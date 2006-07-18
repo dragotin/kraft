@@ -1,0 +1,78 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>DocTextsView</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>DocTextsView</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>523</width>
+            <height>283</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form3</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout19</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel8</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Entry Text on First Page:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>m_teEntry</cstring>
+                    </property>
+                </widget>
+                <widget class="QTextEdit">
+                    <property name="name">
+                        <cstring>m_teEntry</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel8_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Summary Text on Last Page:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>m_teSummary</cstring>
+                    </property>
+                </widget>
+                <widget class="QTextEdit">
+                    <property name="name">
+                        <cstring>m_teSummary</cstring>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>m_cbAddAccount</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Add Account number at bottom of last page</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+A</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+    </grid>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

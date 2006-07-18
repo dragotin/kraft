@@ -1,0 +1,20 @@
+<!DOCTYPE kpartgui>
+<kpartgui name="katalogview" version="0.1">
+<MenuBar>
+  <Menu name="file"><text>&amp;File</text>
+    <Action name="export_catalog"/>
+  </Menu>
+  <Menu name="templates"><text>&amp;Catalog</text>
+    <Action name="edit_vorlage"/>
+    <Action name="neue_vorlage"/>
+    <Action name="edit_chapters"/>
+  </Menu>
+</MenuBar>
+<ToolBar  name="mainToolBar" fullWidth="true">
+    <Action name="edit_vorlage"/>
+    <Action name="neue_vorlage"/>
+    <Action name="edit_chapters"/>
+    <Action name="go_to_document"/>
+    <Action name="targets"/>
+</ToolBar>
+</kpartgui>

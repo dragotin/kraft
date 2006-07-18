@@ -1,0 +1,20 @@
+<!DOCTYPE kpartgui>
+<kpartgui name="kraft" version="0.2">
+<MenuBar>
+  <Menu name="document"><text>&amp;Document</text>
+     <Action name="document_new"/>
+     <Action name="document_open"/>
+     <Action name="document_print"/>
+  </Menu>
+  <Menu name="view"><text>V&amp;iew</text>
+    <Action name="file_new_window"/>
+    <Action name="open_katalog_window"/>
+  </Menu>
+</MenuBar>
+<ToolBar  name="documentToolBar" fullWidth="true">
+    <Action name="document_new"/>
+    <Action name="document_open"/>
+    <Action name="document_print"/>
+</ToolBar>
+
+</kpartgui>

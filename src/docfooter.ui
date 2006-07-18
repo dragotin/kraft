@@ -1,0 +1,125 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>DocFooterEdit</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>DocFooterEdit</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>583</width>
+            <height>192</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form3</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout18</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel8_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Summary Text on Last Page:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>m_teSummary</cstring>
+                    </property>
+                </widget>
+                <widget class="QTextEdit">
+                    <property name="name">
+                        <cstring>m_teSummary</cstring>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout17</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Greeting:</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox">
+                            <property name="name">
+                                <cstring>m_cbGreeting</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer7</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>31</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>m_cbGreeting</sender>
+        <signal>activated(int)</signal>
+        <receiver>DocFooterEdit</receiver>
+        <slot>slotModified()</slot>
+    </connection>
+    <connection>
+        <sender>m_teSummary</sender>
+        <signal>textChanged()</signal>
+        <receiver>DocFooterEdit</receiver>
+        <slot>slotModified()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">docfooter.ui.h</include>
+</includes>
+<signals>
+    <signal>modified()</signal>
+</signals>
+<slots>
+    <slot>slotModified()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kcombobox.h</includehint>
+</includehints>
+</UI>

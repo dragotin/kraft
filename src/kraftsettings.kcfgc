@@ -1,0 +1,5 @@
+File=kraftsettings.kcfg
+ClassName=KraftSettings
+Singleton=true
+Mutators=true
+
