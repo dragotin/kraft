@@ -1,1 +1,1 @@
-SUBDIRS = kange 
+SUBDIRS = src 
