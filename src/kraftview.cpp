@@ -40,7 +40,7 @@
 #include <kabc/addressee.h>
 
 // application specific includes
-#include "kangeview.h"
+#include "kraftview.h"
 #include "kraftdoc.h"
 #include "portal.h"
 #include "docheader.h"
@@ -636,4 +636,4 @@ void KraftView::print(QPrinter * /* pPrinter */ )
     
 }
 
-#include "kangeview.moc"
+#include "kraftview.moc"

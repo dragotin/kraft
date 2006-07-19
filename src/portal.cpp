@@ -36,7 +36,7 @@
 #include <kaction.h>
 
 // application specific includes
-#include "kangeview.h"
+#include "kraftview.h"
 #include "portal.h"
 #include "portalview.h"
 #include "kraftdb.h"
