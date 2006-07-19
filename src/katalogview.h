@@ -44,7 +44,7 @@ class KActionMenu;
 class DocPosition;
 
 /**
-  * The base class for Kange katalog view.
+  * The base class for Kraft katalog view.
   * @see KMainWindow
   * @see KApplication
   * @see KConfig
@@ -76,7 +76,7 @@ class KatalogView : public KMainWindow
     virtual Katalog* getKatalog( const QString& );
       
   public slots:
-    /** open a new application window by creating a new instance of KangeApp */
+    /** open a new application window by creating a new instance of KraftApp */
     void slotFileNewWindow();
     /** clears the document in the actual view to reuse it as the new document */
     void openDocumentFile(const KURL& url);

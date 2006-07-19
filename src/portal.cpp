@@ -119,9 +119,9 @@ void Portal::initActions()
   setStandardToolBarMenuEnabled( true );
   actOpenDocument->setEnabled( false ); 
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
-  char *prjPath = getenv("KANGE_HOME");
+  char *prjPath = getenv("KRAFT_HOME");
   if( prjPath ) {
-      createGUI(QString(prjPath)+"/kange/kraftui.rc");
+      createGUI(QString(prjPath)+"/src/kraftui.rc");
   } else {
       createGUI( "kraftui.rc");
   }
@@ -279,10 +279,10 @@ void Portal::createView( DocGuardedPtr doc )
 {
   // FIXME: We allow only one view for the first time. 
   // Later allow one write view and other read onlys.
-  KangeView *view = doc->firstView();
+  KraftView *view = doc->firstView();
   
   if( ! view ) {
-    view = new KangeView( this );
+    view = new KraftView( this );
     view->setup( doc );
     view->redrawDocument();
     view->show();

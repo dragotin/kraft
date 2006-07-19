@@ -34,7 +34,7 @@
 
 #include "kraftdoc.h"
 
-class KangeView;
+class KraftView;
 class PortalView;
 
 /**
@@ -43,7 +43,7 @@ class Portal : public KMainWindow
 {
   Q_OBJECT
 
-  friend class KangeView;
+  friend class KraftView;
 
   public:
     /** construtor of Portal, calls all init functions to create the application.
@@ -149,7 +149,7 @@ class Portal : public KMainWindow
      * you can create your view according to your application's needs by
      * changing the view class.
      */
-    KangeView *view;
+    KraftView *view;
     /** doc represents your actual document and is created only once. It keeps
      * information such as filename and does the serialization of your files.
      */
@@ -172,5 +172,5 @@ class Portal : public KMainWindow
     
 };
 
-#endif // KANGE_H
+#endif
 

@@ -1,5 +1,5 @@
  /***************************************************************************
-                          kangeview.cpp  -  
+                          kraftview.cpp  -  
                              -------------------
     begin                : Mit Dez 31 19:24:05 CET 2003
     copyright            : (C) 2003 by Klaas Freitag
@@ -50,13 +50,13 @@
 #include "unitmanager.h"
 
 
-KangeViewScroll::KangeViewScroll( QWidget *parent ):
+KraftViewScroll::KraftViewScroll( QWidget *parent ):
 QScrollView( parent )
 {
 
 }
 
-void KangeViewScroll::resizeEvent ( QResizeEvent *ev )
+void KraftViewScroll::resizeEvent ( QResizeEvent *ev )
 {
   int w = visibleWidth(); 
   if( w < 400 ) {
@@ -73,13 +73,13 @@ void KangeViewScroll::resizeEvent ( QResizeEvent *ev )
   QScrollView::resizeEvent( ev );
 }
 
-void KangeViewScroll::addChild( QWidget *child, int x, int y )
+void KraftViewScroll::addChild( QWidget *child, int x, int y )
 {
   mWidgetList.append( static_cast<PositionViewWidget*>(child) );
   QScrollView::addChild( child, x, y );
 }
 
-void KangeViewScroll::kangeRemoveChild( PositionViewWidget *child )
+void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 {
   removeChild( child ); // from the scrollview
   mWidgetList.removeRef( child );
@@ -87,7 +87,7 @@ void KangeViewScroll::kangeRemoveChild( PositionViewWidget *child )
 
 // #########################################################
 
-KangeView::KangeView(QWidget *parent, const char *name) : 
+KraftView::KraftView(QWidget *parent, const char *name) : 
  KDialogBase( TreeList, 0, parent, name, 
               false /* modal */, i18n("Document"), 
 	      Ok|Cancel, Ok, true /* separator */ ),
@@ -117,11 +117,11 @@ KangeView::KangeView(QWidget *parent, const char *name) :
            this, SLOT( slotAboutToShow( QWidget* ) ) );
 }
 
-KangeView::~KangeView()
+KraftView::~KraftView()
 {
 }
 
-void KangeView::setup( DocGuardedPtr doc )
+void KraftView::setup( DocGuardedPtr doc )
 {
   m_doc = doc;
 
@@ -131,7 +131,7 @@ void KangeView::setup( DocGuardedPtr doc )
   setCaption( m_doc->docIdentifier() );
 }
 
-void KangeView::setupDocHeaderView()
+void KraftView::setupDocHeaderView()
 {
     QFrame *page = addPage( i18n("Header"), i18n("Document Header information") );
     QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
@@ -149,7 +149,7 @@ void KangeView::setupDocHeaderView()
               this, SLOT( slotModifiedHeader() ) );
 }
 
-void KangeView::setupPositions()
+void KraftView::setupPositions()
 {
     QFrame *page = addPage( i18n( "Positions of the document" ) );
     QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
@@ -165,13 +165,13 @@ void KangeView::setupPositions()
 
     topLayout->addLayout( hbox );
 
-    m_positionScroll = new KangeViewScroll( page );
+    m_positionScroll = new KraftViewScroll( page );
     topLayout->addWidget( m_positionScroll );
     // QLabel* child1 = new QLabel( i18n("No Positions yet"), m_positionScroll->viewport());
     // m_positionScroll->addChild(child1);
 }
 
-void KangeView::redrawDocument( )
+void KraftView::redrawDocument( )
 {
     KraftDoc *doc = getDocument();
     if( !doc ) {
@@ -222,7 +222,7 @@ void KangeView::redrawDocument( )
     redrawDocPositions( );
 }
 
-void KangeView::redrawDocPositions( )
+void KraftView::redrawDocPositions( )
 {
     KraftDoc *doc = getDocument();
     kdDebug() << "** Starting to redraw the positions" << endl;
@@ -284,7 +284,7 @@ void KangeView::redrawDocPositions( )
     for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
       if( list.containsRef( w->position() ) == 0 ) {
         kdDebug() << "Removing this one: " << w << endl;
-        m_positionScroll->kangeRemoveChild( w );
+        m_positionScroll->kraftRemoveChild( w );
         mPositionWidgetList.remove();
         break;
       }
@@ -294,7 +294,7 @@ void KangeView::redrawDocPositions( )
     m_positionScroll->updateContents();
 }
 
-void KangeView::setupFooter()
+void KraftView::setupFooter()
 {
     QFrame *page = addPage( i18n("Footer"), i18n("Document Footer Information") );
     QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
@@ -305,7 +305,7 @@ void KangeView::setupFooter()
                this, SLOT( slotModifiedFooter() ) );
 }
 
-void KangeView::slotAboutToShow( QWidget* w )
+void KraftView::slotAboutToShow( QWidget* w )
 {
   kdDebug() << "showing page " << w << endl;
   // mach hier weiter: positionwidget an breite anpassen
@@ -317,7 +317,7 @@ void KangeView::slotAboutToShow( QWidget* w )
  pos ->  2    Bla3 <- w1    2 Bla4                         2 Bla2
          3    Bla4                                         3 Bla4 
  */
-void KangeView::slotMovePositionUp( int pos )
+void KraftView::slotMovePositionUp( int pos )
 {
   PositionViewWidget *w1 = 0;
   PositionViewWidget *w2 = 0;
@@ -364,7 +364,7 @@ void KangeView::slotMovePositionUp( int pos )
           2    Bla3 <- w2    2 Bla4   -> insert at pos+1 => 2 Bla2
           3    Bla4                                         3 Bla4 
 */
-void KangeView::slotMovePositionDown( int pos )
+void KraftView::slotMovePositionDown( int pos )
 {
   PositionViewWidget *w1 = 0;
   PositionViewWidget *w2 = 0;
@@ -394,7 +394,7 @@ void KangeView::slotMovePositionDown( int pos )
   }
 }
 
-void KangeView::slotDeletePosition( int pos )
+void KraftView::slotDeletePosition( int pos )
 {  
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
@@ -402,7 +402,7 @@ void KangeView::slotDeletePosition( int pos )
   }
 }
 
-void KangeView::slotLockPosition( int pos )
+void KraftView::slotLockPosition( int pos )
 {
   kdDebug() << "Locking Position " << pos << endl;
   
@@ -412,7 +412,7 @@ void KangeView::slotLockPosition( int pos )
   }
 }
 
-void KangeView::slotUnlockPosition( int pos )
+void KraftView::slotUnlockPosition( int pos )
 {
   kdDebug() << "Unlocking Position " << pos << endl;
   
@@ -422,7 +422,7 @@ void KangeView::slotUnlockPosition( int pos )
   }
 }
 
-void KangeView::slotSelectAddress( KABC::Addressee contact )
+void KraftView::slotSelectAddress( KABC::Addressee contact )
 {
     if( contact.isEmpty() ) {
     	kdDebug() << "Select an address from KAdressbook" << endl;
@@ -446,14 +446,14 @@ void KangeView::slotSelectAddress( KABC::Addressee contact )
     }
 }
 
-void KangeView::slotAddPosition()
+void KraftView::slotAddPosition()
 {
     const DocPosition dp;
     int newPos = m_doc->slotAppendPosition( dp );
     slotFocusPosition( newPos );
 }
 
-void KangeView::slotModifiedPositions()
+void KraftView::slotModifiedPositions()
 {
     const QString modStr = i18n(" (modified)");
 #if 0
@@ -470,7 +470,7 @@ void KangeView::slotModifiedPositions()
     doc->setModified( true );
 }
 
-void KangeView::slotModifiedHeader() 
+void KraftView::slotModifiedHeader() 
 {
     kdDebug() << "Modified the header!" << endl;
     
@@ -482,7 +482,7 @@ void KangeView::slotModifiedHeader()
     doc->setModified( true );
 }
 
-void KangeView::slotModifiedFooter() 
+void KraftView::slotModifiedFooter() 
 {
     kdDebug() << "Modified the footer!" << endl;
     
@@ -494,7 +494,7 @@ void KangeView::slotModifiedFooter()
     doc->setModified( true );
 }
 
-QStringList KangeView::generateLetterHead( KABC::Addressee adr )
+QStringList KraftView::generateLetterHead( KABC::Addressee adr )
 {
     QStringList s;
     const QString famName = adr.familyName();
@@ -507,12 +507,12 @@ QStringList KangeView::generateLetterHead( KABC::Addressee adr )
     return s;
 }
 
-KraftDoc *KangeView::getDocument() const
+KraftDoc *KraftView::getDocument() const
 {
   return m_doc;
 }
 
-void KangeView::done( int r )
+void KraftView::done( int r )
 {
   kdDebug() << "View closed with ret value " << r << endl;
   KraftDoc *doc = getDocument();
@@ -521,7 +521,7 @@ void KangeView::done( int r )
   KDialogBase::done( r );
 }
 
-void KangeView::slotOk()
+void KraftView::slotOk()
 {
     kdDebug() << "Accept Slot hit!" << endl;
     
@@ -549,7 +549,7 @@ void KangeView::slotOk()
 }
 
 // saves changes in the GUI to the underlying document pos
-void KangeView::savePositions()
+void KraftView::savePositions()
 {
   PositionViewWidget *widget;
   for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
@@ -596,7 +596,7 @@ void KangeView::savePositions()
   }
 }
 
-void KangeView::slotFocusPosition( int pos )
+void KraftView::slotFocusPosition( int pos )
 {
   DocPositionList list = getDocument()->positions();
 
@@ -617,7 +617,7 @@ void KangeView::slotFocusPosition( int pos )
   }
 }
 
-void KangeView::slotCancel()
+void KraftView::slotCancel()
 {
   // We need to reread the document
   KraftDoc *doc = getDocument();
@@ -629,7 +629,7 @@ void KangeView::slotCancel()
   KDialogBase::slotCancel();
 }
 
-void KangeView::print(QPrinter * /* pPrinter */ )
+void KraftView::print(QPrinter * /* pPrinter */ )
 {
     // create a archive document and start printing
     // ArchivedDoc *archDoc = doc->archive();

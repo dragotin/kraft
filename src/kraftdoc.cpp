@@ -36,13 +36,13 @@
 #include "docposition.h"
 #include "documentsaverdb.h"
 
-// QList<KangeView> *KraftDoc::pViewList = 0;
+// QList<KraftView> *KraftDoc::pViewList = 0;
 
 KraftDoc::KraftDoc(QWidget *parent, const char *name) : QObject(parent, name),
   mIsNew(true),
   mSaver(0)
 {
-  pViewList = new QList<KangeView>();
+  pViewList = new QList<KraftView>();
   pViewList->setAutoDelete(false);
 
 }
@@ -51,7 +51,7 @@ KraftDoc::~KraftDoc()
 {
 }
 
-KangeView* KraftDoc::firstView()
+KraftView* KraftDoc::firstView()
 {
   if( pViewList->count() > 0 ) {
     return pViewList->first();
@@ -59,12 +59,12 @@ KangeView* KraftDoc::firstView()
   return 0;
 }
 
-void KraftDoc::addView(KangeView *view)
+void KraftDoc::addView(KraftView *view)
 {
   pViewList->append(view);
 }
 
-void KraftDoc::removeView(KangeView *view)
+void KraftDoc::removeView(KraftView *view)
 {
   pViewList->remove(view);
 }
@@ -79,9 +79,9 @@ const KURL& KraftDoc::URL() const
   return doc_url;
 }
 
-void KraftDoc::slotUpdateAllViews( KangeView *sender )
+void KraftDoc::slotUpdateAllViews( KraftView *sender )
 {
-  KangeView *w;
+  KraftView *w;
   if(pViewList) {
     for(w=pViewList->first(); w!=0; w=pViewList->next()) {
       kdDebug() << "VIEW REDRAW, sender is " << sender << endl;
@@ -216,7 +216,7 @@ bool KraftDoc::saveDocument( )
           }
         }
         // we sort the position list here again because the setup
-        // routine KangeView::setupPositions uses the sort order
+        // routine KraftView::setupPositions uses the sort order
         // of the position list rather than the position method because
         // a non trivial position like 1.2, 1.3 etc. can be used more
         // easy. However the sort-compare method of docpositionlist must

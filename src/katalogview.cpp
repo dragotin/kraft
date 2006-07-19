@@ -169,10 +169,10 @@ void KatalogView::initActions()
   editCut->setEnabled(false);
   editCopy->setEnabled(false);
   editPaste->setEnabled(false);
-  // use the absolute path to your kangeui.rc file for testing purpose in createGUI();
-  char *prjPath = getenv( "KANGE_HOME" );
+  // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
+  char *prjPath = getenv( "KRAFT_HOME" );
   if( prjPath ) {
-      createGUI(QString(prjPath)+"/kange/katalogview.rc");
+      createGUI(QString(prjPath)+"/src/katalogview.rc");
   } else {
       createGUI("katalogview.rc");
   }

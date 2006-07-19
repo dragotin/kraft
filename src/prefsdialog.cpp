@@ -28,7 +28,7 @@
 #include "katalogsettings.h"
 
 PrefsDialog::PrefsDialog( QWidget *parent)
-    : KDialogBase(parent, 0, true, i18n("Configure KAnge"), Ok|Cancel, Ok, true )
+    : KDialogBase(parent, 0, true, i18n("Configure Kraft"), Ok|Cancel, Ok, true )
 {
     QLabel *lable;
     QFrame *topFrame = makeMainWidget();

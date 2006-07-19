@@ -1,6 +1,6 @@
 /***************************************************************************
-             kangemain  - main Janus Widget
-                             -------------------
+                              portalview.h
+                           -------------------
     begin                : 2004-05-09
     copyright            : (C) 2004 by Klaas Freitag
     email                : freitag@kde.org

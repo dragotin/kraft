@@ -45,7 +45,7 @@ class QListViewItem;
 class FilterHeader;
 class QBoxLayout;
 /**
-  * The base class for Kange katalog view.
+  * The base class for Kraft katalog view.
   * @see KMainWindow
   * @see KApplication
   * @see KConfig
@@ -59,7 +59,7 @@ class TemplKatalogView: public KatalogView
   Q_OBJECT
 
   public:
-    /** construtor of KangeApp, calls all init functions to create the application.
+    /** construtor of KraftApp, calls all init functions to create the application.
      */
     TemplKatalogView(QWidget* parent=0, const char* name=0);
     TemplKatalogView(const QString& katToShow, QWidget* parent=0, const char* name=0);

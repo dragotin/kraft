@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
     KSplashScreen *splash = new KSplashScreen( pixmap );
     splash->show();
 
-    Portal *kange = new Portal();
-    kange->show();
+    Portal *kraftPortal = new Portal();
+    kraftPortal->show();
 
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 		
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 		  
 		}
 		args->clear();
-    splash->finish( kange->mainWidget() );
+    splash->finish( kraftPortal->mainWidget() );
     delete splash;
   }
 

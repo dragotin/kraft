@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kange.h  -
+                                 brunsviewer.h  
                              -------------------
     begin                : Mit Dez 31 19:24:05 CET 2003
     copyright            : (C) 2003 by Klaas Freitag
@@ -77,5 +77,5 @@ class Brunsviewer : public KMainWindow
   private:
 };
 
-#endif // KANGE_H
+#endif // BRUNSVIEWER_H
 
