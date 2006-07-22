@@ -14,11 +14,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <qsqlcursor.h>
+#include <qsqlrecord.h>
+#include <qsqlindex.h>
+
 #include <kstaticdeleter.h>
 #include <kdebug.h>
 
 #include "archiveman.h"
 #include "kraftdoc.h"
+#include "kraftdb.h"
+#include "unitmanager.h"
+#include "dbids.h"
 
 static KStaticDeleter<ArchiveMan> selfDeleter;
 
@@ -72,6 +79,8 @@ QString ArchiveMan::archiveDocument( KraftDoc *doc )
   QString xml = xmldoc.toString();
   kdDebug() << "Resulting XML: " << xml << endl;
   
+  archiveDocumentDb( doc );
+
   return res;
 }
 
@@ -83,3 +92,96 @@ QDomElement ArchiveMan::xmlTextElement( QDomDocument doc, const QString& name, c
   return elem;
 }
 
+dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
+{
+/*
+  mysql> describe archdoc;
+  +---------------+--------------+------+-----+-------------------+----------------+
+  | Field         | Type         | Null | Key | Default           | Extra          |
+  +---------------+--------------+------+-----+-------------------+----------------+
+  | archDocID     | int(11)      | NO   | PRI | NULL              | auto_increment |
+  | ident         | varchar(32)  | YES  | MUL | NULL              |                |
+  | docType       | varchar(255) | YES  |     | NULL              |                |
+  | clientAddress | text         | YES  |     | NULL              |                |
+  | salut         | varchar(255) | YES  |     | NULL              |                |
+  | goodbye       | varchar(128) | YES  |     | NULL              |                |
+  | printDate     | timestamp    | YES  |     | CURRENT_TIMESTAMP |                |
+  | date          | date         | YES  |     | NULL              |                |
+  | pretext       | text         | YES  |     | NULL              |                |
+  | posttext      | text         | YES  |     | NULL              |                |
+  +---------------+--------------+------+-----+-------------------+----------------+
+*/
+    if( ! doc ) return dbID();
+    
+    QSqlCursor cur("archdoc");
+    cur.setMode( QSqlCursor::Writable );
+    QSqlRecord *record = 0;
+
+    if( doc->isNew() ) {
+	kdDebug() << "Strange: Document in archiving is new!" << endl;
+    }
+
+    record = cur.primeInsert();
+    record->setValue( "ident", doc->ident() );
+    record->setValue( "docType", doc->docType() );
+    record->setValue( "clientAddress", doc->address() );
+    record->setValue( "salut", doc->salut() );
+    record->setValue( "goodbye", doc->goodbye() );
+    record->setValue( "printDate", "NOW()" );
+    record->setValue( "date", doc->date() );
+    record->setValue( "pretext", doc->preText() );    
+    record->setValue( "posttext", doc->postText() );
+
+    cur.insert();
+    dbID id = KraftDB::getLastInsertID();
+    archivePos( id.toInt(), doc );
+
+    return id;
+}
+
+int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
+{
+  /*
+    mysql> describe archdocpos;
+    +-----------+--------------+------+-----+---------+----------------+
+    | Field     | Type         | Null | Key | Default | Extra          |
+    +-----------+--------------+------+-----+---------+----------------+
+    | archPosID | int(11)      | NO   | PRI | NULL    | auto_increment |
+    | archDocID | int(11)      | NO   | MUL |         |                |
+    | ordNumber | int(11)      | NO   |     |         |                |
+    | text      | text         | YES  |     | NULL    |                |
+    | amount    | decimal(6,2) | YES  |     | NULL    |                |
+    | unit      | varchar(64)  | YES  |     | NULL    |                |
+    | price     | decimal(6,2) | YES  |     | NULL    |                |
+    | vat       | decimal(3,1) | YES  |     | 0.0     |                |
+    +-----------+--------------+------+-----+---------+----------------+
+  */
+    if( ! doc ) return -1;
+
+    QSqlCursor cur("archdocpos");
+    cur.setMode( QSqlCursor::Writable );
+    QSqlRecord *record = 0;
+    int cnt = 0;
+    DocPositionBase *dpb;
+    DocPositionList posList = doc->positions();
+
+    for( dpb = posList.first(); dpb; dpb = posList.next() ) {
+	if( dpb->type() == DocPositionBase::Position ) {
+	    DocPosition *dp = static_cast<DocPosition*>(dpb);
+	    
+	    record = cur.primeInsert();
+	    
+	    record->setValue( "archDocID", archDocId );
+	    record->setValue( "ordNumber", dp->position() );
+	    record->setValue( "text", dp->text() );
+	    record->setValue( "amount", dp->amount() );
+	    record->setValue( "unit", dp->unit().einheit( dp->amount() ) );
+	    record->setValue( "price", dp->unitPrice().toDouble() );
+	    record->setValue( "vat", 16.0 ); // FIXME !!
+	    
+	    cur.insert();
+	    cnt++;
+	}
+    }
+    return cnt;
+}

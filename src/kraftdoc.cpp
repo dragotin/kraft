@@ -32,7 +32,7 @@
 // application specific includes
 #include "kraftdoc.h"
 #include "portal.h"
-#include "kangeview.h"
+#include "kraftview.h"
 #include "docposition.h"
 #include "documentsaverdb.h"
 

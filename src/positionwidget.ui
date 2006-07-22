@@ -123,10 +123,10 @@
                                         <cstring>m_sbUnitPrice</cstring>
                                     </property>
                                     <property name="maxValue">
-                                        <number>10000</number>
+                                        <number>1000</number>
                                     </property>
                                     <property name="lineStep">
-                                        <number>0.1</number>
+                                        <number>0.01</number>
                                     </property>
                                     <property name="precision">
                                         <number>2</number>
@@ -167,6 +167,17 @@
                     </vbox>
                 </widget>
             </hbox>
+        </widget>
+        <widget class="QFrame" row="1" column="0">
+            <property name="name">
+                <cstring>seperator</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
         </widget>
     </grid>
 </widget>

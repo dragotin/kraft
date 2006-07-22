@@ -20,6 +20,7 @@
 #include <qdom.h>
 
 class KraftDoc;
+class dbID;
 
 class ArchiveMan
 {
@@ -27,12 +28,13 @@ class ArchiveMan
     ~ArchiveMan();
 
     static ArchiveMan *self();
-    QString archiveDocument( KraftDoc *doc );
-
+    QString archiveDocument( KraftDoc* );
+    dbID archiveDocumentDb( KraftDoc* );
+  
   private:
     ArchiveMan();
     QDomElement xmlTextElement( QDomDocument, const QString&, const QString& );
-
+    int archivePos( int, KraftDoc* );
 
     static ArchiveMan *mSelf;
 };
