@@ -8,5 +8,11 @@
       <default>true</default>
     </entry>
   </group>
+  <group name="reporting">
+    <entry name="NCReportBinary">
+      <label>The complete filename of the NCReport binary</label>
+      <default>ncreport</default>
+    </entry>
+  </group>
 </kcfg>
 

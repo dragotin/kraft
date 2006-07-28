@@ -28,7 +28,7 @@ class ArchiveMan
     ~ArchiveMan();
 
     static ArchiveMan *self();
-    QString archiveDocument( KraftDoc* );
+    dbID archiveDocument( KraftDoc* );
     dbID archiveDocumentDb( KraftDoc* );
   
   private:

@@ -49,10 +49,9 @@ ArchiveMan::~ArchiveMan()
 
 }
 
-QString ArchiveMan::archiveDocument( KraftDoc *doc )
+dbID ArchiveMan::archiveDocument( KraftDoc *doc )
 {
-  QString res; 
-  if( ! doc ) return res;
+  if( ! doc ) return dbID();
     
   QDomDocument xmldoc( "kraftdocument" );
   QDomElement root = xmldoc.createElement( "kraftdocument" );
@@ -79,9 +78,9 @@ QString ArchiveMan::archiveDocument( KraftDoc *doc )
   QString xml = xmldoc.toString();
   kdDebug() << "Resulting XML: " << xml << endl;
   
-  archiveDocumentDb( doc );
+  dbID archID = archiveDocumentDb( doc );
 
-  return res;
+  return archID;
 }
 
 QDomElement ArchiveMan::xmlTextElement( QDomDocument doc, const QString& name, const QString& value )

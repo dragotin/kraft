@@ -51,6 +51,7 @@
 #include "documentman.h"
 #include "docdigestview.h"
 #include "archiveman.h"
+#include "reportgenerator.h"
 
 #define ID_STATUS_MSG 1
 
@@ -248,7 +249,9 @@ void Portal::slotPrintDocument()
   DocGuardedPtr docPtr = docman->openDocument( locId );
   if( docPtr ) {
     ArchiveMan *archman = ArchiveMan::self();
-    archman->archiveDocument( docPtr ); 
+    dbID archID = archman->archiveDocument( docPtr ); 
+    ReportGenerator *report = ReportGenerator::self();
+    report->docPreview( archID );
   }
 }
 
