@@ -57,16 +57,20 @@ class QSignalMapper;
 class KraftViewScroll : public QScrollView
 {
   Q_OBJECT
-  
+
 public:
   KraftViewScroll( QWidget* );
   ~KraftViewScroll() { }
-  
-  void resizeEvent( QResizeEvent* );
+
+  void viewportResizeEvent( QResizeEvent* );
   void addChild( QWidget *child, int x=0, int y=0 );
   // the removeChild method is not virtual for scrollview, so
   // our own needs to be implemented.
   void kraftRemoveChild( PositionViewWidget *child );
+
+public slots:
+  void resizeContents( int, int );
+
 private:
   QPtrList<PositionViewWidget> mWidgetList;
 };
@@ -95,7 +99,7 @@ class KraftView : public KDialogBase
     void print(QPrinter *pPrinter);
 
     void setup( DocGuardedPtr );
-    
+
 
     typedef QMap<DocPositionBase*, PositionViewWidget*> PositionMap;
 
@@ -107,7 +111,7 @@ class KraftView : public KDialogBase
     void slotModifiedFooter();
     void slotAddPosition();
     void slotFocusPosition( int );
-    
+
   protected slots:
     void slotOk();
     void slotCancel();
@@ -119,23 +123,22 @@ class KraftView : public KDialogBase
     void slotDeletePosition( int );
     void slotUnlockPosition(int);
     void slotLockPosition(int);
-    void slotAboutToShow( QWidget* );  
-    
+    void slotAboutToShow( QWidget* );
+
   private:
     void setupDocHeaderView();
     void setupPositions();
     void setupFooter();
     void setupTextsView();
-    
+
     QStringList generateLetterHead( KABC::Addressee adr );
 
     KraftViewScroll *m_positionScroll;
     DocHeaderEdit *m_headerEdit;
     DocFooterEdit *m_footerEdit;
 
-    PositionMap mPositionWidgetMap;
     PositionViewWidgetList mPositionWidgetList;
-    
+
     QString mContactUid;
     DocGuardedPtr m_doc;
     QSignalMapper *mDeleteMapper;

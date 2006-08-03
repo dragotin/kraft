@@ -1,5 +1,5 @@
  /***************************************************************************
-                          kraftview.cpp  -  
+                          kraftview.cpp  -
                              -------------------
     begin                : Mit Dez 31 19:24:05 CET 2003
     copyright            : (C) 2003 by Klaas Freitag
@@ -24,6 +24,8 @@
 #include <qsizepolicy.h>
 #include <qtextedit.h>
 #include <qsignalmapper.h>
+#include <qhbox.h>
+#include <qvbox.h>
 
 #include <kdebug.h>
 #include <kdialogbase.h>
@@ -56,21 +58,23 @@ QScrollView( parent )
 
 }
 
-void KraftViewScroll::resizeEvent ( QResizeEvent *ev )
+void KraftViewScroll::viewportResizeEvent ( QResizeEvent *ev )
 {
-  int w = visibleWidth(); 
+  int w = ev->size().width(); // visibleWidth()-1;
+  resizeContents( w, contentsHeight () );
+  QScrollView::viewportResizeEvent( ev );
+}
+
+void KraftViewScroll::resizeContents(  int w, int h )
+{
   if( w < 400 ) {
     w = 400;
   }
-  
-  // FIXME: Why -4 here? Without -4, a hor. scrollbar is always there...
-  resizeContents( w-4, contentsHeight () );
-
+  QScrollView::resizeContents( w, h );
   PositionViewWidget *wid;
   for ( wid = mWidgetList.first(); wid; wid = mWidgetList.next() ) {
     wid->resize( w, wid->height() );
   }
-  QScrollView::resizeEvent( ev );
 }
 
 void KraftViewScroll::addChild( QWidget *child, int x, int y )
@@ -87,32 +91,32 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 
 // #########################################################
 
-KraftView::KraftView(QWidget *parent, const char *name) : 
- KDialogBase( TreeList, 0, parent, name, 
-              false /* modal */, i18n("Document"), 
+KraftView::KraftView(QWidget *parent, const char *name) :
+ KDialogBase( TreeList, 0, parent, name,
+              false /* modal */, i18n("Document"),
 	      Ok|Cancel, Ok, true /* separator */ ),
        m_doc( 0 )
 {
   mDeleteMapper = new QSignalMapper( this );
-  connect( mDeleteMapper, SIGNAL( mapped(int)), 
-           this, SLOT( slotDeletePosition( int ) ) ); 
-  
+  connect( mDeleteMapper, SIGNAL( mapped(int)),
+           this, SLOT( slotDeletePosition( int ) ) );
+
   mMoveUpMapper = new QSignalMapper( this );
-  connect( mMoveUpMapper, SIGNAL( mapped(int)), 
+  connect( mMoveUpMapper, SIGNAL( mapped(int)),
            this, SLOT( slotMovePositionUp( int  ) ) );
-  
+
   mMoveDownMapper = new QSignalMapper( this );
-  connect( mMoveDownMapper, SIGNAL( mapped(int)), 
+  connect( mMoveDownMapper, SIGNAL( mapped(int)),
            this, SLOT( slotMovePositionDown( int ) ) );
-           
+
   mLockPositionMapper = new QSignalMapper( this );
   connect( mLockPositionMapper, SIGNAL( mapped( int )),
            this, SLOT( slotLockPosition( int ) ) );
-           
+
   mUnlockPositionMapper = new QSignalMapper( this );
   connect( mUnlockPositionMapper, SIGNAL( mapped( int )),
            this, SLOT( slotUnlockPosition( int ) ) );
-           
+
   connect( this, SIGNAL( aboutToShowPage( QWidget* ) ),
            this, SLOT( slotAboutToShow( QWidget* ) ) );
 }
@@ -135,7 +139,7 @@ void KraftView::setupDocHeaderView()
 {
     QFrame *page = addPage( i18n("Header"), i18n("Document Header information") );
     QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
-    
+
     m_headerEdit = new DocHeaderEdit( page );
     topLayout->addWidget( m_headerEdit );
 
@@ -151,24 +155,16 @@ void KraftView::setupDocHeaderView()
 
 void KraftView::setupPositions()
 {
-    QFrame *page = addPage( i18n( "Positions of the document" ) );
-    QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
+    QVBox *page = addVBoxPage( i18n( "Positions" ), i18n( "Positions of the document" ) );
 
-    QHBoxLayout *hbox   = new QHBoxLayout( page, 0, KDialog::spacingHint());
-    KPushButton *button = new KPushButton( i18n("Add"), page );
-    hbox->addWidget( button );
+    QHBox *hbox = new QHBox( page );
+    KPushButton *button = new KPushButton( i18n("Add"), hbox );
     connect( button, SIGNAL( clicked() ), this, SLOT( slotAddPosition() ) );
-    
-    QWidget *spaceEater = new QWidget( page );
-    spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
-    hbox->addWidget( spaceEater );
 
-    topLayout->addLayout( hbox );
+    QWidget *spaceEater = new QWidget( hbox );
+    spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
 
     m_positionScroll = new KraftViewScroll( page );
-    topLayout->addWidget( m_positionScroll );
-    // QLabel* child1 = new QLabel( i18n("No Positions yet"), m_positionScroll->viewport());
-    // m_positionScroll->addChild(child1);
 }
 
 void KraftView::redrawDocument( )
@@ -179,7 +175,7 @@ void KraftView::redrawDocument( )
     } else {
       kdDebug() << "** Starting redraw of document " << doc << endl;
     }
-    
+
     /* header: date and document type */
     QDate date = doc->date();
     m_headerEdit->m_dateEdit->setDate( date );
@@ -188,7 +184,7 @@ void KraftView::redrawDocument( )
     /* header: address */
     mContactUid  = doc->addressUid();
     QString address = doc->address();
-    
+
     kdDebug() << "Loaded address uid from database " << mContactUid << endl;
     if( ! mContactUid.isEmpty() ) {
       KABC::AddressBook *adrBook =  KABC::StdAddressBook::self();
@@ -204,21 +200,21 @@ void KraftView::redrawDocument( )
           slotSelectAddress( contact );
         }
       }
-    } 
+    }
     if( !address.isEmpty() ) {
       // custom address stored in the document.
       // kdDebug() << "custom address came in: " << address << endl;
       m_headerEdit->m_postAddressEdit->setText( address );
     }
-    
+
     if( !doc->salut().isEmpty() ) {
       m_headerEdit->m_letterHead->insertItem( doc->salut() );
       m_headerEdit->m_letterHead->setCurrentText( doc->salut() );
     }
     /* pre- and post text */
     m_headerEdit->m_teEntry->setText( doc->preText() );
-    m_footerEdit->m_teSummary->setText( doc->postText() ); 
-    
+    m_footerEdit->m_teSummary->setText( doc->postText() );
+
     redrawDocPositions( );
 }
 
@@ -226,37 +222,40 @@ void KraftView::redrawDocPositions( )
 {
     KraftDoc *doc = getDocument();
     kdDebug() << "** Starting to redraw the positions" << endl;
-    
+
     if( ! doc ) {
       kdError() << "Empty document pointer" << endl;
       return;
     }
-    
+
     DocPositionList list = doc->positions();
     kdDebug() << "starting to redraw " << list.count() << " positions!" << endl;
-    
+
     DocPositionBase *dp = 0;
-    
+
     for( dp = list.first(); dp; dp = list.next() ) {
         PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
         if( !w ) {
             w = new PositionViewWidget( );
-            w->resize( m_positionScroll->contentsWidth(), w->height() );
-            m_positionScroll->resizeContents( m_positionScroll->contentsWidth(),
+            int cw = m_positionScroll->contentsWidth();
+            if ( cw < 400 ) cw = 400;
+
+            w->resize( cw, w->height() );
+            m_positionScroll->resizeContents( cw,
                                               list.count() * w->height()+1 );
             mDeleteMapper->setMapping( w, list.at() );
             mMoveUpMapper->setMapping( w, list.at() );
             mMoveDownMapper->setMapping( w, list.at() );
             mLockPositionMapper->setMapping( w, list.at() );
             mUnlockPositionMapper->setMapping( w, list.at() );
-            
+
             connect( w, SIGNAL( deletePosition() ), mDeleteMapper, SLOT( map() ) );
             connect( w, SIGNAL( moveUp() ),         mMoveUpMapper, SLOT( map() ) );
             connect( w, SIGNAL( moveDown() ),       mMoveDownMapper, SLOT( map() ) );
             connect( w, SIGNAL( lockPosition() ),   mLockPositionMapper, SLOT( map() ) );
             connect( w, SIGNAL( unlockPosition() ), mUnlockPositionMapper, SLOT( map() ) );
-            
-            connect( w, SIGNAL( positionModified() ), this, 
+
+            connect( w, SIGNAL( positionModified() ), this,
                           SLOT( slotModifiedPositions() ) );
             w->m_cbUnit->insertStringList( UnitManager::allUnits() );
 
@@ -277,7 +276,7 @@ void KraftView::redrawDocPositions( )
         w->setPosition( dp );
         w->setOrdNumber( 1 + list.at() );
     }
-    
+
     // now go through the positionWidgetMap and check if it contains elements
     // that are not any longer in the list of positions
     PositionViewWidget *w = 0;
@@ -289,7 +288,7 @@ void KraftView::redrawDocPositions( )
         break;
       }
     }
-    
+
     // repaint everything
     m_positionScroll->updateContents();
 }
@@ -298,30 +297,29 @@ void KraftView::setupFooter()
 {
     QFrame *page = addPage( i18n("Footer"), i18n("Document Footer Information") );
     QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
-    
+
     m_footerEdit = new DocFooterEdit( page );
     topLayout->addWidget( m_footerEdit );
-    connect( m_footerEdit, SIGNAL( modified() ), 
+    connect( m_footerEdit, SIGNAL( modified() ),
                this, SLOT( slotModifiedFooter() ) );
 }
 
 void KraftView::slotAboutToShow( QWidget* w )
 {
   kdDebug() << "showing page " << w << endl;
-  // mach hier weiter: positionwidget an breite anpassen
 }
 
 /* This is the flow in the move up method:
          0    Bla1          0 Bla1                         0 Bla1
          1    Bla2 <- w2    1 Bla2   -> insert at pos-1 => 1 Bla3
  pos ->  2    Bla3 <- w1    2 Bla4                         2 Bla2
-         3    Bla4                                         3 Bla4 
+         3    Bla4                                         3 Bla4
  */
 void KraftView::slotMovePositionUp( int pos )
 {
   PositionViewWidget *w1 = 0;
   PositionViewWidget *w2 = 0;
-  
+
   if( pos < 1 || (unsigned) pos > mPositionWidgetList.count() ) {
     kdDebug() << "ERR: position out of range: " << pos << endl;
     return;
@@ -330,7 +328,7 @@ void KraftView::slotMovePositionUp( int pos )
   w1 = mPositionWidgetList.take( pos );
   mPositionWidgetList.insert( pos-1, w1 );
   kdDebug() << "Found at pos " << pos << " the widgets " << w1 << " and " << w2 << endl;
-  
+
   PositionViewWidget *vw = 0;
   for( vw = mPositionWidgetList.first(); vw; vw = mPositionWidgetList.next() ) {
     DocPositionBase* pb = vw->position();
@@ -341,7 +339,7 @@ void KraftView::slotMovePositionUp( int pos )
       kdDebug() << "Pos " << vw->ordNumber() << ": " << pos->text() << endl;
     }
   }
-  
+
   if( w1 && w2 ) {
     w1->setOrdNumber( pos );  // note: ordnumbers start with 1, thus add one
     w2->setOrdNumber( pos+1 );
@@ -351,7 +349,7 @@ void KraftView::slotMovePositionUp( int pos )
     mMoveUpMapper->setMapping( w2, pos );
     // int tmpX = m_positionScroll->childX( w1 );
     int tmpY = m_positionScroll->childY( w1 );
-    
+
     m_positionScroll->moveChild( w1, 0, m_positionScroll->childY( w2 ) );
     m_positionScroll->moveChild( w2, 0, tmpY );
   } else {
@@ -362,25 +360,25 @@ void KraftView::slotMovePositionUp( int pos )
           0    Bla1          0 Bla1                         0 Bla1
   pos ->  1    Bla2 <- w1    1 Bla3                         1 Bla3
           2    Bla3 <- w2    2 Bla4   -> insert at pos+1 => 2 Bla2
-          3    Bla4                                         3 Bla4 
+          3    Bla4                                         3 Bla4
 */
 void KraftView::slotMovePositionDown( int pos )
 {
   PositionViewWidget *w1 = 0;
   PositionViewWidget *w2 = 0;
-    
+
   if( pos < 0 || (unsigned) pos > mPositionWidgetList.count() -1 ) {
     kdDebug() << "ERR: position out of range: " << pos << endl;
   }
-  
+
   w2 = mPositionWidgetList.at( pos+1 );
   w1 = mPositionWidgetList.take( pos );
   mPositionWidgetList.insert( pos+1, w1 );
-  
+
   if( w1 && w2 ) {
     w1->setOrdNumber( pos+2  );
     w2->setOrdNumber( pos+1 );
-    
+
     mMoveUpMapper->removeMappings( w1 );
     mMoveDownMapper->setMapping( w1, pos+1 );
     mMoveUpMapper->removeMappings( w2 );
@@ -395,7 +393,7 @@ void KraftView::slotMovePositionDown( int pos )
 }
 
 void KraftView::slotDeletePosition( int pos )
-{  
+{
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Deleted );
@@ -405,7 +403,7 @@ void KraftView::slotDeletePosition( int pos )
 void KraftView::slotLockPosition( int pos )
 {
   kdDebug() << "Locking Position " << pos << endl;
-  
+
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Locked );
@@ -415,7 +413,7 @@ void KraftView::slotLockPosition( int pos )
 void KraftView::slotUnlockPosition( int pos )
 {
   kdDebug() << "Unlocking Position " << pos << endl;
-  
+
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Active );
@@ -432,16 +430,16 @@ void KraftView::slotSelectAddress( KABC::Addressee contact )
     }
 
     if( ! contact.isEmpty() ) {
-      m_headerEdit->m_labName->setText( contact.realName() ); 
+      m_headerEdit->m_labName->setText( contact.realName() );
       KABC::Address address = contact.address(64);
-  
+
       QString adrStr = address.street() + "\n" + address.postalCode();
       adrStr = address.formattedAddress( contact.realName() );
       kdDebug() << "formatted address string: " << adrStr << endl;
       m_headerEdit->m_postAddressEdit->setText( adrStr );
       m_headerEdit->m_letterHead->clear();
       QStringList li = generateLetterHead( contact );
-  
+
       m_headerEdit->m_letterHead->insertStringList( li );
     }
 }
@@ -470,10 +468,10 @@ void KraftView::slotModifiedPositions()
     doc->setModified( true );
 }
 
-void KraftView::slotModifiedHeader() 
+void KraftView::slotModifiedHeader()
 {
     kdDebug() << "Modified the header!" << endl;
-    
+
     KraftDoc *doc = getDocument();
     if( !doc ) {
       kdDebug() << "ERR: No document available in view, return!" << endl;
@@ -482,10 +480,10 @@ void KraftView::slotModifiedHeader()
     doc->setModified( true );
 }
 
-void KraftView::slotModifiedFooter() 
+void KraftView::slotModifiedFooter()
 {
     kdDebug() << "Modified the footer!" << endl;
-    
+
     KraftDoc *doc = getDocument();
     if( !doc ) {
       kdDebug() << "ERR: No document available in view, return!" << endl;
@@ -524,13 +522,13 @@ void KraftView::done( int r )
 void KraftView::slotOk()
 {
     kdDebug() << "Accept Slot hit!" << endl;
-    
+
     KraftDoc *doc = getDocument();
-    
+
     if( !doc ) {
       kdDebug() << "ERR: No document available in view, return!" << endl;
       return;
-    } 
+    }
     // transfer all values to the document
     doc->setDate( m_headerEdit->m_dateEdit->date() );
     doc->setAddressUid( mContactUid );
@@ -538,13 +536,13 @@ void KraftView::slotOk()
     doc->setDocType(  m_headerEdit->m_cbType->currentText() );
     doc->setPreText(  m_headerEdit->m_teEntry->text() );
     doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
-    doc->setPostText( m_footerEdit->m_teSummary->text() ); 
+    doc->setPostText( m_footerEdit->m_teSummary->text() );
     doc->setGoodbye(  m_footerEdit->m_cbGreeting->currentText() );
-    
+
     savePositions();
-    
+
     doc->saveDocument( );
-    
+
     KDialogBase::slotOk(  );
 }
 
@@ -555,9 +553,9 @@ void KraftView::savePositions()
   for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
     DocPositionBase *dpb = widget->position();
     DocPosition *pos = static_cast<DocPosition*>(dpb);
-    
+
     QString h = QString::number( widget->ordNumber() );
-    
+
     if( h != pos->position() ) {
       pos->setPosition( h );
     }
@@ -565,10 +563,10 @@ void KraftView::savePositions()
     if( widget->deleted() ) {
       pos->setToDelete( true );
       continue;
-    } 
-    
+    }
+
     if( widget->modified() ) {
-      kdDebug() << "Position " << pos->position() << " was modified" << endl; 
+      kdDebug() << "Position " << pos->position() << " was modified" << endl;
       h = widget->m_teFloskel->text();
       if( h != pos->text() ) {
         pos->setText( h );
@@ -625,7 +623,7 @@ void KraftView::slotCancel()
     kdDebug() << "Document refetch from database" << endl;
     doc->reloadDocument();
   }
-  
+
   KDialogBase::slotCancel();
 }
 
@@ -633,7 +631,7 @@ void KraftView::print(QPrinter * /* pPrinter */ )
 {
     // create a archive document and start printing
     // ArchivedDoc *archDoc = doc->archive();
-    
+
 }
 
 #include "kraftview.moc"
