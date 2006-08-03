@@ -36,6 +36,7 @@
 
 class KraftView;
 class PortalView;
+class ReportGenerator;
 
 /**
   */
@@ -50,7 +51,7 @@ class Portal : public KMainWindow
      */
     Portal( QWidget* parent=0, const char* name=0);
     ~Portal();
-    
+
     static QString textWrap( const QString& t, unsigned int width=40);
 
     QWidget* mainWidget();
@@ -94,12 +95,12 @@ class Portal : public KMainWindow
      * @see KTMainWindow#readProperties
      */
     virtual void readProperties(KConfig *_cfg);
-    
-    
+
+
   protected slots:
     void slotStartupChecks();
     void slotOfferNewPosition( const DocPosition& pos );
-      
+
   public slots:
     /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.
      * If queryClose() returns false because the user canceled the saveModified() dialog, the closing breaks.
@@ -135,10 +136,10 @@ class Portal : public KMainWindow
     void slotOpenDocument();
     void slotDocumentSelected( const QString& );
     void slotPrintDocument();
-    
+
   private:
     void createView( DocGuardedPtr );
-    
+
     /** the configuration object of the application */
     KConfig *config;
 
@@ -154,6 +155,7 @@ class Portal : public KMainWindow
      * information such as filename and does the serialization of your files.
      */
     KraftDoc *doc;
+    ReportGenerator *mReportGenerator;
 
     // KAction pointers to enable/disable actions
     KAction* fileQuit;
@@ -166,10 +168,10 @@ class Portal : public KMainWindow
     KAction* actNewDocument;
     KAction* actOpenDocument;
     KAction* actPrintDocument;
-    
+
     KToggleAction* viewFlosTemplates;
     KToggleAction* viewStatusBar;
-    
+
 };
 
 #endif

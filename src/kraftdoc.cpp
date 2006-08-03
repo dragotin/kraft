@@ -150,11 +150,11 @@ bool KraftDoc::newDocument()
   /////////////////////////////////////////////////
   modified=false;
   doc_url.setFileName(i18n("Untitled"));
-  
+
   /* initialise data */
   mDate = QDate::currentDate();
   mIdent = QString("%1-%2").arg( mDate.year() ).arg( mDate.dayOfYear() );
-  
+
   mIsNew = true;
   mAddress = QString::null;
   mAddressUid = QString::null;
@@ -188,7 +188,7 @@ bool KraftDoc::reloadDocument()
 bool KraftDoc::saveDocument( )
 {
     bool result = false;
-    
+
     DocumentSaverBase *saver = getSaver();
     if( saver ) {
         result = saver->saveDocument( this );
@@ -199,7 +199,7 @@ bool KraftDoc::saveDocument( )
     doc.appendChild( root );
 
     root.appendChild( xmlTextElement( doc, "Greeting", mGreeting ) );
-    
+
     root.appendChild( xmlTextElement( doc, "docType", mDocType ) );
     root.appendChild( xmlTextElement( doc, "preText", mPreText ) );
     root.appendChild( mPositions.domElement(doc) );
@@ -233,7 +233,7 @@ bool KraftDoc::saveDocument( )
 QString KraftDoc::docIdentifier()
 {
   QString re = docType();
-  
+
   KABC::AddressBook *adrBook =  KABC::StdAddressBook::self();
   KABC::Addressee contact;
   if( adrBook ) {
@@ -252,10 +252,10 @@ void KraftDoc::deleteContents()
 
 }
 
-DocPosition* KraftDoc::createPosition() 
+DocPosition* KraftDoc::createPosition()
 {
     DocPosition *dp = new DocPosition();
-    
+
     mPositions.append( dp );
     dp->setPosition( QString::number( mPositions.count() ) );
     return dp;
@@ -264,9 +264,9 @@ DocPosition* KraftDoc::createPosition()
 void KraftDoc::slotRemovePosition( int pos )
 {
   kdDebug() << "Removing position " << pos << endl;
-  
+
   DocPositionBase *dp = 0;
-  
+
   bool found = false;
   for( dp = mPositions.first(); !found && dp; dp = mPositions.next() ) {
     kdDebug() << "Comparing " << pos << " with " << dp->dbId().toString() << endl;
@@ -294,7 +294,7 @@ void KraftDoc::slotMoveUpPosition( int dbid )
   dpLoop = mPositions.next(); // Jump to second one, first cant be moved up
   DocPositionBase *dp = 0;
   int curPos = -1;
-  
+
   for( ; curPos == -1 && dpLoop; dpLoop = mPositions.next() ) {
          kdDebug() << "Comparing " << dbid << " with " << dpLoop->dbId().toString() << endl;
          if( dpLoop->dbId() == dbid ) {
@@ -302,7 +302,7 @@ void KraftDoc::slotMoveUpPosition( int dbid )
            dp = mPositions.take();
          }
        }
-  
+
   kdDebug() << "Found: "<< curPos << ", count: " << mPositions.count() << ", dp: " << dp << endl;
   if( curPos > -1 && dp ) {
     if( mPositions.insert( curPos-1, dp ) ) {
@@ -321,7 +321,7 @@ void KraftDoc::slotMoveDownPosition( int dbid )
   DocPositionBase *dpLast = mPositions.last();
   int curPos = -1;
 
-  for( dpLoop = mPositions.first(); curPos == -1 && dpLoop != dpLast; 
+  for( dpLoop = mPositions.first(); curPos == -1 && dpLoop != dpLast;
         dpLoop = mPositions.next() ) {
     kdDebug() << "Comparing " << dbid << " with " << dpLoop->dbId().toString() << endl;
     if( dpLoop->dbId() == dbid ) {
@@ -343,14 +343,14 @@ void KraftDoc::slotMoveDownPosition( int dbid )
 int KraftDoc::slotAppendPosition( const DocPosition& pos )
 {
   DocPosition *dp = createPosition();
-  *dp = pos; // FIXME: Proper assignment operator 
+  *dp = pos; // FIXME: Proper assignment operator
 
   dp->setPosition( QString::number( mPositions.count() ) );
   slotUpdateAllViews( 0 );
   return mPositions.count();
 }
 
-int KraftDoc::renumberPositions() 
+int KraftDoc::renumberPositions()
 {
   int cnt = 1;
   DocPositionBase *dp;
@@ -359,11 +359,11 @@ int KraftDoc::renumberPositions()
     if( ! dp->toDelete() )
       cnt++;
   }
-  
+
   return cnt;
 }
 
-DocumentSaverBase* KraftDoc::getSaver( const QString& saverHint )
+DocumentSaverBase* KraftDoc::getSaver( const QString& )
 {
     if( ! mSaver )
     {

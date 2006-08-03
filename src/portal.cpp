@@ -55,7 +55,7 @@
 
 #define ID_STATUS_MSG 1
 
-Portal::Portal( QWidget* , const char* name) 
+Portal::Portal( QWidget* , const char* name)
 : KMainWindow(0, name)
 
 {
@@ -98,15 +98,15 @@ void Portal::initActions()
   actOpenKatalog = new KAction(i18n("Open Catalog Window"), 0,0,this, SLOT(slotOpenKatalog()), actionCollection(), "open_katalog_window");
   actOpenMatKatalog = new KAction(i18n("Open Material Catalog Window"), 0,0,this, SLOT(slotOpenMaterialKatalog()), actionCollection(), "open_matkat_window");
 
-  actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew", KStdAccel::shortcut(KStdAccel::New), this, 
+  actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew", KStdAccel::shortcut(KStdAccel::New), this,
   SLOT(slotNewDocument()), actionCollection(), "document_new");
-  
+
   actPrintDocument = new KAction(i18n("&Print Document"), "printer1",        KStdAccel::shortcut(KStdAccel::Print), this,                                SLOT(slotPrintDocument()), actionCollection(), "document_print");
 
   actOpenDocument = new KAction(i18n("&Open Document"),  "fileopen",
-  KStdAccel::shortcut(KStdAccel::Open), this, 
+  KStdAccel::shortcut(KStdAccel::Open), this,
   SLOT( slotOpenDocument() ), actionCollection(), "document_open" );
-  
+
   fileQuit->setStatusText(i18n("Quits the application"));
   editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
   editCopy->setStatusText(i18n("Copies the selected section to the clipboard"));
@@ -116,9 +116,9 @@ void Portal::initActions()
   actOpenKatalog->setStatusText(i18n("Opens a new Catalog window"));
   actNewDocument->setStatusText(i18n("Creates a new Document"));
   actPrintDocument->setStatusText( i18n("Print and archive this Document"));
-  
+
   setStandardToolBarMenuEnabled( true );
-  actOpenDocument->setEnabled( false ); 
+  actOpenDocument->setEnabled( false );
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
   char *prjPath = getenv("KRAFT_HOME");
   if( prjPath ) {
@@ -148,7 +148,7 @@ void Portal::initView()
              this, SLOT(slotOpenKatalog(const QString&)));
     connect( m_portalView, SIGNAL(katalogToXML(const QString& )),
              this, SLOT(slotKatalogToXML(const QString&)));
-    
+
     // document related connections
     connect( m_portalView, SIGNAL( createDocument() ),
              this, SLOT( slotNewDocument() ) );
@@ -156,7 +156,7 @@ void Portal::initView()
              this, SLOT( slotOpenDocument( const QString& ) ) );
     connect( m_portalView, SIGNAL( printDocument( const QString& ) ),
              this, SLOT( slotPrintDocument() ) );
-             
+
     setCentralWidget(m_portalView);
 }
 
@@ -174,7 +174,7 @@ void Portal::saveOptions()
 {
   config->setGroup("General Options");
   config->writeEntry("Geometry", size());
-  
+
   config->writeEntry("Show Statusbar",viewStatusBar->isChecked());
 
 }
@@ -198,7 +198,7 @@ void Portal::readOptions()
 
 void Portal::saveProperties(KConfig *)
 {
-  
+
 }
 
 
@@ -226,10 +226,10 @@ bool Portal::queryExit()
 void Portal::slotNewDocument()
 {
   slotStatusMsg(i18n("Creating new document..."));
-  
+
   DocumentMan *docman = DocumentMan::self();
   DocGuardedPtr doc = docman->createDocument();
-  
+
   slotStatusMsg(i18n("Ready."));
   createView( doc );
 }
@@ -244,27 +244,28 @@ void Portal::slotPrintDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
   kdDebug() << "printing document " << locId << endl;
-  
+
   DocumentMan *docman = DocumentMan::self();
   DocGuardedPtr docPtr = docman->openDocument( locId );
   if( docPtr ) {
     ArchiveMan *archman = ArchiveMan::self();
-    dbID archID = archman->archiveDocument( docPtr ); 
-    ReportGenerator *report = ReportGenerator::self();
-    report->docPreview( archID );
+    dbID archID = archman->archiveDocument( docPtr );
+
+    mReportGenerator = ReportGenerator::self();
+    mReportGenerator->docPreview( archID );
   }
 }
 
-void Portal::slotOpenDocument( const QString& id ) 
+void Portal::slotOpenDocument( const QString& id )
 {
   slotStatusMsg(i18n("Opening document..."));
-  
+
   if( !id.isEmpty() ) {
     DocumentMan *docman = DocumentMan::self();
     DocGuardedPtr doc = docman->openDocument( id );
     createView( doc );
   }
-  
+
   slotStatusMsg(i18n("Ready."));
 }
 
@@ -272,7 +273,7 @@ void Portal::slotDocumentSelected( const QString& doc )
 {
   kdDebug() << "a doc was selected: " << doc << endl;
   if( doc.isEmpty() ) {
-    actOpenDocument->setEnabled( false ); 
+    actOpenDocument->setEnabled( false );
   } else {
     actOpenDocument->setEnabled( true );
   }
@@ -280,10 +281,10 @@ void Portal::slotDocumentSelected( const QString& doc )
 
 void Portal::createView( DocGuardedPtr doc )
 {
-  // FIXME: We allow only one view for the first time. 
+  // FIXME: We allow only one view for the first time.
   // Later allow one write view and other read onlys.
   KraftView *view = doc->firstView();
-  
+
   if( ! view ) {
     view = new KraftView( this );
     view->setup( doc );
@@ -375,7 +376,7 @@ void Portal::slotOpenKatalog(const QString& kat)
 
     QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
     // FIXME: Besser Unterscheidung der Kataloge
-    
+
     if( kat == QString("Material") ) {
         /* Materialkatalog */
         MatEditor me("Material Allgemein", true, this);

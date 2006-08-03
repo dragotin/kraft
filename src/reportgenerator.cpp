@@ -28,10 +28,12 @@
 #include "unitmanager.h"
 #include "dbids.h"
 #include "kraftsettings.h"
+#include "katalogsettings.h"
 
 static KStaticDeleter<ReportGenerator> selfDeleter;
 
 ReportGenerator* ReportGenerator::mSelf = 0;
+KProcess* ReportGenerator::mProcess = 0;
 
 ReportGenerator *ReportGenerator::self()
 {
@@ -48,7 +50,7 @@ ReportGenerator::ReportGenerator()
 
 ReportGenerator::~ReportGenerator()
 {
-
+  kdDebug() << "ReportGen is destroyed!" << endl;
 }
 
 void ReportGenerator::docPreview( const dbID& dbId )
@@ -57,18 +59,32 @@ void ReportGenerator::docPreview( const dbID& dbId )
 	mProcess = new KProcess;
 	connect( mProcess, SIGNAL( processExited(  KProcess * ) ),
 		 this,     SLOT( slotViewerClosed( KProcess * ) ) );
-    } 
-    
-    *mProcess << KraftSettings::nCReportBinary();
+    } else {
+      mProcess->clearArguments();
+    }
 
-    mProcess->start();
-	
+    const QString ncbin = KraftSettings::nCReportBinary();
+    kdDebug() << "Setting ncreport binary: " << ncbin << endl;
+
+    const QString reportFile = "/home/kf/office/kraft/reports/invoice.xml";
+    dbID id( dbId );
+
+    if (  ! ncbin.isEmpty() ) {
+      *mProcess << ncbin;
+      *mProcess << "-f" << reportFile;
+      *mProcess << "-U" << KatalogSettings::dbUser();
+      *mProcess << "-p" << KatalogSettings::dbPassword();
+      *mProcess << "-D" << KatalogSettings::dbFile();
+      *mProcess << "-add-parameter" << QString( "%1,docID" ).arg( KProcess::quote( id.toString() ) );
+      *mProcess << "-O" << "preview";
+
+      mProcess->start( KProcess::NotifyOnExit );
+    }
 }
 
 void ReportGenerator::slotViewerClosed( KProcess* )
 {
-
+  kdDebug() << "Viewer closed down" << endl;
 }
-
 
 #include "reportgenerator.moc"

@@ -35,12 +35,12 @@ class ReportGenerator : public QObject
     void docPreview( const dbID& );
 
   public slots:
-    void slotViewerClosed( KProcess * );  
+    void slotViewerClosed( KProcess * );
   private:
     ReportGenerator();
-    
+
     static ReportGenerator *mSelf;
-    KProcess *mProcess;
+    static KProcess *mProcess;
 };
 
 #endif
