@@ -42,6 +42,7 @@
 #include <kabc/addressee.h>
 
 // application specific includes
+#include "kraftsettings.h"
 #include "kraftview.h"
 #include "kraftdoc.h"
 #include "portal.h"
@@ -542,6 +543,9 @@ void KraftView::slotOk()
     savePositions();
 
     doc->saveDocument( );
+
+    KraftSettings::setDocViewSize( size() );
+    KraftSettings::writeConfig();
 
     KDialogBase::slotOk(  );
 }

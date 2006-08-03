@@ -52,6 +52,7 @@
 #include "docdigestview.h"
 #include "archiveman.h"
 #include "reportgenerator.h"
+#include "kraftsettings.h"
 
 #define ID_STATUS_MSG 1
 
@@ -289,6 +290,12 @@ void Portal::createView( DocGuardedPtr doc )
     view = new KraftView( this );
     view->setup( doc );
     view->redrawDocument();
+    QSize s = KraftSettings::docViewSize();
+    if ( !s.isValid() ) {
+      s.setWidth( 640 );
+      s.setHeight( 400 );
+    }
+    view->setInitialSize( s );
     view->show();
 
     doc->addView( view );

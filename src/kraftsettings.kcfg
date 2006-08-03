@@ -7,6 +7,10 @@
       <label>Do Database Initialisation</label>
       <default>true</default>
     </entry>
+    <entry name="docViewSize" type="Size">
+      <label>The default size of the document view dialog</label>
+    </entry>
+
   </group>
   <group name="reporting">
     <entry name="NCReportBinary">
