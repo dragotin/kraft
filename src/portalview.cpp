@@ -36,13 +36,19 @@
 PortalView::PortalView(QWidget *parent, const char *name, int face)
     : KJanusWidget( parent, name, face ),
       m_docBox(0),
-      m_katalogBox(0)
+      m_katalogBox(0),
+      mArchiveBox( 0 )
 {
     m_docBox     = addVBoxPage( i18n("Dokumente"),
                                 i18n("Dokumente Suchen und Bearbeiten"),
                                 DesktopIcon("folder_outbox"));
     documentDigests( m_docBox );
-
+#if 0
+    mArchiveBox  = addVBoxPage( i18n( "Archive" ),
+                                i18n( "Archived Documents" ),
+                                DesktopIcon( "vcs_commit" ) );
+    archiveDetails( mArchiveBox );
+#endif
     m_katalogBox = addVBoxPage( i18n("Kataloge"),
                                 i18n("Im System vorhandene Kataloge"),
                                 DesktopIcon("folder_green"));
@@ -78,10 +84,15 @@ void PortalView::katalogDetails(QWidget *parent)
              this, SLOT(slUrlClicked(const QString&)));
 }
 
+void PortalView::archiveDetails( QWidget * parent )
+{
+
+}
+
 QString PortalView::printKatLine( const QString& name ) const
 {
     QString urlName(name); //  = KURL::encode_string(name);
-    
+
     kdDebug() << "Converted Katalog name: " << urlName << endl;
     QString html;
 
@@ -145,7 +156,7 @@ void PortalView::systemDetails(QWidget *parent)
 {
     QString html;
     const QString ptag = "<p class=\"infoline\">";
-    
+
     html = "<h2>" + i18n("Kraft System Information") + "</h2>";
 
     html += "<table width=\"100%\"><tr><td>";
@@ -154,7 +165,7 @@ void PortalView::systemDetails(QWidget *parent)
 
     html += "<h2>" + i18n("Database Information") + "</h2>";
     html += ptag + i18n("Qt Database Driver: ") + KraftDB::qtDriver() +  "</p>";
-    
+
     html += ptag + i18n("Database connection ");
     bool dbOk = false;
     if( KraftDB::getDB() ) {
@@ -191,7 +202,7 @@ void PortalView::documentDigests( QWidget *parent )
              SIGNAL( printDocument( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( selectionChanged( const QString& ) ),
              SIGNAL( documentSelected( const QString& ) ) );
-  
+
   DocumentMan *docman = DocumentMan::self();
 
   mDocDigestView->addChapter( i18n("Latest Documents" ), docman->latestDocs( 10 ) );

@@ -44,10 +44,10 @@ public:
     PortalView (QWidget *parent=0, const char *name=0, int face=Plain);
     ~PortalView();
     DocDigestView* docDigestView() { return mDocDigestView; }
-    
+
 protected slots:
     void slUrlClicked( const QString& );
-    
+
 signals:
     void openKatalog( const QString& );
     void deleteKatalog( const QString& );
@@ -56,16 +56,18 @@ signals:
     void openDocument( const QString& );
     void documentSelected( const QString& );
     void printDocument( const QString& );
-    
+
 private:
-    QString printKatLine( const QString& name ) const;
-    void katalogDetails(QWidget *parent);
-    void systemDetails(QWidget *parent);
-    void documentDigests( QWidget *parent );
-    
+    QString printKatLine( const QString& ) const;
+    void katalogDetails( QWidget *);
+    void archiveDetails( QWidget * );
+    void systemDetails( QWidget *);
+    void documentDigests( QWidget * );
+
     QVBox *m_docBox;
     QVBox *m_katalogBox;
     QVBox *m_sysBox;
+    QVBox *mArchiveBox;
     DocDigestView *mDocDigestView;
 };
 
