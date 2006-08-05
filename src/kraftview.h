@@ -117,6 +117,7 @@ class KraftView : public KDialogBase
     void slotCancel();
     void savePositions();
     void redrawDocPositions( );
+    void redrawSumBox();
     void done( int );
     void slotMovePositionUp( int );
     void slotMovePositionDown( int );
@@ -146,6 +147,12 @@ class KraftView : public KDialogBase
     QSignalMapper *mMoveDownMapper;
     QSignalMapper *mUnlockPositionMapper;
     QSignalMapper *mLockPositionMapper;
+
+  QLabel *mNettoSum;
+  QLabel *mVat;
+  QLabel *mVatLabel;
+  QLabel *mBrutto;
+  QWidget *mSumSpacer;
 };
 
 #endif // KRAFTVIEW_H

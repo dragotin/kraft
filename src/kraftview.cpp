@@ -26,6 +26,7 @@
 #include <qsignalmapper.h>
 #include <qhbox.h>
 #include <qvbox.h>
+#include <qgrid.h>
 
 #include <kdebug.h>
 #include <kdialogbase.h>
@@ -158,14 +159,36 @@ void KraftView::setupPositions()
 {
     QVBox *page = addVBoxPage( i18n( "Positions" ), i18n( "Positions of the document" ) );
 
-    QHBox *hbox = new QHBox( page );
-    KPushButton *button = new KPushButton( i18n("Add"), hbox );
+    QHBox *upperHBox = new QHBox( page );
+    KPushButton *button = new KPushButton( i18n("Add"), upperHBox );
     connect( button, SIGNAL( clicked() ), this, SLOT( slotAddPosition() ) );
 
-    QWidget *spaceEater = new QWidget( hbox );
+    QWidget *spaceEater = new QWidget( upperHBox );
     spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
 
     m_positionScroll = new KraftViewScroll( page );
+
+    QHBox *lowerHBox = new QHBox( page );
+    QWidget *spaceEater2 = new QWidget( lowerHBox );
+    spaceEater2->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
+
+    QGrid *grid = new QGrid( 2, Qt::Horizontal,  lowerHBox );
+    grid->setSpacing( 3 );
+
+    ( void ) new QLabel( i18n( "Netto:" ), grid );
+    mNettoSum = new QLabel( i18n( "0 EUR" ), grid );
+    mNettoSum->setAlignment( Qt::AlignRight );
+    mVatLabel = new QLabel( i18n( "+ VAT (%1%%):" ).arg( 16 ), grid );
+    mVat = new QLabel( i18n( "0 EUR" ), grid );
+    mVat->setAlignment( Qt::AlignRight );
+
+    ( void ) new QLabel( i18n( "<b>Brutto:</b>" ), grid );
+    mBrutto = new QLabel( i18n( "0 EUR" ), grid );
+    mBrutto->setAlignment( Qt::AlignRight );
+
+    mSumSpacer = new QWidget( lowerHBox );
+    mSumSpacer->setSizePolicy( QSizePolicy(  QSizePolicy::Fixed, QSizePolicy::Minimum ) );
+    mSumSpacer->setFixedWidth( 30 );
 }
 
 void KraftView::redrawDocument( )
@@ -258,6 +281,8 @@ void KraftView::redrawDocPositions( )
 
             connect( w, SIGNAL( positionModified() ), this,
                           SLOT( slotModifiedPositions() ) );
+            connect( w, SIGNAL( priceChanged( const Geld& ) ), this,
+                     SLOT( redrawSumBox() ) );
             w->m_cbUnit->insertStringList( UnitManager::allUnits() );
 
             m_positionScroll->addChild( w, 0, 0 );
@@ -292,6 +317,20 @@ void KraftView::redrawDocPositions( )
 
     // repaint everything
     m_positionScroll->updateContents();
+
+    redrawSumBox();
+}
+
+void KraftView::redrawSumBox()
+{
+      // recalc the sum
+  Geld netto = mPositionWidgetList.nettoPrice();
+  mNettoSum->setText( netto.toString() );
+  mVatLabel->setText( i18n( "+ VAT (%1%):" ).arg( 16 ) );
+  Geld vat = netto * 0.16;
+  mVat->setText( vat.toString () );
+  vat += netto;
+  mBrutto->setText( QString( "<b>%1</b>" ).arg( vat.toString() ) );
 }
 
 void KraftView::setupFooter()
