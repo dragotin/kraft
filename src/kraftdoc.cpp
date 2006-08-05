@@ -373,4 +373,26 @@ DocumentSaverBase* KraftDoc::getSaver( const QString& )
     return mSaver;
 }
 
+Geld KraftDoc::nettoSum()
+{
+  return positions().sumPrice();
+}
+
+Geld KraftDoc::bruttoSum()
+{
+  Geld g = nettoSum();
+  g += vatSum();
+  return g;
+}
+
+Geld KraftDoc::vatSum()
+{
+  return Geld( nettoSum() * vat()/100.0 );
+}
+
+double KraftDoc::vat()
+{
+  return 16.0;
+}
+
 #include "kraftdoc.moc"
