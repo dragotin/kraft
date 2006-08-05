@@ -28,6 +28,7 @@
 */
 class DocPosition;
 class KPopupMenu;
+class Geld;
 
 class PositionViewWidget : public positionWidget
 {
@@ -44,9 +45,11 @@ public:
     bool deleted() { return mToDelete; }
     DocPositionGuardedPtr position(){ return mPositionPtr; }
     State state() { return mState; }
-    QString stateString( const State& state ) const;    
+    QString stateString( const State& state ) const;
+    Geld currentPrice();
+
 public slots:
-    void slotSetOverallPrice( double );
+    void slotSetOverallPrice( Geld );
     void slotRefreshPrice();
     void slotModified();
     void slotExecButtonPressed();
@@ -54,11 +57,11 @@ public slots:
     void slotMenuAboutToShow();
     void slotSetState( State );
     void slotSetEnabled( bool );
-    
+
 protected slots:
     void slotLockPosition();
     void slotUnlockPosition();
-    
+
 signals:
     void positionModified();
     void deletePosition();
@@ -66,7 +69,8 @@ signals:
     void moveDown();
     void lockPosition();
     void unlockPosition();
-    
+    void priceChanged( const Geld& );
+
 private:
     bool mModified;
     bool m_skipModifiedSignal;
@@ -85,6 +89,8 @@ class PositionViewWidgetList : public QPtrList<PositionViewWidget>
   public:
     PositionViewWidgetList();
     PositionViewWidget* widgetFromPosition( DocPositionGuardedPtr );
+
+    Geld nettoPrice();
 };
 
 #endif

@@ -30,6 +30,7 @@
 #include "docposition.h"
 #include "positionviewwidget.h"
 #include "unitmanager.h"
+#include "geld.h"
 
 PositionViewWidget::PositionViewWidget()
  : positionWidget(),
@@ -46,34 +47,34 @@ PositionViewWidget::PositionViewWidget()
   connect( m_sbAmount, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
   connect( m_sbUnitPrice, SIGNAL( valueChanged( double )),
-             this, SLOT( slotRefreshPrice( ) ) );  
-  connect( pbExec, SIGNAL( pressed() ), 
+             this, SLOT( slotRefreshPrice( ) ) );
+  connect( pbExec, SIGNAL( pressed() ),
              this,  SLOT( slotExecButtonPressed() ) );
-  
+
   /* modified signals */
   connect( m_cbUnit,      SIGNAL( activated(int) ), this,      SLOT( slotModified() ) );
   connect( m_teFloskel,   SIGNAL( textChanged() ), this,       SLOT( slotModified() ) );
   connect( m_sbAmount,    SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
   connect( m_sbUnitPrice, SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
-  
+
   mExecPopup->insertTitle( i18n("Position Actions") );
-  mExecPopup->insertItem(  SmallIconSet("up"), 
+  mExecPopup->insertItem(  SmallIconSet("up"),
                            i18n("Move Up"),         this, SIGNAL( moveUp() ) );
-  mExecPopup->insertItem(  SmallIconSet("down"), 
+  mExecPopup->insertItem(  SmallIconSet("down"),
                            i18n("Move Down"),       this, SIGNAL( moveDown() ) );
   mLockId = mExecPopup->insertItem(  SmallIconSet("encrypted"),
                            i18n("Lock Position"),   this, SIGNAL( lockPosition() ) );
   mUnlockId = mExecPopup->insertItem(  SmallIconSet("decrypted"),
                            i18n("Unlock Position"), this, SIGNAL( unlockPosition() ) );
-  mDeleteId = mExecPopup->insertItem(  SmallIconSet("remove"), 
+  mDeleteId = mExecPopup->insertItem(  SmallIconSet("remove"),
                            i18n("Delete Position"), this, SIGNAL( deletePosition() ) );
-  
+
   connect( this, SIGNAL( lockPosition() ),   this, SLOT( slotLockPosition() ) );
   connect( this, SIGNAL( unlockPosition() ), this, SLOT( slotUnlockPosition() ) );
-  
+
   connect( mExecPopup, SIGNAL( aboutToShow() ), this, SLOT( slotMenuAboutToShow() ) );
   connect( mExecPopup, SIGNAL( aboutToHide() ), this, SLOT( slotMenuAboutToHide() ) );
-             
+
   mExecPopup->setItemEnabled( mUnlockId, false );
   lStatus->setPixmap( QPixmap() );
 }
@@ -85,9 +86,9 @@ void PositionViewWidget::setPosition( DocPositionBase *dp )
     DocPosition *pos = static_cast<DocPosition*>(dp);
     m_skipModifiedSignal = true;
     // m_labelPosition->setText( QString("%1.").arg( mPositionPtr->position() ) );
-  
+
     m_teFloskel->setText( pos->text() );
-  
+
     m_sbAmount->setValue( pos->amount() );
     m_cbUnit->setCurrentText( pos->unit().einheitSingular() );
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
@@ -101,10 +102,10 @@ void PositionViewWidget::setPosition( DocPositionBase *dp )
 void PositionViewWidget::slotExecButtonPressed()
 {
   kdDebug() << "Opening Context Menu over exec button" << endl;
-  
+
   // set bg-color
   mExecPopup->popup( QWidget::mapToGlobal( pbExec->pos() ) );
-  
+
 }
 
 void PositionViewWidget::slotMenuAboutToShow()
@@ -119,12 +120,12 @@ void PositionViewWidget::slotMenuAboutToHide()
   setBackgroundMode( Qt::PaletteBackground );
 }
 
-void PositionViewWidget::slotLockPosition( ) 
+void PositionViewWidget::slotLockPosition( )
 {
   slotSetState( Locked );
 }
 
-void PositionViewWidget::slotUnlockPosition( ) 
+void PositionViewWidget::slotUnlockPosition( )
 {
   slotSetState( Active );
 }
@@ -132,7 +133,7 @@ void PositionViewWidget::slotUnlockPosition( )
 QString PositionViewWidget::stateString( const State& state ) const
 {
   QString str;
-  
+
   if( state == Active ) {
     str = i18n( "Active" );
   } else if( state == New ) {
@@ -144,7 +145,7 @@ QString PositionViewWidget::stateString( const State& state ) const
   } else {
     str = i18n( "Unknown" );
   }
-  return str;  
+  return str;
 }
 
 void PositionViewWidget::slotSetState( State state )
@@ -154,14 +155,14 @@ void PositionViewWidget::slotSetState( State state )
   if( state == Active ) {
     mExecPopup->setItemEnabled( mLockId, true);
     mExecPopup->setItemEnabled( mUnlockId, false );
-    
+
     lStatus->hide();
     lStatus->setPixmap( QPixmap() );
     mToDelete = false;
     slotSetEnabled( true );
   } else if( state == New ) {
     lStatus->setPixmap( SmallIcon( "filenew" ) );
-    lStatus->show();    
+    lStatus->show();
   } else if( state == Deleted ) {
     lStatus->setPixmap( SmallIcon( "remove" ) );
     lStatus->show();
@@ -169,7 +170,7 @@ void PositionViewWidget::slotSetState( State state )
     slotSetEnabled( false );
   } else if( state == Locked ) {
     mExecPopup->setItemEnabled( mLockId, false );
-    mExecPopup->setItemEnabled( mUnlockId, true );  
+    mExecPopup->setItemEnabled( mUnlockId, true );
     slotSetEnabled( false );
     lStatus->setPixmap( SmallIcon( "encrypted" ) );
     lStatus->show();
@@ -201,21 +202,28 @@ void PositionViewWidget::slotSetEnabled( bool doit )
   }
 }
 
+Geld PositionViewWidget::currentPrice()
+{
+  double amount = m_sbAmount->value();
+  Geld g( m_sbUnitPrice->value() );
+  Geld sum = g * amount;
+
+  return sum;
+}
+
 void PositionViewWidget::slotRefreshPrice()
 {
-    double amount = m_sbAmount->value();
-    double price = m_sbUnitPrice->value();
-    
-    slotSetOverallPrice( amount * price );
+  const Geld sum = currentPrice();
+  slotSetOverallPrice( sum );
+  emit priceChanged( sum );
 }
 
-void PositionViewWidget::slotSetOverallPrice( double p )
+void PositionViewWidget::slotSetOverallPrice( Geld g )
 {
-    const QString moneyStr = KGlobal().locale()->formatMoney( p );
-    m_sumLabel->setText( moneyStr );
+    m_sumLabel->setText( g.toString() );
 }
 
-void PositionViewWidget::slotModified() 
+void PositionViewWidget::slotModified()
 {
     if( mModified ) return;
     if( m_skipModifiedSignal ) return;
@@ -232,17 +240,28 @@ PositionViewWidget::~PositionViewWidget()
 PositionViewWidgetList::PositionViewWidgetList()
   : QPtrList<PositionViewWidget>()
 {
-  
+
 }
 
 PositionViewWidget* PositionViewWidgetList::widgetFromPosition( DocPositionGuardedPtr ptr)
 {
   PositionViewWidget *pvw = 0;
-  
+
   for( pvw = first(); pvw; pvw = next() ) {
     if( pvw->position() == ptr ) return pvw;
   }
   return 0;
+}
+
+Geld PositionViewWidgetList::nettoPrice()
+{
+  PositionViewWidget *pvw = 0;
+  Geld res;
+
+  for( pvw = first(); pvw; pvw = next() ) {
+    res += pvw->currentPrice();
+  }
+  return res;
 }
 
 #include "positionviewwidget.moc"
