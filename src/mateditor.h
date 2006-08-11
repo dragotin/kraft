@@ -83,6 +83,9 @@ public slots:
     void slTakeOver();
     void slGotAnswer( const QString& );
 
+protected slots:
+    void slotClose();
+
 private:
     virtual void addAmountDetail(QWidget*);
 

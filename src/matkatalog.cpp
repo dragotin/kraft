@@ -33,30 +33,15 @@ MatKatalog::MatKatalog( const QString& name)
 }
 
 MatKatalog::MatKatalog()
-    : Katalog()
+    : Katalog( QString( "Material" ))
 {
 
-}
-
-
-int MatKatalog::load( const QString&  )
-{
-    int cnt = 0;
-#if 0
-    QSqlCursor cur("matKats");
-    cur.setMode( QSqlCursor::ReadOnly );
-    cur.select( "matKatName='"+name+"'");
-
-    while ( cur.next() ) {
-        m_katalogID = cur.value("matKatID").toInt();
-    }
-#endif
-    return cnt;
 }
 
 int MatKatalog::load()
 {
-    return 0;
+  Katalog::load();
+  return 0;
 }
 
 MatKatalog::~MatKatalog( )

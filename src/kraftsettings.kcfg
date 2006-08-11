@@ -7,10 +7,19 @@
       <label>Do Database Initialisation</label>
       <default>true</default>
     </entry>
+  </group>
+  <group name="WindowSizes">
     <entry name="docViewSize" type="Size">
       <label>The default size of the document view dialog</label>
     </entry>
-
+    <entry name="materialCatalogSize" type="Size">
+      <label>The default size of the material catalog view</label>
+    </entry>
+  </group>
+  <group name="material">
+    <entry name="lastMaterialChapter" type="String">
+      <label>The name of the last selected chapter in the catalog</label>
+    </entry>
   </group>
   <group name="reporting">
     <entry name="NCReportBinary">

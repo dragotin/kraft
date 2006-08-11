@@ -388,7 +388,8 @@ void Portal::slotOpenKatalog(const QString& kat)
 
     if( kat == QString("Material") ) {
         /* Materialkatalog */
-        MatEditor me("Material Allgemein", true, this);
+        MatEditor me("Material Allgemein", false, this);
+        QApplication::restoreOverrideCursor();
 
         if ( me.exec() == QDialog::Accepted ) {
             kdDebug() << "fine" << endl;

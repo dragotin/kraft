@@ -35,6 +35,7 @@
 #include "matdatatable.h"
 #include "matkatalog.h"
 #include "unitmanager.h"
+#include "kraftsettings.h"
 
 
 /* ********************************************************************************
@@ -58,24 +59,23 @@ MatKatEditor::MatKatEditor( const QString& curChap,  QStringList chaps, QWidget 
  * Materialeditor Hauptdialog mit Datentable
  * ********************************************************************************/
 
-MatEditor::MatEditor(const QString& katName, bool takeover, QWidget *parent,
+MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *parent,
                      const char* name, bool modal, WFlags )
-    : KDialogBase(parent, name, modal, i18n("Material editieren"), Close, Close),
+    : KDialogBase(parent, name, modal, i18n("Edit Material"), Close, Close),
       m_takeOver(0)
 
 {
     m_box = makeVBoxMainWidget();
 
-    QLabel *l = new QLabel(QString("<h1>") + i18n("Editieren von Materialkatalogen") +
+    QLabel *l = new QLabel(QString("<h1>") + i18n("Edit Material") +
                            QString("</h1>"), m_box);
     l->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Maximum );
     m_split = new QSplitter( m_box );
 
-    /* Laden des Materialkataloges */
-    m_kat = new MatKatalog(katName);
+    m_kat = new MatKatalog();
     m_kat->load();
 
-    /* Box zur Anzeige der Katalogkapitel */
+    /* Box to show the chapters */
     m_chapterBox = new KListBox( m_split );
     m_chapterBox->setAcceptDrops(true);
     connect( m_chapterBox, SIGNAL(highlighted(const QString&)),
@@ -101,7 +101,6 @@ MatEditor::MatEditor(const QString& katName, bool takeover, QWidget *parent,
     m_katButton = new KPushButton( i18n("Kategorie..."), hBox );
     m_katButton->setEnabled(false);
 
-    addAmountDetail(hBox);
     hBox->setMargin(KDialog::marginHint());
     hBox->setFrameStyle(QFrame::WinPanel);
 
@@ -112,10 +111,13 @@ MatEditor::MatEditor(const QString& katName, bool takeover, QWidget *parent,
          * wurde. Da gibts dann keinen Kategorie-Button
          */
         m_katButton->hide();
+        addAmountDetail(hBox);
     }
     else
     {
-        m_takeOver->hide();
+      // m_takeOver->hide();
+      QWidget *spaceEater = new QWidget( hBox );
+      spaceEater->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     }
 
     connect( m_dataTable, SIGNAL(currentChanged(int, int)),
@@ -127,10 +129,12 @@ MatEditor::MatEditor(const QString& katName, bool takeover, QWidget *parent,
     connect( m_takeOver, SIGNAL(clicked()),
              this, SLOT(slTakeOver()));
 
-    /* Ersten Katalog selektieren FIXME */
+    QString lastChap = KraftSettings::lastMaterialChapter();
     kdDebug() << "Selecting first katalog " << chaps[0] << endl;
-    slSelectKatalog( chaps[0] );
+    slSelectKatalog( lastChap );
     m_chapterBox->setSelected( 0, true);
+
+    setInitialSize( KraftSettings::materialCatalogSize() );
 }
 
 void MatEditor::addAmountDetail( QWidget *parent )
@@ -241,6 +245,19 @@ void MatEditor::slGotAnswer( const QString& ans )
     }
 }
 
+void MatEditor::slotClose()
+{
+  KraftSettings::setMaterialCatalogSize( size() );
+
+  QString chap = m_chapterBox->currentText();
+  if ( !chap.isEmpty() ) {
+    KraftSettings::setLastMaterialChapter( chap );
+  }
+  KraftSettings::writeConfig();
+  KDialogBase::slotClose();
+}
+
 /* END */
 
 #include "mateditor.moc"
+
