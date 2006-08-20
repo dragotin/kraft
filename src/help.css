@@ -1,0 +1,16 @@
+body { margin:0px; }
+p { font-size:16pt; font-color: #FF0000; 
+    border-bottom-style:solid;
+    border-bottom-width:2;
+    }
+
+h1 { margin:0px 0px 4px 0px;
+                 padding:0px 4px;
+                 border-bottom-style:solid;
+                 border-bottom-width:4px;
+                 border-bottom-color:#FF0000;
+                 background-color:#83C24A;
+                 vertical-align:left;
+                 font-family:sans-serif;
+                 color:#ffffff;
+                 font-size:14pt; }

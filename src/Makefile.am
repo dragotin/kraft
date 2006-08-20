@@ -27,9 +27,10 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	prefsdialog.cpp templkatalogview.cpp templkataloglistview.cpp katalogsettings.kcfgc \
 	docheader.ui positionwidget.ui positionviewwidget.cpp \
 	documentsaverbase.cpp documentsaverdb.cpp docfooter.ui documentman.cpp docdigest.cpp \
-	docdigestview.cpp portal.cpp portalview.cpp archiveman.cpp reportgenerator.cpp
-				
-kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) 
+	docdigestview.cpp portal.cpp portalview.cpp archiveman.cpp reportgenerator.cpp \
+	docoverviewwidget.cpp htmlview.cpp
+
+kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml 
 
 kplant_SOURCES = brunsviewer.cpp brunsviewmain.cpp
 kplant_LDADD = libbruns.la $(LIB_KIO)
@@ -76,6 +77,9 @@ kraft_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 rcdir = $(kde_datadir)/kraft
 rc_DATA = kraftui.rc katalogview.rc
+
+cssdir = $(kde_datadir)/kraft
+css_DATA = help.css
 
 messages: rc.cpp
 	LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \

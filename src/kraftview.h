@@ -25,6 +25,7 @@
 // include files for Qt
 #include <qwidget.h>
 #include <qmap.h>
+#include <qtabwidget.h>
 
 #include <kdialogbase.h>
 #include <kabc/addressee.h>
@@ -53,6 +54,19 @@ class DocPosition;
 class QLabel;
 class QResizeEvent;
 class QSignalMapper;
+class QWidgetStack;
+class QVBox;
+class QSplitter;
+class DocOverviewWidget;
+class HtmlView;
+
+class KraftHelpTab : public QTabWidget
+{
+  Q_OBJECT
+
+public:
+  KraftHelpTab( QWidget* );
+};
 
 class KraftViewScroll : public QScrollView
 {
@@ -125,8 +139,10 @@ class KraftView : public KDialogBase
     void slotUnlockPosition(int);
     void slotLockPosition(int);
     void slotAboutToShow( QWidget* );
+  void slotSwitchToPage( int );
 
   private:
+    void setupDocumentOverview( QWidget* );
     void setupDocHeaderView();
     void setupPositions();
     void setupFooter();
@@ -148,11 +164,16 @@ class KraftView : public KDialogBase
     QSignalMapper *mUnlockPositionMapper;
     QSignalMapper *mLockPositionMapper;
 
-  QLabel *mNettoSum;
-  QLabel *mVat;
-  QLabel *mVatLabel;
-  QLabel *mBrutto;
+  QLabel *mDetailHeader;
+  QString mDetailHeaderTexts[3];
+  QSplitter *mCSplit;
+
   QWidget *mSumSpacer;
+  QWidgetStack *mViewStack;
+  QVBox *mGlobalVBox;
+  int mHeaderId;
+  DocOverviewWidget *mDocOverview;
+  HtmlView *mHelpView;
 };
 
 #endif // KRAFTVIEW_H

@@ -27,6 +27,8 @@
 #include <qhbox.h>
 #include <qvbox.h>
 #include <qgrid.h>
+#include <qwidgetstack.h>
+#include <qtabwidget.h>
 
 #include <kdebug.h>
 #include <kdialogbase.h>
@@ -42,6 +44,8 @@
 #include <kabc/addresseedialog.h>
 #include <kabc/addressee.h>
 
+#include <khtmlview.h>
+
 // application specific includes
 #include "kraftsettings.h"
 #include "kraftview.h"
@@ -52,7 +56,21 @@
 #include "docfooter.h"
 #include "docposition.h"
 #include "unitmanager.h"
+#include <qbuttongroup.h>
+#include "docoverviewwidget.h"
+#include "htmlview.h"
+#include <qcolor.h>
+#include <qsplitter.h>
 
+KraftHelpTab::KraftHelpTab( QWidget *parent ):
+  QTabWidget( parent )
+{
+  HtmlView *w = new HtmlView( this );
+
+  addTab( w->view(),  i18n( "Help" ) );
+}
+
+// #########################################################
 
 KraftViewScroll::KraftViewScroll( QWidget *parent ):
 QScrollView( parent )
@@ -94,8 +112,7 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 // #########################################################
 
 KraftView::KraftView(QWidget *parent, const char *name) :
- KDialogBase( TreeList, 0, parent, name,
-              false /* modal */, i18n("Document"),
+  KDialogBase( parent, name, false /* modal */, i18n("Document"),
 	      Ok|Cancel, Ok, true /* separator */ ),
        m_doc( 0 )
 {
@@ -121,6 +138,32 @@ KraftView::KraftView(QWidget *parent, const char *name) :
 
   connect( this, SIGNAL( aboutToShowPage( QWidget* ) ),
            this, SLOT( slotAboutToShow( QWidget* ) ) );
+
+  mDetailHeaderTexts[ DocOverviewWidget::HeaderId ]   = i18n( "Document Header" );
+  mDetailHeaderTexts[ DocOverviewWidget::PositionId ] = i18n( "Document Positions" );
+  mDetailHeaderTexts[ DocOverviewWidget::FooterId ]   = i18n( "Document Footer" );
+
+  mGlobalVBox = makeVBoxMainWidget();
+  mGlobalVBox->setMargin( 3 );
+
+  mDetailHeader = new QLabel( mGlobalVBox );
+  mDetailHeader->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Maximum );
+  mDetailHeader->setMargin( 4 );
+  mDetailHeader->setFrameStyle( QFrame::Box + QFrame::Plain );
+  mDetailHeader->setLineWidth( 1 );
+  mDetailHeader->setPaletteBackgroundColor( QColor( "darkBlue" ));
+  mDetailHeader->setPaletteForegroundColor( QColor( "white" ) );
+
+  mCSplit    = new QSplitter( mGlobalVBox );
+  QVBox *vb  = new QVBox( mCSplit );
+  vb->setMargin( 3 );
+  mViewStack = new QWidgetStack( vb );
+  mViewStack->setMargin( 0 );
+
+  // mHelpView  = new HtmlView( mCSplit );
+  ( void ) new KraftHelpTab( mCSplit );
+
+  setupDocumentOverview( vb );
 }
 
 KraftView::~KraftView()
@@ -137,17 +180,34 @@ void KraftView::setup( DocGuardedPtr doc )
   setCaption( m_doc->docIdentifier() );
 }
 
+void KraftView::setupDocumentOverview( QWidget *parent )
+{
+  mDocOverview = new DocOverviewWidget( parent );
+  connect( mDocOverview, SIGNAL( switchToPage( int ) ),
+           this,  SLOT( slotSwitchToPage( int ) ) );
+  mDocOverview->slotSelectPageButton( DocOverviewWidget::HeaderId );
+}
+
+void KraftView::slotSwitchToPage( int id )
+{
+  mViewStack->raiseWidget( id );
+
+  mDetailHeader->setText("<h1>"+ mDetailHeaderTexts[id] +"</h1>" );
+
+}
+
 void KraftView::setupDocHeaderView()
 {
-    QFrame *page = addPage( i18n("Header"), i18n("Document Header information") );
-    QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
 
-    m_headerEdit = new DocHeaderEdit( page );
-    topLayout->addWidget( m_headerEdit );
+  /// QFrame *page = addPage( i18n("Header"), i18n("Document Header information") );
+    QVBox *vbox = new QVBox( mViewStack );
+    vbox->setMargin( 0 );
+    mHeaderId = mViewStack->addWidget( vbox, DocOverviewWidget::HeaderId );
 
+    m_headerEdit = new DocHeaderEdit( vbox );
     m_headerEdit->m_cbType->insertItem( i18n("Offer") );
     m_headerEdit->m_cbType->insertItem( i18n("Invoice") );
-    m_headerEdit->m_cbType->insertItem( i18n("Auftragsbestätigung") );
+    m_headerEdit->m_cbType->insertItem( i18n("Acceptance of Order") );
 
     connect( m_headerEdit->m_selectAddress, SIGNAL( clicked() ),
                this, SLOT( slotSelectAddress() ) );
@@ -157,7 +217,9 @@ void KraftView::setupDocHeaderView()
 
 void KraftView::setupPositions()
 {
-    QVBox *page = addVBoxPage( i18n( "Positions" ), i18n( "Positions of the document" ) );
+  // QVBox *page = addVBoxPage( i18n( "Positions" ), i18n( "Positions of the document" ) );
+    QVBox *page = new QVBox( mainWidget() );
+    mViewStack->addWidget( page, DocOverviewWidget::PositionId );
 
     QHBox *upperHBox = new QHBox( page );
     KPushButton *button = new KPushButton( i18n("Add"), upperHBox );
@@ -167,28 +229,6 @@ void KraftView::setupPositions()
     spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
 
     m_positionScroll = new KraftViewScroll( page );
-
-    QHBox *lowerHBox = new QHBox( page );
-    QWidget *spaceEater2 = new QWidget( lowerHBox );
-    spaceEater2->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
-
-    QGrid *grid = new QGrid( 2, Qt::Horizontal,  lowerHBox );
-    grid->setSpacing( 3 );
-
-    ( void ) new QLabel( i18n( "Netto:" ), grid );
-    mNettoSum = new QLabel( i18n( "0 EUR" ), grid );
-    mNettoSum->setAlignment( Qt::AlignRight );
-    mVatLabel = new QLabel( i18n( "+ VAT (%1%%):" ).arg( 16 ), grid );
-    mVat = new QLabel( i18n( "0 EUR" ), grid );
-    mVat->setAlignment( Qt::AlignRight );
-
-    ( void ) new QLabel( i18n( "<b>Brutto:</b>" ), grid );
-    mBrutto = new QLabel( i18n( "0 EUR" ), grid );
-    mBrutto->setAlignment( Qt::AlignRight );
-
-    mSumSpacer = new QWidget( lowerHBox );
-    mSumSpacer->setSizePolicy( QSizePolicy(  QSizePolicy::Fixed, QSizePolicy::Minimum ) );
-    mSumSpacer->setFixedWidth( 30 );
 }
 
 void KraftView::redrawDocument( )
@@ -325,17 +365,15 @@ void KraftView::redrawSumBox()
 {
       // recalc the sum
   Geld netto = mPositionWidgetList.nettoPrice();
-  mNettoSum->setText( netto.toString() );
-  mVatLabel->setText( i18n( "+ VAT (%1%):" ).arg( 16 ) );
-  Geld vat = netto * 0.16;
-  mVat->setText( vat.toString () );
-  vat += netto;
-  mBrutto->setText( QString( "<b>%1</b>" ).arg( vat.toString() ) );
+  mDocOverview->slotSetSums( netto, 16.0 );
 }
 
 void KraftView::setupFooter()
 {
-    QFrame *page = addPage( i18n("Footer"), i18n("Document Footer Information") );
+  // QFrame *page = addPage( i18n("Footer"), i18n("Document Footer Information") );
+    QFrame *page = new QFrame( mainWidget() );
+    mViewStack->addWidget( page, DocOverviewWidget::FooterId );
+
     QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
 
     m_footerEdit = new DocFooterEdit( page );
