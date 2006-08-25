@@ -29,6 +29,9 @@
 #include <qgrid.h>
 #include <qwidgetstack.h>
 #include <qtabwidget.h>
+#include <qcolor.h>
+#include <qsplitter.h>
+#include <qbuttongroup.h>
 
 #include <kdebug.h>
 #include <kdialogbase.h>
@@ -38,13 +41,13 @@
 #include <knuminput.h>
 #include <kactioncollection.h>
 #include <kmessagebox.h>
+#include <khtmlview.h>
 
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
 #include <kabc/addresseedialog.h>
 #include <kabc/addressee.h>
 
-#include <khtmlview.h>
 
 // application specific includes
 #include "kraftsettings.h"
@@ -56,18 +59,20 @@
 #include "docfooter.h"
 #include "docposition.h"
 #include "unitmanager.h"
-#include <qbuttongroup.h>
 #include "docoverviewwidget.h"
-#include "htmlview.h"
-#include <qcolor.h>
-#include <qsplitter.h>
+#include "docpostcard.h"
 
 KraftHelpTab::KraftHelpTab( QWidget *parent ):
-  QTabWidget( parent )
+  QTabWidget( parent ), mPostCard( new DocPostCard( this ) )
 {
-  HtmlView *w = new HtmlView( this );
+  addTab( mPostCard->view(),  i18n( "Postcard" ) );
+  connect( mPostCard, SIGNAL( selectPage( int ) ),
+           this,  SIGNAL( selectPage( int ) ) );
+}
 
-  addTab( w->view(),  i18n( "Help" ) );
+DocPostCard *KraftHelpTab::postCard()
+{
+  return mPostCard;
 }
 
 // #########################################################
@@ -139,9 +144,9 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   connect( this, SIGNAL( aboutToShowPage( QWidget* ) ),
            this, SLOT( slotAboutToShow( QWidget* ) ) );
 
-  mDetailHeaderTexts[ DocOverviewWidget::HeaderId ]   = i18n( "Document Header" );
-  mDetailHeaderTexts[ DocOverviewWidget::PositionId ] = i18n( "Document Positions" );
-  mDetailHeaderTexts[ DocOverviewWidget::FooterId ]   = i18n( "Document Footer" );
+  mDetailHeaderTexts[ DocPostCard::HeaderId ]   = i18n( "Document Header" );
+  mDetailHeaderTexts[ DocPostCard::PositionId ] = i18n( "Document Positions" );
+  mDetailHeaderTexts[ DocPostCard::FooterId ]   = i18n( "Document Footer" );
 
   mGlobalVBox = makeVBoxMainWidget();
   mGlobalVBox->setMargin( 3 );
@@ -161,9 +166,11 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   mViewStack->setMargin( 0 );
 
   // mHelpView  = new HtmlView( mCSplit );
-  ( void ) new KraftHelpTab( mCSplit );
+  mHelperTab = new KraftHelpTab( mCSplit );
+  connect( mHelperTab, SIGNAL( selectPage( int ) ),
+           this,  SLOT( slotSwitchToPage( int ) ) );
 
-  setupDocumentOverview( vb );
+  // setupDocumentOverview( vb );
 }
 
 KraftView::~KraftView()
@@ -178,6 +185,9 @@ void KraftView::setup( DocGuardedPtr doc )
   setupPositions();
   setupFooter();
   setCaption( m_doc->docIdentifier() );
+
+  refreshPostCard( );
+
 }
 
 void KraftView::setupDocumentOverview( QWidget *parent )
@@ -280,6 +290,7 @@ void KraftView::redrawDocument( )
     m_footerEdit->m_teSummary->setText( doc->postText() );
 
     redrawDocPositions( );
+    refreshPostCard();
 }
 
 void KraftView::redrawDocPositions( )
@@ -361,11 +372,53 @@ void KraftView::redrawDocPositions( )
     redrawSumBox();
 }
 
+void KraftView::refreshPostCard()
+{
+  if ( mHelperTab->postCard() ) {
+    QDate d = m_headerEdit->m_dateEdit->date();
+    const QString dStr = KGlobal().locale()->formatDate( d );
+
+    mHelperTab->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
+                              dStr, m_headerEdit->m_postAddressEdit->text(),
+                              m_headerEdit->m_teEntry->text() );
+    DocPositionList list;
+    PositionViewWidget *widget;
+    for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
+      DocPositionBase *dpb = widget->position();
+      DocPosition *dp = new DocPosition( );
+      dp->setDbId( dpb->dbId().toInt() );
+      dp->setPosition( dpb->position() );
+      dp->setToDelete( dpb->toDelete() );
+
+      dp->setText( widget->m_teFloskel->text() );
+
+      QString h = widget->m_cbUnit->currentText();
+      int eId = UnitManager::getUnitIDSingular( h );
+      Einheit e = UnitManager::getUnit( eId );
+      dp->setUnit( e );
+
+      double v = widget->m_sbUnitPrice->value();
+      dp->setUnitPrice( Geld( v ) );
+
+      v = widget->m_sbAmount->value();
+      dp->setAmount( v );
+
+      list.append( dp );
+    }
+    mHelperTab->postCard()->setPositions( list );
+    list.clear();
+    mHelperTab->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
+                                           m_footerEdit->m_cbGreeting->currentText() );
+
+    mHelperTab->postCard()->renderDoc();
+  }
+}
+
 void KraftView::redrawSumBox()
 {
       // recalc the sum
   Geld netto = mPositionWidgetList.nettoPrice();
-  mDocOverview->slotSetSums( netto, 16.0 );
+  // mDocOverview->slotSetSums( netto, 16.0 );
 }
 
 void KraftView::setupFooter()
