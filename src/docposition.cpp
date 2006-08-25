@@ -43,7 +43,7 @@ DocPosition::DocPosition(): DocPositionBase()
 Geld DocPosition::overallPrice()
 {
     Geld g;
-    
+
     g = unitPrice()*amount();
     return g;
 }
@@ -56,7 +56,7 @@ DocPosition& DocPosition::operator=( const DocPosition& dp )
   m_unitPrice = dp.m_unitPrice;
   m_amount = dp.m_amount;
   m_dbId = dp.m_dbId;
-  
+
   return *this;
 }
 
@@ -69,7 +69,7 @@ DocPositionList::DocPositionList()
 Geld DocPositionList::sumPrice()
 {
     Geld g;
-    
+
     DocPositionBase *dp;
     for ( dp = first(); dp; dp = next() ) {
         if( dp->type() == DocPositionBase::Position ) {
@@ -90,22 +90,22 @@ QDomElement DocPositionList::domElement( QDomDocument& doc )
     for ( dpb = first(); dpb; dpb = next() ) {
       if( dpb->type() == DocPositionBase::Position ) {
         DocPosition *dp = static_cast<DocPosition*>(dpb);
-        
+
         posElem = doc.createElement( "position" );
         posElem.setAttribute( "number", num++ );
         topElem.appendChild( posElem );
         posElem.appendChild( xmlTextElement( doc, "text", dp->text() ) );
-  
+
         double am = dp->amount();
         QString h = KGlobal().locale()->formatNumber( am, 2 );
         posElem.appendChild( xmlTextElement( doc, "amount", h ));
-  
+
         Einheit e = dp->unit();
         posElem.appendChild( xmlTextElement( doc, "unit", e.einheit( am ) ) );
-  
+
         Geld g = dp->unitPrice();
         posElem.appendChild( xmlTextElement( doc, "unitprice", g.toString() ) );
-        
+
         posElem.appendChild( xmlTextElement( doc, "sumprice", Geld( g*am).toString() ) );
       }
     }
@@ -116,17 +116,17 @@ int DocPositionList::compareItems ( QPtrCollection::Item item1, QPtrCollection::
 {
   DocPositionBase *dpb1 = static_cast<DocPositionBase*>( item1 );
   DocPositionBase *dpb2 = static_cast<DocPositionBase*>( item2 );
-  
+
   QString pos1 = dpb1->position();
   QString pos2 = dpb2->position();
-  
+
   int p1 = pos1.toInt();
   int p2 = pos2.toInt();
-  
+
   int res = 0;
   if( p1 > p2 ) res = 1;
   if( p1 < p2 ) res = -1;
-  
+
   // kdDebug()<< "In sort: comparing " << p1 << " with " << p2 << " = " << res << endl;
   return res;
 }
@@ -142,7 +142,7 @@ QDomElement DocPositionList::xmlTextElement( QDomDocument& doc, const QString& n
 DocPositionBase *DocPositionList::positionFromId( int id )
 {
   DocPositionBase *dp = 0;
-  
+
   for( dp = first(); dp ; dp = next() ) {
     if( dp->dbId() == id ) {
       break;

@@ -76,13 +76,13 @@ class DocPosition : public DocPositionBase
     void setUnitPrice( const Geld& g ) { m_unitPrice = g; }
     Geld unitPrice() const { return m_unitPrice; }
     Geld overallPrice();
- 
+
     void setAmount( double amount ) { m_amount = amount; }
     double amount() { return m_amount; }
 
     DocPosition& operator=( const DocPosition& );
     PositionType type() { return Position; }
-  private: 
+  private:
     QString m_text;
     Einheit m_unit;
     Geld    m_unitPrice;
@@ -99,7 +99,7 @@ class DocPositionList : public QPtrList<DocPositionBase>
     DocPositionBase *positionFromId( int id );
   protected:
     int compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 );
-    
+
   private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
 };
