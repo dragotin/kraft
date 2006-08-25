@@ -58,7 +58,7 @@ class QWidgetStack;
 class QVBox;
 class QSplitter;
 class DocOverviewWidget;
-class HtmlView;
+class DocPostCard;
 
 class KraftHelpTab : public QTabWidget
 {
@@ -66,6 +66,13 @@ class KraftHelpTab : public QTabWidget
 
 public:
   KraftHelpTab( QWidget* );
+
+  DocPostCard *postCard();
+signals:
+  void selectPage( int );
+
+private:
+  DocPostCard *mPostCard;
 };
 
 class KraftViewScroll : public QScrollView
@@ -140,6 +147,9 @@ class KraftView : public KDialogBase
     void slotLockPosition(int);
     void slotAboutToShow( QWidget* );
   void slotSwitchToPage( int );
+  void refreshPostCard( void );
+  signals:
+    void selectPage( int );
 
   private:
     void setupDocumentOverview( QWidget* );
@@ -173,7 +183,7 @@ class KraftView : public KDialogBase
   QVBox *mGlobalVBox;
   int mHeaderId;
   DocOverviewWidget *mDocOverview;
-  HtmlView *mHelpView;
+  KraftHelpTab *mHelperTab;
 };
 
 #endif // KRAFTVIEW_H
