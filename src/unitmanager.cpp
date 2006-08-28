@@ -115,10 +115,9 @@ int UnitManager::getUnitIDSingular( const QString& einheitStr )
     {
         Einheit tmp = m_units->at(i);
 
-        kdDebug() << "checking <" << m_units->at(i).einheitSingular() << "> against <" << einheitStr << ">" << endl;
         if( tmp.einheitSingular() == einheitStr ||
             tmp.einheitPlural()   == einheitStr ) {
-            kdDebug() << "Thats it, returning " << tmp.id() << endl;
+          // kdDebug() << "Thats it, returning " << tmp.id() << endl;
             return tmp.id();
         }
     }
