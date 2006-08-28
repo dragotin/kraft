@@ -225,7 +225,7 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
 
 void PositionViewWidget::slotModified()
 {
-    if( mModified ) return;
+  // if( mModified ) return;
     if( m_skipModifiedSignal ) return;
     kdDebug() << "Modified Position!" << endl;
 

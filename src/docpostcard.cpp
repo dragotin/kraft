@@ -40,14 +40,14 @@ void DocPostCard::setHeaderData( const QString& type,  const QString& date,
 
 void DocPostCard::setPositions( DocPositionList posList )
 {
-  mPositions = "<table border=\"1\" width=\"99%\">";
+  mPositions = "<table border=\"0\" width=\"99%\">";
   DocPositionBase *dpb;
   for( dpb = posList.first(); dpb; dpb = posList.next() ) {
      if( dpb->type() == DocPositionBase::Position ) {
       DocPosition *dp = static_cast<DocPosition*>(dpb);
-      mPositions += "<tr><td width=\"15px\">" + dp->position() + "</td>";
+      mPositions += "<tr><td width=\"20px\" align=\"right\" valign=\"top\">" + dp->position() + ".</td>";
       mPositions += "<td>" + dp->text() + "</td>";
-      mPositions += "<td width=\"45px\" align=\"right\">" + dp->overallPrice().toString() + "</td></tr>";
+      mPositions += "<td width=\"50px\" align=\"right\">" + dp->overallPrice().toString() + "</td></tr>";
     }
   }
   mPositions += "</table>";
@@ -66,8 +66,13 @@ void DocPostCard::renderDoc()
     t += "<a href=\"kraftdoc://header\">" + i18n( "Header:" ) + "</a>" ;
     QString h = mAddress;
     h.replace( '\n', "<br/>" );
-    t += QString( "<p class=\"address\">%1</p>\n" ).arg( h );
-    t += "<p>" + mType + i18n( " from " ) + mDate + "</p>\n";
+    t += "<table border=\"0\" width=\"99%\">";
+    t += "<tr><td>";
+    t += QString( "%1\n" ).arg( h );
+    t += "</td><td align=\"right\" valign=\"top\">";
+    t += QString( "%1<br />%2\n" ).arg( mType ).arg( mDate );
+    t += "</td></tr></table>";
+
     t += "<p class=\"longtext\">" + mPreText + "</p>\n";
     t += "</div>";
 
@@ -84,7 +89,7 @@ void DocPostCard::renderDoc()
     t += "</div>\n";
 
     t += "</body></html>";
-    kdDebug () << t << endl;
+    // kdDebug () << t << endl;
     displayContent( t );
 }
 
@@ -111,13 +116,13 @@ void DocPostCard::showDocument( DocGuardedPtr ptr )
     DocPositionBase *dpb;
     DocPositionList posList = ptr->positions();
 
-    t += "<table border=\"1\" width=\"99%\">";
+    t += "<table border=\"0\" width=\"99%\">";
     for( dpb = posList.first(); dpb; dpb = posList.next() ) {
       if( dpb->type() == DocPositionBase::Position ) {
         DocPosition *dp = static_cast<DocPosition*>(dpb);
-        t += "<tr><td width=\"15px\">" + dp->position() + "</td>";
+        t += "<tr><td width=\"20px\" valign=\"top\">" + dp->position() + ".</td>";
         t += "<td>" + dp->text() + "</td>";
-        t += "<td width=\"45px\" align=\"right\">" + dp->overallPrice().toString() + "</td></tr>";
+        t += "<td width=\"55px\" align=\"right\">" + dp->overallPrice().toString() + "</td></tr>";
       }
     }
     t += "</table>";
