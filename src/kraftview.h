@@ -59,6 +59,7 @@ class QVBox;
 class QSplitter;
 class DocOverviewWidget;
 class DocPostCard;
+class QTimer;
 
 class KraftHelpTab : public QTabWidget
 {
@@ -143,8 +144,9 @@ class KraftView : public KDialogBase
     void slotMovePositionUp( int );
     void slotMovePositionDown( int );
     void slotDeletePosition( int );
-    void slotUnlockPosition(int);
-    void slotLockPosition(int);
+    void slotUnlockPosition( int );
+    void slotLockPosition( int );
+    void slotPositionModified( int );
     void slotAboutToShow( QWidget* );
   void slotSwitchToPage( int );
   void refreshPostCard( void );
@@ -173,6 +175,7 @@ class KraftView : public KDialogBase
     QSignalMapper *mMoveDownMapper;
     QSignalMapper *mUnlockPositionMapper;
     QSignalMapper *mLockPositionMapper;
+    QSignalMapper *mModifiedMapper;
 
   QLabel *mDetailHeader;
   QString mDetailHeaderTexts[3];
@@ -184,6 +187,7 @@ class KraftView : public KDialogBase
   int mHeaderId;
   DocOverviewWidget *mDocOverview;
   KraftHelpTab *mHelperTab;
+  QTimer *mTimer;
 };
 
 #endif // KRAFTVIEW_H

@@ -61,6 +61,7 @@
 #include "unitmanager.h"
 #include "docoverviewwidget.h"
 #include "docpostcard.h"
+#include <qtimer.h>
 
 KraftHelpTab::KraftHelpTab( QWidget *parent ):
   QTabWidget( parent ), mPostCard( new DocPostCard( this ) )
@@ -119,7 +120,7 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 KraftView::KraftView(QWidget *parent, const char *name) :
   KDialogBase( parent, name, false /* modal */, i18n("Document"),
 	      Ok|Cancel, Ok, true /* separator */ ),
-       m_doc( 0 )
+       m_doc( 0 ), mTimer( 0 )
 {
   mDeleteMapper = new QSignalMapper( this );
   connect( mDeleteMapper, SIGNAL( mapped(int)),
@@ -140,6 +141,10 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   mUnlockPositionMapper = new QSignalMapper( this );
   connect( mUnlockPositionMapper, SIGNAL( mapped( int )),
            this, SLOT( slotUnlockPosition( int ) ) );
+
+  mModifiedMapper = new QSignalMapper( this );
+  connect( mModifiedMapper,  SIGNAL( mapped( int ) ),
+           this,  SLOT( slotPositionModified( int ) ) );
 
   connect( this, SIGNAL( aboutToShowPage( QWidget* ) ),
            this, SLOT( slotAboutToShow( QWidget* ) ) );
@@ -175,6 +180,7 @@ KraftView::KraftView(QWidget *parent, const char *name) :
 
 KraftView::~KraftView()
 {
+  delete mTimer;
 }
 
 void KraftView::setup( DocGuardedPtr doc )
@@ -185,9 +191,11 @@ void KraftView::setup( DocGuardedPtr doc )
   setupPositions();
   setupFooter();
   setCaption( m_doc->docIdentifier() );
-
-  refreshPostCard( );
-
+#if 0
+  mTimer = new QTimer( this );
+  connect( mTimer, SIGNAL( timeout() ), this, SLOT( refreshPostCard() ) );
+  mTimer->start( 600, false ); // 2 seconds single-shot timer
+#endif
 }
 
 void KraftView::setupDocumentOverview( QWidget *parent )
@@ -323,15 +331,18 @@ void KraftView::redrawDocPositions( )
             mMoveDownMapper->setMapping( w, list.at() );
             mLockPositionMapper->setMapping( w, list.at() );
             mUnlockPositionMapper->setMapping( w, list.at() );
+            mModifiedMapper->setMapping( w, list.at() );
 
-            connect( w, SIGNAL( deletePosition() ), mDeleteMapper, SLOT( map() ) );
-            connect( w, SIGNAL( moveUp() ),         mMoveUpMapper, SLOT( map() ) );
-            connect( w, SIGNAL( moveDown() ),       mMoveDownMapper, SLOT( map() ) );
-            connect( w, SIGNAL( lockPosition() ),   mLockPositionMapper, SLOT( map() ) );
-            connect( w, SIGNAL( unlockPosition() ), mUnlockPositionMapper, SLOT( map() ) );
+            connect( w, SIGNAL( deletePosition() ),  mDeleteMapper, SLOT( map() ) );
+            connect( w, SIGNAL( moveUp() ),          mMoveUpMapper, SLOT( map() ) );
+            connect( w, SIGNAL( moveDown() ),        mMoveDownMapper, SLOT( map() ) );
+            connect( w, SIGNAL( lockPosition() ),    mLockPositionMapper, SLOT( map() ) );
+            connect( w, SIGNAL( unlockPosition() ),  mUnlockPositionMapper, SLOT( map() ) );
+            connect( w, SIGNAL( positionModified()), mModifiedMapper,  SLOT( map() ) );
 
             connect( w, SIGNAL( positionModified() ), this,
                           SLOT( slotModifiedPositions() ) );
+
             connect( w, SIGNAL( priceChanged( const Geld& ) ), this,
                      SLOT( redrawSumBox() ) );
             w->m_cbUnit->insertStringList( UnitManager::allUnits() );
@@ -551,6 +562,13 @@ void KraftView::slotUnlockPosition( int pos )
   }
 }
 
+void KraftView::slotPositionModified( int pos )
+{
+  kdDebug() << "Modified Position " << pos << endl;
+
+  refreshPostCard();
+}
+
 void KraftView::slotSelectAddress( KABC::Addressee contact )
 {
     if( contact.isEmpty() ) {
@@ -584,43 +602,52 @@ void KraftView::slotAddPosition()
 
 void KraftView::slotModifiedPositions()
 {
-    const QString modStr = i18n(" (modified)");
+  kdDebug() << "Positions Modified" << endl;
 #if 0
+    const QString modStr = i18n(" (modified)");
     QString t = m_positionLabel->text();
     if( ! t.endsWith( modStr ) ) {
       m_positionLabel->setText( t + modStr );
     }
-#endif
     KraftDoc *doc = getDocument();
     if( !doc ) {
       kdDebug() << "ERR: No document available in view, return!" << endl;
     }
 
     doc->setModified( true );
+#endif
+    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+
 }
 
 void KraftView::slotModifiedHeader()
 {
     kdDebug() << "Modified the header!" << endl;
 
+    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+#if 0
     KraftDoc *doc = getDocument();
     if( !doc ) {
       kdDebug() << "ERR: No document available in view, return!" << endl;
     }
 
     doc->setModified( true );
+#endif
 }
 
 void KraftView::slotModifiedFooter()
 {
     kdDebug() << "Modified the footer!" << endl;
+    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 
+#if 0
     KraftDoc *doc = getDocument();
     if( !doc ) {
       kdDebug() << "ERR: No document available in view, return!" << endl;
     }
 
     doc->setModified( true );
+#endif
 }
 
 QStringList KraftView::generateLetterHead( KABC::Addressee adr )
