@@ -1,4 +1,4 @@
- /***************************************************************************
+/***************************************************************************
                         htmlview.cpp  - show a html page
                              -------------------
     begin                : Aug 2006
@@ -43,6 +43,8 @@ HtmlView::HtmlView( QWidget *parent )
 
 bool HtmlView::loadCss()
 {
+  if ( !mCss.isEmpty() ) return true;   // it's already loaded
+
   KStandardDirs stdDirs;
   QString filename = stdDirs.findResource( "data", "kraft/help.css" );
 
