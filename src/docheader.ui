@@ -224,9 +224,34 @@
         <receiver>DocHeaderEdit</receiver>
         <slot>slotModified()</slot>
     </connection>
+    <connection>
+        <sender>m_cbType</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>DocHeaderEdit</receiver>
+        <slot>slotModified()</slot>
+    </connection>
+    <connection>
+        <sender>m_letterHead</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>DocHeaderEdit</receiver>
+        <slot>slotModified()</slot>
+    </connection>
+    <connection>
+        <sender>m_postAddressEdit</sender>
+        <signal>textChanged()</signal>
+        <receiver>DocHeaderEdit</receiver>
+        <slot>slotModified()</slot>
+    </connection>
+    <connection>
+        <sender>m_teEntry</sender>
+        <signal>textChanged()</signal>
+        <receiver>DocHeaderEdit</receiver>
+        <slot>slotModified()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in declaration">config.h</include>
+    <include location="local" impldecl="in implementation">docheader.ui.h</include>
 </includes>
 <signals>
     <signal>modified()</signal>
