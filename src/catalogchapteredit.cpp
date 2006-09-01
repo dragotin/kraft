@@ -1,7 +1,7 @@
 //
 // C++ Implementation: catalogchapteredit
 //
-// Description: 
+// Description:
 //
 //
 // Author: Klaas Freitag <freitag@kde.org>, (C) 2005
@@ -33,7 +33,7 @@ CatalogChapterEdit::~CatalogChapterEdit()
 }
 
 //
-// This is another class: The dialog 
+// This is another class: The dialog
 //
 CatalogChapterEditDialog::CatalogChapterEditDialog(QWidget *parent,
                                                   const QString& katName)
@@ -43,18 +43,18 @@ CatalogChapterEditDialog::CatalogChapterEditDialog(QWidget *parent,
 {
     setCaption(i18n("Edit Catalog Chapters" ));
     m_chapEdit = new CatalogChapterEdit(this);
-    connect( m_chapEdit->listBox(), SIGNAL( selectionChanged() ), 
+    connect( m_chapEdit->listBox(), SIGNAL( selectionChanged() ),
                this, SLOT( slotSelectionChanged() ) );
-    connect( m_chapEdit, SIGNAL( added( const QString& ) ), 
+    connect( m_chapEdit, SIGNAL( added( const QString& ) ),
                this, SLOT( slotAdded( const QString& ) ) );
-    connect( m_chapEdit, SIGNAL( removed( const QString& ) ), 
+    connect( m_chapEdit, SIGNAL( removed( const QString& ) ),
                this, SLOT( slotRemoved( const QString& ) ) );
-    connect( m_chapEdit, SIGNAL( changed() ), 
+    connect( m_chapEdit, SIGNAL( changed() ),
                this, SLOT( slotTextChanged() ) );
 
     setMainWidget( m_chapEdit );
 
-    m_katalog = KatalogMan::getKatalog( katName );
+    m_katalog = KatalogMan::self()->getKatalog( katName );
     if( ! m_katalog ) return;
 
     const QStringList li = m_katalog->getKatalogChapters();
@@ -69,15 +69,15 @@ CatalogChapterEditDialog::CatalogChapterEditDialog(QWidget *parent,
 
 void CatalogChapterEditDialog::accept()
 {
-  
+
     // First delete entries from the 'to remove' chain.
     QStringList::ConstIterator strIt;
-  
+
     for( strIt = m_removedItems.begin(); strIt != m_removedItems.end(); ++strIt ) {
       m_katalog->removeChapter( *strIt );
       mDirty = true;
     }
-    
+
     QDictIterator<dbID> it( mEntryDict );
     for( ; it.current(); ++it ) {
       /* if the dbID of the dict entry is not ok it means that the entry was
@@ -122,7 +122,7 @@ void CatalogChapterEditDialog::slotAdded( const QString& item )
     m_newItems << item;
     kdDebug() << "adding item " << item << endl;
     dbID *ndb = new dbID();
-    mEntryDict.insert(item, ndb); // 
+    mEntryDict.insert(item, ndb); //
 }
 
 void CatalogChapterEditDialog::slotRemoved( const QString& item )
@@ -166,14 +166,14 @@ void CatalogChapterEditDialog::slotSelectionChanged()
     bool mayRemove = false;
     if( cnt == 0 ) {
         // can remove the chapter because it is empty
-        mayRemove = true; 
+        mayRemove = true;
     }
 
     m_chapEdit->removeButton()->setEnabled( mayRemove );
 
     // FIXME: Better disable remove button instead of hiding it, but the KEditListBox
     //        controlls the buttons itself
-    if( mayRemove ) 
+    if( mayRemove )
         m_chapEdit->setButtons( KEditListBox::All );
     else
         m_chapEdit->setButtons( KEditListBox::Add | KEditListBox::UpDown );

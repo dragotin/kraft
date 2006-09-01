@@ -38,13 +38,13 @@ BrunsKatalogListView::BrunsKatalogListView(QWidget *w)
 
 BrunsKatalogListView::~BrunsKatalogListView()
 {
-    
+
 }
 
 void BrunsKatalogListView::addCatalogDisplay( const QString& katName )
 {
     KatalogListView::addCatalogDisplay(katName);
-    Katalog *k = KatalogMan::getKatalog( katName );
+    Katalog *k = KatalogMan::self()->getKatalog( katName );
     BrunsKatalog *catalog = static_cast<BrunsKatalog*>( k );
     if( ! catalog ) {
         kdDebug() << "No catalog in listview available!" << endl;
@@ -78,7 +78,7 @@ void BrunsKatalogListView::addCatalogDisplay( const QString& katName )
 
 void BrunsKatalogListView::setupChapters()
 {
-    Katalog *catalog = KatalogMan::getKatalog(m_catalogName);
+    Katalog *catalog = KatalogMan::self()->getKatalog(m_catalogName);
     if( ! catalog ) {
         kdWarning() << "No catalog in setupChapters" << endl;
         return;
@@ -117,7 +117,7 @@ void BrunsKatalogListView::setupChapters()
     for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
         const QString chapter = *it;
         KListViewItem *topFolderItem = m_topFolderMap[ Etc ];
-        
+
         if( chapter == "Aepfel" ||
             chapter == "Birnen" ||
             chapter.contains( "beeren" ) ||

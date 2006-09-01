@@ -62,7 +62,7 @@ PortalView::PortalView(QWidget *parent, const char *name, int face)
 
 void PortalView::katalogDetails(QWidget *parent)
 {
-    QStringList katalogNamen = KatalogMan::allKatalogs();
+    QStringList katalogNamen = KatalogMan::self()->allKatalogs();
     QString html;
 
     html = "<h2>" + i18n("Available Catalogs") + "</h2>";
@@ -84,7 +84,7 @@ void PortalView::katalogDetails(QWidget *parent)
              this, SLOT(slUrlClicked(const QString&)));
 }
 
-void PortalView::archiveDetails( QWidget * parent )
+void PortalView::archiveDetails( QWidget *  )
 {
 
 }

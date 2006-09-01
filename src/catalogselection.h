@@ -1,8 +1,8 @@
 /***************************************************************************
-             katalogman  -
+        katalogselection  - widget to select catalog entries from
                              -------------------
-    begin                : 2004-12-09
-    copyright            : (C) 2004 by Klaas Freitag
+    begin                : 2006-08-30
+    copyright            : (C) 2006 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -15,42 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _KATALOGMAN_H
-#define _KATALOGMAN_H
+#ifndef CATALOGSELECTION_H
+#define CATALOGSELECTION_H
 
+#include <qvbox.h>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+class KatalogListView;
+class QComboBox;
+class QWidgetStack;
 
-#include <qdict.h>
-
-#include "katalog.h"
-// include files
-
-/**
- *
- */
-class QStringList;
-
-
-class KatalogMan : public QObject
+class CatalogSelection : public QVBox
 {
+  Q_OBJECT
 public:
-    ~KatalogMan();
-    static KatalogMan *self();
+  CatalogSelection( QWidget* );
 
-    QStringList allKatalogs();
-    Katalog* getKatalog(const QString&);
-    void registerKatalog( Katalog* );
-    QString catalogTypeString( const QString& catName );
+  ~CatalogSelection() { };
+protected:
+  void setupCatalogList();
+
+protected slots:
+  void slotSelectCatalog( const QString& );
+
 private:
-    KatalogMan();
-    static QDict<Katalog> *m_katalogDict;
-    static KatalogMan *mSelf;
+  QComboBox *mCatalogSelector;
+  QWidgetStack *mWidgets;
+
 };
 
 #endif
-
-/* END */
-

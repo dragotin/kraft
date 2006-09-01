@@ -22,35 +22,60 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
+#include <kstaticdeleter.h>
 
 #include "kraftdb.h"
 #include "katalogman.h"
 #include "katalog.h"
 
-KatalogMan::KatalogMan( )
+static KStaticDeleter<KatalogMan> selfDeleter;
+
+KatalogMan* KatalogMan::mSelf = 0;
+QDict<Katalog>* KatalogMan::m_katalogDict = 0;
+
+KatalogMan *KatalogMan::self()
 {
-    if( m_katalogDict == 0 )
-        m_katalogDict = new QDict<Katalog>;
+  if ( ! mSelf ) {
+    selfDeleter.setObject( mSelf, new KatalogMan() );
+  }
+  return mSelf;
 }
 
+KatalogMan::KatalogMan( )
+{
+  m_katalogDict = new QDict<Katalog>;
+}
 
 KatalogMan::~KatalogMan( )
 {
-    // delete m_katalogDict;
+  delete m_katalogDict;
 }
 
 QStringList KatalogMan::allKatalogs()
 {
-    
-    QStringList list;
- 
-    QSqlCursor cur( "CatalogSet" );
-    cur.select( );
-    while( cur.next() ) {
-        list << cur.value("name").toString();
-    }
 
-    return list;
+  QStringList list;
+
+  QSqlCursor cur( "CatalogSet" );
+  cur.select( );
+  while( cur.next() ) {
+    list << cur.value("name").toString();
+  }
+
+  return list;
+}
+
+QString KatalogMan::catalogTypeString( const QString& catName )
+{
+  QString res;
+  QSqlCursor cur( "CatalogSet" );
+  if ( !catName.isEmpty() ) {
+    cur.select( "name='" + catName + "'" );
+    if ( cur.next() ) {
+      res = cur.value( "catalogType" ).toString();
+    }
+  }
+  return res;
 }
 
 void KatalogMan::registerKatalog( Katalog *k )
@@ -72,7 +97,7 @@ Katalog *KatalogMan::getKatalog(const QString& name)
 {
     if( m_katalogDict == 0 )
         m_katalogDict = new QDict<Katalog>;
-    
+
     Katalog* kat = (*m_katalogDict)[name];
 
     if( !kat ) {
@@ -83,7 +108,6 @@ Katalog *KatalogMan::getKatalog(const QString& name)
     return kat;
 }
 
-QDict<Katalog> *KatalogMan::m_katalogDict = 0;
 
 /* END */
 

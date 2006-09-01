@@ -58,10 +58,10 @@ TemplKatalogView::~TemplKatalogView()
 
 Katalog* TemplKatalogView::getKatalog( const QString& name )
 {
-    Katalog *k = KatalogMan::getKatalog( name );
+    Katalog *k = KatalogMan::self()->getKatalog( name );
     if( ! k ) {
         k = new TemplKatalog( name );
-        KatalogMan::registerKatalog( k );
+        KatalogMan::self()->registerKatalog( k );
     }
     return k;
 }
@@ -74,7 +74,7 @@ Katalog* TemplKatalogView::getKatalog( const QString& name )
 void TemplKatalogView::slEditVorlage()
 {
     TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
-    
+
     if( listview )
     {
         FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
@@ -108,13 +108,13 @@ void TemplKatalogView::slNeueVorlage()
     if( parentItem ) {
       // try to find out which catalog is open/actual
       QString name = parentItem->text(0);
-      Katalog *k = KatalogMan::getKatalog(m_katalogName);
+      Katalog *k = KatalogMan::self()->getKatalog(m_katalogName);
       if( k ) {
         kdDebug() << "setting catalog name " << name << endl;
         flosTempl->setChapterID(k->chapterID(name));
       }
     }
-    
+
     KListViewItem *newItem = templListView->addFlosTemplate(parentItem, flosTempl);
     openDialog(newItem, flosTempl);
 }
@@ -123,7 +123,7 @@ bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )
 {
   TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
   bool res = false;
-  
+
   if( listview )
   {
     FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());

@@ -61,12 +61,29 @@
 #include "unitmanager.h"
 #include "docoverviewwidget.h"
 #include "docpostcard.h"
+#include "kataloglistview.h"
+#include "katalogman.h"
+#include "templkatalog.h"
+#include "templkataloglistview.h"
+#include "catalogselection.h"
+
 #include <qtimer.h>
 
 KraftHelpTab::KraftHelpTab( QWidget *parent ):
   QTabWidget( parent ), mPostCard( new DocPostCard( this ) )
 {
-  addTab( mPostCard->view(),  i18n( "Postcard" ) );
+  addTab( mPostCard->view(),  i18n( "Navigation" ) );
+#if 0
+  TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
+  QString name = "Mustertexte GALA-Bau";
+  Katalog *k = new TemplKatalog( name );
+  KatalogMan::self()->registerKatalog( k );
+  tmpllistview->setShowCalcParts( false );
+  tmpllistview->addCatalogDisplay( name );
+#endif
+  mCatalogSelection = new CatalogSelection( this );
+  addTab( mCatalogSelection, i18n( "Catalogs" ) );
+
   connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SIGNAL( selectPage( int ) ) );
 }
@@ -120,7 +137,7 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 KraftView::KraftView(QWidget *parent, const char *name) :
   KDialogBase( parent, name, false /* modal */, i18n("Document"),
 	      Ok|Cancel, Ok, true /* separator */ ),
-       m_doc( 0 ), mTimer( 0 )
+       m_doc( 0 )
 {
   mDeleteMapper = new QSignalMapper( this );
   connect( mDeleteMapper, SIGNAL( mapped(int)),
@@ -157,12 +174,14 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   mGlobalVBox->setMargin( 3 );
 
   mDetailHeader = new QLabel( mGlobalVBox );
-  mDetailHeader->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Maximum );
-  mDetailHeader->setMargin( 4 );
+  mDetailHeader->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+  // mDetailHeader->setMargin( 4 );
   mDetailHeader->setFrameStyle( QFrame::Box + QFrame::Plain );
   mDetailHeader->setLineWidth( 1 );
   mDetailHeader->setPaletteBackgroundColor( QColor( "darkBlue" ));
   mDetailHeader->setPaletteForegroundColor( QColor( "white" ) );
+  mDetailHeader->setTextFormat( Qt::RichText );
+  mDetailHeader->setFixedHeight( 40 ); // FIXME
 
   mCSplit    = new QSplitter( mGlobalVBox );
   QVBox *vb  = new QVBox( mCSplit );
@@ -172,15 +191,23 @@ KraftView::KraftView(QWidget *parent, const char *name) :
 
   // mHelpView  = new HtmlView( mCSplit );
   mHelperTab = new KraftHelpTab( mCSplit );
+
+  if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
+    mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
+  }
   connect( mHelperTab, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSwitchToPage( int ) ) );
 
   // setupDocumentOverview( vb );
+  QSize size = KraftSettings::self()->docViewSize();
+  if ( !size.isEmpty() ) resize( size );
+  QPoint pos = KraftSettings::self()->docViewPosition();
+  if ( !pos.isNull() ) move( pos );
 }
 
 KraftView::~KraftView()
 {
-  delete mTimer;
+
 }
 
 void KraftView::setup( DocGuardedPtr doc )
@@ -191,11 +218,7 @@ void KraftView::setup( DocGuardedPtr doc )
   setupPositions();
   setupFooter();
   setCaption( m_doc->docIdentifier() );
-#if 0
-  mTimer = new QTimer( this );
-  connect( mTimer, SIGNAL( timeout() ), this, SLOT( refreshPostCard() ) );
-  mTimer->start( 600, false ); // 2 seconds single-shot timer
-#endif
+  slotSwitchToPage( DocPostCard::HeaderId );
 }
 
 void KraftView::setupDocumentOverview( QWidget *parent )
@@ -210,7 +233,7 @@ void KraftView::slotSwitchToPage( int id )
 {
   mViewStack->raiseWidget( id );
 
-  mDetailHeader->setText("<h1>"+ mDetailHeaderTexts[id] +"</h1>" );
+  mDetailHeader->setText( "<h1>" + mDetailHeaderTexts[id] + "</h1>" );
 
 }
 
@@ -701,8 +724,10 @@ void KraftView::slotOk()
 
     doc->saveDocument( );
 
-    KraftSettings::setDocViewSize( size() );
-    KraftSettings::writeConfig();
+    KraftSettings::self()->setDocViewSplitter( mCSplit->sizes() );
+    KraftSettings::self()->setDocViewSize( size() );
+    KraftSettings::self()->setDocViewPosition( pos() );
+    KraftSettings::self()->writeConfig();
 
     KDialogBase::slotOk(  );
 }

@@ -12,6 +12,12 @@
     <entry name="docViewSize" type="Size">
       <label>The default size of the document view dialog</label>
     </entry>
+    <entry name="docViewPosition" type="Point">
+      <label>The default position of the document view dialog</label>
+    </entry>
+    <entry name="docViewSplitter" type="IntList">
+      <label>The splitter position of the document view dialog</label>
+    </entry>
     <entry name="materialCatalogSize" type="Size">
       <label>The default size of the material catalog view</label>
     </entry>

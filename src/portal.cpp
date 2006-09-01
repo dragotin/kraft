@@ -431,7 +431,7 @@ void Portal::slotKatalogToXML(const QString& katName)
 {
     kdDebug() << "Generating XML for catalog " << katName << endl;
 
-    Katalog *kat = KatalogMan::getKatalog(katName);
+    Katalog *kat = KatalogMan::self()->getKatalog(katName);
 
     if(kat) {
         kat->writeXMLFile();

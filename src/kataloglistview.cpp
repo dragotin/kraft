@@ -36,7 +36,7 @@
 #include "zeitcalcpart.h"
 
 KatalogListView::KatalogListView(QWidget *parent) : KListView(parent),
-    m_root(0),  
+    m_root(0),
     mMenu(0)
 {
     setItemMargin(4);
@@ -54,7 +54,7 @@ KatalogListView::KatalogListView(QWidget *parent) : KListView(parent),
 void KatalogListView::slotRMB( KListView*, QListViewItem* item, const QPoint& point )
 {
   if( ! item ) return;
-  
+
   // fill the document list with a list of the open docs
   mMenu->popup( point );
 }
@@ -64,9 +64,9 @@ KatalogListView::~KatalogListView()
 
 }
 
-QPopupMenu *KatalogListView::contextMenu() 
+QPopupMenu *KatalogListView::contextMenu()
 {
-  return mMenu; // ->contextMenu(); 
+  return mMenu; // ->contextMenu();
 }
 
 void KatalogListView::addCatalogDisplay( const QString& name)
@@ -76,14 +76,14 @@ void KatalogListView::addCatalogDisplay( const QString& name)
 
 void KatalogListView::setupChapters()
 {
-    Katalog *catalog = KatalogMan::getKatalog(m_catalogName);
+    Katalog *catalog = KatalogMan::self()->getKatalog(m_catalogName);
     if( ! catalog ) return;
 
     if( m_root ) {
       delete m_root;
       m_catalogDict.clear();
     }
-    
+
     kdDebug() << "Creating root item!" <<  endl;
     m_root = new KListViewItem(this, catalog->getName());
     m_root->setPixmap(0, SmallIcon("gear"));
@@ -105,9 +105,9 @@ void KatalogListView::setupChapters()
 
 KListViewItem *KatalogListView::chapterItem( const QString& chapName )
 {
-    Katalog *kat = KatalogMan::getKatalog(m_catalogName);
+    Katalog *kat = KatalogMan::self()->getKatalog(m_catalogName);
     int chapID = kat->chapterID(chapName);
-    
+
     return m_catalogDict[chapID];
 }
 
@@ -146,7 +146,7 @@ void KatalogListView::slFreshupItem( QListViewItem*, void *, bool )
 void KatalogListView::slChangeChapter( KListViewItem* item, int newChapter )
 {
     if( ! item ) return;
-    
+
     QListViewItem *parent = item->parent();
 
     /* Alten parent zuklappen falls noch offen */
@@ -156,7 +156,7 @@ void KatalogListView::slChangeChapter( KListViewItem* item, int newChapter )
     } else {
         setOpen( parent, false );
         setOpen( newChapFolder, true);
-        
+
         parent->takeItem(item);
         newChapFolder->insertItem(item);
 

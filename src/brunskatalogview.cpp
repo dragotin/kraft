@@ -43,7 +43,7 @@ void BrunsKatalogView::createCentralWidget(QBoxLayout *box, QWidget *w)
 {
     kdDebug() << "Creating new Bruns-Listview" << endl;
     QSplitter *split = new QSplitter(Qt::Vertical, w);
-    
+
     m_brunsListView = new BrunsKatalogListView(split);
     box->addWidget(split); // m_brunsListView);
 #if 0
@@ -64,16 +64,16 @@ void BrunsKatalogView::createCentralWidget(QBoxLayout *box, QWidget *w)
 
     connect( m_brunsListView, SIGNAL(selectionChanged(QListViewItem*)),
              this, SLOT(slPlantSelected(QListViewItem* )));
-    
+
 }
 
 Katalog* BrunsKatalogView::getKatalog( const QString& name )
 {
     kdDebug() << "GetKatalog of bruns!" << endl;
-    Katalog *k = KatalogMan::getKatalog( name );
+    Katalog *k = KatalogMan::self()->getKatalog( name );
     if( ! k ) {
         k = new BrunsKatalog( name );
-        KatalogMan::registerKatalog( k );
+        KatalogMan::self()->registerKatalog( k );
     }
     return k;
 }
@@ -84,14 +84,14 @@ void BrunsKatalogView::slPlantSelected( QListViewItem *item)
     if( ! item ) return;
 
     m_details->clear();
-    
+
     BrunsRecord rec = m_brunsListView->getRecord(item);
 
     BrunsSizeList sizes = rec.getSizes();
     BrunsSizeList::iterator it;
     for( it = sizes.begin(); it != sizes.end(); ++it ) {
       KListViewItem *guiItem = new KListViewItem(m_details, (*it).getPrimMatchcode() );
-      
+
       const QStringList list = BrunsKatalog::formatQuality( (*it) );
       int i = 1;
       for ( QStringList::ConstIterator listIt = list.begin(); listIt != list.end(); ++listIt ) {
@@ -100,7 +100,7 @@ void BrunsKatalogView::slPlantSelected( QListViewItem *item)
         // kdDebug() << "showing new plant detail item" << endl;
     }
 
-    
+
 }
 
 #include "brunskatalogview.moc"

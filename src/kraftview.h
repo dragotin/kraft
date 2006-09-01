@@ -60,6 +60,7 @@ class QSplitter;
 class DocOverviewWidget;
 class DocPostCard;
 class QTimer;
+class CatalogSelection;
 
 class KraftHelpTab : public QTabWidget
 {
@@ -74,6 +75,7 @@ signals:
 
 private:
   DocPostCard *mPostCard;
+  CatalogSelection *mCatalogSelection;
 };
 
 class KraftViewScroll : public QScrollView
@@ -187,7 +189,6 @@ class KraftView : public KDialogBase
   int mHeaderId;
   DocOverviewWidget *mDocOverview;
   KraftHelpTab *mHelperTab;
-  QTimer *mTimer;
 };
 
 #endif // KRAFTVIEW_H

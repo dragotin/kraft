@@ -71,7 +71,7 @@ void FlosTemplDialog::setVorlage( FloskelTemplate *t, const QString& katalogname
     m_template = t;
     m_saveTempl = new FloskelTemplate(*t);
 
-    m_katalog = KatalogMan::getKatalog(katalogname);
+    m_katalog = KatalogMan::self()->getKatalog(katalogname);
 
     if( m_katalog == 0 ) {
         kdDebug() << "ERR: Floskel Dialog called without valid Katalog!" << endl;
@@ -82,7 +82,7 @@ void FlosTemplDialog::setVorlage( FloskelTemplate *t, const QString& katalogname
     int chapID = t->getChapterID();
     QString chap = m_katalog->chapterName(dbID(chapID));
     cbChapter->setCurrentText(chap);
-    
+
     /** der text der Vorlage **/
     m_text->setText( t->getText());
 
@@ -114,7 +114,7 @@ void FlosTemplDialog::setVorlage( FloskelTemplate *t, const QString& katalogname
 
     /* text setzen */
     slSetNewText();
-    
+
     pbRundPreis->setEnabled(false);
 }
 
@@ -527,7 +527,7 @@ void FlosTemplDialog::slEditTimePart()
 	  m_timePartDialog->show();
         } else {
 	  kdDebug() << "No time calc part found for this item" << endl;
-	}	
+	}
     }
     refreshPrices();
 }
@@ -681,7 +681,7 @@ void FlosTemplDialog::slEditMatPart()
 
         if( mat )
         {
-          double amount = mc->getCalcAmount(mat);  
+          double amount = mc->getCalcAmount(mat);
           m_matPartDialog = new MatCalcDialog( amount, mat, this);
 
           connect( m_matPartDialog, SIGNAL(matCalcPartChanged(StockMaterial*, double)),
@@ -697,9 +697,9 @@ void FlosTemplDialog::slMatCalcPartChanged(StockMaterial *mat, double amount)
 {
     CalcPartList cParts = m_template->getCalcPartsList( KALKPART_MATERIAL );
     MaterialCalcPart *mc = static_cast<MaterialCalcPart*>(cParts.first());
-  
+
     if(mc && mat) {
-      mc->setCalcAmount(mat, amount); 
+      mc->setCalcAmount(mat, amount);
       drawMatListEntry(m_matParts->currentItem(), mc, mat);
       refreshPrices();
     }
@@ -799,7 +799,7 @@ void FlosTemplDialog::slSetNewText( )
         if( m_textDispMat)
             m_textDispMat->setText(t);
     }
-    
+
 }
 /* END */
 
