@@ -41,12 +41,13 @@ public:
 
     void addCatalogDisplay( const QString&);
 
-    
+  void setShowCalcParts( bool );
+  bool showCalcParts();
 public slots:
     void slFreshupItem( QListViewItem*, FloskelTemplate*, bool remChildren = false );
 
 private:
-    
+  bool mShowCalcParts;
     void addCalcParts( FloskelTemplate* );
 
 };

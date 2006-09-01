@@ -31,7 +31,8 @@
 #include "zeitcalcpart.h"
 
 TemplKatalogListView::TemplKatalogListView(QWidget *w)
-    : KatalogListView(w)
+    : KatalogListView(w),
+      mShowCalcParts( true )
 {
     addColumn( i18n("Katalog"));
     addColumn( i18n("Einheit"));
@@ -53,7 +54,12 @@ void TemplKatalogListView::addCatalogDisplay( const QString& katName )
 {
     KatalogListView::addCatalogDisplay(katName);
 
-    TemplKatalog* catalog = static_cast<TemplKatalog*>(KatalogMan::getKatalog(katName));
+    TemplKatalog* catalog = static_cast<TemplKatalog*>(KatalogMan::self()->getKatalog(katName));
+
+    if ( !catalog ) {
+      kdError() << "Could not load catalog " << katName << endl;
+      return;
+    }
 
     setupChapters();
 
@@ -71,7 +77,8 @@ void TemplKatalogListView::addCatalogDisplay( const QString& katName )
         while ( (tmpl = flosIt.current()) != 0 ) {
             /* create a new item as the child of katalog entry */
             addFlosTemplate( katItem, tmpl );
-            addCalcParts( tmpl );
+            if ( mShowCalcParts )
+              addCalcParts( tmpl );
             ++flosIt;
         }
     }
@@ -191,7 +198,15 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
     }
 }
 
+void TemplKatalogListView::setShowCalcParts( bool on )
+{
+  mShowCalcParts = on;
+}
 
+bool TemplKatalogListView::showCalcParts()
+{
+  return mShowCalcParts;
+}
 
 TemplKatalogListView::~TemplKatalogListView()
 {
