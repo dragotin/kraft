@@ -27,6 +27,7 @@ class DocPostCard : public HtmlView
 {
     Q_OBJECT
   public:
+    enum DisplayMode { Full, Mini };
     enum PageId { HeaderId = 0, PositionId, FooterId };
     DocPostCard( QWidget *parent );
 
@@ -34,16 +35,17 @@ class DocPostCard : public HtmlView
     void selectPage( int );
 
   public slots:
-    void showDocument( DocGuardedPtr );
     void setHeaderData( const QString&, const QString&, const QString&, const QString& );
     void setPositions( DocPositionList );
     void setFooterData( const QString&,  const QString& );
     void renderDoc();
-
+    void slotSetMode( DisplayMode );
   protected:
     void urlSelected( const QString &, int , int ,
                       const QString &, KParts::URLArgs  );
     void writeTopFrame();
+    QString renderDocMini() const;
+    QString renderDocFull() const;
   private:
     DocGuardedPtr mDoc;
     QString mType;
@@ -53,6 +55,8 @@ class DocPostCard : public HtmlView
     QString mAddress;
     QString mPositions;
     QString mGoodbye;
+
+    DisplayMode mMode;
 };
 
 #endif

@@ -24,7 +24,7 @@
 #include <kdebug.h>
 
 DocPostCard::DocPostCard( QWidget *parent )
-  :HtmlView( parent )
+  :HtmlView( parent ),  mMode( Full )
 {
   setZoomFactor( 60 );
 }
@@ -61,90 +61,72 @@ void DocPostCard::setFooterData( const QString& postText,  const QString& goodby
 
 void DocPostCard::renderDoc()
 {
-    QString t = "<div class=\"head\">";
-
-    t += "<a href=\"kraftdoc://header\">" + i18n( "Header:" ) + "</a>" ;
-    QString h = mAddress;
-    h.replace( '\n', "<br/>" );
-    t += "<table border=\"0\" width=\"99%\">";
-    t += "<tr><td>";
-    t += QString( "%1\n" ).arg( h );
-    t += "</td><td align=\"right\" valign=\"top\">";
-    t += QString( "%1<br />%2\n" ).arg( mType ).arg( mDate );
-    t += "</td></tr></table>";
-
-    t += "<p class=\"longtext\">" + mPreText + "</p>\n";
-    t += "</div>";
-
-    t += "<div class=\"body\">";
-    t += "<a href=\"kraftdoc://positions\">" + i18n( "Positions:" ) + "</a>\n" ;
-    t += mPositions;
-    t += "\n</div>";
-
-    t += "<div class=\"footer\">";
-    t += "<a href=\"kraftdoc://footer\">" + i18n( "Footer:" ) + "</a>\n" ;
-
-    t += "<p class=\"longtext\">" + mPostText + "</p>\n";
-    t += "<p>" + mGoodbye + "</p>\n";
-    t += "</div>\n";
-
-    t += "</body></html>";
-    // kdDebug () << t << endl;
-    displayContent( t );
-}
-
-void DocPostCard::showDocument( DocGuardedPtr ptr )
-{
-  mDoc = ptr;
-
-  if( ptr ) {
-    // t += i18n( "Document to show: " ) + ptr->ident();
-    QString t = "<div class=\"head\">";
-
-    t += "<a href=\"kraftdoc://header\">" + i18n( "Header:" ) + "</a>" ;
-    QString h = ptr->address();
-    h.replace( '\n', "<br/>" );
-    t += QString( "<p class=\"address\">%1</p>" ).arg( h );
-    t += "<p>" + ptr->docType() + i18n( " from " ) +
-         KGlobal().locale()->formatDate( ptr->date() ) + "</p>";
-    t += "<p class=\"longtext\">" + ptr->preText() + "</p>";
-    t += "</div>";
-
-    t += "<div class=\"body\">";
-    t += "<a href=\"kraftdoc://positions\">" + i18n( "Positions:" ) + "</a>" ;
-
-    DocPositionBase *dpb;
-    DocPositionList posList = ptr->positions();
-
-    t += "<table border=\"0\" width=\"99%\">";
-    for( dpb = posList.first(); dpb; dpb = posList.next() ) {
-      if( dpb->type() == DocPositionBase::Position ) {
-        DocPosition *dp = static_cast<DocPosition*>(dpb);
-        t += "<tr><td width=\"20px\" valign=\"top\">" + dp->position() + ".</td>";
-        t += "<td>" + dp->text() + "</td>";
-        t += "<td width=\"55px\" align=\"right\">" + dp->overallPrice().toString() + "</td></tr>";
-      }
-    }
-    t += "</table>";
-    t += "</div>";
-
-    t += "<div class=\"footer\">";
-    t += "<a href=\"kraftdoc://footer\">" + i18n( "Footer:" ) + "</a>" ;
-
-    t += "<p class=\"longtext\">" + ptr->postText() + "</p>";
-    t += "<p>" + ptr->goodbye() + "</p>";
-    t += "</div>";
-
-    t += "</body></html>";
-    kdDebug () << t << endl;
-    displayContent( t );
-
+  QString t;
+  if ( mMode == Full ) {
+    t = renderDocFull();
+  } else if ( mMode == Mini ) {
+    t = renderDocMini();
+  } else {
+    kdDebug() << "Unknown postcard mode" << endl;
   }
 
+  // kdDebug () << t << endl;
+  displayContent( t );
 }
 
-void DocPostCard::urlSelected( const QString &url, int button, int state,
-  const QString &_target, KParts::URLArgs args )
+QString DocPostCard::renderDocFull() const
+{
+
+  QString t = "<div class=\"head\">";
+  t += "<a href=\"kraftdoc://header\">" + i18n( "Header:" ) + "</a>" ;
+  QString h = mAddress;
+  h.replace( '\n', "<br/>" );
+  t += "<table border=\"0\" width=\"99%\">";
+  t += "<tr><td>";
+  t += QString( "%1\n" ).arg( h );
+  t += "</td><td align=\"right\" valign=\"top\">";
+  t += QString( "%1<br />%2\n" ).arg( mType ).arg( mDate );
+  t += "</td></tr></table>";
+
+  t += "<p class=\"longtext\">" + mPreText + "</p>\n";
+  t += "</div>";
+
+  t += "<div class=\"body\">";
+  t += "<a href=\"kraftdoc://positions\">" + i18n( "Positions:" ) + "</a>\n" ;
+  t += mPositions;
+  t += "\n</div>";
+
+  t += "<div class=\"footer\">";
+  t += "<a href=\"kraftdoc://footer\">" + i18n( "Footer:" ) + "</a>\n" ;
+
+  t += "<p class=\"longtext\">" + mPostText + "</p>\n";
+  t += "<p>" + mGoodbye + "</p>\n";
+  t += "</div>\n";
+
+  t += "</body></html>";
+  return t;
+}
+
+QString DocPostCard::renderDocMini() const
+{
+  QString t = "<div class=\"head\">";
+  t += "<a href=\"kraftdoc://header\">" + i18n( "Header:" ) + "</a>" ;
+  t += "</div>";
+
+  t += "<div class=\"body\">";
+  t += "<a href=\"kraftdoc://positions\">" + i18n( "Positions:" ) + "</a>\n" ;
+  t += "so many positions";
+  t += "</div>";
+
+  t += "<div class=\"footer\">";
+  t += "<a href=\"kraftdoc://footer\">" + i18n( "Footer:" ) + "</a>\n" ;
+  t += "</div>";
+
+return t;
+}
+
+void DocPostCard::urlSelected( const QString &url, int, int,
+  const QString &, KParts::URLArgs  )
 {
   kdDebug() << "DocPostCard::urlSelected(): " << url << endl;
 
@@ -167,5 +149,9 @@ void DocPostCard::urlSelected( const QString &url, int button, int state,
 void DocPostCard::writeTopFrame()
 {
 
+}
+
+void DocPostCard::slotSetMode( DisplayMode mode ) {
+  mMode = mode;
 }
 #include "docpostcard.moc"

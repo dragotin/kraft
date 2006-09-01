@@ -17,6 +17,7 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qframe.h>
+#include <qheader.h>
 
 #include <klistview.h>
 #include <klocale.h>
@@ -28,28 +29,29 @@
 #include "filterheader.h"
 #include "docdigestview.h"
 
-DocDigestView::DocDigestView( QWidget *parent ) 
+DocDigestView::DocDigestView( QWidget *parent )
 : QWidget( parent )
 {
   QWidget *w = new QWidget(parent);
-  
+
   QBoxLayout *box = new QVBoxLayout( w );
   QBoxLayout *hbox = new QHBoxLayout( w );
   hbox->addStretch(1);
   box->addLayout( hbox );
   mListView = new KListView( w );
+  // mListView->header()->hide();
   mFilterHeader = new FilterHeader( mListView, w );
   mFilterHeader->showCount( false );
 
   connect( mListView, SIGNAL( executed( QListViewItem* ) ),
            this, SLOT( slotDocOpenRequest( QListViewItem* ) ) );
-  
+
   connect( mListView, SIGNAL( currentChanged( QListViewItem* ) ),
            this, SLOT( slotCurrentChanged( QListViewItem* ) ) );
-  
+
   hbox->addWidget( mFilterHeader );
   box->addWidget( mListView );
-  
+
   mListView->addColumn( i18n( "Type" ) );
   mListView->addColumn( i18n( "Client Name" ) );
   mListView->addColumn( i18n( "Date" ) );
@@ -68,14 +70,14 @@ void DocDigestView::addChapter( const QString& chapter, DocDigestList list )
   chapIt->setOpen( true );
   DocDigestList::iterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
-    KListViewItem *item = new KListViewItem( chapIt, 
+    KListViewItem *item = new KListViewItem( chapIt,
                              (*it).type(), (*it).clientName(), (*it).date()  );
     mDocIdDict[item] = (*it).id();
-    
+
   }
 }
 
-void DocDigestView::slotNewDoc() 
+void DocDigestView::slotNewDoc()
 {
 
 }
@@ -84,21 +86,21 @@ void DocDigestView::slotDocOpenRequest( QListViewItem *item )
 {
   QString id = mDocIdDict[ item ];
   if( ! id.isEmpty() ) {
-    kdDebug() << "Opening document " << id << endl; 
-  
+    kdDebug() << "Opening document " << id << endl;
+
     emit openDocument( id );
   }
 }
 
 void DocDigestView::slotOpenCurrentDoc()
 {
-  slotDocOpenRequest( mListView->currentItem() ); 
+  slotDocOpenRequest( mListView->currentItem() );
 }
 
 QString DocDigestView::currentDocumentId()
 {
   QString res;
-  
+
   QListViewItem *current = mListView->currentItem();
   if( current ) {
     res = mDocIdDict[current];

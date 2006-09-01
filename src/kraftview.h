@@ -62,7 +62,7 @@ class DocPostCard;
 class QTimer;
 class CatalogSelection;
 
-class KraftHelpTab : public QTabWidget
+class KraftHelpTab : public QSplitter
 {
   Q_OBJECT
 

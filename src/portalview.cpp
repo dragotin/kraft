@@ -161,7 +161,9 @@ void PortalView::systemDetails(QWidget *parent)
 
     html += "<table width=\"100%\"><tr><td>";
     html += ptag + i18n("Kraft Version: ") + KRAFT_VERSION +  "</p></td>";
-    html += "<td align=\"right\">FooBoo</td></tr></table>";
+    html += "<td align=\"right\">"
+            "<img src=\"/tmp/kraft_small.png\"/>"
+            "</td></tr></table>";
 
     html += "<h2>" + i18n("Database Information") + "</h2>";
     html += ptag + i18n("Qt Database Driver: ") + KraftDB::qtDriver() +  "</p>";

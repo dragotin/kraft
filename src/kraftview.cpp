@@ -70,9 +70,12 @@
 #include <qtimer.h>
 
 KraftHelpTab::KraftHelpTab( QWidget *parent ):
-  QTabWidget( parent ), mPostCard( new DocPostCard( this ) )
+  QSplitter( parent )
 {
-  addTab( mPostCard->view(),  i18n( "Navigation" ) );
+  setOrientation( Vertical );
+  mPostCard =  new DocPostCard( this );
+  mPostCard->slotSetMode( DocPostCard::Mini );
+
 #if 0
   TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
   QString name = "Mustertexte GALA-Bau";
@@ -82,7 +85,6 @@ KraftHelpTab::KraftHelpTab( QWidget *parent ):
   tmpllistview->addCatalogDisplay( name );
 #endif
   mCatalogSelection = new CatalogSelection( this );
-  addTab( mCatalogSelection, i18n( "Catalogs" ) );
 
   connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SIGNAL( selectPage( int ) ) );
