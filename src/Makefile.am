@@ -28,7 +28,8 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	docheader.ui positionwidget.ui positionviewwidget.cpp \
 	documentsaverbase.cpp documentsaverdb.cpp docfooter.ui documentman.cpp docdigest.cpp \
 	docdigestview.cpp portal.cpp portalview.cpp archiveman.cpp reportgenerator.cpp \
-	docoverviewwidget.cpp htmlview.cpp docpostcard.cpp catalogselection.cpp
+	docoverviewwidget.cpp htmlview.cpp docpostcard.cpp catalogselection.cpp \
+	addressselection.cpp
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml 
 

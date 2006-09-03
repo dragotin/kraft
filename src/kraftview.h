@@ -61,13 +61,14 @@ class DocOverviewWidget;
 class DocPostCard;
 class QTimer;
 class CatalogSelection;
+class AddressSelection;
 
-class KraftHelpTab : public QSplitter
+class KraftPreviewWidget : public QSplitter
 {
   Q_OBJECT
 
 public:
-  KraftHelpTab( QWidget* );
+  KraftPreviewWidget( QWidget* );
 
   DocPostCard *postCard();
 signals:
@@ -76,6 +77,8 @@ signals:
 private:
   DocPostCard *mPostCard;
   CatalogSelection *mCatalogSelection;
+  QWidgetStack *mWidgetStack;
+  AddressSelection *mAddressSelection;
 };
 
 class KraftViewScroll : public QScrollView
@@ -188,7 +191,7 @@ class KraftView : public KDialogBase
   QVBox *mGlobalVBox;
   int mHeaderId;
   DocOverviewWidget *mDocOverview;
-  KraftHelpTab *mHelperTab;
+  KraftPreviewWidget *mPreviewWidget;
 };
 
 #endif // KRAFTVIEW_H

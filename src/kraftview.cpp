@@ -66,31 +66,33 @@
 #include "templkatalog.h"
 #include "templkataloglistview.h"
 #include "catalogselection.h"
+#include "addressselection.h"
 
 #include <qtimer.h>
 
-KraftHelpTab::KraftHelpTab( QWidget *parent ):
+KraftPreviewWidget::KraftPreviewWidget( QWidget *parent ):
   QSplitter( parent )
 {
   setOrientation( Vertical );
   mPostCard =  new DocPostCard( this );
-  mPostCard->slotSetMode( DocPostCard::Mini );
+  mPostCard->slotSetMode( DocPostCard::Full );
 
-#if 0
-  TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
-  QString name = "Mustertexte GALA-Bau";
-  Katalog *k = new TemplKatalog( name );
-  KatalogMan::self()->registerKatalog( k );
-  tmpllistview->setShowCalcParts( false );
-  tmpllistview->addCatalogDisplay( name );
-#endif
-  mCatalogSelection = new CatalogSelection( this );
+  mWidgetStack = new QWidgetStack( this );
+  mCatalogSelection = new CatalogSelection( mWidgetStack );
+  mAddressSelection = new AddressSelection( mWidgetStack );
 
+  mWidgetStack->raiseWidget( mCatalogSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SIGNAL( selectPage( int ) ) );
+
+  // hide the selector widgets first and show the full preview.
+  QValueList<int> li;
+  li << height();
+  li << 0;
+  setSizes( li );
 }
 
-DocPostCard *KraftHelpTab::postCard()
+DocPostCard *KraftPreviewWidget::postCard()
 {
   return mPostCard;
 }
@@ -192,12 +194,12 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   mViewStack->setMargin( 0 );
 
   // mHelpView  = new HtmlView( mCSplit );
-  mHelperTab = new KraftHelpTab( mCSplit );
+  mPreviewWidget = new KraftPreviewWidget( mCSplit );
 
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
     mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
   }
-  connect( mHelperTab, SIGNAL( selectPage( int ) ),
+  connect( mPreviewWidget, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSwitchToPage( int ) ) );
 
   // setupDocumentOverview( vb );
@@ -236,6 +238,7 @@ void KraftView::slotSwitchToPage( int id )
   mViewStack->raiseWidget( id );
 
   mDetailHeader->setText( "<h1>" + mDetailHeaderTexts[id] + "</h1>" );
+
 
 }
 
@@ -410,13 +413,13 @@ void KraftView::redrawDocPositions( )
 
 void KraftView::refreshPostCard()
 {
-  if ( mHelperTab->postCard() ) {
+  if ( mPreviewWidget->postCard() ) {
     QDate d = m_headerEdit->m_dateEdit->date();
     const QString dStr = KGlobal().locale()->formatDate( d );
 
-    mHelperTab->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
-                              dStr, m_headerEdit->m_postAddressEdit->text(),
-                              m_headerEdit->m_teEntry->text() );
+    mPreviewWidget->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
+                                           dStr, m_headerEdit->m_postAddressEdit->text(),
+                                           m_headerEdit->m_teEntry->text() );
     DocPositionList list;
     PositionViewWidget *widget;
     for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
@@ -441,12 +444,12 @@ void KraftView::refreshPostCard()
 
       list.append( dp );
     }
-    mHelperTab->postCard()->setPositions( list );
+    mPreviewWidget->postCard()->setPositions( list );
     list.clear();
-    mHelperTab->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
+    mPreviewWidget->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
                                            m_footerEdit->m_cbGreeting->currentText() );
 
-    mHelperTab->postCard()->renderDoc();
+    mPreviewWidget->postCard()->renderDoc();
   }
 }
 

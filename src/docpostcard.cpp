@@ -132,17 +132,20 @@ void DocPostCard::urlSelected( const QString &url, int, int,
 
   KURL kurl( url );
 
+  PageId id = HeaderId;
+
   if ( kurl.protocol() == "kraftdoc" ) {
     if ( kurl.host() == "header" ) {
       kdDebug() << "Header selected!" << endl;
-      emit selectPage( HeaderId );
+      id = HeaderId;
     } else if ( kurl.host() == "positions" ) {
       kdDebug() << "Positions selected!" << endl;
-      emit selectPage( PositionId );
+      id = PositionId;
     } else if ( kurl.host() == "footer" ) {
       kdDebug() << "Footer selected!" << endl;
-      emit selectPage( FooterId );
+      id = FooterId;
     }
+    emit selectPage( id );
   }
 }
 
