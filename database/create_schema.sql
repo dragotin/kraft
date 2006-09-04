@@ -15,6 +15,7 @@ CREATE TABLE CatalogSet(
   catalogSetID INT NOT NULL AUTO_INCREMENT,
   name         VARCHAR(255),
   description  VARCHAR(255),
+  catalogType  VARCHAR(64),
   sortKey      INT NOT NULL,
   
   PRIMARY KEY(catalogSetID)
@@ -186,6 +187,13 @@ CREATE TABLE docposition(
     UNIQUE( docID, ordNumber)
 );
 
+CREATE TABLE archdocStates(
+    stateID          INT NOT NULL AUTO_INCREMENT,
+    state            VARCHAR(32),
+
+    PRIMARY KEY( stateID )
+);
+
 CREATE TABLE archdoc(
     archDocID         INT NOT NULL AUTO_INCREMENT,
     ident             VARCHAR(32),
@@ -199,6 +207,8 @@ CREATE TABLE archdoc(
     pretext           TEXT,
     posttext          TEXT,
 
+    state             int,
+
     PRIMARY KEY( archDocID ),
     INDEX(ident)
 );
@@ -211,7 +221,8 @@ CREATE TABLE archdocpos(
     amount            DECIMAL(6,2),
     unit              VARCHAR(64),
     price             DECIMAL(6,2),
-    
+    vat               DECIMAL(3,1),
+
     PRIMARY KEY( archPosID ),
     INDEX(archDocID),
     UNIQUE( archDocID, ordNumber)
