@@ -374,50 +374,9 @@ void KraftView::redrawDocPositions( )
     for( dp = list.first(); dp; dp = list.next() ) {
         PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
         if( !w ) {
-            w = new PositionViewWidget( );
-            int cw = m_positionScroll->contentsWidth();
-            if ( cw < 400 ) cw = 400;
-
-            w->resize( cw, w->height() );
-            m_positionScroll->resizeContents( cw,
-                                              list.count() * w->height()+1 );
-            mDeleteMapper->setMapping( w, list.at() );
-            mMoveUpMapper->setMapping( w, list.at() );
-            mMoveDownMapper->setMapping( w, list.at() );
-            mLockPositionMapper->setMapping( w, list.at() );
-            mUnlockPositionMapper->setMapping( w, list.at() );
-            mModifiedMapper->setMapping( w, list.at() );
-
-            connect( w, SIGNAL( deletePosition() ),  mDeleteMapper, SLOT( map() ) );
-            connect( w, SIGNAL( moveUp() ),          mMoveUpMapper, SLOT( map() ) );
-            connect( w, SIGNAL( moveDown() ),        mMoveDownMapper, SLOT( map() ) );
-            connect( w, SIGNAL( lockPosition() ),    mLockPositionMapper, SLOT( map() ) );
-            connect( w, SIGNAL( unlockPosition() ),  mUnlockPositionMapper, SLOT( map() ) );
-            connect( w, SIGNAL( positionModified()), mModifiedMapper,  SLOT( map() ) );
-
-            connect( w, SIGNAL( positionModified() ), this,
-                          SLOT( slotModifiedPositions() ) );
-
-            connect( w, SIGNAL( priceChanged( const Geld& ) ), this,
-                     SLOT( redrawSumBox() ) );
-            w->m_cbUnit->insertStringList( UnitManager::allUnits() );
-
-            m_positionScroll->addChild( w, 0, 0 );
-            // kdDebug() << "Adding a widget for position number " << cnt << endl;
-
-            kdDebug() << "Creating an entry in the position map for " << dp->dbId().toInt() << endl;
-            if( dp->dbId().toInt() < 0 ) {
-              kdDebug() << "setting state to NEW" << endl;
-              w->slotSetState( PositionViewWidget::New );
-            }
-            mPositionWidgetList.append( w );
-            w->show();
+          w = createPositionViewWidget( dp, list.at() );
         }
         kdDebug() << "now position " << dp->position() << endl;
-        int y = list.at() * w->height();
-        m_positionScroll->moveChild( w, 0, y );
-        w->setPosition( dp );
-        w->setOrdNumber( 1 + list.at() );
     }
 
     // now go through the positionWidgetMap and check if it contains elements
@@ -436,6 +395,56 @@ void KraftView::redrawDocPositions( )
     m_positionScroll->updateContents();
 
     redrawSumBox();
+}
+
+PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, int pos )
+{
+  PositionViewWidget *w = new PositionViewWidget( );
+  KraftDoc *doc = getDocument();
+
+  int cw = m_positionScroll->contentsWidth();
+  if ( cw < 400 ) cw = 400;
+
+  w->resize( cw, w->height() );
+  m_positionScroll->resizeContents( cw,
+                                    doc->positions().count() * w->height()+1 );
+  mDeleteMapper->setMapping( w, pos );
+  mMoveUpMapper->setMapping( w, pos );
+  mMoveDownMapper->setMapping( w, pos );
+  mLockPositionMapper->setMapping( w, pos );
+  mUnlockPositionMapper->setMapping( w, pos );
+  mModifiedMapper->setMapping( w, pos );
+
+  connect( w, SIGNAL( deletePosition() ),  mDeleteMapper, SLOT( map() ) );
+  connect( w, SIGNAL( moveUp() ),          mMoveUpMapper, SLOT( map() ) );
+  connect( w, SIGNAL( moveDown() ),        mMoveDownMapper, SLOT( map() ) );
+  connect( w, SIGNAL( lockPosition() ),    mLockPositionMapper, SLOT( map() ) );
+  connect( w, SIGNAL( unlockPosition() ),  mUnlockPositionMapper, SLOT( map() ) );
+  connect( w, SIGNAL( positionModified()), mModifiedMapper,  SLOT( map() ) );
+
+  connect( w, SIGNAL( positionModified() ), this,
+           SLOT( slotModifiedPositions() ) );
+
+  connect( w, SIGNAL( priceChanged( const Geld& ) ), this,
+           SLOT( redrawSumBox() ) );
+  w->m_cbUnit->insertStringList( UnitManager::allUnits() );
+
+  m_positionScroll->addChild( w, 0, 0 );
+  int y = pos * w->height();
+  m_positionScroll->moveChild( w, 0, y );
+  w->setPosition( dp );
+  w->setOrdNumber( 1 + pos );
+  // kdDebug() << "Adding a widget for position number " << cnt << endl;
+
+  kdDebug() << "Creating an entry in the position map for " << dp->dbId().toInt() << endl;
+  if( dp->dbId().toInt() < 0 ) {
+    kdDebug() << "setting state to NEW" << endl;
+    w->slotSetState( PositionViewWidget::New );
+  }
+  mPositionWidgetList.append( w );
+  w->show();
+
+  return w;
 }
 
 void KraftView::refreshPostCard()
@@ -650,9 +659,12 @@ void KraftView::slotSelectAddress( KABC::Addressee contact )
 
 void KraftView::slotAddPosition()
 {
-    const DocPosition dp;
-    int newPos = m_doc->slotAppendPosition( dp );
-    // slotFocusPosition( newPos );
+  int newpos = mPositionWidgetList.count();
+
+  DocPosition *dp = new DocPosition();
+  PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
+
+  slotFocusPosition( widget, newpos );
 }
 
 void KraftView::slotShowCatalog( bool on )
@@ -818,26 +830,28 @@ void KraftView::savePositions()
     } else {
       kdDebug() << "Position " << pos->position() << " was NOT modified" << endl;
     }
+
+    if ( widget->state() == PositionViewWidget::New ) {
+      // We need to copy the position into the document.
+      DocPosition *newPos = getDocument()->createPosition();
+      *newPos = *pos;
+    }
   }
 }
 
-void KraftView::slotFocusPosition( int pos )
+void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
 {
-  DocPositionList list = getDocument()->positions();
-
-  PositionViewWidget *dpb = mPositionWidgetList.at( pos-1 );
-
-  if( dpb && pos > 0) {
-    int w = dpb->height();
+  if( posWidget && pos > 0) {
+    int w = posWidget->height();
     m_positionScroll->ensureVisible( 0, (pos-1)*w, 0, w );
   } else {
     m_positionScroll->ensureVisible( 0, 0 );
   }
-  if( dpb ) {
-    if( dpb->m_teFloskel->text().isEmpty() ) {
-      dpb->m_teFloskel->setFocus();
+  if( posWidget ) {
+    if( posWidget->m_teFloskel->text().isEmpty() ) {
+      posWidget->m_teFloskel->setFocus();
     } else {
-      dpb->m_sbAmount->setFocus();
+      posWidget->m_sbAmount->setFocus();
     }
   }
 }

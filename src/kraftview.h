@@ -144,7 +144,7 @@ class KraftView : public KDialogBase
     void slotModifiedHeader();
     void slotModifiedFooter();
     void slotAddPosition();
-    void slotFocusPosition( int );
+    void slotFocusPosition( PositionViewWidget*,  int );
 
   protected slots:
     void slotOk();
@@ -173,6 +173,7 @@ class KraftView : public KDialogBase
     void setupPositions();
     void setupFooter();
     void setupTextsView();
+    PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
 
     QStringList generateLetterHead( KABC::Addressee adr );
 

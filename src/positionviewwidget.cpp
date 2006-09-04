@@ -240,7 +240,7 @@ PositionViewWidget::~PositionViewWidget()
 PositionViewWidgetList::PositionViewWidgetList()
   : QPtrList<PositionViewWidget>()
 {
-
+  setAutoDelete( true );
 }
 
 PositionViewWidget* PositionViewWidgetList::widgetFromPosition( DocPositionGuardedPtr ptr)
