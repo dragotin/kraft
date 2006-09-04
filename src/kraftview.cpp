@@ -70,7 +70,7 @@
 
 #include <qtimer.h>
 
-KraftPreviewWidget::KraftPreviewWidget( QWidget *parent ):
+DocAssistant::DocAssistant( QWidget *parent ):
   QSplitter( parent )
 {
   setOrientation( Vertical );
@@ -84,17 +84,36 @@ KraftPreviewWidget::KraftPreviewWidget( QWidget *parent ):
   mWidgetStack->raiseWidget( mCatalogSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SIGNAL( selectPage( int ) ) );
-
-  // hide the selector widgets first and show the full preview.
-  QValueList<int> li;
-  li << height();
-  li << 0;
-  setSizes( li );
+  mWidgetStack->hide();
 }
 
-DocPostCard *KraftPreviewWidget::postCard()
+DocPostCard *DocAssistant::postCard()
 {
   return mPostCard;
+}
+
+void DocAssistant::slotShowCatalog( )
+{
+  setFullPreview( false );
+  mWidgetStack->raiseWidget( mCatalogSelection );
+}
+
+void DocAssistant::slotShowAddresses()
+{
+  setFullPreview( false );
+  mWidgetStack->raiseWidget( mAddressSelection );
+}
+
+void DocAssistant::setFullPreview( bool setFull )
+{
+  if ( setFull ) {
+    mWidgetStack->hide();
+    mPostCard->slotSetMode( DocPostCard::Full );
+
+  } else {
+    mWidgetStack->show();
+    mPostCard->slotSetMode( DocPostCard::Mini );
+  }
 }
 
 // #########################################################
@@ -167,8 +186,10 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   connect( mModifiedMapper,  SIGNAL( mapped( int ) ),
            this,  SLOT( slotPositionModified( int ) ) );
 
+#if 0
   connect( this, SIGNAL( aboutToShowPage( QWidget* ) ),
            this, SLOT( slotAboutToShow( QWidget* ) ) );
+#endif
 
   mDetailHeaderTexts[ DocPostCard::HeaderId ]   = i18n( "Document Header" );
   mDetailHeaderTexts[ DocPostCard::PositionId ] = i18n( "Document Positions" );
@@ -193,20 +214,19 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   mViewStack = new QWidgetStack( vb );
   mViewStack->setMargin( 0 );
 
-  // mHelpView  = new HtmlView( mCSplit );
-  mPreviewWidget = new KraftPreviewWidget( mCSplit );
+  mAssistant = new DocAssistant( mCSplit );
 
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
     mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
   }
-  connect( mPreviewWidget, SIGNAL( selectPage( int ) ),
+  connect( mAssistant, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSwitchToPage( int ) ) );
 
-  // setupDocumentOverview( vb );
   QSize size = KraftSettings::self()->docViewSize();
   if ( !size.isEmpty() ) resize( size );
   QPoint pos = KraftSettings::self()->docViewPosition();
   if ( !pos.isNull() ) move( pos );
+
 }
 
 KraftView::~KraftView()
@@ -236,10 +256,9 @@ void KraftView::setupDocumentOverview( QWidget *parent )
 void KraftView::slotSwitchToPage( int id )
 {
   mViewStack->raiseWidget( id );
-
+  mAssistant->setFullPreview( true );
+  mCatalogToggle->setOn( false );
   mDetailHeader->setText( "<h1>" + mDetailHeaderTexts[id] + "</h1>" );
-
-
 }
 
 void KraftView::setupDocHeaderView()
@@ -265,11 +284,16 @@ void KraftView::setupPositions()
 {
   // QVBox *page = addVBoxPage( i18n( "Positions" ), i18n( "Positions of the document" ) );
     QVBox *page = new QVBox( mainWidget() );
+    page->setSpacing( KDialog::spacingHint() );
     mViewStack->addWidget( page, DocOverviewWidget::PositionId );
 
     QHBox *upperHBox = new QHBox( page );
     KPushButton *button = new KPushButton( i18n("Add"), upperHBox );
     connect( button, SIGNAL( clicked() ), this, SLOT( slotAddPosition() ) );
+
+    mCatalogToggle = new KPushButton( i18n("Catalog"), upperHBox );
+    mCatalogToggle->setToggleButton( true );
+    connect( mCatalogToggle, SIGNAL( toggled( bool ) ), this, SLOT( slotShowCatalog( bool ) ) );
 
     QWidget *spaceEater = new QWidget( upperHBox );
     spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
@@ -303,7 +327,10 @@ void KraftView::redrawDocument( )
         contact = adrBook->findByUid( mContactUid );
         if( contact.isEmpty() ) {
           // the Uid is set, but the address is not in this addressbook
-          KMessageBox::sorry( this, i18n("The addressbook does not contain the address identified by the ID in the document.").arg( mContactUid ), i18n("Addressbook out of sync") );
+          KMessageBox::sorry( this, i18n("The addressbook does not contain the address "
+                                         "identified by the ID in the document.")
+                              .arg( mContactUid ), i18n("Addressbook out of sync") );
+
           m_headerEdit->m_labName->setText( i18n("--lost--") );
         } else {
           kdDebug() << "The loaded Contact has this realname: " << contact.realName() << endl;
@@ -413,11 +440,11 @@ void KraftView::redrawDocPositions( )
 
 void KraftView::refreshPostCard()
 {
-  if ( mPreviewWidget->postCard() ) {
+  if ( mAssistant->postCard() ) {
     QDate d = m_headerEdit->m_dateEdit->date();
     const QString dStr = KGlobal().locale()->formatDate( d );
 
-    mPreviewWidget->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
+    mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->text(),
                                            m_headerEdit->m_teEntry->text() );
     DocPositionList list;
@@ -444,12 +471,12 @@ void KraftView::refreshPostCard()
 
       list.append( dp );
     }
-    mPreviewWidget->postCard()->setPositions( list );
+    mAssistant->postCard()->setPositions( list );
     list.clear();
-    mPreviewWidget->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
+    mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
                                            m_footerEdit->m_cbGreeting->currentText() );
 
-    mPreviewWidget->postCard()->renderDoc();
+    mAssistant->postCard()->renderDoc();
   }
 }
 
@@ -625,7 +652,16 @@ void KraftView::slotAddPosition()
 {
     const DocPosition dp;
     int newPos = m_doc->slotAppendPosition( dp );
-    slotFocusPosition( newPos );
+    // slotFocusPosition( newPos );
+}
+
+void KraftView::slotShowCatalog( bool on )
+{
+  if ( on ) {
+    mAssistant->slotShowCatalog();
+  } else {
+    mAssistant->setFullPreview( true );
+  }
 }
 
 void KraftView::slotModifiedPositions()

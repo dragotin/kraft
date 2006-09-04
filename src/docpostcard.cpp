@@ -76,7 +76,6 @@ void DocPostCard::renderDoc()
 
 QString DocPostCard::renderDocFull() const
 {
-
   QString t = "<div class=\"head\">";
   t += "<a href=\"kraftdoc://header\">" + i18n( "Header:" ) + "</a>" ;
   QString h = mAddress;
@@ -156,5 +155,6 @@ void DocPostCard::writeTopFrame()
 
 void DocPostCard::slotSetMode( DisplayMode mode ) {
   mMode = mode;
+  renderDoc();
 }
 #include "docpostcard.moc"

@@ -62,15 +62,22 @@ class DocPostCard;
 class QTimer;
 class CatalogSelection;
 class AddressSelection;
+class KPushButton;
 
-class KraftPreviewWidget : public QSplitter
+class DocAssistant : public QSplitter
 {
   Q_OBJECT
 
 public:
-  KraftPreviewWidget( QWidget* );
+  DocAssistant( QWidget* );
 
   DocPostCard *postCard();
+
+public slots:
+  void slotShowCatalog();
+  void slotShowAddresses();
+  void setFullPreview( bool );
+
 signals:
   void selectPage( int );
 
@@ -154,7 +161,9 @@ class KraftView : public KDialogBase
     void slotPositionModified( int );
     void slotAboutToShow( QWidget* );
   void slotSwitchToPage( int );
-  void refreshPostCard( void );
+  void refreshPostCard( );
+  void slotShowCatalog( bool );
+
   signals:
     void selectPage( int );
 
@@ -185,13 +194,14 @@ class KraftView : public KDialogBase
   QLabel *mDetailHeader;
   QString mDetailHeaderTexts[3];
   QSplitter *mCSplit;
+  KPushButton *mCatalogToggle;
 
   QWidget *mSumSpacer;
   QWidgetStack *mViewStack;
   QVBox *mGlobalVBox;
   int mHeaderId;
   DocOverviewWidget *mDocOverview;
-  KraftPreviewWidget *mPreviewWidget;
+  DocAssistant *mAssistant;
 };
 
 #endif // KRAFTVIEW_H
