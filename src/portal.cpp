@@ -60,15 +60,11 @@ Portal::Portal( QWidget* , const char* name)
 : KMainWindow(0, name)
 
 {
-  config=kapp->config();
-
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
   initStatusBar();
   initActions();
   initView();
-
-  readOptions();
 
   ///////////////////////////////////////////////////////////////////
   // disable actions at startup
@@ -78,6 +74,7 @@ Portal::Portal( QWidget* , const char* name)
 
   // check for database init
   // KraftDB::checkInit();
+  setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
 }
 
@@ -172,44 +169,6 @@ void Portal::slotStartupChecks()
   }
 }
 
-
-
-void Portal::saveOptions()
-{
-  config->setGroup("General Options");
-  config->writeEntry("Geometry", size());
-
-  config->writeEntry("Show Statusbar",viewStatusBar->isChecked());
-
-}
-
-
-void Portal::readOptions()
-{
-
-  config->setGroup("General Options");
-
-  bool bViewStatusbar = config->readBoolEntry("Show Statusbar", true);
-  viewStatusBar->setChecked(bViewStatusbar);
-  slotViewStatusBar();
-
-  QSize size=config->readSizeEntry("Geometry");
-  if(!size.isEmpty())
-  {
-    resize(size);
-  }
-}
-
-void Portal::saveProperties(KConfig *)
-{
-
-}
-
-void Portal::readProperties(KConfig*)
-{
-
-}
-
 bool Portal::queryClose()
 {
   // return doc->saveModified();
@@ -218,7 +177,6 @@ bool Portal::queryClose()
 
 bool Portal::queryExit()
 {
-  saveOptions();
   return true;
 }
 
@@ -311,7 +269,6 @@ void Portal::createView( DocGuardedPtr doc )
 void Portal::slotFileQuit()
 {
   slotStatusMsg(i18n("Exiting..."));
-  saveOptions();
   // close the first window, the list makes the next one the first again.
   // This ensures that queryClose() is called on each window to ask for closing
   KMainWindow* w;

@@ -74,7 +74,7 @@ class KatalogView : public KMainWindow
 
   protected:
     virtual Katalog* getKatalog( const QString& );
-      
+
   public slots:
     /** open a new application window by creating a new instance of KraftApp */
     void slotFileNewWindow();
@@ -98,7 +98,7 @@ class KatalogView : public KMainWindow
     /** paste the clipboard into the document
      */
     void slotEditPaste();
-     
+
     /** changes the statusbar contents for the standard label permanently, used to indicate current actions.
      * @param text the text that is displayed in the statusbar
      */
@@ -106,17 +106,17 @@ class KatalogView : public KMainWindow
 
     virtual void slListviewExecuted(QListViewItem*);
     void slExport();
-    
+
     virtual void slEditChapters();
     virtual void slAddToDocument();
-    
+
     signals:
     /**
     * emitted if an entry in a catalog gets selected to be appended
-    * to one or more documents. 
+    * to one or more documents.
     */
     void newDocPosition( const DocPosition& );
-    
+
     protected:
 
     /** the configuration object of the application */
@@ -132,7 +132,7 @@ class KatalogView : public KMainWindow
     KAction* m_acNewItem;
     KAction* m_acExport;
     KAction* m_acToDocument;
-    
+
     // KToggleAction* viewToolBar;
     // KToggleAction* viewStatusBar;
     QString         m_katalogName;
@@ -141,19 +141,12 @@ class KatalogView : public KMainWindow
 
     // Fills the DocPosition with the data from the currently selected item in the view
     virtual bool currentItemToDocPosition( DocPosition& ){ return false; }
-    
-      /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
-     * file
-       */
-    void saveOptions();
-    /** read general Options again and initialize all variables like the recent file list
-     */
-    void readOptions();
+
     /** initializes the KActions of the application */
     void initActions();
     /** sets up the statusbar for the main window by initialzing a statuslabel.
      */
-    
+
     /** initializes the document object of the main window that is connected to the view in initView().
      * @see initView();
      */
@@ -172,16 +165,6 @@ class KatalogView : public KMainWindow
      * @see KTMainWindow#closeEvent
      */
     virtual bool queryExit();
-    /** saves the window properties for each open window during session end to the session config file, including saving the currently
-     * opened file by a temporary filename provided by KApplication.
-     * @see KTMainWindow#saveProperties
-     */
-    virtual void saveProperties(KConfig *_cfg);
-    /** reads the session config file and restores the application's state including the last opened files and documents by reading the
-     * temporary files saved by saveProperties()
-     * @see KTMainWindow#readProperties
-     */
-    virtual void readProperties(KConfig *_cfg);
 
 };
 

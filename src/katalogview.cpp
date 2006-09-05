@@ -47,7 +47,8 @@
 
 #define ID_STATUS_MSG 1
 
-KatalogView::KatalogView( QWidget* parent, const char* name) : KMainWindow(parent, name, 0),
+KatalogView::KatalogView( QWidget* parent, const char* name) :
+  KMainWindow(parent, name, 0),
     m_acEditChapters(0),
     m_acEditItem(0),
     m_acNewItem(0),
@@ -58,23 +59,18 @@ KatalogView::KatalogView( QWidget* parent, const char* name) : KMainWindow(paren
 
 void KatalogView::init(const QString& katName)
 {
-  config=kapp->config();
   m_katalogName = katName;
-  ///////////////////////////////////////////////////////////////////
-  // call inits to invoke all other construction parts
   initActions();
-
-  readOptions();
 
   ///////////////////////////////////////////////////////////////////
   // set up a vertical layout box
   QWidget *w = new QWidget(this);
   QBoxLayout *box = new QVBoxLayout(w);
-  
+
   // start to set up the listview
-  createCentralWidget(box, w); 
+  createCentralWidget(box, w);
   KatalogListView *listview = getListView();
-  
+
   if( ! listview ) {
       kdDebug() << "ERROR: No listview created !!!" << endl;
   } else {
@@ -85,21 +81,23 @@ void KatalogView::init(const QString& katName)
       connect( listview, SIGNAL(selectionChanged(QListViewItem*)),
                this, SLOT(slListviewExecuted(QListViewItem*)));
   }
-  
+
   setCentralWidget(w);
   m_editListViewItem = 0;
   kdDebug() << "Gettign katalog!" << katName << endl;
   getKatalog( katName );
   listview->addCatalogDisplay( katName );
-  
+
   kdDebug() << "Listviews context-menu: " << m_acEditChapters << endl;
   KatalogListView *lv = getListView();
-  
+
   // Populate the context Menu
   m_acEditItem->plug( lv->contextMenu() );
   m_acNewItem->plug( lv->contextMenu() );
   m_acEditChapters->plug( lv->contextMenu() );
   m_acToDocument->plug( lv->contextMenu() );
+
+  setAutoSaveSettings( QString::fromLatin1( "CatalogWindow" ),  true );
 }
 
 void KatalogView::createCentralWidget(QBoxLayout*, QWidget*)
@@ -123,29 +121,29 @@ void KatalogView::initActions()
   m_acEditChapters = new KAction(i18n("Edit &Catalog Chapters..."),
                                    "contents", 0, this,
                                     SLOT(slEditChapters()),  actionCollection(), "edit_chapters" );
-  
+
   m_acEditItem = new KAction(i18n("&Edit Item"), "pencil", 0, this,
                                SLOT(slEditVorlage()),  actionCollection(), "edit_vorlage" );
 
   m_acNewItem  = new KAction( i18n("&New Item"), "filenew", 0, this,
                                 SLOT(slNeueVorlage()), actionCollection(), "neue_vorlage");
-  
+
   m_acToDocument = new KAction( i18n("&Insert into Document"), "add", 0, this,
                                 SLOT(slAddToDocument()), actionCollection(), "go_to_document" );
-    
+
   m_acNewItem->setStatusText(i18n("Opens the editor window for templates to enter a new template"));
   m_acEditItem->setStatusText(i18n("Opens the editor window for templates to edit the selected one"));
   m_acEditChapters->setStatusText(i18n("Add, remove and edit catalog chapters"));
   m_acNewItem->setEnabled(true);   // can always add new items
   m_acEditItem->setEnabled(false);
   m_acEditChapters->setEnabled(true);
-  
+
   m_acExport = new KAction( i18n("&Export Catalog..."), "save", 0, this,
                             SLOT(slExport()), actionCollection(), "export_catalog");
-    
+
   m_acExport->setStatusText(i18n("Export the whole catalog as XML encoded file"));
   m_acExport->setEnabled(true);
-  
+
   fileClose = KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
   filePrint = KStdAction::print(this, SLOT(slotFilePrint()), actionCollection());
   editCut = KStdAction::cut(    this, SLOT(slotEditCut()),   actionCollection());
@@ -155,14 +153,14 @@ void KatalogView::initActions()
   fileClose->setStatusText( i18n("Closes the actual document"));
   filePrint ->setStatusText( i18n("Prints out the actual document"));
   m_acToDocument->setStatusText( i18n("Append text to one or more documents") );
-  
+
   editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
   editCopy->setStatusText(i18n("Copies the selected section to the clipboard"));
   editPaste->setStatusText(i18n("Pastes the clipboard contents to actual position"));
-  
+
   createStandardStatusBarAction();
   setStandardToolBarMenuEnabled( true );
-  
+
   ///////////////////////////////////////////////////////////////////
   // disable actions at startup
   filePrint->setEnabled(false);
@@ -200,30 +198,6 @@ void KatalogView::openDocumentFile(const KURL& )
   slotStatusMsg(i18n("Ready."));
 }
 
-void KatalogView::saveOptions()
-{
-  config->setGroup("General Options");
-  config->writeEntry("Geometry", size());
-  config->writeEntry("ToolBarPos", (int) toolBar("mainToolBar")->barPos());
-}
-
-
-void KatalogView::readOptions()
-{
-
-}
-
-
-void KatalogView::saveProperties(KConfig *kfg)
-{
-  KMainWindow::saveProperties( kfg );
-}
-
-void KatalogView::readProperties(KConfig* _cfg)
-{
-  KMainWindow::readProperties( _cfg );
-}
-
 bool KatalogView::queryClose()
 {
 //  return doc->saveModified();
@@ -232,7 +206,6 @@ bool KatalogView::queryClose()
 
 bool KatalogView::queryExit()
 {
-  saveOptions();
   return true;
 }
 
@@ -344,7 +317,7 @@ void KatalogView::slExport()
 void KatalogView::slEditChapters()
 {
     CatalogChapterEditDialog d( this, m_katalogName );
-    
+
     d.exec();
     if( d.dirty() ) {
       // have to update the catalog view.

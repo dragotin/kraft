@@ -56,13 +56,6 @@ class Portal : public KMainWindow
 
     QWidget* mainWidget();
   protected:
-    /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
-     * file
-     */
-    void saveOptions();
-    /** read general Options again and initialize all variables like the recent file list
-     */
-    void readOptions();
     /** initializes the KActions of the application */
     void initActions();
     /** sets up the statusbar for the main window by initialzing a statuslabel.
@@ -85,16 +78,6 @@ class Portal : public KMainWindow
      * @see KTMainWindow#closeEvent
      */
     virtual bool queryExit();
-    /** saves the window properties for each open window during session end to the session config file, including saving the currently
-     * opened file by a temporary filename provided by KApplication.
-     * @see KTMainWindow#saveProperties
-     */
-    virtual void saveProperties(KConfig *_cfg);
-    /** reads the session config file and restores the application's state including the last opened files and documents by reading the
-     * temporary files saved by saveProperties()
-     * @see KTMainWindow#readProperties
-     */
-    virtual void readProperties(KConfig *_cfg);
 
 
   protected slots:
@@ -139,9 +122,6 @@ class Portal : public KMainWindow
 
   private:
     void createView( DocGuardedPtr );
-
-    /** the configuration object of the application */
-    KConfig *config;
 
     PortalView *m_portalView;
 
