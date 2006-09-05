@@ -20,6 +20,7 @@
 #include <klocale.h>
 #include <kglobal.h>
 #include <kurl.h>
+#include <khtmlview.h>
 
 #include <kdebug.h>
 

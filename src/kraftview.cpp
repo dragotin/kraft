@@ -76,6 +76,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   setOrientation( Vertical );
   mPostCard =  new DocPostCard( this );
   mPostCard->slotSetMode( DocPostCard::Full );
+  setResizeMode( mPostCard->view(), KeepSize );
 
   mWidgetStack = new QWidgetStack( this );
   mCatalogSelection = new CatalogSelection( mWidgetStack );
@@ -84,6 +85,10 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mWidgetStack->raiseWidget( mCatalogSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SIGNAL( selectPage( int ) ) );
+  QValueList<int> sizes;
+  sizes << 120;  // FIXME: Get real needed size from htmlview
+  // sizes << parent->height() / 2;
+  setSizes( sizes );
   mWidgetStack->hide();
 }
 
@@ -213,7 +218,7 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   vb->setMargin( 3 );
   mViewStack = new QWidgetStack( vb );
   mViewStack->setMargin( 0 );
-
+  kdDebug() << "mViewSTack height is " << mViewStack->height() << endl;
   mAssistant = new DocAssistant( mCSplit );
 
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
