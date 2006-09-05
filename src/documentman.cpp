@@ -45,16 +45,16 @@ DocumentMan::DocumentMan()
 DocDigestList DocumentMan::latestDocs( int limit )
 {
   DocDigestList ret;
-  
-  QString qStr ="SELECT docID, ident, docType, clientID, lastModified, date FROM document ORDER BY lastModified";
-  
-  if( limit > 0 ) 
+
+  QString qStr ="SELECT docID, ident, docType, clientID, lastModified, date FROM document ORDER BY date,lastModified desc";
+
+  if( limit > 0 )
     qStr += " LIMIT " + QString::number( limit );
   qStr +=";";
   kdDebug() << "Sending sql string " << qStr << endl;
-  
+
   QSqlQuery query( qStr, KraftDB::getDB() );
-  
+
   if( query.isActive() ) {
     while( query.next() ) {
       DocDigest dig;
@@ -69,7 +69,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
       ret.append( dig );
     }
   }
-  
+
   return ret;
 }
 
@@ -79,7 +79,7 @@ DocGuardedPtr DocumentMan::createDocument()
   doc->newDocument();
   doc->saveDocument();
   mDocMap[doc->docID().toString()] = doc;
-  
+
   return doc;
 }
 
@@ -87,7 +87,7 @@ DocGuardedPtr DocumentMan::openDocument( const QString& id )
 {
   kdDebug() << "Opening Document with id " << id << endl;
   DocGuardedPtr doc;
-  
+
   if( mDocMap.contains( id ) ){
     doc = mDocMap[id];
   } else {
@@ -101,7 +101,7 @@ DocGuardedPtr DocumentMan::openDocument( const QString& id )
 void DocumentMan::offerNewPosition( const DocPosition& pos )
 {
   kdDebug() << "Offering new position to document!" << endl;
-  
+
   DocumentMap::Iterator it;
   for ( it = mDocMap.begin(); it != mDocMap.end(); ++it ) {
     DocGuardedPtr doc = it.data();
@@ -112,7 +112,7 @@ void DocumentMan::offerNewPosition( const DocPosition& pos )
 QStringList DocumentMan::openDocumentsList()
 {
   QStringList list;
-  
+
   DocumentMap::Iterator it;
   for ( it = mDocMap.begin(); it != mDocMap.end(); ++it ) {
     DocGuardedPtr doc = it.data();

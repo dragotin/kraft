@@ -166,7 +166,7 @@ class KraftView : public KDialogBase
 
   signals:
     void selectPage( int );
-
+    void viewClosed( bool );
   private:
     void setupDocumentOverview( QWidget* );
     void setupDocHeaderView();

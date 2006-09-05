@@ -29,18 +29,20 @@ class FilterHeader;
 class DocDigestView : public QWidget
 {
   Q_OBJECT
-  
+
 public:
   DocDigestView( QWidget *parent );
   ~DocDigestView();
-  
-  void addChapter( const QString&, DocDigestList );
+
+  void addLatestDocs( DocDigestList );
+
   QString currentDocumentId();
 public slots:
   void slotNewDoc();
   void slotDocOpenRequest( QListViewItem * );
-  
+
 protected slots:
+  void addChapter( const QString&, DocDigestList );
   void slotOpenCurrentDoc();
   void slotCurrentChanged( QListViewItem* );
 signals:
@@ -51,7 +53,7 @@ signals:
 private:
   KListView *mListView;
   FilterHeader *mFilterHeader;
-  
+
   QMap<QListViewItem*, QString> mDocIdDict;
 };
 

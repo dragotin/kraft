@@ -204,10 +204,13 @@ void PortalView::documentDigests( QWidget *parent )
              SIGNAL( printDocument( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( selectionChanged( const QString& ) ),
              SIGNAL( documentSelected( const QString& ) ) );
+  slotBuildView();
+}
 
+void PortalView::slotBuildView()
+{
   DocumentMan *docman = DocumentMan::self();
-
-  mDocDigestView->addChapter( i18n("Latest Documents" ), docman->latestDocs( 10 ) );
+  mDocDigestView->addLatestDocs( docman->latestDocs( 10 ) );
 }
 
 PortalView::~PortalView( )

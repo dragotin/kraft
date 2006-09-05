@@ -44,6 +44,8 @@ public:
     PortalView (QWidget *parent=0, const char *name=0, int face=Plain);
     ~PortalView();
     DocDigestView* docDigestView() { return mDocDigestView; }
+public slots:
+    void slotBuildView();
 
 protected slots:
     void slUrlClicked( const QString& );

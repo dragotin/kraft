@@ -119,7 +119,7 @@ class Portal : public KMainWindow
     void slotOpenDocument();
     void slotDocumentSelected( const QString& );
     void slotPrintDocument();
-
+    void slotViewClosed( bool );
   private:
     void createView( DocGuardedPtr );
 

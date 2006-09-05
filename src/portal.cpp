@@ -259,12 +259,19 @@ void Portal::createView( DocGuardedPtr doc )
     view->show();
 
     doc->addView( view );
+    connect( view, SIGNAL( viewClosed( bool ) ),
+             this, SLOT( slotViewClosed( bool ) ) );
   } else {
     // pop first view to front
     kdDebug() << "There is already a view for this doc!" << endl;
   }
 }
 
+void Portal::slotViewClosed( bool )
+{
+  kdDebug() << "A view was closed" << endl;
+  m_portalView->slotBuildView();
+}
 
 void Portal::slotFileQuit()
 {

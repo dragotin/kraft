@@ -787,6 +787,7 @@ void KraftView::slotOk()
     KraftSettings::self()->setDocViewPosition( pos() );
     KraftSettings::self()->writeConfig();
 
+    emit viewClosed( true );
     KDialogBase::slotOk(  );
 }
 
@@ -869,7 +870,7 @@ void KraftView::slotCancel()
     kdDebug() << "Document refetch from database" << endl;
     doc->reloadDocument();
   }
-
+  emit viewClosed( false );
   KDialogBase::slotCancel();
 }
 
