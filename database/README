@@ -26,14 +26,14 @@ To create the database, perform the following steps:
 cd database
 mysql -u user -p < create_schema.sql
 
-this creates the database tables in database kange. 
+this creates the database tables in database kraft. 
 
-ATTENTION: The command above deletes the database kange
+ATTENTION: The command above deletes the database kraft
 if it already exists. THERE IS NO BACKUP DONE YET!!
 
 Fill the database with initial content:
 
-mysql -u user -p kange < fill_schema_de.sql
+mysql -u user -p kraft < fill_schema_de.sql
 
 this fills the database with some basic settings for
 language german. Other fill_schema scripts for other
