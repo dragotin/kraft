@@ -32,6 +32,7 @@
 #include <qcolor.h>
 #include <qsplitter.h>
 #include <qbuttongroup.h>
+#include <qfont.h>
 
 #include <kdebug.h>
 #include <kdialogbase.h>
@@ -235,8 +236,12 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   mDetailHeader->setLineWidth( 1 );
   mDetailHeader->setPaletteBackgroundColor( QColor( "darkBlue" ));
   mDetailHeader->setPaletteForegroundColor( QColor( "white" ) );
-  mDetailHeader->setTextFormat( Qt::RichText );
+  mDetailHeader->setTextFormat( Qt::PlainText );
   mDetailHeader->setFixedHeight( 40 ); // FIXME
+  QFont f = mDetailHeader->font();
+  f.setPointSize( qRound( 1.4 * f.pointSize() ) );
+  f.setBold( true );
+  mDetailHeader->setFont( f );
 
   mCSplit    = new QSplitter( mGlobalVBox );
   QVBox *vb  = new QVBox( mCSplit );
@@ -306,7 +311,7 @@ void KraftView::slotSwitchToPage( int id )
     mAssistant->setFullPreview( true );
     mCatalogToggle->setOn( false );
   }
-  mDetailHeader->setText( "<h1>" + mDetailHeaderTexts[id] + "</h1>" );
+  mDetailHeader->setText( mDetailHeaderTexts[id] );
 }
 
 void KraftView::setupDocHeaderView()
