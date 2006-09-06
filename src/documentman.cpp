@@ -77,7 +77,6 @@ DocGuardedPtr DocumentMan::createDocument()
 {
   DocGuardedPtr doc = new KraftDoc( );
   doc->newDocument();
-  doc->saveDocument();
   mDocMap[doc->docID().toString()] = doc;
 
   return doc;
