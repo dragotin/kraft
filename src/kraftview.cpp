@@ -454,14 +454,11 @@ void KraftView::redrawDocPositions( )
 PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, int pos )
 {
   PositionViewWidget *w = new PositionViewWidget( );
-  KraftDoc *doc = getDocument();
 
   int cw = m_positionScroll->contentsWidth();
   if ( cw < 400 ) cw = 400;
-
   w->resize( cw, w->height() );
-  m_positionScroll->resizeContents( cw,
-                                    doc->positions().count() * w->height()+1 );
+
   mDeleteMapper->setMapping( w, pos );
   mMoveUpMapper->setMapping( w, pos );
   mMoveDownMapper->setMapping( w, pos );
@@ -483,11 +480,6 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
            SLOT( redrawSumBox() ) );
   w->m_cbUnit->insertStringList( UnitManager::allUnits() );
 
-  m_positionScroll->addChild( w, 0, 0 );
-  int y = pos * w->height();
-  m_positionScroll->moveChild( w, 0, y );
-  w->setPosition( dp );
-  w->setOrdNumber( 1 + pos );
   // kdDebug() << "Adding a widget for position number " << cnt << endl;
 
   kdDebug() << "Creating an entry in the position map for " << dp->dbId().toInt() << endl;
@@ -496,6 +488,15 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
     w->slotSetState( PositionViewWidget::New );
   }
   mPositionWidgetList.append( w );
+
+  /* do resizing and add the widget to the scrollview and move it to the final place */
+  m_positionScroll->resizeContents( cw,
+                                    mPositionWidgetList.count() * w->height()+1 );
+  m_positionScroll->addChild( w, 0, 0 );
+  w->setPosition( dp );
+  w->setOrdNumber( 1 + pos );
+  int y = pos * w->height();
+  m_positionScroll->moveChild( w, 0, y );
   w->show();
 
   return w;
@@ -718,7 +719,7 @@ void KraftView::slotAddPosition()
   DocPosition *dp = new DocPosition();
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
 
-  slotFocusPosition( widget, newpos );
+  slotFocusPosition( widget, 1+newpos );
 }
 
 void KraftView::slotShowCatalog( bool on )
@@ -896,6 +897,7 @@ void KraftView::savePositions()
 
 void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
 {
+  kdDebug() << "Focussing on widget " << posWidget << " on pos " << pos << endl;
   if( posWidget && pos > 0) {
     int w = posWidget->height();
     m_positionScroll->ensureVisible( 0, (pos-1)*w, 0, w );
