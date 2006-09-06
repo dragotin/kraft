@@ -71,12 +71,15 @@
 #include <qtimer.h>
 
 DocAssistant::DocAssistant( QWidget *parent ):
-  QSplitter( parent )
+  QSplitter( parent ), mFullPreview( true )
 {
   setOrientation( Vertical );
   mPostCard =  new DocPostCard( this );
   mPostCard->slotSetMode( DocPostCard::Full );
   setResizeMode( mPostCard->view(), KeepSize );
+
+  connect( mPostCard, SIGNAL( completed() ),
+           this,  SLOT( slotRenderCompleted() ) );
 
   mWidgetStack = new QWidgetStack( this );
   mCatalogSelection = new CatalogSelection( mWidgetStack );
@@ -87,9 +90,22 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SIGNAL( selectPage( int ) ) );
   QValueList<int> sizes;
   sizes << 120;  // FIXME: Get real needed size from htmlview
-  // sizes << parent->height() / 2;
   setSizes( sizes );
   mWidgetStack->hide();
+}
+
+void DocAssistant::slotRenderCompleted()
+{
+  // kdDebug() << "Render completed: " << mPostCard->view()->contentsHeight() << endl;
+
+#if 0
+  /* This is unfortunately not working because contentsHeight is always as
+     heigh as the viewport is. Must be fixed in khtmlpart. */
+  QValueList<int> sizes;
+  sizes << mPostCard->view()->contentsHeight();
+  setSizes( sizes );
+#endif
+
 }
 
 DocPostCard *DocAssistant::postCard()
@@ -112,12 +128,19 @@ void DocAssistant::slotShowAddresses()
 void DocAssistant::setFullPreview( bool setFull )
 {
   if ( setFull ) {
+    /* remember the sizes used before */
+    mSplitterSizes = sizes();
     mWidgetStack->hide();
     mPostCard->slotSetMode( DocPostCard::Full );
-
+    mFullPreview = true;
   } else {
     mWidgetStack->show();
     mPostCard->slotSetMode( DocPostCard::Mini );
+    if ( mSplitterSizes.count() != 2 ) {
+      mSplitterSizes << 120;
+    }
+    setSizes( mSplitterSizes );
+    mFullPreview = false;
   }
 }
 
@@ -165,7 +188,7 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 KraftView::KraftView(QWidget *parent, const char *name) :
   KDialogBase( parent, name, false /* modal */, i18n("Document"),
 	      Ok|Cancel, Ok, true /* separator */ ),
-       m_doc( 0 )
+  m_doc( 0 ),  mShowAssistantDetail( false )
 {
   mDeleteMapper = new QSignalMapper( this );
   connect( mDeleteMapper, SIGNAL( mapped(int)),
@@ -260,9 +283,27 @@ void KraftView::setupDocumentOverview( QWidget *parent )
 
 void KraftView::slotSwitchToPage( int id )
 {
+  if ( mViewStack->visibleWidget() == mViewStack->widget( id ) ) return;
+
+  if ( mViewStack->visibleWidget() == mViewStack->widget( DocPostCard::PositionId ) ) {
+    mShowAssistantDetail = ! mAssistant->isFullPreview();
+  }
+
   mViewStack->raiseWidget( id );
-  mAssistant->setFullPreview( true );
-  mCatalogToggle->setOn( false );
+
+  bool skip = false;
+  if ( id == DocPostCard::PositionId ) {
+    if ( mShowAssistantDetail ) {
+      mAssistant->setFullPreview( false );
+      mCatalogToggle->setOn( true );
+      skip = true;
+    }
+  }
+
+  if ( ! skip ) {
+    mAssistant->setFullPreview( true );
+    mCatalogToggle->setOn( false );
+  }
   mDetailHeader->setText( "<h1>" + mDetailHeaderTexts[id] + "</h1>" );
 }
 

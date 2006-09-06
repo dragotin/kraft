@@ -73,10 +73,14 @@ public:
 
   DocPostCard *postCard();
 
+  bool isFullPreview() {
+    return mFullPreview;
+  }
 public slots:
   void slotShowCatalog();
   void slotShowAddresses();
   void setFullPreview( bool );
+  void slotRenderCompleted();
 
 signals:
   void selectPage( int );
@@ -86,6 +90,8 @@ private:
   CatalogSelection *mCatalogSelection;
   QWidgetStack *mWidgetStack;
   AddressSelection *mAddressSelection;
+  QValueList<int> mSplitterSizes;
+  bool mFullPreview;
 };
 
 class KraftViewScroll : public QScrollView
@@ -203,6 +209,7 @@ class KraftView : public KDialogBase
   int mHeaderId;
   DocOverviewWidget *mDocOverview;
   DocAssistant *mAssistant;
+  bool mShowAssistantDetail;
 };
 
 #endif // KRAFTVIEW_H
