@@ -67,6 +67,7 @@
 #include "templkataloglistview.h"
 #include "catalogselection.h"
 #include "addressselection.h"
+#include "kraftdocheaderedit.h"
 
 #include <qtimer.h>
 
@@ -315,7 +316,8 @@ void KraftView::setupDocHeaderView()
     vbox->setMargin( 0 );
     mHeaderId = mViewStack->addWidget( vbox, DocOverviewWidget::HeaderId );
 
-    m_headerEdit = new DocHeaderEdit( vbox );
+    m_headerEdit = new KraftDocHeaderEdit( vbox );
+    m_headerEdit->m_cbType->clear();
     m_headerEdit->m_cbType->insertItem( i18n("Offer") );
     m_headerEdit->m_cbType->insertItem( i18n("Invoice") );
     m_headerEdit->m_cbType->insertItem( i18n("Acceptance of Order") );

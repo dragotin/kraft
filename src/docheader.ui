@@ -251,7 +251,6 @@
 </connections>
 <includes>
     <include location="local" impldecl="in declaration">config.h</include>
-    <include location="local" impldecl="in implementation">docheader.ui.h</include>
 </includes>
 <signals>
     <signal>modified()</signal>
