@@ -109,9 +109,6 @@
         <slot>slotModified()</slot>
     </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">docfooter.ui.h</include>
-</includes>
 <signals>
     <signal>modified()</signal>
 </signals>

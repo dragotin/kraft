@@ -68,6 +68,7 @@
 #include "catalogselection.h"
 #include "addressselection.h"
 #include "kraftdocheaderedit.h"
+#include "kraftdocfooteredit.h"
 
 #include <qtimer.h>
 
@@ -552,7 +553,7 @@ void KraftView::setupFooter()
 
     QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
 
-    m_footerEdit = new DocFooterEdit( page );
+    m_footerEdit = new KraftDocFooterEdit( page );
     topLayout->addWidget( m_footerEdit );
     connect( m_footerEdit, SIGNAL( modified() ),
                this, SLOT( slotModifiedFooter() ) );
