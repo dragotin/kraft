@@ -23,15 +23,22 @@
 #include <klocale.h>
 #include <kdebug.h>
 #include <kdialog.h>
+#include <kaction.h>
+#include <kactioncollection.h>
 
 #include <qsizepolicy.h>
 #include <qcombobox.h>
 #include <qwidgetstack.h>
 #include <qlabel.h>
 #include <qvbox.h>
+#include <qpopupmenu.h>
 
 CatalogSelection::CatalogSelection( QWidget *parent )
-  :QVBox( parent )
+  :QVBox( parent ),
+   mCatalogSelector( 0 ),
+   mWidgets( 0 ),
+   mActions( 0 ),
+   mAcAddToDoc( 0 )
 {
   setMargin( KDialog::marginHint() );
   setSpacing( KDialog::spacingHint() );
@@ -47,6 +54,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
   mWidgets  = new QWidgetStack( this );
   mWidgets->setSizePolicy( QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Expanding ) );
 
+  initActions();
   setupCatalogList();
 }
 
@@ -55,6 +63,34 @@ void CatalogSelection::setupCatalogList()
   QStringList katalogNames = KatalogMan::self()->allKatalogs();
   mCatalogSelector->insertStringList( katalogNames );
   slotSelectCatalog( katalogNames[0] );
+}
+
+void CatalogSelection::initActions()
+{
+  mActions     = new KActionCollection( this );
+  mAcAddToDoc  = new KAction( i18n("&Add to document"), "back", 0, this,
+                              SLOT( slotAppendToDoc() ), mActions, "appendToDoc");
+
+}
+
+void CatalogSelection::slotAppendToDoc()
+{
+  const QString currentCat = mCatalogSelector->currentText();
+
+  kdDebug() << "Insert a template from " << currentCat << " to document " << endl;
+
+  Katalog *kat = KatalogMan::self()->getKatalog( currentCat );
+
+  if ( ! kat ) {
+    kdError() << "Could not find catalog " << currentCat << endl;
+  }
+
+  if ( kat->type() == TemplateKatalog ) {
+
+    TemplKatalogListView *listview = static_cast<TemplKatalogListView*> ( mWidgetDict[currentCat] );
+    FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
+  }
+
 }
 
 void CatalogSelection::slotSelectCatalog( const QString& katName )
@@ -79,15 +115,22 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
   }
 
   if ( kat ) {
-    if ( kat->type() == TemplateKatalog ) {
+    if ( mWidgetDict[katName] ) {
+      mWidgets->raiseWidget( mWidgetDict[katName] );
+    } else {
+      if ( kat->type() == TemplateKatalog ) {
+        TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
 
-      TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
-      tmpllistview->setShowCalcParts( false );
-      tmpllistview->addCatalogDisplay( katName );
-      mWidgets->addWidget( tmpllistview );
+        tmpllistview->setShowCalcParts( false );
+        tmpllistview->addCatalogDisplay( katName );
+        mAcAddToDoc->plug( tmpllistview->contextMenu() );
+
+        mWidgets->addWidget( tmpllistview );
+        mWidgetDict.insert(  katName, tmpllistview );
+        kdDebug() << "Creating a selection list for catalog " << katName << endl;
+      }
     }
   }
-
 }
 
 #include "catalogselection.moc"

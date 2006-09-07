@@ -131,7 +131,6 @@ class KatalogView : public KMainWindow
     KAction* m_acEditItem;
     KAction* m_acNewItem;
     KAction* m_acExport;
-    KAction* m_acToDocument;
 
     // KToggleAction* viewToolBar;
     // KToggleAction* viewStatusBar;

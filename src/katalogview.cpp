@@ -57,7 +57,7 @@ KatalogView::KatalogView( QWidget* parent, const char* name) :
 {
 }
 
-void KatalogView::init(const QString& katName)
+void KatalogView::init(const QString& katName )
 {
   m_katalogName = katName;
   initActions();
@@ -95,7 +95,6 @@ void KatalogView::init(const QString& katName)
   m_acEditItem->plug( lv->contextMenu() );
   m_acNewItem->plug( lv->contextMenu() );
   m_acEditChapters->plug( lv->contextMenu() );
-  m_acToDocument->plug( lv->contextMenu() );
 
   setAutoSaveSettings( QString::fromLatin1( "CatalogWindow" ),  true );
 }
@@ -128,9 +127,6 @@ void KatalogView::initActions()
   m_acNewItem  = new KAction( i18n("&New Item"), "filenew", 0, this,
                                 SLOT(slNeueVorlage()), actionCollection(), "neue_vorlage");
 
-  m_acToDocument = new KAction( i18n("&Insert into Document"), "add", 0, this,
-                                SLOT(slAddToDocument()), actionCollection(), "go_to_document" );
-
   m_acNewItem->setStatusText(i18n("Opens the editor window for templates to enter a new template"));
   m_acEditItem->setStatusText(i18n("Opens the editor window for templates to edit the selected one"));
   m_acEditChapters->setStatusText(i18n("Add, remove and edit catalog chapters"));
@@ -152,7 +148,6 @@ void KatalogView::initActions()
 
   fileClose->setStatusText( i18n("Closes the actual document"));
   filePrint ->setStatusText( i18n("Prints out the actual document"));
-  m_acToDocument->setStatusText( i18n("Append text to one or more documents") );
 
   editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
   editCopy->setStatusText(i18n("Copies the selected section to the clipboard"));

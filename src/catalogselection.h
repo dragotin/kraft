@@ -19,10 +19,13 @@
 #define CATALOGSELECTION_H
 
 #include <qvbox.h>
+#include <qasciidict.h>
 
 class KatalogListView;
 class QComboBox;
 class QWidgetStack;
+class KActionCollection;
+class KAction;
 
 class CatalogSelection : public QVBox
 {
@@ -33,14 +36,18 @@ public:
   ~CatalogSelection() { };
 protected:
   void setupCatalogList();
+  void initActions();
 
 protected slots:
   void slotSelectCatalog( const QString& );
+  void slotAppendToDoc();
 
 private:
   QComboBox *mCatalogSelector;
   QWidgetStack *mWidgets;
-
+  QAsciiDict<QWidget> mWidgetDict;
+  KActionCollection *mActions;
+  KAction *mAcAddToDoc;
 };
 
 #endif
