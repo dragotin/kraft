@@ -177,9 +177,10 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
 
     }
     if( m_editListViewItem ) {
-        kdDebug() << "Edit was ok, refreshing item in list " << templ << endl;
-        m_editListViewItem->setSelected(true);
+      kdDebug() << "Edit was ok, refreshing item in list " << templ << endl;
+      templListView->setSelected( m_editListViewItem, true );
       templListView->slFreshupItem( m_editListViewItem, templ, true );
+      templListView->ensureItemVisible( m_editListViewItem );
     }
     m_editListViewItem = 0;
 }
