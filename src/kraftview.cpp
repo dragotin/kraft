@@ -717,9 +717,11 @@ void KraftView::slotAddPosition()
   int newpos = mPositionWidgetList.count();
 
   DocPosition *dp = new DocPosition();
+  dp->setPosition( QString::number( newpos+1 ) ) ;
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
 
   slotFocusPosition( widget, 1+newpos );
+  refreshPostCard();
 }
 
 void KraftView::slotShowCatalog( bool on )

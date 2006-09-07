@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>567</width>
-            <height>129</height>
+            <height>134</height>
         </rect>
     </property>
     <property name="caption">
@@ -123,13 +123,16 @@
                                         <cstring>m_sbUnitPrice</cstring>
                                     </property>
                                     <property name="maxValue">
-                                        <number>1000</number>
+                                        <number>100000</number>
                                     </property>
                                     <property name="minValue">
-                                        <number>-1000</number>
+                                        <number>-100000</number>
                                     </property>
                                     <property name="lineStep">
-                                        <number>0.01</number>
+                                        <number>0.1</number>
+                                    </property>
+                                    <property name="value">
+                                        <number>1</number>
                                     </property>
                                     <property name="precision">
                                         <number>2</number>
@@ -215,9 +218,6 @@
         <slot>slotModified()</slot>
     </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">positionwidget.ui.h</include>
-</includes>
 <signals>
     <signal>modified()</signal>
 </signals>
