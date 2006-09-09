@@ -31,6 +31,7 @@ class KListViewItem;
 class QPixmap;
 class QPopupMenu;
 class KPopupMenu;
+class DocPosition;
 
 class KatalogListView : public KListView  {
     Q_OBJECT
@@ -48,17 +49,18 @@ public:
     virtual KatalogListView *createListView(QWidget*);
 
     QPopupMenu *contextMenu();
-    
+    virtual DocPosition currentItemToDocPosition() = 0;
+
 public slots:
     virtual void slFreshupItem( QListViewItem*, void*, bool remChildren = false );
     virtual void slChangeChapter( KListViewItem* , int );
     virtual void slotRMB( KListView*, QListViewItem*, const QPoint& );
 protected:
-    
+
     virtual QPixmap getCatalogIcon();
-    
+
     KListViewItem *chapterItem( const QString& chapName );
-    
+
     KListViewItem *m_root;
     QPtrDict<void> m_dataDict;
     QIntDict<KListViewItem> m_catalogDict;

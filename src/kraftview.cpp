@@ -85,7 +85,11 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotRenderCompleted() ) );
 
   mWidgetStack = new QWidgetStack( this );
+
   mCatalogSelection = new CatalogSelection( mWidgetStack );
+  connect( mCatalogSelection,  SIGNAL( selectedPosition( DocPosition * ) ),
+           this,  SIGNAL( selectedPosition( DocPosition * ) ) );
+
   mAddressSelection = new AddressSelection( mWidgetStack );
 
   mWidgetStack->raiseWidget( mCatalogSelection );
@@ -249,7 +253,10 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   mViewStack = new QWidgetStack( vb );
   mViewStack->setMargin( 0 );
   kdDebug() << "mViewSTack height is " << mViewStack->height() << endl;
+
   mAssistant = new DocAssistant( mCSplit );
+  connect( mAssistant,  SIGNAL( selectedPosition( DocPosition* ) ),
+           this,  SLOT( slotAddPosition( DocPosition* ) ) );
 
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
     mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
@@ -712,11 +719,16 @@ void KraftView::slotSelectAddress( KABC::Addressee contact )
     }
 }
 
-void KraftView::slotAddPosition()
+void KraftView::slotAddPosition( DocPosition *selectedDP )
 {
   int newpos = mPositionWidgetList.count();
+  kdDebug() << "Adding Position at position " << newpos << endl;
 
   DocPosition *dp = new DocPosition();
+  if ( selectedDP ) {
+    *dp = *selectedDP;
+  }
+
   dp->setPosition( QString::number( newpos+1 ) ) ;
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
 

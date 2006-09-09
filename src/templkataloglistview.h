@@ -26,6 +26,7 @@
 @author Klaas Freitag
 */
 class KListView;
+class DocPosition;
 
 class TemplKatalogListView : public KatalogListView
 {
@@ -43,6 +44,8 @@ public:
 
   void setShowCalcParts( bool );
   bool showCalcParts();
+  DocPosition currentItemToDocPosition();
+
 public slots:
     void slFreshupItem( QListViewItem*, FloskelTemplate*, bool remChildren = false );
 

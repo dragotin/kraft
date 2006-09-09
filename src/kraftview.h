@@ -84,7 +84,7 @@ public slots:
 
 signals:
   void selectPage( int );
-
+  void selectedPosition( DocPosition* );
 private:
   DocPostCard *mPostCard;
   CatalogSelection *mCatalogSelection;
@@ -149,7 +149,7 @@ class KraftView : public KDialogBase
     void slotModifiedPositions();
     void slotModifiedHeader();
     void slotModifiedFooter();
-    void slotAddPosition();
+    void slotAddPosition( DocPosition *selectedDP = 0 );
     void slotFocusPosition( PositionViewWidget*,  int );
 
   protected slots:
@@ -173,6 +173,7 @@ class KraftView : public KDialogBase
   signals:
     void selectPage( int );
     void viewClosed( bool );
+    void selectedPosition( DocPosition* );
   private:
     void setupDocumentOverview( QWidget* );
     void setupDocHeaderView();

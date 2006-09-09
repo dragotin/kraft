@@ -212,5 +212,23 @@ TemplKatalogListView::~TemplKatalogListView()
 {
 }
 
+DocPosition TemplKatalogListView::currentItemToDocPosition()
+{
+  DocPosition pos;
+  QListViewItem *it = currentItem();
 
+  if ( ! it ) return pos;
+
+  FloskelTemplate *flos = static_cast<FloskelTemplate*>( m_dataDict[ it ] );
+
+  if ( flos ) {
+    pos.setText( flos->getText() );
+    pos.setUnit( flos->einheit() );
+    pos.setUnitPrice( flos->einheitsPreis() );
+  } else {
+    kdDebug() << "Can not find a template for the item" << endl;
+  }
+
+  return pos;
+}
 

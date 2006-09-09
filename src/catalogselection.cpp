@@ -19,6 +19,7 @@
 #include "templkatalog.h"
 #include "templkataloglistview.h"
 #include "matkatalog.h"
+#include "docposition.h"
 
 #include <klocale.h>
 #include <kdebug.h>
@@ -85,12 +86,14 @@ void CatalogSelection::slotAppendToDoc()
     kdError() << "Could not find catalog " << currentCat << endl;
   }
 
-  if ( kat->type() == TemplateKatalog ) {
+  KatalogListView *lv = mWidgetDict[ currentCat ];
+  if ( lv ) {
+    DocPosition dp = lv->currentItemToDocPosition();
 
-    TemplKatalogListView *listview = static_cast<TemplKatalogListView*> ( mWidgetDict[currentCat] );
-    FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
+    emit selectedPosition( &dp );
+  } else {
+    kdDebug() << "ERR: No listview stored for catalog " << currentCat << endl;
   }
-
 }
 
 void CatalogSelection::slotSelectCatalog( const QString& katName )

@@ -26,6 +26,7 @@ class QComboBox;
 class QWidgetStack;
 class KActionCollection;
 class KAction;
+class DocPosition;
 
 class CatalogSelection : public QVBox
 {
@@ -38,6 +39,9 @@ protected:
   void setupCatalogList();
   void initActions();
 
+signals:
+  void selectedPosition( DocPosition* );
+
 protected slots:
   void slotSelectCatalog( const QString& );
   void slotAppendToDoc();
@@ -45,7 +49,7 @@ protected slots:
 private:
   QComboBox *mCatalogSelector;
   QWidgetStack *mWidgets;
-  QAsciiDict<QWidget> mWidgetDict;
+  QAsciiDict<KatalogListView> mWidgetDict;
   KActionCollection *mActions;
   KAction *mAcAddToDoc;
 };

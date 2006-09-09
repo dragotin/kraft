@@ -23,11 +23,12 @@
 #include "brunskatalog.h"
 #include "brunskataloglistview.h"
 #include "katalogman.h"
+#include "docposition.h"
+#include "kataloglistview.h"
 
 
-
-BrunsKatalogListView::BrunsKatalogListView(QWidget *w)
-    : KatalogListView(w)
+BrunsKatalogListView::BrunsKatalogListView( QWidget *w )
+    : KatalogListView( w )
 {
     addColumn( i18n("Bot. Name"));
     addColumn( i18n("Dt. Name"));
@@ -161,4 +162,12 @@ BrunsRecord BrunsKatalogListView::getRecord( QListViewItem *it )
         return m_itemMap[it];
     }
     return re;
+}
+
+
+DocPosition BrunsKatalogListView::currentItemToDocPosition()
+{
+  DocPosition pos;
+
+  return pos;
 }

@@ -128,6 +128,7 @@ void* KatalogListView::currentItemData()
     return currData;
 }
 
+
 bool KatalogListView::isChapter( KListViewItem *item )
 {
     return !( isRoot(item) || m_dataDict[item] );

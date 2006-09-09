@@ -34,10 +34,28 @@
 @author Klaas Freitag
 */
 
+DocPositionBase::DocPositionBase() : QObject(),
+                                     m_dbId( -1 ),
+                                     mToDelete( false )
+{
+
+}
+
+
+DocPositionBase::DocPositionBase(const DocPositionBase& b )
+  : QObject()
+{
+  m_dbId     = b.m_dbId;
+  m_position = b.m_position;
+  mToDelete  = b.mToDelete;
+}
+
+// ##############################################################
+
 DocPosition::DocPosition(): DocPositionBase()
   ,m_amount( 1.0 )
 {
-
+  m_text = QString();
 }
 
 Geld DocPosition::overallPrice()

@@ -43,8 +43,10 @@ class DocPositionBase : public QObject
 {
   public:
     enum PositionType { Position, Header };
-    DocPositionBase() : QObject(), m_dbId( -1 ), mToDelete( false ) {}
+    DocPositionBase();
     ~DocPositionBase() {}
+
+    DocPositionBase(const DocPositionBase&);
 
     void setDbId( int id ) { m_dbId = id; }
     dbID dbId() { return dbID( m_dbId ); }
