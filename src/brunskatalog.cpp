@@ -39,7 +39,7 @@ BrunsKatalog::BrunsKatalog( const QString& n )
         kdError() << "Unable to open bruns data file!" << endl;
 
         m_dataFile = KFileDialog::getOpenFileName( QString::null,
-                                  "Artikelstamm_2004_2005.txt", 0,
+                                  "artikel2005.txt", 0,
                                   i18n("Select Bruns Catalog Data File") );
         KatalogSettings::setBrunsDataFile( m_dataFile );
         kdDebug() << "Set data file to " << m_dataFile << endl;
@@ -53,7 +53,7 @@ BrunsKatalog::BrunsKatalog( const QString& n )
         kdError() << "Unable to open bruns key file!" << endl;
 
         m_chapterFile = KFileDialog::getOpenFileName( QString::null,
-                                  "key_2005.txt", 0,
+                                  "key_2006.txt", 0,
                                   i18n("Select Bruns Catalog Key File") );
         KatalogSettings::setBrunsKeyFile( m_chapterFile );
         KatalogSettings::writeConfig();
@@ -76,7 +76,7 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
     } else {
       res << QString();
     }
-    
+
     i = bSize.getFormAdd();
     str = m_formAdds[i];
     if( str ) {
@@ -84,15 +84,16 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
     } else {
       res << QString();
     }
-    
+
     i = bSize.getSize();
     QString *h = m_sizes[i];
-    
+
     i = bSize.getSizeAdd();
     str = m_sizeAdds[i];
-    kdDebug() << "H ist " << *h << " and Str ist " << str << endl;
+
     if( h && str ) {
-        res << ( *h + " " + *str );
+      kdDebug() << "H ist " << *h << " and Str ist " << str << endl;
+      res << ( *h + " " + *str );
     } else {
       res << QString();
     }
@@ -103,7 +104,7 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
       res << *str;
 
     } else {
-        res << QString(); 
+        res << QString();
     }
 
     i = bSize.getQualityAdd();
@@ -113,7 +114,7 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
     } else {
       res << QString::number(i);
     }
-    
+
     i = bSize.getGoodsGroup();
     str = m_goods[i];
     if( str ) {
@@ -138,20 +139,20 @@ int BrunsKatalog::load() {
         int d;
         bool ok = true;
         BrunsRecordList* recList;
-        
+
         BrunsRecord rec;
-        
+
         while ( !stream.atEnd() ) {
             line = stream.readLine(); // line of text excluding '\n'
             d = intPart(line, 0,6);
             if( d > 0) {
                 if( ! ok )
                     kdDebug() << "failed to parse!" << endl;
-                
+
                 int pgroup = intPart(line, 12,18);
                 int artID = intPart(line, 18, 24);
                 // kdDebug() << "Have plant group " << pgroup << endl;
-                
+
                 BrunsSize size;
                 size.setFormNo(intPart(line, 34, 38));
                 size.setGrothNo(intPart(line, 38, 42));
@@ -170,7 +171,7 @@ int BrunsKatalog::load() {
                 } else {
                     // the record is new
 
-                    // save the last one away 
+                    // save the last one away
                     recList = m_recordLists[pgroup];
                     if( ! recList ) {
                         // create a new record list for this plantgroup */
@@ -213,7 +214,7 @@ inline QString BrunsKatalog::toLower( const QString& line )
 {
     QStringList li = QStringList::split( QChar(' '), line  );
     QString re;
-    
+
     for ( QStringList::Iterator it = li.begin(); it != li.end(); ++it ) {
         re += toLowerWord( *it ) + " ";
     }
@@ -226,19 +227,19 @@ inline QString BrunsKatalog::toLowerWord( const QString& str )
     if( str.startsWith( "(" )) return str;
 
     bool quoted = false;
-    
+
     if( str.startsWith( "'" ) ) {
         quoted = true;
     }
     QChar firstChar = str[0];
     if( quoted ) firstChar = str[1];
-    
+
     QString re = str.lower();
-    if( quoted ) 
+    if( quoted )
         re[1] = firstChar;
-    else  
+    else
         re[0] = firstChar;
-        
+
     return re;
 }
 
@@ -246,7 +247,7 @@ inline QString BrunsKatalog::toLowerWord( const QString& str )
 BrunsRecordList* BrunsKatalog::getRecordList( const QString& chap )
 {
     int id = chapterID(chap);
-    if( id ) 
+    if( id )
         return m_recordLists[id];
     else
         return 0;
@@ -273,13 +274,13 @@ void BrunsKatalog::loadDBKeys() {
         QString line;
 
         KatMap *currDict = 0; // m_chapterIDs;
-        KatMap *longDict = 0; 
+        KatMap *longDict = 0;
         bool doChapters = false;
         const QRegExp rxpZusatz = QRegExp( "Tabelle der Gr.+senzus.+tze:", TRUE, FALSE );
         const QRegExp rxpStufe = QRegExp( "Tabelle der Gr.+senstufen:", TRUE, FALSE );
-        
+
         while ( !stream.atEnd() ) {
-            line = stream.readLine(); 
+            line = stream.readLine();
 
             QStringList li = QStringList::split(QChar(0x09), line );
             line = line.simplifyWhiteSpace();

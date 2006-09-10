@@ -31,7 +31,7 @@
 
 
 
-typedef enum {UnspecKatalog, MaterialKatalog, TemplateKatalog, PflanzenKatalog} KatalogType;
+typedef enum {UnspecKatalog, MaterialKatalog, TemplateKatalog, PlantCatalog } KatalogType;
 
 class QDomDocument;
 
@@ -58,11 +58,11 @@ public:
 
     /** Add a catalog chapter */
     virtual void addChapter( const QString&, int );
-    
+
     /** remove a catalog chapter and move existing entries in it to the replacement
         catalog. */
     virtual bool removeChapter( const QString&, const QString& replace = QString() );
-    
+
     /** rename catalog chapter */
     virtual void renameChapter( const QString&, const QString& );
 
@@ -78,11 +78,11 @@ public:
 
     /** get the amount of entries in a chapter or the entire catalog */
     virtual int getEntriesPerChapter( const QString& = QString() ) = 0;
-    
+
     bool isReadOnly() { return m_readOnly; }
     void setReadOnly( bool state ) { m_readOnly = state; }
 
-    
+
     virtual QDomDocument toXML();
     virtual void writeXMLFile();
 protected:
@@ -91,7 +91,7 @@ protected:
     QString     m_name;
     QString     m_description;
     int         m_setID;
-    
+
     bool        m_readOnly;
 private:
     void init();

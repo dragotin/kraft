@@ -21,6 +21,8 @@
 #include "matkatalog.h"
 #include "docposition.h"
 #include "filterheader.h"
+#include "brunskatalog.h"
+#include "brunskataloglistview.h"
 
 #include <klocale.h>
 #include <kdebug.h>
@@ -114,6 +116,8 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
       kat = new TemplKatalog( katName );
     } else if ( type == "MaterialCatalog"  ) {
       kat = new MatKatalog( katName );
+    } else if ( type == "PlantCatalog" ) {
+      kat = new BrunsKatalog( katName );
     }
 
     if ( kat ) {
@@ -134,6 +138,14 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
 
         mWidgets->addWidget( tmpllistview );
         mWidgetDict.insert(  katName, tmpllistview );
+        kdDebug() << "Creating a selection list for catalog " << katName << endl;
+      } else if ( kat->type() == PlantCatalog ) {
+        BrunsKatalogListView *brunsListView = new BrunsKatalogListView( this );
+        brunsListView->addCatalogDisplay( katName );
+
+        mAcAddToDoc->plug( brunsListView->contextMenu() );
+        mWidgets->addWidget( brunsListView );
+        mWidgetDict.insert(  katName, brunsListView );
         kdDebug() << "Creating a selection list for catalog " << katName << endl;
       }
     }

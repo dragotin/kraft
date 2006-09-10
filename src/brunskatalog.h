@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #ifndef BRUNSKATALOG_H
 #define BRUNSKATALOG_H
 #include <qintdict.h>
@@ -32,12 +32,14 @@ class BrunsKatalog : public Katalog
 {
 public:
     BrunsKatalog( const QString& );
-    
+
     ~BrunsKatalog();
 
     virtual int load();
 
-    // virtual KatalogType type();
+    virtual KatalogType type() {
+      return PlantCatalog;
+    };
     virtual QStringList getKatalogChapters();
     BrunsRecordList* getRecordList( const QString& chap );
     // virtual void toXML();
@@ -47,7 +49,7 @@ public:
 private:
     void loadDBKeys();
     inline int intPart( const QString& , int , int );
-    
+
     inline QString toLower( const QString& );
     inline QString toLowerWord( const QString& );
 
