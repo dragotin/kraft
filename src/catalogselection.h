@@ -27,6 +27,7 @@ class QWidgetStack;
 class KActionCollection;
 class KAction;
 class DocPosition;
+class FilterHeader;
 
 class CatalogSelection : public QVBox
 {
@@ -52,6 +53,7 @@ private:
   QAsciiDict<KatalogListView> mWidgetDict;
   KActionCollection *mActions;
   KAction *mAcAddToDoc;
+  FilterHeader *mListSearchLine;
 };
 
 #endif

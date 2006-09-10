@@ -33,9 +33,9 @@ class CountingSearchLine : public KListViewSearchLine
     CountingSearchLine( QWidget *parent, KListView *listView );
 
     void updateSearch( const QString &s = QString::null );
-    
+
     int searchCount();
-    
+
   signals:
     void searchCountChanged();
 };
@@ -55,13 +55,13 @@ class FilterHeader : public QWidget
   public slots:
     void setTitleLabel();
     void clear();
-
+  void setListView( KListView*  );
   private:
     KListView *mListView;
-    
+
     CountingSearchLine *mSearchLine;
     QLabel *mTitleLabel;
-    
+
     QString mItemNameNone;
     QString mItemNameOne;
     QString mItemNameMultiple;

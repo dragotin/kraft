@@ -60,12 +60,12 @@ FilterHeader::FilterHeader( KListView *listView, QWidget *parent )
   QBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing( KDialog::spacingHint() );
   topLayout->setMargin( KDialog::marginHint() );
-  
+
   mTitleLabel = new QLabel( this );
   topLayout->addWidget( mTitleLabel );
-  
+
   QBoxLayout *filterLayout = new QHBoxLayout( topLayout );
-  
+
   QLabel *label = new QLabel( i18n("Search:"), this );
   filterLayout->addWidget( label );
 
@@ -95,6 +95,11 @@ void FilterHeader::setItemName( const QString &none, const QString &one,
   setTitleLabel();
 }
 
+void FilterHeader::setListView( KListView* view )
+{
+  mSearchLine->setListView( view );
+}
+
 void FilterHeader::clear()
 {
   mSearchLine->setText( QString::null );
@@ -104,7 +109,9 @@ void FilterHeader::clear()
 
 void FilterHeader::setTitleLabel()
 {
-  int total = mListView->childCount();
+  int total = 0;
+
+  if ( mListView ) total = mListView->childCount();
 
   QString txt;
 
@@ -117,7 +124,7 @@ void FilterHeader::setTitleLabel()
       txt = mItemNameMultiple.arg( current ).arg( total );
     }
   }
-  
+
   mTitleLabel->setText( "<b>" + txt + "</b>" );
 }
 

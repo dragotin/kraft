@@ -20,12 +20,14 @@
 #include "templkataloglistview.h"
 #include "matkatalog.h"
 #include "docposition.h"
+#include "filterheader.h"
 
 #include <klocale.h>
 #include <kdebug.h>
 #include <kdialog.h>
 #include <kaction.h>
 #include <kactioncollection.h>
+
 
 #include <qsizepolicy.h>
 #include <qcombobox.h>
@@ -52,6 +54,10 @@ CatalogSelection::CatalogSelection( QWidget *parent )
   connect( mCatalogSelector, SIGNAL( activated( const QString& ) ),
            this,  SLOT( slotSelectCatalog( const QString& ) ) );
   l->setBuddy( mCatalogSelector );
+
+  mListSearchLine = new FilterHeader( 0, this ) ;
+  mListSearchLine->showCount( false );
+
   mWidgets  = new QWidgetStack( this );
   mWidgets->setSizePolicy( QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Expanding ) );
 
@@ -118,9 +124,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
   }
 
   if ( kat ) {
-    if ( mWidgetDict[katName] ) {
-      mWidgets->raiseWidget( mWidgetDict[katName] );
-    } else {
+    if ( ! mWidgetDict[katName] ) {
       if ( kat->type() == TemplateKatalog ) {
         TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
 
@@ -132,6 +136,10 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         mWidgetDict.insert(  katName, tmpllistview );
         kdDebug() << "Creating a selection list for catalog " << katName << endl;
       }
+    }
+    if ( mWidgetDict[katName] ) {
+      mWidgets->raiseWidget( mWidgetDict[katName] );
+      mListSearchLine->setListView( mWidgetDict[katName] );
     }
   }
 }
