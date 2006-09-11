@@ -42,7 +42,7 @@ public:
     int getEntriesPerChapter( const QString& = QString() ) { return 0; } // FIXME
 
     int load();
-    KatalogType type() { return MaterialKatalog; }
+    KatalogType type() { return MaterialCatalog; }
 
 };
 

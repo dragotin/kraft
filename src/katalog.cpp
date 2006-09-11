@@ -145,7 +145,7 @@ void Katalog::setName( const QString& n )
 
 KatalogType Katalog::type()
 {
-    return UnspecKatalog;
+    return UnspecCatalog;
 }
 
 void Katalog::addChapter( const QString& name, int sortKey )

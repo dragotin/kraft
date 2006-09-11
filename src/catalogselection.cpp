@@ -129,7 +129,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
 
   if ( kat ) {
     if ( ! mWidgetDict[katName] ) {
-      if ( kat->type() == TemplateKatalog ) {
+      if ( kat->type() == TemplateCatalog ) {
         TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
 
         tmpllistview->setShowCalcParts( false );

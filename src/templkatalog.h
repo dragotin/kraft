@@ -43,13 +43,13 @@ public:
     /** No descriptions */
     FloskelTemplateList getFlosTemplates( const QString& chapter );
 
-    KatalogType type() { return TemplateKatalog; }
+    KatalogType type() { return TemplateCatalog; }
 
     QDomDocument toXML();
 
     /** get the amount of entries in a chapter or the entire catalog */
     int getEntriesPerChapter( const QString& chapter = QString() );
-        
+
 public slots:
     void writeXMLFile();
 private:

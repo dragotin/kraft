@@ -31,7 +31,7 @@
 
 
 
-typedef enum {UnspecKatalog, MaterialKatalog, TemplateKatalog, PlantCatalog } KatalogType;
+typedef enum {UnspecCatalog, MaterialCatalog, TemplateCatalog, PlantCatalog } KatalogType;
 
 class QDomDocument;
 
