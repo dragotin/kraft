@@ -208,7 +208,7 @@ bool KraftDoc::saveDocument( )
     QString xml = doc.toString();
 #endif
         // We go through the whole document and remove the positions
-        // that are to delete because they now were deleted in the
+        // that are to delete because they now were deleted in they
         // database.
         for( DocPositionBase *dp = mPositions.first(); dp; dp = mPositions.next() ) {
           if( dp->toDelete() ) {

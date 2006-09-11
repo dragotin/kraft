@@ -20,7 +20,8 @@
 #include <qdom.h>
 #include <qobject.h>
 
-class KraftDoc;
+#include "kraftdoc.h"
+
 class dbID;
 class KProcess;
 
@@ -28,19 +29,23 @@ class ReportGenerator : public QObject
 {
   Q_OBJECT
 
-  public:
-    ~ReportGenerator();
+public:
+  ~ReportGenerator();
 
-    static ReportGenerator *self();
-    void docPreview( const dbID& );
+  static ReportGenerator *self();
+  void docPreview( const dbID& );
+  void createRml( DocGuardedPtr );
 
-  public slots:
-    void slotViewerClosed( KProcess * );
-  private:
-    ReportGenerator();
+public slots:
+  void slotViewerClosed( KProcess * );
+private:
+  QString getTemplate( DocGuardedPtr );
+  int replaceTag( QString&, const QString&, const QString& );
 
-    static ReportGenerator *mSelf;
-    static KProcess *mProcess;
+  ReportGenerator();
+
+  static ReportGenerator *mSelf;
+  static KProcess *mProcess;
 };
 
 #endif

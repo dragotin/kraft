@@ -17,10 +17,12 @@
 #include <qsqlcursor.h>
 #include <qsqlrecord.h>
 #include <qsqlindex.h>
+#include <qfile.h>
 
 #include <kstaticdeleter.h>
 #include <kdebug.h>
 #include <kprocess.h>
+#include <kstandarddirs.h>
 
 #include "reportgenerator.h"
 #include "kraftdoc.h"
@@ -29,6 +31,8 @@
 #include "dbids.h"
 #include "kraftsettings.h"
 #include "katalogsettings.h"
+#include "docposition.h"
+#include "einheit.h"
 
 static KStaticDeleter<ReportGenerator> selfDeleter;
 
@@ -51,6 +55,101 @@ ReportGenerator::ReportGenerator()
 ReportGenerator::~ReportGenerator()
 {
   kdDebug() << "ReportGen is destroyed!" << endl;
+}
+
+void ReportGenerator::createRml( DocGuardedPtr doc )
+{
+  const QString templ = getTemplate( doc );
+  kdDebug() << "Report BASE:\n" << templ << endl;
+
+}
+
+#define TAG( FOO )  QString( "<!-- %1 -->").arg( FOO )
+
+QString ReportGenerator::getTemplate( DocGuardedPtr doc )
+{
+  KStandardDirs stdDirs;
+  QString findFile = "kraft/reports/" + doc->docType().lower() + ".trml";
+
+  QString tmplFile = stdDirs.findResource( "data", findFile );
+  kdDebug() << "Loading create file from " << findFile << endl;
+
+  QFile f( tmplFile );
+  if ( !f.open( IO_ReadOnly ) ) {
+    kdError() << "Could not open " << tmplFile << endl;
+    return QString();
+  }
+
+  QTextStream ts( &f );
+  QString tmpl = ts.read();
+
+  /* replace the placeholders */
+  /* A placeholder has the format <!-- %VALUE --> */
+
+  /* find the position loop */
+  int posStart = tmpl.find(
+    TAG( "POSITION_LOOP" )
+    );
+  int posEnd   = tmpl.find(
+    TAG( "POSITION_LOOP_END" )
+    );
+
+  QString loop;
+  if ( posStart > 0 && posEnd > 0 && posStart < posEnd ) {
+    loop = tmpl.mid( posStart+22,  posEnd-posStart-22 );
+    kdDebug() << "Loop part: " << loop << endl;
+  }
+
+  DocPositionList posList = doc->positions();
+  QString loopResult;
+  QString h;
+
+  if ( ! loop.isEmpty() ) {
+    DocPositionBase  *dpbase;
+    for( dpbase = posList.first(); dpbase; dpbase = posList.next() ) {
+      DocPosition *dpb = static_cast<DocPosition*>( dpbase );
+
+      QString loopPart = loop;
+      replaceTag( loopPart,
+                  TAG( "POS_NUMBER" ),
+                  dpb->position() );
+
+      replaceTag( loopPart,
+                  TAG( "POS_TEXT" ),
+                  dpb->text() );
+
+      h.setNum( dpb->amount(), 'f', 2 );
+      replaceTag( loopPart,
+                  TAG( "POS_AMOUNT" ),
+                  h );
+
+      h = dpb->unit().einheit( dpb->amount() );
+      replaceTag( loopPart,
+                  TAG( "POS_UNIT" ),
+                  h );
+
+      replaceTag( loopPart,
+                  TAG( "POS_UNITPRICE" ),
+                  dpb->unitPrice().toString() );
+
+      replaceTag( loopPart,
+                  TAG( "POS_TOTAL" ),
+                  dpb->overallPrice().toString() );
+
+      loopResult.append( loopPart );
+    }
+  }
+
+  tmpl.replace( posStart+22, posEnd-posStart-22, loopResult );
+
+  /* now replace stuff in the whole document */
+  return tmpl;
+}
+
+int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QString& rep )
+{
+  text.replace( tag, rep, false );
+  return 0;
 }
 
 void ReportGenerator::docPreview( const dbID& dbId )
