@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="example_5.pdf">
+<template pageSize="(21cm, 29.7cm)" leftMargin="2.0cm" rightMargin="2.0cm"
+  topMargin="2.0cm" bottomMargin="2.0cm" title="test" author="test" allowSplitting="20">
+    <pageTemplate id="first">
+        <pageGraphics>
+            <lines>2cm 3.2cm 19cm 3.2cm</lines>
+            <drawCentredString x="105mm" y="3.4cm">www.printbox.be - 0477/76.18.56 - printbox.be</drawCentredString>
+            <drawCentredString x="105mm" y="2.6cm">Tiny SPRL - rue Joseph Mathieu, 28 - B-1300 Limal - BELGIQUE - info@tiny.be</drawCentredString>
+            <drawCentredString x="105mm" y="2.0cm">RCN 95656 - TVA BE477.472.701 - IBAN: BE74 1262 0132 6907 - SWIFT: ARTEBEBB</drawCentredString>
+            <image x="23mm" y="23cm" file="pict/devis_logo.jpg"/>
+
+            <setFont name="Helvetica" size="135"/>
+            <fill color="(1,0.9,0.9)"/>
+            <stroke color="(1,0.9,0.9)"/>
+            <translate dx="15cm" dy="-5.5cm"/>
+            <rotate degrees="50"/>
+            <drawString x="23mm" y="12.7cm">DRAFT</drawString>
+            <lineMode width="5mm"/>
+            <rect round="1cm" x="18mm" y="12.2cm" width="17cm" height="5cm" fill="no" stroke="yes"/>
+
+        </pageGraphics>
+        <frame id="address" x1="11.2cm" y1="21.0cm" width="8cm" height="4.2cm"/>
+        <frame id="column" x1="2.0cm" y1="7.0cm" width="17cm" height="14cm"/>
+    </pageTemplate>
+</template>
+<stylesheet>
+    <blockTableStyle id="products">
+         <blockFont name="Helvetica-BoldOblique" size="24" start="0,0" stop="-1,0"/>
+         <blockBackground colorName="grey" start="0,0" stop="-1,0"/>
+         <blockTextColor colorName="white" start="0,0" stop="-1,0"/>
+         <blockValign value="TOP"/>
+         <blockAlignment value="RIGHT" start="1,0" stop="-1,-1"/>
+         <blockAlignment value="RIGHT" start="0,-3" stop="-1,-1"/>
+         <lineStyle kind="LINEBELOW" colorName="black" start="0,0" stop="-1,0"/>
+         <lineStyle kind="LINEABOVE" colorName="black" start="-1,-3" stop="-1,-3"/>
+         <lineStyle kind="LINEABOVE" colorName="black" start="-1,-1" stop="-1,-1"/>
+         <lineStyle kind="LINEBELOW" colorName="black" start="-1,-1" stop="-1,-1"/>
+         <lineStyle kind="LINEBEFORE" colorName="black" start="-1,-1" stop="-1,-1"/>
+         <lineStyle kind="LINEAFTER" colorName="black" start="-1,-1" stop="-1,-1"/>
+         <blockBackground colorName="(0.85,0.85,0.85)" start="-1,-1" stop="-1,-1"/>
+    </blockTableStyle>
+    <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
+</stylesheet>
+<story>
+    <xpre><!-- ADDRESS --></xpre>
+    <nextFrame/>
+    <para>
+        <b><!-- DOCTYPE --></b>: <i>Devis impression sur textile</i>
+    </para>
+    <spacer length="1cm" width="1mm"/>
+    <para>
+        <!-- SALUT -->
+    </para>
+    <spacer length="5mm" width="1mm"/>
+    <para>
+        <!-- PRETEXT -->
+    </para>
+    <spacer length="1cm" width="1mm"/>
+    <blockTable colWidths="8mm,10cm,1.0cm,2cm,3cm" style="products">
+    <tr>
+        <td>Pos.</td><td>Text</td><td>Qty.</td><td>Unit</td><td>Price</td>
+    </tr><tr>
+    <!-- POSITION_LOOP -->
+    <tr>
+        <td><!-- POS_NUMBER --></td>
+        <td><!-- POS_TEXT --></td>
+        <td><!-- POS_AMOUNT --></td>
+        <td><!-- POS_UNIT --></td>
+        <td><!-- POS_TOTAL --></td>
+    </tr>
+    <!-- POSITION_LOOP_END -->
+    </blockTable>
+    <spacer length="1cm" width="1mm"/>
+    <para style="conditions">
+	<!-- POSTTEXT -->
+    </para>
+    <spacer length="0.5cm" width="1mm"/>
+    <para style="conditions">
+       <!-- GOODBYE -->
+    </para>
+</story>
+</document>
