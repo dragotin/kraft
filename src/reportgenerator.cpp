@@ -143,6 +143,46 @@ QString ReportGenerator::getTemplate( DocGuardedPtr doc )
   tmpl.replace( posStart+22, posEnd-posStart-22, loopResult );
 
   /* now replace stuff in the whole document */
+  replaceTag( tmpl,
+              TAG( "DATE" ),
+              KGlobal().locale()->formatDate( doc->date() ) );
+  replaceTag( tmpl,
+              TAG( "DOCTYPE" ),
+              doc->docType() );
+  replaceTag( tmpl,
+              TAG( "ADDRESS" ),
+              doc->address() );
+  replaceTag( tmpl,
+              TAG( "DOCID" ),
+              doc->ident() );
+  replaceTag( tmpl,
+              TAG( "SALUT" ),
+              doc->salut() );
+  replaceTag( tmpl,
+              TAG( "GOODBYE" ),
+              doc->goodbye() );
+  replaceTag( tmpl,
+              TAG( "PRETEXT" ),
+              doc->preText() );
+  replaceTag( tmpl,
+              TAG( "POSTTEXT" ),
+              doc->postText() );
+
+  replaceTag( tmpl,
+              TAG( "BRUTTOSUM" ),
+              doc->bruttoSum().toString() );
+  replaceTag( tmpl,
+              TAG( "NETTOSUM" ),
+              doc->nettoSum().toString() );
+
+  h.setNum( doc->vat(), 'f', 1 );
+  replaceTag( tmpl,
+              TAG( "VAT" ),
+              h );
+  replaceTag( tmpl,
+              TAG( "VATSUM" ),
+              doc->vatSum().toString() );
+
   return tmpl;
 }
 
