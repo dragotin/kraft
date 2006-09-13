@@ -61,7 +61,7 @@
     <blockTable colWidths="8mm,10cm,1.0cm,2cm,3cm" style="products">
     <tr>
         <td>Pos.</td><td>Text</td><td>Qty.</td><td>Unit</td><td>Price</td>
-    </tr><tr>
+    </tr>
     <!-- POSITION_LOOP -->
     <tr>
         <td><!-- POS_NUMBER --></td>
