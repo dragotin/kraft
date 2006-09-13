@@ -305,7 +305,7 @@ void ReportGenerator::slotViewerClosed( KProcess *p )
   } else {
     // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
     KMessageBox::detailedError ( 0,
-                                 i18n( "Could not generate the pdf file" ),
+                                 i18n( "Could not generate the pdf file. The trml2pdf script failed." ),
                                  mErrors,
                                  i18n( "rml2pdf Error" ) );
   }
