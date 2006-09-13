@@ -242,7 +242,7 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& id )
   mFile.setName( mOutFile );
   if ( mFile.open( IO_WriteOnly ) ) {
     mTargetStream.setDevice( &mFile );
-    mProcess->start( KProcess::NotifyOnExit, KProcess::Stdout );
+    mProcess->start( KProcess::NotifyOnExit, KProcess::AllOutput );
   }
 }
 
