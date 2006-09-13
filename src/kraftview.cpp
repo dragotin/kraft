@@ -517,6 +517,7 @@ void KraftView::refreshPostCard()
 
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->text(),
+                                           getDocument()->ident(),
                                            m_headerEdit->m_teEntry->text() );
     DocPositionList list;
     PositionViewWidget *widget;

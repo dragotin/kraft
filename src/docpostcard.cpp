@@ -31,12 +31,14 @@ DocPostCard::DocPostCard( QWidget *parent )
 }
 
 void DocPostCard::setHeaderData( const QString& type,  const QString& date,
-                                 const QString& address, const QString& pretext )
+                                 const QString& address, const QString& id,
+                                 const QString& pretext )
 {
   mType = type;
   mDate = date;
   mAddress = address;
   mPreText = pretext;
+  mId = id;
 }
 
 void DocPostCard::setPositions( DocPositionList posList )
@@ -51,6 +53,9 @@ void DocPostCard::setPositions( DocPositionList posList )
       mPositions += "<td width=\"50px\" align=\"right\">" + dp->overallPrice().toString() + "</td></tr>";
     }
   }
+  mPositionCount = posList.count();
+  mTotal = posList.sumPrice().toString();
+  mPositions += QString( "<tr><td colspan=\"3\" align=\"right\">Total: %1</td></tr>" ).arg( mTotal );
   mPositions += "</table>";
 }
 
@@ -78,7 +83,7 @@ void DocPostCard::renderDoc()
 QString DocPostCard::renderDocFull() const
 {
   QString t = "<div class=\"head\">";
-  t += "<a href=\"kraftdoc://header\">" + i18n( "Header:" ) + "</a>" ;
+  t += "<a href=\"kraftdoc://header\">" + i18n( "Header: " ) + "</a>" ;
   QString h = mAddress;
   h.replace( '\n', "<br/>" );
   t += "<table border=\"0\" width=\"99%\">";
@@ -110,16 +115,22 @@ QString DocPostCard::renderDocFull() const
 QString DocPostCard::renderDocMini() const
 {
   QString t = "<div class=\"head\">";
-  t += "<a href=\"kraftdoc://header\">" + i18n( "Header:" ) + "</a>" ;
+  t += "<a href=\"kraftdoc://header\">" + i18n( "Header: " ) + "</a>" ;
+  t += QString( "%1 from %2" ).arg( mType ).arg( mDate );
   t += "</div>";
 
   t += "<div class=\"body\">";
   t += "<a href=\"kraftdoc://positions\">" + i18n( "Positions:" ) + "</a>\n" ;
-  t += "so many positions";
+  t += QString( " %1 Positions, total %2" ).arg( mPositionCount ).arg( mTotal );
   t += "</div>";
 
   t += "<div class=\"footer\">";
   t += "<a href=\"kraftdoc://footer\">" + i18n( "Footer:" ) + "</a>\n" ;
+  QString h( mPostText );
+  if ( h.length() > 45 ) {
+    h = h.left( 42 ) +  "...";
+  }
+  t += h;
   t += "</div>";
 
 return t;

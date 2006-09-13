@@ -35,7 +35,7 @@ class DocPostCard : public HtmlView
     void selectPage( int );
 
   public slots:
-    void setHeaderData( const QString&, const QString&, const QString&, const QString& );
+    void setHeaderData( const QString&, const QString&, const QString&, const QString&, const QString& );
     void setPositions( DocPositionList );
     void setFooterData( const QString&,  const QString& );
     void renderDoc();
@@ -49,13 +49,15 @@ class DocPostCard : public HtmlView
   private:
     DocGuardedPtr mDoc;
     QString mType;
+    QString mId;
     QString mPreText;
     QString mPostText;
     QString mDate;
     QString mAddress;
     QString mPositions;
     QString mGoodbye;
-
+    QString mTotal;
+    int mPositionCount;
     DisplayMode mMode;
 };
 
