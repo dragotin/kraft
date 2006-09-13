@@ -37,6 +37,7 @@
 #include "katalogsettings.h"
 #include "docposition.h"
 #include "einheit.h"
+#include <kmessagebox.h>
 
 static KStaticDeleter<ReportGenerator> selfDeleter;
 
@@ -66,7 +67,7 @@ void ReportGenerator::createRml( DocGuardedPtr doc )
   const QString templ = getTemplate( doc );
   // kdDebug() << "Report BASE:\n" << templ << endl;
 
-  KTempFile temp( QString(), "trml" );
+  KTempFile temp( QString(), ".trml" );
 
   QTextStream *s = temp.textStream();
   *s << templ;
@@ -217,9 +218,14 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& id )
 
     connect( mProcess,  SIGNAL( receivedStdout( KProcess *, char *, int ) ),
              this,  SLOT( slotRecStdout( KProcess *, char *, int ) ) );
+
+    connect( mProcess,  SIGNAL( receivedStderr( KProcess *, char *, int ) ),
+             this,  SLOT( slotRecStderr( KProcess *, char *, int ) ) );
   } else {
     mProcess->clearArguments();
   }
+
+  mErrors = QString();
 
   const QString rmlbin = KraftSettings::self()->trml2PdfBinary();
   kdDebug() << "Using trml2pdf: " << rmlbin << endl;
@@ -250,6 +256,11 @@ void ReportGenerator::slotRecStdout( KProcess *, char * buffer, int len)
   QString buf = QString::fromUtf8( buffer,  len );
   kdDebug() << "==> Datablock of size " << len << endl;
   mTargetStream << buf << endl;
+}
+
+void ReportGenerator::slotRecStderr( KProcess *, char * buffer, int len )
+{
+  mErrors.append( QString::fromUtf8( buffer,  len ) );
 }
 
 void ReportGenerator::docPreview( const dbID& )
@@ -283,14 +294,21 @@ void ReportGenerator::docPreview( const dbID& )
 #endif
 }
 
-void ReportGenerator::slotViewerClosed( KProcess* )
+void ReportGenerator::slotViewerClosed( KProcess *p )
 {
   mFile.close();
-  kdDebug() << "Viewer closed down" << endl;
+  kdDebug() << "Trml2pdf Process finished with status " << p->exitStatus() << endl;
 
-  KURL url( mOutFile );
-  KRun::runURL( url, "application/pdf" );
-
+  if ( p->exitStatus() == 0 ) {
+    KURL url( mOutFile );
+    KRun::runURL( url, "application/pdf" );
+  } else {
+    // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
+    KMessageBox::detailedError ( 0,
+                                 i18n( "Could not generate the pdf file" ),
+                                 mErrors,
+                                 i18n( "rml2pdf Error" ) );
+  }
 }
 
 #include "reportgenerator.moc"

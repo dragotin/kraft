@@ -45,12 +45,14 @@ public slots:
 protected slots:
   void slotWroteStdin( KProcess* );
   void slotRecStdout( KProcess *, char *, int );
+  void slotRecStderr( KProcess *, char *, int );
 private:
   QString getTemplate( DocGuardedPtr );
   int replaceTag( QString&, const QString&, const QString& );
 
   ReportGenerator();
   QString mOutFile;
+  QString mErrors;
 
   QFile mFile;
   QTextStream mTargetStream;
