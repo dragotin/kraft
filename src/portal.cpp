@@ -215,6 +215,7 @@ void Portal::slotPrintDocument()
     mReportGenerator = ReportGenerator::self();
     // mReportGenerator->docPreview( archID );
     mReportGenerator->createRml( docPtr ); // FIXME: Operate on archived doc
+
   }
 }
 

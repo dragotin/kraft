@@ -18,11 +18,15 @@
 #include <qsqlrecord.h>
 #include <qsqlindex.h>
 #include <qfile.h>
+#include <qtextstream.h>
 
 #include <kstaticdeleter.h>
 #include <kdebug.h>
 #include <kprocess.h>
 #include <kstandarddirs.h>
+#include <ktempfile.h>
+#include <kurl.h>
+#include <krun.h>
 
 #include "reportgenerator.h"
 #include "kraftdoc.h"
@@ -60,8 +64,16 @@ ReportGenerator::~ReportGenerator()
 void ReportGenerator::createRml( DocGuardedPtr doc )
 {
   const QString templ = getTemplate( doc );
-  kdDebug() << "Report BASE:\n" << templ << endl;
+  // kdDebug() << "Report BASE:\n" << templ << endl;
 
+  KTempFile temp( QString(), "trml" );
+
+  QTextStream *s = temp.textStream();
+  *s << templ;
+  temp.close();
+
+  kdDebug() << "Wrote rml to " << temp.name() << endl;
+  runTrml2Pdf( temp.name(),  doc->ident() );
 }
 
 #define TAG( FOO )  QString( "<!-- %1 -->").arg( FOO )
@@ -192,7 +204,55 @@ int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QStri
   return 0;
 }
 
-void ReportGenerator::docPreview( const dbID& dbId )
+
+void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& id )
+{
+  if( ! mProcess ) {
+    mProcess = new KProcess;
+    connect( mProcess, SIGNAL( processExited(  KProcess * ) ),
+             this,     SLOT( slotViewerClosed( KProcess * ) ) );
+
+    connect( mProcess,  SIGNAL( wroteStdin( KProcess* ) ),
+             this,  SLOT( slotWroteStdin( KProcess* ) ) );
+
+    connect( mProcess,  SIGNAL( receivedStdout( KProcess *, char *, int ) ),
+             this,  SLOT( slotRecStdout( KProcess *, char *, int ) ) );
+  } else {
+    mProcess->clearArguments();
+  }
+
+  const QString rmlbin = KraftSettings::self()->trml2PdfBinary();
+  kdDebug() << "Using trml2pdf: " << rmlbin << endl;
+
+  KStandardDirs stdDirs;
+  QString outputDir = KraftSettings::self()->pdfOutputDir();
+  if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
+  mOutFile = outputDir + id + ".pdf";
+  kdDebug() << "Writing output to " << mOutFile << endl;
+
+  *mProcess << rmlbin;
+  *mProcess << rmlFile;
+
+  mFile.setName( mOutFile );
+  if ( mFile.open( IO_WriteOnly ) ) {
+    mTargetStream.setDevice( &mFile );
+    mProcess->start( KProcess::NotifyOnExit, KProcess::Stdout );
+  }
+}
+
+void ReportGenerator::slotWroteStdin( KProcess* )
+{
+  kdDebug() << "Writing on stdin finished!" << endl;
+}
+
+void ReportGenerator::slotRecStdout( KProcess *, char * buffer, int len)
+{
+  QString buf = QString::fromUtf8( buffer,  len );
+  kdDebug() << "==> Datablock of size " << len << endl;
+  mTargetStream << buf << endl;
+}
+
+void ReportGenerator::docPreview( const dbID& )
 {
     if( ! mProcess ) {
 	mProcess = new KProcess;
@@ -202,6 +262,8 @@ void ReportGenerator::docPreview( const dbID& dbId )
       mProcess->clearArguments();
     }
 
+
+#if 0
     const QString ncbin = KraftSettings::nCReportBinary();
     kdDebug() << "Setting ncreport binary: " << ncbin << endl;
 
@@ -216,14 +278,19 @@ void ReportGenerator::docPreview( const dbID& dbId )
       *mProcess << "-D" << KatalogSettings::dbFile();
       *mProcess << "-add-parameter" << QString( "%1,docID" ).arg( KProcess::quote( id.toString() ) );
       *mProcess << "-O" << "preview";
-
       mProcess->start( KProcess::NotifyOnExit );
     }
+#endif
 }
 
 void ReportGenerator::slotViewerClosed( KProcess* )
 {
+  mFile.close();
   kdDebug() << "Viewer closed down" << endl;
+
+  KURL url( mOutFile );
+  KRun::runURL( url, "application/pdf" );
+
 }
 
 #include "reportgenerator.moc"

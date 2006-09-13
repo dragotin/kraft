@@ -32,6 +32,13 @@
       <label>The complete filename of the NCReport binary</label>
       <default>ncreport</default>
     </entry>
+    <entry name="Trml2PdfBinary">
+      <label>The complete filename of the trml2pdf binary</label>
+      <default>trml2pdf</default>
+    </entry>
+    <entry name="PdfOutputDir">
+      <label>The path to the output directory for document pdfs</label>
+    </entry>    
   </group>
 </kcfg>
 

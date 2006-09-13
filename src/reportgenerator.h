@@ -24,6 +24,8 @@
 
 class dbID;
 class KProcess;
+class QFile;
+class QTextStream;
 
 class ReportGenerator : public QObject
 {
@@ -35,14 +37,23 @@ public:
   static ReportGenerator *self();
   void docPreview( const dbID& );
   void createRml( DocGuardedPtr );
+  void runTrml2Pdf( const QString&, const QString& );
 
 public slots:
   void slotViewerClosed( KProcess * );
+
+protected slots:
+  void slotWroteStdin( KProcess* );
+  void slotRecStdout( KProcess *, char *, int );
 private:
   QString getTemplate( DocGuardedPtr );
   int replaceTag( QString&, const QString&, const QString& );
 
   ReportGenerator();
+  QString mOutFile;
+
+  QFile mFile;
+  QTextStream mTargetStream;
 
   static ReportGenerator *mSelf;
   static KProcess *mProcess;
