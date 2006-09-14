@@ -253,9 +253,8 @@ void ReportGenerator::slotWroteStdin( KProcess* )
 
 void ReportGenerator::slotRecStdout( KProcess *, char * buffer, int len)
 {
-  QString buf = QString::fromUtf8( buffer,  len );
   kdDebug() << "==> Datablock of size " << len << endl;
-  mTargetStream << buf << endl;
+  mTargetStream.writeRawBytes( buffer, len );
 }
 
 void ReportGenerator::slotRecStderr( KProcess *, char * buffer, int len )
