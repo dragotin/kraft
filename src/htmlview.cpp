@@ -46,7 +46,7 @@ bool HtmlView::loadCss()
   if ( !mCss.isEmpty() ) return true;   // it's already loaded
 
   KStandardDirs stdDirs;
-  QString filename = stdDirs.findResource( "data", "kraft/help.css" );
+  QString filename = stdDirs.findResource( "data", "kraft/docoverview.css" );
 
   if ( filename.isEmpty() ) {
     return false;
@@ -125,17 +125,15 @@ void HtmlView::updateZoomActions()
 void HtmlView::writeTopFrame()
 {
   QString t = "<html>";
-  t += "<head><title>" + i18n( "Kraft Assistance" ) + "</title></head>";
+  t += "<head><title>" + i18n( "Kraft Document Overview" ) + "</title></head>";
   t += "<body>";
-  t += "<h1>" + i18n( "Kraft Help System" ) + "</h1>";
+  t += "<h1>" + i18n( "Document Overview" ) + "</h1>";
   write( t );
 }
 
 void HtmlView::writeContent( const QString& c )
 {
-  write( "<div class=\"content\">" );
   write( c );
-  write( "</div>" );
 }
 
 void HtmlView::writeBottomFrame()

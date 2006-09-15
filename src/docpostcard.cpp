@@ -80,10 +80,14 @@ void DocPostCard::renderDoc()
   displayContent( t );
 }
 
-QString DocPostCard::renderDocFull() const
+QString DocPostCard::renderDocFull()
 {
-  QString t = "<div class=\"head\">";
-  t += "<a href=\"kraftdoc://header\">" + i18n( "Header: " ) + "</a>" ;
+  QString t;
+  t += "<div class=\"headerlink\">";
+  t += "<a href=\"kraftdoc://header\">"+ i18n( "Header: " ) + "</a>";
+  t += "</div>\n" ;
+
+  t += "<div class=\"head\">\n";
   QString h = mAddress;
   h.replace( '\n', "<br/>" );
   t += "<table border=\"0\" width=\"99%\">";
@@ -94,37 +98,42 @@ QString DocPostCard::renderDocFull() const
   t += "</td></tr></table>";
 
   t += "<p class=\"longtext\">" + mPreText + "</p>\n";
-  t += "</div>";
+  t += "</div>\n";
 
-  t += "<div class=\"body\">";
-  t += "<a href=\"kraftdoc://positions\">" + i18n( "Positions:" ) + "</a>\n" ;
+  t += "<div class=\"bodylink\"><a href=\"kraftdoc://positions\">"
+       + i18n( "Positions:" ) + "</a></div>\n" ;
+  t += "<div class=\"body\">\n";
   t += mPositions;
-  t += "\n</div>";
+  t += "\n</div>\n";
 
-  t += "<div class=\"footer\">";
-  t += "<a href=\"kraftdoc://footer\">" + i18n( "Footer:" ) + "</a>\n" ;
-
+  t += "<div class=\"footerlink\"><a href=\"kraftdoc://footer\">"
+       + i18n( "Footer:" ) + "</a></div>\n" ;
+  t += "<div class=\"footer\">\n";
   t += "<p class=\"longtext\">" + mPostText + "</p>\n";
-  t += "<p>" + mGoodbye + "</p>\n";
+  if ( ! mGoodbye.isEmpty() )
+    t += "<p>" + mGoodbye + "</p>\n";
   t += "</div>\n";
 
   t += "</body></html>";
+
+  kdDebug() << t << endl;
+
   return t;
 }
 
 QString DocPostCard::renderDocMini() const
 {
-  QString t = "<div class=\"head\">";
+  QString t = "<div class=\"headerlink\">";
   t += "<a href=\"kraftdoc://header\">" + i18n( "Header: " ) + "</a>" ;
   t += QString( "%1 from %2" ).arg( mType ).arg( mDate );
   t += "</div>";
 
-  t += "<div class=\"body\">";
+  t += "<div class=\"bodylink\">";
   t += "<a href=\"kraftdoc://positions\">" + i18n( "Positions:" ) + "</a>\n" ;
   t += QString( " %1 Positions, total %2" ).arg( mPositionCount ).arg( mTotal );
   t += "</div>";
 
-  t += "<div class=\"footer\">";
+  t += "<div class=\"footerlink\">";
   t += "<a href=\"kraftdoc://footer\">" + i18n( "Footer:" ) + "</a>\n" ;
   QString h( mPostText );
   if ( h.length() > 45 ) {

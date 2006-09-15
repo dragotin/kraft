@@ -18,6 +18,7 @@
 #ifndef DOCPOSTCARD_H
 #define DOCPOSTCARD_H
 
+#include <qstring.h>
 #include "htmlview.h"
 #include "kraftdoc.h"
 
@@ -25,40 +26,41 @@ class KURL;
 
 class DocPostCard : public HtmlView
 {
-    Q_OBJECT
-  public:
-    enum DisplayMode { Full, Mini };
-    enum PageId { HeaderId = 0, PositionId, FooterId };
-    DocPostCard( QWidget *parent );
+  Q_OBJECT
+public:
+  enum DisplayMode { Full, Mini };
+  enum PageId { HeaderId = 0, PositionId, FooterId };
 
-  signals:
-    void selectPage( int );
+  DocPostCard( QWidget *parent );
 
-  public slots:
-    void setHeaderData( const QString&, const QString&, const QString&, const QString&, const QString& );
-    void setPositions( DocPositionList );
-    void setFooterData( const QString&,  const QString& );
-    void renderDoc();
-    void slotSetMode( DisplayMode );
-  protected:
-    void urlSelected( const QString &, int , int ,
-                      const QString &, KParts::URLArgs  );
-    void writeTopFrame();
-    QString renderDocMini() const;
-    QString renderDocFull() const;
-  private:
-    DocGuardedPtr mDoc;
-    QString mType;
-    QString mId;
-    QString mPreText;
-    QString mPostText;
-    QString mDate;
-    QString mAddress;
-    QString mPositions;
-    QString mGoodbye;
-    QString mTotal;
-    int mPositionCount;
-    DisplayMode mMode;
+signals:
+  void selectPage( int );
+
+public slots:
+  void setHeaderData( const QString&, const QString&, const QString&, const QString&, const QString& );
+  void setPositions( DocPositionList );
+  void setFooterData( const QString&,  const QString& );
+  void renderDoc();
+  void slotSetMode( DisplayMode );
+protected:
+  void urlSelected( const QString &, int , int ,
+                    const QString &, KParts::URLArgs  );
+  void writeTopFrame();
+  QString renderDocMini() const;
+  QString renderDocFull();
+private:
+  DocGuardedPtr mDoc;
+  QString mType;
+  QString mId;
+  QString mPreText;
+  QString mPostText;
+  QString mDate;
+  QString mAddress;
+  QString mPositions;
+  QString mGoodbye;
+  QString mTotal;
+  int mPositionCount;
+  DisplayMode mMode;
 };
 
 #endif
