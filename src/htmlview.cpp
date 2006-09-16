@@ -61,8 +61,20 @@ bool HtmlView::loadCss()
     kdDebug() << "Loading stylesheet " << filename << endl;
     QTextStream ts( &f );
     QString css = ts.read();
-    mCss = css;
+
+    KStandardDirs stdDirs;
+    QString findFile = "kraft/pics/docoverviewbg.png";
+    QString bgFile = stdDirs.findResource( "data", findFile );
+    QString bodyCss = "body { margin: 2px;\n";
+    if ( ! bgFile.isEmpty() ) {
+      bodyCss += QString( "background-image:url( %1 );" ).arg( bgFile );
+    }
+    bodyCss += "}\n";
+
+    mCss = bodyCss + css;
+
     return true;
+
   }
 }
 

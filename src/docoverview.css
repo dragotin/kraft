@@ -1,19 +1,19 @@
 body { margin:2px; }
 
 table {
-      color: gray;
+      color: #898989;
 }
  
 a:link {
   font-weight: bold;
   text-decoration: none;
-  color: gray;
+  color: #00008b;
 }
 
 a:visited {
   font-weight: bold;
   text-decoration: none;
-  color: gray;
+  color: 00008b;
 }
 
 a:hover {
@@ -39,7 +39,7 @@ div {
   border-color:#00008B;
   margin: 0px 0px 4px 0px;
   padding: 2px;
-  color:gray;
+  color: #898989;
 
 }
 

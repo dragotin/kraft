@@ -27,7 +27,7 @@
 DocPostCard::DocPostCard( QWidget *parent )
   :HtmlView( parent ),  mMode( Full )
 {
-  setZoomFactor( 60 );
+  setZoomFactor( 70 );
 }
 
 void DocPostCard::setHeaderData( const QString& type,  const QString& date,
@@ -55,7 +55,7 @@ void DocPostCard::setPositions( DocPositionList posList )
   }
   mPositionCount = posList.count();
   mTotal = posList.sumPrice().toString();
-  mPositions += QString( "<tr><td colspan=\"3\" align=\"right\">Total: %1</td></tr>" ).arg( mTotal );
+  mPositions += QString( "<tr><td colspan=\"3\" align=\"right\"><b>Total: %1</b></td></tr>" ).arg( mTotal );
   mPositions += "</table>";
 }
 
