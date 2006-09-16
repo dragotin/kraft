@@ -54,6 +54,7 @@ DocDigestView::DocDigestView( QWidget *parent )
 
   mListView->addColumn( i18n( "Type" ) );
   mListView->addColumn( i18n( "Client Name" ) );
+  mListView->addColumn( i18n( "Last Modified" ) );
   int d = mListView->addColumn( i18n( "Date" ) );
   mListView->setSorting( d, false );
 }
@@ -77,7 +78,8 @@ void DocDigestView::addChapter( const QString& chapter, DocDigestList list )
   DocDigestList::iterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
     KListViewItem *item = new KListViewItem( chapIt,
-                             (*it).type(), (*it).clientName(), (*it).date()  );
+                             (*it).type(), (*it).clientName(),
+                                             ( *it).lastModified(), (*it).date()  );
     mDocIdDict[item] = (*it).id();
 
   }

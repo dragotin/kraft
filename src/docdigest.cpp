@@ -32,13 +32,18 @@ DocDigest::DocDigest( dbID id, const QString& type, const QString& clientID )
 
 }
 
-DocDigest::DocDigest() 
+DocDigest::DocDigest()
 {
 }
 
-QString DocDigest::date() 
+QString DocDigest::date()
 {
-  return KGlobal().locale()->formatDate( mDate );
+  return KGlobal().locale()->formatDate( mDate, true );
+}
+
+QString DocDigest::lastModified()
+{
+  return KGlobal().locale()->formatDate( mLastModified, true );
 }
 
 QString DocDigest::clientName()
@@ -49,7 +54,7 @@ QString DocDigest::clientName()
      contact = adrBook->findByUid( mClientId );
   }
   QString name = contact.realName();
-  
+
   return name;
 }
 

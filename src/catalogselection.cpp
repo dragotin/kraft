@@ -77,7 +77,7 @@ void CatalogSelection::setupCatalogList()
 void CatalogSelection::initActions()
 {
   mActions     = new KActionCollection( this );
-  mAcAddToDoc  = new KAction( i18n("&Add to document"), "back", 0, this,
+  mAcAddToDoc  = new KAction( i18n("&Append to document"), "back", 0, this,
                               SLOT( slotAppendToDoc() ), mActions, "appendToDoc");
 
 }

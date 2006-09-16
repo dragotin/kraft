@@ -90,19 +90,24 @@ void Portal::initActions()
   editCopy = KStdAction::copy(this, SLOT(slotEditCopy()), actionCollection());
   editPaste = KStdAction::paste(this, SLOT(slotEditPaste()), actionCollection());
   viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
-  viewFlosTemplates = new KToggleAction( i18n("Show Floskel Templates"), 0,0,this,SLOT(slotShowTemplates()), actionCollection(), "file_show_templ");
+  viewFlosTemplates = new KToggleAction( i18n("Show Floskel Templates"), 0,0, this,
+                                         SLOT(slotShowTemplates()),
+                                         actionCollection(), "file_show_templ");
   KStdAction::preferences( this, SLOT( preferences() ), actionCollection() );
 
   actOpenKatalog = new KAction(i18n("Open Catalog Window"), 0,0,this,
                                SLOT(slotOpenKatalog()), actionCollection(), "open_katalog_window");
   actOpenMatKatalog = new KAction(i18n("Open Material Catalog Window"), 0,0,this,
-                                  SLOT(slotOpenMaterialKatalog()), actionCollection(), "open_matkat_window");
+                                  SLOT(slotOpenMaterialKatalog()),
+                                  actionCollection(), "open_matkat_window");
 
   actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew", KStdAccel::shortcut(KStdAccel::New), this,
-                               SLOT(slotNewDocument()), actionCollection(), "document_new");
+                               SLOT(slotNewDocument()),
+                               actionCollection(), "document_new");
 
   actPrintDocument = new KAction(i18n("&Print Document"), "printer1", KStdAccel::shortcut(KStdAccel::Print), this,
-                                 SLOT(slotPrintDocument()), actionCollection(), "document_print");
+                                 SLOT(slotPrintDocument()),
+                                 actionCollection(), "document_print");
 
   actOpenDocument = new KAction(i18n("&Open Document"),  "fileopen",
   KStdAccel::shortcut(KStdAccel::Open), this,
@@ -120,6 +125,7 @@ void Portal::initActions()
 
   setStandardToolBarMenuEnabled( true );
   actOpenDocument->setEnabled( false );
+  actPrintDocument->setEnabled( false );
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
   char *prjPath = getenv("KRAFT_HOME");
   if( prjPath ) {
@@ -157,7 +163,8 @@ void Portal::initView()
              this, SLOT( slotOpenDocument( const QString& ) ) );
     connect( m_portalView, SIGNAL( printDocument( const QString& ) ),
              this, SLOT( slotPrintDocument() ) );
-
+    connect( m_portalView,  SIGNAL( documentSelected( const QString& ) ),
+             this,  SLOT( slotDocumentSelected( const QString& ) ) );
     setCentralWidget(m_portalView);
 }
 
@@ -237,8 +244,10 @@ void Portal::slotDocumentSelected( const QString& doc )
   kdDebug() << "a doc was selected: " << doc << endl;
   if( doc.isEmpty() ) {
     actOpenDocument->setEnabled( false );
+    actPrintDocument->setEnabled( false );
   } else {
     actOpenDocument->setEnabled( true );
+    actPrintDocument->setEnabled( true );
   }
 }
 

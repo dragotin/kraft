@@ -57,11 +57,11 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 {
     bool result = false;
     if( ! doc ) return result;
-    
+
     QSqlCursor cur("document");
     cur.setMode( QSqlCursor::Writable );
     QSqlRecord *record = 0;
- 
+
     if( doc->isNew() ) {
         record = cur.primeInsert();
 
@@ -100,22 +100,22 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 {
   DocPositionList posList = doc->positions();
-  
+
   DocPositionBase *dpb = 0;
-  
+
   // invert all pos numbers to avoid a unique violation
   // FIXME: We need non-numeric ids
   QSqlQuery upq;
   upq.prepare( "UPDATE docposition SET ordNumber = -1 * ordNumber WHERE docID=" +  doc->docID().toString() );
   upq.exec();
-  
+
   for( dpb = posList.first(); dpb; dpb = posList.next() ) {
      if( dpb->type() == DocPositionBase::Position ) {
        DocPosition *dp = static_cast<DocPosition*>(dpb);
        QSqlRecord *record = 0;
        QSqlCursor cur( "docposition" );
        bool doInsert = true;
-        
+
        int posDbID = dp->dbId().toInt();
        if( posDbID > -1 ) {
          const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
@@ -139,10 +139,10 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
            cur.primeDelete();
            cur.del();
          }
-         
+
          continue;
        }
-       
+
        if( record ) {
          kdDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
          record->setValue( "docID",     doc->docID().toInt() );
@@ -151,7 +151,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
          record->setValue( "amount",    dp->amount() );
          record->setValue( "unit",      dp->unit().id() );
          record->setValue( "price",     dp->unitPrice().toDouble() );
-    
+
          if( doInsert ) {
            kdDebug() << "Inserting!" << endl;
            cur.insert();
@@ -159,7 +159,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
          } else {
            kdDebug() << "Updating!" << endl;
            cur.update();
-           
+
          }
        } else {
          kdDebug() << "ERR: No record object found!" << endl;
@@ -178,7 +178,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
   for ( it = rPos.begin(); it != rPos.end(); ++it ) {
     const QString selector = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt()).arg((*it).toInt() );
     cur.select( selector );
-    
+
     if( cur.next() ) {
       cur.primeDelete();
       cur.del();
@@ -199,6 +199,7 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord *buf, KraftDoc *doc )
       buf->setValue( "salut",    doc->salut() );
       buf->setValue( "goodbye",  doc->goodbye() );
       buf->setValue( "date",     doc->date() );
+      buf->setValue( "lastModified", "NOW()" );
       buf->setValue( "pretext",  doc->preText() );
       buf->setValue( "posttext", doc->postText() );
     }
@@ -208,16 +209,16 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
 {
     QSqlCursor cur("document");
     kdDebug() << "Loading document id " << id << endl;
-    
+
     cur.select( "docID=" + id );
-    
+
     if( cur.next())
     {
         kdDebug() << "loading document with id " << id << endl;
         dbID dbid;
         dbid = id;
         doc->setDocID( dbid );
-        
+
         doc->setIdent(      cur.value( "ident"    ).toString() );
         doc->setDocType(    cur.value( "docType"  ).toString() );
         doc->setAddressUid( cur.value( "clientID" ).toString() );
@@ -228,7 +229,7 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setPreText(    cur.value( "pretext"  ).toString() );
         doc->setPostText(   cur.value( "posttext" ).toString() );
     }
-    
+
     loadPositions( id, doc );
 }
 /* docposition:
@@ -247,7 +248,7 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
 void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 {
     QSqlCursor cur("docposition");
-    QSqlIndex posIndex = cur.index( "ordNumber" ); 
+    QSqlIndex posIndex = cur.index( "ordNumber" );
     cur.select( "docID=" + id, posIndex );
 
     while( cur.next() ) {
