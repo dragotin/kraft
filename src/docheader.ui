@@ -256,7 +256,7 @@
     <signal>modified()</signal>
 </signals>
 <slots>
-    <slot specifier="non virtual">slotModified()</slot>
+    <slot>slotModified()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="3"/>
 <includehints>
