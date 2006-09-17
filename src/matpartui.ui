@@ -38,7 +38,7 @@
                         <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>&lt;h1&gt;Kalkulationsanteil Material&lt;/h1&gt;</string>
+                        <string>&lt;h1&gt;Calculation Part  'Material'&lt;/h1&gt;</string>
                     </property>
                 </widget>
                 <widget class="QLabel">
@@ -46,7 +46,7 @@
                         <cstring>textLabel2</cstring>
                     </property>
                     <property name="text">
-                        <string>Die Materialkalkulation kann verschiedene Materialien umfassen.</string>
+                        <string>Add Material to the template calculation.</string>
                     </property>
                     <property name="alignment">
                         <set>WordBreak|AlignVCenter</set>
@@ -79,7 +79,7 @@
                                         <cstring>textLabel3_2</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Menge:</string>
+                                        <string>&amp;Amount:</string>
                                     </property>
                                     <property name="buddy" stdset="0">
                                         <cstring>m_inpMenge</cstring>
@@ -104,7 +104,7 @@
                                         <cstring>einheitLabel</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>einheit</string>
+                                        <string>unit</string>
                                     </property>
                                     <property name="buddy" stdset="0">
                                         <cstring>m_inpPreis</cstring>

@@ -39,8 +39,8 @@ PortalView::PortalView(QWidget *parent, const char *name, int face)
       m_katalogBox(0),
       mArchiveBox( 0 )
 {
-    m_docBox     = addVBoxPage( i18n("Dokumente"),
-                                i18n("Dokumente Suchen und Bearbeiten"),
+    m_docBox     = addVBoxPage( i18n("Documents"),
+                                i18n("Create and Edit Documents"),
                                 DesktopIcon("folder_outbox"));
     documentDigests( m_docBox );
 #if 0
@@ -49,13 +49,13 @@ PortalView::PortalView(QWidget *parent, const char *name, int face)
                                 DesktopIcon( "vcs_commit" ) );
     archiveDetails( mArchiveBox );
 #endif
-    m_katalogBox = addVBoxPage( i18n("Kataloge"),
-                                i18n("Im System vorhandene Kataloge"),
+    m_katalogBox = addVBoxPage( i18n("Catalogs"),
+                                i18n("Available Catalogs"),
                                 DesktopIcon("folder_green"));
     katalogDetails(m_katalogBox);
 
     m_sysBox     = addVBoxPage( i18n("System"),
-                                i18n("Systeminformation"),
+                                i18n("Information about the Kraft System"),
                                 DesktopIcon("server"));
     systemDetails( m_sysBox );
 }
@@ -101,17 +101,17 @@ QString PortalView::printKatLine( const QString& name ) const
     html += "<td><b>"+urlName+"</b></td>";
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
             name+"&action=open\">";
-    html += i18n("&ouml;ffnen");
+    html += i18n("Open");
     html += "</td>";
 
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
             name+"&action=xml\">";
-    html += i18n("als XML");
+    html += i18n("XML Export");
     html += "</td>";
 
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
             name+"&action=delete\">";
-    html += i18n("l&ouml;schen");
+    html += i18n("Remove");
     html += "</td>";
 
     html += "</tr>\n";
@@ -157,13 +157,15 @@ void PortalView::systemDetails(QWidget *parent)
     QString html;
     const QString ptag = "<p class=\"infoline\">";
 
-    html = "<h2>" + i18n("Kraft System Information") + "</h2>";
+    html = ""; // "<h2>" + i18n("Kraft System Information") + "</h2>";
 
     html += "<table width=\"100%\"><tr><td>";
     html += ptag + i18n("Kraft Version: ") + KRAFT_VERSION +  "</p></td>";
-    html += "<td align=\"right\">"
+    html += "<td align=\"right\" rowspan=\"2\">"
             "<img src=\"/tmp/kraft_small.png\"/>"
-            "</td></tr></table>";
+            "</td></tr>";
+    html += QString( "<tr><td>Codename <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
+    html += "</table>";
 
     html += "<h2>" + i18n("Database Information") + "</h2>";
     html += ptag + i18n("Qt Database Driver: ") + KraftDB::qtDriver() +  "</p>";

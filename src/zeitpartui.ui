@@ -52,7 +52,7 @@
                         <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>&lt;h1&gt;Kalkulationsanteil Zeit&lt;/h1&gt;</string>
+                        <string>&lt;h1&gt;Calculation Part 'Time'&lt;/h1&gt;</string>
                     </property>
                 </widget>
                 <widget class="QLabel">
@@ -60,7 +60,7 @@
                         <cstring>textLabel2</cstring>
                     </property>
                     <property name="text">
-                        <string>Zeitabhängige Anteile an der Kalkulation sind vom im Dokument global eingestellten Stundensatz abhängig.</string>
+                        <string>Calculate time efforts here for one unit of the template. Note that the costs may depend on a global hourly rate.</string>
                     </property>
                     <property name="alignment">
                         <set>WordBreak|AlignVCenter</set>
@@ -93,7 +93,7 @@
                                         <cstring>m_nameEdit</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Arbeit</string>
+                                        <string>Work</string>
                                     </property>
                                 </widget>
                                 <widget class="QLabel" row="2" column="0">
@@ -101,7 +101,7 @@
                                         <cstring>textLabel3_2_2</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Stundensatz:</string>
+                                        <string>&amp;Hourly Rate:</string>
                                     </property>
                                     <property name="buddy" stdset="0">
                                         <cstring>m_hourSets</cstring>
@@ -112,7 +112,7 @@
                                         <cstring>textLabel3_2</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Zeitdauer</string>
+                                        <string>&amp;Time Effort:</string>
                                     </property>
                                     <property name="buddy" stdset="0">
                                         <cstring>m_dauer</cstring>
@@ -123,7 +123,7 @@
                                         <cstring>textLabel3</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Bezeichnung:</string>
+                                        <string>&amp;Label:</string>
                                     </property>
                                     <property name="buddy" stdset="0">
                                         <cstring>m_nameEdit</cstring>
@@ -156,7 +156,7 @@
                                                 <cstring>textLabel4</cstring>
                                             </property>
                                             <property name="text">
-                                                <string>Minuten</string>
+                                                <string>Minutes</string>
                                             </property>
                                         </widget>
                                     </hbox>
@@ -166,7 +166,10 @@
                                         <cstring>m_stdGlobal</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Stundensatz &amp;global anpassen</string>
+                                        <string>Apply the &amp;global hourly rate.</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+G</string>
                                     </property>
                                 </widget>
                                 <widget class="QComboBox" row="2" column="1">
@@ -260,8 +263,6 @@
         </widget>
     </grid>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>buttonOk</sender>
@@ -287,6 +288,8 @@
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>klineedit.h</includehint>
+    <includehint>knuminput.h</includehint>
     <includehint>knuminput.h</includehint>
 </includehints>
 </UI>

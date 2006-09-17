@@ -12,6 +12,9 @@
             <height>287</height>
         </rect>
     </property>
+    <property name="caption">
+        <string>MyDialog</string>
+    </property>
     <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
@@ -101,6 +104,25 @@
             </widget>
         </hbox>
     </widget>
+    <widget class="QFrame">
+        <property name="name">
+            <cstring>frame3</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>100</y>
+                <width>471</width>
+                <height>130</height>
+            </rect>
+        </property>
+        <property name="frameShape">
+            <enum>StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+            <enum>Raised</enum>
+        </property>
+    </widget>
     <widget class="QLabel">
         <property name="name">
             <cstring>textLabel1</cstring>
@@ -114,7 +136,7 @@
             </rect>
         </property>
         <property name="text">
-            <string>&lt;h1&gt;Kalkulationsanteil Zeit&lt;/h1&gt;</string>
+            <string>&lt;h1&gt;Calculation Part 'Time'&lt;/h1&gt;</string>
         </property>
     </widget>
     <widget class="QLabel">
@@ -134,25 +156,6 @@
         </property>
         <property name="alignment">
             <set>WordBreak|AlignVCenter</set>
-        </property>
-    </widget>
-    <widget class="QFrame">
-        <property name="name">
-            <cstring>frame3</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>20</x>
-                <y>100</y>
-                <width>471</width>
-                <height>130</height>
-            </rect>
-        </property>
-        <property name="frameShape">
-            <enum>StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-            <enum>Raised</enum>
         </property>
     </widget>
 </widget>

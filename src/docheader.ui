@@ -45,21 +45,6 @@
                     </property>
                 </spacer>
                 <widget class="QComboBox">
-                    <item>
-                        <property name="text">
-                            <string>Rechnung</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Angebot</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Auftragsbetätigung</string>
-                        </property>
-                    </item>
                     <property name="name">
                         <cstring>m_cbType</cstring>
                     </property>
@@ -135,7 +120,7 @@
                                 <cstring>textLabel5</cstring>
                             </property>
                             <property name="text">
-                                <string>Letter Anrede:</string>
+                                <string>Salutatory Address:</string>
                             </property>
                         </widget>
                         <widget class="QLayoutWidget" row="0" column="1">
@@ -151,7 +136,7 @@
                                         <cstring>m_labName</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Goofy Johnson</string>
+                                        <string>not selected</string>
                                     </property>
                                 </widget>
                                 <widget class="QPushButton">

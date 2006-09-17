@@ -34,9 +34,9 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
     : KatalogListView(w),
       mShowCalcParts( true )
 {
-    addColumn( i18n("Katalog"));
-    addColumn( i18n("Einheit"));
-    int priceCol = addColumn( i18n("Preis"));
+    addColumn( i18n("Catalog"));
+    addColumn( i18n("Unit"));
+    int priceCol = addColumn( i18n("Price"));
     setColumnWidthMode(0, Manual);
     setColumnWidth(0, 500);
     addColumn( i18n("Calc. Type"));
@@ -185,11 +185,11 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
                 Geld g = mcp->getPriceForMaterial(mat);
                 QString t = mat->getName();
                 double usedAmount = mcp->getCalcAmount(mat);
-                t += i18n(", Menge: %L1 ").arg( usedAmount);
+                t += i18n(", Amount: %L1 ").arg( usedAmount);
                 Einheit e = mat->getUnit();
 
                 // possible to remove the following line ??
-                t += i18n(" pro %1").arg(mat->getAmountPerPack());
+                t += i18n(" per %1").arg(mat->getAmountPerPack());
 
                 (void) new KListViewItem( cpItem, t, e.einheit(usedAmount),
                 g.toString());
