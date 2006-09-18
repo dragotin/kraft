@@ -11,6 +11,13 @@ CREATE TABLE preisArten (
 	PRIMARY KEY( preisArtID )
 );
 
+CREATE TABLE wordLists(
+  category     VARCHAR(64),
+  word         VARCHAR(255),
+
+  PRIMARY KEY( category, word )
+);
+
 CREATE TABLE CatalogSet(
   catalogSetID INT NOT NULL AUTO_INCREMENT,
   name         VARCHAR(255),

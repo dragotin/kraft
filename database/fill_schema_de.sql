@@ -48,3 +48,15 @@ INSERT INTO stdSaetze (name, price, sortKey) VALUES ('Meister', 39.00, 2 );
 INSERT INTO stdSaetze (name, price, sortKey) VALUES ('Helfer', 30.00, 4 );
 INSERT INTO stdSaetze (name, price, sortKey) VALUES ('Auszubildender', 21.00, 3 );
 INSERT INTO stdSaetze (name, price, sortKey) VALUES ('Maschinenfuehrer', 33.00, 5 );
+
+DELETE FROM wordLists;
+INSERT INTO wordLists ("greeting", "mit den besten Grüssen," );
+INSERT INTO wordLists ("greeting", "liebe Grüsse," );
+INSERT INTO wordLists ("greeting", "Hochachtungsvoll," );
+INSERT INTO wordLists ("greeting", "mit freundlichem Gruß," );
+
+INSERT INTO wordLists ("salut", "Sehr geehrter Herr %NAME" );
+INSERT INTO wordLists ("salut", "Sehr geehrte Frau %NAME" );
+INSERT INTO wordLists ("salut", "Sehr geehrte Frau %NAME, sehr geehrter Herr %NAME" );
+INSERT INTO wordLists ("salut", "Lieber %GIVEN_NAME" );
+INSERT INTO wordLists ("salut", "Liebe %GIVEN_NAME" );
