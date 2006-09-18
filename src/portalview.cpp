@@ -24,6 +24,7 @@
 #include <kdebug.h>
 #include <kiconloader.h>
 #include <ktextbrowser.h>
+#include <kstandarddirs.h>
 #include <kurl.h>
 
 #include "version.h"
@@ -157,13 +158,21 @@ void PortalView::systemDetails(QWidget *parent)
     QString html;
     const QString ptag = "<p class=\"infoline\">";
 
+    KStandardDirs stdDirs;
+    QString logoFile = stdDirs.findResource( "data",  "kraft/pics/kraft_small.png" );
+
+
     html = ""; // "<h2>" + i18n("Kraft System Information") + "</h2>";
 
     html += "<table width=\"100%\"><tr><td>";
     html += ptag + i18n("Kraft Version: ") + KRAFT_VERSION +  "</p></td>";
-    html += "<td align=\"right\" rowspan=\"2\">"
-            "<img src=\"/tmp/kraft_small.png\"/>"
-            "</td></tr>";
+    html += "<td align=\"right\" rowspan=\"2\">";
+    if ( ! logoFile.isEmpty() ) {
+      html += QString( "<img src=\"%1\"/>" ).arg( logoFile );
+    } else {
+      html += "&nbsp;";
+    }
+    html += "</td></tr>";
     html += QString( "<tr><td>Codename <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
     html += "</table>";
 
