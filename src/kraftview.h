@@ -180,6 +180,7 @@ class KraftView : public KDialogBase
     void setupPositions();
     void setupFooter();
     void setupTextsView();
+
     PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
 
     QStringList generateLetterHead( KABC::Addressee adr );

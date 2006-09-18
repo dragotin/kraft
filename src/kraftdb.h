@@ -25,6 +25,7 @@ class QSqlDatabase;
 /**
   *@author Klaas Freitag
   */
+#include <qmap.h>
 
 class dbID;
 class KProcess;
@@ -44,9 +45,12 @@ public:
     static dbID getLastInsertID();
 
     static void checkInit();
-    
+
     static QString qtDriver();
-    
+
+    typedef QMap<QString, QString> StringMap;
+    static QStringList wordList( const QString&, StringMap replaceMap = StringMap() );
+
 private: // Private attributes
     static void dBFileBackup( const QString& );
     static bool doInitialSetup( );

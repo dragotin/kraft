@@ -51,6 +51,7 @@
 
 
 // application specific includes
+#include "kraftdb.h"
 #include "kraftsettings.h"
 #include "kraftview.h"
 #include "kraftdoc.h"
@@ -413,6 +414,10 @@ void KraftView::redrawDocument( )
     m_headerEdit->m_teEntry->setText( doc->preText() );
     m_footerEdit->m_teSummary->setText( doc->postText() );
 
+    if ( !doc->goodbye().isEmpty() ) {
+      m_footerEdit->m_cbGreeting->setCurrentText( doc->goodbye() );
+    }
+
     redrawDocPositions( );
     refreshPostCard();
 }
@@ -569,6 +574,9 @@ void KraftView::setupFooter()
 
     m_footerEdit = new KraftDocFooterEdit( page );
     topLayout->addWidget( m_footerEdit );
+
+    m_footerEdit->m_cbGreeting->insertStringList( KraftDB::wordList( "greeting" ) );
+
     connect( m_footerEdit, SIGNAL( modified() ),
                this, SLOT( slotModifiedFooter() ) );
 }
@@ -749,20 +757,8 @@ void KraftView::slotShowCatalog( bool on )
 void KraftView::slotModifiedPositions()
 {
   kdDebug() << "Positions Modified" << endl;
-#if 0
-    const QString modStr = i18n(" (modified)");
-    QString t = m_positionLabel->text();
-    if( ! t.endsWith( modStr ) ) {
-      m_positionLabel->setText( t + modStr );
-    }
-    KraftDoc *doc = getDocument();
-    if( !doc ) {
-      kdDebug() << "ERR: No document available in view, return!" << endl;
-    }
 
-    doc->setModified( true );
-#endif
-    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+  QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 
 }
 
@@ -771,42 +767,24 @@ void KraftView::slotModifiedHeader()
     kdDebug() << "Modified the header!" << endl;
 
     QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
-#if 0
-    KraftDoc *doc = getDocument();
-    if( !doc ) {
-      kdDebug() << "ERR: No document available in view, return!" << endl;
-    }
-
-    doc->setModified( true );
-#endif
 }
 
 void KraftView::slotModifiedFooter()
 {
-    kdDebug() << "Modified the footer!" << endl;
-    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+  kdDebug() << "Modified the footer!" << endl;
 
-#if 0
-    KraftDoc *doc = getDocument();
-    if( !doc ) {
-      kdDebug() << "ERR: No document available in view, return!" << endl;
-    }
-
-    doc->setModified( true );
-#endif
+  QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
 QStringList KraftView::generateLetterHead( KABC::Addressee adr )
 {
     QStringList s;
-    const QString famName = adr.familyName();
-    const QString givenName = adr.givenName();
 
-    s << i18n("Dear Mr. %1,").arg( famName );
-    s << i18n("Dear Mrs. %1,").arg( famName );
-    s << i18n("Dear Mrs. %1, Dear Mr. %2,").arg( famName ).arg( famName );
-    s << i18n("Dear %1,").arg( givenName );
-    return s;
+    KraftDB::StringMap m;
+    m[ "%NAME"]       = adr.familyName();
+    m[ "%GIVEN_NAME"] = adr.givenName();
+
+    return KraftDB::wordList( "salut", m );
 }
 
 KraftDoc *KraftView::getDocument() const

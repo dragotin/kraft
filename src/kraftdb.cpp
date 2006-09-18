@@ -21,6 +21,9 @@
 
 #include <qfile.h>
 #include <qsqldatabase.h>
+#include <qsqlcursor.h>
+#include <qsqlquery.h>
+#include <qstringlist.h>
 
 #include "kraftdb.h"
 #include "dbids.h"
@@ -83,6 +86,29 @@ dbID KraftDB::getLastInsertID()
     return dbID(id);
 }
 
+QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
+{
+  QStringList re;
+
+  if( ! KraftDB::getDB() ) return re;
+
+  QSqlCursor cur( "wordLists" ); // Specify the table/view name
+  // cur.setMode( QSqlCursor::ReadOnly );
+  cur.select( QString( "category='%1'" ).arg( selector ) );
+  while ( cur.next() ) {
+    QString w = cur.value( "word" ).toString();
+
+    StringMap::Iterator it;
+    for ( it = replaceMap.begin(); it != replaceMap.end(); ++it ) {
+      const QString key = it.key().utf8();
+      const QString rep = it.data().utf8();
+      w.replace( key, rep );
+    }
+    re << w;
+  }
+  return re;
+}
+
 // not yet used.
 void KraftDB::checkInit()
 {
@@ -95,7 +121,7 @@ void KraftDB::checkInit()
   QString dbFile = KatalogSettings::dbFile();
   kdDebug() << "Database file is " << dbFile << endl;
   if( ! dbFile.isEmpty() ) {
-            // backup this file 
+            // backup this file
     dBFileBackup( dbFile );
   } else {
     QString dbName = KatalogSettings::defaultDbName();
@@ -115,9 +141,9 @@ void KraftDB::checkInit()
   }
 }
 
-QString KraftDB::qtDriver() 
+QString KraftDB::qtDriver()
 {
-    return DB_DRIVER; 
+    return DB_DRIVER;
 }
 
 bool KraftDB::doInitialSetup()
