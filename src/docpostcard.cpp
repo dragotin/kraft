@@ -116,7 +116,7 @@ QString DocPostCard::renderDocFull()
 
   t += "</body></html>";
 
-  kdDebug() << t << endl;
+  // kdDebug() << t << endl;
 
   return t;
 }

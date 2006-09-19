@@ -144,8 +144,12 @@ void DocAssistant::setFullPreview( bool setFull )
   } else {
     mWidgetStack->show();
     mPostCard->slotSetMode( DocPostCard::Mini );
+    kdDebug() << "mSplitter-Size" << mSplitterSizes.count() << endl;
+
     if ( mSplitterSizes.count() != 2 ) {
+      kdDebug() << "settimg mSplitter to 120" << endl;
       mSplitterSizes << 120;
+      mSplitterSizes << 0;
     }
     setSizes( mSplitterSizes );
     mFullPreview = false;
