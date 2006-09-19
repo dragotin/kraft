@@ -40,4 +40,8 @@ language german. Other fill_schema scripts for other
 languages can be written, thats the reason for why
 these are two scripts.
 
+The database credentials must be entered into the settings
+dialog in kraft after the first start. Please restart after
+you have entered the data.
+
 That's it.
