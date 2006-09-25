@@ -124,7 +124,7 @@ void KatalogView::initActions()
   m_acEditItem = new KAction(i18n("&Edit Item"), "pencil", 0, this,
                                SLOT(slEditVorlage()),  actionCollection(), "edit_vorlage" );
 
-  m_acNewItem  = new KAction( i18n("&New Item"), "filenew", 0, this,
+  m_acNewItem  = new KAction( i18n("&New Template"), "filenew", 0, this,
                                 SLOT(slNeueVorlage()), actionCollection(), "neue_vorlage");
 
   m_acNewItem->setStatusText(i18n("Opens the editor window for templates to enter a new template"));
