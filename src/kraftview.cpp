@@ -601,10 +601,12 @@ void KraftView::slotMovePositionUp( int pos )
   PositionViewWidget *w1 = 0;
   PositionViewWidget *w2 = 0;
 
+  kdDebug() << "Moving position up: " << pos << endl;
   if( pos < 1 || (unsigned) pos > mPositionWidgetList.count() ) {
     kdDebug() << "ERR: position out of range: " << pos << endl;
     return;
   }
+
   w2 = mPositionWidgetList.at( pos-1 );
   w1 = mPositionWidgetList.take( pos );
   mPositionWidgetList.insert( pos-1, w1 );
@@ -647,6 +649,7 @@ void KraftView::slotMovePositionDown( int pos )
 {
   PositionViewWidget *w1 = 0;
   PositionViewWidget *w2 = 0;
+  kdDebug() << "Moving position down: " << pos << endl;
 
   if( pos < 0 || (unsigned) pos > mPositionWidgetList.count() -1 ) {
     kdDebug() << "ERR: position out of range: " << pos << endl;
@@ -660,9 +663,9 @@ void KraftView::slotMovePositionDown( int pos )
     w1->setOrdNumber( pos+2  );
     w2->setOrdNumber( pos+1 );
 
-    mMoveUpMapper->removeMappings( w1 );
+    mMoveDownMapper->removeMappings( w1 );
     mMoveDownMapper->setMapping( w1, pos+1 );
-    mMoveUpMapper->removeMappings( w2 );
+    mMoveDownMapper->removeMappings( w2 );
     mMoveDownMapper->setMapping( w2, pos );
 
     int tmpY = m_positionScroll->childY( w1 );
@@ -847,6 +850,11 @@ void KraftView::savePositions()
     DocPosition *pos = static_cast<DocPosition*>(dpb);
 
     QString h = QString::number( widget->ordNumber() );
+
+    if ( !pos ) {
+      kdError() << "Unexpected: pos is zero for ordNumber " << h << endl;
+      return;
+    }
 
     if( h != pos->position() ) {
       pos->setPosition( h );
