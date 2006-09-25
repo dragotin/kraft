@@ -47,7 +47,8 @@
 
 TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
     : KatalogView(parent, name),
-    m_flosDialog(0)
+      m_flosDialog(0),
+      m_listview( 0 )
 {
 }
 
@@ -115,8 +116,8 @@ void TemplKatalogView::slNeueVorlage()
       }
     }
 
-    KListViewItem *newItem = templListView->addFlosTemplate(parentItem, flosTempl);
-    openDialog(newItem, flosTempl);
+    KListViewItem *item = templListView->addFlosTemplate(parentItem, flosTempl);
+    openDialog( item, flosTempl);
 }
 
 bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )
@@ -157,6 +158,8 @@ void TemplKatalogView::openDialog( KListViewItem *listitem, FloskelTemplate *tmp
         m_flosDialog = new FlosTemplDialog(this, "VORLAGE_EDIT", false);
         connect( m_flosDialog, SIGNAL(editAccepted( FloskelTemplate* )),
                  this, SLOT( slEditOk(FloskelTemplate*)));
+        connect( m_flosDialog, SIGNAL(editRejected( )),
+                 this, SLOT( slEditRejected()));
         connect( m_flosDialog, SIGNAL(chapterChanged(int)),
                  this, SLOT(slChangeChapter(int)));
     }
@@ -185,6 +188,13 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
     m_editListViewItem = 0;
 }
 
+void TemplKatalogView::slEditRejected()
+{
+  if (  m_editListViewItem ) {
+    delete m_editListViewItem;
+    m_editListViewItem = 0;
+  }
+}
 
 void TemplKatalogView::slListviewExecuted(QListViewItem* qItem)
 {

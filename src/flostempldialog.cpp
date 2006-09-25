@@ -332,6 +332,7 @@ void FlosTemplDialog::reject()
         *m_template = *m_saveTempl;
     }
     d_calcTempl::reject();
+    emit editRejected();
 }
 
 void FlosTemplDialog::slManualPriceChanged(double dd)

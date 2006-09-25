@@ -64,7 +64,7 @@ class TemplKatalogView: public KatalogView
     TemplKatalogView(QWidget* parent=0, const char* name=0);
     TemplKatalogView(const QString& katToShow, QWidget* parent=0, const char* name=0);
     ~TemplKatalogView();
-    
+
     // virtual KatalogListView *createListView(QWidget*);
 
     /** opens a file specified by commandline option
@@ -75,7 +75,7 @@ class TemplKatalogView: public KatalogView
   protected:
     Katalog* getKatalog( const QString& );
     bool currentItemToDocPosition( DocPosition& );
-    
+
   public slots:
     /* Editiing of templates -> open edit dialog */
     void slEditVorlage();
@@ -83,7 +83,7 @@ class TemplKatalogView: public KatalogView
 
     /* selected Ok in the template editor */
     void slEditOk(FloskelTemplate*);
-
+    void slEditRejected();
     void slListviewExecuted(QListViewItem*);
 
     /* The catalog chapter was changed in the editor dialog */
