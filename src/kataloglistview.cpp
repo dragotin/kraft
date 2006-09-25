@@ -86,7 +86,7 @@ void KatalogListView::setupChapters()
 
     kdDebug() << "Creating root item!" <<  endl;
     m_root = new KListViewItem(this, catalog->getName());
-    m_root->setPixmap(0, SmallIcon("gear"));
+    m_root->setPixmap(0, SmallIcon("kraft"));
     m_root->setOpen(true);
     repaint();
     const QStringList chapters = catalog->getKatalogChapters( true );

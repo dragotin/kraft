@@ -104,7 +104,7 @@ KListViewItem* TemplKatalogListView::addFlosTemplate( KListViewItem *parentItem,
     {
         listItem->setPixmap(0, SmallIcon("kcalc"));
     }
-    // store the connection between the listviewitem and the floskel in a dict.
+    // store the connection between the listviewitem and the template in a dict.
     m_dataDict.insert( listItem, tmpl );
 
     return listItem;
