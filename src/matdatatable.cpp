@@ -84,11 +84,11 @@ MatDataTable::MatDataTable(QWidget *parent, const char *name )
     propMap->insert( "EinheitPicker", "einheitID" );
     installPropertyMap( propMap );
 
-    addColumn( "material", i18n("Material"));
-    addColumn( "unitID", i18n("Einheit"));
-    addColumn( "perPack", i18n("Packungseinheit"));
-    addColumn( "priceIn", i18n("Einkaufspreis"));
-    addColumn( "priceOut", i18n("Verkaufspreis"));
+    addColumn( "material", i18n("Material") );
+    addColumn( "unitID",   i18n("Unit") );
+    addColumn( "perPack",  i18n( "Pieces per Unit" ) );
+    addColumn( "priceIn",  i18n( "Price (Buy)" ) );
+    addColumn( "priceOut", i18n( "Price (Sell)" ) );
 
     setDragEnabled(true);
     connect( this, SIGNAL(beforeInsert(QSqlRecord*)),

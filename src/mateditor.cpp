@@ -43,12 +43,12 @@
  * ********************************************************************************/
 
 MatKatEditor::MatKatEditor( const QString& curChap,  QStringList chaps, QWidget *parent, const char* name )
-    :KDialogBase(parent, name, true, i18n("Materialkategorie"), Ok|Cancel, Ok)
+    :KDialogBase(parent, name, true, i18n("Material Chapter"), Ok|Cancel, Ok)
 {
     QVBox *vBox = makeVBoxMainWidget();
     vBox->setSpacing(KDialog::spacingHint());
 
-    (void) new QLabel( i18n("Kategorie des markierten Materials festlegen:"), vBox );
+    (void) new QLabel( i18n("Set Chapter of the marked Material:"), vBox );
     m_combo = new QComboBox(vBox);
     m_combo->insertStringList(chaps);
     m_combo->setCurrentText(curChap);
@@ -98,7 +98,7 @@ MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *pare
     hBox->setMargin(KDialog::spacingHint());
 
 
-    m_katButton = new KPushButton( i18n("Kategorie..."), hBox );
+    m_katButton = new KPushButton( i18n("Chapter..."), hBox );
     m_katButton->setEnabled(false);
 
     hBox->setMargin(KDialog::marginHint());
@@ -126,7 +126,7 @@ MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *pare
     connect( m_katButton, SIGNAL(clicked()),
              this, SLOT(slKatButtonClick()));
 
-    connect( m_takeOver, SIGNAL(clicked()),
+     connect( m_takeOver, SIGNAL(clicked()),
              this, SLOT(slTakeOver()));
 
     QString lastChap = KraftSettings::lastMaterialChapter();
@@ -154,10 +154,10 @@ void MatEditor::addAmountDetail( QWidget *parent )
     m_amount   = new KDoubleNumInput( hbox );
     m_amount->setValue( 1.0);
     m_amount->setPrecision(3);
-    m_amount->setLabel( i18n("Menge:"), AlignLeft|AlignVCenter);
+    m_amount->setLabel( i18n("Amount: "), AlignLeft|AlignVCenter);
     m_unit     = new QLabel(hbox);
-    (void) new QLabel(i18n(" zu Kalkulation "), hbox);
-    m_takeOver = new KPushButton( i18n("hinzu"), hbox );
+    m_takeOver = new KPushButton( i18n("add"), hbox );
+    (void) new QLabel(i18n(" to Calculation "), hbox);
 
     m_answer = new QLabel(hbox);
 
