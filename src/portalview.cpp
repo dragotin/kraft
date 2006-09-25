@@ -159,7 +159,7 @@ void PortalView::systemDetails(QWidget *parent)
     const QString ptag = "<p class=\"infoline\">";
 
     KStandardDirs stdDirs;
-    QString logoFile = stdDirs.findResource( "data",  "kraft/pics/kraft_small.png" );
+    QString logoFile = stdDirs.findResource( "data",  "kraft/pics/muckilogo_oS.png" );
 
 
     html = ""; // "<h2>" + i18n("Kraft System Information") + "</h2>";
