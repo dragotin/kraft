@@ -90,7 +90,6 @@ private:
   CatalogSelection *mCatalogSelection;
   QWidgetStack *mWidgetStack;
   AddressSelection *mAddressSelection;
-  QValueList<int> mSplitterSizes;
   bool mFullPreview;
 };
 

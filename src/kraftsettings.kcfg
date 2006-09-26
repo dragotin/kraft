@@ -21,6 +21,9 @@
     <entry name="materialCatalogSize" type="Size">
       <label>The default size of the material catalog view</label>
     </entry>
+    <entry name="assistantSplitterSetting" type="IntList">
+      <label>The splitter setting for the the doc assistant</label>
+    </entry>
   </group>
   <group name="material">
     <entry name="lastMaterialChapter" type="String">

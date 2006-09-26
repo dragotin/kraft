@@ -96,10 +96,9 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mWidgetStack->raiseWidget( mCatalogSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SIGNAL( selectPage( int ) ) );
-  QValueList<int> sizes;
-  sizes << 120;  // FIXME: Get real needed size from htmlview
-  setSizes( sizes );
-  mWidgetStack->hide();
+
+  setSizes( KraftSettings::self()->assistantSplitterSetting() );
+  // mWidgetStack->hide();
 }
 
 void DocAssistant::slotRenderCompleted()
@@ -137,21 +136,23 @@ void DocAssistant::setFullPreview( bool setFull )
 {
   if ( setFull ) {
     /* remember the sizes used before */
-    mSplitterSizes = sizes();
+    if ( mWidgetStack->isVisible() ) {
+      kdDebug() << "Writing mSplitterSizes: " << sizes() << endl;
+      KraftSettings::self()->setAssistantSplitterSetting( sizes() );
+      KraftSettings::self()->writeConfig();
+    }
+
     mWidgetStack->hide();
     mPostCard->slotSetMode( DocPostCard::Full );
     mFullPreview = true;
   } else {
+
     mWidgetStack->show();
     mPostCard->slotSetMode( DocPostCard::Mini );
-    kdDebug() << "mSplitter-Size" << mSplitterSizes.count() << endl;
 
-    if ( mSplitterSizes.count() != 2 ) {
-      kdDebug() << "settimg mSplitter to 120" << endl;
-      mSplitterSizes << 120;
-      mSplitterSizes << 0;
+    if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
+      setSizes( KraftSettings::self()->assistantSplitterSetting() );
     }
-    setSizes( mSplitterSizes );
     mFullPreview = false;
   }
 }

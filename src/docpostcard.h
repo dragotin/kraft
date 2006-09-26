@@ -49,6 +49,7 @@ protected:
   QString renderDocMini() const;
   QString renderDocFull();
 private:
+  QString linkBit( const QString&, const QString& ) const;
   DocGuardedPtr mDoc;
   QString mType;
   QString mId;
