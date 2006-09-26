@@ -2,7 +2,7 @@ kplantsplashdir = $(kde_datadir)/kplant/pics
 kplantsplash_DATA = kplant_splash.png
 
 kraftsplashdir = $(kde_datadir)/kraft/pics
-kraftsplash_DATA = muckilogo_oS.png mucki_en_oS.png muckilogo_oS.png
+kraftsplash_DATA = muckilogo_oS.png mucki_en_oS.png muckilogo_oS.png docoverviewbg.png
 
 KDE_ICON = AUTO
 
