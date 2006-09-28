@@ -142,6 +142,8 @@ class KraftView : public KDialogBase
 
     typedef QMap<DocPositionBase*, PositionViewWidget*> PositionMap;
 
+    DocPositionList currentPositionList();
+
   public slots:
     void slotSelectAddress( KABC::Addressee contact = KABC::Addressee() );
     void redrawDocument( );

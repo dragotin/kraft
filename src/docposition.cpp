@@ -97,6 +97,11 @@ Geld DocPositionList::sumPrice()
     return g;
 }
 
+QString DocPositionList::posNumber( DocPositionBase* pos )
+{
+  return QString::number( 1+findRef( pos ) );
+}
+
 QDomElement DocPositionList::domElement( QDomDocument& doc )
 {
     QDomElement topElem = doc.createElement( "positions" );

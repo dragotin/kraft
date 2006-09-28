@@ -257,7 +257,6 @@ DocPosition* KraftDoc::createPosition()
     DocPosition *dp = new DocPosition();
 
     mPositions.append( dp );
-    dp->setPosition( QString::number( mPositions.count() ) );
     return dp;
 }
 
@@ -282,7 +281,6 @@ void KraftDoc::slotRemovePosition( int pos )
   }
 
   if( found ) {
-    renumberPositions();
     slotUpdateAllViews( 0 );
   }
 }
@@ -307,7 +305,6 @@ void KraftDoc::slotMoveUpPosition( int dbid )
   if( curPos > -1 && dp ) {
     if( mPositions.insert( curPos-1, dp ) ) {
       kdDebug() << "Inserted successfully" << endl;
-      renumberPositions();
       slotUpdateAllViews( 0 );
     }
   }
@@ -334,7 +331,6 @@ void KraftDoc::slotMoveDownPosition( int dbid )
   if( curPos > -1 && dp ) {
     if( mPositions.insert( curPos+1, dp ) ) {
       kdDebug() << "Inserted successfully" << endl;
-      renumberPositions();
       slotUpdateAllViews( 0 );
     }
   }
@@ -345,22 +341,8 @@ int KraftDoc::slotAppendPosition( const DocPosition& pos )
   DocPosition *dp = createPosition();
   *dp = pos; // FIXME: Proper assignment operator
 
-  dp->setPosition( QString::number( mPositions.count() ) );
   slotUpdateAllViews( 0 );
   return mPositions.count();
-}
-
-int KraftDoc::renumberPositions()
-{
-  int cnt = 1;
-  DocPositionBase *dp;
-  for( dp = mPositions.first(); dp; dp = mPositions.next() ) {
-    dp->setPosition( QString::number( cnt ));
-    if( ! dp->toDelete() )
-      cnt++;
-  }
-
-  return cnt;
 }
 
 DocumentSaverBase* KraftDoc::getSaver( const QString& )

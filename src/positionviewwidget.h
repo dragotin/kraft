@@ -37,7 +37,7 @@ public:
     enum State { Active, New, Deleted, Locked };
     PositionViewWidget();
     PositionViewWidget( int );
-    void setPosition( DocPositionBase* );
+    void setDocPosition( DocPositionBase* );
     ~PositionViewWidget();
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }

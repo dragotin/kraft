@@ -79,7 +79,7 @@ PositionViewWidget::PositionViewWidget()
   lStatus->setPixmap( QPixmap() );
 }
 
-void PositionViewWidget::setPosition( DocPositionBase *dp )
+void PositionViewWidget::setDocPosition( DocPositionBase *dp )
 {
   if( ! dp ) return;
   if( dp->type() == DocPositionBase::Position ) {

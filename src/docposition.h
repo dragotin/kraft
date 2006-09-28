@@ -52,7 +52,7 @@ class DocPositionBase : public QObject
     dbID dbId() { return dbID( m_dbId ); }
     virtual PositionType type() = 0;
 
-    virtual void setPosition( const QString& pos ) { m_position = pos; }
+  // virtual void setPosition( const QString& pos ) { m_position = pos; }
     virtual QString position() { return m_position; }
 
     virtual void setToDelete( bool doit ) { mToDelete = doit; }
@@ -99,6 +99,7 @@ class DocPositionList : public QPtrList<DocPositionBase>
     Geld sumPrice();
     QDomElement domElement( QDomDocument& );
     DocPositionBase *positionFromId( int id );
+    QString posNumber( DocPositionBase* );
   protected:
     int compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 );
 
@@ -107,5 +108,7 @@ class DocPositionList : public QPtrList<DocPositionBase>
 };
 
 typedef QValueListIterator<DocPositionList> DocPositionListIterator;
+typedef QValueListConstIterator<DocPositionList> DocPositionListConstIterator;
+
 typedef QGuardedPtr<DocPositionBase> DocPositionGuardedPtr;
 #endif

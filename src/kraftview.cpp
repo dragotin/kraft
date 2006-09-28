@@ -71,6 +71,7 @@
 #include "addressselection.h"
 #include "kraftdocheaderedit.h"
 #include "kraftdocfooteredit.h"
+#include "inserttempldialog.h"
 
 #include <qtimer.h>
 
@@ -504,13 +505,22 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
     kdDebug() << "setting state to NEW" << endl;
     w->slotSetState( PositionViewWidget::New );
   }
-  mPositionWidgetList.append( w );
+  mPositionWidgetList.insert( pos,  w );
 
   /* do resizing and add the widget to the scrollview and move it to the final place */
   m_positionScroll->resizeContents( cw,
                                     mPositionWidgetList.count() * w->height()+1 );
+
+  /* If the new pos is not appended, we have to move all the following on height unit down */
+  if ( ( unsigned )pos != mPositionWidgetList.count() ) {
+    PositionViewWidget *vw;
+    for ( vw = mPositionWidgetList.at( pos+1 ); vw; vw = mPositionWidgetList.next() ) {
+      m_positionScroll->moveChild( vw, 0, m_positionScroll->childY( vw ) + w->height() );
+    }
+  }
+
   m_positionScroll->addChild( w, 0, 0 );
-  w->setPosition( dp );
+  w->setDocPosition( dp );
   w->setOrdNumber( 1 + pos );
   int y = pos * w->height();
   m_positionScroll->moveChild( w, 0, y );
@@ -529,32 +539,9 @@ void KraftView::refreshPostCard()
                                            dStr, m_headerEdit->m_postAddressEdit->text(),
                                            getDocument()->ident(),
                                            m_headerEdit->m_teEntry->text() );
-    DocPositionList list;
-    PositionViewWidget *widget;
-    for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
-      DocPositionBase *dpb = widget->position();
-      DocPosition *dp = new DocPosition( );
-      dp->setDbId( dpb->dbId().toInt() );
-      dp->setPosition( dpb->position() );
-      dp->setToDelete( dpb->toDelete() );
 
-      dp->setText( widget->m_teFloskel->text() );
+    mAssistant->postCard()->setPositions( currentPositionList() );
 
-      QString h = widget->m_cbUnit->currentText();
-      int eId = UnitManager::getUnitIDSingular( h );
-      Einheit e = UnitManager::getUnit( eId );
-      dp->setUnit( e );
-
-      double v = widget->m_sbUnitPrice->value();
-      dp->setUnitPrice( Geld( v ) );
-
-      v = widget->m_sbAmount->value();
-      dp->setAmount( v );
-
-      list.append( dp );
-    }
-    mAssistant->postCard()->setPositions( list );
-    list.clear();
     mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
                                            m_footerEdit->m_cbGreeting->currentText() );
 
@@ -741,16 +728,54 @@ void KraftView::slotAddPosition( DocPosition *selectedDP )
   int newpos = mPositionWidgetList.count();
   kdDebug() << "Adding Position at position " << newpos << endl;
 
+  InsertTemplDialog dia( this );
   DocPosition *dp = new DocPosition();
   if ( selectedDP ) {
     *dp = *selectedDP;
+    dia.setDocPosition( selectedDP );
   }
+  dia.setPositionList( currentPositionList(), newpos );
 
-  dp->setPosition( QString::number( newpos+1 ) ) ;
-  PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
+  if ( dia.exec() ) {
+    *dp = dia.docPosition();
+    newpos = dp->position().toInt();
 
-  slotFocusPosition( widget, 1+newpos );
-  refreshPostCard();
+    kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
+
+    PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
+
+    slotFocusPosition( widget, 1+newpos );
+    refreshPostCard();
+  }
+}
+
+DocPositionList KraftView::currentPositionList()
+{
+    DocPositionList list;
+    PositionViewWidget *widget;
+    for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
+      DocPositionBase *dpb = widget->position();
+      DocPosition *dp = new DocPosition( );
+      dp->setDbId( dpb->dbId().toInt() );
+      // dp->setPosition( dpb->position() );
+      dp->setToDelete( dpb->toDelete() );
+
+      dp->setText( widget->m_teFloskel->text() );
+
+      QString h = widget->m_cbUnit->currentText();
+      int eId = UnitManager::getUnitIDSingular( h );
+      Einheit e = UnitManager::getUnit( eId );
+      dp->setUnit( e );
+
+      double v = widget->m_sbUnitPrice->value();
+      dp->setUnitPrice( Geld( v ) );
+
+      v = widget->m_sbAmount->value();
+      dp->setAmount( v );
+
+      list.append( dp );
+    }
+    return list;
 }
 
 void KraftView::slotShowCatalog( bool on )
@@ -857,9 +882,7 @@ void KraftView::savePositions()
       return;
     }
 
-    if( h != pos->position() ) {
-      pos->setPosition( h );
-    }
+    // pos->setPosition( h );
 
     if( widget->deleted() ) {
       pos->setToDelete( true );

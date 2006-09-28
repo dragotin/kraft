@@ -48,7 +48,8 @@ void DocPostCard::setPositions( DocPositionList posList )
   for( dpb = posList.first(); dpb; dpb = posList.next() ) {
      if( dpb->type() == DocPositionBase::Position ) {
       DocPosition *dp = static_cast<DocPosition*>(dpb);
-      mPositions += "<tr><td width=\"20px\" align=\"right\" valign=\"top\">" + dp->position() + ".</td>";
+      mPositions += "<tr><td width=\"20px\" align=\"right\" valign=\"top\">";
+      mPositions += posList.posNumber( dpb ) + ".</td>";
       mPositions += "<td>" + dp->text() + "</td>";
       mPositions += "<td width=\"50px\" align=\"right\">" + dp->overallPrice().toString() + "</td></tr>";
     }

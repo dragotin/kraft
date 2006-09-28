@@ -146,7 +146,6 @@ class KraftDoc : public QObject
     void slotRemovePosition( int );
     void slotMoveUpPosition( int );
     void slotMoveDownPosition( int );
-    int renumberPositions();
   private:
     /** the list of the views currently connected to the document */
     QList<KraftView> *pViewList;

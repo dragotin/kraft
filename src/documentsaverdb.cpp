@@ -255,7 +255,6 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
         kdDebug() << "loading document position for document id " << id << endl;
         DocPosition *dp = doc->createPosition();
         dp->setDbId( cur.value("positionID").toInt() );
-        dp->setPosition( cur.value("ordNumber").toString() );
         dp->setText( cur.value("text").toString() );
         dp->setAmount( cur.value("amount").toDouble() );
 
