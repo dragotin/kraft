@@ -7,6 +7,13 @@
       <label>Do Database Initialisation</label>
       <default>true</default>
     </entry>
+    <entry name="DoXmlArchive" type="Bool">
+      <label>Do XML archiving of documents they're printed?</label>
+      <default>true</default>
+    </entry>
+    <entry name="XmlArchivePath" type="String">
+      <label>Where Kraft stores the XML archive documents. If empty, KDEHOME/share/apps is used.</label>
+    </entry>
   </group>
   <group name="WindowSizes">
     <entry name="docViewSize" type="Size">

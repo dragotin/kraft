@@ -107,8 +107,7 @@ class DocPositionList : public QPtrList<DocPositionBase>
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
 };
 
-typedef QValueListIterator<DocPositionList> DocPositionListIterator;
-typedef QValueListConstIterator<DocPositionList> DocPositionListConstIterator;
+typedef QPtrListIterator<DocPositionList> DocPositionListIterator;
 
 typedef QGuardedPtr<DocPositionBase> DocPositionGuardedPtr;
 #endif

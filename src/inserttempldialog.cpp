@@ -64,7 +64,6 @@ void InsertTemplDialog::setPositionList( DocPositionList list, int intendedPos )
   DocPositionBase *dpb;
   QStringList strList;
 
-  int no = 1;
   for ( dpb = list.first(); dpb; dpb = list.next() ) {
     DocPosition *dp = static_cast<DocPosition*>( dpb );
     QString h = QString( "%1. %2" ).arg( list.posNumber( dp ) ).arg( dp->text() );

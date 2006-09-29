@@ -17,8 +17,12 @@
 #include <qsqlcursor.h>
 #include <qsqlrecord.h>
 #include <qsqlindex.h>
+#include <qfile.h>
+#include <qtextstream.h>
 
 #include <kstaticdeleter.h>
+#include <kstandarddirs.h>
+
 #include <kdebug.h>
 
 #include "archiveman.h"
@@ -26,6 +30,7 @@
 #include "kraftdb.h"
 #include "unitmanager.h"
 #include "dbids.h"
+#include "kraftsettings.h"
 
 static KStaticDeleter<ArchiveMan> selfDeleter;
 
@@ -52,35 +57,12 @@ ArchiveMan::~ArchiveMan()
 dbID ArchiveMan::archiveDocument( KraftDoc *doc )
 {
   if( ! doc ) return dbID();
-    
-  QDomDocument xmldoc( "kraftdocument" );
-  QDomElement root = xmldoc.createElement( "kraftdocument" );
-  xmldoc.appendChild( root );
-  QDomElement cust = xmldoc.createElement( "client" );
-  root.appendChild( cust );
-  cust.appendChild( xmlTextElement( xmldoc, "address", doc->address() ) );
-  cust.appendChild( xmlTextElement( xmldoc, "clientId", doc->addressUid() ) );
-  
-  QDomElement docElem = xmldoc.createElement( "docframe" );
-  root.appendChild( docElem );
-  docElem.appendChild( xmlTextElement( xmldoc, "docType", doc->docType() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "ident", doc->ident() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "preText", doc->preText() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "postText", doc->postText() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "salut", doc->salut() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
-  
-  docElem.appendChild( xmlTextElement( xmldoc, "date", 
-                    KGlobal().locale()->formatDate( doc->date() ) ) );
-  
-  root.appendChild( doc->positions().domElement( xmldoc ) );
-  
-  QString xml = xmldoc.toString();
-  kdDebug() << "Resulting XML: " << xml << endl;
-  
-  dbID archID = archiveDocumentDb( doc );
 
-  return archID;
+  mDomDoc = archiveDocumentXml( doc );
+
+  mCachedDocId = archiveDocumentDb( doc );
+
+  return mCachedDocId;
 }
 
 QDomElement ArchiveMan::xmlTextElement( QDomDocument doc, const QString& name, const QString& value )
@@ -89,6 +71,55 @@ QDomElement ArchiveMan::xmlTextElement( QDomDocument doc, const QString& name, c
   QDomText t = doc.createTextNode( value );
   elem.appendChild( t );
   return elem;
+}
+
+QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc )
+{
+  QDomDocument xmldoc( "kraftdocument" );
+  QDomElement root = xmldoc.createElement( "kraftdocument" );
+  xmldoc.appendChild( root );
+  QDomElement cust = xmldoc.createElement( "client" );
+  root.appendChild( cust );
+  cust.appendChild( xmlTextElement( xmldoc, "address", doc->address() ) );
+  cust.appendChild( xmlTextElement( xmldoc, "clientId", doc->addressUid() ) );
+
+  QDomElement docElem = xmldoc.createElement( "docframe" );
+  root.appendChild( docElem );
+  docElem.appendChild( xmlTextElement( xmldoc, "docType", doc->docType() ) );
+  docElem.appendChild( xmlTextElement( xmldoc, "ident", doc->ident() ) );
+  docElem.appendChild( xmlTextElement( xmldoc, "preText", doc->preText() ) );
+  docElem.appendChild( xmlTextElement( xmldoc, "postText", doc->postText() ) );
+  docElem.appendChild( xmlTextElement( xmldoc, "salut", doc->salut() ) );
+  docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
+
+  docElem.appendChild( xmlTextElement( xmldoc, "date",
+                                       KGlobal().locale()->formatDate( doc->date() ) ) );
+
+  root.appendChild( doc->positions().domElement( xmldoc ) );
+
+  QString xml = xmldoc.toString();
+  // kdDebug() << "Resulting XML: " << xml << endl;
+
+  QString path = KraftSettings::self()->xmlArchivePath();
+  if ( path.isEmpty() ) {
+    KStandardDirs stdDirs;
+    path = stdDirs.saveLocation( "data", "kraft/archiveXml", true );
+  }
+
+  QString xmlFile = QString( "%1%2.xml" ).arg( path ).arg( doc->ident() );
+  kdDebug() << "Storing to " << xmlFile << endl;
+
+  if ( KraftSettings::self()->doXmlArchive() ) {
+    QFile file( xmlFile );
+    if ( file.open( IO_WriteOnly ) ) {
+      QTextStream stream( &file );
+      stream << xml << "\n";
+      file.close();
+    } else {
+      kdDebug() << "Saving failed" << endl;
+    }
+  }
+  return xmldoc ;
 }
 
 dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
@@ -111,7 +142,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
   +---------------+--------------+------+-----+-------------------+----------------+
 */
     if( ! doc ) return dbID();
-    
+
     QSqlCursor cur("archdoc");
     cur.setMode( QSqlCursor::Writable );
     QSqlRecord *record = 0;
@@ -128,7 +159,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "goodbye", doc->goodbye() );
     record->setValue( "printDate", "NOW()" );
     record->setValue( "date", doc->date() );
-    record->setValue( "pretext", doc->preText() );    
+    record->setValue( "pretext", doc->preText() );
     record->setValue( "posttext", doc->postText() );
 
     cur.insert();
@@ -167,9 +198,9 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
     for( dpb = posList.first(); dpb; dpb = posList.next() ) {
 	if( dpb->type() == DocPositionBase::Position ) {
 	    DocPosition *dp = static_cast<DocPosition*>(dpb);
-	    
+
 	    record = cur.primeInsert();
-	    
+
 	    record->setValue( "archDocID", archDocId );
 	    record->setValue( "ordNumber", dp->position() );
 	    record->setValue( "text", dp->text() );
@@ -177,7 +208,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 	    record->setValue( "unit", dp->unit().einheit( dp->amount() ) );
 	    record->setValue( "price", dp->unitPrice().toDouble() );
 	    record->setValue( "vat", 16.0 ); // FIXME !!
-	    
+
 	    cur.insert();
 	    cnt++;
 	}

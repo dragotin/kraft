@@ -1,7 +1,7 @@
 /***************************************************************************
-                       archiveman.h  - Archive Manager
+          archdocposition.cpp  - a position in an archived document
                              -------------------
-    begin                : July 2006
+    begin                : Sep. 2006
     copyright            : (C) 2006 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
@@ -14,38 +14,56 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef ARCHIVEMAN_H
-#define ARCHIVEMAN_H
 
-#include <qdom.h>
+// include files for Qt
+#include <qvaluelist.h>
+#include <qstring.h>
 
-#include "dbids.h"
+// include files for KDE
+#include <klocale.h>
+#include <kdebug.h>
+#include <kglobal.h>
 
-class KraftDoc;
-class dbID;
-class QDomDocument;
+// application specific includes
+#include "einheit.h"
+#include "geld.h"
+#include "archdocposition.h"
 
-class ArchiveMan
+/**
+@author Klaas Freitag
+*/
+
+
+ArchDocPosition::ArchDocPosition()
+  : m_amount( 0 )
 {
-  public:
-    ~ArchiveMan();
 
-    static ArchiveMan *self();
-    dbID archiveDocument( KraftDoc* );
+}
 
-  protected:
-    virtual QDomDocument archiveDocumentXml( KraftDoc* );
-    virtual dbID archiveDocumentDb( KraftDoc* );
+Geld ArchDocPosition::overallPrice()
+{
+  Geld g;
+  g = unitPrice() * m_amount;
 
-  private:
-    ArchiveMan();
-    QDomElement xmlTextElement( QDomDocument, const QString&, const QString& );
-    int archivePos( int, KraftDoc* );
+  return g;
+}
 
-    QDomDocument mDomDoc;
-    dbID mCachedDocId;
+ArchDocPositionList::ArchDocPositionList()
+    : QValueList<ArchDocPosition>()
+{
 
-    static ArchiveMan *mSelf;
-};
+}
 
-#endif
+Geld ArchDocPositionList::sumPrice()
+{
+    Geld g;
+
+    iterator it;
+    for ( it = begin(); it != end(); ++it ) {
+      g += ( *it ).overallPrice();
+    }
+
+    return g;
+}
+
+
