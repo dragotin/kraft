@@ -18,14 +18,10 @@
 #define ARCHDOCPOSITION_H
 
 // include files for Qt
-#include <qptrlist.h>
 #include <qstring.h>
-#include <qguardedptr.h>
-#include <qobject.h>
+#include <qvaluelist.h>
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
 
 // application specific includes
 #include "einheit.h"
@@ -33,34 +29,37 @@
 #include "dbids.h"
 
 
+class ArchDoc;
 /**
 @author Klaas Freitag
 */
 
 class ArchDocPosition
 {
+    friend class ArchDoc;
   public:
     ArchDocPosition();
     ~ArchDocPosition(){};
 
-    QString posNumber() const { return m_posNo; }
+    QString posNumber() const { return mPosNo; }
 
-    QString text() const { return m_text; } ;
+    QString text() const { return mText; } ;
 
-    Einheit unit() const { return m_unit; }
+    QString unit() const { return mUnit; }
 
-    Geld unitPrice() const { return m_unitPrice; }
+    Geld unitPrice() const { return mUnitPrice; }
     Geld overallPrice();
 
-    double amount() { return m_amount; }
+    double amount() { return mAmount; }
+    double vat() { return mVat; }
 
   private:
-    QString m_text;
-    QString m_posNo;
-    Einheit m_unit;
-    Geld    m_unitPrice;
-    double  m_amount;
-    double  m_vat;
+    QString mText;
+    QString mPosNo;
+    QString mUnit;
+    Geld    mUnitPrice;
+    double  mAmount;
+    double  mVat;
     // No calculation yet
 };
 
@@ -71,7 +70,6 @@ class ArchDocPositionList : public QValueList<ArchDocPosition>
     Geld sumPrice();
 };
 
-typedef QValueListIterator<ArchDocPositionList> ArchDocPositionListIterator;
 
 #endif
 

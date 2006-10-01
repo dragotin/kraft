@@ -142,6 +142,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
   +---------------+--------------+------+-----+-------------------+----------------+
 */
     if( ! doc ) return dbID();
+    if( ! KraftDB::getDB() ) return 0;
 
     QSqlCursor cur("archdoc");
     cur.setMode( QSqlCursor::Writable );
@@ -161,8 +162,8 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "date", doc->date() );
     record->setValue( "pretext", doc->preText() );
     record->setValue( "posttext", doc->postText() );
-
     cur.insert();
+
     dbID id = KraftDB::getLastInsertID();
     archivePos( id.toInt(), doc );
 
@@ -190,19 +191,20 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 
     QSqlCursor cur("archdocpos");
     cur.setMode( QSqlCursor::Writable );
-    QSqlRecord *record = 0;
+
     int cnt = 0;
     DocPositionBase *dpb;
     DocPositionList posList = doc->positions();
 
     for( dpb = posList.first(); dpb; dpb = posList.next() ) {
+      kdDebug() << "Archiving pos for " << archDocId << endl;
 	if( dpb->type() == DocPositionBase::Position ) {
 	    DocPosition *dp = static_cast<DocPosition*>(dpb);
 
-	    record = cur.primeInsert();
+	    QSqlRecord *record = cur.primeInsert();
 
 	    record->setValue( "archDocID", archDocId );
-	    record->setValue( "ordNumber", dp->position() );
+	    record->setValue( "ordNumber", 1+cnt /* dp->position() */ );
 	    record->setValue( "text", dp->text() );
 	    record->setValue( "amount", dp->amount() );
 	    record->setValue( "unit", dp->unit().einheit( dp->amount() ) );
@@ -210,8 +212,13 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 	    record->setValue( "vat", 16.0 ); // FIXME !!
 
 	    cur.insert();
+            kdDebug() << "SQL-Error: " << cur.lastError().text() << endl;
+            dbID id = KraftDB::getLastInsertID();
+            kdDebug() << "Inserted for id " << id.toString() << endl;
 	    cnt++;
-	}
+	} else {
+          kdDebug() << "Unknown position type, can not archive" << endl;
+        }
     }
     return cnt;
 }

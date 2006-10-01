@@ -35,7 +35,7 @@
 
 
 ArchDocPosition::ArchDocPosition()
-  : m_amount( 0 )
+  : mAmount( 0 )
 {
 
 }
@@ -43,7 +43,7 @@ ArchDocPosition::ArchDocPosition()
 Geld ArchDocPosition::overallPrice()
 {
   Geld g;
-  g = unitPrice() * m_amount;
+  g = unitPrice() * mAmount;
 
   return g;
 }

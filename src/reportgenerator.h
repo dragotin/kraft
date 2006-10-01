@@ -36,18 +36,21 @@ public:
 
   static ReportGenerator *self();
   void docPreview( const dbID& );
-  void createRml( DocGuardedPtr );
   void runTrml2Pdf( const QString&, const QString& );
 
 public slots:
   void slotViewerClosed( KProcess * );
+  void createRmlFromArchive( dbID );
+  void createRmlFromDoc( DocGuardedPtr );
 
 protected slots:
   void slotWroteStdin( KProcess* );
   void slotRecStdout( KProcess *, char *, int );
   void slotRecStderr( KProcess *, char *, int );
+  QString readTemplate( const QString& );
 private:
-  QString getTemplate( DocGuardedPtr );
+  QString fillupTemplateFromDoc( DocGuardedPtr );
+  QString fillupTemplateFromArchive( const dbID& );
   int replaceTag( QString&, const QString&, const QString& );
 
   ReportGenerator();

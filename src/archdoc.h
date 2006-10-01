@@ -28,9 +28,9 @@
 
 // include files for KDE
 #include "archdocposition.h"
+#include "geld.h"
+#include "dbids.h"
 
-class dbID;
-class Geld;
 
 class ArchDoc
 {
@@ -70,6 +70,9 @@ public:
   Geld vatSum();
 
 private:
+  void loadPositions( const QString& );
+  void loadFromDb( dbID );
+
   QString mAddress;
   QString mPreText;
   QString mPostText;
@@ -78,9 +81,12 @@ private:
   QString mGoodbye;
   QString mIdent;
 
-  QDate   mDate;
+  QDate     mDate;
+  QDateTime mPrintDate;
+
   ArchDocPositionList mPositions;
   dbID    mDocID;
+  int     mState;
 };
 
 #endif // ARCHDOC_H

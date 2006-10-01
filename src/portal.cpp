@@ -219,10 +219,13 @@ void Portal::slotPrintDocument()
     ArchiveMan *archman = ArchiveMan::self();
     dbID archID = archman->archiveDocument( docPtr );
 
-    mReportGenerator = ReportGenerator::self();
-    // mReportGenerator->docPreview( archID );
-    mReportGenerator->createRml( docPtr ); // FIXME: Operate on archived doc
+    if ( archID.isOk() ) {
+      mReportGenerator = ReportGenerator::self();
+      const QString id = docPtr->ident();
 
+      // mReportGenerator->docPreview( id );
+      mReportGenerator->createRmlFromArchive( archID ); // work on document identifier.
+    }
   }
 }
 

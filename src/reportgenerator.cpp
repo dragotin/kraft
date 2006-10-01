@@ -27,6 +27,7 @@
 #include <ktempfile.h>
 #include <kurl.h>
 #include <krun.h>
+#include <kmessagebox.h>
 
 #include "reportgenerator.h"
 #include "kraftdoc.h"
@@ -37,7 +38,8 @@
 #include "katalogsettings.h"
 #include "docposition.h"
 #include "einheit.h"
-#include <kmessagebox.h>
+#include "archdoc.h"
+
 
 static KStaticDeleter<ReportGenerator> selfDeleter;
 
@@ -62,9 +64,9 @@ ReportGenerator::~ReportGenerator()
   kdDebug() << "ReportGen is destroyed!" << endl;
 }
 
-void ReportGenerator::createRml( DocGuardedPtr doc )
+void ReportGenerator::createRmlFromDoc( DocGuardedPtr doc )
 {
-  const QString templ = getTemplate( doc );
+  const QString templ = fillupTemplateFromDoc( doc );
   // kdDebug() << "Report BASE:\n" << templ << endl;
 
   KTempFile temp( QString(), ".trml" );
@@ -77,12 +79,25 @@ void ReportGenerator::createRml( DocGuardedPtr doc )
   runTrml2Pdf( temp.name(),  doc->ident() );
 }
 
-#define TAG( FOO )  QString( "<!-- %1 -->").arg( FOO )
+void ReportGenerator::createRmlFromArchive( dbID id )
+{
+  const QString templ = fillupTemplateFromArchive( id );
+  // kdDebug() << "Report BASE:\n" << templ << endl;
 
-QString ReportGenerator::getTemplate( DocGuardedPtr doc )
+  KTempFile temp( QString(), ".trml" );
+
+  QTextStream *s = temp.textStream();
+  *s << templ;
+  temp.close();
+
+  kdDebug() << "Wrote rml to " << temp.name() << endl;
+  runTrml2Pdf( temp.name(), id.toString()  );
+}
+
+QString ReportGenerator::readTemplate( const QString& type )
 {
   KStandardDirs stdDirs;
-  QString findFile = "kraft/reports/" + doc->docType().lower() + ".trml";
+  QString findFile = "kraft/reports/" + QString( type ).lower() + ".trml";
 
   QString tmplFile = stdDirs.findResource( "data", findFile );
   kdDebug() << "Loading create file from " << findFile << endl;
@@ -94,7 +109,127 @@ QString ReportGenerator::getTemplate( DocGuardedPtr doc )
   }
 
   QTextStream ts( &f );
-  QString tmpl = ts.read();
+  QString re = ts.read();
+  f.close();
+
+  return re;
+}
+
+#define TAG( FOO )  QString( "<!-- %1 -->").arg( FOO )
+
+QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
+{
+  ArchDoc archive( id );
+
+  QString tmpl = readTemplate( archive.docType() );
+
+  /* replace the placeholders */
+  /* A placeholder has the format <!-- %VALUE --> */
+
+  /* find the position loop */
+  int posStart = tmpl.find(
+    TAG( "POSITION_LOOP" )
+    );
+  int posEnd   = tmpl.find(
+    TAG( "POSITION_LOOP_END" )
+    );
+
+  QString loop;
+  if ( posStart > 0 && posEnd > 0 && posStart < posEnd ) {
+    loop = tmpl.mid( posStart+22,  posEnd-posStart-22 );
+    kdDebug() << "Loop part: " << loop << endl;
+  }
+
+  ArchDocPositionList posList = archive.positions();
+  QString loopResult;
+  QString h;
+
+  if ( ! loop.isEmpty() ) {
+
+    ArchDocPositionList::iterator it;
+    for ( it = posList.begin(); it != posList.end(); ++it ) {
+      ArchDocPosition pos (*it);
+
+      QString loopPart = loop;
+      replaceTag( loopPart,
+                  TAG( "POS_NUMBER" ),
+                  pos.posNumber() );
+
+      replaceTag( loopPart,
+                  TAG( "POS_TEXT" ),
+                  pos.text() );
+
+      h.setNum( pos.amount(), 'f', 2 );
+      replaceTag( loopPart,
+                  TAG( "POS_AMOUNT" ),
+                  h );
+
+      replaceTag( loopPart,
+                  TAG( "POS_UNIT" ),
+                  pos.unit() );
+
+      replaceTag( loopPart,
+                  TAG( "POS_UNITPRICE" ),
+                  pos.unitPrice().toString() );
+
+      replaceTag( loopPart,
+                  TAG( "POS_TOTAL" ),
+                  pos.overallPrice().toString() );
+
+      loopResult.append( loopPart );
+    }
+  }
+
+  tmpl.replace( posStart+22, posEnd-posStart-22, loopResult );
+
+  /* now replace stuff in the whole document */
+  replaceTag( tmpl,
+              TAG( "DATE" ),
+              KGlobal().locale()->formatDate( archive.date() ) );
+  replaceTag( tmpl,
+              TAG( "DOCTYPE" ),
+              archive.docType() );
+  replaceTag( tmpl,
+              TAG( "ADDRESS" ),
+              archive.address() );
+  replaceTag( tmpl,
+              TAG( "DOCID" ),
+              archive.ident() );
+  replaceTag( tmpl,
+              TAG( "SALUT" ),
+              archive.salut() );
+  replaceTag( tmpl,
+              TAG( "GOODBYE" ),
+              archive.goodbye() );
+  replaceTag( tmpl,
+              TAG( "PRETEXT" ),
+              archive.preText() );
+  replaceTag( tmpl,
+              TAG( "POSTTEXT" ),
+              archive.postText() );
+
+  replaceTag( tmpl,
+              TAG( "BRUTTOSUM" ),
+              archive.bruttoSum().toString() );
+  replaceTag( tmpl,
+              TAG( "NETTOSUM" ),
+              archive.nettoSum().toString() );
+
+  h.setNum( archive.vat(), 'f', 1 );
+  replaceTag( tmpl,
+              TAG( "VAT" ),
+              h );
+  replaceTag( tmpl,
+              TAG( "VATSUM" ),
+              archive.vatSum().toString() );
+
+  return tmpl;
+}
+
+QString ReportGenerator::fillupTemplateFromDoc( DocGuardedPtr doc )
+{
+
+  QString tmpl = readTemplate( doc->docType() );
 
   /* replace the placeholders */
   /* A placeholder has the format <!-- %VALUE --> */
