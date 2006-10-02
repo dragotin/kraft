@@ -1,11 +1,3 @@
-#ifndef DOCDIGEST_H
-#define DOCDIGEST_H
-
-#include <qdatetime.h>
-#include <qvaluelist.h>
-
-#include "dbids.h"
-
 /***************************************************************************
                           docdigest.h  -
                              -------------------
@@ -22,32 +14,42 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef DOCDIGEST_H
+#define DOCDIGEST_H
 
+#include <qdatetime.h>
+#include <qvaluelist.h>
+
+#include "dbids.h"
+#include "archdoc.h"
 
 class DocDigest
 {
-  
+
 public:
   DocDigest( dbID id, const QString& type, const QString& clientID );
   DocDigest();
-  
+
   QString clientName();
   void setClientId( const QString& id ) { mClientId = id; }
-  
+
   QString type() { return mType; }
   void setType( const QString& t ) { mType = t; }
-  
+
   QString date();
   void setDate( const QDate& date ) { mDate = date; }
-  
+
   QString lastModified();
   void setLastModified( const QDate& date ) { mLastModified = date; }
-  
-  QString id()   { return mID.toString(); } 
+
+  QString id()   { return mID.toString(); }
   void setId( dbID id ) { mID = id; }
-  
-  QString ident()   { return mIdent; } 
+
+  QString ident()   { return mIdent; }
   void setIdent( const QString& ident ) { mIdent = ident; }
+
+  void addArchDocDigest( const ArchDocDigest& );
+  ArchDocDigestList archDocDigestList();
 protected:
   dbID mID;
   QString mType;
@@ -55,6 +57,7 @@ protected:
   QString mIdent;
   QDate   mLastModified;
   QDate   mDate;
+  ArchDocDigestList mArchDocs;
 };
 
 typedef QValueList<DocDigest> DocDigestList;

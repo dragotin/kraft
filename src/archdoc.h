@@ -25,6 +25,7 @@
 // include files for QT
 #include <qstring.h>
 #include <qdatetime.h>
+#include <qvaluelist.h>
 
 // include files for KDE
 #include "archdocposition.h"
@@ -87,6 +88,42 @@ private:
   ArchDocPositionList mPositions;
   dbID    mDocID;
   int     mState;
+};
+
+class ArchDocDigest
+{
+public:
+
+  /** Constructor for the fileclass of the application */
+  ArchDocDigest();
+  ArchDocDigest( QDateTime, int, dbID );
+  /** Destructor for the fileclass of the application */
+  ~ArchDocDigest();
+
+  QDateTime printDate() {
+    return mPrintDate;
+  }
+
+  int archDocState() {
+    return mState;
+  }
+
+  dbID archDocId() {
+    return mArchDocId;
+  }
+
+  QString printDateString() const;
+
+private:
+  QDateTime mPrintDate;
+  int       mState;
+  dbID      mArchDocId;
+};
+
+class ArchDocDigestList : public QValueList<ArchDocDigest>
+{
+public:
+  ArchDocDigestList();
 };
 
 #endif // ARCHDOC_H

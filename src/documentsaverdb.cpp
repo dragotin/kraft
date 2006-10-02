@@ -263,6 +263,15 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
     }
 }
 
+QString DocumentSaverDB::generateNewDocumentId() const
+{
+  QString re;
+
+  QDateTime d = QDateTime::currentDateTime();
+  re = QString::number( d.toTime_t() );
+
+  return re;
+}
 
 DocumentSaverDB::~DocumentSaverDB( )
 {

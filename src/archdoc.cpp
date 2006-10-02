@@ -19,6 +19,8 @@
 
 
 // include files for KDE
+#include <kglobal.h>
+
 #include <klocale.h>
 #include <kdebug.h>
 // application specific includes
@@ -121,6 +123,40 @@ void ArchDoc::loadPositions( const QString& archDocId )
 
     mPositions.append( pos );
   }
+}
+
+
+/* ###################################################################### */
+
+ArchDocDigest::ArchDocDigest()
+{
+
+}
+
+ArchDocDigest::ArchDocDigest( QDateTime dt,  int s, dbID id )
+  : mPrintDate( dt ),
+    mState( s ),
+    mArchDocId( id )
+{
+
+}
+
+ArchDocDigest::~ArchDocDigest()
+{
+
+}
+
+QString ArchDocDigest::printDateString() const
+{
+  return KGlobal().locale()->formatDateTime( mPrintDate, true );
+}
+
+/* ###################################################################### */
+
+ArchDocDigestList::ArchDocDigestList ()
+  :QValueList<ArchDocDigest>()
+{
+
 }
 
 

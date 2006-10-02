@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <qsqlquery.h>
+#include <qsqlcursor.h>
 
 #include <kstaticdeleter.h>
 #include <kdebug.h>
@@ -46,7 +47,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
 {
   DocDigestList ret;
 
-  QString qStr ="SELECT docID, ident, docType, clientID, lastModified, date FROM document ORDER BY date,lastModified desc";
+  QString qStr ="SELECT docID, ident, docType, clientID, lastModified, date FROM document ORDER BY date desc";
 
   if( limit > 0 )
     qStr += " LIMIT " + QString::number( limit );
@@ -54,6 +55,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
   kdDebug() << "Sending sql string " << qStr << endl;
 
   QSqlQuery query( qStr, KraftDB::getDB() );
+  QSqlCursor archCur( "archdoc" );
 
   if( query.isActive() ) {
     while( query.next() ) {
@@ -66,7 +68,17 @@ DocDigestList DocumentMan::latestDocs( int limit )
       dig.setLastModified( query.value(4).toDate() );
       dig.setDate(     query.value(5).toDate() );
       kdDebug() << "Adding document "<< ident << " to the latest list" << endl;
-      ret.append( dig );
+
+      archCur.select( "ident='" + ident +"'" );
+      while ( archCur.next() ) {
+        int id = archCur.value( "archDocID" ).toInt();
+        QDateTime dt = archCur.value( "printDate" ).toDateTime();
+        int state = archCur.value( "state" ).toInt();
+        dig.addArchDocDigest( ArchDocDigest( dt, state,  id ) );
+      }
+
+      ret.prepend( dig );
+
     }
   }
 

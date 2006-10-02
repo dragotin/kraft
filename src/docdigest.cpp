@@ -58,3 +58,13 @@ QString DocDigest::clientName()
   return name;
 }
 
+void DocDigest::addArchDocDigest( const ArchDocDigest& digest )
+{
+  mArchDocs.append( digest );
+}
+
+ArchDocDigestList DocDigest::archDocDigestList()
+{
+  return mArchDocs;
+}
+

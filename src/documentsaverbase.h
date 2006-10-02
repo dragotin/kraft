@@ -33,14 +33,15 @@ class KraftDoc;
 
 class DocumentSaverBase : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    DocumentSaverBase();
-    virtual ~DocumentSaverBase();
+  DocumentSaverBase();
+  virtual ~DocumentSaverBase();
 
-    virtual bool saveDocument( KraftDoc* ) = 0;
-    virtual void load( const QString&, KraftDoc * ) = 0;
+  virtual bool saveDocument( KraftDoc* ) = 0;
+  virtual void load( const QString&, KraftDoc * ) = 0;
+  virtual QString generateNewDocumentId() const = 0;
 };
 
 #endif
