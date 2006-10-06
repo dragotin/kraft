@@ -26,6 +26,7 @@
 #include <ktextbrowser.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
+#include <klistview.h>
 
 #include "version.h"
 #include "kraftdb.h"
@@ -221,6 +222,7 @@ void PortalView::documentDigests( QWidget *parent )
 void PortalView::slotBuildView()
 {
   DocumentMan *docman = DocumentMan::self();
+  mDocDigestView->listview()->clear();
   mDocDigestView->addLatestDocs( docman->latestDocs( 10 ) );
 }
 

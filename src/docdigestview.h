@@ -37,6 +37,9 @@ public:
   void addLatestDocs( DocDigestList );
 
   QString currentDocumentId();
+  KListView *listview() {
+    return mListView;
+  }
 public slots:
   void slotNewDoc();
   void slotDocOpenRequest( QListViewItem * );

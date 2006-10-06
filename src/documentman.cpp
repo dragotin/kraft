@@ -85,6 +85,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
   return ret;
 }
 
+
 DocGuardedPtr DocumentMan::createDocument()
 {
   DocGuardedPtr doc = new KraftDoc( );
