@@ -109,6 +109,8 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
   upq.prepare( "UPDATE docposition SET ordNumber = -1 * ordNumber WHERE docID=" +  doc->docID().toString() );
   upq.exec();
 
+  int ordNumber = 1;
+
   for( dpb = posList.first(); dpb; dpb = posList.next() ) {
      if( dpb->type() == DocPositionBase::Position ) {
        DocPosition *dp = static_cast<DocPosition*>(dpb);
@@ -117,6 +119,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
        bool doInsert = true;
 
        int posDbID = dp->dbId().toInt();
+       kdDebug() << "Position DB-Id: " << posDbID << endl;
        if( posDbID > -1 ) {
          const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
          kdDebug() << "Selecting with " << selStr << endl;
@@ -146,11 +149,13 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
        if( record ) {
          kdDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
          record->setValue( "docID",     doc->docID().toInt() );
-         record->setValue( "ordNumber", dp->position() );
+         record->setValue( "ordNumber", ordNumber );
          record->setValue( "text",      dp->text() );
          record->setValue( "amount",    dp->amount() );
          record->setValue( "unit",      dp->unit().id() );
          record->setValue( "price",     dp->unitPrice().toDouble() );
+
+         ordNumber++; // FIXME
 
          if( doInsert ) {
            kdDebug() << "Inserting!" << endl;
