@@ -217,16 +217,6 @@ bool KraftDoc::saveDocument( )
             mPositions.remove();
           }
         }
-        // we sort the position list here again because the setup
-        // routine KraftView::setupPositions uses the sort order
-        // of the position list rather than the position method because
-        // a non trivial position like 1.2, 1.3 etc. can be used more
-        // easy. However the sort-compare method of docpositionlist must
-        // be able to cope with that
-        mPositions.sort();
-        // for( DocPositionBase *dp = mPositions.first(); dp; dp = mPositions.next() ) {
-        //  kdDebug() << "Sorted: " << dp->position() << endl;
-        // }
         modified = false;
     }
     return result;

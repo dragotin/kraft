@@ -181,6 +181,7 @@ class KraftView : public KDialogBase
     void setupPositions();
     void setupFooter();
     void setupTextsView();
+    void setMappingId( QWidget *, int );
 
     PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
 

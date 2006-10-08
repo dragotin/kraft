@@ -469,6 +469,28 @@ void KraftView::redrawDocPositions( )
     redrawSumBox();
 }
 
+void KraftView::setMappingId( QWidget *widget, int pos )
+{
+  mDeleteMapper->removeMappings( widget );
+  mDeleteMapper->setMapping( widget, pos );
+
+  mMoveUpMapper->removeMappings( widget );
+  mMoveUpMapper->setMapping( widget, pos );
+
+  mMoveDownMapper->removeMappings( widget );
+  mMoveDownMapper->setMapping( widget, pos );
+
+  mLockPositionMapper->removeMappings( widget );
+  mLockPositionMapper->setMapping( widget, pos );
+
+  mUnlockPositionMapper->removeMappings( widget );
+  mUnlockPositionMapper->setMapping( widget, pos );
+
+  mMoveDownMapper->removeMappings( widget );
+  mModifiedMapper->setMapping( widget, pos );
+
+}
+
 PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, int pos )
 {
   PositionViewWidget *w = new PositionViewWidget( );
@@ -477,19 +499,14 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   if ( cw < 400 ) cw = 400;
   w->resize( cw, w->height() );
 
-  mDeleteMapper->setMapping( w, pos );
-  mMoveUpMapper->setMapping( w, pos );
-  mMoveDownMapper->setMapping( w, pos );
-  mLockPositionMapper->setMapping( w, pos );
-  mUnlockPositionMapper->setMapping( w, pos );
-  mModifiedMapper->setMapping( w, pos );
-
   connect( w, SIGNAL( deletePosition() ),  mDeleteMapper, SLOT( map() ) );
   connect( w, SIGNAL( moveUp() ),          mMoveUpMapper, SLOT( map() ) );
   connect( w, SIGNAL( moveDown() ),        mMoveDownMapper, SLOT( map() ) );
   connect( w, SIGNAL( lockPosition() ),    mLockPositionMapper, SLOT( map() ) );
   connect( w, SIGNAL( unlockPosition() ),  mUnlockPositionMapper, SLOT( map() ) );
   connect( w, SIGNAL( positionModified()), mModifiedMapper,  SLOT( map() ) );
+
+  setMappingId( w, pos );
 
   connect( w, SIGNAL( positionModified() ), this,
            SLOT( slotModifiedPositions() ) );
@@ -614,10 +631,8 @@ void KraftView::slotMovePositionUp( int pos )
   if( w1 && w2 ) {
     w1->setOrdNumber( pos );  // note: ordnumbers start with 1, thus add one
     w2->setOrdNumber( pos+1 );
-    mMoveUpMapper->removeMappings( w1 );
-    mMoveUpMapper->setMapping( w1, pos-1 );
-    mMoveUpMapper->removeMappings( w2 );
-    mMoveUpMapper->setMapping( w2, pos );
+    setMappingId( w1, pos-1 );
+    setMappingId( w2, pos );
     // int tmpX = m_positionScroll->childX( w1 );
     int tmpY = m_positionScroll->childY( w1 );
 
@@ -651,10 +666,8 @@ void KraftView::slotMovePositionDown( int pos )
     w1->setOrdNumber( pos+2  );
     w2->setOrdNumber( pos+1 );
 
-    mMoveDownMapper->removeMappings( w1 );
-    mMoveDownMapper->setMapping( w1, pos+1 );
-    mMoveDownMapper->removeMappings( w2 );
-    mMoveDownMapper->setMapping( w2, pos );
+    setMappingId( w1, pos+1 );
+    setMappingId( w2, pos );
 
     int tmpY = m_positionScroll->childY( w1 );
     m_positionScroll->moveChild( w1, 0, m_positionScroll->childY( w2 ) );
