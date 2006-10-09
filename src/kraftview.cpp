@@ -486,7 +486,7 @@ void KraftView::setMappingId( QWidget *widget, int pos )
   mUnlockPositionMapper->removeMappings( widget );
   mUnlockPositionMapper->setMapping( widget, pos );
 
-  mMoveDownMapper->removeMappings( widget );
+  mModifiedMapper->removeMappings( widget );
   mModifiedMapper->setMapping( widget, pos );
 
 }
@@ -638,6 +638,8 @@ void KraftView::slotMovePositionUp( int pos )
 
     m_positionScroll->moveChild( w1, 0, m_positionScroll->childY( w2 ) );
     m_positionScroll->moveChild( w2, 0, tmpY );
+
+    refreshPostCard();
   } else {
     kdDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
   }
@@ -672,6 +674,8 @@ void KraftView::slotMovePositionDown( int pos )
     int tmpY = m_positionScroll->childY( w1 );
     m_positionScroll->moveChild( w1, 0, m_positionScroll->childY( w2 ) );
     m_positionScroll->moveChild( w2, 0, tmpY );
+
+    refreshPostCard();
   } else {
     kdDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
   }
@@ -682,6 +686,8 @@ void KraftView::slotDeletePosition( int pos )
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Deleted );
+
+    refreshPostCard();
   }
 }
 
@@ -692,6 +698,7 @@ void KraftView::slotLockPosition( int pos )
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Locked );
+    refreshPostCard();
   }
 }
 
@@ -702,6 +709,7 @@ void KraftView::slotUnlockPosition( int pos )
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Active );
+    refreshPostCard();
   }
 }
 
@@ -771,7 +779,7 @@ DocPositionList KraftView::currentPositionList()
       DocPosition *dp = new DocPosition( );
       dp->setDbId( dpb->dbId().toInt() );
       // dp->setPosition( dpb->position() );
-      dp->setToDelete( dpb->toDelete() );
+      dp->setToDelete( widget->deleted() );
 
       dp->setText( widget->m_teFloskel->text() );
 

@@ -49,15 +49,28 @@ void DocPostCard::setPositions( DocPositionList posList )
      if( dpb->type() == DocPositionBase::Position ) {
       DocPosition *dp = static_cast<DocPosition*>(dpb);
       mPositions += "<tr><td width=\"20px\" align=\"right\" valign=\"top\">";
-      mPositions += posList.posNumber( dpb ) + ".</td>";
-      mPositions += "<td>" + dp->text() + "</td>";
-      mPositions += "<td width=\"50px\" align=\"right\">" + dp->overallPrice().toString() + "</td></tr>";
+
+      if ( dp->toDelete() ) mPositions += "<strike>";
+      mPositions += posList.posNumber( dpb ) + ". ";
+      if ( dp->toDelete() ) mPositions += "</strike>";
+      mPositions += "</td>";
+      mPositions += "<td>";
+      if ( dp->toDelete() ) mPositions += "<strike>";
+      mPositions += dp->text();
+      if ( dp->toDelete() ) mPositions += "</strike>";
+      mPositions += "</td>";
+      mPositions += "<td width=\"50px\" align=\"right\">";
+      if ( dp->toDelete() ) mPositions += "<strike>";
+      mPositions += dp->overallPrice().toString();
+      if ( dp->toDelete() ) mPositions += "</strike>";
+      mPositions += "</td></tr>";
     }
   }
   mPositionCount = posList.count();
   mTotal = posList.sumPrice().toString();
   mPositions += QString( "<tr><td colspan=\"3\" align=\"right\"><b>Total: %1</b></td></tr>" ).arg( mTotal );
   mPositions += "</table>";
+  kdDebug() << "Positions-HTML: " << mPositions << endl;
 }
 
 void DocPostCard::setFooterData( const QString& postText,  const QString& goodbye )
