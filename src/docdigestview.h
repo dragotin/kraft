@@ -23,6 +23,7 @@
 #include "docdigest.h"
 
 class KListView;
+class KListViewItem;
 class FilterHeader;
 
 
@@ -34,7 +35,7 @@ public:
   DocDigestView( QWidget *parent );
   ~DocDigestView();
 
-  void addLatestDocs( DocDigestList );
+  KListViewItem* addChapter( const QString&, DocDigestList, KListViewItem *chapParent = 0 );
 
   QString currentDocumentId();
   KListView *listview() {
@@ -45,7 +46,6 @@ public slots:
   void slotDocOpenRequest( QListViewItem * );
 
 protected slots:
-  void addChapter( const QString&, DocDigestList );
   void slotOpenCurrentDoc();
   void slotCurrentChanged( QListViewItem* );
 signals:

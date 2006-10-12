@@ -62,4 +62,27 @@ protected:
 
 typedef QValueList<DocDigest> DocDigestList;
 typedef QValueListIterator<DocDigestList> DocDigestListIterator;
+
+
+class DocDigestsTimeline
+{
+public:
+  DocDigestsTimeline();
+  DocDigestsTimeline( int,  int );
+
+  int month() { return mMonth; }
+  void setMonth( int m ) { mMonth = m; }
+  int year()  { return mYear;  }
+  void setYear( int y ) { mYear = y; }
+
+  DocDigestList digests() { return mDigests; }
+  void setDigestList( const DocDigestList& );
+  void clearDigestList() { mDigests.clear (); }
+private:
+  int mMonth, mYear;
+  DocDigestList mDigests;
+};
+
+typedef QValueList<DocDigestsTimeline> DocDigestsTimelineList;
+
 #endif

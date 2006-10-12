@@ -40,6 +40,8 @@ DocDigestView::DocDigestView( QWidget *parent )
   box->addLayout( hbox );
   mListView = new KListView( w );
   // mListView->header()->hide();
+  mListView->setRootIsDecorated(  true );
+
   mFilterHeader = new FilterHeader( mListView, w );
   mFilterHeader->showCount( false );
 
@@ -64,16 +66,18 @@ DocDigestView::~DocDigestView()
 
 }
 
-void DocDigestView::addLatestDocs( DocDigestList list )
-{
-  addChapter( i18n( "Latest Documents" ),  list );
-}
-
-void DocDigestView::addChapter( const QString& chapter, DocDigestList list )
+KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList list, KListViewItem *chapParent )
 {
   kdDebug() << "Adding docview chapter " << chapter << " with " << list.size() << " elems" << endl;
-  KListViewItem *chapIt = new KListViewItem( mListView, chapter );
+
+  KListViewItem *chapIt;
+  if ( chapParent ) {
+    chapIt = new KListViewItem( chapParent,  chapter );
+  } else {
+    chapIt = new KListViewItem( mListView, chapter );
+  }
   chapIt->setOpen( true );
+
   DocDigestList::iterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
     KListViewItem *item = new KListViewItem( chapIt,
@@ -89,6 +93,7 @@ void DocDigestView::addChapter( const QString& chapter, DocDigestList list )
 
     }
   }
+  return chapIt;
 }
 
 void DocDigestView::slotNewDoc()

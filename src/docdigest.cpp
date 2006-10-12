@@ -68,3 +68,21 @@ ArchDocDigestList DocDigest::archDocDigestList()
   return mArchDocs;
 }
 
+/* *************************************************************************** */
+
+DocDigestsTimeline::DocDigestsTimeline()
+  :mMonth( 0 ), mYear( 0 )
+{
+
+}
+
+DocDigestsTimeline::DocDigestsTimeline( int m,  int y )
+  :mMonth( m ), mYear( y )
+{
+
+}
+
+void DocDigestsTimeline::setDigestList( const DocDigestList& list )
+{
+  mDigests = list;
+}

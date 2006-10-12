@@ -55,36 +55,90 @@ DocDigestList DocumentMan::latestDocs( int limit )
   kdDebug() << "Sending sql string " << qStr << endl;
 
   QSqlQuery query( qStr, KraftDB::getDB() );
-  QSqlCursor archCur( "archdoc" );
 
   if( query.isActive() ) {
     while( query.next() ) {
-      DocDigest dig;
-      dig.setId( dbID( query.value(0).toInt() ) );
-      const QString ident = query.value(1).toString();
-      dig.setIdent(    ident );
-      dig.setType(     query.value(2).toString() );
-      dig.setClientId( query.value(3).toString() );
-      dig.setLastModified( query.value(4).toDate() );
-      dig.setDate(     query.value(5).toDate() );
-      kdDebug() << "Adding document "<< ident << " to the latest list" << endl;
-
-      archCur.select( "ident='" + ident +"'" );
-      while ( archCur.next() ) {
-        int id = archCur.value( "archDocID" ).toInt();
-        QDateTime dt = archCur.value( "printDate" ).toDateTime();
-        int state = archCur.value( "state" ).toInt();
-        dig.addArchDocDigest( ArchDocDigest( dt, state,  id ) );
-      }
-
-      ret.prepend( dig );
-
+      ret.prepend( digestFromQuery( query ) );
     }
   }
 
   return ret;
 }
 
+DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
+{
+  DocDigest dig;
+  QSqlCursor archCur( "archdoc" );
+
+  dig.setId( dbID( query.value(0).toInt() ) );
+  const QString ident = query.value(1).toString();
+  dig.setIdent(    ident );
+  dig.setType(     query.value(2).toString() );
+  dig.setClientId( query.value(3).toString() );
+  dig.setLastModified( query.value(4).toDate() );
+  dig.setDate(     query.value(5).toDate() );
+  kdDebug() << "Adding document "<< ident << " to the latest list" << endl;
+
+  archCur.select( "ident='" + ident +"'" );
+  while ( archCur.next() ) {
+    int id = archCur.value( "archDocID" ).toInt();
+    QDateTime dt = archCur.value( "printDate" ).toDateTime();
+    int state = archCur.value( "state" ).toInt();
+    dig.addArchDocDigest( ArchDocDigest( dt, state,  id ) );
+  }
+  return dig;
+}
+
+DocDigestsTimelineList DocumentMan::docsTimelined()
+{
+  DocDigestsTimelineList retList; // a list of timelined digest objects
+
+  QString qStr ="SELECT docID, ident, docType, clientID, lastModified, date, "
+                "MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date desc;";
+
+  kdDebug() << "Sending sql string " << qStr << endl;
+
+  QSqlQuery query( qStr, KraftDB::getDB() );
+  DocDigestsTimeline timeline;
+  DocDigestList digests;
+
+  if( query.isActive() ) {
+    while( query.next() ) {
+      DocDigest dig = digestFromQuery( query );
+      int month = query.value( 6 /* month */ ).toInt();
+      int year = query.value( 7 /* year */ ).toInt();
+      kdDebug() << "Month: " << month << " in Year: " << year << endl;
+
+      if ( timeline.month() == 0 ) timeline.setMonth( month );
+      if ( timeline.year() == 0 )  timeline.setYear( year );
+
+
+      kdDebug() << "timeline-month=" << timeline.month() << " while month=" << month << endl;
+      if ( month != timeline.month() || year != timeline.year() ) {
+        // a new month/year pair: set digestlist to timelineobject
+        kdDebug() << "Opening new timeline" << endl;
+        timeline.setDigestList( digests );
+
+        kdDebug() << "appending for month " << timeline.month() << " with item cnt " << digests.count() << endl;
+        retList.append( timeline );
+
+        digests.clear();
+        timeline.setMonth( month );
+        timeline.setYear( year );
+        digests.prepend( dig );
+
+        timeline.clearDigestList();
+      } else {
+        digests.prepend( dig );
+      }
+
+    }
+    timeline.setDigestList( digests );
+    retList.append( timeline );
+
+  }
+  return retList;
+}
 
 DocGuardedPtr DocumentMan::createDocument()
 {

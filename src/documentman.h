@@ -22,9 +22,9 @@
 #include "kraftdoc.h"
 
 class DocPosition;
+class QSqlQuery;
 
 typedef QMap<QString, DocGuardedPtr> DocumentMap;
-
 
 class DocumentMan
 {
@@ -34,11 +34,15 @@ class DocumentMan
     static DocumentMan *self();
 
     DocDigestList latestDocs( int );
+    DocDigestsTimelineList docsTimelined();
+
     DocGuardedPtr createDocument();
     DocGuardedPtr openDocument( const QString& );
     void offerNewPosition( const DocPosition& );
     QStringList openDocumentsList();
   private:
+    DocDigest digestFromQuery( QSqlQuery& );
+
     DocumentMan();
 
     static DocumentMan *mSelf;

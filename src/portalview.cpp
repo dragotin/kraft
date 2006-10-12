@@ -223,7 +223,32 @@ void PortalView::slotBuildView()
 {
   DocumentMan *docman = DocumentMan::self();
   mDocDigestView->listview()->clear();
-  mDocDigestView->addLatestDocs( docman->latestDocs( 10 ) );
+
+  mDocDigestView->addChapter( i18n( "All Documents" ),  docman->latestDocs( 0 ) );
+
+  KListViewItem *timeItem = mDocDigestView->addChapter( i18n( "Documents by Time" ), DocDigestList() );
+
+  DocDigestsTimelineList timeList = docman->docsTimelined();
+  DocDigestsTimelineList::iterator it;
+
+  int month = 0;
+  int year = 0;
+  KListViewItem *yearItem = 0;
+
+  for ( it = timeList.begin(); it != timeList.end(); ++it ) {
+    kdDebug() << "Year is: " << ( *it ).year() << endl;
+    if ( year != ( *it ).year() ) {
+      year = ( *it ).year();
+      yearItem = mDocDigestView->addChapter( QString::number( year ),  DocDigestList(), timeItem );
+    }
+
+    month = ( *it ).month();
+    const QString monthName = KGlobal().locale()->monthName( month );
+    ( void ) mDocDigestView->addChapter(  monthName, ( *it ).digests(), yearItem );
+  }
+
+  mDocDigestView->addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
+
 }
 
 PortalView::~PortalView( )
