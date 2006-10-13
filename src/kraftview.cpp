@@ -763,6 +763,8 @@ void KraftView::slotAddPosition( DocPosition *selectedDP )
       newpos = dia.insertAfterPosition();
 
       kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
+    } else {
+      return;
     }
   }
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );

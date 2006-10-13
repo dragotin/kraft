@@ -92,7 +92,7 @@
                                 <string>&amp;after</string>
                             </property>
                             <property name="buddy" stdset="0">
-                                <cstring>dmPosition</cstring>
+                                <cstring>dmPositionCombo</cstring>
                             </property>
                         </widget>
                         <widget class="QComboBox">
