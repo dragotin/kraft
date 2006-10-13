@@ -88,8 +88,8 @@ KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();
     ArchDocDigestList::iterator archIt;
     for ( archIt = archDocList.begin(); archIt != archDocList.end(); ++archIt ) {
-      KListViewItem *archItem = new KListViewItem( item, i18n( "Archived" ), QString(),
-                                                   ( *archIt ).printDateString() );
+      ( void ) new KListViewItem( item, i18n( "Archived" ), QString(),
+                                  ( *archIt ).printDateString() );
 
     }
   }

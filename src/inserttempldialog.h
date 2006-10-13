@@ -33,6 +33,7 @@ public:
   void setDocPosition( DocPosition * );
   void setPositionList( DocPositionList, int );
   DocPosition docPosition();
+  int insertAfterPosition();
 
 private:
   insertTmplBase *mBaseWidget;

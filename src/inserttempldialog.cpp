@@ -83,11 +83,17 @@ DocPosition InsertTemplDialog::docPosition()
 {
   mParkPosition.setText( mBaseWidget->dmTextEdit->text() );
   mParkPosition.setAmount( mBaseWidget->dmAmount->value() );
-  QString itemPos = QString::number( mBaseWidget->dmPositionCombo->currentItem() + 1 );
-  kdDebug() << "Current item selected: " << itemPos << endl;
   // mParkPosition.setPosition( itemPos );
 
   return mParkPosition;
+}
+
+int InsertTemplDialog::insertAfterPosition()
+{
+  int itemPos = mBaseWidget->dmPositionCombo->currentItem() + 1;
+  kdDebug() << "Current item selected: " << itemPos << endl;
+
+  return itemPos;
 }
 
 InsertTemplDialog::~InsertTemplDialog()

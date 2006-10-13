@@ -751,23 +751,24 @@ void KraftView::slotAddPosition( DocPosition *selectedDP )
 
   InsertTemplDialog dia( this );
   DocPosition *dp = new DocPosition();
+
   if ( selectedDP ) {
     *dp = *selectedDP;
     dia.setDocPosition( selectedDP );
+
+    dia.setPositionList( currentPositionList(), newpos );
+
+    if ( dia.exec() ) {
+      *dp = dia.docPosition();
+      newpos = dia.insertAfterPosition();
+
+      kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
+    }
   }
-  dia.setPositionList( currentPositionList(), newpos );
+  PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
 
-  if ( dia.exec() ) {
-    *dp = dia.docPosition();
-    newpos = dp->position().toInt();
-
-    kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
-
-    PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
-
-    slotFocusPosition( widget, 1+newpos );
-    refreshPostCard();
-  }
+  slotFocusPosition( widget, 1+newpos );
+  refreshPostCard();
 }
 
 DocPositionList KraftView::currentPositionList()
