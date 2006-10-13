@@ -94,7 +94,7 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
   DocDigestsTimelineList retList; // a list of timelined digest objects
 
   QString qStr ="SELECT docID, ident, docType, clientID, lastModified, date, "
-                "MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date desc;";
+                "MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date asc;";
 
   kdDebug() << "Sending sql string " << qStr << endl;
 

@@ -27,6 +27,7 @@
 #include <kstandarddirs.h>
 #include <kurl.h>
 #include <klistview.h>
+#include <kcalendarsystem.h>
 
 #include "version.h"
 #include "kraftdb.h"
@@ -222,11 +223,17 @@ void PortalView::documentDigests( QWidget *parent )
 void PortalView::slotBuildView()
 {
   DocumentMan *docman = DocumentMan::self();
-  mDocDigestView->listview()->clear();
+  mDocDigestView->listview()->clear(); // FIXME: Should not be cleared!
 
-  mDocDigestView->addChapter( i18n( "All Documents" ),  docman->latestDocs( 0 ) );
+  KListViewItem *item = mDocDigestView->addChapter( i18n( "All Documents" ),
+                                                       docman->latestDocs( 0 ) );
+  item->setPixmap( 0, SmallIcon( "identity" ) );
+  item->setOpen( false );
 
-  KListViewItem *timeItem = mDocDigestView->addChapter( i18n( "Documents by Time" ), DocDigestList() );
+  item = mDocDigestView->addChapter( i18n( "Documents by Time" ),
+                                                        DocDigestList() );
+  item->setPixmap( 0, SmallIcon( "history" ) );
+  item->setOpen( false );
 
   DocDigestsTimelineList timeList = docman->docsTimelined();
   DocDigestsTimelineList::iterator it;
@@ -239,15 +246,18 @@ void PortalView::slotBuildView()
     kdDebug() << "Year is: " << ( *it ).year() << endl;
     if ( year != ( *it ).year() ) {
       year = ( *it ).year();
-      yearItem = mDocDigestView->addChapter( QString::number( year ),  DocDigestList(), timeItem );
+      yearItem = mDocDigestView->addChapter( QString::number( year ),  DocDigestList(), item );
+      yearItem->setOpen( false );
     }
 
     month = ( *it ).month();
-    const QString monthName = KGlobal().locale()->monthName( month );
-    ( void ) mDocDigestView->addChapter(  monthName, ( *it ).digests(), yearItem );
+    const QString monthName = KGlobal().locale()->calendar()->monthName( month, year, false);
+    KListViewItem *mItem = mDocDigestView->addChapter(  monthName, ( *it ).digests(), yearItem );
+    mItem->setOpen( false );
   }
 
-  mDocDigestView->addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
+  item = mDocDigestView->addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
+  item->setPixmap( 0, SmallIcon( "fork" ) );
 
 }
 
