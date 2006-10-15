@@ -95,12 +95,6 @@ void Portal::initActions()
                                          actionCollection(), "file_show_templ");
   KStdAction::preferences( this, SLOT( preferences() ), actionCollection() );
 
-  actOpenKatalog = new KAction(i18n("Open Catalog Window"), 0,0,this,
-                               SLOT(slotOpenKatalog()), actionCollection(), "open_katalog_window");
-  actOpenMatKatalog = new KAction(i18n("Open Material Catalog Window"), 0,0,this,
-                                  SLOT(slotOpenMaterialKatalog()),
-                                  actionCollection(), "open_matkat_window");
-
   actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew", KStdAccel::shortcut(KStdAccel::New), this,
                                SLOT(slotNewDocument()),
                                actionCollection(), "document_new");
@@ -119,9 +113,9 @@ void Portal::initActions()
   editPaste->setStatusText(i18n("Pastes the clipboard contents to actual position"));
   viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
 
-  actOpenKatalog->setStatusText(i18n("Opens a new Catalog window"));
-  actNewDocument->setStatusText(i18n("Creates a new Document"));
-  actPrintDocument->setStatusText( i18n("Print and archive this Document"));
+  actNewDocument->setStatusText( i18n( "Creates a new Document" ) );
+  actPrintDocument->setStatusText( i18n( "Print and archive this Document" ) );
+  actOpenDocument->setStatusText( i18n( "Opens the document for editing" ) );
 
   setStandardToolBarMenuEnabled( true );
   actOpenDocument->setEnabled( false );
@@ -414,10 +408,6 @@ void Portal::slotKatalogToXML(const QString& katName)
     if(kat) {
         kat->writeXMLFile();
     }
-}
-void Portal::slotOpenMaterialKatalog()
-{
-    kdDebug() << "opening material katalog!" << endl;
 }
 
 QString Portal::textWrap( const QString& t, unsigned int width )
