@@ -168,6 +168,8 @@ void Portal::slotStartupChecks()
       KMessageBox::sorry( this, i18n("Can not open the database"),
                           i18n("Database Problem") );
   }
+
+  KraftDB::checkSchemaVersion();
 }
 
 bool Portal::queryClose()

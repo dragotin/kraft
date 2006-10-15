@@ -3,3 +3,4 @@
 
 #define KRAFT_CODENAME "Embryo"
 
+#define KRAFT_REQUIRED_SCHEMA_VERSION 2

@@ -25,6 +25,7 @@
 #include <qsqlquery.h>
 #include <qstringlist.h>
 
+#include "version.h"
 #include "kraftdb.h"
 #include "dbids.h"
 
@@ -108,6 +109,62 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
   }
   return re;
 }
+
+void KraftDB::checkSchemaVersion()
+{
+  getDB();
+
+  QSqlQuery q( "SELECT dbschemaversion FROM kraftsystem" );
+
+  int currentVer = 0;
+  if ( q.next() ) {
+    currentVer = q.value( 0 ).toInt();
+  }
+
+  if ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
+    kdDebug() << "Kraft Schema Version not sufficient: " << currentVer << endl;
+
+    KStandardDirs stdDirs;
+
+    while ( currentVer <= KRAFT_REQUIRED_SCHEMA_VERSION ) {
+      ++currentVer;
+      const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
+      QString findFile = "kraft/dbmigrate/" + migrateFilename;
+      QString sqlFile = stdDirs.findResource( "data", findFile );
+      if ( ! sqlFile.isEmpty() ) {
+        kdDebug() << "Opening migration file " << sqlFile << endl;
+
+        QFile f( sqlFile );
+        if ( !f.open( IO_ReadOnly ) ) {
+          kdError() << "Could not open " << sqlFile << endl;
+        } else {
+          QTextStream ts( &f );
+          ts.setEncoding(QTextStream::UnicodeUTF8);
+
+          while ( !ts.atEnd() ) {
+            QString sql = ts.read();
+            if ( !sql.isEmpty() ) {
+              if ( sql.lower().startsWith( "message:" ) ) {
+                QString msg = sql.left( sql.length()-8 );
+                kdDebug() << "Msg: " << msg << endl;
+              }
+              else if ( q.exec( sql ) ) {
+                kdDebug() << "Successfull SQL Command: " << sql << endl;
+              } else {
+                kdDebug() << "Failed SQL Command: " << sql << endl;
+              }
+            }
+          }
+          f.close();
+        }
+      }
+    }
+  } else {
+    kdDebug() << "Kraft Schema Version is ok: " << currentVer << endl;
+  }
+
+}
+
 
 // not yet used.
 void KraftDB::checkInit()

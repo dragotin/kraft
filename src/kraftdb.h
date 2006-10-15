@@ -45,6 +45,7 @@ public:
     static dbID getLastInsertID();
 
     static void checkInit();
+    static void checkSchemaVersion();
 
     static QString qtDriver();
 
