@@ -214,6 +214,7 @@ class KraftView : public KDialogBase
   DocOverviewWidget *mDocOverview;
   DocAssistant *mAssistant;
   bool mShowAssistantDetail;
+  double mRememberAmount;
 };
 
 #endif // KRAFTVIEW_H

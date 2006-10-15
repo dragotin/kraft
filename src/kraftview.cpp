@@ -202,7 +202,7 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 KraftView::KraftView(QWidget *parent, const char *name) :
   KDialogBase( parent, name, false /* modal */, i18n("Document"),
 	      Ok|Cancel, Ok, true /* separator */ ),
-  m_doc( 0 ),  mShowAssistantDetail( false )
+  m_doc( 0 ),  mShowAssistantDetail( false ),  mRememberAmount( -1 )
 {
   mDeleteMapper = new QSignalMapper( this );
   connect( mDeleteMapper, SIGNAL( mapped(int)),
@@ -749,11 +749,14 @@ void KraftView::slotAddPosition( DocPosition *selectedDP )
   int newpos = mPositionWidgetList.count();
   kdDebug() << "Adding Position at position " << newpos << endl;
 
-  InsertTemplDialog dia( this );
   DocPosition *dp = new DocPosition();
 
   if ( selectedDP ) {
+    InsertTemplDialog dia( this );
     *dp = *selectedDP;
+    if ( mRememberAmount > 0 ) {
+      selectedDP->setAmount( mRememberAmount );
+    }
     dia.setDocPosition( selectedDP );
 
     dia.setPositionList( currentPositionList(), newpos );
@@ -761,6 +764,8 @@ void KraftView::slotAddPosition( DocPosition *selectedDP )
     if ( dia.exec() ) {
       *dp = dia.docPosition();
       newpos = dia.insertAfterPosition();
+
+      mRememberAmount = dp->amount();
 
       kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
     } else {
