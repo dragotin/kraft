@@ -212,10 +212,12 @@ TemplKatalogListView::~TemplKatalogListView()
 {
 }
 
-DocPosition TemplKatalogListView::currentItemToDocPosition()
+DocPosition TemplKatalogListView::itemToDocPosition( QListViewItem *it )
 {
   DocPosition pos;
-  QListViewItem *it = currentItem();
+  if ( ! it ) {
+    it = currentItem();
+  }
 
   if ( ! it ) return pos;
 

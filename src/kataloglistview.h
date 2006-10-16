@@ -49,7 +49,7 @@ public:
     virtual KatalogListView *createListView(QWidget*);
 
     QPopupMenu *contextMenu();
-    virtual DocPosition currentItemToDocPosition() = 0;
+    virtual DocPosition itemToDocPosition( QListViewItem *it = 0 ) = 0;
 
 public slots:
     virtual void slFreshupItem( QListViewItem*, void*, bool remChildren = false );

@@ -44,29 +44,32 @@ class DocPositionBase : public QObject
   public:
     enum PositionType { Position, Header };
     DocPositionBase();
+    DocPositionBase( const PositionType& );
     ~DocPositionBase() {}
 
     DocPositionBase(const DocPositionBase&);
 
     void setDbId( int id ) { m_dbId = id; }
     dbID dbId() { return dbID( m_dbId ); }
-    virtual PositionType type() = 0;
 
   // virtual void setPosition( const QString& pos ) { m_position = pos; }
     virtual QString position() { return m_position; }
 
     virtual void setToDelete( bool doit ) { mToDelete = doit; }
     virtual bool toDelete() { return mToDelete; }
+    PositionType type() { return mType; }
   protected:
     int     m_dbId;
     QString m_position;
     bool    mToDelete;
+    PositionType mType;
 };
 
 class DocPosition : public DocPositionBase
 {
   public:
     DocPosition();
+    DocPosition( const PositionType& );
     ~DocPosition(){};
 
     void setText( const QString& string ) { m_text = string; }
@@ -83,7 +86,6 @@ class DocPosition : public DocPositionBase
     double amount() { return m_amount; }
 
     DocPosition& operator=( const DocPosition& );
-    PositionType type() { return Position; }
   private:
     QString m_text;
     Einheit m_unit;

@@ -36,18 +36,29 @@
 
 DocPositionBase::DocPositionBase() : QObject(),
                                      m_dbId( -1 ),
-                                     mToDelete( false )
+                                     mToDelete( false ),
+                                     mType( Position )
 {
 
 }
 
+DocPositionBase::DocPositionBase( const PositionType& t )
+  : QObject(),
+    m_dbId( -1 ),
+    mToDelete( false ),
+    mType( t )
+{
+
+}
 
 DocPositionBase::DocPositionBase(const DocPositionBase& b )
-  : QObject()
+  : QObject(),
+    m_dbId( b.m_dbId ),
+    m_position( b.m_position ),
+    mToDelete( b.mToDelete ),
+    mType( b.mType )
 {
-  m_dbId     = b.m_dbId;
-  m_position = b.m_position;
-  mToDelete  = b.mToDelete;
+
 }
 
 // ##############################################################

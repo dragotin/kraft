@@ -165,9 +165,9 @@ BrunsRecord BrunsKatalogListView::getRecord( QListViewItem *it )
 }
 
 
-DocPosition BrunsKatalogListView::currentItemToDocPosition()
+DocPosition BrunsKatalogListView::itemToDocPosition( QListViewItem*  )
 {
   DocPosition pos;
-
+  // FIXME
   return pos;
 }

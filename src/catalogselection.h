@@ -28,6 +28,7 @@ class KActionCollection;
 class KAction;
 class DocPosition;
 class FilterHeader;
+class QListViewItem;
 
 class CatalogSelection : public QVBox
 {
@@ -45,7 +46,8 @@ signals:
 
 protected slots:
   void slotSelectCatalog( const QString& );
-  void slotAppendToDoc();
+  void slotAppendToDoc( QListViewItem *item = 0 );
+  void slCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int );
 
 private:
   QComboBox *mCatalogSelector;

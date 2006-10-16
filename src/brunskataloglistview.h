@@ -42,7 +42,7 @@ public:
      void addCatalogDisplay( const QString& katName );
      BrunsRecord getRecord( QListViewItem * );
      void setupChapters();
-  DocPosition currentItemToDocPosition();
+  DocPosition itemToDocPosition( QListViewItem *it = 0 );
 private:
 
     QMap<QListViewItem*, BrunsRecord> m_itemMap;

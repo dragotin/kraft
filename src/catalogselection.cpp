@@ -82,7 +82,12 @@ void CatalogSelection::initActions()
 
 }
 
-void CatalogSelection::slotAppendToDoc()
+void CatalogSelection::slCatalogDoubleClicked( QListViewItem *onItem,  const QPoint&,  int )
+{
+  slotAppendToDoc( onItem );
+}
+
+void CatalogSelection::slotAppendToDoc( QListViewItem *item )
 {
   const QString currentCat = mCatalogSelector->currentText();
 
@@ -96,7 +101,7 @@ void CatalogSelection::slotAppendToDoc()
 
   KatalogListView *lv = mWidgetDict[ currentCat ];
   if ( lv ) {
-    DocPosition dp = lv->currentItemToDocPosition();
+    DocPosition dp = lv->itemToDocPosition( item );
 
     emit selectedPosition( &dp );
   } else {
@@ -131,7 +136,10 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
     if ( ! mWidgetDict[katName] ) {
       if ( kat->type() == TemplateCatalog ) {
         TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
-
+        connect( tmpllistview,
+                 SIGNAL( doubleClicked ( QListViewItem *, const QPoint &, int ) ),
+                 this,
+                 SLOT( slCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int ) ) );
         tmpllistview->setShowCalcParts( false );
         tmpllistview->addCatalogDisplay( katName );
         mAcAddToDoc->plug( tmpllistview->contextMenu() );
