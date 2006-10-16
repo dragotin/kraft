@@ -234,3 +234,9 @@ CREATE TABLE archdocpos(
     INDEX(archDocID),
     UNIQUE( archDocID, ordNumber)
 );
+
+CREATE TABLE kraftsystem(
+    dbschemaversion  INT NOT NULL,
+    updateUser       VARCHAR(256)
+)
+
