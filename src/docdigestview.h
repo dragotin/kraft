@@ -25,7 +25,7 @@
 class KListView;
 class KListViewItem;
 class FilterHeader;
-
+class QPopupMenu;
 
 class DocDigestView : public QWidget
 {
@@ -41,9 +41,14 @@ public:
   KListView *listview() {
     return mListView;
   }
+
+  QPopupMenu *contextMenu() {
+    return mContextMenu;
+  }
 public slots:
   void slotNewDoc();
   void slotDocOpenRequest( QListViewItem * );
+  void slotRMB( QListViewItem*, const QPoint&, int );
 
 protected slots:
   void slotOpenCurrentDoc();
@@ -56,6 +61,7 @@ signals:
 private:
   KListView *mListView;
   FilterHeader *mFilterHeader;
+  QPopupMenu *mContextMenu;
 
   QMap<QListViewItem*, QString> mDocIdDict;
 };

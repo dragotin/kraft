@@ -32,44 +32,37 @@ UnitManager::UnitManager( )
 
 void UnitManager::load()
 {
-    int max = 5;
-    if( ! m_units )
-        m_units = new EinheitValueVector();
-    m_dummy = new Einheit();
-    m_units->resize(max+1);
+  int max = 5;
+  if( ! m_units )
+    m_units = new EinheitValueVector();
+  m_dummy = new Einheit();
+  m_units->resize(max+1);
 
-    if( ! KraftDB::getDB() )
+  QSqlCursor cur("units");
+
+  // Create an index that sorts from high values for einheitID down.
+  // that makes at least on resize of the vector.
+  QSqlIndex indx = cur.index( "unitID" );
+  indx.setDescending ( 0, true );
+
+  cur.select(indx);
+  while( cur.next())
+  {
+    int unitID = cur.value("unitID").toInt();
+    // resize if index is to big.
+    if( unitID > max )
     {
-        kdDebug() << "Have a problem: No database!" << endl;
+      max = unitID;
+      m_units->resize( max+1);
     }
-    else
-    {
-        QSqlCursor cur("units");
 
-        // Create an index that sorts from high values for einheitID down.
-        // that makes at least on resize of the vector.
-        QSqlIndex indx = cur.index( "unitID" );
-        indx.setDescending ( 0, true );
-
-        cur.select(indx);
-        while( cur.next())
-        {
-            int unitID = cur.value("unitID").toInt();
-            // resize if index is to big.
-            if( unitID > max )
-            {
-                max = unitID;
-                m_units->resize( max+1);
-            }
-
-            Einheit e( unitID,
-                       cur.value("unitShort").toString(),
-                       cur.value("unitLong").toString(),
-                       cur.value("unitPluShort").toString(),
-                       cur.value("unitPluLong").toString() );
-            m_units->at(unitID) = e;
-        }
-    }
+    Einheit e( unitID,
+               cur.value("unitShort").toString(),
+               cur.value("unitLong").toString(),
+               cur.value("unitPluShort").toString(),
+               cur.value("unitPluLong").toString() );
+    m_units->at(unitID) = e;
+  }
 }
 
 QStringList UnitManager::allUnits()

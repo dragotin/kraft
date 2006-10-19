@@ -52,7 +52,6 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
     bool isNew = false;
 
     // Transaktion ?
-    if( ! KraftDB::getDB() ) return 0;
 
     QSqlCursor cur("Catalog");
     QString templID = QString::number(tmpl->getTemplID());
@@ -82,7 +81,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
         cur.insert();
 
         /* Jetzt die neue Template-ID selecten */
-        dbID id = KraftDB::getLastInsertID();
+        dbID id = KraftDB::self()->getLastInsertID();
         kdDebug() << "New Database ID=" << id.toInt() << endl;
 
         if( id.isOk() ) {
@@ -140,7 +139,7 @@ bool TemplateSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, FloskelTemplate *tmpl 
             buffer->setValue( "TemplID", tmpl->getTemplID() );
             cur.insert();
 
-            dbID id = KraftDB::getLastInsertID();
+            dbID id = KraftDB::self()->getLastInsertID();
             cp->setDbID(id);
         } else {
             kdDebug() << "delete flag is set -> skip saving." << endl;
@@ -199,7 +198,7 @@ bool TemplateSaverDB::saveFixCalcPart( FixCalcPart *cp, FloskelTemplate *tmpl )
             buffer->setValue( "TemplID", tmpl->getTemplID() );
             cur.insert();
 
-            dbID id = KraftDB::getLastInsertID();
+            dbID id = KraftDB::self()->getLastInsertID();
             kdDebug() << "Setting db-ID " << id.toString() << endl;
             cp->setDbID(id);
         } else {
@@ -261,7 +260,7 @@ bool TemplateSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, FloskelTemplat
         buffer->setValue( "TemplID", tmpl->getTemplID() );
         cur.insert();
 
-        dbID id = KraftDB::getLastInsertID();
+        dbID id = KraftDB::self()->getLastInsertID();
         cp->setDbID(id);
     } else {
         // calcpart-ID ist bereits belegt, UPDATE
@@ -299,7 +298,7 @@ void TemplateSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *
     QSqlCursor cur("CalcMaterialDetails");
     QString selStr = QString("CalcID=%1 AND materialID=%2" ).arg(cp->getDbID().toInt()).arg(mat->getID());
     kdDebug() << "Material details for calcID " << cp->getDbID().toString() << endl;
-  
+
     cur.select(selStr);
     MaterialCalcPart dbPart("MatCalcPartonDB", 0 );
     while( cur.next() )
@@ -340,7 +339,7 @@ void TemplateSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *
         insRec->setValue("materialID", mat->getID());
 
         modifyCur.insert();
-        dbID id = KraftDB::getLastInsertID();
+        dbID id = KraftDB::self()->getLastInsertID();
         if( id.isOk() ) {
             cp->setDbID(id);
         } else {
@@ -370,7 +369,7 @@ void TemplateSaverDB::fillTemplateBuffer( QSqlRecord *buffer, FloskelTemplate *t
     /* neue templates kriegen ein Eintragsdatum */
     QDateTime dt = QDateTime::currentDateTime();
     QString dtString = dt.toString("yyyy-MM-dd hh:mm:ss" );
-    
+
     if( isNew ) {
         buffer->setValue( "enterDatum", dtString);
     }

@@ -57,7 +57,6 @@ TemplKatalog::~TemplKatalog()
 
 int TemplKatalog::load()
 {
-    if( ! KraftDB::getDB() ) return 0;
     Katalog::load();
     int cnt = 0;
 
@@ -279,7 +278,7 @@ int TemplKatalog::load( const QString& /* chapter */ )
 
 void TemplKatalog::writeXMLFile()
 {
-    QString filename = KFileDialog::getSaveFileName( QDir::homeDirPath(), 
+    QString filename = KFileDialog::getSaveFileName( QDir::homeDirPath(),
             "*.xml", 0, i18n("Export XML Katalog"));
     if(filename.isEmpty()) return;
 
@@ -293,7 +292,7 @@ void TemplKatalog::writeXMLFile()
 
         file.close();
     }
-    
+
 }
 
 QDomDocument TemplKatalog::toXML()
@@ -306,7 +305,7 @@ QDomDocument TemplKatalog::toXML()
     QDomText text = doc.createTextNode(m_name);
     elem.appendChild(text);
     root.appendChild(elem);
-    
+
     QStringList allSets = StdSatzMan::allStdSaetze();
     for ( QStringList::Iterator it = allSets.begin(); it != allSets.end(); ++it ) {
         QDomElement set = doc.createElement("hourset");
@@ -314,19 +313,19 @@ QDomDocument TemplKatalog::toXML()
         QDomText tname = doc.createTextNode(*it);
         elem.appendChild(tname);
         set.appendChild(elem);
- 
+
         QDomElement rateelem = doc.createElement("rate");
         StdSatz satz = StdSatzMan::getStdSatz(*it);
         Geld g = satz.getPreis();
         QDomText rname = doc.createTextNode(g.toString());
         rateelem.appendChild(rname);
         set.appendChild(rateelem);
- 
+
         root.appendChild(set);
     }
 
     QStringList chaps = getKatalogChapters();
-    
+
     for ( QStringList::Iterator it = chaps.begin(); it != chaps.end(); ++it ) {
         QString chapter = *it;
         QDomElement chapElem = doc.createElement("chapter");
@@ -335,11 +334,11 @@ QDomDocument TemplKatalog::toXML()
         chapName.appendChild(text);
         chapElem.appendChild(chapName);
         root.appendChild(chapElem);
-        
+
         FloskelTemplateList templs = getFlosTemplates(chapter);
         FloskelTemplateListIterator it(templs);
         FloskelTemplate *tmpl = 0;
-        
+
         while( (tmpl = it.current()) != 0) {
             chapElem.appendChild( tmpl->toXML(doc));
             ++it;
@@ -352,7 +351,7 @@ QDomDocument TemplKatalog::toXML()
 int TemplKatalog::getEntriesPerChapter( const QString& chapter)
 {
     int cnt = 0;
-    
+
     QString q( "SELECT count(*) FROM katalog" );
     if( !chapter.isEmpty() ) {
         int id = chapterID( chapter );
@@ -363,7 +362,7 @@ int TemplKatalog::getEntriesPerChapter( const QString& chapter)
         }
     }
     QSqlQuery query( q );
-    
+
     while ( query.next() ) {
         cnt = query.value(0).toInt();
     }

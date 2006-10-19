@@ -26,39 +26,44 @@ class QSqlDatabase;
   *@author Klaas Freitag
   */
 #include <qmap.h>
+#include <qobject.h>
 
 class dbID;
 class KProcess;
 
-class KraftDB {
+class KraftDB : public QObject
+{
+
+  Q_OBJECT
 
 public:
-    KraftDB();
-    ~KraftDB();
-    /** Read property of QSqlDatabase* m_db. */
-    static QSqlDatabase* getDB();
+  ~KraftDB();
+  /** Read property of QSqlDatabase* m_db. */
+  static KraftDB *self();
 
-    static double getMwSt(){
-        return MWST;
-    }
+  double getMwSt(){
+    return MWST;
+  }
 
-    static dbID getLastInsertID();
+  dbID getLastInsertID();
 
-    static void checkInit();
-    static void checkSchemaVersion();
+  void checkInit();
+  void checkSchemaVersion();
+  QSqlDatabase *getDB() { return m_db; }
+  QString qtDriver();
 
-    static QString qtDriver();
-
-    typedef QMap<QString, QString> StringMap;
-    static QStringList wordList( const QString&, StringMap replaceMap = StringMap() );
+  typedef QMap<QString, QString> StringMap;
+  QStringList wordList( const QString&, StringMap replaceMap = StringMap() );
+signals:
+  void statusMessage( const QString& );
 
 private: // Private attributes
-    static void dBFileBackup( const QString& );
-    static bool doInitialSetup( );
-    static bool sendFileToDb( const QString& filename );
-    /** The default database */
-    static QSqlDatabase* m_db;
-    static KProcess *mProcess;
+  KraftDB();
+
+  /** The default database */
+  QSqlDatabase* m_db;
+  KProcess *mProcess;
+  static KraftDB *mSelf;
 };
 
 #endif

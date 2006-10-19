@@ -81,7 +81,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     if( doc->isNew() ) {
       kdDebug() << "Doc is new, inserting" << endl;
       cur.insert();
-      dbID id = KraftDB::getLastInsertID();
+      dbID id = KraftDB::self()->getLastInsertID();
       doc->setDocID( id );
     } else {
       kdDebug() << "Doc is not new, updating #" << doc->docID().intID() << endl;
@@ -160,7 +160,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
          if( doInsert ) {
            kdDebug() << "Inserting!" << endl;
            cur.insert();
-           dp->setDbId( KraftDB::getLastInsertID().toInt() );
+           dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
          } else {
            kdDebug() << "Updating!" << endl;
            cur.update();

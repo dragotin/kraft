@@ -18,12 +18,14 @@
 #include <kstandarddirs.h>
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kstaticdeleter.h>
 
 #include <qfile.h>
 #include <qsqldatabase.h>
 #include <qsqlcursor.h>
 #include <qsqlquery.h>
 #include <qstringlist.h>
+#include <qregexp.h>
 
 #include "version.h"
 #include "kraftdb.h"
@@ -34,49 +36,60 @@
 #define DB_DRIVER "QMYSQL3"
 // #define DB_DRIVER "QSQLITE"
 
-QSqlDatabase* KraftDB::m_db = 0;
+static KStaticDeleter<KraftDB> selfDeleter;
 
-KraftDB::KraftDB(){
+KraftDB* KraftDB::mSelf = 0;
+
+KraftDB::KraftDB()
+  :QObject (), m_db( 0 )
+{
+  bool success = true;
+
+  m_db = QSqlDatabase::addDatabase( DB_DRIVER );
+  if ( ! m_db || m_db->isOpenError() )
+  {
+    kdError() <<  "Failed to connect to the database driver: "
+              << m_db->lastError().text() << endl;
+    success = false;
+  }
+  if ( success ) {
+    const QString dbFile = KatalogSettings::dbFile();
+    if( dbFile.isEmpty() ) {
+      kdError() << "Database name is not set!" << endl;
+      QSqlDatabase::removeDatabase( m_db );
+      m_db = 0;
+      success = false;
+    } else {
+      kdDebug() << "Try to open database " << dbFile << endl;
+      m_db->setDatabaseName( dbFile );
+      m_db->setUserName( KatalogSettings::dbUser() );
+      m_db->setPassword( KatalogSettings::dbPassword() );
+      m_db->setHostName( KatalogSettings::dbServerName() );
+
+      if ( m_db->open() ) {
+        // Database successfully opened; we can now issue SQL commands.
+        kdDebug() << "Database " << dbFile << " opened successfully" << endl;
+      } else {
+        m_db = 0;
+        kdError() << "## Could not open database file " << dbFile << endl;
+        success = false;
+      }
+    }
+  }
 
 }
 
-QSqlDatabase* KraftDB::getDB()
+KraftDB *KraftDB::self()
 {
-    if( m_db == 0 )
-    {
-        m_db = QSqlDatabase::addDatabase( DB_DRIVER );
-        if ( ! m_db || m_db->isOpenError() )
-        {
-            kdError() <<  "Failed to connect to the database driver: " << m_db->lastError().text() << endl;
-            return 0;
-        }
-        const QString dbFile = KatalogSettings::dbFile();
-        if( dbFile.isEmpty() ) {
-            kdError() << "Database name is not set!" << endl;
-            QSqlDatabase::removeDatabase( m_db );
-            m_db = 0;
-        } else {
-            kdDebug() << "Try to open database " << dbFile << endl;
-            m_db->setDatabaseName( dbFile );
-            m_db->setUserName( KatalogSettings::dbUser() );
-            m_db->setPassword( KatalogSettings::dbPassword() );
-            m_db->setHostName( KatalogSettings::dbServerName() );
-
-            if ( m_db->open() ) {
-                // Database successfully opened; we can now issue SQL commands.
-                kdDebug() << "Database file " << dbFile << " opened successfully" << endl;
-            } else {
-                m_db = 0;
-                kdError() << "## Could not open database file " << dbFile << endl;
-            }
-        }
-    }
-    return m_db;
+  if ( !mSelf ) {
+    selfDeleter.setObject( mSelf, new KraftDB() );
+  }
+  return mSelf;
 }
 
 dbID KraftDB::getLastInsertID()
 {
-    if( ! KraftDB::getDB() ) return 0;
+    if( ! m_db ) return 0;
 
     QSqlQuery query("SELECT LAST_INSERT_ID()");
     int id = -1;
@@ -91,7 +104,7 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
 {
   QStringList re;
 
-  if( ! KraftDB::getDB() ) return re;
+  if( ! m_db ) return re;
 
   QSqlCursor cur( "wordLists" ); // Specify the table/view name
   // cur.setMode( QSqlCursor::ReadOnly );
@@ -112,9 +125,8 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
 
 void KraftDB::checkSchemaVersion()
 {
-  getDB();
-
-  QSqlQuery q( "SELECT dbschemaversion FROM kraftsystem" );
+  QSqlQuery q( "SELECT dbSchemaVersion FROM kraftsystem" );
+  emit statusMessage( i18n( "Checking Database Schema Version" ) );
 
   int currentVer = 0;
   if ( q.next() ) {
@@ -126,9 +138,10 @@ void KraftDB::checkSchemaVersion()
 
     KStandardDirs stdDirs;
 
-    while ( currentVer <= KRAFT_REQUIRED_SCHEMA_VERSION ) {
+    while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
       ++currentVer;
       const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
+      kdDebug() << "Searching for file: " << migrateFilename << endl;
       QString findFile = "kraft/dbmigrate/" + migrateFilename;
       QString sqlFile = stdDirs.findResource( "data", findFile );
       if ( ! sqlFile.isEmpty() ) {
@@ -139,30 +152,41 @@ void KraftDB::checkSchemaVersion()
           kdError() << "Could not open " << sqlFile << endl;
         } else {
           QTextStream ts( &f );
-          ts.setEncoding(QTextStream::UnicodeUTF8);
+          ts.setEncoding( QTextStream::UnicodeUTF8 );
 
           while ( !ts.atEnd() ) {
-            QString sql = ts.read();
+            QString sql = ts.readLine();
             if ( !sql.isEmpty() ) {
-              if ( sql.lower().startsWith( "message:" ) ) {
-                QString msg = sql.left( sql.length()-8 );
-                kdDebug() << "Msg: " << msg << endl;
-              }
-              else if ( q.exec( sql ) ) {
-                kdDebug() << "Successfull SQL Command: " << sql << endl;
+              QRegExp reg( "\\s*#\\s*message:\\s*" );
+              int pos = sql.lower().find( reg );
+              if ( pos > -1 ) {
+                // QString msg = sql.right( sql.length()-pos );
+                QString msg = sql.remove ( reg );
+                kdDebug() << "Msg: >" << msg << "<" << endl;
+                emit statusMessage( msg );
               } else {
-                kdDebug() << "Failed SQL Command: " << sql << endl;
+                if ( q.exec( sql ) ) {
+                  kdDebug() << "Successfull SQL Command: " << sql << endl;
+                } else {
+                  kdDebug() << "Failed SQL Command: " << sql << endl;
+                }
               }
             }
           }
           f.close();
         }
+      } else {
+        kdDebug() << "No migrate script for step " << currentVer << endl;
+        emit statusMessage( i18n( "Migration Script not found" ) );
       }
     }
+    /* Now update to the required schema version */
+    q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
+            + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
   } else {
     kdDebug() << "Kraft Schema Version is ok: " << currentVer << endl;
+    emit statusMessage( i18n( "Database Schema Version ok" ) );
   }
-
 }
 
 
@@ -179,7 +203,7 @@ void KraftDB::checkInit()
   kdDebug() << "Database file is " << dbFile << endl;
   if( ! dbFile.isEmpty() ) {
             // backup this file
-    dBFileBackup( dbFile );
+    // dBFileBackup( dbFile );
   } else {
     QString dbName = KatalogSettings::defaultDbName();
     QString dbPath = KatalogSettings::dbPath();
@@ -192,9 +216,6 @@ void KraftDB::checkInit()
     kdDebug() << "Database file: " << dbFile << endl;
     KatalogSettings::setDbFile( dbFile );
 
-    if( doInitialSetup() ) {
-      kdDebug() << "Initial setup successfull" << endl;
-    }
   }
 }
 
@@ -203,33 +224,7 @@ QString KraftDB::qtDriver()
     return DB_DRIVER;
 }
 
-bool KraftDB::doInitialSetup()
-{
-    bool result = true;
-#if 0
-    KStandardDirs stdDirs;
-    QString schemaFile = stdDirs.findResource( "data", "create_schema_sqlite.sql" );
-    kdDebug() << "Loading create file from " << schemaFile << endl;
-
-    result = sendFileToDb( schemaFile );
-#endif
-    KMessageBox::sorry( 0, i18n("The database is not yet initialised. Please call the "
-                             "script that creates the database." ),
-                             i18n("Initialisation") );
-    return result;
-}
-
-bool KraftDB::sendFileToDb( const QString& )
-{
-    bool result = true;
-
-    return result;
-}
-
-void KraftDB::dBFileBackup( const QString& filename )
-{
-    kdDebug() << "Backup of file " << filename << endl;
-}
-
 KraftDB::~KraftDB(){
 }
+
+#include "kraftdb.moc"

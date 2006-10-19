@@ -70,7 +70,7 @@ void DocPostCard::setPositions( DocPositionList posList )
   mTotal = posList.sumPrice().toString();
   mPositions += QString( "<tr><td colspan=\"3\" align=\"right\"><b>Total: %1</b></td></tr>" ).arg( mTotal );
   mPositions += "</table>";
-  kdDebug() << "Positions-HTML: " << mPositions << endl;
+  // kdDebug() << "Positions-HTML: " << mPositions << endl;
 }
 
 void DocPostCard::setFooterData( const QString& postText,  const QString& goodbye )

@@ -35,6 +35,7 @@ class QWidget;
 class QVBox;
 class QListViewItem;
 class DocDigestView;
+class KTextBrowser;
 
 class PortalView : public KJanusWidget
 {
@@ -44,9 +45,11 @@ public:
     PortalView (QWidget *parent=0, const char *name=0, int face=Plain);
     ~PortalView();
     DocDigestView* docDigestView() { return mDocDigestView; }
+
 public slots:
     void slotBuildView();
-
+    void fillCatalogDetails();
+    void fillSystemDetails();
 protected slots:
     void slUrlClicked( const QString& );
 
@@ -71,6 +74,8 @@ private:
     QVBox *m_sysBox;
     QVBox *mArchiveBox;
     DocDigestView *mDocDigestView;
+    KTextBrowser  *mCatalogBrowser;
+    KTextBrowser  *mSystemBrowser;
 };
 
 #endif

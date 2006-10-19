@@ -584,7 +584,7 @@ void KraftView::setupFooter()
     m_footerEdit = new KraftDocFooterEdit( page );
     topLayout->addWidget( m_footerEdit );
 
-    m_footerEdit->m_cbGreeting->insertStringList( KraftDB::wordList( "greeting" ) );
+    m_footerEdit->m_cbGreeting->insertStringList( KraftDB::self()->wordList( "greeting" ) );
 
     connect( m_footerEdit, SIGNAL( modified() ),
                this, SLOT( slotModifiedFooter() ) );
@@ -846,7 +846,7 @@ QStringList KraftView::generateLetterHead( KABC::Addressee adr )
     m[ "%NAME"]       = adr.familyName();
     m[ "%GIVEN_NAME"] = adr.givenName();
 
-    return KraftDB::wordList( "salut", m );
+    return KraftDB::self()->wordList( "salut", m );
 }
 
 KraftDoc *KraftView::getDocument() const

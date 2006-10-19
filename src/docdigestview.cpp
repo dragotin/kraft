@@ -18,6 +18,7 @@
 #include <qpushbutton.h>
 #include <qframe.h>
 #include <qheader.h>
+#include <qpopupmenu.h>
 
 #include <klistview.h>
 #include <klocale.h>
@@ -39,6 +40,10 @@ DocDigestView::DocDigestView( QWidget *parent )
   hbox->addStretch(1);
   box->addLayout( hbox );
   mListView = new KListView( w );
+  mContextMenu = new QPopupMenu( mListView );
+  connect( mListView, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint&, int ) ),
+           this, SLOT( slotRMB( QListViewItem *, const QPoint &, int ) ) );
+
   // mListView->header()->hide();
   mListView->setRootIsDecorated(  true );
 
@@ -94,6 +99,11 @@ KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList 
     }
   }
   return chapIt;
+}
+
+void DocDigestView::slotRMB( QListViewItem*, const QPoint& point, int )
+{
+  mContextMenu->popup( point );
 }
 
 void DocDigestView::slotNewDoc()

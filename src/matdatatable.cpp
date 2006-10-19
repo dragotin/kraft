@@ -94,7 +94,6 @@ MatDataTable::MatDataTable(QWidget *parent, const char *name )
     connect( this, SIGNAL(beforeInsert(QSqlRecord*)),
              this, SLOT(slBeforeInsert(QSqlRecord*)));
 
-    if( ! KraftDB::getDB() ) return;
     setSqlCursor( new QSqlCursor("stockMat"), false );
 
     QStringList li;

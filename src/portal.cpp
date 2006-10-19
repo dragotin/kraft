@@ -95,11 +95,13 @@ void Portal::initActions()
                                          actionCollection(), "file_show_templ");
   KStdAction::preferences( this, SLOT( preferences() ), actionCollection() );
 
-  actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew", KStdAccel::shortcut(KStdAccel::New), this,
+  actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew",
+                               KStdAccel::shortcut(KStdAccel::New), this,
                                SLOT(slotNewDocument()),
                                actionCollection(), "document_new");
 
-  actPrintDocument = new KAction(i18n("&Print Document"), "printer1", KStdAccel::shortcut(KStdAccel::Print), this,
+  actPrintDocument = new KAction(i18n("&Print Document"), "printer1",
+                                 KStdAccel::shortcut(KStdAccel::Print), this,
                                  SLOT(slotPrintDocument()),
                                  actionCollection(), "document_print");
 
@@ -141,6 +143,10 @@ void Portal::initStatusBar()
 
 void Portal::initView()
 {
+  /*
+    Since we do the database version check in the slotStartupChecks, we can not
+    do database interaction here in initView.
+  */
     ////////////////////////////////////////////////////////////////////
     // create the main widget here that is managed by KTMainWindow's view-region and
     // connect the widget to your document to display document contents.
@@ -164,12 +170,21 @@ void Portal::initView()
 
 void Portal::slotStartupChecks()
 {
-  if( ! KraftDB::getDB() ) {
+  if( ! KraftDB::self()->getDB() ) {
       KMessageBox::sorry( this, i18n("Can not open the database"),
                           i18n("Database Problem") );
   }
 
-  KraftDB::checkSchemaVersion();
+  connect( KraftDB::self(),  SIGNAL( statusMessage( const QString& ) ),
+           SLOT( slotStatusMsg( const QString& ) ) );
+
+  KraftDB::self()->checkSchemaVersion();
+
+  // Database interaction after this point.
+  m_portalView->slotBuildView();
+  m_portalView->fillCatalogDetails();
+  m_portalView->fillSystemDetails();
+  slotStatusMsg( i18n( "Ready." ) );
 }
 
 bool Portal::queryClose()

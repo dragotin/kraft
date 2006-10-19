@@ -78,7 +78,7 @@ int Katalog::load()
 QStringList Katalog::getKatalogChapters( bool freshup )
 {
   if( m_chapters.empty() || freshup ) {
-    if( ! KraftDB::getDB() ) return 0;
+
     if( freshup ) {
       m_chapters.clear();
       m_chapterIDs->clear();
@@ -150,8 +150,6 @@ KatalogType Katalog::type()
 
 void Katalog::addChapter( const QString& name, int sortKey )
 {
-  if( ! KraftDB::getDB() ) return;
-
   QSqlCursor cur("CatalogChapters");
   QSqlRecord *buffer = cur.primeInsert();
   buffer->setValue( "catalogSetID", m_setID );
@@ -162,7 +160,6 @@ void Katalog::addChapter( const QString& name, int sortKey )
 
 bool Katalog::removeChapter( const QString& name, const QString& )
 {
-  if( ! KraftDB::getDB() ) return false;
   kdDebug() << "Deleting chapter " << name << endl;
   QSqlCursor cur( "CatalogChapters" );
   QString q = QString("catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( name );
@@ -177,7 +174,6 @@ bool Katalog::removeChapter( const QString& name, const QString& )
 
 void Katalog::renameChapter( const QString& from, const QString& to )
 {
-  if( ! KraftDB::getDB() ) return;
   QSqlCursor cur( "CatalogChapters" );
   QString q = QString( "catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( from );
   kdDebug()<< "Rename restriction: " << q << endl;
@@ -192,7 +188,6 @@ void Katalog::renameChapter( const QString& from, const QString& to )
 
 void Katalog::setChapterSortKey( const QString& chap, int key )
 {
-  if( ! KraftDB::getDB() ) return;
   QSqlCursor cur( "CatalogChapters" );
   QString q = QString( "catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( chap );
   cur.select( q );
@@ -207,7 +202,6 @@ void Katalog::setChapterSortKey( const QString& chap, int key )
 int Katalog::chapterSortKey( const QString& chap )
 {
   int key = -1;
-  if( ! KraftDB::getDB() ) return key;
   QSqlCursor cur( "CatalogChapters" );
   QString q = QString( "catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( chap );
   cur.select( q );

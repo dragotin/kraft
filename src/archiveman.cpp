@@ -142,7 +142,6 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
   +---------------+--------------+------+-----+-------------------+----------------+
 */
     if( ! doc ) return dbID();
-    if( ! KraftDB::getDB() ) return 0;
 
     QSqlCursor cur("archdoc");
     cur.setMode( QSqlCursor::Writable );
@@ -164,7 +163,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "posttext", doc->postText() );
     cur.insert();
 
-    dbID id = KraftDB::getLastInsertID();
+    dbID id = KraftDB::self()->getLastInsertID();
     archivePos( id.toInt(), doc );
 
     return id;
@@ -213,7 +212,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 
 	    cur.insert();
             kdDebug() << "SQL-Error: " << cur.lastError().text() << endl;
-            dbID id = KraftDB::getLastInsertID();
+            dbID id = KraftDB::self()->getLastInsertID();
             kdDebug() << "Inserted for id " << id.toString() << endl;
 	    cnt++;
 	} else {

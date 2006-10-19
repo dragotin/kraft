@@ -65,6 +65,15 @@ PortalView::PortalView(QWidget *parent, const char *name, int face)
 
 void PortalView::katalogDetails(QWidget *parent)
 {
+
+    mCatalogBrowser = new KTextBrowser( parent );
+    mCatalogBrowser->setNotifyClick( true );
+    connect( mCatalogBrowser, SIGNAL( urlClick(const QString&) ),
+             this, SLOT( slUrlClicked( const QString& ) ) );
+}
+
+void PortalView::fillCatalogDetails()
+{
     QStringList katalogNamen = KatalogMan::self()->allKatalogs();
     QString html;
 
@@ -80,11 +89,7 @@ void PortalView::katalogDetails(QWidget *parent)
 
     html += "</table></p>";
 
-    KTextBrowser *katBrowser = new KTextBrowser(parent);
-    katBrowser->setText(html);
-    katBrowser->setNotifyClick(true);
-    connect( katBrowser, SIGNAL(urlClick(const QString&)),
-             this, SLOT(slUrlClicked(const QString&)));
+    mCatalogBrowser->setText( html );
 }
 
 void PortalView::archiveDetails( QWidget *  )
@@ -157,52 +162,55 @@ void PortalView::slUrlClicked( const QString& urlStr )
 
 void PortalView::systemDetails(QWidget *parent)
 {
-    QString html;
-    const QString ptag = "<p class=\"infoline\">";
+  mSystemBrowser = new KTextBrowser(parent);
+  // browser->setNotifyClick(false);
+}
 
-    KStandardDirs stdDirs;
-    QString logoFile = stdDirs.findResource( "data",  "kraft/pics/muckilogo_oS.png" );
+void PortalView::fillSystemDetails()
+{
+  QString html;
+  const QString ptag = "<p class=\"infoline\">";
+
+  KStandardDirs stdDirs;
+  QString logoFile = stdDirs.findResource( "data",  "kraft/pics/muckilogo_oS.png" );
 
 
-    html = ""; // "<h2>" + i18n("Kraft System Information") + "</h2>";
+  html = ""; // "<h2>" + i18n("Kraft System Information") + "</h2>";
 
-    html += "<table width=\"100%\"><tr><td>";
-    html += ptag + i18n("Kraft Version: ") + KRAFT_VERSION +  "</p></td>";
-    html += "<td align=\"right\" rowspan=\"2\">";
-    if ( ! logoFile.isEmpty() ) {
-      html += QString( "<img src=\"%1\"/>" ).arg( logoFile );
-    } else {
-      html += "&nbsp;";
+  html += "<table width=\"100%\"><tr><td>";
+  html += ptag + i18n("Kraft Version: ") + KRAFT_VERSION +  "</p></td>";
+  html += "<td align=\"right\" rowspan=\"2\">";
+  if ( ! logoFile.isEmpty() ) {
+    html += QString( "<img src=\"%1\"/>" ).arg( logoFile );
+  } else {
+    html += "&nbsp;";
+  }
+  html += "</td></tr>";
+  html += QString( "<tr><td>Codename <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
+  html += "</table>";
+
+  html += "<h2>" + i18n("Database Information") + "</h2>";
+  html += ptag + i18n( "Kraft Schema Version: %1").arg( KRAFT_REQUIRED_SCHEMA_VERSION ) + "</p>";
+  html += ptag + i18n("Qt Database Driver: ") + KraftDB::self()->qtDriver() +  "</p>";
+
+  html += ptag + i18n("Database connection ");
+  bool dbOk = false;
+  if( KraftDB::self()->getDB() ) {
+    dbOk = true;
+    html += i18n("established");
+  } else {
+    html += i18n("<font color=\"red\">NOT AVAILABLE!</font>");
+  }
+  html += "</p>";
+  if( dbOk ) {
+    QSqlQuery q("SHOW VARIABLES like 'version';");
+    if( q.isActive() ) {
+      q.next();
+      QString version = q.value(1).toString();
+      html += ptag + i18n("Database Version: %1").arg( version );
     }
-    html += "</td></tr>";
-    html += QString( "<tr><td>Codename <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
-    html += "</table>";
-
-    html += "<h2>" + i18n("Database Information") + "</h2>";
-    html += ptag + i18n("Qt Database Driver: ") + KraftDB::qtDriver() +  "</p>";
-
-    html += ptag + i18n("Database connection ");
-    bool dbOk = false;
-    if( KraftDB::getDB() ) {
-        dbOk = true;
-        html += i18n("established");
-    } else {
-        html += i18n("<font color=\"red\">NOT AVAILABLE!</font>");
-    }
-    html += "</p>";
-    if( dbOk ) {
-        QSqlQuery q("SHOW VARIABLES like 'version';");
-        if( q.isActive() ) {
-            q.next();
-            QString version = q.value(1).toString();
-            html += ptag + i18n("Database Version: %1").arg( version );
-        }
-    }
-
-    KTextBrowser *browser = new KTextBrowser(parent);
-    kdDebug() << "This is the html: " << html << endl;
-    browser->setText(html);
-    // browser->setNotifyClick(false);
+  }
+  mSystemBrowser->setText(html);
 }
 
 void PortalView::documentDigests( QWidget *parent )
@@ -217,7 +225,6 @@ void PortalView::documentDigests( QWidget *parent )
              SIGNAL( printDocument( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( selectionChanged( const QString& ) ),
              SIGNAL( documentSelected( const QString& ) ) );
-  slotBuildView();
 }
 
 void PortalView::slotBuildView()

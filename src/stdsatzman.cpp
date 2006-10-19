@@ -101,12 +101,6 @@ StdSatzMan::~StdSatzMan( )
 
 void StdSatzMan::load()
 {
-    if( ! KraftDB::getDB() )
-    {
-        kdDebug() << "Have a problem: No database!" << endl;
-        return;
-    }
-
     if( m_stdSaetze )
     {
         /* Die Daten sind bereits geladen, Methode verlassen */
