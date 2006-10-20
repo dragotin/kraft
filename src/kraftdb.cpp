@@ -57,7 +57,6 @@ KraftDB::KraftDB()
     if( dbFile.isEmpty() ) {
       kdError() << "Database name is not set!" << endl;
       QSqlDatabase::removeDatabase( m_db );
-      m_db = 0;
       success = false;
     } else {
       kdDebug() << "Try to open database " << dbFile << endl;
@@ -70,13 +69,12 @@ KraftDB::KraftDB()
         // Database successfully opened; we can now issue SQL commands.
         kdDebug() << "Database " << dbFile << " opened successfully" << endl;
       } else {
-        m_db = 0;
-        kdError() << "## Could not open database file " << dbFile << endl;
+        kdError() << "## Could not open database " << dbFile << ": "
+                  << m_db->lastError().text() << endl;
         success = false;
       }
     }
   }
-
 }
 
 KraftDB *KraftDB::self()
@@ -85,6 +83,11 @@ KraftDB *KraftDB::self()
     selfDeleter.setObject( mSelf, new KraftDB() );
   }
   return mSelf;
+}
+
+QSqlDatabase *KraftDB::getDB()
+{
+  return m_db;
 }
 
 dbID KraftDB::getLastInsertID()

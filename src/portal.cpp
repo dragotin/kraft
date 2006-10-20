@@ -22,6 +22,7 @@
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qtimer.h>
+#include <qsqldatabase.h>
 
 // include files for KDE
 #include <kiconloader.h>
@@ -175,9 +176,19 @@ void Portal::initView()
 
 void Portal::slotStartupChecks()
 {
-  if( ! KraftDB::self()->getDB() ) {
-      KMessageBox::sorry( this, i18n("Can not open the database"),
+  if( ! KraftDB::self()->getDB()->isOpen() ) {
+    const QString m = KraftDB::self()->getDB()->lastError().text();
+
+    if ( m.contains( "MySQL server through socket" ) ) {
+      // Problem: Server is not running
+      KMessageBox::detailedError ( this, i18n( "There is no MySQL Server running on the system. "
+                                               "Please make sure the Server is started." ),
+                                   m, i18n( "Database not available" ) );
+    } else {
+      // The server is running, but we can not connect to the db.
+      KMessageBox::sorry( this, i18n("Can not open the database: %1").arg( m ),
                           i18n("Database Problem") );
+    }
   }
 
   connect( KraftDB::self(),  SIGNAL( statusMessage( const QString& ) ),

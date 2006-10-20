@@ -18,6 +18,7 @@
 // include files for Qt
 #include <qvbox.h>
 #include <qsqlquery.h>
+#include <qsqldatabase.h>
 
 // include files for KDE
 #include <klocale.h>
@@ -195,7 +196,7 @@ void PortalView::fillSystemDetails()
 
   html += ptag + i18n("Database connection ");
   bool dbOk = false;
-  if( KraftDB::self()->getDB() ) {
+  if( KraftDB::self()->getDB()->isOpen() ) {
     dbOk = true;
     html += i18n("established");
   } else {

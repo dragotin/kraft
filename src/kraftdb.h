@@ -49,7 +49,7 @@ public:
 
   void checkInit();
   void checkSchemaVersion();
-  QSqlDatabase *getDB() { return m_db; }
+  QSqlDatabase *getDB();
   QString qtDriver();
 
   typedef QMap<QString, QString> StringMap;

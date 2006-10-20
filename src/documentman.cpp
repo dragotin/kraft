@@ -54,7 +54,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
   qStr +=";";
   kdDebug() << "Sending sql string " << qStr << endl;
 
-  QSqlQuery query( qStr );// , KraftDB::getDB() );
+  QSqlQuery query( qStr );
 
   if( query.isActive() ) {
     while( query.next() ) {
@@ -98,7 +98,7 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
 
   kdDebug() << "Sending sql string " << qStr << endl;
 
-  QSqlQuery query( qStr ); // , KraftDB::getDB() );
+  QSqlQuery query( qStr );
   DocDigestsTimeline timeline;
   DocDigestList digests;
 
