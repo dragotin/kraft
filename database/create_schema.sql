@@ -238,5 +238,6 @@ CREATE TABLE archdocpos(
 CREATE TABLE kraftsystem(
     dbschemaversion  INT NOT NULL,
     updateUser       VARCHAR(256)
-)
+);
+
 
