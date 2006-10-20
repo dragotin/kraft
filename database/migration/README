@@ -1,0 +1,24 @@
+Kraft Database Migration 
+========================
+
+The Kraft database schema might change over the time.
+To achieve that smoothly for the users, here is a 
+database migration system. 
+
+Every version of Kraft has a hardcoded version of the
+required database schema version. In the Kraft database
+there is a system table that carries the version
+of the current running database schema. In case the actual
+database version is lower than the required, Kraft looks
+in this migration directory if there is a script starting
+with the number "current version +1". If found, Kraft 
+executes the sql commands contained in the file. 
+After all are finished, the version in the database system
+table is updated.
+
+Note that the migration file my contain lines like
+# message: bla bla
+
+Kraft shows the message lines in the status line.
+
+
