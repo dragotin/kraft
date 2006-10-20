@@ -151,6 +151,11 @@ void Portal::initView()
     // create the main widget here that is managed by KTMainWindow's view-region and
     // connect the widget to your document to display document contents.
     m_portalView = new PortalView( this, "mainview", KJanusWidget::IconList );
+
+    actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
+
     connect( m_portalView, SIGNAL(openKatalog( const QString&)),
              this, SLOT(slotOpenKatalog(const QString&)));
     connect( m_portalView, SIGNAL(katalogToXML(const QString& )),
