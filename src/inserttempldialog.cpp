@@ -63,6 +63,7 @@ void InsertTemplDialog::setPositionList( DocPositionList list, int intendedPos )
 {
   DocPositionBase *dpb;
   QStringList strList;
+  strList << i18n( "the Header of the Document as first position" );
 
   for ( dpb = list.first(); dpb; dpb = list.next() ) {
     DocPosition *dp = static_cast<DocPosition*>( dpb );
@@ -90,7 +91,7 @@ DocPosition InsertTemplDialog::docPosition()
 
 int InsertTemplDialog::insertAfterPosition()
 {
-  int itemPos = mBaseWidget->dmPositionCombo->currentItem() + 1;
+  int itemPos = mBaseWidget->dmPositionCombo->currentItem();
   kdDebug() << "Current item selected: " << itemPos << endl;
 
   return itemPos;
