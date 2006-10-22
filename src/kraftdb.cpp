@@ -126,8 +126,19 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
   return re;
 }
 
-void KraftDB::checkSchemaVersion()
+void KraftDB::checkSchemaVersion( QWidget *parent )
 {
+  if ( m_db->tables().contains( "kraftsystem" ) == 0 ) {
+    // The kraftsystem table is not there, reinit the entire db.
+    if( KMessageBox::warningYesNo( parent,
+                                   i18n( "The Kraft System Table was not found in database %1."
+                                         " Do you want me to rebuild the database?\n"
+                                         "WARNING: ALL YOUR DATA WILL BE DESTROYED!").arg(  KatalogSettings::dbFile() ),
+                                   i18n("Database Rebuild") ) == KMessageBox::Yes ) {
+      playSqlFile( "create_db.sql" );
+    }
+  }
+
   QSqlQuery q( "SELECT dbSchemaVersion FROM kraftsystem" );
   emit statusMessage( i18n( "Checking Database Schema Version" ) );
 
@@ -139,49 +150,12 @@ void KraftDB::checkSchemaVersion()
   if ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
     kdDebug() << "Kraft Schema Version not sufficient: " << currentVer << endl;
 
-    KStandardDirs stdDirs;
 
     while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
       ++currentVer;
       const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
-      kdDebug() << "Searching for file: " << migrateFilename << endl;
-      QString findFile = "kraft/dbmigrate/" + migrateFilename;
-      QString sqlFile = stdDirs.findResource( "data", findFile );
-      if ( ! sqlFile.isEmpty() ) {
-        kdDebug() << "Opening migration file " << sqlFile << endl;
-
-        QFile f( sqlFile );
-        if ( !f.open( IO_ReadOnly ) ) {
-          kdError() << "Could not open " << sqlFile << endl;
-        } else {
-          QTextStream ts( &f );
-          ts.setEncoding( QTextStream::UnicodeUTF8 );
-
-          while ( !ts.atEnd() ) {
-            QString sql = ts.readLine();
-            if ( !sql.isEmpty() ) {
-              QRegExp reg( "\\s*#\\s*message:\\s*" );
-              int pos = sql.lower().find( reg );
-              if ( pos > -1 ) {
-                // QString msg = sql.right( sql.length()-pos );
-                QString msg = sql.remove ( reg );
-                kdDebug() << "Msg: >" << msg << "<" << endl;
-                emit statusMessage( msg );
-              } else {
-                if ( q.exec( sql ) ) {
-                  kdDebug() << "Successfull SQL Command: " << sql << endl;
-                } else {
-                  kdDebug() << "Failed SQL Command: " << sql << endl;
-                }
-              }
-            }
-          }
-          f.close();
-        }
-      } else {
-        kdDebug() << "No migrate script for step " << currentVer << endl;
-        emit statusMessage( i18n( "Migration Script not found" ) );
-      }
+      int sqlc = playSqlFile( migrateFilename );
+      kdDebug() << "Successfull sql commands in file: " << migrateFilename << ": " << sqlc << endl;
     }
     /* Now update to the required schema version */
     q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
@@ -190,6 +164,53 @@ void KraftDB::checkSchemaVersion()
     kdDebug() << "Kraft Schema Version is ok: " << currentVer << endl;
     emit statusMessage( i18n( "Database Schema Version ok" ) );
   }
+}
+
+int KraftDB::playSqlFile( const QString& file )
+{
+  KStandardDirs stdDirs;
+  QString findFile = "kraft/dbmigrate/" + file;
+  QString sqlFile = stdDirs.findResource( "data", findFile );
+  int cnt = 0;
+
+  if ( ! sqlFile.isEmpty() ) {
+    kdDebug() << "Opening migration file " << sqlFile << endl;
+
+    QFile f( sqlFile );
+    if ( !f.open( IO_ReadOnly ) ) {
+      kdError() << "Could not open " << sqlFile << endl;
+    } else {
+      QTextStream ts( &f );
+      ts.setEncoding( QTextStream::UnicodeUTF8 );
+
+      QSqlQuery q;
+      while ( !ts.atEnd() ) {
+        QString sql = ts.readLine();
+        if ( !sql.isEmpty() ) {
+          QRegExp reg( "\\s*#\\s*message:\\s*" );
+          int pos = sql.lower().find( reg );
+          if ( pos > -1 ) {
+            // QString msg = sql.right( sql.length()-pos );
+            QString msg = sql.remove ( reg );
+            kdDebug() << "Msg: >" << msg << "<" << endl;
+            emit statusMessage( msg );
+          } else {
+            if ( q.exec( sql ) ) {
+              kdDebug() << "Successfull SQL Command: " << sql << endl;
+              cnt ++;
+            } else {
+              kdDebug() << "Failed SQL Command: " << sql << endl;
+            }
+          }
+        }
+      }
+      f.close();
+    }
+  } else {
+    kdDebug() << "No sql file found " << file << endl;
+    emit statusMessage( i18n( "SQL File %1 not found" ).arg( file ) );
+  }
+  return cnt;
 }
 
 

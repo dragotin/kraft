@@ -48,17 +48,20 @@ public:
   dbID getLastInsertID();
 
   void checkInit();
-  void checkSchemaVersion();
+  void checkSchemaVersion( QWidget* );
   QSqlDatabase *getDB();
   QString qtDriver();
 
   typedef QMap<QString, QString> StringMap;
   QStringList wordList( const QString&, StringMap replaceMap = StringMap() );
+
+
 signals:
   void statusMessage( const QString& );
 
 private: // Private attributes
   KraftDB();
+  int playSqlFile( const QString& );
 
   /** The default database */
   QSqlDatabase* m_db;

@@ -188,13 +188,14 @@ void Portal::slotStartupChecks()
       // The server is running, but we can not connect to the db.
       KMessageBox::sorry( this, i18n("Can not open the database: %1").arg( m ),
                           i18n("Database Problem") );
+
     }
   }
 
   connect( KraftDB::self(),  SIGNAL( statusMessage( const QString& ) ),
            SLOT( slotStatusMsg( const QString& ) ) );
 
-  KraftDB::self()->checkSchemaVersion();
+  KraftDB::self()->checkSchemaVersion( this );
 
   // Database interaction after this point.
   m_portalView->slotBuildView();
