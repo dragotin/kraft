@@ -49,13 +49,19 @@ public:
 
   void checkInit();
   void checkSchemaVersion( QWidget* );
-  QSqlDatabase *getDB();
+  QSqlDatabase *getDB(){ return m_db; }
   QString qtDriver();
 
   typedef QMap<QString, QString> StringMap;
   QStringList wordList( const QString&, StringMap replaceMap = StringMap() );
 
+  QString databaseName() const;
+  QString defaultDatabaseName() const;
 
+  bool isOk() { return mSuccess; }
+
+  bool checkConnect( const QString&, const QString&,
+                     const QString&, const QString& );
 signals:
   void statusMessage( const QString& );
 
@@ -67,6 +73,7 @@ private: // Private attributes
   QSqlDatabase* m_db;
   KProcess *mProcess;
   static KraftDB *mSelf;
+  bool mSuccess;
 };
 
 #endif

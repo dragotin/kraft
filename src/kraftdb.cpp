@@ -43,36 +43,31 @@ KraftDB* KraftDB::mSelf = 0;
 KraftDB::KraftDB()
   :QObject (), m_db( 0 )
 {
-  bool success = true;
-
   m_db = QSqlDatabase::addDatabase( DB_DRIVER );
   if ( ! m_db || m_db->isOpenError() )
   {
     kdError() <<  "Failed to connect to the database driver: "
               << m_db->lastError().text() << endl;
-    success = false;
+    mSuccess = false;
   }
-  if ( success ) {
-    const QString dbFile = KatalogSettings::dbFile();
+  QString dbFile;
+  if ( mSuccess ) {
+     dbFile = KatalogSettings::dbFile();
     if( dbFile.isEmpty() ) {
       kdError() << "Database name is not set!" << endl;
-      QSqlDatabase::removeDatabase( m_db );
-      success = false;
+      // dbFile = defaultDatabaseName();
+      mSuccess = false;
+    }
+  }
+  if ( mSuccess ) {
+    kdDebug() << "Try to open database " << dbFile << endl;
+    if ( checkConnect( KatalogSettings::dbServerName(), dbFile,
+                       KatalogSettings::dbUser(), KatalogSettings::dbPassword() ) ) {
+      // Database successfully opened; we can now issue SQL commands.
+      kdDebug() << "Database " << dbFile << " opened successfully" << endl;
     } else {
-      kdDebug() << "Try to open database " << dbFile << endl;
-      m_db->setDatabaseName( dbFile );
-      m_db->setUserName( KatalogSettings::dbUser() );
-      m_db->setPassword( KatalogSettings::dbPassword() );
-      m_db->setHostName( KatalogSettings::dbServerName() );
-
-      if ( m_db->open() ) {
-        // Database successfully opened; we can now issue SQL commands.
-        kdDebug() << "Database " << dbFile << " opened successfully" << endl;
-      } else {
-        kdError() << "## Could not open database " << dbFile << ": "
-                  << m_db->lastError().text() << endl;
-        success = false;
-      }
+      kdError() << "## Could not open database file " << dbFile << endl;
+      mSuccess = false;
     }
   }
 }
@@ -85,9 +80,22 @@ KraftDB *KraftDB::self()
   return mSelf;
 }
 
-QSqlDatabase *KraftDB::getDB()
+bool KraftDB::checkConnect( const QString& host, const QString& dbName,
+                            const QString& user, const QString& pwd )
 {
-  return m_db;
+  if ( dbName.isEmpty() || !m_db ) return false;
+  m_db->setHostName( host );
+  m_db->setDatabaseName( dbName );
+  m_db->setUserName( user );
+  m_db->setPassword( pwd );
+
+  m_db->open();
+  bool success = true;
+  if ( m_db->isOpenError() ) {
+    success = false;
+    kdDebug() << "ERR opening the db: " << m_db->lastError().text() << endl;
+  }
+  return success;
 }
 
 dbID KraftDB::getLastInsertID()
@@ -101,6 +109,16 @@ dbID KraftDB::getLastInsertID()
     }
 
     return dbID(id);
+}
+
+QString KraftDB::databaseName() const
+{
+  return KatalogSettings::dbFile();
+}
+
+QString KraftDB::defaultDatabaseName() const
+{
+  return QString( "Kraft" );
 }
 
 QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
