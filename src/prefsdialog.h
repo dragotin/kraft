@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #ifndef PREFSDIALOG_H
 #define PREFSDIALOG_H
 
@@ -25,23 +25,28 @@
  */
 class PrefsDialog : public KDialogBase
 {
-public:
-    PrefsDialog(QWidget *parent);
+  Q_OBJECT
 
-    ~PrefsDialog();
+public:
+  PrefsDialog(QWidget *parent);
+
+  ~PrefsDialog();
+
 
 protected:
-     void readConfig();
-     void writeConfig();
+  void readConfig();
+  void writeConfig();
 
 protected slots:
-     void slotOk();
-
+  void slotOk();
+  void slotTextChanged( const QString& );
+  void slotUser1();
 private:
-     QLineEdit *m_leHost;
-     QLineEdit *m_leUser;
-     QLineEdit *m_leName;
-     QLineEdit *m_lePasswd;
+  QLineEdit *m_leHost;
+  QLineEdit *m_leUser;
+  QLineEdit *m_leName;
+  QLineEdit *m_lePasswd;
+  QLabel    *m_statusLabel;
 };
 
 #endif
