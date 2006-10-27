@@ -137,6 +137,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
          record = cur.primeInsert();
        }
        if( dp->toDelete() ) {
+         kdDebug() << "This one is to delete, do it!" << endl;
          if( !doInsert ) {
            // the position is already existing, delete it
            cur.primeDelete();

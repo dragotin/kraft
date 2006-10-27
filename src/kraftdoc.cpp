@@ -18,6 +18,7 @@
 // include files for Qt
 #include <qdir.h>
 #include <qwidget.h>
+#include <qptrlist.h>
 
 // include files for KDE
 #include <klocale.h>
@@ -242,6 +243,21 @@ void KraftDoc::deleteContents()
   // TODO: Add implementation to delete the document contents
   /////////////////////////////////////////////////
 
+}
+
+void KraftDoc::setPositionList( const DocPositionList& newList )
+{
+  mPositions.clear();
+
+  QPtrListIterator<DocPositionBase> it( newList );
+  DocPositionBase *dpb;
+  // for( DocPositionBase *dpb = newList.first(); dpb; dpb = newList.next() ) {
+  while ( ( dpb = it.current() ) != 0 ) {
+    ++it;
+    DocPosition *dp = static_cast<DocPosition*>( dpb );
+    DocPosition *newDp = createPosition();
+    *newDp = *dp;
+  }
 }
 
 DocPosition* KraftDoc::createPosition()

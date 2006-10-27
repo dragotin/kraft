@@ -156,7 +156,6 @@ class KraftView : public KDialogBase
   protected slots:
     void slotOk();
     void slotCancel();
-    void savePositions();
     void redrawDocPositions( );
     void redrawSumBox();
     void done( int );

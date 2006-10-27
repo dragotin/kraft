@@ -518,7 +518,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 
   // kdDebug() << "Adding a widget for position number " << cnt << endl;
 
-  kdDebug() << "Creating an entry in the position map for " << dp->dbId().toInt() << endl;
+  kdDebug() << "Creating widget for pos " << pos << endl;
   if( dp->dbId().toInt() < 0 ) {
     kdDebug() << "setting state to NEW" << endl;
     w->slotSetState( PositionViewWidget::New );
@@ -884,7 +884,7 @@ void KraftView::slotOk()
     doc->setPostText( m_footerEdit->m_teSummary->text() );
     doc->setGoodbye(  m_footerEdit->m_cbGreeting->currentText() );
 
-    savePositions();
+    doc->setPositionList( currentPositionList() );
 
     doc->saveDocument( );
 
@@ -895,63 +895,6 @@ void KraftView::slotOk()
 
     emit viewClosed( true );
     KDialogBase::slotOk(  );
-}
-
-// saves changes in the GUI to the underlying document pos
-void KraftView::savePositions()
-{
-  PositionViewWidget *widget;
-  for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
-    DocPositionBase *dpb = widget->position();
-    DocPosition *pos = static_cast<DocPosition*>(dpb);
-
-    QString h = QString::number( widget->ordNumber() );
-
-    if ( !pos ) {
-      kdError() << "Unexpected: pos is zero for ordNumber " << h << endl;
-      return;
-    }
-
-    // pos->setPosition( h );
-
-    if( widget->deleted() ) {
-      pos->setToDelete( true );
-      continue;
-    }
-
-    if( widget->modified() ) {
-      kdDebug() << "Position " << pos->position() << " was modified" << endl;
-      h = widget->m_teFloskel->text();
-      if( h != pos->text() ) {
-        pos->setText( h );
-      }
-
-      h = widget->m_cbUnit->currentText();
-      int eId = UnitManager::getUnitIDSingular( h );
-      Einheit e = UnitManager::getUnit( eId );
-      if( e.id() != pos->unit().id() ) {
-        pos->setUnit( e );
-      }
-
-      double v = widget->m_sbAmount->value();
-      if( v != pos->amount() ) {
-        pos->setAmount( v );
-      }
-
-      v = widget->m_sbUnitPrice->value();
-      if( v != pos->unitPrice().toDouble() ) {
-        pos->setUnitPrice( Geld( v ) );
-      }
-    } else {
-      kdDebug() << "Position " << pos->position() << " was NOT modified" << endl;
-    }
-
-    if ( widget->state() == PositionViewWidget::New ) {
-      // We need to copy the position into the document.
-      DocPosition *newPos = getDocument()->createPosition();
-      *newPos = *pos;
-    }
-  }
 }
 
 void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
