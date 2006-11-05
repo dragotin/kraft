@@ -41,7 +41,7 @@ static KStaticDeleter<KraftDB> selfDeleter;
 KraftDB* KraftDB::mSelf = 0;
 
 KraftDB::KraftDB()
-  :QObject (), m_db( 0 )
+  :QObject (), m_db( 0 ),  mSuccess( true )
 {
   m_db = QSqlDatabase::addDatabase( DB_DRIVER );
   if ( ! m_db || m_db->isOpenError() )
@@ -50,6 +50,7 @@ KraftDB::KraftDB()
               << m_db->lastError().text() << endl;
     mSuccess = false;
   }
+
   QString dbFile;
   if ( mSuccess ) {
      dbFile = KatalogSettings::dbFile();
@@ -59,10 +60,13 @@ KraftDB::KraftDB()
       mSuccess = false;
     }
   }
+
   if ( mSuccess ) {
     kdDebug() << "Try to open database " << dbFile << endl;
-    if ( checkConnect( KatalogSettings::dbServerName(), dbFile,
-                       KatalogSettings::dbUser(), KatalogSettings::dbPassword() ) ) {
+    int re = checkConnect( KatalogSettings::dbServerName(), dbFile,
+                           KatalogSettings::dbUser(), KatalogSettings::dbPassword() );
+    if ( re == 0 ) {
+
       // Database successfully opened; we can now issue SQL commands.
       kdDebug() << "Database " << dbFile << " opened successfully" << endl;
     } else {
@@ -80,7 +84,7 @@ KraftDB *KraftDB::self()
   return mSelf;
 }
 
-bool KraftDB::checkConnect( const QString& host, const QString& dbName,
+int KraftDB::checkConnect( const QString& host, const QString& dbName,
                             const QString& user, const QString& pwd )
 {
   if ( dbName.isEmpty() || !m_db ) return false;
@@ -89,13 +93,24 @@ bool KraftDB::checkConnect( const QString& host, const QString& dbName,
   m_db->setUserName( user );
   m_db->setPassword( pwd );
 
+  int re = 0;
+
   m_db->open();
-  bool success = true;
   if ( m_db->isOpenError() ) {
-    success = false;
-    kdDebug() << "ERR opening the db: " << m_db->lastError().text() << endl;
+    kdDebug() << "ERR opening the db: " << m_db->lastError().text() <<
+      ", type is " << m_db->lastError().type() << endl;
+    re = m_db->lastError().type();
   }
-  return success;
+  return re;
+}
+
+QSqlError KraftDB::lastError()
+{
+  if ( m_db ) {
+    return m_db->lastError();
+  }
+
+  return QSqlError();
 }
 
 dbID KraftDB::getLastInsertID()
@@ -131,8 +146,9 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
   // cur.setMode( QSqlCursor::ReadOnly );
   cur.select( QString( "category='%1'" ).arg( selector ) );
   while ( cur.next() ) {
-    QString w = cur.value( "word" ).toString();
-
+    QCString wc = cur.value( "word" ).asCString();
+    QString w = QString::fromUtf8( wc );
+    kdDebug() << "wc is " << wc << " and wordlist-String: " << w << endl;
     StringMap::Iterator it;
     for ( it = replaceMap.begin(); it != replaceMap.end(); ++it ) {
       const QString key = it.key().utf8();
@@ -146,14 +162,12 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
 
 void KraftDB::checkSchemaVersion( QWidget *parent )
 {
+  kdDebug() << "The country setting is " << KGlobal().locale()->country() << endl;
+
   if ( m_db->tables().contains( "kraftsystem" ) == 0 ) {
-    // The kraftsystem table is not there, reinit the entire db.
-    if( KMessageBox::warningYesNo( parent,
-                                   i18n( "The Kraft System Table was not found in database %1."
-                                         " Do you want me to rebuild the database?\n"
-                                         "WARNING: ALL YOUR DATA WILL BE DESTROYED!").arg(  KatalogSettings::dbFile() ),
-                                   i18n("Database Rebuild") ) == KMessageBox::Yes ) {
-      playSqlFile( "create_db.sql" );
+    if ( ! createDatabase( parent ) ) {
+      kdDebug() << "Failed to create the database, returning. Thats a bad condition." << endl;
+      return;
     }
   }
 
@@ -172,8 +186,15 @@ void KraftDB::checkSchemaVersion( QWidget *parent )
     while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
       ++currentVer;
       const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
-      int sqlc = playSqlFile( migrateFilename );
-      kdDebug() << "Successfull sql commands in file: " << migrateFilename << ": " << sqlc << endl;
+      int allCmds = 0;
+      int sqlc = playSqlFile( migrateFilename, allCmds );
+      if ( allCmds != sqlc ) {
+        kdDebug() << "WRN: only " << sqlc << " from " << allCmds << " sql commands "
+          "were executed correctly" << endl;
+      } else {
+        kdDebug() << "All sql commands successfull in file: " << migrateFilename << ": " << sqlc << endl;
+
+      }
     }
     /* Now update to the required schema version */
     q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
@@ -184,12 +205,54 @@ void KraftDB::checkSchemaVersion( QWidget *parent )
   }
 }
 
-int KraftDB::playSqlFile( const QString& file )
+bool KraftDB::createDatabase( QWidget *parent )
+{
+  // The kraftsystem table is not there, reinit the entire db.
+  bool ret = false;
+  emit statusMessage( i18n( "Recreate Database" ) );
+  if( KMessageBox::warningYesNo( parent,
+                                 i18n( "The Kraft System Table was not found in database %1."
+                                       " Do you want me to rebuild the database?\n"
+                                       "WARNING: ALL YOUR DATA WILL BE DESTROYED!").arg(  KatalogSettings::dbFile() ),
+                                 i18n("Database Rebuild") ) == KMessageBox::Yes ) {
+    emit statusMessage( i18n( "Creating Database..." ) );
+    int allCmds = 0;
+    int goodCmds = playSqlFile( "create_schema.sql", allCmds );
+    if ( goodCmds == allCmds ) {
+      QString dbFill( "fill_schema_en.sql" );
+
+      if ( KGlobal().locale()->country() == "de" ) {
+        dbFill = "fill_schema_de.sql";
+      }
+      emit statusMessage( i18n( "Filling Database..." ) );
+      if ( playSqlFile( dbFill, allCmds ) == 0 ) {
+        kdDebug() << "Failed to fill the database" << endl;
+        emit statusMessage( i18n( "Failed." ) );
+      } else {
+        ret = true;
+        emit statusMessage( i18n( "Ready." ) );
+      }
+    } else if ( goodCmds > 0 && allCmds > 0 ) {
+      // There were some commands failing
+    } else if ( allCmds == 0 ) {
+      // no commands were found
+    }
+  }
+  return ret;
+}
+
+int KraftDB::playSqlFile( const QString& file, int& overallCount )
 {
   KStandardDirs stdDirs;
   QString findFile = "kraft/dbmigrate/" + file;
   QString sqlFile = stdDirs.findResource( "data", findFile );
   int cnt = 0;
+
+  // search in dbcreate as well.
+  if ( sqlFile.isEmpty() ) {
+    findFile = "kraft/dbinit/" + file;
+    sqlFile = stdDirs.findResource( "data", findFile );
+  }
 
   if ( ! sqlFile.isEmpty() ) {
     kdDebug() << "Opening migration file " << sqlFile << endl;
@@ -202,22 +265,31 @@ int KraftDB::playSqlFile( const QString& file )
       ts.setEncoding( QTextStream::UnicodeUTF8 );
 
       QSqlQuery q;
-      while ( !ts.atEnd() ) {
-        QString sql = ts.readLine();
-        if ( !sql.isEmpty() ) {
-          QRegExp reg( "\\s*#\\s*message:\\s*" );
-          int pos = sql.lower().find( reg );
+      QString allSql = ts.read();
+      QStringList sqlList = QStringList::split( ";", allSql );
+
+      for ( QStringList::iterator it = sqlList.begin();
+            it != sqlList.end(); ++it ) {
+        QString sql = QString( "%1;" ).arg( ( *it ).stripWhiteSpace() );
+
+        if ( sql != ";" ) /* avoid empty lines */ {
+          QRegExp reg( "\\s*#\\s*message: ?(.*)\\s*\\n" );
+          int pos = reg.search( sql.lower(),  0 );
           if ( pos > -1 ) {
-            // QString msg = sql.right( sql.length()-pos );
-            QString msg = sql.remove ( reg );
+            QString msg = reg.cap( 1 );
+            sql = sql.remove ( reg );
             kdDebug() << "Msg: >" << msg << "<" << endl;
             emit statusMessage( msg );
-          } else {
+          }
+
+          if ( !sql.isEmpty() ) {
+            overallCount++;
             if ( q.exec( sql ) ) {
               kdDebug() << "Successfull SQL Command: " << sql << endl;
               cnt ++;
             } else {
-              kdDebug() << "Failed SQL Command: " << sql << endl;
+              QSqlError err = q.lastError();
+              kdDebug() << "Failed SQL Command " << sql << ": " << err.text() << endl;
             }
           }
         }

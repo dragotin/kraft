@@ -177,7 +177,8 @@ void Portal::initView()
 
 void Portal::slotStartupChecks()
 {
-  if ( KraftDB::self()->databaseName().isEmpty() ) {
+  const QString dbName = KraftDB::self()->databaseName();
+  if ( dbName.isEmpty() ) {
     // Problem: Database name is not set in the config.
     PrefsDialog dia( this );
     if ( ! dia.exec() ) {
@@ -189,10 +190,24 @@ void Portal::slotStartupChecks()
            SLOT( slotStatusMsg( const QString& ) ) );
 
   if( ! KraftDB::self()->isOk() ) {
-      KMessageBox::sorry( this, i18n("Can not open the database"),
-                          i18n("Database Problem") );
-      slotStatusMsg( i18n( "Database Problem." ) );
+    QSqlError err = KraftDB::self()->lastError();
+    kdDebug() << "The last sql error id: " << err.type() << endl;
 
+    QString text;
+
+    if ( err.text().contains( "Can't connect to local MySQL server through socket" ) ) {
+      text = i18n( "The MySQL server is not running, Kraft can not connect to it. "
+        "Please start the server, possibly create a database wiht the name %1 and restart Kraft." ).arg( dbName );
+    } else if ( err.text().contains( "Unknown database '" + dbName + "' QMYSQL3: Unable to connect" ) ) {
+      text = i18n( "The database with the name %1 does not exist on the database server. Please make"
+                   " sure the database exists and is accessible by the user running Kraft." ).arg( dbName );
+    } else {
+      text = i18n( "There is a database problem: %1" ).arg( err.text() );
+    }
+
+
+    KMessageBox::sorry( this, text, i18n("Serious Database Problem") );
+    slotStatusMsg( i18n( "Database Problem." ) );
   } else {
     KraftDB::self()->checkSchemaVersion( this );
 

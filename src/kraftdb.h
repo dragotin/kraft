@@ -30,6 +30,7 @@ class QSqlDatabase;
 
 class dbID;
 class KProcess;
+class QSqlError;
 
 class KraftDB : public QObject
 {
@@ -58,22 +59,29 @@ public:
   QString databaseName() const;
   QString defaultDatabaseName() const;
 
-  bool isOk() { return mSuccess; }
+  QSqlError lastError();
 
-  bool checkConnect( const QString&, const QString&,
-                     const QString&, const QString& );
+  int checkConnect( const QString&, const QString&,
+                    const QString&, const QString& );
+  bool isOk() {
+    return mSuccess;
+  }
 signals:
   void statusMessage( const QString& );
 
 private: // Private attributes
   KraftDB();
-  int playSqlFile( const QString& );
+  int playSqlFile( const QString&, int& );
+
+  bool createDatabase( QWidget* );
 
   /** The default database */
   QSqlDatabase* m_db;
   KProcess *mProcess;
   static KraftDB *mSelf;
   bool mSuccess;
+
+  int  mSqlCommandCount;
 };
 
 #endif
