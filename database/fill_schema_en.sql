@@ -4,8 +4,9 @@ INSERT INTO preisArten VALUES (1, 'manual');
 INSERT INTO preisArten VALUES (2, 'calculated');
 
 DELETE FROM CatalogSet;
-INSERT INTO CatalogSet (name, description, catalogType, sortKey) VALUES ( "Templates for Landscaping", \
-  "Calculated Templates for Landscaping Business", "TemplCatalog", 1 );
+INSERT INTO CatalogSet (name, description, catalogType, sortKey) VALUES 
+( "Standard Templates", 
+  "A set of templates suitable for business", "TemplCatalog", 1 );
 SET @newCat := LAST_INSERT_ID();
 
 DELETE FROM CatalogChapters;
@@ -16,7 +17,7 @@ INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES ('Stones', 4
 INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES ('Misc', 5, @newCat  );
 INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES ('Transportation', 6, @newCat  );
 
-INSERT INTO CatalogSet( name, description, catalogType, sortKey) VALUES ("Material", \
+INSERT INTO CatalogSet( name, description, catalogType, sortKey) VALUES ("Material", 
   "Material Catalog to Use in Calculations in Templates", "MaterialCatalog", 2 );
 SET @newCat := LAST_INSERT_ID();
 

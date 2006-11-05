@@ -4,8 +4,8 @@ INSERT INTO preisArten VALUES (1, 'selbsterstellt');
 INSERT INTO preisArten VALUES (2, 'kalkuliert');
 
 DELETE FROM CatalogSet;
-INSERT INTO CatalogSet (name, description, catalogType, sortKey) VALUES ( "Mustertexte GALA-Bau", \
-  "Kalkulierte Musterposten für den Garten- und Landschaftsbau", "TemplCatalog", 1 );
+INSERT INTO CatalogSet (name, description, catalogType, sortKey) VALUES 
+ ( "Mustertexte GALA-Bau", "Kalkulierte Musterposten für den Garten- und Landschaftsbau", "TemplCatalog", 1 );
 SET @newCat := LAST_INSERT_ID();
 
 DELETE FROM CatalogChapters;
@@ -17,17 +17,17 @@ INSERT INTO CatalogChapters (chapter, sortKey) VALUES ('Sonstige', 5 );
 INSERT INTO CatalogChapters (chapter, sortKey) VALUES ('Transport', 6 );
 UPDATE CatalogChapters SET catalogSetID=@newCat;
 
-INSERT INTO CatalogSet( name, description, catalogType, sortKey) VALUES ("Material", \
+INSERT INTO CatalogSet( name, description, catalogType, sortKey) VALUES ("Material",
   "Materialkatalog", "MaterialCatalog", 2 );
 SET @newCat := LAST_INSERT_ID();
 
-INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES \
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES 
   ('Schüttgüter', 3, @newCat);
-INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES \
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES 
   ('Naturstein', 2, @newCat);
-INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES \
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES 
   ('Beton', 1, @newCat);
-INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES \
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES 
   ('Rohre', 4, @newCat);
 
 DELETE FROM units;

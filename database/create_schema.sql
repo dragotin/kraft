@@ -240,4 +240,5 @@ CREATE TABLE kraftsystem(
     updateUser       VARCHAR(256)
 );
 
+INSERT INTO kraftsystem ( dbschemaversion ) VALUES ( 1 );
 
