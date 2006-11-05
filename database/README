@@ -18,27 +18,21 @@ examples with the user name you created.
 The database can be set up using the creation scripts
 in Krafts database directory. The scripts do create
 the database completely new, even if they exists. 
-Unfortunately there is no migration mechanism yet, 
-sorry for that. 
+
+The standard way however to let Kraft create and maintain
+the database schema for you. All that needs to be done 
+is to 
+ - start MySQL on the system
+ - have a user and password combination that has acces to
+   the database
+ - create an empty database with a suitable name like for 
+   example "kraft".
+ - enter the credentials and the database name in Kraft's
+   config dialog.
+
+Schema creation and maintenance is done by Kraft automatically.
 
 To create the database, perform the following steps:
-
-cd database
-mysql -u user -p < create_schema.sql
-
-this creates the database tables in database kraft. 
-
-ATTENTION: The command above deletes the database kraft
-if it already exists. THERE IS NO BACKUP DONE YET!!
-
-Fill the database with initial content:
-
-mysql -u user -p kraft < fill_schema_de.sql
-
-this fills the database with some basic settings for
-language german. Other fill_schema scripts for other
-languages can be written, thats the reason for why
-these are two scripts.
 
 The database credentials must be entered into the settings
 dialog in kraft after the first start. Please restart after
