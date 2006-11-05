@@ -188,6 +188,9 @@ void PortalView::fillSystemDetails()
   }
   html += "</td></tr>";
   html += QString( "<tr><td>Codename <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
+  QString h1 = KGlobal().locale()->twoAlphaToCountryName( KGlobal().locale()->country() );
+  html += QString( "<tr><td>" ) + i18n( "Country Setting: " ) +
+          QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( KGlobal().locale()->country() );
   html += "</table>";
 
   html += "<h2>" + i18n("Database Information") + "</h2>";
