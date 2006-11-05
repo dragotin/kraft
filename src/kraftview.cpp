@@ -518,7 +518,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 
   // kdDebug() << "Adding a widget for position number " << cnt << endl;
 
-  kdDebug() << "Creating widget for pos " << pos << endl;
+  kdDebug() << "Inserting in the new position at " << pos << endl;
   if( dp->dbId().toInt() < 0 ) {
     kdDebug() << "setting state to NEW" << endl;
     w->slotSetState( PositionViewWidget::New );
@@ -775,7 +775,7 @@ void KraftView::slotAddPosition( DocPosition *selectedDP )
   }
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
 
-  slotFocusPosition( widget, 1+newpos );
+  slotFocusPosition( widget, newpos );
   refreshPostCard();
 }
 
