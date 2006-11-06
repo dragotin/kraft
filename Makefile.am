@@ -1,1 +1,1 @@
-SUBDIRS = src database 
+SUBDIRS = src database reports
