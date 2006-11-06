@@ -19,6 +19,7 @@
 #include <qsqlindex.h>
 #include <qfile.h>
 #include <qtextstream.h>
+#include <qregexp.h>
 
 #include <kstaticdeleter.h>
 #include <kdebug.h>
@@ -223,6 +224,9 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
               TAG( "VATSUM" ),
               archive.vatSum().toString() );
 
+  replaceTag( tmpl,
+              TAG( "IMAGE" ) );
+
   return tmpl;
 }
 
@@ -331,12 +335,38 @@ QString ReportGenerator::fillupTemplateFromDoc( DocGuardedPtr doc )
               TAG( "VATSUM" ),
               doc->vatSum().toString() );
 
+  replaceTag( tmpl,
+              TAG( "IMAGE" ) );
   return tmpl;
 }
 
 int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QString& rep )
 {
-  text.replace( tag, rep, false );
+  if ( tag == TAG( "IMAGE" ) ) {
+    kdDebug() << "Replacing image tag" << endl;
+    QRegExp reg( "<!-- IMAGE\\(\\s*(\\S+)\\s*\\) -->" );
+
+    KStandardDirs stdDirs;
+    int pos = 0;
+
+    while ( pos >= 0 ) {
+      pos = reg.search( text, pos );
+      const QString filename = reg.cap( 1 );
+      kdDebug() << "Found position: " << pos << endl;
+
+      if ( ! filename.isEmpty() ) {
+        QString findFile = "kraft/reports/images/" + filename;
+        QString file = stdDirs.findResource( "data", findFile );
+        if ( file.isEmpty() ) {
+          kdDebug() << "can not find findFile " << findFile << endl;
+        } else {
+          text.replace( reg, file );
+        }
+      }
+    }
+  } else {
+    text.replace( tag, rep, false );
+  }
   return 0;
 }
 

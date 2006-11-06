@@ -51,7 +51,7 @@ protected slots:
 private:
   QString fillupTemplateFromDoc( DocGuardedPtr );
   QString fillupTemplateFromArchive( const dbID& );
-  int replaceTag( QString&, const QString&, const QString& );
+  int replaceTag( QString&, const QString&, const QString& = QString() );
 
   ReportGenerator();
   QString mOutFile;
