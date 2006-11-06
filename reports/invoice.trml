@@ -17,7 +17,7 @@
             <drawCentredString x="105mm" y="1.8cm">Wooden Castle - Kelso - Moxmuxshire CD5 8ZN</drawCentredString>
             <drawCentredString x="105mm" y="1.4cm">Telephone 01232 3124229 - Fax 01232 3124230 </drawCentredString>
 
-	    <image x="140mm" y="22cm" width="6cm" height="6cm" file="/tmp/lurchie.png"/>
+	    <image x="140mm" y="22cm" width="6cm" height="6cm" file="<!-- IMAGE(lurchie.png) -->" />
 
         </pageGraphics>
         <frame id="address" x1="2cm"  y1="21.0cm" width="8cm" height="4.2cm"/>
