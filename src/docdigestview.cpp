@@ -77,7 +77,7 @@ KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList 
 
   KListViewItem *chapIt;
   if ( chapParent ) {
-    chapIt = new KListViewItem( chapParent,  chapter );
+    chapIt = new KListViewItem( chapParent, chapter );
   } else {
     chapIt = new KListViewItem( mListView, chapter );
   }

@@ -237,12 +237,12 @@ void PortalView::slotBuildView()
   mDocDigestView->listview()->clear(); // FIXME: Should not be cleared!
 
   KListViewItem *item = mDocDigestView->addChapter( i18n( "All Documents" ),
-                                                       docman->latestDocs( 0 ) );
+                                                    docman->latestDocs( 0 ) );
   item->setPixmap( 0, SmallIcon( "identity" ) );
   item->setOpen( false );
 
   item = mDocDigestView->addChapter( i18n( "Documents by Time" ),
-                                                        DocDigestList() );
+                                     DocDigestList() );
   item->setPixmap( 0, SmallIcon( "history" ) );
   item->setOpen( false );
 
@@ -254,19 +254,19 @@ void PortalView::slotBuildView()
   KListViewItem *yearItem = 0;
 
   for ( it = timeList.begin(); it != timeList.end(); ++it ) {
-    kdDebug() << "Year is: " << ( *it ).year() << endl;
-    if ( year != ( *it ).year() ) {
+    if ( ( *it ).year() && year != ( *it ).year() ) {
       year = ( *it ).year();
+
       yearItem = mDocDigestView->addChapter( QString::number( year ),  DocDigestList(), item );
       yearItem->setOpen( false );
+
+      month = ( *it ).month();
+      const QString monthName = KGlobal().locale()->calendar()->monthName( month, year, false);
+      KListViewItem *mItem = mDocDigestView->addChapter(  monthName, ( *it ).digests(), yearItem );
+      mItem->setOpen( false );
     }
-
-    month = ( *it ).month();
-    const QString monthName = KGlobal().locale()->calendar()->monthName( month, year, false);
-    KListViewItem *mItem = mDocDigestView->addChapter(  monthName, ( *it ).digests(), yearItem );
-    mItem->setOpen( false );
   }
-
+  kdDebug() << "---------" << endl;
   item = mDocDigestView->addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
   item->setPixmap( 0, SmallIcon( "fork" ) );
 

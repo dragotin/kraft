@@ -392,9 +392,33 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& id )
 
   mErrors = QString();
 
-  const QString rmlbin = KraftSettings::self()->trml2PdfBinary();
-  kdDebug() << "Using trml2pdf: " << rmlbin << endl;
+  QString rmlbin = KraftSettings::self()->trml2PdfBinary();
 
+  if ( rmlbin == "trml2pdf" || ! QFile::exists( rmlbin ) ) {
+    QStringList pathes;
+    pathes << "/usr/local/bin/trml2pdf";
+    pathes << "/usr/bin/trml2pdf";
+    pathes << "/usr/local/bin/trml2pdf.py";
+    pathes << "/usr/bin/trml2pdf.py";
+
+    for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
+      if ( QFile::exists( *it ) ) {
+        rmlbin = *it;
+        kdDebug() << "Found trml2pdf in filesystem: " << rmlbin << endl;
+
+      }
+    }
+
+    if ( rmlbin == "trml2pdf" || ! QFile::exists( rmlbin ) ) {
+
+      KMessageBox::error( 0, i18n("The utility trml2pdf could not be found, but is required to create documents."
+                                  "Please make sure the package is installed accordingly." ),
+                          i18n( "Document Generation Error" ) );
+      return;
+    } else {
+      kdDebug() << "Using rml2pdf script: " << rmlbin << endl;
+    }
+  }
   KStandardDirs stdDirs;
   QString outputDir = KraftSettings::self()->pdfOutputDir();
   if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";

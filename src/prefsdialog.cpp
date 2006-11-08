@@ -133,10 +133,10 @@ void PrefsDialog::slotUser1()
 {
   kdDebug() << "Trying database connect to db " << m_leName->text() << endl;
 
-  bool x = KraftDB::self()->checkConnect( m_leHost->text(), m_leName->text(),
+  int x = KraftDB::self()->checkConnect( m_leHost->text(), m_leName->text(),
                                           m_leUser->text(), m_lePasswd->text() );
   kdDebug() << "Connection result: " << x << endl;
-  if ( x ) {
+  if ( x == 0 ) {
     m_statusLabel->setText( i18n( "Good!" ) );
   } else {
     m_statusLabel->setText( i18n( "Failed" ) );

@@ -196,11 +196,13 @@ void Portal::slotStartupChecks()
     QString text;
 
     if ( err.text().contains( "Can't connect to local MySQL server through socket" ) ) {
-      text = i18n( "The MySQL server is not running, Kraft can not connect to it. "
-        "Please start the server, possibly create a database wiht the name %1 and restart Kraft." ).arg( dbName );
+      text = i18n( "Kraft can not connect to the specified MySQL server. "
+                   "Please check the Kraft database settings, check if the server is "
+                   "running and verify if a database with the name %1 exits!" ).arg( dbName );
     } else if ( err.text().contains( "Unknown database '" + dbName + "' QMYSQL3: Unable to connect" ) ) {
-      text = i18n( "The database with the name %1 does not exist on the database server. Please make"
-                   " sure the database exists and is accessible by the user running Kraft." ).arg( dbName );
+      text = i18n( "The database with the name %1 does not exist on the database server. "
+                   "Please make sure the database exists and is accessible by the user "
+                   "running Kraft." ).arg( dbName );
     } else {
       text = i18n( "There is a database problem: %1" ).arg( err.text() );
     }
