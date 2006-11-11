@@ -19,6 +19,7 @@
 #include <qframe.h>
 #include <qheader.h>
 #include <qpopupmenu.h>
+#include <qtooltip.h>
 
 #include <klistview.h>
 #include <klocale.h>
@@ -37,6 +38,12 @@ DocDigestView::DocDigestView( QWidget *parent )
 
   QBoxLayout *box = new QVBoxLayout( w );
   QBoxLayout *hbox = new QHBoxLayout( w );
+
+  mNewDocButton = new QPushButton( i18n( "Create Document" ), w );
+  connect( mNewDocButton, SIGNAL( clicked() ), this, SIGNAL( createDocument() ) );
+
+  hbox->addWidget( mNewDocButton );
+
   hbox->addStretch(1);
   box->addLayout( hbox );
   mListView = new KListView( w );

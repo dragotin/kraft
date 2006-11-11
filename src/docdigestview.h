@@ -26,6 +26,7 @@ class KListView;
 class KListViewItem;
 class FilterHeader;
 class QPopupMenu;
+class QPushButton;
 
 class DocDigestView : public QWidget
 {
@@ -62,7 +63,7 @@ private:
   KListView *mListView;
   FilterHeader *mFilterHeader;
   QPopupMenu *mContextMenu;
-
+  QPushButton *mNewDocButton;
   QMap<QListViewItem*, QString> mDocIdDict;
 };
 
