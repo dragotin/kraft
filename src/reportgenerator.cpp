@@ -359,6 +359,7 @@ int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QStri
         QString file = stdDirs.findResource( "data", findFile );
         if ( file.isEmpty() ) {
           kdDebug() << "can not find findFile " << findFile << endl;
+          pos = -1; // Better break here to avoid infinite loop.
         } else {
           text.replace( reg, file );
         }
@@ -396,14 +397,19 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& id )
 
   if ( rmlbin == "trml2pdf" || ! QFile::exists( rmlbin ) ) {
     QStringList pathes;
+#if 0
     pathes << "/usr/local/bin/trml2pdf";
     pathes << "/usr/bin/trml2pdf";
     pathes << "/usr/local/bin/trml2pdf.py";
     pathes << "/usr/bin/trml2pdf.py";
+#endif
+    KStandardDirs stdDirs;
+    pathes = stdDirs.systemPaths();
 
     for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
-      if ( QFile::exists( *it ) ) {
-        rmlbin = *it;
+      QString cPath = ( *it ) + "/trml2pdf";
+      if ( QFile::exists( cPath ) ) {
+        rmlbin = cPath;
         kdDebug() << "Found trml2pdf in filesystem: " << rmlbin << endl;
 
       }
@@ -421,6 +427,10 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& id )
   }
   KStandardDirs stdDirs;
   QString outputDir = KraftSettings::self()->pdfOutputDir();
+  if ( outputDir.isEmpty() ) {
+    outputDir = stdDirs.saveLocation( "tmp", "kraft/" );
+  }
+
   if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
   mOutFile = outputDir + id + ".pdf";
   kdDebug() << "Writing output to " << mOutFile << endl;

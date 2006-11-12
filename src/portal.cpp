@@ -35,6 +35,7 @@
 #include <kstdaction.h>
 #include <kdebug.h>
 #include <kaction.h>
+#include <kcmdlineargs.h>
 
 // application specific includes
 #include "kraftview.h"
@@ -58,8 +59,9 @@
 
 #define ID_STATUS_MSG 1
 
-Portal::Portal( QWidget* , const char* name)
-: KMainWindow(0, name)
+Portal::Portal( QWidget*, KCmdLineArgs *args, const char* name)
+: KMainWindow(0, name),
+  mCmdLineArgs( args )
 
 {
   ///////////////////////////////////////////////////////////////////
@@ -217,13 +219,22 @@ void Portal::slotStartupChecks()
     m_portalView->slotBuildView();
     m_portalView->fillCatalogDetails();
     m_portalView->fillSystemDetails();
+
+    slotStatusMsg( i18n( "Commandline actions" ) );
+    QCString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
+    if ( ! docId.isEmpty() ) {
+      kdDebug() << "open a document: " << docId << endl;
+      slotPrintDocument( dbID( docId.toInt() ) );
+    }
+
+    mCmdLineArgs->clear();
+
     slotStatusMsg( i18n( "Ready." ) );
   }
 }
 
 bool Portal::queryClose()
 {
-  // return doc->saveModified();
   return true;
 }
 
@@ -235,13 +246,22 @@ bool Portal::queryExit()
 /////////////////////////////////////////////////////////////////////
 // SLOT IMPLEMENTATION
 /////////////////////////////////////////////////////////////////////
+void Portal::busyCursor( bool on )
+{
+  if ( on ) {
+    QApplication::setOverrideCursor( QCursor( BusyCursor ) );
+  } else {
+    QApplication::restoreOverrideCursor();
+  }
+}
 
 void Portal::slotNewDocument()
 {
   slotStatusMsg(i18n("Creating new document..."));
-
+  busyCursor( true );
   DocumentMan *docman = DocumentMan::self();
   DocGuardedPtr doc = docman->createDocument();
+  busyCursor( false );
 
   slotStatusMsg(i18n("Ready."));
   createView( doc );
@@ -258,19 +278,25 @@ void Portal::slotPrintDocument()
   QString locId = m_portalView->docDigestView()->currentDocumentId();
   kdDebug() << "printing document " << locId << endl;
 
+  busyCursor( true );
+  slotStatusMsg( i18n( "Generating PDF..." ) );
   DocumentMan *docman = DocumentMan::self();
   DocGuardedPtr docPtr = docman->openDocument( locId );
   if( docPtr ) {
     ArchiveMan *archman = ArchiveMan::self();
     dbID archID = archman->archiveDocument( docPtr );
+    slotPrintDocument( archID );
+  }
+  busyCursor( false );
+  slotStatusMsg( i18n( "Ready." ) );
 
-    if ( archID.isOk() ) {
-      mReportGenerator = ReportGenerator::self();
-      const QString id = docPtr->ident();
+}
 
-      // mReportGenerator->docPreview( id );
-      mReportGenerator->createRmlFromArchive( archID ); // work on document identifier.
-    }
+void Portal::slotPrintDocument( const dbID& archID )
+{
+  if ( archID.isOk() ) {
+    mReportGenerator = ReportGenerator::self();
+    mReportGenerator->createRmlFromArchive( archID ); // work on document identifier.
   }
 }
 

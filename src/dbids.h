@@ -31,15 +31,15 @@ public:
       int id = _u.toInt( &ok );
       if( ok ) {
         m_id = id;
-      } 
-      return *this; 
+      }
+      return *this;
     }
 
     dbID& operator=( const int _u ) {
         m_id = _u;
         return *this;
     }
-    bool isOk()
+    bool isOk() const
         { return m_id > -1; }
     int  toInt() { return m_id; }
     QString toString() { return QString::number(m_id); }

@@ -37,7 +37,7 @@
 class KraftView;
 class PortalView;
 class ReportGenerator;
-
+class KCmdLineArgs;
 /**
   */
 class Portal : public KMainWindow
@@ -49,7 +49,7 @@ class Portal : public KMainWindow
   public:
     /** construtor of Portal, calls all init functions to create the application.
      */
-    Portal( QWidget* parent=0, const char* name=0);
+    Portal( QWidget* parent = 0, KCmdLineArgs *args = 0, const char* name = 0);
     ~Portal();
 
     static QString textWrap( const QString& t, unsigned int width=40);
@@ -118,7 +118,10 @@ class Portal : public KMainWindow
     void slotOpenDocument();
     void slotDocumentSelected( const QString& );
     void slotPrintDocument();
+    void slotPrintDocument( const dbID& );
     void slotViewClosed( bool );
+
+    void busyCursor( bool );
   private:
     void createView( DocGuardedPtr );
 
@@ -148,7 +151,7 @@ class Portal : public KMainWindow
 
     KToggleAction* viewFlosTemplates;
     KToggleAction* viewStatusBar;
-
+    KCmdLineArgs *mCmdLineArgs;
 };
 
 #endif

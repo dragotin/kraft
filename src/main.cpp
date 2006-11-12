@@ -36,7 +36,8 @@ I18N_NOOP("Kraft is open source software for persons in small businesses\n"
 
 static KCmdLineOptions options[] =
 {
-  { 0, 0, 0 }
+  { "d <documentID>", I18N_NOOP( "Show a document" ), 0 },
+  KCmdLineLastOption
   // INSERT YOUR COMMANDLINE OPTIONS HERE
 };
 
@@ -89,20 +90,10 @@ int main(int argc, char *argv[])
     splash->setMask( *pixmap.mask() );
     splash->show();
 
-    Portal *kraftPortal = new Portal();
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+    Portal *kraftPortal = new Portal( 0, args );
     kraftPortal->show();
 
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-
-    if (args->count())
-    {
-
-    }
-    else
-    {
-
-    }
-    args->clear();
     splash->finish( kraftPortal->mainWidget() );
     delete splash;
   }
