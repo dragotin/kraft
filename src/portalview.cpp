@@ -194,8 +194,9 @@ void PortalView::fillSystemDetails()
   html += "</table>";
 
   html += "<h2>" + i18n("Database Information") + "</h2>";
-  html += ptag + i18n( "Kraft Schema Version: %1").arg( KRAFT_REQUIRED_SCHEMA_VERSION ) + "</p>";
-  html += ptag + i18n("Qt Database Driver: ") + KraftDB::self()->qtDriver() +  "</p>";
+  html += ptag + i18n( "Kraft database name: %1" ).arg( KraftDB::self()->databaseName() ) + "</p>";
+  html += ptag + i18n( "Kraft schema version: %1").arg( KRAFT_REQUIRED_SCHEMA_VERSION ) + "</p>";
+  html += ptag + i18n("Qt database driver: ") + KraftDB::self()->qtDriver() +  "</p>";
 
   html += ptag + i18n("Database connection ");
   bool dbOk = false;
