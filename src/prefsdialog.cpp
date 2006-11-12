@@ -25,6 +25,7 @@
 
 #include<kdialog.h>
 #include<klocale.h>
+#include<kiconloader.h>
 
 #include "prefsdialog.h"
 #include "katalogsettings.h"
@@ -32,67 +33,71 @@
 
 
 PrefsDialog::PrefsDialog( QWidget *parent)
-    : KDialogBase(parent, 0, true, i18n("Configure Kraft"), Ok|Cancel|User1, Ok, true )
+    : KDialogBase( IconList,  i18n("Configure Kraft"), Ok|Cancel, Ok, parent,
+                   "PrefsDialog", true, true )
 {
-  setButtonText( User1, i18n( "try to connect..." ) );
-  actionButton( User1 )->setEnabled( false );
+  databaseTab();
+}
 
+void PrefsDialog::databaseTab()
+{
   QLabel *label;
-  QFrame *topFrame = makeMainWidget();
+  QFrame *topFrame = addPage( i18n( "Database" ),
+                              i18n( "Database Connection Settings" ),
+                              DesktopIcon( "connect_no" ) );
 
   QGridLayout *topLayout = new QGridLayout( topFrame );
   topLayout->setSpacing( spacingHint() );
   topLayout->setColSpacing( 0, spacingHint() );
 
-  label = new QLabel(i18n("Database Settings"), topFrame );
-  QFont f = label->font();
-  f.setPointSize( qRound( 1.4 * f.pointSize() ) );
-  f.setBold( true );
-  label->setFont( f );
-
-  topLayout->addMultiCellWidget(label, 0,0,0,1);
-
   label = new QLabel(i18n("Database Host:"), topFrame );
-  topLayout->addWidget(label, 1,0);
+  topLayout->addWidget(label, 0,0);
 
   label = new QLabel(i18n("Database Name:"), topFrame );
-  topLayout->addWidget(label, 2,0);
+  topLayout->addWidget(label, 1,0);
 
   label = new QLabel(i18n("Database User:"), topFrame );
-  topLayout->addWidget(label, 3,0);
+  topLayout->addWidget(label, 2,0);
 
   label = new QLabel(i18n("Database Password:"), topFrame );
-  topLayout->addWidget(label, 4,0);
+  topLayout->addWidget(label, 3,0);
 
   label = new QLabel(i18n("Connection Status:"), topFrame );
-  topLayout->addWidget(label, 5,0);
+  topLayout->addWidget(label, 4,0);
+
+  m_pbCheck = new QPushButton( i18n( "Check Connection" ), topFrame );
+  m_pbCheck->setEnabled( false );
+  topLayout->addWidget( m_pbCheck, 5, 1 );
 
   m_leHost = new QLineEdit( topFrame );
   connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( slotTextChanged( const QString& ) ) );
-  topLayout->addWidget(m_leHost, 1,1);
+  topLayout->addWidget(m_leHost, 0,1);
 
   m_leName = new QLineEdit( topFrame );
   connect( m_leName, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( slotTextChanged( const QString& ) ) );
-  topLayout->addWidget(m_leName, 2,1);
+  topLayout->addWidget(m_leName, 1,1);
 
   m_leUser = new QLineEdit( topFrame );
   connect( m_leUser, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( slotTextChanged( const QString& ) ) );
-  topLayout->addWidget(m_leUser, 3,1);
+  topLayout->addWidget(m_leUser, 2,1);
 
   m_lePasswd = new QLineEdit( topFrame );
   m_lePasswd->setEchoMode(QLineEdit::Password);
   connect( m_lePasswd, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( slotTextChanged( const QString& ) ) );
-  topLayout->addWidget(m_lePasswd, 4,1);
+  topLayout->addWidget(m_lePasswd, 3,1);
 
   m_statusLabel = new QLabel( topFrame );
-  topLayout->addWidget( m_statusLabel,  5, 1 );
+  topLayout->addWidget( m_statusLabel,  4, 1 );
+
+  connect( m_pbCheck, SIGNAL( clicked() ),
+           this, SLOT( slotCheckConnect() ) );
 
   readConfig();
-  slotUser1();
+  slotCheckConnect();
 }
 
 void PrefsDialog::slotTextChanged( const QString& )
@@ -102,10 +107,7 @@ void PrefsDialog::slotTextChanged( const QString& )
     en = true;
   }
 
-  QPushButton *pb = actionButton ( User1 );
-  if ( pb ) {
-    pb->setEnabled( en );
-  }
+  m_pbCheck->setEnabled( en );
 }
 
 void PrefsDialog::readConfig()
@@ -129,7 +131,7 @@ PrefsDialog::~PrefsDialog()
 {
 }
 
-void PrefsDialog::slotUser1()
+void PrefsDialog::slotCheckConnect()
 {
   kdDebug() << "Trying database connect to db " << m_leName->text() << endl;
 

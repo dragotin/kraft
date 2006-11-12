@@ -20,6 +20,11 @@
 
 #include <kdialogbase.h>
 
+class QLineEdit;
+class QLabel;
+class QTextEdit;
+class QPushButton;
+
 /**
  *  @author Klaas Freitag
  */
@@ -40,13 +45,19 @@ protected:
 protected slots:
   void slotOk();
   void slotTextChanged( const QString& );
-  void slotUser1();
+  void slotCheckConnect();
 private:
+  void databaseTab();
+
   QLineEdit *m_leHost;
   QLineEdit *m_leUser;
   QLineEdit *m_leName;
   QLineEdit *m_lePasswd;
   QLabel    *m_statusLabel;
+
+  QTextEdit *mHeaderEdit;
+  QTextEdit *mFooterEdit;
+  QPushButton *m_pbCheck;
 };
 
 #endif
