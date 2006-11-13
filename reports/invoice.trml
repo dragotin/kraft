@@ -20,9 +20,10 @@
 	    <image x="140mm" y="22cm" width="6cm" height="6cm" file="<!-- IMAGE(lurchie.png) -->" />
 
         </pageGraphics>
-        <frame id="address" x1="2cm"  y1="21.0cm" width="8cm" height="4.2cm"/>
-        <frame id="details" x1="11cm" y1="20.8cm" width="8cm" height="1.5cm"/>
-        <frame id="column" x1="2.0cm" y1="3.0cm" width="17cm" height="18cm"/>
+        <frame id="address"  x1="2.41cm" y1="20.62cm" width="8.5cm" height="4cm"/>
+        <frame id="info"     x1="12cm" y1="20.62cm" width="7.41cm" height="1.5cm"/>
+        <frame id="subject"  x1="2.41cm" y1="18.2cm" width="17cm"  height="1.2cm"/>
+        <frame id="detail"   x1="2.41cm" y1="3cm"  width="17cm"  height="15cm"/>
 
     </pageTemplate>
 
@@ -67,27 +68,30 @@
 
 </stylesheet>
 <story>
+    <!-- Address Frame -->
     <xpre><!-- ADDRESS --></xpre>
+    
+    <nextFrame/>
+    <!-- Info Frame -->
+    <para alignment="right"><!-- DATE --></para>
 
     <nextFrame/>
-	<!-- Details Frame -->
-    <para style="details"><!-- DATE --></para>
-    <para style="details">Document ID: <!-- DOCID --></para>
+    <!-- Subject Frame -->
+    <h1><!-- DOCTYPE --> Nr. <!-- DOCID --></h1>
 
-    <nextFrame/>
-
-        <h1><!-- DOCTYPE --></h1>
-    <spacer length="1cm" width="1mm"/>
+    <!-- Detail Frame -->
+    <spacer length="1mm" width="1mm"/>
     <para style="text">
         <!-- SALUT -->
     </para>
-    <spacer length="5mm" width="1mm"/>
+    <spacer length="1mm" width="1mm"/>
     <para style="text">
         <!-- PRETEXT -->
     </para>
-    <spacer length="1cm" width="1mm"/>
 
     <setNextTemplate name="others" />
+
+    <spacer length="8mm" width="1mm"/>
 
     <blockTable colWidths="8mm,9cm,1.0cm,1cm,2.5cm,2.5cm" style="products" repeatRows="0">
     <tr>
