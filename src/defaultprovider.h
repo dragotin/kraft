@@ -1,8 +1,8 @@
 /***************************************************************************
-             fixcalcdialog  -
+                 defaultprovider.h  - Defaults for this and that
                              -------------------
-    begin                : 2004-23-09
-    copyright            : (C) 2004 by Klaas Freitag
+    begin                : November 2006
+    copyright            : (C) 2006 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,49 +14,37 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef DEFAULTPROVIDER_H
+#define DEFAULTPROVIDER_H
 
-#ifndef _FIXCALCDIALOG_H
-#define _FIXCALCDIALOG_H
+#include <qdom.h>
 
+#include "dbids.h"
+#include "kraftdoc.h"
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-// include files
-#include "fixpartui.h"  // designer file zeitpartui.ui
+class dbID;
+class QStringList;
 
 /**
- *
+ * encapsulates all relevant for default values for documents such as
+ * texts etc.
  */
-
-class FixCalcPart;
-
-class FixCalcDialog : public calcdetailFix
+class DefaultProvider
 {
-    Q_OBJECT
+  public:
+    ~DefaultProvider();
 
-public:
-    FixCalcDialog(QWidget *parent=0, const char* name=0, bool modal=FALSE );
-    FixCalcDialog(FixCalcPart*, QWidget *parent=0, const char* name=0, bool modal=FALSE );
-    ~FixCalcDialog();
+    static DefaultProvider *self();
+    QStringList docTypes();
 
-    QString getName();
-    double  getMenge();
-    double  getPreis();
-    void setCalcPart( FixCalcPart* );
+    QString documentText( const QString&, const QString&, DocGuardedPtr = 0 );
+    void saveDocumentText( const QString&, const QString&, const QString& );
 
-signals:
-    void fixCalcPartChanged(FixCalcPart*);
+    QString docType(); // the default document type for new docs
+  private:
+    DefaultProvider();
 
-protected slots:
-    void accept();
-private:
-
-    FixCalcPart *m_part;
+    static DefaultProvider *mSelf;
 };
 
 #endif
-
-/* END */
-

@@ -81,7 +81,7 @@ void TemplKatalogView::slEditVorlage()
         FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
         if( currTempl ) {
             KListViewItem *item = (KListViewItem*) listview->currentItem();
-            openDialog(item, currTempl);
+            openDialog( item, currTempl, false );
         }
     }
 }
@@ -117,7 +117,7 @@ void TemplKatalogView::slNeueVorlage()
     }
 
     KListViewItem *item = templListView->addFlosTemplate(parentItem, flosTempl);
-    openDialog( item, flosTempl);
+    openDialog( item, flosTempl, true );
 }
 
 bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )
@@ -151,7 +151,7 @@ void TemplKatalogView::slChangeChapter(int newID)
     }
 }
 
-void TemplKatalogView::openDialog( KListViewItem *listitem, FloskelTemplate *tmpl )
+void TemplKatalogView::openDialog( KListViewItem *listitem, FloskelTemplate *tmpl, bool isNew )
 {
     if( ! m_flosDialog )
     {
@@ -163,7 +163,7 @@ void TemplKatalogView::openDialog( KListViewItem *listitem, FloskelTemplate *tmp
         connect( m_flosDialog, SIGNAL(chapterChanged(int)),
                  this, SLOT(slChangeChapter(int)));
     }
-    m_flosDialog->setVorlage(tmpl,m_katalogName);
+    m_flosDialog->setTemplate( tmpl, m_katalogName, isNew );
     m_editListViewItem = listitem;
     m_flosDialog->refreshPrices();
     m_flosDialog->show();
@@ -175,10 +175,10 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
     if( !listview ) return;
     TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listview);
 
-    if(m_flosDialog )
-    {
+    if(m_flosDialog ){
 
     }
+
     if( m_editListViewItem ) {
       kdDebug() << "Edit was ok, refreshing item in list " << templ << endl;
       templListView->setSelected( m_editListViewItem, true );
@@ -186,14 +186,18 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
       templListView->ensureItemVisible( m_editListViewItem );
     }
     m_editListViewItem = 0;
+    delete m_flosDialog;
+    m_flosDialog = 0;
 }
 
 void TemplKatalogView::slEditRejected()
 {
-  if (  m_editListViewItem ) {
+  if ( m_editListViewItem ) {
     delete m_editListViewItem;
     m_editListViewItem = 0;
   }
+  delete m_flosDialog;
+    m_flosDialog = 0;
 }
 
 void TemplKatalogView::slListviewExecuted(QListViewItem* qItem)

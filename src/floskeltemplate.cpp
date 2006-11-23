@@ -41,6 +41,7 @@ FloskelTemplate::FloskelTemplate()
       m_saver(0)
 {
     m_calcType = Calculation;
+    m_calcParts.setAutoDelete(true);
 }
 
 FloskelTemplate::FloskelTemplate( int tID, const QString& text,
@@ -75,22 +76,61 @@ FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
     : m_text( templ.m_text ),
       m_einheitID( templ.m_einheitID ),
       m_templID( templ.m_templID ),
-      m_chapter( templ.m_chapter),
-      m_calcParts( templ.m_calcParts),
-      m_modifyDate( templ.m_modifyDate),
-      m_createDate( templ.m_createDate),
-      m_calcType( templ.m_calcType),
-      m_preis( templ.m_preis),
-      m_listViewItem(templ.m_listViewItem),
-      m_saver( templ.m_saver)
+      m_chapter( templ.m_chapter ),
+      m_modifyDate( templ.m_modifyDate ),
+      m_createDate( templ.m_createDate ),
+      m_preis( templ.m_preis ),
+      m_listViewItem(templ.m_listViewItem ),
+      m_saver( 0 )
 {
+  deepCopyCalcParts( templ );
+  m_calcParts.setAutoDelete(true);
+}
 
+FloskelTemplate& FloskelTemplate::operator= ( FloskelTemplate& src )
+{
+  if ( this == &src ) return *this;
+
+  m_text = src.m_text;
+  m_einheitID = src.m_einheitID;
+  m_templID = src.m_templID;
+  m_chapter = src.m_chapter;
+  m_modifyDate = src.m_modifyDate;
+  m_createDate = src.m_createDate;
+  m_preis = src.m_preis;
+  m_listViewItem = src.m_listViewItem;
+  m_saver = 0; // src.m_saver;
+
+  deepCopyCalcParts( src );
+
+  return *this;
 }
 
 FloskelTemplate::~FloskelTemplate()
 {
-    if( m_saver )
-        delete m_saver;
+  delete m_saver;
+}
+
+void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
+{
+  CalcPart *cp = templ.m_calcParts.first();
+  CalcPart *ncp = 0;
+
+  m_calcParts.clear();
+
+  for( ; cp; cp = templ.m_calcParts.next() )
+  {
+    if( cp->getType() == KALKPART_TIME ) {
+      ncp = new ZeitCalcPart( *( static_cast<ZeitCalcPart*>(cp) ) );
+    } else if( cp->getType() == KALKPART_FIX ) {
+      ncp = new FixCalcPart( *( static_cast<FixCalcPart*>(cp) ) );
+    } else if( cp->getType() == KALKPART_MATERIAL ) {
+      ncp = new MaterialCalcPart( *( static_cast<MaterialCalcPart*>(cp) ) );
+    } else {
+      kdDebug() << "ERROR: Unbekannter Kalkulations-Anteil-Typ!" << endl;
+    }
+    m_calcParts.append( ncp );
+  }
 }
 
 Einheit FloskelTemplate::einheit() const
@@ -255,19 +295,19 @@ bool FloskelTemplate::save()
 QDomElement FloskelTemplate::toXML( QDomDocument& doc)
 {
     QDomElement templ = doc.createElement("template");
-    
+
     templ.appendChild( createDomNode(doc, "unit",   UnitManager::getUnit(m_einheitID).einheitSingular()));
     templ.appendChild( createDomNode(doc, "text", getText()));
     templ.appendChild( createDomNode(doc, "id", QString::number(getTemplID())));
     templ.appendChild( createDomNode(doc, "benefit", QString::number(getGewinn())));
     templ.appendChild( createDomNode(doc, "timecount", hasTimeslice() ? "yes": "no" ));
-    
+
     QDomElement calcParts = doc.createElement( "calcParts" );
     templ.appendChild(calcParts);
     fixPartsToXML(doc, calcParts);
     timePartsToXML(doc, calcParts);
     materialPartsToXML(doc, calcParts);
-    
+
 #if 0
     /* Material Calculation Parts */
     materialPartsToXML(doc);
@@ -311,7 +351,7 @@ QDomElement FloskelTemplate::toXML( QDomDocument& doc)
 void FloskelTemplate::fixPartsToXML( QDomDocument& doc, QDomElement& calcParts )
 {
     CalcPartList tpList = getCalcPartsList(KALKPART_FIX);
-    
+
     FixCalcPart *fc = 0;
     fc = static_cast<FixCalcPart*>(tpList.first());
     for( ; fc; fc = static_cast<FixCalcPart*>(tpList.next()) ) {
@@ -323,7 +363,7 @@ void FloskelTemplate::fixPartsToXML( QDomDocument& doc, QDomElement& calcParts )
         QString h;
         h.setNum(fc->getMenge());
         calcPart.appendChild(createDomNode(doc, "amount", h));
-        
+
         Geld g = fc->unitPreis();
         calcPart.appendChild(createDomNode(doc, "price", g.toString()));
     }
@@ -332,7 +372,7 @@ void FloskelTemplate::fixPartsToXML( QDomDocument& doc, QDomElement& calcParts )
 void FloskelTemplate::timePartsToXML( QDomDocument& doc, QDomElement& calcParts )
 {
     CalcPartList tpList = getCalcPartsList(KALKPART_TIME);
-    
+
     ZeitCalcPart *tc = 0;
     tc = static_cast<ZeitCalcPart*>(tpList.first());
     for( ; tc; tc = static_cast<ZeitCalcPart*>(tpList.next()) ) {
@@ -346,7 +386,7 @@ void FloskelTemplate::timePartsToXML( QDomDocument& doc, QDomElement& calcParts 
         calcPart.appendChild(createDomNode(doc, "minutes", h));
         StdSatz ss = tc->getStundensatz();
         calcPart.appendChild(createDomNode(doc, "stundensatz", ss.getName()));
-        calcPart.appendChild(createDomNode(doc, "globalHourSetup", 
+        calcPart.appendChild(createDomNode(doc, "globalHourSetup",
                              tc->globalStdSetAllowed() ? "yes" : "no"));
     }
 }
@@ -385,12 +425,12 @@ void FloskelTemplate::materialPartsToXML( QDomDocument& doc, QDomElement& calcPa
     }
 }
 
-QDomElement FloskelTemplate::createDomNode( QDomDocument doc, 
+QDomElement FloskelTemplate::createDomNode( QDomDocument doc,
                                             const QString& name, const QString& value)
 {
   QDomElement elem = doc.createElement(name);
   QDomText text = doc.createTextNode(value);
-  elem.appendChild(text); 
+  elem.appendChild(text);
   return elem;
 }
 

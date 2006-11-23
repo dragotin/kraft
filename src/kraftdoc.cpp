@@ -36,6 +36,7 @@
 #include "kraftview.h"
 #include "docposition.h"
 #include "documentsaverdb.h"
+#include "defaultprovider.h"
 
 // QList<KraftView> *KraftDoc::pViewList = 0;
 
@@ -161,9 +162,10 @@ bool KraftDoc::newDocument()
   mIsNew = true;
   mAddress = QString::null;
   mAddressUid = QString::null;
-  mPreText = QString::null;
-  mPostText = QString::null;
-  mDocType = i18n("Offer");
+
+  mDocType = DefaultProvider::self()->docType();
+  mPreText = DefaultProvider::self()->documentText( mDocType, "Header" );
+  mPostText = DefaultProvider::self()->documentText( mDocType, "Footer" );
   mSalut = QString::null;
   mGoodbye = QString::null;
 
@@ -235,7 +237,6 @@ QString KraftDoc::docIdentifier()
 
   return i18n("%1 for %2 (Id %3)").arg( docType() ).arg( contact.realName() ).arg( ident() );
 }
-
 
 void KraftDoc::deleteContents()
 {

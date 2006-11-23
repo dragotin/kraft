@@ -55,14 +55,14 @@ public:
     FlosTemplDialog(QWidget *parent=0, const char* name=0, bool modal=false, WFlags fl=0);
     ~FlosTemplDialog();
 
-    void setVorlage( FloskelTemplate* t, const QString& );
+    void setTemplate( FloskelTemplate* t, const QString&, bool );
 
 signals:
     void takeMaterialAnswer(const QString&);
     void editAccepted( FloskelTemplate* );
     void editRejected();
     void chapterChanged(int);
-    
+
 public slots:
     virtual void slAddFixPart();
     virtual void slEditFixPart();
@@ -85,11 +85,11 @@ public slots:
     void slManualPriceChanged(double );
     void slSetNewText();
     void setCalcparts();
-    
+
     void slFixCalcPartChanged(FixCalcPart*);
     void slTimeCalcPartChanged(ZeitCalcPart*);
     void slMatCalcPartChanged(StockMaterial *, double );
-    
+
 protected slots:
     virtual void accept();
     virtual void reject();
@@ -100,14 +100,13 @@ private:
     virtual void drawMatListEntry( QListViewItem*, MaterialCalcPart*, StockMaterial* );
 
     bool askChapterChange( FloskelTemplate*, int);
-    
+
     virtual QString stdMaterialKalcPartName()
     {
         return i18n("Kalkuliertes Material");
     }
 
     FloskelTemplate *m_template;
-    FloskelTemplate *m_saveTempl;
     Katalog         *m_katalog;
 
     /* dict das qlistviewitems auf calcparts abbildet */
@@ -119,7 +118,7 @@ private:
     ZeitCalcDialog *m_timePartDialog;
     MatCalcDialog *m_matPartDialog;
     CalcPart *m_cpChange;
-
+    bool m_newTemplate;
 };
 
 #endif

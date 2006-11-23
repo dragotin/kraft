@@ -110,29 +110,30 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
       kdDebug() << "Month: " << month << " in Year: " << year << endl;
 
       if ( timeline.month() == 0 ) timeline.setMonth( month );
-      if ( timeline.year() == 0 )  timeline.setYear( year );
-
+      if ( timeline.year() == 0  ) timeline.setYear( year );
 
       kdDebug() << "timeline-month=" << timeline.month() << " while month=" << month << endl;
       if ( month != timeline.month() || year != timeline.year() ) {
         // a new month/year pair: set digestlist to timelineobject
-        kdDebug() << "Opening new timeline" << endl;
+        kdDebug() << "Opening new timeline for month " << month << endl;
         timeline.setDigestList( digests );
 
         kdDebug() << "appending for month " << timeline.month() << " with item cnt " << digests.count() << endl;
         retList.append( timeline );
 
         digests.clear();
-        timeline.setMonth( month );
-        timeline.setYear( year );
         digests.prepend( dig );
 
         timeline.clearDigestList();
+        timeline.setMonth( month );
+        timeline.setYear( year );
       } else {
         digests.prepend( dig );
+        kdDebug() << "Prepending to digests lists: " << dig.date() << endl;
       }
 
     }
+    kdDebug() << "Final append !" << endl;
     timeline.setDigestList( digests );
     retList.append( timeline );
 

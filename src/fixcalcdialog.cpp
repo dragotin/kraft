@@ -88,6 +88,7 @@ double FixCalcDialog::getPreis()
     return m_inpPreis->value();
 }
 
+
 /* END */
 
 

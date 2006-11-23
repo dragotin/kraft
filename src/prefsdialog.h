@@ -24,6 +24,7 @@ class QLineEdit;
 class QLabel;
 class QTextEdit;
 class QPushButton;
+class QComboBox;
 
 /**
  *  @author Klaas Freitag
@@ -46,6 +47,11 @@ protected slots:
   void slotOk();
   void slotTextChanged( const QString& );
   void slotCheckConnect();
+
+  void footerTextTab();
+  void entryTextTab();
+  void slotFooterDocTypeChanged( const QString& );
+  void slotHeaderDocTypeChanged( const QString& );
 private:
   void databaseTab();
 
@@ -58,6 +64,10 @@ private:
   QTextEdit *mHeaderEdit;
   QTextEdit *mFooterEdit;
   QPushButton *m_pbCheck;
+  QComboBox   *mTextTypeEntry;
+  QComboBox   *mTextTypeFooter;
+  QString     mFooterDocType;
+  QString     mHeaderDocType;
 };
 
 #endif

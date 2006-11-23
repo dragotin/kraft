@@ -56,11 +56,13 @@ QString Einheit::einheit( double anz ) {
 
 Einheit& Einheit::operator=( const Einheit& e )
 {
+  if ( this == &e ) return *this;
+
   m_dbId = e.m_dbId;
   m_einheitSingular = e.m_einheitSingular;
   m_einheitPlural = e.m_einheitPlural;
   m_einheitSingularLong = e.m_einheitSingularLong;
   m_einheitPluralLong = e.m_einheitPluralLong;
-  
+
   return *this;
 }

@@ -146,9 +146,8 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
   // cur.setMode( QSqlCursor::ReadOnly );
   cur.select( QString( "category='%1'" ).arg( selector ) );
   while ( cur.next() ) {
-    QCString wc = cur.value( "word" ).asCString();
-    QString w = QString::fromUtf8( wc );
-    kdDebug() << "wc is " << wc << " and wordlist-String: " << w << endl;
+    QString w = cur.value( "word" ).toString();
+    kdDebug() << "Adding to wordlist <" << w << ">" << endl;
     StringMap::Iterator it;
     for ( it = replaceMap.begin(); it != replaceMap.end(); ++it ) {
       const QString key = it.key().utf8();
@@ -158,6 +157,24 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
     re << w;
   }
   return re;
+}
+
+void KraftDB::writeWordList( const QString& listName, const QStringList& list )
+{
+  kdDebug() << "Saving " << list[0] << " into list " << listName << endl;
+  QSqlQuery  qd;
+  qd.prepare( "DELETE FROM wordLists WHERE category=:catName" );
+  qd.bindValue( ":catName", listName );
+  qd.exec();
+
+  QSqlQuery qi;
+  qi.prepare( "INSERT INTO wordLists (category, word) VALUES( :category, :entry )" );
+
+  qi.bindValue( ":category", listName );
+  for ( QStringList::ConstIterator it = list.begin(); it != list.end(); ++it ) {
+    qi.bindValue( ":entry", *it );
+    qi.exec();
+  }
 }
 
 void KraftDB::checkSchemaVersion( QWidget *parent )

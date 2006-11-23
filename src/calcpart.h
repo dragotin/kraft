@@ -28,7 +28,7 @@
   *@author Klaas Freitag
   */
 
-class CalcPart : public QObject {
+class CalcPart {
 public:
     CalcPart();
     CalcPart( const QString& name, int prozent = 0 );
@@ -58,7 +58,7 @@ public:
 
     virtual void setToDelete(bool );
     virtual bool isToDelete();
-    
+
 private:
     double  m_prozentPlus;
     QString m_name;
@@ -68,6 +68,9 @@ private:
     bool    m_toDelete;
 };
 
-typedef QPtrList<CalcPart> CalcPartList;
+class CalcPartList : public QPtrList<CalcPart>
+{
+
+};
 
 #endif

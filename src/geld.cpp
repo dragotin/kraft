@@ -1,5 +1,5 @@
 /***************************************************************************
-             geld  -
+       geld  - A class that represents money and supports calculation
                              -------------------
     begin                : 2004-16-08
     copyright            : (C) 2004 by Klaas Freitag
@@ -48,8 +48,10 @@ Geld& Geld::operator=(const long l)
 
 Geld& Geld::operator=(const Geld& g)
 {
-    m_cent = g.m_cent;
-    return *this;
+  if ( this == &g ) return *this;
+
+  m_cent = g.m_cent;
+  return *this;
 }
 
 Geld& Geld::operator+=(const Geld& g)

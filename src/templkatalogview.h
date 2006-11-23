@@ -91,7 +91,7 @@ class TemplKatalogView: public KatalogView
 
   private:
     // opens the edit dialog.
-    void openDialog( KListViewItem *, FloskelTemplate * );
+    void openDialog( KListViewItem *, FloskelTemplate *, bool );
     // editing dialog for templates
     FlosTemplDialog  *m_flosDialog;
     TemplKatalogListView *m_listview;

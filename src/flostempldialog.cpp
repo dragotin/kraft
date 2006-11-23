@@ -54,7 +54,6 @@
 FlosTemplDialog::FlosTemplDialog( QWidget *parent, const char* name, bool modal, WFlags fl)
     : d_calcTempl(parent, name, modal, fl),
       m_template(0),
-      m_saveTempl(0),
       m_katalog(0),
       m_matEdit(0)
 {
@@ -65,11 +64,11 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, const char* name, bool modal,
     connect( m_text, SIGNAL(textChanged()),this, SLOT(slSetNewText()));
 }
 
-void FlosTemplDialog::setVorlage( FloskelTemplate *t, const QString& katalogname )
+void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalogname, bool newTempl )
 {
     if( ! t ) return;
     m_template = t;
-    m_saveTempl = new FloskelTemplate(*t);
+    m_newTemplate = newTempl;
 
     m_katalog = KatalogMan::self()->getKatalog(katalogname);
 
@@ -217,7 +216,7 @@ void FlosTemplDialog::refreshPrices()
 
     /* Preis setzen */
     t = m_template->einheitsPreis().toString();
-    m_resultPrice->setText("<font size=\"+1\"><b>"+t+"</b></font>");
+    m_resultPrice->setText( t );
 
     /* Preisteile nach Zeit-, Fix- und Materialkalkulation */
     Geld g( m_template->kostenPerKalcPart( KALKPART_TIME ));
@@ -233,7 +232,6 @@ void FlosTemplDialog::refreshPrices()
 
 FlosTemplDialog::~FlosTemplDialog( )
 {
-    if( m_saveTempl ) delete m_saveTempl;
 }
 
 void FlosTemplDialog::accept()
@@ -300,8 +298,8 @@ void FlosTemplDialog::accept()
         kdDebug() << "Katalogkapitel ist " << h << endl;
 
         if( m_template->save() ) {
-            emit( editAccepted( m_template ) );
             d_calcTempl::accept();
+            emit( editAccepted( m_template ) );
         } else {
             KMessageBox::error( this, i18n("Saving of this template failed, sorry"),
                 i18n( "Template Save Error" ) );
@@ -326,13 +324,18 @@ bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
 
 void FlosTemplDialog::reject()
 {
-    if( m_saveTempl )
-    {
-        kdDebug() << "Reverting to saved Template" << endl;
-        *m_template = *m_saveTempl;
-    }
+    m_cpDict.clear();
+
+    m_timeParts->clear ();
+    m_fixParts->clear ();
+    m_matParts->clear ();
+
     d_calcTempl::reject();
-    emit editRejected();
+
+    if ( m_newTemplate ) {
+      // remove the listview item if it was created newly
+      emit editRejected();
+    }
 }
 
 void FlosTemplDialog::slManualPriceChanged(double dd)

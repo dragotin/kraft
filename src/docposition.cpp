@@ -79,6 +79,8 @@ Geld DocPosition::overallPrice()
 
 DocPosition& DocPosition::operator=( const DocPosition& dp )
 {
+  if ( this == &dp ) return *this;
+
   m_text = dp.m_text;
   m_position = dp.m_position;
   m_unit = dp.m_unit;

@@ -88,17 +88,17 @@ public:
     virtual bool save();
     virtual QDomElement toXML( QDomDocument&);
 
+  FloskelTemplate& operator= ( FloskelTemplate& );
 protected:
     virtual TemplateSaverBase* getSaver();
+    virtual void deepCopyCalcParts( FloskelTemplate& );
 
-    
-  
 private: // Private methods
     QDomElement createDomNode( QDomDocument, const QString&, const QString&);
     void materialPartsToXML( QDomDocument&, QDomElement& );
     void fixPartsToXML( QDomDocument&, QDomElement& );
     void timePartsToXML( QDomDocument&, QDomElement& );
-    
+
     virtual Geld calcPreis();
 
     QString          m_text;

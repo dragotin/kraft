@@ -73,6 +73,7 @@
 #include "kraftdocheaderedit.h"
 #include "kraftdocfooteredit.h"
 #include "inserttempldialog.h"
+#include "defaultprovider.h"
 
 #include <qtimer.h>
 
@@ -339,9 +340,7 @@ void KraftView::setupDocHeaderView()
 
     m_headerEdit = new KraftDocHeaderEdit( vbox );
     m_headerEdit->m_cbType->clear();
-    m_headerEdit->m_cbType->insertItem( i18n("Offer") );
-    m_headerEdit->m_cbType->insertItem( i18n("Invoice") );
-    m_headerEdit->m_cbType->insertItem( i18n("Acceptance of Order") );
+    m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
 
     connect( m_headerEdit->m_selectAddress, SIGNAL( clicked() ),
                this, SLOT( slotSelectAddress() ) );
@@ -785,25 +784,29 @@ DocPositionList KraftView::currentPositionList()
     PositionViewWidget *widget;
     for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
       DocPositionBase *dpb = widget->position();
-      DocPosition *dp = new DocPosition( );
-      dp->setDbId( dpb->dbId().toInt() );
-      // dp->setPosition( dpb->position() );
-      dp->setToDelete( widget->deleted() );
+      if ( dpb ) {
+        DocPosition *dp = new DocPosition( );
+        dp->setDbId( dpb->dbId().toInt() );
+        // dp->setPosition( dpb->position() );
+        dp->setToDelete( widget->deleted() );
 
-      dp->setText( widget->m_teFloskel->text() );
+        dp->setText( widget->m_teFloskel->text() );
 
-      QString h = widget->m_cbUnit->currentText();
-      int eId = UnitManager::getUnitIDSingular( h );
-      Einheit e = UnitManager::getUnit( eId );
-      dp->setUnit( e );
+        QString h = widget->m_cbUnit->currentText();
+        int eId = UnitManager::getUnitIDSingular( h );
+        Einheit e = UnitManager::getUnit( eId );
+        dp->setUnit( e );
 
-      double v = widget->m_sbUnitPrice->value();
-      dp->setUnitPrice( Geld( v ) );
+        double v = widget->m_sbUnitPrice->value();
+        dp->setUnitPrice( Geld( v ) );
 
-      v = widget->m_sbAmount->value();
-      dp->setAmount( v );
+        v = widget->m_sbAmount->value();
+        dp->setAmount( v );
 
-      list.append( dp );
+        list.append( dp );
+      } else {
+        kdError() << "Fatal: Widget without position found!" << endl;
+      }
     }
     return list;
 }

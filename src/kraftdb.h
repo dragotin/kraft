@@ -55,6 +55,7 @@ public:
 
   typedef QMap<QString, QString> StringMap;
   QStringList wordList( const QString&, StringMap replaceMap = StringMap() );
+  void writeWordList( const QString&, const QStringList& );
 
   QString databaseName() const;
   QString defaultDatabaseName() const;
