@@ -35,15 +35,17 @@ class StockMaterialMan
 {
 
 public:
-    StockMaterialMan();
-    ~StockMaterialMan();
+  StockMaterialMan();
+  ~StockMaterialMan();
 
-    static StockMaterial* getMaterial( long id );
+  static StockMaterial* getMaterial( long );
 
 
 private:
-    static void load();
-    static StockMaterialList *m_materials;
+  static StockMaterial* findMaterial( long );
+
+  static void load( long = 0);
+  static StockMaterialList *m_materials;
 };
 
 #endif

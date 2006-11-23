@@ -36,7 +36,7 @@ StockMaterialMan::~StockMaterialMan( )
 
 }
 
-void StockMaterialMan::load()
+void StockMaterialMan::load( long no )
 {
     QSqlCursor cur("stockMat");
 
@@ -44,7 +44,11 @@ void StockMaterialMan::load()
     // that makes at least on resize of the vector.
     QSqlIndex indx = cur.index( "material" );
 
-    cur.select(indx);
+    if ( no ) {
+      cur.setValue( "matID", QString::number( no ) );
+    }
+
+    cur.select( indx );
     while( cur.next())
     {
         long matID = cur.value("matID").toLongLong();
@@ -62,7 +66,6 @@ void StockMaterialMan::load()
 
         m_materials->append( mat );
     }
-
 }
 
 StockMaterial* StockMaterialMan::getMaterial( long id )
@@ -75,19 +78,28 @@ StockMaterial* StockMaterialMan::getMaterial( long id )
     if( m_materials->isEmpty() )
         load();
 
-    // TODO: Find the required item
-    StockMaterialListIterator it(*m_materials);
-
-    // Search for the required ID.
-    // FIXME: Could be speed up using a Dict.
-    StockMaterial *mat;
-    while ( sm == 0 && (mat = it.current()) != 0 ) {
-        ++it;
-
-        if( mat->getID() == id )
-            sm = mat;
+    sm = findMaterial( id );
+    if ( !sm ) {
+      load( id );
+      sm = findMaterial( id );
     }
     return sm;
+}
+
+StockMaterial* StockMaterialMan::findMaterial( long id )
+{
+  StockMaterialListIterator it(*m_materials);
+  StockMaterial *mat;
+  StockMaterial *sm = 0;
+
+  while ( sm == 0 && (mat = it.current()) != 0 ) {
+    ++it;
+
+    if( mat->getID() == id )
+      sm = mat;
+  }
+
+  return sm;
 }
 
 StockMaterialList *StockMaterialMan::m_materials = 0;

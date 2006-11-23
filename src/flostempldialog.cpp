@@ -658,7 +658,10 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
                 kdDebug() << "WRN: No material calculation part found!" << endl;
             }
         }
+    } else {
+      kdDebug() << "Can not find material with id " << matID << endl;
     }
+
 }
 
 
