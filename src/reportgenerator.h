@@ -48,6 +48,7 @@ protected slots:
   void slotRecStdout( KProcess *, char *, int );
   void slotRecStderr( KProcess *, char *, int );
   QString readTemplate( const QString& );
+  QString replaceOwnAddress( QString& );
 private:
   QString fillupTemplateFromDoc( DocGuardedPtr );
   QString fillupTemplateFromArchive( const dbID& );

@@ -166,6 +166,7 @@ bool KraftDoc::newDocument()
   mDocType = DefaultProvider::self()->docType();
   mPreText = DefaultProvider::self()->documentText( mDocType, "Header" );
   mPostText = DefaultProvider::self()->documentText( mDocType, "Footer" );
+
   mSalut = QString::null;
   mGoodbye = QString::null;
 

@@ -29,6 +29,7 @@
 #include <kurl.h>
 #include <krun.h>
 #include <kmessagebox.h>
+#include <kabc/stdaddressbook.h>
 
 #include "reportgenerator.h"
 #include "kraftdoc.h"
@@ -227,8 +228,68 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   replaceTag( tmpl,
               TAG( "IMAGE" ) );
 
+  tmpl = replaceOwnAddress( tmpl );
+
   return tmpl;
 }
+
+
+QString ReportGenerator::replaceOwnAddress( QString& tmpl )
+{
+  KABC::Addressee contact;
+  contact = KABC::StdAddressBook::self()->whoAmI();
+
+  replaceTag( tmpl,
+              TAG( "MY.NAME" ),
+              contact.realName() );
+
+  replaceTag( tmpl,
+              TAG( "MY.EMAIL" ),
+              contact.fullEmail() );
+
+  replaceTag( tmpl,
+              TAG( "MY.PHONE" ),
+              contact.phoneNumber( KABC::PhoneNumber::Work ).number() );
+  replaceTag( tmpl,
+              TAG( "MY.FAX" ),
+              contact.phoneNumber( KABC::PhoneNumber::Fax ).number() );
+  replaceTag( tmpl,
+              TAG( "MY.CELL" ),
+              contact.phoneNumber( KABC::PhoneNumber::Cell ).number() );
+
+
+  KABC::Address address;
+  address = contact.address( KABC::Address::Work );
+  replaceTag( tmpl,
+              TAG( "MY.POSTBOX" ),
+              address.postOfficeBox() );
+  replaceTag( tmpl,
+              TAG( "MY.EXTENDED" ),
+              address.extended() );
+  replaceTag( tmpl,
+              TAG( "MY.STREET" ),
+              address.street() );
+  replaceTag( tmpl,
+              TAG( "MY.LOCALITY" ),
+              address.locality() );
+  replaceTag( tmpl,
+              TAG( "MY.REGION" ),
+              address.region() );
+  replaceTag( tmpl,
+              TAG( "MY.POSTCODE" ),
+              address.postalCode() );
+  replaceTag( tmpl,
+              TAG( "MY.COUNTRY" ),
+              address.country() );
+  replaceTag( tmpl,
+              TAG( "MY.REGION" ),
+              address.region() );
+  replaceTag( tmpl,
+              TAG( "MY.LABEL" ),
+              address.label() );
+  return tmpl;
+}
+
 
 QString ReportGenerator::fillupTemplateFromDoc( DocGuardedPtr doc )
 {
