@@ -11,12 +11,11 @@
 	    <lineMode width="0.5" />
             <lines>2cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
-            <drawCentredString x="105mm" y="2.3cm">Landscaper Lurchie - http://www.lurchie-gardens.com</drawCentredString>
+            <drawCentredString x="105mm" y="2.3cm"><!-- MY.NAME --></drawCentredString>
 	    <setFont name="Times-Roman" size="10" />
 	    <fill color="black" />
-            <drawCentredString x="105mm" y="1.8cm">Wooden Castle - Kelso - Moxmuxshire CD5 8ZN</drawCentredString>
-            <drawCentredString x="105mm" y="1.4cm">Telephone 01232 3124229 - Fax 01232 3124230 </drawCentredString>
-
+            <drawCentredString x="105mm" y="1.8cm"><!-- MY.STREET --> - <!-- MY.POSTCODE --> <!-- MY.LOCALITY --></drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">Telephone <!-- MY.PHONE --> - Fax <!-- MY.FAX --></drawCentredString>
 	    <image x="140mm" y="22cm" width="6cm" height="6cm" file="<!-- IMAGE(lurchie.png) -->" />
 
         </pageGraphics>
@@ -33,11 +32,11 @@
 	    <lineMode width="0.5" />
             <lines>2cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
-            <drawCentredString x="105mm" y="2.3cm">Landscaper Lurchie - http://www.lurchie-gardens.com</drawCentredString>
+            <drawCentredString x="105mm" y="2.3cm"><!-- MY.NAME --></drawCentredString>
 	    <setFont name="Times-Roman" size="10" />
 	    <fill color="black" />
-            <drawCentredString x="105mm" y="1.8cm">Wooden Castle - Kelso - Moxmuxshire CD5 8ZN</drawCentredString>
-            <drawCentredString x="105mm" y="1.4cm">Telephone 01232 3124229 - Fax 01232 3124230 </drawCentredString>
+            <drawCentredString x="105mm" y="1.8cm"><!-- MY.STREET --> - <!-- MY.POSTCODE --> <!-- MY.LOCALITY --></drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">Telephone <!-- MY.PHONE --> - Fax <!-- MY.FAX --></drawCentredString>
         </pageGraphics>
 
         <frame id="content" x1="2.0cm" y1="3.0cm" width="17cm" height="24.5cm"/>
