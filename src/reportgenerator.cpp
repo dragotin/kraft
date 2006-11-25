@@ -244,19 +244,28 @@ QString ReportGenerator::replaceOwnAddress( QString& tmpl )
               contact.realName() );
 
   replaceTag( tmpl,
+              TAG( "MY.ORGANISATION" ),
+              contact.organization() );
+
+  replaceTag( tmpl,
+              TAG( "MY.URL" ),
+              contact.url().prettyURL() );
+
+  replaceTag( tmpl,
               TAG( "MY.EMAIL" ),
-              contact.fullEmail() );
+              contact.preferredEmail() );
 
   replaceTag( tmpl,
               TAG( "MY.PHONE" ),
               contact.phoneNumber( KABC::PhoneNumber::Work ).number() );
+
   replaceTag( tmpl,
               TAG( "MY.FAX" ),
               contact.phoneNumber( KABC::PhoneNumber::Fax ).number() );
+
   replaceTag( tmpl,
               TAG( "MY.CELL" ),
               contact.phoneNumber( KABC::PhoneNumber::Cell ).number() );
-
 
   KABC::Address address;
   address = contact.address( KABC::Address::Work );
@@ -287,6 +296,8 @@ QString ReportGenerator::replaceOwnAddress( QString& tmpl )
   replaceTag( tmpl,
               TAG( "MY.LABEL" ),
               address.label() );
+
+
   return tmpl;
 }
 
