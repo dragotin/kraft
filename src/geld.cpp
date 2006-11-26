@@ -90,6 +90,13 @@ QString Geld::toString() const
     return KGlobal().locale()->formatMoney(m_cent/100.0);
 }
 
+QString Geld::toHtmlString() const
+{
+  QString re = toString();
+  re.replace( " ",  "&nbsp;" );
+  return re;
+}
+
 double Geld::toDouble()
 {
     return m_cent/100.0;

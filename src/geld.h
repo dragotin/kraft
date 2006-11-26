@@ -50,6 +50,7 @@ public:
     bool operator!=(Geld);
 
     QString toString() const;
+  QString toHtmlString() const;
     double toDouble();
     long   toLong();
 private:

@@ -3,7 +3,11 @@ body { margin:2px; }
 table {
       color: #898989;
 }
- 
+
+td { 
+  vertical-align:top;
+}
+
 a:link {
   font-weight: bold;
   text-decoration: none;
