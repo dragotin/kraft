@@ -37,8 +37,14 @@ void DocPostCard::setHeaderData( const QString& type,  const QString& date,
   mType = type;
   mDate = date;
   mAddress = address;
-  mPreText = pretext;
+  mPreText = htmlify( pretext );
   mId = id;
+}
+
+QString DocPostCard::htmlify( const QString& str ) const
+{
+  QStringList li = QStringList::split( "\n", str );
+  return "<p>" + li.join( "</p><p>" ) + "</p>";
 }
 
 void DocPostCard::setPositions( DocPositionList posList )
@@ -75,7 +81,7 @@ void DocPostCard::setPositions( DocPositionList posList )
 
 void DocPostCard::setFooterData( const QString& postText,  const QString& goodbye )
 {
-  mPostText = postText;
+  mPostText = htmlify( postText );
   mGoodbye = goodbye;
 }
 

@@ -50,6 +50,8 @@ protected:
   QString renderDocFull();
 private:
   QString linkBit( const QString&, const QString& ) const;
+  QString htmlify( const QString& ) const;
+
   DocGuardedPtr mDoc;
   QString mType;
   QString mId;
