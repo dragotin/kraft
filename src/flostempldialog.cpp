@@ -68,7 +68,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
 {
     if( ! t ) return;
     m_template = t;
-    m_newTemplate = newTempl;
+    m_templateIsNew = newTempl;
 
     m_katalog = KatalogMan::self()->getKatalog(katalogname);
 
@@ -264,7 +264,7 @@ void FlosTemplDialog::accept()
 	       }
         }
 
-        /* Zeit zählen */
+        /* count time */
         bool c = m_addTime->isChecked();
         if( c != m_template->hasTimeslice() ) {
             m_template->setHasTimeslice(c);
@@ -332,7 +332,7 @@ void FlosTemplDialog::reject()
 
     d_calcTempl::reject();
 
-    if ( m_newTemplate ) {
+    if ( m_templateIsNew ) {
       // remove the listview item if it was created newly
       emit editRejected();
     }

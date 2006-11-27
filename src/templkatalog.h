@@ -50,6 +50,7 @@ public:
     /** get the amount of entries in a chapter or the entire catalog */
     int getEntriesPerChapter( const QString& chapter = QString() );
 
+    int addNewTemplate( FloskelTemplate *tmpl );
 public slots:
     void writeXMLFile();
 private:

@@ -69,7 +69,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
 
 void CatalogSelection::setupCatalogList()
 {
-  QStringList katalogNames = KatalogMan::self()->allKatalogs();
+  QStringList katalogNames = KatalogMan::self()->allKatalogNames();
   mCatalogSelector->insertStringList( katalogNames );
   slotSelectCatalog( katalogNames[0] );
 }

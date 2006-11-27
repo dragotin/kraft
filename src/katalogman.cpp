@@ -51,7 +51,7 @@ KatalogMan::~KatalogMan( )
   delete m_katalogDict;
 }
 
-QStringList KatalogMan::allKatalogs()
+QStringList KatalogMan::allKatalogNames()
 {
 
   QStringList list;

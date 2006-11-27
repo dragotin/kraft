@@ -75,10 +75,10 @@ void PortalView::katalogDetails(QWidget *parent)
 
 void PortalView::fillCatalogDetails()
 {
-    QStringList katalogNamen = KatalogMan::self()->allKatalogs();
+    QStringList katalogNamen = KatalogMan::self()->allKatalogNames();
     QString html;
 
-    html = "<h2>" + i18n("Available Catalogs") + "</h2>";
+    html = "<qt><h2>" + i18n("Available Catalogs") + "</h2>";
     html += "<p align=\"center\"><table width=\"80%\" border=\"0\">";
 
     for(QStringList::ConstIterator namesIt = katalogNamen.begin();
@@ -88,7 +88,7 @@ void PortalView::fillCatalogDetails()
         html += printKatLine( katName );
     }
 
-    html += "</table></p>";
+    html += "</table></p></qt>";
 
     mCatalogBrowser->setText( html );
 }
@@ -100,7 +100,7 @@ void PortalView::archiveDetails( QWidget *  )
 
 QString PortalView::printKatLine( const QString& name ) const
 {
-    QString urlName(name); //  = KURL::encode_string(name);
+    QString urlName = QStyleSheet::escape( name );
 
     kdDebug() << "Converted Katalog name: " << urlName << endl;
     QString html;
@@ -112,7 +112,7 @@ QString PortalView::printKatLine( const QString& name ) const
             name+"&action=open\">";
     html += i18n("Open");
     html += "</td>";
-
+#if 0
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
             name+"&action=xml\">";
     html += i18n("XML Export");
@@ -122,7 +122,7 @@ QString PortalView::printKatLine( const QString& name ) const
             name+"&action=delete\">";
     html += i18n("Remove");
     html += "</td>";
-
+#endif
     html += "</tr>\n";
     return html;
 }

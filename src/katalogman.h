@@ -40,7 +40,7 @@ public:
     ~KatalogMan();
     static KatalogMan *self();
 
-    QStringList allKatalogs();
+    QStringList allKatalogNames();
     Katalog* getKatalog(const QString&);
     void registerKatalog( Katalog* );
     QString catalogTypeString( const QString& catName );

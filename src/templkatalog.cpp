@@ -107,6 +107,17 @@ int TemplKatalog::load()
     return cnt;
 }
 
+int TemplKatalog::addNewTemplate( FloskelTemplate *tmpl )
+{
+  int re = -1;
+
+  if ( tmpl ) {
+    m_flosList.append( tmpl );
+    re = m_flosList.count();
+  }
+  return re;
+}
+
 int TemplKatalog::loadCalcParts( FloskelTemplate *flos )
 {
     int cnt = 0;

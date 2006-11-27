@@ -56,7 +56,9 @@ public:
     ~FlosTemplDialog();
 
     void setTemplate( FloskelTemplate* t, const QString&, bool );
-
+    bool templateIsNew() {
+      return m_templateIsNew;
+    };
 signals:
     void takeMaterialAnswer(const QString&);
     void editAccepted( FloskelTemplate* );
@@ -118,7 +120,7 @@ private:
     ZeitCalcDialog *m_timePartDialog;
     MatCalcDialog *m_matPartDialog;
     CalcPart *m_cpChange;
-    bool m_newTemplate;
+    bool m_templateIsNew;
 };
 
 #endif

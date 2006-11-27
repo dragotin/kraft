@@ -109,7 +109,7 @@ void TemplKatalogView::slNeueVorlage()
     if( parentItem ) {
       // try to find out which catalog is open/actual
       QString name = parentItem->text(0);
-      Katalog *k = KatalogMan::self()->getKatalog(m_katalogName);
+      Katalog *k = getKatalog( m_katalogName );
       if( k ) {
         kdDebug() << "setting catalog name " << name << endl;
         flosTempl->setChapterID(k->chapterID(name));
@@ -176,7 +176,10 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
     TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listview);
 
     if(m_flosDialog ){
-
+      if ( m_flosDialog->templateIsNew() ) {
+         TemplKatalog *k = static_cast<TemplKatalog*>( getKatalog( m_katalogName ) );
+        if ( k ) k->addNewTemplate( templ );
+      }
     }
 
     if( m_editListViewItem ) {
@@ -185,6 +188,7 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
       templListView->slFreshupItem( m_editListViewItem, templ, true );
       templListView->ensureItemVisible( m_editListViewItem );
     }
+
     m_editListViewItem = 0;
     delete m_flosDialog;
     m_flosDialog = 0;

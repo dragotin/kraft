@@ -17,6 +17,8 @@
 
 #include "docpostcard.h"
 
+#include <qstylesheet.h>
+
 #include <klocale.h>
 #include <kglobal.h>
 #include <kurl.h>
@@ -43,7 +45,7 @@ void DocPostCard::setHeaderData( const QString& type,  const QString& date,
 
 QString DocPostCard::htmlify( const QString& str ) const
 {
-  QStringList li = QStringList::split( "\n", str );
+  QStringList li = QStringList::split( "\n", QStyleSheet::escape( str ) );
   return "<p>" + li.join( "</p><p>" ) + "</p>";
 }
 

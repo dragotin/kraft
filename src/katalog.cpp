@@ -61,7 +61,7 @@ Katalog::~Katalog()
 }
 
 /**
- * virtuelle Ladeklasse fr Kataloge. Muss berschrieben werden.
+ * virtuell load method for catalogs. Must be overwritten.
  */
 int Katalog::load()
 {
