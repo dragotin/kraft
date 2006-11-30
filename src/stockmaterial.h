@@ -43,8 +43,8 @@ public:
                    double perPack, Geld pIn, Geld pOut );
     ~StockMaterial();
 
-    QString getName() const;
-    QString getDescription() const;
+    QString name() const;
+    QString description() const;
 
     double getAmountPerPack();
     void setAmountPerPack( double am );
@@ -55,6 +55,7 @@ public:
     int getID();
     void setID( int );
 
+    int chapter() { return m_chapter; }
     KABC::Addressee getSupplier();
     void setSupplier( KABC::Addressee *supp );
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-             matkatalog  -
+                      matkatalog  - the material catalog
                              -------------------
     begin                : 2004-19-10
     copyright            : (C) 2004 by Klaas Freitag
@@ -41,8 +41,45 @@ MatKatalog::MatKatalog()
 int MatKatalog::load()
 {
   Katalog::load();
-  return 0;
+  int cnt = 0;
+
+  QSqlCursor cur( "stockMaterial" ); // Specify the table/view name
+  cur.setMode( QSqlCursor::ReadOnly );
+  cur.select(); // We'll retrieve every record
+  while ( cur.next() ) {
+    cnt++;
+    int id = cur.value( "matID" ).toInt();
+    int chapterID = cur.value( "chapterID" ).toInt();
+    QString material = QString::fromUtf8( cur.value( "material" ).toCString() );
+    int unitID = cur.value( "unitID" ).toInt();
+    double pPack = cur.value( "perPack" ).toDouble();
+    double priceIn = cur.value( "priceIn" ).toDouble();
+    double priceOut = cur.value( "priceOut" ).toDouble();
+
+    mAllMaterial.append( new StockMaterial( id, chapterID, material, unitID,
+                                            pPack, Geld( priceIn ), Geld( priceOut ) ) );
+  }
+
+  return cnt;
 }
+
+StockMaterialList MatKatalog::getRecordList( const QString& chapter )
+{
+  StockMaterialList list;
+  StockMaterial *mat;
+
+  int chapID = chapterID( chapter );
+
+  for ( mat = mAllMaterial.first(); mat; mat = mAllMaterial.next() ) {
+    if ( mat->chapter() == chapID ) {
+      list.append( mat );
+    }
+  }
+  return list;
+
+}
+
+
 
 MatKatalog::~MatKatalog( )
 {

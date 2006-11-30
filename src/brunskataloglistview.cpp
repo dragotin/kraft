@@ -171,3 +171,4 @@ DocPosition BrunsKatalogListView::itemToDocPosition( QListViewItem*  )
   // FIXME
   return pos;
 }
+

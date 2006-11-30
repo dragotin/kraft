@@ -227,7 +227,7 @@ void TemplKatalogView::slListviewExecuted(QListViewItem* qItem)
 void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
 {
     kdDebug() << "Creating new Listview" << endl;
-    m_listview = new TemplKatalogListView(w);
+    m_listview = new TemplKatalogListView( w );
     box->addWidget(m_listview);
 }
 

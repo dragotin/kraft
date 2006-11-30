@@ -412,7 +412,7 @@ void FloskelTemplate::materialPartsToXML( QDomDocument& doc, QDomElement& calcPa
         {
             ++it;
             QDomElement matElem = doc.createElement("Material");
-            matElem.appendChild(createDomNode(doc, "MaterialName", mat->getName()));
+            matElem.appendChild(createDomNode(doc, "MaterialName", mat->name()));
             QString h;
             h = h.setNum(mc->getCalcAmount(mat));
             matElem.appendChild(createDomNode(doc, "Amount", h));

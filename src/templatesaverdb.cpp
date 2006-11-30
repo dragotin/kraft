@@ -292,7 +292,7 @@ bool TemplateSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, FloskelTemplat
 void TemplateSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *mat )
 {
     if( ! (cp && mat) ) return;
-    kdDebug() << "storing material calcpart detail for material " << mat->getName() << endl;
+    kdDebug() << "storing material calcpart detail for material " << mat->name() << endl;
 
     /* create temporar dbcalcpart and fill the current material list */
     QSqlCursor cur("CalcMaterialDetails");

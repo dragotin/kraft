@@ -165,10 +165,6 @@ void KatalogListView::slChangeChapter( KListViewItem* item, int newChapter )
     }
 }
 
-KatalogListView *KatalogListView::createListView(QWidget*)
-{
-    kdDebug() << "ERROR: Reimplement createListView!" << endl;
-    return 0;
-}
+
 #include "kataloglistview.moc"
 

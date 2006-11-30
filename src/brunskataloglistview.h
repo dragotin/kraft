@@ -34,19 +34,20 @@ A listview that presents the contents of the Bruns Catalog
 class BrunsKatalogListView : public KatalogListView
 {
 public:
-    typedef enum { Fruits, Rhodos, Roses, Stauden, Konis, Etc } TopKatalogIds;
+  typedef enum { Fruits, Rhodos, Roses, Stauden, Konis, Etc } TopKatalogIds;
 
-    BrunsKatalogListView(QWidget *);
+  BrunsKatalogListView(QWidget *);
 
-    ~BrunsKatalogListView();
-     void addCatalogDisplay( const QString& katName );
-     BrunsRecord getRecord( QListViewItem * );
-     void setupChapters();
+  ~BrunsKatalogListView();
+  void addCatalogDisplay( const QString& katName );
+  BrunsRecord getRecord( QListViewItem * );
+  void setupChapters();
   DocPosition itemToDocPosition( QListViewItem *it = 0 );
+  KatalogListView *createListView( QWidget* );
 private:
 
-    QMap<QListViewItem*, BrunsRecord> m_itemMap;
-    QMap<TopKatalogIds, KListViewItem*> m_topFolderMap;
+  QMap<QListViewItem*, BrunsRecord> m_itemMap;
+  QMap<TopKatalogIds, KListViewItem*> m_topFolderMap;
 };
 
 #endif

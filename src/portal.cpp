@@ -49,6 +49,7 @@
 #include "templkatalogview.h"
 #include "mateditor.h"
 #include "brunskatalogview.h"
+#include "materialkatalogview.h"
 #include "prefsdialog.h"
 #include "documentman.h"
 #include "docdigestview.h"
@@ -436,26 +437,23 @@ void Portal::slotOpenKatalog(const QString& kat)
     // FIXME: Besser Unterscheidung der Kataloge
 
     if( kat == QString("Material") ) {
-        /* Materialkatalog */
-        MatEditor me("Material Allgemein", false, this);
-        QApplication::restoreOverrideCursor();
-
-        if ( me.exec() == QDialog::Accepted ) {
-            kdDebug() << "fine" << endl;
-        }
+      /* Materialkatalog */
+      MaterialKatalogView *katView = new MaterialKatalogView();
+      katView->init( kat );
+      katView->show();
     } else if( kat.startsWith("Bruns") ) {
-        // BrunsKatalog *brunskat = new BrunsKatalog();
-        // brunskat->load();
-        BrunsKatalogView *katView = new BrunsKatalogView();
-        katView->init(kat);
-        katView->show();
+      // BrunsKatalog *brunskat = new BrunsKatalog();
+      // brunskat->load();
+      BrunsKatalogView *katView = new BrunsKatalogView();
+      katView->init(kat);
+      katView->show();
     } else {
-        /* normaler Vorlagenkatalog */
-        TemplKatalogView *katView = new TemplKatalogView();
-        connect( katView, SIGNAL( newDocPosition( const DocPosition& ) ),
-                   this, SLOT( slotOfferNewPosition( const DocPosition& ) ) );
-        katView->init(kat);
-        katView->show();
+      /* normaler Vorlagenkatalog */
+      TemplKatalogView *katView = new TemplKatalogView();
+      connect( katView, SIGNAL( newDocPosition( const DocPosition& ) ),
+               this, SLOT( slotOfferNewPosition( const DocPosition& ) ) );
+      katView->init(kat);
+      katView->show();
     }
     QApplication::restoreOverrideCursor();
 }

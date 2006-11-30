@@ -183,7 +183,7 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
             {
                 ++it;
                 Geld g = mcp->getPriceForMaterial(mat);
-                QString t = mat->getName();
+                QString t = mat->name();
                 double usedAmount = mcp->getCalcAmount(mat);
                 t += i18n(", Amount: %L1 ").arg( usedAmount);
                 Einheit e = mat->getUnit();

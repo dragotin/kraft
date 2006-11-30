@@ -90,7 +90,7 @@ QStringList Katalog::getKatalogChapters( bool freshup )
 
     while ( cur.next() )
     {
-      QString katName = cur.value("chapter").toString();
+      QString katName = QString::fromUtf8( cur.value("chapter").toCString() );
       int katID = cur.value("chapterID").toInt();
       kdDebug() << "Adding catalog chapter " << katName << " with ID " << katID << endl;
       m_chapters.append(katName);

@@ -1,8 +1,8 @@
 /***************************************************************************
-             matkatalog  - Materialkatalogklasse
+             materialkataloglistview  - material katalog listview.
                              -------------------
-    begin                : 2004-19-10
-    copyright            : (C) 2004 by Klaas Freitag
+    begin                : 2006-11-30
+    copyright            : (C) 2006 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,43 +14,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef MATERIALKATALOGLISTVIEW_H
+#define MATERIALKATALOGLISTVIEW_H
 
-#ifndef _MATKATALOG_H
-#define _MATKATALOG_H
+#include <qmap.h>
 
+#include <kataloglistview.h>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-// include files
-#include <qstring.h>
-
-#include "stockmaterial.h"
-#include "katalog.h"
+class QListViewItem;
+class KListViewItem;
 
 /**
- *
- */
+A listview that presents the contents of the Bruns Catalog
 
-class MatKatalog : public Katalog
+@author Klaas Freitag
+*/
+class MaterialKatalogListView : public KatalogListView
 {
 public:
-  MatKatalog( const QString& name );
-  MatKatalog();
-  ~MatKatalog();
+  MaterialKatalogListView(QWidget *);
 
-  int getEntriesPerChapter( const QString& = QString() ) { return 0; } // FIXME
-
-  int load();
-  KatalogType type() { return MaterialCatalog; }
-  StockMaterialList getRecordList( const QString& );
-
+  ~MaterialKatalogListView();
+  void addCatalogDisplay( const QString& katName );
+  DocPosition itemToDocPosition( QListViewItem *it = 0 );
 private:
-  StockMaterialList mAllMaterial;
+
 };
 
 #endif
-
-/* END */
-

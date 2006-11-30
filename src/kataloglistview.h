@@ -46,7 +46,6 @@ public:
     bool isRoot(KListViewItem*);
 
     virtual void setupChapters();
-    virtual KatalogListView *createListView(QWidget*);
 
     QPopupMenu *contextMenu();
     virtual DocPosition itemToDocPosition( QListViewItem *it = 0 ) = 0;

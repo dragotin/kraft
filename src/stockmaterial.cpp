@@ -48,12 +48,12 @@ StockMaterial::~StockMaterial( )
 
 }
 
-QString StockMaterial::getName() const
+QString StockMaterial::name() const
 {
     return m_name;
 }
 
-QString StockMaterial::getDescription() const
+QString StockMaterial::description() const
 {
     return m_descr;
 }

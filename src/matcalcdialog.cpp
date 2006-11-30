@@ -46,7 +46,7 @@ void MatCalcDialog::init(double amount)
     if( ! m_material ) return;
     Einheit e = m_material->getUnit();
 
-    matLabel->setText( m_material->getName());
+    matLabel->setText( m_material->name());
     einheitLabel->setText( e.einheit(amount) );
 }
 

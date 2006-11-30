@@ -1,8 +1,8 @@
 /***************************************************************************
-             matkatalog  - Materialkatalogklasse
+                          materialkatalogview.h
                              -------------------
-    begin                : 2004-19-10
-    copyright            : (C) 2004 by Klaas Freitag
+    begin                : 2006-11-30
+    copyright            : (C) 2006 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,43 +14,38 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef MATERIALKATALOGVIEW_H
+#define MATERIALKATALOGVIEW_H
 
-#ifndef _MATKATALOG_H
-#define _MATKATALOG_H
+#include <katalogview.h>
 
+#include "materialkataloglistview.h"
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-// include files
-#include <qstring.h>
-
-#include "stockmaterial.h"
-#include "katalog.h"
+class QBoxLayout;
+class QListViewItem;
+class BrunsKatalogListView;
+class QLabel;
 
 /**
- *
- */
-
-class MatKatalog : public Katalog
+@author Klaas Freitag
+*/
+class MaterialKatalogView : public KatalogView
 {
+    Q_OBJECT
 public:
-  MatKatalog( const QString& name );
-  MatKatalog();
-  ~MatKatalog();
+    MaterialKatalogView();
 
-  int getEntriesPerChapter( const QString& = QString() ) { return 0; } // FIXME
+    ~MaterialKatalogView();
 
-  int load();
-  KatalogType type() { return MaterialCatalog; }
-  StockMaterialList getRecordList( const QString& );
+    void createCentralWidget(QBoxLayout*, QWidget *w);
+    KatalogListView* getListView() { return m_materialListView; }
 
-private:
-  StockMaterialList mAllMaterial;
+protected:
+    Katalog* getKatalog( const QString& );
+
+    MaterialKatalogListView *m_materialListView;
+    QLabel               *m_detailLabel;
+    KListView            *m_details;
 };
 
 #endif
-
-/* END */
-

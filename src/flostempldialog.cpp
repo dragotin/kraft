@@ -482,7 +482,7 @@ void FlosTemplDialog::drawFixListEntry( QListViewItem* it, FixCalcPart *cp )
 
 void FlosTemplDialog::drawMatListEntry( QListViewItem *it, MaterialCalcPart *mc, StockMaterial *mat )
 {
-    it->setText( 0, mat->getName());
+    it->setText( 0, mat->name());
     it->setText( 1, QString::number(mc->getCalcAmount( mat ), 'f',2));
     it->setText( 2, mat->getUnit().einheitSingular());
     it->setText( 3, mc->getPriceForMaterial(mat).toString());
