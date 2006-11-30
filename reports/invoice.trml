@@ -11,7 +11,7 @@
 	    <lineMode width="0.5" />
             <lines>2cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
-            <drawCentredString x="105mm" y="2.3cm"><!-- MY.NAME --></drawCentredString>
+            <drawCentredString x="105mm" y="2.3cm"><!-- MY.NAME --> <!-- MY.ORGANISATION --></drawCentredString>
 	    <setFont name="Times-Roman" size="10" />
 	    <fill color="black" />
             <drawCentredString x="105mm" y="1.8cm"><!-- MY.STREET --> - <!-- MY.POSTCODE --> <!-- MY.LOCALITY --></drawCentredString>
@@ -32,7 +32,7 @@
 	    <lineMode width="0.5" />
             <lines>2cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
-            <drawCentredString x="105mm" y="2.3cm"><!-- MY.NAME --></drawCentredString>
+            <drawCentredString x="105mm" y="2.3cm"><!-- MY.NAME --> <!-- MY.ORGANISATION --></drawCentredString>
 	    <setFont name="Times-Roman" size="10" />
 	    <fill color="black" />
             <drawCentredString x="105mm" y="1.8cm"><!-- MY.STREET --> - <!-- MY.POSTCODE --> <!-- MY.LOCALITY --></drawCentredString>

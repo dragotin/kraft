@@ -120,9 +120,9 @@ CREATE TABLE units(
 
 
 
-CREATE TABLE stockMat (
+CREATE TABLE stockMaterial (
 	matID        INT NOT NULL AUTO_INCREMENT,
-	matChapter   INT NOT NULL default 1,
+	chapterID    INT NOT NULL default 1,
 	material     mediumtext,
 	unitID       INT NOT NULL,
 	perPack	     DECIMAL(6,2),
@@ -131,25 +131,6 @@ CREATE TABLE stockMat (
 
 	PRIMARY KEY(matID),
 	INDEX(matChapter)
-);
-
-
-
-CREATE TABLE stockMatChapter (
-	stockMatChapterID     INT NOT NULL AUTO_INCREMENT,
-	matKatID	      INT NOT NULL,
-	stockMatChapter       VARCHAR(255),
-	sortID                INT,
-
-	PRIMARY KEY(stockMatChapterID)
-);
-
-CREATE TABLE matKats(
-	matKatID 	      INT NOT NULL AUTO_INCREMENT,
-	matKatName            VARCHAR(255),
-
-	PRIMARY KEY(matKatID)
-
 );
 
 CREATE TABLE stdSaetze( 
