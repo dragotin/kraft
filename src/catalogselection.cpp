@@ -18,6 +18,7 @@
 #include "katalogman.h"
 #include "templkatalog.h"
 #include "templkataloglistview.h"
+#include "materialkataloglistview.h"
 #include "matkatalog.h"
 #include "docposition.h"
 #include "filterheader.h"
@@ -51,7 +52,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
   QHBox *hb = new QHBox( this );
   QWidget *spaceEater = new QWidget( hb );
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum ) );
-  QLabel *l = new QLabel( i18n( "Selected &Catalog:" ), hb );
+  QLabel *l = new QLabel( i18n( "Selected &Catalog: " ), hb );
   mCatalogSelector = new QComboBox( hb );
   connect( mCatalogSelector, SIGNAL( activated( const QString& ) ),
            this,  SLOT( slotSelectCatalog( const QString& ) ) );
@@ -147,6 +148,16 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         mWidgets->addWidget( tmpllistview );
         mWidgetDict.insert(  katName, tmpllistview );
         kdDebug() << "Creating a selection list for catalog " << katName << endl;
+      } else if ( kat->type() == MaterialCatalog ) {
+        MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
+        connect( matListView,
+                 SIGNAL( doubleClicked( QListViewItem*,  const QPoint&,  int ) ),
+                 this,
+                 SLOT( slCatalogDoubleClicked( QListViewItem*, const QPoint&, int ) ) );
+        matListView->addCatalogDisplay( katName );
+        mAcAddToDoc->plug( matListView->contextMenu() );
+        mWidgets->addWidget( matListView );
+        mWidgetDict.insert( katName, matListView );
       } else if ( kat->type() == PlantCatalog ) {
         BrunsKatalogListView *brunsListView = new BrunsKatalogListView( this );
         brunsListView->addCatalogDisplay( katName );

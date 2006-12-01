@@ -32,6 +32,10 @@ MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
   : KatalogListView( w )
 {
   addColumn( i18n("Material" ) );
+  addColumn( i18n("Unit" ) );
+  addColumn( i18n("Units per Pack" ) );
+  addColumn( i18n("Price (In)" ) );
+  addColumn( i18n("Price (Out)" ) );
 }
 
 
@@ -64,6 +68,11 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
     StockMaterial *mat;
     for ( mat = records.first(); mat; mat = records.next() ) {
       KListViewItem *recItem = new KListViewItem( katItem, mat->name() );
+      Einheit e = mat->getUnit();
+      recItem->setText( 1, e.einheitSingular() );
+      recItem->setText( 2, QString::number( mat->getAmountPerPack() ) );
+      recItem->setText( 3, mat->getEPreis().toString() );
+      recItem->setText( 4, mat->getVPreis().toString() );
     }
   }
 }
