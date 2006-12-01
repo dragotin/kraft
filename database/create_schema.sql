@@ -130,7 +130,7 @@ CREATE TABLE stockMaterial (
 	priceOut     DECIMAL(6,2),
 
 	PRIMARY KEY(matID),
-	INDEX(matChapter)
+	INDEX(chapterID)
 );
 
 CREATE TABLE stdSaetze( 
