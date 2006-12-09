@@ -80,6 +80,7 @@ KListViewItem* MaterialKatalogListView::addMaterialToView( KListViewItem *parent
   KListViewItem *recItem = new KListViewItem( parent, mat->name() );
 
   slFreshupItem( recItem,  mat );
+  m_dataDict.insert( recItem, mat );
 
   return recItem;
 }

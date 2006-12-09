@@ -122,7 +122,7 @@ void KatalogView::initActions()
                                     SLOT(slEditChapters()),  actionCollection(), "edit_chapters" );
 
   m_acEditItem = new KAction(i18n("&Edit Item"), "pencil", 0, this,
-                               SLOT(slEditVorlage()),  actionCollection(), "edit_vorlage" );
+                             SLOT(slEditVorlage()),  actionCollection(), "edit_vorlage" );
 
   m_acNewItem  = new KAction( i18n("&New Template"), "filenew", 0, this,
                                 SLOT(slNeueVorlage()), actionCollection(), "neue_vorlage");
@@ -295,8 +295,23 @@ void KatalogView::slotStatusMsg(const QString &text)
   statusBar()->changeItem(text, ID_STATUS_MSG);
 }
 
-void KatalogView::slListviewExecuted(QListViewItem*)
+void KatalogView::slListviewExecuted( QListViewItem *qItem )
 {
+  KatalogListView *listview = getListView();
+  if( !listview ) return;
+  if( ! qItem ) return;
+
+  KListViewItem *item = static_cast<KListViewItem*>(qItem);
+
+  bool itemEdit = true;
+
+  if( listview->isRoot(item) ) {
+    // we have the root item, not editable
+    itemEdit = false;
+  } else if( listview->isChapter(item) ) {
+    itemEdit = false;
+  }
+  m_acEditItem->setEnabled(itemEdit);
 
 }
 

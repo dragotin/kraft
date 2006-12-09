@@ -204,26 +204,6 @@ void TemplKatalogView::slEditRejected()
     m_flosDialog = 0;
 }
 
-void TemplKatalogView::slListviewExecuted(QListViewItem* qItem)
-{
-    KatalogListView *listview = getListView();
-    if( !listview ) return;
-    TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listview);
-
-    if( ! qItem ) return;
-    KListViewItem *item = static_cast<KListViewItem*>(qItem);
-
-    bool itemEdit = true;
-
-    if( templListView->isRoot(item) ) {
-        // we have the root item, not editable
-        itemEdit = false;
-    } else if( templListView->isChapter(item) ) {
-        itemEdit = false;
-    }
-    m_acEditItem->setEnabled(itemEdit);
-}
-
 void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
 {
     kdDebug() << "Creating new Listview" << endl;

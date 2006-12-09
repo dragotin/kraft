@@ -84,7 +84,6 @@ class TemplKatalogView: public KatalogView
     /* selected Ok in the template editor */
     void slEditOk(FloskelTemplate*);
     void slEditRejected();
-    void slListviewExecuted(QListViewItem*);
 
     /* The catalog chapter was changed in the editor dialog */
     void slChangeChapter(int);

@@ -58,6 +58,22 @@ Katalog* MaterialKatalogView::getKatalog( const QString& name )
     return k;
 }
 
+void MaterialKatalogView::slEditVorlage()
+{
+  MaterialKatalogListView *listview = static_cast<MaterialKatalogListView*>(getListView());
+
+  kdDebug() << "Editing the material" << endl;
+
+  if( listview )
+  {
+    StockMaterial *currTempl = static_cast<StockMaterial*> ( listview->currentItemData() );
+    if( currTempl ) {
+      KListViewItem *item = (KListViewItem*) listview->currentItem();
+      openDialog( item, currTempl, false );
+    }
+  }
+}
+
 void MaterialKatalogView::slNeueVorlage()
 {
   KatalogListView *listview = getListView();

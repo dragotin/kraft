@@ -51,11 +51,24 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
     return;
   }
 
+  // chapter settings
   mCbChapter->insertStringList( m_katalog->getKatalogChapters() );
   int chapID = t->chapter();
   QString chap = m_katalog->chapterName(dbID(chapID));
   mCbChapter->setCurrentText(chap);
 
+  // unit settings
+  mCbUnit->insertStringList( UnitManager::allUnits() );
+  Einheit e = t->getUnit();
+  mCbUnit->setCurrentText( e.einheitSingular() );
+
+  // text
+  mEditMaterial->setText( t->name() );
+
+  mInPurchasePrice->setValue( t->purchPrice().toDouble() );
+  mInSalePrice->setValue( t->salesPrice().toDouble() );
+
+  mDiPerPack->setValue( t->getAmountPerPack() );
 }
 
 
@@ -65,7 +78,12 @@ MaterialTemplDialog::~MaterialTemplDialog( )
 
 void MaterialTemplDialog::accept()
 {
-    kdDebug() << "*** Saving finished " << endl;
+  kdDebug() << "*** Saving finished " << endl;
+  const QString newMat = mEditMaterial->text();
+
+  if ( newMat.isEmpty() ) {
+    kdDebug() << "We do not want to store empty materials" << endl;
+  } else {
     mSaveMaterial->setName( mEditMaterial->text() );
     mSaveMaterial->setAmountPerPack( mDiPerPack->value() );
 
@@ -93,8 +111,9 @@ void MaterialTemplDialog::accept()
     mSaveMaterial->save();
 
     emit editAccepted( mSaveMaterial );
+  }
 
-    MaterialDialogBase::accept();
+  MaterialDialogBase::accept();
 }
 
 bool MaterialTemplDialog::askChapterChange( StockMaterial*, int )

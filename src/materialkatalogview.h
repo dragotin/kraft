@@ -42,6 +42,8 @@ public:
   KatalogListView* getListView() { return m_materialListView; }
 protected slots:
   void slNeueVorlage();
+  void slEditVorlage();
+
   void openDialog( KListViewItem *, StockMaterial *, bool );
   void slotEditRejected();
   void slotEditOk( StockMaterial * );

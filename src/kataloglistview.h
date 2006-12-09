@@ -54,6 +54,7 @@ public slots:
     virtual void slFreshupItem( QListViewItem*, void*, bool remChildren = false );
     virtual void slChangeChapter( KListViewItem* , int );
     virtual void slotRMB( KListView*, QListViewItem*, const QPoint& );
+
 protected:
 
     virtual QPixmap getCatalogIcon();
