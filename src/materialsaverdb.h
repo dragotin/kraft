@@ -1,8 +1,8 @@
 /***************************************************************************
-             materialkataloglistview  - material katalog listview.
+             materialsaverdb  -
                              -------------------
-    begin                : 2006-11-30
-    copyright            : (C) 2006 by Klaas Freitag
+    begin                : 2006-12-07
+    copyright            : (C) 2005 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,36 +14,36 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef MATERIALKATALOGLISTVIEW_H
-#define MATERIALKATALOGLISTVIEW_H
 
-#include <qmap.h>
+#ifndef _MATERIALSAVERDB_H
+#define _MATERIALSAVERDB_H
 
-#include <kataloglistview.h>
 
-class QListViewItem;
-class KListViewItem;
-class StockMaterial;
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+// include files
+
+#include "materialsaverbase.h"
 
 /**
-A listview that presents the contents of the Bruns Catalog
+ *
+ */
+class QSqlRecord;
+class StockMaterial;
 
-@author Klaas Freitag
-*/
-class MaterialKatalogListView : public KatalogListView
+class MaterialSaverDB : public MaterialSaverBase
 {
 public:
-  MaterialKatalogListView(QWidget *);
+    MaterialSaverDB();
+    ~MaterialSaverDB();
 
-  ~MaterialKatalogListView();
-  void addCatalogDisplay( const QString& katName );
-  DocPosition itemToDocPosition( QListViewItem *it = 0 );
-  KListViewItem* addMaterialToView( KListViewItem *, StockMaterial * );
-public slots:
-  void slFreshupItem( QListViewItem *, void*,  bool remChildren = false  );
-
-private:
-
+    virtual bool saveTemplate( StockMaterial* );
+    virtual void fillMaterialBuffer( QSqlRecord*, StockMaterial* , bool );
 };
 
 #endif
+
+/* END */
+

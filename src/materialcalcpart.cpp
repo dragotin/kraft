@@ -146,7 +146,7 @@ Geld MaterialCalcPart::getCostsForMaterial( StockMaterial *mat)
     if( mat && mat->getAmountPerPack() > 0 )
     {
         double d = getCalcAmount( mat ) / mat->getAmountPerPack();
-        g = mat->getEPreis() * d;
+        g = mat->purchPrice() * d;
 
         // kdDebug() << "Cost for material " << mat->getName() << ": " <<
         // g.toString() << endl;
@@ -169,7 +169,7 @@ Geld MaterialCalcPart::getPriceForMaterial( StockMaterial *mat)
     {
         // double d = vAmount.toDouble() / mat->getAmountPerPack();
         double d = getCalcAmount( mat ) / mat->getAmountPerPack();
-        g = mat->getVPreis() * d;
+        g = mat->salesPrice() * d;
 
         // kdDebug() << "Cost for material " << mat->getName() << ": " <<
         //    g.toString() << endl;

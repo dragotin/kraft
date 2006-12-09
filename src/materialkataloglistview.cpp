@@ -67,16 +67,39 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
 
     StockMaterial *mat;
     for ( mat = records.first(); mat; mat = records.next() ) {
-      KListViewItem *recItem = new KListViewItem( katItem, mat->name() );
-      Einheit e = mat->getUnit();
-      recItem->setText( 1, e.einheitSingular() );
-      recItem->setText( 2, QString::number( mat->getAmountPerPack() ) );
-      recItem->setText( 3, mat->getEPreis().toString() );
-      recItem->setText( 4, mat->getVPreis().toString() );
+      addMaterialToView( katItem,  mat );
     }
   }
 }
 
+KListViewItem* MaterialKatalogListView::addMaterialToView( KListViewItem *parent, StockMaterial *mat )
+{
+  if ( !mat ) return 0;
+  if ( !parent ) parent = m_root;
+
+  KListViewItem *recItem = new KListViewItem( parent, mat->name() );
+
+  slFreshupItem( recItem,  mat );
+
+  return recItem;
+}
+
+void MaterialKatalogListView::slFreshupItem( QListViewItem *item, void* templ,  bool )
+{
+  StockMaterial *mat = static_cast<StockMaterial*>( templ );
+
+  if ( item && mat ) {
+    Einheit e = mat->getUnit();
+    kdDebug() << "Setting material name " << mat->name() << endl;
+    item->setText( 0, mat->name() );
+    item->setText( 1, e.einheitSingular() );
+    item->setText( 2, QString::number( mat->getAmountPerPack() ) );
+    item->setText( 3, mat->purchPrice().toString() );
+    item->setText( 4, mat->salesPrice().toString() );
+  } else {
+    kdDebug() << "Unable to freshup item - data invalid" << endl;
+  }
+}
 
 DocPosition MaterialKatalogListView::itemToDocPosition( QListViewItem*  )
 {

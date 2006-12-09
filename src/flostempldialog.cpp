@@ -487,7 +487,7 @@ void FlosTemplDialog::drawMatListEntry( QListViewItem *it, MaterialCalcPart *mc,
     it->setText( 2, mat->getUnit().einheitSingular());
     it->setText( 3, mc->getPriceForMaterial(mat).toString());
     it->setText( 4, QString::number(mat->getAmountPerPack(), 'f',2));
-    it->setText( 5, mat->getVPreis().toString());
+    it->setText( 5, mat->salesPrice().toString());
     it->repaint();
 }
 

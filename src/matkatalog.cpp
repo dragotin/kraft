@@ -79,6 +79,10 @@ StockMaterialList MatKatalog::getRecordList( const QString& chapter )
 
 }
 
+void MatKatalog::addNewMaterial( StockMaterial *mat )
+{
+  mAllMaterial.append( mat );
+}
 
 
 MatKatalog::~MatKatalog( )

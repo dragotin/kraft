@@ -25,27 +25,35 @@ class QBoxLayout;
 class QListViewItem;
 class BrunsKatalogListView;
 class QLabel;
+class MaterialTemplDialog;
 
 /**
 @author Klaas Freitag
 */
 class MaterialKatalogView : public KatalogView
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    MaterialKatalogView();
+  MaterialKatalogView();
 
-    ~MaterialKatalogView();
+  ~MaterialKatalogView();
 
-    void createCentralWidget(QBoxLayout*, QWidget *w);
-    KatalogListView* getListView() { return m_materialListView; }
-
+  void createCentralWidget(QBoxLayout*, QWidget *w);
+  KatalogListView* getListView() { return m_materialListView; }
+protected slots:
+  void slNeueVorlage();
+  void openDialog( KListViewItem *, StockMaterial *, bool );
+  void slotEditRejected();
+  void slotEditOk( StockMaterial * );
 protected:
-    Katalog* getKatalog( const QString& );
+  Katalog* getKatalog( const QString& );
 
-    MaterialKatalogListView *m_materialListView;
-    QLabel               *m_detailLabel;
-    KListView            *m_details;
+  MaterialKatalogListView *m_materialListView;
+  QLabel               *m_detailLabel;
+  KListView            *m_details;
+  MaterialTemplDialog *mDialog;
+  KListViewItem *mNewItem;
+  const QString MaterialName;
 };
 
 #endif

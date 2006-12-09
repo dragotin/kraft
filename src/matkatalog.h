@@ -45,7 +45,7 @@ public:
   int load();
   KatalogType type() { return MaterialCatalog; }
   StockMaterialList getRecordList( const QString& );
-
+  void addNewMaterial( StockMaterial* );
 private:
   StockMaterialList mAllMaterial;
 };

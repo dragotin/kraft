@@ -93,13 +93,13 @@ void KatalogListView::setupChapters()
     kdDebug() << "Have count of chapters: " << chapters.size() << endl;
     for ( QStringList::ConstIterator it = chapters.end(); it != chapters.begin();  ) {
       --it;
-        QString chapter = *it;
-        kdDebug() << "Creating katalog chapter item for " << chapter << endl;
-        KListViewItem *katItem = new KListViewItem( m_root, chapter );
-        katItem->setText( 4, QString::number( catalog->chapterID( chapter ) ) );
-        m_catalogDict.insert( catalog->chapterID(chapter), katItem );
+      QString chapter = *it;
+      kdDebug() << "Creating katalog chapter item for " << chapter << endl;
+      KListViewItem *katItem = new KListViewItem( m_root, chapter );
+      katItem->setText( 4, QString::number( catalog->chapterID( chapter ) ) );
+      m_catalogDict.insert( catalog->chapterID(chapter), katItem );
 
-        katItem->setPixmap(0, getCatalogIcon());
+      katItem->setPixmap(0, getCatalogIcon());
     }
 }
 
@@ -131,7 +131,11 @@ void* KatalogListView::currentItemData()
 
 bool KatalogListView::isChapter( KListViewItem *item )
 {
-    return !( isRoot(item) || m_dataDict[item] );
+  QIntDictIterator<KListViewItem> it( m_catalogDict );
+  for ( ; it.current(); ++it )
+    if ( it.current() == item ) return true;
+
+  return false;
 }
 
 bool KatalogListView::isRoot( KListViewItem *item )

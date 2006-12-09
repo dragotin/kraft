@@ -44,7 +44,10 @@ public:
     ~StockMaterial();
 
     QString name() const;
+    void setName( const QString& );
+
     QString description() const;
+    void setDescription( const QString& );
 
     double getAmountPerPack();
     void setAmountPerPack( double am );
@@ -56,14 +59,16 @@ public:
     void setID( int );
 
     int chapter() { return m_chapter; }
+    void setChapter( int c ) { m_chapter = c; }
+
     KABC::Addressee getSupplier();
     void setSupplier( KABC::Addressee *supp );
 
-    Geld getEPreis();
-    Geld getVPreis();
+    Geld purchPrice();
+    Geld salesPrice();
 
-    void setEPreis( Geld );
-    void setVPreis( Geld );
+    void setPurchPrice( Geld );
+    void setSalesPrice( Geld );
 
 private:
     QString m_name;

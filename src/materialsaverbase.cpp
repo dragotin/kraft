@@ -1,8 +1,8 @@
 /***************************************************************************
-             materialkataloglistview  - material katalog listview.
+             templatesaverbase  -
                              -------------------
-    begin                : 2006-11-30
-    copyright            : (C) 2006 by Klaas Freitag
+    begin                : 2005-20-01
+    copyright            : (C) 2005 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,36 +14,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef MATERIALKATALOGLISTVIEW_H
-#define MATERIALKATALOGLISTVIEW_H
 
-#include <qmap.h>
+// include files for Qt
 
-#include <kataloglistview.h>
+// include files for KDE
 
-class QListViewItem;
-class KListViewItem;
-class StockMaterial;
+#include "materialsaverbase.h"
 
-/**
-A listview that presents the contents of the Bruns Catalog
 
-@author Klaas Freitag
-*/
-class MaterialKatalogListView : public KatalogListView
+MaterialSaverBase::MaterialSaverBase( )
 {
-public:
-  MaterialKatalogListView(QWidget *);
 
-  ~MaterialKatalogListView();
-  void addCatalogDisplay( const QString& katName );
-  DocPosition itemToDocPosition( QListViewItem *it = 0 );
-  KListViewItem* addMaterialToView( KListViewItem *, StockMaterial * );
-public slots:
-  void slFreshupItem( QListViewItem *, void*,  bool remChildren = false  );
+}
 
-private:
+bool MaterialSaverBase::saveTemplate( StockMaterial* )
+{
+  return false;
+}
 
-};
+MaterialSaverBase::~MaterialSaverBase( )
+{
 
-#endif
+}
+
+/* END */

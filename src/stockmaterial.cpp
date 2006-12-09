@@ -26,7 +26,9 @@
 #include "stockmaterial.h"
 #include "unitmanager.h"
 
-StockMaterial::StockMaterial( )
+StockMaterial::StockMaterial( ):
+  m_amount( 0 ),
+  m_dbid( -1 )
 {
 
 }
@@ -53,9 +55,19 @@ QString StockMaterial::name() const
     return m_name;
 }
 
+void StockMaterial::setName( const QString& str )
+{
+  m_name = str;
+}
+
 QString StockMaterial::description() const
 {
     return m_descr;
+}
+
+void StockMaterial::setDescription( const QString& str )
+{
+  m_descr = str;
 }
 
 double StockMaterial::getAmountPerPack()
@@ -100,22 +112,22 @@ void StockMaterial::setSupplier( KABC::Addressee *a )
         m_delivererUID = a->uid();
 }
 
-Geld StockMaterial::getEPreis()
+Geld StockMaterial::purchPrice()
 {
     return m_ePrice;
 }
 
-Geld StockMaterial::getVPreis()
+Geld StockMaterial::salesPrice()
 {
     return m_vPrice;
 }
 
-void StockMaterial::setEPreis( Geld g )
+void StockMaterial::setPurchPrice( Geld g )
 {
     m_ePrice = g;
 }
 
-void StockMaterial::setVPreis( Geld g )
+void StockMaterial::setSalesPrice( Geld g )
 {
     m_vPrice = g;
 }

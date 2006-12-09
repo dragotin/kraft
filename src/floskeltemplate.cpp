@@ -335,8 +335,8 @@ QDomElement FloskelTemplate::toXML( QDomDocument& doc)
           matElem.appendChild(createDomNode(doc, "Amount", h));
           matElem.appendChild(createDomNode(doc, "PriceSum",   mc->getPriceForMaterial(mat).toString()));
           matElem.appendChild(createDomNode(doc, "CostSum",   mc->getCostsForMaterial(mat).toString()));
-          matElem.appendChild(createDomNode(doc, "Price",   mat->getVPreis().toString()));
-          matElem.appendChild(createDomNode(doc, "Cost",   mat->getEPreis().toString()));
+          matElem.appendChild(createDomNode(doc, "Price",   mat->salesPrice().toString()));
+          matElem.appendChild(createDomNode(doc, "Cost",   mat->purchPrice().toString()));
           Einheit e = mat->getUnit();
           h = e.einheitSingular();
           matElem.appendChild(createDomNode(doc, "Unit", h));

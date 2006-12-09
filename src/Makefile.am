@@ -22,8 +22,10 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	kraftdoc.cpp main.cpp unitmanager.cpp stockmaterial.cpp \
 	stockmaterialman.cpp materialcalcpart.cpp flostab.ui flostempldialog.cpp \
 	stdsatzman.cpp zeitpartui.ui fixpartui.ui matpartui.ui inserttmplbase.ui \
+	materialdialog.ui materialtempldialog.cpp \
 	zeitcalcdialog.cpp fixcalcdialog.cpp mateditor.cpp matdatatable.cpp matcalcdialog.h \
 	matcalcdialog.cpp templatesaverbase.cpp templatesaverdb.cpp kraftsettings.kcfgc \
+	materialsaverbase.cpp materialsaverdb.cpp \
 	prefsdialog.cpp templkatalogview.cpp templkataloglistview.cpp katalogsettings.kcfgc \
 	docheader.ui positionwidget.ui positionviewwidget.cpp \
 	documentsaverbase.cpp documentsaverdb.cpp docfooter.ui documentman.cpp docdigest.cpp \

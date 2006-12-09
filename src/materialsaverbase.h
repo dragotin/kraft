@@ -1,7 +1,7 @@
 /***************************************************************************
-             materialkataloglistview  - material katalog listview.
+             materialsaverbase  - Base class of a material saver
                              -------------------
-    begin                : 2006-11-30
+    begin                : 2006-12-07
     copyright            : (C) 2006 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
@@ -14,36 +14,36 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef MATERIALKATALOGLISTVIEW_H
-#define MATERIALKATALOGLISTVIEW_H
 
-#include <qmap.h>
+#ifndef _MATERIALSAVERBASE_H
+#define _MATERIALSAVERBASE_H
 
-#include <kataloglistview.h>
 
-class QListViewItem;
-class KListViewItem;
-class StockMaterial;
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+// include files
+#include <qobject.h>
 
 /**
-A listview that presents the contents of the Bruns Catalog
+ *
+ */
+class StockMaterial;
 
-@author Klaas Freitag
-*/
-class MaterialKatalogListView : public KatalogListView
+class MaterialSaverBase
 {
 public:
-  MaterialKatalogListView(QWidget *);
+    MaterialSaverBase();
+    ~MaterialSaverBase();
 
-  ~MaterialKatalogListView();
-  void addCatalogDisplay( const QString& katName );
-  DocPosition itemToDocPosition( QListViewItem *it = 0 );
-  KListViewItem* addMaterialToView( KListViewItem *, StockMaterial * );
-public slots:
-  void slFreshupItem( QListViewItem *, void*,  bool remChildren = false  );
+    virtual bool saveTemplate( StockMaterial* );
 
 private:
 
 };
 
 #endif
+
+/* END */
+
