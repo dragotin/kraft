@@ -23,18 +23,16 @@
 
 
 MaterialSaverBase::MaterialSaverBase( )
+  :QObject()
 {
 
-}
-
-bool MaterialSaverBase::saveTemplate( StockMaterial* )
-{
-  return false;
 }
 
 MaterialSaverBase::~MaterialSaverBase( )
 {
 
 }
+
+#include "materialsaverbase.moc"
 
 /* END */

@@ -1,5 +1,5 @@
 /***************************************************************************
-             materialtempldialog  -
+             materialtempldialog  - dialog to edit material templates
                              -------------------
     begin                : 2006-12-03
     copyright            : (C) 2006 by Klaas Freitag
@@ -89,6 +89,8 @@ void MaterialTemplDialog::accept()
 
     db = mInSalePrice->value();
     mSaveMaterial->setSalesPrice( Geld( db ) );
+
+    mSaveMaterial->save();
 
     emit editAccepted( mSaveMaterial );
 

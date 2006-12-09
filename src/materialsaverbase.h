@@ -31,16 +31,15 @@
  */
 class StockMaterial;
 
-class MaterialSaverBase
+class MaterialSaverBase : public QObject
 {
+  Q_OBJECT
+
 public:
-    MaterialSaverBase();
-    ~MaterialSaverBase();
+   MaterialSaverBase();
+  ~MaterialSaverBase();
 
-    virtual bool saveTemplate( StockMaterial* );
-
-private:
-
+  virtual bool saveTemplate( StockMaterial* ) = 0;
 };
 
 #endif

@@ -36,8 +36,12 @@ class StockMaterial;
 class MaterialSaverDB : public MaterialSaverBase
 {
 public:
+  static MaterialSaverBase* self();
+
+private:
     MaterialSaverDB();
-    ~MaterialSaverDB();
+
+  static MaterialSaverDB *mSelf;
 
     virtual bool saveTemplate( StockMaterial* );
     virtual void fillMaterialBuffer( QSqlRecord*, StockMaterial* , bool );

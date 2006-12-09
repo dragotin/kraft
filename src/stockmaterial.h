@@ -33,7 +33,7 @@
  *
  */
 class Einheit;
-
+class MaterialSaverBase;
 
 class StockMaterial
 {
@@ -69,6 +69,10 @@ public:
 
     void setPurchPrice( Geld );
     void setSalesPrice( Geld );
+
+  void save();
+protected:
+  MaterialSaverBase* getSaver();
 
 private:
     QString m_name;

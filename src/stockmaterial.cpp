@@ -25,6 +25,8 @@
 
 #include "stockmaterial.h"
 #include "unitmanager.h"
+#include "materialsaverbase.h"
+#include "materialsaverdb.h"
 
 StockMaterial::StockMaterial( ):
   m_amount( 0 ),
@@ -48,6 +50,19 @@ StockMaterial::StockMaterial( int dbid, int matChap, QString mat, int unitID,
 StockMaterial::~StockMaterial( )
 {
 
+}
+
+MaterialSaverBase* StockMaterial::getSaver()
+{
+  return MaterialSaverDB::self();
+}
+
+void StockMaterial::save()
+{
+  MaterialSaverBase *saver = getSaver();
+  if ( saver ) {
+    saver->saveTemplate( this );
+  }
 }
 
 QString StockMaterial::name() const

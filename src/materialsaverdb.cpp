@@ -21,6 +21,7 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
+#include <kstaticdeleter.h>
 
 #include <qdatetime.h>
 #include <qsqlcursor.h>
@@ -32,16 +33,21 @@
 #include "materialsaverdb.h"
 #include "stockmaterial.h"
 
+MaterialSaverDB* MaterialSaverDB::mSelf = 0;
+static KStaticDeleter<MaterialSaverDB> selfDeleter;
+
 MaterialSaverDB::MaterialSaverDB( )
     : MaterialSaverBase()
 {
 
 }
 
-
-MaterialSaverDB::~MaterialSaverDB( )
+MaterialSaverBase *MaterialSaverDB::self()
 {
-
+  if ( !mSelf ) {
+    selfDeleter.setObject( mSelf,  new MaterialSaverDB() );
+  }
+  return mSelf;
 }
 
 bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
