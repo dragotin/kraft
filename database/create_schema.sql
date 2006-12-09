@@ -128,6 +128,8 @@ CREATE TABLE stockMaterial (
 	perPack	     DECIMAL(6,2),
 	priceIn	     DECIMAL(6,2),
 	priceOut     DECIMAL(6,2),
+	enterDate    DATETIME,
+	modifyDate   TIMESTAMP(14),
 
 	PRIMARY KEY(matID),
 	INDEX(chapterID)
