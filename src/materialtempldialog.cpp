@@ -35,6 +35,10 @@ MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, const char* name, boo
     : MaterialDialogBase(parent, name, modal, fl)
 {
     /* connect a value Changed signal of the manual price field */
+  const QString currSymbol = KGlobal().locale()->currencySymbol();
+  mInPurchasePrice->setPrefix( currSymbol + " " );
+  mInSalePrice->setPrefix( currSymbol + " " );
+
 }
 
 void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogname, bool newTempl )
@@ -69,6 +73,10 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   mInSalePrice->setValue( t->salesPrice().toDouble() );
 
   mDiPerPack->setValue( t->getAmountPerPack() );
+
+  // user experience
+  mEditMaterial->setFocus();
+  mEditMaterial->selectAll();
 }
 
 
