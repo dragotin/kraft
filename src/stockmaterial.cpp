@@ -44,7 +44,7 @@ StockMaterial::StockMaterial( int dbid, int matChap, QString mat, int unitID,
     m_ePrice(pIn),
     m_vPrice(pOut)
 {
-    m_unit = UnitManager::getUnit(unitID);
+    m_unit = UnitManager::getUnit( unitID );
 }
 
 StockMaterial::~StockMaterial( )

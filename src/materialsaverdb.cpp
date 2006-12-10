@@ -71,7 +71,6 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
         isNew = false;
         buffer = cur.primeUpdate();
         fillMaterialBuffer( buffer, mat, false );
-        buffer->setValue( "modifyDatum", "systimestamp" );
         cur.update();
     }
     else

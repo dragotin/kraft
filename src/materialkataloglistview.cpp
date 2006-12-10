@@ -32,8 +32,9 @@ MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
   : KatalogListView( w )
 {
   addColumn( i18n("Material" ) );
+  int p = addColumn( i18n("Pack" ) );
+  setColumnAlignment( p, Qt::AlignRight );
   addColumn( i18n("Unit" ) );
-  addColumn( i18n("Units per Pack" ) );
   addColumn( i18n("Price (In)" ) );
   addColumn( i18n("Price (Out)" ) );
 }
@@ -91,10 +92,10 @@ void MaterialKatalogListView::slFreshupItem( QListViewItem *item, void* templ,  
 
   if ( item && mat ) {
     Einheit e = mat->getUnit();
-    kdDebug() << "Setting material name " << mat->name() << endl;
+    kdDebug() << "Setting material name " << e.einheitSingular() << endl;
     item->setText( 0, mat->name() );
-    item->setText( 1, e.einheitSingular() );
-    item->setText( 2, QString::number( mat->getAmountPerPack() ) );
+    item->setText( 1, QString::number( mat->getAmountPerPack() ) );
+    item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
     item->setText( 3, mat->purchPrice().toString() );
     item->setText( 4, mat->salesPrice().toString() );
   } else {

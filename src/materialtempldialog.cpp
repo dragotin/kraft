@@ -89,7 +89,9 @@ void MaterialTemplDialog::accept()
 
     const QString str = mCbUnit->currentText();
 
-    mSaveMaterial->setUnit( UnitManager::getUnitIDSingular( str ) );
+    int u = UnitManager::getUnitIDSingular( str );
+    kdDebug() << "Setting unit id "  << u << endl;
+    mSaveMaterial->setUnit( UnitManager::getUnit( u ) );
 
     const QString str2 = mCbChapter->currentText();
     int chapId = m_katalog->chapterID( str2 );
