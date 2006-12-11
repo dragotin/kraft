@@ -32,15 +32,6 @@
 /**
  *
  */
-class QListViewItem;
-class ZeitCalcPart;
-class MaterialCalcPart;
-class FixCalcPart;
-class ZeitCalcPart;
-class FixCalcDialog;
-class MatCalcDialog;
-class ZeitCalcDialog;
-class MatEditor;
 class Katalog;
 
 class MaterialTemplDialog : public MaterialDialogBase
@@ -63,15 +54,21 @@ signals:
 public slots:
 
 protected slots:
-    virtual void accept();
-    virtual void reject();
+  virtual void accept();
+  virtual void reject();
+
+  void slSalePriceChanged( double );
+  void slPurchPriceChanged( double );
+  void slSaleAddChanged( double );
 
 private:
   bool askChapterChange( StockMaterial*, int);
+  void setPriceCalc( double, double, double );
+
   StockMaterial *mSaveMaterial;
   bool m_templateIsNew;
   Katalog *m_katalog;
-
+  const double Eta;
 };
 
 #endif

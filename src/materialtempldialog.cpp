@@ -32,13 +32,74 @@
 #include "geld.h"
 
 MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, const char* name, bool modal, WFlags fl)
-    : MaterialDialogBase(parent, name, modal, fl)
+    : MaterialDialogBase(parent, name, modal, fl),
+      Eta( 0.00000000001 )
 {
     /* connect a value Changed signal of the manual price field */
   const QString currSymbol = KGlobal().locale()->currencySymbol();
   mInPurchasePrice->setPrefix( currSymbol + " " );
   mInSalePrice->setPrefix( currSymbol + " " );
 
+  connect( mInSalePrice, SIGNAL( valueChanged( double ) ),
+           SLOT( slSalePriceChanged( double ) ) );
+  connect( mInPurchasePrice, SIGNAL( valueChanged( double ) ),
+           SLOT( slPurchPriceChanged( double ) ) );
+  connect( mInSaleAdd, SIGNAL( valueChanged( double ) ),
+           SLOT( slSaleAddChanged( double ) ) );
+
+
+}
+
+void MaterialTemplDialog::slSalePriceChanged( double sale )
+{
+  // change the percent val
+  double purch = mInPurchasePrice->value();
+  double m = mInSaleAdd->value();
+
+  if ( m > Eta && purch < Eta ) {
+    // recalc the purchase price
+    purch = sale/( 1+ m / 100.0 );
+  } else if ( purch > Eta ) {
+    // recalc the add-percentage
+    m = 100 * ( ( sale-purch ) / purch );
+  }
+  setPriceCalc( purch, m, sale );
+}
+
+void MaterialTemplDialog::slPurchPriceChanged( double purch )
+{
+  // change the percent val
+  double sale = mInSalePrice->value();
+  double m = mInSaleAdd->value();
+
+  if ( m > Eta && sale < Eta ) {
+    sale = ( 1+m/100 )*purch;
+  } else if ( sale > Eta ) {
+    m = 100*( ( sale-purch )/purch );
+  }
+  setPriceCalc( purch, m, sale );
+}
+
+void MaterialTemplDialog::slSaleAddChanged( double m )
+{
+  // change the Sales Price
+  double sale  = mInSalePrice->value();
+  double purch = mInPurchasePrice->value();
+
+  if (purch < Eta && sale > Eta ) {
+    // calc the purchase price
+    purch = sale/( 1+ m/100 );
+  } else {
+    sale = ( 1+ m/100.0 ) * purch;
+  }
+  setPriceCalc( purch, m, sale );
+}
+
+void MaterialTemplDialog::setPriceCalc( double purch, double addPercent, double sale )
+{
+  mInPurchasePrice->setValue( purch );
+  mInSalePrice->setValue( sale );
+  mInSaleAdd->setValue( addPercent );
 }
 
 void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogname, bool newTempl )
@@ -69,14 +130,22 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   // text
   mEditMaterial->setText( t->name() );
 
-  mInPurchasePrice->setValue( t->purchPrice().toDouble() );
-  mInSalePrice->setValue( t->salesPrice().toDouble() );
+  double priceIn = t->purchPrice().toDouble();
+  double priceOut = t->salesPrice().toDouble();
+
+  mInPurchasePrice->setValue( priceIn );
+  mInSalePrice->setValue( priceOut );
 
   mDiPerPack->setValue( t->getAmountPerPack() );
 
   // user experience
   mEditMaterial->setFocus();
   mEditMaterial->selectAll();
+
+  // percent add on sale price
+  double diff = priceOut - priceIn;
+  double percent = diff / priceIn * 100.0;
+  mInSaleAdd->setValue( percent );
 }
 
 
