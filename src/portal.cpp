@@ -433,29 +433,37 @@ void Portal::slotOpenKatalog(const QString& kat)
 {
     kdDebug() << "opening Katalog " << kat << endl;
 
-    QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
     // FIXME: Besser Unterscheidung der Kataloge
 
-    if( kat == QString("Material") ) {
-      /* Materialkatalog */
-      MaterialKatalogView *katView = new MaterialKatalogView();
-      katView->init( kat );
-      katView->show();
-    } else if( kat.startsWith("Bruns") ) {
-      // BrunsKatalog *brunskat = new BrunsKatalog();
-      // brunskat->load();
-      BrunsKatalogView *katView = new BrunsKatalogView();
-      katView->init(kat);
-      katView->show();
+    if ( mKatalogViews.contains( kat ) ) {
+      // bring up the katalog view window.
+      kdDebug() << "Katalog " << kat << " already open in a view" << endl;
+      ( mKatalogViews[kat] )->show();
     } else {
-      /* normaler Vorlagenkatalog */
-      TemplKatalogView *katView = new TemplKatalogView();
-      connect( katView, SIGNAL( newDocPosition( const DocPosition& ) ),
-               this, SLOT( slotOfferNewPosition( const DocPosition& ) ) );
-      katView->init(kat);
-      katView->show();
+      QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+      KatalogView *katView = 0;
+      if( kat == QString("Material") ) {
+        /* Materialkatalog */
+        katView = new MaterialKatalogView();
+      } else if( kat.startsWith("Bruns") ) {
+        // BrunsKatalog *brunskat = new BrunsKatalog();
+        // brunskat->load();
+        katView = new BrunsKatalogView();
+      } else {
+        /* normaler Vorlagenkatalog */
+        katView = new TemplKatalogView();
+        connect( katView, SIGNAL( newDocPosition( const DocPosition& ) ),
+                 this, SLOT( slotOfferNewPosition( const DocPosition& ) ) );
+      }
+
+      if ( katView ) {
+        katView->init(kat);
+        katView->show();
+        mKatalogViews[kat] = katView;
+      }
+      QApplication::restoreOverrideCursor();
     }
-    QApplication::restoreOverrideCursor();
 }
 
 void Portal::slotOfferNewPosition( const DocPosition& pos )

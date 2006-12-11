@@ -38,7 +38,7 @@ public:
   ~MaterialKatalogListView();
   void addCatalogDisplay( const QString& katName );
   DocPosition itemToDocPosition( QListViewItem *it = 0 );
-  KListViewItem* addMaterialToView( KListViewItem *, StockMaterial * );
+  QListViewItem* addMaterialToView( KListViewItem *, StockMaterial * );
 public slots:
   void slFreshupItem( QListViewItem *, void*,  bool remChildren = false  );
 

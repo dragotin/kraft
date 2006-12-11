@@ -99,7 +99,7 @@ void MaterialKatalogView::slNeueVorlage()
 
 }
 
-void MaterialKatalogView::openDialog( KListViewItem *listitem, StockMaterial *tmpl, bool isNew )
+void MaterialKatalogView::openDialog( QListViewItem *listitem, StockMaterial *tmpl, bool isNew )
 {
   mDialog = new MaterialTemplDialog( this );
   mNewItem = listitem;

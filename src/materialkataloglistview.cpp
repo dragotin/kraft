@@ -35,8 +35,8 @@ MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
   int p = addColumn( i18n("Pack" ) );
   setColumnAlignment( p, Qt::AlignRight );
   addColumn( i18n("Unit" ) );
-  addColumn( i18n("Price (In)" ) );
-  addColumn( i18n("Price (Out)" ) );
+  addColumn( i18n("Purchase" ) );
+  addColumn( i18n("Sale" ) );
 }
 
 
@@ -73,13 +73,14 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
   }
 }
 
-KListViewItem* MaterialKatalogListView::addMaterialToView( KListViewItem *parent, StockMaterial *mat )
+QListViewItem* MaterialKatalogListView::addMaterialToView( KListViewItem *parent, StockMaterial *mat )
 {
   if ( !mat ) return 0;
   if ( !parent ) parent = m_root;
 
-  KListViewItem *recItem = new KListViewItem( parent, mat->name() );
-
+  // QListViewItem *recItem = new QListViewItem( parent, mat->name() );
+  QListViewItem *recItem = new QCheckListItem( parent, mat->name(), QCheckListItem::CheckBox );
+  recItem->setMultiLinesEnabled( true );
   slFreshupItem( recItem,  mat );
   m_dataDict.insert( recItem, mat );
 

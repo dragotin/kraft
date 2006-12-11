@@ -24,6 +24,7 @@
 #endif
 
 // include files for Qt
+#include <qmap.h>
 
 // include files for KDE
 #include <kapp.h>
@@ -33,6 +34,7 @@
 #include <kurl.h>
 
 #include "kraftdoc.h"
+#include "katalogview.h"
 
 class KraftView;
 class PortalView;
@@ -152,6 +154,8 @@ class Portal : public KMainWindow
     KToggleAction* viewFlosTemplates;
     KToggleAction* viewStatusBar;
     KCmdLineArgs *mCmdLineArgs;
+
+  QMap<QString, KatalogView*> mKatalogViews;
 };
 
 #endif

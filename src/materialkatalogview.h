@@ -44,7 +44,7 @@ protected slots:
   void slNeueVorlage();
   void slEditVorlage();
 
-  void openDialog( KListViewItem *, StockMaterial *, bool );
+  void openDialog( QListViewItem *, StockMaterial *, bool );
   void slotEditRejected();
   void slotEditOk( StockMaterial * );
 protected:
@@ -54,7 +54,7 @@ protected:
   QLabel               *m_detailLabel;
   KListView            *m_details;
   MaterialTemplDialog *mDialog;
-  KListViewItem *mNewItem;
+  QListViewItem *mNewItem;
   const QString MaterialName;
 };
 
