@@ -1,0 +1,408 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>MaterialDialogBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>MaterialDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>507</width>
+            <height>334</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Edit Material</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout11</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout13</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>65</width>
+                                    <height>16</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Store in C&amp;hapter</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignVCenter|AlignRight</set>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>mCbChapter</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>mCbChapter</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>groupBox1</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Material</string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget" row="0" column="0">
+                            <property name="name">
+                                <cstring>layout17</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QTextEdit">
+                                    <property name="name">
+                                        <cstring>mEditMaterial</cstring>
+                                    </property>
+                                    <property name="textFormat">
+                                        <enum>PlainText</enum>
+                                    </property>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout15</cstring>
+                                    </property>
+                                    <hbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <spacer>
+                                            <property name="name">
+                                                <cstring>spacer3</cstring>
+                                            </property>
+                                            <property name="orientation">
+                                                <enum>Horizontal</enum>
+                                            </property>
+                                            <property name="sizeType">
+                                                <enum>Expanding</enum>
+                                            </property>
+                                            <property name="sizeHint">
+                                                <size>
+                                                    <width>50</width>
+                                                    <height>16</height>
+                                                </size>
+                                            </property>
+                                        </spacer>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Pac&amp;kaged:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>mDiPerPack</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="KDoubleNumInput">
+                                            <property name="name">
+                                                <cstring>mDiPerPack</cstring>
+                                            </property>
+                                            <property name="value">
+                                                <number>0.1</number>
+                                            </property>
+                                            <property name="maxValue">
+                                                <number>9999.99</number>
+                                            </property>
+                                            <property name="precision">
+                                                <number>3</number>
+                                            </property>
+                                        </widget>
+                                        <widget class="QComboBox">
+                                            <property name="name">
+                                                <cstring>mCbUnit</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel3</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>per P&amp;ackage</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>mCbUnit</cstring>
+                                            </property>
+                                        </widget>
+                                    </hbox>
+                                </widget>
+                            </vbox>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>groupBox2</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Prices</string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget" row="0" column="0">
+                            <property name="name">
+                                <cstring>layout10</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer5</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>71</width>
+                                            <height>11</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout9</cstring>
+                                    </property>
+                                    <grid>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLabel" row="1" column="1">
+                                            <property name="name">
+                                                <cstring>textLabel4_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>= Price of &amp;Sale:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>mInSalePrice</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="KDoubleNumInput" row="1" column="2">
+                                            <property name="name">
+                                                <cstring>mInSalePrice</cstring>
+                                            </property>
+                                            <property name="maxValue">
+                                                <number>1e+07</number>
+                                            </property>
+                                        </widget>
+                                        <widget class="KDoubleNumInput" row="0" column="2">
+                                            <property name="name">
+                                                <cstring>mInPurchasePrice</cstring>
+                                            </property>
+                                            <property name="maxValue">
+                                                <number>1e+07</number>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLayoutWidget" row="1" column="0">
+                                            <property name="name">
+                                                <cstring>layout8</cstring>
+                                            </property>
+                                            <hbox>
+                                                <property name="name">
+                                                    <cstring>unnamed</cstring>
+                                                </property>
+                                                <widget class="QLabel">
+                                                    <property name="name">
+                                                        <cstring>textLabel1_2</cstring>
+                                                    </property>
+                                                    <property name="text">
+                                                        <string>pl&amp;us</string>
+                                                    </property>
+                                                    <property name="buddy" stdset="0">
+                                                        <cstring>mInSaleAdd</cstring>
+                                                    </property>
+                                                </widget>
+                                                <widget class="KDoubleNumInput">
+                                                    <property name="name">
+                                                        <cstring>mInSaleAdd</cstring>
+                                                    </property>
+                                                    <property name="label">
+                                                        <string></string>
+                                                    </property>
+                                                    <property name="suffix">
+                                                        <string>%</string>
+                                                    </property>
+                                                    <property name="precision">
+                                                        <number>1</number>
+                                                    </property>
+                                                </widget>
+                                            </hbox>
+                                        </widget>
+                                        <widget class="QLabel" row="0" column="1">
+                                            <property name="name">
+                                                <cstring>textLabel4</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>&amp;Purchase Price:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>mInPurchasePrice</cstring>
+                                            </property>
+                                        </widget>
+                                    </grid>
+                                </widget>
+                            </hbox>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout1</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>buttonHelp</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Help</string>
+                            </property>
+                            <property name="accel">
+                                <string>F1</string>
+                            </property>
+                            <property name="autoDefault">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>Horizontal Spacing2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>buttonOk</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;OK</string>
+                            </property>
+                            <property name="accel">
+                                <string></string>
+                            </property>
+                            <property name="autoDefault">
+                                <bool>true</bool>
+                            </property>
+                            <property name="default">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>buttonCancel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Cancel</string>
+                            </property>
+                            <property name="accel">
+                                <string></string>
+                            </property>
+                            <property name="autoDefault">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>buttonOk</sender>
+        <signal>clicked()</signal>
+        <receiver>MaterialDialogBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>buttonCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>MaterialDialogBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+</includehints>
+</UI>
