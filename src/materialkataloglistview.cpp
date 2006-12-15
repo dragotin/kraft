@@ -78,8 +78,8 @@ QListViewItem* MaterialKatalogListView::addMaterialToView( KListViewItem *parent
   if ( !mat ) return 0;
   if ( !parent ) parent = m_root;
 
-  // QListViewItem *recItem = new QListViewItem( parent, mat->name() );
-  QListViewItem *recItem = new QCheckListItem( parent, mat->name(), QCheckListItem::CheckBox );
+  QListViewItem *recItem = new QListViewItem( parent, mat->name() );
+  // QListViewItem *recItem = new QCheckListItem( parent, mat->name(), QCheckListItem::CheckBox );
   recItem->setMultiLinesEnabled( true );
   slFreshupItem( recItem,  mat );
   m_dataDict.insert( recItem, mat );
@@ -104,9 +104,22 @@ void MaterialKatalogListView::slFreshupItem( QListViewItem *item, void* templ,  
   }
 }
 
-DocPosition MaterialKatalogListView::itemToDocPosition( QListViewItem*  )
+DocPosition MaterialKatalogListView::itemToDocPosition( QListViewItem *item )
 {
   DocPosition pos;
+  if ( ! item ) {
+    item = currentItem();
+  }
+
+  if ( ! item ) return pos;
+
   // FIXME
+  StockMaterial *mat = static_cast<StockMaterial*>( m_dataDict[item] );
+  if ( mat ) {
+    pos.setText( mat->name() );
+    pos.setUnit( mat->getUnit() );
+    pos.setUnitPrice( mat->salesPrice() );
+  }
+
   return pos;
 }
