@@ -206,12 +206,18 @@ void Portal::slotStartupChecks()
       text = i18n( "The database with the name %1 does not exist on the database server. "
                    "Please make sure the database exists and is accessible by the user "
                    "running Kraft." ).arg( dbName );
+    } else if ( err.text().contains( "Driver not loaded" ) ) {
+      text = i18n( "The Qt database driver could not be loaded. That probably means, that "
+                   "they are not installed. Please make sure the Qt database packages are "
+                   "installed and try again." );
     } else {
       text = i18n( "There is a database problem: %1" ).arg( err.text() );
     }
 
 
-    KMessageBox::sorry( this, text, i18n("Serious Database Problem") );
+    // KMessageBox::sorry( this, text, i18n("Serious Database Problem") );
+    m_portalView->systemInitError( m_portalView->ptag( text, "problem" ) );
+
     slotStatusMsg( i18n( "Database Problem." ) );
   } else {
     KraftDB::self()->checkSchemaVersion( this );

@@ -46,8 +46,9 @@ KraftDB::KraftDB()
   QStringList list = QSqlDatabase::drivers().grep( DB_DRIVER );
   if( list.size() == 0 ) {
     kdError() << "Database Driver could not be loaded." << endl;
-  }  
-    
+    mSuccess = false ;
+  }
+
   m_db = QSqlDatabase::addDatabase( DB_DRIVER );
   if ( ! m_db || m_db->isOpenError() )
   {

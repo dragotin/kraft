@@ -45,7 +45,8 @@ public:
     PortalView (QWidget *parent=0, const char *name=0, int face=Plain);
     ~PortalView();
     DocDigestView* docDigestView() { return mDocDigestView; }
-
+    void systemInitError( const QString& );
+  QString ptag( const QString&,  const QString& c = QString() ) const;
 public slots:
     void slotBuildView();
     void fillCatalogDetails();
@@ -68,6 +69,7 @@ private:
     void archiveDetails( QWidget * );
     void systemDetails( QWidget *);
     void documentDigests( QWidget * );
+  QString systemViewHeader() const;
 
     QVBox *m_docBox;
     QVBox *m_katalogBox;
@@ -76,6 +78,10 @@ private:
     DocDigestView *mDocDigestView;
     KTextBrowser  *mCatalogBrowser;
     KTextBrowser  *mSystemBrowser;
+
+  int mDocDigestIndex;
+  int mCatalogIndex;
+  int mSystemIndex;
 };
 
 #endif

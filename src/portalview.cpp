@@ -41,26 +41,33 @@ PortalView::PortalView(QWidget *parent, const char *name, int face)
     : KJanusWidget( parent, name, face ),
       m_docBox(0),
       m_katalogBox(0),
-      mArchiveBox( 0 )
+      mArchiveBox( 0 ),
+      mCatalogBrowser( 0 ),
+      mSystemBrowser( 0 )
 {
     m_docBox     = addVBoxPage( i18n("Documents"),
                                 i18n("Create and Edit Documents"),
                                 DesktopIcon("folder_outbox"));
+    mDocDigestIndex = pageIndex( m_docBox );
     documentDigests( m_docBox );
+
 #if 0
     mArchiveBox  = addVBoxPage( i18n( "Archive" ),
                                 i18n( "Archived Documents" ),
                                 DesktopIcon( "vcs_commit" ) );
+
     archiveDetails( mArchiveBox );
 #endif
     m_katalogBox = addVBoxPage( i18n("Catalogs"),
                                 i18n("Available Catalogs"),
                                 DesktopIcon("folder_green"));
+    mCatalogIndex = pageIndex( m_katalogBox );
     katalogDetails(m_katalogBox);
 
     m_sysBox     = addVBoxPage( i18n("System"),
                                 i18n("Information about the Kraft System"),
                                 DesktopIcon("server"));
+    mSystemIndex = pageIndex( m_sysBox );
     systemDetails( m_sysBox );
 }
 
@@ -75,6 +82,8 @@ void PortalView::katalogDetails(QWidget *parent)
 
 void PortalView::fillCatalogDetails()
 {
+  if ( ! mCatalogBrowser ) return;
+
     QStringList katalogNamen = KatalogMan::self()->allKatalogNames();
     QString html;
 
@@ -161,25 +170,35 @@ void PortalView::slUrlClicked( const QString& urlStr )
     }
 }
 
+QString PortalView::ptag( const QString& content,  const QString& c ) const
+{
+  QString html( "<p" );
+  if ( ! c.isEmpty() ) {
+    html += QString( " class=\"%1\"" ).arg( c );
+  }
+  html += ">";
+  html += content;
+  html += "</p>";
+
+  return html;
+}
+
 void PortalView::systemDetails(QWidget *parent)
 {
-  mSystemBrowser = new KTextBrowser(parent);
+  mSystemBrowser = new KTextBrowser( parent );
   // browser->setNotifyClick(false);
 }
 
-void PortalView::fillSystemDetails()
+QString PortalView::systemViewHeader() const
 {
-  QString html;
-  const QString ptag = "<p class=\"infoline\">";
+
+  QString html( "" );
 
   KStandardDirs stdDirs;
   QString logoFile = stdDirs.findResource( "data",  "kraft/pics/muckilogo_oS.png" );
 
-
-  html = ""; // "<h2>" + i18n("Kraft System Information") + "</h2>";
-
   html += "<table width=\"100%\"><tr><td>";
-  html += ptag + i18n("Kraft Version: ") + KRAFT_VERSION +  "</p></td>";
+  html += ptag( i18n("Kraft Version: ") + KRAFT_VERSION )+ "</td>";
   html += "<td align=\"right\" rowspan=\"2\">";
   if ( ! logoFile.isEmpty() ) {
     html += QString( "<img src=\"%1\"/>" ).arg( logoFile );
@@ -193,12 +212,22 @@ void PortalView::fillSystemDetails()
           QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( KGlobal().locale()->country() );
   html += "</table>";
 
-  html += "<h2>" + i18n("Database Information") + "</h2>";
-  html += ptag + i18n( "Kraft database name: %1" ).arg( KraftDB::self()->databaseName() ) + "</p>";
-  html += ptag + i18n( "Kraft schema version: %1").arg( KRAFT_REQUIRED_SCHEMA_VERSION ) + "</p>";
-  html += ptag + i18n("Qt database driver: ") + KraftDB::self()->qtDriver() +  "</p>";
+  return html;
+}
 
-  html += ptag + i18n("Database connection ");
+void PortalView::fillSystemDetails()
+{
+  QString html;
+  if ( ! mSystemBrowser ) return;
+
+  html = systemViewHeader(); // "<h2>" + i18n("Kraft System Information") + "</h2>";
+
+  html += "<h2>" + i18n("Database Information") + "</h2>";
+  html += ptag( i18n( "Kraft database name: %1" ).arg( KraftDB::self()->databaseName() ) );
+  html += ptag( i18n( "Kraft schema version: %1").arg( KRAFT_REQUIRED_SCHEMA_VERSION ) );
+  html += ptag( i18n("Qt database driver: ") + KraftDB::self()->qtDriver() );
+
+  html += ptag( i18n("Database connection ") );
   bool dbOk = false;
   if( KraftDB::self()->getDB()->isOpen() ) {
     dbOk = true;
@@ -212,10 +241,23 @@ void PortalView::fillSystemDetails()
     if( q.isActive() ) {
       q.next();
       QString version = q.value(1).toString();
-      html += ptag + i18n("Database Version: %1").arg( version );
+      html += ptag( i18n("Database Version: %1").arg( version ) );
     }
   }
   mSystemBrowser->setText(html);
+}
+
+void PortalView::systemInitError( const QString& htmlMsg )
+{
+  QString html = systemViewHeader(); // "<h2>" + i18n("Kraft System Information") + "</h2>";
+
+  html += "<h2>Kraft is really sorry.</h2>";
+  html += ptag( i18n( "There is a initialisation error on your system. "
+                       "Kraft will not work that way." ) );
+  html += ptag( htmlMsg );
+
+  mSystemBrowser->setText(html);
+  showPage( mSystemIndex );
 }
 
 void PortalView::documentDigests( QWidget *parent )
