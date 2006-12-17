@@ -84,7 +84,6 @@ class Portal : public KMainWindow
 
   protected slots:
     void slotStartupChecks();
-    void slotOfferNewPosition( const DocPosition& pos );
 
   public slots:
     /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.

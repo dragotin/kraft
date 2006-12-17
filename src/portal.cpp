@@ -449,7 +449,7 @@ void Portal::slotOpenKatalog(const QString& kat)
       QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
       KatalogView *katView = 0;
-      if( kat == QString("Material") ) {
+      if( kat == MaterialKatalogView::MaterialCatalogName ) {
         /* Materialkatalog */
         katView = new MaterialKatalogView();
       } else if( kat.startsWith("Bruns") ) {
@@ -470,14 +470,6 @@ void Portal::slotOpenKatalog(const QString& kat)
       }
       QApplication::restoreOverrideCursor();
     }
-}
-
-void Portal::slotOfferNewPosition( const DocPosition& pos )
-{
-  slotStatusMsg( i18n( "Appending catalog entry to document..." ) );
-  DocumentMan *docman = DocumentMan::self();
-  docman->offerNewPosition( pos );
-  slotStatusMsg( i18n("Ready.") );
 }
 
 void Portal::slotOpenKatalog()
