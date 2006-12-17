@@ -28,12 +28,15 @@
 #include "matkatalog.h"
 #include "materialtempldialog.h"
 
+const QString MaterialKatalogView::MaterialCatalogName( "Material" );
+
+
 MaterialKatalogView::MaterialKatalogView()
  : KatalogView(),
- m_materialListView(0),
- m_details(0),
-   MaterialName( "Material" )
+   m_materialListView(0),
+   m_details(0)
 {
+
 }
 
 
@@ -91,7 +94,7 @@ void MaterialKatalogView::slNeueVorlage()
 
   if( parentItem ) {
     // try to find out which catalog is open/actual
-      newMat->setChapter( getKatalog( MaterialName )->chapterID( parentItem->text( 0 ) ) );
+      newMat->setChapter( getKatalog( MaterialCatalogName )->chapterID( parentItem->text( 0 ) ) );
   }
 
   mNewItem = matListView->addMaterialToView( parentItem, newMat );
@@ -112,7 +115,7 @@ void MaterialKatalogView::openDialog( QListViewItem *listitem, StockMaterial *tm
   connect( mDialog, SIGNAL( editRejected( ) ),
            this, SLOT( slotEditRejected() ) );
 
-  mDialog->setMaterial( tmpl, MaterialName, isNew );
+  mDialog->setMaterial( tmpl, MaterialCatalogName, isNew );
   mDialog->show();
 }
 
@@ -133,7 +136,7 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
 
   if( mDialog ) {
     if ( mDialog->templateIsNew() ) {
-      MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialName ) );
+      MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );
       if ( k )
         k->addNewMaterial( mat );
       }
@@ -146,6 +149,5 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
   }
   mNewItem = 0;
 }
-
 
 #include "materialkatalogview.moc"
