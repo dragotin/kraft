@@ -50,12 +50,12 @@
 #include "mateditor.h"
 #include "katalogman.h"
 #include "katalog.h"
+#include "materialselectdialog.h"
 
 FlosTemplDialog::FlosTemplDialog( QWidget *parent, const char* name, bool modal, WFlags fl)
     : d_calcTempl(parent, name, modal, fl),
       m_template(0),
-      m_katalog(0),
-      m_matEdit(0)
+      m_katalog(0)
 {
     /* connect a value Changed signal of the manual price field */
     connect( m_manualPriceVal, SIGNAL( valueChanged(double)),
@@ -545,20 +545,8 @@ void FlosTemplDialog::slAddMatPart()
 {
     if( ! m_template ) return;
 
-    /* Zuerst Materialeditor zur Auswahl des Materials �fnen */
-    if( ! m_matEdit)
-    {
-        m_matEdit = new MatEditor( i18n("Material Catalog"), true, this,
-                                   "KalcMaterialEdit", false ); // , Qt::WDestructiveClose);
-
-    connect( m_matEdit, SIGNAL(materialSelected(int, double)),
-             this,      SLOT(slNewMaterial(int, double)));
-    connect( this,      SIGNAL(takeMaterialAnswer(const QString&)),
-             m_matEdit, SLOT(slGotAnswer( const QString& )));
-    }
-
-    m_matEdit->show();
-
+    MaterialSelectDialog dia( this );
+    dia.exec();
 }
 
 /*
