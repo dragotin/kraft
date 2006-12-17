@@ -40,6 +40,9 @@ public:
 
   void createCentralWidget(QBoxLayout*, QWidget *w);
   KatalogListView* getListView() { return m_materialListView; }
+
+  static const QString MaterialCatalogName;
+
 protected slots:
   void slNeueVorlage();
   void slEditVorlage();
@@ -55,7 +58,6 @@ protected:
   KListView            *m_details;
   MaterialTemplDialog *mDialog;
   QListViewItem *mNewItem;
-  const QString MaterialName;
 };
 
 #endif
