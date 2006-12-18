@@ -444,7 +444,7 @@ void Portal::slotOpenKatalog(const QString& kat)
     if ( mKatalogViews.contains( kat ) ) {
       // bring up the katalog view window.
       kdDebug() << "Katalog " << kat << " already open in a view" << endl;
-      ( mKatalogViews[kat] )->show();
+      ( mKatalogViews[kat] )->raise();
     } else {
       QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
