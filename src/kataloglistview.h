@@ -36,11 +36,12 @@ class DocPosition;
 class KatalogListView : public KListView  {
     Q_OBJECT
 public:
-    KatalogListView(QWidget *parent=0);
+    KatalogListView( QWidget *parent = 0, bool enableCheckboxes = false );
     ~KatalogListView();
 
     virtual void addCatalogDisplay( const QString& );
     virtual void* currentItemData();
+    virtual void* itemData( QListViewItem* );
 
     bool isChapter(KListViewItem*);
     bool isRoot(KListViewItem*);

@@ -38,7 +38,7 @@ StockMaterialMan::~StockMaterialMan( )
 
 void StockMaterialMan::load( long no )
 {
-    QSqlCursor cur("stockMat");
+    QSqlCursor cur("stockMaterial");
 
     // Create an index that sorts from high values for einheitID down.
     // that makes at least on resize of the vector.

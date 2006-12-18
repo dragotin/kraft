@@ -28,8 +28,9 @@
 #include "kataloglistview.h"
 
 
-MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
-  : KatalogListView( w )
+MaterialKatalogListView::MaterialKatalogListView( QWidget *w, bool enableCheckboxes )
+  : KatalogListView( w, enableCheckboxes ),
+    mCheckboxes( enableCheckboxes )
 {
   addColumn( i18n("Material" ) );
   int p = addColumn( i18n("Pack" ) );
@@ -78,8 +79,12 @@ QListViewItem* MaterialKatalogListView::addMaterialToView( KListViewItem *parent
   if ( !mat ) return 0;
   if ( !parent ) parent = m_root;
 
-  QListViewItem *recItem = new QListViewItem( parent, mat->name() );
-  // QListViewItem *recItem = new QCheckListItem( parent, mat->name(), QCheckListItem::CheckBox );
+  QListViewItem *recItem;
+  if ( ! mCheckboxes ) {
+    recItem = new QListViewItem( parent, mat->name() );
+  } else {
+    recItem = new QCheckListItem( parent, mat->name(), QCheckListItem::CheckBox );
+  }
   recItem->setMultiLinesEnabled( true );
   slFreshupItem( recItem,  mat );
   m_dataDict.insert( recItem, mat );

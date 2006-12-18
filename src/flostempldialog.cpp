@@ -546,6 +546,8 @@ void FlosTemplDialog::slAddMatPart()
     if( ! m_template ) return;
 
     MaterialSelectDialog dia( this );
+    connect( &dia, SIGNAL( materialSelected( int, double ) ),
+             this, SLOT( slNewMaterial( int, double ) ) );
     dia.exec();
 }
 

@@ -50,7 +50,9 @@ public slots:
 
 protected slots:
   void slotClose();
-
+  void slotOk();
+signals:
+  void materialSelected( int, double );
 private:
   MaterialKatalogListView *mKatalogListView;
 };

@@ -33,7 +33,7 @@ A listview that presents the contents of the Bruns Catalog
 class MaterialKatalogListView : public KatalogListView
 {
 public:
-  MaterialKatalogListView(QWidget *);
+  MaterialKatalogListView(QWidget *, bool enableCheckboxes = false );
 
   ~MaterialKatalogListView();
   void addCatalogDisplay( const QString& katName );
@@ -43,7 +43,7 @@ public slots:
   void slFreshupItem( QListViewItem *, void*,  bool remChildren = false  );
 
 private:
-
+  bool mCheckboxes;
 };
 
 #endif

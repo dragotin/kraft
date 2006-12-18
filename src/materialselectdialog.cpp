@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <klocale.h>
+#include <kdebug.h>
 
 #include <qlabel.h>
 
@@ -35,7 +36,7 @@ MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
   ( void ) new QLabel( i18n( "Select Material for Calculation" ),
                               page, "caption" );
 
-  mKatalogListView = new MaterialKatalogListView( page );
+  mKatalogListView = new MaterialKatalogListView( page, true );
 
 
   Katalog *kat = KatalogMan::self()->getKatalog( MaterialKatalogView::MaterialCatalogName );
@@ -56,6 +57,23 @@ MaterialSelectDialog::~MaterialSelectDialog()
 void MaterialSelectDialog::slotClose()
 {
   KDialogBase::slotClose();
+}
+
+void MaterialSelectDialog::slotOk()
+{
+  kdDebug() << "++ Material selected!" << endl;
+
+  QListViewItemIterator it( mKatalogListView, QListViewItemIterator::Checked );
+  while ( it.current() ) {
+    kdDebug() << "T: " << ( *it.current() ).text( 0 ) << endl;
+    StockMaterial *mat = static_cast<StockMaterial*>( mKatalogListView->itemData( *it ) );
+    if ( mat ) {
+      emit materialSelected( mat->getID(), 1 );
+    }
+    ++it;
+  }
+
+  KDialogBase::slotOk();
 }
 
 #include "materialselectdialog.moc"

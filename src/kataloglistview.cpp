@@ -35,7 +35,7 @@
 #include "templkatalog.h"
 #include "zeitcalcpart.h"
 
-KatalogListView::KatalogListView(QWidget *parent) : KListView(parent),
+KatalogListView::KatalogListView( QWidget *parent, bool ) : KListView(parent),
     m_root(0),
     mMenu(0)
 {
@@ -116,18 +116,18 @@ QPixmap KatalogListView::getCatalogIcon()
     return SmallIcon("contents");
 }
 
-void* KatalogListView::currentItemData()
+void* KatalogListView::itemData( QListViewItem *item )
 {
-    void* currData = 0;
-
-    QListViewItem *currItem = currentItem();
-
-    if( currItem )
-        currData = m_dataDict[currItem];
-
-    return currData;
+  if ( item ) {
+    return m_dataDict[item];
+  }
+  return 0;
 }
 
+void* KatalogListView::currentItemData()
+{
+  return itemData( currentItem() );
+}
 
 bool KatalogListView::isChapter( KListViewItem *item )
 {
