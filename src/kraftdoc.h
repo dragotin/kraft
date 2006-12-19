@@ -133,7 +133,6 @@ class KraftDoc : public QObject
 
   Geld nettoSum();
   Geld bruttoSum();
-  double vat();
   Geld vatSum();
 
   public slots:

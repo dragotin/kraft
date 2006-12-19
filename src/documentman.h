@@ -40,6 +40,10 @@ class DocumentMan
     DocGuardedPtr openDocument( const QString& );
     void offerNewPosition( const DocPosition& );
     QStringList openDocumentsList();
+
+  double vat();
+  double halfVat();
+
   private:
     DocDigest digestFromQuery( QSqlQuery& );
 

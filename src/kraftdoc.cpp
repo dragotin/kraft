@@ -37,6 +37,7 @@
 #include "docposition.h"
 #include "documentsaverdb.h"
 #include "defaultprovider.h"
+#include "documentman.h"
 
 // QList<KraftView> *KraftDoc::pViewList = 0;
 
@@ -379,12 +380,8 @@ Geld KraftDoc::bruttoSum()
 
 Geld KraftDoc::vatSum()
 {
-  return Geld( nettoSum() * vat()/100.0 );
+  return Geld( nettoSum() * DocumentMan::self()->vat()/100.0 );
 }
 
-double KraftDoc::vat()
-{
-  return 16.0;
-}
 
 #include "kraftdoc.moc"

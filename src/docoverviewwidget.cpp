@@ -19,6 +19,7 @@
 // include files
 #include "docoverviewwidget.h"
 #include "kraftdoc.h"
+#include "documentman.h"
 
 #include <qlabel.h>
 #include <qbuttongroup.h>
@@ -81,7 +82,7 @@ DocOverviewWidget::DocOverviewWidget( QWidget *parent )
   ( void ) new QLabel( i18n( "Netto:" ), grid );
   mNettoSum = new QLabel( i18n( "0 EUR" ), grid );
   mNettoSum->setAlignment( Qt::AlignRight );
-  mVatLabel = new QLabel( i18n( "+ VAT (%1%%):" ).arg( 16 ), grid );
+  mVatLabel = new QLabel( i18n( "+ VAT (%1%%):" ).arg( DocumentMan::self()->vat() ), grid );
   mVat = new QLabel( i18n( "0 EUR" ), grid );
   mVat->setAlignment( Qt::AlignRight );
 

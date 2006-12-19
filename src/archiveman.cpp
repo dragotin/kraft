@@ -31,6 +31,7 @@
 #include "unitmanager.h"
 #include "dbids.h"
 #include "kraftsettings.h"
+#include "documentman.h"
 
 static KStaticDeleter<ArchiveMan> selfDeleter;
 
@@ -208,7 +209,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 	    record->setValue( "amount", dp->amount() );
 	    record->setValue( "unit", dp->unit().einheit( dp->amount() ) );
 	    record->setValue( "price", dp->unitPrice().toDouble() );
-	    record->setValue( "vat", 16.0 ); // FIXME !!
+	    record->setValue( "vat", DocumentMan::self()->vat() ); // FIXME !!
 
 	    cur.insert();
             kdDebug() << "SQL-Error: " << cur.lastError().text() << endl;

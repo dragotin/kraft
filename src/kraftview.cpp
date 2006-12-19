@@ -568,9 +568,7 @@ void KraftView::refreshPostCard()
 
 void KraftView::redrawSumBox()
 {
-      // recalc the sum
   Geld netto = mPositionWidgetList.nettoPrice();
-  // mDocOverview->slotSetSums( netto, 16.0 );
 }
 
 void KraftView::setupFooter()

@@ -188,6 +188,20 @@ QStringList DocumentMan::openDocumentsList()
   return list;
 }
 
+double DocumentMan::vat()
+{
+  double v = 19.0;
+  if ( QDate::currentDate() < QDate( 2007, 1, 1 ) ) {
+    v = 16.0;
+  }
+  return v;
+}
+
+double DocumentMan::halfVat()
+{
+  return vat()/2;
+}
+
 DocumentMan::~DocumentMan()
 {
 

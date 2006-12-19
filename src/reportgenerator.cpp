@@ -41,7 +41,7 @@
 #include "docposition.h"
 #include "einheit.h"
 #include "archdoc.h"
-
+#include "documentman.h"
 
 static KStaticDeleter<ReportGenerator> selfDeleter;
 
@@ -399,7 +399,7 @@ QString ReportGenerator::fillupTemplateFromDoc( DocGuardedPtr doc )
               TAG( "NETTOSUM" ),
               doc->nettoSum().toString() );
 
-  h.setNum( doc->vat(), 'f', 1 );
+  h.setNum( DocumentMan::self()->vat(), 'f', 1 );
   replaceTag( tmpl,
               TAG( "VAT" ),
               h );

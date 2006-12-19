@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 // include files for Qt
-
+#include <qsqlcursor.h>
 
 // include files for KDE
 #include <kglobal.h>
 
 #include <klocale.h>
 #include <kdebug.h>
+
 // application specific includes
 #include "archdoc.h"
+#include "documentman.h"
 
-#include <qsqlcursor.h>
 
 ArchDoc::ArchDoc()
 {
@@ -70,7 +71,7 @@ Geld ArchDoc::vatSum()
 
 double ArchDoc::vat()
 {
-  return 16.0;
+  return DocumentMan::self()->vat();
 }
 
 void ArchDoc::loadFromDb( dbID id )
