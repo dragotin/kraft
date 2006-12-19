@@ -26,6 +26,7 @@
 #include "katalogman.h"
 #include "matkatalog.h"
 #include "katalog.h"
+#include "filterheader.h"
 
 MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
   : KDialogBase( parent, name, true,
@@ -36,8 +37,9 @@ MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
   ( void ) new QLabel( i18n( "Select Material for Calculation" ),
                               page, "caption" );
 
+  mFilter = new FilterHeader( 0, page );
   mKatalogListView = new MaterialKatalogListView( page, true );
-
+  mFilter->setListView( mKatalogListView );
 
   Katalog *kat = KatalogMan::self()->getKatalog( MaterialKatalogView::MaterialCatalogName );
 

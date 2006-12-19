@@ -33,6 +33,7 @@
  */
 
 class MaterialKatalogListView;
+class FilterHeader;
 
 /* ********************************************************************************
  * Editor that shows the MaterialKatalogListView
@@ -55,6 +56,7 @@ signals:
   void materialSelected( int, double );
 private:
   MaterialKatalogListView *mKatalogListView;
+  FilterHeader *mFilter;
 };
 
 #endif
