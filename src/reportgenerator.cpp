@@ -66,21 +66,6 @@ ReportGenerator::~ReportGenerator()
   kdDebug() << "ReportGen is destroyed!" << endl;
 }
 
-void ReportGenerator::createRmlFromDoc( DocGuardedPtr doc )
-{
-  const QString templ = fillupTemplateFromDoc( doc );
-  // kdDebug() << "Report BASE:\n" << templ << endl;
-
-  KTempFile temp( QString(), ".trml" );
-
-  QTextStream *s = temp.textStream();
-  *s << templ;
-  temp.close();
-
-  kdDebug() << "Wrote rml to " << temp.name() << endl;
-  runTrml2Pdf( temp.name(),  doc->ident() );
-}
-
 void ReportGenerator::createRmlFromArchive( dbID id )
 {
   const QString templ = fillupTemplateFromArchive( id );
@@ -302,116 +287,6 @@ QString ReportGenerator::replaceOwnAddress( QString& tmpl )
 }
 
 
-QString ReportGenerator::fillupTemplateFromDoc( DocGuardedPtr doc )
-{
-
-  QString tmpl = readTemplate( doc->docType() );
-
-  /* replace the placeholders */
-  /* A placeholder has the format <!-- %VALUE --> */
-
-  /* find the position loop */
-  int posStart = tmpl.find(
-    TAG( "POSITION_LOOP" )
-    );
-  int posEnd   = tmpl.find(
-    TAG( "POSITION_LOOP_END" )
-    );
-
-  QString loop;
-  if ( posStart > 0 && posEnd > 0 && posStart < posEnd ) {
-    loop = tmpl.mid( posStart+22,  posEnd-posStart-22 );
-    kdDebug() << "Loop part: " << loop << endl;
-  }
-
-  DocPositionList posList = doc->positions();
-  QString loopResult;
-  QString h;
-
-  if ( ! loop.isEmpty() ) {
-    DocPositionBase  *dpbase;
-    for( dpbase = posList.first(); dpbase; dpbase = posList.next() ) {
-      DocPosition *dpb = static_cast<DocPosition*>( dpbase );
-
-      QString loopPart = loop;
-      replaceTag( loopPart,
-                  TAG( "POS_NUMBER" ),
-                  dpb->position() );
-
-      replaceTag( loopPart,
-                  TAG( "POS_TEXT" ),
-                  dpb->text() );
-
-      h.setNum( dpb->amount(), 'f', 2 );
-      replaceTag( loopPart,
-                  TAG( "POS_AMOUNT" ),
-                  h );
-
-      h = dpb->unit().einheit( dpb->amount() );
-      replaceTag( loopPart,
-                  TAG( "POS_UNIT" ),
-                  h );
-
-      replaceTag( loopPart,
-                  TAG( "POS_UNITPRICE" ),
-                  dpb->unitPrice().toString() );
-
-      replaceTag( loopPart,
-                  TAG( "POS_TOTAL" ),
-                  dpb->overallPrice().toString() );
-
-      loopResult.append( loopPart );
-    }
-  }
-
-  tmpl.replace( posStart+22, posEnd-posStart-22, loopResult );
-
-  /* now replace stuff in the whole document */
-  replaceTag( tmpl,
-              TAG( "DATE" ),
-              KGlobal().locale()->formatDate( doc->date() ) );
-  replaceTag( tmpl,
-              TAG( "DOCTYPE" ),
-              doc->docType() );
-  replaceTag( tmpl,
-              TAG( "ADDRESS" ),
-              doc->address() );
-  replaceTag( tmpl,
-              TAG( "DOCID" ),
-              doc->ident() );
-  replaceTag( tmpl,
-              TAG( "SALUT" ),
-              doc->salut() );
-  replaceTag( tmpl,
-              TAG( "GOODBYE" ),
-              doc->goodbye() );
-  replaceTag( tmpl,
-              TAG( "PRETEXT" ),
-              doc->preText() );
-  replaceTag( tmpl,
-              TAG( "POSTTEXT" ),
-              doc->postText() );
-
-  replaceTag( tmpl,
-              TAG( "BRUTTOSUM" ),
-              doc->bruttoSum().toString() );
-  replaceTag( tmpl,
-              TAG( "NETTOSUM" ),
-              doc->nettoSum().toString() );
-
-  h.setNum( DocumentMan::self()->vat(), 'f', 1 );
-  replaceTag( tmpl,
-              TAG( "VAT" ),
-              h );
-  replaceTag( tmpl,
-              TAG( "VATSUM" ),
-              doc->vatSum().toString() );
-
-  replaceTag( tmpl,
-              TAG( "IMAGE" ) );
-  return tmpl;
-}
-
 int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QString& rep )
 {
   if ( tag == TAG( "IMAGE" ) ) {
@@ -524,7 +399,7 @@ void ReportGenerator::slotWroteStdin( KProcess* )
 
 void ReportGenerator::slotRecStdout( KProcess *, char * buffer, int len)
 {
-  kdDebug() << "==> Datablock of size " << len << endl;
+  // kdDebug() << "==> Datablock of size " << len << endl;
   mTargetStream.writeRawBytes( buffer, len );
 }
 

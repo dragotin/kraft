@@ -41,7 +41,6 @@ public:
 public slots:
   void slotViewerClosed( KProcess * );
   void createRmlFromArchive( dbID );
-  void createRmlFromDoc( DocGuardedPtr );
 
 protected slots:
   void slotWroteStdin( KProcess* );
@@ -50,7 +49,7 @@ protected slots:
   QString readTemplate( const QString& );
   QString replaceOwnAddress( QString& );
 private:
-  QString fillupTemplateFromDoc( DocGuardedPtr );
+  QString replaceAllTags( const QString& );
   QString fillupTemplateFromArchive( const dbID& );
   int replaceTag( QString&, const QString&, const QString& = QString() );
 
