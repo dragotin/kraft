@@ -391,6 +391,18 @@
         <slot>reject()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>mCbChapter</tabstop>
+    <tabstop>mEditMaterial</tabstop>
+    <tabstop>mDiPerPack</tabstop>
+    <tabstop>mCbUnit</tabstop>
+    <tabstop>mInPurchasePrice</tabstop>
+    <tabstop>mInSaleAdd</tabstop>
+    <tabstop>mInSalePrice</tabstop>
+    <tabstop>buttonOk</tabstop>
+    <tabstop>buttonCancel</tabstop>
+    <tabstop>buttonHelp</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>knuminput.h</includehint>
