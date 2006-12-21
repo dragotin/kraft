@@ -15,18 +15,23 @@
     <property name="caption">
         <string>Form1</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout9</cstring>
+                <cstring>layout5</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>m_cbType</cstring>
+                    </property>
+                </widget>
                 <spacer>
                     <property name="name">
                         <cstring>spacer2</cstring>
@@ -39,24 +44,11 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>51</width>
+                            <width>198</width>
                             <height>21</height>
                         </size>
                     </property>
                 </spacer>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>m_cbType</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>vom</string>
-                    </property>
-                </widget>
                 <widget class="KDateWidget">
                     <property name="name">
                         <cstring>m_dateEdit</cstring>
@@ -64,7 +56,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="1" column="0">
+        <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout15</cstring>
             </property>
@@ -194,8 +186,10 @@
                 </widget>
             </vbox>
         </widget>
-    </grid>
+    </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>m_cbType</sender>
