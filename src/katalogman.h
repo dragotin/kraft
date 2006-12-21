@@ -46,8 +46,9 @@ public:
     QString catalogTypeString( const QString& catName );
 private:
     KatalogMan();
-    static QDict<Katalog> *m_katalogDict;
     static KatalogMan *mSelf;
+
+    QDict<Katalog> m_katalogDict;
 };
 
 #endif

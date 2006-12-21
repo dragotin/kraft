@@ -31,7 +31,6 @@
 static KStaticDeleter<KatalogMan> selfDeleter;
 
 KatalogMan* KatalogMan::mSelf = 0;
-QDict<Katalog>* KatalogMan::m_katalogDict = 0;
 
 KatalogMan *KatalogMan::self()
 {
@@ -43,12 +42,10 @@ KatalogMan *KatalogMan::self()
 
 KatalogMan::KatalogMan( )
 {
-  m_katalogDict = new QDict<Katalog>;
 }
 
 KatalogMan::~KatalogMan( )
 {
-  delete m_katalogDict;
 }
 
 QStringList KatalogMan::allKatalogNames()
@@ -80,7 +77,7 @@ QString KatalogMan::catalogTypeString( const QString& catName )
 
 void KatalogMan::registerKatalog( Katalog *k )
 {
-    Katalog* kat = (*m_katalogDict)[k->getName()];
+    Katalog* kat = m_katalogDict[k->getName()];
 
     if( kat ) {
         kdWarning() << "Katalog with same name already here -> deleting!" << endl;
@@ -88,17 +85,14 @@ void KatalogMan::registerKatalog( Katalog *k )
     } else {
         // not found, try to open it
         kdDebug() << "Katalog " << k->getName() << " registered and loading..." << endl;
-        m_katalogDict->insert( k->getName(), k );
+        m_katalogDict.insert( k->getName(), k );
         k->load ();
     }
 }
 
 Katalog *KatalogMan::getKatalog(const QString& name)
 {
-    if( m_katalogDict == 0 )
-        m_katalogDict = new QDict<Katalog>;
-
-    Katalog* kat = (*m_katalogDict)[name];
+    Katalog* kat = m_katalogDict[name];
 
     if( !kat ) {
         kdDebug() << "No katalog " << name << " found" << endl;
