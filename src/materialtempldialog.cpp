@@ -30,6 +30,7 @@
 #include "katalogman.h"
 #include "unitmanager.h"
 #include "geld.h"
+#include "kraftsettings.h"
 
 MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, const char* name, bool modal, WFlags fl)
     : MaterialDialogBase(parent, name, modal, fl),
@@ -75,7 +76,11 @@ void MaterialTemplDialog::slPurchPriceChanged( double purch )
   if ( m > Eta && sale < Eta ) {
     sale = ( 1+m/100 )*purch;
   } else if ( sale > Eta ) {
+    // sale price is here, recalc the factor
     m = 100*( ( sale-purch )/purch );
+  } else if ( m < Eta && sale < Eta ) {
+    // take a default for the material factor
+    m = KraftSettings::self()->materialAddOnPercent();
   }
   setPriceCalc( purch, m, sale );
 }

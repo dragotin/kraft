@@ -33,6 +33,10 @@
     </entry>
   </group>
   <group name="material">
+    <entry name="materialAddOnPercent" type="Double">
+      <label>Default percentage the sale price for a material should be higher than its purchase price</label>
+      <default>10.0</default>
+    </entry>
     <entry name="lastMaterialChapter" type="String">
       <label>The name of the last selected chapter in the catalog</label>
     </entry>
