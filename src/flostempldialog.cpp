@@ -114,6 +114,9 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
     /* text setzen */
     slSetNewText();
 
+    m_text->setFocus();
+    m_text->selectAll();
+
     pbRundPreis->setEnabled(false);
 }
 

@@ -94,7 +94,8 @@ void TemplKatalogView::slNeueVorlage()
 
     // Anlegen eines neuen Templates
     FloskelTemplate *flosTempl = new FloskelTemplate();
-
+    flosTempl->setText( i18n( "<new template>" ) );
+    
     // Eltern = Katalogitem rausfinden
     KListViewItem *parentItem = static_cast<KListViewItem*>(listview->currentItem());
     if( parentItem )
@@ -117,6 +118,9 @@ void TemplKatalogView::slNeueVorlage()
     }
 
     KListViewItem *item = templListView->addFlosTemplate(parentItem, flosTempl);
+    templListView->ensureItemVisible( item );
+    templListView->setSelected( item, true );
+    
     openDialog( item, flosTempl, true );
 }
 
