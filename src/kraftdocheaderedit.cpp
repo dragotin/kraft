@@ -17,14 +17,37 @@
 
 #include "kraftdocheaderedit.h"
 
+#include <kdatewidget.h>
+#include <kcombobox.h>
+#include <klocale.h>
+
+#include <qlayout.h>
+#include <qcombobox.h>
+#include <qtextedit.h>
+
 KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
-  :DocHeaderEdit( parent )
+  : KraftDocEdit( parent )
 {
+  QBoxLayout *topLayout = new QVBoxLayout( this );
 
+  mDocHeaderEdit = new DocHeaderEdit( this );
+  topLayout->addWidget( mDocHeaderEdit );
+
+  connect( mDocHeaderEdit->m_cbType, SIGNAL( activated( int ) ),
+    SLOT( slotModified() ) );
+  connect( mDocHeaderEdit->m_cbType, SIGNAL( textChanged( const QString & ) ),
+    SLOT( slotModified() ) );
+  connect( mDocHeaderEdit->m_dateEdit, SIGNAL( changed( QDate ) ),
+    SLOT( slotModified() ) );
+  connect( mDocHeaderEdit->m_postAddressEdit, SIGNAL( textChanged() ),
+    SLOT( slotModified() ) );
+  connect( mDocHeaderEdit->m_letterHead, SIGNAL( activated( int ) ),
+    SLOT( slotModified() ) );
+  connect( mDocHeaderEdit->m_letterHead, SIGNAL( textChanged( const QString & ) ),
+    SLOT( slotModified() ) );
+  connect( mDocHeaderEdit->m_teEntry, SIGNAL( textChanged() ),
+    SLOT( slotModified() ) );
+
+  setTitle( i18n( "Document Header" ) );
+  setColor( "#9af0ff" );
 }
-
-void KraftDocHeaderEdit::slotModified()
-{
-  emit modified();
-}
-

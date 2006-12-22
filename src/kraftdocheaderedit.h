@@ -18,15 +18,18 @@
 #define KRAFTDOCHEADEREDIT_H
 
 #include "docheader.h"
+#include "kraftdocedit.h"
 
-
-
-class KraftDocHeaderEdit : public DocHeaderEdit
+class KraftDocHeaderEdit : public KraftDocEdit
 {
 public:
   KraftDocHeaderEdit( QWidget* );
-public slots:
-  void slotModified();
+
+  // FIXME: Remove access to internal widgets
+  DocHeaderEdit *docHeaderEdit() { return mDocHeaderEdit; }
+
+private:
+  DocHeaderEdit *mDocHeaderEdit;
 };
 
 #endif

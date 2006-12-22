@@ -19,6 +19,9 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <property name="margin">
+            <number>3</number>
+        </property>
         <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
                 <cstring>layout18</cstring>
@@ -95,26 +98,10 @@
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
-    <connection>
-        <sender>m_cbGreeting</sender>
-        <signal>activated(int)</signal>
-        <receiver>DocFooterEdit</receiver>
-        <slot>slotModified()</slot>
-    </connection>
-    <connection>
-        <sender>m_teSummary</sender>
-        <signal>textChanged()</signal>
-        <receiver>DocFooterEdit</receiver>
-        <slot>slotModified()</slot>
-    </connection>
 </connections>
-<signals>
-    <signal>modified()</signal>
-</signals>
-<slots>
-    <slot>slotModified()</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kcombobox.h</includehint>

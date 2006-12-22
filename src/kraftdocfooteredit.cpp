@@ -17,14 +17,26 @@
 
 #include "kraftdocfooteredit.h"
 
+#include <kcombobox.h>
+#include <klocale.h>
+
+#include <qlayout.h>
+#include <qcombobox.h>
+#include <qtextedit.h>
+
 KraftDocFooterEdit::KraftDocFooterEdit( QWidget *parent )
-  :DocFooterEdit( parent )
+  : KraftDocEdit( parent )
 {
+  QBoxLayout *topLayout = new QVBoxLayout( this );
 
+  mDocFooterEdit = new DocFooterEdit( this );
+  topLayout->addWidget( mDocFooterEdit );  
+
+  connect( mDocFooterEdit->m_cbGreeting, SIGNAL( activated( int ) ),
+    SLOT( slotModified() ) );
+  connect( mDocFooterEdit->m_teSummary, SIGNAL( textChanged() ),
+    SLOT( slotModified() ) );
+
+  setTitle( i18n( "Document Footer" ) );
+  setColor( "#f0ff9a" );
 }
-
-void KraftDocFooterEdit::slotModified()
-{
-  emit modified();
-}
-

@@ -18,15 +18,18 @@
 #define KRAFTDOCFOOTEREDIT_H
 
 #include "docfooter.h"
+#include "kraftdocedit.h"
 
-
-
-class KraftDocFooterEdit : public DocFooterEdit
+class KraftDocFooterEdit : public KraftDocEdit
 {
 public:
   KraftDocFooterEdit( QWidget* );
-public slots:
-  void slotModified();
+
+  // FIXME: Remove access to internal widgets
+  DocFooterEdit *docFooterEdit() { return mDocFooterEdit; }
+
+private:
+  DocFooterEdit *mDocFooterEdit;
 };
 
 #endif

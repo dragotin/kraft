@@ -71,6 +71,7 @@
 #include "catalogselection.h"
 #include "addressselection.h"
 #include "kraftdocheaderedit.h"
+#include "kraftdocpositionsedit.h"
 #include "kraftdocfooteredit.h"
 #include "inserttempldialog.h"
 #include "defaultprovider.h"
@@ -235,10 +236,6 @@ KraftView::KraftView(QWidget *parent, const char *name) :
            this, SLOT( slotAboutToShow( QWidget* ) ) );
 #endif
 
-  mDetailHeaderTexts[ DocPostCard::HeaderId ]   = i18n( "Document Header" );
-  mDetailHeaderTexts[ DocPostCard::PositionId ] = i18n( "Document Positions" );
-  mDetailHeaderTexts[ DocPostCard::FooterId ]   = i18n( "Document Footer" );
-
   mGlobalVBox = makeVBoxMainWidget();
   mGlobalVBox->setMargin( 3 );
 
@@ -327,46 +324,43 @@ void KraftView::slotSwitchToPage( int id )
     mAssistant->setFullPreview( true );
     mCatalogToggle->setOn( false );
   }
-  mDetailHeader->setText( mDetailHeaderTexts[id] );
+
+  KraftDocEdit *edit =
+    static_cast<KraftDocEdit *>( mViewStack->visibleWidget() );
+
+  mDetailHeader->setText( edit->title() );
+  mDetailHeader->setPaletteBackgroundColor( edit->color() );
+  mDetailHeader->setPaletteForegroundColor( QColor( "#00008b" ) );
 }
 
 void KraftView::setupDocHeaderView()
 {
+    KraftDocHeaderEdit *edit = new KraftDocHeaderEdit( mainWidget() );
 
-  /// QFrame *page = addPage( i18n("Header"), i18n("Document Header information") );
-    QVBox *vbox = new QVBox( mViewStack );
-    vbox->setMargin( 0 );
-    mHeaderId = mViewStack->addWidget( vbox, DocOverviewWidget::HeaderId );
+    mHeaderId = mViewStack->addWidget( edit, DocOverviewWidget::HeaderId );
 
-    m_headerEdit = new KraftDocHeaderEdit( vbox );
+    m_headerEdit = edit->docHeaderEdit();
+
     m_headerEdit->m_cbType->clear();
     m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
 
     connect( m_headerEdit->m_selectAddress, SIGNAL( clicked() ),
                this, SLOT( slotSelectAddress() ) );
-    connect( m_headerEdit, SIGNAL( modified() ),
+    connect( edit, SIGNAL( modified() ),
               this, SLOT( slotModifiedHeader() ) );
 }
 
 void KraftView::setupPositions()
 {
-  // QVBox *page = addVBoxPage( i18n( "Positions" ), i18n( "Positions of the document" ) );
-    QVBox *page = new QVBox( mainWidget() );
-    page->setSpacing( KDialog::spacingHint() );
-    mViewStack->addWidget( page, DocOverviewWidget::PositionId );
+    KraftDocPositionsEdit *edit = new KraftDocPositionsEdit( mainWidget() );
+    mViewStack->addWidget( edit, DocOverviewWidget::PositionId );
 
-    QHBox *upperHBox = new QHBox( page );
-    KPushButton *button = new KPushButton( i18n("Add"), upperHBox );
-    connect( button, SIGNAL( clicked() ), this, SLOT( slotAddPosition() ) );
+    mCatalogToggle = edit->catalogToggle();
+    m_positionScroll = edit->positionScroll();
 
-    mCatalogToggle = new KPushButton( i18n("Catalog"), upperHBox );
-    mCatalogToggle->setToggleButton( true );
-    connect( mCatalogToggle, SIGNAL( toggled( bool ) ), this, SLOT( slotShowCatalog( bool ) ) );
-
-    QWidget *spaceEater = new QWidget( upperHBox );
-    spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
-
-    m_positionScroll = new KraftViewScroll( page );
+    connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddPosition() ) );
+    connect( edit, SIGNAL( catalogToggled( bool ) ),
+      SLOT( slotShowCatalog( bool ) ) );
 }
 
 void KraftView::redrawDocument( )
@@ -573,18 +567,15 @@ void KraftView::redrawSumBox()
 
 void KraftView::setupFooter()
 {
-  // QFrame *page = addPage( i18n("Footer"), i18n("Document Footer Information") );
-    QFrame *page = new QFrame( mainWidget() );
-    mViewStack->addWidget( page, DocOverviewWidget::FooterId );
+    KraftDocFooterEdit *edit = new KraftDocFooterEdit( mainWidget() );
 
-    QVBoxLayout *topLayout = new QVBoxLayout( page, 0, KDialog::spacingHint() );
+    mViewStack->addWidget( edit, DocOverviewWidget::FooterId );
 
-    m_footerEdit = new KraftDocFooterEdit( page );
-    topLayout->addWidget( m_footerEdit );
+    m_footerEdit = edit->docFooterEdit();
 
     m_footerEdit->m_cbGreeting->insertStringList( KraftDB::self()->wordList( "greeting" ) );
 
-    connect( m_footerEdit, SIGNAL( modified() ),
+    connect( edit, SIGNAL( modified() ),
                this, SLOT( slotModifiedFooter() ) );
 }
 

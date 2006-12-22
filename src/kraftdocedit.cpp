@@ -1,0 +1,37 @@
+#include "kraftdocedit.h"
+
+#include <kdebug.h>
+
+KraftDocEdit::KraftDocEdit( QWidget *parent )
+  : QWidget( parent )
+{
+}
+
+void KraftDocEdit::setTitle( const QString &title )
+{
+  mTitle = title;
+}
+
+QString KraftDocEdit::title() const
+{
+  return mTitle;
+}
+
+void KraftDocEdit::setColor( const QColor &color )
+{
+  mColor = color;
+}
+
+QColor KraftDocEdit::color() const
+{
+  return mColor;
+}
+
+void KraftDocEdit::slotModified()
+{
+//  kdDebug() << "KraftDocEdit::slotModified()" << endl;
+
+  emit modified();
+}
+
+#include "kraftdocedit.moc"

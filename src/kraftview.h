@@ -202,7 +202,6 @@ class KraftView : public KDialogBase
     QSignalMapper *mModifiedMapper;
 
   QLabel *mDetailHeader;
-  QString mDetailHeaderTexts[3];
   QSplitter *mCSplit;
   KPushButton *mCatalogToggle;
 
