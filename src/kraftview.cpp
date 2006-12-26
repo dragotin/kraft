@@ -83,7 +83,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 {
   setOrientation( Vertical );
   mPostCard =  new DocPostCard( this );
-  mPostCard->slotSetMode( DocPostCard::Full );
+  mPostCard->slotSetMode( DocPostCard::Full, DocPostCard::HeaderId );
   setResizeMode( mPostCard->view(), KeepSize );
 
   connect( mPostCard, SIGNAL( completed() ),
@@ -126,17 +126,17 @@ DocPostCard *DocAssistant::postCard()
 
 void DocAssistant::slotShowCatalog( )
 {
-  setFullPreview( false );
+  setFullPreview( false, DocPostCard::PositionId );
   mWidgetStack->raiseWidget( mCatalogSelection );
 }
 
 void DocAssistant::slotShowAddresses()
 {
-  setFullPreview( false );
+  setFullPreview( false, DocPostCard::HeaderId );
   mWidgetStack->raiseWidget( mAddressSelection );
 }
 
-void DocAssistant::setFullPreview( bool setFull )
+void DocAssistant::setFullPreview( bool setFull, int id )
 {
   if ( setFull ) {
     /* remember the sizes used before */
@@ -147,12 +147,12 @@ void DocAssistant::setFullPreview( bool setFull )
     }
 
     mWidgetStack->hide();
-    mPostCard->slotSetMode( DocPostCard::Full );
+    mPostCard->slotSetMode( DocPostCard::Full, id );
     mFullPreview = true;
   } else {
 
     mWidgetStack->show();
-    mPostCard->slotSetMode( DocPostCard::Mini );
+    mPostCard->slotSetMode( DocPostCard::Mini, id );
 
     if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
       setSizes( KraftSettings::self()->assistantSplitterSetting() );
@@ -314,14 +314,14 @@ void KraftView::slotSwitchToPage( int id )
   bool skip = false;
   if ( id == DocPostCard::PositionId ) {
     if ( mShowAssistantDetail ) {
-      mAssistant->setFullPreview( false );
+      mAssistant->setFullPreview( false, id );
       mCatalogToggle->setOn( true );
       skip = true;
     }
   }
 
   if ( ! skip ) {
-    mAssistant->setFullPreview( true );
+    mAssistant->setFullPreview( true, id );
     mCatalogToggle->setOn( false );
   }
 
@@ -331,6 +331,8 @@ void KraftView::slotSwitchToPage( int id )
   mDetailHeader->setText( edit->title() );
   mDetailHeader->setPaletteBackgroundColor( edit->color() );
   mDetailHeader->setPaletteForegroundColor( QColor( "#00008b" ) );
+
+  mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
 }
 
 void KraftView::setupDocHeaderView()
@@ -556,7 +558,7 @@ void KraftView::refreshPostCard()
     mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
                                            m_footerEdit->m_cbGreeting->currentText() );
 
-    mAssistant->postCard()->renderDoc();
+    mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
   }
 }
 
@@ -805,7 +807,7 @@ void KraftView::slotShowCatalog( bool on )
   if ( on ) {
     mAssistant->slotShowCatalog();
   } else {
-    mAssistant->setFullPreview( true );
+    mAssistant->setFullPreview( true, DocPostCard::PositionId );
   }
 }
 

@@ -87,13 +87,15 @@ void DocPostCard::setFooterData( const QString& postText,  const QString& goodby
   mGoodbye = goodbye;
 }
 
-void DocPostCard::renderDoc()
+void DocPostCard::renderDoc( int id )
 {
   QString t;
+  kdDebug() << "rendering postcard for active id " << id <<
+    ( mMode == Full ? " (full) " : " (mini) " ) << endl;
   if ( mMode == Full ) {
-    t = renderDocFull();
+    t = renderDocFull( id );
   } else if ( mMode == Mini ) {
-    t = renderDocMini();
+    t = renderDocMini( id );
   } else {
     kdDebug() << "Unknown postcard mode" << endl;
   }
@@ -102,10 +104,12 @@ void DocPostCard::renderDoc()
   displayContent( t );
 }
 
-QString DocPostCard::renderDocFull()
+QString DocPostCard::renderDocFull( int id )
 {
   QString t;
-  t += "<div class=\"headerlink\">";
+  QString c = "headerlink";
+  if ( id == HeaderId ) c = "headerlink_selected";
+  t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://header", i18n( "Header" ) );
   t += "</div>\n" ;
 
@@ -122,7 +126,9 @@ QString DocPostCard::renderDocFull()
   t += "<p class=\"longtext\">" + mPreText + "</p>\n";
   t += "</div>\n";
 
-  t += "<div class=\"bodylink\">";
+  c = "bodylink";
+  if ( id == PositionId ) c = "bodylink_selected";
+  t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://positions", i18n( "Positions" ) );
   t += "</div>\n";
 
@@ -130,7 +136,9 @@ QString DocPostCard::renderDocFull()
   t += mPositions;
   t += "\n</div>\n";
 
-  t += "<div class=\"footerlink\">";
+  c = "footerlink";
+  if ( id == FooterId ) c = "footerlink_selected";
+  t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit(  "kraftdoc://footer", i18n( "Footer" ) );
   t += "</div>\n";
   t += "<div class=\"footer\">\n";
@@ -144,25 +152,34 @@ QString DocPostCard::renderDocFull()
   return t;
 }
 
-QString DocPostCard::renderDocMini() const
+QString DocPostCard::renderDocMini( int id ) const
 {
-  QString t = "<div class=\"headerlink\">";
+  QString t;
+  QString c = "headerlink";
+  if ( id == HeaderId ) c = "headerlink_selected";
+  t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://header",  i18n( "Header" ) );
   t += QString( "%1 from %2" ).arg( mType ).arg( mDate );
   t += "</div>";
 
-  t += "<div class=\"bodylink\">";
+  c = "bodylink";
+  if ( id == PositionId ) c = "bodylink_selected";
+  t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://positions", i18n( "Positions" ) );
   t += QString( " %1 Positions, total %2" ).arg( mPositionCount ).arg( mTotal );
   t += "</div>";
 
-  t += "<div class=\"footerlink\">";
+  c = "footerlink";
+  if ( id == FooterId ) c = "footerlink_selected";
+  t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://footer", i18n( "Footer" ) );
+#if 0
   QString h( mPostText );
   if ( h.length() > 45 ) {
     h = h.left( 42 ) +  "...";
   }
   t += h;
+#endif
   t += "</div>";
 
 return t;
@@ -202,8 +219,8 @@ void DocPostCard::writeTopFrame()
 
 }
 
-void DocPostCard::slotSetMode( DisplayMode mode ) {
+void DocPostCard::slotSetMode( DisplayMode mode, int id ) {
   mMode = mode;
-  renderDoc();
+  renderDoc( id );
 }
 #include "docpostcard.moc"

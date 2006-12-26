@@ -40,14 +40,14 @@ public slots:
   void setHeaderData( const QString&, const QString&, const QString&, const QString&, const QString& );
   void setPositions( DocPositionList );
   void setFooterData( const QString&,  const QString& );
-  void renderDoc();
-  void slotSetMode( DisplayMode );
+  void renderDoc( int id = -1 );
+  void slotSetMode( DisplayMode, int id = -1 );
 protected:
   void urlSelected( const QString &, int , int ,
                     const QString &, KParts::URLArgs  );
   void writeTopFrame();
-  QString renderDocMini() const;
-  QString renderDocFull();
+  QString renderDocMini( int ) const;
+  QString renderDocFull( int );
 private:
   QString linkBit( const QString&, const QString& ) const;
   QString htmlify( const QString& ) const;

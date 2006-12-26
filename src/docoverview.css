@@ -48,8 +48,13 @@ div {
 }
 
 .headerlink { background: #8ddbe9; }
+.headerlink_selected { background: #9af0ff; }
+
 .bodylink   { background: #8de99a; }
+.bodylink_selected   { background: #9affa9; }
+
 .footerlink { background: #dbe98d; }
+.footerlink_selected { background: #f0ff9a; }
 
 // .head { background:#9af0ff; }
 // .body { background:#9affa9; }

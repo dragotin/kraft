@@ -79,7 +79,7 @@ public:
 public slots:
   void slotShowCatalog();
   void slotShowAddresses();
-  void setFullPreview( bool );
+  void setFullPreview( bool, int );
   void slotRenderCompleted();
 
 signals:
