@@ -89,27 +89,33 @@ QString ReportGenerator::readTemplate( const QString& type )
   QString templFileName = QString( type ).lower()+ ".trml";
   QString findFile = "kraft/reports/" + templFileName;
 
-  QString tmplFile = stdDirs.findResource( "data", templFileName );
+  QString tmplFile = stdDirs.findResource( "data", findFile );
   QString re;
 
   if ( tmplFile.isEmpty() ) {
-    KMessageBox::error( 0, i18n("A document template named %1 could not be loaded."
-                                "Please check the installation." ).arg( templFileName ) ,
-                        i18n( "Template not found" ) );
-    return QString();
-  } else {
-
-    kdDebug() << "Loading create file from " << findFile << endl;
-    QFile f( tmplFile );
-    if ( !f.open( IO_ReadOnly ) ) {
-      kdError() << "Could not open " << tmplFile << endl;
+    findFile = "kraft/reports/invoice.trml";
+    tmplFile = stdDirs.findResource( "data", findFile );
+    if ( tmplFile.isEmpty() ) {
+      KMessageBox::error( 0, i18n("A document template named %1 could not be loaded."
+                                  "Please check the installation." ).arg( templFileName ) ,
+                          i18n( "Template not found" ) );
       return QString();
+    } else {
+      kdDebug() << templFileName << " not found, reverting to invoice.trml" << endl;
     }
-
-    QTextStream ts( &f );
-    re = ts.read();
-    f.close();
   }
+
+  kdDebug() << "Loading create file from " << findFile << endl;
+  QFile f( tmplFile );
+  if ( !f.open( IO_ReadOnly ) ) {
+    kdError() << "Could not open " << tmplFile << endl;
+    return QString();
+  }
+
+  QTextStream ts( &f );
+  re = ts.read();
+  f.close();
+
   return re;
 }
 
