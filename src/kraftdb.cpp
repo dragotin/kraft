@@ -236,9 +236,18 @@ bool KraftDB::createDatabase( QWidget *parent )
   if( KMessageBox::warningYesNo( parent,
                                  i18n( "The Kraft System Table was not found in database %1."
                                        " Do you want me to rebuild the database?\n"
-                                       "WARNING: ALL YOUR DATA WILL BE DESTROYED!").arg(  KatalogSettings::dbFile() ),
+                                       "WARNING: ALL YOUR DATA WILL BE DESTROYED!")
+                                 .arg(  KatalogSettings::dbFile() ),
                                  i18n("Database Rebuild") ) == KMessageBox::Yes ) {
     emit statusMessage( i18n( "Creating Database..." ) );
+
+    if ( m_db->tables().size() > 0 ) {
+      QString allTables = QString( "DROP TABLE %1;" ).arg( m_db->tables().join( ", " ) );
+      kdDebug() << "Erasing all tables " << allTables << endl;
+      QSqlQuery q;
+      q.exec( allTables );
+    }
+
     int allCmds = 0;
     int goodCmds = playSqlFile( "create_schema.sql", allCmds );
     if ( goodCmds == allCmds ) {

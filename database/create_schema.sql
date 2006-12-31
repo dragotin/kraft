@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS kraft; 
-CREATE DATABASE kraft DEFAULT CHARACTER SET "utf8";
+# DROP DATABASE IF EXISTS kraft; 
+# CREATE DATABASE kraft DEFAULT CHARACTER SET "utf8";
 
-use kraft;
+# use kraft;
 
 
 CREATE TABLE preisArten (
@@ -224,4 +224,6 @@ CREATE TABLE kraftsystem(
 );
 
 INSERT INTO kraftsystem ( dbschemaversion ) VALUES ( 1 );
+
+# message Database created.
 
