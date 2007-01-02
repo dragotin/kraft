@@ -27,6 +27,7 @@ class KListViewItem;
 class FilterHeader;
 class QPopupMenu;
 class QPushButton;
+class dbID;
 
 class DocDigestView : public QWidget
 {
@@ -46,6 +47,8 @@ public:
   QPopupMenu *contextMenu() {
     return mContextMenu;
   }
+  dbID currentArchiveDocId();
+
 public slots:
   void slotNewDoc();
   void slotDocOpenRequest( QListViewItem * );
@@ -57,7 +60,9 @@ protected slots:
 signals:
   void createDocument();
   void openDocument( const QString& );
-  void selectionChanged( const QString& );
+  void openArchivedDocument( const dbID& );
+  void docSelected( const QString& );
+  void archivedDocSelected( const dbID& );
   void printDocument( const QString& );
 private:
   KListView *mListView;
@@ -65,6 +70,7 @@ private:
   QPopupMenu *mContextMenu;
   QPushButton *mNewDocButton;
   QMap<QListViewItem*, QString> mDocIdDict;
+  QMap<QListViewItem*, dbID>    mArchIdDict;
 };
 
 #endif

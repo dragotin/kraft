@@ -265,13 +265,17 @@ void PortalView::documentDigests( QWidget *parent )
   mDocDigestView = new DocDigestView( parent );
 
   connect( mDocDigestView, SIGNAL( createDocument() ),
-             SIGNAL( createDocument() ) );
+           SIGNAL( createDocument() ) );
   connect( mDocDigestView, SIGNAL( openDocument( const QString& ) ),
-             SIGNAL( openDocument( const QString& ) ) );
+           SIGNAL( openDocument( const QString& ) ) );
+  connect( mDocDigestView, SIGNAL( openArchivedDocument( const dbID& ) ),
+           SIGNAL( openArchivedDocument( const dbID& ) ) );
   connect( mDocDigestView, SIGNAL( printDocument( const QString& ) ),
-             SIGNAL( printDocument( const QString& ) ) );
-  connect( mDocDigestView, SIGNAL( selectionChanged( const QString& ) ),
-             SIGNAL( documentSelected( const QString& ) ) );
+           SIGNAL( printDocument( const QString& ) ) );
+  connect( mDocDigestView, SIGNAL( docSelected( const QString& ) ),
+           SIGNAL( documentSelected( const QString& ) ) );
+  connect( mDocDigestView, SIGNAL( archivedDocSelected( const dbID& ) ),
+           SIGNAL( archivedDocSelected( const dbID& ) ) );
 }
 
 void PortalView::slotBuildView()

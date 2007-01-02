@@ -7,7 +7,8 @@
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
+ *
+ *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
@@ -107,8 +108,8 @@ class Portal : public KMainWindow
      * @param text the text that is displayed in the statusbar
      */
     void slotStatusMsg(const QString &text);
-  /** Show the  window with floskeltemplates */
-  void slotShowTemplates();
+    /** Show the  window with floskeltemplates */
+    void slotShowTemplates();
 
     void slotOpenKatalog(const QString& );
     void slotOpenKatalog();
@@ -118,6 +119,8 @@ class Portal : public KMainWindow
     void slotOpenDocument( const QString& );
     void slotOpenDocument();
     void slotDocumentSelected( const QString& );
+    void slotArchivedDocExecuted();
+    void slotArchivedDocSelected( const dbID& );
     void slotPrintDocument();
     void slotPrintDocument( const dbID& );
     void slotViewClosed( bool );
@@ -149,6 +152,7 @@ class Portal : public KMainWindow
     KAction* actNewDocument;
     KAction* actOpenDocument;
     KAction* actPrintDocument;
+    KAction* actOpenArchivedDocument;
 
     KToggleAction* viewFlosTemplates;
     KToggleAction* viewStatusBar;

@@ -36,6 +36,7 @@ class QVBox;
 class QListViewItem;
 class DocDigestView;
 class KTextBrowser;
+class dbID;
 
 class PortalView : public KJanusWidget
 {
@@ -60,7 +61,9 @@ signals:
     void katalogToXML( const QString& );
     void createDocument();
     void openDocument( const QString& );
+    void openArchivedDocument( const dbID& );
     void documentSelected( const QString& );
+    void archivedDocSelected( const dbID& );
     void printDocument( const QString& );
 
 private:

@@ -110,9 +110,14 @@ void Portal::initActions()
                                  SLOT(slotPrintDocument()),
                                  actionCollection(), "document_print");
 
+  actOpenArchivedDocument = new KAction( i18n( "Open &Archived Document" ), "attach",
+                                         KShortcut( ), this,
+                                         SLOT( slotArchivedDocExecuted() ), actionCollection(),
+                                         "archived_open" );
+
   actOpenDocument = new KAction(i18n("&Open Document"),  "fileopen",
-  KStdAccel::shortcut(KStdAccel::Open), this,
-  SLOT( slotOpenDocument() ), actionCollection(), "document_open" );
+                                KStdAccel::shortcut(KStdAccel::Open), this,
+                                SLOT( slotOpenDocument() ), actionCollection(), "document_open" );
 
   fileQuit->setStatusText(i18n("Quits the application"));
   editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
@@ -123,10 +128,11 @@ void Portal::initActions()
   actNewDocument->setStatusText( i18n( "Creates a new Document" ) );
   actPrintDocument->setStatusText( i18n( "Print and archive this Document" ) );
   actOpenDocument->setStatusText( i18n( "Opens the document for editing" ) );
-
+  actOpenArchivedDocument->setStatusText( i18n( "Open a viewer on an archived document" ) );
   setStandardToolBarMenuEnabled( true );
   actOpenDocument->setEnabled( false );
   actPrintDocument->setEnabled( false );
+  actOpenArchivedDocument->setEnabled( false );
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
   char *prjPath = getenv("KRAFT_HOME");
   if( prjPath ) {
@@ -160,6 +166,7 @@ void Portal::initView()
     actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    actOpenArchivedDocument->plug( m_portalView->docDigestView()->contextMenu() );
 
     connect( m_portalView, SIGNAL(openKatalog( const QString&)),
              this, SLOT(slotOpenKatalog(const QString&)));
@@ -171,10 +178,14 @@ void Portal::initView()
              this, SLOT( slotNewDocument() ) );
     connect( m_portalView, SIGNAL( openDocument( const QString& ) ),
              this, SLOT( slotOpenDocument( const QString& ) ) );
+    connect( m_portalView, SIGNAL( openArchivedDocument( const dbID& ) ),
+             this, SLOT( slotPrintDocument( const dbID& ) ) );
     connect( m_portalView, SIGNAL( printDocument( const QString& ) ),
              this, SLOT( slotPrintDocument() ) );
     connect( m_portalView,  SIGNAL( documentSelected( const QString& ) ),
              this,  SLOT( slotDocumentSelected( const QString& ) ) );
+    connect( m_portalView,  SIGNAL( archivedDocSelected( const dbID& ) ),
+             this,  SLOT( slotArchivedDocSelected( const dbID& ) ) );
     setCentralWidget(m_portalView);
 }
 
@@ -302,6 +313,7 @@ void Portal::slotPrintDocument()
 void Portal::slotPrintDocument( const dbID& archID )
 {
   if ( archID.isOk() ) {
+    slotStatusMsg(i18n("Printing archived document...") );
     mReportGenerator = ReportGenerator::self();
     mReportGenerator->createRmlFromArchive( archID ); // work on document identifier.
   }
@@ -329,6 +341,26 @@ void Portal::slotDocumentSelected( const QString& doc )
   } else {
     actOpenDocument->setEnabled( true );
     actPrintDocument->setEnabled( true );
+    actOpenArchivedDocument->setEnabled( false );
+  }
+}
+
+void Portal::slotArchivedDocExecuted()
+{
+
+  dbID id = m_portalView->docDigestView()->currentArchiveDocId();
+
+  kdDebug() << "archived doc selected: " << id.toString() << endl;
+  slotPrintDocument( id );
+}
+
+void Portal::slotArchivedDocSelected( const dbID& id )
+{
+  // slotDocumentSelected( QString() );
+  if ( id.isOk() ) {
+    actOpenArchivedDocument->setEnabled( true );
+    actOpenDocument->setEnabled( false );
+    actPrintDocument->setEnabled( false );
   }
 }
 

@@ -100,9 +100,9 @@ KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();
     ArchDocDigestList::iterator archIt;
     for ( archIt = archDocList.begin(); archIt != archDocList.end(); ++archIt ) {
-      ( void ) new KListViewItem( item, i18n( "Archived" ), QString(),
-                                  ( *archIt ).printDateString() );
-
+      KListViewItem *archItem = new KListViewItem( item, i18n( "Archived" ), QString(),
+                                                   ( *archIt ).printDateString() );
+      mArchIdDict[archItem] = (*archIt).archDocId();
     }
   }
   return chapIt;
@@ -126,11 +126,27 @@ void DocDigestView::slotDocOpenRequest( QListViewItem *item )
 
     emit openDocument( id );
   }
+
+  dbID archId = mArchIdDict[ item ];
+  if ( archId.isOk() ) {
+    emit openArchivedDocument( archId );
+  }
 }
 
 void DocDigestView::slotOpenCurrentDoc()
 {
   slotDocOpenRequest( mListView->currentItem() );
+}
+
+dbID DocDigestView::currentArchiveDocId()
+{
+  dbID id;
+
+  QListViewItem *current = mListView->currentItem();
+  if( current ) {
+    id = mArchIdDict[current];
+  }
+  return id;
 }
 
 QString DocDigestView::currentDocumentId()
@@ -146,12 +162,13 @@ QString DocDigestView::currentDocumentId()
 
 void DocDigestView::slotCurrentChanged( QListViewItem *item )
 {
+  dbID id = mArchIdDict[item];
   QString res;
-  if( item ) {
-    res = mDocIdDict[item];
+  if ( mDocIdDict[item] ) {
+    emit docSelected( mDocIdDict[item] );
+  } else if ( id.isOk() ) {
+    emit archivedDocSelected( mArchIdDict[item] );
   }
-  kdDebug() << "Current doc selection changed to " << res << endl;
-  emit selectionChanged( res );
 }
 
 #include "docdigestview.moc"
