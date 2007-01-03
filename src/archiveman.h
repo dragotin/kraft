@@ -33,6 +33,11 @@ class ArchiveMan
     static ArchiveMan *self();
     dbID archiveDocument( KraftDoc* );
 
+    /**
+     * query the document identifier id for a given database archive id
+     */
+    QString documentID( dbID archID ) const;
+
   protected:
     virtual QDomDocument archiveDocumentXml( KraftDoc* );
     virtual dbID archiveDocumentDb( KraftDoc* );

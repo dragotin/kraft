@@ -241,8 +241,8 @@ void Portal::slotStartupChecks()
     slotStatusMsg( i18n( "Commandline actions" ) );
     QCString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
     if ( ! docId.isEmpty() ) {
-      kdDebug() << "open a document: " << docId << endl;
-      slotPrintDocument( dbID( docId.toInt() ) );
+      kdDebug() << "open a archived document: " << docId << endl;
+      slotPrintDocument( QString(), dbID( docId.toInt() ) );
     }
 
     mCmdLineArgs->clear();
@@ -300,22 +300,29 @@ void Portal::slotPrintDocument()
   slotStatusMsg( i18n( "Generating PDF..." ) );
   DocumentMan *docman = DocumentMan::self();
   DocGuardedPtr docPtr = docman->openDocument( locId );
+  QString ident;
+  if ( docPtr ) ident = docPtr->ident();
+
   if( docPtr ) {
     ArchiveMan *archman = ArchiveMan::self();
     dbID archID = archman->archiveDocument( docPtr );
-    slotPrintDocument( archID );
+    slotPrintDocument( ident, archID );
   }
   busyCursor( false );
   slotStatusMsg( i18n( "Ready." ) );
 
 }
 
-void Portal::slotPrintDocument( const dbID& archID )
+/*
+ * id    : document ID
+ * archID: database ID of archived document
+ */
+void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
 {
   if ( archID.isOk() ) {
     slotStatusMsg(i18n("Printing archived document...") );
     mReportGenerator = ReportGenerator::self();
-    mReportGenerator->createRmlFromArchive( archID ); // work on document identifier.
+    mReportGenerator->createRmlFromArchive( id, archID ); // work on document identifier.
   }
 }
 
@@ -351,7 +358,7 @@ void Portal::slotArchivedDocExecuted()
   dbID id = m_portalView->docDigestView()->currentArchiveDocId();
 
   kdDebug() << "archived doc selected: " << id.toString() << endl;
-  slotPrintDocument( id );
+  slotPrintDocument( QString(), id );
 }
 
 void Portal::slotArchivedDocSelected( const dbID& id )

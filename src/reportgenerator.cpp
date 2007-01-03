@@ -40,6 +40,7 @@
 #include "katalogsettings.h"
 #include "docposition.h"
 #include "einheit.h"
+#include "archiveman.h"
 #include "archdoc.h"
 #include "documentman.h"
 
@@ -66,9 +67,13 @@ ReportGenerator::~ReportGenerator()
   kdDebug() << "ReportGen is destroyed!" << endl;
 }
 
-void ReportGenerator::createRmlFromArchive( dbID id )
+/*
+ * docID: document ID
+ *  dbId: database ID of the archived doc.
+ */
+void ReportGenerator::createRmlFromArchive( const QString& docID, dbID dbId )
 {
-  const QString templ = fillupTemplateFromArchive( id );
+  const QString templ = fillupTemplateFromArchive( dbId );
   // kdDebug() << "Report BASE:\n" << templ << endl;
 
   if ( ! templ.isEmpty() ) {
@@ -79,7 +84,13 @@ void ReportGenerator::createRmlFromArchive( dbID id )
     temp.close();
 
     kdDebug() << "Wrote rml to " << temp.name() << endl;
-    runTrml2Pdf( temp.name(), id.toString()  );
+
+    QString dId( docID );
+
+    if ( docID.isEmpty() ) {
+      dId = ArchiveMan::self()->documentID( dbId );
+    }
+    runTrml2Pdf( temp.name(), dId, dbId.toString() );
   }
 }
 
@@ -339,7 +350,7 @@ int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QStri
 }
 
 
-void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& id )
+void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID, const QString& id )
 {
   if( ! mProcess ) {
     mProcess = new KProcess;
@@ -395,11 +406,11 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& id )
   KStandardDirs stdDirs;
   QString outputDir = KraftSettings::self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
-    outputDir = stdDirs.saveLocation( "tmp", "kraft/" );
+    outputDir = stdDirs.saveLocation( "data", "kraft/archivePdf", true );
   }
 
   if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
-  mOutFile = outputDir + id + ".pdf";
+  mOutFile = QString( "%1/%2_%3.pdf" ).arg( outputDir ).arg( docID ).arg( id );
   kdDebug() << "Writing output to " << mOutFile << endl;
 
   *mProcess << rmlbin;

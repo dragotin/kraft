@@ -66,6 +66,21 @@ dbID ArchiveMan::archiveDocument( KraftDoc *doc )
   return mCachedDocId;
 }
 
+QString ArchiveMan::documentID( dbID archID ) const
+{
+  QString re;
+
+  QSqlCursor cur("archdoc");
+  cur.setMode( QSqlCursor::ReadOnly );
+  cur.select( QString( "archDocID=%1" ).arg( archID.toInt() ) );
+
+  if ( cur.next() ) {
+    re = cur.value( "ident" ).asString();
+  }
+
+  return re;
+}
+
 QDomElement ArchiveMan::xmlTextElement( QDomDocument doc, const QString& name, const QString& value )
 {
   QDomElement elem = doc.createElement( name );
@@ -212,9 +227,8 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 	    record->setValue( "vat", DocumentMan::self()->vat() ); // FIXME !!
 
 	    cur.insert();
-            kdDebug() << "SQL-Error: " << cur.lastError().text() << endl;
             dbID id = KraftDB::self()->getLastInsertID();
-            kdDebug() << "Inserted for id " << id.toString() << endl;
+            // kdDebug() << "Inserted for id " << id.toString() << endl;
 	    cnt++;
 	} else {
           kdDebug() << "Unknown position type, can not archive" << endl;

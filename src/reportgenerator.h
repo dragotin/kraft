@@ -36,11 +36,11 @@ public:
 
   static ReportGenerator *self();
   void docPreview( const dbID& );
-  void runTrml2Pdf( const QString&, const QString& );
+  void runTrml2Pdf( const QString&, const QString&, const QString& );
 
 public slots:
   void slotViewerClosed( KProcess * );
-  void createRmlFromArchive( dbID );
+  void createRmlFromArchive( const QString&, dbID );
 
 protected slots:
   void slotWroteStdin( KProcess* );

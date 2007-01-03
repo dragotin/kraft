@@ -122,7 +122,7 @@ class Portal : public KMainWindow
     void slotArchivedDocExecuted();
     void slotArchivedDocSelected( const dbID& );
     void slotPrintDocument();
-    void slotPrintDocument( const dbID& );
+    void slotPrintDocument( const QString&, const dbID& );
     void slotViewClosed( bool );
 
     void busyCursor( bool );
