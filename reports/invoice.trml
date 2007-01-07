@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
 <!DOCTYPE document SYSTEM "rml_1_0.dtd">
-<document filename="example_5.pdf">
-<template pageSize="(21cm, 29.7cm)" leftMargin="2.0cm" rightMargin="2.0cm"
+<document filename="kraft.pdf">
+<template pageSize="(21cm, 29.7cm)" leftMargin="2.41cm" rightMargin="0.81cm"
   topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document" 
   author="http://kraft.kde.org" allowSplitting="20"
   showBoundary="0">
+    <template>
+      <setFont name="Times-Roman" size="12" />
+    </template>
     <pageTemplate id="first">
         <pageGraphics>
             <setFont name="Times-Roman" size="12" />
 	    <lineMode width="0.5" />
-            <lines>2cm 2.2cm 19cm 2.2cm</lines>
+            <lines>2.41cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
             <drawCentredString x="105mm" y="2.3cm"><!-- MY.NAME --> <!-- MY.ORGANISATION --></drawCentredString>
-	    <setFont name="Times-Roman" size="10" />
+
+            <lines>7mm 19cm 12mm 19cm</lines>
+            <lines>2mm 14.65cm 12mm 14.65cm</lines>
+
 	    <fill color="black" />
+	    <setFont name="Times-Roman" size="8" />
+            <drawString x="25mm" y="24.7cm"><!-- MY.ORGANISATION --> - <!-- MY.STREET --> - <!-- MY.POSTCODE --> <!-- MY.LOCALITY --></drawString>
+	    <lines>25mm 24.6cm 11cm 24.6cm</lines>
+	    <setFont name="Times-Roman" size="10" />
             <drawCentredString x="105mm" y="1.8cm"><!-- MY.STREET --> - <!-- MY.POSTCODE --> <!-- MY.LOCALITY --></drawCentredString>
             <drawCentredString x="105mm" y="1.4cm">Telephone <!-- MY.PHONE --> - Fax <!-- MY.FAX --></drawCentredString>
-	    <image x="140mm" y="22cm" width="6cm" height="6cm" file="<!-- IMAGE(lurchie.png) -->" />
+	    <!-- image x="140mm" y="22cm" width="6cm" height="6cm" file="<!-- IMAGE(lurchie.png) -->" / -->
 
         </pageGraphics>
         <frame id="address"  x1="2.41cm" y1="20.62cm" width="8.5cm" height="4cm"/>
@@ -43,6 +53,10 @@
     </pageTemplate>
 </template>
 <stylesheet>
+    <initialize>
+      <alias id="style.normal" value="style.Normal"/>
+    </initialize>
+
     <blockTableStyle id="products">
       <blockFont name="Helvetica-BoldOblique" size="24" start="0,0" stop="-1,0"/>
       <blockBackground colorName="lightgrey" start="0,0" stop="-1,0"/>
@@ -58,21 +72,29 @@
       <lineStyle kind="LINEABOVE" colorName="black" start="-3,-3" stop="-1,-3"/>
       <lineStyle kind="LINEABOVE" colorName="black" start="-3,-1" stop="-1,-1"/>
    </blockTableStyle>
-    
+
    <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
    
-   <paraStyle name="text" fontSize="12" alignment="justify"/>
+   <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
+   <paraStyle name="rtext" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
+
    <paraStyle name="head" fontSize="12" alignment="justify"/>
    <paraStyle name="details" fontSize="12" alignment="right"/>
+   <paraStyle name="addressStyle" fontSize="12" />
 
 </stylesheet>
 <story>
     <!-- Address Frame -->
-    <xpre><!-- ADDRESS --></xpre>
+    <xpre style="addressStyle">
+<br />
+<br />
+<br />
+<!-- ADDRESS -->
+    </xpre>
     
     <nextFrame/>
     <!-- Info Frame -->
-    <para alignment="right"><!-- DATE --></para>
+    <para  style="text" alignment="right"><!-- DATE --></para>
 
     <nextFrame/>
     <!-- Subject Frame -->
@@ -84,59 +106,56 @@
         <!-- SALUT -->
     </para>
     <spacer length="1mm" width="1mm"/>
-    <para style="text">
         <!-- PRETEXT -->
-    </para>
 
     <setNextTemplate name="others" />
 
-    <spacer length="8mm" width="1mm"/>
+    <spacer length="18mm" width="1mm"/>
 
     <blockTable colWidths="8mm,9cm,1.0cm,1cm,2.5cm,2.5cm" style="products" repeatRows="0">
     <tr>
-        <td><para>Pos.</para></td>
-        <td><para>Text</para></td>
-        <td><para>Qty.</para></td>
-        <td><para>Unit</para></td>
-        <td><para alignment="RIGHT">Price</para></td>
-        <td><para alignment="RIGHT">Price</para></td>
+        <td><para style="text">Pos.</para></td>
+        <td><para style="text">Text</para></td>
+        <td><para style="text">Qty.</para></td>
+        <td><para style="text">Unit</para></td>
+        <td><para style="rtext">Price</para></td>
+        <td><para style="rtext">Price</para></td>
     </tr>
     <!-- POSITION_LOOP -->
     <tr>
-        <td><para><!-- POS_NUMBER -->.</para></td>
-        <td><para><!-- POS_TEXT -->   </para></td>
-        <td><para><!-- POS_AMOUNT --> </para></td>
-        <td><para><!-- POS_UNIT -->   </para></td>
-        <td><para alignment="RIGHT"><!-- POS_UNITPRICE -->   </para></td>
-        <td><para alignment="RIGHT"><!-- POS_TOTAL -->  </para></td>
+        <td><para style="text"><!-- POS_NUMBER -->.</para></td>
+        <td>      <!-- POS_TEXT -->          </td>
+        <td><para style="text"><!-- POS_AMOUNT --> </para></td>
+        <td><para style="text"><!-- POS_UNIT -->   </para></td>
+        <td><para style="rtext"><!-- POS_UNITPRICE -->   </para></td>
+        <td><para style="rtext"><!-- POS_TOTAL -->  </para></td>
     </tr>
     <!-- POSITION_LOOP_END -->
     <tr><td></td>
         <td></td>
         <td></td>
         <td></td>
-        <td><para>net:</para></td>
-        <td><para alignment="RIGHT"><!-- NETTOSUM --></para></td>
+        <td><para style="text">net:</para></td>
+        <td><para style="rtext"><!-- NETTOSUM --></para></td>
     </tr>
     <tr><td></td>
         <td></td>
         <td></td>
         <td></td>
-        <td><para>+<!-- VAT -->% VAT</para></td>
-        <td><para alignment="RIGHT"><!-- VATSUM --></para></td>
+        <td><para style="text">+<!-- VAT -->% VAT</para></td>
+        <td><para style="rtext"><!-- VATSUM --></para></td>
     </tr>
     <tr><td></td>
         <td></td>
         <td></td>
         <td></td>
-        <td><para>total sum:</para></td>
-        <td><para alignment="RIGHT"><!-- BRUTTOSUM --></para></td>
+        <td><para style="text">total sum:</para></td>
+        <td><para style="rtext"><!-- BRUTTOSUM --></para></td>
     </tr>
     </blockTable>
     <spacer length="1cm" width="1mm"/>
-    <para style="text">
+    <condPageBreak height="8cm"/>
 	<!-- POSTTEXT -->
-    </para>
     <spacer length="0.5cm" width="1mm"/>
     <para style="text">
        <!-- GOODBYE -->
