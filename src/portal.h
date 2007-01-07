@@ -85,7 +85,7 @@ class Portal : public KMainWindow
 
   protected slots:
     void slotStartupChecks();
-
+  void slotOpenArchivedDoc( const dbID& );
   public slots:
     /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.
      * If queryClose() returns false because the user canceled the saveModified() dialog, the closing breaks.

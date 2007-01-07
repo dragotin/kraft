@@ -179,7 +179,7 @@ void Portal::initView()
     connect( m_portalView, SIGNAL( openDocument( const QString& ) ),
              this, SLOT( slotOpenDocument( const QString& ) ) );
     connect( m_portalView, SIGNAL( openArchivedDocument( const dbID& ) ),
-             this, SLOT( slotPrintDocument( const dbID& ) ) );
+             this, SLOT( slotOpenArchivedDoc( const dbID& ) ) );
     connect( m_portalView, SIGNAL( printDocument( const QString& ) ),
              this, SLOT( slotPrintDocument() ) );
     connect( m_portalView,  SIGNAL( documentSelected( const QString& ) ),
@@ -289,6 +289,13 @@ void Portal::slotOpenDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
   slotOpenDocument( locId );
+}
+
+void Portal::slotOpenArchivedDoc( const dbID& id )
+{
+  busyCursor( true );
+  slotPrintDocument( QString(),  id );
+  busyCursor( false );
 }
 
 void Portal::slotPrintDocument()
