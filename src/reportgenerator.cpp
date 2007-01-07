@@ -175,7 +175,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 
       replaceTag( loopPart,
                   TAG( "POS_TEXT" ),
-                  pos.text() );
+                  rmlString( pos.text() ));
 
       h.setNum( pos.amount(), 'f', 2 );
       replaceTag( loopPart,
@@ -221,10 +221,10 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
               archive.goodbye() );
   replaceTag( tmpl,
               TAG( "PRETEXT" ),
-              archive.preText() );
+              rmlString( archive.preText() ) );
   replaceTag( tmpl,
               TAG( "POSTTEXT" ),
-              archive.postText() );
+              rmlString( archive.postText() ) );
 
   replaceTag( tmpl,
               TAG( "BRUTTOSUM" ),
@@ -317,6 +317,16 @@ QString ReportGenerator::replaceOwnAddress( QString& tmpl )
   return tmpl;
 }
 
+
+QString ReportGenerator::rmlString( const QString& str ) const
+{
+  QString rml;
+
+  QStringList li = QStringList::split( "\n", str );
+  rml = "<para style=\"text\">" + li.join( "</para><para style=\"text\">" ) + "</para>";
+  kdDebug() << "Returning " << rml << endl;
+  return rml;
+}
 
 int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QString& rep )
 {

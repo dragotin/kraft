@@ -53,6 +53,8 @@ private:
   QString fillupTemplateFromArchive( const dbID& );
   int replaceTag( QString&, const QString&, const QString& = QString() );
 
+  QString rmlString( const QString& str ) const;
+
   ReportGenerator();
   QString mOutFile;
   QString mErrors;
