@@ -76,8 +76,8 @@ CREATE TABLE CalcFixed(
 	TemplID       INT NOT NULL,
 
 	name          VARCHAR(255),
-	amount        DECIMAL(4,2) default 1.0,
-	price	      DECIMAL(6,2),
+	amount        DECIMAL(10,2) default 1.0,
+	price	      DECIMAL(10,2),
 	percent       INT default 0,
 	modDate	      TIMESTAMP(14),
 
@@ -101,7 +101,7 @@ CREATE TABLE CalcMaterialDetails(
 	CalcID        INT NOT NULL,
 	
 	materialID    INT NOT NULL,
-	amount 	      DECIMAL(6,2),
+	amount 	      DECIMAL(10,2),
 
 	PRIMARY KEY(MCalcDetailID),
 	INDEX(CalcID)
@@ -125,9 +125,9 @@ CREATE TABLE stockMaterial (
 	chapterID    INT NOT NULL default 1,
 	material     mediumtext,
 	unitID       INT NOT NULL,
-	perPack	     DECIMAL(6,2),
-	priceIn	     DECIMAL(6,2),
-	priceOut     DECIMAL(6,2),
+	perPack	     DECIMAL(10,2),
+	priceIn	     DECIMAL(10,2),
+	priceOut     DECIMAL(10,2),
 	enterDate    DATETIME,
 	modifyDate   TIMESTAMP(14),
 
@@ -138,7 +138,7 @@ CREATE TABLE stockMaterial (
 CREATE TABLE stdSaetze( 
 	stdSaetzeID	      INT NOT NULL AUTO_INCREMENT,
 	name                  VARCHAR(255),
-	price                 DECIMAL(6,2),
+	price                 DECIMAL(10,2),
 	sortKey               int,
 
 	PRIMARY KEY(stdSaetzeID)
@@ -168,9 +168,9 @@ CREATE TABLE docposition(
     docID             INT NOT NULL,
     ordNumber         INT NOT NULL,
     text              TEXT,
-    amount            DECIMAL(6,2),
+    amount            DECIMAL(10,2),
     unit              INT,
-    price             DECIMAL(6,2),
+    price             DECIMAL(10,2),
     
     PRIMARY KEY( positionID ),
     INDEX(docID),
@@ -208,10 +208,10 @@ CREATE TABLE archdocpos(
     archDocID         INT NOT NULL,
     ordNumber         INT NOT NULL,
     text              TEXT,
-    amount            DECIMAL(6,2),
+    amount            DECIMAL(10,2),
     unit              VARCHAR(64),
-    price             DECIMAL(6,2),
-    vat               DECIMAL(3,1),
+    price             DECIMAL(10,2),
+    vat               DECIMAL(4,1),
 
     PRIMARY KEY( archPosID ),
     INDEX(archDocID),
