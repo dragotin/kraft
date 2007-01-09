@@ -3,14 +3,15 @@ Kraft README
 Jun 2005, Klaas Freitag <freitag@kde.org>
 
 
-Kraft is a application to organise the office of small craftsmen
-business. It will help to write offers, invoices and order
-acceptances.
+Kraft is free software for persons in small businesses writing
+correspondence like offers and invoices to their customers.  It is
+focused especially on handcrafters to support writing of invoices
+etc. but might be usefull for other small business people too.
 
-For that, it handles catalogs that organise materials and template
-texts that can appear in the documents for the customer. It focuses
-on good printouts because that is still the main communication media
-in the craftsmen business.
+For efficient work, Kraft handles catalogs that organise materials and
+template texts that can appear in the documents for the customer. It
+focuses on good printouts because that is still the main communication
+media in the craftsmen business.
 
 The main purpose of this software is to provide something that can not
 only be used by nerds but also but people that usually are not
@@ -18,7 +19,7 @@ interested in computer work at all but feel that they have to use one
 to face the business.
 
 Specialised software for craftsmen is usually very expensive and
-unfortunately not really good in my opinion. I follow the market for
+unfortunately not really good IMO. I follow the market for
 software for landscaper for more than 10 years now and I did not see a
 product that has
  - a real intuitive GUI
@@ -31,21 +32,22 @@ product that has
  - a good value for the user compared to the money it costs
 
 I know that it is foolhardy to think to start something that can be
-better here, but there is nothing in this area in the open source world
-yet. 
-However there are real good tools that can be used to support the
-craftsmen in their daily work: Office tools like KOffice, KOrganizer
-and friends for the personal organisation and so on.
-I think and hope that this project can benefit from that.
+better here, but there is nothing in this area in the free software
+world yet.
+
+However there are real good tools in KDE that can be used to support
+the craftsmen in their daily work: Office tools like KOffice,
+KOrganizer and friends for the personal organisation and so on.  I
+think and hope that this project can benefit from that.
 
 
-Kraft is strongly under development, so there is very little of 
-functionality yet. 
+Kraft is strongly under development, so there is very little of
+functionality yet.
 
 Kraft is developed following the german 'best practices' and german
 laws etc. I am not sure if it makes sense/is possible to use it
 in other countries than germany. Kraft's first and example user is 
-a landscaper company with 6 people, office work is usually done by 
+a landscaper company with 6-10 people, office work is usually done by 
 the boss after a workday on the building site. I do not hope, but
 it might be that Kraft will be influenced by the need of landscapers.
 I promise to avoid where possible to open it up to all other trades.
@@ -69,8 +71,8 @@ in the application config file, please start Kraft once and set the
 database access credentials in the config dialog accordingly.
 
 Kraft supports the environment variable KRAFT_HOME that should point
-to upper kange directoy. If the environment var is set, the ui files
-are searched for in $KRAFT_HOME/kange/. That is usefull for development
+to upper kraft directoy. If the environment var is set, the ui files
+are searched for in $KRAFT_HOME/kraft/. That is usefull for development
 without installing.
 
 

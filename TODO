@@ -10,6 +10,8 @@ Configuration and Management
 
 Document Assembly
 -----------------
+* Catalogs for footer and header texts
+* position groups
 
 Catalog Management
 ------------------
@@ -18,6 +20,9 @@ Catalog Management
 * Creation of new Catalogs
 * Importing existing Catalogs of different types
 
+Portal
+------
+* no more complete redraw after doc window closes.
 
 Unsorted
 --------
