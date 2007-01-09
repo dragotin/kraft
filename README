@@ -56,23 +56,10 @@ Interested?
 ===========
 
 If you are interested, please speak up. If you are a developer and
-like to participate, please send email to me <freitag@kde.org>
+like to participate, please send email to Klaas Freitag <freitag@kde.org>
 
 Installation
 ============
 
-Kraft hopefully compiles out of the box. The Qt database classes must
-be installed. It needs a running MySQL database to store the catalogs
-in it. Although I love MySQL I will "port" Kraft to SQLite because
-it's easier to get to work and no server is required.  Check the
-database directory to see how to set up the database initially for the
-time being. The database name, username, passwd and host are defined
-in the application config file, please start Kraft once and set the
-database access credentials in the config dialog accordingly.
-
-Kraft supports the environment variable KRAFT_HOME that should point
-to upper kraft directoy. If the environment var is set, the ui files
-are searched for in $KRAFT_HOME/kraft/. That is usefull for development
-without installing.
-
+Please refer to the paragraphs in the INSTALL file.
 
