@@ -6,7 +6,7 @@
 lib_LTLIBRARIES = libbruns.la
 
 libbruns_la_SOURCES = katalog.cpp katalogman.cpp  brunskatalog.cpp brunsrecord.cpp \
-kataloglistview.cpp katalogview.cpp brunskataloglistview.cpp brunskatalogview.cpp \
+kataloglistview.cpp flostab.ui katalogview.cpp brunskataloglistview.cpp brunskatalogview.cpp \
 filterheader.cpp catalogchapteredit.cpp docposition.cpp kraftdb.cpp \
 geld.cpp einheit.cpp katalogsettings.kcfgc
 
@@ -20,7 +20,7 @@ bin_PROGRAMS = kraft kplant
 kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	fixcalcpart.cpp floskeltemplate.cpp floskel.cpp calcpart.cpp kraftview.cpp \
 	kraftdoc.cpp main.cpp unitmanager.cpp stockmaterial.cpp \
-	stockmaterialman.cpp materialcalcpart.cpp flostab.ui flostempldialog.cpp \
+	stockmaterialman.cpp materialcalcpart.cpp flostempldialog.cpp \
 	stdsatzman.cpp zeitpartui.ui fixpartui.ui matpartui.ui inserttmplbase.ui \
 	materialdialog.ui materialtempldialog.cpp \
 	zeitcalcdialog.cpp fixcalcdialog.cpp mateditor.cpp matdatatable.cpp matcalcdialog.h \
