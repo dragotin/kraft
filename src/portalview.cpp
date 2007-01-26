@@ -19,12 +19,12 @@
 #include <qvbox.h>
 #include <qsqlquery.h>
 #include <qsqldatabase.h>
+#include <qstylesheet.h>
 
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
 #include <kiconloader.h>
-#include <ktextbrowser.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 #include <klistview.h>
@@ -33,6 +33,7 @@
 #include "version.h"
 #include "kraftdb.h"
 #include "portalview.h"
+#include "portalhtmlview.h"
 #include "katalogman.h"
 #include "docdigestview.h"
 #include "documentman.h"
@@ -74,8 +75,11 @@ PortalView::PortalView(QWidget *parent, const char *name, int face)
 void PortalView::katalogDetails(QWidget *parent)
 {
 
-    mCatalogBrowser = new KTextBrowser( parent );
-    mCatalogBrowser->setNotifyClick( true );
+    mCatalogBrowser = new PortalHtmlView( parent );
+    // mCatalogBrowser->setNotifyClick( true ); FIXME
+    connect( mCatalogBrowser, SIGNAL( openCatalog( const QString& ) ),
+             SIGNAL( openKatalog( const QString& ) ) );
+
     connect( mCatalogBrowser, SIGNAL( urlClick(const QString&) ),
              this, SLOT( slUrlClicked( const QString& ) ) );
 }
@@ -99,7 +103,7 @@ void PortalView::fillCatalogDetails()
 
     html += "</table></p></qt>";
 
-    mCatalogBrowser->setText( html );
+    mCatalogBrowser->displayContent( html );
 }
 
 void PortalView::archiveDetails( QWidget *  )
@@ -185,7 +189,7 @@ QString PortalView::ptag( const QString& content,  const QString& c ) const
 
 void PortalView::systemDetails(QWidget *parent)
 {
-  mSystemBrowser = new KTextBrowser( parent );
+  mSystemBrowser = new PortalHtmlView( parent );
   // browser->setNotifyClick(false);
 }
 
@@ -244,7 +248,7 @@ void PortalView::fillSystemDetails()
       html += ptag( i18n("Database Version: %1").arg( version ) );
     }
   }
-  mSystemBrowser->setText(html);
+  mSystemBrowser->displayContent( html );
 }
 
 void PortalView::systemInitError( const QString& htmlMsg )
@@ -253,10 +257,10 @@ void PortalView::systemInitError( const QString& htmlMsg )
 
   html += "<h2>Kraft is really sorry.</h2>";
   html += ptag( i18n( "There is a initialisation error on your system. "
-                       "Kraft will not work that way." ) );
+                       "Kraft will not work that way.", "error" ) );
   html += ptag( htmlMsg );
 
-  mSystemBrowser->setText(html);
+  mSystemBrowser->displayContent( html ); // , "error" );
   showPage( mSystemIndex );
 }
 

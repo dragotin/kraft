@@ -36,8 +36,6 @@ class HtmlView : public KHTMLPart
 
     void showWelcomePage();
 
-    void setStyleSheet();
-
   public slots:
     void setTitle( const QString & );
     void displayContent( const QString& );
@@ -51,7 +49,7 @@ class HtmlView : public KHTMLPart
     virtual void writeContent( const QString& );
 
     void updateZoomActions();
-    virtual bool loadCss();
+    virtual bool loadCss( const QString&, const QString& );
   private:
 
     QString mCss;

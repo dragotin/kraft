@@ -57,7 +57,6 @@ class QSignalMapper;
 class QWidgetStack;
 class QVBox;
 class QSplitter;
-class DocOverviewWidget;
 class DocPostCard;
 class QTimer;
 class CatalogSelection;
@@ -175,7 +174,6 @@ class KraftView : public KDialogBase
     void viewClosed( bool );
     void selectedPosition( DocPosition* );
   private:
-    void setupDocumentOverview( QWidget* );
     void setupDocHeaderView();
     void setupPositions();
     void setupFooter();
@@ -209,7 +207,6 @@ class KraftView : public KDialogBase
   QWidgetStack *mViewStack;
   QVBox *mGlobalVBox;
   int mHeaderId;
-  DocOverviewWidget *mDocOverview;
   DocAssistant *mAssistant;
   bool mShowAssistantDetail;
   double mRememberAmount;

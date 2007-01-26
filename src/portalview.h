@@ -35,8 +35,8 @@ class QWidget;
 class QVBox;
 class QListViewItem;
 class DocDigestView;
-class KTextBrowser;
 class dbID;
+class PortalHtmlView;
 
 class PortalView : public KJanusWidget
 {
@@ -79,8 +79,8 @@ private:
     QVBox *m_sysBox;
     QVBox *mArchiveBox;
     DocDigestView *mDocDigestView;
-    KTextBrowser  *mCatalogBrowser;
-    KTextBrowser  *mSystemBrowser;
+    PortalHtmlView  *mCatalogBrowser;
+    PortalHtmlView  *mSystemBrowser;
 
   int mDocDigestIndex;
   int mCatalogIndex;

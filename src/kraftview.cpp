@@ -62,7 +62,6 @@
 #include "docfooter.h"
 #include "docposition.h"
 #include "unitmanager.h"
-#include "docoverviewwidget.h"
 #include "docpostcard.h"
 #include "kataloglistview.h"
 #include "katalogman.h"
@@ -293,13 +292,6 @@ void KraftView::setup( DocGuardedPtr doc )
   slotSwitchToPage( DocPostCard::HeaderId );
 }
 
-void KraftView::setupDocumentOverview( QWidget *parent )
-{
-  mDocOverview = new DocOverviewWidget( parent );
-  connect( mDocOverview, SIGNAL( switchToPage( int ) ),
-           this,  SLOT( slotSwitchToPage( int ) ) );
-  mDocOverview->slotSelectPageButton( DocOverviewWidget::HeaderId );
-}
 
 void KraftView::slotSwitchToPage( int id )
 {
@@ -339,7 +331,7 @@ void KraftView::setupDocHeaderView()
 {
     KraftDocHeaderEdit *edit = new KraftDocHeaderEdit( mainWidget() );
 
-    mHeaderId = mViewStack->addWidget( edit, DocOverviewWidget::HeaderId );
+    mHeaderId = mViewStack->addWidget( edit, DocPostCard::HeaderId );
 
     m_headerEdit = edit->docHeaderEdit();
 
@@ -355,7 +347,7 @@ void KraftView::setupDocHeaderView()
 void KraftView::setupPositions()
 {
     KraftDocPositionsEdit *edit = new KraftDocPositionsEdit( mainWidget() );
-    mViewStack->addWidget( edit, DocOverviewWidget::PositionId );
+    mViewStack->addWidget( edit, DocPostCard::PositionId );
 
     mCatalogToggle = edit->catalogToggle();
     m_positionScroll = edit->positionScroll();
@@ -571,7 +563,7 @@ void KraftView::setupFooter()
 {
     KraftDocFooterEdit *edit = new KraftDocFooterEdit( mainWidget() );
 
-    mViewStack->addWidget( edit, DocOverviewWidget::FooterId );
+    mViewStack->addWidget( edit, DocPostCard::FooterId );
 
     m_footerEdit = edit->docFooterEdit();
 

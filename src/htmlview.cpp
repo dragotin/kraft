@@ -31,22 +31,22 @@ HtmlView::HtmlView( QWidget *parent )
   connect( this, SIGNAL( setWindowCaption( const QString & ) ),
            SLOT( setTitle( const QString & ) ) );
 
-  setZoomFactor( 100 );
-#if 0
-  mCssFile = new MetaFile( "css-fate", this );
-  mCssFile->setLocalFile( "feature.css" );
+  setZoomFactor( 80 );
 
-#endif
+  setJScriptEnabled(false);
+  setJavaEnabled(false);
+  setMetaRefreshEnabled(false);
+  setPluginsEnabled(false);
 
   showWelcomePage();
 }
 
-bool HtmlView::loadCss()
+bool HtmlView::loadCss( const QString& cssFile, const QString& bgImgFileName )
 {
   if ( !mCss.isEmpty() ) return true;   // it's already loaded
 
   KStandardDirs stdDirs;
-  QString filename = stdDirs.findResource( "data", "kraft/docoverview.css" );
+  QString filename = stdDirs.findResource( "data", QString( "kraft/%1" ).arg( cssFile ) ); // "docoverview.css" );
 
   if ( filename.isEmpty() ) {
     return false;
@@ -62,9 +62,13 @@ bool HtmlView::loadCss()
     QTextStream ts( &f );
     QString css = ts.read();
 
-    KStandardDirs stdDirs;
-    QString findFile = "kraft/pics/docoverviewbg.png";
-    QString bgFile = stdDirs.findResource( "data", findFile );
+    QString bgFile;
+    if ( ! bgImgFileName.isEmpty() ) {
+      KStandardDirs stdDirs;
+      QString findFile = QString( "kraft/pics/%1" ).arg( bgImgFileName ); // docoverviewbg.png";
+      bgFile= stdDirs.findResource( "data", findFile );
+    }
+
     QString bodyCss = "body { margin: 2px;\n";
     if ( ! bgFile.isEmpty() ) {
       bodyCss += QString( "background-image:url( %1 );" ).arg( bgFile );
@@ -72,6 +76,7 @@ bool HtmlView::loadCss()
     bodyCss += "}\n";
 
     mCss = bodyCss + css;
+    setUserStyleSheet( mCss );
 
     return true;
 
@@ -105,11 +110,11 @@ void HtmlView::setTitle( const QString &title )
 void HtmlView::setupActions( KActionCollection *actionCollection )
 {
   mZoomInAction = new KAction( i18n( "Increase Font Sizes" ), "viewmag+",
-    KShortcut( "CTRL++" ), this,
-    SLOT( zoomIn() ), actionCollection, "view_zoom_in" );
+                               KShortcut( "CTRL++" ), this,
+                               SLOT( zoomIn() ), actionCollection, "view_zoom_in" );
   mZoomOutAction = new KAction( i18n( "Decrease Font Sizes" ), "viewmag-",
-    KShortcut( "CTRL+-" ), this,
-    SLOT( zoomOut() ), actionCollection, "view_zoom_out" );
+                                KShortcut( "CTRL+-" ), this,
+                                SLOT( zoomOut() ), actionCollection, "view_zoom_out" );
 
   updateZoomActions();
 }
@@ -159,7 +164,9 @@ void HtmlView::displayContent( const QString& content )
 {
   begin();
 
-  setStyleSheet();
+  if ( !mCss.isEmpty() ) {
+   setUserStyleSheet( mCss );
+  }
 
   writeTopFrame();
   writeContent( content );
@@ -175,12 +182,6 @@ void HtmlView::showWelcomePage()
   t += "offers, order acceptances and invoices in an easy to use, simple ";
   t += "yet powerful way.";
   displayContent( t );
-}
-
-void HtmlView::setStyleSheet()
-{
-  if ( loadCss() )
-    setUserStyleSheet( mCss );
 }
 
 #include "htmlview.moc"
