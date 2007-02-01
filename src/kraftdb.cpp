@@ -205,23 +205,33 @@ void KraftDB::checkSchemaVersion( QWidget *parent )
   if ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
     kdDebug() << "Kraft Schema Version not sufficient: " << currentVer << endl;
 
+    emit statusMessage( i18n( "Database schema not up to date" ) );
+    if( KMessageBox::warningYesNo( parent,
+                                 i18n( "This Kraft database schema is not up to date "
+                                       "(it is version %1 instead of the required version %2).\n"
+                                       "Kraft is able to update it to the new version automatically.\n"
+                                       "WARNING: MAKE SURE A GOOD BACKUP IS AVAILABLE!\n"
+                                       "Do you want Kraft to update the database schema version?")
+                                   .arg(  currentVer ).arg( KRAFT_REQUIRED_SCHEMA_VERSION ),
+                                 i18n("Database Schema Update") ) == KMessageBox::Yes ) {
 
-    while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
-      ++currentVer;
-      const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
-      int allCmds = 0;
-      int sqlc = playSqlFile( migrateFilename, allCmds );
-      if ( allCmds != sqlc ) {
-        kdDebug() << "WRN: only " << sqlc << " from " << allCmds << " sql commands "
-          "were executed correctly" << endl;
-      } else {
-        kdDebug() << "All sql commands successfull in file: " << migrateFilename << ": " << sqlc << endl;
+      while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
+        ++currentVer;
+        const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
+        int allCmds = 0;
+        int sqlc = playSqlFile( migrateFilename, allCmds );
+        if ( allCmds != sqlc ) {
+          kdDebug() << "WRN: only " << sqlc << " from " << allCmds << " sql commands "
+            "were executed correctly" << endl;
+        } else {
+          kdDebug() << "All sql commands successfull in file: " << migrateFilename << ": " << sqlc << endl;
 
+        }
       }
+      /* Now update to the required schema version */
+      q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
+              + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
     }
-    /* Now update to the required schema version */
-    q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
-            + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
   } else {
     kdDebug() << "Kraft Schema Version is ok: " << currentVer << endl;
     emit statusMessage( i18n( "Database Schema Version ok" ) );
