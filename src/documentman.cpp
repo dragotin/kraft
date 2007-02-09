@@ -39,6 +39,7 @@ DocumentMan *DocumentMan::self()
 }
 
 DocumentMan::DocumentMan()
+  : mColumnList( "docID, ident, docType, docDescription, clientID, lastModified, date" )
 {
 
 }
@@ -47,7 +48,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
 {
   DocDigestList ret;
 
-  QString qStr ="SELECT docID, ident, docType, clientID, lastModified, date FROM document ORDER BY date desc";
+  QString qStr = QString( "SELECT %1 FROM document ORDER BY date desc" ).arg( mColumnList );
 
   if( limit > 0 )
     qStr += " LIMIT " + QString::number( limit );
@@ -74,9 +75,10 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   const QString ident = query.value(1).toString();
   dig.setIdent(    ident );
   dig.setType(     query.value(2).toString() );
-  dig.setClientId( query.value(3).toString() );
-  dig.setLastModified( query.value(4).toDate() );
-  dig.setDate(     query.value(5).toDate() );
+  dig.setWhiteboard( query.value( 3 ).toString() );
+  dig.setClientId( query.value(4).toString() );
+  dig.setLastModified( query.value(5).toDate() );
+  dig.setDate(     query.value(6).toDate() );
   kdDebug() << "Adding document "<< ident << " to the latest list" << endl;
 
   archCur.select( "ident='" + ident +"'" );
@@ -93,8 +95,7 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
 {
   DocDigestsTimelineList retList; // a list of timelined digest objects
 
-  QString qStr ="SELECT docID, ident, docType, clientID, lastModified, date, "
-                "MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date asc;";
+  QString qStr = QString( "SELECT %1, MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date asc;" ).arg( mColumnList );
 
   kdDebug() << "Sending sql string " << qStr << endl;
 
@@ -105,8 +106,8 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
   if( query.isActive() ) {
     while( query.next() ) {
       DocDigest dig = digestFromQuery( query );
-      int month = query.value( 6 /* month */ ).toInt();
-      int year = query.value( 7 /* year */ ).toInt();
+      int month = query.value( 7 /* month */ ).toInt();
+      int year = query.value( 8 /* year */ ).toInt();
       kdDebug() << "Month: " << month << " in Year: " << year << endl;
 
       if ( timeline.month() == 0 ) timeline.setMonth( month );

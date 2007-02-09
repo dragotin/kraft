@@ -102,6 +102,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc )
   QDomElement docElem = xmldoc.createElement( "docframe" );
   root.appendChild( docElem );
   docElem.appendChild( xmlTextElement( xmldoc, "docType", doc->docType() ) );
+  docElem.appendChild( xmlTextElement( xmldoc, "docDesc", doc->whiteboard() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "ident", doc->ident() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "preText", doc->preText() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "postText", doc->postText() ) );
@@ -142,20 +143,22 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
 {
 /*
   mysql> describe archdoc;
-  +---------------+--------------+------+-----+-------------------+----------------+
-  | Field         | Type         | Null | Key | Default           | Extra          |
-  +---------------+--------------+------+-----+-------------------+----------------+
-  | archDocID     | int(11)      | NO   | PRI | NULL              | auto_increment |
-  | ident         | varchar(32)  | YES  | MUL | NULL              |                |
-  | docType       | varchar(255) | YES  |     | NULL              |                |
-  | clientAddress | text         | YES  |     | NULL              |                |
-  | salut         | varchar(255) | YES  |     | NULL              |                |
-  | goodbye       | varchar(128) | YES  |     | NULL              |                |
-  | printDate     | timestamp    | YES  |     | CURRENT_TIMESTAMP |                |
-  | date          | date         | YES  |     | NULL              |                |
-  | pretext       | text         | YES  |     | NULL              |                |
-  | posttext      | text         | YES  |     | NULL              |                |
-  +---------------+--------------+------+-----+-------------------+----------------+
+  +----------------+--------------+------+-----+-------------------+----------------+
+  | Field          | Type         | Null | Key | Default           | Extra          |
+  +----------------+--------------+------+-----+-------------------+----------------+
+  | archDocID      | int(11)      | NO   | PRI | NULL              | auto_increment |
+  | ident          | varchar(32)  | YES  | MUL | NULL              |                |
+  | docType        | varchar(255) | YES  |     | NULL              |                |
+  | docDescription | text         | YES  |     | NULL              |                |
+  | clientAddress  | text         | YES  |     | NULL              |                |
+  | salut          | varchar(255) | YES  |     | NULL              |                |
+  | goodbye        | varchar(128) | YES  |     | NULL              |                |
+  | printDate      | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
+  | date           | date         | YES  |     | NULL              |                |
+  | pretext        | text         | YES  |     | NULL              |                |
+  | posttext       | text         | YES  |     | NULL              |                |
+  | state          | int(11)      | YES  |     | NULL              |                |
+  +----------------+--------------+------+-----+-------------------+----------------+
 */
     if( ! doc ) return dbID();
 
@@ -170,6 +173,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record = cur.primeInsert();
     record->setValue( "ident", doc->ident() );
     record->setValue( "docType", doc->docType() );
+    record->setValue( "docDescription", doc->whiteboard() );
     record->setValue( "clientAddress", doc->address() );
     record->setValue( "salut", doc->salut() );
     record->setValue( "goodbye", doc->goodbye() );

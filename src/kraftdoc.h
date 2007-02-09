@@ -123,6 +123,9 @@ class KraftDoc : public QObject
     QString postText() { return mPostText; }
     void setPostText( const QString& str ) { mPostText = str; }
 
+    QString whiteboard() { return mWhiteboard; }
+    void setWhiteboard( const QString& w ) { mWhiteboard = w; }
+
     void setDocID( dbID id ) { mDocID = id; }
     dbID docID() { return mDocID; }
 
@@ -165,6 +168,7 @@ class KraftDoc : public QObject
     QString mSalut;
     QString mGoodbye;
     QString mIdent;
+    QString mWhiteboard;
 
     QDate   mDate;
     DocPositionList mPositions;

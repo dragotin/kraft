@@ -8,57 +8,20 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>583</width>
-            <height>413</height>
+            <width>564</width>
+            <height>489</height>
         </rect>
     </property>
     <property name="caption">
         <string>Form1</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>layout5</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>m_cbType</cstring>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>198</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="KDateWidget">
-                    <property name="name">
-                        <cstring>m_dateEdit</cstring>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout15</cstring>
+                <cstring>layout13</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -66,23 +29,92 @@
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout14</cstring>
+                        <cstring>layout5</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>m_cbType</cstring>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>198</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="KDateWidget">
+                            <property name="name">
+                                <cstring>m_dateEdit</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout11</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Whiteboard:</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignTop</set>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>m_whiteboardEdit</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QTextEdit">
+                            <property name="name">
+                                <cstring>m_whiteboardEdit</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
                     </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QTextEdit" row="1" column="1">
+                        <widget class="KComboBox" row="2" column="1">
                             <property name="name">
-                                <cstring>m_postAddressEdit</cstring>
+                                <cstring>m_letterHead</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
+                            <property name="editable">
+                                <bool>true</bool>
                             </property>
                         </widget>
                         <widget class="QLabel" row="1" column="0">
@@ -97,22 +129,6 @@
                             </property>
                             <property name="buddy" stdset="0">
                                 <cstring>m_postAddressEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="KComboBox" row="2" column="1">
-                            <property name="name">
-                                <cstring>m_letterHead</cstring>
-                            </property>
-                            <property name="editable">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel5</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Salutatory Address:</string>
                             </property>
                         </widget>
                         <widget class="QLayoutWidget" row="0" column="1">
@@ -158,6 +174,27 @@
                                 </spacer>
                             </hbox>
                         </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Salutatory Address:</string>
+                            </property>
+                        </widget>
+                        <widget class="QTextEdit" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_postAddressEdit</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                        </widget>
                         <widget class="QLabel" row="0" column="0">
                             <property name="name">
                                 <cstring>textLabel2</cstring>
@@ -186,12 +223,8 @@
                 </widget>
             </vbox>
         </widget>
-    </vbox>
+    </grid>
 </widget>
-<customwidgets>
-</customwidgets>
-<connections>
-</connections>
 <includes>
     <include location="local" impldecl="in declaration">config.h</include>
 </includes>

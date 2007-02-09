@@ -76,7 +76,10 @@ void PortalView::katalogDetails(QWidget *parent)
 {
 
     mCatalogBrowser = new PortalHtmlView( parent );
-    // mCatalogBrowser->setNotifyClick( true ); FIXME
+    mCatalogBrowser->loadCss( "catalogview.css" ); //, "mucki_en_oS.png",
+    // "background-repeat:no-repeat;"
+    //                        "background-position:center;" );
+
     connect( mCatalogBrowser, SIGNAL( openCatalog( const QString& ) ),
              SIGNAL( openKatalog( const QString& ) ) );
 
@@ -91,17 +94,20 @@ void PortalView::fillCatalogDetails()
     QStringList katalogNamen = KatalogMan::self()->allKatalogNames();
     QString html;
 
-    html = "<qt><h2>" + i18n("Available Catalogs") + "</h2>";
-    html += "<p align=\"center\"><table width=\"80%\" border=\"0\">";
+    html = "<html><h2>" + i18n("Available Catalogs") + "</h2>";
+    html += "<div>\n";
+    html += "<table border=\"0\">";
 
+    int cnt = 0;
     for(QStringList::ConstIterator namesIt = katalogNamen.begin();
         namesIt != katalogNamen.end(); ++namesIt )
     {
         QString katName = *namesIt;
-        html += printKatLine( katName );
+        html += printKatLine( katName, cnt++ );
     }
 
-    html += "</table></p></qt>";
+    html += "</table></div></html>\n";
+    kdDebug() << html << endl;
 
     mCatalogBrowser->displayContent( html );
 }
@@ -111,14 +117,18 @@ void PortalView::archiveDetails( QWidget *  )
 
 }
 
-QString PortalView::printKatLine( const QString& name ) const
+QString PortalView::printKatLine( const QString& name, int cnt ) const
 {
     QString urlName = QStyleSheet::escape( name );
 
     kdDebug() << "Converted Katalog name: " << urlName << endl;
     QString html;
 
-    html += "<tr>";
+    html += "<tr";
+    if ( cnt % 2 ) {
+      html += " class=\"odd\"";
+    }
+    html += ">\n";
 
     html += "<td><b>"+urlName+"</b></td>";
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
@@ -190,6 +200,8 @@ QString PortalView::ptag( const QString& content,  const QString& c ) const
 void PortalView::systemDetails(QWidget *parent)
 {
   mSystemBrowser = new PortalHtmlView( parent );
+  mSystemBrowser->loadCss( "catalogview.css" ); //, "mucki_en_oS.png",
+
   // browser->setNotifyClick(false);
 }
 
@@ -200,10 +212,10 @@ QString PortalView::systemViewHeader() const
 
   KStandardDirs stdDirs;
   QString logoFile = stdDirs.findResource( "data",  "kraft/pics/muckilogo_oS.png" );
-
-  html += "<table width=\"100%\"><tr><td>";
-  html += ptag( i18n("Kraft Version: ") + KRAFT_VERSION )+ "</td>";
-  html += "<td align=\"right\" rowspan=\"2\">";
+  html += "<h2>Welcome to Kraft</h2>";
+  html += "<div><table width=\"100%\" border=\"0\"><tr><td>";
+  html += i18n("Kraft Version: %1</td>").arg( KRAFT_VERSION );
+  html += "<td align=\"right\" rowspan=\"3\">";
   if ( ! logoFile.isEmpty() ) {
     html += QString( "<img src=\"%1\"/>" ).arg( logoFile );
   } else {
@@ -214,7 +226,7 @@ QString PortalView::systemViewHeader() const
   QString h1 = KGlobal().locale()->twoAlphaToCountryName( KGlobal().locale()->country() );
   html += QString( "<tr><td>" ) + i18n( "Country Setting: " ) +
           QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( KGlobal().locale()->country() );
-  html += "</table>";
+  html += "</table></div>";
 
   return html;
 }
@@ -227,11 +239,19 @@ void PortalView::fillSystemDetails()
   html = systemViewHeader(); // "<h2>" + i18n("Kraft System Information") + "</h2>";
 
   html += "<h2>" + i18n("Database Information") + "</h2>";
-  html += ptag( i18n( "Kraft database name: %1" ).arg( KraftDB::self()->databaseName() ) );
-  html += ptag( i18n( "Kraft schema version: %1").arg( KRAFT_REQUIRED_SCHEMA_VERSION ) );
-  html += ptag( i18n("Qt database driver: ") + KraftDB::self()->qtDriver() );
+  html += "<div><table>";
+  html += "<tr><td>" + i18n( "Kraft database name:" ) + "</td>";
+  html += "<td>" + KraftDB::self()->databaseName() + "</td></tr>";
 
-  html += ptag( i18n("Database connection ") );
+  html += "<tr><td>" + i18n( "Database schema version:" ) + "</td>";
+  html += "<td>" + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) + "</td></tr>";
+
+  html += "<tr><td>" + i18n( "Qt database driver:" ) + "</td>";
+  html += "<td>" +  KraftDB::self()->qtDriver() + "</td></tr>";
+
+  html += "<tr><td>" + i18n( "Database connection:" ) + "</td>";
+  html += "<td>";
+
   bool dbOk = false;
   if( KraftDB::self()->getDB()->isOpen() ) {
     dbOk = true;
@@ -239,15 +259,18 @@ void PortalView::fillSystemDetails()
   } else {
     html += i18n("<font color=\"red\">NOT AVAILABLE!</font>");
   }
-  html += "</p>";
+  html += "</td></tr>";
+
   if( dbOk ) {
     QSqlQuery q("SHOW VARIABLES like 'version';");
     if( q.isActive() ) {
       q.next();
       QString version = q.value(1).toString();
-      html += ptag( i18n("Database Version: %1").arg( version ) );
+      html += "<tr><td>" + i18n( "Database Version:" ) + "</td>";
+      html += "<td>" +  version + "</td></tr>";
     }
   }
+  html += "</div></table>";
   mSystemBrowser->displayContent( html );
 }
 
@@ -255,10 +278,12 @@ void PortalView::systemInitError( const QString& htmlMsg )
 {
   QString html = systemViewHeader(); // "<h2>" + i18n("Kraft System Information") + "</h2>";
 
-  html += "<h2>Kraft is really sorry.</h2>";
+  html += "<h2 class=\"error\">Kraft Initialisation Problem:</h2>";
+  html += "<div class=\"error\">";
   html += ptag( i18n( "There is a initialisation error on your system. "
-                       "Kraft will not work that way.", "error" ) );
+                       "Kraft will not work that way." ) );
   html += ptag( htmlMsg );
+  html += "</div>";
 
   mSystemBrowser->displayContent( html ); // , "error" );
   showPage( mSystemIndex );

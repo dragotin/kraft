@@ -48,6 +48,9 @@ public:
   QString ident()   { return mIdent; }
   void setIdent( const QString& ident ) { mIdent = ident; }
 
+  QString whiteboard()   { return mWhiteboard; }
+  void setWhiteboard( const QString& white ) { mWhiteboard = white; }
+
   void addArchDocDigest( const ArchDocDigest& );
   ArchDocDigestList archDocDigestList();
 protected:
@@ -55,6 +58,8 @@ protected:
   QString mType;
   QString mClientId;
   QString mIdent;
+  QString mWhiteboard;
+
   QDate   mLastModified;
   QDate   mDate;
   ArchDocDigestList mArchDocs;

@@ -211,7 +211,7 @@ void KraftDB::checkSchemaVersion( QWidget *parent )
                                        "(it is version %1 instead of the required version %2).\n"
                                        "Kraft is able to update it to the new version automatically.\n"
                                        "WARNING: MAKE SURE A GOOD BACKUP IS AVAILABLE!\n"
-                                       "Do you want Kraft to update the database schema version?")
+                                       "Do you want Kraft to update the database schema version now?")
                                    .arg(  currentVer ).arg( KRAFT_REQUIRED_SCHEMA_VERSION ),
                                  i18n("Database Schema Update") ) == KMessageBox::Yes ) {
 

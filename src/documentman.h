@@ -46,6 +46,7 @@ class DocumentMan
 
   private:
     DocDigest digestFromQuery( QSqlQuery& );
+    const QString mColumnList;
 
     DocumentMan();
 

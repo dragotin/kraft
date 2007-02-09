@@ -34,18 +34,24 @@
 
 
 /* Table document:
- * +----------+--------------+------+-----+---------+----------------+
- * | Field    | Type         | Null | Key | Default | Extra          |
- * +----------+--------------+------+-----+---------+----------------+
- * | docID    | int(11)      |      | PRI | NULL    | auto_increment |
- * | ident    | varchar(32)  | YES  | MUL | NULL    |                |
- * | docType  | varchar(255) | YES  |     | NULL    |                |
- * | clientID | int(11)      | YES  | MUL | NULL    |                |
- * | salut    | varchar(255) | YES  |     | NULL    |                |
- * | date     | date         | YES  |     | NULL    |                |
- * | pretext  | mediumtext   | YES  |     | NULL    |                |
- * | posttext | mediumtext   | YES  |     | NULL    |                |
- * +----------+--------------+------+-----+---------+----------------+
+ * +----------------+--------------+------+-----+-------------------+----------------+
+ * | Field          | Type         | Null | Key | Default           | Extra          |
+ * +----------------+--------------+------+-----+-------------------+----------------+
+ * | docID          | int(11)      | NO   | PRI | NULL              | auto_increment |
+ * | ident          | varchar(32)  | YES  | MUL | NULL              |                |
+ * | docType        | varchar(255) | YES  |     | NULL              |                |
+ * | docDescription | text         | YES  |     | NULL              |                |
+ * | clientID       | varchar(32)  | YES  | MUL | NULL              |                |
+ * | clientAddress  | text         | YES  |     | NULL              |                |
+ * | salut          | varchar(255) | YES  |     | NULL              |                |
+ * | goodbye        | varchar(128) | YES  |     | NULL              |                |
+ * | lastModified   | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
+ * | date           | date         | YES  |     | NULL              |                |
+ * | pretext        | text         | YES  |     | NULL              |                |
+ * | posttext       | text         | YES  |     | NULL              |                |
+ * +----------------+--------------+------+-----+-------------------+----------------+
+ * 12 rows in set (0.00 sec)
+ *
  */
 
 DocumentSaverDB::DocumentSaverDB( ) : DocumentSaverBase()
@@ -200,6 +206,7 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord *buf, KraftDoc *doc )
       kdDebug() << "Adressstring: " << doc->address() << endl;
       buf->setValue( "ident",    doc->ident() );
       buf->setValue( "docType",  doc->docType() );
+      buf->setValue( "docDescription", doc->whiteboard() );
       buf->setValue( "clientID", doc->addressUid() );
       buf->setValue( "clientAddress", doc->address() );
       buf->setValue( "salut",    doc->salut() );
@@ -234,6 +241,7 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setDate(       cur.value( "date"     ).toDate() );
         doc->setPreText(    cur.value( "pretext"  ).toString() );
         doc->setPostText(   cur.value( "posttext" ).toString() );
+        doc->setWhiteboard( cur.value( "docDescription" ).toString() );
     }
 
     loadPositions( id, doc );

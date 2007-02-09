@@ -39,7 +39,7 @@
 #include "defaultprovider.h"
 #include "documentman.h"
 
-// QList<KraftView> *KraftDoc::pViewList = 0;
+// FIXME: Make KraftDoc inheriting DocDigest!
 
 KraftDoc::KraftDoc(QWidget *parent, const char *name) : QObject(parent, name),
   mIsNew(true),

@@ -377,7 +377,7 @@ void KraftView::redrawDocument( )
 
     kdDebug() << "Loaded address uid from database " << mContactUid << endl;
     if( ! mContactUid.isEmpty() ) {
-      KABC::AddressBook *adrBook =  KABC::StdAddressBook::self();
+      KABC::AddressBook *adrBook =  KABC::StdAddressBook::self( );
       KABC::Addressee contact;
       if( adrBook ) {
         contact = adrBook->findByUid( mContactUid );
@@ -406,6 +406,7 @@ void KraftView::redrawDocument( )
     }
     /* pre- and post text */
     m_headerEdit->m_teEntry->setText( doc->preText() );
+    m_headerEdit->m_whiteboardEdit->setText( doc->whiteboard() );
     m_footerEdit->m_teSummary->setText( doc->postText() );
 
     if ( !doc->goodbye().isEmpty() ) {
@@ -866,6 +867,7 @@ void KraftView::slotOk()
     doc->setAddress(  m_headerEdit->m_postAddressEdit->text() );
     doc->setDocType(  m_headerEdit->m_cbType->currentText() );
     doc->setPreText(  m_headerEdit->m_teEntry->text() );
+    doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->text() );
     doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
     doc->setPostText( m_footerEdit->m_teSummary->text() );
     doc->setGoodbye(  m_footerEdit->m_cbGreeting->currentText() );

@@ -41,7 +41,7 @@ HtmlView::HtmlView( QWidget *parent )
   showWelcomePage();
 }
 
-bool HtmlView::loadCss( const QString& cssFile, const QString& bgImgFileName )
+bool HtmlView::loadCss( const QString& cssFile, const QString& bgImgFileName, const QString& addstyle )
 {
   if ( !mCss.isEmpty() ) return true;   // it's already loaded
 
@@ -73,6 +73,7 @@ bool HtmlView::loadCss( const QString& cssFile, const QString& bgImgFileName )
     if ( ! bgFile.isEmpty() ) {
       bodyCss += QString( "background-image:url( %1 );" ).arg( bgFile );
     }
+    bodyCss += addstyle;
     bodyCss += "}\n";
 
     mCss = bodyCss + css;
@@ -163,6 +164,8 @@ void HtmlView::writeBottomFrame()
 void HtmlView::displayContent( const QString& content )
 {
   begin();
+
+  kdDebug() << "Show content: " << content << endl;
 
   if ( !mCss.isEmpty() ) {
    setUserStyleSheet( mCss );

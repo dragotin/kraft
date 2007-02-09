@@ -47,6 +47,8 @@ DocDigestView::DocDigestView( QWidget *parent )
   hbox->addStretch(1);
   box->addLayout( hbox );
   mListView = new KListView( w );
+  mListView->setItemMargin( 5 );
+  mListView->setAlternateBackground( QColor( "#dffdd0" ) );
   mContextMenu = new QPopupMenu( mListView );
   connect( mListView, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint&, int ) ),
            this, SLOT( slotRMB( QListViewItem *, const QPoint &, int ) ) );
@@ -70,6 +72,7 @@ DocDigestView::DocDigestView( QWidget *parent )
   mListView->addColumn( i18n( "Client Name" ) );
   mListView->addColumn( i18n( "Last Modified" ) );
   mListView->addColumn( i18n( "Date" ) );
+  mListView->addColumn( i18n( "Whiteboard" ) );
   mListView->setSorting( 155 ); // sort only manually.
 }
 
@@ -93,8 +96,9 @@ KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList 
   DocDigestList::iterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
     KListViewItem *item = new KListViewItem( chapIt,
-                             (*it).type(), (*it).clientName(),
-                                             ( *it).lastModified(), (*it).date()  );
+                                             (*it).type(), (*it).clientName(),
+                                             ( *it).lastModified(), (*it).date(),
+                                             ( *it ).whiteboard() );
     mDocIdDict[item] = (*it).id();
 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();

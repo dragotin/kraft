@@ -49,12 +49,14 @@ int main(int argc, char *argv[])
 
   KAboutData aboutData( "kraft", I18N_NOOP("Kraft"),
                         KRAFT_VERSION, description, KAboutData::License_GPL,
-                        "(c) 2004-2006 Klaas Freitag", 0, 0, "freitag@kde.org");
+                        "(c) 2004-2007 Klaas Freitag", 0, 0, "freitag@kde.org");
   aboutData.addAuthor("Klaas Freitag", I18N_NOOP( "Developer" ), "freitag@kde.org");
   aboutData.addAuthor("Johannes Spielhagen", I18N_NOOP( "Graphics and Artwork" ),
                       "kraft@spielhagen.de", "http://www.michal-spielhagen.de" );
   aboutData.setProgramLogo( logo );
   aboutData.setOtherText( otherText );
+  aboutData.setVersion( KRAFT_VERSION );
+  aboutData.setHomepage( "http://kraft.sourceforge.net" );
 
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.

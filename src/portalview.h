@@ -67,7 +67,7 @@ signals:
     void printDocument( const QString& );
 
 private:
-    QString printKatLine( const QString& ) const;
+    QString printKatLine( const QString&, int ) const;
     void katalogDetails( QWidget *);
     void archiveDetails( QWidget * );
     void systemDetails( QWidget *);

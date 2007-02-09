@@ -47,6 +47,8 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
     SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_teEntry, SIGNAL( textChanged() ),
     SLOT( slotModified() ) );
+  connect( mDocHeaderEdit->m_whiteboardEdit, SIGNAL( textChanged() ),
+    SLOT( slotModified() ) );
 
   setTitle( i18n( "Document Header" ) );
   setColor( "#9af0ff" );
