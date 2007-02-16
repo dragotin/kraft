@@ -316,6 +316,7 @@ int KraftDB::playSqlFile( const QString& file, int& overallCount )
 
         if ( sql != ";" ) /* avoid empty lines */ {
           QRegExp reg( "\\s*#\\s*message: ?(.*)\\s*\\n" );
+          reg.setMinimal( true );
           int pos = reg.search( sql.lower(),  0 );
           if ( pos > -1 ) {
             QString msg = reg.cap( 1 );
