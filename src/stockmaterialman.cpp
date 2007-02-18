@@ -58,11 +58,15 @@ void StockMaterialMan::load( long no )
         double perPack = cur.value("perPack").toDouble();
         double pIn = cur.value("priceIn").toDouble();
         double pOut = cur.value("priceOut").toDouble();
+        QDate lastmod = cur.value( "modifyDate" ).toDate();
+        QDate entered = cur.value( "enterDate" ).toDate();
         Geld   gIn(pIn);
         Geld   gOut(pOut);
 
         StockMaterial *mat = new StockMaterial( matID, matChap, material, unitID,
                                                 perPack, gIn, gOut );
+        mat->setEnterDate( entered );
+        mat->setLastModified( lastmod );
 
         m_materials->append( mat );
     }

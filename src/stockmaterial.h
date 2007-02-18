@@ -34,6 +34,8 @@
  */
 class Einheit;
 class MaterialSaverBase;
+class QDate;
+class QDateTime;
 
 class StockMaterial
 {
@@ -70,10 +72,16 @@ public:
     void setPurchPrice( Geld );
     void setSalesPrice( Geld );
 
+    void setLastModified( QDate );
+    void setEnterDate( QDate );
+    QString lastModified();
+    QString entered();
+
+
   void save();
 protected:
   MaterialSaverBase* getSaver();
-
+  QString dateShortFormat( QDate );
 private:
     QString m_name;
     QString m_descr;
@@ -88,6 +96,8 @@ private:
     QString m_delivererUID;
     Geld    m_ePrice;  // price for bying
     Geld    m_vPrice;  // price for selling
+    QDate   mLastModified;
+    QDate   mEnteredDate;
 };
 
 

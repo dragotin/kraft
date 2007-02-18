@@ -147,5 +147,32 @@ void StockMaterial::setSalesPrice( Geld g )
     m_vPrice = g;
 }
 
+void StockMaterial::setLastModified( QDate dt )
+{
+  mLastModified = dt;
+}
+
+void StockMaterial::setEnterDate( QDate dt )
+{
+  mEnteredDate = dt;
+}
+
+QString StockMaterial::lastModified()
+{
+  return dateShortFormat( mLastModified );
+}
+
+QString StockMaterial::entered()
+{
+  return dateShortFormat( mEnteredDate );
+}
+
+
+QString StockMaterial::dateShortFormat( QDate d )
+{
+  // return d.toString();
+  return QString( "%1/%2" ).arg( d.month() ).arg( d.year() );
+}
+
 /* END */
 

@@ -238,7 +238,7 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setAddress(    cur.value( "clientAddress" ).toString() );
         doc->setSalut(      cur.value( "salut"    ).toString() );
         doc->setGoodbye(    cur.value( "goodbye"  ).toString() );
-        doc->setDate(       cur.value( "date"     ).toDate() );
+        doc->setDate (      cur.value( "date"     ).toDate() );
         doc->setPreText(    cur.value( "pretext"  ).toString() );
         doc->setPostText(   cur.value( "posttext" ).toString() );
         doc->setWhiteboard( cur.value( "docDescription" ).toString() );

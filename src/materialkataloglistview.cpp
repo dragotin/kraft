@@ -27,7 +27,6 @@
 #include "docposition.h"
 #include "kataloglistview.h"
 
-
 MaterialKatalogListView::MaterialKatalogListView( QWidget *w, bool enableCheckboxes )
   : KatalogListView( w, enableCheckboxes ),
     mCheckboxes( enableCheckboxes )
@@ -38,6 +37,7 @@ MaterialKatalogListView::MaterialKatalogListView( QWidget *w, bool enableCheckbo
   addColumn( i18n("Unit" ) );
   addColumn( i18n("Purchase" ) );
   addColumn( i18n("Sale" ) );
+  addColumn( i18n( "Last Modified" ) );
 }
 
 
@@ -104,6 +104,7 @@ void MaterialKatalogListView::slFreshupItem( QListViewItem *item, void* templ,  
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
     item->setText( 3, mat->purchPrice().toString() );
     item->setText( 4, mat->salesPrice().toString() );
+    item->setText( 5, mat->lastModified() );
   } else {
     kdDebug() << "Unable to freshup item - data invalid" << endl;
   }

@@ -55,9 +55,15 @@ int MatKatalog::load()
     double pPack = cur.value( "perPack" ).toDouble();
     double priceIn = cur.value( "priceIn" ).toDouble();
     double priceOut = cur.value( "priceOut" ).toDouble();
+    QDate lastMod = cur.value( "modifyDate" ).toDate();
+    QDate entered = cur.value( "enterDate" ).toDate();
 
-    mAllMaterial.append( new StockMaterial( id, chapterID, material, unitID,
-                                            pPack, Geld( priceIn ), Geld( priceOut ) ) );
+    StockMaterial *mat = new StockMaterial( id, chapterID, material, unitID,
+                                            pPack, Geld( priceIn ), Geld( priceOut ) );
+    mat->setEnterDate( entered );
+    mat->setLastModified( lastMod );
+    mAllMaterial.append( mat );
+
   }
 
   return cnt;
