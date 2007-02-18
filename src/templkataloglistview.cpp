@@ -34,13 +34,13 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
     : KatalogListView(w),
       mShowCalcParts( true )
 {
-    addColumn( i18n("Catalog"));
-    addColumn( i18n("Unit"));
+    addColumn( i18n("Template"));
+
     int priceCol = addColumn( i18n("Price"));
     setColumnWidthMode(0, Manual);
     setColumnWidth(0, 500);
     addColumn( i18n("Calc. Type"));
-    addColumn( i18n("ID"));
+    // addColumn( i18n("ID"));
     setSortColumn( -1 );
     setColumnAlignment ( priceCol, Qt::AlignRight);
 }
@@ -119,10 +119,11 @@ void TemplKatalogListView::slFreshupItem( QListViewItem *item, FloskelTemplate *
     QString t  = Portal::textWrap(tmpl->getText(), 60);
 
     item->setText( 0, t );
-    item->setText( 1, tmpl->einheit().einheitSingular());
-    item->setText( 2, g.toString());
-    item->setText( 3, ck );
-    item->setText( 4, QString::number(tmpl->getTemplID()));
+    QString h;
+    h = QString( "%1 / %2" ).arg( g.toString() ).arg( tmpl->einheit().einheitSingular() );
+    item->setText( 1,  h );
+    item->setText( 2, ck );
+    // item->setText( 4, QString::number(tmpl->getTemplID()));
 
     if( remChildren ) {
       /* remove all children and insert them again afterwards.
@@ -162,11 +163,14 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
         if( type  == KALKPART_TIME ) {
             ZeitCalcPart *zcp = static_cast<ZeitCalcPart*>(cp);
             StdSatz stdsatz = zcp->getStundensatz();
-            title = cp->getName() + i18n(", ") + QString::number(zcp->getMinuten())+ i18n(" Min. ")+stdsatz.getName();
+            title = QString( "%1, %2 Min. %3" ).arg( cp->getName() )
+                    .arg( QString::number( zcp->getMinuten() ) )
+                    .arg( stdsatz.getName() );
         }
 
-        KListViewItem *cpItem =  new KListViewItem( item, title, cp->getType(),
-                cp->kosten().toString());
+        KListViewItem *cpItem =  new KListViewItem( item, title,
+                                                    cp->kosten().toString(), cp->getType() );
+
 
         /* in case of material, add items for the materials calculated for the
         * template
@@ -185,14 +189,14 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
                 Geld g = mcp->getPriceForMaterial(mat);
                 QString t = mat->name();
                 double usedAmount = mcp->getCalcAmount(mat);
-                t += i18n(", Amount: %L1 ").arg( usedAmount);
                 Einheit e = mat->getUnit();
 
-                // possible to remove the following line ??
-                t += i18n(" per %1").arg(mat->getAmountPerPack());
-
-                (void) new KListViewItem( cpItem, t, e.einheit(usedAmount),
-                g.toString());
+                t = QString( "%1 %2 of %3 %4 %5" ).arg( usedAmount )
+                    .arg( e.einheit( usedAmount ) )
+                    .arg( mat->getAmountPerPack() )
+                    .arg( e.einheit( mat->getAmountPerPack() ) )
+                    .arg( t );
+                (void) new KListViewItem( cpItem, t, g.toString() );
             }
         }
     }
