@@ -73,6 +73,8 @@ DocDigestView::DocDigestView( QWidget *parent )
   mListView->addColumn( i18n( "Last Modified" ) );
   mListView->addColumn( i18n( "Date" ) );
   mListView->addColumn( i18n( "Whiteboard" ) );
+  mListView->addColumn( i18n( "Doc. Number" ) );
+
   mListView->setSorting( 155 ); // sort only manually.
 }
 
@@ -98,7 +100,7 @@ KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList 
     KListViewItem *item = new KListViewItem( chapIt,
                                              (*it).type(), (*it).clientName(),
                                              ( *it).lastModified(), (*it).date(),
-                                             ( *it ).whiteboard() );
+                                             ( *it ).whiteboard(), ( *it ).ident() );
     mDocIdDict[item] = (*it).id();
 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();
