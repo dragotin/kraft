@@ -189,6 +189,7 @@ CREATE TABLE archdoc(
     archDocID         INT NOT NULL AUTO_INCREMENT,
     ident             VARCHAR(32),
     docType           VARCHAR(255),
+    docDescription    TEXT,
     clientAddress     TEXT,
     salut             VARCHAR(255),
     goodbye           VARCHAR(128),
