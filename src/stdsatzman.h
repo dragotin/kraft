@@ -64,6 +64,24 @@ private:
 
 };
 
+class StdSatzDuration : public StdSatz
+{
+public:
+  StdSatzDuration();
+  StdSatzDuration( const StdSatz&, int );
+
+  int duration() {
+    return mDuration;
+  }
+
+  void setDuration( int d ) {
+    mDuration = d;
+  }
+private:
+  int mDuration;
+};
+
+
 typedef QValueVector<StdSatz> StdSatzValueVector;
 
 /**
@@ -73,16 +91,18 @@ typedef QValueVector<StdSatz> StdSatzValueVector;
 class StdSatzMan
 {
 public:
-    StdSatzMan();
-    ~StdSatzMan();
+  ~StdSatzMan();
+  static StdSatzMan *self();
 
-    static QStringList allStdSaetze();
-    static StdSatz     getStdSatz( const QString& name );
-    static StdSatz     getStdSatz( dbID id );
+  QStringList allStdSaetze();
+  StdSatz     getStdSatz( const QString& name );
+  StdSatz     getStdSatz( dbID id );
 private:
-    static void load();
+  StdSatzMan();
+  void load();
 
-    static StdSatzValueVector *m_stdSaetze;
+  StdSatzValueVector mStdSaetze;
+  static StdSatzMan *mSelf;
 };
 
 #endif

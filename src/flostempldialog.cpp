@@ -444,7 +444,7 @@ void FlosTemplDialog::slAddTimePart()
     {
         ZeitCalcPart *cp = new ZeitCalcPart( dia.getName(), dia.getDauer(), 0 );
         cp->setGlobalStdSetAllowed( dia.allowGlobal());
-        StdSatz std = StdSatzMan::getStdSatz( dia.getStundensatzName());
+        StdSatz std = StdSatzMan::self()->getStdSatz( dia.getStundensatzName());
         cp->setStundensatz( std );
         QListViewItem *lvItem = new QListViewItem( m_timeParts);
         drawTimeListEntry( lvItem, cp );

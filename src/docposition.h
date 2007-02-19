@@ -31,7 +31,7 @@
 #include "einheit.h"
 #include "geld.h"
 #include "dbids.h"
-
+#include "calcpart.h"
 
 /**
 @author Klaas Freitag
@@ -52,7 +52,9 @@ class DocPositionBase : public QObject
     void setDbId( int id ) { m_dbId = id; }
     dbID dbId() { return dbID( m_dbId ); }
 
-  // virtual void setPosition( const QString& pos ) { m_position = pos; }
+  /**
+   * Position means the number in the document
+   */
     virtual QString position() { return m_position; }
 
     virtual void setToDelete( bool doit ) { mToDelete = doit; }
@@ -64,6 +66,7 @@ class DocPositionBase : public QObject
     bool    mToDelete;
     PositionType mType;
 };
+
 
 class DocPosition : public DocPositionBase
 {
@@ -86,12 +89,14 @@ class DocPosition : public DocPositionBase
     double amount() { return m_amount; }
 
     DocPosition& operator=( const DocPosition& );
+
   private:
     QString m_text;
     Einheit m_unit;
     Geld    m_unitPrice;
     double  m_amount;
     // No calculation yet
+
 };
 
 class DocPositionList : public QPtrList<DocPositionBase>

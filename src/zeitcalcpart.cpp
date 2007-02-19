@@ -20,6 +20,15 @@
 
 #include "zeitcalcpart.h"
 
+
+ZeitCalcPart::ZeitCalcPart()
+  :CalcPart(),
+   m_minuten( 0 ),
+   m_allowGlobalStundensatz( false )
+{
+
+}
+
 ZeitCalcPart::ZeitCalcPart(const QString& name, int minutes, int prozent)
 :CalcPart( name, prozent ),
  m_minuten( minutes ),

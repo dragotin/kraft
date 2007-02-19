@@ -30,6 +30,7 @@ class ZeitCalcPart : public CalcPart  {
 
 public:
     ZeitCalcPart( const QString& name, int minutes, int prozent = 0);
+  ZeitCalcPart();
     ~ZeitCalcPart();
 
     bool globalStdSetAllowed() { return m_allowGlobalStundensatz; }

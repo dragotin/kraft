@@ -30,18 +30,28 @@
  *
  */
 class FloskelTemplate;
+class dbID;
+class CalcPartList;
 
-class TemplateSaverBase : public QObject
+class TemplateSaverBase
 {
-    Q_OBJECT
-
 public:
     TemplateSaverBase();
     ~TemplateSaverBase();
 
     virtual bool saveTemplate( FloskelTemplate* );
-
 private:
+
+};
+
+class CalculationsSaverBase
+{
+public:
+  enum TargetType { Template, Document };
+  CalculationsSaverBase();
+  CalculationsSaverBase( TargetType );
+
+  virtual bool saveCalculations( CalcPartList, dbID ) = 0;
 
 };
 

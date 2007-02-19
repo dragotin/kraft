@@ -151,7 +151,7 @@ int TemplKatalog::loadTimeCalcParts( FloskelTemplate *flos )
 
         ZeitCalcPart *zcp = new ZeitCalcPart( name, minutes, prozent );
         zcp->setGlobalStdSetAllowed( globAllowed );
-        zcp->setStundensatz( StdSatzMan::getStdSatz(hourSet) );
+        zcp->setStundensatz( StdSatzMan::self()->getStdSatz(hourSet) );
 
         zcp->setDbID( dbID(tcalcid));
         zcp->setTemplID( dbID(templid));
@@ -317,7 +317,7 @@ QDomDocument TemplKatalog::toXML()
     elem.appendChild(text);
     root.appendChild(elem);
 
-    QStringList allSets = StdSatzMan::allStdSaetze();
+    QStringList allSets = StdSatzMan::self()->allStdSaetze();
     for ( QStringList::Iterator it = allSets.begin(); it != allSets.end(); ++it ) {
         QDomElement set = doc.createElement("hourset");
         QDomElement elem = doc.createElement("name");
@@ -326,7 +326,7 @@ QDomDocument TemplKatalog::toXML()
         set.appendChild(elem);
 
         QDomElement rateelem = doc.createElement("rate");
-        StdSatz satz = StdSatzMan::getStdSatz(*it);
+        StdSatz satz = StdSatzMan::self()->getStdSatz(*it);
         Geld g = satz.getPreis();
         QDomText rname = doc.createTextNode(g.toString());
         rateelem.appendChild(rname);

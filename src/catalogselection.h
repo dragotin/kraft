@@ -21,14 +21,17 @@
 #include <qvbox.h>
 #include <qasciidict.h>
 
-class KatalogListView;
 class QComboBox;
 class QWidgetStack;
 class KActionCollection;
 class KAction;
+class QListViewItem;
+
 class DocPosition;
 class FilterHeader;
-class QListViewItem;
+class KatalogListView;
+class CalcPartList;
+class Katalog;
 
 class CatalogSelection : public QVBox
 {
@@ -42,7 +45,17 @@ protected:
   void initActions();
 
 signals:
-  void selectedPosition( DocPosition* );
+  /*
+   * a template was selected to be inserted into the document. This
+   * transports a ptr to the katalog and the item in it. Since the
+   * template type is dependent on the katalog type it is not known
+   * what type of template is coming. It is up to the receiver to
+   * decide (and cast) to the correct template on the katalog type.
+   *
+   * FIXME: Better approach: all catalog items inherit from a base
+   *        type.
+   */
+  void positionSelected( Katalog*, void* );
 
 protected slots:
   void slotSelectCatalog( const QString& );

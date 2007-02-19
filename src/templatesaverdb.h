@@ -39,27 +39,41 @@ class StockMaterial;
 
 class TemplateSaverDB : public TemplateSaverBase
 {
-    Q_OBJECT
-
 public:
     TemplateSaverDB();
     ~TemplateSaverDB();
 
     virtual bool saveTemplate( FloskelTemplate* );
 
-protected:
-    virtual bool saveTimeCalcPart( ZeitCalcPart *cp, FloskelTemplate *tmpl );
-    virtual bool saveFixCalcPart( FixCalcPart *cp, FloskelTemplate *tmpl );
-    virtual bool saveMaterialCalcPart( MaterialCalcPart *cp, FloskelTemplate *tmpl );
+private:
+  void fillTemplateBuffer( QSqlRecord*, FloskelTemplate*, bool );
+  QString sqlWhereFromRecord( QSqlRecord * ) const;
+};
 
-    virtual void fillTemplateBuffer( QSqlRecord*, FloskelTemplate*, bool );
-    virtual void fillZeitCalcBuffer( QSqlRecord *buffer, ZeitCalcPart *cp );
-    virtual void fillFixCalcBuffer( QSqlRecord *buffer, FixCalcPart *cp );
-    virtual void fillMatCalcBuffer( QSqlRecord *buffer, MaterialCalcPart *cp );
-    virtual void storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *mat );
+
+class CalculationsSaverDB:public CalculationsSaverBase
+{
+public:
+  CalculationsSaverDB();
+  CalculationsSaverDB( TargetType tt );
+
+  bool saveCalculations( CalcPartList, dbID );
 
 private:
-    QString sqlWhereFromRecord( QSqlRecord * ) const;
+  bool saveTimeCalcPart( ZeitCalcPart*, dbID );
+  void fillZeitCalcBuffer( QSqlRecord*, ZeitCalcPart* );
+
+  bool saveFixCalcPart( FixCalcPart *cp, dbID );
+  bool saveMaterialCalcPart( MaterialCalcPart *cp, dbID );
+
+  void fillFixCalcBuffer( QSqlRecord *buffer, FixCalcPart *cp );
+  void fillMatCalcBuffer( QSqlRecord *buffer, MaterialCalcPart *cp );
+  void storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *mat );
+
+  QString mTableTimeCalc;
+  QString mTableFixCalc;
+  QString mTableMatCalc;
+  QString mTableMatDetailCalc;
 };
 
 #endif

@@ -506,8 +506,6 @@ void Portal::slotOpenKatalog(const QString& kat)
       } else {
         /* normaler Vorlagenkatalog */
         katView = new TemplKatalogView();
-        connect( katView, SIGNAL( newDocPosition( const DocPosition& ) ),
-                 this, SLOT( slotOfferNewPosition( const DocPosition& ) ) );
       }
 
       if ( katView ) {

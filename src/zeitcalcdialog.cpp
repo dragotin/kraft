@@ -34,14 +34,14 @@ ZeitCalcDialog::ZeitCalcDialog(QWidget *parent, const char* name, bool modal )
     : calcdetailTime( parent, name, modal ),
       m_part(0)
 {
-    m_hourSets->insertStringList( StdSatzMan::allStdSaetze());
+    m_hourSets->insertStringList( StdSatzMan::self()->allStdSaetze());
 }
 
 ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, const char* name, bool modal )
     : calcdetailTime( parent, name, modal ),
       m_part(cp)
 {
-    m_hourSets->insertStringList( StdSatzMan::allStdSaetze());
+    m_hourSets->insertStringList( StdSatzMan::self()->allStdSaetze());
 
     if( ! cp ) return;
 
@@ -65,14 +65,14 @@ void ZeitCalcDialog::accept()
      m_part->setGlobalStdSetAllowed(m_stdGlobal->isChecked());
      m_part->setMinuten(m_dauer->value());
      m_part->setName(m_nameEdit->text());
-     
+
      QString selHourSet = m_hourSets->currentText();
-     StdSatz stdsatz = StdSatzMan::getStdSatz(selHourSet);
-     
+     StdSatz stdsatz = StdSatzMan::self()->getStdSatz(selHourSet);
+
      m_part->setStundensatz(stdsatz);
-	
+
    }
-   
+
    if( m_part && m_part->isDirty() ) {
 	emit timeCalcPartChanged(m_part);
    }

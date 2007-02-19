@@ -1,3 +1,4 @@
+
 /***************************************************************************
              templkataloglistview  - template katalog listview.
                              -------------------
@@ -223,6 +224,8 @@ DocPosition TemplKatalogListView::itemToDocPosition( QListViewItem *it )
     it = currentItem();
   }
 
+  kdDebug() << "###########################################################'"<< endl;
+
   if ( ! it ) return pos;
 
   FloskelTemplate *flos = static_cast<FloskelTemplate*>( m_dataDict[ it ] );
@@ -237,4 +240,23 @@ DocPosition TemplKatalogListView::itemToDocPosition( QListViewItem *it )
 
   return pos;
 }
+
+CalcPartList TemplKatalogListView::itemsCalcParts( QListViewItem* it )
+{
+  CalcPartList cpList;
+
+  if ( ! it ) {
+    it = currentItem();
+  }
+
+  if ( ! it ) return cpList;
+
+  FloskelTemplate *flos = static_cast<FloskelTemplate*>( m_dataDict[ it ] );
+  if ( flos ) {
+    kdDebug() << "We have calc parts: " << flos->getCalcPartsList().count()<< endl;
+    cpList = flos->getCalcPartsList();
+  }
+  return cpList;
+}
+
 

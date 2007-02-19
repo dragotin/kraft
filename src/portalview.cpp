@@ -107,7 +107,6 @@ void PortalView::fillCatalogDetails()
     }
 
     html += "</table></div></html>\n";
-    kdDebug() << html << endl;
 
     mCatalogBrowser->displayContent( html );
 }

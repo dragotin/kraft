@@ -39,6 +39,7 @@ class MaterialCalcPart : public CalcPart
 {
 
 public:
+  MaterialCalcPart();
     MaterialCalcPart( long mCalcID, const QString& name, int percent );
     MaterialCalcPart( const QString& name, int percent);
     ~MaterialCalcPart();

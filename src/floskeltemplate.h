@@ -59,6 +59,7 @@ public:
     void removeCalcPart( CalcPart *cpart );
     CalcPartList getCalcPartsList();
     CalcPartList getCalcPartsList(const QString& );
+  CalcPartList decoupledCalcPartsList();
 
     CalculationType calcKind();
     void setCalculationType( CalculationType t );

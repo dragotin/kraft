@@ -26,6 +26,7 @@
 
 class FixCalcPart : public CalcPart  {
 public:
+  FixCalcPart();
     FixCalcPart( QString name, Geld preis, int prozent = 0);
     ~FixCalcPart();
 

@@ -95,7 +95,7 @@ void TemplKatalogView::slNeueVorlage()
     // Anlegen eines neuen Templates
     FloskelTemplate *flosTempl = new FloskelTemplate();
     flosTempl->setText( i18n( "<new template>" ) );
-    
+
     // Eltern = Katalogitem rausfinden
     KListViewItem *parentItem = static_cast<KListViewItem*>(listview->currentItem());
     if( parentItem )
@@ -120,7 +120,7 @@ void TemplKatalogView::slNeueVorlage()
     KListViewItem *item = templListView->addFlosTemplate(parentItem, flosTempl);
     templListView->ensureItemVisible( item );
     templListView->setSelected( item, true );
-    
+
     openDialog( item, flosTempl, true );
 }
 
@@ -128,7 +128,7 @@ bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )
 {
   TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
   bool res = false;
-
+  kdDebug() << "############################################## Neue Position!" << endl;
   if( listview )
   {
     FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
@@ -143,6 +143,22 @@ bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )
   }
   return res;
 }
+
+CalcPartList TemplKatalogView::currentItemsCalcParts()
+{
+  TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
+  CalcPartList cpList;
+
+  if( listview )
+  {
+    FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
+    if ( currTempl ) {
+      cpList = currTempl->getCalcPartsList();
+    }
+  }
+  return cpList;
+}
+
 
 void TemplKatalogView::slChangeChapter(int newID)
 {

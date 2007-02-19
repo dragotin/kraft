@@ -384,4 +384,5 @@ Geld KraftDoc::vatSum()
 }
 
 
+
 #include "kraftdoc.moc"

@@ -20,6 +20,9 @@
 #include <kdebug.h>
 
 #include "calcpart.h"
+#include "fixcalcpart.h"
+#include "materialcalcpart.h"
+#include "zeitcalcpart.h"
 
 CalcPart::CalcPart( ):
     m_prozentPlus(0),
@@ -112,3 +115,88 @@ bool CalcPart::isToDelete()
 {
     return m_toDelete;
 }
+
+/*
+ * ===========================================================================
+ */
+CalcPartList::CalcPartList()
+  :QPtrList<CalcPart>()
+{
+
+}
+
+Geld CalcPartList::calcPrice()
+{
+  return costPerCalcPart( ALL_KALKPARTS );
+}
+
+Geld CalcPartList::costPerCalcPart( const QString& calcPart )
+{
+  CalcPart *cp;
+  Geld g;
+
+  /* suche nach einer speziellen Kalkulationsart */
+  for( cp = first(); cp; cp = next() )
+  {
+    if( ( calcPart == ALL_KALKPARTS || calcPart == cp->getType() ) && ! cp->isToDelete() )
+    {
+      g += cp->kosten();
+    }
+  }
+  return g;
+}
+
+/*
+ * Attention: returning non deep copy here !
+ */
+CalcPartList CalcPartList::getCalcPartsList( const QString& calcPart )
+{
+  CalcPartList parts;
+
+  if( calcPart == ALL_KALKPARTS )
+    return *this;
+  else
+  {
+    CalcPart *cp;
+    /* suche nach einer speziellen Kalkulationsart */
+    for( cp = first(); cp; cp = next() )
+    {
+      if( calcPart == cp->getType() && ! cp->isToDelete() )
+      {
+        parts.append(cp);
+      }
+    }
+  }
+  return( parts );
+}
+
+
+/*
+ * Attention: returning non deep copy here !
+ */
+CalcPartList CalcPartList::decoupledCalcPartsList()
+{
+  CalcPartList parts;
+  CalcPart *newcp = 0;
+  CalcPart *cp;
+
+  for( cp = first(); cp; cp = next() )
+  {
+    if ( cp->getType() == KALKPART_FIX ) {
+      newcp = new FixCalcPart(  );
+      *newcp = *( static_cast<FixCalcPart*>( cp ) );
+    } else if ( cp->getType ()== KALKPART_TIME ) {
+      newcp = new ZeitCalcPart( );
+      *newcp = *( static_cast<ZeitCalcPart*>( cp ) );
+    } else if ( cp->getType() == KALKPART_MATERIAL ) {
+      newcp = new MaterialCalcPart(  );
+      *newcp = *( static_cast<MaterialCalcPart*>( cp ) );
+
+    }
+    if ( newcp ) newcp->setDbID( -1 );
+    parts.append( newcp );
+
+  }
+  return( parts );
+}
+

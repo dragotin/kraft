@@ -58,42 +58,43 @@ class TemplKatalogView: public KatalogView
 {
   Q_OBJECT
 
-  public:
-    /** construtor of KraftApp, calls all init functions to create the application.
-     */
-    TemplKatalogView(QWidget* parent=0, const char* name=0);
-    TemplKatalogView(const QString& katToShow, QWidget* parent=0, const char* name=0);
-    ~TemplKatalogView();
+public:
+  /** construtor of KraftApp, calls all init functions to create the application.
+   */
+  TemplKatalogView(QWidget* parent=0, const char* name=0);
+  TemplKatalogView(const QString& katToShow, QWidget* parent=0, const char* name=0);
+  ~TemplKatalogView();
 
-    // virtual KatalogListView *createListView(QWidget*);
+  // virtual KatalogListView *createListView(QWidget*);
 
-    /** opens a file specified by commandline option
-     */
-    void createCentralWidget(QBoxLayout*, QWidget*);
-    KatalogListView* getListView(){return m_listview;};
+  /** opens a file specified by commandline option
+   */
+  void createCentralWidget(QBoxLayout*, QWidget*);
+  KatalogListView* getListView(){return m_listview;};
 
-  protected:
-    Katalog* getKatalog( const QString& );
-    bool currentItemToDocPosition( DocPosition& );
+protected:
+  Katalog* getKatalog( const QString& );
+  bool currentItemToDocPosition( DocPosition& );
+  CalcPartList currentItemsCalcParts();
 
-  public slots:
-    /* Editiing of templates -> open edit dialog */
-    void slEditVorlage();
-    void slNeueVorlage();
+public slots:
+  /* Editiing of templates -> open edit dialog */
+  void slEditVorlage();
+  void slNeueVorlage();
 
-    /* selected Ok in the template editor */
-    void slEditOk(FloskelTemplate*);
-    void slEditRejected();
+  /* selected Ok in the template editor */
+  void slEditOk(FloskelTemplate*);
+  void slEditRejected();
 
-    /* The catalog chapter was changed in the editor dialog */
-    void slChangeChapter(int);
+  /* The catalog chapter was changed in the editor dialog */
+  void slChangeChapter(int);
 
-  private:
-    // opens the edit dialog.
-    void openDialog( KListViewItem *, FloskelTemplate *, bool );
-    // editing dialog for templates
-    FlosTemplDialog  *m_flosDialog;
-    TemplKatalogListView *m_listview;
+private:
+  // opens the edit dialog.
+  void openDialog( KListViewItem *, FloskelTemplate *, bool );
+  // editing dialog for templates
+  FlosTemplDialog  *m_flosDialog;
+  TemplKatalogListView *m_listview;
 };
 
 #endif // TEMPLKATALOGVIEW_H

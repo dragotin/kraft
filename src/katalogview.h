@@ -42,6 +42,7 @@ class KListView;
 class QBoxLayout;
 class KActionMenu;
 class DocPosition;
+class CalcPartList;
 
 /**
   * The base class for Kraft katalog view.
@@ -108,14 +109,6 @@ class KatalogView : public KMainWindow
     void slExport();
 
     virtual void slEditChapters();
-    virtual void slAddToDocument();
-
-    signals:
-    /**
-    * emitted if an entry in a catalog gets selected to be appended
-    * to one or more documents.
-    */
-    void newDocPosition( const DocPosition& );
 
     protected:
 

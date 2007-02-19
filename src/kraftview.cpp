@@ -74,6 +74,7 @@
 #include "kraftdocfooteredit.h"
 #include "inserttempldialog.h"
 #include "defaultprovider.h"
+#include "stockmaterial.h"
 
 #include <qtimer.h>
 
@@ -91,8 +92,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mWidgetStack = new QWidgetStack( this );
 
   mCatalogSelection = new CatalogSelection( mWidgetStack );
-  connect( mCatalogSelection,  SIGNAL( selectedPosition( DocPosition * ) ),
-           this,  SIGNAL( selectedPosition( DocPosition * ) ) );
+  connect( mCatalogSelection,  SIGNAL( positionSelected( Katalog*, void* ) ),
+           this,  SIGNAL( positionSelected( Katalog*, void* ) ) );
 
   mAddressSelection = new AddressSelection( mWidgetStack );
 
@@ -260,8 +261,8 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   kdDebug() << "mViewSTack height is " << mViewStack->height() << endl;
 
   mAssistant = new DocAssistant( mCSplit );
-  connect( mAssistant,  SIGNAL( selectedPosition( DocPosition* ) ),
-           this,  SLOT( slotAddPosition( DocPosition* ) ) );
+  connect( mAssistant,  SIGNAL( positionSelected( Katalog*, void* ) ),
+           this,  SLOT( slotAddPosition( Katalog*, void* ) ) );
 
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
     mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
@@ -715,7 +716,18 @@ void KraftView::slotSelectAddress( KABC::Addressee contact )
 
     if( ! contact.isEmpty() ) {
       m_headerEdit->m_labName->setText( contact.realName() );
-      KABC::Address address = contact.address(64);
+
+      KABC::Address address;
+
+      KABC::Address::List addresses = contact.addresses();
+      if ( addresses.count() > 1 ) {
+        kdDebug() << "Have more than one address, taking the default add" << endl;
+        address = contact.address( 64 );
+      } else if ( addresses.count() == 0 ) {
+        kdDebug() << "Have no address, problem!" << endl;
+      } else {
+        address = addresses.first();
+      }
 
       QString adrStr = address.street() + "\n" + address.postalCode();
       adrStr = address.formattedAddress( contact.realName() );
@@ -728,34 +740,54 @@ void KraftView::slotSelectAddress( KABC::Addressee contact )
     }
 }
 
-void KraftView::slotAddPosition( DocPosition *selectedDP )
+void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 {
-  int newpos = mPositionWidgetList.count();
+  int newpos = mPositionWidgetList.count()+1;
   kdDebug() << "Adding Position at position " << newpos << endl;
 
   DocPosition *dp = new DocPosition();
-
-  if ( selectedDP ) {
-    InsertTemplDialog dia( this );
-    *dp = *selectedDP;
-    if ( mRememberAmount > 0 ) {
-      selectedDP->setAmount( mRememberAmount );
-    }
-    dia.setDocPosition( selectedDP );
-
-    dia.setPositionList( currentPositionList(), newpos );
-
-    if ( dia.exec() ) {
-      *dp = dia.docPosition();
-      newpos = dia.insertAfterPosition();
-
-      mRememberAmount = dp->amount();
-
-      kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
-    } else {
-      return;
+  if ( tmpl && kat ) {
+    if ( kat->type() == TemplateCatalog ) {
+      FloskelTemplate *ftmpl = static_cast<FloskelTemplate*>( tmpl );
+      dp->setText( ftmpl->getText() );
+      dp->setUnit( ftmpl->einheit() );
+      dp->setUnitPrice( ftmpl->einheitsPreis() );
+    } else if ( kat->type() == MaterialCatalog ) {
+      StockMaterial *mat = static_cast<StockMaterial*>( tmpl );
+      dp->setText( mat->name() );
+      dp->setUnit( mat->getUnit() );
+      dp->setUnitPrice( mat->salesPrice() );
+    } else if ( kat->type() == PlantCatalog ) {
+      kdDebug() << "Plant catalog insert still unhandled." << endl;
     }
   }
+
+  InsertTemplDialog dia( this );
+
+  if ( mRememberAmount > 0 ) {
+    dp->setAmount( mRememberAmount );
+  }
+  dia.setDocPosition( dp );
+
+  dia.setPositionList( currentPositionList(), newpos );
+
+  if ( dia.exec() ) {
+    *dp = dia.docPosition();
+    // The database ids for the calculations have to be wiped out
+    // because they point to the template tables so far. But for
+    // the document calculation info they have to go to the
+    // doc calculation tables with new ids
+
+
+    newpos = dia.insertAfterPosition();
+
+    mRememberAmount = dp->amount();
+
+    kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
+  } else {
+    return;
+  }
+
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
 
   slotFocusPosition( widget, newpos );
@@ -770,6 +802,12 @@ DocPositionList KraftView::currentPositionList()
       DocPositionBase *dpb = widget->position();
       if ( dpb ) {
         DocPosition *dp = new DocPosition( );
+#if 0
+        DocPosition *dp1 = static_cast<DocPosition*>( dpb );
+        kdDebug() << "################################# Amount of calculations: " << dp1->calculations().count() << endl;
+        dp->setCalculations( dp1->calculations() );
+        kdDebug() << "################################# Amount of calculations: " << dp->calculations().count() << endl;
+#endif
         dp->setDbId( dpb->dbId().toInt() );
         // dp->setPosition( dpb->position() );
         dp->setToDelete( widget->deleted() );
@@ -890,7 +928,7 @@ void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
   kdDebug() << "Focussing on widget " << posWidget << " on pos " << pos << endl;
   if( posWidget && pos > 0) {
     int w = posWidget->height();
-    m_positionScroll->ensureVisible( 0, (pos-1)*w, 0, w );
+    m_positionScroll->ensureVisible( 0, (pos)*w, 0, w );
   } else {
     m_positionScroll->ensureVisible( 0, 0 );
   }

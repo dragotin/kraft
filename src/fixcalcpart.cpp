@@ -18,6 +18,13 @@
 
 #include "fixcalcpart.h"
 
+FixCalcPart::FixCalcPart()
+  :CalcPart(),
+   m_amount( 0 )
+{
+
+}
+
 FixCalcPart::FixCalcPart(QString name, Geld preis, int prozent )
 : CalcPart(name, prozent),
   m_fixPreis(preis),

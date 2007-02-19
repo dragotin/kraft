@@ -165,7 +165,7 @@ void HtmlView::displayContent( const QString& content )
 {
   begin();
 
-  kdDebug() << "Show content: " << content << endl;
+  // kdDebug() << "Show content: " << content << endl;
 
   if ( !mCss.isEmpty() ) {
    setUserStyleSheet( mCss );

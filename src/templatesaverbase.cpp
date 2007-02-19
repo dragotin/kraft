@@ -24,7 +24,7 @@
 #include "templatesaverbase.h"
 
 
-TemplateSaverBase::TemplateSaverBase( ) : QObject()
+TemplateSaverBase::TemplateSaverBase( )
 {
 
 }
@@ -39,7 +39,17 @@ TemplateSaverBase::~TemplateSaverBase( )
 
 }
 
+
+CalculationsSaverBase::CalculationsSaverBase()
+{
+
+}
+
+CalculationsSaverBase::CalculationsSaverBase( TargetType )
+{
+
+}
+
 /* END */
 
 
-#include "templatesaverbase.moc"

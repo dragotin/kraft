@@ -31,6 +31,7 @@
 #include "kraftdb.h"
 #include "unitmanager.h"
 #include "dbids.h"
+#include "templatesaverdb.h"
 
 
 /* Table document:
@@ -118,86 +119,91 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
   int ordNumber = 1;
 
   for( dpb = posList.first(); dpb; dpb = posList.next() ) {
-     if( dpb->type() == DocPositionBase::Position ) {
-       DocPosition *dp = static_cast<DocPosition*>(dpb);
-       QSqlRecord *record = 0;
-       QSqlCursor cur( "docposition" );
-       bool doInsert = true;
+    if( dpb->type() == DocPositionBase::Position ) {
+      DocPosition *dp = static_cast<DocPosition*>(dpb);
+      QSqlRecord *record = 0;
+      QSqlCursor cur( "docposition" );
+      bool doInsert = true;
 
-       int posDbID = dp->dbId().toInt();
-       kdDebug() << "Position DB-Id: " << posDbID << endl;
-       if( posDbID > -1 ) {
-         const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
-         kdDebug() << "Selecting with " << selStr << endl;
-         cur.select( selStr );
-         if ( cur.next() ) {
-           if( ! dp->toDelete() )
-             record = cur.primeUpdate();
-           doInsert = false;
-         } else {
-           kdError() << "ERR: Could not select document position record" << endl;
-           return;
-         }
-       } else {
-          // The record is new
-         record = cur.primeInsert();
-       }
-       if( dp->toDelete() ) {
-         kdDebug() << "This one is to delete, do it!" << endl;
-         if( !doInsert ) {
-           // the position is already existing, delete it
-           cur.primeDelete();
-           cur.del();
-         }
+      int posDbID = dp->dbId().toInt();
+      kdDebug() << "Position DB-Id: " << posDbID << endl;
+      if( posDbID > -1 ) {
+        const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
+        kdDebug() << "Selecting with " << selStr << endl;
+        cur.select( selStr );
+        if ( cur.next() ) {
+          if( ! dp->toDelete() )
+            record = cur.primeUpdate();
+          doInsert = false;
+        } else {
+          kdError() << "ERR: Could not select document position record" << endl;
+          return;
+        }
+      } else {
+        // The record is new
+        record = cur.primeInsert();
+      }
+      if( dp->toDelete() ) {
+        kdDebug() << "This one is to delete, do it!" << endl;
 
-         continue;
-       }
+        if( !doInsert ) {
+          CalculationsSaverDB calculationSaver( CalculationsSaverBase::Document );
+          // CalcPartList cpList = dp->calculations();
 
-       if( record ) {
-         kdDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
-         record->setValue( "docID",     doc->docID().toInt() );
-         record->setValue( "ordNumber", ordNumber );
-         record->setValue( "text",      dp->text() );
-         record->setValue( "amount",    dp->amount() );
-         record->setValue( "unit",      dp->unit().id() );
-         record->setValue( "price",     dp->unitPrice().toDouble() );
+          // bool res = calculationSaver.saveCalculations( cpList, dp->dbId() );
+          // if ( !res ) {
+          //  kdDebug() << "ERR: deletion of doc position calculations failed!" << endl;
+          // }
+          // the position is already existing, delete it
+          cur.primeDelete();
+          cur.del();
+          // Calculation data is deleted automatically by the
+        }
+        continue;
+      }
 
-         ordNumber++; // FIXME
+      if( record ) {
+        kdDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
+        record->setValue( "docID",     doc->docID().toInt() );
+        record->setValue( "ordNumber", ordNumber );
+        record->setValue( "text",      dp->text() );
+        record->setValue( "amount",    dp->amount() );
+        record->setValue( "unit",      dp->unit().id() );
+        record->setValue( "price",     dp->unitPrice().toDouble() );
 
-         if( doInsert ) {
-           kdDebug() << "Inserting!" << endl;
-           cur.insert();
-           dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
-         } else {
-           kdDebug() << "Updating!" << endl;
-           cur.update();
+        ordNumber++; // FIXME
 
-         }
-       } else {
-         kdDebug() << "ERR: No record object found!" << endl;
-       }
-       QSqlError err = cur.lastError();
-       if( err.type() != QSqlError::None ) {
-         kdDebug() << "SQL-ERR: " << err.text() << endl;
-       }
-    }
-  }
+        if( doInsert ) {
+          kdDebug() << "Inserting!" << endl;
+          cur.insert();
+          dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
+        } else {
+          kdDebug() << "Updating!" << endl;
+          cur.update();
+
+        }
+      } else {
+        kdDebug() << "ERR: No record object found!" << endl;
+      }
+
+      QSqlError err = cur.lastError();
+      if( err.type() != QSqlError::None ) {
+        kdDebug() << "SQL-ERR: " << err.text() << " in " << cur.name() << endl;
+      }
+
+      if ( err.type() == QSqlError::None ) {
 #if 0
-  // now remove the removed positions
-  QSqlCursor cur( "docposition" );
-  DBIdList rPos = doc->removePositionList();
-  DBIdList::iterator it;
-  for ( it = rPos.begin(); it != rPos.end(); ++it ) {
-    const QString selector = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt()).arg((*it).toInt() );
-    cur.select( selector );
-
-    if( cur.next() ) {
-      cur.primeDelete();
-      cur.del();
-      kdDebug() << "Removed position " << (*it).toString() << endl;
+        // Now write the calculation data
+        kdDebug() << "******************************************************" << dp->calculations().count() << endl;
+        CalculationsSaverDB calculationSaver( CalculationsSaverBase::Document );
+        bool res = calculationSaver.saveCalculations( dp->calculations(), dp->dbId() );
+        if ( !res ) {
+          kdDebug() << "ERR: Saving of doc position calculations failed!" << endl;
+        }
+#endif
+      }
     }
   }
-#endif
 }
 
 void DocumentSaverDB::fillDocumentBuffer( QSqlRecord *buf, KraftDoc *doc )

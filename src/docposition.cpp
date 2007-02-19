@@ -91,6 +91,8 @@ DocPosition& DocPosition::operator=( const DocPosition& dp )
   return *this;
 }
 
+// ##############################################################
+
 DocPositionList::DocPositionList()
     : QPtrList<DocPositionBase>()
 {

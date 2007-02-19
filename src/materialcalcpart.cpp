@@ -27,6 +27,12 @@
 #include "unitmanager.h"
 #include <kglobal.h>
 
+MaterialCalcPart::MaterialCalcPart()
+  : CalcPart(),
+    m_calcID( 0 )
+{
+
+}
 
 MaterialCalcPart::MaterialCalcPart(long mCalcID, const QString& name, int percent )
     : CalcPart( name, percent ),

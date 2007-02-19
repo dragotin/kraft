@@ -159,49 +159,49 @@ void FloskelTemplate::setGewinn( double g )
 
 double FloskelTemplate::getGewinn( )
 {
-    return m_gewinn;
+  return m_gewinn;
 }
 
 void FloskelTemplate::setTemplID( int newID )
 {
-    m_templID = newID;
+  m_templID = newID;
 }
 
 void FloskelTemplate::setChapterID(int id)
 {
-    // FIXME: ggf. Umh�gen im Feature-listview
-    m_chapter = id;
+  // FIXME: ggf. Umh�gen im Feature-listview
+  m_chapter = id;
 }
 
 /** der Preis pro einer Einheit */
 Geld FloskelTemplate::einheitsPreis()
 {
-   return calcPreis();
+  return calcPreis();
 }
 
 CalculationType FloskelTemplate::calcKind()
 {
-    return m_calcType;
+  return m_calcType;
 }
 
 void FloskelTemplate::setCalculationType( CalculationType t )
 {
-    m_calcType = t;
+  m_calcType = t;
 }
 
 QString FloskelTemplate::calcKindString() const
 {
-    if( m_calcType == ManualPrice )
-        return i18n("Manual Price");
-    else if( m_calcType == Calculation )
-        return i18n("Calculated");
-    else return i18n( "Err: Unknown type %d").arg(m_calcType);
+  if( m_calcType == ManualPrice )
+    return i18n("Manual Price");
+  else if( m_calcType == Calculation )
+    return i18n("Calculated");
+  else return i18n( "Err: Unknown type %d").arg(m_calcType);
 }
 
 /** No descriptions */
 Geld FloskelTemplate::calcPreis()
 {
-    Geld g;
+  Geld g;
 
     if( calcKind() == ManualPrice )
     {
@@ -209,7 +209,7 @@ Geld FloskelTemplate::calcPreis()
     }
     else
     {
-        g = kostenPerKalcPart(ALL_KALKPARTS);
+        g = m_calcParts.calcPrice();
     }
     return g;
 }
@@ -219,25 +219,17 @@ CalcPartList FloskelTemplate::getCalcPartsList()
     return getCalcPartsList(ALL_KALKPARTS);
 }
 
+// Returns a calcpartlist where all calcparts have lost their connection
+// to the database from the dbID POV. That's needed for the transition
+// from template -> document calculations.
+CalcPartList FloskelTemplate::decoupledCalcPartsList()
+{
+  return m_calcParts.decoupledCalcPartsList();
+}
+
 CalcPartList FloskelTemplate::getCalcPartsList( const QString& calcPart )
 {
-    CalcPartList parts;
-
-    if( calcPart == ALL_KALKPARTS )
-        return m_calcParts;
-    else
-    {
-        CalcPart *cp;
-        /* suche nach einer speziellen Kalkulationsart */
-        for( cp = m_calcParts.first(); cp; cp = m_calcParts.next() )
-        {
-            if( calcPart == cp->getType() && ! cp->isToDelete() )
-            {
-                parts.append(cp);
-            }
-        }
-    }
-    return( parts );
+  return m_calcParts.getCalcPartsList( calcPart );
 }
 
 void FloskelTemplate::addCalcPart( CalcPart* cpart )
@@ -247,36 +239,26 @@ void FloskelTemplate::addCalcPart( CalcPart* cpart )
 
 void FloskelTemplate::removeCalcPart( CalcPart *cpart )
 {
-    if( cpart) {// m_calcParts.removeRef(cpart);
-        cpart->setToDelete(true);
-        cpart->setDirty(true);
-    }
+  if( cpart) {// m_calcParts.removeRef(cpart);
+    cpart->setToDelete(true);
+    cpart->setDirty(true);
+  }
 }
 
 Geld FloskelTemplate::kostenPerKalcPart( const QString& part )
 {
-    CalcPart *cp;
-    Geld g;
-
-    for( cp = m_calcParts.first(); cp; cp = m_calcParts.next() )
-    {
-        if( !cp->isToDelete() && (part == ALL_KALKPARTS || part == cp->getType()))
-        {
-            g += cp->kosten();
-        }
-    }
-    return g;
+  return m_calcParts.costPerCalcPart( part );
 }
 
 TemplateSaverBase* FloskelTemplate::getSaver()
 {
-    /* Hier k�nten andere Save-Engines ausgew�lt werden */
-    if( ! m_saver )
-    {
-        kdDebug() << "Erzeuge neuen DB-Saver" << endl;
-        m_saver = new TemplateSaverDB();
-    }
-    return m_saver;
+  /* Hier k�nten andere Save-Engines ausgew�lt werden */
+  if( ! m_saver )
+  {
+    kdDebug() << "Erzeuge neuen DB-Saver" << endl;
+    m_saver = new TemplateSaverDB();
+  }
+  return m_saver;
 }
 
 bool FloskelTemplate::save()

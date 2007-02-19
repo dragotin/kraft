@@ -172,20 +172,6 @@ void KatalogView::initActions()
 
 }
 
-// append the current selected item to document(s). If more than
-// one are open, open a dialog for selection
-void KatalogView::slAddToDocument()
-{
-  kdDebug() << "Append to document slot" << endl;
-  // Call a virtual method that copies data from the specialised view
-  // into the generic document position
-  DocPosition pos;
-  if( currentItemToDocPosition( pos ) ) {
-    emit newDocPosition( pos );
-    // CONTINUE
-  }
-}
-
 void KatalogView::openDocumentFile(const KURL& )
 {
   slotStatusMsg(i18n("Opening file..."));

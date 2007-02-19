@@ -63,6 +63,8 @@ class CatalogSelection;
 class AddressSelection;
 class KPushButton;
 
+class Katalog;
+
 class DocAssistant : public QSplitter
 {
   Q_OBJECT
@@ -83,7 +85,7 @@ public slots:
 
 signals:
   void selectPage( int );
-  void selectedPosition( DocPosition* );
+  void positionSelected( Katalog*, void* );
 private:
   DocPostCard *mPostCard;
   CatalogSelection *mCatalogSelection;
@@ -149,7 +151,7 @@ class KraftView : public KDialogBase
     void slotModifiedPositions();
     void slotModifiedHeader();
     void slotModifiedFooter();
-    void slotAddPosition( DocPosition *selectedDP = 0 );
+    void slotAddPosition( Katalog*, void* );
     void slotFocusPosition( PositionViewWidget*,  int );
 
   protected slots:
@@ -172,7 +174,7 @@ class KraftView : public KDialogBase
   signals:
     void selectPage( int );
     void viewClosed( bool );
-    void selectedPosition( DocPosition* );
+    void positionSelected( Katalog*, void* );
   private:
     void setupDocHeaderView();
     void setupPositions();
@@ -210,6 +212,7 @@ class KraftView : public KDialogBase
   DocAssistant *mAssistant;
   bool mShowAssistantDetail;
   double mRememberAmount;
+  QMap<dbID, CalcPartList> mCalculationsMap;
 };
 
 #endif // KRAFTVIEW_H

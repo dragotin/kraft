@@ -46,7 +46,7 @@ public:
   void setShowCalcParts( bool );
   bool showCalcParts();
   DocPosition itemToDocPosition( QListViewItem* it = 0 );
-
+  CalcPartList itemsCalcParts( QListViewItem* it = 0 );
 public slots:
     void slFreshupItem( QListViewItem*, FloskelTemplate*, bool remChildren = false );
 

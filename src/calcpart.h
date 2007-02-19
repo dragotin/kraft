@@ -70,7 +70,13 @@ private:
 
 class CalcPartList : public QPtrList<CalcPart>
 {
+public:
+  CalcPartList();
 
+  Geld calcPrice();
+  Geld costPerCalcPart( const QString& );
+  CalcPartList getCalcPartsList( const QString& );
+  CalcPartList decoupledCalcPartsList();
 };
 
 #endif

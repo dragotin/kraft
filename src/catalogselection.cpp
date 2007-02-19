@@ -100,11 +100,16 @@ void CatalogSelection::slotAppendToDoc( QListViewItem *item )
     kdError() << "Could not find catalog " << currentCat << endl;
   }
 
+  /*
+   * FIXME: Here we have to promote the Katalog and the selected floskel
+   * to be able to do things depending on the kind of katalog like
+   * calculation parts taking etc.
+   */
   KatalogListView *lv = mWidgetDict[ currentCat ];
   if ( lv ) {
-    DocPosition dp = lv->itemToDocPosition( item );
+    void *flosPtr = lv->currentItemData();
 
-    emit selectedPosition( &dp );
+    emit positionSelected( kat, flosPtr );
   } else {
     kdDebug() << "ERR: No listview stored for catalog " << currentCat << endl;
   }
