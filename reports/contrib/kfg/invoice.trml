@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="kraft.pdf">
+<template pageSize="(21cm, 29.7cm)" leftMargin="2.41cm" rightMargin="0.81cm"
+  topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document" 
+  author="http://kraft.sf.net" allowSplitting="20"
+  showBoundary="0">
+    <template>
+      <setFont name="Helvetica" size="12" />
+    </template>
+    <pageTemplate id="first">
+        <frame id="address"  x1="2.41cm" y1="20.5cm" width="8.5cm" height="4cm"/>
+        <frame id="info"     x1="12cm" y1="19.5cm" width="7.41cm" height="5cm"/>
+        <frame id="subject"  x1="2.41cm" y1="18.2cm" width="17cm"  height="1.2cm"/>
+        <frame id="detail"   x1="2.41cm" y1="3cm"  width="17cm"  height="15cm"/>
+
+    </pageTemplate> 
+
+    <pageTemplate id="others">
+        <frame id="content" x1="2.41cm" y1="2.2cm" width="17cm" height="24.5cm"/>
+
+        <pageGraphics>
+          <setFont name="Times-Roman" size="12" />
+          <lineMode width="0.5" />
+          <!-- <lines>8.75cm 2.0cm 12.75cm 2.0cm</lines> -->
+          <fill color="black" />
+          <drawCentredString x="107.5mm" y="1.5cm">Seite <pageNumber/></drawCentredString>
+        </pageGraphics>
+
+    </pageTemplate>
+</template>
+
+<stylesheet>
+    <initialize>
+      <alias id="style.normal" value="style.Normal"/>
+    </initialize>
+
+    <blockTableStyle id="products">
+      <blockValign value="TOP"/>
+       blockAlignment start="0,0" stop="3,0" value="RIGHT" />
+      <blockSpan start="1,0" stop="3,0"/>
+   </blockTableStyle>
+
+    <blockTableStyle id="sums">
+      <blockValign value="TOP"/>
+      <blockAlignment value="LEFT"/>
+      <lineStyle start="2,0" stop="3,0" kind="LINEABOVE" thickness="0.5" colorName="black"  />
+      <lineStyle start="2,2" stop="3,2" kind="LINEABOVE" thickness="1" colorName="black"  />
+   </blockTableStyle>
+
+   <paraStyle name="conditions" fontName="Times-Roman" fontSize="8" alignment="justify"/>
+   
+   <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
+   <paraStyle name="rtext" fontSize="12" fontName="Times-Roman" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="smallrtext" fontSize="10" fontName="Times-Roman" alignment="RIGHT" spaceBefore="0mm" />
+
+   <paraStyle name="head" fontSize="12" alignment="justify"/>
+   <paraStyle name="details" fontSize="12" alignment="right"/>
+   <paraStyle name="addressStyle" fontName="Times-Roman" fontSize="12" />
+
+</stylesheet>
+<story>
+    <!-- Address Frame -->
+    <xpre style="addressStyle">
+<br />
+<br />
+<br />
+<!-- ADDRESS -->
+    </xpre>
+    
+    <nextFrame/>
+    <!-- Info Frame -->
+    <para  style="rtext" alignment="right"></para>
+    <para  style="rtext"><!-- DATE --> </para>
+    <para  style="rtext"><!-- DOCTYPE --></para>
+    <para  style="rtext">Nr. <!-- DOCID --> </para>
+
+    <spacer length="3mm" width="1mm"/>
+    <para  style="smallrtext">Sparkasse Forchheim</para>
+    <para  style="smallrtext">BLZ 763 510 40</para>
+    <para  style="smallrtext">Kto. Nr. 142 117</para>
+
+    <spacer length="3mm" width="1mm"/>
+    <para  style="smallrtext">Finanzamt Forchheim</para>
+    <para  style="smallrtext">Steuernr. 217/218/10175</para>
+    <nextFrame/>
+    <!-- Subject Frame -->
+
+    <!-- Detail Frame -->
+    <spacer length="1mm" width="1mm"/>
+    <para style="text">
+        <!-- SALUT -->
+    </para>
+    <spacer length="1mm" width="1mm"/>
+        <!-- PRETEXT -->
+
+    <setNextTemplate name="others" />
+
+    <spacer length="18mm" width="1mm"/>
+
+
+    <!-- POSITION_LOOP -->
+    <blockTable colWidths="8mm,8cm,4cm,4cm" style="products" repeatRows="0">
+    <tr>
+        <td><para style="text"><!-- POS_NUMBER -->.</para></td>
+        <td><!-- POS_TEXT --></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><para style="rtext"><!-- POS_AMOUNT --> <!-- POS_UNIT --></para></td>
+        <td><para style="rtext">je <!-- POS_UNITPRICE -->   </para></td>
+        <td><para style="rtext"><!-- POS_TOTAL -->  </para></td>
+    </tr>
+    </blockTable>
+    <spacer length="4mm" width="1mm"/>
+    <!-- POSITION_LOOP_END -->
+
+    <blockTable colWidths="8mm,8cm,4cm,4cm" style="sums" repeatRows="0">
+    <tr><td></td>
+        <td></td>
+        <td><para style="text">Nettosumme:</para></td>
+        <td><para style="rtext"><!-- NETTOSUM --></para></td>
+    </tr>
+    <tr><td></td>
+        <td></td>
+        <td><para style="text">+<!-- VAT -->% MwSt.</para></td>
+        <td><para style="rtext"><!-- VATSUM --></para></td>
+    </tr>
+    <tr><td></td>
+        <td></td>
+        <td><para style="text">Gesamtsumme:</para></td>
+        <td><para style="rtext"><!-- BRUTTOSUM --></para></td>
+    </tr>
+    </blockTable>
+
+    <spacer length="1cm" width="1mm"/>
+    <condPageBreak height="8cm"/>
+	<!-- POSTTEXT -->
+    <spacer length="0.5cm" width="1mm"/>
+    <para style="text">
+       <!-- GOODBYE -->
+    </para>
+</story>
+</document>
