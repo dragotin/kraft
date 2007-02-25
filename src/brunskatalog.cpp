@@ -91,11 +91,11 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
     i = bSize.getSizeAdd();
     str = m_sizeAdds[i];
 
+    // kdDebug() << "H ist " << *h << " and Str ist " << str << endl;
     if( h && str ) {
-      kdDebug() << "H ist " << *h << " and Str ist " << str << endl;
       res << ( *h + " " + *str );
-    } else {
-      res << QString();
+    } else if ( h ) {
+      res << *h;
     }
 
     i = bSize.getRootPack();
@@ -112,7 +112,7 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
     if( str ) {
       res << *str;
     } else {
-      res << QString::number(i);
+      res << QString();
     }
 
     i = bSize.getGoodsGroup();
@@ -125,89 +125,90 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
     return res;
 }
 
-int BrunsKatalog::load() {
-    int cnt = 0;
-    kdDebug() << "Loading brunskatalog from " << m_dataFile << endl;
-    loadDBKeys();
+int BrunsKatalog::load()
+{
+  int cnt = 0;
+  kdDebug() << "Loading brunskatalog from " << m_dataFile << endl;
+  loadDBKeys();
 
-    QFile file( m_dataFile );
-    if ( file.open( IO_ReadOnly ) ) {
-        QTextStream stream( &file );
-        stream.setEncoding(QTextStream::Latin1);
-        QString line;
-        QString h;
-        int d;
-        bool ok = true;
-        BrunsRecordList* recList;
+  QFile file( m_dataFile );
+  if ( file.open( IO_ReadOnly ) ) {
+    QTextStream stream( &file );
+    stream.setEncoding(QTextStream::Latin1);
+    QString line;
+    QString h;
+    int d;
+    bool ok = true;
+    BrunsRecordList* recList;
 
-        BrunsRecord rec;
+    BrunsRecord *rec;
+    rec = new BrunsRecord();
 
-        while ( !stream.atEnd() ) {
-            line = stream.readLine(); // line of text excluding '\n'
-            d = intPart(line, 0,6);
-            if( d > 0) {
-                if( ! ok )
-                    kdDebug() << "failed to parse!" << endl;
+    while ( !stream.atEnd() ) {
+      line = stream.readLine(); // line of text excluding '\n'
+      d = intPart(line, 0,6);
+      if( d > 0) {
+        if( ! ok )
+          kdDebug() << "failed to parse!" << endl;
 
-                int pgroup = intPart(line, 12,18);
-                int artID = intPart(line, 18, 24);
-                // kdDebug() << "Have plant group " << pgroup << endl;
+        int pgroup = intPart(line, 12,18);
+        int artID = intPart(line, 18, 24);
+        // kdDebug() << "Have plant group " << pgroup << endl;
 
-                BrunsSize size;
-                size.setFormNo(intPart(line, 34, 38));
-                size.setGrothNo(intPart(line, 38, 42));
-                size.setRootPack(intPart(line, 42, 47));
-                size.setQualityAdd(intPart(line, 52, 56));
-                size.setFormAdd(intPart(line, 164, 168));
-                size.setGoodsGroup(intPart(line, 267, 271));
-                size.setPrimMatchcode( line.mid( 118, 23).stripWhiteSpace().local8Bit());
-                size.setSize( intPart( line, 57, 60 ));
-                size.setSizeAdd( intPart( line, 61, 64 ));
+        BrunsSize size;
+        size.setFormNo(intPart(line, 34, 38));
+        size.setGrothNo(intPart(line, 38, 42));
+        size.setRootPack(intPart(line, 42, 47));
+        size.setQualityAdd(intPart(line, 52, 56));
+        size.setFormAdd(intPart(line, 164, 168));
+        size.setGoodsGroup(intPart(line, 267, 271));
+        size.setPrimMatchcode( line.mid( 118, 23).stripWhiteSpace().local8Bit());
+        size.setSizeAdd( intPart( line, 56, 60 ));
+        size.setSize( intPart( line, 60, 64 ));
 
-                if( rec.getArtId() == artID ) {
-                    // Only add an additional size
-                    rec.addSize(size);
+        if( rec->getArtId() == artID ) {
+          // Only add an additional size
+          rec->addSize(size);
 
-                } else {
-                    // the record is new
+        } else {
+          // the record is new
 
-                    // save the last one away
-                    recList = m_recordLists[pgroup];
-                    if( ! recList ) {
-                        // create a new record list for this plantgroup */
-                        recList = new BrunsRecordList();
-                        m_recordLists.insert(pgroup, recList);
-                    }
-                    recList->append(rec);
+          // save the last one away
+          recList = m_recordLists[pgroup];
+          if( ! recList ) {
+            // create a new record list for this plantgroup */
+            recList = new BrunsRecordList();
+            m_recordLists.insert(pgroup, recList);
+          }
+          recList->append(rec);
+          rec = new BrunsRecord();
 
-                    // and clear it for the new one
-                    rec.clearSizes();
-                    // and fill with the new data.
-                    rec.setPlantGroup(pgroup);
-                    rec.setArtId(intPart(line, 18, 24));
-                    rec.setArtMatch( line.mid(24, 10).local8Bit());
+          // and fill with the new data.
+          rec->setPlantGroup(pgroup);
+          rec->setArtId(intPart(line, 18, 24));
+          rec->setArtMatch( line.mid(24, 10).local8Bit());
 
-                    QString n = line.mid( 271, 60 ).stripWhiteSpace();
-                    if( m_wantToLower ) {
-                        rec.setDtName( toLower( n ).local8Bit() );
-                    } else {
-                        rec.setDtName( n.local8Bit() );
-                    }
-                    n = line.mid( 331, 60  ).stripWhiteSpace();
-                    if( m_wantToLower ) {
-                        rec.setLtName( toLower( n ).local8Bit() );
-                    } else {
-                        rec.setLtName( n.local8Bit() );
-                    }
+          QString n = line.mid( 271, 60 ).stripWhiteSpace();
+          if( m_wantToLower ) {
+            rec->setDtName( toLower( n ).local8Bit() );
+          } else {
+            rec->setDtName( n.local8Bit() );
+          }
+          n = line.mid( 331, 60  ).stripWhiteSpace();
+          if( m_wantToLower ) {
+            rec->setLtName( toLower( n ).local8Bit() );
+          } else {
+            rec->setLtName( n.local8Bit() );
+          }
 
-                    rec.addSize(size);
-                }
-            }
+          rec->addSize(size);
         }
-    } else {
-        kdDebug() << "Unable to open " << m_dataFile << endl;
+      }
     }
-    return cnt;
+  } else {
+    kdDebug() << "Unable to open " << m_dataFile << endl;
+  }
+  return cnt;
 }
 
 inline QString BrunsKatalog::toLower( const QString& line )

@@ -1,8 +1,8 @@
 /***************************************************************************
- inserttemplatedialog.h  - small dialog to insert templates into documents
+ insertplantdialog.h  - small dialog to insert plants into documents
                              -------------------
-    begin                : Sep 2006
-    copyright            : (C) 2006 Klaas Freitag
+    begin                : Feb 2007
+    copyright            : (C) 2007 Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,33 +14,47 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef INSERTTEMPLDIALOG_H
-#define INSERTTEMPLDIALOG_H
+#ifndef INSERTPLANTDIALOG_H
+#define INSERTPLANTDIALOG_H
 
+#include <qmap.h>
 #include <kdialogbase.h>
 
-#include "docposition.h"
+#include "brunsrecord.h"
 #include "templtopositiondialogbase.h"
 
-class insertTmplBase;
+class insertPlantBase;
+class BrunsRecord;
+class BrunsSize;
+class DocPosition;
+class KListViewItem;
 
-class InsertTemplDialog: public TemplToPositionDialogBase
+class InsertPlantDialog: public TemplToPositionDialogBase
 {
     Q_OBJECT
 
 public:
-    InsertTemplDialog( QWidget* );
-  ~InsertTemplDialog();
+    InsertPlantDialog( QWidget* );
+  ~InsertPlantDialog();
 
-  void setDocPosition( DocPosition * );
+  void setSelectedPlant( BrunsRecord* );
+
+  void setDocPosition( DocPosition* );
+
   DocPosition docPosition();
+
+protected slots:
+  void slotSizeListSelectionChanged();
 
 protected:
   QComboBox *getPositionCombo();
 
 private:
-  insertTmplBase *mBaseWidget;
-  DocPosition mParkPosition;
+  insertPlantBase *mBaseWidget;
+  QMap<KListViewItem*, QString> mSizeMap;
+  QString mLtName;
+  QString mDtName;
+
 };
 
 #endif

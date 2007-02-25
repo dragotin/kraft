@@ -20,6 +20,7 @@
 
 #include <qcstring.h>
 #include <qvaluelist.h>
+#include <qptrlist.h>
 
 /**
 @author Klaas Freitag
@@ -114,6 +115,6 @@ private:
     QCString ltName;   // 322-391
 };
 
-typedef QValueList<BrunsRecord> BrunsRecordList;
+typedef QPtrList<BrunsRecord> BrunsRecordList;
 
 #endif

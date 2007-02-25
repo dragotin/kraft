@@ -40,13 +40,11 @@ public:
 
   ~BrunsKatalogListView();
   void addCatalogDisplay( const QString& katName );
-  BrunsRecord getRecord( QListViewItem * );
   void setupChapters();
-  DocPosition itemToDocPosition( QListViewItem *it = 0 );
+
   KatalogListView *createListView( QWidget* );
 private:
 
-  QMap<QListViewItem*, BrunsRecord> m_itemMap;
   QMap<TopKatalogIds, KListViewItem*> m_topFolderMap;
 };
 

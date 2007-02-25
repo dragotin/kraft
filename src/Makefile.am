@@ -22,7 +22,7 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	kraftdoc.cpp main.cpp unitmanager.cpp stockmaterial.cpp \
 	stockmaterialman.cpp materialcalcpart.cpp flostempldialog.cpp \
 	stdsatzman.cpp zeitpartui.ui fixpartui.ui matpartui.ui inserttmplbase.ui \
-	materialdialog.ui materialtempldialog.cpp \
+	materialdialog.ui materialtempldialog.cpp insertplantbase.ui \
 	zeitcalcdialog.cpp fixcalcdialog.cpp mateditor.cpp matdatatable.cpp matcalcdialog.h \
 	matcalcdialog.cpp templatesaverbase.cpp templatesaverdb.cpp kraftsettings.kcfgc \
 	materialsaverbase.cpp materialsaverdb.cpp \
@@ -34,7 +34,8 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	addressselection.cpp kraftdocheaderedit.cpp kraftdocfooteredit.cpp \
 	inserttempldialog.cpp archdocposition.cpp archdoc.cpp defaultprovider.cpp \
 	materialkataloglistview.cpp materialkatalogview.cpp materialselectdialog.cpp \
-        kraftdocedit.cpp kraftdocpositionsedit.cpp portalhtmlview.cpp
+        kraftdocedit.cpp kraftdocpositionsedit.cpp portalhtmlview.cpp \
+	templtopositiondialogbase.cpp insertplantdialog.cpp
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml 
 

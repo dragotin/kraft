@@ -75,6 +75,9 @@
 #include "inserttempldialog.h"
 #include "defaultprovider.h"
 #include "stockmaterial.h"
+#include "brunsrecord.h"
+#include "insertplantdialog.h"
+#include "templtopositiondialogbase.h"
 
 #include <qtimer.h>
 
@@ -745,6 +748,8 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
   int newpos = mPositionWidgetList.count()+1;
   kdDebug() << "Adding Position at position " << newpos << endl;
 
+  TemplToPositionDialogBase *dia = 0;
+
   DocPosition *dp = new DocPosition();
   if ( tmpl && kat ) {
     if ( kat->type() == TemplateCatalog ) {
@@ -752,41 +757,49 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       dp->setText( ftmpl->getText() );
       dp->setUnit( ftmpl->einheit() );
       dp->setUnitPrice( ftmpl->einheitsPreis() );
+      dia = new InsertTemplDialog( this );
     } else if ( kat->type() == MaterialCatalog ) {
       StockMaterial *mat = static_cast<StockMaterial*>( tmpl );
       dp->setText( mat->name() );
       dp->setUnit( mat->getUnit() );
       dp->setUnitPrice( mat->salesPrice() );
+
+      dia = new InsertTemplDialog( this );
     } else if ( kat->type() == PlantCatalog ) {
-      kdDebug() << "Plant catalog insert still unhandled." << endl;
+      BrunsRecord *bruns = static_cast<BrunsRecord*>( tmpl );
+      dia = new InsertPlantDialog( this );
+      InsertPlantDialog *plantDia = static_cast<InsertPlantDialog*>( dia );
+      plantDia->setSelectedPlant( bruns );
     }
   }
 
-  InsertTemplDialog dia( this );
+  if ( dia ) {
+    if ( mRememberAmount > 0 ) {
+      dp->setAmount( mRememberAmount );
+    }
 
-  if ( mRememberAmount > 0 ) {
-    dp->setAmount( mRememberAmount );
+    dia->setDocPosition( dp );
+
+    dia->setPositionList( currentPositionList(), newpos );
+
+    if ( dia->exec() ) {
+      *dp = dia->docPosition();
+      // The database ids for the calculations have to be wiped out
+      // because they point to the template tables so far. But for
+      // the document calculation info they have to go to the
+      // doc calculation tables with new ids
+
+      newpos = dia->insertAfterPosition();
+
+      mRememberAmount = dp->amount();
+
+      kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
+    } else {
+      return;
+    }
   }
-  dia.setDocPosition( dp );
 
-  dia.setPositionList( currentPositionList(), newpos );
-
-  if ( dia.exec() ) {
-    *dp = dia.docPosition();
-    // The database ids for the calculations have to be wiped out
-    // because they point to the template tables so far. But for
-    // the document calculation info they have to go to the
-    // doc calculation tables with new ids
-
-
-    newpos = dia.insertAfterPosition();
-
-    mRememberAmount = dp->amount();
-
-    kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
-  } else {
-    return;
-  }
+  delete dia;
 
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
 

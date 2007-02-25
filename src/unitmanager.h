@@ -31,6 +31,9 @@
  *
  */
 
+// FIXME: How to identify the unit for piece?
+#define PIECE_UNIT_ID 6
+
 class UnitManager
 {
 

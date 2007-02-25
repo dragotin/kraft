@@ -35,11 +35,12 @@
 #include <kdebug.h>
 
 #include "inserttmplbase.h"
+#include "templtopositiondialogbase.h"
+
 #include "einheit.h"
 
 InsertTemplDialog::InsertTemplDialog( QWidget *parent )
-  :KDialogBase( parent, "TEMPL_DIALOG", true, i18n( "Create Position from Template" ),
-                Ok | Cancel )
+  : TemplToPositionDialogBase( parent )
 {
   QWidget *w = makeVBoxMainWidget();
 
@@ -59,6 +60,7 @@ void InsertTemplDialog::setDocPosition( DocPosition *dp )
   mBaseWidget->dmAmount->setFocus();
 }
 
+#if 0
 void InsertTemplDialog::setPositionList( DocPositionList list, int intendedPos )
 {
   DocPositionBase *dpb;
@@ -79,6 +81,12 @@ void InsertTemplDialog::setPositionList( DocPositionList list, int intendedPos )
   if ( intendedPos > 0 ) --intendedPos;
   mBaseWidget->dmPositionCombo->setCurrentItem( intendedPos );
 }
+#endif
+
+QComboBox *InsertTemplDialog::getPositionCombo()
+{
+  return mBaseWidget->dmPositionCombo;
+}
 
 DocPosition InsertTemplDialog::docPosition()
 {
@@ -89,13 +97,6 @@ DocPosition InsertTemplDialog::docPosition()
   return mParkPosition;
 }
 
-int InsertTemplDialog::insertAfterPosition()
-{
-  int itemPos = mBaseWidget->dmPositionCombo->currentItem();
-  kdDebug() << "Current item selected: " << itemPos << endl;
-
-  return itemPos;
-}
 
 InsertTemplDialog::~InsertTemplDialog()
 {

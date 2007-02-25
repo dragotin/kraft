@@ -85,9 +85,10 @@ void BrunsKatalogView::slPlantSelected( QListViewItem *item)
 
     m_details->clear();
 
-    BrunsRecord rec = m_brunsListView->getRecord(item);
+    BrunsRecord *rec = static_cast<BrunsRecord*>( m_brunsListView->itemData(item) );
 
-    BrunsSizeList sizes = rec.getSizes();
+    if ( ! rec ) return;
+    BrunsSizeList sizes = rec->getSizes();
     BrunsSizeList::iterator it;
     for( it = sizes.begin(); it != sizes.end(); ++it ) {
       KListViewItem *guiItem = new KListViewItem(m_details, (*it).getPrimMatchcode() );
@@ -99,8 +100,6 @@ void BrunsKatalogView::slPlantSelected( QListViewItem *item)
       }
         // kdDebug() << "showing new plant detail item" << endl;
     }
-
-
 }
 
 #include "brunskatalogview.moc"

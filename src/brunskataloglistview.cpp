@@ -64,14 +64,14 @@ void BrunsKatalogListView::addCatalogDisplay( const QString& katName )
         BrunsRecordList *records = catalog->getRecordList(chapter);
 
         if( records ) {
-            BrunsRecordList::iterator it;
-            for ( it = records->begin(); it != records->end(); ++it ) {
-                BrunsRecord rec((*it) );
-                KListViewItem *recItem = new KListViewItem( katItem, rec.getLtName(),
-                        rec.getDtName(),
-                        QString::number(rec.getArtId()),
-                        rec.getArtMatch());
-                m_itemMap[recItem] = rec;
+            BrunsRecord *rec;
+
+            for ( rec = records->last(); rec; rec = records->prev() ) {
+                KListViewItem *recItem = new KListViewItem( katItem, rec->getLtName(),
+                        rec->getDtName(),
+                        QString::number(rec->getArtId()),
+                        rec->getArtMatch());
+                m_dataDict.insert( recItem, rec );
             }
         }
     }
@@ -155,20 +155,4 @@ void BrunsKatalogListView::setupChapters()
   }
 }
 
-BrunsRecord BrunsKatalogListView::getRecord( QListViewItem *it )
-{
-  BrunsRecord re;
-  if( it ) {
-    return m_itemMap[it];
-  }
-  return re;
-}
-
-
-DocPosition BrunsKatalogListView::itemToDocPosition( QListViewItem*  )
-{
-  DocPosition pos;
-  // FIXME
-  return pos;
-}
 
