@@ -751,6 +751,8 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
   TemplToPositionDialogBase *dia = 0;
 
   DocPosition *dp = new DocPosition();
+  QSize s;
+
   if ( tmpl && kat ) {
     if ( kat->type() == TemplateCatalog ) {
       FloskelTemplate *ftmpl = static_cast<FloskelTemplate*>( tmpl );
@@ -758,6 +760,8 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       dp->setUnit( ftmpl->einheit() );
       dp->setUnitPrice( ftmpl->einheitsPreis() );
       dia = new InsertTemplDialog( this );
+      s = KraftSettings::self()->templateToPosDialogSize();
+
     } else if ( kat->type() == MaterialCatalog ) {
       StockMaterial *mat = static_cast<StockMaterial*>( tmpl );
       dp->setText( mat->name() );
@@ -765,11 +769,14 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       dp->setUnitPrice( mat->salesPrice() );
 
       dia = new InsertTemplDialog( this );
+      s = KraftSettings::self()->templateToPosDialogSize();
+
     } else if ( kat->type() == PlantCatalog ) {
       BrunsRecord *bruns = static_cast<BrunsRecord*>( tmpl );
       dia = new InsertPlantDialog( this );
       InsertPlantDialog *plantDia = static_cast<InsertPlantDialog*>( dia );
       plantDia->setSelectedPlant( bruns );
+      s = KraftSettings::self()->plantTemplateToPosDialogSize();
     }
   }
 
@@ -782,6 +789,8 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 
     dia->setPositionList( currentPositionList(), newpos );
 
+    dia->setInitialSize( s );
+
     if ( dia->exec() ) {
       *dp = dia->docPosition();
       // The database ids for the calculations have to be wiped out
@@ -789,6 +798,16 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       // the document calculation info they have to go to the
       // doc calculation tables with new ids
 
+      // store the initial size of the template-to-doc-pos dialogs
+      s = dia->size();
+      if ( kat->type() == PlantCatalog ) {
+        KraftSettings::self()->setPlantTemplateToPosDialogSize( s );
+      } else {
+        KraftSettings::self()->setTemplateToPosDialogSize( s );
+      }
+      KraftSettings::self()->writeConfig();
+
+      kdDebug() << "The finish size is " << s << endl;
       newpos = dia->insertAfterPosition();
 
       mRememberAmount = dp->amount();

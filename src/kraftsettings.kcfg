@@ -31,6 +31,12 @@
     <entry name="assistantSplitterSetting" type="IntList">
       <label>The splitter setting for the the doc assistant</label>
     </entry>
+    <entry name="plantTemplateToPosDialogSize" type="Size">
+      <label>The window size of the template to document dialog for plants</label>
+    </entry>
+    <entry name="templateToPosDialogSize" type="Size">
+      <label>The window size of the template  to document dialog</label>
+    </entry>
   </group>
   <group name="material">
     <entry name="materialAddOnPercent" type="Double">
@@ -42,10 +48,6 @@
     </entry>
   </group>
   <group name="reporting">
-    <entry name="NCReportBinary">
-      <label>The complete filename of the NCReport binary</label>
-      <default>ncreport</default>
-    </entry>
     <entry name="Trml2PdfBinary">
       <label>The complete filename of the trml2pdf binary</label>
       <default>trml2pdf</default>
