@@ -815,14 +815,9 @@ DocPositionList KraftView::currentPositionList()
       DocPositionBase *dpb = widget->position();
       if ( dpb ) {
         DocPosition *dp = new DocPosition( );
-#if 0
-        DocPosition *dp1 = static_cast<DocPosition*>( dpb );
-        kdDebug() << "################################# Amount of calculations: " << dp1->calculations().count() << endl;
-        dp->setCalculations( dp1->calculations() );
-        kdDebug() << "################################# Amount of calculations: " << dp->calculations().count() << endl;
-#endif
         dp->setDbId( dpb->dbId().toInt() );
         // dp->setPosition( dpb->position() );
+
         dp->setToDelete( widget->deleted() );
 
         dp->setText( widget->m_teFloskel->text() );

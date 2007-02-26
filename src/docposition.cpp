@@ -87,7 +87,9 @@ DocPosition& DocPosition::operator=( const DocPosition& dp )
   m_unitPrice = dp.m_unitPrice;
   m_amount = dp.m_amount;
   m_dbId = dp.m_dbId;
-
+  mToDelete = dp.mToDelete;
+  mType = dp.mType;
+  
   return *this;
 }
 
