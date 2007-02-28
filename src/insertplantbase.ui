@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>488</width>
-            <height>233</height>
+            <width>656</width>
+            <height>270</height>
         </rect>
     </property>
     <property name="caption">
@@ -21,7 +21,7 @@
         </property>
         <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>layout5</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -92,7 +92,7 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout5</cstring>
+                        <cstring>layout4</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -156,6 +156,14 @@
                                 <string></string>
                             </property>
                         </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>mUpdateLabel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>textLabel1</string>
+                            </property>
+                        </widget>
                         <spacer>
                             <property name="name">
                                 <cstring>spacer1</cstring>
@@ -168,7 +176,7 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>30</width>
+                                    <width>40</width>
                                     <height>20</height>
                                 </size>
                             </property>

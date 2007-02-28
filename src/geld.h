@@ -40,6 +40,7 @@ public:
     ~Geld();
 
     Geld& operator=(const long);
+    Geld& operator=(const double);
     Geld& operator=(const Geld&);
 
     Geld operator/(const double);

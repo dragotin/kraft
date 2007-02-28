@@ -793,10 +793,6 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 
     if ( dia->exec() ) {
       *dp = dia->docPosition();
-      // The database ids for the calculations have to be wiped out
-      // because they point to the template tables so far. But for
-      // the document calculation info they have to go to the
-      // doc calculation tables with new ids
 
       // store the initial size of the template-to-doc-pos dialogs
       s = dia->size();
@@ -807,7 +803,6 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       }
       KraftSettings::self()->writeConfig();
 
-      kdDebug() << "The finish size is " << s << endl;
       newpos = dia->insertAfterPosition();
 
       mRememberAmount = dp->amount();

@@ -18,16 +18,47 @@
 #define INSERTPLANTDIALOG_H
 
 #include <qmap.h>
+#include <qsqlquery.h>
+#include <qdatetime.h>
+
 #include <kdialogbase.h>
 
 #include "brunsrecord.h"
 #include "templtopositiondialogbase.h"
+#include "geld.h"
 
 class insertPlantBase;
 class BrunsRecord;
 class BrunsSize;
 class DocPosition;
 class KListViewItem;
+class Geld;
+
+
+class PlantPriceInfo
+{
+public:
+  PlantPriceInfo( double price, QDate date )
+    : mPrice( price ), mLastUpdateDate( date ) {
+
+  }
+  PlantPriceInfo() {
+
+  }
+
+  Geld price() {
+    return mPrice;
+  }
+
+  QDate lastUpdateDate() {
+    return mLastUpdateDate;
+  }
+
+private:
+  Geld  mPrice;
+  QDate mLastUpdateDate;
+};
+
 
 class InsertPlantDialog: public TemplToPositionDialogBase
 {
@@ -45,16 +76,21 @@ public:
 
 protected slots:
   void slotSizeListSelectionChanged();
+  void slotOk();
 
 protected:
   QComboBox *getPositionCombo();
 
 private:
+  PlantPriceInfo getPriceInfo( const QString& );
+  void setPrice( const QString&, double );
+
   insertPlantBase *mBaseWidget;
   QMap<KListViewItem*, QString> mSizeMap;
+  QMap<KListViewItem*, PlantPriceInfo> mPriceMap;
   QString mLtName;
   QString mDtName;
-
+  QSqlQuery mPriceQuery;
 };
 
 #endif

@@ -46,6 +46,12 @@ Geld& Geld::operator=(const long l)
     return *this;
 }
 
+Geld& Geld::operator=(const double d)
+{
+    m_cent = qRound( 100.0 * d );
+    return *this;
+}
+
 Geld& Geld::operator=(const Geld& g)
 {
   if ( this == &g ) return *this;
