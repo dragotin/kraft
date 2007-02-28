@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
-Exec=kraft -caption "%c" %i %m 
+Exec=kraft -caption "%c" %i %m
 Icon=kraft
 DocPath=kraft/index.html
 Terminal=false
