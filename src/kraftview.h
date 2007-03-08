@@ -213,6 +213,7 @@ class KraftView : public KDialogBase
   bool mShowAssistantDetail;
   double mRememberAmount;
   QMap<dbID, CalcPartList> mCalculationsMap;
+  bool mModified;
 };
 
 #endif // KRAFTVIEW_H

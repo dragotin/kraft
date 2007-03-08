@@ -53,7 +53,8 @@ PositionViewWidget::PositionViewWidget()
 
   /* modified signals */
   connect( m_cbUnit,      SIGNAL( activated(int) ), this,      SLOT( slotModified() ) );
-  connect( m_teFloskel,   SIGNAL( textChanged() ), this,       SLOT( slotModified() ) );
+  // connect( m_teFloskel,   SIGNAL( textChanged() ), this,       SLOT( slotModified() ) );
+  // teFloskel is already connected in ui file
   connect( m_sbAmount,    SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
   connect( m_sbUnitPrice, SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
 
@@ -228,7 +229,8 @@ void PositionViewWidget::slotModified()
   // if( mModified ) return;
     if( m_skipModifiedSignal ) return;
     kdDebug() << "Modified Position!" << endl;
-
+    QColor c( "red" );
+    m_labelPosition->setPaletteForegroundColor( c );
     mModified = true;
     emit positionModified();
 }

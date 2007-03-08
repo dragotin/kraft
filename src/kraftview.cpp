@@ -208,7 +208,8 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 KraftView::KraftView(QWidget *parent, const char *name) :
   KDialogBase( parent, name, false /* modal */, i18n("Document"),
 	      Ok|Cancel, Ok, true /* separator */ ),
-  m_doc( 0 ),  mShowAssistantDetail( false ),  mRememberAmount( -1 )
+  m_doc( 0 ),  mShowAssistantDetail( false ),  mRememberAmount( -1 ),
+  mModified( false )
 {
   mDeleteMapper = new QSignalMapper( this );
   connect( mDeleteMapper, SIGNAL( mapped(int)),
@@ -419,6 +420,7 @@ void KraftView::redrawDocument( )
 
     redrawDocPositions( );
     refreshPostCard();
+    mModified = false;
 }
 
 void KraftView::redrawDocPositions( )
@@ -704,8 +706,8 @@ void KraftView::slotUnlockPosition( int pos )
 void KraftView::slotPositionModified( int pos )
 {
   kdDebug() << "Modified Position " << pos << endl;
-
-  refreshPostCard();
+  mModified = true;
+  QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
 void KraftView::slotSelectAddress( KABC::Addressee contact )
@@ -866,22 +868,22 @@ void KraftView::slotShowCatalog( bool on )
 
 void KraftView::slotModifiedPositions()
 {
-  kdDebug() << "Positions Modified" << endl;
-
-  QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
-
+  kdDebug() << "Position Modified" << endl;
+  mModified = true;
 }
 
 void KraftView::slotModifiedHeader()
 {
-    kdDebug() << "Modified the header!" << endl;
+  kdDebug() << "Modified the header!" << endl;
+  mModified = true;
 
-    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+  QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
 void KraftView::slotModifiedFooter()
 {
   kdDebug() << "Modified the footer!" << endl;
+  mModified = true;
 
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
@@ -966,6 +968,15 @@ void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
 void KraftView::slotCancel()
 {
   // We need to reread the document
+  if ( mModified ) {
+    if ( KMessageBox::warningYesNo( this, i18n( "The document was modified, do "
+                                            "you really want to discard all changes?" ) )
+          == KMessageBox::No  )
+    {
+      return;
+    }
+  }
+
   KraftDoc *doc = getDocument();
   if( doc && doc->isModified() ) {
     kdDebug() << "Document refetch from database" << endl;
