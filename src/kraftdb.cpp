@@ -152,7 +152,7 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
   // cur.setMode( QSqlCursor::ReadOnly );
   cur.select( QString( "category='%1'" ).arg( selector ) );
   while ( cur.next() ) {
-    QString w = QString::fromUtf8( cur.value( "word" ).toCString() );
+    QString w = cur.value( "word" ).toString();
     kdDebug() << "Adding to wordlist <" << w << ">" << endl;
     StringMap::Iterator it;
     for ( it = replaceMap.begin(); it != replaceMap.end(); ++it ) {

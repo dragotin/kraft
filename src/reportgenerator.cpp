@@ -20,6 +20,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qregexp.h>
+#include <qstylesheet.h>
 
 #include <kstaticdeleter.h>
 #include <kdebug.h>
@@ -175,7 +176,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 
       replaceTag( loopPart,
                   TAG( "POS_TEXT" ),
-                  rmlString( pos.text() ));
+                  pos.text(),  true ); // multiline
 
       h.setNum( pos.amount(), 'f', 2 );
       replaceTag( loopPart,
@@ -221,10 +222,10 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
               archive.goodbye() );
   replaceTag( tmpl,
               TAG( "PRETEXT" ),
-              rmlString( archive.preText() ) );
+              archive.preText(), true ); // multiline
   replaceTag( tmpl,
               TAG( "POSTTEXT" ),
-              rmlString( archive.postText() ) );
+              archive.postText(), true ); // multiline
 
   replaceTag( tmpl,
               TAG( "BRUTTOSUM" ),
@@ -317,19 +318,29 @@ QString ReportGenerator::replaceOwnAddress( QString& tmpl )
   return tmpl;
 }
 
+QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const
+{
+  QString re( QStyleSheet::escape( str ) );
+
+  // FIXME: Workaround for broken trml2pdf which needs double escaped
+  //        & characters to work properly.
+  return re.replace( QChar( '&' ), "&amp;" );
+}
+
 
 QString ReportGenerator::rmlString( const QString& str ) const
 {
   QString rml;
 
-  QStringList li = QStringList::split( "\n", str );
+  QStringList li = QStringList::split( "\n", escapeTrml2pdfXML( str ) );
   rml = "<para style=\"text\">" + li.join( "</para><para style=\"text\">" ) + "</para>";
   kdDebug() << "Returning " << rml << endl;
   return rml;
 }
 
-int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QString& rep )
+int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QString& rep, bool multiline )
 {
+
   if ( tag == TAG( "IMAGE" ) ) {
     kdDebug() << "Replacing image tag" << endl;
     QRegExp reg( "<!-- IMAGE\\(\\s*(\\S+)\\s*\\) -->" );
@@ -354,7 +365,11 @@ int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QStri
       }
     }
   } else {
-    text.replace( tag, rep, false );
+    if ( multiline ) {
+      text.replace( tag, rmlString( rep ), false );
+    } else {
+      text.replace( tag, escapeTrml2pdfXML( rep ), false );
+    }
   }
   return 0;
 }

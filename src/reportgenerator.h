@@ -51,7 +51,8 @@ protected slots:
 private:
   QString replaceAllTags( const QString& );
   QString fillupTemplateFromArchive( const dbID& );
-  int replaceTag( QString&, const QString&, const QString& = QString() );
+  int replaceTag( QString&, const QString&, const QString& = QString(), bool = false );
+  QString escapeTrml2pdfXML( const QString& str ) const;
 
   QString rmlString( const QString& str ) const;
 
