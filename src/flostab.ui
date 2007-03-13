@@ -193,7 +193,7 @@
                                                                     <cstring>spGewinn</cstring>
                                                                 </property>
                                                                 <property name="toolTip" stdset="0">
-                                                                    <string>Zuschlag wie Gewinn oder Risikoausgleich</string>
+                                                                    <string></string>
                                                                 </property>
                                                             </widget>
                                                             <widget class="QSpinBox">
@@ -500,6 +500,9 @@
                                                         <property name="text">
                                                             <string>new...</string>
                                                         </property>
+                                                        <property name="toolTip" stdset="0">
+                                                            <string>Adds a new time calculation part to the template</string>
+                                                        </property>
                                                     </widget>
                                                     <widget class="KPushButton">
                                                         <property name="name">
@@ -509,7 +512,7 @@
                                                             <string>edit...</string>
                                                         </property>
                                                         <property name="toolTip" stdset="0">
-                                                            <string>Bearbeitet den angewählten Zeitbeitrag</string>
+                                                            <string>Edits the current time calculation part</string>
                                                         </property>
                                                     </widget>
                                                     <widget class="KPushButton">
@@ -520,7 +523,7 @@
                                                             <string>delete</string>
                                                         </property>
                                                         <property name="toolTip" stdset="0">
-                                                            <string>Löscht den aktuellen Zeitbeitrag aus der Vorlage</string>
+                                                            <string>Deletes the current time calculation part</string>
                                                         </property>
                                                     </widget>
                                                     <spacer>
@@ -687,6 +690,9 @@
                                                         <property name="text">
                                                             <string>new...</string>
                                                         </property>
+                                                        <property name="toolTip" stdset="0">
+                                                            <string>adds a new fix calculation part</string>
+                                                        </property>
                                                     </widget>
                                                     <widget class="KPushButton">
                                                         <property name="name">
@@ -696,7 +702,7 @@
                                                             <string>edit...</string>
                                                         </property>
                                                         <property name="toolTip" stdset="0">
-                                                            <string>Bearbeitet den angewählten Zeitbeitrag</string>
+                                                            <string>edits the current fix calculation part</string>
                                                         </property>
                                                     </widget>
                                                     <widget class="KPushButton">
@@ -707,7 +713,7 @@
                                                             <string>delete</string>
                                                         </property>
                                                         <property name="toolTip" stdset="0">
-                                                            <string>Löscht den aktuellen Zeitbeitrag aus der Vorlage</string>
+                                                            <string>deletes the current fix calculation part</string>
                                                         </property>
                                                     </widget>
                                                     <spacer>
@@ -874,6 +880,9 @@
                                                         <property name="text">
                                                             <string>new...</string>
                                                         </property>
+                                                        <property name="toolTip" stdset="0">
+                                                            <string>adds a new material calculation part</string>
+                                                        </property>
                                                     </widget>
                                                     <widget class="KPushButton">
                                                         <property name="name">
@@ -883,7 +892,7 @@
                                                             <string>edit...</string>
                                                         </property>
                                                         <property name="toolTip" stdset="0">
-                                                            <string>Bearbeitet den angewählten Zeitbeitrag</string>
+                                                            <string>edits the current material part</string>
                                                         </property>
                                                     </widget>
                                                     <widget class="KPushButton">
@@ -894,7 +903,7 @@
                                                             <string>delete</string>
                                                         </property>
                                                         <property name="toolTip" stdset="0">
-                                                            <string>Löscht den aktuellen Zeitbeitrag aus der Vorlage</string>
+                                                            <string>deletes the current material calculation part</string>
                                                         </property>
                                                     </widget>
                                                     <spacer>

@@ -8,12 +8,12 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>409</width>
-            <height>228</height>
+            <width>419</width>
+            <height>227</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Kalkulationsanteil Fixanteile</string>
+        <string>Calculation Parts Fix</string>
     </property>
     <property name="sizeGripEnabled">
         <bool>true</bool>
@@ -93,7 +93,7 @@
                                         <string></string>
                                     </property>
                                     <property name="toolTip" stdset="0">
-                                        <string>Preis für ein Stück</string>
+                                        <string>amount multiplier</string>
                                     </property>
                                 </widget>
                                 <widget class="QLabel">
@@ -124,7 +124,7 @@
                                         <string>€</string>
                                     </property>
                                     <property name="toolTip" stdset="0">
-                                        <string>Preis für ein Stück</string>
+                                        <string>Price for one piece</string>
                                     </property>
                                 </widget>
                             </hbox>
@@ -153,7 +153,10 @@
                                         <cstring>m_nameEdit</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Abschreibung</string>
+                                        <string>amortisation</string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>describing text</string>
                                     </property>
                                 </widget>
                             </hbox>

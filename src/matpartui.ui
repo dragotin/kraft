@@ -96,7 +96,7 @@
                                         <string></string>
                                     </property>
                                     <property name="toolTip" stdset="0">
-                                        <string>Preis für ein Stück</string>
+                                        <string>Price for one piece</string>
                                     </property>
                                 </widget>
                                 <widget class="QLabel">
