@@ -239,13 +239,16 @@ void Portal::slotStartupChecks()
     m_portalView->fillSystemDetails();
 
     slotStatusMsg( i18n( "Commandline actions" ) );
-    QCString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
-    if ( ! docId.isEmpty() ) {
-      kdDebug() << "open a archived document: " << docId << endl;
-      slotPrintDocument( QString(), dbID( docId.toInt() ) );
-    }
 
-    mCmdLineArgs->clear();
+    if ( mCmdLineArgs ) {
+      QCString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
+      if ( ! docId.isEmpty() ) {
+        kdDebug() << "open a archived document: " << docId << endl;
+        slotPrintDocument( QString(), dbID( docId.toInt() ) );
+      }
+
+      mCmdLineArgs->clear();
+    }
 
     slotStatusMsg( i18n( "Ready." ) );
   }
