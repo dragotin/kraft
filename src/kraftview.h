@@ -73,6 +73,7 @@ public:
   DocAssistant( QWidget* );
 
   DocPostCard *postCard();
+  CatalogSelection *catalogSelection();
 
   bool isFullPreview() {
     return mFullPreview;
@@ -152,6 +153,7 @@ class KraftView : public KDialogBase
     void slotModifiedHeader();
     void slotModifiedFooter();
     void slotAddPosition( Katalog*, void* );
+  void slotAddPosition();
     void slotFocusPosition( PositionViewWidget*,  int );
 
   protected slots:

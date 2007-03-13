@@ -90,16 +90,8 @@ void CatalogSelection::slCatalogDoubleClicked( QListViewItem *onItem,  const QPo
 
 void CatalogSelection::slotAppendToDoc( QListViewItem *item )
 {
+  Katalog *kat = currentSelectedKat();
   const QString currentCat = mCatalogSelector->currentText();
-
-  kdDebug() << "Insert a template from " << currentCat << " to document " << endl;
-
-  Katalog *kat = KatalogMan::self()->getKatalog( currentCat );
-
-  if ( ! kat ) {
-    kdError() << "Could not find catalog " << currentCat << endl;
-  }
-
   /*
    * FIXME: Here we have to promote the Katalog and the selected floskel
    * to be able to do things depending on the kind of katalog like
@@ -113,6 +105,18 @@ void CatalogSelection::slotAppendToDoc( QListViewItem *item )
   } else {
     kdDebug() << "ERR: No listview stored for catalog " << currentCat << endl;
   }
+}
+
+Katalog* CatalogSelection::currentSelectedKat()
+{
+  const QString currentCat = mCatalogSelector->currentText();
+
+  Katalog *kat = KatalogMan::self()->getKatalog( currentCat );
+
+  if ( ! kat ) {
+    kdError() << "Could not find catalog " << currentCat << endl;
+  }
+  return kat;
 }
 
 void CatalogSelection::slotSelectCatalog( const QString& katName )

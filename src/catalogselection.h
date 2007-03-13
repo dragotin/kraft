@@ -40,6 +40,9 @@ public:
   CatalogSelection( QWidget* );
 
   ~CatalogSelection() { };
+
+  Katalog* currentSelectedKat();
+
 protected:
   void setupCatalogList();
   void initActions();

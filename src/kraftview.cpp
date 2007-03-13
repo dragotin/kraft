@@ -127,6 +127,11 @@ DocPostCard *DocAssistant::postCard()
   return mPostCard;
 }
 
+CatalogSelection* DocAssistant::catalogSelection()
+{
+  return mCatalogSelection;
+}
+
 void DocAssistant::slotShowCatalog( )
 {
   setFullPreview( false, DocPostCard::PositionId );
@@ -745,6 +750,13 @@ void KraftView::slotSelectAddress( KABC::Addressee contact )
     }
 }
 
+void KraftView::slotAddPosition()
+{
+  // find the katalog
+  CatalogSelection *catsel = mAssistant->catalogSelection();
+  slotAddPosition( catsel->currentSelectedKat(), 0 );
+}
+
 void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 {
   int newpos = mPositionWidgetList.count()+1;
@@ -755,29 +767,35 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
   DocPosition *dp = new DocPosition();
   QSize s;
 
-  if ( tmpl && kat ) {
-    if ( kat->type() == TemplateCatalog ) {
-      FloskelTemplate *ftmpl = static_cast<FloskelTemplate*>( tmpl );
-      dp->setText( ftmpl->getText() );
-      dp->setUnit( ftmpl->einheit() );
-      dp->setUnitPrice( ftmpl->einheitsPreis() );
+  if ( kat ) {
+    // For empty template in plants dialog come up with standard dialog
+    if ( kat->type() == TemplateCatalog || ( !tmpl && kat->type() == PlantCatalog ) ) {
       dia = new InsertTemplDialog( this );
+      if ( tmpl ) {
+        FloskelTemplate *ftmpl = static_cast<FloskelTemplate*>( tmpl );
+        dp->setText( ftmpl->getText() );
+        dp->setUnit( ftmpl->einheit() );
+        dp->setUnitPrice( ftmpl->einheitsPreis() );
+      }
       s = KraftSettings::self()->templateToPosDialogSize();
 
     } else if ( kat->type() == MaterialCatalog ) {
-      StockMaterial *mat = static_cast<StockMaterial*>( tmpl );
-      dp->setText( mat->name() );
-      dp->setUnit( mat->getUnit() );
-      dp->setUnitPrice( mat->salesPrice() );
-
       dia = new InsertTemplDialog( this );
+      if ( tmpl ) {
+        StockMaterial *mat = static_cast<StockMaterial*>( tmpl );
+        dp->setText( mat->name() );
+        dp->setUnit( mat->getUnit() );
+        dp->setUnitPrice( mat->salesPrice() );
+      }
       s = KraftSettings::self()->templateToPosDialogSize();
 
     } else if ( kat->type() == PlantCatalog ) {
-      BrunsRecord *bruns = static_cast<BrunsRecord*>( tmpl );
       dia = new InsertPlantDialog( this );
       InsertPlantDialog *plantDia = static_cast<InsertPlantDialog*>( dia );
-      plantDia->setSelectedPlant( bruns );
+      if ( tmpl ) {
+        BrunsRecord *bruns = static_cast<BrunsRecord*>( tmpl );
+        plantDia->setSelectedPlant( bruns );
+      }
       s = KraftSettings::self()->plantTemplateToPosDialogSize();
     }
   }
