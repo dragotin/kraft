@@ -16,9 +16,15 @@
  ***************************************************************************/
 #include "addressselection.h"
 
+#include "filterheader.h"
+
 #include <klocale.h>
 #include <kdebug.h>
 #include <kdialog.h>
+#include <klistview.h>
+
+#include <kabc/addressbook.h>
+#include <kabc/stdaddressbook.h>
 
 #include <qsizepolicy.h>
 #include <qcombobox.h>
@@ -26,18 +32,29 @@
 #include <qlabel.h>
 #include <qvbox.h>
 
-AddressSelection::AddressSelection( QWidget *parent )
-  :QVBox( parent )
-{
-  setMargin( KDialog::marginHint() );
-  setSpacing( KDialog::spacingHint() );
 
-  setupAddressList();
+
+AddressSelection::AddressSelection()
+{
+
 }
 
-void AddressSelection::setupAddressList()
+void AddressSelection::setupAddressList( KListView* listView )
 {
+   KABC::AddressBook *ab = KABC::StdAddressBook::self();
+
+   if ( ab ) {
+     KABC::AddressBook::Iterator it;
+     for ( it = ab->begin(); it != ab->end(); ++it ) {
+       KListViewItem *item = new KListViewItem( listView, ( *it ).realName() );
+
+       KABC::Address::List adr = ( *it ).addresses();
+       KABC::Address::List::iterator adrIt;
+       for ( adrIt = adr.begin(); adrIt != adr.end(); ++adrIt ) {
+         item->setText( 1, ( *adrIt ).locality () );
+       }
+
+     }
+   }
 }
 
-
-#include "addressselection.moc"

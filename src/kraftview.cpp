@@ -68,7 +68,7 @@
 #include "templkatalog.h"
 #include "templkataloglistview.h"
 #include "catalogselection.h"
-#include "addressselection.h"
+#include "headerselection.h"
 #include "kraftdocheaderedit.h"
 #include "kraftdocpositionsedit.h"
 #include "kraftdocfooteredit.h"
@@ -98,9 +98,9 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mCatalogSelection,  SIGNAL( positionSelected( Katalog*, void* ) ),
            this,  SIGNAL( positionSelected( Katalog*, void* ) ) );
 
-  mAddressSelection = new AddressSelection( mWidgetStack );
+  mHeaderSelection = new HeaderSelection( mWidgetStack );
 
-  mWidgetStack->raiseWidget( mCatalogSelection );
+  mWidgetStack->raiseWidget( mHeaderSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SIGNAL( selectPage( int ) ) );
 
@@ -141,7 +141,7 @@ void DocAssistant::slotShowCatalog( )
 void DocAssistant::slotShowAddresses()
 {
   setFullPreview( false, DocPostCard::HeaderId );
-  mWidgetStack->raiseWidget( mAddressSelection );
+  mWidgetStack->raiseWidget( mHeaderSelection );
 }
 
 void DocAssistant::setFullPreview( bool setFull, int id )
@@ -364,7 +364,7 @@ void KraftView::setupPositions()
 
     connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddPosition() ) );
     connect( edit, SIGNAL( catalogToggled( bool ) ),
-      SLOT( slotShowCatalog( bool ) ) );
+             SLOT( slotShowCatalog( bool ) ) );
 }
 
 void KraftView::redrawDocument( )
@@ -717,6 +717,8 @@ void KraftView::slotPositionModified( int pos )
 
 void KraftView::slotSelectAddress( KABC::Addressee contact )
 {
+  mAssistant->slotShowAddresses();
+
     if( contact.isEmpty() ) {
     	kdDebug() << "Select an address from KAdressbook" << endl;
     	contact = KABC::AddresseeDialog::getAddressee( this );
@@ -882,6 +884,11 @@ void KraftView::slotShowCatalog( bool on )
   } else {
     mAssistant->setFullPreview( true, DocPostCard::PositionId );
   }
+}
+
+void KraftView::slotShowAddresses()
+{
+  mAssistant->slotShowAddresses();
 }
 
 void KraftView::slotModifiedPositions()

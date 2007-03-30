@@ -26,6 +26,7 @@
 
 #include "defaultprovider.h"
 #include "kraftdb.h"
+#include "doctext.h"
 
 static KStaticDeleter<DefaultProvider> selfDeleter;
 
@@ -58,6 +59,30 @@ QString DefaultProvider::docType()
 {
   return i18n( "Offer" );
 }
+
+DocTextList DefaultProvider::documentTexts( const QString& docType, DocText::TextType tt )
+{
+  DocTextList re;
+
+  QSqlCursor cur( "DocTexts" );
+  cur.setMode( QSqlCursor::ReadOnly );
+
+  QString typeStr = DocText::textTypeToString( tt );
+  QString crit = QString( "docType=\'%1\' AND textType=\'%2\'" ).arg( docType ).arg( typeStr );
+  cur.select( crit );
+
+  while ( cur.next() ) {
+    DocText dt;
+    dt.setText( cur.value( "text" ).toString() );
+    dt.setDescription( cur.value( "description" ).toString() );
+    dt.setTextType( DocText::stringToTextType( cur.value( "textType" ).toString() ) );
+    dt.setDocType( cur.value( "docType" ).toString() );
+
+    re.append( dt );
+  }
+  return re;
+}
+  
 
 QString DefaultProvider::documentText( const QString& docType, const QString&textType, DocGuardedPtr )
 {

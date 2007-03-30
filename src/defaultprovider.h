@@ -21,7 +21,7 @@
 
 #include "dbids.h"
 #include "kraftdoc.h"
-
+#include "doctext.h"
 class dbID;
 class QStringList;
 
@@ -31,20 +31,21 @@ class QStringList;
  */
 class DefaultProvider
 {
-  public:
-    ~DefaultProvider();
+public:
+  ~DefaultProvider();
 
-    static DefaultProvider *self();
-    QStringList docTypes();
+  static DefaultProvider *self();
+  QStringList docTypes();
 
-    QString documentText( const QString&, const QString&, DocGuardedPtr = 0 );
-    void saveDocumentText( const QString&, const QString&, const QString& );
+  QString documentText( const QString&, const QString&, DocGuardedPtr = 0 );
+  void saveDocumentText( const QString&, const QString&, const QString& );
 
-    QString docType(); // the default document type for new docs
-  private:
-    DefaultProvider();
+  QString docType(); // the default document type for new docs
+  DocTextList documentTexts( const QString&, DocText::TextType );
+private:
+  DefaultProvider();
 
-    static DefaultProvider *mSelf;
+  static DefaultProvider *mSelf;
 };
 
 #endif

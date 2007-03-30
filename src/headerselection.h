@@ -15,26 +15,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ADDRESSSELECTION_H
-#define ADDRESSSELECTION_H
+#ifndef HEADERSELECTION_H
+#define HEADERSELECTION_H
 
-#include <qvbox.h>
+#include <qsplitter.h>
 
 class QComboBox;
+class FilterHeader;
 class KListView;
+class KListViewItem;
+class AddressSelection;
 
-class AddressSelection
+class HeaderSelection : public QSplitter
 {
+  Q_OBJECT
 public:
-  AddressSelection();
+  HeaderSelection( QWidget* );
 
-  ~AddressSelection() { };
-  void setupAddressList( KListView* );
-
+  ~HeaderSelection();
+protected:
+  void initActions();
+  void getHeaderTextList();
 protected slots:
 
 private:
+  FilterHeader   *mListSearchLine;
+  KListView      *mTextsView;
+  KListView      *mAddressView;
 
+  AddressSelection *mAddressSelection;
 };
 
 #endif

@@ -35,7 +35,7 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	inserttempldialog.cpp archdocposition.cpp archdoc.cpp defaultprovider.cpp \
 	materialkataloglistview.cpp materialkatalogview.cpp materialselectdialog.cpp \
         kraftdocedit.cpp kraftdocpositionsedit.cpp portalhtmlview.cpp \
-	templtopositiondialogbase.cpp insertplantdialog.cpp
+	templtopositiondialogbase.cpp insertplantdialog.cpp headerselection.cpp doctext.cpp
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml 
 

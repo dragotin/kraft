@@ -60,7 +60,7 @@ class QSplitter;
 class DocPostCard;
 class QTimer;
 class CatalogSelection;
-class AddressSelection;
+class HeaderSelection;
 class KPushButton;
 
 class Katalog;
@@ -91,7 +91,7 @@ private:
   DocPostCard *mPostCard;
   CatalogSelection *mCatalogSelection;
   QWidgetStack *mWidgetStack;
-  AddressSelection *mAddressSelection;
+  HeaderSelection *mHeaderSelection;
   bool mFullPreview;
 };
 
@@ -172,6 +172,7 @@ class KraftView : public KDialogBase
   void slotSwitchToPage( int );
   void refreshPostCard( );
   void slotShowCatalog( bool );
+  void slotShowAddresses();
 
   signals:
     void selectPage( int );

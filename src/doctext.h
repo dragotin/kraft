@@ -1,8 +1,8 @@
 /***************************************************************************
-                 addressselection  - widget to select Addresses
+             doctext.h  - texts like header or footer for documents
                              -------------------
-    begin                : 2006-09-03
-    copyright            : (C) 2006 by Klaas Freitag
+    begin                : March 2007
+    copyright            : (C) 2007 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,27 +14,41 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef DOCTEXT_H
+#define DOCTEXT_H
 
-#ifndef ADDRESSSELECTION_H
-#define ADDRESSSELECTION_H
+#include <qvaluelist.h>
 
-#include <qvbox.h>
-
-class QComboBox;
-class KListView;
-
-class AddressSelection
+class DocText
 {
 public:
-  AddressSelection();
+  enum TextType { Unknown, Header, Footer };
+  
+  DocText();
 
-  ~AddressSelection() { };
-  void setupAddressList( KListView* );
+  QString text() const { return mText; }
+  void setText( const QString& );
 
-protected slots:
+  QString description() const { return mDescription; }
+  void setDescription( const QString& );
 
+  TextType type() { return mTextType; }
+  void setTextType( TextType );
+
+  QString docType() const { return mDocType; }
+  void setDocType( const QString& );
+
+  static TextType stringToTextType( const QString& );
+  static QString  textTypeToString( DocText::TextType );
+  
 private:
-
+  QString  mText;
+  QString  mDescription;
+  QString  mDocType;
+  TextType mTextType;
 };
 
+typedef QValueList<DocText> DocTextList;
+
 #endif
+
