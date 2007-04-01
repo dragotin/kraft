@@ -215,22 +215,28 @@ void KraftDB::checkSchemaVersion( QWidget *parent )
                                    .arg(  currentVer ).arg( KRAFT_REQUIRED_SCHEMA_VERSION ),
                                  i18n("Database Schema Update") ) == KMessageBox::Yes ) {
 
+      bool ok = true;
       while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
         ++currentVer;
         const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
         int allCmds = 0;
         int sqlc = playSqlFile( migrateFilename, allCmds );
-        if ( allCmds != sqlc ) {
+        if ( sqlc == 0 ) {
+          kdWarning() << "No (zero) commands where loaded and executed from " << migrateFilename << endl;
+          ok = false;
+        } else if ( allCmds != sqlc ) {
           kdDebug() << "WRN: only " << sqlc << " from " << allCmds << " sql commands "
             "were executed correctly" << endl;
+          ok = false;
         } else {
           kdDebug() << "All sql commands successfull in file: " << migrateFilename << ": " << sqlc << endl;
-
         }
       }
       /* Now update to the required schema version */
-      q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
-              + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
+      if ( ok ) {
+        q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
+                + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
+      }
     }
   } else {
     kdDebug() << "Kraft Schema Version is ok: " << currentVer << endl;
