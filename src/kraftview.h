@@ -87,6 +87,7 @@ public slots:
 signals:
   void selectPage( int );
   void positionSelected( Katalog*, void* );
+  void showTemplates();
 private:
   DocPostCard *mPostCard;
   CatalogSelection *mCatalogSelection;

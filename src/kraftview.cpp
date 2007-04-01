@@ -85,9 +85,23 @@ DocAssistant::DocAssistant( QWidget *parent ):
   QSplitter( parent ), mFullPreview( true )
 {
   setOrientation( Vertical );
-  mPostCard =  new DocPostCard( this );
+  QVBox *vb = new QVBox( this );
+
+  QHBox *hb = new QHBox( vb );
+  hb->setFrameStyle( Box + Sunken );
+  hb->setMargin( KDialog::marginHint()/2 );
+
+  KPushButton *pb = new KPushButton( i18n( "show Templates" ),  hb );
+  connect( pb, SIGNAL( clicked() ),this,  SIGNAL( showTemplate() ) );
+  pb->setToggleButton( true );
+
+  QWidget *w = new QWidget( hb );
+  w->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+
+  mPostCard =  new DocPostCard( vb );
+
   mPostCard->slotSetMode( DocPostCard::Full, DocPostCard::HeaderId );
-  setResizeMode( mPostCard->view(), KeepSize );
+  setResizeMode( vb /* mPostCard->view() */, KeepSize );
 
   connect( mPostCard, SIGNAL( completed() ),
            this,  SLOT( slotRenderCompleted() ) );
