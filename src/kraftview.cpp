@@ -82,7 +82,8 @@
 #include <qtimer.h>
 
 DocAssistant::DocAssistant( QWidget *parent ):
-  QSplitter( parent ), mFullPreview( true )
+  QSplitter( parent ), mFullPreview( true ),
+  mActivePage( DocPostCard::HeaderId )
 {
   setOrientation( Vertical );
   QVBox *vb = new QVBox( this );
@@ -92,7 +93,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   hb->setMargin( KDialog::marginHint()/2 );
 
   KPushButton *pb = new KPushButton( i18n( "show Templates" ),  hb );
-  connect( pb, SIGNAL( clicked() ),this,  SIGNAL( showTemplate() ) );
+  connect( pb, SIGNAL( toggled( bool ) ),
+           this,  SLOT( slotToggleShowTemplates( bool ) ) );
   pb->setToggleButton( true );
 
   QWidget *w = new QWidget( hb );
@@ -116,10 +118,34 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   mWidgetStack->raiseWidget( mHeaderSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
-           this,  SIGNAL( selectPage( int ) ) );
+           this,  SLOT( slotSelectPage( int ) ) );
 
   setSizes( KraftSettings::self()->assistantSplitterSetting() );
-  // mWidgetStack->hide();
+  mWidgetStack->hide();
+}
+
+void DocAssistant::slotSelectPage( int p )
+{
+  mActivePage = p;
+  emit selectPage( p ) ;
+}
+
+/* slot that opens the template details in case on == true */
+void DocAssistant::slotToggleShowTemplates( bool on )
+{
+  if ( on ) {
+    if ( mActivePage == DocPostCard::HeaderId ) {
+      slotShowAddresses();
+    } else if ( mActivePage == DocPostCard::PositionId ) {
+      slotShowCatalog();
+    } else if ( mActivePage == DocPostCard::FooterId ) {
+      
+    }
+  } else {
+    // hide the details
+    setFullPreview( true, mActivePage );
+  }
+  emit toggleShowTemplates( on );
 }
 
 void DocAssistant::slotRenderCompleted()
@@ -172,7 +198,6 @@ void DocAssistant::setFullPreview( bool setFull, int id )
     mPostCard->slotSetMode( DocPostCard::Full, id );
     mFullPreview = true;
   } else {
-
     mWidgetStack->show();
     mPostCard->slotSetMode( DocPostCard::Mini, id );
 
@@ -284,9 +309,14 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   kdDebug() << "mViewSTack height is " << mViewStack->height() << endl;
 
   mAssistant = new DocAssistant( mCSplit );
+  /* catalog template selection signal */
   connect( mAssistant,  SIGNAL( positionSelected( Katalog*, void* ) ),
            this,  SLOT( slotAddPosition( Katalog*, void* ) ) );
 
+  /* signal to toggle the visibility of the template section in the assistant */
+  connect(  mAssistant, SIGNAL( toggleShowTemplates( bool ) ),
+            this,  SLOT( slotShowTemplates( bool ) ) );
+  
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
     mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
   }
@@ -349,6 +379,11 @@ void KraftView::slotSwitchToPage( int id )
   mDetailHeader->setPaletteForegroundColor( QColor( "#00008b" ) );
 
   mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
+}
+
+void KraftView::slotShowTemplates( bool on )
+{
+  kdDebug() << "Slot Toggle Show Templates: " << on << endl;
 }
 
 void KraftView::setupDocHeaderView()
@@ -731,9 +766,7 @@ void KraftView::slotPositionModified( int pos )
 
 void KraftView::slotSelectAddress( KABC::Addressee contact )
 {
-  mAssistant->slotShowAddresses();
-
-    if( contact.isEmpty() ) {
+  if( contact.isEmpty() ) {
     	kdDebug() << "Select an address from KAdressbook" << endl;
     	contact = KABC::AddresseeDialog::getAddressee( this );
         kdDebug() << "Selected address UID is " << contact.uid() << endl;

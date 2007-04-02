@@ -83,17 +83,19 @@ public slots:
   void slotShowAddresses();
   void setFullPreview( bool, int );
   void slotRenderCompleted();
-
+  void slotSelectPage( int );
+  void slotToggleShowTemplates( bool );
 signals:
   void selectPage( int );
   void positionSelected( Katalog*, void* );
-  void showTemplates();
+  void toggleShowTemplates( bool );
 private:
   DocPostCard *mPostCard;
   CatalogSelection *mCatalogSelection;
   QWidgetStack *mWidgetStack;
   HeaderSelection *mHeaderSelection;
   bool mFullPreview;
+  int  mActivePage;
 };
 
 class KraftViewScroll : public QScrollView
@@ -174,7 +176,8 @@ class KraftView : public KDialogBase
   void refreshPostCard( );
   void slotShowCatalog( bool );
   void slotShowAddresses();
-
+  void slotShowTemplates( bool );
+  
   signals:
     void selectPage( int );
     void viewClosed( bool );
