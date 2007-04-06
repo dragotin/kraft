@@ -18,15 +18,16 @@
 #ifndef HEADERSELECTION_H
 #define HEADERSELECTION_H
 
-#include <qsplitter.h>
+#include <qtabwidget.h>
 
 class QComboBox;
 class FilterHeader;
 class KListView;
 class KListViewItem;
 class AddressSelection;
+class KPushButton;
 
-class HeaderSelection : public QSplitter
+class HeaderSelection : public QTabWidget
 {
   Q_OBJECT
 public:
@@ -37,6 +38,7 @@ protected:
   void initActions();
   void getHeaderTextList();
 protected slots:
+  void slotAddressNew();
 
 private:
   FilterHeader   *mListSearchLine;
@@ -44,6 +46,7 @@ private:
   KListView      *mAddressView;
 
   AddressSelection *mAddressSelection;
+
 };
 
 #endif

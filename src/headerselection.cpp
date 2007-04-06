@@ -25,7 +25,11 @@
 #include <klistview.h>
 #include <kdialog.h>
 #include <kpushbutton.h>
+#include <kaction.h>
+#include <kaccel.h>
+#include <kiconloader.h>
 
+#include <qiconset.h>
 #include <qsizepolicy.h>
 #include <qlabel.h>
 #include <qvbox.h>
@@ -33,22 +37,12 @@
 
 
 HeaderSelection::HeaderSelection( QWidget *parent )
-  :QSplitter( parent )
+  :QTabWidget( parent )
 {
 
-  setOrientation( Qt::Vertical );
-#if 0
-  QHBox *hb = new QHBox( this );
-  QWidget *spaceEater = new QWidget( hb );
-  spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum ) );
-  QLabel *l = new QLabel( i18n( "Selected &Addressbook: " ), hb );
-  mABookSelector = new QComboBox( hb );
-#endif
-
-  QVBox *vBox = new QVBox( this );
+  QVBox *vBox = new QVBox(  );
   vBox->setMargin( KDialog::marginHint() );
   vBox->setSpacing( KDialog::spacingHint() );
-  ( void ) new QLabel( i18n( "Address Selection" ), vBox );
   QHBox *hb = new QHBox( vBox );
   ( new QWidget( hb ) )->setMinimumWidth( 25 );
   mListSearchLine = new FilterHeader( 0, hb ) ;
@@ -61,14 +55,12 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   mAddressView->addColumn( i18n( "Real Name" ) );
   mAddressView->addColumn( i18n( "Locality" ) );
 
-  hb = new QHBox( vBox );
-  /* KPushButton *pushbutton  = */ ( void ) new KPushButton( i18n( "new" ), hb );
-  ( new QWidget( hb ) )->setMinimumWidth( 25 );
-  
+  addTab( vBox, i18n( "Address Selection" ) );
+
   mAddressSelection = new AddressSelection();
   mAddressSelection->setupAddressList( mAddressView );
 
-  vBox = new QVBox( this );
+  vBox = new QVBox( );
   vBox->setMargin( KDialog::marginHint() );
   vBox->setSpacing( KDialog::spacingHint() );
   ( void ) new QLabel( i18n( "Entry Text Selection" ), vBox );
@@ -78,9 +70,17 @@ HeaderSelection::HeaderSelection( QWidget *parent )
 
   getHeaderTextList();
 
+  addTab( vBox, i18n( "Text Templates" ) );
+
   initActions();
 
 }
+
+void HeaderSelection::slotAddressNew()
+{
+  kdDebug() << "New address requested!" << endl;
+}
+
 
 void HeaderSelection::getHeaderTextList()
 {
@@ -95,7 +95,7 @@ void HeaderSelection::getHeaderTextList()
       /* KListViewItem *item1 = */ ( void ) new KListViewItem( docTypeItem, ( *textIt ).description(),
                                                 ( *textIt ).text() );
     }
-    
+
   }
 }
 

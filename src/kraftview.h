@@ -96,6 +96,9 @@ private:
   HeaderSelection *mHeaderSelection;
   bool mFullPreview;
   int  mActivePage;
+  KPushButton    *mPbAdd;
+  KPushButton    *mPbNew;
+  QWidget        *mTemplatePane;
 };
 
 class KraftViewScroll : public QScrollView
@@ -177,7 +180,7 @@ class KraftView : public KDialogBase
   void slotShowCatalog( bool );
   void slotShowAddresses();
   void slotShowTemplates( bool );
-  
+
   signals:
     void selectPage( int );
     void viewClosed( bool );

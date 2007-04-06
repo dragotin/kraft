@@ -33,6 +33,7 @@
 #include <qcolor.h>
 #include <qsplitter.h>
 #include <qbuttongroup.h>
+#include <qtooltip.h>
 #include <qfont.h>
 
 #include <kdebug.h>
@@ -44,6 +45,7 @@
 #include <kactioncollection.h>
 #include <kmessagebox.h>
 #include <khtmlview.h>
+#include <kiconloader.h>
 
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
@@ -96,6 +98,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( pb, SIGNAL( toggled( bool ) ),
            this,  SLOT( slotToggleShowTemplates( bool ) ) );
   pb->setToggleButton( true );
+  QToolTip::add( pb, i18n( "Show mask to create or select templates to be used in the document" ) );
 
   QWidget *w = new QWidget( hb );
   w->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
@@ -108,7 +111,11 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mPostCard, SIGNAL( completed() ),
            this,  SLOT( slotRenderCompleted() ) );
 
-  mWidgetStack = new QWidgetStack( this );
+  QVBox *stackVBox = new QVBox( this );
+  mTemplatePane = stackVBox;
+  stackVBox->setSpacing( KDialog::spacingHint() );
+  mWidgetStack = new QWidgetStack( stackVBox );
+  mWidgetStack->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
   mCatalogSelection = new CatalogSelection( mWidgetStack );
   connect( mCatalogSelection,  SIGNAL( positionSelected( Katalog*, void* ) ),
@@ -120,8 +127,23 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSelectPage( int ) ) );
 
+  QHBox *butBox = new QHBox( stackVBox );
+  butBox->setSpacing( KDialog::spacingHint() );
+  QIconSet icons = BarIconSet( "back" );
+  mPbAdd  = new KPushButton( icons, i18n(""), butBox );
+  mPbAdd->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+  QToolTip::add( mPbAdd, i18n( "Add a template to the document" ) );
+
+  mPbNew  = new KPushButton( BarIconSet( "filenew" ), i18n(""),  butBox );
+  mPbNew->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+  QToolTip::add( mPbNew, i18n( "Create a new template (type depending)" ) );
+  mPbAdd->setEnabled( false );
+
+  w = new QWidget( butBox );
+  w->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Maximum );
+
   setSizes( KraftSettings::self()->assistantSplitterSetting() );
-  mWidgetStack->hide();
+  mTemplatePane->hide();
 }
 
 void DocAssistant::slotSelectPage( int p )
@@ -139,7 +161,7 @@ void DocAssistant::slotToggleShowTemplates( bool on )
     } else if ( mActivePage == DocPostCard::PositionId ) {
       slotShowCatalog();
     } else if ( mActivePage == DocPostCard::FooterId ) {
-      
+
     }
   } else {
     // hide the details
@@ -188,17 +210,17 @@ void DocAssistant::setFullPreview( bool setFull, int id )
 {
   if ( setFull ) {
     /* remember the sizes used before */
-    if ( mWidgetStack->isVisible() ) {
+    if ( mTemplatePane->isVisible() ) {
       kdDebug() << "Writing mSplitterSizes: " << sizes() << endl;
       KraftSettings::self()->setAssistantSplitterSetting( sizes() );
       KraftSettings::self()->writeConfig();
     }
 
-    mWidgetStack->hide();
+    mTemplatePane->hide();
     mPostCard->slotSetMode( DocPostCard::Full, id );
     mFullPreview = true;
   } else {
-    mWidgetStack->show();
+    mTemplatePane->show();
     mPostCard->slotSetMode( DocPostCard::Mini, id );
 
     if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
@@ -316,7 +338,7 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   /* signal to toggle the visibility of the template section in the assistant */
   connect(  mAssistant, SIGNAL( toggleShowTemplates( bool ) ),
             this,  SLOT( slotShowTemplates( bool ) ) );
-  
+
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
     mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
   }
