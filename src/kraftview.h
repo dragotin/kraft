@@ -62,44 +62,9 @@ class QTimer;
 class CatalogSelection;
 class HeaderSelection;
 class KPushButton;
+class DocAssistant;
 
 class Katalog;
-
-class DocAssistant : public QSplitter
-{
-  Q_OBJECT
-
-public:
-  DocAssistant( QWidget* );
-
-  DocPostCard *postCard();
-  CatalogSelection *catalogSelection();
-
-  bool isFullPreview() {
-    return mFullPreview;
-  }
-public slots:
-  void slotShowCatalog();
-  void slotShowAddresses();
-  void setFullPreview( bool, int );
-  void slotRenderCompleted();
-  void slotSelectPage( int );
-  void slotToggleShowTemplates( bool );
-signals:
-  void selectPage( int );
-  void positionSelected( Katalog*, void* );
-  void toggleShowTemplates( bool );
-private:
-  DocPostCard *mPostCard;
-  CatalogSelection *mCatalogSelection;
-  QWidgetStack *mWidgetStack;
-  HeaderSelection *mHeaderSelection;
-  bool mFullPreview;
-  int  mActivePage;
-  KPushButton    *mPbAdd;
-  KPushButton    *mPbNew;
-  QWidget        *mTemplatePane;
-};
 
 class KraftViewScroll : public QScrollView
 {
