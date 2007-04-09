@@ -20,6 +20,8 @@
 
 #include <qtabwidget.h>
 
+#include <kabc/addressee.h>
+
 class QComboBox;
 class FilterHeader;
 class KListView;
@@ -34,11 +36,22 @@ public:
   HeaderSelection( QWidget* );
 
   ~HeaderSelection();
+
+  bool textPageActive();
+  bool addressPageActive();
+
+  KABC::Addressee currentAddressee();
+
+signals:
+  void addressSelectionChanged();
+  void textSelectionChanged();
+
 protected:
   void initActions();
   void getHeaderTextList();
 protected slots:
   void slotAddressNew();
+  void slotCurrentTabChanged( QWidget * );
 
 private:
   FilterHeader   *mListSearchLine;
@@ -46,7 +59,8 @@ private:
   KListView      *mAddressView;
 
   AddressSelection *mAddressSelection;
-
+  int mAddressTabId;
+  int mTextsTabId;
 };
 
 #endif

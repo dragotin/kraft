@@ -20,6 +20,8 @@
 
 #include <qsplitter.h>
 
+#include <kabc/addressee.h>
+
 class DocPostCard;
 class CatalogSelection;
 class HeaderSelection;
@@ -48,15 +50,26 @@ public slots:
   void slotRenderCompleted();
   void slotSelectPage( int );
   void slotToggleShowTemplates( bool );
+  void slotAddToDocument();
+  void slotNewTemplate();
+
+protected slots:
+  void slotAddressSelectionChanged();
+  void slotTextsSelectionChanged();
+
 signals:
   void selectPage( int );
   void positionSelected( Katalog*, void* );
   void toggleShowTemplates( bool );
+
+  void addressTemplate( const KABC::Addressee& );
+
 private:
   DocPostCard *mPostCard;
   CatalogSelection *mCatalogSelection;
   QWidgetStack *mWidgetStack;
   HeaderSelection *mHeaderSelection;
+  /* FooterSelection */ QWidget *mFooterSelection;
   bool mFullPreview;
   int  mActivePage;
   KPushButton    *mPbAdd;

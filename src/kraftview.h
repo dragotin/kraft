@@ -87,7 +87,7 @@ private:
   QPtrList<PositionViewWidget> mWidgetList;
 };
 
-
+// ###########################################################################
 
 class KraftView : public KDialogBase
 {
@@ -118,7 +118,7 @@ class KraftView : public KDialogBase
     DocPositionList currentPositionList();
 
   public slots:
-    void slotSelectAddress( KABC::Addressee contact = KABC::Addressee() );
+    void slotNewAddress( const KABC::Addressee& contact = KABC::Addressee() );
     void redrawDocument( );
     void slotModifiedPositions();
     void slotModifiedHeader();

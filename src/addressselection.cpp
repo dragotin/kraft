@@ -34,27 +34,51 @@
 
 
 
-AddressSelection::AddressSelection()
+AddressSelection::AddressSelection( QWidget *parent )
+  : KListView( parent )
 {
+  setRootIsDecorated( true );
+  addColumn( i18n( "Real Name" ) );
+  addColumn( i18n( "Locality" ) );
 
 }
 
-void AddressSelection::setupAddressList( KListView* listView )
+void AddressSelection::setupAddressList()
 {
-   KABC::AddressBook *ab = KABC::StdAddressBook::self();
+  KABC::AddressBook *ab = KABC::StdAddressBook::self();
 
-   if ( ab ) {
-     KABC::AddressBook::Iterator it;
-     for ( it = ab->begin(); it != ab->end(); ++it ) {
-       KListViewItem *item = new KListViewItem( listView, ( *it ).realName() );
+  if ( ab ) {
+    KABC::AddressBook::Iterator it;
+    for ( it = ab->begin(); it != ab->end(); ++it ) {
+      KListViewItem *item = new KListViewItem( this, ( *it ).realName() );
+      mAddressIds[item] = ( *it ).uid();
 
-       KABC::Address::List adr = ( *it ).addresses();
-       KABC::Address::List::iterator adrIt;
-       for ( adrIt = adr.begin(); adrIt != adr.end(); ++adrIt ) {
-         item->setText( 1, ( *adrIt ).locality () );
-       }
+      KABC::Address::List adr = ( *it ).addresses();
+      KABC::Address::List::iterator adrIt;
+      for ( adrIt = adr.begin(); adrIt != adr.end(); ++adrIt ) {
+        item->setText( 1, ( *adrIt ).locality () );
+      }
 
-     }
-   }
+    }
+  }
+}
+
+KABC::Addressee AddressSelection::currentAddressee()
+{
+  KABC::Addressee adr;
+  QString adrUid;
+
+  QListViewItem *it = currentItem();
+
+  if ( it ) {
+    adrUid = mAddressIds[it];
+
+    if ( ! adrUid.isEmpty() ) {
+      KABC::AddressBook *ab = KABC::StdAddressBook::self();
+      if ( ab )
+        adr = ab->findByUid( adrUid );
+    }
+  }
+  return adr;
 }
 

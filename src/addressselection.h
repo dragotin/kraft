@@ -19,22 +19,28 @@
 #define ADDRESSSELECTION_H
 
 #include <qvbox.h>
+#include <qmap.h>
+#include <qstring.h>
+
+#include <klistview.h>
+#include <kabc/addressee.h>
 
 class QComboBox;
-class KListView;
 
-class AddressSelection
+
+class AddressSelection : public KListView
 {
 public:
-  AddressSelection();
+  AddressSelection( QWidget* );
 
   ~AddressSelection() { };
-  void setupAddressList( KListView* );
+  void setupAddressList( );
+  KABC::Addressee currentAddressee();
 
 protected slots:
 
 private:
-
+  QMap<QListViewItem*, QString> mAddressIds;
 };
 
 #endif

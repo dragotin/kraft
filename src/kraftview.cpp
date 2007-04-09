@@ -190,6 +190,10 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   connect(  mAssistant, SIGNAL( toggleShowTemplates( bool ) ),
             this,  SLOT( slotShowTemplates( bool ) ) );
 
+  /* signal that brings a new address to the document */
+  connect( mAssistant, SIGNAL( addressTemplate( const KABC::Addressee& ) ),
+           this, SLOT( slotNewAddress( const KABC::Addressee& ) ) );
+
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
     mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
   }
@@ -271,7 +275,7 @@ void KraftView::setupDocHeaderView()
     m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
 
     connect( m_headerEdit->m_selectAddress, SIGNAL( clicked() ),
-               this, SLOT( slotSelectAddress() ) );
+               this, SLOT( slotNewAddress() ) );
     connect( edit, SIGNAL( modified() ),
               this, SLOT( slotModifiedHeader() ) );
 }
@@ -322,7 +326,7 @@ void KraftView::redrawDocument( )
           m_headerEdit->m_labName->setText( i18n("--lost--") );
         } else {
           kdDebug() << "The loaded Contact has this realname: " << contact.realName() << endl;
-          slotSelectAddress( contact );
+          slotNewAddress( contact );
         }
       }
     }
@@ -637,24 +641,26 @@ void KraftView::slotPositionModified( int pos )
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
-void KraftView::slotSelectAddress( KABC::Addressee contact )
+void KraftView::slotNewAddress( const KABC::Addressee& contact )
 {
+  KABC::Addressee adr( contact );
+
   if( contact.isEmpty() ) {
     	kdDebug() << "Select an address from KAdressbook" << endl;
-    	contact = KABC::AddresseeDialog::getAddressee( this );
-        kdDebug() << "Selected address UID is " << contact.uid() << endl;
-        mContactUid = contact.uid();
+    	adr = KABC::AddresseeDialog::getAddressee( this );
+        kdDebug() << "Selected address UID is " << adr.uid() << endl;
+        mContactUid = adr.uid();
     }
 
-    if( ! contact.isEmpty() ) {
-      m_headerEdit->m_labName->setText( contact.realName() );
+    if( ! adr.isEmpty() ) {
+      m_headerEdit->m_labName->setText( adr.realName() );
 
       KABC::Address address;
 
-      KABC::Address::List addresses = contact.addresses();
+      KABC::Address::List addresses = adr.addresses();
       if ( addresses.count() > 1 ) {
         kdDebug() << "Have more than one address, taking the default add" << endl;
-        address = contact.address( 64 );
+        address = adr.address( 64 );
       } else if ( addresses.count() == 0 ) {
         kdDebug() << "Have no address, problem!" << endl;
       } else {
@@ -662,11 +668,11 @@ void KraftView::slotSelectAddress( KABC::Addressee contact )
       }
 
       QString adrStr = address.street() + "\n" + address.postalCode();
-      adrStr = address.formattedAddress( contact.realName() );
+      adrStr = address.formattedAddress( adr.realName() );
       kdDebug() << "formatted address string: " << adrStr << endl;
       m_headerEdit->m_postAddressEdit->setText( adrStr );
       m_headerEdit->m_letterHead->clear();
-      QStringList li = generateLetterHead( contact );
+      QStringList li = generateLetterHead( adr );
 
       m_headerEdit->m_letterHead->insertStringList( li );
     }

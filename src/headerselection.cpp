@@ -39,26 +39,27 @@
 HeaderSelection::HeaderSelection( QWidget *parent )
   :QTabWidget( parent )
 {
-
-  QVBox *vBox = new QVBox(  );
+  QVBox *vBox = new QVBox( );
   vBox->setMargin( KDialog::marginHint() );
   vBox->setSpacing( KDialog::spacingHint() );
+#if 0
   QHBox *hb = new QHBox( vBox );
   ( new QWidget( hb ) )->setMinimumWidth( 25 );
   mListSearchLine = new FilterHeader( 0, hb ) ;
   mListSearchLine->showCount( false );
 
-
   mAddressView = new KListView( vBox );
   mListSearchLine->setListView( mAddressView );
-  mAddressView->setRootIsDecorated( true );
-  mAddressView->addColumn( i18n( "Real Name" ) );
-  mAddressView->addColumn( i18n( "Locality" ) );
+#endif
 
   addTab( vBox, i18n( "Address Selection" ) );
+  mAddressTabId = indexOf( vBox );
 
-  mAddressSelection = new AddressSelection();
-  mAddressSelection->setupAddressList( mAddressView );
+  mAddressSelection = new AddressSelection( vBox );
+  mAddressSelection->setupAddressList( );
+
+  connect( mAddressSelection, SIGNAL( selectionChanged() ),
+           SIGNAL( addressSelectionChanged() ) );
 
   vBox = new QVBox( );
   vBox->setMargin( KDialog::marginHint() );
@@ -67,10 +68,15 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   mTextsView = new KListView( vBox );
   mTextsView->addColumn( i18n( "Description" ) );
   mTextsView->addColumn( i18n( "Text" ) );
-
+  connect( mTextsView, SIGNAL( selectionChanged() ),
+           SIGNAL( textSelectionChanged() ) );
   getHeaderTextList();
 
   addTab( vBox, i18n( "Text Templates" ) );
+  mTextsTabId = indexOf( vBox );
+
+  connect( this, SIGNAL( currentChanged( QWidget* ) ),
+           this, SLOT( slotCurrentTabChanged( QWidget ) ) );
 
   initActions();
 
@@ -99,6 +105,16 @@ void HeaderSelection::getHeaderTextList()
   }
 }
 
+bool HeaderSelection::textPageActive()
+{
+  return ( currentPageIndex() == mTextsTabId );
+}
+
+bool HeaderSelection::addressPageActive()
+{
+  return ( currentPageIndex() == mAddressTabId );
+}
+
 HeaderSelection::~HeaderSelection()
 {
   delete mAddressSelection;
@@ -107,6 +123,27 @@ HeaderSelection::~HeaderSelection()
 void HeaderSelection::initActions()
 {
 
+}
+
+KABC::Addressee HeaderSelection::currentAddressee()
+{
+  KABC::Addressee adr;
+  adr = mAddressSelection->currentAddressee();
+  return adr;
+}
+
+void HeaderSelection::slotCurrentTabChanged( QWidget *w )
+{
+  // mPbAdd->setEnabled( false );
+  // Hier gehts weiter.
+
+  if ( indexOf( w ) == mTextsTabId ) {
+
+  } else if ( indexOf( w ) == mAddressTabId ) {
+
+  } else {
+    kdError() << "Unknown Widget!" << endl;
+  }
 }
 
 #include "headerselection.moc"

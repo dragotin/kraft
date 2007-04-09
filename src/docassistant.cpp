@@ -68,6 +68,10 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SIGNAL( positionSelected( Katalog*, void* ) ) );
 
   mHeaderSelection = new HeaderSelection( mWidgetStack );
+  connect( mHeaderSelection, SIGNAL( addressSelectionChanged() ),
+           this, SLOT( slotAddressSelectionChanged() ) );
+  connect( mHeaderSelection, SIGNAL( textSelectionChanged() ),
+           this, SLOT( slotTextsSelectionChanged() ) );
 
   mWidgetStack->raiseWidget( mHeaderSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
@@ -78,10 +82,13 @@ DocAssistant::DocAssistant( QWidget *parent ):
   QIconSet icons = BarIconSet( "back" );
   mPbAdd  = new KPushButton( icons, i18n(""), butBox );
   mPbAdd->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+  connect( mPbAdd, SIGNAL( clicked() ), this, SLOT( slotAddToDocument() ) );
+
   QToolTip::add( mPbAdd, i18n( "Add a template to the document" ) );
 
   mPbNew  = new KPushButton( BarIconSet( "filenew" ), i18n(""),  butBox );
   mPbNew->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+  connect( mPbNew, SIGNAL( clicked() ), this, SLOT( slotNewTemplate() ) );
   QToolTip::add( mPbNew, i18n( "Create a new template (type depending)" ) );
   mPbAdd->setEnabled( false );
 
@@ -90,6 +97,46 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   setSizes( KraftSettings::self()->assistantSplitterSetting() );
   mTemplatePane->hide();
+}
+
+void DocAssistant::slotAddToDocument()
+{
+  kdDebug() << "SlotAddToDocument called!" << endl;
+
+  if ( mWidgetStack->visibleWidget() == mHeaderSelection ) {
+    /* Header page */
+    if ( mHeaderSelection->textPageActive() ) {
+      kdDebug() << "Text Page active" << endl;
+    } else if ( mHeaderSelection->addressPageActive() ) {
+      kdDebug() << "Address Page active" << endl;
+      KABC::Addressee adr = mHeaderSelection->currentAddressee();
+      emit addressTemplate( adr );
+    }
+
+  } else if ( mWidgetStack->visibleWidget() == mCatalogSelection ) {
+
+
+  } else if ( mWidgetStack->visibleWidget() == mFooterSelection ) {
+
+  }
+}
+
+void DocAssistant::slotAddressSelectionChanged()
+{
+  kdDebug() << "A address template was selected!" << endl;
+  mPbAdd->setEnabled( true );
+}
+
+void DocAssistant::slotTextsSelectionChanged()
+{
+  kdDebug() << "A text template was selected!" << endl;
+  mPbAdd->setEnabled( true );
+}
+
+void DocAssistant::slotNewTemplate()
+{
+  kdDebug() << "SlotNewTemplate called!" << endl;
+
 }
 
 void DocAssistant::slotSelectPage( int p )
