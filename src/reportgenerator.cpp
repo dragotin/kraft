@@ -204,7 +204,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   /* now replace stuff in the whole document */
   replaceTag( tmpl,
               TAG( "DATE" ),
-              KGlobal().locale()->formatDate( archive.date(), true ) );
+              KGlobal().locale()->formatDate( archive.date(), KLocale::ShortDate ) );
   replaceTag( tmpl,
               TAG( "DOCTYPE" ),
               archive.docType() );

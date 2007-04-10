@@ -38,12 +38,12 @@ DocDigest::DocDigest()
 
 QString DocDigest::date()
 {
-  return KGlobal().locale()->formatDate( mDate, true );
+  return KGlobal().locale()->formatDate( mDate, KLocale::ShortDate );
 }
 
 QString DocDigest::lastModified()
 {
-  return KGlobal().locale()->formatDate( mLastModified, true );
+  return KGlobal().locale()->formatDate( mLastModified, KLocale::ShortDate );
 }
 
 QString DocDigest::clientName()
