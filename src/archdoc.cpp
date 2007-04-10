@@ -149,7 +149,7 @@ ArchDocDigest::~ArchDocDigest()
 
 QString ArchDocDigest::printDateString() const
 {
-  return KGlobal().locale()->formatDateTime( mPrintDate, KLocale::ShortDate );
+  return KGlobal().locale()->formatDateTime( mPrintDate, true );
 }
 
 /* ###################################################################### */
