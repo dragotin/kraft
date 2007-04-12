@@ -98,8 +98,10 @@ void HeaderSelection::getHeaderTextList()
     DocTextList dtList = DefaultProvider::self()->documentTexts( *dtIt, DocText::Header );
     DocTextList::iterator textIt;
     for ( textIt = dtList.begin(); textIt != dtList.end(); ++textIt ) {
-      /* KListViewItem *item1 = */ ( void ) new KListViewItem( docTypeItem, ( *textIt ).description(),
+
+      KListViewItem *item1 = new KListViewItem( docTypeItem, ( *textIt ).description(),
                                                 ( *textIt ).text() );
+      mTextMap[item1] = *textIt;
     }
 
   }
@@ -130,6 +132,19 @@ KABC::Addressee HeaderSelection::currentAddressee()
   KABC::Addressee adr;
   adr = mAddressSelection->currentAddressee();
   return adr;
+}
+
+QString HeaderSelection::currentText() const
+{
+  QString re;
+
+  QListViewItem *curr = mTextsView->currentItem();
+  if ( curr ) {
+    DocText dt = mTextMap[curr];
+    re = dt.text();
+  }
+
+  return re;
 }
 
 void HeaderSelection::slotCurrentTabChanged( QWidget *w )

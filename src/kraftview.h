@@ -124,9 +124,9 @@ class KraftView : public KDialogBase
     void slotModifiedHeader();
     void slotModifiedFooter();
     void slotAddPosition( Katalog*, void* );
-  void slotAddPosition();
+    void slotAddPosition();
     void slotFocusPosition( PositionViewWidget*,  int );
-
+    void slotNewHeaderText( const QString& );
   protected slots:
     void slotOk();
     void slotCancel();

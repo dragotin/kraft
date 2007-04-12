@@ -63,6 +63,7 @@ signals:
   void toggleShowTemplates( bool );
 
   void addressTemplate( const KABC::Addressee& );
+  void headerTextTemplate( const QString& );
 
 private:
   DocPostCard *mPostCard;

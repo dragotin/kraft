@@ -107,6 +107,7 @@ void DocAssistant::slotAddToDocument()
     /* Header page */
     if ( mHeaderSelection->textPageActive() ) {
       kdDebug() << "Text Page active" << endl;
+      emit headerTextTemplate( mHeaderSelection->currentText() );
     } else if ( mHeaderSelection->addressPageActive() ) {
       kdDebug() << "Address Page active" << endl;
       KABC::Addressee adr = mHeaderSelection->currentAddressee();

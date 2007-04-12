@@ -19,6 +19,7 @@
 #define HEADERSELECTION_H
 
 #include <qtabwidget.h>
+#include <qmap.h>
 
 #include <kabc/addressee.h>
 
@@ -26,8 +27,10 @@ class QComboBox;
 class FilterHeader;
 class KListView;
 class KListViewItem;
+class QListViewItem;
 class AddressSelection;
 class KPushButton;
+class DocText;
 
 class HeaderSelection : public QTabWidget
 {
@@ -41,7 +44,7 @@ public:
   bool addressPageActive();
 
   KABC::Addressee currentAddressee();
-
+  QString currentText() const;
 signals:
   void addressSelectionChanged();
   void textSelectionChanged();
@@ -57,6 +60,7 @@ private:
   FilterHeader   *mListSearchLine;
   KListView      *mTextsView;
   KListView      *mAddressView;
+  QMap<QListViewItem*, DocText> mTextMap;
 
   AddressSelection *mAddressSelection;
   int mAddressTabId;

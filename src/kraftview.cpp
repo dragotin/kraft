@@ -194,6 +194,9 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   connect( mAssistant, SIGNAL( addressTemplate( const KABC::Addressee& ) ),
            this, SLOT( slotNewAddress( const KABC::Addressee& ) ) );
 
+  connect( mAssistant, SIGNAL( headerTextTemplate( const QString& ) ),
+           this, SLOT( slotNewHeaderText( const QString& ) ) );
+
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
     mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
   }
@@ -676,6 +679,12 @@ void KraftView::slotNewAddress( const KABC::Addressee& contact )
 
       m_headerEdit->m_letterHead->insertStringList( li );
     }
+}
+
+void KraftView::slotNewHeaderText( const QString& str )
+{
+  m_headerEdit->m_teEntry->setText( str );
+  slotModifiedHeader();
 }
 
 void KraftView::slotAddPosition()
