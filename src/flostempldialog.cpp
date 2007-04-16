@@ -297,6 +297,10 @@ void FlosTemplDialog::accept()
         }
         m_template->setCalculationType( calcType );
 
+        // reread the manual price
+        double dd = m_manualPriceVal->value();
+        m_template->setManualPrice( Geld( dd ) );
+        
         h = cbChapter->currentText();
         kdDebug() << "Katalogkapitel ist " << h << endl;
 
@@ -343,6 +347,7 @@ void FlosTemplDialog::reject()
 
 void FlosTemplDialog::slManualPriceChanged(double dd)
 {
+  kdDebug() << "Changing manual price!" << endl;
     if( ! m_template ) return;
     m_template->setManualPrice( Geld( dd ));
     refreshPrices();
