@@ -25,9 +25,9 @@
 // include files for QT
 #include <qobject.h>
 #include <qstring.h>
-#include <qlist.h>
 #include <qdatetime.h>
-#include <qguardedptr.h>
+
+// #include <qguardedptr.h>
 
 // include files for KDE
 #include <kurl.h>
@@ -37,7 +37,6 @@
 
 // forward declaration of the Kraft classes
 
-class QDate;
 class DocumentSaverBase;
 class Geld;
 
@@ -57,6 +56,8 @@ class KraftDoc : public QObject
 {
   Q_OBJECT
   public:
+    enum Part { Header,  Positions, Footer, Unknown };
+
     /** Constructor for the fileclass of the application */
     KraftDoc(QWidget *parent = 0, const char *name = 0);
     /** Destructor for the fileclass of the application */
