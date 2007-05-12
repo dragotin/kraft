@@ -22,6 +22,8 @@
 
 #include <kabc/addressee.h>
 
+#include "kraftdoc.h"
+
 class DocPostCard;
 class CatalogSelection;
 class HeaderSelection;
@@ -29,6 +31,9 @@ class QWidgetStack;
 class QWidget;
 class KPushButton;
 class Katalog;
+class TemplateProvider;
+class HeaderTemplateProvider;
+class DocText;
 
 class DocAssistant : public QSplitter
 {
@@ -48,14 +53,22 @@ public slots:
   void slotShowAddresses();
   void setFullPreview( bool, int );
   void slotRenderCompleted();
-  void slotSelectPage( int );
+  void slotSelectDocPart( int );
   void slotToggleShowTemplates( bool );
   void slotAddToDocument();
   void slotNewTemplate();
+  void slotEditTemplate();
+  void slotDeleteTemplate();
+
+  void slotSetDocType( const QString& );
 
 protected slots:
   void slotAddressSelectionChanged();
   void slotTextsSelectionChanged();
+  void slotHeaderTextToDocument( const DocText& );
+  void slotTextDeleted( const DocText& dt );
+  void slotNewHeaderDocText( const DocText& );
+  void slotUpdateHeaderDocText( const DocText& );
 
 signals:
   void selectPage( int );
@@ -72,10 +85,16 @@ private:
   HeaderSelection *mHeaderSelection;
   /* FooterSelection */ QWidget *mFooterSelection;
   bool mFullPreview;
-  int  mActivePage;
+  int            mActivePage;
   KPushButton    *mPbAdd;
   KPushButton    *mPbNew;
+  KPushButton    *mPbEdit;
+  KPushButton    *mPbDel;
   QWidget        *mTemplatePane;
+  QString         mDocType;
+
+  TemplateProvider* mCurrTemplateProvider;
+  HeaderTemplateProvider *mHeaderTemplateProvider;
 };
 
 

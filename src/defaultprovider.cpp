@@ -21,7 +21,6 @@
 
 #include <kstaticdeleter.h>
 #include <klocale.h>
-
 #include <kdebug.h>
 
 #include "defaultprovider.h"
@@ -60,7 +59,7 @@ QString DefaultProvider::docType()
   return i18n( "Offer" );
 }
 
-DocTextList DefaultProvider::documentTexts( const QString& docType, DocText::TextType tt )
+DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Part tt )
 {
   DocTextList re;
 
@@ -73,6 +72,8 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, DocText::Tex
 
   while ( cur.next() ) {
     DocText dt;
+    dt.setDbId( cur.value( "docTextID" ).toInt() );
+    dt.setName( cur.value( "name" ).toString() );
     dt.setText( cur.value( "text" ).toString() );
     dt.setDescription( cur.value( "description" ).toString() );
     dt.setTextType( DocText::stringToTextType( cur.value( "textType" ).toString() ) );
@@ -82,7 +83,7 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, DocText::Tex
   }
   return re;
 }
-  
+
 
 QString DefaultProvider::documentText( const QString& docType, const QString&textType, DocGuardedPtr )
 {
@@ -102,13 +103,61 @@ QString DefaultProvider::documentText( const QString& docType, const QString&tex
   return re;
 }
 
-void DefaultProvider::saveDocumentText( const QString& docType, const QString& textType, const QString& text )
+dbID DefaultProvider::saveDocumentText( const DocText& t )
 {
-  QStringList wl;
-  wl << text;
+  QSqlCursor cur( "DocTexts" );
+  cur.setMode( QSqlCursor::Writable );
+  dbID retVal;
 
-  KraftDB::self()->writeWordList( QString( "doc%1_%2" ).arg( textType ).arg( docType ), wl );
+  if ( t.dbId().isOk() ) {
+    // Update required.
+    QString crit = QString( "docTextID=%1" ).arg( t.dbId().toInt() );
+    cur.select( crit );
+    if ( cur.next() ) {
+      QSqlRecord *buffer = cur.primeUpdate();
+      fillDocTextBuffer( t, buffer );
+      retVal = t.dbId();
+      cur.update();
+    }
+  } else {
+    // Lets insert
+    QSqlRecord *buffer = cur.primeInsert();
+    fillDocTextBuffer( t, buffer );
+    cur.insert();
+
+    retVal = KraftDB::self()->getLastInsertID();
+  }
+  return retVal;
 }
+
+void DefaultProvider::fillDocTextBuffer( const DocText& t, QSqlRecord *buffer )
+{
+  if ( ! buffer ) return;
+
+  buffer->setValue( "name", t.name() );
+  buffer->setValue( "description", t.description() );
+  buffer->setValue( "text", t.text() );
+  buffer->setValue( "docType", t.docType() );
+  buffer->setValue( "textType", t.textTypeString() );
+  buffer->setValue( "modDate", "systimestamp" );
+}
+
+
+void DefaultProvider::deleteDocumentText( const DocText& dt )
+{
+  QSqlCursor cur( "DocTexts" );
+
+  // QString sql = QString( "name=\'%1\' AND docType=\'%2\' AND textType=\'%3\'" )
+  if ( dt.dbId().isOk() ) {
+    QString sql = QString( "docTextID=%1" ).arg( dt.dbId().toInt() );
+    cur.select( sql );
+    if ( cur.next() ) {
+      cur.primeDelete();
+      cur.del();
+    }
+  }
+}
+
 
 DefaultProvider::~DefaultProvider()
 {

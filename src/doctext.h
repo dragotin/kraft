@@ -18,13 +18,20 @@
 #define DOCTEXT_H
 
 #include <qvaluelist.h>
+#include <kraftdoc.h>
+
+#include "dbids.h"
+
+class QListViewItem;
 
 class DocText
 {
 public:
-  enum TextType { Unknown, Header, Footer };
-  
+
   DocText();
+
+  QString name() const { return mName; }
+  void setName( const QString& );
 
   QString text() const { return mText; }
   void setText( const QString& );
@@ -32,20 +39,41 @@ public:
   QString description() const { return mDescription; }
   void setDescription( const QString& );
 
-  TextType type() { return mTextType; }
-  void setTextType( TextType );
+  KraftDoc::Part type() { return mTextType; }
+  QString textTypeString() const {
+    return textTypeToString( mTextType );
+  }
+
+  void setTextType( KraftDoc::Part );
+  KraftDoc::Part textType() const { return mTextType; }
 
   QString docType() const { return mDocType; }
   void setDocType( const QString& );
 
-  static TextType stringToTextType( const QString& );
-  static QString  textTypeToString( DocText::TextType );
-  
+  QListViewItem *listViewItem() const {
+    return mCurrentItem;
+  }
+
+  void setListViewItem( QListViewItem *item ) {
+    mCurrentItem = item;
+  }
+
+  void setDbId( long );
+  void setDbId( const dbID& );
+  dbID dbId() const;
+
+  static KraftDoc::Part stringToTextType( const QString& );
+  static QString  textTypeToString( KraftDoc::Part );
+
+  bool operator==( const DocText& ) const;
 private:
+  QString  mName;
   QString  mText;
   QString  mDescription;
   QString  mDocType;
-  TextType mTextType;
+  KraftDoc::Part mTextType;
+  QListViewItem *mCurrentItem;
+  dbID     mDbId;
 };
 
 typedef QValueList<DocText> DocTextList;

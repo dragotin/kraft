@@ -45,13 +45,25 @@ public:
 
   KABC::Addressee currentAddressee();
   QString currentText() const;
+  DocText currentDocText() const;
+
+  KListView *addressListView() { return mAddressView; }
+  KListView *textsListView() { return mTextsView; }
+
 signals:
   void addressSelectionChanged();
   void textSelectionChanged();
 
+public slots:
+  QListViewItem* addNewDocText( const DocText& );
+  void deleteCurrentText();
+  void updateDocText( const DocText& );
+
 protected:
   void initActions();
-  void getHeaderTextList();
+  void buildHeaderTextList();
+  KListViewItem* addOneDocText( QListViewItem*, const DocText& );
+
 protected slots:
   void slotAddressNew();
   void slotCurrentTabChanged( QWidget * );
@@ -61,6 +73,7 @@ private:
   KListView      *mTextsView;
   KListView      *mAddressView;
   QMap<QListViewItem*, DocText> mTextMap;
+  QMap<QString, QListViewItem*> mDocTypeItemMap;
 
   AddressSelection *mAddressSelection;
   int mAddressTabId;

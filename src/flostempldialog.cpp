@@ -300,7 +300,7 @@ void FlosTemplDialog::accept()
         // reread the manual price
         double dd = m_manualPriceVal->value();
         m_template->setManualPrice( Geld( dd ) );
-        
+
         h = cbChapter->currentText();
         kdDebug() << "Katalogkapitel ist " << h << endl;
 
@@ -331,6 +331,13 @@ bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
 
 void FlosTemplDialog::reject()
 {
+    if ( KMessageBox::warningYesNo( this, i18n( "The template was modified, do "
+                                            "you really want to discard all changes?" ) )
+          == KMessageBox::No  )
+    {
+      return;
+    }
+
     m_cpDict.clear();
 
     m_timeParts->clear ();
@@ -349,6 +356,7 @@ void FlosTemplDialog::slManualPriceChanged(double dd)
 {
   kdDebug() << "Changing manual price!" << endl;
     if( ! m_template ) return;
+    kdDebug() << "Updating manual price!" << endl;
     m_template->setManualPrice( Geld( dd ));
     refreshPrices();
 }

@@ -100,7 +100,7 @@ void PrefsDialog::slotFooterDocTypeChanged( const QString& newEntry )
       }
 
       if ( answer == KMessageBox::Yes ) {
-        DefaultProvider::self()->saveDocumentText( mFooterDocType, "Footer", mFooterEdit->text() );
+        // DefaultProvider::self()->saveDocumentText( mFooterDocType, "Footer", mFooterEdit->text() );
       } else {
         kdDebug() << "Canceled change to default text" << endl;
       }
@@ -125,7 +125,7 @@ void PrefsDialog::slotHeaderDocTypeChanged( const QString& newEntry )
       }
 
       if ( answer == KMessageBox::Yes ) {
-        DefaultProvider::self()->saveDocumentText( mHeaderDocType, "Header", mHeaderEdit->text() );
+        // DefaultProvider::self()->saveDocumentText( mHeaderDocType, "Header", mHeaderEdit->text() );
       } else {
         kdDebug() << "Canceled change to default text" << endl;
       }

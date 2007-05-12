@@ -207,7 +207,6 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   if ( !size.isEmpty() ) resize( size );
   QPoint pos = KraftSettings::self()->docViewPosition();
   if ( !pos.isNull() ) move( pos );
-
 }
 
 KraftView::~KraftView()
@@ -223,7 +222,7 @@ void KraftView::setup( DocGuardedPtr doc )
   setupPositions();
   setupFooter();
   setCaption( m_doc->docIdentifier() );
-  slotSwitchToPage( DocPostCard::HeaderId );
+  slotSwitchToPage( KraftDoc::Header );
 }
 
 
@@ -231,14 +230,14 @@ void KraftView::slotSwitchToPage( int id )
 {
   if ( mViewStack->visibleWidget() == mViewStack->widget( id ) ) return;
 
-  if ( mViewStack->visibleWidget() == mViewStack->widget( DocPostCard::PositionId ) ) {
+  if ( mViewStack->visibleWidget() == mViewStack->widget( KraftDoc::Positions ) ) {
     mShowAssistantDetail = ! mAssistant->isFullPreview();
   }
 
   mViewStack->raiseWidget( id );
 
   bool skip = false;
-  if ( id == DocPostCard::PositionId ) {
+  if ( id == KraftDoc::Positions ) {
     if ( mShowAssistantDetail ) {
       mAssistant->setFullPreview( false, id );
       mCatalogToggle->setOn( true );
@@ -270,7 +269,7 @@ void KraftView::setupDocHeaderView()
 {
     KraftDocHeaderEdit *edit = new KraftDocHeaderEdit( mainWidget() );
 
-    mHeaderId = mViewStack->addWidget( edit, DocPostCard::HeaderId );
+    mHeaderId = mViewStack->addWidget( edit, KraftDoc::Header );
 
     m_headerEdit = edit->docHeaderEdit();
 
@@ -279,6 +278,10 @@ void KraftView::setupDocHeaderView()
 
     connect( m_headerEdit->m_selectAddress, SIGNAL( clicked() ),
                this, SLOT( slotNewAddress() ) );
+
+    connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
+             this, SLOT( slotDocTypeChanged( const QString& ) ) );
+
     connect( edit, SIGNAL( modified() ),
               this, SLOT( slotModifiedHeader() ) );
 }
@@ -286,7 +289,7 @@ void KraftView::setupDocHeaderView()
 void KraftView::setupPositions()
 {
     KraftDocPositionsEdit *edit = new KraftDocPositionsEdit( mainWidget() );
-    mViewStack->addWidget( edit, DocPostCard::PositionId );
+    mViewStack->addWidget( edit, KraftDoc::Positions );
 
     mCatalogToggle = edit->catalogToggle();
     m_positionScroll = edit->positionScroll();
@@ -348,6 +351,7 @@ void KraftView::redrawDocument( )
     m_headerEdit->m_whiteboardEdit->setText( doc->whiteboard() );
     m_footerEdit->m_teSummary->setText( doc->postText() );
 
+    mAssistant->slotSetDocType( doc->docType() );
     if ( !doc->goodbye().isEmpty() ) {
       m_footerEdit->m_cbGreeting->setCurrentText( doc->goodbye() );
     }
@@ -504,7 +508,7 @@ void KraftView::setupFooter()
 {
     KraftDocFooterEdit *edit = new KraftDocFooterEdit( mainWidget() );
 
-    mViewStack->addWidget( edit, DocPostCard::FooterId );
+    mViewStack->addWidget( edit, KraftDoc::Footer );
 
     m_footerEdit = edit->docFooterEdit();
 
@@ -681,6 +685,12 @@ void KraftView::slotNewAddress( const KABC::Addressee& contact )
     }
 }
 
+void KraftView::slotDocTypeChanged( const QString& newType )
+{
+  kdDebug() << "Doc Type changed to " << newType << endl;
+  mAssistant->slotSetDocType( newType );
+}
+
 void KraftView::slotNewHeaderText( const QString& str )
 {
   m_headerEdit->m_teEntry->setText( str );
@@ -817,7 +827,7 @@ void KraftView::slotShowCatalog( bool on )
   if ( on ) {
     mAssistant->slotShowCatalog();
   } else {
-    mAssistant->setFullPreview( true, DocPostCard::PositionId );
+    mAssistant->setFullPreview( true, KraftDoc::Positions );
   }
 }
 

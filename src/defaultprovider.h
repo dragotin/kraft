@@ -22,7 +22,9 @@
 #include "dbids.h"
 #include "kraftdoc.h"
 #include "doctext.h"
-class dbID;
+
+class QSqlRecord;
+
 class QStringList;
 
 /**
@@ -38,11 +40,14 @@ public:
   QStringList docTypes();
 
   QString documentText( const QString&, const QString&, DocGuardedPtr = 0 );
-  void saveDocumentText( const QString&, const QString&, const QString& );
+  dbID saveDocumentText( const DocText& );
+  void deleteDocumentText( const DocText& );
 
   QString docType(); // the default document type for new docs
-  DocTextList documentTexts( const QString&, DocText::TextType );
+  DocTextList documentTexts( const QString&, KraftDoc::Part );
+
 private:
+  void fillDocTextBuffer( const DocText&, QSqlRecord* );
   DefaultProvider();
 
   static DefaultProvider *mSelf;

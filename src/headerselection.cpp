@@ -24,7 +24,6 @@
 #include <kdebug.h>
 #include <klistview.h>
 #include <kdialog.h>
-#include <kpushbutton.h>
 #include <kaction.h>
 #include <kaccel.h>
 #include <kiconloader.h>
@@ -33,7 +32,7 @@
 #include <qsizepolicy.h>
 #include <qlabel.h>
 #include <qvbox.h>
-
+#include <qheader.h>
 
 
 HeaderSelection::HeaderSelection( QWidget *parent )
@@ -42,15 +41,6 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   QVBox *vBox = new QVBox( );
   vBox->setMargin( KDialog::marginHint() );
   vBox->setSpacing( KDialog::spacingHint() );
-#if 0
-  QHBox *hb = new QHBox( vBox );
-  ( new QWidget( hb ) )->setMinimumWidth( 25 );
-  mListSearchLine = new FilterHeader( 0, hb ) ;
-  mListSearchLine->showCount( false );
-
-  mAddressView = new KListView( vBox );
-  mListSearchLine->setListView( mAddressView );
-#endif
 
   addTab( vBox, i18n( "Address Selection" ) );
   mAddressTabId = indexOf( vBox );
@@ -61,16 +51,23 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   connect( mAddressSelection, SIGNAL( selectionChanged() ),
            SIGNAL( addressSelectionChanged() ) );
 
+  /* a view for the entry text repository */
   vBox = new QVBox( );
   vBox->setMargin( KDialog::marginHint() );
   vBox->setSpacing( KDialog::spacingHint() );
   ( void ) new QLabel( i18n( "Entry Text Selection" ), vBox );
   mTextsView = new KListView( vBox );
-  mTextsView->addColumn( i18n( "Description" ) );
+  mTextsView->header()->setHidden( true );
+  mTextsView->setResizeMode( QListView::LastColumn );
+  mTextsView->setSelectionMode( QListView::Single );
+
   mTextsView->addColumn( i18n( "Text" ) );
+
+
+  // mTextsView->addColumn( i18n( "Text" ) );
   connect( mTextsView, SIGNAL( selectionChanged() ),
            SIGNAL( textSelectionChanged() ) );
-  getHeaderTextList();
+  buildHeaderTextList();
 
   addTab( vBox, i18n( "Text Templates" ) );
   mTextsTabId = indexOf( vBox );
@@ -88,22 +85,80 @@ void HeaderSelection::slotAddressNew()
 }
 
 
-void HeaderSelection::getHeaderTextList()
+void HeaderSelection::buildHeaderTextList()
 {
   QStringList docTypes = DefaultProvider::self()->docTypes();
   for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
     KListViewItem *docTypeItem = new KListViewItem( mTextsView, *dtIt );
     docTypeItem->setOpen( true );
+    mDocTypeItemMap[*dtIt] = docTypeItem;
 
-    DocTextList dtList = DefaultProvider::self()->documentTexts( *dtIt, DocText::Header );
+    DocTextList dtList = DefaultProvider::self()->documentTexts( *dtIt, KraftDoc::Header );
     DocTextList::iterator textIt;
     for ( textIt = dtList.begin(); textIt != dtList.end(); ++textIt ) {
-
-      KListViewItem *item1 = new KListViewItem( docTypeItem, ( *textIt ).description(),
-                                                ( *textIt ).text() );
-      mTextMap[item1] = *textIt;
+      ( *textIt ).setListViewItem( addOneDocText( docTypeItem, *textIt ) );
     }
+  }
+}
 
+KListViewItem *HeaderSelection::addOneDocText( QListViewItem* parent, const DocText& dt )
+{
+  KListViewItem *item1 = new KListViewItem( parent, dt.name() );
+  KListViewItem *item2 = new KListViewItem( item1, dt.text() );
+
+  kdDebug() << "Document database id is "<< dt.dbId().toString() << endl;
+  mTextMap[item1] = dt;
+  mTextMap[item2] = dt;
+  // kdDebug() << "Document database id2 is "<< ( mTextMap[item2] ).dbId().toString() << endl;
+  // item1->setOpen( true );
+  return item1;
+}
+
+QListViewItem* HeaderSelection::addNewDocText( const DocText& dt )
+{
+  QListViewItem *item = mDocTypeItemMap[dt.docType()];
+  if ( item ) {
+    mTextsView->clearSelection();
+    return addOneDocText( item, dt );
+  }
+  return 0;
+}
+
+/* requires the QListViewItem set in the doctext */
+void HeaderSelection::updateDocText( const DocText& dt )
+{
+  kdDebug() << "Update Doc Text" << endl;
+  QListViewItem *it = dt.listViewItem();
+  if ( it ) {
+    kdDebug() << "Update Doc Text Item" << endl;
+
+    mTextMap[it] = dt;
+
+    it->setText( 0, dt.name() );
+    QListViewItem *itChild = it->firstChild();
+    if ( itChild ) {
+      itChild->setText( 0, dt.text() );
+    }
+  }
+}
+
+void HeaderSelection::deleteCurrentText()
+{
+  QListViewItem *curr = mTextsView->currentItem();
+
+  if ( curr->firstChild() ) {
+    // If the parent item is in the docType map the child must be deleted.
+    mTextMap.remove( curr->firstChild() );
+    delete curr->firstChild();
+    mTextMap.remove( curr );
+    delete curr;
+  } else {
+    // If the parent is in not in a docType Item, it must be deleted.
+    mTextMap.remove( curr->parent() );
+    delete curr->parent();
+    mTextMap.remove( curr );
+    // the current item gets already deleted from its parent.
+    // delete curr;
   }
 }
 
@@ -134,6 +189,18 @@ KABC::Addressee HeaderSelection::currentAddressee()
   return adr;
 }
 
+DocText HeaderSelection::currentDocText() const
+{
+  DocText dt;
+
+  QListViewItem *curr = mTextsView->currentItem();
+  if ( curr ) {
+    dt = mTextMap[curr];
+  }
+  dt.setListViewItem( curr );
+  return dt;
+}
+
 QString HeaderSelection::currentText() const
 {
   QString re;
@@ -142,6 +209,8 @@ QString HeaderSelection::currentText() const
   if ( curr ) {
     DocText dt = mTextMap[curr];
     re = dt.text();
+  } else {
+    kdDebug() << "No current Item!" << endl;
   }
 
   return re;

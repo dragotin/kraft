@@ -29,7 +29,6 @@ class DocPostCard : public HtmlView
   Q_OBJECT
 public:
   enum DisplayMode { Full, Mini };
-  enum PageId { HeaderId = 0, PositionId, FooterId };
 
   DocPostCard( QWidget *parent );
 

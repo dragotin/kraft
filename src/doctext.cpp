@@ -18,13 +18,21 @@
 #include <kdebug.h>
 #include <klocale.h>
 
+#include <qlistview.h>
+
 #include "doctext.h"
 
 
 DocText::DocText()
-  : mTextType( Unknown )
+  : mTextType( KraftDoc::Unknown ),
+    mCurrentItem( 0 )
 {
-  
+
+}
+
+void DocText::setName( const QString& t )
+{
+  mName = t;
 }
 
 void DocText::setText( const QString& t )
@@ -42,24 +50,49 @@ void DocText::setDocType( const QString& t )
   mDocType = t;
 }
 
-void DocText::setTextType( DocText::TextType t )
+void DocText::setTextType( KraftDoc::Part t )
 {
   mTextType = t;
 }
 
-DocText::TextType DocText::stringToTextType( const QString& str )
+KraftDoc::Part DocText::stringToTextType( const QString& str )
 {
-  TextType tt = Unknown;
-  
-  if ( str == i18n( "Header" ) ) tt = DocText::Header;
-  if ( str == i18n( "Footer" ) ) tt = DocText::Footer;
+  KraftDoc::Part tt = KraftDoc::Unknown;
 
+  if ( str == textTypeToString( KraftDoc::Header ) ) tt = KraftDoc::Header;
+  if ( str == textTypeToString( KraftDoc::Footer ) ) tt = KraftDoc::Footer;
+  if ( str == textTypeToString( KraftDoc::Positions ) ) tt = KraftDoc::Positions;
   return tt;
 }
 
-QString DocText::textTypeToString( DocText::TextType tt )
+QString DocText::textTypeToString( KraftDoc::Part tt )
 {
-  if ( tt == DocText::Header ) return i18n( "Header" );
-  if ( tt == DocText::Footer ) return i18n( "Footer" );
+  if ( tt == KraftDoc::Header ) return i18n( "Header Text" );
+  if ( tt == KraftDoc::Footer ) return i18n( "Footer Text" );
+  if ( tt == KraftDoc::Positions ) return i18n( "Positions" );
+
   return i18n( "Unknown" );
 }
+
+bool DocText::operator==( const DocText& _dt ) const
+{
+  return ( ( mName == _dt.mName ) &&
+           ( mDocType == _dt.mDocType ) &&
+           ( mTextType == _dt.mTextType ) );
+}
+
+void DocText::setDbId( long id )
+{
+  mDbId = id ;
+}
+
+void DocText::setDbId( const dbID& id )
+{
+  mDbId = id ;
+}
+
+dbID DocText::dbId() const
+{
+  return mDbId;
+}
+

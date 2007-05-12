@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "docpostcard.h"
+#include "kraftdoc.h"
 
 #include <qstylesheet.h>
 
@@ -109,7 +110,7 @@ QString DocPostCard::renderDocFull( int id )
 {
   QString t;
   QString c = "headerlink";
-  if ( id == HeaderId ) c = "headerlink_selected";
+  if ( id == KraftDoc::Header ) c = "headerlink_selected";
   t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://header", i18n( "Header" ) );
   t += "</div>\n" ;
@@ -128,7 +129,7 @@ QString DocPostCard::renderDocFull( int id )
   t += "</div>\n";
 
   c = "bodylink";
-  if ( id == PositionId ) c = "bodylink_selected";
+  if ( id == KraftDoc::Positions ) c = "bodylink_selected";
   t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://positions", i18n( "Positions" ) );
   t += "</div>\n";
@@ -138,7 +139,7 @@ QString DocPostCard::renderDocFull( int id )
   t += "\n</div>\n";
 
   c = "footerlink";
-  if ( id == FooterId ) c = "footerlink_selected";
+  if ( id == KraftDoc::Footer ) c = "footerlink_selected";
   t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit(  "kraftdoc://footer", i18n( "Footer" ) );
   t += "</div>\n";
@@ -157,21 +158,21 @@ QString DocPostCard::renderDocMini( int id ) const
 {
   QString t;
   QString c = "headerlink";
-  if ( id == HeaderId ) c = "headerlink_selected";
+  if ( id == KraftDoc::Header ) c = "headerlink_selected";
   t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://header",  i18n( "Header" ) );
   t += QString( "%1 from %2" ).arg( mType ).arg( mDate );
   t += "</div>";
 
   c = "bodylink";
-  if ( id == PositionId ) c = "bodylink_selected";
+  if ( id == KraftDoc::Positions ) c = "bodylink_selected";
   t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://positions", i18n( "Positions" ) );
   t += QString( " %1 Positions, total %2" ).arg( mPositionCount ).arg( mTotal );
   t += "</div>";
 
   c = "footerlink";
-  if ( id == FooterId ) c = "footerlink_selected";
+  if ( id == KraftDoc::Footer ) c = "footerlink_selected";
   t += QString( "<div class=\"%1\">" ).arg( c );
   t += linkBit( "kraftdoc://footer", i18n( "Footer" ) );
 #if 0
@@ -198,18 +199,18 @@ void DocPostCard::urlSelected( const QString &url, int, int,
 
   KURL kurl( url );
 
-  PageId id = HeaderId;
+  KraftDoc::Part id = KraftDoc::Header;
 
   if ( kurl.protocol() == "kraftdoc" ) {
     if ( kurl.host() == "header" ) {
       kdDebug() << "Header selected!" << endl;
-      id = HeaderId;
+      id = KraftDoc::Header;
     } else if ( kurl.host() == "positions" ) {
       kdDebug() << "Positions selected!" << endl;
-      id = PositionId;
+      id = KraftDoc::Positions;
     } else if ( kurl.host() == "footer" ) {
       kdDebug() << "Footer selected!" << endl;
-      id = FooterId;
+      id = KraftDoc::Footer;
     }
     emit selectPage( id );
   }
