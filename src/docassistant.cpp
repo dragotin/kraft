@@ -298,6 +298,7 @@ void DocAssistant::slotSelectDocPart( int p )
 void DocAssistant::slotSetDocType( const QString& type )
 {
   mDocType = type;
+  mHeaderSelection->slotSelectDocType( type );
 }
 
 void DocAssistant::slotShowCatalog( )

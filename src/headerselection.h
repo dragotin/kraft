@@ -58,7 +58,7 @@ public slots:
   QListViewItem* addNewDocText( const DocText& );
   void deleteCurrentText();
   void updateDocText( const DocText& );
-
+  void slotSelectDocType( const QString& );
 protected:
   void initActions();
   void buildHeaderTextList();

@@ -101,9 +101,23 @@ void HeaderSelection::buildHeaderTextList()
   }
 }
 
+void HeaderSelection::slotSelectDocType( const QString& doctype )
+{
+  QStringList docTypes = DefaultProvider::self()->docTypes();
+  for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
+    QListViewItem *item = mDocTypeItemMap[ ( *dtIt ) ];
+
+    if ( doctype != *dtIt ) {
+      item->setVisible( false );
+    } else {
+      item->setVisible( true );
+    }
+  }
+}
+
 KListViewItem *HeaderSelection::addOneDocText( QListViewItem* parent, const DocText& dt )
 {
-  KListViewItem *item1 = new KListViewItem( parent, dt.name() );
+  KListViewItem *item1 = new KListViewItem( parent,dt.name() );
   KListViewItem *item2 = new KListViewItem( item1, dt.text() );
 
   kdDebug() << "Document database id is "<< dt.dbId().toString() << endl;
