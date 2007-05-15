@@ -35,7 +35,7 @@ void HeaderTemplateProvider::slotNewTemplate()
 {
   kdDebug() << "SlotNewTemplate called!" << endl;
 
-  TextEditDialog dia( mParent );
+  TextEditDialog dia( mParent, KraftDoc::Header );
 
   DocText dt;
   dt.setTextType( KraftDoc::Header );
@@ -59,7 +59,7 @@ void HeaderTemplateProvider::slotEditTemplate()
 {
   kdDebug() << "SlotEditTemplate called!" << endl;
 
-  TextEditDialog dia( mParent );
+  TextEditDialog dia( mParent, KraftDoc::Header );
 
   /* mCurrentText is set through the slot slotSetCurrentDocText */
   DocText dt = mCurrentText;

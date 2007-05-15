@@ -28,7 +28,6 @@
 #include "headerselection.h"
 #include "kraftsettings.h"
 #include "kataloglistview.h"
-#include "texteditdialog.h"
 #include "doctext.h"
 #include "defaultprovider.h"
 #include "headertemplateprovider.h"

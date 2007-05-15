@@ -23,6 +23,7 @@
 #include <kdialogbase.h>
 
 #include "doctext.h"
+#include "kraftdoc.h"
 
 class QWidget;
 class QComboBox;
@@ -34,7 +35,7 @@ class TextEditDialog: public KDialogBase
   Q_OBJECT
 
 public:
-  TextEditDialog( QWidget* );
+  TextEditDialog( QWidget*, KraftDoc::Part );
   ~TextEditDialog( );
 
   virtual void setDocText( DocText );
