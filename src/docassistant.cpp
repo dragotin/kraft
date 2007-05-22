@@ -45,7 +45,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   KPushButton *pb = new KPushButton( i18n( "show Templates" ),  hb );
   connect( pb, SIGNAL( toggled( bool ) ),
-           this,  SLOT( slotToggleShowTemplates( bool ) ) );
+           this, SLOT( slotToggleShowTemplates( bool ) ) );
   pb->setToggleButton( true );
   QToolTip::add( pb, i18n( "Show mask to create or select templates to be used in the document" ) );
 
@@ -250,7 +250,7 @@ void DocAssistant::slotToggleShowTemplates( bool on )
 {
   if ( on ) {
     if ( mActivePage == KraftDoc::Header ) {
-      slotShowAddresses();
+      slotShowHeaderTemplates();
     } else if ( mActivePage == KraftDoc::Positions ) {
       slotShowCatalog();
     } else if ( mActivePage == KraftDoc::Footer ) {
@@ -307,7 +307,7 @@ void DocAssistant::slotShowCatalog( )
   mWidgetStack->raiseWidget( mCatalogSelection );
 }
 
-void DocAssistant::slotShowAddresses()
+void DocAssistant::slotShowHeaderTemplates()
 {
   setFullPreview( false, KraftDoc::Header );
   mWidgetStack->raiseWidget( mHeaderSelection );

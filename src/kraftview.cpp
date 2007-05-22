@@ -831,11 +831,6 @@ void KraftView::slotShowCatalog( bool on )
   }
 }
 
-void KraftView::slotShowAddresses()
-{
-  mAssistant->slotShowAddresses();
-}
-
 void KraftView::slotModifiedPositions()
 {
   kdDebug() << "Position Modified" << endl;

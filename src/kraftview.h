@@ -143,7 +143,6 @@ class KraftView : public KDialogBase
   void slotSwitchToPage( int );
   void refreshPostCard( );
   void slotShowCatalog( bool );
-  void slotShowAddresses();
   void slotShowTemplates( bool );
 
   void slotDocTypeChanged( const QString& );

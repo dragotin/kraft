@@ -50,7 +50,7 @@ public:
   }
 public slots:
   void slotShowCatalog();
-  void slotShowAddresses();
+  void slotShowHeaderTemplates();
   void setFullPreview( bool, int );
   void slotRenderCompleted();
   void slotSelectDocPart( int );
