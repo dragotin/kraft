@@ -1,8 +1,9 @@
 CREATE TABLE DocTexts (
   docTextID      INT NOT NULL AUTO_INCREMENT,
-  
-  text           TEXT,
+
+  name           VARCHAR(64),  
   description    TEXT,
+  text           TEXT,
   docType        VARCHAR( 64 ),
   textType       VARCHAR( 64 ),
   modDate        TIMESTAMP(14),
