@@ -2,4 +2,4 @@ Changes since version 0.14:
 
 - fixed bug with manual price field that needs to be left by
   TAB to get a change recognised.
-
+- increased precision to 2 digits for position amounts
