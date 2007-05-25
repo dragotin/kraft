@@ -110,7 +110,16 @@
                                         <cstring>m_sbAmount</cstring>
                                     </property>
                                     <property name="maxValue">
-                                        <number>99999.9</number>
+                                        <number>1e+07</number>
+                                    </property>
+                                    <property name="lineStep">
+                                        <number>1</number>
+                                    </property>
+                                    <property name="value">
+                                        <number>1</number>
+                                    </property>
+                                    <property name="precision">
+                                        <number>2</number>
                                     </property>
                                 </widget>
                                 <widget class="QComboBox">
@@ -123,10 +132,10 @@
                                         <cstring>m_sbUnitPrice</cstring>
                                     </property>
                                     <property name="maxValue">
-                                        <number>1e+07</number>
+                                        <number>1e+06</number>
                                     </property>
                                     <property name="minValue">
-                                        <number>-1e+07</number>
+                                        <number>-1e+06</number>
                                     </property>
                                     <property name="lineStep">
                                         <number>0.01</number>
