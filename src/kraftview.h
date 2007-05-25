@@ -186,7 +186,6 @@ class KraftView : public KDialogBase
   QVBox *mGlobalVBox;
   int mHeaderId;
   DocAssistant *mAssistant;
-  bool mShowAssistantDetail;
   double mRememberAmount;
   QMap<dbID, CalcPartList> mCalculationsMap;
   bool mModified;

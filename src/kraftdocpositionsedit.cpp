@@ -17,14 +17,9 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
 
   QHBox *upperHBox = new QHBox( this );
   topLayout->addWidget( upperHBox );
-  
+
   KPushButton *button = new KPushButton( i18n("Add"), upperHBox );
   connect( button, SIGNAL( clicked() ), SIGNAL( addPositionClicked() ) );
-
-  mCatalogToggle = new KPushButton( i18n("Catalog"), upperHBox );
-  mCatalogToggle->setToggleButton( true );
-  connect( mCatalogToggle, SIGNAL( toggled( bool ) ),
-    SIGNAL( catalogToggled( bool ) ) );
 
   QWidget *spaceEater = new QWidget( upperHBox );
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );

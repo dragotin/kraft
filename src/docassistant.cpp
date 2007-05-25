@@ -249,6 +249,8 @@ void DocAssistant::slotTextDeleted( const DocText& /* dt */)
 void DocAssistant::slotToggleShowTemplates( bool on )
 {
   if ( on ) {
+    // setFullPreview is set in the subslots called from here, that
+    // makes mFullPreview truly reflecting the state of the toggle button
     if ( mActivePage == KraftDoc::Header ) {
       slotShowHeaderTemplates();
     } else if ( mActivePage == KraftDoc::Positions ) {
@@ -291,7 +293,8 @@ CatalogSelection* DocAssistant::catalogSelection()
 void DocAssistant::slotSelectDocPart( int p )
 {
   mActivePage = p;
-  emit selectPage( p ) ;
+  emit selectPage( p );
+  slotToggleShowTemplates( !mFullPreview );
 }
 
 /* Doc Type like offer, invoice etc. */

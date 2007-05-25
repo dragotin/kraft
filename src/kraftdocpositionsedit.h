@@ -15,7 +15,6 @@ public:
 
   // FIXME: Remove access to internal widgets
   KraftViewScroll *positionScroll() { return m_positionScroll; }
-  KPushButton *catalogToggle() { return mCatalogToggle; }
 
 signals:
   void addPositionClicked();
@@ -23,7 +22,6 @@ signals:
 
 private:
   KraftViewScroll *m_positionScroll;
-  KPushButton *mCatalogToggle;  
 };
 
 #endif

@@ -125,7 +125,7 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 KraftView::KraftView(QWidget *parent, const char *name) :
   KDialogBase( parent, name, false /* modal */, i18n("Document"),
 	      Ok|Cancel, Ok, true /* separator */ ),
-  m_doc( 0 ),  mShowAssistantDetail( false ),  mRememberAmount( -1 ),
+  m_doc( 0 ),  mRememberAmount( -1 ),
   mModified( false )
 {
   mDeleteMapper = new QSignalMapper( this );
@@ -228,27 +228,11 @@ void KraftView::setup( DocGuardedPtr doc )
 
 void KraftView::slotSwitchToPage( int id )
 {
+  // check if the wanted part is already visible
   if ( mViewStack->visibleWidget() == mViewStack->widget( id ) ) return;
 
-  if ( mViewStack->visibleWidget() == mViewStack->widget( KraftDoc::Positions ) ) {
-    mShowAssistantDetail = ! mAssistant->isFullPreview();
-  }
 
   mViewStack->raiseWidget( id );
-
-  bool skip = false;
-  if ( id == KraftDoc::Positions ) {
-    if ( mShowAssistantDetail ) {
-      mAssistant->setFullPreview( false, id );
-      mCatalogToggle->setOn( true );
-      skip = true;
-    }
-  }
-
-  if ( ! skip ) {
-    mAssistant->setFullPreview( true, id );
-    mCatalogToggle->setOn( false );
-  }
 
   KraftDocEdit *edit =
     static_cast<KraftDocEdit *>( mViewStack->visibleWidget() );
@@ -291,7 +275,6 @@ void KraftView::setupPositions()
     KraftDocPositionsEdit *edit = new KraftDocPositionsEdit( mainWidget() );
     mViewStack->addWidget( edit, KraftDoc::Positions );
 
-    mCatalogToggle = edit->catalogToggle();
     m_positionScroll = edit->positionScroll();
 
     connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddPosition() ) );
