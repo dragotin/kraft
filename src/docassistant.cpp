@@ -31,6 +31,7 @@
 #include "doctext.h"
 #include "defaultprovider.h"
 #include "headertemplateprovider.h"
+#include "catalogtemplateprovider.h"
 
 DocAssistant::DocAssistant( QWidget *parent ):
   QSplitter( parent ), mFullPreview( true ),
@@ -68,7 +69,9 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   mCatalogSelection = new CatalogSelection( mWidgetStack );
   connect( mCatalogSelection,  SIGNAL( positionSelected( Katalog*, void* ) ),
-           this,  SIGNAL( positionSelected( Katalog*, void* ) ) );
+           this, SIGNAL( positionSelected( catalog, catTemplate ) ) );
+  connect( mCatalogSelection, SIGNAL( selectionChanged( QListViewItem* ) ),
+           this,  SLOT( slotCatalogSelectionChanged( QListViewItem* ) ) );
 
   mHeaderSelection = new HeaderSelection( mWidgetStack );
   connect( mHeaderSelection, SIGNAL( addressSelectionChanged() ),
@@ -113,6 +116,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   /* Template Provider initialisation */
   mHeaderTemplateProvider = new HeaderTemplateProvider( parent );
+  mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
 
   /* get a new header text from the default provider */
   connect( mHeaderTemplateProvider, SIGNAL( newHeaderText( const DocText& ) ),
@@ -134,26 +138,6 @@ void DocAssistant::slotAddToDocument()
 {
   kdDebug() << "SlotAddToDocument called!" << endl;
   mCurrTemplateProvider->slotTemplateToDocument();
-
-#if 0
-  if ( mWidgetStack->visibleWidget() == mHeaderSelection ) {
-    /* Header page */
-    if ( mHeaderSelection->textPageActive() ) {
-      kdDebug() << "Text Page active: " << mHeaderSelection->currentText() << endl;
-      emit headerTextTemplate( mHeaderSelection->currentText() );
-    } else if ( mHeaderSelection->addressPageActive() ) {
-      kdDebug() << "Address Page active" << endl;
-      KABC::Addressee adr = mHeaderSelection->currentAddressee();
-      emit addressTemplate( adr );
-    }
-
-  } else if ( mWidgetStack->visibleWidget() == mCatalogSelection ) {
-
-
-  } else if ( mWidgetStack->visibleWidget() == mFooterSelection ) {
-
-  }
-#endif
 }
 
 void DocAssistant::slotAddressSelectionChanged()
@@ -175,7 +159,21 @@ void DocAssistant::slotTextsSelectionChanged()
     mPbAdd->setEnabled( true );
     mPbEdit->setEnabled( true );
     mPbDel->setEnabled( true );
+  } else {
+    mPbAdd->setEnabled( false );
+    mPbEdit->setEnabled( false );
+    mPbDel->setEnabled( false );
+  }
+}
 
+void DocAssistant::slotCatalogSelectionChanged( QListViewItem* item )
+{
+  // enable the move-to-document button.
+  kdDebug() << "catalog position selection changed!" << endl;
+  if ( item ) {
+    mPbAdd->setEnabled( true );
+  } else {
+    mPbAdd->setEnabled( false );
   }
 }
 
@@ -293,6 +291,15 @@ CatalogSelection* DocAssistant::catalogSelection()
 void DocAssistant::slotSelectDocPart( int p )
 {
   mActivePage = p;
+  // change the currentTemplateProvider variable.
+  if ( p == KraftDoc::Header ) {
+    mCurrTemplateProvider = mHeaderTemplateProvider;
+  } else if ( p == KraftDoc::Positions ) {
+    mCurrTemplateProvider = mCatalogTemplateProvider;
+  } else if ( p == KraftDoc::Footer ) {
+    mCurrTemplateProvider = 0;
+  }
+
   emit selectPage( p );
   slotToggleShowTemplates( !mFullPreview );
 }

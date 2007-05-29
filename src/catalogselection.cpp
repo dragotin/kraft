@@ -88,7 +88,7 @@ void CatalogSelection::slCatalogDoubleClicked( QListViewItem *onItem,  const QPo
   slotAppendToDoc( onItem );
 }
 
-void CatalogSelection::slotAppendToDoc( QListViewItem *item )
+void CatalogSelection::slotAppendToDoc( QListViewItem * )
 {
   Katalog *kat = currentSelectedKat();
   const QString currentCat = mCatalogSelector->currentText();
@@ -143,9 +143,13 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
   }
 
   if ( kat ) {
+
     if ( ! mWidgetDict[katName] ) {
+      KatalogListView *katListView = 0;
+
       if ( kat->type() == TemplateCatalog ) {
         TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
+        katListView = tmpllistview;
         connect( tmpllistview,
                  SIGNAL( doubleClicked ( QListViewItem *, const QPoint &, int ) ),
                  this,
@@ -159,6 +163,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         kdDebug() << "Creating a selection list for catalog " << katName << endl;
       } else if ( kat->type() == MaterialCatalog ) {
         MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
+        katListView = matListView;
         connect( matListView,
                  SIGNAL( doubleClicked( QListViewItem*,  const QPoint&,  int ) ),
                  this,
@@ -169,12 +174,19 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         mWidgetDict.insert( katName, matListView );
       } else if ( kat->type() == PlantCatalog ) {
         BrunsKatalogListView *brunsListView = new BrunsKatalogListView( this );
+        katListView = brunsListView;
         brunsListView->addCatalogDisplay( katName );
 
         mAcAddToDoc->plug( brunsListView->contextMenu() );
         mWidgets->addWidget( brunsListView );
         mWidgetDict.insert(  katName, brunsListView );
         kdDebug() << "Creating a selection list for catalog " << katName << endl;
+      }
+
+      if ( katListView ) {
+        connect( katListView, SIGNAL( selectionChanged( QListViewItem* ) ),
+                 this, SIGNAL( selectionChanged( QListViewItem* ) ) );
+
       }
     }
     if ( mWidgetDict[katName] ) {

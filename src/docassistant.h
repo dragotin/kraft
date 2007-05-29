@@ -29,10 +29,12 @@ class CatalogSelection;
 class HeaderSelection;
 class QWidgetStack;
 class QWidget;
+class QListViewItem;
 class KPushButton;
 class Katalog;
 class TemplateProvider;
 class HeaderTemplateProvider;
+class CatalogTemplateProvider;
 class DocText;
 
 class DocAssistant : public QSplitter
@@ -69,6 +71,7 @@ protected slots:
   void slotTextDeleted( const DocText& dt );
   void slotNewHeaderDocText( const DocText& );
   void slotUpdateHeaderDocText( const DocText& );
+  void slotCatalogSelectionChanged( QListViewItem* );
 
 signals:
   void selectPage( int );
@@ -95,6 +98,7 @@ private:
 
   TemplateProvider* mCurrTemplateProvider;
   HeaderTemplateProvider *mHeaderTemplateProvider;
+  CatalogTemplateProvider *mCatalogTemplateProvider;
 };
 
 

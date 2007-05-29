@@ -25,8 +25,7 @@
 #include "defaultprovider.h"
 
 HeaderTemplateProvider::HeaderTemplateProvider( QWidget *parent )
-  :TemplateProvider( parent ),
-   mListView( 0 )
+  :TemplateProvider( parent )
 {
 
 }

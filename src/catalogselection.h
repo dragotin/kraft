@@ -59,6 +59,7 @@ signals:
    *        type.
    */
   void positionSelected( Katalog*, void* );
+  void selectionChanged( QListViewItem* );
 
 protected slots:
   void slotSelectCatalog( const QString& );

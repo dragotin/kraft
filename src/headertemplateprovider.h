@@ -47,7 +47,6 @@ signals:
 
 private:
   DocText  mCurrentText;
-  QListViewItem *mListView;
 };
 
 
