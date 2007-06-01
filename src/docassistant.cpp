@@ -68,8 +68,6 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mWidgetStack->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
   mCatalogSelection = new CatalogSelection( mWidgetStack );
-  connect( mCatalogSelection,  SIGNAL( positionSelected( Katalog*, void* ) ),
-           this, SIGNAL( positionSelected( catalog, catTemplate ) ) );
   connect( mCatalogSelection, SIGNAL( selectionChanged( QListViewItem* ) ),
            this,  SLOT( slotCatalogSelectionChanged( QListViewItem* ) ) );
 
@@ -114,9 +112,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mPbEdit->setEnabled( false );
   mPbDel->setEnabled( false );
 
-  /* Template Provider initialisation */
+  /* Template Provider initialisations */
   mHeaderTemplateProvider = new HeaderTemplateProvider( parent );
-  mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
 
   /* get a new header text from the default provider */
   connect( mHeaderTemplateProvider, SIGNAL( newHeaderText( const DocText& ) ),
@@ -127,6 +124,12 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotHeaderTextToDocument( const DocText& ) ) );
   connect( mHeaderTemplateProvider, SIGNAL( deleteHeaderText( const DocText& ) ),
            this,  SLOT( slotTextDeleted( const DocText& ) ) );
+
+  /* Catalog Template Provider */
+  mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
+  mCatalogTemplateProvider->setCatalogSelection( mCatalogSelection );
+  connect( mCatalogTemplateProvider,  SIGNAL( positionSelected( Katalog*, void* ) ),
+           this, SIGNAL( positionSelected( Katalog*, void* ) ) );
 
   mCurrTemplateProvider = mHeaderTemplateProvider;
 
@@ -294,10 +297,13 @@ void DocAssistant::slotSelectDocPart( int p )
   // change the currentTemplateProvider variable.
   if ( p == KraftDoc::Header ) {
     mCurrTemplateProvider = mHeaderTemplateProvider;
+    mPbNew->setEnabled( true );
   } else if ( p == KraftDoc::Positions ) {
     mCurrTemplateProvider = mCatalogTemplateProvider;
+    mPbNew->setEnabled( false );
   } else if ( p == KraftDoc::Footer ) {
     mCurrTemplateProvider = 0;
+    mPbNew->setEnabled( false );
   }
 
   emit selectPage( p );

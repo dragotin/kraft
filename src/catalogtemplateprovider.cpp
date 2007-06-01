@@ -22,11 +22,22 @@
 #include "texteditdialog.h"
 #include "doctext.h"
 #include "defaultprovider.h"
+#include "katalog.h"
+#include "catalogselection.h"
 
 CatalogTemplateProvider::CatalogTemplateProvider( QWidget *parent )
-  :TemplateProvider( parent )
+  :TemplateProvider( parent ),
+   mCatalogSelection( 0 )
 {
 
+}
+
+void CatalogTemplateProvider::setCatalogSelection( CatalogSelection *cs )
+{
+  mCatalogSelection = cs;
+
+  connect( mCatalogSelection, SIGNAL( actionAppendPosition() ),
+           this, SLOT( slotTemplateToDocument() ) );
 }
 
 void CatalogTemplateProvider::slotNewTemplate()
@@ -43,11 +54,6 @@ void CatalogTemplateProvider::slotEditTemplate()
 
 }
 
-void CatalogTemplateProvider::slotSetCurrentCatalogName( const QString& dt )
-{
-  mCurrentCatalogName = dt;
-}
-
 void CatalogTemplateProvider::slotDeleteTemplate()
 {
 }
@@ -56,6 +62,11 @@ void CatalogTemplateProvider::slotTemplateToDocument()
 {
   kdDebug() << "Moving catalog entry to document" << endl;
 
+  if ( mCatalogSelection ) {
+    Katalog *catalog = mCatalogSelection->currentSelectedKat();
+
+    emit positionSelected( catalog, mCatalogSelection->currentSelectedPosition() );
+  }
 }
 
 #include "catalogtemplateprovider.moc"

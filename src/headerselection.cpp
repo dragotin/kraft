@@ -117,7 +117,13 @@ void HeaderSelection::slotSelectDocType( const QString& doctype )
 
 KListViewItem *HeaderSelection::addOneDocText( QListViewItem* parent, const DocText& dt )
 {
-  KListViewItem *item1 = new KListViewItem( parent,dt.name() );
+  QString name = dt.name();
+
+  KListViewItem *item1 = new KListViewItem( parent, name );
+  if ( name == i18n( "Standard" ) ) {
+    item1->setPixmap( 0, SmallIcon( "knewstuff" ) );
+  }
+
   KListViewItem *item2 = new KListViewItem( item1, dt.text() );
 
   kdDebug() << "Document database id is "<< dt.dbId().toString() << endl;

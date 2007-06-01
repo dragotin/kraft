@@ -21,6 +21,8 @@
 #include <qvbox.h>
 #include <qasciidict.h>
 
+#include "kataloglistview.h"
+
 class QComboBox;
 class QWidgetStack;
 class KActionCollection;
@@ -29,7 +31,6 @@ class QListViewItem;
 
 class DocPosition;
 class FilterHeader;
-class KatalogListView;
 class CalcPartList;
 class Katalog;
 
@@ -42,6 +43,7 @@ public:
   ~CatalogSelection() { };
 
   Katalog* currentSelectedKat();
+  void *currentSelectedPosition();
 
 protected:
   void setupCatalogList();
@@ -58,13 +60,13 @@ signals:
    * FIXME: Better approach: all catalog items inherit from a base
    *        type.
    */
-  void positionSelected( Katalog*, void* );
   void selectionChanged( QListViewItem* );
+  void actionAppendPosition();
 
 protected slots:
   void slotSelectCatalog( const QString& );
-  void slotAppendToDoc( QListViewItem *item = 0 );
-  void slCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int );
+  // void slotAppendToDoc( QListViewItem *item = 0 );
+  // void slCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int );
 
 private:
   QComboBox *mCatalogSelector;

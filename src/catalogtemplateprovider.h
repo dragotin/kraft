@@ -22,12 +22,18 @@
 
 class QWidget;
 class QListViewItem;
+class CatalogSelection;
+class Katalog;
 
 class CatalogTemplateProvider : public TemplateProvider
 {
   Q_OBJECT
 public:
   CatalogTemplateProvider( QWidget* );
+  void setCatalogSelection( CatalogSelection * );
+
+signals:
+  void positionSelected( Katalog*, void* );
 
 public slots:
   void slotNewTemplate();
@@ -36,13 +42,8 @@ public slots:
 
   void slotTemplateToDocument();
 
-  void slotSetCurrentCatalogName( const QString& );
-
-
-
 private:
-  DocText  mCurrentText;
-  QString  mCurrentCatalogName;
+  CatalogSelection *mCatalogSelection;
 };
 
 

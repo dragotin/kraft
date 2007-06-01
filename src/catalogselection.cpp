@@ -79,10 +79,11 @@ void CatalogSelection::initActions()
 {
   mActions     = new KActionCollection( this );
   mAcAddToDoc  = new KAction( i18n("&Append to document"), "back", 0, this,
-                              SLOT( slotAppendToDoc() ), mActions, "appendToDoc");
+                              SIGNAL( actionAppendPosition() ), mActions, "appendToDoc");
 
 }
 
+#if 0
 void CatalogSelection::slCatalogDoubleClicked( QListViewItem *onItem,  const QPoint&,  int )
 {
   slotAppendToDoc( onItem );
@@ -105,6 +106,19 @@ void CatalogSelection::slotAppendToDoc( QListViewItem * )
   } else {
     kdDebug() << "ERR: No listview stored for catalog " << currentCat << endl;
   }
+}
+#endif
+
+void *CatalogSelection::currentSelectedPosition()
+{
+  const QString currentCat = mCatalogSelector->currentText();
+  KatalogListView *lv = mWidgetDict[ currentCat ];
+
+  void *flosPtr = 0;
+  if ( lv ) {
+    flosPtr = lv->currentItemData();
+  }
+  return flosPtr;
 }
 
 Katalog* CatalogSelection::currentSelectedKat()
