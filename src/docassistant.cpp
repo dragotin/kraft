@@ -26,6 +26,7 @@
 #include "docpostcard.h"
 #include "catalogselection.h"
 #include "headerselection.h"
+#include "textselection.h"
 #include "kraftsettings.h"
 #include "kataloglistview.h"
 #include "doctext.h"
@@ -74,8 +75,10 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mHeaderSelection = new HeaderSelection( mWidgetStack );
   connect( mHeaderSelection, SIGNAL( addressSelectionChanged() ),
            this, SLOT( slotAddressSelectionChanged() ) );
-  connect( mHeaderSelection, SIGNAL( textSelectionChanged() ),
-           this, SLOT( slotTextsSelectionChanged() ) );
+  connect( mHeaderSelection, SIGNAL( textSelectionChanged( QListViewItem* ) ),
+           this, SLOT( slotTextsSelectionChanged( QListViewItem* ) ) );
+
+  mFooterSelection = new TextSelection( mWidgetStack, KraftDoc::Footer );
 
   mWidgetStack->raiseWidget( mHeaderSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
@@ -154,11 +157,11 @@ void DocAssistant::slotAddressSelectionChanged()
   }
 }
 
-void DocAssistant::slotTextsSelectionChanged()
+void DocAssistant::slotTextsSelectionChanged( QListViewItem *item )
 {
   mHeaderTemplateProvider->slotSetCurrentDocText( mHeaderSelection->currentDocText() );
 
-  if ( mHeaderSelection->textsListView()->currentItem() ) {
+  if ( item ) {
     mPbAdd->setEnabled( true );
     mPbEdit->setEnabled( true );
     mPbDel->setEnabled( true );
@@ -191,21 +194,13 @@ void DocAssistant::slotNewTemplate()
 void DocAssistant::slotNewHeaderDocText( const DocText& dt )
 {
   /* show in list of texts in the GUI */
-  QListViewItem *item = mHeaderSelection->addNewDocText( dt );
-  if ( item ) {
-    item->setSelected( true );
-    slotTextsSelectionChanged();
-
-    // FIXME: Here slotaddtodocument should be called but that's not
-    //        working somehow...
-    emit headerTextTemplate( dt.text() );
-  }
+  mHeaderSelection->textSelection()->addNewDocText( dt );
 }
 
 /* called with a changed text that needs to be updated in the view */
 void DocAssistant::slotUpdateHeaderDocText( const DocText& dt )
 {
-  mHeaderSelection->updateDocText( dt );
+  mHeaderSelection->textSelection()->updateDocText( dt );
 }
 
 /* the user hit "add to document" to use a header text template */
@@ -218,8 +213,10 @@ void DocAssistant::slotHeaderTextToDocument( const DocText& dt )
 void DocAssistant::slotEditTemplate()
 {
   kdDebug() << "Editing a template using the currentTemplProvider" << endl;
-  mCurrTemplateProvider->slotSetDocType( mDocType );
-  mCurrTemplateProvider->slotEditTemplate();
+  if ( mCurrTemplateProvider ) {
+    mCurrTemplateProvider->slotSetDocType( mDocType );
+    mCurrTemplateProvider->slotEditTemplate();
+  }
 }
 
 /* slot that initialises a delete, called from the delete button */
@@ -243,7 +240,7 @@ void DocAssistant::slotDeleteTemplate()
 
 void DocAssistant::slotTextDeleted( const DocText& /* dt */)
 {
-  mHeaderSelection->deleteCurrentText();
+  mHeaderSelection->textSelection()->deleteCurrentText();
 }
 
 /* slot that opens the template details in case on == true */
@@ -257,7 +254,7 @@ void DocAssistant::slotToggleShowTemplates( bool on )
     } else if ( mActivePage == KraftDoc::Positions ) {
       slotShowCatalog();
     } else if ( mActivePage == KraftDoc::Footer ) {
-
+      slotShowFooterTemplates();
     }
   } else {
     // hide the details
@@ -315,6 +312,7 @@ void DocAssistant::slotSetDocType( const QString& type )
 {
   mDocType = type;
   mHeaderSelection->slotSelectDocType( type );
+  mFooterSelection->slotSelectDocType( type );
 }
 
 void DocAssistant::slotShowCatalog( )
@@ -327,6 +325,12 @@ void DocAssistant::slotShowHeaderTemplates()
 {
   setFullPreview( false, KraftDoc::Header );
   mWidgetStack->raiseWidget( mHeaderSelection );
+}
+
+void DocAssistant::slotShowFooterTemplates()
+{
+  setFullPreview( false, KraftDoc::Footer );
+  mWidgetStack->raiseWidget( mFooterSelection );
 }
 
 void DocAssistant::setFullPreview( bool setFull, int id )

@@ -1,8 +1,8 @@
 /***************************************************************************
-                 addressselection  - widget to select Addresses
+  textselection  - widget to select header- and footer text data for the doc
                              -------------------
-    begin                : 2006-09-03
-    copyright            : (C) 2006 by Klaas Freitag
+    begin                : 2007-06-01
+    copyright            : (C) 2007 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -15,60 +15,57 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef HEADERSELECTION_H
-#define HEADERSELECTION_H
+#ifndef FOOTERSELECTION_H
+#define FOOTERSELECTION_H
 
 #include <qtabwidget.h>
 #include <qmap.h>
+#include <qvbox.h>
 
 #include <kabc/addressee.h>
 
+#include "kraftdoc.h"
+
 class QComboBox;
 class FilterHeader;
+class KListView;
 class KListViewItem;
 class QListViewItem;
 class AddressSelection;
 class KPushButton;
 class DocText;
-class TextSelection;
-class KListView;
 
-class HeaderSelection : public QTabWidget
+class TextSelection : public QVBox
 {
   Q_OBJECT
 public:
-  HeaderSelection( QWidget* );
+  TextSelection( QWidget*, KraftDoc::Part );
 
-  ~HeaderSelection();
+  ~TextSelection();
 
-  bool textPageActive();
-  bool addressPageActive();
-
-  KABC::Addressee currentAddressee();
   QString currentText() const;
   DocText currentDocText() const;
 
-  KListView *addressListView() { return mAddressView; }
-  TextSelection *textSelection() { return mTextsView; }
+  KListView *textsListView() { return mTextsView; }
 
 signals:
-  void addressSelectionChanged();
-  void textSelectionChanged( QListViewItem* );
+  void textSelectionChanged();
 
 public slots:
+  QListViewItem* addNewDocText( const DocText& );
+  void deleteCurrentText();
+  void updateDocText( const DocText& );
   void slotSelectDocType( const QString& );
-
-protected slots:
-  void slotAddressNew();
-  void slotCurrentTabChanged( QWidget * );
+protected:
+  void initActions();
+  void buildTextList( KraftDoc::Part );
+  KListViewItem* addOneDocText( QListViewItem*, const DocText& );
 
 private:
   FilterHeader   *mListSearchLine;
-  TextSelection  *mTextsView;
-  KListView      *mAddressView;
-  AddressSelection *mAddressSelection;
-  int mAddressTabId;
-  int mTextsTabId;
+  KListView      *mTextsView;
+  QMap<QListViewItem*, DocText> mTextMap;
+  QMap<QString, QListViewItem*> mDocTypeItemMap;
 };
 
 #endif

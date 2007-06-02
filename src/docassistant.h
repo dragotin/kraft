@@ -27,6 +27,7 @@
 class DocPostCard;
 class CatalogSelection;
 class HeaderSelection;
+class TextSelection;
 class QWidgetStack;
 class QWidget;
 class QListViewItem;
@@ -53,6 +54,7 @@ public:
 public slots:
   void slotShowCatalog();
   void slotShowHeaderTemplates();
+  void slotShowFooterTemplates();
   void setFullPreview( bool, int );
   void slotRenderCompleted();
   void slotSelectDocPart( int );
@@ -66,7 +68,7 @@ public slots:
 
 protected slots:
   void slotAddressSelectionChanged();
-  void slotTextsSelectionChanged();
+  void slotTextsSelectionChanged( QListViewItem* );
   void slotHeaderTextToDocument( const DocText& );
   void slotTextDeleted( const DocText& dt );
   void slotNewHeaderDocText( const DocText& );
@@ -86,7 +88,7 @@ private:
   CatalogSelection *mCatalogSelection;
   QWidgetStack *mWidgetStack;
   HeaderSelection *mHeaderSelection;
-  /* FooterSelection */ QWidget *mFooterSelection;
+  TextSelection *mFooterSelection;
   bool mFullPreview;
   int            mActivePage;
   KPushButton    *mPbAdd;
