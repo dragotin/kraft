@@ -197,6 +197,9 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   connect( mAssistant, SIGNAL( headerTextTemplate( const QString& ) ),
            this, SLOT( slotNewHeaderText( const QString& ) ) );
 
+  connect( mAssistant, SIGNAL( footerTextTemplate( const QString& ) ),
+           this, SLOT( slotNewFooterText( const QString& ) ) );
+
   if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
     mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
   }
@@ -678,6 +681,12 @@ void KraftView::slotNewHeaderText( const QString& str )
 {
   m_headerEdit->m_teEntry->setText( str );
   slotModifiedHeader();
+}
+
+void KraftView::slotNewFooterText( const QString& str )
+{
+  m_footerEdit->m_teSummary->setText( str );
+  slotModifiedFooter();
 }
 
 void KraftView::slotAddPosition()

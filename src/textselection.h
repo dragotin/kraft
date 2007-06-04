@@ -49,7 +49,7 @@ public:
   KListView *textsListView() { return mTextsView; }
 
 signals:
-  void textSelectionChanged();
+  void textSelectionChanged( QListViewItem* );
 
 public slots:
   QListViewItem* addNewDocText( const DocText& );

@@ -50,8 +50,8 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   mTextsView->addColumn( i18n( "Text" ) );
 
 
-  connect( mTextsView, SIGNAL( selectionChanged() ),
-           SIGNAL( textSelectionChanged() ) );
+  connect( mTextsView, SIGNAL( selectionChanged( QListViewItem* ) ),
+           SIGNAL( textSelectionChanged( QListViewItem* ) ) );
   buildTextList( part );
 
   initActions();

@@ -36,6 +36,7 @@ class Katalog;
 class TemplateProvider;
 class HeaderTemplateProvider;
 class CatalogTemplateProvider;
+class FooterTemplateProvider;
 class DocText;
 
 class DocAssistant : public QSplitter
@@ -74,6 +75,9 @@ protected slots:
   void slotNewHeaderDocText( const DocText& );
   void slotUpdateHeaderDocText( const DocText& );
   void slotCatalogSelectionChanged( QListViewItem* );
+  void slotNewFooterDocText( const DocText& );
+  void slotUpdateFooterDocText( const DocText& );
+  void slotFooterTextToDocument( const DocText& );
 
 signals:
   void selectPage( int );
@@ -82,6 +86,7 @@ signals:
 
   void addressTemplate( const KABC::Addressee& );
   void headerTextTemplate( const QString& );
+  void footerTextTemplate( const QString& );
 
 private:
   DocPostCard *mPostCard;
@@ -98,9 +103,10 @@ private:
   QWidget        *mTemplatePane;
   QString         mDocType;
 
-  TemplateProvider* mCurrTemplateProvider;
-  HeaderTemplateProvider *mHeaderTemplateProvider;
+  TemplateProvider        *mCurrTemplateProvider;
+  HeaderTemplateProvider  *mHeaderTemplateProvider;
   CatalogTemplateProvider *mCatalogTemplateProvider;
+  FooterTemplateProvider  *mFooterTemplateProvider;
 };
 
 

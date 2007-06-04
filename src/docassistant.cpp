@@ -32,6 +32,7 @@
 #include "doctext.h"
 #include "defaultprovider.h"
 #include "headertemplateprovider.h"
+#include "footertemplateprovider.h"
 #include "catalogtemplateprovider.h"
 
 DocAssistant::DocAssistant( QWidget *parent ):
@@ -79,6 +80,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this, SLOT( slotTextsSelectionChanged( QListViewItem* ) ) );
 
   mFooterSelection = new TextSelection( mWidgetStack, KraftDoc::Footer );
+  connect( mFooterSelection, SIGNAL( textSelectionChanged( QListViewItem* ) ),
+           this, SLOT( slotTextsSelectionChanged( QListViewItem* ) ) );
 
   mWidgetStack->raiseWidget( mHeaderSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
@@ -128,6 +131,18 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mHeaderTemplateProvider, SIGNAL( deleteHeaderText( const DocText& ) ),
            this,  SLOT( slotTextDeleted( const DocText& ) ) );
 
+  mFooterTemplateProvider = new FooterTemplateProvider( parent );
+
+  /* get a new Footer text from the default provider */
+  connect( mFooterTemplateProvider, SIGNAL( newFooterText( const DocText& ) ),
+           this,  SLOT( slotNewFooterDocText( const DocText& ) ) );
+  connect( mFooterTemplateProvider, SIGNAL( updateFooterText( const DocText& ) ),
+           this,  SLOT( slotUpdateFooterDocText( const DocText& ) ) );
+  connect( mFooterTemplateProvider, SIGNAL( footerTextToDocument( const DocText& ) ),
+           this,  SLOT( slotFooterTextToDocument( const DocText& ) ) );
+  connect( mFooterTemplateProvider, SIGNAL( deleteFooterText( const DocText& ) ),
+           this,  SLOT( slotTextDeleted( const DocText& ) ) );
+
   /* Catalog Template Provider */
   mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
   mCatalogTemplateProvider->setCatalogSelection( mCatalogSelection );
@@ -149,7 +164,7 @@ void DocAssistant::slotAddToDocument()
 void DocAssistant::slotAddressSelectionChanged()
 {
   kdDebug() << "A address template was selected!" << endl;
-  if ( mHeaderSelection->addressListView()->currentItem() ) {
+  if ( mHeaderSelection->textSelection()->textsListView()->currentItem() ) {
     mPbAdd->setEnabled( true );
     mPbEdit->setEnabled( true );
     mPbDel->setEnabled( false );
@@ -160,6 +175,7 @@ void DocAssistant::slotAddressSelectionChanged()
 void DocAssistant::slotTextsSelectionChanged( QListViewItem *item )
 {
   mHeaderTemplateProvider->slotSetCurrentDocText( mHeaderSelection->currentDocText() );
+  mFooterTemplateProvider->slotSetCurrentDocText( mFooterSelection->currentDocText() );
 
   if ( item ) {
     mPbAdd->setEnabled( true );
@@ -209,6 +225,26 @@ void DocAssistant::slotHeaderTextToDocument( const DocText& dt )
   emit headerTextTemplate( dt.text() );
 }
 
+/* a new header doc text was created and should go to the document */
+void DocAssistant::slotNewFooterDocText( const DocText& dt )
+{
+  /* show in list of texts in the GUI */
+  mFooterSelection->addNewDocText( dt );
+}
+
+/* called with a changed text that needs to be updated in the view */
+void DocAssistant::slotUpdateFooterDocText( const DocText& dt )
+{
+  mFooterSelection->updateDocText( dt );
+}
+
+/* the user hit "add to document" to use a header text template */
+void DocAssistant::slotFooterTextToDocument( const DocText& dt )
+{
+  emit footerTextTemplate( dt.text() );
+}
+
+
 /* Slot that initiates an edit */
 void DocAssistant::slotEditTemplate()
 {
@@ -230,12 +266,8 @@ void DocAssistant::slotDeleteTemplate()
     return;
   }
 
-  mCurrTemplateProvider->slotDeleteTemplate();
-#if 0
-  DocText dt = mHeaderSelection->currentDocText();
-  DefaultProvider::self()->deleteDocumentText( dt );
-  mHeaderSelection->deleteCurrentText();
-#endif
+  if ( mCurrTemplateProvider )
+    mCurrTemplateProvider->slotDeleteTemplate();
 }
 
 void DocAssistant::slotTextDeleted( const DocText& /* dt */)
@@ -299,8 +331,8 @@ void DocAssistant::slotSelectDocPart( int p )
     mCurrTemplateProvider = mCatalogTemplateProvider;
     mPbNew->setEnabled( false );
   } else if ( p == KraftDoc::Footer ) {
-    mCurrTemplateProvider = 0;
-    mPbNew->setEnabled( false );
+    mCurrTemplateProvider = mFooterTemplateProvider;
+    mPbNew->setEnabled( true );
   }
 
   emit selectPage( p );

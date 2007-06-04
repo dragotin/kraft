@@ -48,7 +48,6 @@ public:
   QString currentText() const;
   DocText currentDocText() const;
 
-  KListView *addressListView() { return mAddressView; }
   TextSelection *textSelection() { return mTextsView; }
 
 signals:
@@ -65,7 +64,6 @@ protected slots:
 private:
   FilterHeader   *mListSearchLine;
   TextSelection  *mTextsView;
-  KListView      *mAddressView;
   AddressSelection *mAddressSelection;
   int mAddressTabId;
   int mTextsTabId;

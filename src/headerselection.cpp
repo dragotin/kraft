@@ -68,7 +68,7 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   mTextsTabId = indexOf( vBox );
 
   connect( this, SIGNAL( currentChanged( QWidget* ) ),
-           this, SLOT( slotCurrentTabChanged( QWidget ) ) );
+           this, SLOT( slotCurrentTabChanged( QWidget* ) ) );
 
 }
 
