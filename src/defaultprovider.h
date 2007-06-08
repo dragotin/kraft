@@ -39,7 +39,7 @@ public:
   static DefaultProvider *self();
   QStringList docTypes();
 
-  QString documentText( const QString&, const QString&, DocGuardedPtr = 0 );
+  QString documentText( const QString&, KraftDoc::Part, DocGuardedPtr = 0 );
   dbID saveDocumentText( const DocText& );
   void deleteDocumentText( const DocText& );
 

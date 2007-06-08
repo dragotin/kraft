@@ -85,7 +85,7 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
 }
 
 
-QString DefaultProvider::documentText( const QString& docType, const QString&textType, DocGuardedPtr )
+QString DefaultProvider::documentText( const QString& docType, KraftDoc::Part p, DocGuardedPtr )
 {
   // FIXME: Later on use the document information to do replaces in the wordlist template
   QString re;
@@ -96,6 +96,7 @@ QString DefaultProvider::documentText( const QString& docType, const QString&tex
     return re;
   }
   // read the wordlist
+  QString textType = KraftDoc::partToString( p );
   QStringList l = KraftDB::self()->wordList( QString( "doc%1_%2" ).arg( textType ).arg( docType ) );
   if ( l.count() ) {
     re = l[0]; // return the first of the list

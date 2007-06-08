@@ -62,7 +62,9 @@ void PrefsDialog::entryTextTab()
   mHeaderEdit = new QTextEdit( vb, "HeaderTextEdit" );
   mHeaderEdit->setTextFormat( Qt::PlainText );
   mHeaderDocType = mTextTypeEntry->currentText();
-  mHeaderEdit->setText( DefaultProvider::self()->documentText( mTextTypeEntry->currentText(), "Header" ) );
+  mHeaderEdit->setText(
+    DefaultProvider::self()->documentText( mTextTypeEntry->currentText(),
+                                           KraftDoc::Header ) );
 }
 
 void PrefsDialog::footerTextTab()
@@ -80,14 +82,14 @@ void PrefsDialog::footerTextTab()
   mFooterEdit = new QTextEdit( vb, "FooterTextEdit" );
   mFooterEdit->setTextFormat( Qt::PlainText );
   mFooterDocType = mTextTypeFooter->currentText();
-  mFooterEdit->setText( DefaultProvider::self()->documentText( mFooterDocType, "Footer" ) );
+  mFooterEdit->setText( DefaultProvider::self()->documentText( mFooterDocType, KraftDoc::Footer ) );
 
 }
 
 void PrefsDialog::slotFooterDocTypeChanged( const QString& newEntry )
 {
   if ( newEntry != mFooterDocType ) {
-    const QString origText = DefaultProvider::self()->documentText( mFooterDocType, "Footer" );
+    const QString origText = DefaultProvider::self()->documentText( mFooterDocType, KraftDoc::Footer );
     kdDebug() << "Original text: <" << origText << "> and edit <" << mFooterEdit->text() << ">" << endl;
 
     if ( mFooterEdit->text() != origText ) {
@@ -109,13 +111,13 @@ void PrefsDialog::slotFooterDocTypeChanged( const QString& newEntry )
     }
   }
   mFooterDocType = newEntry;
-  mFooterEdit->setText( DefaultProvider::self()->documentText( mFooterDocType, "Footer" ) );
+  mFooterEdit->setText( DefaultProvider::self()->documentText( mFooterDocType, KraftDoc::Footer ) );
 }
 
 void PrefsDialog::slotHeaderDocTypeChanged( const QString& newEntry )
 {
   if ( newEntry != mHeaderDocType ) {
-    const QString origText = DefaultProvider::self()->documentText( mHeaderDocType, "Header" );
+    const QString origText = DefaultProvider::self()->documentText( mHeaderDocType, KraftDoc::Header );
     kdDebug() << "Original text: "<< origText << " and new: " << mHeaderEdit->text() <<endl;
     if ( mHeaderEdit->text() != origText ) {
       int answer = KMessageBox::Yes;
@@ -134,7 +136,7 @@ void PrefsDialog::slotHeaderDocTypeChanged( const QString& newEntry )
     }
   }
   mHeaderDocType = newEntry;
-  mHeaderEdit->setText( DefaultProvider::self()->documentText( mHeaderDocType, "Header" ) );
+  mHeaderEdit->setText( DefaultProvider::self()->documentText( mHeaderDocType, KraftDoc::Header ) );
 }
 
 void PrefsDialog::databaseTab()

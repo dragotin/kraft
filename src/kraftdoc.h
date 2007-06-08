@@ -58,6 +58,8 @@ class KraftDoc : public QObject
   public:
     enum Part { Header,  Positions, Footer, Unknown };
 
+  static QString partToString( Part );
+
     /** Constructor for the fileclass of the application */
     KraftDoc(QWidget *parent = 0, const char *name = 0);
     /** Destructor for the fileclass of the application */

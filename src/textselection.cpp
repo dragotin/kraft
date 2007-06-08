@@ -41,14 +41,15 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   setSpacing( KDialog::spacingHint() );
 
   /* a view for the entry text repository */
-  ( void ) new QLabel( i18n( "Text Selection" ), this );
+  ( void ) new QLabel( i18n( "%1 Text Selection" ).arg( KraftDoc::partToString( part ) ), this );
   mTextsView = new KListView( this );
+  mTextsView->setItemMargin( 4 );
+  mTextsView->setRootIsDecorated( true );
   mTextsView->header()->setHidden( true );
   mTextsView->setResizeMode( QListView::LastColumn );
   mTextsView->setSelectionMode( QListView::Single );
 
   mTextsView->addColumn( i18n( "Text" ) );
-
 
   connect( mTextsView, SIGNAL( selectionChanged( QListViewItem* ) ),
            SIGNAL( textSelectionChanged( QListViewItem* ) ) );
@@ -97,6 +98,7 @@ KListViewItem *TextSelection::addOneDocText( QListViewItem* parent, const DocTex
   }
 
   KListViewItem *item2 = new KListViewItem( item1, dt.text() );
+  item2->setMultiLinesEnabled( true );
 
   kdDebug() << "Document database id is "<< dt.dbId().toString() << endl;
   mTextMap[item1] = dt;
@@ -109,9 +111,20 @@ KListViewItem *TextSelection::addOneDocText( QListViewItem* parent, const DocTex
 QListViewItem* TextSelection::addNewDocText( const DocText& dt )
 {
   QListViewItem *item = mDocTypeItemMap[dt.docType()];
+
   if ( item ) {
-    mTextsView->clearSelection();
-    return addOneDocText( item, dt );
+    // if the item does not have a first Child, the text item is selected
+    // and we have to move up one level.
+    if ( ! item->firstChild() ) {
+      item = item->parent();
+    }
+
+    if ( item ) {
+      mTextsView->clearSelection();
+      QListViewItem *newItem = addOneDocText( item, dt );
+      newItem->setSelected( true );
+      return newItem;
+    }
   }
   return 0;
 }
@@ -121,6 +134,10 @@ void TextSelection::updateDocText( const DocText& dt )
 {
   kdDebug() << "Update Doc Text" << endl;
   QListViewItem *it = dt.listViewItem();
+  if ( ! it->firstChild() ) {
+    it = it->parent();
+  }
+
   if ( it ) {
     kdDebug() << "Update Doc Text Item" << endl;
 

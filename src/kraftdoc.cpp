@@ -165,8 +165,8 @@ bool KraftDoc::newDocument()
   mAddressUid = QString::null;
 
   mDocType = DefaultProvider::self()->docType();
-  mPreText = DefaultProvider::self()->documentText( mDocType, "Header" );
-  mPostText = DefaultProvider::self()->documentText( mDocType, "Footer" );
+  mPreText = DefaultProvider::self()->documentText( mDocType, KraftDoc::Header );
+  mPostText = DefaultProvider::self()->documentText( mDocType, KraftDoc::Footer );
 
   mSalut = QString::null;
   mGoodbye = QString::null;
@@ -383,6 +383,18 @@ Geld KraftDoc::vatSum()
   return Geld( nettoSum() * DocumentMan::self()->vat()/100.0 );
 }
 
+
+ QString KraftDoc::partToString( Part p )
+{
+  if ( p == Header )
+    return i18n( "Header" );
+  else if ( p == Footer )
+    return i18n( "Footer" );
+  else if ( p == Positions )
+    return i18n( "Positions" );
+
+  return i18n( "Unknown document part" );
+}
 
 
 #include "kraftdoc.moc"
