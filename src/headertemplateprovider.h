@@ -20,6 +20,7 @@
 
 #include "templateprovider.h"
 #include "doctext.h"
+#include "headerselection.h"
 
 class QWidget;
 class QListViewItem;
@@ -38,6 +39,7 @@ public slots:
   void slotTemplateToDocument();
 
   void slotSetCurrentDocText( const DocText& );
+  void slotSetCurrentTab( HeaderSelection::HeaderTabType );
 
 signals:
   void newHeaderText( const DocText& );
@@ -47,6 +49,7 @@ signals:
 
 private:
   DocText  mCurrentText;
+  HeaderSelection::HeaderTabType mCurrentTab;
 };
 
 

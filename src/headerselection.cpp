@@ -70,6 +70,8 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   connect( this, SIGNAL( currentChanged( QWidget* ) ),
            this, SLOT( slotCurrentTabChanged( QWidget* ) ) );
 
+  setCurrentPage( mTextsTabId );
+
 }
 
 void HeaderSelection::slotAddressNew()
@@ -120,9 +122,9 @@ void HeaderSelection::slotCurrentTabChanged( QWidget *w )
   // Hier gehts weiter.
 
   if ( indexOf( w ) == mTextsTabId ) {
-
+    emit switchedToHeaderTab( TextTab );
   } else if ( indexOf( w ) == mAddressTabId ) {
-
+    emit switchedToHeaderTab( AddressTab );
   } else {
     kdError() << "Unknown Widget!" << endl;
   }

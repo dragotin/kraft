@@ -69,6 +69,9 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mWidgetStack = new QWidgetStack( stackVBox );
   mWidgetStack->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
+  /* Selections are the gui reprenentations of the template providing catalogs
+   * like header- and footer texts and catalogs.
+   */
   mCatalogSelection = new CatalogSelection( mWidgetStack );
   connect( mCatalogSelection, SIGNAL( selectionChanged( QListViewItem* ) ),
            this,  SLOT( slotCatalogSelectionChanged( QListViewItem* ) ) );
@@ -78,10 +81,14 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this, SLOT( slotAddressSelectionChanged() ) );
   connect( mHeaderSelection, SIGNAL( textSelectionChanged( QListViewItem* ) ),
            this, SLOT( slotTextsSelectionChanged( QListViewItem* ) ) );
+  connect( mHeaderSelection->textSelection(), SIGNAL( actionCurrentTextToDoc() ),
+           this,  SLOT( slotAddToDocument() ) );
 
   mFooterSelection = new TextSelection( mWidgetStack, KraftDoc::Footer );
   connect( mFooterSelection, SIGNAL( textSelectionChanged( QListViewItem* ) ),
            this, SLOT( slotTextsSelectionChanged( QListViewItem* ) ) );
+  connect( mFooterSelection, SIGNAL( actionCurrentTextToDoc() ),
+           this,  SLOT( slotAddToDocument() ) );
 
   mWidgetStack->raiseWidget( mHeaderSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
@@ -130,6 +137,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotHeaderTextToDocument( const DocText& ) ) );
   connect( mHeaderTemplateProvider, SIGNAL( deleteHeaderText( const DocText& ) ),
            this,  SLOT( slotTextDeleted( const DocText& ) ) );
+  connect( mHeaderSelection, SIGNAL( switchedToHeaderTab( HeaderSelection::HeaderTabType ) ),
+           mHeaderTemplateProvider, SLOT( slotSetCurrentTab( HeaderSelection::HeaderTabType ) ) );
 
   mFooterTemplateProvider = new FooterTemplateProvider( parent );
 

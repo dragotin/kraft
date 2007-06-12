@@ -98,8 +98,19 @@ void HeaderTemplateProvider::slotDeleteTemplate()
 void HeaderTemplateProvider::slotTemplateToDocument()
 {
   kdDebug() << "Moving template to document" << endl;
-  emit headerTextToDocument( mCurrentText );
 
+  if ( mCurrentTab == HeaderSelection::TextTab ) {
+    emit headerTextToDocument( mCurrentText );
+  } else if ( mCurrentTab == HeaderSelection::AddressTab ) {
+    kdDebug() << "Addresstab is selected!" << endl;
+  } else {
+    kdDebug() << "Currently not a valid Tab selected" << endl;
+  }
+}
+
+void HeaderTemplateProvider::slotSetCurrentTab( HeaderSelection::HeaderTabType t )
+{
+  mCurrentTab = t;
 }
 
 #include "headertemplateprovider.moc"

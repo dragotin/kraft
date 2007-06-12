@@ -39,6 +39,8 @@ class HeaderSelection : public QTabWidget
 public:
   HeaderSelection( QWidget* );
 
+  enum HeaderTabType { AddressTab, TextTab };
+
   ~HeaderSelection();
 
   bool textPageActive();
@@ -53,6 +55,7 @@ public:
 signals:
   void addressSelectionChanged();
   void textSelectionChanged( QListViewItem* );
+  void switchedToHeaderTab( HeaderSelection::HeaderTabType );
 
 public slots:
   void slotSelectDocType( const QString& );

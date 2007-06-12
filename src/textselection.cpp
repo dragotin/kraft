@@ -32,7 +32,7 @@
 #include <qlabel.h>
 #include <qvbox.h>
 #include <qheader.h>
-
+#include <qpopupmenu.h>
 
 TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   :QVBox( parent )
@@ -54,6 +54,14 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   connect( mTextsView, SIGNAL( selectionChanged( QListViewItem* ) ),
            SIGNAL( textSelectionChanged( QListViewItem* ) ) );
   buildTextList( part );
+
+  // Context Menu
+  mMenu = new QPopupMenu( mTextsView );
+  // mMenu->insertTitle( i18n("Template Actions") );
+  // connect( this, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint& , int ) ),
+  //           this, SLOT( slotRMB( QListViewItem *, const QPoint &, int ) ) );
+  connect( mTextsView, SIGNAL( contextMenu( KListView*, QListViewItem *, const QPoint& ) ),
+           this, SLOT( slotRMB( KListView*, QListViewItem *, const QPoint & ) ) );
 
   initActions();
 }
@@ -178,7 +186,10 @@ TextSelection::~TextSelection()
 
 void TextSelection::initActions()
 {
-
+  mActions     = new KActionCollection( this );
+  mAcMoveToDoc = new KAction( i18n("&Use in Document"), "back", 0, this,
+                              SIGNAL( actionCurrentTextToDoc() ), mActions, "moveToDoc");
+  mAcMoveToDoc->plug( mMenu );
 }
 
 DocText TextSelection::currentDocText() const
@@ -206,6 +217,15 @@ QString TextSelection::currentText() const
   }
 
   return re;
+}
+
+
+void TextSelection::slotRMB( KListView*, QListViewItem* item, const QPoint& point )
+{
+  if( ! item ) return;
+
+  // fill the document list with a list of the open docs
+  mMenu->popup( point );
 }
 
 #include "textselection.moc"

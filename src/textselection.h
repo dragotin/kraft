@@ -27,6 +27,7 @@
 #include "kraftdoc.h"
 
 class QComboBox;
+class QPopupMenu;
 class FilterHeader;
 class KListView;
 class KListViewItem;
@@ -34,6 +35,8 @@ class QListViewItem;
 class AddressSelection;
 class KPushButton;
 class DocText;
+class KAction;
+class KActionCollection;
 
 class TextSelection : public QVBox
 {
@@ -50,12 +53,14 @@ public:
 
 signals:
   void textSelectionChanged( QListViewItem* );
+  void actionCurrentTextToDoc();
 
 public slots:
   QListViewItem* addNewDocText( const DocText& );
   void deleteCurrentText();
   void updateDocText( const DocText& );
   void slotSelectDocType( const QString& );
+  void slotRMB( KListView*, QListViewItem* ,const QPoint& );
 protected:
   void initActions();
   void buildTextList( KraftDoc::Part );
@@ -66,6 +71,10 @@ private:
   KListView      *mTextsView;
   QMap<QListViewItem*, DocText> mTextMap;
   QMap<QString, QListViewItem*> mDocTypeItemMap;
+
+  QPopupMenu        *mMenu;
+  KActionCollection *mActions;
+  KAction           *mAcMoveToDoc;
 };
 
 #endif
