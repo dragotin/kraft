@@ -5,3 +5,7 @@ Changes since version 0.14:
 - increased precision to 2 digits for position amounts
 - allow euro-sign in texts and in the whiteboard. Due to a lack
   in the qt3 mysql driver the char needs to be en- and decoded.
+
+Bugs fixed:
+- fixed time lined doc overview, now displaying all documents of
+  all months of a year.

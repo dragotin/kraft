@@ -334,12 +334,11 @@ void PortalView::slotBuildView()
 
       yearItem = mDocDigestView->addChapter( QString::number( year ),  DocDigestList(), item );
       yearItem->setOpen( false );
-
-      month = ( *it ).month();
-      const QString monthName = KGlobal().locale()->calendar()->monthName( month, year, false);
-      KListViewItem *mItem = mDocDigestView->addChapter(  monthName, ( *it ).digests(), yearItem );
-      mItem->setOpen( false );
     }
+    month = ( *it ).month();
+    const QString monthName = KGlobal().locale()->calendar()->monthName( month, year, false);
+    KListViewItem *mItem = mDocDigestView->addChapter(  monthName, ( *it ).digests(), yearItem );
+    mItem->setOpen( false );
   }
   kdDebug() << "---------" << endl;
   item = mDocDigestView->addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
