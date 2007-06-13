@@ -74,7 +74,7 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
     DocText dt;
     dt.setDbId( cur.value( "docTextID" ).toInt() );
     dt.setName( cur.value( "name" ).toString() );
-    dt.setText( cur.value( "text" ).toString() );
+    dt.setText( KraftDB::self()->mysqlEuroDecode( cur.value( "text" ).toString() ) );
     dt.setDescription( cur.value( "description" ).toString() );
     dt.setTextType( DocText::stringToTextType( cur.value( "textType" ).toString() ) );
     dt.setDocType( cur.value( "docType" ).toString() );
@@ -84,22 +84,18 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
   return re;
 }
 
-
-QString DefaultProvider::documentText( const QString& docType, KraftDoc::Part p, DocGuardedPtr )
+QString DefaultProvider::defaultText( const QString& docType, KraftDoc::Part p, DocGuardedPtr )
 {
-  // FIXME: Later on use the document information to do replaces in the wordlist template
   QString re;
 
-  QStringList validType = docTypes().grep( docType );
-  if ( ! validType.count() ) {
-    kdDebug() << "ERR: Do not know the docType " << docType << endl;
-    return re;
-  }
-  // read the wordlist
-  QString textType = KraftDoc::partToString( p );
-  QStringList l = KraftDB::self()->wordList( QString( "doc%1_%2" ).arg( textType ).arg( docType ) );
-  if ( l.count() ) {
-    re = l[0]; // return the first of the list
+  DocTextList list = documentTexts( docType, p );
+  DocTextList::iterator it;
+
+  for ( it = list.begin(); it != list.end(); ++it ) {
+    if ( ( *it ).name() == i18n( "Standard" ) ) {
+      re = ( *it ).text();
+      break;
+    }
   }
   return re;
 }
@@ -137,12 +133,11 @@ void DefaultProvider::fillDocTextBuffer( const DocText& t, QSqlRecord *buffer )
 
   buffer->setValue( "name", t.name() );
   buffer->setValue( "description", t.description() );
-  buffer->setValue( "text", t.text() );
+  buffer->setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
   buffer->setValue( "docType", t.docType() );
   buffer->setValue( "textType", t.textTypeString() );
   buffer->setValue( "modDate", "systimestamp" );
 }
-
 
 void DefaultProvider::deleteDocumentText( const DocText& dt )
 {

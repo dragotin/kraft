@@ -75,7 +75,7 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   const QString ident = query.value(1).toString();
   dig.setIdent(    ident );
   dig.setType(     query.value(2).toString() );
-  dig.setWhiteboard( query.value( 3 ).toString() );
+  dig.setWhiteboard( KraftDB::self()->mysqlEuroDecode( query.value( 3 ).toString() ) );
   dig.setClientId( query.value(4).toString() );
   dig.setLastModified( query.value(5).toDate() );
   dig.setDate(     query.value(6).toDate() );

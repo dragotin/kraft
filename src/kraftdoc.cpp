@@ -165,8 +165,8 @@ bool KraftDoc::newDocument()
   mAddressUid = QString::null;
 
   mDocType = DefaultProvider::self()->docType();
-  mPreText = DefaultProvider::self()->documentText( mDocType, KraftDoc::Header );
-  mPostText = DefaultProvider::self()->documentText( mDocType, KraftDoc::Footer );
+  mPreText = DefaultProvider::self()->defaultText( mDocType, KraftDoc::Header );
+  mPostText = DefaultProvider::self()->defaultText( mDocType, KraftDoc::Footer );
 
   mSalut = QString::null;
   mGoodbye = QString::null;

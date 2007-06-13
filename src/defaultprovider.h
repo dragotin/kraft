@@ -39,7 +39,7 @@ public:
   static DefaultProvider *self();
   QStringList docTypes();
 
-  QString documentText( const QString&, KraftDoc::Part, DocGuardedPtr = 0 );
+  QString defaultText( const QString&, KraftDoc::Part, DocGuardedPtr = 0 );
   dbID saveDocumentText( const DocText& );
   void deleteDocumentText( const DocText& );
 
@@ -48,9 +48,12 @@ public:
 
 private:
   void fillDocTextBuffer( const DocText&, QSqlRecord* );
+
   DefaultProvider();
 
   static DefaultProvider *mSelf;
+
+  const QString EuroTag;
 };
 
 #endif

@@ -67,6 +67,10 @@ public:
   bool isOk() {
     return mSuccess;
   }
+
+  QString mysqlEuroEncode( const QString& ) const;
+  QString mysqlEuroDecode( const QString& ) const;
+
 signals:
   void statusMessage( const QString& );
 
@@ -81,8 +85,7 @@ private: // Private attributes
   KProcess *mProcess;
   static KraftDB *mSelf;
   bool mSuccess;
-
-  int  mSqlCommandCount;
+  const QString EuroTag;
 };
 
 #endif

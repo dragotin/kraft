@@ -27,6 +27,7 @@
 // application specific includes
 #include "archdoc.h"
 #include "documentman.h"
+#include "kraftdb.h"
 
 
 ArchDoc::ArchDoc()
@@ -84,8 +85,8 @@ void ArchDoc::loadFromDb( dbID id )
   if( cur.next()) {
     kdDebug() << "loading archived document with ident " << id.toString() << endl;
     mAddress   = cur.value( "clientAddress" ).toString();
-    mPreText   = cur.value( "pretext" ).toString();
-    mPostText  = cur.value( "posttext" ).toString();
+    mPreText   = KraftDB::self()->mysqlEuroDecode( cur.value( "pretext" ).toString() );
+    mPostText  = KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() );
     mDocType   = cur.value( "docType" ).toString();
     mSalut     = cur.value( "salut" ).toString();
     mGoodbye   = cur.value( "goodbye" ).toString();

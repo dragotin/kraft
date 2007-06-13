@@ -69,6 +69,8 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
 void TextSelection::buildTextList( KraftDoc::Part part )
 {
   QStringList docTypes = DefaultProvider::self()->docTypes();
+  mDocTypeItemMap.clear();
+
   for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
     KListViewItem *docTypeItem = new KListViewItem( mTextsView, *dtIt );
     docTypeItem->setOpen( true );

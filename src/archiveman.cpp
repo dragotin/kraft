@@ -173,14 +173,14 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record = cur.primeInsert();
     record->setValue( "ident", doc->ident() );
     record->setValue( "docType", doc->docType() );
-    record->setValue( "docDescription", doc->whiteboard() );
+    record->setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
     record->setValue( "clientAddress", doc->address() );
     record->setValue( "salut", doc->salut() );
     record->setValue( "goodbye", doc->goodbye() );
     record->setValue( "printDate", "NOW()" );
     record->setValue( "date", doc->date() );
-    record->setValue( "pretext", doc->preText() );
-    record->setValue( "posttext", doc->postText() );
+    record->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
+    record->setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
     cur.insert();
 
     dbID id = KraftDB::self()->getLastInsertID();

@@ -41,7 +41,8 @@ static KStaticDeleter<KraftDB> selfDeleter;
 KraftDB* KraftDB::mSelf = 0;
 
 KraftDB::KraftDB()
-  :QObject (), m_db( 0 ),  mSuccess( true )
+  :QObject (), m_db( 0 ),  mSuccess( true ),
+   EuroTag( QString::fromLatin1( "%EURO" ) )
 {
   QStringList list = QSqlDatabase::drivers().grep( DB_DRIVER );
   if( list.size() == 0 ) {
@@ -385,6 +386,20 @@ void KraftDB::checkInit()
 QString KraftDB::qtDriver()
 {
     return DB_DRIVER;
+}
+
+QString KraftDB::mysqlEuroEncode( const QString& str ) const
+{
+  QChar euro( 0x20ac );
+  QString restr( str );
+  return restr.replace( euro, EuroTag );
+}
+
+QString KraftDB::mysqlEuroDecode( const QString& str ) const
+{
+  QChar euro( 0x20ac );
+  QString restr( str );
+  return restr.replace( EuroTag, euro );
 }
 
 KraftDB::~KraftDB(){

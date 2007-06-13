@@ -212,15 +212,15 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord *buf, KraftDoc *doc )
       kdDebug() << "Adressstring: " << doc->address() << endl;
       buf->setValue( "ident",    doc->ident() );
       buf->setValue( "docType",  doc->docType() );
-      buf->setValue( "docDescription", doc->whiteboard() );
+      buf->setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
       buf->setValue( "clientID", doc->addressUid() );
       buf->setValue( "clientAddress", doc->address() );
       buf->setValue( "salut",    doc->salut() );
       buf->setValue( "goodbye",  doc->goodbye() );
       buf->setValue( "date",     doc->date() );
       buf->setValue( "lastModified", "NOW()" );
-      buf->setValue( "pretext",  doc->preText() );
-      buf->setValue( "posttext", doc->postText() );
+      buf->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
+      buf->setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
     }
 }
 
@@ -245,9 +245,9 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setSalut(      cur.value( "salut"    ).toString() );
         doc->setGoodbye(    cur.value( "goodbye"  ).toString() );
         doc->setDate (      cur.value( "date"     ).toDate() );
-        doc->setPreText(    cur.value( "pretext"  ).toString() );
-        doc->setPostText(   cur.value( "posttext" ).toString() );
-        doc->setWhiteboard( cur.value( "docDescription" ).toString() );
+        doc->setPreText(    KraftDB::self()->mysqlEuroDecode( cur.value( "pretext"  ).toString() ) );
+        doc->setPostText(   KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() ) );
+        doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( cur.value( "docDescription" ).toString() ) );
     }
 
     loadPositions( id, doc );
