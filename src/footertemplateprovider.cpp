@@ -43,7 +43,7 @@ void FooterTemplateProvider::slotNewTemplate()
   dia.setDocText( dt );
 
   if ( dia.exec() ) {
-    kdDebug() << "Successfully edited texts" << endl;
+    kdDebug() << "Successfully edited new text" << endl;
     DocText dt = dia.docText();
     /* save to database */
     dbID newId = DefaultProvider::self()->saveDocumentText( dt );

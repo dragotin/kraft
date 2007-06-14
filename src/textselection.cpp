@@ -123,18 +123,10 @@ QListViewItem* TextSelection::addNewDocText( const DocText& dt )
   QListViewItem *item = mDocTypeItemMap[dt.docType()];
 
   if ( item ) {
-    // if the item does not have a first Child, the text item is selected
-    // and we have to move up one level.
-    if ( ! item->firstChild() ) {
-      item = item->parent();
-    }
-
-    if ( item ) {
-      mTextsView->clearSelection();
-      QListViewItem *newItem = addOneDocText( item, dt );
-      newItem->setSelected( true );
-      return newItem;
-    }
+    mTextsView->clearSelection();
+    QListViewItem *newItem = addOneDocText( item, dt );
+    newItem->setSelected( true );
+    return newItem;
   }
   return 0;
 }
@@ -144,9 +136,9 @@ void TextSelection::updateDocText( const DocText& dt )
 {
   kdDebug() << "Update Doc Text" << endl;
   QListViewItem *it = dt.listViewItem();
-  if ( ! it->firstChild() ) {
-    it = it->parent();
-  }
+  // if ( ! it->firstChild() ) {
+  //  it = it->parent();
+  // }
 
   if ( it ) {
     kdDebug() << "Update Doc Text Item" << endl;
@@ -202,7 +194,7 @@ DocText TextSelection::currentDocText() const
   if ( curr ) {
     dt = mTextMap[curr];
   }
-  dt.setListViewItem( curr );
+
   return dt;
 }
 

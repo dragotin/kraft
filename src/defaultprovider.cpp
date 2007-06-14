@@ -68,6 +68,8 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
 
   QString typeStr = DocText::textTypeToString( tt );
   QString crit = QString( "docType=\'%1\' AND textType=\'%2\'" ).arg( docType ).arg( typeStr );
+  kdDebug() << "Reading texts from DB with crit: " << crit << endl;
+
   cur.select( crit );
 
   while ( cur.next() ) {
