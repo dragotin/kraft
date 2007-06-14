@@ -35,23 +35,18 @@
 #include "defaultprovider.h"
 
 
-TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docType )
+TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
   : KDialogBase( parent, "TEMPL_DIALOG", true, i18n( "Edit Text Templates" ),
                  Ok | Cancel )
 {
   QWidget *w = makeVBoxMainWidget();
   mBaseWidget = new TextEditBase( w );
 
-  mBaseWidget->mCbDocType->insertStringList( DefaultProvider::self()->docTypes() );
+  mBaseWidget->mDocTypeLabel->setText( DocText::textTypeToString( docPart ) );
 
-  QString h = i18n( "Edit %1 Template" ).arg( DocText::textTypeToString( docType ) );
+  QString h = i18n( "Edit %1 Template" ).arg( DocText::textTypeToString( docPart  ) );
 
   mBaseWidget->dmHeaderText->setText( h );
-
-  QStringList strList;
-  strList << DocText::textTypeToString( KraftDoc::Header ) <<
-    DocText::textTypeToString( KraftDoc::Footer );
-  mBaseWidget->mCbTextType->insertStringList( strList );
 }
 
 TextEditDialog::~TextEditDialog()
@@ -70,8 +65,8 @@ void TextEditDialog::setDocText( DocText dt )
   // mBaseWidget->mEditDescription->setText( dt.description() );
   mBaseWidget->mEditText->setText( dt.text() );
 
-  mBaseWidget->mCbTextType->setCurrentText( dt.textTypeString() );
-  mBaseWidget->mCbDocType->setCurrentText( dt.docType() );
+  mBaseWidget->mDocPartLabel->setText( dt.textTypeString() );
+  mBaseWidget->mDocTypeLabel->setText( dt.docType() );
 
   mOriginalText = dt;
 }
@@ -84,8 +79,8 @@ DocText TextEditDialog::docText()
   dt.setName( mBaseWidget->mEditName->text() );
   dt.setDescription( QString() ); // mBaseWidget->mEditDescription->text() );
   dt.setText( mBaseWidget->mEditText->text() );
-  dt.setDocType( mBaseWidget->mCbDocType->currentText() );
-  dt.setTextType( DocText::stringToTextType( mBaseWidget->mCbTextType->currentText() ) );
+  // dt.setDocType( mBaseWidget->mCbDocType->currentText() );
+  // dt.setTextType( DocText::stringToTextType( mBaseWidget->mCbTextType->currentText() ) );
 
   return dt;
 }

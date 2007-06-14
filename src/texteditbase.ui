@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>483</width>
+            <width>481</width>
             <height>286</height>
         </rect>
     </property>
@@ -21,7 +21,7 @@
         </property>
         <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>layout16</cstring>
+                <cstring>layout7</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -68,23 +68,12 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout15</cstring>
+                        <cstring>layout6</cstring>
                     </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel1_2_2_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignTop</set>
-                            </property>
-                        </widget>
                         <widget class="QLabel" row="0" column="0">
                             <property name="name">
                                 <cstring>textLabel1</cstring>
@@ -96,9 +85,20 @@
                                 <cstring>mEditName</cstring>
                             </property>
                         </widget>
-                        <widget class="QLayoutWidget" row="1" column="1">
+                        <widget class="QLabel" row="1" column="0">
                             <property name="name">
-                                <cstring>layout12</cstring>
+                                <cstring>textLabel1_2_2_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignTop</set>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget" row="1" column="1" rowspan="1" colspan="2">
+                            <property name="name">
+                                <cstring>layout5</cstring>
                             </property>
                             <hbox>
                                 <property name="name">
@@ -108,32 +108,80 @@
                                     <property name="name">
                                         <cstring>textLabel1_3</cstring>
                                     </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>5</hsizetype>
+                                            <vsizetype>4</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
                                     <property name="text">
-                                        <string>&amp;displayed as</string>
+                                        <string>displayed as</string>
                                     </property>
                                     <property name="buddy" stdset="0">
                                         <cstring>mCbTextType</cstring>
                                     </property>
                                 </widget>
-                                <widget class="KComboBox">
+                                <widget class="QLabel">
                                     <property name="name">
-                                        <cstring>mCbTextType</cstring>
+                                        <cstring>mDocPartLabel</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>5</hsizetype>
+                                            <vsizetype>4</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <bold>1</bold>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>textLabel2</string>
                                     </property>
                                 </widget>
                                 <widget class="QLabel">
                                     <property name="name">
                                         <cstring>textLabel1_4</cstring>
                                     </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>5</hsizetype>
+                                            <vsizetype>4</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
                                     <property name="text">
-                                        <string>in doc ty&amp;pe</string>
+                                        <string>in doc type</string>
                                     </property>
                                     <property name="buddy" stdset="0">
                                         <cstring>mCbDocType</cstring>
                                     </property>
                                 </widget>
-                                <widget class="KComboBox">
+                                <widget class="QLabel">
                                     <property name="name">
-                                        <cstring>mCbDocType</cstring>
+                                        <cstring>mDocTypeLabel</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>5</hsizetype>
+                                            <vsizetype>4</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <bold>1</bold>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>textLabel3</string>
                                     </property>
                                 </widget>
                                 <spacer>
@@ -148,14 +196,33 @@
                                     </property>
                                     <property name="sizeHint">
                                         <size>
-                                            <width>109</width>
+                                            <width>65</width>
                                             <height>16</height>
                                         </size>
                                     </property>
                                 </spacer>
                             </hbox>
                         </widget>
-                        <widget class="QLayoutWidget" row="0" column="1">
+                        <widget class="QLabel" row="2" column="0" rowspan="2" colspan="1">
+                            <property name="name">
+                                <cstring>textLabel1_2_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Text:</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignTop</set>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>mEditText</cstring>
+                            </property>
+                        </widget>
+                        <widget class="KTextEdit" row="2" column="1" rowspan="2" colspan="2">
+                            <property name="name">
+                                <cstring>mEditText</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget" row="0" column="1" rowspan="1" colspan="2">
                             <property name="name">
                                 <cstring>layout11</cstring>
                             </property>
@@ -187,25 +254,6 @@
                                 </spacer>
                             </hbox>
                         </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel1_2_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Text:</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignTop</set>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>mEditText</cstring>
-                            </property>
-                        </widget>
-                        <widget class="KTextEdit" row="2" column="1">
-                            <property name="name">
-                                <cstring>mEditText</cstring>
-                            </property>
-                        </widget>
                     </grid>
                 </widget>
             </vbox>
@@ -214,15 +262,11 @@
 </widget>
 <tabstops>
     <tabstop>mEditName</tabstop>
-    <tabstop>mCbTextType</tabstop>
-    <tabstop>mCbDocType</tabstop>
     <tabstop>mEditText</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kcombobox.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>klineedit.h</includehint>
     <includehint>ktextedit.h</includehint>
+    <includehint>klineedit.h</includehint>
 </includehints>
 </UI>
