@@ -24,9 +24,11 @@
 
 #include <klistview.h>
 #include <kabc/addressee.h>
+#include <kabc/addressbook.h>
 
 class QComboBox;
 
+class AddressBook;
 
 class AddressSelection : public KListView
 {
@@ -38,6 +40,7 @@ public:
   KABC::Addressee currentAddressee();
 
 protected slots:
+  void slotAddressBookChanged( KABC::AddressBook* );
 
 private:
   QMap<QListViewItem*, QString> mAddressIds;

@@ -45,7 +45,15 @@ AddressSelection::AddressSelection( QWidget *parent )
 
 void AddressSelection::setupAddressList()
 {
-  KABC::AddressBook *ab = KABC::StdAddressBook::self();
+  KABC::AddressBook *ab = KABC::StdAddressBook::self( true );
+  connect( ab, SIGNAL( addressBookChanged( KABC::AddressBook* ) ),
+           this, SLOT( slotAddressBookChanged( KABC::AddressBook* ) ) );
+
+}
+
+void AddressSelection::slotAddressBookChanged( KABC::AddressBook *ab )
+{
+  clear();
 
   if ( ab ) {
     KABC::AddressBook::Iterator it;

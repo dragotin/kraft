@@ -18,6 +18,7 @@
 
 #include <kdebug.h>
 #include <klocale.h>
+#include <krun.h>
 
 #include "headertemplateprovider.h"
 #include "texteditdialog.h"
@@ -33,24 +34,31 @@ HeaderTemplateProvider::HeaderTemplateProvider( QWidget *parent )
 void HeaderTemplateProvider::slotNewTemplate()
 {
   kdDebug() << "SlotNewTemplate called!" << endl;
+  if ( mCurrentTab == HeaderSelection::TextTab ) {
+    TextEditDialog dia( mParent, KraftDoc::Header );
 
-  TextEditDialog dia( mParent, KraftDoc::Header );
+    DocText dt;
+    dt.setTextType( KraftDoc::Header );
+    dt.setDocType( mDocType );
 
-  DocText dt;
-  dt.setTextType( KraftDoc::Header );
-  dt.setDocType( mDocType );
+    dia.setDocText( dt );
 
-  dia.setDocText( dt );
+    if ( dia.exec() ) {
+      kdDebug() << "Successfully edited texts" << endl;
+      DocText dt = dia.docText();
+      /* save to database */
+      dbID newId = DefaultProvider::self()->saveDocumentText( dt );
+      dt.setDbId( newId );
 
-  if ( dia.exec() ) {
-    kdDebug() << "Successfully edited texts" << endl;
-    DocText dt = dia.docText();
-    /* save to database */
-    dbID newId = DefaultProvider::self()->saveDocumentText( dt );
-    dt.setDbId( newId );
-
-    mCurrentText = dt;
-    emit newHeaderText( dt );
+      mCurrentText = dt;
+      emit newHeaderText( dt );
+    }
+  } else if ( mCurrentTab== HeaderSelection::AddressTab ) {
+    kdDebug() << "Addresstab is selected!" << endl;
+    KRun::runCommand( QString::fromLatin1( "kaddressbook --new-contact" ),
+                      QString::fromLatin1("kaddressbook" ), "address" );
+  } else {
+    kdDebug() << "Currently not a valid Tab selected" << endl;
   }
 }
 
@@ -58,28 +66,35 @@ void HeaderTemplateProvider::slotEditTemplate()
 {
   kdDebug() << "SlotEditTemplate called!" << endl;
 
-  TextEditDialog dia( mParent, KraftDoc::Header );
+  if ( mCurrentTab == HeaderSelection::TextTab ) {
 
-  /* mCurrentText is set through the slot slotSetCurrentDocText */
-  DocText dt = mCurrentText;
-  if ( dt.type() == KraftDoc::Unknown ) {
-    dt.setTextType( KraftDoc::Header );
-    dt.setDocType( mDocType );
-  }
+    TextEditDialog dia( mParent, KraftDoc::Header );
 
-  dia.setDocText( dt );
+    /* mCurrentText is set through the slot slotSetCurrentDocText */
+    DocText dt = mCurrentText;
+    if ( dt.type() == KraftDoc::Unknown ) {
+      dt.setTextType( KraftDoc::Header );
+      dt.setDocType( mDocType );
+    }
 
-  if ( dia.exec() ) {
-    kdDebug() << "Successfully edited texts" << endl;
-    DocText dt = dia.docText();
+    dia.setDocText( dt );
 
-    /* write back the listview item stored in the input text */
-    dt.setListViewItem( mCurrentText.listViewItem() );
-    /* save to database */
-    DefaultProvider::self()->saveDocumentText( dt );
-    slotSetCurrentDocText( dt );
+    if ( dia.exec() ) {
+      kdDebug() << "Successfully edited texts" << endl;
+      DocText dt = dia.docText();
 
-    emit updateHeaderText( dt );
+      /* write back the listview item stored in the input text */
+      dt.setListViewItem( mCurrentText.listViewItem() );
+      /* save to database */
+      DefaultProvider::self()->saveDocumentText( dt );
+      slotSetCurrentDocText( dt );
+
+      emit updateHeaderText( dt );
+    }
+  } else if ( mCurrentTab== HeaderSelection::AddressTab ) {
+    kdDebug() << "Addresstab is selected!" << endl;
+  } else {
+    kdDebug() << "Currently not a valid Tab selected" << endl;
   }
 
 }
