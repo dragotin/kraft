@@ -66,6 +66,8 @@ class DocAssistant;
 
 class Katalog;
 
+using namespace KABC;
+
 class KraftViewScroll : public QScrollView
 {
   Q_OBJECT
@@ -118,7 +120,7 @@ class KraftView : public KDialogBase
     DocPositionList currentPositionList();
 
   public slots:
-    void slotNewAddress( const KABC::Addressee& contact = KABC::Addressee() );
+    void slotNewAddress( const Addressee& contact = Addressee() );
     void redrawDocument( );
     void slotModifiedPositions();
     void slotModifiedHeader();
@@ -161,7 +163,7 @@ class KraftView : public KDialogBase
 
     PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
 
-    QStringList generateLetterHead( KABC::Addressee adr );
+    QStringList generateLetterHead( Addressee adr );
 
     KraftViewScroll *m_positionScroll;
     DocHeaderEdit *m_headerEdit;

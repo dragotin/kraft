@@ -191,8 +191,8 @@ KraftView::KraftView(QWidget *parent, const char *name) :
             this,  SLOT( slotShowTemplates( bool ) ) );
 
   /* signal that brings a new address to the document */
-  connect( mAssistant, SIGNAL( addressTemplate( const KABC::Addressee& ) ),
-           this, SLOT( slotNewAddress( const KABC::Addressee& ) ) );
+  connect( mAssistant, SIGNAL( addressTemplate( const Addressee& ) ),
+           this, SLOT( slotNewAddress( const Addressee& ) ) );
 
   connect( mAssistant, SIGNAL( headerTextTemplate( const QString& ) ),
            this, SLOT( slotNewHeaderText( const QString& ) ) );
@@ -305,8 +305,9 @@ void KraftView::redrawDocument( )
 
     kdDebug() << "Loaded address uid from database " << mContactUid << endl;
     if( ! mContactUid.isEmpty() ) {
-      KABC::AddressBook *adrBook =  KABC::StdAddressBook::self( );
-      KABC::Addressee contact;
+      // FIXME - use centralised address provider
+      AddressBook *adrBook =  StdAddressBook::self( );
+      Addressee contact;
       if( adrBook ) {
         contact = adrBook->findByUid( mContactUid );
         if( contact.isEmpty() ) {
@@ -634,13 +635,13 @@ void KraftView::slotPositionModified( int pos )
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
-void KraftView::slotNewAddress( const KABC::Addressee& contact )
+void KraftView::slotNewAddress( const Addressee& contact )
 {
-  KABC::Addressee adr( contact );
+  Addressee adr( contact );
 
   if( contact.isEmpty() ) {
     	kdDebug() << "Select an address from KAdressbook" << endl;
-    	adr = KABC::AddresseeDialog::getAddressee( this );
+    	adr = AddresseeDialog::getAddressee( this );
         kdDebug() << "Selected address UID is " << adr.uid() << endl;
         mContactUid = adr.uid();
     }
@@ -648,9 +649,9 @@ void KraftView::slotNewAddress( const KABC::Addressee& contact )
     if( ! adr.isEmpty() ) {
       m_headerEdit->m_labName->setText( adr.realName() );
 
-      KABC::Address address;
+      Address address;
 
-      KABC::Address::List addresses = adr.addresses();
+      Address::List addresses = adr.addresses();
       if ( addresses.count() > 1 ) {
         kdDebug() << "Have more than one address, taking the default add" << endl;
         address = adr.address( 64 );
@@ -845,7 +846,7 @@ void KraftView::slotModifiedFooter()
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
-QStringList KraftView::generateLetterHead( KABC::Addressee adr )
+QStringList KraftView::generateLetterHead( Addressee adr )
 {
     QStringList s;
 

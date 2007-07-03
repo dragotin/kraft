@@ -51,7 +51,7 @@ public:
   DocText currentDocText() const;
 
   TextSelection *textSelection() { return mTextsView; }
-
+  AddressSelection *addressSelection() { return mAddressSelection; }
 signals:
   void addressSelectionChanged();
   void textSelectionChanged( QListViewItem* );
@@ -61,7 +61,7 @@ public slots:
   void slotSelectDocType( const QString& );
 
 protected slots:
-  void slotAddressNew();
+  // void slotAddressNew();
   void slotCurrentTabChanged( QWidget * );
 
 private:

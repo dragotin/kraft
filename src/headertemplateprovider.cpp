@@ -34,31 +34,24 @@ HeaderTemplateProvider::HeaderTemplateProvider( QWidget *parent )
 void HeaderTemplateProvider::slotNewTemplate()
 {
   kdDebug() << "SlotNewTemplate called!" << endl;
-  if ( mCurrentTab == HeaderSelection::TextTab ) {
-    TextEditDialog dia( mParent, KraftDoc::Header );
 
-    DocText dt;
-    dt.setTextType( KraftDoc::Header );
-    dt.setDocType( mDocType );
+  TextEditDialog dia( mParent, KraftDoc::Header );
 
-    dia.setDocText( dt );
+  DocText dt;
+  dt.setTextType( KraftDoc::Header );
+  dt.setDocType( mDocType );
 
-    if ( dia.exec() ) {
-      kdDebug() << "Successfully edited texts" << endl;
-      DocText dt = dia.docText();
-      /* save to database */
-      dbID newId = DefaultProvider::self()->saveDocumentText( dt );
-      dt.setDbId( newId );
+  dia.setDocText( dt );
 
-      mCurrentText = dt;
-      emit newHeaderText( dt );
-    }
-  } else if ( mCurrentTab== HeaderSelection::AddressTab ) {
-    kdDebug() << "Addresstab is selected!" << endl;
-    KRun::runCommand( QString::fromLatin1( "kaddressbook --new-contact" ),
-                      QString::fromLatin1("kaddressbook" ), "address" );
-  } else {
-    kdDebug() << "Currently not a valid Tab selected" << endl;
+  if ( dia.exec() ) {
+    kdDebug() << "Successfully edited texts" << endl;
+    DocText dt = dia.docText();
+    /* save to database */
+    dbID newId = DefaultProvider::self()->saveDocumentText( dt );
+    dt.setDbId( newId );
+
+    mCurrentText = dt;
+    emit newHeaderText( dt );
   }
 }
 
@@ -66,35 +59,29 @@ void HeaderTemplateProvider::slotEditTemplate()
 {
   kdDebug() << "SlotEditTemplate called!" << endl;
 
-  if ( mCurrentTab == HeaderSelection::TextTab ) {
 
-    TextEditDialog dia( mParent, KraftDoc::Header );
+  TextEditDialog dia( mParent, KraftDoc::Header );
 
-    /* mCurrentText is set through the slot slotSetCurrentDocText */
-    DocText dt = mCurrentText;
-    if ( dt.type() == KraftDoc::Unknown ) {
-      dt.setTextType( KraftDoc::Header );
-      dt.setDocType( mDocType );
-    }
+  /* mCurrentText is set through the slot slotSetCurrentDocText */
+  DocText dt = mCurrentText;
+  if ( dt.type() == KraftDoc::Unknown ) {
+    dt.setTextType( KraftDoc::Header );
+    dt.setDocType( mDocType );
+  }
 
-    dia.setDocText( dt );
+  dia.setDocText( dt );
 
-    if ( dia.exec() ) {
-      kdDebug() << "Successfully edited texts" << endl;
-      DocText dt = dia.docText();
+  if ( dia.exec() ) {
+    kdDebug() << "Successfully edited texts" << endl;
+    DocText dt = dia.docText();
 
-      /* write back the listview item stored in the input text */
-      dt.setListViewItem( mCurrentText.listViewItem() );
-      /* save to database */
-      DefaultProvider::self()->saveDocumentText( dt );
-      slotSetCurrentDocText( dt );
+    /* write back the listview item stored in the input text */
+    dt.setListViewItem( mCurrentText.listViewItem() );
+    /* save to database */
+    DefaultProvider::self()->saveDocumentText( dt );
+    slotSetCurrentDocText( dt );
 
-      emit updateHeaderText( dt );
-    }
-  } else if ( mCurrentTab== HeaderSelection::AddressTab ) {
-    kdDebug() << "Addresstab is selected!" << endl;
-  } else {
-    kdDebug() << "Currently not a valid Tab selected" << endl;
+    emit updateHeaderText( dt );
   }
 
 }
@@ -114,18 +101,7 @@ void HeaderTemplateProvider::slotTemplateToDocument()
 {
   kdDebug() << "Moving template to document" << endl;
 
-  if ( mCurrentTab == HeaderSelection::TextTab ) {
-    emit headerTextToDocument( mCurrentText );
-  } else if ( mCurrentTab == HeaderSelection::AddressTab ) {
-    kdDebug() << "Addresstab is selected!" << endl;
-  } else {
-    kdDebug() << "Currently not a valid Tab selected" << endl;
-  }
-}
-
-void HeaderTemplateProvider::slotSetCurrentTab( HeaderSelection::HeaderTabType t )
-{
-  mCurrentTab = t;
+  emit headerTextToDocument( mCurrentText );
 }
 
 #include "headertemplateprovider.moc"

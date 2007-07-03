@@ -39,7 +39,6 @@ public slots:
   void slotTemplateToDocument();
 
   void slotSetCurrentDocText( const DocText& );
-  void slotSetCurrentTab( HeaderSelection::HeaderTabType );
 
 signals:
   void newHeaderText( const DocText& );

@@ -1,8 +1,8 @@
 /***************************************************************************
-                 addressselection  - widget to select Addresses
+      addresstemplateprovider - template provider class for address data
                              -------------------
-    begin                : 2006-09-03
-    copyright            : (C) 2006 by Klaas Freitag
+    begin                : Jun 2007
+    copyright            : (C) 2007 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,43 +14,41 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef ADDRESSTEMPLATEPROVIDER_H
+#define ADDRESSTEMPLATEPROVIDER_H
 
-#ifndef ADDRESSSELECTION_H
-#define ADDRESSSELECTION_H
+#include "templateprovider.h"
+#include "doctext.h"
+#include "headerselection.h"
 
-#include <qvbox.h>
-#include <qmap.h>
-#include <qstring.h>
-
-#include <klistview.h>
-#include <kabc/addressee.h>
-#include <kabc/addressbook.h>
-
-class QComboBox;
+class QWidget;
+class QListViewItem;
 
 using namespace KABC;
 
-class AddressSelection : public KListView
+class AddressTemplateProvider : public TemplateProvider
 {
   Q_OBJECT
-
 public:
-  AddressSelection( QWidget* );
-
-  ~AddressSelection() { };
-  void setupAddressList( );
-  Addressee currentAddressee();
+  AddressTemplateProvider( QWidget* );
 
 signals:
-  void addressSelected( const Addressee& );
+  void newAddress( Addressee );
+  void addressToDocument( const Addressee& );
 
-protected slots:
-  void slotAddressBookChanged( AddressBook* );
-  void slotSelectionChanged();
+public slots:
+  void slotNewTemplate();
+  void slotEditTemplate();
+  void slotDeleteTemplate();
+
+  void slotTemplateToDocument();
+
+  void slotSetCurrentAddress( const Addressee& );
 
 private:
-  QMap<QListViewItem*, QString> mAddressIds;
-  AddressBook *mStdAddressbook;
+  Addressee mCurrentAddress;
 };
 
+
 #endif
+

@@ -23,10 +23,10 @@
 #include <kabc/addressee.h>
 
 #include "kraftdoc.h"
+#include "headerselection.h"
 
 class DocPostCard;
 class CatalogSelection;
-class HeaderSelection;
 class TextSelection;
 class QWidgetStack;
 class QWidget;
@@ -37,7 +37,11 @@ class TemplateProvider;
 class HeaderTemplateProvider;
 class CatalogTemplateProvider;
 class FooterTemplateProvider;
+class AddressTemplateProvider;
 class DocText;
+class KABC::Addressee;
+
+using namespace KABC;
 
 class DocAssistant : public QSplitter
 {
@@ -78,13 +82,15 @@ protected slots:
   void slotNewFooterDocText( const DocText& );
   void slotUpdateFooterDocText( const DocText& );
   void slotFooterTextToDocument( const DocText& );
+  void slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType );
+  void slotAddressToDocument( const Addressee& adr );
 
 signals:
   void selectPage( int );
   void positionSelected( Katalog*, void* );
   void toggleShowTemplates( bool );
 
-  void addressTemplate( const KABC::Addressee& );
+  void addressTemplate( const Addressee& );
   void headerTextTemplate( const QString& );
   void footerTextTemplate( const QString& );
 
@@ -105,8 +111,10 @@ private:
 
   TemplateProvider        *mCurrTemplateProvider;
   HeaderTemplateProvider  *mHeaderTemplateProvider;
+  AddressTemplateProvider *mAddressTemplateProvider;
   CatalogTemplateProvider *mCatalogTemplateProvider;
   FooterTemplateProvider  *mFooterTemplateProvider;
+
 };
 
 

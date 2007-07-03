@@ -49,7 +49,7 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   mAddressSelection = new AddressSelection( vBox );
   mAddressSelection->setupAddressList( );
 
-  connect( mAddressSelection, SIGNAL( selectionChanged() ),
+  connect( mAddressSelection, SIGNAL( selectionChanged( QListViewItem* ) ),
            SIGNAL( addressSelectionChanged() ) );
 
   /* a view for the entry text repository */
@@ -72,11 +72,6 @@ HeaderSelection::HeaderSelection( QWidget *parent )
 
   setCurrentPage( mTextsTabId );
 
-}
-
-void HeaderSelection::slotAddressNew()
-{
-  kdDebug() << "New address requested!" << endl;
 }
 
 void HeaderSelection::slotSelectDocType( const QString& doctype )

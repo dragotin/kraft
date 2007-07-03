@@ -32,7 +32,7 @@
 #include <qlabel.h>
 #include <qvbox.h>
 
-
+using namespace KABC;
 
 AddressSelection::AddressSelection( QWidget *parent )
   : KListView( parent )
@@ -41,39 +41,68 @@ AddressSelection::AddressSelection( QWidget *parent )
   addColumn( i18n( "Real Name" ) );
   addColumn( i18n( "Locality" ) );
 
+  connect( this, SIGNAL( selectionChanged() ),
+           SLOT( slotSelectionChanged() ) );
+
 }
 
 void AddressSelection::setupAddressList()
 {
-  KABC::AddressBook *ab = KABC::StdAddressBook::self( true );
-  connect( ab, SIGNAL( addressBookChanged( KABC::AddressBook* ) ),
-           this, SLOT( slotAddressBookChanged( KABC::AddressBook* ) ) );
+  // open the address book asynchroniouly. If it is local, it returns
+  // immediately loaded however.
+  mStdAddressbook = StdAddressBook::self( true );
+  if ( mStdAddressbook->loadingHasFinished() ) {
+    slotAddressBookChanged( mStdAddressbook );
+  }
 
+  // be prepared to changes
+  connect( mStdAddressbook, SIGNAL( addressBookChanged( AddressBook* ) ),
+           this, SLOT( slotAddressBookChanged( AddressBook* ) ) );
 }
 
-void AddressSelection::slotAddressBookChanged( KABC::AddressBook *ab )
+void AddressSelection::slotAddressBookChanged( AddressBook *ab )
 {
-  clear();
+  if ( ! ab ) return;
 
-  if ( ab ) {
-    KABC::AddressBook::Iterator it;
-    for ( it = ab->begin(); it != ab->end(); ++it ) {
+  kdDebug() << "Filling address List" << endl;
+
+  // FIXME: handle deletes and updates correctly.
+
+  QValueList<QString> uidList;
+
+  uidList = mAddressIds.values();
+  KListViewItem *newItem = 0;
+  int newItemCnt = 0;
+
+  AddressBook::Iterator it;
+  for ( it = ab->begin(); it != ab->end(); ++it ) {
+
+    // check if we already know the uid and add it if not.
+    if ( uidList.find( ( *it ).uid() ) == uidList.end() ) {
       KListViewItem *item = new KListViewItem( this, ( *it ).realName() );
+      newItem = item;
+      newItemCnt++;
+
       mAddressIds[item] = ( *it ).uid();
 
-      KABC::Address::List adr = ( *it ).addresses();
-      KABC::Address::List::iterator adrIt;
+      Address::List adr = ( *it ).addresses();
+      Address::List::iterator adrIt;
       for ( adrIt = adr.begin(); adrIt != adr.end(); ++adrIt ) {
         item->setText( 1, ( *adrIt ).locality () );
       }
-
     }
+  }
+
+  // if there is exactly one new item, we select it
+  if ( newItemCnt == 1 && newItem ) {
+    clearSelection();
+    newItem->setSelected( true );
   }
 }
 
-KABC::Addressee AddressSelection::currentAddressee()
+Addressee AddressSelection::currentAddressee()
 {
-  KABC::Addressee adr;
+  Addressee adr;
   QString adrUid;
 
   QListViewItem *it = currentItem();
@@ -82,11 +111,16 @@ KABC::Addressee AddressSelection::currentAddressee()
     adrUid = mAddressIds[it];
 
     if ( ! adrUid.isEmpty() ) {
-      KABC::AddressBook *ab = KABC::StdAddressBook::self();
-      if ( ab )
-        adr = ab->findByUid( adrUid );
+      if ( mStdAddressbook && mStdAddressbook->loadingHasFinished() )
+        adr = mStdAddressbook->findByUid( adrUid );
     }
   }
   return adr;
 }
 
+void AddressSelection::slotSelectionChanged()
+{
+  emit addressSelected( currentAddressee() );
+}
+
+#include "addressselection.moc"

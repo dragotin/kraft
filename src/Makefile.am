@@ -38,7 +38,8 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	templtopositiondialogbase.cpp insertplantdialog.cpp headerselection.cpp \
 	textselection.cpp doctext.cpp \
 	docassistant.cpp texteditdialog.cpp texteditbase.ui templateprovider.cpp \
-	headertemplateprovider.cpp footertemplateprovider.cpp catalogtemplateprovider.cpp
+	headertemplateprovider.cpp footertemplateprovider.cpp catalogtemplateprovider.cpp \
+	addresstemplateprovider.cpp
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml 
 

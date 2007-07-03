@@ -34,6 +34,8 @@
 #include "headertemplateprovider.h"
 #include "footertemplateprovider.h"
 #include "catalogtemplateprovider.h"
+#include "addresstemplateprovider.h"
+#include "addressselection.h"
 
 DocAssistant::DocAssistant( QWidget *parent ):
   QSplitter( parent ), mFullPreview( true ),
@@ -137,8 +139,9 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotHeaderTextToDocument( const DocText& ) ) );
   connect( mHeaderTemplateProvider, SIGNAL( deleteHeaderText( const DocText& ) ),
            this,  SLOT( slotTextDeleted( const DocText& ) ) );
+
   connect( mHeaderSelection, SIGNAL( switchedToHeaderTab( HeaderSelection::HeaderTabType ) ),
-           mHeaderTemplateProvider, SLOT( slotSetCurrentTab( HeaderSelection::HeaderTabType ) ) );
+           this, SLOT( slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType ) ) );
 
   mFooterTemplateProvider = new FooterTemplateProvider( parent );
 
@@ -157,6 +160,13 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mCatalogTemplateProvider->setCatalogSelection( mCatalogSelection );
   connect( mCatalogTemplateProvider,  SIGNAL( positionSelected( Katalog*, void* ) ),
            this, SIGNAL( positionSelected( Katalog*, void* ) ) );
+
+  mAddressTemplateProvider = new AddressTemplateProvider( parent );
+  connect( mHeaderSelection->addressSelection(), SIGNAL( addressSelected( const Addressee& ) ),
+           mAddressTemplateProvider, SLOT( slotSetCurrentAddress( const Addressee& ) ) );
+
+  connect( mAddressTemplateProvider, SIGNAL( addressToDocument( const Addressee& ) ),
+           this, SLOT( slotAddressToDocument( const Addressee& ) ) );
 
   mCurrTemplateProvider = mHeaderTemplateProvider;
 
@@ -253,6 +263,10 @@ void DocAssistant::slotFooterTextToDocument( const DocText& dt )
   emit footerTextTemplate( dt.text() );
 }
 
+void DocAssistant::slotAddressToDocument( const Addressee& adr )
+{
+  emit addressTemplate( adr );
+}
 
 /* Slot that initiates an edit */
 void DocAssistant::slotEditTemplate()
@@ -277,6 +291,14 @@ void DocAssistant::slotDeleteTemplate()
 
   if ( mCurrTemplateProvider )
     mCurrTemplateProvider->slotDeleteTemplate();
+}
+
+void DocAssistant::slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType t )
+{
+  mCurrTemplateProvider = mHeaderTemplateProvider;
+  if ( t == HeaderSelection::AddressTab ) {
+    mCurrTemplateProvider = mAddressTemplateProvider;
+  }
 }
 
 void DocAssistant::slotTextDeleted( const DocText& /* dt */)
@@ -334,7 +356,8 @@ void DocAssistant::slotSelectDocPart( int p )
   mActivePage = p;
   // change the currentTemplateProvider variable.
   if ( p == KraftDoc::Header ) {
-    mCurrTemplateProvider = mHeaderTemplateProvider;
+    slSetHeaderTemplateProvider( mHeaderSelection->currentPageIndex() ?
+                                 HeaderSelection::AddressTab : HeaderSelection::TextTab );
     mPbNew->setEnabled( true );
   } else if ( p == KraftDoc::Positions ) {
     mCurrTemplateProvider = mCatalogTemplateProvider;

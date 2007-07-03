@@ -12,7 +12,6 @@
     <Action name="document_new"/>
     <Action name="document_open"/>
     <Action name="document_print"/>
-    <Action name="archived_open"/>
 </ToolBar>
 
 </kpartgui>
