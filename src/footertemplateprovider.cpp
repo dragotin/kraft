@@ -99,7 +99,6 @@ void FooterTemplateProvider::slotTemplateToDocument()
 {
   kdDebug() << "Moving template to document" << endl;
   emit footerTextToDocument( mCurrentText );
-
 }
 
 #include "footertemplateprovider.moc"

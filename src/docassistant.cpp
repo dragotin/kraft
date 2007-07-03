@@ -168,7 +168,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mAddressTemplateProvider, SIGNAL( addressToDocument( const Addressee& ) ),
            this, SLOT( slotAddressToDocument( const Addressee& ) ) );
 
-  mCurrTemplateProvider = mHeaderTemplateProvider;
+  // mCurrTemplateProvider = mHeaderTemplateProvider;
 
   setSizes( KraftSettings::self()->assistantSplitterSetting() );
   mTemplatePane->hide();
@@ -177,7 +177,9 @@ DocAssistant::DocAssistant( QWidget *parent ):
 void DocAssistant::slotAddToDocument()
 {
   kdDebug() << "SlotAddToDocument called!" << endl;
-  mCurrTemplateProvider->slotTemplateToDocument();
+  if ( mCurrTemplateProvider ) {
+    mCurrTemplateProvider->slotTemplateToDocument();
+  }
 }
 
 void DocAssistant::slotAddressSelectionChanged()
@@ -295,7 +297,6 @@ void DocAssistant::slotDeleteTemplate()
 
 void DocAssistant::slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType t )
 {
-  mCurrTemplateProvider = mHeaderTemplateProvider;
   if ( t == HeaderSelection::AddressTab ) {
     mCurrTemplateProvider = mAddressTemplateProvider;
   }

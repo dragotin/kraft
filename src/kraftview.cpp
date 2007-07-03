@@ -210,6 +210,8 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   if ( !size.isEmpty() ) resize( size );
   QPoint pos = KraftSettings::self()->docViewPosition();
   if ( !pos.isNull() ) move( pos );
+
+  mAssistant->slotSelectDocPart( KraftDoc::Header );
 }
 
 KraftView::~KraftView()
@@ -242,6 +244,7 @@ void KraftView::slotSwitchToPage( int id )
 
   mDetailHeader->setText( edit->title() );
   mDetailHeader->setPaletteBackgroundColor( edit->color() );
+  // FIXME: color
   mDetailHeader->setPaletteForegroundColor( QColor( "#00008b" ) );
 
   mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
