@@ -46,7 +46,10 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   addTab( vBox, i18n( "Address Selection" ) );
   mAddressTabId = indexOf( vBox );
 
+  FilterHeader *fh = new FilterHeader( 0, vBox );
   mAddressSelection = new AddressSelection( vBox );
+  fh->setListView( mAddressSelection );
+  fh->showCount( false );
   mAddressSelection->setupAddressList( );
 
   connect( mAddressSelection, SIGNAL( selectionChanged( QListViewItem* ) ),

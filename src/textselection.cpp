@@ -42,6 +42,7 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
 
   /* a view for the entry text repository */
   ( void ) new QLabel( i18n( "%1 Text Selection" ).arg( KraftDoc::partToString( part ) ), this );
+
   mTextsView = new KListView( this );
   mTextsView->setItemMargin( 4 );
   mTextsView->setRootIsDecorated( true );

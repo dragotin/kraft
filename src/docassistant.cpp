@@ -291,14 +291,27 @@ void DocAssistant::slotDeleteTemplate()
     return;
   }
 
-  if ( mCurrTemplateProvider )
+  if ( mCurrTemplateProvider ) {
     mCurrTemplateProvider->slotDeleteTemplate();
+  }
 }
 
 void DocAssistant::slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType t )
 {
+
+  // go out here if it is not the header doc part, sometimes the tab widget
+  // seems to throw the signal a bit unwanted what results in a current template
+  // provider that points to header however we're on the footer page
+  if ( mActivePage != KraftDoc::Header ) {
+    return;
+  }
+
   if ( t == HeaderSelection::AddressTab ) {
     mCurrTemplateProvider = mAddressTemplateProvider;
+  } else if ( t == HeaderSelection::TextTab ) {
+    mCurrTemplateProvider = mHeaderTemplateProvider;
+  } else {
+    kdDebug() << "Unknown HeaderSelection type" << endl;
   }
 }
 
@@ -356,10 +369,14 @@ void DocAssistant::slotSelectDocPart( int p )
 {
   mActivePage = p;
   // change the currentTemplateProvider variable.
+  mPbEdit->setEnabled( false );
+  mPbDel->setEnabled( false );
+
   if ( p == KraftDoc::Header ) {
     slSetHeaderTemplateProvider( mHeaderSelection->currentPageIndex() ?
                                  HeaderSelection::AddressTab : HeaderSelection::TextTab );
     mPbNew->setEnabled( true );
+
   } else if ( p == KraftDoc::Positions ) {
     mCurrTemplateProvider = mCatalogTemplateProvider;
     mPbNew->setEnabled( false );

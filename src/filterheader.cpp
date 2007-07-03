@@ -59,7 +59,7 @@ FilterHeader::FilterHeader( KListView *listView, QWidget *parent )
 {
   QBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing( KDialog::spacingHint() );
-  topLayout->setMargin( KDialog::marginHint() );
+  topLayout->setMargin( 0 ); // KDialog::marginHint() );
 
   mTitleLabel = new QLabel( this );
   topLayout->addWidget( mTitleLabel );
