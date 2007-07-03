@@ -49,13 +49,24 @@ div {
 }
 
 .headerlink { background: #8ddbe9; }
-.headerlink_selected { background: #9af0ff; }
+.headerlink_selected { 
+  background: #9af0ff;   
+  font-weight: bolder;
+      color: #898989;
+
+}
 
 .bodylink   { background: #8de99a; }
-.bodylink_selected   { background: #9affa9; }
+.bodylink_selected   { 
+  background: #9affa9;   
+  font-weight: bolder;
+}
 
 .footerlink { background: #dbe98d; }
-.footerlink_selected { background: #f0ff9a; }
+.footerlink_selected { 
+  background: #f0ff9a;   
+  font-weight: bolder;
+}
 
 // .head { background:#9af0ff; }
 // .body { background:#9affa9; }

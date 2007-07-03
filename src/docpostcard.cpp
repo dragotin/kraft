@@ -109,10 +109,14 @@ void DocPostCard::renderDoc( int id )
 QString DocPostCard::renderDocFull( int id )
 {
   QString t;
-  QString c = "headerlink";
-  if ( id == KraftDoc::Header ) c = "headerlink_selected";
-  t += QString( "<div class=\"%1\">" ).arg( c );
-  t += linkBit( "kraftdoc://header", i18n( "Header" ) );
+  if ( id == KraftDoc::Header ) {
+    // header is the selected doc part
+    t += QString( "<div class=\"headerlink_selected\">" );
+    t += QString( i18n( "Header" ) );
+  } else {
+    t += QString( "<div class=\"headerlink\">" );
+    t += linkBit( "kraftdoc://header", i18n( "Header" ) );
+  }
   t += "</div>\n" ;
 
   t += "<div class=\"head\">\n";
@@ -128,21 +132,29 @@ QString DocPostCard::renderDocFull( int id )
   t += "<p class=\"longtext\">" + mPreText + "</p>\n";
   t += "</div>\n";
 
-  c = "bodylink";
-  if ( id == KraftDoc::Positions ) c = "bodylink_selected";
-  t += QString( "<div class=\"%1\">" ).arg( c );
-  t += linkBit( "kraftdoc://positions", i18n( "Positions" ) );
-  t += "</div>\n";
+  if ( id == KraftDoc::Positions ) {
+    // header is the selected doc part
+    t += QString( "<div class=\"bodylink_selected\">" );
+    t += QString( i18n( "Positions" ) );
+  } else {
+    t += QString( "<div class=\"bodylink\">" );
+    t += linkBit( "kraftdoc://positions", i18n( "Positions" ) );
+  }
+  t += "</div>\n" ;
 
   t += "<div class=\"body\">\n";
   t += mPositions;
   t += "\n</div>\n";
 
-  c = "footerlink";
-  if ( id == KraftDoc::Footer ) c = "footerlink_selected";
-  t += QString( "<div class=\"%1\">" ).arg( c );
-  t += linkBit(  "kraftdoc://footer", i18n( "Footer" ) );
-  t += "</div>\n";
+  if ( id == KraftDoc::Footer ) {
+    // header is the selected doc part
+    t += QString( "<div class=\"footerlink_selected\">" );
+    t += QString( i18n( "Footer" ) );
+  } else {
+    t += QString( "<div class=\"footerlink\">" );
+    t += linkBit( "kraftdoc://footer", i18n( "Footer" ) );
+  }
+  t += "</div>\n" ;
   t += "<div class=\"footer\">\n";
   t += "<p class=\"longtext\">" + mPostText + "</p>\n";
   if ( ! mGoodbye.isEmpty() )
