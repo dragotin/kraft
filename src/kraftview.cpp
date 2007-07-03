@@ -263,9 +263,6 @@ void KraftView::setupDocHeaderView()
     m_headerEdit->m_cbType->clear();
     m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
 
-    connect( m_headerEdit->m_selectAddress, SIGNAL( clicked() ),
-               this, SLOT( slotNewAddress() ) );
-
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
              this, SLOT( slotDocTypeChanged( const QString& ) ) );
 
