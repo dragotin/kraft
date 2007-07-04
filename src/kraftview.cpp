@@ -500,6 +500,8 @@ void KraftView::setupFooter()
 
     m_footerEdit->m_cbGreeting->insertStringList( KraftDB::self()->wordList( "greeting" ) );
 
+    m_footerEdit->m_cbGreeting->setCurrentText( KraftSettings::self()->greeting() );
+
     connect( edit, SIGNAL( modified() ),
              this, SLOT( slotModifiedFooter() ) );
 }
@@ -669,6 +671,7 @@ void KraftView::slotNewAddress( const Addressee& contact )
       QStringList li = generateLetterHead( adr );
 
       m_headerEdit->m_letterHead->insertStringList( li );
+      m_headerEdit->m_letterHead->setCurrentItem( KraftSettings::self()->salut() );
     }
 }
 
@@ -895,6 +898,13 @@ void KraftView::slotOk()
     doc->setPositionList( currentPositionList() );
 
     doc->saveDocument( );
+
+    if ( doc->isNew() ) {
+      // For new documents the user had to select a greeting and we make this
+      // default for the future
+      KraftSettings::self()->setGreeting( m_footerEdit->m_cbGreeting->currentText() );
+      KraftSettings::self()->setSalut( m_headerEdit->m_letterHead->currentItem() );
+    }
 
     KraftSettings::self()->setDocViewSplitter( mCSplit->sizes() );
     KraftSettings::self()->setDocViewSize( size() );

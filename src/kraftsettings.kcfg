@@ -56,5 +56,13 @@
       <label>The path to the output directory for document pdfs</label>
     </entry>    
   </group>
+  <group name="userdefaults">
+    <entry name="greeting" type="String">
+      <label>The greeting below on the document footer.</label>
+    </entry>
+    <entry name="salut" type="Int">
+      <label>The salut message on the document header.</label>
+    </entry>
+  </group>
 </kcfg>
 
