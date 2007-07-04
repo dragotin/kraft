@@ -47,6 +47,9 @@ protected:
   void writeTopFrame();
   QString renderDocMini( int ) const;
   QString renderDocFull( int );
+  QString header( bool, const QString&, const QString&, const QString&,
+                  const QString& = QString() ) const;
+
 private:
   QString linkBit( const QString&, const QString& ) const;
   QString htmlify( const QString& ) const;
