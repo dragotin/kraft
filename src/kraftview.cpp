@@ -1,4 +1,3 @@
-
 /***************************************************************************
                           kraftview.cpp  -
                              -------------------
@@ -502,7 +501,7 @@ void KraftView::setupFooter()
     m_footerEdit->m_cbGreeting->insertStringList( KraftDB::self()->wordList( "greeting" ) );
 
     connect( edit, SIGNAL( modified() ),
-               this, SLOT( slotModifiedFooter() ) );
+             this, SLOT( slotModifiedFooter() ) );
 }
 
 void KraftView::slotAboutToShow( QWidget* w )
@@ -661,6 +660,7 @@ void KraftView::slotNewAddress( const Addressee& contact )
         address = addresses.first();
       }
 
+      mContactUid = contact.uid();
       QString adrStr = address.street() + "\n" + address.postalCode();
       adrStr = address.formattedAddress( adr.realName() );
       kdDebug() << "formatted address string: " << adrStr << endl;
