@@ -28,7 +28,6 @@
 #include <kstandarddirs.h>
 #include <ktempfile.h>
 #include <kurl.h>
-#include <krun.h>
 #include <kmessagebox.h>
 #include <kabc/stdaddressbook.h>
 
@@ -72,9 +71,9 @@ ReportGenerator::~ReportGenerator()
  * docID: document ID
  *  dbId: database ID of the archived doc.
  */
-void ReportGenerator::createRmlFromArchive( const QString& docID, dbID dbId )
+void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 {
-  const QString templ = fillupTemplateFromArchive( dbId );
+  const QString templ = fillupTemplateFromArchive( archId );
   // kdDebug() << "Report BASE:\n" << templ << endl;
 
   if ( ! templ.isEmpty() ) {
@@ -89,9 +88,9 @@ void ReportGenerator::createRmlFromArchive( const QString& docID, dbID dbId )
     QString dId( docID );
 
     if ( docID.isEmpty() ) {
-      dId = ArchiveMan::self()->documentID( dbId );
+      dId = ArchiveMan::self()->documentID( archId );
     }
-    runTrml2Pdf( temp.name(), dId, dbId.toString() );
+    runTrml2Pdf( temp.name(), dId, archId.toString() );
   }
 }
 
@@ -375,7 +374,7 @@ int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QStri
 }
 
 
-void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID, const QString& id )
+void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID, const QString& archId )
 {
   if( ! mProcess ) {
     mProcess = new KProcess;
@@ -427,15 +426,13 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     } else {
       kdDebug() << "Using rml2pdf script: " << rmlbin << endl;
     }
-  }
-  KStandardDirs stdDirs;
-  QString outputDir = KraftSettings::self()->pdfOutputDir();
-  if ( outputDir.isEmpty() ) {
-    outputDir = stdDirs.saveLocation( "data", "kraft/archivePdf", true );
+
   }
 
-  if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
-  mOutFile = QString( "%1/%2_%3.pdf" ).arg( outputDir ).arg( docID ).arg( id );
+  QString outputDir = ArchiveMan::self()->pdfBaseDir();
+  QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
+  mOutFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
+
   kdDebug() << "Writing output to " << mOutFile << endl;
 
   *mProcess << rmlbin;
@@ -464,45 +461,18 @@ void ReportGenerator::slotRecStderr( KProcess *, char * buffer, int len )
   mErrors.append( QString::fromUtf8( buffer,  len ) );
 }
 
-void ReportGenerator::docPreview( const dbID& )
-{
-    if( ! mProcess ) {
-	mProcess = new KProcess;
-	connect( mProcess, SIGNAL( processExited(  KProcess * ) ),
-		 this,     SLOT( slotViewerClosed( KProcess * ) ) );
-    } else {
-      mProcess->clearArguments();
-    }
-
-
-#if 0
-    const QString ncbin = KraftSettings::nCReportBinary();
-    kdDebug() << "Setting ncreport binary: " << ncbin << endl;
-
-    const QString reportFile = "/home/kf/office/kraft/reports/invoice.xml";
-    dbID id( dbId );
-
-    if (  ! ncbin.isEmpty() ) {
-      *mProcess << ncbin;
-      *mProcess << "-f" << reportFile;
-      *mProcess << "-U" << KatalogSettings::dbUser();
-      *mProcess << "-p" << KatalogSettings::dbPassword();
-      *mProcess << "-D" << KatalogSettings::dbFile();
-      *mProcess << "-add-parameter" << QString( "%1,docID" ).arg( KProcess::quote( id.toString() ) );
-      *mProcess << "-O" << "preview";
-      mProcess->start( KProcess::NotifyOnExit );
-    }
-#endif
-}
-
 void ReportGenerator::slotViewerClosed( KProcess *p )
 {
   mFile.close();
   kdDebug() << "Trml2pdf Process finished with status " << p->exitStatus() << endl;
 
   if ( p->exitStatus() == 0 ) {
+    emit pdfAvailable( mOutFile );
+    mOutFile = QString();
+#if 0
     KURL url( mOutFile );
     KRun::runURL( url, "application/pdf" );
+#endif
   } else {
     // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
     KMessageBox::detailedError ( 0,

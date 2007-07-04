@@ -6,6 +6,7 @@
      <Action name="document_open"/>
      <Action name="document_print"/>
      <Action name="archived_open"/>
+     <Action name="document_mail"/>
   </Menu>
 </MenuBar>
 <ToolBar  name="documentToolBar" fullWidth="true">

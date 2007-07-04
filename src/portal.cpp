@@ -36,6 +36,11 @@
 #include <kdebug.h>
 #include <kaction.h>
 #include <kcmdlineargs.h>
+#include <krun.h>
+#include <kapplication.h>
+#include <kabc/addressbook.h>
+#include <kabc/stdaddressbook.h>
+#include <kabc/addressee.h>
 
 // application specific includes
 #include "kraftview.h"
@@ -111,13 +116,17 @@ void Portal::initActions()
                                  actionCollection(), "document_print");
 
   actOpenArchivedDocument = new KAction( i18n( "Open &Archived Document" ), "attach",
-                                         KShortcut( ), this,
+                                         KShortcut( Qt::CTRL + Qt::Key_A ), this,
                                          SLOT( slotArchivedDocExecuted() ), actionCollection(),
                                          "archived_open" );
 
   actOpenDocument = new KAction(i18n("&Open Document"),  "fileopen",
                                 KStdAccel::shortcut(KStdAccel::Open), this,
                                 SLOT( slotOpenDocument() ), actionCollection(), "document_open" );
+
+  actMailDocument = new KAction( i18n( "&Mail Document" ), "mail_generic",
+                                 KShortcut( Qt::CTRL + Qt::Key_M ), this,
+                                 SLOT( slotMailDocument() ), actionCollection(), "document_mail" );
 
   fileQuit->setStatusText(i18n("Quits the application"));
   editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
@@ -323,6 +332,53 @@ void Portal::slotPrintDocument()
 
 }
 
+void Portal::slotMailDocument()
+{
+  QString locId = m_portalView->docDigestView()->currentDocumentId();
+  kdDebug() << "Mailing document " << locId << endl;
+
+  busyCursor( true );
+  slotStatusMsg( i18n( "Generating PDF..." ) );
+  DocumentMan *docman = DocumentMan::self();
+  DocGuardedPtr docPtr = docman->openDocument( locId );
+  QString ident;
+  if ( docPtr ) {
+    ident = docPtr->ident();
+
+    KABC::AddressBook *ab = KABC::StdAddressBook::self();
+    KABC::Addressee addressee = ab->findByUid( docPtr->addressUid() );
+
+    mMailReceiver = addressee.fullEmail();
+
+    ArchiveMan *archman = ArchiveMan::self();
+    dbID archID = archman->archiveDocument( docPtr );
+
+    connect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),
+             this, SLOT( slotMailDocument( const QString& ) ) );
+    ReportGenerator::self()->createPdfFromArchive( ident, archID );
+  }
+  busyCursor( false );
+  slotStatusMsg( i18n( "Ready." ) );
+}
+
+void Portal::slotMailDocument( const QString& fileName )
+{
+  kdDebug() << "Mailing away " << fileName << endl;
+
+  disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
+
+  KURL mailTo;
+  mailTo.setProtocol( "mailto" );
+  if ( ! mMailReceiver.isEmpty() ) {
+    mailTo.addQueryItem( "to", mMailReceiver );
+  }
+  mailTo.addQueryItem( "attach", fileName );
+
+  kdDebug() << "Use this mailto: " << mailTo << endl;
+
+  KApplication::kApplication()->invokeMailer( mailTo, "Kraft", true );
+}
+
 /*
  * id    : document ID
  * archID: database ID of archived document
@@ -332,8 +388,18 @@ void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
   if ( archID.isOk() ) {
     slotStatusMsg(i18n("Printing archived document...") );
     mReportGenerator = ReportGenerator::self();
-    mReportGenerator->createRmlFromArchive( id, archID ); // work on document identifier.
+    connect( mReportGenerator, SIGNAL( pdfAvailable( const QString& ) ),
+             this,  SLOT( slotOpenPdf( const QString& ) ) );
+
+    mReportGenerator->createPdfFromArchive( id, archID ); // work on document identifier.
   }
+}
+
+void Portal::slotOpenPdf( const QString& fileName )
+{
+    disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
+    KURL url( fileName );
+    KRun::runURL( url, "application/pdf" );
 }
 
 void Portal::slotOpenDocument( const QString& id )

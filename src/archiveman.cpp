@@ -59,11 +59,11 @@ dbID ArchiveMan::archiveDocument( KraftDoc *doc )
 {
   if( ! doc ) return dbID();
 
-  mDomDoc = archiveDocumentXml( doc );
+  dbID archId = archiveDocumentDb( doc );
 
-  mCachedDocId = archiveDocumentDb( doc );
+  archiveDocumentXml( doc, archId.toString() );
 
-  return mCachedDocId;
+  return archId;
 }
 
 QString ArchiveMan::documentID( dbID archID ) const
@@ -89,7 +89,7 @@ QDomElement ArchiveMan::xmlTextElement( QDomDocument doc, const QString& name, c
   return elem;
 }
 
-QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc )
+QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archId )
 {
   QDomDocument xmldoc( "kraftdocument" );
   QDomElement root = xmldoc.createElement( "kraftdocument" );
@@ -117,14 +117,12 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc )
   QString xml = xmldoc.toString();
   // kdDebug() << "Resulting XML: " << xml << endl;
 
-  QString path = KraftSettings::self()->xmlArchivePath();
-  if ( path.isEmpty() ) {
-    KStandardDirs stdDirs;
-    path = stdDirs.saveLocation( "data", "kraft/archiveXml", true );
-  }
+  QString outputDir = ArchiveMan::self()->xmlBaseDir();
+  QString filename = ArchiveMan::self()->archiveFileName( doc->ident(), archId, "xml" );
 
-  QString xmlFile = QString( "%1%2.xml" ).arg( path ).arg( doc->ident() );
-  kdDebug() << "Storing to " << xmlFile << endl;
+  QString xmlFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
+
+  kdDebug() << "Storing XML to " << xmlFile << endl;
 
   if ( KraftSettings::self()->doXmlArchive() ) {
     QFile file( xmlFile );
@@ -239,4 +237,36 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
         }
     }
     return cnt;
+}
+
+QString ArchiveMan::xmlBaseDir() const
+{
+  KStandardDirs stdDirs;
+  QString outputDir = KraftSettings::self()->pdfOutputDir();
+  if ( outputDir.isEmpty() ) {
+    outputDir = stdDirs.saveLocation( "data", "kraft/archiveXml", true );
+  }
+
+  if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
+
+  return outputDir;
+}
+
+QString ArchiveMan::pdfBaseDir() const
+{
+  KStandardDirs stdDirs;
+  QString outputDir = KraftSettings::self()->pdfOutputDir();
+  if ( outputDir.isEmpty() ) {
+    outputDir = stdDirs.saveLocation( "data", "kraft/archivePdf", true );
+  }
+
+  if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
+
+  return outputDir;
+
+}
+
+QString ArchiveMan::archiveFileName( const QString& docId, const QString& archId, const QString& ext ) const
+{
+  return QString( "%1_%2.%3" ).arg( docId ).arg( archId ).arg( ext );
 }

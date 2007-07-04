@@ -35,12 +35,15 @@ public:
   ~ReportGenerator();
 
   static ReportGenerator *self();
-  void docPreview( const dbID& );
+
   void runTrml2Pdf( const QString&, const QString&, const QString& );
+
+signals:
+  void pdfAvailable( const QString& filename );
 
 public slots:
   void slotViewerClosed( KProcess * );
-  void createRmlFromArchive( const QString&, dbID );
+  void createPdfFromArchive( const QString&, dbID );
 
 protected slots:
   void slotWroteStdin( KProcess* );

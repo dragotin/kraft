@@ -85,7 +85,10 @@ class Portal : public KMainWindow
 
   protected slots:
     void slotStartupChecks();
-  void slotOpenArchivedDoc( const dbID& );
+    void slotOpenArchivedDoc( const dbID& );
+    void slotMailDocument();
+    void slotMailDocument( const QString& );
+
   public slots:
     /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.
      * If queryClose() returns false because the user canceled the saveModified() dialog, the closing breaks.
@@ -126,6 +129,9 @@ class Portal : public KMainWindow
     void slotViewClosed( bool );
 
     void busyCursor( bool );
+
+    void slotOpenPdf( const QString& );
+
   private:
     void createView( DocGuardedPtr );
 
@@ -152,6 +158,8 @@ class Portal : public KMainWindow
     KAction* actNewDocument;
     KAction* actOpenDocument;
     KAction* actPrintDocument;
+    KAction* actMailDocument;
+
     KAction* actOpenArchivedDocument;
 
     KToggleAction* viewFlosTemplates;
@@ -159,6 +167,7 @@ class Portal : public KMainWindow
     KCmdLineArgs *mCmdLineArgs;
 
   QMap<QString, KatalogView*> mKatalogViews;
+  QString mMailReceiver;
 };
 
 #endif
