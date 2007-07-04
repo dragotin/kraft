@@ -12,7 +12,7 @@ TemplToPositionDialogBase::TemplToPositionDialogBase( QWidget *w )
   : KDialogBase( w, "TEMPL_DIALOG", true, i18n( "Create Position from Template" ),
                  Ok | Cancel )
 {
-
+  enableButtonSeparator( true );
 }
 
 TemplToPositionDialogBase::~TemplToPositionDialogBase()

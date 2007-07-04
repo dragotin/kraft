@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>415</width>
-            <height>210</height>
+            <width>505</width>
+            <height>246</height>
         </rect>
     </property>
     <property name="caption">
@@ -21,7 +21,7 @@
         </property>
         <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>layout14</cstring>
+                <cstring>layout6</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -46,7 +46,7 @@
                         </font>
                     </property>
                     <property name="text">
-                        <string>Generate Position from Template</string>
+                        <string>Create Position from Template</string>
                     </property>
                     <property name="textFormat">
                         <enum>PlainText</enum>
@@ -65,7 +65,7 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>Insert the following &amp;text into the document:</string>
+                        <string>Insert a position with the following &amp;text into the document:</string>
                     </property>
                     <property name="buddy" stdset="0">
                         <cstring>dmTextEdit</cstring>
@@ -121,7 +121,7 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout7</cstring>
+                        <cstring>layout4</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -143,18 +143,21 @@
                                 <cstring>dmAmount</cstring>
                             </property>
                             <property name="maxValue">
-                                <number>99999</number>
+                                <number>200000</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>1</number>
+                            </property>
+                            <property name="value">
+                                <number>1</number>
+                            </property>
+                            <property name="precision">
+                                <number>2</number>
                             </property>
                         </widget>
-                        <widget class="QLabel">
+                        <widget class="QComboBox">
                             <property name="name">
-                                <cstring>dmUnitText</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Pfund</string>
-                            </property>
-                            <property name="textFormat">
-                                <enum>PlainText</enum>
+                                <cstring>dmUnitCombo</cstring>
                             </property>
                         </widget>
                         <spacer>
@@ -169,7 +172,7 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>51</width>
+                                    <width>120</width>
                                     <height>20</height>
                                 </size>
                             </property>

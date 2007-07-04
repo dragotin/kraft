@@ -38,6 +38,7 @@
 #include "templtopositiondialogbase.h"
 
 #include "einheit.h"
+#include "unitmanager.h"
 
 InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
@@ -45,6 +46,7 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   QWidget *w = makeVBoxMainWidget();
 
   mBaseWidget = new insertTmplBase( w );
+  mBaseWidget->dmUnitCombo->insertStringList( UnitManager::allUnits() );
 }
 
 void InsertTemplDialog::setDocPosition( DocPosition *dp )
@@ -53,35 +55,18 @@ void InsertTemplDialog::setDocPosition( DocPosition *dp )
     mParkPosition = *dp;
 
     mBaseWidget->dmTextEdit->setText( mParkPosition.text() );
-    // mBaseWidget->dmPositionCombo->
+
     mBaseWidget->dmAmount->setValue( mParkPosition.amount() );
-    mBaseWidget->dmUnitText->setText( mParkPosition.unit().einheit( 1.0 ) );
+    mBaseWidget->dmUnitCombo->setCurrentText( mParkPosition.unit().einheit( 1.0 ) );
+
+    if ( mParkPosition.text().isEmpty() ) {
+      mBaseWidget->dmHeaderText->setText( i18n( "Create a new Position" ) );
+    } else {
+      mBaseWidget->dmHeaderText->setText( i18n( "Create a new Position from Template" ) );
+    }
   }
   mBaseWidget->dmAmount->setFocus();
 }
-
-#if 0
-void InsertTemplDialog::setPositionList( DocPositionList list, int intendedPos )
-{
-  DocPositionBase *dpb;
-  QStringList strList;
-  strList << i18n( "the Header of the Document as first position" );
-
-  for ( dpb = list.first(); dpb; dpb = list.next() ) {
-    DocPosition *dp = static_cast<DocPosition*>( dpb );
-    QString h = QString( "%1. %2" ).arg( list.posNumber( dp ) ).arg( dp->text() );
-    if ( h.length() > 50 ) {
-      h = h.left( 50 );
-      h += i18n( "..." );
-    }
-    strList.append( h );
-  }
-
-  mBaseWidget->dmPositionCombo->insertStringList( strList );
-  if ( intendedPos > 0 ) --intendedPos;
-  mBaseWidget->dmPositionCombo->setCurrentItem( intendedPos );
-}
-#endif
 
 QComboBox *InsertTemplDialog::getPositionCombo()
 {
@@ -92,6 +77,9 @@ DocPosition InsertTemplDialog::docPosition()
 {
   mParkPosition.setText( mBaseWidget->dmTextEdit->text() );
   mParkPosition.setAmount( mBaseWidget->dmAmount->value() );
+  int uid = UnitManager::getUnitIDSingular( mBaseWidget->dmUnitCombo->currentText() );
+
+  mParkPosition.setUnit( UnitManager::getUnit( uid ) );
   // mParkPosition.setPosition( itemPos );
 
   return mParkPosition;

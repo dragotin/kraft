@@ -26,10 +26,10 @@ class insertTmplBase;
 
 class InsertTemplDialog: public TemplToPositionDialogBase
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    InsertTemplDialog( QWidget* );
+  InsertTemplDialog( QWidget* );
   ~InsertTemplDialog();
 
   void setDocPosition( DocPosition * );

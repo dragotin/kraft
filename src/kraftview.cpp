@@ -776,7 +776,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
   delete dia;
 
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
-
+  widget->slotModified();
   slotFocusPosition( widget, newpos );
   refreshPostCard();
 }
@@ -928,7 +928,7 @@ void KraftView::slotCancel()
   // We need to reread the document
   if ( mModified ) {
     if ( KMessageBox::warningYesNo( this, i18n( "The document was modified, do "
-                                            "you really want to discard all changes?" ) )
+                                                "you really want to discard all changes?" ) )
           == KMessageBox::No  )
     {
       return;
