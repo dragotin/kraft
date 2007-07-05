@@ -367,6 +367,9 @@ void Portal::slotMailDocument( const QString& fileName )
 
   disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
 
+  // FIXME: the mailed document should go to another directory to be traceable
+  // for the time being we rely on the mailer sent mail folder ;-)
+
   KURL mailTo;
   mailTo.setProtocol( "mailto" );
   if ( ! mMailReceiver.isEmpty() ) {
