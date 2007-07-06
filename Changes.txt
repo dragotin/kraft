@@ -5,7 +5,20 @@ Changes since version 0.14:
 - increased precision to 2 digits for position amounts
 - allow euro-sign in texts and in the whiteboard. Due to a lack
   in the qt3 mysql driver the char needs to be en- and decoded.
+- reduced the amount of toolbar buttons to only show the important
+  ones.
+- more beautifull and working navigation block in the document dialog
+- mailing documents added
+- Completely changed header- and footer text template system: 
+  * more than on e text available per text- and doc type
+  * direct adding, editing and removing of texts from the dialog
+  * selecting template texts in the same way as selecting position 
+    templates
+- persist the selection of the greeting and salut text 
 
 Bugs fixed:
 - fixed time lined doc overview, now displaying all documents of
   all months of a year.
+- fixed modification indication: Now also adding a position counts
+  as modification
+- encoding bugs fixed
