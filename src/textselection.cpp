@@ -132,7 +132,7 @@ QListViewItem* TextSelection::addNewDocText( const DocText& dt )
   return 0;
 }
 
-/* requires the QListViewItem set in the doctext */
+/* requires the QListViewItem set as a member in the doctext */
 void TextSelection::updateDocText( const DocText& dt )
 {
   kdDebug() << "Update Doc Text" << endl;
@@ -157,6 +157,12 @@ void TextSelection::updateDocText( const DocText& dt )
 void TextSelection::deleteCurrentText()
 {
   QListViewItem *curr = mTextsView->currentItem();
+  if ( mDocTypeItemMap.values().find( curr ) != mDocTypeItemMap.values().end() ) {
+    kdDebug() << "Can not delete the doc type item" << endl;
+    return;
+  }
+
+  if ( ! curr ) return;
 
   if ( curr->firstChild() ) {
     // If the parent item is in the docType map the child must be deleted.

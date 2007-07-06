@@ -138,7 +138,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mHeaderTemplateProvider, SIGNAL( headerTextToDocument( const DocText& ) ),
            this,  SLOT( slotHeaderTextToDocument( const DocText& ) ) );
   connect( mHeaderTemplateProvider, SIGNAL( deleteHeaderText( const DocText& ) ),
-           this,  SLOT( slotTextDeleted( const DocText& ) ) );
+           this,  SLOT( slotHeaderTextDeleted( const DocText& ) ) );
 
   connect( mHeaderSelection, SIGNAL( switchedToHeaderTab( HeaderSelection::HeaderTabType ) ),
            this, SLOT( slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType ) ) );
@@ -153,7 +153,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mFooterTemplateProvider, SIGNAL( footerTextToDocument( const DocText& ) ),
            this,  SLOT( slotFooterTextToDocument( const DocText& ) ) );
   connect( mFooterTemplateProvider, SIGNAL( deleteFooterText( const DocText& ) ),
-           this,  SLOT( slotTextDeleted( const DocText& ) ) );
+           this,  SLOT( slotFooterTextDeleted( const DocText& ) ) );
 
   /* Catalog Template Provider */
   mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
@@ -284,7 +284,7 @@ void DocAssistant::slotEditTemplate()
 void DocAssistant::slotDeleteTemplate()
 {
   if ( KMessageBox::warningYesNo( this, i18n( "Do you really want to delete the "
-                                            "Template permanently? There is no way "
+                                            "template permanently? There is no way "
                                               "to recover!" ) )
        == KMessageBox::No  )
   {
@@ -315,9 +315,14 @@ void DocAssistant::slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType t
   }
 }
 
-void DocAssistant::slotTextDeleted( const DocText& /* dt */)
+void DocAssistant::slotHeaderTextDeleted( const DocText& /* dt */)
 {
   mHeaderSelection->textSelection()->deleteCurrentText();
+}
+
+void DocAssistant::slotFooterTextDeleted( const DocText& /* dt */)
+{
+  mFooterSelection->deleteCurrentText();
 }
 
 /* slot that opens the template details in case on == true */
@@ -376,6 +381,11 @@ void DocAssistant::slotSelectDocPart( int p )
     slSetHeaderTemplateProvider( mHeaderSelection->currentPageIndex() ?
                                  HeaderSelection::AddressTab : HeaderSelection::TextTab );
     mPbNew->setEnabled( true );
+    if ( mHeaderSelection->itemSelected() ) {
+      kdDebug() << "Enabling Edit and Del for Header" << endl;
+      mPbEdit->setEnabled( true );
+      mPbDel->setEnabled( true );
+    }
 
   } else if ( p == KraftDoc::Positions ) {
     mCurrTemplateProvider = mCatalogTemplateProvider;
@@ -383,6 +393,12 @@ void DocAssistant::slotSelectDocPart( int p )
   } else if ( p == KraftDoc::Footer ) {
     mCurrTemplateProvider = mFooterTemplateProvider;
     mPbNew->setEnabled( true );
+
+    if ( mFooterSelection->textsListView()->currentItem() ) {
+      kdDebug() << "Enabling Edit and Del for Footer" << mFooterSelection->textsListView()->currentItem()->firstChild()->text( 0 ) << endl;
+      mPbEdit->setEnabled( true );
+      mPbDel->setEnabled( true );
+    }
   }
 
   emit selectPage( p );

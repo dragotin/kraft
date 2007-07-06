@@ -1,6 +1,6 @@
 #define KPLANT_VERSION "0.4"
-#define KRAFT_VERSION "0.15"
+#define KRAFT_VERSION "0.20"
 
-#define KRAFT_CODENAME "Embryo"
+#define KRAFT_CODENAME "aKademy 2007"
 
 #define KRAFT_REQUIRED_SCHEMA_VERSION 4

@@ -251,7 +251,6 @@ void KraftView::slotSwitchToPage( int id )
 
 void KraftView::slotShowTemplates( bool on )
 {
-  kdDebug() << "Slot Toggle Show Templates: " << on << endl;
 }
 
 void KraftView::setupDocHeaderView()

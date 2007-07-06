@@ -50,6 +50,8 @@ public:
   QString currentText() const;
   DocText currentDocText() const;
 
+  QListViewItem *itemSelected();
+
   TextSelection *textSelection() { return mTextsView; }
   AddressSelection *addressSelection() { return mAddressSelection; }
 signals:

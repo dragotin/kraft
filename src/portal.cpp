@@ -1,3 +1,4 @@
+
 /***************************************************************************
                    portal.cpp  - The Kraft portal page
                              -------------------
@@ -62,6 +63,7 @@
 #include "reportgenerator.h"
 #include "kraftsettings.h"
 #include "prefsdialog.h"
+#include "defaultprovider.h"
 
 #define ID_STATUS_MSG 1
 
@@ -127,6 +129,15 @@ void Portal::initActions()
   actMailDocument = new KAction( i18n( "&Mail Document" ), "mail_generic",
                                  KShortcut( Qt::CTRL + Qt::Key_M ), this,
                                  SLOT( slotMailDocument() ), actionCollection(), "document_mail" );
+#if 0
+  KActionMenu *actMenuTexts = new KActionMenu( i18n( "&Header Text" ), actionCollection(), "menu_texts" );
+  QStringList docTypes = DefaultProvider::self()->docTypes();
+
+  for ( QStringList::Iterator it = docTypes.begin(); it != docTypes.end(); ++it ) {
+    actMenuTexts->insert( new KAction( *it, KShortcut(), actMenuTexts, SLOT( slotEditText() ),
+                            actionCollection() ) );
+  }
+#endif
 
   fileQuit->setStatusText(i18n("Quits the application"));
   editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
@@ -137,10 +148,13 @@ void Portal::initActions()
   actNewDocument->setStatusText( i18n( "Creates a new Document" ) );
   actPrintDocument->setStatusText( i18n( "Print and archive this Document" ) );
   actOpenDocument->setStatusText( i18n( "Opens the document for editing" ) );
+  actMailDocument->setStatusText( i18n( "Send document per mail" ) );
+
   actOpenArchivedDocument->setStatusText( i18n( "Open a viewer on an archived document" ) );
   setStandardToolBarMenuEnabled( true );
   actOpenDocument->setEnabled( false );
   actPrintDocument->setEnabled( false );
+  actMailDocument->setEnabled( false );
   actOpenArchivedDocument->setEnabled( false );
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
   char *prjPath = getenv("KRAFT_HOME");
@@ -173,8 +187,9 @@ void Portal::initView()
     m_portalView = new PortalView( this, "mainview", KJanusWidget::IconList );
 
     actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
-    actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    actMailDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actOpenArchivedDocument->plug( m_portalView->docDigestView()->contextMenu() );
 
     connect( m_portalView, SIGNAL(openKatalog( const QString&)),
@@ -424,9 +439,11 @@ void Portal::slotDocumentSelected( const QString& doc )
   if( doc.isEmpty() ) {
     actOpenDocument->setEnabled( false );
     actPrintDocument->setEnabled( false );
+    actMailDocument->setEnabled( false );
   } else {
     actOpenDocument->setEnabled( true );
     actPrintDocument->setEnabled( true );
+    actMailDocument->setEnabled( true );
     actOpenArchivedDocument->setEnabled( false );
   }
 }
@@ -447,6 +464,7 @@ void Portal::slotArchivedDocSelected( const dbID& id )
     actOpenArchivedDocument->setEnabled( true );
     actOpenDocument->setEnabled( false );
     actPrintDocument->setEnabled( false );
+    actMailDocument->setEnabled( false );
   }
 }
 

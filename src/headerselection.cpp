@@ -87,6 +87,16 @@ bool HeaderSelection::textPageActive()
   return ( currentPageIndex() == mTextsTabId );
 }
 
+QListViewItem *HeaderSelection::itemSelected()
+{
+  if ( textPageActive() ) {
+    return mTextsView->textsListView()->currentItem();
+  } else {
+    return mAddressSelection->currentItem();
+  }
+  return 0;
+}
+
 bool HeaderSelection::addressPageActive()
 {
   return ( currentPageIndex() == mAddressTabId );

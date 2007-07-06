@@ -75,7 +75,8 @@ protected slots:
   void slotAddressSelectionChanged();
   void slotTextsSelectionChanged( QListViewItem* );
   void slotHeaderTextToDocument( const DocText& );
-  void slotTextDeleted( const DocText& dt );
+  void slotFooterTextDeleted( const DocText& );
+  void slotHeaderTextDeleted( const DocText& );
   void slotNewHeaderDocText( const DocText& );
   void slotUpdateHeaderDocText( const DocText& );
   void slotCatalogSelectionChanged( QListViewItem* );
@@ -99,7 +100,7 @@ private:
   CatalogSelection *mCatalogSelection;
   QWidgetStack *mWidgetStack;
   HeaderSelection *mHeaderSelection;
-  TextSelection *mFooterSelection;
+  TextSelection   *mFooterSelection;
   bool mFullPreview;
   int            mActivePage;
   KPushButton    *mPbAdd;
