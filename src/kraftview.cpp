@@ -249,7 +249,7 @@ void KraftView::slotSwitchToPage( int id )
   mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
 }
 
-void KraftView::slotShowTemplates( bool on )
+void KraftView::slotShowTemplates( bool )
 {
 }
 
