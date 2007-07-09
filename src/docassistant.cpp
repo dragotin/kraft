@@ -395,7 +395,6 @@ void DocAssistant::slotSelectDocPart( int p )
     mPbNew->setEnabled( true );
 
     if ( mFooterSelection->textsListView()->currentItem() ) {
-      kdDebug() << "Enabling Edit and Del for Footer" << mFooterSelection->textsListView()->currentItem()->firstChild()->text( 0 ) << endl;
       mPbEdit->setEnabled( true );
       mPbDel->setEnabled( true );
     }

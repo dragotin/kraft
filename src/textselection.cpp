@@ -45,7 +45,7 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
 
   mTextsView = new KListView( this );
   mTextsView->setItemMargin( 4 );
-  mTextsView->setRootIsDecorated( true );
+  mTextsView->setRootIsDecorated( false );
   mTextsView->header()->setHidden( true );
   mTextsView->setResizeMode( QListView::LastColumn );
   mTextsView->setSelectionMode( QListView::Single );
@@ -126,7 +126,7 @@ QListViewItem* TextSelection::addNewDocText( const DocText& dt )
   if ( item ) {
     mTextsView->clearSelection();
     QListViewItem *newItem = addOneDocText( item, dt );
-    newItem->setSelected( true );
+    // newItem->setSelected( true );
     return newItem;
   }
   return 0;
@@ -157,7 +157,7 @@ void TextSelection::updateDocText( const DocText& dt )
 void TextSelection::deleteCurrentText()
 {
   QListViewItem *curr = mTextsView->currentItem();
-  if ( mDocTypeItemMap.values().find( curr ) != mDocTypeItemMap.values().end() ) {
+  if ( mDocTypeItemMap.values().find( curr ) == mDocTypeItemMap.values().end() ) {
     kdDebug() << "Can not delete the doc type item" << endl;
     return;
   }
