@@ -49,7 +49,7 @@ public:
   dbID getLastInsertID();
 
   void checkInit();
-  void checkSchemaVersion( QWidget* );
+  bool checkSchemaVersion( QWidget* );
   QSqlDatabase *getDB(){ return m_db; }
   QString qtDriver();
 
@@ -70,6 +70,8 @@ public:
 
   QString mysqlEuroEncode( const QString& ) const;
   QString mysqlEuroDecode( const QString& ) const;
+
+  int currentSchemaVersion();
 
 signals:
   void statusMessage( const QString& );

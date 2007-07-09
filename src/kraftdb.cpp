@@ -184,14 +184,14 @@ void KraftDB::writeWordList( const QString& listName, const QStringList& list )
   }
 }
 
-void KraftDB::checkSchemaVersion( QWidget *parent )
+bool KraftDB::checkSchemaVersion( QWidget *parent )
 {
   kdDebug() << "The country setting is " << KGlobal().locale()->country() << endl;
 
   if ( m_db->tables().contains( "kraftsystem" ) == 0 ) {
     if ( ! createDatabase( parent ) ) {
       kdDebug() << "Failed to create the database, returning. Thats a bad condition." << endl;
-      return;
+      return false;
     }
   }
 
@@ -202,6 +202,8 @@ void KraftDB::checkSchemaVersion( QWidget *parent )
   if ( q.next() ) {
     currentVer = q.value( 0 ).toInt();
   }
+
+  bool ok = true;
 
   if ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
     kdDebug() << "Kraft Schema Version not sufficient: " << currentVer << endl;
@@ -216,12 +218,13 @@ void KraftDB::checkSchemaVersion( QWidget *parent )
                                    .arg(  currentVer ).arg( KRAFT_REQUIRED_SCHEMA_VERSION ),
                                  i18n("Database Schema Update") ) == KMessageBox::Yes ) {
 
-      bool ok = true;
+      int allCmds = 0;
+      int sqlc = 0;
+
       while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
         ++currentVer;
         const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
-        int allCmds = 0;
-        int sqlc = playSqlFile( migrateFilename, allCmds );
+        sqlc = playSqlFile( migrateFilename, allCmds );
         if ( sqlc == 0 ) {
           kdWarning() << "No (zero) commands where loaded and executed from " << migrateFilename << endl;
           ok = false;
@@ -229,12 +232,20 @@ void KraftDB::checkSchemaVersion( QWidget *parent )
           kdDebug() << "WRN: only " << sqlc << " from " << allCmds << " sql commands "
             "were executed correctly" << endl;
           ok = false;
+
+          KMessageBox::sorry( parent, i18n( "The update of the database failed, only "
+                                            "%1 of %2 commands succeeded. It is not "
+                                            "recommended to continue.\nPlease check the "
+                                            "database consistency.\n" ).arg( sqlc ).arg( allCmds ),
+                              i18n( "Database Schema Update Error" ) );
+
+
         } else {
           kdDebug() << "All sql commands successfull in file: " << migrateFilename << ": " << sqlc << endl;
         }
       }
       /* Now update to the required schema version */
-      if ( ok ) {
+      if ( ok && allCmds == sqlc ) {
         q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
                 + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
       }
@@ -243,6 +254,8 @@ void KraftDB::checkSchemaVersion( QWidget *parent )
     kdDebug() << "Kraft Schema Version is ok: " << currentVer << endl;
     emit statusMessage( i18n( "Database Schema Version ok" ) );
   }
+
+  return ok;
 }
 
 bool KraftDB::createDatabase( QWidget *parent )
@@ -381,6 +394,19 @@ void KraftDB::checkInit()
     KatalogSettings::setDbFile( dbFile );
 
   }
+}
+
+int KraftDB::currentSchemaVersion()
+{
+  QSqlCursor cur( "kraftsystem" );
+  cur.setMode( QSqlCursor::ReadOnly );
+  cur.select(); // We'll retrieve every record
+
+  int re = -1;
+  if ( cur.next() ) {
+    re = cur.value( "dbschemaversion" ).toInt();
+  }
+  return re;
 }
 
 QString KraftDB::qtDriver()

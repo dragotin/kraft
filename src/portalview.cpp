@@ -243,7 +243,12 @@ void PortalView::fillSystemDetails()
   html += "<td>" + KraftDB::self()->databaseName() + "</td></tr>";
 
   html += "<tr><td>" + i18n( "Database schema version:" ) + "</td>";
-  html += "<td>" + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) + "</td></tr>";
+  html += "<td>" + QString::number( KraftDB::self()->currentSchemaVersion() );
+  if ( KraftDB::self()->currentSchemaVersion() != KRAFT_REQUIRED_SCHEMA_VERSION ) {
+    html += "&nbsp;-&nbsp;" + QString( "<font color=\"red\">Required Version: %1</font>" )
+            .arg( KRAFT_REQUIRED_SCHEMA_VERSION );
+  }
+  html += "</td></tr>";
 
   html += "<tr><td>" + i18n( "Qt database driver:" ) + "</td>";
   html += "<td>" +  KraftDB::self()->qtDriver() + "</td></tr>";
