@@ -146,6 +146,7 @@ DocGuardedPtr DocumentMan::createDocument()
 {
   DocGuardedPtr doc = new KraftDoc( );
   doc->newDocument();
+  kdDebug() << "new document ID: " << doc->docID().toString() << endl;
   mDocMap[doc->docID().toString()] = doc;
 
   return doc;
@@ -164,17 +165,6 @@ DocGuardedPtr DocumentMan::openDocument( const QString& id )
     mDocMap[id] = doc;
   }
   return doc;
-}
-
-void DocumentMan::offerNewPosition( const DocPosition& pos )
-{
-  kdDebug() << "Offering new position to document!" << endl;
-
-  DocumentMap::Iterator it;
-  for ( it = mDocMap.begin(); it != mDocMap.end(); ++it ) {
-    DocGuardedPtr doc = it.data();
-    doc->slotAppendPosition( pos );
-  }
 }
 
 QStringList DocumentMan::openDocumentsList()

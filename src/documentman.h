@@ -38,7 +38,7 @@ class DocumentMan
 
     DocGuardedPtr createDocument();
     DocGuardedPtr openDocument( const QString& );
-    void offerNewPosition( const DocPosition& );
+    
     QStringList openDocumentsList();
 
   double vat();
