@@ -6,5 +6,3 @@ kraftsplash_DATA = muckilogo_oS.png mucki_en_oS.png muckilogo_oS.png docoverview
 
 KDE_ICON = AUTO
 
-
-

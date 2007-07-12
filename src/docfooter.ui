@@ -45,6 +45,9 @@
                     <property name="name">
                         <cstring>m_teSummary</cstring>
                     </property>
+                    <property name="tabChangesFocus">
+                        <bool>true</bool>
+                    </property>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
@@ -98,10 +101,6 @@
         </widget>
     </grid>
 </widget>
-<customwidgets>
-</customwidgets>
-<connections>
-</connections>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kcombobox.h</includehint>

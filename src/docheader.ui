@@ -98,6 +98,9 @@
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+                            <property name="tabChangesFocus">
+                                <bool>true</bool>
+                            </property>
                         </widget>
                     </hbox>
                 </widget>
@@ -186,6 +189,9 @@
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+                            <property name="tabChangesFocus">
+                                <bool>true</bool>
+                            </property>
                         </widget>
                         <widget class="QLabel" row="0" column="0">
                             <property name="name">
@@ -211,6 +217,9 @@
                 <widget class="QTextEdit">
                     <property name="name">
                         <cstring>m_teEntry</cstring>
+                    </property>
+                    <property name="tabChangesFocus">
+                        <bool>true</bool>
                     </property>
                 </widget>
             </vbox>
