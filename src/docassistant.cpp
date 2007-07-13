@@ -187,7 +187,7 @@ void DocAssistant::slotAddressSelectionChanged()
   kdDebug() << "A address template was selected!" << endl;
   if ( mHeaderSelection->textSelection()->textsListView()->currentItem() ) {
     mPbAdd->setEnabled( true );
-    mPbEdit->setEnabled( true );
+    mPbEdit->setEnabled( false );
     mPbDel->setEnabled( false );
 
   }

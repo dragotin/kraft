@@ -1,3 +1,4 @@
+
 /***************************************************************************
                           KraftDoc.cpp  -
                              -------------------
@@ -156,9 +157,7 @@ bool KraftDoc::newDocument()
 
   /* initialise data */
   mDate = QDate::currentDate();
-  // mIdent = QString("%1-%2").arg( mDate.year() ).arg( mDate.dayOfYear() );
-  DocumentSaverBase *loader = getSaver();
-  mIdent = loader->generateNewDocumentId();
+  mIdent = QString();
 
   mIsNew = true;
   mAddress = QString::null;

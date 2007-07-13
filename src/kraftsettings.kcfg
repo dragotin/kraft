@@ -2,6 +2,7 @@
 <!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
 <kcfg> 
   <kcfgfile name="kraftrc"/> 
+
   <group name="system">
     <entry name="DoInit" type="Bool">
       <label>Do Database Initialisation</label>
@@ -15,6 +16,7 @@
       <label>Where Kraft stores the XML archive documents. If empty, KDEHOME/share/apps is used.</label>
     </entry>
   </group>
+
   <group name="WindowSizes">
     <entry name="docViewSize" type="Size">
       <label>The default size of the document view dialog</label>
@@ -38,6 +40,7 @@
       <label>The window size of the template  to document dialog</label>
     </entry>
   </group>
+
   <group name="material">
     <entry name="materialAddOnPercent" type="Double">
       <label>Default percentage the sale price for a material should be higher than its purchase price</label>
@@ -47,6 +50,7 @@
       <label>The name of the last selected chapter in the catalog</label>
     </entry>
   </group>
+
   <group name="reporting">
     <entry name="Trml2PdfBinary">
       <label>The complete filename of the trml2pdf binary</label>
@@ -56,6 +60,7 @@
       <label>The path to the output directory for document pdfs</label>
     </entry>    
   </group>
+
   <group name="userdefaults">
     <entry name="greeting" type="String">
       <label>The greeting below on the document footer.</label>
@@ -63,6 +68,13 @@
     <entry name="salut" type="Int">
       <label>The salut message on the document header.</label>
     </entry>
+  </group>
+
+  <group name="document">
+     <entry name="DocIdent" type="String">
+        <label>The doc id template</label>
+        <default>%y%w-%i</default>
+     </entry>
   </group>
 </kcfg>
 

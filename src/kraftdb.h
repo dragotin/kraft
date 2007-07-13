@@ -72,7 +72,7 @@ public:
   QString mysqlEuroDecode( const QString& ) const;
 
   int currentSchemaVersion();
-
+  QString replaceTagsInWord( const QString& w, StringMap replaceMap ) const;
 signals:
   void statusMessage( const QString& );
 

@@ -33,6 +33,7 @@
  */
 class KraftDoc;
 class QSqlRecord;
+class dbID;
 
 class DocumentSaverDB : public DocumentSaverBase
 {
@@ -44,7 +45,7 @@ public:
 
     virtual bool saveDocument( KraftDoc* );
     virtual void load( const QString& , KraftDoc * );
-    QString generateNewDocumentId() const;
+    QString generateDocumentIdent( dbID, KraftDoc* ) const;
 protected:
     virtual void loadPositions( const QString&, KraftDoc* );
     virtual void saveDocumentPositions( KraftDoc* );

@@ -40,7 +40,7 @@ AddressSelection::AddressSelection( QWidget *parent )
   setRootIsDecorated( true );
   addColumn( i18n( "Real Name" ) );
   addColumn( i18n( "Locality" ) );
-
+  setSelectionMode( QListView::Single );
   connect( this, SIGNAL( selectionChanged() ),
            SLOT( slotSelectionChanged() ) );
 
@@ -96,16 +96,17 @@ void AddressSelection::slotAddressBookChanged( AddressBook *ab )
   // if there is exactly one new item, we select it
   if ( newItemCnt == 1 && newItem ) {
     clearSelection();
-    newItem->setSelected( true );
+    setSelected( newItem, true );
   }
 }
 
-Addressee AddressSelection::currentAddressee()
+Addressee AddressSelection::currentAddressee( QListViewItem *item )
 {
   Addressee adr;
   QString adrUid;
 
-  QListViewItem *it = currentItem();
+  QListViewItem *it = item;
+  if ( ! it ) it = currentItem();
 
   if ( it ) {
     adrUid = mAddressIds[it];

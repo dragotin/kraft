@@ -39,7 +39,7 @@ public:
 
   ~AddressSelection() { };
   void setupAddressList( );
-  Addressee currentAddressee();
+  Addressee currentAddressee( QListViewItem* item = 0 );
 
 signals:
   void addressSelected( const Addressee& );

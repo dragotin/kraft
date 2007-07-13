@@ -153,16 +153,21 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
   cur.setMode( QSqlCursor::ReadOnly );
   cur.select( QString( "category='%1'" ).arg( selector ) );
   while ( cur.next() ) {
-    QString w = cur.value( "word" ).toString();
-    kdDebug() << "Adding to wordlist <" << w << ">" << endl;
-    StringMap::Iterator it;
-    for ( it = replaceMap.begin(); it != replaceMap.end(); ++it ) {
-      const QString key = it.key();
-      const QString rep = it.data();
-      w.replace( key, rep );
-    }
-    re << w;
+    re << replaceTagsInWord( cur.value( "word" ).toString(),  replaceMap );
   }
+  return re;
+}
+
+QString KraftDB::replaceTagsInWord( const QString& w, StringMap replaceMap ) const
+{
+  QString re( w );
+  StringMap::Iterator it;
+  for ( it = replaceMap.begin(); it != replaceMap.end(); ++it ) {
+    const QString key = it.key();
+    const QString rep = it.data();
+    re.replace( key, rep );
+  }
+  kdDebug() << "Adding to wordlist <" << re << ">" << endl;
   return re;
 }
 

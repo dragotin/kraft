@@ -640,38 +640,35 @@ void KraftView::slotNewAddress( const Addressee& contact )
   Addressee adr( contact );
 
   if( contact.isEmpty() ) {
-    	kdDebug() << "Select an address from KAdressbook" << endl;
-    	adr = AddresseeDialog::getAddressee( this );
-        kdDebug() << "Selected address UID is " << adr.uid() << endl;
-        mContactUid = adr.uid();
+    return;
+  }
+
+  if( ! adr.isEmpty() ) {
+    m_headerEdit->m_labName->setText( adr.realName() );
+
+    Address address;
+
+    Address::List addresses = adr.addresses();
+    if ( addresses.count() > 1 ) {
+      kdDebug() << "Have more than one address, taking the default add" << endl;
+      address = adr.address( 64 );
+    } else if ( addresses.count() == 0 ) {
+      kdDebug() << "Have no address, problem!" << endl;
+    } else {
+      address = addresses.first();
     }
 
-    if( ! adr.isEmpty() ) {
-      m_headerEdit->m_labName->setText( adr.realName() );
+    mContactUid = contact.uid();
+    QString adrStr = address.street() + "\n" + address.postalCode();
+    adrStr = address.formattedAddress( adr.realName() );
+    kdDebug() << "formatted address string: " << adrStr << endl;
+    m_headerEdit->m_postAddressEdit->setText( adrStr );
+    m_headerEdit->m_letterHead->clear();
+    QStringList li = generateLetterHead( adr );
 
-      Address address;
-
-      Address::List addresses = adr.addresses();
-      if ( addresses.count() > 1 ) {
-        kdDebug() << "Have more than one address, taking the default add" << endl;
-        address = adr.address( 64 );
-      } else if ( addresses.count() == 0 ) {
-        kdDebug() << "Have no address, problem!" << endl;
-      } else {
-        address = addresses.first();
-      }
-
-      mContactUid = contact.uid();
-      QString adrStr = address.street() + "\n" + address.postalCode();
-      adrStr = address.formattedAddress( adr.realName() );
-      kdDebug() << "formatted address string: " << adrStr << endl;
-      m_headerEdit->m_postAddressEdit->setText( adrStr );
-      m_headerEdit->m_letterHead->clear();
-      QStringList li = generateLetterHead( adr );
-
-      m_headerEdit->m_letterHead->insertStringList( li );
-      m_headerEdit->m_letterHead->setCurrentItem( KraftSettings::self()->salut() );
-    }
+    m_headerEdit->m_letterHead->insertStringList( li );
+    m_headerEdit->m_letterHead->setCurrentItem( KraftSettings::self()->salut() );
+  }
 }
 
 void KraftView::slotDocTypeChanged( const QString& newType )

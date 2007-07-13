@@ -32,7 +32,7 @@
 #include "unitmanager.h"
 #include "dbids.h"
 #include "templatesaverdb.h"
-
+#include "kraftsettings.h"
 
 /* Table document:
  * +----------------+--------------+------+-----+-------------------+----------------+
@@ -71,7 +71,6 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
     if( doc->isNew() ) {
         record = cur.primeInsert();
-
     } else {
       cur.select( "docID=" + doc->docID().toString() );
       if ( cur.next() ) {
@@ -90,6 +89,18 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
       cur.insert();
       dbID id = KraftDB::self()->getLastInsertID();
       doc->setDocID( id );
+
+      // get the uniq id and write it into the db
+      QString ident = generateDocumentIdent( id, doc );
+      doc->setIdent( ident );
+      QSqlCursor cur2( "document" );
+      cur2.select( QString( "docID=" + id.toString() ) );
+      if ( cur2.next() ) {
+        QSqlRecord *uprecord = cur2.primeUpdate();
+        uprecord->setValue( "ident", ident );
+        cur2.update();
+      }
+
     } else {
       kdDebug() << "Doc is not new, updating #" << doc->docID().intID() << endl;
 
@@ -102,6 +113,42 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     kdDebug() << "Saved document no " << doc->docID().toString() << endl;
 
     return result;
+}
+
+/*
+ * this method requires a database id because that is the only garanteed
+ * unique part.
+ */
+QString DocumentSaverDB::generateDocumentIdent( dbID id, KraftDoc *doc ) const
+{
+  /*
+   * The pattern may contain the following tags:
+   * %y - the year of the documents date.
+   * %w - the week number of the documents date
+   * %d - the day number of the documents date
+   * %m - the month number of the documents date
+   * %c - the customer id from kaddressbook
+   * %i - the uniq identifier from db.
+   * %type - the localised doc type (offer, invoice etc.)
+   */
+  QString pattern = KraftSettings::self()->docIdent();
+
+  QDate d = doc->date();
+  KraftDB::StringMap m;
+  int dummy;
+
+  m[ "%y" ] = QString::number( d.year() );
+  m[ "%w" ] = QString::number( d.weekNumber( &dummy ) );
+  m[ "%d" ] = QString::number( d.day()  );
+  m[ "%m" ] = QString::number( d.month() );
+  m[ "%i" ] = id.toString();
+  m[ "%c" ] = doc->addressUid();
+  m[ "%type" ] = doc->docType();
+
+  QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
+  kdDebug() << "Generated document ident: " << re << endl;
+
+  return re;
 }
 
 void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
@@ -281,16 +328,6 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
         dp->setUnit( UnitManager::getUnit( cur.value("unit").toInt() ) );
         dp->setUnitPrice( cur.value("price").toDouble() );
     }
-}
-
-QString DocumentSaverDB::generateNewDocumentId() const
-{
-  QString re;
-
-  QDateTime d = QDateTime::currentDateTime();
-  re = QString::number( d.toTime_t() );
-
-  return re;
 }
 
 DocumentSaverDB::~DocumentSaverDB( )
