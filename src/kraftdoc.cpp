@@ -1,4 +1,3 @@
-
 /***************************************************************************
                           KraftDoc.cpp  -
                              -------------------
@@ -199,26 +198,16 @@ bool KraftDoc::saveDocument( )
     if( saver ) {
         result = saver->saveDocument( this );
 
-#if 0
-    QDomDocument doc( "KraftDocument" );
-    QDomElement root = doc.createElement( "KraftDocument" );
-    doc.appendChild( root );
-
-    root.appendChild( xmlTextElement( doc, "Greeting", mGreeting ) );
-
-    root.appendChild( xmlTextElement( doc, "docType", mDocType ) );
-    root.appendChild( xmlTextElement( doc, "preText", mPreText ) );
-    root.appendChild( mPositions.domElement(doc) );
-    root.appendChild( xmlTextElement( doc, "postText", mPreText ) );
-
-    QString xml = doc.toString();
-#endif
         // We go through the whole document and remove the positions
         // that are to delete because they now were deleted in they
         // database.
-        for( DocPositionBase *dp = mPositions.first(); dp; dp = mPositions.next() ) {
+        for( DocPositionBase *dp = mPositions.first(); dp;  ) {
           if( dp->toDelete() ) {
+            kdDebug() << "Removing pos " << dp->dbId().toString() << " from document object" << endl;
             mPositions.remove();
+            dp = mPositions.current();
+          } else {
+            dp = mPositions.next();
           }
         }
         modified = false;
