@@ -43,101 +43,8 @@ PrefsDialog::PrefsDialog( QWidget *parent)
                    "PrefsDialog", true, true )
 {
   databaseTab();
-  entryTextTab();
-  footerTextTab();
 }
 
-void PrefsDialog::entryTextTab()
-{
-  QVBox *vb = addVBoxPage( i18n( "Header Texts" ),
-                           i18n( "Edit the Default Header Texts" ),
-                           DesktopIcon( "gear" ) );
-  QHBox *hb = new QHBox( vb );
-  ( void ) new QLabel( i18n( "Used in document type:" ), hb );
-  mTextTypeEntry = new QComboBox( hb );
-  mTextTypeEntry->insertStringList( DefaultProvider::self()->docTypes() );
-  connect( mTextTypeEntry, SIGNAL( activated( const QString& ) ),
-           this, SLOT( slotHeaderDocTypeChanged( const QString& ) ) );
-
-  mHeaderEdit = new QTextEdit( vb, "HeaderTextEdit" );
-  mHeaderEdit->setTextFormat( Qt::PlainText );
-  mHeaderDocType = mTextTypeEntry->currentText();
-  mHeaderEdit->setText(
-    DefaultProvider::self()->defaultText( mTextTypeEntry->currentText(),
-                                          KraftDoc::Header ) );
-}
-
-void PrefsDialog::footerTextTab()
-{
-  QVBox *vb = addVBoxPage( i18n( "Footer Texts" ),
-                           i18n( "Edit the Default Footer Texts" ),
-                           DesktopIcon( "gear" ) );
-  QHBox *hb = new QHBox( vb );
-  ( void ) new QLabel( i18n( "Used in document type:" ), hb );
-  mTextTypeFooter = new QComboBox( hb );
-  mTextTypeFooter->insertStringList( DefaultProvider::self()->docTypes() );
-  connect( mTextTypeFooter, SIGNAL( activated( const QString& ) ),
-           this, SLOT( slotFooterDocTypeChanged( const QString& ) ) );
-
-  mFooterEdit = new QTextEdit( vb, "FooterTextEdit" );
-  mFooterEdit->setTextFormat( Qt::PlainText );
-  mFooterDocType = mTextTypeFooter->currentText();
-  mFooterEdit->setText( DefaultProvider::self()->defaultText( mFooterDocType, KraftDoc::Footer ) );
-
-}
-
-void PrefsDialog::slotFooterDocTypeChanged( const QString& newEntry )
-{
-  if ( newEntry != mFooterDocType ) {
-    const QString origText = DefaultProvider::self()->defaultText( mFooterDocType, KraftDoc::Footer );
-    kdDebug() << "Original text: <" << origText << "> and edit <" << mFooterEdit->text() << ">" << endl;
-
-    if ( mFooterEdit->text() != origText ) {
-      int answer = KMessageBox::Yes;
-
-      // only ask if we are switching to another doc type and not if Ok was pressed to finish the dialog.
-      if ( ! newEntry.isEmpty() ) {
-        answer = KMessageBox::questionYesNo( this, i18n( "The default footer text for %1 was changed."
-                                                         "Do you want to save the changed text?" ).arg( mFooterDocType ) );
-      }
-
-      if ( answer == KMessageBox::Yes ) {
-        // DefaultProvider::self()->saveDocumentText( mFooterDocType, "Footer", mFooterEdit->text() );
-      } else {
-        kdDebug() << "Canceled change to default text" << endl;
-      }
-    } else {
-      kdDebug() << "Footer text has not changed" << endl;
-    }
-  }
-  mFooterDocType = newEntry;
-  mFooterEdit->setText( DefaultProvider::self()->defaultText( mFooterDocType, KraftDoc::Footer ) );
-}
-
-void PrefsDialog::slotHeaderDocTypeChanged( const QString& newEntry )
-{
-  if ( newEntry != mHeaderDocType ) {
-    const QString origText = DefaultProvider::self()->defaultText( mHeaderDocType, KraftDoc::Header );
-    kdDebug() << "Original text: "<< origText << " and new: " << mHeaderEdit->text() <<endl;
-    if ( mHeaderEdit->text() != origText ) {
-      int answer = KMessageBox::Yes;
-      if ( ! newEntry.isEmpty() ) {
-        answer = KMessageBox::questionYesNo( this, i18n( "The default header text for %1 was changed."
-                                                         "Do you want to save the changed text?" ).arg( mHeaderDocType ) );
-      }
-
-      if ( answer == KMessageBox::Yes ) {
-        // DefaultProvider::self()->saveDocumentText( mHeaderDocType, "Header", mHeaderEdit->text() );
-      } else {
-        kdDebug() << "Canceled change to default text" << endl;
-      }
-    } else {
-      kdDebug() << "Header text has not changed" << endl;
-    }
-  }
-  mHeaderDocType = newEntry;
-  mHeaderEdit->setText( DefaultProvider::self()->defaultText( mHeaderDocType, KraftDoc::Header ) );
-}
 
 void PrefsDialog::databaseTab()
 {
@@ -253,8 +160,6 @@ void PrefsDialog::slotCheckConnect()
 void PrefsDialog::slotOk()
 {
     writeConfig();
-    slotHeaderDocTypeChanged( QString() );
-    slotFooterDocTypeChanged( QString() );
     accept();
 }
 

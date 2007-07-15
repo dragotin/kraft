@@ -48,10 +48,6 @@ protected slots:
   void slotTextChanged( const QString& );
   void slotCheckConnect();
 
-  void footerTextTab();
-  void entryTextTab();
-  void slotFooterDocTypeChanged( const QString& );
-  void slotHeaderDocTypeChanged( const QString& );
 private:
   void databaseTab();
 
@@ -61,13 +57,7 @@ private:
   QLineEdit *m_lePasswd;
   QLabel    *m_statusLabel;
 
-  QTextEdit *mHeaderEdit;
-  QTextEdit *mFooterEdit;
   QPushButton *m_pbCheck;
-  QComboBox   *mTextTypeEntry;
-  QComboBox   *mTextTypeFooter;
-  QString     mFooterDocType;
-  QString     mHeaderDocType;
 };
 
 #endif
