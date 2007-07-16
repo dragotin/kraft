@@ -10,14 +10,17 @@ Changes since version 0.14:
 - more beautifull and working navigation block in the document dialog
 - mailing documents added
 - Completely changed header- and footer text template system: 
-  * more than on e text available per text- and doc type
+  * now there is more than one text available per text- and doc type
   * direct adding, editing and removing of texts from the dialog
   * selecting template texts in the same way as selecting position 
-    templates
+    templates, more intuitive GUI
+- Addresses also selectable from an address catalog
 - persist the selection of the greeting and salut text 
 - Document ID now configurable in the settings file, key DocIdent:
   [document]
   DocIdent=T-%y%w%i
+- database upgrade code more robust
+- now additionally save archived xml documents
 
 Bugs fixed:
 - fixed time lined doc overview, now displaying all documents of
@@ -27,4 +30,5 @@ Bugs fixed:
 - encoding bugs fixed
 - allow to leave text edit fields using the tab key
 - deletion of positions: Fixed an iteration over the list issue
+- smarter template-to-doc-position dialog
 - others

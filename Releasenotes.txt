@@ -1,0 +1,13 @@
+This release 0.20 of Kraft brings a big step ahead in the way text
+templates for the header and footer texts for the different doc types
+are managed. Kraft now supports to have several templates per type
+(ie. for the header of invoices) and all of them are offered very
+handy right to select from a catalog kind in a context aware manner.
+
+Kraft takes another important step towards a really well integrated
+KDE addressbook. All customer addresses are managed in the KDE
+addressbook but there is a customer catalog now integrated.
+
+This release contains a lot of important bug fixes and small additions
+to functionality, update is really recommended.
+

@@ -34,19 +34,19 @@ INSERT INTO DocTexts ( name, text, docType, textType )
 VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Angebot', 'Kopf Text' );
 
 INSERT INTO DocTexts ( name, text, docType, textType ) 
-VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Angebot', 'Fu� Text' );
+VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Angebot', 'Fuß Text' );
 
 INSERT INTO DocTexts ( name, text, docType, textType ) 
 VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Rechnung', 'Kopf Text' );
 
 INSERT INTO DocTexts ( name, text, docType, textType ) 
-VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Rechnung', 'Fu� Text' );
+VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Rechnung', 'Fuß Text' );
 
 INSERT INTO DocTexts ( name, text, docType, textType ) 
-VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Auftragsbestätigung', 'Kopf Text' );
+VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'AuftragsbestÃ¤tigung', 'Kopf Text' );
 
 INSERT INTO DocTexts ( name, text, docType, textType ) 
-VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Auftragsbestätigung', 'Fu� Text' );
+VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'AuftragsbestÃ¤tigung', 'Fuß Text' );
 
 
 INSERT INTO DocTexts ( name, text, docType, textType )
@@ -65,17 +65,17 @@ INSERT INTO DocTexts ( name, text, docType, textType )
 SELECT 'Standard', word, 'Acceptance of Order', 'Header Text' FROM wordLists WHERE category='docHeader_Acceptance of Order';
 
 INSERT INTO DocTexts ( name, text, docType, textType )
-SELECT 'Standard', word, 'Angebot', 'Fu� Text' FROM wordLists WHERE category='docFooter_Angebot';
+SELECT 'Standard', word, 'Angebot', 'Fuß Text' FROM wordLists WHERE category='docFooter_Angebot';
 INSERT INTO DocTexts ( name, text, docType, textType )
 SELECT 'Standard', word, 'Angebot', 'Kopf Text' FROM wordLists WHERE category='docHeader_Angebot';
 
 INSERT INTO DocTexts ( name, text, docType, textType )
-SELECT 'Standard', word, 'Rechnung', 'Fu� Text' FROM wordLists WHERE category='docFooter_Rechnung';
+SELECT 'Standard', word, 'Rechnung', 'Fuß Text' FROM wordLists WHERE category='docFooter_Rechnung';
 INSERT INTO DocTexts ( name, text, docType, textType )
 SELECT 'Standard', word, 'Rechnung', 'Kopf Text' FROM wordLists WHERE category='docHeader_Rechnung';
 
 INSERT INTO DocTexts ( name, text, docType, textType )
-SELECT 'Standard', word, 'Auftragsbestätigung', 'Fu� Text' FROM wordLists WHERE category='docFooter_Auftragsbestätigung';
+SELECT 'Standard', word, 'AuftragsbestÃ¤tigung', 'Fuß Text' FROM wordLists WHERE category='docFooter_AuftragsbestÃ¤tigung';
 INSERT INTO DocTexts ( name, text, docType, textType )
-SELECT 'Standard', word, 'Auftragsbestätigung', 'Kopf Text' FROM wordLists WHERE category='docHeader_Auftragsbestätigung';
+SELECT 'Standard', word, 'AuftragsbestÃ¤tigung', 'Kopf Text' FROM wordLists WHERE category='docHeader_AuftragsbestÃ¤tigung';
 
