@@ -66,7 +66,7 @@ signals:
 protected slots:
   void slotSelectCatalog( const QString& );
   // void slotAppendToDoc( QListViewItem *item = 0 );
-  // void slCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int );
+  void slotCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int );
 
 private:
   QComboBox *mCatalogSelector;

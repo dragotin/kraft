@@ -54,10 +54,12 @@ public:
 
   TextSelection *textSelection() { return mTextsView; }
   AddressSelection *addressSelection() { return mAddressSelection; }
+
 signals:
   void addressSelectionChanged();
   void textSelectionChanged( QListViewItem* );
   void switchedToHeaderTab( HeaderSelection::HeaderTabType );
+  void doubleClickedOnItem();
 
 public slots:
   void slotSelectDocType( const QString& );

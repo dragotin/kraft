@@ -41,9 +41,9 @@ AddressSelection::AddressSelection( QWidget *parent )
   addColumn( i18n( "Real Name" ) );
   addColumn( i18n( "Locality" ) );
   setSelectionMode( QListView::Single );
+
   connect( this, SIGNAL( selectionChanged() ),
            SLOT( slotSelectionChanged() ) );
-
 }
 
 void AddressSelection::setupAddressList()

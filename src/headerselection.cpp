@@ -55,6 +55,9 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   connect( mAddressSelection, SIGNAL( selectionChanged( QListViewItem* ) ),
            SIGNAL( addressSelectionChanged() ) );
 
+  connect( mAddressSelection, SIGNAL( doubleClicked( QListViewItem* ) ),
+           SIGNAL( doubleClickedOnItem() ) );
+
   /* a view for the entry text repository */
   vBox = new QVBox( );
   vBox->setMargin( KDialog::marginHint() );
@@ -66,6 +69,10 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   connect( mTextsView->textsListView(),
            SIGNAL( selectionChanged( QListViewItem* ) ),
            SIGNAL( textSelectionChanged( QListViewItem* ) ) );
+
+  connect( mTextsView->textsListView(),
+           SIGNAL( doubleClicked( QListViewItem* ) ),
+           SIGNAL( doubleClickedOnItem() ) );
 
   addTab( vBox, i18n( "Text Templates" ) );
   mTextsTabId = indexOf( vBox );

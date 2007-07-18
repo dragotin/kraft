@@ -85,12 +85,16 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this, SLOT( slotTextsSelectionChanged( QListViewItem* ) ) );
   connect( mHeaderSelection->textSelection(), SIGNAL( actionCurrentTextToDoc() ),
            this,  SLOT( slotAddToDocument() ) );
+  connect( mHeaderSelection, SIGNAL( doubleClickedOnItem() ),
+           this, SLOT( slotAddToDocument() ) );
 
   mFooterSelection = new TextSelection( mWidgetStack, KraftDoc::Footer );
   connect( mFooterSelection, SIGNAL( textSelectionChanged( QListViewItem* ) ),
            this, SLOT( slotTextsSelectionChanged( QListViewItem* ) ) );
   connect( mFooterSelection, SIGNAL( actionCurrentTextToDoc() ),
            this,  SLOT( slotAddToDocument() ) );
+  connect( mFooterSelection->textsListView(), SIGNAL( doubleClicked( QListViewItem* ) ),
+           this, SLOT( slotAddToDocument() ) );
 
   mWidgetStack->raiseWidget( mHeaderSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),

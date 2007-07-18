@@ -83,12 +83,13 @@ void CatalogSelection::initActions()
 
 }
 
-#if 0
-void CatalogSelection::slCatalogDoubleClicked( QListViewItem *onItem,  const QPoint&,  int )
+
+void CatalogSelection::slotCatalogDoubleClicked( QListViewItem *onItem,  const QPoint&,  int )
 {
-  slotAppendToDoc( onItem );
+  emit actionAppendPosition();
 }
 
+#if 0
 void CatalogSelection::slotAppendToDoc( QListViewItem * )
 {
   Katalog *kat = currentSelectedKat();
@@ -167,7 +168,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         connect( tmpllistview,
                  SIGNAL( doubleClicked ( QListViewItem *, const QPoint &, int ) ),
                  this,
-                 SLOT( slCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int ) ) );
+                 SLOT( slotCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int ) ) );
         tmpllistview->setShowCalcParts( false );
         tmpllistview->addCatalogDisplay( katName );
         mAcAddToDoc->plug( tmpllistview->contextMenu() );
