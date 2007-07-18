@@ -43,6 +43,10 @@ PositionViewWidget::PositionViewWidget()
 {
   const QString currSymbol = KGlobal().locale()->currencySymbol();
   m_sbUnitPrice->setPrefix( currSymbol + " " );
+  m_sbUnitPrice->setMinValue( 0 );
+  m_sbUnitPrice->setMaxValue( 99999.99 );
+  m_sbUnitPrice->setPrecision( 2 );
+
   pbExec->setToggleButton( false );
   connect( m_sbAmount, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
