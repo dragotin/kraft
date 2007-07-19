@@ -1,4 +1,3 @@
-
 /***************************************************************************
                    portal.cpp  - The Kraft portal page
                              -------------------
@@ -64,6 +63,7 @@
 #include "kraftsettings.h"
 #include "prefsdialog.h"
 #include "defaultprovider.h"
+#include "archdoc.h"
 
 #define ID_STATUS_MSG 1
 
@@ -202,14 +202,14 @@ void Portal::initView()
              this, SLOT( slotNewDocument() ) );
     connect( m_portalView, SIGNAL( openDocument( const QString& ) ),
              this, SLOT( slotOpenDocument( const QString& ) ) );
-    connect( m_portalView, SIGNAL( openArchivedDocument( const dbID& ) ),
-             this, SLOT( slotOpenArchivedDoc( const dbID& ) ) );
+    connect( m_portalView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
+             this, SLOT( slotOpenArchivedDoc( const ArchDocDigest& ) ) );
     connect( m_portalView, SIGNAL( printDocument( const QString& ) ),
              this, SLOT( slotPrintDocument() ) );
     connect( m_portalView,  SIGNAL( documentSelected( const QString& ) ),
              this,  SLOT( slotDocumentSelected( const QString& ) ) );
-    connect( m_portalView,  SIGNAL( archivedDocSelected( const dbID& ) ),
-             this,  SLOT( slotArchivedDocSelected( const dbID& ) ) );
+    connect( m_portalView,  SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
+             this,  SLOT( slotArchivedDocSelected( const ArchDocDigest& ) ) );
     setCentralWidget(m_portalView);
 }
 
@@ -318,10 +318,20 @@ void Portal::slotOpenDocument()
   slotOpenDocument( locId );
 }
 
-void Portal::slotOpenArchivedDoc( const dbID& id )
+void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
 {
   busyCursor( true );
-  slotPrintDocument( QString(),  id );
+  ArchDocDigest digest( d );
+
+  QString outputDir = ArchiveMan::self()->pdfBaseDir();
+  QString filename = ArchiveMan::self()->archiveFileName( digest.archDocIdent(),
+                                                          digest.archDocId().toString(), "pdf" );
+  QString file = QString( "%1/%2" ).arg( outputDir ).arg( filename );
+
+  kdDebug() << "archived doc selected: " << file << endl;
+  slotOpenPdf( file );
+
+
   busyCursor( false );
 }
 
@@ -451,21 +461,18 @@ void Portal::slotDocumentSelected( const QString& doc )
 void Portal::slotArchivedDocExecuted()
 {
 
-  dbID id = m_portalView->docDigestView()->currentArchiveDocId();
+  ArchDocDigest dig = m_portalView->docDigestView()->currentArchiveDoc();
 
-  kdDebug() << "archived doc selected: " << id.toString() << endl;
-  slotPrintDocument( QString(), id );
+  slotOpenArchivedDoc( dig );
 }
 
-void Portal::slotArchivedDocSelected( const dbID& id )
+void Portal::slotArchivedDocSelected( const ArchDocDigest& )
 {
   // slotDocumentSelected( QString() );
-  if ( id.isOk() ) {
-    actOpenArchivedDocument->setEnabled( true );
-    actOpenDocument->setEnabled( false );
-    actPrintDocument->setEnabled( false );
-    actMailDocument->setEnabled( false );
-  }
+  actOpenArchivedDocument->setEnabled( true );
+  actOpenDocument->setEnabled( false );
+  actPrintDocument->setEnabled( false );
+  actMailDocument->setEnabled( false );
 }
 
 void Portal::createView( DocGuardedPtr doc )

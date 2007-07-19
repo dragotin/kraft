@@ -86,7 +86,7 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
     int id = archCur.value( "archDocID" ).toInt();
     QDateTime dt = archCur.value( "printDate" ).toDateTime();
     int state = archCur.value( "state" ).toInt();
-    dig.addArchDocDigest( ArchDocDigest( dt, state,  id ) );
+    dig.addArchDocDigest( ArchDocDigest( dt, state, ident, id ) );
   }
   return dig;
 }

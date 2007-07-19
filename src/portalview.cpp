@@ -301,14 +301,14 @@ void PortalView::documentDigests( QWidget *parent )
            SIGNAL( createDocument() ) );
   connect( mDocDigestView, SIGNAL( openDocument( const QString& ) ),
            SIGNAL( openDocument( const QString& ) ) );
-  connect( mDocDigestView, SIGNAL( openArchivedDocument( const dbID& ) ),
-           SIGNAL( openArchivedDocument( const dbID& ) ) );
+  connect( mDocDigestView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
+           SIGNAL( openArchivedDocument( const ArchDocDigest& ) ) );
   connect( mDocDigestView, SIGNAL( printDocument( const QString& ) ),
            SIGNAL( printDocument( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( docSelected( const QString& ) ),
            SIGNAL( documentSelected( const QString& ) ) );
-  connect( mDocDigestView, SIGNAL( archivedDocSelected( const dbID& ) ),
-           SIGNAL( archivedDocSelected( const dbID& ) ) );
+  connect( mDocDigestView, SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
+           SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
 }
 
 void PortalView::slotBuildView()

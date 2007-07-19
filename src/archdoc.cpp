@@ -135,10 +135,11 @@ ArchDocDigest::ArchDocDigest()
 
 }
 
-ArchDocDigest::ArchDocDigest( QDateTime dt,  int s, dbID id )
+ArchDocDigest::ArchDocDigest( QDateTime dt,  int s, const QString& ident, dbID id )
   : mPrintDate( dt ),
     mState( s ),
-    mArchDocId( id )
+    mArchDocId( id ),
+    mIdent( ident )
 {
 
 }

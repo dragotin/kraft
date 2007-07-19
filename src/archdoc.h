@@ -96,7 +96,7 @@ public:
 
   /** Constructor for the fileclass of the application */
   ArchDocDigest();
-  ArchDocDigest( QDateTime, int, dbID );
+  ArchDocDigest( QDateTime, int, const QString&, dbID );
   /** Destructor for the fileclass of the application */
   ~ArchDocDigest();
 
@@ -112,12 +112,17 @@ public:
     return mArchDocId;
   }
 
+  QString archDocIdent() const {
+    return mIdent;
+  }
+
   QString printDateString() const;
 
 private:
   QDateTime mPrintDate;
   int       mState;
   dbID      mArchDocId;
+  QString   mIdent;
 };
 
 class ArchDocDigestList : public QValueList<ArchDocDigest>

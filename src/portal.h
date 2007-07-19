@@ -41,6 +41,7 @@ class KraftView;
 class PortalView;
 class ReportGenerator;
 class KCmdLineArgs;
+class ArchDocDigest;
 /**
   */
 class Portal : public KMainWindow
@@ -85,7 +86,7 @@ class Portal : public KMainWindow
 
   protected slots:
     void slotStartupChecks();
-    void slotOpenArchivedDoc( const dbID& );
+    void slotOpenArchivedDoc( const ArchDocDigest& );
     void slotMailDocument();
     void slotMailDocument( const QString& );
 
@@ -123,7 +124,7 @@ class Portal : public KMainWindow
     void slotOpenDocument();
     void slotDocumentSelected( const QString& );
     void slotArchivedDocExecuted();
-    void slotArchivedDocSelected( const dbID& );
+    void slotArchivedDocSelected( const ArchDocDigest& );
     void slotPrintDocument();
     void slotPrintDocument( const QString&, const dbID& );
     void slotViewClosed( bool );
