@@ -359,7 +359,7 @@ int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QStri
           kdDebug() << "can not find findFile " << findFile << endl;
           pos = -1; // Better break here to avoid infinite loop.
         } else {
-          text.replace( reg, file );
+          text.replace( reg.cap( 0 ), file );
         }
       }
     }
