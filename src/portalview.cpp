@@ -341,7 +341,8 @@ void PortalView::slotBuildView()
       yearItem->setOpen( false );
     }
     month = ( *it ).month();
-    const QString monthName = KGlobal().locale()->calendar()->monthName( month, year, false);
+    const QString monthName = 
+      KGlobal().locale()->calendar()->monthName( month, year, KCalendarSystem::LongName);
     KListViewItem *mItem = mDocDigestView->addChapter(  monthName, ( *it ).digests(), yearItem );
     mItem->setOpen( false );
   }
