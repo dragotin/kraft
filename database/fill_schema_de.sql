@@ -5,7 +5,7 @@ INSERT INTO preisArten VALUES (2, 'kalkuliert');
 
 DELETE FROM CatalogSet;
 INSERT INTO CatalogSet (name, description, catalogType, sortKey) VALUES 
- ( "Mustertexte GALA-Bau", "Kalkulierte Musterposten für den Garten- und Landschaftsbau", "TemplCatalog", 1 );
+ ( "Standard Mustertexte", "Kalkulierte Musterposten", "TemplCatalog", 1 );
 SET @newCat := LAST_INSERT_ID();
 
 DELETE FROM CatalogChapters;
