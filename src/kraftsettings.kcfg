@@ -62,6 +62,9 @@
   </group>
 
   <group name="userdefaults">
+    <entry name="doctype" type="String">
+      <label>The last created doc type.</label>
+    </entry>
     <entry name="greeting" type="String">
       <label>The greeting below on the document footer.</label>
     </entry>

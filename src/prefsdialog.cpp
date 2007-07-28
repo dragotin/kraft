@@ -34,6 +34,7 @@
 
 #include "prefsdialog.h"
 #include "katalogsettings.h"
+#include "kraftsettings.h"
 #include "kraftdb.h"
 #include "kraftdoc.h"
 #include "defaultprovider.h"
@@ -43,6 +44,10 @@ PrefsDialog::PrefsDialog( QWidget *parent)
                    "PrefsDialog", true, true )
 {
   databaseTab();
+  docTab();
+
+  readConfig();
+  slotCheckConnect();
 }
 
 
@@ -108,8 +113,29 @@ void PrefsDialog::databaseTab()
 
   vboxLay->addItem( new QSpacerItem( 1, 1 ) );
 
-  readConfig();
-  slotCheckConnect();
+}
+
+void PrefsDialog::docTab()
+{
+  QLabel *label;
+  QFrame *topFrame = addPage( i18n( "Documents" ),
+                              i18n( "Document Settings" ),
+                              DesktopIcon( "queue" ) );
+
+  QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
+  QGridLayout *topLayout = new QGridLayout( topFrame );
+  vboxLay->addLayout( topLayout );
+
+  topLayout->setSpacing( spacingHint() );
+  topLayout->setColSpacing( 0, spacingHint() );
+
+  label = new QLabel(i18n("Default document type on creation:"), topFrame );
+  topLayout->addWidget(label, 0,0);
+
+  mCbDocTypes = new QComboBox( topFrame );
+  topLayout->addWidget( mCbDocTypes, 0, 1 );
+  mCbDocTypes->insertStringList( DefaultProvider::self()->docTypes() );
+
 }
 
 void PrefsDialog::slotTextChanged( const QString& )
@@ -128,6 +154,11 @@ void PrefsDialog::readConfig()
     m_leName->setText( KatalogSettings::dbFile() );
     m_leUser->setText( KatalogSettings::dbUser() );
     m_lePasswd->setText( KatalogSettings::dbPassword() );
+
+    QString t = KraftSettings::doctype();
+    if ( t.isEmpty() ) t = DefaultProvider::self()->docType();
+
+    mCbDocTypes->setCurrentText( t );
 }
 
 void PrefsDialog::writeConfig()
@@ -137,6 +168,9 @@ void PrefsDialog::writeConfig()
     KatalogSettings::setDbUser(m_leUser->text());
     KatalogSettings::setDbPassword( m_lePasswd->text());
     KatalogSettings::writeConfig();
+
+    KraftSettings::setDoctype( mCbDocTypes->currentText() );
+    KraftSettings::writeConfig();
 }
 
 PrefsDialog::~PrefsDialog()

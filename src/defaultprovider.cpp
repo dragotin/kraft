@@ -26,6 +26,7 @@
 #include "defaultprovider.h"
 #include "kraftdb.h"
 #include "doctext.h"
+#include "kraftsettings.h"
 
 static KStaticDeleter<DefaultProvider> selfDeleter;
 
@@ -56,7 +57,10 @@ QStringList DefaultProvider::docTypes()
 
 QString DefaultProvider::docType()
 {
-  return i18n( "Offer" );
+  QString type = KraftSettings::doctype();
+  if ( type.isEmpty() )
+    type = docTypes()[0];
+  return type;
 }
 
 DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Part tt )

@@ -50,12 +50,15 @@ protected slots:
 
 private:
   void databaseTab();
+  void docTab();
 
   QLineEdit *m_leHost;
   QLineEdit *m_leUser;
   QLineEdit *m_leName;
   QLineEdit *m_lePasswd;
   QLabel    *m_statusLabel;
+
+  QComboBox *mCbDocTypes;
 
   QPushButton *m_pbCheck;
 };
