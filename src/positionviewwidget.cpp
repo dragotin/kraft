@@ -74,6 +74,17 @@ PositionViewWidget::PositionViewWidget()
   mDeleteId = mExecPopup->insertItem(  SmallIconSet("remove"),
                            i18n("Delete Position"), this, SIGNAL( deletePosition() ) );
 
+  QPopupMenu *stateSubmenu = new QPopupMenu;
+  stateSubmenu->insertItem( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
+  stateSubmenu->insertItem( i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
+  stateSubmenu->insertItem( i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
+  mExecPopup->insertItem( i18n( "Position Kind" ), stateSubmenu );
+
+  connect( this, SIGNAL( positionStateNormal() ),   this, SLOT( slotSetPositionNormal() ) );
+  connect( this, SIGNAL( positionStateAlternative() ),   this, SLOT( slotSetPositionAlternative() ) );
+  connect( this, SIGNAL( positionStateDemand() ),   this, SLOT( slotSetPositionDemand() ) );
+
+
   connect( this, SIGNAL( lockPosition() ),   this, SLOT( slotLockPosition() ) );
   connect( this, SIGNAL( unlockPosition() ), this, SLOT( slotUnlockPosition() ) );
 
@@ -82,6 +93,7 @@ PositionViewWidget::PositionViewWidget()
 
   mExecPopup->setItemEnabled( mUnlockId, false );
   lStatus->setPixmap( QPixmap() );
+  lKind->setPixmap( QPixmap() );
 }
 
 void PositionViewWidget::setDocPosition( DocPositionBase *dp )
@@ -98,8 +110,16 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp )
     m_cbUnit->setCurrentText( pos->unit().einheitSingular() );
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
     lStatus->hide();
+    lKind->hide();
+
     slotSetOverallPrice( pos->overallPrice().toDouble() );
     mPositionPtr = dp;
+
+    AttributeMap amap = dp->attributes();
+    if ( amap.contains( DocPosition::Kind ) ) {
+      lKind->show();
+      lKind->setText( amap[DocPosition::Kind].value().toString().left( 1 ) );
+    }
     m_skipModifiedSignal = false;
   }
 }
@@ -268,6 +288,27 @@ Geld PositionViewWidgetList::nettoPrice()
     res += pvw->currentPrice();
   }
   return res;
+}
+
+void PositionViewWidget::slotSetPositionNormal()
+{
+  lKind->hide();
+  lKind->setPixmap( QPixmap() );
+  emit positionModified();
+}
+
+void PositionViewWidget::slotSetPositionAlternative()
+{
+  lKind->show();
+  lKind->setText( i18n( "FirstLetterOfAlternative", "A" ) );
+  emit positionModified();
+}
+
+void PositionViewWidget::slotSetPositionDemand()
+{
+  lKind->show();
+  lKind->setText( i18n( "FirstLetterOfDemand", "D" ) );
+  emit positionModified();
 }
 
 #include "positionviewwidget.moc"

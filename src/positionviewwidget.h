@@ -61,6 +61,10 @@ public slots:
 protected slots:
     void slotLockPosition();
     void slotUnlockPosition();
+    
+    void slotSetPositionNormal();
+    void slotSetPositionAlternative();
+    void slotSetPositionDemand();
 
 signals:
     void positionModified();
@@ -70,6 +74,9 @@ signals:
     void lockPosition();
     void unlockPosition();
     void priceChanged( const Geld& );
+    void positionStateNormal();
+    void positionStateAlternative();
+    void positionStateDemand();
 
 private:
     bool mModified;

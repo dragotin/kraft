@@ -37,7 +37,8 @@
 DocPositionBase::DocPositionBase() : QObject(),
                                      m_dbId( -1 ),
                                      mToDelete( false ),
-                                     mType( Position )
+                                     mType( Position ),
+                                     mAttribs( QString::fromLatin1( "Position" ) )
 {
 
 }
@@ -46,7 +47,8 @@ DocPositionBase::DocPositionBase( const PositionType& t )
   : QObject(),
     m_dbId( -1 ),
     mToDelete( false ),
-    mType( t )
+    mType( t ),
+    mAttribs( QString::fromLatin1( "Position" ) )
 {
 
 }
@@ -56,12 +58,54 @@ DocPositionBase::DocPositionBase(const DocPositionBase& b )
     m_dbId( b.m_dbId ),
     m_position( b.m_position ),
     mToDelete( b.mToDelete ),
-    mType( b.mType )
+    mType( b.mType ),
+    mAttribs( b.mAttribs )
 {
 
 }
 
+DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
+{
+  if ( this == &dp ) return *this;
+
+  m_dbId = dp.m_dbId;
+  m_position = dp.m_position;
+  mToDelete = dp.mToDelete;
+  mType = dp.mType;
+  mAttribs = dp.mAttribs;
+
+  return *this;
+}
+
+
+void DocPositionBase::setAttribute( const Attribute& attrib )
+{
+  mAttribs[ attrib.name() ] = attrib;
+}
+
+AttributeMap DocPositionBase::attributes()
+{
+  return mAttribs;
+}
+
+void DocPositionBase::loadAttributes()
+{
+  if ( m_dbId == -1 ) {
+    kdDebug() << "Can not load attributes, no valid database id!" << endl;
+    return;
+  }
+  mAttribs.load( m_dbId );
+}
+
+void DocPositionBase::removeAttribute( const QString& name )
+{
+  if ( !name.isEmpty() )
+    mAttribs.remove( name );
+}
+
 // ##############################################################
+
+const QString DocPosition::Kind( QString::fromLatin1( "kind" ) );
 
 DocPosition::DocPosition(): DocPositionBase()
   ,m_amount( 1.0 )
@@ -77,10 +121,12 @@ Geld DocPosition::overallPrice()
     return g;
 }
 
+
 DocPosition& DocPosition::operator=( const DocPosition& dp )
 {
   if ( this == &dp ) return *this;
 
+  DocPositionBase::operator=( dp );
   m_text = dp.m_text;
   m_position = dp.m_position;
   m_unit = dp.m_unit;
@@ -89,7 +135,7 @@ DocPosition& DocPosition::operator=( const DocPosition& dp )
   m_dbId = dp.m_dbId;
   mToDelete = dp.mToDelete;
   mType = dp.mType;
-  
+
   return *this;
 }
 

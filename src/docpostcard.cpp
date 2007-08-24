@@ -66,7 +66,13 @@ void DocPostCard::setPositions( DocPositionList posList )
       mPositions += "</td>";
       mPositions += "<td>";
       if ( dp->toDelete() ) mPositions += "<strike>";
-      mPositions += dp->text();
+
+      if ( dp->attributes().contains( DocPosition::Kind ) ) {
+        mPositions += "<i>" + dp->text() + "</i>";
+      } else {
+        mPositions += dp->text();
+      }
+
       if ( dp->toDelete() ) mPositions += "</strike>";
       mPositions += "</td>";
       mPositions += "<td width=\"50px\" align=\"right\">";

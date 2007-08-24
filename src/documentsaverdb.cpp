@@ -190,6 +190,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         // The record is new
         record = cur.primeInsert();
       }
+
       if( dp->toDelete() ) {
         kdDebug() << "This one is to delete, do it!" << endl;
 
@@ -227,11 +228,12 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         } else {
           kdDebug() << "Updating!" << endl;
           cur.update();
-
         }
       } else {
         kdDebug() << "ERR: No record object found!" << endl;
       }
+
+      dp->attributes().save( dp->dbId() );
 
       QSqlError err = cur.lastError();
       if( err.type() != QSqlError::None ) {
@@ -327,6 +329,7 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 
         dp->setUnit( UnitManager::getUnit( cur.value("unit").toInt() ) );
         dp->setUnitPrice( cur.value("price").toDouble() );
+        dp->loadAttributes();
     }
 }
 

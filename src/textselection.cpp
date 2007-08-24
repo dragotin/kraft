@@ -1,3 +1,4 @@
+
 /***************************************************************************
   textselection  - widget to select header- and footer text data for the doc
                              -------------------
@@ -135,8 +136,8 @@ QListViewItem* TextSelection::addNewDocText( const DocText& dt )
 /* requires the QListViewItem set as a member in the doctext */
 void TextSelection::updateDocText( const DocText& dt )
 {
-  kdDebug() << "Update Doc Text" << endl;
   QListViewItem *it = dt.listViewItem();
+  kdDebug() << "Update Doc Text" << it << endl;
   // if ( ! it->firstChild() ) {
   //  it = it->parent();
   // }

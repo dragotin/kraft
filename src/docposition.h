@@ -32,6 +32,7 @@
 #include "geld.h"
 #include "dbids.h"
 #include "calcpart.h"
+#include "attribute.h"
 
 /**
 @author Klaas Freitag
@@ -52,6 +53,11 @@ class DocPositionBase : public QObject
     void setDbId( int id ) { m_dbId = id; }
     dbID dbId() { return dbID( m_dbId ); }
 
+    void setAttribute( const Attribute& );
+    void removeAttribute( const QString& );
+    void loadAttributes();
+
+    AttributeMap attributes();
   /**
    * Position means the number in the document
    */
@@ -60,11 +66,15 @@ class DocPositionBase : public QObject
     virtual void setToDelete( bool doit ) { mToDelete = doit; }
     virtual bool toDelete() { return mToDelete; }
     PositionType type() { return mType; }
+
+    DocPositionBase& operator=( const DocPositionBase& );
+
   protected:
     int     m_dbId;
     QString m_position;
     bool    mToDelete;
     PositionType mType;
+    AttributeMap mAttribs;
 };
 
 
@@ -89,6 +99,8 @@ class DocPosition : public DocPositionBase
     double amount() { return m_amount; }
 
     DocPosition& operator=( const DocPosition& );
+
+    static const QString Kind;
 
   private:
     QString m_text;

@@ -8,7 +8,7 @@ lib_LTLIBRARIES = libbruns.la
 libbruns_la_SOURCES = katalog.cpp katalogman.cpp  brunskatalog.cpp brunsrecord.cpp \
 kataloglistview.cpp flostab.ui katalogview.cpp brunskataloglistview.cpp brunskatalogview.cpp \
 filterheader.cpp catalogchapteredit.cpp docposition.cpp kraftdb.cpp \
-geld.cpp einheit.cpp katalogsettings.kcfgc
+geld.cpp einheit.cpp katalogsettings.kcfgc attribute.cpp
 
 libbruns_la_LDFLAGS = $(KDE_RPATH) $(all_libraries) -version-info 1:0:0 -no-undefined
 libbruns_la_LIBADD = $(LIB_KIO) $(all_libraries)
@@ -39,7 +39,7 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	textselection.cpp doctext.cpp \
 	docassistant.cpp texteditdialog.cpp texteditbase.ui templateprovider.cpp \
 	headertemplateprovider.cpp footertemplateprovider.cpp catalogtemplateprovider.cpp \
-	addresstemplateprovider.cpp
+	addresstemplateprovider.cpp 
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml 
 

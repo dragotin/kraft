@@ -63,6 +63,7 @@ class CatalogSelection;
 class HeaderSelection;
 class KPushButton;
 class DocAssistant;
+class CalcPartList;
 
 class Katalog;
 

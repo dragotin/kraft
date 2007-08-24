@@ -806,6 +806,24 @@ DocPositionList KraftView::currentPositionList()
         v = widget->m_sbAmount->value();
         dp->setAmount( v );
 
+        QString pk = widget->lKind->text();
+
+        if ( ! pk.isEmpty() ) {
+          kdDebug() << "++++++++++++++++++++++++++++++++++ status: " << pk << endl;
+          Attribute a( DocPosition::Kind );
+          a.setPersistant( true );
+
+          if ( pk == "A" ) {
+            a.setValue( QString::fromLatin1( "Alternative" ) );
+            dp->setAttribute( a );
+          } else if ( pk == "D" ) {
+            a.setValue( QString::fromLatin1( "Demand" ) );
+            dp->setAttribute( a );
+          }
+        } else {
+          dp->removeAttribute( DocPosition::Kind );
+        }
+
         list.append( dp );
       } else {
         kdError() << "Fatal: Widget without position found!" << endl;
