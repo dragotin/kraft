@@ -607,7 +607,7 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
 
                 if(oldAmount != amount )
                 {
-                    QString quest = i18n("This material kind is alreadz in the list of calculated materials.\n");
+                    QString quest = i18n("This material kind is already in the list of calculated materials.\n");
                     quest += i18n("Do you want to adjust the amount of it in the calculation?");
 
                     int answer = KMessageBox::questionYesNo( this,
