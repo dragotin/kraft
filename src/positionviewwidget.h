@@ -35,6 +35,8 @@ class PositionViewWidget : public positionWidget
     Q_OBJECT
 public:
     enum State { Active, New, Deleted, Locked };
+    enum Kind  { Normal, Demand, Alternative, Invalid };
+
     PositionViewWidget();
     PositionViewWidget( int );
     void setDocPosition( DocPositionBase* );
@@ -45,6 +47,8 @@ public:
     bool deleted() { return mToDelete; }
     DocPositionGuardedPtr position(){ return mPositionPtr; }
     State state() { return mState; }
+    Kind  kind()  { return mKind; }
+    QString kindString( Kind = Invalid ) const;
     QString stateString( const State& state ) const;
     Geld currentPrice();
 
@@ -89,6 +93,7 @@ private:
     int  mLockId;
     int  mUnlockId;
     State mState;
+    Kind  mKind;
 };
 
 class PositionViewWidgetList : public QPtrList<PositionViewWidget>

@@ -800,26 +800,18 @@ DocPositionList KraftView::currentPositionList()
         Einheit e = UnitManager::getUnit( eId );
         dp->setUnit( e );
 
-        double v = widget->m_sbUnitPrice->value();
-        dp->setUnitPrice( Geld( v ) );
+        dp->setUnitPrice( widget->currentPrice() );
 
-        v = widget->m_sbAmount->value();
+        double v = widget->m_sbAmount->value();
         dp->setAmount( v );
 
-        QString pk = widget->lKind->text();
+        PositionViewWidget::Kind k = widget->kind();
 
-        if ( ! pk.isEmpty() ) {
-          kdDebug() << "++++++++++++++++++++++++++++++++++ status: " << pk << endl;
+        if ( k != PositionViewWidget::Normal ) {
           Attribute a( DocPosition::Kind );
           a.setPersistant( true );
-
-          if ( pk == "A" ) {
-            a.setValue( QString::fromLatin1( "Alternative" ) );
-            dp->setAttribute( a );
-          } else if ( pk == "D" ) {
-            a.setValue( QString::fromLatin1( "Demand" ) );
-            dp->setAttribute( a );
-          }
+          a.setValue( widget->kindString() );
+          dp->setAttribute( a );
         } else {
           dp->removeAttribute( DocPosition::Kind );
         }

@@ -330,6 +330,8 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
         dp->setUnit( UnitManager::getUnit( cur.value("unit").toInt() ) );
         dp->setUnitPrice( cur.value("price").toDouble() );
         dp->loadAttributes();
+
+
     }
 }
 

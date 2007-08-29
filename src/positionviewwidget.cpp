@@ -39,7 +39,8 @@ PositionViewWidget::PositionViewWidget()
  mToDelete(false),
  mOrdNumber(0),
  mExecPopup( new KPopupMenu( this ) ) ,
- mState( Active )
+ mState( Active ),
+ mKind( Normal )
 {
   const QString currSymbol = KGlobal().locale()->currencySymbol();
   m_sbUnitPrice->setPrefix( currSymbol + " " );
@@ -112,14 +113,22 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp )
     lStatus->hide();
     lKind->hide();
 
-    slotSetOverallPrice( pos->overallPrice().toDouble() );
-    mPositionPtr = dp;
-
     AttributeMap amap = dp->attributes();
     if ( amap.contains( DocPosition::Kind ) ) {
       lKind->show();
-      lKind->setText( amap[DocPosition::Kind].value().toString().left( 1 ) );
+      QString kindStr = amap[DocPosition::Kind].value().toString();
+      lKind->setText( kindStr.left( 1 ) );
+      if ( kindStr == kindString( Alternative ) ) {
+        mKind = Alternative;
+      } else if ( kindStr == kindString( Demand ) ) {
+        mKind = Demand;
+      } else {
+        kdDebug() << "Unknown kind string: " << kindStr << endl;
+      }
     }
+    slotSetOverallPrice( currentPrice() );
+    mPositionPtr = dp;
+
     m_skipModifiedSignal = false;
   }
 }
@@ -229,10 +238,12 @@ void PositionViewWidget::slotSetEnabled( bool doit )
 
 Geld PositionViewWidget::currentPrice()
 {
-  double amount = m_sbAmount->value();
-  Geld g( m_sbUnitPrice->value() );
-  Geld sum = g * amount;
-
+  Geld sum;
+  if ( mKind == Normal ) {
+    double amount = m_sbAmount->value();
+    Geld g( m_sbUnitPrice->value() );
+    sum = g * amount;
+  }
   return sum;
 }
 
@@ -245,7 +256,7 @@ void PositionViewWidget::slotRefreshPrice()
 
 void PositionViewWidget::slotSetOverallPrice( Geld g )
 {
-    m_sumLabel->setText( g.toString() );
+  m_sumLabel->setText( g.toString() );
 }
 
 void PositionViewWidget::slotModified()
@@ -294,6 +305,8 @@ void PositionViewWidget::slotSetPositionNormal()
 {
   lKind->hide();
   lKind->setPixmap( QPixmap() );
+  mKind = Normal;
+  slotRefreshPrice();
   emit positionModified();
 }
 
@@ -301,6 +314,8 @@ void PositionViewWidget::slotSetPositionAlternative()
 {
   lKind->show();
   lKind->setText( i18n( "FirstLetterOfAlternative", "A" ) );
+  mKind = Alternative;
+  slotRefreshPrice();
   emit positionModified();
 }
 
@@ -308,7 +323,22 @@ void PositionViewWidget::slotSetPositionDemand()
 {
   lKind->show();
   lKind->setText( i18n( "FirstLetterOfDemand", "D" ) );
+  mKind = Demand;
+  slotRefreshPrice();
   emit positionModified();
+}
+
+QString PositionViewWidget::kindString( Kind k ) const
+{
+  Kind kind = k;
+
+  if ( kind == Invalid ) kind = mKind;
+
+  if ( kind == Normal ) return i18n( "Normal" );
+  if ( kind == Demand ) return i18n( "Demand" );
+  if ( kind == Alternative ) return i18n( "Alternative" );
+
+  return i18n( "unknown" );
 }
 
 #include "positionviewwidget.moc"
