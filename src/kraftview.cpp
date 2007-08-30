@@ -800,7 +800,7 @@ DocPositionList KraftView::currentPositionList()
         Einheit e = UnitManager::getUnit( eId );
         dp->setUnit( e );
 
-        dp->setUnitPrice( widget->currentPrice() );
+        dp->setUnitPrice( widget->unitPrice() );
 
         double v = widget->m_sbAmount->value();
         dp->setAmount( v );

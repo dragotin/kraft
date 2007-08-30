@@ -51,6 +51,7 @@ public:
     QString kindString( Kind = Invalid ) const;
     QString stateString( const State& state ) const;
     Geld currentPrice();
+    Geld unitPrice();
 
 public slots:
     void slotSetOverallPrice( Geld );

@@ -247,6 +247,12 @@ Geld PositionViewWidget::currentPrice()
   return sum;
 }
 
+Geld PositionViewWidget::unitPrice()
+{
+  Geld p(  m_sbUnitPrice->value() );
+  return p;
+}
+
 void PositionViewWidget::slotRefreshPrice()
 {
   const Geld sum = currentPrice();

@@ -29,6 +29,7 @@
 #include "einheit.h"
 #include "geld.h"
 #include "docposition.h"
+#include "positionviewwidget.h"
 
 /**
 @author Klaas Freitag
@@ -116,8 +117,10 @@ DocPosition::DocPosition(): DocPositionBase()
 Geld DocPosition::overallPrice()
 {
     Geld g;
-
-    g = unitPrice()*amount();
+    AttributeMap atts = attributes();
+    if ( ! atts.contains( DocPosition::Kind ) ) {
+      g = unitPrice()*amount();
+    }
     return g;
 }
 
