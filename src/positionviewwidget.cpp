@@ -20,6 +20,7 @@
 #include <qpushbutton.h>
 #include <qcolor.h>
 #include <qlayout.h>
+#include <qtooltip.h>
 #include <kglobal.h>
 #include <klocale.h>
 #include <knuminput.h>
@@ -31,6 +32,7 @@
 #include "positionviewwidget.h"
 #include "unitmanager.h"
 #include "geld.h"
+#include "kraftsettings.h"
 
 PositionViewWidget::PositionViewWidget()
  : positionWidget(),
@@ -64,6 +66,16 @@ PositionViewWidget::PositionViewWidget()
   connect( m_sbUnitPrice, SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
 
   mExecPopup->insertTitle( i18n("Position Actions") );
+  QPopupMenu *stateSubmenu = new QPopupMenu;
+  stateSubmenu->insertItem( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
+  stateSubmenu->insertItem( SmallIconSet( "alternative" ),
+                            i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
+  stateSubmenu->insertItem( SmallIconSet( "demand" ),
+                            i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
+  mExecPopup->insertItem( i18n( "Position Kind" ), stateSubmenu );
+
+  mExecPopup->insertSeparator();
+
   mExecPopup->insertItem(  SmallIconSet("up"),
                            i18n("Move Up"),         this, SIGNAL( moveUp() ) );
   mExecPopup->insertItem(  SmallIconSet("down"),
@@ -75,15 +87,10 @@ PositionViewWidget::PositionViewWidget()
   mDeleteId = mExecPopup->insertItem(  SmallIconSet("remove"),
                            i18n("Delete Position"), this, SIGNAL( deletePosition() ) );
 
-  QPopupMenu *stateSubmenu = new QPopupMenu;
-  stateSubmenu->insertItem( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
-  stateSubmenu->insertItem( i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
-  stateSubmenu->insertItem( i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
-  mExecPopup->insertItem( i18n( "Position Kind" ), stateSubmenu );
 
-  connect( this, SIGNAL( positionStateNormal() ),   this, SLOT( slotSetPositionNormal() ) );
-  connect( this, SIGNAL( positionStateAlternative() ),   this, SLOT( slotSetPositionAlternative() ) );
-  connect( this, SIGNAL( positionStateDemand() ),   this, SLOT( slotSetPositionDemand() ) );
+  connect( this, SIGNAL( positionStateNormal() ), this, SLOT( slotSetPositionNormal() ) );
+  connect( this, SIGNAL( positionStateAlternative() ), this, SLOT( slotSetPositionAlternative() ) );
+  connect( this, SIGNAL( positionStateDemand() ), this, SLOT( slotSetPositionDemand() ) );
 
 
   connect( this, SIGNAL( lockPosition() ),   this, SLOT( slotLockPosition() ) );
@@ -115,15 +122,14 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp )
 
     AttributeMap amap = dp->attributes();
     if ( amap.contains( DocPosition::Kind ) ) {
-      lKind->show();
-      QString kindStr = amap[DocPosition::Kind].value().toString();
-      lKind->setText( kindStr.left( 1 ) );
+      Attribute kind = amap[DocPosition::Kind];
+      const QString kindStr = kind.value().toString();
       if ( kindStr == kindString( Alternative ) ) {
-        mKind = Alternative;
+        slotSetPositionAlternative();
       } else if ( kindStr == kindString( Demand ) ) {
-        mKind = Demand;
+        slotSetPositionDemand();
       } else {
-        kdDebug() << "Unknown kind string: " << kindStr << endl;
+        kdDebug() << "Unknown position kind!" << endl;
       }
     }
     slotSetOverallPrice( currentPrice() );
@@ -312,25 +318,57 @@ void PositionViewWidget::slotSetPositionNormal()
   lKind->hide();
   lKind->setPixmap( QPixmap() );
   mKind = Normal;
+
+  cleanKindString();
   slotRefreshPrice();
   emit positionModified();
+}
+
+void PositionViewWidget::cleanKindString()
+{
+  QString current = m_teFloskel->text();
+  bool touched = false;
+
+  if ( current.startsWith( kindLabel( Alternative ) ) ) {
+    current.remove( 0, QString( kindLabel( Alternative ) ).length() );
+    touched = true;
+  } else if ( current.startsWith( kindLabel( Demand ) ) ) {
+    current.remove( 0, QString( kindLabel( Demand ) ).length() );
+    touched = true;
+  }
+
+  if ( touched ) {
+    m_teFloskel->setText( current );
+  }
 }
 
 void PositionViewWidget::slotSetPositionAlternative()
 {
   lKind->show();
-  lKind->setText( i18n( "FirstLetterOfAlternative", "A" ) );
+  QToolTip::add( lKind, i18n( "This is an alternative position. Use the position toolbox to change." ) );
+  lKind->setPixmap( SmallIcon( "alternative" ) );
   mKind = Alternative;
   slotRefreshPrice();
+
+  cleanKindString();
+
+  m_teFloskel->insertAt( kindLabel( Alternative ), 0, 0 );
+
   emit positionModified();
 }
 
 void PositionViewWidget::slotSetPositionDemand()
 {
   lKind->show();
-  lKind->setText( i18n( "FirstLetterOfDemand", "D" ) );
+  // lKind->setText( i18n( "FirstLetterOfDemand", "D" ) );
+  QToolTip::add( lKind, i18n( "This is a as required position. Use the position toolbox to change." ) );
+  lKind->setPixmap( SmallIcon( "demand" ) );
   mKind = Demand;
   slotRefreshPrice();
+
+  cleanKindString();
+  m_teFloskel->insertAt( kindLabel( Demand ), 0, 0 );
+
   emit positionModified();
 }
 
@@ -347,5 +385,21 @@ QString PositionViewWidget::kindString( Kind k ) const
   return i18n( "unknown" );
 }
 
+// The label that is prepended to a positions text
+QString PositionViewWidget::kindLabel( Kind k ) const
+{
+  Kind kind = k;
+
+  if ( kind == Invalid ) kind = mKind;
+
+  QString re;
+  if ( kind == Normal ) re = KraftSettings::self()->normalLabel();
+  if ( kind == Demand ) re = KraftSettings::self()->demandLabel();
+  if ( kind == Alternative ) re = KraftSettings::self()->alternativeLabel();
+
+  if ( re.isEmpty() ) re = kindString( kind );
+  re += QString::fromLatin1( ": " );
+  return re;
+}
 #include "positionviewwidget.moc"
 

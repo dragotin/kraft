@@ -78,6 +78,15 @@
         <label>The doc id template</label>
         <default>%y%w-%i</default>
      </entry>
+     <entry name="AlternativeLabel" type="String">
+        <label>The label for alternative positions</label>
+     </entry>
+     <entry name="DemandLabel" type="String">
+        <label>The label for demand positions</label>
+     </entry>
+     <entry name="NormalLabel" type="String">
+        <label>The label for demand positions</label>
+     </entry>
   </group>
 </kcfg>
 

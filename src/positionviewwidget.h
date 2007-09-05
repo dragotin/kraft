@@ -50,6 +50,8 @@ public:
     Kind  kind()  { return mKind; }
     QString kindString( Kind = Invalid ) const;
     QString stateString( const State& state ) const;
+    QString kindLabel( Kind ) const;
+    void cleanKindString();
     Geld currentPrice();
     Geld unitPrice();
 
