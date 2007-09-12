@@ -7,3 +7,9 @@ CREATE TABLE attributes (
 
   PRIMARY KEY( hostObject, hostId)
 );
+
+ALTER TABLE archdocpos ADD COLUMN kind VARCHAR(64) AFTER ordNumber;
+ALTER TABLE archdocpos ADD COLUMN overallPrice DECIMAL(10,2) AFTER price;
+
+UPDATE archdocpos SET kind = "Normal";
+UPDATE archdocpos SET overallPrice = ROUND( price * amount, 2);
