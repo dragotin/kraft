@@ -42,10 +42,7 @@ ArchDocPosition::ArchDocPosition()
 
 Geld ArchDocPosition::overallPrice()
 {
-  Geld g;
-  g = unitPrice() * mAmount;
-
-  return g;
+  return mOverallPrice;
 }
 
 ArchDocPositionList::ArchDocPositionList()

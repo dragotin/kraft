@@ -104,6 +104,13 @@ void DocPositionBase::removeAttribute( const QString& name )
     mAttribs.remove( name );
 }
 
+QString DocPositionBase::attribute( const QString& attName ) const
+{
+  Attribute att = mAttribs[ attName ];
+
+  return att.value().toString();
+}
+
 // ##############################################################
 
 const QString DocPosition::Kind( QString::fromLatin1( "kind" ) );

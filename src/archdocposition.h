@@ -57,7 +57,9 @@ class ArchDocPosition
     QString mText;
     QString mPosNo;
     QString mUnit;
+    QString mKind;
     Geld    mUnitPrice;
+    Geld    mOverallPrice;
     double  mAmount;
     double  mVat;
     // No calculation yet

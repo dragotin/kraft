@@ -56,6 +56,7 @@ class DocPositionBase : public QObject
     void setAttribute( const Attribute& );
     void removeAttribute( const QString& );
     void loadAttributes();
+    QString attribute(const QString& ) const;
 
     AttributeMap attributes();
   /**

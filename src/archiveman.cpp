@@ -222,12 +222,14 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 
 	    record->setValue( "archDocID", archDocId );
 	    record->setValue( "ordNumber", 1+cnt /* dp->position() */ );
+            record->setValue( "kind", dp->attribute( DocPosition::Kind ) );
+
 	    record->setValue( "text", dp->text() );
 	    record->setValue( "amount", dp->amount() );
 	    record->setValue( "unit", dp->unit().einheit( dp->amount() ) );
 	    record->setValue( "price", dp->unitPrice().toDouble() );
+            record->setValue( "overallPrice", dp->overallPrice().toDouble() );
 	    record->setValue( "vat", DocumentMan::self()->vat() ); // FIXME !!
-
 	    cur.insert();
             dbID id = KraftDB::self()->getLastInsertID();
             // kdDebug() << "Inserted for id " << id.toString() << endl;

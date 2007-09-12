@@ -345,7 +345,8 @@ void PositionViewWidget::cleanKindString()
 void PositionViewWidget::slotSetPositionAlternative()
 {
   lKind->show();
-  QToolTip::add( lKind, i18n( "This is an alternative position. Use the position toolbox to change." ) );
+  QToolTip::add( lKind, i18n( "This is an alternative position."
+                              " Use the position toolbox to change." ) );
   lKind->setPixmap( SmallIcon( "alternative" ) );
   mKind = Alternative;
   slotRefreshPrice();
@@ -360,8 +361,8 @@ void PositionViewWidget::slotSetPositionAlternative()
 void PositionViewWidget::slotSetPositionDemand()
 {
   lKind->show();
-  // lKind->setText( i18n( "FirstLetterOfDemand", "D" ) );
-  QToolTip::add( lKind, i18n( "This is a as required position. Use the position toolbox to change." ) );
+  QToolTip::add( lKind, i18n( "This is a as required position. "
+                              "Use the position toolbox to change." ) );
   lKind->setPixmap( SmallIcon( "demand" ) );
   mKind = Demand;
   slotRefreshPrice();
@@ -372,17 +373,18 @@ void PositionViewWidget::slotSetPositionDemand()
   emit positionModified();
 }
 
+// The technical label
 QString PositionViewWidget::kindString( Kind k ) const
 {
   Kind kind = k;
 
   if ( kind == Invalid ) kind = mKind;
 
-  if ( kind == Normal ) return i18n( "Normal" );
-  if ( kind == Demand ) return i18n( "Demand" );
-  if ( kind == Alternative ) return i18n( "Alternative" );
+  if ( kind == Normal )      return QString::fromLatin1( "Normal" );
+  if ( kind == Demand )      return QString::fromLatin1( "Demand" );
+  if ( kind == Alternative ) return QString::fromLatin1( "Alternative" );
 
-  return i18n( "unknown" );
+  return QString::fromLatin1( "unknown" );
 }
 
 // The label that is prepended to a positions text
@@ -393,12 +395,22 @@ QString PositionViewWidget::kindLabel( Kind k ) const
   if ( kind == Invalid ) kind = mKind;
 
   QString re;
-  if ( kind == Normal ) re = KraftSettings::self()->normalLabel();
-  if ( kind == Demand ) re = KraftSettings::self()->demandLabel();
-  if ( kind == Alternative ) re = KraftSettings::self()->alternativeLabel();
+  if ( kind == Normal ) {
+    re = KraftSettings::self()->normalLabel();
+    if ( re.isEmpty() ) re = i18n( "Normal" );
+  }
+  if ( kind == Demand ) {
+    re = KraftSettings::self()->demandLabel();
+    if ( re.isEmpty() ) re = i18n( "Demand" );
+  }
+  if ( kind == Alternative ) {
+    re = KraftSettings::self()->alternativeLabel();
+    if ( re.isEmpty() ) re = i18n( "Alternative" );
+  }
 
-  if ( re.isEmpty() ) re = kindString( kind );
-  re += QString::fromLatin1( ": " );
+  if ( ! re.endsWith( ": " ) ) {
+    re += QString::fromLatin1( ": " );
+  }
   return re;
 }
 #include "positionviewwidget.moc"

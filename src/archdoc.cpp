@@ -122,7 +122,8 @@ void ArchDoc::loadPositions( const QString& archDocId )
     pos.mUnitPrice = Geld( cur.value( "price" ).toDouble() );
     pos.mAmount = cur.value( "amount" ).toDouble();
     pos.mVat = cur.value( "vat" ).toDouble();
-
+    pos.mOverallPrice = cur.value( "overallPrice" ).toDouble();
+    pos.mKind = cur.value( "kind" ).toString();
     mPositions.append( pos );
   }
 }
