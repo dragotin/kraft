@@ -78,6 +78,7 @@ double ArchDoc::vat()
 void ArchDoc::loadFromDb( dbID id )
 {
   QSqlCursor cur("archdoc");
+  cur.setMode( QSqlCursor::ReadOnly );
   kdDebug() << "Loading document id " << id.toString() << endl;
 
   cur.select( "archDocID = " +  id.toString()  );
@@ -97,6 +98,7 @@ void ArchDoc::loadFromDb( dbID id )
 
     QString docID = cur.value( "archDocID" ).toString();
     loadPositions( docID );
+    loadAttributes( docID );
   } else {
     kdDebug() << "ERR: Could not load archived doc with id " << id.toString() << endl;
   }
@@ -107,6 +109,8 @@ void ArchDoc::loadPositions( const QString& archDocId )
   mPositions.clear();
 
   QSqlCursor cur( "archdocpos" );
+  cur.setMode( QSqlCursor::ReadOnly );
+
   if ( archDocId.isEmpty() /* || ! archDocId.isNum() */ ) {
     kdDebug() << "ArchDocId is not crappy: " << archDocId << endl;
     return;
@@ -128,6 +132,31 @@ void ArchDoc::loadPositions( const QString& archDocId )
   }
 }
 
+void ArchDoc::loadAttributes( const QString& archDocId )
+{
+  mAttribs.clear();
+
+  QSqlCursor cur( "archdocAttribs" );
+  cur.setMode( QSqlCursor::ReadOnly );
+
+  if ( archDocId.isEmpty() ) {
+    kdDebug() << "ArchDocId is Empty!" << endl;
+    return;
+  }
+
+  cur.select( "archDocID=" + archDocId );
+
+  while ( cur.next() ) {
+    QString name  = cur.value( "name" ).toString();
+    QString value = cur.value( "value" ).toString();
+
+    if ( !name.isEmpty() ) {
+      mAttribs[ name ] = value;
+    } else {
+      kdDebug() << "Empty attribute name in archive!"  << endl;
+    }
+  }
+}
 
 /* ###################################################################### */
 

@@ -102,6 +102,7 @@ class DocPosition : public DocPositionBase
     DocPosition& operator=( const DocPosition& );
 
     static const QString Kind;
+    static const QString Discount;
 
   private:
     QString m_text;

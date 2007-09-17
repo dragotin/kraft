@@ -26,6 +26,7 @@
 #include <qstring.h>
 #include <qdatetime.h>
 #include <qvaluelist.h>
+#include <qmap.h>
 
 // include files for KDE
 #include "archdocposition.h"
@@ -64,6 +65,10 @@ public:
   dbID docID() { return mDocID; }
 
   QString docIdentifier();
+  
+  QMap<QString, QString> attributes() {
+    return mAttribs;
+  }
 
   Geld nettoSum();
   Geld bruttoSum();
@@ -72,6 +77,7 @@ public:
 
 private:
   void loadPositions( const QString& );
+  void loadAttributes( const QString& );
   void loadFromDb( dbID );
 
   QString mAddress;
@@ -88,6 +94,7 @@ private:
   ArchDocPositionList mPositions;
   dbID    mDocID;
   int     mState;
+  QMap<QString, QString> mAttribs;
 };
 
 class ArchDocDigest

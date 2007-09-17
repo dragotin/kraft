@@ -114,6 +114,7 @@ QString DocPositionBase::attribute( const QString& attName ) const
 // ##############################################################
 
 const QString DocPosition::Kind( QString::fromLatin1( "kind" ) );
+const QString DocPosition::Discount( QString::fromLatin1( "discount" ) );
 
 DocPosition::DocPosition(): DocPositionBase()
   ,m_amount( 1.0 )

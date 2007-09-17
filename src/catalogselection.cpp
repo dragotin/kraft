@@ -84,7 +84,7 @@ void CatalogSelection::initActions()
 }
 
 
-void CatalogSelection::slotCatalogDoubleClicked( QListViewItem *onItem,  const QPoint&,  int )
+void CatalogSelection::slotCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int )
 {
   emit actionAppendPosition();
 }
