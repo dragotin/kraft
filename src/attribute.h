@@ -59,6 +59,8 @@ public:
 
   bool hasAttribute( const QString& );
 
+  void setHost( const QString& );
+
   void load( dbID );
   void save( dbID );
 

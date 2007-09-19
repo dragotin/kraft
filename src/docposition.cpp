@@ -126,6 +126,8 @@ Geld DocPosition::overallPrice()
 {
     Geld g;
     AttributeMap atts = attributes();
+    // all kinds besind from no kind mean  that the position is not
+    // counted for the overall price. That's a FIXME
     if ( ! atts.contains( DocPosition::Kind ) ) {
       g = unitPrice()*amount();
     }

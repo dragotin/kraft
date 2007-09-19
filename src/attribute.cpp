@@ -79,6 +79,11 @@ AttributeMap::AttributeMap( const QString& host)
 
 }
 
+void AttributeMap::setHost( const QString& host )
+{
+  mHost = host;
+}
+
 bool AttributeMap::hasAttribute( const QString& name )
 {
   return contains( name );

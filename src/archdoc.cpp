@@ -136,7 +136,7 @@ void ArchDoc::loadAttributes( const QString& archDocId )
 {
   mAttribs.clear();
 
-  QSqlCursor cur( "archdocAttribs" );
+  QSqlCursor cur( "archPosAttribs" );
   cur.setMode( QSqlCursor::ReadOnly );
 
   if ( archDocId.isEmpty() ) {

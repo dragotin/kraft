@@ -35,6 +35,7 @@
 
 static KStaticDeleter<ArchiveMan> selfDeleter;
 
+
 ArchiveMan* ArchiveMan::mSelf = 0;
 
 ArchiveMan *ArchiveMan::self()
@@ -234,6 +235,12 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
             dbID id = KraftDB::self()->getLastInsertID();
             // kdDebug() << "Inserted for id " << id.toString() << endl;
 	    cnt++;
+
+            // save the attributes of the positions in the attributes
+            // table but with a new host type which reflects the arch state
+            AttributeMap attribs = dp->attributes();
+            attribs.setHost( "ArchPosition" );
+            attribs.save( id );
 	} else {
           kdDebug() << "Unknown position type, can not archive" << endl;
         }
