@@ -53,6 +53,7 @@ class ArchDocPosition
     double amount() { return mAmount; }
     double vat() { return mVat; }
 
+    QString kind() { return mKind; }
   private:
     QString mText;
     QString mPosNo;

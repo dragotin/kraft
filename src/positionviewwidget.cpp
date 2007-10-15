@@ -66,13 +66,13 @@ PositionViewWidget::PositionViewWidget()
   connect( m_sbUnitPrice, SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
 
   mExecPopup->insertTitle( i18n("Position Actions") );
-  QPopupMenu *stateSubmenu = new QPopupMenu;
-  stateSubmenu->insertItem( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
-  stateSubmenu->insertItem( SmallIconSet( "alternative" ),
+  mStateSubmenu = new QPopupMenu;
+  mStateSubmenu->insertItem( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
+  mStateSubmenu->insertItem( SmallIconSet( "alternative" ),
                             i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
-  stateSubmenu->insertItem( SmallIconSet( "demand" ),
+  mStateSubmenu->insertItem( SmallIconSet( "demand" ),
                             i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
-  mExecPopup->insertItem( i18n( "Position Kind" ), stateSubmenu );
+  mExecPopup->insertItem( i18n( "Position Kind" ), mStateSubmenu );
 
   mExecPopup->insertSeparator();
 
@@ -168,6 +168,11 @@ void PositionViewWidget::slotLockPosition( )
 void PositionViewWidget::slotUnlockPosition( )
 {
   slotSetState( Active );
+}
+
+void PositionViewWidget::slotEnableKindMenu( bool s )
+{
+  mStateSubmenu->setEnabled( s );
 }
 
 QString PositionViewWidget::stateString( const State& state ) const

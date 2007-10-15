@@ -38,6 +38,7 @@
 #include "kraftdb.h"
 #include "kraftdoc.h"
 #include "defaultprovider.h"
+#include "doctype.h"
 
 PrefsDialog::PrefsDialog( QWidget *parent)
     : KDialogBase( IconList,  i18n("Configure Kraft"), Ok|Cancel, Ok, parent,
@@ -134,7 +135,7 @@ void PrefsDialog::docTab()
 
   mCbDocTypes = new QComboBox( topFrame );
   topLayout->addWidget( mCbDocTypes, 0, 1 );
-  mCbDocTypes->insertStringList( DefaultProvider::self()->docTypes() );
+  mCbDocTypes->insertStringList( DocType::allLocalised() );
 
 }
 

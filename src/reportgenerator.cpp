@@ -1,3 +1,4 @@
+
 /***************************************************************************
                        archiveman.cpp  - Archive Manager
                              -------------------
@@ -43,6 +44,7 @@
 #include "archiveman.h"
 #include "archdoc.h"
 #include "documentman.h"
+#include "texttemplate.h"
 
 static KStaticDeleter<ReportGenerator> selfDeleter;
 
@@ -74,7 +76,7 @@ ReportGenerator::~ReportGenerator()
 void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 {
   const QString templ = fillupTemplateFromArchive( archId );
-  // kdDebug() << "Report BASE:\n" << templ << endl;
+  kdDebug() << "Report BASE:\n" << templ << endl;
 
   if ( ! templ.isEmpty() ) {
     KTempFile temp( QString(), ".trml" );
@@ -94,7 +96,7 @@ void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
   }
 }
 
-QString ReportGenerator::readTemplate( const QString& type )
+QString ReportGenerator::findTemplate( const QString& type )
 {
   KStandardDirs stdDirs;
   QString templFileName = QString( type ).lower()+ ".trml";
@@ -116,205 +118,111 @@ QString ReportGenerator::readTemplate( const QString& type )
     }
   }
 
-  kdDebug() << "Loading create file from " << findFile << endl;
-  QFile f( tmplFile );
-  if ( !f.open( IO_ReadOnly ) ) {
-    kdError() << "Could not open " << tmplFile << endl;
-    return QString();
-  }
-
-  QTextStream ts( &f );
-  re = ts.read();
-  f.close();
-
-  return re;
+  return tmplFile;
 }
 
-#define TAG( FOO )  QString( "<!-- %1 -->").arg( FOO )
+#define TAG( THE_TAG )  QString( "%1").arg( THE_TAG )
 
 QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 {
   ArchDoc archive( id );
 
-  QString tmpl = readTemplate( archive.docType() );
+  QString tmplFile = findTemplate( archive.docType() );
 
-  if ( tmpl.isEmpty() ) {
+  if ( tmplFile.isEmpty() ) {
     return QString();
   }
+
+  // create a text template
+  TextTemplate tmpl( tmplFile );
+
   /* replace the placeholders */
   /* A placeholder has the format <!-- %VALUE --> */
-
-  /* find the position loop */
-  int posStart = tmpl.find(
-    TAG( "POSITION_LOOP" )
-    );
-  int posEnd   = tmpl.find(
-    TAG( "POSITION_LOOP_END" )
-    );
-
-  QString loop;
-  if ( posStart > 0 && posEnd > 0 && posStart < posEnd ) {
-    loop = tmpl.mid( posStart+22,  posEnd-posStart-22 );
-    kdDebug() << "Loop part: " << loop << endl;
-  }
 
   ArchDocPositionList posList = archive.positions();
   QString loopResult;
   QString h;
 
-  if ( ! loop.isEmpty() ) {
+  ArchDocPositionList::iterator it;
+  int specialPosCnt = 0;
 
-    ArchDocPositionList::iterator it;
-    for ( it = posList.begin(); it != posList.end(); ++it ) {
-      ArchDocPosition pos (*it);
+  for ( it = posList.begin(); it != posList.end(); ++it ) {
+    ArchDocPosition pos (*it);
+    tmpl.createDictionary( "POSITIONS" );
+    tmpl.setValue( "POSITIONS", TAG( "POS_NUMBER" )
+                   , pos.posNumber() );
+    tmpl.setValue( "POSITIONS", "POS_TEXT",
+                   rmlString( pos.text(), QString( "%1text" ).arg( pos.kind().lower() ) ) );
 
-      QString loopPart = loop;
-      replaceTag( loopPart,
-                  TAG( "POS_NUMBER" ),
-                  pos.posNumber() );
+    h.setNum( pos.amount(), 'f', 2 );
+    tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
+    tmpl.setValue( "POSITIONS", "POS_UNIT", pos.unit() );
+    tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString() );
+    tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.overallPrice().toString() );
+    tmpl.setValue( "POSITIONS", "POS_KIND", pos.kind().lower() );
 
-      replaceTag( loopPart,
-                  TAG( "POS_TEXT" ),
-                  pos.text(),  true ); // multiline
-
-      h.setNum( pos.amount(), 'f', 2 );
-      replaceTag( loopPart,
-                  TAG( "POS_AMOUNT" ),
-                  h );
-
-      replaceTag( loopPart,
-                  TAG( "POS_UNIT" ),
-                  pos.unit() );
-
-      replaceTag( loopPart,
-                  TAG( "POS_UNITPRICE" ),
-                  pos.unitPrice().toString() );
-
-      replaceTag( loopPart,
-                  TAG( "POS_TOTAL" ),
-                  pos.overallPrice().toString() );
-
-      loopResult.append( loopPart );
+    if ( !pos.kind().isEmpty() ) {
+      specialPosCnt++;
     }
   }
-
-  tmpl.replace( posStart+22, posEnd-posStart-22, loopResult );
+  if ( specialPosCnt ) {
+    tmpl.createDictionary( "SPECIAL_POS" );
+    tmpl.setValue( "SPECIAL_POS", "COUNT", QString::number( specialPosCnt ) );
+  }
 
   /* now replace stuff in the whole document */
-  replaceTag( tmpl,
-              TAG( "DATE" ),
-              KGlobal().locale()->formatDate( archive.date(), true ) );
-  replaceTag( tmpl,
-              TAG( "DOCTYPE" ),
-              archive.docType() );
-  replaceTag( tmpl,
-              TAG( "ADDRESS" ),
-              archive.address() );
-  replaceTag( tmpl,
-              TAG( "DOCID" ),
-              archive.ident() );
-  replaceTag( tmpl,
-              TAG( "SALUT" ),
-              archive.salut() );
-  replaceTag( tmpl,
-              TAG( "GOODBYE" ),
-              archive.goodbye() );
-  replaceTag( tmpl,
-              TAG( "PRETEXT" ),
-              archive.preText(), true ); // multiline
-  replaceTag( tmpl,
-              TAG( "POSTTEXT" ),
-              archive.postText(), true ); // multiline
-
-  replaceTag( tmpl,
-              TAG( "BRUTTOSUM" ),
-              archive.bruttoSum().toString() );
-  replaceTag( tmpl,
-              TAG( "NETTOSUM" ),
-              archive.nettoSum().toString() );
+  tmpl.setValue( TAG( "DATE" ), KGlobal().locale()->formatDate( archive.date(), true ) );
+  tmpl.setValue( TAG( "DOCTYPE" ), archive.docType() );
+  tmpl.setValue( TAG( "ADDRESS" ), archive.address() );
+  tmpl.setValue( TAG( "DOCID" ),   archive.ident() );
+  tmpl.setValue( TAG( "SALUT" ),   archive.salut() );
+  tmpl.setValue( TAG( "GOODBYE" ), archive.goodbye() );
+  tmpl.setValue( TAG( "PRETEXT" ),   rmlString( archive.preText() ) );
+  tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( archive.postText() ) );
+  tmpl.setValue( TAG( "BRUTTOSUM" ), archive.bruttoSum().toString() );
+  tmpl.setValue( TAG( "NETTOSUM" ),  archive.nettoSum().toString() );
 
   h.setNum( archive.vat(), 'f', 1 );
-  replaceTag( tmpl,
-              TAG( "VAT" ),
-              h );
-  replaceTag( tmpl,
-              TAG( "VATSUM" ),
-              archive.vatSum().toString() );
+  tmpl.setValue( TAG( "VAT" ), h );
+  tmpl.setValue( TAG( "VATSUM" ), archive.vatSum().toString() );
 
-  replaceTag( tmpl,
-              TAG( "IMAGE" ) );
-
-  tmpl = replaceOwnAddress( tmpl );
-
-  return tmpl;
-}
+  // tmpl.setValue( TAG( "IMAGE" ), archive.
 
 
-QString ReportGenerator::replaceOwnAddress( QString& tmpl )
-{
   KABC::Addressee contact;
   contact = KABC::StdAddressBook::self()->whoAmI();
 
-  replaceTag( tmpl,
-              TAG( "MY.NAME" ),
-              contact.realName() );
-
-  replaceTag( tmpl,
-              TAG( "MY.ORGANISATION" ),
-              contact.organization() );
-
-  replaceTag( tmpl,
-              TAG( "MY.URL" ),
-              contact.url().prettyURL() );
-
-  replaceTag( tmpl,
-              TAG( "MY.EMAIL" ),
-              contact.preferredEmail() );
-
-  replaceTag( tmpl,
-              TAG( "MY.PHONE" ),
-              contact.phoneNumber( KABC::PhoneNumber::Work ).number() );
-
-  replaceTag( tmpl,
-              TAG( "MY.FAX" ),
-              contact.phoneNumber( KABC::PhoneNumber::Fax ).number() );
-
-  replaceTag( tmpl,
-              TAG( "MY.CELL" ),
-              contact.phoneNumber( KABC::PhoneNumber::Cell ).number() );
+  tmpl.setValue( TAG( "MY_NAME" ), contact.realName() );
+  tmpl.setValue( TAG( "MY_ORGANISATION" ), contact.organization() );
+  tmpl.setValue( TAG( "MY_URL" ), contact.url().prettyURL() );
+  tmpl.setValue( TAG( "MY_EMAIL" ), contact.preferredEmail() );
+  tmpl.setValue( TAG( "MY_PHONE" ), contact.phoneNumber( KABC::PhoneNumber::Work ).number() );
+  tmpl.setValue( TAG( "MY_FAX" ), contact.phoneNumber( KABC::PhoneNumber::Fax ).number() );
+  tmpl.setValue( TAG( "MY_CELL" ), contact.phoneNumber( KABC::PhoneNumber::Cell ).number() );
 
   KABC::Address address;
   address = contact.address( KABC::Address::Work );
-  replaceTag( tmpl,
-              TAG( "MY.POSTBOX" ),
+  tmpl.setValue( TAG( "MY_POSTBOX" ),
               address.postOfficeBox() );
-  replaceTag( tmpl,
-              TAG( "MY.EXTENDED" ),
-              address.extended() );
-  replaceTag( tmpl,
-              TAG( "MY.STREET" ),
-              address.street() );
-  replaceTag( tmpl,
-              TAG( "MY.LOCALITY" ),
-              address.locality() );
-  replaceTag( tmpl,
-              TAG( "MY.REGION" ),
-              address.region() );
-  replaceTag( tmpl,
-              TAG( "MY.POSTCODE" ),
-              address.postalCode() );
-  replaceTag( tmpl,
-              TAG( "MY.COUNTRY" ),
-              address.country() );
-  replaceTag( tmpl,
-              TAG( "MY.REGION" ),
-              address.region() );
-  replaceTag( tmpl,
-              TAG( "MY.LABEL" ),
-              address.label() );
 
+  tmpl.setValue( TAG( "MY_EXTENDED" ),
+                 address.extended() );
+  tmpl.setValue( TAG( "MY_STREET" ),
+                 address.street() );
+  tmpl.setValue( TAG( "MY_LOCALITY" ),
+                 address.locality() );
+  tmpl.setValue( TAG( "MY_REGION" ),
+                 address.region() );
+  tmpl.setValue( TAG( "MY_POSTCODE" ),
+                 address.postalCode() );
+  tmpl.setValue( TAG( "MY_COUNTRY" ),
+                 address.country() );
+  tmpl.setValue( TAG( "MY_REGION" ),
+                 address.region() );
+  tmpl.setValue( TAG( "MY_LABEL" ),
+                 address.label() );
 
-  return tmpl;
+  return tmpl.expand();
 }
 
 QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const
@@ -327,16 +235,21 @@ QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const
 }
 
 
-QString ReportGenerator::rmlString( const QString& str ) const
+QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle ) const
 {
   QString rml;
 
+  QString style( paraStyle );
+  if ( style.isEmpty() ) style = "text";
+
   QStringList li = QStringList::split( "\n", escapeTrml2pdfXML( str ) );
-  rml = "<para style=\"text\">" + li.join( "</para><para style=\"text\">" ) + "</para>";
+  rml = QString( "<para style=\"%1\">" ).arg( style );
+  rml += li.join( QString( "</para><para style=\"%1\">" ).arg( style ) ) + "</para>";
   kdDebug() << "Returning " << rml << endl;
   return rml;
 }
 
+#if 0
 int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QString& rep, bool multiline )
 {
 
@@ -372,7 +285,7 @@ int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QStri
   }
   return 0;
 }
-
+#endif
 
 void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID, const QString& archId )
 {

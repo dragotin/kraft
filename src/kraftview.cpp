@@ -78,6 +78,7 @@
 #include "brunsrecord.h"
 #include "insertplantdialog.h"
 #include "templtopositiondialogbase.h"
+#include "doctype.h"
 
 #include <qtimer.h>
 
@@ -262,7 +263,8 @@ void KraftView::setupDocHeaderView()
     m_headerEdit = edit->docHeaderEdit();
 
     m_headerEdit->m_cbType->clear();
-    m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
+    // m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
+    m_headerEdit->m_cbType->insertStringList( DocType::allLocalised() );
 
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
              this, SLOT( slotDocTypeChanged( const QString& ) ) );
@@ -279,8 +281,6 @@ void KraftView::setupPositions()
     m_positionScroll = edit->positionScroll();
 
     connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddPosition() ) );
-    connect( edit, SIGNAL( catalogToggled( bool ) ),
-             SLOT( slotShowCatalog( bool ) ) );
 }
 
 void KraftView::redrawDocument( )
@@ -342,7 +342,9 @@ void KraftView::redrawDocument( )
     }
 
     redrawDocPositions( );
+    slotDocTypeChanged( doc->docType() );
     refreshPostCard();
+
     mModified = false;
 }
 
@@ -675,6 +677,15 @@ void KraftView::slotDocTypeChanged( const QString& newType )
 {
   kdDebug() << "Doc Type changed to " << newType << endl;
   mAssistant->slotSetDocType( newType );
+
+  DocType docType( newType );
+
+  PositionViewWidget *w = 0;
+
+  for ( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
+    w->slotEnableKindMenu( docType.allowAlternative() );
+  }
+
 }
 
 void KraftView::slotNewHeaderText( const QString& str )

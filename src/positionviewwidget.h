@@ -29,6 +29,7 @@
 class DocPosition;
 class KPopupMenu;
 class Geld;
+class QPopupMenu;
 
 class PositionViewWidget : public positionWidget
 {
@@ -64,6 +65,7 @@ public slots:
     void slotMenuAboutToShow();
     void slotSetState( State );
     void slotSetEnabled( bool );
+    void slotEnableKindMenu( bool );
 
 protected slots:
     void slotLockPosition();
@@ -92,6 +94,7 @@ private:
     int  mOrdNumber;
     DocPositionGuardedPtr mPositionPtr;
     KPopupMenu *mExecPopup;
+    QPopupMenu *mStateSubmenu;
     int  mDeleteId;
     int  mLockId;
     int  mUnlockId;

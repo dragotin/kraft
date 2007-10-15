@@ -49,15 +49,19 @@ protected slots:
   void slotWroteStdin( KProcess* );
   void slotRecStdout( KProcess *, char *, int );
   void slotRecStderr( KProcess *, char *, int );
-  QString readTemplate( const QString& );
-  QString replaceOwnAddress( QString& );
+  QString findTemplate( const QString& );
+  
 private:
-  QString replaceAllTags( const QString& );
   QString fillupTemplateFromArchive( const dbID& );
-  int replaceTag( QString&, const QString&, const QString& = QString(), bool = false );
+
+  QString registerDictionary( const QString&, const QString& ) const;
+  QString registerTag( const QString&, const QString& ) const;
+  QString registerDictTag( const QString&, const QString&, const QString& ) const;
+
+  
   QString escapeTrml2pdfXML( const QString& str ) const;
 
-  QString rmlString( const QString& str ) const;
+  QString rmlString( const QString& str, const QString& paraStyle = QString() ) const;
 
   ReportGenerator();
   QString mOutFile;

@@ -18,7 +18,6 @@ public:
 
 signals:
   void addPositionClicked();
-  void catalogToggled( bool enabled );
 
 private:
   KraftViewScroll *m_positionScroll;

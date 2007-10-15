@@ -19,6 +19,7 @@
 #include "filterheader.h"
 #include "defaultprovider.h"
 #include "kraftdoc.h"
+#include "doctype.h"
 
 #include <klocale.h>
 #include <kdebug.h>
@@ -70,7 +71,7 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
 
 void TextSelection::buildTextList( KraftDoc::Part part )
 {
-  QStringList docTypes = DefaultProvider::self()->docTypes();
+  QStringList docTypes = DocType::allLocalised();
   mDocTypeItemMap.clear();
 
   for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
@@ -88,7 +89,7 @@ void TextSelection::buildTextList( KraftDoc::Part part )
 
 void TextSelection::slotSelectDocType( const QString& doctype )
 {
-  QStringList docTypes = DefaultProvider::self()->docTypes();
+  QStringList docTypes = DocType::allLocalised();
   for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
     QListViewItem *item = mDocTypeItemMap[ ( *dtIt ) ];
 
