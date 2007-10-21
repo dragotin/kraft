@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>505</width>
-            <height>246</height>
+            <width>580</width>
+            <height>271</height>
         </rect>
     </property>
     <property name="caption">
@@ -21,7 +21,7 @@
         </property>
         <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>layout27</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -124,7 +124,7 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout4</cstring>
+                        <cstring>layout26</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -146,13 +146,13 @@
                                 <cstring>dmAmount</cstring>
                             </property>
                             <property name="maxValue">
-                                <number>20000</number>
+                                <number>2000</number>
                             </property>
                             <property name="lineStep">
-                                <number>0.1</number>
+                                <number>0.01</number>
                             </property>
                             <property name="value">
-                                <number>0.1</number>
+                                <number>0.01</number>
                             </property>
                             <property name="precision">
                                 <number>2</number>
@@ -161,6 +161,25 @@
                         <widget class="QComboBox">
                             <property name="name">
                                 <cstring>dmUnitCombo</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>à</string>
+                            </property>
+                        </widget>
+                        <widget class="KDoubleNumInput">
+                            <property name="name">
+                                <cstring>mPriceVal</cstring>
+                            </property>
+                            <property name="minValue">
+                                <number>0</number>
+                            </property>
+                            <property name="maxValue">
+                                <number>99999</number>
                             </property>
                         </widget>
                         <spacer>
@@ -175,7 +194,7 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>120</width>
+                                    <width>70</width>
                                     <height>20</height>
                                 </size>
                             </property>
@@ -188,6 +207,8 @@
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
     <includehint>knuminput.h</includehint>
 </includehints>
 </UI>

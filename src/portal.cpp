@@ -637,7 +637,7 @@ QString Portal::textWrap( const QString& t, unsigned int width )
 {
     QString re;
 
-    if( t.length() < width )
+    if( t.length() <= width )
     {
         re = t;
     }

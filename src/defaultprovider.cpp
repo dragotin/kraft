@@ -151,6 +151,10 @@ void DefaultProvider::deleteDocumentText( const DocText& dt )
   }
 }
 
+QString DefaultProvider::currencySymbol() const
+{
+  return KGlobal().locale()->currencySymbol();
+}
 
 DefaultProvider::~DefaultProvider()
 {

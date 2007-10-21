@@ -45,6 +45,8 @@ public:
   QString docType(); // the default document type for new docs
   DocTextList documentTexts( const QString&, KraftDoc::Part );
 
+  QString currencySymbol() const;
+
 private:
   void fillDocTextBuffer( const DocText&, QSqlRecord* );
 

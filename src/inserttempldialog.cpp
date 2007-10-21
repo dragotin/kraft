@@ -39,6 +39,7 @@
 
 #include "einheit.h"
 #include "unitmanager.h"
+#include "defaultprovider.h"
 
 InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
@@ -47,6 +48,12 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
 
   mBaseWidget = new insertTmplBase( w );
   mBaseWidget->dmUnitCombo->insertStringList( UnitManager::allUnits() );
+
+  mBaseWidget->mPriceVal->setSuffix( DefaultProvider::self()->currencySymbol() );
+
+  mBaseWidget->mPriceVal->setMinValue( 0 );
+  mBaseWidget->mPriceVal->setMaxValue( 1000000 );
+  mBaseWidget->mPriceVal->setPrecision( 2 );
 }
 
 void InsertTemplDialog::setDocPosition( DocPosition *dp )
@@ -58,6 +65,7 @@ void InsertTemplDialog::setDocPosition( DocPosition *dp )
 
     mBaseWidget->dmAmount->setValue( mParkPosition.amount() );
     mBaseWidget->dmUnitCombo->setCurrentText( mParkPosition.unit().einheit( 1.0 ) );
+    mBaseWidget->mPriceVal->setValue( mParkPosition.unitPrice().toDouble() );
 
     if ( mParkPosition.text().isEmpty() ) {
       mBaseWidget->dmHeaderText->setText( i18n( "Create a new Position" ) );
@@ -77,6 +85,7 @@ DocPosition InsertTemplDialog::docPosition()
 {
   mParkPosition.setText( mBaseWidget->dmTextEdit->text() );
   mParkPosition.setAmount( mBaseWidget->dmAmount->value() );
+  mParkPosition.setUnitPrice( Geld( mBaseWidget->mPriceVal->value() ) );
   int uid = UnitManager::getUnitIDSingular( mBaseWidget->dmUnitCombo->currentText() );
 
   mParkPosition.setUnit( UnitManager::getUnit( uid ) );

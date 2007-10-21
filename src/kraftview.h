@@ -45,6 +45,7 @@
 #include <qptrlist.h>
 
 #include "positionviewwidget.h"
+#include "catalogtemplate.h"
 
 class QScrollView;
 class DocHeaderEdit;
@@ -193,6 +194,7 @@ class KraftView : public KDialogBase
   DocAssistant *mAssistant;
   double mRememberAmount;
   QMap<dbID, CalcPartList> mCalculationsMap;
+  CatalogTemplateList      mNewTemplates;
   bool mModified;
 };
 

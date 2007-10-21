@@ -79,6 +79,7 @@
 #include "insertplantdialog.h"
 #include "templtopositiondialogbase.h"
 #include "doctype.h"
+#include "catalogtemplate.h"
 
 #include <qtimer.h>
 
@@ -212,6 +213,8 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   if ( !pos.isNull() ) move( pos );
 
   mAssistant->slotSelectDocPart( KraftDoc::Header );
+
+  mNewTemplates.setAutoDelete( true );
 }
 
 KraftView::~KraftView()
@@ -717,6 +720,11 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
   DocPosition *dp = new DocPosition();
   QSize s;
 
+  bool newTemplate = false;
+  if ( !tmpl ) {
+    newTemplate = true;
+  }
+
   if ( kat ) {
     // For empty template in plants dialog come up with standard dialog
     if ( kat->type() == TemplateCatalog || ( !tmpl && kat->type() == PlantCatalog ) ) {
@@ -766,10 +774,33 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 
       // store the initial size of the template-to-doc-pos dialogs
       s = dia->size();
-      if ( kat->type() == PlantCatalog ) {
-        KraftSettings::self()->setPlantTemplateToPosDialogSize( s );
-      } else {
+
+      if ( kat->type() == TemplateCatalog ) {
         KraftSettings::self()->setTemplateToPosDialogSize( s );
+
+        // if it's a new position, create a catalog template in the incoming chapter
+        if ( newTemplate ) {
+          FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
+                                                       dp->unit().id(),
+                                                       -1 /* chapter */,
+                                                       1, /* CalcKind = Manual */
+                                                       QDateTime::currentDateTime(),
+                                                       QDateTime::currentDateTime() );
+          flos->setManualPrice( dp->unitPrice() );
+          mNewTemplates.append( flos );
+        }
+      } else if ( kat->type() == MaterialCatalog ) {
+        KraftSettings::self()->setTemplateToPosDialogSize( s );
+        if ( newTemplate ) {
+
+        }
+
+      } else if ( kat->type() == PlantCatalog ) {
+        KraftSettings::self()->setPlantTemplateToPosDialogSize( s );
+        if ( newTemplate ) {
+
+        }
+
       }
       KraftSettings::self()->writeConfig();
 
@@ -928,6 +959,12 @@ void KraftView::slotOk()
     KraftSettings::self()->setDocViewPosition( pos() );
     KraftSettings::self()->writeConfig();
 
+    // Save newly created templates
+    for ( CatalogTemplate *ct = mNewTemplates.first(); ct; ct = mNewTemplates.next() ) {
+      ct->save();
+    }
+    mNewTemplates.clear();
+
     emit viewClosed( true );
     KDialogBase::slotOk(  );
 }
@@ -967,6 +1004,9 @@ void KraftView::slotCancel()
     kdDebug() << "Document refetch from database" << endl;
     doc->reloadDocument();
   }
+
+  mNewTemplates.clear();
+
   emit viewClosed( false );
   KDialogBase::slotCancel();
 }

@@ -31,7 +31,8 @@
 #include "stockmaterial.h"
 
 FloskelTemplate::FloskelTemplate()
-    : m_einheitID(0),
+    : CatalogTemplate(),
+      m_einheitID(0),
       m_templID(-1),
       m_chapter(0),
       m_gewinn(0),
@@ -48,7 +49,8 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
                                   int einheit, int chapter, int calcKind,
                                   const QDateTime& modDate,
                                   const QDateTime& createDate )
- : m_text(text),
+ : CatalogTemplate(),
+   m_text(text),
    m_einheitID(einheit),
    m_templID(tID),
    m_chapter(chapter),
@@ -73,7 +75,8 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
 }
 
 FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
-    : m_text( templ.m_text ),
+    : CatalogTemplate(),
+      m_text( templ.m_text ),
       m_einheitID( templ.m_einheitID ),
       m_templID( templ.m_templID ),
       m_chapter( templ.m_chapter ),

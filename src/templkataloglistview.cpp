@@ -68,7 +68,7 @@ void TemplKatalogListView::addCatalogDisplay( const QString& katName )
     for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
         QString chapter = *it;
         KListViewItem *katItem = chapterItem(chapter);
-        // kdDebug() << "KatItem is " << katItem << endl;
+        kdDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
         FloskelTemplateList katList = catalog->getFlosTemplates(chapter);
         // kdDebug() << "Items in chapter " << chapter << ": " << katList.count() << endl;
         FloskelTemplateListIterator flosIt( katList );
@@ -117,6 +117,7 @@ void TemplKatalogListView::slFreshupItem( QListViewItem *item, FloskelTemplate *
 
     Geld g     = tmpl->einheitsPreis();
     QString ck = tmpl->calcKindString();
+    kdDebug() << "#################################" << tmpl->getText() << ": " << tmpl->getText().length()<< endl;
     QString t  = Portal::textWrap(tmpl->getText(), 60);
 
     item->setText( 0, t );

@@ -66,7 +66,7 @@ protected:
     QPtrDict<void> m_dataDict;
     QIntDict<KListViewItem> m_catalogDict;
     QString m_catalogName;
-    QPopupMenu *mMenu;
+    KPopupMenu *mMenu;
 };
 
 #endif

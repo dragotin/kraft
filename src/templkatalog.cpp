@@ -85,7 +85,6 @@ int TemplKatalog::load()
         if( modDate[10] == 'T' ) {
             modDate = modDate.replace( 10, 1, QChar(' ') );
             modDt = QDateTime::fromString(modDate, Qt::ISODate );
-            // kdDebug() << "Neuer Modify-Date string: konvertiert" << modDate << endl;
         }
 
         QDateTime enterDt = cur.value("enterDatum").asDateTime();
@@ -256,26 +255,19 @@ FloskelTemplateList TemplKatalog::getFlosTemplates( const QString& chapter )
         load();
     }
 
-    if( chap == -1 )
-    {
-        return m_flosList;
-    }
-    else
-    {
-        FloskelTemplateListIterator it(m_flosList);
-        FloskelTemplate *tmpl;
+    FloskelTemplateListIterator it(m_flosList);
+    FloskelTemplate *tmpl;
 
-        while( (tmpl = it.current()) != 0)
-        {
-            ++it;
-            int haveChap = tmpl->getChapterID();
+    while( (tmpl = it.current()) != 0)
+    {
+      ++it;
+      int haveChap = tmpl->getChapterID();
 
-            // kdDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
-            if( haveChap == chap )
-            {
-                resultList.append( tmpl );
-            }
-        }
+      // kdDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
+      if( haveChap == chap )
+      {
+        resultList.append( tmpl );
+      }
     }
     return resultList;
 }

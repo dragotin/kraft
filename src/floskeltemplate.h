@@ -26,6 +26,7 @@
 #include "kraftglobals.h"
 #include "einheit.h"
 #include "calcpart.h"
+#include "catalogtemplate.h"
 
 /**
   *@author Klaas Freitag
@@ -38,7 +39,7 @@ class TemplateSaverBase;
 class QDomDocument;
 class QDomElement;
 
-class FloskelTemplate {
+class FloskelTemplate: public CatalogTemplate {
 public:
     FloskelTemplate();
     FloskelTemplate(int tID, const QString& text, int einheit,

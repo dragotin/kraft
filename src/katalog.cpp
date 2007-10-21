@@ -18,6 +18,7 @@
 #include <qsqlcursor.h>
 #include <qdom.h>
 #include <kdebug.h>
+#include <klocale.h>
 
 #include "floskeltemplate.h"
 #include "dbids.h"
@@ -34,6 +35,8 @@
  *  A name must be given, which is displayed for the root element in the
  *
  */
+
+const QString Katalog::UnsortedChapter( i18n( "unsorted" ) );
 
 Katalog::Katalog(const QString& name):
     m_name(name),
@@ -98,6 +101,8 @@ QStringList Katalog::getKatalogChapters( bool freshup )
       dbID *id = new dbID(katID);
       m_chapterIDs->insert(katName, id);
     }
+    m_chapters.append( UnsortedChapter );
+    m_chapterIDs->insert( UnsortedChapter, new dbID() );
   }
 
   return m_chapters;
@@ -105,7 +110,11 @@ QStringList Katalog::getKatalogChapters( bool freshup )
 
 int Katalog::chapterID(const QString& chapter)
 {
-    if( m_chapterIDs->size() == 0 )
+  if ( chapter == UnsortedChapter ) {
+    return -1;
+  }
+
+  if( m_chapterIDs->size() == 0 )
     {
         // fill up the dict of ids if still empty.
         getKatalogChapters();
@@ -120,6 +129,10 @@ int Katalog::chapterID(const QString& chapter)
 
 QString Katalog::chapterName(const dbID& id)
 {
+  if ( ! id.isOk() ) {
+    return UnsortedChapter;
+  }
+
     if( m_chapterIDs->size() == 0 )
     {
         // fill up the dict of ids if still empty.

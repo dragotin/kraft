@@ -28,13 +28,14 @@
 #include "fixcalcdialog.h"
 #include "fixcalcpart.h"
 #include "stdsatzman.h"
+#include "defaultprovider.h"
 
 
 FixCalcDialog::FixCalcDialog(QWidget *parent, const char* name, bool modal )
     : calcdetailFix( parent, name, modal ),
       m_part(0)
 {
-
+  m_inpPreis->setSuffix( DefaultProvider::self()->currencySymbol() );
 }
 
 FixCalcDialog::FixCalcDialog(FixCalcPart *cp, QWidget *parent, const char* name, bool modal )
@@ -42,6 +43,7 @@ FixCalcDialog::FixCalcDialog(FixCalcPart *cp, QWidget *parent, const char* name,
       m_part(0)
 {
     setCalcPart(cp);
+  m_inpPreis->setSuffix( DefaultProvider::self()->currencySymbol() );
 }
 
 void FixCalcDialog::setCalcPart( FixCalcPart *cp )

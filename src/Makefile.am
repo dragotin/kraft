@@ -5,7 +5,7 @@
 
 lib_LTLIBRARIES = libbruns.la
 
-libbruns_la_SOURCES = katalog.cpp katalogman.cpp  brunskatalog.cpp brunsrecord.cpp \
+libbruns_la_SOURCES = catalogtemplate.cpp katalog.cpp katalogman.cpp  brunskatalog.cpp brunsrecord.cpp \
 kataloglistview.cpp flostab.ui katalogview.cpp brunskataloglistview.cpp brunskatalogview.cpp \
 filterheader.cpp catalogchapteredit.cpp docposition.cpp kraftdb.cpp \
 geld.cpp einheit.cpp katalogsettings.kcfgc attribute.cpp

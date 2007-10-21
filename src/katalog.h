@@ -82,10 +82,12 @@ public:
     bool isReadOnly() { return m_readOnly; }
     void setReadOnly( bool state ) { m_readOnly = state; }
 
-
     virtual QDomDocument toXML();
     virtual void writeXMLFile();
+
 protected:
+    static const QString UnsortedChapter;
+
     dbIdDict   *m_chapterIDs;
     QStringList m_chapters;
     QString     m_name;

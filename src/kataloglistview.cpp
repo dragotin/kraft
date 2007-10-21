@@ -43,10 +43,9 @@ KatalogListView::KatalogListView( QWidget *parent, bool ) : KListView(parent),
     setSelectionMode(QListView::Single);
     setRootIsDecorated(false);
     setSorting(-1);
-    mMenu = new QPopupMenu( this );
-    // mMenu->insertTitle( i18n("Template Actions") );
-    // connect( this, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint& , int ) ),
-    //           this, SLOT( slotRMB( QListViewItem *, const QPoint &, int ) ) );
+    mMenu = new KPopupMenu( this );
+    mMenu->insertTitle( i18n("Template Catalog") );
+
     connect( this, SIGNAL( contextMenu( KListView*, QListViewItem *, const QPoint& ) ),
                this, SLOT( slotRMB( KListView*, QListViewItem *, const QPoint & ) ) );
 }
@@ -91,6 +90,8 @@ void KatalogListView::setupChapters()
     repaint();
     const QStringList chapters = catalog->getKatalogChapters( true );
     kdDebug() << "Have count of chapters: " << chapters.size() << endl;
+    QPixmap icon = getCatalogIcon();
+
     for ( QStringList::ConstIterator it = chapters.end(); it != chapters.begin();  ) {
       --it;
       QString chapter = *it;
@@ -99,8 +100,13 @@ void KatalogListView::setupChapters()
       katItem->setText( 4, QString::number( catalog->chapterID( chapter ) ) );
       m_catalogDict.insert( catalog->chapterID(chapter), katItem );
 
-      katItem->setPixmap(0, getCatalogIcon());
+      katItem->setPixmap( 0, icon );
     }
+
+    KListViewItem *katItem = new KListViewItem( m_root, catalog->chapterName( dbID() ) );
+    katItem->setText( 4, QString::number( -1 ) );
+    m_catalogDict.insert( -1, katItem );
+    katItem->setPixmap( 0,  SmallIcon( "folder_inbox" ) );
 }
 
 KListViewItem *KatalogListView::chapterItem( const QString& chapName )
