@@ -117,7 +117,6 @@ void TemplKatalogListView::slFreshupItem( QListViewItem *item, FloskelTemplate *
 
     Geld g     = tmpl->einheitsPreis();
     QString ck = tmpl->calcKindString();
-    kdDebug() << "#################################" << tmpl->getText() << ": " << tmpl->getText().length()<< endl;
     QString t  = Portal::textWrap(tmpl->getText(), 60);
 
     item->setText( 0, t );
