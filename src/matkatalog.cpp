@@ -38,6 +38,12 @@ MatKatalog::MatKatalog()
 
 }
 
+void MatKatalog::reload( dbID )
+{
+  mAllMaterial.clear();
+  load();
+}
+
 int MatKatalog::load()
 {
   Katalog::load();

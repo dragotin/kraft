@@ -306,6 +306,7 @@ void FlosTemplDialog::accept()
 
         if( m_template->save() ) {
             d_calcTempl::accept();
+            KatalogMan::self()->notifyKatalogChange( m_katalog, m_template->getTemplID() );
             emit( editAccepted( m_template ) );
         } else {
             KMessageBox::error( this, i18n("Saving of this template failed, sorry"),

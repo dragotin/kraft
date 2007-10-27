@@ -40,7 +40,7 @@ class PlantPriceInfo
 public:
   PlantPriceInfo( double price, QDate date )
     : mPrice( price ), mLastUpdateDate( date ) {
-
+    
   }
   PlantPriceInfo() {
 
@@ -73,6 +73,9 @@ public:
   void setDocPosition( DocPosition* );
 
   DocPosition docPosition();
+
+  void setCatalogChapters( const QStringList& );
+  QString chapter() const;
 
 protected slots:
   void slotSizeListSelectionChanged();

@@ -36,6 +36,7 @@ public:
     ~BrunsKatalog();
 
     virtual int load();
+    void reload( dbID );
 
     virtual KatalogType type() {
       return PlantCatalog;

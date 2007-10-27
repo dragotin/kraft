@@ -34,6 +34,9 @@ public:
   ~TemplToPositionDialogBase( );
 
   virtual void setDocPosition( DocPosition* ) = 0;
+  virtual void setCatalogChapters( const QStringList& ) = 0;
+  virtual QString chapter() const = 0;
+
   void setPositionList( DocPositionList, int );
   int insertAfterPosition();
   virtual DocPosition docPosition() = 0;

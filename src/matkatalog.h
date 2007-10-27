@@ -43,6 +43,8 @@ public:
   int getEntriesPerChapter( const QString& = QString() ) { return 0; } // FIXME
 
   int load();
+  void reload( dbID );
+
   KatalogType type() { return MaterialCatalog; }
   StockMaterialList getRecordList( const QString& );
   void addNewMaterial( StockMaterial* );

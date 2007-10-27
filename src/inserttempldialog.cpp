@@ -27,6 +27,8 @@
 #include <qtextedit.h>
 #include <qlabel.h>
 #include <qcombobox.h>
+#include <qcheckbox.h>
+#include <qbuttongroup.h>
 
 // include files for KDE
 #include <knuminput.h>
@@ -36,7 +38,7 @@
 
 #include "inserttmplbase.h"
 #include "templtopositiondialogbase.h"
-
+#include "katalog.h"
 #include "einheit.h"
 #include "unitmanager.h"
 #include "defaultprovider.h"
@@ -54,6 +56,9 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   mBaseWidget->mPriceVal->setMinValue( 0 );
   mBaseWidget->mPriceVal->setMaxValue( 1000000 );
   mBaseWidget->mPriceVal->setPrecision( 2 );
+  // hide the chapter combo by default
+  mBaseWidget->mKeepGroup->hide();
+  enableButtonSeparator( false );
 }
 
 void InsertTemplDialog::setDocPosition( DocPosition *dp )
@@ -98,6 +103,20 @@ DocPosition InsertTemplDialog::docPosition()
 InsertTemplDialog::~InsertTemplDialog()
 {
 
+}
+
+void InsertTemplDialog::setCatalogChapters( const QStringList& chapters )
+{
+  if ( chapters.count() > 0 ) {
+    mBaseWidget->mKeepGroup->show();
+    mBaseWidget->mComboChapter->insertStringList( chapters );
+    mBaseWidget->mComboChapter->setCurrentText( Katalog::UnsortedChapter );
+  }
+}
+
+QString InsertTemplDialog::chapter() const
+{
+  return mBaseWidget->mComboChapter->currentText();
 }
 
 #include "inserttempldialog.moc"

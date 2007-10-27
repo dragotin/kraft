@@ -27,6 +27,7 @@
 #include "kraftdb.h"
 #include "katalogman.h"
 #include "katalog.h"
+#include "templkatalog.h"
 
 static KStaticDeleter<KatalogMan> selfDeleter;
 
@@ -102,6 +103,38 @@ Katalog *KatalogMan::getKatalog(const QString& name)
     return kat;
 }
 
+// this is called after an template has been changed in the database.
+void KatalogMan::notifyKatalogChange( Katalog* k, dbID )
+{
+  // FIXME: More efficient catalog reloading.
+  k->reload( dbID() );
+
+  // if ( id.isOk() ) {
+    // update a existing item
+  // } else {
+    // it's a new item saved to the db now.
+  // }
+}
+
+
+/*
+ * currently, there is only one catalog of type Template by design, see
+ * for example in templatesaverdb.cpp or the database design where only
+ * one template catalog is in use.
+ */
+
+Katalog* KatalogMan::defaultTemplateCatalog()
+{
+  QDictIterator<Katalog> it( m_katalogDict ); // See QDictIterator
+  for( ; it.current(); ++it ) {
+    Katalog *k = it.current();
+    if ( k->type() == TemplateCatalog ) {
+      kdDebug() << "Found default template catalog: " << k->getName() << endl;
+      return k;
+    }
+  }
+  return 0;
+}
 
 /* END */
 

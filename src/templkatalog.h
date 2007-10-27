@@ -39,6 +39,7 @@ public:
 
     int load(const QString&);
     int load();
+    void reload( dbID );
 
     /** No descriptions */
     FloskelTemplateList getFlosTemplates( const QString& chapter );

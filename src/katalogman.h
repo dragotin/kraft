@@ -42,8 +42,11 @@ public:
 
     QStringList allKatalogNames();
     Katalog* getKatalog(const QString&);
+    Katalog* defaultTemplateCatalog();
     void registerKatalog( Katalog* );
     QString catalogTypeString( const QString& catName );
+    void notifyKatalogChange( Katalog*, dbID );
+    
 private:
     KatalogMan();
     static KatalogMan *mSelf;

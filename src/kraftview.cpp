@@ -725,36 +725,38 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
     newTemplate = true;
   }
 
-  if ( kat ) {
-    // For empty template in plants dialog come up with standard dialog
-    if ( kat->type() == TemplateCatalog || ( !tmpl && kat->type() == PlantCatalog ) ) {
-      dia = new InsertTemplDialog( this );
-      if ( tmpl ) {
+  if ( newTemplate ) {
+    // New templates may only go to the standard template catalog, FIXME
+    dia = new InsertTemplDialog( this );
+    dia->setCatalogChapters( kat->getKatalogChapters() );
+  } else {
+    // it's not a new template
+    if ( kat ) {
+      // For empty template in plants dialog come up with standard dialog
+      if ( kat->type() == TemplateCatalog ) {
+        dia = new InsertTemplDialog( this );
         FloskelTemplate *ftmpl = static_cast<FloskelTemplate*>( tmpl );
         dp->setText( ftmpl->getText() );
         dp->setUnit( ftmpl->einheit() );
         dp->setUnitPrice( ftmpl->einheitsPreis() );
-      }
-      s = KraftSettings::self()->templateToPosDialogSize();
 
-    } else if ( kat->type() == MaterialCatalog ) {
-      dia = new InsertTemplDialog( this );
-      if ( tmpl ) {
+        s = KraftSettings::self()->templateToPosDialogSize();
+
+      } else if ( kat->type() == MaterialCatalog ) {
+        dia = new InsertTemplDialog( this );
         StockMaterial *mat = static_cast<StockMaterial*>( tmpl );
         dp->setText( mat->name() );
         dp->setUnit( mat->getUnit() );
         dp->setUnitPrice( mat->salesPrice() );
-      }
-      s = KraftSettings::self()->templateToPosDialogSize();
+        s = KraftSettings::self()->templateToPosDialogSize();
 
-    } else if ( kat->type() == PlantCatalog ) {
-      dia = new InsertPlantDialog( this );
-      InsertPlantDialog *plantDia = static_cast<InsertPlantDialog*>( dia );
-      if ( tmpl ) {
+      } else if ( kat->type() == PlantCatalog ) {
+        dia = new InsertPlantDialog( this );
+        InsertPlantDialog *plantDia = static_cast<InsertPlantDialog*>( dia );
         BrunsRecord *bruns = static_cast<BrunsRecord*>( tmpl );
         plantDia->setSelectedPlant( bruns );
+        s = KraftSettings::self()->plantTemplateToPosDialogSize();
       }
-      s = KraftSettings::self()->plantTemplateToPosDialogSize();
     }
   }
 
@@ -780,9 +782,11 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 
         // if it's a new position, create a catalog template in the incoming chapter
         if ( newTemplate ) {
+          const QString chapter = dia->chapter();
+
           FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
                                                        dp->unit().id(),
-                                                       -1 /* chapter */,
+                                                       kat->chapterID( chapter ),
                                                        1, /* CalcKind = Manual */
                                                        QDateTime::currentDateTime(),
                                                        QDateTime::currentDateTime() );
@@ -960,10 +964,15 @@ void KraftView::slotOk()
     KraftSettings::self()->writeConfig();
 
     // Save newly created templates
-    for ( CatalogTemplate *ct = mNewTemplates.first(); ct; ct = mNewTemplates.next() ) {
-      ct->save();
+    if ( mNewTemplates.count() > 0 ) {
+      for ( CatalogTemplate *ct = mNewTemplates.first(); ct; ct = mNewTemplates.next() ) {
+        ct->save();
+      }
+      mNewTemplates.clear();
+      // reload the entire katalog
+      Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
+      KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
     }
-    mNewTemplates.clear();
 
     emit viewClosed( true );
     KDialogBase::slotOk(  );

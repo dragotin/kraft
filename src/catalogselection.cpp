@@ -89,27 +89,6 @@ void CatalogSelection::slotCatalogDoubleClicked( QListViewItem*,  const QPoint&,
   emit actionAppendPosition();
 }
 
-#if 0
-void CatalogSelection::slotAppendToDoc( QListViewItem * )
-{
-  Katalog *kat = currentSelectedKat();
-  const QString currentCat = mCatalogSelector->currentText();
-  /*
-   * FIXME: Here we have to promote the Katalog and the selected floskel
-   * to be able to do things depending on the kind of katalog like
-   * calculation parts taking etc.
-   */
-  KatalogListView *lv = mWidgetDict[ currentCat ];
-  if ( lv ) {
-    void *flosPtr = lv->currentItemData();
-
-    emit positionSelected( kat, flosPtr );
-  } else {
-    kdDebug() << "ERR: No listview stored for catalog " << currentCat << endl;
-  }
-}
-#endif
-
 void *CatalogSelection::currentSelectedPosition()
 {
   const QString currentCat = mCatalogSelector->currentText();

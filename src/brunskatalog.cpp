@@ -125,6 +125,11 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
     return res;
 }
 
+void BrunsKatalog::reload( dbID )
+{
+
+}
+
 int BrunsKatalog::load()
 {
   int cnt = 0;

@@ -213,6 +213,16 @@ InsertPlantDialog::~InsertPlantDialog()
 
 }
 
+void InsertPlantDialog::setCatalogChapters( const QStringList& )
+{
+
+}
+
+QString InsertPlantDialog::chapter() const
+{
+  return QString();
+}
+
 #include "insertplantdialog.moc"
 
 /* END */

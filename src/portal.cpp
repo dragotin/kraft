@@ -582,8 +582,6 @@ void Portal::slotOpenKatalog(const QString& kat)
 {
     kdDebug() << "opening Katalog " << kat << endl;
 
-    // FIXME: Besser Unterscheidung der Kataloge
-
     if ( mKatalogViews.contains( kat ) ) {
       // bring up the katalog view window.
       kdDebug() << "Katalog " << kat << " already open in a view" << endl;

@@ -38,11 +38,19 @@ class QDomDocument;
 class Katalog
 {
 public:
+    static const QString UnsortedChapter;
+    
     Katalog(const QString& name);
     Katalog();
     virtual ~Katalog();
 
     virtual int load();
+
+    /**
+     * reload the item with the given id or the entire catalog in case
+     * the id is not valid.
+     */
+    virtual void reload( dbID ) = 0;
 
     virtual void setName( const QString& );
     virtual QString getName( ) const;
@@ -86,7 +94,6 @@ public:
     virtual void writeXMLFile();
 
 protected:
-    static const QString UnsortedChapter;
 
     dbIdDict   *m_chapterIDs;
     QStringList m_chapters;

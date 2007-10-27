@@ -55,6 +55,13 @@ TemplKatalog::~TemplKatalog()
 
 }
 
+void TemplKatalog::reload( dbID )
+{
+  kdDebug() << "**** RELOADING katalog ****" << endl;
+  m_flosList.clear();
+  load();
+}
+
 int TemplKatalog::load()
 {
     Katalog::load();
