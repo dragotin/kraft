@@ -193,7 +193,9 @@ bool KraftDB::checkSchemaVersion( QWidget *parent )
 {
   kdDebug() << "The country setting is " << KGlobal().locale()->country() << endl;
 
+  bool reinit = false;
   if ( m_db->tables().contains( "kraftsystem" ) == 0 ) {
+    reinit = true;
     if ( ! createDatabase( parent ) ) {
       kdDebug() << "Failed to create the database, returning. Thats a bad condition." << endl;
       return false;
@@ -214,7 +216,7 @@ bool KraftDB::checkSchemaVersion( QWidget *parent )
     kdDebug() << "Kraft Schema Version not sufficient: " << currentVer << endl;
 
     emit statusMessage( i18n( "Database schema not up to date" ) );
-    if( KMessageBox::warningYesNo( parent,
+    if( reinit || KMessageBox::warningYesNo( parent,
                                  i18n( "This Kraft database schema is not up to date "
                                        "(it is version %1 instead of the required version %2).\n"
                                        "Kraft is able to update it to the new version automatically.\n"
@@ -223,10 +225,10 @@ bool KraftDB::checkSchemaVersion( QWidget *parent )
                                    .arg(  currentVer ).arg( KRAFT_REQUIRED_SCHEMA_VERSION ),
                                  i18n("Database Schema Update") ) == KMessageBox::Yes ) {
 
-      int allCmds = 0;
-      int sqlc = 0;
 
       while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
+        int sqlc = 0;
+        int allCmds = 0;
         ++currentVer;
         const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
         sqlc = playSqlFile( migrateFilename, allCmds );
@@ -250,7 +252,7 @@ bool KraftDB::checkSchemaVersion( QWidget *parent )
         }
       }
       /* Now update to the required schema version */
-      if ( ok && allCmds == sqlc ) {
+      if ( ok ) {
         q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
                 + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
       }
