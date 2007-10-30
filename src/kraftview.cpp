@@ -765,7 +765,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       dp->setAmount( mRememberAmount );
     }
 
-    dia->setDocPosition( dp );
+    dia->setDocPosition( dp, newTemplate );
 
     dia->setPositionList( currentPositionList(), newpos );
 

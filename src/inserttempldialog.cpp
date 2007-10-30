@@ -56,12 +56,13 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   mBaseWidget->mPriceVal->setMinValue( 0 );
   mBaseWidget->mPriceVal->setMaxValue( 1000000 );
   mBaseWidget->mPriceVal->setPrecision( 2 );
+
   // hide the chapter combo by default
   mBaseWidget->mKeepGroup->hide();
   enableButtonSeparator( false );
 }
 
-void InsertTemplDialog::setDocPosition( DocPosition *dp )
+void InsertTemplDialog::setDocPosition( DocPosition *dp, bool isNew )
 {
   if ( dp ) {
     mParkPosition = *dp;
@@ -77,8 +78,12 @@ void InsertTemplDialog::setDocPosition( DocPosition *dp )
     } else {
       mBaseWidget->dmHeaderText->setText( i18n( "Create a new Position from Template" ) );
     }
+    if ( isNew ) {
+      mBaseWidget->dmTextEdit->setFocus();
+    } else {
+      mBaseWidget->dmAmount->setFocus();
+    }
   }
-  mBaseWidget->dmAmount->setFocus();
 }
 
 QComboBox *InsertTemplDialog::getPositionCombo()

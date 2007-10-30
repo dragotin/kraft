@@ -32,7 +32,7 @@ public:
   InsertTemplDialog( QWidget* );
   ~InsertTemplDialog();
 
-  void setDocPosition( DocPosition * );
+  void setDocPosition( DocPosition*, bool );
   DocPosition docPosition();
 
   void setCatalogChapters( const QStringList& );
