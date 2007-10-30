@@ -9,12 +9,13 @@ CREATE TABLE attributes (
 );
 
 # message Creating attributes for archived documents
-CREATE TABLE archdocAttribs (
-  archDocID  INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE archPosAttribs (
+  archPosAttribId INT NOT NULL AUTO_INCREMENT,
+  archDocID  INT NOT NULL,
   name       VARCHAR(255),
   value      VARCHAR(255),
 
-  PRIMARY KEY( archDocID )
+  PRIMARY KEY( archPosAttribId )
 );
 
 # message Adding position type and overall price ot archdocpositions
