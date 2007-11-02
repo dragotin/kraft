@@ -42,6 +42,7 @@
 #include "einheit.h"
 #include "unitmanager.h"
 #include "defaultprovider.h"
+#include "kraftsettings.h"
 
 InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
@@ -54,8 +55,12 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   mBaseWidget->mPriceVal->setSuffix( DefaultProvider::self()->currencySymbol() );
 
   mBaseWidget->mPriceVal->setMinValue( 0 );
-  mBaseWidget->mPriceVal->setMaxValue( 1000000 );
+  mBaseWidget->mPriceVal->setMaxValue( 100000 );
   mBaseWidget->mPriceVal->setPrecision( 2 );
+  mBaseWidget->dmAmount->setPrecision( 2 );
+  mBaseWidget->dmAmount->setRange( 0, 100000, 1 );
+  mBaseWidget->dmAmount->setLineStep( 1 );
+  mBaseWidget->dmAmount->setSteps( 1, 10 );
 
   // hide the chapter combo by default
   mBaseWidget->mKeepGroup->hide();
@@ -107,7 +112,11 @@ DocPosition InsertTemplDialog::docPosition()
 
 InsertTemplDialog::~InsertTemplDialog()
 {
-
+  QString c = mBaseWidget->mComboChapter->currentText();
+  if ( ! c.isEmpty() ) {
+    KraftSettings::self()->setInsertTemplChapterName( c );
+    KraftSettings::self()->writeConfig();
+  }
 }
 
 void InsertTemplDialog::setCatalogChapters( const QStringList& chapters )
@@ -115,13 +124,18 @@ void InsertTemplDialog::setCatalogChapters( const QStringList& chapters )
   if ( chapters.count() > 0 ) {
     mBaseWidget->mKeepGroup->show();
     mBaseWidget->mComboChapter->insertStringList( chapters );
-    mBaseWidget->mComboChapter->setCurrentText( Katalog::UnsortedChapter );
+    mBaseWidget->mComboChapter->setCurrentText(
+      KraftSettings::self()->insertTemplChapterName() );
   }
 }
 
+// return only a chapter if the checkbox is checked.
 QString InsertTemplDialog::chapter() const
 {
-  return mBaseWidget->mComboChapter->currentText();
+  QString re;
+  if ( mBaseWidget->mCbSave->isChecked() )
+    re = mBaseWidget->mComboChapter->currentText();
+  return re;
 }
 
 #include "inserttempldialog.moc"

@@ -71,6 +71,9 @@
     <entry name="salut" type="Int">
       <label>The salut message on the document header.</label>
     </entry>
+    <entry name="InsertTemplChapterName" type="String">
+      <label>The name of the catalog chapter where to store new templates in by default</label>
+    </entry>  
   </group>
 
   <group name="document">
