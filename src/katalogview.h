@@ -110,7 +110,7 @@ class KatalogView : public KMainWindow
 
     virtual void slEditChapters();
 
-    protected:
+  protected:
 
     /** the configuration object of the application */
     KConfig *config;

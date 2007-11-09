@@ -107,7 +107,17 @@ Katalog *KatalogMan::getKatalog(const QString& name)
 void KatalogMan::notifyKatalogChange( Katalog* k, dbID )
 {
   // FIXME: More efficient catalog reloading.
-  k->reload( dbID() );
+  if ( k ) {
+    const QString name = k->getName();
+    k->reload( dbID() );
+
+    QPtrList<KatalogListView> views = mKatalogListViews[name];
+
+    KatalogListView *view;
+    for ( view = views.first(); view; view = views.next() ) {
+      view->slotRedraw();
+    }
+  }
 
   // if ( id.isOk() ) {
     // update a existing item
@@ -116,6 +126,15 @@ void KatalogMan::notifyKatalogChange( Katalog* k, dbID )
   // }
 }
 
+void KatalogMan::registerKatalogListView( const QString& name, KatalogListView *view )
+{
+  QPtrList<KatalogListView> views = mKatalogListViews[name];
+
+  if ( ! views.contains( view ) ) {
+    views.append( view );
+    mKatalogListViews[name] = views;
+  }
+}
 
 /*
  * currently, there is only one catalog of type Template by design, see

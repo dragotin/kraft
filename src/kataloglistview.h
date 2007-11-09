@@ -33,40 +33,43 @@ class QPopupMenu;
 class KPopupMenu;
 class DocPosition;
 
-class KatalogListView : public KListView  {
-    Q_OBJECT
+class KatalogListView : public KListView  
+{
+  Q_OBJECT
 public:
-    KatalogListView( QWidget *parent = 0, bool enableCheckboxes = false );
-    ~KatalogListView();
+  KatalogListView( QWidget *parent = 0, bool enableCheckboxes = false );
+  ~KatalogListView();
 
-    virtual void addCatalogDisplay( const QString& );
-    virtual void* currentItemData();
-    virtual void* itemData( QListViewItem* );
+  virtual void addCatalogDisplay( const QString& );
+  virtual void* currentItemData();
+  virtual void* itemData( QListViewItem* );
 
-    bool isChapter(KListViewItem*);
-    bool isRoot(KListViewItem*);
+  bool isChapter(KListViewItem*);
+  bool isRoot(KListViewItem*);
 
-    virtual void setupChapters();
+  virtual void setupChapters();
 
-    QPopupMenu *contextMenu();
+  QPopupMenu *contextMenu();
   // virtual DocPosition itemToDocPosition( QListViewItem *it = 0 ) = 0;
 
 public slots:
-    virtual void slFreshupItem( QListViewItem*, void*, bool remChildren = false );
-    virtual void slChangeChapter( KListViewItem* , int );
-    virtual void slotRMB( KListView*, QListViewItem*, const QPoint& );
+  virtual void slFreshupItem( QListViewItem*, void*, bool remChildren = false );
+  virtual void slChangeChapter( KListViewItem* , int );
+  virtual void slotRMB( KListView*, QListViewItem*, const QPoint& );
+  virtual void slotRedraw();
 
 protected:
 
-    virtual QPixmap getCatalogIcon();
+  virtual QPixmap getCatalogIcon();
 
-    KListViewItem *chapterItem( const QString& chapName );
+  KListViewItem *chapterItem( const QString& chapName );
 
-    KListViewItem *m_root;
-    QPtrDict<void> m_dataDict;
-    QIntDict<KListViewItem> m_catalogDict;
-    QString m_catalogName;
-    KPopupMenu *mMenu;
+  KListViewItem *m_root;
+  QPtrDict<void> m_dataDict;
+  QIntDict<KListViewItem> m_catalogDict;
+  QString m_catalogName;
+  QStringList mOpenChapters;
+  KPopupMenu *mMenu;
 };
 
 #endif

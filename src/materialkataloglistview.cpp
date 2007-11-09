@@ -55,7 +55,7 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
     kdDebug() << "No catalog in listview available!" << endl;
     return;
   }
-  kdDebug() << "setting up chapters!" << endl;
+  kdDebug() << "setting up meterial chapters --------*********************************+++!" << endl;
   setupChapters();
 
   const QStringList chapters = catalog->getKatalogChapters();

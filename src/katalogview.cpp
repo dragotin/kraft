@@ -44,6 +44,7 @@
 #include "filterheader.h"
 #include "catalogchapteredit.h"
 #include "docposition.h"
+#include "katalogman.h"
 
 #define ID_STATUS_MSG 1
 
@@ -109,10 +110,12 @@ KatalogView::~KatalogView()
 
 }
 
-Katalog* KatalogView::getKatalog( const QString& )
+Katalog* KatalogView::getKatalog( const QString& name )
 {
-    kdDebug() << "Here in base getKatalog" << endl;
-    return 0;
+
+  KatalogMan::self()->registerKatalogListView( name, getListView() );
+
+  return 0;
 }
 
 void KatalogView::initActions()

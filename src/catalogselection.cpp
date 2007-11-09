@@ -180,7 +180,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
       if ( katListView ) {
         connect( katListView, SIGNAL( selectionChanged( QListViewItem* ) ),
                  this, SIGNAL( selectionChanged( QListViewItem* ) ) );
-
+        KatalogMan::self()->registerKatalogListView( katName, katListView );
       }
     }
     if ( mWidgetDict[katName] ) {

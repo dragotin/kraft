@@ -32,27 +32,27 @@ class QListViewItem;
 class TemplKatalogListView : public KatalogListView
 {
 public:
-    TemplKatalogListView(QWidget*);
+  TemplKatalogListView(QWidget*);
 
-    ~TemplKatalogListView();
+  ~TemplKatalogListView();
 
-    FloskelTemplate *currentTemplate();
+  FloskelTemplate *currentTemplate();
 
-    /* create a listview entry for a floskel template */
-    KListViewItem *addFlosTemplate( KListViewItem*, FloskelTemplate* );
+  /* create a listview entry for a floskel template */
+  KListViewItem *addFlosTemplate( KListViewItem*, FloskelTemplate* );
 
-    void addCatalogDisplay( const QString&);
+  void addCatalogDisplay( const QString&);
 
   void setShowCalcParts( bool );
   bool showCalcParts();
   DocPosition itemToDocPosition( QListViewItem* it = 0 );
   CalcPartList itemsCalcParts( QListViewItem* it = 0 );
-public slots:
-    void slFreshupItem( QListViewItem*, FloskelTemplate*, bool remChildren = false );
-
+  public slots:
+  void slFreshupItem( QListViewItem*, FloskelTemplate*, bool remChildren = false );
+    
 private:
   bool mShowCalcParts;
-    void addCalcParts( FloskelTemplate* );
+  void addCalcParts( FloskelTemplate* );
 
 };
 

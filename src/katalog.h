@@ -38,7 +38,6 @@ class QDomDocument;
 class Katalog
 {
 public:
-    static const QString UnsortedChapter;
     
     Katalog(const QString& name);
     Katalog();

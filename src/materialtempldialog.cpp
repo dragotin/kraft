@@ -195,6 +195,7 @@ void MaterialTemplDialog::accept()
     mSaveMaterial->save();
 
     emit editAccepted( mSaveMaterial );
+    KatalogMan::self()->notifyKatalogChange( m_katalog, mSaveMaterial->getID() );
   }
 
   MaterialDialogBase::accept();

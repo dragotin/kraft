@@ -96,56 +96,56 @@ private:
 class KraftView : public KDialogBase
 {
   Q_OBJECT
-  public:
-    /** Constructor for the main view */
-    KraftView(QWidget *parent, const char *name=0);
-    /** Destructor for the main view */
-    ~KraftView();
+    public:
+  /** Constructor for the main view */
+  KraftView(QWidget *parent, const char *name=0);
+  /** Destructor for the main view */
+  ~KraftView();
 
-    /** returns a pointer to the document connected to the view
-    instance. Mind that this method requires a KraftApp instance as a
-    parent * widget to get to the window document pointer by calling
-    the KraftApp::getDocument() method.
-     *
-     * @see KraftApp#getDocument
-     */
-    KraftDoc *getDocument() const;
+  /** returns a pointer to the document connected to the view
+      instance. Mind that this method requires a KraftApp instance as a
+      parent * widget to get to the window document pointer by calling
+      the KraftApp::getDocument() method.
+      *
+      * @see KraftApp#getDocument
+      */
+  KraftDoc *getDocument() const;
 
-    /** contains the implementation for printing functionality */
-    void print(QPrinter *pPrinter);
+  /** contains the implementation for printing functionality */
+  void print(QPrinter *pPrinter);
 
-    void setup( DocGuardedPtr );
+  void setup( DocGuardedPtr );
 
 
-    typedef QMap<DocPositionBase*, PositionViewWidget*> PositionMap;
+  typedef QMap<DocPositionBase*, PositionViewWidget*> PositionMap;
 
-    DocPositionList currentPositionList();
+  DocPositionList currentPositionList();
 
   public slots:
-    void slotNewAddress( const Addressee& contact = Addressee() );
-    void redrawDocument( );
-    void slotModifiedPositions();
-    void slotModifiedHeader();
-    void slotModifiedFooter();
-    void slotAddPosition( Katalog*, void* );
-    void slotAddPosition();
-    void slotFocusPosition( PositionViewWidget*,  int );
-    void slotNewHeaderText( const QString& );
-    void slotNewFooterText( const QString&  );
+  void slotNewAddress( const Addressee& contact = Addressee() );
+  void redrawDocument( );
+  void slotModifiedPositions();
+  void slotModifiedHeader();
+  void slotModifiedFooter();
+  void slotAddPosition( Katalog*, void* );
+  void slotAddPosition();
+  void slotFocusPosition( PositionViewWidget*,  int );
+  void slotNewHeaderText( const QString& );
+  void slotNewFooterText( const QString&  );
   
   protected slots:
-    void slotOk();
-    void slotCancel();
-    void redrawDocPositions( );
-    void redrawSumBox();
-    void done( int );
-    void slotMovePositionUp( int );
-    void slotMovePositionDown( int );
-    void slotDeletePosition( int );
-    void slotUnlockPosition( int );
-    void slotLockPosition( int );
-    void slotPositionModified( int );
-    void slotAboutToShow( QWidget* );
+  void slotOk();
+  void slotCancel();
+  void redrawDocPositions( );
+  void redrawSumBox();
+  void done( int );
+  void slotMovePositionUp( int );
+  void slotMovePositionDown( int );
+  void slotDeletePosition( int );
+  void slotUnlockPosition( int );
+  void slotLockPosition( int );
+  void slotPositionModified( int );
+  void slotAboutToShow( QWidget* );
   void slotSwitchToPage( int );
   void refreshPostCard( );
   void slotShowCatalog( bool );
@@ -153,35 +153,35 @@ class KraftView : public KDialogBase
 
   void slotDocTypeChanged( const QString& );
 
-  signals:
-    void selectPage( int );
-    void viewClosed( bool );
-    void positionSelected( Katalog*, void* );
-  private:
-    void setupDocHeaderView();
-    void setupPositions();
-    void setupFooter();
-    void setupTextsView();
-    void setMappingId( QWidget *, int );
+signals:
+  void selectPage( int );
+  void viewClosed( bool );
+  void positionSelected( Katalog*, void* );
+private:
+  void setupDocHeaderView();
+  void setupPositions();
+  void setupFooter();
+  void setupTextsView();
+  void setMappingId( QWidget *, int );
 
-    PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
+  PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
 
-    QStringList generateLetterHead( Addressee adr );
+  QStringList generateLetterHead( Addressee adr );
 
-    KraftViewScroll *m_positionScroll;
-    DocHeaderEdit *m_headerEdit;
-    DocFooterEdit *m_footerEdit;
+  KraftViewScroll *m_positionScroll;
+  DocHeaderEdit *m_headerEdit;
+  DocFooterEdit *m_footerEdit;
 
-    PositionViewWidgetList mPositionWidgetList;
+  PositionViewWidgetList mPositionWidgetList;
 
-    QString mContactUid;
-    DocGuardedPtr m_doc;
-    QSignalMapper *mDeleteMapper;
-    QSignalMapper *mMoveUpMapper;
-    QSignalMapper *mMoveDownMapper;
-    QSignalMapper *mUnlockPositionMapper;
-    QSignalMapper *mLockPositionMapper;
-    QSignalMapper *mModifiedMapper;
+  QString mContactUid;
+  DocGuardedPtr m_doc;
+  QSignalMapper *mDeleteMapper;
+  QSignalMapper *mMoveUpMapper;
+  QSignalMapper *mMoveDownMapper;
+  QSignalMapper *mUnlockPositionMapper;
+  QSignalMapper *mLockPositionMapper;
+  QSignalMapper *mModifiedMapper;
 
   QLabel *mDetailHeader;
   QSplitter *mCSplit;

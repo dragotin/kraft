@@ -607,6 +607,7 @@ void Portal::slotOpenKatalog(const QString& kat)
         katView->init(kat);
         katView->show();
         mKatalogViews[kat] = katView;
+        KatalogMan::self()->registerKatalogListView( kat, katView->getListView() );
       }
       QApplication::restoreOverrideCursor();
     }

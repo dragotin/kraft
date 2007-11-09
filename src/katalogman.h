@@ -24,8 +24,10 @@
 #endif
 
 #include <qdict.h>
+#include <qmap.h>
 
 #include "katalog.h"
+#include "kataloglistview.h"
 // include files
 
 /**
@@ -46,12 +48,14 @@ public:
     void registerKatalog( Katalog* );
     QString catalogTypeString( const QString& catName );
     void notifyKatalogChange( Katalog*, dbID );
-    
+    // register a view for a catalog identified by its name.
+    void registerKatalogListView( const QString&, KatalogListView* );
 private:
     KatalogMan();
     static KatalogMan *mSelf;
-
+    
     QDict<Katalog> m_katalogDict;
+    QMap< QString, QPtrList<KatalogListView> > mKatalogListViews;
 };
 
 #endif

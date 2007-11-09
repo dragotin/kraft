@@ -36,7 +36,6 @@
  *
  */
 
-const QString Katalog::UnsortedChapter( i18n( "unsorted" ) );
 
 Katalog::Katalog(const QString& name):
     m_name(name),
@@ -101,8 +100,6 @@ QStringList Katalog::getKatalogChapters( bool freshup )
       dbID *id = new dbID(katID);
       m_chapterIDs->insert(katName, id);
     }
-    m_chapters.append( UnsortedChapter );
-    m_chapterIDs->insert( UnsortedChapter, new dbID() );
   }
 
   return m_chapters;
@@ -110,41 +107,32 @@ QStringList Katalog::getKatalogChapters( bool freshup )
 
 int Katalog::chapterID(const QString& chapter)
 {
-  if ( chapter == UnsortedChapter ) {
-    return -1;
+  if( m_chapterIDs->size() == 0 ) {
+    // fill up the dict of ids if still empty.
+    getKatalogChapters();
   }
 
-  if( m_chapterIDs->size() == 0 )
-    {
-        // fill up the dict of ids if still empty.
-        getKatalogChapters();
-    }
-
-    dbID *id = m_chapterIDs->find(chapter);
-    if( id )
-        return id->intID();
-    else
-        return -1;
+  dbID *id = m_chapterIDs->find(chapter);
+  if( id )
+    return id->intID();
+  else
+    return -1;
 }
 
 QString Katalog::chapterName(const dbID& id)
 {
-  if ( ! id.isOk() ) {
-    return UnsortedChapter;
+  if( m_chapterIDs->size() == 0 )
+  {
+    // fill up the dict of ids if still empty.
+    getKatalogChapters();
   }
 
-    if( m_chapterIDs->size() == 0 )
-    {
-        // fill up the dict of ids if still empty.
-        getKatalogChapters();
-    }
+  QDictIterator<dbID> it( *m_chapterIDs ); // See QDictIterator
+  for( ; it.current(); ++it )
+    if( *(it.current()) == id )
+      return it.currentKey();
 
-    QDictIterator<dbID> it( *m_chapterIDs ); // See QDictIterator
-    for( ; it.current(); ++it )
-        if( *(it.current()) == id )
-            return it.currentKey();
-
-    return QString("not found!");
+  return QString("not found!");
 }
 
 QString Katalog::getName() const
