@@ -51,7 +51,12 @@
    <paraStyle name="conditions" fontName="Times-Roman" fontSize="8" alignment="justify"/>
    
    <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
+   <paraStyle name="demandtext"      fontSize="12" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="alternativetext" fontSize="12" alignment="justify" fontName="Times-Italic" />
+
    <paraStyle name="rtext" fontSize="12" fontName="Times-Roman" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
    <paraStyle name="smallrtext" fontSize="10" fontName="Times-Roman" alignment="RIGHT" spaceBefore="0mm" />
 
    <paraStyle name="head" fontSize="12" alignment="justify"/>
@@ -65,15 +70,15 @@
 <br />
 <br />
 <br />
-<!-- ADDRESS -->
+{{ADDRESS}}
     </xpre>
     
     <nextFrame/>
     <!-- Info Frame -->
     <para  style="rtext" alignment="right"></para>
-    <para  style="rtext"><!-- DATE --> </para>
-    <para  style="rtext"><!-- DOCTYPE --></para>
-    <para  style="rtext">Nr. <!-- DOCID --> </para>
+    <para  style="rtext">{{DATE}}</para>
+    <para  style="rtext">{{DOCTYPE}}</para>
+    <para  style="rtext">Nr. {{DOCID}} </para>
 
     <spacer length="3mm" width="1mm"/>
     <para  style="smallrtext">Sparkasse Forchheim</para>
@@ -89,58 +94,64 @@
     <!-- Detail Frame -->
     <spacer length="1mm" width="1mm"/>
     <para style="text">
-        <!-- SALUT -->
+        {{SALUT}}
     </para>
     <spacer length="1mm" width="1mm"/>
-        <!-- PRETEXT -->
+        {{PRETEXT}}
 
     <setNextTemplate name="others" />
 
     <spacer length="18mm" width="1mm"/>
 
 
-    <!-- POSITION_LOOP -->
+    {{#POSITIONS}}
     <blockTable colWidths="8mm,8cm,4cm,4cm" style="products" repeatRows="0">
     <tr>
-        <td><para style="text"><!-- POS_NUMBER -->.</para></td>
-        <td><!-- POS_TEXT --></td>
+        <td><para style="text">{{POS_NUMBER}}.</para></td>
+        <td>{{POS_TEXT}}</td>
         <td></td>
         <td></td>
     </tr>
     <tr>
         <td></td>
-        <td><para style="rtext"><!-- POS_AMOUNT --> <!-- POS_UNIT --></para></td>
-        <td><para style="rtext">je <!-- POS_UNITPRICE -->   </para></td>
-        <td><para style="rtext"><!-- POS_TOTAL -->  </para></td>
+        <td><para style="rtext">{{POS_AMOUNT}} {{POS_UNIT}}</para></td>
+        <td><para style="rtext">je {{POS_UNITPRICE}}   </para></td>
+        <td><para style="rtext">{{POS_TOTAL}}  </para></td>
     </tr>
     </blockTable>
     <spacer length="4mm" width="1mm"/>
-    <!-- POSITION_LOOP_END -->
+    {{/POSITIONS}}
 
     <blockTable colWidths="8mm,8cm,4cm,4cm" style="sums" repeatRows="0">
     <tr><td></td>
         <td></td>
         <td><para style="text">Nettosumme:</para></td>
-        <td><para style="rtext"><!-- NETTOSUM --></para></td>
+        <td><para style="rtext">{{NETTOSUM}}</para></td>
     </tr>
     <tr><td></td>
         <td></td>
-        <td><para style="text">+<!-- VAT -->% MwSt.</para></td>
-        <td><para style="rtext"><!-- VATSUM --></para></td>
+        <td><para style="text">+{{VAT}}% MwSt.</para></td>
+        <td><para style="rtext">{{VATSUM}}</para></td>
     </tr>
     <tr><td></td>
         <td></td>
         <td><para style="text">Gesamtsumme:</para></td>
-        <td><para style="rtext"><!-- BRUTTOSUM --></para></td>
+        <td><para style="rtext">{{BRUTTOSUM}}</para></td>
     </tr>
     </blockTable>
 
     <spacer length="1cm" width="1mm"/>
     <condPageBreak height="8cm"/>
-	<!-- POSTTEXT -->
+    {{#SPECIAL_POS}}
+    <para style="text">
+    Bitte beachten Sie: Dieses Dokument enthält {{COUNT}} Alternativ- oder Bedarfsposition(en).
+    Sie sind in kursiver Schrift gedruckt. Ihre Postensumme ist in der Endsumme nicht enthalten.
+    </para>
+    {{/SPECIAL_POS}}
+    {{POSTTEXT}}
     <spacer length="0.5cm" width="1mm"/>
     <para style="text">
-       <!-- GOODBYE -->
+       {{GOODBYE}}
     </para>
 </story>
 </document>
