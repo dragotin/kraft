@@ -20,6 +20,8 @@
 #include <qsqlquery.h>
 #include <qsqldatabase.h>
 #include <qstylesheet.h>
+#include <qapplication.h>
+#include <qcursor.h>
 #include <qlayout.h>
 
 // include files for KDE
@@ -214,7 +216,7 @@ QString PortalView::systemViewHeader() const
 
   KStandardDirs stdDirs;
   QString logoFile = stdDirs.findResource( "data",  "kraft/pics/muckilogo_oS.png" );
-  html += "<h2>Welcome to Kraft</h2>";
+  html += i18n( "<h2>Welcome to Kraft</h2>" );
   html += "<div><table width=\"100%\" border=\"0\"><tr><td>";
   html += i18n("Kraft Version: %1</td>").arg( KRAFT_VERSION );
   html += "<td align=\"right\" rowspan=\"3\">";
@@ -318,6 +320,7 @@ void PortalView::slotBuildView()
 {
   DocumentMan *docman = DocumentMan::self();
   mDocDigestView->listview()->clear(); // FIXME: Should not be cleared!
+  QApplication::setOverrideCursor( QCursor( BusyCursor ) );
 
   KListViewItem *item = mDocDigestView->addChapter( i18n( "All Documents" ),
                                                     docman->latestDocs( 0 ) );
@@ -352,7 +355,7 @@ void PortalView::slotBuildView()
   kdDebug() << "---------" << endl;
   item = mDocDigestView->addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
   item->setPixmap( 0, SmallIcon( "fork" ) );
-
+  QApplication::restoreOverrideCursor();
 }
 
 PortalView::~PortalView( )

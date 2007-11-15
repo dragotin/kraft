@@ -79,7 +79,7 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   dig.setClientId( query.value(4).toString() );
   dig.setLastModified( query.value(5).toDate() );
   dig.setDate(     query.value(6).toDate() );
-  kdDebug() << "Adding document "<< ident << " to the latest list" << endl;
+  // kdDebug() << "Adding document "<< ident << " to the latest list" << endl;
 
   archCur.select( "ident='" + ident +"'" );
   while ( archCur.next() ) {
@@ -97,8 +97,6 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
 
   QString qStr = QString( "SELECT %1, MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date asc;" ).arg( mColumnList );
 
-  kdDebug() << "Sending sql string " << qStr << endl;
-
   QSqlQuery query( qStr );
   DocDigestsTimeline timeline;
   DocDigestList digests;
@@ -108,18 +106,16 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
       DocDigest dig = digestFromQuery( query );
       int month = query.value( 7 /* month */ ).toInt();
       int year = query.value( 8 /* year */ ).toInt();
-      kdDebug() << "Month: " << month << " in Year: " << year << endl;
+      // kdDebug() << "Month: " << month << " in Year: " << year << endl;
 
       if ( timeline.month() == 0 ) timeline.setMonth( month );
       if ( timeline.year() == 0  ) timeline.setYear( year );
 
-      kdDebug() << "timeline-month=" << timeline.month() << " while month=" << month << endl;
+      // kdDebug() << "timeline-month=" << timeline.month() << " while month=" << month << endl;
       if ( month != timeline.month() || year != timeline.year() ) {
         // a new month/year pair: set digestlist to timelineobject
-        kdDebug() << "Opening new timeline for month " << month << endl;
         timeline.setDigestList( digests );
 
-        kdDebug() << "appending for month " << timeline.month() << " with item cnt " << digests.count() << endl;
         retList.append( timeline );
 
         digests.clear();
@@ -130,7 +126,7 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
         timeline.setYear( year );
       } else {
         digests.prepend( dig );
-        kdDebug() << "Prepending to digests lists: " << dig.date() << endl;
+        // kdDebug() << "Prepending to digests lists: " << dig.date() << endl;
       }
 
     }
