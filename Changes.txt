@@ -4,6 +4,14 @@ Changes since version 0.20: #########################################
 - fixed: allow prices for positions larger than 10k
 - fixed: openArchivedDocument printed again instead of opening
          archived doc from the archive path
+- fixed: template texts in the catalog view where not shown if they
+         were exactly 60 chars long.
+- feature: Alternative positions
+- feature: Demand positions
+- feature: Switched to google template system, see
+           http://code.google.com/p/google-ctemplate/
+- bugfix: Catalog changes show up directly in opened catalogs, also
+          if open as a template catalog in the doc window.
 
 Changes since version 0.14: #########################################
 
