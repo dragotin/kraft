@@ -20,6 +20,7 @@
 #include <qsqlquery.h>
 #include <qsqldatabase.h>
 #include <qstylesheet.h>
+#include <qlayout.h>
 
 // include files for KDE
 #include <klocale.h>
@@ -29,6 +30,7 @@
 #include <kurl.h>
 #include <klistview.h>
 #include <kcalendarsystem.h>
+#include <khtmlview.h>
 
 #include "version.h"
 #include "kraftdb.h"
@@ -46,45 +48,41 @@ PortalView::PortalView(QWidget *parent, const char *name, int face)
       mCatalogBrowser( 0 ),
       mSystemBrowser( 0 )
 {
-    m_docBox     = addVBoxPage( i18n("Documents"),
-                                i18n("Create and Edit Documents"),
-                                DesktopIcon("folder_outbox"));
-    mDocDigestIndex = pageIndex( m_docBox );
-    documentDigests( m_docBox );
+  m_docBox     = addVBoxPage( i18n("Documents"),
+                              i18n("Create and Edit Documents"),
+                              DesktopIcon("folder_outbox"));
+  mDocDigestIndex = pageIndex( m_docBox );
+  documentDigests( m_docBox );
 
-#if 0
-    mArchiveBox  = addVBoxPage( i18n( "Archive" ),
-                                i18n( "Archived Documents" ),
-                                DesktopIcon( "vcs_commit" ) );
+  m_katalogBox = addVBoxPage( i18n("Catalogs"),
+                              i18n("Available Catalogs"),
+                              DesktopIcon("folder_green"));
+  mCatalogIndex = pageIndex( m_katalogBox );
+  katalogDetails(m_katalogBox);
 
-    archiveDetails( mArchiveBox );
-#endif
-    m_katalogBox = addVBoxPage( i18n("Catalogs"),
-                                i18n("Available Catalogs"),
-                                DesktopIcon("folder_green"));
-    mCatalogIndex = pageIndex( m_katalogBox );
-    katalogDetails(m_katalogBox);
-
-    m_sysBox     = addVBoxPage( i18n("System"),
-                                i18n("Information about the Kraft System"),
-                                DesktopIcon("server"));
-    mSystemIndex = pageIndex( m_sysBox );
-    systemDetails( m_sysBox );
+  m_sysBox     = addVBoxPage( i18n("System"),
+                              i18n("Information about the Kraft System"),
+                              DesktopIcon("server"));
+  mSystemIndex = pageIndex( m_sysBox );
+  systemDetails( m_sysBox );
 }
 
 void PortalView::katalogDetails(QWidget *parent)
 {
+  QWidget *w = new QWidget( parent );
+  QBoxLayout *b = new QHBoxLayout( w );
 
-    mCatalogBrowser = new PortalHtmlView( parent );
-    mCatalogBrowser->loadCss( "catalogview.css" ); //, "mucki_en_oS.png",
-    // "background-repeat:no-repeat;"
-    //                        "background-position:center;" );
+  mCatalogBrowser = new PortalHtmlView( w );
+  mCatalogBrowser->loadCss( "catalogview.css" ); //, "mucki_en_oS.png",
 
-    connect( mCatalogBrowser, SIGNAL( openCatalog( const QString& ) ),
-             SIGNAL( openKatalog( const QString& ) ) );
+  b->addWidget( mCatalogBrowser->view() );
+  b->addSpacing( KDialog::marginHint() );
 
-    connect( mCatalogBrowser, SIGNAL( urlClick(const QString&) ),
-             this, SLOT( slUrlClicked( const QString& ) ) );
+  connect( mCatalogBrowser, SIGNAL( openCatalog( const QString& ) ),
+           SIGNAL( openKatalog( const QString& ) ) );
+
+  connect( mCatalogBrowser, SIGNAL( urlClick(const QString&) ),
+           this, SLOT( slUrlClicked( const QString& ) ) );
 }
 
 void PortalView::fillCatalogDetails()
@@ -198,7 +196,12 @@ QString PortalView::ptag( const QString& content,  const QString& c ) const
 
 void PortalView::systemDetails(QWidget *parent)
 {
-  mSystemBrowser = new PortalHtmlView( parent );
+  QWidget *w = new QWidget( parent );
+  QBoxLayout *b = new QHBoxLayout( w );
+  mSystemBrowser = new PortalHtmlView( w );
+  b->addWidget( mSystemBrowser->view() );
+  b->addSpacing( KDialog::marginHint() );
+
   mSystemBrowser->loadCss( "catalogview.css" ); //, "mucki_en_oS.png",
 
   // browser->setNotifyClick(false);

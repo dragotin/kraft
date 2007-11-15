@@ -27,6 +27,7 @@
 #include <kstdaction.h>
 #include <kaction.h>
 #include <ktoolbar.h>
+#include <kdialog.h>
 
 #include "filterheader.h"
 #include "docdigestview.h"
@@ -37,6 +38,8 @@ DocDigestView::DocDigestView( QWidget *parent )
   QWidget *w = new QWidget(parent);
 
   QBoxLayout *box = new QVBoxLayout( w );
+  box->setMargin( 0 );
+  box->setSpacing( 0 );
   QBoxLayout *hbox = new QHBoxLayout( w );
 
   mNewDocButton = new QPushButton( i18n( "Create Document" ), w );
@@ -45,7 +48,6 @@ DocDigestView::DocDigestView( QWidget *parent )
   hbox->addWidget( mNewDocButton );
 
   hbox->addStretch(1);
-  box->addLayout( hbox );
   mListView = new KListView( w );
   mListView->setItemMargin( 5 );
   mListView->setAlternateBackground( QColor( "#dffdd0" ) );
@@ -66,7 +68,15 @@ DocDigestView::DocDigestView( QWidget *parent )
            this, SLOT( slotCurrentChanged( QListViewItem* ) ) );
 
   hbox->addWidget( mFilterHeader );
-  box->addWidget( mListView );
+  hbox->addSpacing( KDialog::marginHint() );
+
+  box->addLayout( hbox );
+  box->addSpacing( KDialog::marginHint() );
+
+  QBoxLayout *hbox2 = new QHBoxLayout( w );
+  hbox2->addWidget( mListView );
+  hbox2->addSpacing( KDialog::marginHint() );
+  box->addLayout( hbox2 );
 
   mListView->addColumn( i18n( "Type" ) );
   mListView->addColumn( i18n( "Client Name" ) );
