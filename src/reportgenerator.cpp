@@ -82,6 +82,7 @@ void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
     KTempFile temp( QString(), ".trml" );
 
     QTextStream *s = temp.textStream();
+    s->setEncoding( QTextStream::UnicodeUTF8 );
     *s << templ;
     temp.close();
 
