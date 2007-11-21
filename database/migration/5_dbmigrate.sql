@@ -48,3 +48,6 @@ INSERT INTO attributes VALUES ('DocType', @dtId, 'AllowDemand', 'true');
 INSERT INTO attributes VALUES ('DocType', @dtId, 'AllowAlternative', 'true');
 
 INSERT INTO DocTypes (name) VALUES ( 'Invoice' );
+
+# message Drop an unused table archdocStates
+DROP TABLE archdocStates;

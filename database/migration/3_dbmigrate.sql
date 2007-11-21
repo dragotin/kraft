@@ -5,3 +5,6 @@ CREATE TABLE plantPrices (
 
   PRIMARY KEY( matchCode )
 );
+
+ALTER TABLE document ADD COLUMN docDescription TEXT AFTER docType;
+
