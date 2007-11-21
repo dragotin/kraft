@@ -148,7 +148,6 @@ CREATE TABLE document(
     docID             INT NOT NULL AUTO_INCREMENT,
     ident             VARCHAR(32),
     docType           VARCHAR(255),
-    docDescription    TEXT,
     clientID          VARCHAR(32),
     clientAddress     TEXT,
     salut             VARCHAR(255),
