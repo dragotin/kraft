@@ -2,8 +2,9 @@ Basic Installation
 ==================
 
    Generic compile and installation instructions in the beginning of
-this file. Find Kraft specific instructions below. Make sure to read
-them!
+this file. 
+
+=> Find Kraft specific instructions below. Make sure to read them!
    
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
@@ -183,6 +184,13 @@ operates.
 
 Kraft Installation
 ==================
+
+Note: Since Kraft v. 0.22 the google ctemplate library is required
+for the document generation. Get it from 
+http://code.google.com/p/google-ctemplate/
+Unfortunately in v. 0.22 the configure check on the lib is not yet
+included, that means both the devel and the library file need to
+be installed!!
 
 Database
 ========

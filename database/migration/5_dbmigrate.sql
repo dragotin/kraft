@@ -49,5 +49,20 @@ INSERT INTO attributes VALUES ('DocType', @dtId, 'AllowAlternative', 'true');
 
 INSERT INTO DocTypes (name) VALUES ( 'Invoice' );
 
+# message Filling doc type attributes
+INSERT INTO DocTypes (name) VALUES ( 'Angebot' );
+SET @dtId := LAST_INSERT_ID();
+INSERT INTO attributes VALUES ('DocType', @dtId, 'AllowDemand', 'true');
+INSERT INTO attributes VALUES ('DocType', @dtId, 'AllowAlternative', 'true');
+
+INSERT INTO DocTypes (name) VALUES ( 'Auftragsbestätigung' );
+SET @dtId := LAST_INSERT_ID();
+INSERT INTO attributes VALUES ('DocType', @dtId, 'AllowDemand', 'true');
+INSERT INTO attributes VALUES ('DocType', @dtId, 'AllowAlternative', 'true');
+
+INSERT INTO DocTypes (name) VALUES ( 'Rechnung' );
+
 # message Drop an unused table archdocStates
 DROP TABLE archdocStates;
+
+
