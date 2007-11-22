@@ -132,8 +132,8 @@
         <td>      {{POS_TEXT}}          </td>
         <td><para style="{{POS_KIND}}text">{{POS_AMOUNT}} </para></td>
         <td><para style="{{POS_KIND}}text">{{POS_UNIT}}   </para></td>
-        <td><para style="{{POS_KIND}}rtext">{{POS_UNITPRICE}}   </para></td>
-        <td><para style="{{POS_KIND}}rtext">{{POS_TOTAL}}  </para></td>
+        <td><para style="{{POS_KIND}}rtext">{{POS_UNITPRICE}}</para></td>
+        <td><para style="{{POS_KIND}}rtext">{{POS_TOTAL}}</para></td>
     </tr>
     {{/POSITIONS}}
     <tr><td></td>
@@ -165,7 +165,7 @@
     </para>
     {{/SPECIAL_POS}}
     <spacer length="1cm" width="1mm"/>
-    <condPageBreak height="8cm"/>
+    <condPageBreak height="4cm"/>
 	{{POSTTEXT}}
     <spacer length="0.5cm" width="1mm"/>
     <para style="text">
