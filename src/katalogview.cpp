@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <stdlib.h>
 // include files for QT
 #include <qdir.h>
 #include <qprinter.h>
