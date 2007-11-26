@@ -89,7 +89,7 @@ Einheit& UnitManager::getUnit( int id )
     bool ok;
 
     Einheit re;
-    if( id >= 0 && abs(id) < m_units->size()) {
+    if( id >= 0 && ((unsigned)abs(id)) < m_units->size()) {
         re = m_units->at(id, &ok );
         if( ! ok ) {
             kdDebug() << "No Unit for id " << id << endl;
