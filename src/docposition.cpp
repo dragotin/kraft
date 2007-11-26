@@ -29,8 +29,8 @@
 #include "einheit.h"
 #include "geld.h"
 #include "docposition.h"
+#include "positionwidget.h"
 #include "positionviewwidget.h"
-
 /**
 @author Klaas Freitag
 */
