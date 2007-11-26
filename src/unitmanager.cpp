@@ -23,6 +23,9 @@
 #include <klocale.h>
 #include <kdebug.h>
 
+// include files for standard functions
+#include <stdlib.h>
+
 #include "unitmanager.h"
 #include "einheit.h"
 
