@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdlib.h>
+
 // include files for Qt
 #include <qsqlcursor.h>
 
