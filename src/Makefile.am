@@ -56,7 +56,7 @@ kde_kcfg_DATA = kraftsettings.kcfg katalogsettings.kcfg
 
 # dependencies on the header from ui files: (strange bug, only for not unsermake)
 docposition.cpp: positionwidget.h
-kraftview.cpp: docfooter.hi docheader.h
+kraftview.cpp: docfooter.h docheader.h
 inserttempldialog.cpp: inserttmplbase.h
 texteditdialog.cpp: texteditbase.h
 insertplantdialog.cpp: insertplantbase.h
