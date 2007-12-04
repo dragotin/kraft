@@ -1,8 +1,8 @@
 # message Creating attributes table...
 CREATE TABLE attributes (
-  hostObject VARCHAR(255),
+  hostObject VARCHAR(64),
   hostId     INT NOT NULL,
-  name       VARCHAR(255),
+  name       VARCHAR(64),
   value      MEDIUMTEXT,
 
   PRIMARY KEY( hostObject, hostId, name )
@@ -12,8 +12,8 @@ CREATE TABLE attributes (
 CREATE TABLE archPosAttribs (
   archPosAttribId INT NOT NULL AUTO_INCREMENT,
   archDocID  INT NOT NULL,
-  name       VARCHAR(255),
-  value      VARCHAR(255),
+  name       VARCHAR(64),
+  value      VARCHAR(64),
 
   PRIMARY KEY( archPosAttribId )
 );
@@ -63,6 +63,6 @@ INSERT INTO attributes VALUES ('DocType', @dtId, 'AllowAlternative', 'true');
 INSERT INTO DocTypes (name) VALUES ( 'Rechnung' );
 
 # message Drop an unused table archdocStates
-DROP TABLE archdocStates;
+DROP TABLE IF EXISTS archdocStates;
 
 
