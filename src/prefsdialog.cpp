@@ -85,6 +85,20 @@ void PrefsDialog::databaseTab()
   m_pbCheck->setEnabled( false );
   topLayout->addWidget( m_pbCheck, 5, 1 );
 
+  QLabel *l1 = new QLabel(  i18n( "Please restart Kraft after "
+                                  "changes in the database connection "
+                                  "parameters to make the changes "
+                                  "effective!" ), topFrame );
+  l1->setTextFormat( Qt::RichText );
+  l1->setBackgroundColor( QColor( "#ffcbcb" ) );
+  l1->setMargin( 5 );
+  l1->setFrameStyle( QFrame::Box + QFrame::Raised );
+  l1->setLineWidth( 1 );
+  l1->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter | Qt::ExpandTabs | Qt::WordBreak );
+  topLayout->addMultiCellWidget( l1, 6,  6, 0, 1 );
+
+
+
   m_leHost = new QLineEdit( topFrame );
   connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( slotTextChanged( const QString& ) ) );
