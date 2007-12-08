@@ -80,6 +80,14 @@ void PortalView::katalogDetails(QWidget *parent)
   b->addWidget( mCatalogBrowser->view() );
   b->addSpacing( KDialog::marginHint() );
 
+  QString html;
+
+  html = "<html><h2>" + i18n("Available Catalogs") + "</h2>";
+  html += "<div>\n";
+  html += i18n( "No catalogs available." );
+  html += "</div>";
+  mCatalogBrowser->displayContent( html );
+
   connect( mCatalogBrowser, SIGNAL( openCatalog( const QString& ) ),
            SIGNAL( openKatalog( const QString& ) ) );
 
@@ -295,6 +303,10 @@ void PortalView::systemInitError( const QString& htmlMsg )
   html += "</div>";
 
   mSystemBrowser->displayContent( html ); // , "error" );
+
+  pageWidget( mDocDigestIndex )->setEnabled( false );
+  pageWidget( mCatalogIndex )->setEnabled( false );
+
   showPage( mSystemIndex );
 }
 

@@ -181,9 +181,6 @@ void HtmlView::displayContent( const QString& content )
 void HtmlView::showWelcomePage()
 {
   QString t;
-  t = "Kraft helps you with your small business. It aids you to write ";
-  t += "offers, order acceptances and invoices in an easy to use, simple ";
-  t += "yet powerful way.";
   displayContent( t );
 }
 

@@ -253,6 +253,13 @@ void Portal::slotStartupChecks()
     // KMessageBox::sorry( this, text, i18n("Serious Database Problem") );
     m_portalView->systemInitError( m_portalView->ptag( text, "problem" ) );
 
+    // disable harmfull actions
+    actNewDocument->setEnabled( false );
+    actPrintDocument->setEnabled( false );
+    actOpenDocument->setEnabled( false );
+    actOpenArchivedDocument->setEnabled( false );
+    actMailDocument->setEnabled( false );
+
     slotStatusMsg( i18n( "Database Problem." ) );
   } else {
     KraftDB::self()->checkSchemaVersion( this );
