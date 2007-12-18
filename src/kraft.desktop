@@ -6,5 +6,6 @@ Icon=kraft
 DocPath=kraft/index.html
 Terminal=false
 Name=Kraft
+Name[xx]=xxKraftxx
 Categories=Office;Finance;ProjectManagement;Database;
 Encoding=UTF-8
