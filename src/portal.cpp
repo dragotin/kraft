@@ -313,6 +313,7 @@ void Portal::slotNewDocument()
   busyCursor( true );
   DocumentMan *docman = DocumentMan::self();
   DocGuardedPtr doc = docman->createDocument();
+
   busyCursor( false );
 
   slotStatusMsg(i18n("Ready."));
@@ -486,6 +487,7 @@ void Portal::createView( DocGuardedPtr doc )
 {
   // FIXME: We allow only one view for the first time.
   // Later allow one write view and other read onlys.
+  if ( !doc ) return;
   KraftView *view = doc->firstView();
 
   if( ! view ) {
@@ -501,18 +503,27 @@ void Portal::createView( DocGuardedPtr doc )
     view->show();
 
     doc->addView( view );
-    connect( view, SIGNAL( viewClosed( bool ) ),
-             this, SLOT( slotViewClosed( bool ) ) );
+    connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
+             this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
   } else {
     // pop first view to front
     kdDebug() << "There is already a view for this doc!" << endl;
   }
 }
 
-void Portal::slotViewClosed( bool )
+void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
 {
-  kdDebug() << "A view was closed" << endl;
-  m_portalView->slotBuildView();
+  // doc is only valid on success!
+  if ( doc && success )  {
+    kdDebug() << "A view was closed saving and doc is new: " << doc->isNew() << endl;
+    if ( doc->isNew() ) {
+      m_portalView->slotDocumentCreated( doc );
+    } else {
+      m_portalView->slotDocumentUpdate( doc );
+    }
+  } else {
+    kdDebug() << "A view was closed canceled" << endl;
+  }
 }
 
 void Portal::slotFileQuit()

@@ -155,7 +155,7 @@ class KraftView : public KDialogBase
 
 signals:
   void selectPage( int );
-  void viewClosed( bool );
+  void viewClosed( bool, DocGuardedPtr );
   void positionSelected( Katalog*, void* );
 private:
   void setupDocHeaderView();

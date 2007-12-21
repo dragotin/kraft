@@ -34,6 +34,7 @@
 
 #include "docposition.h"
 #include "dbids.h"
+#include "docguardedptr.h"
 
 // forward declaration of the Kraft classes
 
@@ -99,6 +100,9 @@ class KraftDoc : public QObject
 
     QDate date() { return mDate; }
     void setDate( QDate d ) { mDate = d; }
+
+    QDate lastModified() { return mLastModified; }
+    void setLastModified( QDate d ) { mLastModified = d; }
 
     QString docType() { return mDocType; }
     void setDocType( const QString& s ) {  mDocType = s; }
@@ -174,11 +178,11 @@ class KraftDoc : public QObject
     QString mWhiteboard;
 
     QDate   mDate;
+    QDate   mLastModified;
     DocPositionList mPositions;
     DBIdList mRemovePositions;
     DocumentSaverBase *mSaver;
     dbID    mDocID;
 };
 
-typedef QGuardedPtr<KraftDoc> DocGuardedPtr;
 #endif // KraftDoc_H

@@ -975,7 +975,7 @@ void KraftView::slotOk()
       KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
     }
 
-    emit viewClosed( true );
+    emit viewClosed( true, m_doc );
     KDialogBase::slotOk(  );
 }
 
@@ -1017,7 +1017,7 @@ void KraftView::slotCancel()
 
   mNewTemplates.clear();
 
-  emit viewClosed( false );
+  emit viewClosed( false, 0 );
   KDialogBase::slotCancel();
 }
 

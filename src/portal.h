@@ -34,8 +34,9 @@
 #include <kaction.h>
 #include <kurl.h>
 
-#include "kraftdoc.h"
+#include "docguardedptr.h"
 #include "katalogview.h"
+#include "dbids.h"
 
 class KraftView;
 class PortalView;
@@ -127,7 +128,7 @@ class Portal : public KMainWindow
     void slotArchivedDocSelected( const ArchDocDigest& );
     void slotPrintDocument();
     void slotPrintDocument( const QString&, const dbID& );
-    void slotViewClosed( bool );
+    void slotViewClosed( bool, DocGuardedPtr );
 
     void busyCursor( bool );
 

@@ -28,9 +28,20 @@
 #include <kaction.h>
 #include <ktoolbar.h>
 #include <kdialog.h>
+#include <kiconloader.h>
+#include <kcalendarsystem.h>
+#include <kabc/addressbook.h>
+#include <kabc/stdaddressbook.h>
+#include <kabc/addresseedialog.h>
+#include <kabc/addressee.h>
 
 #include "filterheader.h"
 #include "docdigestview.h"
+#include "documentman.h"
+#include "docguardedptr.h"
+#include "kraftdoc.h"
+#include <qlistview.h>
+
 
 DocDigestView::DocDigestView( QWidget *parent )
 : QWidget( parent )
@@ -93,6 +104,51 @@ DocDigestView::~DocDigestView()
 
 }
 
+void DocDigestView::slotBuildView()
+{
+  DocumentMan *docman = DocumentMan::self();
+  mListView->clear();
+
+  KListViewItem *item = addChapter( i18n( "All Documents" ),
+                                                    docman->latestDocs( 0 ) );
+  mAllDocsParent = item;
+  item->setPixmap( 0, SmallIcon( "identity" ) );
+  item->setOpen( false );
+
+  item = addChapter( i18n( "Documents by Time" ),
+                                     DocDigestList() );
+  mTimeLineParent = item;
+  item->setPixmap( 0, SmallIcon( "history" ) );
+  item->setOpen( false );
+
+  /* create the timeline view */
+  DocDigestsTimelineList timeList = docman->docsTimelined();
+  DocDigestsTimelineList::iterator it;
+
+  int month = 0;
+  int year = 0;
+  KListViewItem *yearItem = 0;
+
+  for ( it = timeList.begin(); it != timeList.end(); ++it ) {
+    if ( ( *it ).year() && year != ( *it ).year() ) {
+      year = ( *it ).year();
+
+      yearItem = addChapter( QString::number( year ),  DocDigestList(), mTimeLineParent );
+      yearItem->setOpen( false );
+    }
+    month = ( *it ).month();
+    const QString monthName =
+      KGlobal().locale()->calendar()->monthName( month, year ); // , KCalendarSystem::LongName);
+    KListViewItem *mItem = addChapter(  monthName, ( *it ).digests(), yearItem );
+    mItem->setOpen( false );
+  }
+  kdDebug() << "---------" << endl;
+  item = addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
+  mLatestDocsParent = item;
+  item->setPixmap( 0, SmallIcon( "fork" ) );
+}
+
+
 KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList list, KListViewItem *chapParent )
 {
   kdDebug() << "Adding docview chapter " << chapter << " with " << list.size() << " elems" << endl;
@@ -111,6 +167,7 @@ KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList 
                                              (*it).type(), (*it).clientName(),
                                              ( *it).lastModified(), (*it).date(),
                                              ( *it ).whiteboard(), ( *it ).ident() );
+
     mDocIdDict[item] = (*it).id();
 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();
@@ -129,9 +186,58 @@ void DocDigestView::slotRMB( QListViewItem*, const QPoint& point, int )
   mContextMenu->popup( point );
 }
 
-void DocDigestView::slotNewDoc()
+/* Called after the document was saved, thus the doc is complete.
+ * The new entry should set selected.
+ */
+void DocDigestView::slotNewDoc( DocGuardedPtr doc )
 {
+  KListViewItem *parent = mLatestDocsParent;
 
+  if ( !doc ) return;
+
+  if ( parent ) {
+    KListViewItem *item = new KListViewItem( parent );
+    setupListViewItemFromDoc( doc, item );
+    item->setSelected( true );
+    dbID id = doc->docID();
+    if ( id.isOk() ) {
+      mDocIdDict[item] = id.toString();
+    }
+  }
+}
+
+void DocDigestView::slotUpdateDoc( DocGuardedPtr doc )
+{
+  if ( !doc ) return;
+  const QString docId = doc->docID().toString();
+
+  QMap<QListViewItem*, QString>::Iterator it;
+  for ( it = mDocIdDict.begin(); it != mDocIdDict.end(); ++it ) {
+    QListViewItem* item = it.key();
+    QString id = it.data();
+
+    if ( docId == id ) {
+      setupListViewItemFromDoc( doc, item );
+    }
+  }
+}
+
+void DocDigestView::setupListViewItemFromDoc( DocGuardedPtr doc, QListViewItem* item )
+{
+  item->setText( 0,  doc->docType() );
+
+  QString clientName;
+  KABC::AddressBook *adrBook =  KABC::StdAddressBook::self();
+  KABC::Addressee contact;
+  if( adrBook ) {
+    contact = adrBook->findByUid( doc->addressUid() );
+    clientName = contact.realName();
+  }
+  item->setText( 1,  clientName );
+  item->setText( 2, KGlobal().locale()->formatDate( doc->lastModified(), true ) );
+  item->setText( 3, KGlobal().locale()->formatDate( doc->date(), true ) );
+  item->setText( 4, doc->whiteboard() );
+  item->setText( 5, doc->ident() );
 }
 
 void DocDigestView::slotDocOpenRequest( QListViewItem *item )

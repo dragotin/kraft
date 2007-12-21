@@ -315,7 +315,7 @@ void PortalView::documentDigests( QWidget *parent )
   mDocDigestView = new DocDigestView( parent );
 
   connect( mDocDigestView, SIGNAL( createDocument() ),
-           SIGNAL( createDocument() ) );
+           this, SLOT( slotCreateDocument() ) );
   connect( mDocDigestView, SIGNAL( openDocument( const QString& ) ),
            SIGNAL( openDocument( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
@@ -326,48 +326,40 @@ void PortalView::documentDigests( QWidget *parent )
            SIGNAL( documentSelected( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
+  connect( mDocDigestView->listview(), SIGNAL( currentChanged( QListViewItem* ) ),
+           this,  SLOT( slotDigestItemSelected( QListViewItem* ) ) );
+}
+
+void PortalView::slotCreateDocument()
+{
+  // this slot is called if the user wants to initiate the creation of a new doc
+  // It is routed to higher layers.
+  emit createDocument();
+}
+
+void PortalView::slotDocumentCreated( DocGuardedPtr doc )
+{
+  // the new doc is now created and can be inserted into the doc digest view
+  mDocDigestView->slotNewDoc( doc );
+}
+
+void PortalView::slotDocumentUpdate( DocGuardedPtr doc )
+{
+  mDocDigestView->slotUpdateDoc( doc );
 }
 
 void PortalView::slotBuildView()
 {
-  DocumentMan *docman = DocumentMan::self();
-  mDocDigestView->listview()->clear(); // FIXME: Should not be cleared!
+
   QApplication::setOverrideCursor( QCursor( BusyCursor ) );
-
-  KListViewItem *item = mDocDigestView->addChapter( i18n( "All Documents" ),
-                                                    docman->latestDocs( 0 ) );
-  item->setPixmap( 0, SmallIcon( "identity" ) );
-  item->setOpen( false );
-
-  item = mDocDigestView->addChapter( i18n( "Documents by Time" ),
-                                     DocDigestList() );
-  item->setPixmap( 0, SmallIcon( "history" ) );
-  item->setOpen( false );
-
-  DocDigestsTimelineList timeList = docman->docsTimelined();
-  DocDigestsTimelineList::iterator it;
-
-  int month = 0;
-  int year = 0;
-  KListViewItem *yearItem = 0;
-
-  for ( it = timeList.begin(); it != timeList.end(); ++it ) {
-    if ( ( *it ).year() && year != ( *it ).year() ) {
-      year = ( *it ).year();
-
-      yearItem = mDocDigestView->addChapter( QString::number( year ),  DocDigestList(), item );
-      yearItem->setOpen( false );
-    }
-    month = ( *it ).month();
-    const QString monthName =
-      KGlobal().locale()->calendar()->monthName( month, year ); // , KCalendarSystem::LongName);
-    KListViewItem *mItem = mDocDigestView->addChapter(  monthName, ( *it ).digests(), yearItem );
-    mItem->setOpen( false );
-  }
-  kdDebug() << "---------" << endl;
-  item = mDocDigestView->addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
-  item->setPixmap( 0, SmallIcon( "fork" ) );
+  mDocDigestView->slotBuildView();
   QApplication::restoreOverrideCursor();
+}
+
+void PortalView::slotDigestItemSelected( QListViewItem *item )
+{
+  kdDebug() << "Digest Item Selected " << item << endl;
+
 }
 
 PortalView::~PortalView( )

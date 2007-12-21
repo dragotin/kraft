@@ -21,6 +21,7 @@
 #include <qmap.h>
 
 #include "docdigest.h"
+#include "docguardedptr.h"
 
 class KListView;
 class KListViewItem;
@@ -51,13 +52,16 @@ public:
   ArchDocDigest currentArchiveDoc() const;
 
 public slots:
-  void slotNewDoc();
+  void slotNewDoc( DocGuardedPtr );
+  void slotUpdateDoc( DocGuardedPtr );
   void slotDocOpenRequest( QListViewItem * );
   void slotRMB( QListViewItem*, const QPoint&, int );
+  void slotBuildView();
 
 protected slots:
   void slotOpenCurrentDoc();
   void slotCurrentChanged( QListViewItem* );
+  void setupListViewItemFromDoc( DocGuardedPtr , QListViewItem* );
 signals:
   void createDocument();
   void openDocument( const QString& );
@@ -67,6 +71,10 @@ signals:
   void printDocument( const QString& );
 private:
   KListView *mListView;
+  KListViewItem *mAllDocsParent;
+  KListViewItem *mLatestDocsParent;
+  KListViewItem *mTimeLineParent;
+
   FilterHeader *mFilterHeader;
   QPopupMenu *mContextMenu;
   QPushButton *mNewDocButton;

@@ -28,6 +28,8 @@
 // include files
 #include <kjanuswidget.h>
 
+#include "docguardedptr.h"
+
 /**
  *
  */
@@ -53,8 +55,14 @@ public slots:
     void slotBuildView();
     void fillCatalogDetails();
     void fillSystemDetails();
+
+    void slotDocumentCreated( DocGuardedPtr );
+    void slotDocumentUpdate( DocGuardedPtr );
+
 protected slots:
     void slUrlClicked( const QString& );
+    void slotDigestItemSelected( QListViewItem* );
+    void slotCreateDocument();
 
 signals:
     void openKatalog( const QString& );
@@ -82,6 +90,10 @@ private:
     DocDigestView *mDocDigestView;
     PortalHtmlView  *mCatalogBrowser;
     PortalHtmlView  *mSystemBrowser;
+
+    KListViewItem *mAllDocsParent;
+    KListViewItem *mLatestDocsParent;
+    KListViewItem *mTimeLineParent;
 
   int mDocDigestIndex;
   int mCatalogIndex;

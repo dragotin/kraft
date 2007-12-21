@@ -197,6 +197,9 @@ bool KraftDoc::saveDocument( )
     DocumentSaverBase *saver = getSaver();
     if( saver ) {
         result = saver->saveDocument( this );
+        if ( isNew() ) {
+          setLastModified( QDate::currentDate() );
+        }
 
         // We go through the whole document and remove the positions
         // that are to delete because they now were deleted in they

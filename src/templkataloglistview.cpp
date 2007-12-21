@@ -30,6 +30,7 @@
 #include "stockmaterial.h"
 #include "templkatalog.h"
 #include "zeitcalcpart.h"
+#include "docposition.h"
 
 TemplKatalogListView::TemplKatalogListView(QWidget *w)
     : KatalogListView(w),
