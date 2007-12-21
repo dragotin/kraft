@@ -195,6 +195,8 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
 
   if ( !doc ) return;
 
+  // insert item into the "latest docs" list. That makes the latest
+  // list one item longer, we're not deleting one entry
   if ( parent ) {
     KListViewItem *item = new KListViewItem( parent );
     setupListViewItemFromDoc( doc, item );
@@ -204,6 +206,19 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
       mDocIdDict[item] = id.toString();
     }
   }
+
+  // Insert new item into the "all documents" list
+  parent = mAllDocsParent;
+  if ( parent ) {
+    KListViewItem *item = new KListViewItem( parent );
+    setupListViewItemFromDoc( doc, item );
+    dbID id = doc->docID();
+    if ( id.isOk() ) {
+      mDocIdDict[item] = id.toString();
+    }
+  }
+
+  // FIXME: Create a new item in the "Over time"-list.
 }
 
 void DocDigestView::slotUpdateDoc( DocGuardedPtr doc )
