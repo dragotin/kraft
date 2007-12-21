@@ -1,5 +1,5 @@
 #define KPLANT_VERSION "0.4"
-#define KRAFT_VERSION "0.24"
+#define KRAFT_VERSION "0.23"
 
 #define KRAFT_CODENAME "Infant+"
 
