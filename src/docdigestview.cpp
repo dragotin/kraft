@@ -112,13 +112,13 @@ void DocDigestView::slotBuildView()
   KListViewItem *item = addChapter( i18n( "All Documents" ),
                                                     docman->latestDocs( 0 ) );
   mAllDocsParent = item;
-  item->setPixmap( 0, SmallIcon( "identity" ) );
+  item->setPixmap( 0, SmallIcon( "identity" ) ); // KDE 4 icon name: user-identity
   item->setOpen( false );
 
   item = addChapter( i18n( "Documents by Time" ),
                                      DocDigestList() );
   mTimeLineParent = item;
-  item->setPixmap( 0, SmallIcon( "history" ) );
+  item->setPixmap( 0, SmallIcon( "history" ) ); // KDE 4 icon name: view-history
   item->setOpen( false );
 
   /* create the timeline view */
