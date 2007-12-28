@@ -57,7 +57,7 @@ void PrefsDialog::databaseTab()
   QLabel *label;
   QFrame *topFrame = addPage( i18n( "Database" ),
                               i18n( "Database Connection Settings" ),
-                              DesktopIcon( "connect_no" ) );
+                              DesktopIcon( "connect_no" ) ); // KDE 4 name: (probably) network-server-database
 
   QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
   QGridLayout *topLayout = new QGridLayout( topFrame );
