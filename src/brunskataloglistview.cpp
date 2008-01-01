@@ -88,7 +88,7 @@ void BrunsKatalogListView::setupChapters()
   if( ! m_root ) {
     kdDebug() << "Creating root item!" <<  endl;
     m_root = new KListViewItem(this, catalog->getName());
-    m_root->setPixmap(0, SmallIcon("gear"));
+    m_root->setPixmap(0, SmallIcon("gear")); // KDE 4 icon name: system-run
     m_root->setOpen(true);
   }
 
