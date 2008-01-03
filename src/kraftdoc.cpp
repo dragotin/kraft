@@ -1,5 +1,5 @@
 /***************************************************************************
-                          KraftDoc.cpp  -
+                      KraftDoc.cpp  - Kraft document class
                              -------------------
     begin                : Mit Dez 31 19:24:05 CET 2003
     copyright            : (C) 2003 by Klaas Freitag
@@ -72,16 +72,6 @@ void KraftDoc::removeView(KraftView *view)
   pViewList->remove(view);
 }
 
-void KraftDoc::setURL(const KURL &url)
-{
-  doc_url=url;
-}
-
-const KURL& KraftDoc::URL() const
-{
-  return doc_url;
-}
-
 void KraftDoc::slotUpdateAllViews( KraftView *sender )
 {
   KraftView *w;
@@ -95,52 +85,6 @@ void KraftDoc::slotUpdateAllViews( KraftView *sender )
 
 }
 
-bool KraftDoc::saveModified()
-{
-  bool completed=true;
-
-  if(modified)
-  {
-    Portal *win=(Portal *) parent();
-    int want_save = KMessageBox::warningYesNoCancel(win,
-                                         i18n("The current file has been modified.\n"
-                                              "Do you want to save it?"),
-                                         i18n("Warning"));
-    switch(want_save)
-    {
-      case KMessageBox::Yes:
-           if (doc_url.fileName() == i18n("Untitled"))
-           {
-             // win->slotFileSaveAs();
-           }
-           else
-           {
-             saveDocument();
-       	   };
-
-       	   deleteContents();
-           completed=true;
-           break;
-
-      case KMessageBox::No:
-           setModified(false);
-           deleteContents();
-           completed=true;
-           break;
-
-      case KMessageBox::Cancel:
-           completed=false;
-           break;
-
-      default:
-           completed=false;
-           break;
-    }
-  }
-
-  return completed;
-}
-
 void KraftDoc::closeDocument()
 {
   deleteContents();
@@ -148,11 +92,7 @@ void KraftDoc::closeDocument()
 
 bool KraftDoc::newDocument()
 {
-  /////////////////////////////////////////////////
-  // TODO: Add your document initialization code here
-  /////////////////////////////////////////////////
   modified=false;
-  doc_url.setFileName(i18n("Untitled"));
 
   /* initialise data */
   mDate = QDate::currentDate();
