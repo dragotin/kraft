@@ -1,3 +1,47 @@
+Das Kraft Release 0.22 verwendet ein neues Text-Template System,
+das für die benutzerkonfigurierbare PDF-Ausgabe der Dokumente
+verwendet wird. Es wird das google ctemplate-System verwendet,
+Details dazu unter http://code.google.com/p/google-ctemplate/
+Das neue System ist sehr flexibel und stabil und daher 
+zukunftssicher und löst das selbstgeschriebene alte System
+ab. Leider hat sich die Syntax geändert, weshalb eigene
+Templates angepasst werden müssen.
+
+Weiterhin enthält Kraft 0.22 zwei neue Arten von Dokument Posten.
+Es gibt Alternativpositionen, die eine Alternative zu einer 
+vorhergegangenen Position beschreiben. Bedarfspositionen 
+beschreiben Aufwände, die nur bei Bedarf anfallen. Beide 
+Arten addieren ihre Kosten nicht zur Gesamtsumme und sind durch
+Kursivschrift im Dokument hervorgehoben.
+
+Weiterhin wurden viele Fehler behoben und generelle Code 
+Verbesserungen vorgenommen. Das Datenbankschema wurde geändert,
+das Update geschieht automatisch durch Kraft.
+
+----------------------------------------------------------------------
+
+The Kraft release 0.22 changes the text template system that is 
+used by Kraft to support user configureable pdf output. It was
+changed from a very basic homegrown system to the google ctemplate
+system, details under http://code.google.com/p/google-ctemplate/
+It is very flexible and mature and thus future proof which was
+reason enough to switch to it at this early project state. The
+template format is slightly different to the former format, so
+editing of own templates is required.
+
+Additionally two new kinds of document positions were added: 
+Alternative and demand positions. The alternative positions describe
+an alternative to another position. The demand position describes
+a position where it is not yet clear if and how much of it is needed.
+Both position kinds do not add to overall sum and are marked through
+italic characters in the printout by default.
+
+Furthermore a lot of bugfixes and genral code improvements where 
+committed. The database scheme was extended, update is automatically
+performed.
+
+====================================================================
+
 This release 0.20 of Kraft brings a big step ahead in the way text
 templates for the header and footer texts for the different doc types
 are managed. Kraft now supports to have several templates per type
