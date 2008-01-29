@@ -460,7 +460,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   }
 
   m_positionScroll->addChild( w, 0, 0 );
-  w->setDocPosition( dp );
+  w->setDocPosition( dp, getDocument()->locale() );
   w->setOrdNumber( 1 + pos );
   int y = pos * w->height();
   m_positionScroll->moveChild( w, 0, y );
@@ -473,7 +473,7 @@ void KraftView::refreshPostCard()
 {
   if ( mAssistant->postCard() ) {
     QDate d = m_headerEdit->m_dateEdit->date();
-    const QString dStr = KGlobal().locale()->formatDate( d );
+    const QString dStr = getDocument()->locale()->formatDate( d );
 
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->text(),
@@ -830,6 +830,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 DocPositionList KraftView::currentPositionList()
 {
     DocPositionList list;
+    list.setLocale( *( m_doc->locale() ) );
     PositionViewWidget *widget;
     for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
       DocPositionBase *dpb = widget->position();

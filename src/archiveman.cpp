@@ -94,6 +94,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
 {
   QDomDocument xmldoc( "kraftdocument" );
   QDomElement root = xmldoc.createElement( "kraftdocument" );
+  // Fixme:
   xmldoc.appendChild( root );
   QDomElement cust = xmldoc.createElement( "client" );
   root.appendChild( cust );
@@ -111,7 +112,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
   docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
 
   docElem.appendChild( xmlTextElement( xmldoc, "date",
-                                       KGlobal().locale()->formatDate( doc->date() ) ) );
+                                       doc->locale()->formatDate( doc->date() ) ) );
 
   root.appendChild( doc->positions().domElement( xmldoc ) );
 
@@ -180,6 +181,9 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "date", doc->date() );
     record->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
     record->setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
+    record->setValue( "country",  doc->country() );
+    record->setValue( "language", doc->language() );
+
     cur.insert();
 
     dbID id = KraftDB::self()->getLastInsertID();

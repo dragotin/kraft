@@ -41,6 +41,7 @@
 #include "docguardedptr.h"
 #include "kraftdoc.h"
 #include <qlistview.h>
+#include "defaultprovider.h"
 
 
 DocDigestView::DocDigestView( QWidget *parent )
@@ -138,7 +139,7 @@ void DocDigestView::slotBuildView()
     }
     month = ( *it ).month();
     const QString monthName =
-      KGlobal().locale()->calendar()->monthName( month, year ); // , KCalendarSystem::LongName);
+      DefaultProvider::self()->locale()->calendar()->monthName( month, year ); // , KCalendarSystem::LongName);
     KListViewItem *mItem = addChapter(  monthName, ( *it ).digests(), yearItem );
     mItem->setOpen( false );
   }
@@ -249,8 +250,8 @@ void DocDigestView::setupListViewItemFromDoc( DocGuardedPtr doc, QListViewItem* 
     clientName = contact.realName();
   }
   item->setText( 1,  clientName );
-  item->setText( 2, KGlobal().locale()->formatDate( doc->lastModified(), true ) );
-  item->setText( 3, KGlobal().locale()->formatDate( doc->date(), true ) );
+  item->setText( 2, doc->locale()->formatDate( doc->lastModified(), true ) );
+  item->setText( 3, doc->locale()->formatDate( doc->date(), true ) );
   item->setText( 4, doc->whiteboard() );
   item->setText( 5, doc->ident() );
 }

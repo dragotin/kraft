@@ -276,7 +276,7 @@ bool FloskelTemplate::save()
     }
 }
 
-
+#if 0
 QDomElement FloskelTemplate::toXML( QDomDocument& doc)
 {
     QDomElement templ = doc.createElement("template");
@@ -350,7 +350,7 @@ void FloskelTemplate::fixPartsToXML( QDomDocument& doc, QDomElement& calcParts )
         calcPart.appendChild(createDomNode(doc, "amount", h));
 
         Geld g = fc->unitPreis();
-        calcPart.appendChild(createDomNode(doc, "price", g.toString()));
+        calcPart.appendChild(createDomNode(doc, "price", g.toString( mLocale )));
     }
 }
 
@@ -418,5 +418,5 @@ QDomElement FloskelTemplate::createDomNode( QDomDocument doc,
   elem.appendChild(text);
   return elem;
 }
-
+#endif
 

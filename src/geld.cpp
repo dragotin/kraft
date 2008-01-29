@@ -23,6 +23,7 @@
 #include <kglobal.h>
 
 #include "geld.h"
+#include "defaultprovider.h"
 
 
 Geld::Geld( )
@@ -91,14 +92,14 @@ bool Geld::operator!=(Geld g)
     return g.m_cent != m_cent;
 }
 
-QString Geld::toString() const
+QString Geld::toString( KLocale *loc ) const
 {
-    return KGlobal().locale()->formatMoney(m_cent/100.0);
+    return loc->formatMoney(m_cent/100.0);
 }
 
-QString Geld::toHtmlString() const
+QString Geld::toHtmlString( KLocale *loc ) const
 {
-  QString re = toString();
+  QString re = toString( loc );
   re.replace( " ",  "&nbsp;" );
   return re;
 }

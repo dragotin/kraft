@@ -73,10 +73,15 @@ void KatalogListView::addCatalogDisplay( const QString& name)
     m_catalogName = name;
 }
 
+Katalog* KatalogListView::catalog()
+{
+  return KatalogMan::self()->getKatalog( m_catalogName );
+}
+
 void KatalogListView::setupChapters()
 {
-    Katalog *catalog = KatalogMan::self()->getKatalog(m_catalogName);
-    if( ! catalog ) return;
+  Katalog *cat = catalog();
+    if( ! cat ) return;
 
     if( m_root ) {
       delete m_root;
@@ -84,11 +89,11 @@ void KatalogListView::setupChapters()
     }
 
     kdDebug() << "Creating root item!" <<  endl;
-    m_root = new KListViewItem(this, catalog->getName());
+    m_root = new KListViewItem(this, cat->getName());
     m_root->setPixmap(0, SmallIcon("kraft"));
     m_root->setOpen(true);
     repaint();
-    const QStringList chapters = catalog->getKatalogChapters( true );
+    const QStringList chapters = cat->getKatalogChapters( true );
     kdDebug() << "Have count of chapters: " << chapters.size() << endl;
     QPixmap icon = getCatalogIcon();
 
@@ -98,8 +103,8 @@ void KatalogListView::setupChapters()
 
       kdDebug() << "Creating katalog chapter item for " << chapter << endl;
       KListViewItem *katItem = new KListViewItem( m_root, chapter );
-      katItem->setText( 4, QString::number( catalog->chapterID( chapter ) ) );
-      m_catalogDict.insert( catalog->chapterID(chapter), katItem );
+      katItem->setText( 4, QString::number( cat->chapterID( chapter ) ) );
+      m_catalogDict.insert( cat->chapterID(chapter), katItem );
 
       katItem->setPixmap( 0, icon );
       if ( mOpenChapters.contains( chapter ) ) {
@@ -118,7 +123,7 @@ void KatalogListView::setupChapters()
 
 KListViewItem *KatalogListView::chapterItem( const QString& chapName )
 {
-    Katalog *kat = KatalogMan::self()->getKatalog(m_catalogName);
+  Katalog *kat = catalog();
     int chapID = kat->chapterID(chapName);
 
     return m_catalogDict[chapID];

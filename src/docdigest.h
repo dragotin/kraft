@@ -20,8 +20,11 @@
 #include <qdatetime.h>
 #include <qvaluelist.h>
 
+#include <klocale.h>
+
 #include "dbids.h"
 #include "archdoc.h"
+
 
 class DocDigest
 {
@@ -53,6 +56,9 @@ public:
 
   void addArchDocDigest( const ArchDocDigest& );
   ArchDocDigestList archDocDigestList();
+
+  void setCountryLanguage( const QString&, const QString& );
+
 protected:
   dbID mID;
   QString mType;
@@ -62,6 +68,8 @@ protected:
 
   QDate   mLastModified;
   QDate   mDate;
+  KLocale mLocale;
+
   ArchDocDigestList mArchDocs;
 };
 

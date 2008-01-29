@@ -29,6 +29,7 @@
 /**
  *
  */
+class KLocale;
 
 class Geld
 {
@@ -50,8 +51,8 @@ public:
 
     bool operator!=(Geld);
 
-    QString toString() const;
-  QString toHtmlString() const;
+    QString toString( KLocale* ) const;
+    QString toHtmlString( KLocale* ) const;
     double toDouble();
     long   toLong();
 private:

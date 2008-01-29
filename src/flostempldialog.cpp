@@ -51,6 +51,7 @@
 #include "katalogman.h"
 #include "katalog.h"
 #include "materialselectdialog.h"
+#include "defaultprovider.h"
 
 FlosTemplDialog::FlosTemplDialog( QWidget *parent, const char* name, bool modal, WFlags fl)
     : d_calcTempl(parent, name, modal, fl),
@@ -218,18 +219,18 @@ void FlosTemplDialog::refreshPrices()
     m_resPreisName->setText(t);
 
     /* Preis setzen */
-    t = m_template->einheitsPreis().toString();
+    t = m_template->einheitsPreis().toString( m_katalog->locale() );
     m_resultPrice->setText( t );
 
     /* Preisteile nach Zeit-, Fix- und Materialkalkulation */
     Geld g( m_template->kostenPerKalcPart( KALKPART_TIME ));
-    m_textTimePart->setText( g.toString());
+    m_textTimePart->setText( g.toString( m_katalog->locale() ));
 
     g = m_template->kostenPerKalcPart( KALKPART_FIX );
-    m_textFixPart->setText( g.toString());
+    m_textFixPart->setText( g.toString( m_katalog->locale() ));
 
     g = m_template->kostenPerKalcPart( KALKPART_MATERIAL );
-    m_textMaterialPart->setText(g.toString());
+    m_textMaterialPart->setText(g.toString( m_katalog->locale() ));
 
 }
 
@@ -490,10 +491,10 @@ void FlosTemplDialog::drawFixListEntry( QListViewItem* it, FixCalcPart *cp )
     if( !( it && cp) )
         return;
 
-    it->setText( 0, KGlobal().locale()->formatNumber(cp->getMenge()));
+    it->setText( 0, DefaultProvider::self()->locale()->formatNumber(cp->getMenge()));
     it->setText( 1, cp->getName());
-    it->setText( 2, cp->unitPreis().toString());
-    it->setText( 3, cp->basisKosten().toString());
+    it->setText( 2, cp->unitPreis().toString( m_katalog->locale() ));
+    it->setText( 3, cp->basisKosten().toString( m_katalog->locale() ));
     it->repaint();
 }
 
@@ -502,9 +503,9 @@ void FlosTemplDialog::drawMatListEntry( QListViewItem *it, MaterialCalcPart *mc,
     it->setText( 0, mat->name());
     it->setText( 1, QString::number(mc->getCalcAmount( mat ), 'f',2));
     it->setText( 2, mat->getUnit().einheitSingular());
-    it->setText( 3, mc->getPriceForMaterial(mat).toString());
+    it->setText( 3, mc->getPriceForMaterial(mat).toString( m_katalog->locale() ));
     it->setText( 4, QString::number(mat->getAmountPerPack(), 'f',2));
-    it->setText( 5, mat->salesPrice().toString());
+    it->setText( 5, mat->salesPrice().toString( m_katalog->locale() ));
     it->repaint();
 }
 

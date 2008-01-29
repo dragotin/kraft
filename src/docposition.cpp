@@ -31,6 +31,8 @@
 #include "docposition.h"
 #include "positionwidget.h"
 #include "positionviewwidget.h"
+#include "defaultprovider.h"
+
 /**
 @author Klaas Freitag
 */
@@ -40,6 +42,7 @@ DocPositionBase::DocPositionBase() : QObject(),
                                      mToDelete( false ),
                                      mType( Position ),
                                      mAttribs( QString::fromLatin1( "Position" ) )
+
 {
 
 }
@@ -77,7 +80,6 @@ DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
 
   return *this;
 }
-
 
 void DocPositionBase::setAttribute( const Attribute& attrib )
 {
@@ -155,7 +157,7 @@ DocPosition& DocPosition::operator=( const DocPosition& dp )
 // ##############################################################
 
 DocPositionList::DocPositionList()
-    : QPtrList<DocPositionBase>()
+  : QPtrList<DocPositionBase>(), mLocale( "kraft" )
 {
   setAutoDelete( true );
 }
@@ -178,6 +180,11 @@ QString DocPositionList::posNumber( DocPositionBase* pos )
   return QString::number( 1+findRef( pos ) );
 }
 
+void DocPositionList::setLocale( const KLocale& loc )
+{
+  mLocale = loc;
+}
+
 QDomElement DocPositionList::domElement( QDomDocument& doc )
 {
     QDomElement topElem = doc.createElement( "positions" );
@@ -196,16 +203,16 @@ QDomElement DocPositionList::domElement( QDomDocument& doc )
         posElem.appendChild( xmlTextElement( doc, "text", dp->text() ) );
 
         double am = dp->amount();
-        QString h = KGlobal().locale()->formatNumber( am, 2 );
+        QString h = mLocale.formatNumber( am, 2 );
         posElem.appendChild( xmlTextElement( doc, "amount", h ));
 
         Einheit e = dp->unit();
         posElem.appendChild( xmlTextElement( doc, "unit", e.einheit( am ) ) );
 
         Geld g = dp->unitPrice();
-        posElem.appendChild( xmlTextElement( doc, "unitprice", g.toString() ) );
+        posElem.appendChild( xmlTextElement( doc, "unitprice", g.toString( &mLocale ) ) );
 
-        posElem.appendChild( xmlTextElement( doc, "sumprice", Geld( g*am).toString() ) );
+        posElem.appendChild( xmlTextElement( doc, "sumprice", Geld( g*am).toString( &mLocale ) ) );
       }
     }
     return topElem;

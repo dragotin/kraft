@@ -77,13 +77,13 @@ void DocPostCard::setPositions( DocPositionList posList )
       mPositions += "</td>";
       mPositions += "<td width=\"50px\" align=\"right\">";
       if ( dp->toDelete() ) mPositions += "<strike>";
-      mPositions += dp->overallPrice().toHtmlString();
+      mPositions += dp->overallPrice().toHtmlString( posList.locale() );
       if ( dp->toDelete() ) mPositions += "</strike>";
       mPositions += "</td></tr>";
     }
   }
   mPositionCount = posList.count();
-  mTotal = posList.sumPrice().toHtmlString();
+  mTotal = posList.sumPrice().toHtmlString( posList.locale() );
   mPositions += QString( "<tr><td colspan=\"3\" align=\"right\"><b>Total: %1</b></td></tr>" ).arg( mTotal );
   mPositions += "</table>";
   // kdDebug() << "Positions-HTML: " << mPositions << endl;

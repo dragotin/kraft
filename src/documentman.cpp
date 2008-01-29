@@ -39,7 +39,7 @@ DocumentMan *DocumentMan::self()
 }
 
 DocumentMan::DocumentMan()
-  : mColumnList( "docID, ident, docType, docDescription, clientID, lastModified, date" )
+  : mColumnList( "docID, ident, docType, docDescription, clientID, lastModified, date, country, language" )
 {
 
 }
@@ -73,12 +73,14 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
 
   dig.setId( dbID( query.value(0).toInt() ) );
   const QString ident = query.value(1).toString();
-  dig.setIdent(    ident );
-  dig.setType(     query.value(2).toString() );
+  dig.setIdent( ident );
+  dig.setType(  query.value(2).toString() );
   dig.setWhiteboard( KraftDB::self()->mysqlEuroDecode( query.value( 3 ).toString() ) );
   dig.setClientId( query.value(4).toString() );
   dig.setLastModified( query.value(5).toDate() );
   dig.setDate(     query.value(6).toDate() );
+  dig.setCountryLanguage(  query.value( 7 ).toString(), query.value( 8 ).toString() );
+
   // kdDebug() << "Adding document "<< ident << " to the latest list" << endl;
 
   archCur.select( "ident='" + ident +"'" );
@@ -104,8 +106,8 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
   if( query.isActive() ) {
     while( query.next() ) {
       DocDigest dig = digestFromQuery( query );
-      int month = query.value( 7 /* month */ ).toInt();
-      int year = query.value( 8 /* year */ ).toInt();
+      int month = query.value( 9 /* month */ ).toInt();
+      int year = query.value( 10 /* year */ ).toInt();
       // kdDebug() << "Month: " << month << " in Year: " << year << endl;
 
       if ( timeline.month() == 0 ) timeline.setMonth( month );
@@ -128,7 +130,6 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
         digests.prepend( dig );
         // kdDebug() << "Prepending to digests lists: " << dig.date() << endl;
       }
-
     }
     kdDebug() << "Final append !" << endl;
     timeline.setDigestList( digests );

@@ -45,6 +45,7 @@
 #include "archdoc.h"
 #include "documentman.h"
 #include "texttemplate.h"
+#include "defaultprovider.h"
 
 static KStaticDeleter<ReportGenerator> selfDeleter;
 
@@ -158,8 +159,8 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
     h.setNum( pos.amount(), 'f', 2 );
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
     tmpl.setValue( "POSITIONS", "POS_UNIT", pos.unit() );
-    tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString() );
-    tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.overallPrice().toString() );
+    tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString( archive.locale() ) );
+    tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.overallPrice().toString( archive.locale() ) );
     tmpl.setValue( "POSITIONS", "POS_KIND", pos.kind().lower() );
 
     if ( !pos.kind().isEmpty() ) {
@@ -172,7 +173,8 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   }
 
   /* now replace stuff in the whole document */
-  tmpl.setValue( TAG( "DATE" ), KGlobal().locale()->formatDate( archive.date(), true ) );
+  tmpl.setValue( TAG( "DATE" ), DefaultProvider::self()->locale()->formatDate(
+                   archive.date(), true ) );
   tmpl.setValue( TAG( "DOCTYPE" ), archive.docType() );
   tmpl.setValue( TAG( "ADDRESS" ), archive.address() );
   tmpl.setValue( TAG( "DOCID" ),   archive.ident() );
@@ -180,12 +182,12 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   tmpl.setValue( TAG( "GOODBYE" ), archive.goodbye() );
   tmpl.setValue( TAG( "PRETEXT" ),   rmlString( archive.preText() ) );
   tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( archive.postText() ) );
-  tmpl.setValue( TAG( "BRUTTOSUM" ), archive.bruttoSum().toString() );
-  tmpl.setValue( TAG( "NETTOSUM" ),  archive.nettoSum().toString() );
+  tmpl.setValue( TAG( "BRUTTOSUM" ), archive.bruttoSum().toString( archive.locale() ) );
+  tmpl.setValue( TAG( "NETTOSUM" ),  archive.nettoSum().toString( archive.locale() ) );
 
   h.setNum( archive.vat(), 'f', 1 );
   tmpl.setValue( TAG( "VAT" ), h );
-  tmpl.setValue( TAG( "VATSUM" ), archive.vatSum().toString() );
+  tmpl.setValue( TAG( "VATSUM" ), archive.vatSum().toString( archive.locale() ) );
 
   // tmpl.setValue( TAG( "IMAGE" ), archive.
 

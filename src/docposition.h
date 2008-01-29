@@ -23,22 +23,22 @@
 #include <qguardedptr.h>
 #include <qobject.h>
 
-// include files for KDE
 #include <klocale.h>
-#include <kdebug.h>
 
 // application specific includes
-#include "einheit.h"
-#include "geld.h"
 #include "dbids.h"
 #include "calcpart.h"
 #include "attribute.h"
+#include "einheit.h"
 
 /**
 @author Klaas Freitag
 */
 class QDomElement;
 class QDomDocument;
+class Geld;
+class dbID;
+class KLocale;
 
 class DocPositionBase : public QObject
 {
@@ -59,6 +59,7 @@ class DocPositionBase : public QObject
     QString attribute(const QString& ) const;
 
     AttributeMap attributes();
+
   /**
    * Position means the number in the document
    */
@@ -121,11 +122,14 @@ class DocPositionList : public QPtrList<DocPositionBase>
     QDomElement domElement( QDomDocument& );
     DocPositionBase *positionFromId( int id );
     QString posNumber( DocPositionBase* );
+    void setLocale( const KLocale& );
+    KLocale* locale() { return &mLocale; }
   protected:
     int compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 );
 
   private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
+    KLocale mLocale;
 };
 
 typedef QPtrListIterator<DocPositionList> DocPositionListIterator;

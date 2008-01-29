@@ -46,6 +46,7 @@ public:
   DocTextList documentTexts( const QString&, KraftDoc::Part );
 
   QString currencySymbol() const;
+  KLocale* locale();
 
 private:
   void fillDocTextBuffer( const DocText&, QSqlRecord* );

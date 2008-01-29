@@ -86,13 +86,13 @@ QListViewItem* MaterialKatalogListView::addMaterialToView( KListViewItem *parent
     recItem = new QCheckListItem( parent, mat->name(), QCheckListItem::CheckBox );
   }
   recItem->setMultiLinesEnabled( true );
-  slFreshupItem( recItem,  mat );
+  slFreshupItem( recItem,  mat, catalog()->locale() );
   m_dataDict.insert( recItem, mat );
 
   return recItem;
 }
 
-void MaterialKatalogListView::slFreshupItem( QListViewItem *item, void* templ,  bool )
+void MaterialKatalogListView::slFreshupItem( QListViewItem *item, void* templ, KLocale *loc )
 {
   StockMaterial *mat = static_cast<StockMaterial*>( templ );
 
@@ -102,8 +102,8 @@ void MaterialKatalogListView::slFreshupItem( QListViewItem *item, void* templ,  
     item->setText( 0, mat->name() );
     item->setText( 1, QString::number( mat->getAmountPerPack() ) );
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
-    item->setText( 3, mat->purchPrice().toString() );
-    item->setText( 4, mat->salesPrice().toString() );
+    item->setText( 3, mat->purchPrice().toString( loc ) );
+    item->setText( 4, mat->salesPrice().toString( loc ) );
     item->setText( 5, mat->lastModified() );
   } else {
     kdDebug() << "Unable to freshup item - data invalid" << endl;

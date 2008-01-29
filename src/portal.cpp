@@ -536,8 +536,7 @@ void Portal::slotFileQuit()
   {
     for(w=memberList->first(); w!=0; w=memberList->first())
     {
-      // only close the window if the closeEvent is accepted. If the user presses Cancel on the saveModified() dialog,
-      // the window and the application stay open.
+      // only close the window if the closeEvent is accepted. 
       if(!w->close())
 	break;
     }

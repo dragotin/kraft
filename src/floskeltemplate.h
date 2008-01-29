@@ -88,7 +88,7 @@ public:
     KListViewItem* getListViewItem() { return m_listViewItem; }
 
     virtual bool save();
-    virtual QDomElement toXML( QDomDocument&);
+    // virtual QDomElement toXML( QDomDocument&);
 
   FloskelTemplate& operator= ( FloskelTemplate& );
 protected:
@@ -96,11 +96,12 @@ protected:
     virtual void deepCopyCalcParts( FloskelTemplate& );
 
 private: // Private methods
+#if 0
     QDomElement createDomNode( QDomDocument, const QString&, const QString&);
     void materialPartsToXML( QDomDocument&, QDomElement& );
     void fixPartsToXML( QDomDocument&, QDomElement& );
     void timePartsToXML( QDomDocument&, QDomElement& );
-
+#endif
     virtual Geld calcPreis();
 
     QString          m_text;

@@ -25,25 +25,27 @@
 #include <kabc/addressee.h>
 
 #include "docdigest.h"
+#include "defaultprovider.h"
 
 DocDigest::DocDigest( dbID id, const QString& type, const QString& clientID )
-  :mID(id), mType( type ), mClientId( clientID )
+  :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" )
 {
 
 }
 
 DocDigest::DocDigest()
+  :mLocale( "kraft" )
 {
 }
 
 QString DocDigest::date()
 {
-  return KGlobal().locale()->formatDate( mDate, true );
+  return mLocale.formatDate( mDate, true );
 }
 
 QString DocDigest::lastModified()
 {
-  return KGlobal().locale()->formatDate( mLastModified, true );
+  return mLocale.formatDate( mLastModified, true );
 }
 
 QString DocDigest::clientName()
@@ -66,6 +68,12 @@ void DocDigest::addArchDocDigest( const ArchDocDigest& digest )
 ArchDocDigestList DocDigest::archDocDigestList()
 {
   return mArchDocs;
+}
+
+void DocDigest::setCountryLanguage( const QString& country, const QString& lang )
+{
+  mLocale.setCountry( country );
+  mLocale.setLanguage( lang );
 }
 
 /* *************************************************************************** */

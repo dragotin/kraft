@@ -41,17 +41,20 @@
 
 // FIXME: Make KraftDoc inheriting DocDigest!
 
-KraftDoc::KraftDoc(QWidget *parent, const char *name) : QObject(parent, name),
-  mIsNew(true),
-  mSaver(0)
+KraftDoc::KraftDoc(QWidget *parent, const char *name)
+  : QObject(parent, name),
+    mIsNew(true),
+    mLocale(0),
+    mSaver(0)
 {
   pViewList = new QList<KraftView>();
   pViewList->setAutoDelete(false);
-
+  mLocale = new KLocale( "kraft" );
 }
 
 KraftDoc::~KraftDoc()
 {
+  delete mLocale;
 }
 
 KraftView* KraftDoc::firstView()
@@ -105,6 +108,9 @@ bool KraftDoc::newDocument()
   mDocType = DefaultProvider::self()->docType();
   mPreText = DefaultProvider::self()->defaultText( mDocType, KraftDoc::Header );
   mPostText = DefaultProvider::self()->defaultText( mDocType, KraftDoc::Footer );
+
+  mCountry  = DefaultProvider::self()->locale()->country();
+  mLanguage = DefaultProvider::self()->locale()->language();
 
   mSalut = QString::null;
   mGoodbye = QString::null;
@@ -197,7 +203,6 @@ void KraftDoc::setPositionList( const DocPositionList& newList )
 DocPosition* KraftDoc::createPosition()
 {
     DocPosition *dp = new DocPosition();
-
     mPositions.append( dp );
     return dp;
 }
@@ -314,6 +319,27 @@ Geld KraftDoc::vatSum()
   return Geld( nettoSum() * DocumentMan::self()->vat()/100.0 );
 }
 
+QString KraftDoc::country() const
+{
+  return mLocale->country();
+}
+
+QString KraftDoc::language() const
+{
+  return mLocale->language();
+}
+
+KLocale* KraftDoc::locale()
+{
+  return mLocale;
+}
+
+void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
+{
+  kdDebug()<< "Setting country " << country << " and lang " << lang << endl;
+  mLocale->setCountry( country );
+  mLocale->setLanguage( lang );
+}
 
  QString KraftDoc::partToString( Part p )
 {

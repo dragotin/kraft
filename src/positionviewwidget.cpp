@@ -33,6 +33,7 @@
 #include "unitmanager.h"
 #include "geld.h"
 #include "kraftsettings.h"
+#include "defaultprovider.h"
 
 PositionViewWidget::PositionViewWidget()
  : positionWidget(),
@@ -44,8 +45,6 @@ PositionViewWidget::PositionViewWidget()
  mState( Active ),
  mKind( Normal )
 {
-  const QString currSymbol = KGlobal().locale()->currencySymbol();
-  m_sbUnitPrice->setPrefix( currSymbol + " " );
   m_sbUnitPrice->setMinValue( 0 );
   m_sbUnitPrice->setMaxValue( 99999.99 );
   m_sbUnitPrice->setPrecision( 2 );
@@ -104,9 +103,11 @@ PositionViewWidget::PositionViewWidget()
   lKind->setPixmap( QPixmap() );
 }
 
-void PositionViewWidget::setDocPosition( DocPositionBase *dp )
+void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
 {
   if( ! dp ) return;
+  mLocale = loc;
+
   if( dp->type() == DocPositionBase::Position ) {
     DocPosition *pos = static_cast<DocPosition*>(dp);
     m_skipModifiedSignal = true;
@@ -117,6 +118,10 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp )
     m_sbAmount->setValue( pos->amount() );
     m_cbUnit->setCurrentText( pos->unit().einheitSingular() );
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
+
+    const QString currSymbol = mLocale->currencySymbol();
+    m_sbUnitPrice->setPrefix( currSymbol + " " );
+
     lStatus->hide();
     lKind->hide();
 
@@ -132,8 +137,8 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp )
         kdDebug() << "Unknown position kind!" << endl;
       }
     }
-    slotSetOverallPrice( currentPrice() );
     mPositionPtr = dp;
+    slotSetOverallPrice( currentPrice() );
 
     m_skipModifiedSignal = false;
   }
@@ -273,7 +278,8 @@ void PositionViewWidget::slotRefreshPrice()
 
 void PositionViewWidget::slotSetOverallPrice( Geld g )
 {
-  m_sumLabel->setText( g.toString() );
+  if ( mPositionPtr )
+    m_sumLabel->setText( g.toString( mLocale ) );
 }
 
 void PositionViewWidget::slotModified()

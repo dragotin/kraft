@@ -27,11 +27,6 @@
 #include <qstring.h>
 #include <qdatetime.h>
 
-// #include <qguardedptr.h>
-
-// include files for KDE
-#include <kurl.h>
-
 #include "docposition.h"
 #include "dbids.h"
 #include "docguardedptr.h"
@@ -41,6 +36,7 @@
 class DocumentSaverBase;
 class Geld;
 
+class KLocale;
 class KraftView;
 
 class KraftDoc : public QObject
@@ -79,10 +75,8 @@ class KraftDoc : public QObject
   bool reloadDocument();
   /** saves the document under filename and format.*/
   bool saveDocument( );
-  /** returns the KURL of the document */
-  // const KURL& URL() const;
-  /** sets the URL of the document */
-  // void setURL(const KURL& url);
+
+  KLocale* locale();
 
   DocPosition* createPosition();
   DocPositionList positions() { return mPositions; }
@@ -135,6 +129,11 @@ class KraftDoc : public QObject
   Geld bruttoSum();
   Geld vatSum();
 
+  QString country() const;
+  QString language() const;
+
+  void setCountryLanguage( const QString&, const QString& );
+
   public slots:
   /** calls redrawDocument() on all views connected to the document object and is 
    *  called by the view by which the document has been changed.
@@ -165,7 +164,11 @@ private:
   QString mGoodbye;
   QString mIdent;
   QString mWhiteboard;
+
+  // Two qualifiers for the locale settings.
   QString mCountry;
+  QString mLanguage;
+  KLocale *mLocale;
 
   QDate   mDate;
   QDate   mLastModified;

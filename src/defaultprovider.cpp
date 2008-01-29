@@ -136,6 +136,11 @@ void DefaultProvider::fillDocTextBuffer( const DocText& t, QSqlRecord *buffer )
   buffer->setValue( "modDate", "systimestamp" );
 }
 
+KLocale* DefaultProvider::locale()
+{
+  return KGlobal().locale();
+}
+
 void DefaultProvider::deleteDocumentText( const DocText& dt )
 {
   QSqlCursor cur( "DocTexts" );
@@ -151,10 +156,12 @@ void DefaultProvider::deleteDocumentText( const DocText& dt )
   }
 }
 
+
 QString DefaultProvider::currencySymbol() const
 {
-  return KGlobal().locale()->currencySymbol();
+  return self()->locale()->currencySymbol();
 }
+
 
 DefaultProvider::~DefaultProvider()
 {

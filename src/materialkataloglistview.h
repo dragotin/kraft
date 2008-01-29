@@ -24,6 +24,7 @@
 class QListViewItem;
 class KListViewItem;
 class StockMaterial;
+class KLocale;
 
 /**
 A listview that presents the contents of the Bruns Catalog
@@ -38,9 +39,9 @@ public:
   ~MaterialKatalogListView();
   void addCatalogDisplay( const QString& katName );
   DocPosition itemToDocPosition( QListViewItem *it = 0 );
-  QListViewItem* addMaterialToView( KListViewItem *, StockMaterial * );
+  QListViewItem* addMaterialToView( KListViewItem*, StockMaterial* );
 public slots:
-  void slFreshupItem( QListViewItem *, void*,  bool remChildren = false  );
+  void slFreshupItem( QListViewItem *, void*, KLocale* = 0  );
 
 private:
   bool mCheckboxes;

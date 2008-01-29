@@ -28,14 +28,17 @@
 #include "archdoc.h"
 #include "documentman.h"
 #include "kraftdb.h"
+#include "defaultprovider.h"
 
 
 ArchDoc::ArchDoc()
+  :mLocale( "kraft" )
 {
 
 }
 
 ArchDoc::ArchDoc( const dbID& id )
+  :mLocale( "kraft" )
 {
   /* load archive from database */
   loadFromDb( id );
@@ -95,6 +98,10 @@ void ArchDoc::loadFromDb( dbID id )
     mDate      = cur.value( "date" ).toDate();
     mPrintDate = cur.value( "printDate" ).toDateTime();
     mState     = cur.value( "state" ).toInt();
+    QString country = cur.value( "country" ).toString();
+    QString lang = cur.value( "language" ).toString();
+    mLocale.setCountry( country );
+    mLocale.setLanguage( lang );
 
     QString docID = cur.value( "archDocID" ).toString();
     loadPositions( docID );
@@ -181,7 +188,7 @@ ArchDocDigest::~ArchDocDigest()
 
 QString ArchDocDigest::printDateString() const
 {
-  return KGlobal().locale()->formatDateTime( mPrintDate, true );
+  return DefaultProvider::self()->locale()->formatDateTime( mPrintDate, true );
 }
 
 /* ###################################################################### */

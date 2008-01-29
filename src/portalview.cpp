@@ -41,6 +41,7 @@
 #include "katalogman.h"
 #include "docdigestview.h"
 #include "documentman.h"
+#include "defaultprovider.h"
 
 PortalView::PortalView(QWidget *parent, const char *name, int face)
     : KJanusWidget( parent, name, face ),
@@ -235,9 +236,14 @@ QString PortalView::systemViewHeader() const
   }
   html += "</td></tr>";
   html += QString( "<tr><td>Codename <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
-  QString h1 = KGlobal().locale()->twoAlphaToCountryName( KGlobal().locale()->country() );
+  QString h1 = DefaultProvider::self()->locale()->twoAlphaToCountryName(
+    DefaultProvider::self()->locale()->country() );
   html += QString( "<tr><td>" ) + i18n( "Country Setting: " ) +
-          QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( KGlobal().locale()->country() );
+          QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( DefaultProvider::self()->locale()->country() );
+  h1 = DefaultProvider::self()->locale()->twoAlphaToLanguageName(
+    DefaultProvider::self()->locale()->language() );
+  html += QString( "<tr><td>" ) + i18n( "Language Setting: " ) +
+          QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( DefaultProvider::self()->locale()->language() );
   html += "</table></div>";
 
   return html;

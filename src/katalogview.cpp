@@ -184,7 +184,6 @@ void KatalogView::openDocumentFile(const KURL& )
 
 bool KatalogView::queryClose()
 {
-//  return doc->saveModified();
     return true;
 }
 

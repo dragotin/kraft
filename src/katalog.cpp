@@ -19,6 +19,7 @@
 #include <qdom.h>
 #include <kdebug.h>
 #include <klocale.h>
+#include <kglobal.h>
 
 #include "floskeltemplate.h"
 #include "dbids.h"
@@ -54,6 +55,9 @@ void Katalog::init()
 {
     m_chapterIDs = new dbIdDict();
     m_chapterIDs->setAutoDelete(true);
+
+    // FIXME: Catalogs could have their own locale in the future
+    mLocale = KGlobal().locale();
 }
 
 Katalog::~Katalog()

@@ -32,6 +32,7 @@
 #include "dbids.h"
 
 #include "katalogsettings.h"
+#include "defaultprovider.h"
 
 #define DB_DRIVER "QMYSQL3"
 // #define DB_DRIVER "QSQLITE"
@@ -191,7 +192,7 @@ void KraftDB::writeWordList( const QString& listName, const QStringList& list )
 
 bool KraftDB::checkSchemaVersion( QWidget *parent )
 {
-  kdDebug() << "The country setting is " << KGlobal().locale()->country() << endl;
+  kdDebug() << "The country setting is " << DefaultProvider::self()->locale()->country() << endl;
 
   bool reinit = false;
   if ( m_db->tables().contains( "kraftsystem" ) == 0 ) {
@@ -290,7 +291,7 @@ bool KraftDB::createDatabase( QWidget *parent )
     if ( goodCmds == allCmds ) {
       QString dbFill( "fill_schema_en.sql" );
 
-      if ( KGlobal().locale()->country() == "de" ) {
+      if ( DefaultProvider::self()->locale()->country() == "de" ) {
         dbFill = "fill_schema_de.sql";
       }
       emit statusMessage( i18n( "Filling Database..." ) );

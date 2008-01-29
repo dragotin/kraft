@@ -26,6 +26,7 @@
 
 // application specific includes
 #include "doctype.h"
+#include "defaultprovider.h"
 
 /**
 @author Klaas Freitag
@@ -63,7 +64,7 @@ void DocType::init()
   while ( cur.next() ) {
     dbID id( cur.value( "docTypeID" ).toInt() );
     mNameMap[ cur.value( "name" ).toString() ] = id;
-    QString h = KGlobal().locale()->translate( cur.value( "name" ).toString() );
+    QString h = DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
     mNameMap[ h ] = id;
   }
 }
@@ -94,7 +95,7 @@ QStringList DocType::allLocalised()
   cur.select();
 
   while ( cur.next() ) {
-    re << KGlobal().locale()->translate( cur.value( "name" ).toString() );
+    re << DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
   }
 
   return re;

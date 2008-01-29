@@ -31,6 +31,7 @@
 #include "matdatatable.h"
 #include "unitmanager.h"
 #include "kraftdb.h"
+#include "defaultprovider.h"
 
 /* ********************************************************************************
  * Editor Factory
@@ -138,7 +139,7 @@ void MatDataTable::paintField( QPainter * p, const QSqlField* field,
              field->name() == "priceOut" )
     {
         double price = field->value().toDouble();
-        QString str = KGlobal().locale()->formatMoney(price);
+        QString str = DefaultProvider::self()->locale()->formatMoney(price);
         p->drawText( 1,1, cr.width()-2, cr.height()-2, 2 /* fieldAlignment( field ) */, str );
 
 

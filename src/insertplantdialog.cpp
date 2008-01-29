@@ -46,6 +46,7 @@
 #include "brunsrecord.h"
 #include "unitmanager.h"
 #include "geld.h"
+#include "defaultprovider.h"
 
 InsertPlantDialog::InsertPlantDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
@@ -53,7 +54,7 @@ InsertPlantDialog::InsertPlantDialog( QWidget *parent )
   QWidget *w = makeVBoxMainWidget();
 
   mBaseWidget = new insertPlantBase( w );
-  mBaseWidget->mSinglePrice->setSuffix( KGlobal().locale()->currencySymbol() );
+  mBaseWidget->mSinglePrice->setSuffix( DefaultProvider::self()->locale()->currencySymbol() );
 
   mBaseWidget->mSizeList->addColumn( i18n( "Matchcode" ) );
   mBaseWidget->mSizeList->addColumn( i18n( "Form" ) );

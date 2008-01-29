@@ -30,6 +30,7 @@ class DocPosition;
 class KPopupMenu;
 class Geld;
 class QPopupMenu;
+class KLocale;
 
 class PositionViewWidget : public positionWidget
 {
@@ -38,9 +39,10 @@ public:
     enum State { Active, New, Deleted, Locked };
     enum Kind  { Normal, Demand, Alternative, Invalid };
 
-    PositionViewWidget();
+    PositionViewWidget( );
     PositionViewWidget( int );
-    void setDocPosition( DocPositionBase* );
+
+    void setDocPosition( DocPositionBase*, KLocale* );
     ~PositionViewWidget();
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }
@@ -100,6 +102,7 @@ private:
     int  mUnlockId;
     State mState;
     Kind  mKind;
+    KLocale *mLocale;
 };
 
 class PositionViewWidgetList : public QPtrList<PositionViewWidget>

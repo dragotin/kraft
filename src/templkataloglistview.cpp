@@ -122,7 +122,8 @@ void TemplKatalogListView::slFreshupItem( QListViewItem *item, FloskelTemplate *
 
     item->setText( 0, t );
     QString h;
-    h = QString( "%1 / %2" ).arg( g.toString() ).arg( tmpl->einheit().einheitSingular() );
+    h = QString( "%1 / %2" ).arg( g.toString( catalog()->locale() ) )
+        .arg( tmpl->einheit().einheitSingular() );
     item->setText( 1,  h );
     item->setText( 2, ck );
     // item->setText( 4, QString::number(tmpl->getTemplID()));
@@ -171,7 +172,7 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
         }
 
         KListViewItem *cpItem =  new KListViewItem( item, title,
-                                                    cp->kosten().toString(), cp->getType() );
+                                                    cp->kosten().toString( catalog()->locale() ), cp->getType() );
 
 
         /* in case of material, add items for the materials calculated for the
@@ -198,7 +199,7 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
                     .arg( mat->getAmountPerPack() )
                     .arg( e.einheit( mat->getAmountPerPack() ) )
                     .arg( t );
-                (void) new KListViewItem( cpItem, t, g.toString() );
+                (void) new KListViewItem( cpItem, t, g.toString( catalog()->locale() ) );
             }
         }
     }

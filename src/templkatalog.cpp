@@ -82,7 +82,7 @@ int TemplKatalog::load()
         Geld preis(g);
         /* Only for debugging: */
         if( templID == 272 ) {
-            kdDebug() << "Geld ist " << preis.toString() << " from g-value " << g << endl;
+            kdDebug() << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g << endl;
         }
 
         QDateTime modDt;
@@ -327,7 +327,7 @@ QDomDocument TemplKatalog::toXML()
         QDomElement rateelem = doc.createElement("rate");
         StdSatz satz = StdSatzMan::self()->getStdSatz(*it);
         Geld g = satz.getPreis();
-        QDomText rname = doc.createTextNode(g.toString());
+        QDomText rname = doc.createTextNode(g.toString( mLocale ));
         rateelem.appendChild(rname);
         set.appendChild(rateelem);
 
@@ -350,7 +350,7 @@ QDomDocument TemplKatalog::toXML()
         FloskelTemplate *tmpl = 0;
 
         while( (tmpl = it.current()) != 0) {
-            chapElem.appendChild( tmpl->toXML(doc));
+          // chapElem.appendChild( tmpl->toXML(doc));
             ++it;
         }
     }

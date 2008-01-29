@@ -5,10 +5,11 @@
 
 lib_LTLIBRARIES = libbruns.la
 
-libbruns_la_SOURCES = catalogtemplate.cpp katalog.cpp katalogman.cpp  brunskatalog.cpp brunsrecord.cpp \
+libbruns_la_SOURCES = catalogtemplate.cpp katalog.cpp katalogman.cpp  brunskatalog.cpp \
+brunsrecord.cpp defaultprovider.cpp doctext.cpp doctype.cpp \
 kataloglistview.cpp flostab.ui katalogview.cpp brunskataloglistview.cpp brunskatalogview.cpp \
 filterheader.cpp catalogchapteredit.cpp docposition.cpp kraftdb.cpp \
-geld.cpp einheit.cpp katalogsettings.kcfgc attribute.cpp
+geld.cpp einheit.cpp katalogsettings.kcfgc kraftsettings.kcfgc attribute.cpp
 
 libbruns_la_LDFLAGS = $(KDE_RPATH) $(all_libraries) -version-info 1:0:0 -no-undefined
 libbruns_la_LIBADD = $(LIB_KIO) $(all_libraries)
@@ -24,22 +25,22 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	stdsatzman.cpp zeitpartui.ui fixpartui.ui matpartui.ui inserttmplbase.ui \
 	materialdialog.ui materialtempldialog.cpp insertplantbase.ui \
 	zeitcalcdialog.cpp fixcalcdialog.cpp mateditor.cpp matdatatable.cpp matcalcdialog.h \
-	matcalcdialog.cpp templatesaverbase.cpp templatesaverdb.cpp kraftsettings.kcfgc \
+	matcalcdialog.cpp templatesaverbase.cpp templatesaverdb.cpp  \
 	materialsaverbase.cpp materialsaverdb.cpp \
-	prefsdialog.cpp templkatalogview.cpp templkataloglistview.cpp katalogsettings.kcfgc \
+	prefsdialog.cpp templkatalogview.cpp templkataloglistview.cpp  \
 	docheader.ui positionwidget.ui positionviewwidget.cpp \
 	documentsaverbase.cpp documentsaverdb.cpp docfooter.ui documentman.cpp docdigest.cpp \
 	docdigestview.cpp portal.cpp portalview.cpp archiveman.cpp reportgenerator.cpp \
 	htmlview.cpp docpostcard.cpp catalogselection.cpp \
 	addressselection.cpp kraftdocheaderedit.cpp kraftdocfooteredit.cpp \
-	inserttempldialog.cpp archdocposition.cpp archdoc.cpp defaultprovider.cpp \
+	inserttempldialog.cpp archdocposition.cpp archdoc.cpp \
 	materialkataloglistview.cpp materialkatalogview.cpp materialselectdialog.cpp \
         kraftdocedit.cpp kraftdocpositionsedit.cpp portalhtmlview.cpp \
 	templtopositiondialogbase.cpp insertplantdialog.cpp headerselection.cpp \
-	textselection.cpp doctext.cpp \
+	textselection.cpp \
 	docassistant.cpp texteditdialog.cpp texteditbase.ui templateprovider.cpp \
 	headertemplateprovider.cpp footertemplateprovider.cpp catalogtemplateprovider.cpp \
-	addresstemplateprovider.cpp texttemplate.cpp doctype.cpp
+	addresstemplateprovider.cpp texttemplate.cpp 
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml -lctemplate -lpthread
 

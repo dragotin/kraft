@@ -19,8 +19,8 @@
 #include "filterheader.h"
 
 #include <klistview.h>
-#include <klocale.h>
 #include <kdialog.h>
+#include <klocale.h>
 #include <kdebug.h>
 #include <kapplication.h>
 #include <kiconloader.h>

@@ -33,6 +33,7 @@
 #include "geld.h"
 #include "dbids.h"
 
+class KLocale;
 
 class ArchDoc
 {
@@ -65,6 +66,8 @@ public:
   dbID docID() { return mDocID; }
 
   QString docIdentifier();
+
+  KLocale* locale() { return &mLocale; }
   
   QMap<QString, QString> attributes() {
     return mAttribs;
@@ -90,6 +93,8 @@ private:
 
   QDate     mDate;
   QDateTime mPrintDate;
+
+  KLocale   mLocale;
 
   ArchDocPositionList mPositions;
   dbID    mDocID;

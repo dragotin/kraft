@@ -270,6 +270,8 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord *buf, KraftDoc *doc )
       buf->setValue( "lastModified", "NOW()" );
       buf->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
       buf->setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
+      buf->setValue( "country",  doc->country() );
+      buf->setValue( "language", doc->language() );
     }
 }
 
@@ -295,6 +297,8 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setGoodbye(    cur.value( "goodbye"  ).toString() );
         doc->setDate (      cur.value( "date"     ).toDate() );
         doc->setLastModified( cur.value( "lastModified" ).toDate() );
+        doc->setCountryLanguage( cur.value( "country" ).toString(),
+                                 cur.value( "language" ).toString() );
 
         doc->setPreText(    KraftDB::self()->mysqlEuroDecode( cur.value( "pretext"  ).toString() ) );
         doc->setPostText(   KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() ) );

@@ -32,6 +32,7 @@ class QPixmap;
 class QPopupMenu;
 class KPopupMenu;
 class DocPosition;
+class Katalog;
 
 class KatalogListView : public KListView  
 {
@@ -61,6 +62,8 @@ public slots:
 protected:
 
   virtual QPixmap getCatalogIcon();
+
+  virtual Katalog* catalog();
 
   KListViewItem *chapterItem( const QString& chapName );
 

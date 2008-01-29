@@ -34,6 +34,7 @@
 typedef enum {UnspecCatalog, MaterialCatalog, TemplateCatalog, PlantCatalog } KatalogType;
 
 class QDomDocument;
+class KLocale;
 
 class Katalog
 {
@@ -91,7 +92,8 @@ public:
 
     virtual QDomDocument toXML();
     virtual void writeXMLFile();
-
+    
+    KLocale *locale() { return mLocale; }
 protected:
 
     dbIdDict   *m_chapterIDs;
@@ -101,8 +103,12 @@ protected:
     int         m_setID;
 
     bool        m_readOnly;
+
+    KLocale *mLocale;
+
 private:
     void init();
+    
 };
 
 #endif

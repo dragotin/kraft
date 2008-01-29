@@ -31,13 +31,14 @@
 #include "unitmanager.h"
 #include "geld.h"
 #include "kraftsettings.h"
+#include "defaultprovider.h"
 
 MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, const char* name, bool modal, WFlags fl)
     : MaterialDialogBase(parent, name, modal, fl),
       Eta( 0.00000000001 )
 {
     /* connect a value Changed signal of the manual price field */
-  const QString currSymbol = KGlobal().locale()->currencySymbol();
+  const QString currSymbol = DefaultProvider::self()->locale()->currencySymbol();
   mInPurchasePrice->setPrefix( currSymbol + " " );
   mInSalePrice->setPrefix( currSymbol + " " );
 
