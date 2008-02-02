@@ -21,7 +21,7 @@
         </property>
         <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>layout13</cstring>
+                <cstring>layout7</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -29,12 +29,23 @@
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout5</cstring>
+                        <cstring>layout6</cstring>
                     </property>
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>mButtLang</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image0</pixmap>
+                            </property>
+                        </widget>
                         <widget class="QComboBox">
                             <property name="name">
                                 <cstring>m_cbType</cstring>
@@ -52,7 +63,7 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>198</width>
+                                    <width>120</width>
                                     <height>21</height>
                                 </size>
                             </property>
@@ -226,6 +237,11 @@
         </widget>
     </grid>
 </widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="1256">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000004af49444154388ddd954d6c556510869fef9ceffcdc7bee6f5bec2d85b6d602a69a8ab1fcd59fc4981aaa89455024a81859588d0b89121225a03171a16e5c1858088968aa510ba9e0425422048891885090b65828c516dbd296f6b6b7b7f79e7bcef95c882c8c1863e2c63799ddcc3b33997766e03f82f8274eaf522b1bc299f9a9bb16ce376a6ed22feef9f66cdb50a26b2707fd7f95f5636a633f917c66a8a9f964fecbaf725e7777e09d3f1f0c97cfc97713fea68d54edf5622580137fbfd130756958fa49d3929a19326e6a19d9bdbc71f8d3c7ace2e88d6673933016d74328840a02ac97379b45dbb7df577da6672794dc0ba3b9bf244e1439772e5992dadcd9939992a62ee6cf8b4642e72aa4bdfe256869412b2f87e969443a8d42a056ad26f3e0635c7ef575830fded5af5bb1edc88aa2125bde5f1549a6331e951511e22b9fc55b6661b7b6a27b1e229904400c0f137e6f07b9a79ee397c6e67c64cf8e5b822050d96c76101804fc6bc4866d54babee26ce724a62dd16d9786eebd44b6b6a28d8dc1d34f437939c4e3e016d08560d61bafa02fba67c98a152b8e0e0e0e8a03070e4c01878097812ed958f704a38e595e5c62535115259357cc9d13e6869dc7a1b494c2860de80f3d84e638a820c0131a99556b09767d4861dfe77ad871c8e7f30009a019a807ee9277ac5e192968b3535d67a7312c97449145d287c46b1b98bead0671e408fab66d04fdfda84201efca150a4537907e6e1393e919ea064e931a1b4501c7811ca4801b654dc7b192a6779686f38905b86e40d8d6b0c64730761f87175be0c205c49a35980b17a21c074efd84ff512bd12ff6b170c9dd548614d6c404eb0474009b14c1791813fb99d5707bd23b2c1a1a342d1241efed459e3e8d669a04ebd7a33dff3c664d0d3ae02bc8073075394d7eeb167efee13baa52c5e8478f126432009c83e90714b7486b6f7ba538b85bc84387d08300b560016e4b0beae18731a4c46c6b43dbb811d5d5054a215365c8471e6760d31be45f588736398ccabbd764664226802999f4b3730a6fbe290ae2ea760b81d1d74778c70eec5dbb102323280479cfc7770bd8bd7d248f1cc6fdac8da97939e2b7e6a05891eb845c2f6415692027138fae9a1babab41d5d7a3170ac873e7d0070640d3482b9d8bd26254cf51280111b1b19d30659649d1a96324d756139f07729983ca64c9fee072e2432618a72027bd2052f6e309e4a953108b918b26825e3b343e154bc7873a47251181556a513adf22b5d826715b0c3d5e4ca6dfc7c145b33df0c20805cea280b9b637ca5bf87223da967b70ba139a9c37e559d98ef1993346f560ff0b4d339f54369ad17834c4acea08f6ec18221a01d3066962c520e1ea68f969f042e007e01550967f195420f73379693fbc8d8b8e3ba18060e449ea627111326216221a8648042261085d356982efa34b85e78ac0f5754f0a5d370d439ff1b461f07f5f694001de1f930dd9949aa690e83ae812a404c304cb86b04321107eef9981fe6387070e9fe818ff6eec4afe52590267e5626de5f82443d76ec59f71b08b9e8a145f5755054badb00ae183727d35f9eb64b6b367a8f3cbaf2eb5ef6c1f691f99a60fb8a6b5f6ef69af2aa618fefe838497d7727375b959ada4d466663cef6087dbd737ce0560e26a97ff23fc0644f8de831eee29240000000049454e44ae426082</data>
+    </image>
+</images>
 <includes>
     <include location="local" impldecl="in declaration">config.h</include>
 </includes>

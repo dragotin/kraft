@@ -82,6 +82,7 @@
 #include "catalogtemplate.h"
 
 #include <qtimer.h>
+#include "doclocaledialog.h"
 
 
 KraftViewScroll::KraftViewScroll( QWidget *parent ):
@@ -272,6 +273,8 @@ void KraftView::setupDocHeaderView()
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
              this, SLOT( slotDocTypeChanged( const QString& ) ) );
 
+    connect( m_headerEdit->mButtLang, SIGNAL( clicked() ),
+             this, SLOT( slotLanguageSettings() ) );
     connect( edit, SIGNAL( modified() ),
               this, SLOT( slotModifiedHeader() ) );
 }
@@ -691,6 +694,33 @@ void KraftView::slotDocTypeChanged( const QString& newType )
 
 }
 
+void KraftView::slotLanguageSettings()
+{
+  kdDebug() << "Language Settings" << endl;
+  DocLocaleDialog dia( this );
+  KLocale *l = m_doc->locale();
+
+  if ( m_doc ) {
+    dia.setLocale( l->country(), l->language() );
+
+    if ( dia.exec() == QDialog::Accepted  ) {
+      QString c = dia.locale().country();
+      if ( c != m_doc->locale()->country() ) {
+        m_doc->locale()->setCountry( c );
+        m_doc->locale()->setLanguage( c );
+
+        PositionViewWidget *w = 0;
+        for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
+          w->setLocale( m_doc->locale() );
+          w->repaint();
+        }
+
+        refreshPostCard();
+      }
+    }
+  }
+}
+
 void KraftView::slotNewHeaderText( const QString& str )
 {
   m_headerEdit->m_teEntry->setText( str );
@@ -830,7 +860,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 DocPositionList KraftView::currentPositionList()
 {
     DocPositionList list;
-    list.setLocale( *( m_doc->locale() ) );
+    list.setLocale( m_doc->locale() );
     PositionViewWidget *widget;
     for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
       DocPositionBase *dpb = widget->position();

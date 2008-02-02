@@ -152,6 +152,7 @@ class KraftView : public KDialogBase
   void slotShowTemplates( bool );
 
   void slotDocTypeChanged( const QString& );
+  void slotLanguageSettings();
 
 signals:
   void selectPage( int );

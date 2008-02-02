@@ -122,14 +122,14 @@ class DocPositionList : public QPtrList<DocPositionBase>
     QDomElement domElement( QDomDocument& );
     DocPositionBase *positionFromId( int id );
     QString posNumber( DocPositionBase* );
-    void setLocale( const KLocale& );
-    KLocale* locale() { return &mLocale; }
+    void setLocale( KLocale* );
+    KLocale* locale() { return mLocale; }
   protected:
     int compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 );
 
   private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
-    KLocale mLocale;
+    KLocale *mLocale;
 };
 
 typedef QPtrListIterator<DocPositionList> DocPositionListIterator;

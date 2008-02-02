@@ -50,6 +50,7 @@ KraftDoc::KraftDoc(QWidget *parent, const char *name)
   pViewList = new QList<KraftView>();
   pViewList->setAutoDelete(false);
   mLocale = new KLocale( "kraft" );
+  mPositions.setLocale( mLocale );
 }
 
 KraftDoc::~KraftDoc()
@@ -185,7 +186,7 @@ void KraftDoc::deleteContents()
 
 }
 
-void KraftDoc::setPositionList( const DocPositionList& newList )
+void KraftDoc::setPositionList( DocPositionList newList )
 {
   mPositions.clear();
 
@@ -198,6 +199,8 @@ void KraftDoc::setPositionList( const DocPositionList& newList )
     DocPosition *newDp = createPosition();
     *newDp = *dp;
   }
+
+  mPositions.setLocale( newList.locale() );
 }
 
 DocPosition* KraftDoc::createPosition()
@@ -339,6 +342,7 @@ void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
   kdDebug()<< "Setting country " << country << " and lang " << lang << endl;
   mLocale->setCountry( country );
   mLocale->setLanguage( lang );
+  mPositions.setLocale( mLocale );
 }
 
  QString KraftDoc::partToString( Part p )

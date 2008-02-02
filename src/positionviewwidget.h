@@ -57,6 +57,7 @@ public:
     void cleanKindString();
     Geld currentPrice();
     Geld unitPrice();
+    void setLocale( KLocale* );
 
 public slots:
     void slotSetOverallPrice( Geld );

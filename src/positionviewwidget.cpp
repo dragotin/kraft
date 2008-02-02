@@ -106,7 +106,6 @@ PositionViewWidget::PositionViewWidget()
 void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
 {
   if( ! dp ) return;
-  mLocale = loc;
 
   if( dp->type() == DocPositionBase::Position ) {
     DocPosition *pos = static_cast<DocPosition*>(dp);
@@ -119,11 +118,10 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     m_cbUnit->setCurrentText( pos->unit().einheitSingular() );
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
 
-    const QString currSymbol = mLocale->currencySymbol();
-    m_sbUnitPrice->setPrefix( currSymbol + " " );
-
     lStatus->hide();
     lKind->hide();
+
+    setLocale( loc );
 
     AttributeMap amap = dp->attributes();
     if ( amap.contains( DocPosition::Kind ) ) {
@@ -142,6 +140,14 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
 
     m_skipModifiedSignal = false;
   }
+}
+
+void PositionViewWidget::setLocale( KLocale *loc )
+{
+  mLocale = loc;
+  const QString currSymbol = mLocale->currencySymbol();
+  m_sbUnitPrice->setPrefix( currSymbol + " " );
+  slotRefreshPrice();
 }
 
 void PositionViewWidget::slotExecButtonPressed()
