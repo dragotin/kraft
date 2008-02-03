@@ -52,11 +52,11 @@
   </group>
 
   <group name="reporting">
-    <entry name="Trml2PdfBinary">
+    <entry name="Trml2PdfBinary" type="String">
       <label>The complete filename of the trml2pdf binary</label>
       <default>trml2pdf</default>
     </entry>
-    <entry name="PdfOutputDir">
+    <entry name="PdfOutputDir" type="Path">
       <label>The path to the output directory for document pdfs</label>
     </entry>    
   </group>
@@ -81,6 +81,11 @@
         <label>The doc id template</label>
         <default>%y%w-%i</default>
      </entry>
+     <entry name="ShowDocumentLocale" type="Bool">
+        <label>Localisation on document level</label>
+        <default>false</default>
+     </entry>
+
      <entry name="AlternativeLabel" type="String">
         <label>The label for alternative positions</label>
      </entry>

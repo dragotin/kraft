@@ -270,6 +270,13 @@ void KraftView::setupDocHeaderView()
     // m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
     m_headerEdit->m_cbType->insertStringList( DocType::allLocalised() );
 
+    bool vis = false;
+    if ( KraftSettings::showDocumentLocale() ) {
+      m_headerEdit->mButtLang->show();
+    } else {
+      m_headerEdit->mButtLang->hide();
+    }
+
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
              this, SLOT( slotDocTypeChanged( const QString& ) ) );
 
@@ -711,8 +718,6 @@ void KraftView::slotLanguageSettings()
 
         PositionViewWidget *w; //  = 0;
         for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
-          kdDebug() << "******************************************* POSITION!"
-                    << mPositionWidgetList.count() << endl;
           w->setLocale( m_doc->locale() );
           w->repaint();
         }

@@ -25,6 +25,7 @@ class QLabel;
 class QTextEdit;
 class QPushButton;
 class QComboBox;
+class QCheckBox;
 
 /**
  *  @author Klaas Freitag
@@ -61,6 +62,8 @@ private:
   QComboBox *mCbDocTypes;
 
   QPushButton *m_pbCheck;
+
+  QCheckBox *mCbDocLocale;
 };
 
 #endif

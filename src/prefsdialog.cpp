@@ -39,6 +39,7 @@
 #include "kraftdoc.h"
 #include "defaultprovider.h"
 #include "doctype.h"
+#include <qcheckbox.h>
 
 PrefsDialog::PrefsDialog( QWidget *parent)
     : KDialogBase( IconList,  i18n("Configure Kraft"), Ok|Cancel, Ok, parent,
@@ -151,6 +152,11 @@ void PrefsDialog::docTab()
   topLayout->addWidget( mCbDocTypes, 0, 1 );
   mCbDocTypes->insertStringList( DocType::allLocalised() );
 
+  // Localisation on document level
+  mCbDocLocale = new QCheckBox( i18n( "enable &localisation on document level" ), topFrame );
+  vboxLay->addWidget( mCbDocLocale );
+
+  vboxLay->addWidget( new QWidget( topFrame ) );
 }
 
 void PrefsDialog::slotTextChanged( const QString& )
@@ -170,6 +176,8 @@ void PrefsDialog::readConfig()
     m_leUser->setText( KatalogSettings::dbUser() );
     m_lePasswd->setText( KatalogSettings::dbPassword() );
 
+    mCbDocLocale->setChecked( KraftSettings::showDocumentLocale() );
+
     QString t = KraftSettings::doctype();
     if ( t.isEmpty() ) t = DefaultProvider::self()->docType();
 
@@ -184,6 +192,7 @@ void PrefsDialog::writeConfig()
     KatalogSettings::setDbPassword( m_lePasswd->text());
     KatalogSettings::writeConfig();
 
+    KraftSettings::setShowDocumentLocale( mCbDocLocale->isChecked() );
     KraftSettings::setDoctype( mCbDocTypes->currentText() );
     KraftSettings::writeConfig();
 }

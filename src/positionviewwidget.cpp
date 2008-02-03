@@ -148,7 +148,6 @@ void PositionViewWidget::setLocale( KLocale *loc )
   const QString currSymbol = mLocale->currencySymbol();
   m_sbUnitPrice->setPrefix( currSymbol + " " );
   slotSetOverallPrice( currentPrice() );
-  // slotRefreshPrice();
 }
 
 void PositionViewWidget::slotExecButtonPressed()
