@@ -270,7 +270,6 @@ void KraftView::setupDocHeaderView()
     // m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
     m_headerEdit->m_cbType->insertStringList( DocType::allLocalised() );
 
-    bool vis = false;
     if ( KraftSettings::showDocumentLocale() ) {
       m_headerEdit->mButtLang->show();
     } else {
