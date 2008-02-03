@@ -297,8 +297,8 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setGoodbye(    cur.value( "goodbye"  ).toString() );
         doc->setDate (      cur.value( "date"     ).toDate() );
         doc->setLastModified( cur.value( "lastModified" ).toDate() );
-        doc->setCountryLanguage( cur.value( "country" ).toString(),
-                                 cur.value( "language" ).toString() );
+        doc->setCountryLanguage( cur.value( "language" ).toString(),
+                                 cur.value( "country" ).toString());
 
         doc->setPreText(    KraftDB::self()->mysqlEuroDecode( cur.value( "pretext"  ).toString() ) );
         doc->setPostText(   KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() ) );

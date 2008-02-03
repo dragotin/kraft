@@ -81,7 +81,7 @@ void DocLocaleDialog::setLocale( const QString& c, const QString& lang )
   kdDebug() << "Setting country " << c << " and lang " << lang << endl;
   if ( !mLocale ) mLocale = new KLocale( QString::fromLatin1( "kraft" ) );
   mLocale->setCountry( c );
-  mLocale->setLanguage( c );
+  mLocale->setLanguage( lang );
 
   loadCountryList();
   loadLanguageList();

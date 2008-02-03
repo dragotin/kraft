@@ -707,10 +707,12 @@ void KraftView::slotLanguageSettings()
       QString c = dia.locale().country();
       if ( c != m_doc->locale()->country() ) {
         m_doc->locale()->setCountry( c );
-        m_doc->locale()->setLanguage( c );
+        m_doc->locale()->setLanguage( dia.locale().language() );
 
-        PositionViewWidget *w = 0;
+        PositionViewWidget *w; //  = 0;
         for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
+          kdDebug() << "******************************************* POSITION!"
+                    << mPositionWidgetList.count() << endl;
           w->setLocale( m_doc->locale() );
           w->repaint();
         }
