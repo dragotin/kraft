@@ -196,6 +196,7 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   KListViewItem *parent = mLatestDocsParent;
 
   QListViewItem *currItem = mListView->selectedItem();
+  QString itemID; // for docSelected singal
   if ( currItem ) mListView->setSelected( currItem, false );
 
   if ( !doc ) return;
@@ -210,8 +211,10 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
     dbID id = doc->docID();
     if ( id.isOk() ) {
       mDocIdDict[item] = id.toString();
+      itemID = id.toString();
     }
   }
+  emit docSelected( itemID );
 
   // Insert new item into the "all documents" list
   parent = mAllDocsParent;
