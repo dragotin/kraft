@@ -324,10 +324,12 @@ void PortalView::documentDigests( QWidget *parent )
            this, SLOT( slotCreateDocument() ) );
   connect( mDocDigestView, SIGNAL( openDocument( const QString& ) ),
            SIGNAL( openDocument( const QString& ) ) );
+  connect( mDocDigestView, SIGNAL( copyDocument( const QString& ) ),
+           SIGNAL( copyDocument( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
            SIGNAL( openArchivedDocument( const ArchDocDigest& ) ) );
-  connect( mDocDigestView, SIGNAL( printDocument( const QString& ) ),
-           SIGNAL( printDocument( const QString& ) ) );
+  // connect( mDocDigestView, SIGNAL( printDocument( const QString& ) ),
+  //         SIGNAL( printDocument( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( docSelected( const QString& ) ),
            SIGNAL( documentSelected( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),

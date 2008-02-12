@@ -69,6 +69,7 @@ DocDigestView::DocDigestView( QWidget *parent )
 
   // mListView->header()->hide();
   mListView->setRootIsDecorated(  true );
+  mListView->setSelectionMode( QListView::Single );
 
   mFilterHeader = new FilterHeader( mListView, w );
   mFilterHeader->showCount( false );
@@ -143,7 +144,7 @@ void DocDigestView::slotBuildView()
     KListViewItem *mItem = addChapter(  monthName, ( *it ).digests(), yearItem );
     mItem->setOpen( false );
   }
-  kdDebug() << "---------" << endl;
+
   item = addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
   mLatestDocsParent = item;
   item->setPixmap( 0, SmallIcon( "fork" ) );
@@ -194,14 +195,18 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
 {
   KListViewItem *parent = mLatestDocsParent;
 
+  QListViewItem *currItem = mListView->selectedItem();
+  if ( currItem ) mListView->setSelected( currItem, false );
+
   if ( !doc ) return;
 
   // insert item into the "latest docs" list. That makes the latest
   // list one item longer, we're not deleting one entry
   if ( parent ) {
     KListViewItem *item = new KListViewItem( parent );
+    item->setPixmap( 0, SmallIcon( "knewstuff" ) );
     setupListViewItemFromDoc( doc, item );
-    item->setSelected( true );
+    mListView->setSelected( item, true );
     dbID id = doc->docID();
     if ( id.isOk() ) {
       mDocIdDict[item] = id.toString();
@@ -271,10 +276,12 @@ void DocDigestView::slotDocOpenRequest( QListViewItem *item )
   }
 }
 
+#if 0
 void DocDigestView::slotOpenCurrentDoc()
 {
   slotDocOpenRequest( mListView->currentItem() );
 }
+#endif
 
 ArchDocDigest DocDigestView::currentArchiveDoc() const
 {

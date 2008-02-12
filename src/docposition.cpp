@@ -258,3 +258,5 @@ DocPositionBase *DocPositionList::positionFromId( int id )
   }
   return dp;
 }
+
+

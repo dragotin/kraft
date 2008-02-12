@@ -124,6 +124,7 @@ class DocPositionList : public QPtrList<DocPositionBase>
     QString posNumber( DocPositionBase* );
     void setLocale( KLocale* );
     KLocale* locale() { return mLocale; }
+
   protected:
     int compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 );
 

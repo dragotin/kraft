@@ -52,6 +52,8 @@ class KraftDoc : public QObject
   /** Destructor for the fileclass of the application */
   ~KraftDoc();
 
+  KraftDoc& operator=( KraftDoc& );  
+
   /** adds a view to the document which represents the document contents.
    *  Usually this is your main view. */
   void addView(KraftView *view);

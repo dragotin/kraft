@@ -106,4 +106,4 @@ messages: rc.cpp
 	 $(XGETTEXT) $$LIST -o $(podir)/kraft.pot; \
 	fi
 
-noinst_HEADERS = positionviewwidget.h
+# noinst_HEADERS = positionviewwidget.h

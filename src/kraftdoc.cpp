@@ -58,6 +58,56 @@ KraftDoc::~KraftDoc()
   delete mLocale;
 }
 
+KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
+{
+  if ( this == &origDoc ) return *this;
+
+  pViewList = new QList<KraftView>();
+  pViewList->setAutoDelete( false );
+  mLocale = new KLocale( "kraft" );
+  mLocale = origDoc.mLocale;
+
+  DocPosition *dp;
+  for( dp = static_cast<DocPosition*>( origDoc.mPositions.first() );
+       dp ; dp = static_cast<DocPosition*>( origDoc.mPositions.next() ) ) {
+    DocPosition *newPos = new DocPosition();
+    *newPos = *dp;
+    newPos->setDbId( -1 );
+    mPositions.append( newPos );
+    kdDebug() << "Appending position " << dp->dbId().toString() << endl;
+  }
+
+  mPositions.setLocale( mLocale );
+
+  modified = origDoc.modified;
+  mIsNew = true;
+
+  mAddressUid = origDoc.mAddressUid;
+  mAddress    = origDoc.mAddress;
+  mPreText    = origDoc.mPreText;
+  mPostText   = origDoc.mPostText;
+  mDocType    = origDoc.mDocType;
+  mSalut      = origDoc.mSalut;
+  mGoodbye    = origDoc.mGoodbye;
+  mIdent      = origDoc.mIdent;
+  mWhiteboard = origDoc.mWhiteboard;
+
+  // Two qualifiers for the locale settings.
+  mCountry    = origDoc.mCountry;
+  mLanguage   = origDoc.mLanguage;
+
+  mDate = origDoc.mDate;
+  mLastModified = origDoc.mLastModified;
+
+  // setPositionList( origDoc.mPositions );
+  mRemovePositions = origDoc.mRemovePositions;
+  mSaver = 0;
+  // mDocID = origDoc.mDocID;
+
+  return *this;
+}
+
+
 KraftView* KraftDoc::firstView()
 {
   if( pViewList->count() > 0 ) {
@@ -94,7 +144,7 @@ void KraftDoc::closeDocument()
   deleteContents();
 }
 
-bool KraftDoc::newDocument()
+bool KraftDoc::newDocument( )
 {
   modified=false;
 

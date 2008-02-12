@@ -59,16 +59,19 @@ public slots:
   void slotBuildView();
 
 protected slots:
-  void slotOpenCurrentDoc();
+  // void slotOpenCurrentDoc();
   void slotCurrentChanged( QListViewItem* );
   void setupListViewItemFromDoc( DocGuardedPtr , QListViewItem* );
+
 signals:
   void createDocument();
   void openDocument( const QString& );
+  void copyDocument( const QString& );
   void openArchivedDocument( const ArchDocDigest& );
   void docSelected( const QString& );
   void archivedDocSelected( const ArchDocDigest& );
   void printDocument( const QString& );
+
 private:
   KListView *mListView;
   KListViewItem *mAllDocsParent;

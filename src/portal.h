@@ -121,6 +121,8 @@ class Portal : public KMainWindow
     void slotKatalogToXML(const QString&);
     void preferences();
     void slotNewDocument();
+    void slotCopyDocument();
+    void slotCopyDocument( const QString& );
     void slotOpenDocument( const QString& );
     void slotOpenDocument();
     void slotDocumentSelected( const QString& );
@@ -158,6 +160,7 @@ class Portal : public KMainWindow
     KAction* editPaste;
 
     KAction* actNewDocument;
+    KAction* actCopyDocument;
     KAction* actOpenDocument;
     KAction* actPrintDocument;
     KAction* actMailDocument;

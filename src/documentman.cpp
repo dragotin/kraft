@@ -139,12 +139,20 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
   return retList;
 }
 
-DocGuardedPtr DocumentMan::createDocument()
+DocGuardedPtr DocumentMan::createDocument( const QString& copyFromId )
 {
   DocGuardedPtr doc = new KraftDoc( );
   doc->newDocument();
   kdDebug() << "new document ID: " << doc->docID().toString() << endl;
   mDocMap[doc->docID().toString()] = doc;
+
+  if ( ! copyFromId.isEmpty() ) {
+    // copy the content from the source document to the new doc.
+    DocGuardedPtr sourceDoc = openDocument( copyFromId );
+    if ( sourceDoc ) {
+      *doc = *sourceDoc;
+    }
+  }
 
   return doc;
 }

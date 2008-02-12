@@ -70,6 +70,7 @@ signals:
     void katalogToXML( const QString& );
     void createDocument();
     void openDocument( const QString& );
+    void copyDocument( const QString& );
     void openArchivedDocument( const ArchDocDigest& );
     void documentSelected( const QString& );
     void archivedDocSelected( const ArchDocDigest& );

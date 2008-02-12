@@ -112,6 +112,11 @@ void Portal::initActions()
                                SLOT(slotNewDocument()),
                                actionCollection(), "document_new");
 
+  actCopyDocument = new KAction( i18n( "Copy Document" ), "editcopy",
+                                 KStdAccel::shortcut( KStdAccel::Copy ), this,
+                                 SLOT( slotCopyDocument() ),
+                                 actionCollection(), "document_copy" );
+
   actPrintDocument = new KAction(i18n("&Print Document"), "printer1",
                                  KStdAccel::shortcut(KStdAccel::Print), this,
                                  SLOT(slotPrintDocument()),
@@ -188,6 +193,7 @@ void Portal::initView()
 
     actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    actCopyDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actMailDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actOpenArchivedDocument->plug( m_portalView->docDigestView()->contextMenu() );
@@ -200,6 +206,8 @@ void Portal::initView()
     // document related connections
     connect( m_portalView, SIGNAL( createDocument() ),
              this, SLOT( slotNewDocument() ) );
+    connect( m_portalView, SIGNAL( copyDocument( const QString& ) ),
+             this, SLOT( slotCopyDocument( const QString& ) ) );
     connect( m_portalView, SIGNAL( openDocument( const QString& ) ),
              this, SLOT( slotOpenDocument( const QString& ) ) );
     connect( m_portalView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
@@ -318,6 +326,27 @@ void Portal::slotNewDocument()
 
   slotStatusMsg(i18n("Ready."));
   createView( doc );
+}
+
+void Portal::slotCopyDocument()
+{
+  const QString locId = m_portalView->docDigestView()->currentDocumentId();
+  slotCopyDocument( locId );
+}
+
+void Portal::slotCopyDocument( const QString& id )
+{
+  if ( id.isEmpty() ) {
+    return;
+  }
+
+  DocGuardedPtr doc = DocumentMan::self()->createDocument( id );
+  kdDebug() << "Document created from id " << id << endl;
+  // set the current date
+  doc->setDate( QDate::currentDate() );
+  doc->saveDocument();
+  m_portalView->slotDocumentCreated( doc );
+  kdDebug() << "Document saved with dbID " << doc->docID().toString() << endl;
 }
 
 void Portal::slotOpenDocument()
@@ -536,7 +565,7 @@ void Portal::slotFileQuit()
   {
     for(w=memberList->first(); w!=0; w=memberList->first())
     {
-      // only close the window if the closeEvent is accepted. 
+      // only close the window if the closeEvent is accepted.
       if(!w->close())
 	break;
     }
