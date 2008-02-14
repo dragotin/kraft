@@ -127,8 +127,8 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 KraftView::KraftView(QWidget *parent, const char *name) :
   KDialogBase( parent, name, false /* modal */, i18n("Document"),
 	      Ok|Cancel, Ok, true /* separator */ ),
-  m_doc( 0 ),  mRememberAmount( -1 ),
-  mModified( false )
+  m_doc( 0 ),
+  mHelpLabel( 0 ), mRememberAmount( -1 ), mModified( false )
 {
   mDeleteMapper = new QSignalMapper( this );
   connect( mDeleteMapper, SIGNAL( mapped(int)),
@@ -237,6 +237,7 @@ void KraftView::setup( DocGuardedPtr doc )
 
 void KraftView::slotSwitchToPage( int id )
 {
+  kdDebug() << "############################################################ " << id << endl;
   // check if the wanted part is already visible
   if ( mViewStack->visibleWidget() == mViewStack->widget( id ) ) return;
 
@@ -251,7 +252,8 @@ void KraftView::slotSwitchToPage( int id )
   // FIXME: color
   mDetailHeader->setPaletteForegroundColor( QColor( "#00008b" ) );
 
-  mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
+  mAssistant->slotSelectDocPart( mViewStack->id( mViewStack->visibleWidget() ) );
+  // mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
 }
 
 void KraftView::slotShowTemplates( bool )
@@ -362,43 +364,71 @@ void KraftView::redrawDocument( )
 
 void KraftView::redrawDocPositions( )
 {
-    KraftDoc *doc = getDocument();
-    kdDebug() << "** Starting to redraw the positions" << endl;
+  // If there is no position yet, come up with a help message.
+  KraftDoc *doc = getDocument();
+  if ( ! doc ) return;
 
-    if( ! doc ) {
-      kdError() << "Empty document pointer" << endl;
-      return;
+  DocPositionList list = doc->positions();
+  if ( list.count() == 0 ) {
+    // the doc has no positions yet. Let's show a help page
+    if ( ! mHelpLabel ) {
+      mHelpLabel = new QLabel(0);
+      mHelpLabel->setMargin( KDialog::marginHint() );
+      mHelpLabel->setText( i18n( "<qt><h2>The Document Position List is still empty, but Positions "
+                                 "can be added now.</h2>"
+                                 "To add positions to the document either "
+                                 "<ul>"
+                                 "<li>Press the 'Add' button on top of this canvas.</li>"
+                                 "<li>Open the template catalog clicking on the '" )
+                           + i18n( "show Templates" )
+                           + i18n( "' button on the right and select from available template positions.</li>"
+                                   "</ul>"
+                             "</qt>") );
+      m_positionScroll->addChild( mHelpLabel,  0, 0 );
     }
+    return;
 
-    DocPositionList list = doc->positions();
-    kdDebug() << "starting to redraw " << list.count() << " positions!" << endl;
-
-    DocPositionBase *dp = 0;
-
-    for( dp = list.first(); dp; dp = list.next() ) {
-        PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
-        if( !w ) {
-          w = createPositionViewWidget( dp, list.at() );
-        }
-        kdDebug() << "now position " << dp->position() << endl;
+  } else {
+    if ( mHelpLabel ) {
+      delete mHelpLabel;
+      mHelpLabel = 0;
     }
+  }
+  kdDebug() << "** Starting to redraw the positions" << endl;
 
-    // now go through the positionWidgetMap and check if it contains elements
-    // that are not any longer in the list of positions
-    PositionViewWidget *w = 0;
-    for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
-      if( list.containsRef( w->position() ) == 0 ) {
-        kdDebug() << "Removing this one: " << w << endl;
-        m_positionScroll->kraftRemoveChild( w );
-        mPositionWidgetList.remove();
-        break;
-      }
+  if( ! doc ) {
+    kdError() << "Empty document pointer" << endl;
+    return;
+  }
+
+  kdDebug() << "starting to redraw " << list.count() << " positions!" << endl;
+
+  DocPositionBase *dp = 0;
+
+  for( dp = list.first(); dp; dp = list.next() ) {
+    PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
+    if( !w ) {
+      w = createPositionViewWidget( dp, list.at() );
     }
+    kdDebug() << "now position " << dp->position() << endl;
+  }
 
-    // repaint everything
-    m_positionScroll->updateContents();
+  // now go through the positionWidgetMap and check if it contains elements
+  // that are not any longer in the list of positions
+  PositionViewWidget *w = 0;
+  for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
+    if( list.containsRef( w->position() ) == 0 ) {
+      kdDebug() << "Removing this one: " << w << endl;
+      m_positionScroll->kraftRemoveChild( w );
+      mPositionWidgetList.remove();
+      break;
+    }
+  }
 
-    redrawSumBox();
+  // repaint everything
+  m_positionScroll->updateContents();
+
+  redrawSumBox();
 }
 
 void KraftView::setMappingId( QWidget *widget, int pos )
@@ -457,6 +487,11 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   mPositionWidgetList.insert( pos,  w );
 
   /* do resizing and add the widget to the scrollview and move it to the final place */
+
+  if ( mHelpLabel ) {
+    mHelpLabel->hide();
+  }
+
   m_positionScroll->resizeContents( cw,
                                     mPositionWidgetList.count() * w->height()+1 );
 
@@ -473,6 +508,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   w->setOrdNumber( 1 + pos );
   int y = pos * w->height();
   m_positionScroll->moveChild( w, 0, y );
+
   w->show();
 
   return w;

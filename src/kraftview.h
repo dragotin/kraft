@@ -132,6 +132,7 @@ class KraftView : public KDialogBase
   void slotFocusPosition( PositionViewWidget*,  int );
   void slotNewHeaderText( const QString& );
   void slotNewFooterText( const QString&  );
+  void slotSwitchToPage( int );
   
   protected slots:
   void slotOk();
@@ -146,7 +147,6 @@ class KraftView : public KDialogBase
   void slotLockPosition( int );
   void slotPositionModified( int );
   void slotAboutToShow( QWidget* );
-  void slotSwitchToPage( int );
   void refreshPostCard( );
   void slotShowCatalog( bool );
   void slotShowTemplates( bool );
@@ -187,6 +187,7 @@ private:
   QLabel *mDetailHeader;
   QSplitter *mCSplit;
   KPushButton *mCatalogToggle;
+  QLabel *mHelpLabel;
 
   QWidget *mSumSpacer;
   QWidgetStack *mViewStack;

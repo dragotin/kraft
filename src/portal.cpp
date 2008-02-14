@@ -539,6 +539,7 @@ void Portal::createView( DocGuardedPtr doc )
       s.setHeight( 400 );
     }
     view->setInitialSize( s );
+    view->slotSwitchToPage( KraftDoc::Positions );
     view->show();
 
     doc->addView( view );

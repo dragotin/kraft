@@ -1,3 +1,25 @@
+Changes since version 0.24: #########################################
+- Added a Wizard for document creation
+- Improved the document overview widget for more intuitive use.
+- Copying of complete documents added.
+- Litte marker for new documents added to doc overview list.
+- Help text added to positions canvas
+
+Changes since version 0.23: #########################################
+- internationalisation: Ability to do documents in a different location
+  than the desktop is running under.
+  
+  => released BETA v. 0.24
+
+Changes since version 0.22: #########################################
+
+- fixed: database migration 5: added IF EXISTS 
+- fixed: encoding in the report file
+- improved: The document digest overview is not longer always redrawed
+            and looses its selected item.
+
+  => released v. 0.23
+
 Changes since version 0.20: #########################################
 
 - fixed: select from catalogs with doubleclick
@@ -12,6 +34,8 @@ Changes since version 0.20: #########################################
            http://code.google.com/p/google-ctemplate/
 - bugfix: Catalog changes show up directly in opened catalogs, also
           if open as a template catalog in the doc window.
+
+  => released v. 0.22
 
 Changes since version 0.14: #########################################
 
