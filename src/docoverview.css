@@ -1,4 +1,6 @@
-body { margin:2px; }
+body { margin:2px; 
+       background-image:url(pics/docoverviewbg.png); 
+}
 
 table {
       color: #898989;
@@ -9,7 +11,6 @@ td {
 }
 
 a:link {
-  font-weight: bold;
   text-decoration: none;
   color: #00008b;
 }
@@ -22,8 +23,9 @@ a:visited {
 
 a:hover {
   color: #c81e1e;
-  font-weight: bolder;
+  font-weight: bold;
   text-decoration: none;
+
 }
 
 a:active {
@@ -42,10 +44,22 @@ div {
   border-style:dotted;
   border-width:1px;
   border-color:#00008B;
-  margin: 0px 0px 4px 0px;
-  padding: 2px;
+  margin: 1px 0px 1px 0px;
+  padding: 1px;
   color: #898989;
+}
 
+.head_selected {   border-width:1px;
+  border-style:solid;
+  border-color:#00008b;
+}
+.body_selected {   border-width:1px;
+  border-style:solid;
+  border-color:00008b;
+}
+.foot_selected {   border-width:1px;
+  border-style:solid;
+  border-color:#00008b;
 }
 
 .headerlink { background: #8ddbe9; }
@@ -68,8 +82,5 @@ div {
   font-weight: bolder;
 }
 
-// .head { background:#9af0ff; }
-// .body { background:#9affa9; }
-// .footer { background:#f0ff9a; }
 
 

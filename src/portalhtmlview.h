@@ -28,7 +28,6 @@ class PortalHtmlView : public HtmlView
   void openCatalog( const QString& );
 
   protected:
-    virtual void writeTopFrame();
     // virtual void writeBottomFrame();
     void urlSelected( const QString&, int, int,
                       const QString &, KParts::URLArgs  );

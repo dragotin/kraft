@@ -196,7 +196,7 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   KListViewItem *parent = mLatestDocsParent;
 
   QListViewItem *currItem = mListView->selectedItem();
-  QString itemID; // for docSelected singal
+  QString itemID; // for docSelected signal
   if ( currItem ) mListView->setSelected( currItem, false );
 
   if ( !doc ) return;

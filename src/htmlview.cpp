@@ -41,49 +41,6 @@ HtmlView::HtmlView( QWidget *parent )
   showWelcomePage();
 }
 
-bool HtmlView::loadCss( const QString& cssFile, const QString& bgImgFileName, const QString& addstyle )
-{
-  if ( !mCss.isEmpty() ) return true;   // it's already loaded
-
-  KStandardDirs stdDirs;
-  QString filename = stdDirs.findResource( "data", QString( "kraft/%1" ).arg( cssFile ) ); // "docoverview.css" );
-
-  if ( filename.isEmpty() ) {
-    return false;
-  }
-
-  QFile f( filename );
-
-  if ( !f.open( IO_ReadOnly ) ) {
-    kdWarning() << "Unable to read stylesheet '" << filename << "'" << endl;
-    return false;
-  } else {
-    kdDebug() << "Loading stylesheet " << filename << endl;
-    QTextStream ts( &f );
-    QString css = ts.read();
-
-    QString bgFile;
-    if ( ! bgImgFileName.isEmpty() ) {
-      KStandardDirs stdDirs;
-      QString findFile = QString( "kraft/pics/%1" ).arg( bgImgFileName ); // docoverviewbg.png";
-      bgFile= stdDirs.findResource( "data", findFile );
-    }
-
-    QString bodyCss = "body { margin: 2px;\n";
-    if ( ! bgFile.isEmpty() ) {
-      bodyCss += QString( "background-image:url( %1 );" ).arg( bgFile );
-    }
-    bodyCss += addstyle;
-    bodyCss += "}\n";
-
-    mCss = bodyCss + css;
-    setUserStyleSheet( mCss );
-
-    return true;
-
-  }
-}
-
 void HtmlView::clearView()
 {
   begin();
@@ -106,6 +63,11 @@ QString HtmlView::internalUrl() const
 void HtmlView::setTitle( const QString &title )
 {
   mTitle = title;
+}
+
+void HtmlView::setStylesheetFile( const QString &style )
+{
+  mStyleSheetFile = style;
 }
 
 void HtmlView::setupActions( KActionCollection *actionCollection )
@@ -140,12 +102,19 @@ void HtmlView::updateZoomActions()
   // Prefs::self()->setZoomFactor( zoomFactor() );
 }
 
-void HtmlView::writeTopFrame()
+void HtmlView::writeTopFrame( )
 {
-  QString t = "<html>";
-  t += "<head><title>" + i18n( "Kraft Document Overview" ) + "</title></head>";
+  KStandardDirs stdDirs;
+  QString filename = stdDirs.findResource( "data", QString( "kraft/%1" ) .arg( mStyleSheetFile ) );
+
+  QString t = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
+                       "<html><head><title>%1</title>" ).arg( mTitle );
+  if ( ! filename.isEmpty() ) {
+    t += QString( "<link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">"
+                  "<style type=\"text/css\">"
+                  "</style></head>\n\n" ).arg( filename );
+  }
   t += "<body>";
-  t += "<h1>" + i18n( "Document Overview" ) + "</h1>";
   write( t );
 }
 
@@ -166,10 +135,6 @@ void HtmlView::displayContent( const QString& content )
   begin();
 
   // kdDebug() << "Show content: " << content << endl;
-
-  if ( !mCss.isEmpty() ) {
-   setUserStyleSheet( mCss );
-  }
 
   writeTopFrame();
   writeContent( content );

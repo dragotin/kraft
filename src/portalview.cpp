@@ -52,7 +52,7 @@ PortalView::PortalView(QWidget *parent, const char *name, int face)
       mSystemBrowser( 0 )
 {
   m_docBox     = addVBoxPage( i18n("Documents"),
-                              i18n("Create and Edit Documents"),
+                              i18n("Document List"),
                               DesktopIcon("folder_outbox"));
   mDocDigestIndex = pageIndex( m_docBox );
   documentDigests( m_docBox );
@@ -76,7 +76,8 @@ void PortalView::katalogDetails(QWidget *parent)
   QBoxLayout *b = new QHBoxLayout( w );
 
   mCatalogBrowser = new PortalHtmlView( w );
-  mCatalogBrowser->loadCss( "catalogview.css" ); //, "mucki_en_oS.png",
+  mCatalogBrowser->setTitle( i18n( "Kraft Document Overview" ) );
+  mCatalogBrowser->setStylesheetFile( "catalogview.css" );
 
   b->addWidget( mCatalogBrowser->view() );
   b->addSpacing( KDialog::marginHint() );
@@ -212,8 +213,7 @@ void PortalView::systemDetails(QWidget *parent)
   mSystemBrowser = new PortalHtmlView( w );
   b->addWidget( mSystemBrowser->view() );
   b->addSpacing( KDialog::marginHint() );
-
-  mSystemBrowser->loadCss( "catalogview.css" ); //, "mucki_en_oS.png",
+  mSystemBrowser->setStylesheetFile( "catalogview.css" ); //, "mucki_en_oS.png",
 
   // browser->setNotifyClick(false);
 }

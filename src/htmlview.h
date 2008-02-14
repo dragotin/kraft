@@ -36,10 +36,9 @@ class HtmlView : public KHTMLPart
 
     void showWelcomePage();
 
-    bool loadCss( const QString&, const QString& = QString(), const QString& = QString() );
-
   public slots:
     void setTitle( const QString & );
+    void setStylesheetFile( const QString & );
     void displayContent( const QString& );
 
     void zoomIn();
@@ -53,10 +52,9 @@ class HtmlView : public KHTMLPart
     void updateZoomActions();
   private:
 
-    QString mCss;
-
     QString mTitle;
     QString mInternalUrl;
+    QString mStyleSheetFile;
 
     KAction *mZoomInAction;
     KAction *mZoomOutAction;

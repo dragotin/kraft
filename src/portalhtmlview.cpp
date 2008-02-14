@@ -23,15 +23,6 @@ PortalHtmlView::PortalHtmlView( QWidget *parent )
 
 }
 
-void PortalHtmlView::writeTopFrame()
-{
-  QString t = "<html>";
-  t += "<head><title>" + i18n( "Kraft Document Overview" ) + "</title></head>";
-  t += "<body>";
-  write( t );
-}
-
-
 void PortalHtmlView::urlSelected( const QString &url, int, int,
                                   const QString &, KParts::URLArgs  )
 {

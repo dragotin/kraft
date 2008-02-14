@@ -64,6 +64,7 @@
 #include "prefsdialog.h"
 #include "defaultprovider.h"
 #include "archdoc.h"
+#include "newdocassistant.h"
 
 #define ID_STATUS_MSG 1
 
@@ -319,13 +320,22 @@ void Portal::slotNewDocument()
 {
   slotStatusMsg(i18n("Creating new document..."));
   busyCursor( true );
-  DocumentMan *docman = DocumentMan::self();
-  DocGuardedPtr doc = docman->createDocument();
 
   busyCursor( false );
 
+  KraftWizard wiz;
+  wiz.init();
+  if ( wiz.exec() ) {
+    DocumentMan *docman = DocumentMan::self();
+    DocGuardedPtr doc = docman->createDocument();
+
+    doc->setDate( wiz.date() );
+    doc->setAddressUid( wiz.addressUid() );
+    doc->setDocType( wiz.docType() );
+    doc->setWhiteboard( wiz.whiteboard() );
+    createView( doc );
+  }
   slotStatusMsg(i18n("Ready."));
-  createView( doc );
 }
 
 void Portal::slotCopyDocument()

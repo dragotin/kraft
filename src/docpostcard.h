@@ -44,7 +44,7 @@ public slots:
 protected:
   void urlSelected( const QString &, int , int ,
                     const QString &, KParts::URLArgs  );
-  void writeTopFrame();
+  
   QString renderDocMini( int ) const;
   QString renderDocFull( int );
   QString header( bool, const QString&, const QString&, const QString&,

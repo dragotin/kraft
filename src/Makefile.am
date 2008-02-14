@@ -37,7 +37,7 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	materialkataloglistview.cpp materialkatalogview.cpp materialselectdialog.cpp \
         kraftdocedit.cpp kraftdocpositionsedit.cpp portalhtmlview.cpp \
 	templtopositiondialogbase.cpp insertplantdialog.cpp headerselection.cpp \
-	textselection.cpp \
+	textselection.cpp newdocassistant.cpp \
 	docassistant.cpp texteditdialog.cpp texteditbase.ui templateprovider.cpp \
 	headertemplateprovider.cpp footertemplateprovider.cpp catalogtemplateprovider.cpp \
 	addresstemplateprovider.cpp texttemplate.cpp doclocaledialog.cpp
