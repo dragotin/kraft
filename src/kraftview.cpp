@@ -237,7 +237,6 @@ void KraftView::setup( DocGuardedPtr doc )
 
 void KraftView::slotSwitchToPage( int id )
 {
-  kdDebug() << "############################################################ " << id << endl;
   // check if the wanted part is already visible
   if ( mViewStack->visibleWidget() == mViewStack->widget( id ) ) return;
 

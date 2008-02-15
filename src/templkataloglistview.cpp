@@ -226,8 +226,6 @@ DocPosition TemplKatalogListView::itemToDocPosition( QListViewItem *it )
     it = currentItem();
   }
 
-  kdDebug() << "###########################################################'"<< endl;
-
   if ( ! it ) return pos;
 
   FloskelTemplate *flos = static_cast<FloskelTemplate*>( m_dataDict[ it ] );

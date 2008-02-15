@@ -128,7 +128,6 @@ bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )
 {
   TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
   bool res = false;
-  kdDebug() << "############################################## Neue Position!" << endl;
   if( listview )
   {
     FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
