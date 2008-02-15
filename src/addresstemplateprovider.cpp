@@ -41,6 +41,11 @@ void AddressTemplateProvider::slotNewTemplate()
 void AddressTemplateProvider::slotEditTemplate()
 {
   kdDebug() << "SlotEditTemplate called!" << endl;
+
+  KRun::runCommand( QString::fromLatin1( "kaddressbook --uid %1" ).arg(
+                    mCurrentAddress.uid() ),
+                    QString::fromLatin1("kaddressbook" ), "address" );
+  
 }
 
 void AddressTemplateProvider::slotDeleteTemplate()
