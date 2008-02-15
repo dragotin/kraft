@@ -700,16 +700,21 @@ void KraftView::slotNewAddress( const Addressee& contact )
     Address::List addresses = adr.addresses();
     if ( addresses.count() > 1 ) {
       kdDebug() << "Have more than one address, taking the default add" << endl;
-      address = adr.address( 64 );
+      address = adr.address( KABC::Address::Pref );
     } else if ( addresses.count() == 0 ) {
       kdDebug() << "Have no address, problem!" << endl;
     } else {
+      // FIXME: Handle multiple addresses
       address = addresses.first();
     }
 
     mContactUid = contact.uid();
-    QString adrStr = address.street() + "\n" + address.postalCode();
-    adrStr = address.formattedAddress( adr.realName() );
+    QString adrStr;
+    if( address.label().isEmpty() ) {
+      adrStr = address.formattedAddress( adr.realName() );
+    } else {
+      adrStr = address.label();
+    }
     kdDebug() << "formatted address string: " << adrStr << endl;
     m_headerEdit->m_postAddressEdit->setText( adrStr );
     m_headerEdit->m_letterHead->clear();
