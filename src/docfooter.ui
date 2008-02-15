@@ -77,6 +77,9 @@
                             <property name="name">
                                 <cstring>m_cbGreeting</cstring>
                             </property>
+                            <property name="editable">
+                                <bool>true</bool>
+                            </property>
                         </widget>
                     </hbox>
                 </widget>
@@ -104,5 +107,6 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
 </includehints>
 </UI>
