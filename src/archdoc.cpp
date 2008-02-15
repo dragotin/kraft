@@ -49,7 +49,7 @@ ArchDoc::~ArchDoc()
 }
 
 
-QString ArchDoc::docIdentifier()
+QString ArchDoc::docIdentifier() const
 {
   QString re = docType();
 
@@ -89,6 +89,7 @@ void ArchDoc::loadFromDb( dbID id )
   if( cur.next()) {
     kdDebug() << "loading archived document with ident " << id.toString() << endl;
     mAddress   = cur.value( "clientAddress" ).toString();
+    mClientUid = cur.value( "clientUid" ).toString();
     mPreText   = KraftDB::self()->mysqlEuroDecode( cur.value( "pretext" ).toString() );
     mPostText  = KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() );
     mDocType   = cur.value( "docType" ).toString();

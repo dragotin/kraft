@@ -45,31 +45,33 @@ public:
   /** Destructor for the fileclass of the application */
   ~ArchDoc();
 
-  ArchDocPositionList positions() { return mPositions; }
+  ArchDocPositionList positions() const { return mPositions; }
 
-  QDate date()       { return mDate; }
+  QDate date() const      { return mDate; }
 
-  QString docType()  { return mDocType; }
+  QString docType() const { return mDocType; }
 
-  QString& address() { return mAddress; } const
+  QString address() const { return mAddress; }
 
-  QString ident()    { return mIdent;    }
+  QString clientUid() const { return mClientUid; }
 
-  QString salut()    { return mSalut;    }
+  QString ident() const { return mIdent;    }
 
-  QString goodbye()  { return mGoodbye;    }
+  QString salut() const { return mSalut;    }
 
-  QString preText()  { return mPreText;  }
+  QString goodbye() const { return mGoodbye;    }
 
-  QString postText() { return mPostText; }
+  QString preText() const { return mPreText;  }
 
-  dbID docID() { return mDocID; }
+  QString postText() const { return mPostText; }
 
-  QString docIdentifier();
+  dbID docID() const { return mDocID; }
+
+  QString docIdentifier() const;
 
   KLocale* locale() { return &mLocale; }
   
-  QMap<QString, QString> attributes() {
+  QMap<QString, QString> attributes() const {
     return mAttribs;
   }
 
@@ -84,6 +86,7 @@ private:
   void loadFromDb( dbID );
 
   QString mAddress;
+  QString mClientUid;
   QString mPreText;
   QString mPostText;
   QString mDocType;

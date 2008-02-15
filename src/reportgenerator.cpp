@@ -173,10 +173,41 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   }
 
   /* now replace stuff in the whole document */
-  tmpl.setValue( TAG( "DATE" ), DefaultProvider::self()->locale()->formatDate(
+  tmpl.setValue( TAG( "DATE" ), archive.locale()->formatDate(
                    archive.date(), true ) );
   tmpl.setValue( TAG( "DOCTYPE" ), archive.docType() );
   tmpl.setValue( TAG( "ADDRESS" ), archive.address() );
+
+  KABC::AddressBook *ab = KABC::StdAddressBook::self();
+  KABC::Addressee addressee = ab->findByUid( archive.clientUid() );
+  tmpl.setValue( TAG( "CLIENT_NAME" ), addressee.realName() );
+  tmpl.setValue( TAG( "CLIENT_ORGANISATION" ), addressee.organization() );
+  tmpl.setValue( TAG( "CLIENT_URL" ), addressee.url().prettyURL() );
+  tmpl.setValue( TAG( "CLIENT_EMAIL" ), addressee.preferredEmail() );
+  tmpl.setValue( TAG( "CLIENT_PHONE" ), addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
+  tmpl.setValue( TAG( "CLIENT_FAX" ), addressee.phoneNumber( KABC::PhoneNumber::Fax ).number() );
+  tmpl.setValue( TAG( "CLIENT_CELL" ), addressee.phoneNumber( KABC::PhoneNumber::Cell ).number() );
+  KABC::Address clientAddress;
+  clientAddress = addressee.address( KABC::Address::Pref );
+  tmpl.setValue( TAG( "CLIENT_POSTBOX" ),
+                 clientAddress.postOfficeBox() );
+  tmpl.setValue( TAG( "CLIENT_EXTENDED" ),
+                 clientAddress.extended() );
+  tmpl.setValue( TAG( "CLIENT_STREET" ),
+                 clientAddress.street() );
+  tmpl.setValue( TAG( "CLIENT_LOCALITY" ),
+                 clientAddress.locality() );
+  tmpl.setValue( TAG( "CLIENT_REGION" ),
+                 clientAddress.region() );
+  tmpl.setValue( TAG( "CLIENT_POSTCODE" ),
+                 clientAddress.postalCode() );
+  tmpl.setValue( TAG( "CLIENT_COUNTRY" ),
+                 clientAddress.country() );
+  tmpl.setValue( TAG( "CLIENT_REGION" ),
+                 clientAddress.region() );
+  tmpl.setValue( TAG( "CLIENT_LABEL" ),
+                 clientAddress.label() );
+
   tmpl.setValue( TAG( "DOCID" ),   archive.ident() );
   tmpl.setValue( TAG( "SALUT" ),   archive.salut() );
   tmpl.setValue( TAG( "GOODBYE" ), archive.goodbye() );

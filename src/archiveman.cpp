@@ -151,6 +151,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
   | docType        | varchar(255) | YES  |     | NULL              |                |
   | docDescription | text         | YES  |     | NULL              |                |
   | clientAddress  | text         | YES  |     | NULL              |                |
+  | clientUid      | text         | YES  |     | NULL              |                |
   | salut          | varchar(255) | YES  |     | NULL              |                |
   | goodbye        | varchar(128) | YES  |     | NULL              |                |
   | printDate      | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
@@ -175,6 +176,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "docType", doc->docType() );
     record->setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
     record->setValue( "clientAddress", doc->address() );
+    record->setValue( "clientUid", doc->addressUid() );
     record->setValue( "salut", doc->salut() );
     record->setValue( "goodbye", doc->goodbye() );
     record->setValue( "printDate", "NOW()" );
