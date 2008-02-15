@@ -194,9 +194,10 @@ void Portal::initView()
     // connect the widget to your document to display document contents.
     m_portalView = new PortalView( this, "mainview", KJanusWidget::IconList );
 
-    actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actCopyDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    ( new KActionSeparator( this ) )->plug( m_portalView->docDigestView()->contextMenu() );
     actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actMailDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actOpenArchivedDocument->plug( m_portalView->docDigestView()->contextMenu() );

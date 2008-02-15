@@ -18,7 +18,6 @@
 #include <qpushbutton.h>
 #include <qframe.h>
 #include <qheader.h>
-#include <qpopupmenu.h>
 #include <qtooltip.h>
 
 #include <klistview.h>
@@ -29,6 +28,7 @@
 #include <ktoolbar.h>
 #include <kdialog.h>
 #include <kiconloader.h>
+#include <kpopupmenu.h>
 #include <kcalendarsystem.h>
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
@@ -63,7 +63,8 @@ DocDigestView::DocDigestView( QWidget *parent )
   mListView = new KListView( w );
   mListView->setItemMargin( 5 );
   mListView->setAlternateBackground( QColor( "#dffdd0" ) );
-  mContextMenu = new QPopupMenu( mListView );
+  mContextMenu = new KPopupMenu( mListView );
+  mContextMenu->insertTitle( i18n( "Document Actions" ) );
   connect( mListView, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint&, int ) ),
            this, SLOT( slotRMB( QListViewItem *, const QPoint &, int ) ) );
 
@@ -315,6 +316,11 @@ void DocDigestView::slotCurrentChanged( QListViewItem *item )
   } else if ( id.isOk() ) {
     emit archivedDocSelected( mArchIdDict[item] );
   }
+}
+
+QPopupMenu* DocDigestView::contextMenu()
+{
+  return mContextMenu;
 }
 
 #include "docdigestview.moc"

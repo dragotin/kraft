@@ -2,9 +2,10 @@
 <kpartgui name="kraft" version="0.2">
 <MenuBar>
   <Menu name="document"><text>&amp;Document</text>
-     <Action name="document_new"/>
      <Action name="document_open"/>
+     <Action name="document_new"/>
      <Action name="document_copy"/>
+     <Separator/>
      <Action name="document_print"/>
      <Action name="archived_open"/>
      <Action name="document_mail"/>

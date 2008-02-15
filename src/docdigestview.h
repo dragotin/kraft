@@ -26,7 +26,7 @@
 class KListView;
 class KListViewItem;
 class FilterHeader;
-class QPopupMenu;
+class KPopupMenu;
 class QPushButton;
 class dbID;
 class ArchDocDigest;
@@ -46,9 +46,7 @@ public:
     return mListView;
   }
 
-  QPopupMenu *contextMenu() {
-    return mContextMenu;
-  }
+  QPopupMenu *contextMenu();
   ArchDocDigest currentArchiveDoc() const;
 
 public slots:
@@ -77,7 +75,7 @@ private:
   KListViewItem *mTimeLineParent;
 
   FilterHeader *mFilterHeader;
-  QPopupMenu *mContextMenu;
+  KPopupMenu *mContextMenu;
   QPushButton *mNewDocButton;
   QMap<QListViewItem*, QString> mDocIdDict;
   QMap<QListViewItem*, ArchDocDigest>    mArchIdDict;
