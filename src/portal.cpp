@@ -66,7 +66,6 @@
 #include "archdoc.h"
 #include "newdocassistant.h"
 #include "doctype.h"
-#include "followupdialog.h"
 
 #define ID_STATUS_MSG 1
 
