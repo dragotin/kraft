@@ -71,6 +71,7 @@ public:
   ~DocDetailsPage();
 
 private:
+  QLabel      *mCustomerLabel;
   KDateWidget *mDateEdit;
   KComboBox   *mTypeCombo;
   KTextEdit   *mWhiteboardEdit;
@@ -92,6 +93,9 @@ public:
   QString addressUid() const;
   QString docType() const;
   QString whiteboard() const;
+  void setCustomer( const QString& );
+  void setDocIdentifier( const QString& );
+  void setAvailDocTypes( const QStringList& );
 
 protected slots:
   void slotAddressee( const Addressee& );
@@ -100,6 +104,7 @@ protected slots:
 private:
   CustomerSelectPage *mCustomerPage;
   DocDetailsPage *mDetailsPage;
+  QHBox *mCustomerBox;
 };
 
 #endif

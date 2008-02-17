@@ -67,6 +67,7 @@ CustomerSelectPage:: ~CustomerSelectPage()
 // ###########################################################################
 
 DocDetailsPage::DocDetailsPage( QWidget *parent )
+  :mCustomerLabel( 0 )
 {
 
   QVBox *vbox = new QVBox( parent );
@@ -76,6 +77,12 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   help->setTextFormat( Qt::RichText );
   help->setText( i18n( "Select a document type and a date. A comment on the whiteboard "
                        "helps to classify the document." ) );
+
+  mCustomerLabel = new QLabel( vbox );
+  mCustomerLabel->setFrameStyle( QFrame::Box + QFrame::Sunken );
+  mCustomerLabel->setTextFormat( Qt::RichText );
+  mCustomerLabel->setMargin( KDialog::marginHint() );
+  mCustomerLabel->setText( i18n( "Customer: Not yet selected!" ) );
 
   QGrid *grid = new QGrid( 2,  vbox );
 
@@ -113,7 +120,8 @@ DocDetailsPage::~DocDetailsPage()
 // ###########################################################################
 
 KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal, WFlags f )
-  :KWizard( parent,  name,  modal,  f )
+  :KWizard( parent,  name,  modal,  f ),
+   mCustomerBox( 0 )
 {
   setMinimumWidth( 400 );
 }
@@ -125,23 +133,24 @@ KraftWizard::~KraftWizard()
 
 void KraftWizard::init()
 {
-  QHBox *hb = new QHBox( this );
+  mCustomerBox = new QHBox( this );
   setCaption( i18n( "Document Creation Wizard" ) );
 
-  mCustomerPage = new CustomerSelectPage( hb );
+  mCustomerPage = new CustomerSelectPage( mCustomerBox );
   connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
            this,  SLOT( slotAddressee( const Addressee& ) ) );
   connect( mCustomerPage, SIGNAL( startAddressbook() ),
            this, SLOT( slotStartAddressbook() ) );
 
-  addPage( hb, i18n( "Select an Addressee" ) );
 
   QHBox *hb2 = new QHBox( this );
   mDetailsPage = new DocDetailsPage( hb2 );
-  addPage( hb2, i18n( "Document Details" ) );
 
+  addPage( hb2, i18n( "Document Details" ) );
+  addPage( mCustomerBox, i18n( "Select an Addressee" ) );
+
+  setFinishEnabled ( mCustomerBox, true );
   setFinishEnabled ( hb2, true );
-  // setNextEnabled ( mCustomerPage, false );
 }
 
 void KraftWizard::slotAddressee( const Addressee& )
@@ -174,6 +183,21 @@ QString KraftWizard::docType() const
 QString KraftWizard::whiteboard() const
 {
   return mDetailsPage->mWhiteboardEdit->text();
+}
+
+void KraftWizard::setDocIdentifier( const QString& ident )
+{
+  // we already know the customer, disable the customer select page.
+  setAppropriate( page( 1 ), false );
+  if ( mDetailsPage->mCustomerLabel ) {
+    mDetailsPage->mCustomerLabel->setText( ident );
+  }
+}
+
+void KraftWizard::setAvailDocTypes( const QStringList& list )
+{
+  mDetailsPage->mTypeCombo->clear();
+  mDetailsPage->mTypeCombo->insertStringList( list );
 }
 
 #include "newdocassistant.moc"

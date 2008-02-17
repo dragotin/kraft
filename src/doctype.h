@@ -50,6 +50,8 @@ class DocType
   bool allowDemand();
   bool allowAlternative();
 
+  QStringList follower();
+
   protected:
 
   private:
@@ -57,7 +59,6 @@ class DocType
 
   AttributeMap mAttributes;
   QString      mName;
-  dbID         mId;
   static idMap mNameMap;
 };
 

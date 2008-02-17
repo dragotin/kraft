@@ -65,6 +65,8 @@
 #include "defaultprovider.h"
 #include "archdoc.h"
 #include "newdocassistant.h"
+#include "doctype.h"
+#include "followupdialog.h"
 
 #define ID_STATUS_MSG 1
 
@@ -118,6 +120,11 @@ void Portal::initActions()
                                  SLOT( slotCopyDocument() ),
                                  actionCollection(), "document_copy" );
 
+  actFollowDocument = new KAction( i18n( "Follow Document" ), "editcopy",
+                                   KShortcut( Qt::CTRL + Qt::Key_F ), this,
+                                 SLOT( slotFollowUpDocument() ),
+                                 actionCollection(), "document_follow" );
+
   actPrintDocument = new KAction(i18n("&Print Document"), "printer1",
                                  KStdAccel::shortcut(KStdAccel::Print), this,
                                  SLOT(slotPrintDocument()),
@@ -154,6 +161,7 @@ void Portal::initActions()
   actNewDocument->setStatusText( i18n( "Creates a new Document" ) );
   actPrintDocument->setStatusText( i18n( "Print and archive this Document" ) );
   actCopyDocument->setStatusText( i18n( "Creates a new document which is a copy of the selected document" ) );
+  actFollowDocument->setStatusText( i18n( "Create a followup document for the current document" ) );
   actOpenDocument->setStatusText( i18n( "Opens the document for editing" ) );
   actMailDocument->setStatusText( i18n( "Send document per mail" ) );
 
@@ -162,6 +170,7 @@ void Portal::initActions()
   actOpenDocument->setEnabled( false );
   actPrintDocument->setEnabled( false );
   actCopyDocument->setEnabled( false );
+  actFollowDocument->setEnabled( false );
   actMailDocument->setEnabled( false );
   actOpenArchivedDocument->setEnabled( false );
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
@@ -197,6 +206,7 @@ void Portal::initView()
     actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actCopyDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    actFollowDocument->plug( m_portalView->docDigestView()->contextMenu() );
     ( new KActionSeparator( this ) )->plug( m_portalView->docDigestView()->contextMenu() );
     actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actMailDocument->plug( m_portalView->docDigestView()->contextMenu() );
@@ -342,6 +352,28 @@ void Portal::slotNewDocument()
   slotStatusMsg(i18n("Ready."));
 }
 
+void Portal::slotFollowUpDocument()
+{
+  const QString locId = m_portalView->docDigestView()->currentDocumentId();
+
+  DocGuardedPtr doc = DocumentMan::self()->openDocument( locId );
+
+  DocType dt( doc->docType() );
+
+  KraftWizard wiz;
+  wiz.init();
+  wiz.setAvailDocTypes( dt.follower() );
+  kdDebug() << "doc identifier: "<< doc->docIdentifier() << endl;
+  wiz.setDocIdentifier( doc->docIdentifier() );
+  if ( wiz.exec() ) {
+    DocGuardedPtr doc = DocumentMan::self()->createDocument( locId );
+    doc->setDate( wiz.date() );
+    doc->setDocType( wiz.docType() );
+    doc->setWhiteboard( wiz.whiteboard() );
+    createView( doc );
+  }
+}
+
 void Portal::slotCopyDocument()
 {
   const QString locId = m_portalView->docDigestView()->currentDocumentId();
@@ -354,13 +386,18 @@ void Portal::slotCopyDocument( const QString& id )
     return;
   }
 
-  DocGuardedPtr doc = DocumentMan::self()->createDocument( id );
-  kdDebug() << "Document created from id " << id << endl;
-  // set the current date
-  doc->setDate( QDate::currentDate() );
-  doc->saveDocument();
-  m_portalView->slotDocumentCreated( doc );
-  kdDebug() << "Document saved with dbID " << doc->docID().toString() << endl;
+  KraftWizard wiz;
+  wiz.init();
+  if ( wiz.exec() ) {
+    DocGuardedPtr doc = DocumentMan::self()->createDocument( id );
+    doc->setDate( wiz.date() );
+    doc->setDocType( wiz.docType() );
+    doc->setWhiteboard( wiz.whiteboard() );
+    doc->setAddressUid( wiz.addressUid() );
+    doc->saveDocument();
+    m_portalView->slotDocumentCreated( doc );
+    kdDebug() << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
+  }
 }
 
 void Portal::slotOpenDocument()
@@ -501,12 +538,16 @@ void Portal::slotDocumentSelected( const QString& doc )
     actOpenDocument->setEnabled( false );
     actPrintDocument->setEnabled( false );
     actCopyDocument->setEnabled( false );
+    actFollowDocument->setEnabled( false );
+
     actMailDocument->setEnabled( false );
   } else {
     actOpenDocument->setEnabled( true );
     actPrintDocument->setEnabled( true );
     actCopyDocument->setEnabled( true );
     actMailDocument->setEnabled( true );
+    actFollowDocument->setEnabled( true );
+
     actOpenArchivedDocument->setEnabled( false );
   }
 }

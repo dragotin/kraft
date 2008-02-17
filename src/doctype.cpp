@@ -120,3 +120,28 @@ bool DocType::allowAlternative()
   }
   return re;
 }
+
+QStringList DocType::follower()
+{
+  QStringList re;
+
+  QSqlCursor cur( "DocTypeRelations" );
+  cur.setMode( QSqlCursor::ReadOnly );
+
+  QString select = QString( "typeId=%1" ).arg( mNameMap[mName].toInt() );
+  kdDebug() << "SQL: " << select << endl;
+  cur.select( select );
+
+  while ( cur.next() ) {
+    dbID followerId( cur.value( "followerId" ).toInt() );
+
+    idMap::Iterator it;
+    for ( it = mNameMap.begin(); it != mNameMap.end(); ++it ) {
+      kdDebug() << it.key()  << endl;
+      if ( it.data() == followerId ) {
+        re << it.key();
+      }
+    }
+  }
+  return re;
+}

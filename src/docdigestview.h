@@ -64,6 +64,7 @@ protected slots:
 signals:
   void createDocument();
   void openDocument( const QString& );
+  void copyDocument( const QString& );
   void openArchivedDocument( const ArchDocDigest& );
   void docSelected( const QString& );
   void archivedDocSelected( const ArchDocDigest& );

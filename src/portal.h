@@ -125,6 +125,7 @@ class Portal : public KMainWindow
     void slotCopyDocument( const QString& );
     void slotOpenDocument( const QString& );
     void slotOpenDocument();
+    void slotFollowUpDocument();
     void slotDocumentSelected( const QString& );
     void slotArchivedDocExecuted();
     void slotArchivedDocSelected( const ArchDocDigest& );
@@ -162,6 +163,7 @@ class Portal : public KMainWindow
     KAction* actNewDocument;
     KAction* actCopyDocument;
     KAction* actOpenDocument;
+    KAction* actFollowDocument;
     KAction* actPrintDocument;
     KAction* actMailDocument;
 
