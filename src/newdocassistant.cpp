@@ -38,7 +38,8 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
 {
 
   QVBox *vbox = new QVBox( parent );
-  vbox->setSpacing( KDialog::marginHint() );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
 
   QLabel *help = new QLabel( vbox );
   help->setText( i18n( "Please select a customer as addressee for the document. "
@@ -71,7 +72,8 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
 {
 
   QVBox *vbox = new QVBox( parent );
-  vbox->setSpacing( KDialog::marginHint() );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
 
   QLabel *help = new QLabel( vbox );
   help->setTextFormat( Qt::RichText );
@@ -146,8 +148,8 @@ void KraftWizard::init()
   QHBox *hb2 = new QHBox( this );
   mDetailsPage = new DocDetailsPage( hb2 );
 
-  addPage( hb2, i18n( "Document Details" ) );
-  addPage( mCustomerBox, i18n( "Select an Addressee" ) );
+  addPage( hb2, i18n( "<h2>Document Details</h2>" ) );
+  addPage( mCustomerBox, i18n( "<h2>Select an Addressee</h2>" ) );
 
   setFinishEnabled ( mCustomerBox, true );
   setFinishEnabled ( hb2, true );

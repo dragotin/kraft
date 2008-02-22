@@ -361,7 +361,14 @@ void Portal::slotFollowUpDocument()
 
   KraftWizard wiz;
   wiz.init();
-  wiz.setAvailDocTypes( dt.follower() );
+
+  QStringList followers = dt.follower();
+  if ( followers.count() > 0 ) {
+    // only if there are actually followers defined, if not the default wiht
+    // all doc types works.
+    wiz.setAvailDocTypes( dt.follower() );
+  }
+
   kdDebug() << "doc identifier: "<< doc->docIdentifier() << endl;
   wiz.setDocIdentifier( doc->docIdentifier() );
   if ( wiz.exec() ) {

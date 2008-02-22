@@ -378,11 +378,9 @@ void KraftView::redrawDocPositions( )
                                  "To add positions to the document either "
                                  "<ul>"
                                  "<li>Press the 'Add' button on top of this canvas.</li>"
-                                 "<li>Open the template catalog clicking on the '" )
-                           + i18n( "show Templates" )
-                           + i18n( "' button on the right and select from available template positions.</li>"
-                                   "</ul>"
-                             "</qt>") );
+                                 "<li>Open the template catalog clicking on the '%1' "
+                                  "button on the right and select from available template positions.</li>"
+                                   "</ul></qt>").arg( i18n( "show Template" ) ) );
       m_positionScroll->addChild( mHelpLabel,  0, 0 );
     }
     return;
