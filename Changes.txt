@@ -2,8 +2,10 @@ Changes since version 0.24: #########################################
 - Added a Wizard for document creation
 - Improved the document overview widget for more intuitive use.
 - Copying of complete documents added.
+- Followup documents (eg. Invoice follows Offer) added
 - Litte marker for new documents added to doc overview list.
 - Help text added to positions canvas
+- Client address bits added to the available template variables
 
 Changes since version 0.23: #########################################
 - internationalisation: Ability to do documents in a different location

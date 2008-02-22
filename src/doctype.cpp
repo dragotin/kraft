@@ -128,9 +128,10 @@ QStringList DocType::follower()
   QSqlCursor cur( "DocTypeRelations" );
   cur.setMode( QSqlCursor::ReadOnly );
 
+  QSqlIndex sortIndex = cur.index( "sequence" );
   QString select = QString( "typeId=%1" ).arg( mNameMap[mName].toInt() );
   kdDebug() << "SQL: " << select << endl;
-  cur.select( select );
+  cur.select( select, sortIndex );
 
   while ( cur.next() ) {
     dbID followerId( cur.value( "followerId" ).toInt() );
