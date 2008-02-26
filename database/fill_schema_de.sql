@@ -22,7 +22,7 @@ INSERT INTO CatalogSet( name, description, catalogType, sortKey) VALUES ("Materi
 SET @newCat := LAST_INSERT_ID();
 
 INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES 
-  ('Schüttgüter', 3, @newCat);
+  ('SchÃ¼ttgÃ¼ter', 3, @newCat);
 INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES 
   ('Naturstein', 2, @newCat);
 INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES 
@@ -50,13 +50,15 @@ INSERT INTO stdSaetze (name, price, sortKey) VALUES ('Auszubildender', 21.00, 3 
 INSERT INTO stdSaetze (name, price, sortKey) VALUES ('Maschinenfuehrer', 33.00, 5 );
 
 DELETE FROM wordLists;
-INSERT INTO wordLists VALUES ('greeting', 'mit den besten Grüssen,' );
-INSERT INTO wordLists VALUES ('greeting', 'liebe Grüsse,' );
+INSERT INTO wordLists VALUES ('greeting', 'mit den besten GrÃ¼ssen,' );
+INSERT INTO wordLists VALUES ('greeting', 'liebe GrÃ¼sse,' );
 INSERT INTO wordLists VALUES ('greeting', 'Hochachtungsvoll,' );
-INSERT INTO wordLists VALUES ('greeting', 'mit freundlichem Gruß,' );
+INSERT INTO wordLists VALUES ('greeting', 'mit freundlichem GruÃŸ,' );
 
 INSERT INTO wordLists VALUES ('salut', 'Sehr geehrter Herr %NAME' );
 INSERT INTO wordLists VALUES ('salut', 'Sehr geehrte Frau %NAME' );
 INSERT INTO wordLists VALUES ('salut', 'Sehr geehrte Frau %NAME, sehr geehrter Herr %NAME' );
 INSERT INTO wordLists VALUES ('salut', 'Lieber %GIVEN_NAME' );
 INSERT INTO wordLists VALUES ('salut', 'Liebe %GIVEN_NAME' );
+
+
