@@ -106,7 +106,9 @@ Addressee AddressSelection::currentAddressee( QListViewItem *item )
   QString adrUid;
 
   QListViewItem *it = item;
-  if ( ! it ) it = currentItem();
+  if ( ! it ) {
+    it = selectedItem();
+  }
 
   if ( it ) {
     adrUid = mAddressIds[it];
