@@ -43,7 +43,7 @@ class KLocale;
 class DocPositionBase : public QObject
 {
   public:
-    enum PositionType { Position, Header };
+  enum PositionType { Position, Header };
     DocPositionBase();
     DocPositionBase( const PositionType& );
     ~DocPositionBase() {}
@@ -60,6 +60,9 @@ class DocPositionBase : public QObject
 
     AttributeMap attributes();
 
+    void setText( const QString& string ) { m_text = string; }
+    QString text() const { return m_text; } ;
+
   /**
    * Position means the number in the document
    */
@@ -74,6 +77,7 @@ class DocPositionBase : public QObject
   protected:
     int     m_dbId;
     QString m_position;
+    QString m_text;
     bool    mToDelete;
     PositionType mType;
     AttributeMap mAttribs;
@@ -87,8 +91,6 @@ class DocPosition : public DocPositionBase
     DocPosition( const PositionType& );
     ~DocPosition(){};
 
-    void setText( const QString& string ) { m_text = string; }
-    QString text() const { return m_text; } ;
 
     void setUnit( const Einheit& unit ) { m_unit = unit; }
     Einheit unit() const { return m_unit; }
@@ -106,7 +108,6 @@ class DocPosition : public DocPositionBase
     static const QString Discount;
 
   private:
-    QString m_text;
     Einheit m_unit;
     Geld    m_unitPrice;
     double  m_amount;

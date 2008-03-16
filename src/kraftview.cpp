@@ -582,15 +582,15 @@ void KraftView::slotMovePositionUp( int pos )
   PositionViewWidget *vw = 0;
   for( vw = mPositionWidgetList.first(); vw; vw = mPositionWidgetList.next() ) {
     DocPositionBase* pb = vw->position();
-    DocPosition *pos = static_cast<DocPosition*>(pb);
-    if( ! pos ) {
+    if( ! pb ) {
       kdDebug() << "There is no position!" << endl;
     } else {
-      kdDebug() << "Pos " << vw->ordNumber() << ": " << pos->text() << endl;
+      kdDebug() << "Pos " << vw->ordNumber() << ": " << pb->text() << endl;
     }
   }
 
   if( w1 && w2 ) {
+    kdDebug() << "Setting ord number: " << pos << endl;
     w1->setOrdNumber( pos );  // note: ordnumbers start with 1, thus add one
     w2->setOrdNumber( pos+1 );
     setMappingId( w1, pos-1 );
