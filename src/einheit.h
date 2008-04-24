@@ -32,7 +32,9 @@ public:
     ~Einheit();
 
     QString einheitSingular() { return m_einheitSingular; }
+    QString einheitSingularLong() { return m_einheitSingularLong; }
     QString einheitPlural() { return m_einheitPlural; }
+    QString einheitPluralLong() { return m_einheitPluralLong; }
 
     QString einheit( int anz );
     QString einheit( double anz );

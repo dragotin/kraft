@@ -22,12 +22,14 @@ Einheit::Einheit()
 {
 }
 
-Einheit::Einheit( int id, const QString& einh, const QString& /* einhLong */,
-                  const QString& einhPlu, const QString& /* einhPluLong */ )
+Einheit::Einheit( int id, const QString& einh, const QString& einhLong,
+                  const QString& einhPlu, const QString& einhPluLong  )
     : m_dbId(id)
 {
    m_einheitSingular = einh;
    m_einheitPlural = einhPlu;
+   m_einheitSingularLong = einhLong;
+   m_einheitPluralLong = einhPluLong;
 }
 
 Einheit::Einheit( int id )
