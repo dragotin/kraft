@@ -8,8 +8,9 @@ lib_LTLIBRARIES = libbruns.la
 libbruns_la_SOURCES = catalogtemplate.cpp katalog.cpp katalogman.cpp  brunskatalog.cpp \
 brunsrecord.cpp defaultprovider.cpp doctext.cpp doctype.cpp \
 kataloglistview.cpp flostab.ui katalogview.cpp brunskataloglistview.cpp brunskatalogview.cpp \
-filterheader.cpp catalogchapteredit.cpp docposition.cpp kraftdb.cpp \
-geld.cpp einheit.cpp katalogsettings.kcfgc kraftsettings.kcfgc attribute.cpp
+filterheader.cpp catalogchapteredit.cpp  kraftdb.cpp \
+geld.cpp einheit.cpp katalogsettings.kcfgc kraftsettings.kcfgc attribute.cpp \
+
 
 libbruns_la_LDFLAGS = $(KDE_RPATH) $(all_libraries) -version-info 1:0:0 -no-undefined
 libbruns_la_LIBADD = $(LIB_KIO) $(all_libraries)
@@ -18,7 +19,7 @@ bin_PROGRAMS = kraft kplant
 
 ## INCLUDES were found outside kdevelop specific part
 
-kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
+kraft_SOURCES = templkatalog.cpp docposition.cpp matkatalog.cpp zeitcalcpart.cpp \
 	fixcalcpart.cpp floskeltemplate.cpp floskel.cpp calcpart.cpp kraftview.cpp \
 	kraftdoc.cpp main.cpp unitmanager.cpp stockmaterial.cpp \
 	stockmaterialman.cpp materialcalcpart.cpp flostempldialog.cpp \
@@ -40,7 +41,7 @@ kraft_SOURCES = templkatalog.cpp matkatalog.cpp zeitcalcpart.cpp \
 	textselection.cpp newdocassistant.cpp \
 	docassistant.cpp texteditdialog.cpp texteditbase.ui templateprovider.cpp \
 	headertemplateprovider.cpp footertemplateprovider.cpp catalogtemplateprovider.cpp \
-	addresstemplateprovider.cpp texttemplate.cpp doclocaledialog.cpp
+	addresstemplateprovider.cpp texttemplate.cpp doclocaledialog.cpp extendedcombo.cpp
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml -lctemplate -lpthread
 

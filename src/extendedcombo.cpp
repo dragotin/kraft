@@ -50,7 +50,8 @@ QFont ExtendedComboItem::descriptionFont() const
   QFont f;
   if ( listBox() ) {
     f = listBox()->font();
-    kdDebug() << "Pointsize is " << f.pointSize() << endl;
+    // kdDebug() << "Pointsize is " << f.pointSize() << endl;
+    // decrease font size by 25%
     f.setPointSize( f.pointSize()- f.pointSize()/4 );
   }
   return f;
