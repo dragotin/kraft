@@ -32,7 +32,6 @@
   *@author Klaas Freitag
   */
 
-typedef enum {Unknown, ManualPrice, Calculation} CalculationType;
 
 class KListViewItem;
 class TemplateSaverBase;
@@ -51,7 +50,7 @@ public:
     /** No descriptions */
     void setManualPrice( Geld p ) { m_preis = p; }
     Geld manualPrice() { return m_preis; }
-    Geld einheitsPreis();
+    Geld unitPrice();
     Geld kostenPerKalcPart( const QString& part);
 
     QString getText() const { return m_text; }
@@ -61,10 +60,6 @@ public:
     CalcPartList getCalcPartsList();
     CalcPartList getCalcPartsList(const QString& );
   CalcPartList decoupledCalcPartsList();
-
-    CalculationType calcKind();
-    void setCalculationType( CalculationType t );
-    QString calcKindString() const ;
 
     Einheit einheit() const;
     void setEinheitId(int id);
@@ -112,7 +107,6 @@ private: // Private methods
     double           m_gewinn;
     bool             m_zeitbeitrag;
     QDateTime        m_modifyDate, m_createDate;
-    CalculationType  m_calcType;
     Geld             m_preis; // preis only valid for manual calculation.
     KListViewItem   *m_listViewItem;
     TemplateSaverBase *m_saver;    /**  */

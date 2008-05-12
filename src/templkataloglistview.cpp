@@ -98,7 +98,7 @@ KListViewItem* TemplKatalogListView::addFlosTemplate( KListViewItem *parentItem,
 
     listItem->setMultiLinesEnabled(true);
 
-    if( tmpl->calcKind() == ManualPrice )
+    if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
     {
         listItem->setPixmap(0, SmallIcon("roll"));
     }
@@ -116,7 +116,7 @@ void TemplKatalogListView::slFreshupItem( QListViewItem *item, FloskelTemplate *
 {
     if( !(item && tmpl) ) return;
 
-    Geld g     = tmpl->einheitsPreis();
+    Geld g     = tmpl->unitPrice();
     QString ck = tmpl->calcKindString();
     QString t  = Portal::textWrap(tmpl->getText(), 60);
 
@@ -233,7 +233,7 @@ DocPosition TemplKatalogListView::itemToDocPosition( QListViewItem *it )
   if ( flos ) {
     pos.setText( flos->getText() );
     pos.setUnit( flos->einheit() );
-    pos.setUnitPrice( flos->einheitsPreis() );
+    pos.setUnitPrice( flos->unitPrice() );
   } else {
     kdDebug() << "Can not find a template for the item" << endl;
   }

@@ -80,6 +80,7 @@
 #include "templtopositiondialogbase.h"
 #include "doctype.h"
 #include "catalogtemplate.h"
+#include "extendedcombo.h"
 
 #include <qtimer.h>
 #include "doclocaledialog.h"
@@ -294,6 +295,8 @@ void KraftView::setupPositions()
     m_positionScroll = edit->positionScroll();
 
     connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddPosition() ) );
+    connect( edit, SIGNAL( addExtraClicked() ), SLOT( slotAddExtraPosition() ) );
+
 }
 
 void KraftView::redrawDocument( )
@@ -450,6 +453,11 @@ void KraftView::setMappingId( QWidget *widget, int pos )
 
 }
 
+
+//
+// create a new position widget.
+// The position parameter comes in as list counter, starting at 0
+
 PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, int pos )
 {
   PositionViewWidget *w = new PositionViewWidget( );
@@ -466,19 +474,23 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   connect( w, SIGNAL( positionModified()), mModifiedMapper,  SLOT( map() ) );
 
   setMappingId( w, pos );
-
+#if 0
   connect( w, SIGNAL( positionModified() ), this,
            SLOT( slotModifiedPositions() ) );
 
   connect( w, SIGNAL( priceChanged( const Geld& ) ), this,
            SLOT( redrawSumBox() ) );
-  w->m_cbUnit->insertStringList( UnitManager::allUnits() );
+#endif
+  QStringList units = UnitManager::allUnits();
+  units.sort();
 
-  // kdDebug() << "Adding a widget for position number " << cnt << endl;
+  for ( QStringList::Iterator it = units.begin(); it != units.end(); ++it ) {
+    Einheit e = UnitManager::getUnit( UnitManager::getUnitIDSingular( *it ) );
 
-  kdDebug() << "Inserting in the new position at " << pos << endl;
+    w->m_cbUnit->insertEntry( e.einheitSingular(), e.einheitSingularLong() );
+  }
+
   if( dp->dbId().toInt() < 0 ) {
-    kdDebug() << "setting state to NEW" << endl;
     w->slotSetState( PositionViewWidget::New );
   }
   mPositionWidgetList.insert( pos,  w );
@@ -501,6 +513,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   }
 
   m_positionScroll->addChild( w, 0, 0 );
+
   w->setDocPosition( dp, getDocument()->locale() );
   w->setOrdNumber( 1 + pos );
   int y = pos * w->height();
@@ -786,12 +799,14 @@ void KraftView::slotAddPosition()
 
 void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 {
-  int newpos = mPositionWidgetList.count()+1;
-  kdDebug() << "Adding Position at position " << newpos << endl;
+  // newpos is a list position, starts counting at zero!
+  int newpos = mPositionWidgetList.count();
+  kdDebug() << "Adding Position at list position " << newpos << endl;
 
   TemplToPositionDialogBase *dia = 0;
 
   DocPosition *dp = new DocPosition();
+  dp->setPosition( newpos +1 );
   QSize s;
 
   bool newTemplate = false;
@@ -812,7 +827,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
         FloskelTemplate *ftmpl = static_cast<FloskelTemplate*>( tmpl );
         dp->setText( ftmpl->getText() );
         dp->setUnit( ftmpl->einheit() );
-        dp->setUnitPrice( ftmpl->einheitsPreis() );
+        dp->setUnitPrice( ftmpl->unitPrice() );
 
         s = KraftSettings::self()->templateToPosDialogSize();
 
@@ -846,7 +861,8 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
     dia->setInitialSize( s );
 
     if ( dia->exec() ) {
-      *dp = dia->docPosition();
+      DocPosition diaPos = dia->docPosition();
+      *dp = diaPos;
 
       // store the initial size of the template-to-doc-pos dialogs
       s = dia->size();
@@ -901,31 +917,71 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
   refreshPostCard();
 }
 
+void KraftView::slotAddExtraPosition()
+{
+  // newpos is a list position, starts counting at 0
+  int newpos = mPositionWidgetList.count();
+  kdDebug() << "Adding EXTRA Position at position " << newpos << endl;
+
+  DocPosition *dp = new DocPosition( DocPosition::ExtraDiscount );
+  dp->setPosition( newpos+1 );
+  dp->setText( i18n( "Discount" ) );
+  DiscountPricing *pricing = new DiscountPricing( dp, this );
+  pricing->setDiscount( -10.0 );
+  dp->setPricing( pricing );
+
+  kdDebug() << "New Extra position is " << dp << endl;
+
+  PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
+  kdDebug() << "PositionViewWiget doc position is: " << widget->position() << endl;
+  widget->slotModified();
+  slotFocusPosition( widget, newpos );
+  refreshPostCard();
+
+}
+
 DocPositionList KraftView::currentPositionList()
 {
     DocPositionList list;
     list.setLocale( m_doc->locale() );
     PositionViewWidget *widget;
+    int cnt = 1;
+
     for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
       DocPositionBase *dpb = widget->position();
       if ( dpb ) {
-        DocPosition *dp = new DocPosition( );
-        dp->setDbId( dpb->dbId().toInt() );
-        // dp->setPosition( dpb->position() );
+        DocPosition *newDp = new DocPosition( dpb->type() );
+        newDp->setDbId( dpb->dbId().toInt() );
 
-        dp->setToDelete( widget->deleted() );
+        newDp->setPosition( cnt++ );
 
-        dp->setText( widget->m_teFloskel->text() );
+        if ( dpb->type() == DocPosition::ExtraDiscount ) {
+          DiscountPricing *pricing = new DiscountPricing( newDp,  this );
+          double disc = widget->mDiscountPercent->value();
+          pricing->setDiscount( disc );
+          newDp->setPricing( pricing );
+
+          // set Attributes with the discount percentage
+          Attribute a( DocPosition::Discount );
+          a.setPersistant( true );
+          a.setValue( disc );
+          newDp->setAttribute( a );
+        }
+
+        // copy information from the widget
+        newDp->setToDelete( widget->deleted() );
+
+        newDp->setText( widget->m_teFloskel->text() );
 
         QString h = widget->m_cbUnit->currentText();
-        int eId = UnitManager::getUnitIDSingular( h );
+        int eId   = UnitManager::getUnitIDSingular( h );
         Einheit e = UnitManager::getUnit( eId );
-        dp->setUnit( e );
+        newDp->setUnit( e );
 
-        dp->setUnitPrice( widget->unitPrice() );
+        newDp->setUnitPrice( widget->unitPrice() );
 
         double v = widget->m_sbAmount->value();
-        dp->setAmount( v );
+        newDp->setAmount( v );
 
         PositionViewWidget::Kind k = widget->kind();
 
@@ -933,12 +989,12 @@ DocPositionList KraftView::currentPositionList()
           Attribute a( DocPosition::Kind );
           a.setPersistant( true );
           a.setValue( widget->kindString() );
-          dp->setAttribute( a );
+          newDp->setAttribute( a );
         } else {
-          dp->removeAttribute( DocPosition::Kind );
+          newDp->removeAttribute( DocPosition::Kind );
         }
 
-        list.append( dp );
+        list.append( newDp );
       } else {
         kdError() << "Fatal: Widget without position found!" << endl;
       }

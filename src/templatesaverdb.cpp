@@ -413,7 +413,7 @@ void TemplateSaverDB::fillTemplateBuffer( QSqlRecord *buffer, FloskelTemplate *t
     buffer->setValue("modifyDatum", dtString );
 
     int ctype = 2;  // Calculation type Calculation
-    if( tmpl->calcKind() == ManualPrice )
+    if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
     {
         ctype = 1;
     }

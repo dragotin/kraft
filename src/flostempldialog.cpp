@@ -36,6 +36,7 @@
 #include <kpushbutton.h>
 
 #include "floskeltemplate.h"
+#include "catalogtemplate.h"
 #include "flostempldialog.h"
 #include "unitmanager.h"
 #include "zeitcalcpart.h"
@@ -91,11 +92,11 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
     m_unit->insertStringList( UnitManager::allUnits());
     m_unit->setCurrentText( m_template->einheit().einheitSingular() );
 
-    m_manualPriceVal->setValue( t->einheitsPreis().toDouble());
+    m_manualPriceVal->setValue( t->unitPrice().toDouble());
 
     /* Kalkulationsart: Manuell oder Kalkuliert? */
 
-    if( t->calcKind() == ManualPrice )
+    if( t->calcKind() == CatalogTemplate::ManualPrice )
     {
         slCalcOrFix(0);
         m_rbManual->setChecked(true);
@@ -196,11 +197,11 @@ void FlosTemplDialog::refreshPrices()
     t = i18n("Calculated Price: ");
     int kType = m_template->calcKind();
     kdDebug() << "CalcType in integer is " << kType << endl;
-    if( m_template->calcKind() == ManualPrice )
+    if( m_template->calcKind() == CatalogTemplate::ManualPrice )
     {
         t = i18n("Manual Price: ");
     }
-    else if( m_template->calcKind() == Calculation )
+    else if( m_template->calcKind() == CatalogTemplate::Calculation )
     {
         int gewinn = spGewinn->value();
         QString gewinnStr = i18n("(+%1%)").arg(gewinn);
@@ -219,7 +220,7 @@ void FlosTemplDialog::refreshPrices()
     m_resPreisName->setText(t);
 
     /* Preis setzen */
-    t = m_template->einheitsPreis().toString( m_katalog->locale() );
+    t = m_template->unitPrice().toString( m_katalog->locale() );
     m_resultPrice->setText( t );
 
     /* Preisteile nach Zeit-, Fix- und Materialkalkulation */
@@ -288,11 +289,11 @@ void FlosTemplDialog::accept()
 
         // Calculationtype
         int selId = m_gbPriceSrc->selectedId();
-        CalculationType calcType = Unknown;
+        CatalogTemplate::CalculationType calcType = CatalogTemplate::Unknown;
         if( selId == 0 ) {
-            calcType = ManualPrice;
+            calcType = CatalogTemplate::ManualPrice;
         } else if( selId == 1 ) {
-            calcType = Calculation;
+            calcType = CatalogTemplate::Calculation;
         } else {
             kdDebug() << "ERROR: Calculation type not selected, id is " << selId << endl;
         }
@@ -752,7 +753,7 @@ void FlosTemplDialog::slCalcOrFix(int button)
     {
         /* auf manuell geschaltet */
         if( m_template )
-            m_template->setCalculationType(ManualPrice);
+            m_template->setCalculationType( CatalogTemplate::ManualPrice );
 
         m_manualPriceVal->setEnabled( true );
 
@@ -769,7 +770,7 @@ void FlosTemplDialog::slCalcOrFix(int button)
     {
         /* auf kalkuliert geschaltet */
         if( m_template )
-            m_template->setCalculationType(Calculation);
+            m_template->setCalculationType( CatalogTemplate::Calculation );
 
         m_manualPriceVal->setEnabled( false );
 

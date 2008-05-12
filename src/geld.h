@@ -51,6 +51,8 @@ public:
 
     bool operator!=(Geld);
 
+    Geld percent( double );
+
     QString toString( KLocale* ) const;
     QString toHtmlString( KLocale* ) const;
     double toDouble();

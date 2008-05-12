@@ -1,5 +1,5 @@
 /***************************************************************************
-        positionviewwidget - inherited class for doc position views.
+        postionviewwidget - inherited class for doc position views.
                              -------------------
     begin                : 2006-02-20
     copyright            : (C) 2006 by Klaas Freitag

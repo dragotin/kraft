@@ -57,7 +57,6 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
   }
 
   getPositionCombo()->insertStringList( strList );
-  if ( intendedPos > 0 ) --intendedPos;
   getPositionCombo()->setCurrentItem( intendedPos );
 }
 

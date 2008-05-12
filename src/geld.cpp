@@ -74,6 +74,12 @@ Geld Geld::operator/(const double divisor)
     return g;
 }
 
+Geld Geld::percent( double p )
+{
+  Geld g( this->m_cent * p / 100 /100 );
+  return g;
+}
+
 Geld Geld::operator*(const long mult)
 {
     // FIXME

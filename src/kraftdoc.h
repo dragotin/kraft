@@ -80,7 +80,7 @@ class KraftDoc : public QObject
 
   KLocale* locale();
 
-  DocPosition* createPosition();
+  DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
   DocPositionList positions() { return mPositions; }
   void setPositionList( DocPositionList );
 

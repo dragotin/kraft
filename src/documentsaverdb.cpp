@@ -55,7 +55,10 @@
  *
  */
 
-DocumentSaverDB::DocumentSaverDB( ) : DocumentSaverBase()
+DocumentSaverDB::DocumentSaverDB( ) : DocumentSaverBase(),
+                                      PosTypePosition( QString::fromLatin1( "Position" ) ),
+                                      PosTypeExtraDiscount( QString::fromLatin1( "ExtraDiscount" ) ),
+                                      PosTypeHeader( QString::fromLatin1( "Header" ) )
 {
 
 }
@@ -68,6 +71,8 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     QSqlCursor cur("document");
     cur.setMode( QSqlCursor::Writable );
     QSqlRecord *record = 0;
+
+    kdDebug() << "############### Document Save ################" << endl;
 
     if( doc->isNew() ) {
         record = cur.primeInsert();
@@ -166,7 +171,8 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
   int ordNumber = 1;
 
   for( dpb = posList.first(); dpb; dpb = posList.next() ) {
-    if( dpb->type() == DocPositionBase::Position ) {
+    if( dpb->type() == DocPositionBase::Position ||
+        dpb->type() == DocPositionBase::ExtraDiscount ) {
       DocPosition *dp = static_cast<DocPosition*>(dpb);
       QSqlRecord *record = 0;
       QSqlCursor cur( "docposition" );
@@ -211,13 +217,26 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
       }
 
       if( record ) {
-        kdDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
+        // kdDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
+        QString typeStr = PosTypePosition;
+        double price = 0;
+        if ( dp->type() == DocPositionBase::Header ) {
+          typeStr = PosTypeHeader;
+          price = 0;
+        } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
+          typeStr = PosTypeExtraDiscount;
+          price = 0;
+        } else if ( dp->type() == DocPositionBase::Position ) {
+          price= dp->unitPrice().toDouble();
+        }
+
         record->setValue( "docID",     doc->docID().toInt() );
         record->setValue( "ordNumber", ordNumber );
         record->setValue( "text",      dp->text() );
+        record->setValue( "postype",   typeStr );
         record->setValue( "amount",    dp->amount() );
         record->setValue( "unit",      dp->unit().id() );
-        record->setValue( "price",     dp->unitPrice().toDouble() );
+        record->setValue( "price",     price );
 
         ordNumber++; // FIXME
 
@@ -241,15 +260,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
       }
 
       if ( err.type() == QSqlError::None ) {
-#if 0
-        // Now write the calculation data
-        kdDebug() << "******************************************************" << dp->calculations().count() << endl;
-        CalculationsSaverDB calculationSaver( CalculationsSaverBase::Document );
-        bool res = calculationSaver.saveCalculations( dp->calculations(), dp->dbId() );
-        if ( !res ) {
-          kdDebug() << "ERR: Saving of doc position calculations failed!" << endl;
-        }
-#endif
       }
     }
   }
@@ -328,16 +338,34 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 
     while( cur.next() ) {
         kdDebug() << "loading document position for document id " << id << endl;
-        DocPosition *dp = doc->createPosition();
+
+        DocPositionBase::PositionType type = DocPositionBase::Position;
+        QString typeStr = cur.value( "postype" ).toString();
+        if ( typeStr == PosTypeExtraDiscount ) {
+          type = DocPositionBase::ExtraDiscount;
+        } else if ( typeStr == PosTypeHeader ) {
+          type = DocPositionBase::Header;
+        } else if ( ! typeStr.isEmpty() ) {
+          kdDebug() << "Strange type string loaded from db: " << typeStr << endl;
+        }
+
+        DocPosition *dp = doc->createPosition( type );
         dp->setDbId( cur.value("positionID").toInt() );
         dp->setText( cur.value("text").toString() );
+
+        // Note: empty fields are treated as Positions which is intended because
+        // the type col was added later and thus might be empty for older entries
+
         dp->setAmount( cur.value("amount").toDouble() );
 
         dp->setUnit( UnitManager::getUnit( cur.value("unit").toInt() ) );
         dp->setUnitPrice( cur.value("price").toDouble() );
         dp->loadAttributes();
 
-
+        if ( type == DocPositionBase::ExtraDiscount ) {
+          DiscountPricing *pricing = static_cast<DiscountPricing*>( dp->pricing() );
+          pricing->setDiscount( dp->attribute( DocPosition::Discount ).toDouble() );
+        }
     }
 }
 

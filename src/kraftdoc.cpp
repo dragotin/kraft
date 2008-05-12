@@ -246,16 +246,16 @@ void KraftDoc::setPositionList( DocPositionList newList )
   while ( ( dpb = it.current() ) != 0 ) {
     ++it;
     DocPosition *dp = static_cast<DocPosition*>( dpb );
-    DocPosition *newDp = createPosition();
+    DocPosition *newDp = createPosition( dp->type() );
     *newDp = *dp;
   }
 
   mPositions.setLocale( newList.locale() );
 }
 
-DocPosition* KraftDoc::createPosition()
+DocPosition* KraftDoc::createPosition( DocPositionBase::PositionType t )
 {
-    DocPosition *dp = new DocPosition();
+    DocPosition *dp = new DocPosition( t );
     mPositions.append( dp );
     return dp;
 }

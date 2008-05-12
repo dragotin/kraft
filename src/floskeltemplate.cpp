@@ -37,7 +37,6 @@ FloskelTemplate::FloskelTemplate()
       m_chapter(0),
       m_gewinn(0),
       m_zeitbeitrag(true),
-      m_calcType(Calculation),
       m_listViewItem(0),
       m_saver(0)
 {
@@ -57,21 +56,19 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
    m_gewinn(0),
    m_modifyDate(modDate),
    m_createDate(createDate),
-   m_calcType(Unknown),
    m_preis(long(0)),
    m_listViewItem(0),
    m_saver(0)
 {
-    if( calcKind == 1 )
-    {
-        m_calcType = ManualPrice;
-    }
-    else if( calcKind == 2 )
-    {
-        m_calcType = Calculation;
-    }
+  if( calcKind == 1 ) {
+    setCalculationType( ManualPrice );
+  } else if( calcKind == 2 ) {
+    setCalculationType( Calculation );
+  } else if ( calcKind == 3 ) {
+    setCalculationType( AutoCalc );
+  }
 
-    m_calcParts.setAutoDelete(true);
+  m_calcParts.setAutoDelete(true);
 }
 
 FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
@@ -177,29 +174,11 @@ void FloskelTemplate::setChapterID(int id)
 }
 
 /** der Preis pro einer Einheit */
-Geld FloskelTemplate::einheitsPreis()
+Geld FloskelTemplate::unitPrice()
 {
   return calcPreis();
 }
 
-CalculationType FloskelTemplate::calcKind()
-{
-  return m_calcType;
-}
-
-void FloskelTemplate::setCalculationType( CalculationType t )
-{
-  m_calcType = t;
-}
-
-QString FloskelTemplate::calcKindString() const
-{
-  if( m_calcType == ManualPrice )
-    return i18n("Manual Price");
-  else if( m_calcType == Calculation )
-    return i18n("Calculated");
-  else return i18n( "Err: Unknown type %d").arg(m_calcType);
-}
 
 /** No descriptions */
 Geld FloskelTemplate::calcPreis()

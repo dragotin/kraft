@@ -135,16 +135,19 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
   kdDebug() << "****** slotEditOk for Material" << endl;
 
   if( mDialog ) {
+    MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );
     if ( mDialog->templateIsNew() ) {
-      MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );
-      if ( k )
+      KLocale *locale = 0;
+      if ( k ) {
         k->addNewMaterial( mat );
+        locale = k->locale();
       }
-
-    if( mNewItem ) {
-      templListView->setSelected( mNewItem, true );
-      templListView->slFreshupItem( mNewItem, mat );
-      templListView->ensureItemVisible( mNewItem );
+      if( mNewItem ) {
+        templListView->setSelected( mNewItem, true );
+        templListView->setCurrentItem( mNewItem );
+        templListView->slFreshupItem( mNewItem, mat, locale );
+        templListView->ensureItemVisible( mNewItem );
+      }
     }
   }
   mNewItem = 0;

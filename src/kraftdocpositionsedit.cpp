@@ -21,6 +21,9 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   KPushButton *button = new KPushButton( i18n("Add"), upperHBox );
   connect( button, SIGNAL( clicked() ), SIGNAL( addPositionClicked() ) );
 
+  button = new KPushButton( i18n("Extra"), upperHBox );
+  connect( button, SIGNAL( clicked() ), SIGNAL( addExtraClicked() ) );
+
   QWidget *spaceEater = new QWidget( upperHBox );
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
 

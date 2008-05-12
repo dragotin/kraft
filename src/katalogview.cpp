@@ -320,7 +320,8 @@ void KatalogView::slEditChapters()
     if( d.dirty() ) {
       // have to update the catalog view.
       KatalogListView *listview = getListView();
-      listview->setupChapters();
+      // listview->setupChapters();
+      listview->addCatalogDisplay( m_katalogName );
     } else {
       kdDebug() << "We're not dirty!" << endl;
     }

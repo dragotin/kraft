@@ -105,7 +105,7 @@ DocPosition InsertTemplDialog::docPosition()
 
   mParkPosition.setUnit( UnitManager::getUnit( uid ) );
   // mParkPosition.setPosition( itemPos );
-
+  kdDebug() << "in the dialog: " << mParkPosition.text() << endl;
   return mParkPosition;
 }
 

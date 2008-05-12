@@ -39,16 +39,19 @@ class QDomDocument;
 class Geld;
 class dbID;
 class KLocale;
+class KraftView;  
 
 class DocPositionBase : public QObject
 {
   public:
-  enum PositionType { Position, Header };
+    enum PositionType { Position, ExtraDiscount, Header };
     DocPositionBase();
     DocPositionBase( const PositionType& );
-    ~DocPositionBase() {}
+    virtual ~DocPositionBase() {}
 
     DocPositionBase(const DocPositionBase&);
+
+    DocPositionBase& operator=( const DocPositionBase& );
 
     void setDbId( int id ) { m_dbId = id; }
     dbID dbId() { return dbID( m_dbId ); }
@@ -66,21 +69,65 @@ class DocPositionBase : public QObject
   /**
    * Position means the number in the document
    */
-    virtual QString position() { return m_position; }
+    virtual int position() { return m_position; }
+    virtual void setPosition( int pos ) { m_position = pos; }
 
     virtual void setToDelete( bool doit ) { mToDelete = doit; }
     virtual bool toDelete() { return mToDelete; }
     PositionType type() { return mType; }
 
-    DocPositionBase& operator=( const DocPositionBase& );
 
   protected:
     int     m_dbId;
-    QString m_position;
+    int     m_position;
     QString m_text;
     bool    mToDelete;
     PositionType mType;
     AttributeMap mAttribs;
+};
+
+class DocPosition;
+
+class Pricing
+{
+  public:
+    Pricing( DocPosition* );
+    virtual ~Pricing();
+    
+    void setAmount( double amount ) { mAmount = amount; }
+    double amount() { return mAmount; }
+    
+    virtual void setUnitPrice( const Geld& g ) { mUnitPrice = g; }
+    virtual Geld unitPrice() const { return mUnitPrice; }
+    virtual Geld overallPrice();
+
+  protected:  
+    DocPosition* mMyPosition;
+  private:
+    Geld         mUnitPrice;
+    double       mAmount;
+
+};
+
+class DiscountPricing : public Pricing 
+{
+  public:
+  DiscountPricing( DocPosition*, KraftView* );
+    ~DiscountPricing();
+
+    void setDiscount( double );
+    double discount();
+
+    void setFilterTag( const QString& );
+    QString tag() const;
+
+    Geld unitPrice() const;
+    Geld overallPrice();
+  private:
+    double  mDiscount;
+    QString mTag;
+    KraftView *mKraftView;
+
 };
 
 
@@ -89,31 +136,34 @@ class DocPosition : public DocPositionBase
   public:
     DocPosition();
     DocPosition( const PositionType& );
-    ~DocPosition(){};
+    ~DocPosition();
 
+    DocPosition( const DocPosition& );
+    DocPosition& operator=( const DocPosition& );
 
     void setUnit( const Einheit& unit ) { m_unit = unit; }
     Einheit unit() const { return m_unit; }
 
-    void setUnitPrice( const Geld& g ) { m_unitPrice = g; }
-    Geld unitPrice() const { return m_unitPrice; }
-    Geld overallPrice();
+    Pricing *pricing() { return mPricing; }
+    void setPricing( Pricing* );
 
-    void setAmount( double amount ) { m_amount = amount; }
-    double amount() { return m_amount; }
+    void setUnitPrice( const Geld& g ) { mPricing->setUnitPrice( g ); }
+    Geld unitPrice() const     { return mPricing->unitPrice(); }
+    Geld overallPrice()        { return mPricing->overallPrice(); }
 
-    DocPosition& operator=( const DocPosition& );
+    void setAmount( double d ) { mPricing->setAmount(d); }
+    double amount()            { return mPricing->amount(); }
 
     static const QString Kind;
     static const QString Discount;
+    // static const QString Discount;
 
   private:
+    Pricing *mPricing;
     Einheit m_unit;
-    Geld    m_unitPrice;
-    double  m_amount;
     // No calculation yet
-
 };
+
 
 class DocPositionList : public QPtrList<DocPositionBase>
 {

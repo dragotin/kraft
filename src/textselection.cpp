@@ -1,4 +1,3 @@
-
 /***************************************************************************
   textselection  - widget to select header- and footer text data for the doc
                              -------------------
@@ -73,7 +72,6 @@ void TextSelection::buildTextList( KraftDoc::Part part )
 {
   QStringList docTypes = DocType::allLocalised();
   mDocTypeItemMap.clear();
-
   for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
     KListViewItem *docTypeItem = new KListViewItem( mTextsView, *dtIt );
     docTypeItem->setOpen( true );
@@ -128,6 +126,7 @@ QListViewItem* TextSelection::addNewDocText( const DocText& dt )
   if ( item ) {
     mTextsView->clearSelection();
     QListViewItem *newItem = addOneDocText( item, dt );
+
     // newItem->setSelected( true );
     return newItem;
   }
@@ -137,19 +136,22 @@ QListViewItem* TextSelection::addNewDocText( const DocText& dt )
 /* requires the QListViewItem set as a member in the doctext */
 void TextSelection::updateDocText( const DocText& dt )
 {
-  QListViewItem *it = dt.listViewItem();
-  kdDebug() << "Update Doc Text" << it << endl;
-  // if ( ! it->firstChild() ) {
-  //  it = it->parent();
-  // }
+  QListViewItem *item = 0;
+  // search for the listviewitem that is showing the doctext
+  QMap<QListViewItem*, DocText>::iterator it;
+  for ( it = mTextMap.begin(); !item && it != mTextMap.end(); ++it ) {
+    if ( it.data() == dt && ( it.key() )->firstChild() ) {
+      item = it.key();
+    }
+  }
 
-  if ( it ) {
+  if ( item ) {
     kdDebug() << "Update Doc Text Item" << endl;
 
-    mTextMap[it] = dt;
+    mTextMap[item] = dt;
 
-    it->setText( 0, dt.name() );
-    QListViewItem *itChild = it->firstChild();
+    item->setText( 0, dt.name() );
+    QListViewItem *itChild = item->firstChild();
     if ( itChild ) {
       itChild->setText( 0, dt.text() );
     }

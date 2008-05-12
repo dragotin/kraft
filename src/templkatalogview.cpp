@@ -135,7 +135,7 @@ bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )
       // create a new position and offer it to the document manager
       pos.setText( currTempl->getText() );
       pos.setUnit( currTempl->einheit() );
-      pos.setUnitPrice( currTempl->einheitsPreis() );
+      pos.setUnitPrice( currTempl->unitPrice() );
       pos.setAmount( 1.0 );
       res = true;
     }

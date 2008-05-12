@@ -26,12 +26,25 @@ class QWidget;
 class QListViewItem;
 class CatalogSelection;
 class Katalog;
+class Geld;
 
 class CatalogTemplate
 {
 public:
+  typedef enum { Unknown, ManualPrice, Calculation, AutoCalc } CalculationType;
+
   CatalogTemplate();
   virtual bool save() = 0;
+
+  virtual Geld unitPrice() = 0;
+
+  CalculationType calcKind();
+  void setCalculationType( CalculationType t );
+  QString calcKindString() const ;
+
+protected:
+  CalculationType m_calcType;
+
 };
 
 typedef QPtrList<CatalogTemplate> CatalogTemplateList;

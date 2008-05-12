@@ -27,7 +27,9 @@
 #include <ktextedit.h>
 #include <kpopupmenu.h>
 #include <kiconloader.h>
+#include <qwidgetstack.h>
 
+#include "extendedcombo.h"
 #include "docposition.h"
 #include "positionviewwidget.h"
 #include "unitmanager.h"
@@ -37,23 +39,32 @@
 
 PositionViewWidget::PositionViewWidget()
  : positionWidget(),
- mModified( false ),
- m_skipModifiedSignal( false ),
- mToDelete(false),
- mOrdNumber(0),
- mExecPopup( new KPopupMenu( this ) ) ,
- mState( Active ),
- mKind( Normal )
+   mModified( false ),
+   m_skipModifiedSignal( false ),
+   mToDelete(false),
+   mOrdNumber(0),
+   mPositionPtr( 0 ),
+   mExecPopup( new KPopupMenu( this ) ) ,
+   mStateSubmenu( 0 ),
+   mState( Active ),
+   mKind( Normal ),
+   mLocale( 0 )
 {
-  m_sbUnitPrice->setMinValue( 0 );
+  m_sbUnitPrice->setMinValue( -99999.99 );
   m_sbUnitPrice->setMaxValue( 99999.99 );
   m_sbUnitPrice->setPrecision( 2 );
+
+  mDiscountPercent->setMinValue( -9999.99 );
+  mDiscountPercent->setMaxValue( 9999.99 );
+  mDiscountPercent->setPrecision( 2 );
 
   pbExec->setToggleButton( false );
   connect( m_sbAmount, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
   connect( m_sbUnitPrice, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
+  connect( mDiscountPercent, SIGNAL( valueChanged( double ) ),
+           this, SLOT( slotRefreshPrice() ) );
   connect( pbExec, SIGNAL( pressed() ),
              this,  SLOT( slotExecButtonPressed() ) );
 
@@ -63,6 +74,7 @@ PositionViewWidget::PositionViewWidget()
   // teFloskel is already connected in ui file
   connect( m_sbAmount,    SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
   connect( m_sbUnitPrice, SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
+  connect( mDiscountPercent, SIGNAL( valueChanged( double ) ), this, SLOT( slotModified() ) );
 
   mExecPopup->insertTitle( i18n("Position Actions") );
   mStateSubmenu = new QPopupMenu;
@@ -105,25 +117,39 @@ PositionViewWidget::PositionViewWidget()
 
 void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
 {
-  if( ! dp ) return;
+  if( ! dp ) {
+    kdError() << "setDocPosition got empty position!" << endl;
+    return;
+  }
+
+  kdDebug() << "OOOOOOOOOOOOOOOOOOOOOO setDocPosition got called with " << dp << endl;
+  DocPosition *pos = static_cast<DocPosition*>(dp);
+
+  mPositionPtr = pos;
+
+//   m_skipModifiedSignal = true;
+//   // m_labelPosition->setText( QString("%1.").arg( mPositionPtr->position() ) );
+
+  m_teFloskel->setText( pos->text() );
+
+  lStatus->hide();
+  lKind->hide();
+
+  setLocale( loc );
+  AttributeMap amap = dp->attributes();
 
   if( dp->type() == DocPositionBase::Position ) {
-    DocPosition *pos = static_cast<DocPosition*>(dp);
-    m_skipModifiedSignal = true;
-    // m_labelPosition->setText( QString("%1.").arg( mPositionPtr->position() ) );
+    positionDetailStack->raiseWidget( positionPage );
 
-    m_teFloskel->setText( pos->text() );
-
+    m_sbAmount->blockSignals( true );
     m_sbAmount->setValue( pos->amount() );
+    m_sbAmount->blockSignals( false );
     m_cbUnit->setCurrentText( pos->unit().einheitSingular() );
+    m_sbUnitPrice->blockSignals( true );
+
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
+    m_sbUnitPrice->blockSignals( false );
 
-    lStatus->hide();
-    lKind->hide();
-
-    setLocale( loc );
-
-    AttributeMap amap = dp->attributes();
     if ( amap.contains( DocPosition::Kind ) ) {
       Attribute kind = amap[DocPosition::Kind];
       const QString kindStr = kind.value().toString();
@@ -135,11 +161,21 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
         kdDebug() << "Unknown position kind!" << endl;
       }
     }
-    mPositionPtr = dp;
-    slotSetOverallPrice( currentPrice() );
+    kdDebug() << "Setting position ptr. in viewwidget: " << pos << endl;
+  } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
+    positionDetailStack->raiseWidget( discountPage );
+    // kdDebug() << " " << dp->type()<< endl;
+    Pricing *p = pos->pricing();
+    DiscountPricing *discount = static_cast<DiscountPricing*>( p );
+    mDiscountPercent->setValue( discount->discount() );
 
-    m_skipModifiedSignal = false;
+    mDiscountTag->insertEntry( i18n( "all positions" ), i18n( "Overall Position Discout" ) );
+  } else {
+    kdDebug() << "unknown doc position type " << dp->type()<< endl;
   }
+  slotSetOverallPrice( currentPrice() );
+
+  m_skipModifiedSignal = false;
 }
 
 void PositionViewWidget::setLocale( KLocale *loc )
@@ -284,8 +320,11 @@ void PositionViewWidget::slotRefreshPrice()
 
 void PositionViewWidget::slotSetOverallPrice( Geld g )
 {
-  if ( mPositionPtr )
+  if ( mPositionPtr->type() == DocPosition::ExtraDiscount ) {
+    m_sumLabel->setText( "--" );
+  } else {
     m_sumLabel->setText( g.toString( mLocale ) );
+  }
 }
 
 void PositionViewWidget::slotModified()

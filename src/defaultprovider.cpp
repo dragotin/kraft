@@ -59,24 +59,28 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
   DocTextList re;
 
   QSqlCursor cur( "DocTexts" );
-  cur.setMode( QSqlCursor::ReadOnly );
-
   QString typeStr = DocText::textTypeToString( tt );
-  QString crit = QString( "docType=\'%1\' AND textType=\'%2\'" ).arg( docType ).arg( typeStr );
-  kdDebug() << "Reading texts from DB with crit: " << crit << endl;
 
-  cur.select( crit );
+  QString sql = QString( "SELECT texts.docTextID, texts.name, texts.text, texts.description, "
+                         "texts.textType, types.name as docTypeName FROM DocTexts texts, "
+                         "DocTypes types WHERE texts.docTypeId=types.docTypeID AND "
+                         "types.name=\'%1\' AND textType = \'%2\'").arg( docType ).arg( typeStr );
 
-  while ( cur.next() ) {
-    DocText dt;
-    dt.setDbId( cur.value( "docTextID" ).toInt() );
-    dt.setName( cur.value( "name" ).toString() );
-    dt.setText( KraftDB::self()->mysqlEuroDecode( cur.value( "text" ).toString() ) );
-    dt.setDescription( cur.value( "description" ).toString() );
-    dt.setTextType( DocText::stringToTextType( cur.value( "textType" ).toString() ) );
-    dt.setDocType( cur.value( "docType" ).toString() );
+  kdDebug() << "Reading texts from DB with: " << sql << endl;
 
-    re.append( dt );
+  QSqlQuery query( sql );
+  if ( query.isActive() ) {
+    while ( query.next() ) {
+      DocText dt;
+      dt.setDbId( query.value( 0 ) /* docTextID */ .toInt() );
+      dt.setName( query.value( 1 ) /* name */ .toString() );
+      dt.setText( KraftDB::self()->mysqlEuroDecode( query.value( 2 ) /* text */ .toString() ) );
+      dt.setDescription( cur.value( 3 ) /* description */ .toString() );
+      dt.setTextType( DocText::stringToTextType( query.value( 4 ) /* textType */ .toString() ) );
+      dt.setDocType( query.value( 5 ) /* docType */ .toString() );
+
+      re.append( dt );
+    }
   }
   return re;
 }

@@ -56,7 +56,7 @@ void DocPostCard::setPositions( DocPositionList posList )
   mPositions = "<table border=\"0\" width=\"99%\">";
   DocPositionBase *dpb;
   for( dpb = posList.first(); dpb; dpb = posList.next() ) {
-     if( dpb->type() == DocPositionBase::Position ) {
+     if( dpb->type() != DocPositionBase::Header ) {
       DocPosition *dp = static_cast<DocPosition*>(dpb);
       mPositions += "<tr><td width=\"20px\" align=\"right\" valign=\"top\">";
 
@@ -203,7 +203,7 @@ QString DocPostCard::renderDocMini( int id ) const
 QString DocPostCard::header( bool selected,
                              const QString& styleName,
                              const QString& displayName,
-                             const QString& protocol,
+                             const QString& /* protocol */,
                              const QString& addons ) const
 {
   QString t;
