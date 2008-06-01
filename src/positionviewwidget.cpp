@@ -122,7 +122,6 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     return;
   }
 
-  kdDebug() << "OOOOOOOOOOOOOOOOOOOOOO setDocPosition got called with " << dp << endl;
   DocPosition *pos = static_cast<DocPosition*>(dp);
 
   mPositionPtr = pos;
@@ -165,9 +164,8 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
   } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
     positionDetailStack->raiseWidget( discountPage );
     // kdDebug() << " " << dp->type()<< endl;
-    Pricing *p = pos->pricing();
-    DiscountPricing *discount = static_cast<DiscountPricing*>( p );
-    mDiscountPercent->setValue( discount->discount() );
+    Attribute discount = amap[DocPosition::Discount];
+    mDiscountPercent->setValue( discount.value().toDouble() );
 
     mDiscountTag->insertEntry( i18n( "all positions" ), i18n( "Overall Position Discout" ) );
   } else {
@@ -320,11 +318,11 @@ void PositionViewWidget::slotRefreshPrice()
 
 void PositionViewWidget::slotSetOverallPrice( Geld g )
 {
-  if ( mPositionPtr->type() == DocPosition::ExtraDiscount ) {
-    m_sumLabel->setText( "--" );
-  } else {
+  // if ( mPositionPtr->type() == DocPosition::ExtraDiscount ) {
+  //   m_sumLabel->setText( "--" );
+  // } else {
     m_sumLabel->setText( g.toString( mLocale ) );
-  }
+    // }
 }
 
 void PositionViewWidget::slotModified()

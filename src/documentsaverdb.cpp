@@ -361,11 +361,6 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
         dp->setUnit( UnitManager::getUnit( cur.value("unit").toInt() ) );
         dp->setUnitPrice( cur.value("price").toDouble() );
         dp->loadAttributes();
-
-        if ( type == DocPositionBase::ExtraDiscount ) {
-          DiscountPricing *pricing = static_cast<DiscountPricing*>( dp->pricing() );
-          pricing->setDiscount( dp->attribute( DocPosition::Discount ).toDouble() );
-        }
     }
 }
 

@@ -107,6 +107,9 @@ QString Geld::toHtmlString( KLocale *loc ) const
 {
   QString re = toString( loc );
   re.replace( " ",  "&nbsp;" );
+  if ( m_cent < 0 ) {
+    re = QString( "<span class=\"negative\">%1</span>" ).arg( re );
+  }
   return re;
 }
 

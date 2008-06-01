@@ -49,6 +49,10 @@ div {
   color: #898989;
 }
 
+.negative {
+  color: #800040;
+}
+
 .head_selected {   border-width:1px;
   border-style:solid;
   border-color:#00008b;

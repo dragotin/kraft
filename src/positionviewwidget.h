@@ -47,6 +47,7 @@ public:
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }
     void setOrdNumber( int  );
+
     bool deleted() { return mToDelete; }
     DocPositionGuardedPtr position(){ return mPositionPtr; }
     State state() { return mState; }
@@ -114,5 +115,8 @@ class PositionViewWidgetList : public QPtrList<PositionViewWidget>
 
     Geld nettoPrice();
 };
+
+
+typedef QPtrListIterator<PositionViewWidget> PositionViewWidgetListIterator;
 
 #endif

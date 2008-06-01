@@ -32,6 +32,7 @@
 #include <qbuttongroup.h>
 #include <qtooltip.h>
 #include <qfont.h>
+#include <qptrlist.h>
 
 #include <kdebug.h>
 #include <kdialogbase.h>
@@ -410,7 +411,7 @@ void KraftView::redrawDocPositions( )
     if( !w ) {
       w = createPositionViewWidget( dp, list.at() );
     }
-    kdDebug() << "now position " << dp->position() << endl;
+    kdDebug() << "now position " << dp->positionNumber() << endl;
   }
 
   // now go through the positionWidgetMap and check if it contains elements
@@ -428,7 +429,6 @@ void KraftView::redrawDocPositions( )
   // repaint everything
   m_positionScroll->updateContents();
 
-  redrawSumBox();
 }
 
 void KraftView::setMappingId( QWidget *widget, int pos )
@@ -474,13 +474,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   connect( w, SIGNAL( positionModified()), mModifiedMapper,  SLOT( map() ) );
 
   setMappingId( w, pos );
-#if 0
-  connect( w, SIGNAL( positionModified() ), this,
-           SLOT( slotModifiedPositions() ) );
 
-  connect( w, SIGNAL( priceChanged( const Geld& ) ), this,
-           SLOT( redrawSumBox() ) );
-#endif
   QStringList units = UnitManager::allUnits();
   units.sort();
 
@@ -493,7 +487,6 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   if( dp->dbId().toInt() < 0 ) {
     w->slotSetState( PositionViewWidget::New );
   }
-  mPositionWidgetList.insert( pos,  w );
 
   /* do resizing and add the widget to the scrollview and move it to the final place */
 
@@ -519,6 +512,8 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   int y = pos * w->height();
   m_positionScroll->moveChild( w, 0, y );
 
+  mPositionWidgetList.insert( pos,  w );
+
   w->show();
 
   return w;
@@ -526,6 +521,8 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 
 void KraftView::refreshPostCard()
 {
+  DocPositionList positions = currentPositionList();
+
   if ( mAssistant->postCard() ) {
     QDate d = m_headerEdit->m_dateEdit->date();
     const QString dStr = getDocument()->locale()->formatDate( d );
@@ -535,18 +532,25 @@ void KraftView::refreshPostCard()
                                            getDocument()->ident(),
                                            m_headerEdit->m_teEntry->text() );
 
-    mAssistant->postCard()->setPositions( currentPositionList() );
+    mAssistant->postCard()->setPositions( positions );
 
     mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
                                            m_footerEdit->m_cbGreeting->currentText() );
 
     mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
   }
-}
 
-void KraftView::redrawSumBox()
-{
-  Geld netto = mPositionWidgetList.nettoPrice();
+  DocPositionBase *dp;
+  for( dp = positions.first(); dp; dp = positions.next() ) {
+    if (  dp->type() == DocPositionBase::ExtraDiscount ) {
+      PositionViewWidget *w = ( static_cast<DocPosition*>( dp ) )->associatedWidget();
+      if( w ) {
+        w->slotSetOverallPrice( ( static_cast<DocPosition*>( dp ) )->overallPrice() );
+      } else {
+        kdDebug() << "Warning: Position object has no associated widget!" << endl;
+      }
+    }
+  }
 }
 
 void KraftView::setupFooter()
@@ -806,7 +810,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
   TemplToPositionDialogBase *dia = 0;
 
   DocPosition *dp = new DocPosition();
-  dp->setPosition( newpos +1 );
+  dp->setPositionNumber( QString::number( newpos +1 ) );
   QSize s;
 
   bool newTemplate = false;
@@ -856,7 +860,8 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 
     dia->setDocPosition( dp, newTemplate );
 
-    dia->setPositionList( currentPositionList(), newpos );
+    DocPositionList list = currentPositionList();
+    dia->setPositionList( list, newpos );
 
     dia->setInitialSize( s );
 
@@ -903,7 +908,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 
       mRememberAmount = dp->amount();
 
-      kdDebug() << "New position is " << dp->position() << " as int: " << newpos << endl;
+      kdDebug() << "New position is " << dp->positionNumber() << " as int: " << newpos << endl;
     } else {
       return;
     }
@@ -924,11 +929,8 @@ void KraftView::slotAddExtraPosition()
   kdDebug() << "Adding EXTRA Position at position " << newpos << endl;
 
   DocPosition *dp = new DocPosition( DocPosition::ExtraDiscount );
-  dp->setPosition( newpos+1 );
+  dp->setPositionNumber( QString::number( newpos+1 ) );
   dp->setText( i18n( "Discount" ) );
-  DiscountPricing *pricing = new DiscountPricing( dp, this );
-  pricing->setDiscount( -10.0 );
-  dp->setPricing( pricing );
 
   kdDebug() << "New Extra position is " << dp << endl;
 
@@ -947,25 +949,52 @@ DocPositionList KraftView::currentPositionList()
     PositionViewWidget *widget;
     int cnt = 1;
 
-    for( widget = mPositionWidgetList.first(); widget; widget = mPositionWidgetList.next() ) {
+    PositionViewWidgetListIterator outerIt( mPositionWidgetList );
+
+    while ( ( widget = outerIt.current() ) != 0 ) {
       DocPositionBase *dpb = widget->position();
+
+      ++outerIt;
+
       if ( dpb ) {
         DocPosition *newDp = new DocPosition( dpb->type() );
-        newDp->setDbId( dpb->dbId().toInt() );
+        newDp->setPositionNumber( QString::number( cnt++ ) );
 
-        newDp->setPosition( cnt++ );
+        newDp->setDbId( dpb->dbId().toInt() );
+        newDp->setAssociatedWidget( widget );
 
         if ( dpb->type() == DocPosition::ExtraDiscount ) {
-          DiscountPricing *pricing = new DiscountPricing( newDp,  this );
-          double disc = widget->mDiscountPercent->value();
-          pricing->setDiscount( disc );
-          newDp->setPricing( pricing );
+          double discount = widget->mDiscountPercent->value();
 
-          // set Attributes with the discount percentage
+          /* set Attributes with the discount percentage */
           Attribute a( DocPosition::Discount );
           a.setPersistant( true );
-          a.setValue( disc );
+          a.setValue( discount );
           newDp->setAttribute( a );
+
+          /* Calculate the actual sum */
+          PositionViewWidgetListIterator it( mPositionWidgetList );
+          PositionViewWidget *w1;
+          Geld sum;
+          while (  ( w1 = it.current() )!= 0 ) {
+            ++it;
+            if ( it != outerIt ) {
+              sum += w1->unitPrice();
+              kdDebug() << "Summing up pos with text " << w1->ordNumber() << endl;
+            } else {
+              kdDebug() << "Skipping pos " << w1->ordNumber() << " in summing up!" << endl;
+            }
+          }
+
+          sum = sum.percent( discount );
+          newDp->setUnitPrice( sum );
+          newDp->setAmount( 1.0 );
+        } else {
+          /* Ordinary position */
+          newDp->setUnitPrice( widget->unitPrice() );
+
+          double v = widget->m_sbAmount->value();
+          newDp->setAmount( v );
         }
 
         // copy information from the widget
@@ -977,11 +1006,6 @@ DocPositionList KraftView::currentPositionList()
         int eId   = UnitManager::getUnitIDSingular( h );
         Einheit e = UnitManager::getUnit( eId );
         newDp->setUnit( e );
-
-        newDp->setUnitPrice( widget->unitPrice() );
-
-        double v = widget->m_sbAmount->value();
-        newDp->setAmount( v );
 
         PositionViewWidget::Kind k = widget->kind();
 
@@ -1079,7 +1103,8 @@ void KraftView::slotOk()
     doc->setPostText( m_footerEdit->m_teSummary->text() );
     doc->setGoodbye(  m_footerEdit->m_cbGreeting->currentText() );
 
-    doc->setPositionList( currentPositionList() );
+    DocPositionList list = currentPositionList();
+    doc->setPositionList( list );
 
     doc->saveDocument( );
 
