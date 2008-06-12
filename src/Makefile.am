@@ -9,7 +9,7 @@ libbruns_la_SOURCES = catalogtemplate.cpp katalog.cpp katalogman.cpp  brunskatal
 brunsrecord.cpp defaultprovider.cpp doctext.cpp doctype.cpp \
 kataloglistview.cpp flostab.ui katalogview.cpp brunskataloglistview.cpp brunskatalogview.cpp \
 filterheader.cpp catalogchapteredit.cpp  kraftdb.cpp \
-geld.cpp einheit.cpp katalogsettings.kcfgc kraftsettings.kcfgc attribute.cpp \
+geld.cpp einheit.cpp katalogsettings.kcfgc kraftsettings.kcfgc attribute.cpp
 
 
 libbruns_la_LDFLAGS = $(KDE_RPATH) $(all_libraries) -version-info 1:0:0 -no-undefined
