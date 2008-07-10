@@ -189,7 +189,7 @@ void DocAssistant::slotAddToDocument()
 void DocAssistant::slotAddressSelectionChanged()
 {
   kdDebug() << "A address template was selected!" << endl;
-  if ( mHeaderSelection->textSelection()->textsListView()->currentItem() ) {
+  if ( mHeaderSelection->textSelection()->textsListView()->selectedItem() ) {
     mPbAdd->setEnabled( true );
     mPbEdit->setEnabled( true );
     mPbDel->setEnabled( false );
@@ -398,7 +398,7 @@ void DocAssistant::slotSelectDocPart( int p )
     mCurrTemplateProvider = mFooterTemplateProvider;
     mPbNew->setEnabled( true );
 
-    if ( mFooterSelection->textsListView()->currentItem() ) {
+    if ( mFooterSelection->textsListView()->selectedItem() ) {
       mPbEdit->setEnabled( true );
       mPbDel->setEnabled( true );
     }

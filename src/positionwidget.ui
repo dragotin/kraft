@@ -284,7 +284,7 @@
 <customwidgets>
     <customwidget>
         <class>ExtendedCombo</class>
-        <header location="global">/home/kf/office/kraft/src/extendedcombo.h</header>
+        <header location="local">extendedcombo.h</header>
         <sizehint>
             <width>150</width>
             <height>-1</height>
@@ -309,11 +309,7 @@
 </images>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>extendedcombo.h</includehint>
     <includehint>knuminput.h</includehint>
-    <includehint>/home/kf/office/kraft/src/extendedcombo.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>/home/kf/office/kraft/src/extendedcombo.h</includehint>
 </includehints>
 </UI>

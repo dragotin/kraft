@@ -289,7 +289,7 @@ void DocDigestView::slotOpenCurrentDoc()
 
 ArchDocDigest DocDigestView::currentArchiveDoc() const
 {
-  QListViewItem *current = mListView->currentItem();
+  QListViewItem *current = mListView->selectedItem();
   if( current ) {
     return mArchIdDict[current];
   }

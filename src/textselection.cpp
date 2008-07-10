@@ -160,7 +160,7 @@ void TextSelection::updateDocText( const DocText& dt )
 
 void TextSelection::deleteCurrentText()
 {
-  QListViewItem *curr = mTextsView->currentItem();
+  QListViewItem *curr = mTextsView->selectedItem();
   if ( mDocTypeItemMap.values().find( curr ) == mDocTypeItemMap.values().end() ) {
     kdDebug() << "Can not delete the doc type item" << endl;
     return;
@@ -201,7 +201,7 @@ DocText TextSelection::currentDocText() const
 {
   DocText dt;
 
-  QListViewItem *curr = mTextsView->currentItem();
+  QListViewItem *curr = mTextsView->selectedItem();
   if ( curr ) {
     dt = mTextMap[curr];
   }
@@ -213,7 +213,7 @@ QString TextSelection::currentText() const
 {
   QString re;
 
-  QListViewItem *curr = mTextsView->currentItem();
+  QListViewItem *curr = mTextsView->selectedItem();
   if ( curr ) {
     DocText dt = mTextMap[curr];
     re = dt.text();
