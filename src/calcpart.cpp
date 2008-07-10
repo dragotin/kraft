@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <math.h>
 
 #include <klocale.h>
 #include <kdebug.h>
@@ -59,7 +58,7 @@ Geld CalcPart::kosten() {
    // kdDebug() << "Basecosts: " << g.toString() << endl;
    double prozente = getProzentPlus();
 
-   if( fabs(prozente) > 0.0 )
+   if( QABS(prozente) > 0.0 )
    {
         Geld aufschlag = g * double(prozente/100.0);
         // kdDebug() << "Have Money: " << g.toString() << " und " << prozente << " macht Aufschlag: " << aufschlag.toString() << endl;

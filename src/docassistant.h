@@ -39,7 +39,6 @@ class CatalogTemplateProvider;
 class FooterTemplateProvider;
 class AddressTemplateProvider;
 class DocText;
-class KABC::Addressee;
 
 using namespace KABC;
 

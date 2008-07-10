@@ -96,7 +96,7 @@ class KraftDoc : public QObject
   QString addressUid() { return mAddressUid; }
   void setAddressUid( const QString& id ) { mAddressUid = id; }
 
-  QString& address() { return mAddress; } const 
+  QString& address() { return mAddress; } 
   void setAddress( const QString& adr ) { mAddress = adr; }
 
   bool isNew() { return mIsNew; }
