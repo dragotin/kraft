@@ -68,8 +68,13 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   mLocale = origDoc.mLocale;
 
   DocPosition *dp;
-  for( dp = static_cast<DocPosition*>( origDoc.mPositions.first() );
-       dp ; dp = static_cast<DocPosition*>( origDoc.mPositions.next() ) ) {
+  DocPositionListIterator it( origDoc.mPositions );
+  DocPositionBase *dpb;
+
+  while ( ( dpb = it.current() ) != 0 ) {
+    ++it;
+    dp = static_cast<DocPosition*>( dpb );
+
     DocPosition *newPos = new DocPosition();
     *newPos = *dp;
     newPos->setDbId( -1 );
@@ -106,6 +111,8 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
   return *this;
 }
+
+
 
 
 KraftView* KraftDoc::firstView()

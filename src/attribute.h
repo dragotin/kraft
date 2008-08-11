@@ -40,12 +40,15 @@ class Attribute
     QVariant value() const;
     QString  name() const;
     bool     persistant();
+    bool     listValue();
+    void     setListValue( bool );
     void     setPersistant( bool );
 
   private:
     QString  mName;
     QVariant mValue;
     bool     mPersist;
+    bool     mListValue;
 };
 
 /*
@@ -63,6 +66,10 @@ public:
 
   void load( dbID );
   void save( dbID );
+
+protected:
+  void deleteAttribute( const QString& );
+  void deleteValue( const QString&, const QString& = QString() );
 
 private:
   void checkHost();

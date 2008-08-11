@@ -31,7 +31,6 @@
 #include "kraftdb.h"
 #include "unitmanager.h"
 #include "dbids.h"
-#include "templatesaverdb.h"
 #include "kraftsettings.h"
 
 /* Table document:
@@ -50,8 +49,10 @@
  * | date           | date         | YES  |     | NULL              |                |
  * | pretext        | text         | YES  |     | NULL              |                |
  * | posttext       | text         | YES  |     | NULL              |                |
+ * | country        | varchar(32)  | YES  |     | NULL              |                |
+ * | language       | varchar(32)  | YES  |     | NULL              |                |
  * +----------------+--------------+------+-----+-------------------+----------------+
- * 12 rows in set (0.00 sec)
+ * 14 rows in set (0.00 sec)
  *
  */
 
@@ -179,10 +180,10 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
       bool doInsert = true;
 
       int posDbID = dp->dbId().toInt();
-      kdDebug() << "Position DB-Id: " << posDbID << endl;
+      kdDebug() << "Saving Position DB-Id: " << posDbID << endl;
       if( posDbID > -1 ) {
         const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
-        kdDebug() << "Selecting with " << selStr << endl;
+        // kdDebug() << "Selecting with " << selStr << endl;
         cur.select( selStr );
         if ( cur.next() ) {
           if( ! dp->toDelete() )
@@ -199,20 +200,14 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
       if( dp->toDelete() ) {
         kdDebug() << "This one is to delete, do it!" << endl;
-
-        if( !doInsert ) {
-          CalculationsSaverDB calculationSaver( CalculationsSaverBase::Document );
-          // CalcPartList cpList = dp->calculations();
-
-          // bool res = calculationSaver.saveCalculations( cpList, dp->dbId() );
-          // if ( !res ) {
-          //  kdDebug() << "ERR: deletion of doc position calculations failed!" << endl;
-          // }
-          // the position is already existing, delete it
-          cur.primeDelete();
-          cur.del();
-          // Calculation data is deleted automatically by the
+        // FIXME: Delete attributes for this position
+        if( doInsert ) {
+          kdWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
         }
+        // the position is already existing, delete it
+        cur.primeDelete();
+        cur.del();
+
         continue;
       }
 
@@ -225,7 +220,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
           price = 0;
         } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
           typeStr = PosTypeExtraDiscount;
-          price = 0;
+          price = dp->unitPrice().toDouble();
         } else if ( dp->type() == DocPositionBase::Position ) {
           price= dp->unitPrice().toDouble();
         }

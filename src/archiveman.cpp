@@ -19,6 +19,7 @@
 #include <qsqlindex.h>
 #include <qfile.h>
 #include <qtextstream.h>
+#include <qglobal.h>
 
 #include <kstaticdeleter.h>
 #include <kstandarddirs.h>
@@ -220,36 +221,35 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
     DocPositionBase *dpb;
     DocPositionList posList = doc->positions();
 
-    for( dpb = posList.first(); dpb; dpb = posList.next() ) {
-      kdDebug() << "Archiving pos for " << archDocId << endl;
-	if( dpb->type() == DocPositionBase::Position ) {
-	    DocPosition *dp = static_cast<DocPosition*>(dpb);
+    DocPositionListIterator it( posList );
 
-	    QSqlRecord *record = cur.primeInsert();
+    kdDebug() << "Archiving pos for " << archDocId << endl;
+    while ( ( dpb = it.current() ) != 0 ) {
+      ++it;
+      DocPosition *dp = static_cast<DocPosition*>(dpb);
 
-	    record->setValue( "archDocID", archDocId );
-	    record->setValue( "ordNumber", 1+cnt /* dp->position() */ );
-            record->setValue( "kind", dp->attribute( DocPosition::Kind ) );
+      QSqlRecord *record = cur.primeInsert();
 
-	    record->setValue( "text", dp->text() );
-	    record->setValue( "amount", dp->amount() );
-	    record->setValue( "unit", dp->unit().einheit( dp->amount() ) );
-	    record->setValue( "price", dp->unitPrice().toDouble() );
-            record->setValue( "overallPrice", dp->overallPrice().toDouble() );
-	    record->setValue( "vat", DocumentMan::self()->vat() ); // FIXME !!
-	    cur.insert();
-            dbID id = KraftDB::self()->getLastInsertID();
-            // kdDebug() << "Inserted for id " << id.toString() << endl;
-	    cnt++;
+      record->setValue( "archDocID", archDocId );
+      record->setValue( "ordNumber", 1+cnt /* dp->position() */ );
+      record->setValue( "kind", dp->attribute( DocPosition::Kind ) );
 
-            // save the attributes of the positions in the attributes
-            // table but with a new host type which reflects the arch state
-            AttributeMap attribs = dp->attributes();
-            attribs.setHost( "ArchPosition" );
-            attribs.save( id );
-	} else {
-          kdDebug() << "Unknown position type, can not archive" << endl;
-        }
+      record->setValue( "text", dp->text() ); // expandItemText( dp ) );
+      record->setValue( "amount", dp->amount() );
+      record->setValue( "unit", dp->unit().einheit( dp->amount() ) );
+      record->setValue( "price", dp->unitPrice().toDouble() );
+      record->setValue( "overallPrice", dp->overallPrice().toDouble() );
+      record->setValue( "vat", DocumentMan::self()->vat() ); // FIXME !!
+      cur.insert();
+      dbID id = KraftDB::self()->getLastInsertID();
+      // kdDebug() << "Inserted for id " << id.toString() << endl;
+      cnt++;
+
+      // save the attributes of the positions in the attributes
+      // table but with a new host type which reflects the arch state
+      AttributeMap attribs = dp->attributes();
+      attribs.setHost( "ArchPosition" );
+      attribs.save( id );
     }
     return cnt;
 }

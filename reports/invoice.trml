@@ -120,11 +120,11 @@
     <blockTable colWidths="8mm,9cm,1.0cm,1cm,2.5cm,2.5cm" style="products" repeatRows="0">
     <tr>
         <td><para style="text">Pos.</para></td>
-        <td><para style="text">Text</para></td>
+        <td><para style="text">Item</para></td>
         <td><para style="text">Qty.</para></td>
         <td><para style="text">Unit</para></td>
         <td><para style="rtext">Price</para></td>
-        <td><para style="rtext">Price</para></td>
+        <td><para style="rtext">Sum</para></td>
     </tr>
     {{#POSITIONS}}
     <tr>

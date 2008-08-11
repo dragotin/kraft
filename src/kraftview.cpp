@@ -395,12 +395,6 @@ void KraftView::redrawDocPositions( )
       mHelpLabel = 0;
     }
   }
-  kdDebug() << "** Starting to redraw the positions" << endl;
-
-  if( ! doc ) {
-    kdError() << "Empty document pointer" << endl;
-    return;
-  }
 
   kdDebug() << "starting to redraw " << list.count() << " positions!" << endl;
 
@@ -494,6 +488,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
     mHelpLabel->hide();
   }
 
+  mPositionWidgetList.insert( pos,  w );
   m_positionScroll->resizeContents( cw,
                                     mPositionWidgetList.count() * w->height()+1 );
 
@@ -512,7 +507,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   int y = pos * w->height();
   m_positionScroll->moveChild( w, 0, y );
 
-  mPositionWidgetList.insert( pos,  w );
+
 
   w->show();
 
@@ -956,10 +951,12 @@ DocPositionList KraftView::currentPositionList()
 
       ++outerIt;
 
+      KraftDB::StringMap replaceMap;
+
       if ( dpb ) {
         DocPosition *newDp = new DocPosition( dpb->type() );
         newDp->setPositionNumber( QString::number( cnt++ ) );
-
+        newDp->setAttributeMap( dpb->attributes() );
         newDp->setDbId( dpb->dbId().toInt() );
         newDp->setAssociatedWidget( widget );
 
@@ -989,8 +986,14 @@ DocPositionList KraftView::currentPositionList()
           sum = sum.percent( discount );
           newDp->setUnitPrice( sum );
           newDp->setAmount( 1.0 );
+
+          // replace some tags in the text
+
+          replaceMap["%DISCOUNT"] = getDocument()->locale()->formatNumber( discount );
+          replaceMap["%ABS_DISCOUNT"] = getDocument()->locale()->formatNumber( QABS( discount ) );
+
         } else {
-          /* Ordinary position */
+          /* Type is ordinary position */
           newDp->setUnitPrice( widget->unitPrice() );
 
           double v = widget->m_sbAmount->value();
@@ -1000,7 +1003,11 @@ DocPositionList KraftView::currentPositionList()
         // copy information from the widget
         newDp->setToDelete( widget->deleted() );
 
-        newDp->setText( widget->m_teFloskel->text() );
+        QString t = widget->m_teFloskel->text();
+        if ( !replaceMap.empty() ) {
+          t = KraftDB::self()->replaceTagsInWord( t, replaceMap );
+        }
+        newDp->setText( t );
 
         QString h = widget->m_cbUnit->currentText();
         int eId   = UnitManager::getUnitIDSingular( h );
@@ -1018,6 +1025,15 @@ DocPositionList KraftView::currentPositionList()
           newDp->removeAttribute( DocPosition::Kind );
         }
 
+        /* set Attribute with the tags */
+        QStringList tags = widget->tagList();
+        if ( ! tags.empty() ) {
+          Attribute tags( DocPosition::Tags );
+          tags.setPersistant( true );
+          tags.setListValue( true );
+          tags.setValue( QVariant( widget->tagList() ) );
+          newDp->setAttribute( tags );
+        }
         list.append( newDp );
       } else {
         kdError() << "Fatal: Widget without position found!" << endl;

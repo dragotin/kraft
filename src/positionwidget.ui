@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>562</width>
-            <height>179</height>
+            <width>696</width>
+            <height>181</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,263 +19,287 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QFrame" row="1" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>seperator</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-        </widget>
         <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>layout5</cstring>
+                <cstring>layout10</cstring>
             </property>
             <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>m_labelPosition</cstring>
-                    </property>
-                    <property name="text">
-                        <string>1.</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pbExec</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image0</pixmap>
-                    </property>
-                    <property name="toggleButton">
-                        <bool>false</bool>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>lStatus</cstring>
-                    </property>
-                    <property name="text">
-                        <string>D</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignCenter</set>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer4</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>16</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>lKind</cstring>
-                    </property>
-                    <property name="text">
-                        <string>D</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignCenter</set>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QLayoutWidget" row="0" column="1">
-            <property name="name">
-                <cstring>layout12</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QTextEdit">
-                    <property name="name">
-                        <cstring>m_teFloskel</cstring>
-                    </property>
-                    <property name="tabChangesFocus">
-                        <bool>true</bool>
-                    </property>
-                </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout11</cstring>
+                        <cstring>layout9</cstring>
                     </property>
-                    <hbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QWidgetStack">
+                        <widget class="QTextEdit" row="0" column="1">
                             <property name="name">
-                                <cstring>positionDetailStack</cstring>
+                                <cstring>m_teFloskel</cstring>
                             </property>
-                            <widget class="QWidget">
+                            <property name="tabChangesFocus">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget" row="1" column="1">
+                            <property name="name">
+                                <cstring>layout7</cstring>
+                            </property>
+                            <hbox>
                                 <property name="name">
-                                    <cstring>positionPage</cstring>
+                                    <cstring>unnamed</cstring>
                                 </property>
-                                <attribute name="id">
-                                    <number>0</number>
-                                </attribute>
-                                <grid>
+                                <widget class="QWidgetStack">
                                     <property name="name">
-                                        <cstring>unnamed</cstring>
+                                        <cstring>positionDetailStack</cstring>
                                     </property>
-                                    <property name="margin">
-                                        <number>0</number>
-                                    </property>
-                                    <property name="spacing">
-                                        <number>0</number>
-                                    </property>
-                                    <widget class="QLayoutWidget" row="0" column="0">
+                                    <widget class="QWidget">
                                         <property name="name">
-                                            <cstring>layout8</cstring>
+                                            <cstring>positionPage</cstring>
                                         </property>
-                                        <hbox>
+                                        <attribute name="id">
+                                            <number>0</number>
+                                        </attribute>
+                                        <grid>
                                             <property name="name">
                                                 <cstring>unnamed</cstring>
                                             </property>
-                                            <widget class="KDoubleSpinBox">
+                                            <property name="margin">
+                                                <number>0</number>
+                                            </property>
+                                            <property name="spacing">
+                                                <number>0</number>
+                                            </property>
+                                            <widget class="QLayoutWidget" row="0" column="0">
                                                 <property name="name">
-                                                    <cstring>m_sbAmount</cstring>
+                                                    <cstring>layout8</cstring>
                                                 </property>
-                                                <property name="maxValue">
-                                                    <number>10</number>
-                                                </property>
-                                                <property name="lineStep">
-                                                    <number>0.01</number>
-                                                </property>
-                                                <property name="value">
-                                                    <number>0</number>
-                                                </property>
-                                                <property name="precision">
-                                                    <number>2</number>
-                                                </property>
+                                                <hbox>
+                                                    <property name="name">
+                                                        <cstring>unnamed</cstring>
+                                                    </property>
+                                                    <widget class="KDoubleSpinBox">
+                                                        <property name="name">
+                                                            <cstring>m_sbAmount</cstring>
+                                                        </property>
+                                                        <property name="maxValue">
+                                                            <number>1</number>
+                                                        </property>
+                                                        <property name="lineStep">
+                                                            <number>0.01</number>
+                                                        </property>
+                                                        <property name="value">
+                                                            <number>0</number>
+                                                        </property>
+                                                        <property name="precision">
+                                                            <number>2</number>
+                                                        </property>
+                                                    </widget>
+                                                    <widget class="ExtendedCombo">
+                                                        <property name="name">
+                                                            <cstring>m_cbUnit</cstring>
+                                                        </property>
+                                                    </widget>
+                                                    <widget class="KDoubleSpinBox">
+                                                        <property name="name">
+                                                            <cstring>m_sbUnitPrice</cstring>
+                                                        </property>
+                                                        <property name="maxValue">
+                                                            <number>0.1</number>
+                                                        </property>
+                                                        <property name="minValue">
+                                                            <number>-0.1</number>
+                                                        </property>
+                                                        <property name="lineStep">
+                                                            <number>0.01</number>
+                                                        </property>
+                                                        <property name="value">
+                                                            <number>0</number>
+                                                        </property>
+                                                        <property name="precision">
+                                                            <number>2</number>
+                                                        </property>
+                                                    </widget>
+                                                </hbox>
                                             </widget>
-                                            <widget class="ExtendedCombo">
-                                                <property name="name">
-                                                    <cstring>m_cbUnit</cstring>
-                                                </property>
-                                            </widget>
-                                            <widget class="KDoubleSpinBox">
-                                                <property name="name">
-                                                    <cstring>m_sbUnitPrice</cstring>
-                                                </property>
-                                                <property name="maxValue">
-                                                    <number>1</number>
-                                                </property>
-                                                <property name="minValue">
-                                                    <number>-1</number>
-                                                </property>
-                                                <property name="lineStep">
-                                                    <number>0.01</number>
-                                                </property>
-                                                <property name="value">
-                                                    <number>0</number>
-                                                </property>
-                                                <property name="precision">
-                                                    <number>2</number>
-                                                </property>
-                                            </widget>
-                                        </hbox>
+                                        </grid>
                                     </widget>
-                                </grid>
-                            </widget>
-                            <widget class="QWidget">
-                                <property name="name">
-                                    <cstring>discountPage</cstring>
-                                </property>
-                                <attribute name="id">
-                                    <number>1</number>
-                                </attribute>
-                                <grid>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLayoutWidget" row="0" column="0">
+                                    <widget class="QWidget">
                                         <property name="name">
-                                            <cstring>layout7</cstring>
+                                            <cstring>discountPage</cstring>
                                         </property>
-                                        <hbox>
+                                        <attribute name="id">
+                                            <number>1</number>
+                                        </attribute>
+                                        <grid>
                                             <property name="name">
                                                 <cstring>unnamed</cstring>
                                             </property>
-                                            <widget class="KDoubleNumInput">
+                                            <widget class="QLayoutWidget" row="0" column="0">
                                                 <property name="name">
-                                                    <cstring>mDiscountPercent</cstring>
+                                                    <cstring>layout7</cstring>
                                                 </property>
-                                                <property name="suffix">
-                                                    <string>%</string>
-                                                </property>
+                                                <hbox>
+                                                    <property name="name">
+                                                        <cstring>unnamed</cstring>
+                                                    </property>
+                                                    <widget class="KDoubleNumInput">
+                                                        <property name="name">
+                                                            <cstring>mDiscountPercent</cstring>
+                                                        </property>
+                                                        <property name="suffix">
+                                                            <string>%</string>
+                                                        </property>
+                                                    </widget>
+                                                    <widget class="QLabel">
+                                                        <property name="name">
+                                                            <cstring>mDiscountLabel</cstring>
+                                                        </property>
+                                                        <property name="text">
+                                                            <string>of the sum of</string>
+                                                        </property>
+                                                    </widget>
+                                                    <widget class="ExtendedCombo">
+                                                        <property name="name">
+                                                            <cstring>mDiscountTag</cstring>
+                                                        </property>
+                                                    </widget>
+                                                </hbox>
                                             </widget>
-                                            <widget class="QLabel">
-                                                <property name="name">
-                                                    <cstring>mDiscountLabel</cstring>
-                                                </property>
-                                                <property name="text">
-                                                    <string>of the sum of</string>
-                                                </property>
-                                            </widget>
-                                            <widget class="ExtendedCombo">
-                                                <property name="name">
-                                                    <cstring>mDiscountTag</cstring>
-                                                </property>
-                                            </widget>
-                                        </hbox>
+                                        </grid>
                                     </widget>
-                                </grid>
-                            </widget>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer3</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>111</width>
+                                            <height>21</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>m_sumLabel</cstring>
+                                    </property>
+                                    <property name="font">
+                                        <font>
+                                            <bold>1</bold>
+                                        </font>
+                                    </property>
+                                    <property name="text">
+                                        <string>textLabel7</string>
+                                    </property>
+                                </widget>
+                            </hbox>
                         </widget>
-                        <spacer>
+                        <widget class="QLayoutWidget" row="0" column="0" rowspan="2" colspan="1">
                             <property name="name">
-                                <cstring>spacer3</cstring>
+                                <cstring>layout6</cstring>
                             </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>80</width>
-                                    <height>21</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>m_sumLabel</cstring>
-                            </property>
-                            <property name="font">
-                                <font>
-                                    <bold>1</bold>
-                                </font>
-                            </property>
-                            <property name="text">
-                                <string>textLabel7</string>
-                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>m_labelPosition</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>1.</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>pbExec</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap>image0</pixmap>
+                                    </property>
+                                    <property name="toggleButton">
+                                        <bool>false</bool>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>pbTagging</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap>image0</pixmap>
+                                    </property>
+                                    <property name="toggleButton">
+                                        <bool>false</bool>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>lStatus</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>D</string>
+                                    </property>
+                                    <property name="alignment">
+                                        <set>AlignCenter</set>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer4</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>20</width>
+                                            <height>4</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>lKind</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>D</string>
+                                    </property>
+                                    <property name="alignment">
+                                        <set>AlignCenter</set>
+                                    </property>
+                                </widget>
+                            </vbox>
                         </widget>
-                    </hbox>
+                    </grid>
+                </widget>
+                <widget class="QFrame">
+                    <property name="name">
+                        <cstring>seperator</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Raised</enum>
+                    </property>
                 </widget>
             </vbox>
         </widget>
@@ -309,7 +333,7 @@
 </images>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>extendedcombo.h</includehint>
     <includehint>knuminput.h</includehint>
+    <includehint>extendedcombo.h</includehint>
 </includehints>
 </UI>

@@ -20,6 +20,7 @@
 #define POSITIONVIEWWIDGET_H
 
 #include <qptrlist.h>
+#include <qmap.h>
 
 #include "positionwidget.h"
 
@@ -59,12 +60,13 @@ public:
     Geld currentPrice();
     Geld unitPrice();
     void setLocale( KLocale* );
-
+    QStringList tagList() { return mTags; }
 public slots:
     void slotSetOverallPrice( Geld );
     void slotRefreshPrice();
     void slotModified();
     void slotExecButtonPressed();
+    void slotTaggingButtonPressed();
     void slotMenuAboutToHide();
     void slotMenuAboutToShow();
     void slotSetState( State );
@@ -74,10 +76,10 @@ public slots:
 protected slots:
     void slotLockPosition();
     void slotUnlockPosition();
-    
     void slotSetPositionNormal();
     void slotSetPositionAlternative();
     void slotSetPositionDemand();
+    void slotUpdateTagToolTip();
 
 signals:
     void positionModified();
@@ -96,9 +98,11 @@ private:
     bool m_skipModifiedSignal;
     bool mToDelete;
     int  mOrdNumber;
+
     DocPositionGuardedPtr mPositionPtr;
     KPopupMenu *mExecPopup;
     QPopupMenu *mStateSubmenu;
+    QStringList mTags;
     int  mDeleteId;
     int  mLockId;
     int  mUnlockId;

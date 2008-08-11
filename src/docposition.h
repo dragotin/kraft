@@ -60,9 +60,15 @@ class DocPositionBase : public QObject
     QString attribute(const QString& ) const;
 
     AttributeMap attributes();
+    void setAttributeMap( AttributeMap );
 
     void setText( const QString& string ) { m_text = string; }
     QString text() const { return m_text; } ;
+
+    void setTag( const QString& );
+    void removeTag( const QString& );
+    bool hasTag( const QString& );
+    QStringList tags();
 
   /**
    * Position means the number in the document
@@ -110,7 +116,7 @@ class DocPosition : public DocPositionBase
 
     static const QString Kind;
     static const QString Discount;
-
+    static const QString Tags;
   private:
     Einheit m_unit;
     Geld    m_unitPrice;
@@ -140,7 +146,7 @@ class DocPositionList : public QPtrList<DocPositionBase>
     KLocale *mLocale;
 };
 
-typedef QPtrListIterator<DocPositionList> DocPositionListIterator;
+typedef QPtrListIterator<DocPositionBase> DocPositionListIterator;
 
 typedef QGuardedPtr<DocPositionBase> DocPositionGuardedPtr;
 #endif

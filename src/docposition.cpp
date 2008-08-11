@@ -85,12 +85,20 @@ DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
 
 void DocPositionBase::setAttribute( const Attribute& attrib )
 {
-  mAttribs[ attrib.name() ] = attrib;
+  if ( attrib.name().isEmpty() )
+    kdDebug()  << "WRN: Can not save attribute with empty name!" << endl;
+  else
+    mAttribs[ attrib.name() ] = attrib;
 }
 
 AttributeMap DocPositionBase::attributes()
 {
   return mAttribs;
+}
+
+void DocPositionBase::setAttributeMap( AttributeMap attmap )
+{
+  mAttribs = attmap;
 }
 
 void DocPositionBase::loadAttributes()
@@ -115,10 +123,71 @@ QString DocPositionBase::attribute( const QString& attName ) const
   return att.value().toString();
 }
 
+void DocPositionBase::setTag( const QString& tag )
+{
+  if ( tag.isEmpty() ) return;
+
+  if ( mAttribs.contains( DocPosition::Tags ) ) {
+    Attribute att = mAttribs[DocPosition::Tags];
+    att.setListValue( true );
+    QStringList li =  att.value().toStringList();
+    li.append( tag );
+    att.setValue( QVariant( li ) );
+    setAttribute( att );
+  } else {
+    QStringList li;
+    li.append( tag );
+    Attribute a( DocPosition::Tags );
+    a.setListValue( true );
+    a.setPersistant( true );
+    a.setValue( QVariant( li ) );
+    setAttribute( a );
+  }
+  // if ( !hasTag( tag ) ) {
+  //  mTags.append( tag );
+  //}
+}
+
+void DocPositionBase::removeTag( const QString& tag )
+{
+  if ( mAttribs.contains( DocPosition::Tags ) ) {
+    Attribute tags = mAttribs[DocPosition::Tags];
+    QStringList list = ( tags.value() ).toStringList();
+    if ( list.findIndex( tag ) > -1 ) {
+      list.remove( tag );
+      tags.setValue( QVariant( list ) );
+      setAttribute( tags );
+    }
+  }
+}
+
+bool DocPositionBase::hasTag( const QString& term )
+{
+  if ( mAttribs.contains( DocPosition::Tags ) ) {
+    Attribute tags = mAttribs[DocPosition::Tags];
+    QStringList list = ( tags.value() ).toStringList();
+    if ( list.findIndex( term ) > -1 ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+QStringList DocPositionBase::tags()
+{
+  QStringList tags;
+  if ( mAttribs.contains( DocPosition::Tags ) ) {
+    tags = mAttribs[DocPosition::Tags].value().toStringList();
+  }
+  return tags;
+}
+
+
 // ##############################################################
 
 const QString DocPosition::Kind( QString::fromLatin1( "kind" ) );
 const QString DocPosition::Discount( QString::fromLatin1( "discount" ) );
+const QString DocPosition::Tags( QString::fromLatin1( "tags" ) );
 
 DocPosition::DocPosition(): DocPositionBase()
   ,m_amount( 1.0 ), mWidget( 0 )
@@ -140,7 +209,7 @@ Geld DocPosition::overallPrice()
     // all kinds besind from no kind mean  that the position is not
     // counted for the overall price. That's a FIXME
     if ( ! atts.contains( DocPosition::Kind ) ) {
-      g = unitPrice()*amount();
+      g = unitPrice() * amount();
     }
     return g;
 }
@@ -151,14 +220,10 @@ DocPosition& DocPosition::operator=( const DocPosition& dp )
   if ( this == &dp ) return *this;
 
   DocPositionBase::operator=( dp );
-  m_text = dp.m_text;
-  m_position = dp.m_position;
   m_unit = dp.m_unit;
   m_unitPrice = dp.m_unitPrice;
   m_amount = dp.m_amount;
-  m_dbId = dp.m_dbId;
-  mToDelete = dp.mToDelete;
-  mType = dp.mType;
+  mWidget = dp.mWidget;
 
   return *this;
 }

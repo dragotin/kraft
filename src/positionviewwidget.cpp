@@ -36,6 +36,9 @@
 #include "geld.h"
 #include "kraftsettings.h"
 #include "defaultprovider.h"
+#include "kraftdb.h"
+#include "positiontagdialog.h"
+#include "tagman.h"
 
 PositionViewWidget::PositionViewWidget()
  : positionWidget(),
@@ -54,19 +57,27 @@ PositionViewWidget::PositionViewWidget()
   m_sbUnitPrice->setMaxValue( 99999.99 );
   m_sbUnitPrice->setPrecision( 2 );
 
+  m_sbAmount->setMinValue( -99999.99 );
+  m_sbAmount->setMaxValue( 99999.99 );
+  m_sbAmount->setPrecision( 2 );
+
   mDiscountPercent->setMinValue( -9999.99 );
   mDiscountPercent->setMaxValue( 9999.99 );
   mDiscountPercent->setPrecision( 2 );
 
   pbExec->setToggleButton( false );
+  pbTagging->setToggleButton( false );
+  pbTagging->setPixmap( SmallIcon( "flag" ) );
+
   connect( m_sbAmount, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
   connect( m_sbUnitPrice, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
   connect( mDiscountPercent, SIGNAL( valueChanged( double ) ),
            this, SLOT( slotRefreshPrice() ) );
-  connect( pbExec, SIGNAL( pressed() ),
-             this,  SLOT( slotExecButtonPressed() ) );
+  connect( pbExec, SIGNAL( pressed() ),     this,  SLOT( slotExecButtonPressed() ) );
+  connect( pbTagging,  SIGNAL( pressed() ), this,  SLOT( slotTaggingButtonPressed() ) );
+
 
   /* modified signals */
   connect( m_cbUnit,      SIGNAL( activated(int) ), this,      SLOT( slotModified() ) );
@@ -77,6 +88,8 @@ PositionViewWidget::PositionViewWidget()
   connect( mDiscountPercent, SIGNAL( valueChanged( double ) ), this, SLOT( slotModified() ) );
 
   mExecPopup->insertTitle( i18n("Position Actions") );
+
+  // state submenu:
   mStateSubmenu = new QPopupMenu;
   mStateSubmenu->insertItem( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
   mStateSubmenu->insertItem( SmallIconSet( "alternative" ),
@@ -84,6 +97,9 @@ PositionViewWidget::PositionViewWidget()
   mStateSubmenu->insertItem( SmallIconSet( "demand" ),
                             i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
   mExecPopup->insertItem( i18n( "Position Kind" ), mStateSubmenu );
+
+  mExecPopup->insertSeparator();
+
 
   mExecPopup->insertSeparator();
 
@@ -126,8 +142,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
 
   mPositionPtr = pos;
 
-//   m_skipModifiedSignal = true;
-//   // m_labelPosition->setText( QString("%1.").arg( mPositionPtr->position() ) );
+  m_skipModifiedSignal = true;
 
   m_teFloskel->setText( pos->text() );
 
@@ -144,8 +159,8 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     m_sbAmount->setValue( pos->amount() );
     m_sbAmount->blockSignals( false );
     m_cbUnit->setCurrentText( pos->unit().einheitSingular() );
-    m_sbUnitPrice->blockSignals( true );
 
+    m_sbUnitPrice->blockSignals( true );
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
     m_sbUnitPrice->blockSignals( false );
 
@@ -173,7 +188,37 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
   }
   slotSetOverallPrice( currentPrice() );
 
+  // set tags marked
+  mTags = dp->tags();
+  slotUpdateTagToolTip();
+
   m_skipModifiedSignal = false;
+}
+
+void PositionViewWidget::slotUpdateTagToolTip()
+{
+  QString tip;
+  bool first = true;
+
+  if ( mTags.count() == 1 ) {
+    tip = i18n( "Tag: %1" ).arg( mTags.first() );
+
+  } else if ( mTags.count() > 1 ) {
+    tip = i18n( "Tags:<ul>" );
+    for ( QStringList::Iterator it = mTags.begin(); it != mTags.end(); ++it ) {
+      if ( first ) {
+        tip += QString( "<li>%1</li>" ).arg( *it );
+        first = false;
+      } else {
+        tip += QString( "<li>%1</li>" ).arg( *it );
+      }
+    }
+    tip += "</ul>";
+  } else {
+    tip = i18n( "No tags assigned yet." );
+  }
+
+  QToolTip::add( pbTagging, tip );
 }
 
 void PositionViewWidget::setLocale( KLocale *loc )
@@ -183,6 +228,21 @@ void PositionViewWidget::setLocale( KLocale *loc )
   m_sbUnitPrice->setPrefix( currSymbol + " " );
   slotSetOverallPrice( currentPrice() );
 }
+
+void PositionViewWidget::slotTaggingButtonPressed()
+{
+  kdDebug() << "opening tagging dialog" << endl;
+
+  PositionTagDialog dia( 0 );
+  dia.setTags( TagTemplateMan::self()->allTagTemplates() );
+  dia.setPositionTags( mTags );
+  if ( dia.exec() ) {
+    mTags = dia.getSelectedTags();
+    slotUpdateTagToolTip();
+    kdDebug() << "Selected tags: " << mTags.join( ", " ) << endl;
+  }
+}
+
 
 void PositionViewWidget::slotExecButtonPressed()
 {
@@ -328,12 +388,12 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
 void PositionViewWidget::slotModified()
 {
   // if( mModified ) return;
-    if( m_skipModifiedSignal ) return;
-    kdDebug() << "Modified Position!" << endl;
-    QColor c( "red" );
-    m_labelPosition->setPaletteForegroundColor( c );
-    mModified = true;
-    emit positionModified();
+  if( m_skipModifiedSignal ) return;
+  kdDebug() << "Modified Position!" << endl;
+  QColor c( "red" );
+  m_labelPosition->setPaletteForegroundColor( c );
+  mModified = true;
+  emit positionModified();
 }
 
 PositionViewWidget::~PositionViewWidget()
