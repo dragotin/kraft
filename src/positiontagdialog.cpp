@@ -21,6 +21,7 @@
 #include <qvbox.h>
 #include <qlabel.h>
 #include <qlistview.h>
+#include <qdrawutil.h>
 
 #include <kdialogbase.h>
 #include <kdebug.h>
@@ -32,6 +33,39 @@
 #include "positiontagdialog.h"
 #include "defaultprovider.h"
 #include "tagman.h"
+
+
+class TagItem:public QCheckListItem
+{
+
+  public:
+    TagItem( KListView*, const QString&, QCheckListItem::Type );
+    void paintCell ( QPainter*, const QColorGroup&, int, int, int );
+    void setColorGroup( QColorGroup );
+private:
+    QColorGroup mColorGroup;
+};
+
+
+TagItem::TagItem( KListView* view, const QString& name, QCheckListItem::Type t )
+  :QCheckListItem( view, name, t )
+{
+
+}
+void TagItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
+{
+  if ( column == 1 ) {
+    QBrush b( mColorGroup.mid() );
+    qDrawShadeRect( p, 5, 4, width-10, height()-8, mColorGroup, false, 1, 4, &b );
+  }  else {
+    QCheckListItem::paintCell( p, cg, column, width, align );
+  }
+}
+
+void TagItem::setColorGroup( QColorGroup cg )
+{
+  mColorGroup = cg;
+}
 
 PositionTagDialog::PositionTagDialog( QWidget *parent )
   : KDialogBase( parent, "POSITION_TAG_DIALOG", true, i18n( "Edit Item Tags" ),
@@ -46,6 +80,7 @@ PositionTagDialog::PositionTagDialog( QWidget *parent )
   mListView->setRootIsDecorated( false );
   mListView->setSelectionMode( QListView::Single );
   mListView->addColumn( i18n( "Tag" ) );
+  mListView->addColumn( i18n( "Color" ) );
   mListView->addColumn( i18n( "Description" ) );
 
   // FIXME: Display help if a item is selection
@@ -67,8 +102,9 @@ void PositionTagDialog::setTags()
   for ( QStringList::ConstIterator it = tags.begin(); it != tags.end(); ++it ) {
     TagTemplate templ = TagTemplateMan::self()->getTagTemplate( *it );
 
-    QCheckListItem *item = new QCheckListItem( mListView, templ.name(), QCheckListItem::CheckBox );
-    item->setText( 1, templ.description() );
+    TagItem *item = new TagItem( mListView, templ.name(), QCheckListItem::CheckBox );
+    item->setColorGroup( templ.colorGroup() );
+    item->setText( 2, templ.description() );
 
     mItemMap[*it] = item;
   }

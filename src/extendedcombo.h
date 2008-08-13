@@ -23,17 +23,8 @@
 class QString;
 class QListBox;
 class QPainter;
-
-class ExtendedCombo : public KComboBox
-{
-  public:
-    ExtendedCombo(QWidget *parent, const char *name);
-
-    void insertEntry( const QString &name, const QString &description );
-
-    
-};
-
+class ExtendedCombo;
+class QPixmap;
 
 class ExtendedComboItem : public QListBoxItem
 {
@@ -42,13 +33,24 @@ class ExtendedComboItem : public QListBoxItem
 
     virtual int width(const QListBox *) const;
     virtual int height(const QListBox *) const;
-
+    virtual void setPixmap( const QPixmap& );
   protected:
     virtual void paint(QPainter *p);
     virtual QFont descriptionFont() const;
 
   private:
     QString mDescription;
+    QPixmap mPixmap;
+};
+
+
+class ExtendedCombo : public KComboBox
+{
+  public:
+    ExtendedCombo(QWidget *parent, const char *name);
+    ~ExtendedCombo();
+    ExtendedComboItem* insertEntry( const QString &name, const QString &description );
+
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include <qlistbox.h>
 #include <qstring.h>
 #include <qpainter.h>
+#include <qpixmap.h>
 
 #include <kdebug.h>
 #include <kcombobox.h>
@@ -63,23 +64,42 @@ void ExtendedComboItem::paint(QPainter *p)
   // evil trick: find out whether we are painted onto our listbox
   bool in_list_box = listBox() && listBox()->viewport() == p->device();
 
+  QFontMetrics fm(p->fontMetrics());
   if( in_list_box ) {
-    QFontMetrics fm(p->fontMetrics());
     QFont descFont = descriptionFont();
     QFontMetrics descFm(  descriptionFont() );
     p->drawLine( 0, 0, listBox()->width(), 0 );
-    p->drawText(3, 2 + fm.ascent() + fm.leading() / 2, text());
+    // paint the pixmap
+    int pixOffset = 0;
+    if ( mPixmap.width() && mPixmap.height() ) {
+      int y = ( fm.height()-mPixmap.height() );
+      if ( mPixmap.height() > fm.height() ) y = 0;
+      p->drawPixmap( 3, y , mPixmap );
+      pixOffset = mPixmap.width()+3;
+    }
+    p->drawText(pixOffset + 3, 2 + fm.ascent() + fm.leading() / 2, text());
 
     // drawing the description
     p->setFont( descFont );
     p->setPen( Qt::darkGray );
     p->drawText(13, 4 + descFm.ascent() + descFm.leading() / 2 + descFm.lineSpacing(), mDescription);
   } else {
-    p->drawText(3, 0, width(listBox())-3, height(listBox()), Qt::AlignLeft | Qt::AlignVCenter, text());
+    int pixOffset = 0;
+
+    if ( mPixmap.width() && mPixmap.height() ) {
+      int y = 15; // ( listBox().height()-mPixmap.height() );
+      if ( y  < 0 ) y = 0;
+      p->drawPixmap( 3, y , mPixmap );
+      pixOffset = mPixmap.width()+3;
+    }
+    p->drawText(pixOffset+3, 0, width(listBox())-3, height(listBox()), Qt::AlignLeft | Qt::AlignVCenter, text());
   }
 }
 
-
+void ExtendedComboItem::setPixmap( const QPixmap& pix )
+{
+  mPixmap = pix;
+}
 // ################################################################################
 
 
@@ -88,9 +108,14 @@ ExtendedCombo::ExtendedCombo(QWidget *parent, const char *name)
 {
 }
 
-void ExtendedCombo::insertEntry( const QString &name, const QString &description )
+ExtendedCombo::~ExtendedCombo()
 {
-  new ExtendedComboItem( name, description, this );
+
+}
+
+ExtendedComboItem* ExtendedCombo::insertEntry( const QString &name, const QString &description )
+{
+  return new ExtendedComboItem( name, description, this );
 }
 
 

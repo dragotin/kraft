@@ -46,6 +46,7 @@ public:
 
   QString name()  const { return mName;  }
   QColor  color() const { return mColor; }
+  QColorGroup colorGroup() const;
   dbID    dbId()  const { return mId;    }
   QString description() const { return mDesc; }
 private:

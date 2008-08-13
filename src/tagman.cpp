@@ -29,6 +29,7 @@
 #include "kraftdb.h"
 #include <qsqlquery.h>
 #include <qsqlcursor.h>
+#include <qpalette.h>
 
 /*
  * ********** Tag Template  **********
@@ -43,6 +44,15 @@ TagTemplate::TagTemplate( const dbID& id, const QString& name, const QString& de
   : mId( id ), mName( name ), mDesc( desc ), mColor( col )
 {
 
+}
+
+QColorGroup TagTemplate::colorGroup() const
+{
+  QColorGroup cg;
+  cg.setColor( QColorGroup::Light, mColor.light() );
+  cg.setColor( QColorGroup::Dark,  mColor.dark() );
+  cg.setColor( QColorGroup::Mid,   mColor );
+  return cg;
 }
 
 /*

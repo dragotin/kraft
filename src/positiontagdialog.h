@@ -30,7 +30,6 @@ class QListViewItem;
 class KListView;
 class FilterHeader;
 
-
 class PositionTagDialog: public KDialogBase
 {
   Q_OBJECT

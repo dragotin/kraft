@@ -28,6 +28,7 @@
 #include <kpopupmenu.h>
 #include <kiconloader.h>
 #include <qwidgetstack.h>
+#include <qdrawutil.h>
 
 #include "extendedcombo.h"
 #include "docposition.h"
@@ -40,6 +41,7 @@
 #include "positiontagdialog.h"
 #include "tagman.h"
 #include <qregexp.h>
+#include <qpainter.h>
 
 PositionViewWidget::PositionViewWidget()
  : positionWidget(),
@@ -197,8 +199,12 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
 
     for ( QStringList::Iterator tagIt = taglist.begin(); tagIt != taglist.end(); ++tagIt ) {
       QString tagger;
+      TagTemplate tmpl = TagTemplateMan::self()->getTagTemplate( *tagIt );
+      QPixmap pix( 16, 12 );
+      pix.fill( tmpl.color() );
       tagger = i18n( "%1-tagged items" ).arg( *tagIt );
-      mDiscountTag->insertEntry( tagger, i18n( "sum up only items marked with '%1'" ).arg( *tagIt ) );
+      ExtendedComboItem *item = mDiscountTag->insertEntry( tagger, i18n( "sum up only items marked with '%1'" ).arg( *tagIt ) );
+      item->setPixmap( pix );
       if ( selTag == *tagIt ) {
         currentEntry = tagger;
       }
@@ -581,5 +587,33 @@ QString PositionViewWidget::kindLabel( Kind k ) const
   }
   return re;
 }
+
+void PositionViewWidget::paintEvent ( QPaintEvent *pe )
+{
+  QPainter *painter;
+  painter = new QPainter( this );
+
+  // visualise the tags
+  QStringList taglist = tagList();
+  if ( taglist.count() ) {
+    int share = ( height() - 24 ) / taglist.count();
+    int cnt = 0;
+
+    for ( QStringList::Iterator it = taglist.begin(); it != taglist.end(); ++it ) {
+      QString tag = *it;
+      TagTemplate tagTemplate = TagTemplateMan::self()->getTagTemplate( tag );
+
+      // QColor c = tagTemplate.color();
+      // kdDebug() << "color: " << c.red() << ", " << c.green() << ", " << c.blue() << endl;
+      // painter->setBrush( c );
+
+      int starty = cnt*share;
+      qDrawShadeLine( painter, 3, starty, 3, starty+share-1, tagTemplate.colorGroup(), false, 1, 4 );
+      cnt++;
+    }
+  }
+  positionWidget::paintEvent( pe );
+}
+
 #include "positionviewwidget.moc"
 

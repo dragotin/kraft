@@ -82,7 +82,7 @@ protected slots:
     void slotSetPositionAlternative();
     void slotSetPositionDemand();
     void slotUpdateTagToolTip();
-
+    void paintEvent ( QPaintEvent* );
 signals:
     void positionModified();
     void deletePosition();
