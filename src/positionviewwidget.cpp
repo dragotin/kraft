@@ -286,14 +286,37 @@ void PositionViewWidget::slotExecButtonPressed()
 
 void PositionViewWidget::slotMenuAboutToShow()
 {
-  // setPaletteBackground( QColor( "blue" ) );
   setBackgroundMode( Qt::PaletteMid );
+  m_sumLabel->setBackgroundMode( Qt::PaletteMid );
+  m_labelPosition->setBackgroundMode( Qt::PaletteMid );
+  m_sumLabel->setBackgroundMode( Qt::PaletteMid );
+  m_sbAmount->setBackgroundMode( Qt::PaletteMid );
+  m_cbUnit->setBackgroundMode( Qt::PaletteMid );
+  m_sbUnitPrice->setBackgroundMode( Qt::PaletteMid );
+  discountPage->setBackgroundMode( Qt::PaletteMid );
+  mDiscountPercent->setBackgroundMode( Qt::PaletteMid );
+  mDiscountLabel->setBackgroundMode( Qt::PaletteMid );
+  discountPage->setBackgroundMode( Qt::PaletteMid );
+  positionPage->setBackgroundMode( Qt::PaletteMid );
+setBackgroundMode( Qt::PaletteMid );
 }
 
 void PositionViewWidget::slotMenuAboutToHide()
 {
   kdDebug() << "Set normal again" << endl;
   setBackgroundMode( Qt::PaletteBackground );
+  m_sumLabel->setBackgroundMode( Qt::PaletteBackground );
+  m_labelPosition->setBackgroundMode( Qt::PaletteBackground );
+  m_sumLabel->setBackgroundMode( Qt::PaletteBackground );
+  m_sbAmount->setBackgroundMode( Qt::PaletteBackground );
+  m_cbUnit->setBackgroundMode( Qt::PaletteBackground );
+  m_sbUnitPrice->setBackgroundMode( Qt::PaletteBackground );
+  discountPage->setBackgroundMode( Qt::PaletteBackground );
+  mDiscountPercent->setBackgroundMode( Qt::PaletteBackground );
+  mDiscountLabel->setBackgroundMode( Qt::PaletteBackground );
+  discountPage->setBackgroundMode( Qt::PaletteBackground );
+  positionPage->setBackgroundMode( Qt::PaletteBackground );
+
 }
 
 void PositionViewWidget::slotLockPosition( )
