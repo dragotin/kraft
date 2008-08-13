@@ -31,7 +31,7 @@
 
 #include "positiontagdialog.h"
 #include "defaultprovider.h"
-
+#include "tagman.h"
 
 PositionTagDialog::PositionTagDialog( QWidget *parent )
   : KDialogBase( parent, "POSITION_TAG_DIALOG", true, i18n( "Edit Item Tags" ),
@@ -46,6 +46,8 @@ PositionTagDialog::PositionTagDialog( QWidget *parent )
   mListView->setRootIsDecorated( false );
   mListView->setSelectionMode( QListView::Single );
   mListView->addColumn( i18n( "Tag" ) );
+  mListView->addColumn( i18n( "Description" ) );
+
   // FIXME: Display help if a item is selection
   mListView->setSelectionMode( QListView::NoSelection );
   // mFilterHeader = new FilterHeader( mListView, w );
@@ -58,16 +60,23 @@ PositionTagDialog::~PositionTagDialog()
 
 }
 
-void PositionTagDialog::setTags( const QStringList& tags )
+void PositionTagDialog::setTags()
 {
+  QStringList tags = TagTemplateMan::self()->allTagTemplates();
+
   for ( QStringList::ConstIterator it = tags.begin(); it != tags.end(); ++it ) {
-    QCheckListItem *item = new QCheckListItem( mListView, *it, QCheckListItem::CheckBox );
+    TagTemplate templ = TagTemplateMan::self()->getTagTemplate( *it );
+
+    QCheckListItem *item = new QCheckListItem( mListView, templ.name(), QCheckListItem::CheckBox );
+    item->setText( 1, templ.description() );
+
     mItemMap[*it] = item;
   }
 }
 
 void PositionTagDialog::setPositionTags( const QStringList& tags )
 {
+  setTags();
   for ( QStringList::ConstIterator it = tags.begin(); it != tags.end(); ++it ) {
     if ( mItemMap.contains( *it ) ) {
       QCheckListItem *item = mItemMap[*it];

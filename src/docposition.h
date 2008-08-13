@@ -117,6 +117,8 @@ class DocPosition : public DocPositionBase
     static const QString Kind;
     static const QString Discount;
     static const QString Tags;
+    static const QString ExtraDiscountTagRequired;
+
   private:
     Einheit m_unit;
     Geld    m_unitPrice;

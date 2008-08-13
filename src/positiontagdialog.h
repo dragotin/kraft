@@ -39,9 +39,11 @@ public:
   PositionTagDialog( QWidget* );
   ~PositionTagDialog( );
 
-  void setTags( const QStringList& );
   void setPositionTags( const QStringList& );
   QStringList getSelectedTags();
+
+protected:
+  void setTags( );
 
 private:
   KListView *mListView;

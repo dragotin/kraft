@@ -39,6 +39,7 @@
 #include "kraftdb.h"
 #include "positiontagdialog.h"
 #include "tagman.h"
+#include <qregexp.h>
 
 PositionViewWidget::PositionViewWidget()
  : positionWidget(),
@@ -182,7 +183,27 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     Attribute discount = amap[DocPosition::Discount];
     mDiscountPercent->setValue( discount.value().toDouble() );
 
-    mDiscountTag->insertEntry( i18n( "all positions" ), i18n( "Overall Position Discout" ) );
+    QString selTag;
+    if ( amap.contains( DocPosition::ExtraDiscountTagRequired ) ) {
+      Attribute tagSelector = amap[DocPosition::ExtraDiscountTagRequired];
+      selTag = tagSelector.value().toString();
+    }
+
+    /* Fill and set the extra discount selection combo */
+    const QString allPos = i18n( "all items" );
+    mDiscountTag->insertEntry( allPos, i18n( "Overall Position Discout" ) );
+    QStringList taglist = TagTemplateMan::self()->allTagTemplates();
+    QString currentEntry = allPos;
+
+    for ( QStringList::Iterator tagIt = taglist.begin(); tagIt != taglist.end(); ++tagIt ) {
+      QString tagger;
+      tagger = i18n( "%1-tagged items" ).arg( *tagIt );
+      mDiscountTag->insertEntry( tagger, i18n( "sum up only items marked with '%1'" ).arg( *tagIt ) );
+      if ( selTag == *tagIt ) {
+        currentEntry = tagger;
+      }
+    }
+    mDiscountTag->setCurrentText( currentEntry );
   } else {
     kdDebug() << "unknown doc position type " << dp->type()<< endl;
   }
@@ -221,6 +242,16 @@ void PositionViewWidget::slotUpdateTagToolTip()
   QToolTip::add( pbTagging, tip );
 }
 
+QString PositionViewWidget::extraDiscountTagRestriction()
+{
+  QString selection = mDiscountTag->currentText();
+  QRegExp rx( "\\b(.+)-tagged\\b" );
+  if ( rx.search( selection ) > -1 ) {
+    return rx.cap( 1 );
+  }
+  return QString();
+}
+
 void PositionViewWidget::setLocale( KLocale *loc )
 {
   mLocale = loc;
@@ -234,7 +265,7 @@ void PositionViewWidget::slotTaggingButtonPressed()
   kdDebug() << "opening tagging dialog" << endl;
 
   PositionTagDialog dia( 0 );
-  dia.setTags( TagTemplateMan::self()->allTagTemplates() );
+
   dia.setPositionTags( mTags );
   if ( dia.exec() ) {
     mTags = dia.getSelectedTags();

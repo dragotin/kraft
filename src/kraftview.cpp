@@ -969,6 +969,12 @@ DocPositionList KraftView::currentPositionList()
           a.setValue( discount );
           newDp->setAttribute( a );
 
+          QString tagRequired = widget->extraDiscountTagRestriction();
+          Attribute tr(  DocPosition::ExtraDiscountTagRequired );
+          tr.setPersistant( true );
+          tr.setValue( tagRequired );
+          newDp->setAttribute( tr );
+
           /* Calculate the actual sum */
           PositionViewWidgetListIterator it( mPositionWidgetList );
           PositionViewWidget *w1;
@@ -976,8 +982,16 @@ DocPositionList KraftView::currentPositionList()
           while (  ( w1 = it.current() )!= 0 ) {
             ++it;
             if ( it != outerIt ) {
-              sum += w1->unitPrice();
-              kdDebug() << "Summing up pos with text " << w1->ordNumber() << endl;
+              if ( tagRequired.isEmpty() ) {
+                sum += w1->currentPrice(); // unitPrice();
+                kdDebug() << "Summing up pos with text " << w1->ordNumber() << endl;
+              } else {
+                if ( w1->tagList().contains( tagRequired ) ) {
+                  sum += w1->currentPrice();
+                } else {
+                  kdDebug() << "Not summing because tag " << tagRequired << " is required!" << endl;
+                }
+              }
             } else {
               kdDebug() << "Skipping pos " << w1->ordNumber() << " in summing up!" << endl;
             }

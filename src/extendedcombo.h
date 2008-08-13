@@ -3,6 +3,7 @@
                              -------------------
     begin                : April 2008
     copyright            : (C) 2008 by Klaas Freitag
+                           (C) 2007, 2008 Andre Duffeck
     email                : freitag@kde.org
  ***************************************************************************/
 

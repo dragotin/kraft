@@ -61,6 +61,8 @@ public:
     Geld unitPrice();
     void setLocale( KLocale* );
     QStringList tagList() { return mTags; }
+    QString extraDiscountTagRestriction();
+
 public slots:
     void slotSetOverallPrice( Geld );
     void slotRefreshPrice();

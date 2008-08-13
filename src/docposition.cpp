@@ -188,6 +188,7 @@ QStringList DocPositionBase::tags()
 const QString DocPosition::Kind( QString::fromLatin1( "kind" ) );
 const QString DocPosition::Discount( QString::fromLatin1( "discount" ) );
 const QString DocPosition::Tags( QString::fromLatin1( "tags" ) );
+const QString DocPosition::ExtraDiscountTagRequired( QString::fromLatin1( "discountTagRequired" ) );
 
 DocPosition::DocPosition(): DocPositionBase()
   ,m_amount( 1.0 ), mWidget( 0 )
