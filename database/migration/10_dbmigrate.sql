@@ -14,8 +14,25 @@ ALTER TABLE attributes ADD COLUMN valueIsList tinyint default 0 after value;
 ALTER TABLE attributes ADD COLUMN id int not null  auto_increment primary key FIRST;
 ALTER TABLE attributes ADD UNIQUE INDEX ( hostObject, hostId, name );
 
+DROP TABLE IF EXISTS tmp_attrib;
+
+CREATE TABLE tmp_attrib (
+  id INT NOT NULL AUTO_INCREMENT,
+  hostObject VARCHAR(64),
+  hostId     INT,
+  name       VARCHAR(64),
+  value      MEDIUMTEXT,
+  valueIsList TINYINT,
+
+  PRIMARY KEY(id),
+  UNIQUE INDEX( hostObject, hostId, name )
+);
+
+INSERT INTO tmp_attrib (hostObject, hostId, name, value, valueIsList) SELECT hostObject, hostId, name, value, 0 FROM attributes;
+
+
 # message Create an attribute value table
-CREATE TABLE attributeValues (
+CREATE TABLE IF NOT EXISTS attributeValues (
   id INT NOT NULL AUTO_INCREMENT,
   attributeId INT NOT NULL,
   value      VARCHAR(255),
@@ -25,13 +42,17 @@ CREATE TABLE attributeValues (
 );
 
 # message copy the attribute values over to the new attribute value table
-INSERT INTO attributeValues (attributeId, value) SELECT id, value FROM attributes WHERE value is not null;
+INSERT INTO attributeValues (attributeId, value) SELECT id, value FROM tmp_attrib WHERE value is not null;
 
 # message drop the attrib column
-ALTER TABLE attributes DROP COLUMN value;
+ALTER TABLE tmp_attrib DROP COLUMN value;
+
+DROP TABLE IF EXISTS attribute_old;
+ALTER TABLE attribute RENAME attribute_old;
+ALTER TABLE tmp_attrib RENAME attribute;
 
 # message create a table to keep tag templates
-CREATE TABLE `tagTemplates` (
+CREATE TABLE IF NOT EXISTS `tagTemplates` (
   `tagTmplID` int(11) NOT NULL auto_increment,
   `sortkey` int(11) NOT NULL,
   `name` varchar(255) default NULL,
