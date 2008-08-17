@@ -124,7 +124,8 @@ int UnitManager::getUnitIDSingular( const QString& einheitStr )
 
 UnitManager::~UnitManager( )
 {
-
+  delete m_units;
+  delete m_dummy;
 }
 
 EinheitValueVector *UnitManager::m_units = 0;

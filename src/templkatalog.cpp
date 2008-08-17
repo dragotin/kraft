@@ -45,9 +45,7 @@
 TemplKatalog::TemplKatalog(const QString& name)
     : Katalog(name)
 {
-    m_chapterIDs = new dbIdDict();
-    m_chapterIDs->setAutoDelete(true);
-
+  m_flosList.setAutoDelete( true );
 }
 
 TemplKatalog::~TemplKatalog()

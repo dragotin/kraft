@@ -1,5 +1,13 @@
-# message Add a list value identification column to the attribute table
+# message allow laternatives and demand positions for offers 
+SELECT @item := docTypeID FROM DocTypes WHERE name="Offer";
+INSERT INTO attributes (hostObject, hostId, name, value) VALUES ('DocType', @item, 'AllowAlternative', '1');
+INSERT INTO attributes (hostObject, hostId, name, value) VALUES ('DocType', @item, 'AllowDemand', '1');
 
+SELECT @item := docTypeID FROM DocTypes WHERE name="Angebot";
+INSERT INTO attributes (hostObject, hostId, name, value) VALUES ('DocType', @item, 'AllowAlternative', '1');
+INSERT INTO attributes (hostObject, hostId, name, value) VALUES ('DocType', @item, 'AllowDemand', '1');
+
+# message Add a list value identification column to the attribute table
 ALTER TABLE attributes ADD COLUMN valueIsList tinyint default 0 after value;
 
 # ALTER TABLE attributes DROP PRIMARY KEY;

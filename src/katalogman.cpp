@@ -43,6 +43,7 @@ KatalogMan *KatalogMan::self()
 
 KatalogMan::KatalogMan( )
 {
+  m_katalogDict.setAutoDelete( true );
 }
 
 KatalogMan::~KatalogMan( )

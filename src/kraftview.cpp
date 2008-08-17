@@ -180,7 +180,7 @@ KraftView::KraftView(QWidget *parent, const char *name) :
 
   mCSplit    = new QSplitter( mGlobalVBox );
   QVBox *vb  = new QVBox( mCSplit );
-  vb->setMargin( 3 );
+  vb->setMargin( 0 );
   mViewStack = new QWidgetStack( vb );
   mViewStack->setMargin( 0 );
   kdDebug() << "mViewSTack height is " << mViewStack->height() << endl;
@@ -219,7 +219,6 @@ KraftView::KraftView(QWidget *parent, const char *name) :
 
   mNewTemplates.setAutoDelete( true );
 }
-
 KraftView::~KraftView()
 {
 

@@ -84,11 +84,12 @@ PositionViewWidget::PositionViewWidget()
 
   /* modified signals */
   connect( m_cbUnit,      SIGNAL( activated(int) ), this,      SLOT( slotModified() ) );
-  // connect( m_teFloskel,   SIGNAL( textChanged() ), this,       SLOT( slotModified() ) );
-  // teFloskel is already connected in ui file
+  connect( m_teFloskel,   SIGNAL( textChanged() ), this,       SLOT( slotModified() ) );
+
   connect( m_sbAmount,    SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
   connect( m_sbUnitPrice, SIGNAL( valueChanged(double)), this, SLOT( slotModified() ) );
   connect( mDiscountPercent, SIGNAL( valueChanged( double ) ), this, SLOT( slotModified() ) );
+  connect( mDiscountTag,  SIGNAL( activated( int ) ), this,    SLOT( slotModified() ) );
 
   mExecPopup->insertTitle( i18n("Position Actions") );
 
@@ -276,6 +277,8 @@ void PositionViewWidget::slotTaggingButtonPressed()
   if ( dia.exec() ) {
     mTags = dia.getSelectedTags();
     slotUpdateTagToolTip();
+    slotModified();
+    update();
     kdDebug() << "Selected tags: " << mTags.join( ", " ) << endl;
   }
 }
@@ -612,6 +615,7 @@ void PositionViewWidget::paintEvent ( QPaintEvent *pe )
       cnt++;
     }
   }
+  delete painter;
   positionWidget::paintEvent( pe );
 }
 
