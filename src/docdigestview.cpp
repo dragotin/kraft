@@ -118,8 +118,7 @@ void DocDigestView::slotBuildView()
   item->setPixmap( 0, SmallIcon( "identity" ) ); // KDE 4 icon name: user-identity
   item->setOpen( false );
 
-  item = addChapter( i18n( "Documents by Time" ),
-                                     DocDigestList() );
+  item = addChapter( i18n( "Documents by Time" ), DocDigestList() );
   mTimeLineParent = item;
   item->setPixmap( 0, SmallIcon( "history" ) ); // KDE 4 icon name: view-history
   item->setOpen( false );
@@ -142,8 +141,10 @@ void DocDigestView::slotBuildView()
     month = ( *it ).month();
     const QString monthName =
       DefaultProvider::self()->locale()->calendar()->monthName( month, year ); // , KCalendarSystem::LongName);
-    KListViewItem *mItem = addChapter(  monthName, ( *it ).digests(), yearItem );
-    mItem->setOpen( false );
+    if ( yearItem ) {
+      KListViewItem *mItem = addChapter(  monthName, ( *it ).digests(), yearItem );
+      mItem->setOpen( false );
+    }
   }
 
   item = addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
