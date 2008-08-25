@@ -54,7 +54,10 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   mTextsView->addColumn( i18n( "Text" ) );
 
   connect( mTextsView, SIGNAL( selectionChanged( QListViewItem* ) ),
-           SIGNAL( textSelectionChanged( QListViewItem* ) ) );
+           this, SLOT( slotSelectionChanged( QListViewItem* ) ) );
+  connect( mTextsView, SIGNAL( doubleClicked( QListViewItem*, const QPoint &, int ) ),
+           this, SLOT( slotSelectionChanged( QListViewItem* ) ) );
+
   buildTextList( part );
 
   // Context Menu
@@ -85,6 +88,17 @@ void TextSelection::buildTextList( KraftDoc::Part part )
   }
 }
 
+void TextSelection::slotSelectionChanged( QListViewItem* item )
+{
+  // do not fire the signal for the root element which is the doc type
+  QListViewItem *it = 0;
+  QValueList<QListViewItem*> itemsList = mDocTypeItemMap.values();
+  if ( itemsList.find( item ) == itemsList.end() ) {
+    it = item; // was not found in the doctype item list
+  }
+  emit textSelectionChanged( it );
+}
+
 void TextSelection::slotSelectDocType( const QString& doctype )
 {
   QStringList docTypes = DocType::allLocalised();
@@ -106,6 +120,9 @@ KListViewItem *TextSelection::addOneDocText( QListViewItem* parent, const DocTex
   KListViewItem *item1 = new KListViewItem( parent, name );
   if ( name == i18n( "Standard" ) ) {
     item1->setPixmap( 0, SmallIcon( "knewstuff" ) );
+    mTextsView->blockSignals( true );
+    mTextsView->setSelected( item1, true );
+    mTextsView->blockSignals( false );
   }
 
   KListViewItem *item2 = new KListViewItem( item1, dt.text() );

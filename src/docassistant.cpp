@@ -93,8 +93,6 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this, SLOT( slotTextsSelectionChanged( QListViewItem* ) ) );
   connect( mFooterSelection, SIGNAL( actionCurrentTextToDoc() ),
            this,  SLOT( slotAddToDocument() ) );
-  connect( mFooterSelection->textsListView(), SIGNAL( doubleClicked( QListViewItem* ) ),
-           this, SLOT( slotAddToDocument() ) );
 
   mWidgetStack->raiseWidget( mHeaderSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
@@ -414,6 +412,11 @@ void DocAssistant::slotSetDocType( const QString& type )
   mDocType = type;
   mHeaderSelection->slotSelectDocType( type );
   mFooterSelection->slotSelectDocType( type );
+
+  // nothing is selected.
+  mPbAdd->setEnabled( true );
+  mPbEdit->setEnabled( false );
+  mPbDel->setEnabled( false );
 }
 
 void DocAssistant::slotShowCatalog( )

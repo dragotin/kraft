@@ -66,13 +66,9 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   mTextsView = new TextSelection( vBox, KraftDoc::Header );
 
   // mTextsView->addColumn( i18n( "Text" ) );
-  connect( mTextsView->textsListView(),
-           SIGNAL( selectionChanged( QListViewItem* ) ),
+  connect( mTextsView,
+           SIGNAL( textSelectionChanged( QListViewItem* ) ),
            SIGNAL( textSelectionChanged( QListViewItem* ) ) );
-
-  connect( mTextsView->textsListView(),
-           SIGNAL( doubleClicked( QListViewItem* ) ),
-           SIGNAL( doubleClickedOnItem() ) );
 
   addTab( vBox, i18n( "Text Templates" ) );
   mTextsTabId = indexOf( vBox );

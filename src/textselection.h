@@ -66,6 +66,9 @@ protected:
   void buildTextList( KraftDoc::Part );
   KListViewItem* addOneDocText( QListViewItem*, const DocText& );
 
+protected slots:
+  void slotSelectionChanged( QListViewItem* );
+
 private:
   FilterHeader   *mListSearchLine;
   KListView      *mTextsView;

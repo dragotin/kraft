@@ -49,6 +49,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
   setMargin( KDialog::marginHint() );
   setSpacing( KDialog::spacingHint() );
 
+
   QHBox *hb = new QHBox( this );
   QWidget *spaceEater = new QWidget( hb );
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum ) );
