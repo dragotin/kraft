@@ -31,7 +31,7 @@ static const char *description =
 I18N_NOOP("Kraft - Small business correspondence for the KDE desktop" );
 
 static const char *otherText =
-I18N_NOOP("Kraft is open source software for persons in small businesses\n"
+I18N_NOOP("Kraft is free software for persons in small businesses\n"
           "writing correspondence like offers and invoices to their customers" );
 
 static KCmdLineOptions options[] =

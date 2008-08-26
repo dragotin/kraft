@@ -58,11 +58,11 @@ xdg_apps_DATA = kraft.desktop
 kde_kcfg_DATA = kraftsettings.kcfg katalogsettings.kcfg
 
 # dependencies on the header from ui files: (strange bug, only for not unsermake)
-docposition.cpp: positionwidget.h
-kraftview.cpp: docfooter.h docheader.h
-inserttempldialog.cpp: inserttmplbase.h
-texteditdialog.cpp: texteditbase.h
-insertplantdialog.cpp: insertplantbase.h
+docposition.o: positionwidget.h
+kraftview.o: docfooter.h docheader.h
+inserttempldialog.o: inserttmplbase.h
+texteditdialog.o: texteditbase.h
+insertplantdialog.o: insertplantbase.h
 
 ####### kdevelop will overwrite this part!!! (end)############
 # These paths are KDE specific. Use them:

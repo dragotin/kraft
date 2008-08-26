@@ -87,6 +87,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotAddToDocument() ) );
   connect( mHeaderSelection, SIGNAL( doubleClickedOnItem() ),
            this, SLOT( slotAddToDocument() ) );
+  slotTextsSelectionChanged( mHeaderSelection->textSelection()->textsListView()->currentItem() );
 
   mFooterSelection = new TextSelection( mWidgetStack, KraftDoc::Footer );
   connect( mFooterSelection, SIGNAL( textSelectionChanged( QListViewItem* ) ),
