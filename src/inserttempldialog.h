@@ -18,9 +18,11 @@
 #define INSERTTEMPLDIALOG_H
 
 #include <kdialogbase.h>
+#include <qmap.h>
 
 #include "docposition.h"
 #include "templtopositiondialogbase.h"
+
 
 class insertTmplBase;
 
@@ -43,6 +45,7 @@ protected:
 private:
   insertTmplBase *mBaseWidget;
   DocPosition mParkPosition;
+  QMap<int, QString> mTagMap;
 };
 
 #endif

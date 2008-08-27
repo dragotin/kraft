@@ -29,6 +29,8 @@
 #include <qcombobox.h>
 #include <qcheckbox.h>
 #include <qbuttongroup.h>
+#include <qtooltip.h>
+#include <qmap.h>
 
 // include files for KDE
 #include <knuminput.h>
@@ -43,6 +45,7 @@
 #include "unitmanager.h"
 #include "defaultprovider.h"
 #include "kraftsettings.h"
+#include "tagman.h"
 
 InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
@@ -65,6 +68,25 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   // hide the chapter combo by default
   mBaseWidget->mKeepGroup->hide();
   enableButtonSeparator( false );
+
+  // Fill the tags list
+  QButtonGroup *group = mBaseWidget->mTagGroup;
+
+  group->setColumns( 1 );
+  // mBaseWidget->mTagGroup->layout()->setSpacing( 6 );
+  // mBaseWidget->mTagGroup->layout()->setMargin( 11 );
+
+  QStringList tags = TagTemplateMan::self()->allTagTemplates();
+  int c = 0;
+
+  for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
+    QCheckBox *cb = new QCheckBox( *it, group );
+    QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
+    QToolTip::add( cb, desc );
+    group->insert( cb, c );
+    mTagMap[c] = *it;
+    c++;
+  }
 }
 
 void InsertTemplDialog::setDocPosition( DocPosition *dp, bool isNew )
@@ -105,6 +127,18 @@ DocPosition InsertTemplDialog::docPosition()
 
   mParkPosition.setUnit( UnitManager::getUnit( uid ) );
   // mParkPosition.setPosition( itemPos );
+
+  QButtonGroup *group = mBaseWidget->mTagGroup;
+  for ( int i = 0; i < group->count(); i++ ) {
+    QCheckBox *b = static_cast<QCheckBox*>( group->find( i ) );
+
+    if ( b && b->isChecked() ) {
+      QString tag = mTagMap[i];
+      kdDebug() << "OOOOOOOOOOOOOOOOOOOOOOOOOOOO " << tag << endl;
+      mParkPosition.setTag( b->text() );
+    }
+  }
+
   kdDebug() << "in the dialog: " << mParkPosition.text() << endl;
   return mParkPosition;
 }
