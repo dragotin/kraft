@@ -17,8 +17,10 @@
 
 #include <kdebug.h>
 #include <klocale.h>
+#include <kiconloader.h>
 
 #include <qlistview.h>
+#include <qpixmap.h>
 
 #include "doctext.h"
 
@@ -53,6 +55,20 @@ void DocText::setDocType( const QString& t )
 void DocText::setTextType( KraftDoc::Part t )
 {
   mTextType = t;
+}
+
+bool DocText::isStandardText() const
+{
+  return ( mName == i18n( "Standard" ) ); // can surely be improved...
+}
+
+QPixmap DocText::pixmap() const
+{
+  if ( isStandardText() ) {
+    return SmallIcon( "knewstuff" );
+  } else {
+    return QPixmap();
+  }
 }
 
 KraftDoc::Part DocText::stringToTextType( const QString& str )

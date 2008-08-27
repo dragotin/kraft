@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <klistview.h>
 
 #include "templateprovider.h"
 #include "doctext.h"

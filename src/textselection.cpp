@@ -85,7 +85,7 @@ void TextSelection::buildTextList( KraftDoc::Part part )
     for ( textIt = dtList.begin(); textIt != dtList.end(); ++textIt ) {
       QListViewItem *item = addOneDocText( docTypeItem, *textIt );
       QString textname = ( *textIt ).name();
-      if ( textname == i18n( "Standard" ) ) {
+      if ( ( *textIt ).isStandardText() ) {
         mStandardItemMap[*dtIt] = item;
       }
       ( *textIt ).setListViewItem( item );
@@ -126,22 +126,23 @@ void TextSelection::slotSelectDocType( const QString& doctype )
 KListViewItem *TextSelection::addOneDocText( QListViewItem* parent, const DocText& dt )
 {
   QString name = dt.name();
+  DocText newDt = dt;
 
   KListViewItem *item1 = new KListViewItem( parent, name );
-  if ( name == i18n( "Standard" ) ) {
-    item1->setPixmap( 0, SmallIcon( "knewstuff" ) );
-
+  item1->setPixmap( 0, dt.pixmap() );
+  if ( dt.isStandardText() ) {
     mTextsView->blockSignals( true );
     mTextsView->setSelected( item1, true );
     mTextsView->blockSignals( false );
   }
+  newDt.setListViewItem( item1 );
 
   KListViewItem *item2 = new KListViewItem( item1, dt.text() );
   item2->setMultiLinesEnabled( true );
 
   kdDebug() << "Document database id is "<< dt.dbId().toString() << endl;
-  mTextMap[item1] = dt;
-  mTextMap[item2] = dt;
+  mTextMap[item1] = newDt;
+  mTextMap[item2] = newDt;
   // kdDebug() << "Document database id2 is "<< ( mTextMap[item2] ).dbId().toString() << endl;
   // item1->setOpen( true );
   return item1;
@@ -154,8 +155,6 @@ QListViewItem* TextSelection::addNewDocText( const DocText& dt )
   if ( item ) {
     mTextsView->clearSelection();
     QListViewItem *newItem = addOneDocText( item, dt );
-
-    // newItem->setSelected( true );
     return newItem;
   }
   return 0;
@@ -164,24 +163,20 @@ QListViewItem* TextSelection::addNewDocText( const DocText& dt )
 /* requires the QListViewItem set as a member in the doctext */
 void TextSelection::updateDocText( const DocText& dt )
 {
-  QListViewItem *item = 0;
-  // search for the listviewitem that is showing the doctext
-  QMap<QListViewItem*, DocText>::iterator it;
-  for ( it = mTextMap.begin(); !item && it != mTextMap.end(); ++it ) {
-    if ( it.data() == dt && ( it.key() )->firstChild() ) {
-      item = it.key();
-    }
-  }
+  QListViewItem *item = dt.listViewItem();
 
   if ( item ) {
-    kdDebug() << "Update Doc Text Item" << endl;
+    kdDebug() << "Update Doc Text Item" << item << endl;
 
     mTextMap[item] = dt;
 
     item->setText( 0, dt.name() );
+    item->setPixmap( 0, dt.pixmap() );
+
     QListViewItem *itChild = item->firstChild();
     if ( itChild ) {
       itChild->setText( 0, dt.text() );
+      mTextMap[itChild] = dt;
     }
   }
 }

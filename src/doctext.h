@@ -23,6 +23,7 @@
 #include "dbids.h"
 
 class QListViewItem;
+class QPixmap;
 
 class DocText
 {
@@ -43,6 +44,9 @@ public:
   QString textTypeString() const {
     return textTypeToString( mTextType );
   }
+
+  bool isStandardText() const;
+  QPixmap pixmap() const;
 
   void setTextType( KraftDoc::Part );
   KraftDoc::Part textType() const { return mTextType; }

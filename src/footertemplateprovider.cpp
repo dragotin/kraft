@@ -76,7 +76,7 @@ void FooterTemplateProvider::slotEditTemplate()
     dt.setListViewItem( currentText().listViewItem() );
     /* save to database */
     DefaultProvider::self()->saveDocumentText( dt );
-
+    // this ends up in the footerselection, slot updateDocText
     emit updateFooterText( dt );
   }
 
