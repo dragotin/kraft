@@ -23,6 +23,7 @@
 
 class QWidget;
 class QListViewItem;
+class FooterSelection;
 
 class FooterTemplateProvider : public TemplateProvider
 {
@@ -37,8 +38,6 @@ public slots:
 
   void slotTemplateToDocument();
 
-  void slotSetCurrentDocText( const DocText& );
-
 signals:
   void newFooterText( const DocText& );
   void updateFooterText( const DocText& );
@@ -46,7 +45,6 @@ signals:
   void deleteFooterText( const DocText& );
 
 private:
-  DocText  mCurrentText;
 };
 
 

@@ -50,7 +50,6 @@ void HeaderTemplateProvider::slotNewTemplate()
     dbID newId = DefaultProvider::self()->saveDocumentText( dt );
     dt.setDbId( newId );
 
-    mCurrentText = dt;
     emit newHeaderText( dt );
   }
 }
@@ -63,7 +62,7 @@ void HeaderTemplateProvider::slotEditTemplate()
   TextEditDialog dia( mParent, KraftDoc::Header );
 
   /* mCurrentText is set through the slot slotSetCurrentDocText */
-  DocText dt = mCurrentText;
+  DocText dt = currentText();
   if ( dt.type() == KraftDoc::Unknown ) {
     dt.setTextType( KraftDoc::Header );
     dt.setDocType( mDocType );
@@ -76,32 +75,27 @@ void HeaderTemplateProvider::slotEditTemplate()
     DocText dt = dia.docText();
 
     /* write back the listview item stored in the input text */
-    dt.setListViewItem( mCurrentText.listViewItem() );
+    dt.setListViewItem( currentText().listViewItem() );
     /* save to database */
     DefaultProvider::self()->saveDocumentText( dt );
-    slotSetCurrentDocText( dt );
 
     emit updateHeaderText( dt );
   }
 
 }
 
-void HeaderTemplateProvider::slotSetCurrentDocText( const DocText& dt )
-{
-  mCurrentText = dt;
-}
-
 void HeaderTemplateProvider::slotDeleteTemplate()
 {
-  emit deleteHeaderText( mCurrentText );
-  DefaultProvider::self()->deleteDocumentText( mCurrentText );
+  emit deleteHeaderText( currentText() );
+  DefaultProvider::self()->deleteDocumentText( currentText() );
 }
 
 void HeaderTemplateProvider::slotTemplateToDocument()
 {
   kdDebug() << "Moving template to document" << endl;
 
-  emit headerTextToDocument( mCurrentText );
+
+  emit headerTextToDocument( currentText() );
 }
 
 #include "headertemplateprovider.moc"

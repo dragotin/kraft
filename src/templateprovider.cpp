@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "templateprovider.h"
+#include "doctext.h"
+#include "textselection.h"
 
 TemplateProvider::TemplateProvider( QWidget *parent )
-  : QObject(), mParent( parent )
+  : QObject(), mParent( parent ), mTextSelection( 0 )
 {
 
 }
@@ -31,6 +33,20 @@ TemplateProvider::~TemplateProvider()
 void TemplateProvider::slotSetDocType( const QString& str )
 {
   mDocType = str;
+}
+
+void TemplateProvider::setSelection( TextSelection *sel )
+{
+  mTextSelection = sel;
+}
+
+DocText TemplateProvider::currentText()
+{
+  DocText dt;
+  if ( mTextSelection ) {
+    return mTextSelection->currentDocText();
+  }
+  return dt;
 }
 
 #include "templateprovider.moc"

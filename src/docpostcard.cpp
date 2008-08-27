@@ -98,8 +98,8 @@ void DocPostCard::setFooterData( const QString& postText,  const QString& goodby
 void DocPostCard::renderDoc( int id )
 {
   QString t;
-  kdDebug() << "rendering postcard for active id " << id <<
-    ( mMode == Full ? " (full) " : " (mini) " ) << endl;
+  // kdDebug() << "rendering postcard for active id " << id <<
+    //( mMode == Full ? " (full) " : " (mini) " ) << endl;
   if ( mMode == Full ) {
     t = renderDocFull( id );
   } else if ( mMode == Mini ) {

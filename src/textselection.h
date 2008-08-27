@@ -61,6 +61,7 @@ public slots:
   void updateDocText( const DocText& );
   void slotSelectDocType( const QString& );
   void slotRMB( KListView*, QListViewItem* ,const QPoint& );
+
 protected:
   void initActions();
   void buildTextList( KraftDoc::Part );
@@ -74,6 +75,7 @@ private:
   KListView      *mTextsView;
   QMap<QListViewItem*, DocText> mTextMap;
   QMap<QString, QListViewItem*> mDocTypeItemMap;
+  QMap<QString, QListViewItem*> mStandardItemMap;
 
   QPopupMenu        *mMenu;
   KActionCollection *mActions;

@@ -87,7 +87,6 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotAddToDocument() ) );
   connect( mHeaderSelection, SIGNAL( doubleClickedOnItem() ),
            this, SLOT( slotAddToDocument() ) );
-  slotTextsSelectionChanged( mHeaderSelection->textSelection()->textsListView()->currentItem() );
 
   mFooterSelection = new TextSelection( mWidgetStack, KraftDoc::Footer );
   connect( mFooterSelection, SIGNAL( textSelectionChanged( QListViewItem* ) ),
@@ -146,6 +145,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mHeaderSelection, SIGNAL( switchedToHeaderTab( HeaderSelection::HeaderTabType ) ),
            this, SLOT( slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType ) ) );
 
+  mHeaderTemplateProvider->setSelection( mHeaderSelection->textSelection() );
+
   mFooterTemplateProvider = new FooterTemplateProvider( parent );
 
   /* get a new Footer text from the default provider */
@@ -157,6 +158,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotFooterTextToDocument( const DocText& ) ) );
   connect( mFooterTemplateProvider, SIGNAL( deleteFooterText( const DocText& ) ),
            this,  SLOT( slotFooterTextDeleted( const DocText& ) ) );
+  mFooterTemplateProvider->setSelection( mFooterSelection );
 
   /* Catalog Template Provider */
   mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
@@ -198,9 +200,6 @@ void DocAssistant::slotAddressSelectionChanged()
 
 void DocAssistant::slotTextsSelectionChanged( QListViewItem *item )
 {
-  mHeaderTemplateProvider->slotSetCurrentDocText( mHeaderSelection->currentDocText() );
-  mFooterTemplateProvider->slotSetCurrentDocText( mFooterSelection->currentDocText() );
-
   if ( item ) {
     mPbAdd->setEnabled( true );
     mPbEdit->setEnabled( true );
@@ -415,9 +414,17 @@ void DocAssistant::slotSetDocType( const QString& type )
   mFooterSelection->slotSelectDocType( type );
 
   // nothing is selected.
+  bool selector = false;
+  if ( mActivePage == KraftDoc::Header && mHeaderSelection->itemSelected() ) {
+    selector = true;
+  }
+  if ( mActivePage == KraftDoc::Footer && mFooterSelection->textsListView()->selectedItem() ) {
+    selector = true;
+  }
+
   mPbAdd->setEnabled( true );
-  mPbEdit->setEnabled( false );
-  mPbDel->setEnabled( false );
+  mPbEdit->setEnabled( selector );
+  mPbDel->setEnabled( selector );
 }
 
 void DocAssistant::slotShowCatalog( )

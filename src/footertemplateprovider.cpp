@@ -49,7 +49,6 @@ void FooterTemplateProvider::slotNewTemplate()
     dbID newId = DefaultProvider::self()->saveDocumentText( dt );
     dt.setDbId( newId );
 
-    mCurrentText = dt;
     emit newFooterText( dt );
   }
 }
@@ -61,7 +60,7 @@ void FooterTemplateProvider::slotEditTemplate()
   TextEditDialog dia( mParent, KraftDoc::Footer );
 
   /* mCurrentText is set through the slot slotSetCurrentDocText */
-  DocText dt = mCurrentText;
+  DocText dt = currentText();
   if ( dt.type() == KraftDoc::Unknown ) {
     dt.setTextType( KraftDoc::Footer );
     dt.setDocType( mDocType );
@@ -74,31 +73,26 @@ void FooterTemplateProvider::slotEditTemplate()
     DocText dt = dia.docText();
 
     /* write back the listview item stored in the input text */
-    dt.setListViewItem( mCurrentText.listViewItem() );
+    dt.setListViewItem( currentText().listViewItem() );
     /* save to database */
     DefaultProvider::self()->saveDocumentText( dt );
-    slotSetCurrentDocText( dt );
 
     emit updateFooterText( dt );
   }
 
 }
 
-void FooterTemplateProvider::slotSetCurrentDocText( const DocText& dt )
-{
-  mCurrentText = dt;
-}
-
 void FooterTemplateProvider::slotDeleteTemplate()
 {
-  emit deleteFooterText( mCurrentText );
-  DefaultProvider::self()->deleteDocumentText( mCurrentText );
+  DocText dt = currentText();
+  emit deleteFooterText( dt );
+  DefaultProvider::self()->deleteDocumentText( dt );
 }
 
 void FooterTemplateProvider::slotTemplateToDocument()
 {
   kdDebug() << "Moving template to document" << endl;
-  emit footerTextToDocument( mCurrentText );
+  emit footerTextToDocument( currentText() );
 }
 
 #include "footertemplateprovider.moc"

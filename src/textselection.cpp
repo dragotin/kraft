@@ -83,7 +83,12 @@ void TextSelection::buildTextList( KraftDoc::Part part )
     DocTextList dtList = DefaultProvider::self()->documentTexts( *dtIt, part );
     DocTextList::iterator textIt;
     for ( textIt = dtList.begin(); textIt != dtList.end(); ++textIt ) {
-      ( *textIt ).setListViewItem( addOneDocText( docTypeItem, *textIt ) );
+      QListViewItem *item = addOneDocText( docTypeItem, *textIt );
+      QString textname = ( *textIt ).name();
+      if ( textname == i18n( "Standard" ) ) {
+        mStandardItemMap[*dtIt] = item;
+      }
+      ( *textIt ).setListViewItem( item );
     }
   }
 }
@@ -111,6 +116,11 @@ void TextSelection::slotSelectDocType( const QString& doctype )
       item->setVisible( true );
     }
   }
+  if ( mStandardItemMap.contains( doctype )  ) {
+    mStandardItemMap[doctype]->setSelected( true );
+  } else {
+    kdDebug() << "no standard text found for "<< doctype << endl;
+  }
 }
 
 KListViewItem *TextSelection::addOneDocText( QListViewItem* parent, const DocText& dt )
@@ -120,6 +130,7 @@ KListViewItem *TextSelection::addOneDocText( QListViewItem* parent, const DocTex
   KListViewItem *item1 = new KListViewItem( parent, name );
   if ( name == i18n( "Standard" ) ) {
     item1->setPixmap( 0, SmallIcon( "knewstuff" ) );
+
     mTextsView->blockSignals( true );
     mTextsView->setSelected( item1, true );
     mTextsView->blockSignals( false );

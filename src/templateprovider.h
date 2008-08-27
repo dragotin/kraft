@@ -20,6 +20,8 @@
 #include <qobject.h>
 
 class QWidget;
+class TextSelection;
+class DocText;
 
 class TemplateProvider : public QObject
 {
@@ -27,6 +29,8 @@ class TemplateProvider : public QObject
 public:
   TemplateProvider( QWidget* );
   ~TemplateProvider();
+  virtual void setSelection( TextSelection* );
+  virtual DocText currentText();
 
 public slots:
   virtual void slotNewTemplate() = 0;
@@ -39,6 +43,7 @@ public slots:
 protected:
   QWidget *mParent;
   QString  mDocType;
+  TextSelection *mTextSelection;
 };
 
 

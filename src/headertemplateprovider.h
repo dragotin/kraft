@@ -38,8 +38,6 @@ public slots:
 
   void slotTemplateToDocument();
 
-  void slotSetCurrentDocText( const DocText& );
-
 signals:
   void newHeaderText( const DocText& );
   void updateHeaderText( const DocText& );
@@ -47,7 +45,7 @@ signals:
   void deleteHeaderText( const DocText& );
 
 private:
-  DocText  mCurrentText;
+
   HeaderSelection::HeaderTabType mCurrentTab;
 };
 
