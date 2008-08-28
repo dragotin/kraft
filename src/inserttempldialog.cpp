@@ -73,9 +73,6 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   QButtonGroup *group = mBaseWidget->mTagGroup;
 
   group->setColumns( 1 );
-  // mBaseWidget->mTagGroup->layout()->setSpacing( 6 );
-  // mBaseWidget->mTagGroup->layout()->setMargin( 11 );
-
   QStringList tags = TagTemplateMan::self()->allTagTemplates();
   int c = 0;
 
@@ -133,9 +130,11 @@ DocPosition InsertTemplDialog::docPosition()
     QCheckBox *b = static_cast<QCheckBox*>( group->find( i ) );
 
     if ( b && b->isChecked() ) {
-      QString tag = mTagMap[i];
-      kdDebug() << "OOOOOOOOOOOOOOOOOOOOOOOOOOOO " << tag << endl;
-      mParkPosition.setTag( b->text() );
+      if ( mTagMap.contains( i ) ) {
+        QString tag = mTagMap[i];
+
+        mParkPosition.setTag( tag );
+      }
     }
   }
 
