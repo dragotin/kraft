@@ -58,6 +58,8 @@ public:
     QString kindLabel( Kind ) const;
     void cleanKindString();
     Geld currentPrice();
+    bool priceValid();
+    void setCurrentPrice( Geld );
     Geld unitPrice();
     void setLocale( KLocale* );
     QStringList tagList() { return mTags; }
@@ -108,8 +110,10 @@ private:
     int  mDeleteId;
     int  mLockId;
     int  mUnlockId;
+    Geld mPositionPrice;  // only used for Discount items to store the result
     State mState;
     Kind  mKind;
+    bool mPositionPriceValid;
     KLocale *mLocale;
 };
 

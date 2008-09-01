@@ -26,7 +26,7 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   connect( button, SIGNAL( clicked() ), SIGNAL( addPositionClicked() ) );
   QToolTip::add( button, i18n( "Add a normal item to the document manually." ) );
   upperHBox->setSpacing( 3 );
-  button = new KPushButton( i18n("Add Discount Item..."), upperHBox );
+  button = new KPushButton( i18n("Add Discount Item"), upperHBox );
   connect( button, SIGNAL( clicked() ), SIGNAL( addExtraClicked() ) );
   QToolTip::add( button, i18n( "Adds an item to the document that allows discounts on other items in the document" ) );
 

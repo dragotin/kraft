@@ -506,8 +506,6 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   int y = pos * w->height();
   m_positionScroll->moveChild( w, 0, y );
 
-
-
   w->show();
 
   return w;
@@ -611,8 +609,7 @@ void KraftView::slotMovePositionUp( int pos )
 
     m_positionScroll->moveChild( w1, 0, m_positionScroll->childY( w2 ) );
     m_positionScroll->moveChild( w2, 0, tmpY );
-
-    refreshPostCard();
+    QTimer::singleShot( 0, this, SLOT(refreshPostCard()  ) );
   } else {
     kdDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
   }
@@ -629,8 +626,9 @@ void KraftView::slotMovePositionDown( int pos )
   PositionViewWidget *w2 = 0;
   kdDebug() << "Moving position down: " << pos << endl;
 
-  if( pos < 0 || (unsigned) pos > mPositionWidgetList.count() -1 ) {
+  if( pos < 0 || (unsigned) pos >= mPositionWidgetList.count() -1 ) {
     kdDebug() << "ERR: position out of range: " << pos << endl;
+    return;
   }
 
   w2 = mPositionWidgetList.at( pos+1 );
@@ -648,7 +646,7 @@ void KraftView::slotMovePositionDown( int pos )
     m_positionScroll->moveChild( w1, 0, m_positionScroll->childY( w2 ) );
     m_positionScroll->moveChild( w2, 0, tmpY );
 
-    refreshPostCard();
+    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
   } else {
     kdDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
   }
@@ -945,111 +943,135 @@ DocPositionList KraftView::currentPositionList()
 
     PositionViewWidgetListIterator outerIt( mPositionWidgetList );
 
-    while ( ( widget = outerIt.current() ) != 0 ) {
-      DocPositionBase *dpb = widget->position();
+    bool progress = true;
+    kdDebug() << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO Calculation Starts" << endl;
 
-      ++outerIt;
+    while ( progress && ( list.count() != mPositionWidgetList.count() ) ) {
+      unsigned preListCnt = list.count();
+      kdDebug() << "####################### Pre List Count: " << preListCnt << endl;
 
-      KraftDB::StringMap replaceMap;
+      while ( ( widget = outerIt.current() ) != 0 ) {
+        DocPositionBase *dpb = widget->position();
 
-      if ( dpb ) {
-        DocPosition *newDp = new DocPosition( dpb->type() );
-        newDp->setPositionNumber( QString::number( cnt++ ) );
-        newDp->setAttributeMap( dpb->attributes() );
-        newDp->setDbId( dpb->dbId().toInt() );
-        newDp->setAssociatedWidget( widget );
+        ++outerIt;
 
-        if ( dpb->type() == DocPosition::ExtraDiscount ) {
-          double discount = widget->mDiscountPercent->value();
+        KraftDB::StringMap replaceMap;
 
-          /* set Attributes with the discount percentage */
-          Attribute a( DocPosition::Discount );
-          a.setPersistant( true );
-          a.setValue( discount );
-          newDp->setAttribute( a );
+        if ( dpb ) {
+          DocPosition *newDp = new DocPosition( dpb->type() );
+          newDp->setPositionNumber( QString::number( cnt++ ) );
+          newDp->setAttributeMap( dpb->attributes() );
+          newDp->setDbId( dpb->dbId().toInt() );
+          newDp->setAssociatedWidget( widget );
 
-          QString tagRequired = widget->extraDiscountTagRestriction();
-          Attribute tr(  DocPosition::ExtraDiscountTagRequired );
-          tr.setPersistant( true );
-          tr.setValue( tagRequired );
-          newDp->setAttribute( tr );
+          bool calculatable = true;
 
-          /* Calculate the actual sum */
-          PositionViewWidgetListIterator it( mPositionWidgetList );
-          PositionViewWidget *w1;
-          Geld sum;
-          while (  ( w1 = it.current() )!= 0 ) {
-            ++it;
-            if ( it != outerIt ) {
-              if ( tagRequired.isEmpty() ) {
-                sum += w1->currentPrice(); // unitPrice();
-                kdDebug() << "Summing up pos with text " << w1->ordNumber() << endl;
-              } else {
-                if ( w1->tagList().contains( tagRequired ) ) {
-                  sum += w1->currentPrice();
-                } else {
-                  kdDebug() << "Not summing because tag " << tagRequired << " is required!" << endl;
+          if ( dpb->type() == DocPosition::ExtraDiscount ) {
+            double discount = widget->mDiscountPercent->value();
+
+            /* set Attributes with the discount percentage */
+            Attribute a( DocPosition::Discount );
+            a.setPersistant( true );
+            a.setValue( discount );
+            newDp->setAttribute( a );
+
+            QString tagRequired = widget->extraDiscountTagRestriction();
+            Attribute tr(  DocPosition::ExtraDiscountTagRequired );
+            tr.setPersistant( true );
+            tr.setValue( tagRequired );
+            newDp->setAttribute( tr );
+
+            /* Calculate the actual sum over all widgets */
+            PositionViewWidgetListIterator it( mPositionWidgetList );
+            PositionViewWidget *w1;
+            Geld sum;
+
+            while (  calculatable && ( w1 = it.current() )!= 0 ) {
+              ++it;
+              if ( it != outerIt ) { // do not take the own value into account
+                if ( tagRequired.isEmpty()  // means that all positions are to calculate
+                     || w1->tagList().contains( tagRequired ) ) {
+                  if ( w1->priceValid() ) {
+                    sum += w1->currentPrice();
+                    kdDebug() << "Summing up pos with text " << w1->ordNumber() << " and price "
+                              << w1->currentPrice().toLong() << endl;
+                  } else {
+                    calculatable = false; // give up, we continue in outerIt
+                    kdDebug() << "We skip pos " << w1->ordNumber() << endl;
+                  }
                 }
+              } else {
+                // we can not calculate ourselves.
+                kdDebug() << "Skipping pos " << w1->ordNumber() << " in summing up, thats me!" << endl;
               }
-            } else {
-              kdDebug() << "Skipping pos " << w1->ordNumber() << " in summing up!" << endl;
             }
+
+            if ( calculatable ) {
+              sum = sum.percent( discount );
+              newDp->setUnitPrice( sum );
+              newDp->setAmount( 1.0 );
+              widget->setCurrentPrice( sum );
+            }
+
+            // replace some tags in the text
+
+            replaceMap["%DISCOUNT"]     = getDocument()->locale()->formatNumber( discount );
+            replaceMap["%ABS_DISCOUNT"] = getDocument()->locale()->formatNumber( QABS( discount ) );
+
+          } else {
+            /* Type is ordinary position */
+            newDp->setUnitPrice( widget->unitPrice() );
+
+            double v = widget->m_sbAmount->value();
+            newDp->setAmount( v );
           }
 
-          sum = sum.percent( discount );
-          newDp->setUnitPrice( sum );
-          newDp->setAmount( 1.0 );
+          if ( calculatable ) {
+            // copy information from the widget
+            newDp->setToDelete( widget->deleted() );
 
-          // replace some tags in the text
+            QString t = widget->m_teFloskel->text();
+            if ( !replaceMap.empty() ) {
+              t = KraftDB::self()->replaceTagsInWord( t, replaceMap );
+            }
+            newDp->setText( t );
 
-          replaceMap["%DISCOUNT"] = getDocument()->locale()->formatNumber( discount );
-          replaceMap["%ABS_DISCOUNT"] = getDocument()->locale()->formatNumber( QABS( discount ) );
+            QString h = widget->m_cbUnit->currentText();
+            int eId   = UnitManager::getUnitIDSingular( h );
+            Einheit e = UnitManager::getUnit( eId );
+            newDp->setUnit( e );
 
+            PositionViewWidget::Kind k = widget->kind();
+
+            if ( k != PositionViewWidget::Normal ) {
+              Attribute a( DocPosition::Kind );
+              a.setPersistant( true );
+              a.setValue( widget->kindString() );
+              newDp->setAttribute( a );
+            } else {
+              newDp->removeAttribute( DocPosition::Kind );
+            }
+
+            /* set Attribute with the tags */
+            QStringList tags = widget->tagList();
+            if ( ! tags.empty() ) {
+              Attribute tags( DocPosition::Tags );
+              tags.setPersistant( true );
+              tags.setListValue( true );
+              tags.setValue( QVariant( widget->tagList() ) );
+              newDp->setAttribute( tags );
+            }
+            list.append( newDp );
+          }
         } else {
-          /* Type is ordinary position */
-          newDp->setUnitPrice( widget->unitPrice() );
-
-          double v = widget->m_sbAmount->value();
-          newDp->setAmount( v );
+          kdError() << "Fatal: Widget without position found!" << endl;
         }
+      }
+      kdDebug() << "####################### Post List Count: " << list.count() << endl;
 
-        // copy information from the widget
-        newDp->setToDelete( widget->deleted() );
-
-        QString t = widget->m_teFloskel->text();
-        if ( !replaceMap.empty() ) {
-          t = KraftDB::self()->replaceTagsInWord( t, replaceMap );
-        }
-        newDp->setText( t );
-
-        QString h = widget->m_cbUnit->currentText();
-        int eId   = UnitManager::getUnitIDSingular( h );
-        Einheit e = UnitManager::getUnit( eId );
-        newDp->setUnit( e );
-
-        PositionViewWidget::Kind k = widget->kind();
-
-        if ( k != PositionViewWidget::Normal ) {
-          Attribute a( DocPosition::Kind );
-          a.setPersistant( true );
-          a.setValue( widget->kindString() );
-          newDp->setAttribute( a );
-        } else {
-          newDp->removeAttribute( DocPosition::Kind );
-        }
-
-        /* set Attribute with the tags */
-        QStringList tags = widget->tagList();
-        if ( ! tags.empty() ) {
-          Attribute tags( DocPosition::Tags );
-          tags.setPersistant( true );
-          tags.setListValue( true );
-          tags.setValue( QVariant( widget->tagList() ) );
-          newDp->setAttribute( tags );
-        }
-        list.append( newDp );
-      } else {
-        kdError() << "Fatal: Widget without position found!" << endl;
+      if ( preListCnt == list.count() ) {
+        kdError() << "No progress in widget list processing - abort!" << endl;
+        progress = false;
       }
     }
     return list;

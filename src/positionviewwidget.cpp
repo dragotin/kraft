@@ -54,6 +54,7 @@ PositionViewWidget::PositionViewWidget()
    mStateSubmenu( 0 ),
    mState( Active ),
    mKind( Normal ),
+   mPositionPriceValid( false ),
    mLocale( 0 )
 {
   m_sbUnitPrice->setMinValue( -99999.99 );
@@ -415,13 +416,40 @@ void PositionViewWidget::slotSetEnabled( bool doit )
   }
 }
 
+bool PositionViewWidget::priceValid()
+{
+  bool isValid = true;
+
+  if ( position()->type() == DocPosition::ExtraDiscount ) {
+    isValid = mPositionPriceValid;
+  }
+
+  return isValid;
+}
+
+void PositionViewWidget::setCurrentPrice( Geld g )
+{
+  // do nothing for normal positions
+  if ( position()->type() == DocPosition::ExtraDiscount ) {
+    mPositionPrice = g;
+    mPositionPriceValid = true;
+  }
+}
+
 Geld PositionViewWidget::currentPrice()
 {
   Geld sum;
   if ( mKind == Normal ) {
-    double amount = m_sbAmount->value();
-    Geld g( m_sbUnitPrice->value() );
-    sum = g * amount;
+    if ( position()->type() == DocPosition::ExtraDiscount ) {
+      sum = mPositionPrice;
+      if ( ! mPositionPriceValid ) {
+        kdWarning() << "Asking for price of Discount item, but invalid!" << endl;
+      }
+    } else {
+      double amount = m_sbAmount->value();
+      Geld g( m_sbUnitPrice->value() );
+      sum = g * amount;
+    }
   }
   return sum;
 }

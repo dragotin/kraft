@@ -67,12 +67,17 @@ void TagItem::setColorGroup( QColorGroup cg )
   mColorGroup = cg;
 }
 
+// ################################################################################
+
 PositionTagDialog::PositionTagDialog( QWidget *parent )
   : KDialogBase( parent, "POSITION_TAG_DIALOG", true, i18n( "Edit Item Tags" ),
                  Ok | Cancel )
 {
   QWidget *w = makeVBoxMainWidget();
-  ( void ) new QLabel( i18n( "Item Tags:" ), w );
+  ( void ) new QLabel( QString::fromLatin1( "<h2>" )
+                       + i18n( "<h2>Item Tags</h2>" ) + QString::fromLatin1( "</h2>" ), w );
+  ( void ) new QLabel( i18n( "Select all tags for the item should be tagged with." ), w );
+
   mListView = new KListView( w );
   mListView->setItemMargin( 3 );
   mListView->setAlternateBackground( QColor( "#dffdd0" ) );
@@ -83,11 +88,7 @@ PositionTagDialog::PositionTagDialog( QWidget *parent )
   mListView->addColumn( i18n( "Color" ) );
   mListView->addColumn( i18n( "Description" ) );
 
-  // FIXME: Display help if a item is selection
   mListView->setSelectionMode( QListView::NoSelection );
-  // mFilterHeader = new FilterHeader( mListView, w );
-  // mFilterHeader->showCount( false );
-
 }
 
 PositionTagDialog::~PositionTagDialog()
