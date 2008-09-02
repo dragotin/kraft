@@ -19,6 +19,7 @@
 #define EXTENDEDCOMBO_H
 
 #include <kcombobox.h>
+#include <qlistbox.h>
 
 class QString;
 class QListBox;

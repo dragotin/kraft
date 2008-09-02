@@ -23,6 +23,7 @@
 #include <qmap.h>
 
 #include <kdialogbase.h>
+#include <klistview.h>
 
 class QWidget;
 class QStringList;

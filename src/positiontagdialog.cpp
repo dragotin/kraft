@@ -22,6 +22,7 @@
 #include <qlabel.h>
 #include <qlistview.h>
 #include <qdrawutil.h>
+#include <qheader.h>
 
 #include <kdialogbase.h>
 #include <kdebug.h>
