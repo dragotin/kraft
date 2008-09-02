@@ -426,26 +426,13 @@ void KraftView::redrawDocPositions( )
 
 void KraftView::setMappingId( QWidget *widget, int pos )
 {
-  mDeleteMapper->removeMappings( widget );
   mDeleteMapper->setMapping( widget, pos );
-
-  mMoveUpMapper->removeMappings( widget );
   mMoveUpMapper->setMapping( widget, pos );
-
-  mMoveDownMapper->removeMappings( widget );
   mMoveDownMapper->setMapping( widget, pos );
-
-  mLockPositionMapper->removeMappings( widget );
   mLockPositionMapper->setMapping( widget, pos );
-
-  mUnlockPositionMapper->removeMappings( widget );
   mUnlockPositionMapper->setMapping( widget, pos );
-
-  mModifiedMapper->removeMappings( widget );
   mModifiedMapper->setMapping( widget, pos );
-
 }
-
 
 //
 // create a new position widget.
