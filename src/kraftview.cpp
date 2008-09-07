@@ -865,6 +865,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
                                                          QDateTime::currentDateTime(),
                                                          QDateTime::currentDateTime() );
             flos->setManualPrice( dp->unitPrice() );
+            flos->save(); // <- Checke das hier!
             mNewTemplates.append( flos );
           }
         }
@@ -931,11 +932,10 @@ DocPositionList KraftView::currentPositionList()
     PositionViewWidgetListIterator outerIt( mPositionWidgetList );
 
     bool progress = true;
-    kdDebug() << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO Calculation Starts" << endl;
 
     while ( progress && ( list.count() != mPositionWidgetList.count() ) ) {
       unsigned preListCnt = list.count();
-      kdDebug() << "####################### Pre List Count: " << preListCnt << endl;
+      // kdDebug() << "# Pre List Count: " << preListCnt << endl;
 
       while ( ( widget = outerIt.current() ) != 0 ) {
         DocPositionBase *dpb = widget->position();
@@ -1054,7 +1054,7 @@ DocPositionList KraftView::currentPositionList()
           kdError() << "Fatal: Widget without position found!" << endl;
         }
       }
-      kdDebug() << "####################### Post List Count: " << list.count() << endl;
+      // kdDebug() << " Post List Count: " << list.count() << endl;
 
       if ( preListCnt == list.count() ) {
         kdError() << "No progress in widget list processing - abort!" << endl;

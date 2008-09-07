@@ -132,6 +132,7 @@ class Portal : public KMainWindow
     void slotPrintDocument();
     void slotPrintDocument( const QString&, const dbID& );
     void slotViewClosed( bool, DocGuardedPtr );
+    void slotEditTagTemplates();
 
     void busyCursor( bool );
 
@@ -166,6 +167,7 @@ class Portal : public KMainWindow
     KAction* actFollowDocument;
     KAction* actPrintDocument;
     KAction* actMailDocument;
+    KAction* actEditTemplates;
 
     KAction* actOpenArchivedDocument;
 

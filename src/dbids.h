@@ -58,7 +58,7 @@ public:
     bool isOk() const
         { return m_id > -1; }
     int  toInt() { return m_id; }
-    QString toString() { return QString::number(m_id); }
+    QString toString() const { return QString::number(m_id); }
 private:
     int m_id;
 };

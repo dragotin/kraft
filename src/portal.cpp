@@ -66,6 +66,7 @@
 #include "archdoc.h"
 #include "newdocassistant.h"
 #include "doctype.h"
+#include "tagtemplatesdialog.h"
 
 #define ID_STATUS_MSG 1
 
@@ -141,15 +142,10 @@ void Portal::initActions()
   actMailDocument = new KAction( i18n( "&Mail Document" ), "mail_generic",
                                  KShortcut( Qt::CTRL + Qt::Key_M ), this,
                                  SLOT( slotMailDocument() ), actionCollection(), "document_mail" );
-#if 0
-  KActionMenu *actMenuTexts = new KActionMenu( i18n( "&Header Text" ), actionCollection(), "menu_texts" );
-  QStringList docTypes = DefaultProvider::self()->docTypes();
 
-  for ( QStringList::Iterator it = docTypes.begin(); it != docTypes.end(); ++it ) {
-    actMenuTexts->insert( new KAction( *it, KShortcut(), actMenuTexts, SLOT( slotEditText() ),
-                            actionCollection() ) );
-  }
-#endif
+  actEditTemplates = new KAction( i18n( "&Edit Tag Templates..." ),  "flag",
+                                  KShortcut( Qt::CTRL + Qt::Key_E ), this,
+                                  SLOT( slotEditTagTemplates() ), actionCollection(), "edit_tag_templates" );
 
   fileQuit->setStatusText(i18n("Quits the application"));
   editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
@@ -573,6 +569,16 @@ void Portal::slotArchivedDocSelected( const ArchDocDigest& )
   actOpenDocument->setEnabled( false );
   actPrintDocument->setEnabled( false );
   actMailDocument->setEnabled( false );
+}
+
+void Portal::slotEditTagTemplates()
+{
+  TagTemplatesDialog dia( this );
+
+  if ( dia.exec() ) {
+    kdDebug() << "Editing of tag templates succeeded!" << endl;
+
+  }
 }
 
 void Portal::createView( DocGuardedPtr doc )

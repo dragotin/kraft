@@ -55,6 +55,11 @@ QColorGroup TagTemplate::colorGroup() const
   return cg;
 }
 
+bool TagTemplate::operator!= ( const TagTemplate& tt ) const
+{
+  return !( mName == tt.mName && mDesc == tt.mDesc && mColor == tt.mColor );
+}
+
 /*
  * ********** Tag Template Manager **********
  */
@@ -101,6 +106,53 @@ TagTemplate TagTemplateMan::getTagTemplate( const QString& name )
 TagTemplateMan::~TagTemplateMan( )
 {
 
+}
+
+bool TagTemplateMan::writeTemplate( const TagTemplate& tt )
+{
+  bool ret = true;
+  int cnt = 0;
+
+  if ( tt.dbId().isOk() ) {
+    QSqlQuery q;
+    q.prepare( "UPDATE tagTemplates SET name=:name, description=:desc, color=:col "
+               "WHERE tagTmplID=:id" );
+    q.bindValue( ":name", tt.name() );
+    q.bindValue( ":desc", tt.description() );
+    q.bindValue( ":col",  tt.color().name() );
+    q.bindValue( ":id",   tt.dbId().toString() );
+    q.exec();
+    cnt = q.numRowsAffected();
+  }
+
+  if ( cnt == -1 ) {
+    kdError() << "DB does not know the number of affected rows, poor!" << endl;
+    ret = false;
+  } else if ( cnt == 0 ) {
+    kdDebug() << "need to insert the tag template into db" << endl;
+    QSqlQuery qi;
+    qi.prepare( "INSERT INTO tagTemplates (name, description, color) VALUES "
+                  "( :name, :desc, :col )" );
+    qi.bindValue( ":name", tt.name() );
+    qi.bindValue( ":desc", tt.description() );
+    qi.bindValue( ":col",  tt.color().name() );
+    qi.exec();
+  }
+  if ( ret ) {
+    load();
+  }
+  return ret;
+}
+
+void TagTemplateMan::deleteTemplate( const dbID& id )
+{
+  if ( id.isOk() ) {
+    QSqlQuery q;
+    q.prepare( "DELETE FROM tagTemplates WHERE tagTmplID=:id" );
+    q.bindValue( ":id", id.toString() );
+    q.exec();
+    load();
+  }
 }
 
 void TagTemplateMan::load()

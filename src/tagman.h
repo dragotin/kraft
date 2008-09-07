@@ -49,6 +49,11 @@ public:
   QColorGroup colorGroup() const;
   dbID    dbId()  const { return mId;    }
   QString description() const { return mDesc; }
+  void setName( const QString& n ) { mName = n; }
+  void setDescription( const QString& d ) { mDesc = d; }
+  void setColor( const QColor& c ) { mColor = c; }
+
+  bool operator!= ( const TagTemplate& tt ) const;
 private:
   dbID      mId;
   QString   mName;
@@ -71,6 +76,8 @@ public:
 
   QStringList allTagTemplates();
   TagTemplate getTagTemplate( const QString& );
+  bool writeTemplate( const TagTemplate& );
+  void deleteTemplate( const dbID& );
 
 private:
   TagTemplateMan();
