@@ -79,6 +79,7 @@ PositionViewWidget::PositionViewWidget()
              this, SLOT( slotRefreshPrice( ) ) );
   connect( mDiscountPercent, SIGNAL( valueChanged( double ) ),
            this, SLOT( slotRefreshPrice() ) );
+
   connect( pbExec, SIGNAL( pressed() ),     this,  SLOT( slotExecButtonPressed() ) );
   connect( pbTagging,  SIGNAL( pressed() ), this,  SLOT( slotTaggingButtonPressed() ) );
 
@@ -231,7 +232,6 @@ void PositionViewWidget::slotUpdateTagToolTip()
 
   if ( mTags.count() == 1 ) {
     tip = i18n( "Tag: %1" ).arg( mTags.first() );
-
   } else if ( mTags.count() > 1 ) {
     tip = i18n( "Tags:<ul>" );
     for ( QStringList::Iterator it = mTags.begin(); it != mTags.end(); ++it ) {
@@ -253,11 +253,12 @@ void PositionViewWidget::slotUpdateTagToolTip()
 QString PositionViewWidget::extraDiscountTagRestriction()
 {
   QString selection = mDiscountTag->currentText();
+  QString id;
   QRegExp rx( "\\b(.+)-tagged\\b" );
   if ( rx.search( selection ) > -1 ) {
-    return rx.cap( 1 );
+    id = rx.cap( 1 );
   }
-  return QString();
+  return id;
 }
 
 void PositionViewWidget::setLocale( KLocale *loc )

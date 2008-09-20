@@ -103,6 +103,17 @@ TagTemplate TagTemplateMan::getTagTemplate( const QString& name )
     return TagTemplate();
 }
 
+TagTemplate TagTemplateMan::getTagTemplateFromId( const QString& id )
+{
+  TagTemplateValueVector::iterator it;
+  for( it = mTagTmpl.begin(); it != mTagTmpl.end(); ++it )
+  {
+    if( (*it).dbId().toString() == id ) return (*it);
+  }
+  return TagTemplate();
+}
+
+
 TagTemplateMan::~TagTemplateMan( )
 {
 

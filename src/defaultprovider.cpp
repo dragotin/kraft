@@ -58,7 +58,6 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
 {
   DocTextList re;
 
-  QSqlCursor cur( "DocTexts" );
   QString typeStr = DocText::textTypeToString( tt );
 
   QString sql = QString( "SELECT texts.docTextID, texts.name, texts.text, texts.description, "
@@ -66,7 +65,7 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
                          "DocTypes types WHERE texts.docTypeId=types.docTypeID AND "
                          "types.name=\'%1\' AND textType = \'%2\'").arg( docType ).arg( typeStr );
 
-  kdDebug() << "Reading texts from DB with: " << sql << endl;
+  // kdDebug() << "Reading texts from DB with: " << sql << endl;
 
   QSqlQuery query( sql );
   if ( query.isActive() ) {
@@ -75,7 +74,7 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
       dt.setDbId( query.value( 0 ) /* docTextID */ .toInt() );
       dt.setName( query.value( 1 ) /* name */ .toString() );
       dt.setText( KraftDB::self()->mysqlEuroDecode( query.value( 2 ) /* text */ .toString() ) );
-      dt.setDescription( cur.value( 3 ) /* description */ .toString() );
+      dt.setDescription( query.value( 3 ) /* description */ .toString() );
       dt.setTextType( DocText::stringToTextType( query.value( 4 ) /* textType */ .toString() ) );
       dt.setDocType( query.value( 5 ) /* docType */ .toString() );
 

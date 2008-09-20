@@ -128,9 +128,10 @@ void DocPositionBase::setTag( const QString& tag )
   if ( tag.isEmpty() ) return;
 
   if ( mAttribs.contains( DocPosition::Tags ) ) {
+    if ( hasTag( tag ) ) return;
     Attribute att = mAttribs[DocPosition::Tags];
-    att.setListValue( true );
     QStringList li =  att.value().toStringList();
+
     li.append( tag );
     att.setValue( QVariant( li ) );
     setAttribute( att );
@@ -141,34 +142,33 @@ void DocPositionBase::setTag( const QString& tag )
     a.setListValue( true );
     a.setPersistant( true );
     a.setValue( QVariant( li ) );
+    a.setValueRelation( "TagTemplates", "tagTmplID", "name" );
     setAttribute( a );
   }
-  // if ( !hasTag( tag ) ) {
-  //  mTags.append( tag );
-  //}
 }
 
 void DocPositionBase::removeTag( const QString& tag )
 {
-  if ( mAttribs.contains( DocPosition::Tags ) ) {
-    Attribute tags = mAttribs[DocPosition::Tags];
-    QStringList list = ( tags.value() ).toStringList();
-    if ( list.findIndex( tag ) > -1 ) {
-      list.remove( tag );
-      tags.setValue( QVariant( list ) );
-      setAttribute( tags );
-    }
+  if ( hasTag( tag ) ) {
+    Attribute att = mAttribs[DocPosition::Tags];
+    QStringList li =  att.value().toStringList();
+
+    li.remove( tag );
+    att.setValue( QVariant( li ) );
+    setAttribute( att );
   }
 }
 
-bool DocPositionBase::hasTag( const QString& term )
+bool DocPositionBase::hasTag( const QString& tag )
 {
-  if ( mAttribs.contains( DocPosition::Tags ) ) {
-    Attribute tags = mAttribs[DocPosition::Tags];
-    QStringList list = ( tags.value() ).toStringList();
-    if ( list.findIndex( term ) > -1 ) {
-      return true;
-    }
+  if ( ! mAttribs.contains( DocPosition::Tags ) ) {
+    return false;
+  }
+  Attribute att = mAttribs[DocPosition::Tags];
+  QStringList li =  att.value().toStringList();
+  QStringList search = li.grep( tag, false ); // ignore case
+  if ( ! search.isEmpty() ) {
+    return true;
   }
   return false;
 }
@@ -177,6 +177,7 @@ QStringList DocPositionBase::tags()
 {
   QStringList tags;
   if ( mAttribs.contains( DocPosition::Tags ) ) {
+    kdDebug() << mAttribs[DocPosition::Tags].toString() << endl;
     tags = mAttribs[DocPosition::Tags].value().toStringList();
   }
   return tags;

@@ -166,7 +166,10 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
   // invert all pos numbers to avoid a unique violation
   // FIXME: We need non-numeric ids
   QSqlQuery upq;
-  upq.prepare( "UPDATE docposition SET ordNumber = -1 * ordNumber WHERE docID=" +  doc->docID().toString() );
+  QString queryStr = "UPDATE docposition SET ordNumber = -1 * ordNumber WHERE docID=";
+  queryStr +=  doc->docID().toString();
+  queryStr += " AND ordNumber > 0";
+  upq.prepare( queryStr );
   upq.exec();
 
   int ordNumber = 1;
@@ -331,17 +334,21 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
     QSqlIndex posIndex = cur.index( "ordNumber" );
     cur.select( "docID=" + id, posIndex );
 
+    kdDebug() << "* loading document positions for document id " << id << endl;
     while( cur.next() ) {
-        kdDebug() << "loading document position for document id " << id << endl;
+        kdDebug() << " loading position id " << cur.value( "positionID" ).toInt() << endl;
 
         DocPositionBase::PositionType type = DocPositionBase::Position;
         QString typeStr = cur.value( "postype" ).toString();
         if ( typeStr == PosTypeExtraDiscount ) {
           type = DocPositionBase::ExtraDiscount;
+        } else if ( typeStr == PosTypePosition ) {
+          // nice, default position type.
+          type = DocPositionBase::Position;
         } else if ( typeStr == PosTypeHeader ) {
-          type = DocPositionBase::Header;
-        } else if ( ! typeStr.isEmpty() ) {
-          kdDebug() << "Strange type string loaded from db: " << typeStr << endl;
+          type = DocPositionBase::Header;}
+        else if ( ! typeStr.isEmpty() ) {
+          kdDebug() << "ERROR: Strange type string loaded from db: " << typeStr << endl;
         }
 
         DocPosition *dp = doc->createPosition( type );

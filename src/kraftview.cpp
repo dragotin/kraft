@@ -963,16 +963,19 @@ DocPositionList KraftView::currentPositionList()
             newDp->setAttribute( a );
 
             QString tagRequired = widget->extraDiscountTagRestriction();
-            Attribute tr(  DocPosition::ExtraDiscountTagRequired );
-            tr.setPersistant( true );
-            tr.setValue( tagRequired );
-            newDp->setAttribute( tr );
+
+            if ( !tagRequired.isEmpty() ) {
+              Attribute tr(  DocPosition::ExtraDiscountTagRequired );
+              tr.setValueRelation( "tagTemplates", "tagTmplID", "name" );
+              tr.setPersistant( true );
+              tr.setValue( QVariant( tagRequired ) );
+              newDp->setAttribute( tr );
+            }
 
             /* Calculate the actual sum over all widgets */
             PositionViewWidgetListIterator it( mPositionWidgetList );
             PositionViewWidget *w1;
             Geld sum;
-
             while (  calculatable && ( w1 = it.current() )!= 0 ) {
               ++it;
               if ( it != outerIt ) { // do not take the own value into account
@@ -1040,12 +1043,13 @@ DocPositionList KraftView::currentPositionList()
             }
 
             /* set Attribute with the tags */
-            QStringList tags = widget->tagList();
-            if ( ! tags.empty() ) {
+            QStringList tagStrings = widget->tagList();
+            if ( ! tagStrings.empty() ) {
               Attribute tags( DocPosition::Tags );
+              tags.setValueRelation( "tagTemplates", "tagTmplID", "name" );
               tags.setPersistant( true );
               tags.setListValue( true );
-              tags.setValue( QVariant( widget->tagList() ) );
+              tags.setValue( QVariant( tagStrings ) );
               newDp->setAttribute( tags );
             }
             list.append( newDp );

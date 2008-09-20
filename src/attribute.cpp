@@ -40,13 +40,83 @@ Attribute::Attribute( const QString& name )
 
 }
 
-void Attribute::setValue( const QVariant& var )
+void Attribute::setRawValue( const QVariant& var )
 {
   mValue = var;
 }
 
-QVariant Attribute::value() const
+
+void Attribute::setValue( const QVariant& var )
 {
+  if ( useRelationTable() ) {
+    QSqlQuery q;
+    QString query = "SELECT " + mIdCol +" FROM " + mTable + " WHERE " + mStringCol + "=:string";
+
+    q.prepare( query  );
+
+    kdDebug() << "Column: " << mIdCol << " | table " << mTable << " | string: " << mStringCol << ": " << query << endl;
+
+    if ( listValue() ) {
+      QStringList idList;
+      QStringList list = var.toStringList();
+      for ( QStringList::Iterator valIt = list.begin(); valIt != list.end(); ++valIt ) {
+        QString curValue = *valIt;
+        kdDebug() << "Searching for " << curValue << " in relation table" << endl;
+        q.bindValue( ":string", curValue );
+        q.exec();
+        if ( q.next() ) {
+          idList << q.value( 0 ).toString();
+        }
+      }
+      mValue = QVariant( idList );
+    } else {
+      q.bindValue( ":string", var.toString() );
+      q.exec();
+      kdDebug() << "ERROR" << q.lastError().text() << endl;
+      if ( q.next() ) {
+        mValue = q.value( 0 );
+      }
+    }
+  } else {
+    mValue = var;
+  }
+}
+
+bool Attribute::useRelationTable()
+{
+  return !( mTable.isEmpty() || mIdCol.isEmpty() || mStringCol.isEmpty() );
+}
+
+QVariant Attribute::value()
+{
+  if ( useRelationTable() ) {
+    // get the value from the relation table
+    QSqlQuery q;
+    QString query = "SELECT " + mStringCol +" FROM " + mTable + " WHERE " + mIdCol + "=:id";
+    q.prepare( query  );
+
+    if ( listValue() ) {
+      QStringList idList = mValue.asStringList();
+      QStringList::Iterator it = idList.begin();
+      QStringList list;
+      while( it != idList.end() ) {
+        q.bindValue( ":id", *it );
+        q.exec();
+        while ( q.next() ) {
+          QString str = q.value( 0 ).toString();
+          list.append( str );
+        }
+        ++it;
+      }
+      return QVariant( list );
+    } else {
+      q.bindValue( ":id", mValue.toString() );
+      q.exec();
+      if ( q.next() ) {
+        return QVariant( q.value( 0 ) );
+      }
+    }
+  }
   return mValue;
 }
 
@@ -73,6 +143,30 @@ void Attribute::setListValue( bool p )
 bool Attribute::listValue()
 {
   return mListValue;
+}
+
+void Attribute::setValueRelation( const QString& table, const QString& idColumn,  const QString& stringColumn )
+{
+  mTable = table;
+  mIdCol = idColumn;
+  mStringCol = stringColumn;
+}
+
+QString Attribute::toString()
+{
+  QString re;
+  re =  "+ Attribute name: " + mName + '\n';
+  if ( mListValue ) {
+    re += "+ Attribute Value (List): " + mValue.toStringList().join( ", " )+ '\n';
+  } else {
+    re += "+ Attribute Value (String): " + mValue.toString() + '\n';
+  }
+  re += "+ Relation Table: " + mTable + '\n';
+  re += "+ Relation ID-Column: " + mIdCol + '\n';
+  re += "+ Relation StringCol: " + mStringCol + '\n';
+  re += "+ List: " + ( mListValue ? QString( "yes" ) : QString( "no" ) ) + '\n';
+
+  return re;
 }
 
 /*
@@ -145,11 +239,19 @@ void AttributeMap::save( dbID id )
       } else {
         kdDebug() << "oo- writing of attribute name " << att.name() << endl;
         QSqlQuery insQuery;
-        insQuery.prepare( "INSERT INTO attributes (hostObject, hostId, name, valueIsList) VALUES (:host, :hostId, :name, :valueIsList )" );
+        insQuery.prepare( "INSERT INTO attributes (hostObject, hostId, name, valueIsList, relationTable, "
+                          "relationIDColumn, relationStringColumn) "
+                          "VALUES (:host, :hostId, :name, :valueIsList, :relTable, :relIDCol, :relStringCol )" );
         insQuery.bindValue( ":host", mHost );
         insQuery.bindValue( ":hostId", id.toString() );
         insQuery.bindValue( ":name", att.name() );
         insQuery.bindValue( ":valueIsList", att.listValue() );
+
+        // Write the relation table info. These remain empty for non related attributes.
+        insQuery.bindValue( ":relTable", att.mTable );
+        insQuery.bindValue( ":relIDCol", att.mIdCol );
+        insQuery.bindValue( ":relStringCol", att.mStringCol );
+
         insQuery.exec();
         dbID attId = KraftDB::self()->getLastInsertID();
         attribId = attId.toString();
@@ -158,7 +260,7 @@ void AttributeMap::save( dbID id )
 
     // store the id to be able to drop not longer existant values
     seenIds << attribId;
-    kdDebug() << "adding attribute id " << attribId << endl;
+    kdDebug() << "adding attribute id " << attribId << " for attribute " << att.name() << endl;
 
     // now there is a valid entry in the attribute table. Check the values.
     QSqlQuery valueQuery( "SELECT id, value FROM attributeValues WHERE attributeId=" + attribId );
@@ -176,7 +278,7 @@ void AttributeMap::save( dbID id )
     // create a stringlist with the current values of the attribute
     if ( att.listValue() ) {
       QStringList newValues;
-      newValues = att.value().toStringList();
+      newValues = att.mValue.toStringList();
       kdDebug() << "new values are: " << newValues.join( ", " ) << endl;
 
       if ( newValues.empty() ) {
@@ -208,7 +310,9 @@ void AttributeMap::save( dbID id )
       }
     } else {
       // only a single entry for the attribte, update if needed.
-      QString newValue = att.value().toString();
+      QString newValue = att.mValue.toString();  // access the attribute object directly to get the numeric
+      kdDebug() << "NEW value String: " << newValue << endl;
+      // value in case the attribute is bound to a relation table
       if ( newValue.isEmpty() ) {
         // delete the entire attribute
         deleteValue( attribId ); // deletes all values
@@ -296,10 +400,13 @@ void AttributeMap::load( dbID id )
   while ( cur.next() ) {
     QString h = cur.value( "name" ).toString();
     bool isList = cur.value( "valueIsList" ).toBool();
+    QString relTable = cur.value( "relationTable" ).toString();
+    QString relIDCol = cur.value( "relationIDColumn" ).toString();
+    QString relStrCol = cur.value( "relationStringColumn" ).toString();
 
-    kdDebug() << "Loading attribute " << h  << endl;
     Attribute attr( h );
     attr.setListValue( isList );
+    attr.setValueRelation( relTable, relIDCol,  relStrCol );
 
     crit = QString( "attributeId=%1" ).arg( cur.value( "id" ).toInt() );
     curValues.select( crit );
@@ -311,13 +418,16 @@ void AttributeMap::load( dbID id )
         values << curValues.value( "value" ).toString();
       } else {
         str = curValues.value( "value" ).toString();
+        // kdDebug() << " attribute string " << h <<": " << str  << endl;
       }
     }
+    // kdDebug() << " attribute list " << h <<": " << values  << endl;
+
 
     if ( isList ) {
-      attr.setValue( QVariant( values ) );
+      attr.setRawValue( QVariant( values ) );
     } else {
-      attr.setValue( QVariant( str ) );
+      attr.setRawValue( QVariant( str ) );
     }
     attr.setPersistant( true );
 

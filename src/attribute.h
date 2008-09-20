@@ -32,23 +32,32 @@ class dbID;
 
 class Attribute
 {
+  friend class AttributeMap;
+
   public:
     Attribute();
     Attribute( const QString& name );
     
     void     setValue( const QVariant& var );
-    QVariant value() const;
+    QVariant value();
     QString  name() const;
     bool     persistant();
     bool     listValue();
     void     setListValue( bool );
     void     setPersistant( bool );
-
-  private:
+    bool     useRelationTable();
+    void     setValueRelation( const QString&, const QString&, const QString& );
+    QString  toString();
+private:
+    void     setRawValue( const QVariant& var );
     QString  mName;
     QVariant mValue;
     bool     mPersist;
     bool     mListValue;
+
+    QString mTable;
+    QString mIdCol;
+    QString mStringCol;
 };
 
 /*

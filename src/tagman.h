@@ -76,6 +76,8 @@ public:
 
   QStringList allTagTemplates();
   TagTemplate getTagTemplate( const QString& );
+  TagTemplate getTagTemplateFromId( const QString& );
+
   bool writeTemplate( const TagTemplate& );
   void deleteTemplate( const dbID& );
 
