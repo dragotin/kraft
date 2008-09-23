@@ -382,7 +382,6 @@ void AttributeMap::dbDeleteAll( dbID id )
   listQuery.exec();
 
   while ( listQuery.next() ) {
-    kdDebug() << "Deleting id " << listQuery.value( 0 ).toString() << endl;
     dbDeleteAttribute( listQuery.value( 0 ).toString() );
   }
   clear();
@@ -403,7 +402,6 @@ void AttributeMap::dbDeleteAttribute( const QString& attribId )
 void AttributeMap::dbDeleteValue( const QString& attribId, const QString& id )
 {
   QSqlQuery delQuery;
-  kdDebug() << "DELETING attribute " << attribId << ", id " << id << endl;
 
   if ( id.isEmpty() && ! attribId.isEmpty() ) {
     delQuery.prepare( "DELETE FROM attributeValues WHERE attributeId=" + attribId );

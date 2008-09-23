@@ -132,13 +132,13 @@ DocPosition InsertTemplDialog::docPosition()
     if ( b && b->isChecked() ) {
       if ( mTagMap.contains( i ) ) {
         QString tag = mTagMap[i];
-
+        kdDebug() << "*********************************" << tag << endl;
         mParkPosition.setTag( tag );
       }
     }
   }
 
-  kdDebug() << "in the dialog: " << mParkPosition.text() << endl;
+  kdDebug() << "in the dialog: " << mParkPosition.tags() << endl;
   return mParkPosition;
 }
 

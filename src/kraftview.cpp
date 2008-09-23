@@ -887,8 +887,6 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       newpos = dia->insertAfterPosition();
 
       mRememberAmount = dp->amount();
-
-      kdDebug() << "New position is " << dp->positionNumber() << " as int: " << newpos << endl;
     } else {
       return;
     }
@@ -1056,7 +1054,7 @@ DocPositionList KraftView::currentPositionList()
               tags.setListValue( true );
               tags.setValue( QVariant( tagStrings ) );
               newDp->setAttribute( tags );
-              kdDebug() << "============ " << tags.toString() << endl;
+              // kdDebug() << "============ " << tags.toString() << endl;
             } else {
               newDp->removeAttribute( DocPosition::Tags );
             }

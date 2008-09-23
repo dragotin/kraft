@@ -139,10 +139,10 @@ void DocPositionBase::setTag( const QString& tag )
     QStringList li;
     li.append( tag );
     Attribute a( DocPosition::Tags );
+    a.setValueRelation( "tagTemplates", "tagTmplID", "name" );
     a.setListValue( true );
     a.setPersistant( true );
     a.setValue( QVariant( li ) );
-    a.setValueRelation( "TagTemplates", "tagTmplID", "name" );
     setAttribute( a );
   }
 }
