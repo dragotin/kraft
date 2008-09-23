@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS `tagTemplates` (
   KEY `sortkey` (`sortkey`)
 );
 
-INSERT IGNORE INTO tagTemplates (sortkey, name, description, color) VALUES (3, 'discount', 'Marks items to give discount on', '#ff1c1c' );
-INSERT IGNORE INTO tagTemplates (sortkey, name, description, color) VALUES (1, 'material', 'Marks material', '#4e4e4e' );
-INSERT IGNORE INTO tagTemplates (sortkey, name, description, color) VALUES (2, 'work', 'Marks working hour items', '#ffbb39' );
-INSERT IGNORE INTO tagTemplates (sortkey, name, description, color) VALUES (4, 'plants', 'Marks plant items', '#26b913' );
+INSERT IGNORE INTO tagTemplates (sortkey, name, description, color) VALUES (3, 'Discount', 'Marks items to give discount on', '#ff1c1c' );
+INSERT IGNORE INTO tagTemplates (sortkey, name, description, color) VALUES (1, 'Material', 'Marks material', '#4e4e4e' );
+INSERT IGNORE INTO tagTemplates (sortkey, name, description, color) VALUES (2, 'Work', 'Marks working hour items', '#ffbb39' );
+INSERT IGNORE INTO tagTemplates (sortkey, name, description, color) VALUES (4, 'Plants', 'Marks plant items', '#26b913' );
 

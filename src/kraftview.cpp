@@ -934,6 +934,8 @@ DocPositionList KraftView::currentPositionList()
     bool progress = true;
 
     while ( progress && ( list.count() != mPositionWidgetList.count() ) ) {
+      // the loop runs until all positions have a valid price.
+
       unsigned preListCnt = list.count();
       // kdDebug() << "# Pre List Count: " << preListCnt << endl;
 
@@ -976,6 +978,7 @@ DocPositionList KraftView::currentPositionList()
             PositionViewWidgetListIterator it( mPositionWidgetList );
             PositionViewWidget *w1;
             Geld sum;
+            kdDebug() << "Starting to loop over the items " << endl;
             while (  calculatable && ( w1 = it.current() )!= 0 ) {
               ++it;
               if ( it != outerIt ) { // do not take the own value into account
@@ -995,6 +998,7 @@ DocPositionList KraftView::currentPositionList()
                 kdDebug() << "Skipping pos " << w1->ordNumber() << " in summing up, thats me!" << endl;
               }
             }
+            kdDebug() << "Finished loop over items with calculatable=" << calculatable << endl;
 
             if ( calculatable ) {
               sum = sum.percent( discount );
@@ -1014,6 +1018,7 @@ DocPositionList KraftView::currentPositionList()
 
             double v = widget->m_sbAmount->value();
             newDp->setAmount( v );
+            widget->setCurrentPrice( newDp->overallPrice() );
           }
 
           if ( calculatable ) {
@@ -1051,6 +1056,7 @@ DocPositionList KraftView::currentPositionList()
               tags.setListValue( true );
               tags.setValue( QVariant( tagStrings ) );
               newDp->setAttribute( tags );
+              kdDebug() << "============ " << tags.toString() << endl;
             }
             list.append( newDp );
           }
