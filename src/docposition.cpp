@@ -113,7 +113,7 @@ void DocPositionBase::loadAttributes()
 void DocPositionBase::removeAttribute( const QString& name )
 {
   if ( !name.isEmpty() )
-    mAttribs.remove( name );
+    mAttribs.markDelete( name );
 }
 
 QString DocPositionBase::attribute( const QString& attName ) const

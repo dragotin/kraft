@@ -28,14 +28,16 @@
 #include <qsqlcursor.h>
 
 Attribute::Attribute()
-  :mListValue( false )
+  :mListValue( false ),
+   mDelete( false )
 {
 
 }
 
 Attribute::Attribute( const QString& name )
   :mName( name ),
-   mListValue( false )
+   mListValue( false ),
+   mDelete( false )
 {
 
 }
@@ -221,17 +223,16 @@ void AttributeMap::save( dbID id )
     attribQuery.exec();
 
     QString attribId;
-    QStringList seenIds;
 
     if ( attribQuery.next() ) {
       // the attrib exists. Check the values
 
       attribId = attribQuery.value(0).toString();  // the id
-      if ( att.value().isNull() ) {
+      if ( att.value().isNull() || att.mDelete ) {
         // the value is empty. the existing entry needs to be dropped
-        deleteAttribute( attribId );
+        dbDeleteAttribute( attribId );
+        return;
       }
-      // FIXME: check if the listvalue is correct in the existing entry.
     } else {
       // the attrib does not yet exist. Create if att value is not null.
       if ( att.value().isNull() ) {
@@ -259,7 +260,6 @@ void AttributeMap::save( dbID id )
     }
 
     // store the id to be able to drop not longer existant values
-    seenIds << attribId;
     kdDebug() << "adding attribute id " << attribId << " for attribute " << att.name() << endl;
 
     // now there is a valid entry in the attribute table. Check the values.
@@ -283,8 +283,8 @@ void AttributeMap::save( dbID id )
 
       if ( newValues.empty() ) {
         // delete the entire attribute.
-        deleteValue( attribId ); // deletes all values
-        deleteAttribute( attribId );
+        dbDeleteValue( attribId ); // deletes all values
+        dbDeleteAttribute( attribId );
         valueMap.clear();
       } else {
         // we really have new values
@@ -299,7 +299,7 @@ void AttributeMap::save( dbID id )
 
           if ( valueMap.contains( curValue ) ) {
             // the valueMap is already saved. remove it from the valueMap string
-            kdDebug() << "Value <" << curValue << " is already present with id " << valueMap[curValue] << endl;
+            kdDebug() << "Value " << curValue << " is already present with id " << valueMap[curValue] << endl;
             valueMap.remove( curValue );
           } else {
             // the value is not yet there, insert it.
@@ -315,8 +315,8 @@ void AttributeMap::save( dbID id )
       // value in case the attribute is bound to a relation table
       if ( newValue.isEmpty() ) {
         // delete the entire attribute
-        deleteValue( attribId ); // deletes all values
-        deleteAttribute( attribId );
+        dbDeleteValue( attribId ); // deletes all values
+        dbDeleteAttribute( attribId );
         valueMap.clear();
       } else {
         if ( valueMap.empty() ) {
@@ -350,18 +350,45 @@ void AttributeMap::save( dbID id )
     // remove all still existing entries in the valueMap because they point to values which are
     // in the db but were deleted from the attribute
     if ( ! valueMap.isEmpty() ) {
-      QSqlQuery delValue;
-
       ValueMap::Iterator mapIt;
       for ( mapIt = valueMap.begin(); mapIt != valueMap.end(); ++mapIt ) {
         QString valId = mapIt.data();
-        deleteValue( attribId, valId );
+        dbDeleteValue( attribId, valId );
       }
     }
   }
 }
 
-void AttributeMap::deleteAttribute( const QString& attribId )
+void AttributeMap::markDelete( const QString& name )
+{
+  if ( name.isEmpty() || ! contains( name ) )return;
+  Iterator it = find( name );
+  if ( it != end() ) {
+    ( *it ).mDelete = true;
+  }
+}
+
+/* remove all Attributes from the database for the given host id
+ * this method clears the entire map and should only be called if
+ * the whole host is to delete anyway. */
+void AttributeMap::dbDeleteAll( dbID id )
+{
+  kdDebug() << "This is the id for to delete: " << id.toString() << endl;
+  if ( !id.isOk() ) return;
+  QSqlQuery listQuery;
+  listQuery.prepare( "SELECT id FROM attributes WHERE hostObject=:hostObject AND hostId=:hostId" );
+  listQuery.bindValue( ":hostObject", mHost );
+  listQuery.bindValue( ":hostId", id.toString() );
+  listQuery.exec();
+
+  while ( listQuery.next() ) {
+    kdDebug() << "Deleting id " << listQuery.value( 0 ).toString() << endl;
+    dbDeleteAttribute( listQuery.value( 0 ).toString() );
+  }
+  clear();
+}
+
+void AttributeMap::dbDeleteAttribute( const QString& attribId )
 {
   if ( attribId.isEmpty() ) return;
 
@@ -370,12 +397,13 @@ void AttributeMap::deleteAttribute( const QString& attribId )
   delQuery.bindValue( ":id", attribId );
   delQuery.exec();
 
-  deleteValue( attribId ); // delete all values
+  dbDeleteValue( attribId ); // delete all values
 }
 
-void AttributeMap::deleteValue( const QString& attribId, const QString& id )
+void AttributeMap::dbDeleteValue( const QString& attribId, const QString& id )
 {
   QSqlQuery delQuery;
+  kdDebug() << "DELETING attribute " << attribId << ", id " << id << endl;
 
   if ( id.isEmpty() && ! attribId.isEmpty() ) {
     delQuery.prepare( "DELETE FROM attributeValues WHERE attributeId=" + attribId );

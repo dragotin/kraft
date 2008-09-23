@@ -1049,7 +1049,7 @@ DocPositionList KraftView::currentPositionList()
 
             /* set Attribute with the tags */
             QStringList tagStrings = widget->tagList();
-            if ( ! tagStrings.empty() ) {
+            if ( !tagStrings.isEmpty() ) {
               Attribute tags( DocPosition::Tags );
               tags.setValueRelation( "tagTemplates", "tagTmplID", "name" );
               tags.setPersistant( true );
@@ -1057,6 +1057,8 @@ DocPositionList KraftView::currentPositionList()
               tags.setValue( QVariant( tagStrings ) );
               newDp->setAttribute( tags );
               kdDebug() << "============ " << tags.toString() << endl;
+            } else {
+              newDp->removeAttribute( DocPosition::Tags );
             }
             list.append( newDp );
           }

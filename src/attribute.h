@@ -49,11 +49,12 @@ class Attribute
     void     setValueRelation( const QString&, const QString&, const QString& );
     QString  toString();
 private:
-    void     setRawValue( const QVariant& var );
+    void     setRawValue( const QVariant& var ); // sets the value without checking for relations
     QString  mName;
     QVariant mValue;
     bool     mPersist;
     bool     mListValue;
+    bool     mDelete;  // Delete the attribute on save. Written and read by the attributemap
 
     QString mTable;
     QString mIdCol;
@@ -76,9 +77,11 @@ public:
   void load( dbID );
   void save( dbID );
 
+  void markDelete( const QString& );
+  void dbDeleteAll( dbID );
 protected:
-  void deleteAttribute( const QString& );
-  void deleteValue( const QString&, const QString& = QString() );
+  void dbDeleteAttribute( const QString& );
+  void dbDeleteValue( const QString&, const QString& = QString() );
 
 private:
   void checkHost();

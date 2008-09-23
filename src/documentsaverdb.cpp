@@ -207,6 +207,9 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         if( doInsert ) {
           kdWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
         }
+        // delete all existing attributes
+        dp->attributes().dbDeleteAll( dp->dbId() );
+
         // the position is already existing, delete it
         cur.primeDelete();
         cur.del();
