@@ -1199,9 +1199,10 @@ void KraftView::slotCancel()
 {
   // We need to reread the document
   if ( mModified ) {
-    if ( KMessageBox::warningYesNo( this, i18n( "The document was modified, do "
-                                                "you really want to discard all changes?" ) )
-          == KMessageBox::No  )
+    if ( KMessageBox::warningContinueCancel( this, i18n( "The document was modified. Do "
+                                                "you really want to discard all changes?" ),
+           i18n( "Document Modified" ), KGuiItem( i18n( "Discard" ) ) )
+          == KMessageBox::Cancel  )
     {
       return;
     }

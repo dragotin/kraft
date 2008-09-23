@@ -334,9 +334,10 @@ bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
 
 void FlosTemplDialog::reject()
 {
-    if ( KMessageBox::warningYesNo( this, i18n( "The template was modified, do "
-                                            "you really want to discard all changes?" ) )
-          == KMessageBox::No  )
+    if ( KMessageBox::warningContinueCancel( this, i18n( "The template was modified. Do "
+                                            "you really want to discard all changes?" ),
+           i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ) ) )
+          == KMessageBox::Cancel  )
     {
       return;
     }
