@@ -1,3 +1,13 @@
+Changes since version 0.25: #########################################
+- introduced the extended combo box with explanation line for units.
+- added document item tagging
+- added discount item system, based on tagging 
+- tag templates with tag template edit dialog
+- fixed a bunch of bugs with text templates (header- and footer text)
+- tag selection in ordinary add-item-to-document dialog
+
+   => released v. 0.30
+
 Changes since version 0.24: #########################################
 - Added a Wizard for document creation
 - Improved the document overview widget for more intuitive use.

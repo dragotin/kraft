@@ -5,7 +5,13 @@ Basic Installation
 this file. 
 
 => Find Kraft specific instructions below. Make sure to read them!
-   
+
++------------------------------------------------------------------+
+|    Please use binary Packages from the openSUSE Buildservice.    |
+|          Go to http://software.opensuse.org/search               |
+|      and search for Kraft. Use the openSUSE 1-Click-Install      |
++------------------------------------------------------------------+
+
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
 those values to create a `Makefile' in each directory of the package.
