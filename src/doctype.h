@@ -52,6 +52,7 @@ class DocType
 
   QStringList follower();
 
+  static dbID docTypeId( const QString& );
   protected:
 
   private:

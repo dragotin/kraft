@@ -74,7 +74,7 @@ void Attribute::setValue( const QVariant& var )
     } else {
       q.bindValue( ":string", var.toString() );
       q.exec();
-      kdDebug() << "ERROR" << q.lastError().text() << endl;
+      // kdDebug() << "ERROR" << q.lastError().text() << endl;
       if ( q.next() ) {
         mValue = q.value( 0 );
       }

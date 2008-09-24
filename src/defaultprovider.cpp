@@ -135,6 +135,9 @@ void DefaultProvider::fillDocTextBuffer( const DocText& t, QSqlRecord *buffer )
   buffer->setValue( "description", t.description() );
   buffer->setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
   buffer->setValue( "docType", t.docType() );
+
+  dbID id = DocType::docTypeId( t.docType() );
+  buffer->setValue( "docTypeId", id.toString() );
   buffer->setValue( "textType", t.textTypeString() );
   buffer->setValue( "modDate", "systimestamp" );
 }

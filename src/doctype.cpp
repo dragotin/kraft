@@ -101,6 +101,20 @@ QStringList DocType::allLocalised()
   return re;
 }
 
+dbID DocType::docTypeId( const QString& docType )
+{
+  QSqlQuery q;
+  q.prepare( "SELECT docTypeID FROM DocTypes WHERE name=:name" );
+  q.bindValue( ":name", docType );
+  q.exec();
+  if ( q.next() ) {
+    int id = q.value( 0 ).toInt();
+    return dbID( id );
+  }
+  return dbID();
+
+}
+
 bool DocType::allowDemand()
 {
   bool re = false;
