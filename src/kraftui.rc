@@ -10,7 +10,7 @@
      <Action name="archived_open"/>
      <Action name="document_mail"/>
   </Menu>
-  <Menu name="data"><text>D&amp;ata</text>
+  <Menu name="settings"><text>Settings</text>
      <Action name="edit_tag_templates"/>
   </Menu>
 </MenuBar>
