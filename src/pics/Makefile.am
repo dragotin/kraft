@@ -4,5 +4,5 @@ kplantsplash_DATA = kplant_splash.png
 kraftsplashdir = $(kde_datadir)/kraft/pics
 kraftsplash_DATA = muckilogo_oS.png mucki_en_oS.png muckilogo_oS.png docoverviewbg.png
 
-KDE_ICON = AUTO
+KDE_ICON = kraft alternative demand 
 
