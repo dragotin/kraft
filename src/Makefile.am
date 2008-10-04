@@ -49,7 +49,7 @@ kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml -lctemplate -lpthrea
 kplant_SOURCES = brunsviewer.cpp brunsviewmain.cpp
 kplant_LDADD = libbruns.la $(LIB_KIO)
 
-EXTRA_DIST = kraftdoc.h kraftview.h kraftui.rc katalogview.rc kraft.desktop lo32-app-kange.png lo16-app-kange.png calcpart.cpp calcpart.h floskel.cpp floskel.h kraftglobals.h einheit.cpp einheit.h floskeltemplate.cpp floskeltemplate.h fixcalcpart.cpp fixcalcpart.h zeitcalcpart.cpp zeitcalcpart.h kraftdb.cpp kraftdb.h katalog.cpp templkatalog.cpp matkatalog.cpp matkatalog.h katalog.h templkatalog.h kataloglistview.cpp kataloglistview.h katalogview.h dbids.h unitmanager.h stockmaterial.h stockmaterialman.h materialcalcpart.h flostempldialog.h geld.h katalogman.h stdsatzman.h zeitcalcdialog.h fixcalcdialog.h mateditor.cpp mateditor.h matdatatable.cpp matdatatable.h matcalcdialog.h matcalcdialog.cpp templatesaverbase.cpp templatesaverbase.h templatesaverdb.cpp templatesaverdb.h 
+EXTRA_DIST = kraftdoc.h kraftview.h kraftui.rc katalogview.rc kraft.desktop calcpart.cpp calcpart.h floskel.cpp floskel.h kraftglobals.h einheit.cpp einheit.h floskeltemplate.cpp floskeltemplate.h fixcalcpart.cpp fixcalcpart.h zeitcalcpart.cpp zeitcalcpart.h kraftdb.cpp kraftdb.h katalog.cpp templkatalog.cpp matkatalog.cpp matkatalog.h katalog.h templkatalog.h kataloglistview.cpp kataloglistview.h katalogview.h dbids.h unitmanager.h stockmaterial.h stockmaterialman.h materialcalcpart.h flostempldialog.h geld.h katalogman.h stdsatzman.h zeitcalcdialog.h fixcalcdialog.h mateditor.cpp mateditor.h matdatatable.cpp matdatatable.h matcalcdialog.h matcalcdialog.cpp templatesaverbase.cpp templatesaverbase.h templatesaverdb.cpp templatesaverdb.h 
 
 KDE_ICON = kraft
 

@@ -101,7 +101,7 @@ TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
   enableButtonSeparator( true );
   QWidget *w = makeVBoxMainWidget();
   ( void ) new QLabel( QString::fromLatin1( "<h2>" )
-                       + i18n( "<h2>Edit Tag Templates</h2>" ) + QString::fromLatin1( "</h2>" ), w );
+                       + i18n( "Edit Tag Templates" ) + QString::fromLatin1( "</h2>" ), w );
   ( void ) new QLabel( i18n( "Add, edit and remove tag templates for use in the documents." ), w );
 
   mListView = new KListView( w );
