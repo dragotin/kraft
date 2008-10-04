@@ -102,7 +102,7 @@ TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
   QWidget *w = makeVBoxMainWidget();
   ( void ) new QLabel( QString::fromLatin1( "<h2>" )
                        + i18n( "<h2>Edit Tag Templates</h2>" ) + QString::fromLatin1( "</h2>" ), w );
-  ( void ) new QLabel( i18n( "Add, edit and remoave tag templates for use in the documents." ), w );
+  ( void ) new QLabel( i18n( "Add, edit and remove tag templates for use in the documents." ), w );
 
   mListView = new KListView( w );
   mListView->setItemMargin( 3 );

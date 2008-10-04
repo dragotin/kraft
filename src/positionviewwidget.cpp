@@ -196,7 +196,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
 
     /* Fill and set the extra discount selection combo */
     const QString allPos = i18n( "all items" );
-    mDiscountTag->insertEntry( allPos, i18n( "Overall Position Discout" ) );
+    mDiscountTag->insertEntry( allPos, i18n( "Overall Position Discount" ) );
     QStringList taglist = TagTemplateMan::self()->allTagTemplates();
     QString currentEntry = allPos;
 
