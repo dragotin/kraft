@@ -1,0 +1,42 @@
+<body>
+<p>
+Datum: {{DATE}}
+</p><p>
+Type: {{DOC_TYPE}}
+</p><p>
+Adresse: {{ADDRESS}}
+</p><p>
+
+DocNo: {{DOCNO}}
+</p><p>
+<p>
+Salut: {{SALUT}}
+</p>
+Pretext: {{PRETEXT}}
+</p><p>
+
+<table>
+{{#POSITIONS}}
+<tr>
+<td>{{NUMBER}}</td>
+<td colspan="2">{{TEXT}}</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>{{AMOUNT}} {{UNIT}}</td>
+<td>je {{SINGLE_PRICE}}</td>
+<td><b>{{PRICE}}</b></td>
+</tr>
+{{/POSITIONS}}
+</table>
+
+<p>Netto sum: {{NETTOSUM}}</p>
+<p>plus {{VAT}}% VAT: {{VATSUM}}</p>
+<p>Brutto sum: {{BRUTTOSUM}}</p>
+<p>
+Posttext: {{POSTTEXT}}
+</p><p>
+Goodbye: {{GOODBYE}}
+</p>
+</body>

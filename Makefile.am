@@ -1,1 +1,1 @@
-SUBDIRS = src database reports
+SUBDIRS = src database reports importfilter
