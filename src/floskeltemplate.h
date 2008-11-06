@@ -113,7 +113,16 @@ private: // Private methods
 
 };
 
-typedef QPtrList<FloskelTemplate> FloskelTemplateList;
+class FloskelTemplateList :public QPtrList<FloskelTemplate>
+{
+public:
+  FloskelTemplateList() { }
+
+protected:
+  int compareItems( QPtrCollection::Item, QPtrCollection::Item );
+};
+
+// typedef QPtrList<FloskelTemplate> FloskelTemplateList;
 typedef QPtrListIterator<FloskelTemplate> FloskelTemplateListIterator;
 
 

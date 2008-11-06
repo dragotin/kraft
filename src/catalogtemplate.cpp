@@ -46,3 +46,38 @@ QString CatalogTemplate::calcKindString() const
     return i18n("AutoCalc");
   else return i18n( "Err: Unknown type %d").arg(m_calcType);
 }
+
+
+// ================================================================================
+
+CatalogTemplateList::CatalogTemplateList()
+ :QPtrList<CatalogTemplate>()
+{
+
+}
+
+#if 0
+CatalogTemplateList::~CatalogTemplateList
+{
+
+}
+#endif
+
+// int CatalogTemplateList::compareItems( QPtrCollection::Item i1, QPtrCollection::Item i2 )
+int CatalogTemplateList::compareItems( CatalogTemplate *ct1,  CatalogTemplate *ct2 )
+{
+  // CatalogTemplate* ct1 = static_cast<CatalogTemplate*>( i1 );
+  // CatalogTemplate* ct2 = static_cast<CatalogTemplate*>( i2 );
+
+  kdDebug() << "********************************* In Sort!" << endl;
+
+  if ( !( ct1 && ct2 ) ) return 0;
+
+  int sortKey1 = ct1->sortKey();
+  int sortKey2 = ct2->sortKey();
+
+  if ( sortKey1 == sortKey2 ) return 0;
+  if ( sortKey1 < sortKey2 ) return -1;
+  return 1;
+
+}

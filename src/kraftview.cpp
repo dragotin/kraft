@@ -82,6 +82,7 @@
 #include "doctype.h"
 #include "catalogtemplate.h"
 #include "extendedcombo.h"
+#include "importitemdialog.h"
 
 #include <qtimer.h>
 #include "doclocaledialog.h"
@@ -296,6 +297,7 @@ void KraftView::setupPositions()
 
     connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddPosition() ) );
     connect( edit, SIGNAL( addExtraClicked() ), SLOT( slotAddExtraPosition() ) );
+    connect( edit, SIGNAL( importItemsClicked() ), SLOT( slotImportItems() ) );
 
 }
 
@@ -898,6 +900,20 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
   widget->slotModified();
   slotFocusPosition( widget, newpos );
   refreshPostCard();
+}
+
+void KraftView::slotImportItems()
+{
+  kdDebug() << "We're importing!" << endl;
+
+  ImportItemDialog dia( this );
+  DocPositionList list = currentPositionList();
+  int newpos = 1;
+  dia.setPositionList( list, newpos );
+
+  if ( dia.exec() ) {
+    kdDebug() << "Have finalised" << endl;
+  }
 }
 
 void KraftView::slotAddExtraPosition()

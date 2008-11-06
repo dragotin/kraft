@@ -53,6 +53,7 @@ public slots:
   void slotNewDoc( DocGuardedPtr );
   void slotUpdateDoc( DocGuardedPtr );
   void slotDocOpenRequest( QListViewItem * );
+
   void slotRMB( QListViewItem*, const QPoint&, int );
   void slotBuildView();
 
@@ -64,6 +65,7 @@ protected slots:
 signals:
   void createDocument();
   void openDocument( const QString& );
+  void viewDocument( const QString& );
   void copyDocument( const QString& );
   void openArchivedDocument( const ArchDocDigest& );
   void docSelected( const QString& );

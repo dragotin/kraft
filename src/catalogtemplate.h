@@ -41,13 +41,25 @@ public:
   CalculationType calcKind();
   void setCalculationType( CalculationType t );
   QString calcKindString() const ;
-
+  int sortKey() { return mSortKey; }
+  void setSortKey( int k ) { mSortKey = k; }
 protected:
   CalculationType m_calcType;
-
+  int mSortKey;
 };
 
-typedef QPtrList<CatalogTemplate> CatalogTemplateList;
+class CatalogTemplateList : public QPtrList<CatalogTemplate>
+{
+public:
+  CatalogTemplateList();
+  // virtual ~CatalogTemplateList();
+
+protected:
+  // int compareItems( QPtrCollection::Item, QPtrCollection::Item );
+  virtual int compareItems( CatalogTemplate*, CatalogTemplate* );
+};
+
+// typedef QPtrList<CatalogTemplate> CatalogTemplateList;
 
 #endif
 

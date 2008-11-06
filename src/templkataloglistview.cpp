@@ -45,6 +45,10 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
     // addColumn( i18n("ID"));
     setSortColumn( -1 );
     setColumnAlignment ( priceCol, Qt::AlignRight);
+
+    setAcceptDrops( true );
+    setDragEnabled( true );
+    setDropVisualizer(true);
 }
 
 /*
@@ -77,7 +81,7 @@ void TemplKatalogListView::addCatalogDisplay( const QString& katName )
 
         /* iterate over all templates */
         while ( (tmpl = flosIt.current()) != 0 ) {
-            /* create a new item as the child of katalog entry */
+            /* create a ew item as the child of katalog entry */
             addFlosTemplate( katItem, tmpl );
             if ( mShowCalcParts )
               addCalcParts( tmpl );
@@ -95,6 +99,9 @@ KListViewItem* TemplKatalogListView::addFlosTemplate( KListViewItem *parentItem,
     KListViewItem *listItem = new KListViewItem( parentItem );
     slFreshupItem( listItem, tmpl);
     tmpl->setListViewItem( listItem );
+
+    listItem->setDragEnabled( true );
+    listItem->setDropEnabled( true );
 
     listItem->setMultiLinesEnabled(true);
 

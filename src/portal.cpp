@@ -67,6 +67,7 @@
 #include "newdocassistant.h"
 #include "doctype.h"
 #include "tagtemplatesdialog.h"
+#include "kraftview_ro.h"
 
 #define ID_STATUS_MSG 1
 
@@ -135,7 +136,11 @@ void Portal::initActions()
                                          SLOT( slotArchivedDocExecuted() ), actionCollection(),
                                          "archived_open" );
 
-  actOpenDocument = new KAction(i18n("&Open Document"),  "fileopen",
+  actViewDocument = new KAction(i18n("&Show Document"),  "filefind",
+                                KStdAccel::shortcut(KStdAccel::Reload), this,
+                                SLOT( slotViewDocument() ), actionCollection(), "document_view" );
+
+  actOpenDocument = new KAction(i18n("&Edit Document"),  "fileopen",
                                 KStdAccel::shortcut(KStdAccel::Open), this,
                                 SLOT( slotOpenDocument() ), actionCollection(), "document_open" );
 
@@ -158,11 +163,13 @@ void Portal::initActions()
   actCopyDocument->setStatusText( i18n( "Creates a new document which is a copy of the selected document" ) );
   actFollowDocument->setStatusText( i18n( "Create a followup document for the current document" ) );
   actOpenDocument->setStatusText( i18n( "Opens the document for editing" ) );
+  actViewDocument->setStatusText( i18n( "Opens a read only view on the document." ) );
   actMailDocument->setStatusText( i18n( "Send document per mail" ) );
 
   actOpenArchivedDocument->setStatusText( i18n( "Open a viewer on an archived document" ) );
   setStandardToolBarMenuEnabled( true );
   actOpenDocument->setEnabled( false );
+  actViewDocument->setEnabled( false );
   actPrintDocument->setEnabled( false );
   actCopyDocument->setEnabled( false );
   actFollowDocument->setEnabled( false );
@@ -198,6 +205,7 @@ void Portal::initView()
     // connect the widget to your document to display document contents.
     m_portalView = new PortalView( this, "mainview", KJanusWidget::IconList );
 
+    actViewDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
     actCopyDocument->plug( m_portalView->docDigestView()->contextMenu() );
@@ -219,6 +227,8 @@ void Portal::initView()
              this, SLOT( slotCopyDocument( const QString& ) ) );
     connect( m_portalView, SIGNAL( openDocument( const QString& ) ),
              this, SLOT( slotOpenDocument( const QString& ) ) );
+    connect( m_portalView, SIGNAL( viewDocument( const QString& ) ),
+             this, SLOT( slotViewDocument( const QString& ) ) );
     connect( m_portalView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
              this, SLOT( slotOpenArchivedDoc( const ArchDocDigest& ) ) );
     connect( m_portalView, SIGNAL( printDocument( const QString& ) ),
@@ -275,6 +285,7 @@ void Portal::slotStartupChecks()
     actPrintDocument->setEnabled( false );
     actCopyDocument->setEnabled( false );
     actOpenDocument->setEnabled( false );
+    actViewDocument->setEnabled( false );
     actOpenArchivedDocument->setEnabled( false );
     actMailDocument->setEnabled( false );
 
@@ -408,6 +419,28 @@ void Portal::slotOpenDocument()
   slotOpenDocument( locId );
 }
 
+void Portal::slotViewDocument()
+{
+  QString locId = m_portalView->docDigestView()->currentDocumentId();
+  slotViewDocument( locId );
+}
+
+void Portal::slotViewDocument( const QString& id )
+{
+  QString locId = m_portalView->docDigestView()->currentDocumentId();
+
+  slotStatusMsg(i18n("Opening document to view..."));
+
+  if( !id.isEmpty() ) {
+    DocumentMan *docman = DocumentMan::self();
+    DocGuardedPtr doc = docman->openDocument( id );
+    createROView( doc );
+  }
+
+  slotStatusMsg(i18n("Ready."));
+
+}
+
 void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
 {
   busyCursor( true );
@@ -537,6 +570,7 @@ void Portal::slotDocumentSelected( const QString& doc )
 {
   kdDebug() << "a doc was selected: " << doc << endl;
   if( doc.isEmpty() ) {
+    actViewDocument->setEnabled( false );
     actOpenDocument->setEnabled( false );
     actPrintDocument->setEnabled( false );
     actCopyDocument->setEnabled( false );
@@ -544,6 +578,7 @@ void Portal::slotDocumentSelected( const QString& doc )
 
     actMailDocument->setEnabled( false );
   } else {
+    actViewDocument->setEnabled( true );
     actOpenDocument->setEnabled( true );
     actPrintDocument->setEnabled( true );
     actCopyDocument->setEnabled( true );
@@ -566,6 +601,7 @@ void Portal::slotArchivedDocSelected( const ArchDocDigest& )
 {
   // slotDocumentSelected( QString() );
   actOpenArchivedDocument->setEnabled( true );
+  actViewDocument->setEnabled( false );
   actOpenDocument->setEnabled( false );
   actPrintDocument->setEnabled( false );
   actMailDocument->setEnabled( false );
@@ -608,6 +644,26 @@ void Portal::createView( DocGuardedPtr doc )
     // pop first view to front
     kdDebug() << "There is already a view for this doc!" << endl;
   }
+}
+
+void Portal::createROView( DocGuardedPtr doc )
+{
+  if ( !doc ) return;
+
+  KraftViewRO *view = new KraftViewRO( this );
+  view->setup( doc );
+  // view->redrawDocument();
+  QSize s = KraftSettings::docViewSize();
+  if ( !s.isValid() ) {
+    s.setWidth( 640 );
+    s.setHeight( 400 );
+  }
+  view->setInitialSize( s );
+  view->show();
+
+  // doc->addView( view );
+  connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
+           this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
 }
 
 void Portal::slotViewClosed( bool success, DocGuardedPtr doc )

@@ -1,8 +1,8 @@
 /***************************************************************************
-             unitmanager  -
+  importitemdialog.h  - small dialog to import items into the document
                              -------------------
-    begin                : 2004-05-05
-    copyright            : (C) 2004 by Klaas Freitag
+    begin                : Nov 2008
+    copyright            : (C) 2008 Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,45 +14,34 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef IMPORTITEMDIALOG_H
+#define IMPORTITEMDIALOG_H
 
-#ifndef _UNITMANAGER_H
-#define _UNITMANAGER_H
+#include <kdialogbase.h>
+#include <qmap.h>
 
+#include "templtopositiondialogbase.h"
+#include "docposition.h"
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+class importToDocBase;
 
-// include files
-#include <qvaluevector.h>
-
-#include "einheit.h"
-/**
- *
- */
-
-// FIXME: How to identify the unit for piece?
-#define PIECE_UNIT_ID 6
-
-class UnitManager
+class ImportItemDialog: public KDialogBase
 {
+  Q_OBJECT
 
- 
 public:
-    UnitManager();
-    ~UnitManager();
+  ImportItemDialog( QWidget* );
+  ~ImportItemDialog();
 
-    static Einheit& getUnit( int id );
-    static QStringList allUnits();
-    static int getUnitIDSingular( const QString& einheit );
+  void setPositionList( DocPositionList, int );
+  
+protected:
+  QComboBox *getPositionCombo();
+
 private:
-    static void load();
-    static EinheitValueVector *m_units;
+  importToDocBase *mBaseWidget;
 
-    static Einheit *m_dummy;
+  QMap<int, QString> mTagMap;
 };
 
 #endif
-
-/* END */
-

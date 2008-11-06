@@ -74,6 +74,7 @@ int TemplKatalog::load()
         int templID = cur.value("TemplID").toInt();
         kdDebug() << "Loading template number " << templID << endl;
         int chapID = cur.value("chapterID").toInt();
+        int sortID = cur.value( "sortKey" ).toInt();
         int calcKind = cur.value("Preisart").toInt();
         double g = cur.value("EPreis").toDouble();
 
@@ -98,7 +99,7 @@ int TemplKatalog::load()
                                                      QString::fromUtf8(cur.value("Floskel").toCString()),
                                                      einheit, chapID, calcKind,
                                                      modDt, enterDt );
-
+        flos->setSortKey( sortID );
         flos->setGewinn( cur.value("Gewinn").toDouble());
         flos->setManualPrice( preis );
         bool tslice = cur.value("zeitbeitrag").toInt() > 0;
@@ -106,7 +107,7 @@ int TemplKatalog::load()
 
         loadCalcParts( flos );
 
-        m_flosList.append(flos);
+        m_flosList.inSort(flos);
     }
     return cnt;
 }

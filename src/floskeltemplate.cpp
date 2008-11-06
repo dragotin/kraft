@@ -399,3 +399,21 @@ QDomElement FloskelTemplate::createDomNode( QDomDocument doc,
 }
 #endif
 
+int FloskelTemplateList::compareItems( QPtrCollection::Item i1, QPtrCollection::Item i2 )
+// int compareItems( FloskelTemplate* ct1, FloskelTemplate* ct2 )
+{
+  kdDebug() << "********************************* In Floskel-Sort!" << endl;
+  CatalogTemplate* ct1 = static_cast<CatalogTemplate*>( i1 );
+  CatalogTemplate* ct2 = static_cast<CatalogTemplate*>( i2 );
+
+  if ( !( ct1 && ct2 ) ) return 0;
+
+  int sortKey1 = ct1->sortKey();
+  int sortKey2 = ct2->sortKey();
+
+  if ( sortKey1 == sortKey2 ) return 0;
+  if ( sortKey1 < sortKey2 ) return 1;
+  return -1;
+
+}
+

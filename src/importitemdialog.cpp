@@ -1,0 +1,109 @@
+/***************************************************************************
+   importitemdialog.h  - small dialog to import items into the document
+                             -------------------
+    begin                : Nov 2008
+    copyright            : (C) 2008 Klaas Freitag
+    email                : freitag@kde.org
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "importitemdialog.h"
+
+// include files for Qt
+#include <qvbox.h>
+#include <qtextedit.h>
+#include <qlabel.h>
+#include <qcombobox.h>
+#include <qcheckbox.h>
+#include <qbuttongroup.h>
+#include <qtooltip.h>
+#include <qmap.h>
+
+// include files for KDE
+#include <klocale.h>
+#include <kdebug.h>
+
+#include "importtodocbase.h"
+#include "defaultprovider.h"
+#include "kraftsettings.h"
+#include "tagman.h"
+
+ImportItemDialog::ImportItemDialog( QWidget *parent )
+  : KDialogBase( parent, "IMPORTITEMDIALOG", true, i18n( "Import Items From File" ),
+                 Ok | Cancel )
+{
+  mBaseWidget = new importToDocBase( this );
+  QWidget *w = mBaseWidget;
+
+  setMainWidget( w );
+
+  // Fill the tags list
+  QButtonGroup *group = mBaseWidget->mTagGroup;
+
+  group->setColumns( 1 );
+  QStringList tags = TagTemplateMan::self()->allTagTemplates();
+  int c = 0;
+
+  for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
+    QCheckBox *cb = new QCheckBox( *it, group );
+    QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
+    QToolTip::add( cb, desc );
+    group->insert( cb, c );
+    mTagMap[c] = *it;
+    c++;
+  }
+}
+
+ImportItemDialog::~ImportItemDialog()
+{
+
+}
+
+QComboBox *ImportItemDialog::getPositionCombo()
+{
+  return mBaseWidget->dmPositionCombo;
+}
+
+void ImportItemDialog::setPositionList( DocPositionList list, int intendedPos )
+{
+  DocPositionBase *dpb;
+  if ( ! getPositionCombo() ) {
+    kdError() << "Can not get a ptr to the position combo" << endl;
+    return;
+  }
+  QStringList strList;
+  strList << i18n( "the Header of the Document" );
+
+  for ( dpb = list.first(); dpb; dpb = list.next() ) {
+    DocPosition *dp = static_cast<DocPosition*>( dpb );
+    QString h = QString( "%1. %2" ).arg( list.posNumber( dp ) ).arg( dp->text() );
+    if ( h.length() > 50 ) {
+      h = h.left( 50 );
+      h += i18n( "..." );
+    }
+    strList.append( h );
+  }
+
+  getPositionCombo()->insertStringList( strList );
+  getPositionCombo()->setCurrentItem( intendedPos );
+}
+
+
+
+#include "importitemdialog.moc"
+
+/* END */
+

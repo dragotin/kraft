@@ -19,6 +19,8 @@ public:
 signals:
   void addPositionClicked();
   void addExtraClicked();
+  void importItemsClicked();
+
 private:
   KraftViewScroll *m_positionScroll;
 };

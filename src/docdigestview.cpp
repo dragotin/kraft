@@ -266,6 +266,18 @@ void DocDigestView::setupListViewItemFromDoc( DocGuardedPtr doc, QListViewItem* 
   item->setText( 5, doc->ident() );
 }
 
+#if 0
+void DocDigestView::slotDocViewRequest( QListViewItem *item )
+{
+  QString id = mDocIdDict[ item ];
+  if( ! id.isEmpty() ) {
+    kdDebug() << "Opening document " << id << endl;
+
+    emit viewDocument( id );
+  }
+}
+#endif
+
 void DocDigestView::slotDocOpenRequest( QListViewItem *item )
 {
   QString id = mDocIdDict[ item ];

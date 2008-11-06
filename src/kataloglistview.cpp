@@ -92,6 +92,9 @@ void KatalogListView::setupChapters()
     m_root = new KListViewItem(this, cat->getName());
     m_root->setPixmap(0, SmallIcon("kraft"));
     m_root->setOpen(true);
+    m_root->setDragEnabled( false );
+    m_root->setDropEnabled( false );
+
     repaint();
     const QStringList chapters = cat->getKatalogChapters( true );
     kdDebug() << "Have count of chapters: " << chapters.size() << endl;
@@ -111,14 +114,6 @@ void KatalogListView::setupChapters()
         katItem->setOpen( true );
       }
     }
-
-    #if 0
-    KListViewItem *katItem = new KListViewItem( m_root, catalog->chapterName( dbID() ) );
-    katItem->setText( 4, QString::number( -1 ) );
-    m_catalogDict.insert( -1, katItem );
-    katItem->setPixmap( 0,  SmallIcon( "folder_inbox" ) );
-    #endif
-
 }
 
 KListViewItem *KatalogListView::chapterItem( const QString& chapName )

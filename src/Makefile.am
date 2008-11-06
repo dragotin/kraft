@@ -15,7 +15,7 @@ geld.cpp einheit.cpp katalogsettings.kcfgc kraftsettings.kcfgc attribute.cpp
 libbruns_la_LDFLAGS = $(KDE_RPATH) $(all_libraries) -version-info 1:0:0 -no-undefined
 libbruns_la_LIBADD = $(LIB_KIO) $(all_libraries)
 
-bin_PROGRAMS = kraft kplant
+bin_PROGRAMS = kraft kplant imporst
 
 ## INCLUDES were found outside kdevelop specific part
 
@@ -42,12 +42,16 @@ kraft_SOURCES = templkatalog.cpp docposition.cpp matkatalog.cpp zeitcalcpart.cpp
 	docassistant.cpp texteditdialog.cpp texteditbase.ui templateprovider.cpp \
 	headertemplateprovider.cpp footertemplateprovider.cpp catalogtemplateprovider.cpp \
 	addresstemplateprovider.cpp texttemplate.cpp doclocaledialog.cpp extendedcombo.cpp \
-	tagman.cpp positiontagdialog.cpp tagtemplatesdialog.cpp
+	tagman.cpp positiontagdialog.cpp tagtemplatesdialog.cpp kraftview_ro.cpp importfilter.cpp \
+	importitemdialog.cpp importtodocbase.ui
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml -lctemplate -lpthread
 
 kplant_SOURCES = brunsviewer.cpp brunsviewmain.cpp
 kplant_LDADD = libbruns.la $(LIB_KIO)
+
+imporst_SOURCES = importfilter.cpp imporst.cpp docposition.cpp unitmanager.cpp
+imporst_LDADD = libbruns.la
 
 EXTRA_DIST = kraftdoc.h kraftview.h kraftui.rc katalogview.rc kraft.desktop calcpart.cpp calcpart.h floskel.cpp floskel.h kraftglobals.h einheit.cpp einheit.h floskeltemplate.cpp floskeltemplate.h fixcalcpart.cpp fixcalcpart.h zeitcalcpart.cpp zeitcalcpart.h kraftdb.cpp kraftdb.h katalog.cpp templkatalog.cpp matkatalog.cpp matkatalog.h katalog.h templkatalog.h kataloglistview.cpp kataloglistview.h katalogview.h dbids.h unitmanager.h stockmaterial.h stockmaterialman.h materialcalcpart.h flostempldialog.h geld.h katalogman.h stdsatzman.h zeitcalcdialog.h fixcalcdialog.h mateditor.cpp mateditor.h matdatatable.cpp matdatatable.h matcalcdialog.h matcalcdialog.cpp templatesaverbase.cpp templatesaverbase.h templatesaverdb.cpp templatesaverdb.h 
 
