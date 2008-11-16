@@ -1,0 +1,10 @@
+AMOUNT: COL(1)
+UNIT: COL(2)
+TEXT: COL(3)
+UNIT_PRICE: COL(4)
+
+NAME: Standard Import
+DESCRIPTION: Simple Standard Importfilter for four columns:<br/> Amount, Unit, Text, Single Price
+ENCODING: windows-1250
+SEPARATOR: ;
+

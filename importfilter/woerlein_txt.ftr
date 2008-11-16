@@ -5,7 +5,7 @@ UNIT: Stück
 UNIT_PRICE: COL(6)
 
 NAME: Wörlein Pflanzenkatalog Export
-DESCRIPTION: Importfilter for CSV exported Wörlein Pflanzenkatalog documents 
+DESCRIPTION: Importfilter for CSV exported <b>Wörlein Pflanzenkatalog</b> documents 
 ENCODING: windows-1250
 SEPARATOR: ;
 TAGS: plants

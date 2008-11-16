@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>488</width>
-            <height>259</height>
+            <width>524</width>
+            <height>277</height>
         </rect>
     </property>
     <property name="caption">
@@ -75,13 +75,85 @@
                                     <property name="name">
                                         <cstring>layout10</cstring>
                                     </property>
-                                    <grid>
+                                    <vbox>
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
-                                        <widget class="QLayoutWidget" row="4" column="0">
+                                        <widget class="QLabel">
                                             <property name="name">
-                                                <cstring>layout6</cstring>
+                                                <cstring>textLabel3_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Select a &amp;File to import from:</string>
+                                            </property>
+                                            <property name="buddy" stdset="0">
+                                                <cstring>mFileRequester</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="KURLRequester">
+                                            <property name="name">
+                                                <cstring>mFileRequester</cstring>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLayoutWidget">
+                                            <property name="name">
+                                                <cstring>layout8</cstring>
+                                            </property>
+                                            <hbox>
+                                                <property name="name">
+                                                    <cstring>unnamed</cstring>
+                                                </property>
+                                                <widget class="QLabel">
+                                                    <property name="name">
+                                                        <cstring>textLabel1</cstring>
+                                                    </property>
+                                                    <property name="text">
+                                                        <string>Import &amp;Schema:</string>
+                                                    </property>
+                                                    <property name="buddy" stdset="0">
+                                                        <cstring>mSchemaCombo</cstring>
+                                                    </property>
+                                                </widget>
+                                                <widget class="QComboBox">
+                                                    <property name="name">
+                                                        <cstring>mSchemaCombo</cstring>
+                                                    </property>
+                                                </widget>
+                                            </hbox>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>mSchemaInfo</cstring>
+                                            </property>
+                                            <property name="minimumSize">
+                                                <size>
+                                                    <width>0</width>
+                                                    <height>66</height>
+                                                </size>
+                                            </property>
+                                            <property name="paletteForegroundColor">
+                                                <color>
+                                                    <red>104</red>
+                                                    <green>104</green>
+                                                    <blue>104</blue>
+                                                </color>
+                                            </property>
+                                            <property name="margin">
+                                                <number>5</number>
+                                            </property>
+                                            <property name="text">
+                                                <string>this is interesting information about the selected schema</string>
+                                            </property>
+                                            <property name="textFormat">
+                                                <enum>RichText</enum>
+                                            </property>
+                                            <property name="alignment">
+                                                <set>WordBreak|AlignTop</set>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLayoutWidget">
+                                            <property name="name">
+                                                <cstring>layout9</cstring>
                                             </property>
                                             <hbox>
                                                 <property name="name">
@@ -103,123 +175,9 @@
                                                         <cstring>dmPositionCombo</cstring>
                                                     </property>
                                                 </widget>
-                                                <spacer>
-                                                    <property name="name">
-                                                        <cstring>spacer1</cstring>
-                                                    </property>
-                                                    <property name="orientation">
-                                                        <enum>Horizontal</enum>
-                                                    </property>
-                                                    <property name="sizeType">
-                                                        <enum>Expanding</enum>
-                                                    </property>
-                                                    <property name="sizeHint">
-                                                        <size>
-                                                            <width>61</width>
-                                                            <height>20</height>
-                                                        </size>
-                                                    </property>
-                                                </spacer>
                                             </hbox>
                                         </widget>
-                                        <widget class="QLabel" row="2" column="0">
-                                            <property name="name">
-                                                <cstring>textLabel3_2</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>Select a &amp;File to import from:</string>
-                                            </property>
-                                            <property name="buddy" stdset="0">
-                                                <cstring>mFileRequester</cstring>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLayoutWidget" row="0" column="0">
-                                            <property name="name">
-                                                <cstring>layout7</cstring>
-                                            </property>
-                                            <hbox>
-                                                <property name="name">
-                                                    <cstring>unnamed</cstring>
-                                                </property>
-                                                <spacer>
-                                                    <property name="name">
-                                                        <cstring>spacer5</cstring>
-                                                    </property>
-                                                    <property name="orientation">
-                                                        <enum>Horizontal</enum>
-                                                    </property>
-                                                    <property name="sizeType">
-                                                        <enum>Expanding</enum>
-                                                    </property>
-                                                    <property name="sizeHint">
-                                                        <size>
-                                                            <width>101</width>
-                                                            <height>20</height>
-                                                        </size>
-                                                    </property>
-                                                </spacer>
-                                                <widget class="QLabel">
-                                                    <property name="name">
-                                                        <cstring>textLabel1</cstring>
-                                                    </property>
-                                                    <property name="text">
-                                                        <string>Import &amp;Schema:</string>
-                                                    </property>
-                                                    <property name="buddy" stdset="0">
-                                                        <cstring>mSchemaCombo</cstring>
-                                                    </property>
-                                                </widget>
-                                                <widget class="QComboBox">
-                                                    <property name="name">
-                                                        <cstring>mSchemaCombo</cstring>
-                                                    </property>
-                                                </widget>
-                                            </hbox>
-                                        </widget>
-                                        <widget class="KURLRequester" row="3" column="0">
-                                            <property name="name">
-                                                <cstring>mFileRequester</cstring>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLayoutWidget" row="1" column="0">
-                                            <property name="name">
-                                                <cstring>layout8</cstring>
-                                            </property>
-                                            <hbox>
-                                                <property name="name">
-                                                    <cstring>unnamed</cstring>
-                                                </property>
-                                                <spacer>
-                                                    <property name="name">
-                                                        <cstring>spacer6</cstring>
-                                                    </property>
-                                                    <property name="orientation">
-                                                        <enum>Horizontal</enum>
-                                                    </property>
-                                                    <property name="sizeType">
-                                                        <enum>Expanding</enum>
-                                                    </property>
-                                                    <property name="sizeHint">
-                                                        <size>
-                                                            <width>51</width>
-                                                            <height>20</height>
-                                                        </size>
-                                                    </property>
-                                                </spacer>
-                                                <widget class="QLabel">
-                                                    <property name="name">
-                                                        <cstring>mSchemaInfo</cstring>
-                                                    </property>
-                                                    <property name="text">
-                                                        <string>this is interesting information about the selected schema</string>
-                                                    </property>
-                                                    <property name="alignment">
-                                                        <set>WordBreak|AlignVCenter</set>
-                                                    </property>
-                                                </widget>
-                                            </hbox>
-                                        </widget>
-                                    </grid>
+                                    </vbox>
                                 </widget>
                             </grid>
                         </widget>

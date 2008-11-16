@@ -32,11 +32,14 @@
 #include <qtooltip.h>
 #include <qmap.h>
 
+#include <kstandarddirs.h>
+
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
 
 #include "importtodocbase.h"
+#include "importfilter.h"
 #include "defaultprovider.h"
 #include "kraftsettings.h"
 #include "tagman.h"
@@ -65,6 +68,16 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
     mTagMap[c] = *it;
     c++;
   }
+
+  connect( mBaseWidget->mSchemaCombo, SIGNAL( activated( const QString& ) ),
+           SLOT( slotSchemaChanged( const QString& ) ) );
+  QString selectName = readFilterSpecs();
+
+  if ( ! KraftSettings::importItemsSchemaName().isEmpty() ) {
+    selectName = KraftSettings::importItemsSchemaName();
+  }
+  mBaseWidget->mSchemaCombo->setCurrentText( selectName );
+  slotSchemaChanged( selectName );
 }
 
 ImportItemDialog::~ImportItemDialog()
@@ -101,6 +114,41 @@ void ImportItemDialog::setPositionList( DocPositionList list, int intendedPos )
   getPositionCombo()->setCurrentItem( intendedPos );
 }
 
+QString ImportItemDialog::readFilterSpecs()
+{
+  KStandardDirs dir;
+
+  QString filter = QString::fromLatin1( "kraft/importfilter/positions/*.ftr" );
+  QStringList filters = dir.findAllResources( "data", filter );
+
+  QStringList combo;
+  for ( QStringList::Iterator it = filters.begin(); it != filters.end(); ++it ) {
+    kdDebug() << " -> Import filter file " << *it << endl;
+    DocPositionImportFilter filter;
+    filter.readDefinition( *it );
+    filter.parseDefinition();
+    combo << filter.name();
+    mFilterMap[filter.name()] = filter;
+  }
+  mBaseWidget->mSchemaCombo->insertStringList( combo );
+
+  return combo.first();
+}
+
+void ImportItemDialog::slotSchemaChanged( const QString& name )
+{
+  QString desc = mFilterMap[name].description();
+
+  mBaseWidget->mSchemaInfo->setText( desc );
+}
+
+void ImportItemDialog::slotOk()
+{
+  KraftSettings::setImportItemsSchemaName( mBaseWidget->mSchemaCombo->currentText() );
+  KraftSettings::writeConfig();
+
+  KDialogBase::slotOk();
+}
 
 
 #include "importitemdialog.moc"

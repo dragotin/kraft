@@ -37,6 +37,9 @@ public:
   void setStrict( bool _strict ) { mStrict = _strict; }
   bool strict() { return mStrict; }
 
+  QString name() { return mName; }
+  QString description() { return mDescription; }
+
 protected:
   bool recode( const QString& );
 

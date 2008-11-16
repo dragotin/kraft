@@ -34,31 +34,34 @@ ImportFilter::ImportFilter()
 
 bool ImportFilter::readDefinition( const QString& name )
 {
-  KStandardDirs stdDirs;
-  QString defFileName = QString( name ).lower();
-  QString findFile = kdeStdDirPath() + defFileName;
+  QString defFile = name;
+  if ( ! name.startsWith( "/" ) ) {
+    KStandardDirs stdDirs;
+    QString defFileName = QString( name ).lower();
+    QString findFile = kdeStdDirPath() + defFileName;
 
-  kdDebug() << "KDE StdDir Path: " << findFile << endl;
-  QString defFile = stdDirs.findResource( "data", findFile );
-  if ( defFile.isEmpty() ) {
-    mError = i18n( "Unable to find filter called %1" ).arg( name );
-    return false;
-  } else {
-    kdDebug() << "Reading definition file " << defFile << endl;
-    QFile f( defFile );
-    if ( !f.open( IO_ReadOnly ) ) {
-      mError = i18n( "Could not open the definition file!" );
+    kdDebug() << "KDE StdDir Path: " << findFile << endl;
+    defFile = stdDirs.findResource( "data", findFile );
+    if ( defFile.isEmpty() ) {
+      mError = i18n( "Unable to find filter called %1" ).arg( name );
       return false;
     }
-
-    QTextStream t( &f );
-    t.setEncoding(QTextStream::UnicodeUTF8);
-
-    while ( !t.atEnd() ) {
-      mDefinition << t.readLine();
-    }
-    f.close();
   }
+
+  kdDebug() << "Reading definition file " << defFile << endl;
+  QFile f( defFile );
+  if ( !f.open( IO_ReadOnly ) ) {
+    mError = i18n( "Could not open the definition file!" );
+    return false;
+  }
+
+  QTextStream t( &f );
+  t.setEncoding(QTextStream::UnicodeUTF8);
+
+  while ( !t.atEnd() ) {
+    mDefinition << t.readLine();
+  }
+  f.close();
   return true;
 }
 

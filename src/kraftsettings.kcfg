@@ -74,6 +74,9 @@
     <entry name="InsertTemplChapterName" type="String">
       <label>The name of the catalog chapter where to store new templates in by default</label>
     </entry>  
+    <entry name="ImportItemsSchemaName" type="String">
+      <label>The name of the last used import schema for items.</label>
+    </entry>  
   </group>
 
   <group name="document">

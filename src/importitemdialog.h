@@ -22,6 +22,7 @@
 
 #include "templtopositiondialogbase.h"
 #include "docposition.h"
+#include "importfilter.h"
 
 class importToDocBase;
 
@@ -35,12 +36,19 @@ public:
 
   void setPositionList( DocPositionList, int );
   
+public slots:
+  void slotOk();
+
+protected slots:
+  void slotSchemaChanged( const QString& );
+
 protected:
   QComboBox *getPositionCombo();
+  QString readFilterSpecs();
 
 private:
   importToDocBase *mBaseWidget;
-
+  QMap<QString, DocPositionImportFilter> mFilterMap;
   QMap<int, QString> mTagMap;
 };
 
