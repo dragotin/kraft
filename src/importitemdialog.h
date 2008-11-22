@@ -35,7 +35,9 @@ public:
   ~ImportItemDialog();
 
   void setPositionList( DocPositionList, int );
+  DocPositionList positionList();
   
+  QComboBox *getPositionCombo();
 public slots:
   void slotOk();
 
@@ -43,7 +45,6 @@ protected slots:
   void slotSchemaChanged( const QString& );
 
 protected:
-  QComboBox *getPositionCombo();
   QString readFilterSpecs();
 
 private:

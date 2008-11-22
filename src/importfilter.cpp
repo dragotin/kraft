@@ -25,6 +25,8 @@
 #include "importfilter.h"
 #include "unitmanager.h"
 #include <qregexp.h>
+#include <kio/netaccess.h>
+#include <ktempfile.h>
 
 ImportFilter::ImportFilter()
   : mStrict( true )
@@ -106,12 +108,13 @@ bool DocPositionImportFilter::parseDefinition()
   for ( QStringList::Iterator it = mDefinition.begin(); it != mDefinition.end(); ++it ) {
     QString l = ( *it ).stripWhiteSpace();
 
-    if ( l.startsWith( "#" ) ) {
+    if ( l.isEmpty() || l.startsWith( "#" ) ) {
       // continue - whitespace....
     } else if ( l.startsWith( FILTER_TAG( "amount:", "amount of the item" ),  false ) ) {
       mAmount = ( l.right( l.length()-7 ) ).stripWhiteSpace();
     } else if ( l.startsWith( FILTER_TAG( "text:",  "The item text" ),  false ) ) {
       mText = ( l.right( l.length()-5 ) ).stripWhiteSpace();
+      mText.replace( "<br>", QChar( 0x0A ) );
     } else if ( l.startsWith( FILTER_TAG( "unit:",  "The item unit" ),  false ) ) {
       mUnit = ( l.right( l.length()-5 ) ).stripWhiteSpace();
     } else if ( l.startsWith( FILTER_TAG( "unit_price:", "unit price" ),  false ) ) {
@@ -151,9 +154,19 @@ void DocPositionImportFilter::debugDefinition()
   kdDebug() << "Separator: <" << mSeparator << ">" << endl;
 }
 
-DocPositionList DocPositionImportFilter::import( const QString& file )
+DocPositionList DocPositionImportFilter::import( const QString& inFile )
 {
   DocPositionList list;
+  bool copied = false;
+  QString file( inFile );
+
+  // in case we have to recode, the source file needs to be copied.
+  if ( !mEncoding.isEmpty() ) {
+    file = inFile+".tmp";
+    KIO::NetAccess::file_copy( inFile, file, -1, true, 0 );
+    copied = true;
+    kdDebug() << "Copied import src file to " << file << endl;
+  }
 
   QFile f( file );
   bool ok = true;
@@ -166,7 +179,7 @@ DocPositionList DocPositionImportFilter::import( const QString& file )
 
   if ( ok ) {
     if ( !f.open( IO_ReadOnly ) ) {
-      mError = i18n( "Could not open the definition file!" );
+      mError = i18n( "Could not open the import source file!" );
       ok = false;
     }
   }
@@ -189,7 +202,9 @@ DocPositionList DocPositionImportFilter::import( const QString& file )
     }
     f.close();
   }
-
+  if ( copied ) {
+    KIO::NetAccess::del( file, 0 );
+  }
   return list;
 }
 
@@ -206,7 +221,9 @@ DocPosition* DocPositionImportFilter::importDocPosition( const QString& l )
 
   // the text (mandatory)
   p->setText( replaceCOL( parts, mText ) );
-  int unitId = UnitManager::getUnitIDSingular( replaceCOL( parts, mUnit ) );
+  QString unit = replaceCOL( parts, mUnit );
+
+  int unitId = UnitManager::getUnitIDSingular( unit );
   if ( unitId > -1 ) {
     p->setUnit( UnitManager::getUnit( unitId ) );
   } else {

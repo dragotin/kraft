@@ -77,6 +77,9 @@
     <entry name="ImportItemsSchemaName" type="String">
       <label>The name of the last used import schema for items.</label>
     </entry>  
+    <entry name="ImportItemsFileName" type="String">
+      <label>The name of the last used input file for items.</label>
+    </entry>  
   </group>
 
   <group name="document">

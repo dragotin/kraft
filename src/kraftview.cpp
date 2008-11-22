@@ -908,11 +908,28 @@ void KraftView::slotImportItems()
 
   ImportItemDialog dia( this );
   DocPositionList list = currentPositionList();
-  int newpos = 1;
+  int newpos = list.count();
   dia.setPositionList( list, newpos );
 
   if ( dia.exec() ) {
     kdDebug() << "Have finalised" << endl;
+
+    DocPositionList list = dia.positionList();
+    kdDebug() << "Importlist amount of entries: " << list.count() << endl;
+    DocPositionBase *dpb =0;
+    int cnt = 0;
+    int newpos = dia.getPositionCombo()->currentItem();
+
+    for( dpb = list.first(); dpb; dpb = list.next() ) {
+      DocPosition *dp = static_cast<DocPosition*>( dpb );
+      kdDebug() << "XXXXXXXX " << dp->text() << endl;
+      DocPosition *newDp = new DocPosition();
+      *newDp = *dp;
+      PositionViewWidget *widget = createPositionViewWidget( newDp, newpos + cnt++ );
+      widget->slotModified();
+    }
+    refreshPostCard();
+
   }
 }
 

@@ -1,7 +1,7 @@
 AMOUNT: COL(1)
-TEXT: COL(2) - COL(3)\nCOL(4), COL(5)\nCOL(7)
+TEXT: COL(2) - COL(3)<br>COL(4), COL(5) cm<br>Rabatt: COL(7)%
 # TEXT: "%s - %s\n%s, %s\n%s", COL(2), COL(3), COL(4), COL(5), COL(7)
-UNIT: Stück
+UNIT: Stck.
 UNIT_PRICE: COL(6)
 
 NAME: Wörlein Pflanzenkatalog Export

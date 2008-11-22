@@ -32,11 +32,12 @@
 #include <qtooltip.h>
 #include <qmap.h>
 
-#include <kstandarddirs.h>
 
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
+#include <kstandarddirs.h>
+#include <kurlrequester.h>
 
 #include "importtodocbase.h"
 #include "importfilter.h"
@@ -78,6 +79,10 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
   }
   mBaseWidget->mSchemaCombo->setCurrentText( selectName );
   slotSchemaChanged( selectName );
+
+  if ( ! KraftSettings::importItemsFileName().isEmpty() ) {
+    mBaseWidget->mFileRequester->setURL( KraftSettings::importItemsFileName() );
+  }
 }
 
 ImportItemDialog::~ImportItemDialog()
@@ -145,11 +150,42 @@ void ImportItemDialog::slotSchemaChanged( const QString& name )
 void ImportItemDialog::slotOk()
 {
   KraftSettings::setImportItemsSchemaName( mBaseWidget->mSchemaCombo->currentText() );
+  KraftSettings::setImportItemsFileName( mBaseWidget->mFileRequester->url() );
   KraftSettings::writeConfig();
 
   KDialogBase::slotOk();
 }
 
+
+DocPositionList ImportItemDialog::positionList()
+{
+  QString url = mBaseWidget->mFileRequester->url();
+
+  DocPositionImportFilter filter = mFilterMap[mBaseWidget->mSchemaCombo->currentText()];
+
+  DocPositionList list = filter.import( url );
+
+  // get the tags
+  QButtonGroup *group = mBaseWidget->mTagGroup;
+  QStringList tags;
+
+  QMap<int, QString>::Iterator it;
+  for ( it = mTagMap.begin(); it != mTagMap.end(); ++it ) {
+    QCheckBox *b = static_cast<QCheckBox*>( group->find( it.key() ) );
+    if ( b->isChecked() ) tags.append( it.data() );
+  }
+
+  if ( tags.size() > 0 ) {
+    DocPositionBase *dpb;
+    for( dpb = list.first(); dpb; dpb = list.next() ) {
+      for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
+        dpb->setTag( *it );
+      }
+    }
+  }
+
+  return list;
+}
 
 #include "importitemdialog.moc"
 

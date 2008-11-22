@@ -56,14 +56,14 @@ void Attribute::setValue( const QVariant& var )
 
     q.prepare( query  );
 
-    kdDebug() << "Column: " << mIdCol << " | table " << mTable << " | string: " << mStringCol << ": " << query << endl;
+    // kdDebug() << "Column: " << mIdCol << " | table " << mTable << " | string: " << mStringCol << ": " << query << endl;
 
     if ( listValue() ) {
       QStringList idList;
       QStringList list = var.toStringList();
       for ( QStringList::Iterator valIt = list.begin(); valIt != list.end(); ++valIt ) {
         QString curValue = *valIt;
-        kdDebug() << "Searching for " << curValue << " in relation table" << endl;
+        // kdDebug() << "Searching for " << curValue << " in relation table" << endl;
         q.bindValue( ":string", curValue );
         q.exec();
         if ( q.next() ) {
