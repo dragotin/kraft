@@ -51,6 +51,9 @@ class DocType
   bool allowAlternative();
 
   QStringList follower();
+  int nextIdentId();
+  QString identTemplate();
+  QString numberCycleName();
 
   static dbID docTypeId( const QString& );
   protected:

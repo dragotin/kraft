@@ -27,6 +27,7 @@
 // application specific includes
 #include "doctype.h"
 #include "defaultprovider.h"
+#include "kraftsettings.h"
 
 /**
 @author Klaas Freitag
@@ -159,4 +160,92 @@ QStringList DocType::follower()
     }
   }
   return re;
+}
+
+QString DocType::numberCycleName()
+{
+  QString numberCycle( "default" );
+  if ( mAttributes.contains( "identNumberCycle" ) ) {
+    numberCycle = mAttributes["identNumberCycle"].value().toString();
+    kdDebug() << "DocType using special numbercycle " << numberCycle << endl;
+  }
+  return numberCycle;
+}
+
+int DocType::nextIdentId()
+{
+  QString numberCycle = numberCycleName();
+
+  if ( numberCycle.isEmpty() ) {
+    kdError() << "NumberCycle name is empty" << endl;
+    return -1;
+  }
+
+  QSqlQuery qLock;
+  qLock.exec( "LOCK TABLES numberCycles WRITE" );
+
+  QSqlQuery q;
+  q.prepare( "SELECT lastIdentNumber FROM numberCycles WHERE name=:name" );
+
+  int num = -1;
+  q.bindValue( ":name", numberCycle );
+  q.exec();
+  if ( q.next() ) {
+    num = 1+( q.value( 0 ).toInt() );
+    kdDebug() << "Got current number: " << num << endl;
+  }
+
+  QSqlQuery setQuery;
+  setQuery.prepare( "UPDATE numberCycles SET lastIdentNumber=:newNumber WHERE name=:name" );
+  setQuery.bindValue( ":name", numberCycle );
+  setQuery.bindValue( ":newNumber", num );
+  setQuery.exec();
+  if ( setQuery.isActive() ) {
+    kdDebug() << "Successfully created new id number for numbercycle " << numberCycle << ": " << num << endl;
+  }
+  qLock.exec( "UNLOCK TABLES" );
+
+  return num;
+}
+
+QString DocType::identTemplate()
+{
+  QSqlQuery q;
+  QString tmpl;
+  const QString defaultTempl = QString::fromLatin1( "%y%w-%i" );
+
+  QString numberCycle = numberCycleName();
+  if ( numberCycle.isEmpty() ) {
+    kdError() << "Numbercycle for doctype is empty, returning default" << endl;
+    return defaultTempl;
+  }
+  kdDebug() << "Picking ident Template for numberCycle " << numberCycle << endl;
+
+  q.prepare( "SELECT identTemplate FROM numberCycles WHERE name=:name" );
+
+  q.bindValue( ":name", numberCycle );
+  q.exec();
+  if ( q.next() ) {
+    tmpl = q.value( 0 ).toString();
+    kdDebug() << "Read ident template from database: " << tmpl << endl;
+  }
+  kdDebug() << "ERROR" << q.lastError().text() << endl;
+  if ( tmpl.isEmpty() ) {
+    // migration: If there is nothing yet in the database, check the local config and
+    // transfer the setting to the db
+    QString pattern = KraftSettings::self()->docIdent();
+    if ( pattern.isEmpty() ) {
+      // There is nothing in KConfig File, so we use our default from here.
+      pattern = defaultTempl;
+    }
+    kdDebug() << "Writing ident template to database: " << pattern << endl;
+    QSqlQuery insQuery;
+    insQuery.prepare( "UPDATE numberCycles SET identTemplate=:pattern WHERE name=:name" );
+    insQuery.bindValue( ":name", numberCycle );
+    insQuery.bindValue( ":pattern", pattern );
+    insQuery.exec();
+    tmpl = pattern;
+  }
+
+  return tmpl;
 }

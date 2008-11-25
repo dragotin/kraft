@@ -32,6 +32,7 @@
 #include "unitmanager.h"
 #include "dbids.h"
 #include "kraftsettings.h"
+#include "doctype.h"
 
 /* Table document:
  * +----------------+--------------+------+-----+-------------------+----------------+
@@ -93,11 +94,11 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     if( doc->isNew() ) {
       kdDebug() << "Doc is new, inserting" << endl;
       cur.insert();
+
       dbID id = KraftDB::self()->getLastInsertID();
       doc->setDocID( id );
-
       // get the uniq id and write it into the db
-      QString ident = generateDocumentIdent( id, doc );
+      QString ident = generateDocumentIdent( doc );
       doc->setIdent( ident );
       QSqlCursor cur2( "document" );
       cur2.select( QString( "docID=" + id.toString() ) );
@@ -125,7 +126,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
  * this method requires a database id because that is the only garanteed
  * unique part.
  */
-QString DocumentSaverDB::generateDocumentIdent( dbID id, KraftDoc *doc ) const
+QString DocumentSaverDB::generateDocumentIdent( KraftDoc *doc ) const
 {
   /*
    * The pattern may contain the following tags:
@@ -137,8 +138,13 @@ QString DocumentSaverDB::generateDocumentIdent( dbID id, KraftDoc *doc ) const
    * %i - the uniq identifier from db.
    * %type - the localised doc type (offer, invoice etc.)
    */
-  QString pattern = KraftSettings::self()->docIdent();
 
+  DocType dt( doc->docType() );
+  QString pattern = dt.identTemplate();
+  if ( pattern.find( "%i" ) == -1 ) {
+    kdWarning() << "No %i found in identTemplate, appending it to meet law needs!" << endl;
+    pattern += "-%i";
+  }
   QDate d = doc->date();
   KraftDB::StringMap m;
   int dummy;
@@ -147,7 +153,7 @@ QString DocumentSaverDB::generateDocumentIdent( dbID id, KraftDoc *doc ) const
   m[ "%w" ] = QString::number( d.weekNumber( &dummy ) );
   m[ "%d" ] = QString::number( d.day()  );
   m[ "%m" ] = QString::number( d.month() );
-  m[ "%i" ] = id.toString();
+  m[ "%i" ] = QString::number( dt.nextIdentId() );
   m[ "%c" ] = doc->addressUid();
   m[ "%type" ] = doc->docType();
 

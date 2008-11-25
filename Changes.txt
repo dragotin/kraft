@@ -1,3 +1,17 @@
+Changes since version 0.30: #########################################
+- added a read only view on documents, customizable with ctemplate 
+  as html page
+- added importing items from text files with configurable import 
+  filters, to enable usage of special software which is able to 
+  export text files
+- added document number cycles: The unique id of a document depends
+  on a unique number. Now there can be multiple number cycles which 
+  can be used by document types. Multiple doc types can use the same
+  number cycle, that means that for example all types of invoices 
+  count the same number cycle while offers are in another.
+
+   => released v. 0.31
+
 Changes since version 0.25: #########################################
 - introduced the extended combo box with explanation line for units.
 - added document item tagging
