@@ -252,13 +252,17 @@ void PositionViewWidget::slotUpdateTagToolTip()
 
 QString PositionViewWidget::extraDiscountTagRestriction()
 {
-  QString selection = mDiscountTag->currentText();
-  QString id;
-  QRegExp rx( "\\b(.+)-tagged\\b" );
-  if ( rx.search( selection ) > -1 ) {
-    id = rx.cap( 1 );
+  QStringList taglist = TagTemplateMan::self()->allTagTemplates();
+
+  uint currentItem = mDiscountTag->currentItem();
+  if ( currentItem > 0 && currentItem <= taglist.count() ) {
+    // subtract one for the "all items" entry in the combo box at first position
+    currentItem -= 1;
+    return taglist[currentItem];
+  } else {
+    kdDebug() << "taglist index possibly out of range!" << endl;
   }
-  return id;
+  return QString();
 }
 
 void PositionViewWidget::setLocale( KLocale *loc )
