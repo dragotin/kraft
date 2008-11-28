@@ -100,6 +100,7 @@ KraftViewRO::KraftViewRO(QWidget *parent, const char *name) :
   mGlobalVBox->setMargin( 3 );
 
   mHtmlView = new HtmlView( mGlobalVBox );
+  mHtmlView->setStylesheetFile( "docoverview.css" );
 }
 
 KraftViewRO::~KraftViewRO()
@@ -139,7 +140,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
   tmpl.setValue( DOC_RO_TAG( "ADDRESS" ), doc->address() );
   tmpl.setValue( DOC_RO_TAG( "DOCNO" ), doc->ident() );
   tmpl.setValue( DOC_RO_TAG( "PRETEXT" ), doc->preText() );
-  tmpl.setValue( DOC_RO_TAG( "POSTTTEXT" ), doc->postText() );
+  tmpl.setValue( DOC_RO_TAG( "POSTTEXT" ), doc->postText() );
   tmpl.setValue( DOC_RO_TAG( "SALUT" ), doc->salut() );
   tmpl.setValue( DOC_RO_TAG( "GOODBYE" ), doc->goodbye() );
 
@@ -188,9 +189,9 @@ void KraftViewRO::done( int r )
   KDialogBase::done( r );
 }
 
-void KraftViewRO::slotOk()
+void KraftViewRO::slotClose()
 {
-    kdDebug() << "Accept Slot hit!" << endl;
+    kdDebug() << "Close Slot hit!" << endl;
 
     KraftDoc *doc = getDocument();
 
@@ -198,17 +199,11 @@ void KraftViewRO::slotOk()
       kdDebug() << "ERR: No document available in view, return!" << endl;
       return;
     }
+    KraftSettings::self()->setRODocViewSize( size() );
+    KraftSettings::self()->writeConfig();
 
     emit viewClosed( true, m_doc );
-    KDialogBase::slotOk(  );
+    KDialogBase::slotClose(  );
 }
 
-#if 0
-void KraftViewRO::slotCancel()
-{
-  KraftDoc *doc = getDocument();
-  emit viewClosed( false, 0 );
-  KDialogBase::slotCancel();
-}
-#endif
 #include "kraftview_ro.moc"

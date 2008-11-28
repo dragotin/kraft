@@ -89,7 +89,7 @@ class KraftViewRO : public KDialogBase
   void setup( DocGuardedPtr );
 
   protected slots:
-    void slotOk();
+    void slotClose();
     // void slotCancel();
     void done( int );
 

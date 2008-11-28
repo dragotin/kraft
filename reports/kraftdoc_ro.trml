@@ -1,21 +1,19 @@
 <body>
-<p>
-Datum: {{DATE}}
-</p><p>
-Type: {{DOC_TYPE}}
-</p><p>
-Adresse: {{ADDRESS}}
-</p><p>
+<h2>Document Overview</h2>
 
-DocNo: {{DOCNO}}
-</p><p>
+<div>
+<table width="100%" border="0">
+<tr>
+ <td>{{ADDRESS}}</td>
+ <td align="right"><b>{{DOC_TYPE}}</b><br/>{{DATE}}<br/>{{DOCNO}}</td>
+</tr>
+</table>
 <p>
-Salut: {{SALUT}}
+{{SALUT}}
 </p>
-Pretext: {{PRETEXT}}
-</p><p>
-
-<table>
+{{PRETEXT}}
+</p>
+<table width="100%" border="0">
 {{#POSITIONS}}
 <tr>
 <td>{{NUMBER}}</td>
@@ -25,18 +23,19 @@ Pretext: {{PRETEXT}}
 <tr>
 <td></td>
 <td>{{AMOUNT}} {{UNIT}}</td>
-<td>je {{SINGLE_PRICE}}</td>
-<td><b>{{PRICE}}</b></td>
+<td align="right">je {{SINGLE_PRICE}}</td>
+<td align="right"><b>{{PRICE}}</b></td>
 </tr>
 {{/POSITIONS}}
+<tr><td colspan="4" align="right">____________________________</td></tr>
+<tr><td colspan="4" align="right">Netto Sum: {{NETTOSUM}}</td></tr>
+<tr><td colspan="4" align="right">plus {{VAT}}% VAT: {{VATSUM}}</td></tr>
+<tr><td colspan="4" align="right"><b>Brutto Sum: {{BRUTTOSUM}}</b></td></tr>
 </table>
-
-<p>Netto sum: {{NETTOSUM}}</p>
-<p>plus {{VAT}}% VAT: {{VATSUM}}</p>
-<p>Brutto sum: {{BRUTTOSUM}}</p>
 <p>
-Posttext: {{POSTTEXT}}
+{{POSTTEXT}}
 </p><p>
-Goodbye: {{GOODBYE}}
+{{GOODBYE}}
 </p>
+</div>
 </body>

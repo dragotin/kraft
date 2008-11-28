@@ -653,7 +653,7 @@ void Portal::createROView( DocGuardedPtr doc )
   KraftViewRO *view = new KraftViewRO( this );
   view->setup( doc );
   // view->redrawDocument();
-  QSize s = KraftSettings::docViewSize();
+  QSize s = KraftSettings::rODocViewSize();
   if ( !s.isValid() ) {
     s.setWidth( 640 );
     s.setHeight( 400 );
