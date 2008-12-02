@@ -26,6 +26,7 @@
 #include <qtextedit.h>
 #include <qcombobox.h>
 #include <qlayout.h>
+#include <qcheckbox.h>
 
 #include<kdialog.h>
 #include<klocale.h>
@@ -39,7 +40,7 @@
 #include "kraftdoc.h"
 #include "defaultprovider.h"
 #include "doctype.h"
-#include <qcheckbox.h>
+#include "doctypeedit.h"
 
 PrefsDialog::PrefsDialog( QWidget *parent)
     : KDialogBase( IconList,  i18n("Configure Kraft"), Ok|Cancel, Ok, parent,
@@ -157,6 +158,8 @@ void PrefsDialog::docTab()
   vboxLay->addWidget( mCbDocLocale );
 
   vboxLay->addWidget( new QWidget( topFrame ) );
+
+  vboxLay->addWidget( new DocTypeEditBase( topFrame ) );
 }
 
 void PrefsDialog::slotTextChanged( const QString& )

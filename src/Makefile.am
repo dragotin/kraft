@@ -43,7 +43,7 @@ kraft_SOURCES = templkatalog.cpp docposition.cpp matkatalog.cpp zeitcalcpart.cpp
 	headertemplateprovider.cpp footertemplateprovider.cpp catalogtemplateprovider.cpp \
 	addresstemplateprovider.cpp texttemplate.cpp doclocaledialog.cpp extendedcombo.cpp \
 	tagman.cpp positiontagdialog.cpp tagtemplatesdialog.cpp kraftview_ro.cpp importfilter.cpp \
-	importitemdialog.cpp importtodocbase.ui
+	importitemdialog.cpp importtodocbase.ui doctypeedit.ui
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml -lctemplate -lpthread
 
