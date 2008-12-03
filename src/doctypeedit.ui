@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>461</width>
-            <height>262</height>
+            <width>484</width>
+            <height>291</height>
         </rect>
     </property>
     <property name="caption">
@@ -21,143 +21,162 @@
         </property>
         <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>layout12</cstring>
             </property>
-            <vbox>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&lt;h2&gt;Available Document Types&lt;/h2&gt;</string>
-                    </property>
-                </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout5</cstring>
+                        <cstring>layout2</cstring>
                     </property>
-                    <hbox>
+                    <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout2</cstring>
-                            </property>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
+                        <widget class="QListBox">
+                            <item>
+                                <property name="text">
+                                    <string>New Item</string>
                                 </property>
-                                <widget class="QListBox">
-                                    <item>
-                                        <property name="text">
-                                            <string>New Item</string>
-                                        </property>
-                                    </item>
-                                    <property name="name">
-                                        <cstring>mTypeListBox</cstring>
-                                    </property>
-                                </widget>
-                                <widget class="QLayoutWidget">
-                                    <property name="name">
-                                        <cstring>layout1</cstring>
-                                    </property>
-                                    <hbox>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <widget class="QPushButton">
-                                            <property name="name">
-                                                <cstring>mPbAdd</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>add</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="QPushButton">
-                                            <property name="name">
-                                                <cstring>mPbRemove</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>remove</string>
-                                            </property>
-                                        </widget>
-                                    </hbox>
-                                </widget>
-                            </vbox>
+                            </item>
+                            <property name="name">
+                                <cstring>mTypeListBox</cstring>
+                            </property>
                         </widget>
                         <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>layout4</cstring>
+                                <cstring>layout1</cstring>
                             </property>
-                            <vbox>
+                            <hbox>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QLabel">
+                                <widget class="QPushButton">
                                     <property name="name">
-                                        <cstring>textLabel1</cstring>
+                                        <cstring>mPbAdd</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>The list to the left shows the available document types.&lt;br/&gt;
-
-Types can be added and removed. The numbercycle defines which pool of numbers the doctype shares. One doctype can use the default number cycle, it's own or it can share a number cycle with other doc types.</string>
-                                    </property>
-                                    <property name="textFormat">
-                                        <enum>RichText</enum>
+                                        <string>add</string>
                                     </property>
                                 </widget>
-                                <widget class="QLayoutWidget">
+                                <widget class="QPushButton">
                                     <property name="name">
-                                        <cstring>layout3</cstring>
+                                        <cstring>mPbRemove</cstring>
                                     </property>
-                                    <hbox>
+                                    <property name="text">
+                                        <string>remove</string>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout11</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>The list to the left shows the available document types.&lt;br/&gt;
+
+Types can be added and removed. The numbercycle defines which pool of numbers the doctype shares. One doctype can use the default number cycle, it's own or it can share a number cycle with other doc types.</string>
+                            </property>
+                            <property name="textFormat">
+                                <enum>RichText</enum>
+                            </property>
+                        </widget>
+                        <widget class="QGroupBox">
+                            <property name="name">
+                                <cstring>groupBox2</cstring>
+                            </property>
+                            <property name="title">
+                                <string>Doc Type Details</string>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLayoutWidget" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>layout8</cstring>
+                                    </property>
+                                    <grid>
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
-                                        <widget class="QLabel">
+                                        <widget class="QLabel" row="0" column="1">
                                             <property name="name">
-                                                <cstring>textLabel2</cstring>
+                                                <cstring>mNumCycleLabel</cstring>
                                             </property>
                                             <property name="text">
-                                                <string>Number &amp;Cycle:</string>
-                                            </property>
-                                            <property name="buddy" stdset="0">
-                                                <cstring>mNumCycle</cstring>
+                                                <string>default</string>
                                             </property>
                                         </widget>
-                                        <widget class="QComboBox">
+                                        <widget class="QLabel" row="1" column="1">
                                             <property name="name">
-                                                <cstring>mNumCycle</cstring>
+                                                <cstring>mIdentTemplLabel</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>default</string>
                                             </property>
                                         </widget>
-                                    </hbox>
+                                        <widget class="QLabel" row="1" column="0">
+                                            <property name="name">
+                                                <cstring>textLabel1_2_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>ident Template:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel" row="0" column="0">
+                                            <property name="name">
+                                                <cstring>textLabel1_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Number Cycle:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton" row="0" column="2">
+                                            <property name="name">
+                                                <cstring>mEditDocTypeDetails</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>edit...</string>
+                                            </property>
+                                        </widget>
+                                    </grid>
                                 </widget>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer1</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Vertical</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Expanding</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>20</width>
-                                            <height>31</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                            </vbox>
+                            </grid>
                         </widget>
-                    </hbox>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer1</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </vbox>
                 </widget>
-            </vbox>
+            </hbox>
         </widget>
     </grid>
 </widget>

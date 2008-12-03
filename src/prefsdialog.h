@@ -20,6 +20,8 @@
 
 #include <kdialogbase.h>
 
+#include "doctypeedit.h"
+
 class QLineEdit;
 class QLabel;
 class QTextEdit;
@@ -27,9 +29,26 @@ class QPushButton;
 class QComboBox;
 class QCheckBox;
 
+
 /**
  *  @author Klaas Freitag
  */
+class DocTypeEdit : public DocTypeEditBase
+{
+  Q_OBJECT
+
+public:
+  DocTypeEdit( QWidget *parent );
+
+protected slots:
+  void slotDocTypeSelected( const QString& );
+  void slotEditDocTypeDetails();
+private:
+  QStringList allNumberCycles();
+};
+
+// ################################################################################
+
 class PrefsDialog : public KDialogBase
 {
   Q_OBJECT
@@ -52,6 +71,7 @@ protected slots:
 private:
   void databaseTab();
   void docTab();
+  void doctypeTab();
 
   QLineEdit *m_leHost;
   QLineEdit *m_leUser;
@@ -64,6 +84,8 @@ private:
   QPushButton *m_pbCheck;
 
   QCheckBox *mCbDocLocale;
+
+  DocTypeEditBase *mDocTypeEditBase;
 };
 
 #endif

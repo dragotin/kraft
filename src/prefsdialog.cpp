@@ -27,6 +27,8 @@
 #include <qcombobox.h>
 #include <qlayout.h>
 #include <qcheckbox.h>
+#include <qlistbox.h>
+#include <qsqlquery.h>
 
 #include<kdialog.h>
 #include<klocale.h>
@@ -42,12 +44,67 @@
 #include "doctype.h"
 #include "doctypeedit.h"
 
+
+
+// --------------------------------------------------------------------------------
+
+DocTypeEdit::DocTypeEdit( QWidget *parent )
+  : DocTypeEditBase( parent )
+{
+  connect( mTypeListBox, SIGNAL( selected( const QString& ) ),
+           this,  SLOT( slotDocTypeSelected( const QString& ) ) );
+
+  QStringList types = DocType::allLocalised();;
+  mTypeListBox->clear();
+  mTypeListBox->insertStringList( types );
+  connect( mTypeListBox, SIGNAL( selected( const QString& ) ),
+           this,  SLOT( slotDocTypeSelected( const QString& ) ) );
+
+  mTypeListBox->setSelected( 0, true );
+
+  connect( mEditDocTypeDetails, SIGNAL( clicked() ),
+           SLOT( slotEditDocTypeDetails() ) );
+}
+
+void DocTypeEdit::slotEditDocTypeDetails()
+{
+  kdDebug()<< "Editing docType details, old type is " << mCurrentDocType << endl;
+
+}
+
+void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
+{
+  DocType t( newValue );
+
+  mNumCycleLabel->setText( t.numberCycleName() );
+  mIdentTemplLabel->setText( t.identTemplate() );
+}
+
+QStringList DocTypeEdit::allNumberCycles()
+{
+  QStringList re;
+  re << QString::fromLatin1( "default" );
+  QSqlQuery q( "SELECT av.value FROM attributes a, attributeValues av "
+               "WHERE a.id=av.attributeId AND a.hostObject='DocType' "
+               "AND a.name='identNumberCycle'" );
+
+  while ( q.next() ) {
+    QString cycleName = q.value(0).toString();
+    re << cycleName;
+  }
+  return re;
+}
+
+
+// ################################################################################
+
 PrefsDialog::PrefsDialog( QWidget *parent)
     : KDialogBase( IconList,  i18n("Configure Kraft"), Ok|Cancel, Ok, parent,
                    "PrefsDialog", true, true )
 {
   databaseTab();
   docTab();
+  doctypeTab();
 
   readConfig();
   slotCheckConnect();
@@ -135,8 +192,8 @@ void PrefsDialog::databaseTab()
 void PrefsDialog::docTab()
 {
   QLabel *label;
-  QFrame *topFrame = addPage( i18n( "Documents" ),
-                              i18n( "Document Settings" ),
+  QFrame *topFrame = addPage( i18n( "Appearance" ),
+                              i18n( "How Kraft starts up." ),
                               DesktopIcon( "queue" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
@@ -161,6 +218,21 @@ void PrefsDialog::docTab()
 
   vboxLay->addWidget( new DocTypeEditBase( topFrame ) );
 }
+
+void PrefsDialog::doctypeTab()
+{
+  QFrame *topFrame = addPage( i18n( "Document Types" ),
+                              i18n( "Edit Details of Document Types." ),
+                              DesktopIcon( "queue" ) );
+
+  QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
+  vboxLay->setSpacing( spacingHint() );
+  // vboxLay->setColSpacing( 0, spacingHint() );
+
+  mDocTypeEditBase = new DocTypeEdit( topFrame );
+  vboxLay->addWidget( mDocTypeEditBase );
+}
+
 
 void PrefsDialog::slotTextChanged( const QString& )
 {
