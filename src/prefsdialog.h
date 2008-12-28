@@ -20,7 +20,10 @@
 
 #include <kdialogbase.h>
 
+#include <qmap.h>
+
 #include "doctypeedit.h"
+#include "doctype.h"
 
 class QLineEdit;
 class QLabel;
@@ -39,12 +42,26 @@ class DocTypeEdit : public DocTypeEditBase
 
 public:
   DocTypeEdit( QWidget *parent );
+  void saveDocTypes();
 
-protected slots:
-  void slotDocTypeSelected( const QString& );
-  void slotEditDocTypeDetails();
+public slots:
+  void slotDocTypeSelected( const QString& = QString() );
+  void slotCounterValueChanged( const QString&  );
+  void slotAddDocType();
+  void slotEditDocType();
+  void slotRemoveDocType();
+
 private:
+  DocType mOrigDocType;
+
   QStringList allNumberCycles();
+  void removeTypeFromDb( const QString& );
+  void renameTypeInDb( const QString&, const QString& );
+
+  QMap<QString, QString> mTypeNameChanges;
+  QMap<QString, DocType> mOrigDocTypes;
+  QStringList mAddedTypes;
+  QStringList mRemovedTypes;
 };
 
 // ################################################################################
@@ -85,7 +102,8 @@ private:
 
   QCheckBox *mCbDocLocale;
 
-  DocTypeEditBase *mDocTypeEditBase;
+  DocTypeEdit *mDocTypeEdit;
+  
 };
 
 #endif

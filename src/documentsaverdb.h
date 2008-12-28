@@ -45,7 +45,6 @@ public:
 
     virtual bool saveDocument( KraftDoc* );
     virtual void load( const QString& , KraftDoc * );
-    QString generateDocumentIdent( KraftDoc* ) const;
 protected:
     virtual void loadPositions( const QString&, KraftDoc* );
     virtual void saveDocumentPositions( KraftDoc* );

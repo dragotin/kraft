@@ -31,6 +31,7 @@
 */
 
 typedef QMap<QString, dbID> idMap;
+class KraftDoc;
 
 class DocType
 {
@@ -43,20 +44,22 @@ class DocType
 
   static QStringList all();
   static QStringList allLocalised();
+  static dbID docTypeId( const QString& );
   
-  QString techName() const;
-  QString localisedName() const;
-  
+  QString name() const;
+  void setName( const QString& );
+
   bool allowDemand();
   bool allowAlternative();
 
   QStringList follower();
-  int nextIdentId();
-  QString identTemplate();
-  QString numberCycleName();
+  QString     generateDocumentIdent( KraftDoc* doc, int id = -1 );
+  QString     identTemplate();
+  QString     numberCycleName();
+  static void  clearMap();
 
-  static dbID docTypeId( const QString& );
   protected:
+  int         nextIdentId();
 
   private:
   static void init();

@@ -28,6 +28,7 @@
 #include "doctype.h"
 #include "defaultprovider.h"
 #include "kraftsettings.h"
+#include "kraftdb.h"
 
 /**
 @author Klaas Freitag
@@ -70,6 +71,11 @@ void DocType::init()
   }
 }
 
+void DocType::clearMap()
+{
+  mNameMap.clear();
+}
+
 QStringList DocType::all()
 {
   init();
@@ -104,16 +110,16 @@ QStringList DocType::allLocalised()
 
 dbID DocType::docTypeId( const QString& docType )
 {
-  QSqlQuery q;
-  q.prepare( "SELECT docTypeID FROM DocTypes WHERE name=:name" );
-  q.bindValue( ":name", docType );
-  q.exec();
-  if ( q.next() ) {
-    int id = q.value( 0 ).toInt();
-    return dbID( id );
-  }
-  return dbID();
+  dbID id;
+  init();
+  if ( mNameMap.contains( docType ) ) {
+    id = mNameMap[ docType ];
 
+    return id;
+  } else {
+    kdError()<< "Can not find id for doctype named " << docType << endl;
+  }
+  return id;
 }
 
 bool DocType::allowDemand()
@@ -139,6 +145,8 @@ bool DocType::allowAlternative()
 QStringList DocType::follower()
 {
   QStringList re;
+
+  init();
 
   QSqlCursor cur( "DocTypeRelations" );
   cur.setMode( QSqlCursor::ReadOnly );
@@ -172,6 +180,53 @@ QString DocType::numberCycleName()
   return numberCycle;
 }
 
+QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
+{
+  /*
+   * The pattern may contain the following tags:
+   * %y - the year of the documents date.
+   * %w - the week number of the documents date
+   * %d - the day number of the documents date
+   * %m - the month number of the documents date
+   * %c - the customer id from kaddressbook
+   * %i - the uniq identifier from db.
+   * %type - the localised doc type (offer, invoice etc.)
+   */
+
+  QString pattern = identTemplate();
+  if ( pattern.find( "%i" ) == -1 ) {
+    kdWarning() << "No %i found in identTemplate, appending it to meet law needs!" << endl;
+    pattern += "-%i";
+  }
+  QDate d = QDate::currentDate();
+  if ( doc ) d = doc->date();
+
+  KraftDB::StringMap m;
+  int dummy;
+
+  m[ "%y" ] = QString::number( d.year() );
+  m[ "%w" ] = QString::number( d.weekNumber( &dummy ) );
+  m[ "%d" ] = QString::number( d.day()  );
+  m[ "%m" ] = QString::number( d.month() );
+  if ( id == -1 ) { // hot mode: The database id is incremented by nextIdentId()
+    m[ "%i" ] = QString::number( nextIdentId() );
+  } else {
+    m[ "%i" ] = QString::number( id );
+  }
+  if ( doc ) {
+    m[ "%c" ] = doc->addressUid();
+    m[ "%type" ] = doc->docType();
+  } else {
+    m[ "%c"] = QString(" <addressUid>" );
+    m[ "%type" ] = mName;
+  }
+
+  QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
+  kdDebug() << "Generated document ident: " << re << endl;
+
+  return re;
+}
+
 int DocType::nextIdentId()
 {
   QString numberCycle = numberCycleName();
@@ -193,15 +248,16 @@ int DocType::nextIdentId()
   if ( q.next() ) {
     num = 1+( q.value( 0 ).toInt() );
     kdDebug() << "Got current number: " << num << endl;
-  }
 
-  QSqlQuery setQuery;
-  setQuery.prepare( "UPDATE numberCycles SET lastIdentNumber=:newNumber WHERE name=:name" );
-  setQuery.bindValue( ":name", numberCycle );
-  setQuery.bindValue( ":newNumber", num );
-  setQuery.exec();
-  if ( setQuery.isActive() ) {
-    kdDebug() << "Successfully created new id number for numbercycle " << numberCycle << ": " << num << endl;
+    QSqlQuery setQuery;
+    setQuery.prepare( "UPDATE numberCycles SET lastIdentNumber=:newNumber WHERE name=:name" );
+    setQuery.bindValue( ":name", numberCycle );
+    setQuery.bindValue( ":newNumber", num );
+    setQuery.exec();
+    if ( setQuery.isActive() ) {
+      kdDebug() << "Successfully created new id number for numbercycle " << numberCycle << ": "
+                << num << endl;
+    }
   }
   qLock.exec( "UNLOCK TABLES" );
 
@@ -229,7 +285,7 @@ QString DocType::identTemplate()
     tmpl = q.value( 0 ).toString();
     kdDebug() << "Read ident template from database: " << tmpl << endl;
   }
-  kdDebug() << "ERROR" << q.lastError().text() << endl;
+
   if ( tmpl.isEmpty() ) {
     // migration: If there is nothing yet in the database, check the local config and
     // transfer the setting to the db
@@ -249,3 +305,15 @@ QString DocType::identTemplate()
 
   return tmpl;
 }
+
+QString DocType::name() const
+{
+  return mName;
+}
+
+void DocType::setName( const QString& name )
+{
+  mName = name;
+}
+
+

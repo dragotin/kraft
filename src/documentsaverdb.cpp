@@ -97,8 +97,10 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
       dbID id = KraftDB::self()->getLastInsertID();
       doc->setDocID( id );
+
       // get the uniq id and write it into the db
-      QString ident = generateDocumentIdent( doc );
+      DocType dt( doc->docType() );
+      QString ident = dt.generateDocumentIdent( doc );
       doc->setIdent( ident );
       QSqlCursor cur2( "document" );
       cur2.select( QString( "docID=" + id.toString() ) );
@@ -120,47 +122,6 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     kdDebug() << "Saved document no " << doc->docID().toString() << endl;
 
     return result;
-}
-
-/*
- * this method requires a database id because that is the only garanteed
- * unique part.
- */
-QString DocumentSaverDB::generateDocumentIdent( KraftDoc *doc ) const
-{
-  /*
-   * The pattern may contain the following tags:
-   * %y - the year of the documents date.
-   * %w - the week number of the documents date
-   * %d - the day number of the documents date
-   * %m - the month number of the documents date
-   * %c - the customer id from kaddressbook
-   * %i - the uniq identifier from db.
-   * %type - the localised doc type (offer, invoice etc.)
-   */
-
-  DocType dt( doc->docType() );
-  QString pattern = dt.identTemplate();
-  if ( pattern.find( "%i" ) == -1 ) {
-    kdWarning() << "No %i found in identTemplate, appending it to meet law needs!" << endl;
-    pattern += "-%i";
-  }
-  QDate d = doc->date();
-  KraftDB::StringMap m;
-  int dummy;
-
-  m[ "%y" ] = QString::number( d.year() );
-  m[ "%w" ] = QString::number( d.weekNumber( &dummy ) );
-  m[ "%d" ] = QString::number( d.day()  );
-  m[ "%m" ] = QString::number( d.month() );
-  m[ "%i" ] = QString::number( dt.nextIdentId() );
-  m[ "%c" ] = doc->addressUid();
-  m[ "%type" ] = doc->docType();
-
-  QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
-  kdDebug() << "Generated document ident: " << re << endl;
-
-  return re;
 }
 
 void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )

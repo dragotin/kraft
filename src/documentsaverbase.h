@@ -42,7 +42,6 @@ public:
 
   virtual bool saveDocument( KraftDoc* ) = 0;
   virtual void load( const QString&, KraftDoc * ) = 0;
-  virtual QString generateDocumentIdent( KraftDoc* ) const = 0;
 };
 
 #endif
