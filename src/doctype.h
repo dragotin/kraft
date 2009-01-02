@@ -58,8 +58,9 @@ class DocType
   QString     numberCycleName();
   static void  clearMap();
 
+  int         nextIdentId( bool hot = true );
+
   protected:
-  int         nextIdentId();
 
   private:
   static void init();

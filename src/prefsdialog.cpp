@@ -56,9 +56,6 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   connect( mTypeListBox, SIGNAL( highlighted( const QString& ) ),
            this,  SLOT( slotDocTypeSelected( const QString& ) ) );
 
-  connect( mCounterEdit, SIGNAL( valueChanged( const QString& ) ),
-           this,  SLOT( slotCounterValueChanged( const QString& ) ) );
-
   QStringList types = DocType::allLocalised();;
   mTypeListBox->clear();
   mTypeListBox->insertStringList( types );
@@ -167,12 +164,6 @@ void DocTypeEdit::slotRemoveDocType()
   mTypeListBox->removeItem( mTypeListBox->currentItem() );
 }
 
-void DocTypeEdit::slotCounterValueChanged( const QString& idValue )
-{
-  slotDocTypeSelected();
-}
-
-
 void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
 {
   QString value = mTypeListBox->currentText();
@@ -182,10 +173,17 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   DocType dt( value );
 
   kdDebug() << "Selected doc type " << value << endl;
-  mIdTemplEdit->setText( dt.identTemplate() );
+  mIdent->setText( dt.identTemplate() );
+  int nextNum = dt.nextIdentId( false );
+  mCounter->setText( QString::number( nextNum ) );
+  mNumCycle->setText( dt.numberCycleName() );
+  mHeader->setText( i18n( "Details for %1:" ).arg( dt.name() ) );
+  mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
 
+#if 0
   QSqlQuery q;
   q.prepare( "SELECT lastIdentNumber FROM numberCycles WHERE name=:name" );
+
 
   int num = -1;
   q.bindValue( ":name", dt.numberCycleName() );
@@ -202,6 +200,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     mCounterEdit->setMinValue( num );
   }
   mExampleId->setText( example );
+#endif
 }
 
 QStringList DocTypeEdit::allNumberCycles()

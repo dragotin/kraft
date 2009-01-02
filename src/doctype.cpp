@@ -227,7 +227,8 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
   return re;
 }
 
-int DocType::nextIdentId()
+// if hot, the id is updated in the database, otherwise not.
+int DocType::nextIdentId( bool hot )
 {
   QString numberCycle = numberCycleName();
 
@@ -237,7 +238,9 @@ int DocType::nextIdentId()
   }
 
   QSqlQuery qLock;
-  qLock.exec( "LOCK TABLES numberCycles WRITE" );
+  if ( hot ) {
+    qLock.exec( "LOCK TABLES numberCycles WRITE" );
+  }
 
   QSqlQuery q;
   q.prepare( "SELECT lastIdentNumber FROM numberCycles WHERE name=:name" );
@@ -249,17 +252,21 @@ int DocType::nextIdentId()
     num = 1+( q.value( 0 ).toInt() );
     kdDebug() << "Got current number: " << num << endl;
 
-    QSqlQuery setQuery;
-    setQuery.prepare( "UPDATE numberCycles SET lastIdentNumber=:newNumber WHERE name=:name" );
-    setQuery.bindValue( ":name", numberCycle );
-    setQuery.bindValue( ":newNumber", num );
-    setQuery.exec();
-    if ( setQuery.isActive() ) {
-      kdDebug() << "Successfully created new id number for numbercycle " << numberCycle << ": "
-                << num << endl;
+    if ( hot ) {
+      QSqlQuery setQuery;
+      setQuery.prepare( "UPDATE numberCycles SET lastIdentNumber=:newNumber WHERE name=:name" );
+      setQuery.bindValue( ":name", numberCycle );
+      setQuery.bindValue( ":newNumber", num );
+      setQuery.exec();
+      if ( setQuery.isActive() ) {
+        kdDebug() << "Successfully created new id number for numbercycle " << numberCycle << ": "
+                  << num << endl;
+      }
     }
   }
-  qLock.exec( "UNLOCK TABLES" );
+  if ( hot ) {
+    qLock.exec( "UNLOCK TABLES" );
+  }
 
   return num;
 }

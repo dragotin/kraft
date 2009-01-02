@@ -46,7 +46,6 @@ public:
 
 public slots:
   void slotDocTypeSelected( const QString& = QString() );
-  void slotCounterValueChanged( const QString&  );
   void slotAddDocType();
   void slotEditDocType();
   void slotRemoveDocType();
