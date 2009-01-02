@@ -33,36 +33,6 @@ class QComboBox;
 class QCheckBox;
 
 
-/**
- *  @author Klaas Freitag
- */
-class DocTypeEdit : public DocTypeEditBase
-{
-  Q_OBJECT
-
-public:
-  DocTypeEdit( QWidget *parent );
-  void saveDocTypes();
-
-public slots:
-  void slotDocTypeSelected( const QString& = QString() );
-  void slotAddDocType();
-  void slotEditDocType();
-  void slotRemoveDocType();
-
-private:
-  DocType mOrigDocType;
-
-  QStringList allNumberCycles();
-  void removeTypeFromDb( const QString& );
-  void renameTypeInDb( const QString&, const QString& );
-
-  QMap<QString, QString> mTypeNameChanges;
-  QMap<QString, DocType> mOrigDocTypes;
-  QStringList mAddedTypes;
-  QStringList mRemovedTypes;
-};
-
 // ################################################################################
 
 class PrefsDialog : public KDialogBase

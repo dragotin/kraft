@@ -54,6 +54,7 @@ class DocType
 
   QStringList follower();
   QString     generateDocumentIdent( KraftDoc* doc, int id = -1 );
+  void        setIdentTemplate( const QString& );
   QString     identTemplate();
   QString     numberCycleName();
   static void  clearMap();
@@ -67,6 +68,7 @@ class DocType
 
   AttributeMap mAttributes;
   QString      mName;
+  QString      mIdentTemplate;
   static idMap mNameMap;
 };
 

@@ -271,10 +271,20 @@ int DocType::nextIdentId( bool hot )
   return num;
 }
 
+void DocType::setIdentTemplate( const QString& templ )
+{
+  mIdentTemplate = templ;
+}
+
 QString DocType::identTemplate()
 {
   QSqlQuery q;
   QString tmpl;
+
+  if ( !mIdentTemplate.isEmpty() ) {
+    return mIdentTemplate;
+  }
+
   const QString defaultTempl = QString::fromLatin1( "%y%w-%i" );
 
   QString numberCycle = numberCycleName();
@@ -309,6 +319,7 @@ QString DocType::identTemplate()
     insQuery.exec();
     tmpl = pattern;
   }
+  mIdentTemplate = tmpl;
 
   return tmpl;
 }
