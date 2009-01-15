@@ -15,7 +15,8 @@ geld.cpp einheit.cpp katalogsettings.kcfgc kraftsettings.kcfgc attribute.cpp
 libbruns_la_LDFLAGS = $(KDE_RPATH) $(all_libraries) -version-info 1:0:0 -no-undefined
 libbruns_la_LIBADD = $(LIB_KIO) $(all_libraries)
 
-bin_PROGRAMS = kraft kplant imporst
+bin_PROGRAMS = kraft kplant
+check_PROGRAMS = imporst
 
 ## INCLUDES were found outside kdevelop specific part
 
