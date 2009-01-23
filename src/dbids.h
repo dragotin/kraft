@@ -19,6 +19,8 @@
 
 #include <qstring.h>
 #include <qdict.h>
+#include <qvaluelist.h>
+
 /**
  * utility class that provides a simple database id object.
  * It's usefull to work with dicts which do not work on base
@@ -49,6 +51,11 @@ public:
         m_id = id;
       }
       return *this;
+    }
+
+    bool operator<( dbID _id ) {
+      if( m_id < _id.toInt() ) return true;
+      return false;
     }
 
     dbID& operator=( const int _u ) {

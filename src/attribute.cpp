@@ -195,7 +195,12 @@ void AttributeMap::setHost( const QString& host )
 
 bool AttributeMap::hasAttribute( const QString& name )
 {
-  return contains( name );
+  Iterator it = find( name );
+  if ( it != end() ) {
+    // it is there, check the delete flag.
+    if (  ! ( *it ).mDelete ) return true;
+  }
+  return false;
 }
 
 

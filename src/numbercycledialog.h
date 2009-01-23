@@ -1,7 +1,7 @@
 /***************************************************************************
-                   doctypeedit.h  - the document type editor 
+                   numbercycledialog.h  - edit number cycles
                              -------------------
-    begin                : Fri Jan 2 2009
+    begin                : Jan 15 2009
     copyright            : (C) 2009 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef DOCTYPEEDIT_H
-#define DOCTYPEEDIT_H
+#ifndef NUMBERCYCLEDIALOG_H
+#define NUMBERCYCLEDIALOG_H
 
 #include <kdialogbase.h>
 
-#include <qmap.h>
+#include <qvaluevector.h>
 
-#include "doctype.h"
-#include "doctypeeditbase.h"
-#include "doctypedetailseditbase.h"
+#include "dbids.h"
+#include "numbercycle.h"
+#include "numbercycleseditbase.h"
 
 class QLineEdit;
 class QLabel;
@@ -40,37 +40,27 @@ class QCheckBox;
 
 // ################################################################################
 
-class DocTypeEdit : public DocTypeEditBase
+class NumberCycleDialog: public KDialogBase
 {
   Q_OBJECT
 
 public:
-  DocTypeEdit( QWidget *parent );
-  void saveDocTypes();
+  NumberCycleDialog( QWidget *parent );
 
 public slots:
-  void slotDocTypeSelected( const QString& = QString() );
-  void slotAddDocType();
-  void slotEditDocType();
-  void slotRemoveDocType();
 
 protected slots:
-  void fillNumberCycleCombo();
-  void slotNumberCycleChanged( const QString& );
-  void slotEditNumberCycles();
 
+  void slotAddCycle();
+  void slotRemoveCycle();
+  void slotNumberCycleSelected( int );
+  void slotTemplTextChanged( const QString& );
 private:
-  DocType mOrigDocType;
+  void loadCycles();
 
-  QStringList allNumberCycles();
-  void removeTypeFromDb( const QString& );
-  void renameTypeInDb( const QString&, const QString& );
+  NumberCycleEditBase *mBaseWidget;
 
-  QMap<QString, QString> mTypeNameChanges;
-  QMap<QString, QString> mNumberCycleDict;
-  QMap<QString, DocType> mOrigDocTypes;
-  QStringList mAddedTypes;
-  QStringList mRemovedTypes;
+  QValueVector<NumberCycle> mNumberCycles;
 };
 
 #endif

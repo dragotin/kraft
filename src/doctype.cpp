@@ -38,14 +38,16 @@ idMap DocType::mNameMap = idMap();
 
 
 DocType::DocType()
-  : mAttributes( QString::fromLatin1( "DocType" ) )
+  : mAttributes( QString::fromLatin1( "DocType" ) ),
+    mDirty( false )
 {
   init();
 }
 
 DocType::DocType( const QString& name )
   : mAttributes( QString::fromLatin1( "DocType" ) ),
-    mName( name )
+    mName( name ),
+    mDirty( false )
 {
   init();
   if ( mNameMap.contains( name ) ) {
@@ -53,10 +55,14 @@ DocType::DocType( const QString& name )
 
     mAttributes.load( id );
   }
+
+  readFollowerList();
+  readIdentTemplate();
 }
 
 void DocType::init()
 {
+  // === Start to fill static content
   if ( ! mNameMap.empty() ) return;
 
   QSqlCursor cur("DocTypes");
@@ -108,6 +114,7 @@ QStringList DocType::allLocalised()
   return re;
 }
 
+// static function to retrieve id of a certain doctype
 dbID DocType::docTypeId( const QString& docType )
 {
   dbID id;
@@ -144,16 +151,16 @@ bool DocType::allowAlternative()
 
 QStringList DocType::follower()
 {
-  QStringList re;
+  return mFollowerList;
+}
 
-  init();
-
+void DocType::readFollowerList()
+{
   QSqlCursor cur( "DocTypeRelations" );
   cur.setMode( QSqlCursor::ReadOnly );
 
   QSqlIndex sortIndex = cur.index( "sequence" );
   QString select = QString( "typeId=%1" ).arg( mNameMap[mName].toInt() );
-  kdDebug() << "SQL: " << select << endl;
   cur.select( select, sortIndex );
 
   while ( cur.next() ) {
@@ -161,23 +168,38 @@ QStringList DocType::follower()
 
     idMap::Iterator it;
     for ( it = mNameMap.begin(); it != mNameMap.end(); ++it ) {
-      kdDebug() << it.key()  << endl;
       if ( it.data() == followerId ) {
-        re << it.key();
+        mFollowerList << it.key();
       }
     }
   }
-  return re;
 }
 
 QString DocType::numberCycleName()
 {
-  QString numberCycle( "default" );
-  if ( mAttributes.contains( "identNumberCycle" ) ) {
-    numberCycle = mAttributes["identNumberCycle"].value().toString();
-    kdDebug() << "DocType using special numbercycle " << numberCycle << endl;
+  QString re = i18n( "default" );
+  if ( mAttributes.hasAttribute( "identNumberCycle" ) ) {
+    re = mAttributes["identNumberCycle"].value().toString();
   }
-  return numberCycle;
+  return re;
+}
+
+void DocType::setNumberCycleName( const QString& name )
+{
+  if ( name.isEmpty() ) return;
+
+  if ( name != i18n( "default" ) ) {
+    Attribute att( "identNumberCycle" );
+    att.setPersistant( true );
+    att.setValue( name );
+    mAttributes["identNumberCycle"] = att;
+  } else {
+    // remove default value from map
+    mAttributes.markDelete( "identNumberCycle" );
+    kdDebug() << "Removing identNumberCycle Attribute" << endl;
+  }
+  mDirty = true;
+  readIdentTemplate();
 }
 
 QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
@@ -271,26 +293,22 @@ int DocType::nextIdentId( bool hot )
   return num;
 }
 
-void DocType::setIdentTemplate( const QString& templ )
+QString DocType::identTemplate()
 {
-  mIdentTemplate = templ;
+  return mIdentTemplate;
 }
 
-QString DocType::identTemplate()
+void DocType::readIdentTemplate()
 {
   QSqlQuery q;
   QString tmpl;
-
-  if ( !mIdentTemplate.isEmpty() ) {
-    return mIdentTemplate;
-  }
 
   const QString defaultTempl = QString::fromLatin1( "%y%w-%i" );
 
   QString numberCycle = numberCycleName();
   if ( numberCycle.isEmpty() ) {
     kdError() << "Numbercycle for doctype is empty, returning default" << endl;
-    return defaultTempl;
+    mIdentTemplate = defaultTempl;
   }
   kdDebug() << "Picking ident Template for numberCycle " << numberCycle << endl;
 
@@ -303,6 +321,7 @@ QString DocType::identTemplate()
     kdDebug() << "Read ident template from database: " << tmpl << endl;
   }
 
+  // FIXME: Check again.
   if ( tmpl.isEmpty() ) {
     // migration: If there is nothing yet in the database, check the local config and
     // transfer the setting to the db
@@ -320,8 +339,6 @@ QString DocType::identTemplate()
     tmpl = pattern;
   }
   mIdentTemplate = tmpl;
-
-  return tmpl;
 }
 
 QString DocType::name() const
@@ -331,7 +348,48 @@ QString DocType::name() const
 
 void DocType::setName( const QString& name )
 {
+  QString oldName = mName;
+  dbID id = mNameMap[ oldName ]; // The old id.
+  mNameMap[ name ] = id;
+  mNameMap.erase( oldName );
   mName = name;
+  mDirty = true;
 }
 
 
+/*
+ * Saves the name and the attriutes (numbercycle, demand, etc.)
+ */
+void DocType::save()
+{
+  if ( !mDirty ) {
+    kdDebug() << "Saving: not DIRTY!" << endl;
+    return;
+  }
+
+  if ( !mNameMap.contains( mName ) ) {
+    kdError() << "nameMap does not contain id for " << mName << endl;
+    return;
+  }
+  dbID id = mNameMap[ mName ];
+
+  QSqlQuery q;
+
+  bool doInsert = false;
+  if ( id.isOk() ) {
+    q.prepare( "UPDATE DocTypes SET name=:name WHERE docTypeId=:id" );
+  } else {
+    q.prepare( "INSERT INTO DocTypes (name) VALUES (:name)" );
+    doInsert = true;
+  }
+
+  q.bindValue( ":name", mName.utf8() );
+  q.bindValue( ":id", id.toInt() );
+  q.exec();
+
+  if ( doInsert ) {
+    mNameMap[mName] = KraftDB::self()->getLastInsertID();
+  }
+
+  mAttributes.save( mNameMap[mName] );
+}

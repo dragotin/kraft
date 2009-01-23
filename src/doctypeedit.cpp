@@ -45,57 +45,7 @@
 #include "doctype.h"
 #include "doctypeedit.h"
 #include <kinputdialog.h>
-
-
-DocTypeDetailsEdit::DocTypeDetailsEdit( QWidget *parent, const QString& docTypeName )
-    : KDialogBase( parent, "DOCTYPEDETAILSEDIT_DIALOG", true,
-                   i18n( "Document Type Details" ),
-                   Ok | Cancel )
-{
-  QVBox *w = makeVBoxMainWidget();
-  w->setSpacing( KDialogBase::spacingHint() );
-
-  mBaseWidget = new DocTypeDetailsEditBase( w );
-  mBaseWidget->mHeader->setText( i18n( "Document Type Details for %1:" ).arg( docTypeName ) );
-
-  DocType dt( docTypeName );
-  mDocType = dt;
-  mBaseWidget->mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
-  mBaseWidget->mIdTemplEdit->setText( dt.identTemplate() );
-  QSqlQuery q;
-  q.prepare( "SELECT lastIdentNumber FROM numberCycles WHERE name=:name" );
-
-  int num = -1;
-  q.bindValue( ":name", dt.numberCycleName() );
-  q.exec();
-  if ( q.next() ) {
-    num = 1+( q.value( 0 ).toInt() );
-  }
-
-  mBaseWidget->mCounterEdit->setValue( num );
-  mBaseWidget->mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
-  slotUpdateExample();
-
-  connect( mBaseWidget->mCounterEdit, SIGNAL( valueChanged(int ) ),
-           SLOT( slotUpdateExample() ) );
-  connect( mBaseWidget->mIdTemplEdit, SIGNAL( textChanged( const QString& ) ),
-           SLOT( slotUpdateExample() ) );
-}
-
-void DocTypeDetailsEdit::slotUpdateExample()
-{
-  QString example;
-  int num = mBaseWidget->mCounterEdit->value();
-
-  mDocType.setIdentTemplate( mBaseWidget->mIdTemplEdit->text() );
-
-  if ( num > -1 ) {
-    example = mDocType.generateDocumentIdent( 0, num );
-    mBaseWidget->mCounterEdit->setMinValue( num );
-  }
-  mBaseWidget->mExampleId->setText( example );
-
-}
+#include "numbercycledialog.h"
 
 // --------------------------------------------------------------------------------
 
@@ -110,10 +60,13 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   mTypeListBox->insertStringList( types );
 
   for ( QStringList::Iterator it = types.begin(); it != types.end(); ++it ) {
-    mOrigDocTypes[*it] = DocType( *it );
+    DocType dt( *it );
+    mNumberCycleDict[*it] = dt.numberCycleName();
+    mOrigDocTypes[*it] = dt;
   }
 
   mTypeListBox->setSelected( 0, true );
+  QString dtype = mTypeListBox->currentText();
 
   mPbAdd->setPixmap( BarIcon( "filenew" ) );
   mPbEdit->setPixmap( BarIcon( "edit" ) );
@@ -126,17 +79,28 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   connect( mPbRemove, SIGNAL( clicked() ),
            SLOT( slotRemoveDocType() ) );
 
-  connect( mPbEditDetails, SIGNAL( clicked() ),
-           SLOT( slotEditDetails() ) );
+  connect( mNumberCycleCombo, SIGNAL( activated( const QString& ) ),
+           SLOT( slotNumberCycleChanged( const QString& ) ) );
+
+  connect( mPbEditCycles, SIGNAL( clicked() ),
+           SLOT( slotEditNumberCycles() ) );
+
+  fillNumberCycleCombo();
+  DocType dt( dtype );
+  mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
 }
 
-void DocTypeEdit::slotEditDetails()
+void DocTypeEdit::fillNumberCycleCombo()
 {
-  const QString docType = mTypeListBox->currentText();
-  kdDebug() << "Editing details for " <<  docType << endl;
-
-  DocTypeDetailsEdit dia( this, docType );
-  dia.exec();
+  QSqlQuery q;
+  q.prepare( "SELECT name FROM numberCycles ORDER BY name" );
+  q.exec();
+  QStringList cycles;
+  while ( q.next() ) {
+    cycles << q.value( 0 ).toString();
+  }
+  mNumberCycleCombo->clear();
+  mNumberCycleCombo->insertStringList( cycles );
 }
 
 void DocTypeEdit::slotAddDocType()
@@ -152,7 +116,9 @@ void DocTypeEdit::slotAddDocType()
     kdDebug() << "New Name already exists" << endl;
   } else {
     mTypeListBox->insertItem( newName );
-    mOrigDocTypes[newName] = DocType( newName );
+    DocType newDt( newName );
+    mNumberCycleDict[newName] = i18n( "default" );
+    mOrigDocTypes[newName] = newDt;
     mAddedTypes.append( newName );
   }
 }
@@ -192,6 +158,8 @@ void DocTypeEdit::slotEditDocType()
     }
     if ( ! skipEntry ) {
       mTypeNameChanges[currName] = newName;
+      DocType dt( currName );
+      mNumberCycleDict[newName] = dt.numberCycleName();
     }
   }
 }
@@ -232,42 +200,47 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     value = newValue;
   }
   DocType dt( value );
-
+  if ( mNumberCycleDict.contains( value ) ) {
+    dt.setNumberCycleName( mNumberCycleDict[value] );
+  }
   kdDebug() << "Selected doc type " << value << endl;
   mIdent->setText( dt.identTemplate() );
   int nextNum = dt.nextIdentId( false );
   mCounter->setText( QString::number( nextNum ) );
-  mNumCycle->setText( dt.numberCycleName() );
-  mHeader->setText( i18n( "Details for %1:" ).arg( dt.name() ) );
+  mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
+  // mHeader->setText( i18n( "Details for %1:" ).arg( dt.name() ) );
   mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
 
-#if 0
-  QSqlQuery q;
-  q.prepare( "SELECT lastIdentNumber FROM numberCycles WHERE name=:name" );
+}
 
+void DocTypeEdit::slotEditNumberCycles()
+{
+  NumberCycleDialog dia( this );
 
-  int num = -1;
-  q.bindValue( ":name", dt.numberCycleName() );
-  q.exec();
-  if ( q.next() ) {
-    num = 1+( q.value( 0 ).toInt() );
+  if ( dia.exec() == QDialog::Accepted ) {
+
   }
+}
 
-  mCounterEdit->setValue( num );
-  mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
-  QString example;
-  if ( num > -1 ) {
-    example = dt.generateDocumentIdent( 0, num );
-    mCounterEdit->setMinValue( num );
-  }
-  mExampleId->setText( example );
-#endif
+void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
+{
+  QString docType = mTypeListBox->currentText();
+  mNumberCycleDict[docType] = newCycle;
+  kdDebug() << "Changing the cycle name of " << docType << " to " << newCycle << endl;
+
+  DocType dt( docType );
+  dt.setNumberCycleName( newCycle );
+
+  mIdent->setText( dt.identTemplate() );
+  int nextNum = dt.nextIdentId( false );
+  mCounter->setText( QString::number( nextNum ) );
+  mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
 }
 
 QStringList DocTypeEdit::allNumberCycles()
 {
   QStringList re;
-  re << QString::fromLatin1( "default" );
+  re << i18n( "default" );
   QSqlQuery q( "SELECT av.value FROM attributes a, attributeValues av "
                "WHERE a.id=av.attributeId AND a.hostObject='DocType' "
                "AND a.name='identNumberCycle'" );
@@ -282,6 +255,7 @@ QStringList DocTypeEdit::allNumberCycles()
 void DocTypeEdit::saveDocTypes()
 {
   // removed doctypes
+  // FIXME: Remove unreferenced number cycles
   for ( QStringList::Iterator it = mRemovedTypes.begin(); it != mRemovedTypes.end(); ++it ) {
     if ( mOrigDocTypes.contains( *it ) ) {
       DocType dt = mOrigDocTypes[*it];
@@ -292,13 +266,13 @@ void DocTypeEdit::saveDocTypes()
 
   // added doctypes
   for ( QStringList::Iterator it = mAddedTypes.begin(); it != mAddedTypes.end(); ++it ) {
-    if ( mOrigDocTypes.contains( *it ) ) { // just to check
-      QSqlQuery q;
-      q.prepare( "INSERT INTO DocTypes (name) VALUES (:name)" );
-      QString name = *it;
-      q.bindValue( ":name", name.utf8() );
-      q.exec();
-      kdDebug() << "Created DocTypes-Entry " << *it << endl;
+    QString name = *it;
+    if ( mOrigDocTypes.contains( name ) ) { // just to check
+      DocType dt( name );
+      QString numCycleName = mNumberCycleDict[name];
+      kdDebug() << "Number cycle name for to add doctype " << name << ": " << numCycleName << endl;
+      dt.setNumberCycleName( numCycleName );
+      dt.save();
     }
   }
 
@@ -313,9 +287,25 @@ void DocTypeEdit::saveDocTypes()
       dt.setName( newName );
       mOrigDocTypes.remove( oldName );
       mOrigDocTypes[newName] = dt;
-      renameTypeInDb( oldName, newName );
+      QString numCycleName = mNumberCycleDict[oldName];
+      mNumberCycleDict[newName] = numCycleName;
+      mNumberCycleDict.remove( oldName );
+      dt.setNumberCycleName( numCycleName );
+      // renameTypeInDb( oldName, newName );
+      dt.save();
     } else {
       kdError() << "Can not find doctype to change named " << oldName << endl;
+    }
+  }
+
+  // check if numberCycles have changed.
+  QMap<QString, QString>::Iterator mapit;
+  for ( mapit = mNumberCycleDict.begin(); mapit != mNumberCycleDict.end(); ++mapit ) {
+    DocType dt( mapit.key() );
+    if ( dt.numberCycleName() != mNumberCycleDict[mapit.key()] ) {
+      // the numberCycleName has changed.
+      dt.setNumberCycleName( mapit.data() );
+      dt.save();
     }
   }
 

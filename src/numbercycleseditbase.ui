@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>DocTypeDetailsEditBase</class>
+<class>NumberCycleEditBase</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>DocTypeDetailsEditBase</cstring>
+        <cstring>NumberCycleEditBase</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -24,7 +24,7 @@
                 <cstring>mHeader</cstring>
             </property>
             <property name="text">
-                <string>&lt;h1&gt;Edit Number Cycles&lt;/h1&gt;</string>
+                <string>&lt;h3&gt;Edit Number Cycles&lt;/h3&gt;</string>
             </property>
         </widget>
         <widget class="QGroupBox" row="1" column="1">

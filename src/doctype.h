@@ -53,22 +53,31 @@ class DocType
   bool allowAlternative();
 
   QStringList follower();
+
   QString     generateDocumentIdent( KraftDoc* doc, int id = -1 );
-  void        setIdentTemplate( const QString& );
   QString     identTemplate();
+
   QString     numberCycleName();
+  void        setNumberCycleName( const QString& );
+
   static void  clearMap();
 
   int         nextIdentId( bool hot = true );
+  void        save();
 
   protected:
+  void        readFollowerList();
+  void        readIdentTemplate();
 
   private:
   static void init();
 
   AttributeMap mAttributes;
+  QStringList  mFollowerList;
   QString      mName;
   QString      mIdentTemplate;
+  bool         mDirty;
+
   static idMap mNameMap;
 };
 
