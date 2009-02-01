@@ -29,7 +29,7 @@
 #include "defaultprovider.h"
 #include "kraftsettings.h"
 #include "kraftdb.h"
-
+#include "numbercycle.h"
 /**
 @author Klaas Freitag
 */
@@ -177,7 +177,7 @@ void DocType::readFollowerList()
 
 QString DocType::numberCycleName()
 {
-  QString re = i18n( "default" );
+  QString re = NumberCycle::defaultName();
   if ( mAttributes.hasAttribute( "identNumberCycle" ) ) {
     re = mAttributes["identNumberCycle"].value().toString();
   }
@@ -188,7 +188,7 @@ void DocType::setNumberCycleName( const QString& name )
 {
   if ( name.isEmpty() ) return;
 
-  if ( name != i18n( "default" ) ) {
+  if ( name != NumberCycle::defaultName() ) {
     Attribute att( "identNumberCycle" );
     att.setPersistant( true );
     att.setValue( name );
@@ -296,6 +296,11 @@ int DocType::nextIdentId( bool hot )
 QString DocType::identTemplate()
 {
   return mIdentTemplate;
+}
+
+void DocType::setIdentTemplate( const QString& t )
+{
+  mIdentTemplate = t;
 }
 
 void DocType::readIdentTemplate()

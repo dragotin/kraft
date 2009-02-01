@@ -20,7 +20,7 @@
 
 #include <kdialogbase.h>
 
-#include <qvaluevector.h>
+#include <qmap.h>
 
 #include "dbids.h"
 #include "numbercycle.h"
@@ -55,12 +55,19 @@ protected slots:
   void slotRemoveCycle();
   void slotNumberCycleSelected( int );
   void slotTemplTextChanged( const QString& );
+  void slotOk();
+  void slotUpdateExample();
+
 private:
+  void updateField( int, const QString&, const QString& );
   void loadCycles();
+  void updateCycleDataFromGUI();
 
   NumberCycleEditBase *mBaseWidget;
-
-  QValueVector<NumberCycle> mNumberCycles;
+  QStringList mRemovedCycles;
+  QMap<QString,NumberCycle> mNumberCycles;
+  QString mSelectedCycle;
+  
 };
 
 #endif

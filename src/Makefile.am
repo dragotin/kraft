@@ -9,7 +9,8 @@ libbruns_la_SOURCES = catalogtemplate.cpp katalog.cpp katalogman.cpp  brunskatal
 brunsrecord.cpp defaultprovider.cpp doctext.cpp doctype.cpp \
 kataloglistview.cpp flostab.ui katalogview.cpp brunskataloglistview.cpp brunskatalogview.cpp \
 filterheader.cpp catalogchapteredit.cpp  kraftdb.cpp \
-geld.cpp einheit.cpp katalogsettings.kcfgc kraftsettings.kcfgc attribute.cpp
+geld.cpp einheit.cpp katalogsettings.kcfgc kraftsettings.kcfgc attribute.cpp \
+numbercycle.cpp
 
 
 libbruns_la_LDFLAGS = $(KDE_RPATH) $(all_libraries) -version-info 1:0:0 -no-undefined
@@ -44,8 +45,8 @@ kraft_SOURCES = templkatalog.cpp docposition.cpp matkatalog.cpp zeitcalcpart.cpp
 	headertemplateprovider.cpp footertemplateprovider.cpp catalogtemplateprovider.cpp \
 	addresstemplateprovider.cpp texttemplate.cpp doclocaledialog.cpp extendedcombo.cpp \
 	tagman.cpp positiontagdialog.cpp tagtemplatesdialog.cpp kraftview_ro.cpp importfilter.cpp \
-	importitemdialog.cpp importtodocbase.ui doctypeeditbase.ui doctypedetailseditbase.ui \
-	doctypeedit.cpp numbercycleseditbase.ui numbercycle.cpp numbercycledialog.cpp
+	importitemdialog.cpp importtodocbase.ui doctypeeditbase.ui \
+	doctypeedit.cpp numbercycleseditbase.ui  numbercycledialog.cpp
 
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml -lctemplate -lpthread

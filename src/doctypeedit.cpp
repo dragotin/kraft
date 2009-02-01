@@ -117,7 +117,7 @@ void DocTypeEdit::slotAddDocType()
   } else {
     mTypeListBox->insertItem( newName );
     DocType newDt( newName );
-    mNumberCycleDict[newName] = i18n( "default" );
+    mNumberCycleDict[newName] = NumberCycle::defaultName();
     mOrigDocTypes[newName] = newDt;
     mAddedTypes.append( newName );
   }
@@ -218,7 +218,7 @@ void DocTypeEdit::slotEditNumberCycles()
   NumberCycleDialog dia( this );
 
   if ( dia.exec() == QDialog::Accepted ) {
-
+    fillNumberCycleCombo();
   }
 }
 
@@ -240,7 +240,7 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
 QStringList DocTypeEdit::allNumberCycles()
 {
   QStringList re;
-  re << i18n( "default" );
+  re << NumberCycle::defaultName();
   QSqlQuery q( "SELECT av.value FROM attributes a, attributeValues av "
                "WHERE a.id=av.attributeId AND a.hostObject='DocType' "
                "AND a.name='identNumberCycle'" );
@@ -261,6 +261,7 @@ void DocTypeEdit::saveDocTypes()
       DocType dt = mOrigDocTypes[*it];
       removeTypeFromDb( *it );
       mOrigDocTypes.remove( *it );
+      mNumberCycleDict.remove( *it );
     }
   }
 
@@ -328,16 +329,19 @@ void DocTypeEdit::removeTypeFromDb( const QString& name )
   delQuery.prepare( "DELETE FROM DocTypeRelations WHERE followerId=:id or typeId=:id" );
   delQuery.bindValue( ":id", id.toString() );
   delQuery.exec();
+  kdDebug() << "1-XXXXXXXXXXX " << delQuery.lastError().text() << endl;
 
   // delete in DocTexts
   delQuery.prepare( "DELETE FROM DocTexts WHERE DocTypeId=:id" );
   delQuery.bindValue( ":id", id.toString() );
   delQuery.exec();
+  kdDebug() << "2-XXXXXXXXXXX " << delQuery.lastError().text() << endl;
 
   // delete in the DocTypes table
   delQuery.prepare( "DELETE FROM DocTypes WHERE docTypeId=:id" );
   delQuery.bindValue( ":id", id.toString() );
   delQuery.exec();
+  kdDebug() << "3-XXXXXXXXXXX " << delQuery.lastError().text() << endl;
 
   AttributeMap attMap( "DocType" );
   attMap.dbDeleteAll( id );

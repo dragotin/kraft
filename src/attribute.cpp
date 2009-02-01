@@ -385,6 +385,8 @@ void AttributeMap::dbDeleteAll( dbID id )
   listQuery.bindValue( ":hostObject", mHost );
   listQuery.bindValue( ":hostId", id.toString() );
   listQuery.exec();
+  kdDebug() << "4-XXXXXXXXXXX " << listQuery.lastError().text() << endl;
+
 
   while ( listQuery.next() ) {
     dbDeleteAttribute( listQuery.value( 0 ).toString() );
@@ -397,9 +399,11 @@ void AttributeMap::dbDeleteAttribute( const QString& attribId )
   if ( attribId.isEmpty() ) return;
 
   QSqlQuery delQuery;
+  kdDebug() << "Deleting attribute id " << attribId << endl;
   delQuery.prepare( "DELETE FROM attributes WHERE id=:id" );
   delQuery.bindValue( ":id", attribId );
   delQuery.exec();
+  kdDebug() << "5-XXXXXXXXXXX " << delQuery.lastError().text() << endl;
 
   dbDeleteValue( attribId ); // delete all values
 }
@@ -414,6 +418,8 @@ void AttributeMap::dbDeleteValue( const QString& attribId, const QString& id )
     delQuery.prepare( "DELETE FROM attributeValues WHERE id="+id );
   }
   delQuery.exec();
+  kdDebug() << "6-XXXXXXXXXXX " << delQuery.lastError().text() << endl;
+
 }
 
 void AttributeMap::load( dbID id )

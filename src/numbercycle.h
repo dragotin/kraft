@@ -36,6 +36,9 @@ public:
 
   void setCounter( int );
   int  counter();
+
+  static QString defaultName();
+
 private:
   dbID id;
   QString mName;

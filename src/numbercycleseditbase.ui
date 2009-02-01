@@ -72,7 +72,7 @@
                 </widget>
                 <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>textLabel1</cstring>
+                        <cstring>mHelpLabel</cstring>
                     </property>
                     <property name="text">
                         <string>Bla Help</string>

@@ -56,6 +56,7 @@ class DocType
 
   QString     generateDocumentIdent( KraftDoc* doc, int id = -1 );
   QString     identTemplate();
+  void        setIdentTemplate( const QString& );
 
   QString     numberCycleName();
   void        setNumberCycleName( const QString& );

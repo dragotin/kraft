@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <klocale.h>
+
 #include "numbercycle.h"
 
 NumberCycle::NumberCycle()
@@ -55,4 +57,9 @@ void NumberCycle::setCounter( int c )
 int  NumberCycle::counter()
 {
   return mCounter;
+}
+
+QString NumberCycle::defaultName()
+{
+  return i18n( "default" );
 }
