@@ -173,7 +173,7 @@ void PrefsDialog::doctypeTab()
 {
   QFrame *topFrame = addPage( i18n( "Document Types" ),
                               i18n( "Edit Details of Document Types." ),
-                              DesktopIcon( "queue" ) );
+                              DesktopIcon( "folder_man" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
   vboxLay->setSpacing( spacingHint() );
