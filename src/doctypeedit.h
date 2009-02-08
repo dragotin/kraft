@@ -24,7 +24,6 @@
 
 #include "doctype.h"
 #include "doctypeeditbase.h"
-#include "doctypedetailseditbase.h"
 
 class QLineEdit;
 class QLabel;
