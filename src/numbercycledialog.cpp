@@ -222,14 +222,37 @@ void NumberCycleDialog::slotRemoveCycle()
 {
   QString entry = mBaseWidget->mCycleListBox->currentText();
   QListBoxItem *item = mBaseWidget->mCycleListBox->selectedItem();
+  if ( entry.isEmpty() || !item ) return;
 
-  // if ( entry ==
   mRemovedCycles << entry;
 
   if ( item ) {
     mNumberCycles.remove( entry );
     delete item;
   }
+}
+
+bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
+{
+  QSqlQuery q;
+  q.prepare( "SELECT count(att.id) FROM attributes att, attributeValues attVal WHERE att.id=attVal.attributeId AND att.hostObject=:dtype AND att.name=:attName AND attVal.value=:val" );
+  q.bindValue( ":dtype", "DocType" );
+  q.bindValue( ":attName", "identNumberCycle" );
+  q.bindValue( ":val", name );
+  q.exec();
+
+  if ( q.next() ) {
+    int cnt = q.value( 0 ).toInt();
+
+    if ( cnt > 0 ) {
+      KMessageBox::information( this, i18n( "The numbercycle %1 is still assigned to a document type."
+                                  "The number cycle can not be deleted as long as it "
+                                            "is assigned to a document type." ).arg( name ),
+                                i18n( "Numbercycle Deletion" ) );
+    }
+    return cnt == 0;
+  }
+  return true;
 }
 
 
@@ -246,10 +269,13 @@ void NumberCycleDialog::slotOk()
   for ( QStringList::Iterator it = mRemovedCycles.begin();
         it != mRemovedCycles.end(); ++it ) {
     kdDebug() << "about to drop the number cycle " << *it << endl;
-    qDel.bindValue( ":name", *it );
-    qDel.exec();
+    if ( dropOfNumberCycleOk( *it ) ) {
+      qDel.bindValue( ":name", *it );
+      qDel.exec();
+    }
   }
 
+  // update existing entries and insert new ones
   QSqlQuery q;
   q.prepare( "SELECT * FROM numberCycles WHERE name=:name" );
   QMap<QString, NumberCycle>::Iterator it;
@@ -257,12 +283,11 @@ void NumberCycleDialog::slotOk()
     QString cycleName = it.key();
     NumberCycle cycle = it.data();
 
-    kdDebug() << "CycleName added: " << cycleName << endl;
-
     q.bindValue( ":name", cycleName );
     // name changes can not happen by design
     q.exec();
     if ( q.next() ) {
+      kdDebug() << "Checking existing number cycle " << cycleName << " for update" << endl;
       // there is an entry
       if ( q.value( 2 ).toInt() != cycle.counter() ) {
         updateField( q.value( 0 ).toInt(),
@@ -272,7 +297,7 @@ void NumberCycleDialog::slotOk()
         updateField( q.value( 0 ).toInt(), "identTemplate", cycle.getTemplate() );
       }
     } else {
-      kdDebug() << "This one is new: " << cycleName << endl;
+      kdDebug() << "This number cycle is new: " << cycleName << endl;
       QSqlQuery qIns;
       qIns.prepare( "INSERT INTO numberCycles (name, lastIdentNumber, identTemplate) "
                     "VALUES (:name, :number, :templ)" );

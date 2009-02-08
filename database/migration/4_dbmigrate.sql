@@ -43,10 +43,10 @@ INSERT INTO DocTexts ( name, text, docType, textType )
 VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Rechnung', 'Fuß Text' );
 
 INSERT INTO DocTexts ( name, text, docType, textType ) 
-VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'AuftragsbestÃ¤tigung', 'Kopf Text' );
+VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Auftragsbestätigung', 'Kopf Text' );
 
 INSERT INTO DocTexts ( name, text, docType, textType ) 
-VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'AuftragsbestÃ¤tigung', 'Fuß Text' );
+VALUES ( 'Standard', 'Please edit me - Bitte passe mich an!', 'Auftragsbestätigung', 'Fuß Text' );
 
 
 INSERT INTO DocTexts ( name, text, docType, textType )
@@ -75,7 +75,7 @@ INSERT INTO DocTexts ( name, text, docType, textType )
 SELECT 'Standard', word, 'Rechnung', 'Kopf Text' FROM wordLists WHERE category='docHeader_Rechnung';
 
 INSERT INTO DocTexts ( name, text, docType, textType )
-SELECT 'Standard', word, 'AuftragsbestÃ¤tigung', 'Fuß Text' FROM wordLists WHERE category='docFooter_AuftragsbestÃ¤tigung';
+SELECT 'Standard', word, 'AuftragsbestÃ¤tigung', 'Fuß Text' FROM wordLists WHERE category='docFooter_Auftragsbestätigung';
 INSERT INTO DocTexts ( name, text, docType, textType )
-SELECT 'Standard', word, 'AuftragsbestÃ¤tigung', 'Kopf Text' FROM wordLists WHERE category='docHeader_AuftragsbestÃ¤tigung';
+SELECT 'Standard', word, 'AuftragsbestÃ¤tigung', 'Kopf Text' FROM wordLists WHERE category='docHeader_Auftragsbestätigung';
 

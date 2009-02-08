@@ -8,4 +8,6 @@ CREATE TABLE numberCycles (
   UNIQUE(name)
 );                              
 
-INSERT INTO numberCycles (name, lastIdentNumber) VALUES ("default", 42);
+SELECT @id := IF( ISNULL(MAX( docID)), 1, MAX(docID) ) FROM document;
+
+INSERT INTO numberCycles (name, lastIdentNumber) VALUES ("default", @id);

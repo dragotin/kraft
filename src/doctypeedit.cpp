@@ -215,6 +215,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
 
 void DocTypeEdit::slotEditNumberCycles()
 {
+  saveDocTypes();
   NumberCycleDialog dia( this );
 
   if ( dia.exec() == QDialog::Accepted ) {
