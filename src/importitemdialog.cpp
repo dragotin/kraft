@@ -159,31 +159,33 @@ void ImportItemDialog::slotOk()
 
 DocPositionList ImportItemDialog::positionList()
 {
+  DocPositionList list;
   QString url = mBaseWidget->mFileRequester->url();
 
-  DocPositionImportFilter filter = mFilterMap[mBaseWidget->mSchemaCombo->currentText()];
+  if ( ! url.isEmpty() ) {
+    DocPositionImportFilter filter = mFilterMap[mBaseWidget->mSchemaCombo->currentText()];
 
-  DocPositionList list = filter.import( url );
+    list = filter.import( url );
 
-  // get the tags
-  QButtonGroup *group = mBaseWidget->mTagGroup;
-  QStringList tags;
+    // get the tags
+    QButtonGroup *group = mBaseWidget->mTagGroup;
+    QStringList tags;
 
-  QMap<int, QString>::Iterator it;
-  for ( it = mTagMap.begin(); it != mTagMap.end(); ++it ) {
-    QCheckBox *b = static_cast<QCheckBox*>( group->find( it.key() ) );
-    if ( b->isChecked() ) tags.append( it.data() );
-  }
+    QMap<int, QString>::Iterator it;
+    for ( it = mTagMap.begin(); it != mTagMap.end(); ++it ) {
+      QCheckBox *b = static_cast<QCheckBox*>( group->find( it.key() ) );
+      if ( b->isChecked() ) tags.append( it.data() );
+    }
 
-  if ( tags.size() > 0 ) {
-    DocPositionBase *dpb;
-    for( dpb = list.first(); dpb; dpb = list.next() ) {
-      for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-        dpb->setTag( *it );
+    if ( tags.size() > 0 ) {
+      DocPositionBase *dpb;
+      for( dpb = list.first(); dpb; dpb = list.next() ) {
+        for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
+          dpb->setTag( *it );
+        }
       }
     }
   }
-
   return list;
 }
 

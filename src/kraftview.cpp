@@ -279,6 +279,9 @@ void KraftView::setupDocHeaderView()
       m_headerEdit->mButtLang->hide();
     }
 
+    m_headerEdit->m_whiteboardEdit->setFrameStyle( QFrame::NoFrame );
+    m_headerEdit->m_whiteboardEdit->setMaximumSize( 32676, 80 );
+    // m_headerEdit->m_whiteboardEdit->setBackgroundColor( QColor( 243, 244, 121 ) );
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
              this, SLOT( slotDocTypeChanged( const QString& ) ) );
 
@@ -352,6 +355,7 @@ void KraftView::redrawDocument( )
     /* pre- and post text */
     m_headerEdit->m_teEntry->setText( doc->preText() );
     m_headerEdit->m_whiteboardEdit->setText( doc->whiteboard() );
+    m_headerEdit->mProjectLabelEdit->setText( doc->projectLabel() );
     m_footerEdit->m_teSummary->setText( doc->postText() );
 
     mAssistant->slotSetDocType( doc->docType() );
@@ -915,21 +919,22 @@ void KraftView::slotImportItems()
     kdDebug() << "Have finalised" << endl;
 
     DocPositionList list = dia.positionList();
-    kdDebug() << "Importlist amount of entries: " << list.count() << endl;
-    DocPositionBase *dpb =0;
-    int cnt = 0;
-    int newpos = dia.getPositionCombo()->currentItem();
+    if ( list.count() > 0 ) {
+      kdDebug() << "Importlist amount of entries: " << list.count() << endl;
+      DocPositionBase *dpb =0;
+      int cnt = 0;
+      int newpos = dia.getPositionCombo()->currentItem();
 
-    for( dpb = list.first(); dpb; dpb = list.next() ) {
-      DocPosition *dp = static_cast<DocPosition*>( dpb );
-      kdDebug() << "XXXXXXXX " << dp->text() << endl;
-      DocPosition *newDp = new DocPosition();
-      *newDp = *dp;
-      PositionViewWidget *widget = createPositionViewWidget( newDp, newpos + cnt++ );
-      widget->slotModified();
+      for( dpb = list.first(); dpb; dpb = list.next() ) {
+        DocPosition *dp = static_cast<DocPosition*>( dpb );
+        kdDebug() << "XXXXXXXX " << dp->text() << endl;
+        DocPosition *newDp = new DocPosition();
+        *newDp = *dp;
+        PositionViewWidget *widget = createPositionViewWidget( newDp, newpos + cnt++ );
+        widget->slotModified();
+      }
+      refreshPostCard();
     }
-    refreshPostCard();
-
   }
 }
 
@@ -1180,6 +1185,7 @@ void KraftView::slotOk()
     doc->setDocType(  m_headerEdit->m_cbType->currentText() );
     doc->setPreText(  m_headerEdit->m_teEntry->text() );
     doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->text() );
+    doc->setProjectLabel( m_headerEdit->mProjectLabelEdit->text() );
     doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
     doc->setPostText( m_footerEdit->m_teSummary->text() );
     doc->setGoodbye(  m_footerEdit->m_cbGreeting->currentText() );

@@ -19,18 +19,36 @@
 #include "brunsrecord.h"
 
 // *********************************************** BrunsSize
-BrunsSize::BrunsSize() : 
+BrunsSize::BrunsSize() :
 formNo(0),
 grothNo(0),
 rootPack(0),
 qualityAdd(0),
 formAdd(0),
-goodsGroup(0)
+goodsGroup(0),
+sizeNo( 0 ),
+sizeAddNo( 0 )
 {
 
 }
 
 // *********************************************** BrunsRecord
+
+
+BrunsRecord::BrunsRecord(int d)
+    : artNo(d),
+      passNeeded( false ),
+      plantGroup( 0 ),
+      artId( 0 )
+{
+
+}
+
+
+BrunsRecord::~BrunsRecord()
+{
+
+}
 
 void BrunsRecord::addSize( const BrunsSize& size )
 {
@@ -40,18 +58,6 @@ void BrunsRecord::addSize( const BrunsSize& size )
 void BrunsRecord::clearSizes()
 {
     m_sizes.clear();
-}
-
-BrunsRecord::BrunsRecord(int d)
-    : artNo(d)
-{
- 
-}
-
-
-BrunsRecord::~BrunsRecord()
-{
-    
 }
 
 void BrunsRecord::debugOut()

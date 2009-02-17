@@ -90,9 +90,9 @@ QStringList Katalog::getKatalogChapters( bool freshup )
       m_chapterIDs->clear();
     }
     QSqlCursor cur("CatalogChapters");
-    QSqlIndex index = cur.index( "sortKey" );
+    // QSqlIndex index = cur.index( "sortKey" );
     kdDebug() << "Selecting chapters for catalog no " << QString::number( m_setID ) << endl;
-    cur.select( "catalogSetID=" + QString::number( m_setID ), index );
+    cur.select( "catalogSetID=" + QString::number( m_setID ) ); // , index );
 
     while ( cur.next() )
     {

@@ -40,6 +40,7 @@
 DocPositionBase::DocPositionBase() : QObject(),
                                      m_dbId( -1 ),
                                      mToDelete( false ),
+                                     mVatType( Full ),
                                      mType( Position ),
                                      mAttribs( QString::fromLatin1( "Position" ) )
 
@@ -51,6 +52,7 @@ DocPositionBase::DocPositionBase( const PositionType& t )
   : QObject(),
     m_dbId( -1 ),
     mToDelete( false ),
+    mVatType( Full ),
     mType( t ),
     mAttribs( QString::fromLatin1( "Position" ) )
 {
@@ -63,6 +65,7 @@ DocPositionBase::DocPositionBase(const DocPositionBase& b )
     m_position( b.m_position ),
     m_text( b.m_text ),
     mToDelete( b.mToDelete ),
+    mVatType( Full ),
     mType( b.mType ),
     mAttribs( b.mAttribs )
 {
@@ -79,6 +82,7 @@ DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
   mToDelete = dp.mToDelete;
   mType = dp.mType;
   mAttribs = dp.mAttribs;
+  mVatType = dp.mVatType;
 
   return *this;
 }
@@ -183,6 +187,32 @@ QStringList DocPositionBase::tags()
   return tags;
 }
 
+void DocPositionBase::setVatType( int type )
+{
+  if ( type == 1 )
+    mVatType = None;
+  else if ( type == 2 )
+    mVatType = Reduced;
+  else if ( type == 3 )
+    mVatType = Full;
+  else {
+    kdDebug() << "Ambigous vat type " << type << endl;
+    mVatType = Invalid;
+  }
+}
+
+int DocPositionBase::vatTypeNumeric()
+{
+  if ( mVatType == None )
+    return 1;
+  else if ( mVatType == Reduced )
+    return 2;
+  else if ( mVatType == Full )
+    return 3;
+
+  kdDebug() << "ERR: Vat-type ambigous!" << endl;
+  return 0; // Invalid
+}
 
 // ##############################################################
 
@@ -208,7 +238,7 @@ Geld DocPosition::overallPrice()
 {
     Geld g;
     AttributeMap atts = attributes();
-    // all kinds besind from no kind mean  that the position is not
+    // all kinds beside from no kind mean  that the position is not
     // counted for the overall price. That's a FIXME
     if ( ! atts.contains( DocPosition::Kind ) ) {
       g = unitPrice() * amount();

@@ -45,6 +45,8 @@ class DocPositionBase : public QObject
 {
   public:
   enum PositionType { Position, ExtraDiscount, Header };
+  enum vatType { Invalid, None, Reduced, Full };
+
     DocPositionBase();
     DocPositionBase( const PositionType& );
     ~DocPositionBase() {}
@@ -69,6 +71,9 @@ class DocPositionBase : public QObject
     void removeTag( const QString& );
     bool hasTag( const QString& );
     QStringList tags();
+    
+    int vatTypeNumeric();
+    void setVatType( int );
 
   /**
    * Position means the number in the document
@@ -86,6 +91,7 @@ class DocPositionBase : public QObject
     QString m_position;
     QString m_text;
     bool    mToDelete;
+    vatType mVatType;
     PositionType mType;
     AttributeMap mAttribs;
 };

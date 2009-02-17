@@ -399,6 +399,7 @@ QDomElement FloskelTemplate::createDomNode( QDomDocument doc,
 }
 #endif
 
+#if 0
 int FloskelTemplateList::compareItems( QPtrCollection::Item i1, QPtrCollection::Item i2 )
 // int compareItems( FloskelTemplate* ct1, FloskelTemplate* ct2 )
 {
@@ -417,3 +418,4 @@ int FloskelTemplateList::compareItems( QPtrCollection::Item i1, QPtrCollection::
 
 }
 
+#endif

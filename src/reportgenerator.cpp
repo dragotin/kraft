@@ -208,6 +208,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
                  clientAddress.label() );
 
   tmpl.setValue( TAG( "DOCID" ),   archive.ident() );
+  tmpl.setValue( TAG( "PROJECTLABEL" ),   archive.projectLabel() );
   tmpl.setValue( TAG( "SALUT" ),   archive.salut() );
   tmpl.setValue( TAG( "GOODBYE" ), archive.goodbye() );
   tmpl.setValue( TAG( "PRETEXT" ),   rmlString( archive.preText() ) );

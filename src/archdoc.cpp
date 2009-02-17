@@ -96,6 +96,8 @@ void ArchDoc::loadFromDb( dbID id )
     mSalut     = cur.value( "salut" ).toString();
     mGoodbye   = cur.value( "goodbye" ).toString();
     mIdent     = cur.value( "ident" ).toString();
+    mProjectLabel = cur.value( "projectLabel" ).toString();
+
     mDate      = cur.value( "date" ).toDate();
     mPrintDate = cur.value( "printDate" ).toDateTime();
     mState     = cur.value( "state" ).toInt();

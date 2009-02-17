@@ -109,6 +109,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
   docElem.appendChild( xmlTextElement( xmldoc, "ident", doc->ident() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "preText", doc->preText() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "postText", doc->postText() ) );
+  docElem.appendChild( xmlTextElement( xmldoc, "projectLabel", doc->projectLabel() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "salut", doc->salut() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
 
@@ -144,23 +145,25 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
 {
 /*
   mysql> describe archdoc;
-  +----------------+--------------+------+-----+-------------------+----------------+
-  | Field          | Type         | Null | Key | Default           | Extra          |
-  +----------------+--------------+------+-----+-------------------+----------------+
-  | archDocID      | int(11)      | NO   | PRI | NULL              | auto_increment |
-  | ident          | varchar(32)  | YES  | MUL | NULL              |                |
-  | docType        | varchar(255) | YES  |     | NULL              |                |
-  | docDescription | text         | YES  |     | NULL              |                |
-  | clientAddress  | text         | YES  |     | NULL              |                |
-  | clientUid      | text         | YES  |     | NULL              |                |
-  | salut          | varchar(255) | YES  |     | NULL              |                |
-  | goodbye        | varchar(128) | YES  |     | NULL              |                |
-  | printDate      | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
-  | date           | date         | YES  |     | NULL              |                |
-  | pretext        | text         | YES  |     | NULL              |                |
-  | posttext       | text         | YES  |     | NULL              |                |
-  | state          | int(11)      | YES  |     | NULL              |                |
-  +----------------+--------------+------+-----+-------------------+----------------+
+   +---------------+--------------+------+-----+-------------------+----------------+
+   | Field         | Type         | Null | Key | Default           | Extra          |
+   +---------------+--------------+------+-----+-------------------+----------------+
+   | archDocID     | int(11)      | NO   | PRI | NULL              | auto_increment |
+   | ident         | varchar(32)  | YES  | MUL | NULL              |                |
+   | docType       | varchar(255) | YES  |     | NULL              |                |
+   | clientAddress | text         | YES  |     | NULL              |                |
+   | clientUid     | varchar(32)  | YES  |     | NULL              |                |
+   | salut         | varchar(255) | YES  |     | NULL              |                |
+   | goodbye       | varchar(128) | YES  |     | NULL              |                |
+   | printDate     | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
+   | date          | date         | YES  |     | NULL              |                |
+   | pretext       | text         | YES  |     | NULL              |                |
+   | posttext      | text         | YES  |     | NULL              |                |
+   | country       | varchar(32)  | YES  |     | NULL              |                |
+   | language      | varchar(32)  | YES  |     | NULL              |                |
+   | projectLabel  | varchar(255) | YES  |     | NULL              |                |
+   | state         | int(11)      | YES  |     | NULL              |                |
+   +---------------+--------------+------+-----+-------------------+----------------+
 */
     if( ! doc ) return dbID();
 
@@ -184,6 +187,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "date", doc->date() );
     record->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
     record->setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
+    record->setValue( "projectLabel", KraftDB::self()->mysqlEuroEncode(doc->projectLabel() ) );
     record->setValue( "country",  doc->country() );
     record->setValue( "language", doc->language() );
 

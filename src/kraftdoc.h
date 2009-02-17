@@ -119,6 +119,9 @@ class KraftDoc : public QObject
   QString whiteboard() { return mWhiteboard; }
   void setWhiteboard( const QString& w ) { mWhiteboard = w; }
 
+  QString projectLabel() { return mProjectLabel; }
+  void setProjectLabel( const QString& w ) { mProjectLabel = w; }
+
   void setDocID( dbID id ) { mDocID = id; }
   dbID docID() { return mDocID; }
 
@@ -158,6 +161,7 @@ private:
   bool mIsNew;
 
   QString mAddressUid;
+  QString mProjectLabel;
   QString mAddress;
   QString mPreText;
   QString mPostText;

@@ -65,6 +65,8 @@ public:
 
   QString postText() const { return mPostText; }
 
+  QString projectLabel() const { return mProjectLabel; }
+
   dbID docID() const { return mDocID; }
 
   QString docIdentifier() const;
@@ -93,6 +95,7 @@ private:
   QString mSalut;
   QString mGoodbye;
   QString mIdent;
+  QString mProjectLabel;
 
   QDate     mDate;
   QDateTime mPrintDate;

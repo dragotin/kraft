@@ -28,7 +28,8 @@
 #include <qsqlcursor.h>
 
 Attribute::Attribute()
-  :mListValue( false ),
+  :mPersist( true ),
+   mListValue( false ),
    mDelete( false )
 {
 
@@ -36,6 +37,7 @@ Attribute::Attribute()
 
 Attribute::Attribute( const QString& name )
   :mName( name ),
+   mPersist( true ),
    mListValue( false ),
    mDelete( false )
 {

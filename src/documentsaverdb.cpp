@@ -52,8 +52,8 @@
  * | posttext       | text         | YES  |     | NULL              |                |
  * | country        | varchar(32)  | YES  |     | NULL              |                |
  * | language       | varchar(32)  | YES  |     | NULL              |                |
+ * | projectLabel   | varchar(255) | YES  |     | NULL              |                |
  * +----------------+--------------+------+-----+-------------------+----------------+
- * 14 rows in set (0.00 sec)
  *
  */
 
@@ -205,6 +205,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         record->setValue( "amount",    dp->amount() );
         record->setValue( "unit",      dp->unit().id() );
         record->setValue( "price",     price );
+        record->setValue( "taxType",   dp->vatTypeNumeric() );
 
         ordNumber++; // FIXME
 
@@ -235,22 +236,23 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
 void DocumentSaverDB::fillDocumentBuffer( QSqlRecord *buf, KraftDoc *doc )
 {
-    if( buf && doc ) {
-      kdDebug() << "Adressstring: " << doc->address() << endl;
-      buf->setValue( "ident",    doc->ident() );
-      buf->setValue( "docType",  doc->docType() );
-      buf->setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
-      buf->setValue( "clientID", doc->addressUid() );
-      buf->setValue( "clientAddress", doc->address() );
-      buf->setValue( "salut",    doc->salut() );
-      buf->setValue( "goodbye",  doc->goodbye() );
-      buf->setValue( "date",     doc->date() );
-      buf->setValue( "lastModified", "NOW()" );
-      buf->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
-      buf->setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
-      buf->setValue( "country",  doc->country() );
-      buf->setValue( "language", doc->language() );
-    }
+  if( buf && doc ) {
+    kdDebug() << "Adressstring: " << doc->address() << endl;
+    buf->setValue( "ident",    doc->ident() );
+    buf->setValue( "docType",  doc->docType() );
+    buf->setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
+    buf->setValue( "clientID", doc->addressUid() );
+    buf->setValue( "clientAddress", doc->address() );
+    buf->setValue( "salut",    doc->salut() );
+    buf->setValue( "goodbye",  doc->goodbye() );
+    buf->setValue( "date",     doc->date() );
+    buf->setValue( "lastModified", "NOW()" );
+    buf->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
+    buf->setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
+    buf->setValue( "country",  doc->country() );
+    buf->setValue( "language", doc->language() );
+    buf->setValue( "projectLabel", doc->projectLabel() );
+  }
 }
 
 void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
@@ -281,23 +283,27 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setPreText(    KraftDB::self()->mysqlEuroDecode( cur.value( "pretext"  ).toString() ) );
         doc->setPostText(   KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() ) );
         doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( cur.value( "docDescription" ).toString() ) );
+        doc->setProjectLabel( KraftDB::self()->mysqlEuroDecode( cur.value( "projectLabel" ).toString() ) );
     }
 
     loadPositions( id, doc );
 }
 /* docposition:
-  +------------+--------------+------+-----+---------+----------------+
-  | Field      | Type         | Null | Key | Default | Extra          |
-  +------------+--------------+------+-----+---------+----------------+
-  | positionID | int(11)      |      | PRI | NULL    | auto_increment |
-  | docID      | int(11)      |      | MUL | 0       |                |
-  | ordNumber  | int(11)      |      |     | 0       |                |
-  | text       | mediumtext   | YES  |     | NULL    |                |
-  | amount     | decimal(6,2) | YES  |     | NULL    |                |
-  | unit       | varchar(64)  | YES  |     | NULL    |                |
-  | price      | decimal(6,2) | YES  |     | NULL    |                |
-  +------------+--------------+------+-----+---------+----------------+
-*/
+ * +------------+---------------+------+-----+---------+----------------+
+ * | Field      | Type          | Null | Key | Default | Extra          |
+ * +------------+---------------+------+-----+---------+----------------+
+ * | positionID | int(11)       | NO   | PRI | NULL    | auto_increment |
+ * | docID      | int(11)       | NO   | MUL | NULL    |                |
+ * | ordNumber  | int(11)       | NO   |     | NULL    |                |
+ * | text       | text          | YES  |     | NULL    |                |
+ * | postype    | varchar(64)   | YES  |     | NULL    |                |
+ * | amount     | decimal(10,2) | YES  |     | NULL    |                |
+ * | unit       | int(11)       | YES  |     | NULL    |                |
+ * | price      | decimal(10,2) | YES  |     | NULL    |                |
+ * | taxType    | int(11)       | YES  |     | 0       |                |
+ * +------------+---------------+------+-----+---------+----------------+
+ *
+ */
 void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 {
     QSqlCursor cur("docposition");
@@ -332,6 +338,8 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 
         dp->setUnit( UnitManager::getUnit( cur.value("unit").toInt() ) );
         dp->setUnitPrice( cur.value("price").toDouble() );
+        dp->setVatType( cur.value( "taxType" ).toInt() );
+
         dp->loadAttributes();
     }
 }

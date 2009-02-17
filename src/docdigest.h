@@ -54,6 +54,9 @@ public:
   QString whiteboard()   { return mWhiteboard; }
   void setWhiteboard( const QString& white ) { mWhiteboard = white; }
 
+  void setProjectLabel( const QString& prjLabel ) { mProjectLabel = prjLabel; }
+  QString projectLabel() { return mProjectLabel; }
+
   void addArchDocDigest( const ArchDocDigest& );
   ArchDocDigestList archDocDigestList();
 
@@ -65,6 +68,7 @@ protected:
   QString mClientId;
   QString mIdent;
   QString mWhiteboard;
+  QString mProjectLabel;
 
   QDate   mLastModified;
   QDate   mDate;

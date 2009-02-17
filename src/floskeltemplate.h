@@ -119,7 +119,7 @@ public:
   FloskelTemplateList() { }
 
 protected:
-  int compareItems( QPtrCollection::Item, QPtrCollection::Item );
+  // int compareItems( QPtrCollection::Item, QPtrCollection::Item );
 };
 
 // typedef QPtrList<FloskelTemplate> FloskelTemplateList;

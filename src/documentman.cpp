@@ -39,7 +39,7 @@ DocumentMan *DocumentMan::self()
 }
 
 DocumentMan::DocumentMan()
-  : mColumnList( "docID, ident, docType, docDescription, clientID, lastModified, date, country, language" )
+  : mColumnList( "docID, ident, docType, docDescription, clientID, lastModified, date, country, language, projectLabel" )
 {
 
 }
@@ -80,7 +80,7 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   dig.setLastModified( query.value(5).toDate() );
   dig.setDate(     query.value(6).toDate() );
   dig.setCountryLanguage(  query.value( 7 ).toString(), query.value( 8 ).toString() );
-
+  dig.setProjectLabel( query.value( 9 ).toString() );
   // kdDebug() << "Adding document "<< ident << " to the latest list" << endl;
 
   archCur.select( "ident='" + ident +"'" );
@@ -186,11 +186,17 @@ QStringList DocumentMan::openDocumentsList()
 
 double DocumentMan::vat()
 {
-  double v = 19.0;
-  if ( QDate::currentDate() < QDate( 2007, 1, 1 ) ) {
-    v = 16.0;
+  QSqlQuery q( "SELECT fullText, reducedTax, startDate FROM taxes ORDER BY startDate DESC LIMIT 1" );
+  q.exec();
+
+  double full = 0;
+  double reduced = 0;
+  if ( q.next() ) {
+    full    = q.value( 0 ).toDouble();
+    reduced = q.value( 1 ).toDouble();
+    kdDebug() << "* Taxes: " << full << "/" << reduced << " from " << q.value( 2 ).toDate() << endl;
   }
-  return v;
+  return full;
 }
 
 double DocumentMan::halfVat()
