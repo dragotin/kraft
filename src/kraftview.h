@@ -120,6 +120,7 @@ class KraftView : public KDialogBase
   typedef QMap<DocPositionBase*, PositionViewWidget*> PositionMap;
 
   DocPositionList currentPositionList();
+  DocPositionBase::TaxType currentTaxSetting();
 
   public slots:
   void slotNewAddress( const Addressee& contact = Addressee() );

@@ -40,7 +40,7 @@
 DocPositionBase::DocPositionBase() : QObject(),
                                      m_dbId( -1 ),
                                      mToDelete( false ),
-                                     mVatType( Full ),
+                                     mTaxType( TaxFull ),
                                      mType( Position ),
                                      mAttribs( QString::fromLatin1( "Position" ) )
 
@@ -52,7 +52,7 @@ DocPositionBase::DocPositionBase( const PositionType& t )
   : QObject(),
     m_dbId( -1 ),
     mToDelete( false ),
-    mVatType( Full ),
+    mTaxType( TaxFull ),
     mType( t ),
     mAttribs( QString::fromLatin1( "Position" ) )
 {
@@ -65,7 +65,7 @@ DocPositionBase::DocPositionBase(const DocPositionBase& b )
     m_position( b.m_position ),
     m_text( b.m_text ),
     mToDelete( b.mToDelete ),
-    mVatType( Full ),
+    mTaxType( TaxFull ),
     mType( b.mType ),
     mAttribs( b.mAttribs )
 {
@@ -82,7 +82,7 @@ DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
   mToDelete = dp.mToDelete;
   mType = dp.mType;
   mAttribs = dp.mAttribs;
-  mVatType = dp.mVatType;
+  mTaxType = dp.mTaxType;
 
   return *this;
 }
@@ -187,27 +187,30 @@ QStringList DocPositionBase::tags()
   return tags;
 }
 
-void DocPositionBase::setVatType( int type )
+void DocPositionBase::setTaxType( TaxType tt )
 {
+  mTaxType = tt;
+#if 0
   if ( type == 1 )
-    mVatType = None;
+    mTaxType = TaxNone;
   else if ( type == 2 )
-    mVatType = Reduced;
+    mTaxType = TaxReduced;
   else if ( type == 3 )
-    mVatType = Full;
+    mTaxType = TaxFull;
   else {
     kdDebug() << "Ambigous vat type " << type << endl;
-    mVatType = Invalid;
+    mTaxType = TaxInvalid;
   }
+#endif
 }
 
-int DocPositionBase::vatTypeNumeric()
+int DocPositionBase::taxTypeNumeric()
 {
-  if ( mVatType == None )
+  if ( mTaxType == TaxNone )
     return 1;
-  else if ( mVatType == Reduced )
+  else if ( mTaxType == TaxReduced )
     return 2;
-  else if ( mVatType == Full )
+  else if ( mTaxType == TaxFull )
     return 3;
 
   kdDebug() << "ERR: Vat-type ambigous!" << endl;
@@ -268,7 +271,14 @@ DocPositionList::DocPositionList()
   setAutoDelete( true );
 }
 
-Geld DocPositionList::sumPrice()
+Geld DocPositionList::bruttoPrice(double fullTax, double reducedTax )
+{
+  Geld g = nettoPrice();
+  g += taxSum( fullTax, reducedTax );
+  return g;
+}
+
+Geld DocPositionList::nettoPrice()
 {
     Geld g;
 
@@ -277,6 +287,32 @@ Geld DocPositionList::sumPrice()
           g += static_cast<DocPosition*>(dp)->overallPrice();
     }
     return g;
+}
+
+Geld DocPositionList::taxSum( double fullTax, double reducedTax )
+{
+    Geld sum;
+
+    if ( fullTax < 0 ) {
+      kdError() << "Full Tax is not loaded!" << endl;
+    }
+
+    DocPositionBase *dp;
+    for ( dp = first(); dp; dp = next() ) {
+      Geld g = static_cast<DocPosition*>(dp)->overallPrice();
+      Geld tax;
+      if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
+        tax = ( g * fullTax );
+      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
+        tax = ( g * reducedTax );
+      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
+        kdDebug() << "no tax for pos " << dp->dbId().toString() << endl;
+      } else {
+        kdDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString() << endl;
+      }
+      sum += tax / 100.0;
+    }
+    return sum;
 }
 
 QString DocPositionList::posNumber( DocPositionBase* pos )

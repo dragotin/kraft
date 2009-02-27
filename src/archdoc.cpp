@@ -64,18 +64,24 @@ Geld ArchDoc::nettoSum()
 Geld ArchDoc::bruttoSum()
 {
   Geld g = nettoSum();
-  g += vatSum();
+  g += taxSum();
   return g;
 }
 
-Geld ArchDoc::vatSum()
+Geld ArchDoc::taxSum()
 {
-  return Geld( nettoSum() * vat()/100.0 );
+  return positions().taxSum( DocumentMan::self()->tax( date() ),
+                             DocumentMan::self()->reducedTax( date() ) );
 }
 
-double ArchDoc::vat()
+double ArchDoc::tax()
 {
-  return DocumentMan::self()->vat();
+  return mTax;
+}
+
+double ArchDoc::reducedTax()
+{
+  return mReducedTax;
 }
 
 void ArchDoc::loadFromDb( dbID id )
@@ -106,6 +112,9 @@ void ArchDoc::loadFromDb( dbID id )
     mLocale.setCountry( country );
     mLocale.setLanguage( lang );
 
+    mTax = cur.value( "tax" ).toDouble();
+    mReducedTax = cur.value( "reducedTax" ).toDouble();
+
     QString docID = cur.value( "archDocID" ).toString();
     loadPositions( docID );
     loadAttributes( docID );
@@ -135,7 +144,14 @@ void ArchDoc::loadPositions( const QString& archDocId )
     pos.mUnit  = cur.value( "unit" ).toString();
     pos.mUnitPrice = Geld( cur.value( "price" ).toDouble() );
     pos.mAmount = cur.value( "amount" ).toDouble();
-    pos.mVat = cur.value( "vat" ).toDouble();
+    int tt = cur.value( "taxType" ).toInt();
+    if ( tt == 1 )
+      pos.mTaxType = DocPositionBase::TaxNone;
+    else if ( tt == 2 )
+      pos.mTaxType = DocPositionBase::TaxReduced;
+    else if ( tt == 3 )
+      pos.mTaxType = DocPositionBase::TaxFull;
+
     pos.mOverallPrice = cur.value( "overallPrice" ).toDouble();
     pos.mKind = cur.value( "kind" ).toString();
     mPositions.append( pos );

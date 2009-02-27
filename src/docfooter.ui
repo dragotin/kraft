@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>583</width>
-            <height>192</height>
+            <width>560</width>
+            <height>245</height>
         </rect>
     </property>
     <property name="caption">
@@ -22,88 +22,152 @@
         <property name="margin">
             <number>3</number>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0">
+        <spacer row="2" column="0">
             <property name="name">
-                <cstring>layout18</cstring>
+                <cstring>spacer7</cstring>
             </property>
-            <vbox>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Footer Texts</string>
+            </property>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QLayoutWidget" row="0" column="0">
                     <property name="name">
-                        <cstring>textLabel8_2</cstring>
+                        <cstring>layout4</cstring>
                     </property>
-                    <property name="text">
-                        <string>&amp;Summary Text on Last Page:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>m_teSummary</cstring>
-                    </property>
-                </widget>
-                <widget class="QTextEdit">
-                    <property name="name">
-                        <cstring>m_teSummary</cstring>
-                    </property>
-                    <property name="tabChangesFocus">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout17</cstring>
-                    </property>
-                    <hbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel">
+                        <widget class="QTextEdit" row="1" column="0">
                             <property name="name">
-                                <cstring>textLabel1</cstring>
+                                <cstring>m_teSummary</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Greeting:</string>
-                            </property>
-                        </widget>
-                        <widget class="KComboBox">
-                            <property name="name">
-                                <cstring>m_cbGreeting</cstring>
-                            </property>
-                            <property name="editable">
+                            <property name="tabChangesFocus">
                                 <bool>true</bool>
                             </property>
                         </widget>
-                    </hbox>
+                        <widget class="QLayoutWidget" row="2" column="0">
+                            <property name="name">
+                                <cstring>layout3</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel1</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>4</hsizetype>
+                                            <vsizetype>5</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Greeting:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>m_cbGreeting</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="KComboBox">
+                                    <property name="name">
+                                        <cstring>m_cbGreeting</cstring>
+                                    </property>
+                                    <property name="editable">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel8_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Summary Text on Last Page:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>m_teSummary</cstring>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-                <spacer>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="1" column="0">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>Tax</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
                     <property name="name">
-                        <cstring>spacer7</cstring>
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Document &amp;Tax:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>mTaxCombo</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>mTaxCombo</cstring>
+                    </property>
+                </widget>
+                <spacer row="0" column="2">
+                    <property name="name">
+                        <cstring>spacer2</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Vertical</enum>
+                        <enum>Horizontal</enum>
                     </property>
                     <property name="sizeType">
                         <enum>Expanding</enum>
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>20</width>
-                            <height>31</height>
+                            <width>50</width>
+                            <height>20</height>
                         </size>
                     </property>
                 </spacer>
-            </vbox>
+            </grid>
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kcombobox.h</includehint>

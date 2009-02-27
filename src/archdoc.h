@@ -79,8 +79,9 @@ public:
 
   Geld nettoSum();
   Geld bruttoSum();
-  double vat();
-  Geld vatSum();
+  Geld taxSum();
+  double tax();
+  double reducedTax();
 
 private:
   void loadPositions( const QString& );
@@ -96,6 +97,8 @@ private:
   QString mGoodbye;
   QString mIdent;
   QString mProjectLabel;
+  double  mTax;
+  double  mReducedTax;
 
   QDate     mDate;
   QDateTime mPrintDate;

@@ -168,7 +168,10 @@ void KraftViewRO::setup( DocGuardedPtr doc )
   tmpl.setValue( DOC_RO_TAG( "NETTOSUM" ), locale->formatMoney( doc->nettoSum().toDouble() ) );
   tmpl.setValue( DOC_RO_TAG( "BRUTTOSUM" ), locale->formatMoney( doc->nettoSum().toDouble() ) );
   tmpl.setValue( DOC_RO_TAG( "VATSUM" ), locale->formatMoney( doc->vatSum().toDouble() ) );
-  tmpl.setValue( DOC_RO_TAG( "VAT" ), locale->formatNumber( DocumentMan::self()->vat() ) );
+  tmpl.setValue( DOC_RO_TAG( "VAT" ), locale->formatNumber( DocumentMan::self()->tax( doc->date() ) ) );
+  tmpl.setValue( DOC_RO_TAG( "TAX" ), locale->formatNumber( DocumentMan::self()->tax( doc->date() ) ) );
+  tmpl.setValue( DOC_RO_TAG( "REDUCED_TAX" ),
+                 locale->formatNumber( DocumentMan::self()->reducedTax( doc->date() ) ) );
   setCaption( m_doc->docIdentifier() );
 
   mHtmlView->setTitle( doc->docIdentifier() );

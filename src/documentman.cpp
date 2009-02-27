@@ -39,7 +39,9 @@ DocumentMan *DocumentMan::self()
 }
 
 DocumentMan::DocumentMan()
-  : mColumnList( "docID, ident, docType, docDescription, clientID, lastModified, date, country, language, projectLabel" )
+  : mColumnList( "docID, ident, docType, docDescription, clientID, lastModified, date, country, language, projectLabel" ),
+    mFullTax( -1 ),
+    mReducedTax( -1 )
 {
 
 }
@@ -184,24 +186,40 @@ QStringList DocumentMan::openDocumentsList()
   return list;
 }
 
-double DocumentMan::vat()
+double DocumentMan::tax( const QDate& date )
 {
-  QSqlQuery q( "SELECT fullText, reducedTax, startDate FROM taxes ORDER BY startDate DESC LIMIT 1" );
-  q.exec();
-
-  double full = 0;
-  double reduced = 0;
-  if ( q.next() ) {
-    full    = q.value( 0 ).toDouble();
-    reduced = q.value( 1 ).toDouble();
-    kdDebug() << "* Taxes: " << full << "/" << reduced << " from " << q.value( 2 ).toDate() << endl;
-  }
-  return full;
+  if ( mFullTax < 0 || date != mTaxDate )
+    readTaxes( date );
+  return mFullTax;
 }
 
-double DocumentMan::halfVat()
+double DocumentMan::reducedTax( const QDate& date )
 {
-  return vat()/2;
+  if ( mReducedTax < 0 || date != mTaxDate )
+    readTaxes( date );
+  return mReducedTax;
+}
+
+bool DocumentMan::readTaxes( const QDate& date )
+{
+  QString sql;
+  QSqlQuery q;
+  sql = "SELECT fullTax, reducedTax, startDate FROM taxes ";
+  sql += "WHERE startDate <= :date ORDER BY startDate DESC LIMIT 1";
+
+  q.prepare( sql );
+  QString dateStr = date.toString( "yyyy-MM-dd" );
+  kdDebug() << "** Datestring: " << dateStr << endl;
+  q.bindValue( ":date", dateStr );
+  q.exec();
+
+  if ( q.next() ) {
+    mFullTax    = q.value( 0 ).toDouble();
+    mReducedTax = q.value( 1 ).toDouble();
+    mTaxDate = date;
+    kdDebug() << "* Taxes: " << mFullTax << "/" << mReducedTax << " from " << q.value( 2 ).toDate() << endl;
+  }
+  return ( mFullTax > 0 && mReducedTax > 0 );
 }
 
 DocumentMan::~DocumentMan()

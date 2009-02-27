@@ -205,7 +205,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         record->setValue( "amount",    dp->amount() );
         record->setValue( "unit",      dp->unit().id() );
         record->setValue( "price",     price );
-        record->setValue( "taxType",   dp->vatTypeNumeric() );
+        record->setValue( "taxType",   dp->taxTypeNumeric() );
 
         ordNumber++; // FIXME
 
@@ -338,7 +338,16 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 
         dp->setUnit( UnitManager::getUnit( cur.value("unit").toInt() ) );
         dp->setUnitPrice( cur.value("price").toDouble() );
-        dp->setVatType( cur.value( "taxType" ).toInt() );
+        int tt = cur.value( "taxType" ).toInt();
+        DocPositionBase::TaxType taxType = DocPositionBase::TaxInvalid;
+        if ( tt == 1 ) {
+          taxType = DocPositionBase::TaxNone;
+        } else if ( tt == 2 ) {
+          taxType = DocPositionBase::TaxReduced;
+        } else if ( tt == 3 ) {
+          taxType = DocPositionBase::TaxFull;
+        }
+        dp->setTaxType( taxType );
 
         dp->loadAttributes();
     }

@@ -51,7 +51,8 @@ QString DocPostCard::htmlify( const QString& str ) const
   return "<p>" + li.join( "</p><p>" ) + "</p>";
 }
 
-void DocPostCard::setPositions( DocPositionList posList )
+void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxType taxType,
+                                double tax, double reducedTax )
 {
   mPositions = "<table border=\"0\" width=\"99%\">";
   DocPositionBase *dpb;
@@ -82,10 +83,30 @@ void DocPostCard::setPositions( DocPositionList posList )
       mPositions += "</td></tr>";
     }
   }
-  mPositionCount = posList.count();
-  mTotal = posList.sumPrice().toHtmlString( posList.locale() );
-  mPositions += QString( "<tr><td colspan=\"3\" align=\"right\"><b>Total: %1</b></td></tr>" ).arg( mTotal );
   mPositions += "</table>";
+  // Create the sum table
+  mPositions += "<div class=\"alignright\" align=\"right\"><table border=\"0\">";
+  // mPositionCount = posList.count();
+  QString netto  = posList.nettoPrice().toHtmlString( posList.locale() );
+  QString brutto = posList.bruttoPrice( tax, reducedTax ).toHtmlString( posList.locale() );
+  QString taxStr = posList.taxSum( tax, reducedTax ).toHtmlString( posList.locale() );
+  mPositions += QString( "<tr><td colspan=\"2\" class=\"baseline\"></td></tr>" );
+  if ( taxType != DocPositionBase::TaxInvalid && taxType != DocPositionBase::TaxNone ) {
+    mPositions += QString( "<tr><td>&nbsp;&nbsp;&nbsp;" ) + i18n( "Netto:" )+
+                  QString( "</td><td align=\"right\">%1</td></tr>" ).arg(netto );
+
+    QString curTax;
+    curTax.setNum( tax, 'f', 1 );
+    if ( taxType == DocPositionBase::TaxReduced ) {
+      curTax.setNum( reducedTax, 'f', 2 );
+    }
+
+    mPositions += QString( "<tr><td>" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
+                  QString( "</td><td align=\"right\">%1</td></tr>" ).arg( taxStr );
+  }
+  mPositions += QString( "<tr><td><b>" ) + i18n( "Total:" )+
+                QString( "</b></td><td align=\"right\"><b>%1</b></td></tr>" ).arg( brutto );
+  mPositions += "</table></div>";
   // kdDebug() << "Positions-HTML: " << mPositions << endl;
 }
 

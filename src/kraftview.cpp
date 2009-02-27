@@ -58,6 +58,7 @@
 #include "kraftdoc.h"
 #include "portal.h"
 #include "docheader.h"
+#include "documentman.h"
 #include "docassistant.h"
 #include "positionviewwidget.h"
 #include "docfooter.h"
@@ -504,6 +505,23 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   return w;
 }
 
+DocPositionBase::TaxType KraftView::currentTaxSetting()
+{
+  int taxKind = m_footerEdit->mTaxCombo->currentItem();
+  DocPositionBase::TaxType tt = DocPositionBase::TaxInvalid;
+
+  if ( taxKind == 0 ) { // No Tax at all
+    tt = DocPositionBase::TaxNone;
+  } else if ( taxKind == 1 ) { // Reduced tax for all items
+    tt = DocPositionBase::TaxReduced;
+  } else if ( taxKind == 2 ) { // Full tax for all items
+    tt = DocPositionBase::TaxFull;
+  } else { // individual level, not yet implementend
+    kdError() << "Item individual tax level is not yet implemented." << endl;
+  }
+  return tt;
+}
+
 void KraftView::refreshPostCard()
 {
   DocPositionList positions = currentPositionList();
@@ -517,7 +535,10 @@ void KraftView::refreshPostCard()
                                            getDocument()->ident(),
                                            m_headerEdit->m_teEntry->text() );
 
-    mAssistant->postCard()->setPositions( positions );
+
+    mAssistant->postCard()->setPositions( positions,  currentTaxSetting(),
+                                          DocumentMan::self()->tax( d ),
+                                          DocumentMan::self()->reducedTax( d ) );
 
     mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
                                            m_footerEdit->m_cbGreeting->currentText() );
@@ -540,18 +561,53 @@ void KraftView::refreshPostCard()
 
 void KraftView::setupFooter()
 {
-    KraftDocFooterEdit *edit = new KraftDocFooterEdit( mainWidget() );
+  KraftDocFooterEdit *edit = new KraftDocFooterEdit( mainWidget() );
 
-    mViewStack->addWidget( edit, KraftDoc::Footer );
+  mViewStack->addWidget( edit, KraftDoc::Footer );
 
-    m_footerEdit = edit->docFooterEdit();
+  m_footerEdit = edit->docFooterEdit();
 
-    m_footerEdit->m_cbGreeting->insertStringList( KraftDB::self()->wordList( "greeting" ) );
+  m_footerEdit->m_cbGreeting->insertStringList( KraftDB::self()->wordList( "greeting" ) );
 
-    m_footerEdit->m_cbGreeting->setCurrentText( KraftSettings::self()->greeting() );
+  m_footerEdit->m_cbGreeting->setCurrentText( KraftSettings::self()->greeting() );
 
-    connect( edit, SIGNAL( modified() ),
-             this, SLOT( slotModifiedFooter() ) );
+  // ATTENTION: If you change the following inserts, make sure to check the code
+  //            in method currentPositionList!
+  m_footerEdit->mTaxCombo->insertItem( i18n( "Display no tax at all" ), 0 );
+  m_footerEdit->mTaxCombo->insertItem( i18n( "Calculate reduced tax for all items" ), 1);
+  m_footerEdit->mTaxCombo->insertItem( i18n( "Calculate full tax for all items" ), 2 );
+  // m_footerEdit->mTaxCombo->insertItem( i18n( "Calculate on individual item tax rate" ), 3 );
+
+  // set the tax type combo correctly: If all items have the same tax type, take it.
+  // If items have different, its the individual thing.
+  DocPositionList list = m_doc->positions();
+
+  int tt = -1;
+  DocPositionBase *dp = 0;
+  bool equality = true;
+
+  for( dp = list.first(); dp; dp = list.next() ) {
+    tt = dp->taxTypeNumeric();
+    if ( tt == -1 )
+      tt = dp->taxTypeNumeric(); // store the first entry.
+    else {
+      if ( tt != dp->taxTypeNumeric() ) {
+        m_footerEdit->mTaxCombo->setCurrentItem( 3 );
+        equality = false;
+      } else {
+        // old and new taxtype are the same.
+      }
+    }
+  }
+  if ( equality ) {
+    m_footerEdit->mTaxCombo->setCurrentItem( tt-1 );
+  }
+
+  connect( m_footerEdit->mTaxCombo, SIGNAL( activated( int ) ),
+           this, SLOT( slotModifiedFooter() ) );
+
+  connect( edit, SIGNAL( modified() ),
+           this, SLOT( slotModifiedFooter() ) );
 }
 
 void KraftView::slotAboutToShow( QWidget* w )
@@ -908,16 +964,12 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 
 void KraftView::slotImportItems()
 {
-  kdDebug() << "We're importing!" << endl;
-
   ImportItemDialog dia( this );
   DocPositionList list = currentPositionList();
   int newpos = list.count();
   dia.setPositionList( list, newpos );
 
   if ( dia.exec() ) {
-    kdDebug() << "Have finalised" << endl;
-
     DocPositionList list = dia.positionList();
     if ( list.count() > 0 ) {
       kdDebug() << "Importlist amount of entries: " << list.count() << endl;
@@ -927,7 +979,6 @@ void KraftView::slotImportItems()
 
       for( dpb = list.first(); dpb; dpb = list.next() ) {
         DocPosition *dp = static_cast<DocPosition*>( dpb );
-        kdDebug() << "XXXXXXXX " << dp->text() << endl;
         DocPosition *newDp = new DocPosition();
         *newDp = *dp;
         PositionViewWidget *widget = createPositionViewWidget( newDp, newpos + cnt++ );
@@ -1096,6 +1147,9 @@ DocPositionList KraftView::currentPositionList()
             } else {
               newDp->removeAttribute( DocPosition::Tags );
             }
+
+            // tax settings
+            newDp->setTaxType( currentTaxSetting() );
             list.append( newDp );
           }
         } else {

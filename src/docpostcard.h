@@ -37,7 +37,7 @@ signals:
 
 public slots:
   void setHeaderData( const QString&, const QString&, const QString&, const QString&, const QString& );
-  void setPositions( DocPositionList );
+  void setPositions( DocPositionList, DocPositionBase::TaxType, double, double );
   void setFooterData( const QString&,  const QString& );
   void renderDoc( int id = -1 );
   void slotSetMode( DisplayMode, int id = -1 );

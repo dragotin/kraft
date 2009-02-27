@@ -41,12 +41,17 @@ class DocumentMan
     
     QStringList openDocumentsList();
 
-  double vat();
-  double halfVat();
+    double tax( const QDate& );
+    double reducedTax( const QDate& );
 
   private:
+    bool readTaxes( const QDate& );
     DocDigest digestFromQuery( QSqlQuery& );
     const QString mColumnList;
+
+    double mFullTax;
+    double mReducedTax;
+    QDate  mTaxDate;
 
     DocumentMan();
 

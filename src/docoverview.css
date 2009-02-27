@@ -49,6 +49,14 @@ div {
   color: #898989;
 }
 
+div.alignright {
+  border-style:none;
+  border-width:0px;
+  margin: 1px 0px 1px 0px;
+  padding: 1px;
+  color: #898989;
+}
+
 .negative {
   color: #800040;
 }
@@ -86,5 +94,9 @@ div {
   font-weight: bolder;
 }
 
-
+td.baseline {
+  border-bottom:1px inset #898989;
+  padding-left: 30px;
+  margin-left: 30px;
+}
 

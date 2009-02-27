@@ -365,7 +365,7 @@ DocumentSaverBase* KraftDoc::getSaver( const QString& )
 
 Geld KraftDoc::nettoSum()
 {
-  return positions().sumPrice();
+  return positions().nettoPrice();
 }
 
 Geld KraftDoc::bruttoSum()
@@ -377,7 +377,10 @@ Geld KraftDoc::bruttoSum()
 
 Geld KraftDoc::vatSum()
 {
-  return Geld( nettoSum() * DocumentMan::self()->vat()/100.0 );
+  return positions().taxSum( DocumentMan::self()->tax( date() ),
+                             DocumentMan::self()->reducedTax( date() ) );
+
+  // return Geld( nettoSum() * DocumentMan::self()->vat()/100.0 );
 }
 
 QString KraftDoc::country() const

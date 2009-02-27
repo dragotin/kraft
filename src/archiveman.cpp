@@ -190,7 +190,8 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "projectLabel", KraftDB::self()->mysqlEuroEncode(doc->projectLabel() ) );
     record->setValue( "country",  doc->country() );
     record->setValue( "language", doc->language() );
-
+    record->setValue( "tax", DocumentMan::self()->tax( doc->date() ) );
+    record->setValue( "reducedTax", DocumentMan::self()->reducedTax( doc->date() ) );
     cur.insert();
 
     dbID id = KraftDB::self()->getLastInsertID();
@@ -243,7 +244,8 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
       record->setValue( "unit", dp->unit().einheit( dp->amount() ) );
       record->setValue( "price", dp->unitPrice().toDouble() );
       record->setValue( "overallPrice", dp->overallPrice().toDouble() );
-      record->setValue( "vat", DocumentMan::self()->vat() ); // FIXME !!
+      record->setValue( "taxType", dp->taxTypeNumeric() );
+
       cur.insert();
       dbID id = KraftDB::self()->getLastInsertID();
       // kdDebug() << "Inserted for id " << id.toString() << endl;

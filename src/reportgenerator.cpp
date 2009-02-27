@@ -159,7 +159,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
     tmpl.setValue( "POSITIONS", "POS_UNIT", pos.unit() );
     tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString( archive.locale() ) );
-    tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.overallPrice().toString( archive.locale() ) );
+    tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.nettoPrice().toString( archive.locale() ) );
     tmpl.setValue( "POSITIONS", "POS_KIND", pos.kind().lower() );
 
     if ( !pos.kind().isEmpty() ) {
@@ -216,9 +216,16 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   tmpl.setValue( TAG( "BRUTTOSUM" ), archive.bruttoSum().toString( archive.locale() ) );
   tmpl.setValue( TAG( "NETTOSUM" ),  archive.nettoSum().toString( archive.locale() ) );
 
-  h.setNum( archive.vat(), 'f', 1 );
+  h.setNum( archive.tax(), 'f', 1 );
+  kdDebug() << "Tax in archive document: " << h << endl;
+  tmpl.setValue( TAG( "TAX" ), h );
   tmpl.setValue( TAG( "VAT" ), h );
-  tmpl.setValue( TAG( "VATSUM" ), archive.vatSum().toString( archive.locale() ) );
+
+  h.setNum( archive.reducedTax(), 'f', 1 );
+  kdDebug() << "Reduced Tax in archive document: " << h << endl;
+  tmpl.setValue( TAG( "REDUCED_VAT" ), h );
+
+  tmpl.setValue( TAG( "VATSUM" ), archive.taxSum().toString( archive.locale() ) );
 
   // tmpl.setValue( TAG( "IMAGE" ), archive.
 

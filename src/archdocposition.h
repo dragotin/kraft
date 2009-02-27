@@ -27,7 +27,7 @@
 #include "einheit.h"
 #include "geld.h"
 #include "dbids.h"
-
+#include "docposition.h"
 
 class ArchDoc;
 /**
@@ -48,10 +48,11 @@ class ArchDocPosition
     QString unit() const { return mUnit; }
 
     Geld unitPrice() const { return mUnitPrice; }
-    Geld overallPrice();
+    Geld nettoPrice();
 
     double amount() { return mAmount; }
-    double vat() { return mVat; }
+    double taxType() { return mTaxType; }
+    Geld   tax( double fullTax, double reducedTax );
 
     QString kind() { return mKind; }
   private:
@@ -62,7 +63,7 @@ class ArchDocPosition
     Geld    mUnitPrice;
     Geld    mOverallPrice;
     double  mAmount;
-    double  mVat;
+    DocPositionBase::TaxType mTaxType;
     // No calculation yet
 };
 
@@ -71,6 +72,7 @@ class ArchDocPositionList : public QValueList<ArchDocPosition>
   public:
     ArchDocPositionList();
     Geld sumPrice();
+    Geld taxSum( double, double );
 };
 
 

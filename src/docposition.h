@@ -45,7 +45,7 @@ class DocPositionBase : public QObject
 {
   public:
   enum PositionType { Position, ExtraDiscount, Header };
-  enum vatType { Invalid, None, Reduced, Full };
+  enum TaxType { TaxInvalid, TaxNone, TaxReduced, TaxFull };
 
     DocPositionBase();
     DocPositionBase( const PositionType& );
@@ -72,8 +72,8 @@ class DocPositionBase : public QObject
     bool hasTag( const QString& );
     QStringList tags();
     
-    int vatTypeNumeric();
-    void setVatType( int );
+    int taxTypeNumeric();
+    void setTaxType( DocPositionBase::TaxType );
 
   /**
    * Position means the number in the document
@@ -91,7 +91,7 @@ class DocPositionBase : public QObject
     QString m_position;
     QString m_text;
     bool    mToDelete;
-    vatType mVatType;
+    TaxType mTaxType;
     PositionType mType;
     AttributeMap mAttribs;
 };
@@ -139,12 +139,16 @@ class DocPositionList : public QPtrList<DocPositionBase>
 {
   public:
     DocPositionList();
-    Geld sumPrice();
+
     QDomElement domElement( QDomDocument& );
     DocPositionBase *positionFromId( int id );
     QString posNumber( DocPositionBase* );
     void setLocale( KLocale* );
     KLocale* locale() { return mLocale; }
+
+    Geld nettoPrice();
+    Geld bruttoPrice( double fullTax, double reducedTax );
+    Geld taxSum( double fullTax, double reducedTax );
 
   protected:
     int compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 );
