@@ -68,6 +68,10 @@
     <entry name="doctype" type="String">
       <label>The last created doc type.</label>
     </entry>
+    <entry name="defaultTaxType" type="Int">
+      <label>The default tax type for new documents.</label>
+      <default>2</default>
+    </entry>
     <entry name="greeting" type="String">
       <label>The greeting below on the document footer.</label>
     </entry>

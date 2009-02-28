@@ -86,14 +86,14 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
   mPositions += "</table>";
   // Create the sum table
   mPositions += "<div class=\"alignright\" align=\"right\"><table border=\"0\">";
-  // mPositionCount = posList.count();
-  QString netto  = posList.nettoPrice().toHtmlString( posList.locale() );
+  mPositionCount = posList.count();
+  mTotal  = posList.nettoPrice().toHtmlString( posList.locale() );
   QString brutto = posList.bruttoPrice( tax, reducedTax ).toHtmlString( posList.locale() );
   QString taxStr = posList.taxSum( tax, reducedTax ).toHtmlString( posList.locale() );
   mPositions += QString( "<tr><td colspan=\"2\" class=\"baseline\"></td></tr>" );
   if ( taxType != DocPositionBase::TaxInvalid && taxType != DocPositionBase::TaxNone ) {
     mPositions += QString( "<tr><td>&nbsp;&nbsp;&nbsp;" ) + i18n( "Netto:" )+
-                  QString( "</td><td align=\"right\">%1</td></tr>" ).arg(netto );
+                  QString( "</td><td align=\"right\">%1</td></tr>" ).arg( mTotal );
 
     QString curTax;
     curTax.setNum( tax, 'f', 1 );
@@ -206,7 +206,7 @@ QString DocPostCard::renderDocMini( int id ) const
   if ( id == KraftDoc::Positions ) selString = QString::fromLatin1( "_selected" );
   t = QString( "<div class=\"body%1\">\n" ).arg( selString );
   t += header( id == KraftDoc::Positions, "bodylink", i18n( "Positions" ), "positions",
-               QString( " %1 Positions, total %2" ).arg( mPositionCount ).arg( mTotal ) );
+               i18n( " %1 Positions, netto %2" ).arg( mPositionCount ).arg( mTotal ) );
   t += "</div>";
   rethtml += linkBit( "kraftdoc://positions", t );
 

@@ -66,6 +66,7 @@ private:
   QLabel    *m_statusLabel;
 
   QComboBox *mCbDocTypes;
+  QComboBox *mCbDefaultTaxType;
 
   QPushButton *m_pbCheck;
 

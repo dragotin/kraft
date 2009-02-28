@@ -46,6 +46,7 @@
 #include "doctype.h"
 #include "doctypeedit.h"
 #include "doctypeedit.h"
+#include <qtooltip.h>
 
 
 // ################################################################################
@@ -144,8 +145,8 @@ void PrefsDialog::databaseTab()
 void PrefsDialog::docTab()
 {
   QLabel *label;
-  QFrame *topFrame = addPage( i18n( "Appearance" ),
-                              i18n( "How Kraft starts up." ),
+  QFrame *topFrame = addPage( i18n( "Document Defaults" ),
+                              i18n( "Defaults for new Documents." ),
                               DesktopIcon( "queue" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
@@ -155,18 +156,45 @@ void PrefsDialog::docTab()
   topLayout->setSpacing( spacingHint() );
   topLayout->setColSpacing( 0, spacingHint() );
 
-  label = new QLabel(i18n("Default document type on creation:"), topFrame );
+  label = new QLabel(i18n("&Default document type on creation:"), topFrame );
   topLayout->addWidget(label, 0,0);
 
   mCbDocTypes = new QComboBox( topFrame );
+  label->setBuddy( mCbDocTypes );
+  QToolTip::add( mCbDocTypes, i18n( "New documents are from the selected type by default." ) );
   topLayout->addWidget( mCbDocTypes, 0, 1 );
   mCbDocTypes->insertStringList( DocType::allLocalised() );
 
+  QLabel *f = new QLabel( topFrame );
+  f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+  vboxLay->addWidget( f );
+
   // Localisation on document level
-  mCbDocLocale = new QCheckBox( i18n( "enable &localisation on document level" ), topFrame );
+  mCbDocLocale = new QCheckBox( i18n( "Enable &Localisation on Document Level" ), topFrame );
+  QToolTip::add( mCbDocLocale, i18n( "Checking this enables language settings for each document. <br>Leave it unchecked to use the KDE default settings for the document localisation." ) );
   vboxLay->addWidget( mCbDocLocale );
 
   vboxLay->addWidget( new QWidget( topFrame ) );
+
+  f = new QLabel( topFrame );
+  f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+  vboxLay->addWidget( f );
+
+  QHBox *tBox = new QHBox( topFrame );
+  QLabel *l = new QLabel( i18n( "Default &Tax for Documents:" ), tBox );
+  mCbDefaultTaxType = new QComboBox( tBox );
+  l->setBuddy( mCbDefaultTaxType );
+  QToolTip::add( mCbDefaultTaxType, i18n( "The default tax setting for all documents." ) );
+  mCbDefaultTaxType->insertItem( i18n( "Display no tax at all" ), 0 );
+  mCbDefaultTaxType->insertItem( i18n( "Calculate reduced tax for all items" ), 1);
+  mCbDefaultTaxType->insertItem( i18n( "Calculate full tax for all items" ), 2 );
+  // mCbDefaultTaxType->insertItem( i18n( "Calculate on individual item tax rate" ), 3 );
+  vboxLay->addWidget( tBox );
+
+  // space eater
+  QWidget *spaceEater = new QWidget( topFrame );
+  spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
+  vboxLay->addWidget( spaceEater );
 }
 
 void PrefsDialog::doctypeTab()
@@ -207,6 +235,7 @@ void PrefsDialog::readConfig()
     if ( t.isEmpty() ) t = DefaultProvider::self()->docType();
 
     mCbDocTypes->setCurrentText( t );
+    mCbDefaultTaxType->setCurrentItem( KraftSettings::defaultTaxType() );
 }
 
 void PrefsDialog::writeConfig()
@@ -219,6 +248,7 @@ void PrefsDialog::writeConfig()
 
     KraftSettings::setShowDocumentLocale( mCbDocLocale->isChecked() );
     KraftSettings::setDoctype( mCbDocTypes->currentText() );
+    KraftSettings::setDefaultTaxType( mCbDefaultTaxType->currentItem() );
     KraftSettings::writeConfig();
 }
 
