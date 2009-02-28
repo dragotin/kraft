@@ -910,6 +910,9 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       DocPosition diaPos = dia->docPosition();
       *dp = diaPos;
 
+      // set the tax settings
+      dp->setTaxType( currentTaxSetting() );
+
       // store the initial size of the template-to-doc-pos dialogs
       s = dia->size();
 
