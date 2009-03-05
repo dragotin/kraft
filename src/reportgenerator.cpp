@@ -123,6 +123,7 @@ QString ReportGenerator::findTemplate( const QString& type )
 }
 
 #define TAG( THE_TAG )  QString( "%1").arg( THE_TAG )
+#define DICT( THE_DICT )  QString( "%1").arg( THE_DICT )
 
 QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 {
@@ -216,14 +217,26 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   tmpl.setValue( TAG( "BRUTTOSUM" ), archive.bruttoSum().toString( archive.locale() ) );
   tmpl.setValue( TAG( "NETTOSUM" ),  archive.nettoSum().toString( archive.locale() ) );
 
+
   h.setNum( archive.tax(), 'f', 1 );
   kdDebug() << "Tax in archive document: " << h << endl;
-  tmpl.setValue( TAG( "TAX" ), h );
-  tmpl.setValue( TAG( "VAT" ), h );
+  if ( archive.reducedTaxSum().toLong() > 0 ) {
+    tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
+    tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_SUM" ),
+      archive.reducedTaxSum().toString( archive.locale() ) );
+    h.setNum( archive.reducedTax(), 'f', 1 );
+    tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX" ), h );
+  }
+  if ( archive.fullTaxSum().toLong() > 0 ) {
+    tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
+    tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_SUM" ),
+      archive.fullTaxSum().toString( archive.locale() ) );
+    h.setNum( archive.tax(), 'f', 1 );
+    tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX" ), h );
+  }
 
-  h.setNum( archive.reducedTax(), 'f', 1 );
-  kdDebug() << "Reduced Tax in archive document: " << h << endl;
-  tmpl.setValue( TAG( "REDUCED_VAT" ), h );
+  h.setNum( archive.tax(), 'f', 1 );
+  tmpl.setValue( TAG( "VAT" ), h );
 
   tmpl.setValue( TAG( "VATSUM" ), archive.taxSum().toString( archive.locale() ) );
 

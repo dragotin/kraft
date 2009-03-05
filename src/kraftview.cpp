@@ -587,7 +587,6 @@ void KraftView::setupFooter()
   bool equality = true;
 
   for( dp = list.first(); dp; dp = list.next() ) {
-    tt = dp->taxTypeNumeric();
     if ( tt == -1 )
       tt = dp->taxTypeNumeric(); // store the first entry.
     else {
@@ -984,6 +983,7 @@ void KraftView::slotImportItems()
         DocPosition *dp = static_cast<DocPosition*>( dpb );
         DocPosition *newDp = new DocPosition();
         *newDp = *dp;
+        newDp->setTaxType( currentTaxSetting() );
         PositionViewWidget *widget = createPositionViewWidget( newDp, newpos + cnt++ );
         widget->slotModified();
       }
@@ -1001,6 +1001,7 @@ void KraftView::slotAddExtraPosition()
   DocPosition *dp = new DocPosition( DocPosition::ExtraDiscount );
   dp->setPositionNumber( QString::number( newpos+1 ) );
   dp->setText( i18n( "Discount" ) );
+  dp->setTaxType( currentTaxSetting() );
 
   kdDebug() << "New Extra position is " << dp << endl;
 

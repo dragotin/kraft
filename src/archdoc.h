@@ -80,6 +80,9 @@ public:
   Geld nettoSum();
   Geld bruttoSum();
   Geld taxSum();
+  Geld fullTaxSum( );
+  Geld reducedTaxSum();
+
   double tax();
   double reducedTax();
 

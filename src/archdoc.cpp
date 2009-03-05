@@ -70,8 +70,18 @@ Geld ArchDoc::bruttoSum()
 
 Geld ArchDoc::taxSum()
 {
-  return positions().taxSum( DocumentMan::self()->tax( date() ),
-                             DocumentMan::self()->reducedTax( date() ) );
+  return positions().taxSum( tax(), reducedTax() ); // DocumentMan::self()->tax( date() ),
+  // DocumentMan::self()->reducedTax( date() ) );
+}
+
+Geld ArchDoc::fullTaxSum()
+{
+  return positions().fullTaxSum( tax() );
+}
+
+Geld ArchDoc::reducedTaxSum()
+{
+  return positions().reducedTaxSum( reducedTax() );
 }
 
 double ArchDoc::tax()

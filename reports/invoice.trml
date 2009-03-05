@@ -143,13 +143,24 @@
         <td><para style="text">net:</para></td>
         <td><para style="rtext">{{NETTOSUM}}</para></td>
     </tr>
+    {{#SECTION_REDUCED_TAX}}
     <tr><td></td>
         <td></td>
         <td></td>
         <td></td>
-        <td><para style="text">+{{VAT}}% VAT</para></td>
-        <td><para style="rtext">{{VATSUM}}</para></td>
+        <td><para style="text">+{{REDUCED_TAX}}% VAT</para></td>
+        <td><para style="rtext">{{REDUCED_TAX_SUM}}</para></td>
     </tr>
+    {{/SECTION_REDUCED_TAX}}
+    {{#SECTION_FULL_TAX}}
+    <tr><td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><para style="text">+{{FULL_TAX}}% VAT</para></td>
+        <td><para style="rtext">{{FULL_TAX_SUM}}</para></td>
+    </tr>
+    {{/SECTION_FULL_TAX}}
     <tr><td></td>
         <td></td>
         <td></td>

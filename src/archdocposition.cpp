@@ -45,6 +45,27 @@ Geld ArchDocPosition::nettoPrice()
   return mOverallPrice;
 }
 
+Geld ArchDocPosition::fullTax( double fullTax )
+{
+  Geld tax;
+
+  if ( mTaxType == DocPositionBase::TaxFull ) {
+    tax = mOverallPrice * fullTax;
+  }
+  return tax / 100.0;
+}
+
+Geld ArchDocPosition::reducedTax( double reducedTax )
+{
+  Geld tax;
+
+  if ( mTaxType == DocPositionBase::TaxReduced ) {
+    tax = mOverallPrice * reducedTax;
+  }
+  return tax / 100.0;
+}
+
+
 Geld ArchDocPosition::tax( double fullTax, double reducedTax )
 {
   Geld tax;
@@ -81,8 +102,31 @@ Geld ArchDocPositionList::taxSum( double fullTax, double reducedTax )
 
     iterator it;
     for ( it = begin(); it != end(); ++it ) {
-
       g += ( *it ).tax( fullTax, reducedTax );
+    }
+
+    return g;
+}
+
+Geld ArchDocPositionList::fullTaxSum( double fullTax )
+{
+    Geld g;
+
+    iterator it;
+    for ( it = begin(); it != end(); ++it ) {
+      g += ( *it ).fullTax( fullTax );
+    }
+
+    return g;
+}
+
+Geld ArchDocPositionList::reducedTaxSum( double reducedTax )
+{
+    Geld g;
+
+    iterator it;
+    for ( it = begin(); it != end(); ++it ) {
+      g += ( *it ).reducedTax( reducedTax );
     }
 
     return g;

@@ -149,6 +149,8 @@ class DocPositionList : public QPtrList<DocPositionBase>
     Geld nettoPrice();
     Geld bruttoPrice( double fullTax, double reducedTax );
     Geld taxSum( double fullTax, double reducedTax );
+    Geld fullTaxSum( double fullTax );
+    Geld reducedTaxSum( double reducedTax );
 
   protected:
     int compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 );

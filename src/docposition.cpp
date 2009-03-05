@@ -289,6 +289,63 @@ Geld DocPositionList::nettoPrice()
     return g;
 }
 
+Geld DocPositionList::fullTaxSum( double fullTax )
+{
+    Geld sum;
+
+    if ( fullTax < 0 ) {
+      kdError() << "Full Tax is not loaded!" << endl;
+    }
+
+    DocPositionBase *dp;
+    for ( dp = first(); dp; dp = next() ) {
+      Geld g = static_cast<DocPosition*>(dp)->overallPrice();
+      Geld tax;
+      if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
+        tax = g.percent( fullTax );
+        // kdDebug() << "full Tax:" << g.toDouble( ) << " * " << fullTax << " = " << tax.toDouble() << endl;
+        sum += tax;
+      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
+        // tax = g.percent( reducedTax );
+        // kdDebug() << "red. Tax:" << g.toDouble( ) << " * " << reducedTax << " = " << tax.toDouble() << endl;
+      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
+        // kdDebug() << "no tax for pos " << dp->dbId().toString() << endl;
+      } else {
+        kdDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString() << endl;
+      }
+    }
+    return sum;
+}
+
+Geld DocPositionList::reducedTaxSum( double reducedTax )
+{
+    Geld sum;
+
+    if ( reducedTax < 0 ) {
+      kdError() << "Full Tax is not loaded!" << endl;
+    }
+
+    DocPositionBase *dp;
+    for ( dp = first(); dp; dp = next() ) {
+      Geld g = static_cast<DocPosition*>(dp)->overallPrice();
+      Geld tax;
+      if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
+        // tax = g.percent( fullTax );
+        // kdDebug() << "full Tax:" << g.toDouble( ) << " * " << fullTax << " = " << tax.toDouble() << endl;
+      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
+        tax = g.percent( reducedTax );
+        // kdDebug() << "red. Tax:" << g.toDouble( ) << " * " << reducedTax << " = " << tax.toDouble() << endl;
+        sum += tax;
+      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
+        // kdDebug() << "no tax for pos " << dp->dbId().toString() << endl;
+      } else {
+        kdDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString() << endl;
+      }
+    }
+    return sum;
+
+}
+
 Geld DocPositionList::taxSum( double fullTax, double reducedTax )
 {
     Geld sum;
@@ -302,15 +359,17 @@ Geld DocPositionList::taxSum( double fullTax, double reducedTax )
       Geld g = static_cast<DocPosition*>(dp)->overallPrice();
       Geld tax;
       if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
-        tax = ( g * fullTax );
+        tax = g.percent( fullTax );
+        // kdDebug() << "full Tax:" << g.toDouble( ) << " * " << fullTax << " = " << tax.toDouble() << endl;
       } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
-        tax = ( g * reducedTax );
+        tax = g.percent( reducedTax );
+        // kdDebug() << "red. Tax:" << g.toDouble( ) << " * " << reducedTax << " = " << tax.toDouble() << endl;
       } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
         kdDebug() << "no tax for pos " << dp->dbId().toString() << endl;
       } else {
         kdDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString() << endl;
       }
-      sum += tax / 100.0;
+      sum += tax;
     }
     return sum;
 }

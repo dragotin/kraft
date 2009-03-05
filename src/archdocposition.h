@@ -53,6 +53,8 @@ class ArchDocPosition
     double amount() { return mAmount; }
     double taxType() { return mTaxType; }
     Geld   tax( double fullTax, double reducedTax );
+    Geld   fullTax( double fullTax );
+    Geld   reducedTax( double reducedTax );
 
     QString kind() { return mKind; }
   private:
@@ -73,6 +75,8 @@ class ArchDocPositionList : public QValueList<ArchDocPosition>
     ArchDocPositionList();
     Geld sumPrice();
     Geld taxSum( double, double );
+    Geld fullTaxSum( double );
+    Geld reducedTaxSum( double );
 };
 
 
