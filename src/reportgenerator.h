@@ -66,6 +66,7 @@ private:
   ReportGenerator();
   QString mOutFile;
   QString mErrors;
+  QString mMergeIdent;
 
   QFile mFile;
   QTextStream mTargetStream;

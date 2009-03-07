@@ -61,6 +61,12 @@ class DocType
   QString     numberCycleName();
   void        setNumberCycleName( const QString& );
 
+  QString     templateFile();
+  void        setTemplateFile( const QString& );
+
+  QString     mergeIdent();
+  void        setMergeIdent( const QString& );
+
   static void  clearMap();
 
   int         nextIdentId( bool hot = true );
@@ -78,6 +84,7 @@ class DocType
   QString      mName;
   QString      mIdentTemplate;
   bool         mDirty;
+  QString     mMergeIdent;
 
   static idMap mNameMap;
 };

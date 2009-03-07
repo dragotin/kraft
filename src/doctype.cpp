@@ -202,6 +202,54 @@ void DocType::setNumberCycleName( const QString& name )
   readIdentTemplate();
 }
 
+QString DocType::templateFile()
+{
+  QString re = name();
+  if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
+    re = mAttributes["docTemplateFile"].value().toString();
+  }
+
+  return re;
+}
+
+void DocType::setTemplateFile( const QString& name )
+{
+  if ( !name.isEmpty() ) {
+    Attribute att( "docTemplateFile" );
+    att.setPersistant( true );
+    att.setValue( name );
+    mAttributes["docTemplateFile"] = att;
+  } else {
+    // remove default value from map
+    mAttributes.markDelete( "docTemplateFile" );
+    kdDebug() << "Removing docTemplateFile Attribute" << endl;
+  }
+}
+
+QString DocType::mergeIdent()
+{
+  QString re = "1";
+  if ( mAttributes.hasAttribute( "docMergeIdent" ) ) {
+    re = mAttributes["docMergeIdent"].value().toString();
+  }
+
+  return re;
+}
+
+void DocType::setMergeIdent( const QString& ident )
+{
+  if ( !ident.isEmpty() ) {
+    Attribute att( "docMergeIdent" );
+    att.setPersistant( true );
+    att.setValue( ident );
+    mAttributes["docMergeIdent"] = att;
+  } else {
+    // remove default value from map
+    mAttributes.markDelete( "docMergeIdent" );
+    kdDebug() << "Removing docMergeIdent Attribute" << endl;
+  }
+}
+
 QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
 {
   /*

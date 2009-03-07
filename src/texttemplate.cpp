@@ -21,6 +21,8 @@
 #include <klocale.h>
 #include <kdebug.h>
 
+#include <qfile.h>
+
 #include <string.h>
 
 TextTemplate::TextTemplate()
@@ -81,16 +83,22 @@ bool TextTemplate::setTemplateFileName( const QString& name )
 
 bool TextTemplate::openTemplate()
 {
-  KStandardDirs stdDirs;
-  if ( mFileName.isEmpty() ) {
-    mErrorString = i18n( "No file name given for template" );
-    return false;
+  QString findFile;
+
+  if ( mFileName.contains( "/" ) ) {
+    // assume it is a absolute path
+    findFile = mFileName;
+  } else {
+    KStandardDirs stdDirs;
+    if ( mFileName.isEmpty() ) {
+      mErrorString = i18n( "No file name given for template" );
+      return false;
+    }
+
+    findFile = stdDirs.findResource( "data", mFileName );
   }
-
-  QString findFile = stdDirs.findResource( "data", mFileName );
-
-  if ( findFile.isEmpty() ) {
-    mErrorString = i18n( "Could not find template file" );
+  if ( findFile.isEmpty() || ! QFile::exists( findFile ) ) {
+    mErrorString = i18n( "Could not find template file" + findFile );
     return false;
   }
 

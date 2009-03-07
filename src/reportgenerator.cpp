@@ -45,6 +45,7 @@
 #include "documentman.h"
 #include "texttemplate.h"
 #include "defaultprovider.h"
+#include "doctype.h"
 
 static KStaticDeleter<ReportGenerator> selfDeleter;
 
@@ -100,22 +101,36 @@ void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 QString ReportGenerator::findTemplate( const QString& type )
 {
   KStandardDirs stdDirs;
-  QString templFileName = QString( type ).lower()+ ".trml";
-  QString findFile = "kraft/reports/" + templFileName;
 
-  QString tmplFile = stdDirs.findResource( "data", findFile );
-  QString re;
+  DocType dType( type );
 
-  if ( tmplFile.isEmpty() ) {
-    findFile = "kraft/reports/invoice.trml";
+  QString tmplName = dType.templateFile();
+
+  mMergeIdent = dType.mergeIdent();
+
+  QString tmplFile;
+
+  if ( tmplName.contains( "/" ) && QFile::exists( tmplName ) ) {
+    tmplFile = tmplName;
+  } else {
+    // No Slash in the name, search in KDE Resource path
+    QString templFileName = QString( type ).lower() + ".trml";
+    QString findFile = "kraft/reports/" + templFileName;
+
     tmplFile = stdDirs.findResource( "data", findFile );
+    QString re;
+
     if ( tmplFile.isEmpty() ) {
-      KMessageBox::error( 0, i18n("A document template named %1 could not be loaded."
-                                  "Please check the installation." ).arg( templFileName ) ,
-                          i18n( "Template not found" ) );
-      return QString();
-    } else {
-      kdDebug() << templFileName << " not found, reverting to invoice.trml" << endl;
+      findFile = "kraft/reports/invoice.trml";
+      tmplFile = stdDirs.findResource( "data", findFile );
+      if ( tmplFile.isEmpty() ) {
+        KMessageBox::error( 0, i18n("A document template named %1 could not be loaded."
+                                    "Please check the installation." ).arg( templFileName ) ,
+                            i18n( "Template not found" ) );
+        return QString();
+      } else {
+        kdDebug() << templFileName << " not found, reverting to invoice.trml" << endl;
+      }
     }
   }
 
@@ -362,38 +377,46 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
 
   mErrors = QString();
 
+  const QString rmlbinDefault = QString::fromLatin1( "trml2pdf" ); // FIXME: how to get the default value?
   QString rmlbin = KraftSettings::self()->trml2PdfBinary();
+  kdDebug() << "### Start searching rml2pdf bin: " << rmlbin << endl;
 
-  if ( rmlbin == "trml2pdf" || ! QFile::exists( rmlbin ) ) {
+  bool haveMerge = false;
+
+  if ( rmlbinDefault == rmlbin  ) {
     QStringList pathes;
-#if 0
-    pathes << "/usr/local/bin/trml2pdf";
-    pathes << "/usr/bin/trml2pdf";
-    pathes << "/usr/local/bin/trml2pdf.py";
-    pathes << "/usr/bin/trml2pdf.py";
-#endif
     KStandardDirs stdDirs;
     pathes = stdDirs.systemPaths();
 
     for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
-      QString cPath = ( *it ) + "/trml2pdf";
+      QString cPath = ( *it ) + "/trml2pdf_merge.sh";
+      kdDebug() << "### Checking cPath: " << cPath << endl;
       if ( QFile::exists( cPath ) ) {
         rmlbin = cPath;
-        kdDebug() << "Found trml2pdf in filesystem: " << rmlbin << endl;
-
+        kdDebug() << "Found trml2pdf_merge.sh in filesystem: " << rmlbin << endl;
+        haveMerge = true;
+        break;
       }
     }
 
-    if ( rmlbin == "trml2pdf" || ! QFile::exists( rmlbin ) ) {
-
-      KMessageBox::error( 0, i18n("The utility trml2pdf could not be found, but is required to create documents."
-                                  "Please make sure the package is installed accordingly." ),
-                          i18n( "Document Generation Error" ) );
-      return;
-    } else {
-      kdDebug() << "Using rml2pdf script: " << rmlbin << endl;
+    if ( ! haveMerge ) {
+      for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
+        QString cPath = ( *it ) + "/trml2pdf";
+        if ( QFile::exists( cPath ) ) {
+          rmlbin = cPath;
+          kdDebug() << "Found trml2pdf in filesystem: " << rmlbin << endl;
+          break;
+        }
+      }
     }
+  }
+  if ( ! QFile::exists( rmlbin ) ) {
 
+    KMessageBox::error( 0, i18n("The utility to create PDF from the rml file could not be found, "
+                                "but is required to create documents."
+                                "Please make sure the package is installed accordingly." ),
+                        i18n( "Document Generation Error" ) );
+    return;
   }
 
   QString outputDir = ArchiveMan::self()->pdfBaseDir();
@@ -403,11 +426,17 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
   kdDebug() << "Writing output to " << mOutFile << endl;
 
   *mProcess << rmlbin;
+  if ( haveMerge ) {
+    *mProcess << mMergeIdent;
+  }
   *mProcess << rmlFile;
 
   mFile.setName( mOutFile );
   if ( mFile.open( IO_WriteOnly ) ) {
     mTargetStream.setDevice( &mFile );
+    QValueList<QCString> args = mProcess->args();
+    kdDebug() << "* rml2pdf Call-Arguments: " << args << endl;
+
     mProcess->start( KProcess::NotifyOnExit, KProcess::AllOutput );
   }
 }
