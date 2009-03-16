@@ -186,8 +186,10 @@ void DocTypeEdit::slotEditDocType()
     if ( ! skipEntry ) {
       mTypeNameChanges[currName] = newName;
       DocType dt( currName );
-      if ( mChangedDocTypes.contains( currName ) )
+      if ( mChangedDocTypes.contains( currName ) ) {
         dt = mChangedDocTypes[currName];
+      }
+      dt.setName( newName );
       mChangedDocTypes[newName] = dt;
     }
   }
