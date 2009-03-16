@@ -1,3 +1,18 @@
+Changes since version 0.31: #########################################
+- Tax: Added more flexible tax calculation. Kraft now has the tax in 
+  a table for easy changing, supports no, reduced and full tax on 
+  document level for this release, on item level later.
+- Numbercycles: All Kraft documents need an unique document number. 
+  These are taken from numbercycles now which can be edited and shared
+  between document types.
+- Watermark: Kraft documents can now be merged with an existing pdf file
+  with the company logo. Configuration through the Kraft settings on
+  a per document type basis
+- Templates: Kraft now supports different templates for each document 
+  type. Templates can be configured through the Kraft settings.
+
+   => released v. 0.32 (not yet).
+
 Changes since version 0.30: #########################################
 - added a read only view on documents, customizable with ctemplate 
   as html page
