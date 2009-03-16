@@ -204,11 +204,12 @@ void PrefsDialog::doctypeTab()
                               DesktopIcon( "folder_man" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
-  vboxLay->setSpacing( spacingHint() );
-  // vboxLay->setColSpacing( 0, spacingHint() );
+  vboxLay->setSpacing( 0 ); // spacingHint() );
 
   mDocTypeEdit = new DocTypeEdit( topFrame );
+  mDocTypeEdit->mCentralSplit->setMargin( 0 );
   vboxLay->addWidget( mDocTypeEdit );
+
 }
 
 

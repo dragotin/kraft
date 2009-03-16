@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>477</width>
-            <height>257</height>
+            <width>800</width>
+            <height>512</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,245 +19,374 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0">
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="spacing">
+            <number>0</number>
+        </property>
+        <widget class="QSplitter" row="0" column="0">
             <property name="name">
-                <cstring>layout8</cstring>
+                <cstring>mCentralSplit</cstring>
             </property>
-            <hbox>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>layout7</cstring>
                 </property>
-                <widget class="QLayoutWidget">
+                <vbox>
                     <property name="name">
-                        <cstring>layout7</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QListBox">
-                            <item>
-                                <property name="text">
-                                    <string>New Item</string>
-                                </property>
-                            </item>
-                            <property name="name">
-                                <cstring>mTypeListBox</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout9</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer2</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Expanding</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>37</width>
-                                            <height>20</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                                <widget class="QPushButton">
-                                    <property name="name">
-                                        <cstring>mPbAdd</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>add</string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>Click to add a new document type to the list.</string>
-                                    </property>
-                                </widget>
-                                <widget class="QPushButton">
-                                    <property name="name">
-                                        <cstring>mPbEdit</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>edit</string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>click to edit the selected document type name</string>
-                                    </property>
-                                </widget>
-                                <widget class="QPushButton">
-                                    <property name="name">
-                                        <cstring>mPbRemove</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>remove</string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>click to remove the current document type</string>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                    </vbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout7</cstring>
+                    <property name="margin">
+                        <number>0</number>
                     </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>mPbEditCycles</cstring>
-                            </property>
+                    <widget class="QListBox">
+                        <item>
                             <property name="text">
-                                <string>edit Number Cycles...</string>
+                                <string>New Item</string>
                             </property>
-                        </widget>
-                        <widget class="QGroupBox">
+                        </item>
+                        <property name="name">
+                            <cstring>mTypeListBox</cstring>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout9</cstring>
+                        </property>
+                        <hbox>
                             <property name="name">
-                                <cstring>groupBox2</cstring>
+                                <cstring>unnamed</cstring>
                             </property>
-                            <property name="title">
-                                <string>Doc Type Details</string>
-                            </property>
-                            <grid>
+                            <spacer>
                                 <property name="name">
-                                    <cstring>unnamed</cstring>
+                                    <cstring>spacer2</cstring>
                                 </property>
-                                <widget class="QLayoutWidget" row="0" column="0">
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>37</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>mPbAdd</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>add</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Click to add a new document type to the list.</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>mPbEdit</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>edit</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>click to edit the selected document type name</string>
+                                </property>
+                            </widget>
+                            <widget class="QPushButton">
+                                <property name="name">
+                                    <cstring>mPbRemove</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>remove</string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>click to remove the current document type</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout10</cstring>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <widget class="QGroupBox">
+                        <property name="name">
+                            <cstring>groupBox2</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Unique Document Number</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLayoutWidget" row="0" column="0">
+                                <property name="name">
+                                    <cstring>layout6</cstring>
+                                </property>
+                                <hbox>
                                     <property name="name">
-                                        <cstring>layout8</cstring>
+                                        <cstring>unnamed</cstring>
                                     </property>
-                                    <vbox>
+                                    <widget class="QLabel">
                                         <property name="name">
-                                            <cstring>unnamed</cstring>
+                                            <cstring>textLabel1_2</cstring>
                                         </property>
-                                        <widget class="QLayoutWidget">
-                                            <property name="name">
-                                                <cstring>layout6</cstring>
+                                        <property name="text">
+                                            <string>Number &amp;Cycle:</string>
+                                        </property>
+                                        <property name="buddy" stdset="0">
+                                            <cstring>mNumberCycleCombo</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QComboBox">
+                                        <property name="name">
+                                            <cstring>mNumberCycleCombo</cstring>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QLayoutWidget" row="1" column="0">
+                                <property name="name">
+                                    <cstring>layout7</cstring>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>mCounter</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>example</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>textLabel1_2_2</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>ident Template:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="2" column="0">
+                                        <property name="name">
+                                            <cstring>textLabel1_2_3_2</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Example Id:</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="2" column="1">
+                                        <property name="name">
+                                            <cstring>mExampleId</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>example</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="1">
+                                        <property name="name">
+                                            <cstring>mIdent</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>example</string>
+                                        </property>
+                                        <property name="alignment">
+                                            <set>AlignVCenter|AlignRight</set>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>textLabel1_2_3</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Counter:</string>
+                                        </property>
+                                    </widget>
+                                </grid>
+                            </widget>
+                            <widget class="QLayoutWidget" row="2" column="0">
+                                <property name="name">
+                                    <cstring>layout8</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <spacer>
+                                        <property name="name">
+                                            <cstring>spacer3_2</cstring>
+                                        </property>
+                                        <property name="orientation">
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property name="sizeHint">
+                                            <size>
+                                                <width>71</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                    <widget class="QPushButton">
+                                        <property name="name">
+                                            <cstring>mPbEditCycles</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>&amp;edit Number Cycles...</string>
+                                        </property>
+                                        <property name="accel">
+                                            <string>Alt+E</string>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="QGroupBox">
+                        <property name="name">
+                            <cstring>groupBox2_2</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Template for PDF Creation</string>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLayoutWidget" row="0" column="0">
+                                <property name="name">
+                                    <cstring>layout9</cstring>
+                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QComboBox" row="1" column="1">
+                                        <item>
+                                            <property name="text">
+                                                <string>no watermark</string>
                                             </property>
-                                            <hbox>
-                                                <property name="name">
-                                                    <cstring>unnamed</cstring>
-                                                </property>
-                                                <widget class="QLabel">
-                                                    <property name="name">
-                                                        <cstring>textLabel1_2</cstring>
-                                                    </property>
-                                                    <property name="text">
-                                                        <string>Number Cycle:</string>
-                                                    </property>
-                                                </widget>
-                                                <widget class="QComboBox">
-                                                    <property name="name">
-                                                        <cstring>mNumberCycleCombo</cstring>
-                                                    </property>
-                                                </widget>
-                                            </hbox>
-                                        </widget>
-                                        <widget class="QLayoutWidget">
-                                            <property name="name">
-                                                <cstring>layout7</cstring>
+                                        </item>
+                                        <item>
+                                            <property name="text">
+                                                <string>on first page</string>
                                             </property>
-                                            <grid>
-                                                <property name="name">
-                                                    <cstring>unnamed</cstring>
-                                                </property>
-                                                <widget class="QLabel" row="0" column="1">
-                                                    <property name="name">
-                                                        <cstring>mCounter</cstring>
-                                                    </property>
-                                                    <property name="text">
-                                                        <string>example</string>
-                                                    </property>
-                                                    <property name="alignment">
-                                                        <set>AlignVCenter|AlignRight</set>
-                                                    </property>
-                                                </widget>
-                                                <widget class="QLabel" row="1" column="0">
-                                                    <property name="name">
-                                                        <cstring>textLabel1_2_2</cstring>
-                                                    </property>
-                                                    <property name="text">
-                                                        <string>ident Template:</string>
-                                                    </property>
-                                                </widget>
-                                                <widget class="QLabel" row="2" column="0">
-                                                    <property name="name">
-                                                        <cstring>textLabel1_2_3_2</cstring>
-                                                    </property>
-                                                    <property name="text">
-                                                        <string>Example Id:</string>
-                                                    </property>
-                                                </widget>
-                                                <widget class="QLabel" row="2" column="1">
-                                                    <property name="name">
-                                                        <cstring>mExampleId</cstring>
-                                                    </property>
-                                                    <property name="text">
-                                                        <string>example</string>
-                                                    </property>
-                                                    <property name="alignment">
-                                                        <set>AlignVCenter|AlignRight</set>
-                                                    </property>
-                                                </widget>
-                                                <widget class="QLabel" row="1" column="1">
-                                                    <property name="name">
-                                                        <cstring>mIdent</cstring>
-                                                    </property>
-                                                    <property name="text">
-                                                        <string>example</string>
-                                                    </property>
-                                                    <property name="alignment">
-                                                        <set>AlignVCenter|AlignRight</set>
-                                                    </property>
-                                                </widget>
-                                                <widget class="QLabel" row="0" column="0">
-                                                    <property name="name">
-                                                        <cstring>textLabel1_2_3</cstring>
-                                                    </property>
-                                                    <property name="text">
-                                                        <string>Counter:</string>
-                                                    </property>
-                                                </widget>
-                                            </grid>
-                                        </widget>
-                                        <spacer>
-                                            <property name="name">
-                                                <cstring>spacer3</cstring>
+                                        </item>
+                                        <item>
+                                            <property name="text">
+                                                <string>on all pages</string>
                                             </property>
-                                            <property name="orientation">
-                                                <enum>Vertical</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Expanding</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>20</width>
-                                                    <height>91</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                                    </vbox>
-                                </widget>
-                            </grid>
-                        </widget>
-                    </vbox>
-                </widget>
-            </hbox>
+                                        </item>
+                                        <property name="name">
+                                            <cstring>mWatermarkCombo</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="KURLRequester" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>mTemplateUrl</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>textLabel1</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>&amp;Template File</string>
+                                        </property>
+                                        <property name="buddy" stdset="0">
+                                            <cstring>mTemplateUrl</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="KURLRequester" row="2" column="1">
+                                        <property name="name">
+                                            <cstring>mWatermarkUrl</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="2" column="0">
+                                        <property name="name">
+                                            <cstring>textLabel1_3</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>&amp;Watermark File</string>
+                                        </property>
+                                        <property name="buddy" stdset="0">
+                                            <cstring>mTemplateUrl</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>textLabel2</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>W&amp;atermark:</string>
+                                        </property>
+                                        <property name="buddy" stdset="0">
+                                            <cstring>mWatermarkCombo</cstring>
+                                        </property>
+                                    </widget>
+                                </grid>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer3</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>16</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </vbox>
+            </widget>
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>

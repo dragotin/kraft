@@ -18,6 +18,7 @@
 // include files for Qt
 #include <qstring.h>
 #include <qsqlcursor.h>
+#include <qfile.h>
 
 // include files for KDE
 #include <klocale.h>
@@ -30,6 +31,7 @@
 #include "kraftsettings.h"
 #include "kraftdb.h"
 #include "numbercycle.h"
+#include <kstandarddirs.h>
 /**
 @author Klaas Freitag
 */
@@ -204,12 +206,27 @@ void DocType::setNumberCycleName( const QString& name )
 
 QString DocType::templateFile()
 {
-  QString re = name();
+  KStandardDirs stdDirs;
+
+  QString tmplFile = name().lower() + QString( ".trml" );
   if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
-    re = mAttributes["docTemplateFile"].value().toString();
+    tmplFile = mAttributes["docTemplateFile"].value().toString();
   }
 
-  return re;
+  if ( tmplFile.contains( "/" ) && QFile::exists( tmplFile ) ) {
+    // all fine. The attribute has a filename
+  } else {
+    // No Slash in the name, search in KDE Resource path
+    QString findFile = "kraft/reports/" + tmplFile;
+
+    tmplFile = stdDirs.findResource( "data", findFile );
+
+    if ( tmplFile.isEmpty() ) {
+      findFile = "kraft/reports/invoice.trml";
+      tmplFile = stdDirs.findResource( "data", findFile );
+    }
+  }
+  return tmplFile;
 }
 
 void DocType::setTemplateFile( const QString& name )
@@ -224,11 +241,12 @@ void DocType::setTemplateFile( const QString& name )
     mAttributes.markDelete( "docTemplateFile" );
     kdDebug() << "Removing docTemplateFile Attribute" << endl;
   }
+  mDirty = true;
 }
 
 QString DocType::mergeIdent()
 {
-  QString re = "1";
+  QString re = "0";
   if ( mAttributes.hasAttribute( "docMergeIdent" ) ) {
     re = mAttributes["docMergeIdent"].value().toString();
   }
@@ -248,7 +266,35 @@ void DocType::setMergeIdent( const QString& ident )
     mAttributes.markDelete( "docMergeIdent" );
     kdDebug() << "Removing docMergeIdent Attribute" << endl;
   }
+  mDirty = true;
+
 }
+
+QString DocType::watermarkFile()
+{
+  QString re;
+  if ( mAttributes.hasAttribute( "watermarkFile" ) ) {
+    re = mAttributes["watermarkFile"].value().toString();
+  }
+
+  return re;
+}
+
+void DocType::setWatermarkFile( const QString& file )
+{
+  if ( !file.isEmpty() ) {
+    Attribute att( "watermarkFile" );
+    att.setPersistant( true );
+    att.setValue( file );
+    mAttributes["watermarkFile"] = att;
+  } else {
+    // remove default value from map
+    mAttributes.markDelete( "watermarkFile" );
+    kdDebug() << "Removing docMergeFile Attribute" << endl;
+  }
+  mDirty = true;
+}
+
 
 QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
 {

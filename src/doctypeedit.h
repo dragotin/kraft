@@ -57,6 +57,11 @@ protected slots:
   void fillNumberCycleCombo();
   void slotNumberCycleChanged( const QString& );
   void slotEditNumberCycles();
+  void slotWatermarkChange( int);
+  void slotWatermarkModeChanged( int );
+
+  void slotWatermarkUrlChanged( const QString& );
+  void slotTemplateUrlChanged( const QString& );
 
 private:
   DocType mOrigDocType;
@@ -66,10 +71,13 @@ private:
   void renameTypeInDb( const QString&, const QString& );
 
   QMap<QString, QString> mTypeNameChanges;
-  QMap<QString, QString> mNumberCycleDict;
+  
+  QMap<QString, DocType> mChangedDocTypes;
   QMap<QString, DocType> mOrigDocTypes;
   QStringList mAddedTypes;
   QStringList mRemovedTypes;
+
+  QString mPreviousType;
 };
 
 #endif

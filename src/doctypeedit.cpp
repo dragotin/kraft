@@ -35,6 +35,7 @@
 #include<klocale.h>
 #include<kiconloader.h>
 #include<kmessagebox.h>
+#include <kurlrequester.h>
 
 #include "prefsdialog.h"
 #include "katalogsettings.h"
@@ -61,7 +62,6 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
 
   for ( QStringList::Iterator it = types.begin(); it != types.end(); ++it ) {
     DocType dt( *it );
-    mNumberCycleDict[*it] = dt.numberCycleName();
     mOrigDocTypes[*it] = dt;
   }
 
@@ -85,9 +85,28 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   connect( mPbEditCycles, SIGNAL( clicked() ),
            SLOT( slotEditNumberCycles() ) );
 
+  connect( mWatermarkCombo, SIGNAL( activated( int ) ),
+           SLOT( slotWatermarkModeChanged( int ) ) );
+
+  connect( mWatermarkUrl, SIGNAL( textChanged( const QString& ) ),
+           SLOT( slotWatermarkUrlChanged( const QString& ) ) );
+
+  connect( mTemplateUrl, SIGNAL( textChanged( const QString& ) ),
+           SLOT( slotTemplateUrlChanged( const QString& ) ) );
+
   fillNumberCycleCombo();
   DocType dt( dtype );
   mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
+
+  mTemplateUrl->setFilter( "*.trml" );
+  mWatermarkUrl->setFilter( "*.pdf" );
+
+  mTemplateUrl->setURL( dt.templateFile() );
+  connect( mWatermarkCombo, SIGNAL( activated( int ) ),
+           SLOT( slotWatermarkChange( int ) ) );
+  mWatermarkCombo->setCurrentItem( dt.mergeIdent().toInt() );
+  mWatermarkUrl->setURL( dt.watermarkFile() );
+
 }
 
 void DocTypeEdit::fillNumberCycleCombo()
@@ -101,6 +120,15 @@ void DocTypeEdit::fillNumberCycleCombo()
   }
   mNumberCycleCombo->clear();
   mNumberCycleCombo->insertStringList( cycles );
+}
+
+void DocTypeEdit::slotWatermarkChange( int val )
+{
+  bool state = true;
+
+  if ( val == 0 )
+    state = false;
+  mWatermarkUrl->setEnabled( state );
 }
 
 void DocTypeEdit::slotAddDocType()
@@ -117,7 +145,6 @@ void DocTypeEdit::slotAddDocType()
   } else {
     mTypeListBox->insertItem( newName );
     DocType newDt( newName );
-    mNumberCycleDict[newName] = NumberCycle::defaultName();
     mOrigDocTypes[newName] = newDt;
     mAddedTypes.append( newName );
   }
@@ -132,7 +159,7 @@ void DocTypeEdit::slotEditDocType()
   if ( currName.isEmpty() ) return;
 
   QString newName = KInputDialog::getText( i18n( "Add Document Type" ),
-                                           i18n( "Enter the name of a new document type" ),
+                                           i18n( "Edit the name of a document type" ),
                                            currName );
   if ( newName.isEmpty() ) return;
   kdDebug() << "edit: " << currName << " became " << newName << endl;
@@ -159,7 +186,9 @@ void DocTypeEdit::slotEditDocType()
     if ( ! skipEntry ) {
       mTypeNameChanges[currName] = newName;
       DocType dt( currName );
-      mNumberCycleDict[newName] = dt.numberCycleName();
+      if ( mChangedDocTypes.contains( currName ) )
+        dt = mChangedDocTypes[currName];
+      mChangedDocTypes[newName] = dt;
     }
   }
 }
@@ -195,42 +224,103 @@ void DocTypeEdit::slotRemoveDocType()
 
 void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
 {
-  QString value = mTypeListBox->currentText();
-  if ( ! newValue.isEmpty() ) {
-    value = newValue;
+  kdDebug() << "docTypeSelected: " << newValue << " and previous: " << mPreviousType << endl;
+
+  DocType dt( newValue );
+  if ( mChangedDocTypes.contains( newValue ) ) {
+    dt = mChangedDocTypes[newValue];
+    kdDebug() << "new docType taken from ChangedDocTypes: " << endl;
   }
-  DocType dt( value );
-  if ( mNumberCycleDict.contains( value ) ) {
-    dt.setNumberCycleName( mNumberCycleDict[value] );
+
+  // store the previous type
+  DocType prevType = mOrigDocTypes[mPreviousType];
+  if ( mChangedDocTypes.contains( mPreviousType ) ) {
+    prevType = mChangedDocTypes[mPreviousType];
+    kdDebug() << "previous docType taken from ChangedDocTypes: " << endl;
   }
-  kdDebug() << "Selected doc type " << value << endl;
+  prevType.setNumberCycleName( mNumberCycleCombo->currentText() );
+  prevType.setTemplateFile( mTemplateUrl->url() );
+  prevType.setWatermarkFile( mWatermarkUrl->url() );
+  prevType.setMergeIdent( QString::number( mWatermarkCombo->currentItem() ) );
+  mChangedDocTypes[mPreviousType] = prevType;
+
+  // dt.setNumberCycleName( dt.numberCycleName() );
+  kdDebug() << "Selected doc type " << newValue << endl;
   mIdent->setText( dt.identTemplate() );
   int nextNum = dt.nextIdentId( false );
   mCounter->setText( QString::number( nextNum ) );
   mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
   // mHeader->setText( i18n( "Details for %1:" ).arg( dt.name() ) );
   mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
+  mTemplateUrl->setURL( dt.templateFile() );
+
+  mWatermarkUrl->setURL( dt.watermarkFile() );
+  mWatermarkCombo->setCurrentItem( dt.mergeIdent().toInt() );
+
+  mPreviousType = newValue;
 
 }
 
 void DocTypeEdit::slotEditNumberCycles()
 {
   saveDocTypes();
-  NumberCycleDialog dia( this );
+  NumberCycleDialog dia( this, mNumberCycleCombo->currentText() );
 
   if ( dia.exec() == QDialog::Accepted ) {
     fillNumberCycleCombo();
   }
 }
 
+void DocTypeEdit::slotWatermarkModeChanged( int newMode )
+{
+  QString docType = mTypeListBox->currentText();
+  DocType dt = mOrigDocTypes[docType];
+  if ( mChangedDocTypes.contains( docType ) ) {
+    dt = mChangedDocTypes[docType];
+  }
+  QString newMergeIdent = QString::number( newMode );
+  if ( newMergeIdent != dt.mergeIdent() ) {
+    dt.setMergeIdent( newMergeIdent );
+    mChangedDocTypes[docType] = dt;
+  }
+}
+
+void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )
+{
+  QString docType = mTypeListBox->currentText();
+  DocType dt = mOrigDocTypes[docType];
+  if ( mChangedDocTypes.contains( docType ) ) {
+    dt = mChangedDocTypes[docType];
+  }
+
+  if ( newUrl != dt.templateFile() ) {
+    dt.setTemplateFile( newUrl );
+    mChangedDocTypes[docType] = dt;
+  }
+}
+
+void DocTypeEdit::slotWatermarkUrlChanged( const QString& newUrl )
+{
+  QString docType = mTypeListBox->currentText();
+  DocType dt = mOrigDocTypes[docType];
+  if ( mChangedDocTypes.contains( docType ) ) {
+    dt = mChangedDocTypes[docType];
+  }
+
+  if ( newUrl != dt.watermarkFile() ) {
+    dt.setWatermarkFile( newUrl );
+    mChangedDocTypes[docType] = dt;
+  }
+
+}
+
 void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
 {
   QString docType = mTypeListBox->currentText();
-  mNumberCycleDict[docType] = newCycle;
-  kdDebug() << "Changing the cycle name of " << docType << " to " << newCycle << endl;
-
   DocType dt( docType );
   dt.setNumberCycleName( newCycle );
+  mChangedDocTypes[newCycle] = dt;
+  kdDebug() << "Changing the cycle name of " << docType << " to " << newCycle << endl;
 
   mIdent->setText( dt.identTemplate() );
   int nextNum = dt.nextIdentId( false );
@@ -262,7 +352,7 @@ void DocTypeEdit::saveDocTypes()
       DocType dt = mOrigDocTypes[*it];
       removeTypeFromDb( *it );
       mOrigDocTypes.remove( *it );
-      mNumberCycleDict.remove( *it );
+      mChangedDocTypes.remove( *it );
     }
   }
 
@@ -270,10 +360,9 @@ void DocTypeEdit::saveDocTypes()
   for ( QStringList::Iterator it = mAddedTypes.begin(); it != mAddedTypes.end(); ++it ) {
     QString name = *it;
     if ( mOrigDocTypes.contains( name ) ) { // just to check
-      DocType dt( name );
-      QString numCycleName = mNumberCycleDict[name];
+      DocType dt = mChangedDocTypes[name];
+      QString numCycleName = dt.numberCycleName();
       kdDebug() << "Number cycle name for to add doctype " << name << ": " << numCycleName << endl;
-      dt.setNumberCycleName( numCycleName );
       dt.save();
     }
   }
@@ -286,14 +375,13 @@ void DocTypeEdit::saveDocTypes()
       QString newName = it.data();
       kdDebug() << "Renaming " << oldName << " to " << newName << endl;
       DocType dt = mOrigDocTypes[oldName];
-      dt.setName( newName );
+      if ( mChangedDocTypes.contains( newName ) ) {
+        dt = mChangedDocTypes[newName];
+      } else {
+        dt.setName( newName );
+      }
       mOrigDocTypes.remove( oldName );
       mOrigDocTypes[newName] = dt;
-      QString numCycleName = mNumberCycleDict[oldName];
-      mNumberCycleDict[newName] = numCycleName;
-      mNumberCycleDict.remove( oldName );
-      dt.setNumberCycleName( numCycleName );
-      // renameTypeInDb( oldName, newName );
       dt.save();
     } else {
       kdError() << "Can not find doctype to change named " << oldName << endl;
@@ -301,14 +389,10 @@ void DocTypeEdit::saveDocTypes()
   }
 
   // check if numberCycles have changed.
-  QMap<QString, QString>::Iterator mapit;
-  for ( mapit = mNumberCycleDict.begin(); mapit != mNumberCycleDict.end(); ++mapit ) {
-    DocType dt( mapit.key() );
-    if ( dt.numberCycleName() != mNumberCycleDict[mapit.key()] ) {
-      // the numberCycleName has changed.
-      dt.setNumberCycleName( mapit.data() );
-      dt.save();
-    }
+  QMap<QString, DocType>::Iterator mapit;
+  for ( mapit = mChangedDocTypes.begin(); mapit != mChangedDocTypes.end(); ++mapit ) {
+    DocType dt = mapit.data();
+    dt.save();
   }
 
   // now the list of document types should be up to date and reflected into
@@ -330,19 +414,16 @@ void DocTypeEdit::removeTypeFromDb( const QString& name )
   delQuery.prepare( "DELETE FROM DocTypeRelations WHERE followerId=:id or typeId=:id" );
   delQuery.bindValue( ":id", id.toString() );
   delQuery.exec();
-  kdDebug() << "1-XXXXXXXXXXX " << delQuery.lastError().text() << endl;
 
   // delete in DocTexts
   delQuery.prepare( "DELETE FROM DocTexts WHERE DocTypeId=:id" );
   delQuery.bindValue( ":id", id.toString() );
   delQuery.exec();
-  kdDebug() << "2-XXXXXXXXXXX " << delQuery.lastError().text() << endl;
 
   // delete in the DocTypes table
   delQuery.prepare( "DELETE FROM DocTypes WHERE docTypeId=:id" );
   delQuery.bindValue( ":id", id.toString() );
   delQuery.exec();
-  kdDebug() << "3-XXXXXXXXXXX " << delQuery.lastError().text() << endl;
 
   AttributeMap attMap( "DocType" );
   attMap.dbDeleteAll( id );

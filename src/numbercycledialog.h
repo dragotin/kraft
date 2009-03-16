@@ -45,7 +45,7 @@ class NumberCycleDialog: public KDialogBase
   Q_OBJECT
 
 public:
-  NumberCycleDialog( QWidget *parent );
+  NumberCycleDialog( QWidget *parent, const QString& initType = QString() );
 
 public slots:
 

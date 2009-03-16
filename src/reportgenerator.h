@@ -67,6 +67,7 @@ private:
   QString mOutFile;
   QString mErrors;
   QString mMergeIdent;
+  QString mWatermarkFile;
 
   QFile mFile;
   QTextStream mTargetStream;

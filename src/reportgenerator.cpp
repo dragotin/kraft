@@ -104,35 +104,16 @@ QString ReportGenerator::findTemplate( const QString& type )
 
   DocType dType( type );
 
-  QString tmplName = dType.templateFile();
+  QString tmplFile = dType.templateFile();
+
+  if ( tmplFile.isEmpty() ) {
+    KMessageBox::error( 0, i18n("A document template named %1 could not be loaded."
+                                "Please check the installation." ).arg( dType.templateFile() ) ,
+                        i18n( "Template not found" ) );
+  }
 
   mMergeIdent = dType.mergeIdent();
-
-  QString tmplFile;
-
-  if ( tmplName.contains( "/" ) && QFile::exists( tmplName ) ) {
-    tmplFile = tmplName;
-  } else {
-    // No Slash in the name, search in KDE Resource path
-    QString templFileName = QString( type ).lower() + ".trml";
-    QString findFile = "kraft/reports/" + templFileName;
-
-    tmplFile = stdDirs.findResource( "data", findFile );
-    QString re;
-
-    if ( tmplFile.isEmpty() ) {
-      findFile = "kraft/reports/invoice.trml";
-      tmplFile = stdDirs.findResource( "data", findFile );
-      if ( tmplFile.isEmpty() ) {
-        KMessageBox::error( 0, i18n("A document template named %1 could not be loaded."
-                                    "Please check the installation." ).arg( templFileName ) ,
-                            i18n( "Template not found" ) );
-        return QString();
-      } else {
-        kdDebug() << templFileName << " not found, reverting to invoice.trml" << endl;
-      }
-    }
-  }
+  mWatermarkFile = dType.watermarkFile();
 
   return tmplFile;
 }
@@ -318,44 +299,6 @@ QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle
   return rml;
 }
 
-#if 0
-int ReportGenerator::replaceTag( QString& text, const QString& tag,  const QString& rep, bool multiline )
-{
-
-  if ( tag == TAG( "IMAGE" ) ) {
-    kdDebug() << "Replacing image tag" << endl;
-    QRegExp reg( "<!-- IMAGE\\(\\s*(\\S+)\\s*\\) -->" );
-
-    KStandardDirs stdDirs;
-    int pos = 0;
-
-    while ( pos >= 0 ) {
-      pos = reg.search( text, pos );
-      const QString filename = reg.cap( 1 );
-      kdDebug() << "Found position: " << pos << endl;
-
-      if ( ! filename.isEmpty() ) {
-        QString findFile = "kraft/reports/images/" + filename;
-        QString file = stdDirs.findResource( "data", findFile );
-        if ( file.isEmpty() ) {
-          kdDebug() << "can not find findFile " << findFile << endl;
-          pos = -1; // Better break here to avoid infinite loop.
-        } else {
-          text.replace( reg.cap( 0 ), file );
-        }
-      }
-    }
-  } else {
-    if ( multiline ) {
-      text.replace( tag, rmlString( rep ), false );
-    } else {
-      text.replace( tag, escapeTrml2pdfXML( rep ), false );
-    }
-  }
-  return 0;
-}
-#endif
-
 void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID, const QString& archId )
 {
   if( ! mProcess ) {
@@ -389,11 +332,11 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     pathes = stdDirs.systemPaths();
 
     for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
-      QString cPath = ( *it ) + "/trml2pdf_merge.sh";
+      QString cPath = ( *it ) + "/trml2pdf_kraft.sh";
       kdDebug() << "### Checking cPath: " << cPath << endl;
       if ( QFile::exists( cPath ) ) {
         rmlbin = cPath;
-        kdDebug() << "Found trml2pdf_merge.sh in filesystem: " << rmlbin << endl;
+        kdDebug() << "Found trml2pdf_kraft.sh in filesystem: " << rmlbin << endl;
         haveMerge = true;
         break;
       }
@@ -419,6 +362,15 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     return;
   }
 
+  if ( haveMerge && mMergeIdent != "0" &&
+       ( mWatermarkFile.isEmpty() || !QFile::exists( mWatermarkFile ) ) ) {
+
+    KMessageBox::error( 0, i18n("The Watermark file to merge with the document could not be found. "
+                                "Merge is going to be disabled." ),
+                        i18n( "Watermark Error" ) );
+    mMergeIdent = "0";
+  }
+
   QString outputDir = ArchiveMan::self()->pdfBaseDir();
   QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
   mOutFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
@@ -430,6 +382,9 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     *mProcess << mMergeIdent;
   }
   *mProcess << rmlFile;
+  if ( haveMerge && mMergeIdent != "0" ) {
+    *mProcess << mWatermarkFile;
+  }
 
   mFile.setName( mOutFile );
   if ( mFile.open( IO_WriteOnly ) ) {
@@ -470,11 +425,13 @@ void ReportGenerator::slotViewerClosed( KProcess *p )
     KRun::runURL( url, "application/pdf" );
 #endif
   } else {
+    if ( mErrors.isEmpty() ) mErrors = i18n( "Unknown problem." );
     // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
     KMessageBox::detailedError ( 0,
                                  i18n( "Could not generate the pdf file. The trml2pdf script failed." ),
                                  mErrors,
                                  i18n( "rml2pdf Error" ) );
+    mErrors = QString();
   }
 }
 

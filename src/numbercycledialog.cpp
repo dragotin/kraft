@@ -49,7 +49,7 @@
 #include "numbercycledialog.h"
 
 
-NumberCycleDialog::NumberCycleDialog( QWidget *parent )
+NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
  :KDialogBase( parent, "NUMBER_CYCLES_EDIT", true, i18n( "Edit Number Cycles" ), Ok|Cancel )
 {
   enableButtonSeparator( true );
@@ -85,7 +85,10 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent )
   connect( mBaseWidget->mCycleListBox, SIGNAL( highlighted( int ) ),
            SLOT( slotNumberCycleSelected( int ) ) );
 
-  mBaseWidget->mCycleListBox->setCurrentItem( 0 );
+  QListBoxItem *initItem = mBaseWidget->mCycleListBox->findItem( initType );
+  if ( initItem ) {
+    mBaseWidget->mCycleListBox->setSelected( initItem,  true );
+  }
   slotUpdateExample();
 
   connect( mBaseWidget->mIdTemplEdit, SIGNAL( textChanged( const QString& ) ),

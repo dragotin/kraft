@@ -64,6 +64,9 @@ class DocType
   QString     templateFile();
   void        setTemplateFile( const QString& );
 
+  QString     watermarkFile();
+  void        setWatermarkFile( const QString& );
+
   QString     mergeIdent();
   void        setMergeIdent( const QString& );
 
