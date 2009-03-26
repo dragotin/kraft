@@ -1,0 +1,112 @@
+body { margin:20px; 
+       background-image:url(pics/docoverviewbg.png); 
+}
+
+table {
+      color: #898989;
+}
+
+td { 
+  vertical-align:top;
+}
+
+a:link {
+  text-decoration: none;
+  color: #00008b;
+}
+
+a:visited {
+  font-weight: bold;
+  text-decoration: none;
+  color: 00008b;
+}
+
+a:hover {
+  color: #c81e1e;
+  font-weight: bold;
+  text-decoration: none;
+
+}
+
+a:active {
+  color: #cccccc;
+  text-decoration: underline;
+}
+
+.links {
+  border-style: dotted;
+  border-width: thin;
+  width: 100%;
+  padding: 1px;
+}
+
+div {
+  border-style:none;
+  border-width:0px;
+  border-color:#00008B;
+  margin: 1px 0px 1px 0px;
+  padding: 1px;
+  color: #898989;
+}
+
+div.alignright {
+  border-style:none;
+  border-width:0px;
+  margin: 1px 0px 1px 0px;
+  padding: 1px;
+  color: #898989;
+}
+
+.negative {
+  color: #800040;
+}
+
+.head_selected {   border-width:1px;
+  border-style:solid;
+  border-color:#00008b;
+}
+.body_selected {   border-width:1px;
+  border-style:solid;
+  border-color:00008b;
+}
+.foot_selected {   border-width:1px;
+  border-style:solid;
+  border-color:#00008b;
+}
+
+.headerlink { background: #8ddbe9; }
+.headerlink_selected { 
+  background: #9af0ff;   
+  font-weight: bolder;
+      color: #898989;
+
+}
+
+.bodylink   { background: #8de99a; }
+.bodylink_selected   { 
+  background: #9affa9;   
+  font-weight: bolder;
+}
+
+.footerlink { background: #dbe98d; }
+.footerlink_selected { 
+  background: #f0ff9a;   
+  font-weight: bolder;
+}
+
+td.baseline {
+  border-bottom:1px inset #898989;
+  padding-left: 30px;
+  margin-left: 30px;
+}
+
+h2 {
+  border-bottom: 2px inset #000000;
+  vertical-align: text-bottom;
+  background-image:url(pics/docoverview_h2_bg.png);
+  background-repeat: no-repeat;
+  background-position: right;
+  image-repeat: none;
+  height: 64px;
+
+}
