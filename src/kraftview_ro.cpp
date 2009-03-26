@@ -100,7 +100,7 @@ KraftViewRO::KraftViewRO(QWidget *parent, const char *name) :
   mGlobalVBox->setMargin( 3 );
 
   mHtmlView = new HtmlView( mGlobalVBox );
-  mHtmlView->setStylesheetFile( "docoverview.css" );
+  mHtmlView->setStylesheetFile( "docoverview_ro.css" );
 }
 
 KraftViewRO::~KraftViewRO()
@@ -134,10 +134,12 @@ void KraftViewRO::setup( DocGuardedPtr doc )
   }
 
   TextTemplate tmpl( tmplFile );
-
+  tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), i18n( "Document Overview" ) );
   tmpl.setValue( DOC_RO_TAG( "DATE" ), locale->formatDate( doc->date(), true ) );
   tmpl.setValue( DOC_RO_TAG( "DOC_TYPE" ),  doc->docType() );
-  tmpl.setValue( DOC_RO_TAG( "ADDRESS" ), doc->address() );
+  QString address = doc->address();
+  address.replace( '\n', "<br/>" );
+  tmpl.setValue( DOC_RO_TAG( "ADDRESS" ), address );
   tmpl.setValue( DOC_RO_TAG( "DOCNO" ), doc->ident() );
   tmpl.setValue( DOC_RO_TAG( "PRETEXT" ), doc->preText() );
   tmpl.setValue( DOC_RO_TAG( "POSTTEXT" ), doc->postText() );
@@ -165,10 +167,11 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     tmpl.setValue( "POSITIONS", "PRICE", locale->formatMoney( dp->overallPrice().toDouble() ) );
   }
 
+  tmpl.setValue( DOC_RO_TAG( "TAXLABEL" ), i18n( "VAT" ) );
+  tmpl.setValue( DOC_RO_TAG( "REDUCED_TAXLABEL" ), i18n( "Reduced TAX" ) );
   tmpl.setValue( DOC_RO_TAG( "NETTOSUM" ), locale->formatMoney( doc->nettoSum().toDouble() ) );
   tmpl.setValue( DOC_RO_TAG( "BRUTTOSUM" ), locale->formatMoney( doc->nettoSum().toDouble() ) );
-  tmpl.setValue( DOC_RO_TAG( "VATSUM" ), locale->formatMoney( doc->vatSum().toDouble() ) );
-  tmpl.setValue( DOC_RO_TAG( "VAT" ), locale->formatNumber( DocumentMan::self()->tax( doc->date() ) ) );
+  tmpl.setValue( DOC_RO_TAG( "TAXSUM" ), locale->formatMoney( doc->vatSum().toDouble() ) );
   tmpl.setValue( DOC_RO_TAG( "TAX" ), locale->formatNumber( DocumentMan::self()->tax( doc->date() ) ) );
   tmpl.setValue( DOC_RO_TAG( "REDUCED_TAX" ),
                  locale->formatNumber( DocumentMan::self()->reducedTax( doc->date() ) ) );

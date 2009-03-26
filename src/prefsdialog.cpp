@@ -47,6 +47,7 @@
 #include "doctypeedit.h"
 #include "doctypeedit.h"
 #include <qtooltip.h>
+#include <qlistview.h>
 
 
 // ################################################################################
@@ -58,6 +59,7 @@ PrefsDialog::PrefsDialog( QWidget *parent)
   databaseTab();
   docTab();
   doctypeTab();
+  taxTab();
 
   readConfig();
   slotCheckConnect();
@@ -140,6 +142,25 @@ void PrefsDialog::databaseTab()
 
   vboxLay->addItem( new QSpacerItem( 1, 1 ) );
 
+}
+
+void PrefsDialog::taxTab()
+{
+  QLabel *label;
+  QFrame *topFrame = addPage( i18n( "Taxes" ),
+                              i18n( "Tax Settings." ),
+                              DesktopIcon( "queue" ) );
+
+  QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
+
+  label = new QLabel(i18n("Tax rates beginning at date:"), topFrame );
+  vboxLay->addWidget( label );
+
+  mTaxListView = new QListView( topFrame );
+  mTaxListView->addColumn( i18n( "Start Date" ) );
+  mTaxListView->addColumn( i18n( "Reduced Tax Rate" ) );
+  mTaxListView->addColumn( i18n( "Full Tax Rate" ) );
+  vboxLay->addWidget( mTaxListView );
 }
 
 void PrefsDialog::docTab()

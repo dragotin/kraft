@@ -108,7 +108,7 @@ rcdir = $(kde_datadir)/kraft
 rc_DATA = kraftui.rc katalogview.rc
 
 cssdir = $(kde_datadir)/kraft
-css_DATA = docoverview.css catalogview.css
+css_DATA = docoverview_ro.css docoverview.css catalogview.css
 
 messages: rc.cpp
 	LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \

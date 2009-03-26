@@ -222,6 +222,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
       archive.reducedTaxSum().toString( archive.locale() ) );
     h.setNum( archive.reducedTax(), 'f', 1 );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX" ), h );
+    tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
   }
   if ( archive.fullTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
@@ -229,6 +230,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
       archive.fullTaxSum().toString( archive.locale() ) );
     h.setNum( archive.tax(), 'f', 1 );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX" ), h );
+    tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
   }
 
   h.setNum( archive.tax(), 'f', 1 );

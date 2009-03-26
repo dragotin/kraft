@@ -31,7 +31,7 @@ class QTextEdit;
 class QPushButton;
 class QComboBox;
 class QCheckBox;
-
+class QListView;
 
 // ################################################################################
 
@@ -58,6 +58,7 @@ private:
   void databaseTab();
   void docTab();
   void doctypeTab();
+  void taxTab();
 
   QLineEdit *m_leHost;
   QLineEdit *m_leUser;
@@ -74,6 +75,7 @@ private:
 
   DocTypeEdit *mDocTypeEdit;
   
+  QListView *mTaxListView;
 };
 
 #endif
