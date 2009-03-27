@@ -48,6 +48,7 @@ kraft_SOURCES = templkatalog.cpp docposition.cpp matkatalog.cpp zeitcalcpart.cpp
 	importitemdialog.cpp importtodocbase.ui doctypeeditbase.ui \
 	doctypeedit.cpp numbercycleseditbase.ui  numbercycledialog.cpp
 
+AM_CFLAGS = -Wno-deprecated
 
 kraft_LDADD   =  libbruns.la $(LIB_KIO) $(LIB_KABC) -lkhtml -lctemplate -lpthread
 
