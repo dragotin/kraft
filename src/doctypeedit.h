@@ -57,7 +57,6 @@ protected slots:
   void fillNumberCycleCombo();
   void slotNumberCycleChanged( const QString& );
   void slotEditNumberCycles();
-  void slotWatermarkChange( int);
   void slotWatermarkModeChanged( int );
 
   void slotWatermarkUrlChanged( const QString& );

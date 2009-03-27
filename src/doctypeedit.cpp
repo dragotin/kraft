@@ -102,11 +102,14 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   mWatermarkUrl->setFilter( "*.pdf" );
 
   mTemplateUrl->setURL( dt.templateFile() );
-  connect( mWatermarkCombo, SIGNAL( activated( int ) ),
-           SLOT( slotWatermarkChange( int ) ) );
-  mWatermarkCombo->setCurrentItem( dt.mergeIdent().toInt() );
   mWatermarkUrl->setURL( dt.watermarkFile() );
 
+  int newMode = dt.mergeIdent().toInt();
+  mWatermarkCombo->setCurrentItem( newMode );
+  bool state = true;
+  if ( newMode == 0 )
+    state = false;
+  mWatermarkUrl->setEnabled( state );
 }
 
 void DocTypeEdit::fillNumberCycleCombo()
@@ -120,15 +123,6 @@ void DocTypeEdit::fillNumberCycleCombo()
   }
   mNumberCycleCombo->clear();
   mNumberCycleCombo->insertStringList( cycles );
-}
-
-void DocTypeEdit::slotWatermarkChange( int val )
-{
-  bool state = true;
-
-  if ( val == 0 )
-    state = false;
-  mWatermarkUrl->setEnabled( state );
 }
 
 void DocTypeEdit::slotAddDocType()
@@ -304,6 +298,11 @@ void DocTypeEdit::slotWatermarkModeChanged( int newMode )
       mChangedDocTypes[ mTypeListBox->currentText() ] = dt;
     }
   }
+
+  bool state = true;
+  if ( newMode == 0 )
+    state = false;
+  mWatermarkUrl->setEnabled( state );
 }
 
 void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )
