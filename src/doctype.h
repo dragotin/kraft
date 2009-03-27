@@ -75,9 +75,10 @@ class DocType
   int         nextIdentId( bool hot = true );
   void        save();
 
+  void        readIdentTemplate();
+
   protected:
   void        readFollowerList();
-  void        readIdentTemplate();
 
   private:
   static void init();

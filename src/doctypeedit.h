@@ -64,6 +64,8 @@ protected slots:
   void slotTemplateUrlChanged( const QString& );
 
 private:
+  DocType currentDocType();
+
   DocType mOrigDocType;
 
   QStringList allNumberCycles();

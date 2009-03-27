@@ -266,24 +266,43 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
 void DocTypeEdit::slotEditNumberCycles()
 {
   saveDocTypes();
-  NumberCycleDialog dia( this, mNumberCycleCombo->currentText() );
+  QString currNumbercycle = mNumberCycleCombo->currentText();
+  NumberCycleDialog dia( this, currNumbercycle );
 
   if ( dia.exec() == QDialog::Accepted ) {
     fillNumberCycleCombo();
+    mNumberCycleCombo->setCurrentText( currNumbercycle );
+
+    DocType dt = currentDocType();
+    dt.readIdentTemplate();
+    // only the numbercycle has changed - refresh the display
+    mIdent->setText( dt.identTemplate() );
+    int nextNum = dt.nextIdentId( false );
+    mCounter->setText( QString::number( nextNum ) );
+    mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
   }
 }
 
-void DocTypeEdit::slotWatermarkModeChanged( int newMode )
+DocType DocTypeEdit::currentDocType()
 {
   QString docType = mTypeListBox->currentText();
   DocType dt = mOrigDocTypes[docType];
   if ( mChangedDocTypes.contains( docType ) ) {
     dt = mChangedDocTypes[docType];
   }
+  return dt;
+}
+
+void DocTypeEdit::slotWatermarkModeChanged( int newMode )
+{
+  DocType dt = currentDocType();
+
   QString newMergeIdent = QString::number( newMode );
   if ( newMergeIdent != dt.mergeIdent() ) {
     dt.setMergeIdent( newMergeIdent );
-    mChangedDocTypes[docType] = dt;
+    if ( !mTypeListBox->currentText().isEmpty() ) {
+      mChangedDocTypes[ mTypeListBox->currentText() ] = dt;
+    }
   }
 }
 
@@ -318,11 +337,11 @@ void DocTypeEdit::slotWatermarkUrlChanged( const QString& newUrl )
 
 void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
 {
-  QString docType = mTypeListBox->currentText();
-  DocType dt( docType );
+  QString docTypeName = mTypeListBox->currentText();
+  DocType dt = currentDocType();
   dt.setNumberCycleName( newCycle );
-  mChangedDocTypes[newCycle] = dt;
-  kdDebug() << "Changing the cycle name of " << docType << " to " << newCycle << endl;
+  mChangedDocTypes[docTypeName] = dt;
+  kdDebug() << "Changing the cycle name of " << docTypeName << " to " << newCycle << endl;
 
   mIdent->setText( dt.identTemplate() );
   int nextNum = dt.nextIdentId( false );
