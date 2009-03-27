@@ -301,6 +301,50 @@ QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle
   return rml;
 }
 
+QString ReportGenerator::findTrml2Pdf( )
+{
+  const QString rmlbinDefault = QString::fromLatin1( "trml2pdf" ); // FIXME: how to get the default value?
+  QString rmlbin = KraftSettings::self()->trml2PdfBinary();
+  kdDebug() << "### Start searching rml2pdf bin: " << rmlbin << endl;
+
+  mHaveMerge = false;
+
+  if ( rmlbinDefault == rmlbin  ) {
+    QStringList pathes;
+    KStandardDirs stdDirs;
+    pathes = stdDirs.systemPaths();
+
+    for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
+      QString cPath = ( *it ) + "/trml2pdf_kraft.sh";
+      kdDebug() << "### Checking cPath: " << cPath << endl;
+      if ( QFile::exists( cPath ) ) {
+        rmlbin = cPath;
+        kdDebug() << "Found trml2pdf_kraft.sh in filesystem: " << rmlbin << endl;
+        mHaveMerge = true;
+        break;
+      }
+    }
+
+    if ( ! mHaveMerge ) {
+      for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
+        QString cPath = ( *it ) + "/trml2pdf";
+        if ( QFile::exists( cPath ) ) {
+          rmlbin = cPath;
+          kdDebug() << "Found trml2pdf in filesystem: " << rmlbin << endl;
+          break;
+        }
+      }
+    }
+  }
+  if ( rmlbinDefault == rmlbin  ) {
+    kdDebug() << "We have not found the script!" << endl;
+    rmlbin = QString();
+  }
+
+  return rmlbin;
+}
+
+
 void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID, const QString& archId )
 {
   if( ! mProcess ) {
@@ -321,40 +365,8 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
   }
 
   mErrors = QString();
+  QString rmlbin = findTrml2Pdf();
 
-  const QString rmlbinDefault = QString::fromLatin1( "trml2pdf" ); // FIXME: how to get the default value?
-  QString rmlbin = KraftSettings::self()->trml2PdfBinary();
-  kdDebug() << "### Start searching rml2pdf bin: " << rmlbin << endl;
-
-  bool haveMerge = false;
-
-  if ( rmlbinDefault == rmlbin  ) {
-    QStringList pathes;
-    KStandardDirs stdDirs;
-    pathes = stdDirs.systemPaths();
-
-    for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
-      QString cPath = ( *it ) + "/trml2pdf_kraft.sh";
-      kdDebug() << "### Checking cPath: " << cPath << endl;
-      if ( QFile::exists( cPath ) ) {
-        rmlbin = cPath;
-        kdDebug() << "Found trml2pdf_kraft.sh in filesystem: " << rmlbin << endl;
-        haveMerge = true;
-        break;
-      }
-    }
-
-    if ( ! haveMerge ) {
-      for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
-        QString cPath = ( *it ) + "/trml2pdf";
-        if ( QFile::exists( cPath ) ) {
-          rmlbin = cPath;
-          kdDebug() << "Found trml2pdf in filesystem: " << rmlbin << endl;
-          break;
-        }
-      }
-    }
-  }
   if ( ! QFile::exists( rmlbin ) ) {
 
     KMessageBox::error( 0, i18n("The utility to create PDF from the rml file could not be found, "
@@ -364,7 +376,7 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     return;
   }
 
-  if ( haveMerge && mMergeIdent != "0" &&
+  if ( mHaveMerge && mMergeIdent != "0" &&
        ( mWatermarkFile.isEmpty() || !QFile::exists( mWatermarkFile ) ) ) {
 
     KMessageBox::error( 0, i18n("The Watermark file to merge with the document could not be found. "
@@ -380,11 +392,11 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
   kdDebug() << "Writing output to " << mOutFile << endl;
 
   *mProcess << rmlbin;
-  if ( haveMerge ) {
+  if ( mHaveMerge ) {
     *mProcess << mMergeIdent;
   }
   *mProcess << rmlFile;
-  if ( haveMerge && mMergeIdent != "0" ) {
+  if ( mHaveMerge && mMergeIdent != "0" ) {
     *mProcess << mWatermarkFile;
   }
 

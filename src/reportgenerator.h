@@ -18,6 +18,7 @@
 #define REPORTGENERATOR_H
 
 #include <qdom.h>
+#include <qfile.h>
 #include <qobject.h>
 
 #include "kraftdoc.h"
@@ -26,6 +27,7 @@ class dbID;
 class KProcess;
 class QFile;
 class QTextStream;
+
 
 class ReportGenerator : public QObject
 {
@@ -37,6 +39,7 @@ public:
   static ReportGenerator *self();
 
   void runTrml2Pdf( const QString&, const QString&, const QString& );
+  QString findTrml2Pdf();
 
 signals:
   void pdfAvailable( const QString& filename );
@@ -67,6 +70,7 @@ private:
   QString mOutFile;
   QString mErrors;
   QString mMergeIdent;
+  bool    mHaveMerge;
   QString mWatermarkFile;
 
   QFile mFile;

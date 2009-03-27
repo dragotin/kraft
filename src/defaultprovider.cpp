@@ -28,6 +28,7 @@
 #include "doctext.h"
 #include "kraftsettings.h"
 #include "doctype.h"
+#include <kstandarddirs.h>
 
 static KStaticDeleter<DefaultProvider> selfDeleter;
 
@@ -162,12 +163,15 @@ void DefaultProvider::deleteDocumentText( const DocText& dt )
   }
 }
 
-
 QString DefaultProvider::currencySymbol() const
 {
   return self()->locale()->currencySymbol();
 }
 
+QString DefaultProvider::recodeTool() const
+{
+  return KStandardDirs::findExe( "recode" );
+}
 
 DefaultProvider::~DefaultProvider()
 {

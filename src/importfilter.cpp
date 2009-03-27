@@ -24,6 +24,8 @@
 
 #include "importfilter.h"
 #include "unitmanager.h"
+#include "defaultprovider.h"
+
 #include <qregexp.h>
 #include <kio/netaccess.h>
 #include <ktempfile.h>
@@ -77,12 +79,15 @@ bool ImportFilter::recode( const QString& file )
   QString command;
   if ( mEncoding.isEmpty() ) return true;
 
-  command = QString( "/usr/bin/recode %1..utf-8 %2" ).arg( mEncoding ).arg( file );
-  int result = system( command.latin1() );
-  kdDebug() << "Recode finished with exit code " << result << endl;
+  QString cmd = DefaultProvider::self()->recodeTool();
 
-  // FIXME: check return value
-  return true;
+  if ( QFile::exists( command ) ) {
+    QString command = QString( "%1 %2..utf-8 %3" ).arg( cmd ).arg( mEncoding ).arg( file );
+    int result = system( command.latin1() );
+    kdDebug() << "Recode finished with exit code " << result << endl;
+    return true;
+  }
+  return false;
 }
 
 

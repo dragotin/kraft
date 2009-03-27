@@ -48,6 +48,8 @@ public:
   QString currencySymbol() const;
   KLocale* locale();
 
+  QString recodeTool() const;
+
 private:
   void fillDocTextBuffer( const DocText&, QSqlRecord* );
 

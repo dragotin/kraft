@@ -42,6 +42,7 @@
 #include "docdigestview.h"
 #include "documentman.h"
 #include "defaultprovider.h"
+#include "reportgenerator.h"
 
 PortalView::PortalView(QWidget *parent, const char *name, int face)
     : KJanusWidget( parent, name, face ),
@@ -254,7 +255,7 @@ void PortalView::fillSystemDetails()
   QString html;
   if ( ! mSystemBrowser ) return;
 
-  html = systemViewHeader(); // "<h2>" + i18n("Kraft System Information") + "</h2>";
+  html = systemViewHeader();
 
   html += "<h2>" + i18n("Database Information") + "</h2>";
   html += "<div><table>";
@@ -293,7 +294,17 @@ void PortalView::fillSystemDetails()
       html += "<td>" +  version + "</td></tr>";
     }
   }
-  html += "</div></table>";
+  html += "</table></div>";
+  // external tools
+  html += "<h2>" + i18n( "External Tools" ) + "</h2>";
+  html += "<div><table>";
+  html += "<tr><td>" + i18n( "RML to PDF conversion tool:" ) + "</td><td>";
+  html += ReportGenerator::self()->findTrml2Pdf() + "</td></tr>";
+  html += "<tr><td>" + i18n( "recode tool for text import:" ) + "</td><td>";
+  html += DefaultProvider::self()->recodeTool() + "</td></tr>";
+
+  html += "</table></div>";
+
   mSystemBrowser->displayContent( html );
 }
 
