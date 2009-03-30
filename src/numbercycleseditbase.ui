@@ -75,7 +75,7 @@
                         <cstring>mHelpLabel</cstring>
                     </property>
                     <property name="text">
-                        <string>Bla Help</string>
+                        <string></string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="4" column="0">

@@ -192,7 +192,9 @@ void PrefsDialog::docTab()
 
   // Localisation on document level
   mCbDocLocale = new QCheckBox( i18n( "Enable &Localisation on Document Level" ), topFrame );
-  QToolTip::add( mCbDocLocale, i18n( "Checking this enables language settings for each document. <br>Leave it unchecked to use the KDE default settings for the document localisation." ) );
+  QToolTip::add( mCbDocLocale, i18n( "Checking this enables language settings for each document."
+                                     "<br>Leave it unchecked to use the KDE default settings for "
+                                     "the document localisation." ) );
   vboxLay->addWidget( mCbDocLocale );
 
   vboxLay->addWidget( new QWidget( topFrame ) );

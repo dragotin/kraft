@@ -173,7 +173,7 @@ void NumberCycleDialog::slotNumberCycleSelected( int num )
   kdDebug() << "Selected number cycle number " << num << endl;
 
   mBaseWidget->mIdTemplEdit->setText( nc.getTemplate() );
-  mBaseWidget->mCounterEdit->setMinValue( nc.counter() );
+  mBaseWidget->mCounterEdit->setMinValue( 0 ); // nc.counter() );
   mBaseWidget->mCounterEdit->setValue( nc.counter() );
   mBaseWidget->mNameEdit->setText( nc.name() );
   mBaseWidget->mNameEdit->setReadOnly( true );
@@ -267,15 +267,18 @@ void NumberCycleDialog::slotOk()
   updateCycleDataFromGUI();
 
   // First remove the dropped cycles
-  QSqlQuery qDel;
-  qDel.prepare( "DELETE FROM numberCycles WHERE name=:name" );
-  for ( QStringList::Iterator it = mRemovedCycles.begin();
-        it != mRemovedCycles.end(); ++it ) {
-    kdDebug() << "about to drop the number cycle " << *it << endl;
-    if ( dropOfNumberCycleOk( *it ) ) {
-      qDel.bindValue( ":name", *it );
-      qDel.exec();
+  if ( mRemovedCycles.count() > 0 ) {
+    QSqlQuery qDel;
+    qDel.prepare( "DELETE FROM numberCycles WHERE name=:name" );
+    for ( QStringList::Iterator it = mRemovedCycles.begin();
+          it != mRemovedCycles.end(); ++it ) {
+      kdDebug() << "about to drop the number cycle " << *it << endl;
+      if ( dropOfNumberCycleOk( *it ) ) {
+        qDel.bindValue( ":name", *it );
+        qDel.exec();
+      }
     }
+    mRemovedCycles.clear();
   }
 
   // update existing entries and insert new ones
@@ -293,8 +296,26 @@ void NumberCycleDialog::slotOk()
       kdDebug() << "Checking existing number cycle " << cycleName << " for update" << endl;
       // there is an entry
       if ( q.value( 2 ).toInt() != cycle.counter() ) {
-        updateField( q.value( 0 ).toInt(),
-                     "lastIdentNumber", QString::number( cycle.counter() ) );
+        bool doUpdate = true;
+        if ( q.value( 2 ).toInt() > cycle.counter() ) {
+          if ( q.value( 3 ).toString() == cycle.getTemplate() ) {
+            // The number has become smaller but the the template remains the same.
+            // That has high potential to end up with doublicate doc numbers.
+            if( KMessageBox::questionYesNo( this,
+                                            i18n( "The new counter is lower than the old one. "
+                                                  "That has potential to create doublicate document numbers. Do you really want to decrease it?" ),
+                                            i18n("Dangerous Counter Change"),
+                                            KStdGuiItem::yes(), KStdGuiItem::no() )
+                  != KMessageBox::Yes )
+            {
+              doUpdate = false;
+            }
+          }
+        }
+        if ( doUpdate ) {
+          updateField( q.value( 0 ).toInt(),
+                       "lastIdentNumber", QString::number( cycle.counter() ) );
+        }
       }
       if ( q.value( 3 ).toString() != cycle.getTemplate() ) {
         updateField( q.value( 0 ).toInt(), "identTemplate", cycle.getTemplate() );
