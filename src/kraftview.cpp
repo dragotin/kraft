@@ -598,8 +598,15 @@ void KraftView::setupFooter()
       }
     }
   }
-  if ( equality ) {
-    m_footerEdit->mTaxCombo->setCurrentItem( tt-1 );
+  if ( tt == -1 ) {
+    // means that there is no item yet, the default tax type needs to be used.
+    m_footerEdit->mTaxCombo->setCurrentItem( KraftSettings::self()->defaultTaxType() );
+  } else {
+    if ( equality ) {
+      m_footerEdit->mTaxCombo->setCurrentItem( tt-1 );
+    } else {
+      kdError() << "Problem: Not all Tax-Levels are the same! (Fixed later with tax on item base)" << endl;
+    }
   }
 
   connect( m_footerEdit->mTaxCombo, SIGNAL( activated( int ) ),

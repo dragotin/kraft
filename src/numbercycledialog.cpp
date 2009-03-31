@@ -65,10 +65,18 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
   mBaseWidget->mCounterEdit->setLineStep( 1 );
 
   const QString tip = i18n( "The template may contain the following tags:"
-                            "<ul><li>%y - the year of the documents date.</li>"
-                            "<li>%w - the week number of the documents date</li>"
-                            "<li>%d - the day number of the documents date</li>"
-                            "<li>%m - the month number of the documents date</li>"
+                            "<ul><li>%y or %yyyy - the year of the documents date.</li>"
+                            "<li>%yy - the year of the document (two digits).</li>"
+
+                            "<li>%w - the week number of the documents date.</li>"
+                            "<li>%ww - the week number of the documents date with leading zero.</li>"
+
+                            "<li>%d - the day number of the documents date.</li>"
+                            "<li>%dd - the day number of the documents date with leading zero.</li>"
+
+                            "<li>%m or %M - the month number of the documents date.</li>"
+                            "<li>%MM - the month number with leading zero.</li>"
+
                             "<li>%c - the customer id from kaddressbook</li>"
                             "<li>%i - the unique counter</li>"
                             "<li>%type - the localised doc type (offer, invoice etc.)</li>"

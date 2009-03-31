@@ -318,17 +318,46 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
   if ( doc ) d = doc->date();
 
   KraftDB::StringMap m;
-  int dummy;
 
-  m[ "%y" ] = QString::number( d.year() );
-  m[ "%w" ] = QString::number( d.weekNumber( &dummy ) );
-  m[ "%d" ] = QString::number( d.day()  );
+  m[ "%yyyy" ] = d.toString( "yyyy" );
+  m[ "%yy" ] = d.toString( "yy" );
+  m[ "%y" ] = d.toString( "yyyy" );
+
+  QString h;
+  h.sprintf( "%02d", d.weekNumber( ) );
+  m[ "%ww" ] = h;
+  m[ "%w" ] = QString::number( d.weekNumber( ) );
+
+  m[ "%dd" ] = d.toString( "dd" );
+  m[ "%d" ] = d.toString( "d" );
+
   m[ "%m" ] = QString::number( d.month() );
+
+  m[ "%MM" ] = d.toString( "MM" );
+  m[ "%M" ] = d.toString( "M" );
+
+  int i = id;
   if ( id == -1 ) { // hot mode: The database id is incremented by nextIdentId()
-    m[ "%i" ] = QString::number( nextIdentId() );
-  } else {
-    m[ "%i" ] = QString::number( id );
+    i = nextIdentId();
   }
+
+  h.sprintf( "%06d", i );
+  m[ "%iiiiii" ] = h;
+
+  h.sprintf( "%05d", i );
+  m[ "%iiiii" ] = h;
+
+  h.sprintf( "%04d", i );
+  m[ "%iiii" ] = h;
+
+  h.sprintf( "%03d", i );
+  m[ "%iii" ] = h;
+
+  h.sprintf( "%02d", i );
+  m[ "%ii" ] = h;
+
+  m[ "%i" ] = QString::number( i );
+
   if ( doc ) {
     m[ "%c" ] = doc->addressUid();
     m[ "%type" ] = doc->docType();

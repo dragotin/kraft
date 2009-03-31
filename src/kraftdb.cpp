@@ -162,12 +162,24 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
 QString KraftDB::replaceTagsInWord( const QString& w, StringMap replaceMap ) const
 {
   QString re( w );
+
+  QMap<int, QStringList> reMap;
   StringMap::Iterator it;
   for ( it = replaceMap.begin(); it != replaceMap.end(); ++it ) {
-    const QString key = it.key();
-    const QString rep = it.data();
-    re.replace( key, rep );
+    reMap[it.key().length()] << it.key();
   }
+
+  QMap<int, QStringList>::Iterator reIt;
+  for ( reIt = reMap.end(); reIt != reMap.begin(); ) {
+    --reIt;
+    QStringList keys = reIt.data();
+    kdDebug() << "PP: " << keys << endl;
+    for ( QStringList::Iterator dtIt = keys.begin(); dtIt != keys.end(); ++dtIt ) {
+      QString repKey = *dtIt;
+      re.replace( repKey, replaceMap[repKey] );
+    }
+  }
+
   kdDebug() << "Adding to wordlist <" << re << ">" << endl;
   return re;
 }

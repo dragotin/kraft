@@ -273,6 +273,7 @@ void PrefsDialog::writeConfig()
     KraftSettings::setShowDocumentLocale( mCbDocLocale->isChecked() );
     KraftSettings::setDoctype( mCbDocTypes->currentText() );
     KraftSettings::setDefaultTaxType( mCbDefaultTaxType->currentItem() );
+
     KraftSettings::writeConfig();
 }
 
