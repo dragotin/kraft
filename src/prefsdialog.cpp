@@ -30,12 +30,17 @@
 #include <qlistbox.h>
 #include <qsqlquery.h>
 #include <qspinbox.h>
+#include <qsqlcursor.h>
+#include <qdatatable.h>
 
 #include <kdialog.h>
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kinputdialog.h>
 #include <kmessagebox.h>
+#include <kpushbutton.h>
+#include <kiconloader.h>
+#include <kglobal.h>
 
 #include "prefsdialog.h"
 #include "katalogsettings.h"
@@ -48,6 +53,7 @@
 #include "doctypeedit.h"
 #include <qtooltip.h>
 #include <qlistview.h>
+#include "taxeditdialog.h"
 
 
 // ################################################################################
@@ -152,15 +158,118 @@ void PrefsDialog::taxTab()
                               DesktopIcon( "queue" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
+  vboxLay->setSpacing( spacingHint() );
 
   label = new QLabel(i18n("Tax rates beginning at date:"), topFrame );
   vboxLay->addWidget( label );
 
   mTaxListView = new QListView( topFrame );
-  mTaxListView->addColumn( i18n( "Start Date" ) );
-  mTaxListView->addColumn( i18n( "Reduced Tax Rate" ) );
-  mTaxListView->addColumn( i18n( "Full Tax Rate" ) );
   vboxLay->addWidget( mTaxListView );
+  mTaxListView->addColumn( i18n( "Start Date" ) );
+  mTaxListView->addColumn( i18n( "Reduced Tax [%]" ) );
+  mTaxListView->setColumnAlignment( 1, Qt::AlignRight );
+  mTaxListView->addColumn( i18n( "Full Tax [%]" ) );
+  mTaxListView->setColumnAlignment( 2, Qt::AlignRight );
+
+  connect( mTaxListView, SIGNAL( selectionChanged() ),
+           SLOT( slotTaxSelected() ) );
+
+  QHBoxLayout *butLay = new QHBoxLayout( topFrame );
+  butLay->setSpacing( KDialogBase::spacingHint() );
+  butLay->addStretch( 1 );
+  KPushButton *but = new KPushButton( BarIconSet( "filenew" ),  i18n( "add" ), topFrame );
+  connect( but, SIGNAL( clicked() ), SLOT( slotAddTax() ) );
+  butLay->addWidget( but );
+
+#if 0
+  but = new KPushButton( BarIconSet( "edit" ), i18n( "edit" ), topFrame );
+  connect( but, SIGNAL( clicked() ), SLOT( slotEditTax() ) );
+  butLay->addWidget( but );
+#endif
+
+  mDelTax = new KPushButton( BarIconSet( "editdelete" ), i18n( "delete" ), topFrame );
+  connect( mDelTax, SIGNAL( clicked() ), SLOT( slotDeleteTax() ) );
+  butLay->addWidget( mDelTax );
+  mDelTax->setEnabled( false );
+
+  vboxLay->addLayout( butLay );
+  buildTaxList();
+}
+
+void PrefsDialog::buildTaxList()
+{
+  QSqlQuery q( "SELECT * FROM taxes ORDER BY startDate" );
+  mTaxListView->clear();
+
+  TaxRecord::List taxes;
+
+  while ( q.next() ) {
+    QDate d = q.value( 3 ).toDate();
+    double fullTax = q.value( 1 ).toDouble();
+    double redTax = q.value( 2 ).toDouble();
+
+    QListViewItem *newItem = new QListViewItem( mTaxListView,
+                                                KGlobal().locale()->formatDate( d, true ),
+                                                KGlobal().locale()->formatNumber(
+                                                  QString::number( redTax ), true, 1 ),
+                                                KGlobal().locale()->formatNumber(
+                                                  QString::number( fullTax ), true, 1 ) );
+    ( void )newItem;
+  }
+}
+
+void PrefsDialog::slotAddTax()
+{
+  TaxEditDialog ted( this );
+
+  if ( ted.exec() == QDialog::Accepted ) {
+    TaxRecord newTax = ted.newTaxRecord();
+
+    QListViewItem *item = mTaxListView->firstChild();
+    bool found = false;
+    while ( item && !found ) {
+      bool ok;
+      QDate date = KGlobal().locale()->readDate( item->text( 0 ), &ok );
+      if ( date == newTax.date ) {
+        item->setText( 1, KGlobal().locale()->formatNumber( newTax.fullTax, 1 ) );
+        item->setText( 2, KGlobal().locale()->formatNumber( newTax.reducedTax, 1 ) );
+        found = true;
+      }
+      item = item->nextSibling();
+    }
+
+    if ( !found ) {
+      QListViewItem *newItem = new QListViewItem( mTaxListView,
+                                                  KGlobal().locale()->formatDate( newTax.date, true ),
+                                                  KGlobal().locale()->formatNumber(
+                                                    QString::number( newTax.reducedTax ), true, 1 ),
+                                                  KGlobal().locale()->formatNumber(
+                                                    QString::number( newTax.fullTax ), true, 1 ) );
+      ( void )newItem;
+
+    }
+  }
+}
+
+void PrefsDialog::slotEditTax()
+{
+
+}
+
+void PrefsDialog::slotDeleteTax()
+{
+  if ( mTaxListView->currentItem() )
+    delete mTaxListView->currentItem();
+}
+
+void PrefsDialog::slotTaxSelected()
+{
+  bool state = false;
+  if ( mTaxListView->currentItem() ) {
+    state = true;
+  }
+
+  mDelTax->setEnabled( state );
 }
 
 void PrefsDialog::docTab()
@@ -277,6 +386,48 @@ void PrefsDialog::writeConfig()
     KraftSettings::writeConfig();
 }
 
+void PrefsDialog::writeTaxes()
+{
+  // First, multiply all fullTaxes with -1
+  QSqlQuery q;
+  q.prepare( "UPDATE taxes SET fullTax=(-1.0*fullTax)" );
+  q.exec();
+
+  // Go through all entries in the listview and update or insert
+  QSqlQuery qUpdate;
+  qUpdate.prepare( "UPDATE taxes SET fullTax=:fullTax, reducedTax=:redTax WHERE startDate=:date" );
+  QSqlQuery qInsert;
+  qInsert.prepare( "INSERT INTO taxes (fullTax, reducedTax, startDate) VALUES (:fullTax, :redTax, :date)" );
+
+  QListViewItem *item = mTaxListView->firstChild();
+  while ( item ) {
+    bool ok;
+    QDate date     = KGlobal().locale()->readDate( item->text( 0 ), &ok );
+    double fullTax = KGlobal().locale()->readNumber( item->text( 1 ), &ok );
+    double redTax  = KGlobal().locale()->readNumber( item->text( 2 ), &ok );
+
+    qUpdate.bindValue( ":fullTax", fullTax );
+    qUpdate.bindValue( ":redTax", redTax );
+    qUpdate.bindValue( ":date", date );
+
+    qUpdate.exec();
+    if ( ! qUpdate.numRowsAffected() ) {
+      qInsert.bindValue( ":fullTax", fullTax );
+      qInsert.bindValue( ":redTax", redTax );
+      qInsert.bindValue( ":date", date );
+      qInsert.exec();
+      if ( !qInsert.numRowsAffected() ) {
+        kdError() << "Could not insert tax records!" << endl;
+      }
+    }
+    item = item->nextSibling();
+  }
+
+  QSqlQuery qDel;
+  qDel.prepare( "DELETE FROM taxes WHERE fullTax < 0" );
+  qDel.exec();
+}
+
 PrefsDialog::~PrefsDialog()
 {
 }
@@ -298,6 +449,7 @@ void PrefsDialog::slotCheckConnect()
 void PrefsDialog::slotOk()
 {
   mDocTypeEdit->saveDocTypes();
+  writeTaxes();
   writeConfig();
   accept();
 }

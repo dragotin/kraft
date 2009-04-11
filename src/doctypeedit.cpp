@@ -30,6 +30,8 @@
 #include <qlistbox.h>
 #include <qsqlquery.h>
 #include <qspinbox.h>
+#include <qdatatable.h>
+#include <qsqlcursor.h>
 
 #include<kdialog.h>
 #include<klocale.h>

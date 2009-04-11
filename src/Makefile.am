@@ -46,7 +46,8 @@ kraft_SOURCES = templkatalog.cpp docposition.cpp matkatalog.cpp zeitcalcpart.cpp
 	addresstemplateprovider.cpp texttemplate.cpp doclocaledialog.cpp extendedcombo.cpp \
 	tagman.cpp positiontagdialog.cpp tagtemplatesdialog.cpp kraftview_ro.cpp importfilter.cpp \
 	importitemdialog.cpp importtodocbase.ui doctypeeditbase.ui \
-	doctypeedit.cpp numbercycleseditbase.ui  numbercycledialog.cpp
+	doctypeedit.cpp numbercycleseditbase.ui  numbercycledialog.cpp \
+	taxeditbase.ui taxeditdialog.cpp
 
 AM_CFLAGS = -Wno-deprecated
 

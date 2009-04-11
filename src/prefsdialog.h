@@ -24,6 +24,7 @@
 
 #include "doctypeedit.h"
 #include "doctype.h"
+#include "taxeditdialog.h"
 
 class QLineEdit;
 class QLabel;
@@ -32,6 +33,8 @@ class QPushButton;
 class QComboBox;
 class QCheckBox;
 class QListView;
+class QDataTable;
+class QSqlCursor;
 
 // ################################################################################
 
@@ -53,12 +56,19 @@ protected slots:
   void slotOk();
   void slotTextChanged( const QString& );
   void slotCheckConnect();
+  
+  void slotAddTax();
+  void slotEditTax();
+  void slotDeleteTax();
+  void slotTaxSelected();
 
 private:
   void databaseTab();
   void docTab();
   void doctypeTab();
   void taxTab();
+  void buildTaxList();
+  void writeTaxes();
 
   QLineEdit *m_leHost;
   QLineEdit *m_leUser;
@@ -76,6 +86,8 @@ private:
   DocTypeEdit *mDocTypeEdit;
   
   QListView *mTaxListView;
+  QPushButton *mDelTax;
+
 };
 
 #endif
