@@ -286,7 +286,6 @@ void NumberCycleDialog::slotOk()
         qDel.exec();
       }
     }
-    mRemovedCycles.clear();
   }
 
   // update existing entries and insert new ones

@@ -54,13 +54,14 @@ protected:
 
 protected slots:
   void slotOk();
-  void slotTextChanged( const QString& );
+  void slotDbCredentialsChanged( const QString& );
   void slotCheckConnect();
   
   void slotAddTax();
   void slotEditTax();
   void slotDeleteTax();
   void slotTaxSelected();
+  void slotDocTypeRemoved( const QString& );
 
 private:
   void databaseTab();

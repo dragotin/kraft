@@ -140,8 +140,10 @@ void DocTypeEdit::slotAddDocType()
     kdDebug() << "New Name already exists" << endl;
   } else {
     mTypeListBox->insertItem( newName );
-    DocType newDt( newName );
+    DocType newDt( newName, true );
+
     mOrigDocTypes[newName] = newDt;
+    mChangedDocTypes[newName] = newDt; // Check again!
     mAddedTypes.append( newName );
   }
 }
@@ -217,7 +219,10 @@ void DocTypeEdit::slotRemoveDocType()
     }
     mRemovedTypes.append( toRemove );
   }
+
   mTypeListBox->removeItem( mTypeListBox->currentItem() );
+
+  emit removedType( currName );
 }
 
 void DocTypeEdit::slotDocTypeSelected( const QString& newValue )

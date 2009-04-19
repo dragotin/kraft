@@ -27,11 +27,13 @@
 #include <kdatewidget.h>
 #include <qpushbutton.h>
 #include <qsizepolicy.h>
+#include <qgrid.h>
 
 #include "newdocassistant.h"
 #include "addressselection.h"
+#include "defaultprovider.h"
 #include "doctype.h"
-#include <qgrid.h>
+
 
 CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   :QWidget( parent )
@@ -98,6 +100,7 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   l->setBuddy( mTypeCombo );
 
   mTypeCombo->insertStringList( DocType::allLocalised() );
+  mTypeCombo->setCurrentText( DefaultProvider::self()->docType() );
 
   QLabel *l2 = new QLabel( i18n( "Document Date: " ), grid );
   ( void ) l2;

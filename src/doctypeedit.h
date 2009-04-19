@@ -62,12 +62,20 @@ protected slots:
   void slotWatermarkUrlChanged( const QString& );
   void slotTemplateUrlChanged( const QString& );
 
+signals:
+  /**
+   * emitted for every doctype which is deleted 
+   */
+  void removedType( const QString& );
+
 private:
   DocType currentDocType();
 
   DocType mOrigDocType;
 
   QStringList allNumberCycles();
+  QStringList removedTypes() { return mRemovedTypes; }
+
   void removeTypeFromDb( const QString& );
   void renameTypeInDb( const QString&, const QString& );
 

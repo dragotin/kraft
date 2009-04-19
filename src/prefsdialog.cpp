@@ -121,23 +121,23 @@ void PrefsDialog::databaseTab()
 
   m_leHost = new QLineEdit( topFrame );
   connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotTextChanged( const QString& ) ) );
+           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
   topLayout->addWidget(m_leHost, 0,1);
 
   m_leName = new QLineEdit( topFrame );
   connect( m_leName, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotTextChanged( const QString& ) ) );
+           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
   topLayout->addWidget(m_leName, 1,1);
 
   m_leUser = new QLineEdit( topFrame );
   connect( m_leUser, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotTextChanged( const QString& ) ) );
+           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
   topLayout->addWidget(m_leUser, 2,1);
 
   m_lePasswd = new QLineEdit( topFrame );
   m_lePasswd->setEchoMode(QLineEdit::Password);
   connect( m_lePasswd, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotTextChanged( const QString& ) ) );
+           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
   topLayout->addWidget(m_lePasswd, 3,1);
 
   m_statusLabel = new QLabel( topFrame );
@@ -342,10 +342,33 @@ void PrefsDialog::doctypeTab()
   mDocTypeEdit->mCentralSplit->setMargin( 0 );
   vboxLay->addWidget( mDocTypeEdit );
 
+  connect( mDocTypeEdit, SIGNAL( removedType( const QString& ) ),
+           SLOT( slotDocTypeRemoved( const QString& ) ) );
+
 }
 
+void PrefsDialog::slotDocTypeRemoved( const QString& type )
+{
+  // check if the default document type is still there
+  QString currDefault = mCbDocTypes->currentText();
 
-void PrefsDialog::slotTextChanged( const QString& )
+  if ( currDefault == type ) {
+    KMessageBox::information ( this,  i18n( "The old default doc type for new documents was just deleted."
+                                            "Please check the setting in the Document Defaults in the "
+                                            "Kraft preferences Dialog." ),
+                               i18n( "Document Default Change" ),
+                               QString::fromLatin1( "DefaultDocTypeDeleted" ) );
+  }
+
+  for ( int i=0; i < mCbDocTypes->count(); i++ ) {
+    if ( mCbDocTypes->text( i ) == type ) {
+      mCbDocTypes->removeItem( i );
+      continue;
+    }
+  }
+}
+
+void PrefsDialog::slotDbCredentialsChanged( const QString& )
 {
   bool en = false;
   if ( !m_leName->text().isEmpty() ) {

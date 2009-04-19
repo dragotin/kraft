@@ -46,10 +46,10 @@ DocType::DocType()
   init();
 }
 
-DocType::DocType( const QString& name )
+DocType::DocType( const QString& name, bool dirty )
   : mAttributes( QString::fromLatin1( "DocType" ) ),
     mName( name ),
-    mDirty( false )
+    mDirty( dirty )
 {
   init();
   if ( mNameMap.contains( name ) ) {

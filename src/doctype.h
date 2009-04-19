@@ -40,7 +40,7 @@ class DocType
   /** 
    * create a doctype from its localised or tech name 
    */
-  DocType( const QString& );
+  DocType( const QString&, bool dirty = false );
 
   static QStringList all();
   static QStringList allLocalised();
