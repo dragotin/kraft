@@ -170,11 +170,30 @@ void KraftViewRO::setup( DocGuardedPtr doc )
   tmpl.setValue( DOC_RO_TAG( "TAXLABEL" ), i18n( "VAT" ) );
   tmpl.setValue( DOC_RO_TAG( "REDUCED_TAXLABEL" ), i18n( "Reduced TAX" ) );
   tmpl.setValue( DOC_RO_TAG( "NETTOSUM" ), locale->formatMoney( doc->nettoSum().toDouble() ) );
-  tmpl.setValue( DOC_RO_TAG( "BRUTTOSUM" ), locale->formatMoney( doc->nettoSum().toDouble() ) );
+  tmpl.setValue( DOC_RO_TAG( "BRUTTOSUM" ), locale->formatMoney( doc->bruttoSum().toDouble() ) );
+
+  double redTax = DocumentMan::self()->reducedTax( doc->date() );
+  double fullTax = DocumentMan::self()->tax( doc->date() );
+  QString h;
+  if ( positions.reducedTaxSum( redTax ).toLong() > 0 ) {
+    tmpl.createDictionary( "SECTION_REDUCED_TAX"  );
+    tmpl.setValue( "SECTION_REDUCED_TAX", DOC_RO_TAG( "REDUCED_TAX_SUM" ),
+                   positions.reducedTaxSum( redTax ).toString( positions.locale() ) );
+    h.setNum( redTax, 'f', 1 );
+    tmpl.setValue( "SECTION_REDUCED_TAX", DOC_RO_TAG( "REDUCED_TAX" ), h );
+    tmpl.setValue( "SECTION_REDUCED_TAX", DOC_RO_TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
+
+  }
+  if ( positions.fullTaxSum( fullTax ).toLong() > 0 ) {
+    tmpl.createDictionary( "SECTION_FULL_TAX" );
+    tmpl.setValue( "SECTION_FULL_TAX", DOC_RO_TAG( "FULL_TAX_SUM" ),
+                   positions.fullTaxSum( fullTax ).toString( positions.locale() ) );
+    h.setNum( fullTax, 'f', 1 );
+    tmpl.setValue( "SECTION_FULL_TAX", DOC_RO_TAG( "FULL_TAX" ), h );
+    tmpl.setValue( "SECTION_FULL_TAX", DOC_RO_TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
+  }
+
   tmpl.setValue( DOC_RO_TAG( "TAXSUM" ), locale->formatMoney( doc->vatSum().toDouble() ) );
-  tmpl.setValue( DOC_RO_TAG( "TAX" ), locale->formatNumber( DocumentMan::self()->tax( doc->date() ) ) );
-  tmpl.setValue( DOC_RO_TAG( "REDUCED_TAX" ),
-                 locale->formatNumber( DocumentMan::self()->reducedTax( doc->date() ) ) );
   setCaption( m_doc->docIdentifier() );
 
   mHtmlView->setTitle( doc->docIdentifier() );

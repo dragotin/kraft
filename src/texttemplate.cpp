@@ -44,6 +44,32 @@ TextTemplate::~TextTemplate()
   delete mStandardDict;
 }
 
+TextTemplate::Dictionary TextTemplate::createSubDictionary( const QString& parent, const QString& name )
+{
+  Dictionary ttd;
+
+  if ( mDictionaries.contains( parent ) ) {
+    ttd.mDict = mDictionaries[parent]->AddSectionDictionary( name.ascii() );
+    ttd.mParent = parent;
+    ttd.mName = name;
+    mDictionaries[name] = ttd.mDict;
+  }
+  return ttd;
+}
+
+TextTemplate::Dictionary TextTemplate::createSubDictionary( Dictionary parentTtd, const QString& name )
+{
+  Dictionary ttd;
+
+  if ( parentTtd.mDict ) {
+    ttd.mDict = ( parentTtd.mDict )->AddSectionDictionary( name.ascii() );
+    ttd.mParent = parentTtd.mName;
+    ttd.mName = name;
+    // mDictionaries[name] = ttd.mDict;
+  }
+  return ttd;
+}
+
 void TextTemplate::createDictionary( const QString& dictName )
 {
   if ( mStandardDict ) {
@@ -52,16 +78,18 @@ void TextTemplate::createDictionary( const QString& dictName )
   }
 }
 
-
 void TextTemplate::setValue( const QString& dictName, const QString& key, const QString& val )
 {
-  TemplateDictionary *dict = mDictionaries[dictName];
-  if ( ! dict ) {
-    if ( mStandardDict ) {
-      dict = mStandardDict->AddSectionDictionary( dictName.ascii() );
-      mStandardDict->ShowSection( dictName.ascii() );
-    }
+  TemplateDictionary *dict = 0;
+
+  if ( mDictionaries.contains( dictName ) ) {
+    dict = mDictionaries[dictName];
+  } else {
+    dict = mStandardDict->AddSectionDictionary( dictName.ascii() );
+    mDictionaries[dictName] = dict;
+    mStandardDict->ShowSection( dictName.ascii() );
   }
+
   if ( dict )
     dict->SetValue( key.ascii(), std::string( val.utf8() ) );
 }
@@ -70,6 +98,13 @@ void TextTemplate::setValue( const QString& key, const QString& val )
 {
   if ( mStandardDict ) {
     mStandardDict->SetValue( key.ascii(), std::string( val.utf8() ) );
+  }
+}
+
+void TextTemplate::setValue( Dictionary ttd, const QString& key, const QString& val )
+{
+  if ( ttd.mDict ) {
+    ( ttd.mDict )->SetValue( key.ascii(), std::string( val.utf8() ) );
   }
 }
 

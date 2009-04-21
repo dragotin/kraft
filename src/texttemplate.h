@@ -25,10 +25,18 @@
 using google::Template;
 using google::TemplateDictionary;
 
+
 class TextTemplate
 {
 
 public:
+  struct Dictionary
+  {
+    QString mParent;
+    QString mName;
+    TemplateDictionary *mDict;
+  };
+
   TextTemplate();
   /**
    * constructs a text template and loads the template source file
@@ -66,8 +74,23 @@ public:
    * the value
    */
   void setValue( const QString&, const QString&, const QString& );
+  void setValue( Dictionary, const QString& , const QString& );
 
   void createDictionary( const QString& );
+
+  /**
+   * creates a sub dictionary to a given dictionary. 
+   * Parameter 1 is the parent dict, Param 2 the sub dictionary name.
+   */
+  Dictionary createSubDictionary( const QString& , const QString& );
+
+  /**
+   * creates a dictionary with the name given in parameter two nested 
+   * in the parent dictionary given in the first parameter.
+   *
+   * The dictionary struck is given back to use with setValue.
+   */
+  Dictionary createSubDictionary( Dictionary, const QString& );
   /**
    * get the expanded output 
    */

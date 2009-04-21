@@ -27,9 +27,16 @@
 <td align="right"><b>{{PRICE}}</b></td>
 </tr>
 {{/POSITIONS}}
+
+
 <tr><td colspan="4" align="right">____________________________</td></tr>
 <tr><td colspan="4" align="right">Netto Sum: {{NETTOSUM}}</td></tr>
-<tr><td colspan="4" align="right">plus {{VAT}}% VAT: {{VATSUM}}</td></tr>
+{{#SECTION_REDUCED_TAX}}
+<tr><td colspan="4" align="right">plus {{REDUCED_TAX}}% {{REDUCED_TAX_LABEL}}: {{REDUCED_TAX_SUM}}</td></tr>
+{{/SECTION_REDUCED_TAX}}
+{{#SECTION_FULL_TAX}}
+<tr><td colspan="4" align="right">plus {{FULL_TAX}}% {{FULL_TAX_LABEL}}: {{FULL_TAX_SUM}}</td></tr>
+{{/SECTION_FULL_TAX}}
 <tr><td colspan="4" align="right"><b>Brutto Sum: {{BRUTTOSUM}}</b></td></tr>
 </table>
 <p>

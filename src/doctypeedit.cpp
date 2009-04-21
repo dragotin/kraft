@@ -380,6 +380,7 @@ void DocTypeEdit::saveDocTypes()
       removeTypeFromDb( *it );
       mOrigDocTypes.remove( *it );
       mChangedDocTypes.remove( *it );
+      emit removedType( *it );
     }
   }
 
