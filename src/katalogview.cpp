@@ -291,15 +291,17 @@ void KatalogView::slListviewExecuted( QListViewItem *qItem )
   KListViewItem *item = static_cast<KListViewItem*>(qItem);
 
   bool itemEdit = true;
+  bool itemNew = true;
 
   if( listview->isRoot(item) ) {
     // we have the root item, not editable
     itemEdit = false;
+    itemNew = false;
   } else if( listview->isChapter(item) ) {
     itemEdit = false;
   }
   m_acEditItem->setEnabled(itemEdit);
-
+  m_acNewItem->setEnabled( itemNew );
 }
 
 void KatalogView::slExport()
