@@ -31,7 +31,7 @@ usage() {
 # check the infile exists
 checkInfile() {
   if [ ! -e $1 ]; then
-    echo "Trml file \"$1\" does not exist!"
+    echo "Trml file \"$1\" does not exist!" >> /dev/stderr
     usage
     exit 1;
   fi
@@ -40,12 +40,12 @@ checkInfile() {
 # check if watermark exists
 checkWatermarkFile() {
   if [ -z $1 ]; then
-    echo "Watermark file \"$1\" does not exist!"
+    echo "Watermark file \"$1\" does not exist!" >> /dev/stderr
     exit 1;
   fi
 
   if [ ! -e $1 ]; then
-    echo "Watermark file \"$1\" does not exist!"
+    echo "Watermark file \"$1\" does not exist!" >> /dev/stderr
     usage
     exit 1;
   fi
@@ -69,7 +69,6 @@ infile=$2
 
 case "$type" in
   0)
-     echo "no watermark"
      checkInfile $infile
      # render the document
      trml2pdf $infile > $tmpDir/rendered.pdf
@@ -77,7 +76,6 @@ case "$type" in
      pdftk $tmpDir/rendered.pdf cat output -
      ;;
   1) 
-     echo "watermark on first page"
      watermark=$3
      checkInfile $infile
      checkWatermarkFile $watermark
@@ -97,7 +95,6 @@ case "$type" in
      fi
      ;;
   2)
-     echo "watermark on all pages"
      watermark=$3
      checkInfile $infile
      checkWatermarkFile $watermark
