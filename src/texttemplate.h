@@ -102,7 +102,6 @@ private:
 
   bool openTemplate();
   
-  Template *mTemplate;
   TemplateDictionary *mStandardDict;
   QMap<QString, TemplateDictionary*> mDictionaries;
 };

@@ -40,7 +40,6 @@ TextTemplate::TextTemplate( const QString& name )
 
 TextTemplate::~TextTemplate()
 {
-  // delete mTemplate;
   delete mStandardDict;
 }
 
@@ -135,12 +134,16 @@ bool TextTemplate::openTemplate()
   if ( findFile.isEmpty() || ! QFile::exists( findFile ) ) {
     mErrorString = i18n( "Could not find template file" + findFile );
     return false;
+  } else {
+    mFileName = findFile;
   }
 
   kdDebug() << "Loading this template source file: " << findFile << endl;
-  mTemplate = Template::GetTemplate( findFile, google::DO_NOT_STRIP );
 
-  if ( !mTemplate ) {
+  Template *tmpl = Template::GetTemplate( findFile, google::DO_NOT_STRIP );
+  tmpl->ReloadIfChanged();
+
+  if ( !tmpl || tmpl->state() != google::TS_READY ) {
     mErrorString = i18n( "Failed to open template source" );
     return false;
   }
@@ -160,11 +163,12 @@ QString TextTemplate::expand() const
 {
   std::string output;
 
-  if ( mStandardDict ) {
-    mStandardDict->Dump();
-  }
-  if ( mTemplate ) {
-    bool errorFree = mTemplate->Expand(&output, mStandardDict );
+  // if ( mStandardDict ) {
+  //   mStandardDict->Dump();
+  // }
+  Template *textTemplate = Template::GetTemplate( mFileName, google::DO_NOT_STRIP );
+  if ( textTemplate ) {
+    bool errorFree = textTemplate->Expand(&output, mStandardDict );
 
     if ( errorFree )
       return QString::fromUtf8( output.c_str() );
