@@ -163,7 +163,15 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     tmpl.setValue( "POSITIONS", "TEXT", dp->text() );
     tmpl.setValue( "POSITIONS", "AMOUNT", locale->formatNumber( dp->amount() ) );
     tmpl.setValue( "POSITIONS", "UNIT", dp->unit().einheit( dp->amount() ) );
-    tmpl.setValue( "POSITIONS", "SINGLE_PRICE", locale->formatMoney( dp->unitPrice().toDouble() ) );
+    double singlePrice = dp->unitPrice().toDouble();
+
+    tmpl.setValue( "POSITIONS", "SINGLE_PRICE", locale->formatMoney( singlePrice ) );
+    QString style( "positive" );
+    if ( singlePrice < 0 ) {
+      style = "negative";
+    }
+    tmpl.setValue( "POSITIONS", "PRICE_STYLE", style );
+
     tmpl.setValue( "POSITIONS", "PRICE", locale->formatMoney( dp->overallPrice().toDouble() ) );
   }
 

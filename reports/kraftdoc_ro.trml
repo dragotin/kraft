@@ -1,3 +1,6 @@
+<!-- Check file docoverview_ro.css for stylesheet definition. It is added
+     to the html output automagically.
+  -->
 <body>
 <h2>{{HEADLINE}}</h2>
 
@@ -23,8 +26,8 @@
 <tr>
 <td></td>
 <td>{{AMOUNT}} {{UNIT}}</td>
-<td align="right">je {{SINGLE_PRICE}}</td>
-<td align="right"><b>{{PRICE}}</b></td>
+<td align="right"><span class="{{PRICE_STYLE}}">je {{SINGLE_PRICE}}</span></td>
+<td align="right"><span class="{{PRICE_STYLE}}"{{PRICE}}</span></td>
 </tr>
 {{/POSITIONS}}
 
@@ -32,10 +35,10 @@
 <tr><td colspan="4" align="right">____________________________</td></tr>
 <tr><td colspan="4" align="right">Netto Sum: {{NETTOSUM}}</td></tr>
 {{#SECTION_REDUCED_TAX}}
-<tr><td colspan="4" align="right">plus {{REDUCED_TAX}}% {{REDUCED_TAX_LABEL}}: {{REDUCED_TAX_SUM}}</td></tr>
+<tr><td colspan="4" align="right">+{{REDUCED_TAX}}% {{REDUCED_TAX_LABEL}}: {{REDUCED_TAX_SUM}}</td></tr>
 {{/SECTION_REDUCED_TAX}}
 {{#SECTION_FULL_TAX}}
-<tr><td colspan="4" align="right">plus {{FULL_TAX}}% {{FULL_TAX_LABEL}}: {{FULL_TAX_SUM}}</td></tr>
+<tr><td colspan="4" align="right">+{{FULL_TAX}}% {{FULL_TAX_LABEL}}: {{FULL_TAX_SUM}}</td></tr>
 {{/SECTION_FULL_TAX}}
 <tr><td colspan="4" align="right"><b>Brutto Sum: {{BRUTTOSUM}}</b></td></tr>
 </table>
