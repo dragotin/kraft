@@ -10,6 +10,10 @@ Changes since version 0.31: #########################################
   a per document type basis
 - Templates: Kraft now supports different templates for each document 
   type. Templates can be configured through the Kraft settings.
+- Project-String: There is a project label at the document. It is 
+  exported to the document template.
+- System-Tab: Display of some interesting setup information
+- Templates for PDF and HTML output are reloaded if modified
 
    => released v. 0.32 (not yet).
 
