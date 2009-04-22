@@ -107,7 +107,7 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
 
 void NumberCycleDialog::loadCycles()
 {
-  QSqlQuery q( "SELECT * FROM numberCycles ORDER BY name" );
+  QSqlQuery q( "SELECT id, name, lastIdentNumber, identTemplate FROM numberCycles ORDER BY name" );
 
   mBaseWidget->mCycleListBox->clear();
 

@@ -250,7 +250,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   // dt.setNumberCycleName( dt.numberCycleName() );
   kdDebug() << "Selected doc type " << newValue << endl;
   mIdent->setText( dt.identTemplate() );
-  int nextNum = dt.nextIdentId( false );
+  int nextNum = dt.nextIdentId( false )-1;
   mCounter->setText( QString::number( nextNum ) );
   mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
   // mHeader->setText( i18n( "Details for %1:" ).arg( dt.name() ) );
@@ -258,7 +258,9 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   mTemplateUrl->setURL( dt.templateFile() );
 
   mWatermarkUrl->setURL( dt.watermarkFile() );
-  mWatermarkCombo->setCurrentItem( dt.mergeIdent().toInt() );
+  int mergeIdent = dt.mergeIdent().toInt();
+  mWatermarkCombo->setCurrentItem( mergeIdent );
+  mWatermarkUrl->setEnabled( mergeIdent > 0 );
 
   mPreviousType = newValue;
 
@@ -278,7 +280,7 @@ void DocTypeEdit::slotEditNumberCycles()
     dt.readIdentTemplate();
     // only the numbercycle has changed - refresh the display
     mIdent->setText( dt.identTemplate() );
-    int nextNum = dt.nextIdentId( false );
+    int nextNum = dt.nextIdentId( false )-1;
     mCounter->setText( QString::number( nextNum ) );
     mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
   }
@@ -350,7 +352,7 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
   kdDebug() << "Changing the cycle name of " << docTypeName << " to " << newCycle << endl;
 
   mIdent->setText( dt.identTemplate() );
-  int nextNum = dt.nextIdentId( false );
+  int nextNum = dt.nextIdentId( false )-1;
   mCounter->setText( QString::number( nextNum ) );
   mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
 }
