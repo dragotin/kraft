@@ -157,9 +157,9 @@ void ImportItemDialog::slotOk()
 }
 
 
-DocPositionList ImportItemDialog::positionList()
+QValueList<DocPosition> ImportItemDialog::positionList()
 {
-  DocPositionList list;
+  QValueList<DocPosition> list;
   QString url = mBaseWidget->mFileRequester->url();
 
   if ( ! url.isEmpty() ) {
@@ -178,10 +178,10 @@ DocPositionList ImportItemDialog::positionList()
     }
 
     if ( tags.size() > 0 ) {
-      DocPositionBase *dpb;
-      for( dpb = list.first(); dpb; dpb = list.next() ) {
+      QValueList<DocPosition>::iterator posIt;
+      for( posIt = list.begin(); posIt != list.end(); ++posIt ) {
         for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-          dpb->setTag( *it );
+          ( *posIt ).setTag( *it );
         }
       }
     }

@@ -979,19 +979,18 @@ void KraftView::slotImportItems()
   dia.setPositionList( list, newpos );
 
   if ( dia.exec() ) {
-    DocPositionList list = dia.positionList();
+    QValueList<DocPosition> list = dia.positionList();
     if ( list.count() > 0 ) {
       kdDebug() << "Importlist amount of entries: " << list.count() << endl;
-      DocPositionBase *dpb =0;
       int cnt = 0;
       int newpos = dia.getPositionCombo()->currentItem();
+      kdDebug() << "Newpos is " << newpos << endl;
 
-      for( dpb = list.first(); dpb; dpb = list.next() ) {
-        DocPosition *dp = static_cast<DocPosition*>( dpb );
-        DocPosition *newDp = new DocPosition();
-        *newDp = *dp;
-        newDp->setTaxType( currentTaxSetting() );
-        PositionViewWidget *widget = createPositionViewWidget( newDp, newpos + cnt++ );
+      QValueList<DocPosition>::iterator posIt;
+      for( posIt = list.begin(); posIt != list.end(); ++posIt ) {
+        DocPosition *dp = new DocPosition( *posIt );
+        dp->setTaxType( currentTaxSetting() );
+        PositionViewWidget *widget = createPositionViewWidget( dp, newpos + cnt++ );
         widget->slotModified();
       }
       refreshPostCard();

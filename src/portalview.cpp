@@ -300,8 +300,8 @@ void PortalView::fillSystemDetails()
   html += "<div><table>";
   html += "<tr><td>" + i18n( "RML to PDF conversion tool:" ) + "</td><td>";
   html += ReportGenerator::self()->findTrml2Pdf() + "</td></tr>";
-  html += "<tr><td>" + i18n( "recode tool for text import:" ) + "</td><td>";
-  html += DefaultProvider::self()->recodeTool() + "</td></tr>";
+  html += "<tr><td>" + i18n( "iconv tool for text import:" ) + "</td><td>";
+  html += DefaultProvider::self()->iconvTool() + "</td></tr>";
 
   html += "</table></div>";
 

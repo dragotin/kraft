@@ -41,7 +41,7 @@ public:
   QString description() { return mDescription; }
 
 protected:
-  bool recode( const QString& );
+  bool recode( const QString&, const QString& );
 
   QString mName;
   QString mDescription;
@@ -65,11 +65,11 @@ public:
 
   bool parseDefinition();
 
-  DocPositionList import( const QString& );
+  QValueList<DocPosition> import( const QString& );
   void debugDefinition();
 
 private:
-  DocPosition* importDocPosition( const QString& );
+  DocPosition importDocPosition( const QString&, bool& );
   QString replaceCOL( const QStringList&, const QString& );
 
   QString mAmount;

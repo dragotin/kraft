@@ -168,9 +168,9 @@ QString DefaultProvider::currencySymbol() const
   return self()->locale()->currencySymbol();
 }
 
-QString DefaultProvider::recodeTool() const
+QString DefaultProvider::iconvTool() const
 {
-  return KStandardDirs::findExe( "recode" );
+  return KStandardDirs::findExe( "iconv" );
 }
 
 DefaultProvider::~DefaultProvider()

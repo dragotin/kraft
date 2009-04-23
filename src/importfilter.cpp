@@ -74,18 +74,20 @@ bool ImportFilter::parse()
   return true;
 }
 
-bool ImportFilter::recode( const QString& file )
+bool ImportFilter::recode( const QString& file, const QString& outfile )
 {
-  QString command;
   if ( mEncoding.isEmpty() ) return true;
 
-  QString cmd = DefaultProvider::self()->recodeTool();
+  QString cmd = DefaultProvider::self()->iconvTool();
 
-  if ( QFile::exists( command ) ) {
-    QString command = QString( "%1 %2..utf-8 %3" ).arg( cmd ).arg( mEncoding ).arg( file );
+  if ( QFile::exists( cmd ) ) {
+    QString command = QString( "%1 -f %2 -t utf-8 -o %3 %4" ).arg( cmd )
+                      .arg( mEncoding ).arg( outfile ).arg( file );
     int result = system( command.latin1() );
     kdDebug() << "Recode finished with exit code " << result << endl;
     return true;
+  } else {
+    kdDebug() << "Recode-tool does not exist!" << endl;
   }
   return false;
 }
@@ -159,33 +161,40 @@ void DocPositionImportFilter::debugDefinition()
   kdDebug() << "Separator: <" << mSeparator << ">" << endl;
 }
 
-DocPositionList DocPositionImportFilter::import( const QString& inFile )
+QValueList<DocPosition> DocPositionImportFilter::import( const QString& inFile )
 {
-  DocPositionList list;
+  QValueList<DocPosition> list;
   bool copied = false;
   QString file( inFile );
 
   // in case we have to recode, the source file needs to be copied.
+  bool ok = true;
   if ( !mEncoding.isEmpty() ) {
     file = inFile+".tmp";
-    KIO::NetAccess::file_copy( inFile, file, -1, true, 0 );
     copied = true;
-    kdDebug() << "Copied import src file to " << file << endl;
+    kdDebug() << "Encoding file to " << file << endl;
+
+    ok = recode( inFile, file );
+    if ( !ok ) {
+      kdDebug() << "Recoding failed!" << endl;
+      mError = i18n( "Could not recode input file!" );
+    }
   }
 
   QFile f( file );
-  bool ok = true;
 
-  if ( f.exists() ) {
-    // Fix the input file encoding.
-    // FIXME: copy into a temp file before recoding
-    ok = recode( file );
+  if ( ! f.exists() ) {
+    kdDebug() << "File " << file << " could not be found!" << endl;
+    mError = i18n( "Unable to open temp file " ) + file;
+    ok = false;
   }
 
   if ( ok ) {
     if ( !f.open( IO_ReadOnly ) ) {
       mError = i18n( "Could not open the import source file!" );
       ok = false;
+    } else {
+      kdDebug() << "Unable to open file in read only mode" << endl;
     }
   }
   if ( ok ) {
@@ -196,13 +205,12 @@ DocPositionList DocPositionImportFilter::import( const QString& inFile )
     while ( !t.atEnd() ) {
       cnt++;
       QString l = t.readLine().stripWhiteSpace();
+      kdDebug() << "Importing line " << l << endl;
       if ( !( l.isEmpty() || l.startsWith( "#" ) ) ) {
-        DocPosition* dp = importDocPosition( l );
-        if ( dp ) {
+        bool ok;
+        DocPosition dp = importDocPosition( l, ok );
+        if ( ok )
           list.append( dp );
-        } else {
-          kdDebug() << "WRN: could not import line " << cnt << endl;
-        }
       }
     }
     f.close();
@@ -214,23 +222,25 @@ DocPositionList DocPositionImportFilter::import( const QString& inFile )
 }
 
 // creates a DocPosition from one line of the imported file
-DocPosition* DocPositionImportFilter::importDocPosition( const QString& l )
+DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& ok )
 {
   QStringList parts = QStringList::split( mSeparator, l, true );
   kdDebug() << "Importing raw line " << l << endl;
 
   QString h;
-  bool ok = true;
+  ok = true;
 
-  DocPosition *p = new DocPosition();
+  DocPosition pos;
 
   // the text (mandatory)
-  p->setText( replaceCOL( parts, mText ) );
+  QString t = replaceCOL( parts, mText );
+
+  pos.setText( t );
   QString unit = replaceCOL( parts, mUnit );
 
   int unitId = UnitManager::getUnitIDSingular( unit );
   if ( unitId > -1 ) {
-    p->setUnit( UnitManager::getUnit( unitId ) );
+    pos.setUnit( UnitManager::getUnit( unitId ) );
   } else {
     kdDebug() << "WRN: Unable to get a valid unit" << endl;
     if ( mStrict ) ok = false;
@@ -241,7 +251,7 @@ DocPosition* DocPositionImportFilter::importDocPosition( const QString& l )
   bool convOk = true;
   double a = h.toDouble( &convOk );
   if ( convOk ) {
-    p->setAmount( a );
+    pos.setAmount( a );
   } else {
     kdDebug() << "WRN: Unable to convert amount to double: " << h << endl;
     if ( mStrict ) ok = false;
@@ -251,7 +261,7 @@ DocPosition* DocPositionImportFilter::importDocPosition( const QString& l )
   h = replaceCOL( parts, mUnitPrice );
   a = h.toDouble( &convOk );
  if ( convOk ) {
-   p->setUnitPrice( Geld( a ) );
+   pos.setUnitPrice( Geld( a ) );
  } else {
     kdDebug() << "WRN: Unable to convert unit price to double: " << h << endl;
     if ( mStrict ) ok = false;
@@ -262,12 +272,11 @@ DocPosition* DocPositionImportFilter::importDocPosition( const QString& l )
 
    for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
      QString t = ( *it ).stripWhiteSpace();
-     p->setTag( t );
+     pos.setTag( t );
    }
  }
 
- if ( !ok ) return 0;
- return p;
+ return pos;
 }
 
 QString DocPositionImportFilter::replaceCOL( const QStringList& cols, const QString& in )

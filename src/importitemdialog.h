@@ -35,9 +35,13 @@ public:
   ~ImportItemDialog();
 
   void setPositionList( DocPositionList, int );
-  DocPositionList positionList();
+  QValueList<DocPosition> positionList();
   
   QComboBox *getPositionCombo();
+
+signals:
+  void positionImported( const DocPosition& );
+
 public slots:
   void slotOk();
 
