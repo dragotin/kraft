@@ -97,7 +97,7 @@
 
      <entry name="DefaultTaxType" type="Int">
         <label>The tax default for new documents.</label>
-        <default>2</default>
+        <default>3</default>
      </entry>
 
      <entry name="AlternativeLabel" type="String">

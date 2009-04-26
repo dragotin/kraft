@@ -190,18 +190,6 @@ QStringList DocPositionBase::tags()
 void DocPositionBase::setTaxType( TaxType tt )
 {
   mTaxType = tt;
-#if 0
-  if ( type == 1 )
-    mTaxType = TaxNone;
-  else if ( type == 2 )
-    mTaxType = TaxReduced;
-  else if ( type == 3 )
-    mTaxType = TaxFull;
-  else {
-    kdDebug() << "Ambigous vat type " << type << endl;
-    mTaxType = TaxInvalid;
-  }
-#endif
 }
 
 int DocPositionBase::taxTypeNumeric()

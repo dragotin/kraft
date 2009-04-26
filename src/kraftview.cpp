@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kraftview.cpp  -
+                 kraftview.cpp  - Interactive document view
                              -------------------
     begin                : Mit Dez 31 19:24:05 CET 2003
     copyright            : (C) 2003 by Klaas Freitag
@@ -507,18 +507,20 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 
 DocPositionBase::TaxType KraftView::currentTaxSetting()
 {
-  int taxKind = m_footerEdit->mTaxCombo->currentItem();
+  // add 1 to the currentItem since that starts with zero.
+  int taxKind = 1+( m_footerEdit->mTaxCombo->currentItem() );
   DocPositionBase::TaxType tt = DocPositionBase::TaxInvalid;
 
-  if ( taxKind == 0 ) { // No Tax at all
+  if ( taxKind == 1 ) { // No Tax at all
     tt = DocPositionBase::TaxNone;
-  } else if ( taxKind == 1 ) { // Reduced tax for all items
+  } else if ( taxKind == 2 ) { // Reduced tax for all items
     tt = DocPositionBase::TaxReduced;
-  } else if ( taxKind == 2 ) { // Full tax for all items
+  } else if ( taxKind == 3 ) { // Full tax for all items
     tt = DocPositionBase::TaxFull;
   } else { // individual level, not yet implementend
     kdError() << "Item individual tax level is not yet implemented." << endl;
   }
+  kdDebug() << "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP " << tt << endl;
   return tt;
 }
 

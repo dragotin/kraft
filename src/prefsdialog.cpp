@@ -231,8 +231,8 @@ void PrefsDialog::slotAddTax()
       bool ok;
       QDate date = KGlobal().locale()->readDate( item->text( 0 ), &ok );
       if ( date == newTax.date ) {
-        item->setText( 1, KGlobal().locale()->formatNumber( newTax.fullTax, 1 ) );
-        item->setText( 2, KGlobal().locale()->formatNumber( newTax.reducedTax, 1 ) );
+        item->setText( 1, KGlobal().locale()->formatNumber( newTax.reducedTax, 1 ) );
+        item->setText( 2, KGlobal().locale()->formatNumber( newTax.fullTax, 1 ) );
         found = true;
       }
       item = item->nextSibling();
@@ -391,7 +391,8 @@ void PrefsDialog::readConfig()
     if ( t.isEmpty() ) t = DefaultProvider::self()->docType();
 
     mCbDocTypes->setCurrentText( t );
-    mCbDefaultTaxType->setCurrentItem( KraftSettings::defaultTaxType() );
+
+    mCbDefaultTaxType->setCurrentItem( KraftSettings::defaultTaxType()-1 );
 }
 
 void PrefsDialog::writeConfig()
@@ -404,7 +405,7 @@ void PrefsDialog::writeConfig()
 
     KraftSettings::setShowDocumentLocale( mCbDocLocale->isChecked() );
     KraftSettings::setDoctype( mCbDocTypes->currentText() );
-    KraftSettings::setDefaultTaxType( mCbDefaultTaxType->currentItem() );
+    KraftSettings::setDefaultTaxType( 1+mCbDefaultTaxType->currentItem() );
 
     KraftSettings::writeConfig();
 }
@@ -426,8 +427,8 @@ void PrefsDialog::writeTaxes()
   while ( item ) {
     bool ok;
     QDate date     = KGlobal().locale()->readDate( item->text( 0 ), &ok );
-    double fullTax = KGlobal().locale()->readNumber( item->text( 1 ), &ok );
-    double redTax  = KGlobal().locale()->readNumber( item->text( 2 ), &ok );
+    double redTax  = KGlobal().locale()->readNumber( item->text( 1 ), &ok );
+    double fullTax = KGlobal().locale()->readNumber( item->text( 2 ), &ok );
 
     qUpdate.bindValue( ":fullTax", fullTax );
     qUpdate.bindValue( ":redTax", redTax );

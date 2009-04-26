@@ -91,6 +91,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
   QString brutto = posList.bruttoPrice( tax, reducedTax ).toHtmlString( posList.locale() );
   QString taxStr = posList.taxSum( tax, reducedTax ).toHtmlString( posList.locale() );
   mPositions += QString( "<tr><td colspan=\"2\" class=\"baseline\"></td></tr>" );
+
   if ( taxType != DocPositionBase::TaxInvalid && taxType != DocPositionBase::TaxNone ) {
     mPositions += QString( "<tr><td>&nbsp;&nbsp;&nbsp;" ) + i18n( "Netto:" )+
                   QString( "</td><td align=\"right\">%1</td></tr>" ).arg( mTotal );
@@ -98,7 +99,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
     QString curTax;
     curTax.setNum( tax, 'f', 1 );
     if ( taxType == DocPositionBase::TaxReduced ) {
-      curTax.setNum( reducedTax, 'f', 2 );
+      curTax.setNum( reducedTax, 'f', 1 );
     }
 
     mPositions += QString( "<tr><td>" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
