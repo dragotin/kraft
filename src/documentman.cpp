@@ -186,6 +186,12 @@ QStringList DocumentMan::openDocumentsList()
   return list;
 }
 
+void DocumentMan::clearTaxCache()
+{
+  mFullTax = -1;
+  mReducedTax = -1;
+}
+
 double DocumentMan::tax( const QDate& date )
 {
   if ( mFullTax < 0 || date != mTaxDate )

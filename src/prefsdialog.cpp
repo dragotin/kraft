@@ -32,6 +32,8 @@
 #include <qspinbox.h>
 #include <qsqlcursor.h>
 #include <qdatatable.h>
+#include <qtooltip.h>
+#include <qlistview.h>
 
 #include <kdialog.h>
 #include <klocale.h>
@@ -51,9 +53,8 @@
 #include "doctype.h"
 #include "doctypeedit.h"
 #include "doctypeedit.h"
-#include <qtooltip.h>
-#include <qlistview.h>
 #include "taxeditdialog.h"
+#include "documentman.h"
 
 
 // ################################################################################
@@ -450,6 +451,8 @@ void PrefsDialog::writeTaxes()
   QSqlQuery qDel;
   qDel.prepare( "DELETE FROM taxes WHERE fullTax < 0" );
   qDel.exec();
+
+  DocumentMan::self()->clearTaxCache();
 }
 
 PrefsDialog::~PrefsDialog()

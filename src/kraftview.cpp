@@ -520,7 +520,6 @@ DocPositionBase::TaxType KraftView::currentTaxSetting()
   } else { // individual level, not yet implementend
     kdError() << "Item individual tax level is not yet implemented." << endl;
   }
-  kdDebug() << "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP " << tt << endl;
   return tt;
 }
 
