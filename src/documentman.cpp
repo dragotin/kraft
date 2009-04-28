@@ -99,6 +99,7 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
 {
   DocDigestsTimelineList retList; // a list of timelined digest objects
 
+  // mColumnList = "docID, ident, docType, docDescription, clientID, lastModified, date, country, language, projectLabel"
   QString qStr = QString( "SELECT %1, MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date asc;" ).arg( mColumnList );
 
   QSqlQuery query( qStr );
@@ -108,8 +109,8 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
   if( query.isActive() ) {
     while( query.next() ) {
       DocDigest dig = digestFromQuery( query );
-      int month = query.value( 9 /* month */ ).toInt();
-      int year = query.value( 10 /* year */ ).toInt();
+      int month = query.value( 10 /* month */ ).toInt();
+      int year = query.value( 11 /* year */ ).toInt();
       // kdDebug() << "Month: " << month << " in Year: " << year << endl;
 
       if ( timeline.month() == 0 ) timeline.setMonth( month );

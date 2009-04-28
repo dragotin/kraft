@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
   {
 
   KStandardDirs stdDirs;
-  splashFile = stdDirs.findResource( "data", "kraft/pics/mucki_en_oS.png" );
+  splashFile = stdDirs.findResource( "data", "kraft/pics/kraftsplash.png" );
   QImage img( splashFile );
 
   QPixmap pixmap;
