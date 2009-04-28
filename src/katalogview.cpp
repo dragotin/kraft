@@ -140,7 +140,7 @@ void KatalogView::initActions()
                             SLOT(slExport()), actionCollection(), "export_catalog");
 
   m_acExport->setStatusText(i18n("Export the whole catalog as XML encoded file"));
-  m_acExport->setEnabled(true);
+  m_acExport->setEnabled(false); // FIXME: Repair XML Export
 
   fileClose = KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
   filePrint = KStdAction::print(this, SLOT(slotFilePrint()), actionCollection());
