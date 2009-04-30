@@ -23,6 +23,7 @@
 #include <kaboutdata.h>
 #include <klocale.h>
 #include <ksplashscreen.h>
+#include <kdebug.h>
 
 #include "version.h"
 #include "portal.h"
@@ -63,41 +64,44 @@ int main(int argc, char *argv[])
 
   KApplication app;
 
-  if (app.isRestored())
-  {
+  if (app.isRestored()) {
     RESTORE(Portal);
-  }
-  else
-  {
+  } else {
+    KStandardDirs stdDirs;
+    splashFile = stdDirs.findResource( "data", "kraft/pics/kraftsplash.png" );
+    KSplashScreen *splash = 0;
 
-  KStandardDirs stdDirs;
-  splashFile = stdDirs.findResource( "data", "kraft/pics/kraftsplash.png" );
-  QImage img( splashFile );
+    if( !splashFile.isEmpty()) {
+      QImage img( splashFile );
 
-  QPixmap pixmap;
-    pixmap.convertFromImage( img );
-    if ( !pixmap.mask() ) {
-      QBitmap bm;
-      if ( img.hasAlphaBuffer() ) {
-        bm = img.createAlphaMask();
+      QPixmap pixmap;
+      pixmap.convertFromImage( img );
+      if ( !pixmap.mask() ) {
+        QBitmap bm;
+        if ( img.hasAlphaBuffer() ) {
+          bm = img.createAlphaMask();
+        } else {
+          bm = img.createHeuristicMask();
+        }
+        pixmap.setMask( bm );
       } else {
-        bm = img.createHeuristicMask();
+        // kdDebug() << "Have a mask already!" << endl;
       }
-      pixmap.setMask( bm );
-    } else {
-      // kdDebug() << "Have a mask already!" << endl;
+
+      splash = new KSplashScreen( pixmap );
+      splash->setMask( *pixmap.mask() );
+      splash->show();
     }
-
-    KSplashScreen *splash = new KSplashScreen( pixmap );
-    splash->setMask( *pixmap.mask() );
-    splash->show();
-
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
     Portal *kraftPortal = new Portal( 0, args );
     kraftPortal->show();
 
-    splash->finish( kraftPortal->mainWidget() );
-    delete splash;
+    if( splash ) {
+      splash->finish( kraftPortal->mainWidget() );
+      delete splash;
+    } else {
+      kdDebug() << "Could not find splash screen" << endl;
+    }
   }
 
   return app.exec();
