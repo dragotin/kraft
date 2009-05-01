@@ -601,7 +601,11 @@ void KraftView::setupFooter()
   }
   if ( tt == -1 ) {
     // means that there is no item yet, the default tax type needs to be used.
-    m_footerEdit->mTaxCombo->setCurrentItem( KraftSettings::self()->defaultTaxType() );
+    int deflt = KraftSettings::self()->defaultTaxType();
+    if ( deflt > 0 ) {
+      deflt -= 1;
+    }
+    m_footerEdit->mTaxCombo->setCurrentItem( deflt );
   } else {
     if ( equality ) {
       m_footerEdit->mTaxCombo->setCurrentItem( tt-1 );
