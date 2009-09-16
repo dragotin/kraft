@@ -21,8 +21,6 @@
 # uncomment for debug messages
 # set -x
 
-tmpDir="/tmp/kraft"
-
 # print the usage
 usage() {
   echo "Usage: $0 {0|1|2} trml-file watermark-pdf-file"
@@ -58,11 +56,8 @@ if [ "$#" -lt 2 ]; then
 fi
 
 # cleanup the resources and create new directory
-if [ -d $tmpDir ]; then
-  rm -rf $tmpDir
-fi
 
-mkdir $tmpDir
+tmpDir=`mktemp -d trml2pdf.XXXXXXXX`
 
 type=$1
 infile=$2
@@ -110,6 +105,8 @@ case "$type" in
      exit 1
      ;;
 esac
+
+rm -rf $tmpDir
 
 exit 0;
 
