@@ -56,7 +56,6 @@ if [ "$#" -lt 2 ]; then
 fi
 
 # cleanup the resources and create new directory
-
 tmpDir=`mktemp -d trml2pdf.XXXXXXXX`
 
 type=$1
@@ -77,13 +76,13 @@ case "$type" in
      # render the document
      trml2pdf $infile > $tmpDir/rendered.pdf
      # burst the document
-     pdftk $tmpDir/rendered.pdf burst
+     pdftk $tmpDir/rendered.pdf burst output $tmpDir/pg_%04d.pdf
      # apply the watermark
-     pdftk pg_0001.pdf background $watermark output $tmpDir/firstback.pdf
+     pdftk $tmpDir/pg_0001.pdf background $watermark output $tmpDir/firstback.pdf
      # remove the tmp file
-     rm pg_0001.pdf
+     rm $tmpDir/pg_0001.pdf
      # merge all together
-     if [ -e pg_0002.pdf ]; then
+     if [ -e $tmpDir/pg_0002.pdf ]; then
        pdftk $tmpDir/firstback.pdf pg_*.pdf cat output -
      else
        pdftk $tmpDir/firstback.pdf cat output -
