@@ -22,7 +22,7 @@
 #include "doctext.h"
 
 class QWidget;
-class QListViewItem;
+class Q3ListViewItem;
 class FooterSelection;
 
 class FooterTemplateProvider : public TemplateProvider

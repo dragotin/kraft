@@ -33,7 +33,7 @@ HeaderTemplateProvider::HeaderTemplateProvider( QWidget *parent )
 
 void HeaderTemplateProvider::slotNewTemplate()
 {
-  kdDebug() << "SlotNewTemplate called!" << endl;
+  kDebug() << "SlotNewTemplate called!" << endl;
 
   TextEditDialog dia( mParent, KraftDoc::Header );
 
@@ -44,7 +44,7 @@ void HeaderTemplateProvider::slotNewTemplate()
   dia.setDocText( dt );
 
   if ( dia.exec() ) {
-    kdDebug() << "Successfully edited texts" << endl;
+    kDebug() << "Successfully edited texts" << endl;
     DocText dt = dia.docText();
     /* save to database */
     dbID newId = DefaultProvider::self()->saveDocumentText( dt );
@@ -56,7 +56,7 @@ void HeaderTemplateProvider::slotNewTemplate()
 
 void HeaderTemplateProvider::slotEditTemplate()
 {
-  kdDebug() << "SlotEditTemplate called!" << endl;
+  kDebug() << "SlotEditTemplate called!" << endl;
 
 
   TextEditDialog dia( mParent, KraftDoc::Header );
@@ -71,7 +71,7 @@ void HeaderTemplateProvider::slotEditTemplate()
   dia.setDocText( dt );
 
   if ( dia.exec() ) {
-    kdDebug() << "Successfully edited texts" << endl;
+    kDebug() << "Successfully edited texts" << endl;
     DocText dt = dia.docText();
 
     /* write back the listview item stored in the input text */
@@ -92,7 +92,7 @@ void HeaderTemplateProvider::slotDeleteTemplate()
 
 void HeaderTemplateProvider::slotTemplateToDocument()
 {
-  kdDebug() << "Moving template to document" << endl;
+  kDebug() << "Moving template to document" << endl;
 
 
   emit headerTextToDocument( currentText() );

@@ -18,9 +18,12 @@
 // include files for Qt
 
 
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqlrecord.h>
 #include <qsqlindex.h>
+//Added by qt3to4:
+#include <QSqlQuery>
+#include <QSqlError>
 
 // include files for KDE
 #include <klocale.h>
@@ -52,8 +55,8 @@
  * | posttext       | text         | YES  |     | NULL              |                |
  * | country        | varchar(32)  | YES  |     | NULL              |                |
  * | language       | varchar(32)  | YES  |     | NULL              |                |
- * | projectLabel   | varchar(255) | YES  |     | NULL              |                |
  * +----------------+--------------+------+-----+-------------------+----------------+
+ * 14 rows in set (0.00 sec)
  *
  */
 
@@ -70,11 +73,11 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     bool result = false;
     if( ! doc ) return result;
 
-    QSqlCursor cur("document");
-    cur.setMode( QSqlCursor::Writable );
+    Q3SqlCursor cur("document");
+    cur.setMode( Q3SqlCursor::Writable );
     QSqlRecord *record = 0;
 
-    kdDebug() << "############### Document Save ################" << endl;
+    kDebug() << "############### Document Save ################" << endl;
 
     if( doc->isNew() ) {
         record = cur.primeInsert();
@@ -83,7 +86,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
       if ( cur.next() ) {
         record = cur.primeUpdate();
       } else {
-        kdError() << "Could not select document record" << endl;
+        kError() << "Could not select document record" << endl;
         return result;
       }
        // The document was already saved.
@@ -92,7 +95,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     fillDocumentBuffer( record, doc );
 
     if( doc->isNew() ) {
-      kdDebug() << "Doc is new, inserting" << endl;
+      kDebug() << "Doc is new, inserting" << endl;
       cur.insert();
 
       dbID id = KraftDB::self()->getLastInsertID();
@@ -102,7 +105,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
       DocType dt( doc->docType() );
       QString ident = dt.generateDocumentIdent( doc );
       doc->setIdent( ident );
-      QSqlCursor cur2( "document" );
+      Q3SqlCursor cur2( "document" );
       cur2.select( QString( "docID=" + id.toString() ) );
       if ( cur2.next() ) {
         QSqlRecord *uprecord = cur2.primeUpdate();
@@ -111,7 +114,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
       }
 
     } else {
-      kdDebug() << "Doc is not new, updating #" << doc->docID().intID() << endl;
+      kDebug() << "Doc is not new, updating #" << doc->docID().intID() << endl;
 
       record->setValue( "docID", doc->docID().toString() );
       cur.update();
@@ -119,16 +122,51 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
     saveDocumentPositions( doc );
 
-    kdDebug() << "Saved document no " << doc->docID().toString() << endl;
+    kDebug() << "Saved document no " << doc->docID().toString() << endl;
 
     return result;
 }
 
+#if 0
+/*
+ * this method requires a database id because that is the only garanteed
+ * unique part.
+ */
+QString DocumentSaverDB::generateDocumentIdent( dbID id, KraftDoc *doc ) const
+{
+  /*
+   * The pattern may contain the following tags:
+   * %y - the year of the documents date.
+   * %w - the week number of the documents date
+   * %d - the day number of the documents date
+   * %m - the month number of the documents date
+   * %c - the customer id from kaddressbook
+   * %i - the uniq identifier from db.
+   * %type - the localised doc type (offer, invoice etc.)
+   */
+  QString pattern = KraftSettings::self()->self()->docIdent();
+
+  QDate d = doc->date();
+  KraftDB::StringMap m;
+  int dummy;
+
+  m[ "%y" ] = QString::number( d.year() );
+  m[ "%w" ] = QString::number( d.weekNumber( &dummy ) );
+  m[ "%d" ] = QString::number( d.day()  );
+  m[ "%m" ] = QString::number( d.month() );
+  m[ "%i" ] = id.toString();
+  m[ "%c" ] = doc->addressUid();
+  m[ "%type" ] = doc->docType();
+
+  QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
+  kDebug() << "Generated document ident: " << re << endl;
+
+  return re;
+}
+#endif
 void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 {
   DocPositionList posList = doc->positions();
-
-  DocPositionBase *dpb = 0;
 
   // invert all pos numbers to avoid a unique violation
   // FIXME: We need non-numeric ids
@@ -141,26 +179,29 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
   int ordNumber = 1;
 
-  for( dpb = posList.first(); dpb; dpb = posList.next() ) {
+  DocPositionListIterator it( posList );
+  while( it.hasNext() ) {
+    DocPositionBase *dpb = it.next();
+
     if( dpb->type() == DocPositionBase::Position ||
         dpb->type() == DocPositionBase::ExtraDiscount ) {
       DocPosition *dp = static_cast<DocPosition*>(dpb);
       QSqlRecord *record = 0;
-      QSqlCursor cur( "docposition" );
+      Q3SqlCursor cur( "docposition" );
       bool doInsert = true;
 
       int posDbID = dp->dbId().toInt();
-      kdDebug() << "Saving Position DB-Id: " << posDbID << endl;
+      kDebug() << "Saving Position DB-Id: " << posDbID << endl;
       if( posDbID > -1 ) {
         const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
-        // kdDebug() << "Selecting with " << selStr << endl;
+        // kDebug() << "Selecting with " << selStr << endl;
         cur.select( selStr );
         if ( cur.next() ) {
           if( ! dp->toDelete() )
             record = cur.primeUpdate();
           doInsert = false;
         } else {
-          kdError() << "ERR: Could not select document position record" << endl;
+          kError() << "ERR: Could not select document position record" << endl;
           return;
         }
       } else {
@@ -169,10 +210,10 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
       }
 
       if( dp->toDelete() ) {
-        kdDebug() << "This one is to delete, do it!" << endl;
+        kDebug() << "This one is to delete, do it!" << endl;
         // FIXME: Delete attributes for this position
         if( doInsert ) {
-          kdWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
+          kWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
         }
         // delete all existing attributes
         dp->attributes().dbDeleteAll( dp->dbId() );
@@ -185,7 +226,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
       }
 
       if( record ) {
-        // kdDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
+        // kDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
         QString typeStr = PosTypePosition;
         double price = 0;
         if ( dp->type() == DocPositionBase::Header ) {
@@ -205,30 +246,29 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         record->setValue( "amount",    dp->amount() );
         record->setValue( "unit",      dp->unit().id() );
         record->setValue( "price",     price );
-        record->setValue( "taxType",   dp->taxTypeNumeric() );
 
         ordNumber++; // FIXME
 
         if( doInsert ) {
-          kdDebug() << "Inserting!" << endl;
+          kDebug() << "Inserting!" << endl;
           cur.insert();
           dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
         } else {
-          kdDebug() << "Updating!" << endl;
+          kDebug() << "Updating!" << endl;
           cur.update();
         }
       } else {
-        kdDebug() << "ERR: No record object found!" << endl;
+        kDebug() << "ERR: No record object found!" << endl;
       }
 
       dp->attributes().save( dp->dbId() );
 
       QSqlError err = cur.lastError();
-      if( err.type() != QSqlError::None ) {
-        kdDebug() << "SQL-ERR: " << err.text() << " in " << cur.name() << endl;
+      if( err.type() != QSqlError::NoError ) {
+        kDebug() << "SQL-ERR: " << err.text() << " in " << cur.name() << endl;
       }
 
-      if ( err.type() == QSqlError::None ) {
+      if ( err.type() == QSqlError::NoError ) {
       }
     }
   }
@@ -236,35 +276,34 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
 void DocumentSaverDB::fillDocumentBuffer( QSqlRecord *buf, KraftDoc *doc )
 {
-  if( buf && doc ) {
-    kdDebug() << "Adressstring: " << doc->address() << endl;
-    buf->setValue( "ident",    doc->ident() );
-    buf->setValue( "docType",  doc->docType() );
-    buf->setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
-    buf->setValue( "clientID", doc->addressUid() );
-    buf->setValue( "clientAddress", doc->address() );
-    buf->setValue( "salut",    doc->salut() );
-    buf->setValue( "goodbye",  doc->goodbye() );
-    buf->setValue( "date",     doc->date() );
-    buf->setValue( "lastModified", "NOW()" );
-    buf->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
-    buf->setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
-    buf->setValue( "country",  doc->country() );
-    buf->setValue( "language", doc->language() );
-    buf->setValue( "projectLabel", doc->projectLabel() );
-  }
+    if( buf && doc ) {
+      kDebug() << "Adressstring: " << doc->address() << endl;
+      buf->setValue( "ident",    doc->ident() );
+      buf->setValue( "docType",  doc->docType() );
+      buf->setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
+      buf->setValue( "clientID", doc->addressUid() );
+      buf->setValue( "clientAddress", doc->address() );
+      buf->setValue( "salut",    doc->salut() );
+      buf->setValue( "goodbye",  doc->goodbye() );
+      buf->setValue( "date",     doc->date() );
+      buf->setValue( "lastModified", "NOW()" );
+      buf->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
+      buf->setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
+      buf->setValue( "country",  doc->country() );
+      buf->setValue( "language", doc->language() );
+    }
 }
 
 void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
 {
-    QSqlCursor cur("document");
-    kdDebug() << "Loading document id " << id << endl;
+    Q3SqlCursor cur("document");
+    kDebug() << "Loading document id " << id << endl;
 
     cur.select( "docID=" + id );
 
     if( cur.next())
     {
-        kdDebug() << "loading document with id " << id << endl;
+        kDebug() << "loading document with id " << id << endl;
         dbID dbid;
         dbid = id;
         doc->setDocID( dbid );
@@ -283,36 +322,32 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setPreText(    KraftDB::self()->mysqlEuroDecode( cur.value( "pretext"  ).toString() ) );
         doc->setPostText(   KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() ) );
         doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( cur.value( "docDescription" ).toString() ) );
-        doc->setProjectLabel( KraftDB::self()->mysqlEuroDecode( cur.value( "projectLabel" ).toString() ) );
     }
 
     loadPositions( id, doc );
 }
 /* docposition:
- * +------------+---------------+------+-----+---------+----------------+
- * | Field      | Type          | Null | Key | Default | Extra          |
- * +------------+---------------+------+-----+---------+----------------+
- * | positionID | int(11)       | NO   | PRI | NULL    | auto_increment |
- * | docID      | int(11)       | NO   | MUL | NULL    |                |
- * | ordNumber  | int(11)       | NO   |     | NULL    |                |
- * | text       | text          | YES  |     | NULL    |                |
- * | postype    | varchar(64)   | YES  |     | NULL    |                |
- * | amount     | decimal(10,2) | YES  |     | NULL    |                |
- * | unit       | int(11)       | YES  |     | NULL    |                |
- * | price      | decimal(10,2) | YES  |     | NULL    |                |
- * | taxType    | int(11)       | YES  |     | 0       |                |
- * +------------+---------------+------+-----+---------+----------------+
- *
- */
+  +------------+--------------+------+-----+---------+----------------+
+  | Field      | Type         | Null | Key | Default | Extra          |
+  +------------+--------------+------+-----+---------+----------------+
+  | positionID | int(11)      |      | PRI | NULL    | auto_increment |
+  | docID      | int(11)      |      | MUL | 0       |                |
+  | ordNumber  | int(11)      |      |     | 0       |                |
+  | text       | mediumtext   | YES  |     | NULL    |                |
+  | amount     | decimal(6,2) | YES  |     | NULL    |                |
+  | unit       | varchar(64)  | YES  |     | NULL    |                |
+  | price      | decimal(6,2) | YES  |     | NULL    |                |
+  +------------+--------------+------+-----+---------+----------------+
+*/
 void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 {
-    QSqlCursor cur("docposition");
+    Q3SqlCursor cur("docposition");
     QSqlIndex posIndex = cur.index( "ordNumber" );
     cur.select( "docID=" + id, posIndex );
 
-    kdDebug() << "* loading document positions for document id " << id << endl;
+    kDebug() << "* loading document positions for document id " << id << endl;
     while( cur.next() ) {
-        kdDebug() << " loading position id " << cur.value( "positionID" ).toInt() << endl;
+        kDebug() << " loading position id " << cur.value( "positionID" ).toInt() << endl;
 
         DocPositionBase::PositionType type = DocPositionBase::Position;
         QString typeStr = cur.value( "postype" ).toString();
@@ -324,7 +359,7 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
         } else if ( typeStr == PosTypeHeader ) {
           type = DocPositionBase::Header;}
         else if ( ! typeStr.isEmpty() ) {
-          kdDebug() << "ERROR: Strange type string loaded from db: " << typeStr << endl;
+          kDebug() << "ERROR: Strange type string loaded from db: " << typeStr << endl;
         }
 
         DocPosition *dp = doc->createPosition( type );
@@ -336,19 +371,8 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 
         dp->setAmount( cur.value("amount").toDouble() );
 
-        dp->setUnit( UnitManager::getUnit( cur.value("unit").toInt() ) );
+        dp->setUnit( UnitManager::self()->getUnit( cur.value("unit").toInt() ) );
         dp->setUnitPrice( cur.value("price").toDouble() );
-        int tt = cur.value( "taxType" ).toInt();
-        DocPositionBase::TaxType taxType = DocPositionBase::TaxInvalid;
-        if ( tt == 1 ) {
-          taxType = DocPositionBase::TaxNone;
-        } else if ( tt == 2 ) {
-          taxType = DocPositionBase::TaxReduced;
-        } else if ( tt == 3 ) {
-          taxType = DocPositionBase::TaxFull;
-        }
-        dp->setTaxType( taxType );
-
         dp->loadAttributes();
     }
 }

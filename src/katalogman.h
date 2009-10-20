@@ -23,11 +23,12 @@
 #include <config.h>
 #endif
 
-#include <qdict.h>
 #include <qmap.h>
 
 #include "katalog.h"
 #include "kataloglistview.h"
+#include "kraftcat_export.h"
+
 // include files
 
 /**
@@ -36,7 +37,7 @@
 class QStringList;
 
 
-class KatalogMan : public QObject
+class KRAFTCAT_EXPORT KatalogMan : public QObject
 {
 public:
     ~KatalogMan();
@@ -54,8 +55,8 @@ private:
     KatalogMan();
     static KatalogMan *mSelf;
     
-    QDict<Katalog> m_katalogDict;
-    QMap< QString, QPtrList<KatalogListView> > mKatalogListViews;
+    QHash<QString, Katalog*> m_katalogDict;
+    QMap< QString, QList<KatalogListView*> > mKatalogListViews;
 };
 
 #endif

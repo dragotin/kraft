@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 #include <qdom.h>
+//Added by qt3to4:
+#include <Q3PtrCollection>
 #include <klocale.h>
 #include <kdebug.h>
 #include <qstring.h>
@@ -41,7 +43,7 @@ FloskelTemplate::FloskelTemplate()
       m_saver(0)
 {
     m_calcType = Calculation;
-    m_calcParts.setAutoDelete(true);
+    // m_calcParts.setAutoDelete(true);
 }
 
 FloskelTemplate::FloskelTemplate( int tID, const QString& text,
@@ -68,7 +70,7 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
     setCalculationType( AutoCalc );
   }
 
-  m_calcParts.setAutoDelete(true);
+  // m_calcParts.setAutoDelete(true);
 }
 
 FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
@@ -84,7 +86,7 @@ FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
       m_saver( 0 )
 {
   deepCopyCalcParts( templ );
-  m_calcParts.setAutoDelete(true);
+  // m_calcParts.setAutoDelete(true);
 }
 
 FloskelTemplate& FloskelTemplate::operator= ( FloskelTemplate& src )
@@ -113,13 +115,15 @@ FloskelTemplate::~FloskelTemplate()
 
 void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
 {
-  CalcPart *cp = templ.m_calcParts.first();
-  CalcPart *ncp = 0;
+  CalcPart *cp = 0;
 
   m_calcParts.clear();
 
-  for( ; cp; cp = templ.m_calcParts.next() )
-  {
+  QListIterator<CalcPart*> i( templ.m_calcParts );
+  while( i.hasNext()) {
+    cp = i.next();
+    CalcPart *ncp = 0;
+
     if( cp->getType() == KALKPART_TIME ) {
       ncp = new ZeitCalcPart( *( static_cast<ZeitCalcPart*>(cp) ) );
     } else if( cp->getType() == KALKPART_FIX ) {
@@ -127,7 +131,7 @@ void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
     } else if( cp->getType() == KALKPART_MATERIAL ) {
       ncp = new MaterialCalcPart( *( static_cast<MaterialCalcPart*>(cp) ) );
     } else {
-      kdDebug() << "ERROR: Unbekannter Kalkulations-Anteil-Typ!" << endl;
+      kDebug() << "ERROR: Unbekannter Kalkulations-Anteil-Typ!" << endl;
     }
     m_calcParts.append( ncp );
   }
@@ -135,7 +139,7 @@ void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
 
 Einheit FloskelTemplate::einheit() const
 {
-    return UnitManager::getUnit( m_einheitID );
+    return UnitManager::self()->getUnit( m_einheitID );
 }
 
 void FloskelTemplate::setEinheitId(int id)
@@ -145,16 +149,18 @@ void FloskelTemplate::setEinheitId(int id)
 
 void FloskelTemplate::setGewinn( double g )
 {
-    m_gewinn = g;
-    CalcPart *cp;
-    /*  jede teilkalkulation hat einen eigenen Gewinn fuer spaetere Erweiterung.
+  m_gewinn = g;
+  CalcPart *cp = 0;
+  /*  jede teilkalkulation hat einen eigenen Gewinn fuer spaetere Erweiterung.
      *  Hier werden alle mit dem reinkommenden Wert beschrieben, spaeter kann
      *  jeder einzeln einen Wert haben...
      */
-    for( cp = m_calcParts.first(); cp; cp = m_calcParts.next() )
-    {
-        cp->setProzentPlus(g);
-    }
+  QListIterator<CalcPart*> i( m_calcParts );
+  while( i.hasNext()) {
+    cp = i.next();
+
+    cp->setProzentPlus(g);
+  }
 }
 
 double FloskelTemplate::getGewinn( )
@@ -237,7 +243,7 @@ TemplateSaverBase* FloskelTemplate::getSaver()
   /* Hier k�nten andere Save-Engines ausgew�lt werden */
   if( ! m_saver )
   {
-    kdDebug() << "Erzeuge neuen DB-Saver" << endl;
+    kDebug() << "Erzeuge neuen DB-Saver" << endl;
     m_saver = new TemplateSaverDB();
   }
   return m_saver;
@@ -246,11 +252,11 @@ TemplateSaverBase* FloskelTemplate::getSaver()
 bool FloskelTemplate::save()
 {
     TemplateSaverBase *saver = getSaver();
-    kdDebug() << "Saver is " << saver << endl;
+    kDebug() << "Saver is " << saver << endl;
     if( saver ) {
         return saver->saveTemplate( this );
     } else {
-        kdDebug() << "ERR: No saver available!" << endl;
+        kDebug() << "ERR: No saver available!" << endl;
         return false;
     }
 }
@@ -260,7 +266,7 @@ QDomElement FloskelTemplate::toXML( QDomDocument& doc)
 {
     QDomElement templ = doc.createElement("template");
 
-    templ.appendChild( createDomNode(doc, "unit",   UnitManager::getUnit(m_einheitID).einheitSingular()));
+    templ.appendChild( createDomNode(doc, "unit",   UnitManager::self()->getUnit(m_einheitID).einheitSingular()));
     templ.appendChild( createDomNode(doc, "text", getText()));
     templ.appendChild( createDomNode(doc, "id", QString::number(getTemplID())));
     templ.appendChild( createDomNode(doc, "benefit", QString::number(getGewinn())));
@@ -399,23 +405,3 @@ QDomElement FloskelTemplate::createDomNode( QDomDocument doc,
 }
 #endif
 
-#if 0
-int FloskelTemplateList::compareItems( QPtrCollection::Item i1, QPtrCollection::Item i2 )
-// int compareItems( FloskelTemplate* ct1, FloskelTemplate* ct2 )
-{
-  kdDebug() << "********************************* In Floskel-Sort!" << endl;
-  CatalogTemplate* ct1 = static_cast<CatalogTemplate*>( i1 );
-  CatalogTemplate* ct2 = static_cast<CatalogTemplate*>( i2 );
-
-  if ( !( ct1 && ct2 ) ) return 0;
-
-  int sortKey1 = ct1->sortKey();
-  int sortKey2 = ct2->sortKey();
-
-  if ( sortKey1 == sortKey2 ) return 0;
-  if ( sortKey1 < sortKey2 ) return 1;
-  return -1;
-
-}
-
-#endif

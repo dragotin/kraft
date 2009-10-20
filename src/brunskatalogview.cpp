@@ -14,10 +14,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qsplitter.h>
+//Added by qt3to4:
+#include <Q3BoxLayout>
 #include <kdebug.h>
 #include <klocale.h>
 
@@ -26,50 +28,57 @@
 #include "brunskataloglistview.h"
 #include "brunsrecord.h"
 #include "brunskatalog.h"
-#
+
+
 BrunsKatalogView::BrunsKatalogView()
  : KatalogView(),
  m_brunsListView(0),
  m_details(0)
 {
+
 }
 
 
 BrunsKatalogView::~BrunsKatalogView()
 {
+
 }
 
 void BrunsKatalogView::createCentralWidget(QBoxLayout *box, QWidget *w)
 {
-    kdDebug() << "Creating new Bruns-Listview" << endl;
+    kDebug() << "Creating new Bruns-Listview" << endl;
     QSplitter *split = new QSplitter(Qt::Vertical, w);
 
     m_brunsListView = new BrunsKatalogListView(split);
     box->addWidget(split); // m_brunsListView);
-#if 0
     m_detailLabel = new QLabel(w);
+
     box->addWidget(m_detailLabel);
     m_detailLabel->setText(i18n("Plant Details (Sizes, Root Forms etc.):"));
-#endif
 
-    m_details = new KListView(split);
-    m_details->addColumn( i18n( "Matchcode" ) );
-    m_details->addColumn( i18n( "Form" ) );
-    m_details->addColumn( i18n( "Form Add" ) );
-    m_details->addColumn( i18n( "Wuchs" ) );
-    m_details->addColumn( i18n( "Root" ) );
-    m_details->addColumn( i18n( "Quality"));
-    m_details->addColumn( i18n( "Group" ));
-    // box->addWidget(m_details);
+    m_details = new QTreeWidget(split);
+    m_details->setColumnCount( 7 );
+    QStringList h;
 
-    connect( m_brunsListView, SIGNAL(selectionChanged(QListViewItem*)),
-             this, SLOT(slPlantSelected(QListViewItem* )));
+    h << i18n( "Matchcode" );
+    h << i18n( "Form" );
+    h << i18n( "Form Add" );
+    h << i18n( "Wuchs" );
+    h << i18n( "Root" );
+    h << i18n( "Quality");
+    h << i18n( "Group" );
+    m_details->setHeaderLabels( h );
+
+    box->addWidget(m_details);
+
+    connect( m_brunsListView, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem* ) ),
+             this, SLOT( slPlantSelected( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
 }
 
 Katalog* BrunsKatalogView::getKatalog( const QString& name )
 {
-    kdDebug() << "GetKatalog of bruns!" << endl;
+    kDebug() << "GetKatalog of bruns!" << endl;
     Katalog *k = KatalogMan::self()->getKatalog( name );
     if( ! k ) {
         k = new BrunsKatalog( name );
@@ -79,7 +88,7 @@ Katalog* BrunsKatalogView::getKatalog( const QString& name )
 }
 
 
-void BrunsKatalogView::slPlantSelected( QListViewItem *item)
+void BrunsKatalogView::slPlantSelected( QTreeWidgetItem *item, QTreeWidgetItem*)
 {
     if( ! item ) return;
 
@@ -90,16 +99,16 @@ void BrunsKatalogView::slPlantSelected( QListViewItem *item)
     if ( ! rec ) return;
     BrunsSizeList sizes = rec->getSizes();
     BrunsSizeList::iterator it;
-    for( it = sizes.begin(); it != sizes.end(); ++it ) {
-      KListViewItem *guiItem = new KListViewItem(m_details, (*it).getPrimMatchcode() );
+    QList<QTreeWidgetItem*> items;
 
-      const QStringList list = BrunsKatalog::formatQuality( (*it) );
-      int i = 1;
-      for ( QStringList::ConstIterator listIt = list.begin(); listIt != list.end(); ++listIt ) {
-        guiItem->setText( i++, (*listIt) );
-      }
-        // kdDebug() << "showing new plant detail item" << endl;
+    for( it = sizes.begin(); it != sizes.end(); ++it ) {
+      QStringList list = BrunsKatalog::formatQuality( (*it) );
+      list.prepend( (*it).getPrimMatchcode() );
+      
+      items.append( new QTreeWidgetItem( list ) );
+        // kDebug() << "showing new plant detail item" << endl;
     }
+    m_details->addTopLevelItems( items );
 }
 
 #include "brunskatalogview.moc"

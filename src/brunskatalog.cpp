@@ -16,7 +16,7 @@
  ***************************************************************************/
 #include <qstring.h>
 #include <qfile.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <qregexp.h>
 
 #include <kdebug.h>
@@ -32,33 +32,31 @@ BrunsKatalog::BrunsKatalog( const QString& n )
 : Katalog( n ),
   m_wantToLower(true)
 {
-    m_chapterFile = KatalogSettings::brunsKeyFile();
-    m_dataFile    = KatalogSettings::brunsDataFile();
+    m_chapterFile = KatalogSettings::self()->brunsKeyFile();
+    m_dataFile    = KatalogSettings::self()->brunsDataFile();
 
     if( m_dataFile.isEmpty() ) {
-        kdError() << "Unable to open bruns data file!" << endl;
+        kError() << "Unable to open bruns data file!" << endl;
 
-        m_dataFile = KFileDialog::getOpenFileName( QString::null,
-                                  "artikel2005.txt", 0,
+        m_dataFile = KFileDialog::getOpenFileName( KUrl(),
+                                  "Artikelstamm_2008_2009.txt", 0,
                                   i18n("Select Bruns Catalog Data File") );
-        KatalogSettings::setBrunsDataFile( m_dataFile );
-        kdDebug() << "Set data file to " << m_dataFile << endl;
-        KatalogSettings::writeConfig();
-
+        KatalogSettings::self()->setBrunsDataFile( m_dataFile );
+        kDebug() << "Set data file to " << m_dataFile << endl;
     } else {
-        kdDebug() << "Opening bruns data file from " << m_dataFile << endl;
+        kDebug() << "Opening bruns data file from " << m_dataFile << endl;
     }
 
     if( m_chapterFile.isEmpty() ) {
-        kdError() << "Unable to open bruns key file!" << endl;
+        kError() << "Unable to open bruns key file!" << endl;
 
-        m_chapterFile = KFileDialog::getOpenFileName( QString::null,
-                                  "key_2006.txt", 0,
+        m_chapterFile = KFileDialog::getOpenFileName( KUrl(),
+                                  "key_2008.txt", 0,
                                   i18n("Select Bruns Catalog Key File") );
-        KatalogSettings::setBrunsKeyFile( m_chapterFile );
-        KatalogSettings::writeConfig();
+        KatalogSettings::self()->setBrunsKeyFile( m_chapterFile );
+        // KatalogSettings::self()->writeConfig();
     } else {
-        kdDebug() << "Opening bruns chapter file from " << m_chapterFile << endl;
+        kDebug() << "Opening bruns chapter file from " << m_chapterFile << endl;
     }
 
     setReadOnly( true );
@@ -91,7 +89,7 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
     i = bSize.getSizeAdd();
     str = m_sizeAdds[i];
 
-    // kdDebug() << "H ist " << *h << " and Str ist " << str << endl;
+    // kDebug() << "H ist " << *h << " and Str ist " << str << endl;
     if( h && str ) {
       res << ( *h + " " + *str );
     } else if ( h ) {
@@ -133,13 +131,13 @@ void BrunsKatalog::reload( dbID )
 int BrunsKatalog::load()
 {
   int cnt = 0;
-  kdDebug() << "Loading brunskatalog from " << m_dataFile << endl;
+  kDebug() << "Loading brunskatalog from " << m_dataFile << endl;
   loadDBKeys();
 
   QFile file( m_dataFile );
-  if ( file.open( IO_ReadOnly ) ) {
-    QTextStream stream( &file );
-    stream.setEncoding(QTextStream::Latin1);
+  if ( file.open( QIODevice::ReadOnly ) ) {
+    Q3TextStream stream( &file );
+    stream.setEncoding(Q3TextStream::Latin1);
     QString line;
     QString h;
     int d;
@@ -154,11 +152,11 @@ int BrunsKatalog::load()
       d = intPart(line, 0,6);
       if( d > 0) {
         if( ! ok )
-          kdDebug() << "failed to parse!" << endl;
+          kDebug() << "failed to parse!" << endl;
 
         int pgroup = intPart(line, 12,18);
         int artID = intPart(line, 18, 24);
-        // kdDebug() << "Have plant group " << pgroup << endl;
+        // kDebug() << "Have plant group " << pgroup << endl;
 
         BrunsSize size;
         size.setFormNo(intPart(line, 34, 38));
@@ -167,7 +165,7 @@ int BrunsKatalog::load()
         size.setQualityAdd(intPart(line, 52, 56));
         size.setFormAdd(intPart(line, 164, 168));
         size.setGoodsGroup(intPart(line, 267, 271));
-        size.setPrimMatchcode( line.mid( 118, 23).stripWhiteSpace().local8Bit());
+        size.setPrimMatchcode( line.mid( 118, 23).trimmed().toLocal8Bit());
         size.setSizeAdd( intPart( line, 56, 60 ));
         size.setSize( intPart( line, 60, 64 ));
 
@@ -191,19 +189,19 @@ int BrunsKatalog::load()
           // and fill with the new data.
           rec->setPlantGroup(pgroup);
           rec->setArtId(intPart(line, 18, 24));
-          rec->setArtMatch( line.mid(24, 10).local8Bit());
+          rec->setArtMatch( line.mid(24, 10).toLocal8Bit());
 
-          QString n = line.mid( 271, 60 ).stripWhiteSpace();
+          QString n = line.mid( 271, 60 ).trimmed();
           if( m_wantToLower ) {
-            rec->setDtName( toLower( n ).local8Bit() );
+            rec->setDtName( toLower( n ).toLocal8Bit() );
           } else {
-            rec->setDtName( n.local8Bit() );
+            rec->setDtName( n.toLocal8Bit() );
           }
-          n = line.mid( 331, 60  ).stripWhiteSpace();
+          n = line.mid( 331, 60  ).trimmed();
           if( m_wantToLower ) {
-            rec->setLtName( toLower( n ).local8Bit() );
+            rec->setLtName( toLower( n ).toLocal8Bit() );
           } else {
-            rec->setLtName( n.local8Bit() );
+            rec->setLtName( n.toLocal8Bit() );
           }
 
           rec->addSize(size);
@@ -211,14 +209,14 @@ int BrunsKatalog::load()
       }
     }
   } else {
-    kdDebug() << "Unable to open " << m_dataFile << endl;
+    kDebug() << "Unable to open " << m_dataFile << endl;
   }
   return cnt;
 }
 
 inline QString BrunsKatalog::toLower( const QString& line )
 {
-    QStringList li = QStringList::split( QChar(' '), line  );
+    QStringList li = line.split( " " );
     QString re;
 
     for ( QStringList::Iterator it = li.begin(); it != li.end(); ++it ) {
@@ -240,7 +238,7 @@ inline QString BrunsKatalog::toLowerWord( const QString& str )
     QChar firstChar = str[0];
     if( quoted ) firstChar = str[1];
 
-    QString re = str.lower();
+    QString re = str.toLower();
     if( quoted )
         re[1] = firstChar;
     else
@@ -262,11 +260,11 @@ BrunsRecordList* BrunsKatalog::getRecordList( const QString& chap )
 inline int BrunsKatalog::intPart( const QString& str, int from, int to ) {
     bool ok = true;
     const QString s = str.mid(from, to-from);
-    // kdDebug() << ">" << s << "<" << endl;
+    // kDebug() << ">" << s << "<" << endl;
     return s.toInt(&ok, 10);
 }
 
-QStringList BrunsKatalog::getKatalogChapters() {
+QStringList BrunsKatalog::getKatalogChapters( bool /* freshup */ ) {
     return m_chapters;
 }
 
@@ -274,22 +272,22 @@ void BrunsKatalog::loadDBKeys() {
     QStringList lines;
     QFile file( m_chapterFile );
 
-    if ( file.open( IO_ReadOnly ) ) {
-        QTextStream stream( &file );
-        stream.setEncoding(QTextStream::Latin1);
+    if ( file.open( QIODevice::ReadOnly ) ) {
+        Q3TextStream stream( &file );
+        stream.setEncoding(Q3TextStream::Latin1);
         QString line;
 
         KatMap *currDict = 0; // m_chapterIDs;
         KatMap *longDict = 0;
         bool doChapters = false;
-        const QRegExp rxpZusatz = QRegExp( "Tabelle der Gr.+senzus.+tze:", TRUE, FALSE );
-        const QRegExp rxpStufe = QRegExp( "Tabelle der Gr.+senstufen:", TRUE, FALSE );
+        const QRegExp rxpZusatz = QRegExp( "Tabelle der Gr.+senzus.+tze:", Qt::CaseInsensitive );
+        const QRegExp rxpStufe = QRegExp( "Tabelle der Gr.+senstufen:", Qt::CaseInsensitive );
 
         while ( !stream.atEnd() ) {
             line = stream.readLine();
 
-            QStringList li = QStringList::split(QChar(0x09), line );
-            line = line.simplifyWhiteSpace();
+            QStringList li = line.split(QChar(0x09) );
+            line = line.trimmed();
 
             bool ok;
 
@@ -299,12 +297,12 @@ void BrunsKatalog::loadDBKeys() {
                 QString katName = li[1];
 
                 if( doChapters ) { // maintain Stringlist only for chapters.
-                    m_chapterIDs->insert(katName, new dbID(id));
+                    m_chapterIDs.insert(katName, dbID(id));
                     m_chapters.append(katName);
                 } else {
-                // kdDebug() << "Inserting Brunskatalog name " << katName << endl;
+                // kDebug() << "Inserting Brunskatalog name " << katName << endl;
                     if( currDict == &m_rootPacks ) {
-                        kdDebug() << "inserting RootPack: " << katName << endl;
+                        kDebug() << "inserting RootPack: " << katName << endl;
                     }
                     if( currDict ) {
                         currDict->insert(id, new QString(katName));
@@ -320,46 +318,46 @@ void BrunsKatalog::loadDBKeys() {
                     }
                 }
             } else {
-                // kdDebug() << "THis is line : " << line << endl;
+                // kDebug() << "THis is line : " << line << endl;
                 if( line == "Tabelle der Pflanzengruppen:" ) {
                     doChapters = true;
                 } else if( line == "Tabelle der Warenengruppen:" ) {
-                    kdDebug() << "Loading Warengruppen" << endl;
+                    kDebug() << "Loading Warengruppen" << endl;
                     currDict = &m_goods;
                     longDict = 0;
                     doChapters = false;
                 } else if( line.startsWith("Tabelle der Formzus") ) {
-                    kdDebug() << "Loading Formzusätze" << endl;
+                    kDebug() << "Loading Formzusätze" << endl;
                     currDict = &m_formAdds;
                     longDict = &m_formAddsLong;
                     doChapters = false;
                 } else if( line == "Tabelle der Formen:") {
-                    kdDebug() << "Loading Formen" << endl;
+                    kDebug() << "Loading Formen" << endl;
                     currDict = &m_forms;
                     longDict = &m_formsLong;
                     doChapters = false;
                 } else if( line == "Tabelle der Wuchsarten:") {
-                    kdDebug() << "Loading Wuchsarten" << endl;
+                    kDebug() << "Loading Wuchsarten" << endl;
                     currDict = &m_grows;
                     longDict = 0;
                     doChapters = false;
                 } else if( line == "Tabelle der Wurzelverpackungen:") {
-                    kdDebug() << "Loading Wurzelverpackungen" << endl;
+                    kDebug() << "Loading Wurzelverpackungen" << endl;
                     currDict = &m_rootPacks;
                     longDict = 0;
                     doChapters = false;
                 }  else if( line.startsWith( "Tabelle der Qualit" ) ) { // \u00e4tszus\u00e4tze:") {
-                    kdDebug() << "Loading Qualitätszusätze" << endl;
+                    kDebug() << "Loading Qualitätszusätze" << endl;
                     currDict = &m_qualities;
                     longDict = &m_qualitiesLong;
                     doChapters = false;
                 } else if( line.contains( rxpZusatz ) ) {
-                    kdDebug() << "Loading Grössenzusätze" << endl;
+                    kDebug() << "Loading Grössenzusätze" << endl;
                     currDict = &m_sizeAdds;
                     longDict = &m_sizeAddsLong;
                     doChapters = false;
                 } else if( line.contains( rxpStufe ) ) {
-                    kdDebug() << "Loading Grössenstufen" << endl;
+                    kDebug() << "Loading Grössenstufen" << endl;
                     currDict = &m_sizes;
                     longDict = 0;
                     doChapters = false;

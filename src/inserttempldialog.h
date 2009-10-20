@@ -17,14 +17,14 @@
 #ifndef INSERTTEMPLDIALOG_H
 #define INSERTTEMPLDIALOG_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <qmap.h>
 
 #include "docposition.h"
 #include "templtopositiondialogbase.h"
+#include "ui_inserttmplbase.h"
 
-
-class insertTmplBase;
+class QCheckBox;
 
 class InsertTemplDialog: public TemplToPositionDialogBase
 {
@@ -43,9 +43,9 @@ protected:
   QComboBox *getPositionCombo();
 
 private:
-  insertTmplBase *mBaseWidget;
+  Ui::insertTmplBase *mBaseWidget;
   DocPosition mParkPosition;
-  QMap<int, QString> mTagMap;
+  QMap<QCheckBox*, QString> mTagMap;
 };
 
 #endif

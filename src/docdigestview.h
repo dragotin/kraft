@@ -19,14 +19,16 @@
 
 #include <qwidget.h>
 #include <qmap.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
 
 #include "docdigest.h"
 #include "docguardedptr.h"
 
-class KListView;
-class KListViewItem;
+class K3ListView;
+class K3ListViewItem;
 class FilterHeader;
-class KPopupMenu;
+class KMenu;
 class QPushButton;
 class dbID;
 class ArchDocDigest;
@@ -36,31 +38,31 @@ class DocDigestView : public QWidget
   Q_OBJECT
 
 public:
-  DocDigestView( QWidget *parent );
+  DocDigestView( QWidget *parent = 0 );
   ~DocDigestView();
 
-  KListViewItem* addChapter( const QString&, DocDigestList, KListViewItem *chapParent = 0 );
+  QTreeWidgetItem* addChapter( const QString&, DocDigestList, QTreeWidgetItem *chapParent = 0 );
 
   QString currentDocumentId();
-  KListView *listview() {
+  QTreeWidget *listview() {
     return mListView;
   }
 
-  QPopupMenu *contextMenu();
+  KMenu* contextMenu();
   ArchDocDigest currentArchiveDoc() const;
 
 public slots:
   void slotNewDoc( DocGuardedPtr );
   void slotUpdateDoc( DocGuardedPtr );
-  void slotDocOpenRequest( QListViewItem * );
+  void slotDocOpenRequest( QTreeWidgetItem*, int );
 
-  void slotRMB( QListViewItem*, const QPoint&, int );
+  void slotRMB( QTreeWidgetItem*, const QPoint&, int );
   void slotBuildView();
 
 protected slots:
   // void slotOpenCurrentDoc();
-  void slotCurrentChanged( QListViewItem* );
-  void setupListViewItemFromDoc( DocGuardedPtr , QListViewItem* );
+  void slotCurrentChanged( QTreeWidgetItem* );
+  void setupListViewItemFromDoc( DocGuardedPtr , QTreeWidgetItem* );
 
 signals:
   void createDocument();
@@ -72,16 +74,16 @@ signals:
   void archivedDocSelected( const ArchDocDigest& );
 
 private:
-  KListView *mListView;
-  KListViewItem *mAllDocsParent;
-  KListViewItem *mLatestDocsParent;
-  KListViewItem *mTimeLineParent;
+  QTreeWidget *mListView;
+  QTreeWidgetItem *mAllDocsParent;
+  QTreeWidgetItem *mLatestDocsParent;
+  QTreeWidgetItem *mTimeLineParent;
 
   FilterHeader *mFilterHeader;
-  KPopupMenu *mContextMenu;
+  KMenu *mContextMenu;
   QPushButton *mNewDocButton;
-  QMap<QListViewItem*, QString> mDocIdDict;
-  QMap<QListViewItem*, ArchDocDigest>    mArchIdDict;
+  QMap<QTreeWidgetItem*, QString> mDocIdDict;
+  QMap<QTreeWidgetItem*, ArchDocDigest>    mArchIdDict;
 };
 
 #endif

@@ -23,23 +23,23 @@
 
 #include <klocale.h>
 #include <kdebug.h>
-#include <klistview.h>
+
 #include <kdialog.h>
 #include <kaction.h>
-#include <kaccel.h>
 #include <kiconloader.h>
 
-#include <qiconset.h>
+#include <QTreeWidget>
+#include <QIcon>
 #include <qsizepolicy.h>
 #include <qlabel.h>
-#include <qvbox.h>
-#include <qheader.h>
+#include <q3vbox.h>
+#include <q3header.h>
 
 
 HeaderSelection::HeaderSelection( QWidget *parent )
   :QTabWidget( parent )
 {
-  QVBox *vBox = new QVBox( );
+  Q3VBox *vBox = new Q3VBox( );
   vBox->setMargin( KDialog::marginHint() );
   vBox->setSpacing( KDialog::spacingHint() );
 
@@ -52,14 +52,14 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   fh->showCount( false );
   mAddressSelection->setupAddressList( );
 
-  connect( mAddressSelection, SIGNAL( selectionChanged( QListViewItem* ) ),
+  connect( mAddressSelection, SIGNAL( selectionChanged( Q3ListViewItem* ) ),
            SIGNAL( addressSelectionChanged() ) );
 
-  connect( mAddressSelection, SIGNAL( doubleClicked( QListViewItem* ) ),
+  connect( mAddressSelection, SIGNAL( doubleClicked( Q3ListViewItem* ) ),
            SIGNAL( doubleClickedOnItem() ) );
 
   /* a view for the entry text repository */
-  vBox = new QVBox( );
+  vBox = new Q3VBox( );
   vBox->setMargin( KDialog::marginHint() );
   vBox->setSpacing( KDialog::spacingHint() );
 
@@ -67,8 +67,8 @@ HeaderSelection::HeaderSelection( QWidget *parent )
 
   // mTextsView->addColumn( i18n( "Text" ) );
   connect( mTextsView,
-           SIGNAL( textSelectionChanged( QListViewItem* ) ),
-           SIGNAL( textSelectionChanged( QListViewItem* ) ) );
+           SIGNAL( textSelectionChanged( Q3ListViewItem* ) ),
+           SIGNAL( textSelectionChanged( Q3ListViewItem* ) ) );
 
   addTab( vBox, i18n( "Text Templates" ) );
   mTextsTabId = indexOf( vBox );
@@ -76,7 +76,7 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   connect( this, SIGNAL( currentChanged( QWidget* ) ),
            this, SLOT( slotCurrentTabChanged( QWidget* ) ) );
 
-  setCurrentPage( mTextsTabId );
+  setCurrentIndex( mTextsTabId );
 
 }
 
@@ -87,10 +87,10 @@ void HeaderSelection::slotSelectDocType( const QString& doctype )
 
 bool HeaderSelection::textPageActive()
 {
-  return ( currentPageIndex() == mTextsTabId );
+  return ( currentIndex() == mTextsTabId );
 }
 
-QListViewItem *HeaderSelection::itemSelected()
+QTreeWidgetItem *HeaderSelection::itemSelected()
 {
   if ( textPageActive() ) {
     return mTextsView->textsListView()->currentItem();
@@ -102,7 +102,7 @@ QListViewItem *HeaderSelection::itemSelected()
 
 bool HeaderSelection::addressPageActive()
 {
-  return ( currentPageIndex() == mAddressTabId );
+  return ( currentIndex() == mAddressTabId );
 }
 
 HeaderSelection::~HeaderSelection()
@@ -137,8 +137,8 @@ void HeaderSelection::slotCurrentTabChanged( QWidget *w )
   } else if ( indexOf( w ) == mAddressTabId ) {
     emit switchedToHeaderTab( AddressTab );
   } else {
-    kdError() << "Unknown Widget!" << endl;
+    kError() << "Unknown Widget!" << endl;
   }
 }
 
-#include "headerselection.moc"
+// #include "headerselection.moc"

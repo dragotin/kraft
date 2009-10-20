@@ -26,6 +26,11 @@ CatalogTemplate::CatalogTemplate()
 
 }
 
+CatalogTemplate::~CatalogTemplate()
+{
+
+}
+
 CatalogTemplate::CalculationType CatalogTemplate::calcKind()
 {
   return m_calcType;
@@ -51,17 +56,15 @@ QString CatalogTemplate::calcKindString() const
 // ================================================================================
 
 CatalogTemplateList::CatalogTemplateList()
- :QPtrList<CatalogTemplate>()
+ :QList<CatalogTemplate*>()
 {
 
 }
 
-#if 0
-CatalogTemplateList::~CatalogTemplateList
+CatalogTemplateList::~CatalogTemplateList()
 {
 
 }
-#endif
 
 // int CatalogTemplateList::compareItems( QPtrCollection::Item i1, QPtrCollection::Item i2 )
 int CatalogTemplateList::compareItems( CatalogTemplate *ct1,  CatalogTemplate *ct2 )
@@ -69,7 +72,7 @@ int CatalogTemplateList::compareItems( CatalogTemplate *ct1,  CatalogTemplate *c
   // CatalogTemplate* ct1 = static_cast<CatalogTemplate*>( i1 );
   // CatalogTemplate* ct2 = static_cast<CatalogTemplate*>( i2 );
 
-  kdDebug() << "********************************* In Sort!" << endl;
+  kDebug() << "********************************* In Sort!" << endl;
 
   if ( !( ct1 && ct2 ) ) return 0;
 

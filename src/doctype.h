@@ -21,6 +21,8 @@
 #include <qstring.h>
 #include <qmap.h>
 
+#include "kraftcat_export.h"
+
 #include "attribute.h"
 #include "dbids.h"
 
@@ -33,7 +35,7 @@
 typedef QMap<QString, dbID> idMap;
 class KraftDoc;
 
-class DocType
+class KRAFTCAT_EXPORT DocType
 {
   public:
   DocType();

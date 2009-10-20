@@ -26,9 +26,9 @@
 // include files for Qt
 
 // include files for KDE
-#include <kapp.h>
+#include <kapplication.h>
 #include <kmainwindow.h>
-#include <kaccel.h>
+
 #include <kaction.h>
 #include <kurl.h>
 
@@ -46,15 +46,10 @@ class Brunsviewer : public KMainWindow
      */
     static QString textWrap( const QString& t, unsigned int width=40);
 
-  protected:
     // void initActions();
     /** sets up the statusbar for the main window by initialzing a statuslabel.
      */
     void initStatusBar();
-    /** initializes the document object of the main window that is connected to the view in initView().
-     * @see initView();
-     */
-    void initView();
     /** queryClose is called by KTMainWindow on each closeEvent of a window. Against the
      * default implementation (only returns true), this calles saveModified() on the document object to ask if the document shall
      * be saved if Modified; on cancel the closeEvent is rejected.

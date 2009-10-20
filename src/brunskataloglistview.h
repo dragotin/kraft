@@ -21,9 +21,9 @@
 
 #include <kataloglistview.h>
 
+#include "kraftcat_export.h"
+
 class BrunsRecord;
-class QListViewItem;
-class KListViewItem;
 class DocPosition;
 
 /**
@@ -31,7 +31,7 @@ A listview that presents the contents of the Bruns Catalog
 
 @author Klaas Freitag
 */
-class BrunsKatalogListView : public KatalogListView
+class KRAFTCAT_EXPORT BrunsKatalogListView : public KatalogListView
 {
 public:
   typedef enum { Fruits, Rhodos, Roses, Stauden, Konis, Etc } TopKatalogIds;
@@ -45,7 +45,7 @@ public:
   KatalogListView *createListView( QWidget* );
 private:
 
-  QMap<TopKatalogIds, KListViewItem*> m_topFolderMap;
+  QMap<TopKatalogIds, QTreeWidgetItem*> m_topFolderMap;
 };
 
 #endif

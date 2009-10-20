@@ -19,7 +19,7 @@
 
 // include files for Qt
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 // include files for KDE
 
@@ -69,7 +69,7 @@ class ArchDocPosition
     // No calculation yet
 };
 
-class ArchDocPositionList : public QValueList<ArchDocPosition>
+class ArchDocPositionList : public Q3ValueList<ArchDocPosition>
 {
   public:
     ArchDocPositionList();

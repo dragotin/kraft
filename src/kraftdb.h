@@ -18,21 +18,22 @@
 #ifndef KRAFTDB_H
 #define KRAFTDB_H
 
-#define MWST 16.0
+#include <QSqlError>
+#include <QSqlDatabase>
 
-class QSqlDatabase;
+#include <QMap>
+#include <QObject>
+
+#include "kraftcat_export.h"
+
+class dbID;
+class QSqlError;
 
 /**
   *@author Klaas Freitag
   */
-#include <qmap.h>
-#include <qobject.h>
 
-class dbID;
-class KProcess;
-class QSqlError;
-
-class KraftDB : public QObject
+class KRAFTCAT_EXPORT KraftDB : public QObject
 {
 
   Q_OBJECT
@@ -42,15 +43,11 @@ public:
   /** Read property of QSqlDatabase* m_db. */
   static KraftDB *self();
 
-  double getMwSt(){
-    return MWST;
-  }
-
   dbID getLastInsertID();
 
   void checkInit();
   bool checkSchemaVersion( QWidget* );
-  QSqlDatabase *getDB(){ return m_db; }
+  QSqlDatabase *getDB(){ return &m_db; }
   QString qtDriver();
 
   typedef QMap<QString, QString> StringMap;
@@ -78,13 +75,13 @@ signals:
 
 private: // Private attributes
   KraftDB();
-  int playSqlFile( const QString&, int& );
+  int processSqlFile( const QString&, int& );
 
   bool createDatabase( QWidget* );
 
   /** The default database */
-  QSqlDatabase* m_db;
-  KProcess *mProcess;
+  QSqlDatabase m_db;
+
   static KraftDB *mSelf;
   bool mSuccess;
   const QString EuroTag;

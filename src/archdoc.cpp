@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 // include files for KDE
 #include <kglobal.h>
@@ -96,14 +98,14 @@ double ArchDoc::reducedTax()
 
 void ArchDoc::loadFromDb( dbID id )
 {
-  QSqlCursor cur("archdoc");
-  cur.setMode( QSqlCursor::ReadOnly );
-  kdDebug() << "Loading document id " << id.toString() << endl;
+  Q3SqlCursor cur("archdoc");
+  cur.setMode( Q3SqlCursor::ReadOnly );
+  kDebug() << "Loading document id " << id.toString() << endl;
 
   cur.select( "archDocID = " +  id.toString()  );
 
   if( cur.next()) {
-    kdDebug() << "loading archived document with ident " << id.toString() << endl;
+    kDebug() << "loading archived document with ident " << id.toString() << endl;
     mAddress   = cur.value( "clientAddress" ).toString();
     mClientUid = cur.value( "clientUid" ).toString();
     mPreText   = KraftDB::self()->mysqlEuroDecode( cur.value( "pretext" ).toString() );
@@ -119,8 +121,10 @@ void ArchDoc::loadFromDb( dbID id )
     mState     = cur.value( "state" ).toInt();
     QString country = cur.value( "country" ).toString();
     QString lang = cur.value( "language" ).toString();
-    mLocale.setCountry( country );
-    mLocale.setLanguage( lang );
+
+    KConfig *cfg = KGlobal::config().data();
+    mLocale.setCountry( country, cfg );
+    mLocale.setLanguage( lang , cfg );
 
     mTax = cur.value( "tax" ).toDouble();
     mReducedTax = cur.value( "reducedTax" ).toDouble();
@@ -129,7 +133,7 @@ void ArchDoc::loadFromDb( dbID id )
     loadPositions( docID );
     loadAttributes( docID );
   } else {
-    kdDebug() << "ERR: Could not load archived doc with id " << id.toString() << endl;
+    kDebug() << "ERR: Could not load archived doc with id " << id.toString() << endl;
   }
 }
 
@@ -137,11 +141,11 @@ void ArchDoc::loadPositions( const QString& archDocId )
 {
   mPositions.clear();
 
-  QSqlCursor cur( "archdocpos" );
-  cur.setMode( QSqlCursor::ReadOnly );
+  Q3SqlCursor cur( "archdocpos" );
+  cur.setMode( Q3SqlCursor::ReadOnly );
 
   if ( archDocId.isEmpty() /* || ! archDocId.isNum() */ ) {
-    kdDebug() << "ArchDocId is not crappy: " << archDocId << endl;
+    kDebug() << "ArchDocId is not crappy: " << archDocId << endl;
     return;
   }
 
@@ -172,11 +176,11 @@ void ArchDoc::loadAttributes( const QString& archDocId )
 {
   mAttribs.clear();
 
-  QSqlCursor cur( "archPosAttribs" );
-  cur.setMode( QSqlCursor::ReadOnly );
+  Q3SqlCursor cur( "archPosAttribs" );
+  cur.setMode( Q3SqlCursor::ReadOnly );
 
   if ( archDocId.isEmpty() ) {
-    kdDebug() << "ArchDocId is Empty!" << endl;
+    kDebug() << "ArchDocId is Empty!" << endl;
     return;
   }
 
@@ -189,7 +193,7 @@ void ArchDoc::loadAttributes( const QString& archDocId )
     if ( !name.isEmpty() ) {
       mAttribs[ name ] = value;
     } else {
-      kdDebug() << "Empty attribute name in archive!"  << endl;
+      kDebug() << "Empty attribute name in archive!"  << endl;
     }
   }
 }
@@ -217,13 +221,13 @@ ArchDocDigest::~ArchDocDigest()
 
 QString ArchDocDigest::printDateString() const
 {
-  return DefaultProvider::self()->locale()->formatDateTime( mPrintDate, true );
+  return DefaultProvider::self()->locale()->formatDateTime( mPrintDate, KLocale::ShortDate );
 }
 
 /* ###################################################################### */
 
 ArchDocDigestList::ArchDocDigestList ()
-  :QValueList<ArchDocDigest>()
+  :Q3ValueList<ArchDocDigest>()
 {
 
 }

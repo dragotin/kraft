@@ -16,13 +16,16 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qvbox.h>
+#include <q3vbox.h>
 #include <qsqlquery.h>
 #include <qsqldatabase.h>
-#include <qstylesheet.h>
+#include <q3stylesheet.h>
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3BoxLayout>
 
 // include files for KDE
 #include <klocale.h>
@@ -30,9 +33,10 @@
 #include <kiconloader.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <kcalendarsystem.h>
 #include <khtmlview.h>
+#include <QTextDocument>
 
 #include "version.h"
 #include "kraftdb.h"
@@ -44,38 +48,40 @@
 #include "defaultprovider.h"
 #include "reportgenerator.h"
 
-PortalView::PortalView(QWidget *parent, const char *name, int face)
-    : KJanusWidget( parent, name, face ),
-      m_docBox(0),
-      m_katalogBox(0),
-      mArchiveBox( 0 ),
+PortalView::PortalView(QWidget *parent, const char*)
+    : KPageWidget( parent ),
       mCatalogBrowser( 0 ),
-      mSystemBrowser( 0 )
+      mSystemBrowser( 0 ),
+      mSysPage(0),
+      mDocsPage(0)
 {
-  m_docBox     = addVBoxPage( i18n("Documents"),
-                              i18n("Document List"),
-                              DesktopIcon("folder_outbox"));
-  mDocDigestIndex = pageIndex( m_docBox );
-  documentDigests( m_docBox );
 
-  m_katalogBox = addVBoxPage( i18n("Catalogs"),
-                              i18n("Available Catalogs"),
-                              DesktopIcon("folder_green"));
-  mCatalogIndex = pageIndex( m_katalogBox );
-  katalogDetails(m_katalogBox);
+  //   m_docBox     = addVBoxPage( i18n("Documents"),
+  //                              i18n("Document List"),
+  //                              DesktopIcon("folder_outbox"));
+  // mDocDigestIndex = pageIndex( m_docBox );
+  documentDigests();
 
-  m_sysBox     = addVBoxPage( i18n("System"),
-                              i18n("Information about the Kraft System"),
-                              DesktopIcon("server"));
-  mSystemIndex = pageIndex( m_sysBox );
-  systemDetails( m_sysBox );
+  // m_katalogBox = addVBoxPage( i18n("Catalogs"),
+  //                            i18n("Available Catalogs"),
+  //                            DesktopIcon("folder_green"));
+  // mCatalogIndex = pageIndex( m_katalogBox );
+  katalogDetails();
+
+  //  m_sysBox     = addVBoxPage( i18n("System"),
+  //                              i18n("Information about the Kraft System"),
+  //                              DesktopIcon("server"));
+  //  mSystemIndex = pageIndex( m_sysBox );
+  systemDetails();
 }
 
-void PortalView::katalogDetails(QWidget *parent)
+void PortalView::katalogDetails()
 {
-  QWidget *w = new QWidget( parent );
-  QBoxLayout *b = new QHBoxLayout( w );
+  QWidget *w = new QWidget;
+  KPageWidgetItem *pageWidget = addPage( w, i18n("Catalogs" ) );
 
+  QBoxLayout *b = new QHBoxLayout;
+  w->setLayout( b );
   mCatalogBrowser = new PortalHtmlView( w );
   mCatalogBrowser->setTitle( i18n( "Kraft Document Overview" ) );
   mCatalogBrowser->setStylesheetFile( "catalogview.css" );
@@ -122,16 +128,11 @@ void PortalView::fillCatalogDetails()
     mCatalogBrowser->displayContent( html );
 }
 
-void PortalView::archiveDetails( QWidget *  )
-{
-
-}
-
 QString PortalView::printKatLine( const QString& name, int cnt ) const
 {
-    QString urlName = QStyleSheet::escape( name );
+    QString urlName = Qt::escape( name );
 
-    kdDebug() << "Converted Katalog name: " << urlName << endl;
+    kDebug() << "Converted Katalog name: " << urlName << endl;
     QString html;
 
     html += "<tr";
@@ -162,9 +163,9 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
 
 void PortalView::slUrlClicked( const QString& urlStr )
 {
-    KURL url( urlStr );
+    KUrl url( urlStr );
 
-    kdDebug() << "URL: " << url.path() << endl;
+    kDebug() << "URL: " << url.path() << endl;
     if( url.path().startsWith( "/katalog.cgi") )
     {
         QString action = url.queryItem("action");
@@ -185,7 +186,7 @@ void PortalView::slUrlClicked( const QString& urlStr )
         else
         {
             // unknown query
-            kdDebug() << "Can not handle Query: " << url.query() << endl;
+            kDebug() << "Can not handle Query: " << url.query() << endl;
         }
     }
     else
@@ -207,10 +208,12 @@ QString PortalView::ptag( const QString& content,  const QString& c ) const
   return html;
 }
 
-void PortalView::systemDetails(QWidget *parent)
+void PortalView::systemDetails()
 {
-  QWidget *w = new QWidget( parent );
-  QBoxLayout *b = new QHBoxLayout( w );
+  QWidget *w = new QWidget;
+  mSysPage = addPage( w, i18n("System Details" ) );
+  QBoxLayout *b = new QHBoxLayout;
+  w->setLayout( b );
   mSystemBrowser = new PortalHtmlView( w );
   b->addWidget( mSystemBrowser->view() );
   b->addSpacing( KDialog::marginHint() );
@@ -237,11 +240,10 @@ QString PortalView::systemViewHeader() const
   }
   html += "</td></tr>";
   html += QString( "<tr><td>Codename <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
-  QString h1 = DefaultProvider::self()->locale()->twoAlphaToCountryName(
-    DefaultProvider::self()->locale()->country() );
+  QString h1 = DefaultProvider::self()->locale()->country();
   html += QString( "<tr><td>" ) + i18n( "Country Setting: " ) +
           QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( DefaultProvider::self()->locale()->country() );
-  h1 = DefaultProvider::self()->locale()->twoAlphaToLanguageName(
+  h1 = DefaultProvider::self()->locale()->languageCodeToName(
     DefaultProvider::self()->locale()->language() );
   html += QString( "<tr><td>" ) + i18n( "Language Setting: " ) +
           QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( DefaultProvider::self()->locale()->language() );
@@ -321,15 +323,23 @@ void PortalView::systemInitError( const QString& htmlMsg )
 
   mSystemBrowser->displayContent( html ); // , "error" );
 
-  pageWidget( mDocDigestIndex )->setEnabled( false );
-  pageWidget( mCatalogIndex )->setEnabled( false );
+  mDocsPage->setEnabled( false );
+  mSysPage->setEnabled( false );
 
-  showPage( mSystemIndex );
+  setCurrentPage( mSysPage );
 }
 
-void PortalView::documentDigests( QWidget *parent )
+void PortalView::documentDigests()
 {
-  mDocDigestView = new DocDigestView( parent );
+  QWidget *w = new QWidget;
+  KPageWidgetItem *pageWidget = addPage( w, i18n("Document Digests" ) );
+
+  QBoxLayout *b = new QHBoxLayout;
+  w->setLayout( b );
+
+  mDocDigestView = new DocDigestView( w );
+  b->addWidget( mDocDigestView );
+  b->addSpacing( KDialog::marginHint() );
 
   connect( mDocDigestView, SIGNAL( createDocument() ),
            this, SLOT( slotCreateDocument() ) );
@@ -347,8 +357,8 @@ void PortalView::documentDigests( QWidget *parent )
            SIGNAL( documentSelected( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
-  connect( mDocDigestView->listview(), SIGNAL( currentChanged( QListViewItem* ) ),
-           this,  SLOT( slotDigestItemSelected( QListViewItem* ) ) );
+  connect( mDocDigestView->listview(), SIGNAL( currentChanged( Q3ListViewItem* ) ),
+           this,  SLOT( slotDigestItemSelected( Q3ListViewItem* ) ) );
 }
 
 void PortalView::slotCreateDocument()
@@ -372,14 +382,14 @@ void PortalView::slotDocumentUpdate( DocGuardedPtr doc )
 void PortalView::slotBuildView()
 {
 
-  QApplication::setOverrideCursor( QCursor( BusyCursor ) );
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
   mDocDigestView->slotBuildView();
   QApplication::restoreOverrideCursor();
 }
 
-void PortalView::slotDigestItemSelected( QListViewItem *item )
+void PortalView::slotDigestItemSelected( QTreeWidgetItem *item )
 {
-  kdDebug() << "Digest Item Selected " << item << endl;
+  kDebug() << "Digest Item Selected " << item << endl;
 
 }
 

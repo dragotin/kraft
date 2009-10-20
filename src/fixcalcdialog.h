@@ -23,8 +23,9 @@
 #include <config.h>
 #endif
 
-// include files
-#include "fixpartui.h"  // designer file zeitpartui.ui
+#include <kdialog.h>
+
+#include "ui_fixpartui.h"  // designer file zeitpartui.ui
 
 /**
  *
@@ -32,14 +33,14 @@
 
 class FixCalcPart;
 
-class FixCalcDialog : public calcdetailFix
+class FixCalcDialog : public KDialog, protected Ui::calcdetailFix
 {
     Q_OBJECT
 
 public:
-    FixCalcDialog(QWidget *parent=0, const char* name=0, bool modal=FALSE );
-    FixCalcDialog(FixCalcPart*, QWidget *parent=0, const char* name=0, bool modal=FALSE );
-    ~FixCalcDialog();
+    FixCalcDialog(QWidget *parent=0, bool modal=FALSE );
+    FixCalcDialog(FixCalcPart*, QWidget *parent=0, bool modal=FALSE );
+    virtual ~FixCalcDialog();
 
     QString getName();
     double  getMenge();

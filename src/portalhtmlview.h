@@ -30,7 +30,7 @@ class PortalHtmlView : public HtmlView
   protected:
     // virtual void writeBottomFrame();
     void urlSelected( const QString&, int, int,
-                      const QString &, KParts::URLArgs  );
+                      const QString &, KParts::OpenUrlArguments&  );
   private:
 };
 

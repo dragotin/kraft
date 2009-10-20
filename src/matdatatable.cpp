@@ -17,10 +17,15 @@
 
 // include files for Qt
 #include <qpainter.h>
-#include <qsqlpropertymap.h>
-#include <qdragobject.h>
-#include <qguardedptr.h>
-#include <qpopupmenu.h>
+#include <q3sqlpropertymap.h>
+#include <q3dragobject.h>
+#include <qpointer.h>
+#include <q3popupmenu.h>
+#include <QSqlField>
+
+//Added by qt3to4:
+#include <Q3SqlCursor>
+#include <Q3SqlEditorFactory>
 
 // include files for KDE
 #include <klocale.h>
@@ -44,7 +49,7 @@ QWidget* CustomSqlEditorFactory::createEditor( QWidget *parent, const QSqlField 
         return editor;
     }
 
-    return QSqlEditorFactory::createEditor( parent, field );
+    return Q3SqlEditorFactory::createEditor( parent, field );
 }
 
 /* ********************************************************************************
@@ -54,18 +59,18 @@ QWidget* CustomSqlEditorFactory::createEditor( QWidget *parent, const QSqlField 
 EinheitPicker::EinheitPicker( QWidget *parent, const char *name )
     : QComboBox( parent, name )
 {
-    insertStringList( UnitManager::allUnits());
+    insertStringList( UnitManager::self()->allUnits());
 }
 
 int EinheitPicker::einheitId() const
 {
-    return UnitManager::getUnitIDSingular(currentText());
+    return UnitManager::self()->getUnitIDSingular(currentText());
 }
 
 
 void EinheitPicker::setEinheitId( int einheitid )
 {
-    setCurrentText(UnitManager::getUnit(einheitid).einheitSingular() );
+    setCurrentText(UnitManager::self()->getUnit(einheitid).einheitSingular() );
 }
 
 
@@ -76,12 +81,12 @@ void EinheitPicker::setEinheitId( int einheitid )
  */
 
 MatDataTable::MatDataTable(QWidget *parent, const char *name )
-    : QDataTable(parent, name),
+    : Q3DataTable(parent, name),
       m_currChapterID(-1)
 {
     installEditorFactory( new CustomSqlEditorFactory() );
 
-    QSqlPropertyMap *propMap = new QSqlPropertyMap();
+    Q3SqlPropertyMap *propMap = new Q3SqlPropertyMap();
     propMap->insert( "EinheitPicker", "einheitID" );
     installPropertyMap( propMap );
 
@@ -95,7 +100,7 @@ MatDataTable::MatDataTable(QWidget *parent, const char *name )
     connect( this, SIGNAL(beforeInsert(QSqlRecord*)),
              this, SLOT(slBeforeInsert(QSqlRecord*)));
 
-    setSqlCursor( new QSqlCursor("stockMat"), false );
+    setSqlCursor( new Q3SqlCursor("stockMat"), false );
 
     QStringList li;
     li << "material ASC";
@@ -112,7 +117,7 @@ MatDataTable::~MatDataTable( )
 
 void MatDataTable::slBeforeInsert ( QSqlRecord * buf )
 {
-    kdDebug() << "Before Inserting" << endl;
+    kDebug() << "Before Inserting" << endl;
     if( buf )
     {
         buf->setValue("matChapter", m_currChapterID );
@@ -131,7 +136,7 @@ void MatDataTable::paintField( QPainter * p, const QSqlField* field,
     if ( field->name() == "unitID" )
     {
         QString text;
-        text = UnitManager::getUnit( field->value().toInt() ).einheitSingular();
+        text = UnitManager::self()->getUnit( field->value().toInt() ).einheitSingular();
 
         p->drawText( 2,2, cr.width()-4, cr.height()-4, fieldAlignment( field ), text );
     }
@@ -146,19 +151,19 @@ void MatDataTable::paintField( QPainter * p, const QSqlField* field,
     }
     else if( field->name() == "material" )
     {
-        p->drawText( 1,1, cr.width()-2, cr.height()-2, fieldAlignment( field ), QString::fromUtf8(field->value().toString()) );
+        p->drawText( 1,1, cr.width()-2, cr.height()-2, fieldAlignment( field ), field->value().toString() );
 
     }
     else
     {
-        QDataTable::paintField( p, field, cr, b) ;
+        Q3DataTable::paintField( p, field, cr, b) ;
     }
 }
 
 void MatDataTable::slSetCurrChapterID( int id )
 {
     m_currChapterID = id;
-    kdDebug() << "Setting current chapter id " << id << endl;
+    kDebug() << "Setting current chapter id " << id << endl;
     setFilter( "matChapter="+QString::number(id));
     refresh();
     adjustColumn(0);
@@ -170,7 +175,7 @@ void MatDataTable::updateCurrChapter( int chapID )
 {
     QSqlRecord *rec = sqlCursor()->primeUpdate();
 
-    kdDebug() << "Setze Kategorie ChapterID=" << chapID << endl;
+    kDebug() << "Setze Kategorie ChapterID=" << chapID << endl;
 
     if( rec )
     {

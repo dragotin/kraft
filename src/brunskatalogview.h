@@ -21,34 +21,36 @@
 
 #include "brunskataloglistview.h"
 
+#include <QLabel>
+
+
 class QBoxLayout;
-class QListViewItem;
 class BrunsKatalogListView;
 class QLabel;
 
 /**
 @author Klaas Freitag
 */
-class BrunsKatalogView : public KatalogView
+class KRAFTCAT_EXPORT BrunsKatalogView : public KatalogView
 {
     Q_OBJECT
 public:
     BrunsKatalogView();
 
-    ~BrunsKatalogView();
+    virtual ~BrunsKatalogView();
 
     void createCentralWidget(QBoxLayout*, QWidget *w);
     KatalogListView* getListView() { return m_brunsListView; }
 
 protected slots:
-    void slPlantSelected( QListViewItem *);
+    void slPlantSelected( QTreeWidgetItem*, QTreeWidgetItem*);
     
 protected:
     Katalog* getKatalog( const QString& );
     
     BrunsKatalogListView *m_brunsListView;
     QLabel               *m_detailLabel;
-    KListView            *m_details;
+    QTreeWidget          *m_details;
 };
 
 #endif

@@ -18,22 +18,19 @@
 #ifndef EXTENDEDCOMBO_H
 #define EXTENDEDCOMBO_H
 
-#include <kcombobox.h>
-#include <qlistbox.h>
+#include <QComboBox>
+#include "kraftcat_export.h"
 
 class QString;
-class QListBox;
-class QPainter;
-class ExtendedCombo;
-class QPixmap;
 
-class ExtendedComboItem : public QListBoxItem
+#if 0
+class KRAFTCAT_EXPORT ExtendedComboItem : public Q3ListBoxItem
 {
   public:
     ExtendedComboItem( const QString &name, const QString &description, ExtendedCombo *combo );
 
-    virtual int width(const QListBox *) const;
-    virtual int height(const QListBox *) const;
+    virtual int width(const Q3ListBox *) const;
+    virtual int height(const Q3ListBox *) const;
     virtual void setPixmap( const QPixmap& );
   protected:
     virtual void paint(QPainter *p);
@@ -43,14 +40,14 @@ class ExtendedComboItem : public QListBoxItem
     QString mDescription;
     QPixmap mPixmap;
 };
+#endif
 
-
-class ExtendedCombo : public KComboBox
+class KRAFTCAT_EXPORT ExtendedCombo : public QComboBox
 {
   public:
-    ExtendedCombo(QWidget *parent, const char *name);
+    ExtendedCombo(QWidget *parent, const char *name = 0);
     ~ExtendedCombo();
-    ExtendedComboItem* insertEntry( const QString &name, const QString &description );
+    void insertEntry( const QString &name, const QString &description );
 
 };
 

@@ -17,7 +17,7 @@
 #ifndef KRAFTDOCHEADEREDIT_H
 #define KRAFTDOCHEADEREDIT_H
 
-#include "docheader.h"
+#include "ui_docheader.h"
 #include "kraftdocedit.h"
 
 class KraftDocHeaderEdit : public KraftDocEdit
@@ -26,10 +26,10 @@ public:
   KraftDocHeaderEdit( QWidget* );
 
   // FIXME: Remove access to internal widgets
-  DocHeaderEdit *docHeaderEdit() { return mDocHeaderEdit; }
+  Ui::DocHeaderEdit *docHeaderEdit() { return mDocHeaderEdit; }
 
 private:
-  DocHeaderEdit *mDocHeaderEdit;
+  Ui::DocHeaderEdit *mDocHeaderEdit;
 };
 
 #endif

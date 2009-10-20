@@ -19,19 +19,19 @@
 #include<qlineedit.h>
 #include <qlineedit.h>
 #include<qlabel.h>
-#include<qframe.h>
-#include <qhbox.h>
-#include <qvbox.h>
+#include<q3frame.h>
+#include <q3hbox.h>
+#include <q3vbox.h>
 #include <qpushbutton.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qcombobox.h>
 #include <qlayout.h>
 #include <qcheckbox.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qsqlquery.h>
 #include <qspinbox.h>
-#include <qdatatable.h>
-#include <qsqlcursor.h>
+#include <q3datatable.h>
+#include <q3sqlcursor.h>
 
 #include<kdialog.h>
 #include<klocale.h>
@@ -53,8 +53,10 @@
 // --------------------------------------------------------------------------------
 
 DocTypeEdit::DocTypeEdit( QWidget *parent )
-  : DocTypeEditBase( parent )
+  : Ui::DocTypeEditBase( )
 {
+  setupUi( this );
+
   connect( mTypeListBox, SIGNAL( highlighted( const QString& ) ),
            this,  SLOT( slotDocTypeSelected( const QString& ) ) );
 
@@ -103,8 +105,8 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   mTemplateUrl->setFilter( "*.trml" );
   mWatermarkUrl->setFilter( "*.pdf" );
 
-  mTemplateUrl->setURL( dt.templateFile() );
-  mWatermarkUrl->setURL( dt.watermarkFile() );
+  mTemplateUrl->setUrl( dt.templateFile() );
+  mWatermarkUrl->setUrl( dt.watermarkFile() );
 
   int newMode = dt.mergeIdent().toInt();
   mWatermarkCombo->setCurrentItem( newMode );
@@ -129,15 +131,15 @@ void DocTypeEdit::fillNumberCycleCombo()
 
 void DocTypeEdit::slotAddDocType()
 {
-  kdDebug() << "Adding a doctype!" << endl;
+  kDebug() << "Adding a doctype!";
 
   QString newName = KInputDialog::getText( i18n( "Add Document Type" ),
                                            i18n( "Enter the name of a new document type" ) );
   if ( newName.isEmpty() ) return;
-  kdDebug() << "New Name to add: " << newName << endl;
+  kDebug() << "New Name to add: " << newName;
 
   if ( mTypeListBox->findItem( newName ) ) {
-    kdDebug() << "New Name already exists" << endl;
+    kDebug() << "New Name already exists";
   } else {
     mTypeListBox->insertItem( newName );
     DocType newDt( newName, true );
@@ -150,7 +152,7 @@ void DocTypeEdit::slotAddDocType()
 
 void DocTypeEdit::slotEditDocType()
 {
-  kdDebug() << "Editing a doctype!" << endl;
+  kDebug() << "Editing a doctype!";
 
   QString currName = mTypeListBox->currentText();
 
@@ -160,7 +162,7 @@ void DocTypeEdit::slotEditDocType()
                                            i18n( "Edit the name of a document type" ),
                                            currName );
   if ( newName.isEmpty() ) return;
-  kdDebug() << "edit: " << currName << " became " << newName << endl;
+  kDebug() << "edit: " << currName << " became " << newName;
   if ( newName != currName ) {
     mTypeListBox->changeItem( newName, mTypeListBox->currentItem() );
 
@@ -176,7 +178,7 @@ void DocTypeEdit::slotEditDocType()
       }
 
       if ( !skipEntry && it.data() == currName ) {
-        kdDebug() << "Was changed before, key is " << it.key() << endl;
+        kDebug() << "Was changed before, key is " << it.key();
         currName = it.key();
         prechanged = true;
       }
@@ -195,12 +197,12 @@ void DocTypeEdit::slotEditDocType()
 
 void DocTypeEdit::slotRemoveDocType()
 {
-  kdDebug() << "Removing a doctype!" << endl;
+  kDebug() << "Removing a doctype!";
 
   QString currName = mTypeListBox->currentText();
 
   if ( currName.isEmpty() ) {
-    kdDebug() << "No current Item, return" << endl;
+    kDebug() << "No current Item, return";
     return;
   }
 
@@ -227,37 +229,37 @@ void DocTypeEdit::slotRemoveDocType()
 
 void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
 {
-  kdDebug() << "docTypeSelected: " << newValue << " and previous: " << mPreviousType << endl;
+  kDebug() << "docTypeSelected: " << newValue << " and previous: " << mPreviousType;
 
   DocType dt( newValue );
   if ( mChangedDocTypes.contains( newValue ) ) {
     dt = mChangedDocTypes[newValue];
-    kdDebug() << "new docType taken from ChangedDocTypes: " << endl;
+    kDebug() << "new docType taken from ChangedDocTypes: ";
   }
 
   // store the previous type
   DocType prevType = mOrigDocTypes[mPreviousType];
   if ( mChangedDocTypes.contains( mPreviousType ) ) {
     prevType = mChangedDocTypes[mPreviousType];
-    kdDebug() << "previous docType taken from ChangedDocTypes: " << endl;
+    kDebug() << "previous docType taken from ChangedDocTypes: ";
   }
   prevType.setNumberCycleName( mNumberCycleCombo->currentText() );
-  prevType.setTemplateFile( mTemplateUrl->url() );
-  prevType.setWatermarkFile( mWatermarkUrl->url() );
+  prevType.setTemplateFile( mTemplateUrl->url().toLocalFile() );
+  prevType.setWatermarkFile( mWatermarkUrl->url().toLocalFile() );
   prevType.setMergeIdent( QString::number( mWatermarkCombo->currentItem() ) );
   mChangedDocTypes[mPreviousType] = prevType;
 
   // dt.setNumberCycleName( dt.numberCycleName() );
-  kdDebug() << "Selected doc type " << newValue << endl;
+  kDebug() << "Selected doc type " << newValue;
   mIdent->setText( dt.identTemplate() );
   int nextNum = dt.nextIdentId( false )-1;
   mCounter->setText( QString::number( nextNum ) );
   mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
   // mHeader->setText( i18n( "Details for %1:" ).arg( dt.name() ) );
   mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
-  mTemplateUrl->setURL( dt.templateFile() );
+  mTemplateUrl->setUrl( dt.templateFile() );
 
-  mWatermarkUrl->setURL( dt.watermarkFile() );
+  mWatermarkUrl->setUrl( dt.watermarkFile() );
   int mergeIdent = dt.mergeIdent().toInt();
   mWatermarkCombo->setCurrentItem( mergeIdent );
   mWatermarkUrl->setEnabled( mergeIdent > 0 );
@@ -349,7 +351,7 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
   DocType dt = currentDocType();
   dt.setNumberCycleName( newCycle );
   mChangedDocTypes[docTypeName] = dt;
-  kdDebug() << "Changing the cycle name of " << docTypeName << " to " << newCycle << endl;
+  kDebug() << "Changing the cycle name of " << docTypeName << " to " << newCycle;
 
   mIdent->setText( dt.identTemplate() );
   int nextNum = dt.nextIdentId( false )-1;
@@ -392,7 +394,7 @@ void DocTypeEdit::saveDocTypes()
     if ( mOrigDocTypes.contains( name ) ) { // just to check
       DocType dt = mChangedDocTypes[name];
       QString numCycleName = dt.numberCycleName();
-      kdDebug() << "Number cycle name for to add doctype " << name << ": " << numCycleName << endl;
+      kDebug() << "Number cycle name for to add doctype " << name << ": " << numCycleName;
       dt.save();
     }
   }
@@ -403,7 +405,7 @@ void DocTypeEdit::saveDocTypes()
     QString oldName( it.key() );
     if ( mOrigDocTypes.contains( oldName ) ) {
       QString newName = it.data();
-      kdDebug() << "Renaming " << oldName << " to " << newName << endl;
+      kDebug() << "Renaming " << oldName << " to " << newName;
       DocType dt = mOrigDocTypes[oldName];
       if ( mChangedDocTypes.contains( newName ) ) {
         dt = mChangedDocTypes[newName];
@@ -414,7 +416,7 @@ void DocTypeEdit::saveDocTypes()
       mOrigDocTypes[newName] = dt;
       dt.save();
     } else {
-      kdError() << "Can not find doctype to change named " << oldName << endl;
+      kError() << "Can not find doctype to change named " << oldName;
     }
   }
 
@@ -436,7 +438,7 @@ void DocTypeEdit::removeTypeFromDb( const QString& name )
 
   dbID id = DocType::docTypeId( name );
   if ( !id.isOk() ) {
-    kdDebug() << "Can not find doctype " << name << " to remove!" << endl;
+    kDebug() << "Can not find doctype " << name << " to remove!";
     return;
   }
 
@@ -469,12 +471,12 @@ void DocTypeEdit::renameTypeInDb( const QString& oldName,  const QString& newNam
     q.bindValue( ":oldId", id.toInt() );
     q.exec();
     if ( q.numRowsAffected() == 0 ) {
-      kdError() << "Database update failed for renaming " << oldName << " to " << newName << endl;
+      kError() << "Database update failed for renaming " << oldName << " to " << newName;
     } else {
-      kdDebug() << "Renamed doctype " << oldName << " to " << newName << endl;
+      kDebug() << "Renamed doctype " << oldName << " to " << newName;
     }
   } else {
-    kdError() << "Could not find the id for doctype named " << oldName << endl;
+    kError() << "Could not find the id for doctype named " << oldName;
   }
 }
 

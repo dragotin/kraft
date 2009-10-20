@@ -28,9 +28,8 @@
 class DocPostCard;
 class CatalogSelection;
 class TextSelection;
-class QWidgetStack;
+class QStackedWidget;
 class QWidget;
-class QListViewItem;
 class KPushButton;
 class Katalog;
 class TemplateProvider;
@@ -39,6 +38,7 @@ class CatalogTemplateProvider;
 class FooterTemplateProvider;
 class AddressTemplateProvider;
 class DocText;
+class QSplitter;
 
 using namespace KABC;
 
@@ -72,13 +72,13 @@ public slots:
 
 protected slots:
   void slotAddressSelectionChanged();
-  void slotTextsSelectionChanged( QListViewItem* );
+  void slotTextsSelectionChanged( QTreeWidgetItem* );
   void slotHeaderTextToDocument( const DocText& );
   void slotFooterTextDeleted( const DocText& );
   void slotHeaderTextDeleted( const DocText& );
   void slotNewHeaderDocText( const DocText& );
   void slotUpdateHeaderDocText( const DocText& );
-  void slotCatalogSelectionChanged( QListViewItem* );
+  void slotCatalogSelectionChanged( QTreeWidgetItem* );
   void slotNewFooterDocText( const DocText& );
   void slotUpdateFooterDocText( const DocText& );
   void slotFooterTextToDocument( const DocText& );
@@ -95,11 +95,11 @@ signals:
   void footerTextTemplate( const QString& );
 
 private:
-  DocPostCard *mPostCard;
+  DocPostCard      *mPostCard;
   CatalogSelection *mCatalogSelection;
-  QWidgetStack *mWidgetStack;
-  HeaderSelection *mHeaderSelection;
-  TextSelection   *mFooterSelection;
+  QStackedWidget   *mWidgetStack;
+  HeaderSelection  *mHeaderSelection;
+  TextSelection    *mFooterSelection;
   bool mFullPreview;
   int            mActivePage;
   KPushButton    *mPbAdd;
@@ -108,6 +108,8 @@ private:
   KPushButton    *mPbDel;
   QWidget        *mTemplatePane;
   QString         mDocType;
+
+  // QSplitter      *mMainSplit;
 
   TemplateProvider        *mCurrTemplateProvider;
   HeaderTemplateProvider  *mHeaderTemplateProvider;

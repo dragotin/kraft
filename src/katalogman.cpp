@@ -16,20 +16,20 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qstringlist.h>
-#include <qsqlcursor.h>
+#include <QStringList>
+#include <QSqlQuery>
 
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 
 #include "kraftdb.h"
 #include "katalogman.h"
 #include "katalog.h"
 #include "templkatalog.h"
 
-static KStaticDeleter<KatalogMan> selfDeleter;
+static K3StaticDeleter<KatalogMan> selfDeleter;
 
 KatalogMan* KatalogMan::mSelf = 0;
 
@@ -43,7 +43,7 @@ KatalogMan *KatalogMan::self()
 
 KatalogMan::KatalogMan( )
 {
-  m_katalogDict.setAutoDelete( true );
+
 }
 
 KatalogMan::~KatalogMan( )
@@ -55,10 +55,10 @@ QStringList KatalogMan::allKatalogNames()
 
   QStringList list;
 
-  QSqlCursor cur( "CatalogSet" );
-  cur.select( );
-  while( cur.next() ) {
-    list << cur.value("name").toString();
+  QSqlQuery q( "SELECT name FROM CatalogSet ORDER BY sortKey, name" );
+
+  while( q.next() ) {
+    list << q.value( 0 ).toString();
   }
 
   return list;
@@ -67,11 +67,13 @@ QStringList KatalogMan::allKatalogNames()
 QString KatalogMan::catalogTypeString( const QString& catName )
 {
   QString res;
-  QSqlCursor cur( "CatalogSet" );
   if ( !catName.isEmpty() ) {
-    cur.select( "name='" + catName + "'" );
-    if ( cur.next() ) {
-      res = cur.value( "catalogType" ).toString();
+    QSqlQuery q;
+    q.prepare( "SELECT catalogType FROM CatalogSet where name=:name" );
+    q.bindValue( ":name",  catName );
+
+    if ( q.exec() && q.next() ) {
+      res = q.value( 0 ).toString();
     }
   }
   return res;
@@ -82,11 +84,11 @@ void KatalogMan::registerKatalog( Katalog *k )
     Katalog* kat = m_katalogDict[k->getName()];
 
     if( kat ) {
-        kdWarning() << "Katalog with same name already here -> deleting!" << endl;
+        kWarning() << "Katalog with same name already here -> deleting!" << endl;
         delete kat;
     } else {
         // not found, try to open it
-        kdDebug() << "Katalog " << k->getName() << " registered and loading..." << endl;
+        kDebug() << "Katalog " << k->getName() << " registered and loading..." << endl;
         m_katalogDict.insert( k->getName(), k );
         k->load ();
     }
@@ -97,9 +99,9 @@ Katalog *KatalogMan::getKatalog(const QString& name)
     Katalog* kat = m_katalogDict[name];
 
     if( !kat ) {
-        kdDebug() << "No katalog " << name << " found" << endl;
+        kDebug() << "No katalog " << name << " found" << endl;
     } else {
-        kdDebug() << "Returning existing katalog " << name << endl;
+        kDebug() << "Returning existing katalog " << name << endl;
     }
     return kat;
 }
@@ -112,24 +114,20 @@ void KatalogMan::notifyKatalogChange( Katalog* k, dbID )
     const QString name = k->getName();
     k->reload( dbID() );
 
-    QPtrList<KatalogListView> views = mKatalogListViews[name];
+    QList<KatalogListView*> views = mKatalogListViews[name];
 
     KatalogListView *view;
-    for ( view = views.first(); view; view = views.next() ) {
+    QListIterator<KatalogListView*> i( views );
+    while ( i.hasNext() ) {
+      view = i.next();
       view->slotRedraw();
     }
   }
-
-  // if ( id.isOk() ) {
-    // update a existing item
-  // } else {
-    // it's a new item saved to the db now.
-  // }
 }
 
 void KatalogMan::registerKatalogListView( const QString& name, KatalogListView *view )
 {
-  QPtrList<KatalogListView> views = mKatalogListViews[name];
+  QList<KatalogListView*> views = mKatalogListViews[name];
 
   if ( ! views.contains( view ) ) {
     views.append( view );
@@ -145,11 +143,12 @@ void KatalogMan::registerKatalogListView( const QString& name, KatalogListView *
 
 Katalog* KatalogMan::defaultTemplateCatalog()
 {
-  QDictIterator<Katalog> it( m_katalogDict ); // See QDictIterator
-  for( ; it.current(); ++it ) {
-    Katalog *k = it.current();
+  QHashIterator<QString, Katalog*> it( m_katalogDict ); // See QDictIterator
+  while ( it.hasNext() ) {
+    it.next();
+    Katalog *k = it.value();
     if ( k->type() == TemplateCatalog ) {
-      kdDebug() << "Found default template catalog: " << k->getName() << endl;
+      kDebug() << "Found default template catalog: " << k->getName() << endl;
       return k;
     }
   }

@@ -15,8 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qdom.h>
+//Added by qt3to4:
+#include <QSqlQuery>
 #include <kdebug.h>
 #include <klocale.h>
 #include <kglobal.h>
@@ -53,17 +55,12 @@ Katalog::Katalog()
 
 void Katalog::init()
 {
-    m_chapterIDs = new dbIdDict();
-    m_chapterIDs->setAutoDelete(true);
-
     // FIXME: Catalogs could have their own locale in the future
-    mLocale = KGlobal().locale();
+  mLocale = KGlobal::locale();
 }
 
 Katalog::~Katalog()
 {
-    if( m_chapterIDs )
-        delete m_chapterIDs;
 }
 
 /**
@@ -71,12 +68,14 @@ Katalog::~Katalog()
  */
 int Katalog::load()
 {
-    QSqlCursor cur( "CatalogSet" );
+    Q3SqlCursor cur( "CatalogSet" );
+    QSqlQuery q( "SELECT * FROM CatalogSet WHERE name = :name" );
+
     cur.select( QString("name='%1'").arg(m_name) );
     if( cur.next() ) {
         m_description = cur.value("description").toString();
         m_setID = cur.value("catalogSetID").toInt();
-        kdDebug() << "Setting catalogSetID=" << m_setID << " from name " << m_name << endl;
+        kDebug() << "Setting catalogSetID=" << QString( m_setID ) << " from name " << m_name << endl;
     }
     return 0;
 }
@@ -85,13 +84,12 @@ QStringList Katalog::getKatalogChapters( bool freshup )
 {
   if( m_chapters.empty() || freshup ) {
 
-    if( freshup ) {
-      m_chapters.clear();
-      m_chapterIDs->clear();
-    }
-    QSqlCursor cur("CatalogChapters");
+    m_chapters.clear();
+    m_chapterIDs.clear();
+
+    Q3SqlCursor cur("CatalogChapters");
     // QSqlIndex index = cur.index( "sortKey" );
-    kdDebug() << "Selecting chapters for catalog no " << QString::number( m_setID ) << endl;
+    kDebug() << "Selecting chapters for catalog no " << QString::number( m_setID ) << endl;
     cur.select( "catalogSetID=" + QString::number( m_setID ) ); // , index );
 
     while ( cur.next() )
@@ -99,10 +97,10 @@ QStringList Katalog::getKatalogChapters( bool freshup )
       // QString katName = QString::fromUtf8( cur.value("chapter").toCString() );
       QString katName = cur.value("chapter").toString();
       int katID = cur.value("chapterID").toInt();
-      kdDebug() << "Adding catalog chapter " << katName << " with ID " << katID << endl;
+      kDebug() << "Adding catalog chapter " << katName << " with ID " << katID << endl;
       m_chapters.append(katName);
-      dbID *id = new dbID(katID);
-      m_chapterIDs->insert(katName, id);
+      dbID id( katID );
+      m_chapterIDs.insert(katName, id);
     }
   }
 
@@ -111,30 +109,33 @@ QStringList Katalog::getKatalogChapters( bool freshup )
 
 int Katalog::chapterID(const QString& chapter)
 {
-  if( m_chapterIDs->size() == 0 ) {
+  if( m_chapterIDs.size() == 0 ) {
     // fill up the dict of ids if still empty.
     getKatalogChapters();
   }
 
-  dbID *id = m_chapterIDs->find(chapter);
-  if( id )
-    return id->intID();
+  dbIdDict::iterator it = m_chapterIDs.find(chapter);
+  if( it != m_chapterIDs.end() )
+    return it.value().intID();
   else
     return -1;
 }
 
 QString Katalog::chapterName(const dbID& id)
 {
-  if( m_chapterIDs->size() == 0 )
+  if( m_chapterIDs.size() == 0 )
   {
     // fill up the dict of ids if still empty.
     getKatalogChapters();
   }
 
-  QDictIterator<dbID> it( *m_chapterIDs ); // See QDictIterator
-  for( ; it.current(); ++it )
-    if( *(it.current()) == id )
-      return it.currentKey();
+  dbIdDictIterator i( m_chapterIDs );
+  while (i.hasNext()) {
+    i.next();
+    if ( i.value() == id ) {
+      return i.key();
+    }
+  }
 
   return QString("not found!");
 }
@@ -156,7 +157,7 @@ KatalogType Katalog::type()
 
 void Katalog::addChapter( const QString& name, int sortKey )
 {
-  QSqlCursor cur("CatalogChapters");
+  Q3SqlCursor cur("CatalogChapters");
   QSqlRecord *buffer = cur.primeInsert();
   buffer->setValue( "catalogSetID", m_setID );
   buffer->setValue( "chapter", name );
@@ -166,8 +167,8 @@ void Katalog::addChapter( const QString& name, int sortKey )
 
 bool Katalog::removeChapter( const QString& name, const QString& )
 {
-  kdDebug() << "Deleting chapter " << name << endl;
-  QSqlCursor cur( "CatalogChapters" );
+  kDebug() << "Deleting chapter " << name << endl;
+  Q3SqlCursor cur( "CatalogChapters" );
   QString q = QString("catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( name );
 
   cur.select( q );
@@ -180,9 +181,9 @@ bool Katalog::removeChapter( const QString& name, const QString& )
 
 void Katalog::renameChapter( const QString& from, const QString& to )
 {
-  QSqlCursor cur( "CatalogChapters" );
+  Q3SqlCursor cur( "CatalogChapters" );
   QString q = QString( "catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( from );
-  kdDebug()<< "Rename restriction: " << q << endl;
+  kDebug()<< "Rename restriction: " << q << endl;
   cur.select( q );
 
   if ( cur.next() ) {
@@ -194,7 +195,7 @@ void Katalog::renameChapter( const QString& from, const QString& to )
 
 void Katalog::setChapterSortKey( const QString& chap, int key )
 {
-  QSqlCursor cur( "CatalogChapters" );
+  Q3SqlCursor cur( "CatalogChapters" );
   QString q = QString( "catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( chap );
   cur.select( q );
 
@@ -208,7 +209,7 @@ void Katalog::setChapterSortKey( const QString& chap, int key )
 int Katalog::chapterSortKey( const QString& chap )
 {
   int key = -1;
-  QSqlCursor cur( "CatalogChapters" );
+  Q3SqlCursor cur( "CatalogChapters" );
   QString q = QString( "catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( chap );
   cur.select( q );
 

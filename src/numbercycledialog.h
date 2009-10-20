@@ -18,17 +18,18 @@
 #ifndef NUMBERCYCLEDIALOG_H
 #define NUMBERCYCLEDIALOG_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 #include <qmap.h>
+#include <QLabel>
 
 #include "dbids.h"
 #include "numbercycle.h"
-#include "numbercycleseditbase.h"
+#include "ui_numbercycleseditbase.h"
 
 class QLineEdit;
 class QLabel;
-class QTextEdit;
+class Q3TextEdit;
 class QPushButton;
 class QComboBox;
 class QCheckBox;
@@ -40,7 +41,7 @@ class QCheckBox;
 
 // ################################################################################
 
-class NumberCycleDialog: public KDialogBase
+class NumberCycleDialog: public KDialog
 {
   Q_OBJECT
 
@@ -64,7 +65,7 @@ private:
   void updateCycleDataFromGUI();
   bool dropOfNumberCycleOk( const QString& );
 
-  NumberCycleEditBase *mBaseWidget;
+  Ui::NumberCycleEditBase *mBaseWidget;
   QStringList mRemovedCycles;
   QMap<QString,NumberCycle> mNumberCycles;
   QString mSelectedCycle;

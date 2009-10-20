@@ -17,15 +17,18 @@
 #ifndef DOCTEXT_H
 #define DOCTEXT_H
 
-#include <qvaluelist.h>
-#include <kraftdoc.h>
+#include <QPixmap>
+#include <QList>
 
+#include "kraftcat_export.h"
+
+#include "kraftdoc.h"
 #include "dbids.h"
 
-class QListViewItem;
+class QTreeWidgetItem;
 class QPixmap;
 
-class DocText
+class KRAFTCAT_EXPORT DocText
 {
 public:
 
@@ -54,11 +57,11 @@ public:
   QString docType() const { return mDocType; }
   void setDocType( const QString& );
 
-  QListViewItem *listViewItem() const {
+  QTreeWidgetItem *listViewItem() const {
     return mCurrentItem;
   }
 
-  void setListViewItem( QListViewItem *item ) {
+  void setListViewItem( QTreeWidgetItem *item ) {
     mCurrentItem = item;
   }
 
@@ -76,11 +79,11 @@ private:
   QString  mDescription;
   QString  mDocType;
   KraftDoc::Part mTextType;
-  QListViewItem *mCurrentItem;
+  QTreeWidgetItem *mCurrentItem;
   dbID     mDbId;
 };
 
-typedef QValueList<DocText> DocTextList;
+typedef QList<DocText> DocTextList;
 
 #endif
 

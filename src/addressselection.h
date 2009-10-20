@@ -18,11 +18,11 @@
 #ifndef ADDRESSSELECTION_H
 #define ADDRESSSELECTION_H
 
-#include <qvbox.h>
+#include <q3vbox.h>
 #include <qmap.h>
 #include <qstring.h>
+#include <QTreeWidget>
 
-#include <klistview.h>
 #include <kabc/addressee.h>
 #include <kabc/addressbook.h>
 
@@ -30,16 +30,16 @@ class QComboBox;
 
 using namespace KABC;
 
-class AddressSelection : public KListView
+class AddressSelection : public QTreeWidget
 {
   Q_OBJECT
 
 public:
-  AddressSelection( QWidget* );
+  AddressSelection( QWidget *parent = 0 );
 
   ~AddressSelection() { };
   void setupAddressList( );
-  Addressee currentAddressee( QListViewItem* item = 0 );
+  Addressee currentAddressee( QTreeWidgetItem* item = 0 );
 
 signals:
   void addressSelected( const Addressee& );
@@ -49,7 +49,7 @@ protected slots:
   void slotSelectionChanged();
 
 private:
-  QMap<QListViewItem*, QString> mAddressIds;
+  QMap<QTreeWidgetItem*, QString> mAddressIds;
   AddressBook *mStdAddressbook;
 };
 

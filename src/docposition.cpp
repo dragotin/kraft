@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qstring.h>
 #include <qdom.h>
+#include <Q3PtrList>
+#include <Q3PtrCollection>
 
 // include files for KDE
 #include <klocale.h>
@@ -29,7 +31,7 @@
 #include "einheit.h"
 #include "geld.h"
 #include "docposition.h"
-#include "positionwidget.h"
+#include "ui_positionwidget.h"
 #include "positionviewwidget.h"
 #include "defaultprovider.h"
 
@@ -90,7 +92,7 @@ DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
 void DocPositionBase::setAttribute( const Attribute& attrib )
 {
   if ( attrib.name().isEmpty() )
-    kdDebug()  << "WRN: Can not save attribute with empty name!" << endl;
+    kDebug()  << "WRN: Can not save attribute with empty name!" << endl;
   else
     mAttribs[ attrib.name() ] = attrib;
 }
@@ -108,7 +110,7 @@ void DocPositionBase::setAttributeMap( AttributeMap attmap )
 void DocPositionBase::loadAttributes()
 {
   if ( m_dbId == -1 ) {
-    kdDebug() << "Can not load attributes, no valid database id!" << endl;
+    kDebug() << "Can not load attributes, no valid database id!" << endl;
     return;
   }
   mAttribs.load( m_dbId );
@@ -157,7 +159,7 @@ void DocPositionBase::removeTag( const QString& tag )
     Attribute att = mAttribs[DocPosition::Tags];
     QStringList li =  att.value().toStringList();
 
-    li.remove( tag );
+    li.removeAll( tag );
     att.setValue( QVariant( li ) );
     setAttribute( att );
   }
@@ -170,8 +172,7 @@ bool DocPositionBase::hasTag( const QString& tag )
   }
   Attribute att = mAttribs[DocPosition::Tags];
   QStringList li =  att.value().toStringList();
-  QStringList search = li.grep( tag, false ); // ignore case
-  if ( ! search.isEmpty() ) {
+  if( li.contains( tag, Qt::CaseInsensitive ) ) { // ignore case
     return true;
   }
   return false;
@@ -181,7 +182,7 @@ QStringList DocPositionBase::tags()
 {
   QStringList tags;
   if ( mAttribs.contains( DocPosition::Tags ) ) {
-    kdDebug() << mAttribs[DocPosition::Tags].toString() << endl;
+    kDebug() << mAttribs[DocPosition::Tags].toString() << endl;
     tags = mAttribs[DocPosition::Tags].value().toStringList();
   }
   return tags;
@@ -201,7 +202,7 @@ int DocPositionBase::taxTypeNumeric()
   else if ( mTaxType == TaxFull )
     return 3;
 
-  kdDebug() << "ERR: Vat-type ambigous!" << endl;
+  kDebug() << "ERR: Vat-type ambigous!";
   return 0; // Invalid
 }
 
@@ -254,9 +255,9 @@ DocPosition& DocPosition::operator=( const DocPosition& dp )
 // ##############################################################
 
 DocPositionList::DocPositionList()
-  : QPtrList<DocPositionBase>(), mLocale( 0 )
+  : QList<DocPositionBase*>(), mLocale( 0 )
 {
-  setAutoDelete( true );
+  // setAutoDelete( true );
 }
 
 Geld DocPositionList::bruttoPrice(double fullTax, double reducedTax )
@@ -268,103 +269,107 @@ Geld DocPositionList::bruttoPrice(double fullTax, double reducedTax )
 
 Geld DocPositionList::nettoPrice()
 {
-    Geld g;
+  Geld g;
 
-    DocPositionBase *dp;
-    for ( dp = first(); dp; dp = next() ) {
-          g += static_cast<DocPosition*>(dp)->overallPrice();
-    }
-    return g;
+  DocPositionListIterator it( *this );
+  while( it.hasNext() ) {
+    g += static_cast<DocPosition*>(it.next())->overallPrice();
+  }
+  return g;
 }
 
 Geld DocPositionList::fullTaxSum( double fullTax )
 {
-    Geld sum;
+  Geld sum;
 
-    if ( fullTax < 0 ) {
-      kdError() << "Full Tax is not loaded!" << endl;
-    }
+  if ( fullTax < 0 ) {
+    kError() << "Full Tax is not loaded!";
+  }
+  DocPositionListIterator it( *this );
+  while( it.hasNext() ) {
+    DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
-    DocPositionBase *dp;
-    for ( dp = first(); dp; dp = next() ) {
-      Geld g = static_cast<DocPosition*>(dp)->overallPrice();
-      Geld tax;
-      if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
-        tax = g.percent( fullTax );
-        // kdDebug() << "full Tax:" << g.toDouble( ) << " * " << fullTax << " = " << tax.toDouble() << endl;
-        sum += tax;
-      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
-        // tax = g.percent( reducedTax );
-        // kdDebug() << "red. Tax:" << g.toDouble( ) << " * " << reducedTax << " = " << tax.toDouble() << endl;
-      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
-        // kdDebug() << "no tax for pos " << dp->dbId().toString() << endl;
-      } else {
-        kdDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString() << endl;
-      }
+    Geld g = dp->overallPrice();
+    Geld tax;
+    if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
+      tax = g.percent( fullTax );
+      // kDebug() << "full Tax:" << g.toDouble( ) << " * " << fullTax << " = " << tax.toDouble();
+      sum += tax;
+    } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
+      // tax = g.percent( reducedTax );
+      // kDebug() << "red. Tax:" << g.toDouble( ) << " * " << reducedTax << " = " << tax.toDouble();
+    } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
+      // kDebug() << "no tax for pos " << dp->dbId().toString();
+    } else {
+      kDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString();
     }
-    return sum;
+  }
+  return sum;
 }
 
 Geld DocPositionList::reducedTaxSum( double reducedTax )
 {
-    Geld sum;
+  Geld sum;
 
-    if ( reducedTax < 0 ) {
-      kdError() << "Full Tax is not loaded!" << endl;
-    }
+  if ( reducedTax < 0 ) {
+    kError() << "Full Tax is not loaded!";
+  }
 
-    DocPositionBase *dp;
-    for ( dp = first(); dp; dp = next() ) {
-      Geld g = static_cast<DocPosition*>(dp)->overallPrice();
-      Geld tax;
-      if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
-        // tax = g.percent( fullTax );
-        // kdDebug() << "full Tax:" << g.toDouble( ) << " * " << fullTax << " = " << tax.toDouble() << endl;
-      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
-        tax = g.percent( reducedTax );
-        // kdDebug() << "red. Tax:" << g.toDouble( ) << " * " << reducedTax << " = " << tax.toDouble() << endl;
-        sum += tax;
-      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
-        // kdDebug() << "no tax for pos " << dp->dbId().toString() << endl;
-      } else {
-        kdDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString() << endl;
-      }
+  DocPositionListIterator it( *this );
+  while( it.hasNext() ) {
+    DocPosition *dp = static_cast<DocPosition*>( it.next() );
+    Geld g = dp->overallPrice();
+    Geld tax;
+    if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
+      // tax = g.percent( fullTax );
+      // kDebug() << "full Tax:" << g.toDouble( ) << " * " << fullTax << " = " << tax.toDouble();
+    } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
+      tax = g.percent( reducedTax );
+      // kDebug() << "red. Tax:" << g.toDouble( ) << " * " << reducedTax << " = " << tax.toDouble();
+      sum += tax;
+    } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
+      // kDebug() << "no tax for pos " << dp->dbId().toString();
+    } else {
+      kDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString();
     }
-    return sum;
+  }
+  return sum;
 
 }
 
 Geld DocPositionList::taxSum( double fullTax, double reducedTax )
 {
-    Geld sum;
+  Geld sum;
 
-    if ( fullTax < 0 ) {
-      kdError() << "Full Tax is not loaded!" << endl;
-    }
+  if ( fullTax < 0 ) {
+    kError() << "Full Tax is not loaded!";
+  }
 
-    DocPositionBase *dp;
-    for ( dp = first(); dp; dp = next() ) {
-      Geld g = static_cast<DocPosition*>(dp)->overallPrice();
-      Geld tax;
-      if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
-        tax = g.percent( fullTax );
-        // kdDebug() << "full Tax:" << g.toDouble( ) << " * " << fullTax << " = " << tax.toDouble() << endl;
-      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
-        tax = g.percent( reducedTax );
-        // kdDebug() << "red. Tax:" << g.toDouble( ) << " * " << reducedTax << " = " << tax.toDouble() << endl;
-      } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
-        kdDebug() << "no tax for pos " << dp->dbId().toString() << endl;
-      } else {
-        kdDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString() << endl;
-      }
-      sum += tax;
+  DocPositionListIterator it( *this );
+  while( it.hasNext() ) {
+    DocPosition *dp = static_cast<DocPosition*>( it.next() );
+
+    Geld g = dp->overallPrice();
+    Geld tax;
+    if ( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
+      tax = g.percent( fullTax );
+      // kDebug() << "full Tax:" << g.toDouble( ) << " * " << fullTax << " = " << tax.toDouble();
+    } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
+      tax = g.percent( reducedTax );
+      // kDebug() << "red. Tax:" << g.toDouble( ) << " * " << reducedTax << " = " << tax.toDouble();
+    } else if ( dp->taxTypeNumeric() == DocPositionBase::TaxNone ) {
+      kDebug() << "no tax for pos " << dp->dbId().toString();
+    } else {
+      kDebug() << "Unknown or invalid tax type for pos " << dp->dbId().toString();
     }
-    return sum;
+    sum += tax;
+  }
+  return sum;
 }
 
 QString DocPositionList::posNumber( DocPositionBase* pos )
 {
-  return QString::number( 1+findRef( pos ) );
+  return QString::number( 1+indexOf( pos ) );
 }
 
 void DocPositionList::setLocale( KLocale* loc )
@@ -374,40 +379,42 @@ void DocPositionList::setLocale( KLocale* loc )
 
 QDomElement DocPositionList::domElement( QDomDocument& doc )
 {
-    QDomElement topElem = doc.createElement( "positions" );
-    QDomElement posElem;
+  QDomElement topElem = doc.createElement( "positions" );
+  QDomElement posElem;
 
-    if ( !mLocale ) mLocale = DefaultProvider::self()->locale();
+  if ( !mLocale ) mLocale = DefaultProvider::self()->locale();
 
-    int num = 1;
-    DocPositionBase *dpb = 0;
+  int num = 1;
 
-    for ( dpb = first(); dpb; dpb = next() ) {
-      if( dpb->type() == DocPositionBase::Position ) {
-        DocPosition *dp = static_cast<DocPosition*>(dpb);
+  DocPositionListIterator it( *this );
+  while( it.hasNext() ) {
+    DocPosition *dpb = static_cast<DocPosition*>( it.next() );
 
-        posElem = doc.createElement( "position" );
-        posElem.setAttribute( "number", num++ );
-        topElem.appendChild( posElem );
-        posElem.appendChild( xmlTextElement( doc, "text", dp->text() ) );
+    if( dpb->type() == DocPositionBase::Position ) {
+      DocPosition *dp = static_cast<DocPosition*>(dpb);
 
-        double am = dp->amount();
-        QString h = mLocale->formatNumber( am, 2 );
-        posElem.appendChild( xmlTextElement( doc, "amount", h ));
+      posElem = doc.createElement( "position" );
+      posElem.setAttribute( "number", num++ );
+      topElem.appendChild( posElem );
+      posElem.appendChild( xmlTextElement( doc, "text", dp->text() ) );
 
-        Einheit e = dp->unit();
-        posElem.appendChild( xmlTextElement( doc, "unit", e.einheit( am ) ) );
+      double am = dp->amount();
+      QString h = mLocale->formatNumber( am, 2 );
+      posElem.appendChild( xmlTextElement( doc, "amount", h ));
 
-        Geld g = dp->unitPrice();
-        posElem.appendChild( xmlTextElement( doc, "unitprice", g.toString( mLocale ) ) );
+      Einheit e = dp->unit();
+      posElem.appendChild( xmlTextElement( doc, "unit", e.einheit( am ) ) );
 
-        posElem.appendChild( xmlTextElement( doc, "sumprice", Geld( g*am).toString( mLocale ) ) );
-      }
+      Geld g = dp->unitPrice();
+      posElem.appendChild( xmlTextElement( doc, "unitprice", g.toString( mLocale ) ) );
+
+      posElem.appendChild( xmlTextElement( doc, "sumprice", Geld( g*am).toString( mLocale ) ) );
     }
-    return topElem;
+  }
+  return topElem;
 }
-
-int DocPositionList::compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 )
+#if 0
+int DocPositionList::compareItems ( Q3PtrCollection::Item item1, Q3PtrCollection::Item item2 )
 {
   DocPositionBase *dpb1 = static_cast<DocPositionBase*>( item1 );
   DocPositionBase *dpb2 = static_cast<DocPositionBase*>( item2 );
@@ -422,9 +429,10 @@ int DocPositionList::compareItems ( QPtrCollection::Item item1, QPtrCollection::
   if( p1 > p2 ) res = 1;
   if( p1 < p2 ) res = -1;
 
-  // kdDebug()<< "In sort: comparing " << p1 << " with " << p2 << " = " << res << endl;
+  // kDebug()<< "In sort: comparing " << p1 << " with " << p2 << " = " << res << endl;
   return res;
 }
+#endif
 
 QDomElement DocPositionList::xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
 {
@@ -436,9 +444,12 @@ QDomElement DocPositionList::xmlTextElement( QDomDocument& doc, const QString& n
 
 DocPositionBase *DocPositionList::positionFromId( int id )
 {
-  DocPositionBase *dp = 0;
+  DocPosition *dp = 0;
 
-  for( dp = first(); dp ; dp = next() ) {
+  DocPositionListIterator it( *this );
+  while( it.hasNext() ) {
+    dp = static_cast<DocPosition*>( it.next() );
+
     if( dp->dbId() == id ) {
       break;
     }

@@ -14,13 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qsqlcursor.h>
 #include <qsqlrecord.h>
 #include <qsqlindex.h>
 #include <qstringlist.h>
+#include <QSqlQuery>
 
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 #include <klocale.h>
+#include <kglobal.h>
 #include <kdebug.h>
 
 #include "defaultprovider.h"
@@ -30,7 +31,7 @@
 #include "doctype.h"
 #include <kstandarddirs.h>
 
-static KStaticDeleter<DefaultProvider> selfDeleter;
+static K3StaticDeleter<DefaultProvider> selfDeleter;
 
 DefaultProvider* DefaultProvider::mSelf = 0;
 
@@ -49,9 +50,15 @@ DefaultProvider::DefaultProvider()
 
 QString DefaultProvider::docType()
 {
-  QString type = KraftSettings::doctype();
-  if ( type.isEmpty() )
-    type = DocType::allLocalised()[0];
+  QString type = KraftSettings::self()->doctype();
+  if ( type.isEmpty() ) {
+    QStringList allTypes = DocType::allLocalised();
+    if( ! allTypes.isEmpty() ) {
+      type = DocType::allLocalised()[0];
+    } else {
+      type = i18n( "Unknown" );
+    }
+  }
   return type;
 }
 
@@ -66,7 +73,7 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
                          "DocTypes types WHERE texts.docTypeId=types.docTypeID AND "
                          "types.name=\'%1\' AND textType = \'%2\'").arg( docType ).arg( typeStr );
 
-  // kdDebug() << "Reading texts from DB with: " << sql << endl;
+  // kDebug() << "Reading texts from DB with: " << sql << endl;
 
   QSqlQuery query( sql );
   if ( query.isActive() ) {
@@ -103,63 +110,49 @@ QString DefaultProvider::defaultText( const QString& docType, KraftDoc::Part p, 
 
 dbID DefaultProvider::saveDocumentText( const DocText& t )
 {
-  QSqlCursor cur( "DocTexts" );
-  cur.setMode( QSqlCursor::Writable );
   dbID retVal;
 
+  QSqlQuery q;
   if ( t.dbId().isOk() ) {
-    // Update required.
-    QString crit = QString( "docTextID=%1" ).arg( t.dbId().toInt() );
-    cur.select( crit );
-    if ( cur.next() ) {
-      QSqlRecord *buffer = cur.primeUpdate();
-      fillDocTextBuffer( t, buffer );
-      retVal = t.dbId();
-      cur.update();
-    }
+    q.prepare( "UPDATE DocTexts SET (name=:name, description=:desc, text=:text,"
+               "docType=:doctype, docTypeId=:doctypeid, textType=:texttype, "
+               "modDate=systemtimestamp) "
+               "WHERE docTextID=:id" );
+    q.bindValue( ":id",  t.dbId().toInt() );
   } else {
     // Lets insert
-    QSqlRecord *buffer = cur.primeInsert();
-    fillDocTextBuffer( t, buffer );
-    cur.insert();
-
-    retVal = KraftDB::self()->getLastInsertID();
+    q.prepare( "INSERT INTO DocTexts (name, description, text, docType, docTypeId, "
+               "textType, modDate) "
+               "VALUES (:name, :description, :text, :doctype, :doctypeid, :texttype, \"systemtimestamp\" )" );
   }
+  q.bindValue( ":name", t.name() );
+  q.bindValue( ":description", t.description() );
+  q.bindValue( ":text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
+  q.bindValue( ":doctype", t.docType() );
+  dbID id = DocType::docTypeId( t.docType() );
+  q.bindValue( ":doctypeid", id.toInt() );
+  q.bindValue( ":texttype", t.textTypeString() );
+
+  q.exec();
+
+  retVal = KraftDB::self()->getLastInsertID();
+
   return retVal;
 }
 
-void DefaultProvider::fillDocTextBuffer( const DocText& t, QSqlRecord *buffer )
-{
-  if ( ! buffer ) return;
-
-  buffer->setValue( "name", t.name() );
-  buffer->setValue( "description", t.description() );
-  buffer->setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
-  buffer->setValue( "docType", t.docType() );
-
-  dbID id = DocType::docTypeId( t.docType() );
-  buffer->setValue( "docTypeId", id.toString() );
-  buffer->setValue( "textType", t.textTypeString() );
-  buffer->setValue( "modDate", "systimestamp" );
-}
 
 KLocale* DefaultProvider::locale()
 {
-  return KGlobal().locale();
+  return KGlobal::locale();
 }
 
 void DefaultProvider::deleteDocumentText( const DocText& dt )
 {
-  QSqlCursor cur( "DocTexts" );
-
-  // QString sql = QString( "name=\'%1\' AND docType=\'%2\' AND textType=\'%3\'" )
   if ( dt.dbId().isOk() ) {
-    QString sql = QString( "docTextID=%1" ).arg( dt.dbId().toInt() );
-    cur.select( sql );
-    if ( cur.next() ) {
-      cur.primeDelete();
-      cur.del();
-    }
+    QSqlQuery q;
+    q.prepare("DELETE FROM DocTexts WHERE docTextID=:id") ;
+    q.bindValue( ":id", dt.dbId().toInt());
+    q.exec();
   }
 }
 

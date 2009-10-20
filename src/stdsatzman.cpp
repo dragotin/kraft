@@ -21,12 +21,12 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 
 #include "stdsatzman.h"
 #include "kraftdb.h"
 #include <qsqlquery.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 
 StdSatz::StdSatz():
     m_dbId(0)
@@ -66,7 +66,7 @@ StdSatzDuration::StdSatzDuration( const StdSatz& std, int dur )
 /*
  * ********** Stundensatz Manager **********
  */
-static KStaticDeleter<StdSatzMan> selfDeleter;
+static K3StaticDeleter<StdSatzMan> selfDeleter;
 StdSatzMan* StdSatzMan::mSelf = 0;
 
 StdSatzMan *StdSatzMan::self()
@@ -87,7 +87,7 @@ QStringList StdSatzMan::allStdSaetze()
     QStringList list;
     load();
 
-    StdSatzValueVector::iterator it;
+    StdSatzVector::iterator it;
     for( it = mStdSaetze.begin(); it != mStdSaetze.end(); ++it )
     {
         QString n = (*it).getName();
@@ -101,7 +101,7 @@ QStringList StdSatzMan::allStdSaetze()
 StdSatz  StdSatzMan::getStdSatz( const QString& name )
 {
     load();
-    StdSatzValueVector::iterator it;
+    StdSatzVector::iterator it;
     for( it = mStdSaetze.begin(); it != mStdSaetze.end(); ++it )
     {
         if( (*it).getName() == name ) return (*it);
@@ -112,7 +112,7 @@ StdSatz  StdSatzMan::getStdSatz( const QString& name )
 StdSatz StdSatzMan::getStdSatz( dbID id )
 {
     load();
-    StdSatzValueVector::iterator it;
+    StdSatzVector::iterator it;
     for( it = mStdSaetze.begin(); it != mStdSaetze.end(); ++it )
     {
         dbID dbid = (*it).getId();
@@ -137,14 +137,14 @@ void StdSatzMan::load()
     q.next();
     max = q.value(0).toInt();
   }
-  kdDebug() << "Groesse fuer Stundensatzliste: " << max << endl;
+  kDebug() << "Groesse fuer Stundensatzliste: " << max << endl;
 
   mStdSaetze.resize( max );
 
 
   /* Daten laden */
-  QSqlCursor cur("stdSaetze");
-  cur.setMode( QSqlCursor::ReadOnly );
+  Q3SqlCursor cur("stdSaetze");
+  cur.setMode( Q3SqlCursor::ReadOnly );
 
     // Create an index that sorts from high values for einheitID down.
     // that makes at least on resize of the vector.
@@ -155,7 +155,7 @@ void StdSatzMan::load()
     while( cur.next() )
     {
       int satzID = cur.value("stdSaetzeID").toInt();
-      kdDebug() << "Neue StdSatz ID " << satzID << endl;
+      kDebug() << "Neue StdSatz ID " << satzID << endl;
       // resize if index is to big.
       StdSatz ss( satzID, QString::fromUtf8(cur.value("name").toCString()),
                   Geld( cur.value("price").toDouble()));

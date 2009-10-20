@@ -25,7 +25,7 @@
 // include files for QT
 #include <qstring.h>
 #include <qdatetime.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qmap.h>
 
 // include files for KDE
@@ -149,7 +149,7 @@ private:
   QString   mIdent;
 };
 
-class ArchDocDigestList : public QValueList<ArchDocDigest>
+class ArchDocDigestList : public Q3ValueList<ArchDocDigest>
 {
 public:
   ArchDocDigestList();

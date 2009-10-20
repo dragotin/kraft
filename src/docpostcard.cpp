@@ -18,7 +18,7 @@
 #include "docpostcard.h"
 #include "kraftdoc.h"
 
-#include <qstylesheet.h>
+#include <q3stylesheet.h>
 
 #include <klocale.h>
 #include <kglobal.h>
@@ -27,6 +27,7 @@
 
 #include <kdebug.h>
 #include <kstandarddirs.h>
+#include <QTextDocument>
 
 DocPostCard::DocPostCard( QWidget *parent )
   :HtmlView( parent ),  mMode( Full )
@@ -47,7 +48,7 @@ void DocPostCard::setHeaderData( const QString& type,  const QString& date,
 
 QString DocPostCard::htmlify( const QString& str ) const
 {
-  QStringList li = QStringList::split( "\n", QStyleSheet::escape( str ) );
+  QStringList li = Qt::escape(str).split( "\n" );
   return "<p>" + li.join( "</p><p>" ) + "</p>";
 }
 
@@ -55,9 +56,11 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
                                 double tax, double reducedTax )
 {
   mPositions = "<table border=\"0\" width=\"99%\">";
-  DocPositionBase *dpb;
-  for( dpb = posList.first(); dpb; dpb = posList.next() ) {
-     if( dpb->type() != DocPositionBase::Header ) {
+
+  DocPositionListIterator it(posList);
+  while( it.hasNext() ) {
+    DocPositionBase *dpb = it.next();
+    if( dpb->type() != DocPositionBase::Header ) {
       DocPosition *dp = static_cast<DocPosition*>(dpb);
       mPositions += "<tr><td width=\"20px\" align=\"right\" valign=\"top\">";
 
@@ -108,7 +111,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
   mPositions += QString( "<tr><td><b>" ) + i18n( "Total:" )+
                 QString( "</b></td><td align=\"right\"><b>%1</b></td></tr>" ).arg( brutto );
   mPositions += "</table></div>";
-  // kdDebug() << "Positions-HTML: " << mPositions << endl;
+  // kDebug() << "Positions-HTML: " << mPositions << endl;
 }
 
 void DocPostCard::setFooterData( const QString& postText,  const QString& goodbye )
@@ -120,17 +123,17 @@ void DocPostCard::setFooterData( const QString& postText,  const QString& goodby
 void DocPostCard::renderDoc( int id )
 {
   QString t;
-  // kdDebug() << "rendering postcard for active id " << id <<
+  // kDebug() << "rendering postcard for active id " << id <<
     //( mMode == Full ? " (full) " : " (mini) " ) << endl;
   if ( mMode == Full ) {
     t = renderDocFull( id );
   } else if ( mMode == Mini ) {
     t = renderDocMini( id );
   } else {
-    kdDebug() << "Unknown postcard mode" << endl;
+    kDebug() << "Unknown postcard mode" << endl;
   }
 
-  // kdDebug () << t << endl;
+  // kDebug () << t << endl;
   displayContent( t );
 }
 
@@ -252,28 +255,30 @@ QString DocPostCard::linkBit( const QString& url, const QString& display ) const
   return QString( "<a href=\"%1\">%2</a> " ).arg( url ).arg( display );
 }
 
-void DocPostCard::urlSelected( const QString &url, int, int,
-  const QString &, KParts::URLArgs  )
+bool DocPostCard::urlSelected (const QString &url, int, int, const QString &,
+                    const KParts::OpenUrlArguments &,
+                    const KParts::BrowserArguments &)
 {
-  kdDebug() << "DocPostCard::urlSelected(): " << url << endl;
+  kDebug() << "DocPostCard::urlSelected(): " << url << endl;
 
-  KURL kurl( url );
+  KUrl kurl( url );
 
   KraftDoc::Part id = KraftDoc::Header;
 
   if ( kurl.protocol() == "kraftdoc" ) {
     if ( kurl.host() == "header" ) {
-      kdDebug() << "Header selected!" << endl;
+      kDebug() << "Header selected!" << endl;
       id = KraftDoc::Header;
     } else if ( kurl.host() == "positions" ) {
-      kdDebug() << "Positions selected!" << endl;
+      kDebug() << "Positions selected!" << endl;
       id = KraftDoc::Positions;
     } else if ( kurl.host() == "footer" ) {
-      kdDebug() << "Footer selected!" << endl;
+      kDebug() << "Footer selected!" << endl;
       id = KraftDoc::Footer;
     }
     emit selectPage( id );
   }
+  return true;
 }
 
 void DocPostCard::slotSetMode( DisplayMode mode, int id ) {

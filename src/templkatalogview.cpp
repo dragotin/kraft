@@ -20,6 +20,8 @@
 #include <qprinter.h>
 #include <qpainter.h>
 #include <qlayout.h>
+//Added by qt3to4:
+
 // include files for KDE
 #include <kiconloader.h>
 #include <kmessagebox.h>
@@ -28,7 +30,7 @@
 #include <kstatusbar.h>
 #include <klocale.h>
 #include <kconfig.h>
-#include <kstdaction.h>
+#include <kstandardaction.h>
 #include <kdebug.h>
 
 // application specific includes
@@ -80,7 +82,7 @@ void TemplKatalogView::slEditVorlage()
     {
         FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
         if( currTempl ) {
-            KListViewItem *item = (KListViewItem*) listview->currentItem();
+            QTreeWidgetItem *item = (QTreeWidgetItem*) listview->currentItem();
             openDialog( item, currTempl, false );
         }
     }
@@ -97,13 +99,13 @@ void TemplKatalogView::slNeueVorlage()
     flosTempl->setText( i18n( "<new template>" ) );
 
     // Eltern = Katalogitem rausfinden
-    KListViewItem *parentItem = static_cast<KListViewItem*>(listview->currentItem());
+    QTreeWidgetItem *parentItem = static_cast<QTreeWidgetItem*>(listview->currentItem());
     if( parentItem )
     {
         // Wenn es kein chapter ist, nehmen wir den Parent
         if( ! (templListView->isRoot(parentItem) || templListView->isChapter(parentItem)) )
         {
-            parentItem = (KListViewItem*) parentItem->parent();
+            parentItem = (QTreeWidgetItem*) parentItem->parent();
         }
     }
 
@@ -112,15 +114,14 @@ void TemplKatalogView::slNeueVorlage()
       QString name = parentItem->text(0);
       Katalog *k = getKatalog( m_katalogName );
       if( k ) {
-        kdDebug() << "setting catalog name " << name << endl;
+        kDebug() << "setting catalog name " << name << endl;
         flosTempl->setChapterID(k->chapterID(name));
       }
     }
 
-    KListViewItem *item = templListView->addFlosTemplate(parentItem, flosTempl);
-    templListView->ensureItemVisible( item );
-    templListView->setSelected( item, true );
-
+    QTreeWidgetItem *item = templListView->addFlosTemplate(parentItem, flosTempl);
+    templListView->scrollToItem( item );
+    templListView->setCurrentItem( item );
     openDialog( item, flosTempl, true );
 }
 
@@ -159,22 +160,22 @@ CalcPartList TemplKatalogView::currentItemsCalcParts()
 }
 
 
-void TemplKatalogView::slChangeChapter(int newID)
+void TemplKatalogView::slChangeChapter( int newID)
 {
     KatalogListView *listview = getListView();
     if( !listview ) return;
     TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listview);
 
     if( m_editListViewItem ) {
-        templListView->slChangeChapter( m_editListViewItem, newID);
+        templListView->slotChangeChapter( m_editListViewItem, newID);
     }
 }
 
-void TemplKatalogView::openDialog( KListViewItem *listitem, FloskelTemplate *tmpl, bool isNew )
+void TemplKatalogView::openDialog( QTreeWidgetItem *listitem, FloskelTemplate *tmpl, bool isNew )
 {
     if( ! m_flosDialog )
     {
-        m_flosDialog = new FlosTemplDialog(this, "VORLAGE_EDIT", false);
+        m_flosDialog = new FlosTemplDialog(this, false);
         connect( m_flosDialog, SIGNAL(editAccepted( FloskelTemplate* )),
                  this, SLOT( slEditOk(FloskelTemplate*)));
         connect( m_flosDialog, SIGNAL(editRejected( )),
@@ -202,10 +203,10 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
     }
 
     if( m_editListViewItem ) {
-      kdDebug() << "Edit was ok, refreshing item in list " << m_editListViewItem << endl;
-      templListView->setSelected( m_editListViewItem, true );
+      kDebug() << "Edit was ok, refreshing item in list " << m_editListViewItem << endl;
+      templListView->setCurrentItem( m_editListViewItem );
       templListView->slFreshupItem( m_editListViewItem, templ, true );
-      templListView->ensureItemVisible( m_editListViewItem );
+      templListView->scrollToItem( m_editListViewItem );
     }
 
     m_editListViewItem = 0;
@@ -225,7 +226,7 @@ void TemplKatalogView::slEditRejected()
 
 void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
 {
-    kdDebug() << "Creating new Listview" << endl;
+    kDebug() << "Creating new Listview" << endl;
     m_listview = new TemplKatalogListView( w );
     box->addWidget(m_listview);
 }

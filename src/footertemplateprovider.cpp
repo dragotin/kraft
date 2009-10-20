@@ -32,7 +32,7 @@ FooterTemplateProvider::FooterTemplateProvider( QWidget *parent )
 
 void FooterTemplateProvider::slotNewTemplate()
 {
-  kdDebug() << "SlotNewTemplate called!" << endl;
+  kDebug() << "SlotNewTemplate called!" << endl;
 
   TextEditDialog dia( mParent, KraftDoc::Footer );
 
@@ -43,7 +43,7 @@ void FooterTemplateProvider::slotNewTemplate()
   dia.setDocText( dt );
 
   if ( dia.exec() ) {
-    kdDebug() << "Successfully edited new text" << endl;
+    kDebug() << "Successfully edited new text" << endl;
     DocText dt = dia.docText();
     /* save to database */
     dbID newId = DefaultProvider::self()->saveDocumentText( dt );
@@ -55,7 +55,7 @@ void FooterTemplateProvider::slotNewTemplate()
 
 void FooterTemplateProvider::slotEditTemplate()
 {
-  kdDebug() << "SlotEditTemplate called!" << endl;
+  kDebug() << "SlotEditTemplate called!" << endl;
 
   TextEditDialog dia( mParent, KraftDoc::Footer );
 
@@ -69,7 +69,7 @@ void FooterTemplateProvider::slotEditTemplate()
   dia.setDocText( dt );
 
   if ( dia.exec() ) {
-    kdDebug() << "Successfully edited texts" << endl;
+    kDebug() << "Successfully edited texts" << endl;
     DocText dt = dia.docText();
 
     /* write back the listview item stored in the input text */
@@ -91,7 +91,7 @@ void FooterTemplateProvider::slotDeleteTemplate()
 
 void FooterTemplateProvider::slotTemplateToDocument()
 {
-  kdDebug() << "Moving template to document" << endl;
+  kDebug() << "Moving template to document" << endl;
   emit footerTextToDocument( currentText() );
 }
 

@@ -19,15 +19,15 @@
 #include<qlineedit.h>
 #include <qlineedit.h>
 #include<qlabel.h>
-#include<qframe.h>
-#include <qhbox.h>
-#include <qvbox.h>
+#include<q3frame.h>
+#include <q3hbox.h>
+#include <q3vbox.h>
 #include <qpushbutton.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qcombobox.h>
 #include <qlayout.h>
 #include <qcheckbox.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qsqlquery.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
@@ -37,6 +37,7 @@
 #include<kiconloader.h>
 #include<kmessagebox.h>
 #include <kinputdialog.h>
+#include <kvbox.h>
 
 #include "prefsdialog.h"
 #include "katalogsettings.h"
@@ -50,12 +51,20 @@
 
 
 NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
- :KDialogBase( parent, "NUMBER_CYCLES_EDIT", true, i18n( "Edit Number Cycles" ), Ok|Cancel )
+ :KDialog( parent ) //  "NUMBER_CYCLES_EDIT", true, i18n( "Edit Number Cycles" ), Ok|Cancel )
 {
-  enableButtonSeparator( true );
-  QWidget *w = makeVBoxMainWidget();
+  setObjectName( "NUMBER_CYCLES_EDIT" );
+  setModal( true );
+  setCaption( i18n( "Edit Number Cycles" ) );
+  setButtons( Ok|Cancel );
 
-  mBaseWidget = new NumberCycleEditBase( w );
+  showButtonSeparator( true );
+
+  KVBox *w = new KVBox( parent );
+  setMainWidget( w );
+
+  mBaseWidget = new Ui::NumberCycleEditBase( );
+  mBaseWidget->setupUi( w );
 
   mBaseWidget->mPbAdd->setPixmap( BarIcon( "filenew" ) );
   mBaseWidget->mPbEdit->setPixmap( BarIcon( "edit" ) );
@@ -93,7 +102,7 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
   connect( mBaseWidget->mCycleListBox, SIGNAL( highlighted( int ) ),
            SLOT( slotNumberCycleSelected( int ) ) );
 
-  QListBoxItem *initItem = mBaseWidget->mCycleListBox->findItem( initType );
+  Q3ListBoxItem *initItem = mBaseWidget->mCycleListBox->findItem( initType );
   if ( initItem ) {
     mBaseWidget->mCycleListBox->setSelected( initItem,  true );
   }
@@ -141,7 +150,7 @@ void NumberCycleDialog::slotTemplTextChanged( const QString& str )
   if ( !str.isEmpty() && str.contains( "%i" ) ) {
     state = true;
   }
-  actionButton( Ok )->setEnabled( state );
+  button( Ok )->setEnabled( state );
   slotUpdateExample();
 }
 
@@ -149,21 +158,21 @@ void NumberCycleDialog::updateCycleDataFromGUI()
 {
   // Store the updated values
   if ( !mSelectedCycle.isEmpty() ) {
-    kdDebug() << "Updating the cycle: " << mSelectedCycle << endl;
+    kDebug() << "Updating the cycle: " << mSelectedCycle;
 
     if ( mNumberCycles.contains( mSelectedCycle ) ) {
       QString h = mBaseWidget->mIdTemplEdit->text();
       mNumberCycles[mSelectedCycle].setTemplate( h );
-      kdDebug() << "Number Cycle Template: " << h << endl;
+      kDebug() << "Number Cycle Template: " << h;
 
       int num = mBaseWidget->mCounterEdit->value();
-      kdDebug() << "Number Edit: " << num << endl;
+      kDebug() << "Number Edit: " << num;
       mNumberCycles[mSelectedCycle].setCounter( num );
     } else {
-      kdDebug() << "WRN: NumberCycle " << mSelectedCycle << " is not known" << endl;
+      kDebug() << "WRN: NumberCycle " << mSelectedCycle << " is not known";
     }
   } else {
-    kdDebug() << "The selected cycle name is Empty!" << endl;
+    kDebug() << "The selected cycle name is Empty!";
   }
 
 }
@@ -175,10 +184,10 @@ void NumberCycleDialog::slotNumberCycleSelected( int num )
   // set the new data of the selected cycle
   QString name = mBaseWidget->mCycleListBox->text( num );
   if ( ! mNumberCycles.contains( name ) ) {
-    kdDebug() << "No numbercycle found at pos " << num << endl;
+    kDebug() << "No numbercycle found at pos " << num;
   }
   NumberCycle nc = mNumberCycles[name];
-  kdDebug() << "Selected number cycle number " << num << endl;
+  kDebug() << "Selected number cycle number " << num;
 
   mBaseWidget->mIdTemplEdit->setText( nc.getTemplate() );
   mBaseWidget->mCounterEdit->setMinValue( 0 ); // nc.counter() );
@@ -221,9 +230,9 @@ void NumberCycleDialog::slotAddCycle()
     mNumberCycles[newName] = numCycle;
     mBaseWidget->mCycleListBox->insertItem( numCycle.name() );
   } else {
-    kdDebug() << "The name is not unique!" << endl;
+    kDebug() << "The name is not unique!";
   }
-  QListBoxItem *item = mBaseWidget->mCycleListBox->findItem( newName );
+  Q3ListBoxItem *item = mBaseWidget->mCycleListBox->findItem( newName );
   if ( item ) {
     mBaseWidget->mCycleListBox->setCurrentItem( item );
   }
@@ -232,7 +241,7 @@ void NumberCycleDialog::slotAddCycle()
 void NumberCycleDialog::slotRemoveCycle()
 {
   QString entry = mBaseWidget->mCycleListBox->currentText();
-  QListBoxItem *item = mBaseWidget->mCycleListBox->selectedItem();
+  Q3ListBoxItem *item = mBaseWidget->mCycleListBox->selectedItem();
   if ( entry.isEmpty() || !item ) return;
 
   mRemovedCycles << entry;
@@ -269,7 +278,7 @@ bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
 
 void NumberCycleDialog::slotOk()
 {
-  kdDebug() << "Slot Ok hit" << endl;
+  kDebug() << "Slot Ok hit";
 
   // get the changed stuff from the gui elements
   updateCycleDataFromGUI();
@@ -280,7 +289,7 @@ void NumberCycleDialog::slotOk()
     qDel.prepare( "DELETE FROM numberCycles WHERE name=:name" );
     for ( QStringList::Iterator it = mRemovedCycles.begin();
           it != mRemovedCycles.end(); ++it ) {
-      kdDebug() << "about to drop the number cycle " << *it << endl;
+      kDebug() << "about to drop the number cycle " << *it;
       if ( dropOfNumberCycleOk( *it ) ) {
         qDel.bindValue( ":name", *it );
         qDel.exec();
@@ -300,7 +309,7 @@ void NumberCycleDialog::slotOk()
     // name changes can not happen by design
     q.exec();
     if ( q.next() ) {
-      kdDebug() << "Checking existing number cycle " << cycleName << " for update" << endl;
+      kDebug() << "Checking existing number cycle " << cycleName << " for update";
       // there is an entry
       if ( q.value( 2 ).toInt() != cycle.counter() ) {
         bool doUpdate = true;
@@ -312,7 +321,7 @@ void NumberCycleDialog::slotOk()
                                             i18n( "The new counter is lower than the old one. "
                                                   "That has potential to create doublicate document numbers. Do you really want to decrease it?" ),
                                             i18n("Dangerous Counter Change"),
-                                            KStdGuiItem::yes(), KStdGuiItem::no() )
+                                            KStandardGuiItem::yes(), KStandardGuiItem::no() )
                   != KMessageBox::Yes )
             {
               doUpdate = false;
@@ -328,7 +337,7 @@ void NumberCycleDialog::slotOk()
         updateField( q.value( 0 ).toInt(), "identTemplate", cycle.getTemplate() );
       }
     } else {
-      kdDebug() << "This number cycle is new: " << cycleName << endl;
+      kDebug() << "This number cycle is new: " << cycleName;
       QSqlQuery qIns;
       qIns.prepare( "INSERT INTO numberCycles (name, lastIdentNumber, identTemplate) "
                     "VALUES (:name, :number, :templ)" );
@@ -340,7 +349,7 @@ void NumberCycleDialog::slotOk()
       qIns.exec();
     }
   }
-  KDialogBase::slotOk();
+  KDialog::slotButtonClicked( Ok );
 }
 
 void NumberCycleDialog::updateField( int id, const QString& field, const QString& value )

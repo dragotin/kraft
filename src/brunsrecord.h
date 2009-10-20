@@ -18,14 +18,15 @@
 #ifndef BRUNSBRUNSRECORD_H
 #define BRUNSBRUNSRECORD_H
 
-#include <qcstring.h>
-#include <qvaluelist.h>
-#include <qptrlist.h>
+#include <q3cstring.h>
+#include <q3ptrlist.h>
+
+#include "kraftcat_export.h"
 
 /**
 @author Klaas Freitag
 */
-class BrunsSize {
+class KRAFTCAT_EXPORT BrunsSize {
 
 public:
     BrunsSize();
@@ -54,8 +55,8 @@ public:
     int getSizeAdd () { return sizeAddNo; }
     void setSizeAdd (int i) { sizeAddNo = i; }
 
-    QCString getPrimMatchcode() { return primMatch; }
-    void setPrimMatchcode(const QCString& str) { primMatch = str; }
+    QString getPrimMatchcode() { return primMatch; }
+    void setPrimMatchcode(const QString& str) { primMatch = str; }
 private:
     int   formNo;      // 35-38
     int   grothNo;     // 39-42
@@ -65,12 +66,12 @@ private:
     int   goodsGroup;   // 268-271
     int   sizeNo;
     int   sizeAddNo;
-    QCString primMatch;
+    QString primMatch;
 };
-typedef QValueList<BrunsSize> BrunsSizeList;
+typedef QList<BrunsSize> BrunsSizeList;
 
 
-class BrunsRecord{
+class KRAFTCAT_EXPORT BrunsRecord{
 public:
     // Construct with an artikelID
     BrunsRecord(){};
@@ -88,14 +89,14 @@ public:
     int getArtId () { return artId; }
     void setArtId (int i) { artId = i; }
 
-    QCString getArtMatch() const { return artMatch; }
-    void setArtMatch( const QCString& str ) { artMatch = str; }
+    Q3CString getArtMatch() const { return artMatch; }
+    void setArtMatch( const Q3CString& str ) { artMatch = str; }
 
-    QCString getLtName() const { return ltName; }
-    void setLtName( const QCString& n ) { ltName = n; }
+    Q3CString getLtName() const { return ltName; }
+    void setLtName( const Q3CString& n ) { ltName = n; }
 
-    QCString getDtName() const { return dtName; }
-    void setDtName( const QCString& n ) { dtName = n; }
+    Q3CString getDtName() const { return dtName; }
+    void setDtName( const Q3CString& n ) { dtName = n; }
     
     void debugOut();
 
@@ -110,11 +111,11 @@ private:
     bool  passNeeded;  // 11
     int   plantGroup;  // 13-18
     int   artId;       // 19-24
-    QCString artMatch; // 25-34
-    QCString dtName;   // 272-331
-    QCString ltName;   // 322-391
+    Q3CString artMatch; // 25-34
+    Q3CString dtName;   // 272-331
+    Q3CString ltName;   // 322-391
 };
 
-typedef QPtrList<BrunsRecord> BrunsRecordList;
+typedef QList<BrunsRecord*> BrunsRecordList;
 
 #endif

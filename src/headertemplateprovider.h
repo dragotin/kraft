@@ -23,7 +23,7 @@
 #include "headerselection.h"
 
 class QWidget;
-class QListViewItem;
+class Q3ListViewItem;
 
 class HeaderTemplateProvider : public TemplateProvider
 {

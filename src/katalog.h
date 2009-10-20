@@ -18,9 +18,9 @@
 #ifndef KATALOG_H
 #define KATALOG_H
 
-#include <qptrlist.h>
-#include <qdict.h>
-#include <qstringlist.h>
+#include <kraftcat_export.h>
+
+#include <QStringList>
 
 #include "floskeltemplate.h"
 #include "dbids.h"
@@ -36,12 +36,12 @@ typedef enum {UnspecCatalog, MaterialCatalog, TemplateCatalog, PlantCatalog } Ka
 class QDomDocument;
 class KLocale;
 
-class Katalog
+class KRAFTCAT_EXPORT Katalog
 {
 public:
-    
-    Katalog(const QString& name);
     Katalog();
+    Katalog(const QString& );
+
     virtual ~Katalog();
 
     virtual int load();
@@ -96,7 +96,7 @@ public:
     KLocale *locale() { return mLocale; }
 protected:
 
-    dbIdDict   *m_chapterIDs;
+    dbIdDict    m_chapterIDs;
     QStringList m_chapters;
     QString     m_name;
     QString     m_description;

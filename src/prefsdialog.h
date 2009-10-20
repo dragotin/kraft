@@ -18,9 +18,12 @@
 #ifndef PREFSDIALOG_H
 #define PREFSDIALOG_H
 
-#include <kdialogbase.h>
+#include <kpagedialog.h>
 
 #include <qmap.h>
+//Added by qt3to4:
+#include <Q3SqlCursor>
+#include <QLabel>
 
 #include "doctypeedit.h"
 #include "doctype.h"
@@ -28,17 +31,17 @@
 
 class QLineEdit;
 class QLabel;
-class QTextEdit;
+class Q3TextEdit;
 class QPushButton;
 class QComboBox;
 class QCheckBox;
-class QListView;
-class QDataTable;
-class QSqlCursor;
+class Q3ListView;
+class Q3DataTable;
+class Q3SqlCursor;
 
 // ################################################################################
 
-class PrefsDialog : public KDialogBase
+class PrefsDialog : public KPageDialog
 {
   Q_OBJECT
 
@@ -53,7 +56,7 @@ protected:
   void writeConfig();
 
 protected slots:
-  void slotOk();
+  void accept();
   void slotDbCredentialsChanged( const QString& );
   void slotCheckConnect();
   
@@ -86,7 +89,7 @@ private:
 
   DocTypeEdit *mDocTypeEdit;
   
-  QListView *mTaxListView;
+  Q3ListView *mTaxListView;
   QPushButton *mDelTax;
 
 };

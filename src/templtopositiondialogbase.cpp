@@ -17,7 +17,7 @@
 
 #include <qcombobox.h>
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <kdebug.h>
 #include <klocale.h>
 
@@ -25,10 +25,14 @@
 #include "docposition.h"
 
 TemplToPositionDialogBase::TemplToPositionDialogBase( QWidget *w )
-  : KDialogBase( w, "TEMPL_DIALOG", true, i18n( "Create Position from Template" ),
-                 Ok | Cancel )
+  : KDialog( w )
 {
-  enableButtonSeparator( true );
+  setObjectName( "TEMPL_DIALOG" );
+  setButtons( KDialog::Ok | KDialog::Cancel );
+  setCaption( i18n("Create Position from Template" ) );
+  setModal( true );
+
+  showButtonSeparator( true );
 }
 
 TemplToPositionDialogBase::~TemplToPositionDialogBase()
@@ -40,14 +44,14 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
 {
   DocPositionBase *dpb;
   if ( ! getPositionCombo() ) {
-    kdError() << "Can not get a ptr to the position combo" << endl;
+    kError() << "Can not get a ptr to the position combo" << endl;
     return;
   }
   QStringList strList;
   strList << i18n( "the Header of the Document as first position" );
-
-  for ( dpb = list.first(); dpb; dpb = list.next() ) {
-    DocPosition *dp = static_cast<DocPosition*>( dpb );
+  DocPositionListIterator it( list );
+  while( it.hasNext() ) {
+    DocPosition *dp = static_cast<DocPosition*>( it.next() );
     QString h = QString( "%1. %2" ).arg( list.posNumber( dp ) ).arg( dp->text() );
     if ( h.length() > 50 ) {
       h = h.left( 50 );
@@ -63,7 +67,7 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
 int TemplToPositionDialogBase::insertAfterPosition()
 {
   int itemPos = getPositionCombo()->currentItem();
-  kdDebug() << "Current item selected: " << itemPos << endl;
+  kDebug() << "Current item selected: " << itemPos << endl;
 
   return itemPos;
 }

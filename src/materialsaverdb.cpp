@@ -21,10 +21,10 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 
 #include <qdatetime.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqlrecord.h>
 
 #include "kraftdb.h"
@@ -34,7 +34,7 @@
 #include "stockmaterial.h"
 
 MaterialSaverDB* MaterialSaverDB::mSelf = 0;
-static KStaticDeleter<MaterialSaverDB> selfDeleter;
+static K3StaticDeleter<MaterialSaverDB> selfDeleter;
 
 MaterialSaverDB::MaterialSaverDB( )
     : MaterialSaverBase()
@@ -57,7 +57,7 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 
     // Transaktion ?
 
-    QSqlCursor cur("stockMaterial");
+    Q3SqlCursor cur("stockMaterial");
     QString templID = QString::number( mat->getID() );
     cur.select( "matID=" + templID);
 
@@ -65,7 +65,7 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 
     if( cur.next())
     {
-        kdDebug() << "Updating material " << mat->getID() << endl;
+        kDebug() << "Updating material " << mat->getID() << endl;
 
         // mach update
         isNew = false;
@@ -76,7 +76,7 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
     else
     {
         // insert
-        kdDebug() << "Creating new material database entry" << endl;
+        kDebug() << "Creating new material database entry" << endl;
 
         isNew = true;
         buffer = cur.primeInsert();
@@ -85,13 +85,13 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 
         /* Jetzt die neue Template-ID selecten */
         dbID id = KraftDB::self()->getLastInsertID();
-        kdDebug() << "New Database ID=" << id.toInt() << endl;
+        kDebug() << "New Database ID=" << id.toInt() << endl;
 
         if( id.isOk() ) {
             mat->setID( id.toInt() );
             templID = id.toString();
         } else {
-            kdDebug() << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
+            kDebug() << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
             res = false;
         }
     }

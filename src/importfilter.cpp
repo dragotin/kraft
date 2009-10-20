@@ -17,6 +17,9 @@
 
 // include files for QT
 #include <qfile.h>
+//Added by qt3to4:
+#include <Q3TextStream>
+#include <Q3ValueList>
 
 #include <kstandarddirs.h>
 #include <klocale.h>
@@ -28,7 +31,7 @@
 
 #include <qregexp.h>
 #include <kio/netaccess.h>
-#include <ktempfile.h>
+#include <ktemporaryfile.h>
 
 ImportFilter::ImportFilter()
   : mStrict( true )
@@ -44,7 +47,7 @@ bool ImportFilter::readDefinition( const QString& name )
     QString defFileName = QString( name ).lower();
     QString findFile = kdeStdDirPath() + defFileName;
 
-    kdDebug() << "KDE StdDir Path: " << findFile << endl;
+    kDebug() << "KDE StdDir Path: " << findFile;
     defFile = stdDirs.findResource( "data", findFile );
     if ( defFile.isEmpty() ) {
       mError = i18n( "Unable to find filter called %1" ).arg( name );
@@ -52,15 +55,15 @@ bool ImportFilter::readDefinition( const QString& name )
     }
   }
 
-  kdDebug() << "Reading definition file " << defFile << endl;
+  kDebug() << "Reading definition file " << defFile;
   QFile f( defFile );
-  if ( !f.open( IO_ReadOnly ) ) {
+  if ( !f.open( QIODevice::ReadOnly ) ) {
     mError = i18n( "Could not open the definition file!" );
     return false;
   }
 
-  QTextStream t( &f );
-  t.setEncoding(QTextStream::UnicodeUTF8);
+  Q3TextStream t( &f );
+  t.setEncoding(Q3TextStream::UnicodeUTF8);
 
   while ( !t.atEnd() ) {
     mDefinition << t.readLine();
@@ -84,10 +87,10 @@ bool ImportFilter::recode( const QString& file, const QString& outfile )
     QString command = QString( "%1 -f %2 -t utf-8 -o %3 %4" ).arg( cmd )
                       .arg( mEncoding ).arg( outfile ).arg( file );
     int result = system( command.latin1() );
-    kdDebug() << "Recode finished with exit code " << result << endl;
+    kDebug() << "Recode finished with exit code " << result;
     return true;
   } else {
-    kdDebug() << "Recode-tool does not exist!" << endl;
+    kDebug() << "Recode-tool does not exist!";
   }
   return false;
 }
@@ -113,32 +116,32 @@ bool DocPositionImportFilter::parseDefinition()
 {
   bool ret = true;
   for ( QStringList::Iterator it = mDefinition.begin(); it != mDefinition.end(); ++it ) {
-    QString l = ( *it ).stripWhiteSpace();
+    QString l = ( *it ).trimmed();
 
     if ( l.isEmpty() || l.startsWith( "#" ) ) {
       // continue - whitespace....
     } else if ( l.startsWith( FILTER_TAG( "amount:", "amount of the item" ),  false ) ) {
-      mAmount = ( l.right( l.length()-7 ) ).stripWhiteSpace();
+      mAmount = ( l.right( l.length()-7 ) ).trimmed();
     } else if ( l.startsWith( FILTER_TAG( "text:",  "The item text" ),  false ) ) {
-      mText = ( l.right( l.length()-5 ) ).stripWhiteSpace();
+      mText = ( l.right( l.length()-5 ) ).trimmed();
       mText.replace( "<br>", QChar( 0x0A ) );
     } else if ( l.startsWith( FILTER_TAG( "unit:",  "The item unit" ),  false ) ) {
-      mUnit = ( l.right( l.length()-5 ) ).stripWhiteSpace();
+      mUnit = ( l.right( l.length()-5 ) ).trimmed();
     } else if ( l.startsWith( FILTER_TAG( "unit_price:", "unit price" ),  false ) ) {
-      mUnitPrice = ( l.right( l.length()-11 ) ).stripWhiteSpace();
+      mUnitPrice = ( l.right( l.length()-11 ) ).trimmed();
     } else if ( l.startsWith( FILTER_TAG( "name:",  "The name of the filter" ),  false ) ) {
-      mName = ( l.right( l.length()-5 ) ).stripWhiteSpace();
+      mName = ( l.right( l.length()-5 ) ).trimmed();
     } else if ( l.startsWith( FILTER_TAG( "description:", "The filter description" ), false ) ) {
-      mDescription = ( l.right( l.length()-12 ) ).stripWhiteSpace();
+      mDescription = ( l.right( l.length()-12 ) ).trimmed();
     } else if ( l.startsWith( FILTER_TAG("encoding:", "The encoding of the source file" ),  false ) ) {
-      mEncoding = ( l.right( l.length()-9 ) ).stripWhiteSpace();
+      mEncoding = ( l.right( l.length()-9 ) ).trimmed();
     } else if ( l.startsWith( FILTER_TAG( "separator:", "The separator used in the source file" ),  false ) ) {
-      kdDebug() << "Separator found: " << l.right( l.length()-10 ) << endl;
-      mSeparator = ( l.right( l.length()-10 ) ).stripWhiteSpace();
+      kDebug() << "Separator found: " << l.right( l.length()-10 );
+      mSeparator = ( l.right( l.length()-10 ) ).trimmed();
     } else if ( l.startsWith( FILTER_TAG( "tags:", "Comma separated list of tags for one item" ),  false ) ) {
-      mTags = ( l.right( l.length()-5 ) ).stripWhiteSpace();
+      mTags = ( l.right( l.length()-5 ) ).trimmed();
     } else {
-      kdDebug() << "WRN: Unknown filter tag found: " << l << endl;
+      kDebug() << "WRN: Unknown filter tag found: " << l;
       if ( mError.isEmpty() ) mError = i18n( "Unknown tags: " );
       mError.append( l );
       ret = false;
@@ -154,29 +157,32 @@ bool DocPositionImportFilter::parseDefinition()
 
 void DocPositionImportFilter::debugDefinition()
 {
-  kdDebug() << "Amount: " << mAmount << endl;
-  kdDebug() << "Unit: " << mUnit << endl;
-  kdDebug() << "UnitPrice: " << mUnitPrice << endl;
-  kdDebug() << "Text: " << mText << endl;
-  kdDebug() << "Separator: <" << mSeparator << ">" << endl;
+  kDebug() << "Amount: " << mAmount;
+  kDebug() << "Unit: " << mUnit;
+  kDebug() << "UnitPrice: " << mUnitPrice;
+  kDebug() << "Text: " << mText;
+  kDebug() << "Separator: <" << mSeparator << ">";
 }
 
-QValueList<DocPosition> DocPositionImportFilter::import( const QString& inFile )
+DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
 {
-  QValueList<DocPosition> list;
+  DocPositionList list;
   bool copied = false;
-  QString file( inFile );
+
+  if( !inFile.isLocalFile() ) return list;
+
+  QString file( inFile.toLocalFile() );
 
   // in case we have to recode, the source file needs to be copied.
   bool ok = true;
   if ( !mEncoding.isEmpty() ) {
-    file = inFile+".tmp";
+    file += ".tmp";
     copied = true;
-    kdDebug() << "Encoding file to " << file << endl;
+    kDebug() << "Encoding file to " << file;
 
-    ok = recode( inFile, file );
+    ok = recode( inFile.toLocalFile(), file );
     if ( !ok ) {
-      kdDebug() << "Recoding failed!" << endl;
+      kDebug() << "Recoding failed!";
       mError = i18n( "Could not recode input file!" );
     }
   }
@@ -184,33 +190,33 @@ QValueList<DocPosition> DocPositionImportFilter::import( const QString& inFile )
   QFile f( file );
 
   if ( ! f.exists() ) {
-    kdDebug() << "File " << file << " could not be found!" << endl;
+    kDebug() << "File " << file << " could not be found!";
     mError = i18n( "Unable to open temp file " ) + file;
     ok = false;
   }
 
   if ( ok ) {
-    if ( !f.open( IO_ReadOnly ) ) {
+    if ( !f.open( QIODevice::ReadOnly ) ) {
       mError = i18n( "Could not open the import source file!" );
       ok = false;
     } else {
-      kdDebug() << "Unable to open file in read only mode" << endl;
+      kDebug() << "Unable to open file in read only mode";
     }
   }
   if ( ok ) {
-    QTextStream t( &f );
-    t.setEncoding(QTextStream::UnicodeUTF8);
+    Q3TextStream t( &f );
+    t.setEncoding(Q3TextStream::UnicodeUTF8);
 
     int cnt = 0;
     while ( !t.atEnd() ) {
       cnt++;
-      QString l = t.readLine().stripWhiteSpace();
-      kdDebug() << "Importing line " << l << endl;
+      QString l = t.readLine().trimmed();
+      kDebug() << "Importing line " << l;
       if ( !( l.isEmpty() || l.startsWith( "#" ) ) ) {
         bool ok;
         DocPosition dp = importDocPosition( l, ok );
         if ( ok )
-          list.append( dp );
+          list.append( new DocPosition( dp ) );
       }
     }
     f.close();
@@ -225,7 +231,7 @@ QValueList<DocPosition> DocPositionImportFilter::import( const QString& inFile )
 DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& ok )
 {
   QStringList parts = QStringList::split( mSeparator, l, true );
-  kdDebug() << "Importing raw line " << l << endl;
+  kDebug() << "Importing raw line " << l;
 
   QString h;
   ok = true;
@@ -238,11 +244,11 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
   pos.setText( t );
   QString unit = replaceCOL( parts, mUnit );
 
-  int unitId = UnitManager::getUnitIDSingular( unit );
+  int unitId = UnitManager::self()->getUnitIDSingular( unit );
   if ( unitId > -1 ) {
-    pos.setUnit( UnitManager::getUnit( unitId ) );
+    pos.setUnit( UnitManager::self()->getUnit( unitId ) );
   } else {
-    kdDebug() << "WRN: Unable to get a valid unit" << endl;
+    kDebug() << "WRN: Unable to get a valid unit";
     if ( mStrict ) ok = false;
   }
 
@@ -253,7 +259,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
   if ( convOk ) {
     pos.setAmount( a );
   } else {
-    kdDebug() << "WRN: Unable to convert amount to double: " << h << endl;
+    kDebug() << "WRN: Unable to convert amount to double: " << h;
     if ( mStrict ) ok = false;
   }
 
@@ -263,7 +269,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
  if ( convOk ) {
    pos.setUnitPrice( Geld( a ) );
  } else {
-    kdDebug() << "WRN: Unable to convert unit price to double: " << h << endl;
+    kDebug() << "WRN: Unable to convert unit price to double: " << h;
     if ( mStrict ) ok = false;
  }
 
@@ -271,7 +277,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
    QStringList tags = QStringList::split( QRegExp( "\\s*,\\s*" ), mTags );
 
    for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-     QString t = ( *it ).stripWhiteSpace();
+     QString t = ( *it ).trimmed();
      pos.setTag( t );
    }
  }
@@ -286,6 +292,6 @@ QString DocPositionImportFilter::replaceCOL( const QStringList& cols, const QStr
     QString replacer = QString( "COL(%1)" ).arg( i+1 );
     re.replace( replacer, cols[i], false );
   }
-  // kdDebug() << "replaced line: " << re << endl;
+  // kDebug() << "replaced line: " << re;
   return re;
 }

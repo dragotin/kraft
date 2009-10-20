@@ -28,47 +28,41 @@
 #include "version.h"
 #include "portal.h"
 
-static const char *description =
-I18N_NOOP("Kraft - Small business correspondence for the KDE desktop" );
-
-static const char *otherText =
-I18N_NOOP("Kraft is free software for persons in small businesses\n"
-          "writing correspondence like offers and invoices to their customers" );
-
-static KCmdLineOptions options[] =
-{
-  { "d <documentID>", I18N_NOOP( "Show a document" ), 0 },
-  KCmdLineLastOption
-  // INSERT YOUR COMMANDLINE OPTIONS HERE
-};
-
 int main(int argc, char *argv[])
 {
-  KStandardDirs stdDirs;
-  QString splashFile = stdDirs.findResource( "data", "kraft/pics/muckilogo_oS.png" );
-  QImage logo( splashFile );
+  KAboutData aboutData( "kraft", "kraft", ki18n("Kraft"),
+                        KRAFT_VERSION,
+                        ki18n("Business documents for the small enterprise"),
+                        KAboutData::License_GPL,
+                        ki18n("(c) 2004-2009 Klaas Freitag" ) );
 
-  KAboutData aboutData( "kraft", I18N_NOOP("Kraft"),
-                        KRAFT_VERSION, description, KAboutData::License_GPL,
-                        "(c) 2004-2008 Klaas Freitag", 0, 0, "freitag@kde.org");
-  aboutData.addAuthor("Klaas Freitag", I18N_NOOP( "Developer" ), "freitag@kde.org");
-  aboutData.addAuthor("Johannes Spielhagen", I18N_NOOP( "Graphics and Artwork" ),
+  aboutData.addAuthor(ki18n("Klaas Freitag"), ki18n( "Developer" ), "freitag@kde.org");
+  aboutData.addAuthor(ki18n("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ),
                       "kraft@spielhagen.de", "http://www.michal-spielhagen.de" );
-  aboutData.setProgramLogo( logo );
-  aboutData.setOtherText( otherText );
+  // aboutData.setProgramLogo( logo );
+  aboutData.setOtherText( ki18n("Kraft is free software for persons in small businesses\n"
+          "writing correspondence like offers and invoices to their customers" ) );
+
   aboutData.setVersion( KRAFT_VERSION );
   aboutData.setHomepage( "http://kraft.sourceforge.net" );
 
   KCmdLineArgs::init( argc, argv, &aboutData );
-  KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
+
+
+  KCmdLineOptions options;
+  options.add( "d <number>", ki18n("Open Document Number") );
+
+   // Register the supported options
+  KCmdLineArgs::addCmdLineOptions( options );
 
   KApplication app;
 
-  if (app.isRestored()) {
+  if (app.isSessionRestored())
+  {
     RESTORE(Portal);
   } else {
     KStandardDirs stdDirs;
-    splashFile = stdDirs.findResource( "data", "kraft/pics/kraftsplash.png" );
+    QString splashFile = stdDirs.findResource( "data", "kraft/pics/kraftsplash.png" );
     KSplashScreen *splash = 0;
 
     if( !splashFile.isEmpty()) {
@@ -85,11 +79,11 @@ int main(int argc, char *argv[])
         }
         pixmap.setMask( bm );
       } else {
-        // kdDebug() << "Have a mask already!" << endl;
+        // kDebug() << "Have a mask already!";
       }
 
       splash = new KSplashScreen( pixmap );
-      splash->setMask( *pixmap.mask() );
+      // splash->setMask( *pixmap.mask() );
       splash->show();
     }
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -100,7 +94,7 @@ int main(int argc, char *argv[])
       splash->finish( kraftPortal->mainWidget() );
       delete splash;
     } else {
-      kdDebug() << "Could not find splash screen" << endl;
+      kDebug() << "Could not find splash screen";
     }
   }
 

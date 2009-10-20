@@ -1,305 +1,281 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>DocHeaderEdit</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>DocHeaderEdit</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>614</width>
-            <height>534</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Form1</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget" row="0" column="0">
-            <property name="name">
-                <cstring>layout6</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mButtLang</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="pixmap">
-                        <pixmap>image0</pixmap>
-                    </property>
-                </widget>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>m_cbType</cstring>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>120</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="KDateWidget">
-                    <property name="name">
-                        <cstring>m_dateEdit</cstring>
-                    </property>
-                </widget>
-            </hbox>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DocHeaderEdit</class>
+ <widget class="QWidget" name="DocHeaderEdit">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>614</width>
+    <height>534</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form1</string>
+  </property>
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QPushButton" name="mButtLang">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="m_cbType"/>
+     </item>
+     <item>
+      <spacer name="spacer2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>120</width>
+         <height>21</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="KDateWidget" name="m_dateEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QGridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="textLabel1_2">
+       <property name="text">
+        <string>&amp;Project:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignTop</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+       <property name="buddy">
+        <cstring>mProjectLabelEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" rowspan="2">
+      <widget class="Q3TextEdit" name="m_whiteboardEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>32767</width>
+         <height>80</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::VLine</enum>
+       </property>
+       <property name="tabChangesFocus" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLineEdit" name="mProjectLabelEdit">
+       <property name="toolTip">
+        <string>Enter a label that describes the project. This may appear on the customer document.</string>
+       </property>
+       <property name="maxLength">
+        <number>255</number>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+       <property name="dragEnabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="textLabel1">
+       <property name="text">
+        <string>&amp;Whiteboard:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignTop</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+       <property name="buddy">
+        <cstring>m_whiteboardEdit</cstring>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <layout class="QGridLayout">
+     <item row="2" column="1">
+      <widget class="KComboBox" name="m_letterHead">
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="textLabel4">
+       <property name="text">
+        <string>Postal &amp;Address:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignTop</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+       <property name="buddy">
+        <cstring>m_postAddressEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout">
+       <item>
+        <widget class="QLabel" name="m_labName">
+         <property name="text">
+          <string>not selected</string>
+         </property>
+         <property name="wordWrap">
+          <bool>false</bool>
+         </property>
         </widget>
-        <widget class="QLayoutWidget" row="1" column="0">
-            <property name="name">
-                <cstring>layout5</cstring>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Project:</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignTop</set>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>mProjectLabelEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="QTextEdit" row="1" column="1" rowspan="2" colspan="1">
-                    <property name="name">
-                        <cstring>m_whiteboardEdit</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>32767</width>
-                            <height>80</height>
-                        </size>
-                    </property>
-                    <property name="paletteBackgroundColor">
-                        <color>
-                            <red>246</red>
-                            <green>255</green>
-                            <blue>141</blue>
-                        </color>
-                    </property>
-                    <property name="frameShape">
-                        <enum>VLine</enum>
-                    </property>
-                    <property name="tabChangesFocus">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="1" column="0">
-                    <property name="name">
-                        <cstring>mProjectLabelEdit</cstring>
-                    </property>
-                    <property name="maxLength">
-                        <number>255</number>
-                    </property>
-                    <property name="frame">
-                        <bool>true</bool>
-                    </property>
-                    <property name="dragEnabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Enter a label that describes the project. This may appear on the customer document.</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="1">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Whiteboard:</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignTop</set>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>m_whiteboardEdit</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QLayoutWidget" row="2" column="0">
-            <property name="name">
-                <cstring>layout7</cstring>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="KComboBox" row="2" column="1">
-                    <property name="name">
-                        <cstring>m_letterHead</cstring>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>textLabel4</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Postal &amp;Address:</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignTop</set>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>m_postAddressEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget" row="0" column="1">
-                    <property name="name">
-                        <cstring>layout8</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>m_labName</cstring>
-                            </property>
-                            <property name="text">
-                                <string>not selected</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer1</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>41</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </hbox>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
-                    <property name="name">
-                        <cstring>textLabel5</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Salutatory Address:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>m_teEntry</cstring>
-                    </property>
-                </widget>
-                <widget class="QTextEdit" row="1" column="1">
-                    <property name="name">
-                        <cstring>m_postAddressEdit</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="tabChangesFocus">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Customer:</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QLabel" row="3" column="0">
-            <property name="name">
-                <cstring>textLabel8</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Entry Text on First Page:</string>
-            </property>
-            <property name="buddy" stdset="0">
-                <cstring>m_teEntry</cstring>
-            </property>
-        </widget>
-        <widget class="QTextEdit" row="4" column="0">
-            <property name="name">
-                <cstring>m_teEntry</cstring>
-            </property>
-            <property name="tabChangesFocus">
-                <bool>true</bool>
-            </property>
-        </widget>
-    </grid>
-</widget>
-<customwidgets>
-</customwidgets>
-<images>
-    <image name="image0">
-        <data format="PNG" length="1256">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000004af49444154388ddd954d6c556510869fef9ceffcdc7bee6f5bec2d85b6d602a69a8ab1fcd59fc4981aaa89455024a81859588d0b89121225a03171a16e5c1858088968aa510ba9e0425422048891885090b65828c516dbd296f6b6b7b7f79e7bcef95c882c8c1863e2c63799ddcc3b33997766e03f82f8274eaf522b1bc299f9a9bb16ce376a6ed22feef9f66cdb50a26b2707fd7f95f5636a633f917c66a8a9f964fecbaf725e7777e09d3f1f0c97cfc97713fea68d54edf5622580137fbfd130756958fa49d3929a19326e6a19d9bdbc71f8d3c7ace2e88d6673933016d74328840a02ac97379b45dbb7df577da6672794dc0ba3b9bf244e1439772e5992dadcd9939992a62ee6cf8b4642e72aa4bdfe256869412b2f87e969443a8d42a056ad26f3e0635c7ef575830fded5af5bb1edc88aa2125bde5f1549a6331e951511e22b9fc55b6661b7b6a27b1e229904400c0f137e6f07b9a79ee397c6e67c64cf8e5b822050d96c76101804fc6bc4866d54babee26ce724a62dd16d9786eebd44b6b6a28d8dc1d34f437939c4e3e016d08560d61bafa02fba67c98a152b8e0e0e0e8a03070e4c01878097812ed958f704a38e595e5c62535115259357cc9d13e6869dc7a1b494c2860de80f3d84e638a820c0131a99556b09767d4861dfe77ad871c8e7f30009a019a807ee9277ac5e192968b3535d67a7312c97449145d287c46b1b98bead0671e408fab66d04fdfda84201efca150a4537907e6e1393e919ea064e931a1b4501c7811ca4801b654dc7b192a6779686f38905b86e40d8d6b0c64730761f87175be0c205c49a35980b17a21c074efd84ff512bd12ff6b170c9dd548614d6c404eb0474009b14c1791813fb99d5707bd23b2c1a1a342d1241efed459e3e8d669a04ebd7a33dff3c664d0d3ae02bc8073075394d7eeb167efee13baa52c5e8478f126432009c83e90714b7486b6f7ba538b85bc84387d08300b560016e4b0beae18731a4c46c6b43dbb811d5d5054a215365c8471e6760d31be45f588736398ccabbd764664226802999f4b3730a6fbe290ae2ea760b81d1d74778c70eec5dbb102323280479cfc7770bd8bd7d248f1cc6fdac8da97939e2b7e6a05891eb845c2f6415692027138fae9a1babab41d5d7a3170ac873e7d0070640d3482b9d8bd26254cf51280111b1b19d30659649d1a96324d756139f07729983ca64c9fee072e2432618a72027bd2052f6e309e4a953108b918b26825e3b343e154bc7873a47251181556a513adf22b5d826715b0c3d5e4ca6dfc7c145b33df0c20805cea280b9b637ca5bf87223da967b70ba139a9c37e559d98ef1993346f560ff0b4d339f54369ad17834c4acea08f6ec18221a01d3066962c520e1ea68f969f042e007e01550967f195420f73379693fbc8d8b8e3ba18060e449ea627111326216221a8648042261085d356982efa34b85e78ac0f5754f0a5d370d439ff1b461f07f5f694001de1f930dd9949aa690e83ae812a404c304cb86b04321107eef9981fe6387070e9fe818ff6eec4afe52590267e5626de5f82443d76ec59f71b08b9e8a145f5755054badb00ae183727d35f9eb64b6b367a8f3cbaf2eb5ef6c1f691f99a60fb8a6b5f6ef69af2aa618fefe838497d7727375b959ada4d466663cef6087dbd737ce0560e26a97ff23fc0644f8de831eee29240000000049454e44ae426082</data>
-    </image>
-</images>
-<tabstops>
-    <tabstop>mButtLang</tabstop>
-    <tabstop>m_cbType</tabstop>
-    <tabstop>mProjectLabelEdit</tabstop>
-    <tabstop>m_whiteboardEdit</tabstop>
-    <tabstop>m_postAddressEdit</tabstop>
-    <tabstop>m_letterHead</tabstop>
-    <tabstop>m_teEntry</tabstop>
-</tabstops>
-<includes>
-    <include location="local" impldecl="in declaration">config.h</include>
-</includes>
-<layoutdefaults spacing="6" margin="3"/>
-<includehints>
-    <includehint>kdatewidget.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>klineedit.h</includehint>
-</includehints>
-</UI>
+       </item>
+       <item>
+        <spacer name="spacer1">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>41</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="textLabel5">
+       <property name="text">
+        <string>&amp;Salutatory Address:</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+       <property name="buddy">
+        <cstring>m_teEntry</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="Q3TextEdit" name="m_postAddressEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="tabChangesFocus" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="textLabel2">
+       <property name="text">
+        <string>Customer:</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="textLabel8">
+     <property name="text">
+      <string>&amp;Entry Text on First Page:</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+     <property name="buddy">
+      <cstring>m_teEntry</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="Q3TextEdit" name="m_teEntry">
+     <property name="tabChangesFocus" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="3"/>
+ <customwidgets>
+  <customwidget>
+   <class>KDateWidget</class>
+   <extends>QWidget</extends>
+   <header>kdatewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>q3textedit.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mButtLang</tabstop>
+  <tabstop>m_cbType</tabstop>
+  <tabstop>mProjectLabelEdit</tabstop>
+  <tabstop>m_whiteboardEdit</tabstop>
+  <tabstop>m_postAddressEdit</tabstop>
+  <tabstop>m_letterHead</tabstop>
+  <tabstop>m_teEntry</tabstop>
+ </tabstops>
+ <includes>
+  <include location="local">config.h</include>
+  <include location="local">kdatewidget.h</include>
+  <include location="local">kcombobox.h</include>
+  <include location="local">klineedit.h</include>
+ </includes>
+ <resources/>
+ <connections/>
+</ui>

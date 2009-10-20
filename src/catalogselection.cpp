@@ -30,17 +30,17 @@
 #include <kdialog.h>
 #include <kaction.h>
 #include <kactioncollection.h>
-
+#include <kmenu.h>
 
 #include <qsizepolicy.h>
 #include <qcombobox.h>
-#include <qwidgetstack.h>
+#include <q3widgetstack.h>
 #include <qlabel.h>
-#include <qvbox.h>
-#include <qpopupmenu.h>
+#include <q3vbox.h>
+#include <q3popupmenu.h>
 
 CatalogSelection::CatalogSelection( QWidget *parent )
-  :QVBox( parent ),
+  :Q3VBox( parent ),
    mCatalogSelector( 0 ),
    mWidgets( 0 ),
    mActions( 0 ),
@@ -50,7 +50,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
   setSpacing( KDialog::spacingHint() );
 
 
-  QHBox *hb = new QHBox( this );
+  Q3HBox *hb = new Q3HBox( this );
   QWidget *spaceEater = new QWidget( hb );
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum ) );
   QLabel *l = new QLabel( i18n( "Selected &Catalog: " ), hb );
@@ -62,7 +62,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
   mListSearchLine = new FilterHeader( 0, this ) ;
   mListSearchLine->showCount( false );
 
-  mWidgets  = new QWidgetStack( this );
+  mWidgets  = new Q3WidgetStack( this );
   mWidgets->setSizePolicy( QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Expanding ) );
 
   initActions();
@@ -79,25 +79,30 @@ void CatalogSelection::setupCatalogList()
 void CatalogSelection::initActions()
 {
   mActions     = new KActionCollection( this );
-  mAcAddToDoc  = new KAction( i18n("&Append to document"), "back", 0, this,
-                              SIGNAL( actionAppendPosition() ), mActions, "appendToDoc");
+  mActions->addAction( "appendToDoc", this, SIGNAL( actionAppendPosition()) );
+
+//  mAcAddToDoc  = new KAction( i18n("&Append to document"), "back", 0, this,
+//                              SIGNAL( actionAppendPosition() ), mActions, "appendToDoc");
 
 }
 
 
-void CatalogSelection::slotCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int )
+void CatalogSelection::slotCatalogDoubleClicked( Q3ListViewItem*,  const QPoint&,  int )
 {
   emit actionAppendPosition();
 }
 
 void *CatalogSelection::currentSelectedPosition()
 {
-  const QString currentCat = mCatalogSelector->currentText();
-  KatalogListView *lv = mWidgetDict[ currentCat ];
-
   void *flosPtr = 0;
-  if ( lv ) {
-    flosPtr = lv->currentItemData();
+
+  const QString currentCat = mCatalogSelector->currentText();
+  if( mWidgetMap.contains( currentCat ) ) {
+    KatalogListView *lv = mWidgetMap[currentCat];
+
+    if ( lv ) {
+      flosPtr = lv->currentItemData();
+    }
   }
   return flosPtr;
 }
@@ -109,7 +114,7 @@ Katalog* CatalogSelection::currentSelectedKat()
   Katalog *kat = KatalogMan::self()->getKatalog( currentCat );
 
   if ( ! kat ) {
-    kdError() << "Could not find catalog " << currentCat << endl;
+    kError() << "Could not find catalog " << currentCat << endl;
   }
   return kat;
 }
@@ -121,7 +126,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
   if ( ! kat ) {
     const QString type = KatalogMan::self()->catalogTypeString( katName );
 
-    kdDebug() << "Catalog type for cat " << katName << " is " << type << endl;
+    kDebug() << "Catalog type for cat " << katName << " is " << type << endl;
     if ( type == "TemplCatalog" ) {
       kat = new TemplKatalog( katName );
     } else if ( type == "MaterialCatalog"  ) {
@@ -133,60 +138,59 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
     if ( kat ) {
       KatalogMan::self()->registerKatalog( kat );
     } else {
-      kdError() << "Could not find a catalog type for catname " << katName << endl;
+      kError() << "Could not find a catalog type for catname " << katName << endl;
     }
   }
 
   if ( kat ) {
-
-    if ( ! mWidgetDict[katName] ) {
+    if ( ! mWidgetMap.contains( katName ) ) {
       KatalogListView *katListView = 0;
 
       if ( kat->type() == TemplateCatalog ) {
         TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
         katListView = tmpllistview;
         connect( tmpllistview,
-                 SIGNAL( doubleClicked ( QListViewItem *, const QPoint &, int ) ),
+                 SIGNAL( doubleClicked ( Q3ListViewItem *, const QPoint &, int ) ),
                  this,
-                 SLOT( slotCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int ) ) );
+                 SLOT( slotCatalogDoubleClicked( Q3ListViewItem*,  const QPoint&,  int ) ) );
         tmpllistview->setShowCalcParts( false );
         tmpllistview->addCatalogDisplay( katName );
-        mAcAddToDoc->plug( tmpllistview->contextMenu() );
+        // mAcAddToDoc->plug( tmpllistview->contextMenu() );
+        tmpllistview->contextMenu()->addAction( mAcAddToDoc );
 
         mWidgets->addWidget( tmpllistview );
-        mWidgetDict.insert(  katName, tmpllistview );
-        kdDebug() << "Creating a selection list for catalog " << katName << endl;
+        mWidgetMap.insert(  katName, tmpllistview );
+        kDebug() << "Creating a selection list for catalog " << katName << endl;
       } else if ( kat->type() == MaterialCatalog ) {
         MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
         katListView = matListView;
         connect( matListView,
-                 SIGNAL( doubleClicked( QListViewItem*,  const QPoint&,  int ) ),
+                 SIGNAL( doubleClicked( Q3ListViewItem*,  const QPoint&,  int ) ),
                  this,
-                 SLOT( slCatalogDoubleClicked( QListViewItem*, const QPoint&, int ) ) );
+                 SLOT( slCatalogDoubleClicked( Q3ListViewItem*, const QPoint&, int ) ) );
         matListView->addCatalogDisplay( katName );
-        mAcAddToDoc->plug( matListView->contextMenu() );
+        matListView->contextMenu()->addAction( mAcAddToDoc );
         mWidgets->addWidget( matListView );
-        mWidgetDict.insert( katName, matListView );
+        mWidgetMap.insert( katName, matListView );
       } else if ( kat->type() == PlantCatalog ) {
         BrunsKatalogListView *brunsListView = new BrunsKatalogListView( this );
         katListView = brunsListView;
         brunsListView->addCatalogDisplay( katName );
-
-        mAcAddToDoc->plug( brunsListView->contextMenu() );
+        brunsListView->contextMenu()->addAction( mAcAddToDoc );
         mWidgets->addWidget( brunsListView );
-        mWidgetDict.insert(  katName, brunsListView );
-        kdDebug() << "Creating a selection list for catalog " << katName << endl;
+        mWidgetMap.insert(  katName, brunsListView );
+        kDebug() << "Creating a selection list for catalog " << katName << endl;
       }
 
       if ( katListView ) {
-        connect( katListView, SIGNAL( selectionChanged( QListViewItem* ) ),
-                 this, SIGNAL( selectionChanged( QListViewItem* ) ) );
+        connect( katListView, SIGNAL( selectionChanged( Q3ListViewItem* ) ),
+                 this, SIGNAL( selectionChanged( Q3ListViewItem* ) ) );
         KatalogMan::self()->registerKatalogListView( katName, katListView );
       }
     }
-    if ( mWidgetDict[katName] ) {
-      mWidgets->raiseWidget( mWidgetDict[katName] );
-      mListSearchLine->setListView( mWidgetDict[katName] );
+    if ( mWidgetMap.contains( katName ) ) {
+      mWidgets->raiseWidget( mWidgetMap[katName] );
+      mListSearchLine->setListView( mWidgetMap[katName] );
     }
   }
 }

@@ -26,7 +26,7 @@
 #include <kurl.h>
 
 // include files
-#include <kjanuswidget.h>
+#include <kpagewidget.h>
 
 #include "docguardedptr.h"
 
@@ -34,68 +34,67 @@
  *
  */
 class QWidget;
-class QVBox;
-class QListViewItem;
+class KPageWidgetItem;
+class QTreeWidgetItem;
 class DocDigestView;
 class dbID;
 class PortalHtmlView;
 class ArchDocDigest;
 
-class PortalView : public KJanusWidget
+class PortalView : public KPageWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    PortalView (QWidget *parent=0, const char *name=0, int face=Plain);
-    ~PortalView();
-    DocDigestView* docDigestView() { return mDocDigestView; }
-    void systemInitError( const QString& );
+  PortalView (QWidget *parent=0, const char *name=0 );
+  ~PortalView();
+  DocDigestView* docDigestView() { return mDocDigestView; }
+  void systemInitError( const QString& );
   QString ptag( const QString&,  const QString& c = QString() ) const;
 public slots:
-    void slotBuildView();
-    void fillCatalogDetails();
-    void fillSystemDetails();
+  void slotBuildView();
+  void fillCatalogDetails();
+  void fillSystemDetails();
 
-    void slotDocumentCreated( DocGuardedPtr );
-    void slotDocumentUpdate( DocGuardedPtr );
+  void slotDocumentCreated( DocGuardedPtr );
+  void slotDocumentUpdate( DocGuardedPtr );
 
 protected slots:
-    void slUrlClicked( const QString& );
-    void slotDigestItemSelected( QListViewItem* );
-    void slotCreateDocument();
+  void slUrlClicked( const QString& );
+  void slotDigestItemSelected( QTreeWidgetItem* );
+  void slotCreateDocument();
 
 signals:
-    void openKatalog( const QString& );
-    void deleteKatalog( const QString& );
-    void katalogToXML( const QString& );
-    void createDocument();
-    void openDocument( const QString& );
-    void copyDocument( const QString& );
-    void viewDocument( const QString& );
-    void openArchivedDocument( const ArchDocDigest& );
-    void documentSelected( const QString& );
-    void archivedDocSelected( const ArchDocDigest& );
-    void printDocument( const QString& );
+  void openKatalog( const QString& );
+  void deleteKatalog( const QString& );
+  void katalogToXML( const QString& );
+  void createDocument();
+  void openDocument( const QString& );
+  void copyDocument( const QString& );
+  void viewDocument( const QString& );
+  void openArchivedDocument( const ArchDocDigest& );
+  void documentSelected( const QString& );
+  void archivedDocSelected( const ArchDocDigest& );
+  void printDocument( const QString& );
 
 private:
-    QString printKatLine( const QString&, int ) const;
-    void katalogDetails( QWidget *);
-    void archiveDetails( QWidget * );
-    void systemDetails( QWidget *);
-    void documentDigests( QWidget * );
+  QString printKatLine( const QString&, int ) const;
+  void katalogDetails();
+  void systemDetails();
+  void documentDigests();
+
   QString systemViewHeader() const;
 
-    QVBox *m_docBox;
-    QVBox *m_katalogBox;
-    QVBox *m_sysBox;
-    QVBox *mArchiveBox;
-    DocDigestView *mDocDigestView;
-    PortalHtmlView  *mCatalogBrowser;
-    PortalHtmlView  *mSystemBrowser;
+  DocDigestView *mDocDigestView;
+  PortalHtmlView  *mCatalogBrowser;
+  PortalHtmlView  *mSystemBrowser;
 
-    KListViewItem *mAllDocsParent;
-    KListViewItem *mLatestDocsParent;
-    KListViewItem *mTimeLineParent;
+  QTreeWidgetItem *mAllDocsParent;
+  QTreeWidgetItem *mLatestDocsParent;
+  QTreeWidgetItem *mTimeLineParent;
+
+  KPageWidgetItem *mDocsPage;
+  KPageWidgetItem *mSysPage;
 
   int mDocDigestIndex;
   int mCatalogIndex;

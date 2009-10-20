@@ -20,20 +20,23 @@
 /**
  * base class that is the base for all templates in kraft catalogs.
  */
-#include <qptrlist.h>
+#include <QList>
+
+#include "kraftcat_export.h"
 
 class QWidget;
-class QListViewItem;
 class CatalogSelection;
 class Katalog;
 class Geld;
 
-class CatalogTemplate
+class KRAFTCAT_EXPORT CatalogTemplate
 {
 public:
   typedef enum { Unknown, ManualPrice, Calculation, AutoCalc } CalculationType;
 
   CatalogTemplate();
+  virtual ~CatalogTemplate();
+
   virtual bool save() = 0;
 
   virtual Geld unitPrice() = 0;
@@ -48,18 +51,18 @@ protected:
   int mSortKey;
 };
 
-class CatalogTemplateList : public QPtrList<CatalogTemplate>
+class KRAFTCAT_EXPORT CatalogTemplateList : public QList<CatalogTemplate*>
 {
 public:
   CatalogTemplateList();
-  // virtual ~CatalogTemplateList();
+  virtual ~CatalogTemplateList();
 
 protected:
   // int compareItems( QPtrCollection::Item, QPtrCollection::Item );
   virtual int compareItems( CatalogTemplate*, CatalogTemplate* );
 };
 
-// typedef QPtrList<CatalogTemplate> CatalogTemplateList;
+typedef QListIterator<CatalogTemplate*> CatalogTemplateListIterator;
 
 #endif
 

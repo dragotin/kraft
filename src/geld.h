@@ -24,6 +24,7 @@
 #include <config.h>
 #endif
 
+#include "kraftcat_export.h"
 // include files
 
 /**
@@ -31,7 +32,7 @@
  */
 class KLocale;
 
-class Geld
+class KRAFTCAT_EXPORT Geld
 {
 public:
     Geld();

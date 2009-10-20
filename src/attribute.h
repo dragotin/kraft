@@ -23,6 +23,7 @@
 // include files for KDE
 
 // application specific includes
+#include "kraftcat_export.h"
 
 /**
 @author Klaas Freitag
@@ -30,7 +31,7 @@
 class QString;
 class dbID;
 
-class Attribute
+class KRAFTCAT_EXPORT Attribute
 {
   friend class AttributeMap;
 
@@ -64,7 +65,7 @@ private:
 /*
  * Attribute Map
  */
-class AttributeMap: public QMap<QString, Attribute>
+class KRAFTCAT_EXPORT AttributeMap: public QMap<QString, Attribute>
 {
 public:
   AttributeMap();

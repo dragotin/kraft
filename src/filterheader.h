@@ -19,33 +19,36 @@
 #ifndef FILTERHEADER_H
 #define FILTERHEADER_H
 
-#include <klistviewsearchline.h>
+#include <QWidget>
+#include <QLabel>
 
-#include <qwidget.h>
+#include "kraftcat_export.h"
 
-class KListView;
+#include <ktreewidgetsearchline.h>
+
+class QTreeWidget;
 class QLabel;
 
-class CountingSearchLine : public KListViewSearchLine
+class KRAFTCAT_EXPORT CountingSearchLine : public KTreeWidgetSearchLine
 {
     Q_OBJECT
   public:
-    CountingSearchLine( QWidget *parent, KListView *listView );
-
-    void updateSearch( const QString &s = QString::null );
-
+    CountingSearchLine( QWidget *parent, QTreeWidget *listView );
     int searchCount();
+
+  protected:
+    void searchUpdate( const QString &s = QString::null );
 
   signals:
     void searchCountChanged();
 };
 
 
-class FilterHeader : public QWidget
+class KRAFTCAT_EXPORT FilterHeader : public QWidget
 {
     Q_OBJECT
   public:
-    FilterHeader( KListView *, QWidget *parent );
+    FilterHeader( QTreeWidget *, QWidget *parent = 0 );
 
     void setItemName( const QString &none, const QString &one,
       const QString &multiple );
@@ -55,9 +58,9 @@ class FilterHeader : public QWidget
   public slots:
     void setTitleLabel();
     void clear();
-  void setListView( KListView*  );
+  void setListView( QTreeWidget*  );
   private:
-    KListView *mListView;
+    QTreeWidget *mListView;
 
     CountingSearchLine *mSearchLine;
     QLabel *mTitleLabel;

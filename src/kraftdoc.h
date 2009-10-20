@@ -48,7 +48,7 @@ class KraftDoc : public QObject
   static QString partToString( Part );
 
   /** Constructor for the fileclass of the application */
-  KraftDoc(QWidget *parent = 0, const char *name = 0);
+  KraftDoc(QWidget *parent = 0);
   /** Destructor for the fileclass of the application */
   ~KraftDoc();
 
@@ -61,10 +61,10 @@ class KraftDoc : public QObject
   void removeView(KraftView *view);
   /** sets the modified flag for the document after a modifying action 
    *  on the view connected to the document.*/
-  void setModified(bool _m=true){ modified=_m; };
+  void setModified(bool _m=true){ modified=_m; }
   /** returns if the document is modified or not. Use this to determine 
    *  if your document needs saving by the user on closing.*/
-  bool isModified(){ return modified; };
+  bool isModified(){ return modified; }
   /** deletes the document's contents */
   void deleteContents();
   /** initializes the document generally */
@@ -153,7 +153,7 @@ class KraftDoc : public QObject
   void slotMoveDownPosition( int );
 private:
   /** the list of the views currently connected to the document */
-  QList<KraftView> *pViewList;
+  QList<KraftView*> pViewList;
 
   DocumentSaverBase* getSaver( const QString& saverHint = QString() );
   /** the modified flag of the current document */

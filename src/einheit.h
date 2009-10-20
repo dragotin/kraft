@@ -17,39 +17,41 @@
 
 #ifndef EINHEIT_H
 #define EINHEIT_H
-#include <qvaluevector.h>
-#include <qstring.h>
+#include <QVector>
+#include <QString>
 
+#include "kraftcat_export.h"
 /**
   *@author Klaas Freitag
   */
 
-class Einheit {
+class KRAFTCAT_EXPORT Einheit
+{
 public:
-    Einheit();
-    Einheit( int id );
-    Einheit( int id, const QString&, const QString&, const QString&, const QString& );
-    ~Einheit();
+  typedef QList<Einheit> List;
 
-    QString einheitSingular() { return m_einheitSingular; }
-    QString einheitSingularLong() { return m_einheitSingularLong; }
-    QString einheitPlural() { return m_einheitPlural; }
-    QString einheitPluralLong() { return m_einheitPluralLong; }
+  Einheit();
+  Einheit( int id );
+  Einheit( int id, const QString&, const QString&, const QString&, const QString& );
+  ~Einheit();
 
-    QString einheit( int anz );
-    QString einheit( double anz );
+  QString einheitSingular() { return m_einheitSingular; }
+  QString einheitSingularLong() { return m_einheitSingularLong; }
+  QString einheitPlural() { return m_einheitPlural; }
+  QString einheitPluralLong() { return m_einheitPluralLong; }
 
-    int     id() { return m_dbId; }
-    
-    Einheit& operator=( const Einheit& e );
+  QString einheit( int anz );
+  QString einheit( double anz );
+
+  int     id() { return m_dbId; }
+
+  Einheit& operator=( const Einheit& e );
 private:
-    int m_dbId;
-    QString m_einheitSingular;
-    QString m_einheitPlural;
-    QString m_einheitSingularLong;
-    QString m_einheitPluralLong;
+  int m_dbId;
+  QString m_einheitSingular;
+  QString m_einheitPlural;
+  QString m_einheitSingularLong;
+  QString m_einheitPluralLong;
 };
-
-typedef QValueVector<Einheit> EinheitValueVector;
 
 #endif

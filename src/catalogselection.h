@@ -18,27 +18,27 @@
 #ifndef CATALOGSELECTION_H
 #define CATALOGSELECTION_H
 
-#include <qvbox.h>
-#include <qasciidict.h>
+#include <q3vbox.h>
+#include <q3asciidict.h>
 
 #include "kataloglistview.h"
 
 class QComboBox;
-class QWidgetStack;
+class Q3WidgetStack;
 class KActionCollection;
 class KAction;
-class QListViewItem;
+class Q3ListViewItem;
 
 class DocPosition;
 class FilterHeader;
 class CalcPartList;
 class Katalog;
 
-class CatalogSelection : public QVBox
+class CatalogSelection : public Q3VBox
 {
   Q_OBJECT
 public:
-  CatalogSelection( QWidget* );
+  CatalogSelection( QWidget *parent=0 );
 
   ~CatalogSelection() { };
 
@@ -60,18 +60,18 @@ signals:
    * FIXME: Better approach: all catalog items inherit from a base
    *        type.
    */
-  void selectionChanged( QListViewItem* );
+  void selectionChanged( Q3ListViewItem* );
   void actionAppendPosition();
 
 protected slots:
   void slotSelectCatalog( const QString& );
   // void slotAppendToDoc( QListViewItem *item = 0 );
-  void slotCatalogDoubleClicked( QListViewItem*,  const QPoint&,  int );
+  void slotCatalogDoubleClicked( Q3ListViewItem*,  const QPoint&,  int );
 
 private:
   QComboBox *mCatalogSelector;
-  QWidgetStack *mWidgets;
-  QAsciiDict<KatalogListView> mWidgetDict;
+  Q3WidgetStack *mWidgets;
+  QMap<QString, KatalogListView*> mWidgetMap;
   KActionCollection *mActions;
   KAction *mAcAddToDoc;
   FilterHeader *mListSearchLine;

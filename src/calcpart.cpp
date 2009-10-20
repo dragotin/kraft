@@ -23,6 +23,7 @@
 #include "materialcalcpart.h"
 #include "zeitcalcpart.h"
 
+
 CalcPart::CalcPart( ):
     m_prozentPlus(0),
     m_dbId(-1),
@@ -55,16 +56,16 @@ Geld CalcPart::kosten() {
     * Der prozentuale Aufschlag kommt dann hier.
     */
    Geld g = basisKosten();
-   // kdDebug() << "Basecosts: " << g.toString() << endl;
+   // kDebug() << "Basecosts: " << g.toString() << endl;
    double prozente = getProzentPlus();
 
-   if( QABS(prozente) > 0.0 )
+   if( qAbs(prozente) > 0.0 )
    {
         Geld aufschlag = g * double(prozente/100.0);
-        // kdDebug() << "Have Money: " << g.toString() << " und " << prozente << " macht Aufschlag: " << aufschlag.toString() << endl;
+        // kDebug() << "Have Money: " << g.toString() << " und " << prozente << " macht Aufschlag: " << aufschlag.toString() << endl;
         g += aufschlag;
    }
-   // kdDebug() << "Overall sum: " << g.toString() << endl;
+   // kDebug() << "Overall sum: " << g.toString() << endl;
    return g;
 }
 
@@ -119,7 +120,7 @@ bool CalcPart::isToDelete()
  * ===========================================================================
  */
 CalcPartList::CalcPartList()
-  :QPtrList<CalcPart>()
+  :QList<CalcPart*>()
 {
 
 }
@@ -135,8 +136,10 @@ Geld CalcPartList::costPerCalcPart( const QString& calcPart )
   Geld g;
 
   /* suche nach einer speziellen Kalkulationsart */
-  for( cp = first(); cp; cp = next() )
-  {
+  QListIterator<CalcPart*> i( *this );
+  while( i.hasNext()) {
+    cp = i.next();
+
     if( ( calcPart == ALL_KALKPARTS || calcPart == cp->getType() ) && ! cp->isToDelete() )
     {
       g += cp->kosten();
@@ -158,8 +161,10 @@ CalcPartList CalcPartList::getCalcPartsList( const QString& calcPart )
   {
     CalcPart *cp;
     /* suche nach einer speziellen Kalkulationsart */
-    for( cp = first(); cp; cp = next() )
-    {
+    QListIterator<CalcPart*> i( *this );
+    while( i.hasNext()) {
+      cp = i.next();
+
       if( calcPart == cp->getType() && ! cp->isToDelete() )
       {
         parts.append(cp);
@@ -179,8 +184,9 @@ CalcPartList CalcPartList::decoupledCalcPartsList()
   CalcPart *newcp = 0;
   CalcPart *cp;
 
-  for( cp = first(); cp; cp = next() )
-  {
+  QListIterator<CalcPart*> i( *this );
+  while( i.hasNext()) {
+    cp = i.next();
     if ( cp->getType() == KALKPART_FIX ) {
       newcp = new FixCalcPart(  );
       *newcp = *( static_cast<FixCalcPart*>( cp ) );

@@ -24,18 +24,18 @@
 #endif
 
 // include files
-#include <qptrdict.h>
 
 #include <klocale.h>
+#include <kdialog.h>
 
 #include "kraftglobals.h"
-#include "flostab.h"
+#include "ui_flostab.h"
 #include "calcpart.h"
 #include "stockmaterial.h"
 /**
  *
  */
-class QListViewItem;
+class Q3ListViewItem;
 class FloskelTemplate;
 class ZeitCalcPart;
 class MaterialCalcPart;
@@ -47,13 +47,13 @@ class ZeitCalcDialog;
 class MatEditor;
 class Katalog;
 
-class FlosTemplDialog : public d_calcTempl
+class FlosTemplDialog : public KDialog, protected Ui::d_calcTempl
 {
     Q_OBJECT
 
 public:
-    FlosTemplDialog(QWidget *parent=0, const char* name=0, bool modal=false, WFlags fl=0);
-    ~FlosTemplDialog();
+    FlosTemplDialog(QWidget *parent=0, bool modal=false );
+    virtual ~FlosTemplDialog();
 
     void setTemplate( FloskelTemplate* t, const QString&, bool );
     bool templateIsNew() {
@@ -97,9 +97,9 @@ protected slots:
     virtual void reject();
 
 private:
-    virtual void drawTimeListEntry( QListViewItem *, ZeitCalcPart * );
-    virtual void drawFixListEntry( QListViewItem*, FixCalcPart* );
-    virtual void drawMatListEntry( QListViewItem*, MaterialCalcPart*, StockMaterial* );
+    virtual void drawTimeListEntry( Q3ListViewItem *, ZeitCalcPart * );
+    virtual void drawFixListEntry( Q3ListViewItem*, FixCalcPart* );
+    virtual void drawMatListEntry( Q3ListViewItem*, MaterialCalcPart*, StockMaterial* );
 
     bool askChapterChange( FloskelTemplate*, int);
 
@@ -112,8 +112,8 @@ private:
     Katalog         *m_katalog;
 
     /* dict das qlistviewitems auf calcparts abbildet */
-    QPtrDict<CalcPart> m_cpDict;
-    QPtrDict<StockMaterial> m_matDict;
+    QHash<Q3ListViewItem*, CalcPart*> mCalcPartDict;
+    QHash<Q3ListViewItem*, StockMaterial*> m_matDict;
 
     MatEditor *m_matEdit;
     FixCalcDialog *m_fixCalcDia;

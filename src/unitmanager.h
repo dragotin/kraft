@@ -23,10 +23,8 @@
 #include <config.h>
 #endif
 
-// include files
-#include <qvaluevector.h>
-
 #include "einheit.h"
+
 /**
  *
  */
@@ -36,20 +34,21 @@
 
 class UnitManager
 {
+  public:
 
- 
-public:
+    virtual ~UnitManager();
+    static UnitManager* self();
+
+    Einheit getUnit( int id );
+    QStringList allUnits();
+    int getUnitIDSingular( const QString& einheit );
+
+  private:
     UnitManager();
-    ~UnitManager();
+    Einheit::List mUnits;
+    static UnitManager* mSelf;
 
-    static Einheit& getUnit( int id );
-    static QStringList allUnits();
-    static int getUnitIDSingular( const QString& einheit );
-private:
-    static void load();
-    static EinheitValueVector *m_units;
-
-    static Einheit *m_dummy;
+    void load();
 };
 
 #endif

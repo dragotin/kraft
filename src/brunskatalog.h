@@ -17,8 +17,9 @@
 
 #ifndef BRUNSKATALOG_H
 #define BRUNSKATALOG_H
-#include <qintdict.h>
 #include <katalog.h>
+
+#include "kraftcat_export.h"
 
 #include "dbids.h"
 #include "brunsrecord.h"
@@ -26,9 +27,9 @@
 /**
 @author Klaas Freitag
 */
-typedef QIntDict<QString> KatMap;
+typedef QHash<int, QString*> KatMap;
 
-class BrunsKatalog : public Katalog
+class KRAFTCAT_EXPORT BrunsKatalog : public Katalog
 {
 public:
     BrunsKatalog( const QString& );
@@ -41,7 +42,7 @@ public:
     virtual KatalogType type() {
       return PlantCatalog;
     };
-    virtual QStringList getKatalogChapters();
+    virtual QStringList getKatalogChapters( bool freshup = false );
     BrunsRecordList* getRecordList( const QString& chap );
     // virtual void toXML();
     static QStringList formatQuality( BrunsSize& );
@@ -72,7 +73,7 @@ private:
     static KatMap m_sizeAddsLong;
     static KatMap m_sizes;
 
-    QIntDict<BrunsRecordList> m_recordLists;
+    QHash<int, BrunsRecordList*> m_recordLists;
 };
 
 #endif

@@ -22,20 +22,20 @@
 
 #include <qmap.h>
 
-#include <kdialogbase.h>
-#include <klistview.h>
+#include <kdialog.h>
+#include <k3listview.h>
 
 #include "tagman.h"
 
 class QWidget;
+class QTreeWidget;
+class QTreeWidgetItem;
 class QStringList;
-class QListViewItem;
-class KListView;
 class FilterHeader;
 class QPushButton;
 class KColorButton;
 
-class TagTemplateEditor: public KDialogBase
+class TagTemplateEditor: public KDialog
 {
   Q_OBJECT
 
@@ -54,7 +54,7 @@ private:
     
 };
 
-class TagTemplatesDialog: public KDialogBase
+class TagTemplatesDialog: public KDialog
 {
   Q_OBJECT
 
@@ -74,8 +74,8 @@ protected:
   void setTags( );
 
 private:
-  KListView *mListView;
-  QMap<QListViewItem*, QString> mItemMap;
+  QTreeWidget *mListView;
+  QMap<QTreeWidgetItem*, QString> mItemMap;
 
   QPushButton *mAddButton;
   QPushButton *mEditButton;

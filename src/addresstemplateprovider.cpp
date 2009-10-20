@@ -25,26 +25,27 @@
 #include "defaultprovider.h"
 
 AddressTemplateProvider::AddressTemplateProvider( QWidget *parent )
-  :TemplateProvider( parent )
+  :TemplateProvider( parent ),
+  mParent( parent )
 {
 
 }
 
 void AddressTemplateProvider::slotNewTemplate()
 {
-  kdDebug() << "SlotNewTemplate for addresses called!" << endl;
+  kDebug() << "SlotNewTemplate for addresses called!" << endl;
 
   KRun::runCommand( QString::fromLatin1( "kaddressbook --new-contact" ),
-                    QString::fromLatin1("kaddressbook" ), "address" );
+                    QString::fromLatin1("kaddressbook" ), "address", mParent, "" );
 }
 
 void AddressTemplateProvider::slotEditTemplate()
 {
-  kdDebug() << "SlotEditTemplate called!" << endl;
+  kDebug() << "SlotEditTemplate called!" << endl;
 
   KRun::runCommand( QString::fromLatin1( "kaddressbook --uid %1" ).arg(
                     mCurrentAddress.uid() ),
-                    QString::fromLatin1("kaddressbook" ), "address" );
+                    QString::fromLatin1("kaddressbook" ), "address", mParent, "" );
   
 }
 
@@ -60,7 +61,7 @@ void AddressTemplateProvider::slotSetCurrentAddress( const Addressee& adr )
 
 void AddressTemplateProvider::slotTemplateToDocument()
 {
-  kdDebug() << "Moving template to document" << endl;
+  kDebug() << "Moving template to document" << endl;
 
   emit addressToDocument( mCurrentAddress );
 }

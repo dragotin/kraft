@@ -30,26 +30,30 @@
 #include "stdsatzman.h"
 
 
-ZeitCalcDialog::ZeitCalcDialog(QWidget *parent, const char* name, bool modal )
-    : calcdetailTime( parent, name, modal ),
-      m_part(0)
+ZeitCalcDialog::ZeitCalcDialog(QWidget *parent, bool modal )
+    : KDialog( parent ), Ui::calcdetailTime(),
+    m_part(0)
 {
-    m_hourSets->insertStringList( StdSatzMan::self()->allStdSaetze());
+  setupUi( this );
+  setModal( modal );
+  m_hourSets->insertStringList( StdSatzMan::self()->allStdSaetze());
 }
 
-ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, const char* name, bool modal )
-    : calcdetailTime( parent, name, modal ),
-      m_part(cp)
+ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, bool modal )
+    : KDialog( parent ), Ui::calcdetailTime(),
+    m_part(cp)
 {
-    m_hourSets->insertStringList( StdSatzMan::self()->allStdSaetze());
+  setupUi( this );
+  setModal( modal );
+  m_hourSets->insertStringList( StdSatzMan::self()->allStdSaetze());
 
-    if( ! cp ) return;
+  if( ! cp ) return;
 
-    m_nameEdit->setText( cp->getName());
-    m_dauer->setValue( cp->getMinuten());
-    m_stdGlobal->setChecked(cp->globalStdSetAllowed());
-    StdSatz std = cp->getStundensatz();
-    m_hourSets->setCurrentText( std.getName());
+  m_nameEdit->setText( cp->getName());
+  m_dauer->setValue( cp->getMinuten());
+  m_stdGlobal->setChecked(cp->globalStdSetAllowed());
+  StdSatz std = cp->getStundensatz();
+  m_hourSets->setCurrentText( std.getName());
 }
 
 
@@ -61,42 +65,42 @@ ZeitCalcDialog::~ZeitCalcDialog( )
 void ZeitCalcDialog::accept()
 {
 
-   if( m_part ) {
-     m_part->setGlobalStdSetAllowed(m_stdGlobal->isChecked());
-     m_part->setMinuten(m_dauer->value());
-     m_part->setName(m_nameEdit->text());
+  if( m_part ) {
+    m_part->setGlobalStdSetAllowed(m_stdGlobal->isChecked());
+    m_part->setMinuten(m_dauer->value());
+    m_part->setName(m_nameEdit->text());
 
-     QString selHourSet = m_hourSets->currentText();
-     StdSatz stdsatz = StdSatzMan::self()->getStdSatz(selHourSet);
+    QString selHourSet = m_hourSets->currentText();
+    StdSatz stdsatz = StdSatzMan::self()->getStdSatz(selHourSet);
 
-     m_part->setStundensatz(stdsatz);
+    m_part->setStundensatz(stdsatz);
 
-   }
+  }
 
-   if( m_part && m_part->isDirty() ) {
-	emit timeCalcPartChanged(m_part);
-   }
-   calcdetailTime::accept();
+  if( m_part && m_part->isDirty() ) {
+    emit timeCalcPartChanged(m_part);
+  }
+  accept();
 }
 
 QString ZeitCalcDialog::getName()
 {
-    return m_nameEdit->text();
+  return m_nameEdit->text();
 }
 
 int ZeitCalcDialog::getDauer()
 {
-    return m_dauer->value();
+  return m_dauer->value();
 }
 
 bool ZeitCalcDialog::allowGlobal()
 {
-    return m_stdGlobal->isChecked();
+  return m_stdGlobal->isChecked();
 }
 
 QString ZeitCalcDialog::getStundensatzName()
 {
-    return m_hourSets->currentText();
+  return m_hourSets->currentText();
 }
 
 /* END */

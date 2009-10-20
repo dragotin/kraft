@@ -21,17 +21,18 @@
 #include <qsqlquery.h>
 #include <qdatetime.h>
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 #include "brunsrecord.h"
 #include "templtopositiondialogbase.h"
 #include "geld.h"
+#include "ui_insertplantbase.h"
 
 class insertPlantBase;
 class BrunsRecord;
 class BrunsSize;
 class DocPosition;
-class KListViewItem;
+class QTreeViewItem;
 class Geld;
 
 
@@ -88,9 +89,9 @@ private:
   PlantPriceInfo getPriceInfo( const QString& );
   void setPrice( const QString&, double );
 
-  insertPlantBase *mBaseWidget;
-  QMap<KListViewItem*, QString> mSizeMap;
-  QMap<KListViewItem*, PlantPriceInfo> mPriceMap;
+  Ui::insertPlantBase *mBaseWidget;
+  QMap<QTreeWidgetItem*, QString> mSizeMap;
+  QMap<QTreeWidgetItem*, PlantPriceInfo> mPriceMap;
   QString mLtName;
   QString mDtName;
   QSqlQuery mPriceQuery;

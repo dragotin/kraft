@@ -25,9 +25,8 @@
 /**
 @author Klaas Freitag
 */
-class KListView;
 class DocPosition;
-class QListViewItem;
+
 
 class TemplKatalogListView : public KatalogListView
 {
@@ -39,16 +38,16 @@ public:
   FloskelTemplate *currentTemplate();
 
   /* create a listview entry for a floskel template */
-  KListViewItem *addFlosTemplate( KListViewItem*, FloskelTemplate* );
+  QTreeWidgetItem *addFlosTemplate( QTreeWidgetItem*, FloskelTemplate* );
 
   void addCatalogDisplay( const QString&);
 
   void setShowCalcParts( bool );
   bool showCalcParts();
-  DocPosition itemToDocPosition( QListViewItem* it = 0 );
-  CalcPartList itemsCalcParts( QListViewItem* it = 0 );
+  DocPosition itemToDocPosition( QTreeWidgetItem* it = 0 );
+  CalcPartList itemsCalcParts( QTreeWidgetItem* it = 0 );
   public slots:
-  void slFreshupItem( QListViewItem*, FloskelTemplate*, bool remChildren = false );
+  void slFreshupItem( QTreeWidgetItem*, FloskelTemplate*, bool remChildren = false );
     
 private:
   bool mShowCalcParts;

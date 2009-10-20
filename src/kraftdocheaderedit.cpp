@@ -23,15 +23,20 @@
 
 #include <qlayout.h>
 #include <qcombobox.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
+//Added by qt3to4:
+#include <Q3BoxLayout>
+#include <Q3VBoxLayout>
 
 KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   : KraftDocEdit( parent )
 {
-  QBoxLayout *topLayout = new QVBoxLayout( this );
-
-  mDocHeaderEdit = new DocHeaderEdit( this );
-  topLayout->addWidget( mDocHeaderEdit );
+  QVBoxLayout *topLayout = new QVBoxLayout;
+  parent->setLayout( topLayout );
+  mDocHeaderEdit = new Ui::DocHeaderEdit;
+  QWidget *w = new QWidget;
+  mDocHeaderEdit->setupUi( w );
+  topLayout->addWidget( w );
 
   connect( mDocHeaderEdit->m_cbType, SIGNAL( activated( int ) ),
     SLOT( slotModified() ) );

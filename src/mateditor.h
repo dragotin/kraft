@@ -18,16 +18,19 @@
 #ifndef _MATEDITOR_H
 #define _MATEDITOR_H
 
-#include <qdatatable.h>
-#include <qvbox.h>
+#include <q3datatable.h>
+
 #include <qcombobox.h>
+//Added by qt3to4:
+#include <Q3SqlCursor>
+#include <QLabel>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <kdialogbase.h>
-
+#include <kdialog.h>
+#include <kvbox.h>
 // include files
 
 /**
@@ -37,9 +40,9 @@ class QLabel;
 class KDoubleNumInput;
 class QSplitter;
 class QWidget;
-class KListBox;
+class K3ListBox;
 class MatKatalog;
-class QSqlCursor;
+class Q3SqlCursor;
 class KPushButton;
 class MatDataTable;
 
@@ -47,12 +50,13 @@ class MatDataTable;
  * Editor für die Materialkategorie
  * ********************************************************************************/
 
-class MatKatEditor : public KDialogBase
+class MatKatEditor : public KDialog
 {
     Q_OBJECT
 
 public:
-    MatKatEditor( const QString& curChap,  QStringList chaps, QWidget *parent, const char* name=0 );
+    MatKatEditor( const QString& curChap,  QStringList chaps, QWidget *parent );
+    virtual ~MatKatEditor() {}
     QString kategorie() const { return m_combo->currentText(); }
 
 private:
@@ -64,14 +68,14 @@ private:
  * Materialeditor Hauptdialog mit Datentable
  * ********************************************************************************/
 
-class MatEditor : public KDialogBase
+class MatEditor : public KDialog
 {
     Q_OBJECT
 
 public:
     MatEditor(const QString& katName, bool takeover = false, QWidget * parent = 0,
-              const char * name = 0, bool modal = FALSE, WFlags f = 0 );
-    ~MatEditor();
+              bool modal = FALSE, Qt::WFlags f = 0 );
+    virtual ~MatEditor();
 
 signals:
     void materialSelected(int, double);
@@ -90,11 +94,11 @@ private:
     virtual void addAmountDetail(QWidget*);
 
     QSplitter  *m_split;
-    KListBox   *m_chapterBox;
+    K3ListBox   *m_chapterBox;
 
     MatKatalog *m_kat;
     MatDataTable *m_dataTable;
-    QVBox      *m_box;
+    KVBox      *m_box;
 
     KPushButton *m_katButton;
     KPushButton *m_takeOver;

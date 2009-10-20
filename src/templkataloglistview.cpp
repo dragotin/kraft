@@ -36,19 +36,22 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
     : KatalogListView(w),
       mShowCalcParts( true )
 {
-    addColumn( i18n("Template"));
+  QStringList labels;
+  labels << i18n("Template");
+  labels << i18n("Price");
+  labels << i18n("Calc. Type");
 
-    int priceCol = addColumn( i18n("Price"));
-    setColumnWidthMode(0, Manual);
-    setColumnWidth(0, 500);
-    addColumn( i18n("Calc. Type"));
-    // addColumn( i18n("ID"));
-    setSortColumn( -1 );
-    setColumnAlignment ( priceCol, Qt::AlignRight);
-
-    setAcceptDrops( true );
-    setDragEnabled( true );
-    setDropVisualizer(true);
+//  int priceCol = 1; // addColumn( i18n("Price"));
+//    setColumnWidthMode(0, Manual);
+//    setColumnWidth(0, 500);
+//    addColumn( i18n("Calc. Type"));
+//    // addColumn( i18n("ID"));
+//    setSortColumn( -1 );
+//    setColumnAlignment ( priceCol, Qt::AlignRight);
+//
+//    setAcceptDrops( true );
+//    setDragEnabled( true );
+//    setDropVisualizer(true);
 }
 
 /*
@@ -58,60 +61,56 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
  */
 void TemplKatalogListView::addCatalogDisplay( const QString& katName )
 {
-    KatalogListView::addCatalogDisplay(katName);
+  KatalogListView::addCatalogDisplay(katName);
 
-    TemplKatalog* catalog = static_cast<TemplKatalog*>(KatalogMan::self()->getKatalog(katName));
+  TemplKatalog* catalog = static_cast<TemplKatalog*>(KatalogMan::self()->getKatalog(katName));
 
-    if ( !catalog ) {
-      kdError() << "Could not load catalog " << katName << endl;
-      return;
+  if ( !catalog ) {
+    kError() << "Could not load catalog " << katName << endl;
+    return;
+  }
+
+  setupChapters();
+
+  const QStringList chapters = catalog->getKatalogChapters();
+  for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
+    QString chapter = *it;
+    QTreeWidgetItem *katItem = chapterItem(chapter);
+    kDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
+    FloskelTemplateList katList = catalog->getFlosTemplates(chapter);
+    // kDebug() << "Items in chapter " << chapter << ": " << katList.count() << endl;
+    FloskelTemplateListIterator flosIt( katList );
+
+    while( flosIt.hasNext() ) {
+      FloskelTemplate *tmpl = flosIt.next();
+
+      /* create a ew item as the child of katalog entry */
+      addFlosTemplate( katItem, tmpl );
+      if ( mShowCalcParts )
+        addCalcParts( tmpl );
     }
-
-    setupChapters();
-
-    const QStringList chapters = catalog->getKatalogChapters();
-    for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
-        QString chapter = *it;
-        KListViewItem *katItem = chapterItem(chapter);
-        kdDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
-        FloskelTemplateList katList = catalog->getFlosTemplates(chapter);
-        // kdDebug() << "Items in chapter " << chapter << ": " << katList.count() << endl;
-        FloskelTemplateListIterator flosIt( katList );
-        FloskelTemplate *tmpl;
-
-        /* iterate over all templates */
-        while ( (tmpl = flosIt.current()) != 0 ) {
-            /* create a ew item as the child of katalog entry */
-            addFlosTemplate( katItem, tmpl );
-            if ( mShowCalcParts )
-              addCalcParts( tmpl );
-            ++flosIt;
-        }
-    }
+  }
 }
 
 /*
  * add a single template to the view with setting icon etc.
  */
-KListViewItem* TemplKatalogListView::addFlosTemplate( KListViewItem *parentItem, FloskelTemplate *tmpl )
+QTreeWidgetItem* TemplKatalogListView::addFlosTemplate( QTreeWidgetItem *parentItem, FloskelTemplate *tmpl )
 {
     if( ! parentItem ) parentItem = m_root;
-    KListViewItem *listItem = new KListViewItem( parentItem );
+    QTreeWidgetItem *listItem = new QTreeWidgetItem( parentItem );
     slFreshupItem( listItem, tmpl);
     tmpl->setListViewItem( listItem );
-
-    listItem->setDragEnabled( true );
-    listItem->setDropEnabled( true );
-
-    listItem->setMultiLinesEnabled(true);
+    listItem->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
+    // listItem->setMultiLinesEnabled(true);
 
     if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
     {
-        listItem->setPixmap(0, SmallIcon("roll"));
+        listItem->setIcon(0, SmallIcon("roll"));
     }
     else
     {
-        listItem->setPixmap(0, SmallIcon("kcalc"));
+        listItem->setIcon(0, SmallIcon("kcalc"));
     }
     // store the connection between the listviewitem and the template in a dict.
     m_dataDict.insert( listItem, tmpl );
@@ -119,97 +118,96 @@ KListViewItem* TemplKatalogListView::addFlosTemplate( KListViewItem *parentItem,
     return listItem;
 }
 
-void TemplKatalogListView::slFreshupItem( QListViewItem *item, FloskelTemplate *tmpl, bool remChildren )
+void TemplKatalogListView::slFreshupItem( QTreeWidgetItem *item, FloskelTemplate *tmpl, bool remChildren )
 {
-    if( !(item && tmpl) ) return;
+  if( !(item && tmpl) ) return;
 
-    Geld g     = tmpl->unitPrice();
-    QString ck = tmpl->calcKindString();
-    QString t  = Portal::textWrap(tmpl->getText(), 60);
+  Geld g     = tmpl->unitPrice();
+  QString ck = tmpl->calcKindString();
+  QString t  = Portal::textWrap(tmpl->getText(), 60);
 
-    item->setText( 0, t );
-    QString h;
-    h = QString( "%1 / %2" ).arg( g.toString( catalog()->locale() ) )
-        .arg( tmpl->einheit().einheitSingular() );
-    item->setText( 1,  h );
-    item->setText( 2, ck );
-    // item->setText( 4, QString::number(tmpl->getTemplID()));
+  item->setText( 0, t );
+  QString h;
+  h = QString( "%1 / %2" ).arg( g.toString( catalog()->locale() ) )
+      .arg( tmpl->einheit().einheitSingular() );
+  item->setText( 1,  h );
+  item->setText( 2, ck );
+  // item->setText( 4, QString::number(tmpl->getTemplID()));
 
-    if( remChildren ) {
-      /* remove all children and insert them again afterwards.
+  if( remChildren ) {
+    /* remove all children and insert them again afterwards.
         * That updates the view
       */
-        QListViewItem *it = item->firstChild();
-        if( it )  {
-            QListViewItem *nextIt = it->nextSibling();
-            delete it;
-
-            while( nextIt ) {
-                it = nextIt;
-                nextIt = it->nextSibling();
-                delete it;
-            }
-        }
-
-        addCalcParts(tmpl); // Insert to update the view again.
+    for( int i = 0; i < item->childCount(); i++ ) {
+      QTreeWidgetItem *it = item->child(i);
+      if( it )  {
+        item->removeChild( it );
+        delete it;
+      }
     }
+
+    addCalcParts(tmpl); // Insert to update the view again.
+  }
 }
 
 
 void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
 {
-    KListViewItem *item = tmpl->getListViewItem();
+  QTreeWidgetItem *item = tmpl->getListViewItem();
 
-    if( ! item ) return;
+  if( ! item ) return;
 
-    CalcPartList parts = tmpl->getCalcPartsList();
+  CalcPartList parts = tmpl->getCalcPartsList();
+  CalcPartListIterator it(parts);
 
-    CalcPart *cp;
-    for ( cp = parts.first(); cp; cp = parts.next() )
-    {
-        QString title = cp->getName();
-        QString type = cp->getType();
-        kdDebug() << "Type is " << type << endl;
-        if( type  == KALKPART_TIME ) {
-            ZeitCalcPart *zcp = static_cast<ZeitCalcPart*>(cp);
-            StdSatz stdsatz = zcp->getStundensatz();
-            title = QString( "%1, %2 Min. %3" ).arg( cp->getName() )
-                    .arg( QString::number( zcp->getMinuten() ) )
-                    .arg( stdsatz.getName() );
-        }
+  while( it.hasNext() ) {
+    CalcPart *cp = it.next();
+    QString title = cp->getName();
+    QString type = cp->getType();
+    kDebug() << "Type is " << type << endl;
+    if( type  == KALKPART_TIME ) {
+      ZeitCalcPart *zcp = static_cast<ZeitCalcPart*>(cp);
+      StdSatz stdsatz = zcp->getStundensatz();
+      title = QString( "%1, %2 Min. %3" ).arg( cp->getName() )
+              .arg( QString::number( zcp->getMinuten() ) )
+              .arg( stdsatz.getName() );
+    }
 
-        KListViewItem *cpItem =  new KListViewItem( item, title,
-                                                    cp->kosten().toString( catalog()->locale() ), cp->getType() );
+    QStringList list;
+    list << title;
+    list << cp->kosten().toString( catalog()->locale() );
+    list << cp->getType();
+    QTreeWidgetItem *cpItem =  new QTreeWidgetItem( item, list );
 
-
-        /* in case of material, add items for the materials calculated for the
+    /* in case of material, add items for the materials calculated for the
         * template
         */
-        if( type == KALKPART_MATERIAL )
-        {
-            MaterialCalcPart *mcp = static_cast<MaterialCalcPart*>( cp );
-            StockMaterialList mats =  mcp->getCalcMaterialList();
+    if( type == KALKPART_MATERIAL )
+    {
+      MaterialCalcPart *mcp = static_cast<MaterialCalcPart*>( cp );
+      StockMaterialList mats =  mcp->getCalcMaterialList();
 
-            StockMaterialListIterator it( mats );
+      StockMaterialListIterator it( mats );
+      while( it.hasNext() ) {
+        StockMaterial *mat = it.next();
 
-            StockMaterial *mat;
-            while ( (mat = it.current()) != 0 )
-            {
-                ++it;
-                Geld g = mcp->getPriceForMaterial(mat);
-                QString t = mat->name();
-                double usedAmount = mcp->getCalcAmount(mat);
-                Einheit e = mat->getUnit();
+        Geld g = mcp->getPriceForMaterial(mat);
+        QString t = mat->name();
+        double usedAmount = mcp->getCalcAmount(mat);
+        Einheit e = mat->getUnit();
 
-                t = QString( "%1 %2 of %3 %4 %5" ).arg( usedAmount )
-                    .arg( e.einheit( usedAmount ) )
-                    .arg( mat->getAmountPerPack() )
-                    .arg( e.einheit( mat->getAmountPerPack() ) )
-                    .arg( t );
-                (void) new KListViewItem( cpItem, t, g.toString( catalog()->locale() ) );
-            }
-        }
+        t = QString( "%1 %2 of %3 %4 %5" ).arg( usedAmount )
+            .arg( e.einheit( usedAmount ) )
+            .arg( mat->getAmountPerPack() )
+            .arg( e.einheit( mat->getAmountPerPack() ) )
+            .arg( t );
+        QStringList li;
+        li << t;
+        li << g.toString( catalog()->locale() );
+        (void) new QTreeWidgetItem( cpItem, li );
+      }
     }
+  }
 }
 
 void TemplKatalogListView::setShowCalcParts( bool on )
@@ -226,7 +224,7 @@ TemplKatalogListView::~TemplKatalogListView()
 {
 }
 
-DocPosition TemplKatalogListView::itemToDocPosition( QListViewItem *it )
+DocPosition TemplKatalogListView::itemToDocPosition( QTreeWidgetItem *it )
 {
   DocPosition pos;
   if ( ! it ) {
@@ -242,13 +240,13 @@ DocPosition TemplKatalogListView::itemToDocPosition( QListViewItem *it )
     pos.setUnit( flos->einheit() );
     pos.setUnitPrice( flos->unitPrice() );
   } else {
-    kdDebug() << "Can not find a template for the item" << endl;
+    kDebug() << "Can not find a template for the item" << endl;
   }
 
   return pos;
 }
 
-CalcPartList TemplKatalogListView::itemsCalcParts( QListViewItem* it )
+CalcPartList TemplKatalogListView::itemsCalcParts( QTreeWidgetItem* it )
 {
   CalcPartList cpList;
 
@@ -260,7 +258,7 @@ CalcPartList TemplKatalogListView::itemsCalcParts( QListViewItem* it )
 
   FloskelTemplate *flos = static_cast<FloskelTemplate*>( m_dataDict[ it ] );
   if ( flos ) {
-    kdDebug() << "We have calc parts: " << flos->getCalcPartsList().count()<< endl;
+    kDebug() << "We have calc parts: " << flos->getCalcPartsList().count()<< endl;
     cpList = flos->getCalcPartsList();
   }
   return cpList;

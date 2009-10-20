@@ -13,13 +13,14 @@
 #define CATALOGCHAPTEREDIT_H
 
 #include <keditlistbox.h>
-#include <kdialogbase.h>
+#include <kdialog.h>
 
-#include <dbids.h>
+#include "kraftcat_export.h"
+#include "dbids.h"
 /**
 @author Klaas Freitag
 */
-class CatalogChapterEdit : public KEditListBox
+class KRAFTCAT_EXPORT CatalogChapterEdit : public KEditListBox
 {
     Q_OBJECT
 public:
@@ -32,7 +33,7 @@ public:
 
 class Katalog;
 
-class CatalogChapterEditDialog: public KDialogBase
+class CatalogChapterEditDialog: public KDialog
 {
     Q_OBJECT
 public:

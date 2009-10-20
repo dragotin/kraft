@@ -18,12 +18,13 @@
 #include <klocale.h>
 #include <kdebug.h>
 #include <kaction.h>
+#include <kactioncollection.h>
 #include <kstandarddirs.h>
 #include <krun.h>
 #include <kdirwatch.h>
 
 #include <qfile.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 
 HtmlView::HtmlView( QWidget *parent )
   : KHTMLPart( parent ), mZoomStep( 10 )
@@ -72,13 +73,15 @@ void HtmlView::setStylesheetFile( const QString &style )
 
 void HtmlView::setupActions( KActionCollection *actionCollection )
 {
-  mZoomInAction = new KAction( i18n( "Increase Font Sizes" ), "viewmag+",
-                               KShortcut( "CTRL++" ), this,
-                               SLOT( zoomIn() ), actionCollection, "view_zoom_in" );
-  mZoomOutAction = new KAction( i18n( "Decrease Font Sizes" ), "viewmag-",
-                                KShortcut( "CTRL+-" ), this,
-                                SLOT( zoomOut() ), actionCollection, "view_zoom_out" );
+//  mZoomInAction = new KAction( i18n( "Increase Font Sizes" ), "viewmag+",
+//                               KShortcut( "Qt::CTRL++" ), this,
+//                               SLOT( zoomIn() ), actionCollection, "view_zoom_in" );
+  actionCollection->addAction( "view_zoom_in", this, SLOT( zoomIn() ) );
 
+//  mZoomOutAction = new KAction( i18n( "Decrease Font Sizes" ), "viewmag-",
+//                                KShortcut( "Qt::CTRL+-" ), this,
+//                                SLOT( zoomOut() ), actionCollection, "view_zoom_out" );
+  actionCollection->addAction( "view_zoom_out", this, SLOT( zoomOut() ) );
   updateZoomActions();
 }
 
@@ -106,7 +109,8 @@ void HtmlView::writeTopFrame( )
 {
   KStandardDirs stdDirs;
   QString filename = stdDirs.findResource( "data", QString( "kraft/%1" ) .arg( mStyleSheetFile ) );
-
+  filename = KStandardDirs::locate( "appdata", mStyleSheetFile  );
+  kDebug() << "OOOO here ists doch: " << filename << " out of " << mStyleSheetFile;
   QString t = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
                        "<html><head><title>%1</title>" ).arg( mTitle );
   if ( ! filename.isEmpty() ) {
@@ -134,7 +138,7 @@ void HtmlView::displayContent( const QString& content )
 {
   begin();
 
-  // kdDebug() << "Show content: " << content << endl;
+  // kDebug() << "Show content: " << content << endl;
 
   writeTopFrame();
   writeContent( content );

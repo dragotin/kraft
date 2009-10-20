@@ -18,14 +18,14 @@
 #ifndef TEMPLTOPOSITIONDIALOGBASE
 #define TEMPLTOPOSITIONDIALOGBASE
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class QWidget;
 class DocPosition;
 class DocPositionList;
 class QComboBox;
 
-class TemplToPositionDialogBase: public KDialogBase
+class TemplToPositionDialogBase: public KDialog
 {
   Q_OBJECT
 

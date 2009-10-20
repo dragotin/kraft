@@ -18,6 +18,7 @@
 #include <qstring.h>
 #include <kglobal.h>
 #include <klocale.h>
+#include <kconfig.h>
 
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
@@ -40,12 +41,12 @@ DocDigest::DocDigest()
 
 QString DocDigest::date()
 {
-  return mLocale.formatDate( mDate, true );
+  return mLocale.formatDate( mDate, KLocale::ShortDate );
 }
 
 QString DocDigest::lastModified()
 {
-  return mLocale.formatDate( mLastModified, true );
+  return mLocale.formatDate( mLastModified, KLocale::ShortDate );
 }
 
 QString DocDigest::clientName()
@@ -72,8 +73,9 @@ ArchDocDigestList DocDigest::archDocDigestList()
 
 void DocDigest::setCountryLanguage( const QString& country, const QString& lang )
 {
-  mLocale.setCountry( country );
-  mLocale.setLanguage( lang );
+  KConfig *cfg = KGlobal::config().data();
+  mLocale.setCountry( country, cfg );
+  mLocale.setLanguage( lang, cfg ); // FIXME !!
 }
 
 /* *************************************************************************** */

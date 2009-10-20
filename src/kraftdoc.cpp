@@ -18,7 +18,7 @@
 // include files for Qt
 #include <qdir.h>
 #include <qwidget.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 // include files for KDE
 #include <klocale.h>
@@ -41,14 +41,12 @@
 
 // FIXME: Make KraftDoc inheriting DocDigest!
 
-KraftDoc::KraftDoc(QWidget *parent, const char *name)
-  : QObject(parent, name),
+KraftDoc::KraftDoc(QWidget *parent)
+  : QObject(parent),
     mIsNew(true),
     mLocale(0),
     mSaver(0)
 {
-  pViewList = new QList<KraftView>();
-  pViewList->setAutoDelete(false);
   mLocale = new KLocale( "kraft" );
   mPositions.setLocale( mLocale );
 }
@@ -62,24 +60,19 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 {
   if ( this == &origDoc ) return *this;
 
-  pViewList = new QList<KraftView>();
-  pViewList->setAutoDelete( false );
   mLocale = new KLocale( "kraft" );
   mLocale = origDoc.mLocale;
 
-  DocPosition *dp;
   DocPositionListIterator it( origDoc.mPositions );
-  DocPositionBase *dpb;
 
-  while ( ( dpb = it.current() ) != 0 ) {
-    ++it;
-    dp = static_cast<DocPosition*>( dpb );
+  while ( it.hasNext() ) {
+    DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
     DocPosition *newPos = new DocPosition();
     *newPos = *dp;
     newPos->setDbId( -1 );
     mPositions.append( newPos );
-    kdDebug() << "Appending position " << dp->dbId().toString() << endl;
+    kDebug() << "Appending position " << dp->dbId().toString() << endl;
   }
 
   mPositions.setLocale( mLocale );
@@ -118,33 +111,32 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
 KraftView* KraftDoc::firstView()
 {
-  if( pViewList->count() > 0 ) {
-    return pViewList->first();
+  if( pViewList.count() > 0 ) {
+    return pViewList.first();
   }
   return 0;
 }
 
 void KraftDoc::addView(KraftView *view)
 {
-  pViewList->append(view);
+  pViewList.append(view);
 }
 
 void KraftDoc::removeView(KraftView *view)
 {
-  pViewList->remove(view);
+  pViewList.remove(view);
 }
 
 void KraftDoc::slotUpdateAllViews( KraftView *sender )
 {
-  KraftView *w;
-  if(pViewList) {
-    for(w=pViewList->first(); w!=0; w=pViewList->next()) {
-      kdDebug() << "VIEW REDRAW, sender is " << sender << endl;
-      if(w!=sender)
+  KraftView *w = 0;
+  QListIterator<KraftView*> it( pViewList );
+  while( it.hasNext() ) {
+    w = it.next();
+    if( w != sender ) {
         w->redrawDocument( ); // no cache
     }
   }
-
 }
 
 void KraftDoc::closeDocument()
@@ -207,15 +199,14 @@ bool KraftDoc::saveDocument( )
         }
 
         // We go through the whole document and remove the positions
-        // that are to delete because they now were deleted in they
+        // that are to delete because they now were deleted in the
         // database.
-        for( DocPositionBase *dp = mPositions.first(); dp;  ) {
+        DocPositionListIterator it( mPositions );
+        while( it.hasNext() ) {
+          DocPositionBase *dp = it.next();
           if( dp->toDelete() ) {
-            kdDebug() << "Removing pos " << dp->dbId().toString() << " from document object" << endl;
-            mPositions.remove();
-            dp = mPositions.current();
-          } else {
-            dp = mPositions.next();
+            kDebug() << "Removing pos " << dp->dbId().toString() << " from document object" << endl;
+            mPositions.removeAll( dp );
           }
         }
         modified = false;
@@ -248,11 +239,9 @@ void KraftDoc::setPositionList( DocPositionList newList )
 {
   mPositions.clear();
 
-  QPtrListIterator<DocPositionBase> it( newList );
-  DocPositionBase *dpb;
-  // for( DocPositionBase *dpb = newList.first(); dpb; dpb = newList.next() ) {
-  while ( ( dpb = it.current() ) != 0 ) {
-    ++it;
+  DocPositionListIterator it( newList );
+  while ( it.hasNext() ) {
+    DocPositionBase *dpb = it.next();
     DocPosition *dp = static_cast<DocPosition*>( dpb );
     DocPosition *newDp = createPosition( dp->type() );
     *newDp = *dp;
@@ -270,18 +259,16 @@ DocPosition* KraftDoc::createPosition( DocPositionBase::PositionType t )
 
 void KraftDoc::slotRemovePosition( int pos )
 {
-  kdDebug() << "Removing position " << pos << endl;
-
-  DocPositionBase *dp = 0;
+  kDebug() << "Removing position " << pos << endl;
 
   bool found = false;
-  for( dp = mPositions.first(); !found && dp; dp = mPositions.next() ) {
-    kdDebug() << "Comparing " << pos << " with " << dp->dbId().toString() << endl;
+  foreach( DocPositionBase *dp, mPositions ) {
+    kDebug() << "Comparing " << pos << " with " << dp->dbId().toString() << endl;
     if( dp->dbId() == pos ) {
-      if( ! mPositions.removeRef( dp ) ) {
-        kdDebug() << "Could not remove!" << endl;
+      if( ! mPositions.removeAll( dp ) ) {
+        kDebug() << "Could not remove!" << endl;
       } else {
-        kdDebug() << "Successfully removed the position " << dp << endl;
+        kDebug() << "Successfully removed the position " << dp << endl;
         mRemovePositions.append( dp->dbId() ); // remember to delete
         found = true;
       }
@@ -295,52 +282,41 @@ void KraftDoc::slotRemovePosition( int pos )
 
 void KraftDoc::slotMoveUpPosition( int dbid )
 {
-  kdDebug() << "Moving position " << dbid << " up" << endl;
-  DocPositionBase *dpLoop = mPositions.first();
-  dpLoop = mPositions.next(); // Jump to second one, first cant be moved up
-  DocPositionBase *dp = 0;
+  kDebug() << "Moving position " << dbid << " up" << endl;
+  if( mPositions.count() < 1 ) return;
   int curPos = -1;
 
-  for( ; curPos == -1 && dpLoop; dpLoop = mPositions.next() ) {
-         kdDebug() << "Comparing " << dbid << " with " << dpLoop->dbId().toString() << endl;
-         if( dpLoop->dbId() == dbid ) {
-           curPos = mPositions.at();
-           dp = mPositions.take();
-         }
-       }
-
-  kdDebug() << "Found: "<< curPos << ", count: " << mPositions.count() << ", dp: " << dp << endl;
-  if( curPos > -1 && dp ) {
-    if( mPositions.insert( curPos-1, dp ) ) {
-      kdDebug() << "Inserted successfully" << endl;
-      slotUpdateAllViews( 0 );
+  // Search the one to move up
+  for( int i = 0; curPos == -1 && i < mPositions.size(); i++ ) {
+    if( (mPositions.at(i))->dbId() == dbid ) {
+      curPos = i; // get out of the loop
     }
+  }
+
+  kDebug() << "Found: "<< curPos << ", count: " << mPositions.count() << endl;
+  if( curPos < mPositions.size()-1 ) {
+    mPositions.swap( curPos, curPos+1 );
+    slotUpdateAllViews( 0 );
   }
 }
 
 void KraftDoc::slotMoveDownPosition( int dbid )
 {
-  kdDebug() << "Moving position " << dbid << " down" << endl;
-  DocPositionBase *dpLoop = 0;
-  DocPositionBase *dp = 0;
-  DocPositionBase *dpLast = mPositions.last();
+  kDebug() << "Moving position " << dbid << " down" << endl;
+  if( mPositions.count() < 1 ) return;
   int curPos = -1;
 
-  for( dpLoop = mPositions.first(); curPos == -1 && dpLoop != dpLast;
-        dpLoop = mPositions.next() ) {
-    kdDebug() << "Comparing " << dbid << " with " << dpLoop->dbId().toString() << endl;
-    if( dpLoop->dbId() == dbid ) {
-      curPos = mPositions.at();
-      dp = mPositions.take();
+  // Search the one to move up
+  for( int i = 0; curPos == -1 && i < mPositions.size(); i++ ) {
+    if( (mPositions.at(i))->dbId() == dbid ) {
+      curPos = i; // get out of the loop
     }
   }
 
-  kdDebug() << "Found: "<< curPos << ", count: " << mPositions.count() << ", dp: " << dp << endl;
-  if( curPos > -1 && dp ) {
-    if( mPositions.insert( curPos+1, dp ) ) {
-      kdDebug() << "Inserted successfully" << endl;
-      slotUpdateAllViews( 0 );
-    }
+  kDebug() << "Found: "<< curPos << ", count: " << mPositions.count();
+  if( curPos > 0 ) {
+    mPositions.swap( curPos, curPos-1 );
+    slotUpdateAllViews( 0 );
   }
 }
 
@@ -357,7 +333,7 @@ DocumentSaverBase* KraftDoc::getSaver( const QString& )
 {
     if( ! mSaver )
     {
-        kdDebug() << "Create new Document DB-Saver" << endl;
+        kDebug() << "Create new Document DB-Saver" << endl;
         mSaver = new DocumentSaverDB();
     }
     return mSaver;
@@ -400,9 +376,10 @@ KLocale* KraftDoc::locale()
 
 void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
 {
-  kdDebug()<< "Setting country " << country << " and lang " << lang << endl;
-  mLocale->setCountry( country );
-  mLocale->setLanguage( lang );
+  kDebug()<< "Setting country " << country << " and lang " << lang << endl;
+  KConfig *cfg = KGlobal::config().data();
+  mLocale->setCountry( country, cfg );
+  mLocale->setLanguage( lang, cfg );
   mPositions.setLocale( mLocale );
 }
 

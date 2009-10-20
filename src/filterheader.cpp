@@ -18,53 +18,54 @@
 
 #include "filterheader.h"
 
-#include <klistview.h>
+#include <ktreewidgetsearchline.h>
 #include <kdialog.h>
 #include <klocale.h>
 #include <kdebug.h>
 #include <kapplication.h>
 #include <kiconloader.h>
 
+#include <QTreeWidget>
+
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <Q3BoxLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
-CountingSearchLine::CountingSearchLine( QWidget *parent, KListView *listView )
-  : KListViewSearchLine( parent, listView )
+CountingSearchLine::CountingSearchLine( QWidget *parent, QTreeWidget *listView )
+  : KTreeWidgetSearchLine( parent, listView )
 {
 }
 
-void CountingSearchLine::updateSearch( const QString &s )
+void CountingSearchLine::searchUpdate( const QString &s )
 {
-  KListViewSearchLine::updateSearch( s );
-
-  emit searchCountChanged();
+  KTreeWidgetSearchLine::updateSearch( s );
 }
 
 int CountingSearchLine::searchCount()
 {
   int count = 0;
-  QListViewItem *item;
-  for( item = listView()->firstChild(); item; item = item->nextSibling() ) {
-    if ( item->isVisible() ) ++count;
-  }
+  // FIXME KDE4
   return count;
 }
 
 
-FilterHeader::FilterHeader( KListView *listView, QWidget *parent )
+FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
   : QWidget( parent ), mListView( listView ), mItemNameNone( i18n("No Items") ),
     mItemNameOne( i18n("1 Item") ),
     mItemNameMultiple( i18n("%1 of %2 Items") )
 {
-  QBoxLayout *topLayout = new QVBoxLayout( this );
+  Q3BoxLayout *topLayout = new Q3VBoxLayout( this );
   topLayout->setSpacing( KDialog::spacingHint() );
   topLayout->setMargin( 0 ); // KDialog::marginHint() );
 
   mTitleLabel = new QLabel( this );
   topLayout->addWidget( mTitleLabel );
 
-  QBoxLayout *filterLayout = new QHBoxLayout( topLayout );
+  Q3BoxLayout *filterLayout = new Q3HBoxLayout( topLayout );
 
   QLabel *label = new QLabel( i18n("Search:"), this );
   filterLayout->addWidget( label );
@@ -95,9 +96,9 @@ void FilterHeader::setItemName( const QString &none, const QString &one,
   setTitleLabel();
 }
 
-void FilterHeader::setListView( KListView* view )
+void FilterHeader::setListView( QTreeWidget* view )
 {
-  mSearchLine->setListView( view );
+  mSearchLine->setTreeWidget( view );
 }
 
 void FilterHeader::clear()
@@ -111,7 +112,7 @@ void FilterHeader::setTitleLabel()
 {
   int total = 0;
 
-  if ( mListView ) total = mListView->childCount();
+  if ( mListView ) total = 0; // FIXME KDE4 mListView->childCount();
 
   QString txt;
 

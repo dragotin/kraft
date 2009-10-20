@@ -22,7 +22,7 @@
 #include "materialkataloglistview.h"
 
 class QBoxLayout;
-class QListViewItem;
+class QTreeWidgetItem;
 class BrunsKatalogListView;
 class QLabel;
 class MaterialTemplDialog;
@@ -47,7 +47,7 @@ protected slots:
   void slNeueVorlage();
   void slEditVorlage();
 
-  void openDialog( QListViewItem *, StockMaterial *, bool );
+  void openDialog( QTreeWidgetItem *, StockMaterial *, bool );
   void slotEditRejected();
   void slotEditOk( StockMaterial * );
 protected:
@@ -55,9 +55,9 @@ protected:
 
   MaterialKatalogListView *m_materialListView;
   QLabel               *m_detailLabel;
-  KListView            *m_details;
+  QTreeWidget           *m_details;
   MaterialTemplDialog *mDialog;
-  QListViewItem *mNewItem;
+  QTreeWidgetItem *mNewItem;
 };
 
 #endif

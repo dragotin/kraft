@@ -16,14 +16,27 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qsqlcursor.h>
+#include <QSqlQuery>
 
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
 
+#include <k3staticdeleter.h>
+
 #include "stockmaterialman.h"
 
+static K3StaticDeleter<StockMaterialMan> selfDeleter;
+
+StockMaterialMan *StockMaterialMan::mSelf = 0;
+
+StockMaterialMan* StockMaterialMan::self()
+{
+  if ( ! mSelf ) {
+    selfDeleter.setObject( mSelf, new StockMaterialMan() );
+  }
+  return mSelf;
+}
 
 StockMaterialMan::StockMaterialMan( )
 {
@@ -36,77 +49,52 @@ StockMaterialMan::~StockMaterialMan( )
 
 }
 
-void StockMaterialMan::load( long no )
+void StockMaterialMan::load( )
 {
-    QSqlCursor cur("stockMaterial");
+  QSqlQuery cur( "SELECT matID, matChapter, material, unitID, perPack, "
+                 "priceIn, priceOut, modifyDate, enterDate FROM stockMaterial "
+                 "ORDER BY material" );
 
-    // Create an index that sorts from high values for einheitID down.
-    // that makes at least on resize of the vector.
-    QSqlIndex indx = cur.index( "material" );
+  while( cur.next())
+  {
+    long matID = cur.value( 0 ).toLongLong();
+    long matChap = cur.value( 1 ).toLongLong();
+    QString material = cur.value( 2 ).toString();
+    int unitID = cur.value( 3 ).toInt();
+    double perPack = cur.value( 4 ).toDouble();
+    double pIn = cur.value( 5 ).toDouble();
+    double pOut = cur.value( 6 ).toDouble();
+    QDate lastmod = cur.value( 7 ).toDate();
+    QDate entered = cur.value( 8 ).toDate();
+    Geld   gIn(pIn);
+    Geld   gOut(pOut);
 
-    if ( no ) {
-      cur.setValue( "matID", QString::number( no ) );
-    }
+    StockMaterial *mat = new StockMaterial( matID, matChap, material, unitID,
+                                            perPack, gIn, gOut );
+    mat->setEnterDate( entered );
+    mat->setLastModified( lastmod );
 
-    cur.select( indx );
-    while( cur.next())
-    {
-        long matID = cur.value("matID").toLongLong();
-        long matChap = cur.value("matChapter").toLongLong();
-        QString material = cur.value("material").toString();
-        int unitID = cur.value("unitID").toInt();
-        double perPack = cur.value("perPack").toDouble();
-        double pIn = cur.value("priceIn").toDouble();
-        double pOut = cur.value("priceOut").toDouble();
-        QDate lastmod = cur.value( "modifyDate" ).toDate();
-        QDate entered = cur.value( "enterDate" ).toDate();
-        Geld   gIn(pIn);
-        Geld   gOut(pOut);
-
-        StockMaterial *mat = new StockMaterial( matID, matChap, material, unitID,
-                                                perPack, gIn, gOut );
-        mat->setEnterDate( entered );
-        mat->setLastModified( lastmod );
-
-        m_materials->append( mat );
-    }
+    mMaterials.append( mat );
+  }
 }
 
 StockMaterial* StockMaterialMan::getMaterial( long id )
 {
-    StockMaterial *sm = 0;
-
-    if( ! m_materials )
-        m_materials = new StockMaterialList();
-
-    if( m_materials->isEmpty() )
-        load();
-
-    sm = findMaterial( id );
-    if ( !sm ) {
-      load( id );
-      sm = findMaterial( id );
-    }
-    return sm;
+  StockMaterial *sm = findMaterial( id );
+  return sm;
 }
 
 StockMaterial* StockMaterialMan::findMaterial( long id )
 {
-  StockMaterialListIterator it(*m_materials);
-  StockMaterial *mat;
-  StockMaterial *sm = 0;
+  if( mMaterials.isEmpty() )
+    load();
 
-  while ( sm == 0 && (mat = it.current()) != 0 ) {
-    ++it;
-
-    if( mat->getID() == id )
-      sm = mat;
+  foreach( StockMaterial *sm, mMaterials ) {
+    if( sm->getID() == id )
+      return sm;
   }
 
-  return sm;
+  return 0;
 }
-
-StockMaterialList *StockMaterialMan::m_materials = 0;
-
 
 /* END */

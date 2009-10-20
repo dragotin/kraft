@@ -22,22 +22,22 @@
 
 #include <qmap.h>
 
-#include <kdialogbase.h>
-#include <klistview.h>
+#include <kdialog.h>
 
 class QWidget;
 class QStringList;
-class QListViewItem;
-class KListView;
+class QTreeWidget;
+class QTreeWidgetItem;
+
 class FilterHeader;
 
-class PositionTagDialog: public KDialogBase
+class PositionTagDialog: public KDialog
 {
   Q_OBJECT
 
 public:
   PositionTagDialog( QWidget* );
-  ~PositionTagDialog( );
+  virtual ~PositionTagDialog( );
 
   void setPositionTags( const QStringList& );
   QStringList getSelectedTags();
@@ -46,9 +46,9 @@ protected:
   void setTags( );
 
 private:
-  KListView *mListView;
+  QTreeWidget* mListView;
   FilterHeader *mFilterHeader;
-  QMap<QString, QCheckListItem*> mItemMap;
+  QMap<QString, QTreeWidgetItem*> mItemMap;
 };
 
 #endif

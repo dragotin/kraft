@@ -18,24 +18,24 @@
 // include files for Qt
 #include <qlayout.h>
 #include <qlabel.h>
-#include <qscrollview.h>
+#include <q3scrollview.h>
 #include <qsizepolicy.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qsignalmapper.h>
-#include <qhbox.h>
-#include <qvbox.h>
-#include <qgrid.h>
-#include <qwidgetstack.h>
+#include <q3hbox.h>
+#include <q3vbox.h>
+#include <q3grid.h>
+#include <q3widgetstack.h>
 #include <qtabwidget.h>
 #include <qcolor.h>
 #include <qsplitter.h>
-#include <qbuttongroup.h>
+#include <q3buttongroup.h>
 #include <qtooltip.h>
 #include <qfont.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 #include <kdebug.h>
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <kpushbutton.h>
 #include <kcombobox.h>
 #include <kdatewidget.h>
@@ -44,6 +44,7 @@
 #include <kmessagebox.h>
 #include <khtmlview.h>
 #include <kiconloader.h>
+#include <kvbox.h>
 
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
@@ -57,10 +58,10 @@
 #include "kraftview_ro.h"
 #include "kraftdoc.h"
 #include "portal.h"
-#include "docheader.h"
+#include "ui_docheader.h"
 #include "docassistant.h"
 #include "positionviewwidget.h"
-#include "docfooter.h"
+#include "ui_docfooter.h"
 #include "docposition.h"
 #include "unitmanager.h"
 #include "docpostcard.h"
@@ -92,11 +93,20 @@
 // #########################################################
 
 KraftViewRO::KraftViewRO(QWidget *parent, const char *name) :
-  KDialogBase( parent, name, false /* modal */, i18n("Document"),
-	      Close, Ok, true /* separator */ ),
+  KDialog( parent ),
+
+  // name, false /* modal */, i18n("Document"),
+  // 	      Close, Ok, true /* separator */ ),
   m_doc( 0 )
 {
-  mGlobalVBox = makeVBoxMainWidget();
+  setObjectName( name );
+  setModal( false );
+  setCaption( i18n("Document" ) );
+  setButtons( Ok | Close );
+
+  KVBox *w = new KVBox( parent );
+  mGlobalVBox = w;
+  setMainWidget( w );
   mGlobalVBox->setMargin( 3 );
 
   mHtmlView = new HtmlView( mGlobalVBox );
@@ -117,7 +127,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
   if ( !doc ) return;
 
   KLocale *locale = doc->locale();
-  if ( !locale ) locale = KGlobal().locale();
+  if ( !locale ) locale = KGlobal::locale();
 
   // do stuff like open a template and render values into it.
   KStandardDirs stdDirs;
@@ -128,14 +138,14 @@ void KraftViewRO::setup( DocGuardedPtr doc )
   QString tmplFile = stdDirs.findResource( "data", findFile );
 
 
-  if ( ! tmplFile ) {
-    kdDebug() << "Could not find template to render ro view of document." << endl;
+  if ( tmplFile.isEmpty() ) {
+    kDebug() << "Could not find template to render ro view of document.";
     return;
   }
 
   TextTemplate tmpl( tmplFile );
   tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), doc->docType() + " " + doc->ident() );
-  tmpl.setValue( DOC_RO_TAG( "DATE" ), locale->formatDate( doc->date(), true ) );
+  tmpl.setValue( DOC_RO_TAG( "DATE" ), locale->formatDate( doc->date(), KLocale::ShortDate ) );
   tmpl.setValue( DOC_RO_TAG( "DOC_TYPE" ),  doc->docType() );
   QString address = doc->address();
   address.replace( '\n', "<br/>" );
@@ -149,14 +159,13 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
   DocPositionList positions = doc->positions();
   DocPosition *dp;
-  DocPositionBase *dpb;
+
 
   DocPositionListIterator it( positions );
   int pos = 1;
 
-  while ( ( dpb = it.current() ) != 0 ) {
-    ++it;
-    dp = static_cast<DocPosition*>( dpb );
+  while ( it.hasNext() ) {
+    dp = static_cast<DocPosition*>( it.next() );
     tmpl.createDictionary( "POSITIONS" );
 
     tmpl.setValue( "POSITIONS", "NUMBER", QString::number( pos++ ) );
@@ -215,28 +224,28 @@ KraftDoc *KraftViewRO::getDocument() const
 
 void KraftViewRO::done( int r )
 {
-  kdDebug() << "View closed with ret value " << r << endl;
-  KraftDoc *doc = getDocument();
-  if( doc )
-    // doc->removeView( this );
-  KDialogBase::done( r );
+  kDebug() << "View closed with ret value " << r;
+  // KraftDoc *doc = getDocument();
+  // if( doc )
+  // doc->removeView( this );
+  // KDialog::buttonClicked( Done );
 }
 
 void KraftViewRO::slotClose()
 {
-    kdDebug() << "Close Slot hit!" << endl;
+    kDebug() << "Close Slot hit!";
 
     KraftDoc *doc = getDocument();
 
     if( !doc ) {
-      kdDebug() << "ERR: No document available in view, return!" << endl;
+      kDebug() << "ERR: No document available in view, return!";
       return;
     }
-    KraftSettings::self()->setRODocViewSize( size() );
-    KraftSettings::self()->writeConfig();
+    KraftSettings::self()->self()->setRODocViewSize( size() );
+    KraftSettings::self()->self()->writeConfig();
 
     emit viewClosed( true, m_doc );
-    KDialogBase::slotClose(  );
+    KDialog::slotButtonClicked( Close );
 }
 
 #include "kraftview_ro.moc"

@@ -31,13 +31,17 @@ MaterialKatalogListView::MaterialKatalogListView( QWidget *w, bool enableCheckbo
   : KatalogListView( w, enableCheckboxes ),
     mCheckboxes( enableCheckboxes )
 {
-  addColumn( i18n("Material" ) );
-  int p = addColumn( i18n("Pack" ) );
-  setColumnAlignment( p, Qt::AlignRight );
-  addColumn( i18n("Unit" ) );
-  addColumn( i18n("Purchase" ) );
-  addColumn( i18n("Sale" ) );
-  addColumn( i18n( "Last Modified" ) );
+  setColumnCount( 6 );
+
+  QStringList headers;
+  headers << i18n("Material");
+  headers << i18n("Pack");
+  headers << i18n("Unit");
+  headers << i18n("Purchase");
+  headers << i18n("Sale");
+  headers << i18n("Last Modified");
+
+  setHeaderLabels( headers );
 }
 
 
@@ -52,53 +56,56 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
   Katalog *k = KatalogMan::self()->getKatalog( katName );
   MatKatalog *catalog = static_cast<MatKatalog*>( k );
   if( ! catalog ) {
-    kdDebug() << "No catalog in listview available!" << endl;
+    kDebug() << "No catalog in listview available!" << endl;
     return;
   }
-  kdDebug() << "setting up meterial chapters --------*********************************+++!" << endl;
+  kDebug() << "setting up meterial chapters --------*********************************+++!" << endl;
   setupChapters();
 
   const QStringList chapters = catalog->getKatalogChapters();
   for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
     QString chapter = *it;
-    KListViewItem *katItem = chapterItem(chapter);
-    kdDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
+    QTreeWidgetItem *katItem = chapterItem(chapter);
+    kDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
 
     // hole alle Brunsrecords per Chapter und mach weiter....
     StockMaterialList records = catalog->getRecordList( chapter );
-
-    StockMaterial *mat;
-    for ( mat = records.first(); mat; mat = records.next() ) {
+    StockMaterialListIterator it( records );
+    while( it.hasNext() ) {
+      StockMaterial *mat = it.next();
       addMaterialToView( katItem,  mat );
     }
   }
 }
 
-QListViewItem* MaterialKatalogListView::addMaterialToView( KListViewItem *parent, StockMaterial *mat )
+QTreeWidgetItem* MaterialKatalogListView::addMaterialToView( QTreeWidgetItem *parent, StockMaterial *mat )
 {
   if ( !mat ) return 0;
   if ( !parent ) parent = m_root;
 
-  QListViewItem *recItem;
+  QTreeWidgetItem *recItem = new QTreeWidgetItem( parent );
+  Qt::ItemFlags flags;
   if ( ! mCheckboxes ) {
-    recItem = new QListViewItem( parent, mat->name() );
+
   } else {
-    recItem = new QCheckListItem( parent, mat->name(), QCheckListItem::CheckBox );
+    flags = Qt::ItemIsUserCheckable;
   }
-  recItem->setMultiLinesEnabled( true );
+  recItem->setFlags( flags );
+  recItem->setText( 0, mat->name() );
+  // recItem->setMultiLinesEnabled( true );  FIXME
   slFreshupItem( recItem,  mat, catalog()->locale() );
   m_dataDict.insert( recItem, mat );
 
   return recItem;
 }
 
-void MaterialKatalogListView::slFreshupItem( QListViewItem *item, void* templ, KLocale *loc )
+void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ, KLocale *loc )
 {
   StockMaterial *mat = static_cast<StockMaterial*>( templ );
 
   if ( item && mat ) {
     Einheit e = mat->getUnit();
-    kdDebug() << "Setting material name " << e.einheitSingular() << endl;
+    kDebug() << "Setting material name " << e.einheitSingular() << endl;
     item->setText( 0, mat->name() );
     item->setText( 1, QString::number( mat->getAmountPerPack() ) );
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
@@ -106,11 +113,11 @@ void MaterialKatalogListView::slFreshupItem( QListViewItem *item, void* templ, K
     item->setText( 4, mat->salesPrice().toString( loc ) );
     item->setText( 5, mat->lastModified() );
   } else {
-    kdDebug() << "Unable to freshup item - data invalid" << endl;
+    kDebug() << "Unable to freshup item - data invalid" << endl;
   }
 }
 
-DocPosition MaterialKatalogListView::itemToDocPosition( QListViewItem *item )
+DocPosition MaterialKatalogListView::itemToDocPosition( QTreeWidgetItem *item )
 {
   DocPosition pos;
   if ( ! item ) {

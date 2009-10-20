@@ -1,1218 +1,1207 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>d_calcTempl</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>d_calcTempl</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>587</width>
-            <height>675</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Edit Template</string>
-    </property>
-    <property name="sizeGripEnabled">
-        <bool>true</bool>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget" row="0" column="0">
-            <property name="name">
-                <cstring>layout26</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>d_calcTempl</class>
+ <widget class="QDialog" name="d_calcTempl">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>587</width>
+    <height>675</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Edit Template</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout">
+     <item>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="Widget8">
+        <attribute name="title">
+         <string>Template</string>
+        </attribute>
+        <layout class="QGridLayout">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout">
+           <item>
+            <layout class="QHBoxLayout">
+             <item>
+              <spacer name="spacer4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>195</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="textLabel4">
+               <property name="text">
+                <string>&amp;Store in Chapter</string>
+               </property>
+               <property name="wordWrap">
+                <bool>false</bool>
+               </property>
+               <property name="buddy">
+                <cstring>cbChapter</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="cbChapter"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="Q3GroupBox" name="groupBox2_2">
+             <property name="title">
+              <string>&amp;Template</string>
+             </property>
+             <layout class="QGridLayout">
+              <item row="0" column="0">
+               <layout class="QVBoxLayout">
+                <item>
+                 <widget class="Q3TextEdit" name="m_text"/>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout">
+                  <item>
+                   <widget class="QLabel" name="textLabel3">
+                    <property name="text">
+                     <string>&amp;Unit</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>false</bool>
+                    </property>
+                    <property name="buddy">
+                     <cstring>m_unit</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="m_unit"/>
+                  </item>
+                  <item>
+                   <spacer name="spacer3">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>90</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="m_addTime">
+                    <property name="text">
+                     <string>&amp;Count Time for Overalltime</string>
+                    </property>
+                    <property name="shortcut">
+                     <string>Alt+C</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout">
+                  <item>
+                   <widget class="QLabel" name="textLabel1_2">
+                    <property name="toolTip">
+                     <string/>
+                    </property>
+                    <property name="text">
+                     <string>Bonus</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>false</bool>
+                    </property>
+                    <property name="buddy">
+                     <cstring>spGewinn</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="spGewinn">
+                    <property name="buttonSymbols">
+                     <enum>QAbstractSpinBox::UpDownArrows</enum>
+                    </property>
+                    <property name="specialValueText">
+                     <string/>
+                    </property>
+                    <property name="suffix">
+                     <string> %</string>
+                    </property>
+                    <property name="prefix">
+                     <string/>
+                    </property>
+                    <property name="minimum">
+                     <number>-1000</number>
+                    </property>
+                    <property name="maximum">
+                     <number>1000</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="KPushButton" name="pbRundPreis">
+                    <property name="text">
+                     <string>round</string>
+                    </property>
+                    <property name="shortcut">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="spacer12">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>197</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="textLabel1_3">
+                    <property name="text">
+                     <string>VAT</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="KComboBox" name="cbMwst">
+                    <item>
+                     <property name="text">
+                      <string>full</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>half</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="Q3ButtonGroup" name="m_gbPriceSrc">
+             <property name="title">
+              <string>Price</string>
+             </property>
+             <layout class="QGridLayout">
+              <item row="0" column="0">
+               <layout class="QHBoxLayout">
+                <item>
+                 <widget class="QRadioButton" name="m_rbManual">
+                  <property name="text">
+                   <string>&amp;manuel:</string>
+                  </property>
+                  <property name="shortcut">
+                   <string>Alt+M</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="KDoubleNumInput" name="m_manualPriceVal">
+                  <property name="minValue" stdset="0">
+                   <number>0</number>
+                  </property>
+                  <property name="maxValue" stdset="0">
+                   <number>99999</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="textLabel1">
+                  <property name="text">
+                   <string>Euro</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="spacer5">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Expanding</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>60</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="m_rbCalculation">
+                  <property name="text">
+                   <string>Calculated Price</string>
+                  </property>
+                  <property name="shortcut">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="Widget9">
+        <attribute name="title">
+         <string>Time Calculation</string>
+        </attribute>
+        <layout class="QGridLayout">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout">
+           <item>
+            <widget class="QLabel" name="m_textDispTime">
+             <property name="text">
+              <string>textLabel1</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignVCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="textLabel2">
+             <property name="text">
+              <string>Time measureable effort for this template:</string>
+             </property>
+             <property name="wordWrap">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout">
+             <item>
+              <widget class="Q3ListView" name="m_timeParts">
+               <property name="defaultRenameAction">
+                <enum>Q3ListView::Accept</enum>
+               </property>
+               <column>
+                <property name="text">
+                 <string>Label</string>
                 </property>
-                <widget class="QTabWidget">
-                    <property name="name">
-                        <cstring>tabWidget</cstring>
-                    </property>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>Widget8</cstring>
-                        </property>
-                        <attribute name="title">
-                            <string>Template</string>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout18</cstring>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>layout28</cstring>
-                                        </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <spacer>
-                                                <property name="name">
-                                                    <cstring>spacer4</cstring>
-                                                </property>
-                                                <property name="orientation">
-                                                    <enum>Horizontal</enum>
-                                                </property>
-                                                <property name="sizeType">
-                                                    <enum>Expanding</enum>
-                                                </property>
-                                                <property name="sizeHint">
-                                                    <size>
-                                                        <width>195</width>
-                                                        <height>20</height>
-                                                    </size>
-                                                </property>
-                                            </spacer>
-                                            <widget class="QLabel">
-                                                <property name="name">
-                                                    <cstring>textLabel4</cstring>
-                                                </property>
-                                                <property name="text">
-                                                    <string>&amp;Store in Chapter</string>
-                                                </property>
-                                                <property name="buddy" stdset="0">
-                                                    <cstring>cbChapter</cstring>
-                                                </property>
-                                            </widget>
-                                            <widget class="QComboBox">
-                                                <property name="name">
-                                                    <cstring>cbChapter</cstring>
-                                                </property>
-                                            </widget>
-                                        </hbox>
-                                    </widget>
-                                    <widget class="QGroupBox">
-                                        <property name="name">
-                                            <cstring>groupBox2_2</cstring>
-                                        </property>
-                                        <property name="title">
-                                            <string>&amp;Template</string>
-                                        </property>
-                                        <grid>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <widget class="QLayoutWidget" row="0" column="0">
-                                                <property name="name">
-                                                    <cstring>layout17</cstring>
-                                                </property>
-                                                <vbox>
-                                                    <property name="name">
-                                                        <cstring>unnamed</cstring>
-                                                    </property>
-                                                    <widget class="QTextEdit">
-                                                        <property name="name">
-                                                            <cstring>m_text</cstring>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="QLayoutWidget">
-                                                        <property name="name">
-                                                            <cstring>layout27</cstring>
-                                                        </property>
-                                                        <hbox>
-                                                            <property name="name">
-                                                                <cstring>unnamed</cstring>
-                                                            </property>
-                                                            <widget class="QLabel">
-                                                                <property name="name">
-                                                                    <cstring>textLabel3</cstring>
-                                                                </property>
-                                                                <property name="text">
-                                                                    <string>&amp;Unit</string>
-                                                                </property>
-                                                                <property name="buddy" stdset="0">
-                                                                    <cstring>m_unit</cstring>
-                                                                </property>
-                                                            </widget>
-                                                            <widget class="QComboBox">
-                                                                <property name="name">
-                                                                    <cstring>m_unit</cstring>
-                                                                </property>
-                                                            </widget>
-                                                            <spacer>
-                                                                <property name="name">
-                                                                    <cstring>spacer3</cstring>
-                                                                </property>
-                                                                <property name="orientation">
-                                                                    <enum>Horizontal</enum>
-                                                                </property>
-                                                                <property name="sizeType">
-                                                                    <enum>Expanding</enum>
-                                                                </property>
-                                                                <property name="sizeHint">
-                                                                    <size>
-                                                                        <width>90</width>
-                                                                        <height>20</height>
-                                                                    </size>
-                                                                </property>
-                                                            </spacer>
-                                                            <widget class="QCheckBox">
-                                                                <property name="name">
-                                                                    <cstring>m_addTime</cstring>
-                                                                </property>
-                                                                <property name="text">
-                                                                    <string>&amp;Count Time for Overalltime</string>
-                                                                </property>
-                                                                <property name="accel">
-                                                                    <string>Alt+C</string>
-                                                                </property>
-                                                            </widget>
-                                                        </hbox>
-                                                    </widget>
-                                                    <widget class="QLayoutWidget">
-                                                        <property name="name">
-                                                            <cstring>layout16</cstring>
-                                                        </property>
-                                                        <hbox>
-                                                            <property name="name">
-                                                                <cstring>unnamed</cstring>
-                                                            </property>
-                                                            <widget class="QLabel">
-                                                                <property name="name">
-                                                                    <cstring>textLabel1_2</cstring>
-                                                                </property>
-                                                                <property name="text">
-                                                                    <string>Bonus</string>
-                                                                </property>
-                                                                <property name="buddy" stdset="0">
-                                                                    <cstring>spGewinn</cstring>
-                                                                </property>
-                                                                <property name="toolTip" stdset="0">
-                                                                    <string></string>
-                                                                </property>
-                                                            </widget>
-                                                            <widget class="QSpinBox">
-                                                                <property name="name">
-                                                                    <cstring>spGewinn</cstring>
-                                                                </property>
-                                                                <property name="prefix">
-                                                                    <string></string>
-                                                                </property>
-                                                                <property name="suffix">
-                                                                    <string> %</string>
-                                                                </property>
-                                                                <property name="specialValueText">
-                                                                    <string></string>
-                                                                </property>
-                                                                <property name="buttonSymbols">
-                                                                    <enum>UpDownArrows</enum>
-                                                                </property>
-                                                                <property name="maxValue">
-                                                                    <number>1000</number>
-                                                                </property>
-                                                                <property name="minValue">
-                                                                    <number>-1000</number>
-                                                                </property>
-                                                            </widget>
-                                                            <widget class="KPushButton">
-                                                                <property name="name">
-                                                                    <cstring>pbRundPreis</cstring>
-                                                                </property>
-                                                                <property name="text">
-                                                                    <string>round</string>
-                                                                </property>
-                                                                <property name="accel">
-                                                                    <string></string>
-                                                                </property>
-                                                            </widget>
-                                                            <spacer>
-                                                                <property name="name">
-                                                                    <cstring>spacer12</cstring>
-                                                                </property>
-                                                                <property name="orientation">
-                                                                    <enum>Horizontal</enum>
-                                                                </property>
-                                                                <property name="sizeType">
-                                                                    <enum>Expanding</enum>
-                                                                </property>
-                                                                <property name="sizeHint">
-                                                                    <size>
-                                                                        <width>197</width>
-                                                                        <height>20</height>
-                                                                    </size>
-                                                                </property>
-                                                            </spacer>
-                                                            <widget class="QLabel">
-                                                                <property name="name">
-                                                                    <cstring>textLabel1_3</cstring>
-                                                                </property>
-                                                                <property name="text">
-                                                                    <string>VAT</string>
-                                                                </property>
-                                                            </widget>
-                                                            <widget class="KComboBox">
-                                                                <item>
-                                                                    <property name="text">
-                                                                        <string>full</string>
-                                                                    </property>
-                                                                </item>
-                                                                <item>
-                                                                    <property name="text">
-                                                                        <string>half</string>
-                                                                    </property>
-                                                                </item>
-                                                                <property name="name">
-                                                                    <cstring>cbMwst</cstring>
-                                                                </property>
-                                                            </widget>
-                                                        </hbox>
-                                                    </widget>
-                                                </vbox>
-                                            </widget>
-                                        </grid>
-                                    </widget>
-                                    <widget class="QButtonGroup">
-                                        <property name="name">
-                                            <cstring>m_gbPriceSrc</cstring>
-                                        </property>
-                                        <property name="title">
-                                            <string>Price</string>
-                                        </property>
-                                        <grid>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <widget class="QLayoutWidget" row="0" column="0">
-                                                <property name="name">
-                                                    <cstring>layout14</cstring>
-                                                </property>
-                                                <hbox>
-                                                    <property name="name">
-                                                        <cstring>unnamed</cstring>
-                                                    </property>
-                                                    <widget class="QRadioButton">
-                                                        <property name="name">
-                                                            <cstring>m_rbManual</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>&amp;manuel:</string>
-                                                        </property>
-                                                        <property name="accel">
-                                                            <string>Alt+M</string>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="KDoubleNumInput">
-                                                        <property name="name">
-                                                            <cstring>m_manualPriceVal</cstring>
-                                                        </property>
-                                                        <property name="minValue">
-                                                            <number>0</number>
-                                                        </property>
-                                                        <property name="maxValue">
-                                                            <number>99999</number>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="QLabel">
-                                                        <property name="name">
-                                                            <cstring>textLabel1</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>Euro</string>
-                                                        </property>
-                                                    </widget>
-                                                    <spacer>
-                                                        <property name="name">
-                                                            <cstring>spacer5</cstring>
-                                                        </property>
-                                                        <property name="orientation">
-                                                            <enum>Horizontal</enum>
-                                                        </property>
-                                                        <property name="sizeType">
-                                                            <enum>Expanding</enum>
-                                                        </property>
-                                                        <property name="sizeHint">
-                                                            <size>
-                                                                <width>60</width>
-                                                                <height>20</height>
-                                                            </size>
-                                                        </property>
-                                                    </spacer>
-                                                    <widget class="QRadioButton">
-                                                        <property name="name">
-                                                            <cstring>m_rbCalculation</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>Calculated Price</string>
-                                                        </property>
-                                                        <property name="accel">
-                                                            <string></string>
-                                                        </property>
-                                                    </widget>
-                                                </hbox>
-                                            </widget>
-                                        </grid>
-                                    </widget>
-                                </vbox>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>Widget9</cstring>
-                        </property>
-                        <attribute name="title">
-                            <string>Time Calculation</string>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout22</cstring>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>m_textDispTime</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>textLabel1</string>
-                                        </property>
-                                        <property name="alignment">
-                                            <set>WordBreak|AlignVCenter</set>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel2</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Time measureable effort for this template:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>layout21</cstring>
-                                        </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <widget class="QListView">
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Label</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Duration (Min.)</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Hourly Rate</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>glob. Rate</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                            <item>
-                                                <property name="text">
-                                                    <string>New Item</string>
-                                                </property>
-                                                <property name="text">
-                                                    <string></string>
-                                                </property>
-                                                <property name="text">
-                                                    <string></string>
-                                                </property>
-                                                <property name="text">
-                                                    <string></string>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                            </item>
-                                                <property name="name">
-                                                    <cstring>m_timeParts</cstring>
-                                                </property>
-                                                <property name="defaultRenameAction">
-                                                    <enum>Accept</enum>
-                                                </property>
-                                            </widget>
-                                            <widget class="QLayoutWidget">
-                                                <property name="name">
-                                                    <cstring>layout17</cstring>
-                                                </property>
-                                                <vbox>
-                                                    <property name="name">
-                                                        <cstring>unnamed</cstring>
-                                                    </property>
-                                                    <widget class="KPushButton">
-                                                        <property name="name">
-                                                            <cstring>m_butAddTime</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>new...</string>
-                                                        </property>
-                                                        <property name="toolTip" stdset="0">
-                                                            <string>Adds a new time calculation part to the template</string>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="KPushButton">
-                                                        <property name="name">
-                                                            <cstring>m_butEditTime</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>edit...</string>
-                                                        </property>
-                                                        <property name="toolTip" stdset="0">
-                                                            <string>Edits the current time calculation part</string>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="KPushButton">
-                                                        <property name="name">
-                                                            <cstring>m_butRemoveTime</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>delete</string>
-                                                        </property>
-                                                        <property name="toolTip" stdset="0">
-                                                            <string>Deletes the current time calculation part</string>
-                                                        </property>
-                                                    </widget>
-                                                    <spacer>
-                                                        <property name="name">
-                                                            <cstring>spacer5_2</cstring>
-                                                        </property>
-                                                        <property name="orientation">
-                                                            <enum>Vertical</enum>
-                                                        </property>
-                                                        <property name="sizeType">
-                                                            <enum>Expanding</enum>
-                                                        </property>
-                                                        <property name="sizeHint">
-                                                            <size>
-                                                                <width>20</width>
-                                                                <height>191</height>
-                                                            </size>
-                                                        </property>
-                                                    </spacer>
-                                                </vbox>
-                                            </widget>
-                                        </hbox>
-                                    </widget>
-                                </vbox>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>TabPage</cstring>
-                        </property>
-                        <attribute name="title">
-                            <string>Fix Costs</string>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout23</cstring>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>m_textDispFix</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>textLabel1</string>
-                                        </property>
-                                        <property name="alignment">
-                                            <set>WordBreak|AlignVCenter</set>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel2_3</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Fix costs for this template per one unit:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>layout18</cstring>
-                                        </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <widget class="QListView">
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Amount</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Label</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Single Price</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Overall Price</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                            <item>
-                                                <property name="text">
-                                                    <string>New Item</string>
-                                                </property>
-                                                <property name="text">
-                                                    <string></string>
-                                                </property>
-                                                <property name="text">
-                                                    <string></string>
-                                                </property>
-                                                <property name="text">
-                                                    <string></string>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                            </item>
-                                                <property name="name">
-                                                    <cstring>m_fixParts</cstring>
-                                                </property>
-                                                <property name="defaultRenameAction">
-                                                    <enum>Accept</enum>
-                                                </property>
-                                            </widget>
-                                            <widget class="QLayoutWidget">
-                                                <property name="name">
-                                                    <cstring>layout17</cstring>
-                                                </property>
-                                                <vbox>
-                                                    <property name="name">
-                                                        <cstring>unnamed</cstring>
-                                                    </property>
-                                                    <widget class="KPushButton">
-                                                        <property name="name">
-                                                            <cstring>m_butAddFix</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>new...</string>
-                                                        </property>
-                                                        <property name="toolTip" stdset="0">
-                                                            <string>adds a new fix calculation part</string>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="KPushButton">
-                                                        <property name="name">
-                                                            <cstring>m_butEditFix</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>edit...</string>
-                                                        </property>
-                                                        <property name="toolTip" stdset="0">
-                                                            <string>edits the current fix calculation part</string>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="KPushButton">
-                                                        <property name="name">
-                                                            <cstring>m_butRemoveFix</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>delete</string>
-                                                        </property>
-                                                        <property name="toolTip" stdset="0">
-                                                            <string>deletes the current fix calculation part</string>
-                                                        </property>
-                                                    </widget>
-                                                    <spacer>
-                                                        <property name="name">
-                                                            <cstring>spacer6</cstring>
-                                                        </property>
-                                                        <property name="orientation">
-                                                            <enum>Vertical</enum>
-                                                        </property>
-                                                        <property name="sizeType">
-                                                            <enum>Expanding</enum>
-                                                        </property>
-                                                        <property name="sizeHint">
-                                                            <size>
-                                                                <width>20</width>
-                                                                <height>170</height>
-                                                            </size>
-                                                        </property>
-                                                    </spacer>
-                                                </vbox>
-                                            </widget>
-                                        </hbox>
-                                    </widget>
-                                </vbox>
-                            </widget>
-                        </grid>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>TabPage</cstring>
-                        </property>
-                        <attribute name="title">
-                            <string>Material</string>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout25</cstring>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>m_textDispMat</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>textLabel1</string>
-                                        </property>
-                                        <property name="alignment">
-                                            <set>WordBreak|AlignVCenter</set>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel2_2</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Needed materials for one unit of this template:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>layout23</cstring>
-                                        </property>
-                                        <hbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <widget class="QListView">
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Label</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Amount</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Unit</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Price</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                            <item>
-                                                <property name="text">
-                                                    <string>New Item</string>
-                                                </property>
-                                                <property name="text">
-                                                    <string></string>
-                                                </property>
-                                                <property name="text">
-                                                    <string></string>
-                                                </property>
-                                                <property name="text">
-                                                    <string></string>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                                <property name="pixmap">
-                                                    <pixmap></pixmap>
-                                                </property>
-                                            </item>
-                                                <property name="name">
-                                                    <cstring>m_matParts</cstring>
-                                                </property>
-                                                <property name="defaultRenameAction">
-                                                    <enum>Accept</enum>
-                                                </property>
-                                            </widget>
-                                            <widget class="QLayoutWidget">
-                                                <property name="name">
-                                                    <cstring>layout22</cstring>
-                                                </property>
-                                                <vbox>
-                                                    <property name="name">
-                                                        <cstring>unnamed</cstring>
-                                                    </property>
-                                                    <widget class="KPushButton">
-                                                        <property name="name">
-                                                            <cstring>m_butAddMat</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>new...</string>
-                                                        </property>
-                                                        <property name="toolTip" stdset="0">
-                                                            <string>adds a new material calculation part</string>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="KPushButton">
-                                                        <property name="name">
-                                                            <cstring>m_butEditMat</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>edit...</string>
-                                                        </property>
-                                                        <property name="toolTip" stdset="0">
-                                                            <string>edits the current material part</string>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="KPushButton">
-                                                        <property name="name">
-                                                            <cstring>m_butRemoveMat</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>delete</string>
-                                                        </property>
-                                                        <property name="toolTip" stdset="0">
-                                                            <string>deletes the current material calculation part</string>
-                                                        </property>
-                                                    </widget>
-                                                    <spacer>
-                                                        <property name="name">
-                                                            <cstring>spacer5_2_2</cstring>
-                                                        </property>
-                                                        <property name="orientation">
-                                                            <enum>Vertical</enum>
-                                                        </property>
-                                                        <property name="sizeType">
-                                                            <enum>Expanding</enum>
-                                                        </property>
-                                                        <property name="sizeHint">
-                                                            <size>
-                                                                <width>20</width>
-                                                                <height>160</height>
-                                                            </size>
-                                                        </property>
-                                                    </spacer>
-                                                </vbox>
-                                            </widget>
-                                        </hbox>
-                                    </widget>
-                                </vbox>
-                            </widget>
-                        </grid>
-                    </widget>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Duration (Min.)</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Hourly Rate</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>glob. Rate</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <item>
+                <property name="text">
+                 <string>New Item</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <layout class="QVBoxLayout">
+               <item>
+                <widget class="KPushButton" name="m_butAddTime">
+                 <property name="toolTip">
+                  <string>Adds a new time calculation part to the template</string>
+                 </property>
+                 <property name="text">
+                  <string>new...</string>
+                 </property>
                 </widget>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>groupBox3</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Overall Price per Unit</string>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>m_tLabelFix</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Fix Costs Part:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>m_tLabelTime</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Time Calculation Part:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="1">
-                            <property name="name">
-                                <cstring>m_textMaterialPart</cstring>
-                            </property>
-                            <property name="text">
-                                <string>textLabel2</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="1">
-                            <property name="name">
-                                <cstring>m_textFixPart</cstring>
-                            </property>
-                            <property name="text">
-                                <string>textLabel2</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="1">
-                            <property name="name">
-                                <cstring>m_textTimePart</cstring>
-                            </property>
-                            <property name="text">
-                                <string>textLabel2</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="3" column="1">
-                            <property name="name">
-                                <cstring>m_resultPrice</cstring>
-                            </property>
-                            <property name="text">
-                                <string>88.888,88 €</string>
-                            </property>
-                            <property name="textFormat">
-                                <enum>PlainText</enum>
-                            </property>
-                            <property name="alignment">
-                                <set>WordBreak|AlignVCenter|AlignRight</set>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string></string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>m_tLabelMat</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Material Part:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="3" column="0">
-                            <property name="name">
-                                <cstring>m_resPreisName</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Calculated Price:</string>
-                            </property>
-                            <property name="textFormat">
-                                <enum>PlainText</enum>
-                            </property>
-                        </widget>
-                    </grid>
+               </item>
+               <item>
+                <widget class="KPushButton" name="m_butEditTime">
+                 <property name="toolTip">
+                  <string>Edits the current time calculation part</string>
+                 </property>
+                 <property name="text">
+                  <string>edit...</string>
+                 </property>
                 </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout25</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>buttonHelp</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Help</string>
-                            </property>
-                            <property name="accel">
-                                <string>F1</string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>Horizontal Spacing2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>348</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>buttonOk</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;OK</string>
-                            </property>
-                            <property name="accel">
-                                <string></string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>true</bool>
-                            </property>
-                            <property name="default">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>buttonCancel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Cancel</string>
-                            </property>
-                            <property name="accel">
-                                <string></string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                    </hbox>
+               </item>
+               <item>
+                <widget class="KPushButton" name="m_butRemoveTime">
+                 <property name="toolTip">
+                  <string>Deletes the current time calculation part</string>
+                 </property>
+                 <property name="text">
+                  <string>delete</string>
+                 </property>
                 </widget>
-            </vbox>
+               </item>
+               <item>
+                <spacer name="spacer5_2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>191</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="TabPage">
+        <attribute name="title">
+         <string>Fix Costs</string>
+        </attribute>
+        <layout class="QGridLayout">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout">
+           <item>
+            <widget class="QLabel" name="m_textDispFix">
+             <property name="text">
+              <string>textLabel1</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignVCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="textLabel2_3">
+             <property name="text">
+              <string>Fix costs for this template per one unit:</string>
+             </property>
+             <property name="wordWrap">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout">
+             <item>
+              <widget class="Q3ListView" name="m_fixParts">
+               <property name="defaultRenameAction">
+                <enum>Q3ListView::Accept</enum>
+               </property>
+               <column>
+                <property name="text">
+                 <string>Amount</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Label</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Single Price</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Overall Price</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <item>
+                <property name="text">
+                 <string>New Item</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <layout class="QVBoxLayout">
+               <item>
+                <widget class="KPushButton" name="m_butAddFix">
+                 <property name="toolTip">
+                  <string>adds a new fix calculation part</string>
+                 </property>
+                 <property name="text">
+                  <string>new...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KPushButton" name="m_butEditFix">
+                 <property name="toolTip">
+                  <string>edits the current fix calculation part</string>
+                 </property>
+                 <property name="text">
+                  <string>edit...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KPushButton" name="m_butRemoveFix">
+                 <property name="toolTip">
+                  <string>deletes the current fix calculation part</string>
+                 </property>
+                 <property name="text">
+                  <string>delete</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="spacer6">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>170</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="TabPage">
+        <attribute name="title">
+         <string>Material</string>
+        </attribute>
+        <layout class="QGridLayout">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout">
+           <item>
+            <widget class="QLabel" name="m_textDispMat">
+             <property name="text">
+              <string>textLabel1</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignVCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="textLabel2_2">
+             <property name="text">
+              <string>Needed materials for one unit of this template:</string>
+             </property>
+             <property name="wordWrap">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout">
+             <item>
+              <widget class="Q3ListView" name="m_matParts">
+               <property name="defaultRenameAction">
+                <enum>Q3ListView::Accept</enum>
+               </property>
+               <column>
+                <property name="text">
+                 <string>Label</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Amount</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Unit</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Price</string>
+                </property>
+                <property name="clickable">
+                 <bool>true</bool>
+                </property>
+                <property name="resizable">
+                 <bool>true</bool>
+                </property>
+               </column>
+               <item>
+                <property name="text">
+                 <string>New Item</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <layout class="QVBoxLayout">
+               <item>
+                <widget class="KPushButton" name="m_butAddMat">
+                 <property name="toolTip">
+                  <string>adds a new material calculation part</string>
+                 </property>
+                 <property name="text">
+                  <string>new...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KPushButton" name="m_butEditMat">
+                 <property name="toolTip">
+                  <string>edits the current material part</string>
+                 </property>
+                 <property name="text">
+                  <string>edit...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="KPushButton" name="m_butRemoveMat">
+                 <property name="toolTip">
+                  <string>deletes the current material calculation part</string>
+                 </property>
+                 <property name="text">
+                  <string>delete</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="spacer5_2_2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>160</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="Q3GroupBox" name="groupBox3">
+       <property name="title">
+        <string>Overall Price per Unit</string>
+       </property>
+       <layout class="QGridLayout">
+        <item row="1" column="0">
+         <widget class="QLabel" name="m_tLabelFix">
+          <property name="text">
+           <string>Fix Costs Part:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="m_tLabelTime">
+          <property name="text">
+           <string>Time Calculation Part:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="m_textMaterialPart">
+          <property name="text">
+           <string>textLabel2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="m_textFixPart">
+          <property name="text">
+           <string>textLabel2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="m_textTimePart">
+          <property name="text">
+           <string>textLabel2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="m_resultPrice">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="text">
+           <string>88.888,88 €</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::PlainText</enum>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="m_tLabelMat">
+          <property name="text">
+           <string>Material Part:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="m_resPreisName">
+          <property name="text">
+           <string>Calculated Price:</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::PlainText</enum>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout">
+       <item>
+        <widget class="QPushButton" name="buttonHelp">
+         <property name="text">
+          <string>&amp;Help</string>
+         </property>
+         <property name="shortcut">
+          <string>F1</string>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
         </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>m_gbPriceSrc</sender>
-        <signal>clicked(int)</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slCalcOrFix(int)</slot>
-    </connection>
-    <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>m_butAddTime</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slAddTimePart()</slot>
-    </connection>
-    <connection>
-        <sender>m_butRemoveTime</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slRemoveTimePart()</slot>
-    </connection>
-    <connection>
-        <sender>m_butAddFix</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slAddFixPart()</slot>
-    </connection>
-    <connection>
-        <sender>m_butRemoveFix</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slRemoveFixPart()</slot>
-    </connection>
-    <connection>
-        <sender>m_butAddMat</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slAddMatPart()</slot>
-    </connection>
-    <connection>
-        <sender>m_butRemoveMat</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slRemoveMatPart()</slot>
-    </connection>
-    <connection>
-        <sender>m_butEditTime</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slEditTimePart()</slot>
-    </connection>
-    <connection>
-        <sender>m_butEditFix</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slEditFixPart()</slot>
-    </connection>
-    <connection>
-        <sender>m_butEditMat</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slEditMatPart()</slot>
-    </connection>
-    <connection>
-        <sender>spGewinn</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>slGewinnChange(int)</slot>
-    </connection>
-    <connection>
-        <sender>buttonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>d_calcTempl</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
-<slots>
-    <slot>slAddFixPart()</slot>
-    <slot>slRemoveFixPart()</slot>
-    <slot>slAddTimePart()</slot>
-    <slot>slRemoveTimePart()</slot>
-    <slot>slAddMatPart()</slot>
-    <slot>slRemoveMatPart()</slot>
-    <slot>slCalcOrFix(int)</slot>
-    <slot>slEditTimePart()</slot>
-    <slot>slEditFixPart()</slot>
-    <slot>slEditMatPart()</slot>
-    <slot>slGewinnChange(int)</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-</includehints>
-</UI>
+       </item>
+       <item>
+        <spacer name="Horizontal Spacing2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>348</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="buttonOk">
+         <property name="text">
+          <string>&amp;OK</string>
+         </property>
+         <property name="shortcut">
+          <string/>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="buttonCancel">
+         <property name="text">
+          <string>&amp;Cancel</string>
+         </property>
+         <property name="shortcut">
+          <string/>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3ButtonGroup</class>
+   <extends>Q3GroupBox</extends>
+   <header>Qt3Support/Q3ButtonGroup</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3ListView</class>
+   <extends>Q3Frame</extends>
+   <header>q3listview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Q3TextEdit</class>
+   <extends>Q3Frame</extends>
+   <header>q3textedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KDoubleNumInput</class>
+   <extends>QWidget</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kpushbutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <includes>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">kcombobox.h</include>
+  <include location="local">knuminput.h</include>
+  <include location="local">knuminput.h</include>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">kpushbutton.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>m_gbPriceSrc</sender>
+   <signal>clicked(int)</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slCalcOrFix(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonOk</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_butAddTime</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slAddTimePart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_butRemoveTime</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slRemoveTimePart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_butAddFix</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slAddFixPart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_butRemoveFix</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slRemoveFixPart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_butAddMat</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slAddMatPart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_butRemoveMat</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slRemoveMatPart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_butEditTime</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slEditTimePart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_butEditFix</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slEditFixPart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_butEditMat</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slEditMatPart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spGewinn</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>slGewinnChange(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>d_calcTempl</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

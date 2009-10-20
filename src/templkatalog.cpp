@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqlquery.h>
 #include <qstringlist.h>
 #include <qdom.h>
 #include <qfile.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <qdir.h>
 
 #include <kdebug.h>
@@ -36,16 +36,17 @@
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
 #include "geld.h"
+#include "katalog.h"
 
 /** constructor of a katalog, which is only a list of Floskel templates.
  *  A name must be given, which is displayed for the root element in the
  *
  */
 
-TemplKatalog::TemplKatalog(const QString& name)
-    : Katalog(name)
+TemplKatalog::TemplKatalog( const QString& name )
+    : Katalog( name )
 {
-  m_flosList.setAutoDelete( true );
+
 }
 
 TemplKatalog::~TemplKatalog()
@@ -55,7 +56,7 @@ TemplKatalog::~TemplKatalog()
 
 void TemplKatalog::reload( dbID )
 {
-  kdDebug() << "**** RELOADING katalog ****" << endl;
+  kDebug() << "**** RELOADING katalog ****" << endl;
   m_flosList.clear();
   load();
 }
@@ -65,14 +66,14 @@ int TemplKatalog::load()
     Katalog::load();
     int cnt = 0;
 
-    QSqlCursor cur( "Catalog" ); // Specify the table/view name
-    cur.setMode( QSqlCursor::ReadOnly );
+    Q3SqlCursor cur( "Catalog" ); // Specify the table/view name
+    cur.setMode( Q3SqlCursor::ReadOnly );
     cur.select(); // We'll retrieve every record
     while ( cur.next() ) {
         cnt++;
         int einheit = cur.value("unitID").toInt();
         int templID = cur.value("TemplID").toInt();
-        kdDebug() << "Loading template number " << templID << endl;
+        kDebug() << "Loading template number " << templID << endl;
         int chapID = cur.value("chapterID").toInt();
         // int sortID = cur.value( "sortKey" ).toInt();
         int calcKind = cur.value("Preisart").toInt();
@@ -81,7 +82,7 @@ int TemplKatalog::load()
         Geld preis(g);
         /* Only for debugging: */
         if( templID == 272 ) {
-            kdDebug() << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g << endl;
+            kDebug() << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g << endl;
         }
 
         QDateTime modDt;
@@ -94,7 +95,9 @@ int TemplKatalog::load()
         }
 
         QDateTime enterDt = cur.value("enterDatum").asDateTime();
-        // kdDebug() << "Chapter ID is " << chapID << endl;
+
+        kDebug() << "Chapter ID is " << chapID << endl;
+
         FloskelTemplate *flos = new FloskelTemplate( templID,
                                                      QString::fromUtf8(cur.value("Floskel").toCString()),
                                                      einheit, chapID, calcKind,
@@ -107,7 +110,8 @@ int TemplKatalog::load()
 
         loadCalcParts( flos );
 
-        m_flosList.inSort(flos);
+        // FIXME KDE4: Append to list sorted.
+        m_flosList.append(flos);
     }
     return cnt;
 }
@@ -138,7 +142,7 @@ int TemplKatalog::loadTimeCalcParts( FloskelTemplate *flos )
     if( ! flos ) return(0);
     int cnt = 0;
 
-    QSqlCursor cur("CalcTime");
+    Q3SqlCursor cur("CalcTime");
 
     cur.select( "TemplID=" + QString::number( flos->getTemplID()));
 
@@ -172,7 +176,7 @@ int TemplKatalog::loadMaterialCalcParts( FloskelTemplate *flos )
     if( ! flos ) return(0);
     int cnt = 0;
 
-    QSqlCursor cur("CalcMaterials");
+    Q3SqlCursor cur("CalcMaterials");
 
     cur.select( "TemplID=" + QString::number( flos->getTemplID()));
 
@@ -199,7 +203,7 @@ int TemplKatalog::loadMaterialDetails( long calcID, MaterialCalcPart* mcp )
 {
     if( ! mcp ) return 0;
 
-    QSqlCursor cur("CalcMaterialDetails");
+    Q3SqlCursor cur("CalcMaterialDetails");
     cur.select("CalcID=" + QString::number(calcID));
 
     int cnt = 0;
@@ -222,7 +226,7 @@ int TemplKatalog::loadFixCalcParts( FloskelTemplate *flos )
     if( ! flos ) return(0);
     int cnt = 0;
 
-    QSqlCursor cur("CalcFixed");
+    Q3SqlCursor cur("CalcFixed");
 
     cur.select( "TemplID=" + QString::number( flos->getTemplID()));
 
@@ -257,19 +261,20 @@ FloskelTemplateList TemplKatalog::getFlosTemplates( const QString& chapter )
 
     if( m_flosList.count() == 0 )
     {
-        kdDebug() << "Empty katalog list - loading!" << endl;
+        kDebug() << "Empty katalog list - loading!" << endl;
         load();
     }
 
     FloskelTemplateListIterator it(m_flosList);
     FloskelTemplate *tmpl;
 
-    while( (tmpl = it.current()) != 0)
+    while( it.hasNext() )
     {
-      ++it;
+      tmpl = it.next();
+
       int haveChap = tmpl->getChapterID();
 
-      // kdDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
+      // kDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
       if( haveChap == chap )
       {
         resultList.append( tmpl );
@@ -287,16 +292,16 @@ int TemplKatalog::load( const QString& /* chapter */ )
 
 void TemplKatalog::writeXMLFile()
 {
-    QString filename = KFileDialog::getSaveFileName( QDir::homeDirPath(),
+    QString filename = KFileDialog::getSaveFileName( QDir::homePath(),
             "*.xml", 0, i18n("Export XML Katalog"));
     if(filename.isEmpty()) return;
 
     QDomDocument doc = toXML();
 
     QFile file( filename );
-    if( file.open( IO_WriteOnly ) )
+    if( file.open( QIODevice::WriteOnly ) )
     {
-        QTextStream ts( &file );
+        Q3TextStream ts( &file );
         ts << doc.toString();
 
         file.close();
@@ -346,12 +351,13 @@ QDomDocument TemplKatalog::toXML()
 
         FloskelTemplateList templs = getFlosTemplates(chapter);
         FloskelTemplateListIterator it(templs);
-        FloskelTemplate *tmpl = 0;
+        // FloskelTemplate *tmpl = 0;
 
-        while( (tmpl = it.current()) != 0) {
+        // while( ( it.hasNext()) {
+        //  tmpl = it.next();
           // chapElem.appendChild( tmpl->toXML(doc));
-            ++it;
-        }
+
+        // }
     }
     return doc;
 }

@@ -17,9 +17,9 @@
 #ifndef DBIDS_H
 #define DBIDS_H
 
-#include <qstring.h>
-#include <qdict.h>
-#include <qvaluelist.h>
+#include <QString>
+#include <QList>
+#include <QHash>
 
 /**
  * utility class that provides a simple database id object.
@@ -70,7 +70,9 @@ private:
     int m_id;
 };
 
-typedef QDict<dbID> dbIdDict;
-typedef QValueList<dbID> DBIdList;
+typedef QHash<QString, dbID> dbIdDict;
+typedef QHashIterator<QString, dbID> dbIdDictIterator;
+
+typedef QList<dbID> DBIdList;
 
 #endif

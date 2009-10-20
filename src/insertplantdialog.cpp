@@ -24,23 +24,23 @@
 #include "docposition.h"
 
 // include files for Qt
-#include <qvbox.h>
-#include <qtextedit.h>
+#include <q3vbox.h>
+#include <q3textedit.h>
 #include <qlabel.h>
 #include <qcombobox.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qpushbutton.h>
 #include <qsqlquery.h>
 
 // include files for KDE
 #include <knuminput.h>
-#include <klistview.h>
+#include <kvbox.h>
 #include <kglobal.h>
+#include <kpushbutton.h>
 
 #include <klocale.h>
 #include <kdebug.h>
 
-#include "insertplantbase.h"
 #include "templtopositiondialogbase.h"
 #include "brunskatalog.h"
 #include "brunsrecord.h"
@@ -51,26 +51,31 @@
 InsertPlantDialog::InsertPlantDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
 {
-  QWidget *w = makeVBoxMainWidget();
+  KVBox *w = new KVBox( parent );
+  setMainWidget( w );
 
-  mBaseWidget = new insertPlantBase( w );
+  mBaseWidget = new Ui::insertPlantBase(  );
+  mBaseWidget->setupUi( w );
   mBaseWidget->mSinglePrice->setSuffix( DefaultProvider::self()->locale()->currencySymbol() );
 
-  mBaseWidget->mSizeList->addColumn( i18n( "Matchcode" ) );
-  mBaseWidget->mSizeList->addColumn( i18n( "Form" ) );
-  mBaseWidget->mSizeList->addColumn( i18n( "Form Add" ) );
-  mBaseWidget->mSizeList->addColumn( i18n( "Growth" ) );
-  mBaseWidget->mSizeList->addColumn( i18n( "Root" ) );
-  mBaseWidget->mSizeList->addColumn( i18n( "Quality"));
-  mBaseWidget->mSizeList->addColumn( i18n( "Group" ));
+  mBaseWidget->mSizeList->setColumnCount( 7 );
+  QStringList li;
+  li << i18n( "Matchcode" );
+  li << i18n( "Form" );
+  li << i18n( "Form Add" );
+  li << i18n( "Growth" );
+  li << i18n( "Root" );
+  li << i18n( "Quality" );
+  li << i18n( "Group" );
+  mBaseWidget->mSizeList->setHeaderLabels( li );
 
   mBaseWidget->mSizeList->setAllColumnsShowFocus ( true ) ;
-  mBaseWidget->mSizeList->setSelectionMode( QListView::Single );
+  mBaseWidget->mSizeList->setSelectionMode( QAbstractItemView::SingleSelection );
 
   connect( mBaseWidget->mSizeList,  SIGNAL( selectionChanged() ),
            this,  SLOT( slotSizeListSelectionChanged() ) );
 
-  actionButton( Ok )->setEnabled( false );
+  button( Ok )->setEnabled( false );
 
   mPriceQuery.prepare( "SELECT price, lastUpdate FROM plantPrices WHERE matchCode=:match" );
   mBaseWidget->mUpdateLabel->setText( QString() );
@@ -79,11 +84,11 @@ InsertPlantDialog::InsertPlantDialog( QWidget *parent )
 void InsertPlantDialog::slotSizeListSelectionChanged()
 {
   bool res = false;
-  KListViewItem *item = static_cast<KListViewItem*>( mBaseWidget->mSizeList->currentItem() );
+  QTreeWidgetItem *item = static_cast<QTreeWidgetItem*>( mBaseWidget->mSizeList->currentItem() );
   if ( item ) {
     res = true;
   }
-  actionButton( Ok )->setEnabled( res );
+  button( Ok )->setEnabled( res );
 
   PlantPriceInfo ppi = mPriceMap[item];
 
@@ -118,7 +123,7 @@ DocPosition InsertPlantDialog::docPosition()
 
   h += "\n";
 
-  KListViewItem *guiItem = static_cast<KListViewItem*>( mBaseWidget->mSizeList->currentItem() );
+  QTreeWidgetItem *guiItem = static_cast<QTreeWidgetItem*>( mBaseWidget->mSizeList->currentItem() );
 
   if ( guiItem ) {
     h += mSizeMap[guiItem];
@@ -126,7 +131,7 @@ DocPosition InsertPlantDialog::docPosition()
 
   pos.setText( h );
   pos.setAmount( 1.0 );
-  pos.setUnit( UnitManager::getUnit( PIECE_UNIT_ID ) );
+  pos.setUnit( UnitManager::self()->getUnit( PIECE_UNIT_ID ) );
 
   double p = mBaseWidget->mSinglePrice->value();
   pos.setUnitPrice( Geld( p ) );
@@ -147,7 +152,8 @@ void InsertPlantDialog::setSelectedPlant( BrunsRecord* bruns )
   BrunsSizeList::iterator it;
   for( it = sizes.begin(); it != sizes.end(); ++it ) {
     QString match = ( *it ).getPrimMatchcode();
-    KListViewItem *guiItem = new KListViewItem(mBaseWidget->mSizeList, match );
+    QTreeWidgetItem *guiItem = new QTreeWidgetItem( mBaseWidget->mSizeList );
+    guiItem->setText( 0, match );
 
     QStringList list = BrunsKatalog::formatQuality( (*it) );
     int i = 1;
@@ -159,7 +165,7 @@ void InsertPlantDialog::setSelectedPlant( BrunsRecord* bruns )
     mSizeMap[guiItem] = ( qualString );
     mPriceMap[guiItem] = getPriceInfo( match );
 
-    // kdDebug() << "showing new plant detail item" << endl;
+    // kDebug() << "showing new plant detail item" << endl;
   }
 }
 
@@ -181,7 +187,7 @@ PlantPriceInfo InsertPlantDialog::getPriceInfo( const QString& matchcode )
 void InsertPlantDialog::setPrice( const QString& match, double g )
 {
   QSqlQuery q;
-  kdDebug() << "Writing price for " << match << ": " << g << endl;
+  kDebug() << "Writing price for " << match << ": " << g << endl;
   Geld price = getPriceInfo( match ).price();
   if ( price.toDouble() == g ) return;
 
@@ -204,7 +210,7 @@ void InsertPlantDialog::slotOk()
     if ( d > 0 )
       setPrice( m, d );
   }
-  TemplToPositionDialogBase::slotOk();
+  TemplToPositionDialogBase::slotButtonClicked( Ok );
 }
 
 

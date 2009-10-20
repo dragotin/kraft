@@ -28,7 +28,7 @@ class QDomDocument;
 class ArchiveMan
 {
   public:
-    ~ArchiveMan();
+    virtual ~ArchiveMan();
 
     static ArchiveMan *self();
     dbID archiveDocument( KraftDoc* );

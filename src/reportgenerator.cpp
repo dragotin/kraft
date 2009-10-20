@@ -4,7 +4,7 @@
     begin                : July 2006
     copyright            : (C) 2006 by Klaas Freitag
     email                : freitag@kde.org
- ***************************************************************************/
+   ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -14,22 +14,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqlrecord.h>
 #include <qsqlindex.h>
-#include <qfile.h>
-#include <qtextstream.h>
+#include <QFile>
+#include <QTextStream>
 #include <qregexp.h>
-#include <qstylesheet.h>
+#include <q3stylesheet.h>
+//Added by qt3to4:
+#include <QList>
 
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 #include <kdebug.h>
 #include <kprocess.h>
 #include <kstandarddirs.h>
-#include <ktempfile.h>
+#include <ktemporaryfile.h>
 #include <kurl.h>
 #include <kmessagebox.h>
 #include <kabc/stdaddressbook.h>
+#include <QTextDocument>
 
 #include "reportgenerator.h"
 #include "kraftdoc.h"
@@ -47,7 +50,7 @@
 #include "defaultprovider.h"
 #include "doctype.h"
 
-static KStaticDeleter<ReportGenerator> selfDeleter;
+static K3StaticDeleter<ReportGenerator> selfDeleter;
 
 ReportGenerator* ReportGenerator::mSelf = 0;
 KProcess* ReportGenerator::mProcess = 0;
@@ -67,7 +70,7 @@ ReportGenerator::ReportGenerator()
 
 ReportGenerator::~ReportGenerator()
 {
-  kdDebug() << "ReportGen is destroyed!" << endl;
+  kDebug() << "ReportGen is destroyed!";
 }
 
 /*
@@ -77,24 +80,25 @@ ReportGenerator::~ReportGenerator()
 void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 {
   const QString templ = fillupTemplateFromArchive( archId );
-  kdDebug() << "Report BASE:\n" << templ << endl;
+  kDebug() << "Report BASE:\n" << templ;
 
   if ( ! templ.isEmpty() ) {
-    KTempFile temp( QString(), ".trml" );
+    KTemporaryFile temp;
+    temp.setPrefix( ".trml" );
 
-    QTextStream *s = temp.textStream();
-    s->setEncoding( QTextStream::Locale );
-    *s << templ;
+    QTextStream s(&temp);
+    s.setEncoding( QTextStream::Locale );
+    s << templ;
     temp.close();
 
-    kdDebug() << "Wrote rml to " << temp.name() << endl;
+    kDebug() << "Wrote rml to " << temp.fileName();
 
     QString dId( docID );
 
     if ( docID.isEmpty() ) {
       dId = ArchiveMan::self()->documentID( archId );
     }
-    runTrml2Pdf( temp.name(), dId, archId.toString() );
+    runTrml2Pdf( temp.fileName(), dId, archId.toString() );
   }
 }
 
@@ -150,14 +154,14 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
     tmpl.setValue( "POSITIONS", TAG( "POS_NUMBER" )
                    , pos.posNumber() );
     tmpl.setValue( "POSITIONS", "POS_TEXT",
-                   rmlString( pos.text(), QString( "%1text" ).arg( pos.kind().lower() ) ) );
+                   rmlString( pos.text(), QString( "%1text" ).arg( pos.kind().toLower() ) ) );
 
     h.setNum( pos.amount(), 'f', 2 );
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
     tmpl.setValue( "POSITIONS", "POS_UNIT", pos.unit() );
     tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString( archive.locale() ) );
     tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.nettoPrice().toString( archive.locale() ) );
-    tmpl.setValue( "POSITIONS", "POS_KIND", pos.kind().lower() );
+    tmpl.setValue( "POSITIONS", "POS_KIND", pos.kind().toLower() );
 
     if ( !pos.kind().isEmpty() ) {
       specialPosCnt++;
@@ -170,7 +174,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 
   /* now replace stuff in the whole document */
   tmpl.setValue( TAG( "DATE" ), archive.locale()->formatDate(
-                   archive.date(), true ) );
+                   archive.date(), KLocale::ShortDate ) );
   tmpl.setValue( TAG( "DOCTYPE" ), archive.docType() );
   tmpl.setValue( TAG( "ADDRESS" ), archive.address() );
 
@@ -178,7 +182,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   KABC::Addressee addressee = ab->findByUid( archive.clientUid() );
   tmpl.setValue( TAG( "CLIENT_NAME" ), addressee.realName() );
   tmpl.setValue( TAG( "CLIENT_ORGANISATION" ), addressee.organization() );
-  tmpl.setValue( TAG( "CLIENT_URL" ), addressee.url().prettyURL() );
+  tmpl.setValue( TAG( "CLIENT_URL" ), addressee.url().prettyUrl() );
   tmpl.setValue( TAG( "CLIENT_EMAIL" ), addressee.preferredEmail() );
   tmpl.setValue( TAG( "CLIENT_PHONE" ), addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
   tmpl.setValue( TAG( "CLIENT_FAX" ), addressee.phoneNumber( KABC::PhoneNumber::Fax ).number() );
@@ -215,7 +219,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 
 
   h.setNum( archive.tax(), 'f', 1 );
-  kdDebug() << "Tax in archive document: " << h << endl;
+  kDebug() << "Tax in archive document: " << h;
   if ( archive.reducedTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_SUM" ),
@@ -246,7 +250,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 
   tmpl.setValue( TAG( "MY_NAME" ), contact.realName() );
   tmpl.setValue( TAG( "MY_ORGANISATION" ), contact.organization() );
-  tmpl.setValue( TAG( "MY_URL" ), contact.url().prettyURL() );
+  tmpl.setValue( TAG( "MY_URL" ), contact.url().prettyUrl() );
   tmpl.setValue( TAG( "MY_EMAIL" ), contact.preferredEmail() );
   tmpl.setValue( TAG( "MY_PHONE" ), contact.phoneNumber( KABC::PhoneNumber::Work ).number() );
   tmpl.setValue( TAG( "MY_FAX" ), contact.phoneNumber( KABC::PhoneNumber::Fax ).number() );
@@ -279,7 +283,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 
 QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const
 {
-  QString re( QStyleSheet::escape( str ) );
+  QString re( Qt::escape( str ) );
 
   // FIXME: Workaround for broken trml2pdf which needs double escaped
   //        & characters to work properly.
@@ -294,18 +298,19 @@ QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle
   QString style( paraStyle );
   if ( style.isEmpty() ) style = "text";
 
-  QStringList li = QStringList::split( "\n", escapeTrml2pdfXML( str ) );
+  // QStringList li = QStringList::split( "\n", escapeTrml2pdfXML( str ) );
+  QStringList li = escapeTrml2pdfXML( str ).split( "\n" );
   rml = QString( "<para style=\"%1\">" ).arg( style );
   rml += li.join( QString( "</para><para style=\"%1\">" ).arg( style ) ) + "</para>";
-  kdDebug() << "Returning " << rml << endl;
+  kDebug() << "Returning " << rml;
   return rml;
 }
 
 QString ReportGenerator::findTrml2Pdf( )
 {
   const QString rmlbinDefault = QString::fromLatin1( "trml2pdf" ); // FIXME: how to get the default value?
-  QString rmlbin = KraftSettings::self()->trml2PdfBinary();
-  kdDebug() << "### Start searching rml2pdf bin: " << rmlbin << endl;
+  QString rmlbin = KraftSettings::self()->self()->trml2PdfBinary();
+  kDebug() << "### Start searching rml2pdf bin: " << rmlbin;
 
   mHaveMerge = false;
 
@@ -316,10 +321,10 @@ QString ReportGenerator::findTrml2Pdf( )
 
     for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
       QString cPath = ( *it ) + "/trml2pdf_kraft.sh";
-      kdDebug() << "### Checking cPath: " << cPath << endl;
+      kDebug() << "### Checking cPath: " << cPath;
       if ( QFile::exists( cPath ) ) {
         rmlbin = cPath;
-        kdDebug() << "Found trml2pdf_kraft.sh in filesystem: " << rmlbin << endl;
+        kDebug() << "Found trml2pdf_kraft.sh in filesystem: " << rmlbin;
         mHaveMerge = true;
         break;
       }
@@ -330,14 +335,14 @@ QString ReportGenerator::findTrml2Pdf( )
         QString cPath = ( *it ) + "/trml2pdf";
         if ( QFile::exists( cPath ) ) {
           rmlbin = cPath;
-          kdDebug() << "Found trml2pdf in filesystem: " << rmlbin << endl;
+          kDebug() << "Found trml2pdf in filesystem: " << rmlbin;
           break;
         }
       }
     }
   }
   if ( rmlbinDefault == rmlbin  ) {
-    kdDebug() << "We have not found the script!" << endl;
+    kDebug() << "We have not found the script!";
     rmlbin = QString();
   }
 
@@ -349,20 +354,13 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
 {
   if( ! mProcess ) {
     mProcess = new KProcess;
-    connect( mProcess, SIGNAL( processExited(  KProcess * ) ),
-             this,     SLOT( slotViewerClosed( KProcess * ) ) );
-
-    connect( mProcess,  SIGNAL( wroteStdin( KProcess* ) ),
-             this,  SLOT( slotWroteStdin( KProcess* ) ) );
-
-    connect( mProcess,  SIGNAL( receivedStdout( KProcess *, char *, int ) ),
-             this,  SLOT( slotRecStdout( KProcess *, char *, int ) ) );
-
-    connect( mProcess,  SIGNAL( receivedStderr( KProcess *, char *, int ) ),
-             this,  SLOT( slotRecStderr( KProcess *, char *, int ) ) );
+    connect( mProcess, SIGNAL( finished( int ) ),this, SLOT( trml2pdfFinished( int ) ) );
+    connect( mProcess, SIGNAL( readyReadStandardOutput()), this, SLOT( slotReceivedStdout() ) );
+    connect( mProcess, SIGNAL( readyReadStandardError()), this, SLOT( slotReceivedStderr() ) );
   } else {
-    mProcess->clearArguments();
+    mProcess->clearProgram();
   }
+  QStringList prg;
 
   mErrors = QString();
   QString rmlbin = findTrml2Pdf();
@@ -389,53 +387,48 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
   QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
   mOutFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
 
-  kdDebug() << "Writing output to " << mOutFile << endl;
+  kDebug() << "Writing output to " << mOutFile;
 
-  *mProcess << rmlbin;
+  prg << rmlbin;
   if ( mHaveMerge ) {
-    *mProcess << mMergeIdent;
+    prg << mMergeIdent;
   }
-  *mProcess << rmlFile;
+  prg << rmlFile;
   if ( mHaveMerge && mMergeIdent != "0" ) {
-    *mProcess << mWatermarkFile;
+    prg << mWatermarkFile;
   }
 
-  mFile.setName( mOutFile );
-  if ( mFile.open( IO_WriteOnly ) ) {
+  mFile.setFileName( mOutFile );
+  if ( mFile.open( QIODevice::WriteOnly ) ) {
     mTargetStream.setDevice( &mFile );
-    QValueList<QCString> args = mProcess->args();
-    kdDebug() << "* rml2pdf Call-Arguments: " << args << endl;
+    QStringList args = mProcess->program();
+    kDebug() << "* rml2pdf Call-Arguments: " << args;
 
-    mProcess->start( KProcess::NotifyOnExit, KProcess::AllOutput );
+    mProcess->setProgram( prg );
+    mProcess->start( );
   }
 }
 
-void ReportGenerator::slotWroteStdin( KProcess* )
+void ReportGenerator::slotReceivedStdout( )
 {
-  kdDebug() << "Writing on stdin finished!" << endl;
+  mTargetStream << (mProcess->readAllStandardOutput());
 }
 
-void ReportGenerator::slotRecStdout( KProcess *, char * buffer, int len)
+void ReportGenerator::slotReceivedStderr( )
 {
-  // kdDebug() << "==> Datablock of size " << len << endl;
-  mTargetStream.writeRawBytes( buffer, len );
+  mErrors.append( mProcess->readAllStandardError() );
 }
 
-void ReportGenerator::slotRecStderr( KProcess *, char * buffer, int len )
-{
-  mErrors.append( QString::fromUtf8( buffer,  len ) );
-}
-
-void ReportGenerator::slotViewerClosed( KProcess *p )
+void ReportGenerator::trml2pdfFinished( int exitStatus)
 {
   mFile.close();
-  kdDebug() << "Trml2pdf Process finished with status " << p->exitStatus() << endl;
+  kDebug() << "Trml2pdf Process finished with status " << exitStatus;
 
-  if ( p->exitStatus() == 0 ) {
+  if ( exitStatus == 0 ) {
     emit pdfAvailable( mOutFile );
     mOutFile = QString();
 #if 0
-    KURL url( mOutFile );
+    KUrl url( mOutFile );
     KRun::runURL( url, "application/pdf" );
 #endif
   } else {

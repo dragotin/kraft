@@ -20,15 +20,18 @@
 #include <qsql.h>
 #include <qlabel.h>
 #include <qsizepolicy.h>
+//Added by qt3to4:
+#include <Q3Frame>
 
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
 #include <kdialog.h>
-#include <klistbox.h>
+#include <k3listbox.h>
 #include <kguiitem.h>
 #include <kpushbutton.h>
 #include <knuminput.h>
+#include <kvbox.h>
 
 #include "kraftdb.h"
 #include "mateditor.h"
@@ -42,16 +45,23 @@
  * Editor für die Materialkategorie
  * ********************************************************************************/
 
-MatKatEditor::MatKatEditor( const QString& curChap,  QStringList chaps, QWidget *parent, const char* name )
-    :KDialogBase(parent, name, true, i18n("Material Chapter"), Ok|Cancel, Ok)
+MatKatEditor::MatKatEditor( const QString& curChap,  QStringList chaps, QWidget *parent )
+    :KDialog(parent)
 {
-    QVBox *vBox = makeVBoxMainWidget();
-    vBox->setSpacing(KDialog::spacingHint());
+  KVBox *vBox = new KVBox( this );
 
-    (void) new QLabel( i18n("Set Chapter of the marked Material:"), vBox );
-    m_combo = new QComboBox(vBox);
-    m_combo->insertStringList(chaps);
-    m_combo->setCurrentText(curChap);
+  setCaption( i18n("Material Chapter" ) );
+  setButtons( Ok|Cancel );
+  setDefaultButton( Ok );
+  setModal( true );
+
+  vBox->setSpacing(KDialog::spacingHint());
+
+  (void) new QLabel( i18n("Set Chapter of the marked Material:"), vBox );
+  m_combo = new QComboBox(vBox);
+  m_combo->insertStringList(chaps);
+  m_combo->setCurrentText(curChap);
+  setMainWidget( vBox );
 }
 
 
@@ -60,12 +70,15 @@ MatKatEditor::MatKatEditor( const QString& curChap,  QStringList chaps, QWidget 
  * ********************************************************************************/
 
 MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *parent,
-                     const char* name, bool modal, WFlags )
-    : KDialogBase(parent, name, modal, i18n("Edit Material"), Close, Close),
+                     bool modal, Qt::WFlags )
+    : KDialog(parent ),
+    // , name, modal, i18n("Edit Material"), Close, Close),
       m_takeOver(0)
 
 {
-    m_box = makeVBoxMainWidget();
+    m_box = new KVBox( this );
+    setMainWidget( m_box );
+    setButtons( Close );
 
     QLabel *l = new QLabel(QString("<h1>") + i18n("Edit Material") +
                            QString("</h1>"), m_box);
@@ -76,7 +89,7 @@ MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *pare
     m_kat->load();
 
     /* Box to show the chapters */
-    m_chapterBox = new KListBox( m_split );
+    m_chapterBox = new K3ListBox( m_split );
     m_chapterBox->setAcceptDrops(true);
     connect( m_chapterBox, SIGNAL(highlighted(const QString&)),
              this, SLOT(slSelectKatalog(const QString&)));
@@ -86,14 +99,14 @@ MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *pare
     m_chapterBox->insertStringList( chaps );
 
     /* Datentabelle anlegen */
-    QVBox *vBox = new QVBox(m_split);
+    KVBox *vBox = new KVBox(m_split);
     /* Spacing ist zwischen den Widgets */
     vBox->setSpacing( 0 );
 
     m_dataTable = new MatDataTable(vBox);
 
     /* Einen Kategorie-Knopf in entsprechendem Layout hinzufügen */
-    QHBox *hBox = new QHBox( vBox );
+    KHBox *hBox = new KHBox( vBox );
     /* Margin ist der Abstand zum Aussenrand */
     hBox->setMargin(KDialog::spacingHint());
 
@@ -102,7 +115,7 @@ MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *pare
     m_katButton->setEnabled(false);
 
     hBox->setMargin(KDialog::marginHint());
-    hBox->setFrameStyle(QFrame::WinPanel);
+    hBox->setFrameStyle(Q3Frame::WinPanel);
 
 
     if( takeover )
@@ -129,17 +142,17 @@ MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *pare
      connect( m_takeOver, SIGNAL(clicked()),
              this, SLOT(slTakeOver()));
 
-    QString lastChap = KraftSettings::lastMaterialChapter();
-    kdDebug() << "Selecting first katalog " << chaps[0] << endl;
+    QString lastChap = KraftSettings::self()->lastMaterialChapter();
+    kDebug() << "Selecting first katalog " << chaps[0] << endl;
     slSelectKatalog( lastChap );
     m_chapterBox->setSelected( 0, true);
 
-    setInitialSize( KraftSettings::materialCatalogSize() );
+    setInitialSize( KraftSettings::self()->materialCatalogSize() );
 }
 
 void MatEditor::addAmountDetail( QWidget *parent )
 {
-    QVBox *vbox = new QVBox(parent);
+    KVBox *vbox = new KVBox(parent);
     vbox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     // (void) new QLabel(i18n("Material"),vbox);
     m_matShort = new QLabel( vbox );
@@ -149,12 +162,12 @@ void MatEditor::addAmountDetail( QWidget *parent )
 
     m_matShort->setMinimumHeight(2*m_matShort->fontMetrics().height()+2*m_matShort->margin());
 
-    QHBox *hbox = new QHBox(vbox);
+    KHBox *hbox = new KHBox(vbox);
     // (void) new QLabel(i18n("Menge: "), hbox);
     m_amount   = new KDoubleNumInput( hbox );
     m_amount->setValue( 1.0);
     m_amount->setPrecision(3);
-    m_amount->setLabel( i18n("Amount: "), AlignLeft|AlignVCenter);
+    m_amount->setLabel( i18n("Amount: "), Qt::AlignLeft|Qt::AlignVCenter);
     m_unit     = new QLabel(hbox);
     m_takeOver = new KPushButton( i18n("add"), hbox );
     (void) new QLabel(i18n(" to Calculation "), hbox);
@@ -200,11 +213,11 @@ void MatEditor::slTableSelected(int row, int)
         {
             m_matShort->setText( "<i>" + QString::fromUtf8(rec->value("material").toCString()) + "</i>");
             int unitID = rec->value("unitID").toInt();
-            Einheit e( UnitManager::getUnit(unitID));
+            Einheit e( UnitManager::self()->getUnit(unitID));
             m_amount->setValue(1.0);
             QString einh( e.einheit(1.0));
 
-            m_unit->setText( " "+einh ); // .leftJustify(12, ' '));
+            m_unit->setText( " "+einh ); // .leftJustified(12, ' '));
         }
 
         /* Antwort-String löschen */
@@ -247,14 +260,14 @@ void MatEditor::slGotAnswer( const QString& ans )
 
 void MatEditor::slotClose()
 {
-  KraftSettings::setMaterialCatalogSize( size() );
+  KraftSettings::self()->setMaterialCatalogSize( size() );
 
   QString chap = m_chapterBox->currentText();
   if ( !chap.isEmpty() ) {
-    KraftSettings::setLastMaterialChapter( chap );
+    KraftSettings::self()->setLastMaterialChapter( chap );
   }
-  KraftSettings::writeConfig();
-  KDialogBase::slotClose();
+  KraftSettings::self()->self()->writeConfig();
+  slotClose();
 }
 
 /* END */

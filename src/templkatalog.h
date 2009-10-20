@@ -18,8 +18,6 @@
 #ifndef TEMPLKATALOG_H
 #define TEMPLKATALOG_H
 
-#include <qptrlist.h>
-#include <qdict.h>
 
 #include "floskeltemplate.h"
 #include "katalog.h"

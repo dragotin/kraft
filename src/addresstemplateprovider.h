@@ -22,7 +22,7 @@
 #include "headerselection.h"
 
 class QWidget;
-class QListViewItem;
+class Q3ListViewItem;
 
 using namespace KABC;
 
@@ -47,6 +47,7 @@ public slots:
 
 private:
   Addressee mCurrentAddress;
+  QWidget *mParent;
 };
 
 

@@ -21,26 +21,32 @@
 #include <klocale.h>
 #include <kdebug.h>
 #include <kdialog.h>
-#include <klistview.h>
+#include <k3listview.h>
 
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
 
 #include <qsizepolicy.h>
 #include <qcombobox.h>
-#include <qwidgetstack.h>
+#include <q3widgetstack.h>
 #include <qlabel.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 using namespace KABC;
 
 AddressSelection::AddressSelection( QWidget *parent )
-  : KListView( parent )
+  : QTreeWidget( parent )
 {
   setRootIsDecorated( true );
-  addColumn( i18n( "Real Name" ) );
-  addColumn( i18n( "Locality" ) );
-  setSelectionMode( QListView::Single );
+  setColumnCount( 2 );
+  QStringList li;
+  li << i18n( "Real Name" );
+  li << i18n( "Locality" );
+  setHeaderLabels( li );
+
+  setSelectionMode( QAbstractItemView::SingleSelection );
 
   connect( this, SIGNAL( selectionChanged() ),
            SLOT( slotSelectionChanged() ) );
@@ -64,14 +70,14 @@ void AddressSelection::slotAddressBookChanged( AddressBook *ab )
 {
   if ( ! ab ) return;
 
-  kdDebug() << "Filling address List" << endl;
+  kDebug() << "Filling address List" << endl;
 
   // FIXME: handle deletes and updates correctly.
 
-  QValueList<QString> uidList;
+  Q3ValueList<QString> uidList;
 
   uidList = mAddressIds.values();
-  KListViewItem *newItem = 0;
+  QTreeWidgetItem *newItem = 0;
   int newItemCnt = 0;
 
   AddressBook::Iterator it;
@@ -79,7 +85,8 @@ void AddressSelection::slotAddressBookChanged( AddressBook *ab )
 
     // check if we already know the uid and add it if not.
     if ( uidList.find( ( *it ).uid() ) == uidList.end() ) {
-      KListViewItem *item = new KListViewItem( this, ( *it ).realName() );
+      QTreeWidgetItem *item = new QTreeWidgetItem( this );
+      item->setText( 0, ( *it ).realName() );
       newItem = item;
       newItemCnt++;
 
@@ -96,18 +103,18 @@ void AddressSelection::slotAddressBookChanged( AddressBook *ab )
   // if there is exactly one new item, we select it
   if ( newItemCnt == 1 && newItem ) {
     clearSelection();
-    setSelected( newItem, true );
+    setCurrentItem( newItem );
   }
 }
 
-Addressee AddressSelection::currentAddressee( QListViewItem *item )
+Addressee AddressSelection::currentAddressee( QTreeWidgetItem *item )
 {
   Addressee adr;
   QString adrUid;
 
-  QListViewItem *it = item;
+  QTreeWidgetItem *it = item;
   if ( ! it ) {
-    it = selectedItem();
+    it = currentItem();
   }
 
   if ( it ) {

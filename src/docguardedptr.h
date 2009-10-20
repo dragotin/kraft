@@ -1,10 +1,11 @@
 #ifndef DOCGUARDEDPTR
 #define DOCGUARDEDPTR
 
-#include <qguardedptr.h>
+#include <QPointer>
+
 class KraftDoc;
 
-typedef QGuardedPtr<KraftDoc> DocGuardedPtr;
+typedef QPointer<KraftDoc> DocGuardedPtr;
 
 #endif
 

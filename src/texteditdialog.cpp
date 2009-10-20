@@ -18,11 +18,12 @@
 
 #include <qcombobox.h>
 #include <qwidget.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 #include <qlabel.h>
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <kdebug.h>
+#include <kvbox.h>
 #include <klocale.h>
 #include <kcombobox.h>
 #include <ktextedit.h>
@@ -30,17 +31,23 @@
 
 #include "templtopositiondialogbase.h"
 #include "texteditdialog.h"
-#include "texteditbase.h"
 #include "doctext.h"
 #include "defaultprovider.h"
 
 
 TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
-  : KDialogBase( parent, "TEMPL_DIALOG", true, i18n( "Edit Text Templates" ),
-                 Ok | Cancel )
+  : KDialog( parent )
 {
-  QWidget *w = makeVBoxMainWidget();
-  mBaseWidget = new TextEditBase( w );
+  setObjectName( "TEMPL_DIALOG" );
+  setModal( true );
+  setCaption(  i18n("Edit Text Templates" ));
+  setButtons( KDialog::Ok | KDialog::Cancel );
+
+  KVBox *mainWidget = new KVBox( this );
+  setMainWidget( mainWidget );
+
+  mBaseWidget = new Ui::TextEditBase;
+  mBaseWidget->setupUi( mainWidget );
 
   mBaseWidget->mDocTypeLabel->setText( DocText::textTypeToString( docPart ) );
 

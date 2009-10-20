@@ -24,7 +24,7 @@
 #endif
 
 // include files
-#include<qptrdict.h>
+#include<q3ptrdict.h>
 #include<qvariant.h>
 
 #include "calcpart.h"
@@ -58,7 +58,7 @@ public:
     Geld getPriceForMaterial( StockMaterial *mat );
 private:
     long m_calcID;
-    QPtrDict<QVariant> m_amounts;
+    QHash<StockMaterial*, QVariant> m_amounts;
 };
 
 #endif

@@ -62,6 +62,6 @@ void BrunsRecord::clearSizes()
 
 void BrunsRecord::debugOut()
 {
-    kdDebug() << artNo << "  dt. Name: " << dtName << ", lt. Name. " << ltName << endl;
+    kDebug() << artNo << "  dt. Name: " << dtName << ", lt. Name. " << ltName << endl;
 }
 

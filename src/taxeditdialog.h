@@ -20,11 +20,13 @@
 
 
 #include <qdatetime.h>
-#include <qvaluelist.h>
 
-#include <kdialogbase.h>
+#include <QLabel>
+#include <QList>
 
-#include "taxeditbase.h"
+#include <kdialog.h>
+
+#include "ui_taxeditbase.h"
 
 class QLabel;
 
@@ -36,14 +38,14 @@ class QLabel;
 
 struct TaxRecord
 {
-  typedef QValueList<TaxRecord> List;
+  typedef QList<TaxRecord> List;
 
   double fullTax;
   double reducedTax;
   QDate  date;
 };
 
-class TaxEditDialog: public KDialogBase
+class TaxEditDialog: public KDialog, protected Ui::TaxEditBase
 {
   Q_OBJECT
 
@@ -53,7 +55,7 @@ public:
   TaxRecord newTaxRecord();
 
 private:
-  TaxEditBase *mBaseWidget;
+  Ui::TaxEditBase *mBaseWidget;
   
 };
 

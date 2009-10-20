@@ -18,6 +18,7 @@
 #define HTMLVIEW_H
 
 #include <khtml_part.h>
+class  KAction;
 
 class HtmlView : public KHTMLPart
 {

@@ -23,12 +23,12 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 
 #include "tagman.h"
 #include "kraftdb.h"
 #include <qsqlquery.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qpalette.h>
 
 /*
@@ -63,7 +63,7 @@ bool TagTemplate::operator!= ( const TagTemplate& tt ) const
 /*
  * ********** Tag Template Manager **********
  */
-static KStaticDeleter<TagTemplateMan> selfDeleter;
+static K3StaticDeleter<TagTemplateMan> selfDeleter;
 TagTemplateMan* TagTemplateMan::mSelf = 0;
 
 TagTemplateMan *TagTemplateMan::self()
@@ -137,10 +137,10 @@ bool TagTemplateMan::writeTemplate( const TagTemplate& tt )
   }
 
   if ( cnt == -1 ) {
-    kdError() << "DB does not know the number of affected rows, poor!" << endl;
+    kError() << "DB does not know the number of affected rows, poor!" << endl;
     ret = false;
   } else if ( cnt == 0 ) {
-    kdDebug() << "need to insert the tag template into db" << endl;
+    kDebug() << "need to insert the tag template into db" << endl;
     QSqlQuery qi;
     qi.prepare( "INSERT INTO tagTemplates (name, description, color) VALUES "
                   "( :name, :desc, :col )" );
@@ -178,13 +178,13 @@ void TagTemplateMan::load()
     q.next();
     max = q.value(0).toInt();
   }
-  kdDebug() << "Size of tag template list: " << max << endl;
+  kDebug() << "Size of tag template list: " << max << endl;
 
   mTagTmpl.resize( max );
 
   /* Daten laden */
-  QSqlCursor cur("tagTemplates");
-  cur.setMode( QSqlCursor::ReadOnly );
+  Q3SqlCursor cur("tagTemplates");
+  cur.setMode( Q3SqlCursor::ReadOnly );
 
     // Create an index that sorts from high values for einheitID down.
     // that makes at least on resize of the vector.

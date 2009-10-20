@@ -16,19 +16,24 @@
  ***************************************************************************/
 #include <qlayout.h>
 #include <qpushbutton.h>
-#include <qframe.h>
-#include <qheader.h>
+#include <q3frame.h>
+#include <q3header.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3BoxLayout>
+#include <Q3PopupMenu>
+#include <Q3VBoxLayout>
 
-#include <klistview.h>
+#include <k3listview.h>
 #include <klocale.h>
 #include <kdebug.h>
-#include <kstdaction.h>
+#include <kstandardaction.h>
 #include <kaction.h>
 #include <ktoolbar.h>
 #include <kdialog.h>
 #include <kiconloader.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kcalendarsystem.h>
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
@@ -40,46 +45,51 @@
 #include "documentman.h"
 #include "docguardedptr.h"
 #include "kraftdoc.h"
-#include <qlistview.h>
+#include <q3listview.h>
 #include "defaultprovider.h"
 
 
 DocDigestView::DocDigestView( QWidget *parent )
 : QWidget( parent )
 {
-  QWidget *w = new QWidget(parent);
+  // QWidget *w = new QWidget;
 
-  QBoxLayout *box = new QVBoxLayout( w );
+  QVBoxLayout *box = new QVBoxLayout;
+  setLayout( box );
+
   box->setMargin( 0 );
   box->setSpacing( 0 );
-  QBoxLayout *hbox = new QHBoxLayout( w );
 
-  mNewDocButton = new QPushButton( i18n( "Create Document" ), w );
+  QHBoxLayout *hbox = new QHBoxLayout;
+
+  mNewDocButton = new QPushButton( i18n( "Create Document" ) );
   connect( mNewDocButton, SIGNAL( clicked() ), this, SIGNAL( createDocument() ) );
 
   hbox->addWidget( mNewDocButton );
 
   hbox->addStretch(1);
-  mListView = new KListView( w );
-  mListView->setItemMargin( 5 );
-  mListView->setAlternateBackground( QColor( "#dffdd0" ) );
-  mContextMenu = new KPopupMenu( mListView );
-  mContextMenu->insertTitle( i18n( "Document Actions" ) );
-  connect( mListView, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint&, int ) ),
-           this, SLOT( slotRMB( QListViewItem *, const QPoint &, int ) ) );
+  box->addLayout( hbox );
+
+  mListView = new QTreeWidget;
+  // mListView->setItemMargin( 5 );
+  mListView->setAlternatingRowColors( true );
+  mContextMenu = new KMenu( mListView );
+  // mContextMenu->insertTitle( i18n( "Document Actions" ) );
+  connect( mListView, SIGNAL( contextMenuRequested( QTreeWidgetItem *, const QPoint&, int ) ),
+           this, SLOT( slotRMB( QTreeWidgetItem *, const QPoint &, int ) ) );
 
   // mListView->header()->hide();
   mListView->setRootIsDecorated(  true );
-  mListView->setSelectionMode( QListView::Single );
+  mListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
-  mFilterHeader = new FilterHeader( mListView, w );
+  mFilterHeader = new FilterHeader( mListView ); // , w );
   mFilterHeader->showCount( false );
 
-  connect( mListView, SIGNAL( executed( QListViewItem* ) ),
-           this, SLOT( slotDocOpenRequest( QListViewItem* ) ) );
+  connect( mListView, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ),
+           this, SLOT( slotDocOpenRequest( QTreeWidgetItem*, int ) ) );
 
-  connect( mListView, SIGNAL( currentChanged( QListViewItem* ) ),
-           this, SLOT( slotCurrentChanged( QListViewItem* ) ) );
+  connect( mListView, SIGNAL( currentChanged( QTreeWidgetItem* ) ),
+           this, SLOT( slotCurrentChanged( QTreeWidgetItem* ) ) );
 
   hbox->addWidget( mFilterHeader );
   hbox->addSpacing( KDialog::marginHint() );
@@ -87,20 +97,23 @@ DocDigestView::DocDigestView( QWidget *parent )
   box->addLayout( hbox );
   box->addSpacing( KDialog::marginHint() );
 
-  QBoxLayout *hbox2 = new QHBoxLayout( w );
+  QHBoxLayout *hbox2 = new QHBoxLayout;
   hbox2->addWidget( mListView );
   hbox2->addSpacing( KDialog::marginHint() );
   box->addLayout( hbox2 );
 
-  mListView->addColumn( i18n( "Type" ) );
-  mListView->addColumn( i18n( "Client Name" ) );
-  mListView->addColumn( i18n( "Last Modified" ) );
-  mListView->addColumn( i18n( "Date" ) );
-  mListView->addColumn( i18n( "Whiteboard" ) );
-  mListView->addColumn( i18n( "Project" ) );
-  mListView->addColumn( i18n( "Doc. Number" ) );
+  mListView->setColumnCount( 7 );
+  QStringList cols;
+  cols << i18n( "Type" );
+  cols << i18n( "Client Name" );
+  cols << i18n( "Last Modified" );
+  cols << i18n( "Date" );
+  cols << i18n( "Whiteboard" );
+  cols << i18n( "Project" );
+  cols << i18n( "Doc. Number" );
 
-  mListView->setSorting( 155 ); // sort only manually.
+  mListView->setHeaderLabels( cols );
+  // mListView->setSorting( 155 ); // sort only manually.
 }
 
 DocDigestView::~DocDigestView()
@@ -113,16 +126,16 @@ void DocDigestView::slotBuildView()
   DocumentMan *docman = DocumentMan::self();
   mListView->clear();
 
-  KListViewItem *item = addChapter( i18n( "All Documents" ),
+  QTreeWidgetItem *item = addChapter( i18n( "All Documents" ),
                                                     docman->latestDocs( 0 ) );
   mAllDocsParent = item;
-  item->setPixmap( 0, SmallIcon( "identity" ) ); // KDE 4 icon name: user-identity
-  item->setOpen( false );
+  item->setIcon( 0, SmallIcon( "identity" ) ); // KDE 4 icon name: user-identity
+  mListView->collapseItem( item );
 
   item = addChapter( i18n( "Documents by Time" ), DocDigestList() );
   mTimeLineParent = item;
-  item->setPixmap( 0, SmallIcon( "history" ) ); // KDE 4 icon name: view-history
-  item->setOpen( false );
+  item->setIcon( 0, SmallIcon( "history" ) ); // KDE 4 icon name: view-history
+  mListView->collapseItem( item );
 
   /* create the timeline view */
   DocDigestsTimelineList timeList = docman->docsTimelined();
@@ -130,64 +143,64 @@ void DocDigestView::slotBuildView()
 
   int month = 0;
   int year = 0;
-  KListViewItem *yearItem = 0;
+  QTreeWidgetItem *yearItem = 0;
 
   for ( it = timeList.begin(); it != timeList.end(); ++it ) {
     if ( ( *it ).year() && year != ( *it ).year() ) {
       year = ( *it ).year();
 
       yearItem = addChapter( QString::number( year ),  DocDigestList(), mTimeLineParent );
-      yearItem->setOpen( false );
+      mListView->collapseItem( yearItem );
     }
     month = ( *it ).month();
     const QString monthName =
       DefaultProvider::self()->locale()->calendar()->monthName( month, year ); // , KCalendarSystem::LongName);
     if ( yearItem ) {
-      KListViewItem *mItem = addChapter(  monthName, ( *it ).digests(), yearItem );
-      mItem->setOpen( false );
+      QTreeWidgetItem *mItem = addChapter(  monthName, ( *it ).digests(), yearItem );
+      mListView->collapseItem( mItem );
     }
   }
 
   item = addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
   mLatestDocsParent = item;
-  item->setPixmap( 0, SmallIcon( "fork" ) );
+  item->setIcon( 0, SmallIcon( "fork" ) );
 }
 
 
-KListViewItem* DocDigestView::addChapter( const QString& chapter, DocDigestList list, KListViewItem *chapParent )
+QTreeWidgetItem* DocDigestView::addChapter( const QString& chapter, DocDigestList list, QTreeWidgetItem *chapParent )
 {
-  kdDebug() << "Adding docview chapter " << chapter << " with " << list.size() << " elems" << endl;
+  kDebug() << "Adding docview chapter " << chapter << " with " << list.size() << " elems" << endl;
 
-  KListViewItem *chapIt;
+  QTreeWidgetItem *chapIt;
   if ( chapParent ) {
-    chapIt = new KListViewItem( chapParent, chapter );
+    chapIt = new QTreeWidgetItem( chapParent, QStringList(chapter));
   } else {
-    chapIt = new KListViewItem( mListView, chapter );
+    chapIt = new QTreeWidgetItem( mListView, QStringList(chapter) );
   }
-  chapIt->setOpen( true );
+  mListView->expandItem( chapIt );
 
   DocDigestList::iterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
-    KListViewItem *item = new KListViewItem( chapIt,
-                                             (*it).type(), (*it).clientName(),
-                                             ( *it).lastModified(), (*it).date(),
-                                             ( *it ).whiteboard(), ( *it ).projectLabel(),
-                                             ( *it ).ident() );
+    QStringList li;
+    li << (*it).type() << (*it).clientName() << ( *it).lastModified() << (*it).date()
+        << ( *it ).whiteboard() << ( *it ).projectLabel() << ( *it ).ident();
 
+    QTreeWidgetItem *item = new QTreeWidgetItem( chapIt, li );
     mDocIdDict[item] = (*it).id();
 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();
     ArchDocDigestList::iterator archIt;
     for ( archIt = archDocList.begin(); archIt != archDocList.end(); ++archIt ) {
-      KListViewItem *archItem = new KListViewItem( item, i18n( "Archived" ), QString(),
-                                                   ( *archIt ).printDateString() );
+      QStringList li;
+      li << i18n("Archived") << QString() << (*archIt).printDateString();
+      QTreeWidgetItem *archItem = new QTreeWidgetItem( item, li );
       mArchIdDict[archItem] = (*archIt);
     }
   }
   return chapIt;
 }
 
-void DocDigestView::slotRMB( QListViewItem*, const QPoint& point, int )
+void DocDigestView::slotRMB( QTreeWidgetItem*, const QPoint& point, int )
 {
   mContextMenu->popup( point );
 }
@@ -197,21 +210,21 @@ void DocDigestView::slotRMB( QListViewItem*, const QPoint& point, int )
  */
 void DocDigestView::slotNewDoc( DocGuardedPtr doc )
 {
-  KListViewItem *parent = mLatestDocsParent;
+  QTreeWidgetItem *parent = mLatestDocsParent;
 
-  QListViewItem *currItem = mListView->selectedItem();
+  QTreeWidgetItem *currItem = mListView->selectedItems().first();
   QString itemID; // for docSelected signal
-  if ( currItem ) mListView->setSelected( currItem, false );
+  if ( currItem ) mListView->setCurrentItem( currItem );
 
   if ( !doc ) return;
 
   // insert item into the "latest docs" list. That makes the latest
   // list one item longer, we're not deleting one entry
   if ( parent ) {
-    KListViewItem *item = new KListViewItem( parent );
-    item->setPixmap( 0, SmallIcon( "knewstuff" ) );
+    QTreeWidgetItem *item = new QTreeWidgetItem( parent );
+    item->setIcon( 0, SmallIcon( "knewstuff" ) );
     setupListViewItemFromDoc( doc, item );
-    mListView->setSelected( item, true );
+    mListView->setCurrentItem( item );
     dbID id = doc->docID();
     if ( id.isOk() ) {
       mDocIdDict[item] = id.toString();
@@ -223,7 +236,7 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   // Insert new item into the "all documents" list
   parent = mAllDocsParent;
   if ( parent ) {
-    KListViewItem *item = new KListViewItem( parent );
+    QTreeWidgetItem *item = new QTreeWidgetItem( parent );
     setupListViewItemFromDoc( doc, item );
     dbID id = doc->docID();
     if ( id.isOk() ) {
@@ -239,10 +252,10 @@ void DocDigestView::slotUpdateDoc( DocGuardedPtr doc )
   if ( !doc ) return;
   const QString docId = doc->docID().toString();
 
-  QMap<QListViewItem*, QString>::Iterator it;
-  for ( it = mDocIdDict.begin(); it != mDocIdDict.end(); ++it ) {
-    QListViewItem* item = it.key();
-    QString id = it.data();
+  QMapIterator<QTreeWidgetItem*, QString> it( mDocIdDict );
+  while( it.hasNext() ) {
+    QTreeWidgetItem* item = it.key();
+    QString id = it.value();
 
     if ( docId == id ) {
       setupListViewItemFromDoc( doc, item );
@@ -250,7 +263,7 @@ void DocDigestView::slotUpdateDoc( DocGuardedPtr doc )
   }
 }
 
-void DocDigestView::setupListViewItemFromDoc( DocGuardedPtr doc, QListViewItem* item )
+void DocDigestView::setupListViewItemFromDoc( DocGuardedPtr doc, QTreeWidgetItem* item )
 {
   item->setText( 0,  doc->docType() );
 
@@ -262,30 +275,30 @@ void DocDigestView::setupListViewItemFromDoc( DocGuardedPtr doc, QListViewItem* 
     clientName = contact.realName();
   }
   item->setText( 1,  clientName );
-  item->setText( 2, doc->locale()->formatDate( doc->lastModified(), true ) );
-  item->setText( 3, doc->locale()->formatDate( doc->date(), true ) );
+  item->setText( 2, doc->locale()->formatDate( doc->lastModified(), KLocale::ShortDate ) );
+  item->setText( 3, doc->locale()->formatDate( doc->date(), KLocale::ShortDate ) );
   item->setText( 4, doc->whiteboard() );
   item->setText( 5, doc->projectLabel() );
   item->setText( 6, doc->ident() );
 }
 
 #if 0
-void DocDigestView::slotDocViewRequest( QListViewItem *item )
+void DocDigestView::slotDocViewRequest( QTreeWidgetItem *item )
 {
   QString id = mDocIdDict[ item ];
   if( ! id.isEmpty() ) {
-    kdDebug() << "Opening document " << id << endl;
+    kDebug() << "Opening document " << id;
 
     emit viewDocument( id );
   }
 }
 #endif
 
-void DocDigestView::slotDocOpenRequest( QListViewItem *item )
+void DocDigestView::slotDocOpenRequest( QTreeWidgetItem *item, int )
 {
   QString id = mDocIdDict[ item ];
   if( ! id.isEmpty() ) {
-    kdDebug() << "Opening document " << id << endl;
+    kDebug() << "Opening document " << id << endl;
 
     emit openDocument( id );
   }
@@ -305,7 +318,7 @@ void DocDigestView::slotOpenCurrentDoc()
 
 ArchDocDigest DocDigestView::currentArchiveDoc() const
 {
-  QListViewItem *current = mListView->selectedItem();
+  QTreeWidgetItem *current = mListView->selectedItems().first();
   if( current ) {
     return mArchIdDict[current];
   }
@@ -316,25 +329,25 @@ QString DocDigestView::currentDocumentId()
 {
   QString res;
 
-  QListViewItem *current = mListView->currentItem();
+  QTreeWidgetItem *current = mListView->currentItem();
   if( current ) {
     res = mDocIdDict[current];
   }
   return res;
 }
 
-void DocDigestView::slotCurrentChanged( QListViewItem *item )
+void DocDigestView::slotCurrentChanged( QTreeWidgetItem *item )
 {
   dbID id = ( mArchIdDict[item] ).archDocId();
   QString res;
-  if ( mDocIdDict[item] ) {
+  if ( mDocIdDict.contains( item ) ) {
     emit docSelected( mDocIdDict[item] );
   } else if ( id.isOk() ) {
     emit archivedDocSelected( mArchIdDict[item] );
   }
 }
 
-QPopupMenu* DocDigestView::contextMenu()
+KMenu* DocDigestView::contextMenu()
 {
   return mContextMenu;
 }

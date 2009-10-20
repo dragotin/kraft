@@ -16,30 +16,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qlistbox.h>
-#include <qstring.h>
-#include <qpainter.h>
-#include <qpixmap.h>
 
 #include <kdebug.h>
-#include <kcombobox.h>
 
 #include "extendedcombo.h"
 
-
+#if 0
 ExtendedComboItem::ExtendedComboItem( const QString &name, const QString &description, ExtendedCombo *combo )
-  : QListBoxItem( combo->listBox() ), mDescription( description )
+  : Q3ListBoxItem( combo->listBox() ), mDescription( description )
 {
   setText( name );
 }
 
-int ExtendedComboItem::width(const QListBox *lb) const
+int ExtendedComboItem::width(const Q3ListBox *lb) const
 {
   QFontMetrics descFm( descriptionFont() );
-  return QMAX( lb->fontMetrics().width(text()), descFm.width(mDescription) + 4 ) + 6;
+  return qMax( lb->fontMetrics().width(text()), descFm.width(mDescription) + 4 ) + 6;
 }
 
-int ExtendedComboItem::height(const QListBox *lb) const
+int ExtendedComboItem::height(const Q3ListBox *lb) const
 {
   QFontMetrics fm(lb->fontMetrics());
   QFontMetrics descFm(  this->descriptionFont() );
@@ -52,7 +47,7 @@ QFont ExtendedComboItem::descriptionFont() const
   QFont f;
   if ( listBox() ) {
     f = listBox()->font();
-    // kdDebug() << "Pointsize is " << f.pointSize() << endl;
+    // kDebug() << "Pointsize is " << f.pointSize() << endl;
     // decrease font size by 25%
     f.setPointSize( f.pointSize()- f.pointSize()/4 );
   }
@@ -100,12 +95,14 @@ void ExtendedComboItem::setPixmap( const QPixmap& pix )
 {
   mPixmap = pix;
 }
+#endif
 // ################################################################################
 
 
 ExtendedCombo::ExtendedCombo(QWidget *parent, const char *name)
-  : KComboBox( parent, name )
+  : QComboBox( parent )
 {
+  setObjectName( name );
 }
 
 ExtendedCombo::~ExtendedCombo()
@@ -113,9 +110,9 @@ ExtendedCombo::~ExtendedCombo()
 
 }
 
-ExtendedComboItem* ExtendedCombo::insertEntry( const QString &name, const QString &description )
+void ExtendedCombo::insertEntry( const QString &name, const QString & /* description */ )
 {
-  return new ExtendedComboItem( name, description, this );
+  addItem( name );
 }
 
 

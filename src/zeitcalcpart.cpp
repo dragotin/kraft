@@ -51,7 +51,7 @@ StdSatz& ZeitCalcPart::getStundensatz()
 /** Write property of Geld m_stundensatz. */
 void ZeitCalcPart::setStundensatz( const StdSatz& _newVal)
 {
-    // kdDebug() << "stundensatz gesetzt: " << _newVal.toString() << endl;
+    // kDebug() << "stundensatz gesetzt: " << _newVal.toString() << endl;
     m_stundensatz = _newVal;
     setDirty(true);
 }

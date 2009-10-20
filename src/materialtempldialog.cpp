@@ -17,7 +17,6 @@
 
 // include files for Qt
 #include <qcombobox.h>
-#include <qtextedit.h>
 #include <qstring.h>
 
 // include files for KDE
@@ -33,11 +32,14 @@
 #include "kraftsettings.h"
 #include "defaultprovider.h"
 
-MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, const char* name, bool modal, WFlags fl)
-    : MaterialDialogBase(parent, name, modal, fl),
-      Eta( 0.00000000001 )
+MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, bool modal )
+    : KDialog( parent ),
+    Ui::MaterialDialogBase(),
+    Eta( 0.00000000001 )
 {
-    /* connect a value Changed signal of the manual price field */
+  /* connect a value Changed signal of the manual price field */
+  setupUi( this );
+  setModal( modal );
   const QString currSymbol = DefaultProvider::self()->locale()->currencySymbol();
   mInPurchasePrice->setPrefix( currSymbol + " " );
   mInSalePrice->setPrefix( currSymbol + " " );
@@ -81,7 +83,7 @@ void MaterialTemplDialog::slPurchPriceChanged( double purch )
     m = 100*( ( sale-purch )/purch );
   } else if ( m < Eta && sale < Eta ) {
     // take a default for the material factor
-    m = KraftSettings::self()->materialAddOnPercent();
+    m = KraftSettings::self()->self()->materialAddOnPercent();
   }
   setPriceCalc( purch, m, sale );
 }
@@ -118,7 +120,7 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   m_katalog = KatalogMan::self()->getKatalog(katalogname);
 
   if( m_katalog == 0 ) {
-    kdDebug() << "ERR: Floskel Dialog called without valid Katalog!" << endl;
+    kDebug() << "ERR: Floskel Dialog called without valid Katalog!" << endl;
     return;
   }
 
@@ -129,9 +131,9 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   mCbChapter->setCurrentText(chap);
 
   // unit settings
-  mCbUnit->insertStringList( UnitManager::allUnits() );
+  mCbUnit->insertStringList( UnitManager::self()->allUnits() );
   Einheit e = t->getUnit();
-  mCbUnit->setCurrentText( e.einheitSingular() );
+  this->mCbUnit->setCurrentText( e.einheitSingular() );
 
   // text
   mEditMaterial->setText( t->name() );
@@ -161,20 +163,20 @@ MaterialTemplDialog::~MaterialTemplDialog( )
 
 void MaterialTemplDialog::accept()
 {
-  kdDebug() << "*** Saving finished " << endl;
+  kDebug() << "*** Saving finished " << endl;
   const QString newMat = mEditMaterial->text();
 
   if ( newMat.isEmpty() ) {
-    kdDebug() << "We do not want to store empty materials" << endl;
+    kDebug() << "We do not want to store empty materials" << endl;
   } else {
     mSaveMaterial->setName( mEditMaterial->text() );
     mSaveMaterial->setAmountPerPack( mDiPerPack->value() );
 
     const QString str = mCbUnit->currentText();
 
-    int u = UnitManager::getUnitIDSingular( str );
-    kdDebug() << "Setting unit id "  << u << endl;
-    mSaveMaterial->setUnit( UnitManager::getUnit( u ) );
+    int u = UnitManager::self()->getUnitIDSingular( str );
+    kDebug() << "Setting unit id "  << u << endl;
+    mSaveMaterial->setUnit( UnitManager::self()->getUnit( u ) );
 
     const QString str2 = mCbChapter->currentText();
     int chapId = m_katalog->chapterID( str2 );
@@ -199,30 +201,30 @@ void MaterialTemplDialog::accept()
     KatalogMan::self()->notifyKatalogChange( m_katalog, mSaveMaterial->getID() );
   }
 
-  MaterialDialogBase::accept();
+  accept();
 }
 
 bool MaterialTemplDialog::askChapterChange( StockMaterial*, int )
 {
-    if( KMessageBox::questionYesNo( this,
-        i18n( "The catalog chapter was changed for this template.\nDo you really want to move the template to the new chapter?"),
-        i18n("Changed Chapter"), KStdGuiItem::yes(), KStdGuiItem::no(),
-        "chapterchange" ) == KMessageBox::Yes )
-    {
-        return true;
+  if( KMessageBox::questionYesNo( this,
+                                  i18n( "The catalog chapter was changed for this template.\nDo you really want to move the template to the new chapter?"),
+                                  i18n("Changed Chapter"), KStandardGuiItem::yes(), KStandardGuiItem::no(),
+                                  "chapterchange" ) == KMessageBox::Yes )
+  {
+    return true;
 
-    } else {
-        return false;
-    }
+  } else {
+    return false;
+  }
 }
 
 void MaterialTemplDialog::reject()
 {
-    if ( m_templateIsNew ) {
-      // remove the listview item if it was created newly
-      emit editRejected();
-    }
-    MaterialDialogBase::reject();
+  if ( m_templateIsNew ) {
+    // remove the listview item if it was created newly
+    emit editRejected();
+  }
+  reject();
 }
 
 

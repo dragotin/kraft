@@ -17,7 +17,7 @@
 
 #include<qlabel.h>
 #include <qtooltip.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 #include <qdatetime.h>
 #include <qsqlquery.h>
 
@@ -26,16 +26,26 @@
 #include<kdebug.h>
 #include<kdatewidget.h>
 #include<knuminput.h>
+#include<kvbox.h>
 
 #include "taxeditdialog.h"
 
 TaxEditDialog::TaxEditDialog( QWidget *parent )
- :KDialogBase( parent, "TAX_EDIT", true, i18n( "Edit Tax Rates" ), Ok|Cancel )
+ :KDialog( parent ) // , "TAX_EDIT", true, i18n( "Edit Tax Rates" ), Ok|Cancel )
 {
-  enableButtonSeparator( true );
-  QWidget *w = makeVBoxMainWidget();
+  setObjectName( "TAX_EDIT_DIALOG" );
+  setModal( true );
+  setCaption( i18n( "Edit Tax Rates" ) );
+  setButtons( Ok|Cancel );
 
-  mBaseWidget = new TaxEditBase( w );
+  showButtonSeparator( true );
+
+  KVBox *w = new KVBox( parent );
+  setMainWidget( w );
+
+  mBaseWidget = new Ui::TaxEditBase( );
+  mBaseWidget->setupUi( w );
+
   mBaseWidget->mDateWidget->setDate( QDate::currentDate() );
 
   mBaseWidget->mFullTax->setSuffix( "%" );

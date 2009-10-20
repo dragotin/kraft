@@ -16,26 +16,31 @@
  ***************************************************************************/
 
 // include files for Qt
+#include <QtGui>
+
 #include <qlayout.h>
 #include <qlabel.h>
-#include <qscrollview.h>
+#include <q3scrollview.h>
 #include <qsizepolicy.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qsignalmapper.h>
-#include <qhbox.h>
-#include <qvbox.h>
-#include <qgrid.h>
-#include <qwidgetstack.h>
+#include <khbox.h>
+#include <kvbox.h>
+#include <q3grid.h>
+#include <q3widgetstack.h>
 #include <qtabwidget.h>
 #include <qcolor.h>
 #include <qsplitter.h>
-#include <qbuttongroup.h>
+#include <q3buttongroup.h>
 #include <qtooltip.h>
 #include <qfont.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
+#include <QResizeEvent>
+#include <Q3ValueList>
+#include <Q3Frame>
 
 #include <kdebug.h>
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <kpushbutton.h>
 #include <kcombobox.h>
 #include <kdatewidget.h>
@@ -57,11 +62,11 @@
 #include "kraftview.h"
 #include "kraftdoc.h"
 #include "portal.h"
-#include "docheader.h"
+#include "ui_docheader.h"
 #include "documentman.h"
 #include "docassistant.h"
 #include "positionviewwidget.h"
-#include "docfooter.h"
+#include "ui_docfooter.h"
 #include "docposition.h"
 #include "unitmanager.h"
 #include "docpostcard.h"
@@ -90,7 +95,7 @@
 
 
 KraftViewScroll::KraftViewScroll( QWidget *parent ):
-QScrollView( parent )
+Q3ScrollView( parent )
 {
 
 }
@@ -99,7 +104,7 @@ void KraftViewScroll::viewportResizeEvent ( QResizeEvent *ev )
 {
   int w = ev->size().width(); // visibleWidth()-1;
   resizeContents( w, contentsHeight () );
-  QScrollView::viewportResizeEvent( ev );
+  Q3ScrollView::viewportResizeEvent( ev );
 }
 
 void KraftViewScroll::resizeContents(  int w, int h )
@@ -107,7 +112,7 @@ void KraftViewScroll::resizeContents(  int w, int h )
   if( w < 400 ) {
     w = 400;
   }
-  QScrollView::resizeContents( w, h );
+  Q3ScrollView::resizeContents( w, h );
   PositionViewWidget *wid;
   for ( wid = mWidgetList.first(); wid; wid = mWidgetList.next() ) {
     wid->resize( w, wid->height() );
@@ -117,7 +122,7 @@ void KraftViewScroll::resizeContents(  int w, int h )
 void KraftViewScroll::addChild( QWidget *child, int x, int y )
 {
   mWidgetList.append( static_cast<PositionViewWidget*>(child) );
-  QScrollView::addChild( child, x, y );
+  Q3ScrollView::addChild( child, x, y );
 }
 
 void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
@@ -128,12 +133,99 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 
 // #########################################################
 
-KraftView::KraftView(QWidget *parent, const char *name) :
-  KDialogBase( parent, name, false /* modal */, i18n("Document"),
-	      Ok|Cancel, Ok, true /* separator */ ),
+KraftView::KraftView(QWidget *parent) :
+  KDialog( parent ),
+#if 0
+  , name, false /* modal */, i18n("Document"),
+              Ok|Cancel, Ok, true /* separator */ ), */
+#endif
   m_doc( 0 ),
   mHelpLabel( 0 ), mRememberAmount( -1 ), mModified( false )
 {
+  setCaption( i18n("Document" ) );
+  setModal( false );
+  setButtons( KDialog::Ok | KDialog::Cancel );
+
+  QWidget *w = new QWidget( this );
+
+  QVBoxLayout *vLayoutGlobal = new QVBoxLayout;
+  w->setLayout( vLayoutGlobal );
+
+  setMainWidget( w );
+
+  //mGlobalVBox->setMargin( 3 );
+
+  mDetailHeader = new QLabel;
+  mDetailHeader->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
+  // mDetailHeader->setMargin( 4 );
+  mDetailHeader->setFrameStyle( Q3Frame::Box + Q3Frame::Plain );
+  mDetailHeader->setLineWidth( 1 );
+  mDetailHeader->setPaletteBackgroundColor( QColor( "darkBlue" ));
+  mDetailHeader->setPaletteForegroundColor( QColor( "white" ) );
+  mDetailHeader->setTextFormat( Qt::PlainText );
+  mDetailHeader->setFixedHeight( 40 ); // FIXME
+  QFont f = mDetailHeader->font();
+  f.setPointSize( qRound( 1.4 * f.pointSize() ) );
+  f.setBold( true );
+  mDetailHeader->setFont( f );
+  vLayoutGlobal->addWidget( mDetailHeader );
+
+  mCSplit    = new QSplitter( w );
+  vLayoutGlobal->addWidget( mCSplit );
+
+  mViewStack = new QStackedWidget;
+  // mViewStack->setMargin( 0 );
+  mCSplit->addWidget( mViewStack );
+
+  kDebug() << "mViewSTack height is " << mViewStack->height() << endl;
+
+  mAssistant = new DocAssistant( mCSplit );
+  mCSplit->addWidget( mAssistant );
+
+  /* catalog template selection signal */
+  connect( mAssistant,  SIGNAL( positionSelected( Katalog*, void* ) ),
+           this,  SLOT( slotAddPosition( Katalog*, void* ) ) );
+
+  /* signal to toggle the visibility of the template section in the assistant */
+  connect(  mAssistant, SIGNAL( toggleShowTemplates( bool ) ),
+            this,  SLOT( slotShowTemplates( bool ) ) );
+
+  /* signal that brings a new address to the document */
+  connect( mAssistant, SIGNAL( addressTemplate( const Addressee& ) ),
+           this, SLOT( slotNewAddress( const Addressee& ) ) );
+
+  connect( mAssistant, SIGNAL( headerTextTemplate( const QString& ) ),
+           this, SLOT( slotNewHeaderText( const QString& ) ) );
+
+  connect( mAssistant, SIGNAL( footerTextTemplate( const QString& ) ),
+           this, SLOT( slotNewFooterText( const QString& ) ) );
+
+  if ( KraftSettings::self()->self()->docViewSplitter().count() == 2 ) {
+    mCSplit->setSizes( KraftSettings::self()->self()->docViewSplitter() );
+  }
+  connect( mAssistant, SIGNAL( selectPage( int ) ),
+           this,  SLOT( slotSwitchToPage( int ) ) );
+
+  QSize size = KraftSettings::self()->self()->docViewSize();
+  if ( !size.isEmpty() ) resize( size );
+  QPoint pos = KraftSettings::self()->self()->docViewPosition();
+  if ( !pos.isNull() ) move( pos );
+
+  mAssistant->slotSelectDocPart( KraftDoc::Header );
+
+  setupMappers();
+
+  // mNewTemplates.setAutoDelete( true );
+}
+
+KraftView::~KraftView()
+{
+
+}
+
+void KraftView::setupMappers()
+{
+
   mDeleteMapper = new QSignalMapper( this );
   connect( mDeleteMapper, SIGNAL( mapped(int)),
            this, SLOT( slotDeletePosition( int ) ) );
@@ -157,73 +249,6 @@ KraftView::KraftView(QWidget *parent, const char *name) :
   mModifiedMapper = new QSignalMapper( this );
   connect( mModifiedMapper,  SIGNAL( mapped( int ) ),
            this,  SLOT( slotPositionModified( int ) ) );
-
-#if 0
-  connect( this, SIGNAL( aboutToShowPage( QWidget* ) ),
-           this, SLOT( slotAboutToShow( QWidget* ) ) );
-#endif
-
-  mGlobalVBox = makeVBoxMainWidget();
-  mGlobalVBox->setMargin( 3 );
-
-  mDetailHeader = new QLabel( mGlobalVBox );
-  mDetailHeader->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
-  // mDetailHeader->setMargin( 4 );
-  mDetailHeader->setFrameStyle( QFrame::Box + QFrame::Plain );
-  mDetailHeader->setLineWidth( 1 );
-  mDetailHeader->setPaletteBackgroundColor( QColor( "darkBlue" ));
-  mDetailHeader->setPaletteForegroundColor( QColor( "white" ) );
-  mDetailHeader->setTextFormat( Qt::PlainText );
-  mDetailHeader->setFixedHeight( 40 ); // FIXME
-  QFont f = mDetailHeader->font();
-  f.setPointSize( qRound( 1.4 * f.pointSize() ) );
-  f.setBold( true );
-  mDetailHeader->setFont( f );
-
-  mCSplit    = new QSplitter( mGlobalVBox );
-  QVBox *vb  = new QVBox( mCSplit );
-  vb->setMargin( 0 );
-  mViewStack = new QWidgetStack( vb );
-  mViewStack->setMargin( 0 );
-  kdDebug() << "mViewSTack height is " << mViewStack->height() << endl;
-
-  mAssistant = new DocAssistant( mCSplit );
-  /* catalog template selection signal */
-  connect( mAssistant,  SIGNAL( positionSelected( Katalog*, void* ) ),
-           this,  SLOT( slotAddPosition( Katalog*, void* ) ) );
-
-  /* signal to toggle the visibility of the template section in the assistant */
-  connect(  mAssistant, SIGNAL( toggleShowTemplates( bool ) ),
-            this,  SLOT( slotShowTemplates( bool ) ) );
-
-  /* signal that brings a new address to the document */
-  connect( mAssistant, SIGNAL( addressTemplate( const Addressee& ) ),
-           this, SLOT( slotNewAddress( const Addressee& ) ) );
-
-  connect( mAssistant, SIGNAL( headerTextTemplate( const QString& ) ),
-           this, SLOT( slotNewHeaderText( const QString& ) ) );
-
-  connect( mAssistant, SIGNAL( footerTextTemplate( const QString& ) ),
-           this, SLOT( slotNewFooterText( const QString& ) ) );
-
-  if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
-    mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
-  }
-  connect( mAssistant, SIGNAL( selectPage( int ) ),
-           this,  SLOT( slotSwitchToPage( int ) ) );
-
-  QSize size = KraftSettings::self()->docViewSize();
-  if ( !size.isEmpty() ) resize( size );
-  QPoint pos = KraftSettings::self()->docViewPosition();
-  if ( !pos.isNull() ) move( pos );
-
-  mAssistant->slotSelectDocPart( KraftDoc::Header );
-
-  mNewTemplates.setAutoDelete( true );
-}
-KraftView::~KraftView()
-{
-
 }
 
 void KraftView::setup( DocGuardedPtr doc )
@@ -241,20 +266,20 @@ void KraftView::setup( DocGuardedPtr doc )
 void KraftView::slotSwitchToPage( int id )
 {
   // check if the wanted part is already visible
-  if ( mViewStack->visibleWidget() == mViewStack->widget( id ) ) return;
+  if ( mViewStack->currentWidget() == mViewStack->widget( id ) ) return;
 
 
-  mViewStack->raiseWidget( id );
+  mViewStack->setCurrentIndex( id );
 
   KraftDocEdit *edit =
-    static_cast<KraftDocEdit *>( mViewStack->visibleWidget() );
+    static_cast<KraftDocEdit *>( mViewStack->currentWidget() );
 
   mDetailHeader->setText( edit->title() );
   mDetailHeader->setPaletteBackgroundColor( edit->color() );
   // FIXME: color
   mDetailHeader->setPaletteForegroundColor( QColor( "#00008b" ) );
 
-  mAssistant->slotSelectDocPart( mViewStack->id( mViewStack->visibleWidget() ) );
+  mAssistant->slotSelectDocPart( mViewStack->currentIndex() );
   // mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
 }
 
@@ -266,7 +291,7 @@ void KraftView::setupDocHeaderView()
 {
     KraftDocHeaderEdit *edit = new KraftDocHeaderEdit( mainWidget() );
 
-    mHeaderId = mViewStack->addWidget( edit, KraftDoc::Header );
+    mHeaderId = mViewStack->addWidget( edit ); // , KraftDoc::Header );
 
     m_headerEdit = edit->docHeaderEdit();
 
@@ -274,13 +299,13 @@ void KraftView::setupDocHeaderView()
     // m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
     m_headerEdit->m_cbType->insertStringList( DocType::allLocalised() );
 
-    if ( KraftSettings::showDocumentLocale() ) {
+    if ( KraftSettings::self()->showDocumentLocale() ) {
       m_headerEdit->mButtLang->show();
     } else {
       m_headerEdit->mButtLang->hide();
     }
 
-    m_headerEdit->m_whiteboardEdit->setFrameStyle( QFrame::NoFrame );
+    m_headerEdit->m_whiteboardEdit->setFrameStyle( Q3Frame::NoFrame );
     m_headerEdit->m_whiteboardEdit->setMaximumSize( 32676, 80 );
     // m_headerEdit->m_whiteboardEdit->setBackgroundColor( QColor( 243, 244, 121 ) );
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
@@ -295,7 +320,7 @@ void KraftView::setupDocHeaderView()
 void KraftView::setupPositions()
 {
     KraftDocPositionsEdit *edit = new KraftDocPositionsEdit( mainWidget() );
-    mViewStack->addWidget( edit, KraftDoc::Positions );
+    mViewStack->addWidget( edit ); // , KraftDoc::Positions );
 
     m_positionScroll = edit->positionScroll();
 
@@ -309,9 +334,9 @@ void KraftView::redrawDocument( )
 {
     KraftDoc *doc = getDocument();
     if( !doc ) {
-      kdDebug() << "ERR: No document available in view, return!" << endl;
+      kDebug() << "ERR: No document available in view, return!" << endl;
     } else {
-      kdDebug() << "** Starting redraw of document " << doc << endl;
+      kDebug() << "** Starting redraw of document " << doc << endl;
     }
 
     /* header: date and document type */
@@ -323,7 +348,7 @@ void KraftView::redrawDocument( )
     mContactUid  = doc->addressUid();
     QString address = doc->address();
 
-    kdDebug() << "Loaded address uid from database " << mContactUid << endl;
+    kDebug() << "Loaded address uid from database " << mContactUid << endl;
     if( ! mContactUid.isEmpty() ) {
       // FIXME - use centralised address provider
       AddressBook *adrBook =  StdAddressBook::self( );
@@ -338,14 +363,14 @@ void KraftView::redrawDocument( )
 
           m_headerEdit->m_labName->setText( i18n("--lost--") );
         } else {
-          kdDebug() << "The loaded Contact has this realname: " << contact.realName() << endl;
+          kDebug() << "The loaded Contact has this realname: " << contact.realName() << endl;
           slotNewAddress( contact );
         }
       }
     }
     if( !address.isEmpty() ) {
       // custom address stored in the document.
-      // kdDebug() << "custom address came in: " << address << endl;
+      // kDebug() << "custom address came in: " << address << endl;
       m_headerEdit->m_postAddressEdit->setText( address );
     }
 
@@ -402,24 +427,25 @@ void KraftView::redrawDocPositions( )
     }
   }
 
-  kdDebug() << "starting to redraw " << list.count() << " positions!" << endl;
-
-  DocPositionBase *dp = 0;
-
-  for( dp = list.first(); dp; dp = list.next() ) {
+  kDebug() << "starting to redraw " << list.count() << " positions!" << endl;
+  int cnt = 0;
+  DocPositionListIterator it( list );
+  while( it.hasNext() ) {
+    DocPositionBase *dp = it.next();
+    cnt++;
     PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
     if( !w ) {
-      w = createPositionViewWidget( dp, list.at() );
+      w = createPositionViewWidget( dp, cnt );
     }
-    kdDebug() << "now position " << dp->positionNumber() << endl;
+    kDebug() << "now position " << dp->positionNumber() << endl;
   }
 
   // now go through the positionWidgetMap and check if it contains elements
   // that are not any longer in the list of positions
   PositionViewWidget *w = 0;
   for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
-    if( list.containsRef( w->position() ) == 0 ) {
-      kdDebug() << "Removing this one: " << w << endl;
+    if( list.contains( w->position() ) == 0 ) {
+      kDebug() << "Removing this one: " << w << endl;
       m_positionScroll->kraftRemoveChild( w );
       mPositionWidgetList.remove();
       break;
@@ -462,11 +488,11 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 
   setMappingId( w, pos );
 
-  QStringList units = UnitManager::allUnits();
+  QStringList units = UnitManager::self()->allUnits();
   units.sort();
 
   for ( QStringList::Iterator it = units.begin(); it != units.end(); ++it ) {
-    Einheit e = UnitManager::getUnit( UnitManager::getUnitIDSingular( *it ) );
+    Einheit e = UnitManager::self()->getUnit( UnitManager::self()->getUnitIDSingular( *it ) );
 
     w->m_cbUnit->insertEntry( e.einheitSingular(), e.einheitSingularLong() );
   }
@@ -518,7 +544,7 @@ DocPositionBase::TaxType KraftView::currentTaxSetting()
   } else if ( taxKind == 3 ) { // Full tax for all items
     tt = DocPositionBase::TaxFull;
   } else { // individual level, not yet implementend
-    kdError() << "Item individual tax level is not yet implemented." << endl;
+    kError() << "Item individual tax level is not yet implemented.";
   }
   return tt;
 }
@@ -544,17 +570,21 @@ void KraftView::refreshPostCard()
     mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
                                            m_footerEdit->m_cbGreeting->currentText() );
 
-    mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
+    mAssistant->postCard()->renderDoc( mViewStack->currentIndex() ); // id( mViewStack->visibleWidget() ) );
   }
 
+
+  DocPositionListIterator it( positions );
   DocPositionBase *dp;
-  for( dp = positions.first(); dp; dp = positions.next() ) {
+  while( it.hasNext()) {
+    dp = it.next();
+
     if (  dp->type() == DocPositionBase::ExtraDiscount ) {
       PositionViewWidget *w = ( static_cast<DocPosition*>( dp ) )->associatedWidget();
       if( w ) {
         w->slotSetOverallPrice( ( static_cast<DocPosition*>( dp ) )->overallPrice() );
       } else {
-        kdDebug() << "Warning: Position object has no associated widget!" << endl;
+        kDebug() << "Warning: Position object has no associated widget!" << endl;
       }
     }
   }
@@ -564,13 +594,13 @@ void KraftView::setupFooter()
 {
   KraftDocFooterEdit *edit = new KraftDocFooterEdit( mainWidget() );
 
-  mViewStack->addWidget( edit, KraftDoc::Footer );
+  mViewStack->addWidget( edit ); //  KraftDoc::Footer );
 
   m_footerEdit = edit->docFooterEdit();
 
   m_footerEdit->m_cbGreeting->insertStringList( KraftDB::self()->wordList( "greeting" ) );
 
-  m_footerEdit->m_cbGreeting->setCurrentText( KraftSettings::self()->greeting() );
+  m_footerEdit->m_cbGreeting->setCurrentText( KraftSettings::self()->self()->greeting() );
 
   // ATTENTION: If you change the following inserts, make sure to check the code
   //            in method currentPositionList!
@@ -587,7 +617,9 @@ void KraftView::setupFooter()
   DocPositionBase *dp = 0;
   bool equality = true;
 
-  for( dp = list.first(); dp; dp = list.next() ) {
+  DocPositionListIterator it( list );
+  while( it.hasNext()) {
+    dp = it.next();
     if ( tt == -1 )
       tt = dp->taxTypeNumeric(); // store the first entry.
     else {
@@ -601,7 +633,7 @@ void KraftView::setupFooter()
   }
   if ( tt == -1 ) {
     // means that there is no item yet, the default tax type needs to be used.
-    int deflt = KraftSettings::self()->defaultTaxType();
+    int deflt = KraftSettings::self()->self()->defaultTaxType();
     if ( deflt > 0 ) {
       deflt -= 1;
     }
@@ -610,7 +642,7 @@ void KraftView::setupFooter()
     if ( equality ) {
       m_footerEdit->mTaxCombo->setCurrentItem( tt-1 );
     } else {
-      kdError() << "Problem: Not all Tax-Levels are the same! (Fixed later with tax on item base)" << endl;
+      kError() << "Problem: Not all Tax-Levels are the same! (Fixed later with tax on item base)";
     }
   }
 
@@ -623,7 +655,7 @@ void KraftView::setupFooter()
 
 void KraftView::slotAboutToShow( QWidget* w )
 {
-  kdDebug() << "showing page " << w << endl;
+  kDebug() << "showing page " << w << endl;
 }
 
 /* This is the flow in the move up method:
@@ -637,29 +669,29 @@ void KraftView::slotMovePositionUp( int pos )
   PositionViewWidget *w1 = 0;
   PositionViewWidget *w2 = 0;
 
-  kdDebug() << "Moving position up: " << pos << endl;
+  kDebug() << "Moving position up: " << pos << endl;
   if( pos < 1 || (unsigned) pos > mPositionWidgetList.count() ) {
-    kdDebug() << "ERR: position out of range: " << pos << endl;
+    kDebug() << "ERR: position out of range: " << pos << endl;
     return;
   }
 
   w2 = mPositionWidgetList.at( pos-1 );
   w1 = mPositionWidgetList.take( pos );
   mPositionWidgetList.insert( pos-1, w1 );
-  kdDebug() << "Found at pos " << pos << " the widgets " << w1 << " and " << w2 << endl;
+  kDebug() << "Found at pos " << pos << " the widgets " << w1 << " and " << w2 << endl;
 
   PositionViewWidget *vw = 0;
   for( vw = mPositionWidgetList.first(); vw; vw = mPositionWidgetList.next() ) {
     DocPositionBase* pb = vw->position();
     if( ! pb ) {
-      kdDebug() << "There is no position!" << endl;
+      kDebug() << "There is no position!" << endl;
     } else {
-      kdDebug() << "Pos " << vw->ordNumber() << ": " << pb->text() << endl;
+      kDebug() << "Pos " << vw->ordNumber() << ": " << pb->text() << endl;
     }
   }
 
   if( w1 && w2 ) {
-    kdDebug() << "Setting ord number: " << pos << endl;
+    kDebug() << "Setting ord number: " << pos << endl;
     w1->setOrdNumber( pos );  // note: ordnumbers start with 1, thus add one
     w2->setOrdNumber( pos+1 );
     setMappingId( w1, pos-1 );
@@ -671,7 +703,7 @@ void KraftView::slotMovePositionUp( int pos )
     m_positionScroll->moveChild( w2, 0, tmpY );
     QTimer::singleShot( 0, this, SLOT(refreshPostCard()  ) );
   } else {
-    kdDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
+    kDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
   }
 }
 /*
@@ -684,10 +716,10 @@ void KraftView::slotMovePositionDown( int pos )
 {
   PositionViewWidget *w1 = 0;
   PositionViewWidget *w2 = 0;
-  kdDebug() << "Moving position down: " << pos << endl;
+  kDebug() << "Moving position down: " << pos << endl;
 
   if( pos < 0 || (unsigned) pos >= mPositionWidgetList.count() -1 ) {
-    kdDebug() << "ERR: position out of range: " << pos << endl;
+    kDebug() << "ERR: position out of range: " << pos << endl;
     return;
   }
 
@@ -708,7 +740,7 @@ void KraftView::slotMovePositionDown( int pos )
 
     QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
   } else {
-    kdDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
+    kDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
   }
 }
 
@@ -724,7 +756,7 @@ void KraftView::slotDeletePosition( int pos )
 
 void KraftView::slotLockPosition( int pos )
 {
-  kdDebug() << "Locking Position " << pos << endl;
+  kDebug() << "Locking Position " << pos << endl;
 
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
@@ -735,7 +767,7 @@ void KraftView::slotLockPosition( int pos )
 
 void KraftView::slotUnlockPosition( int pos )
 {
-  kdDebug() << "Unlocking Position " << pos << endl;
+  kDebug() << "Unlocking Position " << pos << endl;
 
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
@@ -746,7 +778,7 @@ void KraftView::slotUnlockPosition( int pos )
 
 void KraftView::slotPositionModified( int pos )
 {
-  kdDebug() << "Modified Position " << pos << endl;
+  kDebug() << "Modified Position " << pos << endl;
   mModified = true;
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
@@ -766,10 +798,10 @@ void KraftView::slotNewAddress( const Addressee& contact )
 
     Address::List addresses = adr.addresses();
     if ( addresses.count() > 1 ) {
-      kdDebug() << "Have more than one address, taking the default add" << endl;
+      kDebug() << "Have more than one address, taking the default add" << endl;
       address = adr.address( KABC::Address::Pref );
     } else if ( addresses.count() == 0 ) {
-      kdDebug() << "Have no address, problem!" << endl;
+      kDebug() << "Have no address, problem!" << endl;
     } else {
       // FIXME: Handle multiple addresses
       address = addresses.first();
@@ -782,19 +814,19 @@ void KraftView::slotNewAddress( const Addressee& contact )
     } else {
       adrStr = address.label();
     }
-    kdDebug() << "formatted address string: " << adrStr << endl;
+    kDebug() << "formatted address string: " << adrStr << endl;
     m_headerEdit->m_postAddressEdit->setText( adrStr );
     m_headerEdit->m_letterHead->clear();
     QStringList li = generateLetterHead( adr );
 
     m_headerEdit->m_letterHead->insertStringList( li );
-    m_headerEdit->m_letterHead->setCurrentItem( KraftSettings::self()->salut() );
+    m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->self()->salut() );
   }
 }
 
 void KraftView::slotDocTypeChanged( const QString& newType )
 {
-  kdDebug() << "Doc Type changed to " << newType << endl;
+  kDebug() << "Doc Type changed to " << newType << endl;
   mAssistant->slotSetDocType( newType );
 
   DocType docType( newType );
@@ -809,7 +841,7 @@ void KraftView::slotDocTypeChanged( const QString& newType )
 
 void KraftView::slotLanguageSettings()
 {
-  kdDebug() << "Language Settings" << endl;
+  kDebug() << "Language Settings" << endl;
   DocLocaleDialog dia( this );
   KLocale *l = m_doc->locale();
 
@@ -819,8 +851,10 @@ void KraftView::slotLanguageSettings()
     if ( dia.exec() == QDialog::Accepted  ) {
       QString c = dia.locale().country();
       if ( c != m_doc->locale()->country() ) {
-        m_doc->locale()->setCountry( c );
-        m_doc->locale()->setLanguage( dia.locale().language() );
+
+        KConfig *cfg = KGlobal::config().data();
+        m_doc->locale()->setCountry( c, cfg );
+        m_doc->locale()->setLanguage( dia.locale().language(), cfg );
 
         PositionViewWidget *w; //  = 0;
         for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
@@ -857,7 +891,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 {
   // newpos is a list position, starts counting at zero!
   int newpos = mPositionWidgetList.count();
-  kdDebug() << "Adding Position at list position " << newpos << endl;
+  kDebug() << "Adding Position at list position " << newpos << endl;
 
   TemplToPositionDialogBase *dia = 0;
 
@@ -885,7 +919,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
         dp->setUnit( ftmpl->einheit() );
         dp->setUnitPrice( ftmpl->unitPrice() );
 
-        s = KraftSettings::self()->templateToPosDialogSize();
+        s = KraftSettings::self()->self()->templateToPosDialogSize();
 
       } else if ( kat->type() == MaterialCatalog ) {
         dia = new InsertTemplDialog( this );
@@ -893,14 +927,14 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
         dp->setText( mat->name() );
         dp->setUnit( mat->getUnit() );
         dp->setUnitPrice( mat->salesPrice() );
-        s = KraftSettings::self()->templateToPosDialogSize();
+        s = KraftSettings::self()->self()->templateToPosDialogSize();
 
       } else if ( kat->type() == PlantCatalog ) {
         dia = new InsertPlantDialog( this );
         InsertPlantDialog *plantDia = static_cast<InsertPlantDialog*>( dia );
         BrunsRecord *bruns = static_cast<BrunsRecord*>( tmpl );
         plantDia->setSelectedPlant( bruns );
-        s = KraftSettings::self()->plantTemplateToPosDialogSize();
+        s = KraftSettings::self()->self()->plantTemplateToPosDialogSize();
       }
     }
   }
@@ -928,7 +962,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       s = dia->size();
 
       if ( kat->type() == TemplateCatalog ) {
-        KraftSettings::self()->setTemplateToPosDialogSize( s );
+        KraftSettings::self()->self()->setTemplateToPosDialogSize( s );
 
         // if it's a new position, create a catalog template in the incoming chapter
         if ( newTemplate ) {
@@ -946,19 +980,19 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
           }
         }
       } else if ( kat->type() == MaterialCatalog ) {
-        KraftSettings::self()->setTemplateToPosDialogSize( s );
+        KraftSettings::self()->self()->setTemplateToPosDialogSize( s );
         if ( newTemplate ) {
 
         }
 
       } else if ( kat->type() == PlantCatalog ) {
-        KraftSettings::self()->setPlantTemplateToPosDialogSize( s );
+        KraftSettings::self()->self()->setPlantTemplateToPosDialogSize( s );
         if ( newTemplate ) {
 
         }
 
       }
-      KraftSettings::self()->writeConfig();
+      KraftSettings::self()->self()->writeConfig();
 
       newpos = dia->insertAfterPosition();
 
@@ -984,16 +1018,18 @@ void KraftView::slotImportItems()
   dia.setPositionList( list, newpos );
 
   if ( dia.exec() ) {
-    QValueList<DocPosition> list = dia.positionList();
+    DocPositionList list = dia.positionList();
     if ( list.count() > 0 ) {
-      kdDebug() << "Importlist amount of entries: " << list.count() << endl;
+      kDebug() << "Importlist amount of entries: " << list.count();
       int cnt = 0;
       int newpos = dia.getPositionCombo()->currentItem();
-      kdDebug() << "Newpos is " << newpos << endl;
+      kDebug() << "Newpos is " << newpos;
 
-      QValueList<DocPosition>::iterator posIt;
-      for( posIt = list.begin(); posIt != list.end(); ++posIt ) {
-        DocPosition *dp = new DocPosition( *posIt );
+      DocPositionListIterator posIt( list );
+      while( posIt.hasNext() ) {
+        DocPosition *dp_old = static_cast<DocPosition*>(posIt.next());
+
+        DocPosition *dp = new DocPosition( *(dp_old) );
         dp->setTaxType( currentTaxSetting() );
         PositionViewWidget *widget = createPositionViewWidget( dp, newpos + cnt++ );
         widget->slotModified();
@@ -1007,17 +1043,17 @@ void KraftView::slotAddExtraPosition()
 {
   // newpos is a list position, starts counting at 0
   int newpos = mPositionWidgetList.count();
-  kdDebug() << "Adding EXTRA Position at position " << newpos << endl;
+  kDebug() << "Adding EXTRA Position at position " << newpos << endl;
 
   DocPosition *dp = new DocPosition( DocPosition::ExtraDiscount );
   dp->setPositionNumber( QString::number( newpos+1 ) );
   dp->setText( i18n( "Discount" ) );
   dp->setTaxType( currentTaxSetting() );
 
-  kdDebug() << "New Extra position is " << dp << endl;
+  kDebug() << "New Extra position is " << dp << endl;
 
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
-  kdDebug() << "PositionViewWiget doc position is: " << widget->position() << endl;
+  kDebug() << "PositionViewWiget doc position is: " << widget->position() << endl;
   widget->slotModified();
   slotFocusPosition( widget, newpos );
   refreshPostCard();
@@ -1039,7 +1075,7 @@ DocPositionList KraftView::currentPositionList()
       // the loop runs until all positions have a valid price.
 
       unsigned preListCnt = list.count();
-      // kdDebug() << "# Pre List Count: " << preListCnt << endl;
+      // kDebug() << "# Pre List Count: " << preListCnt << endl;
 
       while ( ( widget = outerIt.current() ) != 0 ) {
         DocPositionBase *dpb = widget->position();
@@ -1080,7 +1116,7 @@ DocPositionList KraftView::currentPositionList()
             PositionViewWidgetListIterator it( mPositionWidgetList );
             PositionViewWidget *w1;
             Geld sum;
-            kdDebug() << "Starting to loop over the items " << endl;
+            kDebug() << "Starting to loop over the items " << endl;
             while (  calculatable && ( w1 = it.current() )!= 0 ) {
               ++it;
               if ( it != outerIt ) { // do not take the own value into account
@@ -1088,19 +1124,19 @@ DocPositionList KraftView::currentPositionList()
                      || w1->tagList().contains( tagRequired ) ) {
                   if ( w1->priceValid() ) {
                     sum += w1->currentPrice();
-                    kdDebug() << "Summing up pos with text " << w1->ordNumber() << " and price "
+                    kDebug() << "Summing up pos with text " << w1->ordNumber() << " and price "
                               << w1->currentPrice().toLong() << endl;
                   } else {
                     calculatable = false; // give up, we continue in outerIt
-                    kdDebug() << "We skip pos " << w1->ordNumber() << endl;
+                    kDebug() << "We skip pos " << w1->ordNumber() << endl;
                   }
                 }
               } else {
                 // we can not calculate ourselves.
-                kdDebug() << "Skipping pos " << w1->ordNumber() << " in summing up, thats me!" << endl;
+                kDebug() << "Skipping pos " << w1->ordNumber() << " in summing up, thats me!" << endl;
               }
             }
-            kdDebug() << "Finished loop over items with calculatable=" << calculatable << endl;
+            kDebug() << "Finished loop over items with calculatable=" << calculatable << endl;
 
             if ( calculatable ) {
               sum = sum.percent( discount );
@@ -1112,7 +1148,7 @@ DocPositionList KraftView::currentPositionList()
             // replace some tags in the text
 
             replaceMap["%DISCOUNT"]     = getDocument()->locale()->formatNumber( discount );
-            replaceMap["%ABS_DISCOUNT"] = getDocument()->locale()->formatNumber( QABS( discount ) );
+            replaceMap["%ABS_DISCOUNT"] = getDocument()->locale()->formatNumber( qAbs( discount ) );
 
           } else {
             /* Type is ordinary position */
@@ -1134,8 +1170,8 @@ DocPositionList KraftView::currentPositionList()
             newDp->setText( t );
 
             QString h = widget->m_cbUnit->currentText();
-            int eId   = UnitManager::getUnitIDSingular( h );
-            Einheit e = UnitManager::getUnit( eId );
+            int eId   = UnitManager::self()->getUnitIDSingular( h );
+            Einheit e = UnitManager::self()->getUnit( eId );
             newDp->setUnit( e );
 
             PositionViewWidget::Kind k = widget->kind();
@@ -1158,7 +1194,7 @@ DocPositionList KraftView::currentPositionList()
               tags.setListValue( true );
               tags.setValue( QVariant( tagStrings ) );
               newDp->setAttribute( tags );
-              // kdDebug() << "============ " << tags.toString() << endl;
+              // kDebug() << "============ " << tags.toString() << endl;
             } else {
               newDp->removeAttribute( DocPosition::Tags );
             }
@@ -1168,13 +1204,13 @@ DocPositionList KraftView::currentPositionList()
             list.append( newDp );
           }
         } else {
-          kdError() << "Fatal: Widget without position found!" << endl;
+          kError() << "Fatal: Widget without position found!" << endl;
         }
       }
-      // kdDebug() << " Post List Count: " << list.count() << endl;
+      // kDebug() << " Post List Count: " << list.count() << endl;
 
       if ( preListCnt == list.count() ) {
-        kdError() << "No progress in widget list processing - abort!" << endl;
+        kError() << "No progress in widget list processing - abort!" << endl;
         progress = false;
       }
     }
@@ -1192,13 +1228,13 @@ void KraftView::slotShowCatalog( bool on )
 
 void KraftView::slotModifiedPositions()
 {
-  kdDebug() << "Position Modified" << endl;
+  kDebug() << "Position Modified" << endl;
   mModified = true;
 }
 
 void KraftView::slotModifiedHeader()
 {
-  kdDebug() << "Modified the header!" << endl;
+  kDebug() << "Modified the header!" << endl;
   mModified = true;
 
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
@@ -1206,7 +1242,7 @@ void KraftView::slotModifiedHeader()
 
 void KraftView::slotModifiedFooter()
 {
-  kdDebug() << "Modified the footer!" << endl;
+  kDebug() << "Modified the footer!" << endl;
   mModified = true;
 
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
@@ -1230,21 +1266,21 @@ KraftDoc *KraftView::getDocument() const
 
 void KraftView::done( int r )
 {
-  kdDebug() << "View closed with ret value " << r << endl;
+  kDebug() << "View closed with ret value " << r << endl;
   KraftDoc *doc = getDocument();
   if( doc )
     doc->removeView( this );
-  KDialogBase::done( r );
+  KDialog::done( r );
 }
 
 void KraftView::slotOk()
 {
-    kdDebug() << "Accept Slot hit!" << endl;
+    kDebug() << "Accept Slot hit!" << endl;
 
     KraftDoc *doc = getDocument();
 
     if( !doc ) {
-      kdDebug() << "ERR: No document available in view, return!" << endl;
+      kDebug() << "ERR: No document available in view, return!" << endl;
       return;
     }
     // transfer all values to the document
@@ -1267,18 +1303,21 @@ void KraftView::slotOk()
     if ( doc->isNew() ) {
       // For new documents the user had to select a greeting and we make this
       // default for the future
-      KraftSettings::self()->setGreeting( m_footerEdit->m_cbGreeting->currentText() );
-      KraftSettings::self()->setSalut( m_headerEdit->m_letterHead->currentItem() );
+      KraftSettings::self()->self()->setGreeting( m_footerEdit->m_cbGreeting->currentText() );
+      KraftSettings::self()->self()->setSalut( m_headerEdit->m_letterHead->currentItem() );
     }
 
-    KraftSettings::self()->setDocViewSplitter( mCSplit->sizes() );
-    KraftSettings::self()->setDocViewSize( size() );
-    KraftSettings::self()->setDocViewPosition( pos() );
-    KraftSettings::self()->writeConfig();
+    KraftSettings::self()->self()->setDocViewSplitter( mCSplit->sizes() );
+    KraftSettings::self()->self()->setDocViewSize( size() );
+    KraftSettings::self()->self()->setDocViewPosition( pos() );
+    KraftSettings::self()->self()->writeConfig();
 
     // Save newly created templates
     if ( mNewTemplates.count() > 0 ) {
-      for ( CatalogTemplate *ct = mNewTemplates.first(); ct; ct = mNewTemplates.next() ) {
+      CatalogTemplate *ct = 0;
+      CatalogTemplateListIterator it( mNewTemplates );
+      while( it.hasNext()) {
+        ct = it.next();
         ct->save();
       }
       mNewTemplates.clear();
@@ -1288,12 +1327,12 @@ void KraftView::slotOk()
     }
 
     emit viewClosed( true, m_doc );
-    KDialogBase::slotOk(  );
+    KDialog::slotButtonClicked( KDialog::Ok );
 }
 
 void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
 {
-  kdDebug() << "Focussing on widget " << posWidget << " on pos " << pos << endl;
+  kDebug() << "Focussing on widget " << posWidget << " on pos " << pos << endl;
   if( posWidget && pos > 0) {
     int w = posWidget->height();
     m_positionScroll->ensureVisible( 0, (pos)*w, 0, w );
@@ -1324,14 +1363,14 @@ void KraftView::slotCancel()
 
   KraftDoc *doc = getDocument();
   if( doc && doc->isModified() ) {
-    kdDebug() << "Document refetch from database" << endl;
+    kDebug() << "Document refetch from database" << endl;
     doc->reloadDocument();
   }
 
   mNewTemplates.clear();
 
   emit viewClosed( false, 0 );
-  KDialogBase::slotCancel();
+  KDialog::slotButtonClicked( KDialog::Cancel );
 }
 
 void KraftView::print(QPrinter * /* pPrinter */ )

@@ -29,7 +29,7 @@ QColor KraftDocEdit::color() const
 
 void KraftDocEdit::slotModified()
 {
-//  kdDebug() << "KraftDocEdit::slotModified()" << endl;
+//  kDebug() << "KraftDocEdit::slotModified()" << endl;
 
   emit modified();
 }

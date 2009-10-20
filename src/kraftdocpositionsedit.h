@@ -1,7 +1,7 @@
 #ifndef KRAFTDOCPOSITIONSEDIT_H
 #define KRAFTDOCPOSITIONSEDIT_H
 
-#include "docheader.h"
+#include "ui_docheader.h"
 #include "kraftdocedit.h"
 
 class KraftViewScroll;

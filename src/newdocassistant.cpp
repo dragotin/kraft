@@ -15,19 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qwidget.h>
-#include <qlabel.h>
-#include <qvbox.h>
-#include <krun.h>
-#include <ktextedit.h>
+#include <QWidget>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QFormLayout>
+#include <QPushButton>
 
+#include <ktextedit.h>
+#include <khbox.h>
+#include <krun.h>
 #include <klocale.h>
 #include <kdialog.h>
 #include <kcombobox.h>
 #include <kdatewidget.h>
-#include <qpushbutton.h>
-#include <qsizepolicy.h>
-#include <qgrid.h>
 
 #include "newdocassistant.h"
 #include "addressselection.h"
@@ -38,28 +38,33 @@
 CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   :QWidget( parent )
 {
-
-  QVBox *vbox = new QVBox( parent );
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
   vbox->setSpacing( KDialog::spacingHint() );
   vbox->setMargin( KDialog::marginHint() );
 
-  QLabel *help = new QLabel( vbox );
+  QLabel *help = new QLabel;
   help->setText( i18n( "Please select a customer as addressee for the document. "
                    "If there is no entry for the customer in the addressbook yet, it can be opened "
                        "by clicking on the button below." ) );
   help->setTextFormat( Qt::RichText );
-  mAddresses = new AddressSelection( vbox );
+  help->setWordWrap( true );
+  vbox->addWidget( help );
+
+  mAddresses = new AddressSelection;
   connect( mAddresses,  SIGNAL( addressSelected( const Addressee& ) ),
            SIGNAL( addresseeSelected( const Addressee& ) ) );
 
   mAddresses->setupAddressList();
+  vbox->addWidget( mAddresses );
 
-  QHBox *hbox = new QHBox( vbox );
-  QPushButton *but = new QPushButton( i18n( "Create new Customer Entry..." ), hbox );
+  QHBoxLayout *hbox = new QHBoxLayout;
+  QPushButton *but = new QPushButton( i18n( "Create new Customer Entry..." ) );
   connect( but, SIGNAL( clicked() ), this,  SIGNAL( startAddressbook() ) );
+  hbox->addWidget( but );
 
-  QWidget *spaceEater = new QWidget( hbox );
-  spaceEater->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  hbox->addStretch( 1 );
+  vbox->addLayout( hbox );
 }
 
 CustomerSelectPage:: ~CustomerSelectPage()
@@ -72,49 +77,47 @@ CustomerSelectPage:: ~CustomerSelectPage()
 DocDetailsPage::DocDetailsPage( QWidget *parent )
   :mCustomerLabel( 0 )
 {
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
 
-  QVBox *vbox = new QVBox( parent );
   vbox->setSpacing( KDialog::spacingHint() );
   vbox->setMargin( KDialog::marginHint() );
 
-  QLabel *help = new QLabel( vbox );
+  QLabel *help = new QLabel;
   help->setTextFormat( Qt::RichText );
   help->setText( i18n( "Select a document type and a date. A comment on the whiteboard "
                        "helps to classify the document." ) );
+  vbox->addWidget( help );
 
-  mCustomerLabel = new QLabel( vbox );
+  mCustomerLabel = new QLabel;
   mCustomerLabel->setFrameStyle( QFrame::Box + QFrame::Sunken );
   mCustomerLabel->setTextFormat( Qt::RichText );
   mCustomerLabel->setMargin( KDialog::marginHint() );
   mCustomerLabel->setText( i18n( "Customer: Not yet selected!" ) );
+  vbox->addWidget( mCustomerLabel );
 
-  QGrid *grid = new QGrid( 2,  vbox );
-
+  QFormLayout *grid = new QFormLayout;
   grid->setSpacing( KDialog::marginHint() );
+  vbox->addLayout( grid );
 
 //   QLabel *l = new QLabel( i18n( "Some Document Details: " ), vbox );
 //  l->setMargin( KDialog::marginHint() );
 
-  QLabel *l = new QLabel( i18n( "Document Type: " ), grid );
-  mTypeCombo = new KComboBox( grid );
-  l->setBuddy( mTypeCombo );
-
-  mTypeCombo->insertStringList( DocType::allLocalised() );
+  mTypeCombo = new KComboBox;
+  mTypeCombo->insertItems( 0, DocType::allLocalised() );
   mTypeCombo->setCurrentText( DefaultProvider::self()->docType() );
+  grid->addRow( i18n("Document &Type:"), mTypeCombo );
 
-  QLabel *l2 = new QLabel( i18n( "Document Date: " ), grid );
-  ( void ) l2;
-  mDateEdit = new KDateWidget( grid );
+  mDateEdit = new KDateWidget;
   mDateEdit->setDate( QDate::currentDate() );
+  grid->addRow( i18n( "Document Date: " ), mDateEdit );
 
-  l = new QLabel( vbox );
-  l->setText( i18n( "Whiteboard Content:" ) );
-  mWhiteboardEdit = new KTextEdit(  vbox );
-  l->setBuddy( mWhiteboardEdit );
+  mWhiteboardEdit = new KTextEdit;
+  grid->addRow( i18n( "Whiteboard Content:" ), mWhiteboardEdit );
 
-  QWidget *spaceEater = new QWidget( vbox );  // space Eater
+  vbox->addStretch( 1 );
 
-  spaceEater->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
 }
 
 DocDetailsPage::~DocDetailsPage()
@@ -124,11 +127,14 @@ DocDetailsPage::~DocDetailsPage()
 
 // ###########################################################################
 
-KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal, WFlags f )
-  :KWizard( parent,  name,  modal,  f ),
-   mCustomerBox( 0 )
+KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
+  :KAssistantDialog( parent ),
+   mCustomerBox( 0 ),
+   mParent( parent )
 {
-  setMinimumWidth( 400 );
+  setObjectName( name );
+  setModal( modal );
+  // setMinimumWidth( 400 );
 }
 
 KraftWizard::~KraftWizard()
@@ -138,36 +144,41 @@ KraftWizard::~KraftWizard()
 
 void KraftWizard::init()
 {
-  mCustomerBox = new QHBox( this );
+  QWidget *w = new QWidget;
+  mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
+
+  QHBoxLayout *layout = new QHBoxLayout;
+
   setCaption( i18n( "Document Creation Wizard" ) );
 
-  mCustomerPage = new CustomerSelectPage( mCustomerBox );
+  mCustomerPage = new CustomerSelectPage( w );
   connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
            this,  SLOT( slotAddressee( const Addressee& ) ) );
   connect( mCustomerPage, SIGNAL( startAddressbook() ),
            this, SLOT( slotStartAddressbook() ) );
+  layout->addWidget( mCustomerPage );
+  w->setLayout( layout );
 
+  QWidget *w1 = new QWidget;
+  QHBoxLayout *layoutDetails = new QHBoxLayout;
+  mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
+  mDetailsPage = new DocDetailsPage( w1 );
 
-  QHBox *hb2 = new QHBox( this );
-  mDetailsPage = new DocDetailsPage( hb2 );
+  layoutDetails->addWidget( mDetailsPage );
+  w1->setLayout( layoutDetails );
 
-  addPage( hb2, i18n( "<h2>Document Details</h2>" ) );
-  addPage( mCustomerBox, i18n( "<h2>Select an Addressee</h2>" ) );
-
-  setFinishEnabled ( mCustomerBox, true );
-  setFinishEnabled ( hb2, true );
 }
 
 void KraftWizard::slotAddressee( const Addressee& )
 {
-  kdDebug() << "Addressee Changed!"  << endl;
+  kDebug() << "Addressee Changed!";
   // setNextEnabled ( mCustomerPage, true );
 }
 
 void KraftWizard::slotStartAddressbook()
 {
   KRun::runCommand( QString::fromLatin1( "kaddressbook --new-contact" ),
-                    QString::fromLatin1("kaddressbook" ), "address" );
+                    QString::fromLatin1("kaddressbook" ), "address", mParent, "" );
 }
 
 QDate KraftWizard::date() const
@@ -193,7 +204,8 @@ QString KraftWizard::whiteboard() const
 void KraftWizard::setDocIdentifier( const QString& ident )
 {
   // we already know the customer, disable the customer select page.
-  setAppropriate( page( 1 ), false );
+  setAppropriate( mCustomerPageItem, false );
+
   if ( mDetailsPage->mCustomerLabel ) {
     mDetailsPage->mCustomerLabel->setText( ident );
   }

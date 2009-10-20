@@ -17,8 +17,10 @@
 
 #include <klocale.h>
 #include <kdebug.h>
+#include <kvbox.h>
+#include <kdialog.h>
 
-#include <qlabel.h>
+#include <QLabel>
 
 #include "materialkatalogview.h"
 #include "materialselectdialog.h"
@@ -29,11 +31,15 @@
 #include "filterheader.h"
 
 MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
-  : KDialogBase( parent, name, true,
-                 i18n( "Select Material for Calculation" ),
-                 Ok|Cancel, Ok, true )
+  : KDialog( parent )
 {
-  QVBox *page = makeVBoxMainWidget();
+  setObjectName( name );
+  setModal( true );
+  setCaption( i18n("Select Material for Calculation" ) );
+  setButtons( KDialog::Ok | KDialog::Cancel );
+
+  KVBox *page = new KVBox( this );
+  setMainWidget( page );
   ( void ) new QLabel( i18n( "Select Material for Calculation" ),
                               page, "caption" );
 
@@ -58,16 +64,16 @@ MaterialSelectDialog::~MaterialSelectDialog()
 
 void MaterialSelectDialog::slotClose()
 {
-  KDialogBase::slotClose();
+  KDialog::slotButtonClicked( KDialog::Close );
 }
 
 void MaterialSelectDialog::slotOk()
 {
-  kdDebug() << "++ Material selected!" << endl;
+  kDebug() << "++ Material selected!" << endl;
 
-  QListViewItemIterator it( mKatalogListView, QListViewItemIterator::Checked );
-  while ( it.current() ) {
-    kdDebug() << "T: " << ( *it.current() ).text( 0 ) << endl;
+  QTreeWidgetItemIterator it( mKatalogListView, QTreeWidgetItemIterator::Checked	);
+  while (*it) {
+    kDebug() << "T: " << (*it)->text( 0 ) << endl;
     StockMaterial *mat = static_cast<StockMaterial*>( mKatalogListView->itemData( *it ) );
     if ( mat ) {
       emit materialSelected( mat->getID(), 1 );
@@ -75,7 +81,7 @@ void MaterialSelectDialog::slotOk()
     ++it;
   }
 
-  KDialogBase::slotOk();
+  KDialog::slotButtonClicked( KDialog::Ok );
 }
 
 #include "materialselectdialog.moc"

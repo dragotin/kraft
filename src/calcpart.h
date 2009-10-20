@@ -18,8 +18,8 @@
 #ifndef CALCPART_H
 #define CALCPART_H
 
-#include <qobject.h>
-#include <qptrlist.h>
+#include <QObject>
+#include <QList>
 
 #include "dbids.h"
 #include "kraftglobals.h"
@@ -68,7 +68,7 @@ private:
     bool    m_toDelete;
 };
 
-class CalcPartList : public QPtrList<CalcPart>
+class CalcPartList : public QList<CalcPart*>
 {
 public:
   CalcPartList();
@@ -78,5 +78,7 @@ public:
   CalcPartList getCalcPartsList( const QString& );
   CalcPartList decoupledCalcPartsList();
 };
+
+typedef QListIterator<CalcPart*> CalcPartListIterator; 
 
 #endif

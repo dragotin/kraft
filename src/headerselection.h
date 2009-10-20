@@ -25,19 +25,19 @@
 
 class QComboBox;
 class FilterHeader;
-class KListViewItem;
-class QListViewItem;
+class QTreeWidgetItem;
+class QTreeWidget;
 class AddressSelection;
 class KPushButton;
 class DocText;
 class TextSelection;
-class KListView;
+
 
 class HeaderSelection : public QTabWidget
 {
   Q_OBJECT
 public:
-  HeaderSelection( QWidget* );
+  HeaderSelection( QWidget *parent=0 );
 
   enum HeaderTabType { AddressTab, TextTab };
 
@@ -50,14 +50,14 @@ public:
   QString currentText() const;
   DocText currentDocText() const;
 
-  QListViewItem *itemSelected();
+   QTreeWidgetItem *itemSelected();
 
   TextSelection *textSelection() { return mTextsView; }
   AddressSelection *addressSelection() { return mAddressSelection; }
 
 signals:
   void addressSelectionChanged();
-  void textSelectionChanged( QListViewItem* );
+  void textSelectionChanged( QTreeWidgetItem* );
   void switchedToHeaderTab( HeaderSelection::HeaderTabType );
   void doubleClickedOnItem();
 

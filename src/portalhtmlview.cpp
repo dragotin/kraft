@@ -24,19 +24,19 @@ PortalHtmlView::PortalHtmlView( QWidget *parent )
 }
 
 void PortalHtmlView::urlSelected( const QString &url, int, int,
-                                  const QString &, KParts::URLArgs  )
+                                  const QString &, KParts::OpenUrlArguments& )
 {
-  kdDebug() << "HtmlView::urlSelected(): " << url << endl;
+  kDebug() << "HtmlView::urlSelected(): " << url << endl;
 
-  KURL kurl( url );
+  KUrl kurl( url );
   const QString katName = kurl.queryItem( "kat" );
   const QString action = kurl.queryItem( "action" );
 
   if ( action == "open" ) {
-    kdDebug() << "open catalog " << katName << endl;
+    kDebug() << "open catalog " << katName << endl;
     emit( openCatalog( katName ) );
   } else {
-    kdDebug() << "unknown action " << action << endl;
+    kDebug() << "unknown action " << action << endl;
   }
 }
 

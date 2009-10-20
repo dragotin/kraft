@@ -22,7 +22,7 @@
 #include "htmlview.h"
 #include "kraftdoc.h"
 
-class KURL;
+class KUrl;
 
 class DocPostCard : public HtmlView
 {
@@ -30,7 +30,7 @@ class DocPostCard : public HtmlView
 public:
   enum DisplayMode { Full, Mini };
 
-  DocPostCard( QWidget *parent );
+  DocPostCard( QWidget *parent = 0 );
 
 signals:
   void selectPage( int );
@@ -42,8 +42,13 @@ public slots:
   void renderDoc( int id = -1 );
   void slotSetMode( DisplayMode, int id = -1 );
 protected:
-  void urlSelected( const QString &, int , int ,
-                    const QString &, KParts::URLArgs  );
+  bool urlSelected (const QString &url, int button, int state, const QString &_target,
+                    const KParts::OpenUrlArguments &args=KParts::OpenUrlArguments(),
+                    const KParts::BrowserArguments &browserArgs=KParts::BrowserArguments());
+
+  // void urlSelected( const QString &, int , int ,
+  //                  const QString &, KParts::openUrlArguments& );
+  // openUrlRequestDelayed(const KUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments&)
   
   QString renderDocMini( int ) const;
   QString renderDocFull( int );

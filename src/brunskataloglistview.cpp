@@ -30,10 +30,13 @@
 BrunsKatalogListView::BrunsKatalogListView( QWidget *w )
     : KatalogListView( w )
 {
-    addColumn( i18n("Bot. Name"));
-    addColumn( i18n("Dt. Name"));
-    addColumn( i18n("Art-Ident"));
-    addColumn( i18n("Art-Match"));
+  setColumnCount( 4 );
+  QStringList headerLabels;
+  headerLabels << i18n("Bot. Name");
+  headerLabels << i18n( "Dt. Name");
+  headerLabels << i18n("Art-Ident");
+  headerLabels << i18n("Art-Match");
+  setHeaderLabels( headerLabels );
 }
 
 
@@ -48,17 +51,17 @@ void BrunsKatalogListView::addCatalogDisplay( const QString& katName )
     Katalog *k = KatalogMan::self()->getKatalog( katName );
     BrunsKatalog *catalog = static_cast<BrunsKatalog*>( k );
     if( ! catalog ) {
-        kdDebug() << "No catalog in listview available!" << endl;
+        kDebug() << "No catalog in listview available!" << endl;
         return;
     }
-    kdDebug() << "setting up chapters!" << endl;
+    kDebug() << "setting up chapters!" << endl;
     setupChapters();
 
     const QStringList chapters = catalog->getKatalogChapters();
     for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
         QString chapter = *it;
-        KListViewItem *katItem = chapterItem(chapter);
-        kdDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
+        QTreeWidgetItem *katItem = chapterItem(chapter);
+        kDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
 
         // hole alle Brunsrecords per Chapter und mach weiter....
         BrunsRecordList *records = catalog->getRecordList(chapter);
@@ -66,11 +69,16 @@ void BrunsKatalogListView::addCatalogDisplay( const QString& katName )
         if( records ) {
             BrunsRecord *rec;
 
-            for ( rec = records->last(); rec; rec = records->prev() ) {
-                KListViewItem *recItem = new KListViewItem( katItem, rec->getLtName(),
-                        rec->getDtName(),
-                        QString::number(rec->getArtId()),
-                        rec->getArtMatch());
+            QListIterator<BrunsRecord*> i(*records);
+            i.toBack();
+            while (i.hasPrevious()) {
+              rec = i.previous();
+              QStringList texts;
+              texts << rec->getLtName();
+              texts << rec->getDtName();
+              texts << QString::number( rec->getArtId() );
+              texts << rec->getArtMatch();
+              QTreeWidgetItem *recItem = new QTreeWidgetItem( katItem, texts );
                 m_dataDict.insert( recItem, rec );
             }
         }
@@ -81,35 +89,35 @@ void BrunsKatalogListView::setupChapters()
 {
   Katalog *catalog = KatalogMan::self()->getKatalog(m_catalogName);
   if( ! catalog ) {
-    kdWarning() << "No catalog in setupChapters" << endl;
+    kWarning() << "No catalog in setupChapters" << endl;
     return;
   }
 
   if( ! m_root ) {
-    kdDebug() << "Creating root item!" <<  endl;
-    m_root = new KListViewItem(this, catalog->getName());
-    m_root->setPixmap(0, SmallIcon("gear")); // KDE 4 icon name: system-run
-    m_root->setOpen(true);
+    kDebug() << "Creating root item!" <<  endl;
+    m_root = new QTreeWidgetItem(this, QStringList(catalog->getName()));
+    m_root->setIcon(0, SmallIcon("system-run"));
+    m_root->setExpanded(true);
   }
 
-  KListViewItem *topItem = new KListViewItem( m_root, i18n( "Fruits" ) );
-  topItem->setPixmap(0, getCatalogIcon());
+  QTreeWidgetItem *topItem = new QTreeWidgetItem( m_root, QStringList(i18n( "Fruits" )) );
+  topItem->setIcon(0, getCatalogIcon());
   m_topFolderMap[ Fruits ] = topItem;
 
-  topItem = new KListViewItem( m_root, i18n( "Azaleen and Rhododendren" ) );
-  topItem->setPixmap(0, getCatalogIcon());
+  topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Azaleen and Rhododendren" ) ) );
+  topItem->setIcon(0, getCatalogIcon());
   m_topFolderMap[ Rhodos ] = topItem;
 
-  topItem = new KListViewItem( m_root, i18n( "Roses" ) );
-  topItem->setPixmap(0, getCatalogIcon());
+  topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Roses" ) ) );
+  topItem->setIcon(0, getCatalogIcon());
   m_topFolderMap[ Roses ] = topItem;
 
-  topItem = new KListViewItem( m_root, i18n( "Stauden" ) );
-  topItem->setPixmap(0, getCatalogIcon());
+  topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Stauden" ) ) );
+  topItem->setIcon(0, getCatalogIcon());
   m_topFolderMap[ Stauden ] = topItem;
 
-  topItem = new KListViewItem( m_root, i18n( "Sonstige" ) );
-  topItem->setPixmap(0, getCatalogIcon());
+  topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Sonstige" ) ) );
+  topItem->setIcon(0, getCatalogIcon());
   m_topFolderMap[ Etc ] = topItem;
 
   const QStringList chapters = catalog->getKatalogChapters();
@@ -117,7 +125,7 @@ void BrunsKatalogListView::setupChapters()
   // weiterhier: sortiere chapter unter die top folder.
   for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
     const QString chapter = *it;
-    KListViewItem *topFolderItem = m_topFolderMap[ Etc ];
+    QTreeWidgetItem *topFolderItem = m_topFolderMap[ Etc ];
 
     if( chapter == "Aepfel" ||
         chapter == "Birnen" ||
@@ -144,12 +152,12 @@ void BrunsKatalogListView::setupChapters()
       topFolderItem = m_root;
     } else {
       // be in etc.
-      kdDebug() << "Undetected catalog " << chapter << endl;
+      kDebug() << "Undetected catalog " << chapter << endl;
     }
 
     if( chapter != "0" ) {
-      KListViewItem *katItem = new KListViewItem( topFolderItem, chapter );
-      katItem->setPixmap( 0, getCatalogIcon() );
+      QTreeWidgetItem *katItem = new QTreeWidgetItem( topFolderItem, QStringList( chapter ) );
+      katItem->setIcon( 0, getCatalogIcon() );
       m_catalogDict.insert( catalog->chapterID(chapter), katItem );
     }
   }

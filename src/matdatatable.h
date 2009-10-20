@@ -20,8 +20,8 @@
 
 
 #include <qcombobox.h>
-#include <qdatatable.h>
-#include <qsqleditorfactory.h>
+#include <q3datatable.h>
+#include <q3sqleditorfactory.h>
 
 
 // include files
@@ -31,7 +31,7 @@ class QSqlRecord;
 /* ********************************************************************************
  * SQL Editor Factory
  */
-class CustomSqlEditorFactory : public QSqlEditorFactory
+class CustomSqlEditorFactory : public Q3SqlEditorFactory
 {
     Q_OBJECT
 public:
@@ -56,7 +56,7 @@ public:
  * Datatable
  */
 
-class MatDataTable : public QDataTable
+class MatDataTable : public Q3DataTable
 {
     Q_OBJECT
 

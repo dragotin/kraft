@@ -24,7 +24,7 @@
 #endif
 
 // include files
-#include <qptrlist.h>
+#include <QList>
 
 #include <kabc/addressee.h>
 #include "kraftglobals.h"
@@ -40,42 +40,42 @@ class QDateTime;
 class StockMaterial
 {
 public:
-    StockMaterial();
-    StockMaterial( int dbid, int matChap, QString mat, int unitID,
-                   double perPack, Geld pIn, Geld pOut );
-    ~StockMaterial();
+  StockMaterial();
+  StockMaterial( int dbid, int matChap, QString mat, int unitID,
+                 double perPack, Geld pIn, Geld pOut );
+  ~StockMaterial();
 
-    QString name() const;
-    void setName( const QString& );
+  QString name() const;
+  void setName( const QString& );
 
-    QString description() const;
-    void setDescription( const QString& );
+  QString description() const;
+  void setDescription( const QString& );
 
-    double getAmountPerPack();
-    void setAmountPerPack( double am );
+  double getAmountPerPack();
+  void setAmountPerPack( double am );
 
-    Einheit getUnit();
-    void setUnit(const Einheit& );
+  Einheit getUnit();
+  void setUnit(const Einheit& );
 
-    int getID();
-    void setID( int );
+  int getID();
+  void setID( int );
 
-    int chapter() { return m_chapter; }
-    void setChapter( int c ) { m_chapter = c; }
+  int chapter() { return m_chapter; }
+  void setChapter( int c ) { m_chapter = c; }
 
-    KABC::Addressee getSupplier();
-    void setSupplier( KABC::Addressee *supp );
+  KABC::Addressee getSupplier();
+  void setSupplier( KABC::Addressee *supp );
 
-    Geld purchPrice();
-    Geld salesPrice();
+  Geld purchPrice();
+  Geld salesPrice();
 
-    void setPurchPrice( Geld );
-    void setSalesPrice( Geld );
+  void setPurchPrice( Geld );
+  void setSalesPrice( Geld );
 
-    void setLastModified( QDate );
-    void setEnterDate( QDate );
-    QString lastModified();
-    QString entered();
+  void setLastModified( QDate );
+  void setEnterDate( QDate );
+  QString lastModified();
+  QString entered();
 
 
   void save();
@@ -83,31 +83,31 @@ protected:
   MaterialSaverBase* getSaver();
   QString dateShortFormat( QDate );
 private:
-    QString m_name;
-    QString m_descr;
-    int     m_chapter;
+  QString m_name;
+  QString m_descr;
+  int     m_chapter;
 
-    // per package:
-    double  m_amount;
-    Einheit m_unit;
-    int     m_dbid;
+  // per package:
+  double  m_amount;
+  Einheit m_unit;
+  int     m_dbid;
 
-    // FIXME: introduce supplier list
-    QString m_delivererUID;
-    Geld    m_ePrice;  // price for bying
-    Geld    m_vPrice;  // price for selling
-    QDate   mLastModified;
-    QDate   mEnteredDate;
+  // FIXME: introduce supplier list
+  QString m_delivererUID;
+  Geld    m_ePrice;  // price for bying
+  Geld    m_vPrice;  // price for selling
+  QDate   mLastModified;
+  QDate   mEnteredDate;
 };
 
 
-class StockMaterialList : public QPtrList<StockMaterial>
+class StockMaterialList : public QList<StockMaterial*>
 {
 public:
-    StockMaterialList() : QPtrList<StockMaterial>() { }
+  StockMaterialList() : QList<StockMaterial*>() { }
 };
 
-typedef QPtrListIterator<StockMaterial> StockMaterialListIterator;
+typedef QListIterator<StockMaterial*> StockMaterialListIterator;
 
 #endif
 

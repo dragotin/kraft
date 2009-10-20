@@ -19,22 +19,23 @@
 #define NEWDOCASSISTANT_H
 
 #include <qmap.h>
+//Added by qt3to4:
+#include <QLabel>
 
 #include <kabc/addressee.h>
-#include <kwizard.h>
+#include <kassistantdialog.h>
 
 class KComboBox;
 class FilterHeader;
-class KListViewItem;
-class QListViewItem;
 class AddressSelection;
 class KPushButton;
 class DocText;
 class TextSelection;
-class KListView;
 class KDateWidget;
 class KraftWizard;
 class KTextEdit;
+class KHBox;
+class KPageWidgetItem;
 
 using namespace KABC;
 
@@ -79,12 +80,12 @@ private:
 
 // ---------------------------------------------------------------------------
 
-class KraftWizard: public KWizard
+class KraftWizard: public KAssistantDialog
 {
   Q_OBJECT
 
 public:
-  KraftWizard(QWidget *parent = 0, const char* name = 0, bool modal = FALSE, WFlags f = 0 );
+  KraftWizard(QWidget *parent = 0, const char* name = 0, bool modal = FALSE );
   void init();
 
   ~KraftWizard();
@@ -104,7 +105,11 @@ protected slots:
 private:
   CustomerSelectPage *mCustomerPage;
   DocDetailsPage *mDetailsPage;
-  QHBox *mCustomerBox;
+  KHBox *mCustomerBox;
+  QWidget *mParent;
+
+  KPageWidgetItem *mCustomerPageItem;
+  KPageWidgetItem *mDetailsPageItem;
 };
 
 #endif

@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qstring.h>
-#include <qsqlcursor.h>
+#include <QString>
+#include <QSqlQuery>
+#include <QFile>
 #include <qfile.h>
 
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
 #include <kglobal.h>
+#include <kstandarddirs.h>
 
 // application specific includes
 #include "doctype.h"
@@ -67,15 +69,16 @@ void DocType::init()
   // === Start to fill static content
   if ( ! mNameMap.empty() ) return;
 
-  QSqlCursor cur("DocTypes");
-  cur.setMode( QSqlCursor::ReadOnly );
-  cur.select();
+  QSqlQuery q;
+  q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
+  q.exec();
 
-  while ( cur.next() ) {
-    dbID id( cur.value( "docTypeID" ).toInt() );
-    mNameMap[ cur.value( "name" ).toString() ] = id;
-    QString h = DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
-    mNameMap[ h ] = id;
+  while ( q.next() ) {
+    dbID id( q.value(0).toInt() );
+    QString name = q.value(1).toString();
+
+    mNameMap[ name ] = id;
+    // QString h = DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
   }
 }
 
@@ -90,12 +93,12 @@ QStringList DocType::all()
 
   QStringList re;
 
-  QSqlCursor cur("DocTypes");
-  cur.setMode( QSqlCursor::ReadOnly );
-  cur.select();
+  QSqlQuery q;
+  q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
+  q.exec();
 
-  while ( cur.next() ) {
-    re << cur.value( "name" ).toString();
+  while ( q.next() ) {
+    re << q.value(1).toString();
   }
 
   return re;
@@ -103,17 +106,7 @@ QStringList DocType::all()
 
 QStringList DocType::allLocalised()
 {
-  QStringList re;
-
-  QSqlCursor cur("DocTypes");
-  cur.setMode( QSqlCursor::ReadOnly );
-  cur.select();
-
-  while ( cur.next() ) {
-    re << DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
-  }
-
-  return re;
+  return all();
 }
 
 // static function to retrieve id of a certain doctype
@@ -126,7 +119,7 @@ dbID DocType::docTypeId( const QString& docType )
 
     return id;
   } else {
-    kdError()<< "Can not find id for doctype named " << docType << endl;
+    kError()<< "Can not find id for doctype named " << docType;
   }
   return id;
 }
@@ -158,19 +151,17 @@ QStringList DocType::follower()
 
 void DocType::readFollowerList()
 {
-  QSqlCursor cur( "DocTypeRelations" );
-  cur.setMode( QSqlCursor::ReadOnly );
+  QSqlQuery q;
+  q.prepare( "SELECT typeId, followerId, sequence FROM DocTypeRelations WHERE typeId=:type ORDER BY sequence");
+  q.bindValue( ":type", mNameMap[mName].toInt() );
+  q.exec();
 
-  QSqlIndex sortIndex = cur.index( "sequence" );
-  QString select = QString( "typeId=%1" ).arg( mNameMap[mName].toInt() );
-  cur.select( select, sortIndex );
-
-  while ( cur.next() ) {
-    dbID followerId( cur.value( "followerId" ).toInt() );
+  while ( q.next() ) {
+    dbID followerId( q.value(1).toInt() );
 
     idMap::Iterator it;
     for ( it = mNameMap.begin(); it != mNameMap.end(); ++it ) {
-      if ( it.data() == followerId ) {
+      if ( it.value() == followerId ) {
         mFollowerList << it.key();
       }
     }
@@ -198,7 +189,7 @@ void DocType::setNumberCycleName( const QString& name )
   } else {
     // remove default value from map
     mAttributes.markDelete( "identNumberCycle" );
-    kdDebug() << "Removing identNumberCycle Attribute" << endl;
+    kDebug() << "Removing identNumberCycle Attribute";
   }
   mDirty = true;
   readIdentTemplate();
@@ -208,7 +199,7 @@ QString DocType::templateFile()
 {
   KStandardDirs stdDirs;
 
-  QString tmplFile = name().lower() + QString( ".trml" );
+  QString tmplFile = name().toLower() + QString( ".trml" );
   if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
     tmplFile = mAttributes["docTemplateFile"].value().toString();
   }
@@ -239,7 +230,7 @@ void DocType::setTemplateFile( const QString& name )
   } else {
     // remove default value from map
     mAttributes.markDelete( "docTemplateFile" );
-    kdDebug() << "Removing docTemplateFile Attribute" << endl;
+    kDebug() << "Removing docTemplateFile Attribute";
   }
   mDirty = true;
 }
@@ -264,7 +255,7 @@ void DocType::setMergeIdent( const QString& ident )
   } else {
     // remove default value from map
     mAttributes.markDelete( "docMergeIdent" );
-    kdDebug() << "Removing docMergeIdent Attribute" << endl;
+    kDebug() << "Removing docMergeIdent Attribute";
   }
   mDirty = true;
 
@@ -280,6 +271,7 @@ QString DocType::watermarkFile()
   return re;
 }
 
+
 void DocType::setWatermarkFile( const QString& file )
 {
   if ( !file.isEmpty() ) {
@@ -290,11 +282,10 @@ void DocType::setWatermarkFile( const QString& file )
   } else {
     // remove default value from map
     mAttributes.markDelete( "watermarkFile" );
-    kdDebug() << "Removing docMergeFile Attribute" << endl;
+    kDebug() << "Removing docMergeFile Attribute";
   }
   mDirty = true;
 }
-
 
 QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
 {
@@ -310,8 +301,8 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
    */
 
   QString pattern = identTemplate();
-  if ( pattern.find( "%i" ) == -1 ) {
-    kdWarning() << "No %i found in identTemplate, appending it to meet law needs!" << endl;
+  if ( pattern.indexOf( "%i" ) == -1 ) {
+    kWarning() << "No %i found in identTemplate, appending it to meet law needs!";
     pattern += "-%i";
   }
   QDate d = QDate::currentDate();
@@ -367,7 +358,7 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
   }
 
   QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
-  kdDebug() << "Generated document ident: " << re << endl;
+  kDebug() << "Generated document ident: " << re;
 
   return re;
 }
@@ -378,7 +369,7 @@ int DocType::nextIdentId( bool hot )
   QString numberCycle = numberCycleName();
 
   if ( numberCycle.isEmpty() ) {
-    kdError() << "NumberCycle name is empty" << endl;
+    kError() << "NumberCycle name is empty";
     return -1;
   }
 
@@ -395,7 +386,7 @@ int DocType::nextIdentId( bool hot )
   q.exec();
   if ( q.next() ) {
     num = 1+( q.value( 0 ).toInt() );
-    kdDebug() << "Got current number: " << num << endl;
+    kDebug() << "Got current number: " << num;
 
     if ( hot ) {
       QSqlQuery setQuery;
@@ -404,7 +395,7 @@ int DocType::nextIdentId( bool hot )
       setQuery.bindValue( ":newNumber", num );
       setQuery.exec();
       if ( setQuery.isActive() ) {
-        kdDebug() << "Successfully created new id number for numbercycle " << numberCycle << ": "
+        kDebug() << "Successfully created new id number for numbercycle " << numberCycle << ": "
                   << num << endl;
       }
     }
@@ -435,10 +426,10 @@ void DocType::readIdentTemplate()
 
   QString numberCycle = numberCycleName();
   if ( numberCycle.isEmpty() ) {
-    kdError() << "Numbercycle for doctype is empty, returning default" << endl;
+    kError() << "Numbercycle for doctype is empty, returning default";
     mIdentTemplate = defaultTempl;
   }
-  kdDebug() << "Picking ident Template for numberCycle " << numberCycle << endl;
+  kDebug() << "Picking ident Template for numberCycle " << numberCycle;
 
   q.prepare( "SELECT identTemplate FROM numberCycles WHERE name=:name" );
 
@@ -446,19 +437,19 @@ void DocType::readIdentTemplate()
   q.exec();
   if ( q.next() ) {
     tmpl = q.value( 0 ).toString();
-    kdDebug() << "Read ident template from database: " << tmpl << endl;
+    kDebug() << "Read ident template from database: " << tmpl;
   }
 
   // FIXME: Check again.
   if ( tmpl.isEmpty() ) {
     // migration: If there is nothing yet in the database, check the local config and
     // transfer the setting to the db
-    QString pattern = KraftSettings::self()->docIdent();
+    QString pattern = KraftSettings::self()->self()->docIdent();
     if ( pattern.isEmpty() ) {
       // There is nothing in KConfig File, so we use our default from here.
       pattern = defaultTempl;
     }
-    kdDebug() << "Writing ident template to database: " << pattern << endl;
+    kDebug() << "Writing ident template to database: " << pattern;
     QSqlQuery insQuery;
     insQuery.prepare( "UPDATE numberCycles SET identTemplate=:pattern WHERE name=:name" );
     insQuery.bindValue( ":name", numberCycle );
@@ -479,7 +470,7 @@ void DocType::setName( const QString& name )
   QString oldName = mName;
   dbID id = mNameMap[ oldName ]; // The old id.
   mNameMap[ name ] = id;
-  mNameMap.erase( oldName );
+  mNameMap.remove( oldName );
   mName = name;
   mDirty = true;
 }
@@ -491,12 +482,12 @@ void DocType::setName( const QString& name )
 void DocType::save()
 {
   if ( !mDirty ) {
-    kdDebug() << "Saving: not DIRTY!" << endl;
+    kDebug() << "Saving: not DIRTY!";
     return;
   }
 
   if ( !mNameMap.contains( mName ) ) {
-    kdError() << "nameMap does not contain id for " << mName << endl;
+    kError() << "nameMap does not contain id for " << mName;
     return;
   }
   dbID id = mNameMap[ mName ];
@@ -511,7 +502,7 @@ void DocType::save()
     doInsert = true;
   }
 
-  q.bindValue( ":name", mName.utf8() );
+  q.bindValue( ":name", mName );
   q.bindValue( ":id", id.toInt() );
   q.exec();
 

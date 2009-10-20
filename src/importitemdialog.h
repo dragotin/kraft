@@ -17,16 +17,21 @@
 #ifndef IMPORTITEMDIALOG_H
 #define IMPORTITEMDIALOG_H
 
-#include <kdialogbase.h>
-#include <qmap.h>
+#include <kdialog.h>
+#include <QMap>
+#include <QList>
+#include <QComboBox>
+
+#include "ui_importtodocbase.h"
 
 #include "templtopositiondialogbase.h"
 #include "docposition.h"
 #include "importfilter.h"
 
 class importToDocBase;
+class DocPositionList;
 
-class ImportItemDialog: public KDialogBase
+class ImportItemDialog: public KDialog
 {
   Q_OBJECT
 
@@ -35,7 +40,7 @@ public:
   ~ImportItemDialog();
 
   void setPositionList( DocPositionList, int );
-  QValueList<DocPosition> positionList();
+  DocPositionList positionList();
   
   QComboBox *getPositionCombo();
 
@@ -52,7 +57,7 @@ protected:
   QString readFilterSpecs();
 
 private:
-  importToDocBase *mBaseWidget;
+  Ui::importToDocBase *mBaseWidget;
   QMap<QString, DocPositionImportFilter> mFilterMap;
   QMap<int, QString> mTagMap;
 };

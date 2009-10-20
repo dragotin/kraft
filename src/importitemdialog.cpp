@@ -23,14 +23,16 @@
 #include "importitemdialog.h"
 
 // include files for Qt
-#include <qvbox.h>
-#include <qtextedit.h>
+#include <q3vbox.h>
+#include <q3textedit.h>
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
-#include <qbuttongroup.h>
+#include <q3buttongroup.h>
 #include <qtooltip.h>
 #include <qmap.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 
 // include files for KDE
@@ -38,24 +40,31 @@
 #include <kdebug.h>
 #include <kstandarddirs.h>
 #include <kurlrequester.h>
+#include <kvbox.h>
 
-#include "importtodocbase.h"
 #include "importfilter.h"
 #include "defaultprovider.h"
 #include "kraftsettings.h"
 #include "tagman.h"
 
 ImportItemDialog::ImportItemDialog( QWidget *parent )
-  : KDialogBase( parent, "IMPORTITEMDIALOG", true, i18n( "Import Items From File" ),
-                 Ok | Cancel )
+  : KDialog( parent )
 {
-  mBaseWidget = new importToDocBase( this );
-  QWidget *w = mBaseWidget;
+  // , "IMPORTITEMDIALOG", true, i18n( "Import Items From File" ),
+  //               Ok | Cancel )
+  setObjectName( "IMPORTITEMDIALOG" );
+  setModal( true );
+  setCaption( i18n( "Import Items From File" ) );
+  setButtons( Ok | Cancel );
+
+  QWidget *w = new KVBox;
+  mBaseWidget = new Ui::importToDocBase;
+  mBaseWidget->setupUi( w );
 
   setMainWidget( w );
 
   // Fill the tags list
-  QButtonGroup *group = mBaseWidget->mTagGroup;
+  Q3ButtonGroup *group = mBaseWidget->mTagGroup;
 
   group->setColumns( 1 );
   QStringList tags = TagTemplateMan::self()->allTagTemplates();
@@ -74,14 +83,14 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
            SLOT( slotSchemaChanged( const QString& ) ) );
   QString selectName = readFilterSpecs();
 
-  if ( ! KraftSettings::importItemsSchemaName().isEmpty() ) {
-    selectName = KraftSettings::importItemsSchemaName();
+  if ( ! KraftSettings::self()->importItemsSchemaName().isEmpty() ) {
+    selectName = KraftSettings::self()->importItemsSchemaName();
   }
   mBaseWidget->mSchemaCombo->setCurrentText( selectName );
   slotSchemaChanged( selectName );
 
-  if ( ! KraftSettings::importItemsFileName().isEmpty() ) {
-    mBaseWidget->mFileRequester->setURL( KraftSettings::importItemsFileName() );
+  if ( ! KraftSettings::self()->importItemsFileName().isEmpty() ) {
+    mBaseWidget->mFileRequester->setUrl( KraftSettings::self()->importItemsFileName() );
   }
 }
 
@@ -99,13 +108,15 @@ void ImportItemDialog::setPositionList( DocPositionList list, int intendedPos )
 {
   DocPositionBase *dpb;
   if ( ! getPositionCombo() ) {
-    kdError() << "Can not get a ptr to the position combo" << endl;
+    kError() << "Can not get a ptr to the position combo";
     return;
   }
   QStringList strList;
   strList << i18n( "the Header of the Document" );
 
-  for ( dpb = list.first(); dpb; dpb = list.next() ) {
+  DocPositionListIterator it( list );
+  while( it.hasNext() ) {
+    DocPositionBase *dpb = it.next();
     DocPosition *dp = static_cast<DocPosition*>( dpb );
     QString h = QString( "%1. %2" ).arg( list.posNumber( dp ) ).arg( dp->text() );
     if ( h.length() > 50 ) {
@@ -128,7 +139,7 @@ QString ImportItemDialog::readFilterSpecs()
 
   QStringList combo;
   for ( QStringList::Iterator it = filters.begin(); it != filters.end(); ++it ) {
-    kdDebug() << " -> Import filter file " << *it << endl;
+    kDebug() << " -> Import filter file " << *it;
     DocPositionImportFilter filter;
     filter.readDefinition( *it );
     filter.parseDefinition();
@@ -149,18 +160,20 @@ void ImportItemDialog::slotSchemaChanged( const QString& name )
 
 void ImportItemDialog::slotOk()
 {
-  KraftSettings::setImportItemsSchemaName( mBaseWidget->mSchemaCombo->currentText() );
-  KraftSettings::setImportItemsFileName( mBaseWidget->mFileRequester->url() );
-  KraftSettings::writeConfig();
-
-  KDialogBase::slotOk();
+#if 0
+  FIXME!!!
+  KraftSettings::self()->setImportItemsSchemaName( mBaseWidget->mSchemaCombo->currentText() );
+  KraftSettings::self()->setImportItemsFileName( mBaseWidget->mFileRequester->url() );
+  KraftSettings::self()->writeConfig();
+#endif
+  KDialog::slotButtonClicked( Ok );
 }
 
 
-QValueList<DocPosition> ImportItemDialog::positionList()
+DocPositionList ImportItemDialog::positionList()
 {
-  QValueList<DocPosition> list;
-  QString url = mBaseWidget->mFileRequester->url();
+  DocPositionList list;
+  KUrl url = mBaseWidget->mFileRequester->url();
 
   if ( ! url.isEmpty() ) {
     DocPositionImportFilter filter = mFilterMap[mBaseWidget->mSchemaCombo->currentText()];
@@ -168,7 +181,7 @@ QValueList<DocPosition> ImportItemDialog::positionList()
     list = filter.import( url );
 
     // get the tags
-    QButtonGroup *group = mBaseWidget->mTagGroup;
+    Q3ButtonGroup *group = mBaseWidget->mTagGroup;
     QStringList tags;
 
     QMap<int, QString>::Iterator it;
@@ -178,10 +191,11 @@ QValueList<DocPosition> ImportItemDialog::positionList()
     }
 
     if ( tags.size() > 0 ) {
-      QValueList<DocPosition>::iterator posIt;
-      for( posIt = list.begin(); posIt != list.end(); ++posIt ) {
+      DocPositionListIterator posIt( list );
+      while( posIt.hasNext() ) {
+        DocPositionBase *dp = posIt.next();
         for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-          ( *posIt ).setTag( *it );
+          dp->setTag( *it );
         }
       }
     }

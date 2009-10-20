@@ -24,7 +24,7 @@
 #endif
 
 // include files
-#include "zeitpartui.h"  // designer file zeitpartui.ui
+#include "ui_zeitpartui.h"  // designer file zeitpartui.ui
 
 /**
  *
@@ -32,14 +32,14 @@
 
 class ZeitCalcPart;
 
-class ZeitCalcDialog : public calcdetailTime
+class ZeitCalcDialog : public KDialog, protected Ui::calcdetailTime
 {
     Q_OBJECT
 
 public:
-    ZeitCalcDialog(QWidget *parent=0, const char* name=0, bool modal=FALSE );
-    ZeitCalcDialog(ZeitCalcPart*, QWidget *parent=0, const char* name=0, bool modal=FALSE );
-    ~ZeitCalcDialog();
+    ZeitCalcDialog(QWidget *parent=0, bool modal=FALSE );
+    ZeitCalcDialog(ZeitCalcPart*, QWidget *parent=0, bool modal=FALSE );
+    virtual ~ZeitCalcDialog();
 
     QString getName();
     QString getStundensatzName();

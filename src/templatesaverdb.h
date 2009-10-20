@@ -41,7 +41,7 @@ class TemplateSaverDB : public TemplateSaverBase
 {
 public:
     TemplateSaverDB();
-    ~TemplateSaverDB();
+    virtual ~TemplateSaverDB();
 
     virtual bool saveTemplate( FloskelTemplate* );
 
@@ -56,6 +56,7 @@ class CalculationsSaverDB:public CalculationsSaverBase
 public:
   CalculationsSaverDB();
   CalculationsSaverDB( TargetType tt );
+  virtual ~CalculationsSaverDB() { }
 
   bool saveCalculations( CalcPartList, dbID );
 

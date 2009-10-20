@@ -50,14 +50,14 @@ int main(int argc, char *argv[])
 
   DocPositionImportFilter importer;
   if ( ! importer.readDefinition( "woerlein_txt.ftr" ) ) {
-    kdDebug() << "Unable to import the definition!" << importer.error() << endl;
+    kDebug() << "Unable to import the definition!" << importer.error();
   }
   if ( ! importer.parseDefinition() ) {
-    kdDebug() << "** Error in definition parsing: " << importer.error() << endl;
+    kDebug() << "** Error in definition parsing: " << importer.error();
   }
   importer.debugDefinition();
 
   DocPositionList list = importer.import( "/tmp/pflanzliste.txt" );
-  kdDebug() << "********* List of " << list.count() << " items imported" << endl;
+  kDebug() << "********* List of " << list.count() << " items imported";
   return app.exec();
 }

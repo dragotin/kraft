@@ -1,295 +1,297 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>calcdetailTime</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>calcdetailTime</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>466</width>
-            <height>307</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Kalkulationsanteil Zeit</string>
-    </property>
-    <property name="sizeGripEnabled">
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>calcdetailTime</class>
+ <widget class="QDialog" name="calcdetailTime">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>466</width>
+    <height>307</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Kalkulationsanteil Zeit</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <spacer name="spacer3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0">
+    <layout class="QVBoxLayout">
+     <item>
+      <widget class="QLabel" name="textLabel1">
+       <property name="text">
+        <string>&lt;h1&gt;Calculation Part 'Time'&lt;/h1&gt;</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="textLabel2">
+       <property name="text">
+        <string>Calculate time efforts here for one unit of the template. Note that the costs may depend on a global hourly rate.</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignVCenter</set>
+       </property>
+       <property name="wordWrap">
         <bool>true</bool>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <spacer row="0" column="0">
-            <property name="name">
-                <cstring>spacer3</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Q3Frame" name="frame3" native="true">
+       <layout class="QGridLayout">
+        <item row="0" column="0">
+         <layout class="QGridLayout">
+          <item row="0" column="1">
+           <widget class="KLineEdit" name="m_nameEdit">
+            <property name="text">
+             <string>Work</string>
             </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="textLabel3_2_2">
+            <property name="text">
+             <string>&amp;Hourly Rate:</string>
             </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
+            <property name="wordWrap">
+             <bool>false</bool>
             </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>20</height>
-                </size>
+            <property name="buddy">
+             <cstring>m_hourSets</cstring>
             </property>
-        </spacer>
-        <widget class="QLayoutWidget" row="0" column="0">
-            <property name="name">
-                <cstring>layout6</cstring>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="textLabel3_2">
+            <property name="text">
+             <string>&amp;Time Effort:</string>
             </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&lt;h1&gt;Calculation Part 'Time'&lt;/h1&gt;</string>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Calculate time efforts here for one unit of the template. Note that the costs may depend on a global hourly rate.</string>
-                    </property>
-                    <property name="alignment">
-                        <set>WordBreak|AlignVCenter</set>
-                    </property>
-                </widget>
-                <widget class="QFrame">
-                    <property name="name">
-                        <cstring>frame3</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Raised</enum>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLayoutWidget" row="0" column="0">
-                            <property name="name">
-                                <cstring>layout4</cstring>
-                            </property>
-                            <grid>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="KLineEdit" row="0" column="1">
-                                    <property name="name">
-                                        <cstring>m_nameEdit</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Work</string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="2" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel3_2_2</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Hourly Rate:</string>
-                                    </property>
-                                    <property name="buddy" stdset="0">
-                                        <cstring>m_hourSets</cstring>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="1" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel3_2</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Time Effort:</string>
-                                    </property>
-                                    <property name="buddy" stdset="0">
-                                        <cstring>m_dauer</cstring>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="0" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel3</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Label:</string>
-                                    </property>
-                                    <property name="buddy" stdset="0">
-                                        <cstring>m_nameEdit</cstring>
-                                    </property>
-                                </widget>
-                                <widget class="QLayoutWidget" row="1" column="1">
-                                    <property name="name">
-                                        <cstring>layout2</cstring>
-                                    </property>
-                                    <hbox>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <widget class="KIntNumInput">
-                                            <property name="name">
-                                                <cstring>m_dauer</cstring>
-                                            </property>
-                                            <property name="value">
-                                                <number>6</number>
-                                            </property>
-                                            <property name="minValue">
-                                                <number>0</number>
-                                            </property>
-                                            <property name="maxValue">
-                                                <number>10000</number>
-                                            </property>
-                                        </widget>
-                                        <widget class="QLabel">
-                                            <property name="name">
-                                                <cstring>textLabel4</cstring>
-                                            </property>
-                                            <property name="text">
-                                                <string>Minutes</string>
-                                            </property>
-                                        </widget>
-                                    </hbox>
-                                </widget>
-                                <widget class="QCheckBox" row="3" column="1">
-                                    <property name="name">
-                                        <cstring>m_stdGlobal</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Apply the &amp;global hourly rate.</string>
-                                    </property>
-                                    <property name="accel">
-                                        <string>Alt+G</string>
-                                    </property>
-                                </widget>
-                                <widget class="QComboBox" row="2" column="1">
-                                    <property name="name">
-                                        <cstring>m_hourSets</cstring>
-                                    </property>
-                                </widget>
-                            </grid>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>Layout1</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>buttonHelp</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Help</string>
-                            </property>
-                            <property name="accel">
-                                <string>F1</string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>Horizontal Spacing2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>20</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>buttonOk</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;OK</string>
-                            </property>
-                            <property name="accel">
-                                <string></string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>true</bool>
-                            </property>
-                            <property name="default">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>buttonCancel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Cancel</string>
-                            </property>
-                            <property name="accel">
-                                <string></string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>true</bool>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-            </vbox>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="buddy">
+             <cstring>m_dauer</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="textLabel3">
+            <property name="text">
+             <string>&amp;Label:</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="buddy">
+             <cstring>m_nameEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout">
+            <item>
+             <widget class="KIntNumInput" name="m_dauer">
+              <property name="value">
+               <number>5</number>
+              </property>
+              <property name="minValue" stdset="0">
+               <number>0</number>
+              </property>
+              <property name="maxValue" stdset="0">
+               <number>10000</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="textLabel4">
+              <property name="text">
+               <string>Minutes</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="1">
+           <widget class="QCheckBox" name="m_stdGlobal">
+            <property name="text">
+             <string>Apply the &amp;global hourly rate.</string>
+            </property>
+            <property name="shortcut">
+             <string>Alt+G</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="m_hourSets"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="buttonHelp">
+         <property name="text">
+          <string>&amp;Help</string>
+         </property>
+         <property name="shortcut">
+          <string>F1</string>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
         </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>calcdetailTime</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>buttonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>calcdetailTime</receiver>
-        <slot>reject()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>m_nameEdit</tabstop>
-    <tabstop>m_dauer</tabstop>
-    <tabstop>m_hourSets</tabstop>
-    <tabstop>m_stdGlobal</tabstop>
-    <tabstop>buttonHelp</tabstop>
-    <tabstop>buttonOk</tabstop>
-    <tabstop>buttonCancel</tabstop>
-</tabstops>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>klineedit.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-</includehints>
-</UI>
+       </item>
+       <item>
+        <spacer name="Horizontal Spacing2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="buttonOk">
+         <property name="text">
+          <string>&amp;OK</string>
+         </property>
+         <property name="shortcut">
+          <string/>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="buttonCancel">
+         <property name="text">
+          <string>&amp;Cancel</string>
+         </property>
+         <property name="shortcut">
+          <string/>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KIntNumInput</class>
+   <extends>QWidget</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QWidget</extends>
+   <header>q3frame.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>m_nameEdit</tabstop>
+  <tabstop>m_dauer</tabstop>
+  <tabstop>m_hourSets</tabstop>
+  <tabstop>m_stdGlobal</tabstop>
+  <tabstop>buttonHelp</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
+ </tabstops>
+ <includes>
+  <include location="local">klineedit.h</include>
+  <include location="local">knuminput.h</include>
+  <include location="local">knuminput.h</include>
+ </includes>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonOk</sender>
+   <signal>clicked()</signal>
+   <receiver>calcdetailTime</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>calcdetailTime</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -17,19 +17,19 @@
 #ifndef KRAFTDOCFOOTEREDIT_H
 #define KRAFTDOCFOOTEREDIT_H
 
-#include "docfooter.h"
+#include "ui_docfooter.h"
 #include "kraftdocedit.h"
 
 class KraftDocFooterEdit : public KraftDocEdit
 {
 public:
-  KraftDocFooterEdit( QWidget* );
+  KraftDocFooterEdit( QWidget *parent=0 );
 
   // FIXME: Remove access to internal widgets
-  DocFooterEdit *docFooterEdit() { return mDocFooterEdit; }
+  Ui::DocFooterEdit *docFooterEdit() { return mDocFooterEdit; }
 
 private:
-  DocFooterEdit *mDocFooterEdit;
+  Ui::DocFooterEdit *mDocFooterEdit;
 };
 
 #endif

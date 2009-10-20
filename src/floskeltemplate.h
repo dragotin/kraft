@@ -21,7 +21,9 @@
 
 #include <qstring.h>
 #include <qdatetime.h>
-#include <qptrlist.h>
+#include <QList>
+//Added by qt3to4:
+#include <Q3PtrCollection>
 
 #include "kraftglobals.h"
 #include "einheit.h"
@@ -32,8 +34,7 @@
   *@author Klaas Freitag
   */
 
-
-class KListViewItem;
+class QTreeWidgetItem;
 class TemplateSaverBase;
 class QDomDocument;
 class QDomElement;
@@ -79,8 +80,8 @@ public:
     QDateTime modifyDate() { return m_modifyDate; }
     QDateTime createDate() { return m_createDate; }
 
-    void setListViewItem( KListViewItem *it ) { m_listViewItem = it; }
-    KListViewItem* getListViewItem() { return m_listViewItem; }
+    void setListViewItem( QTreeWidgetItem *it ) { m_listViewItem = it; }
+    QTreeWidgetItem* getListViewItem() { return m_listViewItem; }
 
     virtual bool save();
     // virtual QDomElement toXML( QDomDocument&);
@@ -108,22 +109,18 @@ private: // Private methods
     bool             m_zeitbeitrag;
     QDateTime        m_modifyDate, m_createDate;
     Geld             m_preis; // preis only valid for manual calculation.
-    KListViewItem   *m_listViewItem;
+    QTreeWidgetItem  *m_listViewItem;
     TemplateSaverBase *m_saver;    /**  */
 
 };
 
-class FloskelTemplateList :public QPtrList<FloskelTemplate>
+class FloskelTemplateList :public QList<FloskelTemplate*>
 {
 public:
   FloskelTemplateList() { }
-
-protected:
-  // int compareItems( QPtrCollection::Item, QPtrCollection::Item );
 };
 
-// typedef QPtrList<FloskelTemplate> FloskelTemplateList;
-typedef QPtrListIterator<FloskelTemplate> FloskelTemplateListIterator;
+typedef QListIterator<FloskelTemplate*> FloskelTemplateListIterator;
 
 
 #endif

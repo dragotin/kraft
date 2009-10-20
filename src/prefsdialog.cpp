@@ -19,21 +19,21 @@
 #include <qlineedit.h>
 #include <qlineedit.h>
 #include <qlabel.h>
-#include <qframe.h>
-#include <qhbox.h>
-#include <qvbox.h>
+#include <q3frame.h>
+#include <q3hbox.h>
+#include <q3vbox.h>
 #include <qpushbutton.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 #include <qcombobox.h>
 #include <qlayout.h>
 #include <qcheckbox.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qsqlquery.h>
 #include <qspinbox.h>
-#include <qsqlcursor.h>
-#include <qdatatable.h>
+#include <q3sqlcursor.h>
+#include <q3datatable.h>
 #include <qtooltip.h>
-#include <qlistview.h>
+#include <q3listview.h>
 
 #include <kdialog.h>
 #include <klocale.h>
@@ -60,9 +60,14 @@
 // ################################################################################
 
 PrefsDialog::PrefsDialog( QWidget *parent)
-    : KDialogBase( IconList,  i18n("Configure Kraft"), Ok|Cancel, Ok, parent,
-                   "PrefsDialog", true, true )
+    : KPageDialog( parent )
 {
+  setFaceType( KPageDialog::List );
+  setModal( true );
+  setCaption( i18n( "Configure Kraft" ) );
+  setButtons( Ok|Cancel);
+  setDefaultButton( Ok );
+
   databaseTab();
   docTab();
   doctypeTab();
@@ -75,73 +80,77 @@ PrefsDialog::PrefsDialog( QWidget *parent)
 
 void PrefsDialog::databaseTab()
 {
+  QWidget *topWidget = new QWidget;
+
   QLabel *label;
-  QFrame *topFrame = addPage( i18n( "Database" ),
-                              i18n( "Database Connection Settings" ),
-                              DesktopIcon( "connect_no" ) ); // KDE 4 name: (probably) network-server-database
 
-  QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
-  QGridLayout *topLayout = new QGridLayout( topFrame );
+  QVBoxLayout *vboxLay = new QVBoxLayout;
+  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Database" ) );
+                              // i18n( "Database Connection Settings" ) );
+
+  // topFrame->setIcon( DesktopIcon( "connect_no" ) ); // KDE 4 name: (probably) network-server-database
+
+
+  QGridLayout *topLayout = new QGridLayout;
   vboxLay->addLayout( topLayout );
-
   topLayout->setSpacing( spacingHint() );
   topLayout->setColSpacing( 0, spacingHint() );
 
-  label = new QLabel(i18n("Database Host:"), topFrame );
+  label = new QLabel(i18n("Database Host:") );
   topLayout->addWidget(label, 0,0);
 
-  label = new QLabel(i18n("Database Name:"), topFrame );
+  label = new QLabel(i18n("Database Name:") );
   topLayout->addWidget(label, 1,0);
 
-  label = new QLabel(i18n("Database User:"), topFrame );
+  label = new QLabel(i18n("Database User:") );
   topLayout->addWidget(label, 2,0);
 
-  label = new QLabel(i18n("Database Password:"), topFrame );
+  label = new QLabel(i18n("Database Password:") );
   topLayout->addWidget(label, 3,0);
 
-  label = new QLabel(i18n("Connection Status:"), topFrame );
+  label = new QLabel(i18n("Connection Status:") );
   topLayout->addWidget(label, 4,0);
 
-  m_pbCheck = new QPushButton( i18n( "Check Connection" ), topFrame );
+  m_pbCheck = new QPushButton( i18n( "Check Connection" ) );
   m_pbCheck->setEnabled( false );
   topLayout->addWidget( m_pbCheck, 5, 1 );
 
   QLabel *l1 = new QLabel(  i18n( "Please restart Kraft after "
                                   "changes in the database connection "
                                   "parameters to make the changes "
-                                  "effective!" ), topFrame );
+                                  "effective!" ) );
   l1->setTextFormat( Qt::RichText );
   l1->setBackgroundColor( QColor( "#ffcbcb" ) );
   l1->setMargin( 5 );
-  l1->setFrameStyle( QFrame::Box + QFrame::Raised );
+  l1->setFrameStyle( Q3Frame::Box + Q3Frame::Raised );
   l1->setLineWidth( 1 );
-  l1->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter | Qt::ExpandTabs | Qt::WordBreak );
+  l1->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter | Qt::TextExpandTabs | Qt::TextWordWrap );
   topLayout->addMultiCellWidget( l1, 6,  6, 0, 1 );
 
 
 
-  m_leHost = new QLineEdit( topFrame );
+  m_leHost = new QLineEdit;
   connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
   topLayout->addWidget(m_leHost, 0,1);
 
-  m_leName = new QLineEdit( topFrame );
+  m_leName = new QLineEdit;
   connect( m_leName, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
   topLayout->addWidget(m_leName, 1,1);
 
-  m_leUser = new QLineEdit( topFrame );
+  m_leUser = new QLineEdit;
   connect( m_leUser, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
   topLayout->addWidget(m_leUser, 2,1);
 
-  m_lePasswd = new QLineEdit( topFrame );
+  m_lePasswd = new QLineEdit;
   m_lePasswd->setEchoMode(QLineEdit::Password);
   connect( m_lePasswd, SIGNAL( textChanged( const QString& ) ),
            this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
   topLayout->addWidget(m_lePasswd, 3,1);
 
-  m_statusLabel = new QLabel( topFrame );
+  m_statusLabel = new QLabel;
   topLayout->addWidget( m_statusLabel,  4, 1 );
 
   connect( m_pbCheck, SIGNAL( clicked() ),
@@ -149,22 +158,25 @@ void PrefsDialog::databaseTab()
 
   vboxLay->addItem( new QSpacerItem( 1, 1 ) );
 
+  topWidget->setLayout( vboxLay );
 }
 
 void PrefsDialog::taxTab()
 {
   QLabel *label;
-  QFrame *topFrame = addPage( i18n( "Taxes" ),
-                              i18n( "Tax Settings." ),
-                              DesktopIcon( "queue" ) );
+  QWidget *topWidget = new QWidget;
 
-  QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
+  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Taxes" )
+                              /* i18n( "Tax Settings." )
+                                 DesktopIcon( "queue" ) */ );
+
+  QVBoxLayout *vboxLay = new QVBoxLayout;
   vboxLay->setSpacing( spacingHint() );
 
-  label = new QLabel(i18n("Tax rates beginning at date:"), topFrame );
+  label = new QLabel(i18n("Tax rates beginning at date:"));
   vboxLay->addWidget( label );
 
-  mTaxListView = new QListView( topFrame );
+  mTaxListView = new Q3ListView( topWidget );
   vboxLay->addWidget( mTaxListView );
   mTaxListView->addColumn( i18n( "Start Date" ) );
   mTaxListView->addColumn( i18n( "Reduced Tax [%]" ) );
@@ -175,10 +187,10 @@ void PrefsDialog::taxTab()
   connect( mTaxListView, SIGNAL( selectionChanged() ),
            SLOT( slotTaxSelected() ) );
 
-  QHBoxLayout *butLay = new QHBoxLayout( topFrame );
-  butLay->setSpacing( KDialogBase::spacingHint() );
+  QHBoxLayout *butLay = new QHBoxLayout;
+  // butLay->setSpacing( KDialogBase::spacingHint() );
   butLay->addStretch( 1 );
-  KPushButton *but = new KPushButton( BarIconSet( "filenew" ),  i18n( "add" ), topFrame );
+  KPushButton *but = new KPushButton( i18n( "add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddTax() ) );
   butLay->addWidget( but );
 
@@ -188,12 +200,13 @@ void PrefsDialog::taxTab()
   butLay->addWidget( but );
 #endif
 
-  mDelTax = new KPushButton( BarIconSet( "editdelete" ), i18n( "delete" ), topFrame );
+  mDelTax = new KPushButton( i18n( "delete" ) );
   connect( mDelTax, SIGNAL( clicked() ), SLOT( slotDeleteTax() ) );
   butLay->addWidget( mDelTax );
   mDelTax->setEnabled( false );
 
   vboxLay->addLayout( butLay );
+  topWidget->setLayout( vboxLay );
   buildTaxList();
 }
 
@@ -209,11 +222,11 @@ void PrefsDialog::buildTaxList()
     double fullTax = q.value( 1 ).toDouble();
     double redTax = q.value( 2 ).toDouble();
 
-    QListViewItem *newItem = new QListViewItem( mTaxListView,
-                                                KGlobal().locale()->formatDate( d, true ),
-                                                KGlobal().locale()->formatNumber(
+    Q3ListViewItem *newItem = new Q3ListViewItem( mTaxListView,
+                                                DefaultProvider::self()->locale()->formatDate( d ),
+                                                DefaultProvider::self()->locale()->formatNumber(
                                                   QString::number( redTax ), true, 1 ),
-                                                KGlobal().locale()->formatNumber(
+                                                DefaultProvider::self()->locale()->formatNumber(
                                                   QString::number( fullTax ), true, 1 ) );
     ( void )newItem;
   }
@@ -226,25 +239,25 @@ void PrefsDialog::slotAddTax()
   if ( ted.exec() == QDialog::Accepted ) {
     TaxRecord newTax = ted.newTaxRecord();
 
-    QListViewItem *item = mTaxListView->firstChild();
+    Q3ListViewItem *item = mTaxListView->firstChild();
     bool found = false;
     while ( item && !found ) {
       bool ok;
-      QDate date = KGlobal().locale()->readDate( item->text( 0 ), &ok );
+      QDate date = DefaultProvider::self()->locale()->readDate( item->text( 0 ), &ok );
       if ( date == newTax.date ) {
-        item->setText( 1, KGlobal().locale()->formatNumber( newTax.reducedTax, 1 ) );
-        item->setText( 2, KGlobal().locale()->formatNumber( newTax.fullTax, 1 ) );
+        item->setText( 1, DefaultProvider::self()->locale()->formatNumber( newTax.reducedTax, 1 ) );
+        item->setText( 2, DefaultProvider::self()->locale()->formatNumber( newTax.fullTax, 1 ) );
         found = true;
       }
       item = item->nextSibling();
     }
 
     if ( !found ) {
-      QListViewItem *newItem = new QListViewItem( mTaxListView,
-                                                  KGlobal().locale()->formatDate( newTax.date, true ),
-                                                  KGlobal().locale()->formatNumber(
+      Q3ListViewItem *newItem = new Q3ListViewItem( mTaxListView,
+                                                 DefaultProvider::self()->locale()->formatDate( newTax.date, KLocale::ShortDate ),
+                                                  DefaultProvider::self()->locale()->formatNumber(
                                                     QString::number( newTax.reducedTax ), true, 1 ),
-                                                  KGlobal().locale()->formatNumber(
+                                                  DefaultProvider::self()->locale()->formatNumber(
                                                     QString::number( newTax.fullTax ), true, 1 ) );
       ( void )newItem;
 
@@ -276,71 +289,79 @@ void PrefsDialog::slotTaxSelected()
 void PrefsDialog::docTab()
 {
   QLabel *label;
-  QFrame *topFrame = addPage( i18n( "Document Defaults" ),
-                              i18n( "Defaults for new Documents." ),
-                              DesktopIcon( "queue" ) );
+  QWidget *topWidget = new QWidget;
 
-  QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
-  QGridLayout *topLayout = new QGridLayout( topFrame );
+  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Defaults" ) );
+                              // i18n( "Defaults for new Documents." ),
+                              // DesktopIcon( "queue" ) );
+
+  QVBoxLayout *vboxLay = new QVBoxLayout;
+  topWidget->setLayout( vboxLay );
+  QGridLayout *topLayout = new QGridLayout;
   vboxLay->addLayout( topLayout );
 
   topLayout->setSpacing( spacingHint() );
   topLayout->setColSpacing( 0, spacingHint() );
 
-  label = new QLabel(i18n("&Default document type on creation:"), topFrame );
+  label = new QLabel(i18n("&Default document type on creation:") );
   topLayout->addWidget(label, 0,0);
 
-  mCbDocTypes = new QComboBox( topFrame );
+  mCbDocTypes = new QComboBox;
   label->setBuddy( mCbDocTypes );
   QToolTip::add( mCbDocTypes, i18n( "New documents are from the selected type by default." ) );
   topLayout->addWidget( mCbDocTypes, 0, 1 );
   mCbDocTypes->insertStringList( DocType::allLocalised() );
 
-  QLabel *f = new QLabel( topFrame );
+  QLabel *f = new QLabel;
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
   vboxLay->addWidget( f );
 
   // Localisation on document level
-  mCbDocLocale = new QCheckBox( i18n( "Enable &Localisation on Document Level" ), topFrame );
+  mCbDocLocale = new QCheckBox( i18n( "Enable &Localisation on Document Level" ) );
   QToolTip::add( mCbDocLocale, i18n( "Checking this enables language settings for each document."
                                      "<br>Leave it unchecked to use the KDE default settings for "
                                      "the document localisation." ) );
   vboxLay->addWidget( mCbDocLocale );
 
-  vboxLay->addWidget( new QWidget( topFrame ) );
+  vboxLay->addWidget( new QWidget );
 
-  f = new QLabel( topFrame );
+  f = new QLabel;
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
   vboxLay->addWidget( f );
 
-  QHBox *tBox = new QHBox( topFrame );
-  QLabel *l = new QLabel( i18n( "Default &Tax for Documents:" ), tBox );
-  mCbDefaultTaxType = new QComboBox( tBox );
+  QHBoxLayout *butLay = new QHBoxLayout;
+  QLabel *l = new QLabel( i18n( "Default &Tax for Documents:" ) );
+  butLay->addWidget( l );
+  mCbDefaultTaxType = new QComboBox;
+  butLay->addWidget( mCbDefaultTaxType );
   l->setBuddy( mCbDefaultTaxType );
+
   QToolTip::add( mCbDefaultTaxType, i18n( "The default tax setting for all documents." ) );
   mCbDefaultTaxType->insertItem( i18n( "Display no tax at all" ), 0 );
   mCbDefaultTaxType->insertItem( i18n( "Calculate reduced tax for all items" ), 1);
   mCbDefaultTaxType->insertItem( i18n( "Calculate full tax for all items" ), 2 );
   // mCbDefaultTaxType->insertItem( i18n( "Calculate on individual item tax rate" ), 3 );
-  vboxLay->addWidget( tBox );
+  vboxLay->addLayout( butLay );
 
   // space eater
-  QWidget *spaceEater = new QWidget( topFrame );
+  QWidget *spaceEater = new QWidget;
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
   vboxLay->addWidget( spaceEater );
 }
 
 void PrefsDialog::doctypeTab()
 {
-  QFrame *topFrame = addPage( i18n( "Document Types" ),
-                              i18n( "Edit Details of Document Types." ),
-                              DesktopIcon( "folder_man" ) );
+  QWidget *topWidget = new QWidget;
+  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Types" ) );
+                              // i18n( "Edit Details of Document Types." ),
+                              // DesktopIcon( "folder_man" ) );
 
-  QVBoxLayout *vboxLay = new QVBoxLayout( topFrame );
+  QVBoxLayout *vboxLay = new QVBoxLayout;
+
   vboxLay->setSpacing( 0 ); // spacingHint() );
 
-  mDocTypeEdit = new DocTypeEdit( topFrame );
-  mDocTypeEdit->mCentralSplit->setMargin( 0 );
+  mDocTypeEdit = new DocTypeEdit;
+  // FIXME mDocTypeEdit->mCentralSplit->setMargin( 0 );
   vboxLay->addWidget( mDocTypeEdit );
 
   connect( mDocTypeEdit, SIGNAL( removedType( const QString& ) ),
@@ -381,34 +402,34 @@ void PrefsDialog::slotDbCredentialsChanged( const QString& )
 
 void PrefsDialog::readConfig()
 {
-    m_leHost->setText( KatalogSettings::dbServerName() );
-    m_leName->setText( KatalogSettings::dbFile() );
-    m_leUser->setText( KatalogSettings::dbUser() );
-    m_lePasswd->setText( KatalogSettings::dbPassword() );
+    m_leHost->setText( KatalogSettings::self()->dbServerName() );
+    m_leName->setText( KatalogSettings::self()->dbFile() );
+    m_leUser->setText( KatalogSettings::self()->dbUser() );
+    m_lePasswd->setText( KatalogSettings::self()->dbPassword() );
 
-    mCbDocLocale->setChecked( KraftSettings::showDocumentLocale() );
+    mCbDocLocale->setChecked( KraftSettings::self()->showDocumentLocale() );
 
-    QString t = KraftSettings::doctype();
+    QString t = KraftSettings::self()->doctype();
     if ( t.isEmpty() ) t = DefaultProvider::self()->docType();
 
     mCbDocTypes->setCurrentText( t );
 
-    mCbDefaultTaxType->setCurrentItem( KraftSettings::defaultTaxType()-1 );
+    mCbDefaultTaxType->setCurrentItem( KraftSettings::self()->defaultTaxType()-1 );
 }
 
 void PrefsDialog::writeConfig()
 {
-    KatalogSettings::setDbServerName(m_leHost->text());
-    KatalogSettings::setDbFile(m_leName->text());
-    KatalogSettings::setDbUser(m_leUser->text());
-    KatalogSettings::setDbPassword( m_lePasswd->text());
-    KatalogSettings::writeConfig();
+    KatalogSettings::self()->setDbServerName(m_leHost->text());
+    KatalogSettings::self()->setDbFile(m_leName->text());
+    KatalogSettings::self()->setDbUser(m_leUser->text());
+    KatalogSettings::self()->setDbPassword( m_lePasswd->text());
+    KatalogSettings::self()->writeConfig();
 
-    KraftSettings::setShowDocumentLocale( mCbDocLocale->isChecked() );
-    KraftSettings::setDoctype( mCbDocTypes->currentText() );
-    KraftSettings::setDefaultTaxType( 1+mCbDefaultTaxType->currentItem() );
+    KraftSettings::self()->setShowDocumentLocale( mCbDocLocale->isChecked() );
+    KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
+    KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentItem() );
 
-    KraftSettings::writeConfig();
+    KraftSettings::self()->writeConfig();
 }
 
 void PrefsDialog::writeTaxes()
@@ -424,12 +445,12 @@ void PrefsDialog::writeTaxes()
   QSqlQuery qInsert;
   qInsert.prepare( "INSERT INTO taxes (fullTax, reducedTax, startDate) VALUES (:fullTax, :redTax, :date)" );
 
-  QListViewItem *item = mTaxListView->firstChild();
+  Q3ListViewItem *item = mTaxListView->firstChild();
   while ( item ) {
     bool ok;
-    QDate date     = KGlobal().locale()->readDate( item->text( 0 ), &ok );
-    double redTax  = KGlobal().locale()->readNumber( item->text( 1 ), &ok );
-    double fullTax = KGlobal().locale()->readNumber( item->text( 2 ), &ok );
+    QDate date     = DefaultProvider::self()->locale()->readDate( item->text( 0 ), &ok );
+    double redTax  = DefaultProvider::self()->locale()->readNumber( item->text( 1 ), &ok );
+    double fullTax = DefaultProvider::self()->locale()->readNumber( item->text( 2 ), &ok );
 
     qUpdate.bindValue( ":fullTax", fullTax );
     qUpdate.bindValue( ":redTax", redTax );
@@ -442,7 +463,7 @@ void PrefsDialog::writeTaxes()
       qInsert.bindValue( ":date", date );
       qInsert.exec();
       if ( !qInsert.numRowsAffected() ) {
-        kdError() << "Could not insert tax records!" << endl;
+        kError() << "Could not insert tax records!";
       }
     }
     item = item->nextSibling();
@@ -461,11 +482,11 @@ PrefsDialog::~PrefsDialog()
 
 void PrefsDialog::slotCheckConnect()
 {
-  kdDebug() << "Trying database connect to db " << m_leName->text() << endl;
+  kDebug() << "Trying database connect to db " << m_leName->text() << endl;
 
   int x = KraftDB::self()->checkConnect( m_leHost->text(), m_leName->text(),
                                          m_leUser->text(), m_lePasswd->text() );
-  kdDebug() << "Connection result: " << x << endl;
+  kDebug() << "Connection result: " << x << endl;
   if ( x == 0 ) {
     m_statusLabel->setText( i18n( "Good!" ) );
   } else {
@@ -473,12 +494,12 @@ void PrefsDialog::slotCheckConnect()
   }
 }
 
-void PrefsDialog::slotOk()
+void PrefsDialog::accept()
 {
   mDocTypeEdit->saveDocTypes();
   writeTaxes();
   writeConfig();
-  accept();
+  QDialog::accept();
 }
 
 #include "prefsdialog.moc"

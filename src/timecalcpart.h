@@ -12,13 +12,19 @@
 
 #include <qvariant.h>
 #include <qdialog.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3Frame>
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <QLabel>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+class Q3VBoxLayout;
+class Q3HBoxLayout;
+class Q3GridLayout;
 class QSpacerItem;
 class QLabel;
-class QFrame;
+class Q3Frame;
 class KLineEdit;
 class KIntNumInput;
 class QCheckBox;
@@ -30,12 +36,12 @@ class calcdetail_time : public QDialog
     Q_OBJECT
 
 public:
-    calcdetail_time( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    calcdetail_time( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
     ~calcdetail_time();
 
     QLabel* textLabel1;
     QLabel* textLabel2;
-    QFrame* frame3;
+    Q3Frame* frame3;
     KLineEdit* m_nameEdit;
     QLabel* textLabel3_2_2;
     QLabel* textLabel3_2;
@@ -49,13 +55,13 @@ public:
     QPushButton* buttonCancel;
 
 protected:
-    QGridLayout* calcdetail_timeLayout;
+    Q3GridLayout* calcdetail_timeLayout;
     QSpacerItem* spacer3;
-    QVBoxLayout* layout6;
-    QGridLayout* frame3Layout;
-    QGridLayout* layout4;
-    QHBoxLayout* layout2;
-    QHBoxLayout* Layout1;
+    Q3VBoxLayout* layout6;
+    Q3GridLayout* frame3Layout;
+    Q3GridLayout* layout4;
+    Q3HBoxLayout* layout2;
+    Q3HBoxLayout* Layout1;
     QSpacerItem* Horizontal_Spacing2;
 
 protected slots:

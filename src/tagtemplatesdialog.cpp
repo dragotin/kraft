@@ -18,20 +18,21 @@
 
 #include <qcombobox.h>
 #include <qwidget.h>
-#include <qvbox.h>
-#include <qlabel.h>
-#include <qlistview.h>
-#include <qdrawutil.h>
-#include <qheader.h>
+
+#include <QLabel>
+#include <QPixmap>
+#include <QTreeWidget>
 #include "tagman.h"
 #include <qpushbutton.h>
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <kdebug.h>
 #include <klocale.h>
 #include <kcombobox.h>
 #include <ktextedit.h>
 #include <klineedit.h>
+#include <khbox.h>
+#include <kvbox.h>
 
 #include "tagtemplatesdialog.h"
 #include "defaultprovider.h"
@@ -40,17 +41,22 @@
 
 
 TagTemplateEditor::TagTemplateEditor( QWidget *parent )
-  : KDialogBase( parent, "TAG_TEMPLATES_EDITOR", true, i18n( "Edit Tag Template" ),
-                 Ok | Cancel )
+  : KDialog( parent )
 {
-  enableButtonSeparator( true );
-  QWidget *w = makeVBoxMainWidget();
+  setObjectName("TAG_TEMPLATES_EDITOR");
+  setModal( true );
+  setCaption( i18n("Edit Tag Template" ));
+  setButtons( Ok | Cancel );
+
+  showButtonSeparator( true );
+  KVBox *w = new KVBox( this );
+  setMainWidget( w );
 
   ( void ) new QLabel( QString::fromLatin1( "<h2>" )
                        + i18n( "<h2>Edit a Tag Template</h2>" ) + QString::fromLatin1( "</h2>" ), w );
   ( void ) new QLabel( i18n( "Adjust settings for name, color and description." ), w );
 
-  QHBox *h1 = new QHBox( w );
+  KHBox *h1 = new KHBox( w );
   h1->setSpacing( KDialog::spacingHint() );
   ( void ) new QLabel( i18n( "Name:" ), h1 );
   mNameEdit = new KLineEdit( h1 );
@@ -59,7 +65,7 @@ TagTemplateEditor::TagTemplateEditor( QWidget *parent )
   ( void ) new QLabel( i18n( "Description:" ), w );
   mDescriptionEdit = new KTextEdit( w );
 
-  QHBox *h2 = new QHBox( w );
+  KHBox *h2 = new KHBox( w );
   h2->setSpacing( KDialog::spacingHint() );
   QWidget *spaceEater = new QWidget( h2 );
   spaceEater->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -95,33 +101,42 @@ TagTemplate TagTemplateEditor::currentTemplate()
 // ################################################################################
 
 TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
-  : KDialogBase( parent, "TAG_TEMPLATES_DIALOG", true, i18n( "Edit Tag Templates" ),
-                 Close )
+  : KDialog( parent )
 {
-  enableButtonSeparator( true );
-  QWidget *w = makeVBoxMainWidget();
+  setObjectName( "TAG_TEMPLATES_DIALOG" );
+  setModal( true );
+  setCaption( i18n("Edit Tag Templates" ) );
+  setButtons( Close );
+
+  showButtonSeparator( true );
+  KVBox *w= new KVBox( this );
+  setMainWidget( w );
+
   ( void ) new QLabel( QString::fromLatin1( "<h2>" )
                        + i18n( "Edit Tag Templates" ) + QString::fromLatin1( "</h2>" ), w );
   ( void ) new QLabel( i18n( "Add, edit and remove tag templates for use in the documents." ), w );
 
-  mListView = new KListView( w );
-  mListView->setItemMargin( 3 );
-  mListView->setAlternateBackground( QColor( "#dffdd0" ) );
-  mListView->header()->hide();
+  mListView = new QTreeWidget( w );
+  // mListView->setItemMargin( 3 );
+  // mListView->setAlternateBackground( QColor( "#dffdd0" ) );
+  // mListView->headerItem()->hide();
   mListView->setRootIsDecorated( false );
-  mListView->setSelectionMode( QListView::Single );
-  mListView->addColumn( i18n( "Tag" ) );
-  mListView->addColumn( i18n( "Color" ) );
-  mListView->addColumn( i18n( "Description" ) );
+  mListView->setSelectionMode( QAbstractItemView::SingleSelection );
+  QStringList headers;
+  headers << i18n( "Tag" );
+  headers << i18n( "Color" );
+  headers << i18n( "Description" );
+  mListView->setHeaderLabels( headers );
+
   mListView->setAllColumnsShowFocus( true );
-  mListView->setSelectionMode( QListView::Single );
+  mListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
   connect( mListView, SIGNAL( selectionChanged() ),
            this, SLOT( slotSelectionChanged() ) );
 
   setTags();
 
-  QHBox *buttBox = new QHBox( w );
+  KHBox *buttBox = new KHBox( w );
   buttBox->setSpacing( KDialog::spacingHint() );
   mAddButton = new QPushButton( i18n( "Add..." ), buttBox );
   mEditButton = new QPushButton( i18n( "Edit.." ), buttBox );
@@ -169,7 +184,7 @@ void TagTemplatesDialog::slotDeleteTemplate()
 {
   if( KMessageBox::questionYesNo( this,
         i18n( "Do you really want to delete the template?"),
-        i18n("Delete Tag Template"), KStdGuiItem::yes(), KStdGuiItem::no(),
+        i18n("Delete Tag Template"), KStandardGuiItem::yes(), KStandardGuiItem::no(),
         "deletetemplate" ) == KMessageBox::Yes )
     {
       TagTemplateMan::self()->deleteTemplate( currentTemplate().dbId() );
@@ -180,17 +195,16 @@ void TagTemplatesDialog::slotDeleteTemplate()
 void TagTemplatesDialog::slotSelectionChanged()
 {
   bool state = false;
-  if ( mListView->selectedItem() ) {
+  if ( mListView->selectedItems().size() ) {
     state = true;
   }
   mEditButton->setEnabled( state );
   mDeleteButton->setEnabled( state );
-
 }
 
 TagTemplate TagTemplatesDialog::currentTemplate()
 {
-  QListViewItem *item = mListView->currentItem();
+  QTreeWidgetItem *item = mListView->currentItem();
 
   if ( item ) {
     QString templName = mItemMap[item];
@@ -208,10 +222,11 @@ void TagTemplatesDialog::setTags()
     TagTemplate templ = TagTemplateMan::self()->getTagTemplate( *it );
 
     // TagItem *item = new QListViewItem( mListView, templ.name(), QCheckListItem::CheckBox );
-    KListViewItem *item = new KListViewItem( mListView, templ.name() );
+    QTreeWidgetItem *item = new QTreeWidgetItem( mListView );
+    item->setText( 1, templ.name() );
     QPixmap pix( 16, 12 );
     pix.fill( templ.color() );
-    item->setPixmap( 0, pix );
+    item->setIcon( 0, pix );
 
     // item->setColorGroup( templ.colorGroup() );
     item->setText( 2, templ.description() );

@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 
 // include files for KDE
 #include <klocale.h>
@@ -44,7 +44,7 @@ StockMaterial::StockMaterial( int dbid, int matChap, QString mat, int unitID,
     m_ePrice(pIn),
     m_vPrice(pOut)
 {
-    m_unit = UnitManager::getUnit( unitID );
+    m_unit = UnitManager::self()->getUnit( unitID );
 }
 
 StockMaterial::~StockMaterial( )

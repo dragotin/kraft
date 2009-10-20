@@ -18,13 +18,13 @@
 #ifndef _MATERIALSELECTDIALOG_H
 #define _MATERIALSELECTDIALOG_H
 
-#include <qvbox.h>
+#include <q3vbox.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 // include files
 
@@ -39,7 +39,7 @@ class FilterHeader;
  * Editor that shows the MaterialKatalogListView
  * ********************************************************************************/
 
-class MaterialSelectDialog : public KDialogBase
+class MaterialSelectDialog : public KDialog
 {
   Q_OBJECT
 

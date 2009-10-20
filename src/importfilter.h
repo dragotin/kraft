@@ -21,6 +21,7 @@
 #define _IMPORTFILTER_H
 
 #include <qstring.h>
+
 #include <stdlib.h>
 
 #include "docposition.h"
@@ -29,6 +30,7 @@ class ImportFilter
 {
 public:
   ImportFilter();
+  virtual ~ImportFilter() { }
 
   virtual bool parse();
   virtual QString kdeStdDirPath() const = 0;
@@ -60,12 +62,13 @@ class DocPositionImportFilter : public ImportFilter
 {
 public:
   DocPositionImportFilter( );
+  virtual ~DocPositionImportFilter( ) {}
 
   virtual QString kdeStdDirPath() const;
 
   bool parseDefinition();
 
-  QValueList<DocPosition> import( const QString& );
+  DocPositionList import( const KUrl& );
   void debugDefinition();
 
 private:

@@ -14,14 +14,18 @@
 #include <qvariant.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
-#include <qframe.h>
+#include <q3frame.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 #include <klineedit.h>
 #include <knuminput.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qlayout.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
 
 /*
  *  Constructs a calcdetail_time as a child of 'parent', with the
@@ -30,31 +34,31 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-calcdetail_time::calcdetail_time( QWidget* parent, const char* name, bool modal, WFlags fl )
+calcdetail_time::calcdetail_time( QWidget* parent, const char* name, bool modal, Qt::WFlags fl )
     : QDialog( parent, name, modal, fl )
 {
     if ( !name )
 	setName( "calcdetail_time" );
     setSizeGripEnabled( TRUE );
-    calcdetail_timeLayout = new QGridLayout( this, 1, 1, 11, 6, "calcdetail_timeLayout"); 
+    calcdetail_timeLayout = new Q3GridLayout( this, 1, 1, 11, 6, "calcdetail_timeLayout"); 
     spacer3 = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
     calcdetail_timeLayout->addItem( spacer3, 0, 0 );
 
-    layout6 = new QVBoxLayout( 0, 0, 6, "layout6"); 
+    layout6 = new Q3VBoxLayout( 0, 0, 6, "layout6"); 
 
     textLabel1 = new QLabel( this, "textLabel1" );
     layout6->addWidget( textLabel1 );
 
     textLabel2 = new QLabel( this, "textLabel2" );
-    textLabel2->setAlignment( int( QLabel::WordBreak | QLabel::AlignVCenter ) );
+    textLabel2->setAlignment( int( QLabel::WordBreak | Qt::AlignVCenter ) );
     layout6->addWidget( textLabel2 );
 
-    frame3 = new QFrame( this, "frame3" );
-    frame3->setFrameShape( QFrame::StyledPanel );
-    frame3->setFrameShadow( QFrame::Raised );
-    frame3Layout = new QGridLayout( frame3, 1, 1, 11, 6, "frame3Layout"); 
+    frame3 = new Q3Frame( this, "frame3" );
+    frame3->setFrameShape( Q3Frame::StyledPanel );
+    frame3->setFrameShadow( Q3Frame::Raised );
+    frame3Layout = new Q3GridLayout( frame3, 1, 1, 11, 6, "frame3Layout"); 
 
-    layout4 = new QGridLayout( 0, 1, 1, 0, 6, "layout4"); 
+    layout4 = new Q3GridLayout( 0, 1, 1, 0, 6, "layout4"); 
 
     m_nameEdit = new KLineEdit( frame3, "m_nameEdit" );
 
@@ -72,7 +76,7 @@ calcdetail_time::calcdetail_time( QWidget* parent, const char* name, bool modal,
 
     layout4->addWidget( textLabel3, 0, 0 );
 
-    layout2 = new QHBoxLayout( 0, 0, 6, "layout2"); 
+    layout2 = new Q3HBoxLayout( 0, 0, 6, "layout2"); 
 
     m_dauer = new KIntNumInput( frame3, "m_dauer" );
     m_dauer->setValue( 6 );
@@ -96,7 +100,7 @@ calcdetail_time::calcdetail_time( QWidget* parent, const char* name, bool modal,
     frame3Layout->addLayout( layout4, 0, 0 );
     layout6->addWidget( frame3 );
 
-    Layout1 = new QHBoxLayout( 0, 0, 6, "Layout1"); 
+    Layout1 = new Q3HBoxLayout( 0, 0, 6, "Layout1"); 
 
     buttonHelp = new QPushButton( this, "buttonHelp" );
     buttonHelp->setAutoDefault( TRUE );

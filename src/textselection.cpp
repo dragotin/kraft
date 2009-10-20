@@ -22,21 +22,23 @@
 
 #include <klocale.h>
 #include <kdebug.h>
-#include <klistview.h>
+#include <QTreeWidgetItem>
 #include <kdialog.h>
 #include <kaction.h>
-#include <kaccel.h>
+#include <kactioncollection.h>
 #include <kiconloader.h>
 
-#include <qiconset.h>
+#include <qicon.h>
 #include <qsizepolicy.h>
 #include <qlabel.h>
-#include <qvbox.h>
-#include <qheader.h>
-#include <qpopupmenu.h>
+#include <q3vbox.h>
+#include <q3header.h>
+#include <q3popupmenu.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
-  :QVBox( parent )
+  :Q3VBox( parent )
 {
   setMargin( KDialog::marginHint() );
   setSpacing( KDialog::spacingHint() );
@@ -44,29 +46,29 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   /* a view for the entry text repository */
   ( void ) new QLabel( i18n( "%1 Text Selection" ).arg( KraftDoc::partToString( part ) ), this );
 
-  mTextsView = new KListView( this );
-  mTextsView->setItemMargin( 4 );
+  mTextsView = new QTreeWidget( this );
+  // mTextsView->setItemMargin( 4 );
   mTextsView->setRootIsDecorated( false );
-  mTextsView->header()->setHidden( true );
-  mTextsView->setResizeMode( QListView::LastColumn );
-  mTextsView->setSelectionMode( QListView::Single );
+  mTextsView->headerItem()->setHidden( true );
+  // mTextsView->setResizeMode( Q3ListView::LastColumn );
+  mTextsView->setSelectionMode( QAbstractItemView::SingleSelection );
+  mTextsView->setColumnCount( 1 );
+  mTextsView->setHeaderLabel( i18n("Text"));
 
-  mTextsView->addColumn( i18n( "Text" ) );
-
-  connect( mTextsView, SIGNAL( selectionChanged( QListViewItem* ) ),
-           this, SLOT( slotSelectionChanged( QListViewItem* ) ) );
-  connect( mTextsView, SIGNAL( doubleClicked( QListViewItem*, const QPoint &, int ) ),
-           this, SLOT( slotSelectionChanged( QListViewItem* ) ) );
+  connect( mTextsView, SIGNAL( selectionChanged( QTreeWidgetItem* ) ),
+           this, SLOT( slotSelectionChanged( QTreeWidgetItem* ) ) );
+  connect( mTextsView, SIGNAL( doubleClicked( QTreeWidgetItem*, const QPoint &, int ) ),
+           this, SLOT( slotSelectionChanged( QTreeWidgetItem* ) ) );
 
   buildTextList( part );
 
   // Context Menu
-  mMenu = new QPopupMenu( mTextsView );
+  mMenu = new Q3PopupMenu( mTextsView );
   // mMenu->insertTitle( i18n("Template Actions") );
   // connect( this, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint& , int ) ),
   //           this, SLOT( slotRMB( QListViewItem *, const QPoint &, int ) ) );
-  connect( mTextsView, SIGNAL( contextMenu( KListView*, QListViewItem *, const QPoint& ) ),
-           this, SLOT( slotRMB( KListView*, QListViewItem *, const QPoint & ) ) );
+  connect( mTextsView, SIGNAL( contextMenu( QTreeWidget*, QTreeWidgetItem *, const QPoint& ) ),
+           this, SLOT( slotRMB( QTreeWidget*, QTreeWidgetItem *, const QPoint & ) ) );
 
   initActions();
 }
@@ -76,14 +78,15 @@ void TextSelection::buildTextList( KraftDoc::Part part )
   QStringList docTypes = DocType::allLocalised();
   mDocTypeItemMap.clear();
   for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
-    KListViewItem *docTypeItem = new KListViewItem( mTextsView, *dtIt );
-    docTypeItem->setOpen( true );
+    QTreeWidgetItem *docTypeItem = new QTreeWidgetItem( mTextsView );
+    docTypeItem->setText(0 , *dtIt );
+    docTypeItem->setExpanded( true );
     mDocTypeItemMap[*dtIt] = docTypeItem;
 
     DocTextList dtList = DefaultProvider::self()->documentTexts( *dtIt, part );
     DocTextList::iterator textIt;
     for ( textIt = dtList.begin(); textIt != dtList.end(); ++textIt ) {
-      QListViewItem *item = addOneDocText( docTypeItem, *textIt );
+      QTreeWidgetItem *item = addOneDocText( docTypeItem, *textIt );
       QString textname = ( *textIt ).name();
       if ( ( *textIt ).isStandardText() ) {
         mStandardItemMap[*dtIt] = item;
@@ -93,11 +96,11 @@ void TextSelection::buildTextList( KraftDoc::Part part )
   }
 }
 
-void TextSelection::slotSelectionChanged( QListViewItem* item )
+void TextSelection::slotSelectionChanged( QTreeWidgetItem* item )
 {
   // do not fire the signal for the root element which is the doc type
-  QListViewItem *it = 0;
-  QValueList<QListViewItem*> itemsList = mDocTypeItemMap.values();
+  QTreeWidgetItem *it = 0;
+  QList<QTreeWidgetItem*> itemsList = mDocTypeItemMap.values();
   if ( itemsList.find( item ) == itemsList.end() ) {
     it = item; // was not found in the doctype item list
   }
@@ -108,53 +111,55 @@ void TextSelection::slotSelectDocType( const QString& doctype )
 {
   QStringList docTypes = DocType::allLocalised();
   for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
-    QListViewItem *item = mDocTypeItemMap[ ( *dtIt ) ];
+    QTreeWidgetItem *item = mDocTypeItemMap[ ( *dtIt ) ];
 
     if ( doctype != *dtIt ) {
-      item->setVisible( false );
+      item->setHidden( true );
     } else {
-      item->setVisible( true );
+      item->setHidden( false );
     }
   }
   if ( mStandardItemMap.contains( doctype )  ) {
     mStandardItemMap[doctype]->setSelected( true );
   } else {
-    kdDebug() << "no standard text found for "<< doctype << endl;
+    kDebug() << "no standard text found for "<< doctype << endl;
   }
 }
 
-KListViewItem *TextSelection::addOneDocText( QListViewItem* parent, const DocText& dt )
+QTreeWidgetItem *TextSelection::addOneDocText( QTreeWidgetItem* parent, const DocText& dt )
 {
   QString name = dt.name();
   DocText newDt = dt;
 
-  KListViewItem *item1 = new KListViewItem( parent, name );
-  item1->setPixmap( 0, dt.pixmap() );
+  QTreeWidgetItem *item1 = new QTreeWidgetItem( parent );
+  item1->setText( 0, name );
+  item1->setIcon( 0, dt.pixmap() );
   if ( dt.isStandardText() ) {
     mTextsView->blockSignals( true );
-    mTextsView->setSelected( item1, true );
+    item1->setSelected( true );
     mTextsView->blockSignals( false );
   }
   newDt.setListViewItem( item1 );
 
-  KListViewItem *item2 = new KListViewItem( item1, dt.text() );
-  item2->setMultiLinesEnabled( true );
+  QTreeWidgetItem *item2 = new QTreeWidgetItem( item1 );
+  item2->setText(0, dt.text() );
+  // item2->setMultiLinesEnabled( true ); FIXME
 
-  kdDebug() << "Document database id is "<< dt.dbId().toString() << endl;
+  kDebug() << "Document database id is "<< dt.dbId().toString() << endl;
   mTextMap[item1] = newDt;
   mTextMap[item2] = newDt;
-  // kdDebug() << "Document database id2 is "<< ( mTextMap[item2] ).dbId().toString() << endl;
+  // kDebug() << "Document database id2 is "<< ( mTextMap[item2] ).dbId().toString() << endl;
   // item1->setOpen( true );
   return item1;
 }
 
-QListViewItem* TextSelection::addNewDocText( const DocText& dt )
+QTreeWidgetItem* TextSelection::addNewDocText( const DocText& dt )
 {
-  QListViewItem *item = mDocTypeItemMap[dt.docType()];
+  QTreeWidgetItem *item = mDocTypeItemMap[dt.docType()];
 
   if ( item ) {
     mTextsView->clearSelection();
-    QListViewItem *newItem = addOneDocText( item, dt );
+    QTreeWidgetItem *newItem = addOneDocText( item, dt );
     return newItem;
   }
   return 0;
@@ -163,17 +168,17 @@ QListViewItem* TextSelection::addNewDocText( const DocText& dt )
 /* requires the QListViewItem set as a member in the doctext */
 void TextSelection::updateDocText( const DocText& dt )
 {
-  QListViewItem *item = dt.listViewItem();
+  QTreeWidgetItem *item = dt.listViewItem();
 
   if ( item ) {
-    kdDebug() << "Update Doc Text Item" << item << endl;
+    kDebug() << "Update Doc Text Item" << item << endl;
 
     mTextMap[item] = dt;
 
     item->setText( 0, dt.name() );
-    item->setPixmap( 0, dt.pixmap() );
+    item->setIcon( 0, dt.pixmap() );
 
-    QListViewItem *itChild = item->firstChild();
+    QTreeWidgetItem *itChild = item->child( 0 );
     if ( itChild ) {
       itChild->setText( 0, dt.text() );
       mTextMap[itChild] = dt;
@@ -183,18 +188,18 @@ void TextSelection::updateDocText( const DocText& dt )
 
 void TextSelection::deleteCurrentText()
 {
-  QListViewItem *curr = mTextsView->selectedItem();
+  QTreeWidgetItem *curr = mTextsView->selectedItems()[0];
   if ( mDocTypeItemMap.values().find( curr ) == mDocTypeItemMap.values().end() ) {
-    kdDebug() << "Can not delete the doc type item" << endl;
+    kDebug() << "Can not delete the doc type item" << endl;
     return;
   }
 
   if ( ! curr ) return;
 
-  if ( curr->firstChild() ) {
+  if ( curr->child(0) ) {
     // If the parent item is in the docType map the child must be deleted.
-    mTextMap.remove( curr->firstChild() );
-    delete curr->firstChild();
+    mTextMap.remove( curr->child(0) );
+    delete curr->child(0);
     mTextMap.remove( curr );
     delete curr;
   } else {
@@ -215,16 +220,19 @@ TextSelection::~TextSelection()
 void TextSelection::initActions()
 {
   mActions     = new KActionCollection( this );
-  mAcMoveToDoc = new KAction( i18n("&Use in Document"), "back", 0, this,
-                              SIGNAL( actionCurrentTextToDoc() ), mActions, "moveToDoc");
-  mAcMoveToDoc->plug( mMenu );
+  mAcMoveToDoc = mActions->addAction( "moveToDoc", this, SIGNAL(actionCurrentTextToDoc()));
+  mAcMoveToDoc->setIcon( KIcon( "back" ));
+  mAcMoveToDoc->setText( i18n("&Use in Document") );
+
+  mMenu->addAction( mAcMoveToDoc );
+
 }
 
 DocText TextSelection::currentDocText() const
 {
   DocText dt;
 
-  QListViewItem *curr = mTextsView->selectedItem();
+  QTreeWidgetItem *curr = mTextsView->selectedItems()[0];
   if ( curr ) {
     dt = mTextMap[curr];
   }
@@ -236,19 +244,19 @@ QString TextSelection::currentText() const
 {
   QString re;
 
-  QListViewItem *curr = mTextsView->selectedItem();
+  QTreeWidgetItem *curr = mTextsView->selectedItems()[0];
   if ( curr ) {
     DocText dt = mTextMap[curr];
     re = dt.text();
   } else {
-    kdDebug() << "No current Item!" << endl;
+    kDebug() << "No current Item!" << endl;
   }
 
   return re;
 }
 
 
-void TextSelection::slotRMB( KListView*, QListViewItem* item, const QPoint& point )
+void TextSelection::slotRMB( QTreeWidget*, QTreeWidgetItem* item, const QPoint& point )
 {
   if( ! item ) return;
 

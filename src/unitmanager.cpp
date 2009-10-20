@@ -17,13 +17,13 @@
 
 #include <stdlib.h>
 
-// include files for Qt
-#include <qsqlcursor.h>
+#include <QSqlQuery>
 
 // include files for KDE
 #include <kraftdb.h>
 #include <klocale.h>
 #include <kdebug.h>
+#include <k3staticdeleter.h>
 
 // include files for standard functions
 #include <stdlib.h>
@@ -31,105 +31,83 @@
 #include "unitmanager.h"
 #include "einheit.h"
 
+static K3StaticDeleter<UnitManager> selfDeleter;
+
+UnitManager* UnitManager::mSelf = 0;
+
+UnitManager* UnitManager::self()
+{
+  if ( ! mSelf ) {
+    selfDeleter.setObject( mSelf, new UnitManager() );
+  }
+  return mSelf;
+}
+
 UnitManager::UnitManager( )
 {
+
 }
 
 void UnitManager::load()
 {
-  int max = 5;
-  if( ! m_units )
-    m_units = new EinheitValueVector();
-  m_dummy = new Einheit();
-  m_units->resize(max+1);
+  QSqlQuery q( "SELECT unitID, unitShort, unitLong, unitPluShort, unitPluLong FROM units");
 
-  QSqlCursor cur("units");
-
-  // Create an index that sorts from high values for einheitID down.
-  // that makes at least on resize of the vector.
-  QSqlIndex indx = cur.index( "unitID" );
-  indx.setDescending ( 0, true );
-
-  cur.select(indx);
-  while( cur.next())
+  while( q.next())
   {
-    int unitID = cur.value("unitID").toInt();
-    // resize if index is to big.
-    if( unitID > max )
-    {
-      max = unitID;
-      m_units->resize( max+1);
-    }
-
+    int unitID = q.value(0).toInt();
     Einheit e( unitID,
-               cur.value("unitShort").toString(),
-               cur.value("unitLong").toString(),
-               cur.value("unitPluShort").toString(),
-               cur.value("unitPluLong").toString() );
-    m_units->at(unitID) = e;
+               q.value(1).toString(),
+               q.value(2).toString(),
+               q.value(3).toString(),
+               q.value(4).toString() );
+    mUnits.append(e);
   }
 }
 
 QStringList UnitManager::allUnits()
 {
-    QStringList list;
+  QStringList list;
 
-    if(! m_units ) load();
-    EinheitValueVector::iterator it;
-    for( it = m_units->begin(); it && it != m_units->end(); ++it )
-    {
-        QString uSing = (*it).einheitSingular();
-        if( !uSing.isEmpty())
-            list << (*it).einheitSingular();
-    }
-    return list;
+  if(mUnits.size() == 0 ) load();
+  foreach( Einheit e, mUnits ) {
+    QString uSing = e.einheitSingular();
+    if( !uSing.isEmpty())
+      list << uSing;
+  }
+  return list;
 }
 
 
-Einheit& UnitManager::getUnit( int id )
+Einheit UnitManager::getUnit( int id )
 {
-    if( ! m_units || m_units->isEmpty() ) load();
+  if( mUnits.size() == 0 ) load();
 
-    // kdDebug() << "Searching unit ID " << id << endl;
-    bool ok;
-
-    Einheit re;
-    if( id >= 0 && ((unsigned)abs(id)) < m_units->size()) {
-        re = m_units->at(id, &ok );
-        if( ! ok ) {
-            kdDebug() << "No Unit for id " << id << endl;
-        } else {
-            return m_units->at(id, &ok );
-        }
-    }
-    return *m_dummy;
+  // kDebug() << "Searching unit ID " << id << endl;
+  foreach( Einheit e, mUnits ) {
+    if( e.id() == id ) return e;
+  }
+  return Einheit();
 }
 
 int UnitManager::getUnitIDSingular( const QString& einheitStr )
 {
-    if( ! m_units || m_units->isEmpty() ) load();
+  if( mUnits.size() == 0 ) load();
 
-    for( uint i = 0; i < m_units->size(); i++ )
-    {
-        Einheit tmp = m_units->at(i);
+  foreach( Einheit tmp, mUnits ) {
 
-        if( tmp.einheitSingular() == einheitStr ||
-            tmp.einheitPlural()   == einheitStr ) {
-          // kdDebug() << "Thats it, returning " << tmp.id() << endl;
-            return tmp.id();
-        }
+    if( tmp.einheitSingular() == einheitStr ||
+        tmp.einheitPlural()   == einheitStr ) {
+      // kDebug() << "Thats it, returning " << tmp.id() << endl;
+      return tmp.id();
     }
-    return -1;
+  }
+  return -1;
 }
 
 UnitManager::~UnitManager( )
 {
-  delete m_units;
-  delete m_dummy;
 }
 
-EinheitValueVector *UnitManager::m_units = 0;
-Einheit *UnitManager::m_dummy = 0;
 /* END */
 
 

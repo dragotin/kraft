@@ -31,18 +31,22 @@
 #include "defaultprovider.h"
 
 
-FixCalcDialog::FixCalcDialog(QWidget *parent, const char* name, bool modal )
-    : calcdetailFix( parent, name, modal ),
-      m_part(0)
+FixCalcDialog::FixCalcDialog(QWidget *parent, bool modal )
+    :KDialog( parent ), Ui::calcdetailFix(),
+    m_part(0)
 {
+  setupUi( this );
+  setModal( modal );
   m_inpPreis->setSuffix( DefaultProvider::self()->currencySymbol() );
 }
 
-FixCalcDialog::FixCalcDialog(FixCalcPart *cp, QWidget *parent, const char* name, bool modal )
-    : calcdetailFix( parent, name, modal ),
-      m_part(0)
+FixCalcDialog::FixCalcDialog(FixCalcPart *cp, QWidget *parent, bool modal )
+    : KDialog( parent ), Ui::calcdetailFix( ),
+    m_part(0)
 {
-    setCalcPart(cp);
+  setupUi( this );
+  setModal( modal );
+  setCalcPart(cp);
   m_inpPreis->setSuffix( DefaultProvider::self()->currencySymbol() );
 }
 
@@ -72,7 +76,7 @@ void FixCalcDialog::accept()
   if( m_part && m_part->isDirty() ) {
     emit fixCalcPartChanged(m_part);
   }
-  calcdetailFix::accept();
+  accept();
 }
 
 QString FixCalcDialog::getName()

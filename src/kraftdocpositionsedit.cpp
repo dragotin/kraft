@@ -1,7 +1,11 @@
 #include "kraftdocpositionsedit.h"
 
-#include <qhbox.h>
+#include <q3hbox.h>
 #include <qlayout.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <Q3Frame>
+#include <Q3BoxLayout>
 
 #include <kpushbutton.h>
 #include <klocale.h>
@@ -13,12 +17,12 @@
 KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   : KraftDocEdit( parent )
 {
-  QBoxLayout *topLayout = new QVBoxLayout( this );
+  Q3BoxLayout *topLayout = new Q3VBoxLayout( this );
   topLayout->setMargin( 0 );
   topLayout->setSpacing( 0 ); // KDialog::spacingHint() );
 
-  QHBox *upperHBox = new QHBox( this );
-  upperHBox->setFrameStyle( QFrame::Box + QFrame::Sunken );
+  Q3HBox *upperHBox = new Q3HBox( this );
+  upperHBox->setFrameStyle( Q3Frame::Box + Q3Frame::Sunken );
   upperHBox->setMargin( KDialog::marginHint()/2 );
   topLayout->addWidget( upperHBox );
 
@@ -29,7 +33,7 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
 
   button = new KPushButton( i18n("Add Discount Item"), upperHBox );
   connect( button, SIGNAL( clicked() ), SIGNAL( addExtraClicked() ) );
-  QToolTip::add( button, i18n( "Adds an item to the document that allows discounts on other items in the document" ) );
+   QToolTip::add( button, i18n( "Adds an item to the document that allows discounts on other items in the document" ) );
 
   button = new KPushButton( i18n("Import Items..."), upperHBox );
   connect( button, SIGNAL( clicked() ), SIGNAL( importItemsClicked() ) );

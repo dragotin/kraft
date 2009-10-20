@@ -37,7 +37,7 @@ class TemplateSaverBase
 {
 public:
     TemplateSaverBase();
-    ~TemplateSaverBase();
+    virtual ~TemplateSaverBase();
 
     virtual bool saveTemplate( FloskelTemplate* );
 private:
@@ -49,6 +49,7 @@ class CalculationsSaverBase
 public:
   enum TargetType { Template, Document };
   CalculationsSaverBase();
+  virtual ~CalculationsSaverBase() { }
   CalculationsSaverBase( TargetType );
 
   virtual bool saveCalculations( CalcPartList, dbID ) = 0;

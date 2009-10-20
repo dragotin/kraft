@@ -24,21 +24,23 @@
 #endif
 
 // include files
-#include "matpartui.h"
+#include <kdialog.h>
+
+#include "ui_matpartui.h"
 
 class StockMaterial;
 /**
  *
  */
 
-class MatCalcDialog : public calcdetailMat
+class MatCalcDialog : public KDialog, protected Ui::calcdetailMat
 {
     Q_OBJECT
 
 public:
-    MatCalcDialog( StockMaterial *mat=0, QWidget *parent=0, const char* name=0, bool modal=FALSE );
-    MatCalcDialog( double amount, StockMaterial *mat, QWidget *parent=0, const char* name=0, bool modal=FALSE );
-    ~MatCalcDialog();
+    MatCalcDialog( StockMaterial *mat=0, QWidget *parent=0, bool modal=FALSE );
+    MatCalcDialog( double amount, StockMaterial *mat, QWidget *parent=0, bool modal=FALSE );
+    virtual ~MatCalcDialog();
 
     double getAmount();
 protected slots:

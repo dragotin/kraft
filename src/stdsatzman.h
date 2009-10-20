@@ -30,7 +30,7 @@
 #endif
 
 // include files
-#include <qvaluevector.h>
+#include <QVector>
 
 #include "geld.h"
 #include "dbids.h"
@@ -82,7 +82,7 @@ private:
 };
 
 
-typedef QValueVector<StdSatz> StdSatzValueVector;
+typedef QVector<StdSatz> StdSatzVector;
 
 /**
  * der Stundensatzmanager
@@ -101,7 +101,7 @@ private:
   StdSatzMan();
   void load();
 
-  StdSatzValueVector mStdSaetze;
+  StdSatzVector mStdSaetze;
   static StdSatzMan *mSelf;
 };
 

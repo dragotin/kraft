@@ -23,16 +23,19 @@
 #include <qcursor.h>
 #include <qtimer.h>
 #include <qsqldatabase.h>
+#include <QSqlError>
 
 // include files for KDE
+#include <kaction.h>
+#include <kactioncollection.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <kfiledialog.h>
-#include <kmenubar.h>
+#include <kmenu.h>
 #include <kstatusbar.h>
 #include <klocale.h>
 #include <kconfig.h>
-#include <kstdaction.h>
+#include <kstandardaction.h>
 #include <kdebug.h>
 #include <kaction.h>
 #include <kcmdlineargs.h>
@@ -41,6 +44,7 @@
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
 #include <kabc/addressee.h>
+#include <ktoolinvocation.h>
 
 // application specific includes
 #include "kraftview.h"
@@ -71,11 +75,12 @@
 
 #define ID_STATUS_MSG 1
 
-Portal::Portal( QWidget*, KCmdLineArgs *args, const char* name)
-: KMainWindow(0, name),
+Portal::Portal( QWidget *parent, KCmdLineArgs *args, const char* name)
+: KXmlGuiWindow( parent, 0 ),
   mCmdLineArgs( args )
 
 {
+  setObjectName( name );
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
   initStatusBar();
@@ -101,72 +106,91 @@ Portal::~Portal()
 
 void Portal::initActions()
 {
-  fileQuit = KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
-  editCut = KStdAction::cut(this, SLOT(slotEditCut()), actionCollection());
-  editCopy = KStdAction::copy(this, SLOT(slotEditCopy()), actionCollection());
-  editPaste = KStdAction::paste(this, SLOT(slotEditPaste()), actionCollection());
-  viewStatusBar = KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
-  viewFlosTemplates = new KToggleAction( i18n("Show Floskel Templates"), 0,0, this,
-                                         SLOT(slotShowTemplates()),
-                                         actionCollection(), "file_show_templ");
-  KStdAction::preferences( this, SLOT( preferences() ), actionCollection() );
+  fileQuit = actionCollection()->addAction( KStandardAction::Quit, this, SLOT(slotFileQuit() ) );
+  editCut = actionCollection()->addAction( KStandardAction::Cut, this, SLOT(slotEditCut() ) );
+  editCopy = actionCollection()->addAction( KStandardAction::Copy, this, SLOT(slotEditCopy() ) );
+  editPaste = actionCollection()->addAction( KStandardAction::Paste, this, SLOT(slotEditPaste() ) );
+  viewStatusBar = KStandardAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
+  // viewFlosTemplates = actionCollection()->addAction( "file_show_templ", this, SLOT( slotShowTemplates()) );
 
-  actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew",
-                               KStdAccel::shortcut(KStdAccel::New), this,
-                               SLOT(slotNewDocument()),
-                               actionCollection(), "document_new");
+//  viewFlosTemplates = new KToggleAction( i18n("Show Floskel Templates"), 0,0, this,
+//                                         SLOT(slotShowTemplates()),
+//                                         actionCollection(), "file_show_templ");
 
-  actCopyDocument = new KAction( i18n( "Copy Document" ), "editcopy",
-                                 KStdAccel::shortcut( KStdAccel::Copy ), this,
-                                 SLOT( slotCopyDocument() ),
-                                 actionCollection(), "document_copy" );
+  actionCollection()->addAction( KStandardAction::Preferences, this, SLOT( preferences() ) );
 
-  actFollowDocument = new KAction( i18n( "Follow Document" ), "editcopy",
-                                   KShortcut( Qt::CTRL + Qt::Key_F ), this,
-                                 SLOT( slotFollowUpDocument() ),
-                                 actionCollection(), "document_follow" );
+  actNewDocument = actionCollection()->addAction( "document_new", this, SLOT( slotNewDocument()) );
+  // actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew",
+  //                             KStandardShortcut::shortcut(KStandardShortcut::New), this,
+  //                             SLOT(slotNewDocument()),
+  //                             actionCollection(), "document_new");
+  actCopyDocument = actionCollection()->addAction( "document_copy", this, SLOT( slotCopyDocument()) );
 
-  actPrintDocument = new KAction(i18n("&Print Document"), "printer1",
-                                 KStdAccel::shortcut(KStdAccel::Print), this,
-                                 SLOT(slotPrintDocument()),
-                                 actionCollection(), "document_print");
+//  actCopyDocument = new KAction( i18n( "Copy Document" ), "editcopy",
+//                                 KStandardShortcut::sho rtcut( KStandardShortcut::Copy ), this,
+//                                 SLOT( slotCopyDocument() ),
+//                                 actionCollection(), "document_copy" );
 
-  actOpenArchivedDocument = new KAction( i18n( "Open &Archived Document" ), "attach",
-                                         KShortcut( Qt::CTRL + Qt::Key_A ), this,
-                                         SLOT( slotArchivedDocExecuted() ), actionCollection(),
-                                         "archived_open" );
+  actFollowDocument = actionCollection()->addAction( "document_follow", this, SLOT( slotFollowUpDocument() ) );
 
-  actViewDocument = new KAction(i18n("&Show Document"),  "filefind",
-                                KStdAccel::shortcut(KStdAccel::Reload), this,
-                                SLOT( slotViewDocument() ), actionCollection(), "document_view" );
+//  actFollowDocument = new KAction( i18n( "Follow Document" ), "editcopy",
+//                                   KShortcut( Qt::CTRL + Qt::Key_F ), this,
+//                                 SLOT( slotFollowUpDocument() ),
+//                                 actionCollection(), "document_follow" );
 
-  actOpenDocument = new KAction(i18n("&Edit Document"),  "fileopen",
-                                KStdAccel::shortcut(KStdAccel::Open), this,
-                                SLOT( slotOpenDocument() ), actionCollection(), "document_open" );
+  actPrintDocument = actionCollection()->addAction( "document_print", this, SLOT( slotPrintDocument()) );
 
-  actMailDocument = new KAction( i18n( "&Mail Document" ), "mail_generic",
-                                 KShortcut( Qt::CTRL + Qt::Key_M ), this,
-                                 SLOT( slotMailDocument() ), actionCollection(), "document_mail" );
+//  actPrintDocument = new KAction(i18n("&Print Document"), "printer1",
+//                                 KStandardShortcut::shortcut(KStandardShortcut::Print), this,
+//                                 SLOT(slotPrintDocument()),
+//                                 actionCollection(), "document_print");
 
-  actEditTemplates = new KAction( i18n( "&Edit Tag Templates..." ),  "flag",
-                                  KShortcut( Qt::CTRL + Qt::Key_E ), this,
-                                  SLOT( slotEditTagTemplates() ), actionCollection(), "edit_tag_templates" );
+  actOpenArchivedDocument = actionCollection()->addAction( "archived_open", this, SLOT( slotArchivedDocExecuted()) );
 
-  fileQuit->setStatusText(i18n("Quits the application"));
-  editCut->setStatusText(i18n("Cuts the selected section and puts it to the clipboard"));
-  editCopy->setStatusText(i18n("Copies the selected section to the clipboard"));
-  editPaste->setStatusText(i18n("Pastes the clipboard contents to actual position"));
-  viewStatusBar->setStatusText(i18n("Enables/disables the statusbar"));
+//  actOpenArchivedDocument = new KAction( i18n( "Open &Archived Document" ), "attach",
+//                                         KShortcut( Qt::CTRL + Qt::Key_A ), this,
+//                                         SLOT( slotArchivedDocExecuted() ), actionCollection(),
+//                                         "archived_open" );
 
-  actNewDocument->setStatusText( i18n( "Creates a new Document" ) );
-  actPrintDocument->setStatusText( i18n( "Print and archive this Document" ) );
-  actCopyDocument->setStatusText( i18n( "Creates a new document which is a copy of the selected document" ) );
-  actFollowDocument->setStatusText( i18n( "Create a followup document for the current document" ) );
-  actOpenDocument->setStatusText( i18n( "Opens the document for editing" ) );
-  actViewDocument->setStatusText( i18n( "Opens a read only view on the document." ) );
-  actMailDocument->setStatusText( i18n( "Send document per mail" ) );
+  actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewDocument()));
 
-  actOpenArchivedDocument->setStatusText( i18n( "Open a viewer on an archived document" ) );
+//  actViewDocument = new KAction(i18n("&Show Document"),  "filefind",
+//                                KStandardShortcut::shortcut(KStandardShortcut::Reload), this,
+//                                SLOT( slotViewDocument() ), actionCollection(), "document_view" );
+
+  actOpenDocument = actionCollection()->addAction( "document_open", this, SLOT( slotOpenDocument()) );
+
+//  actOpenDocument = new KAction(i18n("&Edit Document"),  "fileopen",
+//                                KStandardShortcut::shortcut(KStandardShortcut::Open), this,
+//                                SLOT( slotOpenDocument() ), actionCollection(), "document_open" );
+
+  actMailDocument = actionCollection()->addAction( "document_mail", this, SLOT( slotMailDocument()) );
+
+//  actMailDocument = new KAction( i18n( "&Mail Document" ), "mail_generic",
+//                                 KShortcut( Qt::CTRL + Qt::Key_M ), this,
+//                                 SLOT( slotMailDocument() ), actionCollection(), "document_mail" );
+
+  actEditTemplates = actionCollection()->addAction( "edit_tag_templates", this, SLOT( slotEditTagTemplates() ) );
+
+//  actEditTemplates = new KAction( i18n( "&Edit Tag Templates..." ),  "flag",
+//                                  KShortcut( Qt::CTRL + Qt::Key_E ), this,
+//                                  SLOT( slotEditTagTemplates() ), actionCollection(), "edit_tag_templates" );
+
+  fileQuit->setStatusTip(i18n("Quits the application"));
+  editCut->setStatusTip(i18n("Cuts the selected section and puts it to the clipboard"));
+  editCopy->setStatusTip(i18n("Copies the selected section to the clipboard"));
+  editPaste->setStatusTip(i18n("Pastes the clipboard contents to actual position"));
+  viewStatusBar->setStatusTip(i18n("Enables/disables the statusbar"));
+
+  actNewDocument->setStatusTip( i18n( "Creates a new Document" ) );
+  actPrintDocument->setStatusTip( i18n( "Print and archive this Document" ) );
+  actCopyDocument->setStatusTip( i18n( "Creates a new document which is a copy of the selected document" ) );
+  actFollowDocument->setStatusTip( i18n( "Create a followup document for the current document" ) );
+  actOpenDocument->setStatusTip( i18n( "Opens the document for editing" ) );
+  actViewDocument->setStatusTip( i18n( "Opens a read only view on the document." ) );
+  actMailDocument->setStatusTip( i18n( "Send document per mail" ) );
+
+  actOpenArchivedDocument->setStatusTip( i18n( "Open a viewer on an archived document" ) );
   setStandardToolBarMenuEnabled( true );
   actOpenDocument->setEnabled( false );
   actViewDocument->setEnabled( false );
@@ -203,17 +227,28 @@ void Portal::initView()
     ////////////////////////////////////////////////////////////////////
     // create the main widget here that is managed by KTMainWindow's view-region and
     // connect the widget to your document to display document contents.
-    m_portalView = new PortalView( this, "mainview", KJanusWidget::IconList );
+    m_portalView = new PortalView( this, "PortalMainView" );
+    KMenu *menu = m_portalView->docDigestView()->contextMenu();
 
-    actViewDocument->plug( m_portalView->docDigestView()->contextMenu() );
-    actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
-    actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
-    actCopyDocument->plug( m_portalView->docDigestView()->contextMenu() );
-    actFollowDocument->plug( m_portalView->docDigestView()->contextMenu() );
-    ( new KActionSeparator( this ) )->plug( m_portalView->docDigestView()->contextMenu() );
-    actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
-    actMailDocument->plug( m_portalView->docDigestView()->contextMenu() );
-    actOpenArchivedDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    menu->addAction( actViewDocument );
+    menu->addAction( actOpenDocument );
+    menu->addAction( actNewDocument );
+    menu->addAction( actCopyDocument );
+    menu->addAction( actFollowDocument );
+    menu->addSeparator();
+    menu->addAction( actPrintDocument );
+    menu->addAction( actMailDocument );
+    menu->addAction( actOpenArchivedDocument );
+
+    // actViewDocument->plug( m_portalView->docDigestView()->contextMenu() );
+//    actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
+//    actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
+//    actCopyDocument->plug( m_portalView->docDigestView()->contextMenu() );
+//    actFollowDocument->plug( m_portalView->docDigestView()->contextMenu() );
+//    ( new KActionSeparator( this ) )->plug( m_portalView->docDigestView()->contextMenu() );
+//    actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
+//    actMailDocument->plug( m_portalView->docDigestView()->contextMenu() );
+//    actOpenArchivedDocument->plug( m_portalView->docDigestView()->contextMenu() );
 
     connect( m_portalView, SIGNAL(openKatalog( const QString&)),
              this, SLOT(slotOpenKatalog(const QString&)));
@@ -256,7 +291,7 @@ void Portal::slotStartupChecks()
 
   if( ! KraftDB::self()->isOk() ) {
     QSqlError err = KraftDB::self()->lastError();
-    kdDebug() << "The last sql error id: " << err.type() << endl;
+    kDebug() << "The last sql error id: " << err.type() << endl;
 
     QString text;
 
@@ -301,9 +336,9 @@ void Portal::slotStartupChecks()
     slotStatusMsg( i18n( "Commandline actions" ) );
 
     if ( mCmdLineArgs ) {
-      QCString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
+      QString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
       if ( ! docId.isEmpty() ) {
-        kdDebug() << "open a archived document: " << docId << endl;
+        kDebug() << "open a archived document: " << docId << endl;
         slotPrintDocument( QString(), dbID( docId.toInt() ) );
       }
 
@@ -330,7 +365,7 @@ bool Portal::queryExit()
 void Portal::busyCursor( bool on )
 {
   if ( on ) {
-    QApplication::setOverrideCursor( QCursor( BusyCursor ) );
+    QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
   } else {
     QApplication::restoreOverrideCursor();
   }
@@ -376,7 +411,7 @@ void Portal::slotFollowUpDocument()
     wiz.setAvailDocTypes( dt.follower() );
   }
 
-  kdDebug() << "doc identifier: "<< doc->docIdentifier() << endl;
+  kDebug() << "doc identifier: "<< doc->docIdentifier() << endl;
   wiz.setDocIdentifier( doc->docIdentifier() );
   if ( wiz.exec() ) {
     DocGuardedPtr doc = DocumentMan::self()->createDocument( locId );
@@ -409,7 +444,7 @@ void Portal::slotCopyDocument( const QString& id )
     doc->setAddressUid( wiz.addressUid() );
     doc->saveDocument();
     m_portalView->slotDocumentCreated( doc );
-    kdDebug() << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
+    kDebug() << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
   }
 }
 
@@ -451,7 +486,7 @@ void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
                                                           digest.archDocId().toString(), "pdf" );
   QString file = QString( "%1/%2" ).arg( outputDir ).arg( filename );
 
-  kdDebug() << "archived doc selected: " << file << endl;
+  kDebug() << "archived doc selected: " << file << endl;
   slotOpenPdf( file );
 
 
@@ -461,7 +496,7 @@ void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
 void Portal::slotPrintDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
-  kdDebug() << "printing document " << locId << endl;
+  kDebug() << "printing document " << locId << endl;
 
   busyCursor( true );
   slotStatusMsg( i18n( "Generating PDF..." ) );
@@ -483,7 +518,7 @@ void Portal::slotPrintDocument()
 void Portal::slotMailDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
-  kdDebug() << "Mailing document " << locId << endl;
+  kDebug() << "Mailing document " << locId << endl;
 
   busyCursor( true );
   slotStatusMsg( i18n( "Generating PDF..." ) );
@@ -511,23 +546,23 @@ void Portal::slotMailDocument()
 
 void Portal::slotMailDocument( const QString& fileName )
 {
-  kdDebug() << "Mailing away " << fileName << endl;
+  kDebug() << "Mailing away " << fileName << endl;
 
   disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
 
   // FIXME: the mailed document should go to another directory to be traceable
   // for the time being we rely on the mailer sent mail folder ;-)
 
-  KURL mailTo;
+  KUrl mailTo;
   mailTo.setProtocol( "mailto" );
   if ( ! mMailReceiver.isEmpty() ) {
     mailTo.addQueryItem( "to", mMailReceiver );
   }
   mailTo.addQueryItem( "attach", fileName );
 
-  kdDebug() << "Use this mailto: " << mailTo << endl;
+  kDebug() << "Use this mailto: " << mailTo << endl;
 
-  KApplication::kApplication()->invokeMailer( mailTo, "Kraft", true );
+  KToolInvocation::invokeMailer( mailTo, "Kraft", true );
 }
 
 /*
@@ -549,8 +584,8 @@ void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
 void Portal::slotOpenPdf( const QString& fileName )
 {
     disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
-    KURL url( fileName );
-    KRun::runURL( url, "application/pdf" );
+    KUrl url( fileName );
+    KRun::runUrl( url, "application/pdf", this );
 }
 
 void Portal::slotOpenDocument( const QString& id )
@@ -568,7 +603,7 @@ void Portal::slotOpenDocument( const QString& id )
 
 void Portal::slotDocumentSelected( const QString& doc )
 {
-  kdDebug() << "a doc was selected: " << doc << endl;
+  kDebug() << "a doc was selected: " << doc << endl;
   if( doc.isEmpty() ) {
     actViewDocument->setEnabled( false );
     actOpenDocument->setEnabled( false );
@@ -612,7 +647,7 @@ void Portal::slotEditTagTemplates()
   TagTemplatesDialog dia( this );
 
   if ( dia.exec() ) {
-    kdDebug() << "Editing of tag templates succeeded!" << endl;
+    kDebug() << "Editing of tag templates succeeded!" << endl;
 
   }
 }
@@ -628,7 +663,7 @@ void Portal::createView( DocGuardedPtr doc )
     view = new KraftView( this );
     view->setup( doc );
     view->redrawDocument();
-    QSize s = KraftSettings::docViewSize();
+    QSize s = KraftSettings::self()->docViewSize();
     if ( !s.isValid() ) {
       s.setWidth( 640 );
       s.setHeight( 400 );
@@ -642,7 +677,7 @@ void Portal::createView( DocGuardedPtr doc )
              this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
   } else {
     // pop first view to front
-    kdDebug() << "There is already a view for this doc!" << endl;
+    kDebug() << "There is already a view for this doc!" << endl;
   }
 }
 
@@ -653,7 +688,7 @@ void Portal::createROView( DocGuardedPtr doc )
   KraftViewRO *view = new KraftViewRO( this );
   view->setup( doc );
   // view->redrawDocument();
-  QSize s = KraftSettings::rODocViewSize();
+  QSize s = KraftSettings::self()->rODocViewSize();
   if ( !s.isValid() ) {
     s.setWidth( 640 );
     s.setHeight( 400 );
@@ -670,14 +705,14 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
 {
   // doc is only valid on success!
   if ( doc && success )  {
-    kdDebug() << "A view was closed saving and doc is new: " << doc->isNew() << endl;
+    kDebug() << "A view was closed saving and doc is new: " << doc->isNew() << endl;
     if ( doc->isNew() ) {
       m_portalView->slotDocumentCreated( doc );
     } else {
       m_portalView->slotDocumentUpdate( doc );
     }
   } else {
-    kdDebug() << "A view was closed canceled" << endl;
+    kDebug() << "A view was closed canceled" << endl;
   }
 }
 
@@ -686,15 +721,16 @@ void Portal::slotFileQuit()
   slotStatusMsg(i18n("Exiting..."));
   // close the first window, the list makes the next one the first again.
   // This ensures that queryClose() is called on each window to ask for closing
+
+
   KMainWindow* w;
-  if(memberList)
-  {
-    for(w=memberList->first(); w!=0; w=memberList->first())
-    {
-      // only close the window if the closeEvent is accepted.
-      if(!w->close())
-	break;
-    }
+  QListIterator<KMainWindow*> it( memberList() );
+
+  while( it.hasNext() ) {
+    w = it.next();
+    // only close the window if the closeEvent is accepted.
+    if(!w->close())
+      break;
   }
 }
 
@@ -752,11 +788,11 @@ void Portal::slotShowTemplates(){
 
 void Portal::slotOpenKatalog(const QString& kat)
 {
-    kdDebug() << "opening Katalog " << kat << endl;
+    kDebug() << "opening Katalog " << kat << endl;
 
     if ( mKatalogViews.contains( kat ) ) {
       // bring up the katalog view window.
-      kdDebug() << "Katalog " << kat << " already open in a view" << endl;
+      kDebug() << "Katalog " << kat << " already open in a view" << endl;
       mKatalogViews[kat]->show();
       mKatalogViews[kat]->raise();
     } else {
@@ -764,6 +800,7 @@ void Portal::slotOpenKatalog(const QString& kat)
 
       KatalogView *katView = 0;
       if( kat == MaterialKatalogView::MaterialCatalogName ) {
+
         /* Materialkatalog */
         katView = new MaterialKatalogView();
       } else if( kat.startsWith("Bruns") ) {
@@ -787,7 +824,7 @@ void Portal::slotOpenKatalog(const QString& kat)
 
 void Portal::slotOpenKatalog()
 {
-    kdDebug() << "opening katalog!" << endl;
+    kDebug() << "opening katalog!" << endl;
     KatalogView *katView = new TemplKatalogView(); //this);
     katView->show();
 
@@ -795,7 +832,7 @@ void Portal::slotOpenKatalog()
 
 void Portal::slotKatalogToXML(const QString& katName)
 {
-    kdDebug() << "Generating XML for catalog " << katName << endl;
+    kDebug() << "Generating XML for catalog " << katName << endl;
 
     Katalog *kat = KatalogMan::self()->getKatalog(katName);
 
@@ -842,8 +879,8 @@ void Portal::preferences()
 
 QWidget* Portal::mainWidget()
 {
-  if( m_portalView )
-    return m_portalView->pageWidget(0);
+  if( m_portalView && m_portalView->currentPage() )
+     return m_portalView->currentPage()->widget();
   return 0;
 }
 

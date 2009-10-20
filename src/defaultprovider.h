@@ -19,6 +19,8 @@
 
 #include <qdom.h>
 
+#include "kraftcat_export.h"
+
 #include "dbids.h"
 #include "kraftdoc.h"
 #include "doctext.h"
@@ -31,7 +33,7 @@ class QStringList;
  * encapsulates all relevant for default values for documents such as
  * texts etc.
  */
-class DefaultProvider
+class KRAFTCAT_EXPORT DefaultProvider
 {
 public:
   ~DefaultProvider();
@@ -51,8 +53,6 @@ public:
   QString iconvTool() const;
 
 private:
-  void fillDocTextBuffer( const DocText&, QSqlRecord* );
-
   DefaultProvider();
 
   static DefaultProvider *mSelf;

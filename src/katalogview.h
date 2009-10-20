@@ -26,24 +26,22 @@
 // include files for Qt
 
 // include files for KDE
-#include <kapp.h>
-#include <kmainwindow.h>
-#include <kaccel.h>
+#include <kapplication.h>
+#include <kxmlguiwindow.h>
 #include <kaction.h>
 #include <kurl.h>
 
+#include "kraftcat_export.h"
+
 class KatalogListView;
 class Katalog;
-class KListViewItem;
-class QListViewItem;
 class FilterHeader;
 class CatalogWidget;
-class KListView;
 class QBoxLayout;
 class KActionMenu;
 class DocPosition;
 class CalcPartList;
-
+class QTreeWidgetItem;
 /**
   * The base class for Kraft katalog view.
   * @see KMainWindow
@@ -53,7 +51,7 @@ class CalcPartList;
   * @author Klaas Freitag <freitag@kde.org>
   * @version $Id$
   */
-class KatalogView : public KMainWindow
+class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
 {
   Q_OBJECT
 
@@ -63,7 +61,7 @@ class KatalogView : public KMainWindow
      * class of KatalogView
      */
     KatalogView(QWidget* parent=0, const char* name=0);
-    ~KatalogView();
+    virtual ~KatalogView();
 
     /**
      * create a special listview for the kind of catalog. This method must
@@ -71,7 +69,7 @@ class KatalogView : public KMainWindow
      */
     virtual void createCentralWidget(QBoxLayout*, QWidget*);
     virtual KatalogListView* getListView(){return 0;};
-    void init( const QString& );
+    virtual void init( const QString& );
 
   protected:
     virtual Katalog* getKatalog( const QString& );
@@ -80,7 +78,7 @@ class KatalogView : public KMainWindow
     /** open a new application window by creating a new instance of KraftApp */
     void slotFileNewWindow();
     /** clears the document in the actual view to reuse it as the new document */
-    void openDocumentFile(const KURL& url);
+    void openDocumentFile(const KUrl& url);
 
     void slotFileOpen();
     /** save a document */
@@ -105,7 +103,8 @@ class KatalogView : public KMainWindow
      */
     void slotStatusMsg(const QString &text);
 
-    virtual void slListviewExecuted(QListViewItem*);
+    // virtual void slListviewExecuted(Q3ListViewItem*);
+    virtual void slTreeviewItemChanged( QTreeWidgetItem *, QTreeWidgetItem *);
     void slExport();
 
     virtual void slEditChapters();
@@ -114,11 +113,11 @@ class KatalogView : public KMainWindow
 
     /** the configuration object of the application */
     KConfig *config;
-    KAction* fileClose;
-    KAction* filePrint;
-    KAction* editCut;
-    KAction* editCopy;
-    KAction* editPaste;
+    KAction* m_acFileClose;
+    KAction* m_acFilePrint;
+    KAction* m_acEditCut;
+    KAction* m_acEditCopy;
+    KAction* m_acEditPaste;
 
     KAction* m_acEditChapters;
     KAction* m_acEditItem;
@@ -129,7 +128,7 @@ class KatalogView : public KMainWindow
     // KToggleAction* viewStatusBar;
     QString         m_katalogName;
     FilterHeader    *m_filterHead;
-    KListViewItem   *m_editListViewItem;
+    QTreeWidgetItem   *m_editListViewItem;
 
     // Fills the DocPosition with the data from the currently selected item in the view
     virtual bool currentItemToDocPosition( DocPosition& ){ return false; }

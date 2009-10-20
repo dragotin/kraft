@@ -14,14 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqlrecord.h>
 #include <qsqlindex.h>
 #include <qfile.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <qglobal.h>
 
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 #include <kstandarddirs.h>
 
 #include <kdebug.h>
@@ -34,7 +34,7 @@
 #include "kraftsettings.h"
 #include "documentman.h"
 
-static KStaticDeleter<ArchiveMan> selfDeleter;
+static K3StaticDeleter<ArchiveMan> selfDeleter;
 
 
 ArchiveMan* ArchiveMan::mSelf = 0;
@@ -72,8 +72,8 @@ QString ArchiveMan::documentID( dbID archID ) const
 {
   QString re;
 
-  QSqlCursor cur("archdoc");
-  cur.setMode( QSqlCursor::ReadOnly );
+  Q3SqlCursor cur("archdoc");
+  cur.setMode( Q3SqlCursor::ReadOnly );
   cur.select( QString( "archDocID=%1" ).arg( archID.toInt() ) );
 
   if ( cur.next() ) {
@@ -119,23 +119,23 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
   root.appendChild( doc->positions().domElement( xmldoc ) );
 
   QString xml = xmldoc.toString();
-  // kdDebug() << "Resulting XML: " << xml << endl;
+  // kDebug() << "Resulting XML: " << xml << endl;
 
   QString outputDir = ArchiveMan::self()->xmlBaseDir();
   QString filename = ArchiveMan::self()->archiveFileName( doc->ident(), archId, "xml" );
 
   QString xmlFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
 
-  kdDebug() << "Storing XML to " << xmlFile << endl;
+  kDebug() << "Storing XML to " << xmlFile << endl;
 
-  if ( KraftSettings::self()->doXmlArchive() ) {
+  if ( KraftSettings::self()->self()->doXmlArchive() ) {
     QFile file( xmlFile );
-    if ( file.open( IO_WriteOnly ) ) {
-      QTextStream stream( &file );
+    if ( file.open( QIODevice::WriteOnly ) ) {
+      Q3TextStream stream( &file );
       stream << xml << "\n";
       file.close();
     } else {
-      kdDebug() << "Saving failed" << endl;
+      kDebug() << "Saving failed" << endl;
     }
   }
   return xmldoc ;
@@ -167,12 +167,12 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
 */
     if( ! doc ) return dbID();
 
-    QSqlCursor cur("archdoc");
-    cur.setMode( QSqlCursor::Writable );
+    Q3SqlCursor cur("archdoc");
+    cur.setMode( Q3SqlCursor::Writable );
     QSqlRecord *record = 0;
 
     if( doc->isNew() ) {
-	kdDebug() << "Strange: Document in archiving is new!" << endl;
+	kDebug() << "Strange: Document in archiving is new!" << endl;
     }
 
     record = cur.primeInsert();
@@ -219,19 +219,17 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
   */
     if( ! doc ) return -1;
 
-    QSqlCursor cur("archdocpos");
-    cur.setMode( QSqlCursor::Writable );
+    Q3SqlCursor cur("archdocpos");
+    cur.setMode( Q3SqlCursor::Writable );
 
     int cnt = 0;
-    DocPositionBase *dpb;
-    DocPositionList posList = doc->positions();
 
+    DocPositionList posList = doc->positions();
     DocPositionListIterator it( posList );
 
-    kdDebug() << "Archiving pos for " << archDocId << endl;
-    while ( ( dpb = it.current() ) != 0 ) {
-      ++it;
-      DocPosition *dp = static_cast<DocPosition*>(dpb);
+    kDebug() << "Archiving pos for " << archDocId << endl;
+    while ( it.hasNext() ) {
+      DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
       QSqlRecord *record = cur.primeInsert();
 
@@ -248,7 +246,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 
       cur.insert();
       dbID id = KraftDB::self()->getLastInsertID();
-      // kdDebug() << "Inserted for id " << id.toString() << endl;
+      // kDebug() << "Inserted for id " << id.toString() << endl;
       cnt++;
 
       // save the attributes of the positions in the attributes
@@ -263,7 +261,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 QString ArchiveMan::xmlBaseDir() const
 {
   KStandardDirs stdDirs;
-  QString outputDir = KraftSettings::self()->pdfOutputDir();
+  QString outputDir = KraftSettings::self()->self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
     outputDir = stdDirs.saveLocation( "data", "kraft/archiveXml", true );
   }
@@ -276,7 +274,7 @@ QString ArchiveMan::xmlBaseDir() const
 QString ArchiveMan::pdfBaseDir() const
 {
   KStandardDirs stdDirs;
-  QString outputDir = KraftSettings::self()->pdfOutputDir();
+  QString outputDir = KraftSettings::self()->self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
     outputDir = stdDirs.saveLocation( "data", "kraft/archivePdf", true );
   }

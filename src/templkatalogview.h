@@ -26,22 +26,21 @@
 // include files for Qt
 
 // include files for KDE
-#include <kapp.h>
+#include <kapplication.h>
 #include <kmainwindow.h>
-#include <kaccel.h>
 #include <kaction.h>
 #include <kurl.h>
 
 #include "katalogview.h"
 #include "templkataloglistview.h"
-#
+
 class TemplKatalog;
 class KatalogListView;
-class KListViewItem;
-class KListView;
+class K3ListViewItem;
+class K3ListView;
 class FloskelTemplate;
 class FlosTemplDialog;
-class QListViewItem;
+class Q3ListViewItem;
 class FilterHeader;
 class QBoxLayout;
 /**
@@ -70,7 +69,7 @@ public:
   /** opens a file specified by commandline option
    */
   void createCentralWidget(QBoxLayout*, QWidget*);
-  KatalogListView* getListView(){return m_listview;};
+  KatalogListView* getListView(){return m_listview;}
 
 protected:
   Katalog* getKatalog( const QString& );
@@ -91,7 +90,7 @@ public slots:
 
 private:
   // opens the edit dialog.
-  void openDialog( KListViewItem *, FloskelTemplate *, bool );
+  void openDialog( QTreeWidgetItem*, FloskelTemplate *, bool );
   // editing dialog for templates
   FlosTemplDialog  *m_flosDialog;
   TemplKatalogListView *m_listview;

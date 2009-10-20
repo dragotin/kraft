@@ -21,8 +21,9 @@
 #include <qstring.h>
 
 #include "dbids.h"
+#include "kraftcat_export.h"
 
-class NumberCycle
+class KRAFTCAT_EXPORT NumberCycle
 {
 public:
   NumberCycle();

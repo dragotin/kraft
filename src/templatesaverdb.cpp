@@ -20,7 +20,7 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 #include <qsqlrecord.h>
 
 #include "kraftdb.h"
@@ -39,10 +39,10 @@
 bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
 {
     bool result = true;
-    QSqlCursor cur( mTableFixCalc );
+    Q3SqlCursor cur( mTableFixCalc );
 
     int cpId = cp->getDbID().toInt();
-    kdDebug() << "CalcFix calcpart-ID is " << cpId << endl;
+    kDebug() << "CalcFix calcpart-ID is " << cpId << endl;
     if( cpId < 0 ) { // no db entry yet => INSERT
         if( !cp->isToDelete() ) {
             QSqlRecord *buffer = cur.primeInsert();
@@ -51,21 +51,21 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
             cur.insert();
 
             dbID id = KraftDB::self()->getLastInsertID();
-            kdDebug() << "Setting db-ID " << id.toString() << endl;
+            kDebug() << "Setting db-ID " << id.toString() << endl;
             cp->setDbID(id);
         } else {
-            kdDebug() << "new element, but set to delete" << endl;
+            kDebug() << "new element, but set to delete" << endl;
         }
     } else {
         if( cp->isToDelete() ) {
-            kdDebug() << "deleting fix calc part " << cpId << endl;
+            kDebug() << "deleting fix calc part " << cpId << endl;
             // delete this calcpart.
-            QSqlCursor delcur( mTableFixCalc );
+            Q3SqlCursor delcur( mTableFixCalc );
             delcur.select( "FCalcID="+QString::number(cpId) );
             if ( delcur.next() ) {
                 delcur.primeDelete();
                 int cnt = delcur.del();
-                kdDebug() << "Amount of deleted entries: " << cnt << endl;
+                kDebug() << "Amount of deleted entries: " << cnt << endl;
             }
         } else {
             // der Datensatz ist bereits in der Datenbank => UPDATE
@@ -76,7 +76,7 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
                 fillFixCalcBuffer( buffer, cp );
                 cur.update();
             } else {
-                kdError() << "Can not select FCalcID, corrupt data!" << endl;
+                kError() << "Can not select FCalcID, corrupt data!" << endl;
             }
         }
     }
@@ -98,58 +98,57 @@ void CalculationsSaverDB::fillFixCalcBuffer( QSqlRecord *buffer, FixCalcPart *cp
 
 bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID parentID )
 {
-    bool result = true;
-    if( !cp ) return result;
+  bool result = true;
+  if( !cp ) return result;
 
-    QSqlCursor cur( mTableMatCalc );
+  Q3SqlCursor cur( mTableMatCalc );
 
-    int cpId = cp->getDbID().toInt();
-    kdDebug() << "Saving material calcpart id=" << cpId << endl;
+  int cpId = cp->getDbID().toInt();
+  kDebug() << "Saving material calcpart id=" << cpId << endl;
 
-    if( cpId < 0 ) { // kein Eintrag in db bis jetzt => INSERT
-        QSqlRecord *buffer = cur.primeInsert();
-        fillMatCalcBuffer( buffer, cp );
-        buffer->setValue( "TemplID", parentID.toInt() );
-        cur.insert();
+  if( cpId < 0 ) { // kein Eintrag in db bis jetzt => INSERT
+    QSqlRecord *buffer = cur.primeInsert();
+    fillMatCalcBuffer( buffer, cp );
+    buffer->setValue( "TemplID", parentID.toInt() );
+    cur.insert();
 
-        dbID id = KraftDB::self()->getLastInsertID();
-        cp->setDbID(id);
+    dbID id = KraftDB::self()->getLastInsertID();
+    cp->setDbID(id);
+  } else {
+    // calcpart-ID ist bereits belegt, UPDATE
+    cur.select( "MCalcID=" + QString::number( cpId ) );
+    if( cur.next() ) {
+      QSqlRecord *buffer = cur.primeUpdate();
+      buffer->setValue( "modDate", "systimestamp" );
+      fillMatCalcBuffer( buffer, cp );
+      cur.update();
     } else {
-        // calcpart-ID ist bereits belegt, UPDATE
-        cur.select( "MCalcID=" + QString::number( cpId ) );
-        if( cur.next() ) {
-            QSqlRecord *buffer = cur.primeUpdate();
-            buffer->setValue( "modDate", "systimestamp" );
-            fillMatCalcBuffer( buffer, cp );
-            cur.update();
-        } else {
-            kdError() << "Can not select MCalcID, corrupt data!" << endl;
-        }
+      kError() << "Can not select MCalcID, corrupt data!" << endl;
     }
+  }
 
-    // nun die Materialliste sichern
-    StockMaterialList matList = cp->getCalcMaterialList();
-    StockMaterialListIterator it( matList );
+  // nun die Materialliste sichern
+  StockMaterialList matList = cp->getCalcMaterialList();
+  StockMaterialListIterator it( matList );
 
-    StockMaterial *mat;
+  while( it.hasNext() ) {
+    StockMaterial *mat = it.next();
 
-    while( (mat = it.current()) != 0 )
-    {
-        storeMaterialDetail( cp, mat );
-        ++it;
-    }
-    return result;
+    storeMaterialDetail( cp, mat );
+  }
+
+return result;
 }
 
 void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *mat )
 {
     if( ! (cp && mat) ) return;
-    kdDebug() << "storing material calcpart detail for material " << mat->name() << endl;
+    kDebug() << "storing material calcpart detail for material " << mat->name() << endl;
 
     /* create temporar dbcalcpart and fill the current material list */
-    QSqlCursor cur( mTableMatDetailCalc );
+    Q3SqlCursor cur( mTableMatDetailCalc );
     QString selStr = QString("CalcID=%1 AND materialID=%2" ).arg(cp->getDbID().toInt()).arg(mat->getID());
-    kdDebug() << "Material details for calcID " << cp->getDbID().toString() << endl;
+    kDebug() << "Material details for calcID " << cp->getDbID().toString() << endl;
 
     cur.select(selStr);
     MaterialCalcPart dbPart("MatCalcPartonDB", 0 );
@@ -164,8 +163,8 @@ void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMateri
     double newAmount = cp->getCalcAmount(mat);
     double origAmount = dbPart.getCalcAmount(mat);
 
-    kdDebug() << "The new Value is " << newAmount << " and the orig is " << origAmount << endl;
-    QSqlCursor modifyCur( mTableMatDetailCalc );
+    kDebug() << "The new Value is " << newAmount << " and the orig is " << origAmount << endl;
+    Q3SqlCursor modifyCur( mTableMatDetailCalc );
 
     if( origAmount > -1.0  ) {
         // Es gibt schon einen DS fuer dieses Material, schauen, ob die Anzahl
@@ -195,7 +194,7 @@ void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMateri
         if( id.isOk() ) {
             cp->setDbID(id);
         } else {
-            kdDebug() << "ERROR: Keine gueltige DB-ID bei Anlage des Material CalcPart!" << endl;
+            kDebug() << "ERROR: Keine gueltige DB-ID bei Anlage des Material CalcPart!" << endl;
         }
     }
 }
@@ -240,8 +239,10 @@ bool CalculationsSaverDB::saveCalculations( CalcPartList parts, dbID parentID )
   bool res = true;
 
   CalcPart *cp;
-  for ( cp = parts.first(); cp && res; cp = parts.next() )
-  {
+  CalcPartListIterator it( parts );
+
+  while( it.hasNext()) {
+    CalcPart *cp = it.next();
     if( cp->isDirty() )
     {
       if( cp->getType() == KALKPART_TIME ) {
@@ -254,7 +255,7 @@ bool CalculationsSaverDB::saveCalculations( CalcPartList parts, dbID parentID )
         res = saveMaterialCalcPart( static_cast<MaterialCalcPart*>(cp), parentID );
         Q_ASSERT( res );
       } else {
-        kdDebug() << "ERROR: Unbekannter Kalkulations-Anteil-Typ!" << endl;
+        kDebug() << "ERROR: Unbekannter Kalkulations-Anteil-Typ!" << endl;
       }
     }
   }
@@ -267,7 +268,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
     bool result = true;
     if( !cp ) return result;
 
-    QSqlCursor cur( mTableTimeCalc );
+    Q3SqlCursor cur( mTableTimeCalc );
 
     int cpId = cp->getDbID().toInt();
 
@@ -281,12 +282,12 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
             dbID id = KraftDB::self()->getLastInsertID();
             cp->setDbID(id);
         } else {
-            kdDebug() << "delete flag is set -> skip saving." << endl;
+            kDebug() << "delete flag is set -> skip saving." << endl;
         }
     } else {
         if( cp->isToDelete() ) {
             // delete this calcpart.
-            QSqlCursor delcur( mTableTimeCalc );
+            Q3SqlCursor delcur( mTableTimeCalc );
             delcur.select( "TCalcID="+cpId );
             if ( delcur.next() ) {
                 delcur.primeDelete();
@@ -301,7 +302,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
                 fillZeitCalcBuffer( buffer, cp );
                 cur.update();
             } else {
-                kdError() << "Unable to select TCalcID, corrupt data!" << endl;
+                kError() << "Unable to select TCalcID, corrupt data!" << endl;
             }
         }
     }
@@ -344,7 +345,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
 
     // Transaktion ?
 
-    QSqlCursor cur("Catalog");
+    Q3SqlCursor cur("Catalog");
     QString templID = QString::number(tmpl->getTemplID());
     cur.select( "TemplID=" + templID);
 
@@ -352,7 +353,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
 
     if( cur.next())
     {
-        kdDebug() << "Updating template " << tmpl->getTemplID() << endl;
+        kDebug() << "Updating template " << tmpl->getTemplID() << endl;
 
         // mach update
         isNew = false;
@@ -364,7 +365,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
     else
     {
         // insert
-        kdDebug() << "Creating new database entry" << endl;
+        kDebug() << "Creating new database entry" << endl;
 
         isNew = true;
         buffer = cur.primeInsert();
@@ -373,13 +374,13 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
 
         /* Jetzt die neue Template-ID selecten */
         dbID id = KraftDB::self()->getLastInsertID();
-        kdDebug() << "New Database ID=" << id.toInt() << endl;
+        kDebug() << "New Database ID=" << id.toInt() << endl;
 
         if( id.isOk() ) {
             tmpl->setTemplID(id.toInt() );
             templID = id.toString();
         } else {
-            kdDebug() << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
+            kDebug() << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
             res = false;
         }
     }

@@ -17,7 +17,7 @@
 
 // include files for Qt
 #include <qsql.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 
 // include files for KDE
 #include <klocale.h>
@@ -49,8 +49,8 @@ int MatKatalog::load()
   Katalog::load();
   int cnt = 0;
 
-  QSqlCursor cur( "stockMaterial" ); // Specify the table/view name
-  cur.setMode( QSqlCursor::ReadOnly );
+  Q3SqlCursor cur( "stockMaterial" ); // Specify the table/view name
+  cur.setMode( Q3SqlCursor::ReadOnly );
   cur.select(); // We'll retrieve every record
   while ( cur.next() ) {
     cnt++;
@@ -78,11 +78,13 @@ int MatKatalog::load()
 StockMaterialList MatKatalog::getRecordList( const QString& chapter )
 {
   StockMaterialList list;
-  StockMaterial *mat;
 
   int chapID = chapterID( chapter );
+  StockMaterialListIterator it( mAllMaterial );
+  
+  while( it.hasNext() ) {
+    StockMaterial *mat = it.next();
 
-  for ( mat = mAllMaterial.first(); mat; mat = mAllMaterial.next() ) {
     if ( mat->chapter() == chapID ) {
       list.append( mat );
     }

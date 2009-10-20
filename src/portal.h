@@ -28,9 +28,11 @@
 #include <qmap.h>
 
 // include files for KDE
-#include <kapp.h>
-#include <kmainwindow.h>
-#include <kaccel.h>
+#include <ktoggleaction.h>
+
+#include <kapplication.h>
+#include <kxmlguiwindow.h>
+
 #include <kaction.h>
 #include <kurl.h>
 
@@ -45,7 +47,7 @@ class KCmdLineArgs;
 class ArchDocDigest;
 /**
   */
-class Portal : public KMainWindow
+class Portal : public KXmlGuiWindow
 {
   Q_OBJECT
 

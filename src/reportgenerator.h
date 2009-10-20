@@ -17,9 +17,9 @@
 #ifndef REPORTGENERATOR_H
 #define REPORTGENERATOR_H
 
-#include <qdom.h>
-#include <qfile.h>
-#include <qobject.h>
+#include <QFile>
+#include <QObject>
+
 
 #include "kraftdoc.h"
 
@@ -45,13 +45,12 @@ signals:
   void pdfAvailable( const QString& filename );
 
 public slots:
-  void slotViewerClosed( KProcess * );
   void createPdfFromArchive( const QString&, dbID );
 
 protected slots:
-  void slotWroteStdin( KProcess* );
-  void slotRecStdout( KProcess *, char *, int );
-  void slotRecStderr( KProcess *, char *, int );
+  void trml2pdfFinished( int );
+  void slotReceivedStdout();
+  void slotReceivedStderr();
   QString findTemplate( const QString& );
   
 private:

@@ -11,7 +11,7 @@
 //
 #include <qpushbutton.h>
 #include <klocale.h>
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <kdebug.h>
 #include <klineedit.h>
 
@@ -37,14 +37,15 @@ CatalogChapterEdit::~CatalogChapterEdit()
 //
 CatalogChapterEditDialog::CatalogChapterEditDialog(QWidget *parent,
                                                   const QString& katName)
-    : KDialogBase(parent),
+    : KDialog(parent),
     m_katalog(0),
     mDirty( false )
 {
     setCaption(i18n("Edit Catalog Chapters" ));
     m_chapEdit = new CatalogChapterEdit(this);
-    connect( m_chapEdit->listBox(), SIGNAL( selectionChanged() ),
-               this, SLOT( slotSelectionChanged() ) );
+    // FIXME KDE4
+    // connect( m_chapEdit->listView(), SIGNAL( selectionChanged() ),
+    //           this, SLOT( slotSelectionChanged() ) );
     connect( m_chapEdit, SIGNAL( added( const QString& ) ),
                this, SLOT( slotAdded( const QString& ) ) );
     connect( m_chapEdit, SIGNAL( removed( const QString& ) ),
@@ -63,7 +64,7 @@ CatalogChapterEditDialog::CatalogChapterEditDialog(QWidget *parent,
         QString entry = *it;
         m_chapEdit->insertItem( entry );
         int id = m_katalog->chapterID( entry );
-        mEntryDict.insert( entry, new dbID( id ) );
+        mEntryDict.insert( entry, dbID( id ) );
     }
 }
 
@@ -78,8 +79,9 @@ void CatalogChapterEditDialog::accept()
       mDirty = true;
     }
 
-    QDictIterator<dbID> it( mEntryDict );
-    for( ; it.current(); ++it ) {
+    dbIdDictIterator it( mEntryDict );
+    while( it.hasNext() ) {
+      it.next();
       /* if the dbID of the dict entry is not ok it means that the entry was
        * added in the dialog and needs to go into the database.
        * If the id is ok, we need to compare if the entry that the catalog
@@ -87,15 +89,15 @@ void CatalogChapterEditDialog::accept()
        * differs, it was changed and must be updated.
       */
 
-      if( ! it.current()->isOk() ) {
-          kdDebug() << it.currentKey() << " is new and must be added" << endl;
-          m_katalog->addChapter( it.currentKey(), 1 );
+      if( ! it.value().isOk() ) {
+          kDebug() << it.key() << " is new and must be added" << endl;
+          m_katalog->addChapter( it.key(), 1 );
       } else {
-        QString stored = m_katalog->chapterName( *(it.current()) );
-        QString curr = it.currentKey();
-        kdDebug() << "Comparing edited <" << curr << "> with stored <" << stored << ">" << endl;
+        QString stored = m_katalog->chapterName( it.value() );
+        QString curr = it.key();
+        kDebug() << "Comparing edited <" << curr << "> with stored <" << stored << ">" << endl;
         if( curr != stored ) {
-          kdDebug() << "Renaming " << stored << " to " << curr << endl;
+          kDebug() << "Renaming " << stored << " to " << curr << endl;
           m_katalog->renameChapter( stored, curr );
           mDirty = true;
         }
@@ -106,7 +108,7 @@ void CatalogChapterEditDialog::accept()
     int pos = 1;
     for ( strIt = newChapList.begin(); strIt != newChapList.end(); ++strIt ) {
       const QString current = *strIt;
-      kdDebug() << "Setting entry " << current << " to sortkey " << pos << endl;
+      kDebug() << "Setting entry " << current << " to sortkey " << pos << endl;
       if( pos != m_katalog->chapterSortKey( current ) ) {
         m_katalog->setChapterSortKey( current, pos );
         mDirty = true;
@@ -114,40 +116,40 @@ void CatalogChapterEditDialog::accept()
       pos++;
     }
 
-    KDialogBase::accept();
+    KDialog::accept();
 }
 
 void CatalogChapterEditDialog::slotAdded( const QString& item )
 {
     m_newItems << item;
-    kdDebug() << "adding item " << item << endl;
-    dbID *ndb = new dbID();
+    kDebug() << "adding item " << item << endl;
+    dbID ndb;
     mEntryDict.insert(item, ndb); //
 }
 
 void CatalogChapterEditDialog::slotRemoved( const QString& item )
 {
     m_removedItems << item;
-    kdDebug() << "Removing item " << item << endl;
-    if( mEntryDict[item] ) {
+    kDebug() << "Removing item " << item << endl;
+    if( mEntryDict.contains(item) ) {
       mEntryDict.remove( item );
     } else {
-      kdDebug() << "Can not remove item " << item << " from dict" << endl;
+      kDebug() << "Can not remove item " << item << " from dict" << endl;
     }
 }
 
 void CatalogChapterEditDialog::slotTextChanged()
 {
-    kdDebug() << "Text changed" << endl;
+    kDebug() << "Text changed" << endl;
 
     if( m_chapEdit->currentItem() >= 0 ) {
       QString current = mLastSelection;
       QString newCurrent = m_chapEdit->lineEdit()->text();
-      kdDebug() << "Current ="<< current << " and new=" << newCurrent << endl;
+      kDebug() << "Current ="<< current << " and new=" << newCurrent << endl;
       if( current != newCurrent ) {
-        dbID *id = mEntryDict[current];
-        dbID *newID = mEntryDict[newCurrent];
-        if( id && !newID ) {
+        dbID id = mEntryDict[current];
+
+        if( mEntryDict.contains(current) && !(mEntryDict.contains( newCurrent)) ) {
           mEntryDict.insert( newCurrent, id );
           mEntryDict.remove( current );
         }

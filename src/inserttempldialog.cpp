@@ -23,12 +23,11 @@
 #include "inserttempldialog.h"
 
 // include files for Qt
-#include <qvbox.h>
-#include <qtextedit.h>
+#include <QTextEdit>
 #include <qlabel.h>
 #include <qcombobox.h>
-#include <qcheckbox.h>
-#include <qbuttongroup.h>
+#include <QCheckBox>
+#include <QVBoxLayout>
 #include <qtooltip.h>
 #include <qmap.h>
 
@@ -37,8 +36,9 @@
 
 #include <klocale.h>
 #include <kdebug.h>
+#include <kvbox.h>
 
-#include "inserttmplbase.h"
+#include "ui_inserttmplbase.h"
 #include "templtopositiondialogbase.h"
 #include "katalog.h"
 #include "einheit.h"
@@ -50,39 +50,42 @@
 InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
 {
-  QWidget *w = makeVBoxMainWidget();
+  KVBox *w = new KVBox( this );
 
-  mBaseWidget = new insertTmplBase( w );
-  mBaseWidget->dmUnitCombo->insertStringList( UnitManager::allUnits() );
+  setMainWidget( w );
+
+  mBaseWidget = new Ui::insertTmplBase;
+  mBaseWidget->setupUi( w );
+  mBaseWidget->dmUnitCombo->insertStringList( UnitManager::self()->allUnits() );
 
   mBaseWidget->mPriceVal->setSuffix( DefaultProvider::self()->currencySymbol() );
 
-  mBaseWidget->mPriceVal->setMinValue( 0 );
-  mBaseWidget->mPriceVal->setMaxValue( 100000 );
-  mBaseWidget->mPriceVal->setPrecision( 2 );
-  mBaseWidget->dmAmount->setPrecision( 2 );
-  mBaseWidget->dmAmount->setRange( 0, 100000, 1 );
-  mBaseWidget->dmAmount->setLineStep( 1 );
-  mBaseWidget->dmAmount->setSteps( 1, 10 );
+  mBaseWidget->mPriceVal->setMinimum( 0 );
+  mBaseWidget->mPriceVal->setMaximum( 100000 );
+  mBaseWidget->mPriceVal->setDecimals( 2 );
+  mBaseWidget->dmAmount->setDecimals( 2 );
+  mBaseWidget->dmAmount->setRange( 0, 100000 );
+  mBaseWidget->dmAmount->setSingleStep( 1 );
+  // mBaseWidget->dmAmount->setSteps( 1, 10 );
 
   // hide the chapter combo by default
   mBaseWidget->mKeepGroup->hide();
-  enableButtonSeparator( false );
+  showButtonSeparator( false );
 
   // Fill the tags list
-  QButtonGroup *group = mBaseWidget->mTagGroup;
+  QGroupBox *group = mBaseWidget->mTagGroup;
+  QVBoxLayout *groupLay = new QVBoxLayout;
+  group->setLayout( groupLay );
 
-  group->setColumns( 1 );
   QStringList tags = TagTemplateMan::self()->allTagTemplates();
-  int c = 0;
 
+  int cnt = 0;
   for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-    QCheckBox *cb = new QCheckBox( *it, group );
+    QCheckBox *cb = new QCheckBox( *it );
     QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
-    QToolTip::add( cb, desc );
-    group->insert( cb, c );
-    mTagMap[c] = *it;
-    c++;
+    // QToolTip::add( cb, desc );
+    groupLay->insertWidget( cnt++, cb );
+    mTagMap[cb] = *it;
   }
 }
 
@@ -120,25 +123,20 @@ DocPosition InsertTemplDialog::docPosition()
   mParkPosition.setText( mBaseWidget->dmTextEdit->text() );
   mParkPosition.setAmount( mBaseWidget->dmAmount->value() );
   mParkPosition.setUnitPrice( Geld( mBaseWidget->mPriceVal->value() ) );
-  int uid = UnitManager::getUnitIDSingular( mBaseWidget->dmUnitCombo->currentText() );
+  int uid = UnitManager::self()->getUnitIDSingular( mBaseWidget->dmUnitCombo->currentText() );
 
-  mParkPosition.setUnit( UnitManager::getUnit( uid ) );
+  mParkPosition.setUnit( UnitManager::self()->getUnit( uid ) );
   // mParkPosition.setPosition( itemPos );
 
-  QButtonGroup *group = mBaseWidget->mTagGroup;
-  for ( int i = 0; i < group->count(); i++ ) {
-    QCheckBox *b = static_cast<QCheckBox*>( group->find( i ) );
-
-    if ( b && b->isChecked() ) {
-      if ( mTagMap.contains( i ) ) {
-        QString tag = mTagMap[i];
-        kdDebug() << "*********************************" << tag << endl;
-        mParkPosition.setTag( tag );
-      }
+  QMapIterator<QCheckBox*, QString> i(mTagMap);
+  while (i.hasNext()) {
+    i.next();
+    if( i.key()->isChecked() ) {
+      mParkPosition.setTag( i.value() );
     }
   }
 
-  kdDebug() << "in the dialog: " << mParkPosition.tags() << endl;
+  kDebug() << "in the dialog: " << mParkPosition.tags() << endl;
   return mParkPosition;
 }
 
@@ -147,8 +145,8 @@ InsertTemplDialog::~InsertTemplDialog()
 {
   QString c = mBaseWidget->mComboChapter->currentText();
   if ( ! c.isEmpty() ) {
-    KraftSettings::self()->setInsertTemplChapterName( c );
-    KraftSettings::self()->writeConfig();
+    KraftSettings::self()->self()->setInsertTemplChapterName( c );
+    KraftSettings::self()->self()->writeConfig();
   }
 }
 
@@ -158,7 +156,7 @@ void InsertTemplDialog::setCatalogChapters( const QStringList& chapters )
     mBaseWidget->mKeepGroup->show();
     mBaseWidget->mComboChapter->insertStringList( chapters );
     mBaseWidget->mComboChapter->setCurrentText(
-      KraftSettings::self()->insertTemplChapterName() );
+      KraftSettings::self()->self()->insertTemplChapterName() );
   }
 }
 

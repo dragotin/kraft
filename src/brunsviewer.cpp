@@ -31,7 +31,7 @@
 #include <kstatusbar.h>
 #include <klocale.h>
 #include <kconfig.h>
-#include <kstdaction.h>
+#include <kstandardaction.h>
 #include <kdebug.h>
 
 // application specific includes
@@ -40,16 +40,23 @@
 
 #define ID_STATUS_MSG 1
 
-Brunsviewer::Brunsviewer(QWidget* , const char* name):KMainWindow(0, name)
+Brunsviewer::Brunsviewer(QWidget* , const char* name):KMainWindow(0)
 {
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
+  setObjectName( name );
   initStatusBar();
   // initActions();
-  initView();
 
-  // check for database init
-  // KraftDB::checkInit();
+  const QString kat = i18n("BRUNS Pflanzenkatalog 2005");
+
+  BrunsKatalogView *lv = new BrunsKatalogView();
+  lv->init( kat );
+  lv->show();
+
+  setCentralWidget( lv );
+
+  setCaption( kat, false );
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
 }
 
@@ -67,20 +74,6 @@ void Brunsviewer::initStatusBar()
 }
 
 
-void Brunsviewer::initView()
-{
-    const QString kat = i18n("BRUNS Pflanzenkatalog 2005");
-    
-    BrunsKatalogView *lv = new BrunsKatalogView( );
-    lv->init( kat );
-    lv->show();
-
-    setCentralWidget( lv );
-
-    setCaption( kat, false );
-
-}
-
 void Brunsviewer::slotStartupChecks()
 {
 
@@ -97,7 +90,7 @@ void Brunsviewer::slotStatusMsg(const QString &text)
 #if 0
 void Brunsviewer::slotKatalogToXML(const QString& katName)
 {
-    kdDebug() << "Generating XML for catalog " << katName << endl;
+    kDebug() << "Generating XML for catalog " << katName << endl;
 
     Katalog *kat = KatalogMan::getKatalog(katName);
 

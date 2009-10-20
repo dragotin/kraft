@@ -55,14 +55,14 @@ MaterialCalcPart::~MaterialCalcPart( )
 
 void MaterialCalcPart::addMaterial( double amount, long matID )
 {
-    addMaterial( amount, StockMaterialMan::getMaterial(matID));
+    addMaterial( amount, StockMaterialMan::self()->getMaterial(matID));
 }
 
 void MaterialCalcPart::addMaterial( double amount, StockMaterial* mat)
 {
     if( mat == 0 ) return;
 
-    m_amounts.insert( mat, new QVariant(amount) );
+    m_amounts.insert( mat, QVariant(amount) );
     setDirty(true);
 }
 
@@ -80,15 +80,14 @@ QString MaterialCalcPart::getType() const
 Geld MaterialCalcPart::basisKosten()
 {
     Geld gg;
+    QHashIterator<StockMaterial*, QVariant> i( m_amounts );
+    while (i.hasNext()) {
+      i.next();
+      StockMaterial *mat = (StockMaterial*) i.key();
 
-    QPtrDictIterator<QVariant> it( m_amounts );
-    for( ; it.current(); ++it )
-    {
-        StockMaterial *mat = (StockMaterial*) it.currentKey();
+      gg += getPriceForMaterial(mat);
 
-        gg += getPriceForMaterial(mat);
-
-            }
+    }
     return gg;
 }
 
@@ -99,42 +98,31 @@ StockMaterialList MaterialCalcPart::getCalcMaterialList()
 {
     StockMaterialList reList;
 
-    QPtrDictIterator<QVariant> it( m_amounts );
-    for( ; it.current(); ++it )
-    {
-        reList.append( (StockMaterial*) it.currentKey());
+    QHashIterator<StockMaterial*, QVariant> i( m_amounts );
+    while (i.hasNext()) {
+      i.next();
+      StockMaterial *mat = (StockMaterial*) i.key();
+      reList.append( mat );
     }
 
     return reList;
 }
 
 /*
- * checkt ob es das Material in der Liste der Kalkulierten
- * enthalten ist.
+ * check if a material identified by materialID is part of the
+ * calculation.
  */
 
 bool MaterialCalcPart::containsMaterial( long materialID )
 {
-    bool isThere = false;
-
-    // StockMaterialList list = getCalcMaterialList();
     StockMaterialList li = getCalcMaterialList();
-    kdDebug() << "Anzahl listeintraege: " << li.count() << endl;
-    StockMaterialListIterator it( li );
+    kDebug() << "count listentries: " << li.count() << endl;
 
-    StockMaterial* mat = it.current();
-    kdDebug() << "Materialpointer: " << mat << endl;
-
-    while ( (!isThere) && (mat != 0) )
-    {
-        ++it;
-        long myMatID = mat->getID();
-        kdDebug() << "comparing "<<myMatID<< " to " << materialID << endl;
-        if( myMatID == materialID )
-            isThere = true;
-        mat = it.current();
+    foreach( StockMaterial *mat, getCalcMaterialList()) {
+      if( mat->getID() == materialID )
+        return true;
     }
-    return isThere;
+    return false;
 }
 
 
@@ -154,7 +142,7 @@ Geld MaterialCalcPart::getCostsForMaterial( StockMaterial *mat)
         double d = getCalcAmount( mat ) / mat->getAmountPerPack();
         g = mat->purchPrice() * d;
 
-        // kdDebug() << "Cost for material " << mat->getName() << ": " <<
+        // kDebug() << "Cost for material " << mat->getName() << ": " <<
         // g.toString() << endl;
     }
     return g;
@@ -177,7 +165,7 @@ Geld MaterialCalcPart::getPriceForMaterial( StockMaterial *mat)
         double d = getCalcAmount( mat ) / mat->getAmountPerPack();
         g = mat->salesPrice() * d;
 
-        // kdDebug() << "Cost for material " << mat->getName() << ": " <<
+        // kDebug() << "Cost for material " << mat->getName() << ": " <<
         //    g.toString() << endl;
     }
     return g;
@@ -194,9 +182,9 @@ double MaterialCalcPart::getCalcAmount( StockMaterial* mat )
 {
     double am = -1.0;
 
-    if( mat && m_amounts[mat])
+    if( mat && m_amounts.contains(mat))
     {
-        QVariant v = *(m_amounts[mat]);
+        QVariant v = m_amounts[mat];
         am = v.toDouble();
     }
     return am;
@@ -206,9 +194,9 @@ double MaterialCalcPart::getCalcAmount( StockMaterial* mat )
 bool MaterialCalcPart::setCalcAmount( StockMaterial* mat, double newAmount )
 {
     bool updated = false;
-    if( mat && m_amounts[mat] )
+    if( mat && m_amounts.contains(mat) )
     {
-        QVariant& v = *(m_amounts[mat]);
+        QVariant v = m_amounts[mat];
         double prevAmount = v.toDouble();
 
         if( prevAmount != newAmount )

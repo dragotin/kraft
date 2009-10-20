@@ -19,7 +19,6 @@
 #include <klocale.h>
 #include <kiconloader.h>
 
-#include <qlistview.h>
 #include <qpixmap.h>
 
 #include "doctext.h"

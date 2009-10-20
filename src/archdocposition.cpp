@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qstring.h>
 
 // include files for KDE
@@ -79,7 +79,7 @@ Geld ArchDocPosition::tax( double fullTax, double reducedTax )
 }
 
 ArchDocPositionList::ArchDocPositionList()
-    : QValueList<ArchDocPosition>()
+    : Q3ValueList<ArchDocPosition>()
 {
 
 }

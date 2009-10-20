@@ -19,21 +19,23 @@
 #ifndef POSITIONVIEWWIDGET_H
 #define POSITIONVIEWWIDGET_H
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qmap.h>
+#include <Q3PopupMenu>
+#include <QPaintEvent>
 
-#include "positionwidget.h"
+#include "ui_positionwidget.h"
 
 /**
 	@author Klaas Freitag <freitag@kde.org>
 */
 class DocPosition;
-class KPopupMenu;
+class KMenu;
 class Geld;
-class QPopupMenu;
+class Q3PopupMenu;
 class KLocale;
 
-class PositionViewWidget : public positionWidget
+class PositionViewWidget : public QWidget, public Ui_positionWidget
 {
     Q_OBJECT
 public:
@@ -44,7 +46,7 @@ public:
     PositionViewWidget( int );
 
     void setDocPosition( DocPositionBase*, KLocale* );
-    ~PositionViewWidget();
+    virtual ~PositionViewWidget();
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }
     void setOrdNumber( int  );
@@ -104,8 +106,8 @@ private:
     int  mOrdNumber;
 
     DocPositionGuardedPtr mPositionPtr;
-    KPopupMenu *mExecPopup;
-    QPopupMenu *mStateSubmenu;
+    KMenu *mExecPopup;
+    Q3PopupMenu *mStateSubmenu;
     QStringList mTags;
     int  mDeleteId;
     int  mLockId;
@@ -117,7 +119,7 @@ private:
     KLocale *mLocale;
 };
 
-class PositionViewWidgetList : public QPtrList<PositionViewWidget>
+class PositionViewWidgetList : public Q3PtrList<PositionViewWidget>
 {
   public:
     PositionViewWidgetList();
@@ -127,6 +129,6 @@ class PositionViewWidgetList : public QPtrList<PositionViewWidget>
 };
 
 
-typedef QPtrListIterator<PositionViewWidget> PositionViewWidgetListIterator;
+typedef Q3PtrListIterator<PositionViewWidget> PositionViewWidgetListIterator;
 
 #endif

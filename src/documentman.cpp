@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 #include <qsqlquery.h>
-#include <qsqlcursor.h>
+#include <q3sqlcursor.h>
 
-#include <kstaticdeleter.h>
+#include <k3staticdeleter.h>
 #include <kdebug.h>
 
 #include "documentman.h"
 #include "docdigest.h"
 #include "kraftdb.h"
 
-static KStaticDeleter<DocumentMan> selfDeleter;
+static K3StaticDeleter<DocumentMan> selfDeleter;
 
 DocumentMan *DocumentMan::mSelf = 0;
 // DocGuardedPtr DocumentMan::mDocPtr = 0;
@@ -55,7 +55,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
   if( limit > 0 )
     qStr += " LIMIT " + QString::number( limit );
   qStr +=";";
-  kdDebug() << "Sending sql string " << qStr << endl;
+  kDebug() << "Sending sql string " << qStr << endl;
 
   QSqlQuery query( qStr );
 
@@ -71,7 +71,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
 DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
 {
   DocDigest dig;
-  QSqlCursor archCur( "archdoc" );
+  Q3SqlCursor archCur( "archdoc" );
 
   dig.setId( dbID( query.value(0).toInt() ) );
   const QString ident = query.value(1).toString();
@@ -83,7 +83,7 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   dig.setDate(     query.value(6).toDate() );
   dig.setCountryLanguage(  query.value( 7 ).toString(), query.value( 8 ).toString() );
   dig.setProjectLabel( query.value( 9 ).toString() );
-  // kdDebug() << "Adding document "<< ident << " to the latest list" << endl;
+  // kDebug() << "Adding document "<< ident << " to the latest list" << endl;
 
   archCur.select( "ident='" + ident +"'" );
   while ( archCur.next() ) {
@@ -111,12 +111,12 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
       DocDigest dig = digestFromQuery( query );
       int month = query.value( 10 /* month */ ).toInt();
       int year = query.value( 11 /* year */ ).toInt();
-      // kdDebug() << "Month: " << month << " in Year: " << year << endl;
+      // kDebug() << "Month: " << month << " in Year: " << year << endl;
 
       if ( timeline.month() == 0 ) timeline.setMonth( month );
       if ( timeline.year() == 0  ) timeline.setYear( year );
 
-      // kdDebug() << "timeline-month=" << timeline.month() << " while month=" << month << endl;
+      // kDebug() << "timeline-month=" << timeline.month() << " while month=" << month << endl;
       if ( month != timeline.month() || year != timeline.year() ) {
         // a new month/year pair: set digestlist to timelineobject
         timeline.setDigestList( digests );
@@ -131,10 +131,10 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
         timeline.setYear( year );
       } else {
         digests.prepend( dig );
-        // kdDebug() << "Prepending to digests lists: " << dig.date() << endl;
+        // kDebug() << "Prepending to digests lists: " << dig.date() << endl;
       }
     }
-    kdDebug() << "Final append !" << endl;
+    kDebug() << "Final append !" << endl;
     timeline.setDigestList( digests );
     retList.append( timeline );
 
@@ -146,7 +146,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& copyFromId )
 {
   DocGuardedPtr doc = new KraftDoc( );
   doc->newDocument();
-  kdDebug() << "new document ID: " << doc->docID().toString() << endl;
+  kDebug() << "new document ID: " << doc->docID().toString() << endl;
   mDocMap[doc->docID().toString()] = doc;
 
   if ( ! copyFromId.isEmpty() ) {
@@ -162,7 +162,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& copyFromId )
 
 DocGuardedPtr DocumentMan::openDocument( const QString& id )
 {
-  kdDebug() << "Opening Document with id " << id << endl;
+  kDebug() << "Opening Document with id " << id << endl;
   DocGuardedPtr doc;
 
   if( mDocMap.contains( id ) ){
@@ -216,7 +216,7 @@ bool DocumentMan::readTaxes( const QDate& date )
 
   q.prepare( sql );
   QString dateStr = date.toString( "yyyy-MM-dd" );
-  kdDebug() << "** Datestring: " << dateStr << endl;
+  kDebug() << "** Datestring: " << dateStr;
   q.bindValue( ":date", dateStr );
   q.exec();
 
@@ -224,7 +224,7 @@ bool DocumentMan::readTaxes( const QDate& date )
     mFullTax    = q.value( 0 ).toDouble();
     mReducedTax = q.value( 1 ).toDouble();
     mTaxDate = date;
-    kdDebug() << "* Taxes: " << mFullTax << "/" << mReducedTax << " from " << q.value( 2 ).toDate() << endl;
+    kDebug() << "* Taxes: " << mFullTax << "/" << mReducedTax << " from " << q.value( 2 ).toDate();
   }
   return ( mFullTax > 0 && mReducedTax > 0 );
 }

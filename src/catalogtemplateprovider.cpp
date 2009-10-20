@@ -42,14 +42,14 @@ void CatalogTemplateProvider::setCatalogSelection( CatalogSelection *cs )
 
 void CatalogTemplateProvider::slotNewTemplate()
 {
-  kdDebug() << "SlotNewTemplate for Catalog called!" << endl;
+  kDebug() << "SlotNewTemplate for Catalog called!" << endl;
 
 
 }
 
 void CatalogTemplateProvider::slotEditTemplate()
 {
-  kdDebug() << "SlotEditTemplate for Catalog called!" << endl;
+  kDebug() << "SlotEditTemplate for Catalog called!" << endl;
 
 
 }
@@ -60,7 +60,7 @@ void CatalogTemplateProvider::slotDeleteTemplate()
 
 void CatalogTemplateProvider::slotTemplateToDocument()
 {
-  kdDebug() << "Moving catalog entry to document" << endl;
+  kDebug() << "Moving catalog entry to document" << endl;
 
   if ( mCatalogSelection ) {
     Katalog *catalog = mCatalogSelection->currentSelectedKat();

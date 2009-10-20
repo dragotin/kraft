@@ -14,10 +14,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qsplitter.h>
+//Added by qt3to4:
+#include <Q3BoxLayout>
 #include <kdebug.h>
 #include <klocale.h>
 
@@ -52,7 +54,7 @@ void MaterialKatalogView::createCentralWidget( QBoxLayout *box, QWidget *w )
 
 Katalog* MaterialKatalogView::getKatalog( const QString& name )
 {
-    kdDebug() << "GetKatalog of material!" << endl;
+    kDebug() << "GetKatalog of material!" << endl;
     Katalog *k = KatalogMan::self()->getKatalog( name );
     if( ! k ) {
         k = new MatKatalog( name );
@@ -65,13 +67,13 @@ void MaterialKatalogView::slEditVorlage()
 {
   MaterialKatalogListView *listview = static_cast<MaterialKatalogListView*>(getListView());
 
-  kdDebug() << "Editing the material" << endl;
+  kDebug() << "Editing the material" << endl;
 
   if( listview )
   {
     StockMaterial *currTempl = static_cast<StockMaterial*> ( listview->currentItemData() );
     if( currTempl ) {
-      KListViewItem *item = (KListViewItem*) listview->currentItem();
+      QTreeWidgetItem *item = (QTreeWidgetItem*) listview->currentItem();
       openDialog( item, currTempl, false );
     }
   }
@@ -85,10 +87,10 @@ void MaterialKatalogView::slNeueVorlage()
 
   StockMaterial *newMat = new StockMaterial();
   newMat->setName( i18n( "<new material>" ) );
-  KListViewItem *parentItem = static_cast<KListViewItem*>( listview->currentItem() );
+  QTreeWidgetItem *parentItem = static_cast<QTreeWidgetItem*>( listview->currentItem() );
   if ( parentItem ) {
     if ( ! ( matListView->isRoot( parentItem ) || matListView->isChapter( parentItem ) ) ) {
-      parentItem = ( KListViewItem* ) parentItem->parent();
+      parentItem = ( QTreeWidgetItem* ) parentItem->parent();
     }
   }
 
@@ -102,13 +104,13 @@ void MaterialKatalogView::slNeueVorlage()
 
 }
 
-void MaterialKatalogView::openDialog( QListViewItem *listitem, StockMaterial *tmpl, bool isNew )
+void MaterialKatalogView::openDialog( QTreeWidgetItem *listitem, StockMaterial *tmpl, bool isNew )
 {
   mDialog = new MaterialTemplDialog( this );
   mNewItem = listitem;
 
-  m_materialListView->ensureItemVisible( listitem );
-  m_materialListView->setSelected( listitem, true );
+  listitem->setSelected( true );
+  // listitem->ensureItemVisible( true );
 
   connect( mDialog, SIGNAL( editAccepted( StockMaterial* ) ),
            this, SLOT( slotEditOk( StockMaterial* ) ) );
@@ -132,7 +134,7 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
   KatalogListView *listview = getListView();
   if( !listview ) return;
   MaterialKatalogListView *templListView = static_cast<MaterialKatalogListView*>(listview);
-  kdDebug() << "****** slotEditOk for Material" << endl;
+  kDebug() << "****** slotEditOk for Material" << endl;
 
   if( mDialog ) {
     MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );
@@ -143,10 +145,9 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
         locale = k->locale();
       }
       if( mNewItem ) {
-        templListView->setSelected( mNewItem, true );
-        templListView->setCurrentItem( mNewItem );
+        mNewItem->setSelected( true );
         templListView->slFreshupItem( mNewItem, mat, locale );
-        templListView->ensureItemVisible( mNewItem );
+        // templListView->ensureItemVisible( mNewItem );
       }
     }
   }

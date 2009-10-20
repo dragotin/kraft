@@ -132,15 +132,15 @@ bool TextTemplate::openTemplate()
     findFile = stdDirs.findResource( "data", mFileName );
   }
   if ( findFile.isEmpty() || ! QFile::exists( findFile ) ) {
-    mErrorString = i18n( "Could not find template file" + findFile );
+    mErrorString = i18n( "Could not find template file %1" ).arg( findFile );
     return false;
   } else {
     mFileName = findFile;
   }
 
-  kdDebug() << "Loading this template source file: " << findFile << endl;
+  kDebug() << "Loading this template source file: " << findFile << endl;
 
-  Template *tmpl = Template::GetTemplate( findFile, google::DO_NOT_STRIP );
+  Template *tmpl = Template::GetTemplate( std::string( findFile.toAscii() ), google::DO_NOT_STRIP );
   tmpl->ReloadIfChanged();
 
   if ( !tmpl || tmpl->state() != google::TS_READY ) {
@@ -166,7 +166,8 @@ QString TextTemplate::expand() const
   // if ( mStandardDict ) {
   //   mStandardDict->Dump();
   // }
-  Template *textTemplate = Template::GetTemplate( mFileName, google::DO_NOT_STRIP );
+  Template *textTemplate = Template::GetTemplate( std::string( mFileName.toAscii() ),
+                                                  google::DO_NOT_STRIP );
   if ( textTemplate ) {
     bool errorFree = textTemplate->Expand(&output, mStandardDict );
 

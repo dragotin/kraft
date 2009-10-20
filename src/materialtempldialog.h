@@ -27,19 +27,19 @@
 #include <klocale.h>
 
 #include "kraftglobals.h"
-#include "materialdialog.h"
+#include "ui_materialdialog.h"
 #include "stockmaterial.h"
 /**
  *
  */
 class Katalog;
 
-class MaterialTemplDialog : public MaterialDialogBase
+class MaterialTemplDialog : public KDialog, protected Ui::MaterialDialogBase
 {
     Q_OBJECT
 
 public:
-    MaterialTemplDialog(QWidget *parent=0, const char* name=0, bool modal=false, WFlags fl=0);
+    MaterialTemplDialog( QWidget *parent=0, bool modal=false );
     ~MaterialTemplDialog();
 
     void setMaterial( StockMaterial* t, const QString&, bool );

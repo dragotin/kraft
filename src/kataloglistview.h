@@ -18,23 +18,24 @@
 #ifndef KATALOGLISTVIEW_H
 #define KATALOGLISTVIEW_H
 
-#include <qptrdict.h>
-#include <qintdict.h>
+#include <QPixmap>
+#include <QTreeWidgetItem>
+#include <QTreeWidget>
 
-#include <klistview.h>
+#include "kraftcat_export.h"
+
 /**
   *@author Klaas Freitag
   */
 
 class TemplKatalog;
-class KListViewItem;
 class QPixmap;
-class QPopupMenu;
-class KPopupMenu;
+class KMenu;
 class DocPosition;
 class Katalog;
 
-class KatalogListView : public KListView  
+
+class KRAFTCAT_EXPORT KatalogListView : public QTreeWidget
 {
   Q_OBJECT
 public:
@@ -43,20 +44,20 @@ public:
 
   virtual void addCatalogDisplay( const QString& );
   virtual void* currentItemData();
-  virtual void* itemData( QListViewItem* );
+  virtual void* itemData( QTreeWidgetItem* );
 
-  bool isChapter(KListViewItem*);
-  bool isRoot(KListViewItem*);
+  bool isChapter(QTreeWidgetItem*);
+  bool isRoot(QTreeWidgetItem*);
 
   virtual void setupChapters();
 
-  QPopupMenu *contextMenu();
+  KMenu *contextMenu();
   // virtual DocPosition itemToDocPosition( QListViewItem *it = 0 ) = 0;
 
 public slots:
-  virtual void slFreshupItem( QListViewItem*, void*, bool remChildren = false );
-  virtual void slChangeChapter( KListViewItem* , int );
-  virtual void slotRMB( KListView*, QListViewItem*, const QPoint& );
+  virtual void slotFreshupItem( QTreeWidgetItem*, void*, bool remChildren = false );
+  virtual void slotChangeChapter( QTreeWidgetItem* , int );
+  virtual void slotRMB( QTreeWidget*, QTreeWidgetItem*, const QPoint& );
   virtual void slotRedraw();
 
 protected:
@@ -65,14 +66,14 @@ protected:
 
   virtual Katalog* catalog();
 
-  KListViewItem *chapterItem( const QString& chapName );
+  QTreeWidgetItem *chapterItem( const QString& chapName );
 
-  KListViewItem *m_root;
-  QPtrDict<void> m_dataDict;
-  QIntDict<KListViewItem> m_catalogDict;
+  QTreeWidgetItem *m_root;
+  QHash<QTreeWidgetItem*, void*> m_dataDict;
+  QHash<int, QTreeWidgetItem*> m_catalogDict;
   QString m_catalogName;
   QStringList mOpenChapters;
-  KPopupMenu *mMenu;
+  KMenu *mMenu;
 };
 
 #endif

@@ -26,7 +26,7 @@
 #endif
 
 // include files
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 
 #include "geld.h"
 #include "dbids.h"
@@ -62,7 +62,7 @@ private:
   
 };
 
-typedef QValueVector<TagTemplate> TagTemplateValueVector;
+typedef Q3ValueVector<TagTemplate> TagTemplateValueVector;
 
 /**
  * Tag Template Manager

@@ -18,10 +18,10 @@
 #define DOCPOSITION_H
 
 // include files for Qt
-#include <qptrlist.h>
-#include <qstring.h>
-#include <qguardedptr.h>
-#include <qobject.h>
+#include <QPointer>
+#include <QObject>
+
+#include <QList>
 
 #include <klocale.h>
 
@@ -34,6 +34,7 @@
 /**
 @author Klaas Freitag
 */
+class QString;
 class QDomElement;
 class QDomDocument;
 class Geld;
@@ -135,7 +136,7 @@ class DocPosition : public DocPositionBase
 
 };
 
-class DocPositionList : public QPtrList<DocPositionBase>
+class DocPositionList : public QList<DocPositionBase*>
 {
   public:
     DocPositionList();
@@ -153,14 +154,14 @@ class DocPositionList : public QPtrList<DocPositionBase>
     Geld reducedTaxSum( double reducedTax );
 
   protected:
-    int compareItems ( QPtrCollection::Item item1, QPtrCollection::Item item2 );
+    // int compareItems ( Q3PtrCollection::Item item1, Q3PtrCollection::Item item2 );
 
   private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
     KLocale *mLocale;
 };
 
-typedef QPtrListIterator<DocPositionBase> DocPositionListIterator;
+typedef QListIterator<DocPositionBase*> DocPositionListIterator;
 
-typedef QGuardedPtr<DocPositionBase> DocPositionGuardedPtr;
+typedef QPointer<DocPositionBase> DocPositionGuardedPtr;
 #endif

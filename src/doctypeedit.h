@@ -18,16 +18,17 @@
 #ifndef DOCTYPEEDIT_H
 #define DOCTYPEEDIT_H
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
-#include <qmap.h>
+#include <QMap>
+#include <QLabel>
 
 #include "doctype.h"
-#include "doctypeeditbase.h"
+#include "ui_doctypeeditbase.h"
 
 class QLineEdit;
 class QLabel;
-class QTextEdit;
+class Q3TextEdit;
 class QPushButton;
 class QComboBox;
 class QCheckBox;
@@ -39,12 +40,12 @@ class QCheckBox;
 
 // ################################################################################
 
-class DocTypeEdit : public DocTypeEditBase
+class DocTypeEdit : public KDialog, protected Ui::DocTypeEditBase
 {
   Q_OBJECT
 
 public:
-  DocTypeEdit( QWidget *parent );
+  DocTypeEdit( QWidget *parent  = 0 );
   void saveDocTypes();
 
 public slots:

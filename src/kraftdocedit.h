@@ -1,7 +1,7 @@
 #ifndef KRAFTDOCEDIT_H
 #define KRAFTDOCEDIT_H
 
-#include "docheader.h"
+#include "ui_docheader.h"
 
 class KraftDocEdit : public QWidget
 {

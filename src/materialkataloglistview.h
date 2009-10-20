@@ -21,8 +21,7 @@
 
 #include <kataloglistview.h>
 
-class QListViewItem;
-class KListViewItem;
+class QTreeWidgetItem;
 class StockMaterial;
 class KLocale;
 
@@ -38,10 +37,10 @@ public:
 
   ~MaterialKatalogListView();
   void addCatalogDisplay( const QString& katName );
-  DocPosition itemToDocPosition( QListViewItem *it = 0 );
-  QListViewItem* addMaterialToView( KListViewItem*, StockMaterial* );
+  DocPosition itemToDocPosition( QTreeWidgetItem *it = 0 );
+  QTreeWidgetItem* addMaterialToView( QTreeWidgetItem*, StockMaterial* );
 public slots:
-  void slFreshupItem( QListViewItem *, void*, KLocale* = 0  );
+  void slFreshupItem( QTreeWidgetItem *, void*, KLocale* = 0  );
 
 private:
   bool mCheckboxes;

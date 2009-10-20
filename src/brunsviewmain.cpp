@@ -25,6 +25,10 @@
 #include "brunsviewer.h"
 #include "brunskatalogview.h"
 
+//Added by qt3to4:
+#include <QPixmap>
+
+#if 0
 static const char *description =
 	I18N_NOOP("KDE Plant Catalog Viewer");
 // INSERT A DESCRIPTION FOR YOUR APPLICATION HERE
@@ -36,9 +40,20 @@ static KCmdLineOptions options[] =
   { 0, 0, 0 }
   // INSERT YOUR COMMANDLINE OPTIONS HERE
 };
+#endif
 
 int main(int argc, char *argv[])
 {
+  KAboutData aboutData( "kplant", "kplant",
+                        ki18n("KDE Plant Catalog Viewer"), KPLANT_VERSION,
+                        ki18n("The KDE Plant Catalog Viewer"),
+                        KAboutData::License_GPL,
+                        ki18n("Copyright (c) 2005-2009 Klaas Freitag") );
+  KCmdLineArgs::init( argc, argv, &aboutData );
+
+  KApplication app;
+
+#if 0
 
 	KAboutData aboutData( "kplant", I18N_NOOP("KDE Plant Catalog Viewer"),
 		KPLANT_VERSION, description, KAboutData::License_GPL,
@@ -57,24 +72,30 @@ int main(int argc, char *argv[])
     splash = new KSplashScreen( pixmap );
     splash->show();
   }
-  
+
   BrunsKatalogView *lv = 0;
   
-  if (app.isRestored())
+  if (app.isSessionRestored())
   {
     RESTORE( Brunsviewer );
   }
   else 
   {
+#endif
       const QString kat = i18n("BRUNS Pflanzenkatalog 2005");
+      Brunsviewer *brunsView = new Brunsviewer();
 
-      lv = new BrunsKatalogView( );
+      brunsView->show();
+#if 0
+      BrunsKatalogView *lv = new BrunsKatalogView( );
       lv->init( kat );
       lv->show();
-  }
+#endif
+#if 0
   if( splash ) {
     splash->finish( lv );
     delete splash;
   }
+#endif
   return app.exec();
 }  

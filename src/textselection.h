@@ -20,25 +20,26 @@
 
 #include <qtabwidget.h>
 #include <qmap.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
+
+#include <QTreeWidget>
 
 #include <kabc/addressee.h>
 
 #include "kraftdoc.h"
 
 class QComboBox;
-class QPopupMenu;
+class Q3PopupMenu;
 class FilterHeader;
-class KListView;
-class KListViewItem;
-class QListViewItem;
 class AddressSelection;
 class KPushButton;
 class DocText;
 class KAction;
 class KActionCollection;
 
-class TextSelection : public QVBox
+class TextSelection : public Q3VBox
 {
   Q_OBJECT
 public:
@@ -49,35 +50,35 @@ public:
   QString currentText() const;
   DocText currentDocText() const;
 
-  KListView *textsListView() { return mTextsView; }
+  QTreeWidget *textsListView() { return mTextsView; }
 
 signals:
-  void textSelectionChanged( QListViewItem* );
+  void textSelectionChanged( QTreeWidgetItem* );
   void actionCurrentTextToDoc();
 
 public slots:
-  QListViewItem* addNewDocText( const DocText& );
+  QTreeWidgetItem* addNewDocText( const DocText& );
   void deleteCurrentText();
   void updateDocText( const DocText& );
   void slotSelectDocType( const QString& );
-  void slotRMB( KListView*, QListViewItem* ,const QPoint& );
+  void slotRMB( QTreeWidget*, QTreeWidgetItem* ,const QPoint& );
 
 protected:
   void initActions();
   void buildTextList( KraftDoc::Part );
-  KListViewItem* addOneDocText( QListViewItem*, const DocText& );
+  QTreeWidgetItem* addOneDocText( QTreeWidgetItem*, const DocText& );
 
 protected slots:
-  void slotSelectionChanged( QListViewItem* );
+  void slotSelectionChanged( QTreeWidgetItem* );
 
 private:
   FilterHeader   *mListSearchLine;
-  KListView      *mTextsView;
-  QMap<QListViewItem*, DocText> mTextMap;
-  QMap<QString, QListViewItem*> mDocTypeItemMap;
-  QMap<QString, QListViewItem*> mStandardItemMap;
+  QTreeWidget      *mTextsView;
+  QMap<QTreeWidgetItem*, DocText> mTextMap;
+  QMap<QString, QTreeWidgetItem*> mDocTypeItemMap;
+  QMap<QString, QTreeWidgetItem*> mStandardItemMap;
 
-  QPopupMenu        *mMenu;
+  Q3PopupMenu        *mMenu;
   KActionCollection *mActions;
   KAction           *mAcMoveToDoc;
 };
