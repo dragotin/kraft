@@ -128,28 +128,28 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   butHBox2->setSpacing( KDialog::spacingHint() );
   KIcon icons = KIcon(BarIconSet( "go-previous" )); // KDE 4 icon name: go-previous
-  mPbAdd  = new KPushButton( icons, i18n("") );
+  mPbAdd  = new KPushButton( icons, QString() );
   mPbAdd->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbAdd, SIGNAL( clicked() ), this, SLOT( slotAddToDocument() ) );
   butHBox2->addWidget( mPbAdd );
   QToolTip::add( mPbAdd, i18n( "Add a template to the document" ) );
 
   icons = KIcon( BarIconSet( "document-new" ) );
-  mPbNew  = new KPushButton( icons, i18n("") ); // KDE 4 icon name: document-new
+  mPbNew  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-new
   mPbNew->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbNew, SIGNAL( clicked() ), this, SLOT( slotNewTemplate() ) );
   QToolTip::add( mPbNew, i18n( "Create a new template (type depending)" ) );
   butHBox2->addWidget( mPbNew );
 
   icons = KIcon( BarIconSet( "document-properties" ) );
-  mPbEdit  = new KPushButton( icons, i18n("") ); // KDE 4 icon name: document-properties
+  mPbEdit  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-properties
   mPbEdit->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbEdit, SIGNAL( clicked() ), this, SLOT( slotEditTemplate() ) );
   QToolTip::add( mPbEdit, i18n( "Edit the selected template (type depending)" ) );
   butHBox2->addWidget( mPbEdit );
 
   icons = KIcon( BarIconSet( "edit-delete" ) );
-  mPbDel  = new KPushButton( icons, i18n("") ); // KDE 4 icon name: edit-delete
+  mPbDel  = new KPushButton( icons, QString() ); // KDE 4 icon name: edit-delete
   mPbDel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbDel, SIGNAL( clicked() ), this, SLOT( slotDeleteTemplate() ) );
   QToolTip::add( mPbDel, i18n( "Delete the selected template (type depending)" ) );
