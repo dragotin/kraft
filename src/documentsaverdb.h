@@ -18,11 +18,6 @@
 #ifndef _DOCUMENTSAVERDB_H
 #define _DOCUMENTSAVERDB_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "documentsaverbase.h"
 
 // include files

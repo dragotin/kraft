@@ -18,11 +18,6 @@
 #ifndef _FIXCALCDIALOG_H
 #define _FIXCALCDIALOG_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <kdialog.h>
 
 #include "ui_fixpartui.h"  // designer file zeitpartui.ui

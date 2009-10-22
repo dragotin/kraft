@@ -25,10 +25,6 @@
 #include <Q3SqlCursor>
 #include <QLabel>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <kdialog.h>
 #include <kvbox.h>
 // include files

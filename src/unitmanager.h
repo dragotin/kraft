@@ -18,11 +18,6 @@
 #ifndef _UNITMANAGER_H
 #define _UNITMANAGER_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "einheit.h"
 
 /**

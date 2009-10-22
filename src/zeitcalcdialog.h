@@ -18,11 +18,6 @@
 #ifndef _ZEITCALCDIALOG_H
 #define _ZEITCALCDIALOG_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 #include "ui_zeitpartui.h"  // designer file zeitpartui.ui
 

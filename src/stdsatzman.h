@@ -19,15 +19,10 @@
 #define _STDSATZMAN_H
 
 /*
- * Stundensatzverwaltung: Es gibt Stundensätze mit verschiedenen Namen wie
- * Meister, Geselle, Helfer. Hinter jedem Namen steht ein gewisser Wert, der
- * per Dokument angepasst werden kann.
- *
+ * Hour rate management: There are different named hour rates such as Master
+ * or helper with a different amount of euros. The cost per hour can be adjusted
+ * document globally.
  */
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 
 // include files
 #include <QVector>

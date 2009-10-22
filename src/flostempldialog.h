@@ -18,11 +18,6 @@
 #ifndef _FLOSTEMPLDIALOG_H
 #define _FLOSTEMPLDIALOG_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 
 #include <klocale.h>

@@ -18,7 +18,7 @@
 #define ATTRIBUTE_H
 
 // include files for Qt
-#include <qvariant.h>
+#include <QVariant>
 
 // include files for KDE
 

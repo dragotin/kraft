@@ -18,11 +18,6 @@
 #ifndef _STOCKMATERIALMAN_H
 #define _STOCKMATERIALMAN_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 #include "stockmaterial.h"
 

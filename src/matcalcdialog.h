@@ -18,11 +18,6 @@
 #ifndef _MATCALCDIALOG_H
 #define _MATCALCDIALOG_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 #include <kdialog.h>
 

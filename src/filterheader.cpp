@@ -27,13 +27,12 @@
 
 #include <QTreeWidget>
 
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-//Added by qt3to4:
-#include <Q3BoxLayout>
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
+#include <QLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QBoxLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 CountingSearchLine::CountingSearchLine( QWidget *parent, QTreeWidget *listView )
   : KTreeWidgetSearchLine( parent, listView )
@@ -58,14 +57,14 @@ FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
     mItemNameOne( i18n("1 Item") ),
     mItemNameMultiple( i18n("%1 of %2 Items") )
 {
-  Q3BoxLayout *topLayout = new Q3VBoxLayout( this );
+  QBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing( KDialog::spacingHint() );
   topLayout->setMargin( 0 ); // KDialog::marginHint() );
 
   mTitleLabel = new QLabel( this );
   topLayout->addWidget( mTitleLabel );
 
-  Q3BoxLayout *filterLayout = new Q3HBoxLayout( topLayout );
+  QBoxLayout *filterLayout = new QHBoxLayout( this );
 
   QLabel *label = new QLabel( i18n("Search:"), this );
   filterLayout->addWidget( label );
@@ -76,8 +75,8 @@ FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
   filterLayout->addWidget( mSearchLine );
 
   QPushButton *removeButton = new QPushButton( this );
-  removeButton->setIconSet( KApplication::reverseLayout() ?
-    SmallIconSet("locationbar_erase") : SmallIconSet( "clear_left" ) );
+  removeButton->setIcon( KApplication::isRightToLeft() ?
+    KIcon("locationbar_erase") : KIcon( "clear_left" ) );
   filterLayout->addWidget( removeButton );
   connect( removeButton, SIGNAL( clicked() ), SLOT( clear() ) );
 

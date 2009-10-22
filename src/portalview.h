@@ -18,11 +18,6 @@
 #ifndef _PORTALVIEW_H
 #define _PORTALVIEW_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <kurl.h>
 
 // include files

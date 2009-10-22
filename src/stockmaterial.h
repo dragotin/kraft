@@ -18,11 +18,6 @@
 #ifndef _MATERIAL_H
 #define _MATERIAL_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 #include <QList>
 

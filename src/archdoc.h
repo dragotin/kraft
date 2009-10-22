@@ -18,10 +18,6 @@
 #ifndef ARCHDOC_H
 #define ARCHDOC_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files for QT
 #include <qstring.h>
 #include <qdatetime.h>

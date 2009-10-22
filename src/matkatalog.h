@@ -18,11 +18,6 @@
 #ifndef _MATKATALOG_H
 #define _MATKATALOG_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 #include <qstring.h>
 

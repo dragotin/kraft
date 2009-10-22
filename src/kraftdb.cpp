@@ -21,13 +21,10 @@
 #include <k3staticdeleter.h>
 
 #include <QFile>
-#include <qsqldatabase.h>
-#include <q3sqlcursor.h>
-#include <qsqlquery.h>
-#include <qstringlist.h>
-#include <qregexp.h>
-//Added by qt3to4:
-#include <Q3TextStream>
+#include <QSqlQuery>
+#include <QStringList>
+#include <QRegExp>
+#include <QTextStream>
 #include <QSqlError>
 #include <QDir>
 
@@ -38,7 +35,7 @@
 #include "katalogsettings.h"
 #include "defaultprovider.h"
 
-#define DB_DRIVER "QMYSQL3"
+#define DB_DRIVER "QMYSQL" //Might cause some trouble at the moment?
 // #define DB_DRIVER "QSQLITE"
 
 static K3StaticDeleter<KraftDB> selfDeleter;
@@ -152,12 +149,13 @@ QString KraftDB::defaultDatabaseName() const
 QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
 {
   QStringList re;
-
-  Q3SqlCursor cur( "wordLists" ); // Specify the table/view name
-  cur.setMode( Q3SqlCursor::ReadOnly );
-  cur.select( QString( "category='%1'" ).arg( selector ) );
-  while ( cur.next() ) {
-    re << replaceTagsInWord( cur.value( "word" ).toString(),  replaceMap );
+	QSqlQuery query;
+	
+	query.prepare("SELECT * FROM wordLists WHERE category='?'");
+	query.addBindValue(selector);
+  
+  while ( query.next() ) {
+    re << replaceTagsInWord( query.value(1).toString(), replaceMap );
   }
   return re;
 }
@@ -175,7 +173,7 @@ QString KraftDB::replaceTagsInWord( const QString& w, StringMap replaceMap ) con
   QMap<int, QStringList>::Iterator reIt;
   for ( reIt = reMap.end(); reIt != reMap.begin(); ) {
     --reIt;
-    QStringList keys = reIt.data();
+    QStringList keys = reIt.value();
     kDebug() << "PP: " << keys;
     for ( QStringList::Iterator dtIt = keys.begin(); dtIt != keys.end(); ++dtIt ) {
       QString repKey = *dtIt;
@@ -360,12 +358,12 @@ int KraftDB::processSqlFile( const QString& file, int& overallCount )
     if ( !f.open( QIODevice::ReadOnly ) ) {
       kError() << "Could not open " << sqlFile << endl;
     } else {
-      Q3TextStream ts( &f );
-      ts.setEncoding( Q3TextStream::UnicodeUTF8 );
+      QTextStream ts( &f );
+      ts.setCodec("UTF-8");
 
       QSqlQuery q;
-      QString allSql = ts.read();
-      QStringList sqlList = QStringList::split( ";", allSql );
+      QString allSql = ts.readAll(); //Not sure of this one!
+      QStringList sqlList = allSql.split(";");
 
       for ( QStringList::iterator it = sqlList.begin();
       it != sqlList.end(); ++it ) {
@@ -374,7 +372,7 @@ int KraftDB::processSqlFile( const QString& file, int& overallCount )
         if ( sql != ";" ) /* avoid empty lines */ {
           QRegExp reg( "\\s*#\\s*message: ?(.*)\\s*\\n" );
           reg.setMinimal( true );
-          int pos = reg.search( sql.lower(),  0 );
+          int pos = reg.indexIn( sql.toLower(),  0 );
           if ( pos > -1 ) {
             QString msg = reg.cap( 1 );
             sql = sql.remove ( reg );
@@ -435,13 +433,13 @@ void KraftDB::checkInit()
 
 int KraftDB::currentSchemaVersion()
 {
-  Q3SqlCursor cur( "kraftsystem" );
-  cur.setMode( Q3SqlCursor::ReadOnly );
-  cur.select(); // We'll retrieve every record
+  QSqlQuery query;
+
+  query.exec("SELECT dbschemaversion FROM kraftsystem"); //We'll retrieve every record
 
   int re = -1;
-  if ( cur.next() ) {
-    re = cur.value( "dbschemaversion" ).toInt();
+  if ( query.next() ) {
+    re = query.value(0).toInt();
   }
   return re;
 }

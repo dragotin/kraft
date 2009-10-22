@@ -18,11 +18,6 @@
 #ifndef TEMPLKATALOGVIEW_H
 #define TEMPLKATALOGVIEW_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files for Qt
 
 // include files for KDE

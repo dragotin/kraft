@@ -20,8 +20,6 @@
 #include <qprinter.h>
 #include <qpainter.h>
 
-#include <Q3BoxLayout>
-
 // include files for KDE
 #include <kiconloader.h>
 #include <kmessagebox.h>
@@ -83,7 +81,7 @@ void KatalogView::init(const QString& katName )
   ///////////////////////////////////////////////////////////////////
   // set up a vertical layout box
   QWidget *w = new QWidget(this);
-  Q3BoxLayout *box = new Q3VBoxLayout(w);
+  QBoxLayout *box = new QVBoxLayout(w);
 
   // start to set up the listview
   createCentralWidget(box, w);
@@ -334,7 +332,7 @@ void KatalogView::slotStatusMsg(const QString &text)
 {
   ///////////////////////////////////////////////////////////////////
   // change status message permanently
-  statusBar()->clear();
+  statusBar()->clearMessage();
   statusBar()->changeItem(text, ID_STATUS_MSG);
 }
 

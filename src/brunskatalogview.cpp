@@ -14,12 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <q3listview.h>
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qsplitter.h>
-//Added by qt3to4:
-#include <Q3BoxLayout>
+
+#include <QLabel>
+#include <QStringList>
+#include <QList>
+#include <QSplitter>
+#include <QTreeWidgetItem>
+#include <QBoxLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
 #include <kdebug.h>
 #include <klocale.h>
 

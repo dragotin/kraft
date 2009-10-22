@@ -18,11 +18,6 @@
 #ifndef _DOCUMENTSAVERBASE_H
 #define _DOCUMENTSAVERBASE_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 #include <qobject.h>
 

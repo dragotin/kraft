@@ -18,11 +18,6 @@
 #ifndef _MATERIALCALCPART_H
 #define _MATERIALCALCPART_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 #include<q3ptrdict.h>
 #include<qvariant.h>

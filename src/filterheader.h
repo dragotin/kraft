@@ -20,7 +20,6 @@
 #define FILTERHEADER_H
 
 #include <QWidget>
-#include <QLabel>
 
 #include "kraftcat_export.h"
 
@@ -28,6 +27,7 @@
 
 class QTreeWidget;
 class QLabel;
+class QString;
 
 class KRAFTCAT_EXPORT CountingSearchLine : public KTreeWidgetSearchLine
 {
@@ -58,7 +58,7 @@ class KRAFTCAT_EXPORT FilterHeader : public QWidget
   public slots:
     void setTitleLabel();
     void clear();
-  void setListView( QTreeWidget*  );
+		void setListView( QTreeWidget*  );
   private:
     QTreeWidget *mListView;
 

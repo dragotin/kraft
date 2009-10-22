@@ -18,13 +18,6 @@
 #ifndef _TAGMAN_H
 #define _TAGMAN_H
 
-/*
- */
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 #include <q3valuevector.h>
 

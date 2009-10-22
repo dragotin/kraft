@@ -27,7 +27,6 @@
 #include "kraftcat_export.h"
 
 class dbID;
-class QSqlError;
 
 /**
   *@author Klaas Freitag

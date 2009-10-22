@@ -18,13 +18,6 @@
 #ifndef _TEMPLATESAVERDB_H
 #define _TEMPLATESAVERDB_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-// include files
-
 #include "templatesaverbase.h"
 
 /**

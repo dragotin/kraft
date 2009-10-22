@@ -18,11 +18,6 @@
 #ifndef _MATERIALSAVERDB_H
 #define _MATERIALSAVERDB_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 
 #include "materialsaverbase.h"

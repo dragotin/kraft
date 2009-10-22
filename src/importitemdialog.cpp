@@ -15,11 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "importitemdialog.h"
 
 // include files for Qt

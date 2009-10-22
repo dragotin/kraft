@@ -19,11 +19,6 @@
 #ifndef _GELD_H
 #define _GELD_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "kraftcat_export.h"
 // include files
 

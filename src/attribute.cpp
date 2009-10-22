@@ -15,18 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qstring.h>
-#include <qvariant.h>
-#include <q3valuelist.h>
-#include <qsqlquery.h>
-#include <qstringlist.h>
+#include <QString>
+#include <QVariant>
+#include <QSqlQuery>
+#include <QStringList>
+#include <q3sqlcursor.h>
 
 #include <kdebug.h>
 
 #include "attribute.h"
 #include "kraftdb.h"
 #include "dbids.h"
-#include <q3sqlcursor.h>
 
 Attribute::Attribute()
   :mPersist( true ),
@@ -101,7 +100,7 @@ QVariant Attribute::value()
     q.prepare( query  );
 
     if ( listValue() ) {
-      QStringList idList = mValue.asStringList();
+      QStringList idList = mValue.toStringList();
       QStringList::Iterator it = idList.begin();
       QStringList list;
       while( it != idList.end() ) {
@@ -224,7 +223,7 @@ void AttributeMap::save( dbID id )
 
   Iterator it;
   for ( it = begin(); it != end(); ++it ) {
-    Attribute att = it.data();
+    Attribute att = it.value();
     kDebug() << ">> oo-  saving attribute with name " << it.key() << " for " << id.toString() << " att-name: " << att.name();
 
     attribQuery.bindValue( ":name", att.name() );
@@ -339,7 +338,7 @@ void AttributeMap::save( dbID id )
 
         } else {
           QString oldValue = valueMap.begin().key();
-          QString id = valueMap.begin().data();
+          QString id = valueMap.begin().value();
 
           if ( newValue != oldValue ) {
             kDebug() << "Updating " << id << " from " << oldValue << " to " << newValue;
@@ -360,7 +359,7 @@ void AttributeMap::save( dbID id )
     if ( ! valueMap.isEmpty() ) {
       ValueMap::Iterator mapIt;
       for ( mapIt = valueMap.begin(); mapIt != valueMap.end(); ++mapIt ) {
-        QString valId = mapIt.data();
+        QString valId = mapIt.value();
         dbDeleteValue( attribId, valId );
       }
     }

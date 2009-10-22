@@ -18,11 +18,6 @@
 #ifndef _MATERIALSAVERBASE_H
 #define _MATERIALSAVERBASE_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 // include files
 #include <qobject.h>
 

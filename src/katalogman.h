@@ -18,11 +18,6 @@
 #ifndef _KATALOGMAN_H
 #define _KATALOGMAN_H
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <qmap.h>
 
 #include "katalog.h"
