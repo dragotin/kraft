@@ -32,7 +32,7 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   : KraftDocEdit( parent )
 {
   QVBoxLayout *topLayout = new QVBoxLayout;
-  parent->setLayout( topLayout );
+  setLayout( topLayout );
   mDocHeaderEdit = new Ui::DocHeaderEdit;
   QWidget *w = new QWidget;
   mDocHeaderEdit->setupUi( w );

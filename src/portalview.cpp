@@ -332,7 +332,7 @@ void PortalView::systemInitError( const QString& htmlMsg )
 void PortalView::documentDigests()
 {
   QWidget *w = new QWidget;
-  KPageWidgetItem *pageWidget = addPage( w, i18n("Document Digests" ) );
+  mDocsPage = addPage( w, i18n("Document Digests" ) );
 
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );

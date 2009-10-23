@@ -136,10 +136,6 @@ void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
 
 KraftView::KraftView(QWidget *parent) :
   KDialog( parent ),
-#if 0
-  , name, false /* modal */, i18n("Document"),
-              Ok|Cancel, Ok, true /* separator */ ), */
-#endif
   m_doc( 0 ),
   mHelpLabel( 0 ), mRememberAmount( -1 ), mModified( false )
 {

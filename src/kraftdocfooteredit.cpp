@@ -33,7 +33,7 @@ KraftDocFooterEdit::KraftDocFooterEdit( QWidget *parent )
 {
   QVBoxLayout *topLayout = new QVBoxLayout;
   Q_ASSERT( parent );
-  parent->setLayout( topLayout );
+  setLayout( topLayout );
 
   mDocFooterEdit = new Ui::DocFooterEdit;
   QWidget *w = new QWidget;
