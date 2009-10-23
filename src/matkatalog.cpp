@@ -56,7 +56,7 @@ int MatKatalog::load()
     cnt++;
     int id = cur.value( "matID" ).toInt();
     int chapterID = cur.value( "chapterID" ).toInt();
-    const QString material = cur.value( "material" ).asString();
+    const QString material = cur.value( "material" ).toString();
     int unitID = cur.value( "unitID" ).toInt();
     double pPack = cur.value( "perPack" ).toDouble();
     double priceIn = cur.value( "priceIn" ).toDouble();

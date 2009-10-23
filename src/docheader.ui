@@ -271,7 +271,6 @@
   <tabstop>m_teEntry</tabstop>
  </tabstops>
  <includes>
-  <include location="local">config.h</include>
   <include location="local">kdatewidget.h</include>
   <include location="local">kcombobox.h</include>
   <include location="local">klineedit.h</include>

@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include <q3sqlcursor.h>
-#include <qsqlquery.h>
-#include <qstringlist.h>
+#include <QSqlQuery>
+#include <QStringList>
 #include <qdom.h>
-#include <qfile.h>
+#include <QFile>
 #include <q3textstream.h>
-#include <qdir.h>
+#include <QDir>
 
 #include <kdebug.h>
 #include <kfiledialog.h>
@@ -86,7 +86,7 @@ int TemplKatalog::load()
         }
 
         QDateTime modDt;
-        QString modDate = cur.value("modifyDatum").asString();
+        QString modDate = cur.value("modifyDatum").toString();
         /* modifyDatum ist TIMESTAMP und den gibt mysql offensichtlich mit einem T im
          * String zurck */
         if( modDate[10] == 'T' ) {
@@ -94,12 +94,12 @@ int TemplKatalog::load()
             modDt = QDateTime::fromString(modDate, Qt::ISODate );
         }
 
-        QDateTime enterDt = cur.value("enterDatum").asDateTime();
+        QDateTime enterDt = cur.value("enterDatum").toDateTime();
 
         kDebug() << "Chapter ID is " << chapID << endl;
 
         FloskelTemplate *flos = new FloskelTemplate( templID,
-                                                     QString::fromUtf8(cur.value("Floskel").toCString()),
+                                                     QString::fromUtf8(cur.value("Floskel").toByteArray()),
                                                      einheit, chapID, calcKind,
                                                      modDt, enterDt );
         // flos->setSortKey( sortID );
@@ -152,7 +152,7 @@ int TemplKatalog::loadTimeCalcParts( FloskelTemplate *flos )
         int tcalcid = cur.value("TCalcID").toInt();
         int templid = cur.value("TemplID").toInt();
 
-        QString name = QString::fromUtf8(cur.value("name").toCString());
+        QString name = QString::fromUtf8(cur.value("name").toByteArray());
         int minutes = cur.value("minutes").toInt();
         int prozent = cur.value("percent").toInt();
         int hourSet = cur.value("stdHourSet").toInt();
@@ -183,7 +183,7 @@ int TemplKatalog::loadMaterialCalcParts( FloskelTemplate *flos )
     while( cur.next() )
     {
         cnt++;
-        QString name = QString::fromUtf8(cur.value("name").toCString());
+        QString name = QString::fromUtf8(cur.value("name").toByteArray());
         int prozent = cur.value("percent").toInt();
         long mcalcID = cur.value("MCalcID").toLongLong();
         int templid = cur.value("TemplID").toInt();
@@ -233,7 +233,7 @@ int TemplKatalog::loadFixCalcParts( FloskelTemplate *flos )
     while( cur.next() )
     {
         cnt++;
-        QString name  = QString::fromUtf8(cur.value("name").toCString());
+        QString name  = QString::fromUtf8(cur.value("name").toByteArray());
         double amount = cur.value("amount").toDouble();
         int percent   = cur.value("percent").toInt();
         int tcalcid = cur.value("FCalcID").toInt();

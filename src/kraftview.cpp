@@ -38,6 +38,7 @@
 #include <QResizeEvent>
 #include <Q3ValueList>
 #include <Q3Frame>
+#include <QPalette>
 
 #include <kdebug.h>
 #include <kdialog.h>
@@ -160,8 +161,10 @@ KraftView::KraftView(QWidget *parent) :
   // mDetailHeader->setMargin( 4 );
   mDetailHeader->setFrameStyle( Q3Frame::Box + Q3Frame::Plain );
   mDetailHeader->setLineWidth( 1 );
-  mDetailHeader->setPaletteBackgroundColor( QColor( "darkBlue" ));
-  mDetailHeader->setPaletteForegroundColor( QColor( "white" ) );
+  QPalette palette;
+  palette.setColor(mDetailHeader->backgroundRole(), QColor( "darkBlue" ));
+  palette.setColor(mDetailHeader->foregroundRole(), QColor( "white "));
+  mDetailHeader->setPalette( palette );
   mDetailHeader->setTextFormat( Qt::PlainText );
   mDetailHeader->setFixedHeight( 40 ); // FIXME
   QFont f = mDetailHeader->font();
@@ -275,9 +278,12 @@ void KraftView::slotSwitchToPage( int id )
     static_cast<KraftDocEdit *>( mViewStack->currentWidget() );
 
   mDetailHeader->setText( edit->title() );
-  mDetailHeader->setPaletteBackgroundColor( edit->color() );
+  
+  QPalette palette;
+  palette.setColor(mDetailHeader->backgroundRole(), edit->color());
   // FIXME: color
-  mDetailHeader->setPaletteForegroundColor( QColor( "#00008b" ) );
+  palette.setColor(mDetailHeader->foregroundRole(), QColor( "#00008b" ));
+  mDetailHeader->setPalette( palette );
 
   mAssistant->slotSelectDocPart( mViewStack->currentIndex() );
   // mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
@@ -297,7 +303,7 @@ void KraftView::setupDocHeaderView()
 
     m_headerEdit->m_cbType->clear();
     // m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
-    m_headerEdit->m_cbType->insertStringList( DocType::allLocalised() );
+    m_headerEdit->m_cbType->insertItems(-1, DocType::allLocalised() );
 
     if ( KraftSettings::self()->showDocumentLocale() ) {
       m_headerEdit->mButtLang->show();
@@ -342,7 +348,7 @@ void KraftView::redrawDocument( )
     /* header: date and document type */
     QDate date = doc->date();
     m_headerEdit->m_dateEdit->setDate( date );
-    m_headerEdit->m_cbType->setCurrentText( doc->docType() );
+    m_headerEdit->m_cbType->setItemText(m_headerEdit->m_cbType->currentIndex(), doc->docType() );
 
     /* header: address */
     mContactUid  = doc->addressUid();
@@ -375,8 +381,8 @@ void KraftView::redrawDocument( )
     }
 
     if( !doc->salut().isEmpty() ) {
-      m_headerEdit->m_letterHead->insertItem( doc->salut() );
-      m_headerEdit->m_letterHead->setCurrentText( doc->salut() );
+      m_headerEdit->m_letterHead->insertItem(-1, doc->salut() );
+      m_headerEdit->m_letterHead->setItemText(m_headerEdit->m_letterHead->currentIndex(), doc->salut() );
     }
     /* pre- and post text */
     m_headerEdit->m_teEntry->setText( doc->preText() );
@@ -386,7 +392,7 @@ void KraftView::redrawDocument( )
 
     mAssistant->slotSetDocType( doc->docType() );
     if ( !doc->goodbye().isEmpty() ) {
-      m_footerEdit->m_cbGreeting->setCurrentText( doc->goodbye() );
+      m_footerEdit->m_cbGreeting->setItemText(m_footerEdit->m_cbGreeting->currentIndex(), doc->goodbye() );
     }
 
     redrawDocPositions( );
