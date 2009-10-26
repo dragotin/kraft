@@ -143,7 +143,7 @@ KraftView::KraftView(QWidget *parent) :
   setModal( false );
   setButtons( KDialog::Ok | KDialog::Cancel );
   
-  //connect(this->button(KDialog::Ok), SIGNAL(clicked()), this, SLOT(slotOk()));
+  connect(this->button(KDialog::Ok), SIGNAL(clicked()), this, SLOT(slotOk()));
 
   QWidget *w = new QWidget( this );
 

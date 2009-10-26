@@ -248,10 +248,12 @@ void DocDigestView::slotUpdateDoc( DocGuardedPtr doc )
   if ( !doc ) return;
   const QString docId = doc->docID().toString();
 
-  QMapIterator<QTreeWidgetItem*, QString> it( mDocIdDict );
-  while( it.hasNext() ) {
-    QTreeWidgetItem* item = it.key();
+  QMap<QTreeWidgetItem*, QString>::iterator it;
+
+  for(it=mDocIdDict.begin(); it != mDocIdDict.end(); ++it ) {
     QString id = it.value();
+    QTreeWidgetItem* item = it.key();
+
 
     if ( docId == id ) {
       setupListViewItemFromDoc( doc, item );
