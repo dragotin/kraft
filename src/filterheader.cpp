@@ -57,16 +57,16 @@ FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
     mItemNameOne( i18n("1 Item") ),
     mItemNameMultiple( i18n("%1 of %2 Items") )
 {
-  #warning: Memory leak
-  QBoxLayout *topLayout = new QVBoxLayout();  
+  QBoxLayout *topLayout = new QVBoxLayout;
+  setLayout( topLayout );
   topLayout->setSpacing( KDialog::spacingHint() );
-  topLayout->setMargin( 0 ); // KDialog::marginHint() );
+  topLayout->setMargin( KDialog::marginHint() );
 
   mTitleLabel = new QLabel();
   topLayout->addWidget( mTitleLabel );
 
-  QBoxLayout *filterLayout = new QHBoxLayout();
-
+  QBoxLayout *filterLayout = new QHBoxLayout;
+  topLayout->addLayout( filterLayout );
   QLabel *label = new QLabel( i18n("Search:"));
   filterLayout->addWidget( label );
 
@@ -79,7 +79,6 @@ FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
   setTabOrder( mSearchLine, listView );
 
   setTitleLabel();
-  setLayout(filterLayout);
 }
 
 void FilterHeader::setItemName( const QString &none, const QString &one,
