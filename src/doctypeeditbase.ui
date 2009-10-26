@@ -13,9 +13,6 @@
         <height>512</height>
       </rect>
     </property>
-    <property name="windowTitle">
-      <string>Form1</string>
-    </property>
     <layout class="QGridLayout">
       <property name="margin">
         <number>0</number>
@@ -220,9 +217,6 @@
                           <widget class="QPushButton" name="mPbEditCycles">
                             <property name="text">
                               <string>&amp;edit Number Cycles...</string>
-                            </property>
-                            <property name="shortcut">
-                              <string>Alt+E</string>
                             </property>
                           </widget>
                         </item>

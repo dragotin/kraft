@@ -10,9 +10,6 @@
     <height>460</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form2</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
     <widget class="QLabel" name="dmHeaderText">
@@ -159,9 +156,6 @@
            <widget class="QCheckBox" name="mCbSave">
             <property name="text">
              <string>&amp;save this as a template</string>
-            </property>
-            <property name="shortcut">
-             <string>Alt+S</string>
             </property>
            </widget>
           </item>

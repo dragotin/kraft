@@ -10,9 +10,6 @@
     <height>248</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form3</string>
-  </property>
   <layout class="QGridLayout">
    <property name="margin">
     <number>3</number>

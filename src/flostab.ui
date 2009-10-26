@@ -117,9 +117,6 @@
                     <property name="text">
                      <string>&amp;Count Time for Overalltime</string>
                     </property>
-                    <property name="shortcut">
-                     <string>Alt+C</string>
-                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -233,9 +230,6 @@
                  <widget class="QRadioButton" name="m_rbManual">
                   <property name="text">
                    <string>&amp;manuel:</string>
-                  </property>
-                  <property name="shortcut">
-                   <string>Alt+M</string>
                   </property>
                  </widget>
                 </item>
