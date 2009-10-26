@@ -16,11 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <q3valuelist.h>
-#include <qstring.h>
+#include <QString>
 #include <qdom.h>
-#include <Q3PtrList>
-#include <Q3PtrCollection>
 
 // include files for KDE
 #include <klocale.h>

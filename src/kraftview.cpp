@@ -18,22 +18,22 @@
 // include files for Qt
 #include <QtGui>
 
-#include <qlayout.h>
-#include <qlabel.h>
+#include <QLayout>
+#include <QLabel>
 #include <q3scrollview.h>
-#include <qsizepolicy.h>
+#include <QSizePolicy>
 #include <q3textedit.h>
-#include <qsignalmapper.h>
+#include <QSignalMapper>
 #include <khbox.h>
 #include <kvbox.h>
 #include <q3grid.h>
 #include <q3widgetstack.h>
 #include <qtabwidget.h>
-#include <qcolor.h>
-#include <qsplitter.h>
+#include <QColor>
+#include <QSplitter>
 #include <q3buttongroup.h>
-#include <qtooltip.h>
-#include <qfont.h>
+#include <QToolTip>
+#include <QFont>
 #include <q3ptrlist.h>
 #include <QResizeEvent>
 #include <Q3ValueList>
@@ -142,6 +142,8 @@ KraftView::KraftView(QWidget *parent) :
   setCaption( i18n("Document" ) );
   setModal( false );
   setButtons( KDialog::Ok | KDialog::Cancel );
+  
+  //connect(this->button(KDialog::Ok), SIGNAL(clicked()), this, SLOT(slotOk()));
 
   QWidget *w = new QWidget( this );
 
@@ -344,7 +346,7 @@ void KraftView::redrawDocument( )
     /* header: date and document type */
     QDate date = doc->date();
     m_headerEdit->m_dateEdit->setDate( date );
-    m_headerEdit->m_cbType->setItemText(m_headerEdit->m_cbType->currentIndex(), doc->docType() );
+    m_headerEdit->m_cbType->setCurrentIndex(m_headerEdit->m_cbType->findText( doc->docType() ));
 
     /* header: address */
     mContactUid  = doc->addressUid();
@@ -378,7 +380,7 @@ void KraftView::redrawDocument( )
 
     if( !doc->salut().isEmpty() ) {
       m_headerEdit->m_letterHead->insertItem(-1, doc->salut() );
-      m_headerEdit->m_letterHead->setItemText(m_headerEdit->m_letterHead->currentIndex(), doc->salut() );
+      m_headerEdit->m_letterHead->setCurrentIndex(m_headerEdit->m_letterHead->findText( doc->salut() ));
     }
     /* pre- and post text */
     m_headerEdit->m_teEntry->setText( doc->preText() );
@@ -388,7 +390,7 @@ void KraftView::redrawDocument( )
 
     mAssistant->slotSetDocType( doc->docType() );
     if ( !doc->goodbye().isEmpty() ) {
-      m_footerEdit->m_cbGreeting->setItemText(m_footerEdit->m_cbGreeting->currentIndex(), doc->goodbye() );
+      m_footerEdit->m_cbGreeting->setCurrentIndex(m_footerEdit->m_cbGreeting->findText( doc->goodbye() ));
     }
 
     redrawDocPositions( );
@@ -437,7 +439,7 @@ void KraftView::redrawDocPositions( )
     cnt++;
     PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
     if( !w ) {
-      w = createPositionViewWidget( dp, cnt );
+      w = createPositionViewWidget( dp, cnt);
     }
     kDebug() << "now position " << dp->positionNumber() << endl;
   }
@@ -476,7 +478,9 @@ void KraftView::setMappingId( QWidget *widget, int pos )
 PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, int pos )
 {
   PositionViewWidget *w = new PositionViewWidget( );
-
+  
+  pos--;
+  
   int cw = m_positionScroll->contentsWidth();
   if ( cw < 400 ) cw = 400;
   w->resize( cw, w->height() );
@@ -524,8 +528,8 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   m_positionScroll->addChild( w, 0, 0 );
 
   w->setDocPosition( dp, getDocument()->locale() );
-  w->setOrdNumber( 1 + pos );
-  int y = pos * w->height();
+  w->setOrdNumber( pos+1 );
+  int y = (pos) * w->height();
   m_positionScroll->moveChild( w, 0, y );
 
   w->show();
@@ -536,7 +540,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 DocPositionBase::TaxType KraftView::currentTaxSetting()
 {
   // add 1 to the currentItem since that starts with zero.
-  int taxKind = 1+( m_footerEdit->mTaxCombo->currentItem() );
+  int taxKind = 1+( m_footerEdit->mTaxCombo->currentIndex() );
   DocPositionBase::TaxType tt = DocPositionBase::TaxInvalid;
 
   if ( taxKind == 1 ) { // No Tax at all
@@ -600,16 +604,16 @@ void KraftView::setupFooter()
 
   m_footerEdit = edit->docFooterEdit();
 
-  m_footerEdit->m_cbGreeting->insertStringList( KraftDB::self()->wordList( "greeting" ) );
+  m_footerEdit->m_cbGreeting->insertItems(-1, KraftDB::self()->wordList( "greeting" ) );
 
-  m_footerEdit->m_cbGreeting->setCurrentText( KraftSettings::self()->self()->greeting() );
+  m_footerEdit->m_cbGreeting->setCurrentIndex(m_footerEdit->m_cbGreeting->findText( KraftSettings::self()->self()->greeting() ));
 
   // ATTENTION: If you change the following inserts, make sure to check the code
   //            in method currentPositionList!
-  m_footerEdit->mTaxCombo->insertItem( i18n( "Display no tax at all" ), 0 );
-  m_footerEdit->mTaxCombo->insertItem( i18n( "Calculate reduced tax for all items" ), 1);
-  m_footerEdit->mTaxCombo->insertItem( i18n( "Calculate full tax for all items" ), 2 );
-  // m_footerEdit->mTaxCombo->insertItem( i18n( "Calculate on individual item tax rate" ), 3 );
+  m_footerEdit->mTaxCombo->insertItem( 0, i18n( "Display no tax at all" ));
+  m_footerEdit->mTaxCombo->insertItem( 1, i18n( "Calculate reduced tax for all items" ));
+  m_footerEdit->mTaxCombo->insertItem( 2, i18n( "Calculate full tax for all items" ));
+  // m_footerEdit->mTaxCombo->insertItem( i18n( 3, i18n( "Calculate on individual item tax rate" )));
 
   // set the tax type combo correctly: If all items have the same tax type, take it.
   // If items have different, its the individual thing.
@@ -626,7 +630,7 @@ void KraftView::setupFooter()
       tt = dp->taxTypeNumeric(); // store the first entry.
     else {
       if ( tt != dp->taxTypeNumeric() ) {
-        m_footerEdit->mTaxCombo->setCurrentItem( 3 );
+        m_footerEdit->mTaxCombo->setCurrentIndex( 3 );
         equality = false;
       } else {
         // old and new taxtype are the same.
@@ -639,10 +643,10 @@ void KraftView::setupFooter()
     if ( deflt > 0 ) {
       deflt -= 1;
     }
-    m_footerEdit->mTaxCombo->setCurrentItem( deflt );
+    m_footerEdit->mTaxCombo->setCurrentIndex( deflt );
   } else {
     if ( equality ) {
-      m_footerEdit->mTaxCombo->setCurrentItem( tt-1 );
+      m_footerEdit->mTaxCombo->setCurrentIndex( tt-1 );
     } else {
       kError() << "Problem: Not all Tax-Levels are the same! (Fixed later with tax on item base)";
     }
@@ -751,7 +755,6 @@ void KraftView::slotDeletePosition( int pos )
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Deleted );
-
     refreshPostCard();
   }
 }
@@ -821,7 +824,7 @@ void KraftView::slotNewAddress( const Addressee& contact )
     m_headerEdit->m_letterHead->clear();
     QStringList li = generateLetterHead( adr );
 
-    m_headerEdit->m_letterHead->insertStringList( li );
+    m_headerEdit->m_letterHead->insertItems(-1, li );
     m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->self()->salut() );
   }
 }
@@ -1024,7 +1027,7 @@ void KraftView::slotImportItems()
     if ( list.count() > 0 ) {
       kDebug() << "Importlist amount of entries: " << list.count();
       int cnt = 0;
-      int newpos = dia.getPositionCombo()->currentItem();
+      int newpos = dia.getPositionCombo()->currentIndex();
       kDebug() << "Newpos is " << newpos;
 
       DocPositionListIterator posIt( list );
@@ -1306,7 +1309,7 @@ void KraftView::slotOk()
       // For new documents the user had to select a greeting and we make this
       // default for the future
       KraftSettings::self()->self()->setGreeting( m_footerEdit->m_cbGreeting->currentText() );
-      KraftSettings::self()->self()->setSalut( m_headerEdit->m_letterHead->currentItem() );
+      KraftSettings::self()->self()->setSalut( m_headerEdit->m_letterHead->currentIndex() );
     }
 
     KraftSettings::self()->self()->setDocViewSplitter( mCSplit->sizes() );

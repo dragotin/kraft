@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 // include files for Qt
+#include <q3sqlcursor.h>
+#include <QSqlRecord>
 
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <q3sqlcursor.h>
-#include <qsqlrecord.h>
 
 #include "kraftdb.h"
 #include "kraftglobals.h"
@@ -33,7 +33,6 @@
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
 #include "stockmaterial.h"
-
 
 
 bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
@@ -400,7 +399,7 @@ void TemplateSaverDB::fillTemplateBuffer( QSqlRecord *buffer, FloskelTemplate *t
 {
     buffer->setValue( "chapterID", tmpl->getChapterID());
     buffer->setValue( "unitID", tmpl->einheit().id());
-    buffer->setValue( "Floskel", tmpl->getText().utf8() );
+    buffer->setValue( "Floskel", tmpl->getText().toUtf8() );
     buffer->setValue( "Gewinn", tmpl->getGewinn() );
     buffer->setValue( "zeitbeitrag", tmpl->hasTimeslice() );
 

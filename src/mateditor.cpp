@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qsplitter.h>
+#include <QSplitter>
 #include <qsql.h>
-#include <qlabel.h>
-#include <qsizepolicy.h>
+#include <QLabel>
+#include <QSizePolicy>
 //Added by qt3to4:
 #include <Q3Frame>
 
@@ -42,7 +42,7 @@
 
 
 /* ********************************************************************************
- * Editor für die Materialkategorie
+ * Editor for die Materialkategorie
  * ********************************************************************************/
 
 MatKatEditor::MatKatEditor( const QString& curChap,  QStringList chaps, QWidget *parent )
@@ -59,8 +59,8 @@ MatKatEditor::MatKatEditor( const QString& curChap,  QStringList chaps, QWidget 
 
   (void) new QLabel( i18n("Set Chapter of the marked Material:"), vBox );
   m_combo = new QComboBox(vBox);
-  m_combo->insertStringList(chaps);
-  m_combo->setCurrentText(curChap);
+  m_combo->insertItems(-1, chaps);
+  m_combo->setCurrentIndex(m_combo->findText( curChap ));
   setMainWidget( vBox );
 }
 
@@ -105,7 +105,7 @@ MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *pare
 
     m_dataTable = new MatDataTable(vBox);
 
-    /* Einen Kategorie-Knopf in entsprechendem Layout hinzufügen */
+    /* Einen Kategorie-Knopf in entsprechendem Layout hinzufï¿½gen */
     KHBox *hBox = new KHBox( vBox );
     /* Margin ist der Abstand zum Aussenrand */
     hBox->setMargin(KDialog::spacingHint());
@@ -166,7 +166,7 @@ void MatEditor::addAmountDetail( QWidget *parent )
     // (void) new QLabel(i18n("Menge: "), hbox);
     m_amount   = new KDoubleNumInput( hbox );
     m_amount->setValue( 1.0);
-    m_amount->setPrecision(3);
+    m_amount->setDecimals(3);
     m_amount->setLabel( i18n("Amount: "), Qt::AlignLeft|Qt::AlignVCenter);
     m_unit     = new QLabel(hbox);
     m_takeOver = new KPushButton( i18n("add"), hbox );
@@ -193,7 +193,7 @@ void MatEditor::slSelectKatalog( const QString& str )
     m_dataTable->slSetCurrChapterID(chapID);
 }
 
-/* Setzt den enabled-Status für den Kategorie-Button */
+/* Setzt den enabled-Status fï¿½r den Kategorie-Button */
 void MatEditor::slTableSelected(int row, int)
 {
     bool enabled = false;
@@ -211,7 +211,7 @@ void MatEditor::slTableSelected(int row, int)
         QSqlRecord *rec = m_dataTable->currentRecord();
         if( rec )
         {
-            m_matShort->setText( "<i>" + QString::fromUtf8(rec->value("material").toCString()) + "</i>");
+            m_matShort->setText( "<i>" + QString::fromUtf8(rec->value("material").toByteArray()) + "</i>");
             int unitID = rec->value("unitID").toInt();
             Einheit e( UnitManager::self()->getUnit(unitID));
             m_amount->setValue(1.0);
@@ -220,7 +220,7 @@ void MatEditor::slTableSelected(int row, int)
             m_unit->setText( " "+einh ); // .leftJustified(12, ' '));
         }
 
-        /* Antwort-String löschen */
+        /* Antwort-String lï¿½schen */
         if( m_answer )
             m_answer->setText( QString::null );
     }

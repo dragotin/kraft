@@ -22,18 +22,19 @@
 
 #include <klocale.h>
 #include <kdebug.h>
-#include <QTreeWidgetItem>
+
 #include <kdialog.h>
 #include <kaction.h>
 #include <kactioncollection.h>
 #include <kiconloader.h>
 
-#include <qicon.h>
-#include <qsizepolicy.h>
-#include <qlabel.h>
+#include <QIcon>
+#include <QSizePolicy>
+#include <QLabel>
 #include <q3vbox.h>
 #include <q3header.h>
 #include <q3popupmenu.h>
+#include <QTreeWidgetItem>
 //Added by qt3to4:
 #include <Q3ValueList>
 
@@ -101,7 +102,7 @@ void TextSelection::slotSelectionChanged( QTreeWidgetItem* item )
   // do not fire the signal for the root element which is the doc type
   QTreeWidgetItem *it = 0;
   QList<QTreeWidgetItem*> itemsList = mDocTypeItemMap.values();
-  if ( itemsList.find( item ) == itemsList.end() ) {
+  if ( itemsList.indexOf( item ) == itemsList.count() ) {
     it = item; // was not found in the doctype item list
   }
   emit textSelectionChanged( it );
@@ -189,7 +190,7 @@ void TextSelection::updateDocText( const DocText& dt )
 void TextSelection::deleteCurrentText()
 {
   QTreeWidgetItem *curr = mTextsView->selectedItems()[0];
-  if ( mDocTypeItemMap.values().find( curr ) == mDocTypeItemMap.values().end() ) {
+  if ( mDocTypeItemMap.values().indexOf( curr ) == mDocTypeItemMap.values().count() ) {
     kDebug() << "Can not delete the doc type item" << endl;
     return;
   }

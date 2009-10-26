@@ -14,14 +14,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <q3sqlcursor.h>
-#include <qsqlrecord.h>
-#include <qsqlindex.h>
+
+#include <QSqlRecord>
+#include <QSqlIndex>
 #include <QFile>
 #include <QTextStream>
-#include <qregexp.h>
-#include <q3stylesheet.h>
-//Added by qt3to4:
+#include <QRegExp>
 #include <QList>
 
 #include <k3staticdeleter.h>
@@ -87,7 +85,7 @@ void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
     temp.setPrefix( ".trml" );
 
     QTextStream s(&temp);
-    s.setEncoding( QTextStream::Locale );
+    s.setCodec( QTextCodec::codecForLocale() );
     s << templ;
     temp.close();
 

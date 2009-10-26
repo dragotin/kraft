@@ -17,14 +17,14 @@
 
 // include files for Qt
 #include <q3textedit.h>
-#include <qradiobutton.h>
-#include <qlabel.h>
-#include <qstring.h>
-#include <qcombobox.h>
+#include <QRadioButton>
+#include <QLabel>
+#include <QString>
+#include <QComboBox>
 #include <q3listview.h>
-#include <qcheckbox.h>
+#include <QCheckBox>
 #include <q3buttongroup.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 
 // include files for KDE
 #include <klocale.h>
@@ -87,18 +87,18 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
     return;
   }
 
-  cbChapter->insertStringList( m_katalog->getKatalogChapters() );
+  cbChapter->insertItems(-1, m_katalog->getKatalogChapters() );
   int chapID = t->getChapterID();
   QString chap = m_katalog->chapterName(dbID(chapID));
-  cbChapter->setCurrentText(chap);
+  cbChapter->setCurrentIndex(cbChapter->findText( chap ));
 
   /** der text der Vorlage **/
   m_text->setText( t->getText());
 
   /* Einheit */
   m_unit->clear();
-  m_unit->insertStringList( UnitManager::self()->allUnits());
-  m_unit->setCurrentText( m_template->einheit().einheitSingular() );
+  m_unit->insertItems(-1, UnitManager::self()->allUnits());
+  m_unit->setCurrentIndex(m_unit->findText( m_template->einheit().einheitSingular() ));
 
   m_manualPriceVal->setValue( t->unitPrice().toDouble());
 

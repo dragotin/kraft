@@ -16,13 +16,13 @@
  ***************************************************************************/
 
 // include files for QT
-#include <qdir.h>
-#include <qprinter.h>
-#include <qpainter.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qtimer.h>
-#include <qsqldatabase.h>
+#include <QDir>
+#include <QPrinter>
+#include <QPainter>
+#include <QApplication>
+#include <QCursor>
+#include <QTimer>
+#include <QSqlDatabase>
 #include <QSqlError>
 
 // include files for KDE
@@ -778,7 +778,7 @@ void Portal::slotStatusMsg(const QString &text)
 {
   ///////////////////////////////////////////////////////////////////
   // change status message permanently
-  statusBar()->clear();
+  statusBar()->clearMessage();
   statusBar()->changeItem(text, ID_STATUS_MSG);
 }
 
@@ -855,7 +855,7 @@ QString Portal::textWrap( const QString& t, unsigned int width )
         int pos = width;
         while( pos < (int) t.length() )
         {
-            pos = t.find( ' ', start+width );
+            pos = t.indexOf( ' ', start+width );
             if( pos > -1 ) {
                 re += t.mid( start, pos-start)+'\n';
                 start = pos;

@@ -16,14 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcombobox.h>
-#include <qwidget.h>
-
+#include <QComboBox>
+#include <QWidget>
 #include <QLabel>
 #include <QPixmap>
 #include <QTreeWidget>
-#include "tagman.h"
-#include <qpushbutton.h>
+#include <QPushButton>
 
 #include <kdialog.h>
 #include <kdebug.h>
@@ -33,12 +31,12 @@
 #include <klineedit.h>
 #include <khbox.h>
 #include <kvbox.h>
-
-#include "tagtemplatesdialog.h"
-#include "defaultprovider.h"
 #include <kcolorbutton.h>
 #include <kmessagebox.h>
 
+#include "tagtemplatesdialog.h"
+#include "defaultprovider.h"
+#include "tagman.h"
 
 TagTemplateEditor::TagTemplateEditor( QWidget *parent )
   : KDialog( parent )
@@ -92,7 +90,7 @@ TagTemplate TagTemplateEditor::currentTemplate()
 {
   TagTemplate tt = mOrigTemplate;
   tt.setName( mNameEdit->text() );
-  tt.setDescription( mDescriptionEdit->text() );
+  tt.setDescription( mDescriptionEdit->toPlainText() );
   tt.setColor( mColorButton->color() );
 
   return tt;

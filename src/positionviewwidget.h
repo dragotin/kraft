@@ -20,8 +20,9 @@
 #define POSITIONVIEWWIDGET_H
 
 #include <q3ptrlist.h>
-#include <qmap.h>
-#include <Q3PopupMenu>
+#include <QMap>
+#include <QMenu>
+#include <QAction>
 #include <QPaintEvent>
 
 #include "ui_positionwidget.h"
@@ -31,6 +32,7 @@
 */
 class DocPosition;
 class KMenu;
+class KAction;
 class Geld;
 class Q3PopupMenu;
 class KLocale;
@@ -107,11 +109,11 @@ private:
 
     DocPositionGuardedPtr mPositionPtr;
     KMenu *mExecPopup;
-    Q3PopupMenu *mStateSubmenu;
+    QMenu *mStateSubmenu;
     QStringList mTags;
-    int  mDeleteId;
-    int  mLockId;
-    int  mUnlockId;
+    QAction * mDeleteId;
+    QAction * mLockId;
+    QAction * mUnlockId;
     Geld mPositionPrice;  // only used for Discount items to store the result
     State mState;
     Kind  mKind;

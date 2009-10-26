@@ -77,7 +77,7 @@ QString ArchiveMan::documentID( dbID archID ) const
   cur.select( QString( "archDocID=%1" ).arg( archID.toInt() ) );
 
   if ( cur.next() ) {
-    re = cur.value( "ident" ).asString();
+    re = cur.value( "ident" ).toString();
   }
 
   return re;

@@ -21,12 +21,8 @@
 #include <kcombobox.h>
 #include <klocale.h>
 
-#include <qlayout.h>
-#include <qcombobox.h>
-#include <q3textedit.h>
-//Added by qt3to4:
-#include <Q3BoxLayout>
-#include <Q3VBoxLayout>
+#include <QLayout>
+#include <QComboBox>
 
 KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   : KraftDocEdit( parent )

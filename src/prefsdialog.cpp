@@ -15,25 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qlineedit.h>
-#include <qlabel.h>
+#include <QLayout>
+#include <QLineEdit>
+#include <QLabel>
 #include <q3frame.h>
 #include <q3hbox.h>
 #include <q3vbox.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 #include <q3textedit.h>
-#include <qcombobox.h>
-#include <qlayout.h>
-#include <qcheckbox.h>
+#include <QComboBox>
+#include <QLayout>
+#include <QCheckBox>
 #include <q3listbox.h>
-#include <qsqlquery.h>
-#include <qspinbox.h>
+#include <QSqlQuery>
+#include <QSpinBox>
 #include <q3sqlcursor.h>
 #include <q3datatable.h>
-#include <qtooltip.h>
+#include <QToolTip>
 #include <q3listview.h>
+#include <QPalette>
 
 #include <kdialog.h>
 #include <klocale.h>
@@ -94,7 +94,7 @@ void PrefsDialog::databaseTab()
   QGridLayout *topLayout = new QGridLayout;
   vboxLay->addLayout( topLayout );
   topLayout->setSpacing( spacingHint() );
-  topLayout->setColSpacing( 0, spacingHint() );
+  topLayout->addItem(new QSpacerItem(spacingHint(), 0), 0, 0);
 
   label = new QLabel(i18n("Database Host:") );
   topLayout->addWidget(label, 0,0);
@@ -120,14 +120,14 @@ void PrefsDialog::databaseTab()
                                   "parameters to make the changes "
                                   "effective!" ) );
   l1->setTextFormat( Qt::RichText );
-  l1->setBackgroundColor( QColor( "#ffcbcb" ) );
+  QPalette palette;
+  palette.setColor(l1->backgroundRole(), QColor( "#ffcbcb"));
+  l1->setPalette(palette);
   l1->setMargin( 5 );
   l1->setFrameStyle( Q3Frame::Box + Q3Frame::Raised );
   l1->setLineWidth( 1 );
-  l1->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter | Qt::TextExpandTabs | Qt::TextWordWrap );
-  topLayout->addMultiCellWidget( l1, 6,  6, 0, 1 );
-
-
+  l1->setAlignment( Qt::AlignCenter | Qt::TextExpandTabs | Qt::TextWordWrap );
+  topLayout->addWidget( l1, 0,  1, 6, 5 ); //Not sure!  
 
   m_leHost = new QLineEdit;
   connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
@@ -301,16 +301,16 @@ void PrefsDialog::docTab()
   vboxLay->addLayout( topLayout );
 
   topLayout->setSpacing( spacingHint() );
-  topLayout->setColSpacing( 0, spacingHint() );
+  topLayout->addItem(new QSpacerItem(spacingHint(), 0), 0, 0);
 
   label = new QLabel(i18n("&Default document type on creation:") );
   topLayout->addWidget(label, 0,0);
 
   mCbDocTypes = new QComboBox;
   label->setBuddy( mCbDocTypes );
-  QToolTip::add( mCbDocTypes, i18n( "New documents are from the selected type by default." ) );
+  mCbDocTypes->setToolTip( i18n( "New documents are from the selected type by default." ) );
   topLayout->addWidget( mCbDocTypes, 0, 1 );
-  mCbDocTypes->insertStringList( DocType::allLocalised() );
+  mCbDocTypes->insertItems(-1, DocType::allLocalised() );
 
   QLabel *f = new QLabel;
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
@@ -318,7 +318,7 @@ void PrefsDialog::docTab()
 
   // Localisation on document level
   mCbDocLocale = new QCheckBox( i18n( "Enable &Localisation on Document Level" ) );
-  QToolTip::add( mCbDocLocale, i18n( "Checking this enables language settings for each document."
+  mCbDocLocale->setToolTip( i18n( "Checking this enables language settings for each document."
                                      "<br>Leave it unchecked to use the KDE default settings for "
                                      "the document localisation." ) );
   vboxLay->addWidget( mCbDocLocale );
@@ -336,11 +336,11 @@ void PrefsDialog::docTab()
   butLay->addWidget( mCbDefaultTaxType );
   l->setBuddy( mCbDefaultTaxType );
 
-  QToolTip::add( mCbDefaultTaxType, i18n( "The default tax setting for all documents." ) );
-  mCbDefaultTaxType->insertItem( i18n( "Display no tax at all" ), 0 );
-  mCbDefaultTaxType->insertItem( i18n( "Calculate reduced tax for all items" ), 1);
-  mCbDefaultTaxType->insertItem( i18n( "Calculate full tax for all items" ), 2 );
-  // mCbDefaultTaxType->insertItem( i18n( "Calculate on individual item tax rate" ), 3 );
+  mCbDefaultTaxType->setToolTip( i18n( "The default tax setting for all documents." ) );
+  mCbDefaultTaxType->insertItem( 0, i18n("Display no tax at all" , 0));
+  mCbDefaultTaxType->insertItem( 1, i18n("Calculate reduced tax for all items" ));
+  mCbDefaultTaxType->insertItem( 2, i18n("Calculate full tax for all items" ) );
+  // mCbDefaultTaxType->insertItem( 3, i18n("Calculate on individual item tax rate" ));
   vboxLay->addLayout( butLay );
 
   // space eater
@@ -383,7 +383,7 @@ void PrefsDialog::slotDocTypeRemoved( const QString& type )
   }
 
   for ( int i=0; i < mCbDocTypes->count(); i++ ) {
-    if ( mCbDocTypes->text( i ) == type ) {
+    if ( mCbDocTypes->itemText( i ) == type ) {
       mCbDocTypes->removeItem( i );
       continue;
     }
@@ -412,9 +412,9 @@ void PrefsDialog::readConfig()
     QString t = KraftSettings::self()->doctype();
     if ( t.isEmpty() ) t = DefaultProvider::self()->docType();
 
-    mCbDocTypes->setCurrentText( t );
+    mCbDocTypes->setCurrentIndex( mCbDocTypes->findText( t ));
 
-    mCbDefaultTaxType->setCurrentItem( KraftSettings::self()->defaultTaxType()-1 );
+    mCbDefaultTaxType->setCurrentIndex( KraftSettings::self()->defaultTaxType()-1 );
 }
 
 void PrefsDialog::writeConfig()
@@ -427,7 +427,7 @@ void PrefsDialog::writeConfig()
 
     KraftSettings::self()->setShowDocumentLocale( mCbDocLocale->isChecked() );
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
-    KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentItem() );
+    KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
 
     KraftSettings::self()->writeConfig();
 }

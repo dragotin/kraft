@@ -48,7 +48,7 @@ TextTemplate::Dictionary TextTemplate::createSubDictionary( const QString& paren
   Dictionary ttd;
 
   if ( mDictionaries.contains( parent ) ) {
-    ttd.mDict = mDictionaries[parent]->AddSectionDictionary( name.ascii() );
+    ttd.mDict = mDictionaries[parent]->AddSectionDictionary( name.toAscii().data() );
     ttd.mParent = parent;
     ttd.mName = name;
     mDictionaries[name] = ttd.mDict;
@@ -61,7 +61,7 @@ TextTemplate::Dictionary TextTemplate::createSubDictionary( Dictionary parentTtd
   Dictionary ttd;
 
   if ( parentTtd.mDict ) {
-    ttd.mDict = ( parentTtd.mDict )->AddSectionDictionary( name.ascii() );
+    ttd.mDict = ( parentTtd.mDict )->AddSectionDictionary( name.toAscii().data() );
     ttd.mParent = parentTtd.mName;
     ttd.mName = name;
     // mDictionaries[name] = ttd.mDict;
@@ -72,8 +72,8 @@ TextTemplate::Dictionary TextTemplate::createSubDictionary( Dictionary parentTtd
 void TextTemplate::createDictionary( const QString& dictName )
 {
   if ( mStandardDict ) {
-    mDictionaries[dictName] = mStandardDict->AddSectionDictionary( dictName.ascii() );
-    mStandardDict->ShowSection( dictName.ascii() );
+    mDictionaries[dictName] = mStandardDict->AddSectionDictionary( dictName.toAscii().data() );
+    mStandardDict->ShowSection( dictName.toAscii().data() );
   }
 }
 
@@ -84,26 +84,26 @@ void TextTemplate::setValue( const QString& dictName, const QString& key, const 
   if ( mDictionaries.contains( dictName ) ) {
     dict = mDictionaries[dictName];
   } else {
-    dict = mStandardDict->AddSectionDictionary( dictName.ascii() );
+    dict = mStandardDict->AddSectionDictionary( dictName.toAscii().data() );
     mDictionaries[dictName] = dict;
-    mStandardDict->ShowSection( dictName.ascii() );
+    mStandardDict->ShowSection( dictName.toAscii().data() );
   }
 
   if ( dict )
-    dict->SetValue( key.ascii(), std::string( val.utf8() ) );
+    dict->SetValue( key.toAscii().data(), std::string( val.toUtf8() ) );
 }
 
 void TextTemplate::setValue( const QString& key, const QString& val )
 {
   if ( mStandardDict ) {
-    mStandardDict->SetValue( key.ascii(), std::string( val.utf8() ) );
+    mStandardDict->SetValue( key.toAscii().data(), std::string( val.toUtf8() ) );
   }
 }
 
 void TextTemplate::setValue( Dictionary ttd, const QString& key, const QString& val )
 {
   if ( ttd.mDict ) {
-    ( ttd.mDict )->SetValue( key.ascii(), std::string( val.utf8() ) );
+    ( ttd.mDict )->SetValue( key.toAscii().data(), std::string( val.toUtf8() ) );
   }
 }
 
@@ -140,7 +140,7 @@ bool TextTemplate::openTemplate()
 
   kDebug() << "Loading this template source file: " << findFile << endl;
 
-  Template *tmpl = Template::GetTemplate( std::string( findFile.toAscii() ), google::DO_NOT_STRIP );
+  Template *tmpl = Template::GetTemplate( std::string( findFile.toAscii().data() ), google::DO_NOT_STRIP );
   tmpl->ReloadIfChanged();
 
   if ( !tmpl || tmpl->state() != google::TS_READY ) {
@@ -166,7 +166,7 @@ QString TextTemplate::expand() const
   // if ( mStandardDict ) {
   //   mStandardDict->Dump();
   // }
-  Template *textTemplate = Template::GetTemplate( std::string( mFileName.toAscii() ),
+  Template *textTemplate = Template::GetTemplate( std::string( mFileName.toAscii().data() ),
                                                   google::DO_NOT_STRIP );
   if ( textTemplate ) {
     bool errorFree = textTemplate->Expand(&output, mStandardDict );

@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qcombobox.h>
-#include <qstring.h>
+#include <QComboBox>
+#include <QString>
 
 // include files for KDE
 #include <klocale.h>
@@ -125,15 +125,15 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   }
 
   // chapter settings
-  mCbChapter->insertStringList( m_katalog->getKatalogChapters() );
+  mCbChapter->insertItems(-1, m_katalog->getKatalogChapters() );
   int chapID = t->chapter();
   QString chap = m_katalog->chapterName(dbID(chapID));
-  mCbChapter->setCurrentText(chap);
+  mCbChapter->setCurrentIndex(mCbChapter->findText( chap ));
 
   // unit settings
-  mCbUnit->insertStringList( UnitManager::self()->allUnits() );
+  mCbUnit->insertItems(-1, UnitManager::self()->allUnits() );
   Einheit e = t->getUnit();
-  this->mCbUnit->setCurrentText( e.einheitSingular() );
+  mCbUnit->setCurrentIndex(mCbUnit->findText( e.einheitSingular() ));
 
   // text
   mEditMaterial->setText( t->name() );

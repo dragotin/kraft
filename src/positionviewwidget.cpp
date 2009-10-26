@@ -15,25 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qcolor.h>
-#include <qlayout.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QComboBox>
+#include <QPushButton>
+#include <QColor>
+#include <QLayout>
+#include <QToolTip>
+#include <QPaintEvent>
+#include <QRegExp>
+#include <QPainter>
+#include <QPixmap>
+#include <qdrawutil.h>
+
 //Added by qt3to4:
 #include <Q3PtrList>
-#include <QPixmap>
 #include <Q3PopupMenu>
-#include <QPaintEvent>
+#include <q3widgetstack.h>
+
 #include <kglobal.h>
 #include <klocale.h>
 #include <knuminput.h>
 #include <ktextedit.h>
 #include <kmenu.h>
 #include <kiconloader.h>
-#include <q3widgetstack.h>
-#include <qdrawutil.h>
 
 #include "docposition.h"
 #include "positionviewwidget.h"
@@ -44,8 +48,7 @@
 #include "kraftdb.h"
 #include "positiontagdialog.h"
 #include "tagman.h"
-#include <qregexp.h>
-#include <qpainter.h>
+
 
 PositionViewWidget::PositionViewWidget()
     :QWidget(), Ui_positionWidget(),
@@ -74,9 +77,9 @@ PositionViewWidget::PositionViewWidget()
   mDiscountPercent->setMaximum( 9999.99 );
   mDiscountPercent->setDecimals( 2 );
 
-  pbExec->setToggleButton( false );
-  pbTagging->setToggleButton( false );
-  pbTagging->setPixmap( SmallIcon( "flag" ) );
+  pbExec->setCheckable( false );
+  pbTagging->setCheckable( false );
+  pbTagging->setIcon( SmallIcon( "flag" ) );
 
   connect( m_sbAmount, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
@@ -101,28 +104,27 @@ PositionViewWidget::PositionViewWidget()
   // mExecPopup->insertTitle( i18n("Position Actions") );
 
   // state submenu:
-  mStateSubmenu = new Q3PopupMenu;
-  mStateSubmenu->insertItem( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
-  mStateSubmenu->insertItem( SmallIconSet( "alternative" ),
+  mStateSubmenu = mExecPopup->addMenu(i18n( "Position Kind" ));
+  mStateSubmenu->addAction( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
+  mStateSubmenu->addAction( KIcon( "alternative" ),
                             i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
-  mStateSubmenu->insertItem( SmallIconSet( "demand" ),
+  mStateSubmenu->addAction( KIcon( "demand" ),
                             i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
-  mExecPopup->insertItem( i18n( "Position Kind" ), mStateSubmenu );
 
-  mExecPopup->insertSeparator();
+  mExecPopup->addSeparator();
 
 
-  mExecPopup->insertSeparator();
+  mExecPopup->addSeparator();
 
-  mExecPopup->insertItem(  SmallIconSet("up"),
+  mExecPopup->addAction(  KIcon("up"),
                            i18n("Move Up"),         this, SIGNAL( moveUp() ) );
-  mExecPopup->insertItem(  SmallIconSet("down"),
+  mExecPopup->addAction(  KIcon("down"),
                            i18n("Move Down"),       this, SIGNAL( moveDown() ) );
-  mLockId = mExecPopup->insertItem(  SmallIconSet("encrypted"),
+  mLockId = mExecPopup->addAction(  KIcon("encrypted"),
                            i18n("Lock Position"),   this, SIGNAL( lockPosition() ) );
-  mUnlockId = mExecPopup->insertItem(  SmallIconSet("decrypted"),
+  mUnlockId = mExecPopup->addAction(  KIcon("decrypted"),
                            i18n("Unlock Position"), this, SIGNAL( unlockPosition() ) );
-  mDeleteId = mExecPopup->insertItem(  SmallIconSet("remove"),
+  mDeleteId = mExecPopup->addAction(  KIcon("remove"),
                            i18n("Delete Position"), this, SIGNAL( deletePosition() ) );
 
 
@@ -137,7 +139,7 @@ PositionViewWidget::PositionViewWidget()
   connect( mExecPopup, SIGNAL( aboutToShow() ), this, SLOT( slotMenuAboutToShow() ) );
   connect( mExecPopup, SIGNAL( aboutToHide() ), this, SLOT( slotMenuAboutToHide() ) );
 
-  mExecPopup->setItemEnabled( mUnlockId, false );
+  mUnlockId->setEnabled(false);
   lStatus->setPixmap( QPixmap() );
   lKind->setPixmap( QPixmap() );
 }
@@ -169,7 +171,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     m_sbAmount->blockSignals( true );
     m_sbAmount->setValue( pos->amount() );
     m_sbAmount->blockSignals( false );
-    m_cbUnit->setCurrentText( pos->unit().einheitSingular() );
+    m_cbUnit->setCurrentIndex(m_cbUnit->findText( pos->unit().einheitSingular() ));
 
     m_sbUnitPrice->blockSignals( true );
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
@@ -211,14 +213,14 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
       QPixmap pix( 16, 12 );
       pix.fill( tmpl.color() );
       tagger = i18n( "%1-tagged items" ).arg( *tagIt );
-      mDiscountTag->insertItem( tagger, 255 );
+      mDiscountTag->insertItem( 255, tagger );
       // ExtendedComboItem *item = mDiscountTag->insertEntry( tagger, i18n( "sum up only items marked with '%1'" ).arg( *tagIt ) );
       // item->setPixmap( pix );
       if ( selTag == *tagIt ) {
         currentEntry = tagger;
       }
     }
-    mDiscountTag->setCurrentText( currentEntry );
+    mDiscountTag->setCurrentIndex(mDiscountTag->findText( currentEntry ));
   } else {
     kDebug() << "unknown doc position type " << dp->type()<< endl;
   }
@@ -253,14 +255,14 @@ void PositionViewWidget::slotUpdateTagToolTip()
     tip = i18n( "No tags assigned yet." );
   }
 
-  QToolTip::add( pbTagging, tip );
+  pbTagging->setToolTip( tip );
 }
 
 QString PositionViewWidget::extraDiscountTagRestriction()
 {
   QStringList taglist = TagTemplateMan::self()->allTagTemplates();
 
-  uint currentItem = mDiscountTag->currentItem();
+  uint currentItem = mDiscountTag->currentIndex();
   if ( currentItem > 0 && currentItem <= taglist.count() ) {
     // subtract one for the "all items" entry in the combo box at first position
     currentItem -= 1;
@@ -307,36 +309,39 @@ void PositionViewWidget::slotExecButtonPressed()
 
 void PositionViewWidget::slotMenuAboutToShow()
 {
-  setBackgroundMode( Qt::PaletteMid );
-  m_sumLabel->setBackgroundMode( Qt::PaletteMid );
-  m_labelPosition->setBackgroundMode( Qt::PaletteMid );
-  m_sumLabel->setBackgroundMode( Qt::PaletteMid );
-  m_sbAmount->setBackgroundMode( Qt::PaletteMid );
-  m_cbUnit->setBackgroundMode( Qt::PaletteMid );
-  m_sbUnitPrice->setBackgroundMode( Qt::PaletteMid );
-  discountPage->setBackgroundMode( Qt::PaletteMid );
-  mDiscountPercent->setBackgroundMode( Qt::PaletteMid );
-  mDiscountLabel->setBackgroundMode( Qt::PaletteMid );
-  discountPage->setBackgroundMode( Qt::PaletteMid );
-  positionPage->setBackgroundMode( Qt::PaletteMid );
-setBackgroundMode( Qt::PaletteMid );
+  QPalette palette;
+  palette.setCurrentColorGroup(QPalette::Disabled);
+  setPalette( palette );
+  m_sumLabel->setPalette( palette );
+  m_labelPosition->setPalette( palette );
+  m_sumLabel->setPalette( palette );
+  m_sbAmount->setPalette( palette );
+  m_cbUnit->setPalette( palette );
+  m_sbUnitPrice->setPalette( palette );
+  discountPage->setPalette( palette );
+  mDiscountPercent->setPalette( palette );
+  mDiscountLabel->setPalette( palette );
+  discountPage->setPalette( palette );
+  positionPage->setPalette( palette );
 }
 
 void PositionViewWidget::slotMenuAboutToHide()
 {
   kDebug() << "Set normal again" << endl;
-  setBackgroundMode( Qt::PaletteBackground );
-  m_sumLabel->setBackgroundMode( Qt::PaletteBackground );
-  m_labelPosition->setBackgroundMode( Qt::PaletteBackground );
-  m_sumLabel->setBackgroundMode( Qt::PaletteBackground );
-  m_sbAmount->setBackgroundMode( Qt::PaletteBackground );
-  m_cbUnit->setBackgroundMode( Qt::PaletteBackground );
-  m_sbUnitPrice->setBackgroundMode( Qt::PaletteBackground );
-  discountPage->setBackgroundMode( Qt::PaletteBackground );
-  mDiscountPercent->setBackgroundMode( Qt::PaletteBackground );
-  mDiscountLabel->setBackgroundMode( Qt::PaletteBackground );
-  discountPage->setBackgroundMode( Qt::PaletteBackground );
-  positionPage->setBackgroundMode( Qt::PaletteBackground );
+  QPalette palette;
+  palette.setCurrentColorGroup(QPalette::Active);
+  setPalette( palette );
+  m_sumLabel->setPalette( palette );
+  m_labelPosition->setPalette( palette );
+  m_sumLabel->setPalette( palette );
+  m_sbAmount->setPalette( palette );
+  m_cbUnit->setPalette( palette );
+  m_sbUnitPrice->setPalette( palette );
+  discountPage->setPalette( palette );
+  mDiscountPercent->setPalette( palette );
+  mDiscountLabel->setPalette( palette );
+  discountPage->setPalette( palette );
+  positionPage->setPalette( palette );
 
 }
 
@@ -378,8 +383,8 @@ void PositionViewWidget::slotSetState( State state )
   mState = state;
   kDebug() << "Setting new widget state " << stateString( state ) << endl;
   if( state == Active ) {
-    mExecPopup->setItemEnabled( mLockId, true);
-    mExecPopup->setItemEnabled( mUnlockId, false );
+    mLockId->setEnabled( true );
+    mUnlockId->setEnabled( false );
 
     lStatus->hide();
     lStatus->setPixmap( QPixmap() );
@@ -394,8 +399,8 @@ void PositionViewWidget::slotSetState( State state )
     mToDelete = true;
     slotSetEnabled( false );
   } else if( state == Locked ) {
-    mExecPopup->setItemEnabled( mLockId, false );
-    mExecPopup->setItemEnabled( mUnlockId, true );
+    mLockId->setEnabled( false );
+    mUnlockId->setEnabled( true );
     slotSetEnabled( false );
     lStatus->setPixmap( SmallIcon( "encrypted" ) );
     lStatus->show();
@@ -493,7 +498,8 @@ void PositionViewWidget::slotModified()
   if( m_skipModifiedSignal ) return;
   kDebug() << "Modified Position!" << endl;
   QColor c( "red" );
-  m_labelPosition->setPaletteForegroundColor( c );
+  QPalette palette;
+  palette.setColor(m_labelPosition->foregroundRole(), c);
   mModified = true;
   emit positionModified();
 }
@@ -561,7 +567,7 @@ void PositionViewWidget::cleanKindString()
 void PositionViewWidget::slotSetPositionAlternative()
 {
   lKind->show();
-  QToolTip::add( lKind, i18n( "This is an alternative position."
+  lKind->setToolTip( i18n( "This is an alternative position."
                               " Use the position toolbox to change." ) );
   lKind->setPixmap( SmallIcon( "alternative" ) );
   mKind = Alternative;
@@ -577,7 +583,7 @@ void PositionViewWidget::slotSetPositionAlternative()
 void PositionViewWidget::slotSetPositionDemand()
 {
   lKind->show();
-  QToolTip::add( lKind, i18n( "This is a as required position. "
+  lKind->setToolTip( i18n( "This is a as required position. "
                               "Use the position toolbox to change." ) );
   lKind->setPixmap( SmallIcon( "demand" ) );
   mKind = Demand;

@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qstringlist.h>
-#include <qstring.h>
+#include <QStringList>
+#include <QString>
+#include <QSqlQuery>
+#include <q3sqlcursor.h>
+
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
@@ -25,8 +28,7 @@
 
 #include "stdsatzman.h"
 #include "kraftdb.h"
-#include <qsqlquery.h>
-#include <q3sqlcursor.h>
+
 
 StdSatz::StdSatz():
     m_dbId(0)
@@ -157,7 +159,7 @@ void StdSatzMan::load()
       int satzID = cur.value("stdSaetzeID").toInt();
       kDebug() << "Neue StdSatz ID " << satzID << endl;
       // resize if index is to big.
-      StdSatz ss( satzID, QString::fromUtf8(cur.value("name").toCString()),
+      StdSatz ss( satzID, QString::fromUtf8(cur.value("name").toByteArray()),
                   Geld( cur.value("price").toDouble()));
 
       mStdSaetze.append(ss);

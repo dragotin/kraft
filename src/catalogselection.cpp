@@ -32,10 +32,10 @@
 #include <kactioncollection.h>
 #include <kmenu.h>
 
-#include <qsizepolicy.h>
-#include <qcombobox.h>
+#include <QSizePolicy>
+#include <QComboBox>
 #include <q3widgetstack.h>
-#include <qlabel.h>
+#include <QLabel>
 #include <q3vbox.h>
 #include <q3popupmenu.h>
 
@@ -72,7 +72,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
 void CatalogSelection::setupCatalogList()
 {
   QStringList katalogNames = KatalogMan::self()->allKatalogNames();
-  mCatalogSelector->insertStringList( katalogNames );
+  mCatalogSelector->insertItems(-1, katalogNames );
   slotSelectCatalog( katalogNames[0] );
 }
 

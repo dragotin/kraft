@@ -14,9 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qpixmap.h>
-#include <qbitmap.h>
-#include <qimage.h>
+#include <QPixmap>
+#include <QBitmap>
+#include <QImage>
 
 #include <kstandarddirs.h>
 #include <kcmdlineargs.h>
@@ -69,13 +69,13 @@ int main(int argc, char *argv[])
       QImage img( splashFile );
 
       QPixmap pixmap;
-      pixmap.convertFromImage( img );
+      pixmap.fromImage( img );
       if ( !pixmap.mask() ) {
         QBitmap bm;
-        if ( img.hasAlphaBuffer() ) {
-          bm = img.createAlphaMask();
+        if ( img.hasAlphaChannel() ) {
+          bm = QBitmap::fromImage(img.createAlphaMask());
         } else {
-          bm = img.createHeuristicMask();
+          bm = QBitmap::fromImage(img.createHeuristicMask());
         }
         pixmap.setMask( bm );
       } else {

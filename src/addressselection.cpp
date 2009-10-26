@@ -26,10 +26,10 @@
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
 
-#include <qsizepolicy.h>
-#include <qcombobox.h>
+#include <QSizePolicy>
+#include <QComboBox>
 #include <q3widgetstack.h>
-#include <qlabel.h>
+#include <QLabel>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3ValueList>
@@ -74,7 +74,7 @@ void AddressSelection::slotAddressBookChanged( AddressBook *ab )
 
   // FIXME: handle deletes and updates correctly.
 
-  Q3ValueList<QString> uidList;
+  QList<QString> uidList;
 
   uidList = mAddressIds.values();
   QTreeWidgetItem *newItem = 0;
@@ -84,7 +84,7 @@ void AddressSelection::slotAddressBookChanged( AddressBook *ab )
   for ( it = ab->begin(); it != ab->end(); ++it ) {
 
     // check if we already know the uid and add it if not.
-    if ( uidList.find( ( *it ).uid() ) == uidList.end() ) {
+    if ( uidList.indexOf( ( *it ).uid() ) == uidList.count() ) {
       QTreeWidgetItem *item = new QTreeWidgetItem( this );
       item->setText( 0, ( *it ).realName() );
       newItem = item;

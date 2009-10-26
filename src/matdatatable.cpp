@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qpainter.h>
+#include <QPainter>
 #include <q3sqlpropertymap.h>
 #include <q3dragobject.h>
-#include <qpointer.h>
+#include <QPointer>
 #include <q3popupmenu.h>
 #include <QSqlField>
 
@@ -43,6 +43,7 @@
  */
 QWidget* CustomSqlEditorFactory::createEditor( QWidget *parent, const QSqlField *field )
 {
+
     if ( field->name() == "unitID" )
     {
         QWidget *editor = new EinheitPicker( parent );
@@ -53,13 +54,14 @@ QWidget* CustomSqlEditorFactory::createEditor( QWidget *parent, const QSqlField 
 }
 
 /* ********************************************************************************
- * Picker für die Einheit
+ * Picker for die Einheit
  */
 
 EinheitPicker::EinheitPicker( QWidget *parent, const char *name )
-    : QComboBox( parent, name )
+    : QComboBox( parent )
 {
-    insertStringList( UnitManager::self()->allUnits());
+    this->setObjectName(name);
+    insertItems(-1, UnitManager::self()->allUnits());
 }
 
 int EinheitPicker::einheitId() const
@@ -70,7 +72,7 @@ int EinheitPicker::einheitId() const
 
 void EinheitPicker::setEinheitId( int einheitid )
 {
-    setCurrentText(UnitManager::self()->getUnit(einheitid).einheitSingular() );
+    setCurrentIndex(this->findText( UnitManager::self()->getUnit(einheitid).einheitSingular() ));
 }
 
 
@@ -123,7 +125,7 @@ void MatDataTable::slBeforeInsert ( QSqlRecord * buf )
         buf->setValue("matChapter", m_currChapterID );
         QString m = buf->value("material").toString();
 
-        buf->setValue( "material", QVariant(m.utf8()) );
+        buf->setValue( "material", QVariant(m.toUtf8()) );
     }
 }
 
@@ -170,7 +172,7 @@ void MatDataTable::slSetCurrChapterID( int id )
 
 }
 
-/* Kategorie für das aktuelle Material setzen und updaten */
+/* Kategorie fï¿½r das aktuelle Material setzen und updaten */
 void MatDataTable::updateCurrChapter( int chapID )
 {
     QSqlRecord *rec = sqlCursor()->primeUpdate();

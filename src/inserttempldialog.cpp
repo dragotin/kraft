@@ -19,12 +19,12 @@
 
 // include files for Qt
 #include <QTextEdit>
-#include <qlabel.h>
-#include <qcombobox.h>
+#include <QLabel>
+#include <QComboBox>
 #include <QCheckBox>
 #include <QVBoxLayout>
-#include <qtooltip.h>
-#include <qmap.h>
+#include <QToolTip>
+#include <QMap>
 
 // include files for KDE
 #include <knuminput.h>
@@ -51,7 +51,7 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
 
   mBaseWidget = new Ui::insertTmplBase;
   mBaseWidget->setupUi( w );
-  mBaseWidget->dmUnitCombo->insertStringList( UnitManager::self()->allUnits() );
+  mBaseWidget->dmUnitCombo->insertItems( -1, UnitManager::self()->allUnits() );
 
   mBaseWidget->mPriceVal->setSuffix( DefaultProvider::self()->currencySymbol() );
 
@@ -92,7 +92,7 @@ void InsertTemplDialog::setDocPosition( DocPosition *dp, bool isNew )
     mBaseWidget->dmTextEdit->setText( mParkPosition.text() );
 
     mBaseWidget->dmAmount->setValue( mParkPosition.amount() );
-    mBaseWidget->dmUnitCombo->setCurrentText( mParkPosition.unit().einheit( 1.0 ) );
+    mBaseWidget->dmUnitCombo->setCurrentIndex(mBaseWidget->dmUnitCombo->findText( mParkPosition.unit().einheit( 1.0 )));
     mBaseWidget->mPriceVal->setValue( mParkPosition.unitPrice().toDouble() );
 
     if ( mParkPosition.text().isEmpty() ) {
@@ -115,7 +115,7 @@ QComboBox *InsertTemplDialog::getPositionCombo()
 
 DocPosition InsertTemplDialog::docPosition()
 {
-  mParkPosition.setText( mBaseWidget->dmTextEdit->text() );
+  mParkPosition.setText( mBaseWidget->dmTextEdit->toPlainText() );
   mParkPosition.setAmount( mBaseWidget->dmAmount->value() );
   mParkPosition.setUnitPrice( Geld( mBaseWidget->mPriceVal->value() ) );
   int uid = UnitManager::self()->getUnitIDSingular( mBaseWidget->dmUnitCombo->currentText() );
@@ -149,9 +149,9 @@ void InsertTemplDialog::setCatalogChapters( const QStringList& chapters )
 {
   if ( chapters.count() > 0 ) {
     mBaseWidget->mKeepGroup->show();
-    mBaseWidget->mComboChapter->insertStringList( chapters );
-    mBaseWidget->mComboChapter->setCurrentText(
-      KraftSettings::self()->self()->insertTemplChapterName() );
+    mBaseWidget->mComboChapter->insertItems( -1, chapters );
+    mBaseWidget->mComboChapter->setCurrentIndex(mBaseWidget->mComboChapter->findText(
+      KraftSettings::self()->self()->insertTemplChapterName() ));
   }
 }
 

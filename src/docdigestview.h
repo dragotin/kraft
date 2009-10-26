@@ -19,6 +19,7 @@
 
 #include <qwidget.h>
 #include <qmap.h>
+#include <QTreeWidgetItem>
 //Added by qt3to4:
 #include <Q3PopupMenu>
 

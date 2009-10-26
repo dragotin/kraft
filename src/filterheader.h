@@ -48,10 +48,10 @@ class KRAFTCAT_EXPORT FilterHeader : public QWidget
 {
     Q_OBJECT
   public:
-    FilterHeader( QTreeWidget *, QWidget *parent = 0 );
+    FilterHeader( QTreeWidget *tree, QWidget *parent = 0 );
 
     void setItemName( const QString &none, const QString &one,
-      const QString &multiple );
+    const QString &multiple );
 
     void showCount( bool );
 

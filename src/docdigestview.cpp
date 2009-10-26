@@ -14,18 +14,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <q3frame.h>
-#include <q3header.h>
-#include <qtooltip.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3BoxLayout>
-#include <Q3PopupMenu>
-#include <Q3VBoxLayout>
+#include <QLayout>
+#include <QPushButton>
+#include <QToolTip>
+#include <QHBoxLayout>
+#include <QBoxLayout>
+#include <QVBoxLayout>
 
-#include <k3listview.h>
 #include <klocale.h>
 #include <kdebug.h>
 #include <kstandardaction.h>
@@ -45,15 +40,12 @@
 #include "documentman.h"
 #include "docguardedptr.h"
 #include "kraftdoc.h"
-#include <q3listview.h>
 #include "defaultprovider.h"
 
 
 DocDigestView::DocDigestView( QWidget *parent )
 : QWidget( parent )
 {
-  // QWidget *w = new QWidget;
-
   QVBoxLayout *box = new QVBoxLayout;
   setLayout( box );
 
@@ -66,12 +58,14 @@ DocDigestView::DocDigestView( QWidget *parent )
   connect( mNewDocButton, SIGNAL( clicked() ), this, SIGNAL( createDocument() ) );
 
   hbox->addWidget( mNewDocButton );
-
   hbox->addStretch(1);
-  box->addLayout( hbox );
-
+ 
   mListView = new QTreeWidget;
   // mListView->setItemMargin( 5 );
+  QPalette palette;
+  palette.setColor(QPalette::AlternateBase, QColor("#e0fdd1"));
+  
+  mListView->setPalette(palette);
   mListView->setAlternatingRowColors( true );
   mContextMenu = new KMenu( mListView );
   // mContextMenu->insertTitle( i18n( "Document Actions" ) );
@@ -82,7 +76,7 @@ DocDigestView::DocDigestView( QWidget *parent )
   mListView->setRootIsDecorated(  true );
   mListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
-  mFilterHeader = new FilterHeader( mListView ); // , w );
+  mFilterHeader = new FilterHeader( mListView );
   mFilterHeader->showCount( false );
 
   connect( mListView, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ),
@@ -95,7 +89,7 @@ DocDigestView::DocDigestView( QWidget *parent )
   hbox->addSpacing( KDialog::marginHint() );
 
   box->addLayout( hbox );
-  box->addSpacing( KDialog::marginHint() );
+  //box->addSpacing( KDialog::marginHint() );
 
   QHBoxLayout *hbox2 = new QHBoxLayout;
   hbox2->addWidget( mListView );
@@ -129,12 +123,12 @@ void DocDigestView::slotBuildView()
   QTreeWidgetItem *item = addChapter( i18n( "All Documents" ),
                                                     docman->latestDocs( 0 ) );
   mAllDocsParent = item;
-  item->setIcon( 0, SmallIcon( "identity" ) ); // KDE 4 icon name: user-identity
+  item->setIcon( 0, SmallIcon( "user-identity" ) ); // KDE 4 icon name: user-identity
   mListView->collapseItem( item );
 
   item = addChapter( i18n( "Documents by Time" ), DocDigestList() );
   mTimeLineParent = item;
-  item->setIcon( 0, SmallIcon( "history" ) ); // KDE 4 icon name: view-history
+  item->setIcon( 0, SmallIcon( "view-history" ) ); // KDE 4 icon name: view-history
   mListView->collapseItem( item );
 
   /* create the timeline view */
@@ -164,6 +158,8 @@ void DocDigestView::slotBuildView()
   item = addChapter( i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
   mLatestDocsParent = item;
   item->setIcon( 0, SmallIcon( "fork" ) );
+  mListView->resizeColumnToContents(0);
+  
 }
 
 

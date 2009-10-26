@@ -19,7 +19,7 @@
 #define _MATDATATABLE_H
 
 
-#include <qcombobox.h>
+#include <QComboBox>
 #include <q3datatable.h>
 #include <q3sqleditorfactory.h>
 
@@ -39,7 +39,7 @@ public:
 };
 
 /* ********************************************************************************
- * Combobox für Einheiten
+ * Combobox for Einheiten
  */
 class EinheitPicker : public QComboBox
 {

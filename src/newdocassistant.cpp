@@ -105,7 +105,7 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
 
   mTypeCombo = new KComboBox;
   mTypeCombo->insertItems( 0, DocType::allLocalised() );
-  mTypeCombo->setCurrentText( DefaultProvider::self()->docType() );
+  mTypeCombo->setCurrentIndex(mTypeCombo->findText( DefaultProvider::self()->docType() ));
   grid->addRow( i18n("Document &Type:"), mTypeCombo );
 
   mDateEdit = new KDateWidget;
@@ -198,7 +198,7 @@ QString KraftWizard::docType() const
 
 QString KraftWizard::whiteboard() const
 {
-  return mDetailsPage->mWhiteboardEdit->text();
+  return mDetailsPage->mWhiteboardEdit->toPlainText();
 }
 
 void KraftWizard::setDocIdentifier( const QString& ident )
@@ -214,7 +214,7 @@ void KraftWizard::setDocIdentifier( const QString& ident )
 void KraftWizard::setAvailDocTypes( const QStringList& list )
 {
   mDetailsPage->mTypeCombo->clear();
-  mDetailsPage->mTypeCombo->insertStringList( list );
+  mDetailsPage->mTypeCombo->insertItems( -1, list );
 }
 
 #include "newdocassistant.moc"

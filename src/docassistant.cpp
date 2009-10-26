@@ -17,9 +17,9 @@
 #include <QtGui>
 
 #include <q3widgetstack.h>
-#include <qtooltip.h>
+#include <QToolTip>
 #include <q3asciidict.h>
-#include <qtimer.h>
+#include <QTimer>
 #include <Q3ValueList>
 #include <QTreeWidgetItem>
 
@@ -61,12 +61,12 @@ DocAssistant::DocAssistant( QWidget *parent ):
   topVBox->addLayout( buttonLayout );
   buttonLayout->setMargin( KDialog::marginHint()/2 );
 
-  KPushButton *pb = new KPushButton( i18n( "show Templates" ) );
+  KPushButton *pb = new KPushButton( i18n( "Show Templates" ) );
   buttonLayout->addWidget( pb );
   connect( pb, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleShowTemplates( bool ) ) );
-  pb->setToggleButton( true );
-  QToolTip::add( pb, i18n( "Show mask to create or select templates to be used in the document" ) );
+  pb->setCheckable( true );
+  pb->setToolTip( i18n( "Show mask to create or select templates to be used in the document" ) );
 
   buttonLayout->addStretch();
 
@@ -127,32 +127,32 @@ DocAssistant::DocAssistant( QWidget *parent ):
   bottomVBox->addLayout( butHBox2 );
 
   butHBox2->setSpacing( KDialog::spacingHint() );
-  KIcon icons = KIcon(BarIconSet( "go-previous" )); // KDE 4 icon name: go-previous
+  KIcon icons = KIcon( "go-previous" ); // KDE 4 icon name: go-previous
   mPbAdd  = new KPushButton( icons, QString() );
   mPbAdd->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbAdd, SIGNAL( clicked() ), this, SLOT( slotAddToDocument() ) );
   butHBox2->addWidget( mPbAdd );
-  QToolTip::add( mPbAdd, i18n( "Add a template to the document" ) );
+  mPbAdd->setToolTip( i18n( "Add a template to the document" ) );
 
-  icons = KIcon( BarIconSet( "document-new" ) );
+  icons = KIcon( "document-new" );
   mPbNew  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-new
   mPbNew->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbNew, SIGNAL( clicked() ), this, SLOT( slotNewTemplate() ) );
-  QToolTip::add( mPbNew, i18n( "Create a new template (type depending)" ) );
+  mPbNew->setToolTip( i18n( "Create a new template (type depending)" ) );
   butHBox2->addWidget( mPbNew );
 
-  icons = KIcon( BarIconSet( "document-properties" ) );
+  icons = KIcon( "document-properties" );
   mPbEdit  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-properties
   mPbEdit->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbEdit, SIGNAL( clicked() ), this, SLOT( slotEditTemplate() ) );
-  QToolTip::add( mPbEdit, i18n( "Edit the selected template (type depending)" ) );
+  mPbEdit->setToolTip( i18n( "Edit the selected template (type depending)" ) );
   butHBox2->addWidget( mPbEdit );
 
-  icons = KIcon( BarIconSet( "edit-delete" ) );
+  icons = KIcon( "edit-delete" );
   mPbDel  = new KPushButton( icons, QString() ); // KDE 4 icon name: edit-delete
   mPbDel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbDel, SIGNAL( clicked() ), this, SLOT( slotDeleteTemplate() ) );
-  QToolTip::add( mPbDel, i18n( "Delete the selected template (type depending)" ) );
+  mPbDel->setToolTip( i18n( "Delete the selected template (type depending)" ) );
   butHBox2->addWidget( mPbDel );
 
   butHBox2->addStretch();
@@ -412,7 +412,7 @@ void DocAssistant::slotSelectDocPart( int p )
   mPbDel->setEnabled( false );
 
   if ( p == KraftDoc::Header ) {
-    slSetHeaderTemplateProvider( mHeaderSelection->currentPageIndex() ?
+    slSetHeaderTemplateProvider( mHeaderSelection->currentIndex() ?
                                  HeaderSelection::AddressTab : HeaderSelection::TextTab );
     mPbNew->setEnabled( true );
     if ( mHeaderSelection->itemSelected() ) {

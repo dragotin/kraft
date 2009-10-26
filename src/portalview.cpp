@@ -16,16 +16,14 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <q3vbox.h>
-#include <qsqlquery.h>
-#include <qsqldatabase.h>
-#include <q3stylesheet.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qlayout.h>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3BoxLayout>
+#include <QSqlQuery>
+#include <QSqlDatabase>
+#include <QApplication>
+#include <QCursor>
+#include <QLayout>
+#include <QTextDocument>
+#include <QHBoxLayout>
+#include <QBoxLayout>
 
 // include files for KDE
 #include <klocale.h>
@@ -36,7 +34,6 @@
 #include <k3listview.h>
 #include <kcalendarsystem.h>
 #include <khtmlview.h>
-#include <QTextDocument>
 
 #include "version.h"
 #include "kraftdb.h"
@@ -79,12 +76,14 @@ void PortalView::katalogDetails()
 {
   QWidget *w = new QWidget;
   KPageWidgetItem *pageWidget = addPage( w, i18n("Catalogs" ) );
+  pageWidget->setIcon(KIcon("server-database"));
 
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );
   mCatalogBrowser = new PortalHtmlView( w );
   mCatalogBrowser->setTitle( i18n( "Kraft Document Overview" ) );
   mCatalogBrowser->setStylesheetFile( "catalogview.css" );
+  
 
   b->addWidget( mCatalogBrowser->view() );
   b->addSpacing( KDialog::marginHint() );
@@ -212,6 +211,7 @@ void PortalView::systemDetails()
 {
   QWidget *w = new QWidget;
   mSysPage = addPage( w, i18n("System Details" ) );
+  mSysPage->setIcon(KIcon("dialog-information"));
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );
   mSystemBrowser = new PortalHtmlView( w );
@@ -333,6 +333,7 @@ void PortalView::documentDigests()
 {
   QWidget *w = new QWidget;
   mDocsPage = addPage( w, i18n("Document Digests" ) );
+  mDocsPage->setIcon(KIcon("folder-documents"));
 
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );

@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcombobox.h>
+#include <QComboBox>
 
 #include <kdialog.h>
 #include <kdebug.h>
@@ -60,13 +60,13 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
     strList.append( h );
   }
 
-  getPositionCombo()->insertStringList( strList );
-  getPositionCombo()->setCurrentItem( intendedPos );
+  getPositionCombo()->insertItems( -1, strList );
+  getPositionCombo()->setCurrentIndex( intendedPos );
 }
 
 int TemplToPositionDialogBase::insertAfterPosition()
 {
-  int itemPos = getPositionCombo()->currentItem();
+  int itemPos = getPositionCombo()->currentIndex();
   kDebug() << "Current item selected: " << itemPos << endl;
 
   return itemPos;

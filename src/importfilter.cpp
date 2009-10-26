@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 // include files for QT
-#include <qfile.h>
+#include <QFile>
+#include <QRegExp>
 //Added by qt3to4:
 #include <Q3TextStream>
 #include <Q3ValueList>
@@ -29,7 +30,6 @@
 #include "unitmanager.h"
 #include "defaultprovider.h"
 
-#include <qregexp.h>
 #include <kio/netaccess.h>
 #include <ktemporaryfile.h>
 
@@ -44,7 +44,7 @@ bool ImportFilter::readDefinition( const QString& name )
   QString defFile = name;
   if ( ! name.startsWith( "/" ) ) {
     KStandardDirs stdDirs;
-    QString defFileName = QString( name ).lower();
+    QString defFileName = QString( name ).toLower();
     QString findFile = kdeStdDirPath() + defFileName;
 
     kDebug() << "KDE StdDir Path: " << findFile;
@@ -86,7 +86,7 @@ bool ImportFilter::recode( const QString& file, const QString& outfile )
   if ( QFile::exists( cmd ) ) {
     QString command = QString( "%1 -f %2 -t utf-8 -o %3 %4" ).arg( cmd )
                       .arg( mEncoding ).arg( outfile ).arg( file );
-    int result = system( command.latin1() );
+    int result = system( command.toLatin1() );
     kDebug() << "Recode finished with exit code " << result;
     return true;
   } else {
@@ -120,25 +120,25 @@ bool DocPositionImportFilter::parseDefinition()
 
     if ( l.isEmpty() || l.startsWith( "#" ) ) {
       // continue - whitespace....
-    } else if ( l.startsWith( FILTER_TAG( "amount:", "amount of the item" ),  false ) ) {
+    } else if ( l.startsWith( FILTER_TAG( "amount:", "amount of the item" ),  Qt::CaseInsensitive ) ) {
       mAmount = ( l.right( l.length()-7 ) ).trimmed();
-    } else if ( l.startsWith( FILTER_TAG( "text:",  "The item text" ),  false ) ) {
+    } else if ( l.startsWith( FILTER_TAG( "text:",  "The item text" ),  Qt::CaseInsensitive ) ) {
       mText = ( l.right( l.length()-5 ) ).trimmed();
       mText.replace( "<br>", QChar( 0x0A ) );
-    } else if ( l.startsWith( FILTER_TAG( "unit:",  "The item unit" ),  false ) ) {
+    } else if ( l.startsWith( FILTER_TAG( "unit:",  "The item unit" ),  Qt::CaseInsensitive ) ) {
       mUnit = ( l.right( l.length()-5 ) ).trimmed();
-    } else if ( l.startsWith( FILTER_TAG( "unit_price:", "unit price" ),  false ) ) {
+    } else if ( l.startsWith( FILTER_TAG( "unit_price:", "unit price" ),  Qt::CaseInsensitive ) ) {
       mUnitPrice = ( l.right( l.length()-11 ) ).trimmed();
-    } else if ( l.startsWith( FILTER_TAG( "name:",  "The name of the filter" ),  false ) ) {
+    } else if ( l.startsWith( FILTER_TAG( "name:",  "The name of the filter" ),  Qt::CaseInsensitive ) ) {
       mName = ( l.right( l.length()-5 ) ).trimmed();
-    } else if ( l.startsWith( FILTER_TAG( "description:", "The filter description" ), false ) ) {
+    } else if ( l.startsWith( FILTER_TAG( "description:", "The filter description" ), Qt::CaseInsensitive ) ) {
       mDescription = ( l.right( l.length()-12 ) ).trimmed();
-    } else if ( l.startsWith( FILTER_TAG("encoding:", "The encoding of the source file" ),  false ) ) {
+    } else if ( l.startsWith( FILTER_TAG("encoding:", "The encoding of the source file" ),  Qt::CaseInsensitive ) ) {
       mEncoding = ( l.right( l.length()-9 ) ).trimmed();
-    } else if ( l.startsWith( FILTER_TAG( "separator:", "The separator used in the source file" ),  false ) ) {
+    } else if ( l.startsWith( FILTER_TAG( "separator:", "The separator used in the source file" ),  Qt::CaseInsensitive ) ) {
       kDebug() << "Separator found: " << l.right( l.length()-10 );
       mSeparator = ( l.right( l.length()-10 ) ).trimmed();
-    } else if ( l.startsWith( FILTER_TAG( "tags:", "Comma separated list of tags for one item" ),  false ) ) {
+    } else if ( l.startsWith( FILTER_TAG( "tags:", "Comma separated list of tags for one item" ),  Qt::CaseInsensitive ) ) {
       mTags = ( l.right( l.length()-5 ) ).trimmed();
     } else {
       kDebug() << "WRN: Unknown filter tag found: " << l;
@@ -230,7 +230,7 @@ DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
 // creates a DocPosition from one line of the imported file
 DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& ok )
 {
-  QStringList parts = QStringList::split( mSeparator, l, true );
+  QStringList parts = mSeparator.split( l, QString::KeepEmptyParts );
   kDebug() << "Importing raw line " << l;
 
   QString h;
@@ -274,7 +274,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
  }
 
  if ( !mTags.isEmpty() ) {
-   QStringList tags = QStringList::split( QRegExp( "\\s*,\\s*" ), mTags );
+   QStringList tags =  mTags.split(QRegExp( "\\s*,\\s*" ));
 
    for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
      QString t = ( *it ).trimmed();
@@ -290,7 +290,7 @@ QString DocPositionImportFilter::replaceCOL( const QStringList& cols, const QStr
   QString re( in );
   for ( uint i = 0; i < cols.size(); i++ ) {
     QString replacer = QString( "COL(%1)" ).arg( i+1 );
-    re.replace( replacer, cols[i], false );
+    re.replace( replacer, cols[i], Qt::CaseInsensitive );
   }
   // kDebug() << "replaced line: " << re;
   return re;

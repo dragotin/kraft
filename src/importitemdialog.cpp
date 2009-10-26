@@ -20,12 +20,12 @@
 // include files for Qt
 #include <q3vbox.h>
 #include <q3textedit.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
+#include <QLabel>
+#include <QComboBox>
+#include <QCheckBox>
 #include <q3buttongroup.h>
-#include <qtooltip.h>
-#include <qmap.h>
+#include <QToolTip>
+#include <QMap>
 //Added by qt3to4:
 #include <Q3ValueList>
 
@@ -68,7 +68,7 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
   for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
     QCheckBox *cb = new QCheckBox( *it, group );
     QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
-    QToolTip::add( cb, desc );
+    cb->setToolTip( desc );
     group->insert( cb, c );
     mTagMap[c] = *it;
     c++;
@@ -81,7 +81,7 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
   if ( ! KraftSettings::self()->importItemsSchemaName().isEmpty() ) {
     selectName = KraftSettings::self()->importItemsSchemaName();
   }
-  mBaseWidget->mSchemaCombo->setCurrentText( selectName );
+  mBaseWidget->mSchemaCombo->setCurrentIndex(mBaseWidget->mSchemaCombo->findText( selectName ));
   slotSchemaChanged( selectName );
 
   if ( ! KraftSettings::self()->importItemsFileName().isEmpty() ) {
@@ -121,8 +121,8 @@ void ImportItemDialog::setPositionList( DocPositionList list, int intendedPos )
     strList.append( h );
   }
 
-  getPositionCombo()->insertStringList( strList );
-  getPositionCombo()->setCurrentItem( intendedPos );
+  getPositionCombo()->insertItems(-1, strList );
+  getPositionCombo()->setCurrentIndex( intendedPos );
 }
 
 QString ImportItemDialog::readFilterSpecs()
@@ -141,7 +141,7 @@ QString ImportItemDialog::readFilterSpecs()
     combo << filter.name();
     mFilterMap[filter.name()] = filter;
   }
-  mBaseWidget->mSchemaCombo->insertStringList( combo );
+  mBaseWidget->mSchemaCombo->insertItems(-1, combo );
 
   return combo.first();
 }
@@ -182,7 +182,7 @@ DocPositionList ImportItemDialog::positionList()
     QMap<int, QString>::Iterator it;
     for ( it = mTagMap.begin(); it != mTagMap.end(); ++it ) {
       QCheckBox *b = static_cast<QCheckBox*>( group->find( it.key() ) );
-      if ( b->isChecked() ) tags.append( it.data() );
+      if ( b->isChecked() ) tags.append( it.value() );
     }
 
     if ( tags.size() > 0 ) {

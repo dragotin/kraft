@@ -15,27 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include<qlayout.h>
-#include<qlineedit.h>
-#include <qlineedit.h>
-#include<qlabel.h>
-#include<q3frame.h>
+#include <QLayout>
+#include <QLineEdit>
+#include <QLabel>
+#include <q3frame.h>
 #include <q3hbox.h>
 #include <q3vbox.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 #include <q3textedit.h>
-#include <qcombobox.h>
-#include <qlayout.h>
-#include <qcheckbox.h>
+#include <QComboBox>
+#include <QLayout>
+#include <QCheckBox>
 #include <q3listbox.h>
-#include <qsqlquery.h>
-#include <qspinbox.h>
-#include <qtooltip.h>
+#include <QSqlQuery>
+#include <QSpinBox>
+#include <QToolTip>
 
-#include<kdialog.h>
-#include<klocale.h>
-#include<kiconloader.h>
-#include<kmessagebox.h>
+#include <kdialog.h>
+#include <klocale.h>
+#include <kiconloader.h>
+#include <kmessagebox.h>
 #include <kinputdialog.h>
 #include <kvbox.h>
 
@@ -66,12 +65,12 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
   mBaseWidget = new Ui::NumberCycleEditBase( );
   mBaseWidget->setupUi( w );
 
-  mBaseWidget->mPbAdd->setPixmap( BarIcon( "filenew" ) );
-  mBaseWidget->mPbEdit->setPixmap( BarIcon( "edit" ) );
+  mBaseWidget->mPbAdd->setIcon( BarIcon( "filenew" ) );
+  mBaseWidget->mPbEdit->setIcon( BarIcon( "edit" ) );
   mBaseWidget->mPbEdit->setHidden( true );
-  mBaseWidget->mPbRemove->setPixmap( BarIcon( "editdelete" ) );
-  mBaseWidget->mCounterEdit->setMaxValue( 1000000 );
-  mBaseWidget->mCounterEdit->setLineStep( 1 );
+  mBaseWidget->mPbRemove->setIcon( BarIcon( "editdelete" ) );
+  mBaseWidget->mCounterEdit->setMaximum( 1000000 );
+  mBaseWidget->mCounterEdit->setSingleStep( 1 );
 
   const QString tip = i18n( "The template may contain the following tags:"
                             "<ul><li>%y or %yyyy - the year of the documents date.</li>"
@@ -90,7 +89,7 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
                             "<li>%i - the unique counter</li>"
                             "<li>%type - the localised doc type (offer, invoice etc.)</li>"
                             "</ul>%i needs to be part of the template." );
-  QToolTip::add( mBaseWidget->mIdTemplEdit, tip );
+  mBaseWidget->mIdTemplEdit->setToolTip( tip );
 
   connect( mBaseWidget->mPbAdd, SIGNAL( clicked() ),
            SLOT( slotAddCycle() ) );
@@ -190,7 +189,7 @@ void NumberCycleDialog::slotNumberCycleSelected( int num )
   kDebug() << "Selected number cycle number " << num;
 
   mBaseWidget->mIdTemplEdit->setText( nc.getTemplate() );
-  mBaseWidget->mCounterEdit->setMinValue( 0 ); // nc.counter() );
+  mBaseWidget->mCounterEdit->setMinimum( 0 ); // nc.counter() );
   mBaseWidget->mCounterEdit->setValue( nc.counter() );
   mBaseWidget->mNameEdit->setText( nc.name() );
   mBaseWidget->mNameEdit->setReadOnly( true );
@@ -303,7 +302,7 @@ void NumberCycleDialog::slotOk()
   QMap<QString, NumberCycle>::Iterator it;
   for ( it = mNumberCycles.begin(); it != mNumberCycles.end(); ++it ) {
     QString cycleName = it.key();
-    NumberCycle cycle = it.data();
+    NumberCycle cycle = it.value();
 
     q.bindValue( ":name", cycleName );
     // name changes can not happen by design

@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qcombobox.h>
-#include <qcheckbox.h>
+#include <QComboBox>
+#include <QCheckBox>
 
 // include files for KDE
 #include <klocale.h>
@@ -36,7 +36,7 @@ ZeitCalcDialog::ZeitCalcDialog(QWidget *parent, bool modal )
 {
   setupUi( this );
   setModal( modal );
-  m_hourSets->insertStringList( StdSatzMan::self()->allStdSaetze());
+  m_hourSets->insertItems(-1, StdSatzMan::self()->allStdSaetze());
 }
 
 ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, bool modal )
@@ -45,7 +45,7 @@ ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, bool modal )
 {
   setupUi( this );
   setModal( modal );
-  m_hourSets->insertStringList( StdSatzMan::self()->allStdSaetze());
+  m_hourSets->insertItems(-1, StdSatzMan::self()->allStdSaetze());
 
   if( ! cp ) return;
 
@@ -53,7 +53,7 @@ ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, bool modal )
   m_dauer->setValue( cp->getMinuten());
   m_stdGlobal->setChecked(cp->globalStdSetAllowed());
   StdSatz std = cp->getStundensatz();
-  m_hourSets->setCurrentText( std.getName());
+  m_hourSets->setCurrentIndex(m_hourSets->findText( std.getName() ));
 }
 
 

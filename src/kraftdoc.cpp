@@ -17,7 +17,7 @@
 
 // include files for Qt
 #include <qdir.h>
-#include <qwidget.h>
+#include <QWidget>
 #include <q3ptrlist.h>
 
 // include files for KDE
@@ -124,7 +124,7 @@ void KraftDoc::addView(KraftView *view)
 
 void KraftDoc::removeView(KraftView *view)
 {
-  pViewList.remove(view);
+  pViewList.removeAll(view);
 }
 
 void KraftDoc::slotUpdateAllViews( KraftView *sender )

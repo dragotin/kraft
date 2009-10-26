@@ -40,8 +40,9 @@ MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
 
   KVBox *page = new KVBox( this );
   setMainWidget( page );
-  ( void ) new QLabel( i18n( "Select Material for Calculation" ),
-                              page, "caption" );
+  QLabel *label = new QLabel( i18n( "Select Material for Calculation" ),
+                              page);
+  label->setObjectName("caption");
 
   mFilter = new FilterHeader( 0, page );
   mKatalogListView = new MaterialKatalogListView( page, true );

@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qsqlquery.h>
+#include <QSqlQuery>
 #include <q3sqlcursor.h>
 
 #include <k3staticdeleter.h>
@@ -181,7 +181,7 @@ QStringList DocumentMan::openDocumentsList()
 
   DocumentMap::Iterator it;
   for ( it = mDocMap.begin(); it != mDocMap.end(); ++it ) {
-    DocGuardedPtr doc = it.data();
+    DocGuardedPtr doc = it.value();
     list.append( doc->docIdentifier() );
   }
   return list;

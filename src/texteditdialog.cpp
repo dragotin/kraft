@@ -16,10 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcombobox.h>
-#include <qwidget.h>
+#include <QComboBox>
+#include <QWidget>
 #include <q3vbox.h>
-#include <qlabel.h>
+#include <QLabel>
 
 #include <kdialog.h>
 #include <kdebug.h>
@@ -85,7 +85,7 @@ DocText TextEditDialog::docText()
 
   dt.setName( mBaseWidget->mEditName->text() );
   dt.setDescription( QString() ); // mBaseWidget->mEditDescription->text() );
-  dt.setText( mBaseWidget->mEditText->text() );
+  dt.setText( mBaseWidget->mEditText->toPlainText() );
   // dt.setDocType( mBaseWidget->mCbDocType->currentText() );
   // dt.setTextType( DocText::stringToTextType( mBaseWidget->mCbTextType->currentText() ) );
 

@@ -57,32 +57,29 @@ FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
     mItemNameOne( i18n("1 Item") ),
     mItemNameMultiple( i18n("%1 of %2 Items") )
 {
-  QBoxLayout *topLayout = new QVBoxLayout( this );
+  #warning: Memory leak
+  QBoxLayout *topLayout = new QVBoxLayout();  
   topLayout->setSpacing( KDialog::spacingHint() );
   topLayout->setMargin( 0 ); // KDialog::marginHint() );
 
-  mTitleLabel = new QLabel( this );
+  mTitleLabel = new QLabel();
   topLayout->addWidget( mTitleLabel );
 
-  QBoxLayout *filterLayout = new QHBoxLayout( this );
+  QBoxLayout *filterLayout = new QHBoxLayout();
 
-  QLabel *label = new QLabel( i18n("Search:"), this );
+  QLabel *label = new QLabel( i18n("Search:"));
   filterLayout->addWidget( label );
 
-  mSearchLine = new CountingSearchLine( this, listView );
+  mSearchLine = new CountingSearchLine( 0, listView );
+  mSearchLine-> setClearButtonShown(true);
   connect( mSearchLine, SIGNAL( searchCountChanged() ),
     SLOT( setTitleLabel() ) );
   filterLayout->addWidget( mSearchLine );
-
-  QPushButton *removeButton = new QPushButton( this );
-  removeButton->setIcon( KApplication::isRightToLeft() ?
-    KIcon("locationbar_erase") : KIcon( "clear_left" ) );
-  filterLayout->addWidget( removeButton );
-  connect( removeButton, SIGNAL( clicked() ), SLOT( clear() ) );
-
+  
   setTabOrder( mSearchLine, listView );
 
   setTitleLabel();
+  setLayout(filterLayout);
 }
 
 void FilterHeader::setItemName( const QString &none, const QString &one,

@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include<qlabel.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QToolTip>
 #include <q3vbox.h>
-#include <qdatetime.h>
-#include <qsqlquery.h>
+#include <QDateTime>
+#include <QSqlQuery>
 
-#include<kdialog.h>
-#include<klocale.h>
-#include<kdebug.h>
-#include<kdatewidget.h>
-#include<knuminput.h>
-#include<kvbox.h>
+#include <kdialog.h>
+#include <klocale.h>
+#include <kdebug.h>
+#include <kdatewidget.h>
+#include <knuminput.h>
+#include <kvbox.h>
 
 #include "taxeditdialog.h"
 
@@ -54,8 +54,8 @@ TaxEditDialog::TaxEditDialog( QWidget *parent )
   mBaseWidget->mFullTax->setRange( 0,10.0 );
   mBaseWidget->mReducedTax->setRange( 0, 10.0 );
 
-  mBaseWidget->mFullTax->setPrecision( 1 );
-  mBaseWidget->mReducedTax->setPrecision( 1 );
+  mBaseWidget->mFullTax->setDecimals( 1 );
+  mBaseWidget->mReducedTax->setDecimals( 1 );
 }
 
 TaxRecord TaxEditDialog::newTaxRecord()

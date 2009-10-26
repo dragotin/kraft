@@ -15,29 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include<qlayout.h>
-#include<qlineedit.h>
-#include <qlineedit.h>
-#include<qlabel.h>
-#include<q3frame.h>
+#include <QLayout>
+#include <QLineEdit>
+#include <QLabel>
+#include <q3frame.h>
 #include <q3hbox.h>
 #include <q3vbox.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 #include <q3textedit.h>
-#include <qcombobox.h>
-#include <qlayout.h>
-#include <qcheckbox.h>
+#include <QComboBox>
+#include <QLayout>
+#include <QCheckBox>
 #include <q3listbox.h>
-#include <qsqlquery.h>
-#include <qspinbox.h>
+#include <QSqlQuery>
+#include <QSpinBox>
 #include <q3datatable.h>
 #include <q3sqlcursor.h>
 
-#include<kdialog.h>
-#include<klocale.h>
-#include<kiconloader.h>
-#include<kmessagebox.h>
+#include <kdialog.h>
+#include <klocale.h>
+#include <kiconloader.h>
+#include <kmessagebox.h>
 #include <kurlrequester.h>
+#include <kinputdialog.h>
 
 #include "prefsdialog.h"
 #include "katalogsettings.h"
@@ -47,7 +47,6 @@
 #include "defaultprovider.h"
 #include "doctype.h"
 #include "doctypeedit.h"
-#include <kinputdialog.h>
 #include "numbercycledialog.h"
 
 // --------------------------------------------------------------------------------
@@ -72,9 +71,9 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   mTypeListBox->setSelected( 0, true );
   QString dtype = mTypeListBox->currentText();
 
-  mPbAdd->setPixmap( BarIcon( "filenew" ) );
-  mPbEdit->setPixmap( BarIcon( "edit" ) );
-  mPbRemove->setPixmap( BarIcon( "editdelete" ) );
+  mPbAdd->setIcon( BarIcon( "filenew" ) );
+  mPbEdit->setIcon( BarIcon( "edit" ) );
+  mPbRemove->setIcon( BarIcon( "editdelete" ) );
 
   connect( mPbAdd, SIGNAL( clicked() ),
            SLOT( slotAddDocType() ) );
@@ -100,7 +99,7 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
 
   fillNumberCycleCombo();
   DocType dt( dtype );
-  mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
+  mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
 
   mTemplateUrl->setFilter( "*.trml" );
   mWatermarkUrl->setFilter( "*.pdf" );
@@ -109,7 +108,7 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   mWatermarkUrl->setUrl( dt.watermarkFile() );
 
   int newMode = dt.mergeIdent().toInt();
-  mWatermarkCombo->setCurrentItem( newMode );
+  mWatermarkCombo->setCurrentIndex( newMode );
   bool state = true;
   if ( newMode == 0 )
     state = false;
@@ -126,7 +125,7 @@ void DocTypeEdit::fillNumberCycleCombo()
     cycles << q.value( 0 ).toString();
   }
   mNumberCycleCombo->clear();
-  mNumberCycleCombo->insertStringList( cycles );
+  mNumberCycleCombo->insertItems(-1, cycles );
 }
 
 void DocTypeEdit::slotAddDocType()
@@ -173,11 +172,11 @@ void DocTypeEdit::slotEditDocType()
     for ( it = mTypeNameChanges.begin(); !prechanged && it != mTypeNameChanges.end(); ++it ) {
 
       if (it.key() == currName ) { // it was changed back to an original name.
-        mTypeNameChanges.remove( it );
+        mTypeNameChanges.erase( it );
         skipEntry = true;
       }
 
-      if ( !skipEntry && it.data() == currName ) {
+      if ( !skipEntry && it.value() == currName ) {
         kDebug() << "Was changed before, key is " << it.key();
         currName = it.key();
         prechanged = true;
@@ -206,15 +205,15 @@ void DocTypeEdit::slotRemoveDocType()
     return;
   }
 
-  if ( mAddedTypes.find( currName ) != mAddedTypes.end() ) {
+  if ( mAddedTypes.indexOf( currName ) != mAddedTypes.count() ) {
     // remove item from recently added list.
-    mAddedTypes.remove( currName );
+    mAddedTypes.removeAll( currName );
     mOrigDocTypes.remove( currName );
   } else {
     QString toRemove = currName;
     QMap<QString, QString>::Iterator it;
     for ( it = mTypeNameChanges.begin(); it != mTypeNameChanges.end(); ++it ) {
-      if ( currName == it.data() ) {
+      if ( currName == it.value() ) {
         // remove the original name
         toRemove = it.key(); // the original name
       }
@@ -246,7 +245,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   prevType.setNumberCycleName( mNumberCycleCombo->currentText() );
   prevType.setTemplateFile( mTemplateUrl->url().toLocalFile() );
   prevType.setWatermarkFile( mWatermarkUrl->url().toLocalFile() );
-  prevType.setMergeIdent( QString::number( mWatermarkCombo->currentItem() ) );
+  prevType.setMergeIdent( QString::number( mWatermarkCombo->currentIndex() ) );
   mChangedDocTypes[mPreviousType] = prevType;
 
   // dt.setNumberCycleName( dt.numberCycleName() );
@@ -254,14 +253,14 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   mIdent->setText( dt.identTemplate() );
   int nextNum = dt.nextIdentId( false )-1;
   mCounter->setText( QString::number( nextNum ) );
-  mNumberCycleCombo->setCurrentText( dt.numberCycleName() );
+  mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
   // mHeader->setText( i18n( "Details for %1:" ).arg( dt.name() ) );
   mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
   mTemplateUrl->setUrl( dt.templateFile() );
 
   mWatermarkUrl->setUrl( dt.watermarkFile() );
   int mergeIdent = dt.mergeIdent().toInt();
-  mWatermarkCombo->setCurrentItem( mergeIdent );
+  mWatermarkCombo->setCurrentIndex( mergeIdent );
   mWatermarkUrl->setEnabled( mergeIdent > 0 );
 
   mPreviousType = newValue;
@@ -276,7 +275,7 @@ void DocTypeEdit::slotEditNumberCycles()
 
   if ( dia.exec() == QDialog::Accepted ) {
     fillNumberCycleCombo();
-    mNumberCycleCombo->setCurrentText( currNumbercycle );
+    mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( currNumbercycle ));
 
     DocType dt = currentDocType();
     dt.readIdentTemplate();
@@ -404,7 +403,7 @@ void DocTypeEdit::saveDocTypes()
   for ( it = mTypeNameChanges.begin(); it != mTypeNameChanges.end(); ++it ) {
     QString oldName( it.key() );
     if ( mOrigDocTypes.contains( oldName ) ) {
-      QString newName = it.data();
+      QString newName = it.value();
       kDebug() << "Renaming " << oldName << " to " << newName;
       DocType dt = mOrigDocTypes[oldName];
       if ( mChangedDocTypes.contains( newName ) ) {
@@ -423,7 +422,7 @@ void DocTypeEdit::saveDocTypes()
   // check if numberCycles have changed.
   QMap<QString, DocType>::Iterator mapit;
   for ( mapit = mChangedDocTypes.begin(); mapit != mChangedDocTypes.end(); ++mapit ) {
-    DocType dt = mapit.data();
+    DocType dt = mapit.value();
     dt.save();
   }
 
@@ -467,7 +466,7 @@ void DocTypeEdit::renameTypeInDb( const QString& oldName,  const QString& newNam
   q.prepare( "UPDATE DocTypes SET name=:newName WHERE docTypeID=:oldId" );
   dbID id = DocType::docTypeId( oldName );
   if ( id.isOk() ) {
-    q.bindValue( ":newName", newName.utf8() );
+    q.bindValue( ":newName", newName.toUtf8() );
     q.bindValue( ":oldId", id.toInt() );
     q.exec();
     if ( q.numRowsAffected() == 0 ) {
