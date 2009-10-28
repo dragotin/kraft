@@ -46,7 +46,7 @@
 InsertPlantDialog::InsertPlantDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
 {
-  KVBox *w = new KVBox( parent );
+  QWidget *w = new QWidget( parent );
   setMainWidget( w );
 
   mBaseWidget = new Ui::insertPlantBase(  );

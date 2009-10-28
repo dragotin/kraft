@@ -45,9 +45,8 @@
 InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
 {
-  KVBox *w = new KVBox( this );
-
-  setMainWidget( w );
+  QWidget *w = new QWidget( this );
+  setMainWidget(w);
 
   mBaseWidget = new Ui::insertTmplBase;
   mBaseWidget->setupUi( w );
@@ -82,6 +81,7 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
     groupLay->insertWidget( cnt++, cb );
     mTagMap[cb] = *it;
   }
+  groupLay->addStretch();
 }
 
 void InsertTemplDialog::setDocPosition( DocPosition *dp, bool isNew )
