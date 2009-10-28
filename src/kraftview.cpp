@@ -436,11 +436,11 @@ void KraftView::redrawDocPositions( )
   DocPositionListIterator it( list );
   while( it.hasNext() ) {
     DocPositionBase *dp = it.next();
-    cnt++;
     PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
     if( !w ) {
       w = createPositionViewWidget( dp, cnt);
     }
+    cnt++;
     kDebug() << "now position " << dp->positionNumber() << endl;
   }
 
@@ -478,8 +478,6 @@ void KraftView::setMappingId( QWidget *widget, int pos )
 PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, int pos )
 {
   PositionViewWidget *w = new PositionViewWidget( );
-  
-  pos--;
   
   int cw = m_positionScroll->contentsWidth();
   if ( cw < 400 ) cw = 400;
