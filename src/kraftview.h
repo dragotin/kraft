@@ -137,7 +137,8 @@ class KraftView : public KDialog
   
   protected slots:
   void slotOk();
-  void slotCancel();
+  bool slotCancel();
+  void closeEvent(QCloseEvent *event);
   void redrawDocPositions( );
   void done( int );
   void slotMovePositionUp( int );

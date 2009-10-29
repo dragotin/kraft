@@ -142,8 +142,6 @@ KraftView::KraftView(QWidget *parent) :
   setCaption( i18n("Document" ) );
   setModal( false );
   setButtons( KDialog::Ok | KDialog::Cancel );
-  
-  connect(this->button(KDialog::Ok), SIGNAL(clicked()), this, SLOT(slotOk()));
 
   QWidget *w = new QWidget( this );
 
@@ -1269,11 +1267,41 @@ KraftDoc *KraftView::getDocument() const
 
 void KraftView::done( int r )
 {
-  kDebug() << "View closed with ret value " << r << endl;
-  KraftDoc *doc = getDocument();
-  if( doc )
-    doc->removeView( this );
-  KDialog::done( r );
+  bool okToContinue = true;
+
+  //Closed using the cancel button .. Check if we can close
+  if(r == 0)
+  {
+    okToContinue = slotCancel();
+  }
+  //Closed using the OK button .. We can close, but we have to save our data
+  else if(r == 1)
+  {
+    slotOk();
+  }
+
+  if(okToContinue)
+  {
+    kDebug() << "View closed with ret value " << r << endl;
+    KraftDoc *doc = getDocument();
+    if( doc )
+      doc->removeView( this );
+    KDialog::done( r );
+  }
+}
+
+void KraftView::closeEvent(QCloseEvent *event)
+{
+  if(slotCancel())
+  {
+    event->accept();
+    //Do nothing but close the dialog
+    done(2);
+  }
+  else
+  {
+    event->ignore();
+  }
 }
 
 void KraftView::slotOk()
@@ -1330,7 +1358,6 @@ void KraftView::slotOk()
     }
 
     emit viewClosed( true, m_doc );
-    KDialog::slotButtonClicked( KDialog::Ok );
 }
 
 void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
@@ -1351,7 +1378,7 @@ void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
   }
 }
 
-void KraftView::slotCancel()
+bool KraftView::slotCancel()
 {
   // We need to reread the document
   if ( mModified ) {
@@ -1360,7 +1387,7 @@ void KraftView::slotCancel()
            i18n( "Document Modified" ), KGuiItem( i18n( "Discard" ) ) )
           == KMessageBox::Cancel  )
     {
-      return;
+      return false;
     }
   }
 
@@ -1373,7 +1400,7 @@ void KraftView::slotCancel()
   mNewTemplates.clear();
 
   emit viewClosed( false, 0 );
-  KDialog::slotButtonClicked( KDialog::Cancel );
+  return true;
 }
 
 void KraftView::print(QPrinter * /* pPrinter */ )
