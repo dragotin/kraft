@@ -19,7 +19,6 @@
 #ifndef POSITIONVIEWWIDGET_H
 #define POSITIONVIEWWIDGET_H
 
-#include <q3ptrlist.h>
 #include <QMap>
 #include <QMenu>
 #include <QAction>
@@ -121,7 +120,7 @@ private:
     KLocale *mLocale;
 };
 
-class PositionViewWidgetList : public Q3PtrList<PositionViewWidget>
+class PositionViewWidgetList : public QList<PositionViewWidget*>
 {
   public:
     PositionViewWidgetList();
@@ -131,6 +130,6 @@ class PositionViewWidgetList : public Q3PtrList<PositionViewWidget>
 };
 
 
-typedef Q3PtrListIterator<PositionViewWidget> PositionViewWidgetListIterator;
+typedef QListIterator<PositionViewWidget*> PositionViewWidgetListIterator;
 
 #endif

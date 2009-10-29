@@ -15,22 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QLabel>
-#include <QComboBox>
-#include <QPushButton>
-#include <QColor>
-#include <QLayout>
-#include <QToolTip>
-#include <QPaintEvent>
-#include <QRegExp>
-#include <QPainter>
-#include <QPixmap>
-#include <qdrawutil.h>
-
-//Added by qt3to4:
-#include <Q3PtrList>
-#include <Q3PopupMenu>
-#include <q3widgetstack.h>
+#include <QtGui>
 
 #include <kglobal.h>
 #include <klocale.h>
@@ -65,15 +50,15 @@ PositionViewWidget::PositionViewWidget()
    mLocale( 0 )
 {
   setupUi( this );
-  m_sbUnitPrice->setMinimum( -99999.99 );
-  m_sbUnitPrice->setMaximum( 99999.99 );
+  m_sbUnitPrice->setMinimum( -999999.99 );
+  m_sbUnitPrice->setMaximum( 999999.99 );
   m_sbUnitPrice->setDecimals( 2 );
 
-  m_sbAmount->setMinimum( -99999.99 );
-  m_sbAmount->setMaximum( 99999.99 );
+  m_sbAmount->setMinimum( -999999.99 );
+  m_sbAmount->setMaximum( 999999.99 );
   m_sbAmount->setDecimals( 2 );
 
-  mDiscountPercent->setMinimum( -9999.99 );
+  mDiscountPercent->setMinimum( -100.0 );
   mDiscountPercent->setMaximum( 9999.99 );
   mDiscountPercent->setDecimals( 2 );
 
@@ -111,9 +96,6 @@ PositionViewWidget::PositionViewWidget()
                             i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
   mStateSubmenu->addAction( KIcon( "demand" ),
                             i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
-
-  mExecPopup->addSeparator();
-
 
   mExecPopup->addSeparator();
 
@@ -265,7 +247,7 @@ QString PositionViewWidget::extraDiscountTagRestriction()
 {
   QStringList taglist = TagTemplateMan::self()->allTagTemplates();
 
-  uint currentItem = mDiscountTag->currentIndex();
+  int currentItem = mDiscountTag->currentIndex();
   if ( currentItem > 0 && currentItem <= taglist.count() ) {
     // subtract one for the "all items" entry in the combo box at first position
     currentItem -= 1;
@@ -489,27 +471,31 @@ PositionViewWidget::~PositionViewWidget()
 }
 
 PositionViewWidgetList::PositionViewWidgetList()
-  : Q3PtrList<PositionViewWidget>()
+  : QList<PositionViewWidget*>()
 {
-  setAutoDelete( true );
+  // setAutoDelete( true );
 }
 
 PositionViewWidget* PositionViewWidgetList::widgetFromPosition( DocPositionGuardedPtr ptr)
 {
-  PositionViewWidget *pvw = 0;
-
-  for( pvw = first(); pvw; pvw = next() ) {
-    if( pvw->position() == ptr ) return pvw;
+  PositionViewWidgetListIterator it( *this );
+  while( it.hasNext() ) {
+    PositionViewWidget *pvw = it.next();
+    if( pvw ->position() == ptr ) {
+      return pvw;
+    }
   }
+
   return 0;
 }
 
 Geld PositionViewWidgetList::nettoPrice()
 {
-  PositionViewWidget *pvw = 0;
   Geld res;
 
-  for( pvw = first(); pvw; pvw = next() ) {
+  PositionViewWidgetListIterator it( *this );
+  while( it.hasNext() ) {
+    PositionViewWidget *pvw = it.next();
     res += pvw->currentPrice();
   }
   return res;
@@ -616,7 +602,7 @@ QString PositionViewWidget::kindLabel( Kind k ) const
   return re;
 }
 
-void PositionViewWidget::paintEvent ( QPaintEvent *pe )
+void PositionViewWidget::paintEvent ( QPaintEvent* )
 {
   QPainter *painter;
   painter = new QPainter( this );

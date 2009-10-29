@@ -446,12 +446,16 @@ void KraftView::redrawDocPositions( )
 
   // now go through the positionWidgetMap and check if it contains elements
   // that are not any longer in the list of positions
-  PositionViewWidget *w = 0;
-  for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
-    if( list.contains( w->position() ) == 0 ) {
+
+  QMutableListIterator<PositionViewWidget*> it2( mPositionWidgetList );
+  while( it2.hasNext() ) {
+    PositionViewWidget *w = it2.next();
+
+    if( w && (list.contains( w->position() ) == 0) ) {
       kDebug() << "Removing this one: " << w << endl;
       m_positionScroll->kraftRemoveChild( w );
-      mPositionWidgetList.remove();
+      it2.remove();
+      // mPositionWidgetList.erase( it2 );
       break;
     }
   }
@@ -516,10 +520,13 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
                                     mPositionWidgetList.count() * w->height()+1 );
 
   /* If the new pos is not appended, we have to move all the following on height unit down */
-  if ( ( unsigned )pos != mPositionWidgetList.count() ) {
-    PositionViewWidget *vw;
-    for ( vw = mPositionWidgetList.at( pos+1 ); vw; vw = mPositionWidgetList.next() ) {
-      m_positionScroll->moveChild( vw, 0, m_positionScroll->childY( vw ) + w->height() );
+  if ( pos != mPositionWidgetList.count() ) {
+
+    for ( int indx = pos + 1; indx < mPositionWidgetList.count(); indx++ ) {
+      // for ( vw = mPositionWidgetList.at( pos+1 ); vw; vw = mPositionWidgetList.next() ) {
+      PositionViewWidget *vw = mPositionWidgetList.at( indx );
+      if( vw )
+        m_positionScroll->moveChild( vw, 0, m_positionScroll->childY( vw ) + w->height() );
     }
   }
 
@@ -674,16 +681,18 @@ void KraftView::slotMovePositionUp( int pos )
   PositionViewWidget *w2 = 0;
 
   kDebug() << "Moving position up: " << pos << endl;
-  if( pos < 1 || (unsigned) pos > mPositionWidgetList.count() ) {
+  if( pos < 1 || pos > mPositionWidgetList.count() ) {
     kDebug() << "ERR: position out of range: " << pos << endl;
     return;
   }
 
-  w2 = mPositionWidgetList.at( pos-1 );
-  w1 = mPositionWidgetList.take( pos );
-  mPositionWidgetList.insert( pos-1, w1 );
+  mPositionWidgetList.swap( pos, pos-1 );
+  w1 = mPositionWidgetList.at( pos-1 );
+  w2 = mPositionWidgetList.at( pos ); // Porting ATTENTION: check assignment of w1, w1
+
   kDebug() << "Found at pos " << pos << " the widgets " << w1 << " and " << w2 << endl;
 
+#if 0
   PositionViewWidget *vw = 0;
   for( vw = mPositionWidgetList.first(); vw; vw = mPositionWidgetList.next() ) {
     DocPositionBase* pb = vw->position();
@@ -693,6 +702,7 @@ void KraftView::slotMovePositionUp( int pos )
       kDebug() << "Pos " << vw->ordNumber() << ": " << pb->text() << endl;
     }
   }
+#endif
 
   if( w1 && w2 ) {
     kDebug() << "Setting ord number: " << pos << endl;
@@ -722,14 +732,14 @@ void KraftView::slotMovePositionDown( int pos )
   PositionViewWidget *w2 = 0;
   kDebug() << "Moving position down: " << pos << endl;
 
-  if( pos < 0 || (unsigned) pos >= mPositionWidgetList.count() -1 ) {
+  if( pos < 0 || pos >= mPositionWidgetList.count() -1 ) {
     kDebug() << "ERR: position out of range: " << pos << endl;
     return;
   }
 
-  w2 = mPositionWidgetList.at( pos+1 );
-  w1 = mPositionWidgetList.take( pos );
-  mPositionWidgetList.insert( pos+1, w1 );
+  mPositionWidgetList.swap( pos, pos+1);
+  w1 = mPositionWidgetList.at( pos+1 );
+  w2 = mPositionWidgetList.at( pos );  // Porting ATTENTION: check assignment of w1, w1
 
   if( w1 && w2 ) {
     w1->setOrdNumber( pos+2  );
@@ -835,9 +845,9 @@ void KraftView::slotDocTypeChanged( const QString& newType )
 
   DocType docType( newType );
 
-  PositionViewWidget *w = 0;
-
-  for ( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
+  PositionViewWidgetListIterator it( mPositionWidgetList );
+  while( it.hasNext() ) {
+    PositionViewWidget *w = it.next();
     w->slotEnableKindMenu( docType.allowAlternative() );
   }
 
@@ -860,8 +870,9 @@ void KraftView::slotLanguageSettings()
         m_doc->locale()->setCountry( c, cfg );
         m_doc->locale()->setLanguage( dia.locale().language(), cfg );
 
-        PositionViewWidget *w; //  = 0;
-        for( w = mPositionWidgetList.first(); w; w = mPositionWidgetList.next() ) {
+        PositionViewWidgetListIterator it( mPositionWidgetList );
+        while( it.hasNext() ) {
+          PositionViewWidget *w = it.next(); //  = 0;
           w->setLocale( m_doc->locale() );
           w->repaint();
         }
@@ -1078,13 +1089,12 @@ DocPositionList KraftView::currentPositionList()
     while ( progress && ( list.count() != mPositionWidgetList.count() ) ) {
       // the loop runs until all positions have a valid price.
 
-      unsigned preListCnt = list.count();
+      int preListCnt = list.count();
       // kDebug() << "# Pre List Count: " << preListCnt << endl;
 
-      while ( ( widget = outerIt.current() ) != 0 ) {
+      while ( outerIt.hasNext() ) {
+        widget = outerIt.next();
         DocPositionBase *dpb = widget->position();
-
-        ++outerIt;
 
         KraftDB::StringMap replaceMap;
 
@@ -1121,9 +1131,10 @@ DocPositionList KraftView::currentPositionList()
             PositionViewWidget *w1;
             Geld sum;
             kDebug() << "Starting to loop over the items " << endl;
-            while (  calculatable && ( w1 = it.current() )!= 0 ) {
-              ++it;
-              if ( it != outerIt ) { // do not take the own value into account
+            while (  calculatable && it.hasNext() ) {
+              w1 = it.next();
+
+              if ( widget != w1 ) { // ATTENTION Porting: do not take the own value into account
                 if ( tagRequired.isEmpty()  // means that all positions are to calculate
                      || w1->tagList().contains( tagRequired ) ) {
                   if ( w1->priceValid() ) {
