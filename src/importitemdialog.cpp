@@ -52,11 +52,10 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
   setCaption( i18n( "Import Items From File" ) );
   setButtons( Ok | Cancel );
 
-  QWidget *w = new KVBox;
+  QWidget *w = new QWidget( this );
+  setMainWidget(w);
   mBaseWidget = new Ui::importToDocBase;
   mBaseWidget->setupUi( w );
-
-  setMainWidget( w );
 
   // Fill the tags list
   Q3ButtonGroup *group = mBaseWidget->mTagGroup;
