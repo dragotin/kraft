@@ -5,6 +5,7 @@
 KraftDocEdit::KraftDocEdit( QWidget *parent )
   : QWidget( parent )
 {
+  this->setAutoFillBackground(true);
 }
 
 void KraftDocEdit::setTitle( const QString &title )

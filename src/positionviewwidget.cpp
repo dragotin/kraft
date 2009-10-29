@@ -78,6 +78,7 @@ PositionViewWidget::PositionViewWidget()
   mDiscountPercent->setDecimals( 2 );
 
   pbExec->setCheckable( false );
+  pbExec->setIcon( SmallIcon( "configure") );
   pbTagging->setCheckable( false );
   pbTagging->setIcon( SmallIcon( "flag" ) );
 
@@ -101,7 +102,7 @@ PositionViewWidget::PositionViewWidget()
   connect( mDiscountPercent, SIGNAL( valueChanged( double ) ), this, SLOT( slotModified() ) );
   connect( mDiscountTag,  SIGNAL( activated( int ) ), this,    SLOT( slotModified() ) );
 
-  // mExecPopup->insertTitle( i18n("Position Actions") );
+  mExecPopup->addTitle(i18n("Position Actions") );
 
   // state submenu:
   mStateSubmenu = mExecPopup->addMenu(i18n( "Position Kind" ));
@@ -116,15 +117,15 @@ PositionViewWidget::PositionViewWidget()
 
   mExecPopup->addSeparator();
 
-  mExecPopup->addAction(  KIcon("up"),
+  mExecPopup->addAction(  KIcon("arrow-up"),
                            i18n("Move Up"),         this, SIGNAL( moveUp() ) );
-  mExecPopup->addAction(  KIcon("down"),
+  mExecPopup->addAction(  KIcon("arrow-down"),
                            i18n("Move Down"),       this, SIGNAL( moveDown() ) );
-  mLockId = mExecPopup->addAction(  KIcon("encrypted"),
+  mLockId = mExecPopup->addAction(  KIcon("object-locked"),
                            i18n("Lock Position"),   this, SIGNAL( lockPosition() ) );
-  mUnlockId = mExecPopup->addAction(  KIcon("decrypted"),
+  mUnlockId = mExecPopup->addAction(  KIcon("object-unlocked"),
                            i18n("Unlock Position"), this, SIGNAL( unlockPosition() ) );
-  mDeleteId = mExecPopup->addAction(  KIcon("remove"),
+  mDeleteId = mExecPopup->addAction(  KIcon("edit-delete"),
                            i18n("Delete Position"), this, SIGNAL( deletePosition() ) );
 
 
@@ -142,6 +143,8 @@ PositionViewWidget::PositionViewWidget()
   mUnlockId->setEnabled(false);
   lStatus->setPixmap( QPixmap() );
   lKind->setPixmap( QPixmap() );
+
+  this->setAutoFillBackground(true);
 }
 
 void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
@@ -310,39 +313,16 @@ void PositionViewWidget::slotExecButtonPressed()
 void PositionViewWidget::slotMenuAboutToShow()
 {
   QPalette palette;
-  palette.setCurrentColorGroup(QPalette::Disabled);
-  setPalette( palette );
-  m_sumLabel->setPalette( palette );
-  m_labelPosition->setPalette( palette );
-  m_sumLabel->setPalette( palette );
-  m_sbAmount->setPalette( palette );
-  m_cbUnit->setPalette( palette );
-  m_sbUnitPrice->setPalette( palette );
-  discountPage->setPalette( palette );
-  mDiscountPercent->setPalette( palette );
-  mDiscountLabel->setPalette( palette );
-  discountPage->setPalette( palette );
-  positionPage->setPalette( palette );
+  palette.setColor(this->backgroundRole(), QColor("#757476"));
+  this->setPalette(palette);
 }
 
 void PositionViewWidget::slotMenuAboutToHide()
 {
   kDebug() << "Set normal again" << endl;
   QPalette palette;
-  palette.setCurrentColorGroup(QPalette::Active);
   setPalette( palette );
-  m_sumLabel->setPalette( palette );
-  m_labelPosition->setPalette( palette );
-  m_sumLabel->setPalette( palette );
-  m_sbAmount->setPalette( palette );
-  m_cbUnit->setPalette( palette );
-  m_sbUnitPrice->setPalette( palette );
-  discountPage->setPalette( palette );
-  mDiscountPercent->setPalette( palette );
-  mDiscountLabel->setPalette( palette );
-  discountPage->setPalette( palette );
-  positionPage->setPalette( palette );
-
+  pbExec->setChecked(false);
 }
 
 void PositionViewWidget::slotLockPosition( )

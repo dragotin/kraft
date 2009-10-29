@@ -157,6 +157,8 @@ KraftView::KraftView(QWidget *parent) :
   // mDetailHeader->setMargin( 4 );
   mDetailHeader->setFrameStyle( Q3Frame::Box + Q3Frame::Plain );
   mDetailHeader->setLineWidth( 1 );
+  mDetailHeader->setAutoFillBackground(true);
+
   QPalette palette;
   palette.setColor(mDetailHeader->backgroundRole(), QColor( "darkBlue" ));
   palette.setColor(mDetailHeader->foregroundRole(), QColor( "white "));
@@ -751,6 +753,7 @@ void KraftView::slotDeletePosition( int pos )
   PositionViewWidget *w1 = mPositionWidgetList.at( pos );
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Deleted );
+    w1->slotModified();
     refreshPostCard();
   }
 }

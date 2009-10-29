@@ -18,8 +18,6 @@
 #include "docpostcard.h"
 #include "kraftdoc.h"
 
-#include <q3stylesheet.h>
-
 #include <klocale.h>
 #include <kglobal.h>
 #include <kurl.h>

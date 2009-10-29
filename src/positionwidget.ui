@@ -25,6 +25,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="pbExec">
+       <property name="maximumSize">
+        <size>
+         <width>25</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -35,6 +41,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="pbTagging">
+       <property name="maximumSize">
+        <size>
+         <width>25</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -103,8 +115,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>297</width>
-          <height>43</height>
+          <width>241</width>
+          <height>36</height>
          </rect>
         </property>
         <layout class="QGridLayout">
@@ -163,8 +175,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>297</width>
-          <height>43</height>
+          <width>100</width>
+          <height>30</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -245,6 +257,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>KDoubleNumInput</class>
+   <extends>QWidget</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
    <class>Q3Frame</class>
    <extends>QFrame</extends>
    <header>Qt3Support/Q3Frame</header>
@@ -260,11 +277,7 @@
    <class>Q3TextEdit</class>
    <extends>Q3Frame</extends>
    <header>q3textedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KDoubleNumInput</class>
-   <extends>QWidget</extends>
-   <header>knuminput.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>ExtendedCombo</class>
