@@ -1286,12 +1286,18 @@ void KraftView::done( int r )
   //Closed using the cancel button .. Check if we can close
   if(r == 0)
   {
-    okToContinue = slotCancel();
+    okToContinue = documentModifiedMessageBox();
+    if(okToContinue)
+    {
+      discardChanges();
+      emit viewClosed( false, 0 );
+    }
   }
   //Closed using the OK button .. We can close, but we have to save our data
   else if(r == 1)
   {
-    slotOk();
+    saveChanges();
+    emit viewClosed( true, m_doc );
   }
 
   if(okToContinue)
@@ -1306,11 +1312,13 @@ void KraftView::done( int r )
 
 void KraftView::closeEvent(QCloseEvent *event)
 {
-  if(slotCancel())
+  if(documentModifiedMessageBox())
   {
     event->accept();
     //Do nothing but close the dialog
+    discardChanges();
     done(2);
+    emit viewClosed( false, 0 );
   }
   else
   {
@@ -1318,9 +1326,9 @@ void KraftView::closeEvent(QCloseEvent *event)
   }
 }
 
-void KraftView::slotOk()
+void KraftView::saveChanges()
 {
-    kDebug() << "Accept Slot hit!" << endl;
+    kDebug() << "Saving changes!" << endl;
 
     KraftDoc *doc = getDocument();
 
@@ -1370,8 +1378,6 @@ void KraftView::slotOk()
       Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
       KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
     }
-
-    emit viewClosed( true, m_doc );
 }
 
 void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
@@ -1392,9 +1398,8 @@ void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
   }
 }
 
-bool KraftView::slotCancel()
+bool KraftView::documentModifiedMessageBox()
 {
-  // We need to reread the document
   if ( mModified ) {
     if ( KMessageBox::warningContinueCancel( this, i18n( "The document was modified. Do "
                                                 "you really want to discard all changes?" ),
@@ -1403,8 +1408,14 @@ bool KraftView::slotCancel()
     {
       return false;
     }
-  }
 
+    return true;
+  }
+}
+
+void KraftView::discardChanges()
+{
+  // We need to reread the document
   KraftDoc *doc = getDocument();
   if( doc && doc->isModified() ) {
     kDebug() << "Document refetch from database" << endl;
@@ -1412,9 +1423,6 @@ bool KraftView::slotCancel()
   }
 
   mNewTemplates.clear();
-
-  emit viewClosed( false, 0 );
-  return true;
 }
 
 void KraftView::print(QPrinter * /* pPrinter */ )

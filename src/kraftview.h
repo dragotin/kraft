@@ -136,8 +136,6 @@ class KraftView : public KDialog
   void slotSwitchToPage( int );
   
   protected slots:
-  void slotOk();
-  bool slotCancel();
   void closeEvent(QCloseEvent *event);
   void redrawDocPositions( );
   void done( int );
@@ -166,6 +164,9 @@ private:
   void setupTextsView();
   void setMappingId( QWidget *, int );
   void setupMappers();
+  void saveChanges();
+  void discardChanges();
+  bool documentModifiedMessageBox();
 
   PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
 
