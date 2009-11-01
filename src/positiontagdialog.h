@@ -20,7 +20,7 @@
 #ifndef POSITIONTAGDIALOG_H
 #define POSITIONTAGDIALOG_H
 
-#include <qmap.h>
+#include <QMap>
 
 #include <kdialog.h>
 
@@ -39,11 +39,8 @@ public:
   PositionTagDialog( QWidget* );
   virtual ~PositionTagDialog( );
 
-  void setPositionTags( const QStringList& );
+  void setPositionTags( const QStringList& checkedTags);
   QStringList getSelectedTags();
-
-protected:
-  void setTags( );
 
 private:
   QTreeWidget* mListView;

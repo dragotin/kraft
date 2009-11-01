@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qstringlist.h>
-#include <qstring.h>
-#include <qcolor.h>
+#include <QStringList>
+#include <QString>
+#include <QColor>
+#include <QSqlQuery>
+#include <QPalette>
+
 
 // include files for KDE
 #include <klocale.h>
@@ -27,9 +30,6 @@
 
 #include "tagman.h"
 #include "kraftdb.h"
-#include <qsqlquery.h>
-#include <q3sqlcursor.h>
-#include <qpalette.h>
 
 /*
  * ********** Tag Template  **********
@@ -182,21 +182,15 @@ void TagTemplateMan::load()
 
   mTagTmpl.resize( max );
 
-  /* Daten laden */
-  Q3SqlCursor cur("tagTemplates");
-  cur.setMode( Q3SqlCursor::ReadOnly );
+  /* Load data */
+  q.exec("SELECT * from tagTemplates ORDER BY sortKey;");
 
-    // Create an index that sorts from high values for einheitID down.
-    // that makes at least on resize of the vector.
-    QSqlIndex indx = cur.index( "sortKey" );
-
-    cur.select( indx );
-    while( cur.next() )
-    {
-      dbID id( cur.value("tagTmplID").toInt() );
+  while( q.next() )
+  {
+      dbID id( q.value(0).toInt() );
       // resize if index is to big.
-      TagTemplate tt ( id, cur.value( "name" ).toString(), cur.value( "description" ).toString(),
-                       cur.value( "color" ).toString() );
+      TagTemplate tt ( id, q.value( 2 ).toString(), q.value( 3 ).toString(),
+                       q.value( 4 ).toString() );
 
       mTagTmpl.append( tt );
     }

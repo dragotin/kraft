@@ -20,8 +20,10 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QLabel>
+#include <QItemDelegate>
+#include <QStyleOptionViewItem>
+#include <QModelIndex>
 #include <qdrawutil.h>
-#include <q3header.h>
 
 #include <kdialog.h>
 #include <kdebug.h>
@@ -36,38 +38,37 @@
 #include "tagman.h"
 
 
-class TagItem:public QTreeWidgetItem
+class TagDelegate : public QItemDelegate
 {
-
   public:
-    TagItem( QTreeWidget*, const QString& );
-    void setColorGroup( QColorGroup );
-private:
-    QColorGroup mColorGroup;
+    TagDelegate( QObject *parent = 0 );
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 };
 
 
-TagItem::TagItem( QTreeWidget* view, const QString& name )
-  :QTreeWidgetItem( view )
+TagDelegate::TagDelegate( QObject *parent  )
+  :QItemDelegate( parent )
 {
-  // setText( name );
-  setFlags( Qt::ItemIsUserCheckable );
-  setText( 1, name );
 }
-#if 0
-void TagItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
+
+void TagDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  if ( column == 1 ) {
-    QBrush b( mColorGroup.mid() );
-    qDrawShadeRect( p, 5, 4, width-10, height()-8, mColorGroup, false, 1, 4, &b );
-  }  else {
-    Q3CheckListItem::paintCell( p, cg, column, width, align );
+  //If we're in the color column
+  if(index.column() == 1)
+  {
+    QColor c( index.model()->data(index, Qt::DisplayRole).toString() );
+    QBrush b( c );
+    int x = option.rect.left();
+    int y = option.rect.top();
+    int height = option.rect.height();
+    int width = option.rect.width();
+    QColor test(index.data(1).toString());
+    qDrawShadeRect( painter, x+5, y+4, width-10, height-8, c, false, 1, 0, &b );
   }
-}
-#endif
-void TagItem::setColorGroup( QColorGroup cg )
-{
-  mColorGroup = cg;
+  else
+  {
+    QItemDelegate::paint(painter, option, index);
+  }
 }
 
 // ################################################################################
@@ -80,6 +81,7 @@ PositionTagDialog::PositionTagDialog( QWidget *parent )
   setModal( true );
   setCaption( i18n("Edit Item Tags" ) );
   setButtons( KDialog::Ok | KDialog::Cancel );
+  setMinimumWidth ( 375 );
 
   KVBox *w = new KVBox( this );
   setMainWidget( w );
@@ -91,11 +93,14 @@ PositionTagDialog::PositionTagDialog( QWidget *parent )
 
   mListView = new QTreeWidget( w );
   mListView->setAlternatingRowColors( true );
+  mListView->setItemDelegate(new TagDelegate());
 
-  // mListView->setItemMargin( 3 );
-  // mListView->setAlternateBackground( QColor( "#dffdd0" ) );
-  // mListView->header()->hide();
-  // mListView->setRootIsDecorated( false );
+  mListView->setContentsMargins ( 3, 3, 3, 3 );
+  QPalette palette;
+  palette.setColor(QPalette::AlternateBase, QColor( "#dffdd0" ));
+  mListView->setPalette(palette);
+  mListView->setHeaderHidden(true);
+  mListView->setRootIsDecorated( false );
 
   mListView->setColumnCount( 3 );
   QStringList headers;
@@ -104,6 +109,7 @@ PositionTagDialog::PositionTagDialog( QWidget *parent )
   headers << i18n( "Description" );
   mListView->setHeaderLabels( headers );
   mListView->setSelectionMode( QAbstractItemView::NoSelection );
+  mListView->setColumnWidth(1, 50);
 }
 
 PositionTagDialog::~PositionTagDialog()
@@ -111,31 +117,23 @@ PositionTagDialog::~PositionTagDialog()
 
 }
 
-void PositionTagDialog::setTags()
+void PositionTagDialog::setPositionTags( const QStringList& checkedTags )
 {
-  QStringList tags = TagTemplateMan::self()->allTagTemplates();
+  QStringList allTags = TagTemplateMan::self()->allTagTemplates();
 
-  for ( QStringList::ConstIterator it = tags.begin(); it != tags.end(); ++it ) {
-    TagTemplate templ = TagTemplateMan::self()->getTagTemplate( *it );
+  for ( QStringList::ConstIterator it = allTags.begin(); it != allTags.end(); ++it ) {
+      TagTemplate templ = TagTemplateMan::self()->getTagTemplate( *it );
 
-    TagItem *item = new TagItem( mListView, templ.name() );
-    item->setColorGroup( templ.colorGroup() );
-    item->setText( 2, templ.description() );
+    QStringList contents;
+    contents << templ.name();
+    contents << templ.color().name();
+    contents << templ.description();
 
-    mItemMap[*it] = item;
-  }
-}
-
-void PositionTagDialog::setPositionTags( const QStringList& tags )
-{
-  setTags();
-  for ( QStringList::ConstIterator it = tags.begin(); it != tags.end(); ++it ) {
-    if ( mItemMap.contains( *it ) ) {
-      QTreeWidgetItem *item = mItemMap[*it];
-      if( item ) {
-        item->setCheckState( 0, Qt::Checked );
-      }
-    }
+    QTreeWidgetItem *item = new QTreeWidgetItem( mListView, contents );
+    if(checkedTags.contains(templ.name()))
+      item->setCheckState( 0, Qt::Checked );
+    else
+      item->setCheckState( 0, Qt::Unchecked );
   }
 }
 
