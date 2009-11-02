@@ -120,11 +120,17 @@ void Portal::initActions()
   actionCollection()->addAction( KStandardAction::Preferences, this, SLOT( preferences() ) );
 
   actNewDocument = actionCollection()->addAction( "document_new", this, SLOT( slotNewDocument()) );
+  actNewDocument->setText( i18n("Create Document") );
+  actNewDocument->setShortcut( KShortcut( KStandardShortcut::New ) );
+  actNewDocument->setIcon( KIcon("document-new"));
   // actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew",
   //                             KStandardShortcut::shortcut(KStandardShortcut::New), this,
   //                             SLOT(slotNewDocument()),
   //                             actionCollection(), "document_new");
   actCopyDocument = actionCollection()->addAction( "document_copy", this, SLOT( slotCopyDocument()) );
+  actCopyDocument->setText( i18n("Copy Document"));
+  actCopyDocument->setShortcut( KStandardAction::Copy );
+  actCopyDocument->setIcon( KIcon( "document-edit"));
 
 //  actCopyDocument = new KAction( i18n( "Copy Document" ), "editcopy",
 //                                 KStandardShortcut::sho rtcut( KStandardShortcut::Copy ), this,
@@ -132,6 +138,9 @@ void Portal::initActions()
 //                                 actionCollection(), "document_copy" );
 
   actFollowDocument = actionCollection()->addAction( "document_follow", this, SLOT( slotFollowUpDocument() ) );
+  actFollowDocument->setText( i18n("Follow Document" ));
+  actFollowDocument->setShortcut( KShortcut( Qt::CTRL + Qt::Key_F ));
+  actFollowDocument->setIcon( KIcon( "document-edit"));
 
 //  actFollowDocument = new KAction( i18n( "Follow Document" ), "editcopy",
 //                                   KShortcut( Qt::CTRL + Qt::Key_F ), this,
@@ -139,13 +148,17 @@ void Portal::initActions()
 //                                 actionCollection(), "document_follow" );
 
   actPrintDocument = actionCollection()->addAction( "document_print", this, SLOT( slotPrintDocument()) );
-
+  actPrintDocument->setText( i18n("Print Document"));
+  actPrintDocument->setShortcut( KStandardShortcut::Print );
+  actPrintDocument->setIcon( KIcon("document-print"));
 //  actPrintDocument = new KAction(i18n("&Print Document"), "printer1",
 //                                 KStandardShortcut::shortcut(KStandardShortcut::Print), this,
 //                                 SLOT(slotPrintDocument()),
 //                                 actionCollection(), "document_print");
 
   actOpenArchivedDocument = actionCollection()->addAction( "archived_open", this, SLOT( slotArchivedDocExecuted()) );
+  actOpenArchivedDocument->setText( i18n("Open Archived Document"));
+  actOpenArchivedDocument->setShortcut( KShortcut(Qt::CTRL + Qt::Key_A) );
 
 //  actOpenArchivedDocument = new KAction( i18n( "Open &Archived Document" ), "attach",
 //                                         KShortcut( Qt::CTRL + Qt::Key_A ), this,
@@ -153,25 +166,35 @@ void Portal::initActions()
 //                                         "archived_open" );
 
   actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewDocument()));
+  actViewDocument->setText(i18n("Show Document"));
+  actViewDocument->setShortcut( KStandardShortcut::Reload );
+  actViewDocument->setIcon( KIcon("document-preview" ));
 
 //  actViewDocument = new KAction(i18n("&Show Document"),  "filefind",
 //                                KStandardShortcut::shortcut(KStandardShortcut::Reload), this,
 //                                SLOT( slotViewDocument() ), actionCollection(), "document_view" );
 
   actOpenDocument = actionCollection()->addAction( "document_open", this, SLOT( slotOpenDocument()) );
+  actOpenDocument->setText( i18n("Edit Document"));
+  actOpenDocument->setShortcut( KStandardShortcut::Open );
+  actOpenDocument->setIcon( KIcon("document-open" ));
 
 //  actOpenDocument = new KAction(i18n("&Edit Document"),  "fileopen",
 //                                KStandardShortcut::shortcut(KStandardShortcut::Open), this,
 //                                SLOT( slotOpenDocument() ), actionCollection(), "document_open" );
 
   actMailDocument = actionCollection()->addAction( "document_mail", this, SLOT( slotMailDocument()) );
+  actMailDocument->setText(i18n("&Mail Document"));
+  actMailDocument->setShortcut( KShortcut(Qt::CTRL + Qt::Key_M ));
+  actMailDocument->setIcon( KIcon("mail-forward"));
 
 //  actMailDocument = new KAction( i18n( "&Mail Document" ), "mail_generic",
 //                                 KShortcut( Qt::CTRL + Qt::Key_M ), this,
 //                                 SLOT( slotMailDocument() ), actionCollection(), "document_mail" );
 
   actEditTemplates = actionCollection()->addAction( "edit_tag_templates", this, SLOT( slotEditTagTemplates() ) );
-
+  actEditTemplates->setText("Edit Tag Templates");
+  actEditTemplates->setShortcut( KShortcut( Qt::CTRL + Qt::Key_E ));
 //  actEditTemplates = new KAction( i18n( "&Edit Tag Templates..." ),  "flag",
 //                                  KShortcut( Qt::CTRL + Qt::Key_E ), this,
 //                                  SLOT( slotEditTagTemplates() ), actionCollection(), "edit_tag_templates" );
@@ -240,7 +263,8 @@ void Portal::initView()
     menu->addAction( actMailDocument );
     menu->addAction( actOpenArchivedDocument );
 
-    // actViewDocument->plug( m_portalView->docDigestView()->contextMenu() );
+   // m_portalView->docDigestView()->contextMenu()->addAction( actViewDocument );
+    // actViewDocument->plug(  );
 //    actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
 //    actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
 //    actCopyDocument->plug( m_portalView->docDigestView()->contextMenu() );
@@ -841,7 +865,7 @@ void Portal::slotKatalogToXML(const QString& katName)
     }
 }
 
-QString Portal::textWrap( const QString& t, unsigned int width )
+QString Portal::textWrap( const QString& t, int width )
 {
     QString re;
 

@@ -169,7 +169,7 @@ QString DocPostCard::renderDocFull( int id )
     selString= QString();
   if ( id == KraftDoc::Positions ) selString = QString::fromLatin1( "_selected" );
   t = QString( "<div class=\"body%1\">\n" ).arg( selString );
-  t += header( id == KraftDoc::Positions, "bodylink", i18n( "Positions" ), "positions" );
+  t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions ), "positions" );
 
   t += mPositions;
   t += "\n</div>\n";

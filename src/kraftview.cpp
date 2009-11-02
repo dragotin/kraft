@@ -410,13 +410,13 @@ void KraftView::redrawDocPositions( )
     if ( ! mHelpLabel ) {
       mHelpLabel = new QLabel(0);
       mHelpLabel->setMargin( KDialog::marginHint() );
-      mHelpLabel->setText( i18n( "<qt><h2>The Document Position List is still empty, but Positions "
+      mHelpLabel->setText( i18n( "<qt><h2>The Document Items List is still empty, but Items "
                                  "can be added now.</h2>"
-                                 "To add positions to the document either "
+                                 "To add items to the document either "
                                  "<ul>"
-                                 "<li>Press the 'Add' button on top of this canvas.</li>"
+                                 "<li>Press the 'Add' button.</li>"
                                  "<li>Open the template catalog clicking on the '%1' "
-                                  "button on the right and select from available template positions.</li>"
+                                  "button on the right and select from available templates.</li>"
                                    "</ul></qt>").arg( i18n( "show Template" ) ) );
       m_positionScroll->addChild( mHelpLabel,  0, 0 );
     }
@@ -429,7 +429,7 @@ void KraftView::redrawDocPositions( )
     }
   }
 
-  kDebug() << "starting to redraw " << list.count() << " positions!" << endl;
+  kDebug() << "starting to redraw " << list.count() << " positions!";
   int cnt = 0;
   DocPositionListIterator it( list );
   while( it.hasNext() ) {

@@ -14,12 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QLayout>
-#include <QPushButton>
-#include <QToolTip>
-#include <QHBoxLayout>
-#include <QBoxLayout>
-#include <QVBoxLayout>
+#include <QtGui>
 
 #include <klocale.h>
 #include <kdebug.h>
@@ -194,6 +189,11 @@ QTreeWidgetItem* DocDigestView::addChapter( const QString& chapter, DocDigestLis
     }
   }
   return chapIt;
+}
+
+void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
+{
+  mContextMenu->popup( event->pos() );
 }
 
 void DocDigestView::slotRMB( QTreeWidgetItem*, const QPoint& point, int )

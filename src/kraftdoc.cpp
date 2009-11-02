@@ -390,7 +390,7 @@ void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
   else if ( p == Footer )
     return i18n( "Footer" );
   else if ( p == Positions )
-    return i18n( "Positions" );
+    return i18n( "Items" );
 
   return i18n( "Unknown document part" );
 }

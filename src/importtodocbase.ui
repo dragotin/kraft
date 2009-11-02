@@ -115,7 +115,7 @@
               <item>
                <widget class="QLabel" name="textLabel3">
                 <property name="text">
-                 <string>Insert all Positions &amp;after</string>
+                 <string>Insert all Items &amp;after</string>
                 </property>
                 <property name="wordWrap">
                  <bool>false</bool>
@@ -152,6 +152,11 @@
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
+   <class>KUrlRequester</class>
+   <extends>QFrame</extends>
+   <header>kurlrequester.h</header>
+  </customwidget>
+  <customwidget>
    <class>Q3GroupBox</class>
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
@@ -162,11 +167,6 @@
    <extends>Q3GroupBox</extends>
    <header>Qt3Support/Q3ButtonGroup</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>KUrlRequester</class>
-   <extends>QFrame</extends>
-   <header>kurlrequester.h</header>
   </customwidget>
  </customwidgets>
  <includes>

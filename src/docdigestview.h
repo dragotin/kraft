@@ -26,13 +26,12 @@
 #include "docdigest.h"
 #include "docguardedptr.h"
 
-class K3ListView;
-class K3ListViewItem;
 class FilterHeader;
 class KMenu;
 class QPushButton;
 class dbID;
 class ArchDocDigest;
+class QContextMenuEvent;
 
 class DocDigestView : public QWidget
 {
@@ -59,6 +58,9 @@ public slots:
 
   void slotRMB( QTreeWidgetItem*, const QPoint&, int );
   void slotBuildView();
+
+protected:
+  void contextMenuEvent( QContextMenuEvent* );
 
 protected slots:
   // void slotOpenCurrentDoc();

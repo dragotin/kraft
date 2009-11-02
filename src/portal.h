@@ -54,7 +54,7 @@ class Portal : public KXmlGuiWindow
     Portal( QWidget* parent = 0, KCmdLineArgs *args = 0, const char* name = 0);
     ~Portal();
 
-    static QString textWrap( const QString& t, unsigned int width=40);
+    static QString textWrap( const QString& t, int width=40);
 
     QWidget* mainWidget();
   protected:
