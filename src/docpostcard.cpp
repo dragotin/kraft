@@ -30,7 +30,7 @@
 DocPostCard::DocPostCard( QWidget *parent )
   :HtmlView( parent ),  mMode( Full )
 {
-  setZoomFactor( 70 );
+
 }
 
 void DocPostCard::setHeaderData( const QString& type,  const QString& date,

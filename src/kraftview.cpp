@@ -34,10 +34,8 @@
 #include <q3buttongroup.h>
 #include <QToolTip>
 #include <QFont>
-#include <q3ptrlist.h>
 #include <QResizeEvent>
-#include <Q3ValueList>
-#include <Q3Frame>
+
 #include <QPalette>
 
 #include <kdebug.h>

@@ -32,8 +32,6 @@ HtmlView::HtmlView( QWidget *parent )
   connect( this, SIGNAL( setWindowCaption( const QString & ) ),
            SLOT( setTitle( const QString & ) ) );
 
-  setZoomFactor( 80 );
-
   setJScriptEnabled(false);
   setJavaEnabled(false);
   setMetaRefreshEnabled(false);
@@ -100,7 +98,7 @@ void HtmlView::zoomOut()
 void HtmlView::updateZoomActions()
 {
   mZoomInAction->setEnabled( zoomFactor() + mZoomStep <= 300 );
-  mZoomOutAction->setEnabled( zoomFactor() - mZoomStep >= 20 );
+  mZoomOutAction->setEnabled( zoomFactor() - mZoomStep > 100 );
 
   // Prefs::self()->setZoomFactor( zoomFactor() );
 }
@@ -110,7 +108,7 @@ void HtmlView::writeTopFrame( )
   KStandardDirs stdDirs;
   QString filename = stdDirs.findResource( "data", QString( "kraft/%1" ) .arg( mStyleSheetFile ) );
   filename = KStandardDirs::locate( "appdata", mStyleSheetFile  );
-  kDebug() << "OOOO here ists doch: " << filename << " out of " << mStyleSheetFile;
+  kDebug() << "found this stylefile: " << filename << " out of " << mStyleSheetFile;
   QString t = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
                        "<html><head><title>%1</title>" ).arg( mTitle );
   if ( ! filename.isEmpty() ) {
@@ -138,7 +136,7 @@ void HtmlView::displayContent( const QString& content )
 {
   begin();
 
-  // kDebug() << "Show content: " << content << endl;
+  // kDebug() << "Show content: " << content;
 
   writeTopFrame();
   writeContent( content );
