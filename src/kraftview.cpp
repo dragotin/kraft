@@ -1402,15 +1402,14 @@ bool KraftView::documentModifiedMessageBox()
 {
   if ( mModified ) {
     if ( KMessageBox::warningContinueCancel( this, i18n( "The document was modified. Do "
-                                                "you really want to discard all changes?" ),
-           i18n( "Document Modified" ), KGuiItem( i18n( "Discard" ) ) )
-          == KMessageBox::Cancel  )
-    {
+                                                         "you really want to discard all changes?" ),
+                                             i18n( "Document Modified" ), KGuiItem( i18n( "Discard" ) ) )
+      == KMessageBox::Cancel  ) {
       return false;
     }
-
-    return true;
   }
+  return true;
+
 }
 
 void KraftView::discardChanges()

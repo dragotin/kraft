@@ -207,15 +207,16 @@ void DocDigestView::slotRMB( QTreeWidgetItem*, const QPoint& point, int )
 void DocDigestView::slotNewDoc( DocGuardedPtr doc )
 {
   QTreeWidgetItem *parent = mLatestDocsParent;
-
-  QTreeWidgetItem *currItem = mListView->selectedItems().first();
-  QString itemID; // for docSelected signal
-  if ( currItem ) mListView->setCurrentItem( currItem );
-
   if ( !doc ) return;
+
+  if( mListView->selectedItems().count() ) {
+    QTreeWidgetItem *currItem = mListView->selectedItems().first();
+    if ( currItem ) mListView->setCurrentItem( currItem );
+  }
 
   // insert item into the "latest docs" list. That makes the latest
   // list one item longer, we're not deleting one entry
+  QString itemID; // for docSelected signal
   if ( parent ) {
     QTreeWidgetItem *item = new QTreeWidgetItem( parent );
     item->setIcon( 0, SmallIcon( "knewstuff" ) );

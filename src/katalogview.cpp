@@ -71,6 +71,7 @@ KatalogView::KatalogView( QWidget* parent, const char* ) :
     m_acExport(0),
     m_filterHead(0)
 {
+  setObjectName( "catalogeview#" );
 }
 
 void KatalogView::init(const QString& katName )

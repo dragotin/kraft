@@ -16,12 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QStringList>
-#include <QString>
-#include <QColor>
+#include <QtGui>
 #include <QSqlQuery>
-#include <QPalette>
-
 
 // include files for KDE
 #include <klocale.h>
@@ -168,32 +164,17 @@ void TagTemplateMan::deleteTemplate( const dbID& id )
 
 void TagTemplateMan::load()
 {
-  /* noetige Groesse rausfinden */
-  int max = -1;
   mTagTmpl.clear();
 
-  QSqlQuery q("SELECT count(*) from tagTemplates;");
-  if( q.isActive())
-  {
-    q.next();
-    max = q.value(0).toInt();
+  /* read tag templates from db */
+  QSqlQuery q1( "SELECT tagTmplID, name, description, color FROM tagTemplates ORDER BY sortKey" );
+  while( q1.next()) {
+    dbID id( q1.value(0).toInt() );
+    // resize if index is to big.
+    TagTemplate tt ( id, q1.value(1).toString(), q1.value(2).toString(),
+                     q1.value(3).toString() );
+    mTagTmpl.append( tt );
   }
-  kDebug() << "Size of tag template list: " << max << endl;
-
-  mTagTmpl.resize( max );
-
-  /* Load data */
-  q.exec("SELECT * from tagTemplates ORDER BY sortKey;");
-
-  while( q.next() )
-  {
-      dbID id( q.value(0).toInt() );
-      // resize if index is to big.
-      TagTemplate tt ( id, q.value( 2 ).toString(), q.value( 3 ).toString(),
-                       q.value( 4 ).toString() );
-
-      mTagTmpl.append( tt );
-    }
 }
 
 
