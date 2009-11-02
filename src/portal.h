@@ -93,6 +93,7 @@ class Portal : public KXmlGuiWindow
      * If queryClose() returns false because the user canceled the saveModified() dialog, the closing breaks.
      */
     void slotFileQuit();
+    void closeEvent( QCloseEvent * event );
     /** put the marked text/object into the clipboard and remove
      *	it from the document
      */

@@ -102,8 +102,7 @@ void KatalogListView::setupChapters()
     kDebug() << "Have count of chapters: " << chapters.size() << endl;
     QPixmap icon = getCatalogIcon();
 
-    for ( QStringList::ConstIterator it = chapters.end(); it != chapters.begin();  ) {
-      --it;
+    for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end();  ++it) {
       QString chapter = *it;
 
       kDebug() << "Creating katalog chapter item for " << chapter << endl;

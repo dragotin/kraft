@@ -23,14 +23,16 @@ PortalHtmlView::PortalHtmlView( QWidget *parent )
 
 }
 
-void PortalHtmlView::urlSelected( const QString &url, int, int,
-                                  const QString &, KParts::OpenUrlArguments& )
+bool PortalHtmlView::urlSelected( const QString &url, int, int,
+                                  const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments &)
 {
   kDebug() << "HtmlView::urlSelected(): " << url << endl;
 
   KUrl kurl( url );
   const QString katName = kurl.queryItem( "kat" );
   const QString action = kurl.queryItem( "action" );
+
+  kDebug() << "Action " << action;
 
   if ( action == "open" ) {
     kDebug() << "open catalog " << katName << endl;

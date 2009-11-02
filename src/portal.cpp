@@ -742,13 +742,24 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
 
 void Portal::slotFileQuit()
 {
+  closeEvent(0);
+}
+
+void Portal::closeEvent( QCloseEvent * event )
+{
   slotStatusMsg(i18n("Exiting..."));
   // close the first window, the list makes the next one the first again.
   // This ensures that queryClose() is called on each window to ask for closing
 
+ //We have to delete katalogviews ourself otherwise the application keeps running in the background
+ QMap<QString, KatalogView *>::iterator i;
+ for (i = mKatalogViews.begin(); i != mKatalogViews.end(); ++i)
+     i.value()->deleteLater();
 
   KMainWindow* w;
   QListIterator<KMainWindow*> it( memberList() );
+
+
 
   while( it.hasNext() ) {
     w = it.next();
@@ -817,8 +828,10 @@ void Portal::slotOpenKatalog(const QString& kat)
     if ( mKatalogViews.contains( kat ) ) {
       // bring up the katalog view window.
       kDebug() << "Katalog " << kat << " already open in a view" << endl;
-      mKatalogViews[kat]->show();
-      mKatalogViews[kat]->raise();
+
+      mKatalogViews.value(kat)->show();
+      mKatalogViews.value(kat)->raise();
+
     } else {
       QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
@@ -835,11 +848,11 @@ void Portal::slotOpenKatalog(const QString& kat)
         /* normaler Vorlagenkatalog */
         katView = new TemplKatalogView();
       }
-
       if ( katView ) {
+        kDebug() << katView;
         katView->init(kat);
         katView->show();
-        mKatalogViews[kat] = katView;
+        mKatalogViews.insert(kat, katView);
         KatalogMan::self()->registerKatalogListView( kat, katView->getListView() );
       }
       QApplication::restoreOverrideCursor();
@@ -851,7 +864,6 @@ void Portal::slotOpenKatalog()
     kDebug() << "opening katalog!" << endl;
     KatalogView *katView = new TemplKatalogView(); //this);
     katView->show();
-
 }
 
 void Portal::slotKatalogToXML(const QString& katName)

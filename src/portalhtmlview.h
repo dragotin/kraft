@@ -29,8 +29,8 @@ class PortalHtmlView : public HtmlView
 
   protected:
     // virtual void writeBottomFrame();
-    void urlSelected( const QString&, int, int,
-                      const QString &, KParts::OpenUrlArguments&  );
+    bool urlSelected( const QString&, int, int,
+                      const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments & );
   private:
 };
 

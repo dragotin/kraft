@@ -15,9 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <q3sqlcursor.h>
 #include <qdom.h>
-//Added by qt3to4:
 #include <QSqlQuery>
 #include <kdebug.h>
 #include <klocale.h>
@@ -67,17 +65,18 @@ Katalog::~Katalog()
  * virtuell load method for catalogs. Must be overwritten.
  */
 int Katalog::load()
-{
-    Q3SqlCursor cur( "CatalogSet" );
-    QSqlQuery q( "SELECT * FROM CatalogSet WHERE name = :name" );
+{  
+  QSqlQuery q;
+  q.prepare("SELECT * FROM CatalogSet WHERE name = :name");
+  q.bindValue(":name", m_name);
+  q.exec();
 
-    cur.select( QString("name='%1'").arg(m_name) );
-    if( cur.next() ) {
-        m_description = cur.value("description").toString();
-        m_setID = cur.value("catalogSetID").toInt();
-        kDebug() << "Setting catalogSetID=" << QString( m_setID ) << " from name " << m_name << endl;
-    }
-    return 0;
+  if( q.next() ) {
+    m_description = q.value(2).toString();
+    m_setID = q.value(0).toInt();
+    kDebug() << "Setting catalogSetID=" << QString( m_setID ) << " from name " << m_name << endl;
+  }
+  return 0;
 }
 
 QStringList Katalog::getKatalogChapters( bool freshup )
@@ -87,16 +86,16 @@ QStringList Katalog::getKatalogChapters( bool freshup )
     m_chapters.clear();
     m_chapterIDs.clear();
 
-    Q3SqlCursor cur("CatalogChapters");
-    // QSqlIndex index = cur.index( "sortKey" );
+    QSqlQuery q;
+    q.prepare("SELECT * FROM CatalogChapters WHERE catalogSetId = :catalogSetId ORDER BY sortKey");
+    q.bindValue(":catalogSetId", m_setID);
+    q.exec();
     kDebug() << "Selecting chapters for catalog no " << QString::number( m_setID ) << endl;
-    cur.select( "catalogSetID=" + QString::number( m_setID ) ); // , index );
 
-    while ( cur.next() )
+    while ( q.next() )
     {
-      // QString katName = QString::fromUtf8( cur.value("chapter").toCString() );
-      QString katName = cur.value("chapter").toString();
-      int katID = cur.value("chapterID").toInt();
+      QString katName = q.value(2).toString();
+      int katID = q.value(0).toInt();
       kDebug() << "Adding catalog chapter " << katName << " with ID " << katID << endl;
       m_chapters.append(katName);
       dbID id( katID );
@@ -157,64 +156,60 @@ KatalogType Katalog::type()
 
 void Katalog::addChapter( const QString& name, int sortKey )
 {
-  Q3SqlCursor cur("CatalogChapters");
-  QSqlRecord *buffer = cur.primeInsert();
-  buffer->setValue( "catalogSetID", m_setID );
-  buffer->setValue( "chapter", name );
-  buffer->setValue( "sortKey", sortKey );
-  cur.insert();
+  kDebug() << "Inserting new chapter " << name << sortKey << endl;
+  QSqlQuery q;
+  q.prepare("INSERT INTO CatalogChapters (catalogSetID, chapter, sortKey)"
+            "VALUES(:catalogSetID, :chapter, :sortKey)");
+  q.bindValue( ":catalogSetID", m_setID );
+  q.bindValue( ":chapter", name );
+  q.bindValue( ":sortKey", sortKey );
+  q.exec();
 }
 
 bool Katalog::removeChapter( const QString& name, const QString& )
 {
   kDebug() << "Deleting chapter " << name << endl;
-  Q3SqlCursor cur( "CatalogChapters" );
-  QString q = QString("catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( name );
+  QSqlQuery q;
+  q.prepare("DELETE FROM CatalogChapters WHERE catalogSetId = :catalogSetId AND chapter = :chapter");
+  q.bindValue(":catalogSetID", m_setID);
+  q.bindValue(":chapter", name);
 
-  cur.select( q );
-  if ( cur.next() ) {
-    cur.primeDelete();
-    cur.del();
-  }
   return false;
 }
 
 void Katalog::renameChapter( const QString& from, const QString& to )
 {
-  Q3SqlCursor cur( "CatalogChapters" );
-  QString q = QString( "catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( from );
-  kDebug()<< "Rename restriction: " << q << endl;
-  cur.select( q );
-
-  if ( cur.next() ) {
-    QSqlRecord *buffer = cur.primeUpdate();
-    buffer->setValue( "chapter", to );
-    cur.update();
-  }
+  kDebug() << "Rename chapter " << from << " to " << to << endl;
+  QSqlQuery q;
+  q.prepare("UPDATE CatalogChapters SET (chapter = :newchapter) WHERE catalogSetId = :catalogSetId AND chapter = :oldchapter");
+  q.bindValue(":catalogSetID", m_setID);
+  q.bindValue(":oldchapter", from);
+  q.bindValue(":newchapter", to);
+  q.exec();
 }
 
 void Katalog::setChapterSortKey( const QString& chap, int key )
 {
-  Q3SqlCursor cur( "CatalogChapters" );
-  QString q = QString( "catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( chap );
-  cur.select( q );
-
-  if ( cur.next() ) {
-    QSqlRecord *buffer = cur.primeUpdate();
-    buffer->setValue( "sortKey", key );
-    cur.update();
-  }
+  kDebug() << "Set chapter sortKey for " << chap << " to " << key << endl;
+  QSqlQuery q;
+  q.prepare("UPDATE CatalogChapters SET (sortKey = :sortKey) WHERE catalogSetId = :catalogSetId AND chapter = :chapter");
+  q.bindValue(":catalogSetID", m_setID);
+  q.bindValue(":chapter", chap);
+  q.bindValue(":sortKey", key);
+  q.exec();
 }
 
 int Katalog::chapterSortKey( const QString& chap )
 {
   int key = -1;
-  Q3SqlCursor cur( "CatalogChapters" );
-  QString q = QString( "catalogSetID=%1 AND chapter='%2'").arg( m_setID ).arg( chap );
-  cur.select( q );
+  QSqlQuery q;
+  q.prepare("SELECT sortKey FROM catalogChapters WHERE chapter = :chapter");
+  q.bindValue(":chapter", chap);
+  q.exec();
 
-  if ( cur.next() ) {
-    key = cur.value("sortKey").toInt();
+  if(q.next())
+  {
+    key = q.value(0).toInt();
   }
   return key;
 }

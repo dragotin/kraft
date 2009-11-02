@@ -41,14 +41,8 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
   labels << i18n("Price");
   labels << i18n("Calc. Type");
 
-//  int priceCol = 1; // addColumn( i18n("Price"));
-//    setColumnWidthMode(0, Manual);
-//    setColumnWidth(0, 500);
-//    addColumn( i18n("Calc. Type"));
-//    // addColumn( i18n("ID"));
-//    setSortColumn( -1 );
-//    setColumnAlignment ( priceCol, Qt::AlignRight);
-//
+  setHeaderLabels(labels);
+
 //    setAcceptDrops( true );
 //    setDragEnabled( true );
 //    setDropVisualizer(true);
