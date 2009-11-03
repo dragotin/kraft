@@ -111,93 +111,51 @@ void Portal::initActions()
   editCopy = actionCollection()->addAction( KStandardAction::Copy, this, SLOT(slotEditCopy() ) );
   editPaste = actionCollection()->addAction( KStandardAction::Paste, this, SLOT(slotEditPaste() ) );
   viewStatusBar = KStandardAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
-  // viewFlosTemplates = actionCollection()->addAction( "file_show_templ", this, SLOT( slotShowTemplates()) );
-
-//  viewFlosTemplates = new KToggleAction( i18n("Show Floskel Templates"), 0,0, this,
-//                                         SLOT(slotShowTemplates()),
-//                                         actionCollection(), "file_show_templ");
 
   actionCollection()->addAction( KStandardAction::Preferences, this, SLOT( preferences() ) );
 
   actNewDocument = actionCollection()->addAction( "document_new", this, SLOT( slotNewDocument()) );
   actNewDocument->setText( i18n("Create Document") );
-  actNewDocument->setShortcut( KShortcut( KStandardShortcut::New ) );
+  actNewDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::New) );
   actNewDocument->setIcon( KIcon("document-new"));
-  // actNewDocument = new KAction(i18n("Create Docume&nt"), "filenew",
-  //                             KStandardShortcut::shortcut(KStandardShortcut::New), this,
-  //                             SLOT(slotNewDocument()),
-  //                             actionCollection(), "document_new");
+
   actCopyDocument = actionCollection()->addAction( "document_copy", this, SLOT( slotCopyDocument()) );
   actCopyDocument->setText( i18n("Copy Document"));
-  actCopyDocument->setShortcut( KStandardAction::Copy );
+  actCopyDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Copy) );
   actCopyDocument->setIcon( KIcon( "document-edit"));
-
-//  actCopyDocument = new KAction( i18n( "Copy Document" ), "editcopy",
-//                                 KStandardShortcut::sho rtcut( KStandardShortcut::Copy ), this,
-//                                 SLOT( slotCopyDocument() ),
-//                                 actionCollection(), "document_copy" );
 
   actFollowDocument = actionCollection()->addAction( "document_follow", this, SLOT( slotFollowUpDocument() ) );
   actFollowDocument->setText( i18n("Follow Document" ));
   actFollowDocument->setShortcut( KShortcut( Qt::CTRL + Qt::Key_F ));
   actFollowDocument->setIcon( KIcon( "document-edit"));
 
-//  actFollowDocument = new KAction( i18n( "Follow Document" ), "editcopy",
-//                                   KShortcut( Qt::CTRL + Qt::Key_F ), this,
-//                                 SLOT( slotFollowUpDocument() ),
-//                                 actionCollection(), "document_follow" );
-
   actPrintDocument = actionCollection()->addAction( "document_print", this, SLOT( slotPrintDocument()) );
   actPrintDocument->setText( i18n("Print Document"));
-  actPrintDocument->setShortcut( KStandardShortcut::Print );
+  actPrintDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Print) );
   actPrintDocument->setIcon( KIcon("document-print"));
-//  actPrintDocument = new KAction(i18n("&Print Document"), "printer1",
-//                                 KStandardShortcut::shortcut(KStandardShortcut::Print), this,
-//                                 SLOT(slotPrintDocument()),
-//                                 actionCollection(), "document_print");
 
   actOpenArchivedDocument = actionCollection()->addAction( "archived_open", this, SLOT( slotArchivedDocExecuted()) );
   actOpenArchivedDocument->setText( i18n("Open Archived Document"));
   actOpenArchivedDocument->setShortcut( KShortcut(Qt::CTRL + Qt::Key_A) );
 
-//  actOpenArchivedDocument = new KAction( i18n( "Open &Archived Document" ), "attach",
-//                                         KShortcut( Qt::CTRL + Qt::Key_A ), this,
-//                                         SLOT( slotArchivedDocExecuted() ), actionCollection(),
-//                                         "archived_open" );
-
   actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewDocument()));
   actViewDocument->setText(i18n("Show Document"));
-  actViewDocument->setShortcut( KStandardShortcut::Reload );
+  actViewDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Reload) );
   actViewDocument->setIcon( KIcon("document-preview" ));
-
-//  actViewDocument = new KAction(i18n("&Show Document"),  "filefind",
-//                                KStandardShortcut::shortcut(KStandardShortcut::Reload), this,
-//                                SLOT( slotViewDocument() ), actionCollection(), "document_view" );
 
   actOpenDocument = actionCollection()->addAction( "document_open", this, SLOT( slotOpenDocument()) );
   actOpenDocument->setText( i18n("Edit Document"));
-  actOpenDocument->setShortcut( KStandardShortcut::Open );
+  actOpenDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Open) );
   actOpenDocument->setIcon( KIcon("document-open" ));
-
-//  actOpenDocument = new KAction(i18n("&Edit Document"),  "fileopen",
-//                                KStandardShortcut::shortcut(KStandardShortcut::Open), this,
-//                                SLOT( slotOpenDocument() ), actionCollection(), "document_open" );
 
   actMailDocument = actionCollection()->addAction( "document_mail", this, SLOT( slotMailDocument()) );
   actMailDocument->setText(i18n("&Mail Document"));
   actMailDocument->setShortcut( KShortcut(Qt::CTRL + Qt::Key_M ));
   actMailDocument->setIcon( KIcon("mail-forward"));
 
-//  actMailDocument = new KAction( i18n( "&Mail Document" ), "mail_generic",
-//                                 KShortcut( Qt::CTRL + Qt::Key_M ), this,
-//                                 SLOT( slotMailDocument() ), actionCollection(), "document_mail" );
-
   actEditTemplates = actionCollection()->addAction( "edit_tag_templates", this, SLOT( slotEditTagTemplates() ) );
   actEditTemplates->setText("Edit Tag Templates");
   actEditTemplates->setShortcut( KShortcut( Qt::CTRL + Qt::Key_E ));
-//  actEditTemplates = new KAction( i18n( "&Edit Tag Templates..." ),  "flag",
-//                                  KShortcut( Qt::CTRL + Qt::Key_E ), this,
-//                                  SLOT( slotEditTagTemplates() ), actionCollection(), "edit_tag_templates" );
 
   fileQuit->setStatusTip(i18n("Quits the application"));
   editCut->setStatusTip(i18n("Cuts the selected section and puts it to the clipboard"));
@@ -756,13 +714,9 @@ void Portal::closeEvent( QCloseEvent * event )
  for (i = mKatalogViews.begin(); i != mKatalogViews.end(); ++i)
      i.value()->deleteLater();
 
-  KMainWindow* w;
   QListIterator<KMainWindow*> it( memberList() );
-
-
-
   while( it.hasNext() ) {
-    w = it.next();
+    KMainWindow *w = it.next();
     // only close the window if the closeEvent is accepted.
     if(!w->close())
       break;

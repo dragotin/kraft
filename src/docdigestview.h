@@ -55,8 +55,6 @@ public slots:
   void slotNewDoc( DocGuardedPtr );
   void slotUpdateDoc( DocGuardedPtr );
   void slotDocOpenRequest( QTreeWidgetItem*, int );
-
-  void slotRMB( QTreeWidgetItem*, const QPoint&, int );
   void slotBuildView();
 
 protected:
@@ -64,7 +62,7 @@ protected:
 
 protected slots:
   // void slotOpenCurrentDoc();
-  void slotCurrentChanged( QTreeWidgetItem* );
+  void slotCurrentChanged( QTreeWidgetItem*, QTreeWidgetItem* );
   void setupListViewItemFromDoc( DocGuardedPtr , QTreeWidgetItem* );
 
 signals:

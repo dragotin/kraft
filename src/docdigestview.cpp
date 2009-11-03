@@ -63,11 +63,8 @@ DocDigestView::DocDigestView( QWidget *parent )
   mListView->setPalette(palette);
   mListView->setAlternatingRowColors( true );
   mContextMenu = new KMenu( mListView );
-  // mContextMenu->insertTitle( i18n( "Document Actions" ) );
-  connect( mListView, SIGNAL( contextMenuRequested( QTreeWidgetItem *, const QPoint&, int ) ),
-           this, SLOT( slotRMB( QTreeWidgetItem *, const QPoint &, int ) ) );
+  mContextMenu->setTitle( i18n("Document Actions"));
 
-  // mListView->header()->hide();
   mListView->setRootIsDecorated(  true );
   mListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
@@ -77,8 +74,8 @@ DocDigestView::DocDigestView( QWidget *parent )
   connect( mListView, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ),
            this, SLOT( slotDocOpenRequest( QTreeWidgetItem*, int ) ) );
 
-  connect( mListView, SIGNAL( currentChanged( QTreeWidgetItem* ) ),
-           this, SLOT( slotCurrentChanged( QTreeWidgetItem* ) ) );
+  connect( mListView, SIGNAL( currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem* )),
+           this, SLOT( slotCurrentChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
   hbox->addWidget( mFilterHeader );
   hbox->addSpacing( KDialog::marginHint() );
@@ -193,12 +190,7 @@ QTreeWidgetItem* DocDigestView::addChapter( const QString& chapter, DocDigestLis
 
 void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
 {
-  mContextMenu->popup( event->pos() );
-}
-
-void DocDigestView::slotRMB( QTreeWidgetItem*, const QPoint& point, int )
-{
-  mContextMenu->popup( point );
+  mContextMenu->popup( event->globalPos() );
 }
 
 /* Called after the document was saved, thus the doc is complete.
@@ -335,7 +327,7 @@ QString DocDigestView::currentDocumentId()
   return res;
 }
 
-void DocDigestView::slotCurrentChanged( QTreeWidgetItem *item )
+void DocDigestView::slotCurrentChanged( QTreeWidgetItem *item, QTreeWidgetItem* )
 {
   dbID id = ( mArchIdDict[item] ).archDocId();
   QString res;
