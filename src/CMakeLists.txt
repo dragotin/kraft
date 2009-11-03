@@ -169,7 +169,7 @@ install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES  kraft.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 install(FILES  kraftsettings.kcfg katalogsettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
-install(FILES  docoverview.css catalogview.css DESTINATION ${DATA_INSTALL_DIR}/kraft)
+install(FILES  docoverview.css docoverview_ro.css catalogview.css DESTINATION ${DATA_INSTALL_DIR}/kraft)
 install(FILES  kraftui.rc katalogview.rc DESTINATION ${DATA_INSTALL_DIR}/kraft)
 
 kde4_install_icons(${ICON_INSTALL_DIR})
