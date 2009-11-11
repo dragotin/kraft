@@ -712,7 +712,11 @@ void Portal::closeEvent( QCloseEvent * event )
  //We have to delete katalogviews ourself otherwise the application keeps running in the background
  QMap<QString, KatalogView *>::iterator i;
  for (i = mKatalogViews.begin(); i != mKatalogViews.end(); ++i)
+ {
+   KatalogView *view = i.value();
+  kDebug() << "Windowstate" <<view->windowState();
      i.value()->deleteLater();
+ }
 
   QListIterator<KMainWindow*> it( memberList() );
   while( it.hasNext() ) {

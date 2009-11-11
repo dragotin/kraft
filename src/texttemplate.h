@@ -19,12 +19,11 @@
 
 #include <qmap.h>
 #include <qstring.h>
-#include <google/template_dictionary.h>
-#include <google/template_modifiers.h>
+#include <ctemplate/template_dictionary.h>
+#include <ctemplate/template_modifiers.h>
 
-using google::Template;
-using google::TemplateDictionary;
-
+using ctemplate::Template;
+using ctemplate::TemplateDictionary;
 
 class TextTemplate
 {

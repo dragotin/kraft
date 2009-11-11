@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "texttemplate.h"
-#include "google/template.h"
+#include "ctemplate/template.h"
 #include <kstandarddirs.h>
 #include <klocale.h>
 #include <kdebug.h>
@@ -140,10 +140,10 @@ bool TextTemplate::openTemplate()
 
   kDebug() << "Loading this template source file: " << findFile << endl;
 
-  Template *tmpl = Template::GetTemplate( std::string( findFile.toAscii().data() ), google::DO_NOT_STRIP );
+  Template *tmpl = Template::GetTemplate( std::string( findFile.toAscii().data() ), ctemplate::DO_NOT_STRIP );
   tmpl->ReloadIfChanged();
 
-  if ( !tmpl || tmpl->state() != google::TS_READY ) {
+  if ( !tmpl || tmpl->state() != ctemplate::TS_READY ) {
     mErrorString = i18n( "Failed to open template source" );
     return false;
   }
@@ -167,7 +167,7 @@ QString TextTemplate::expand() const
   //   mStandardDict->Dump();
   // }
   Template *textTemplate = Template::GetTemplate( std::string( mFileName.toAscii().data() ),
-                                                  google::DO_NOT_STRIP );
+                                                  ctemplate::DO_NOT_STRIP );
   if ( textTemplate ) {
     bool errorFree = textTemplate->Expand(&output, mStandardDict );
 
