@@ -21,18 +21,15 @@
 #include <klocale.h>
 #include <kdebug.h>
 #include <kdialog.h>
-#include <k3listview.h>
 
 #include <kabc/addressbook.h>
+#include <kabc/addressee.h>
 #include <kabc/stdaddressbook.h>
 
 #include <QSizePolicy>
 #include <QComboBox>
-#include <q3widgetstack.h>
 #include <QLabel>
-#include <q3vbox.h>
-//Added by qt3to4:
-#include <Q3ValueList>
+#include <QTreeWidget>
 
 using namespace KABC;
 
@@ -48,7 +45,7 @@ AddressSelection::AddressSelection( QWidget *parent )
 
   setSelectionMode( QAbstractItemView::SingleSelection );
 
-  connect( this, SIGNAL( selectionChanged() ),
+  connect( this, SIGNAL( itemSelectionChanged() ),
            SLOT( slotSelectionChanged() ) );
 }
 
@@ -68,23 +65,21 @@ void AddressSelection::setupAddressList()
 
 void AddressSelection::slotAddressBookChanged( AddressBook *ab )
 {
-  if ( ! ab ) return;
 
+  if ( ! ab ) return;
   kDebug() << "Filling address List" << endl;
 
   // FIXME: handle deletes and updates correctly.
 
   QList<QString> uidList;
-
   uidList = mAddressIds.values();
   QTreeWidgetItem *newItem = 0;
   int newItemCnt = 0;
 
   AddressBook::Iterator it;
   for ( it = ab->begin(); it != ab->end(); ++it ) {
-
     // check if we already know the uid and add it if not.
-    if ( uidList.indexOf( ( *it ).uid() ) == uidList.count() ) {
+    if ( uidList.indexOf( ( *it ).uid() ) == -1 ) {
       QTreeWidgetItem *item = new QTreeWidgetItem( this );
       item->setText( 0, ( *it ).realName() );
       newItem = item;
@@ -105,6 +100,8 @@ void AddressSelection::slotAddressBookChanged( AddressBook *ab )
     clearSelection();
     setCurrentItem( newItem );
   }
+
+  this->resizeColumnToContents(0);
 }
 
 Addressee AddressSelection::currentAddressee( QTreeWidgetItem *item )

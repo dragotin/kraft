@@ -18,21 +18,13 @@
 // include files for Qt
 #include <qlayout.h>
 #include <qlabel.h>
-#include <q3scrollview.h>
 #include <qsizepolicy.h>
-#include <q3textedit.h>
 #include <qsignalmapper.h>
-#include <q3hbox.h>
-#include <q3vbox.h>
-#include <q3grid.h>
-#include <q3widgetstack.h>
 #include <qtabwidget.h>
 #include <qcolor.h>
 #include <qsplitter.h>
-#include <q3buttongroup.h>
 #include <qtooltip.h>
 #include <qfont.h>
-#include <q3ptrlist.h>
 
 #include <kdebug.h>
 #include <kdialog.h>
@@ -225,10 +217,10 @@ KraftDoc *KraftViewRO::getDocument() const
 void KraftViewRO::done( int r )
 {
   kDebug() << "View closed with ret value " << r;
-  // KraftDoc *doc = getDocument();
-  // if( doc )
-  // doc->removeView( this );
-  // KDialog::buttonClicked( Done );
+  //KraftDoc *doc = getDocument();
+  //if( doc )
+  //doc->removeView( this );
+  this->close();
 }
 
 void KraftViewRO::slotClose()
@@ -245,7 +237,7 @@ void KraftViewRO::slotClose()
     KraftSettings::self()->self()->writeConfig();
 
     emit viewClosed( true, m_doc );
-    KDialog::slotButtonClicked( Close );
+    KDialog::slotButtonClicked( Ok );
 }
 
 #include "kraftview_ro.moc"

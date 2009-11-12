@@ -21,6 +21,7 @@
 #include <QFormLayout>
 #include <QPushButton>
 
+#include <kabc/addressee.h>
 #include <ktextedit.h>
 #include <khbox.h>
 #include <krun.h>
@@ -144,10 +145,13 @@ KraftWizard::~KraftWizard()
 
 void KraftWizard::init()
 {
+  QWidget *w1 = new QWidget;
+  mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
+  mDetailsPage = new DocDetailsPage( w1 );
+
   QWidget *w = new QWidget;
   mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
-
-  QHBoxLayout *layout = new QHBoxLayout;
+  setValid(mCustomerPageItem, false);
 
   setCaption( i18n( "Document Creation Wizard" ) );
 
@@ -156,23 +160,12 @@ void KraftWizard::init()
            this,  SLOT( slotAddressee( const Addressee& ) ) );
   connect( mCustomerPage, SIGNAL( startAddressbook() ),
            this, SLOT( slotStartAddressbook() ) );
-  layout->addWidget( mCustomerPage );
-  w->setLayout( layout );
-
-  QWidget *w1 = new QWidget;
-  QHBoxLayout *layoutDetails = new QHBoxLayout;
-  mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
-  mDetailsPage = new DocDetailsPage( w1 );
-
-  layoutDetails->addWidget( mDetailsPage );
-  w1->setLayout( layoutDetails );
-
 }
 
 void KraftWizard::slotAddressee( const Addressee& )
 {
   kDebug() << "Addressee Changed!";
-  // setNextEnabled ( mCustomerPage, true );
+  setValid ( mCustomerPageItem, true );
 }
 
 void KraftWizard::slotStartAddressbook()
