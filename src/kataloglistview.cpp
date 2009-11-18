@@ -127,7 +127,7 @@ QTreeWidgetItem *KatalogListView::chapterItem( const QString& chapName )
 
 QPixmap KatalogListView::getCatalogIcon()
 {
-    return SmallIcon("contents");
+    return SmallIcon("folder-documents");
 }
 
 void* KatalogListView::itemData( QTreeWidgetItem *item )

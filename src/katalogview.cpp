@@ -143,83 +143,52 @@ Katalog* KatalogView::getKatalog( const QString& name )
 
 void KatalogView::initActions()
 {
-#if 0
-  m_acEditChapters = new KAction( i18n("Edit &Catalog Chapters..."), this );
-  connect( m_acEditChapters, SIGNAL(triggered()), this, SLOT(slEditChapters()));
-
-  m_acNewItem = new KAction( i18n("&New Template"), this );
-  connect( m_acNewItem, SIGNAL(triggered()), this, SLOT(slNeueVorlage()));
-
-  m_acEditItem = new KAction( i18n("&Edit Item"), this );
-  connect( m_acEditItem, SIGNAL(triggered()), this, SLOT(slEditVorlage()));
-
-  m_acExport = new KAction( i18n("&Export Catalog"), this );
-  connect( m_acEditItem, SIGNAL(triggered()), this, SLOT(slExport()));
-#endif
 
   m_acEditChapters = actionCollection()->addAction( "edit_chapters", this, SLOT( slEditChapters() ) );
-  //
-  m_acEditItem = actionCollection()->addAction( "edit_vorlage", this, SLOT( slEditVorlage() ) );
-  m_acNewItem = actionCollection()->addAction( "neue_vorlage", this, SLOT( slNeueVorlage() ) );
-  m_acExport = actionCollection()->addAction( "export_catalog", this, SLOT( slExport() ) );
-
-  m_acFileClose = actionCollection()->addAction( KStandardAction::Close, this, SLOT( slotFileClose() ) );
-  m_acFilePrint = actionCollection()->addAction( KStandardAction::Print, this, SLOT( slotFilePrint() ) );
-  m_acEditCut = actionCollection()->addAction( KStandardAction::Cut, this, SLOT( slotEditCut() ) );
-  m_acEditCopy = actionCollection()->addAction( KStandardAction::Copy, this, SLOT( slotEditCopy() ) );
-  m_acEditPaste = actionCollection()->addAction( KStandardAction::Paste, this, SLOT( slotEditPaste() ) );
-
-#if 0
-  m_acEditChapters = new KAction(i18n("Edit &Catalog Chapters..."),
-                                   "contents", 0, this,
-                                    SLOT(slEditChapters()),  actionCollection(), "edit_chapters" );
-
-  m_acEditItem = new KAction(i18n("&Edit Item"), "pencil", 0, this,
-                             SLOT(slEditVorlage()),  actionCollection(), "edit_vorlage" );
-
-  m_acNewItem  = new KAction( i18n("&New Template"), "filenew", 0, this,
-                                SLOT(slNeueVorlage()), actionCollection(), "neue_vorlage");
-
-  m_acExport = new KAction( i18n("&Export Catalog..."), "save", 0, this,
-                            SLOT(slExport()), actionCollection(), "export_catalog");
-
-#endif
-
-  m_acNewItem->setStatusTip(i18n("Opens the editor window for templates to enter a new template"));
-  m_acEditItem->setStatusTip(i18n("Opens the editor window for templates to edit the selected one"));
+  m_acEditChapters->setText( i18n("Edit chapters") );
+  m_acEditChapters->setIcon( KIcon("folder-documents"));
   m_acEditChapters->setStatusTip(i18n("Add, remove and edit catalog chapters"));
-  m_acNewItem->setEnabled(true);   // can always add new items
-  m_acEditItem->setEnabled(false);
   m_acEditChapters->setEnabled(true);
 
+  m_acEditItem = actionCollection()->addAction( "edit_vorlage", this, SLOT( slEditVorlage() ) );
+  m_acEditItem->setText( i18n("Edit templates") );
+  m_acEditItem->setIcon( KIcon("document-edit"));
+  m_acEditItem->setStatusTip(i18n("Opens the editor window for templates to edit the selected one"));
+  m_acEditItem->setEnabled(false);
 
+  m_acNewItem = actionCollection()->addAction( "neue_vorlage", this, SLOT( slNeueVorlage() ) );
+  m_acNewItem->setText( i18n("New template") );
+  m_acNewItem->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::New) );
+  m_acNewItem->setIcon( KIcon("document-new"));
+  m_acNewItem->setStatusTip(i18n("Opens the editor window for templates to enter a new template"));
+  m_acNewItem->setEnabled(false);   // can't add item when no chapter is selected
+
+  m_acExport = actionCollection()->addAction( "export_catalog", this, SLOT( slExport() ) );
+  m_acExport->setText( i18n("Export catalog") );
   m_acExport->setStatusTip(i18n("Export the whole catalog as XML encoded file"));
   m_acExport->setEnabled(false); // FIXME: Repair XML Export
 
-#if 0
-  m_acFileClose = KStandardAction::close(this, SLOT(slotFileClose()), actionCollection());
-  filePrint = KStandardAction::print(this, SLOT(slotFilePrint()), actionCollection());
-  editCut = KStandardAction::cut(    this, SLOT(slotEditCut()),   actionCollection());
-  editCopy = KStandardAction::copy(  this, SLOT(slotEditCopy()),  actionCollection());
-  editPaste = KStandardAction::paste(this, SLOT(slotEditPaste()), actionCollection());
-#endif
+  m_acFileClose = actionCollection()->addAction( KStandardAction::Close, this, SLOT( slotFileClose() ) );
+  m_acFileClose->setStatusTip( i18n("Close the katalog view"));
 
-  m_acFileClose->setStatusTip( i18n("Closes the actual document"));
+  m_acFilePrint = actionCollection()->addAction( KStandardAction::Print, this, SLOT( slotFilePrint() ) );
   m_acFilePrint ->setStatusTip( i18n("Prints out the actual document"));
+  m_acFilePrint->setEnabled(false);
 
+  m_acEditCut = actionCollection()->addAction( KStandardAction::Cut, this, SLOT( slotEditCut() ) );
   m_acEditCut->setStatusTip(i18n("Cuts the selected section and puts it to the clipboard"));
-  m_acEditCopy->setStatusTip(i18n("Copies the selected section to the clipboard"));
-  m_acEditPaste->setStatusTip(i18n("Pastes the clipboard contents to actual position"));
+  m_acEditCut->setEnabled(false);
 
+  m_acEditCopy = actionCollection()->addAction( KStandardAction::Copy, this, SLOT( slotEditCopy() ) );
+  m_acEditCopy->setStatusTip(i18n("Copies the selected section to the clipboard"));
+  m_acEditCopy->setEnabled(false);
+
+  m_acEditPaste = actionCollection()->addAction( KStandardAction::Paste, this, SLOT( slotEditPaste() ) );
+  m_acEditPaste->setStatusTip(i18n("Pastes the clipboard contents to actual position"));
+  m_acEditPaste->setEnabled(false);
   // createStandardStatusBarAction();
   // setStandardToolBarMenuEnabled( true );
 
-  ///////////////////////////////////////////////////////////////////
-  // disable actions at startup
-  m_acFilePrint->setEnabled(false);
-  m_acEditCut->setEnabled(false);
-  m_acEditCopy->setEnabled(false);
-  m_acEditPaste->setEnabled(false);
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
   char *prjPath = getenv( "KRAFT_HOME" );
   if( prjPath ) {

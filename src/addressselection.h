@@ -18,7 +18,6 @@
 #ifndef ADDRESSSELECTION_H
 #define ADDRESSSELECTION_H
 
-#include <q3vbox.h>
 #include <qmap.h>
 #include <qstring.h>
 #include <QTreeWidget>

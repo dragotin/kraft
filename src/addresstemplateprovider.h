@@ -17,12 +17,11 @@
 #ifndef ADDRESSTEMPLATEPROVIDER_H
 #define ADDRESSTEMPLATEPROVIDER_H
 
+#include <QWidget>
+
 #include "templateprovider.h"
 #include "doctext.h"
 #include "headerselection.h"
-
-class QWidget;
-class Q3ListViewItem;
 
 using namespace KABC;
 

@@ -45,7 +45,7 @@ public slots:
 protected slots:
     void slotAdded( const QString& );
     void slotRemoved( const QString& );
-    void slotSelectionChanged();
+    void slotSelectionChanged(const QModelIndex & index);
     void slotTextChanged();
 private:
     QStringList m_newItems;

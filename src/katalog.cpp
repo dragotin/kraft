@@ -181,7 +181,7 @@ void Katalog::renameChapter( const QString& from, const QString& to )
 {
   kDebug() << "Rename chapter " << from << " to " << to << endl;
   QSqlQuery q;
-  q.prepare("UPDATE CatalogChapters SET (chapter = :newchapter) WHERE catalogSetId = :catalogSetId AND chapter = :oldchapter");
+  q.prepare("UPDATE CatalogChapters SET chapter = :newchapter WHERE catalogSetID = :catalogSetID AND chapter = :oldchapter");
   q.bindValue(":catalogSetID", m_setID);
   q.bindValue(":oldchapter", from);
   q.bindValue(":newchapter", to);
@@ -192,7 +192,7 @@ void Katalog::setChapterSortKey( const QString& chap, int key )
 {
   kDebug() << "Set chapter sortKey for " << chap << " to " << key << endl;
   QSqlQuery q;
-  q.prepare("UPDATE CatalogChapters SET (sortKey = :sortKey) WHERE catalogSetId = :catalogSetId AND chapter = :chapter");
+  q.prepare("UPDATE CatalogChapters SET sortKey = :sortKey WHERE catalogSetID = :catalogSetID AND chapter = :chapter");
   q.bindValue(":catalogSetID", m_setID);
   q.bindValue(":chapter", chap);
   q.bindValue(":sortKey", key);
@@ -203,7 +203,7 @@ int Katalog::chapterSortKey( const QString& chap )
 {
   int key = -1;
   QSqlQuery q;
-  q.prepare("SELECT sortKey FROM catalogChapters WHERE chapter = :chapter");
+  q.prepare("SELECT sortKey FROM CatalogChapters WHERE chapter = :chapter");
   q.bindValue(":chapter", chap);
   q.exec();
 

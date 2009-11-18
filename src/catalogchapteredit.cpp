@@ -9,13 +9,16 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <qpushbutton.h>
+#include <QStringList>
+#include <QListView>
+#include <QPushButton>
+
 #include <klocale.h>
 #include <kdialog.h>
 #include <kdebug.h>
 #include <klineedit.h>
 
-#include <qstringlist.h>
+
 
 #include "catalogchapteredit.h"
 #include "katalog.h"
@@ -43,9 +46,8 @@ CatalogChapterEditDialog::CatalogChapterEditDialog(QWidget *parent,
 {
     setCaption(i18n("Edit Catalog Chapters" ));
     m_chapEdit = new CatalogChapterEdit(this);
-    // FIXME KDE4
-    // connect( m_chapEdit->listView(), SIGNAL( selectionChanged() ),
-    //           this, SLOT( slotSelectionChanged() ) );
+    connect( m_chapEdit->listView(), SIGNAL( activated(QModelIndex) ),
+               this, SLOT( slotSelectionChanged(QModelIndex) ) );
     connect( m_chapEdit, SIGNAL( added( const QString& ) ),
                this, SLOT( slotAdded( const QString& ) ) );
     connect( m_chapEdit, SIGNAL( removed( const QString& ) ),
@@ -106,10 +108,12 @@ void CatalogChapterEditDialog::accept()
 
     QStringList newChapList = m_chapEdit->items();
     int pos = 1;
+    int testie = 0;
     for ( strIt = newChapList.begin(); strIt != newChapList.end(); ++strIt ) {
       const QString current = *strIt;
       kDebug() << "Setting entry " << current << " to sortkey " << pos << endl;
       if( pos != m_katalog->chapterSortKey( current ) ) {
+        testie = m_katalog->chapterSortKey(current);
         m_katalog->setChapterSortKey( current, pos );
         mDirty = true;
       }
@@ -158,7 +162,7 @@ void CatalogChapterEditDialog::slotTextChanged()
     }
 }
 
-void CatalogChapterEditDialog::slotSelectionChanged()
+void CatalogChapterEditDialog::slotSelectionChanged(const QModelIndex & index)
 {
     QString current = m_chapEdit->currentText();
     mLastSelection = current;
@@ -172,13 +176,5 @@ void CatalogChapterEditDialog::slotSelectionChanged()
     }
 
     m_chapEdit->removeButton()->setEnabled( mayRemove );
-
-    // FIXME: Better disable remove button instead of hiding it, but the KEditListBox
-    //        controlls the buttons itself
-    if( mayRemove )
-        m_chapEdit->setButtons( KEditListBox::All );
-    else
-        m_chapEdit->setButtons( KEditListBox::Add | KEditListBox::UpDown );
-
 }
 #include "catalogchapteredit.moc"
