@@ -108,6 +108,13 @@ void KatalogView::init(const QString& katName )
   getKatalog( katName );
   listview->addCatalogDisplay( katName );
 
+  //We want the first column to have the correct width, for that we expand all rows
+  listview->expandAll();
+  listview->resizeColumnToContents(0);
+  listview->collapseAll();
+  listview->expandToDepth(0);
+  listview->setAnimated(true);
+
   kDebug() << "Listviews context-menu: " << m_acEditChapters << endl;
   KatalogListView *lv = getListView();
 
@@ -151,7 +158,7 @@ void KatalogView::initActions()
   m_acEditChapters->setEnabled(true);
 
   m_acEditItem = actionCollection()->addAction( "edit_vorlage", this, SLOT( slEditVorlage() ) );
-  m_acEditItem->setText( i18n("Edit templates") );
+  m_acEditItem->setText( i18n("Edit template") );
   m_acEditItem->setIcon( KIcon("document-edit"));
   m_acEditItem->setStatusTip(i18n("Opens the editor window for templates to edit the selected one"));
   m_acEditItem->setEnabled(false);
@@ -161,7 +168,7 @@ void KatalogView::initActions()
   m_acNewItem->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::New) );
   m_acNewItem->setIcon( KIcon("document-new"));
   m_acNewItem->setStatusTip(i18n("Opens the editor window for templates to enter a new template"));
-  m_acNewItem->setEnabled(false);   // can't add item when no chapter is selected
+  m_acNewItem->setEnabled(true);
 
   m_acExport = actionCollection()->addAction( "export_catalog", this, SLOT( slExport() ) );
   m_acExport->setText( i18n("Export catalog") );

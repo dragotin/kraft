@@ -60,12 +60,21 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
     m_template(0),
     m_katalog(0)
 {
-  setupUi( this );
+  QWidget *widget = new QWidget(this);
+  setupUi( widget );
+  KDialog::setMainWidget(widget);
   setCaption( i18n("Create or Edit Template Items") );
   setModal( modal );
   setButtons( Ok | Cancel );
   setDefaultButton( Ok );
   showButtonSeparator( true);
+
+  //Initialise the buttongroup to switch between manual and calculated price
+  m_gbPriceSrc = new QButtonGroup(this);
+  m_gbPriceSrc->addButton(m_rbManual, 0);
+  m_gbPriceSrc->addButton(m_rbCalculation, 1);
+
+  connect(m_gbPriceSrc, SIGNAL(buttonClicked(int)), this, SLOT(slCalcOrFix(int)));
 
   /* connect a value Changed signal of the manual price field */
   connect( m_manualPriceVal, SIGNAL( valueChanged(double)),
@@ -250,7 +259,7 @@ void FlosTemplDialog::accept()
     kDebug() << "Saving template ID " << m_template->getTemplID() << endl;
 
     QString h;
-    h = m_text->text();
+    h = m_text->toPlainText();
 
     if( h != m_template->getText() ) {
       kDebug() << "Template Text dirty -> update" << endl;
@@ -292,7 +301,7 @@ void FlosTemplDialog::accept()
     // TODO!
 
     // Calculationtype
-    int selId = m_gbPriceSrc->selectedId();
+    int selId = m_gbPriceSrc->checkedId();
     CatalogTemplate::CalculationType calcType = CatalogTemplate::Unknown;
     if( selId == 0 ) {
       calcType = CatalogTemplate::ManualPrice;
@@ -320,6 +329,8 @@ void FlosTemplDialog::accept()
     }
   }
   kDebug() << "*** Saving finished " << endl;
+
+  KDialog::accept();
 }
 
 bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
@@ -790,7 +801,7 @@ void FlosTemplDialog::slCalcOrFix(int button)
   else
   {
     /* unbekannter knopf -> fehler */
-    kDebug() << "--- Error: Falsche Button ID" << endl;
+    kDebug() << "--- Error: Falsche Button ID " << button <<  endl;
     ok = false;
   }
 
@@ -803,14 +814,14 @@ void FlosTemplDialog::slCalcOrFix(int button)
 
 void FlosTemplDialog::slSetNewText( )
 {
-  if( ! m_text || m_text->text().isEmpty() ) {
-    buttonOk->setEnabled(false);
+  if( ! m_text || m_text->toPlainText().isEmpty() ) {
+    this->button(KDialog::Ok)->setEnabled(false);
   } else {
-    buttonOk->setEnabled(true);
+    this->button(KDialog::Ok)->setEnabled(true);
   }
 
   if( m_text ) {
-    QString t = m_text->text();
+    QString t = m_text->toPlainText();
 
     if( m_textDispTime)
       m_textDispTime->setText(t);

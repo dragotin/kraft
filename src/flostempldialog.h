@@ -110,6 +110,8 @@ private:
     QHash<Q3ListViewItem*, CalcPart*> mCalcPartDict;
     QHash<Q3ListViewItem*, StockMaterial*> m_matDict;
 
+    QButtonGroup *m_gbPriceSrc;
+
     MatEditor *m_matEdit;
     FixCalcDialog *m_fixCalcDia;
     ZeitCalcDialog *m_timePartDialog;

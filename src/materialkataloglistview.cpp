@@ -90,7 +90,7 @@ QTreeWidgetItem* MaterialKatalogListView::addMaterialToView( QTreeWidgetItem *pa
   } else {
     flags = Qt::ItemIsUserCheckable;
   }
-  recItem->setFlags( flags );
+  //recItem->setFlags( flags );
   recItem->setText( 0, mat->name() );
   // recItem->setMultiLinesEnabled( true );  FIXME
   slFreshupItem( recItem,  mat, catalog()->locale() );

@@ -38,8 +38,11 @@ MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, bool modal )
     Eta( 0.00000000001 )
 {
   /* connect a value Changed signal of the manual price field */
-  setupUi( this );
+  QWidget *widget = new QWidget(this);
+  setupUi( widget );
   setModal( modal );
+  KDialog::setMainWidget(widget);
+  KDialog::setButtons(KDialog::Ok | KDialog::Cancel);
   const QString currSymbol = DefaultProvider::self()->locale()->currencySymbol();
   mInPurchasePrice->setPrefix( currSymbol + " " );
   mInSalePrice->setPrefix( currSymbol + " " );
@@ -164,12 +167,12 @@ MaterialTemplDialog::~MaterialTemplDialog( )
 void MaterialTemplDialog::accept()
 {
   kDebug() << "*** Saving finished " << endl;
-  const QString newMat = mEditMaterial->text();
+  const QString newMat = mEditMaterial->toPlainText();
 
   if ( newMat.isEmpty() ) {
     kDebug() << "We do not want to store empty materials" << endl;
   } else {
-    mSaveMaterial->setName( mEditMaterial->text() );
+    mSaveMaterial->setName( mEditMaterial->toPlainText() );
     mSaveMaterial->setAmountPerPack( mDiPerPack->value() );
 
     const QString str = mCbUnit->currentText();
@@ -201,7 +204,7 @@ void MaterialTemplDialog::accept()
     KatalogMan::self()->notifyKatalogChange( m_katalog, mSaveMaterial->getID() );
   }
 
-  accept();
+  KDialog::accept();
 }
 
 bool MaterialTemplDialog::askChapterChange( StockMaterial*, int )
@@ -224,7 +227,7 @@ void MaterialTemplDialog::reject()
     // remove the listview item if it was created newly
     emit editRejected();
   }
-  reject();
+  KDialog::reject();
 }
 
 

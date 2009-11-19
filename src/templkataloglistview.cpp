@@ -95,16 +95,15 @@ QTreeWidgetItem* TemplKatalogListView::addFlosTemplate( QTreeWidgetItem *parentI
     QTreeWidgetItem *listItem = new QTreeWidgetItem( parentItem );
     slFreshupItem( listItem, tmpl);
     tmpl->setListViewItem( listItem );
-    listItem->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
-    // listItem->setMultiLinesEnabled(true);
+    //listItem->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled);
 
     if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
     {
-        listItem->setIcon(0, SmallIcon("roll"));
+        listItem->setIcon(0, SmallIcon("application-x-applix-spreadsheet"));
     }
     else
     {
-        listItem->setIcon(0, SmallIcon("kcalc"));
+        listItem->setIcon(0, SmallIcon("accessories-calculator"));
     }
     // store the connection between the listviewitem and the template in a dict.
     m_dataDict.insert( listItem, tmpl );
@@ -172,6 +171,7 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
     list << cp->kosten().toString( catalog()->locale() );
     list << cp->getType();
     QTreeWidgetItem *cpItem =  new QTreeWidgetItem( item, list );
+    cpItem->setDisabled(true);
 
     /* in case of material, add items for the materials calculated for the
         * template
