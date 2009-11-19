@@ -11,7 +11,11 @@
     </entry>  
   </group>
   <group name="database"> 
-    <entry name="DbServerName" type="String"> 
+   <entry name="DbDriver" type="String">
+     <label>Qt Database Driver:</label>
+     <default>QMYSQL</default>
+   </entry>
+    <entry name="DbServerName" type="String">
       <label>Database Server:</label>  
       <default>localhost</default>
     </entry> 

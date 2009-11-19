@@ -609,7 +609,8 @@ void KraftView::setupFooter()
 
   m_footerEdit->m_cbGreeting->insertItems(-1, KraftDB::self()->wordList( "greeting" ) );
 
-  m_footerEdit->m_cbGreeting->setCurrentIndex(m_footerEdit->m_cbGreeting->findText( KraftSettings::self()->self()->greeting() ));
+  // m_footerEdit->m_cbGreeting->setCurrentIndex(m_footerEdit->m_cbGreeting->findText( KraftSettings::self()->self()->greeting() ));
+  m_footerEdit->m_cbGreeting->setEditText( KraftSettings::self()->greeting() );
 
   // ATTENTION: If you change the following inserts, make sure to check the code
   //            in method currentPositionList!

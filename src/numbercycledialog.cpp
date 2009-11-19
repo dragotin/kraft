@@ -297,8 +297,15 @@ void NumberCycleDialog::slotOk()
   }
 
   // update existing entries and insert new ones
+//  CREATE TABLE numberCycles (
+//    id INTEGER PRIMARY KEY ASC autoincrement,
+//    name VARCHAR(64) NOT NULL,
+//    lastIdentNumber  INT NOT NULL,
+//    identTemplate VARCHAR(64) NOT NULL
+//  );
+
   QSqlQuery q;
-  q.prepare( "SELECT * FROM numberCycles WHERE name=:name" );
+  q.prepare( "SELECT id, name, lastIdentNumber, identTemplate FROM numberCycles WHERE name=:name" );
   QMap<QString, NumberCycle>::Iterator it;
   for ( it = mNumberCycles.begin(); it != mNumberCycles.end(); ++it ) {
     QString cycleName = it.key();

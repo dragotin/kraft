@@ -66,14 +66,22 @@ Katalog::~Katalog()
  */
 int Katalog::load()
 {  
+//  CREATE TABLE CatalogSet(
+//    catalogSetID INTEGER PRIMARY KEY ASC autoincrement,
+//    name         VARCHAR(255),
+//    description  VARCHAR(255),
+//    catalogType  VARCHAR(64),
+//    sortKey      INT NOT NULL
+//  );
+//
   QSqlQuery q;
-  q.prepare("SELECT * FROM CatalogSet WHERE name = :name");
+  q.prepare("SELECT catalogSetID, description FROM CatalogSet WHERE name = :name");
   q.bindValue(":name", m_name);
   q.exec();
 
   if( q.next() ) {
-    m_description = q.value(2).toString();
     m_setID = q.value(0).toInt();
+    m_description = q.value(1).toString();
     kDebug() << "Setting catalogSetID=" << QString( m_setID ) << " from name " << m_name << endl;
   }
   return 0;
@@ -86,19 +94,26 @@ QStringList Katalog::getKatalogChapters( bool freshup )
     m_chapters.clear();
     m_chapterIDs.clear();
 
+//    CREATE TABLE CatalogChapters(
+//            chapterID INTEGER PRIMARY KEY ASC autoincrement,
+//            catalogSetID INT NOT NULL,
+//            chapter      VARCHAR(255),
+//            sortKey      INT NOT NULL
+//    );
     QSqlQuery q;
-    q.prepare("SELECT * FROM CatalogChapters WHERE catalogSetId = :catalogSetId ORDER BY sortKey");
+    q.prepare("SELECT chapterID, chapter FROM CatalogChapters WHERE catalogSetId = :catalogSetId ORDER BY sortKey");
     q.bindValue(":catalogSetId", m_setID);
     q.exec();
     kDebug() << "Selecting chapters for catalog no " << QString::number( m_setID ) << endl;
 
     while ( q.next() )
     {
-      QString katName = q.value(2).toString();
-      int katID = q.value(0).toInt();
-      kDebug() << "Adding catalog chapter " << katName << " with ID " << katID << endl;
+      int chapID = q.value(0).toInt();
+      QString katName = q.value(1).toString();
+
+      kDebug() << "Adding catalog chapter " << katName << " with ID " << chapID << endl;
       m_chapters.append(katName);
-      dbID id( katID );
+      dbID id( chapID );
       m_chapterIDs.insert(katName, id);
     }
   }

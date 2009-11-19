@@ -286,11 +286,14 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord *buf, KraftDoc *doc )
       buf->setValue( "salut",    doc->salut() );
       buf->setValue( "goodbye",  doc->goodbye() );
       buf->setValue( "date",     doc->date() );
-      buf->setValue( "lastModified", "NOW()" );
+      // do not set that because mysql automatically updates the timestamp and
+      // sqlite3 has a trigger for it.
+      // buf->setValue( "lastModified", "NOW()" );
       buf->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
       buf->setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
       buf->setValue( "country",  doc->country() );
       buf->setValue( "language", doc->language() );
+      buf->setValue( "projectLabel",  doc->projectLabel() );
     }
 }
 
@@ -322,6 +325,7 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setPreText(    KraftDB::self()->mysqlEuroDecode( cur.value( "pretext"  ).toString() ) );
         doc->setPostText(   KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() ) );
         doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( cur.value( "docDescription" ).toString() ) );
+        doc->setProjectLabel( cur.value("projectLabel").toString() );
     }
 
     loadPositions( id, doc );

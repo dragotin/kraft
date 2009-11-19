@@ -32,6 +32,26 @@ class dbID;
   *@author Klaas Freitag
   */
 
+class SqlCommand
+{
+public:
+  SqlCommand();
+  SqlCommand( const QString&, const QString& );
+
+  QString message();
+  QString command();
+
+private:
+  QString mSql;
+  QString mMessage;
+};
+
+class SqlCommandList: public QList<SqlCommand>
+{
+public:
+  SqlCommandList();
+};
+
 class KRAFTCAT_EXPORT KraftDB : public QObject
 {
 
@@ -74,6 +94,7 @@ signals:
 
 private: // Private attributes
   KraftDB();
+  SqlCommandList parseCommandFile( const QString& );
   int processSqlFile( const QString&, int& );
 
   bool createDatabase( QWidget* );
@@ -84,6 +105,7 @@ private: // Private attributes
   static KraftDB *mSelf;
   bool mSuccess;
   const QString EuroTag;
+  QString mDatabaseDriver;
 };
 
 #endif

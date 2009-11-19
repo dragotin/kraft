@@ -71,6 +71,9 @@
             <property name="editable">
              <bool>true</bool>
             </property>
+            <property name="autoCompletion">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
          </layout>

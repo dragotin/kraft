@@ -212,7 +212,14 @@ void PrefsDialog::taxTab()
 
 void PrefsDialog::buildTaxList()
 {
-  QSqlQuery q( "SELECT * FROM taxes ORDER BY startDate" );
+//  CREATE TABLE taxes (
+//      id          INTEGER PRIMARY KEY ASC autoincrement,
+//      fullTax     DECIMAL(5,1),
+//      reducedTax  DECIMAL(5,1),
+//      startDate   DATE
+//  );
+
+  QSqlQuery q( "SELECT id, fullTax, reducedTax, startDate FROM taxes ORDER BY startDate" );
   mTaxListView->clear();
 
   TaxRecord::List taxes;
