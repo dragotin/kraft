@@ -29,7 +29,7 @@ set( kraftcat_LIB_SRCS
     )
 
 
-kde4_add_ui_files(kraftcat_LIB_SRCS flostab.ui)
+kde4_add_ui_files(kraftcat_LIB_SRCS calctemplate.ui)
 
 kde4_add_kcfg_files(kraftcat_LIB_SRCS katalogsettings.kcfgc kraftsettings.kcfgc)
 

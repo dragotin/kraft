@@ -69,7 +69,8 @@ KatalogView::KatalogView( QWidget* parent, const char* ) :
     m_acEditItem(0),
     m_acNewItem(0),
     m_acExport(0),
-    m_filterHead(0)
+    m_filterHead(0),
+    m_editListViewItem(0)
 {
   setObjectName( "catalogeview#" );
   //We don't want to delete this view when we close it!
@@ -157,13 +158,13 @@ void KatalogView::initActions()
   m_acEditChapters->setStatusTip(i18n("Add, remove and edit catalog chapters"));
   m_acEditChapters->setEnabled(true);
 
-  m_acEditItem = actionCollection()->addAction( "edit_vorlage", this, SLOT( slEditVorlage() ) );
+  m_acEditItem = actionCollection()->addAction( "edit_vorlage", this, SLOT( slEditTemplate() ) );
   m_acEditItem->setText( i18n("Edit template") );
   m_acEditItem->setIcon( KIcon("document-edit"));
   m_acEditItem->setStatusTip(i18n("Opens the editor window for templates to edit the selected one"));
   m_acEditItem->setEnabled(false);
 
-  m_acNewItem = actionCollection()->addAction( "neue_vorlage", this, SLOT( slNeueVorlage() ) );
+  m_acNewItem = actionCollection()->addAction( "neue_vorlage", this, SLOT( slNewTemplate() ) );
   m_acNewItem->setText( i18n("New template") );
   m_acNewItem->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::New) );
   m_acNewItem->setIcon( KIcon("document-new"));

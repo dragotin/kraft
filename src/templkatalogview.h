@@ -73,8 +73,8 @@ protected:
 
 public slots:
   /* Editiing of templates -> open edit dialog */
-  void slEditVorlage();
-  void slNeueVorlage();
+  void slEditTemplate();
+  void slNewTemplate();
 
   /* selected Ok in the template editor */
   void slEditOk(FloskelTemplate*);

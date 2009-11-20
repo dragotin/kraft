@@ -44,8 +44,8 @@ public:
   static const QString MaterialCatalogName;
 
 protected slots:
-  void slNeueVorlage();
-  void slEditVorlage();
+  void slNewTemplate();
+  void slEditTemplate();
 
   void openDialog( QTreeWidgetItem *, StockMaterial *, bool );
   void slotEditRejected();

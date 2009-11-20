@@ -62,7 +62,7 @@ Katalog* MaterialKatalogView::getKatalog( const QString& name )
     return k;
 }
 
-void MaterialKatalogView::slEditVorlage()
+void MaterialKatalogView::slEditTemplate()
 {
   MaterialKatalogListView *listview = static_cast<MaterialKatalogListView*>(getListView());
 
@@ -78,7 +78,7 @@ void MaterialKatalogView::slEditVorlage()
   }
 }
 
-void MaterialKatalogView::slNeueVorlage()
+void MaterialKatalogView::slNewTemplate()
 {
   KatalogListView *listview = getListView();
   if( !listview ) return;

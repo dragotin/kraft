@@ -56,13 +56,14 @@
 
 FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
     : KDialog( parent ),
-    Ui::d_calcTempl(),
     m_template(0),
     m_katalog(0)
 {
-  QWidget *widget = new QWidget(this);
-  setupUi( widget );
-  KDialog::setMainWidget(widget);
+  QWidget *w = new QWidget( this );
+  setMainWidget(w);
+
+  setupUi( w );
+
   setCaption( i18n("Create or Edit Template Items") );
   setModal( modal );
   setButtons( Ok | Cancel );
@@ -250,6 +251,7 @@ void FlosTemplDialog::refreshPrices()
 
 FlosTemplDialog::~FlosTemplDialog( )
 {
+
 }
 
 void FlosTemplDialog::accept()
@@ -835,4 +837,4 @@ void FlosTemplDialog::slSetNewText( )
 /* END */
 
 
-#include "flostempldialog.moc"
+// #include "flostempldialog.moc"

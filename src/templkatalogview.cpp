@@ -51,12 +51,13 @@ TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
     : KatalogView(parent, name),
       m_flosDialog(0),
       m_listview( 0 )
+
 {
 }
 
 TemplKatalogView::~TemplKatalogView()
 {
-
+  delete m_flosDialog;
 }
 
 Katalog* TemplKatalogView::getKatalog( const QString& name )
@@ -74,7 +75,7 @@ Katalog* TemplKatalogView::getKatalog( const QString& name )
 /////////////////////////////////////////////////////////////////////
 
 
-void TemplKatalogView::slEditVorlage()
+void TemplKatalogView::slEditTemplate()
 {
     TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
 
@@ -88,7 +89,7 @@ void TemplKatalogView::slEditVorlage()
     }
 }
 
-void TemplKatalogView::slNeueVorlage()
+void TemplKatalogView::slNewTemplate()
 {
     KatalogListView *listview = getListView();
     if( !listview ) return;
@@ -202,7 +203,7 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
       }
     }
 
-    if( m_editListViewItem ) {
+    if( templListView && m_editListViewItem ) {
       kDebug() << "Edit was ok, refreshing item in list " << m_editListViewItem << endl;
       templListView->setCurrentItem( m_editListViewItem );
       templListView->slFreshupItem( m_editListViewItem, templ, true );
@@ -210,8 +211,6 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
     }
 
     m_editListViewItem = 0;
-    delete m_flosDialog;
-    m_flosDialog = 0;
 }
 
 void TemplKatalogView::slEditRejected()

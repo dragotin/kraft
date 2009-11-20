@@ -24,7 +24,7 @@
 #include <kdialog.h>
 
 #include "kraftglobals.h"
-#include "ui_flostab.h"
+#include "ui_calctemplate.h"
 #include "calcpart.h"
 #include "stockmaterial.h"
 /**
@@ -87,7 +87,6 @@ public slots:
     void slTimeCalcPartChanged(ZeitCalcPart*);
     void slMatCalcPartChanged(StockMaterial *, double );
 
-protected slots:
     virtual void accept();
     virtual void reject();
 
