@@ -65,8 +65,8 @@ public:
     Einheit einheit() const;
     void setEinheitId(int id);
 
-    void setGewinn( double );
-    double getGewinn();
+    void setBenefit( double );
+    double getBenefit();
 
     int  getTemplID() { return m_templID; }
     void setTemplID( int );

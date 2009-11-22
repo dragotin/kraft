@@ -46,7 +46,10 @@ ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, bool modal )
     : KDialog( parent ), Ui::calcdetailTime(),
     m_part(cp)
 {
-  setupUi( this );
+  QWidget *w = new QWidget( this );
+  setMainWidget(w);
+
+  setupUi( w );
   setModal( modal );
   m_hourSets->insertItems(-1, StdSatzMan::self()->allStdSaetze());
 
@@ -58,7 +61,6 @@ ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, bool modal )
   StdSatz std = cp->getStundensatz();
   m_hourSets->setCurrentIndex(m_hourSets->findText( std.getName() ));
 }
-
 
 ZeitCalcDialog::~ZeitCalcDialog( )
 {

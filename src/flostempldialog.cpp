@@ -1,5 +1,5 @@
 /***************************************************************************
-             flostempldialog  -
+             flostempldialog - dialog to edit templates
                              -------------------
     begin                : 2004-15-08
     copyright            : (C) 2004 by Klaas Freitag
@@ -16,14 +16,11 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <q3textedit.h>
 #include <QRadioButton>
 #include <QLabel>
 #include <QString>
 #include <QComboBox>
-#include <q3listview.h>
 #include <QCheckBox>
-#include <q3buttongroup.h>
 #include <QPushButton>
 
 // include files for KDE
@@ -57,7 +54,10 @@
 FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
     : KDialog( parent ),
     m_template(0),
-    m_katalog(0)
+    m_katalog(0),
+    m_fixCalcDia(0),
+    m_timePartDialog(0),
+    m_matPartDialog(0)
 {
   QWidget *w = new QWidget( this );
   setMainWidget(w);
@@ -88,7 +88,7 @@ void FlosTemplDialog::setupConnections()
 
   connect( m_text, SIGNAL(textChanged()),this, SLOT(slSetNewText()));
 
-  connect( spGewinn, SIGNAL(valueChanged(int)), this, SLOT(slGewinnChange(int)));
+  connect( spBenefit, SIGNAL(valueChanged(int)), this, SLOT(slBenefitChange(int)));
 
 
   //Time calculation
@@ -135,7 +135,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
 
   m_manualPriceVal->setValue( t->unitPrice().toDouble());
 
-  /* Kalkulationsart: Manuell oder Kalkuliert? */
+  /* Kind of Calculation: Manual or calculated?  */
 
   if( t->calcKind() == CatalogTemplate::ManualPrice )
   {
@@ -151,10 +151,10 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
     m_rbCalculation->setChecked(true);
   }
 
-  /* anzeige der verschiedenen Kalkulationsteile */
+  /* set up the different calculation parts */
   setCalcparts();
 
-  /* text setzen */
+  /* set text */
   slSetNewText();
 
   m_text->setFocus();
@@ -165,7 +165,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
 
 void FlosTemplDialog::setCalcparts( )
 {
-  /* Zeitkalkulation in widget m_timeParts */
+  /* time calculation in widget m_timeParts */
   CalcPartList tpList = m_template->getCalcPartsList( KALKPART_TIME );
   m_timeParts->clear();
 
@@ -182,7 +182,7 @@ void FlosTemplDialog::setCalcparts( )
     mCalcPartDict.insert(lvItem, cp );
   }
 
-  /* Fixpart Kalkulationsanteile */
+  /* Fix calculation parts */
   m_fixParts->clear();
   tpList = m_template->getCalcPartsList( KALKPART_FIX );
   QListIterator<CalcPart*> fixIt( tpList );
@@ -193,7 +193,7 @@ void FlosTemplDialog::setCalcparts( )
     mCalcPartDict.insert( lvItem, fc );
   }
 
-  /* Materialpart Kalkulationsanteile */
+  /* Material calculation */
   m_matParts->clear();
   m_matParts->setRootIsDecorated(true);
   tpList = m_template->getCalcPartsList( KALKPART_MATERIAL );
@@ -229,7 +229,7 @@ void FlosTemplDialog::refreshPrices()
 {
   if( ! m_template ) return;
 
-  /* Preisbezeichnung setzen */
+  /* assemble the pricing label */
   QString t;
   t = i18n("Calculated Price: ");
   int kType = m_template->calcKind();
@@ -240,27 +240,27 @@ void FlosTemplDialog::refreshPrices()
   }
   else if( m_template->calcKind() == CatalogTemplate::Calculation )
   {
-    int gewinn = spGewinn->value();
-    QString gewinnStr = i18n("(+%1%)").arg(gewinn);
+    int benefit = spBenefit->value();
+    QString benefitStr = i18n("(+%1%)").arg(benefit);
 
-    if( gewinn < 0 )
+    if( benefit < 0 )
     {
-      gewinnStr = "<font color=\"red\">"+i18n("%1%").arg(gewinn)+"</font>";
+      benefitStr = "<font color=\"red\">"+i18n("%1%").arg(benefit)+"</font>";
     }
-    gewinnStr += i18n(": ");
-    t += gewinnStr;
+    benefitStr += i18n(": ");
+    t += benefitStr;
   }
   else
   {
-    kDebug() << "ERR: Unbekannter Kalkulationstyp!" << endl;
+    kDebug() << "ERR: unknown calculation type!" << endl;
   }
   m_resPreisName->setText(t);
 
-  /* Preis setzen */
+  /* set Price */
   t = m_template->unitPrice().toString( m_katalog->locale() );
   m_resultPrice->setText( t );
 
-  /* Preisteile nach Zeit-, Fix- und Materialkalkulation */
+  /* Price parts per calculation part */
   Geld g( m_template->kostenPerKalcPart( KALKPART_TIME ));
   m_textTimePart->setText( g.toString( m_katalog->locale() ));
 
@@ -274,7 +274,9 @@ void FlosTemplDialog::refreshPrices()
 
 FlosTemplDialog::~FlosTemplDialog( )
 {
-
+  delete m_fixCalcDia;
+  delete m_timePartDialog;
+  delete m_matPartDialog;
 }
 
 void FlosTemplDialog::accept()
@@ -297,7 +299,7 @@ void FlosTemplDialog::accept()
       m_template->setEinheitId( UnitManager::self()->getUnitIDSingular(h));
     }
 
-    /* katalog chapter vergleichen */
+    /* compare catalog chapter */
     int chapID = m_katalog->chapterID(cbChapter->currentText());
     if( chapID != m_template->getChapterID() ) {
       kDebug() << "Chapter ID dirty ->update" << endl;
@@ -313,13 +315,13 @@ void FlosTemplDialog::accept()
       m_template->setHasTimeslice(c);
     }
 
-    /* Gewinn */
-    h = spGewinn->cleanText();
+    /* benefit */
+    h = spBenefit->cleanText();
     bool b;
     double g = h.toDouble( &b );
-    if( b  && g != m_template->getGewinn() ) {
-      m_template->setGewinn(g);
-      kDebug() << "Gewinn dirty ->update to " << g << endl;
+    if( b  && g != m_template->getBenefit() ) {
+      m_template->setBenefit(g);
+      kDebug() << "benefit dirty ->update to " << g << endl;
     }
 
     h = cbMwst->currentText();
@@ -342,10 +344,9 @@ void FlosTemplDialog::accept()
     m_template->setManualPrice( Geld( dd ) );
 
     h = cbChapter->currentText();
-    kDebug() << "Katalogkapitel ist " << h << endl;
+    kDebug() << "catalog chapter is " << h << endl;
 
     if( m_template->save() ) {
-      // d_calcTempl::accept();
       emit( editAccepted( m_template ) );
       KatalogMan::self()->notifyKatalogChange( m_katalog, m_template->getTemplID() );
     } else {
@@ -366,7 +367,6 @@ bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
                                   "chapterchange" ) == KMessageBox::Yes )
   {
     return true;
-
   } else {
     return false;
   }
@@ -388,8 +388,6 @@ void FlosTemplDialog::reject()
   m_fixParts->clear ();
   m_matParts->clear ();
 
-  // d_calcTempl::reject();
-
   if ( m_templateIsNew ) {
     // remove the listview item if it was created newly
     emit editRejected();
@@ -406,7 +404,7 @@ void FlosTemplDialog::slManualPriceChanged(double dd)
 }
 
 
-void FlosTemplDialog::slGewinnChange( int neuPreis )
+void FlosTemplDialog::slBenefitChange( int neuPreis )
 {
   CalcPartList tpList = m_template->getCalcPartsList( );
   QListIterator<CalcPart*> it( tpList );
@@ -635,7 +633,7 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
       /* Es gibt noch garkeinen Material-Kalkulationsanteil. Es wird
                ein neuer angelegt
              */
-      mc = new MaterialCalcPart( stdMaterialKalcPartName(), 0);
+      mc = new MaterialCalcPart( i18n("Calculated Material"), 0);
       m_template->addCalcPart( mc );
     }
     else
@@ -804,7 +802,7 @@ void FlosTemplDialog::slCalcOrFix(int button)
     m_tLabelMat->setEnabled(false);
     m_tLabelFix->setEnabled(false);
     m_tLabelTime->setEnabled(false);
-    spGewinn->setEnabled(false);
+    spBenefit->setEnabled(false);
   }
   else if( button == 1 )
   {
@@ -821,7 +819,7 @@ void FlosTemplDialog::slCalcOrFix(int button)
     m_tLabelMat->setEnabled(true);
     m_tLabelFix->setEnabled(true);
     m_tLabelTime->setEnabled(true);
-    spGewinn->setEnabled(true);
+    spBenefit->setEnabled(true);
   }
   else
   {

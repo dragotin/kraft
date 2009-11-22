@@ -78,6 +78,7 @@ MatEditor::MatEditor(const QString& /* katName  */, bool takeover, QWidget *pare
 {
     m_box = new KVBox( this );
     setMainWidget( m_box );
+    setModal( modal );
     setButtons( Close );
 
     QLabel *l = new QLabel(QString("<h1>") + i18n("Edit Material") +

@@ -147,7 +147,7 @@ void FloskelTemplate::setEinheitId(int id)
     m_einheitID = id;
 }
 
-void FloskelTemplate::setGewinn( double g )
+void FloskelTemplate::setBenefit( double g )
 {
   m_gewinn = g;
   CalcPart *cp = 0;
@@ -163,7 +163,7 @@ void FloskelTemplate::setGewinn( double g )
   }
 }
 
-double FloskelTemplate::getGewinn( )
+double FloskelTemplate::getBenefit( )
 {
   return m_gewinn;
 }
@@ -269,7 +269,7 @@ QDomElement FloskelTemplate::toXML( QDomDocument& doc)
     templ.appendChild( createDomNode(doc, "unit",   UnitManager::self()->getUnit(m_einheitID).einheitSingular()));
     templ.appendChild( createDomNode(doc, "text", getText()));
     templ.appendChild( createDomNode(doc, "id", QString::number(getTemplID())));
-    templ.appendChild( createDomNode(doc, "benefit", QString::number(getGewinn())));
+    templ.appendChild( createDomNode(doc, "benefit", QString::number(getBenefit())));
     templ.appendChild( createDomNode(doc, "timecount", hasTimeslice() ? "yes": "no" ));
 
     QDomElement calcParts = doc.createElement( "calcParts" );

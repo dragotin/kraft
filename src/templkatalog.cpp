@@ -103,7 +103,7 @@ int TemplKatalog::load()
                                                      einheit, chapID, calcKind,
                                                      modDt, enterDt );
         // flos->setSortKey( sortID );
-        flos->setGewinn( cur.value("Gewinn").toDouble());
+        flos->setBenefit( cur.value("Gewinn").toDouble());
         flos->setManualPrice( preis );
         bool tslice = cur.value("zeitbeitrag").toInt() > 0;
         flos->setHasTimeslice( tslice );

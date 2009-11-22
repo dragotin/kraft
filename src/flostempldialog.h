@@ -74,9 +74,9 @@ public slots:
     virtual void slRemoveMatPart();
 
     virtual void slCalcOrFix(int);
-    virtual void slGewinnChange( int neuPreis );
+    virtual void slBenefitChange( int neuPreis );
 
-    /* slot, wenn im Materialeditor ein Material fr die Kalkulation ausgew�lt wird */
+    /* slot for adding a new material to the material calculation */
     void slNewMaterial( int, double );
     void refreshPrices();
     void slManualPriceChanged(double );
@@ -98,11 +98,6 @@ private:
 
     bool askChapterChange( FloskelTemplate*, int);
 
-    virtual QString stdMaterialKalcPartName()
-    {
-        return i18n("Kalkuliertes Material");
-    }
-
     FloskelTemplate *m_template;
     Katalog         *m_katalog;
 
@@ -112,10 +107,9 @@ private:
 
     QButtonGroup *m_gbPriceSrc;
 
-    MatEditor *m_matEdit;
-    FixCalcDialog *m_fixCalcDia;
-    ZeitCalcDialog *m_timePartDialog;
-    MatCalcDialog *m_matPartDialog;
+    FixCalcDialog   *m_fixCalcDia;
+    ZeitCalcDialog  *m_timePartDialog;
+    MatCalcDialog   *m_matPartDialog;
     CalcPart *m_cpChange;
     bool m_templateIsNew;
 };

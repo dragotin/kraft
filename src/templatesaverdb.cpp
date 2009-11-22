@@ -237,7 +237,6 @@ bool CalculationsSaverDB::saveCalculations( CalcPartList parts, dbID parentID )
 {
   bool res = true;
 
-  CalcPart *cp;
   CalcPartListIterator it( parts );
 
   while( it.hasNext()) {
@@ -400,7 +399,7 @@ void TemplateSaverDB::fillTemplateBuffer( QSqlRecord *buffer, FloskelTemplate *t
     buffer->setValue( "chapterID", tmpl->getChapterID());
     buffer->setValue( "unitID", tmpl->einheit().id());
     buffer->setValue( "Floskel", tmpl->getText().toUtf8() );
-    buffer->setValue( "Gewinn", tmpl->getGewinn() );
+    buffer->setValue( "Gewinn", tmpl->getBenefit() );
     buffer->setValue( "zeitbeitrag", tmpl->hasTimeslice() );
 
     /* neue templates kriegen ein Eintragsdatum */

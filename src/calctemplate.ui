@@ -138,12 +138,12 @@
                  <bool>false</bool>
                 </property>
                 <property name="buddy">
-                 <cstring>spGewinn</cstring>
+                 <cstring>spBenefit</cstring>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="spGewinn">
+               <widget class="QSpinBox" name="spBenefit">
                 <property name="buttonSymbols">
                  <enum>QAbstractSpinBox::UpDownArrows</enum>
                 </property>
