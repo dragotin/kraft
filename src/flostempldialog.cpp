@@ -75,6 +75,11 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
   m_gbPriceSrc->addButton(m_rbManual, 0);
   m_gbPriceSrc->addButton(m_rbCalculation, 1);
 
+  setupConnections();
+}
+
+void FlosTemplDialog::setupConnections()
+{
   connect(m_gbPriceSrc, SIGNAL(buttonClicked(int)), this, SLOT(slCalcOrFix(int)));
 
   /* connect a value Changed signal of the manual price field */
@@ -82,6 +87,24 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
            this, SLOT( slManualPriceChanged(double)));
 
   connect( m_text, SIGNAL(textChanged()),this, SLOT(slSetNewText()));
+
+  connect( spGewinn, SIGNAL(valueChanged(int)), this, SLOT(slGewinnChange(int)));
+
+
+  //Time calculation
+  connect(m_butAddTime, SIGNAL(clicked()), this, SLOT(slAddTimePart()));
+  connect(m_butEditTime, SIGNAL(clicked()), this, SLOT(slEditTimePart()));
+  connect(m_butRemoveTime, SIGNAL(clicked()), this, SLOT(slRemoveTimePart()));
+
+  //Fix costs
+  connect(m_butAddFix, SIGNAL(clicked()), this, SLOT(slAddFixPart()));
+  connect(m_butEditFix, SIGNAL(clicked()), this, SLOT(slEditFixPart()));
+  connect(m_butRemoveFix, SIGNAL(clicked()), this, SLOT(slRemoveFixPart()));
+
+  //Material
+  connect(m_butAddMat, SIGNAL(clicked()), this, SLOT(slAddMatPart()));
+  connect(m_butEditMat, SIGNAL(clicked()), this, SLOT(slEditMatPart()));
+  connect(m_butRemoveMat, SIGNAL(clicked()), this, SLOT(slRemoveMatPart()));
 }
 
 void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalogname, bool newTempl )
@@ -102,10 +125,10 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   QString chap = m_katalog->chapterName(dbID(chapID));
   cbChapter->setCurrentIndex(cbChapter->findText( chap ));
 
-  /** der text der Vorlage **/
+  /* Text of the template */
   m_text->setText( t->getText());
 
-  /* Einheit */
+  /* Unit */
   m_unit->clear();
   m_unit->insertItems(-1, UnitManager::self()->allUnits());
   m_unit->setCurrentIndex(m_unit->findText( m_template->einheit().einheitSingular() ));

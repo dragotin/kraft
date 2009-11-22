@@ -51,7 +51,7 @@ StockMaterialMan::~StockMaterialMan( )
 
 void StockMaterialMan::load( )
 {
-  QSqlQuery cur( "SELECT matID, matChapter, material, unitID, perPack, "
+  QSqlQuery cur( "SELECT matID, chapterID, material, unitID, perPack, "
                  "priceIn, priceOut, modifyDate, enterDate FROM stockMaterial "
                  "ORDER BY material" );
 

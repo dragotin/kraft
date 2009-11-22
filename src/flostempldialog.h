@@ -91,6 +91,7 @@ public slots:
     virtual void reject();
 
 private:
+    void setupConnections();
     virtual void drawTimeListEntry( Q3ListViewItem *, ZeitCalcPart * );
     virtual void drawFixListEntry( Q3ListViewItem*, FixCalcPart* );
     virtual void drawMatListEntry( Q3ListViewItem*, MaterialCalcPart*, StockMaterial* );

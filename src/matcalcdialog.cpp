@@ -30,7 +30,10 @@ MatCalcDialog::MatCalcDialog(StockMaterial *mat, QWidget *parent, bool modal )
     : KDialog( parent ), Ui::calcdetailMat(),
     m_material(mat)
 {
-  setupUi( this );
+  QWidget *w = new QWidget( this );
+  setMainWidget(w);
+
+  setupUi( w );
   setModal( modal );
   init(1.0);
 }

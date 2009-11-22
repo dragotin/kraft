@@ -17,6 +17,7 @@
 
 #include <QPixmap>
 #include <QStringList>
+#include <QHeaderView>
 
 #include <klocale.h>
 #include <kdebug.h>
@@ -42,6 +43,8 @@ KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     setSelectionMode(QAbstractItemView::SingleSelection );
 
     setRootIsDecorated(false);
+    setAnimated(true);
+    header()->setResizeMode(QHeaderView::ResizeToContents);
     // setSorting(-1);
     mMenu = new KMenu( this );
     mMenu->addTitle( i18n("Template Catalog") );

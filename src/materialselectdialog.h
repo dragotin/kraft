@@ -46,8 +46,7 @@ public:
 public slots:
 
 protected slots:
-  void slotClose();
-  void slotOk();
+  void accept();
 signals:
   void materialSelected( int, double );
 private:

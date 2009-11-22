@@ -63,12 +63,7 @@ MaterialSelectDialog::~MaterialSelectDialog()
 
 }
 
-void MaterialSelectDialog::slotClose()
-{
-  KDialog::slotButtonClicked( KDialog::Close );
-}
-
-void MaterialSelectDialog::slotOk()
+void MaterialSelectDialog::accept()
 {
   kDebug() << "++ Material selected!" << endl;
 
@@ -82,7 +77,7 @@ void MaterialSelectDialog::slotOk()
     ++it;
   }
 
-  KDialog::slotButtonClicked( KDialog::Ok );
+  KDialog::accept();
 }
 
 #include "materialselectdialog.moc"

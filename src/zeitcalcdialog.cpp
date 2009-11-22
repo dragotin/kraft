@@ -34,7 +34,10 @@ ZeitCalcDialog::ZeitCalcDialog(QWidget *parent, bool modal )
     : KDialog( parent ), Ui::calcdetailTime(),
     m_part(0)
 {
-  setupUi( this );
+  QWidget *w = new QWidget( this );
+  setMainWidget(w);
+
+  setupUi( w );
   setModal( modal );
   m_hourSets->insertItems(-1, StdSatzMan::self()->allStdSaetze());
 }
@@ -80,7 +83,8 @@ void ZeitCalcDialog::accept()
   if( m_part && m_part->isDirty() ) {
     emit timeCalcPartChanged(m_part);
   }
-  accept();
+
+  KDialog::accept();
 }
 
 QString ZeitCalcDialog::getName()

@@ -35,7 +35,10 @@ FixCalcDialog::FixCalcDialog(QWidget *parent, bool modal )
     :KDialog( parent ), Ui::calcdetailFix(),
     m_part(0)
 {
-  setupUi( this );
+  QWidget *w = new QWidget( this );
+  setMainWidget(w);
+
+  setupUi( w );
   setModal( modal );
   m_inpPreis->setSuffix( DefaultProvider::self()->currencySymbol() );
 }

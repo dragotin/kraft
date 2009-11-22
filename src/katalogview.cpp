@@ -109,13 +109,6 @@ void KatalogView::init(const QString& katName )
   getKatalog( katName );
   listview->addCatalogDisplay( katName );
 
-  //We want the first column to have the correct width, for that we expand all rows
-  listview->expandAll();
-  listview->resizeColumnToContents(0);
-  listview->collapseAll();
-  listview->expandToDepth(0);
-  listview->setAnimated(true);
-
   kDebug() << "Listviews context-menu: " << m_acEditChapters << endl;
   KatalogListView *lv = getListView();
 

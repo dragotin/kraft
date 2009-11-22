@@ -88,7 +88,7 @@ QTreeWidgetItem* MaterialKatalogListView::addMaterialToView( QTreeWidgetItem *pa
   if ( ! mCheckboxes ) {
 
   } else {
-    flags = Qt::ItemIsUserCheckable;
+    recItem->setCheckState(0, Qt::Unchecked);
   }
   //recItem->setFlags( flags );
   recItem->setText( 0, mat->name() );

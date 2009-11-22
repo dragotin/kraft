@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 // include files for Qt
+#include <QHash>
 
 // include files for KDE
 #include <klocale.h>
@@ -31,21 +32,21 @@ MaterialCalcPart::MaterialCalcPart()
   : CalcPart(),
     m_calcID( 0 )
 {
-
+  m_amounts = QHash<StockMaterial*, QVariant>();
 }
 
 MaterialCalcPart::MaterialCalcPart(long mCalcID, const QString& name, int percent )
     : CalcPart( name, percent ),
       m_calcID( mCalcID )
 {
-
+  m_amounts = QHash<StockMaterial*, QVariant>();
 }
 
 MaterialCalcPart::MaterialCalcPart(const QString& name, int percent)
     : CalcPart( name, percent ),
       m_calcID(0)
 {
-
+  m_amounts = QHash<StockMaterial*, QVariant>();
 }
 
 MaterialCalcPart::~MaterialCalcPart( )
@@ -98,9 +99,9 @@ StockMaterialList MaterialCalcPart::getCalcMaterialList()
 {
     StockMaterialList reList;
 
-    QHashIterator<StockMaterial*, QVariant> i( m_amounts );
-    while (i.hasNext()) {
-      i.next();
+    QHash<StockMaterial*, QVariant>::iterator i;
+    for (i = m_amounts.begin(); i != m_amounts.end(); ++i)
+    {
       StockMaterial *mat = (StockMaterial*) i.key();
       reList.append( mat );
     }
