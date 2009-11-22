@@ -79,7 +79,7 @@ void FixCalcDialog::accept()
   if( m_part && m_part->isDirty() ) {
     emit fixCalcPartChanged(m_part);
   }
-  accept();
+  KDialog::accept();
 }
 
 QString FixCalcDialog::getName()
