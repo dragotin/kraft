@@ -202,7 +202,7 @@ bool MaterialCalcPart::setCalcAmount( StockMaterial* mat, double newAmount )
 
         if( prevAmount != newAmount )
         {
-            v = newAmount;
+            m_amounts[mat] = newAmount;
             updated = true;
             setDirty(true);
         }

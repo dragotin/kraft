@@ -256,68 +256,39 @@
          <item>
           <layout class="QHBoxLayout" name="_13">
            <item>
-            <widget class="Q3ListView" name="m_timeParts">
-             <property name="defaultRenameAction">
-              <enum>Q3ListView::Accept</enum>
+            <widget class="QTreeWidget" name="m_timeParts">
+             <property name="rootIsDecorated">
+              <bool>false</bool>
              </property>
+             <property name="itemsExpandable">
+              <bool>false</bool>
+             </property>
+             <property name="columnCount">
+              <number>4</number>
+             </property>
+             <attribute name="headerStretchLastSection">
+              <bool>true</bool>
+             </attribute>
              <column>
               <property name="text">
                <string>Label</string>
               </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
-              </property>
              </column>
              <column>
               <property name="text">
-               <string>Duration (Min.)</string>
-              </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
+               <string>Duration</string>
               </property>
              </column>
              <column>
               <property name="text">
                <string>Hourly Rate</string>
               </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
-              </property>
              </column>
              <column>
               <property name="text">
-               <string>glob. Rate</string>
-              </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
+               <string>Glob. Rate</string>
               </property>
              </column>
-             <item>
-              <property name="text">
-               <string>New Item</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
             </widget>
            </item>
            <item>
@@ -409,68 +380,39 @@
          <item>
           <layout class="QHBoxLayout" name="_17">
            <item>
-            <widget class="Q3ListView" name="m_fixParts">
-             <property name="defaultRenameAction">
-              <enum>Q3ListView::Accept</enum>
+            <widget class="QTreeWidget" name="m_fixParts">
+             <property name="rootIsDecorated">
+              <bool>false</bool>
              </property>
+             <property name="itemsExpandable">
+              <bool>false</bool>
+             </property>
+             <property name="columnCount">
+              <number>4</number>
+             </property>
+             <attribute name="headerStretchLastSection">
+              <bool>true</bool>
+             </attribute>
              <column>
               <property name="text">
                <string>Amount</string>
-              </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
               </property>
              </column>
              <column>
               <property name="text">
                <string>Label</string>
               </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
-              </property>
              </column>
              <column>
               <property name="text">
                <string>Single Price</string>
-              </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
               </property>
              </column>
              <column>
               <property name="text">
                <string>Overall Price</string>
               </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
-              </property>
              </column>
-             <item>
-              <property name="text">
-               <string>New Item</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
             </widget>
            </item>
            <item>
@@ -562,68 +504,39 @@
          <item>
           <layout class="QHBoxLayout" name="_21">
            <item>
-            <widget class="Q3ListView" name="m_matParts">
-             <property name="defaultRenameAction">
-              <enum>Q3ListView::Accept</enum>
+            <widget class="QTreeWidget" name="m_matParts">
+             <property name="rootIsDecorated">
+              <bool>false</bool>
              </property>
+             <property name="itemsExpandable">
+              <bool>false</bool>
+             </property>
+             <property name="columnCount">
+              <number>4</number>
+             </property>
+             <attribute name="headerStretchLastSection">
+              <bool>true</bool>
+             </attribute>
              <column>
               <property name="text">
                <string>Label</string>
-              </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
               </property>
              </column>
              <column>
               <property name="text">
                <string>Amount</string>
               </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
-              </property>
              </column>
              <column>
               <property name="text">
                <string>Unit</string>
-              </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
               </property>
              </column>
              <column>
               <property name="text">
                <string>Price</string>
               </property>
-              <property name="clickable">
-               <bool>true</bool>
-              </property>
-              <property name="resizable">
-               <bool>true</bool>
-              </property>
              </column>
-             <item>
-              <property name="text">
-               <string>New Item</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </item>
             </widget>
            </item>
            <item>
@@ -861,17 +774,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3ListView</class>
-   <extends>Q3Frame</extends>
-   <header>q3listview.h</header>
-  </customwidget>
   <customwidget>
    <class>KDoubleNumInput</class>
    <extends>QWidget</extends>

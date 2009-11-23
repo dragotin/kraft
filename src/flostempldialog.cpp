@@ -20,8 +20,11 @@
 #include <QLabel>
 #include <QString>
 #include <QComboBox>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 #include <QCheckBox>
 #include <QPushButton>
+#include <QCloseEvent>
 
 // include files for KDE
 #include <klocale.h>
@@ -75,7 +78,12 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
   m_gbPriceSrc->addButton(m_rbManual, 0);
   m_gbPriceSrc->addButton(m_rbCalculation, 1);
 
+  m_timeParts->header()->setResizeMode(QHeaderView::ResizeToContents);
+  m_fixParts->header()->setResizeMode(QHeaderView::ResizeToContents);
+  m_matParts->header()->setResizeMode(QHeaderView::ResizeToContents);
+
   setupConnections();
+  setButtonIcons();
 }
 
 void FlosTemplDialog::setupConnections()
@@ -105,6 +113,21 @@ void FlosTemplDialog::setupConnections()
   connect(m_butAddMat, SIGNAL(clicked()), this, SLOT(slAddMatPart()));
   connect(m_butEditMat, SIGNAL(clicked()), this, SLOT(slEditMatPart()));
   connect(m_butRemoveMat, SIGNAL(clicked()), this, SLOT(slRemoveMatPart()));
+}
+
+void FlosTemplDialog::setButtonIcons()
+{
+  m_butAddTime->setIcon(KIcon("list-add"));
+  m_butEditTime->setIcon(KIcon("document-edit"));
+  m_butRemoveTime->setIcon(KIcon("list-remove"));
+
+  m_butAddFix->setIcon(KIcon("list-add"));
+  m_butEditFix->setIcon(KIcon("document-edit"));
+  m_butRemoveFix->setIcon(KIcon("list-remove"));
+
+  m_butAddMat->setIcon(KIcon("list-add"));
+  m_butEditMat->setIcon(KIcon("document-edit"));
+  m_butRemoveMat->setIcon(KIcon("list-remove"));
 }
 
 void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalogname, bool newTempl )
@@ -161,6 +184,9 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   m_text->selectAll();
 
   pbRundPreis->setEnabled(false);
+
+  //Fixme: Only set this to true if something really changed
+  modified = true;
 }
 
 void FlosTemplDialog::setCalcparts( )
@@ -177,7 +203,7 @@ void FlosTemplDialog::setCalcparts( )
     QString stdStd = i18n("No");
     if( cp->globalStdSetAllowed() ) stdStd = i18n("Yes");
 
-    Q3ListViewItem *lvItem = new Q3ListViewItem( m_timeParts );
+    QTreeWidgetItem *lvItem = new QTreeWidgetItem( m_timeParts );
     drawTimeListEntry( lvItem, cp );
     mCalcPartDict.insert(lvItem, cp );
   }
@@ -188,19 +214,18 @@ void FlosTemplDialog::setCalcparts( )
   QListIterator<CalcPart*> fixIt( tpList );
   while( fixIt.hasNext() ) {
     FixCalcPart *fc = static_cast<FixCalcPart*>(fixIt.next());
-    Q3ListViewItem *lvItem = new Q3ListViewItem( m_fixParts );
+    QTreeWidgetItem *lvItem = new QTreeWidgetItem( m_fixParts );
     drawFixListEntry( lvItem, fc );
     mCalcPartDict.insert( lvItem, fc );
   }
 
   /* Material calculation */
   m_matParts->clear();
-  m_matParts->setRootIsDecorated(true);
   tpList = m_template->getCalcPartsList( KALKPART_MATERIAL );
   QListIterator<CalcPart*> matIt( tpList );
   while( matIt.hasNext() ) {
     MaterialCalcPart *mc = static_cast<MaterialCalcPart*>(matIt.next());
-    // QListViewItem *matPart = new QListViewItem( m_matParts,
+    // QTreeWidgetItem *matPart = new QTreeWidgetItem( m_matParts,
     //                                            mc->getName() );
     // mCalcPartDict.insert( matPart, mc );
 
@@ -212,7 +237,7 @@ void FlosTemplDialog::setCalcparts( )
     while ( stockIt.hasNext()) {
       StockMaterial *mat = stockIt.next();
 
-      Q3ListViewItem *lvItem = new Q3ListViewItem( m_matParts );
+      QTreeWidgetItem *lvItem = new QTreeWidgetItem( m_matParts );
       m_matDict.insert( lvItem, mat );
       drawMatListEntry( lvItem, mc, mat );
 
@@ -259,6 +284,7 @@ void FlosTemplDialog::refreshPrices()
   /* set Price */
   t = m_template->unitPrice().toString( m_katalog->locale() );
   m_resultPrice->setText( t );
+  m_manualPriceVal->setValue( m_template->unitPrice().toDouble() );
 
   /* Price parts per calculation part */
   Geld g( m_template->kostenPerKalcPart( KALKPART_TIME ));
@@ -356,7 +382,51 @@ void FlosTemplDialog::accept()
   }
   kDebug() << "*** Saving finished " << endl;
 
+  modified = false;
   KDialog::accept();
+}
+
+void FlosTemplDialog::reject()
+{
+  if(confirmClose() == true)
+    KDialog::reject();
+}
+
+void FlosTemplDialog::closeEvent ( QCloseEvent * event )
+{
+  if(confirmClose() == false)
+    event->ignore();
+  else
+    event->accept();
+}
+
+bool FlosTemplDialog::confirmClose()
+{
+  if(modified == true)
+  {
+    if ( KMessageBox::warningContinueCancel( this, i18n( "The template was modified. Do "
+                                                         "you really want to discard all changes?" ),
+                                             i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ) ) )
+          == KMessageBox::Cancel  )
+    {
+      return false;
+    }
+
+    mCalcPartDict.clear();
+
+    m_timeParts->clear ();
+    m_fixParts->clear ();
+    m_matParts->clear ();
+
+    // d_calcTempl::reject();
+
+    if ( m_templateIsNew ) {
+      // remove the listview item if it was created newly
+      emit editRejected();
+    }
+
+  }
+  return true;
 }
 
 bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
@@ -369,28 +439,6 @@ bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
     return true;
   } else {
     return false;
-  }
-}
-
-void FlosTemplDialog::reject()
-{
-  if ( KMessageBox::warningContinueCancel( this, i18n( "The template was modified. Do "
-                                                       "you really want to discard all changes?" ),
-                                           i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ) ) )
-    == KMessageBox::Cancel  )
-    {
-    return;
-  }
-
-  mCalcPartDict.clear();
-
-  m_timeParts->clear ();
-  m_fixParts->clear ();
-  m_matParts->clear ();
-
-  if ( m_templateIsNew ) {
-    // remove the listview item if it was created newly
-    emit editRejected();
   }
 }
 
@@ -427,7 +475,7 @@ void FlosTemplDialog::slAddFixPart()
     cp->setMenge( dia.getMenge());
     cp->setDirty(true);
 
-    Q3ListViewItem *lvItem = new Q3ListViewItem( m_fixParts);
+    QTreeWidgetItem *lvItem = new QTreeWidgetItem( m_fixParts);
     drawFixListEntry( lvItem, cp );
     mCalcPartDict.insert( lvItem, cp );
     m_template->addCalcPart( cp );
@@ -439,7 +487,7 @@ void FlosTemplDialog::slRemoveFixPart()
 {
   if( ! m_template || ! m_fixParts ) return;
 
-  Q3ListViewItem *item = m_fixParts->currentItem();
+  QTreeWidgetItem *item = m_fixParts->currentItem();
 
   if( item )
   {
@@ -448,7 +496,7 @@ void FlosTemplDialog::slRemoveFixPart()
     {
       m_template->removeCalcPart(cp);
     }
-    m_fixParts->takeItem(item);
+    m_fixParts->removeItemWidget(item, 0);
 
     refreshPrices();
   }
@@ -460,7 +508,7 @@ void FlosTemplDialog::slEditFixPart()
 
   kDebug() << "Edit fix part!" << endl;
 
-  Q3ListViewItem *item = m_fixParts->currentItem();
+  QTreeWidgetItem *item = m_fixParts->currentItem();
 
   if( item )
   {
@@ -500,7 +548,7 @@ void FlosTemplDialog::slAddTimePart()
     cp->setGlobalStdSetAllowed( dia.allowGlobal());
     StdSatz std = StdSatzMan::self()->getStdSatz( dia.getStundensatzName());
     cp->setStundensatz( std );
-    Q3ListViewItem *lvItem = new Q3ListViewItem( m_timeParts);
+    QTreeWidgetItem *lvItem = new QTreeWidgetItem( m_timeParts);
     drawTimeListEntry( lvItem, cp );
     mCalcPartDict.insert( lvItem, cp );
     m_template->addCalcPart( cp );
@@ -512,7 +560,7 @@ void FlosTemplDialog::slAddTimePart()
  * stellt einen ZeitCalcPart als ListViewItem dar. Wird gebraucht, wenn das
  * item neu ist, aber auch beim Editieren
  */
-void FlosTemplDialog::drawTimeListEntry( Q3ListViewItem *it, ZeitCalcPart *cp )
+void FlosTemplDialog::drawTimeListEntry( QTreeWidgetItem *it, ZeitCalcPart *cp )
 {
 
   if( !( it && cp) )
@@ -522,10 +570,9 @@ void FlosTemplDialog::drawTimeListEntry( Q3ListViewItem *it, ZeitCalcPart *cp )
   it->setText( 1, i18n("%1 Min.").arg(cp->getMinuten()));
   it->setText( 2, cp->getStundensatz().getName());
   it->setText( 3, cp->globalStdSetAllowed() ? i18n("Yes") : i18n("No"));
-  it->repaint();
 }
 
-void FlosTemplDialog::drawFixListEntry( Q3ListViewItem* it, FixCalcPart *cp )
+void FlosTemplDialog::drawFixListEntry( QTreeWidgetItem* it, FixCalcPart *cp )
 {
   if( !( it && cp) )
     return;
@@ -534,10 +581,9 @@ void FlosTemplDialog::drawFixListEntry( Q3ListViewItem* it, FixCalcPart *cp )
   it->setText( 1, cp->getName());
   it->setText( 2, cp->unitPreis().toString( m_katalog->locale() ));
   it->setText( 3, cp->basisKosten().toString( m_katalog->locale() ));
-  it->repaint();
 }
 
-void FlosTemplDialog::drawMatListEntry( Q3ListViewItem *it, MaterialCalcPart *mc, StockMaterial *mat )
+void FlosTemplDialog::drawMatListEntry( QTreeWidgetItem *it, MaterialCalcPart *mc, StockMaterial *mat )
 {
   it->setText( 0, mat->name());
   it->setText( 1, QString::number(mc->getCalcAmount( mat ), 'f',2));
@@ -545,7 +591,6 @@ void FlosTemplDialog::drawMatListEntry( Q3ListViewItem *it, MaterialCalcPart *mc
   it->setText( 3, mc->getPriceForMaterial(mat).toString( m_katalog->locale() ));
   it->setText( 4, QString::number(mat->getAmountPerPack(), 'f',2));
   it->setText( 5, mat->salesPrice().toString( m_katalog->locale() ));
-  it->repaint();
 }
 
 
@@ -553,7 +598,7 @@ void FlosTemplDialog::slRemoveTimePart()
 {
   if( ! m_template || !m_timeParts ) return;
 
-  Q3ListViewItem *item = m_timeParts->currentItem();
+  QTreeWidgetItem *item = m_timeParts->currentItem();
 
   if( item )
   {
@@ -562,7 +607,7 @@ void FlosTemplDialog::slRemoveTimePart()
     {
       m_template->removeCalcPart(cp);
     }
-    m_timeParts->takeItem(item);
+    m_timeParts->removeItemWidget(item, 0);
 
     refreshPrices();
   }
@@ -574,7 +619,7 @@ void FlosTemplDialog::slEditTimePart()
 
   kDebug() << "Edit time part!" << endl;
 
-  Q3ListViewItem *item = m_timeParts->currentItem();
+  QTreeWidgetItem *item = m_timeParts->currentItem();
 
   if( item )
   {
@@ -623,12 +668,11 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
   {
     CalcPartList tpList = m_template->getCalcPartsList( KALKPART_MATERIAL );
     MaterialCalcPart *mc;
-    mc = static_cast<MaterialCalcPart*>(tpList.first());
 
     bool addMat = true;
-    Q3ListViewItem *lvItem = 0;
+    QTreeWidgetItem *lvItem = 0;
 
-    if( ! mc )
+    if(tpList.isEmpty())
     {
       /* Es gibt noch garkeinen Material-Kalkulationsanteil. Es wird
                ein neuer angelegt
@@ -638,7 +682,9 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
     }
     else
     {
-      /* Der Material-Kalkulationsanteil existiert bereits. Hier checken, ob es
+      mc = static_cast<MaterialCalcPart*>(tpList.first());
+
+            /* Der Material-Kalkulationsanteil existiert bereits. Hier checken, ob es
                das vermeintlich neue material bereits in der Liste gibt */
       if( mc->containsMaterial( matID ) )
       {
@@ -659,13 +705,14 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
           {
             mc->setCalcAmount( mat, amount );
 
-            QHashIterator<Q3ListViewItem*, StockMaterial*> it(m_matDict);
+            QHashIterator<QTreeWidgetItem*, StockMaterial*> it(m_matDict);
 
             /* Das entsprechende Listitem raussuchen */
             while( !lvItem && it.hasNext() ) {
+              it.next();
               StockMaterial *listmat = static_cast<StockMaterial*>(it.value());
               if(  listmat == mat )
-                lvItem = static_cast<Q3ListViewItem*>(it.key());
+                lvItem = static_cast<QTreeWidgetItem*>(it.key());
             }
             if( lvItem )
             {
@@ -693,7 +740,7 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
       {
         mc->addMaterial(amount, matID);
         mc->setDirty(true);
-        lvItem = new Q3ListViewItem( m_matParts );
+        lvItem = new QTreeWidgetItem( m_matParts );
         m_matDict.insert( lvItem, mat);
         drawMatListEntry( lvItem, mc, mat );
         refreshPrices();
@@ -718,7 +765,7 @@ void FlosTemplDialog::slEditMatPart()
 
   kDebug() << "Edit Material part!" << endl;
 
-  Q3ListViewItem *item = m_matParts->currentItem();
+  QTreeWidgetItem *item = m_matParts->currentItem();
 
   /*
      * es gibt vorerst nur einen Material Calcpart pro template, der einen
@@ -763,7 +810,7 @@ void FlosTemplDialog::slRemoveMatPart()
 {
   if( ! m_template || ! m_matParts ) return;
 
-  Q3ListViewItem *item = m_matParts->currentItem();
+  QTreeWidgetItem *item = m_matParts->currentItem();
 
   if( item )
   {
@@ -774,7 +821,7 @@ void FlosTemplDialog::slRemoveMatPart()
     StockMaterial *mat = static_cast<StockMaterial*>(m_matDict[item]);
 
     mc->removeMaterial( mat );
-    m_matParts->takeItem(item);
+    m_matParts->removeItemWidget(item, 0);
     refreshPrices();
   }
 }

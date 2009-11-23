@@ -38,11 +38,15 @@ MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, bool modal )
     Eta( 0.00000000001 )
 {
   /* connect a value Changed signal of the manual price field */
-  QWidget *widget = new QWidget(this);
-  setupUi( widget );
+  QWidget *w = new QWidget(this);
+  setMainWidget(w);
+
+  setupUi( w );
   setModal( modal );
-  KDialog::setMainWidget(widget);
-  KDialog::setButtons(KDialog::Ok | KDialog::Cancel);
+  setButtons(KDialog::Ok | KDialog::Cancel);
+  setDefaultButton(KDialog::Ok);
+  showButtonSeparator( true);
+
   const QString currSymbol = DefaultProvider::self()->locale()->currencySymbol();
   mInPurchasePrice->setPrefix( currSymbol + " " );
   mInSalePrice->setPrefix( currSymbol + " " );

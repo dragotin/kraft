@@ -42,7 +42,10 @@ MatCalcDialog::MatCalcDialog(double amount, StockMaterial *mat, QWidget *parent,
     : KDialog( parent ), Ui::calcdetailMat( ),
     m_material(mat)
 {
-  setupUi( this );
+  QWidget *w = new QWidget( this );
+  setMainWidget(w);
+
+  setupUi( w );
   setModal( modal );
   m_inpMenge->setValue(amount);
   init(amount);
@@ -59,14 +62,15 @@ void MatCalcDialog::init(double amount)
 
 void MatCalcDialog::reject()
 {
-  reject();
+  KDialog::reject();
 }
 
 void MatCalcDialog::accept()
 {
   double val = m_inpMenge->value();
   emit( matCalcPartChanged(m_material, val ));
-  accept();
+
+  KDialog::accept();
 }
 
 double MatCalcDialog::getAmount()

@@ -89,21 +89,29 @@ public slots:
 
     virtual void accept();
     virtual void reject();
+    virtual void closeEvent ( QCloseEvent * event );
+    bool confirmClose();
 
 private:
     void setupConnections();
-    virtual void drawTimeListEntry( Q3ListViewItem *, ZeitCalcPart * );
-    virtual void drawFixListEntry( Q3ListViewItem*, FixCalcPart* );
-    virtual void drawMatListEntry( Q3ListViewItem*, MaterialCalcPart*, StockMaterial* );
+    void setButtonIcons();
+    virtual void drawTimeListEntry( QTreeWidgetItem *, ZeitCalcPart * );
+    virtual void drawFixListEntry( QTreeWidgetItem*, FixCalcPart* );
+    virtual void drawMatListEntry( QTreeWidgetItem*, MaterialCalcPart*, StockMaterial* );
 
     bool askChapterChange( FloskelTemplate*, int);
+
+    virtual QString stdMaterialKalcPartName()
+    {
+        return i18n("Calculated material");
+    }
 
     FloskelTemplate *m_template;
     Katalog         *m_katalog;
 
     /* dict das qlistviewitems auf calcparts abbildet */
-    QHash<Q3ListViewItem*, CalcPart*> mCalcPartDict;
-    QHash<Q3ListViewItem*, StockMaterial*> m_matDict;
+    QHash<QTreeWidgetItem*, CalcPart*> mCalcPartDict;
+    QHash<QTreeWidgetItem*, StockMaterial*> m_matDict;
 
     QButtonGroup *m_gbPriceSrc;
 
@@ -112,6 +120,7 @@ private:
     MatCalcDialog   *m_matPartDialog;
     CalcPart *m_cpChange;
     bool m_templateIsNew;
+    bool modified;
 };
 
 #endif

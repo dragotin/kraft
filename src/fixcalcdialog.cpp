@@ -47,7 +47,10 @@ FixCalcDialog::FixCalcDialog(FixCalcPart *cp, QWidget *parent, bool modal )
     : KDialog( parent ), Ui::calcdetailFix( ),
     m_part(0)
 {
-  setupUi( this );
+  QWidget *w = new QWidget( this );
+  setMainWidget(w);
+
+  setupUi( w );
   setModal( modal );
   setCalcPart(cp);
   m_inpPreis->setSuffix( DefaultProvider::self()->currencySymbol() );
@@ -79,6 +82,7 @@ void FixCalcDialog::accept()
   if( m_part && m_part->isDirty() ) {
     emit fixCalcPartChanged(m_part);
   }
+
   KDialog::accept();
 }
 
