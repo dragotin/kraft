@@ -183,7 +183,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "clientUid", doc->addressUid() );
     record->setValue( "salut", doc->salut() );
     record->setValue( "goodbye", doc->goodbye() );
-    record->setValue( "printDate", "NOW()" );
+    // record->setValue( "printDate", "NOW()" );
     record->setValue( "date", doc->date() );
     record->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
     record->setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
