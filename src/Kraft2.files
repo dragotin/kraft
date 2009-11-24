@@ -133,10 +133,6 @@ kraftview_ro.h
 main.cpp
 matcalcdialog.cpp
 matcalcdialog.h
-matdatatable.cpp
-matdatatable.h
-mateditor.cpp
-mateditor.h
 materialcalcpart.cpp
 materialcalcpart.h
 materialdialog.ui

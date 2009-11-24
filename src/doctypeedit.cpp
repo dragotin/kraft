@@ -18,19 +18,13 @@
 #include <QLayout>
 #include <QLineEdit>
 #include <QLabel>
-#include <q3frame.h>
-#include <q3hbox.h>
-#include <q3vbox.h>
 #include <QPushButton>
-#include <q3textedit.h>
 #include <QComboBox>
 #include <QLayout>
 #include <QCheckBox>
-#include <q3listbox.h>
 #include <QSqlQuery>
 #include <QSpinBox>
-#include <q3datatable.h>
-#include <q3sqlcursor.h>
+#include <QListWidget>
 
 #include <kdialog.h>
 #include <klocale.h>
@@ -52,24 +46,24 @@
 // --------------------------------------------------------------------------------
 
 DocTypeEdit::DocTypeEdit( QWidget *parent )
-  : Ui::DocTypeEditBase( )
+  : QWidget(parent), Ui::DocTypeEditBase( )
 {
   setupUi( this );
 
-  connect( mTypeListBox, SIGNAL( highlighted( const QString& ) ),
+  connect( mTypeListBox, SIGNAL( currentTextChanged( const QString& ) ),
            this,  SLOT( slotDocTypeSelected( const QString& ) ) );
 
   QStringList types = DocType::allLocalised();;
   mTypeListBox->clear();
-  mTypeListBox->insertStringList( types );
+  mTypeListBox->addItems( types );
 
   for ( QStringList::Iterator it = types.begin(); it != types.end(); ++it ) {
     DocType dt( *it );
     mOrigDocTypes[*it] = dt;
   }
 
-  mTypeListBox->setSelected( 0, true );
-  QString dtype = mTypeListBox->currentText();
+  mTypeListBox->setCurrentRow( 0, QItemSelectionModel::Select );
+  QString dtype = mTypeListBox->currentItem()->text();
 
   mPbAdd->setIcon( BarIcon( "filenew" ) );
   mPbEdit->setIcon( BarIcon( "edit" ) );
@@ -137,10 +131,10 @@ void DocTypeEdit::slotAddDocType()
   if ( newName.isEmpty() ) return;
   kDebug() << "New Name to add: " << newName;
 
-  if ( mTypeListBox->findItem( newName ) ) {
+  if ( mTypeListBox->findItems(newName, Qt::MatchExactly).count() > 0 ) {
     kDebug() << "New Name already exists";
   } else {
-    mTypeListBox->insertItem( newName );
+    mTypeListBox->addItem( newName );
     DocType newDt( newName, true );
 
     mOrigDocTypes[newName] = newDt;
@@ -153,7 +147,7 @@ void DocTypeEdit::slotEditDocType()
 {
   kDebug() << "Editing a doctype!";
 
-  QString currName = mTypeListBox->currentText();
+  QString currName = mTypeListBox->currentItem()->text();
 
   if ( currName.isEmpty() ) return;
 
@@ -163,7 +157,7 @@ void DocTypeEdit::slotEditDocType()
   if ( newName.isEmpty() ) return;
   kDebug() << "edit: " << currName << " became " << newName;
   if ( newName != currName ) {
-    mTypeListBox->changeItem( newName, mTypeListBox->currentItem() );
+    mTypeListBox->currentItem()->setText(newName);
 
     /* check if the word that was changed now was already changed before. */
     bool prechanged = false;
@@ -198,7 +192,7 @@ void DocTypeEdit::slotRemoveDocType()
 {
   kDebug() << "Removing a doctype!";
 
-  QString currName = mTypeListBox->currentText();
+  QString currName = mTypeListBox->currentItem()->text();
 
   if ( currName.isEmpty() ) {
     kDebug() << "No current Item, return";
@@ -221,7 +215,7 @@ void DocTypeEdit::slotRemoveDocType()
     mRemovedTypes.append( toRemove );
   }
 
-  mTypeListBox->removeItem( mTypeListBox->currentItem() );
+  mTypeListBox->removeItemWidget( mTypeListBox->currentItem() );
 
   emit removedType( currName );
 }
@@ -289,7 +283,7 @@ void DocTypeEdit::slotEditNumberCycles()
 
 DocType DocTypeEdit::currentDocType()
 {
-  QString docType = mTypeListBox->currentText();
+  QString docType = mTypeListBox->currentItem()->text();
   DocType dt = mOrigDocTypes[docType];
   if ( mChangedDocTypes.contains( docType ) ) {
     dt = mChangedDocTypes[docType];
@@ -304,8 +298,8 @@ void DocTypeEdit::slotWatermarkModeChanged( int newMode )
   QString newMergeIdent = QString::number( newMode );
   if ( newMergeIdent != dt.mergeIdent() ) {
     dt.setMergeIdent( newMergeIdent );
-    if ( !mTypeListBox->currentText().isEmpty() ) {
-      mChangedDocTypes[ mTypeListBox->currentText() ] = dt;
+    if ( !mTypeListBox->currentItem()->text().isEmpty() ) {
+      mChangedDocTypes[ mTypeListBox->currentItem()->text() ] = dt;
     }
   }
 
@@ -317,7 +311,7 @@ void DocTypeEdit::slotWatermarkModeChanged( int newMode )
 
 void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )
 {
-  QString docType = mTypeListBox->currentText();
+  QString docType = mTypeListBox->currentItem()->text();
   DocType dt = mOrigDocTypes[docType];
   if ( mChangedDocTypes.contains( docType ) ) {
     dt = mChangedDocTypes[docType];
@@ -331,7 +325,7 @@ void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )
 
 void DocTypeEdit::slotWatermarkUrlChanged( const QString& newUrl )
 {
-  QString docType = mTypeListBox->currentText();
+  QString docType = mTypeListBox->currentItem()->text();
   DocType dt = mOrigDocTypes[docType];
   if ( mChangedDocTypes.contains( docType ) ) {
     dt = mChangedDocTypes[docType];
@@ -346,7 +340,7 @@ void DocTypeEdit::slotWatermarkUrlChanged( const QString& newUrl )
 
 void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
 {
-  QString docTypeName = mTypeListBox->currentText();
+  QString docTypeName = mTypeListBox->currentItem()->text();
   DocType dt = currentDocType();
   dt.setNumberCycleName( newCycle );
   mChangedDocTypes[docTypeName] = dt;

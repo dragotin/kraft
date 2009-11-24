@@ -74,8 +74,6 @@ set(kraft_SRCS
     materialtempldialog.cpp
     zeitcalcdialog.cpp
     fixcalcdialog.cpp
-    mateditor.cpp
-    matdatatable.cpp
     matcalcdialog.h
     matcalcdialog.cpp
     templatesaverbase.cpp

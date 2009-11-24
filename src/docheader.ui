@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>614</width>
-    <height>534</height>
+    <height>387</height>
    </rect>
   </property>
   <layout class="QGridLayout">
@@ -62,28 +62,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1" rowspan="2">
-      <widget class="Q3TextEdit" name="m_whiteboardEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>32767</width>
-         <height>80</height>
-        </size>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::VLine</enum>
-       </property>
-       <property name="tabChangesFocus" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="0">
       <widget class="QLineEdit" name="mProjectLabelEdit">
        <property name="toolTip">
@@ -111,8 +89,15 @@
        <property name="wordWrap">
         <bool>false</bool>
        </property>
-       <property name="buddy">
-        <cstring>m_whiteboardEdit</cstring>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="KTextEdit" name="m_whiteboardEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
       </widget>
      </item>
@@ -137,9 +122,6 @@
        </property>
        <property name="wordWrap">
         <bool>false</bool>
-       </property>
-       <property name="buddy">
-        <cstring>m_postAddressEdit</cstring>
        </property>
       </widget>
      </item>
@@ -181,22 +163,6 @@
        <property name="wordWrap">
         <bool>false</bool>
        </property>
-       <property name="buddy">
-        <cstring>m_teEntry</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="Q3TextEdit" name="m_postAddressEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="tabChangesFocus" stdset="0">
-        <bool>true</bool>
-       </property>
       </widget>
      </item>
      <item row="0" column="0">
@@ -206,6 +172,16 @@
        </property>
        <property name="wordWrap">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="KTextEdit" name="m_postAddressEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
       </widget>
      </item>
@@ -219,17 +195,10 @@
      <property name="wordWrap">
       <bool>false</bool>
      </property>
-     <property name="buddy">
-      <cstring>m_teEntry</cstring>
-     </property>
     </widget>
    </item>
    <item row="4" column="0">
-    <widget class="Q3TextEdit" name="m_teEntry">
-     <property name="tabChangesFocus" stdset="0">
-      <bool>true</bool>
-     </property>
-    </widget>
+    <widget class="KTextEdit" name="m_teEntry"/>
    </item>
   </layout>
  </widget>
@@ -246,26 +215,16 @@
    <header>kcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Q3TextEdit</class>
-   <extends>Q3Frame</extends>
-   <header>q3textedit.h</header>
-   <container>1</container>
+   <class>KTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>ktextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mButtLang</tabstop>
   <tabstop>m_cbType</tabstop>
   <tabstop>mProjectLabelEdit</tabstop>
-  <tabstop>m_whiteboardEdit</tabstop>
-  <tabstop>m_postAddressEdit</tabstop>
   <tabstop>m_letterHead</tabstop>
-  <tabstop>m_teEntry</tabstop>
  </tabstops>
  <includes>
   <include location="local">kdatewidget.h</include>

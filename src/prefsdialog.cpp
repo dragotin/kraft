@@ -18,19 +18,12 @@
 #include <QLayout>
 #include <QLineEdit>
 #include <QLabel>
-#include <q3frame.h>
-#include <q3hbox.h>
-#include <q3vbox.h>
 #include <QPushButton>
-#include <q3textedit.h>
 #include <QComboBox>
 #include <QLayout>
 #include <QCheckBox>
-#include <q3listbox.h>
 #include <QSqlQuery>
 #include <QSpinBox>
-#include <q3sqlcursor.h>
-#include <q3datatable.h>
 #include <QToolTip>
 #include <q3listview.h>
 #include <QPalette>
@@ -124,10 +117,11 @@ void PrefsDialog::databaseTab()
   palette.setColor(l1->backgroundRole(), QColor( "#ffcbcb"));
   l1->setPalette(palette);
   l1->setMargin( 5 );
-  l1->setFrameStyle( Q3Frame::Box + Q3Frame::Raised );
+  l1->setFrameStyle( QFrame::Box + QFrame::Raised );
   l1->setLineWidth( 1 );
-  l1->setAlignment( Qt::AlignCenter | Qt::TextExpandTabs | Qt::TextWordWrap );
-  topLayout->addWidget( l1, 0,  1, 6, 5 ); //Not sure!  
+  //l1->setAlignment( Qt::AlignCenter | Qt::TextExpandTabs | Qt::TextWordWrap );
+  l1->setAlignment(Qt::AlignCenter);
+  topLayout->addWidget( l1, 0, 1, 6, 5 ); //Not sure!
 
   m_leHost = new QLineEdit;
   connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
@@ -364,7 +358,7 @@ void PrefsDialog::doctypeTab()
                               // DesktopIcon( "folder_man" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
-
+  topWidget->setLayout(vboxLay);
   vboxLay->setSpacing( 0 ); // spacingHint() );
 
   mDocTypeEdit = new DocTypeEdit;

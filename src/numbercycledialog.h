@@ -56,7 +56,7 @@ protected slots:
   void slotRemoveCycle();
   void slotNumberCycleSelected( int );
   void slotTemplTextChanged( const QString& );
-  void slotOk();
+  void accept();
   void slotUpdateExample();
 
 private:

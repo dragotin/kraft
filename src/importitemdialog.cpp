@@ -58,20 +58,26 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
   mBaseWidget->setupUi( w );
 
   // Fill the tags list
-  Q3ButtonGroup *group = mBaseWidget->mTagGroup;
+  group = new QButtonGroup(this);
+  group->setExclusive(false);
 
-  group->setColumns( 1 );
   QStringList tags = TagTemplateMan::self()->allTagTemplates();
   int c = 0;
 
+  QVBoxLayout *checkboxLayout = new QVBoxLayout;
+
   for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-    QCheckBox *cb = new QCheckBox( *it, group );
+    QCheckBox *cb = new QCheckBox( *it );
+    group->addButton(cb, c);
+    checkboxLayout->addWidget(cb);
     QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
     cb->setToolTip( desc );
-    group->insert( cb, c );
     mTagMap[c] = *it;
     c++;
   }
+
+  checkboxLayout->addStretch(2);
+  mBaseWidget->mTagGroup->setLayout(checkboxLayout);
 
   connect( mBaseWidget->mSchemaCombo, SIGNAL( activated( const QString& ) ),
            SLOT( slotSchemaChanged( const QString& ) ) );
@@ -175,12 +181,11 @@ DocPositionList ImportItemDialog::positionList()
     list = filter.import( url );
 
     // get the tags
-    Q3ButtonGroup *group = mBaseWidget->mTagGroup;
     QStringList tags;
 
     QMap<int, QString>::Iterator it;
     for ( it = mTagMap.begin(); it != mTagMap.end(); ++it ) {
-      QCheckBox *b = static_cast<QCheckBox*>( group->find( it.key() ) );
+      QCheckBox *b = static_cast<QCheckBox*>( group->button( it.key() ) );
       if ( b->isChecked() ) tags.append( it.value() );
     }
 

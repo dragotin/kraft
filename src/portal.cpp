@@ -56,7 +56,6 @@
 #include "kraftdoc.h"
 #include "floskeltemplate.h"
 #include "templkatalogview.h"
-#include "mateditor.h"
 #include "brunskatalogview.h"
 #include "materialkatalogview.h"
 #include "prefsdialog.h"

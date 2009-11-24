@@ -497,13 +497,13 @@ void DocType::save()
   bool doInsert = false;
   if ( id.isOk() ) {
     q.prepare( "UPDATE DocTypes SET name=:name WHERE docTypeId=:id" );
+    q.bindValue( ":id", id.toInt() );
   } else {
     q.prepare( "INSERT INTO DocTypes (name) VALUES (:name)" );
     doInsert = true;
   }
 
   q.bindValue( ":name", mName );
-  q.bindValue( ":id", id.toInt() );
   q.exec();
 
   if ( doInsert ) {

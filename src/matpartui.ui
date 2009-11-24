@@ -65,9 +65,6 @@
           <property name="wordWrap">
            <bool>true</bool>
           </property>
-          <property name="buddy">
-           <cstring>m_nameEdit</cstring>
-          </property>
          </widget>
         </item>
        </layout>
@@ -110,9 +107,6 @@
           </property>
           <property name="wordWrap">
            <bool>false</bool>
-          </property>
-          <property name="buddy">
-           <cstring>m_inpPreis</cstring>
           </property>
          </widget>
         </item>

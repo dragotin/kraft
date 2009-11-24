@@ -27,10 +27,7 @@
 #include "ui_calctemplate.h"
 #include "calcpart.h"
 #include "stockmaterial.h"
-/**
- *
- */
-class Q3ListViewItem;
+
 class FloskelTemplate;
 class ZeitCalcPart;
 class MaterialCalcPart;
@@ -39,7 +36,6 @@ class ZeitCalcPart;
 class FixCalcDialog;
 class MatCalcDialog;
 class ZeitCalcDialog;
-class MatEditor;
 class Katalog;
 
 class FlosTemplDialog : public KDialog, protected Ui::d_calcTempl

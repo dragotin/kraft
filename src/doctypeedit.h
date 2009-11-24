@@ -28,7 +28,6 @@
 
 class QLineEdit;
 class QLabel;
-class Q3TextEdit;
 class QPushButton;
 class QComboBox;
 class QCheckBox;
@@ -40,7 +39,7 @@ class QCheckBox;
 
 // ################################################################################
 
-class DocTypeEdit : public KDialog, protected Ui::DocTypeEditBase
+class DocTypeEdit : public QWidget, protected Ui::DocTypeEditBase
 {
   Q_OBJECT
 

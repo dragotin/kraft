@@ -110,7 +110,6 @@ void KatalogListView::setupChapters()
 
       kDebug() << "Creating katalog chapter item for " << chapter << endl;
       QTreeWidgetItem *katItem = new QTreeWidgetItem( m_root, QStringList( chapter) );
-      katItem->setText( 4, QString::number( cat->chapterID( chapter ) ) );
       m_catalogDict.insert( cat->chapterID(chapter), katItem );
 
       katItem->setIcon( 0, icon );
@@ -122,7 +121,7 @@ void KatalogListView::setupChapters()
 
 QTreeWidgetItem *KatalogListView::chapterItem( const QString& chapName )
 {
-  Katalog *kat = catalog();
+    Katalog *kat = catalog();
     int chapID = kat->chapterID(chapName);
 
     return m_catalogDict[chapID];

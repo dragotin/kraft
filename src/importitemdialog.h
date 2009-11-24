@@ -58,6 +58,7 @@ protected:
 
 private:
   Ui::importToDocBase *mBaseWidget;
+  QButtonGroup *group;
   QMap<QString, DocPositionImportFilter> mFilterMap;
   QMap<int, QString> mTagMap;
 };

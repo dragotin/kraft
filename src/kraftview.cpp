@@ -22,7 +22,7 @@
 #include <QLabel>
 #include <q3scrollview.h>
 #include <QSizePolicy>
-#include <q3textedit.h>
+#include <QTextEdit>
 #include <QSignalMapper>
 #include <khbox.h>
 #include <kvbox.h>
@@ -44,6 +44,7 @@
 #include <kcombobox.h>
 #include <kdatewidget.h>
 #include <knuminput.h>
+#include <ktextedit.h>
 #include <kactioncollection.h>
 #include <kmessagebox.h>
 #include <khtmlview.h>
@@ -153,7 +154,7 @@ KraftView::KraftView(QWidget *parent) :
   mDetailHeader = new QLabel;
   mDetailHeader->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
   // mDetailHeader->setMargin( 4 );
-  mDetailHeader->setFrameStyle( Q3Frame::Box + Q3Frame::Plain );
+  mDetailHeader->setFrameStyle( QFrame::Box + QFrame::Plain );
   mDetailHeader->setLineWidth( 1 );
   mDetailHeader->setAutoFillBackground(true);
 
@@ -567,16 +568,16 @@ void KraftView::refreshPostCard()
     const QString dStr = getDocument()->locale()->formatDate( d );
 
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
-                                           dStr, m_headerEdit->m_postAddressEdit->text(),
+                                           dStr, m_headerEdit->m_postAddressEdit->toPlainText(),
                                            getDocument()->ident(),
-                                           m_headerEdit->m_teEntry->text() );
+                                           m_headerEdit->m_teEntry->toPlainText() );
 
 
     mAssistant->postCard()->setPositions( positions,  currentTaxSetting(),
                                           DocumentMan::self()->tax( d ),
                                           DocumentMan::self()->reducedTax( d ) );
 
-    mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->text(),
+    mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->toPlainText(),
                                            m_footerEdit->m_cbGreeting->currentText() );
 
     mAssistant->postCard()->renderDoc( mViewStack->currentIndex() ); // id( mViewStack->visibleWidget() ) );
@@ -1338,13 +1339,13 @@ void KraftView::saveChanges()
     // transfer all values to the document
     doc->setDate( m_headerEdit->m_dateEdit->date() );
     doc->setAddressUid( mContactUid );
-    doc->setAddress(  m_headerEdit->m_postAddressEdit->text() );
+    doc->setAddress(  m_headerEdit->m_postAddressEdit->toPlainText() );
     doc->setDocType(  m_headerEdit->m_cbType->currentText() );
-    doc->setPreText(  m_headerEdit->m_teEntry->text() );
-    doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->text() );
+    doc->setPreText(  m_headerEdit->m_teEntry->toPlainText() );
+    doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->toPlainText() );
     doc->setProjectLabel( m_headerEdit->mProjectLabelEdit->text() );
     doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
-    doc->setPostText( m_footerEdit->m_teSummary->text() );
+    doc->setPostText( m_footerEdit->m_teSummary->toPlainText() );
     doc->setGoodbye(  m_footerEdit->m_cbGreeting->currentText() );
 
     DocPositionList list = currentPositionList();

@@ -18,15 +18,12 @@
 #include <QLayout>
 #include <QLineEdit>
 #include <QLabel>
-#include <q3frame.h>
-#include <q3hbox.h>
-#include <q3vbox.h>
 #include <QPushButton>
-#include <q3textedit.h>
 #include <QComboBox>
 #include <QLayout>
 #include <QCheckBox>
-#include <q3listbox.h>
+#include <QListWidget>
+#include <QListWidgetItem>
 #include <QSqlQuery>
 #include <QSpinBox>
 #include <QToolTip>
@@ -59,16 +56,14 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
 
   showButtonSeparator( true );
 
-  KVBox *w = new KVBox( parent );
+  QWidget *w = new QWidget(this);
   setMainWidget( w );
 
   mBaseWidget = new Ui::NumberCycleEditBase( );
   mBaseWidget->setupUi( w );
 
-  mBaseWidget->mPbAdd->setIcon( BarIcon( "filenew" ) );
-  mBaseWidget->mPbEdit->setIcon( BarIcon( "edit" ) );
-  mBaseWidget->mPbEdit->setHidden( true );
-  mBaseWidget->mPbRemove->setIcon( BarIcon( "editdelete" ) );
+  mBaseWidget->mPbAdd->setIcon( KIcon( "list-add" ) );
+  mBaseWidget->mPbRemove->setIcon( KIcon( "list-remove" ) );
   mBaseWidget->mCounterEdit->setMaximum( 1000000 );
   mBaseWidget->mCounterEdit->setSingleStep( 1 );
 
@@ -98,12 +93,12 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
 
   loadCycles();
 
-  connect( mBaseWidget->mCycleListBox, SIGNAL( highlighted( int ) ),
+  connect( mBaseWidget->mCycleListBox, SIGNAL( currentRowChanged( int ) ),
            SLOT( slotNumberCycleSelected( int ) ) );
 
-  Q3ListBoxItem *initItem = mBaseWidget->mCycleListBox->findItem( initType );
+  QListWidgetItem *initItem = mBaseWidget->mCycleListBox->findItems( initType, Qt::MatchExactly ).first();
   if ( initItem ) {
-    mBaseWidget->mCycleListBox->setSelected( initItem,  true );
+    mBaseWidget->mCycleListBox->setCurrentItem( initItem,  QItemSelectionModel::Select );
   }
   slotUpdateExample();
 
@@ -127,7 +122,7 @@ void NumberCycleDialog::loadCycles()
     nc.setTemplate( q.value( 3 ).toString() );
 
     mNumberCycles[nc.name()] = nc;
-    mBaseWidget->mCycleListBox->insertItem( nc.name() );
+    mBaseWidget->mCycleListBox->addItem( nc.name() );
   }
 }
 
@@ -181,7 +176,7 @@ void NumberCycleDialog::slotNumberCycleSelected( int num )
   updateCycleDataFromGUI();
 
   // set the new data of the selected cycle
-  QString name = mBaseWidget->mCycleListBox->text( num );
+  QString name = mBaseWidget->mCycleListBox->item( num )->text();
   if ( ! mNumberCycles.contains( name ) ) {
     kDebug() << "No numbercycle found at pos " << num;
   }
@@ -227,11 +222,11 @@ void NumberCycleDialog::slotAddCycle()
     }
 
     mNumberCycles[newName] = numCycle;
-    mBaseWidget->mCycleListBox->insertItem( numCycle.name() );
+    mBaseWidget->mCycleListBox->addItem( numCycle.name() );
   } else {
     kDebug() << "The name is not unique!";
   }
-  Q3ListBoxItem *item = mBaseWidget->mCycleListBox->findItem( newName );
+  QListWidgetItem *item = mBaseWidget->mCycleListBox->findItems( newName, Qt::MatchExactly ).first();
   if ( item ) {
     mBaseWidget->mCycleListBox->setCurrentItem( item );
   }
@@ -239,8 +234,8 @@ void NumberCycleDialog::slotAddCycle()
 
 void NumberCycleDialog::slotRemoveCycle()
 {
-  QString entry = mBaseWidget->mCycleListBox->currentText();
-  Q3ListBoxItem *item = mBaseWidget->mCycleListBox->selectedItem();
+  QString entry = mBaseWidget->mCycleListBox->currentItem()->text();
+  QListWidgetItem *item = mBaseWidget->mCycleListBox->currentItem();
   if ( entry.isEmpty() || !item ) return;
 
   mRemovedCycles << entry;
@@ -275,7 +270,7 @@ bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
 }
 
 
-void NumberCycleDialog::slotOk()
+void NumberCycleDialog::accept()
 {
   kDebug() << "Slot Ok hit";
 
@@ -355,7 +350,7 @@ void NumberCycleDialog::slotOk()
       qIns.exec();
     }
   }
-  KDialog::slotButtonClicked( Ok );
+  KDialog::accept();
 }
 
 void NumberCycleDialog::updateField( int id, const QString& field, const QString& value )

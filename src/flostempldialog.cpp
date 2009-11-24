@@ -48,7 +48,6 @@
 #include "zeitcalcdialog.h"
 #include "fixcalcdialog.h"
 #include "stdsatzman.h"
-#include "mateditor.h"
 #include "katalogman.h"
 #include "katalog.h"
 #include "materialselectdialog.h"
