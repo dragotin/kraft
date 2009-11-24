@@ -21,6 +21,7 @@
 #include <QTextStream>
 #include <QRegExp>
 #include <QList>
+#include <QTextDocument>
 
 #include <k3staticdeleter.h>
 #include <kdebug.h>
@@ -30,7 +31,6 @@
 #include <kurl.h>
 #include <kmessagebox.h>
 #include <kabc/stdaddressbook.h>
-#include <QTextDocument>
 
 #include "reportgenerator.h"
 #include "kraftdoc.h"
@@ -82,12 +82,16 @@ void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 
   if ( ! templ.isEmpty() ) {
     KTemporaryFile temp;
-    temp.setPrefix( ".trml" );
+    temp.setSuffix( ".trml" );
+    temp.setAutoRemove( false );
 
-    QTextStream s(&temp);
-    s.setCodec( QTextCodec::codecForLocale() );
-    s << templ;
-    temp.close();
+    if ( temp.open() ) {
+      QTextStream s(&temp);
+      // s.setCodec( QTextCodec::codecForLocale() );
+      s << templ;
+    } else {
+      kDebug() << "ERROR: Could not open temporar file";
+    }
 
     kDebug() << "Wrote rml to " << temp.fileName();
 
@@ -352,9 +356,11 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
 {
   if( ! mProcess ) {
     mProcess = new KProcess;
+    mProcess->setOutputChannelMode( KProcess::SeparateChannels );
     connect( mProcess, SIGNAL( finished( int ) ),this, SLOT( trml2pdfFinished( int ) ) );
     connect( mProcess, SIGNAL( readyReadStandardOutput()), this, SLOT( slotReceivedStdout() ) );
     connect( mProcess, SIGNAL( readyReadStandardError()), this, SLOT( slotReceivedStderr() ) );
+    connect( mProcess, SIGNAL( error ( QProcess::ProcessError )), this, SLOT( slotError( QProcess::ProcessError)));
   } else {
     mProcess->clearProgram();
   }
@@ -398,11 +404,11 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
 
   mFile.setFileName( mOutFile );
   if ( mFile.open( QIODevice::WriteOnly ) ) {
+    mProcess->setProgram( prg );
     mTargetStream.setDevice( &mFile );
     QStringList args = mProcess->program();
     kDebug() << "* rml2pdf Call-Arguments: " << args;
 
-    mProcess->setProgram( prg );
     mProcess->start( );
   }
 }
@@ -417,18 +423,20 @@ void ReportGenerator::slotReceivedStderr( )
   mErrors.append( mProcess->readAllStandardError() );
 }
 
+void ReportGenerator::slotError( QProcess::ProcessError err )
+{
+  mErrors.append( i18n("Program ended with status %1").arg(err));
+}
+
 void ReportGenerator::trml2pdfFinished( int exitStatus)
 {
+  mTargetStream.flush();
   mFile.close();
   kDebug() << "Trml2pdf Process finished with status " << exitStatus;
 
   if ( exitStatus == 0 ) {
     emit pdfAvailable( mOutFile );
     mOutFile = QString();
-#if 0
-    KUrl url( mOutFile );
-    KRun::runURL( url, "application/pdf" );
-#endif
   } else {
     if ( mErrors.isEmpty() ) mErrors = i18n( "Unknown problem." );
     // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
@@ -440,4 +448,4 @@ void ReportGenerator::trml2pdfFinished( int exitStatus)
   }
 }
 
-#include "reportgenerator.moc"
+

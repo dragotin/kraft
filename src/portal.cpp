@@ -703,7 +703,7 @@ void Portal::slotFileQuit()
   closeEvent(0);
 }
 
-void Portal::closeEvent( QCloseEvent * event )
+void Portal::closeEvent( QCloseEvent * /* event */)
 {
   slotStatusMsg(i18n("Exiting..."));
   // close the first window, the list makes the next one the first again.

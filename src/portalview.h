@@ -88,8 +88,8 @@ private:
   QTreeWidgetItem *mLatestDocsParent;
   QTreeWidgetItem *mTimeLineParent;
 
-  KPageWidgetItem *mDocsPage;
   KPageWidgetItem *mSysPage;
+  KPageWidgetItem *mDocsPage;
 
   int mDocDigestIndex;
   int mCatalogIndex;

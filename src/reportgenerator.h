@@ -19,14 +19,14 @@
 
 #include <QFile>
 #include <QObject>
-
+#include <QProcess>
+#include <QTextStream>
 
 #include "kraftdoc.h"
 
 class dbID;
 class KProcess;
 class QFile;
-class QTextStream;
 
 
 class ReportGenerator : public QObject
@@ -51,6 +51,7 @@ protected slots:
   void trml2pdfFinished( int );
   void slotReceivedStdout();
   void slotReceivedStderr();
+  void slotError( QProcess::ProcessError );
   QString findTemplate( const QString& );
   
 private:
