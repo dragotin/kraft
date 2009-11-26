@@ -15,23 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QLabel>
-#include <QToolTip>
-#include <q3vbox.h>
 #include <QDateTime>
-#include <QSqlQuery>
+#include <QSqlTableModel>
+#include <QDataWidgetMapper>
 
 #include <kdialog.h>
 #include <klocale.h>
 #include <kdebug.h>
 #include <kdatewidget.h>
 #include <knuminput.h>
-#include <kvbox.h>
 
 #include "taxeditdialog.h"
 
-TaxEditDialog::TaxEditDialog( QWidget *parent )
- :KDialog( parent ) // , "TAX_EDIT", true, i18n( "Edit Tax Rates" ), Ok|Cancel )
+TaxEditDialog::TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent )
+ : KDialog( parent )
 {
   setObjectName( "TAX_EDIT_DIALOG" );
   setModal( true );
@@ -40,32 +37,41 @@ TaxEditDialog::TaxEditDialog( QWidget *parent )
 
   showButtonSeparator( true );
 
-  KVBox *w = new KVBox( parent );
+  QWidget *w = new QWidget( this );
   setMainWidget( w );
 
   mBaseWidget = new Ui::TaxEditBase( );
   mBaseWidget->setupUi( w );
-
   mBaseWidget->mDateWidget->setDate( QDate::currentDate() );
 
   mBaseWidget->mFullTax->setSuffix( "%" );
   mBaseWidget->mReducedTax->setSuffix( "%" );
 
-  mBaseWidget->mFullTax->setRange( 0,10.0 );
-  mBaseWidget->mReducedTax->setRange( 0, 10.0 );
+  mBaseWidget->mFullTax->setRange( 0,100.0 );
+  mBaseWidget->mReducedTax->setRange( 0, 100.0 );
 
   mBaseWidget->mFullTax->setDecimals( 1 );
   mBaseWidget->mReducedTax->setDecimals( 1 );
+
+  this->model = taxModel;
+
+  mapper = new QDataWidgetMapper(this);
+
+  mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
+  mapper->setModel(taxModel);
+  mapper->addMapping(mBaseWidget->mReducedTax, 0);
+  mapper->addMapping(mBaseWidget->mFullTax, 1);
+  mapper->addMapping(mBaseWidget->mDateWidget, 2);
+  mapper->setCurrentIndex(0);
 }
 
-TaxRecord TaxEditDialog::newTaxRecord()
+void TaxEditDialog::accept()
 {
-  TaxRecord record;
-  record.fullTax = mBaseWidget->mFullTax->value();
-  record.reducedTax = mBaseWidget->mReducedTax->value();
-  record.date = mBaseWidget->mDateWidget->date();
+  mapper->submit();
+  model->insertRow(mapper->currentIndex());
+  kDebug() << mapper->currentIndex();
 
-  return record;
+  KDialog::accept();
 }
 
 #include "taxeditdialog.moc"

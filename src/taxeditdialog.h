@@ -18,17 +18,12 @@
 #ifndef TAXEDITDIALOG_H
 #define TAXEDITDIALOG_H
 
-
-#include <qdatetime.h>
-
-#include <QLabel>
-#include <QList>
+#include <QSqlTableModel>
+#include <QDataWidgetMapper>
 
 #include <kdialog.h>
 
 #include "ui_taxeditbase.h"
-
-class QLabel;
 
 /**
  *  @author Klaas Freitag
@@ -36,27 +31,20 @@ class QLabel;
 
 // ################################################################################
 
-struct TaxRecord
-{
-  typedef QList<TaxRecord> List;
-
-  double fullTax;
-  double reducedTax;
-  QDate  date;
-};
-
 class TaxEditDialog: public KDialog, protected Ui::TaxEditBase
 {
   Q_OBJECT
 
 public:
-  TaxEditDialog( QWidget *parent );
+  TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent );
 
-  TaxRecord newTaxRecord();
+public slots:
+  void accept();
 
 private:
   Ui::TaxEditBase *mBaseWidget;
-  
+  QDataWidgetMapper *mapper;
+  QSqlTableModel *model;
 };
 
 #endif

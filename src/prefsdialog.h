@@ -20,24 +20,17 @@
 
 #include <kpagedialog.h>
 
-#include <qmap.h>
-//Added by qt3to4:
-#include <Q3SqlCursor>
-#include <QLabel>
-
 #include "doctypeedit.h"
 #include "doctype.h"
 #include "taxeditdialog.h"
 
 class QLineEdit;
 class QLabel;
-class Q3TextEdit;
 class QPushButton;
 class QComboBox;
 class QCheckBox;
-class Q3ListView;
-class Q3DataTable;
-class Q3SqlCursor;
+class QTreeView;
+class QSqlTableModel;
 
 // ################################################################################
 
@@ -61,9 +54,8 @@ protected slots:
   void slotCheckConnect();
   
   void slotAddTax();
-  void slotEditTax();
   void slotDeleteTax();
-  void slotTaxSelected();
+  void slotTaxSelected(QModelIndex);
   void slotDocTypeRemoved( const QString& );
 
 private:
@@ -71,7 +63,6 @@ private:
   void docTab();
   void doctypeTab();
   void taxTab();
-  void buildTaxList();
   void writeTaxes();
 
   QLineEdit *m_leHost;
@@ -89,9 +80,9 @@ private:
 
   DocTypeEdit *mDocTypeEdit;
   
-  Q3ListView *mTaxListView;
   QPushButton *mDelTax;
-
+  QTreeView *mTaxTreeView;
+  QSqlTableModel *mTaxModel;
 };
 
 #endif
