@@ -59,19 +59,38 @@ TaxEditDialog::TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent )
 
   mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
   mapper->setModel(taxModel);
-  mapper->addMapping(mBaseWidget->mReducedTax, 0);
   mapper->addMapping(mBaseWidget->mFullTax, 1);
-  mapper->addMapping(mBaseWidget->mDateWidget, 2);
-  mapper->setCurrentIndex(0);
+  mapper->addMapping(mBaseWidget->mReducedTax, 2);
+  mapper->addMapping(mBaseWidget->mDateWidget, 3);
+  model->insertRow(model->rowCount());
+  mapper->toLast();
 }
 
 void TaxEditDialog::accept()
 {
   mapper->submit();
-  model->insertRow(mapper->currentIndex());
-  kDebug() << mapper->currentIndex();
+  //Check if the inserted date already exists, if so update the existing record and delete this record
+  for(int i = 0; i < model->rowCount() - 1; ++i)
+  {
+    if (model->index(i, 3).data(Qt::DisplayRole).toDate() == mBaseWidget->mDateWidget->date() )
+    {
+      //Check if the row isn't removed
+      QString headerdata = model->headerData(i, Qt::Vertical, Qt::DisplayRole).toString();
+      if(headerdata != "!")
+      {
+        model->setData(model->index(i, 1, QModelIndex()), mBaseWidget->mFullTax->value(), Qt::EditRole);
+        model->setData(model->index(i, 2, QModelIndex()), mBaseWidget->mReducedTax->value(), Qt::EditRole);
+        model->removeRow(model->rowCount()-1);
+      }
+    } 
+  }
 
   KDialog::accept();
+}
+
+void TaxEditDialog::reject()
+{
+  model->removeRow(model->rowCount()-1);
 }
 
 #include "taxeditdialog.moc"

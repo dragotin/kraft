@@ -19,6 +19,7 @@
 #define PREFSDIALOG_H
 
 #include <kpagedialog.h>
+#include <QItemDelegate>
 
 #include "doctypeedit.h"
 #include "doctype.h"
@@ -55,6 +56,8 @@ protected slots:
   
   void slotAddTax();
   void slotDeleteTax();
+  void slotUndoTax();
+  void slotTaxDataChanged(QModelIndex,QModelIndex);
   void slotTaxSelected(QModelIndex);
   void slotDocTypeRemoved( const QString& );
 
@@ -81,8 +84,19 @@ private:
   DocTypeEdit *mDocTypeEdit;
   
   QPushButton *mDelTax;
+  QPushButton *mUndoTax;
   QTreeView *mTaxTreeView;
   QSqlTableModel *mTaxModel;
+};
+
+class TaxItemDelegate : public QItemDelegate
+{
+  Q_OBJECT
+
+public:
+  TaxItemDelegate(QObject * parent = 0);
+
+  virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 };
 
 #endif

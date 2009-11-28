@@ -25,10 +25,11 @@
 #include <QSqlQuery>
 #include <QSpinBox>
 #include <QToolTip>
-#include <q3listview.h>
 #include <QPalette>
 #include <QTreeView>
 #include <QSqlTableModel>
+#include <QModelIndex>
+#include <QSortFilterProxyModel>
 
 #include <kdialog.h>
 #include <klocale.h>
@@ -172,8 +173,9 @@ void PrefsDialog::taxTab()
   label = new QLabel(i18n("Tax rates beginning at date:"));
   vboxLay->addWidget( label );
 
-  mTaxModel = new QSqlTableModel;
+  mTaxModel = new QSqlTableModel(this);
   mTaxModel->setTable("taxes");
+  mTaxModel->setSort(3, Qt::DescendingOrder);
   mTaxModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
   mTaxModel->select();
   mTaxModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
@@ -181,22 +183,35 @@ void PrefsDialog::taxTab()
   mTaxModel->setHeaderData(2, Qt::Horizontal, tr("Reduced Tax [%]"));
   mTaxModel->setHeaderData(3, Qt::Horizontal, tr("Start Date"));
 
+  connect(mTaxModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotTaxDataChanged(QModelIndex,QModelIndex)));
+
   mTaxTreeView = new QTreeView;
   vboxLay->addWidget( mTaxTreeView );
   mTaxTreeView->setModel(mTaxModel);
+  mTaxTreeView->setItemDelegate(new TaxItemDelegate());
   mTaxTreeView->hideColumn(0);
+  mTaxTreeView->header()->moveSection(3, 1);
+  mTaxTreeView->header()->stretchLastSection();
+  mTaxTreeView->setColumnWidth(3, 200);
+  mTaxTreeView->resizeColumnToContents(2);
+  mTaxTreeView->resizeColumnToContents(1);
 
   connect( mTaxTreeView, SIGNAL(clicked(QModelIndex)),
            SLOT( slotTaxSelected(QModelIndex) ) );
 
   QHBoxLayout *butLay = new QHBoxLayout;
-  // butLay->setSpacing( KDialogBase::spacingHint() );
   butLay->addStretch( 1 );
-  KPushButton *but = new KPushButton( i18n( "add" ));
+
+  mUndoTax = new KPushButton( KIcon("edit-undo"), i18n( "Undo changes" ));
+  mUndoTax->setEnabled(false);
+  connect( mUndoTax, SIGNAL( clicked() ), SLOT( slotUndoTax() ) );
+  butLay->addWidget( mUndoTax );
+
+  KPushButton *but = new KPushButton( KIcon("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddTax() ) );
   butLay->addWidget( but );
 
-  mDelTax = new KPushButton( i18n( "delete" ) );
+  mDelTax = new KPushButton( KIcon("list-remove"), i18n( "Remove" ) );
   connect( mDelTax, SIGNAL( clicked() ), SLOT( slotDeleteTax() ) );
   butLay->addWidget( mDelTax );
   mDelTax->setEnabled( false );
@@ -215,12 +230,26 @@ void PrefsDialog::slotDeleteTax()
 {
   if ( mTaxTreeView->currentIndex().isValid() )
   {
-    kDebug() << mTaxTreeView->currentIndex().row();
-    mTaxModel->removeRow(mTaxTreeView->currentIndex().row());
-    mTaxTreeView->update();
-    //Will submit changes directly into the database
-    //mTaxModel->submitAll();
+    int row = mTaxTreeView->currentIndex().row();
+    mTaxTreeView->setRowHidden( row, mTaxTreeView->rootIndex(), true );
+    mTaxModel->removeRows(row, 1);
+    slotTaxDataChanged(QModelIndex(), QModelIndex());
   }
+}
+
+void PrefsDialog::slotUndoTax()
+{
+  mTaxModel->revertAll();
+  mUndoTax->setEnabled(false);
+  for(int i=0 ; i < mTaxModel->rowCount(); ++i)
+  {
+    mTaxTreeView->setRowHidden( i, mTaxTreeView->rootIndex(), false);
+  }
+}
+
+void PrefsDialog::slotTaxDataChanged(QModelIndex,QModelIndex)
+{
+  mUndoTax->setEnabled(true);
 }
 
 void PrefsDialog::slotTaxSelected(QModelIndex)
@@ -408,6 +437,28 @@ void PrefsDialog::accept()
   writeTaxes();
   writeConfig();
   QDialog::accept();
+}
+
+TaxItemDelegate::TaxItemDelegate(QObject * parent) : QItemDelegate(parent) {}
+
+void TaxItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+  if(index.column() == 1 || index.column() == 2)
+  {
+    double percentage = index.data(Qt::DisplayRole).toDouble();
+    QString string = DefaultProvider::self()->locale()->formatNumber(QString::number(percentage), true, 1);
+    drawDisplay(painter, option, option.rect, string);
+  }
+  else if(index.column() == 3)
+  {
+    QDate date = index.data(Qt::DisplayRole).toDate();
+    QString string = DefaultProvider::self()->locale()->formatDate(date);
+    drawDisplay(painter, option, option.rect, string);
+  }
+  else
+  {
+    QItemDelegate::paint(painter, option, index);
+  }
 }
 
 #include "prefsdialog.moc"

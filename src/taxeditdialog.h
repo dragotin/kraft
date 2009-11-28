@@ -40,6 +40,7 @@ public:
 
 public slots:
   void accept();
+  void reject();
 
 private:
   Ui::TaxEditBase *mBaseWidget;
