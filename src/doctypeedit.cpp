@@ -63,7 +63,10 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   }
 
   mTypeListBox->setCurrentRow( 0, QItemSelectionModel::Select );
-  QString dtype = mTypeListBox->currentItem()->text();
+
+  QString dtype;
+  if(mTypeListBox->currentRow() != -1)
+    dtype = mTypeListBox->currentItem()->text();
 
   mPbAdd->setIcon( KIcon( "list-add" ) );
   mPbEdit->setIcon( KIcon( "document-edit" ) );
@@ -311,7 +314,10 @@ void DocTypeEdit::slotWatermarkModeChanged( int newMode )
 
 void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )
 {
-  QString docType = mTypeListBox->currentItem()->text();
+  QString docType ;
+  if(mTypeListBox->currentRow() != -1)
+    docType = mTypeListBox->currentItem()->text();
+
   DocType dt = mOrigDocTypes[docType];
   if ( mChangedDocTypes.contains( docType ) ) {
     dt = mChangedDocTypes[docType];

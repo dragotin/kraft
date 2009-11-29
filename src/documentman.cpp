@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <QSqlQuery>
+#include <QSqlDriver>
 #include <q3sqlcursor.h>
 
 #include <k3staticdeleter.h>
@@ -99,9 +100,14 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
 {
   DocDigestsTimelineList retList; // a list of timelined digest objects
 
-  // mColumnList = "docID, ident, docType, docDescription, clientID, lastModified, date, country, language, projectLabel"
-  QString qStr = QString( "SELECT %1, MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date asc;" ).arg( mColumnList );
-
+  //mColumnList = "docID, ident, docType, docDescription, clientID, lastModified, date, country, language, projectLabel";
+  QString qStr;
+  QVariant v = QSqlDatabase::database().driver()->handle();
+  kDebug() << "Database:" << v.typeName();
+  if(v.isValid() && qstrcmp(v.typeName(), "MYSQL*")==0)
+    qStr = QString( "SELECT %1, MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date asc;" ).arg( mColumnList );
+  else if(v.isValid() && qstrcmp(v.typeName(), "sqlite3*")==0)
+    qStr = QString("SELECT %1, strftime('%m', date) as month, strftime('%Y',date) as year FROM document ORDER BY date asc;" ).arg( mColumnList );
   QSqlQuery query( qStr );
   DocDigestsTimeline timeline;
   DocDigestList digests;
