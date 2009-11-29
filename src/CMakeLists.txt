@@ -130,7 +130,9 @@ set(kraft_SRCS
     importfilter.cpp
     kraftview_ro.cpp
     taxeditdialog.cpp
-    numbercycledialog.cpp )
+    numbercycledialog.cpp
+    impviewwidgets.cpp
+)
 
 kde4_add_kcfg_files(kraft_SRCS katalogsettings.kcfgc kraftsettings.kcfgc)
 

@@ -57,7 +57,7 @@ TaxEditDialog::TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent )
 
   mapper = new QDataWidgetMapper(this);
 
-  mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
+  mapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
   mapper->setModel(taxModel);
   mapper->addMapping(mBaseWidget->mFullTax, 1);
   mapper->addMapping(mBaseWidget->mReducedTax, 2);
@@ -91,6 +91,8 @@ void TaxEditDialog::accept()
 void TaxEditDialog::reject()
 {
   model->removeRow(model->rowCount()-1);
+
+  KDialog::reject();
 }
 
 #include "taxeditdialog.moc"

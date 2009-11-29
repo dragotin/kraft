@@ -22,11 +22,9 @@
 #include <QComboBox>
 #include <QLayout>
 #include <QCheckBox>
-#include <QSqlQuery>
 #include <QSpinBox>
 #include <QToolTip>
 #include <QPalette>
-#include <QTreeView>
 #include <QSqlTableModel>
 #include <QModelIndex>
 #include <QSortFilterProxyModel>
@@ -51,7 +49,7 @@
 #include "doctypeedit.h"
 #include "taxeditdialog.h"
 #include "documentman.h"
-
+#include "impviewwidgets.h"
 
 // ################################################################################
 
@@ -63,6 +61,7 @@ PrefsDialog::PrefsDialog( QWidget *parent)
   setCaption( i18n( "Configure Kraft" ) );
   setButtons( Ok|Cancel);
   setDefaultButton( Ok );
+  setMinimumWidth(700);
 
   databaseTab();
   docTab();
@@ -73,7 +72,6 @@ PrefsDialog::PrefsDialog( QWidget *parent)
   slotCheckConnect();
 }
 
-
 void PrefsDialog::databaseTab()
 {
   QWidget *topWidget = new QWidget;
@@ -82,15 +80,11 @@ void PrefsDialog::databaseTab()
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Database" ) );
-                              // i18n( "Database Connection Settings" ) );
-
-  // topFrame->setIcon( DesktopIcon( "connect_no" ) ); // KDE 4 name: (probably) network-server-database
-
+  topFrame->setIcon( KIcon( "network-server-database" ) );
 
   QGridLayout *topLayout = new QGridLayout;
   vboxLay->addLayout( topLayout );
   topLayout->setSpacing( spacingHint() );
-  topLayout->addItem(new QSpacerItem(spacingHint(), 0), 0, 0);
 
   label = new QLabel(i18n("Database Host:") );
   topLayout->addWidget(label, 0,0);
@@ -108,7 +102,6 @@ void PrefsDialog::databaseTab()
   topLayout->addWidget(label, 4,0);
 
   m_pbCheck = new QPushButton( i18n( "Check Connection" ) );
-  m_pbCheck->setEnabled( false );
   topLayout->addWidget( m_pbCheck, 5, 1 );
 
   QLabel *l1 = new QLabel(  i18n( "Please restart Kraft after "
@@ -116,15 +109,16 @@ void PrefsDialog::databaseTab()
                                   "parameters to make the changes "
                                   "effective!" ) );
   l1->setTextFormat( Qt::RichText );
+  l1->setAutoFillBackground(true);
   QPalette palette;
-  palette.setColor(l1->backgroundRole(), QColor( "#ffcbcb"));
+  palette.setColor(l1->backgroundRole(), QColor( "#ff6666"));
   l1->setPalette(palette);
-  l1->setMargin( 5 );
   l1->setFrameStyle( QFrame::Box + QFrame::Raised );
   l1->setLineWidth( 1 );
-  //l1->setAlignment( Qt::AlignCenter | Qt::TextExpandTabs | Qt::TextWordWrap );
+  l1->setMargin( 5 );
   l1->setAlignment(Qt::AlignCenter);
-  topLayout->addWidget( l1, 0, 1, 6, 5 ); //Not sure!
+  l1->setWordWrap(true);
+  topLayout->addWidget( l1, 6, 0, 1, 2 );
 
   m_leHost = new QLineEdit;
   connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
@@ -153,7 +147,7 @@ void PrefsDialog::databaseTab()
   connect( m_pbCheck, SIGNAL( clicked() ),
            this, SLOT( slotCheckConnect() ) );
 
-  vboxLay->addItem( new QSpacerItem( 1, 1 ) );
+  vboxLay->addStretch(2);
 
   topWidget->setLayout( vboxLay );
 }
@@ -162,9 +156,9 @@ void PrefsDialog::taxTab()
 {
   QWidget *topWidget = new QWidget;
 
-  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Taxes" )
-                              /* i18n( "Tax Settings." )
-                                 DesktopIcon( "queue" ) */ );
+  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Taxes" ));
+
+  topFrame->setIcon(KIcon( "accessories-text-editor" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   vboxLay->setSpacing( spacingHint() );
@@ -185,7 +179,7 @@ void PrefsDialog::taxTab()
 
   connect(mTaxModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotTaxDataChanged(QModelIndex,QModelIndex)));
 
-  mTaxTreeView = new QTreeView;
+  mTaxTreeView = new ImpTreeView;
   vboxLay->addWidget( mTaxTreeView );
   mTaxTreeView->setModel(mTaxModel);
   mTaxTreeView->setItemDelegate(new TaxItemDelegate());
@@ -231,7 +225,7 @@ void PrefsDialog::slotDeleteTax()
   if ( mTaxTreeView->currentIndex().isValid() )
   {
     int row = mTaxTreeView->currentIndex().row();
-    mTaxTreeView->setRowHidden( row, mTaxTreeView->rootIndex(), true );
+    //mTaxTreeView->setRowHidden( row, mTaxTreeView->rootIndex(), true );
     mTaxModel->removeRows(row, 1);
     slotTaxDataChanged(QModelIndex(), QModelIndex());
   }
@@ -240,11 +234,8 @@ void PrefsDialog::slotDeleteTax()
 void PrefsDialog::slotUndoTax()
 {
   mTaxModel->revertAll();
+  mTaxTreeView->unhideRows();
   mUndoTax->setEnabled(false);
-  for(int i=0 ; i < mTaxModel->rowCount(); ++i)
-  {
-    mTaxTreeView->setRowHidden( i, mTaxTreeView->rootIndex(), false);
-  }
 }
 
 void PrefsDialog::slotTaxDataChanged(QModelIndex,QModelIndex)
@@ -268,8 +259,7 @@ void PrefsDialog::docTab()
   QWidget *topWidget = new QWidget;
 
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Defaults" ) );
-                              // i18n( "Defaults for new Documents." ),
-                              // DesktopIcon( "queue" ) );
+  topFrame->setIcon(KIcon( "edit-copy" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   topWidget->setLayout( vboxLay );
@@ -329,15 +319,13 @@ void PrefsDialog::doctypeTab()
 {
   QWidget *topWidget = new QWidget;
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Types" ) );
-                              // i18n( "Edit Details of Document Types." ),
-                              // DesktopIcon( "folder_man" ) );
+  topFrame->setIcon(KIcon( "folder-documents" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   topWidget->setLayout(vboxLay);
   vboxLay->setSpacing( 0 ); // spacingHint() );
 
   mDocTypeEdit = new DocTypeEdit;
-  // FIXME mDocTypeEdit->mCentralSplit->setMargin( 0 );
   vboxLay->addWidget( mDocTypeEdit );
 
   connect( mDocTypeEdit, SIGNAL( removedType( const QString& ) ),
@@ -460,5 +448,7 @@ void TaxItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & o
     QItemDelegate::paint(painter, option, index);
   }
 }
+
+
 
 #include "prefsdialog.moc"

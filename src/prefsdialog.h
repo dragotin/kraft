@@ -30,8 +30,12 @@ class QLabel;
 class QPushButton;
 class QComboBox;
 class QCheckBox;
-class QTreeView;
 class QSqlTableModel;
+class QTreeView;
+class QPainter;
+class QStyleOptionViewItem;
+class QModelIndex;
+class ImpTreeView;
 
 // ################################################################################
 
@@ -85,7 +89,7 @@ private:
   
   QPushButton *mDelTax;
   QPushButton *mUndoTax;
-  QTreeView *mTaxTreeView;
+  ImpTreeView *mTaxTreeView;
   QSqlTableModel *mTaxModel;
 };
 

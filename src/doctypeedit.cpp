@@ -53,7 +53,7 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   connect( mTypeListBox, SIGNAL( currentTextChanged( const QString& ) ),
            this,  SLOT( slotDocTypeSelected( const QString& ) ) );
 
-  QStringList types = DocType::allLocalised();;
+  QStringList types = DocType::allLocalised();
   mTypeListBox->clear();
   mTypeListBox->addItems( types );
 
@@ -65,9 +65,9 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   mTypeListBox->setCurrentRow( 0, QItemSelectionModel::Select );
   QString dtype = mTypeListBox->currentItem()->text();
 
-  mPbAdd->setIcon( BarIcon( "filenew" ) );
-  mPbEdit->setIcon( BarIcon( "edit" ) );
-  mPbRemove->setIcon( BarIcon( "editdelete" ) );
+  mPbAdd->setIcon( KIcon( "list-add" ) );
+  mPbEdit->setIcon( KIcon( "document-edit" ) );
+  mPbRemove->setIcon( KIcon( "list-remove" ) );
 
   connect( mPbAdd, SIGNAL( clicked() ),
            SLOT( slotAddDocType() ) );
