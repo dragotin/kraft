@@ -183,7 +183,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "clientUid", doc->addressUid() );
     record->setValue( "salut", doc->salut() );
     record->setValue( "goodbye", doc->goodbye() );
-    // record->setValue( "printDate", "NOW()" );
+    record->setValue( "printDate", QDateTime::currentDateTime().toTime_t () );
     record->setValue( "date", doc->date() );
     record->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
     record->setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
@@ -193,6 +193,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record->setValue( "tax", DocumentMan::self()->tax( doc->date() ) );
     record->setValue( "reducedTax", DocumentMan::self()->reducedTax( doc->date() ) );
     cur.insert();
+    kDebug() <<cur.lastQuery();
 
     dbID id = KraftDB::self()->getLastInsertID();
     archivePos( id.toInt(), doc );

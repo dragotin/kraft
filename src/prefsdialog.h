@@ -60,8 +60,6 @@ protected slots:
   
   void slotAddTax();
   void slotDeleteTax();
-  void slotUndoTax();
-  void slotTaxDataChanged(QModelIndex,QModelIndex);
   void slotTaxSelected(QModelIndex);
   void slotDocTypeRemoved( const QString& );
 
@@ -88,7 +86,6 @@ private:
   DocTypeEdit *mDocTypeEdit;
   
   QPushButton *mDelTax;
-  QPushButton *mUndoTax;
   ImpTreeView *mTaxTreeView;
   QSqlTableModel *mTaxModel;
 };

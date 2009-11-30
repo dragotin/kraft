@@ -177,8 +177,6 @@ void PrefsDialog::taxTab()
   mTaxModel->setHeaderData(2, Qt::Horizontal, tr("Reduced Tax [%]"));
   mTaxModel->setHeaderData(3, Qt::Horizontal, tr("Start Date"));
 
-  connect(mTaxModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotTaxDataChanged(QModelIndex,QModelIndex)));
-
   mTaxTreeView = new ImpTreeView;
   vboxLay->addWidget( mTaxTreeView );
   mTaxTreeView->setModel(mTaxModel);
@@ -195,11 +193,6 @@ void PrefsDialog::taxTab()
 
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
-
-  mUndoTax = new KPushButton( KIcon("edit-undo"), i18n( "Undo changes" ));
-  mUndoTax->setEnabled(false);
-  connect( mUndoTax, SIGNAL( clicked() ), SLOT( slotUndoTax() ) );
-  butLay->addWidget( mUndoTax );
 
   KPushButton *but = new KPushButton( KIcon("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddTax() ) );
@@ -227,20 +220,7 @@ void PrefsDialog::slotDeleteTax()
     int row = mTaxTreeView->currentIndex().row();
     //mTaxTreeView->setRowHidden( row, mTaxTreeView->rootIndex(), true );
     mTaxModel->removeRows(row, 1);
-    slotTaxDataChanged(QModelIndex(), QModelIndex());
   }
-}
-
-void PrefsDialog::slotUndoTax()
-{
-  mTaxModel->revertAll();
-  mTaxTreeView->unhideRows();
-  mUndoTax->setEnabled(false);
-}
-
-void PrefsDialog::slotTaxDataChanged(QModelIndex,QModelIndex)
-{
-  mUndoTax->setEnabled(true);
 }
 
 void PrefsDialog::slotTaxSelected(QModelIndex)
