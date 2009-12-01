@@ -57,5 +57,6 @@ INSERT INTO attributes VALUES ('DocType', (SELECT docTypeID FROM DocTypes WHERE 
 INSERT INTO DocTypes (name) VALUES ( 'Rechnung' );
 
 -- message Drop an unused table archdocStates
-DROP TABLE IF EXISTS archdocStates;
+-- DROP TABLE IF EXISTS archdocStates;
+ALTER TABLE archdocStates RENAME TO archdocStates_unused;
 

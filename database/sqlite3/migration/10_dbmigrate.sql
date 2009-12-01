@@ -30,7 +30,9 @@ INSERT INTO attributeValues (attributeId, value) SELECT id, value FROM tmp_attri
 -- message drop the attrib column
 -- ALTER TABLE tmp_attrib DROP COLUMN value;
 
-DROP TABLE attributes;
+-- DROP TABLE attributes;
+ALTER TABLE attributes RENAME TO attributes_unused;
+
 CREATE TABLE attributes (
   id         INTEGER PRIMARY KEY ASC autoincrement,
   hostObject VARCHAR(64),
@@ -40,9 +42,6 @@ CREATE TABLE attributes (
 );
 CREATE UNIQUE INDEX attribIndx_10 ON attributes( hostObject, hostId, name );
 INSERT INTO attributes (hostObject, hostId, name, valueIsList) SELECT hostObject, hostId, name, valueIsList FROM tmp_attrib;
-DROP TABLE tmp_attrib;
-
-DROP TABLE IF EXISTS attribute_old;
 
 -- message create a table to keep tag templates
 CREATE TABLE IF NOT EXISTS tagTemplates (
@@ -58,4 +57,9 @@ INSERT INTO tagTemplates (sortkey, name, description, color) VALUES (3, 'Discoun
 INSERT INTO tagTemplates (sortkey, name, description, color) VALUES (1, 'Material', 'Marks material', '#4e4e4e' );
 INSERT INTO tagTemplates (sortkey, name, description, color) VALUES (2, 'Work', 'Marks working hour items', '#ffbb39' );
 INSERT INTO tagTemplates (sortkey, name, description, color) VALUES (4, 'Plants', 'Marks plant items', '#26b913' );
+
+
+ALTER TABLE tmp_attrib RENAME TO tmp_attrib_unused;
+
+DROP TABLE IF EXISTS attribute_old;
 
