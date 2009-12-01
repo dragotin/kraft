@@ -31,7 +31,7 @@
 #include "version.h"
 #include "kraftdb.h"
 #include "dbids.h"
-
+#include "dbinitdialog.h"
 #include "katalogsettings.h"
 #include "defaultprovider.h"
 
@@ -78,7 +78,8 @@ KraftDB* KraftDB::mSelf = 0;
 
 KraftDB::KraftDB()
   :QObject (), mSuccess( true ),
-   EuroTag( QString::fromLatin1( "%EURO" ) )
+   EuroTag( QString::fromLatin1( "%EURO" ) ),
+   mInitDialog(0)
 {
   mDatabaseDriver =KatalogSettings::self()->dbDriver().toUpper();
   if( mDatabaseDriver.isEmpty() ) {
@@ -100,6 +101,7 @@ KraftDB::KraftDB()
   }
 
   m_db = QSqlDatabase::addDatabase( mDatabaseDriver );
+
   if ( ! m_db.isValid() || m_db.isOpenError() )
   {
     kError() <<  "Failed to connect to the database driver: "
@@ -258,6 +260,18 @@ void KraftDB::writeWordList( const QString& listName, const QStringList& list )
   }
 }
 
+void KraftDB::createInitDialog( QWidget *parent )
+{
+  if( mInitDialog ) return;
+  mInitDialog = new DbInitDialog( parent );
+  mInitDialog->setModal( true );
+
+  connect( this, SIGNAL(statusMessage( const QString& )),
+           mInitDialog, SLOT( slotSetStatusText( const QString& )));
+  connect( this, SIGNAL(processedSqlCommand( bool )),
+           mInitDialog, SLOT( slotProcessedOneCommand( bool )));
+}
+
 bool KraftDB::checkSchemaVersion( QWidget *parent )
 {
   kDebug() << "The country setting is " << DefaultProvider::self()->locale()->country() << endl;
@@ -265,6 +279,9 @@ bool KraftDB::checkSchemaVersion( QWidget *parent )
   bool reinit = false;
   if ( m_db.tables().contains( "kraftsystem" ) == 0 ) {
     reinit = true;
+    createInitDialog( parent );
+    mInitDialog->show();
+
     if ( ! createDatabase( parent ) ) {
       kDebug() << "Failed to create the database, returning. Thats a bad condition." << endl;
       return false;
@@ -282,46 +299,60 @@ bool KraftDB::checkSchemaVersion( QWidget *parent )
   bool ok = true;
 
   if ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
+    createInitDialog( parent );
+    if( !reinit ) mInitDialog->show();
+
     kDebug() << "Kraft Schema Version not sufficient: " << currentVer << endl;
 
     emit statusMessage( i18n( "Database schema not up to date" ) );
     if( reinit || KMessageBox::warningYesNo( parent,
-                                 i18n( "This Kraft database schema is not up to date "
-                                       "(it is version %1 instead of the required version %2).\n"
-                                       "Kraft is able to update it to the new version automatically.\n"
-                                       "WARNING: MAKE SURE A GOOD BACKUP IS AVAILABLE!\n"
-                                       "Do you want Kraft to update the database schema version now?")
-                                   .arg(  currentVer ).arg( KRAFT_REQUIRED_SCHEMA_VERSION ),
-                                 i18n("Database Schema Update") ) == KMessageBox::Yes ) {
+                                             i18n( "This Kraft database schema is not up to date "
+                                                   "(it is version %1 instead of the required version %2).\n"
+                                                   "Kraft is able to update it to the new version automatically.\n"
+                                                   "WARNING: MAKE SURE A GOOD BACKUP IS AVAILABLE!\n"
+                                                   "Do you want Kraft to update the database schema version now?")
+                                             .arg(  currentVer ).arg( KRAFT_REQUIRED_SCHEMA_VERSION ),
+                                             i18n("Database Schema Update") ) == KMessageBox::Yes ) {
 
+      int overallCmdCount = 0;
+      QList<SqlCommandList> commandLists;
 
       while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
-        int sqlc = 0;
-        int allCmds = 0;
-        ++currentVer;
         const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
-        sqlc = processSqlFile( migrateFilename, allCmds );
-        if ( sqlc == 0 ) {
-          kWarning() << "No (zero) commands where loaded and executed from " << migrateFilename << endl;
-          ok = false;
-        } else if ( allCmds != sqlc ) {
-          kDebug() << "WRN: only " << sqlc << " from " << allCmds << " sql commands "
-            "were executed correctly" << endl;
-          ok = false;
+        SqlCommandList cmds = parseCommandFile( migrateFilename );
+        overallCmdCount += cmds.count();
+        commandLists << cmds;
+        ++currentVer;
+      }
+      mInitDialog->setOverallCount( overallCmdCount );
 
-          KMessageBox::sorry( parent, i18n( "The update of the database failed, only "
-                                            "%1 of %2 commands succeeded. It is not "
-                                            "recommended to continue.\nPlease check the "
-                                            "database consistency.\n" ).arg( sqlc ).arg( allCmds ),
-                              i18n( "Database Schema Update Error" ) );
-
-
-        } else {
-          kDebug() << "All sql commands successfull in file: " << migrateFilename << ": " << sqlc << endl;
-          /* Now update to the required schema version */
-          q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
-                  + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
+      int doneOverallCmds =  0;
+      foreach( SqlCommandList cmds, commandLists ) {
+        mInitDialog->setDetailOverallCnt( cmds.count() );
+        int goodCmds = processSqlCommands( cmds );
+        doneOverallCmds += goodCmds;
+        if( goodCmds != cmds.count() ) {
+          kDebug() << "Only performned " << goodCmds << " out of " << cmds.count();
         }
+      }
+
+      if( doneOverallCmds != overallCmdCount ) {
+        kDebug() << "WRN: only " << doneOverallCmds << " from " << overallCmdCount << " sql commands "
+            "were executed correctly" << endl;
+        ok = false;
+
+        KMessageBox::sorry( parent, i18n( "The update of the database failed, only "
+                                          "%1 of %2 commands succeeded. It is not "
+                                          "recommended to continue.\nPlease check the "
+                                          "database consistency.\n" ).arg( doneOverallCmds ).arg( overallCmdCount ),
+                            i18n( "Database Schema Update Error" ) );
+
+
+      } else {
+        kDebug() << "All sql commands successfully performned";
+        /* Now update to the required schema version */
+        q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
+                + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
       }
     }
   } else {
@@ -335,7 +366,7 @@ bool KraftDB::checkSchemaVersion( QWidget *parent )
 bool KraftDB::createDatabase( QWidget *parent )
 {
   // The kraftsystem table is not there, reinit the entire db.
-  bool ret = false;
+  bool ret = true;
   emit statusMessage( i18n( "Recreate Database" ) );
   if( KMessageBox::warningYesNo( parent,
                                  i18n( "The Kraft System Table was not found in database %1."
@@ -343,6 +374,7 @@ bool KraftDB::createDatabase( QWidget *parent )
                                        "WARNING: ALL YOUR DATA WILL BE DESTROYED!")
                                  .arg(  KatalogSettings::self()->dbFile() ),
                                  i18n("Database Rebuild") ) == KMessageBox::Yes ) {
+
     emit statusMessage( i18n( "Creating Database..." ) );
 
     if ( m_db.tables().size() > 0 ) {
@@ -352,26 +384,36 @@ bool KraftDB::createDatabase( QWidget *parent )
       q.exec( allTables );
     }
 
-    int allCmds = 0;
-    int goodCmds = processSqlFile( "create_schema.sql", allCmds );
-    if ( goodCmds == allCmds ) {
-      QString dbFill( "fill_schema_en.sql" );
+    emit statusMessage( i18n( "Parse Commands..." ) );
 
-      if ( DefaultProvider::self()->locale()->country() == "de" ) {
-        dbFill = "fill_schema_de.sql";
+    SqlCommandList createCommands = parseCommandFile( "create_schema.sql");
+
+    QString dbFill( "fill_schema_en.sql" );
+
+    if ( DefaultProvider::self()->locale()->country() == "de" ) {
+      dbFill = "fill_schema_de.sql";
+    }
+    SqlCommandList fillCommands = parseCommandFile( dbFill );
+
+    int overallCnt = createCommands.count() + fillCommands.count();
+    mInitDialog->setOverallCount( overallCnt );
+
+    emit statusMessage( i18n( "Process create commands..." ) );
+    mInitDialog->setDetailOverallCnt( createCommands.count() );
+    int creates = processSqlCommands( createCommands );
+    if( createCommands.count() != creates ) {
+      kDebug() << "####### Some create commands failed";
+      ret = false;
+    }
+
+    if( ret ) {
+      emit statusMessage( i18n( "Process fill commands..." ) );
+      mInitDialog->setDetailOverallCnt( fillCommands.count() );
+      int fills = processSqlCommands( fillCommands );
+      if( fillCommands.count() != fills ) {
+        kDebug() << "####### Some fill commands failed";
+        ret = false;
       }
-      emit statusMessage( i18n( "Filling Database..." ) );
-      if ( processSqlFile( dbFill, allCmds ) == 0 ) {
-        kDebug() << "Failed to fill the database" << endl;
-        emit statusMessage( i18n( "Failed." ) );
-      } else {
-        ret = true;
-        emit statusMessage( i18n( "Ready." ) );
-      }
-    } else if ( goodCmds > 0 && allCmds > 0 ) {
-      // There were some commands failing
-    } else if ( allCmds == 0 ) {
-      // no commands were found
     }
   }
   return ret;
@@ -386,7 +428,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
   }
 
   QString driverPrefix = "mysql"; // Default on mysql
-  if( mDatabaseDriver == "QSQLITE") {
+  if( mDatabaseDriver.toLower() == "qsqlite") {
     driverPrefix = "sqlite3";
   }
 
@@ -478,26 +520,30 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
   return retList;
 }
 
-int KraftDB::processSqlFile( const QString& file, int& overallCount )
+int KraftDB::processSqlCommands( const SqlCommandList& commands )
 {
-  QSqlQuery q;
-  SqlCommandList commands = parseCommandFile( file );
-
   int cnt = 0;
+
   foreach( SqlCommand cmd, commands ) {
     if( !cmd.message().isEmpty() ) {
       emit statusMessage( cmd.message() );
     }
 
     if( !cmd.command().isEmpty() ) {
-      overallCount++;
-      if ( q.exec( cmd.command() ) ) {
+      bool res = true;
+      QSqlQuery q;
+      q.clear();
+      if ( q.exec(cmd.command()) ) {
         kDebug() << "Successfull SQL Command: " << cmd.command() << endl;
         cnt ++;
       } else {
         QSqlError err = q.lastError();
+        res = false;
         kDebug() << "###### Failed SQL Command " << cmd.command() << ": " << err.text() << endl;
       }
+      q.clear();
+      emit processedSqlCommand( res );
+
     }
   }
   return cnt;
@@ -564,7 +610,8 @@ QString KraftDB::mysqlEuroDecode( const QString& str ) const
   return restr.replace( EuroTag, euro );
 }
 
-KraftDB::~KraftDB(){
+KraftDB::~KraftDB()
+{
 }
 
 #include "kraftdb.moc"

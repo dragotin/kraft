@@ -21,6 +21,7 @@ set( kraftcat_LIB_SRCS
     filterheader.cpp
     catalogchapteredit.cpp
     kraftdb.cpp
+    dbinitdialog.cpp
     geld.cpp
     einheit.cpp
     attribute.cpp
@@ -29,7 +30,7 @@ set( kraftcat_LIB_SRCS
     )
 
 
-kde4_add_ui_files(kraftcat_LIB_SRCS calctemplate.ui)
+kde4_add_ui_files(kraftcat_LIB_SRCS calctemplate.ui dbinit.ui)
 
 kde4_add_kcfg_files(kraftcat_LIB_SRCS katalogsettings.kcfgc kraftsettings.kcfgc)
 

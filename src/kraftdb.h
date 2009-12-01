@@ -27,6 +27,7 @@
 #include "kraftcat_export.h"
 
 class dbID;
+class DbInitDialog;
 
 /**
   *@author Klaas Freitag
@@ -91,13 +92,17 @@ public:
   QString replaceTagsInWord( const QString& w, StringMap replaceMap ) const;
 signals:
   void statusMessage( const QString& );
+  void processedSqlCommand( bool );
 
 private: // Private attributes
   KraftDB();
   SqlCommandList parseCommandFile( const QString& );
-  int processSqlFile( const QString&, int& );
+
+  int processSqlCommands( const SqlCommandList& );
 
   bool createDatabase( QWidget* );
+
+  void createInitDialog( QWidget* );
 
   /** The default database */
   QSqlDatabase m_db;
@@ -106,6 +111,7 @@ private: // Private attributes
   bool mSuccess;
   const QString EuroTag;
   QString mDatabaseDriver;
+  DbInitDialog *mInitDialog;
 };
 
 #endif
