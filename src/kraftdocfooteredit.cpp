@@ -20,11 +20,8 @@
 #include <kcombobox.h>
 #include <klocale.h>
 
-#include <qlayout.h>
-#include <qcombobox.h>
-#include <q3textedit.h>
-//Added by qt3to4:
-
+#include <QLayout>
+#include <QComboBox>
 #include <QVBoxLayout>
 
 KraftDocFooterEdit::KraftDocFooterEdit( QWidget *parent )

@@ -17,11 +17,9 @@
 #ifndef DOCDIGESTVIEW_H
 #define DOCDIGESTVIEW_H
 
-#include <qwidget.h>
-#include <qmap.h>
+#include <QWidget>
+#include <QMap>
 #include <QTreeWidgetItem>
-//Added by qt3to4:
-#include <Q3PopupMenu>
 
 #include "docdigest.h"
 #include "docguardedptr.h"

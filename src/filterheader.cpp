@@ -76,7 +76,7 @@ FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
     SLOT( setTitleLabel() ) );
   filterLayout->addWidget( mSearchLine );
   
-  setTabOrder( mSearchLine, listView );
+  //setTabOrder( mSearchLine, listView );
 
   setTitleLabel();
 }

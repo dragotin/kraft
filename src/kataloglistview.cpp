@@ -18,6 +18,7 @@
 #include <QPixmap>
 #include <QStringList>
 #include <QHeaderView>
+#include <QContextMenuEvent>
 
 #include <klocale.h>
 #include <kdebug.h>
@@ -48,17 +49,6 @@ KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     // setSorting(-1);
     mMenu = new KMenu( this );
     mMenu->addTitle( i18n("Template Catalog") );
-
-    connect( this, SIGNAL( contextMenu( KTreeView*, QTreeWidgetItem *, const QPoint& ) ),
-               this, SLOT( slotRMB( KTreeView*, QTreeWidgetItem *, const QPoint & ) ) );
-}
-
-void KatalogListView::slotRMB( QTreeWidget*, QTreeWidgetItem* item, const QPoint& point )
-{
-  if( ! item ) return;
-
-  // fill the document list with a list of the open docs
-  mMenu->popup( point );
 }
 
 KatalogListView::~KatalogListView()
@@ -74,6 +64,11 @@ KMenu *KatalogListView::contextMenu()
 void KatalogListView::addCatalogDisplay( const QString& name)
 {
     m_catalogName = name;
+}
+
+void KatalogListView::contextMenuEvent( QContextMenuEvent * event )
+{
+  mMenu->popup( event->globalPos() );
 }
 
 Katalog* KatalogListView::catalog()

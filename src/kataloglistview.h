@@ -57,7 +57,7 @@ public:
 public slots:
   virtual void slotFreshupItem( QTreeWidgetItem*, void*, bool remChildren = false );
   virtual void slotChangeChapter( QTreeWidgetItem* , int );
-  virtual void slotRMB( QTreeWidget*, QTreeWidgetItem*, const QPoint& );
+  virtual void contextMenuEvent( QContextMenuEvent * event );
   virtual void slotRedraw();
 
 protected:

@@ -55,13 +55,11 @@ public slots:
   void slotDocumentUpdate( DocGuardedPtr );
 
 protected slots:
-  void slUrlClicked( const QString& );
-  void slotDigestItemSelected( QTreeWidgetItem* );
+  void slotDigestItemSelected( QTreeWidgetItem *current,QTreeWidgetItem* );
   void slotCreateDocument();
 
 signals:
   void openKatalog( const QString& );
-  void deleteKatalog( const QString& );
   void katalogToXML( const QString& );
   void createDocument();
   void openDocument( const QString& );

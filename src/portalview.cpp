@@ -98,9 +98,6 @@ void PortalView::katalogDetails()
 
   connect( mCatalogBrowser, SIGNAL( openCatalog( const QString& ) ),
            SIGNAL( openKatalog( const QString& ) ) );
-
-  connect( mCatalogBrowser, SIGNAL( urlClick(const QString&) ),
-           this, SLOT( slUrlClicked( const QString& ) ) );
 }
 
 void PortalView::fillCatalogDetails()
@@ -158,40 +155,6 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
 #endif
     html += "</tr>\n";
     return html;
-}
-
-void PortalView::slUrlClicked( const QString& urlStr )
-{
-    KUrl url( urlStr );
-
-    kDebug() << "URL: " << url.path() << endl;
-    if( url.path().startsWith( "/katalog.cgi") )
-    {
-        QString action = url.queryItem("action");
-        QString kat    = url.queryItem("kat");
-        // Katalog editieren
-        if( action == "open" )
-        {
-            emit openKatalog(kat);
-        }
-        else if( action == "delete" )
-        {
-            emit deleteKatalog(kat);
-        }
-        else if( action == "xml" )
-        {
-            emit( katalogToXML(kat));
-        }
-        else
-        {
-            // unknown query
-            kDebug() << "Can not handle Query: " << url.query() << endl;
-        }
-    }
-    else
-    {
-        // weitere
-    }
 }
 
 QString PortalView::ptag( const QString& content,  const QString& c ) const
@@ -358,8 +321,8 @@ void PortalView::documentDigests()
            SIGNAL( documentSelected( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
-  connect( mDocDigestView->listview(), SIGNAL( currentChanged( Q3ListViewItem* ) ),
-           this,  SLOT( slotDigestItemSelected( Q3ListViewItem* ) ) );
+  connect( mDocDigestView->listview(), SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+           this,  SLOT( slotDigestItemSelected( QTreeWidgetItem*,QTreeWidgetItem* ) ) );
 }
 
 void PortalView::slotCreateDocument()
@@ -388,9 +351,9 @@ void PortalView::slotBuildView()
   QApplication::restoreOverrideCursor();
 }
 
-void PortalView::slotDigestItemSelected( QTreeWidgetItem *item )
+void PortalView::slotDigestItemSelected( QTreeWidgetItem *current,QTreeWidgetItem* )
 {
-  kDebug() << "Digest Item Selected " << item << endl;
+  kDebug() << "Digest Item Selected " << current << endl;
 
 }
 
