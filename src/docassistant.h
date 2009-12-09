@@ -78,7 +78,7 @@ protected slots:
   void slotHeaderTextDeleted( const DocText& );
   void slotNewHeaderDocText( const DocText& );
   void slotUpdateHeaderDocText( const DocText& );
-  void slotCatalogSelectionChanged( QTreeWidgetItem* );
+  void slotCatalogSelectionChanged( QTreeWidgetItem*,QTreeWidgetItem* );
   void slotNewFooterDocText( const DocText& );
   void slotUpdateFooterDocText( const DocText& );
   void slotFooterTextToDocument( const DocText& );

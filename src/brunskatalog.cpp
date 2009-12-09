@@ -14,10 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qstring.h>
-#include <qfile.h>
-#include <q3textstream.h>
-#include <qregexp.h>
+#include <QString>
+#include <QFile>
+#include <QTextStream>
+#include <QRegExp>
 
 #include <kdebug.h>
 #include <kfiledialog.h>
@@ -136,8 +136,8 @@ int BrunsKatalog::load()
 
   QFile file( m_dataFile );
   if ( file.open( QIODevice::ReadOnly ) ) {
-    Q3TextStream stream( &file );
-    stream.setEncoding(Q3TextStream::Latin1);
+    QTextStream stream( &file );
+    stream.setCodec("UTF-8");
     QString line;
     QString h;
     int d;
@@ -273,8 +273,8 @@ void BrunsKatalog::loadDBKeys() {
     QFile file( m_chapterFile );
 
     if ( file.open( QIODevice::ReadOnly ) ) {
-        Q3TextStream stream( &file );
-        stream.setEncoding(Q3TextStream::Latin1);
+        QTextStream stream( &file );
+        stream.setCodec("UTF-8");
         QString line;
 
         KatMap *currDict = 0; // m_chapterIDs;

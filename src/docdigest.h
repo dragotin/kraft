@@ -17,14 +17,16 @@
 #ifndef DOCDIGEST_H
 #define DOCDIGEST_H
 
-#include <qdatetime.h>
-#include <q3valuelist.h>
-
 #include <klocale.h>
+#include <QList>
 
 #include "dbids.h"
 #include "archdoc.h"
 
+class QString;
+class QDate;
+
+typedef QList<ArchDocDigest> ArchDocDigestList;
 
 class DocDigest
 {
@@ -77,8 +79,8 @@ protected:
   ArchDocDigestList mArchDocs;
 };
 
-typedef Q3ValueList<DocDigest> DocDigestList;
-typedef Q3ValueListIterator<DocDigestList> DocDigestListIterator;
+typedef QList<DocDigest> DocDigestList;
+typedef QList<DocDigestList> DocDigestListIterator;
 
 
 class DocDigestsTimeline
@@ -100,6 +102,6 @@ private:
   DocDigestList mDigests;
 };
 
-typedef Q3ValueList<DocDigestsTimeline> DocDigestsTimelineList;
+typedef QList<DocDigestsTimeline> DocDigestsTimelineList;
 
 #endif

@@ -19,10 +19,9 @@
 #define ARCHDOC_H
 
 // include files for QT
-#include <qstring.h>
-#include <qdatetime.h>
-#include <q3valuelist.h>
-#include <qmap.h>
+#include <QString>
+#include <QDateTime>
+#include <QMap>
 
 // include files for KDE
 #include "archdocposition.h"
@@ -143,12 +142,6 @@ private:
   int       mState;
   dbID      mArchDocId;
   QString   mIdent;
-};
-
-class ArchDocDigestList : public Q3ValueList<ArchDocDigest>
-{
-public:
-  ArchDocDigestList();
 };
 
 #endif // ARCHDOC_H

@@ -15,10 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
-#include <q3sqlcursor.h>
-//Added by qt3to4:
-#include <Q3ValueList>
+#include <QString>
+#include <QSqlQuery>
+#include <QDateTime>
 
 // include files for KDE
 #include <kglobal.h>
@@ -98,38 +97,40 @@ double ArchDoc::reducedTax()
 
 void ArchDoc::loadFromDb( dbID id )
 {
-  Q3SqlCursor cur("archdoc");
-  cur.setMode( Q3SqlCursor::ReadOnly );
+  QSqlQuery q;
+  q.prepare("SELECT * from archdoc WHERE archDocID=:id");
+  q.bindValue(":id", id.toInt());
+  q.exec();
+
   kDebug() << "Loading document id " << id.toString() << endl;
 
-  cur.select( "archDocID = " +  id.toString()  );
-
-  if( cur.next()) {
+  if( q.next()) {
     kDebug() << "loading archived document with ident " << id.toString() << endl;
-    mAddress   = cur.value( "clientAddress" ).toString();
-    mClientUid = cur.value( "clientUid" ).toString();
-    mPreText   = KraftDB::self()->mysqlEuroDecode( cur.value( "pretext" ).toString() );
-    mPostText  = KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() );
-    mDocType   = cur.value( "docType" ).toString();
-    mSalut     = cur.value( "salut" ).toString();
-    mGoodbye   = cur.value( "goodbye" ).toString();
-    mIdent     = cur.value( "ident" ).toString();
-    mProjectLabel = cur.value( "projectLabel" ).toString();
-
-    mDate      = cur.value( "date" ).toDate();
-    mPrintDate = cur.value( "printDate" ).toDateTime();
-    mState     = cur.value( "state" ).toInt();
-    QString country = cur.value( "country" ).toString();
-    QString lang = cur.value( "language" ).toString();
+    QString docID;
+    QString country;
+    QString lang;
+    docID         = q.value( 0 ).toString();
+    mIdent        = q.value( 1 ).toString();
+    mDocType      = q.value( 2 ).toString();
+    mAddress      = q.value( 4 ).toString();
+    mSalut        = q.value( 5 ).toString();
+    mGoodbye      = q.value( 6 ).toString();
+    mPrintDate    = q.value( 7 ).toDateTime();
+    mDate         = q.value( 8 ).toDate();
+    mPreText      = KraftDB::self()->mysqlEuroDecode( q.value( 9 ).toString() );
+    mPostText     = KraftDB::self()->mysqlEuroDecode( q.value( 10 ).toString() );
+    mState        = q.value( 11 ).toInt();
+    country       = q.value( 12 ).toString();
+    lang          = q.value( 13 ).toString();
+    mClientUid    = q.value( 14 ).toString();
+    mProjectLabel = q.value( 15 ).toString();
+    mTax          = q.value( 16 ).toDouble();
+    mReducedTax   = q.value( 17 ).toDouble();
 
     KConfig *cfg = KGlobal::config().data();
     mLocale.setCountry( country, cfg );
     mLocale.setLanguage( lang , cfg );
 
-    mTax = cur.value( "tax" ).toDouble();
-    mReducedTax = cur.value( "reducedTax" ).toDouble();
-
-    QString docID = cur.value( "archDocID" ).toString();
     loadPositions( docID );
     loadAttributes( docID );
   } else {
@@ -141,24 +142,26 @@ void ArchDoc::loadPositions( const QString& archDocId )
 {
   mPositions.clear();
 
-  Q3SqlCursor cur( "archdocpos" );
-  cur.setMode( Q3SqlCursor::ReadOnly );
-
   if ( archDocId.isEmpty() /* || ! archDocId.isNum() */ ) {
     kDebug() << "ArchDocId is not crappy: " << archDocId << endl;
     return;
   }
 
-  cur.select( "archDocID="+archDocId, cur.index( "ordNumber" ) );
+  QSqlQuery q;
+  q.prepare("SELECT * FROM archdocpos WHERE archDocID=:id ORDER BY ordNumber");
+  q.bindValue("id", archDocId);
+  q.exec();
 
-  while( cur.next() ) {
+  while( q.next() ) {
     ArchDocPosition pos;
-    pos.mText = cur.value( "text" ).toString();
-    pos.mPosNo = cur.value( "ordNumber" ).toString();
-    pos.mUnit  = cur.value( "unit" ).toString();
-    pos.mUnitPrice = Geld( cur.value( "price" ).toDouble() );
-    pos.mAmount = cur.value( "amount" ).toDouble();
-    int tt = cur.value( "taxType" ).toInt();
+    pos.mPosNo = q.value( 2 ).toString();
+    pos.mText = q.value( 3 ).toString();
+    pos.mAmount = q.value( 4 ).toDouble();
+    pos.mUnit  = q.value( 5 ).toString();
+    pos.mUnitPrice = Geld( q.value( 6 ).toDouble() );
+    pos.mKind = q.value( 8 ).toString();
+    pos.mOverallPrice = q.value( 9 ).toDouble();
+    int tt = q.value( 11 ).toInt();
     if ( tt == 1 )
       pos.mTaxType = DocPositionBase::TaxNone;
     else if ( tt == 2 )
@@ -166,8 +169,6 @@ void ArchDoc::loadPositions( const QString& archDocId )
     else if ( tt == 3 )
       pos.mTaxType = DocPositionBase::TaxFull;
 
-    pos.mOverallPrice = cur.value( "overallPrice" ).toDouble();
-    pos.mKind = cur.value( "kind" ).toString();
     mPositions.append( pos );
   }
 }
@@ -176,19 +177,19 @@ void ArchDoc::loadAttributes( const QString& archDocId )
 {
   mAttribs.clear();
 
-  Q3SqlCursor cur( "archPosAttribs" );
-  cur.setMode( Q3SqlCursor::ReadOnly );
-
   if ( archDocId.isEmpty() ) {
     kDebug() << "ArchDocId is Empty!" << endl;
     return;
   }
 
-  cur.select( "archDocID=" + archDocId );
+  QSqlQuery q;
+  q.prepare("SELECT * FROM archPosAttribs WHERE archDocID=:id");
+  q.bindValue(":id", archDocId);
+  q.exec();
 
-  while ( cur.next() ) {
-    QString name  = cur.value( "name" ).toString();
-    QString value = cur.value( "value" ).toString();
+  while ( q.next() ) {
+    QString name  = q.value( 2 ).toString();
+    QString value = q.value( 3 ).toString();
 
     if ( !name.isEmpty() ) {
       mAttribs[ name ] = value;
@@ -225,11 +226,5 @@ QString ArchDocDigest::printDateString() const
 }
 
 /* ###################################################################### */
-
-ArchDocDigestList::ArchDocDigestList ()
-  :Q3ValueList<ArchDocDigest>()
-{
-
-}
 
 

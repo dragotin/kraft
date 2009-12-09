@@ -14,16 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <q3sqlcursor.h>
-#include <qsqlrecord.h>
-#include <qsqlindex.h>
-#include <qfile.h>
-#include <q3textstream.h>
-#include <qglobal.h>
+
+#include <QSqlTableModel>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QSqlIndex>
+#include <QFile>
+#include <QTextStream>
 
 #include <k3staticdeleter.h>
 #include <kstandarddirs.h>
-
 #include <kdebug.h>
 
 #include "archiveman.h"
@@ -72,12 +72,13 @@ QString ArchiveMan::documentID( dbID archID ) const
 {
   QString re;
 
-  Q3SqlCursor cur("archdoc");
-  cur.setMode( Q3SqlCursor::ReadOnly );
-  cur.select( QString( "archDocID=%1" ).arg( archID.toInt() ) );
+  QSqlQuery q;
+  q.prepare("SELECT ident FROM archdoc WHERE archDocID=:id");
+  q.bindValue(":id", archID.toInt());
+  q.exec();
 
-  if ( cur.next() ) {
-    re = cur.value( "ident" ).toString();
+  if ( q.next() ) {
+    re = q.value( 0 ).toString();
   }
 
   return re;
@@ -131,7 +132,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
   if ( KraftSettings::self()->self()->doXmlArchive() ) {
     QFile file( xmlFile );
     if ( file.open( QIODevice::WriteOnly ) ) {
-      Q3TextStream stream( &file );
+      QTextStream stream( &file );
       stream << xml << "\n";
       file.close();
     } else {
@@ -167,33 +168,31 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
 */
     if( ! doc ) return dbID();
 
-    Q3SqlCursor cur("archdoc");
-    cur.setMode( Q3SqlCursor::Writable );
-    QSqlRecord *record = 0;
+    QSqlTableModel model;
+    model.setTable("archdoc");
+    QSqlRecord record = model.record();
 
     if( doc->isNew() ) {
-	kDebug() << "Strange: Document in archiving is new!" << endl;
+      kDebug() << "Strange: Document in archiving is new!" << endl;
     }
-
-    record = cur.primeInsert();
-    record->setValue( "ident", doc->ident() );
-    record->setValue( "docType", doc->docType() );
-    record->setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
-    record->setValue( "clientAddress", doc->address() );
-    record->setValue( "clientUid", doc->addressUid() );
-    record->setValue( "salut", doc->salut() );
-    record->setValue( "goodbye", doc->goodbye() );
-    record->setValue( "printDate", QDateTime::currentDateTime().toTime_t () );
-    record->setValue( "date", doc->date() );
-    record->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
-    record->setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
-    record->setValue( "projectLabel", KraftDB::self()->mysqlEuroEncode(doc->projectLabel() ) );
-    record->setValue( "country",  doc->country() );
-    record->setValue( "language", doc->language() );
-    record->setValue( "tax", DocumentMan::self()->tax( doc->date() ) );
-    record->setValue( "reducedTax", DocumentMan::self()->reducedTax( doc->date() ) );
-    cur.insert();
-    kDebug() <<cur.lastQuery();
+    record.setValue( "ident", doc->ident() );
+    record.setValue( "docType", doc->docType() );
+    record.setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
+    record.setValue( "clientAddress", doc->address() );
+    record.setValue( "clientUid", doc->addressUid() );
+    record.setValue( "salut", doc->salut() );
+    record.setValue( "goodbye", doc->goodbye() );
+    record.setValue( "printDate", QDateTime::currentDateTime().toTime_t () );
+    record.setValue( "date", doc->date() );
+    record.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
+    record.setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
+    record.setValue( "projectLabel", KraftDB::self()->mysqlEuroEncode(doc->projectLabel() ) );
+    record.setValue( "country",  doc->country() );
+    record.setValue( "language", doc->language() );
+    record.setValue( "tax", DocumentMan::self()->tax( doc->date() ) );
+    record.setValue( "reducedTax", DocumentMan::self()->reducedTax( doc->date() ) );
+    if(!model.insertRecord(-1, record))
+      kDebug() << model.lastError();
 
     dbID id = KraftDB::self()->getLastInsertID();
     archivePos( id.toInt(), doc );
@@ -220,8 +219,9 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
   */
     if( ! doc ) return -1;
 
-    Q3SqlCursor cur("archdocpos");
-    cur.setMode( Q3SqlCursor::Writable );
+    QSqlTableModel model;
+    model.setTable("archdocpos");
+    QSqlRecord record = model.record();
 
     int cnt = 0;
 
@@ -232,20 +232,18 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
     while ( it.hasNext() ) {
       DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
-      QSqlRecord *record = cur.primeInsert();
+      record.setValue( "archDocID", archDocId );
+      record.setValue( "ordNumber", 1+cnt /* dp->position() */ );
+      record.setValue( "kind", dp->attribute( DocPosition::Kind ) );
+      record.setValue( "text", dp->text() ); // expandItemText( dp ) );
+      record.setValue( "amount", dp->amount() );
+      record.setValue( "unit", dp->unit().einheit( dp->amount() ) );
+      record.setValue( "price", dp->unitPrice().toDouble() );
+      record.setValue( "overallPrice", dp->overallPrice().toDouble() );
+      record.setValue( "taxType", dp->taxTypeNumeric() );
 
-      record->setValue( "archDocID", archDocId );
-      record->setValue( "ordNumber", 1+cnt /* dp->position() */ );
-      record->setValue( "kind", dp->attribute( DocPosition::Kind ) );
-
-      record->setValue( "text", dp->text() ); // expandItemText( dp ) );
-      record->setValue( "amount", dp->amount() );
-      record->setValue( "unit", dp->unit().einheit( dp->amount() ) );
-      record->setValue( "price", dp->unitPrice().toDouble() );
-      record->setValue( "overallPrice", dp->overallPrice().toDouble() );
-      record->setValue( "taxType", dp->taxTypeNumeric() );
-
-      cur.insert();
+      if(!model.insertRecord(-1, record))
+        kDebug() << model.lastError();
       dbID id = KraftDB::self()->getLastInsertID();
       // kDebug() << "Inserted for id " << id.toString() << endl;
       cnt++;

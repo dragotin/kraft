@@ -18,8 +18,8 @@
 #ifndef BRUNSBRUNSRECORD_H
 #define BRUNSBRUNSRECORD_H
 
-#include <q3cstring.h>
-#include <q3ptrlist.h>
+#include <QList>
+#include <QByteArray>
 
 #include "kraftcat_export.h"
 
@@ -89,14 +89,14 @@ public:
     int getArtId () { return artId; }
     void setArtId (int i) { artId = i; }
 
-    Q3CString getArtMatch() const { return artMatch; }
-    void setArtMatch( const Q3CString& str ) { artMatch = str; }
+    QByteArray getArtMatch() const { return artMatch; }
+    void setArtMatch( const QByteArray& str ) { artMatch = str; }
 
-    Q3CString getLtName() const { return ltName; }
-    void setLtName( const Q3CString& n ) { ltName = n; }
+    QByteArray getLtName() const { return ltName; }
+    void setLtName( const QByteArray& n ) { ltName = n; }
 
-    Q3CString getDtName() const { return dtName; }
-    void setDtName( const Q3CString& n ) { dtName = n; }
+    QByteArray getDtName() const { return dtName; }
+    void setDtName( const QByteArray& n ) { dtName = n; }
     
     void debugOut();
 
@@ -111,9 +111,9 @@ private:
     bool  passNeeded;  // 11
     int   plantGroup;  // 13-18
     int   artId;       // 19-24
-    Q3CString artMatch; // 25-34
-    Q3CString dtName;   // 272-331
-    Q3CString ltName;   // 322-391
+    QByteArray artMatch; // 25-34
+    QByteArray dtName;   // 272-331
+    QByteArray ltName;   // 322-391
 };
 
 typedef QList<BrunsRecord*> BrunsRecordList;

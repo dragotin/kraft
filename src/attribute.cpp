@@ -19,7 +19,6 @@
 #include <QVariant>
 #include <QSqlQuery>
 #include <QStringList>
-#include <q3sqlcursor.h>
 
 #include <kdebug.h>
 
@@ -426,37 +425,37 @@ void AttributeMap::dbDeleteValue( const QString& attribId, const QString& id )
 
 void AttributeMap::load( dbID id )
 {
-  Q3SqlCursor cur( "attributes" );
-  cur.setMode( Q3SqlCursor::ReadOnly );
-  Q3SqlCursor curValues(  "attributeValues" );
-  curValues.setMode( Q3SqlCursor::ReadOnly );
+  QSqlQuery q1;
+  q1.prepare("SELECT id, name, valueIsList, relationTable, relationIDColumn, relationStringColumn FROM attributes WHERE hostObject=:hostObject AND hostId=:hostId");
+  q1.bindValue(":hostObject", mHost);
+  q1.bindValue(":hostId", id.toInt());
+  q1.exec();
+
   checkHost();
 
-  QString crit;
-  crit = QString( "hostObject='%1' AND hostId=%2" ).arg( mHost ).arg( id.toInt() );
-  cur.select( crit );
-
-  while ( cur.next() ) {
-    QString h = cur.value( "name" ).toString();
-    bool isList = cur.value( "valueIsList" ).toBool();
-    QString relTable = cur.value( "relationTable" ).toString();
-    QString relIDCol = cur.value( "relationIDColumn" ).toString();
-    QString relStrCol = cur.value( "relationStringColumn" ).toString();
+  while ( q1.next() ) {
+    QString h = q1.value( 1 ).toString();
+    bool isList = q1.value( 2 ).toBool();
+    QString relTable = q1.value( 3 ).toString();
+    QString relIDCol = q1.value( 4 ).toString();
+    QString relStrCol = q1.value( 5 ).toString();
 
     Attribute attr( h );
     attr.setListValue( isList );
     attr.setValueRelation( relTable, relIDCol,  relStrCol );
 
-    crit = QString( "attributeId=%1" ).arg( cur.value( "id" ).toInt() );
-    curValues.select( crit );
+    QSqlQuery q2;
+    q2.prepare("SELECT value FROM attributeValues WHERE attributeId=:id");
+    q2.bindValue(":id", q1.value(0).toInt());
+    q2.exec();
 
     QStringList values;
     QString str;
-    while ( curValues.next() )  {
+    while ( q2.next() )  {
       if ( isList ) {
-        values << curValues.value( "value" ).toString();
+        values << q2.value( 0 ).toString();
       } else {
-        str = curValues.value( "value" ).toString();
+        str = q2.value( 0 ).toString();
         // kDebug() << " attribute string " << h <<": " << str;
       }
     }

@@ -96,8 +96,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
    */
   mCatalogSelection = new CatalogSelection;
   mWidgetStack->addWidget( mCatalogSelection );
-  connect( mCatalogSelection, SIGNAL( selectionChanged( Q3ListViewItem* ) ),
-           this,  SLOT( slotCatalogSelectionChanged( Q3ListViewItem* ) ) );
+  connect( mCatalogSelection, SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ),
+           this,  SLOT( slotCatalogSelectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ) );
 
   mHeaderSelection = new HeaderSelection;
   mWidgetStack->addWidget( mHeaderSelection );
@@ -243,11 +243,11 @@ void DocAssistant::slotTextsSelectionChanged( QTreeWidgetItem *item )
   }
 }
 
-void DocAssistant::slotCatalogSelectionChanged( QTreeWidgetItem* item )
+void DocAssistant::slotCatalogSelectionChanged(QTreeWidgetItem *current ,QTreeWidgetItem *)
 {
   // enable the move-to-document button.
   kDebug() << "catalog position selection changed!" << endl;
-  if ( item ) {
+  if ( current ) {
     mPbAdd->setEnabled( true );
   } else {
     mPbAdd->setEnabled( false );

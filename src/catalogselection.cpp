@@ -33,38 +33,44 @@
 #include <kmenu.h>
 
 #include <QSizePolicy>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QComboBox>
-#include <q3widgetstack.h>
+#include <QStackedWidget>
 #include <QLabel>
-#include <q3vbox.h>
-#include <q3popupmenu.h>
 
 CatalogSelection::CatalogSelection( QWidget *parent )
-  :Q3VBox( parent ),
+  :QWidget( parent ),
    mCatalogSelector( 0 ),
    mWidgets( 0 ),
    mActions( 0 ),
    mAcAddToDoc( 0 )
 {
-  setMargin( KDialog::marginHint() );
-  setSpacing( KDialog::spacingHint() );
-
-
-  Q3HBox *hb = new Q3HBox( this );
-  QWidget *spaceEater = new QWidget( hb );
+  QVBoxLayout *layout = new QVBoxLayout();
+  layout->setMargin(KDialog::marginHint());
+  layout->setSpacing(KDialog::spacingHint());
+  QHBoxLayout *hb = new QHBoxLayout;
+  layout->addLayout(hb);
+  QWidget *spaceEater = new QWidget();
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum ) );
-  QLabel *l = new QLabel( i18n( "Selected &Catalog: " ), hb );
-  mCatalogSelector = new QComboBox( hb );
+  hb->addWidget(spaceEater);
+  QLabel *l = new QLabel( i18n( "Selected &Catalog: " ) );
+  hb->addWidget(l);
+  mCatalogSelector = new QComboBox();
+  hb->addWidget(mCatalogSelector);
   connect( mCatalogSelector, SIGNAL( activated( const QString& ) ),
            this,  SLOT( slotSelectCatalog( const QString& ) ) );
   l->setBuddy( mCatalogSelector );
 
-  mListSearchLine = new FilterHeader( 0, this ) ;
+  mListSearchLine = new FilterHeader( 0 ) ;
   mListSearchLine->showCount( false );
+  layout->addWidget(mListSearchLine);
 
-  mWidgets  = new Q3WidgetStack( this );
+  mWidgets  = new QStackedWidget;
   mWidgets->setSizePolicy( QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Expanding ) );
+  layout->addWidget(mWidgets);
 
+  this->setLayout(layout);
   initActions();
   setupCatalogList();
 }
@@ -87,7 +93,7 @@ void CatalogSelection::initActions()
 }
 
 
-void CatalogSelection::slotCatalogDoubleClicked( Q3ListViewItem*,  const QPoint&,  int )
+void CatalogSelection::slotCatalogDoubleClicked( QModelIndex )
 {
   emit actionAppendPosition();
 }
@@ -150,9 +156,9 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
         katListView = tmpllistview;
         connect( tmpllistview,
-                 SIGNAL( doubleClicked ( Q3ListViewItem *, const QPoint &, int ) ),
+                 SIGNAL( doubleClicked( QModelIndex ) ),
                  this,
-                 SLOT( slotCatalogDoubleClicked( Q3ListViewItem*,  const QPoint&,  int ) ) );
+                 SLOT( slotCatalogDoubleClicked( QModelIndex ) ) );
         tmpllistview->setShowCalcParts( false );
         tmpllistview->addCatalogDisplay( katName );
         // mAcAddToDoc->plug( tmpllistview->contextMenu() );
@@ -165,9 +171,9 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
         katListView = matListView;
         connect( matListView,
-                 SIGNAL( doubleClicked( Q3ListViewItem*,  const QPoint&,  int ) ),
+                 SIGNAL( doubleClicked( QModelIndex ) ),
                  this,
-                 SLOT( slCatalogDoubleClicked( Q3ListViewItem*, const QPoint&, int ) ) );
+                 SLOT( slCatalogDoubleClicked( QModelIndex ) ) );
         matListView->addCatalogDisplay( katName );
         matListView->contextMenu()->addAction( mAcAddToDoc );
         mWidgets->addWidget( matListView );
@@ -183,13 +189,13 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
       }
 
       if ( katListView ) {
-        connect( katListView, SIGNAL( selectionChanged( Q3ListViewItem* ) ),
-                 this, SIGNAL( selectionChanged( Q3ListViewItem* ) ) );
+        connect( katListView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                 this, SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ) );
         KatalogMan::self()->registerKatalogListView( katName, katListView );
       }
     }
     if ( mWidgetMap.contains( katName ) ) {
-      mWidgets->raiseWidget( mWidgetMap[katName] );
+      mWidgets->setCurrentWidget( mWidgetMap[katName] );
       mListSearchLine->setListView( mWidgetMap[katName] );
     }
   }
