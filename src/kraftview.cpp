@@ -911,7 +911,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
   TemplToPositionDialogBase *dia = 0;
 
   DocPosition *dp = new DocPosition();
-  dp->setPositionNumber( QString::number( newpos +1 ) );
+  dp->setPositionNumber( newpos +1 );
   QSize s;
 
   bool newTemplate = false;
@@ -1061,7 +1061,7 @@ void KraftView::slotAddExtraPosition()
   kDebug() << "Adding EXTRA Position at position " << newpos << endl;
 
   DocPosition *dp = new DocPosition( DocPosition::ExtraDiscount );
-  dp->setPositionNumber( QString::number( newpos+1 ) );
+  dp->setPositionNumber( newpos+1 );
   dp->setText( i18n( "Discount" ) );
   dp->setTaxType( currentTaxSetting() );
 
@@ -1100,7 +1100,7 @@ DocPositionList KraftView::currentPositionList()
 
         if ( dpb ) {
           DocPosition *newDp = new DocPosition( dpb->type() );
-          newDp->setPositionNumber( QString::number( cnt++ ) );
+          newDp->setPositionNumber( cnt++ );
           newDp->setAttributeMap( dpb->attributes() );
           newDp->setDbId( dpb->dbId().toInt() );
           newDp->setAssociatedWidget( widget );

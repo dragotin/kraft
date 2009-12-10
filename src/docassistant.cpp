@@ -16,11 +16,8 @@
  ***************************************************************************/
 #include <QtGui>
 
-#include <q3widgetstack.h>
 #include <QToolTip>
-#include <q3asciidict.h>
 #include <QTimer>
-#include <Q3ValueList>
 #include <QTreeWidgetItem>
 
 #include <kiconloader.h>
@@ -104,8 +101,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   connect( mHeaderSelection, SIGNAL( addressSelectionChanged() ),
            this, SLOT( slotAddressSelectionChanged() ) );
-  connect( mHeaderSelection, SIGNAL( textSelectionChanged( Q3ListViewItem* ) ),
-           this, SLOT( slotTextsSelectionChanged( Q3ListViewItem* ) ) );
+  connect( mHeaderSelection, SIGNAL(textSelectionChanged( QTreeWidgetItem* ) ),
+           this, SLOT( slotTextsSelectionChanged( QTreeWidgetItem* ) ) );
   connect( mHeaderSelection->textSelection(), SIGNAL( actionCurrentTextToDoc() ),
            this,  SLOT( slotAddToDocument() ) );
   connect( mHeaderSelection, SIGNAL( doubleClickedOnItem() ),
@@ -114,8 +111,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mFooterSelection = new TextSelection( 0, KraftDoc::Footer );
   mWidgetStack->addWidget( mFooterSelection );
 
-  connect( mFooterSelection, SIGNAL( textSelectionChanged( Q3ListViewItem* ) ),
-           this, SLOT( slotTextsSelectionChanged( Q3ListViewItem* ) ) );
+  connect( mFooterSelection, SIGNAL( textSelectionChanged( QTreeWidgetItem* ) ),
+           this, SLOT( slotTextsSelectionChanged( QTreeWidgetItem* ) ) );
   connect( mFooterSelection, SIGNAL( actionCurrentTextToDoc() ),
            this,  SLOT( slotAddToDocument() ) );
 
@@ -386,7 +383,7 @@ void DocAssistant::slotRenderCompleted()
 #if 0
   /* This is unfortunately not working because contentsHeight is always as
      heigh as the viewport is. Must be fixed in khtmlpart. */
-  Q3ValueList<int> sizes;
+  QList<int> sizes;
   sizes << mPostCard->view()->contentsHeight();
   setSizes( sizes );
 #endif

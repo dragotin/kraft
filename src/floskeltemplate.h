@@ -19,11 +19,9 @@
 #define FLOSKELTEMPLATE_H
 
 
-#include <qstring.h>
-#include <qdatetime.h>
+#include <QString>
+#include <QDateTime>
 #include <QList>
-//Added by qt3to4:
-#include <Q3PtrCollection>
 
 #include "kraftglobals.h"
 #include "einheit.h"

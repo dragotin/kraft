@@ -410,26 +410,23 @@ QDomElement DocPositionList::domElement( QDomDocument& doc )
   }
   return topElem;
 }
-#if 0
-int DocPositionList::compareItems ( Q3PtrCollection::Item item1, Q3PtrCollection::Item item2 )
+
+int DocPositionList::compareItems ( DocPosition *dp1, DocPosition *dp2 )
 {
-  DocPositionBase *dpb1 = static_cast<DocPositionBase*>( item1 );
-  DocPositionBase *dpb2 = static_cast<DocPositionBase*>( item2 );
+  //DocPositionBase *dpb1 = static_cast<DocPositionBase*>( item1 );
+  //DocPositionBase *dpb2 = static_cast<DocPositionBase*>( item2 );
 
-  QString pos1 = dpb1->positionNumber();
-  QString pos2 = dpb2->positionNumber();
-
-  int p1 = pos1.toInt();
-  int p2 = pos2.toInt();
+  int sortkey1 = dp1->positionNumber();
+  int sortkey2 = dp2->positionNumber();
 
   int res = 0;
-  if( p1 > p2 ) res = 1;
-  if( p1 < p2 ) res = -1;
+  if( sortkey1 > sortkey2 ) res = 1;
+  if( sortkey2 < sortkey1 ) res = -1;
 
   // kDebug()<< "In sort: comparing " << p1 << " with " << p2 << " = " << res << endl;
   return res;
 }
-#endif
+
 
 QDomElement DocPositionList::xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
 {

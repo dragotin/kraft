@@ -23,8 +23,7 @@
 #include <krun.h>
 #include <kdirwatch.h>
 
-#include <qfile.h>
-#include <q3textstream.h>
+#include <QFile>
 
 HtmlView::HtmlView( QWidget *parent )
   : KHTMLPart( parent ), mZoomStep( 10 )

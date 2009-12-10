@@ -66,7 +66,6 @@ CatalogTemplateList::~CatalogTemplateList()
 
 }
 
-// int CatalogTemplateList::compareItems( QPtrCollection::Item i1, QPtrCollection::Item i2 )
 int CatalogTemplateList::compareItems( CatalogTemplate *ct1,  CatalogTemplate *ct2 )
 {
   // CatalogTemplate* ct1 = static_cast<CatalogTemplate*>( i1 );

@@ -54,7 +54,7 @@ private:
   void loadLanguageList();
   void loadCountryList();
 
-  KLanguageButton *mCountryButton;
+  QComboBox *mCountryButton;
   KLanguageButton *mLanguageButton;
   QStringList languageList() const;
 

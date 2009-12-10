@@ -21,7 +21,6 @@
 #include "doctext.h"
 
 class QWidget;
-class Q3ListViewItem;
 class CatalogSelection;
 class Katalog;
 

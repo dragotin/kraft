@@ -15,11 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 #include <qdom.h>
-//Added by qt3to4:
-#include <Q3PtrCollection>
+#include <QString>
+
 #include <klocale.h>
 #include <kdebug.h>
-#include <qstring.h>
 
 #include "templatesaverbase.h"
 #include "templatesaverdb.h"

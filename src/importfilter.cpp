@@ -18,9 +18,7 @@
 // include files for QT
 #include <QFile>
 #include <QRegExp>
-//Added by qt3to4:
-#include <Q3TextStream>
-#include <Q3ValueList>
+#include <QTextStream>
 
 #include <kstandarddirs.h>
 #include <klocale.h>
@@ -62,8 +60,8 @@ bool ImportFilter::readDefinition( const QString& name )
     return false;
   }
 
-  Q3TextStream t( &f );
-  t.setEncoding(Q3TextStream::UnicodeUTF8);
+  QTextStream t( &f );
+  t.setCodec("UTF-8");
 
   while ( !t.atEnd() ) {
     mDefinition << t.readLine();
@@ -204,8 +202,8 @@ DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
     }
   }
   if ( ok ) {
-    Q3TextStream t( &f );
-    t.setEncoding(Q3TextStream::UnicodeUTF8);
+    QTextStream t( &f );
+    t.setCodec("UTF-8");
 
     int cnt = 0;
     while ( !t.atEnd() ) {

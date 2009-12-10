@@ -16,12 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qcombobox.h>
-#include <qwidget.h>
-#include <q3vbox.h>
-#include <qlabel.h>
-//Added by qt3to4:
-#include <Q3Frame>
+#include <QComboBox>
+#include <QVBoxLayout>
+#include <QWidget>
+#include <QLabel>
+#include <QSizePolicy>
 
 #include <kdialog.h>
 #include <kdebug.h>
@@ -35,8 +34,6 @@
 
 #include "doclocaledialog.h"
 #include "defaultprovider.h"
-#include <q3grid.h>
-#include <qsizepolicy.h>
 
 
 DocLocaleDialog::DocLocaleDialog( QWidget *parent )
@@ -48,30 +45,42 @@ DocLocaleDialog::DocLocaleDialog( QWidget *parent )
   setCaption( i18n( "Document Locale Settings" ) );
   setButtons( KDialog::Ok | KDialog::Cancel );
 
-  KVBox *w = new KVBox( this );
-  setMainWidget( w );
+  QWidget *w = new QWidget;
+  this->setMainWidget(w);
+  QVBoxLayout *layout = new QVBoxLayout;
+  w->setLayout(layout);
 
-  w->setSpacing( KDialog::spacingHint() );
-  ( void ) new QLabel( i18n( "<h2>Document Localisation</h2>" ), w );
-  QLabel *l = new QLabel( i18n( "Select country and language for the document.\n"
-                                "That influences the formatting of numbers, dates etc." ), w );
-  ( void ) l;
+  layout->setSpacing( KDialog::spacingHint() );
+  QLabel *l = new QLabel( i18n( "<h2>Document Localisation</h2>" ));
+  layout->addWidget(l);
+
+  l = new QLabel( i18n( "Select country and language for the document.\n"
+                                "That influences the formatting of numbers, dates etc." ));
+  layout->addWidget(l);
   // l->setFrameStyle( QFrame::Box | QFrame::Sunken );
 
-  Q3Grid *g = new Q3Grid( 2, Qt::Horizontal, w );
+  QGridLayout *g = new QGridLayout;
+  layout->addLayout(g);
   g->setSpacing( KDialog::spacingHint() );
-  new QLabel( i18n( "Country: " ),  g );
+  l = new QLabel( i18n( "Country: " ));
+  mCountryButton = new QComboBox;
 
-  mCountryButton = new KLanguageButton( g );
+  g->addWidget(l, 0, 0);
+  g->addWidget(mCountryButton, 0, 1);
+
   connect( mCountryButton, SIGNAL(activated(const QString &)),
            this, SLOT(changedCountry(const QString &)) );
 
-  new QLabel( i18n( "Language: : " ),  g );
-  mLanguageButton = new KLanguageButton( g );
+  l = new QLabel( i18n( "Language:" ) );
+  mLanguageButton = new KLanguageButton;
 
-  mLabSample = new QLabel( w );
+  g->addWidget(l, 1, 0);
+  g->addWidget(mLanguageButton, 1, 1);
+
+  mLabSample = new QLabel;
+  layout->addWidget(mLabSample);
   mLabSample->setMargin( KDialog::marginHint() );
-  mLabSample->setFrameStyle( Q3Frame::Box | Q3Frame::Sunken );
+  mLabSample->setFrameStyle( QFrame::Box | QFrame::Sunken );
 
 #if 0
   QWidget *dummy = new QWidget( w );
@@ -96,7 +105,7 @@ void DocLocaleDialog::setLocale( const QString& c, const QString& lang )
   loadCountryList();
   loadLanguageList();
 
-  mCountryButton->setCurrentItem( c );
+  mCountryButton->setCurrentIndex( mCountryButton->findText(c) );
   mLanguageButton->setCurrentItem( lang );
 
   slotUpdateSample();
@@ -119,157 +128,29 @@ KLocale DocLocaleDialog::locale() const
 void DocLocaleDialog::loadLanguageList()
 {
   mLanguageButton->loadAllLanguages();
-#if 0
-  // temperary use of our locale as the global locale
-  KLocale *lsave = KGlobal::locale();
-  KGlobal::setLocale( mLocale, KGlobal::DontCopyCatalogs );
-
-  // clear the list
-  mLanguageButton->clear();
-
-  QStringList first = languageList();
-
-  QStringList prilang;
-  // add the primary languages for the country to the list
-  for ( QStringList::ConstIterator it = first.begin();
-        it != first.end();
-        ++it )
-  {
-    QString str = KStandardDirs::locate("locale", QString::fromLatin1("%1/entry.desktop")
-                         .arg(*it));
-    if (!str.isNull())
-      prilang << str;
-  }
-
-  // add all languages to the list
-  QStringList alllang = KGlobal::dirs()->findAllResources("locale",
-                               QString::fromLatin1("*/entry.desktop") );
-  QStringList langlist = prilang;
-  if (langlist.count() > 0)
-    langlist << QString::null; // separator
-  langlist += alllang;
-
-  int menu_index = -2;
-  QString submenu; // we are working on this menu
-  for ( QStringList::ConstIterator it = langlist.begin();
-        it != langlist.end(); ++it )
-  {
-    if ((*it).isNull())
-    {
-      mLanguageButton->insertSeparator();
-      submenu = QString::fromLatin1("other");
-      mLanguageButton->insertSubmenu( mLocale->translate("Other"),
-                                      submenu, QString::null, -1 );
-      menu_index = -2; // first entries should _not_ be sorted
-      continue;
-    }
-    KSimpleConfig entry(*it);
-    entry.setGroup("KCM Locale");
-    QString name = entry.readEntry("Name",
-                                   mLocale->translate("without name"));
-   QString tag = *it;
-    int index = tag.findRev('/');
-    tag = tag.left(index);
-    index = tag.findRev('/');
-    tag = tag.mid(index + 1);
-    mLanguageButton->insertItem(name, tag, submenu, menu_index);
-  }
-
-  // restore the old global locale
-  KGlobal::_locale = lsave;
-#endif
 }
 
 QStringList DocLocaleDialog::languageList() const
 {
-  return QStringList(); // FIXME !!
-#if 0
-  QString fileName = KStandardDirs::locate("locale",
-                            QString::fromLatin1("l10n/%1/entry.desktop")
-                            .arg(mLocale->country()));
+  QStringList langlist = mLocale->allLanguagesList();
+  QStringList list2;
 
-  KSimpleConfig entry(fileName);
-  entry.setGroup("KCM Locale");
-  return entry.readListEntry("Languages");
-#endif
+  for (int i = 0; i < langlist.size(); ++i)
+            list2 << mLocale->languageCodeToName(langlist.at(i));
 
+  return list2;
 }
 
 void DocLocaleDialog::loadCountryList()
 {
-  // FIXME !!
-#if 0
-  // temperary use of our locale as the global locale
-  KLocale *lsave = KGlobal::_locale;
-  KGlobal::_locale = mLocale;
+  //Fixme: Don't just give countrycodes, but this needs some other adjustements aswell
+  QStringList countrylist = mLocale->allCountriesList();
+  QStringList list2;
 
-  QString sub = QString::fromLatin1("l10n/");
+  for (int i = 0; i < countrylist.size(); ++i)
+            list2 << mLocale->countryCodeToName(countrylist.at(i));
 
-  // clear the list
-  mCountryButton->clear();
-
-  QStringList regionlist = KGlobal::dirs()->findAllResources("locale",
-                                 sub + QString::fromLatin1("*.desktop"),
-                                 false, true );
-
-  for ( QStringList::ConstIterator it = regionlist.begin();
-    it != regionlist.end();
-    ++it )
-  {
-    QString tag = *it;
-    int index;
-
-    index = tag.findRev('/');
-    if (index != -1)
-      tag = tag.mid(index + 1);
-
-    index = tag.findRev('.');
-    if (index != -1)
-      tag.truncate(index);
-
-    KSimpleConfig entry(*it);
-    entry.setGroup("KCM Locale");
-    QString name = entry.readEntry("Name",
-                                   mLocale->translate("without name"));
-    QString map( locate( "locale",
-                          QString::fromLatin1( "l10n/%1.png" )
-                          .arg(tag) ) );
-    QIcon icon;
-    if ( !map.isNull() )
-      icon = KIconLoader::global()->loadIconSet(map, KIcon::Small);
-    mCountryButton->insertSubmenu( icon, name, tag, sub, -2 );
-  }
-
-  // add all languages to the list
-  QStringList countrylist = KGlobal::dirs()->findAllResources
-    ("locale", sub + QString::fromLatin1("*/entry.desktop"), false, true);
-
-  for ( QStringList::ConstIterator it = countrylist.begin();
-        it != countrylist.end(); ++it )
-  {
-    KSimpleConfig entry(*it);
-    entry.setGroup("KCM Locale");
-    QString name = entry.readEntry("Name",
-                                   mLocale->translate("without name"));
-    QString submenu = entry.readEntry("Region");
-
-    QString tag = *it;
-    int index = tag.findRev('/');
-    tag.truncate(index);
-    index = tag.findRev('/');
-    tag = tag.mid(index + 1);
-    int menu_index = submenu.isEmpty() ? -1 : -2;
-
-    QString flag( locate( "locale",
-                          QString::fromLatin1( "l10n/%1/flag.png" )
-                          .arg(tag) ) );
-    QIcon icon( KIconLoader::global()->loadIconSet(flag, KIcon::Small) );
-    mCountryButton->insertItem( icon, name, tag, submenu, menu_index );
-  }
-
-  // restore the old global locale
-  KGlobal::_locale = lsave;
-#endif
+  mCountryButton->addItems(countrylist);
 }
 
 

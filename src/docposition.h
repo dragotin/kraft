@@ -79,8 +79,8 @@ class DocPositionBase : public QObject
   /**
    * Position means the number in the document
    */
-    virtual QString positionNumber() { return m_position; } // FIXME: Position not working
-    virtual void setPositionNumber( const QString& str ) { m_position = str; }
+    virtual int positionNumber() { return m_position; }
+    virtual void setPositionNumber( const int& pos ) { m_position = pos; }
     virtual void setToDelete( bool doit ) { mToDelete = doit; }
     virtual bool toDelete() { return mToDelete; }
     PositionType type() { return mType; }
@@ -89,7 +89,7 @@ class DocPositionBase : public QObject
 
   protected:
     int     m_dbId;
-    QString m_position;
+    int     m_position;
     QString m_text;
     bool    mToDelete;
     TaxType mTaxType;
@@ -154,7 +154,7 @@ class DocPositionList : public QList<DocPositionBase*>
     Geld reducedTaxSum( double reducedTax );
 
   protected:
-    // int compareItems ( Q3PtrCollection::Item item1, Q3PtrCollection::Item item2 );
+    int compareItems ( DocPosition *dp1, DocPosition *dp2 );
 
   private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
