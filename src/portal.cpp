@@ -307,7 +307,7 @@ void Portal::slotStartupChecks()
 
     slotStatusMsg( i18n( "Database Problem." ) );
   } else {
-    KraftDB::self()->checkSchemaVersion( this );
+    KraftDB::self()->checkDatabaseSetup( this );
 
     // Database interaction after this point.
     m_portalView->slotBuildView();

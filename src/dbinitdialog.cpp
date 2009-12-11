@@ -14,7 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QtGui>
 
+#include <kdebug.h>
 #include "dbinitdialog.h"
 
 DbInitDialog::DbInitDialog( QWidget *parent )
@@ -27,8 +29,10 @@ DbInitDialog::DbInitDialog( QWidget *parent )
 
   setCaption( i18n("Database Setup") );
   setModal( true );
-  setButtons( Ok | Cancel );
-  setDefaultButton( Ok );
+  setButtons( User1 | Close );
+  setDefaultButton( User1 );
+  setButtonText( User1, i18n("Start"));
+  setButtonToolTip(User1,i18n("Start the Database Operation"));
   showButtonSeparator( true);
 
 }
@@ -38,13 +42,18 @@ void DbInitDialog::slotSetStatusText( const QString& msg )
   mSummary->setText( msg );
 }
 
+void DbInitDialog::slotSetInstructionText( const QString& text )
+{
+  mInfoText->setText( text );
+}
+
 void DbInitDialog::slotProcessedOneCommand( bool )
 {
   int cnt = mOverallProgress->value();
-  mOverallProgress->setValue( cnt +1 );
+  setCurrentOverallCount( cnt +1 );
 
   cnt =mDetailProgress->value();
-  mDetailProgress->setValue( cnt +1 );
+  setCurrentDetailCount( cnt+1 );
 }
 
 void DbInitDialog::setOverallCount( int cnt )
@@ -52,12 +61,20 @@ void DbInitDialog::setOverallCount( int cnt )
   mOverallProgress->setMinimum(0);
   mOverallProgress->setMaximum( cnt );
   mOverallProgress->setValue( 0 );
+  setCounterText( mOverallStatus, 0, cnt );
 }
 
 void DbInitDialog::setCurrentOverallCount( int cnt )
 {
   mOverallProgress->setValue( cnt );
+  setCounterText( mOverallStatus, cnt, mOverallProgress->maximum() );
+}
 
+void DbInitDialog::setCounterText( QLabel* label, int current, int max )
+{
+  if( !label ) return;
+  kDebug() << "setting counter text: " << current << "/" << max;
+  label->setText( i18n("%1/%2").arg(current).arg(max) );
 }
 
 void DbInitDialog::setDetailOverallCnt( int cnt )
@@ -65,9 +82,11 @@ void DbInitDialog::setDetailOverallCnt( int cnt )
   mDetailProgress->setValue( 0 );
   mDetailProgress->setMinimum( 0 );
   mDetailProgress->setMaximum( cnt );
+  setCounterText( mDetailStatus, 0, cnt );
 }
 
 void DbInitDialog::setCurrentDetailCount( int cnt )
 {
   mDetailProgress->setValue( cnt );
+  setCounterText( mDetailStatus, cnt, mDetailProgress->maximum());
 }

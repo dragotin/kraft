@@ -19,7 +19,9 @@
 #include <kmessagebox.h>
 #include <klocale.h>
 #include <k3staticdeleter.h>
+#include <kpushbutton.h>
 
+#include <QtGui>
 #include <QFile>
 #include <QSqlQuery>
 #include <QStringList>
@@ -77,7 +79,8 @@ static K3StaticDeleter<KraftDB> selfDeleter;
 KraftDB* KraftDB::mSelf = 0;
 
 KraftDB::KraftDB()
-  :QObject (), mSuccess( true ),
+  :QObject (), mParent(0),
+  mSuccess( true ),
    EuroTag( QString::fromLatin1( "%EURO" ) ),
    mInitDialog(0)
 {
@@ -260,10 +263,10 @@ void KraftDB::writeWordList( const QString& listName, const QStringList& list )
   }
 }
 
-void KraftDB::createInitDialog( QWidget *parent )
+void KraftDB::createInitDialog( )
 {
   if( mInitDialog ) return;
-  mInitDialog = new DbInitDialog( parent );
+  mInitDialog = new DbInitDialog( mParent );
   mInitDialog->setModal( true );
 
   connect( this, SIGNAL(statusMessage( const QString& )),
@@ -272,151 +275,164 @@ void KraftDB::createInitDialog( QWidget *parent )
            mInitDialog, SLOT( slotProcessedOneCommand( bool )));
 }
 
-bool KraftDB::checkSchemaVersion( QWidget *parent )
+void KraftDB::checkDatabaseSetup( QWidget *parent )
+{
+ bool reinit = false;
+ mParent = parent;
+ // check if the kraftsystems table exists, otherwise recreate everything
+  if ( m_db.tables().contains( "kraftsystem" ) == 0 ) {
+    reinit = true;
+    createInitDialog();
+    connect( mInitDialog, SIGNAL(user1Clicked()), this, SLOT(slotCreateDatabase()));
+    mInitDialog->show();
+
+    createDatabase();
+  }
+
+  if( ! reinit ) {
+    // in case of reinit we wait until the user clicks slotStartSchemaUpdateok
+    checkSchemaVersion();
+  }
+}
+
+void KraftDB::checkSchemaVersion( )
 {
   kDebug() << "The country setting is " << DefaultProvider::self()->locale()->country() << endl;
 
-  bool reinit = false;
-  if ( m_db.tables().contains( "kraftsystem" ) == 0 ) {
-    reinit = true;
-    createInitDialog( parent );
-    mInitDialog->show();
-
-    if ( ! createDatabase( parent ) ) {
-      kDebug() << "Failed to create the database, returning. Thats a bad condition." << endl;
-      return false;
-    }
-  }
-
-  QSqlQuery q( "SELECT dbSchemaVersion FROM kraftsystem" );
   emit statusMessage( i18n( "Checking Database Schema Version" ) );
 
-  int currentVer = 0;
-  if ( q.next() ) {
-    currentVer = q.value( 0 ).toInt();
-  }
+  int currentVer = currentSchemaVersion();
 
-  bool ok = true;
+  bool interactive = (mInitDialog == 0); // if the dialog already exists, we do not wait for click on 'Start'
 
   if ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
-    createInitDialog( parent );
-    if( !reinit ) mInitDialog->show();
 
     kDebug() << "Kraft Schema Version not sufficient: " << currentVer << endl;
+    if( interactive ) {
+      createInitDialog( );
+      connect( mInitDialog, SIGNAL(user1Clicked()), this, SLOT(slotStartSchemaUpdate()));
 
+      mInitDialog->show();
+    }
     emit statusMessage( i18n( "Database schema not up to date" ) );
-    if( reinit || KMessageBox::warningYesNo( parent,
-                                             i18n( "This Kraft database schema is not up to date "
-                                                   "(it is version %1 instead of the required version %2).\n"
-                                                   "Kraft is able to update it to the new version automatically.\n"
-                                                   "WARNING: MAKE SURE A GOOD BACKUP IS AVAILABLE!\n"
-                                                   "Do you want Kraft to update the database schema version now?")
-                                             .arg(  currentVer ).arg( KRAFT_REQUIRED_SCHEMA_VERSION ),
-                                             i18n("Database Schema Update") ) == KMessageBox::Yes ) {
+    mInitDialog->slotSetInstructionText( i18n( "This Kraft database schema is not up to date "
+                                               "(it is version %1 instead of the required version %2).\n"
+                                               "Kraft is able to update it to the new version automatically.\n"
+                                               "WARNING: MAKE SURE A GOOD BACKUP IS AVAILABLE!\n"
+                                               "Do you want Kraft to update the database schema version now?")
+                                         .arg(  currentVer ).arg( KRAFT_REQUIRED_SCHEMA_VERSION ) );
 
-      int overallCmdCount = 0;
-      QList<SqlCommandList> commandLists;
-
-      while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
-        const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
-        SqlCommandList cmds = parseCommandFile( migrateFilename );
-        overallCmdCount += cmds.count();
-        commandLists << cmds;
-        ++currentVer;
-      }
-      mInitDialog->setOverallCount( overallCmdCount );
-
-      int doneOverallCmds =  0;
-      foreach( SqlCommandList cmds, commandLists ) {
-        mInitDialog->setDetailOverallCnt( cmds.count() );
-        int goodCmds = processSqlCommands( cmds );
-        doneOverallCmds += goodCmds;
-        if( goodCmds != cmds.count() ) {
-          kDebug() << "Only performned " << goodCmds << " out of " << cmds.count();
-        }
-      }
-
-      if( doneOverallCmds != overallCmdCount ) {
-        kDebug() << "WRN: only " << doneOverallCmds << " from " << overallCmdCount << " sql commands "
-            "were executed correctly" << endl;
-        ok = false;
-
-        KMessageBox::sorry( parent, i18n( "The update of the database failed, only "
-                                          "%1 of %2 commands succeeded. It is not "
-                                          "recommended to continue.\nPlease check the "
-                                          "database consistency.\n" ).arg( doneOverallCmds ).arg( overallCmdCount ),
-                            i18n( "Database Schema Update Error" ) );
-
-
-      } else {
-        kDebug() << "All sql commands successfully performned";
-        /* Now update to the required schema version */
-        q.exec( "UPDATE kraftsystem SET dbSchemaVersion="
-                + QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
-      }
+    if( !interactive ) {
+      slotStartSchemaUpdate();
     }
   } else {
-    kDebug() << "Kraft Schema Version is ok: " << currentVer << endl;
-    emit statusMessage( i18n( "Database Schema Version ok" ) );
+    kDebug() << "Database Version is sufficient!";
   }
-
-  return ok;
 }
 
-bool KraftDB::createDatabase( QWidget *parent )
+
+void KraftDB::slotStartSchemaUpdate()
 {
-  // The kraftsystem table is not there, reinit the entire db.
-  bool ret = true;
-  emit statusMessage( i18n( "Recreate Database" ) );
-  if( KMessageBox::warningYesNo( parent,
-                                 i18n( "The Kraft System Table was not found in database %1."
-                                       " Do you want me to rebuild the database?\n"
-                                       "WARNING: ALL YOUR DATA WILL BE DESTROYED!")
-                                 .arg(  KatalogSettings::self()->dbFile() ),
-                                 i18n("Database Rebuild") ) == KMessageBox::Yes ) {
+  int overallCmdCount = 0;
+  QList<SqlCommandList> commandLists;
+  int currentVer = currentSchemaVersion();
 
-    emit statusMessage( i18n( "Creating Database..." ) );
+  while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
+    const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
+    SqlCommandList cmds = parseCommandFile( migrateFilename );
+    overallCmdCount += cmds.count();
+    commandLists << cmds;
+    ++currentVer;
+  }
+  mInitDialog->setOverallCount( overallCmdCount );
 
-    if ( m_db.tables().size() > 0 ) {
-      QString allTables = QString( "DROP TABLE %1;" ).arg( m_db.tables().join( ", " ) );
-      kDebug() << "Erasing all tables " << allTables << endl;
-      QSqlQuery q;
-      q.exec( allTables );
-    }
-
-    emit statusMessage( i18n( "Parse Commands..." ) );
-
-    SqlCommandList createCommands = parseCommandFile( "create_schema.sql");
-
-    QString dbFill( "fill_schema_en.sql" );
-
-    if ( DefaultProvider::self()->locale()->country() == "de" ) {
-      dbFill = "fill_schema_de.sql";
-    }
-    SqlCommandList fillCommands = parseCommandFile( dbFill );
-
-    int overallCnt = createCommands.count() + fillCommands.count();
-    mInitDialog->setOverallCount( overallCnt );
-
-    emit statusMessage( i18n( "Process create commands..." ) );
-    mInitDialog->setDetailOverallCnt( createCommands.count() );
-    int creates = processSqlCommands( createCommands );
-    if( createCommands.count() != creates ) {
-      kDebug() << "####### Some create commands failed";
-      ret = false;
-    }
-
-    if( ret ) {
-      emit statusMessage( i18n( "Process fill commands..." ) );
-      mInitDialog->setDetailOverallCnt( fillCommands.count() );
-      int fills = processSqlCommands( fillCommands );
-      if( fillCommands.count() != fills ) {
-        kDebug() << "####### Some fill commands failed";
-        ret = false;
-      }
+  int doneOverallCmds =  0;
+  foreach( SqlCommandList cmds, commandLists ) {
+    mInitDialog->setDetailOverallCnt( cmds.count() );
+    int goodCmds = processSqlCommands( cmds );
+    doneOverallCmds += goodCmds;
+    if( goodCmds != cmds.count() ) {
+      kDebug() << "Only performned " << goodCmds << " out of " << cmds.count();
     }
   }
-  return ret;
+
+  if( doneOverallCmds != overallCmdCount ) {
+    kDebug() << "WRN: only " << doneOverallCmds << " from " << overallCmdCount << " sql commands "
+        "were executed correctly" << endl;
+
+    mInitDialog->slotSetInstructionText( i18n( "The update of the database failed, only "
+                                               "%1 of %2 commands succeeded. It is not "
+                                               "recommended to continue.\nPlease check the "
+                                               "database consistency.\n" ).arg( doneOverallCmds ).arg( overallCmdCount ));
+  } else {
+    kDebug() << "All sql commands successfully performned";
+    /* Now update to the required schema version */
+    QSqlQuery q;
+    q.prepare( "UPDATE kraftsystem SET dbSchemaVersion=:id" );
+    q.bindValue(":id", QString::number( KRAFT_REQUIRED_SCHEMA_VERSION ) );
+    q.exec();
+    mInitDialog->button( KDialog::User1 )->setEnabled(false);
+  }
+}
+
+void KraftDB::createDatabase( )
+{
+  // The kraftsystem table is not there, reinit the entire db.
+
+  emit statusMessage( i18n( "Recreate Database" ) );
+
+  mInitDialog->slotSetInstructionText( i18n( "<p>The database <br/><tt>%1</tt><br/> is either empty or broken."
+                                       "To setup the database from scratch press the Start button!</p>"
+                                       "<p><b>WARNING:</b> ALL YOUR KRAFT DATA WILL BE DESTROYED!</p>")
+                                       .arg( KatalogSettings::self()->dbFile() ) );
+  mInitDialog->show();
+}
+
+void KraftDB::slotCreateDatabase()
+{
+  emit statusMessage( i18n( "Creating Database..." ) );
+  bool ret = true;
+  if ( m_db.tables().size() > 0 ) {
+    QString allTables = QString( "DROP TABLE %1;" ).arg( m_db.tables().join( ", " ) );
+    kDebug() << "Erasing all tables " << allTables << endl;
+    QSqlQuery q;
+    q.exec( allTables );
+  }
+
+  emit statusMessage( i18n( "Parse Commands..." ) );
+
+  SqlCommandList createCommands = parseCommandFile( "create_schema.sql");
+
+  QString dbFill( "fill_schema_en.sql" );
+
+  if ( DefaultProvider::self()->locale()->country() == "de" ) {
+    dbFill = "fill_schema_de.sql";
+  }
+  SqlCommandList fillCommands = parseCommandFile( dbFill );
+
+  int overallCnt = createCommands.count() + fillCommands.count();
+  mInitDialog->setOverallCount( overallCnt );
+
+  emit statusMessage( i18n( "Process create commands..." ) );
+  mInitDialog->setDetailOverallCnt( createCommands.count() );
+  int creates = processSqlCommands( createCommands );
+  if( createCommands.count() != creates ) {
+    kDebug() << "####### Some create commands failed";
+    ret = false;
+  }
+
+  if( ret ) {
+    emit statusMessage( i18n( "Process fill commands..." ) );
+    mInitDialog->setDetailOverallCnt( fillCommands.count() );
+    int fills = processSqlCommands( fillCommands );
+    if( fillCommands.count() != fills ) {
+      kDebug() << "####### Some fill commands failed";
+      ret = false;
+    }
+  }
+  if( ret ) {
+    checkSchemaVersion();
+  }
 }
 
 SqlCommandList KraftDB::parseCommandFile( const QString& file )

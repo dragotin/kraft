@@ -33,12 +33,14 @@ public:
 public slots:
 
   void slotSetStatusText( const QString& );
+  void slotSetInstructionText( const QString& );
   void slotProcessedOneCommand( bool );
   void setOverallCount( int );
   void setCurrentOverallCount( int );
   void setDetailOverallCnt( int );
   void setCurrentDetailCount( int );
-
+private:
+  void setCounterText( QLabel*, int, int );
 };
 
 #endif // DBINITDIALOG_H

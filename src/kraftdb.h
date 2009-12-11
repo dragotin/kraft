@@ -66,7 +66,7 @@ public:
   dbID getLastInsertID();
 
   void checkInit();
-  bool checkSchemaVersion( QWidget* );
+
   QSqlDatabase *getDB(){ return &m_db; }
   QString qtDriver();
 
@@ -90,9 +90,18 @@ public:
 
   int currentSchemaVersion();
   QString replaceTagsInWord( const QString& w, StringMap replaceMap ) const;
+
+  void checkDatabaseSetup( QWidget* );
 signals:
   void statusMessage( const QString& );
   void processedSqlCommand( bool );
+
+protected:
+  void checkSchemaVersion();
+
+protected slots:
+  void slotCreateDatabase();
+  void slotStartSchemaUpdate();
 
 private: // Private attributes
   KraftDB();
@@ -100,12 +109,13 @@ private: // Private attributes
 
   int processSqlCommands( const SqlCommandList& );
 
-  bool createDatabase( QWidget* );
+  void createDatabase();
 
-  void createInitDialog( QWidget* );
+  void createInitDialog();
 
   /** The default database */
   QSqlDatabase m_db;
+  QWidget *mParent;
 
   static KraftDB *mSelf;
   bool mSuccess;
