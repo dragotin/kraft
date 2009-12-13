@@ -16,12 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-
-
-#include <q3sqlcursor.h>
-#include <qsqlrecord.h>
-#include <qsqlindex.h>
-//Added by qt3to4:
+#include <QSqlRecord>
+#include <QSqlTableModel>
 #include <QSqlQuery>
 #include <QSqlError>
 
@@ -73,18 +69,20 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     bool result = false;
     if( ! doc ) return result;
 
-    Q3SqlCursor cur("document");
-    cur.setMode( Q3SqlCursor::Writable );
-    QSqlRecord *record = 0;
+    QSqlTableModel model;
+    model.setTable("document");
+
+    QSqlRecord record;
 
     kDebug() << "############### Document Save ################" << endl;
 
     if( doc->isNew() ) {
-        record = cur.primeInsert();
+        record = model.record();
     } else {
-      cur.select( "docID=" + doc->docID().toString() );
-      if ( cur.next() ) {
-        record = cur.primeUpdate();
+      model.setFilter("docID=" + doc->docID().toString());
+      model.select();
+      if ( model.rowCount() > 0 ) {
+        record = model.record(0);
       } else {
         kError() << "Could not select document record" << endl;
         return result;
@@ -96,7 +94,8 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
     if( doc->isNew() ) {
       kDebug() << "Doc is new, inserting" << endl;
-      cur.insert();
+      model.insertRecord(-1, record);
+      model.submitAll();
 
       dbID id = KraftDB::self()->getLastInsertID();
       doc->setDocID( id );
@@ -105,19 +104,19 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
       DocType dt( doc->docType() );
       QString ident = dt.generateDocumentIdent( doc );
       doc->setIdent( ident );
-      Q3SqlCursor cur2( "document" );
-      cur2.select( QString( "docID=" + id.toString() ) );
-      if ( cur2.next() ) {
-        QSqlRecord *uprecord = cur2.primeUpdate();
-        uprecord->setValue( "ident", ident );
-        cur2.update();
+      model.setFilter("docID=" + id.toString());
+      model.select();
+      if ( model.rowCount() > 0 ) {
+        model.setData(model.index(0, 1), ident);
+        model.submitAll();
       }
 
     } else {
       kDebug() << "Doc is not new, updating #" << doc->docID().intID() << endl;
 
-      record->setValue( "docID", doc->docID().toString() );
-      cur.update();
+      record.setValue( "docID", doc->docID().toString() );
+      model.setRecord(0, record);
+      model.submitAll();
     }
 
     saveDocumentPositions( doc );
@@ -186,8 +185,9 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
     if( dpb->type() == DocPositionBase::Position ||
         dpb->type() == DocPositionBase::ExtraDiscount ) {
       DocPosition *dp = static_cast<DocPosition*>(dpb);
-      QSqlRecord *record = 0;
-      Q3SqlCursor cur( "docposition" );
+      QSqlRecord record ;
+      QSqlTableModel model;
+      model.setTable("docposition");
       bool doInsert = true;
 
       int posDbID = dp->dbId().toInt();
@@ -195,18 +195,19 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
       if( posDbID > -1 ) {
         const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
         // kDebug() << "Selecting with " << selStr << endl;
-        cur.select( selStr );
-        if ( cur.next() ) {
+        model.setFilter( selStr );
+        model.select();
+        if ( model.rowCount() > 0 ) {
           if( ! dp->toDelete() )
-            record = cur.primeUpdate();
-          doInsert = false;
+            record = model.record(0);
+            doInsert = false;
         } else {
           kError() << "ERR: Could not select document position record" << endl;
           return;
         }
       } else {
         // The record is new
-        record = cur.primeInsert();
+        record = model.record();
       }
 
       if( dp->toDelete() ) {
@@ -218,14 +219,13 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         // delete all existing attributes
         dp->attributes().dbDeleteAll( dp->dbId() );
 
-        // the position is already existing, delete it
-        cur.primeDelete();
-        cur.del();
+        model.removeRow(0);
+        model.submitAll();
 
         continue;
       }
 
-      if( record ) {
+      if( record.count() > 0 ) {
         // kDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
         QString typeStr = PosTypePosition;
         double price = 0;
@@ -239,23 +239,25 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
           price= dp->unitPrice().toDouble();
         }
 
-        record->setValue( "docID",     doc->docID().toInt() );
-        record->setValue( "ordNumber", ordNumber );
-        record->setValue( "text",      dp->text() );
-        record->setValue( "postype",   typeStr );
-        record->setValue( "amount",    dp->amount() );
-        record->setValue( "unit",      dp->unit().id() );
-        record->setValue( "price",     price );
+        record.setValue( "docID",     doc->docID().toInt() );
+        record.setValue( "ordNumber", ordNumber );
+        record.setValue( "text",      dp->text() );
+        record.setValue( "postype",   typeStr );
+        record.setValue( "amount",    dp->amount() );
+        record.setValue( "unit",      dp->unit().id() );
+        record.setValue( "price",     price );
 
         ordNumber++; // FIXME
 
         if( doInsert ) {
           kDebug() << "Inserting!" << endl;
-          cur.insert();
+          model.insertRecord(-1, record);
+          model.submitAll();
           dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
         } else {
           kDebug() << "Updating!" << endl;
-          cur.update();
+          model.setRecord(0, record);
+          model.submitAll();
         }
       } else {
         kDebug() << "ERR: No record object found!" << endl;
@@ -263,9 +265,9 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
       dp->attributes().save( dp->dbId() );
 
-      QSqlError err = cur.lastError();
+      QSqlError err = model.lastError();
       if( err.type() != QSqlError::NoError ) {
-        kDebug() << "SQL-ERR: " << err.text() << " in " << cur.name() << endl;
+        kDebug() << "SQL-ERR: " << err.text() << " in " << model.tableName() << endl;
       }
 
       if ( err.type() == QSqlError::NoError ) {
@@ -274,58 +276,59 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
   }
 }
 
-void DocumentSaverDB::fillDocumentBuffer( QSqlRecord *buf, KraftDoc *doc )
+void DocumentSaverDB::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
 {
-    if( buf && doc ) {
+    if( doc ) {
       kDebug() << "Adressstring: " << doc->address() << endl;
-      buf->setValue( "ident",    doc->ident() );
-      buf->setValue( "docType",  doc->docType() );
-      buf->setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
-      buf->setValue( "clientID", doc->addressUid() );
-      buf->setValue( "clientAddress", doc->address() );
-      buf->setValue( "salut",    doc->salut() );
-      buf->setValue( "goodbye",  doc->goodbye() );
-      buf->setValue( "date",     doc->date() );
+      buf.setValue( "ident",    doc->ident() );
+      buf.setValue( "docType",  doc->docType() );
+      buf.setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
+      buf.setValue( "clientID", doc->addressUid() );
+      buf.setValue( "clientAddress", doc->address() );
+      buf.setValue( "salut",    doc->salut() );
+      buf.setValue( "goodbye",  doc->goodbye() );
+      buf.setValue( "date",     doc->date() );
       // do not set that because mysql automatically updates the timestamp and
       // sqlite3 has a trigger for it.
       // buf->setValue( "lastModified", "NOW()" );
-      buf->setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
-      buf->setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
-      buf->setValue( "country",  doc->country() );
-      buf->setValue( "language", doc->language() );
-      buf->setValue( "projectLabel",  doc->projectLabel() );
+      buf.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
+      buf.setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
+      buf.setValue( "country",  doc->country() );
+      buf.setValue( "language", doc->language() );
+      buf.setValue( "projectLabel",  doc->projectLabel() );
     }
 }
 
 void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
 {
-    Q3SqlCursor cur("document");
+    QSqlQuery q;
+    q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, pretext, posttext, docDescription, projectlabel FROM document WHERE docID=:docID");
+    q.bindValue(":docID", id);
+    q.exec();
     kDebug() << "Loading document id " << id << endl;
 
-    cur.select( "docID=" + id );
-
-    if( cur.next())
+    if( q.next())
     {
         kDebug() << "loading document with id " << id << endl;
         dbID dbid;
         dbid = id;
         doc->setDocID( dbid );
 
-        doc->setIdent(      cur.value( "ident"    ).toString() );
-        doc->setDocType(    cur.value( "docType"  ).toString() );
-        doc->setAddressUid( cur.value( "clientID" ).toString() );
-        doc->setAddress(    cur.value( "clientAddress" ).toString() );
-        doc->setSalut(      cur.value( "salut"    ).toString() );
-        doc->setGoodbye(    cur.value( "goodbye"  ).toString() );
-        doc->setDate (      cur.value( "date"     ).toDate() );
-        doc->setLastModified( cur.value( "lastModified" ).toDate() );
-        doc->setCountryLanguage( cur.value( "language" ).toString(),
-                                 cur.value( "country" ).toString());
+        doc->setIdent(      q.value( 0    ).toString() );
+        doc->setDocType(    q.value( 1  ).toString() );
+        doc->setAddressUid( q.value( 2 ).toString() );
+        doc->setAddress(    q.value( 3 ).toString() );
+        doc->setSalut(      q.value( 4    ).toString() );
+        doc->setGoodbye(    q.value( 5  ).toString() );
+        doc->setDate (      q.value( 6     ).toDate() );
+        doc->setLastModified( q.value( 7 ).toDate() );
+        doc->setCountryLanguage( q.value( 8 ).toString(),
+                                 q.value( 9 ).toString());
 
-        doc->setPreText(    KraftDB::self()->mysqlEuroDecode( cur.value( "pretext"  ).toString() ) );
-        doc->setPostText(   KraftDB::self()->mysqlEuroDecode( cur.value( "posttext" ).toString() ) );
-        doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( cur.value( "docDescription" ).toString() ) );
-        doc->setProjectLabel( cur.value("projectLabel").toString() );
+        doc->setPreText(    KraftDB::self()->mysqlEuroDecode( q.value( 10  ).toString() ) );
+        doc->setPostText(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );
+        doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( q.value( 12 ).toString() ) );
+        doc->setProjectLabel( q.value(13).toString() );
     }
 
     loadPositions( id, doc );
@@ -345,16 +348,17 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
 */
 void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 {
-    Q3SqlCursor cur("docposition");
-    QSqlIndex posIndex = cur.index( "ordNumber" );
-    cur.select( "docID=" + id, posIndex );
+    QSqlQuery q;
+    q.prepare("SELECT positionID, postype, text, amount, unit, price FROM docposition WHERE docID=:docID ORDER BY ordNumber");
+    q.bindValue(":docID", id);
+    q.exec();
 
     kDebug() << "* loading document positions for document id " << id << endl;
-    while( cur.next() ) {
-        kDebug() << " loading position id " << cur.value( "positionID" ).toInt() << endl;
+    while( q.next() ) {
+        kDebug() << " loading position id " << q.value( 0 ).toInt() << endl;
 
         DocPositionBase::PositionType type = DocPositionBase::Position;
-        QString typeStr = cur.value( "postype" ).toString();
+        QString typeStr = q.value( 1 ).toString();
         if ( typeStr == PosTypeExtraDiscount ) {
           type = DocPositionBase::ExtraDiscount;
         } else if ( typeStr == PosTypePosition ) {
@@ -367,16 +371,16 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
         }
 
         DocPosition *dp = doc->createPosition( type );
-        dp->setDbId( cur.value("positionID").toInt() );
-        dp->setText( cur.value("text").toString() );
+        dp->setDbId( q.value(0).toInt() );
+        dp->setText( q.value(2).toString() );
 
         // Note: empty fields are treated as Positions which is intended because
         // the type col was added later and thus might be empty for older entries
 
-        dp->setAmount( cur.value("amount").toDouble() );
+        dp->setAmount( q.value(3).toDouble() );
 
-        dp->setUnit( UnitManager::self()->getUnit( cur.value("unit").toInt() ) );
-        dp->setUnitPrice( cur.value("price").toDouble() );
+        dp->setUnit( UnitManager::self()->getUnit( q.value(4).toInt() ) );
+        dp->setUnitPrice( q.value(5).toDouble() );
         dp->loadAttributes();
     }
 }

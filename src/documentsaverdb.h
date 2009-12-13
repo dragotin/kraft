@@ -20,15 +20,10 @@
 
 #include "documentsaverbase.h"
 
-// include files
-#include <qobject.h>
-
-/**
- *
- */
 class KraftDoc;
 class QSqlRecord;
 class dbID;
+class QString;
 
 class DocumentSaverDB : public DocumentSaverBase
 {
@@ -48,7 +43,7 @@ private:
     const QString PosTypeExtraDiscount;
     const QString PosTypeHeader;
 
-    void fillDocumentBuffer( QSqlRecord*, KraftDoc* );
+    void fillDocumentBuffer( QSqlRecord &, KraftDoc* );
 };
 
 #endif

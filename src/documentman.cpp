@@ -16,7 +16,6 @@
  ***************************************************************************/
 #include <QSqlQuery>
 #include <QSqlDriver>
-#include <q3sqlcursor.h>
 
 #include <k3staticdeleter.h>
 #include <kdebug.h>
@@ -72,7 +71,9 @@ DocDigestList DocumentMan::latestDocs( int limit )
 DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
 {
   DocDigest dig;
-  Q3SqlCursor archCur( "archdoc" );
+
+  QSqlQuery q;
+  q.prepare("SELECT archDocId, printData, state FROM archdoc WHERE ident=:ident");
 
   dig.setId( dbID( query.value(0).toInt() ) );
   const QString ident = query.value(1).toString();
@@ -86,13 +87,14 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   dig.setProjectLabel( query.value( 9 ).toString() );
   // kDebug() << "Adding document "<< ident << " to the latest list" << endl;
 
-  archCur.select( "ident='" + ident +"'" );
-  while ( archCur.next() ) {
-    int id = archCur.value( "archDocID" ).toInt();
-    unsigned int timestamp = archCur.value( "printDate").toUInt();
+  q.bindValue(":ident", ident);
+  q.exec();
+  while ( q.next() ) {
+    int id = q.value( 0 ).toInt();
+    unsigned int timestamp = q.value( 1).toUInt();
     QDateTime dt;
     dt.setTime_t(timestamp);
-    int state = archCur.value( "state" ).toInt();
+    int state = q.value( 2 ).toInt();
     dig.addArchDocDigest( ArchDocDigest( dt, state, ident, id ) );
   }
   return dig;
