@@ -75,7 +75,6 @@
 #include "templkatalog.h"
 #include "templkataloglistview.h"
 #include "catalogselection.h"
-#include "headerselection.h"
 #include "kraftdocheaderedit.h"
 #include "kraftdocpositionsedit.h"
 #include "kraftdocfooteredit.h"
@@ -87,7 +86,6 @@
 #include "templtopositiondialogbase.h"
 #include "doctype.h"
 #include "catalogtemplate.h"
-#include "extendedcombo.h"
 #include "importitemdialog.h"
 
 #include <qtimer.h>
@@ -500,8 +498,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 
   for ( QStringList::Iterator it = units.begin(); it != units.end(); ++it ) {
     Einheit e = UnitManager::self()->getUnit( UnitManager::self()->getUnitIDSingular( *it ) );
-
-    w->m_cbUnit->insertEntry( e.einheitSingular(), e.einheitSingularLong() );
+    w->m_cbUnit->addItem(e.einheitSingular(), e.einheitSingularLong());
   }
 
   if( dp->dbId().toInt() < 0 ) {

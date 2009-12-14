@@ -211,7 +211,7 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   QString itemID; // for docSelected signal
   if ( parent ) {
     QTreeWidgetItem *item = new QTreeWidgetItem( parent );
-    item->setIcon( 0, SmallIcon( "knewstuff" ) );
+    item->setIcon( 0, SmallIcon( "get-hot-new-stuff" ) );
     setupListViewItemFromDoc( doc, item );
     mListView->setCurrentItem( item );
     dbID id = doc->docID();

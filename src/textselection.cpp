@@ -56,9 +56,9 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   mTextsView->setColumnCount( 1 );
   mTextsView->setHeaderLabel( i18n("Text"));
 
-  connect( mTextsView, SIGNAL( selectionChanged( QTreeWidgetItem* ) ),
+  connect( mTextsView, SIGNAL( currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*) ),
            this, SLOT( slotSelectionChanged( QTreeWidgetItem* ) ) );
-  connect( mTextsView, SIGNAL( doubleClicked( QTreeWidgetItem*, const QPoint &, int ) ),
+  connect( mTextsView, SIGNAL(doubleClicked(QModelIndex) ),
            this, SLOT( slotSelectionChanged( QTreeWidgetItem* ) ) );
 
   buildTextList( part );
@@ -102,7 +102,7 @@ void TextSelection::slotSelectionChanged( QTreeWidgetItem* item )
   // do not fire the signal for the root element which is the doc type
   QTreeWidgetItem *it = 0;
   QList<QTreeWidgetItem*> itemsList = mDocTypeItemMap.values();
-  if ( itemsList.indexOf( item ) == itemsList.count() ) {
+  if ( itemsList.indexOf( item ) == -1 ) {
     it = item; // was not found in the doctype item list
   }
   emit textSelectionChanged( it );

@@ -16,9 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qdir.h>
+#include <QDir>
 #include <QWidget>
-#include <q3ptrlist.h>
 
 // include files for KDE
 #include <klocale.h>

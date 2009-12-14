@@ -33,8 +33,8 @@ class DocPosition;
 class KMenu;
 class KAction;
 class Geld;
-class Q3PopupMenu;
 class KLocale;
+class DocPositionBase;
 
 class PositionViewWidget : public QWidget, public Ui_positionWidget
 {

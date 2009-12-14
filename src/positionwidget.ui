@@ -115,7 +115,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>241</width>
+          <width>247</width>
           <height>36</height>
          </rect>
         </property>
@@ -145,7 +145,7 @@
             </widget>
            </item>
            <item>
-            <widget class="ExtendedCombo" name="m_cbUnit" native="true"/>
+            <widget class="QComboBox" name="m_cbUnit"/>
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="m_sbUnitPrice">
@@ -175,8 +175,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>100</width>
-          <height>30</height>
+          <width>247</width>
+          <height>36</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_3">
@@ -257,11 +257,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>KDoubleNumInput</class>
-   <extends>QWidget</extends>
-   <header>knuminput.h</header>
-  </customwidget>
-  <customwidget>
    <class>Q3Frame</class>
    <extends>QFrame</extends>
    <header>Qt3Support/Q3Frame</header>
@@ -280,9 +275,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>ExtendedCombo</class>
+   <class>KDoubleNumInput</class>
    <extends>QWidget</extends>
-   <header>extendedcombo.h</header>
+   <header>knuminput.h</header>
   </customwidget>
  </customwidgets>
  <includes>

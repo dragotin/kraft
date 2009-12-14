@@ -19,14 +19,14 @@
 #define _TAGMAN_H
 
 // include files
-#include <q3valuevector.h>
+#include <QVector>
 
 #include "geld.h"
 #include "dbids.h"
 
-
 class QString;
 class QColor;
+class QColorGroup;
 
 /**
  * das Stundensatzobjekt: definiert durch id und namen
@@ -55,7 +55,7 @@ private:
   
 };
 
-typedef Q3ValueVector<TagTemplate> TagTemplateValueVector;
+typedef QVector<TagTemplate> TagTemplateValueVector;
 
 /**
  * Tag Template Manager

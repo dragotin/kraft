@@ -32,46 +32,52 @@
 #include <QIcon>
 #include <qsizepolicy.h>
 #include <qlabel.h>
-#include <q3vbox.h>
+#include <QVBoxLayout>
 #include <q3header.h>
 
 
 HeaderSelection::HeaderSelection( QWidget *parent )
-  :QTabWidget( parent )
+  : QTabWidget( parent )
 {
-  Q3VBox *vBox = new Q3VBox( );
-  vBox->setMargin( KDialog::marginHint() );
-  vBox->setSpacing( KDialog::spacingHint() );
+  QWidget *w = new QWidget( );
+  QVBoxLayout *l = new QVBoxLayout();
+  w->setLayout(l);
+  l->setMargin( KDialog::marginHint() );
+  l->setSpacing( KDialog::spacingHint() );
 
-  addTab( vBox, i18n( "Address Selection" ) );
-  mAddressTabId = indexOf( vBox );
+  addTab( w, i18n( "Address Selection" ) );
+  mAddressTabId = indexOf( w );
 
-  FilterHeader *fh = new FilterHeader( 0, vBox );
-  mAddressSelection = new AddressSelection( vBox );
+  FilterHeader *fh = new FilterHeader( 0 );
+  l->addWidget(fh);
+  mAddressSelection = new AddressSelection();
+  l->addWidget(mAddressSelection);
   fh->setListView( mAddressSelection );
   fh->showCount( false );
   mAddressSelection->setupAddressList( );
 
-  connect( mAddressSelection, SIGNAL( selectionChanged( Q3ListViewItem* ) ),
+  connect( mAddressSelection, SIGNAL( currentItemChanged( QTreeWidgetItem*,QTreeWidgetItem* ) ),
            SIGNAL( addressSelectionChanged() ) );
 
-  connect( mAddressSelection, SIGNAL( doubleClicked( Q3ListViewItem* ) ),
+  connect( mAddressSelection, SIGNAL( doubleClicked( QModelIndex ) ),
            SIGNAL( doubleClickedOnItem() ) );
 
   /* a view for the entry text repository */
-  vBox = new Q3VBox( );
-  vBox->setMargin( KDialog::marginHint() );
-  vBox->setSpacing( KDialog::spacingHint() );
+  w = new QWidget( );
+  l = new QVBoxLayout();
+  w->setLayout(l);
+  l->setMargin( KDialog::marginHint() );
+  l->setSpacing( KDialog::spacingHint() );
 
-  mTextsView = new TextSelection( vBox, KraftDoc::Header );
+  mTextsView = new TextSelection( 0, KraftDoc::Header );
+  l->addWidget(mTextsView);
 
   // mTextsView->addColumn( i18n( "Text" ) );
-  connect( mTextsView,
-           SIGNAL( textSelectionChanged( Q3ListViewItem* ) ),
-           SIGNAL( textSelectionChanged( Q3ListViewItem* ) ) );
+  connect( mTextsView, SIGNAL( textSelectionChanged( QTreeWidgetItem* ) ),
+           this, SIGNAL( textSelectionChanged( QTreeWidgetItem* ) ) );
 
-  addTab( vBox, i18n( "Text Templates" ) );
-  mTextsTabId = indexOf( vBox );
+  addTab( w, i18n( "Text Templates" ) );
+  mTextsTabId = indexOf( w );
 
   connect( this, SIGNAL( currentChanged( QWidget* ) ),
            this, SLOT( slotCurrentTabChanged( QWidget* ) ) );

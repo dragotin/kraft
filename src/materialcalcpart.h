@@ -19,9 +19,7 @@
 #define _MATERIALCALCPART_H
 
 // include files
-#include<q3ptrdict.h>
-#include<qvariant.h>
-
+#include <QHash>
 #include "calcpart.h"
 
 /**
@@ -29,6 +27,8 @@
  */
 class StockMaterial;
 class StockMaterialList;
+class QString;
+class QVariant;
 
 class MaterialCalcPart : public CalcPart
 {

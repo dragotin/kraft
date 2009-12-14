@@ -21,7 +21,7 @@
 
 #include "templateprovider.h"
 #include "doctext.h"
-#include "headerselection.h"
+#include <kabc/addressee.h>
 
 using namespace KABC;
 

@@ -62,7 +62,6 @@
 #include "templkatalog.h"
 #include "templkataloglistview.h"
 #include "catalogselection.h"
-#include "headerselection.h"
 #include "kraftdocheaderedit.h"
 #include "kraftdocpositionsedit.h"
 #include "kraftdocfooteredit.h"
@@ -74,7 +73,6 @@
 #include "templtopositiondialogbase.h"
 #include "doctype.h"
 #include "catalogtemplate.h"
-#include "extendedcombo.h"
 
 #include <qtimer.h>
 #include "doclocaledialog.h"

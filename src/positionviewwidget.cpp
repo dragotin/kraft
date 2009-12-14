@@ -187,8 +187,8 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     }
 
     /* Fill and set the extra discount selection combo */
-    const QString allPos = i18n( "all items" );
-    mDiscountTag->insertItem( 0, allPos ); // , i18n( "Overall Position Discount" ) );
+    const QString allPos = i18n( "All items" );
+    mDiscountTag->addItem( allPos ); // , i18n( "Overall Position Discount" ) );
     QStringList taglist = TagTemplateMan::self()->allTagTemplates();
     QString currentEntry = allPos;
 
@@ -198,9 +198,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
       QPixmap pix( 16, 12 );
       pix.fill( tmpl.color() );
       tagger = i18n( "%1-tagged items" ).arg( *tagIt );
-      mDiscountTag->insertItem( 255, tagger );
-      // ExtendedComboItem *item = mDiscountTag->insertEntry( tagger, i18n( "sum up only items marked with '%1'" ).arg( *tagIt ) );
-      // item->setPixmap( pix );
+      mDiscountTag->addItem(pix, tagger);
       if ( selTag == *tagIt ) {
         currentEntry = tagger;
       }

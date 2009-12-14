@@ -409,8 +409,11 @@ void DocAssistant::slotSelectDocPart( int p )
   mPbDel->setEnabled( false );
 
   if ( p == KraftDoc::Header ) {
-    slSetHeaderTemplateProvider( mHeaderSelection->currentIndex() ?
-                                 HeaderSelection::AddressTab : HeaderSelection::TextTab );
+    if(mHeaderSelection->currentIndex() == 0)
+      slSetHeaderTemplateProvider( HeaderSelection::AddressTab );
+    else
+      slSetHeaderTemplateProvider( HeaderSelection::TextTab );
+
     mPbNew->setEnabled( true );
     if ( mHeaderSelection->itemSelected() ) {
       kDebug() << "Enabling Edit and Del for Header" << endl;

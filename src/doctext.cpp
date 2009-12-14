@@ -64,7 +64,7 @@ bool DocText::isStandardText() const
 QPixmap DocText::pixmap() const
 {
   if ( isStandardText() ) {
-    return SmallIcon( "knewstuff" );
+    return SmallIcon( "get-hot-new-stuff" );
   } else {
     return QPixmap();
   }

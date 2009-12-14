@@ -58,7 +58,6 @@ class QSplitter;
 class DocPostCard;
 class QTimer;
 class CatalogSelection;
-class HeaderSelection;
 class KPushButton;
 class DocAssistant;
 class CalcPartList;

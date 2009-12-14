@@ -19,15 +19,14 @@
 #define FOOTERTEMPLATEPROVIDER_H
 
 #include "templateprovider.h"
-#include "doctext.h"
 
 class QWidget;
-class Q3ListViewItem;
-class FooterSelection;
+class DocText;
 
 class FooterTemplateProvider : public TemplateProvider
 {
   Q_OBJECT
+
 public:
   FooterTemplateProvider( QWidget* );
 
@@ -43,8 +42,6 @@ signals:
   void updateFooterText( const DocText& );
   void footerTextToDocument( const DocText& );
   void deleteFooterText( const DocText& );
-
-private:
 };
 
 
