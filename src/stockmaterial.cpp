@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <q3sqlcursor.h>
+#include <QString>
+#include <QDate>
 
 // include files for KDE
 #include <klocale.h>

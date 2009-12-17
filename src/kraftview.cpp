@@ -16,26 +16,19 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QtGui>
-
 #include <QLayout>
 #include <QLabel>
-#include <q3scrollview.h>
+#include <QScrollArea>
+#include <QStackedWidget>
 #include <QSizePolicy>
 #include <QTextEdit>
 #include <QSignalMapper>
-#include <khbox.h>
-#include <kvbox.h>
-#include <q3grid.h>
-#include <q3widgetstack.h>
-#include <qtabwidget.h>
+#include <QTabWidget>
 #include <QColor>
 #include <QSplitter>
-#include <q3buttongroup.h>
 #include <QToolTip>
 #include <QFont>
 #include <QResizeEvent>
-
 #include <QPalette>
 
 #include <kdebug.h>
@@ -93,40 +86,35 @@
 
 
 KraftViewScroll::KraftViewScroll( QWidget *parent ):
-Q3ScrollView( parent )
+QScrollArea( parent )
 {
-
+  widget = new QWidget;
+  setWidget(widget);
+  widget->setAutoFillBackground(false);
+  layout = new QVBoxLayout;
+  widget->setLayout(layout);
+  setWidgetResizable(true);
 }
 
-void KraftViewScroll::viewportResizeEvent ( QResizeEvent *ev )
+void KraftViewScroll::addChild( QWidget *child, int index )
 {
-  int w = ev->size().width(); // visibleWidth()-1;
-  resizeContents( w, contentsHeight () );
-  Q3ScrollView::viewportResizeEvent( ev );
+  layout->insertWidget(index, child);
 }
 
-void KraftViewScroll::resizeContents(  int w, int h )
+void KraftViewScroll::removeChild( PositionViewWidget *child )
 {
-  if( w < 400 ) {
-    w = 400;
-  }
-  Q3ScrollView::resizeContents( w, h );
-  PositionViewWidget *wid;
-  for ( wid = mWidgetList.first(); wid; wid = mWidgetList.next() ) {
-    wid->resize( w, wid->height() );
-  }
+  layout->removeWidget( child ); // from the scrollview
 }
 
-void KraftViewScroll::addChild( QWidget *child, int x, int y )
+void KraftViewScroll::moveChild( PositionViewWidget *child, int index)
 {
-  mWidgetList.append( static_cast<PositionViewWidget*>(child) );
-  Q3ScrollView::addChild( child, x, y );
+  layout->removeWidget(child);
+  layout->insertWidget(index, child);
 }
 
-void KraftViewScroll::kraftRemoveChild( PositionViewWidget *child )
+int KraftViewScroll::indexOf(PositionViewWidget *child)
 {
-  removeChild( child ); // from the scrollview
-  mWidgetList.removeRef( child );
+  return layout->indexOf(child);
 }
 
 // #########################################################
@@ -144,14 +132,10 @@ KraftView::KraftView(QWidget *parent) :
 
   QVBoxLayout *vLayoutGlobal = new QVBoxLayout;
   w->setLayout( vLayoutGlobal );
-
   setMainWidget( w );
-
-  //mGlobalVBox->setMargin( 3 );
 
   mDetailHeader = new QLabel;
   mDetailHeader->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
-  // mDetailHeader->setMargin( 4 );
   mDetailHeader->setFrameStyle( QFrame::Box + QFrame::Plain );
   mDetailHeader->setLineWidth( 1 );
   mDetailHeader->setAutoFillBackground(true);
@@ -172,7 +156,6 @@ KraftView::KraftView(QWidget *parent) :
   vLayoutGlobal->addWidget( mCSplit );
 
   mViewStack = new QStackedWidget;
-  // mViewStack->setMargin( 0 );
   mCSplit->addWidget( mViewStack );
 
   kDebug() << "mViewSTack height is " << mViewStack->height() << endl;
@@ -306,7 +289,7 @@ void KraftView::setupDocHeaderView()
       m_headerEdit->mButtLang->hide();
     }
 
-    m_headerEdit->m_whiteboardEdit->setFrameStyle( Q3Frame::NoFrame );
+    m_headerEdit->m_whiteboardEdit->setFrameStyle( QFrame::NoFrame );
     m_headerEdit->m_whiteboardEdit->setMaximumSize( 32676, 80 );
     // m_headerEdit->m_whiteboardEdit->setBackgroundColor( QColor( 243, 244, 121 ) );
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
@@ -417,7 +400,7 @@ void KraftView::redrawDocPositions( )
                                  "<li>Open the template catalog clicking on the '%1' "
                                   "button on the right and select from available templates.</li>"
                                    "</ul></qt>").arg( i18n( "show Template" ) ) );
-      m_positionScroll->addChild( mHelpLabel,  0, 0 );
+      m_positionScroll->addChild( mHelpLabel, 0);
     }
     return;
 
@@ -450,16 +433,12 @@ void KraftView::redrawDocPositions( )
 
     if( w && (list.contains( w->position() ) == 0) ) {
       kDebug() << "Removing this one: " << w << endl;
-      m_positionScroll->kraftRemoveChild( w );
+      m_positionScroll->removeChild( w );
       it2.remove();
       // mPositionWidgetList.erase( it2 );
       break;
     }
   }
-
-  // repaint everything
-  m_positionScroll->updateContents();
-
 }
 
 void KraftView::setMappingId( QWidget *widget, int pos )
@@ -480,7 +459,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 {
   PositionViewWidget *w = new PositionViewWidget( );
   
-  int cw = m_positionScroll->contentsWidth();
+  int cw = m_positionScroll->width();
   if ( cw < 400 ) cw = 400;
   w->resize( cw, w->height() );
 
@@ -512,28 +491,19 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   }
 
   mPositionWidgetList.insert( pos,  w );
-  m_positionScroll->resizeContents( cw,
-                                    mPositionWidgetList.count() * w->height()+1 );
+  m_positionScroll->addChild( w, pos );
 
-  /* If the new pos is not appended, we have to move all the following on height unit down */
-  if ( pos != mPositionWidgetList.count() ) {
-
-    for ( int indx = pos + 1; indx < mPositionWidgetList.count(); indx++ ) {
-      // for ( vw = mPositionWidgetList.at( pos+1 ); vw; vw = mPositionWidgetList.next() ) {
-      PositionViewWidget *vw = mPositionWidgetList.at( indx );
-      if( vw )
-        m_positionScroll->moveChild( vw, 0, m_positionScroll->childY( vw ) + w->height() );
+  //Set the correct indexes when the widget is not appended
+  if(pos < mPositionWidgetList.count())
+  {
+    for(int i = pos+1; i < mPositionWidgetList.count(); ++i)
+    {
+      mPositionWidgetList.at(i)->setOrdNumber(i+1);
     }
   }
 
-  m_positionScroll->addChild( w, 0, 0 );
-
   w->setDocPosition( dp, getDocument()->locale() );
   w->setOrdNumber( pos+1 );
-  int y = (pos) * w->height();
-  m_positionScroll->moveChild( w, 0, y );
-
-  w->show();
 
   return w;
 }
@@ -707,11 +677,8 @@ void KraftView::slotMovePositionUp( int pos )
     w2->setOrdNumber( pos+1 );
     setMappingId( w1, pos-1 );
     setMappingId( w2, pos );
-    // int tmpX = m_positionScroll->childX( w1 );
-    int tmpY = m_positionScroll->childY( w1 );
 
-    m_positionScroll->moveChild( w1, 0, m_positionScroll->childY( w2 ) );
-    m_positionScroll->moveChild( w2, 0, tmpY );
+    m_positionScroll->moveChild( w2, m_positionScroll->indexOf(w1) );
     QTimer::singleShot( 0, this, SLOT(refreshPostCard()  ) );
   } else {
     kDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
@@ -745,9 +712,7 @@ void KraftView::slotMovePositionDown( int pos )
     setMappingId( w1, pos+1 );
     setMappingId( w2, pos );
 
-    int tmpY = m_positionScroll->childY( w1 );
-    m_positionScroll->moveChild( w1, 0, m_positionScroll->childY( w2 ) );
-    m_positionScroll->moveChild( w2, 0, tmpY );
+    m_positionScroll->moveChild( w1, m_positionScroll->indexOf( w2 ) );
 
     QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
   } else {
@@ -1175,7 +1140,7 @@ DocPositionList KraftView::currentPositionList()
             // copy information from the widget
             newDp->setToDelete( widget->deleted() );
 
-            QString t = widget->m_teFloskel->text();
+            QString t = widget->m_teFloskel->toPlainText();
             if ( !replaceMap.empty() ) {
               t = KraftDB::self()->replaceTagsInWord( t, replaceMap );
             }
@@ -1387,7 +1352,7 @@ void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
     m_positionScroll->ensureVisible( 0, 0 );
   }
   if( posWidget ) {
-    if( posWidget->m_teFloskel->text().isEmpty() ) {
+    if( posWidget->m_teFloskel->toPlainText().isEmpty() ) {
       posWidget->m_teFloskel->setFocus();
     } else {
       posWidget->m_sbAmount->setFocus();

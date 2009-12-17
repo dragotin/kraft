@@ -19,13 +19,10 @@
 #include "docposition.h"
 
 // include files for Qt
-#include <q3vbox.h>
-#include <q3textedit.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <q3listview.h>
-#include <qpushbutton.h>
-#include <qsqlquery.h>
+#include <QLabel>
+#include <QComboBox>
+#include <QPushButton>
+#include <QSqlQuery>
 
 // include files for KDE
 #include <knuminput.h>

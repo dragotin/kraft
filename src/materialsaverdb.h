@@ -39,7 +39,7 @@ private:
   static MaterialSaverDB *mSelf;
 
     virtual bool saveTemplate( StockMaterial* );
-    virtual void fillMaterialBuffer( QSqlRecord*, StockMaterial* , bool );
+    virtual void fillMaterialBuffer( QSqlRecord &, StockMaterial* , bool );
 };
 
 #endif

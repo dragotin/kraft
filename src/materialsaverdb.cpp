@@ -24,8 +24,8 @@
 #include <k3staticdeleter.h>
 
 #include <qdatetime.h>
-#include <q3sqlcursor.h>
-#include <qsqlrecord.h>
+#include <QSqlTableModel>
+#include <QSqlRecord>
 
 #include "kraftdb.h"
 #include "kraftglobals.h"
@@ -57,21 +57,24 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 
     // Transaktion ?
 
-    Q3SqlCursor cur("stockMaterial");
+    QSqlTableModel model;
+    model.setTable("stockMaterial");
     QString templID = QString::number( mat->getID() );
-    cur.select( "matID=" + templID);
+    model.setFilter( "matID=" + templID );
+    model.select();
 
-    QSqlRecord *buffer = 0;
+    QSqlRecord buffer = model.record();
 
-    if( cur.next())
+    if( model.rowCount() > 0)
     {
         kDebug() << "Updating material " << mat->getID() << endl;
 
         // mach update
         isNew = false;
-        buffer = cur.primeUpdate();
+        buffer = model.record(0);
         fillMaterialBuffer( buffer, mat, false );
-        cur.update();
+        model.setRecord(0, buffer);
+        model.submitAll();
     }
     else
     {
@@ -79,9 +82,9 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
         kDebug() << "Creating new material database entry" << endl;
 
         isNew = true;
-        buffer = cur.primeInsert();
         fillMaterialBuffer( buffer, mat, true );
-        cur.insert();
+        model.insertRecord(-1, buffer);
+        model.submitAll();
 
         /* Jetzt die neue Template-ID selecten */
         dbID id = KraftDB::self()->getLastInsertID();
@@ -98,21 +101,21 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
     return res;
 }
 
-void MaterialSaverDB::fillMaterialBuffer( QSqlRecord *rec, StockMaterial *mat, bool isNew )
+void MaterialSaverDB::fillMaterialBuffer( QSqlRecord &rec, StockMaterial *mat, bool isNew )
 {
-  if( ! ( rec && mat ) ) return;
-  rec->setValue( "chapterID", mat->chapter() );
-  rec->setValue( "material", mat->name() );
-  rec->setValue( "unitID", mat->getUnit().id() );
-  rec->setValue( "perPack", mat->getAmountPerPack() );
-  rec->setValue( "priceIn", mat->purchPrice().toDouble() );
-  rec->setValue( "priceOut", mat->salesPrice().toDouble() );
+  if( ! ( mat ) ) return;
+  rec.setValue( "chapterID", mat->chapter() );
+  rec.setValue( "material", mat->name() );
+  rec.setValue( "unitID", mat->getUnit().id() );
+  rec.setValue( "perPack", mat->getAmountPerPack() );
+  rec.setValue( "priceIn", mat->purchPrice().toDouble() );
+  rec.setValue( "priceOut", mat->salesPrice().toDouble() );
 
   QDateTime dt = QDateTime::currentDateTime();
   QString dtString = dt.toString("yyyy-MM-dd hh:mm:ss" );
 
   if( isNew ) {
-    rec->setValue( "enterDate", dtString);
+    rec.setValue( "enterDate", dtString);
   }
-  rec->setValue("modifyDate", dtString );
+  rec.setValue("modifyDate", dtString );
 }

@@ -98,7 +98,6 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
      */
     void slotStatusMsg(const QString &text);
 
-    // virtual void slListviewExecuted(Q3ListViewItem*);
     virtual void slTreeviewItemChanged( QTreeWidgetItem *, QTreeWidgetItem *);
     void slExport();
 

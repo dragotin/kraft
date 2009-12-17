@@ -18,15 +18,7 @@
 #ifndef _MATERIALSELECTDIALOG_H
 #define _MATERIALSELECTDIALOG_H
 
-#include <q3vbox.h>
-
 #include <kdialog.h>
-
-// include files
-
-/**
- *
- */
 
 class MaterialKatalogListView;
 class FilterHeader;

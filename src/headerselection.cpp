@@ -30,10 +30,9 @@
 
 #include <QTreeWidget>
 #include <QIcon>
-#include <qsizepolicy.h>
-#include <qlabel.h>
+#include <QSizePolicy>
+#include <QLabel>
 #include <QVBoxLayout>
-#include <q3header.h>
 
 
 HeaderSelection::HeaderSelection( QWidget *parent )

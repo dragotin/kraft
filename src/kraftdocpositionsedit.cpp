@@ -21,7 +21,7 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   topLayout->setSpacing( 0 ); // KDialog::spacingHint() );
 
   QHBoxLayout *upperHBoxLayout = new QHBoxLayout;
-  //upperHBoxLayout->setFrameStyle( Q3Frame::Box + Q3Frame::Sunken );
+  //upperHBoxLayout->setFrameStyle( QFrame::Box + QFrame::Sunken );
   upperHBoxLayout->setMargin( KDialog::marginHint()/2 );
   topLayout->addLayout( upperHBoxLayout );
 

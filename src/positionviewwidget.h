@@ -24,6 +24,7 @@
 #include <QAction>
 #include <QPaintEvent>
 
+#include "geld.h"
 #include "ui_positionwidget.h"
 
 /**
@@ -35,6 +36,7 @@ class KAction;
 class Geld;
 class KLocale;
 class DocPositionBase;
+class DosPositionGuardedPtr;
 
 class PositionViewWidget : public QWidget, public Ui_positionWidget
 {

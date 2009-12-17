@@ -18,16 +18,11 @@
 #include "importitemdialog.h"
 
 // include files for Qt
-#include <q3vbox.h>
-#include <q3textedit.h>
 #include <QLabel>
 #include <QComboBox>
 #include <QCheckBox>
-#include <q3buttongroup.h>
 #include <QToolTip>
 #include <QMap>
-//Added by qt3to4:
-#include <Q3ValueList>
 
 
 // include files for KDE

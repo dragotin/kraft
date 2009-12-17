@@ -19,7 +19,6 @@
 #include <QStringList>
 #include <QString>
 #include <QSqlQuery>
-#include <q3sqlcursor.h>
 
 // include files for KDE
 #include <klocale.h>
@@ -145,25 +144,17 @@ void StdSatzMan::load()
 
 
   /* Daten laden */
-  Q3SqlCursor cur("stdSaetze");
-  cur.setMode( Q3SqlCursor::ReadOnly );
-
-    // Create an index that sorts from high values for einheitID down.
-    // that makes at least on resize of the vector.
-    QSqlIndex indx = cur.index( "sortKey" );
-    // indx.setDescending ( 0, true );
-
-    cur.select( indx );
-    while( cur.next() )
-    {
-      int satzID = cur.value("stdSaetzeID").toInt();
-      kDebug() << "Neue StdSatz ID " << satzID << endl;
-      // resize if index is to big.
-      StdSatz ss( satzID, QString::fromUtf8(cur.value("name").toByteArray()),
-                  Geld( cur.value("price").toDouble()));
-
-      mStdSaetze.append(ss);
-    }
+  q.prepare("SELECT stdSaetzeID, name, price FROM stdSaetze ORDER BY sortKey");
+  q.exec();
+  while( q.next() )
+  {
+    int satzID = q.value(0).toInt();
+    kDebug() << "Neue StdSatz ID " << satzID << endl;
+    // resize if index is to big.
+    StdSatz ss( satzID, QString::fromUtf8(q.value(1).toByteArray()),
+                Geld( q.value(2).toDouble()));
+    mStdSaetze.append(ss);
+  }
 }
 
 

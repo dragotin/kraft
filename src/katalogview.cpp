@@ -100,7 +100,6 @@ void KatalogView::init(const QString& katName )
 
       connect( listview, SIGNAL(currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)),
                this, SLOT(slTreeviewItemChanged( QTreeWidgetItem*, QTreeWidgetItem*)) );
-               // this, SLOT(slListviewExecuted(Q3ListViewItem*)));
   }
 
   setCentralWidget(w);

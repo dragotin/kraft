@@ -15,7 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QWidget>
+#include <QStackedWidget>
+#include <QPainter>
 
 #include <kglobal.h>
 #include <klocale.h>
@@ -127,6 +129,7 @@ PositionViewWidget::PositionViewWidget()
   lKind->setPixmap( QPixmap() );
 
   this->setAutoFillBackground(true);
+  this->setBaseSize(this->width(), 100);
 }
 
 void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
@@ -151,7 +154,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
   AttributeMap amap = dp->attributes();
 
   if( dp->type() == DocPositionBase::Position ) {
-    positionDetailStack->raiseWidget( positionPage );
+    positionDetailStack->setCurrentWidget( positionPage );
 
     m_sbAmount->blockSignals( true );
     m_sbAmount->setValue( pos->amount() );
@@ -175,7 +178,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     }
     kDebug() << "Setting position ptr. in viewwidget: " << pos << endl;
   } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
-    positionDetailStack->raiseWidget( discountPage );
+    positionDetailStack->setCurrentWidget( discountPage );
     // kDebug() << " " << dp->type()<< endl;
     Attribute discount = amap[DocPosition::Discount];
     mDiscountPercent->setValue( discount.value().toDouble() );
@@ -512,7 +515,7 @@ void PositionViewWidget::slotSetPositionNormal()
 
 void PositionViewWidget::cleanKindString()
 {
-  QString current = m_teFloskel->text();
+  QString current = m_teFloskel->toPlainText();
   bool touched = false;
 
   if ( current.startsWith( kindLabel( Alternative ) ) ) {
@@ -539,7 +542,7 @@ void PositionViewWidget::slotSetPositionAlternative()
 
   cleanKindString();
 
-  m_teFloskel->insertAt( kindLabel( Alternative ), 0, 0 );
+  m_teFloskel->setText( kindLabel( Alternative ) + m_teFloskel->toPlainText() );
 
   emit positionModified();
 }
@@ -554,7 +557,7 @@ void PositionViewWidget::slotSetPositionDemand()
   slotRefreshPrice();
 
   cleanKindString();
-  m_teFloskel->insertAt( kindLabel( Demand ), 0, 0 );
+  m_teFloskel->setText( kindLabel( Demand ) + m_teFloskel->toPlainText() );
 
   emit positionModified();
 }

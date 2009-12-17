@@ -16,8 +16,7 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qsql.h>
-#include <q3sqlcursor.h>
+#include <QSqlQuery>
 
 // include files for KDE
 #include <klocale.h>
@@ -49,20 +48,19 @@ int MatKatalog::load()
   Katalog::load();
   int cnt = 0;
 
-  Q3SqlCursor cur( "stockMaterial" ); // Specify the table/view name
-  cur.setMode( Q3SqlCursor::ReadOnly );
-  cur.select(); // We'll retrieve every record
-  while ( cur.next() ) {
+  QSqlQuery q("SELECT matID, chapterID, material, unitID, perPack, priceIn, priceOut, modifyDate, enterDate FROM stockMaterial");
+  q.exec();
+  while ( q.next() ) {
     cnt++;
-    int id = cur.value( "matID" ).toInt();
-    int chapterID = cur.value( "chapterID" ).toInt();
-    const QString material = cur.value( "material" ).toString();
-    int unitID = cur.value( "unitID" ).toInt();
-    double pPack = cur.value( "perPack" ).toDouble();
-    double priceIn = cur.value( "priceIn" ).toDouble();
-    double priceOut = cur.value( "priceOut" ).toDouble();
-    QDate lastMod = cur.value( "modifyDate" ).toDate();
-    QDate entered = cur.value( "enterDate" ).toDate();
+    int id = q.value( 0 ).toInt();
+    int chapterID = q.value( 1 ).toInt();
+    const QString material = q.value( 2 ).toString();
+    int unitID = q.value( 3 ).toInt();
+    double pPack = q.value( 4 ).toDouble();
+    double priceIn = q.value( 5 ).toDouble();
+    double priceOut = q.value(6 ).toDouble();
+    QDate lastMod = q.value( 7 ).toDate();
+    QDate entered = q.value( 8 ).toDate();
 
     StockMaterial *mat = new StockMaterial( id, chapterID, material, unitID,
                                             pPack, Geld( priceIn ), Geld( priceOut ) );

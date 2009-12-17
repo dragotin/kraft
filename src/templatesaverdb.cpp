@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <q3sqlcursor.h>
 #include <QSqlRecord>
+#include <QSqlQuery>
+#include <QSqlTableModel>
 
 // include files for KDE
 #include <klocale.h>
@@ -38,16 +39,19 @@
 bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
 {
     bool result = true;
-    Q3SqlCursor cur( mTableFixCalc );
-
+    QSqlTableModel model;
+    model.setTable(mTableFixCalc);
     int cpId = cp->getDbID().toInt();
+    model.setFilter("FCalcID=" + QString::number( cpId ));
+    model.select();
     kDebug() << "CalcFix calcpart-ID is " << cpId << endl;
     if( cpId < 0 ) { // no db entry yet => INSERT
         if( !cp->isToDelete() ) {
-            QSqlRecord *buffer = cur.primeInsert();
-            fillFixCalcBuffer( buffer, cp );
-            buffer->setValue( "TemplID", parentID.toInt() );
-            cur.insert();
+            QSqlRecord buffer = model.record();
+            fillFixCalcBuffer( &buffer, cp );
+            buffer.setValue( "TemplID", parentID.toInt() );
+            model.insertRecord(-1, buffer);
+            model.submitAll();
 
             dbID id = KraftDB::self()->getLastInsertID();
             kDebug() << "Setting db-ID " << id.toString() << endl;
@@ -59,21 +63,20 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
         if( cp->isToDelete() ) {
             kDebug() << "deleting fix calc part " << cpId << endl;
             // delete this calcpart.
-            Q3SqlCursor delcur( mTableFixCalc );
-            delcur.select( "FCalcID="+QString::number(cpId) );
-            if ( delcur.next() ) {
-                delcur.primeDelete();
-                int cnt = delcur.del();
+            if ( model.rowCount() > 0 ) {
+                int cnt = model.rowCount();
+                model.removeRows(0, cnt);
+                model.submitAll();
                 kDebug() << "Amount of deleted entries: " << cnt << endl;
             }
         } else {
             // der Datensatz ist bereits in der Datenbank => UPDATE
-            cur.select( "FCalcID=" + QString::number( cpId ) );
-            if( cur.next() ) {
-                QSqlRecord *buffer = cur.primeUpdate();
-                buffer->setValue( "modDate", "systimestamp" );
-                fillFixCalcBuffer( buffer, cp );
-                cur.update();
+            if( model.rowCount() > 0 ) {
+                QSqlRecord buffer = model.record(0);
+                buffer.setValue( "modDate", "systimestamp" );
+                fillFixCalcBuffer(& buffer, cp );
+                model.setRecord(0, buffer);
+                model.submitAll();
             } else {
                 kError() << "Can not select FCalcID, corrupt data!" << endl;
             }
@@ -100,27 +103,31 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
   bool result = true;
   if( !cp ) return result;
 
-  Q3SqlCursor cur( mTableMatCalc );
+  QSqlTableModel model;
+  model.setTable( mTableMatCalc );
 
   int cpId = cp->getDbID().toInt();
+  model.setFilter("MCalcID=" + QString::number( cpId ));
+  model.select();
   kDebug() << "Saving material calcpart id=" << cpId << endl;
 
   if( cpId < 0 ) { // kein Eintrag in db bis jetzt => INSERT
-    QSqlRecord *buffer = cur.primeInsert();
-    fillMatCalcBuffer( buffer, cp );
-    buffer->setValue( "TemplID", parentID.toInt() );
-    cur.insert();
+    QSqlRecord buffer = model.record();
+    fillMatCalcBuffer( &buffer, cp );
+    buffer.setValue( "TemplID", parentID.toInt() );
+    model.insertRecord(-1, buffer);
+    model.submitAll();
 
     dbID id = KraftDB::self()->getLastInsertID();
     cp->setDbID(id);
   } else {
     // calcpart-ID ist bereits belegt, UPDATE
-    cur.select( "MCalcID=" + QString::number( cpId ) );
-    if( cur.next() ) {
-      QSqlRecord *buffer = cur.primeUpdate();
-      buffer->setValue( "modDate", "systimestamp" );
-      fillMatCalcBuffer( buffer, cp );
-      cur.update();
+    if( model.rowCount() > 0) {
+      QSqlRecord buffer = model.record(0);
+      buffer.setValue( "modDate", "systimestamp" );
+      fillMatCalcBuffer( &buffer, cp );
+      model.setRecord(0, buffer);
+      model.submitAll();
     } else {
       kError() << "Can not select MCalcID, corrupt data!" << endl;
     }
@@ -145,16 +152,21 @@ void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMateri
     kDebug() << "storing material calcpart detail for material " << mat->name() << endl;
 
     /* create temporar dbcalcpart and fill the current material list */
-    Q3SqlCursor cur( mTableMatDetailCalc );
+    QSqlQuery q;
+    q.prepare("SELECT amount, materialID FROM " + mTableMatDetailCalc + " WHERE CalcID=:CalcID AND materialID=:materialID");
+    q.bindValue(":CalcID", cp->getDbID().toInt());
+    q.bindValue(":materialID", mat->getID());
+    q.exec();
+
     QString selStr = QString("CalcID=%1 AND materialID=%2" ).arg(cp->getDbID().toInt()).arg(mat->getID());
+
     kDebug() << "Material details for calcID " << cp->getDbID().toString() << endl;
 
-    cur.select(selStr);
     MaterialCalcPart dbPart("MatCalcPartonDB", 0 );
-    while( cur.next() )
+    while( q.next() )
     {
-      double amount = cur.value("amount").toDouble();
-      int matID     = cur.value("materialID").toInt();
+      double amount = q.value(0).toDouble();
+      int matID     = q.value(1).toInt();
       dbPart.addMaterial(amount, matID);
     }
 
@@ -163,32 +175,37 @@ void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMateri
     double origAmount = dbPart.getCalcAmount(mat);
 
     kDebug() << "The new Value is " << newAmount << " and the orig is " << origAmount << endl;
-    Q3SqlCursor modifyCur( mTableMatDetailCalc );
+    QSqlTableModel model;
+    model.setTable(mTableMatDetailCalc);
+    model.setFilter(selStr);
+    model.select();
 
     if( origAmount > -1.0  ) {
         // Es gibt schon einen DS fuer dieses Material, schauen, ob die Anzahl
         // des Materials stimmt, wenn nicht, updaten.
-        if( origAmount != newAmount ) {
-            modifyCur.select(selStr);
-            if( modifyCur.next() ) {
-                QSqlRecord *upRec = modifyCur.primeUpdate();
-                if( upRec ) {
-                    upRec->setValue("amount", newAmount);
-                    modifyCur.update();
-                }
+        if( origAmount != newAmount )
+        {
+            if( model.rowCount() > 0 )
+            {
+                QSqlRecord upRec = model.record(0);
+                upRec.setValue("amount", newAmount);
+                model.setRecord(0, upRec);
+                model.submitAll();
             }
-            // muss geupdatet werden
-        } else {
+        }
+            // muss geupdatet werder
+        else {
             // die Anzahl ist gleichgeblieben, nix zu tun.
         }
     } else {
         // nix gefunden, datensatz muss eingefuegt werden.
-        QSqlRecord *insRec = modifyCur.primeInsert();
-        insRec->setValue("amount", newAmount);
-        insRec->setValue("CalcID", cp->getDbID().toInt());
-        insRec->setValue("materialID", mat->getID());
+        QSqlRecord insRec = model.record();
+        insRec.setValue("amount", newAmount);
+        insRec.setValue("CalcID", cp->getDbID().toInt());
+        insRec.setValue("materialID", mat->getID());
 
-        modifyCur.insert();
+        model.insertRecord(-1, insRec);
+        model.submitAll();
         dbID id = KraftDB::self()->getLastInsertID();
         if( id.isOk() ) {
             cp->setDbID(id);
@@ -266,39 +283,47 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
     bool result = true;
     if( !cp ) return result;
 
-    Q3SqlCursor cur( mTableTimeCalc );
-
     int cpId = cp->getDbID().toInt();
 
-    if( cpId < 0 ) { // kein Eintrag in db bis jetzt => INSERT
+    QSqlTableModel model;
+    model.setTable( mTableTimeCalc );
+    model.setFilter( "TCalcID="+QString::number(cpId) );
+    model.select();
+
+    kDebug() << "Models last error: " << model.lastError() << model.rowCount();
+
+    if( cpId < 0 )
+    { // kein Eintrag in db bis jetzt => INSERT
         if( ! cp->isToDelete() ) {
-            QSqlRecord *buffer = cur.primeInsert();
-            fillZeitCalcBuffer( buffer, cp );
-            buffer->setValue( "TemplID", parentId.toInt() );
-            cur.insert();
+            QSqlRecord buffer = model.record();
+            fillZeitCalcBuffer( &buffer, cp );
+            buffer.setValue( "TemplID", parentId.toInt() );
+            model.insertRecord(-1, buffer);
 
             dbID id = KraftDB::self()->getLastInsertID();
             cp->setDbID(id);
         } else {
             kDebug() << "delete flag is set -> skip saving." << endl;
         }
-    } else {
+    }
+
+    else
+    {
         if( cp->isToDelete() ) {
             // delete this calcpart.
-            Q3SqlCursor delcur( mTableTimeCalc );
-            delcur.select( "TCalcID="+cpId );
-            if ( delcur.next() ) {
-                delcur.primeDelete();
-                delcur.del();
+            if ( model.rowCount() > 0 ) {
+                model.removeRow(0);
+                model.submitAll();
             }
-        } else {
+        }
+        else {
 	    // Update needed, record is already in the database
-            cur.select( "TCalcID=" + QString::number( cpId ) );
-            if( cur.next() ) {
-                QSqlRecord *buffer = cur.primeUpdate();
-                buffer->setValue( "modDate", "systimestamp" );
-                fillZeitCalcBuffer( buffer, cp );
-                cur.update();
+            if( model.rowCount() > 0 ) {
+                QSqlRecord buffer = model.record(0);
+                buffer.setValue( "modDate", "systimestamp" );
+                fillZeitCalcBuffer( &buffer, cp );
+                model.setRecord(0, buffer);
+                model.submitAll();
             } else {
                 kError() << "Unable to select TCalcID, corrupt data!" << endl;
             }
@@ -343,22 +368,24 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
 
     // Transaktion ?
 
-    Q3SqlCursor cur("Catalog");
+    QSqlTableModel model;
+    model.setTable("Catalog");
     QString templID = QString::number(tmpl->getTemplID());
-    cur.select( "TemplID=" + templID);
+    model.setFilter("TemplID=" + templID);
+    model.select();
 
-    QSqlRecord *buffer = 0;
-
-    if( cur.next())
+    QSqlRecord buffer;
+    if( model.rowCount() > 0)
     {
         kDebug() << "Updating template " << tmpl->getTemplID() << endl;
 
         // mach update
         isNew = false;
-        buffer = cur.primeUpdate();
-        fillTemplateBuffer( buffer, tmpl, false );
-        buffer->setValue( "modifyDatum", "systimestamp" );
-        cur.update();
+        buffer = model.record(0);
+        fillTemplateBuffer( &buffer, tmpl, false );
+        buffer.setValue( "modifyDatum", "systimestamp" );
+        model.setRecord(0, buffer);
+        model.submitAll();
     }
     else
     {
@@ -366,9 +393,10 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
         kDebug() << "Creating new database entry" << endl;
 
         isNew = true;
-        buffer = cur.primeInsert();
-        fillTemplateBuffer( buffer, tmpl, true );
-        cur.insert();
+        buffer = model.record();
+        fillTemplateBuffer( &buffer, tmpl, true );
+        model.insertRecord(-1, buffer);
+        model.submitAll();
 
         /* Jetzt die neue Template-ID selecten */
         dbID id = KraftDB::self()->getLastInsertID();
