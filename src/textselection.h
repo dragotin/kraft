@@ -18,20 +18,18 @@
 #ifndef FOOTERSELECTION_H
 #define FOOTERSELECTION_H
 
-#include <qtabwidget.h>
-#include <qmap.h>
-#include <q3vbox.h>
-//Added by qt3to4:
-#include <Q3PopupMenu>
-
-#include <QTreeWidget>
+#include <QMap>
+#include <QWidget>
 
 #include <kabc/addressee.h>
 
 #include "kraftdoc.h"
 
-class QComboBox;
-class Q3PopupMenu;
+class QTreeWidget;
+class QTreeWidgetItem;
+class QString;
+class QPoint;
+class QMenu;
 class FilterHeader;
 class AddressSelection;
 class KPushButton;
@@ -39,7 +37,7 @@ class DocText;
 class KAction;
 class KActionCollection;
 
-class TextSelection : public Q3VBox
+class TextSelection : public QWidget
 {
   Q_OBJECT
 public:
@@ -61,7 +59,7 @@ public slots:
   void deleteCurrentText();
   void updateDocText( const DocText& );
   void slotSelectDocType( const QString& );
-  void slotRMB( QTreeWidget*, QTreeWidgetItem* ,const QPoint& );
+  void slotRMB( QPoint );
 
 protected:
   void initActions();
@@ -72,13 +70,13 @@ protected slots:
   void slotSelectionChanged( QTreeWidgetItem* );
 
 private:
-  FilterHeader   *mListSearchLine;
-  QTreeWidget      *mTextsView;
+  FilterHeader                    *mListSearchLine;
+  QTreeWidget                     *mTextsView;
   QMap<QTreeWidgetItem*, DocText> mTextMap;
   QMap<QString, QTreeWidgetItem*> mDocTypeItemMap;
   QMap<QString, QTreeWidgetItem*> mStandardItemMap;
 
-  Q3PopupMenu        *mMenu;
+  QMenu             *mMenu;
   KActionCollection *mActions;
   KAction           *mAcMoveToDoc;
 };

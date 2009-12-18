@@ -772,7 +772,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>KDoubleNumInput</class>
@@ -794,16 +793,6 @@
   <include location="local">kpushbutton.h</include>
   <include location="local">kcombobox.h</include>
   <include location="local">knuminput.h</include>
-  <include location="local">knuminput.h</include>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">kpushbutton.h</include>
  </includes>
  <resources/>
  <connections/>

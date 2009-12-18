@@ -35,7 +35,6 @@ class K3ListViewItem;
 class K3ListView;
 class FloskelTemplate;
 class FlosTemplDialog;
-class Q3ListViewItem;
 class FilterHeader;
 class QBoxLayout;
 /**

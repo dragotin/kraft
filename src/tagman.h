@@ -26,7 +26,7 @@
 
 class QString;
 class QColor;
-class QColorGroup;
+class QPalette;
 
 /**
  * das Stundensatzobjekt: definiert durch id und namen
@@ -39,7 +39,7 @@ public:
 
   QString name()  const { return mName;  }
   QColor  color() const { return mColor; }
-  QColorGroup colorGroup() const;
+  QPalette palette() const;
   dbID    dbId()  const { return mId;    }
   QString description() const { return mDesc; }
   void setName( const QString& n ) { mName = n; }

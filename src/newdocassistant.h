@@ -18,8 +18,7 @@
 #ifndef NEWDOCASSISTANT_H
 #define NEWDOCASSISTANT_H
 
-#include <qmap.h>
-//Added by qt3to4:
+#include <QMap>
 #include <QLabel>
 
 #include <kabc/addressee.h>

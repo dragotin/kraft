@@ -162,7 +162,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>KDoubleNumInput</class>
@@ -181,9 +180,6 @@
   <tabstop>m_inpPreis</tabstop>
  </tabstops>
  <includes>
-  <include location="local">knuminput.h</include>
-  <include location="local">knuminput.h</include>
-  <include location="local">knuminput.h</include>
   <include location="local">knuminput.h</include>
   <include location="local">klineedit.h</include>
  </includes>

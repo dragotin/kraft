@@ -316,7 +316,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>KUrlRequester</class>
@@ -325,9 +324,6 @@
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="local">kurlrequester.h</include>
-  <include location="local">klineedit.h</include>
-  <include location="local">kpushbutton.h</include>
   <include location="local">kurlrequester.h</include>
   <include location="local">klineedit.h</include>
   <include location="local">kpushbutton.h</include>

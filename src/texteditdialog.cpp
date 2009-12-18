@@ -18,12 +18,10 @@
 
 #include <QComboBox>
 #include <QWidget>
-#include <q3vbox.h>
 #include <QLabel>
 
 #include <kdialog.h>
 #include <kdebug.h>
-#include <kvbox.h>
 #include <klocale.h>
 #include <kcombobox.h>
 #include <ktextedit.h>
@@ -43,7 +41,7 @@ TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
   setCaption(  i18n("Edit Text Templates" ));
   setButtons( KDialog::Ok | KDialog::Cancel );
 
-  KVBox *mainWidget = new KVBox( this );
+  QWidget *mainWidget = new QWidget( this );
   setMainWidget( mainWidget );
 
   mBaseWidget = new Ui::TextEditBase;

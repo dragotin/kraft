@@ -25,7 +25,6 @@
 #include "brunsviewer.h"
 #include "brunskatalogview.h"
 
-//Added by qt3to4:
 #include <QPixmap>
 
 #if 0

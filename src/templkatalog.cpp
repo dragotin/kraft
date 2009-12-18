@@ -15,12 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <q3sqlcursor.h>
 #include <QSqlQuery>
 #include <QStringList>
 #include <qdom.h>
 #include <QFile>
-#include <q3textstream.h>
 #include <QDir>
 
 #include <kdebug.h>
@@ -66,18 +64,17 @@ int TemplKatalog::load()
     Katalog::load();
     int cnt = 0;
 
-    Q3SqlCursor cur( "Catalog" ); // Specify the table/view name
-    cur.setMode( Q3SqlCursor::ReadOnly );
-    cur.select(); // We'll retrieve every record
-    while ( cur.next() ) {
+    QSqlQuery q("SELECT unitID, TemplID, chapterID, Preisart, EPreis, modifyDatum, enterDatum, Floskel, Gewinn, zeitbeitrag FROM Catalog");
+    q.exec();
+    while ( q.next() ) {
         cnt++;
-        int einheit = cur.value("unitID").toInt();
-        int templID = cur.value("TemplID").toInt();
+        int einheit = q.value(0).toInt();
+        int templID = q.value(1).toInt();
         kDebug() << "Loading template number " << templID << endl;
-        int chapID = cur.value("chapterID").toInt();
+        int chapID = q.value(2).toInt();
         // int sortID = cur.value( "sortKey" ).toInt();
-        int calcKind = cur.value("Preisart").toInt();
-        double g = cur.value("EPreis").toDouble();
+        int calcKind = q.value(3).toInt();
+        double g = q.value(4).toDouble();
 
         Geld preis(g);
         /* Only for debugging: */
@@ -86,7 +83,7 @@ int TemplKatalog::load()
         }
 
         QDateTime modDt;
-        QString modDate = cur.value("modifyDatum").toString();
+        QString modDate = q.value(5).toString();
         /* modifyDatum ist TIMESTAMP und den gibt mysql offensichtlich mit einem T im
          * String zurck */
         if( modDate[10] == 'T' ) {
@@ -94,18 +91,18 @@ int TemplKatalog::load()
             modDt = QDateTime::fromString(modDate, Qt::ISODate );
         }
 
-        QDateTime enterDt = cur.value("enterDatum").toDateTime();
+        QDateTime enterDt = q.value(6).toDateTime();
 
         kDebug() << "Chapter ID is " << chapID << endl;
 
         FloskelTemplate *flos = new FloskelTemplate( templID,
-                                                     QString::fromUtf8(cur.value("Floskel").toByteArray()),
+                                                     QString::fromUtf8(q.value(7).toByteArray()),
                                                      einheit, chapID, calcKind,
                                                      modDt, enterDt );
         // flos->setSortKey( sortID );
-        flos->setBenefit( cur.value("Gewinn").toDouble());
+        flos->setBenefit( q.value(8).toDouble());
         flos->setManualPrice( preis );
-        bool tslice = cur.value("zeitbeitrag").toInt() > 0;
+        bool tslice = q.value(9).toInt() > 0;
         flos->setHasTimeslice( tslice );
 
         loadCalcParts( flos );
@@ -142,21 +139,21 @@ int TemplKatalog::loadTimeCalcParts( FloskelTemplate *flos )
     if( ! flos ) return(0);
     int cnt = 0;
 
-    Q3SqlCursor cur("CalcTime");
+    QSqlQuery q;
+    q.prepare("SELECT TCalcID, TemplID, name, minutes, percent, stdHourSet, allowGlobal FROM CalcTime WHERE TemplID=:TemplID");
+    q.bindValue(":TemplID", QString::number( flos->getTemplID()));
+    q.exec();
 
-    cur.select( "TemplID=" + QString::number( flos->getTemplID()));
-
-    while( cur.next() )
+    while( q.next() )
     {
         cnt++;
-        int tcalcid = cur.value("TCalcID").toInt();
-        int templid = cur.value("TemplID").toInt();
-
-        QString name = QString::fromUtf8(cur.value("name").toByteArray());
-        int minutes = cur.value("minutes").toInt();
-        int prozent = cur.value("percent").toInt();
-        int hourSet = cur.value("stdHourSet").toInt();
-        bool globAllowed = cur.value("allowGlobal").toInt() > 0;
+        int tcalcid = q.value(0).toInt();
+        int templid = q.value(1).toInt();
+        QString name = QString::fromUtf8(q.value(2).toByteArray());
+        int minutes = q.value(3).toInt();
+        int prozent = q.value(4).toInt();
+        int hourSet = q.value(5).toInt();
+        bool globAllowed = q.value(6).toInt() > 0;
 
         ZeitCalcPart *zcp = new ZeitCalcPart( name, minutes, prozent );
         zcp->setGlobalStdSetAllowed( globAllowed );
@@ -164,7 +161,7 @@ int TemplKatalog::loadTimeCalcParts( FloskelTemplate *flos )
 
         zcp->setDbID( dbID(tcalcid));
         zcp->setTemplID( dbID(templid));
-	zcp->setDirty( false );
+        zcp->setDirty( false );
         flos->addCalcPart( zcp );
     }
 
@@ -176,22 +173,23 @@ int TemplKatalog::loadMaterialCalcParts( FloskelTemplate *flos )
     if( ! flos ) return(0);
     int cnt = 0;
 
-    Q3SqlCursor cur("CalcMaterials");
+    QSqlQuery q;
+    q.prepare("SELECT name, percent, MCalcID, TemplID FROM CalcMaterials WHERE TemplID=:TemplID");
+    q.bindValue(":TemplID", QString::number( flos->getTemplID()));
+    q.exec();
 
-    cur.select( "TemplID=" + QString::number( flos->getTemplID()));
-
-    while( cur.next() )
+    while( q.next() )
     {
         cnt++;
-        QString name = QString::fromUtf8(cur.value("name").toByteArray());
-        int prozent = cur.value("percent").toInt();
-        long mcalcID = cur.value("MCalcID").toLongLong();
-        int templid = cur.value("TemplID").toInt();
+        QString name = QString::fromUtf8(q.value(0).toByteArray());
+        int prozent = q.value(1).toInt();
+        long mcalcID = q.value(2).toLongLong();
+        int templid = q.value(3).toInt();
 
         MaterialCalcPart *mPart = new MaterialCalcPart( mcalcID, name, prozent );
         mPart->setDbID( dbID(mcalcID));
         mPart->setTemplID( dbID(templid));
-	mPart->setDirty( false );
+        mPart->setDirty( false );
         flos->addCalcPart( mPart );
         loadMaterialDetails( mcalcID, mPart );
     }
@@ -203,16 +201,18 @@ int TemplKatalog::loadMaterialDetails( long calcID, MaterialCalcPart* mcp )
 {
     if( ! mcp ) return 0;
 
-    Q3SqlCursor cur("CalcMaterialDetails");
-    cur.select("CalcID=" + QString::number(calcID));
+    QSqlQuery q;
+    q.prepare("SELECT materialID, amount FROM CalcMaterialDetails WHERE CalcID=:CalcID");
+    q.bindValue(":CalcID", QString::number(calcID));
+    q.exec();
 
     int cnt = 0;
-    while( cur.next())
+    while( q.next())
     {
         cnt ++;
 
-        long   matID  = cur.value("materialID").toLongLong();
-        double amount = cur.value("amount").toDouble();
+        long   matID  = q.value(0).toLongLong();
+        double amount = q.value(1).toDouble();
 
         mcp->addMaterial( amount, matID );
     }
@@ -226,27 +226,27 @@ int TemplKatalog::loadFixCalcParts( FloskelTemplate *flos )
     if( ! flos ) return(0);
     int cnt = 0;
 
-    Q3SqlCursor cur("CalcFixed");
+    QSqlQuery q;
+    q.prepare("SELECT name, amount, percent, FCalcID, TemplID, price FROM CalcFixed WHERE TemplID=:TemplID");
+    q.bindValue(":TemplID", QString::number( flos->getTemplID()));
 
-    cur.select( "TemplID=" + QString::number( flos->getTemplID()));
-
-    while( cur.next() )
+    while( q.next() )
     {
         cnt++;
-        QString name  = QString::fromUtf8(cur.value("name").toByteArray());
-        double amount = cur.value("amount").toDouble();
-        int percent   = cur.value("percent").toInt();
-        int tcalcid = cur.value("FCalcID").toInt();
-        int templid = cur.value("TemplID").toInt();
+        QString name  = QString::fromUtf8(q.value(0).toByteArray());
+        double amount = q.value(1).toDouble();
+        int percent   = q.value(2).toInt();
+        int tcalcid = q.value(3).toInt();
+        int templid = q.value(4).toInt();
 
-        double g      = cur.value("price").toDouble();
+        double g      = q.value(5).toDouble();
         Geld price(g); //     = (int) g; // FIXME: proper handling of money here.
 
         FixCalcPart *fcp = new FixCalcPart( name, price, percent );
         fcp->setMenge( amount );
         fcp->setDbID( dbID(tcalcid));
         fcp->setTemplID( dbID(templid));
-	fcp->setDirty( false );
+        fcp->setDirty( false );
         flos->addCalcPart( fcp );
     }
 
@@ -301,7 +301,7 @@ void TemplKatalog::writeXMLFile()
     QFile file( filename );
     if( file.open( QIODevice::WriteOnly ) )
     {
-        Q3TextStream ts( &file );
+        QTextStream ts( &file );
         ts << doc.toString();
 
         file.close();

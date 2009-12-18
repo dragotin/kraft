@@ -623,7 +623,7 @@ void PositionViewWidget::paintEvent ( QPaintEvent* )
       // painter->setBrush( c );
 
       int starty = cnt*share;
-      qDrawShadeLine( painter, 3, starty, 3, starty+share-1, tagTemplate.colorGroup(), false, 1, 4 );
+      qDrawShadeLine( painter, 3, starty, 3, starty+share-1, tagTemplate.palette(), false, 1, 4 );
       cnt++;
     }
   }

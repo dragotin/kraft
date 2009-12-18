@@ -18,6 +18,7 @@
 // include files for Qt
 #include <QtGui>
 #include <QSqlQuery>
+#include <QColorGroup>
 
 // include files for KDE
 #include <klocale.h>
@@ -42,13 +43,13 @@ TagTemplate::TagTemplate( const dbID& id, const QString& name, const QString& de
 
 }
 
-QColorGroup TagTemplate::colorGroup() const
+QPalette TagTemplate::palette() const
 {
-  QColorGroup cg;
-  cg.setColor( QColorGroup::Light, mColor.light() );
-  cg.setColor( QColorGroup::Dark,  mColor.dark() );
-  cg.setColor( QColorGroup::Mid,   mColor );
-  return cg;
+  QPalette palette;
+  palette.setColor( QPalette::Light, mColor.light() );
+  palette.setColor( QPalette::Dark,  mColor.dark() );
+  palette.setColor( QPalette::Mid,   mColor );
+  return palette;
 }
 
 bool TagTemplate::operator!= ( const TagTemplate& tt ) const

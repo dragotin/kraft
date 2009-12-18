@@ -31,27 +31,27 @@
 #include <QIcon>
 #include <QSizePolicy>
 #include <QLabel>
-#include <q3vbox.h>
-#include <q3header.h>
-#include <q3popupmenu.h>
 #include <QTreeWidgetItem>
-//Added by qt3to4:
-#include <Q3ValueList>
+#include <QVBoxLayout>
+#include <QMenu>
 
 TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
-  :Q3VBox( parent )
+  :QWidget( parent )
 {
-  setMargin( KDialog::marginHint() );
-  setSpacing( KDialog::spacingHint() );
+  QVBoxLayout *layout = new QVBoxLayout;
+  setLayout(layout);
+
+  layout->setMargin( KDialog::marginHint() );
+  layout->setSpacing( KDialog::spacingHint() );
 
   /* a view for the entry text repository */
-  ( void ) new QLabel( i18n( "%1 Text Selection" ).arg( KraftDoc::partToString( part ) ), this );
+  QLabel *label = new QLabel( i18n( "%1 Text Selection" ).arg( KraftDoc::partToString( part ) ));
+  layout->addWidget(label);
 
-  mTextsView = new QTreeWidget( this );
-  // mTextsView->setItemMargin( 4 );
+  mTextsView = new QTreeWidget;
+  layout->addWidget(mTextsView);
   mTextsView->setRootIsDecorated( false );
   mTextsView->headerItem()->setHidden( true );
-  // mTextsView->setResizeMode( Q3ListView::LastColumn );
   mTextsView->setSelectionMode( QAbstractItemView::SingleSelection );
   mTextsView->setColumnCount( 1 );
   mTextsView->setHeaderLabel( i18n("Text"));
@@ -64,12 +64,11 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   buildTextList( part );
 
   // Context Menu
-  mMenu = new Q3PopupMenu( mTextsView );
-  // mMenu->insertTitle( i18n("Template Actions") );
-  // connect( this, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint& , int ) ),
-  //           this, SLOT( slotRMB( QListViewItem *, const QPoint &, int ) ) );
-  connect( mTextsView, SIGNAL( contextMenu( QTreeWidget*, QTreeWidgetItem *, const QPoint& ) ),
-           this, SLOT( slotRMB( QTreeWidget*, QTreeWidgetItem *, const QPoint & ) ) );
+  mMenu = new QMenu( mTextsView );
+  mMenu->setTitle( i18n("Template Actions") );
+  mTextsView->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect( mTextsView, SIGNAL(customContextMenuRequested(QPoint) ),
+            this, SLOT( slotRMB( QPoint ) ) );
 
   initActions();
 }
@@ -222,7 +221,7 @@ void TextSelection::initActions()
 {
   mActions     = new KActionCollection( this );
   mAcMoveToDoc = mActions->addAction( "moveToDoc", this, SIGNAL(actionCurrentTextToDoc()));
-  mAcMoveToDoc->setIcon( KIcon( "back" ));
+  mAcMoveToDoc->setIcon( KIcon( "go-previous" ));
   mAcMoveToDoc->setText( i18n("&Use in Document") );
 
   mMenu->addAction( mAcMoveToDoc );
@@ -257,12 +256,9 @@ QString TextSelection::currentText() const
 }
 
 
-void TextSelection::slotRMB( QTreeWidget*, QTreeWidgetItem* item, const QPoint& point )
+void TextSelection::slotRMB(QPoint point )
 {
-  if( ! item ) return;
-
-  // fill the document list with a list of the open docs
-  mMenu->popup( point );
+  mMenu->popup( mTextsView->mapToGlobal(point) );
 }
 
 #include "textselection.moc"

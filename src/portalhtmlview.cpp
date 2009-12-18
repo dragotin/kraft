@@ -40,6 +40,7 @@ bool PortalHtmlView::urlSelected( const QString &url, int, int,
   } else {
     kDebug() << "unknown action " << action << endl;
   }
+
 }
 
 

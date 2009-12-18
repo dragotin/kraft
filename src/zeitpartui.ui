@@ -137,7 +137,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
    <class>KLineEdit</class>
@@ -158,7 +157,6 @@
  </tabstops>
  <includes>
   <include location="local">klineedit.h</include>
-  <include location="local">knuminput.h</include>
   <include location="local">knuminput.h</include>
  </includes>
  <resources/>
