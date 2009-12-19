@@ -23,7 +23,6 @@
 #include <qmap.h>
 
 #include <kdialog.h>
-#include <k3listview.h>
 
 #include "tagman.h"
 
@@ -34,6 +33,8 @@ class QStringList;
 class FilterHeader;
 class QPushButton;
 class KColorButton;
+class KLineEdit;
+class KTextEdit;
 
 class TagTemplateEditor: public KDialog
 {

@@ -25,6 +25,7 @@
  */
 class FloskelTemplate;
 class QSqlRecord;
+class QString;
 class ZeitCalcPart;
 class FixCalcPart;
 class MaterialCalcPart;

@@ -22,22 +22,16 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <k3staticdeleter.h>
+#include <kglobal.h>
 
 #include "kraftdb.h"
 #include "katalogman.h"
 #include "katalog.h"
 #include "templkatalog.h"
 
-static K3StaticDeleter<KatalogMan> selfDeleter;
-
-KatalogMan* KatalogMan::mSelf = 0;
-
 KatalogMan *KatalogMan::self()
 {
-  if ( ! mSelf ) {
-    selfDeleter.setObject( mSelf, new KatalogMan() );
-  }
+  K_GLOBAL_STATIC(KatalogMan, mSelf);
   return mSelf;
 }
 

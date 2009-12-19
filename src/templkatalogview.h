@@ -31,8 +31,6 @@
 
 class TemplKatalog;
 class KatalogListView;
-class K3ListViewItem;
-class K3ListView;
 class FloskelTemplate;
 class FlosTemplDialog;
 class FilterHeader;

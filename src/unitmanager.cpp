@@ -15,31 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <stdlib.h>
-
 #include <QSqlQuery>
 
 // include files for KDE
 #include <kraftdb.h>
 #include <klocale.h>
 #include <kdebug.h>
-#include <k3staticdeleter.h>
-
-// include files for standard functions
-#include <stdlib.h>
+#include <kglobal.h>
 
 #include "unitmanager.h"
 #include "einheit.h"
-
-static K3StaticDeleter<UnitManager> selfDeleter;
 
 UnitManager* UnitManager::mSelf = 0;
 
 UnitManager* UnitManager::self()
 {
-  if ( ! mSelf ) {
-    selfDeleter.setObject( mSelf, new UnitManager() );
-  }
+  K_GLOBAL_STATIC(UnitManager, mSelf);
   return mSelf;
 }
 

@@ -22,7 +22,6 @@
 #include <QFile>
 #include <QTextStream>
 
-#include <k3staticdeleter.h>
 #include <kstandarddirs.h>
 #include <kdebug.h>
 
@@ -34,16 +33,9 @@
 #include "kraftsettings.h"
 #include "documentman.h"
 
-static K3StaticDeleter<ArchiveMan> selfDeleter;
-
-
-ArchiveMan* ArchiveMan::mSelf = 0;
-
 ArchiveMan *ArchiveMan::self()
 {
-  if ( !mSelf ) {
-    selfDeleter.setObject( mSelf, new ArchiveMan() );
-  }
+  K_GLOBAL_STATIC(ArchiveMan, mSelf);
   return mSelf;
 }
 

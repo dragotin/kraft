@@ -33,7 +33,6 @@
 @author Klaas Freitag
 */
 
-
 ArchDocPosition::ArchDocPosition()
   : mAmount( 0 )
 {

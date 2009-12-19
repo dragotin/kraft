@@ -495,7 +495,7 @@ void FlosTemplDialog::slRemoveFixPart()
     {
       m_template->removeCalcPart(cp);
     }
-    m_fixParts->removeItemWidget(item, 0);
+    delete item;
 
     refreshPrices();
   }
@@ -606,7 +606,7 @@ void FlosTemplDialog::slRemoveTimePart()
     {
       m_template->removeCalcPart(cp);
     }
-    m_timeParts->removeItemWidget(item, 0);
+    delete item;
 
     refreshPrices();
   }
@@ -820,7 +820,7 @@ void FlosTemplDialog::slRemoveMatPart()
     StockMaterial *mat = static_cast<StockMaterial*>(m_matDict[item]);
 
     mc->removeMaterial( mat );
-    m_matParts->removeItemWidget(item, 0);
+    delete item;
     refreshPrices();
   }
 }

@@ -19,7 +19,6 @@
 #include <qstringlist.h>
 #include <QSqlQuery>
 
-#include <k3staticdeleter.h>
 #include <klocale.h>
 #include <kglobal.h>
 #include <kdebug.h>
@@ -31,15 +30,9 @@
 #include "doctype.h"
 #include <kstandarddirs.h>
 
-static K3StaticDeleter<DefaultProvider> selfDeleter;
-
-DefaultProvider* DefaultProvider::mSelf = 0;
-
 DefaultProvider *DefaultProvider::self()
 {
-  if ( !mSelf ) {
-    selfDeleter.setObject( mSelf, new DefaultProvider() );
-  }
+  K_GLOBAL_STATIC(DefaultProvider, mSelf);
   return mSelf;
 }
 

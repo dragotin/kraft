@@ -23,7 +23,7 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <k3staticdeleter.h>
+#include <kglobal.h>
 
 #include "stdsatzman.h"
 #include "kraftdb.h"
@@ -67,14 +67,10 @@ StdSatzDuration::StdSatzDuration( const StdSatz& std, int dur )
 /*
  * ********** Stundensatz Manager **********
  */
-static K3StaticDeleter<StdSatzMan> selfDeleter;
-StdSatzMan* StdSatzMan::mSelf = 0;
 
 StdSatzMan *StdSatzMan::self()
 {
-  if ( !mSelf ) {
-    selfDeleter.setObject( mSelf, new StdSatzMan() );
-  }
+  K_GLOBAL_STATIC(StdSatzMan, mSelf);
   return mSelf;
 }
 

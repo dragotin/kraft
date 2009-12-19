@@ -121,20 +121,32 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
     dbID id = KraftDB::self()->getLastInsertID();
     cp->setDbID(id);
   } else {
-    // calcpart-ID ist bereits belegt, UPDATE
-    if( model.rowCount() > 0) {
-      QSqlRecord buffer = model.record(0);
-      buffer.setValue( "modDate", "systimestamp" );
-      fillMatCalcBuffer( &buffer, cp );
-      model.setRecord(0, buffer);
-      model.submitAll();
-    } else {
-      kError() << "Can not select MCalcID, corrupt data!" << endl;
+    if(cp->isToDelete())
+    {
+      // This calcpart must be deleted
+      if( model.rowCount() > 0)
+      {
+        model.removeRow(0);
+        model.submitAll();
+      }
+    }
+    else
+    {
+      // calcpart-ID ist bereits belegt, UPDATE
+      if( model.rowCount() > 0) {
+        QSqlRecord buffer = model.record(0);
+        buffer.setValue( "modDate", "systimestamp" );
+        fillMatCalcBuffer( &buffer, cp );
+        model.setRecord(0, buffer);
+        model.submitAll();
+      } else {
+        kError() << "Can not select MCalcID, corrupt data!" << endl;
+      }
     }
   }
 
   // nun die Materialliste sichern
-  StockMaterialList matList = cp->getCalcMaterialList();
+  StockMaterialList matList = cp->getFullCalcMaterialList();
   StockMaterialListIterator it( matList );
 
   while( it.hasNext() ) {
@@ -146,61 +158,40 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
 return result;
 }
 
-void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *mat )
+void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *mat)
 {
     if( ! (cp && mat) ) return;
     kDebug() << "storing material calcpart detail for material " << mat->name() << endl;
-
-    /* create temporar dbcalcpart and fill the current material list */
-    QSqlQuery q;
-    q.prepare("SELECT amount, materialID FROM " + mTableMatDetailCalc + " WHERE CalcID=:CalcID AND materialID=:materialID");
-    q.bindValue(":CalcID", cp->getDbID().toInt());
-    q.bindValue(":materialID", mat->getID());
-    q.exec();
-
-    QString selStr = QString("CalcID=%1 AND materialID=%2" ).arg(cp->getDbID().toInt()).arg(mat->getID());
-
     kDebug() << "Material details for calcID " << cp->getDbID().toString() << endl;
 
-    MaterialCalcPart dbPart("MatCalcPartonDB", 0 );
-    while( q.next() )
-    {
-      double amount = q.value(0).toDouble();
-      int matID     = q.value(1).toInt();
-      dbPart.addMaterial(amount, matID);
-    }
-
-    /* Now start to compare the DB and the temp calc part */
-    double newAmount = cp->getCalcAmount(mat);
-    double origAmount = dbPart.getCalcAmount(mat);
-
-    kDebug() << "The new Value is " << newAmount << " and the orig is " << origAmount << endl;
     QSqlTableModel model;
     model.setTable(mTableMatDetailCalc);
+    QString selStr = QString("CalcID=%1 AND materialID=%2" ).arg(cp->getDbID().toInt()).arg(mat->getID());
     model.setFilter(selStr);
     model.select();
 
-    if( origAmount > -1.0  ) {
-        // Es gibt schon einen DS fuer dieses Material, schauen, ob die Anzahl
-        // des Materials stimmt, wenn nicht, updaten.
-        if( origAmount != newAmount )
-        {
-            if( model.rowCount() > 0 )
-            {
-                QSqlRecord upRec = model.record(0);
-                upRec.setValue("amount", newAmount);
-                model.setRecord(0, upRec);
-                model.submitAll();
-            }
-        }
-            // muss geupdatet werder
-        else {
-            // die Anzahl ist gleichgeblieben, nix zu tun.
-        }
-    } else {
-        // nix gefunden, datensatz muss eingefuegt werden.
+    if( model.rowCount() > 0 )
+    {
+      if( cp->isMatToDelete(mat) == true)
+      {
+        //Delete the material details
+        model.removeRow(0);
+        model.submitAll();
+      }
+      else
+      {
+        //Update the material details
+        QSqlRecord upRec = model.record(0);
+        upRec.setValue("amount", cp->getCalcAmount(mat));
+        model.setRecord(0, upRec);
+        model.submitAll();
+      }
+    }
+    else
+    {
+        //Insert the material details
         QSqlRecord insRec = model.record();
-        insRec.setValue("amount", newAmount);
+        insRec.setValue("amount",  cp->getCalcAmount(mat));
         insRec.setValue("CalcID", cp->getDbID().toInt());
         insRec.setValue("materialID", mat->getID());
 

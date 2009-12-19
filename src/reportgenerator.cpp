@@ -23,7 +23,6 @@
 #include <QList>
 #include <QTextDocument>
 
-#include <k3staticdeleter.h>
 #include <kdebug.h>
 #include <kprocess.h>
 #include <kstandarddirs.h>
@@ -48,16 +47,11 @@
 #include "defaultprovider.h"
 #include "doctype.h"
 
-static K3StaticDeleter<ReportGenerator> selfDeleter;
-
-ReportGenerator* ReportGenerator::mSelf = 0;
 KProcess* ReportGenerator::mProcess = 0;
 
 ReportGenerator *ReportGenerator::self()
 {
-  if ( !mSelf ) {
-    selfDeleter.setObject( mSelf, new ReportGenerator() );
-  }
+  K_GLOBAL_STATIC(ReportGenerator, mSelf);
   return mSelf;
 }
 

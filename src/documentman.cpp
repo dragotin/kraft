@@ -17,24 +17,19 @@
 #include <QSqlQuery>
 #include <QSqlDriver>
 
-#include <k3staticdeleter.h>
 #include <kdebug.h>
+#include <kglobal.h>
 
 #include "documentman.h"
 #include "docdigest.h"
 #include "kraftdb.h"
 
-static K3StaticDeleter<DocumentMan> selfDeleter;
-
-DocumentMan *DocumentMan::mSelf = 0;
 // DocGuardedPtr DocumentMan::mDocPtr = 0;
 DocumentMap DocumentMan::mDocMap = DocumentMap();
 
 DocumentMan *DocumentMan::self()
 {
-  if ( !mSelf ) {
-    selfDeleter.setObject( mSelf, new DocumentMan() );
-  }
+  K_GLOBAL_STATIC(DocumentMan, mSelf);
   return mSelf;
 }
 
@@ -72,9 +67,6 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
 {
   DocDigest dig;
 
-  QSqlQuery q;
-  q.prepare("SELECT archDocId, printData, state FROM archdoc WHERE ident=:ident");
-
   dig.setId( dbID( query.value(0).toInt() ) );
   const QString ident = query.value(1).toString();
   dig.setIdent( ident );
@@ -87,6 +79,8 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   dig.setProjectLabel( query.value( 9 ).toString() );
   // kDebug() << "Adding document "<< ident << " to the latest list" << endl;
 
+  QSqlQuery q;
+  q.prepare("SELECT archDocId, printDate, state FROM archdoc WHERE ident=:ident");
   q.bindValue(":ident", ident);
   q.exec();
   while ( q.next() ) {

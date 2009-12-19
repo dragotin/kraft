@@ -21,20 +21,13 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-
-#include <k3staticdeleter.h>
+#include <kglobal.h>
 
 #include "stockmaterialman.h"
 
-static K3StaticDeleter<StockMaterialMan> selfDeleter;
-
-StockMaterialMan *StockMaterialMan::mSelf = 0;
-
 StockMaterialMan* StockMaterialMan::self()
 {
-  if ( ! mSelf ) {
-    selfDeleter.setObject( mSelf, new StockMaterialMan() );
-  }
+  K_GLOBAL_STATIC(StockMaterialMan, mSelf);
   return mSelf;
 }
 

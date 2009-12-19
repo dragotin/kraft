@@ -42,11 +42,14 @@ public:
     void addMaterial( double amount, long materialID );
     void addMaterial( double amount, StockMaterial* mat );
     void removeMaterial( StockMaterial *mat );
+    bool isMatToDelete( StockMaterial *mat );
 
     virtual Geld basisKosten();
     QString getType() const;
     bool containsMaterial( long materialID );
     StockMaterialList getCalcMaterialList();
+    //Items deleted in the view don't get deleted in this list <== needed for database storing
+    StockMaterialList getFullCalcMaterialList();
     double getCalcAmount( StockMaterial* );
     bool   setCalcAmount( StockMaterial*, double );
     Geld getCostsForMaterial( StockMaterial *mat );
@@ -54,6 +57,7 @@ public:
 private:
     long m_calcID;
     QHash<StockMaterial*, QVariant> m_amounts;
+    QHash<StockMaterial*, QVariant> m_materials;
 };
 
 #endif

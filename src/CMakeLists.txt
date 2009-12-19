@@ -35,7 +35,7 @@ kde4_add_kcfg_files(kraftcat_LIB_SRCS katalogsettings.kcfgc kraftsettings.kcfgc)
 
 kde4_add_library(kraftcat SHARED ${kraftcat_LIB_SRCS})
 
-target_link_libraries(kraftcat ${KDE4_KDECORE_LIBS}  ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${QT_QT3SUPPORT_LIBRARY} ${KDE4_KDEUI_LIBS} kde3support)
+target_link_libraries(kraftcat ${KDE4_KDECORE_LIBS}  ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS})
 
 set_target_properties(kraftcat PROPERTIES VERSION 1.0.0 SOVERSION 1)
 install(TARGETS kraftcat ${INSTALL_TARGETS_DEFAULT_ARGS})
@@ -47,7 +47,7 @@ set(kplant_SRCS brunsviewmain.cpp brunsviewer.cpp)
 
 kde4_add_executable(kplant ${kplant_SRCS} )
 
-target_link_libraries(kplant kraftcat ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS} ${QT_QT3SUPPORT_LIBRARY}  ${KDE4_KDE3SUPPORT_LIBS})
+target_link_libraries(kplant kraftcat ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS})
 
 install(TARGETS kplant ${INSTALL_TARGETS_DEFAULT_ARGS})
 
@@ -158,7 +158,7 @@ kde4_add_ui_files(kraft_SRCS
 
 kde4_add_executable(kraft ${kraft_SRCS})
 
-target_link_libraries(kraft kraftcat ${KDE4_KDECORE_LIBS} ${KDEPIMLIBS_KABC_LIBS} ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${QT_QT3SUPPORT_LIBRARY} ${KDE4_KDEUI_LIBS} kde3support khtml ctemplate pthread)
+target_link_libraries(kraft kraftcat ${KDE4_KDECORE_LIBS} ${KDEPIMLIBS_KABC_LIBS} ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS} khtml ctemplate pthread)
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 

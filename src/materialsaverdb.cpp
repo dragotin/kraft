@@ -17,24 +17,20 @@
 
 
 // include files for Qt
+#include <QDateTime>
+#include <QSqlTableModel>
+#include <QSqlRecord>
 
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <k3staticdeleter.h>
-
-#include <qdatetime.h>
-#include <QSqlTableModel>
-#include <QSqlRecord>
+#include <kglobal.h>
 
 #include "kraftdb.h"
 #include "kraftglobals.h"
 #include "dbids.h"
 #include "materialsaverdb.h"
 #include "stockmaterial.h"
-
-MaterialSaverDB* MaterialSaverDB::mSelf = 0;
-static K3StaticDeleter<MaterialSaverDB> selfDeleter;
 
 MaterialSaverDB::MaterialSaverDB( )
     : MaterialSaverBase()
@@ -44,9 +40,7 @@ MaterialSaverDB::MaterialSaverDB( )
 
 MaterialSaverBase *MaterialSaverDB::self()
 {
-  if ( !mSelf ) {
-    selfDeleter.setObject( mSelf,  new MaterialSaverDB() );
-  }
+  K_GLOBAL_STATIC(MaterialSaverDB, mSelf);
   return mSelf;
 }
 

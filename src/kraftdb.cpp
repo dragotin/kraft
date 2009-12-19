@@ -18,10 +18,8 @@
 #include <kstandarddirs.h>
 #include <kmessagebox.h>
 #include <klocale.h>
-#include <k3staticdeleter.h>
 #include <kpushbutton.h>
 
-#include <QtGui>
 #include <QFile>
 #include <QSqlQuery>
 #include <QStringList>
@@ -73,10 +71,6 @@ SqlCommandList::SqlCommandList()
 }
 
 // ==========================================================================
-
-static K3StaticDeleter<KraftDB> selfDeleter;
-
-KraftDB* KraftDB::mSelf = 0;
 
 KraftDB::KraftDB()
   :QObject (), mParent(0),
@@ -139,9 +133,7 @@ KraftDB::KraftDB()
 
 KraftDB *KraftDB::self()
 {
-  if ( !mSelf ) {
-    selfDeleter.setObject( mSelf, new KraftDB() );
-  }
+  K_GLOBAL_STATIC(KraftDB, mSelf);
   return mSelf;
 }
 

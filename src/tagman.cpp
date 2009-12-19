@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QtGui>
 #include <QSqlQuery>
 #include <QColorGroup>
+#include <QString>
+#include <QPalette>
+#include <QStringList>
 
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
-#include <k3staticdeleter.h>
+#include <kglobal.h>
 
 #include "tagman.h"
 #include "kraftdb.h"
@@ -60,14 +62,10 @@ bool TagTemplate::operator!= ( const TagTemplate& tt ) const
 /*
  * ********** Tag Template Manager **********
  */
-static K3StaticDeleter<TagTemplateMan> selfDeleter;
-TagTemplateMan* TagTemplateMan::mSelf = 0;
 
 TagTemplateMan *TagTemplateMan::self()
 {
-  if ( !mSelf ) {
-    selfDeleter.setObject( mSelf, new TagTemplateMan() );
-  }
+  K_GLOBAL_STATIC(TagTemplateMan, mSelf);
   return mSelf;
 }
 

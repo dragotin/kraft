@@ -31,7 +31,6 @@
 #include <kiconloader.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
-#include <k3listview.h>
 #include <kcalendarsystem.h>
 #include <khtmlview.h>
 

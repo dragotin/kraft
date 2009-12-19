@@ -64,6 +64,7 @@ void MaterialCalcPart::addMaterial( double amount, StockMaterial* mat)
     if( mat == 0 ) return;
 
     m_amounts.insert( mat, QVariant(amount) );
+    m_materials.insert( mat, QVariant(amount) );
     setDirty(true);
 }
 
@@ -71,6 +72,14 @@ void MaterialCalcPart::removeMaterial( StockMaterial *mat )
 {
     m_amounts.remove( mat );
     setDirty(true);
+}
+
+bool MaterialCalcPart::isMatToDelete( StockMaterial* mat )
+{
+  if(m_amounts.contains(mat))
+    return false;
+
+  return true;
 }
 
 QString MaterialCalcPart::getType() const
@@ -101,6 +110,20 @@ StockMaterialList MaterialCalcPart::getCalcMaterialList()
 
     QHash<StockMaterial*, QVariant>::iterator i;
     for (i = m_amounts.begin(); i != m_amounts.end(); ++i)
+    {
+      StockMaterial *mat = (StockMaterial*) i.key();
+      reList.append( mat );
+    }
+
+    return reList;
+}
+
+StockMaterialList MaterialCalcPart::getFullCalcMaterialList()
+{
+    StockMaterialList reList;
+
+    QHash<StockMaterial*, QVariant>::iterator i;
+    for (i = m_materials.begin(); i != m_materials.end(); ++i)
     {
       StockMaterial *mat = (StockMaterial*) i.key();
       reList.append( mat );
@@ -203,6 +226,7 @@ bool MaterialCalcPart::setCalcAmount( StockMaterial* mat, double newAmount )
         if( prevAmount != newAmount )
         {
             m_amounts[mat] = newAmount;
+            m_materials[mat] = newAmount;
             updated = true;
             setDirty(true);
         }
