@@ -111,7 +111,7 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
   model.select();
   kDebug() << "Saving material calcpart id=" << cpId << endl;
 
-  if( cpId < 0 ) { // kein Eintrag in db bis jetzt => INSERT
+  if( cpId < 0 ) { // no entry in database yet, need to insert
     QSqlRecord buffer = model.record();
     fillMatCalcBuffer( &buffer, cp );
     buffer.setValue( "TemplID", parentID.toInt() );
@@ -121,18 +121,15 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
     dbID id = KraftDB::self()->getLastInsertID();
     cp->setDbID(id);
   } else {
-    if(cp->isToDelete())
-    {
+    // there is an db entry, update needed
+    if(cp->isToDelete()) {
       // This calcpart must be deleted
-      if( model.rowCount() > 0)
-      {
+      if( model.rowCount() > 0) {
         model.removeRow(0);
         model.submitAll();
       }
-    }
-    else
-    {
-      // calcpart-ID ist bereits belegt, UPDATE
+    } else {
+      // dont delete, update!
       if( model.rowCount() > 0) {
         QSqlRecord buffer = model.record(0);
         buffer.setValue( "modDate", "systimestamp" );
@@ -172,6 +169,7 @@ void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMateri
 
     if( model.rowCount() > 0 )
     {
+      // update or delete the record
       if( cp->isMatToDelete(mat) == true)
       {
         //Delete the material details
@@ -201,7 +199,7 @@ void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMateri
         if( id.isOk() ) {
             cp->setDbID(id);
         } else {
-            kDebug() << "ERROR: Keine gueltige DB-ID bei Anlage des Material CalcPart!" << endl;
+            kDebug() << "ERROR: Invalid DB-ID at Material CalcPart creation!" << endl;
         }
     }
 }
@@ -284,7 +282,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
     kDebug() << "Models last error: " << model.lastError() << model.rowCount();
 
     if( cpId < 0 )
-    { // kein Eintrag in db bis jetzt => INSERT
+    { // no entry in db yet => INSERT
         if( ! cp->isToDelete() ) {
             QSqlRecord buffer = model.record();
             fillZeitCalcBuffer( &buffer, cp );

@@ -286,7 +286,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
 QString DocPositionImportFilter::replaceCOL( const QStringList& cols, const QString& in )
 {
   QString re( in );
-  for ( uint i = 0; i < cols.size(); i++ ) {
+  for ( int i = 0; i < cols.size(); i++ ) {
     QString replacer = QString( "COL(%1)" ).arg( i+1 );
     re.replace( replacer, cols[i], Qt::CaseInsensitive );
   }

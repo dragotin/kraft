@@ -162,7 +162,7 @@ void CatalogChapterEditDialog::slotTextChanged()
     }
 }
 
-void CatalogChapterEditDialog::slotSelectionChanged(const QModelIndex & index)
+void CatalogChapterEditDialog::slotSelectionChanged(const QModelIndex & /* index */)
 {
     QString current = m_chapEdit->currentText();
     mLastSelection = current;

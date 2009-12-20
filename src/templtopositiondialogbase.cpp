@@ -42,7 +42,6 @@ TemplToPositionDialogBase::~TemplToPositionDialogBase()
 
 void TemplToPositionDialogBase::setPositionList( DocPositionList list, int intendedPos )
 {
-  DocPositionBase *dpb;
   if ( ! getPositionCombo() ) {
     kError() << "Can not get a ptr to the position combo" << endl;
     return;

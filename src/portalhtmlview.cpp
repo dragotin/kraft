@@ -37,10 +37,11 @@ bool PortalHtmlView::urlSelected( const QString &url, int, int,
   if ( action == "open" ) {
     kDebug() << "open catalog " << katName << endl;
     emit( openCatalog( katName ) );
+    return true;
   } else {
     kDebug() << "unknown action " << action << endl;
   }
-
+  return false;
 }
 
 
