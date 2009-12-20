@@ -73,6 +73,7 @@ signals:
   void archivedDocSelected( const ArchDocDigest& );
 
 private:
+  QTreeWidgetItem *addDocToParent( DocGuardedPtr, QTreeWidgetItem* );
   QTreeWidget *mListView;
   QTreeWidgetItem *mAllDocsParent;
   QTreeWidgetItem *mLatestDocsParent;

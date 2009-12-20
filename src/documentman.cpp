@@ -45,7 +45,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
 {
   DocDigestList ret;
 
-  QString qStr = QString( "SELECT %1 FROM document ORDER BY date desc" ).arg( mColumnList );
+  QString qStr = QString( "SELECT %1 FROM document ORDER BY date" ).arg( mColumnList );
 
   if( limit > 0 )
     qStr += " LIMIT " + QString::number( limit );

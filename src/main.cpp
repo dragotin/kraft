@@ -74,8 +74,6 @@ int main(int argc, char *argv[])
       splash->show();
     }
 
-    app.processEvents();
-
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
     Portal *kraftPortal = new Portal( 0, args );
     kraftPortal->show();

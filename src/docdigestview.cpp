@@ -225,15 +225,116 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   // Insert new item into the "all documents" list
   parent = mAllDocsParent;
   if ( parent ) {
-    QTreeWidgetItem *item = new QTreeWidgetItem( parent );
-    setupListViewItemFromDoc( doc, item );
+    QTreeWidgetItem *item = addDocToParent(doc, parent);
     dbID id = doc->docID();
     if ( id.isOk() ) {
-      mDocIdDict[item] = id.toString();
+      if(item)
+        mDocIdDict[item] = id.toString();
     }
   }
 
-  // FIXME: Create a new item in the "Over time"-list.
+  //Insert new item into the "timeline" list
+  parent = mTimeLineParent;
+  if ( parent )
+  {
+    QDate docdate = doc.data()->date();
+    QString monthname = DefaultProvider::self()->locale()->calendar()->monthName(docdate);
+    bool iteminserted = false;
+    QTreeWidgetItem *docyear = 0;
+
+    //Iterate over the years
+    for(int y=0; y < parent->childCount(); ++y)
+    {
+      QTreeWidgetItem *year = parent->child(y);
+      if(year->text(0).toInt() == docdate.year())
+      {
+        //If the year of the doc is found, iterate over the months of that year
+        for(int m=0; m < year->childCount(); ++m)
+        {
+           QTreeWidgetItem *month = year->child(m);
+
+           if(month->text(0) == monthname)
+           {
+             //If the month is found, insert the document and break out of the loop
+             addDocToParent(doc, month);
+             iteminserted = true;
+             break;
+           }
+        }
+        docyear = year;
+        break;
+      }
+    }
+
+    if(!iteminserted)
+    {
+      //If the item didn't get inserted, it means that the month was not found
+      QTreeWidgetItem *docmonth = 0;
+
+      //We need to check if a year was found though
+      if(docyear == 0)
+      {
+        int y=0;
+        //The year doesn't exist either. Let's create it at the right spot.
+        for(y=0; y < parent->childCount(); ++y)
+        {
+          QTreeWidgetItem *year = parent->child(y);
+          if(year->text(0).toInt() > docdate.year())
+            break;
+        }
+
+        docyear = new QTreeWidgetItem;
+        docyear->setText(0, QString::number(docdate.year()));
+        parent->insertChild(y, docyear);
+
+        docmonth = new QTreeWidgetItem;
+        docmonth->setText(0, DefaultProvider::self()->locale()->calendar()->monthName( docdate.month(), docdate.year()));
+        docyear->addChild(docmonth);
+      }
+
+      if(docmonth == 0)
+      {
+        //Insert the month at the right spot
+        int m=0;
+        for(m=0; m < docyear->childCount(); ++m)
+        {
+           QTreeWidgetItem *month = docyear->child(m);
+           QDate date = DefaultProvider::self()->locale()->readDate("1 " + month->text(0) , "%e %B");
+           if(date.month() > docdate.month())
+             break;
+        }
+
+        docmonth = new QTreeWidgetItem;
+        docmonth->setText(0, DefaultProvider::self()->locale()->calendar()->monthName( docdate.month(), docdate.year()));
+        docyear->insertChild(m, docmonth);
+      }
+
+      //We know we created a new docmonth, so the item can just get inserted
+      QTreeWidgetItem *item = new QTreeWidgetItem;
+      setupListViewItemFromDoc( doc, item );
+      docmonth->addChild(item);
+    }
+  }
+}
+
+QTreeWidgetItem* DocDigestView::addDocToParent(DocGuardedPtr doc, QTreeWidgetItem *month)
+{
+  QDate docdate = doc.data()->date();
+
+  //Insert the doc at the right spot
+  int d;
+  for(d=0; d < month->childCount(); ++d)
+  {
+     QTreeWidgetItem *document = month->child(d);
+     QDate date = DefaultProvider::self()->locale()->readDate(document->text(3));
+     if(date < docdate)
+       break;
+  }
+
+  QTreeWidgetItem *item = new QTreeWidgetItem;
+  setupListViewItemFromDoc( doc, item );
+  month->insertChild(d, item);
+  return item;
 }
 
 void DocDigestView::slotUpdateDoc( DocGuardedPtr doc )
