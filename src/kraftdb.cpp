@@ -276,13 +276,18 @@ void KraftDB::checkDatabaseSetup( QWidget *parent )
     reinit = true;
     createInitDialog();
     connect( mInitDialog, SIGNAL(user1Clicked()), this, SLOT(slotCreateDatabase()));
-    mInitDialog->show();
 
-    createDatabase();
-  }
+    emit statusMessage( i18n( "Recreate Database" ) );
+
+    mInitDialog->slotSetInstructionText( i18n( "<p>The database <br/><tt>%1</tt><br/> is either empty or broken."
+                                         "To setup the database from scratch press the Start button!</p>"
+                                         "<p><b>WARNING:</b> ALL YOUR KRAFT DATA WILL BE DESTROYED!</p>")
+                                         .arg( KatalogSettings::self()->dbFile() ) );
+    mInitDialog->show();
+   }
 
   if( ! reinit ) {
-    // in case of reinit we wait until the user clicks slotStartSchemaUpdateok
+    // in case of reinit we wait until the user clicks slotStartSchemaUpdate ok
     checkSchemaVersion();
   }
 }
@@ -328,13 +333,15 @@ void KraftDB::slotStartSchemaUpdate()
   int overallCmdCount = 0;
   QList<SqlCommandList> commandLists;
   int currentVer = currentSchemaVersion();
+  if( currentVer == -1 ) currentVer = 1; // set to initial version
 
   while ( currentVer < KRAFT_REQUIRED_SCHEMA_VERSION ) {
+    ++currentVer;
     const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
+    kDebug() << "######### Reading " << migrateFilename;
     SqlCommandList cmds = parseCommandFile( migrateFilename );
     overallCmdCount += cmds.count();
     commandLists << cmds;
-    ++currentVer;
   }
   mInitDialog->setOverallCount( overallCmdCount );
 
@@ -345,6 +352,8 @@ void KraftDB::slotStartSchemaUpdate()
     doneOverallCmds += goodCmds;
     if( goodCmds != cmds.count() ) {
       kDebug() << "Only performned " << goodCmds << " out of " << cmds.count();
+    } else {
+      kDebug() << "Performed well!";
     }
   }
 
@@ -367,18 +376,6 @@ void KraftDB::slotStartSchemaUpdate()
   }
 }
 
-void KraftDB::createDatabase( )
-{
-  // The kraftsystem table is not there, reinit the entire db.
-
-  emit statusMessage( i18n( "Recreate Database" ) );
-
-  mInitDialog->slotSetInstructionText( i18n( "<p>The database <br/><tt>%1</tt><br/> is either empty or broken."
-                                       "To setup the database from scratch press the Start button!</p>"
-                                       "<p><b>WARNING:</b> ALL YOUR KRAFT DATA WILL BE DESTROYED!</p>")
-                                       .arg( KatalogSettings::self()->dbFile() ) );
-  mInitDialog->show();
-}
 
 void KraftDB::slotCreateDatabase()
 {
@@ -487,7 +484,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
         int pos = reg.indexIn( sqlFragment.toLower(),  0 );
         if ( pos > -1 ) {
           msg = reg.cap( 2 );
-          kDebug() << "SQL-Commands-Parser: Msg: >" << msg << "<" << endl;
+          // kDebug() << "SQL-Commands-Parser: Msg: >" << msg << "<" << endl;
         }
 
         bool clean = false;
@@ -495,19 +492,20 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
           if(  sqlFragment.startsWith("#") || sqlFragment.startsWith("--") ) {
             // remove the comment line.
             int newLinePos = sqlFragment.indexOf('\n');
-            kDebug() << "Found newline in <" << sqlFragment << ">:" << newLinePos;
+            // kDebug() << "Found newline in <" << sqlFragment << ">:" << newLinePos;
             if(newLinePos > 0) {
               sqlFragment = sqlFragment.remove( 0, 1+sqlFragment.indexOf('\n') );
             } else {
               sqlFragment = QString();
             }
-            kDebug() << "Left over SQL Fragment:" << sqlFragment;
+            // kDebug() << "Left over SQL Fragment:" << sqlFragment;
           } else {
             clean = true;
           }
         }
 
-        if( ! sqlFragment.isEmpty() ) {
+        if( !sqlFragment.isEmpty() ) {
+
           if( sqlFragment.startsWith( "CREATE TRIGGER", Qt::CaseInsensitive )) {
             // Triggers contain a ; which scares the parser. In case of triggers we pull
             // the next item in the list which should be the END; keyword.

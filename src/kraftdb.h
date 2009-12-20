@@ -109,8 +109,6 @@ private: // Private attributes
 
   int processSqlCommands( const SqlCommandList& );
 
-  void createDatabase();
-
   void createInitDialog();
 
   /** The default database */

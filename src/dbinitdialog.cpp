@@ -73,7 +73,6 @@ void DbInitDialog::setCurrentOverallCount( int cnt )
 void DbInitDialog::setCounterText( QLabel* label, int current, int max )
 {
   if( !label ) return;
-  kDebug() << "setting counter text: " << current << "/" << max;
   label->setText( i18n("%1/%2").arg(current).arg(max) );
 }
 
