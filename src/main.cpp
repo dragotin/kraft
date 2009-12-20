@@ -17,6 +17,7 @@
 #include <QPixmap>
 #include <QBitmap>
 #include <QImage>
+#include <QPalette>
 
 #include <kstandarddirs.h>
 #include <kcmdlineargs.h>
@@ -66,33 +67,22 @@ int main(int argc, char *argv[])
     KSplashScreen *splash = 0;
 
     if( !splashFile.isEmpty()) {
-      QImage img( splashFile );
+      QPixmap pixmap( splashFile );
 
-      QPixmap pixmap;
-      pixmap.fromImage( img );
-      if ( !pixmap.mask() ) {
-        QBitmap bm;
-        if ( img.hasAlphaChannel() ) {
-          bm = QBitmap::fromImage(img.createAlphaMask());
-        } else {
-          bm = QBitmap::fromImage(img.createHeuristicMask());
-        }
-        pixmap.setMask( bm );
-      } else {
-        // kDebug() << "Have a mask already!";
-      }
-
-      splash = new KSplashScreen( pixmap );
-      // splash->setMask( *pixmap.mask() );
+      splash = new KSplashScreen( pixmap, Qt::WindowStaysOnTopHint );
+      splash->setMask(pixmap.mask());
       splash->show();
     }
+
+    app.processEvents();
+
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
     Portal *kraftPortal = new Portal( 0, args );
     kraftPortal->show();
 
     if( splash ) {
       splash->finish( kraftPortal->mainWidget() );
-      delete splash;
+      splash->deleteLater();
     } else {
       kDebug() << "Could not find splash screen";
     }
