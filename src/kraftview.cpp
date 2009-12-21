@@ -92,6 +92,7 @@ QScrollArea( parent )
   setWidget(widget);
   widget->setAutoFillBackground(false);
   layout = new QVBoxLayout;
+  layout->setAlignment(Qt::AlignTop);
   widget->setLayout(layout);
   setWidgetResizable(true);
 }
@@ -289,9 +290,6 @@ void KraftView::setupDocHeaderView()
       m_headerEdit->mButtLang->hide();
     }
 
-    m_headerEdit->m_whiteboardEdit->setFrameStyle( QFrame::NoFrame );
-    m_headerEdit->m_whiteboardEdit->setMaximumSize( 32676, 80 );
-    // m_headerEdit->m_whiteboardEdit->setBackgroundColor( QColor( 243, 244, 121 ) );
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
              this, SLOT( slotDocTypeChanged( const QString& ) ) );
 
@@ -400,6 +398,7 @@ void KraftView::redrawDocPositions( )
                                  "<li>Open the template catalog clicking on the '%1' "
                                   "button on the right and select from available templates.</li>"
                                    "</ul></qt>").arg( i18n( "show Template" ) ) );
+      mHelpLabel->setWordWrap(true);
       m_positionScroll->addChild( mHelpLabel, 0);
     }
     return;

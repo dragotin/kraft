@@ -5,7 +5,6 @@
 KraftDocEdit::KraftDocEdit( QWidget *parent )
   : QWidget( parent )
 {
-  this->setAutoFillBackground(true);
 }
 
 void KraftDocEdit::setTitle( const QString &title )
@@ -30,8 +29,6 @@ QColor KraftDocEdit::color() const
 
 void KraftDocEdit::slotModified()
 {
-//  kDebug() << "KraftDocEdit::slotModified()" << endl;
-
   emit modified();
 }
 
