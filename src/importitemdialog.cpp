@@ -132,17 +132,20 @@ QString ImportItemDialog::readFilterSpecs()
   QStringList filters = dir.findAllResources( "data", filter );
 
   QStringList combo;
+  QString firstFilter;
+
   for ( QStringList::Iterator it = filters.begin(); it != filters.end(); ++it ) {
     kDebug() << " -> Import filter file " << *it;
     DocPositionImportFilter filter;
     filter.readDefinition( *it );
     filter.parseDefinition();
     combo << filter.name();
+    if( firstFilter.isEmpty() ) firstFilter = filter.name();
     mFilterMap[filter.name()] = filter;
   }
   mBaseWidget->mSchemaCombo->insertItems(-1, combo );
 
-  return combo.first();
+  return firstFilter;
 }
 
 void ImportItemDialog::slotSchemaChanged( const QString& name )

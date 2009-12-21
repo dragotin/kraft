@@ -320,7 +320,7 @@ void PortalView::documentDigests()
            SIGNAL( documentSelected( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
-  connect( mDocDigestView->listview(), SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+  connect( mDocDigestView, SIGNAL( currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
            this,  SLOT( slotDigestItemSelected( QTreeWidgetItem*,QTreeWidgetItem* ) ) );
 }
 

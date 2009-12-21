@@ -208,28 +208,19 @@ void Portal::initView()
     // create the main widget here that is managed by KTMainWindow's view-region and
     // connect the widget to your document to display document contents.
     m_portalView = new PortalView( this, "PortalMainView" );
-    KMenu *menu = m_portalView->docDigestView()->contextMenu();
-
-    menu->addAction( actViewDocument );
-    menu->addAction( actOpenDocument );
-    menu->addAction( actNewDocument );
-    menu->addAction( actCopyDocument );
-    menu->addAction( actFollowDocument );
-    menu->addSeparator();
-    menu->addAction( actPrintDocument );
-    menu->addAction( actMailDocument );
-    menu->addAction( actOpenArchivedDocument );
-
-   // m_portalView->docDigestView()->contextMenu()->addAction( actViewDocument );
-    // actViewDocument->plug(  );
-//    actOpenDocument->plug( m_portalView->docDigestView()->contextMenu() );
-//    actNewDocument->plug( m_portalView->docDigestView()->contextMenu() );
-//    actCopyDocument->plug( m_portalView->docDigestView()->contextMenu() );
-//    actFollowDocument->plug( m_portalView->docDigestView()->contextMenu() );
-//    ( new KActionSeparator( this ) )->plug( m_portalView->docDigestView()->contextMenu() );
-//    actPrintDocument->plug( m_portalView->docDigestView()->contextMenu() );
-//    actMailDocument->plug( m_portalView->docDigestView()->contextMenu() );
-//    actOpenArchivedDocument->plug( m_portalView->docDigestView()->contextMenu() );
+    QList<KMenu*> menus = m_portalView->docDigestView()->contextMenus();
+    foreach( KMenu *menu, menus ) {
+      menu->setTitle( i18n("Document Actions"));
+      menu->addAction( actViewDocument );
+      menu->addAction( actOpenDocument );
+      menu->addAction( actNewDocument );
+      menu->addAction( actCopyDocument );
+      menu->addAction( actFollowDocument );
+      menu->addSeparator();
+      menu->addAction( actPrintDocument );
+      menu->addAction( actMailDocument );
+      menu->addAction( actOpenArchivedDocument );
+    }
 
     connect( m_portalView, SIGNAL(openKatalog( const QString&)),
              this, SLOT(slotOpenKatalog(const QString&)));

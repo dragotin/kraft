@@ -40,13 +40,13 @@ TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
   setModal( true );
   setCaption(  i18n("Edit Text Templates" ));
   setButtons( KDialog::Ok | KDialog::Cancel );
+  showButtonSeparator( true );
 
   QWidget *mainWidget = new QWidget( this );
   setMainWidget( mainWidget );
 
   mBaseWidget = new Ui::TextEditBase;
   mBaseWidget->setupUi( mainWidget );
-
   mBaseWidget->mDocTypeLabel->setText( DocText::textTypeToString( docPart ) );
 
   QString h = i18n( "Edit %1 Template" ).arg( DocText::textTypeToString( docPart  ) );
