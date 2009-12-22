@@ -80,10 +80,6 @@ private:
   QTreeWidget *mLatestView;
   QTreeWidget *mTimeView;
 
-  QTreeWidgetItem *mAllDocsParent;
-  QTreeWidgetItem *mLatestDocsParent;
-  QTreeWidgetItem *mTimeLineParent;
-
   FilterHeader *mFilterHeader;
   KMenu *mTimelineMenu;
   KMenu *mAllMenu;

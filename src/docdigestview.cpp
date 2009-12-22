@@ -275,8 +275,7 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   }
 
   //Insert new item into the "timeline" list
-  QTreeWidgetItem *parent = mTimeLineParent;
-  if ( parent )
+  if ( mTimeView )
   {
     QDate docdate = doc.data()->date();
     QString monthname = DefaultProvider::self()->locale()->calendar()->monthName(docdate);
@@ -284,9 +283,9 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
     QTreeWidgetItem *docyear = 0;
 
     //Iterate over the years
-    for(int y=0; y < parent->childCount(); ++y)
+    for(int y=0; y < mTimeView->topLevelItemCount(); ++y)
     {
-      QTreeWidgetItem *year = parent->child(y);
+      QTreeWidgetItem *year = mTimeView->topLevelItem(y);
       if(year->text(0).toInt() == docdate.year())
       {
         //If the year of the doc is found, iterate over the months of that year
@@ -317,16 +316,16 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
       {
         int y=0;
         //The year doesn't exist either. Let's create it at the right spot.
-        for(y=0; y < parent->childCount(); ++y)
+        for(y=0; y < mTimeView->topLevelItemCount(); ++y)
         {
-          QTreeWidgetItem *year = parent->child(y);
+          QTreeWidgetItem *year = mTimeView->topLevelItem(y);
           if(year->text(0).toInt() > docdate.year())
             break;
         }
 
         docyear = new QTreeWidgetItem;
         docyear->setText(0, QString::number(docdate.year()));
-        parent->insertChild(y, docyear);
+        mTimeView->insertTopLevelItem(y, docyear);
 
         docmonth = new QTreeWidgetItem;
         docmonth->setText(0, DefaultProvider::self()->locale()->calendar()->monthName( docdate.month(), docdate.year()));
