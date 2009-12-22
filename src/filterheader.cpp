@@ -39,6 +39,11 @@ CountingSearchLine::CountingSearchLine( QWidget *parent, QTreeWidget *listView )
 {
 }
 
+CountingSearchLine::CountingSearchLine( QWidget *parent, const QList< QTreeWidget * > &treeWidgets )
+  : KTreeWidgetSearchLine( parent, treeWidgets )
+{
+}
+
 void CountingSearchLine::searchUpdate( const QString &s )
 {
   KTreeWidgetSearchLine::updateSearch( s );
@@ -53,7 +58,7 @@ int CountingSearchLine::searchCount()
 
 
 FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
-  : QWidget( parent ), mListView( listView ), mItemNameNone( i18n("No Items") ),
+  : QWidget( parent ), mItemNameNone( i18n("No Items") ),
     mItemNameOne( i18n("1 Item") ),
     mItemNameMultiple( i18n("%1 of %2 Items") )
 {
@@ -76,6 +81,36 @@ FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
     SLOT( setTitleLabel() ) );
   filterLayout->addWidget( mSearchLine );
   
+  //setTabOrder( mSearchLine, listView );
+
+  setTitleLabel();
+}
+
+FilterHeader::FilterHeader(QList<QTreeWidget *> &treewidgets, QWidget *parent)
+  : QWidget( parent ), mItemNameNone( i18n("No Items")),
+  mItemNameOne( i18n("1 Item") ),
+  mItemNameMultiple( i18n("%1 of %2 Items") )
+{
+  QBoxLayout *topLayout = new QVBoxLayout;
+  setLayout( topLayout );
+  topLayout->setSpacing( KDialog::spacingHint() );
+  topLayout->setMargin( KDialog::marginHint() );
+
+  mTitleLabel = new QLabel();
+  topLayout->addWidget( mTitleLabel );
+
+  QBoxLayout *filterLayout = new QHBoxLayout;
+  topLayout->addLayout( filterLayout );
+  QLabel *label = new QLabel( i18n("Search:"));
+  filterLayout->addWidget( label );
+
+  mSearchLine = new CountingSearchLine( parent, treewidgets );
+
+  mSearchLine-> setClearButtonShown(true);
+  connect( mSearchLine, SIGNAL( searchCountChanged() ),
+    SLOT( setTitleLabel() ) );
+  filterLayout->addWidget( mSearchLine );
+
   //setTabOrder( mSearchLine, listView );
 
   setTitleLabel();
@@ -107,7 +142,7 @@ void FilterHeader::setTitleLabel()
 {
   int total = 0;
 
-  if ( mListView ) total = 0; // FIXME KDE4 mListView->childCount();
+  //if ( mListView ) total = 0; // FIXME KDE4 mListView->childCount();
 
   QString txt;
 

@@ -34,6 +34,7 @@ class KRAFTCAT_EXPORT CountingSearchLine : public KTreeWidgetSearchLine
     Q_OBJECT
   public:
     CountingSearchLine( QWidget *parent, QTreeWidget *listView );
+    CountingSearchLine( QWidget *parent, const QList< QTreeWidget * > &treeWidgets );
     int searchCount();
 
   protected:
@@ -49,6 +50,7 @@ class KRAFTCAT_EXPORT FilterHeader : public QWidget
     Q_OBJECT
   public:
     FilterHeader( QTreeWidget *tree, QWidget *parent = 0 );
+    FilterHeader( QList<QTreeWidget *> &treewidgets, QWidget *parent = 0);
 
     void setItemName( const QString &none, const QString &one,
     const QString &multiple );
@@ -60,8 +62,6 @@ class KRAFTCAT_EXPORT FilterHeader : public QWidget
     void clear();
 		void setListView( QTreeWidget*  );
   private:
-    QTreeWidget *mListView;
-
     CountingSearchLine *mSearchLine;
     QLabel *mTitleLabel;
 

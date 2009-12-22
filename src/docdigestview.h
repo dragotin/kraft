@@ -40,7 +40,7 @@ public:
   DocDigestView( QWidget *parent = 0 );
   ~DocDigestView();
 
-  QTreeWidgetItem* addChapter( QTreeWidget*, const QString&, DocDigestList, QTreeWidgetItem *chapParent = 0 );
+  void addItems( QTreeWidget*, DocDigestList, QTreeWidgetItem *chapParent = 0 );
 
   QString currentDocumentId();
 
@@ -56,11 +56,13 @@ public slots:
 
 protected:
   void contextMenuEvent( QContextMenuEvent* );
+  QList<QTreeWidget *> initializeTreeWidgets();
 
 protected slots:
   // void slotOpenCurrentDoc();
   void slotCurrentChanged( QTreeWidgetItem*, QTreeWidgetItem* );
   void setupListViewItemFromDoc( DocGuardedPtr , QTreeWidgetItem* );
+  QTreeWidgetItem *addDocToParent( DocGuardedPtr, QTreeWidget*, QTreeWidgetItem* = 0);
 
 signals:
   void createDocument();
@@ -78,7 +80,6 @@ private:
   QTreeWidget *mLatestView;
   QTreeWidget *mTimeView;
 
-  QTreeWidgetItem *addDocToParent( DocGuardedPtr, QTreeWidgetItem* );
   QTreeWidgetItem *mAllDocsParent;
   QTreeWidgetItem *mLatestDocsParent;
   QTreeWidgetItem *mTimeLineParent;

@@ -56,27 +56,55 @@ DocDigestView::DocDigestView( QWidget *parent )
   hbox->addStretch(1);
   mToolBox = new QToolBox;
 
+  QList<QTreeWidget *> treelist = initializeTreeWidgets();
+
+  mFilterHeader = new FilterHeader( treelist );
+  mFilterHeader->showCount( false );
+
+  hbox->addWidget( mFilterHeader );
+  hbox->addSpacing( KDialog::marginHint() );
+
+  box->addLayout( hbox );
+
+  QHBoxLayout *hbox2 = new QHBoxLayout;
+  hbox2->addWidget( mToolBox );
+  hbox2->addSpacing( KDialog::marginHint() );
+  box->addLayout( hbox2 );
+}
+
+DocDigestView::~DocDigestView()
+{
+
+}
+
+QList<QTreeWidget *> DocDigestView::initializeTreeWidgets()
+{
+  //Note: Actually building the views is done in slotBuildView() that is called from the portal
+  //      because otherwise we'd access the database before it is initialized
   mAllView = new QTreeWidget;
   mLatestView = new QTreeWidget;
   mTimeView = new QTreeWidget;
-  connect( mAllView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-           this, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-  connect( mLatestView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-           this, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-  connect( mTimeView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-           this, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-  // mListView->setItemMargin( 5 );
+
+  //Add the widgets to a temporary list so we can iterate over them and centralise the common initialization
+  QList<QTreeWidget *> treelist;
+  treelist.append(mAllView);
+  treelist.append(mLatestView);
+  treelist.append(mTimeView);
+
+  //Initialize common style options
   QPalette palette;
   palette.setColor( QPalette::AlternateBase, QColor("#e0fdd1") );
-  
-  mAllView->setPalette( palette );
-  mLatestView->setPalette( palette );
-  mTimeView->setPalette( palette );
 
-  mAllView->setAlternatingRowColors( true );
-  mTimeView->setAlternatingRowColors( true );
-  mLatestView->setAlternatingRowColors( true );
+  QStringList cols;
+  cols << i18n( "Type" );
+  cols << i18n( "Client Name" );
+  cols << i18n( "Last Modified" );
+  cols << i18n( "Date" );
+  cols << i18n( "Project" );
+  cols << i18n( "Doc. Number" );
+  cols << i18n( "Whiteboard" );
 
+  //Initialise
   mAllMenu = new KMenu( mAllView );
   mAllMenu->setTitle( i18n("Document Actions"));
   mTimelineMenu = new KMenu( mTimeView );
@@ -84,32 +112,27 @@ DocDigestView::DocDigestView( QWidget *parent )
   mLatestMenu = new KMenu( mLatestView );
   mLatestMenu->setTitle( i18n("Document Actions"));
 
+  for(int i=0; i<treelist.count(); ++i)
+  {
+    QTreeWidget *widget = treelist.at(i);
 
-  mAllView->setRootIsDecorated(  true );
-  mLatestView->setRootIsDecorated(  true );
-  mTimeView->setRootIsDecorated(  true );
+    connect( widget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+             this, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    connect( widget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ),
+             this, SLOT( slotDocOpenRequest( QTreeWidgetItem*, int ) ) );
 
-  mAllView->setSelectionMode( QAbstractItemView::SingleSelection );
-  mLatestView->setSelectionMode( QAbstractItemView::SingleSelection );
-  mTimeView->setSelectionMode( QAbstractItemView::SingleSelection );
+    widget->setAnimated(true);
+    widget->setPalette( palette );
+    widget->setAlternatingRowColors( true );
+    widget->setRootIsDecorated(  true );
+    widget->setSelectionMode( QAbstractItemView::SingleSelection );
+    widget->setColumnCount( 7 );
+    widget->setHeaderLabels( cols );
+    widget->header()->setResizeMode(QHeaderView::ResizeToContents);
+    widget->header()->setResizeMode(6, QHeaderView::Stretch);
+  }
 
-  mFilterHeader = new FilterHeader( mAllView );
-  mFilterHeader->showCount( false );
-
-  connect( mLatestView, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ),
-           this, SLOT( slotDocOpenRequest( QTreeWidgetItem*, int ) ) );
-
-  connect( mLatestView, SIGNAL( currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem* )),
-           this, SLOT( slotCurrentChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
-
-  hbox->addWidget( mFilterHeader );
-  hbox->addSpacing( KDialog::marginHint() );
-
-  box->addLayout( hbox );
-  //box->addSpacing( KDialog::marginHint() );
-
-  QHBoxLayout *hbox2 = new QHBoxLayout;
-
+  //Add treewidgets to the toolbox
   int indx = mToolBox->addItem( mLatestView, i18n("Latest Documents"));
   mToolBox->setItemIcon( indx, KIcon( "get-hot-new-stuff"));
   mToolBox->setItemToolTip(indx, i18n("Shows the latest ten documents"));
@@ -122,31 +145,7 @@ DocDigestView::DocDigestView( QWidget *parent )
   mToolBox->setItemIcon( indx, KIcon( "chronometer"));
   mToolBox->setItemToolTip(indx, i18n("Shows all documents along a timeline"));
 
-  hbox2->addWidget( mToolBox );
-  hbox2->addSpacing( KDialog::marginHint() );
-  box->addLayout( hbox2 );
-
-  mAllView->setColumnCount( 7 );
-  mLatestView->setColumnCount( 7 );
-  mTimeView->setColumnCount( 7 );
-  QStringList cols;
-  cols << i18n( "Type" );
-  cols << i18n( "Client Name" );
-  cols << i18n( "Last Modified" );
-  cols << i18n( "Date" );
-  cols << i18n( "Whiteboard" );
-  cols << i18n( "Project" );
-  cols << i18n( "Doc. Number" );
-
-  mLatestView->setHeaderLabels( cols );
-  mAllView->setHeaderLabels( cols );
-  mTimeView->setHeaderLabels( cols );
-
-}
-
-DocDigestView::~DocDigestView()
-{
-
+  return treelist;
 }
 
 void DocDigestView::slotBuildView()
@@ -155,19 +154,12 @@ void DocDigestView::slotBuildView()
   mLatestView->clear();
   mAllView->clear();
   mTimeView->clear();
-  QTreeWidgetItem *item = addChapter( mAllView, i18n( "All Documents" ),
-                                      docman->latestDocs( 0 ) );
 
-  mAllDocsParent = item;
-  item->setIcon( 0, SmallIcon( "user-identity" ) );
-  mLatestView->collapseItem( item );
-  mTimeView->collapseItem( item );
-  mAllView->collapseItem( item );
+  //Create the latest documents view
+  addItems( mLatestView, docman->latestDocs(10));
 
-  item = addChapter( mTimeView, i18n( "Documents by Time" ), DocDigestList());
-  mTimeLineParent = item;
-  item->setIcon( 0, SmallIcon( "view-history" ) ); // KDE 4 icon name: view-history
-  // mTimeLineParent->collapseItem( item );
+  //Create the all documents view
+  addItems( mAllView, docman->latestDocs(0));
 
   /* create the timeline view */
   DocDigestsTimelineList timeList = docman->docsTimelined();
@@ -181,45 +173,41 @@ void DocDigestView::slotBuildView()
     if ( ( *it ).year() && year != ( *it ).year() ) {
       year = ( *it ).year();
 
-      yearItem = addChapter( mTimeView, QString::number( year ),  DocDigestList());
-      // mListView->collapseItem( yearItem );
+      QStringList list;
+      list << QString::number(year);
+      yearItem = new QTreeWidgetItem(mTimeView, list);
+      mTimeView->collapseItem( yearItem );
     }
     month = ( *it ).month();
     const QString monthName =
       DefaultProvider::self()->locale()->calendar()->monthName( month, year ); // , KCalendarSystem::LongName);
     if ( yearItem ) {
-      QTreeWidgetItem *mItem = addChapter(  mTimeView, monthName, ( *it ).digests(), yearItem );
-      // mListView->collapseItem( mItem );
+      QStringList list;
+      list << monthName;
+      QTreeWidgetItem *mItem = new QTreeWidgetItem(yearItem, list);
+      addItems(mTimeView, ( *it ).digests(), mItem);
+      mTimeView->collapseItem( mItem );
     }
   }
-
-  item = addChapter( mLatestView, i18n( "Latest Documents" ),  docman->latestDocs( 10 ) );
-  mLatestDocsParent = item;
-  item->setIcon( 0, SmallIcon( "fork" ) );
-  mTimeView->resizeColumnToContents(0);
-  
 }
 
 
-QTreeWidgetItem* DocDigestView::addChapter( QTreeWidget* tree, const QString& chapter, DocDigestList list, QTreeWidgetItem *chapParent )
+void DocDigestView::addItems( QTreeWidget *view, DocDigestList list, QTreeWidgetItem *itemParent)
 {
-  kDebug() << "Adding docview chapter " << chapter << " with " << list.size() << " elems" << endl;
+  kDebug() << "Adding " << list.size() << " elems to a view" << endl;
 
-  QTreeWidgetItem *chapIt;
-  if ( chapParent ) {
-    chapIt = new QTreeWidgetItem( chapParent, QStringList(chapter));
-  } else {
-    chapIt = new QTreeWidgetItem( tree, QStringList(chapter) );
-  }
-  tree->expandItem( chapIt );
 
   DocDigestList::iterator it;
   for ( it = list.begin(); it != list.end(); ++it ) {
     QStringList li;
     li << (*it).type() << (*it).clientName() << ( *it).lastModified() << (*it).date()
-        << ( *it ).whiteboard() << ( *it ).projectLabel() << ( *it ).ident();
+        << ( *it ).projectLabel() << ( *it ).ident() << ( *it ).whiteboard();
 
-    QTreeWidgetItem *item = new QTreeWidgetItem( chapIt, li );
+    QTreeWidgetItem *item;
+    if(itemParent == 0)
+       item = new QTreeWidgetItem( view, li );
+    else
+       item = new QTreeWidgetItem( itemParent, li );
     mDocIdDict[item] = (*it).id();
 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();
@@ -231,7 +219,6 @@ QTreeWidgetItem* DocDigestView::addChapter( QTreeWidget* tree, const QString& ch
       mArchIdDict[archItem] = (*archIt);
     }
   }
-  return chapIt;
 }
 
 void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
@@ -252,7 +239,7 @@ void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
  */
 void DocDigestView::slotNewDoc( DocGuardedPtr doc )
 {
-  QTreeWidgetItem *parent = mLatestDocsParent;
+
   if ( !doc ) return;
 
   QTreeWidget *currView = static_cast<QTreeWidget*>(mToolBox->currentWidget());
@@ -264,8 +251,8 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   // insert item into the "latest docs" list. That makes the latest
   // list one item longer, we're not deleting one entry
   QString itemID; // for docSelected signal
-  if ( parent ) {
-    QTreeWidgetItem *item = new QTreeWidgetItem( parent );
+  if ( mLatestView ) {
+    QTreeWidgetItem *item = new QTreeWidgetItem( mLatestView );
     item->setIcon( 0, SmallIcon( "get-hot-new-stuff" ) );
     setupListViewItemFromDoc( doc, item );
     currView->setCurrentItem( item );
@@ -278,9 +265,8 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   emit docSelected( itemID );
 
   // Insert new item into the "all documents" list
-  parent = mAllDocsParent;
-  if ( parent ) {
-    QTreeWidgetItem *item = addDocToParent(doc, parent);
+  if ( mAllView ) {
+    QTreeWidgetItem *item = addDocToParent(doc, mAllView);
     dbID id = doc->docID();
     if ( id.isOk() ) {
       if(item)
@@ -289,7 +275,7 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   }
 
   //Insert new item into the "timeline" list
-  parent = mTimeLineParent;
+  QTreeWidgetItem *parent = mTimeLineParent;
   if ( parent )
   {
     QDate docdate = doc.data()->date();
@@ -311,7 +297,7 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
            if(month->text(0) == monthname)
            {
              //If the month is found, insert the document and break out of the loop
-             addDocToParent(doc, month);
+             addDocToParent(doc, mTimeView, month);
              iteminserted = true;
              break;
            }
@@ -372,23 +358,42 @@ void DocDigestView::slotNewDoc( DocGuardedPtr doc )
   }
 }
 
-QTreeWidgetItem* DocDigestView::addDocToParent(DocGuardedPtr doc, QTreeWidgetItem *month)
+QTreeWidgetItem* DocDigestView::addDocToParent(DocGuardedPtr doc, QTreeWidget *widget, QTreeWidgetItem *month)
 {
   QDate docdate = doc.data()->date();
 
-  //Insert the doc at the right spot
+  //Insert the doc at the right spot by date
   int d;
-  for(d=0; d < month->childCount(); ++d)
+  QTreeWidgetItem *item = new QTreeWidgetItem;
+
+  if(month == 0)
   {
-     QTreeWidgetItem *document = month->child(d);
-     QDate date = DefaultProvider::self()->locale()->readDate(document->text(3));
-     if(date < docdate)
-       break;
+    //We need to insert directly into the qtreeview
+    for(d=0; d < widget->topLevelItemCount(); ++d)
+    {
+       QTreeWidgetItem *document = widget->topLevelItem(d);
+       QDate date = DefaultProvider::self()->locale()->readDate(document->text(3));
+       if(date < docdate)
+         break;
+    }
+
+    widget->insertTopLevelItem(d, item);
+  }
+  else
+  {
+    for(d=0; d < month->childCount(); ++d)
+    {
+       QTreeWidgetItem *document = month->child(d);
+       QDate date = DefaultProvider::self()->locale()->readDate(document->text(3));
+       if(date < docdate)
+         break;
+    }
+
+      month->insertChild(d, item);
   }
 
-  QTreeWidgetItem *item = new QTreeWidgetItem;
   setupListViewItemFromDoc( doc, item );
-  month->insertChild(d, item);
+
   return item;
 }
 
@@ -423,10 +428,10 @@ void DocDigestView::setupListViewItemFromDoc( DocGuardedPtr doc, QTreeWidgetItem
   }
   item->setText( 1,  clientName );
   item->setText( 2, doc->locale()->formatDate( doc->lastModified(), KLocale::ShortDate ) );
-  item->setText( 3, doc->locale()->formatDate( doc->date(), KLocale::ShortDate ) );
-  item->setText( 4, doc->whiteboard() );
-  item->setText( 5, doc->projectLabel() );
-  item->setText( 6, doc->ident() );
+  item->setText( 3, doc->locale()->formatDate( doc->date(), KLocale::ShortDate ) );  
+  item->setText( 4, doc->projectLabel() );
+  item->setText( 5, doc->ident() );
+  item->setText( 6, doc->whiteboard() );
 }
 
 #if 0
