@@ -27,7 +27,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Create Position from Template</string>
+      <string>Create Item from Template</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>

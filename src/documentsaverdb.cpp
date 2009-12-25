@@ -269,9 +269,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
       if( err.type() != QSqlError::NoError ) {
         kDebug() << "SQL-ERR: " << err.text() << " in " << model.tableName() << endl;
       }
-
-      if ( err.type() == QSqlError::NoError ) {
-      }
     }
   }
 }

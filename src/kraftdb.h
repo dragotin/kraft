@@ -113,6 +113,7 @@ private: // Private attributes
 
   /** The default database */
   QSqlDatabase m_db;
+
   QWidget *mParent;
 
   static KraftDB *mSelf;

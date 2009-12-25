@@ -29,7 +29,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Create Plant Position</string>
+        <string>Create Plant Item</string>
        </property>
        <property name="textFormat">
         <enum>Qt::PlainText</enum>
