@@ -34,6 +34,17 @@ CalcPart::CalcPart( ):
 
 }
 
+CalcPart::CalcPart( int prozent ):
+    m_prozentPlus( prozent ),
+    m_dbId(-1),
+    m_templId(-1),
+    m_dirty(false),
+    m_toDelete(false)
+{
+
+}
+
+
 CalcPart::CalcPart(const QString& name, int prozent ) :
 m_prozentPlus( prozent ),
 m_name( name ),

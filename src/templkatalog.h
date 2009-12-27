@@ -57,7 +57,6 @@ private:
     int loadTimeCalcParts( FloskelTemplate* );
     int loadFixCalcParts( FloskelTemplate* );
     int loadMaterialCalcParts( FloskelTemplate * );
-    int loadMaterialDetails( long, MaterialCalcPart* );
 
     FloskelTemplateList m_flosList;
 };

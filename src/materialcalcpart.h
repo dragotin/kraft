@@ -34,30 +34,26 @@ class MaterialCalcPart : public CalcPart
 {
 
 public:
-  MaterialCalcPart();
-    MaterialCalcPart( long mCalcID, const QString& name, int percent );
-    MaterialCalcPart( const QString& name, int percent);
+    MaterialCalcPart();
+    MaterialCalcPart( long mCalcID, long matID, int procent, double amount );
+    MaterialCalcPart( long matID, int procent, double amount );
     ~MaterialCalcPart();
-
-    void addMaterial( double amount, long materialID );
-    void addMaterial( double amount, StockMaterial* mat );
-    void removeMaterial( StockMaterial *mat );
-    bool isMatToDelete( StockMaterial *mat );
 
     virtual Geld basisKosten();
     QString getType() const;
-    bool containsMaterial( long materialID );
-    StockMaterialList getCalcMaterialList();
-    //Items deleted in the view don't get deleted in this list <== needed for database storing
-    StockMaterialList getFullCalcMaterialList();
-    double getCalcAmount( StockMaterial* );
-    bool   setCalcAmount( StockMaterial*, double );
-    Geld getCostsForMaterial( StockMaterial *mat );
-    Geld getPriceForMaterial( StockMaterial *mat );
+
+    StockMaterial* getMaterial();
+
+    bool setCalcAmount( double newAmount );
+    double getCalcAmount(){return m_calcAmount;};
+
+protected:
+    void getMatFromID(long matID);
+
 private:
     long m_calcID;
-    QHash<StockMaterial*, QVariant> m_amounts;
-    QHash<StockMaterial*, QVariant> m_materials;
+    double m_calcAmount;
+    StockMaterial *m_mat;
 };
 
 #endif

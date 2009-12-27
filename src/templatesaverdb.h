@@ -55,15 +55,13 @@ public:
   bool saveCalculations( CalcPartList, dbID );
 
 private:
-  bool saveTimeCalcPart( ZeitCalcPart*, dbID );
-  void fillZeitCalcBuffer( QSqlRecord*, ZeitCalcPart* );
-
   bool saveFixCalcPart( FixCalcPart *cp, dbID );
   bool saveMaterialCalcPart( MaterialCalcPart *cp, dbID );
+  bool saveTimeCalcPart( ZeitCalcPart*, dbID );
 
   void fillFixCalcBuffer( QSqlRecord *buffer, FixCalcPart *cp );
   void fillMatCalcBuffer( QSqlRecord *buffer, MaterialCalcPart *cp );
-  void storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *mat );
+  void fillZeitCalcBuffer( QSqlRecord*, ZeitCalcPart* );
 
   QString mTableTimeCalc;
   QString mTableFixCalc;

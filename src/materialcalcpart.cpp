@@ -32,205 +32,57 @@ MaterialCalcPart::MaterialCalcPart()
   : CalcPart(),
     m_calcID( 0 )
 {
-  m_amounts = QHash<StockMaterial*, QVariant>();
 }
 
-MaterialCalcPart::MaterialCalcPart(long mCalcID, const QString& name, int percent )
-    : CalcPart( name, percent ),
-      m_calcID( mCalcID )
+MaterialCalcPart::MaterialCalcPart( long mCalcID, long matID, int percent, double amount  )
+    : CalcPart( percent), m_calcID( mCalcID ), m_calcAmount(amount)
 {
-  m_amounts = QHash<StockMaterial*, QVariant>();
+  m_mat = new StockMaterial();
+  getMatFromID(matID);
+  setName(m_mat->name());
 }
 
-MaterialCalcPart::MaterialCalcPart(const QString& name, int percent)
-    : CalcPart( name, percent ),
-      m_calcID(0)
+MaterialCalcPart::MaterialCalcPart(long matID, int percent, double amount)
+    : CalcPart( percent), m_calcID(0), m_calcAmount(amount)
 {
-  m_amounts = QHash<StockMaterial*, QVariant>();
+  m_mat = new StockMaterial();
+  getMatFromID(matID);
+  setName(m_mat->name());
 }
 
 MaterialCalcPart::~MaterialCalcPart( )
 {
-
+  delete m_mat;
 }
 
-void MaterialCalcPart::addMaterial( double amount, long matID )
+void MaterialCalcPart::getMatFromID(long matID)
 {
-    addMaterial( amount, StockMaterialMan::self()->getMaterial(matID));
-}
-
-void MaterialCalcPart::addMaterial( double amount, StockMaterial* mat)
-{
-    if( mat == 0 ) return;
-
-    m_amounts.insert( mat, QVariant(amount) );
-    m_materials.insert( mat, QVariant(amount) );
-    setDirty(true);
-}
-
-void MaterialCalcPart::removeMaterial( StockMaterial *mat )
-{
-    m_amounts.remove( mat );
-    setDirty(true);
-}
-
-bool MaterialCalcPart::isMatToDelete( StockMaterial* mat )
-{
-  if(m_amounts.contains(mat))
-    return false;
-
-  return true;
+  delete m_mat;
+  m_mat = StockMaterialMan::self()->getMaterial(matID);
 }
 
 QString MaterialCalcPart::getType() const
-{
+{   //This seems to be bad
     return KALKPART_MATERIAL;
 }
 
 Geld MaterialCalcPart::basisKosten()
 {
-    Geld gg;
-    QHashIterator<StockMaterial*, QVariant> i( m_amounts );
-    while (i.hasNext()) {
-      i.next();
-      StockMaterial *mat = (StockMaterial*) i.key();
-
-      gg += getPriceForMaterial(mat);
-
-    }
-    return gg;
+  double d = m_calcAmount / m_mat->getAmountPerPack();
+  return m_mat->salesPrice() * d;
 }
 
-/*
- * return a list of all materials calculated in this calcpart
- */
-StockMaterialList MaterialCalcPart::getCalcMaterialList()
+StockMaterial * MaterialCalcPart::getMaterial()
 {
-    StockMaterialList reList;
-
-    QHash<StockMaterial*, QVariant>::iterator i;
-    for (i = m_amounts.begin(); i != m_amounts.end(); ++i)
-    {
-      StockMaterial *mat = (StockMaterial*) i.key();
-      reList.append( mat );
-    }
-
-    return reList;
+  return m_mat;
 }
 
-StockMaterialList MaterialCalcPart::getFullCalcMaterialList()
+bool MaterialCalcPart::setCalcAmount( double newAmount )
 {
-    StockMaterialList reList;
+    m_calcAmount = newAmount;
+    bool updated = true;
+    setDirty(true);
 
-    QHash<StockMaterial*, QVariant>::iterator i;
-    for (i = m_materials.begin(); i != m_materials.end(); ++i)
-    {
-      StockMaterial *mat = (StockMaterial*) i.key();
-      reList.append( mat );
-    }
-
-    return reList;
-}
-
-/*
- * check if a material identified by materialID is part of the
- * calculation.
- */
-
-bool MaterialCalcPart::containsMaterial( long materialID )
-{
-    StockMaterialList li = getCalcMaterialList();
-    kDebug() << "count listentries: " << li.count() << endl;
-
-    foreach( StockMaterial *mat, getCalcMaterialList()) {
-      if( mat->getID() == materialID )
-        return true;
-    }
-    return false;
-}
-
-
-/*
- * Cost of the calculated amount of the specific material in this
- * calculation part. Note that one template may have more than one
- * material calculation part!
- * This is the costs of the material, i.e. it is calculated with
- * the price to be payed to buy the material (EPreis!)
- */
-Geld MaterialCalcPart::getCostsForMaterial( StockMaterial *mat)
-{
-    Geld g;
-
-    if( mat && mat->getAmountPerPack() > 0 )
-    {
-        double d = getCalcAmount( mat ) / mat->getAmountPerPack();
-        g = mat->purchPrice() * d;
-
-        // kDebug() << "Cost for material " << mat->getName() << ": " <<
-        // g.toString() << endl;
-    }
-    return g;
-}
-
-/*
- * Price of the calculated amount of the specific material in this
- * calculation part. Note that one template may have more than one
- * material calculation part!
- * This is the price of the material, i.e. it is calculated with
- * the price the customer has to pay for this material (VPreis!)
- */
-Geld MaterialCalcPart::getPriceForMaterial( StockMaterial *mat)
-{
-    Geld g;
-
-    if( mat && mat->getAmountPerPack() > 0 )
-    {
-        // double d = vAmount.toDouble() / mat->getAmountPerPack();
-        double d = getCalcAmount( mat ) / mat->getAmountPerPack();
-        g = mat->salesPrice() * d;
-
-        // kDebug() << "Cost for material " << mat->getName() << ": " <<
-        //    g.toString() << endl;
-    }
-    return g;
-}
-
-/**
- * returns the amount of calculated material for the given type.
- * Note: to distinguish between a not existing material and a
- * material with amount zero, this method returns zero in case
- * the material is there but with amount 0 and -1 if the material
- * is not in the calcpartlist at all.
- */
-double MaterialCalcPart::getCalcAmount( StockMaterial* mat )
-{
-    double am = -1.0;
-
-    if( mat && m_amounts.contains(mat))
-    {
-        QVariant v = m_amounts[mat];
-        am = v.toDouble();
-    }
-    return am;
-}
-
-
-bool MaterialCalcPart::setCalcAmount( StockMaterial* mat, double newAmount )
-{
-    bool updated = false;
-    if( mat && m_amounts.contains(mat) )
-    {
-        QVariant v = m_amounts[mat];
-        double prevAmount = v.toDouble();
-
-        if( prevAmount != newAmount )
-        {
-            m_amounts[mat] = newAmount;
-            m_materials[mat] = newAmount;
-            updated = true;
-            setDirty(true);
-        }
-    }
     return updated;
 }
 

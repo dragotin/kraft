@@ -31,6 +31,7 @@
 class CalcPart {
 public:
     CalcPart();
+    CalcPart( int prozent );
     CalcPart( const QString& name, int prozent = 0 );
     virtual ~CalcPart();
     /** overall costs for this calculation */

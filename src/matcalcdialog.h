@@ -24,6 +24,7 @@
 #include "ui_matpartui.h"
 
 class StockMaterial;
+class MaterialCalcPart;
 /**
  *
  */
@@ -33,20 +34,18 @@ class MatCalcDialog : public KDialog, protected Ui::calcdetailMat
     Q_OBJECT
 
 public:
-    MatCalcDialog( StockMaterial *mat=0, QWidget *parent=0, bool modal=FALSE );
-    MatCalcDialog( double amount, StockMaterial *mat, QWidget *parent=0, bool modal=FALSE );
+    MatCalcDialog( MaterialCalcPart *mc, QWidget *parent=0, bool modal=FALSE );
     virtual ~MatCalcDialog();
 
-    double getAmount();
 protected slots:
     void accept();
     void reject();
     
   signals:
-    void matCalcPartChanged(StockMaterial*, double);
+    void matCalcPartChanged(MaterialCalcPart *mc);
 private:
     void init(double);
-    StockMaterial *m_material;
+    MaterialCalcPart *m_mc;
 };
 
 #endif

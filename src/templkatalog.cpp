@@ -174,52 +174,30 @@ int TemplKatalog::loadMaterialCalcParts( FloskelTemplate *flos )
     int cnt = 0;
 
     QSqlQuery q;
-    q.prepare("SELECT name, percent, MCalcID, TemplID FROM CalcMaterials WHERE TemplID=:TemplID");
+    q.prepare("SELECT MCalcID, TemplID, materialID, percent, amount FROM CalcMaterials WHERE TemplID=:TemplID");
     q.bindValue(":TemplID", QString::number( flos->getTemplID()));
     q.exec();
 
     while( q.next() )
     {
         cnt++;
-        QString name = QString::fromUtf8(q.value(0).toByteArray());
-        int prozent = q.value(1).toInt();
-        long mcalcID = q.value(2).toLongLong();
-        int templid = q.value(3).toInt();
+        long mcalcID = q.value(0).toLongLong();
+        int templid = q.value(1).toInt();
+        long   matID  = q.value(2).toLongLong();
+        int procent = q.value(3).toInt();
+        double amount = q.value(4).toDouble();
 
-        MaterialCalcPart *mPart = new MaterialCalcPart( mcalcID, name, prozent );
+
+        MaterialCalcPart *mPart = new MaterialCalcPart( mcalcID, matID, procent, amount );
         mPart->setDbID( dbID(mcalcID));
         mPart->setTemplID( dbID(templid));
         mPart->setDirty( false );
         flos->addCalcPart( mPart );
-        loadMaterialDetails( mcalcID, mPart );
     }
+
 
     return cnt;
 }
-
-int TemplKatalog::loadMaterialDetails( long calcID, MaterialCalcPart* mcp )
-{
-    if( ! mcp ) return 0;
-
-    QSqlQuery q;
-    q.prepare("SELECT materialID, amount FROM CalcMaterialDetails WHERE CalcID=:CalcID");
-    q.bindValue(":CalcID", QString::number(calcID));
-    q.exec();
-
-    int cnt = 0;
-    while( q.next())
-    {
-        cnt ++;
-
-        long   matID  = q.value(0).toLongLong();
-        double amount = q.value(1).toDouble();
-
-        mcp->addMaterial( amount, matID );
-    }
-
-    return cnt;
-}
-
 
 int TemplKatalog::loadFixCalcParts( FloskelTemplate *flos )
 {

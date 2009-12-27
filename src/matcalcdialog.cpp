@@ -24,39 +24,27 @@
 #include <knuminput.h>
 
 #include "matcalcdialog.h"
+#include "materialcalcpart.h"
 #include "stockmaterial.h"
 
-MatCalcDialog::MatCalcDialog(StockMaterial *mat, QWidget *parent, bool modal )
-    : KDialog( parent ), Ui::calcdetailMat(),
-    m_material(mat)
-{
-  QWidget *w = new QWidget( this );
-  setMainWidget(w);
-
-  setupUi( w );
-  setModal( modal );
-  init(1.0);
-}
-
-MatCalcDialog::MatCalcDialog(double amount, StockMaterial *mat, QWidget *parent, bool modal )
+MatCalcDialog::MatCalcDialog( MaterialCalcPart *mc, QWidget *parent, bool modal )
     : KDialog( parent ), Ui::calcdetailMat( ),
-    m_material(mat)
+    m_mc(mc)
 {
   QWidget *w = new QWidget( this );
   setMainWidget(w);
 
   setupUi( w );
   setModal( modal );
-  m_inpMenge->setValue(amount);
-  init(amount);
+  m_inpMenge->setValue(mc->getCalcAmount());
+  init(mc->getCalcAmount());
 }
 
 void MatCalcDialog::init(double amount)
 {
-  if( ! m_material ) return;
-  Einheit e = m_material->getUnit();
+  Einheit e = m_mc->getMaterial()->getUnit();
 
-  matLabel->setText( m_material->name());
+  matLabel->setText( m_mc->getMaterial()->name());
   einheitLabel->setText( e.einheit(amount) );
 }
 
@@ -68,14 +56,10 @@ void MatCalcDialog::reject()
 void MatCalcDialog::accept()
 {
   double val = m_inpMenge->value();
-  emit( matCalcPartChanged(m_material, val ));
+  m_mc->setCalcAmount(val);
+  emit( matCalcPartChanged(m_mc));
 
   KDialog::accept();
-}
-
-double MatCalcDialog::getAmount()
-{
-  return m_inpMenge->value();
 }
 
 MatCalcDialog::~MatCalcDialog( )

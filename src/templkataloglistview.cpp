@@ -172,35 +172,6 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
     list << cp->getType();
     QTreeWidgetItem *cpItem =  new QTreeWidgetItem( item, list );
     cpItem->setDisabled(true);
-
-    /* in case of material, add items for the materials calculated for the
-        * template
-        */
-    if( type == KALKPART_MATERIAL )
-    {
-      MaterialCalcPart *mcp = static_cast<MaterialCalcPart*>( cp );
-      StockMaterialList mats =  mcp->getCalcMaterialList();
-
-      StockMaterialListIterator it( mats );
-      while( it.hasNext() ) {
-        StockMaterial *mat = it.next();
-
-        Geld g = mcp->getPriceForMaterial(mat);
-        QString t = mat->name();
-        double usedAmount = mcp->getCalcAmount(mat);
-        Einheit e = mat->getUnit();
-
-        t = QString( "%1 %2 of %3 %4 %5" ).arg( usedAmount )
-            .arg( e.einheit( usedAmount ) )
-            .arg( mat->getAmountPerPack() )
-            .arg( e.einheit( mat->getAmountPerPack() ) )
-            .arg( t );
-        QStringList li;
-        li << t;
-        li << g.toString( catalog()->locale() );
-        (void) new QTreeWidgetItem( cpItem, li );
-      }
-    }
   }
 }
 

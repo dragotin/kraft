@@ -115,6 +115,8 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
     QSqlRecord buffer = model.record();
     fillMatCalcBuffer( &buffer, cp );
     buffer.setValue( "TemplID", parentID.toInt() );
+    buffer.setValue( "materialID", cp->getMaterial()->getID());
+    buffer.setValue( "amount", cp->getCalcAmount());
     model.insertRecord(-1, buffer);
     model.submitAll();
 
@@ -132,6 +134,8 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
       // dont delete, update!
       if( model.rowCount() > 0) {
         QSqlRecord buffer = model.record(0);
+        buffer.setValue( "materialID", cp->getMaterial()->getID());
+        buffer.setValue( "amount", cp->getCalcAmount());
         buffer.setValue( "modDate", "systimestamp" );
         fillMatCalcBuffer( &buffer, cp );
         model.setRecord(0, buffer);
@@ -142,74 +146,16 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
     }
   }
 
-  // nun die Materialliste sichern
-  StockMaterialList matList = cp->getFullCalcMaterialList();
-  StockMaterialListIterator it( matList );
-
-  while( it.hasNext() ) {
-    StockMaterial *mat = it.next();
-
-    storeMaterialDetail( cp, mat );
-  }
-
 return result;
 }
-
-void CalculationsSaverDB::storeMaterialDetail( MaterialCalcPart *cp, StockMaterial *mat)
-{
-    if( ! (cp && mat) ) return;
-    kDebug() << "storing material calcpart detail for material " << mat->name() << endl;
-    kDebug() << "Material details for calcID " << cp->getDbID().toString() << endl;
-
-    QSqlTableModel model;
-    model.setTable(mTableMatDetailCalc);
-    QString selStr = QString("CalcID=%1 AND materialID=%2" ).arg(cp->getDbID().toInt()).arg(mat->getID());
-    model.setFilter(selStr);
-    model.select();
-
-    if( model.rowCount() > 0 )
-    {
-      // update or delete the record
-      if( cp->isMatToDelete(mat) == true)
-      {
-        //Delete the material details
-        model.removeRow(0);
-        model.submitAll();
-      }
-      else
-      {
-        //Update the material details
-        QSqlRecord upRec = model.record(0);
-        upRec.setValue("amount", cp->getCalcAmount(mat));
-        model.setRecord(0, upRec);
-        model.submitAll();
-      }
-    }
-    else
-    {
-        //Insert the material details
-        QSqlRecord insRec = model.record();
-        insRec.setValue("amount",  cp->getCalcAmount(mat));
-        insRec.setValue("CalcID", cp->getDbID().toInt());
-        insRec.setValue("materialID", mat->getID());
-
-        model.insertRecord(-1, insRec);
-        model.submitAll();
-        dbID id = KraftDB::self()->getLastInsertID();
-        if( id.isOk() ) {
-            cp->setDbID(id);
-        } else {
-            kDebug() << "ERROR: Invalid DB-ID at Material CalcPart creation!" << endl;
-        }
-    }
-}
-
 
 void CalculationsSaverDB::fillMatCalcBuffer( QSqlRecord *buffer, MaterialCalcPart *cp )
 {
     if( !(buffer && cp)) return;
 
-    buffer->setValue("name", cp->getName());
+    buffer->setValue("materialID", cp->getMaterial()->getID());
+    buffer->setValue("amount", cp->getCalcAmount());
+    buffer->setValue("TemplID", cp->getTemplID().toInt());
     buffer->setValue("percent", cp->getProzentPlus() );
 
 }

@@ -224,27 +224,9 @@ void FlosTemplDialog::setCalcparts( )
   QListIterator<CalcPart*> matIt( tpList );
   while( matIt.hasNext() ) {
     MaterialCalcPart *mc = static_cast<MaterialCalcPart*>(matIt.next());
-    // QTreeWidgetItem *matPart = new QTreeWidgetItem( m_matParts,
-    //                                            mc->getName() );
-    // mCalcPartDict.insert( matPart, mc );
-
-    // matPart->setOpen(true);
-    StockMaterialList matList = mc->getCalcMaterialList();
-
-    StockMaterialListIterator stockIt( matList );
-
-    while ( stockIt.hasNext()) {
-      StockMaterial *mat = stockIt.next();
-
-      QTreeWidgetItem *lvItem = new QTreeWidgetItem( m_matParts );
-      m_matDict.insert( lvItem, mat );
-      drawMatListEntry( lvItem, mc, mat );
-
-      // This is a bit tricky: We more material entries in the listview
-      // for the same materila calcpart. Thus we insert an entry for every
-      // listview item pointing to the same material calc part
-      mCalcPartDict.insert(lvItem, mc);
-    }
+    QTreeWidgetItem *lvItem = new QTreeWidgetItem( m_matParts );
+    mCalcPartDict.insert( lvItem, mc );
+    drawMatListEntry( lvItem, mc );
   }
 }
 
@@ -582,14 +564,14 @@ void FlosTemplDialog::drawFixListEntry( QTreeWidgetItem* it, FixCalcPart *cp )
   it->setText( 3, cp->basisKosten().toString( m_katalog->locale() ));
 }
 
-void FlosTemplDialog::drawMatListEntry( QTreeWidgetItem *it, MaterialCalcPart *mc, StockMaterial *mat )
+void FlosTemplDialog::drawMatListEntry( QTreeWidgetItem *it, MaterialCalcPart *mc )
 {
-  it->setText( 0, mat->name());
-  it->setText( 1, QString::number(mc->getCalcAmount( mat ), 'f',2));
-  it->setText( 2, mat->getUnit().einheitSingular());
-  it->setText( 3, mc->getPriceForMaterial(mat).toString( m_katalog->locale() ));
-  it->setText( 4, QString::number(mat->getAmountPerPack(), 'f',2));
-  it->setText( 5, mat->salesPrice().toString( m_katalog->locale() ));
+  it->setText( 0, mc->getName());
+  it->setText( 1, QString::number(mc->getCalcAmount(), 'f',2));
+  it->setText( 2, mc->getMaterial()->getUnit().einheitSingular());
+  it->setText( 3, mc->basisKosten().toString( m_katalog->locale() ));
+  it->setText( 4, QString::number(mc->getMaterial()->getAmountPerPack(), 'f',2));
+  it->setText( 5, mc->getMaterial()->salesPrice().toString( m_katalog->locale() ));
 }
 
 
@@ -661,100 +643,14 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
   kDebug() << "Material ID: " << matID << endl;
 
   // TODO: Checken, ob der richtige Tab aktiv ist.
-  StockMaterial *mat = StockMaterialMan::self()->getMaterial(matID);
+  // TODO: Check if the material is already in the calcpart (is this really needed??)
+  MaterialCalcPart *mc;
 
-  if( mat )
-  {
-    CalcPartList tpList = m_template->getCalcPartsList( KALKPART_MATERIAL );
-    MaterialCalcPart *mc;
-
-    bool addMat = true;
-    QTreeWidgetItem *lvItem = 0;
-
-    if(tpList.isEmpty())
-    {
-      /* Es gibt noch garkeinen Material-Kalkulationsanteil. Es wird
-               ein neuer angelegt
-             */
-      mc = new MaterialCalcPart( i18n("Calculated Material"), 0);
-      m_template->addCalcPart( mc );
-    }
-    else
-    {
-      mc = static_cast<MaterialCalcPart*>(tpList.first());
-
-            /* Der Material-Kalkulationsanteil existiert bereits. Hier checken, ob es
-               das vermeintlich neue material bereits in der Liste gibt */
-      if( mc->containsMaterial( matID ) )
-      {
-        double oldAmount = mc->getCalcAmount(mat);
-
-        addMat = false;
-
-        if(oldAmount != amount )
-        {
-          QString quest = i18n("This material kind is already in the list of calculated materials.\n");
-          quest += i18n("Do you want to adjust the amount of it in the calculation?");
-
-          int answer = KMessageBox::questionYesNo( this,
-                                                   quest,
-                                                   i18n("Material duplicate"));
-
-          if( answer == KMessageBox::Yes )
-          {
-            mc->setCalcAmount( mat, amount );
-
-            QHashIterator<QTreeWidgetItem*, StockMaterial*> it(m_matDict);
-
-            /* Das entsprechende Listitem raussuchen */
-            while( !lvItem && it.hasNext() ) {
-              it.next();
-              StockMaterial *listmat = static_cast<StockMaterial*>(it.value());
-              if(  listmat == mat )
-                lvItem = static_cast<QTreeWidgetItem*>(it.key());
-            }
-            if( lvItem )
-            {
-              drawMatListEntry( lvItem, mc, mat );
-              refreshPrices();
-              emit( takeMaterialAnswer(i18n("Amount changed")));
-            }
-          }
-          else
-          {
-            /* Menge sollte nciht angepasst werden */
-          }
-        }
-        else
-        {
-          /* Die Anzahl fr das MAterial unterscheidet sich nicht => nix tun. */
-          emit( takeMaterialAnswer( i18n("Material amount already in calculation.")));
-        }
-      }
-    }
-
-    if( addMat )
-    {
-      if( mc )
-      {
-        mc->addMaterial(amount, matID);
-        mc->setDirty(true);
-        lvItem = new QTreeWidgetItem( m_matParts );
-        m_matDict.insert( lvItem, mat);
-        drawMatListEntry( lvItem, mc, mat );
-        refreshPrices();
-        emit( takeMaterialAnswer(i18n("Material inserted to calculation")));
-      }
-      else
-      {
-        /* Es gibt garkein Material-Kalcpart */
-        kDebug() << "WRN: No material calculation part found!" << endl;
-      }
-    }
-  } else {
-    kDebug() << "Can not find material with id " << matID << endl;
-  }
-
+  mc = new MaterialCalcPart(matID, 0, amount);
+  m_template->addCalcPart( mc );
+  QTreeWidgetItem *lvItem = new QTreeWidgetItem(m_matParts);
+  drawMatListEntry( lvItem, mc );
+  refreshPrices();
 }
 
 
@@ -771,38 +667,23 @@ void FlosTemplDialog::slEditMatPart()
      * Standard-Namen hat. Deshalb wird hier khn der erste eintrag in der
      * List verwendet.
      */
-  CalcPartList cParts = m_template->getCalcPartsList( KALKPART_MATERIAL );
-  MaterialCalcPart *mc;
-  mc = static_cast<MaterialCalcPart*>(cParts.first());
+  MaterialCalcPart *mc = static_cast<MaterialCalcPart*>(mCalcPartDict[item]);
 
-  if( item )
+  if( mc )
   {
-    StockMaterial *mat = static_cast<StockMaterial*>(m_matDict[item]);
+      m_matPartDialog = new MatCalcDialog( mc, this);
 
-    if( mat )
-    {
-      double amount = mc->getCalcAmount(mat);
-      m_matPartDialog = new MatCalcDialog( amount, mat, this);
-
-      connect( m_matPartDialog, SIGNAL(matCalcPartChanged(StockMaterial*, double)),
-               this, SLOT(slMatCalcPartChanged(StockMaterial*, double)));
+      connect( m_matPartDialog, SIGNAL(matCalcPartChanged(MaterialCalcPart*)),
+               this, SLOT(slMatCalcPartChanged(MaterialCalcPart*)));
       m_matPartDialog->setModal(true);
       m_matPartDialog->show();
-
-    }
   }
 }
 
-void FlosTemplDialog::slMatCalcPartChanged(StockMaterial *mat, double amount)
+void FlosTemplDialog::slMatCalcPartChanged(MaterialCalcPart *mc)
 {
-  CalcPartList cParts = m_template->getCalcPartsList( KALKPART_MATERIAL );
-  MaterialCalcPart *mc = static_cast<MaterialCalcPart*>(cParts.first());
-
-  if(mc && mat) {
-    mc->setCalcAmount(mat, amount);
-    drawMatListEntry(m_matParts->currentItem(), mc, mat);
-    refreshPrices();
-  }
+  drawMatListEntry(m_matParts->currentItem(), mc);
+  refreshPrices();
 }
 
 void FlosTemplDialog::slRemoveMatPart()
@@ -813,14 +694,13 @@ void FlosTemplDialog::slRemoveMatPart()
 
   if( item )
   {
-    CalcPartList cParts = m_template->getCalcPartsList( KALKPART_MATERIAL );
-    MaterialCalcPart *mc;
-    mc = static_cast<MaterialCalcPart*>(cParts.first());
-
-    StockMaterial *mat = static_cast<StockMaterial*>(m_matDict[item]);
-
-    mc->removeMaterial( mat );
+    CalcPart *cp = mCalcPartDict[item];
+    if( cp )
+    {
+      m_template->removeCalcPart(cp);
+    }
     delete item;
+
     refreshPrices();
   }
 }

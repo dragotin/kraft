@@ -81,7 +81,7 @@ public slots:
 
     void slFixCalcPartChanged(FixCalcPart*);
     void slTimeCalcPartChanged(ZeitCalcPart*);
-    void slMatCalcPartChanged(StockMaterial *, double );
+    void slMatCalcPartChanged(MaterialCalcPart*);
 
     virtual void accept();
     virtual void reject();
@@ -93,7 +93,7 @@ private:
     void setButtonIcons();
     virtual void drawTimeListEntry( QTreeWidgetItem *, ZeitCalcPart * );
     virtual void drawFixListEntry( QTreeWidgetItem*, FixCalcPart* );
-    virtual void drawMatListEntry( QTreeWidgetItem*, MaterialCalcPart*, StockMaterial* );
+    virtual void drawMatListEntry( QTreeWidgetItem*, MaterialCalcPart* );
 
     bool askChapterChange( FloskelTemplate*, int);
 
@@ -107,7 +107,6 @@ private:
 
     /* dict das qlistviewitems auf calcparts abbildet */
     QHash<QTreeWidgetItem*, CalcPart*> mCalcPartDict;
-    QHash<QTreeWidgetItem*, StockMaterial*> m_matDict;
 
     QButtonGroup *m_gbPriceSrc;
 
