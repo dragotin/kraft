@@ -52,11 +52,38 @@ TemplKatalog::~TemplKatalog()
 
 }
 
-void TemplKatalog::reload( dbID )
+void TemplKatalog::reload( dbID id)
 {
-  kDebug() << "**** RELOADING katalog ****" << endl;
-  m_flosList.clear();
-  load();
+  FloskelTemplate *templ=0;
+  //Find the template we want to reload in the templatelist
+  for(int i=0; i < m_flosList.count(); ++i)
+  {
+    templ = m_flosList[i];
+    if(templ->getTemplID() == id.toInt())
+      break;
+  }
+
+  if(templ)
+  {
+    QSqlQuery q("SELECT unitID, TemplID, chapterID, Preisart, EPreis, modifyDatum, enterDatum, Floskel, Gewinn, zeitbeitrag FROM Catalog WHERE TemplID=:TemplID");
+    q.bindValue(":TemplID", id.toInt());
+    q.exec();
+
+    if(q.next())
+    {
+      //templ->setEinheitId(q.value(0).toInt());
+      kDebug() << "Reloading template number " << q.value(1) << endl;
+      templ->setChapterID(q.value(2).toInt());
+      //templ->setCalculationType(q.value(3).toInt());
+      templ->setManualPrice(q.value(4).toDouble());
+      templ->setText(QString::fromUtf8(q.value(7).toByteArray()));
+      templ->setBenefit( q.value(8).toDouble());
+      templ->setHasTimeslice( q.value(9).toBool() );
+
+      templ->clearCalcParts();
+      loadCalcParts( templ );
+    }
+  }
 }
 
 int TemplKatalog::load()
@@ -195,7 +222,6 @@ int TemplKatalog::loadMaterialCalcParts( FloskelTemplate *flos )
         flos->addCalcPart( mPart );
     }
 
-
     return cnt;
 }
 
@@ -207,6 +233,7 @@ int TemplKatalog::loadFixCalcParts( FloskelTemplate *flos )
     QSqlQuery q;
     q.prepare("SELECT name, amount, percent, FCalcID, TemplID, price FROM CalcFixed WHERE TemplID=:TemplID");
     q.bindValue(":TemplID", QString::number( flos->getTemplID()));
+    q.exec();
 
     while( q.next() )
     {

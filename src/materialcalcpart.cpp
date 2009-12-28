@@ -52,7 +52,7 @@ MaterialCalcPart::MaterialCalcPart(long matID, int percent, double amount)
 
 MaterialCalcPart::~MaterialCalcPart( )
 {
-  delete m_mat;
+  //We won't delete m_mat because it comes straight from stockmaterialman
 }
 
 void MaterialCalcPart::getMatFromID(long matID)

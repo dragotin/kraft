@@ -65,6 +65,7 @@ public:
   void setCountryLanguage( const QString&, const QString& );
 
 protected:
+
   dbID mID;
   QString mType;
   QString mClientId;

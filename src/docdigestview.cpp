@@ -55,6 +55,7 @@ DocDigestView::DocDigestView( QWidget *parent )
   hbox->addWidget( mNewDocButton );
   hbox->addStretch(1);
   mToolBox = new QToolBox;
+  connect( mToolBox, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChangedToolbox(int)));
 
   QList<QTreeWidget *> treelist = initializeTreeWidgets();
 
@@ -117,7 +118,7 @@ QList<QTreeWidget *> DocDigestView::initializeTreeWidgets()
     QTreeWidget *widget = treelist.at(i);
 
     connect( widget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-             this, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+             this, SLOT(slotCurrentChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
     connect( widget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ),
              this, SLOT( slotDocOpenRequest( QTreeWidgetItem*, int ) ) );
 
@@ -146,6 +147,16 @@ QList<QTreeWidget *> DocDigestView::initializeTreeWidgets()
   mToolBox->setItemToolTip(indx, i18n("Shows all documents along a timeline"));
 
   return treelist;
+}
+
+void DocDigestView::slotCurrentChangedToolbox(int index)
+{
+  //At the moment we are sure there a QTreeWidgets in the toolbox. If we ever put other widgets in there we need to change this code!
+  QTreeWidget *widget = static_cast<QTreeWidget*>(mToolBox->widget(index));
+  if(widget->selectedItems().count() > 0)
+    slotCurrentChanged(widget->selectedItems().first());
+  else
+    slotCurrentChanged(0);
 }
 
 void DocDigestView::slotBuildView()
@@ -212,7 +223,8 @@ void DocDigestView::addItems( QTreeWidget *view, DocDigestList list, QTreeWidget
 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();
     ArchDocDigestList::iterator archIt;
-    for ( archIt = archDocList.begin(); archIt != archDocList.end(); ++archIt ) {
+    for ( archIt = archDocList.begin(); archIt != archDocList.end(); ++archIt )
+    {
       QStringList li;
       li << i18n("Archived") << QString() << (*archIt).printDateString();
       QTreeWidgetItem *archItem = new QTreeWidgetItem( item, li );
@@ -483,13 +495,18 @@ QString DocDigestView::currentDocumentId()
 
 void DocDigestView::slotCurrentChanged( QTreeWidgetItem *item, QTreeWidgetItem* )
 {
-  dbID id = ( mArchIdDict[item] ).archDocId();
-  QString res;
-  if ( mDocIdDict.contains( item ) ) {
-    emit docSelected( mDocIdDict[item] );
-  } else if ( id.isOk() ) {
-    emit archivedDocSelected( mArchIdDict[item] );
+  if(item != 0)
+  {
+    if ( mDocIdDict.contains( item ) ) {
+      emit docSelected( mDocIdDict[item] );
+    } else if ( mArchIdDict.contains( item->parent() ) ) {
+      emit archivedDocSelected( mArchIdDict[item] );
+    }
+    else
+      emit docSelected( "" );
   }
+  else
+    emit docSelected( "" );
 }
 
 QList<KMenu*> DocDigestView::contextMenus()

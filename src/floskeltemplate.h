@@ -56,9 +56,10 @@ public:
     void setText( const QString& str ) { m_text = str; }
     void addCalcPart( CalcPart* cpart );
     void removeCalcPart( CalcPart *cpart );
+    void clearCalcParts();
     CalcPartList getCalcPartsList();
     CalcPartList getCalcPartsList(const QString& );
-  CalcPartList decoupledCalcPartsList();
+    CalcPartList decoupledCalcPartsList();
 
     Einheit einheit() const;
     void setEinheitId(int id);

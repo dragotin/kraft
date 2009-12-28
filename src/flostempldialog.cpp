@@ -387,7 +387,7 @@ bool FlosTemplDialog::confirmClose()
   {
     if ( KMessageBox::warningContinueCancel( this, i18n( "The template was modified. Do "
                                                          "you really want to discard all changes?" ),
-                                             i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ) ) )
+                                             i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ), KIcon("edit-clear") ) )
           == KMessageBox::Cancel  )
     {
       return false;
@@ -399,7 +399,7 @@ bool FlosTemplDialog::confirmClose()
     m_fixParts->clear ();
     m_matParts->clear ();
 
-    // d_calcTempl::reject();
+    m_katalog->reload(m_template->getTemplID());
 
     if ( m_templateIsNew ) {
       // remove the listview item if it was created newly

@@ -60,7 +60,8 @@ protected:
 
 protected slots:
   // void slotOpenCurrentDoc();
-  void slotCurrentChanged( QTreeWidgetItem*, QTreeWidgetItem* );
+  void slotCurrentChanged( QTreeWidgetItem*, QTreeWidgetItem* = 0 );
+  void slotCurrentChangedToolbox ( int index );
   void setupListViewItemFromDoc( DocGuardedPtr , QTreeWidgetItem* );
   QTreeWidgetItem *addDocToParent( DocGuardedPtr, QTreeWidget*, QTreeWidgetItem* = 0);
 
@@ -72,7 +73,7 @@ signals:
   void openArchivedDocument( const ArchDocDigest& );
   void docSelected( const QString& );
   void archivedDocSelected( const ArchDocDigest& );
-  void currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
+  //void currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
 
 private:
 

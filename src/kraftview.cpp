@@ -1364,7 +1364,7 @@ bool KraftView::documentModifiedMessageBox()
   if ( mModified ) {
     if ( KMessageBox::warningContinueCancel( this, i18n( "The document was modified. Do "
                                                          "you really want to discard all changes?" ),
-                                             i18n( "Document Modified" ), KGuiItem( i18n( "Discard" ) ) )
+                                             i18n( "Document Modified" ), KGuiItem( i18n( "Discard" ), KIcon("edit-clear") ) )
       == KMessageBox::Cancel  ) {
       return false;
     }

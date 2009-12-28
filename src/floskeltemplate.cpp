@@ -229,7 +229,18 @@ void FloskelTemplate::removeCalcPart( CalcPart *cpart )
   if( cpart) {// m_calcParts.removeRef(cpart);
     cpart->setToDelete(true);
     cpart->setDirty(true);
+
   }
+}
+
+void FloskelTemplate::clearCalcParts()
+{
+  for(int i=0; i<m_calcParts.count(); ++i)
+  {
+    delete m_calcParts[i];
+  }
+
+  m_calcParts.clear();
 }
 
 Geld FloskelTemplate::kostenPerKalcPart( const QString& part )

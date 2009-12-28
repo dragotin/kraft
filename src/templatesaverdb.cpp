@@ -73,7 +73,7 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
             // der Datensatz ist bereits in der Datenbank => UPDATE
             if( model.rowCount() > 0 ) {
                 QSqlRecord buffer = model.record(0);
-                buffer.setValue( "modDate", "systimestamp" );
+                buffer.setValue( "modDate", QDateTime::currentDateTime().toTime_t() );
                 fillFixCalcBuffer(& buffer, cp );
                 model.setRecord(0, buffer);
                 model.submitAll();
@@ -95,7 +95,7 @@ void CalculationsSaverDB::fillFixCalcBuffer( QSqlRecord *buffer, FixCalcPart *cp
     buffer->setValue( "price", cp->unitPreis().toDouble() );
 
     buffer->setValue( "percent", cp->getProzentPlus() );
-    buffer->setValue( "modDate", "systimestamp" );
+    buffer->setValue( "modDate", QDateTime::currentDateTime().toTime_t() );
 }
 
 bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID parentID )
@@ -115,8 +115,6 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
     QSqlRecord buffer = model.record();
     fillMatCalcBuffer( &buffer, cp );
     buffer.setValue( "TemplID", parentID.toInt() );
-    buffer.setValue( "materialID", cp->getMaterial()->getID());
-    buffer.setValue( "amount", cp->getCalcAmount());
     model.insertRecord(-1, buffer);
     model.submitAll();
 
@@ -134,9 +132,7 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
       // dont delete, update!
       if( model.rowCount() > 0) {
         QSqlRecord buffer = model.record(0);
-        buffer.setValue( "materialID", cp->getMaterial()->getID());
-        buffer.setValue( "amount", cp->getCalcAmount());
-        buffer.setValue( "modDate", "systimestamp" );
+        buffer.setValue( "modDate", QDateTime::currentDateTime().toTime_t() );
         fillMatCalcBuffer( &buffer, cp );
         model.setRecord(0, buffer);
         model.submitAll();
@@ -255,7 +251,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
 	    // Update needed, record is already in the database
             if( model.rowCount() > 0 ) {
                 QSqlRecord buffer = model.record(0);
-                buffer.setValue( "modDate", "systimestamp" );
+                buffer.setValue( "modDate", QDateTime::currentDateTime().toTime_t() );
                 fillZeitCalcBuffer( &buffer, cp );
                 model.setRecord(0, buffer);
                 model.submitAll();
