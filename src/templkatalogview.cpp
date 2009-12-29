@@ -110,7 +110,7 @@ void TemplKatalogView::slNewTemplate()
     }
 
     if( parentItem ) {
-      // try to find out which catalog is open/actual
+      // try to find out which catalog is open/current
       QString name = parentItem->text(0);
       Katalog *k = getKatalog( m_katalogName );
       if( k ) {

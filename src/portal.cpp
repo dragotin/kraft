@@ -159,7 +159,7 @@ void Portal::initActions()
   fileQuit->setStatusTip(i18n("Quits the application"));
   editCut->setStatusTip(i18n("Cuts the selected section and puts it to the clipboard"));
   editCopy->setStatusTip(i18n("Copies the selected section to the clipboard"));
-  editPaste->setStatusTip(i18n("Pastes the clipboard contents to actual position"));
+  editPaste->setStatusTip(i18n("Pastes the clipboard contents to current position"));
   viewStatusBar->setStatusTip(i18n("Enables/disables the statusbar"));
 
   actNewDocument->setStatusTip( i18n( "Creates a new Document" ) );
@@ -378,7 +378,7 @@ void Portal::slotFollowUpDocument()
 
   QStringList followers = dt.follower();
   if ( followers.count() > 0 ) {
-    // only if there are actually followers defined, if not the default wiht
+    // only if there are currently followers defined, if not the default wiht
     // all doc types works.
     wiz.setAvailDocTypes( dt.follower() );
   }

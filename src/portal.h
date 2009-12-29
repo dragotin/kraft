@@ -152,7 +152,7 @@ class Portal : public KXmlGuiWindow
      * changing the view class.
      */
     KraftView *view;
-    /** doc represents your actual document and is created only once. It keeps
+    /** doc represents your current document and is created only once. It keeps
      * information such as filename and does the serialization of your files.
      */
     KraftDoc *doc;

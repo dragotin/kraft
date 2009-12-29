@@ -80,7 +80,7 @@ DocDigestView::~DocDigestView()
 
 QList<QTreeWidget *> DocDigestView::initializeTreeWidgets()
 {
-  //Note: Actually building the views is done in slotBuildView() that is called from the portal
+  //Note: Currently building the views is done in slotBuildView() that is called from the portal
   //      because otherwise we'd access the database before it is initialized
   mAllView = new QTreeWidget;
   mLatestView = new QTreeWidget;

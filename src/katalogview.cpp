@@ -172,7 +172,7 @@ void KatalogView::initActions()
   m_acFileClose->setStatusTip( i18n("Close the katalog view"));
 
   m_acFilePrint = actionCollection()->addAction( KStandardAction::Print, this, SLOT( slotFilePrint() ) );
-  m_acFilePrint ->setStatusTip( i18n("Prints out the actual document"));
+  m_acFilePrint ->setStatusTip( i18n("Prints out the current document"));
   m_acFilePrint->setEnabled(false);
 
   m_acEditCut = actionCollection()->addAction( KStandardAction::Cut, this, SLOT( slotEditCut() ) );
@@ -184,7 +184,7 @@ void KatalogView::initActions()
   m_acEditCopy->setEnabled(false);
 
   m_acEditPaste = actionCollection()->addAction( KStandardAction::Paste, this, SLOT( slotEditPaste() ) );
-  m_acEditPaste->setStatusTip(i18n("Pastes the clipboard contents to actual position"));
+  m_acEditPaste->setStatusTip(i18n("Pastes the clipboard contents to current position"));
   m_acEditPaste->setEnabled(false);
   // createStandardStatusBarAction();
   // setStandardToolBarMenuEnabled( true );

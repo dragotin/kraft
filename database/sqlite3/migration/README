@@ -8,7 +8,7 @@ database migration system.
 Every version of Kraft has a hardcoded version of the
 required database schema version. In the Kraft database
 there is a system table that carries the version
-of the current running database schema. In case the actual
+of the current running database schema. In case the current
 database version is lower than the required, Kraft looks
 in this migration directory if there is a script starting
 with the number "current version +1". If found, Kraft 

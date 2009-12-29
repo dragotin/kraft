@@ -72,15 +72,15 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
   public slots:
     /** open a new application window by creating a new instance of KraftApp */
     void slotFileNewWindow();
-    /** clears the document in the actual view to reuse it as the new document */
+    /** clears the document in the current view to reuse it as the new document */
     void openDocumentFile(const KUrl& url);
 
     void slotFileOpen();
     /** save a document */
     void slotFileSave();
-    /** asks for saving if the file is modified, then closes the actual file and window*/
+    /** asks for saving if the file is modified, then closes the current file and window*/
     void slotFileClose();
-    /** print the actual file */
+    /** print the current file */
     void slotFilePrint();
     /** put the marked text/object into the clipboard and remove
      *	it from the document

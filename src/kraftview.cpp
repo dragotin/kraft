@@ -1087,7 +1087,7 @@ DocPositionList KraftView::currentPositionList()
               newDp->setAttribute( tr );
             }
 
-            /* Calculate the actual sum over all widgets */
+            /* Calculate the current sum over all widgets */
             PositionViewWidgetListIterator it( mPositionWidgetList );
             PositionViewWidget *w1;
             Geld sum;
