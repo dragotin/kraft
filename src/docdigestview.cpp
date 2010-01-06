@@ -149,6 +149,32 @@ QList<QTreeWidget *> DocDigestView::initializeTreeWidgets()
   return treelist;
 }
 
+ void DocDigestView::addArchivedItem( dbID docID, dbID archID)
+ {
+     QTreeWidgetItem *widget = 0;
+     QMapIterator<QTreeWidgetItem*, QString> i(mDocIdDict);
+
+     //We have to iterate over all items because a doc can (and should) be in the list more then one time
+     while (i.hasNext())
+     {
+        i.next();
+        if(i.value() == docID.toString())
+        {
+            widget = i.key();
+            if(widget != 0)
+            {
+                ArchDoc doc(archID);
+                ArchDocDigest digest = doc.toDigest();
+                QStringList li;
+                li << i18n("Archived") << QString() << digest.printDateString();
+                QTreeWidgetItem *archItem = new QTreeWidgetItem( widget, li );
+                mArchIdDict[archItem] = digest;
+            }
+        }
+     }
+ }
+
+
 void DocDigestView::slotCurrentChangedToolbox(int index)
 {
   //At the moment we are sure there a QTreeWidgets in the toolbox. If we ever put other widgets in there we need to change this code!

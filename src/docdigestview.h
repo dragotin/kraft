@@ -41,6 +41,7 @@ public:
   ~DocDigestView();
 
   void addItems( QTreeWidget*, DocDigestList, QTreeWidgetItem *chapParent = 0 );
+  void addArchivedItem( dbID docID, dbID archID);
 
   QString currentDocumentId();
 
@@ -89,7 +90,7 @@ private:
   QToolBox    *mToolBox;
   QPushButton *mNewDocButton;
   QMap<QTreeWidgetItem*, QString> mDocIdDict;
-  QMap<QTreeWidgetItem*, ArchDocDigest>    mArchIdDict;
+  QMap<QTreeWidgetItem*, ArchDocDigest> mArchIdDict;
 };
 
 #endif

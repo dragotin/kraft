@@ -30,6 +30,41 @@
 
 class KLocale;
 
+class ArchDocDigest
+{
+public:
+
+  /** Constructor for the fileclass of the application */
+  ArchDocDigest();
+  ArchDocDigest( QDateTime, int, const QString&, dbID );
+  /** Destructor for the fileclass of the application */
+  ~ArchDocDigest();
+
+  QDateTime printDate() {
+    return mPrintDate;
+  }
+
+  int archDocState() {
+    return mState;
+  }
+
+  dbID archDocId() {
+    return mArchDocId;
+  }
+
+  QString archDocIdent() const {
+    return mIdent;
+  }
+
+  QString printDateString() const;
+
+private:
+  QDateTime mPrintDate;
+  int       mState;
+  dbID      mArchDocId;
+  QString   mIdent;
+};
+
 class ArchDoc
 {
 public:
@@ -81,11 +116,14 @@ public:
   double tax();
   double reducedTax();
 
+  ArchDocDigest toDigest();
+
 private:
   void loadPositions( const QString& );
   void loadAttributes( const QString& );
   void loadFromDb( dbID );
 
+  dbID mArchDocID;
   QString mAddress;
   QString mClientUid;
   QString mPreText;
@@ -107,41 +145,6 @@ private:
   dbID    mDocID;
   int     mState;
   QMap<QString, QString> mAttribs;
-};
-
-class ArchDocDigest
-{
-public:
-
-  /** Constructor for the fileclass of the application */
-  ArchDocDigest();
-  ArchDocDigest( QDateTime, int, const QString&, dbID );
-  /** Destructor for the fileclass of the application */
-  ~ArchDocDigest();
-
-  QDateTime printDate() {
-    return mPrintDate;
-  }
-
-  int archDocState() {
-    return mState;
-  }
-
-  dbID archDocId() {
-    return mArchDocId;
-  }
-
-  QString archDocIdent() const {
-    return mIdent;
-  }
-
-  QString printDateString() const;
-
-private:
-  QDateTime mPrintDate;
-  int       mState;
-  dbID      mArchDocId;
-  QString   mIdent;
 };
 
 #endif // ARCHDOC_H

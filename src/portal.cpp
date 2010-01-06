@@ -481,6 +481,7 @@ void Portal::slotPrintDocument()
     ArchiveMan *archman = ArchiveMan::self();
     dbID archID = archman->archiveDocument( docPtr );
     slotPrintDocument( ident, archID );
+    m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
   }
   busyCursor( false );
   slotStatusMsg( i18n( "Ready." ) );

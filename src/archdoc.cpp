@@ -97,6 +97,8 @@ double ArchDoc::reducedTax()
 
 void ArchDoc::loadFromDb( dbID id )
 {
+  mArchDocID = id;
+
   QSqlQuery q;
   q.prepare("SELECT * from archdoc WHERE archDocID=:id");
   q.bindValue(":id", id.toInt());
@@ -115,7 +117,8 @@ void ArchDoc::loadFromDb( dbID id )
     mAddress      = q.value( 4 ).toString();
     mSalut        = q.value( 5 ).toString();
     mGoodbye      = q.value( 6 ).toString();
-    mPrintDate    = q.value( 7 ).toDateTime();
+    unsigned int timestamp = q.value( 7 ).toUInt();
+    mPrintDate.setTime_t(timestamp);
     mDate         = q.value( 8 ).toDate();
     mPreText      = KraftDB::self()->mysqlEuroDecode( q.value( 9 ).toString() );
     mPostText     = KraftDB::self()->mysqlEuroDecode( q.value( 10 ).toString() );
@@ -197,6 +200,11 @@ void ArchDoc::loadAttributes( const QString& archDocId )
       kDebug() << "Empty attribute name in archive!"  << endl;
     }
   }
+}
+
+ArchDocDigest ArchDoc::toDigest()
+{
+    return ArchDocDigest(mPrintDate, mState, mIdent, mArchDocID);
 }
 
 /* ###################################################################### */
