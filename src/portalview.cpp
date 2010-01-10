@@ -51,31 +51,16 @@ PortalView::PortalView(QWidget *parent, const char*)
       mSysPage(0),
       mDocsPage(0)
 {
-
-  //   m_docBox     = addVBoxPage( i18n("Documents"),
-  //                              i18n("Document List"),
-  //                              DesktopIcon("folder_outbox"));
-  // mDocDigestIndex = pageIndex( m_docBox );
   documentDigests();
-
-  // m_katalogBox = addVBoxPage( i18n("Catalogs"),
-  //                            i18n("Available Catalogs"),
-  //                            DesktopIcon("folder_green"));
-  // mCatalogIndex = pageIndex( m_katalogBox );
   katalogDetails();
-
-  //  m_sysBox     = addVBoxPage( i18n("System"),
-  //                              i18n("Information about the Kraft System"),
-  //                              DesktopIcon("server"));
-  //  mSystemIndex = pageIndex( m_sysBox );
   systemDetails();
 }
 
 void PortalView::katalogDetails()
 {
   QWidget *w = new QWidget;
-  KPageWidgetItem *pageWidget = addPage( w, i18n("Catalogs" ) );
-  pageWidget->setIcon(KIcon("server-database"));
+  mCatalogPage = addPage( w, i18n("Catalogs" ) );
+  mCatalogPage->setIcon(KIcon("server-database"));
 
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );
@@ -286,7 +271,7 @@ void PortalView::systemInitError( const QString& htmlMsg )
   mSystemBrowser->displayContent( html ); // , "error" );
 
   mDocsPage->setEnabled( false );
-  mSysPage->setEnabled( false );
+  mCatalogPage->setEnabled( false );
 
   setCurrentPage( mSysPage );
 }

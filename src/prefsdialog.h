@@ -34,7 +34,9 @@ class QSqlTableModel;
 class QTreeView;
 class QPainter;
 class QStyleOptionViewItem;
+class QStackedWidget;
 class QModelIndex;
+class KUrlRequester;
 class ImpTreeView;
 
 // ################################################################################
@@ -55,6 +57,7 @@ protected:
 
 protected slots:
   void accept();
+  void slotBrowse();
   void slotDbCredentialsChanged( const QString& );
   void slotCheckConnect();
   
@@ -70,11 +73,17 @@ private:
   void taxTab();
   void writeTaxes();
 
+  QComboBox *m_databaseDriver;
   QLineEdit *m_leHost;
   QLineEdit *m_leUser;
   QLineEdit *m_leName;
   QLineEdit *m_lePasswd;
+  KUrlRequester *m_leFile;
   QLabel    *m_statusLabel;
+
+  QWidget         *m_mysqlpart;
+  QWidget         *m_sqlitepart;
+  QStackedWidget  *m_databaseconfigparts;
 
   QComboBox *mCbDocTypes;
   QComboBox *mCbDefaultTaxType;

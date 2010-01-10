@@ -28,6 +28,7 @@
 #include <QSqlTableModel>
 #include <QModelIndex>
 #include <QSortFilterProxyModel>
+#include <QStackedWidget>
 
 #include <kdialog.h>
 #include <klocale.h>
@@ -75,34 +76,103 @@ PrefsDialog::PrefsDialog( QWidget *parent)
 void PrefsDialog::databaseTab()
 {
   QWidget *topWidget = new QWidget;
-
   QLabel *label;
+
+  //Setup the different widgets for the different database drivers first
+  //Mysql first
+  m_mysqlpart = new QWidget;
+  QGridLayout *mysqlLayout = new QGridLayout;
+  m_mysqlpart->setLayout(mysqlLayout);
+  mysqlLayout->setMargin(0);
+
+  label = new QLabel(i18n("Database Host:") );
+  mysqlLayout->addWidget(label, 0,0);
+
+  label = new QLabel(i18n("Database Name:") );
+  mysqlLayout->addWidget(label, 1,0);
+
+  label = new QLabel(i18n("Database User:") );
+  mysqlLayout->addWidget(label, 2,0);
+
+  label = new QLabel(i18n("Database Password:") );
+  mysqlLayout->addWidget(label, 3,0);
+
+  label = new QLabel(i18n("Connection Status:") );
+  mysqlLayout->addWidget(label, 4,0);
+
+  m_pbCheck = new QPushButton( i18n( "Check Connection" ) );
+  mysqlLayout->addWidget( m_pbCheck, 5, 1 );
+
+  m_leHost = new QLineEdit;
+  connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
+           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
+  mysqlLayout->addWidget(m_leHost, 0,1);
+
+  m_leName = new QLineEdit;
+  connect( m_leName, SIGNAL( textChanged( const QString& ) ),
+           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
+  mysqlLayout->addWidget(m_leName, 1,1);
+
+  m_leUser = new QLineEdit;
+  connect( m_leUser, SIGNAL( textChanged( const QString& ) ),
+           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
+  mysqlLayout->addWidget(m_leUser, 2,1);
+
+  m_lePasswd = new QLineEdit;
+  m_lePasswd->setEchoMode(QLineEdit::Password);
+  connect( m_lePasswd, SIGNAL( textChanged( const QString& ) ),
+           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
+  mysqlLayout->addWidget(m_lePasswd, 3,1);
+
+  m_statusLabel = new QLabel;
+  m_statusLabel->setWordWrap(true);
+  mysqlLayout->addWidget( m_statusLabel,  4, 1 );
+
+  connect( m_pbCheck, SIGNAL( clicked() ),
+           this, SLOT( slotCheckConnect() ) );
+
+  //Sqlite next
+  m_sqlitepart = new QWidget;
+  QVBoxLayout *wrapper = new QVBoxLayout;
+  QHBoxLayout *sqlitelayout = new QHBoxLayout;
+  wrapper->addLayout(sqlitelayout);
+  wrapper->setMargin(0);
+  m_sqlitepart->setLayout(wrapper);
+
+  label = new QLabel(i18n("Database File:") );
+  sqlitelayout->addWidget(label);
+  sqlitelayout->setMargin(0);
+
+  m_leFile = new KUrlRequester;
+  connect( m_leFile, SIGNAL( textChanged( const QString& ) ),
+           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
+  sqlitelayout->addWidget(m_leFile);
+  wrapper->addStretch(1);
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Database" ) );
   topFrame->setIcon( KIcon( "network-server-database" ) );
 
-  QGridLayout *topLayout = new QGridLayout;
-  vboxLay->addLayout( topLayout );
-  topLayout->setSpacing( spacingHint() );
+  QHBoxLayout *databasedriver = new QHBoxLayout;
+  vboxLay->addLayout( databasedriver );
 
-  label = new QLabel(i18n("Database Host:") );
-  topLayout->addWidget(label, 0,0);
+  label = new QLabel(i18n("Database Driver:") );
+  databasedriver->addWidget(label);
 
-  label = new QLabel(i18n("Database Name:") );
-  topLayout->addWidget(label, 1,0);
+  m_databaseDriver = new QComboBox;
+  m_databaseDriver->addItem("SQLite");
+  m_databaseDriver->addItem("MySQL");
 
-  label = new QLabel(i18n("Database User:") );
-  topLayout->addWidget(label, 2,0);
+  databasedriver->addWidget(m_databaseDriver);
 
-  label = new QLabel(i18n("Database Password:") );
-  topLayout->addWidget(label, 3,0);
+  m_databaseconfigparts = new QStackedWidget;
+  m_databaseconfigparts->addWidget(m_sqlitepart);
+  m_databaseconfigparts->addWidget(m_mysqlpart);
 
-  label = new QLabel(i18n("Connection Status:") );
-  topLayout->addWidget(label, 4,0);
+  vboxLay->addWidget(m_databaseconfigparts);
 
-  m_pbCheck = new QPushButton( i18n( "Check Connection" ) );
-  topLayout->addWidget( m_pbCheck, 5, 1 );
+  connect( m_databaseDriver, SIGNAL(currentIndexChanged(int)),
+           m_databaseconfigparts, SLOT(setCurrentIndex(int)));
 
   QLabel *l1 = new QLabel(  i18n( "Please restart Kraft after "
                                   "changes in the database connection "
@@ -118,34 +188,7 @@ void PrefsDialog::databaseTab()
   l1->setMargin( 5 );
   l1->setAlignment(Qt::AlignCenter);
   l1->setWordWrap(true);
-  topLayout->addWidget( l1, 6, 0, 1, 2 );
-
-  m_leHost = new QLineEdit;
-  connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
-  topLayout->addWidget(m_leHost, 0,1);
-
-  m_leName = new QLineEdit;
-  connect( m_leName, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
-  topLayout->addWidget(m_leName, 1,1);
-
-  m_leUser = new QLineEdit;
-  connect( m_leUser, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
-  topLayout->addWidget(m_leUser, 2,1);
-
-  m_lePasswd = new QLineEdit;
-  m_lePasswd->setEchoMode(QLineEdit::Password);
-  connect( m_lePasswd, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
-  topLayout->addWidget(m_lePasswd, 3,1);
-
-  m_statusLabel = new QLabel;
-  topLayout->addWidget( m_statusLabel,  4, 1 );
-
-  connect( m_pbCheck, SIGNAL( clicked() ),
-           this, SLOT( slotCheckConnect() ) );
+  vboxLay->addWidget(l1);
 
   vboxLay->addStretch(2);
 
@@ -205,6 +248,11 @@ void PrefsDialog::taxTab()
 
   vboxLay->addLayout( butLay );
   topWidget->setLayout( vboxLay );
+}
+
+void PrefsDialog::slotBrowse()
+{
+
 }
 
 void PrefsDialog::slotAddTax()
@@ -346,10 +394,16 @@ void PrefsDialog::slotDbCredentialsChanged( const QString& )
 
 void PrefsDialog::readConfig()
 {
+    if(KatalogSettings::self()->dbDriver() == "QSQLITE")
+        m_databaseDriver->setCurrentIndex(0);
+    else if(KatalogSettings::self()->dbDriver() == "QMYSQL")
+        m_databaseDriver->setCurrentIndex(1);
+
     m_leHost->setText( KatalogSettings::self()->dbServerName() );
-    m_leName->setText( KatalogSettings::self()->dbFile() );
+    m_leName->setText( KatalogSettings::self()->dbDatabaseName() );
     m_leUser->setText( KatalogSettings::self()->dbUser() );
     m_lePasswd->setText( KatalogSettings::self()->dbPassword() );
+    m_leFile->setText( KatalogSettings::self()->dbFile() );
 
     mCbDocLocale->setChecked( KraftSettings::self()->showDocumentLocale() );
 
@@ -363,10 +417,16 @@ void PrefsDialog::readConfig()
 
 void PrefsDialog::writeConfig()
 {
+    if(m_databaseDriver->currentIndex() == 0)
+        KatalogSettings::self()->setDbDriver("QSQLITE");
+    else if(m_databaseDriver->currentIndex() == 1)
+        KatalogSettings::self()->setDbDriver("QMYSQL");
+
     KatalogSettings::self()->setDbServerName(m_leHost->text());
-    KatalogSettings::self()->setDbFile(m_leName->text());
+    KatalogSettings::self()->setDbDatabaseName(m_leName->text());
     KatalogSettings::self()->setDbUser(m_leUser->text());
     KatalogSettings::self()->setDbPassword( m_lePasswd->text());
+    KatalogSettings::self()->setDbFile( m_leFile->text());
     KatalogSettings::self()->writeConfig();
 
     KraftSettings::self()->setShowDocumentLocale( mCbDocLocale->isChecked() );
@@ -389,13 +449,22 @@ void PrefsDialog::slotCheckConnect()
 {
   kDebug() << "Trying database connect to db " << m_leName->text() << endl;
 
-  int x = KraftDB::self()->checkConnect( m_leHost->text(), m_leName->text(),
-                                         m_leUser->text(), m_lePasswd->text() );
+  QSqlDatabase check;
+  check = QSqlDatabase::addDatabase( "QMYSQL" );
+  check.setHostName( m_leHost->text() );
+  check.setDatabaseName( m_leName->text() );
+  check.setUserName( m_leUser->text() );
+  check.setPassword( m_lePasswd->text() );
+
+  check.open();
+
+  bool x = check.isOpen();
+
   kDebug() << "Connection result: " << x << endl;
-  if ( x == 0 ) {
-    m_statusLabel->setText( i18n( "Good!" ) );
+  if ( x == true ) {
+    m_statusLabel->setText( i18n( "<font color='green'>Good!</font>" ) );
   } else {
-    m_statusLabel->setText( i18n( "Failed" ) );
+    m_statusLabel->setText( i18n( "<font color='red'>Failed</font><br>") + check.lastError().text()  );
   }
 }
 

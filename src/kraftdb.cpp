@@ -108,8 +108,7 @@ KraftDB::KraftDB()
 
   QString dbFile;
   if ( mSuccess ) {
-     dbFile = KatalogSettings::self()->dbFile();
-    if( dbFile.isEmpty() ) {
+    if( KatalogSettings::self()->dbFile().isEmpty() && KatalogSettings::self()->dbDatabaseName().isEmpty() ) {
       kError() << "Database name is not set!" << endl;
       // dbFile = defaultDatabaseName();
       mSuccess = false;
@@ -117,15 +116,19 @@ KraftDB::KraftDB()
   }
 
   if ( mSuccess ) {
-    kDebug() << "Try to open database " << dbFile << endl;
-    int re = checkConnect( KatalogSettings::self()->dbServerName(), dbFile,
+    kDebug() << "Try to open database" << endl;
+    int re = 0;
+    if(mDatabaseDriver == "QMYSQL")
+        re = checkConnect( KatalogSettings::self()->dbServerName(), KatalogSettings::self()->dbDatabaseName(),
                            KatalogSettings::self()->dbUser(), KatalogSettings::self()->dbPassword() );
+    else if(mDatabaseDriver == "QSQLITE")
+        re = checkConnect( "", KatalogSettings::self()->dbFile(), "", "");
     if ( re == 0 ) {
 
       // Database successfully opened; we can now issue SQL commands.
-      kDebug() << "Database " << dbFile << " opened successfully" << endl;
+      kDebug() << "Database opened successfully" << endl;
     } else {
-      kError() << "## Could not open database file " << dbFile << endl;
+      kError() << "## Could not open database" << endl;
       mSuccess = false;
     }
   }
@@ -189,7 +192,12 @@ dbID KraftDB::getLastInsertID()
 
 QString KraftDB::databaseName() const
 {
-  return KatalogSettings::self()->dbFile();
+  if(KatalogSettings::self()->dbDriver() == "QMYSQL")
+      return KatalogSettings::self()->dbDatabaseName();
+  else if(KatalogSettings::self()->dbDriver() == "QSQLITE")
+      return KatalogSettings::self()->dbFile();
+
+  return "";
 }
 
 QString KraftDB::defaultDatabaseName() const
