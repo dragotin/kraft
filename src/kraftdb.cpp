@@ -31,7 +31,6 @@
 #include "version.h"
 #include "kraftdb.h"
 #include "dbids.h"
-#include "dbinitdialog.h"
 #include "katalogsettings.h"
 #include "defaultprovider.h"
 

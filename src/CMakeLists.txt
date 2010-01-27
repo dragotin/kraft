@@ -21,7 +21,6 @@ set( kraftcat_LIB_SRCS
     filterheader.cpp
     catalogchapteredit.cpp
     kraftdb.cpp
-    dbinitdialog.cpp
     geld.cpp
     einheit.cpp
     attribute.cpp
