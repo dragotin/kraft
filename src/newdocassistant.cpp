@@ -209,5 +209,3 @@ void KraftWizard::setAvailDocTypes( const QStringList& list )
   mDetailsPage->mTypeCombo->clear();
   mDetailsPage->mTypeCombo->insertItems( -1, list );
 }
-
-#include "newdocassistant.moc"

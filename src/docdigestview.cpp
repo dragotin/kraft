@@ -545,4 +545,3 @@ QList<KMenu*> DocDigestView::contextMenus()
   return menus;
 }
 
-#include "docdigestview.moc"

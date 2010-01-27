@@ -201,4 +201,3 @@ void DocLocaleDialog::readLocale(const QString &path, QString &name,
 #endif
 }
 
-#include "doclocaledialog.moc"

@@ -201,4 +201,3 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
   }
 }
 
-#include "catalogselection.moc"

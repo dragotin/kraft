@@ -28,6 +28,7 @@
 
 class dbID;
 class DbInitDialog;
+class SetupAssistant;
 
 /**
   *@author Klaas Freitag
@@ -60,12 +61,10 @@ class KRAFTCAT_EXPORT KraftDB : public QObject
 
 public:
   ~KraftDB();
-  /** Read property of QSqlDatabase* m_db. */
+
   static KraftDB *self();
 
   dbID getLastInsertID();
-
-  void checkInit();
 
   QSqlDatabase *getDB(){ return &m_db; }
   QString qtDriver();
@@ -75,7 +74,6 @@ public:
   void writeWordList( const QString&, const QStringList& );
 
   QString databaseName() const;
-  QString defaultDatabaseName() const;
 
   QSqlError lastError();
 
@@ -85,31 +83,52 @@ public:
     return mSuccess;
   }
 
+  bool dbConnect( const QString& driver= QString(), const QString& dbName= QString(),
+                const QString& dbUser= QString(), const QString& dbHost= QString(),
+                const QString& dbPasswd= QString() );
+
+  /**
+   * check if the database is open and contains the table kraftsystem. Still
+   * the Schema version can be invalid, check currentSchemaVersion().
+   */
+  bool databaseExists();
+
+  /*
+   * required and current schema versions. Must be equal for a healty
+   * Kraft database. If currentSchemaVersion is smaller than requiredSchemaVersion,
+   * the db needs an update.
+   */
+  int currentSchemaVersion();
+  int requiredSchemaVersion();
+
+  void setSchemaVersion( const QString& );
+
+  /**
+   * Euro sign encoding to work around a problem with mysql
+   */
   QString mysqlEuroEncode( const QString& ) const;
   QString mysqlEuroDecode( const QString& ) const;
 
-  int currentSchemaVersion();
+
   QString replaceTagsInWord( const QString& w, StringMap replaceMap ) const;
 
-  void checkDatabaseSetup( QWidget* );
+  // void checkDatabaseSetup( QWidget* );
+
+  SqlCommandList parseCommandFile( const QString& );
+
+  int processSqlCommands( const SqlCommandList& );
+
 signals:
   void statusMessage( const QString& );
   void processedSqlCommand( bool );
 
 protected:
-  void checkSchemaVersion();
-
-protected slots:
-  void slotCreateDatabase();
-  void slotStartSchemaUpdate();
+  // void checkSchemaVersion();
+  void wipeDatabase();
 
 private: // Private attributes
   KraftDB();
-  SqlCommandList parseCommandFile( const QString& );
-
-  int processSqlCommands( const SqlCommandList& );
-
-  void createInitDialog();
+  void close();
 
   /** The default database */
   QSqlDatabase m_db;
@@ -121,6 +140,7 @@ private: // Private attributes
   const QString EuroTag;
   QString mDatabaseDriver;
   DbInitDialog *mInitDialog;
+  SetupAssistant *mSetupAssistant;
 };
 
 #endif

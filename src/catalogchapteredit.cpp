@@ -177,4 +177,4 @@ void CatalogChapterEditDialog::slotSelectionChanged(const QModelIndex & /* index
 
     m_chapEdit->removeButton()->setEnabled( mayRemove );
 }
-#include "catalogchapteredit.moc"
+

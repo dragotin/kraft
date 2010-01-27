@@ -66,5 +66,4 @@ void AddressTemplateProvider::slotTemplateToDocument()
   emit addressToDocument( mCurrentAddress );
 }
 
-#include "addresstemplateprovider.moc"
 

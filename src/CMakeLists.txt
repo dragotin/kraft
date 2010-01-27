@@ -1,5 +1,5 @@
 
-include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} )
 
 add_subdirectory(pics)
 
@@ -26,10 +26,17 @@ set( kraftcat_LIB_SRCS
     einheit.cpp
     attribute.cpp
     numbercycle.cpp
+    setupassistant.cpp
     )
 
 
-kde4_add_ui_files(kraftcat_LIB_SRCS calctemplate.ui dbinit.ui)
+kde4_add_ui_files(kraftcat_LIB_SRCS calctemplate.ui dbinit.ui
+createdb.ui
+dbselect.ui
+mysqldetails.ui
+sqlitedetails.ui
+statuspage.ui
+upgradedb.ui )
 
 kde4_add_kcfg_files(kraftcat_LIB_SRCS katalogsettings.kcfgc kraftsettings.kcfgc)
 
@@ -132,6 +139,7 @@ set(kraft_SRCS
     taxeditdialog.cpp
     numbercycledialog.cpp
     impviewwidgets.cpp
+
 )
 
 kde4_add_kcfg_files(kraft_SRCS katalogsettings.kcfgc kraftsettings.kcfgc)
@@ -153,15 +161,13 @@ kde4_add_ui_files(kraft_SRCS
     importtodocbase.ui
     numbercycleseditbase.ui
 
-    )
-
+)
 
 kde4_add_executable(kraft ${kraft_SRCS})
 
 target_link_libraries(kraft kraftcat ${KDE4_KDECORE_LIBS} ${KDEPIMLIBS_KABC_LIBS} ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS} khtml ctemplate pthread)
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
-
 
 
 ########### install files ###############

@@ -115,4 +115,3 @@ void BrunsKatalogView::slPlantSelected( QTreeWidgetItem *item, QTreeWidgetItem*)
     m_details->addTopLevelItems( items );
 }
 
-#include "brunskatalogview.moc"

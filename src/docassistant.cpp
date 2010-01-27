@@ -501,4 +501,3 @@ void DocAssistant::setFullPreview( bool setFull, int id )
   }
 }
 
-#include "docassistant.moc"

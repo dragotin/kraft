@@ -132,4 +132,3 @@ QString Brunsviewer::textWrap( const QString& t, unsigned int width )
 }
 
 
-#include "brunsviewer.moc"

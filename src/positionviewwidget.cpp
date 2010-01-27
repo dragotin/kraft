@@ -89,7 +89,7 @@ PositionViewWidget::PositionViewWidget()
   connect( mDiscountPercent, SIGNAL( valueChanged( double ) ), this, SLOT( slotModified() ) );
   connect( mDiscountTag,  SIGNAL( activated( int ) ), this,    SLOT( slotModified() ) );
 
-  mExecPopup->addTitle(i18n("Position Actions") );
+  mExecPopup->addTitle(i18n("Item Actions") );
 
   // state submenu:
   mStateSubmenu = mExecPopup->addMenu(i18n( "Position Kind" ));

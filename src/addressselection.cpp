@@ -130,4 +130,3 @@ void AddressSelection::slotSelectionChanged()
   emit addressSelected( currentAddressee() );
 }
 
-#include "addressselection.moc"

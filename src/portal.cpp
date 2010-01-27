@@ -71,6 +71,8 @@
 #include "doctype.h"
 #include "tagtemplatesdialog.h"
 #include "kraftview_ro.h"
+#include "katalogsettings.h"
+#include "setupassistant.h"
 
 #define ID_STATUS_MSG 1
 
@@ -92,8 +94,6 @@ Portal::Portal( QWidget *parent, KCmdLineArgs *args, const char* name)
   editCopy->setEnabled(false);
   editPaste->setEnabled(false);
 
-  // check for database init
-  // KraftDB::checkInit();
   setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
 }
@@ -249,19 +249,14 @@ void Portal::initView()
 
 void Portal::slotStartupChecks()
 {
-  const QString dbName = KraftDB::self()->databaseName();
-  if ( dbName.isEmpty() ) {
-    // Problem: Database name is not set in the config.
-    PrefsDialog dia( this );
-    if ( ! dia.exec() ) {
-      return;
-    }
+  QString dbName = KatalogSettings::self()->dbDatabaseName();
+
+  SetupAssistant assi(this);
+  if( assi.init( SetupAssistant::Update) ) {
+    assi.exec();
   }
 
-  connect( KraftDB::self(),  SIGNAL( statusMessage( const QString& ) ),
-           SLOT( slotStatusMsg( const QString& ) ) );
-
-  if( ! KraftDB::self()->isOk() ) {
+ if( ! KraftDB::self()->isOk() ) {
     QSqlError err = KraftDB::self()->lastError();
     kDebug() << "The last sql error id: " << err.type() << endl;
 
@@ -298,14 +293,12 @@ void Portal::slotStartupChecks()
 
     slotStatusMsg( i18n( "Database Problem." ) );
   } else {
-    KraftDB::self()->checkDatabaseSetup( this );
-
-    // Database interaction after this point.
+    // Database interaction is ok after this point.
     m_portalView->slotBuildView();
     m_portalView->fillCatalogDetails();
     m_portalView->fillSystemDetails();
 
-    slotStatusMsg( i18n( "Commandline actions" ) );
+    slotStatusMsg( i18n( "Check commandline actions" ) );
 
     if ( mCmdLineArgs ) {
       QString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
