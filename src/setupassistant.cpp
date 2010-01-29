@@ -68,6 +68,9 @@ bool SqLiteDetailsPage::useDefault()
 
 KUrl SqLiteDetailsPage::url()
 {
+  if( ui.mRbDefault->isChecked() ) {
+    return KUrl( KStandardDirs::locateLocal( "appdata", "sqlite/kraft.db") );
+  }
   return ui.mFileUrl->url();
 }
 
@@ -75,6 +78,8 @@ bool SqLiteDetailsPage::defaultFileSelected()
 {
   return ui.mRbDefault->isChecked();
 }
+
+
 
 // ---------------------------------------------------------------------------
 
@@ -490,18 +495,13 @@ void SetupAssistant::handleDatabaseBackendSelect()
 
 void SetupAssistant::handleSqLiteDetails()
 {
-  QString file;
-
-  if( mSqLiteDetailsPage->defaultFileSelected() ) {
-    file = KStandardDirs::locateLocal( "appdata", "sqlite/kraft.db" );
-    kDebug() << "Standard dir for SqLite file: " << file;
-  } else {
-    file  = mSqLiteDetailsPage->url().pathOrUrl();
-  }
+  QString file = mSqLiteDetailsPage->url().pathOrUrl();
   kDebug() << "The SqlLite database file is " << file;
+
   QString driver = mDbSelectPage->selectedDriver();
-    kDebug() << "The database driver is " << driver;
+  kDebug() << "The database driver is " << driver;
   KraftDB::self()->dbConnect( driver, file );
+
   kDebug() << "############ database opened: "<< KraftDB::self()->isOk();
   bool dbExists = KraftDB::self()->databaseExists();
 

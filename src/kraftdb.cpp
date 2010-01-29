@@ -86,13 +86,15 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
                          const QString& dbUser, const QString& dbHost,
                          const QString& dbPasswd )
 {
+  mSuccess = true;
+
   mDatabaseDriver = driver;
   if( driver.isEmpty() ) {
     mDatabaseDriver = KatalogSettings::self()->dbDriver().toUpper();
   }
 
   if( mDatabaseDriver.isEmpty() ) {
-    kError() << "Database Driver is not specified, check katalog settings";
+    kDebug() << "Database Driver is not specified, check katalog settings";
     mSuccess = false;
     return false;
   } else {
@@ -101,11 +103,11 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
 
   QStringList list = QSqlDatabase::drivers();
   if( list.size() == 0 ) {
-    kError() << "Database Drivers could not be loaded." << endl;
+    kDebug() << "Database Drivers could not be loaded." << endl;
     mSuccess = false ;
   } else {
     if( list.indexOf( mDatabaseDriver ) == -1 ) {
-      kError() << "Database Driver could not be loaded!" << endl;
+      kDebug() << "Database Driver could not be loaded!" << endl;
       mSuccess = false;
     }
   }
@@ -119,7 +121,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
 
     if ( ! m_db.isValid() || m_db.isOpenError() )
     {
-      kError() <<  "Failed to connect to the database driver: "
+      kDebug() <<  "Failed to connect to the database driver: "
           << m_db.lastError().text() << endl;
       mSuccess = false;
     }
@@ -148,7 +150,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
       // Database successfully opened; we can now issue SQL commands.
       kDebug() << "** Database opened successfully" << endl;
     } else {
-      kError() << "## Could not open database" << endl;
+      kDebug() << "## Could not open database" << endl;
       mSuccess = false;
     }
   }
@@ -297,7 +299,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
 
     QFile f( sqlFile );
     if ( !f.open( QIODevice::ReadOnly ) ) {
-      kError() << "Could not open " << sqlFile << endl;
+      kDebug() << "Could not open " << sqlFile << endl;
     } else {
       QTextStream ts( &f );
       ts.setCodec("UTF-8");
