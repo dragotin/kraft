@@ -69,10 +69,9 @@ class SqLiteDetailsPage:public QWidget
   public:
   SqLiteDetailsPage( QWidget *parent = 0 );
 
-  bool useDefault();
-  bool defaultFileSelected();
   KUrl url();
-
+  protected slots:
+  void slotSelectCustom();
   private:
   Ui::sqLiteDetailsForm ui;
 };
@@ -173,7 +172,7 @@ public:
 public slots:
   void back();
   void next();
-  void slotFinished();
+  void slotButtonClicked(int);
 
 private slots:
   void slotCurrentPageChanged( KPageWidgetItem*, KPageWidgetItem* );

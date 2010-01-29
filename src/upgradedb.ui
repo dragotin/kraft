@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>395</width>
-    <height>232</height>
+    <width>420</width>
+    <height>186</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,10 @@
    <item row="0" column="0">
     <widget class="QLabel" name="mUpgradeInfo">
      <property name="text">
-      <string>The database schema version is not sufficient for this version of Kraft.
+      <string>This step checks if the database schema version is sufficient for this version of Kraft. 
 
-Kraft will now automatically upgrade the database.</string>
+In case it is not, the schema is updated automatically.
+</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

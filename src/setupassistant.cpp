@@ -28,7 +28,16 @@
 WelcomePage::WelcomePage(QWidget *parent)
   :QWidget(parent)
 {
-  ui.setupUi(this);
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
+
+  QWidget *w = new QWidget;
+  vbox->addWidget( w );
+
+  ui.setupUi(w);
+
 }
 
 void WelcomePage::setWelcomeText( const QString& txt )
@@ -41,7 +50,15 @@ void WelcomePage::setWelcomeText( const QString& txt )
 DbSelectPage::DbSelectPage(QWidget *parent)
   :QWidget(parent)
 {
-  ui.setupUi(this);
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
+
+  QWidget *w = new QWidget;
+  vbox->addWidget( w );
+
+  ui.setupUi(w);
 }
 
 QString DbSelectPage::selectedDriver()
@@ -58,12 +75,24 @@ QString DbSelectPage::selectedDriver()
 SqLiteDetailsPage::SqLiteDetailsPage(QWidget *parent)
   :QWidget(parent)
 {
-  ui.setupUi(this);
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
+
+  QWidget *w = new QWidget;
+  vbox->addWidget( w );
+
+  ui.setupUi(w);
+
+  ui.mFileUrl->setMode( KFile::File | KFile::LocalOnly );
+
+  connect( ui.mFileUrl, SIGNAL( textChanged( const QString& )), this, SLOT( slotSelectCustom() ) );
 }
 
-bool SqLiteDetailsPage::useDefault()
+void SqLiteDetailsPage::slotSelectCustom()
 {
-  return ui.mRbDefault->isChecked();
+  ui.mRbCustom->setChecked(true);
 }
 
 KUrl SqLiteDetailsPage::url()
@@ -74,19 +103,20 @@ KUrl SqLiteDetailsPage::url()
   return ui.mFileUrl->url();
 }
 
-bool SqLiteDetailsPage::defaultFileSelected()
-{
-  return ui.mRbDefault->isChecked();
-}
-
-
-
 // ---------------------------------------------------------------------------
 
 MysqlDetailsPage::MysqlDetailsPage(QWidget *parent)
   :QWidget(parent)
 {
-  ui.setupUi(this);
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
+
+  QWidget *w = new QWidget;
+  vbox->addWidget( w );
+
+  ui.setupUi(w);
 }
 
 QString MysqlDetailsPage::dbName()
@@ -113,7 +143,15 @@ QString MysqlDetailsPage::dbPasswd()
 CreateDbPage::CreateDbPage(QWidget *parent)
   :QWidget(parent)
 {
-  ui.setupUi(this);
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
+
+  QWidget *w = new QWidget;
+  vbox->addWidget( w );
+
+  ui.setupUi(w);
 }
 
 void CreateDbPage::setStatusText( const QString& t )
@@ -173,7 +211,15 @@ void CreateDbPage::slotCountFillProgress( bool res )
 UpgradeDbPage::UpgradeDbPage(QWidget *parent)
   :QWidget(parent)
 {
-  ui.setupUi(this);
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
+
+  QWidget *w = new QWidget;
+  vbox->addWidget( w );
+
+  ui.setupUi(w);
 }
 
 void UpgradeDbPage::slotSetStatusText( const QString& txt )
@@ -208,7 +254,15 @@ void UpgradeDbPage::slotCountFillProgress( bool res )
 FinalStatusPage::FinalStatusPage(QWidget *parent)
   :QWidget(parent)
 {
-  ui.setupUi(this);
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
+
+  QWidget *w = new QWidget;
+  vbox->addWidget( w );
+
+  ui.setupUi(w);
   ui.mStatusText->setTextFormat( Qt::RichText );
 }
 
@@ -253,7 +307,7 @@ SetupAssistant::SetupAssistant( QWidget *parent )
 
   connect( this, SIGNAL( currentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ),
            this, SLOT( slotCurrentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ) );
-  connect( this, SIGNAL( finished() ), this, SLOT( slotFinished() ) );
+  connect( this, SIGNAL( slotButtonClicked(int) ), this, SLOT( slotButtonClicked(int) ) );
 }
 
 void SetupAssistant::next( )
@@ -307,19 +361,23 @@ void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidg
   }
 }
 
-void SetupAssistant::slotFinished()
+void SetupAssistant::slotButtonClicked( int buttCode )
 {
-  KatalogSettings::self()->setDbDriver( mDbSelectPage->selectedDriver() );
-  if( mDbSelectPage->selectedDriver() == "QSQLITE" ) {
-    KatalogSettings::self()->setDbFile( mSqLiteDetailsPage->url().pathOrUrl() ); // The sqLite file name
+  if( buttCode == KDialog::User1 ) { // Button "Finished"
+    KatalogSettings::self()->setDbDriver( mDbSelectPage->selectedDriver() );
+    if( mDbSelectPage->selectedDriver() == "QSQLITE" ) {
+      KatalogSettings::self()->setDbFile( mSqLiteDetailsPage->url().pathOrUrl() ); // The sqLite file name
+    }
+    if( mDbSelectPage->selectedDriver() == "QMYSQL" ) {
+      KatalogSettings::self()->setDbDatabaseName( mMysqlDetailsPage->dbName() );
+      KatalogSettings::self()->setDbUser( mMysqlDetailsPage->dbUser() );
+      KatalogSettings::self()->setDbServerName( mMysqlDetailsPage->dbServer() );
+      KatalogSettings::self()->setDbPassword( mMysqlDetailsPage->dbPasswd() );
+    }
+    KatalogSettings::self()->writeConfig();
   }
-  if( mDbSelectPage->selectedDriver() == "QMYSQL" ) {
-    KatalogSettings::self()->setDbDatabaseName( mMysqlDetailsPage->dbName() );
-    KatalogSettings::self()->setDbUser( mMysqlDetailsPage->dbUser() );
-    KatalogSettings::self()->setDbServerName( mMysqlDetailsPage->dbServer() );
-    KatalogSettings::self()->setDbPassword( mMysqlDetailsPage->dbPasswd() );
-  }
-  KatalogSettings::self()->writeConfig();
+  KAssistantDialog::slotButtonClicked( buttCode );
+
 }
 
 void SetupAssistant::finalizePage()

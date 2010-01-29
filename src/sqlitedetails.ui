@@ -41,7 +41,7 @@ Pick a filename to name the SQLite database file or leave the default setting.</
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QRadioButton" name="mRbDefault_2">
+        <widget class="QRadioButton" name="mRbCustom">
          <property name="text">
           <string>select a file name:</string>
          </property>
