@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Kraft uses a database backend to store values. By default it uses a file based database  with easy setup targetted to single user mode.
+        <string>Kraft uses a database backend to store values. By default it uses a file based database with easy setup targetted to single user mode.
 
 Please select the database backend you want to use:</string>
        </property>

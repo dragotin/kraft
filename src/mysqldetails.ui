@@ -19,7 +19,7 @@
      <property name="text">
       <string>Please enter the MySQL Database server settings. 
 
-For  detailed setup instructions for the MySQL to use with Kraft please check the Kraft website.</string>
+For detailed setup instructions for the MySQL to use with Kraft please check the Kraft website.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
