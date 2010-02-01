@@ -40,7 +40,7 @@
 #include <kglobal.h>
 
 #include "prefsdialog.h"
-#include "katalogsettings.h"
+#include "databasesettings.h"
 #include "kraftsettings.h"
 #include "kraftdb.h"
 #include "kraftdoc.h"
@@ -394,16 +394,16 @@ void PrefsDialog::slotDbCredentialsChanged( const QString& )
 
 void PrefsDialog::readConfig()
 {
-    if(KatalogSettings::self()->dbDriver() == "QSQLITE")
+    if(DatabaseSettings::self()->dbDriver() == "QSQLITE")
         m_databaseDriver->setCurrentIndex(0);
-    else if(KatalogSettings::self()->dbDriver() == "QMYSQL")
+    else if(DatabaseSettings::self()->dbDriver() == "QMYSQL")
         m_databaseDriver->setCurrentIndex(1);
 
-    m_leHost->setText( KatalogSettings::self()->dbServerName() );
-    m_leName->setText( KatalogSettings::self()->dbDatabaseName() );
-    m_leUser->setText( KatalogSettings::self()->dbUser() );
-    m_lePasswd->setText( KatalogSettings::self()->dbPassword() );
-    m_leFile->setText( KatalogSettings::self()->dbFile() );
+    m_leHost->setText( DatabaseSettings::self()->dbServerName() );
+    m_leName->setText( DatabaseSettings::self()->dbDatabaseName() );
+    m_leUser->setText( DatabaseSettings::self()->dbUser() );
+    m_lePasswd->setText( DatabaseSettings::self()->dbPassword() );
+    m_leFile->setText( DatabaseSettings::self()->dbFile() );
 
     mCbDocLocale->setChecked( KraftSettings::self()->showDocumentLocale() );
 
@@ -418,16 +418,16 @@ void PrefsDialog::readConfig()
 void PrefsDialog::writeConfig()
 {
     if(m_databaseDriver->currentIndex() == 0)
-        KatalogSettings::self()->setDbDriver("QSQLITE");
+        DatabaseSettings::self()->setDbDriver("QSQLITE");
     else if(m_databaseDriver->currentIndex() == 1)
-        KatalogSettings::self()->setDbDriver("QMYSQL");
+        DatabaseSettings::self()->setDbDriver("QMYSQL");
 
-    KatalogSettings::self()->setDbServerName(m_leHost->text());
-    KatalogSettings::self()->setDbDatabaseName(m_leName->text());
-    KatalogSettings::self()->setDbUser(m_leUser->text());
-    KatalogSettings::self()->setDbPassword( m_lePasswd->text());
-    KatalogSettings::self()->setDbFile( m_leFile->text());
-    KatalogSettings::self()->writeConfig();
+    DatabaseSettings::self()->setDbServerName(m_leHost->text());
+    DatabaseSettings::self()->setDbDatabaseName(m_leName->text());
+    DatabaseSettings::self()->setDbUser(m_leUser->text());
+    DatabaseSettings::self()->setDbPassword( m_lePasswd->text());
+    DatabaseSettings::self()->setDbFile( m_leFile->text());
+    DatabaseSettings::self()->writeConfig();
 
     KraftSettings::self()->setShowDocumentLocale( mCbDocLocale->isChecked() );
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );

@@ -36,7 +36,6 @@
 #include <kvbox.h>
 
 #include "prefsdialog.h"
-#include "katalogsettings.h"
 #include "kraftsettings.h"
 #include "kraftdb.h"
 #include "kraftdoc.h"

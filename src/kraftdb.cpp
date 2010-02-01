@@ -31,7 +31,7 @@
 #include "version.h"
 #include "kraftdb.h"
 #include "dbids.h"
-#include "katalogsettings.h"
+#include "databasesettings.h"
 #include "defaultprovider.h"
 
 SqlCommand::SqlCommand()
@@ -90,7 +90,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
 
   mDatabaseDriver = driver;
   if( driver.isEmpty() ) {
-    mDatabaseDriver = KatalogSettings::self()->dbDriver().toUpper();
+    mDatabaseDriver = DatabaseSettings::self()->dbDriver().toUpper();
   }
 
   if( mDatabaseDriver.isEmpty() ) {
@@ -132,18 +132,18 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
     int re = 0;
     if(mDatabaseDriver == "QMYSQL") {
       QString host = dbHost;
-      if( host.isEmpty() ) host = KatalogSettings::self()->dbServerName();
+      if( host.isEmpty() ) host = DatabaseSettings::self()->dbServerName();
       QString name = dbName;
-      if( name.isEmpty() ) name = KatalogSettings::self()->dbDatabaseName();
+      if( name.isEmpty() ) name = DatabaseSettings::self()->dbDatabaseName();
       QString user = dbUser;
-      if( user.isEmpty() ) user = KatalogSettings::self()->dbUser();
+      if( user.isEmpty() ) user = DatabaseSettings::self()->dbUser();
       QString pwd = dbPasswd;
-      if( pwd.isEmpty() ) pwd = KatalogSettings::self()->dbPassword();
+      if( pwd.isEmpty() ) pwd = DatabaseSettings::self()->dbPassword();
       re = checkConnect( host, name , user, pwd );
     } else if(mDatabaseDriver == "QSQLITE") {
       // SqlLite only requires a valid file name which comes in as Database Name
       QString name = dbName;
-      if( name.isEmpty() ) name = KatalogSettings::self()->dbFile();
+      if( name.isEmpty() ) name = DatabaseSettings::self()->dbFile();
       re = checkConnect( "", name, "", "");
     }
     if ( re == 0 ) {
@@ -226,10 +226,10 @@ dbID KraftDB::getLastInsertID()
 
 QString KraftDB::databaseName() const
 {
-  if(KatalogSettings::self()->dbDriver() == "QMYSQL")
-      return KatalogSettings::self()->dbDatabaseName();
-  else if(KatalogSettings::self()->dbDriver() == "QSQLITE")
-      return KatalogSettings::self()->dbFile();
+  if(DatabaseSettings::self()->dbDriver() == "QMYSQL")
+      return DatabaseSettings::self()->dbDatabaseName();
+  else if(DatabaseSettings::self()->dbDriver() == "QSQLITE")
+      return DatabaseSettings::self()->dbFile();
 
   return "";
 }

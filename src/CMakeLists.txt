@@ -37,7 +37,7 @@ sqlitedetails.ui
 statuspage.ui
 upgradedb.ui )
 
-kde4_add_kcfg_files(kraftcat_LIB_SRCS katalogsettings.kcfgc kraftsettings.kcfgc)
+kde4_add_kcfg_files(kraftcat_LIB_SRCS databasesettings.kcfgc kraftsettings.kcfgc)
 
 kde4_add_library(kraftcat SHARED ${kraftcat_LIB_SRCS})
 
@@ -141,7 +141,7 @@ set(kraft_SRCS
 
 )
 
-kde4_add_kcfg_files(kraft_SRCS katalogsettings.kcfgc kraftsettings.kcfgc)
+kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)
 
 kde4_add_ui_files(kraft_SRCS
     zeitpartui.ui
@@ -172,7 +172,7 @@ install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 ########### install files ###############
 
 install(FILES  kraft.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
-install(FILES  kraftsettings.kcfg katalogsettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
+install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
 install(FILES  docoverview.css docoverview_ro.css catalogview.css DESTINATION ${DATA_INSTALL_DIR}/kraft)
 install(FILES  kraftui.rc katalogview.rc DESTINATION ${DATA_INSTALL_DIR}/kraft)
 

@@ -71,7 +71,7 @@
 #include "doctype.h"
 #include "tagtemplatesdialog.h"
 #include "kraftview_ro.h"
-#include "katalogsettings.h"
+#include "databasesettings.h"
 #include "setupassistant.h"
 
 #define ID_STATUS_MSG 1
@@ -249,7 +249,7 @@ void Portal::initView()
 
 void Portal::slotStartupChecks()
 {
-  QString dbName = KatalogSettings::self()->dbDatabaseName();
+  QString dbName = DatabaseSettings::self()->dbDatabaseName();
 
   SetupAssistant assi(this);
   if( assi.init( SetupAssistant::Update) ) {

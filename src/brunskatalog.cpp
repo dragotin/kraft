@@ -26,14 +26,14 @@
 #include "dbids.h"
 #include "brunskatalog.h"
 #include "brunsrecord.h"
-#include "katalogsettings.h"
+#include "databasesettings.h"
 
 BrunsKatalog::BrunsKatalog( const QString& n )
 : Katalog( n ),
   m_wantToLower(true)
 {
-    m_chapterFile = KatalogSettings::self()->brunsKeyFile();
-    m_dataFile    = KatalogSettings::self()->brunsDataFile();
+    m_chapterFile = DatabaseSettings::self()->brunsKeyFile();
+    m_dataFile    = DatabaseSettings::self()->brunsDataFile();
 
     if( m_dataFile.isEmpty() ) {
         kError() << "Unable to open bruns data file!" << endl;
@@ -41,7 +41,7 @@ BrunsKatalog::BrunsKatalog( const QString& n )
         m_dataFile = KFileDialog::getOpenFileName( KUrl(),
                                   "Artikelstamm_2008_2009.txt", 0,
                                   i18n("Select Bruns Catalog Data File") );
-        KatalogSettings::self()->setBrunsDataFile( m_dataFile );
+        DatabaseSettings::self()->setBrunsDataFile( m_dataFile );
         kDebug() << "Set data file to " << m_dataFile << endl;
     } else {
         kDebug() << "Opening bruns data file from " << m_dataFile << endl;
@@ -53,8 +53,8 @@ BrunsKatalog::BrunsKatalog( const QString& n )
         m_chapterFile = KFileDialog::getOpenFileName( KUrl(),
                                   "key_2008.txt", 0,
                                   i18n("Select Bruns Catalog Key File") );
-        KatalogSettings::self()->setBrunsKeyFile( m_chapterFile );
-        // KatalogSettings::self()->writeConfig();
+        DatabaseSettings::self()->setBrunsKeyFile( m_chapterFile );
+        // DatabaseSettings::self()->writeConfig();
     } else {
         kDebug() << "Opening bruns chapter file from " << m_chapterFile << endl;
     }

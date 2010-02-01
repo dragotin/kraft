@@ -18,9 +18,10 @@
 
 #include <kdebug.h>
 #include <kstandarddirs.h>
+#include <kstringhandler.h>
 
 #include "setupassistant.h"
-#include "katalogsettings.h"
+#include "databasesettings.h"
 #include "defaultprovider.h"
 #include "kraftdb.h"
 
@@ -364,17 +365,17 @@ void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidg
 void SetupAssistant::slotButtonClicked( int buttCode )
 {
   if( buttCode == KDialog::User1 ) { // Button "Finished"
-    KatalogSettings::self()->setDbDriver( mDbSelectPage->selectedDriver() );
+    DatabaseSettings::self()->setDbDriver( mDbSelectPage->selectedDriver() );
     if( mDbSelectPage->selectedDriver() == "QSQLITE" ) {
-      KatalogSettings::self()->setDbFile( mSqLiteDetailsPage->url().pathOrUrl() ); // The sqLite file name
+      DatabaseSettings::self()->setDbFile( mSqLiteDetailsPage->url().pathOrUrl() ); // The sqLite file name
     }
     if( mDbSelectPage->selectedDriver() == "QMYSQL" ) {
-      KatalogSettings::self()->setDbDatabaseName( mMysqlDetailsPage->dbName() );
-      KatalogSettings::self()->setDbUser( mMysqlDetailsPage->dbUser() );
-      KatalogSettings::self()->setDbServerName( mMysqlDetailsPage->dbServer() );
-      KatalogSettings::self()->setDbPassword( mMysqlDetailsPage->dbPasswd() );
+      DatabaseSettings::self()->setDbDatabaseName( mMysqlDetailsPage->dbName() );
+      DatabaseSettings::self()->setDbUser( mMysqlDetailsPage->dbUser() );
+      DatabaseSettings::self()->setDbServerName( mMysqlDetailsPage->dbServer() );
+      DatabaseSettings::self()->setDbPassword( mMysqlDetailsPage->dbPasswd() );
     }
-    KatalogSettings::self()->writeConfig();
+    DatabaseSettings::self()->writeConfig();
   }
   KAssistantDialog::slotButtonClicked( buttCode );
 
@@ -585,23 +586,39 @@ bool SetupAssistant::init( Mode mode )
 
     text = i18n("The Database is going to be reset.");
   } else if( mode == Update ) {
-    KraftDB::self()->dbConnect(); // try to connect with default values
-    if( KraftDB::self()->databaseExists() ) {
-      kDebug() << "The database exists.";
 
-      if( KraftDB::self()->currentSchemaVersion() != KraftDB::self()->requiredSchemaVersion() ) {
-        kDebug() << "Need a database schema update.";
-        startDialog = true;
+    //We're going to check if there's a config file for the KDE4 version already
+    KStandardDirs stdDirs;
+    if(stdDirs.findResource("config", "kraftdatabaserc")==QString())
+      tryMigrateFromKDE3();
+
+    if(KraftDB::self()->dbConnect()) // try to connect with default values
+    {
+      if( KraftDB::self()->databaseExists() ) {
+        kDebug() << "The database exists.";
+
+        if( KraftDB::self()->currentSchemaVersion() != KraftDB::self()->requiredSchemaVersion() ) {
+          kDebug() << "Need a database schema update.";
+          startDialog = true;
+        } else {
+          kDebug() << "Database Schema is ok, nothing to do for StartupAssistant";
+        }
       } else {
-        kDebug() << "Database Schema is ok, nothing to do for StartupAssistant";
+        kDebug() << "The database is not existing, need to start update!";
+        startDialog = true;
+
+        text = i18n( "<p>There was no valid database configuration found.</p>"
+                     "<p>A new database can be created automatically from scratch.</p>");
       }
-    } else {
-      kDebug() << "The database is not existing, need to start update!";
+    }
+    else
+    {
       startDialog = true;
 
       text = i18n( "<p>There was no valid database configuration found.</p>"
-                   "<p>A new database can be created automatically from scratch.</p>");
+                     "<p>A new database can be created automatically from scratch.</p>");
     }
+
   }
 
   if( startDialog ) {
@@ -616,6 +633,45 @@ void SetupAssistant::createDatabase( bool doIt )
   setAppropriate( mDbSelectPageItem, doIt );
 }
 
+void SetupAssistant::tryMigrateFromKDE3()
+{
+  kDebug() << "tryMigrate";
+  KConfig *config = 0;
+
+  //We will try to look for an old katalogrc in .kde and .kde3
+  if(KStandardDirs::exists(QDir::homePath() + "/.kde/share/config/katalogrc"))
+  {
+    kDebug() << "katalogrc found in .kde";
+    config = new KConfig(QDir::homePath() + "/.kde/share/config/katalogrc", KConfig::SimpleConfig);
+  }
+  else if(KStandardDirs::exists(QDir::homePath() + "/.kde3/share/config/katalogrc"))
+  {
+    kDebug() << "katalogrc found in .kde3";
+    config = new KConfig(QDir::homePath() + "/.kde3/share/config/katalogrc", KConfig::SimpleConfig);
+  }
+
+  if(config)
+  {
+    //The old config file always uses mysql as database driver
+    DatabaseSettings::self()->setDbDriver("QMYSQL");
+
+    QMap<QString, QString> entries = config->entryMap("database");
+
+    if(!entries.value("DbServername").isEmpty())
+      DatabaseSettings::self()->setDbServerName(entries.value("DbServername"));
+    if(!entries.value("DbFile").isEmpty())
+      DatabaseSettings::self()->setDbDatabaseName(entries.value("DbFile"));
+    if(!entries.value("DbPassword").isEmpty())
+      DatabaseSettings::self()->setDbPassword(KStringHandler::obscure( entries.value("DbPassword")));
+    if(!entries.value("DbUser").isEmpty())
+      DatabaseSettings::self()->setDbUser(entries.value("DbUser"));
+
+    delete config;
+  }
+
+  DatabaseSettings::self()->writeConfig();
+
+}
 
 SetupAssistant::~SetupAssistant()
 {

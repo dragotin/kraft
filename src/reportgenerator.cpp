@@ -37,7 +37,6 @@
 #include "unitmanager.h"
 #include "dbids.h"
 #include "kraftsettings.h"
-#include "katalogsettings.h"
 #include "docposition.h"
 #include "einheit.h"
 #include "archiveman.h"

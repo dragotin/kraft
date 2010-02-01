@@ -183,6 +183,7 @@ private:
   void startDatabaseCreation();
   void startDatabaseUpdate();
   void finalizePage();
+  void tryMigrateFromKDE3();
 
   WelcomePage       *mWelcomePage;
   DbSelectPage      *mDbSelectPage;

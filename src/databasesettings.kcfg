@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
 <kcfg> 
-  <kcfgfile name="katalogrc"/>
+  <kcfgfile name="kraftdatabaserc"/>
   <group name="bruns">
     <entry name="BrunsDataFile" type="String">
       <label>Bruns Data File:</label>
@@ -33,14 +33,14 @@
     <entry name="DefaultDbName" type="String">
       <label>The default database name when creating new databases</label>
     </entry>
-    <entry name="DbPath" type="String">
-      <label>The path where database file are stored. Leave empty!</label>
-    </entry>
   </group>
-  <group name="sqlite settings">
+  <group name="Sqlite settings">
     <entry name="DbFile" type="String">
       <label>File Name</label> 
     </entry> 
+    <entry name="DbPath" type="String">
+      <label>The path where database file are stored. Leave empty!</label>
+    </entry>
   </group>  
 </kcfg>
 
