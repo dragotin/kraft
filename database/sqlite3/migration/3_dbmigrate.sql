@@ -12,6 +12,6 @@ BEGIN
   UPDATE plantPrices SET lastUpdate = DATETIME('NOW')  WHERE matchCode = new.matchCode;
 END;
 
-ALTER TABLE document ADD COLUMN docDescription TEXT;
--- AFTER docType;
+-- Columns already added in create_schema.sql   *sqlite workaround*
+--ALTER TABLE document ADD COLUMN docDescription TEXT AFTER docType;
 

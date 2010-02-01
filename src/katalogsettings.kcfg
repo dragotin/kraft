@@ -23,7 +23,6 @@
     <entry name="DbDatabaseName" type="String">
       <label>Database Name</label> 
     </entry>
-
     <entry name="DbUser" type="String">
       <label>Database User:</label>
       <default>root</default>

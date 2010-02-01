@@ -1,5 +1,6 @@
+-- 5_dbmigrate.sql
 -- message Add a list value identification column to the attribute table
-ALTER TABLE attributes ADD COLUMN valueIsList tinyint default 0; -- AFTER value;
+--ALTER TABLE attributes ADD COLUMN valueIsList tinyint default 0; -- AFTER value;
 
 DROP TABLE IF EXISTS tmp_attrib;
 
@@ -38,7 +39,10 @@ CREATE TABLE attributes (
   hostObject VARCHAR(64),
   hostId     INT,
   name       VARCHAR(64),
-  valueIsList TINYINT
+  valueIsList TINYINT,
+  relationTable varchar(64) default NULL,
+  relationIDColumn varchar(64) default NULL,
+  relationStringColumn varchar(64) default NULL
 );
 CREATE UNIQUE INDEX attribIndx_10 ON attributes( hostObject, hostId, name );
 INSERT INTO attributes (hostObject, hostId, name, valueIsList) SELECT hostObject, hostId, name, valueIsList FROM tmp_attrib;
@@ -59,7 +63,6 @@ INSERT INTO tagTemplates (sortkey, name, description, color) VALUES (2, 'Work', 
 INSERT INTO tagTemplates (sortkey, name, description, color) VALUES (4, 'Plants', 'Marks plant items', '#26b913' );
 
 
-ALTER TABLE tmp_attrib RENAME TO tmp_attrib_unused;
-
-DROP TABLE IF EXISTS attribute_old;
+DROP TABLE IF EXISTS tmp_attrib;
+DROP TABLE IF EXISTS attributes_unused;
 

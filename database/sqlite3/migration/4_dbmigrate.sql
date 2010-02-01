@@ -7,6 +7,7 @@ CREATE TABLE DocTexts (
   description    TEXT,
   text           TEXT,
   docType        VARCHAR( 64 ),
+  docTypeId      int,
   textType       VARCHAR( 64 ),
   modDate        TIMESTAMP(14)
   

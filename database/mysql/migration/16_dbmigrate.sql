@@ -17,3 +17,4 @@ FROM CalcMaterialDetails INNER JOIN CalcMaterialsOld ON CalcMaterialDetails.Calc
 
 DROP TABLE IF EXISTS CalcMaterialsOld;
 DROP TABLE IF EXISTS CalcMaterialDetails;
+DROP TABLE IF EXISTS attribute_old;

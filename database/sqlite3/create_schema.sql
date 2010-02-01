@@ -137,7 +137,6 @@ CREATE TRIGGER insert_material_enterDate AFTER  INSERT ON stockMaterial
 BEGIN
   UPDATE stockMaterial SET enterDate = DATETIME('NOW')  WHERE matID = new.matID;
 END;
-
 CREATE TRIGGER update_material_modifyDate AFTER UPDATE ON stockMaterial
 BEGIN
   UPDATE stockMaterial SET modifyDate = DATETIME('NOW')  WHERE matID = new.matID;
@@ -155,15 +154,18 @@ CREATE TABLE document(
     docID             INTEGER PRIMARY KEY ASC autoincrement,
     ident             VARCHAR(32),
     docType           VARCHAR(255),
+    docDescription    TEXT,
     clientID          VARCHAR(32),
     clientAddress     TEXT,
     salut             VARCHAR(255),
     goodbye           VARCHAR(128),
     lastModified      TIMESTAMP,
     date              DATE,
-
     pretext           TEXT,
-    posttext          TEXT
+    posttext          TEXT,
+    country           VARCHAR(32),
+    language          VARCHAR(32),
+    projectLabel      VARCHAR(255)
 );
 CREATE INDEX identIndx ON document( ident );
 CREATE INDEX clientIndx ON document( clientID );
@@ -178,9 +180,11 @@ CREATE TABLE docposition(
     docID             INT NOT NULL,
     ordNumber         INT NOT NULL,
     text              TEXT,
+    postype           VARCHAR(64),
     amount            DECIMAL(10,2),
     unit              INT,
-    price             DECIMAL(10,2)
+    price             DECIMAL(10,2),
+    taxType           INT default 3
 );
 CREATE INDEX docIdIndx ON docposition( docID );
 CREATE UNIQUE INDEX ordIndx ON docposition( docID, ordNumber );
@@ -196,14 +200,18 @@ CREATE TABLE archdoc(
     docType           VARCHAR(255),
     docDescription    TEXT,
     clientAddress     TEXT,
+    clientUid         VARCHAR(32),
     salut             VARCHAR(255),
     goodbye           VARCHAR(128),
     printDate         TIMESTAMP,
     date              DATE,
-
     pretext           TEXT,
     posttext          TEXT,
-
+    country           VARCHAR(32),
+    language          VARCHAR(32),
+    projectLabel      VARCHAR(255),
+    tax               DECIMAL(5,1),
+    reducedTax        DECIMAL(5,1),
     state             int
 );
 CREATE INDEX archIdentIndx ON archdoc( ident );
@@ -214,14 +222,17 @@ END;
 
 
 CREATE TABLE archdocpos(
-    archPosID        INTEGER PRIMARY KEY ASC autoincrement,
+    archPosID         INTEGER PRIMARY KEY ASC autoincrement,
     archDocID         INT NOT NULL,
     ordNumber         INT NOT NULL,
+    kind              VARCHAR(64),
+    postype           VARCHAR(64),
     text              TEXT,
     amount            DECIMAL(10,2),
     unit              VARCHAR(64),
     price             DECIMAL(10,2),
-    vat               DECIMAL(4,1)
+    overallPrice      DECIMAL(10,2),
+    taxType           INT default 0
 );
 CREATE INDEX archDocIdIndx ON archdocpos( archDocID );
 CREATE UNIQUE INDEX archOrdIndx ON archdocpos( archDocID, ordNumber );
