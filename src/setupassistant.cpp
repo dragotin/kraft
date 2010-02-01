@@ -87,6 +87,10 @@ SqLiteDetailsPage::SqLiteDetailsPage(QWidget *parent)
   ui.setupUi(w);
 
   ui.mFileUrl->setMode( KFile::File | KFile::LocalOnly );
+  ui.mFileUrl->setText(DatabaseSettings::self()->dbFile());
+
+  if(!DatabaseSettings::self()->dbFile().isEmpty())
+    ui.mRbCustom->setChecked(true);
 
   connect( ui.mFileUrl, SIGNAL( textChanged( const QString& )), this, SLOT( slotSelectCustom() ) );
 }
@@ -118,6 +122,16 @@ MysqlDetailsPage::MysqlDetailsPage(QWidget *parent)
   vbox->addWidget( w );
 
   ui.setupUi(w);
+
+  reloadSettings();
+}
+
+void MysqlDetailsPage::reloadSettings()
+{
+  ui.mMysqlHost->setText(DatabaseSettings::self()->dbServerName());
+  ui.mMysqUser->setText(DatabaseSettings::self()->dbUser());
+  ui.mMysqlDbName->setText(DatabaseSettings::self()->dbDatabaseName());
+  ui.mMysqlPwd->setText(DatabaseSettings::self()->dbPassword());
 }
 
 QString MysqlDetailsPage::dbName()
@@ -322,6 +336,7 @@ void SetupAssistant::next( )
     handleDatabaseBackendSelect();
   } else if( item == mMysqlDetailsPageItem ) {
     // get the mysql datails
+    handleMysqlDetails();
   } else if( item == mSqLiteDetailsPageItem ) {
     // get the sqlite filename
     handleSqLiteDetails();
@@ -338,14 +353,24 @@ void SetupAssistant::back()
 void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidgetItem* /* previous */)
 {
   if( current == mCreateDbPageItem ) {
-    if( ! KraftDB::self()->databaseExists() ) {
-      kDebug() << "Start to create the database";
-      startDatabaseCreation();
-    } else {
-      kDebug() << "CreateDB-Page: Database already existing";
-      mCreateDbPage->setStatusText( i18n( "<p>The database is already existing, no action needs to be taken here.</p>"
-                                          "<p>Please hit <b>next</b> to proceed.</p>" ) );
+   if(DatabaseSettings::self()->dbDriver() == "QMYSQL")
+   {
+      if(!KraftDB::self()->checkConnect(DatabaseSettings::self()->dbServerName(), DatabaseSettings::self()->dbDatabaseName(),
+                                        DatabaseSettings::self()->dbUser(), DatabaseSettings::self()->dbPassword()))
+      {
+        mCreateDbPage->setStatusText( i18n( "<p>Can't connect to your database. Are you sure your credentials are correct and the database exists?</p>") );
+        return;
+      }
     }
+
+      if( !KraftDB::self()->databaseExists() ) {
+        kDebug() << "Start to create the database";
+        startDatabaseCreation();
+      } else {
+        kDebug() << "CreateDB-Page: Database already existing";
+        mCreateDbPage->setStatusText( i18n( "<p>The database is already existing, no action needs to be taken here.</p>"
+                                            "<p>Please hit <b>next</b> to proceed.</p>" ) );
+      }
   }
 
   if( current == mUpgradeDbPageItem ) {
@@ -574,6 +599,29 @@ void SetupAssistant::handleSqLiteDetails()
   kDebug() << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
 }
 
+void SetupAssistant::handleMysqlDetails()
+{
+  QString driver = mDbSelectPage->selectedDriver();
+  QString hostName = mMysqlDetailsPage->dbServer();
+  QString databaseName = mMysqlDetailsPage->dbName();
+  QString userName = mMysqlDetailsPage->dbUser();
+  QString password = mMysqlDetailsPage->dbPasswd();
+
+  KraftDB::self()->dbConnect( driver, databaseName, userName, hostName, password );
+
+  kDebug() << "############ database opened: "<< KraftDB::self()->isOk();
+  bool dbExists = KraftDB::self()->databaseExists();
+
+  kDebug() << "Database exists: " << dbExists;
+  if( dbExists ) {
+    kDebug() << "Database exists, no create needed";
+    setAppropriate( mCreateDbPageItem, false );
+  } else {
+    setAppropriate( mCreateDbPageItem, true );
+  }
+  kDebug() << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
+}
+
 bool SetupAssistant::init( Mode mode )
 {
   bool startDialog = false;
@@ -666,6 +714,7 @@ void SetupAssistant::tryMigrateFromKDE3()
     if(!entries.value("DbUser").isEmpty())
       DatabaseSettings::self()->setDbUser(entries.value("DbUser"));
 
+    mMysqlDetailsPage->reloadSettings();
     delete config;
   }
 

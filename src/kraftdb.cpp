@@ -237,7 +237,10 @@ QString KraftDB::databaseName() const
 bool KraftDB::databaseExists()
 {
   bool re = false;
-  re = m_db.tables().contains( "kraftsystem");
+
+  if(m_db.isOpen())
+    re = m_db.tables().contains( "kraftsystem");
+
   return re;
 }
 

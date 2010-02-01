@@ -84,6 +84,8 @@ class MysqlDetailsPage:public QWidget
 
   public:
   MysqlDetailsPage( QWidget *parent = 0 );
+  
+  void reloadSettings();
 
   QString dbName();
   QString dbUser();
@@ -180,6 +182,7 @@ private slots:
 private:
   void handleDatabaseBackendSelect();
   void handleSqLiteDetails();
+  void handleMysqlDetails();
   void startDatabaseCreation();
   void startDatabaseUpdate();
   void finalizePage();
