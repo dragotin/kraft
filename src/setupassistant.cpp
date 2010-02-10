@@ -353,24 +353,29 @@ void SetupAssistant::back()
 void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidgetItem* /* previous */)
 {
   if( current == mCreateDbPageItem ) {
-   if(DatabaseSettings::self()->dbDriver() == "QMYSQL")
-   {
-      if(!KraftDB::self()->checkConnect(DatabaseSettings::self()->dbServerName(), DatabaseSettings::self()->dbDatabaseName(),
-                                        DatabaseSettings::self()->dbUser(), DatabaseSettings::self()->dbPassword()))
-      {
+    if(DatabaseSettings::self()->dbDriver() == "QMYSQL") {
+      if(!KraftDB::self()->dbConnect( "QMYSQL",
+                                      mMysqlDetailsPage->dbName(),
+                                      mMysqlDetailsPage->dbUser(),
+                                      mMysqlDetailsPage->dbServer(),
+                                      mMysqlDetailsPage->dbPasswd() ) ) {
         mCreateDbPage->setStatusText( i18n( "<p>Can't connect to your database. Are you sure your credentials are correct and the database exists?</p>") );
         return;
       }
+    } else {
+      if( !KraftDB::self()->dbConnect( "QSQLITE", mSqLiteDetailsPage->url().pathOrUrl() ) ) {
+        mCreateDbPage->setStatusText( i18n("<p>Can't open your database file, check the permissions and such."));
+      }
     }
 
-      if( !KraftDB::self()->databaseExists() ) {
-        kDebug() << "Start to create the database";
-        startDatabaseCreation();
-      } else {
-        kDebug() << "CreateDB-Page: Database already existing";
-        mCreateDbPage->setStatusText( i18n( "<p>The database is already existing, no action needs to be taken here.</p>"
-                                            "<p>Please hit <b>next</b> to proceed.</p>" ) );
-      }
+    if( !KraftDB::self()->databaseExists() ) {
+      kDebug() << "Start to create the database";
+      startDatabaseCreation();
+    } else {
+      kDebug() << "CreateDB-Page: Database already existing";
+      mCreateDbPage->setStatusText( i18n( "<p>The database is already existing, no action needs to be taken here.</p>"
+                                          "<p>Please hit <b>next</b> to proceed.</p>" ) );
+    }
   }
 
   if( current == mUpgradeDbPageItem ) {
@@ -626,7 +631,7 @@ bool SetupAssistant::init( Mode mode )
 {
   bool startDialog = false;
   QString text;
-
+  QString configOrigin;
   mMode = mode;
 
   if( mMode == Reinit ) {
@@ -634,14 +639,24 @@ bool SetupAssistant::init( Mode mode )
 
     text = i18n("The Database is going to be reset.");
   } else if( mode == Update ) {
-
     //We're going to check if there's a config file for the KDE4 version already
     KStandardDirs stdDirs;
-    if(stdDirs.findResource("config", "kraftdatabaserc")==QString())
-      tryMigrateFromKDE3();
 
-    if(KraftDB::self()->dbConnect()) // try to connect with default values
-    {
+    if( stdDirs.findResource( "config", "kraftdatabaserc" ) == QString() ) {
+      // No KDE4 config file there.
+      if( tryMigrateFromKDE3() ) {
+        configOrigin = i18n("The database configuration was converted from the former KDE3 config file.");
+      } else {
+        // migration failed and we do not have a config file. All from scratch
+        configOrigin = i18n("There was no database configuration found.");
+      }
+    } else {
+      configOrigin = i18n("A valid KDE4 database configuration file was found.");
+      kDebug() << "A standard KDE4 database config file is there.";
+    }
+
+    if( KraftDB::self()->dbConnect() )  { // try to connect with default values
+      kDebug() << "The database can be opened!";
       if( KraftDB::self()->databaseExists() ) {
         kDebug() << "The database exists.";
 
@@ -652,26 +667,28 @@ bool SetupAssistant::init( Mode mode )
           kDebug() << "Database Schema is ok, nothing to do for StartupAssistant";
         }
       } else {
-        kDebug() << "The database is not existing, need to start update!";
+        kDebug() << "The database is not existing, need to recreate!";
         startDialog = true;
 
-        text = i18n( "<p>There was no valid database configuration found.</p>"
+        text = i18n( "<p>The database can be opened, but does not contain valid content.</p>"
                      "<p>A new database can be created automatically from scratch.</p>");
       }
-    }
-    else
-    {
+    } else {
+      // unable to connect to the database at all
       startDialog = true;
-
-      text = i18n( "<p>There was no valid database configuration found.</p>"
-                     "<p>A new database can be created automatically from scratch.</p>");
+      text = i18n( "<p>Kraft could not connect to the configured database.<p>" );
+      if( KraftDB::self()->qtDriver().toUpper() == "QMYSQL" ) {
+          text += i18n( "<p>Please check the database server setup and restart Kraft to connect" );
+      } else {
+          text += i18n("<p>Please check the database file");
+      }
+      text += " " + i18n( "or create a new database by hitting <b>next</b>.</p>" );
     }
-
   }
 
   if( startDialog ) {
-    text += "<p>Please follow the instructions in this assistant</p>";
-    mWelcomePage->setWelcomeText( text );
+    text += "<p>Please hit next and follow the instructions.</p>";
+    mWelcomePage->setWelcomeText( configOrigin + text );
   }
   return startDialog ;
 }
@@ -681,10 +698,11 @@ void SetupAssistant::createDatabase( bool doIt )
   setAppropriate( mDbSelectPageItem, doIt );
 }
 
-void SetupAssistant::tryMigrateFromKDE3()
+bool SetupAssistant::tryMigrateFromKDE3()
 {
   kDebug() << "tryMigrate";
   KConfig *config = 0;
+  bool haveOldConfig  = false;
 
   //We will try to look for an old katalogrc in .kde and .kde3
   if(KStandardDirs::exists(QDir::homePath() + "/.kde/share/config/katalogrc"))
@@ -715,11 +733,11 @@ void SetupAssistant::tryMigrateFromKDE3()
       DatabaseSettings::self()->setDbUser(entries.value("DbUser"));
 
     mMysqlDetailsPage->reloadSettings();
+    haveOldConfig = true;
+    DatabaseSettings::self()->writeConfig();
     delete config;
   }
-
-  DatabaseSettings::self()->writeConfig();
-
+  return haveOldConfig;
 }
 
 SetupAssistant::~SetupAssistant()

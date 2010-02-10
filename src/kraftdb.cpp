@@ -107,7 +107,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
     mSuccess = false ;
   } else {
     if( list.indexOf( mDatabaseDriver ) == -1 ) {
-      kDebug() << "Database Driver could not be loaded!" << endl;
+      kDebug() << "Database Driver " << mDatabaseDriver << " could not be loaded!" << endl;
       mSuccess = false;
     }
   }
@@ -276,14 +276,19 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
     driverPrefix = "sqlite3";
   }
 
+  KStandardDirs stdDirs;
+  kDebug() << "XXXXXXXXXX: " << stdDirs.resourceDirs("data");
+
   if( env.isEmpty() ) {
     // Environment-Variable is empty, search in KDE paths
-    QString fragment = QString("dbmigrate/%1/%2").arg(driverPrefix).arg(file );
-    sqlFile = KStandardDirs::locate("appdata", fragment );
+    QString fragment = QString("kraft/dbmigrate/%1/%2").arg(driverPrefix).arg(file );
+    sqlFile = KStandardDirs::locate("data", fragment );
     kDebug() << "Searching for this fragment: " << fragment;
     // search in dbcreate as well.
     if ( sqlFile.isEmpty() ) {
-      sqlFile = KStandardDirs::locate( "appdata", QString("dbinit/%1/%2").arg(driverPrefix).arg(file ) );
+      fragment = QString("kraft/dbinit/%1/%2").arg(driverPrefix).arg(file );
+      kDebug() << "Also searching in " << fragment;
+      sqlFile = KStandardDirs::locate( "data", fragment );
     }
   } else {
     // read from environment variable path

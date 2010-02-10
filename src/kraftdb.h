@@ -77,8 +77,6 @@ public:
 
   QSqlError lastError();
 
-  int checkConnect( const QString&, const QString&,
-                    const QString&, const QString& );
   bool isOk() {
     return mSuccess;
   }
@@ -129,6 +127,8 @@ protected:
 private: // Private attributes
   KraftDB();
   void close();
+  int checkConnect( const QString&, const QString&,
+                    const QString&, const QString& );
 
   /** The default database */
   QSqlDatabase m_db;
