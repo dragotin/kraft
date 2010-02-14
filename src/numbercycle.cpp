@@ -61,5 +61,5 @@ int  NumberCycle::counter()
 
 QString NumberCycle::defaultName()
 {
-  return i18n( "default" );
+  return QString( "default" );
 }
