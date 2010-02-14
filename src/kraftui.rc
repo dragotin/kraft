@@ -17,6 +17,7 @@
   </Menu>
 </MenuBar>
 <ToolBar  name="documentToolBar" fullWidth="true">
+    <Text>Document Actions</Text>
     <Action name="document_new"/>
     <Action name="document_open"/>
     <Action name="document_view"/>

@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
                         ki18n("KDE Plant Catalog Viewer"), KPLANT_VERSION,
                         ki18n("The KDE Plant Catalog Viewer"),
                         KAboutData::License_GPL,
-                        ki18n("Copyright (c) 2005-2009 Klaas Freitag") );
+                        ki18n("Copyright (c) 2005-2010 Klaas Freitag") );
   KCmdLineArgs::init( argc, argv, &aboutData );
 
   KApplication app;
@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
 		KPLANT_VERSION, description, KAboutData::License_GPL,
 		"(c) 2005 Klaas Freitag", 0, 0, "freitag@kde.org");
 	aboutData.addAuthor("Klaas Freitag",0, "freitag@kde.org");
+
 	KCmdLineArgs::init( argc, argv, &aboutData );
 	KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 

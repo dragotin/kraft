@@ -1,6 +1,6 @@
 #define KPLANT_VERSION "0.4"
 #define KRAFT_VERSION "0.40"
 
-#define KRAFT_CODENAME "Toddler"
+#define KRAFT_CODENAME "Tiddler"
 
 #define KRAFT_REQUIRED_SCHEMA_VERSION 16
