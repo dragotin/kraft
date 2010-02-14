@@ -101,6 +101,8 @@ public:
 
   void setSchemaVersion( const QString& );
 
+  // database aware current time stamp
+  QString currentTimeStamp();
   /**
    * Euro sign encoding to work around a problem with mysql
    */

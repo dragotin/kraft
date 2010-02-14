@@ -13,6 +13,7 @@
   </Menu>
   <Menu name="settings"><text>Settings</text>
      <Action name="edit_tag_templates"/>
+     <Action name="reconfigure_db"/>
   </Menu>
 </MenuBar>
 <ToolBar  name="documentToolBar" fullWidth="true">

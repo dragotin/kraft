@@ -156,6 +156,10 @@ void Portal::initActions()
   actEditTemplates->setText("Edit Tag Templates");
   actEditTemplates->setShortcut( KShortcut( Qt::CTRL + Qt::Key_E ));
 
+  KAction *reconfDb = actionCollection()->addAction( "reconfigure_db", this, SLOT( slotReconfigureDatabase() ) );
+  reconfDb->setText("Configure Database...");
+  reconfDb->setShortcut( KShortcut( Qt::CTRL + Qt::Key_R ));
+
   fileQuit->setStatusTip(i18n("Quits the application"));
   editCut->setStatusTip(i18n("Cuts the selected section and puts it to the clipboard"));
   editCopy->setStatusTip(i18n("Copies the selected section to the clipboard"));
@@ -169,6 +173,8 @@ void Portal::initActions()
   actOpenDocument->setStatusTip( i18n( "Opens the document for editing" ) );
   actViewDocument->setStatusTip( i18n( "Opens a read only view on the document." ) );
   actMailDocument->setStatusTip( i18n( "Send document per mail" ) );
+  actEditTemplates->setStatusTip( i18n("Edit the available tag templates which can be assigned to document items.") );
+  reconfDb->setStatusTip( i18n( "Configure the Database Kraft is working on." ) );
 
   actOpenArchivedDocument->setStatusTip( i18n( "Open a viewer on an archived document" ) );
   setStandardToolBarMenuEnabled( true );
@@ -178,6 +184,7 @@ void Portal::initActions()
   actCopyDocument->setEnabled( false );
   actFollowDocument->setEnabled( false );
   actMailDocument->setEnabled( false );
+
   actOpenArchivedDocument->setEnabled( false );
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
   char *prjPath = getenv("KRAFT_HOME");
@@ -569,7 +576,7 @@ void Portal::slotOpenDocument( const QString& id )
 
 void Portal::slotDocumentSelected( const QString& doc )
 {
-  kDebug() << "a doc was selected: " << doc << endl;
+  // kDebug() << "a doc was selected: " << doc << endl;
   if( doc.isEmpty() ) {
     actViewDocument->setEnabled( false );
     actOpenDocument->setEnabled( false );
@@ -615,6 +622,16 @@ void Portal::slotEditTagTemplates()
   if ( dia.exec() ) {
     kDebug() << "Editing of tag templates succeeded!" << endl;
 
+  }
+}
+
+void Portal::slotReconfigureDatabase()
+{
+  kDebug() << "Reconfiguring the Database";
+
+  SetupAssistant assi(this);
+  if( assi.init( SetupAssistant::Reinit ) ) {
+    assi.exec();
   }
 }
 

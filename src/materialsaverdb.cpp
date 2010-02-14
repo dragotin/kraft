@@ -105,8 +105,7 @@ void MaterialSaverDB::fillMaterialBuffer( QSqlRecord &rec, StockMaterial *mat, b
   rec.setValue( "priceIn", mat->purchPrice().toDouble() );
   rec.setValue( "priceOut", mat->salesPrice().toDouble() );
 
-  QDateTime dt = QDateTime::currentDateTime();
-  QString dtString = dt.toString("yyyy-MM-dd hh:mm:ss" );
+  QString dtString = KraftDB::self()->currentTimeStamp();
 
   if( isNew ) {
     rec.setValue( "enterDate", dtString);

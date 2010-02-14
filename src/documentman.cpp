@@ -85,9 +85,7 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   q.exec();
   while ( q.next() ) {
     int id = q.value( 0 ).toInt();
-    unsigned int timestamp = q.value( 1).toUInt();
-    QDateTime dt;
-    dt.setTime_t(timestamp);
+    QDateTime dt = q.value(1).toDateTime();
     int state = q.value( 2 ).toInt();
     dig.addArchDocDigest( ArchDocDigest( dt, state, ident, id ) );
   }

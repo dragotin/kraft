@@ -73,7 +73,7 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
             // der Datensatz ist bereits in der Datenbank => UPDATE
             if( model.rowCount() > 0 ) {
                 QSqlRecord buffer = model.record(0);
-                buffer.setValue( "modDate", QDateTime::currentDateTime().toTime_t() );
+                buffer.setValue( "modDate", KraftDB::self()->currentTimeStamp() );
                 fillFixCalcBuffer(& buffer, cp );
                 model.setRecord(0, buffer);
                 model.submitAll();
@@ -95,7 +95,7 @@ void CalculationsSaverDB::fillFixCalcBuffer( QSqlRecord *buffer, FixCalcPart *cp
     buffer->setValue( "price", cp->unitPreis().toDouble() );
 
     buffer->setValue( "percent", cp->getProzentPlus() );
-    buffer->setValue( "modDate", QDateTime::currentDateTime().toTime_t() );
+    buffer->setValue( "modDate", KraftDB::self()->currentTimeStamp() );
 }
 
 bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID parentID )
@@ -132,7 +132,7 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
       // dont delete, update!
       if( model.rowCount() > 0) {
         QSqlRecord buffer = model.record(0);
-        buffer.setValue( "modDate", QDateTime::currentDateTime().toTime_t() );
+        buffer.setValue( "modDate", KraftDB::self()->currentTimeStamp() );
         fillMatCalcBuffer( &buffer, cp );
         model.setRecord(0, buffer);
         model.submitAll();
@@ -251,7 +251,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
 	    // Update needed, record is already in the database
             if( model.rowCount() > 0 ) {
                 QSqlRecord buffer = model.record(0);
-                buffer.setValue( "modDate", QDateTime::currentDateTime().toTime_t() );
+                buffer.setValue( "modDate", KraftDB::self()->currentTimeStamp() );
                 fillZeitCalcBuffer( &buffer, cp );
                 model.setRecord(0, buffer);
                 model.submitAll();
@@ -361,9 +361,7 @@ void TemplateSaverDB::fillTemplateBuffer( QSqlRecord *buffer, FloskelTemplate *t
     buffer->setValue( "Gewinn", tmpl->getBenefit() );
     buffer->setValue( "zeitbeitrag", tmpl->hasTimeslice() );
 
-    /* neue templates kriegen ein Eintragsdatum */
-    QDateTime dt = QDateTime::currentDateTime();
-    QString dtString = dt.toString("yyyy-MM-dd hh:mm:ss" );
+    QString dtString = KraftDB::self()->currentTimeStamp();
 
     if( isNew ) {
         buffer->setValue( "enterDatum", dtString);

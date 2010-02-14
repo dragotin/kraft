@@ -135,6 +135,7 @@ class Portal : public KXmlGuiWindow
     void slotPrintDocument( const QString&, const dbID& );
     void slotViewClosed( bool, DocGuardedPtr );
     void slotEditTagTemplates();
+    void slotReconfigureDatabase();
 
     void busyCursor( bool );
 

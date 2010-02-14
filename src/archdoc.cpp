@@ -100,7 +100,9 @@ void ArchDoc::loadFromDb( dbID id )
   mArchDocID = id;
 
   QSqlQuery q;
-  q.prepare("SELECT * from archdoc WHERE archDocID=:id");
+  q.prepare("SELECT archDocID, ident, docType, docDescription, clientAddress, clientUid, " // pos 0..5
+            "salut, goodbye, printDate, date, pretext, posttext, country, language, " // pos 6..13
+            "projectLabel,tax, reducedTax, state from archdoc WHERE archDocID=:id" ); // pos 14..17
   q.bindValue(":id", id.toInt());
   q.exec();
 
@@ -115,20 +117,20 @@ void ArchDoc::loadFromDb( dbID id )
     mIdent        = q.value( 1 ).toString();
     mDocType      = q.value( 2 ).toString();
     mAddress      = q.value( 4 ).toString();
-    mSalut        = q.value( 5 ).toString();
-    mGoodbye      = q.value( 6 ).toString();
-    unsigned int timestamp = q.value( 7 ).toUInt();
-    mPrintDate.setTime_t(timestamp);
-    mDate         = q.value( 8 ).toDate();
-    mPreText      = KraftDB::self()->mysqlEuroDecode( q.value( 9 ).toString() );
-    mPostText     = KraftDB::self()->mysqlEuroDecode( q.value( 10 ).toString() );
-    mState        = q.value( 11 ).toInt();
+    mClientUid    = q.value( 5 ).toString();
+    mSalut        = q.value( 6 ).toString();
+    mGoodbye      = q.value( 7 ).toString();
+    QVariant v    = q.value( 8 );
+    mPrintDate    = v.toDateTime();
+    mDate         = q.value( 9 ).toDate();
+    mPreText      = KraftDB::self()->mysqlEuroDecode( q.value( 10 ).toString() );
+    mPostText     = KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() );
     country       = q.value( 12 ).toString();
     lang          = q.value( 13 ).toString();
-    mClientUid    = q.value( 14 ).toString();
-    mProjectLabel = q.value( 15 ).toString();
-    mTax          = q.value( 16 ).toDouble();
-    mReducedTax   = q.value( 17 ).toDouble();
+    mProjectLabel = q.value( 14 ).toString();
+    mTax          = q.value( 15 ).toDouble();
+    mReducedTax   = q.value( 16 ).toDouble();
+    mState        = q.value( 17 ).toInt();
 
     KConfig *cfg = KGlobal::config().data();
     mLocale.setCountry( country, cfg );
@@ -151,20 +153,22 @@ void ArchDoc::loadPositions( const QString& archDocId )
   }
 
   QSqlQuery q;
-  q.prepare("SELECT * FROM archdocpos WHERE archDocID=:id ORDER BY ordNumber");
+  q.prepare("SELECT archPosID, archDocID, ordNumber, kind, postype, text, amount, " // pos 0..6
+            "unit, price, overallPrice, taxType FROM archdocpos WHERE archDocID=:id ORDER BY ordNumber"); // pos 7..10
   q.bindValue("id", archDocId);
   q.exec();
 
   while( q.next() ) {
     ArchDocPosition pos;
     pos.mPosNo = q.value( 2 ).toString();
-    pos.mText = q.value( 3 ).toString();
-    pos.mAmount = q.value( 4 ).toDouble();
-    pos.mUnit  = q.value( 5 ).toString();
-    pos.mUnitPrice = Geld( q.value( 6 ).toDouble() );
-    pos.mKind = q.value( 8 ).toString();
+    pos.mKind = q.value( 3 ).toString();
+    pos.mText = q.value( 5 ).toString();
+    pos.mAmount = q.value( 6 ).toDouble();
+    pos.mUnit  = q.value( 7 ).toString();
+    pos.mUnitPrice = Geld( q.value( 8 ).toDouble() );
     pos.mOverallPrice = q.value( 9 ).toDouble();
-    int tt = q.value( 11 ).toInt();
+
+    int tt = q.value( 10 ).toInt();
     if ( tt == 1 )
       pos.mTaxType = DocPositionBase::TaxNone;
     else if ( tt == 2 )
@@ -186,13 +190,13 @@ void ArchDoc::loadAttributes( const QString& archDocId )
   }
 
   QSqlQuery q;
-  q.prepare("SELECT * FROM archPosAttribs WHERE archDocID=:id");
+  q.prepare("SELECT name, value FROM archPosAttribs WHERE archDocID=:id");
   q.bindValue(":id", archDocId);
   q.exec();
 
   while ( q.next() ) {
-    QString name  = q.value( 2 ).toString();
-    QString value = q.value( 3 ).toString();
+    QString name  = q.value( 0 ).toString();
+    QString value = q.value( 1 ).toString();
 
     if ( !name.isEmpty() ) {
       mAttribs[ name ] = value;

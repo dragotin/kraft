@@ -425,6 +425,13 @@ QString KraftDB::qtDriver()
     return mDatabaseDriver;
 }
 
+QString KraftDB::currentTimeStamp()
+{
+  QString dateStr;
+  dateStr = QDateTime::currentDateTime().toString(Qt::ISODate);
+  return dateStr;
+}
+
 QString KraftDB::mysqlEuroEncode( const QString& str ) const
 {
   QChar euro( 0x20ac );
