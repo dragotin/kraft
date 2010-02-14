@@ -129,8 +129,8 @@ QList<QTreeWidget *> DocDigestView::initializeTreeWidgets()
     widget->setSelectionMode( QAbstractItemView::SingleSelection );
     widget->setColumnCount( 7 );
     widget->setHeaderLabels( cols );
-    widget->header()->setResizeMode(QHeaderView::ResizeToContents);
-    widget->header()->setResizeMode(6, QHeaderView::Stretch);
+    widget->header()->setResizeMode( QHeaderView::Interactive );
+    widget->header()->setResizeMode(6, QHeaderView::Stretch );
   }
 
   //Add treewidgets to the toolbox

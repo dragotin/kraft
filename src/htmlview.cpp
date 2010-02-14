@@ -65,7 +65,9 @@ void HtmlView::setTitle( const QString &title )
 
 void HtmlView::setStylesheetFile( const QString &style )
 {
-  mStyleSheetFile = style;
+  KStandardDirs stdDirs;
+  mStyleSheetFile = KStandardDirs::locate( "appdata", style );
+  kDebug() << "found this stylefile: " << mStyleSheetFile << " out of " << style;
 }
 
 void HtmlView::setupActions( KActionCollection *actionCollection )
@@ -104,16 +106,12 @@ void HtmlView::updateZoomActions()
 
 void HtmlView::writeTopFrame( )
 {
-  KStandardDirs stdDirs;
-  QString filename = stdDirs.findResource( "data", QString( "kraft/%1" ) .arg( mStyleSheetFile ) );
-  filename = KStandardDirs::locate( "appdata", mStyleSheetFile  );
-  kDebug() << "found this stylefile: " << filename << " out of " << mStyleSheetFile;
   QString t = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
                        "<html><head><title>%1</title>" ).arg( mTitle );
-  if ( ! filename.isEmpty() ) {
+  if ( ! mStyleSheetFile.isEmpty() ) {
     t += QString( "<link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">"
                   "<style type=\"text/css\">"
-                  "</style></head>\n\n" ).arg( filename );
+                  "</style></head>\n\n" ).arg( mStyleSheetFile );
   }
   t += "<body>";
   write( t );

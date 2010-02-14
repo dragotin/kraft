@@ -30,7 +30,8 @@
 DocPostCard::DocPostCard( QWidget *parent )
   :HtmlView( parent ),  mMode( Full )
 {
-
+  setStylesheetFile( "docoverview.css" );
+  setTitle( i18n( "Document Overview" ) );
 }
 
 void DocPostCard::setHeaderData( const QString& type,  const QString& date,
@@ -140,9 +141,6 @@ QString DocPostCard::renderDocFull( int id )
   QString rethtml;
   QString t;
   QString selString;
-
-  setStylesheetFile( "docoverview.css" );
-  setTitle( i18n( "Document Overview" ) );
 
   rethtml = QString::fromLatin1( "<body>" );
 

@@ -82,10 +82,6 @@ private:
   PortalHtmlView  *mCatalogBrowser;
   PortalHtmlView  *mSystemBrowser;
 
-  QTreeWidgetItem *mAllDocsParent;
-  QTreeWidgetItem *mLatestDocsParent;
-  QTreeWidgetItem *mTimeLineParent;
-
   KPageWidgetItem *mSysPage;
   KPageWidgetItem *mCatalogPage;
   KPageWidgetItem *mDocsPage;

@@ -64,135 +64,11 @@ PrefsDialog::PrefsDialog( QWidget *parent)
   setDefaultButton( Ok );
   setMinimumWidth(700);
 
-  databaseTab();
   docTab();
   doctypeTab();
   taxTab();
 
   readConfig();
-  slotCheckConnect();
-}
-
-void PrefsDialog::databaseTab()
-{
-  QWidget *topWidget = new QWidget;
-  QLabel *label;
-
-  //Setup the different widgets for the different database drivers first
-  //Mysql first
-  m_mysqlpart = new QWidget;
-  QGridLayout *mysqlLayout = new QGridLayout;
-  m_mysqlpart->setLayout(mysqlLayout);
-  mysqlLayout->setMargin(0);
-
-  label = new QLabel(i18n("Database Host:") );
-  mysqlLayout->addWidget(label, 0,0);
-
-  label = new QLabel(i18n("Database Name:") );
-  mysqlLayout->addWidget(label, 1,0);
-
-  label = new QLabel(i18n("Database User:") );
-  mysqlLayout->addWidget(label, 2,0);
-
-  label = new QLabel(i18n("Database Password:") );
-  mysqlLayout->addWidget(label, 3,0);
-
-  label = new QLabel(i18n("Connection Status:") );
-  mysqlLayout->addWidget(label, 4,0);
-
-  m_pbCheck = new QPushButton( i18n( "Check Connection" ) );
-  mysqlLayout->addWidget( m_pbCheck, 5, 1 );
-
-  m_leHost = new QLineEdit;
-  connect( m_leHost, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
-  mysqlLayout->addWidget(m_leHost, 0,1);
-
-  m_leName = new QLineEdit;
-  connect( m_leName, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
-  mysqlLayout->addWidget(m_leName, 1,1);
-
-  m_leUser = new QLineEdit;
-  connect( m_leUser, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
-  mysqlLayout->addWidget(m_leUser, 2,1);
-
-  m_lePasswd = new QLineEdit;
-  m_lePasswd->setEchoMode(QLineEdit::Password);
-  connect( m_lePasswd, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
-  mysqlLayout->addWidget(m_lePasswd, 3,1);
-
-  m_statusLabel = new QLabel;
-  m_statusLabel->setWordWrap(true);
-  mysqlLayout->addWidget( m_statusLabel,  4, 1 );
-
-  connect( m_pbCheck, SIGNAL( clicked() ),
-           this, SLOT( slotCheckConnect() ) );
-
-  //Sqlite next
-  m_sqlitepart = new QWidget;
-  QVBoxLayout *wrapper = new QVBoxLayout;
-  QHBoxLayout *sqlitelayout = new QHBoxLayout;
-  wrapper->addLayout(sqlitelayout);
-  wrapper->setMargin(0);
-  m_sqlitepart->setLayout(wrapper);
-
-  label = new QLabel(i18n("Database File:") );
-  sqlitelayout->addWidget(label);
-  sqlitelayout->setMargin(0);
-
-  m_leFile = new KUrlRequester;
-  connect( m_leFile, SIGNAL( textChanged( const QString& ) ),
-           this, SLOT( slotDbCredentialsChanged( const QString& ) ) );
-  sqlitelayout->addWidget(m_leFile);
-  wrapper->addStretch(1);
-
-  QVBoxLayout *vboxLay = new QVBoxLayout;
-  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Database" ) );
-  topFrame->setIcon( KIcon( "network-server-database" ) );
-
-  QHBoxLayout *databasedriver = new QHBoxLayout;
-  vboxLay->addLayout( databasedriver );
-
-  label = new QLabel(i18n("Database Driver:") );
-  databasedriver->addWidget(label);
-
-  m_databaseDriver = new QComboBox;
-  m_databaseDriver->addItem("SQLite");
-  m_databaseDriver->addItem("MySQL");
-
-  databasedriver->addWidget(m_databaseDriver);
-
-  m_databaseconfigparts = new QStackedWidget;
-  m_databaseconfigparts->addWidget(m_sqlitepart);
-  m_databaseconfigparts->addWidget(m_mysqlpart);
-
-  vboxLay->addWidget(m_databaseconfigparts);
-
-  connect( m_databaseDriver, SIGNAL(currentIndexChanged(int)),
-           m_databaseconfigparts, SLOT(setCurrentIndex(int)));
-
-  QLabel *l1 = new QLabel(  i18n( "Please restart Kraft after "
-                                  "changes in the database connection "
-                                  "parameters to make the changes "
-                                  "effective!" ) );
-  l1->setTextFormat( Qt::RichText );
-  l1->setAutoFillBackground(true);
-  QPalette palette;
-  palette.setColor(l1->backgroundRole(), QColor( "#ff6666"));
-  l1->setPalette(palette);
-  l1->setFrameStyle( QFrame::Box + QFrame::Raised );
-  l1->setLineWidth( 1 );
-  l1->setMargin( 5 );
-  l1->setAlignment(Qt::AlignCenter);
-  l1->setWordWrap(true);
-  vboxLay->addWidget(l1);
-
-  vboxLay->addStretch(2);
-
-  topWidget->setLayout( vboxLay );
 }
 
 void PrefsDialog::taxTab()
@@ -248,11 +124,6 @@ void PrefsDialog::taxTab()
 
   vboxLay->addLayout( butLay );
   topWidget->setLayout( vboxLay );
-}
-
-void PrefsDialog::slotBrowse()
-{
-
 }
 
 void PrefsDialog::slotAddTax()
@@ -382,29 +253,8 @@ void PrefsDialog::slotDocTypeRemoved( const QString& type )
   }
 }
 
-void PrefsDialog::slotDbCredentialsChanged( const QString& )
-{
-  bool en = false;
-  if ( !m_leName->text().isEmpty() ) {
-    en = true;
-  }
-
-  m_pbCheck->setEnabled( en );
-}
-
 void PrefsDialog::readConfig()
 {
-    if(DatabaseSettings::self()->dbDriver() == "QSQLITE")
-        m_databaseDriver->setCurrentIndex(0);
-    else if(DatabaseSettings::self()->dbDriver() == "QMYSQL")
-        m_databaseDriver->setCurrentIndex(1);
-
-    m_leHost->setText( DatabaseSettings::self()->dbServerName() );
-    m_leName->setText( DatabaseSettings::self()->dbDatabaseName() );
-    m_leUser->setText( DatabaseSettings::self()->dbUser() );
-    m_lePasswd->setText( DatabaseSettings::self()->dbPassword() );
-    m_leFile->setText( DatabaseSettings::self()->dbFile() );
-
     mCbDocLocale->setChecked( KraftSettings::self()->showDocumentLocale() );
 
     QString t = KraftSettings::self()->doctype();
@@ -417,18 +267,6 @@ void PrefsDialog::readConfig()
 
 void PrefsDialog::writeConfig()
 {
-    if(m_databaseDriver->currentIndex() == 0)
-        DatabaseSettings::self()->setDbDriver("QSQLITE");
-    else if(m_databaseDriver->currentIndex() == 1)
-        DatabaseSettings::self()->setDbDriver("QMYSQL");
-
-    DatabaseSettings::self()->setDbServerName(m_leHost->text());
-    DatabaseSettings::self()->setDbDatabaseName(m_leName->text());
-    DatabaseSettings::self()->setDbUser(m_leUser->text());
-    DatabaseSettings::self()->setDbPassword( m_lePasswd->text());
-    DatabaseSettings::self()->setDbFile( m_leFile->text());
-    DatabaseSettings::self()->writeConfig();
-
     KraftSettings::self()->setShowDocumentLocale( mCbDocLocale->isChecked() );
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
@@ -443,29 +281,6 @@ void PrefsDialog::writeTaxes()
 
 PrefsDialog::~PrefsDialog()
 {
-}
-
-void PrefsDialog::slotCheckConnect()
-{
-  kDebug() << "Trying database connect to db " << m_leName->text() << endl;
-
-  QSqlDatabase check;
-  check = QSqlDatabase::addDatabase( "QMYSQL" );
-  check.setHostName( m_leHost->text() );
-  check.setDatabaseName( m_leName->text() );
-  check.setUserName( m_leUser->text() );
-  check.setPassword( m_lePasswd->text() );
-
-  check.open();
-
-  bool x = check.isOpen();
-
-  kDebug() << "Connection result: " << x << endl;
-  if ( x == true ) {
-    m_statusLabel->setText( i18n( "<font color='green'>Good!</font>" ) );
-  } else {
-    m_statusLabel->setText( i18n( "<font color='red'>Failed</font><br>") + check.lastError().text()  );
-  }
 }
 
 void PrefsDialog::accept()
@@ -497,7 +312,3 @@ void TaxItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & o
     QItemDelegate::paint(painter, option, index);
   }
 }
-
-
-
-#include "prefsdialog.moc"

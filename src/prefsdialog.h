@@ -57,9 +57,6 @@ protected:
 
 protected slots:
   void accept();
-  void slotBrowse();
-  void slotDbCredentialsChanged( const QString& );
-  void slotCheckConnect();
   
   void slotAddTax();
   void slotDeleteTax();
@@ -67,7 +64,6 @@ protected slots:
   void slotDocTypeRemoved( const QString& );
 
 private:
-  void databaseTab();
   void docTab();
   void doctypeTab();
   void taxTab();
