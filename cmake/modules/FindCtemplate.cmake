@@ -1,9 +1,9 @@
 # - Try to find the ctemplate
 # Once done this will define
 #
-#  CTEMPLATE_FOUND - system has libspectre
-#  CTEMPLATE_INCLUDE_DIR - the libspectre include directory
-#  CTEMPLATE_LIBRARIES - Link this to use libspectre
+#  CTEMPLATE_FOUND - system has ctemplate
+#  CTEMPLATE_INCLUDE_DIR - the ctemplate include directory
+#  CTEMPLATE_LIBRARIES - Link this to use ctemplate
 #
 
 # Copyright (c) 2009, Thomas Richard, <thomas.richard@proan.be>
