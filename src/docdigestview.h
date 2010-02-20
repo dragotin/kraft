@@ -21,6 +21,8 @@
 #include <QMap>
 #include <QTreeWidgetItem>
 
+#include <kabc/addressbook.h>
+
 #include "docdigest.h"
 #include "docguardedptr.h"
 
@@ -40,7 +42,7 @@ public:
   DocDigestView( QWidget *parent = 0 );
   ~DocDigestView();
 
-  void addItems( QTreeWidget*, DocDigestList, QTreeWidgetItem *chapParent = 0 );
+  void addItems( QTreeWidget*, DocDigestList, KABC::AddressBook*, QTreeWidgetItem *chapParent = 0 );
   void addArchivedItem( dbID docID, dbID archID);
 
   QString currentDocumentId();

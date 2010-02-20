@@ -49,17 +49,20 @@ QString DocDigest::lastModified()
   return mLocale.formatDate( mLastModified, KLocale::ShortDate );
 }
 
+#if 0
 QString DocDigest::clientName()
 {
-  KABC::AddressBook *adrBook =  KABC::StdAddressBook::self();
+  KABC::AddressBook *addressBook = KABC::StdAddressBook::self();
+
   KABC::Addressee contact;
-  if( adrBook ) {
-     contact = adrBook->findByUid( mClientId );
+  if( addressBook ) {
+     contact = addressBook->findByUid( mClientId );
   }
   QString name = contact.realName();
 
   return name;
 }
+#endif
 
 void DocDigest::addArchDocDigest( const ArchDocDigest& digest )
 {

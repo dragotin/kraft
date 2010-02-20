@@ -193,10 +193,12 @@ void DocDigestView::slotBuildView()
   mTimeView->clear();
 
   //Create the latest documents view
-  addItems( mLatestView, docman->latestDocs(10));
+  KABC::AddressBook *addressBook =  KABC::StdAddressBook::self();
+
+  addItems( mLatestView, docman->latestDocs(10), addressBook);
 
   //Create the all documents view
-  addItems( mAllView, docman->latestDocs(0));
+  addItems( mAllView, docman->latestDocs(0), addressBook);
 
   /* create the timeline view */
   DocDigestsTimelineList timeList = docman->docsTimelined();
@@ -205,6 +207,7 @@ void DocDigestView::slotBuildView()
   int month = 0;
   int year = 0;
   QTreeWidgetItem *yearItem = 0;
+  QList<QTreeWidgetItem*> itemsList;
 
   for ( it = timeList.begin(); it != timeList.end(); ++it ) {
     if ( ( *it ).year() && year != ( *it ).year() ) {
@@ -212,8 +215,9 @@ void DocDigestView::slotBuildView()
 
       QStringList list;
       list << QString::number(year);
-      yearItem = new QTreeWidgetItem(mTimeView, list);
+      yearItem = new QTreeWidgetItem( (QTreeWidget*) 0, list);
       mTimeView->collapseItem( yearItem );
+      itemsList.append( yearItem );
     }
     month = ( *it ).month();
     const QString monthName =
@@ -222,29 +226,38 @@ void DocDigestView::slotBuildView()
       QStringList list;
       list << monthName;
       QTreeWidgetItem *mItem = new QTreeWidgetItem(yearItem, list);
-      addItems(mTimeView, ( *it ).digests(), mItem);
+      addItems( mTimeView, ( *it ).digests(), addressBook, mItem );
       mTimeView->collapseItem( mItem );
     }
   }
+  mTimeView->addTopLevelItems( itemsList );
 }
 
 
-void DocDigestView::addItems( QTreeWidget *view, DocDigestList list, QTreeWidgetItem *itemParent)
+void DocDigestView::addItems( QTreeWidget *view, DocDigestList list,  KABC::AddressBook *addressBook, QTreeWidgetItem *itemParent )
 {
   kDebug() << "Adding " << list.size() << " elems to a view" << endl;
 
-
   DocDigestList::iterator it;
+
+  QList<QTreeWidgetItem*> itemList;
   for ( it = list.begin(); it != list.end(); ++it ) {
     QStringList li;
-    li << (*it).type() << (*it).clientName() << ( *it).lastModified() << (*it).date()
+    QString clientName;
+    if( addressBook ) {
+      clientName = addressBook->findByUid( (*it).clientId() ).realName();
+    }
+    li << (*it).type() << clientName << ( *it).lastModified() << (*it).date()
         << ( *it ).projectLabel() << ( *it ).ident() << ( *it ).whiteboard();
 
-    QTreeWidgetItem *item;
-    if(itemParent == 0)
-       item = new QTreeWidgetItem( view, li );
-    else
+    QTreeWidgetItem *item = 0;
+    if(itemParent == 0) {
+      item = new QTreeWidgetItem( (QTreeWidget*) 0, li );
+      itemList.append( item );
+       // item = new QTreeWidgetItem( view, li );
+    } else {
        item = new QTreeWidgetItem( itemParent, li );
+    }
     mDocIdDict[item] = (*it).id();
 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();
@@ -256,6 +269,10 @@ void DocDigestView::addItems( QTreeWidget *view, DocDigestList list, QTreeWidget
       QTreeWidgetItem *archItem = new QTreeWidgetItem( item, li );
       mArchIdDict[archItem] = (*archIt);
     }
+  }
+  if( ! itemParent ) {
+    view->addTopLevelItems( itemList );
+    kDebug() << "Adding by topLevelItems: " << itemList.size() ;
   }
 }
 
@@ -470,18 +487,6 @@ void DocDigestView::setupListViewItemFromDoc( DocGuardedPtr doc, QTreeWidgetItem
   item->setText( 5, doc->ident() );
   item->setText( 6, doc->whiteboard() );
 }
-
-#if 0
-void DocDigestView::slotDocViewRequest( QTreeWidgetItem *item )
-{
-  QString id = mDocIdDict[ item ];
-  if( ! id.isEmpty() ) {
-    kDebug() << "Opening document " << id;
-
-    emit viewDocument( id );
-  }
-}
-#endif
 
 void DocDigestView::slotDocOpenRequest( QTreeWidgetItem *item, int )
 {
