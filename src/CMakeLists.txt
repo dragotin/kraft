@@ -87,6 +87,7 @@ set(kraft_SRCS
     materialsaverbase.cpp
     materialsaverdb.cpp
     prefsdialog.cpp
+    prefswages.cpp
     templkatalogview.cpp
     templkataloglistview.cpp
     positionviewwidget.cpp
@@ -157,6 +158,7 @@ kde4_add_ui_files(kraft_SRCS
     positionwidget.ui
     doctypeeditbase.ui
     taxeditbase.ui
+    wageseditbase.ui
     importtodocbase.ui
     numbercycleseditbase.ui
 

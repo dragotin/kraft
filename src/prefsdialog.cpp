@@ -40,6 +40,7 @@
 #include <kglobal.h>
 
 #include "prefsdialog.h"
+#include "prefswages.h"
 #include "databasesettings.h"
 #include "kraftsettings.h"
 #include "kraftdb.h"
@@ -67,6 +68,7 @@ PrefsDialog::PrefsDialog( QWidget *parent)
   docTab();
   doctypeTab();
   taxTab();
+  wagesTab();
 
   readConfig();
 }
@@ -124,6 +126,15 @@ void PrefsDialog::taxTab()
 
   vboxLay->addLayout( butLay );
   topWidget->setLayout( vboxLay );
+}
+
+void PrefsDialog::wagesTab()
+{
+    mPrefsWages = new PrefsWages(this);
+
+    KPageWidgetItem *topFrame = addPage( mPrefsWages, i18n( "Wages" ));
+
+    //topFrame->setIcon(KIcon( "accessories-text-editor" ) );
 }
 
 void PrefsDialog::slotAddTax()
@@ -286,6 +297,7 @@ PrefsDialog::~PrefsDialog()
 void PrefsDialog::accept()
 {
   mDocTypeEdit->saveDocTypes();
+  mPrefsWages->save();
   writeTaxes();
   writeConfig();
   QDialog::accept();

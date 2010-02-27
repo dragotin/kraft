@@ -54,7 +54,7 @@
             <string>Click to add a new document type to the list.</string>
            </property>
            <property name="text">
-            <string>add</string>
+            <string>Add</string>
            </property>
           </widget>
          </item>
@@ -64,7 +64,7 @@
             <string>click to edit the selected document type name</string>
            </property>
            <property name="text">
-            <string>edit</string>
+            <string>Edit</string>
            </property>
           </widget>
          </item>
@@ -74,7 +74,7 @@
             <string>click to remove the current document type</string>
            </property>
            <property name="text">
-            <string>remove</string>
+            <string>Remove</string>
            </property>
           </widget>
          </item>
@@ -207,7 +207,7 @@
             <item>
              <widget class="QPushButton" name="mPbEditCycles">
               <property name="text">
-               <string>&amp;edit Number Cycles...</string>
+               <string>&amp;Edit Number Cycles...</string>
               </property>
              </widget>
             </item>
@@ -321,6 +321,7 @@
    <class>KUrlRequester</class>
    <extends>QFrame</extends>
    <header>kurlrequester.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <includes>

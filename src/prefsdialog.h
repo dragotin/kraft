@@ -38,6 +38,7 @@ class QStackedWidget;
 class QModelIndex;
 class KUrlRequester;
 class ImpTreeView;
+class PrefsWages;
 
 // ################################################################################
 
@@ -67,6 +68,7 @@ private:
   void docTab();
   void doctypeTab();
   void taxTab();
+  void wagesTab();
   void writeTaxes();
 
   QComboBox *m_databaseDriver;
@@ -90,9 +92,12 @@ private:
 
   DocTypeEdit *mDocTypeEdit;
   
+  PrefsWages *mPrefsWages;
+
   QPushButton *mDelTax;
   ImpTreeView *mTaxTreeView;
   QSqlTableModel *mTaxModel;
+
 };
 
 class TaxItemDelegate : public QItemDelegate
