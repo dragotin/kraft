@@ -48,8 +48,8 @@ PrefsUnits::PrefsUnits(QWidget* parent)
   mUnitsModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
   mUnitsModel->setHeaderData(1, Qt::Horizontal, tr("Short"));
   mUnitsModel->setHeaderData(2, Qt::Horizontal, tr("Long"));
-  mUnitsModel->setHeaderData(3, Qt::Horizontal, tr("Short plurar"));
-  mUnitsModel->setHeaderData(4, Qt::Horizontal, tr("Long plurar"));
+  mUnitsModel->setHeaderData(3, Qt::Horizontal, tr("Short plural"));
+  mUnitsModel->setHeaderData(4, Qt::Horizontal, tr("Long plural"));
 
   mProxyModel = new QSortFilterProxyModel(this);
   mProxyModel->setSourceModel(mUnitsModel);
