@@ -41,6 +41,7 @@
 
 #include "prefsdialog.h"
 #include "prefswages.h"
+#include "prefsunits.h"
 #include "databasesettings.h"
 #include "kraftsettings.h"
 #include "kraftdb.h"
@@ -69,6 +70,7 @@ PrefsDialog::PrefsDialog( QWidget *parent)
   doctypeTab();
   taxTab();
   wagesTab();
+  unitsTab();
 
   readConfig();
 }
@@ -133,6 +135,15 @@ void PrefsDialog::wagesTab()
     mPrefsWages = new PrefsWages(this);
 
     KPageWidgetItem *topFrame = addPage( mPrefsWages, i18n( "Wages" ));
+
+    //topFrame->setIcon(KIcon( "accessories-text-editor" ) );
+}
+
+void PrefsDialog::unitsTab()
+{
+    mPrefsUnits = new PrefsUnits(this);
+
+    KPageWidgetItem *topFrame = addPage( mPrefsUnits, i18n( "Units" ));
 
     //topFrame->setIcon(KIcon( "accessories-text-editor" ) );
 }
@@ -298,6 +309,7 @@ void PrefsDialog::accept()
 {
   mDocTypeEdit->saveDocTypes();
   mPrefsWages->save();
+  mPrefsUnits->save();
   writeTaxes();
   writeConfig();
   QDialog::accept();

@@ -41,10 +41,6 @@ PrefsWages::PrefsWages(QWidget* parent)
 {
   QVBoxLayout *vboxLay = new QVBoxLayout;
 
-  QLabel *label;
-  label = new QLabel(i18n("Tax rates beginning at date:"));
-  vboxLay->addWidget( label );
-
   mWagesModel = new QSqlTableModel(this);
   mWagesModel->setTable("stdSaetze");
   mWagesModel->setSort(3, Qt::AscendingOrder);
@@ -96,6 +92,7 @@ PrefsWages::PrefsWages(QWidget* parent)
   mEditWage = new KPushButton( KIcon("document-edit"), i18n( "Edit" ));
   connect( mEditWage, SIGNAL( clicked() ), SLOT( slotEditWage() ) );
   butLay->addWidget( mEditWage );
+  mEditWage->setEnabled(false);
 
   mDelWage = new KPushButton( KIcon("list-remove"), i18n( "Remove" ) );
   connect( mDelWage, SIGNAL( clicked() ), SLOT( slotDeleteWage() ) );

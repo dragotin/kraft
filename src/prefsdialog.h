@@ -39,6 +39,7 @@ class QModelIndex;
 class KUrlRequester;
 class ImpTreeView;
 class PrefsWages;
+class PrefsUnits;
 
 // ################################################################################
 
@@ -69,6 +70,7 @@ private:
   void doctypeTab();
   void taxTab();
   void wagesTab();
+  void unitsTab();
   void writeTaxes();
 
   QComboBox *m_databaseDriver;
@@ -93,6 +95,7 @@ private:
   DocTypeEdit *mDocTypeEdit;
   
   PrefsWages *mPrefsWages;
+  PrefsUnits *mPrefsUnits;
 
   QPushButton *mDelTax;
   ImpTreeView *mTaxTreeView;
