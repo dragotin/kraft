@@ -422,7 +422,7 @@ void DocType::readIdentTemplate()
   QSqlQuery q;
   QString tmpl;
 
-  const QString defaultTempl = QString::fromLatin1( "%y%w-%i" );
+  const QString defaultTempl = QString::fromLatin1( "%y%ww-%i" );
 
   QString numberCycle = numberCycleName();
   if ( numberCycle.isEmpty() ) {
