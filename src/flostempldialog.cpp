@@ -288,8 +288,7 @@ FlosTemplDialog::~FlosTemplDialog( )
 
 void FlosTemplDialog::accept()
 {
-  if( m_template )
-  {
+  if( m_template ) {
     kDebug() << "Saving template ID " << m_template->getTemplID() << endl;
 
     QString h;
@@ -369,8 +368,9 @@ void FlosTemplDialog::accept()
 
 void FlosTemplDialog::reject()
 {
-  if(confirmClose() == true)
-    KDialog::reject();
+  if(confirmClose() == true) {
+    // everything is happening in confirmClose
+  }
 }
 
 void FlosTemplDialog::closeEvent ( QCloseEvent * event )
@@ -383,13 +383,11 @@ void FlosTemplDialog::closeEvent ( QCloseEvent * event )
 
 bool FlosTemplDialog::confirmClose()
 {
-  if(modified == true)
-  {
+  if(modified == true) {
     if ( KMessageBox::warningContinueCancel( this, i18n( "The template was modified. Do "
                                                          "you really want to discard all changes?" ),
                                              i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ), KIcon("edit-clear") ) )
-          == KMessageBox::Cancel  )
-    {
+          == KMessageBox::Cancel  ) {
       return false;
     }
 
