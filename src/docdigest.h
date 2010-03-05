@@ -35,7 +35,6 @@ public:
   DocDigest( dbID id, const QString& type, const QString& clientID );
   DocDigest();
 
-  // QString clientName();
   QString clientId() { return mClientId; }
   void setClientId( const QString& id ) { mClientId = id; }
 

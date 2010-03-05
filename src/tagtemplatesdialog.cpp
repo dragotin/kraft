@@ -129,7 +129,7 @@ TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
   mListView->setAllColumnsShowFocus( true );
   mListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
-  connect( mListView, SIGNAL( selectionChanged() ),
+  connect( mListView, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotSelectionChanged() ) );
 
   setTags();

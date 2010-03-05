@@ -137,8 +137,9 @@ bool TagTemplateMan::writeTemplate( const TagTemplate& tt )
   } else if ( cnt == 0 ) {
     kDebug() << "need to insert the tag template into db" << endl;
     QSqlQuery qi;
-    qi.prepare( "INSERT INTO tagTemplates (name, description, color) VALUES "
-                  "( :name, :desc, :col )" );
+    qi.prepare( "INSERT INTO tagTemplates (name, sortKey, description, color) VALUES "
+                "( :name, :sortKey, :desc, :col )" );
+    qi.bindValue( ":sortKey", 0 );
     qi.bindValue( ":name", tt.name() );
     qi.bindValue( ":desc", tt.description() );
     qi.bindValue( ":col",  tt.color().name() );
@@ -166,10 +167,11 @@ void TagTemplateMan::load()
   mTagTmpl.clear();
 
   /* read tag templates from db */
-  QSqlQuery q1( "SELECT tagTmplID, name, description, color FROM tagTemplates ORDER BY sortKey" );
+  /* FIXME: The sortKey sort is not working because the sortKey is not correctly set on write */
+  /* With the initial db setup come useful sortKeys, thats why we still sort for it. */
+  QSqlQuery q1( "SELECT tagTmplID, name, description, color FROM tagTemplates ORDER BY sortKey, name" );
   while( q1.next()) {
     dbID id( q1.value(0).toInt() );
-    // resize if index is to big.
     TagTemplate tt ( id, q1.value(1).toString(), q1.value(2).toString(),
                      q1.value(3).toString() );
     mTagTmpl.append( tt );
