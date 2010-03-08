@@ -22,6 +22,8 @@
 
 #include <kassistantdialog.h>
 
+#include <akonadi/item.h>
+
 #include "ui_statuspage.h"
 #include "ui_dbselect.h"
 #include "ui_mysqldetails.h"
@@ -33,6 +35,8 @@
 
 class KPageWidgetItem;
 class KUrl;
+class AddressSelection;
+
 
 class WelcomePage:public QWidget
 {
@@ -142,6 +146,23 @@ class UpgradeDbPage:public QWidget
 
 // ---------------------------------------------------------------------------
 
+class OwnAddressPage:public QWidget
+{
+  Q_OBJECT
+
+  public:
+  OwnAddressPage( QWidget *parent=0 );
+  void setupAddresses();
+
+  private:
+  AddressSelection *mAddresses;
+
+  private slots:
+  void contactStored( const Akonadi::Item& );
+};
+
+// ---------------------------------------------------------------------------
+
 class FinalStatusPage:public QWidget
 {
   Q_OBJECT
@@ -158,7 +179,7 @@ class FinalStatusPage:public QWidget
 
 // ---------------------------------------------------------------------------
 
-class KRAFTCAT_EXPORT SetupAssistant: public KAssistantDialog
+class SetupAssistant: public KAssistantDialog
 {
   Q_OBJECT
 
@@ -195,6 +216,7 @@ private:
   UpgradeDbPage     *mUpgradeDbPage;
   FinalStatusPage   *mFinalStatusPage;
   SqLiteDetailsPage *mSqLiteDetailsPage;
+  OwnAddressPage    *mOwnAddressPage;
 
   KPageWidgetItem *mWelcomePageItem;
   KPageWidgetItem *mDbSelectPageItem;
@@ -203,6 +225,7 @@ private:
   KPageWidgetItem *mCreateDbPageItem;
   KPageWidgetItem *mUpgradeDbPageItem;
   KPageWidgetItem *mFinalStatusPageItem;
+  KPageWidgetItem *mOwnAddressPageItem;
 
   Mode mMode;
   QStringList mErrors;

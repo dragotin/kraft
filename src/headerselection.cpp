@@ -51,7 +51,7 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   l->addWidget(fh);
   mAddressSelection = new AddressSelection();
   l->addWidget(mAddressSelection);
-  fh->setListView( mAddressSelection );
+  fh->setListView( mAddressSelection->treeWidget() );
   fh->showCount( false );
   mAddressSelection->setupAddressList( );
 
@@ -100,7 +100,7 @@ QTreeWidgetItem *HeaderSelection::itemSelected()
   if ( textPageActive() ) {
     return mTextsView->textsListView()->currentItem();
   } else {
-    return mAddressSelection->currentItem();
+    return mAddressSelection->treeWidget()->currentItem();
   }
   return 0;
 }
@@ -113,13 +113,6 @@ bool HeaderSelection::addressPageActive()
 HeaderSelection::~HeaderSelection()
 {
   delete mAddressSelection;
-}
-
-KABC::Addressee HeaderSelection::currentAddressee()
-{
-  KABC::Addressee adr;
-  adr = mAddressSelection->currentAddressee();
-  return adr;
 }
 
 DocText HeaderSelection::currentDocText() const

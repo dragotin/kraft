@@ -23,13 +23,14 @@
 #include <QTreeWidget>
 
 #include <kabc/addressee.h>
-#include <kabc/addressbook.h>
 
 class QComboBox;
+class QPushButton;
+class KJob;
 
 using namespace KABC;
 
-class AddressSelection : public QTreeWidget
+class AddressSelection : public QWidget
 {
   Q_OBJECT
 
@@ -39,17 +40,22 @@ public:
   ~AddressSelection() { };
   void setupAddressList( );
   Addressee currentAddressee( QTreeWidgetItem* item = 0 );
+  QTreeWidget *treeWidget() { return mTreeWidget; }
 
 signals:
   void addressSelected( const Addressee& );
 
 protected slots:
-  void slotAddressBookChanged( AddressBook* );
-  void slotSelectionChanged();
-
+  void readContacts( KJob* job );
+  // void slotAddressBookChanged( AddressBook* );
+  void slotSelectionChanged( QTreeWidgetItem*, QTreeWidgetItem* );
+  void addressSelectedResult( KJob * );
+  void slotRefreshAddressList();
+  void slotOpenAddressBook();
 private:
+  QTreeWidget         *mTreeWidget;
   QMap<QTreeWidgetItem*, QString> mAddressIds;
-  AddressBook *mStdAddressbook;
+  QPushButton *mRefreshList;
 };
 
 #endif

@@ -53,7 +53,7 @@ public:
 
 signals:
   void addresseeSelected( const Addressee& );
-  void startAddressbook();
+
 private:
   AddressSelection *mAddresses;
 };
@@ -106,6 +106,8 @@ private:
   DocDetailsPage *mDetailsPage;
   KHBox *mCustomerBox;
   QWidget *mParent;
+
+  KABC::Addressee mAddressee;
 
   KPageWidgetItem *mCustomerPageItem;
   KPageWidgetItem *mDetailsPageItem;

@@ -29,6 +29,7 @@
 #include <kdialog.h>
 #include <kcombobox.h>
 #include <kdatewidget.h>
+#include <kdebug.h>
 
 #include "newdocassistant.h"
 #include "addressselection.h"
@@ -58,14 +59,6 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
 
   mAddresses->setupAddressList();
   vbox->addWidget( mAddresses );
-
-  QHBoxLayout *hbox = new QHBoxLayout;
-  QPushButton *but = new QPushButton( i18n( "Create new Customer Entry..." ) );
-  connect( but, SIGNAL( clicked() ), this,  SIGNAL( startAddressbook() ) );
-  hbox->addWidget( but );
-
-  hbox->addStretch( 1 );
-  vbox->addLayout( hbox );
 }
 
 CustomerSelectPage:: ~CustomerSelectPage()
@@ -158,13 +151,12 @@ void KraftWizard::init()
   mCustomerPage = new CustomerSelectPage( w );
   connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
            this,  SLOT( slotAddressee( const Addressee& ) ) );
-  connect( mCustomerPage, SIGNAL( startAddressbook() ),
-           this, SLOT( slotStartAddressbook() ) );
 }
 
-void KraftWizard::slotAddressee( const Addressee& )
+void KraftWizard::slotAddressee( const Addressee& addressee )
 {
   kDebug() << "Addressee Changed!";
+  mAddressee = addressee;
   setValid ( mCustomerPageItem, true );
 }
 
@@ -181,7 +173,7 @@ QDate KraftWizard::date() const
 
 QString KraftWizard::addressUid() const
 {
-  return mCustomerPage->mAddresses->currentAddressee().uid();
+  return mAddressee.uid();
 }
 
 QString KraftWizard::docType() const

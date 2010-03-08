@@ -46,7 +46,6 @@ public:
   bool textPageActive();
   bool addressPageActive();
 
-  KABC::Addressee currentAddressee();
   QString currentText() const;
   DocText currentDocText() const;
 

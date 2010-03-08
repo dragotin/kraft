@@ -3,6 +3,8 @@ include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_
 
 add_subdirectory(pics)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
+
 ########### next target ###############
 
 set( kraftcat_LIB_SRCS
@@ -25,7 +27,6 @@ set( kraftcat_LIB_SRCS
     einheit.cpp
     attribute.cpp
     numbercycle.cpp
-    setupassistant.cpp
     )
 
 
@@ -105,7 +106,6 @@ set(kraft_SRCS
     htmlview.cpp
     docpostcard.cpp
     catalogselection.cpp
-    addressselection.cpp
     kraftdocheaderedit.cpp
     kraftdocfooteredit.cpp
     inserttempldialog.cpp
@@ -140,7 +140,8 @@ set(kraft_SRCS
     taxeditdialog.cpp
     numbercycledialog.cpp
     impviewwidgets.cpp
-
+    addressselection.cpp
+    setupassistant.cpp
 )
 
 kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)
@@ -168,7 +169,7 @@ kde4_add_ui_files(kraft_SRCS
 
 kde4_add_executable(kraft ${kraft_SRCS})
 
-target_link_libraries(kraft kraftcat ${QT_AND_KDECORE_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_KABC_LIBS} ${KDE4_KIO_LIBS}  ctemplate pthread)
+target_link_libraries(kraft kraftcat akonadi-contact ${QT_AND_KDECORE_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_KABC_LIBS} ${KDE4_KIO_LIBS}  ctemplate pthread)
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 

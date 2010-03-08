@@ -49,9 +49,9 @@
 TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
     : KatalogView(parent, name),
       m_flosDialog(0),
-      m_listview( 0 )
-
+      m_listview(0)
 {
+
 }
 
 TemplKatalogView::~TemplKatalogView()
@@ -214,12 +214,16 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
 
 void TemplKatalogView::slEditRejected()
 {
+  kDebug() << "Rejecting Edit!";
   if ( m_editListViewItem ) {
     delete m_editListViewItem;
     m_editListViewItem = 0;
   }
-  delete m_flosDialog;
+
+  if( m_flosDialog ) {
+    delete m_flosDialog;
     m_flosDialog = 0;
+  }
 }
 
 void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)

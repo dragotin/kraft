@@ -26,107 +26,157 @@
 #include <kabc/addressee.h>
 #include <kabc/stdaddressbook.h>
 
+#include <akonadi/contact/contactsearchjob.h>
+#include <akonadi/control.h>
+#include <akonadi/contact/contacteditor.h>
+#include <akonadi/contact/contacteditordialog.h>
+
 #include <QSizePolicy>
 #include <QComboBox>
 #include <QLabel>
 #include <QTreeWidget>
+#include <QHeaderView>
+#include <QVBoxLayout>
+#include <QPushButton>
 
 using namespace KABC;
+using namespace Akonadi;
 
 AddressSelection::AddressSelection( QWidget *parent )
-  : QTreeWidget( parent )
+  : QWidget( parent )
 {
-  setRootIsDecorated( true );
-  setColumnCount( 2 );
+  QVBoxLayout *vbox = new QVBoxLayout;
+  setLayout( vbox );
+
+  QLabel *l = new QLabel;
+  l->setText(i18n("Please select a contact from the list below: "));
+  vbox->addWidget( l );
+
+  mTreeWidget = new QTreeWidget;
+  vbox->addWidget( mTreeWidget );
+
+  mTreeWidget->setRootIsDecorated( true );
+  mTreeWidget->setColumnCount( 2 );
+  mTreeWidget->header()->setResizeMode( QHeaderView::ResizeToContents );
   QStringList li;
   li << i18n( "Real Name" );
   li << i18n( "Locality" );
-  setHeaderLabels( li );
+  mTreeWidget->setHeaderLabels( li );
 
-  setSelectionMode( QAbstractItemView::SingleSelection );
+  mTreeWidget->setSelectionMode( QAbstractItemView::SingleSelection );
 
-  connect( this, SIGNAL( itemSelectionChanged() ),
-           SLOT( slotSelectionChanged() ) );
+  QHBoxLayout *hbox = new QHBoxLayout;
+  vbox->addLayout( hbox );
+
+  QPushButton *openAdrBook = new QPushButton(i18n("New Contact..."));
+  hbox->addWidget( openAdrBook );
+  connect( openAdrBook, SIGNAL(clicked() ), SLOT( slotOpenAddressBook() ) );
+  hbox->addStretch(4);
+
+  if ( !Akonadi::Control::start( this ) ) {
+    kError() << "Failed to start Akonadi!";
+  }
+  connect(  mTreeWidget, SIGNAL( currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*  )),
+           SLOT( slotSelectionChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
+}
+
+void AddressSelection::slotOpenAddressBook()
+{
+  ContactEditorDialog *dlg = new ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this );
+  connect( dlg, SIGNAL( contactStored( const Akonadi::Item& ) ),
+           this, SLOT( slotRefreshAddressList() ) );
+  dlg->show();
+}
+
+void AddressSelection::slotRefreshAddressList()
+{
+  setupAddressList();
 }
 
 void AddressSelection::setupAddressList()
 {
-  // open the address book asynchroniouly. If it is local, it returns
-  // immediately loaded however.
-  mStdAddressbook = StdAddressBook::self( true );
-  if ( mStdAddressbook->loadingHasFinished() ) {
-    slotAddressBookChanged( mStdAddressbook );
-  }
-
-  // be prepared to changes
-  connect( mStdAddressbook, SIGNAL( addressBookChanged( AddressBook* ) ),
-           this, SLOT( slotAddressBookChanged( AddressBook* ) ) );
+  mTreeWidget->clear();
+  mAddressIds.clear();
+  // Start an Akonadi Search job which returns all Addresses found in Akonadis
+  // contact storage, which can be multiple address books.
+  Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
+  connect( job, SIGNAL( result( KJob* ) ), SLOT( readContacts( KJob* ) ) );
 }
 
-void AddressSelection::slotAddressBookChanged( AddressBook *ab )
+// Result Slot of the Contact Search above
+void AddressSelection::readContacts( KJob* job )
 {
+  kDebug() << "Reading Akonadi Search Job!";
+  if ( job->error() ) {
+    qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
+    return;
+  }
 
-  if ( ! ab ) return;
-  kDebug() << "Filling address List" << endl;
+  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
+  KABC::Addressee::List contacts = searchJob->contacts();
+  kDebug() << "Amount of address entries: " << contacts.size();
 
-  // FIXME: handle deletes and updates correctly.
+  // iterate over all found contacts and write build up the treeview
+  foreach ( const KABC::Addressee &contact, contacts ) {
+    QTreeWidgetItem *item = new QTreeWidgetItem( mTreeWidget );
+    item->setText( 0, contact.name() );
 
-  QList<QString> uidList;
-  uidList = mAddressIds.values();
-  QTreeWidgetItem *newItem = 0;
-  int newItemCnt = 0;
+    // remember the name as a search key for the slot selectionChanged
+    mAddressIds[item] = contact.name();
 
-  AddressBook::Iterator it;
-  for ( it = ab->begin(); it != ab->end(); ++it ) {
-    // check if we already know the uid and add it if not.
-    if ( uidList.indexOf( ( *it ).uid() ) == -1 ) {
-      QTreeWidgetItem *item = new QTreeWidgetItem( this );
-      item->setText( 0, ( *it ).realName() );
-      newItem = item;
-      newItemCnt++;
-
-      mAddressIds[item] = ( *it ).uid();
-
-      Address::List adr = ( *it ).addresses();
-      Address::List::iterator adrIt;
-      for ( adrIt = adr.begin(); adrIt != adr.end(); ++adrIt ) {
-        item->setText( 1, ( *adrIt ).locality () );
-      }
+    Address::List adr = contact.addresses();
+    Address::List::iterator adrIt;
+    for ( adrIt = adr.begin(); adrIt != adr.end(); ++adrIt ) {
+      item->setText( 1, ( *adrIt ).locality () );
     }
   }
-
-  // if there is exactly one new item, we select it
-  if ( newItemCnt == 1 && newItem ) {
-    clearSelection();
-    setCurrentItem( newItem );
-  }
-
-  this->resizeColumnToContents(0);
 }
 
-Addressee AddressSelection::currentAddressee( QTreeWidgetItem *item )
+// slot called if the user clicks on the treeview
+void AddressSelection::slotSelectionChanged( QTreeWidgetItem *item, QTreeWidgetItem* )
 {
   Addressee adr;
-  QString adrUid;
+  QString adrName;
 
   QTreeWidgetItem *it = item;
   if ( ! it ) {
-    it = currentItem();
+    it = mTreeWidget->currentItem();
   }
 
   if ( it ) {
-    adrUid = mAddressIds[it];
+    adrName = mAddressIds[it];
 
-    if ( ! adrUid.isEmpty() ) {
-      if ( mStdAddressbook && mStdAddressbook->loadingHasFinished() )
-        adr = mStdAddressbook->findByUid( adrUid );
+    if ( ! adrName.isEmpty() ) {
+      // fire again an akonadi search job with the name as key
+      // FIXME: Use the contacts Unique Object ID to search for, currently
+      // not supported by Akonadi.
+      Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
+      job->setQuery( Akonadi::ContactSearchJob::Name, adrName );
+      connect( job, SIGNAL( result( KJob* ) ), SLOT( addressSelectedResult( KJob* ) ) );
     }
   }
-  return adr;
 }
 
-void AddressSelection::slotSelectionChanged()
+// Slot to handle the selection Query Job
+void AddressSelection::addressSelectedResult( KJob *job )
 {
-  emit addressSelected( currentAddressee() );
+  kDebug() << "Address Selection Job!";
+  if ( job->error() ) {
+    qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
+    return;
+  }
+
+  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
+  KABC::Addressee::List contacts = searchJob->contacts();
+  kDebug() << "Amount of address entries: " << contacts.size();
+
+  // emit the selected Signal for every Contact. Usually its only one.
+  foreach ( const KABC::Addressee &contact, contacts ) {
+    kDebug() << "Found the addressee: " << contact.name();
+    emit addressSelected( contact );
+  }
 }
+
+
+
 

@@ -24,7 +24,7 @@
 #include "databasesettings.h"
 #include "defaultprovider.h"
 #include "kraftdb.h"
-
+#include "addressselection.h"
 
 WelcomePage::WelcomePage(QWidget *parent)
   :QWidget(parent)
@@ -266,7 +266,36 @@ void UpgradeDbPage::slotCountFillProgress( bool res )
 
 // ---------------------------------------------------------------------------
 
-FinalStatusPage::FinalStatusPage(QWidget *parent)
+OwnAddressPage::OwnAddressPage(QWidget *parent)
+  :QWidget(parent)
+{
+  QVBoxLayout *vbox = new QVBoxLayout;
+  parent->setLayout( vbox );
+  vbox->setSpacing( KDialog::spacingHint() );
+  vbox->setMargin( KDialog::marginHint() );
+
+  QLabel *l = new QLabel;
+  l->setText( i18n("Select your own address from the address book. It is set as a consigner on the documents.") );
+  vbox->addWidget( l );
+
+  mAddresses = new AddressSelection();
+  vbox->addWidget( mAddresses );
+}
+
+void OwnAddressPage::setupAddresses()
+{
+  mAddresses->setupAddressList();
+}
+
+void OwnAddressPage::contactStored( const Akonadi::Item& item )
+{
+  KABC::Addressee addressee  = item.payload<KABC::Addressee>();
+  kDebug() << "Contact was stored in Akonadi: " << addressee.name();
+}
+
+
+// ---------------------------------------------------------------------------
+  FinalStatusPage::FinalStatusPage(QWidget *parent)
   :QWidget(parent)
 {
   QVBoxLayout *vbox = new QVBoxLayout;
@@ -317,12 +346,20 @@ SetupAssistant::SetupAssistant( QWidget *parent )
   mUpgradeDbPage = new UpgradeDbPage(w);
 
   w = new QWidget;
+  mOwnAddressPageItem = addPage( w, i18n( "My Own Address Data" ));
+  mOwnAddressPage = new OwnAddressPage(w);
+  mOwnAddressPage->setupAddresses();
+
+  w = new QWidget;
   mFinalStatusPageItem = addPage( w, i18n("Setup Finished."));
   mFinalStatusPage = new FinalStatusPage(w);
 
   connect( this, SIGNAL( currentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ),
            this, SLOT( slotCurrentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ) );
   connect( this, SIGNAL( slotButtonClicked(int) ), this, SLOT( slotButtonClicked(int) ) );
+
+  setInitialSize( QSize( 450, 260 ) );
+
 }
 
 void SetupAssistant::next( )
