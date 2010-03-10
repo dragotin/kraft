@@ -47,7 +47,7 @@ signals:
 
 protected slots:
   void readContacts( KJob* job );
-  // void slotAddressBookChanged( AddressBook* );
+
   void slotSelectionChanged( QTreeWidgetItem*, QTreeWidgetItem* );
   void addressSelectedResult( KJob * );
   void slotRefreshAddressList();

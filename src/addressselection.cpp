@@ -22,9 +22,7 @@
 #include <kdebug.h>
 #include <kdialog.h>
 
-#include <kabc/addressbook.h>
 #include <kabc/addressee.h>
-#include <kabc/stdaddressbook.h>
 
 #include <akonadi/contact/contactsearchjob.h>
 #include <akonadi/control.h>

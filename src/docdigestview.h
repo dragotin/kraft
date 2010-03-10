@@ -19,9 +19,10 @@
 
 #include <QWidget>
 #include <QMap>
+#include <QMultiMap>
 #include <QTreeWidgetItem>
 
-#include <kabc/addressbook.h>
+#include <kabc/addressee.h>
 
 #include "docdigest.h"
 #include "docguardedptr.h"
@@ -33,6 +34,7 @@ class dbID;
 class ArchDocDigest;
 class QContextMenuEvent;
 class QToolBox;
+class KJob;
 
 class DocDigestView : public QWidget
 {
@@ -42,7 +44,7 @@ public:
   DocDigestView( QWidget *parent = 0 );
   ~DocDigestView();
 
-  void addItems( QTreeWidget*, DocDigestList, KABC::AddressBook*, QTreeWidgetItem *chapParent = 0 );
+  void addItems( QTreeWidget*, DocDigestList, QTreeWidgetItem *chapParent = 0 );
   void addArchivedItem( dbID docID, dbID archID);
 
   QString currentDocumentId();
@@ -67,6 +69,8 @@ protected slots:
   void slotCurrentChangedToolbox ( int index );
   void setupListViewItemFromDoc( DocGuardedPtr , QTreeWidgetItem* );
   QTreeWidgetItem *addDocToParent( DocGuardedPtr, QTreeWidget*, QTreeWidgetItem* = 0);
+  void getClientNames();
+  void readContacts( KJob* );
 
 signals:
   void createDocument();
@@ -93,6 +97,9 @@ private:
   QPushButton *mNewDocButton;
   QMap<QTreeWidgetItem*, QString> mDocIdDict;
   QMap<QTreeWidgetItem*, ArchDocDigest> mArchIdDict;
+  QMultiMap<QString, QTreeWidgetItem*> mClientIdDict;
+
+  KABC::Addressee::List mContacts;
 };
 
 #endif

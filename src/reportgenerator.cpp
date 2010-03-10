@@ -29,7 +29,7 @@
 #include <ktemporaryfile.h>
 #include <kurl.h>
 #include <kmessagebox.h>
-#include <kabc/stdaddressbook.h>
+#include <akonadi/contact/contactsearchjob.h>
 
 #include "reportgenerator.h"
 #include "kraftdoc.h"
@@ -55,8 +55,10 @@ ReportGenerator *ReportGenerator::self()
 }
 
 ReportGenerator::ReportGenerator()
+  :mArchDoc( 0 )
 {
-
+  connect( this, SIGNAL( templateGenerated( const QString& )),
+           this, SLOT( slotConvertTemplate( const QString& )));
 }
 
 ReportGenerator::~ReportGenerator()
@@ -70,7 +72,16 @@ ReportGenerator::~ReportGenerator()
  */
 void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 {
-  const QString templ = fillupTemplateFromArchive( archId );
+  mDocId = docID;
+  mArchId = archId;
+  fillupTemplateFromArchive( archId );
+  // Method fillupTemplateFromArchive raises a signal when the archive was
+  // generated. This signal gets connected to slotConvertTemplate in the
+  // constructor of this class.
+}
+
+void ReportGenerator::slotConvertTemplate( const QString& templ )
+{
   kDebug() << "Report BASE:\n" << templ;
 
   if ( ! templ.isEmpty() ) {
@@ -88,25 +99,23 @@ void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 
     kDebug() << "Wrote rml to " << temp.fileName();
 
-    QString dId( docID );
+    QString dId( mDocId );
 
-    if ( docID.isEmpty() ) {
-      dId = ArchiveMan::self()->documentID( archId );
+    if ( mDocId.isEmpty() ) {
+      dId = ArchiveMan::self()->documentID( mArchId );
     }
-    runTrml2Pdf( temp.fileName(), dId, archId.toString() );
+    runTrml2Pdf( temp.fileName(), dId, mArchId.toString() );
   }
 }
 
 QString ReportGenerator::findTemplate( const QString& type )
 {
-  KStandardDirs stdDirs;
-
   DocType dType( type );
 
   QString tmplFile = dType.templateFile();
 
   if ( tmplFile.isEmpty() ) {
-    KMessageBox::error( 0, i18n("A document template named %1 could not be loaded."
+    KMessageBox::error( 0, i18n("A document template named %1 could not be loaded. "
                                 "Please check the installation." ).arg( dType.templateFile() ) ,
                         i18n( "Template not found" ) );
   }
@@ -120,14 +129,46 @@ QString ReportGenerator::findTemplate( const QString& type )
 #define TAG( THE_TAG )  QString( "%1").arg( THE_TAG )
 #define DICT( THE_DICT )  QString( "%1").arg( THE_DICT )
 
-QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
+void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 {
-  ArchDoc archive( id );
+  mArchDoc = new ArchDoc(id);
 
-  QString tmplFile = findTemplate( archive.docType() );
+  if( mArchDoc->clientUid().isEmpty() ) {
+    addressReceived( 0 );
+  } else {
+    Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
+    connect( job, SIGNAL( result( KJob* ) ), SLOT( addressReceived( KJob* ) ) );
+  }
+}
+
+// Result Slot of the Contact Search above
+void ReportGenerator::addressReceived( KJob* job )
+{
+  kDebug() << "Reading Akonadi Search Job!";
+  KABC::Addressee addressee ;
+  if( job ) {
+    if ( job->error() ) {
+      qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
+      return;
+    }
+
+    Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
+    KABC::Addressee::List contacts = searchJob->contacts();
+    kDebug() << "Amount of address entries: " << contacts.size();
+
+    // iterate over all found contacts and write build up the treeview
+    foreach ( const KABC::Addressee &contact, contacts ) {
+      if( contact.uid() == mArchDoc->clientUid() ) {
+        addressee = contact;
+        break;
+      }
+    }
+  }
+
+  QString tmplFile = findTemplate( mArchDoc->docType() );
 
   if ( tmplFile.isEmpty() ) {
-    return QString();
+    return;
   }
 
   // create a text template
@@ -136,7 +177,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   /* replace the placeholders */
   /* A placeholder has the format <!-- %VALUE --> */
 
-  ArchDocPositionList posList = archive.positions();
+  ArchDocPositionList posList = mArchDoc->positions();
   QString loopResult;
   QString h;
 
@@ -154,8 +195,8 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
     h.setNum( pos.amount(), 'f', 2 );
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
     tmpl.setValue( "POSITIONS", "POS_UNIT", pos.unit() );
-    tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString( archive.locale() ) );
-    tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.nettoPrice().toString( archive.locale() ) );
+    tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString( mArchDoc->locale() ) );
+    tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.nettoPrice().toString( mArchDoc->locale() ) );
     tmpl.setValue( "POSITIONS", "POS_KIND", pos.kind().toLower() );
 
     if ( !pos.kind().isEmpty() ) {
@@ -168,13 +209,11 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   }
 
   /* now replace stuff in the whole document */
-  tmpl.setValue( TAG( "DATE" ), archive.locale()->formatDate(
-                   archive.date(), KLocale::ShortDate ) );
-  tmpl.setValue( TAG( "DOCTYPE" ), archive.docType() );
-  tmpl.setValue( TAG( "ADDRESS" ), archive.address() );
+  tmpl.setValue( TAG( "DATE" ), mArchDoc->locale()->formatDate(
+                   mArchDoc->date(), KLocale::ShortDate ) );
+  tmpl.setValue( TAG( "DOCTYPE" ), mArchDoc->docType() );
+  tmpl.setValue( TAG( "ADDRESS" ), mArchDoc->address() );
 
-  KABC::AddressBook *ab = KABC::StdAddressBook::self();
-  KABC::Addressee addressee = ab->findByUid( archive.clientUid() );
   tmpl.setValue( TAG( "CLIENT_NAME" ), addressee.realName() );
   tmpl.setValue( TAG( "CLIENT_ORGANISATION" ), addressee.organization() );
   tmpl.setValue( TAG( "CLIENT_URL" ), addressee.url().prettyUrl() );
@@ -203,45 +242,44 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   tmpl.setValue( TAG( "CLIENT_LABEL" ),
                  clientAddress.label() );
 
-  tmpl.setValue( TAG( "DOCID" ),   archive.ident() );
-  tmpl.setValue( TAG( "PROJECTLABEL" ),   archive.projectLabel() );
-  tmpl.setValue( TAG( "SALUT" ),   archive.salut() );
-  tmpl.setValue( TAG( "GOODBYE" ), archive.goodbye() );
-  tmpl.setValue( TAG( "PRETEXT" ),   rmlString( archive.preText() ) );
-  tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( archive.postText() ) );
-  tmpl.setValue( TAG( "BRUTTOSUM" ), archive.bruttoSum().toString( archive.locale() ) );
-  tmpl.setValue( TAG( "NETTOSUM" ),  archive.nettoSum().toString( archive.locale() ) );
+  tmpl.setValue( TAG( "DOCID" ),   mArchDoc->ident() );
+  tmpl.setValue( TAG( "PROJECTLABEL" ),   mArchDoc->projectLabel() );
+  tmpl.setValue( TAG( "SALUT" ),   mArchDoc->salut() );
+  tmpl.setValue( TAG( "GOODBYE" ), mArchDoc->goodbye() );
+  tmpl.setValue( TAG( "PRETEXT" ),   rmlString( mArchDoc->preText() ) );
+  tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( mArchDoc->postText() ) );
+  tmpl.setValue( TAG( "BRUTTOSUM" ), mArchDoc->bruttoSum().toString( mArchDoc->locale() ) );
+  tmpl.setValue( TAG( "NETTOSUM" ),  mArchDoc->nettoSum().toString( mArchDoc->locale() ) );
 
 
-  h.setNum( archive.tax(), 'f', 1 );
+  h.setNum( mArchDoc->tax(), 'f', 1 );
   kDebug() << "Tax in archive document: " << h;
-  if ( archive.reducedTaxSum().toLong() > 0 ) {
+  if ( mArchDoc->reducedTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_SUM" ),
-      archive.reducedTaxSum().toString( archive.locale() ) );
-    h.setNum( archive.reducedTax(), 'f', 1 );
+      mArchDoc->reducedTaxSum().toString( mArchDoc->locale() ) );
+    h.setNum( mArchDoc->reducedTax(), 'f', 1 );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX" ), h );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
   }
-  if ( archive.fullTaxSum().toLong() > 0 ) {
+  if ( mArchDoc->fullTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_SUM" ),
-      archive.fullTaxSum().toString( archive.locale() ) );
-    h.setNum( archive.tax(), 'f', 1 );
+      mArchDoc->fullTaxSum().toString( mArchDoc->locale() ) );
+    h.setNum( mArchDoc->tax(), 'f', 1 );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX" ), h );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
   }
 
-  h.setNum( archive.tax(), 'f', 1 );
+  h.setNum( mArchDoc->tax(), 'f', 1 );
   tmpl.setValue( TAG( "VAT" ), h );
 
-  tmpl.setValue( TAG( "VATSUM" ), archive.taxSum().toString( archive.locale() ) );
+  tmpl.setValue( TAG( "VATSUM" ), mArchDoc->taxSum().toString( mArchDoc->locale() ) );
 
-  // tmpl.setValue( TAG( "IMAGE" ), archive.
-
+  // tmpl.setValue( TAG( "IMAGE" ), mArchDoc->
 
   KABC::Addressee contact;
-  contact = KABC::StdAddressBook::self()->whoAmI();
+  // contact = KABC::StdAddressBook::self()->whoAmI();
 
   tmpl.setValue( TAG( "MY_NAME" ), contact.realName() );
   tmpl.setValue( TAG( "MY_ORGANISATION" ), contact.organization() );
@@ -273,7 +311,7 @@ QString ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   tmpl.setValue( TAG( "MY_LABEL" ),
                  address.label() );
 
-  return tmpl.expand();
+  emit templateGenerated( tmpl.expand() );
 }
 
 QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const

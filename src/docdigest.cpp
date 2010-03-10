@@ -20,9 +20,7 @@
 #include <klocale.h>
 #include <kconfig.h>
 
-#include <kabc/addressbook.h>
-#include <kabc/stdaddressbook.h>
-#include <kabc/addresseedialog.h>
+
 #include <kabc/addressee.h>
 
 #include "docdigest.h"

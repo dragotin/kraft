@@ -1,4 +1,4 @@
-/***************************************************************************
+/**************************************************************************
                           docdigestview.cpp  -
                              -------------------
     begin                : Wed Mar 15 2006
@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <QtGui>
+#include <QTimer>
 
 #include <klocale.h>
 #include <kdebug.h>
@@ -25,8 +26,9 @@
 #include <kiconloader.h>
 #include <kmenu.h>
 #include <kcalendarsystem.h>
-#include <kabc/addressbook.h>
-#include <kabc/stdaddressbook.h>
+
+#include <akonadi/contact/contactsearchjob.h>
+
 #include <kabc/addresseedialog.h>
 #include <kabc/addressee.h>
 
@@ -193,12 +195,10 @@ void DocDigestView::slotBuildView()
   mTimeView->clear();
 
   //Create the latest documents view
-  KABC::AddressBook *addressBook =  KABC::StdAddressBook::self();
-
-  addItems( mLatestView, docman->latestDocs(10), addressBook);
+  addItems( mLatestView, docman->latestDocs(10) );
 
   //Create the all documents view
-  addItems( mAllView, docman->latestDocs(0), addressBook);
+  addItems( mAllView, docman->latestDocs(0) );
 
   /* create the timeline view */
   DocDigestsTimelineList timeList = docman->docsTimelined();
@@ -226,15 +226,16 @@ void DocDigestView::slotBuildView()
       QStringList list;
       list << monthName;
       QTreeWidgetItem *mItem = new QTreeWidgetItem(yearItem, list);
-      addItems( mTimeView, ( *it ).digests(), addressBook, mItem );
+      addItems( mTimeView, ( *it ).digests(), mItem );
       mTimeView->collapseItem( mItem );
     }
   }
   mTimeView->addTopLevelItems( itemsList );
+
+  QTimer::singleShot( 0, this, SLOT( getClientNames() ) );
 }
 
-
-void DocDigestView::addItems( QTreeWidget *view, DocDigestList list,  KABC::AddressBook *addressBook, QTreeWidgetItem *itemParent )
+void DocDigestView::addItems( QTreeWidget *view, DocDigestList list, QTreeWidgetItem *itemParent )
 {
   kDebug() << "Adding " << list.size() << " elems to a view" << endl;
 
@@ -243,11 +244,12 @@ void DocDigestView::addItems( QTreeWidget *view, DocDigestList list,  KABC::Addr
   QList<QTreeWidgetItem*> itemList;
   for ( it = list.begin(); it != list.end(); ++it ) {
     QStringList li;
-    QString clientName;
-    if( addressBook ) {
-      clientName = addressBook->findByUid( (*it).clientId() ).realName();
+
+    QString nameTag = "<*>";
+    if( (*it).clientId().isEmpty() ) {
+      nameTag = "";
     }
-    li << (*it).type() << clientName << ( *it).lastModified() << (*it).date()
+    li << (*it).type() << nameTag << ( *it).lastModified() << (*it).date()
         << ( *it ).projectLabel() << ( *it ).ident() << ( *it ).whiteboard();
 
     QTreeWidgetItem *item = 0;
@@ -259,6 +261,7 @@ void DocDigestView::addItems( QTreeWidget *view, DocDigestList list,  KABC::Addr
        item = new QTreeWidgetItem( itemParent, li );
     }
     mDocIdDict[item] = (*it).id();
+    mClientIdDict.insert( (*it).clientId(), item );
 
     ArchDocDigestList archDocList = ( *it ).archDocDigestList();
     ArchDocDigestList::iterator archIt;
@@ -273,6 +276,37 @@ void DocDigestView::addItems( QTreeWidget *view, DocDigestList list,  KABC::Addr
   if( ! itemParent ) {
     view->addTopLevelItems( itemList );
     kDebug() << "Adding by topLevelItems: " << itemList.size() ;
+  }
+}
+
+void DocDigestView::getClientNames()
+{
+  Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
+  connect( job, SIGNAL( result( KJob* ) ), SLOT( readContacts( KJob* ) ) );
+}
+
+// Result Slot of the Contact Search above
+void DocDigestView::readContacts( KJob* job )
+{
+  kDebug() << "Reading Akonadi Search Job!";
+  if ( job->error() ) {
+    qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
+    return;
+  }
+
+  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
+  mContacts = searchJob->contacts();
+  kDebug() << "Amount of address entries: " << mContacts.size();
+
+  // iterate over all found contacts and write build up the treeview
+  foreach ( const KABC::Addressee &contact, mContacts ) {
+    const QString uid = contact.uid();
+    if( mClientIdDict.contains( uid ) ) {
+      QList<QTreeWidgetItem*> items = mClientIdDict.values( uid );
+      foreach( QTreeWidgetItem *item, items ) {
+        item->setText( 1, contact.realName() );  // column one
+      }
+    }
   }
 }
 
@@ -473,13 +507,18 @@ void DocDigestView::setupListViewItemFromDoc( DocGuardedPtr doc, QTreeWidgetItem
 {
   item->setText( 0,  doc->docType() );
 
-  QString clientName;
-  KABC::AddressBook *adrBook =  KABC::StdAddressBook::self();
-  KABC::Addressee contact;
-  if( adrBook ) {
-    contact = adrBook->findByUid( doc->addressUid() );
-    clientName = contact.realName();
+  QString clientName = "";
+  if( doc->addressUid().isEmpty() ) {
+    kDebug() << "No address UID in doc!";
+  } else {
+    foreach( KABC::Addressee contact, mContacts ) {
+      if( contact.uid() == doc->addressUid() ) {
+        clientName = contact.realName();
+        break;
+      }
+    }
   }
+
   item->setText( 1,  clientName );
   item->setText( 2, doc->locale()->formatDate( doc->lastModified(), KLocale::ShortDate ) );
   item->setText( 3, doc->locale()->formatDate( doc->date(), KLocale::ShortDate ) );  

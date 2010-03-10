@@ -217,13 +217,16 @@ QString KraftDoc::docIdentifier()
 {
   QString re = docType();
 
+#if 0
   KABC::AddressBook *adrBook =  KABC::StdAddressBook::self();
   KABC::Addressee contact;
   if( adrBook ) {
     contact = adrBook->findByUid( addressUid() );
   }
+#endif
+  const QString realName = "<*>"; // FIXME: get Realname out of Akonadi
+  return i18n("%1 for %2 (Id %3)").arg( docType() ).arg( realName ).arg( ident() );
 
-  return i18n("%1 for %2 (Id %3)").arg( docType() ).arg( contact.realName() ).arg( ident() );
 }
 
 void KraftDoc::deleteContents()

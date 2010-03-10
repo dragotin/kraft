@@ -23,9 +23,11 @@
 #include <QTextStream>
 
 #include "kraftdoc.h"
+#include "archdoc.h"
 
 class dbID;
 class KProcess;
+class KJob;
 class QFile;
 
 
@@ -42,20 +44,25 @@ public:
   QString findTrml2Pdf();
 
 signals:
-  void pdfAvailable( const QString& filename );
+  void pdfAvailable( const QString& );
+  void templateGenerated( const QString& );
 
 public slots:
   void createPdfFromArchive( const QString&, dbID );
+
+protected:
 
 protected slots:
   void trml2pdfFinished( int );
   void slotReceivedStdout();
   void slotReceivedStderr();
   void slotError( QProcess::ProcessError );
-  QString findTemplate( const QString& );
-  
+  void slotConvertTemplate( const QString& );
+  void addressReceived( KJob* );
+
 private:
-  QString fillupTemplateFromArchive( const dbID& );
+  void fillupTemplateFromArchive( const dbID& );
+  QString findTemplate( const QString& );
 
   QString registerDictionary( const QString&, const QString& ) const;
   QString registerTag( const QString&, const QString& ) const;
@@ -72,10 +79,12 @@ private:
   QString mMergeIdent;
   bool    mHaveMerge;
   QString mWatermarkFile;
+  QString mDocId;
+  dbID mArchId;
 
   QFile mFile;
   QTextStream mTargetStream;
-
+  ArchDoc *mArchDoc;
   static ReportGenerator *mSelf;
   static KProcess *mProcess;
 };
