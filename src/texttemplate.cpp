@@ -21,7 +21,8 @@
 #include <klocale.h>
 #include <kdebug.h>
 
-#include <qfile.h>
+#include <QFile>
+#include <QFileInfo>
 
 #include <string.h>
 
@@ -117,11 +118,10 @@ bool TextTemplate::setTemplateFileName( const QString& name )
 
 bool TextTemplate::openTemplate()
 {
-  QString findFile;
+  QFileInfo info( mFileName );
 
-  if ( mFileName.contains( "/" ) ) {
+  if ( info.isAbsolute() ) {
     // assume it is a absolute path
-    findFile = mFileName;
   } else {
     KStandardDirs stdDirs;
     if ( mFileName.isEmpty() ) {
@@ -129,18 +129,20 @@ bool TextTemplate::openTemplate()
       return false;
     }
 
-    findFile = stdDirs.findResource( "data", mFileName );
+    QString findFile = stdDirs.findResource( "data", mFileName );
+    info.setFile( findFile );
   }
-  if ( findFile.isEmpty() || ! QFile::exists( findFile ) ) {
-    mErrorString = i18n( "Could not find template file %1" ).arg( findFile );
+
+  if ( ! ( info.isFile() && info.isReadable() ) ) {
+    mErrorString = i18n( "Could not find template file %1" ).arg( info.absoluteFilePath() );
     return false;
   } else {
-    mFileName = findFile;
+    mFileName = info.absoluteFilePath();
   }
 
-  kDebug() << "Loading this template source file: " << findFile << endl;
+  kDebug() << "Loading this template source file: " << mFileName << endl;
 
-  Template *tmpl = Template::GetTemplate( std::string( findFile.toAscii().data() ), ctemplate::DO_NOT_STRIP );
+  Template *tmpl = Template::GetTemplate( std::string( mFileName.toAscii().data() ), ctemplate::DO_NOT_STRIP );
   tmpl->ReloadIfChanged();
 
   if ( !tmpl || tmpl->state() != ctemplate::TS_READY ) {

@@ -30,7 +30,6 @@ class KProcess;
 class KJob;
 class QFile;
 
-
 class ReportGenerator : public QObject
 {
   Q_OBJECT

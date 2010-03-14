@@ -202,6 +202,10 @@ QString DocType::templateFile()
   QString tmplFile = name().toLower() + QString( ".trml" );
   if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
     tmplFile = mAttributes["docTemplateFile"].value().toString();
+    if( tmplFile.isEmpty() ) {
+      // happens in case of strange db content
+      tmplFile = "invoice.trml";  // the default doc
+    }
   }
 
   if ( tmplFile.contains( "/" ) && QFile::exists( tmplFile ) ) {

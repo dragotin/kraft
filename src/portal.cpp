@@ -41,8 +41,7 @@
 #include <kcmdlineargs.h>
 #include <krun.h>
 #include <kapplication.h>
-#include <kabc/addressbook.h>
-#include <kabc/stdaddressbook.h>
+#include <akonadi/control.h>
 #include <kabc/addressee.h>
 #include <ktoolinvocation.h>
 
@@ -257,6 +256,10 @@ void Portal::initView()
 void Portal::slotStartupChecks()
 {
   QString dbName = DatabaseSettings::self()->dbDatabaseName();
+
+  if ( !Akonadi::Control::start( this ) ) {
+    kError() << "Failed to start Akonadi!";
+  }
 
   SetupAssistant assi(this);
   if( assi.init( SetupAssistant::Update) ) {

@@ -1,5 +1,5 @@
 
-include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} )
+include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS})
 
 add_subdirectory(pics)
 
@@ -169,7 +169,7 @@ kde4_add_ui_files(kraft_SRCS
 
 kde4_add_executable(kraft ${kraft_SRCS})
 
-target_link_libraries(kraft kraftcat akonadi-contact ${QT_AND_KDECORE_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_KABC_LIBS} ${KDE4_KIO_LIBS}  ctemplate pthread)
+target_link_libraries(kraft kraftcat akonadi-contact ${QT_AND_KDECORE_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_KABC_LIBS} ${KDE4_KIO_LIBS} ctemplate pthread)
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 

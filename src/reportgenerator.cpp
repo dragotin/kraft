@@ -133,12 +133,10 @@ void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 {
   mArchDoc = new ArchDoc(id);
 
-  if( mArchDoc->clientUid().isEmpty() ) {
-    addressReceived( 0 );
-  } else {
-    Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
-    connect( job, SIGNAL( result( KJob* ) ), SLOT( addressReceived( KJob* ) ) );
-  }
+  // FIXME: Read all contacts, even if the customer is not in the address book
+  // we need to read all for our own address.
+  Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
+  connect( job, SIGNAL( result( KJob* ) ), SLOT( addressReceived( KJob* ) ) );
 }
 
 // Result Slot of the Contact Search above
@@ -146,29 +144,45 @@ void ReportGenerator::addressReceived( KJob* job )
 {
   kDebug() << "Reading Akonadi Search Job!";
   KABC::Addressee addressee ;
-  if( job ) {
-    if ( job->error() ) {
-      qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
-      return;
-    }
+  KABC::Addressee myAddress;
 
-    Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-    KABC::Addressee::List contacts = searchJob->contacts();
-    kDebug() << "Amount of address entries: " << contacts.size();
+  if( ! job ) {
+    kError() << "Akonadi Address search job failed!";
+    return;
+  }
 
-    // iterate over all found contacts and write build up the treeview
-    foreach ( const KABC::Addressee &contact, contacts ) {
-      if( contact.uid() == mArchDoc->clientUid() ) {
-        addressee = contact;
-        break;
-      }
+  if ( job->error() ) {
+    qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
+    return;
+  }
+
+  QString myName = KraftSettings::self()->userName();
+  kDebug() << "MY name is " << myName;
+
+  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
+  KABC::Addressee::List contacts = searchJob->contacts();
+  kDebug() << "Amount of address entries: " << contacts.size();
+
+  // iterate over all found contacts and search for the customer address
+  // and 'My' address
+  foreach ( const KABC::Addressee &contact, contacts ) {
+    if( contact.uid() == mArchDoc->clientUid() ) {
+      addressee = contact;
     }
+    kDebug() << "XXXXXXXXXX comparing " << contact.name() << " with " << myName;
+    if( contact.name() == myName ) {
+      myAddress = contact;
+    }
+    if( !( myAddress.isEmpty() || addressee.isEmpty() ) ) break;
   }
 
   QString tmplFile = findTemplate( mArchDoc->docType() );
 
   if ( tmplFile.isEmpty() ) {
+    kDebug() << "tmplFile is emty!";
     return;
+  } else {
+    kDebug() << "Reading this template: " << tmplFile;
   }
 
   // create a text template
@@ -276,21 +290,25 @@ void ReportGenerator::addressReceived( KJob* job )
 
   tmpl.setValue( TAG( "VATSUM" ), mArchDoc->taxSum().toString( mArchDoc->locale() ) );
 
-  // tmpl.setValue( TAG( "IMAGE" ), mArchDoc->
+  // My own contact data
 
-  KABC::Addressee contact;
-  // contact = KABC::StdAddressBook::self()->whoAmI();
-
-  tmpl.setValue( TAG( "MY_NAME" ), contact.realName() );
-  tmpl.setValue( TAG( "MY_ORGANISATION" ), contact.organization() );
-  tmpl.setValue( TAG( "MY_URL" ), contact.url().prettyUrl() );
-  tmpl.setValue( TAG( "MY_EMAIL" ), contact.preferredEmail() );
-  tmpl.setValue( TAG( "MY_PHONE" ), contact.phoneNumber( KABC::PhoneNumber::Work ).number() );
-  tmpl.setValue( TAG( "MY_FAX" ), contact.phoneNumber( KABC::PhoneNumber::Fax ).number() );
-  tmpl.setValue( TAG( "MY_CELL" ), contact.phoneNumber( KABC::PhoneNumber::Cell ).number() );
+  tmpl.setValue( TAG( "MY_NAME" ), myAddress.realName() );
+  tmpl.setValue( TAG( "MY_ORGANISATION" ), myAddress.organization() );
+  tmpl.setValue( TAG( "MY_URL" ), myAddress.url().prettyUrl() );
+  tmpl.setValue( TAG( "MY_EMAIL" ), myAddress.preferredEmail() );
+  tmpl.setValue( TAG( "MY_PHONE" ), myAddress.phoneNumber( KABC::PhoneNumber::Work ).number() );
+  tmpl.setValue( TAG( "MY_FAX" ), myAddress.phoneNumber( KABC::PhoneNumber::Fax ).number() );
+  tmpl.setValue( TAG( "MY_CELL" ), myAddress.phoneNumber( KABC::PhoneNumber::Cell ).number() );
 
   KABC::Address address;
-  address = contact.address( KABC::Address::Work );
+  address = myAddress.address( KABC::Address::Pref );
+  if( address.isEmpty() )
+    address = myAddress.address(KABC::Address::Work );
+  if( address.isEmpty() )
+    address = myAddress.address(KABC::Address::Home );
+  if( address.isEmpty() )
+    address = myAddress.address(KABC::Address::Postal );
+
   tmpl.setValue( TAG( "MY_POSTBOX" ),
               address.postOfficeBox() );
 
@@ -311,7 +329,10 @@ void ReportGenerator::addressReceived( KJob* job )
   tmpl.setValue( TAG( "MY_LABEL" ),
                  address.label() );
 
-  emit templateGenerated( tmpl.expand() );
+  QString output = tmpl.expand();
+
+  emit templateGenerated( output );
+
 }
 
 QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const
@@ -342,7 +363,7 @@ QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle
 QString ReportGenerator::findTrml2Pdf( )
 {
   const QString rmlbinDefault = QString::fromLatin1( "trml2pdf" ); // FIXME: how to get the default value?
-  QString rmlbin = KraftSettings::self()->self()->trml2PdfBinary();
+  QString rmlbin = KraftSettings::self()->trml2PdfBinary();
   kDebug() << "### Start searching rml2pdf bin: " << rmlbin;
 
   mHaveMerge = false;

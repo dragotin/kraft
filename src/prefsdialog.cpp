@@ -134,7 +134,8 @@ void PrefsDialog::wagesTab()
 {
     mPrefsWages = new PrefsWages(this);
 
-    KPageWidgetItem *topFrame = addPage( mPrefsWages, i18n( "Wages" ));
+    // KPageWidgetItem *topFrame =
+    (void) addPage( mPrefsWages, i18n( "Wages" ));
 
     //topFrame->setIcon(KIcon( "accessories-text-editor" ) );
 }
@@ -143,7 +144,8 @@ void PrefsDialog::unitsTab()
 {
     mPrefsUnits = new PrefsUnits(this);
 
-    KPageWidgetItem *topFrame = addPage( mPrefsUnits, i18n( "Units" ));
+    // KPageWidgetItem *topFrame =
+    (void) addPage( mPrefsUnits, i18n( "Units" ));
 
     //topFrame->setIcon(KIcon( "accessories-text-editor" ) );
 }

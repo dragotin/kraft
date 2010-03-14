@@ -100,37 +100,36 @@ void ArchDoc::loadFromDb( dbID id )
   mArchDocID = id;
 
   QSqlQuery q;
-  q.prepare("SELECT archDocID, ident, docType, docDescription, clientAddress, clientUid, " // pos 0..5
-            "salut, goodbye, printDate, date, pretext, posttext, country, language, " // pos 6..13
-            "projectLabel,tax, reducedTax, state from archdoc WHERE archDocID=:id" ); // pos 14..17
+  q.prepare("SELECT archDocID, ident, docType, clientAddress, clientUid, " // pos 0..4
+            "salut, goodbye, printDate, date, pretext, posttext, country, language, " // pos 5..12
+            "projectLabel,tax, reducedTax, state from archdoc WHERE archDocID=:id" ); // pos 13..16
   q.bindValue(":id", id.toInt());
   q.exec();
 
   kDebug() << "Loading document id " << id.toString() << endl;
 
   if( q.next()) {
-    kDebug() << "loading archived document with ident " << id.toString() << endl;
     QString docID;
     QString country;
     QString lang;
     docID         = q.value( 0 ).toString();
     mIdent        = q.value( 1 ).toString();
     mDocType      = q.value( 2 ).toString();
-    mAddress      = q.value( 4 ).toString();
-    mClientUid    = q.value( 5 ).toString();
-    mSalut        = q.value( 6 ).toString();
-    mGoodbye      = q.value( 7 ).toString();
-    QVariant v    = q.value( 8 );
+    mAddress      = q.value( 3 ).toString();
+    mClientUid    = q.value( 4 ).toString();
+    mSalut        = q.value( 5 ).toString();
+    mGoodbye      = q.value( 6 ).toString();
+    QVariant v    = q.value( 7 );
     mPrintDate    = v.toDateTime();
-    mDate         = q.value( 9 ).toDate();
-    mPreText      = KraftDB::self()->mysqlEuroDecode( q.value( 10 ).toString() );
-    mPostText     = KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() );
-    country       = q.value( 12 ).toString();
-    lang          = q.value( 13 ).toString();
-    mProjectLabel = q.value( 14 ).toString();
-    mTax          = q.value( 15 ).toDouble();
-    mReducedTax   = q.value( 16 ).toDouble();
-    mState        = q.value( 17 ).toInt();
+    mDate         = q.value( 8 ).toDate();
+    mPreText      = KraftDB::self()->mysqlEuroDecode( q.value( 9 ).toString() );
+    mPostText     = KraftDB::self()->mysqlEuroDecode( q.value( 10 ).toString() );
+    country       = q.value( 11 ).toString();
+    lang          = q.value( 12 ).toString();
+    mProjectLabel = q.value( 13 ).toString();
+    mTax          = q.value( 14 ).toDouble();
+    mReducedTax   = q.value( 15 ).toDouble();
+    mState        = q.value( 16 ).toInt();
 
     KConfig *cfg = KGlobal::config().data();
     mLocale.setCountry( country, cfg );

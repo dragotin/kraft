@@ -71,9 +71,6 @@ AddressSelection::AddressSelection( QWidget *parent )
   connect( openAdrBook, SIGNAL(clicked() ), SLOT( slotOpenAddressBook() ) );
   hbox->addStretch(4);
 
-  if ( !Akonadi::Control::start( this ) ) {
-    kError() << "Failed to start Akonadi!";
-  }
   connect(  mTreeWidget, SIGNAL( currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*  )),
            SLOT( slotSelectionChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 }
