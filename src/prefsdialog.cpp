@@ -197,7 +197,7 @@ void PrefsDialog::docTab()
 
   mCbDocTypes = new QComboBox;
   label->setBuddy( mCbDocTypes );
-  mCbDocTypes->setToolTip( i18n( "New documents are from the selected type by default." ) );
+  mCbDocTypes->setToolTip( i18n( "New documents default to the selected type." ) );
   topLayout->addWidget( mCbDocTypes, 0, 1 );
   mCbDocTypes->insertItems(-1, DocType::allLocalised() );
 

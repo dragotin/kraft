@@ -140,8 +140,9 @@ InsertTemplDialog::~InsertTemplDialog()
 {
   QString c = mBaseWidget->mComboChapter->currentText();
   if ( ! c.isEmpty() ) {
-    KraftSettings::self()->self()->setInsertTemplChapterName( c );
-    KraftSettings::self()->self()->writeConfig();
+    KraftSettings::self()->setInsertTemplChapterName( c );
+    KraftSettings::self()->writeConfig();
+    KraftSettings::self()->readConfig();
   }
 }
 
@@ -151,7 +152,7 @@ void InsertTemplDialog::setCatalogChapters( const QStringList& chapters )
     mBaseWidget->mKeepGroup->show();
     mBaseWidget->mComboChapter->insertItems( -1, chapters );
     mBaseWidget->mComboChapter->setCurrentIndex(mBaseWidget->mComboChapter->findText(
-      KraftSettings::self()->self()->insertTemplChapterName() ));
+      KraftSettings::self()->insertTemplChapterName() ));
   }
 }
 

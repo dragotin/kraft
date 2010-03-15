@@ -231,8 +231,9 @@ void KraftViewRO::slotClose()
       kDebug() << "ERR: No document available in view, return!";
       return;
     }
-    KraftSettings::self()->self()->setRODocViewSize( size() );
-    KraftSettings::self()->self()->writeConfig();
+    KraftSettings::self()->setRODocViewSize( size() );
+    KraftSettings::self()->writeConfig();
+    KraftSettings::self()->readConfig();
 
     emit viewClosed( true, m_doc );
     KDialog::slotButtonClicked( Ok );

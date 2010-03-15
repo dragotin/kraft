@@ -90,7 +90,7 @@ void MaterialTemplDialog::slPurchPriceChanged( double purch )
     m = 100*( ( sale-purch )/purch );
   } else if ( m < Eta && sale < Eta ) {
     // take a default for the material factor
-    m = KraftSettings::self()->self()->materialAddOnPercent();
+    m = KraftSettings::self()->materialAddOnPercent();
   }
   setPriceCalc( purch, m, sale );
 }

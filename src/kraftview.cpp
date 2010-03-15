@@ -182,15 +182,15 @@ KraftView::KraftView(QWidget *parent) :
   connect( mAssistant, SIGNAL( footerTextTemplate( const QString& ) ),
            this, SLOT( slotNewFooterText( const QString& ) ) );
 
-  if ( KraftSettings::self()->self()->docViewSplitter().count() == 2 ) {
-    mCSplit->setSizes( KraftSettings::self()->self()->docViewSplitter() );
+  if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
+    mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
   }
   connect( mAssistant, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSwitchToPage( int ) ) );
 
-  QSize size = KraftSettings::self()->self()->docViewSize();
+  QSize size = KraftSettings::self()->docViewSize();
   if ( !size.isEmpty() ) resize( size );
-  QPoint pos = KraftSettings::self()->self()->docViewPosition();
+  QPoint pos = KraftSettings::self()->docViewPosition();
   if ( !pos.isNull() ) move( pos );
 
   mAssistant->slotSelectDocPart( KraftDoc::Header );
@@ -576,7 +576,7 @@ void KraftView::setupFooter()
 
   m_footerEdit->m_cbGreeting->insertItems(-1, KraftDB::self()->wordList( "greeting" ) );
 
-  // m_footerEdit->m_cbGreeting->setCurrentIndex(m_footerEdit->m_cbGreeting->findText( KraftSettings::self()->self()->greeting() ));
+  // m_footerEdit->m_cbGreeting->setCurrentIndex(m_footerEdit->m_cbGreeting->findText( KraftSettings::self()->greeting() ));
   m_footerEdit->m_cbGreeting->setEditText( KraftSettings::self()->greeting() );
 
   // ATTENTION: If you change the following inserts, make sure to check the code
@@ -610,7 +610,7 @@ void KraftView::setupFooter()
   }
   if ( tt == -1 ) {
     // means that there is no item yet, the default tax type needs to be used.
-    int deflt = KraftSettings::self()->self()->defaultTaxType();
+    int deflt = KraftSettings::self()->defaultTaxType();
     if ( deflt > 0 ) {
       deflt -= 1;
     }
@@ -795,7 +795,7 @@ void KraftView::slotNewAddress( const Addressee& contact )
     QStringList li = generateLetterHead( adr );
 
     m_headerEdit->m_letterHead->insertItems(-1, li );
-    m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->self()->salut() );
+    m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
   }
 }
 
@@ -895,7 +895,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
         dp->setUnit( ftmpl->einheit() );
         dp->setUnitPrice( ftmpl->unitPrice() );
 
-        s = KraftSettings::self()->self()->templateToPosDialogSize();
+        s = KraftSettings::self()->templateToPosDialogSize();
 
       } else if ( kat->type() == MaterialCatalog ) {
         dia = new InsertTemplDialog( this );
@@ -903,14 +903,14 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
         dp->setText( mat->name() );
         dp->setUnit( mat->getUnit() );
         dp->setUnitPrice( mat->salesPrice() );
-        s = KraftSettings::self()->self()->templateToPosDialogSize();
+        s = KraftSettings::self()->templateToPosDialogSize();
 
       } else if ( kat->type() == PlantCatalog ) {
         dia = new InsertPlantDialog( this );
         InsertPlantDialog *plantDia = static_cast<InsertPlantDialog*>( dia );
         BrunsRecord *bruns = static_cast<BrunsRecord*>( tmpl );
         plantDia->setSelectedPlant( bruns );
-        s = KraftSettings::self()->self()->plantTemplateToPosDialogSize();
+        s = KraftSettings::self()->plantTemplateToPosDialogSize();
       }
     }
   }
@@ -938,7 +938,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
       s = dia->size();
 
       if ( kat->type() == TemplateCatalog ) {
-        KraftSettings::self()->self()->setTemplateToPosDialogSize( s );
+        KraftSettings::self()->setTemplateToPosDialogSize( s );
 
         // if it's a new position, create a catalog template in the incoming chapter
         if ( newTemplate ) {
@@ -956,19 +956,20 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
           }
         }
       } else if ( kat->type() == MaterialCatalog ) {
-        KraftSettings::self()->self()->setTemplateToPosDialogSize( s );
+        KraftSettings::self()->setTemplateToPosDialogSize( s );
         if ( newTemplate ) {
 
         }
 
       } else if ( kat->type() == PlantCatalog ) {
-        KraftSettings::self()->self()->setPlantTemplateToPosDialogSize( s );
+        KraftSettings::self()->setPlantTemplateToPosDialogSize( s );
         if ( newTemplate ) {
 
         }
 
       }
-      KraftSettings::self()->self()->writeConfig();
+      KraftSettings::self()->writeConfig();
+      KraftSettings::self()->readConfig();
 
       newpos = dia->insertAfterPosition();
 
@@ -1317,14 +1318,15 @@ void KraftView::saveChanges()
     if ( doc->isNew() ) {
       // For new documents the user had to select a greeting and we make this
       // default for the future
-      KraftSettings::self()->self()->setGreeting( m_footerEdit->m_cbGreeting->currentText() );
-      KraftSettings::self()->self()->setSalut( m_headerEdit->m_letterHead->currentIndex() );
+      KraftSettings::self()->setGreeting( m_footerEdit->m_cbGreeting->currentText() );
+      KraftSettings::self()->setSalut( m_headerEdit->m_letterHead->currentIndex() );
     }
 
-    KraftSettings::self()->self()->setDocViewSplitter( mCSplit->sizes() );
-    KraftSettings::self()->self()->setDocViewSize( size() );
-    KraftSettings::self()->self()->setDocViewPosition( pos() );
-    KraftSettings::self()->self()->writeConfig();
+    KraftSettings::self()->setDocViewSplitter( mCSplit->sizes() );
+    KraftSettings::self()->setDocViewSize( size() );
+    KraftSettings::self()->setDocViewPosition( pos() );
+    KraftSettings::self()->writeConfig();
+    KraftSettings::self()->readConfig();
 
     // Save newly created templates
     if ( mNewTemplates.count() > 0 ) {

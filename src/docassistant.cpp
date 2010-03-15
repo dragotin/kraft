@@ -204,7 +204,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   mCurrTemplateProvider = mHeaderTemplateProvider;
 
-  // mMainSplit->setSizes( KraftSettings::self()->self()->assistantSplitterSetting() );
+  // mMainSplit->setSizes( KraftSettings::self()->assistantSplitterSetting() );
   mTemplatePane->hide();
 }
 
@@ -483,8 +483,8 @@ void DocAssistant::setFullPreview( bool setFull, int id )
     /* remember the sizes used before */
     if ( mTemplatePane->isVisible() ) {
       // kDebug() << "Writing mSplitterSizes: " << mMainSplit->sizes() << endl;
-      // KraftSettings::self()->self()->setAssistantSplitterSetting( mMainSplit->sizes() );
-    //  KraftSettings::self()->self()->writeConfig();
+      // KraftSettings::self()->setAssistantSplitterSetting( mMainSplit->sizes() );
+    //  KraftSettings::self()->writeConfig();
     }
 
     mTemplatePane->hide();
@@ -494,8 +494,8 @@ void DocAssistant::setFullPreview( bool setFull, int id )
     mTemplatePane->show();
     mPostCard->slotSetMode( DocPostCard::Mini, id );
 
-    if ( KraftSettings::self()->self()->assistantSplitterSetting().size() == 2 ) {
-      // mMainSplit->setSizes( KraftSettings::self()->self()->assistantSplitterSetting() );
+    if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
+      // mMainSplit->setSizes( KraftSettings::self()->assistantSplitterSetting() );
     }
     mFullPreview = false;
   }

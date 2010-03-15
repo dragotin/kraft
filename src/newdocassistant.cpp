@@ -99,7 +99,7 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
 
   mTypeCombo = new KComboBox;
   mTypeCombo->insertItems( 0, DocType::allLocalised() );
-  mTypeCombo->setCurrentIndex(mTypeCombo->findText( DefaultProvider::self()->docType() ));
+  mTypeCombo->setCurrentIndex( mTypeCombo->findText( DefaultProvider::self()->docType() ));
   grid->addRow( i18n("Document &Type:"), mTypeCombo );
 
   mDateEdit = new KDateWidget;

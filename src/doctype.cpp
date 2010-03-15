@@ -448,7 +448,7 @@ void DocType::readIdentTemplate()
   if ( tmpl.isEmpty() ) {
     // migration: If there is nothing yet in the database, check the local config and
     // transfer the setting to the db
-    QString pattern = KraftSettings::self()->self()->docIdent();
+    QString pattern = KraftSettings::self()->docIdent();
     if ( pattern.isEmpty() ) {
       // There is nothing in KConfig File, so we use our default from here.
       pattern = defaultTempl;

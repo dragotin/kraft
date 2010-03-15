@@ -585,15 +585,15 @@ QString PositionViewWidget::kindLabel( Kind k ) const
 
   QString re;
   if ( kind == Normal ) {
-    re = KraftSettings::self()->self()->normalLabel();
+    re = KraftSettings::self()->normalLabel();
     if ( re.isEmpty() ) re = i18n( "Normal" );
   }
   if ( kind == Demand ) {
-    re = KraftSettings::self()->self()->demandLabel();
+    re = KraftSettings::self()->demandLabel();
     if ( re.isEmpty() ) re = i18n( "Demand" );
   }
   if ( kind == Alternative ) {
-    re = KraftSettings::self()->self()->alternativeLabel();
+    re = KraftSettings::self()->alternativeLabel();
     if ( re.isEmpty() ) re = i18n( "Alternative" );
   }
 

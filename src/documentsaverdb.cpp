@@ -143,7 +143,7 @@ QString DocumentSaverDB::generateDocumentIdent( dbID id, KraftDoc *doc ) const
    * %i - the uniq identifier from db.
    * %type - the localised doc type (offer, invoice etc.)
    */
-  QString pattern = KraftSettings::self()->self()->docIdent();
+  QString pattern = KraftSettings::self()->docIdent();
 
   QDate d = doc->date();
   KraftDB::StringMap m;

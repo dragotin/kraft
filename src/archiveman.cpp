@@ -121,7 +121,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
 
   kDebug() << "Storing XML to " << xmlFile << endl;
 
-  if ( KraftSettings::self()->self()->doXmlArchive() ) {
+  if ( KraftSettings::self()->doXmlArchive() ) {
     QFile file( xmlFile );
     if ( file.open( QIODevice::WriteOnly ) ) {
       QTextStream stream( &file );
@@ -252,7 +252,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 QString ArchiveMan::xmlBaseDir() const
 {
   KStandardDirs stdDirs;
-  QString outputDir = KraftSettings::self()->self()->pdfOutputDir();
+  QString outputDir = KraftSettings::self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
     outputDir = stdDirs.saveLocation( "data", "kraft/archiveXml", true );
   }
@@ -265,7 +265,7 @@ QString ArchiveMan::xmlBaseDir() const
 QString ArchiveMan::pdfBaseDir() const
 {
   KStandardDirs stdDirs;
-  QString outputDir = KraftSettings::self()->self()->pdfOutputDir();
+  QString outputDir = KraftSettings::self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
     outputDir = stdDirs.saveLocation( "data", "kraft/archivePdf", true );
   }
