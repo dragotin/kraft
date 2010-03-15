@@ -194,15 +194,17 @@ void DocTypeEdit::slotRemoveDocType()
 {
   kDebug() << "Removing a doctype!";
 
-  QString currName = mTypeListBox->currentItem()->text();
+  QListWidgetItem *currItem = mTypeListBox->currentItem();
 
-  if ( currName.isEmpty() ) {
+  if ( !currItem || currItem->text().isEmpty() ) {
     kDebug() << "No current Item, return";
     return;
   }
+  QString currName = currItem->text();
 
-  if ( mAddedTypes.indexOf( currName ) != mAddedTypes.count() ) {
+  if ( mAddedTypes.indexOf( currName ) != -1 ) {
     // remove item from recently added list.
+    mChangedDocTypes.remove( currName );
     mAddedTypes.removeAll( currName );
     mOrigDocTypes.remove( currName );
   } else {
@@ -217,8 +219,8 @@ void DocTypeEdit::slotRemoveDocType()
     mRemovedTypes.append( toRemove );
   }
 
-  mTypeListBox->removeItemWidget( mTypeListBox->currentItem() );
-
+  delete currItem;
+  kDebug() << "removed type: " << mRemovedTypes;
   emit removedType( currName );
 }
 
