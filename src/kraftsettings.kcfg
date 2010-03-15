@@ -34,7 +34,7 @@
       <label>The default size of the material catalog view</label>
     </entry>
     <entry name="assistantSplitterSetting" type="IntList">
-      <label>The splitter setting for the the doc assistant</label>
+      <label>The splitter setting for the doc assistant</label>
     </entry>
     <entry name="plantTemplateToPosDialogSize" type="Size">
       <label>The window size of the template to document dialog for plants</label>
