@@ -156,7 +156,7 @@ void Portal::initActions()
   actEditTemplates->setShortcut( KShortcut( Qt::CTRL + Qt::Key_E ));
 
   KAction *reconfDb = actionCollection()->addAction( "reconfigure_db", this, SLOT( slotReconfigureDatabase() ) );
-  reconfDb->setText("Configure Database...");
+  reconfDb->setText("Redo Initial Setup...");
   reconfDb->setShortcut( KShortcut( Qt::CTRL + Qt::Key_R ));
 
   fileQuit->setStatusTip(i18n("Quits the application"));

@@ -21,6 +21,7 @@
 #include <QtGui>
 
 #include <kassistantdialog.h>
+#include <kabc/addressee.h>
 
 #include <akonadi/item.h>
 
@@ -37,6 +38,7 @@ class KPageWidgetItem;
 class KUrl;
 class AddressSelection;
 
+using namespace KABC;
 
 class WelcomePage:public QWidget
 {
@@ -153,12 +155,16 @@ class OwnAddressPage:public QWidget
   public:
   OwnAddressPage( QWidget *parent=0 );
   void setupAddresses();
+  void saveOwnName();
 
   private:
   AddressSelection *mAddresses;
+  KABC::Addressee mMe;
 
   private slots:
   void contactStored( const Akonadi::Item& );
+  void gotMyAddress( Addressee );
+
 };
 
 // ---------------------------------------------------------------------------

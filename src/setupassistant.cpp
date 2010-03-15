@@ -25,6 +25,8 @@
 #include "defaultprovider.h"
 #include "kraftdb.h"
 #include "addressselection.h"
+#include "kraftsettings.h"
+
 
 WelcomePage::WelcomePage(QWidget *parent)
   :QWidget(parent)
@@ -280,6 +282,9 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
 
   mAddresses = new AddressSelection();
   vbox->addWidget( mAddresses );
+
+  connect( mAddresses, SIGNAL( addressSelected(Addressee)),
+           SLOT( gotMyAddress( Addressee ) ) );
 }
 
 void OwnAddressPage::setupAddresses()
@@ -293,6 +298,18 @@ void OwnAddressPage::contactStored( const Akonadi::Item& item )
   kDebug() << "Contact was stored in Akonadi: " << addressee.name();
 }
 
+void OwnAddressPage::gotMyAddress( Addressee addressee )
+{
+  mMe = addressee;
+}
+
+void OwnAddressPage::saveOwnName()
+{
+  if( ! mMe.isEmpty() ) {
+    KraftSettings::self()->setUserName( mMe.name() );
+    KraftSettings::self()->writeConfig();
+  }
+}
 
 // ---------------------------------------------------------------------------
   FinalStatusPage::FinalStatusPage(QWidget *parent)
@@ -432,6 +449,9 @@ void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidg
 void SetupAssistant::slotButtonClicked( int buttCode )
 {
   if( buttCode == KDialog::User1 ) { // Button "Finished"
+    // store the stakeholders own name for picking the sender address
+    mOwnAddressPage->saveOwnName();
+
     DatabaseSettings::self()->setDbDriver( mDbSelectPage->selectedDriver() );
     if( mDbSelectPage->selectedDriver() == "QSQLITE" ) {
       DatabaseSettings::self()->setDbFile( mSqLiteDetailsPage->url().pathOrUrl() ); // The sqLite file name
@@ -455,9 +475,9 @@ void SetupAssistant::finalizePage()
   if( mErrors.isEmpty() ) {
     txt = i18n( "<p>The database setup was successfully completed.</p> " );
     txt += i18n("<p>You can start to work with Kraft now. Please do not forget to");
-    txt += i18n("<ul><li>Enter your own address in the KAddressBook</li>");
     txt += i18n("<li>Adjust various settings in the Kraft Preferences dialog.</li>" );
     txt += i18n("<li>Check the Catalog chapter list.</li>" );
+    txt += i18n("<li>Make your business and have fun :-)</li>" );
     txt += "</ul></p>";
     txt += i18n("<p>If you press <i>Finish</i> now, the new database configuration is stored in Krafts configuration.</p>");
   } else {
@@ -671,10 +691,10 @@ bool SetupAssistant::init( Mode mode )
   QString configOrigin;
   mMode = mode;
 
+  text = i18n("This assistant guides you through the basic settings of your Kraft installation.");
+
   if( mMode == Reinit ) {
     startDialog = true;
-
-    text = i18n("The Database is going to be reset.");
   } else if( mode == Update ) {
     //We're going to check if there's a config file for the KDE4 version already
     KStandardDirs stdDirs;

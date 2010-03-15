@@ -39,7 +39,6 @@ public:
 
   ~AddressSelection() { };
   void setupAddressList( );
-  Addressee currentAddressee( QTreeWidgetItem* item = 0 );
   QTreeWidget *treeWidget() { return mTreeWidget; }
 
 signals:
