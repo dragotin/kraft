@@ -89,7 +89,7 @@ SqLiteDetailsPage::SqLiteDetailsPage(QWidget *parent)
   ui.setupUi(w);
 
   ui.mFileUrl->setMode( KFile::File | KFile::LocalOnly );
-  ui.mFileUrl->setText(DatabaseSettings::self()->dbFile());
+  // ui.mFileUrl->setText(DatabaseSettings::self()->dbFile());
 
   if(!DatabaseSettings::self()->dbFile().isEmpty())
     ui.mRbCustom->setChecked(true);

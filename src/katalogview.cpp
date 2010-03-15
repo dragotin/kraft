@@ -29,8 +29,9 @@
 #include <kstatusbar.h>
 #include <klocale.h>
 #include <kconfig.h>
-#include <kstandardaction.h>
 #include <kactioncollection.h>
+#include <kstandardshortcut.h>
+#include <kstandardaction.h>
 #include <kdebug.h>
 
 #include <kapplication.h>

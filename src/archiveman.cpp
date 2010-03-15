@@ -183,9 +183,9 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record.setValue( "language", doc->language() );
     record.setValue( "tax", DocumentMan::self()->tax( doc->date() ) );
     record.setValue( "reducedTax", DocumentMan::self()->reducedTax( doc->date() ) );
-    if(!model.insertRecord(-1, record))
+    if(!model.insertRecord(-1, record)) {
       kDebug() << model.lastError();
-
+	}
     dbID id = KraftDB::self()->getLastInsertID();
     archivePos( id.toInt(), doc );
 
@@ -234,8 +234,9 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
       record.setValue( "overallPrice", dp->overallPrice().toDouble() );
       record.setValue( "taxType", dp->taxTypeNumeric() );
 
-      if(!model.insertRecord(-1, record))
+      if(!model.insertRecord(-1, record)) {
         kDebug() << model.lastError();
+	  }
       dbID id = KraftDB::self()->getLastInsertID();
       // kDebug() << "Inserted for id " << id.toString() << endl;
       cnt++;

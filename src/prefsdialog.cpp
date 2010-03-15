@@ -29,6 +29,7 @@
 #include <QModelIndex>
 #include <QSortFilterProxyModel>
 #include <QStackedWidget>
+#include <QHeaderView>
 
 #include <kdialog.h>
 #include <klocale.h>

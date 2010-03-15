@@ -25,6 +25,7 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include <QCloseEvent>
+#include <QHeaderView>
 
 // include files for KDE
 #include <klocale.h>

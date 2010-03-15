@@ -35,8 +35,9 @@
 #include <kstatusbar.h>
 #include <klocale.h>
 #include <kconfig.h>
-#include <kstandardaction.h>
 #include <kdebug.h>
+#include <kstandardaction.h>
+#include <kstandardshortcut.h>
 #include <kaction.h>
 #include <kcmdlineargs.h>
 #include <krun.h>
