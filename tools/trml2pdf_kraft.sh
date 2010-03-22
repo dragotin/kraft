@@ -55,6 +55,18 @@ if [ "$#" -lt 2 ]; then
   exit 1;
 fi
 
+pdftk="`which pdftk`"
+
+if [ -z $pdftk ]; then
+  echo "pdftk (pdf toolkit) not found. Please install!" >> /dev/stderr
+  exit 2;
+fi
+
+if [ ! -x $pdftk ]; then
+  echo "pdftk is not an executable. Please fix!" >> /dev/stderr
+  exit 3;
+fi
+
 # cleanup the resources and create new directory
 tmpDir=`mktemp -d trml2pdf.XXXXXXXX`
 
@@ -67,7 +79,7 @@ case "$type" in
      # render the document
      trml2pdf $infile > $tmpDir/rendered.pdf
      # print pdf to stdout
-     pdftk $tmpDir/rendered.pdf cat output -
+     $pdftk $tmpDir/rendered.pdf cat output -
      ;;
   1) 
      watermark=$3
@@ -76,16 +88,16 @@ case "$type" in
      # render the document
      trml2pdf $infile > $tmpDir/rendered.pdf
      # burst the document
-     pdftk $tmpDir/rendered.pdf burst output $tmpDir/pg_%04d.pdf
+     $pdftk $tmpDir/rendered.pdf burst output $tmpDir/pg_%04d.pdf
      # apply the watermark
-     pdftk $tmpDir/pg_0001.pdf background $watermark output $tmpDir/firstback.pdf
+     $pdftk $tmpDir/pg_0001.pdf background $watermark output $tmpDir/firstback.pdf
      # remove the tmp file
      rm $tmpDir/pg_0001.pdf
      # merge all together
      if [ -e $tmpDir/pg_0002.pdf ]; then
-       pdftk $tmpDir/firstback.pdf pg_*.pdf cat output -
+       $pdftk $tmpDir/firstback.pdf pg_*.pdf cat output -
      else
-       pdftk $tmpDir/firstback.pdf cat output -
+       $pdftk $tmpDir/firstback.pdf cat output -
      fi
      ;;
   2)
@@ -95,9 +107,9 @@ case "$type" in
      # render the document
      trml2pdf $infile > $tmpDir/rendered.pdf
      # apply the watermark
-     pdftk $tmpDir/rendered.pdf background $watermark output $tmpDir/renderedFinal.pdf
+     $pdftk $tmpDir/rendered.pdf background $watermark output $tmpDir/renderedFinal.pdf
      # print pdf to stdout
-     pdftk $tmpDir/renderedFinal.pdf cat output -
+     $pdftk $tmpDir/renderedFinal.pdf cat output -
      ;;
   *) 
      usage
