@@ -144,7 +144,6 @@ void KraftWizard::init()
 
   QWidget *w = new QWidget;
   mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
-  setValid(mCustomerPageItem, false);
 
   setCaption( i18n( "Document Creation Wizard" ) );
 
@@ -157,7 +156,6 @@ void KraftWizard::slotAddressee( const Addressee& addressee )
 {
   kDebug() << "Addressee Changed!";
   mAddressee = addressee;
-  setValid ( mCustomerPageItem, true );
 }
 
 void KraftWizard::slotStartAddressbook()

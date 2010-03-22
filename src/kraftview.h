@@ -58,6 +58,7 @@ class CatalogSelection;
 class KPushButton;
 class DocAssistant;
 class CalcPartList;
+class KJob;
 
 class Katalog;
 
@@ -144,6 +145,7 @@ class KraftView : public KDialog
 
   void slotDocTypeChanged( const QString& );
   void slotLanguageSettings();
+  void readContacts( KJob * );
 
 signals:
   void selectPage( int );

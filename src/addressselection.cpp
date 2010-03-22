@@ -79,13 +79,23 @@ void AddressSelection::slotOpenAddressBook()
 {
   ContactEditorDialog *dlg = new ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this );
   connect( dlg, SIGNAL( contactStored( const Akonadi::Item& ) ),
-           this, SLOT( slotRefreshAddressList() ) );
+           this, SLOT( slotUpdateAddressList( const Akonadi::Item& ) ) );
   dlg->show();
 }
 
-void AddressSelection::slotRefreshAddressList()
+void AddressSelection::slotUpdateAddressList( const Akonadi::Item& item )
 {
-  setupAddressList();
+  if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
+    KABC::Addressee contact = item.payload<KABC::Addressee>();
+
+    QTreeWidgetItem *treeItem = contactToWidgetEntry( contact );
+    if( treeItem ) {
+      treeItem->setSelected( true );
+      mTreeWidget->scrollToItem( treeItem );
+    }
+  } else {
+    kDebug() << "Update AddressList: Item is not valid";
+  }
 }
 
 void AddressSelection::setupAddressList()
@@ -113,7 +123,16 @@ void AddressSelection::readContacts( KJob* job )
 
   // iterate over all found contacts and write build up the treeview
   foreach ( const KABC::Addressee &contact, contacts ) {
-    QTreeWidgetItem *item = new QTreeWidgetItem( mTreeWidget );
+    contactToWidgetEntry( contact );
+  }
+}
+
+QTreeWidgetItem* AddressSelection::contactToWidgetEntry( const KABC::Addressee& contact )
+{
+  QTreeWidgetItem *item = 0;
+
+  if( ! contact.isEmpty() ) {
+    item = new QTreeWidgetItem( mTreeWidget );
     item->setText( 0, contact.name() );
 
     // remember the name as a search key for the slot selectionChanged
@@ -125,6 +144,7 @@ void AddressSelection::readContacts( KJob* job )
       item->setText( 1, ( *adrIt ).locality () );
     }
   }
+  return item;
 }
 
 // slot called if the user clicks on the treeview

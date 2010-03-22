@@ -245,7 +245,7 @@ void DocDigestView::addItems( QTreeWidget *view, DocDigestList list, QTreeWidget
   for ( it = list.begin(); it != list.end(); ++it ) {
     QStringList li;
 
-    QString nameTag = "<*>";
+    QString nameTag = "";
     if( (*it).clientId().isEmpty() ) {
       nameTag = "";
     }

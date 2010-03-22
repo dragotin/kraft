@@ -43,11 +43,8 @@
 #include <khtmlview.h>
 #include <kiconloader.h>
 
-#include <kabc/addressbook.h>
-#include <kabc/stdaddressbook.h>
-#include <kabc/addresseedialog.h>
 #include <kabc/addressee.h>
-
+#include <akonadi/contact/contactsearchjob.h>
 
 // application specific includes
 #include "kraftdb.h"
@@ -333,23 +330,10 @@ void KraftView::redrawDocument( )
     kDebug() << "Loaded address uid from database " << mContactUid << endl;
     if( ! mContactUid.isEmpty() ) {
       // FIXME - use centralised address provider
-      AddressBook *adrBook =  StdAddressBook::self( );
-      Addressee contact;
-      if( adrBook ) {
-        contact = adrBook->findByUid( mContactUid );
-        if( contact.isEmpty() ) {
-          // the Uid is set, but the address is not in this addressbook
-          KMessageBox::sorry( this, i18n("The addressbook does not contain the address "
-                                         "identified by the ID in the document.")
-                              .arg( mContactUid ), i18n("Addressbook out of sync") );
-
-          m_headerEdit->m_labName->setText( i18n("--lost--") );
-        } else {
-          kDebug() << "The loaded Contact has this realname: " << contact.realName() << endl;
-          slotNewAddress( contact );
-        }
-      }
+      Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
+      connect( job, SIGNAL( result( KJob* ) ), SLOT( readContacts( KJob* ) ) );
     }
+
     if( !address.isEmpty() ) {
       // custom address stored in the document.
       // kDebug() << "custom address came in: " << address << endl;
@@ -376,6 +360,27 @@ void KraftView::redrawDocument( )
     refreshPostCard();
 
     mModified = false;
+}
+
+void KraftView::readContacts( KJob *job )
+{
+  kDebug() << "Reading Akonadi Search Job!";
+  if ( job->error() ) {
+    qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
+    return;
+  }
+
+  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
+
+  // iterate over all found contacts and and find the one with the correct uid
+  foreach ( const KABC::Addressee &contact, searchJob->contacts() ) {
+    const QString uid = contact.uid();
+    if( uid == mContactUid ) {
+      slotNewAddress( contact );
+      kDebug() << "The loaded Contact has this realname: " << contact.realName() << endl;
+      break;
+    }
+  }
 }
 
 void KraftView::redrawDocPositions( )

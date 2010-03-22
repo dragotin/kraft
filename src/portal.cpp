@@ -504,13 +504,7 @@ void Portal::slotMailDocument()
   QString ident;
   if ( docPtr ) {
     ident = docPtr->ident();
-#if 0
-    FIXME: Get mail from Akonadi, disable until Akonadi can do that.
-    KABC::AddressBook *ab = KABC::StdAddressBook::self();
-    KABC::Addressee addressee = ab->findByUid( docPtr->addressUid() );
 
-    mMailReceiver = addressee.fullEmail();
-#endif
     ArchiveMan *archman = ArchiveMan::self();
     dbID archID = archman->archiveDocument( docPtr );
 

@@ -23,12 +23,14 @@
 #include <QTreeWidget>
 
 #include <kabc/addressee.h>
+#include <akonadi/item.h>
 
 class QComboBox;
 class QPushButton;
 class KJob;
 
 using namespace KABC;
+
 
 class AddressSelection : public QWidget
 {
@@ -49,9 +51,12 @@ protected slots:
 
   void slotSelectionChanged( QTreeWidgetItem*, QTreeWidgetItem* );
   void addressSelectedResult( KJob * );
-  void slotRefreshAddressList();
+  void slotUpdateAddressList( const Akonadi::Item& );
   void slotOpenAddressBook();
+
 private:
+  QTreeWidgetItem* contactToWidgetEntry( const KABC::Addressee& ) ;
+
   QTreeWidget         *mTreeWidget;
   QMap<QTreeWidgetItem*, QString> mAddressIds;
   QPushButton *mRefreshList;

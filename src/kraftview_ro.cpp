@@ -38,12 +38,6 @@
 #include <kiconloader.h>
 #include <kvbox.h>
 
-#include <kabc/addressbook.h>
-#include <kabc/stdaddressbook.h>
-#include <kabc/addresseedialog.h>
-#include <kabc/addressee.h>
-
-
 // application specific includes
 #include "kraftdb.h"
 #include "kraftsettings.h"
