@@ -370,7 +370,8 @@ void FlosTemplDialog::accept()
 void FlosTemplDialog::reject()
 {
   if(confirmClose() == true) {
-    // everything is happening in confirmClose
+    // let KDialog clean away the dialog.
+    KDialog::reject();
   }
 }
 
@@ -388,7 +389,7 @@ bool FlosTemplDialog::confirmClose()
     if ( KMessageBox::warningContinueCancel( this, i18n( "The template was modified. Do "
                                                          "you really want to discard all changes?" ),
                                              i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ), KIcon("edit-clear") ) )
-          == KMessageBox::Cancel  ) {
+      == KMessageBox::Cancel  ) {
       return false;
     }
 

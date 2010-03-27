@@ -76,7 +76,7 @@ void TemplKatalog::reload( dbID id)
       templ->setChapterID(q.value(2).toInt());
       //templ->setCalculationType(q.value(3).toInt());
       templ->setManualPrice(q.value(4).toDouble());
-      templ->setText(QString::fromUtf8(q.value(7).toByteArray()));
+      templ->setText( q.value(7).toString() );
       templ->setBenefit( q.value(8).toDouble());
       templ->setHasTimeslice( q.value(9).toBool() );
 
@@ -123,7 +123,7 @@ int TemplKatalog::load()
         kDebug() << "Chapter ID is " << chapID << endl;
 
         FloskelTemplate *flos = new FloskelTemplate( templID,
-                                                     QString::fromUtf8(q.value(7).toByteArray()),
+                                                     q.value(7).toString(),
                                                      einheit, chapID, calcKind,
                                                      modDt, enterDt );
         // flos->setSortKey( sortID );
@@ -176,7 +176,7 @@ int TemplKatalog::loadTimeCalcParts( FloskelTemplate *flos )
         cnt++;
         int tcalcid = q.value(0).toInt();
         int templid = q.value(1).toInt();
-        QString name = QString::fromUtf8(q.value(2).toByteArray());
+        QString name = q.value(2).toString();
         int minutes = q.value(3).toInt();
         int prozent = q.value(4).toInt();
         int hourSet = q.value(5).toInt();
@@ -238,7 +238,7 @@ int TemplKatalog::loadFixCalcParts( FloskelTemplate *flos )
     while( q.next() )
     {
         cnt++;
-        QString name  = QString::fromUtf8(q.value(0).toByteArray());
+        QString name  = q.value(0).toString();
         double amount = q.value(1).toDouble();
         int percent   = q.value(2).toInt();
         int tcalcid = q.value(3).toInt();

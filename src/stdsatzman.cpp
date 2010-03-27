@@ -147,7 +147,7 @@ void StdSatzMan::load()
     int satzID = q.value(0).toInt();
     kDebug() << "Neue StdSatz ID " << satzID << endl;
     // resize if index is to big.
-    StdSatz ss( satzID, QString::fromUtf8(q.value(1).toByteArray()),
+    StdSatz ss( satzID, q.value(1).toString(),
                 Geld( q.value(2).toDouble()));
     mStdSaetze.append(ss);
   }

@@ -693,6 +693,8 @@ bool SetupAssistant::init( Mode mode )
 
   text = i18n("This assistant guides you through the basic settings of your Kraft installation.");
 
+  bool hitNextClosing = true;
+
   if( mMode == Reinit ) {
     startDialog = true;
   } else if( mode == Update ) {
@@ -733,6 +735,7 @@ bool SetupAssistant::init( Mode mode )
     } else {
       // unable to connect to the database at all
       startDialog = true;
+      hitNextClosing = false;
       text = i18n( "<p>Kraft could not connect to the configured database.<p>" );
       if( KraftDB::self()->qtDriver().toUpper() == "QMYSQL" ) {
           text += i18n( "<p>Please check the database server setup and restart Kraft to connect" );
@@ -744,7 +747,8 @@ bool SetupAssistant::init( Mode mode )
   }
 
   if( startDialog ) {
-    text += "<p>Please hit next and follow the instructions.</p>";
+    if( hitNextClosing )
+      text += "<p>Please hit next and follow the instructions.</p>";
     mWelcomePage->setWelcomeText( configOrigin + text );
   }
   return startDialog ;
