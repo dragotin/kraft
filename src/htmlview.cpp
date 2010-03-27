@@ -65,8 +65,12 @@ void HtmlView::setTitle( const QString &title )
 
 void HtmlView::setStylesheetFile( const QString &style )
 {
-  KStandardDirs stdDirs;
-  mStyleSheetFile = KStandardDirs::locate( "appdata", style );
+  char *prjPath = getenv( "KRAFT_HOME" );
+  if( prjPath ) {
+    mStyleSheetFile = QString( "%1/src/%2" ).arg( prjPath ).arg( style );
+  } else {
+    mStyleSheetFile = KStandardDirs::locate( "appdata", style );
+  }
   kDebug() << "found this stylefile: " << mStyleSheetFile << " out of " << style;
 }
 
