@@ -95,7 +95,7 @@ case "$type" in
      rm $tmpDir/pg_0001.pdf
      # merge all together
      if [ -e $tmpDir/pg_0002.pdf ]; then
-       $pdftk $tmpDir/firstback.pdf pg_*.pdf cat output -
+       $pdftk $tmpDir/firstback.pdf $tmpDir/pg_*.pdf cat output -
      else
        $pdftk $tmpDir/firstback.pdf cat output -
      fi
