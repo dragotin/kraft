@@ -22,6 +22,7 @@
 #include <QRegExp>
 #include <QList>
 #include <QTextDocument>
+#include <QApplication>
 
 #include <kdebug.h>
 #include <kstandarddirs.h>
@@ -426,6 +427,8 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     return;
   }
 
+  QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
+
   if ( mHaveMerge && mMergeIdent != "0" &&
        ( mWatermarkFile.isEmpty() || !QFile::exists( mWatermarkFile ) ) ) {
 
@@ -498,6 +501,8 @@ void ReportGenerator::trml2pdfFinished( int exitStatus)
                                  i18n( "rml2pdf Error" ) );
     mErrors = QString();
   }
+  QApplication::restoreOverrideCursor();
+
 }
 
 
