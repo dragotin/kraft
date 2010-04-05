@@ -20,13 +20,14 @@
 #include <QFile>
 #include <QObject>
 #include <QProcess>
-#include <QTextStream>
+#include <QDataStream>
+
+#include <kprocess.h>
 
 #include "kraftdoc.h"
 #include "archdoc.h"
 
 class dbID;
-class KProcess;
 class KJob;
 class QFile;
 
@@ -80,12 +81,13 @@ private:
   QString mWatermarkFile;
   QString mDocId;
   dbID mArchId;
+  long  mOutputSize;
 
   QFile mFile;
-  QTextStream mTargetStream;
+  QDataStream mTargetStream;
   ArchDoc *mArchDoc;
   static ReportGenerator *mSelf;
-  static KProcess *mProcess;
+  KProcess mProcess;
 };
 
 #endif

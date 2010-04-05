@@ -126,43 +126,6 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     return result;
 }
 
-#if 0
-/*
- * this method requires a database id because that is the only garanteed
- * unique part.
- */
-QString DocumentSaverDB::generateDocumentIdent( dbID id, KraftDoc *doc ) const
-{
-  /*
-   * The pattern may contain the following tags:
-   * %y - the year of the documents date.
-   * %w - the week number of the documents date
-   * %d - the day number of the documents date
-   * %m - the month number of the documents date
-   * %c - the customer id from kaddressbook
-   * %i - the uniq identifier from db.
-   * %type - the localised doc type (offer, invoice etc.)
-   */
-  QString pattern = KraftSettings::self()->docIdent();
-
-  QDate d = doc->date();
-  KraftDB::StringMap m;
-  int dummy;
-
-  m[ "%y" ] = QString::number( d.year() );
-  m[ "%w" ] = QString::number( d.weekNumber( &dummy ) );
-  m[ "%d" ] = QString::number( d.day()  );
-  m[ "%m" ] = QString::number( d.month() );
-  m[ "%i" ] = id.toString();
-  m[ "%c" ] = doc->addressUid();
-  m[ "%type" ] = doc->docType();
-
-  QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
-  kDebug() << "Generated document ident: " << re << endl;
-
-  return re;
-}
-#endif
 void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 {
   DocPositionList posList = doc->positions();

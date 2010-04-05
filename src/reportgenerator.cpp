@@ -24,7 +24,6 @@
 #include <QTextDocument>
 
 #include <kdebug.h>
-#include <kprocess.h>
 #include <kstandarddirs.h>
 #include <ktemporaryfile.h>
 #include <kurl.h>
@@ -46,7 +45,6 @@
 #include "defaultprovider.h"
 #include "doctype.h"
 
-KProcess* ReportGenerator::mProcess = 0;
 
 ReportGenerator *ReportGenerator::self()
 {
@@ -59,6 +57,12 @@ ReportGenerator::ReportGenerator()
 {
   connect( this, SIGNAL( templateGenerated( const QString& )),
            this, SLOT( slotConvertTemplate( const QString& )));
+
+  mProcess.setOutputChannelMode( KProcess:: OnlyStdoutChannel );
+  connect( &mProcess, SIGNAL( finished( int ) ),this, SLOT( trml2pdfFinished( int ) ) );
+  connect( &mProcess, SIGNAL( readyReadStandardOutput()), this, SLOT( slotReceivedStdout() ) );
+  connect( &mProcess, SIGNAL( readyReadStandardError()), this, SLOT( slotReceivedStderr() ) );
+  connect( &mProcess, SIGNAL( error ( QProcess::ProcessError )), this, SLOT( slotError( QProcess::ProcessError)));
 }
 
 ReportGenerator::~ReportGenerator()
@@ -82,7 +86,7 @@ void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 
 void ReportGenerator::slotConvertTemplate( const QString& templ )
 {
-  kDebug() << "Report BASE:\n" << templ;
+  // kDebug() << "Report BASE:\n" << templ;
 
   if ( ! templ.isEmpty() ) {
     KTemporaryFile temp;
@@ -406,16 +410,8 @@ QString ReportGenerator::findTrml2Pdf( )
 
 void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID, const QString& archId )
 {
-  if( ! mProcess ) {
-    mProcess = new KProcess;
-    mProcess->setOutputChannelMode( KProcess::SeparateChannels );
-    connect( mProcess, SIGNAL( finished( int ) ),this, SLOT( trml2pdfFinished( int ) ) );
-    connect( mProcess, SIGNAL( readyReadStandardOutput()), this, SLOT( slotReceivedStdout() ) );
-    connect( mProcess, SIGNAL( readyReadStandardError()), this, SLOT( slotReceivedStderr() ) );
-    connect( mProcess, SIGNAL( error ( QProcess::ProcessError )), this, SLOT( slotError( QProcess::ProcessError)));
-  } else {
-    mProcess->clearProgram();
-  }
+  mProcess.clearProgram();
+
   QStringList prg;
 
   mErrors = QString();
@@ -455,24 +451,28 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
   }
 
   mFile.setFileName( mOutFile );
+  mOutputSize = 0;
   if ( mFile.open( QIODevice::WriteOnly ) ) {
-    mProcess->setProgram( prg );
+    mProcess.setProgram( prg );
     mTargetStream.setDevice( &mFile );
-    QStringList args = mProcess->program();
+    QStringList args = mProcess.program();
     kDebug() << "* rml2pdf Call-Arguments: " << args;
 
-    mProcess->start( );
+    mProcess.start( );
   }
 }
 
 void ReportGenerator::slotReceivedStdout( )
 {
-  mTargetStream << (mProcess->readAllStandardOutput());
+  QByteArray arr  = mProcess.readAllStandardOutput();
+  mOutputSize += arr.size();
+  mTargetStream.writeRawData( arr, arr.size());
 }
 
 void ReportGenerator::slotReceivedStderr( )
 {
-  mErrors.append( mProcess->readAllStandardError() );
+  QByteArray arr  = mProcess.readAllStandardError();
+  mErrors.append( arr );
 }
 
 void ReportGenerator::slotError( QProcess::ProcessError err )
@@ -482,10 +482,10 @@ void ReportGenerator::slotError( QProcess::ProcessError err )
 
 void ReportGenerator::trml2pdfFinished( int exitStatus)
 {
-  mTargetStream.flush();
   mFile.close();
-  kDebug() << "Trml2pdf Process finished with status " << exitStatus;
 
+  kDebug() << "PDF Creation Process finished with status " << exitStatus;
+  kDebug() << "Wrote bytes to the output file: " << mOutputSize;
   if ( exitStatus == 0 ) {
     emit pdfAvailable( mOutFile );
     mOutFile = QString();
