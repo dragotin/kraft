@@ -678,7 +678,7 @@
       <item row="0" column="1">
        <widget class="QLabel" name="m_textTimePart">
         <property name="text">
-         <string>textLabel2</string>
+         <string comment="KDE::DoNotExtract">textLabel2</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -701,7 +701,7 @@
       <item row="1" column="1">
        <widget class="QLabel" name="m_textFixPart">
         <property name="text">
-         <string>textLabel2</string>
+         <string comment="KDE::DoNotExtract">textLabel2</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -724,7 +724,7 @@
       <item row="2" column="1">
        <widget class="QLabel" name="m_textMaterialPart">
         <property name="text">
-         <string>textLabel2</string>
+         <string comment="KDE::DoNotExtract">textLabel2</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

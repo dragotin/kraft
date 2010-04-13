@@ -146,7 +146,7 @@
         </font>
        </property>
        <property name="text">
-        <string>textLabel7</string>
+        <string comment="KDE::DoNotExtract">textLabel7</string>
        </property>
        <property name="wordWrap">
         <bool>false</bool>

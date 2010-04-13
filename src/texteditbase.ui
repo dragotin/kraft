@@ -110,7 +110,7 @@
             </font>
            </property>
            <property name="text">
-            <string>textLabel2</string>
+            <string comment="KDE::DoNotExtract">textLabel2</string>
            </property>
            <property name="wordWrap">
             <bool>false</bool>
@@ -148,7 +148,7 @@
             </font>
            </property>
            <property name="text">
-            <string>textLabel3</string>
+            <string comment="KDE::DoNotExtract">textLabel3</string>
            </property>
            <property name="wordWrap">
             <bool>false</bool>
