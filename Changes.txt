@@ -1,3 +1,12 @@
+Changes since version 0.32: #########################################
+- Ported to the KDE 4 Platform. In particular, to KDE 4.4
+- Use Akonadi based addressbook
+- Edit dialog for Wages and Units
+- SQLite-Support 
+- Setup Assistant for SQLite and MySQL Databases
+
+   => released v. 0.40
+
 Changes since version 0.31: #########################################
 - Tax: Added more flexible tax calculation. Kraft now has the tax in 
   a table for easy changing, supports no, reduced and full tax on 
@@ -15,7 +24,7 @@ Changes since version 0.31: #########################################
 - System-Tab: Display of some interesting setup information
 - Templates for PDF and HTML output are reloaded if modified
 
-   => released v. 0.32 (not yet).
+   => released v. 0.32 
 
 Changes since version 0.30: #########################################
 - added a read only view on documents, customizable with ctemplate 
