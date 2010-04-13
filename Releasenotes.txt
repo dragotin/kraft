@@ -1,3 +1,9 @@
+
+====================================================================
+Please refer to the Kraft Project website under http://kraft.sf.net
+====================================================================
+
+
 Das Kraft Release 0.22 verwendet ein neues Text-Template System,
 das für die benutzerkonfigurierbare PDF-Ausgabe der Dokumente
 verwendet wird. Es wird das google ctemplate-System verwendet,
