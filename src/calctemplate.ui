@@ -233,7 +233,7 @@
          <item>
           <widget class="QLabel" name="m_textDispTime">
            <property name="text">
-            <string>textLabel1</string>
+            <string comment="KDE::DoNotExtract">textLabel1</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignVCenter</set>
@@ -357,7 +357,7 @@
          <item>
           <widget class="QLabel" name="m_textDispFix">
            <property name="text">
-            <string>textLabel1</string>
+            <string comment="KDE::DoNotExtract">textLabel1</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignVCenter</set>
@@ -481,7 +481,7 @@
          <item>
           <widget class="QLabel" name="m_textDispMat">
            <property name="text">
-            <string>textLabel1</string>
+            <string comment="KDE::DoNotExtract">textLabel1</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignVCenter</set>

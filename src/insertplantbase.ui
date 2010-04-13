@@ -64,7 +64,7 @@
         <enum>QFrame::Sunken</enum>
        </property>
        <property name="text">
-        <string>textLabel1</string>
+        <string comment="KDE::DoNotExtract">textLabel1</string>
        </property>
        <property name="wordWrap">
         <bool>false</bool>
@@ -124,7 +124,7 @@
        <item>
         <widget class="QLabel" name="mUpdateLabel">
          <property name="text">
-          <string>textLabel1</string>
+          <string comment="KDE::DoNotExtract">textLabel1</string>
          </property>
          <property name="wordWrap">
           <bool>false</bool>
