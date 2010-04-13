@@ -99,7 +99,6 @@ public:
 
 protected slots:
   void slotAddressee( const Addressee& );
-  void slotStartAddressbook();
 
 private:
   CustomerSelectPage *mCustomerPage;

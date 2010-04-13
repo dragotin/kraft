@@ -119,7 +119,7 @@ void PrefsWages::slotAddWage()
   dialog->show();
 }
 
-void PrefsWages::slotEditWage(QModelIndex index)
+void PrefsWages::slotEditWage(QModelIndex /* index */ )
 {
   if ( mWagesTreeView->currentIndex().isValid() ) {
     int row = mWagesTreeView->currentIndex().row();

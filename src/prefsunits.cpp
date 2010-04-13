@@ -105,7 +105,7 @@ void PrefsUnits::slotAddUnit()
   dialog->show();
 }
 
-void PrefsUnits::slotEditUnit(QModelIndex index)
+void PrefsUnits::slotEditUnit(QModelIndex /* index */ )
 {
   if ( mUnitsTreeView->currentIndex().isValid() ) {
     int row = mUnitsTreeView->currentIndex().row();

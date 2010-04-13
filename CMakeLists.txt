@@ -1,8 +1,8 @@
-PROJECT(kraft)
+project(kraft)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/ ${CMAKE_MODULE_PATH} )
 
-find_package(KDE4 REQUIRED)
+find_package(KDE4 4.4.0 REQUIRED) 
 find_package (KdepimLibs REQUIRED)
 find_package(Ctemplate REQUIRED)
 

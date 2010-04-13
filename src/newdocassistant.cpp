@@ -128,7 +128,6 @@ KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
 {
   setObjectName( name );
   setModal( modal );
-  // setMinimumWidth( 400 );
 }
 
 KraftWizard::~KraftWizard()
@@ -156,12 +155,6 @@ void KraftWizard::slotAddressee( const Addressee& addressee )
 {
   kDebug() << "Addressee Changed!";
   mAddressee = addressee;
-}
-
-void KraftWizard::slotStartAddressbook()
-{
-  KRun::runCommand( QString::fromLatin1( "kaddressbook --new-contact" ),
-                    QString::fromLatin1("kaddressbook" ), "address", mParent, "" );
 }
 
 QDate KraftWizard::date() const
