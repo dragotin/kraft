@@ -14,7 +14,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="mStatusText">
      <property name="text">
-      <string>TextLabel</string>
+      <string comment="KDE::DoNotExtract">TextLabel</string>
      </property>
      <property name="textFormat">
       <enum>Qt::RichText</enum>
