@@ -31,8 +31,8 @@
 static const char *description =
 	I18N_NOOP("KDE Plant Catalog Viewer");
 // INSERT A DESCRIPTION FOR YOUR APPLICATION HERE
-	
-	
+
+
 static KCmdLineOptions options[] =
 {
   // { "+[File]", I18N_NOOP("file to open"), 0 },
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
                         ki18n("KDE Plant Catalog Viewer"), KPLANT_VERSION,
                         ki18n("The KDE Plant Catalog Viewer"),
                         KAboutData::License_GPL,
-                        ki18n("Copyright (c) 2005-2010 Klaas Freitag") );
+                        ki18n("Copyright © 2005–2010 Klaas Freitag") );
   KCmdLineArgs::init( argc, argv, &aboutData );
 
   KApplication app;
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
   KStandardDirs stdDirs;
   QString splashFile = stdDirs.findResource( "data", "kplant/pics/kplant_splash.png" );
   KSplashScreen *splash = 0;
-  
+
   if( ! splashFile.isNull() ) {
     QPixmap pixmap( splashFile );
     splash = new KSplashScreen( pixmap );
@@ -74,12 +74,12 @@ int main(int argc, char *argv[])
   }
 
   BrunsKatalogView *lv = 0;
-  
+
   if (app.isSessionRestored())
   {
     RESTORE( Brunsviewer );
   }
-  else 
+  else
   {
 #endif
       const QString kat = i18n("BRUNS Pflanzenkatalog 2005");
@@ -98,4 +98,4 @@ int main(int argc, char *argv[])
   }
 #endif
   return app.exec();
-}  
+}

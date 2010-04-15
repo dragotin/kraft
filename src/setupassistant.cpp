@@ -351,7 +351,7 @@ SetupAssistant::SetupAssistant( QWidget *parent )
   mMysqlDetailsPage = new MysqlDetailsPage(w);
 
   w = new QWidget;
-  mSqLiteDetailsPageItem = addPage( w, i18n("Enter SqLite Filename"));
+  mSqLiteDetailsPageItem = addPage( w, i18n("Enter SQLite Filename"));
   mSqLiteDetailsPage = new SqLiteDetailsPage(w);
 
   w = new QWidget;
@@ -475,9 +475,9 @@ void SetupAssistant::finalizePage()
   if( mErrors.isEmpty() ) {
     txt = i18n( "<p>The database setup was successfully completed.</p> " );
     txt += i18n("<p>You can start to work with Kraft now. Please do not forget to");
-    txt += i18n("<li>Adjust various settings in the Kraft Preferences dialog.</li>" );
+    txt += i18n("<li>adjust various settings in the Kraft Preferences dialog.</li>" );
     txt += i18n("<li>Check the Catalog chapter list.</li>" );
-    txt += i18n("<li>Make your business and have fun :-)</li>" );
+    txt += i18n("<li>Make your business and have fun.</li>" );
     txt += "</ul></p>";
     txt += i18n("<p>If you press <i>Finish</i> now, the new database configuration is stored in Krafts configuration.</p>");
   } else {
@@ -491,20 +491,20 @@ void SetupAssistant::finalizePage()
 void SetupAssistant::startDatabaseUpdate()
 {
   if( ! KraftDB::self()->isOk() ) {
-    mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials!"));
+    mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials."));
     enableButton( KDialog::User2, false );
     return;
   }
 
   if( !KraftDB::self()->databaseExists() ) {
-    mCreateDbPage->setStatusText( i18n("The database core tables do not exist, please check initial setup!"));
+    mCreateDbPage->setStatusText( i18n("The database core tables do not exist. Please check initial setup."));
     enableButton( KDialog::User2, false );
     return;
   }
   enableButton( KDialog::User2, true );
 
   if( KraftDB::self()->currentSchemaVersion() == KraftDB::self()->requiredSchemaVersion() ) {
-    mUpgradeDbPage->slotSetStatusText( i18n("Database is up to date, no upgrade required."));
+    mUpgradeDbPage->slotSetStatusText( i18n("Database is up to date. No upgrade is required."));
     return;
   }
 
@@ -538,7 +538,7 @@ void SetupAssistant::startDatabaseUpdate()
   bool errors = false;
 
   currentVer = KraftDB::self()->currentSchemaVersion();
-  foreach( SqlCommandList cmds, commandLists ) {  
+  foreach( SqlCommandList cmds, commandLists ) {
     currentVer++;
     int goodCmds = KraftDB::self()->processSqlCommands( cmds );
     doneOverallCmds += goodCmds;
@@ -698,20 +698,20 @@ bool SetupAssistant::init( Mode mode )
   if( mMode == Reinit ) {
     startDialog = true;
   } else if( mode == Update ) {
-    //We're going to check if there's a config file for the KDE4 version already
+    //We're going to check if there's a config file for the KDE Platform 4.x version already
     KStandardDirs stdDirs;
 
     if( stdDirs.findResource( "config", "kraftdatabaserc" ) == QString() ) {
-      // No KDE4 config file there.
+      // No KDE Platform 4.x config file there.
       if( tryMigrateFromKDE3() ) {
-        configOrigin = i18n("The database configuration was converted from the former KDE3 config file.");
+        configOrigin = i18n("The database configuration was converted from a former configuration file.");
       } else {
         // migration failed and we do not have a config file. All from scratch
         configOrigin = i18n("There was no database configuration found.");
       }
     } else {
-      configOrigin = i18n("A valid KDE4 database configuration file was found.");
-      kDebug() << "A standard KDE4 database config file is there.";
+      configOrigin = i18n("A valid current database configuration file was found.");
+      kDebug() << "A standard KDE Platform 4.x database config file is there.";
     }
 
     if( KraftDB::self()->dbConnect() )  { // try to connect with default values
@@ -723,10 +723,10 @@ bool SetupAssistant::init( Mode mode )
           kDebug() << "Need a database schema update.";
           startDialog = true;
         } else {
-          kDebug() << "Database Schema is ok, nothing to do for StartupAssistant";
+          kDebug() << "Database Schema is OK. Nothing to do for StartupAssistant";
         }
       } else {
-        kDebug() << "The database is not existing, need to recreate!";
+        kDebug() << "The database is not existing. It needs to be recreated.";
         startDialog = true;
 
         text = i18n( "<p>The database can be opened, but does not contain valid content.</p>"
@@ -738,9 +738,9 @@ bool SetupAssistant::init( Mode mode )
       hitNextClosing = false;
       text = i18n( "<p>Kraft could not connect to the configured database.<p>" );
       if( KraftDB::self()->qtDriver().toUpper() == "QMYSQL" ) {
-          text += i18n( "<p>Please check the database server setup and restart Kraft to connect" );
+          text += i18n( "<p>Please check the database server setup and restart Kraft to connect." );
       } else {
-          text += i18n("<p>Please check the database file");
+          text += i18n("<p>Please check the database file.");
       }
       text += " " + i18n( "or create a new database by hitting <b>next</b>.</p>" );
     }
