@@ -316,10 +316,10 @@ void NumberCycleDialog::accept()
         if ( q.value( 2 ).toInt() > cycle.counter() ) {
           if ( q.value( 3 ).toString() == cycle.getTemplate() ) {
             // The number has become smaller but the the template remains the same.
-            // That has high potential to end up with doublicate doc numbers.
+            // That has high potential to end up with duplicate doc numbers.
             if( KMessageBox::questionYesNo( this,
                                             i18n( "The new counter is lower than the old one. "
-                                                  "That has potential to create doublicate document numbers. Do you really want to decrease it?" ),
+                                                  "That has potential to create duplicate document numbers. Do you really want to decrease it?" ),
                                             i18n("Dangerous Counter Change"),
                                             KStandardGuiItem::yes(), KStandardGuiItem::no() )
                   != KMessageBox::Yes )
