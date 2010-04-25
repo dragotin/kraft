@@ -18,7 +18,7 @@
 // include files for QT
 #include <qdir.h>
 #include <qprinter.h>
-#include <qpainter.h>
+#include <qtreewidget.h>
 
 // include files for KDE
 #include <kiconloader.h>
@@ -101,6 +101,8 @@ void KatalogView::init(const QString& katName )
 
       connect( listview, SIGNAL(currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)),
                this, SLOT(slTreeviewItemChanged( QTreeWidgetItem*, QTreeWidgetItem*)) );
+      connect( listview, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+               this, SLOT(slEditTemplate()));
   }
 
   setCentralWidget(w);
