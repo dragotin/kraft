@@ -49,7 +49,7 @@ install(TARGETS kraftcat ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### next target ###############
 
-LINK_DIRECTORIES( lib )
+LINK_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/lib )
 set(kplant_SRCS brunsviewmain.cpp brunsviewer.cpp)
 
 kde4_add_executable(kplant ${kplant_SRCS} )
