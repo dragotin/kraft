@@ -1,5 +1,5 @@
 /***************************************************************************
-             zeitcalcdialog  -
+             Timecalcdialog  -
                              -------------------
     begin                : 2004-23-09
     copyright            : (C) 2004 by Klaas Freitag
@@ -25,12 +25,12 @@
 #include <knuminput.h>
 #include <klineedit.h>
 
-#include "zeitcalcdialog.h"
-#include "zeitcalcpart.h"
+#include "timecalcdialog.h"
+#include "timecalcpart.h"
 #include "stdsatzman.h"
 
 
-ZeitCalcDialog::ZeitCalcDialog(QWidget *parent, bool modal )
+TimeCalcDialog::TimeCalcDialog(QWidget *parent, bool modal )
     : KDialog( parent ), Ui::calcdetailTime(),
     m_part(0)
 {
@@ -42,7 +42,7 @@ ZeitCalcDialog::ZeitCalcDialog(QWidget *parent, bool modal )
   m_hourSets->insertItems(-1, StdSatzMan::self()->allStdSaetze());
 }
 
-ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, bool modal )
+TimeCalcDialog::TimeCalcDialog(TimeCalcPart *cp, QWidget *parent, bool modal )
     : KDialog( parent ), Ui::calcdetailTime(),
     m_part(cp)
 {
@@ -62,12 +62,12 @@ ZeitCalcDialog::ZeitCalcDialog(ZeitCalcPart *cp, QWidget *parent, bool modal )
   m_hourSets->setCurrentIndex(m_hourSets->findText( std.getName() ));
 }
 
-ZeitCalcDialog::~ZeitCalcDialog( )
+TimeCalcDialog::~TimeCalcDialog( )
 {
 
 }
 
-void ZeitCalcDialog::accept()
+void TimeCalcDialog::accept()
 {
 
   if( m_part ) {
@@ -89,27 +89,24 @@ void ZeitCalcDialog::accept()
   KDialog::accept();
 }
 
-QString ZeitCalcDialog::getName()
+QString TimeCalcDialog::getName()
 {
   return m_nameEdit->text();
 }
 
-int ZeitCalcDialog::getDauer()
+int TimeCalcDialog::getDauer()
 {
   return m_dauer->value();
 }
 
-bool ZeitCalcDialog::allowGlobal()
+bool TimeCalcDialog::allowGlobal()
 {
   return m_stdGlobal->isChecked();
 }
 
-QString ZeitCalcDialog::getStundensatzName()
+QString TimeCalcDialog::getStundensatzName()
 {
   return m_hourSets->currentText();
 }
 
 /* END */
-
-
-#include "zeitcalcdialog.moc"

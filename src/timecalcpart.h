@@ -1,5 +1,5 @@
 /***************************************************************************
-                          zeitcalcpart.h  -
+                          Timecalcpart.h  -
                              -------------------
     begin                : Don Jan 1 2004
     copyright            : (C) 2004 by Klaas Freitag
@@ -15,23 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ZEITCALCPART_H
-#define ZEITCALCPART_H
+#ifndef TIMECALCPART_H
+#define TIMECALCPART_H
 
 #include <calcpart.h>
 
 #include "stdsatzman.h"
 
-/**Implementiert einen zeitabhängigen Kalkulationsbeitrag.
+/**
   *@author Klaas Freitag
   */
 
-class ZeitCalcPart : public CalcPart  {
+class TimeCalcPart : public CalcPart  {
 
 public:
-    ZeitCalcPart( const QString& name, int minutes, int prozent = 0);
-  ZeitCalcPart();
-    ~ZeitCalcPart();
+    TimeCalcPart( const QString& name, int minutes, int prozent = 0);
+  TimeCalcPart();
+    ~TimeCalcPart();
 
     bool globalStdSetAllowed() { return m_allowGlobalStundensatz; }
     void setGlobalStdSetAllowed( bool s );

@@ -28,7 +28,7 @@
 #include "calcpart.h"
 #include "materialcalcpart.h"
 #include "fixcalcpart.h"
-#include "zeitcalcpart.h"
+#include "timecalcpart.h"
 #include "stockmaterial.h"
 
 FloskelTemplate::FloskelTemplate()
@@ -124,7 +124,7 @@ void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
     CalcPart *ncp = 0;
 
     if( cp->getType() == KALKPART_TIME ) {
-      ncp = new ZeitCalcPart( *( static_cast<ZeitCalcPart*>(cp) ) );
+      ncp = new TimeCalcPart( *( static_cast<TimeCalcPart*>(cp) ) );
     } else if( cp->getType() == KALKPART_FIX ) {
       ncp = new FixCalcPart( *( static_cast<FixCalcPart*>(cp) ) );
     } else if( cp->getType() == KALKPART_MATERIAL ) {
@@ -353,9 +353,9 @@ void FloskelTemplate::timePartsToXML( QDomDocument& doc, QDomElement& calcParts 
 {
     CalcPartList tpList = getCalcPartsList(KALKPART_TIME);
 
-    ZeitCalcPart *tc = 0;
-    tc = static_cast<ZeitCalcPart*>(tpList.first());
-    for( ; tc; tc = static_cast<ZeitCalcPart*>(tpList.next()) ) {
+    TimeCalcPart *tc = 0;
+    tc = static_cast<TimeCalcPart*>(tpList.first());
+    for( ; tc; tc = static_cast<TimeCalcPart*>(tpList.next()) ) {
         QDomElement calcPart = doc.createElement("TimeCalcPart");
         calcParts.appendChild(calcPart);
         calcPart.appendChild(createDomNode(doc, "name", tc->getName()));

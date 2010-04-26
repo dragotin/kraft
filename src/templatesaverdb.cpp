@@ -30,7 +30,7 @@
 #include "templatesaverdb.h"
 #include "calcpart.h"
 #include "floskeltemplate.h"
-#include "zeitcalcpart.h"
+#include "timecalcpart.h"
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
 #include "stockmaterial.h"
@@ -192,7 +192,7 @@ bool CalculationsSaverDB::saveCalculations( CalcPartList parts, dbID parentID )
     if( cp->isDirty() )
     {
       if( cp->getType() == KALKPART_TIME ) {
-        res = saveTimeCalcPart( static_cast<ZeitCalcPart*>(cp), parentID );
+        res = saveTimeCalcPart( static_cast<TimeCalcPart*>(cp), parentID );
         Q_ASSERT( res );
       } else if( cp->getType() == KALKPART_FIX ) {
         res = saveFixCalcPart( static_cast<FixCalcPart*>(cp), parentID );
@@ -209,7 +209,7 @@ bool CalculationsSaverDB::saveCalculations( CalcPartList parts, dbID parentID )
   return res;
 }
 
-bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
+bool CalculationsSaverDB::saveTimeCalcPart( TimeCalcPart *cp, dbID parentId )
 {
     bool result = true;
     if( !cp ) return result;
@@ -227,7 +227,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
     { // no entry in db yet => INSERT
         if( ! cp->isToDelete() ) {
             QSqlRecord buffer = model.record();
-            fillZeitCalcBuffer( &buffer, cp );
+            fillTimeCalcBuffer( &buffer, cp );
             buffer.setValue( "TemplID", parentId.toInt() );
             model.insertRecord(-1, buffer);
 
@@ -252,7 +252,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
             if( model.rowCount() > 0 ) {
                 QSqlRecord buffer = model.record(0);
                 buffer.setValue( "modDate", KraftDB::self()->currentTimeStamp() );
-                fillZeitCalcBuffer( &buffer, cp );
+                fillTimeCalcBuffer( &buffer, cp );
                 model.setRecord(0, buffer);
                 model.submitAll();
             } else {
@@ -264,7 +264,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( ZeitCalcPart *cp, dbID parentId )
     return result;
 }
 
-void CalculationsSaverDB::fillZeitCalcBuffer( QSqlRecord *buffer, ZeitCalcPart *cp )
+void CalculationsSaverDB::fillTimeCalcBuffer( QSqlRecord *buffer, TimeCalcPart *cp )
 {
     if( ! (buffer && cp )) return;
     buffer->setValue( "name",    cp->getName() );

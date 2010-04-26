@@ -29,13 +29,12 @@
 #include "stockmaterial.h"
 
 class FloskelTemplate;
-class ZeitCalcPart;
+class TimeCalcPart;
 class MaterialCalcPart;
 class FixCalcPart;
-class ZeitCalcPart;
 class FixCalcDialog;
 class MatCalcDialog;
-class ZeitCalcDialog;
+class TimeCalcDialog;
 class Katalog;
 
 class FlosTemplDialog : public KDialog, protected Ui::d_calcTempl
@@ -80,7 +79,7 @@ public slots:
     void setCalcparts();
 
     void slFixCalcPartChanged(FixCalcPart*);
-    void slTimeCalcPartChanged(ZeitCalcPart*);
+    void slTimeCalcPartChanged(TimeCalcPart*);
     void slMatCalcPartChanged(MaterialCalcPart*);
 
     virtual void accept();
@@ -91,7 +90,7 @@ public slots:
 private:
     void setupConnections();
     void setButtonIcons();
-    virtual void drawTimeListEntry( QTreeWidgetItem *, ZeitCalcPart * );
+    virtual void drawTimeListEntry( QTreeWidgetItem *, TimeCalcPart * );
     virtual void drawFixListEntry( QTreeWidgetItem*, FixCalcPart* );
     virtual void drawMatListEntry( QTreeWidgetItem*, MaterialCalcPart* );
 
@@ -111,7 +110,7 @@ private:
     QButtonGroup *m_gbPriceSrc;
 
     FixCalcDialog   *m_fixCalcDia;
-    ZeitCalcDialog  *m_timePartDialog;
+    TimeCalcDialog  *m_timePartDialog;
     MatCalcDialog   *m_matPartDialog;
     CalcPart *m_cpChange;
     bool m_templateIsNew;

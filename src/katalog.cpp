@@ -26,7 +26,7 @@
 #include "katalog.h"
 #include "kraftdb.h"
 #include "unitmanager.h"
-#include "zeitcalcpart.h"
+#include "timecalcpart.h"
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
 #include "kraftdb.h"

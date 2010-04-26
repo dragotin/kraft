@@ -29,7 +29,7 @@
 #include "materialcalcpart.h"
 #include "stockmaterial.h"
 #include "templkatalog.h"
-#include "zeitcalcpart.h"
+#include "timecalcpart.h"
 #include "docposition.h"
 
 TemplKatalogListView::TemplKatalogListView(QWidget *w)
@@ -159,7 +159,7 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
     QString type = cp->getType();
     kDebug() << "Type is " << type << endl;
     if( type  == KALKPART_TIME ) {
-      ZeitCalcPart *zcp = static_cast<ZeitCalcPart*>(cp);
+      TimeCalcPart *zcp = static_cast<TimeCalcPart*>(cp);
       StdSatz stdsatz = zcp->getStundensatz();
       title = QString( "%1, %2 Min. %3" ).arg( cp->getName() )
               .arg( QString::number( zcp->getMinuten() ) )

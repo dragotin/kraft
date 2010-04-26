@@ -21,7 +21,7 @@
 #include "calcpart.h"
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
-#include "zeitcalcpart.h"
+#include "timecalcpart.h"
 
 
 CalcPart::CalcPart( ):
@@ -202,8 +202,8 @@ CalcPartList CalcPartList::decoupledCalcPartsList()
       newcp = new FixCalcPart(  );
       *newcp = *( static_cast<FixCalcPart*>( cp ) );
     } else if ( cp->getType ()== KALKPART_TIME ) {
-      newcp = new ZeitCalcPart( );
-      *newcp = *( static_cast<ZeitCalcPart*>( cp ) );
+      newcp = new TimeCalcPart( );
+      *newcp = *( static_cast<TimeCalcPart*>( cp ) );
     } else if ( cp->getType() == KALKPART_MATERIAL ) {
       newcp = new MaterialCalcPart(  );
       *newcp = *( static_cast<MaterialCalcPart*>( cp ) );

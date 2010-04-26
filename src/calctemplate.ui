@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>538</width>
-    <height>586</height>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -78,6 +78,9 @@
                 <width>0</width>
                 <height>200</height>
                </size>
+              </property>
+              <property name="acceptRichText">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -269,6 +272,9 @@
              <attribute name="headerStretchLastSection">
               <bool>true</bool>
              </attribute>
+             <attribute name="headerStretchLastSection">
+              <bool>true</bool>
+             </attribute>
              <column>
               <property name="text">
                <string>Label</string>
@@ -393,6 +399,9 @@
              <attribute name="headerStretchLastSection">
               <bool>true</bool>
              </attribute>
+             <attribute name="headerStretchLastSection">
+              <bool>true</bool>
+             </attribute>
              <column>
               <property name="text">
                <string>Amount</string>
@@ -514,6 +523,9 @@
              <property name="columnCount">
               <number>4</number>
              </property>
+             <attribute name="headerStretchLastSection">
+              <bool>true</bool>
+             </attribute>
              <attribute name="headerStretchLastSection">
               <bool>true</bool>
              </attribute>

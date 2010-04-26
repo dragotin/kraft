@@ -1,5 +1,5 @@
 /***************************************************************************
-             katalogman  -
+                     katalogman  - Catalogue manager
                              -------------------
     begin                : 2004-12-09
     copyright            : (C) 2004 by Klaas Freitag
@@ -95,7 +95,7 @@ Katalog *KatalogMan::getKatalog(const QString& name)
     if( !kat ) {
         kDebug() << "No katalog " << name << " found" << endl;
     } else {
-        kDebug() << "Returning existing katalog " << name << endl;
+        // kDebug() << "Returning existing katalog " << name << endl;
     }
     return kat;
 }

@@ -64,7 +64,7 @@ set(kraft_SRCS
     templkatalog.cpp
     docposition.cpp
     matkatalog.cpp
-    zeitcalcpart.cpp
+    timecalcpart.cpp
     fixcalcpart.cpp
     floskeltemplate.cpp
     floskel.cpp
@@ -79,7 +79,7 @@ set(kraft_SRCS
     flostempldialog.cpp
     stdsatzman.cpp
     materialtempldialog.cpp
-    zeitcalcdialog.cpp
+    timecalcdialog.cpp
     fixcalcdialog.cpp
     matcalcdialog.h
     matcalcdialog.cpp
@@ -147,7 +147,7 @@ set(kraft_SRCS
 kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)
 
 kde4_add_ui_files(kraft_SRCS
-    zeitpartui.ui
+    timepart.ui
     fixpartui.ui
     matpartui.ui
     inserttmplbase.ui

@@ -1,5 +1,5 @@
 /***************************************************************************
-             zeitcalcdialog  -
+             Timecalcdialog  -
                              -------------------
     begin                : 2004-23-09
     copyright            : (C) 2004 by Klaas Freitag
@@ -15,38 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _ZEITCALCDIALOG_H
-#define _ZEITCALCDIALOG_H
+#ifndef _TimeCALCDIALOG_H
+#define _TimeCALCDIALOG_H
 
 // include files
-#include "ui_zeitpartui.h"  // designer file zeitpartui.ui
+#include "ui_timepart.h"  // designer file Timepartui.ui
 
 /**
  *
  */
 
-class ZeitCalcPart;
+class TimeCalcPart;
 
-class ZeitCalcDialog : public KDialog, protected Ui::calcdetailTime
+class TimeCalcDialog : public KDialog, protected Ui::calcdetailTime
 {
     Q_OBJECT
 
 public:
-    ZeitCalcDialog(QWidget *parent=0, bool modal=FALSE );
-    ZeitCalcDialog(ZeitCalcPart*, QWidget *parent=0, bool modal=FALSE );
-    virtual ~ZeitCalcDialog();
+    TimeCalcDialog(QWidget *parent=0, bool modal=FALSE );
+    TimeCalcDialog(TimeCalcPart*, QWidget *parent=0, bool modal=FALSE );
+    virtual ~TimeCalcDialog();
 
     QString getName();
     QString getStundensatzName();
     int     getDauer();
     bool    allowGlobal();
 signals:
-    void timeCalcPartChanged(ZeitCalcPart*);
+    void timeCalcPartChanged(TimeCalcPart*);
 protected slots:
     void accept();
 
 private:
-    ZeitCalcPart *m_part;
+    TimeCalcPart *m_part;
 };
 
 #endif

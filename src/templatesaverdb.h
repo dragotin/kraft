@@ -26,7 +26,7 @@
 class FloskelTemplate;
 class QSqlRecord;
 class QString;
-class ZeitCalcPart;
+class TimeCalcPart;
 class FixCalcPart;
 class MaterialCalcPart;
 class StockMaterial;
@@ -57,11 +57,11 @@ public:
 private:
   bool saveFixCalcPart( FixCalcPart *cp, dbID );
   bool saveMaterialCalcPart( MaterialCalcPart *cp, dbID );
-  bool saveTimeCalcPart( ZeitCalcPart*, dbID );
+  bool saveTimeCalcPart( TimeCalcPart*, dbID );
 
   void fillFixCalcBuffer( QSqlRecord *buffer, FixCalcPart *cp );
   void fillMatCalcBuffer( QSqlRecord *buffer, MaterialCalcPart *cp );
-  void fillZeitCalcBuffer( QSqlRecord*, ZeitCalcPart* );
+  void fillTimeCalcBuffer( QSqlRecord*, TimeCalcPart* );
 
   QString mTableTimeCalc;
   QString mTableFixCalc;

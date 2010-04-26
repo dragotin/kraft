@@ -40,13 +40,13 @@
 #include "catalogtemplate.h"
 #include "flostempldialog.h"
 #include "unitmanager.h"
-#include "zeitcalcpart.h"
+#include "timecalcpart.h"
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
 #include "matcalcdialog.h"
 #include "stockmaterial.h"
 #include "stockmaterialman.h"
-#include "zeitcalcdialog.h"
+#include "timecalcdialog.h"
 #include "fixcalcdialog.h"
 #include "stdsatzman.h"
 #include "katalogman.h"
@@ -198,7 +198,7 @@ void FlosTemplDialog::setCalcparts( )
   QListIterator<CalcPart*> it( tpList );
   while( it.hasNext() ) {
 
-    ZeitCalcPart *cp = static_cast<ZeitCalcPart*>(it.next());
+    TimeCalcPart *cp = static_cast<TimeCalcPart*>(it.next());
 
     QString stdStd = i18n("No");
     if( cp->globalStdSetAllowed() ) stdStd = i18n("Yes");
@@ -512,7 +512,7 @@ void FlosTemplDialog::slFixCalcPartChanged(FixCalcPart *cp)
   drawFixListEntry(m_fixParts->currentItem(), cp);
 }
 
-void FlosTemplDialog::slTimeCalcPartChanged(ZeitCalcPart *cp)
+void FlosTemplDialog::slTimeCalcPartChanged(TimeCalcPart *cp)
 {
   refreshPrices();
   drawTimeListEntry(m_timeParts->currentItem(), cp);
@@ -521,11 +521,11 @@ void FlosTemplDialog::slTimeCalcPartChanged(ZeitCalcPart *cp)
 void FlosTemplDialog::slAddTimePart()
 {
   if( ! m_template ) return;
-  ZeitCalcDialog dia(this);
+  TimeCalcDialog dia(this);
 
   if( dia.exec() == QDialog::Accepted )
   {
-    ZeitCalcPart *cp = new ZeitCalcPart( dia.getName(), dia.getDauer(), 0 );
+    TimeCalcPart *cp = new TimeCalcPart( dia.getName(), dia.getDauer(), 0 );
     cp->setGlobalStdSetAllowed( dia.allowGlobal());
     StdSatz std = StdSatzMan::self()->getStdSatz( dia.getStundensatzName());
     cp->setStundensatz( std );
@@ -538,10 +538,10 @@ void FlosTemplDialog::slAddTimePart()
 }
 
 /*
- * stellt einen ZeitCalcPart als ListViewItem dar. Wird gebraucht, wenn das
+ * stellt einen TimeCalcPart als ListViewItem dar. Wird gebraucht, wenn das
  * item neu ist, aber auch beim Editieren
  */
-void FlosTemplDialog::drawTimeListEntry( QTreeWidgetItem *it, ZeitCalcPart *cp )
+void FlosTemplDialog::drawTimeListEntry( QTreeWidgetItem *it, TimeCalcPart *cp )
 {
 
   if( !( it && cp) )
@@ -602,19 +602,19 @@ void FlosTemplDialog::slEditTimePart()
 
   QTreeWidgetItem *item = m_timeParts->currentItem();
 
-  if( item )
-  {
-    ZeitCalcPart *cp = static_cast<ZeitCalcPart*>(mCalcPartDict[item]);
-    if( cp )
-    {
-      m_timePartDialog = new ZeitCalcDialog(cp, this);
+  if( item ) {
+    TimeCalcPart *cp = static_cast<TimeCalcPart*>(mCalcPartDict[item]);
+    if( cp ) {
+      m_timePartDialog = new TimeCalcDialog(cp, this);
       m_timePartDialog->setModal(true);
-      connect(m_timePartDialog, SIGNAL(timeCalcPartChanged(ZeitCalcPart*)),
-              this, SLOT(slTimeCalcPartChanged(ZeitCalcPart*)));
+      connect( m_timePartDialog, SIGNAL(timeCalcPartChanged(TimeCalcPart*)),
+               this, SLOT(slTimeCalcPartChanged(TimeCalcPart*)) );
       m_timePartDialog->show();
     } else {
       kDebug() << "No time calc part found for this item" << endl;
     }
+  } else {
+    kDebug() << "No current Item!";
   }
   refreshPrices();
 }
@@ -650,6 +650,7 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
   m_template->addCalcPart( mc );
   QTreeWidgetItem *lvItem = new QTreeWidgetItem(m_matParts);
   drawMatListEntry( lvItem, mc );
+  mCalcPartDict.insert( lvItem, mc );
   refreshPrices();
 }
 
@@ -662,22 +663,18 @@ void FlosTemplDialog::slEditMatPart()
 
   QTreeWidgetItem *item = m_matParts->currentItem();
 
-  /*
-     * es gibt vorerst nur einen Material Calcpart pro template, der einen
-     * Standard-Namen hat. Deshalb wird hier khn der erste eintrag in der
-     * List verwendet.
-     */
-  MaterialCalcPart *mc = static_cast<MaterialCalcPart*>(mCalcPartDict[item]);
+  MaterialCalcPart *mc = static_cast<MaterialCalcPart*>( mCalcPartDict[item] );
 
-  if( mc )
-  {
+  if( mc ) {
       m_matPartDialog = new MatCalcDialog( mc, this);
 
       connect( m_matPartDialog, SIGNAL(matCalcPartChanged(MaterialCalcPart*)),
                this, SLOT(slMatCalcPartChanged(MaterialCalcPart*)));
       m_matPartDialog->setModal(true);
       m_matPartDialog->show();
-  }
+    } else {
+      kDebug() << "No such MaterialCalcPart!";
+    }
 }
 
 void FlosTemplDialog::slMatCalcPartChanged(MaterialCalcPart *mc)

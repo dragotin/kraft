@@ -30,7 +30,7 @@
 #include "templkatalog.h"
 #include "kraftdb.h"
 #include "unitmanager.h"
-#include "zeitcalcpart.h"
+#include "timecalcpart.h"
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
 #include "geld.h"
@@ -182,7 +182,7 @@ int TemplKatalog::loadTimeCalcParts( FloskelTemplate *flos )
         int hourSet = q.value(5).toInt();
         bool globAllowed = q.value(6).toInt() > 0;
 
-        ZeitCalcPart *zcp = new ZeitCalcPart( name, minutes, prozent );
+        TimeCalcPart *zcp = new TimeCalcPart( name, minutes, prozent );
         zcp->setGlobalStdSetAllowed( globAllowed );
         zcp->setStundensatz( StdSatzMan::self()->getStdSatz(hourSet) );
 

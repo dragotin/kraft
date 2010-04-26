@@ -34,7 +34,7 @@
 #include "materialcalcpart.h"
 #include "stockmaterial.h"
 #include "templkatalog.h"
-#include "zeitcalcpart.h"
+#include "timecalcpart.h"
 
 KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     m_root(0),
