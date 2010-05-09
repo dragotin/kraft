@@ -234,17 +234,7 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="_12">
          <item>
-          <widget class="QLabel" name="m_textDispTime">
-           <property name="text">
-            <string comment="KDE::DoNotExtract">textLabel1</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignVCenter</set>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
+          <widget class="KSqueezedTextLabel" name="m_textDispTime"/>
          </item>
          <item>
           <widget class="QLabel" name="textLabel2">
@@ -361,17 +351,7 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="_16">
          <item>
-          <widget class="QLabel" name="m_textDispFix">
-           <property name="text">
-            <string comment="KDE::DoNotExtract">textLabel1</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignVCenter</set>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
+          <widget class="KSqueezedTextLabel" name="m_textDispFix"/>
          </item>
          <item>
           <widget class="QLabel" name="textLabel2_3">
@@ -488,17 +468,7 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="_20">
          <item>
-          <widget class="QLabel" name="m_textDispMat">
-           <property name="text">
-            <string comment="KDE::DoNotExtract">textLabel1</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignVCenter</set>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
+          <widget class="KSqueezedTextLabel" name="m_textDispMat"/>
          </item>
          <item>
           <widget class="QLabel" name="textLabel2_2">
@@ -773,9 +743,6 @@
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
        </widget>
       </item>
      </layout>
@@ -791,6 +758,11 @@
    <header>knuminput.h</header>
   </customwidget>
   <customwidget>
+   <class>KSqueezedTextLabel</class>
+   <extends>QLabel</extends>
+   <header>ksqueezedtextlabel.h</header>
+  </customwidget>
+  <customwidget>
    <class>KPushButton</class>
    <extends>QPushButton</extends>
    <header>kpushbutton.h</header>
@@ -801,6 +773,30 @@
    <header>kcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>cbChapter</tabstop>
+  <tabstop>m_text</tabstop>
+  <tabstop>m_unit</tabstop>
+  <tabstop>m_addTime</tabstop>
+  <tabstop>spBenefit</tabstop>
+  <tabstop>pbRundPreis</tabstop>
+  <tabstop>cbMwst</tabstop>
+  <tabstop>m_rbManual</tabstop>
+  <tabstop>m_rbCalculation</tabstop>
+  <tabstop>m_timeParts</tabstop>
+  <tabstop>m_butAddTime</tabstop>
+  <tabstop>m_butEditTime</tabstop>
+  <tabstop>m_butRemoveTime</tabstop>
+  <tabstop>m_fixParts</tabstop>
+  <tabstop>m_butAddFix</tabstop>
+  <tabstop>m_butEditFix</tabstop>
+  <tabstop>m_butRemoveFix</tabstop>
+  <tabstop>m_matParts</tabstop>
+  <tabstop>m_butAddMat</tabstop>
+  <tabstop>m_butEditMat</tabstop>
+  <tabstop>m_butRemoveMat</tabstop>
+ </tabstops>
  <includes>
   <include location="local">kpushbutton.h</include>
   <include location="local">kcombobox.h</include>
