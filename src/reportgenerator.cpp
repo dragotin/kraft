@@ -371,25 +371,30 @@ QString ReportGenerator::findTrml2Pdf( )
   QString rmlbin = KraftSettings::self()->trml2PdfBinary();
   kDebug() << "### Start searching rml2pdf bin: " << rmlbin;
 
-  mHaveMerge = false;
+  mHavePdfMerge = false;
 
   if ( rmlbinDefault == rmlbin  ) {
     QStringList pathes;
     KStandardDirs stdDirs;
     pathes = stdDirs.systemPaths();
+    QStringList rmlConverters;
+    rmlConverters << "/erml2pdf"  << "/trml2pdf_kraft.sh";
 
-    for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
-      QString cPath = ( *it ) + "/trml2pdf_kraft.sh";
-      kDebug() << "### Checking cPath: " << cPath;
-      if ( QFile::exists( cPath ) ) {
-        rmlbin = cPath;
-        kDebug() << "Found trml2pdf_kraft.sh in filesystem: " << rmlbin;
-        mHaveMerge = true;
-        break;
+    for ( QStringList::Iterator it = pathes.begin(); !mHavePdfMerge && it != pathes.end(); ++it ) {
+      foreach( QString rmlConverter, rmlConverters ) {
+        QString path = ( *it ) + rmlConverter;
+
+        kDebug() << "### Checking for rml converter: " << path;
+        if ( QFile::exists( path ) ) {
+          rmlbin = path;
+          kDebug() << "Found " << rmlConverter << " in filesystem: " << rmlbin;
+          mHavePdfMerge = true;
+          break;
+        }
       }
     }
 
-    if ( ! mHaveMerge ) {
+    if ( ! mHavePdfMerge ) {
       for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
         QString cPath = ( *it ) + "/trml2pdf";
         if ( QFile::exists( cPath ) ) {
@@ -429,7 +434,7 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
 
   QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
 
-  if ( mHaveMerge && mMergeIdent != "0" &&
+  if ( mHavePdfMerge && mMergeIdent != "0" &&
        ( mWatermarkFile.isEmpty() || !QFile::exists( mWatermarkFile ) ) ) {
 
     KMessageBox::error( 0, i18n("The Watermark file to merge with the document could not be found. "
@@ -440,20 +445,32 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
 
   QString outputDir = ArchiveMan::self()->pdfBaseDir();
   QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
-  mOutFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
+  mFile.setFileName( QString( "%1/%2").arg( outputDir).arg( filename ) );
 
-  kDebug() << "Writing output to " << mOutFile;
+  kDebug() << "Writing output to " << mFile.fileName();
+
+  bool haveErml = rmlbin.endsWith( "erml2pdf" ); // check if we have etrml2pdf
 
   prg << rmlbin;
-  if ( mHaveMerge ) {
-    prg << mMergeIdent;
-  }
-  prg << rmlFile;
-  if ( mHaveMerge && mMergeIdent != "0" ) {
-    prg << mWatermarkFile;
+
+  if( !haveErml ) {
+    if ( mHavePdfMerge ) {
+        prg << mMergeIdent;
+    }
+    prg << rmlFile;
+    if ( mHavePdfMerge && mMergeIdent != "0" ) {
+      prg << mWatermarkFile;
+    }
+  } else {
+    kDebug() << "Erml2pdf available!";
+    if ( mHavePdfMerge && mMergeIdent != "0" ) {
+      prg << "-m" << mMergeIdent;
+      prg << "-w" << mWatermarkFile;
+    }
+    prg << rmlFile;
   }
 
-  mFile.setFileName( mOutFile );
+  mFile.setFileName( mFile.fileName() );
   mOutputSize = 0;
   if ( mFile.open( QIODevice::WriteOnly ) ) {
     mProcess.setProgram( prg );
@@ -490,8 +507,8 @@ void ReportGenerator::trml2pdfFinished( int exitStatus)
   kDebug() << "PDF Creation Process finished with status " << exitStatus;
   kDebug() << "Wrote bytes to the output file: " << mOutputSize;
   if ( exitStatus == 0 ) {
-    emit pdfAvailable( mOutFile );
-    mOutFile = QString();
+    emit pdfAvailable( mFile.fileName() );
+    mFile.setFileName( QString() );
   } else {
     if ( mErrors.isEmpty() ) mErrors = i18n( "Unknown problem." );
     // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)

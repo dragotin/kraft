@@ -31,6 +31,7 @@ class dbID;
 class KJob;
 class QFile;
 
+
 class ReportGenerator : public QObject
 {
   Q_OBJECT
@@ -74,14 +75,14 @@ private:
   QString rmlString( const QString& str, const QString& paraStyle = QString() ) const;
 
   ReportGenerator();
-  QString mOutFile;
-  QString mErrors;
-  QString mMergeIdent;
-  bool    mHaveMerge;
-  QString mWatermarkFile;
-  QString mDocId;
-  dbID mArchId;
-  long  mOutputSize;
+
+  QString   mErrors;
+  QString   mMergeIdent;
+  bool      mHavePdfMerge;
+  QString   mWatermarkFile;
+  QString   mDocId;
+  dbID      mArchId;
+  long      mOutputSize;
 
   QFile mFile;
   QDataStream mTargetStream;
