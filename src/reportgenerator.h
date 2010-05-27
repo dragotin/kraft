@@ -42,7 +42,7 @@ public:
   static ReportGenerator *self();
 
   void runTrml2Pdf( const QString&, const QString&, const QString& );
-  QString findTrml2Pdf();
+  QStringList findTrml2Pdf();
 
 signals:
   void pdfAvailable( const QString& );

@@ -365,52 +365,56 @@ QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle
   return rml;
 }
 
-QString ReportGenerator::findTrml2Pdf( )
+QStringList ReportGenerator::findTrml2Pdf( )
 {
   const QString rmlbinDefault = QString::fromLatin1( "trml2pdf" ); // FIXME: how to get the default value?
   QString rmlbin = KraftSettings::self()->trml2PdfBinary();
   kDebug() << "### Start searching rml2pdf bin: " << rmlbin;
 
+  QStringList retList;
   mHavePdfMerge = false;
 
   if ( rmlbinDefault == rmlbin  ) {
-    QStringList pathes;
-    KStandardDirs stdDirs;
-    pathes = stdDirs.systemPaths();
-    QStringList rmlConverters;
-    rmlConverters << "/erml2pdf"  << "/trml2pdf_kraft.sh";
-
-    for ( QStringList::Iterator it = pathes.begin(); !mHavePdfMerge && it != pathes.end(); ++it ) {
-      foreach( QString rmlConverter, rmlConverters ) {
-        QString path = ( *it ) + rmlConverter;
-
-        kDebug() << "### Checking for rml converter: " << path;
-        if ( QFile::exists( path ) ) {
-          rmlbin = path;
-          kDebug() << "Found " << rmlConverter << " in filesystem: " << rmlbin;
-          mHavePdfMerge = true;
-          break;
-        }
+    QString ermlpy = KStandardDirs::locate( "data", "kraft/tools/erml2pdf.py" );
+    kDebug() << "Ermlpy: " << ermlpy;
+    if( ! ermlpy.isEmpty() ) {
+      // need the python interpreter
+      QString python = KStandardDirs::findExe("python");
+      if( python.isEmpty() ) {
+        kError() << "ERR: Unable to find python, thats a problem";
+      } else {
+        kDebug() << "Using python: " << python;
+        retList << python;
+        retList << ermlpy;
+        mHavePdfMerge = true;
+      }
+    } else {
+      // tool erml2pdf.py not found. Try trml2pdf_kraft.sh for legacy reasons
+      QString trml2pdf = KStandardDirs::findExe("trml2pdf_kraft.sh");
+      if( trml2pdf.isEmpty() ) {
+        kDebug() << "Could not find trml2pdf_kraft.sh";
+      } else {
+        kDebug() << "Found trml2pdf: " << trml2pdf;
+        retList << trml2pdf;
+        mHavePdfMerge = true;
       }
     }
 
     if ( ! mHavePdfMerge ) {
-      for ( QStringList::Iterator it = pathes.begin(); it != pathes.end(); ++it ) {
-        QString cPath = ( *it ) + "/trml2pdf";
-        if ( QFile::exists( cPath ) ) {
-          rmlbin = cPath;
-          kDebug() << "Found trml2pdf in filesystem: " << rmlbin;
-          break;
-        }
+      QString trml2pdf = KStandardDirs::findExe( "trml2pdf");
+      if( trml2pdf.isEmpty() ) {
+        kDebug() << "trml2pdf is also empty, we can not convert rml. Debug!";
+      } else {
+        kDebug() << "trml2pdf found here: " << trml2pdf;
+        retList << trml2pdf;
       }
     }
   }
-  if ( rmlbinDefault == rmlbin  ) {
+  if ( retList.isEmpty() ) {
     kDebug() << "We have not found the script!";
-    rmlbin = QString();
   }
 
-  return rmlbin;
+  return retList;
 }
 
 
@@ -421,9 +425,11 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
   QStringList prg;
 
   mErrors = QString();
-  QString rmlbin = findTrml2Pdf();
+  // findTrml2Pdf returns a list of command line parts for the converter, such as
+  // /usr/bin/pyhton /usr/local/share/erml2pdf.py
+  QStringList rmlbin = findTrml2Pdf();
 
-  if ( ! QFile::exists( rmlbin ) ) {
+  if ( ! rmlbin.size() ) {
 
     KMessageBox::error( 0, i18n("The utility to create PDF from the rml file could not be found, "
                                 "but is required to create documents."
@@ -436,7 +442,6 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
 
   if ( mHavePdfMerge && mMergeIdent != "0" &&
        ( mWatermarkFile.isEmpty() || !QFile::exists( mWatermarkFile ) ) ) {
-
     KMessageBox::error( 0, i18n("The Watermark file to merge with the document could not be found. "
                                 "Merge is going to be disabled." ),
                         i18n( "Watermark Error" ) );
@@ -449,7 +454,14 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
 
   kDebug() << "Writing output to " << mFile.fileName();
 
-  bool haveErml = rmlbin.endsWith( "erml2pdf" ); // check if we have etrml2pdf
+  // check if we have etrml2pdf
+  bool haveErml = false;
+  if( rmlbin.size() > 1 ) {
+    QString ermlbin = rmlbin[1];
+    if( ermlbin.endsWith( "erml2pdf.py") ) {
+      haveErml = true;
+    }
+  }
 
   prg << rmlbin;
 

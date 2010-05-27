@@ -248,7 +248,12 @@ void PortalView::fillSystemDetails()
   html += "<h2>" + i18n( "External Tools" ) + "</h2>";
   html += "<div><table>";
   html += "<tr><td>" + i18n( "RML to PDF conversion tool:" ) + "</td><td>";
-  html += ReportGenerator::self()->findTrml2Pdf() + "</td></tr>";
+  QStringList trml2pdf = ReportGenerator::self()->findTrml2Pdf();
+  if( trml2pdf.count() ) {
+    html += trml2pdf[0]+ "</td></tr>";
+  } else {
+    html += i18n("not found!") + "</td></tr>";
+  }
   html += "<tr><td>" + i18n( "iconv tool for text import:" ) + "</td><td>";
   html += DefaultProvider::self()->iconvTool() + "</td></tr>";
 
