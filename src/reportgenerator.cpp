@@ -141,6 +141,7 @@ void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   // FIXME: Read all contacts, even if the customer is not in the address book
   // we need to read all for our own address.
   Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
+
   connect( job, SIGNAL( result( KJob* ) ), SLOT( addressReceived( KJob* ) ) );
 }
 
@@ -174,7 +175,6 @@ void ReportGenerator::addressReceived( KJob* job )
     if( contact.uid() == mArchDoc->clientUid() ) {
       addressee = contact;
     }
-    kDebug() << "XXXXXXXXXX comparing " << contact.name() << " with " << myName;
     if( contact.name() == myName ) {
       myAddress = contact;
     }

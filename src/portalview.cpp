@@ -250,7 +250,7 @@ void PortalView::fillSystemDetails()
   html += "<tr><td>" + i18n( "RML to PDF conversion tool:" ) + "</td><td>";
   QStringList trml2pdf = ReportGenerator::self()->findTrml2Pdf();
   if( trml2pdf.count() ) {
-    html += trml2pdf[0]+ "</td></tr>";
+    html += trml2pdf.join(" ")+ "</td></tr>";
   } else {
     html += i18n("not found!") + "</td></tr>";
   }
