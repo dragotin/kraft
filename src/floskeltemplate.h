@@ -50,7 +50,7 @@ public:
     void setManualPrice( Geld p ) { m_preis = p; }
     Geld manualPrice() { return m_preis; }
     Geld unitPrice();
-    Geld kostenPerKalcPart( const QString& part);
+    Geld costsByCalcPart( const QString& part);
 
     QString getText() const { return m_text; }
     void setText( const QString& str ) { m_text = str; }
@@ -61,20 +61,20 @@ public:
     CalcPartList getCalcPartsList(const QString& );
     CalcPartList decoupledCalcPartsList();
 
-    Einheit einheit() const;
-    void setEinheitId(int id);
+    Einheit unit() const;
+    void setUnitId(int id);
 
     void setBenefit( double );
     double getBenefit();
 
-    int  getTemplID() { return m_templID; }
+    int  getTemplID() { return mTemplId; }
     void setTemplID( int );
 
     int getChapterID() { return m_chapter; }
     void setChapterID(int id);
 
-    bool hasTimeslice() { return m_zeitbeitrag; }
-    void setHasTimeslice(bool ts) { m_zeitbeitrag = ts; }
+    bool hasTimeslice() { return mTimeAdd; }
+    void setHasTimeslice(bool ts) { mTimeAdd = ts; }
 
     QDateTime modifyDate() { return m_modifyDate; }
     QDateTime createDate() { return m_createDate; }
@@ -100,12 +100,12 @@ private: // Private methods
     virtual Geld calcPreis();
 
     QString          m_text;
-    int              m_einheitID;
-    int              m_templID;  // Database ID
+    int              mUnitId;
+    int              mTemplId;  // Database ID
     int              m_chapter;
     CalcPartList     m_calcParts;
-    double           m_gewinn;
-    bool             m_zeitbeitrag;
+    double           mBenefit;
+    bool             mTimeAdd;
     QDateTime        m_modifyDate, m_createDate;
     Geld             m_preis; // preis only valid for manual calculation.
     QTreeWidgetItem  *m_listViewItem;

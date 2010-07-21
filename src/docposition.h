@@ -46,7 +46,7 @@ class DocPositionBase : public QObject
 {
   public:
   enum PositionType { Position, ExtraDiscount, Header };
-  enum TaxType { TaxInvalid, TaxNone, TaxReduced, TaxFull };
+  enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3 };
 
     DocPositionBase();
     DocPositionBase( const PositionType& );

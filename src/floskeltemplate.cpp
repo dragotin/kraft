@@ -33,16 +33,15 @@
 
 FloskelTemplate::FloskelTemplate()
     : CatalogTemplate(),
-      m_einheitID(0),
-      m_templID(-1),
+      mUnitId(0),
+      mTemplId(-1),
       m_chapter(0),
-      m_gewinn(0),
-      m_zeitbeitrag(true),
+      mBenefit(0),
+      mTimeAdd(true),
       m_listViewItem(0),
       m_saver(0)
 {
     m_calcType = Calculation;
-    // m_calcParts.setAutoDelete(true);
 }
 
 FloskelTemplate::FloskelTemplate( int tID, const QString& text,
@@ -51,10 +50,10 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
                                   const QDateTime& createDate )
  : CatalogTemplate(),
    m_text(text),
-   m_einheitID(einheit),
-   m_templID(tID),
+   mUnitId(einheit),
+   mTemplId(tID),
    m_chapter(chapter),
-   m_gewinn(0),
+   mBenefit(0),
    m_modifyDate(modDate),
    m_createDate(createDate),
    m_preis(long(0)),
@@ -75,8 +74,8 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
 FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
     : CatalogTemplate(),
       m_text( templ.m_text ),
-      m_einheitID( templ.m_einheitID ),
-      m_templID( templ.m_templID ),
+      mUnitId( templ.mUnitId ),
+      mTemplId( templ.mTemplId ),
       m_chapter( templ.m_chapter ),
       m_modifyDate( templ.m_modifyDate ),
       m_createDate( templ.m_createDate ),
@@ -93,8 +92,8 @@ FloskelTemplate& FloskelTemplate::operator= ( FloskelTemplate& src )
   if ( this == &src ) return *this;
 
   m_text = src.m_text;
-  m_einheitID = src.m_einheitID;
-  m_templID = src.m_templID;
+  mUnitId = src.mUnitId;
+  mTemplId = src.mTemplId;
   m_chapter = src.m_chapter;
   m_modifyDate = src.m_modifyDate;
   m_createDate = src.m_createDate;
@@ -130,30 +129,29 @@ void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
     } else if( cp->getType() == KALKPART_MATERIAL ) {
       ncp = new MaterialCalcPart( *( static_cast<MaterialCalcPart*>(cp) ) );
     } else {
-      kDebug() << "ERROR: Unbekannter Kalkulations-Anteil-Typ!" << endl;
+      kDebug() << "ERROR: Unknown Calculation-Type!" << endl;
     }
     m_calcParts.append( ncp );
   }
 }
 
-Einheit FloskelTemplate::einheit() const
+Einheit FloskelTemplate::unit() const
 {
-    return UnitManager::self()->getUnit( m_einheitID );
+    return UnitManager::self()->getUnit( mUnitId );
 }
 
-void FloskelTemplate::setEinheitId(int id)
+void FloskelTemplate::setUnitId(int id)
 {
-    m_einheitID = id;
+    mUnitId = id;
 }
 
 void FloskelTemplate::setBenefit( double g )
 {
-  m_gewinn = g;
+  mBenefit = g;
   CalcPart *cp = 0;
-  /*  jede teilkalkulation hat einen eigenen Gewinn fuer spaetere Erweiterung.
-     *  Hier werden alle mit dem reinkommenden Wert beschrieben, spaeter kann
-     *  jeder einzeln einen Wert haben...
-     */
+  /* Every calc part has an value for benefit. Set the benefit value for
+     each calc part, later on each can have its own value
+   */
   QListIterator<CalcPart*> i( m_calcParts );
   while( i.hasNext()) {
     cp = i.next();
@@ -164,28 +162,25 @@ void FloskelTemplate::setBenefit( double g )
 
 double FloskelTemplate::getBenefit( )
 {
-  return m_gewinn;
+  return mBenefit;
 }
 
 void FloskelTemplate::setTemplID( int newID )
 {
-  m_templID = newID;
+  mTemplId = newID;
 }
 
 void FloskelTemplate::setChapterID(int id)
 {
-  // FIXME: ggf. Umh�gen im Feature-listview
   m_chapter = id;
 }
 
-/** der Preis pro einer Einheit */
 Geld FloskelTemplate::unitPrice()
 {
   return calcPreis();
 }
 
 
-/** No descriptions */
 Geld FloskelTemplate::calcPreis()
 {
   Geld g;
@@ -226,7 +221,7 @@ void FloskelTemplate::addCalcPart( CalcPart* cpart )
 
 void FloskelTemplate::removeCalcPart( CalcPart *cpart )
 {
-  if( cpart) {// m_calcParts.removeRef(cpart);
+  if( cpart) {
     cpart->setToDelete(true);
     cpart->setDirty(true);
 
@@ -243,17 +238,15 @@ void FloskelTemplate::clearCalcParts()
   m_calcParts.clear();
 }
 
-Geld FloskelTemplate::kostenPerKalcPart( const QString& part )
+Geld FloskelTemplate::costsByCalcPart( const QString& part )
 {
   return m_calcParts.costPerCalcPart( part );
 }
 
 TemplateSaverBase* FloskelTemplate::getSaver()
 {
-  /* Hier k�nten andere Save-Engines ausgew�lt werden */
   if( ! m_saver )
   {
-    kDebug() << "Erzeuge neuen DB-Saver" << endl;
     m_saver = new TemplateSaverDB();
   }
   return m_saver;
@@ -276,7 +269,7 @@ QDomElement FloskelTemplate::toXML( QDomDocument& doc)
 {
     QDomElement templ = doc.createElement("template");
 
-    templ.appendChild( createDomNode(doc, "unit",   UnitManager::self()->getUnit(m_einheitID).einheitSingular()));
+    templ.appendChild( createDomNode(doc, "unit",   UnitManager::self()->getUnit(mUnitId).einheitSingular()));
     templ.appendChild( createDomNode(doc, "text", getText()));
     templ.appendChild( createDomNode(doc, "id", QString::number(getTemplID())));
     templ.appendChild( createDomNode(doc, "benefit", QString::number(getBenefit())));
@@ -288,7 +281,6 @@ QDomElement FloskelTemplate::toXML( QDomDocument& doc)
     timePartsToXML(doc, calcParts);
     materialPartsToXML(doc, calcParts);
 
-#if 0
     /* Material Calculation Parts */
     materialPartsToXML(doc);
     CalcPartList tpList = getCalcPartsList(KALKPART_MATERIAL);
@@ -323,8 +315,6 @@ QDomElement FloskelTemplate::toXML( QDomDocument& doc)
           calcPart.appendChild(matElem);
         }
     }
-#endif
-
     return templ;
 }
 

@@ -122,7 +122,7 @@ void TemplKatalogListView::slFreshupItem( QTreeWidgetItem *item, FloskelTemplate
   item->setText( 0, t );
   QString h;
   h = QString( "%1 / %2" ).arg( g.toString( catalog()->locale() ) )
-      .arg( tmpl->einheit().einheitSingular() );
+      .arg( tmpl->unit().einheitSingular() );
   item->setText( 1,  h );
   item->setText( 2, ck );
   // item->setText( 4, QString::number(tmpl->getTemplID()));
@@ -202,7 +202,7 @@ DocPosition TemplKatalogListView::itemToDocPosition( QTreeWidgetItem *it )
 
   if ( flos ) {
     pos.setText( flos->getText() );
-    pos.setUnit( flos->einheit() );
+    pos.setUnit( flos->unit() );
     pos.setUnitPrice( flos->unitPrice() );
   } else {
     kDebug() << "Can not find a template for the item" << endl;

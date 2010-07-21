@@ -356,7 +356,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
 void TemplateSaverDB::fillTemplateBuffer( QSqlRecord *buffer, FloskelTemplate *tmpl, bool isNew )
 {
     buffer->setValue( "chapterID", tmpl->getChapterID());
-    buffer->setValue( "unitID", tmpl->einheit().id());
+    buffer->setValue( "unitID", tmpl->unit().id());
     buffer->setValue( "Floskel", tmpl->getText().toUtf8() );
     buffer->setValue( "Gewinn", tmpl->getBenefit() );
     buffer->setValue( "zeitbeitrag", tmpl->hasTimeslice() );

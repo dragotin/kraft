@@ -897,7 +897,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
         dia = new InsertTemplDialog( this );
         FloskelTemplate *ftmpl = static_cast<FloskelTemplate*>( tmpl );
         dp->setText( ftmpl->getText() );
-        dp->setUnit( ftmpl->einheit() );
+        dp->setUnit( ftmpl->unit() );
         dp->setUnitPrice( ftmpl->unitPrice() );
 
         s = KraftSettings::self()->templateToPosDialogSize();

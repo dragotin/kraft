@@ -154,7 +154,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   /* Unit */
   m_unit->clear();
   m_unit->insertItems(-1, UnitManager::self()->allUnits());
-  m_unit->setCurrentIndex(m_unit->findText( m_template->einheit().einheitSingular() ));
+  m_unit->setCurrentIndex(m_unit->findText( m_template->unit().einheitSingular() ));
 
   m_manualPriceVal->setValue( t->unitPrice().toDouble());
 
@@ -269,13 +269,13 @@ void FlosTemplDialog::refreshPrices()
   m_manualPriceVal->setValue( m_template->unitPrice().toDouble() );
 
   /* Price parts per calculation part */
-  Geld g( m_template->kostenPerKalcPart( KALKPART_TIME ));
+  Geld g( m_template->costsByCalcPart( KALKPART_TIME ));
   m_textTimePart->setText( g.toString( m_katalog->locale() ));
 
-  g = m_template->kostenPerKalcPart( KALKPART_FIX );
+  g = m_template->costsByCalcPart( KALKPART_FIX );
   m_textFixPart->setText( g.toString( m_katalog->locale() ));
 
-  g = m_template->kostenPerKalcPart( KALKPART_MATERIAL );
+  g = m_template->costsByCalcPart( KALKPART_MATERIAL );
   m_textMaterialPart->setText(g.toString( m_katalog->locale() ));
 
 }
@@ -301,9 +301,9 @@ void FlosTemplDialog::accept()
     }
 
     h = m_unit->currentText();
-    if( h != m_template->einheit().einheitSingular()) {
+    if( h != m_template->unit().einheitSingular()) {
       kDebug() << "Template Einheit dirty -> update to " << h << endl;
-      m_template->setEinheitId( UnitManager::self()->getUnitIDSingular(h));
+      m_template->setUnitId( UnitManager::self()->getUnitIDSingular(h));
     }
 
     /* compare catalog chapter */
