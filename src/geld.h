@@ -21,11 +21,11 @@
 
 #include "kraftcat_export.h"
 // include files
-
+#include <klocale.h>
 /**
  *
  */
-class KLocale;
+
 
 class KRAFTCAT_EXPORT Geld
 {

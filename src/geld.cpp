@@ -100,6 +100,9 @@ bool Geld::operator!=(Geld g)
 
 QString Geld::toString( KLocale *loc ) const
 {
+  if( ! loc ) {
+    loc =  KGlobal::locale();
+  }
     return loc->formatMoney(m_cent/100.0);
 }
 
