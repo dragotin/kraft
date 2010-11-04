@@ -60,15 +60,14 @@ CatalogChapterEditDialog::CatalogChapterEditDialog(QWidget *parent,
     m_katalog = KatalogMan::self()->getKatalog( katName );
     if( ! m_katalog ) return;
 
-    const QStringList li = m_katalog->getKatalogChapters();
+    const QList<CatalogChapter> chapters = m_katalog->getKatalogChapters();
 
-    for ( QStringList::ConstIterator it = li.begin(); it != li.end(); ++it ) {
-        QString entry = *it;
-        m_chapEdit->insertItem( entry );
-        int id = m_katalog->chapterID( entry );
-        mEntryDict.insert( entry, dbID( id ) );
+    foreach( CatalogChapter chapter, chapters ) {
+      QString entry = chapter.name();
+      m_chapEdit->insertItem( entry );
+      mEntryDict.insert( entry,  chapter.id() );
     }
-}
+  }
 
 void CatalogChapterEditDialog::accept()
 {
@@ -164,17 +163,10 @@ void CatalogChapterEditDialog::slotTextChanged()
 
 void CatalogChapterEditDialog::slotSelectionChanged(const QModelIndex & /* index */)
 {
-    QString current = m_chapEdit->currentText();
-    mLastSelection = current;
+  QString current = m_chapEdit->currentText();
+  mLastSelection = current;
 
-    int cnt = m_katalog->getEntriesPerChapter( current );
-
-    bool mayRemove = false;
-    if( cnt == 0 ) {
-        // can remove the chapter because it is empty
-        mayRemove = true;
-    }
-
-    m_chapEdit->removeButton()->setEnabled( mayRemove );
+  bool mayRemove = m_katalog->mayRemoveChapter( current );
+  m_chapEdit->removeButton()->setEnabled( mayRemove );
 }
 

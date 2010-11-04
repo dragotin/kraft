@@ -1,8 +1,8 @@
 /***************************************************************************
-             matkatalog  - Materialkatalogklasse
+             catalogchapter.h  - a simle catalog chapter object
                              -------------------
-    begin                : 2004-19-10
-    copyright            : (C) 2004 by Klaas Freitag
+    begin                : Thu Nov 4 2010
+    copyright            : (C) 2010 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -15,39 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _MATKATALOG_H
-#define _MATKATALOG_H
+#ifndef CATALOGCHAPTER_H
+#define CATALOGCHAPTER_H
 
-// include files
-#include <qstring.h>
+#include <QtCore>
 
-#include "stockmaterial.h"
-#include "katalog.h"
+#include "kraftcat_export.h"
 
-/**
- *
- */
+#include <dbids.h>
 
-class MatKatalog : public Katalog
+class KRAFTCAT_EXPORT CatalogChapter
 {
 public:
-  MatKatalog( const QString& name );
-  MatKatalog();
-  ~MatKatalog();
+  CatalogChapter();
+  CatalogChapter( int, const QString&, int, const QString& = QString() );
 
-  int getEntriesPerChapter( const CatalogChapter& ) { return 0; } // FIXME
+  QString name() const;
+  QString description() const;
+  dbID id() const;
+  dbID parentId() const;
 
-  int load();
-  void reload( dbID );
-
-  KatalogType type() { return MaterialCatalog; }
-  StockMaterialList getRecordList( const CatalogChapter& );
-  void addNewMaterial( StockMaterial* );
 private:
-  StockMaterialList mAllMaterial;
+  QString mName;
+  dbID mId;
+  QString mDescription;
+  int mParentId;
+
 };
 
-#endif
 
-/* END */
-
+#endif // CATALOGCHAPTER_H

@@ -31,6 +31,7 @@
 #include "materialcalcpart.h"
 #include "kraftdb.h"
 
+
 /**
  *  constructor of a katalog, which is only a list of Floskel templates.
  *  A name must be given, which is displayed for the root element in the
@@ -87,21 +88,21 @@ int Katalog::load()
   return 0;
 }
 
-QStringList Katalog::getKatalogChapters( bool freshup )
+QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
 {
-  if( m_chapters.empty() || freshup ) {
+  if( mChapters.empty() || freshup ) {
 
-    m_chapters.clear();
-    m_chapterIDs.clear();
+    mChapters.clear();
 
-//    CREATE TABLE CatalogChapters(
-//            chapterID INTEGER PRIMARY KEY ASC autoincrement,
-//            catalogSetID INT NOT NULL,
-//            chapter      VARCHAR(255),
-//            sortKey      INT NOT NULL
-//    );
+    //    CREATE TABLE CatalogChapters(
+    //            chapterID INTEGER PRIMARY KEY ASC autoincrement,
+    //            catalogSetID INT NOT NULL,
+    //            chapter      VARCHAR(255),
+    //            sortKey      INT NOT NULL
+    //    );
     QSqlQuery q;
-    q.prepare("SELECT chapterID, chapter FROM CatalogChapters WHERE catalogSetId = :catalogSetId ORDER BY sortKey");
+    q.prepare("SELECT chapterID, chapter, parentChapter FROM CatalogChapters WHERE "
+              "catalogSetId = :catalogSetId ORDER BY parentChapter, sortKey");
     q.bindValue(":catalogSetId", m_setID);
     q.exec();
     kDebug() << "Selecting chapters for catalog no " << QString::number( m_setID ) << endl;
@@ -109,49 +110,42 @@ QStringList Katalog::getKatalogChapters( bool freshup )
     while ( q.next() )
     {
       int chapID = q.value(0).toInt();
-      QString katName = q.value(1).toString();
+      QString chapterName = q.value(1).toString();
+      int parentChapter = q.value(2).toInt();
 
-      kDebug() << "Adding catalog chapter " << katName << " with ID " << chapID << endl;
-      m_chapters.append(katName);
-      dbID id( chapID );
-      m_chapterIDs.insert(katName, id);
+      kDebug() << "Adding catalog chapter " << chapterName << " with ID " << chapID << endl;
+      CatalogChapter c( chapID, chapterName, parentChapter, QString() /* description */ );
+      mChapters.append( c );
     }
   }
 
-  return m_chapters;
+  return mChapters;
 }
 
-int Katalog::chapterID(const QString& chapter)
+bool Katalog::mayRemoveChapter( const QString& /* chapterName */ )
 {
-  if( m_chapterIDs.size() == 0 ) {
-    // fill up the dict of ids if still empty.
-    getKatalogChapters();
+  return true; // FIXME !
+}
+
+dbID Katalog::chapterID( const QString& chapterName )
+{
+  foreach( CatalogChapter chapter, mChapters ) {
+    if( chapter.name() == chapterName ) {
+      return chapter.id();
+    }
   }
 
-  dbIdDict::iterator it = m_chapterIDs.find(chapter);
-  if( it != m_chapterIDs.end() )
-    return it.value().intID();
-  else
-    return -1;
+  return dbID();
 }
 
 QString Katalog::chapterName(const dbID& id)
 {
-  if( m_chapterIDs.size() == 0 )
-  {
-    // fill up the dict of ids if still empty.
-    getKatalogChapters();
-  }
-
-  dbIdDictIterator i( m_chapterIDs );
-  while (i.hasNext()) {
-    i.next();
-    if ( i.value() == id ) {
-      return i.key();
+  foreach( CatalogChapter chapter, mChapters ) {
+    if( chapter.id() == id ) {
+      return chapter.name();
     }
   }
-
-  return QString("not found!");
+  return i18n("not found");
 }
 
 QString Katalog::getName() const

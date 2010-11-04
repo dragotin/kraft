@@ -42,12 +42,12 @@ public:
     virtual KatalogType type() {
       return PlantCatalog;
     };
-    virtual QStringList getKatalogChapters( bool freshup = false );
-    BrunsRecordList* getRecordList( const QString& chap );
+
+    BrunsRecordList* getRecordList( const CatalogChapter& chap );
     // virtual void toXML();
     static QStringList formatQuality( BrunsSize& );
 
-    int getEntriesPerChapter( const QString& = QString() ) { return 0; } // FIXME
+    int getEntriesPerChapter( const CatalogChapter& ) { return 0; } // FIXME
 private:
     void loadDBKeys();
     inline int intPart( const QString& , int , int );

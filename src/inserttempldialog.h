@@ -37,7 +37,7 @@ public:
   void setDocPosition( DocPosition*, bool );
   DocPosition docPosition();
 
-  void setCatalogChapters( const QStringList& );
+  void setCatalogChapters( const QList<CatalogChapter>& );
   QString chapter() const;
 protected:
   QComboBox *getPositionCombo();

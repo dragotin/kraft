@@ -73,11 +73,11 @@ int MatKatalog::load()
   return cnt;
 }
 
-StockMaterialList MatKatalog::getRecordList( const QString& chapter )
+StockMaterialList MatKatalog::getRecordList( const CatalogChapter& chapter )
 {
   StockMaterialList list;
 
-  int chapID = chapterID( chapter );
+  int chapID = chapter.id().toInt();
   StockMaterialListIterator it( mAllMaterial );
   
   while( it.hasNext() ) {

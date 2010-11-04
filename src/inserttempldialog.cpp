@@ -146,11 +146,15 @@ InsertTemplDialog::~InsertTemplDialog()
   }
 }
 
-void InsertTemplDialog::setCatalogChapters( const QStringList& chapters )
+void InsertTemplDialog::setCatalogChapters( const QList<CatalogChapter>& chapters )
 {
   if ( chapters.count() > 0 ) {
+    QStringList chapterNames;
+    foreach( CatalogChapter chapter, chapters ) {
+      chapterNames.append( chapter.name() );
+    }
     mBaseWidget->mKeepGroup->show();
-    mBaseWidget->mComboChapter->insertItems( -1, chapters );
+    mBaseWidget->mComboChapter->insertItems( -1, chapterNames );
     mBaseWidget->mComboChapter->setCurrentIndex(mBaseWidget->mComboChapter->findText(
       KraftSettings::self()->insertTemplChapterName() ));
   }

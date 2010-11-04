@@ -143,7 +143,12 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
     return;
   }
 
-  cbChapter->insertItems(-1, m_katalog->getKatalogChapters() );
+  QList<CatalogChapter> chapters = m_katalog->getKatalogChapters( );
+  QStringList chapNames;
+  foreach( CatalogChapter chap, chapters ) {
+    chapNames.append( chap.name() );
+  }
+  cbChapter->insertItems(-1, chapNames );
   int chapID = t->getChapterID();
   QString chap = m_katalog->chapterName(dbID(chapID));
   cbChapter->setCurrentIndex(cbChapter->findText( chap ));
@@ -307,7 +312,7 @@ void FlosTemplDialog::accept()
     }
 
     /* compare catalog chapter */
-    int chapID = m_katalog->chapterID(cbChapter->currentText());
+    int chapID = m_katalog->chapterID(cbChapter->currentText()).toInt();
     if( chapID != m_template->getChapterID() ) {
       kDebug() << "Chapter ID dirty ->update" << endl;
       if( askChapterChange( m_template, chapID )) {

@@ -57,13 +57,12 @@ void BrunsKatalogListView::addCatalogDisplay( const QString& katName )
     kDebug() << "setting up chapters!" << endl;
     setupChapters();
 
-    const QStringList chapters = catalog->getKatalogChapters();
-    for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
-        QString chapter = *it;
-        QTreeWidgetItem *katItem = chapterItem(chapter);
-        kDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
+    const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
+    foreach( CatalogChapter chapter, chapters ) {
 
-        // hole alle Brunsrecords per Chapter und mach weiter....
+        QTreeWidgetItem *katItem = chapterItem(chapter.name());
+
+        // fetch all Bruns-Records for the chapter
         BrunsRecordList *records = catalog->getRecordList(chapter);
 
         if( records ) {
@@ -120,12 +119,12 @@ void BrunsKatalogListView::setupChapters()
   topItem->setIcon(0, getCatalogIcon());
   m_topFolderMap[ Etc ] = topItem;
 
-  const QStringList chapters = catalog->getKatalogChapters();
+  const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
 
   // weiterhier: sortiere chapter unter die top folder.
-  for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
-    const QString chapter = *it;
+  foreach( CatalogChapter theChapter, chapters ) {
     QTreeWidgetItem *topFolderItem = m_topFolderMap[ Etc ];
+    const QString chapter = theChapter.name();
 
     if( chapter == "Aepfel" ||
         chapter == "Birnen" ||
@@ -155,10 +154,10 @@ void BrunsKatalogListView::setupChapters()
       kDebug() << "Undetected catalog " << chapter << endl;
     }
 
-    if( chapter != "0" ) {
+    if( ! chapter.isEmpty() ) {
       QTreeWidgetItem *katItem = new QTreeWidgetItem( topFolderItem, QStringList( chapter ) );
       katItem->setIcon( 0, getCatalogIcon() );
-      m_catalogDict.insert( catalog->chapterID(chapter), katItem );
+      m_catalogDict.insert( theChapter.id().toInt(), katItem );
     }
   }
 }

@@ -73,7 +73,7 @@ KatalogView::KatalogView( QWidget* parent, const char* ) :
     m_filterHead(0),
     m_editListViewItem(0)
 {
-  setObjectName( "catalogeview#" );
+  setObjectName( "catalogeview" );
   //We don't want to delete this view when we close it!
   setAttribute(Qt::WA_DeleteOnClose, false);
 }

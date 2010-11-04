@@ -115,7 +115,7 @@ void TemplKatalogView::slNewTemplate()
       Katalog *k = getKatalog( m_katalogName );
       if( k ) {
         kDebug() << "setting catalog name " << name << endl;
-        flosTempl->setChapterID(k->chapterID(name));
+        flosTempl->setChapterID(k->chapterID(name).toInt() );
       }
     }
 

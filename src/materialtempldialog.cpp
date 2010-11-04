@@ -132,7 +132,11 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   }
 
   // chapter settings
-  mCbChapter->insertItems(-1, m_katalog->getKatalogChapters() );
+  QStringList chapterNames;
+  foreach( CatalogChapter chap, m_katalog->getKatalogChapters() ) {
+    chapterNames.append( chap.name() );
+  }
+  mCbChapter->insertItems(-1, chapterNames );
   int chapID = t->chapter();
   QString chap = m_katalog->chapterName(dbID(chapID));
   mCbChapter->setCurrentIndex(mCbChapter->findText( chap ));
@@ -186,7 +190,7 @@ void MaterialTemplDialog::accept()
     mSaveMaterial->setUnit( UnitManager::self()->getUnit( u ) );
 
     const QString str2 = mCbChapter->currentText();
-    int chapId = m_katalog->chapterID( str2 );
+    int chapId = m_katalog->chapterID( str2 ).toInt();
     if ( !templateIsNew() && chapId != mSaveMaterial->chapter() ) {
       if( askChapterChange( mSaveMaterial, chapId )) {
         mSaveMaterial->setChapter( chapId );
@@ -194,7 +198,7 @@ void MaterialTemplDialog::accept()
       }
     }
 
-    mSaveMaterial->setChapter( m_katalog->chapterID( str2 ) );
+    mSaveMaterial->setChapter( m_katalog->chapterID( str2 ).toInt() );
 
     double db = mInPurchasePrice->value();
     mSaveMaterial->setPurchPrice( Geld( db ) );

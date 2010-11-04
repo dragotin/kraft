@@ -40,14 +40,14 @@ public:
     void reload( dbID );
 
     /** No descriptions */
-    FloskelTemplateList getFlosTemplates( const QString& chapter );
+    FloskelTemplateList getFlosTemplates( const CatalogChapter& chapter );
 
     KatalogType type() { return TemplateCatalog; }
 
     QDomDocument toXML();
 
     /** get the amount of entries in a chapter or the entire catalog */
-    int getEntriesPerChapter( const QString& chapter = QString() );
+    int getEntriesPerChapter( const CatalogChapter& );
 
     int addNewTemplate( FloskelTemplate *tmpl );
 public slots:

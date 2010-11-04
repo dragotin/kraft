@@ -23,6 +23,8 @@
 #include <QStringList>
 
 #include "floskeltemplate.h"
+#include "catalogchapter.h"
+
 #include "dbids.h"
 
 /**
@@ -56,16 +58,20 @@ public:
     virtual QString getName( ) const;
 
     /** find the ID for the corresponding chapter */
-    virtual int chapterID(const QString&);
+    virtual dbID chapterID(const QString&);
 
     /** get a list of all existing chapters of this catalog */
-    virtual QStringList getKatalogChapters( bool freshup = false );
+    virtual QList<CatalogChapter> getKatalogChapters( bool freshup = false );
 
     /** get the chapter name for the given ID */
     virtual QString chapterName(const dbID&);
 
     /** Add a catalog chapter */
     virtual void addChapter( const QString&, int );
+
+    /** Check if a chapter may be removed, ie. its empty
+      */
+    virtual bool mayRemoveChapter( const QString& );
 
     /** remove a catalog chapter and move existing entries in it to the replacement
         catalog. */
@@ -85,7 +91,7 @@ public:
     virtual KatalogType type();
 
     /** get the amount of entries in a chapter or the entire catalog */
-    virtual int getEntriesPerChapter( const QString& = QString() ) = 0;
+    virtual int getEntriesPerChapter( const CatalogChapter& ) = 0;
 
     bool isReadOnly() { return m_readOnly; }
     void setReadOnly( bool state ) { m_readOnly = state; }
@@ -95,9 +101,7 @@ public:
     
     KLocale *locale() { return mLocale; }
 protected:
-
-    dbIdDict    m_chapterIDs;
-    QStringList m_chapters;
+    QList<CatalogChapter> mChapters;
     QString     m_name;
     QString     m_description;
     int         m_setID;

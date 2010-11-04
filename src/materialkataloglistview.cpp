@@ -62,14 +62,14 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
   kDebug() << "setting up meterial chapters --------*********************************+++!" << endl;
   setupChapters();
 
-  const QStringList chapters = catalog->getKatalogChapters();
-  for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
-    QString chapter = *it;
+  const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
+  foreach( CatalogChapter theChapter, chapters ) {
+    QString chapter = theChapter.name();
     QTreeWidgetItem *katItem = chapterItem(chapter);
     kDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
 
     // hole alle Brunsrecords per Chapter und mach weiter....
-    StockMaterialList records = catalog->getRecordList( chapter );
+    StockMaterialList records = catalog->getRecordList( theChapter );
     StockMaterialListIterator it( records );
     while( it.hasNext() ) {
       StockMaterial *mat = it.next();

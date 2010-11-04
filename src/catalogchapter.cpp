@@ -1,8 +1,8 @@
 /***************************************************************************
-             matkatalog  - Materialkatalogklasse
+             catalogchapter.h  - a simle catalog chapter object
                              -------------------
-    begin                : 2004-19-10
-    copyright            : (C) 2004 by Klaas Freitag
+    begin                : Thu Nov 4 2010
+    copyright            : (C) 2010 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -15,39 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _MATKATALOG_H
-#define _MATKATALOG_H
+#include "catalogchapter.h"
 
-// include files
-#include <qstring.h>
-
-#include "stockmaterial.h"
-#include "katalog.h"
-
-/**
- *
- */
-
-class MatKatalog : public Katalog
+CatalogChapter::CatalogChapter()
 {
-public:
-  MatKatalog( const QString& name );
-  MatKatalog();
-  ~MatKatalog();
 
-  int getEntriesPerChapter( const CatalogChapter& ) { return 0; } // FIXME
+}
 
-  int load();
-  void reload( dbID );
+CatalogChapter::CatalogChapter( int id, const QString& name, int parent, const QString& desc )
+    :mName( name ),
+    mId( dbID(id) ),
+    mDescription( desc ),
+    mParentId( parent )
+{
 
-  KatalogType type() { return MaterialCatalog; }
-  StockMaterialList getRecordList( const CatalogChapter& );
-  void addNewMaterial( StockMaterial* );
-private:
-  StockMaterialList mAllMaterial;
-};
+}
 
-#endif
+QString CatalogChapter::name() const
+{
+  return mName;
+}
 
-/* END */
+QString CatalogChapter::description() const
+{
+  return mDescription;
+}
 
+dbID CatalogChapter::id() const
+{
+  return mId;
+}
+
+dbID CatalogChapter::parentId() const
+{
+  return mParentId;
+}

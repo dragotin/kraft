@@ -35,6 +35,7 @@
 #include "stockmaterial.h"
 #include "templkatalog.h"
 #include "timecalcpart.h"
+#include "dbids.h"
 
 KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     m_root(0),
@@ -42,7 +43,7 @@ KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
 {
     // setItemMargin(4);
     setSelectionMode(QAbstractItemView::SingleSelection );
-
+    setAlternatingRowColors( true );
     setRootIsDecorated(false);
     setAnimated(true);
     header()->setResizeMode(QHeaderView::ResizeToContents);
@@ -96,19 +97,18 @@ void KatalogListView::setupChapters()
     // m_root->setDropEnabled( false );
 
     repaint();
-    const QStringList chapters = cat->getKatalogChapters( true );
+    const QList<CatalogChapter> chapters = cat->getKatalogChapters( true );
     kDebug() << "Have count of chapters: " << chapters.size() << endl;
     QPixmap icon = getCatalogIcon();
 
-    for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end();  ++it) {
-      QString chapter = *it;
-
-      kDebug() << "Creating katalog chapter item for " << chapter << endl;
-      QTreeWidgetItem *katItem = new QTreeWidgetItem( m_root, QStringList( chapter) );
-      m_catalogDict.insert( cat->chapterID(chapter), katItem );
+    foreach( CatalogChapter chapter, chapters ) {
+      kDebug() << "Creating katalog chapter item for " << chapter.name() << endl;
+      QTreeWidgetItem *katItem = new QTreeWidgetItem( m_root, QStringList( chapter.name() ) );
+      int id = chapter.id().toInt();
+      m_catalogDict.insert( id, katItem );
 
       katItem->setIcon( 0, icon );
-      if ( mOpenChapters.contains( chapter ) ) {
+      if ( mOpenChapters.contains( chapter.name() ) ) {
         katItem->setExpanded( true );
       }
     }
@@ -117,9 +117,9 @@ void KatalogListView::setupChapters()
 QTreeWidgetItem *KatalogListView::chapterItem( const QString& chapName )
 {
     Katalog *kat = catalog();
-    int chapID = kat->chapterID(chapName);
+    dbID chapID = kat->chapterID(chapName);
 
-    return m_catalogDict[chapID];
+    return m_catalogDict[chapID.toInt()];
 }
 
 QPixmap KatalogListView::getCatalogIcon()

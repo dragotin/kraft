@@ -75,7 +75,7 @@ public:
 
   DocPosition docPosition();
 
-  void setCatalogChapters( const QStringList& );
+  void setCatalogChapters( const QList<CatalogChapter>& );
   QString chapter() const;
 
 protected slots:

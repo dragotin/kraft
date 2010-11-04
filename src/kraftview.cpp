@@ -951,7 +951,7 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
           if ( !chapter.isEmpty() ) {
             FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
                                                          dp->unit().id(),
-                                                         kat->chapterID( chapter ),
+                                                         kat->chapterID( chapter ).toInt(),
                                                          1, /* CalcKind = Manual */
                                                          QDateTime::currentDateTime(),
                                                          QDateTime::currentDateTime() );

@@ -212,7 +212,7 @@ InsertPlantDialog::~InsertPlantDialog()
 
 }
 
-void InsertPlantDialog::setCatalogChapters( const QStringList& )
+void InsertPlantDialog::setCatalogChapters( const QList<CatalogChapter>& )
 {
 
 }

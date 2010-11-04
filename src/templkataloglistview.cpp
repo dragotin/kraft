@@ -66,12 +66,12 @@ void TemplKatalogListView::addCatalogDisplay( const QString& katName )
 
   setupChapters();
 
-  const QStringList chapters = catalog->getKatalogChapters();
-  for ( QStringList::ConstIterator it = chapters.begin(); it != chapters.end(); ++it ) {
-    QString chapter = *it;
+  const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
+  foreach( CatalogChapter chap, chapters ) {
+    QString chapter = chap.name();
     QTreeWidgetItem *katItem = chapterItem(chapter);
     kDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
-    FloskelTemplateList katList = catalog->getFlosTemplates(chapter);
+    FloskelTemplateList katList = catalog->getFlosTemplates(chap);
     // kDebug() << "Items in chapter " << chapter << ": " << katList.count() << endl;
     FloskelTemplateListIterator flosIt( katList );
 

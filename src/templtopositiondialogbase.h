@@ -20,6 +20,8 @@
 
 #include <kdialog.h>
 
+#include <catalogchapter.h>
+
 class QWidget;
 class DocPosition;
 class DocPositionList;
@@ -34,7 +36,7 @@ public:
   ~TemplToPositionDialogBase( );
 
   virtual void setDocPosition( DocPosition*, bool ) = 0;
-  virtual void setCatalogChapters( const QStringList& ) = 0;
+  virtual void setCatalogChapters( const QList<CatalogChapter>& ) = 0;
   virtual QString chapter() const = 0;
 
   void setPositionList( DocPositionList, int );

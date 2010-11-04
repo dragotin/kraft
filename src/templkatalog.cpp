@@ -88,56 +88,56 @@ void TemplKatalog::reload( dbID id)
 
 int TemplKatalog::load()
 {
-    Katalog::load();
-    int cnt = 0;
+  Katalog::load();
+  int cnt = 0;
 
-    QSqlQuery q("SELECT unitID, TemplID, chapterID, Preisart, EPreis, modifyDatum, enterDatum, Floskel, Gewinn, zeitbeitrag FROM Catalog");
-    q.exec();
-    while ( q.next() ) {
-        cnt++;
-        int einheit = q.value(0).toInt();
-        int templID = q.value(1).toInt();
-        kDebug() << "Loading template number " << templID << endl;
-        int chapID = q.value(2).toInt();
-        // int sortID = cur.value( "sortKey" ).toInt();
-        int calcKind = q.value(3).toInt();
-        double g = q.value(4).toDouble();
+  QSqlQuery q("SELECT unitID, TemplID, chapterID, Preisart, EPreis, modifyDatum, enterDatum, Floskel, Gewinn, zeitbeitrag FROM Catalog");
+  q.exec();
+  while ( q.next() ) {
+    cnt++;
+    int einheit = q.value(0).toInt();
+    int templID = q.value(1).toInt();
+    kDebug() << "Loading template number " << templID << endl;
+    int chapID = q.value(2).toInt();
+    // int sortID = cur.value( "sortKey" ).toInt();
+    int calcKind = q.value(3).toInt();
+    double g = q.value(4).toDouble();
 
-        Geld preis(g);
-        /* Only for debugging: */
-        if( templID == 272 ) {
-            kDebug() << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g << endl;
-        }
-
-        QDateTime modDt;
-        QString modDate = q.value(5).toString();
-        /* modifyDatum ist TIMESTAMP und den gibt mysql offensichtlich mit einem T im
-         * String zurck */
-        if( modDate[10] == 'T' ) {
-            modDate = modDate.replace( 10, 1, QChar(' ') );
-            modDt = QDateTime::fromString(modDate, Qt::ISODate );
-        }
-
-        QDateTime enterDt = q.value(6).toDateTime();
-
-        kDebug() << "Chapter ID is " << chapID << endl;
-
-        FloskelTemplate *flos = new FloskelTemplate( templID,
-                                                     q.value(7).toString(),
-                                                     einheit, chapID, calcKind,
-                                                     modDt, enterDt );
-        // flos->setSortKey( sortID );
-        flos->setBenefit( q.value(8).toDouble());
-        flos->setManualPrice( preis );
-        bool tslice = q.value(9).toInt() > 0;
-        flos->setHasTimeslice( tslice );
-
-        loadCalcParts( flos );
-
-        // FIXME KDE4: Append to list sorted.
-        m_flosList.append(flos);
+    Geld preis(g);
+    /* Only for debugging: */
+    if( templID == 272 ) {
+      kDebug() << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g << endl;
     }
-    return cnt;
+
+    QDateTime modDt;
+    QString modDate = q.value(5).toString();
+    /* modifyDatum ist TIMESTAMP und den gibt mysql offensichtlich mit einem T im
+         * String zurck */
+    if( modDate[10] == 'T' ) {
+      modDate = modDate.replace( 10, 1, QChar(' ') );
+      modDt = QDateTime::fromString(modDate, Qt::ISODate );
+    }
+
+    QDateTime enterDt = q.value(6).toDateTime();
+
+    kDebug() << "Chapter ID is " << chapID << endl;
+
+    FloskelTemplate *flos = new FloskelTemplate( templID,
+                                                 q.value(7).toString(),
+                                                 einheit, chapID, calcKind,
+                                                 modDt, enterDt );
+    // flos->setSortKey( sortID );
+    flos->setBenefit( q.value(8).toDouble());
+    flos->setManualPrice( preis );
+    bool tslice = q.value(9).toInt() > 0;
+    flos->setHasTimeslice( tslice );
+
+    loadCalcParts( flos );
+
+    // FIXME KDE4: Append to list sorted.
+    m_flosList.append(flos);
+  }
+  return cnt;
 }
 
 int TemplKatalog::addNewTemplate( FloskelTemplate *tmpl )
@@ -153,238 +153,224 @@ int TemplKatalog::addNewTemplate( FloskelTemplate *tmpl )
 
 int TemplKatalog::loadCalcParts( FloskelTemplate *flos )
 {
-    int cnt = 0;
+  int cnt = 0;
 
-    cnt = loadTimeCalcParts( flos );
-    cnt += loadFixCalcParts( flos );
-    cnt += loadMaterialCalcParts(flos);
-    return cnt;
+  cnt = loadTimeCalcParts( flos );
+  cnt += loadFixCalcParts( flos );
+  cnt += loadMaterialCalcParts(flos);
+  return cnt;
 }
 
 int TemplKatalog::loadTimeCalcParts( FloskelTemplate *flos )
 {
-    if( ! flos ) return(0);
-    int cnt = 0;
+  if( ! flos ) return(0);
+  int cnt = 0;
 
-    QSqlQuery q;
-    q.prepare("SELECT TCalcID, TemplID, name, minutes, percent, stdHourSet, allowGlobal FROM CalcTime WHERE TemplID=:TemplID");
-    q.bindValue(":TemplID", QString::number( flos->getTemplID()));
-    q.exec();
+  QSqlQuery q;
+  q.prepare("SELECT TCalcID, TemplID, name, minutes, percent, stdHourSet, allowGlobal FROM CalcTime WHERE TemplID=:TemplID");
+  q.bindValue(":TemplID", QString::number( flos->getTemplID()));
+  q.exec();
 
-    while( q.next() )
-    {
-        cnt++;
-        int tcalcid = q.value(0).toInt();
-        int templid = q.value(1).toInt();
-        QString name = q.value(2).toString();
-        int minutes = q.value(3).toInt();
-        int prozent = q.value(4).toInt();
-        int hourSet = q.value(5).toInt();
-        bool globAllowed = q.value(6).toInt() > 0;
+  while( q.next() )
+  {
+    cnt++;
+    int tcalcid = q.value(0).toInt();
+    int templid = q.value(1).toInt();
+    QString name = q.value(2).toString();
+    int minutes = q.value(3).toInt();
+    int prozent = q.value(4).toInt();
+    int hourSet = q.value(5).toInt();
+    bool globAllowed = q.value(6).toInt() > 0;
 
-        TimeCalcPart *zcp = new TimeCalcPart( name, minutes, prozent );
-        zcp->setGlobalStdSetAllowed( globAllowed );
-        zcp->setStundensatz( StdSatzMan::self()->getStdSatz(hourSet) );
+    TimeCalcPart *zcp = new TimeCalcPart( name, minutes, prozent );
+    zcp->setGlobalStdSetAllowed( globAllowed );
+    zcp->setStundensatz( StdSatzMan::self()->getStdSatz(hourSet) );
 
-        zcp->setDbID( dbID(tcalcid));
-        zcp->setTemplID( dbID(templid));
-        zcp->setDirty( false );
-        flos->addCalcPart( zcp );
-    }
+    zcp->setDbID( dbID(tcalcid));
+    zcp->setTemplID( dbID(templid));
+    zcp->setDirty( false );
+    flos->addCalcPart( zcp );
+  }
 
-    return cnt;
+  return cnt;
 }
 
 int TemplKatalog::loadMaterialCalcParts( FloskelTemplate *flos )
 {
-    if( ! flos ) return(0);
-    int cnt = 0;
+  if( ! flos ) return(0);
+  int cnt = 0;
 
-    QSqlQuery q;
-    q.prepare("SELECT MCalcID, TemplID, materialID, percent, amount FROM CalcMaterials WHERE TemplID=:TemplID");
-    q.bindValue(":TemplID", QString::number( flos->getTemplID()));
-    q.exec();
+  QSqlQuery q;
+  q.prepare("SELECT MCalcID, TemplID, materialID, percent, amount FROM CalcMaterials WHERE TemplID=:TemplID");
+  q.bindValue(":TemplID", QString::number( flos->getTemplID()));
+  q.exec();
 
-    while( q.next() )
-    {
-        cnt++;
-        long mcalcID = q.value(0).toLongLong();
-        int templid = q.value(1).toInt();
-        long   matID  = q.value(2).toLongLong();
-        int procent = q.value(3).toInt();
-        double amount = q.value(4).toDouble();
+  while( q.next() )
+  {
+    cnt++;
+    long mcalcID = q.value(0).toLongLong();
+    int templid = q.value(1).toInt();
+    long   matID  = q.value(2).toLongLong();
+    int procent = q.value(3).toInt();
+    double amount = q.value(4).toDouble();
 
 
-        MaterialCalcPart *mPart = new MaterialCalcPart( mcalcID, matID, procent, amount );
-        mPart->setDbID( dbID(mcalcID));
-        mPart->setTemplID( dbID(templid));
-        mPart->setDirty( false );
-        flos->addCalcPart( mPart );
-    }
+    MaterialCalcPart *mPart = new MaterialCalcPart( mcalcID, matID, procent, amount );
+    mPart->setDbID( dbID(mcalcID));
+    mPart->setTemplID( dbID(templid));
+    mPart->setDirty( false );
+    flos->addCalcPart( mPart );
+  }
 
-    return cnt;
+  return cnt;
 }
 
 int TemplKatalog::loadFixCalcParts( FloskelTemplate *flos )
 {
-    if( ! flos ) return(0);
-    int cnt = 0;
+  if( ! flos ) return(0);
+  int cnt = 0;
 
-    QSqlQuery q;
-    q.prepare("SELECT name, amount, percent, FCalcID, TemplID, price FROM CalcFixed WHERE TemplID=:TemplID");
-    q.bindValue(":TemplID", QString::number( flos->getTemplID()));
-    q.exec();
+  QSqlQuery q;
+  q.prepare("SELECT name, amount, percent, FCalcID, TemplID, price FROM CalcFixed WHERE TemplID=:TemplID");
+  q.bindValue(":TemplID", QString::number( flos->getTemplID()));
+  q.exec();
 
-    while( q.next() )
-    {
-        cnt++;
-        QString name  = q.value(0).toString();
-        double amount = q.value(1).toDouble();
-        int percent   = q.value(2).toInt();
-        int tcalcid = q.value(3).toInt();
-        int templid = q.value(4).toInt();
+  while( q.next() )
+  {
+    cnt++;
+    QString name  = q.value(0).toString();
+    double amount = q.value(1).toDouble();
+    int percent   = q.value(2).toInt();
+    int tcalcid = q.value(3).toInt();
+    int templid = q.value(4).toInt();
 
-        double g      = q.value(5).toDouble();
-        Geld price(g); //     = (int) g; // FIXME: proper handling of money here.
+    double g      = q.value(5).toDouble();
+    Geld price(g); //     = (int) g; // FIXME: proper handling of money here.
 
-        FixCalcPart *fcp = new FixCalcPart( name, price, percent );
-        fcp->setMenge( amount );
-        fcp->setDbID( dbID(tcalcid));
-        fcp->setTemplID( dbID(templid));
-        fcp->setDirty( false );
-        flos->addCalcPart( fcp );
-    }
+    FixCalcPart *fcp = new FixCalcPart( name, price, percent );
+    fcp->setMenge( amount );
+    fcp->setDbID( dbID(tcalcid));
+    fcp->setTemplID( dbID(templid));
+    fcp->setDirty( false );
+    flos->addCalcPart( fcp );
+  }
 
-    return cnt;
+  return cnt;
 }
 
 
-FloskelTemplateList TemplKatalog::getFlosTemplates( const QString& chapter )
+FloskelTemplateList TemplKatalog::getFlosTemplates( const CatalogChapter& chapter )
 {
-    FloskelTemplateList resultList;
-    int chap = chapterID(chapter);
+  FloskelTemplateList resultList;
+  int chap = chapter.id().toInt();
 
-    if( m_flosList.count() == 0 )
+  if( m_flosList.count() == 0 )
+  {
+    kDebug() << "Empty katalog list - loading!" << endl;
+    load();
+  }
+
+  FloskelTemplateListIterator it(m_flosList);
+  FloskelTemplate *tmpl;
+
+  while( it.hasNext() )
+  {
+    tmpl = it.next();
+
+    int haveChap = tmpl->getChapterID();
+
+    // kDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
+    if( haveChap == chap )
     {
-        kDebug() << "Empty katalog list - loading!" << endl;
-        load();
+      resultList.append( tmpl );
     }
-
-    FloskelTemplateListIterator it(m_flosList);
-    FloskelTemplate *tmpl;
-
-    while( it.hasNext() )
-    {
-      tmpl = it.next();
-
-      int haveChap = tmpl->getChapterID();
-
-      // kDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
-      if( haveChap == chap )
-      {
-        resultList.append( tmpl );
-      }
-    }
-    return resultList;
+  }
+  return resultList;
 }
 
 
 int TemplKatalog::load( const QString& /* chapter */ )
 {
-    return 0;
+  return 0;
 }
 
 
 void TemplKatalog::writeXMLFile()
 {
-    QString filename = KFileDialog::getSaveFileName( QDir::homePath(),
-            "*.xml", 0, i18n("Export XML Katalog"));
-    if(filename.isEmpty()) return;
+  QString filename = KFileDialog::getSaveFileName( QDir::homePath(),
+                                                   "*.xml", 0, i18n("Export XML Katalog"));
+  if(filename.isEmpty()) return;
 
-    QDomDocument doc = toXML();
+  QDomDocument doc = toXML();
 
-    QFile file( filename );
-    if( file.open( QIODevice::WriteOnly ) )
-    {
-        QTextStream ts( &file );
-        ts << doc.toString();
+  QFile file( filename );
+  if( file.open( QIODevice::WriteOnly ) )
+  {
+    QTextStream ts( &file );
+    ts << doc.toString();
 
-        file.close();
-    }
+    file.close();
+  }
 
 }
 
 QDomDocument TemplKatalog::toXML()
 {
 
-    QDomDocument doc("catalog");
-    QDomElement root = doc.createElement("catalog");
-    doc.appendChild(root);
-    QDomElement elem = doc.createElement("catalogname");
-    QDomText text = doc.createTextNode(m_name);
-    elem.appendChild(text);
-    root.appendChild(elem);
+  QDomDocument doc("catalog");
+  QDomElement root = doc.createElement("catalog");
+  doc.appendChild(root);
+  QDomElement elem = doc.createElement("catalogname");
+  QDomText text = doc.createTextNode(m_name);
+  elem.appendChild(text);
+  root.appendChild(elem);
 
-    QStringList allSets = StdSatzMan::self()->allStdSaetze();
-    for ( QStringList::Iterator it = allSets.begin(); it != allSets.end(); ++it ) {
-        QDomElement set = doc.createElement("hourset");
-        QDomElement elem = doc.createElement("name");
-        QDomText tname = doc.createTextNode(*it);
-        elem.appendChild(tname);
-        set.appendChild(elem);
+  QStringList allSets = StdSatzMan::self()->allStdSaetze();
+  for ( QStringList::Iterator it = allSets.begin(); it != allSets.end(); ++it ) {
+    QDomElement set = doc.createElement("hourset");
+    QDomElement elem = doc.createElement("name");
+    QDomText tname = doc.createTextNode(*it);
+    elem.appendChild(tname);
+    set.appendChild(elem);
 
-        QDomElement rateelem = doc.createElement("rate");
-        StdSatz satz = StdSatzMan::self()->getStdSatz(*it);
-        Geld g = satz.getPreis();
-        QDomText rname = doc.createTextNode(g.toString( mLocale ));
-        rateelem.appendChild(rname);
-        set.appendChild(rateelem);
+    QDomElement rateelem = doc.createElement("rate");
+    StdSatz satz = StdSatzMan::self()->getStdSatz(*it);
+    Geld g = satz.getPreis();
+    QDomText rname = doc.createTextNode(g.toString( mLocale ));
+    rateelem.appendChild(rname);
+    set.appendChild(rateelem);
 
-        root.appendChild(set);
-    }
+    root.appendChild(set);
+  }
 
-    QStringList chaps = getKatalogChapters();
+  QList<CatalogChapter> chaps = getKatalogChapters();
+  foreach( CatalogChapter theChapter, chaps ) {
+    QString chapter = theChapter.name();
+    QDomElement chapElem = doc.createElement("chapter");
+    QDomElement chapName = doc.createElement("chaptername");
+    text = doc.createTextNode(chapter);
+    chapName.appendChild(text);
+    chapElem.appendChild(chapName);
+    root.appendChild(chapElem);
 
-    for ( QStringList::Iterator it = chaps.begin(); it != chaps.end(); ++it ) {
-        QString chapter = *it;
-        QDomElement chapElem = doc.createElement("chapter");
-        QDomElement chapName = doc.createElement("chaptername");
-        text = doc.createTextNode(chapter);
-        chapName.appendChild(text);
-        chapElem.appendChild(chapName);
-        root.appendChild(chapElem);
+    FloskelTemplateList templs = getFlosTemplates(theChapter);
+    FloskelTemplateListIterator it(templs);
 
-        FloskelTemplateList templs = getFlosTemplates(chapter);
-        FloskelTemplateListIterator it(templs);
-        // FloskelTemplate *tmpl = 0;
-
-        // while( ( it.hasNext()) {
-        //  tmpl = it.next();
-          // chapElem.appendChild( tmpl->toXML(doc));
-
-        // }
-    }
-    return doc;
+    // FIXME: XML export!
+  }
+  return doc;
 }
 
 
-int TemplKatalog::getEntriesPerChapter( const QString& chapter)
+int TemplKatalog::getEntriesPerChapter( const CatalogChapter& chapter)
 {
-    int cnt = 0;
+  int cnt = 0;
 
-    QString q( "SELECT count(*) FROM katalog" );
-    if( !chapter.isEmpty() ) {
-        int id = chapterID( chapter );
-        if( id > 0 ) {
-            q += " WHERE chapterID=" + QString::number( id );
-        } else {
-            return cnt;
-        }
-    }
-    QSqlQuery query( q );
+  QString q( QString("SELECT count(*) FROM katalog WHERE chapterID=%1" ).arg( chapter.id().toInt() ) );
+  QSqlQuery query( q );
 
-    while ( query.next() ) {
-        cnt = query.value(0).toInt();
-    }
-    return cnt;
+  while ( query.next() ) {
+    cnt = query.value(0).toInt();
+  }
+  return cnt;
 }
