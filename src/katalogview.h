@@ -102,6 +102,7 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     void slExport();
 
     virtual void slEditChapters();
+    virtual void slAddSubChapter();
 
   protected:
 
@@ -114,6 +115,7 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     KAction* m_acEditPaste;
 
     KAction* m_acEditChapters;
+    KAction* m_acAddChapter;
     KAction* m_acEditItem;
     KAction* m_acNewItem;
     KAction* m_acExport;

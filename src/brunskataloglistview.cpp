@@ -159,7 +159,7 @@ void BrunsKatalogListView::setupChapters()
     if( ! chapter.isEmpty() ) {
       QTreeWidgetItem *katItem = new QTreeWidgetItem( topFolderItem, QStringList( chapter ) );
       katItem->setIcon( 0, icon );
-      m_catalogDict.insert( theChapter.id().toInt(), katItem );
+      mChapterDict.insert( theChapter.id().toInt(), katItem );
     }
   }
 }

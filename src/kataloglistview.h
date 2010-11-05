@@ -58,6 +58,8 @@ public:
 public slots:
   virtual void slotFreshupItem( QTreeWidgetItem*, void*, bool remChildren = false );
   virtual void slotChangeChapter( QTreeWidgetItem* , int );
+  virtual void slotCreateNewChapter( );
+
   virtual void contextMenuEvent( QContextMenuEvent * event );
   virtual void slotRedraw();
 
@@ -69,7 +71,7 @@ protected:
 
   QTreeWidgetItem *m_root;
   QHash<QTreeWidgetItem*, void*> m_dataDict;
-  QHash<int, QTreeWidgetItem*> m_catalogDict;
+  QHash<int, QTreeWidgetItem*> mChapterDict;
   QString m_catalogName;
   QStringList mOpenChapters;
   KMenu *mMenu;

@@ -92,7 +92,7 @@ void CatalogChapterEditDialog::accept()
 
       if( ! it.value().isOk() ) {
           kDebug() << it.key() << " is new and must be added" << endl;
-          m_katalog->addChapter( it.key(), 1 );
+          // Commented because adding works different now. m_katalog->addChapter( it.key(), 1 );
       } else {
         QString stored = m_katalog->chapterName( it.value() );
         QString curr = it.key();

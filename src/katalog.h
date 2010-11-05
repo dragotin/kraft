@@ -67,7 +67,8 @@ public:
     virtual QString chapterName(const dbID&);
 
     /** Add a catalog chapter */
-    virtual void addChapter( const QString&, int );
+    // virtual void addChapter( const QString&, int );
+    virtual void addChapter( const CatalogChapter& );
 
     /** Check if a chapter may be removed, ie. its empty
       */

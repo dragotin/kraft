@@ -8,6 +8,7 @@
     <Action name="edit_vorlage"/>
     <Action name="neue_vorlage"/>
     <Action name="edit_chapters"/>
+    <Action name="add_chapter"/>
   </Menu>
 </MenuBar>
 <ToolBar  name="mainToolBar" fullWidth="true">

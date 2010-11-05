@@ -153,6 +153,12 @@ void KatalogView::initActions()
   m_acEditChapters->setStatusTip(i18n("Add, remove and edit catalog chapters"));
   m_acEditChapters->setEnabled(true);
 
+  m_acAddChapter = actionCollection()->addAction( "add_chapter", this, SLOT( slAddSubChapter() ) );
+  m_acAddChapter->setText( i18n("Add a sub chapter") );
+  m_acAddChapter->setIcon( KIcon("document-edit"));
+  m_acAddChapter->setStatusTip(i18n("Add a sub chapter below the selected one"));
+  m_acAddChapter->setEnabled(false);
+
   m_acEditItem = actionCollection()->addAction( "edit_vorlage", this, SLOT( slEditTemplate() ) );
   m_acEditItem->setText( i18n("Edit template") );
   m_acEditItem->setIcon( KIcon("document-edit"));
@@ -319,16 +325,20 @@ void KatalogView::slTreeviewItemChanged( QTreeWidgetItem *newItem, QTreeWidgetIt
 
   bool itemEdit = true;
   bool itemNew = true;
+  bool chapterNew = false;
 
   if( listview->isRoot(newItem) ) {
     // we have the root item, not editable
     itemEdit = false;
     itemNew = false;
+    chapterNew = true;
   } else if( listview->isChapter(newItem) ) {
     itemEdit = false;
+    chapterNew = true;
   }
   m_acEditItem->setEnabled(itemEdit);
   m_acNewItem->setEnabled( itemNew );
+  m_acAddChapter->setEnabled( chapterNew );
 }
 
 void KatalogView::slExport()
@@ -338,6 +348,15 @@ void KatalogView::slExport()
     if(k)
         k->writeXMLFile();
     slotStatusMsg(i18n("Ready."));
+}
+
+void KatalogView::slAddSubChapter()
+{
+  slotStatusMsg( i18n("Creating a new sub chapter..."));
+  KatalogListView *listview = getListView();
+  if( listview )
+    listview->slotCreateNewChapter();
+  slotStatusMsg( i18n("Ready."));
 }
 
 void KatalogView::slEditChapters()
@@ -355,4 +374,3 @@ void KatalogView::slEditChapters()
     }
 }
 
-#include "katalogview.moc"

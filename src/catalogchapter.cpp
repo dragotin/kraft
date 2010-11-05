@@ -41,10 +41,21 @@ QString CatalogChapter::name() const
   return mName;
 }
 
+void CatalogChapter::setName( const QString& name )
+{
+  mName = name;
+}
+
 QString CatalogChapter::description() const
 {
   return mDescription;
 }
+
+void CatalogChapter::setDescription( const QString& d )
+{
+  mDescription = d;
+}
+
 
 dbID CatalogChapter::id() const
 {
@@ -56,7 +67,27 @@ dbID CatalogChapter::parentId() const
   return mParentId;
 }
 
+void CatalogChapter::setParentId( const dbID &id )
+{
+  mParentId = id;
+}
+
 QPixmap CatalogChapter::icon() const
 {
   return SmallIcon("folder-documents");
+}
+
+void CatalogChapter::setIcon( const QPixmap & )
+{
+  // do nothing for now
+}
+
+int CatalogChapter::sortKey() const
+{
+  return mSortKey;
+}
+
+void CatalogChapter::setSortKey( int key )
+{
+  mSortKey = key;
 }

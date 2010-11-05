@@ -163,15 +163,23 @@ KatalogType Katalog::type()
     return UnspecCatalog;
 }
 
-void Katalog::addChapter( const QString& name, int sortKey )
+void Katalog::addChapter( const CatalogChapter& c )
 {
-  kDebug() << "Inserting new chapter " << name << sortKey << endl;
+//  chapterID INTEGER PRIMARY KEY ASC autoincrement,
+//  catalogSetID INT NOT NULL,
+//  chapter      VARCHAR(255),
+//  sortKey      INT NOT NULL
+//, parentChapter int(11) default 0)
+
+  kDebug() << "Inserting new chapter " << c.name() << c.sortKey() << endl;
   QSqlQuery q;
-  q.prepare("INSERT INTO CatalogChapters (catalogSetID, chapter, sortKey)"
-            "VALUES(:catalogSetID, :chapter, :sortKey)");
-  q.bindValue( ":catalogSetID", m_setID );
-  q.bindValue( ":chapter", name );
-  q.bindValue( ":sortKey", sortKey );
+  q.prepare("INSERT INTO CatalogChapters (catalogSetID, chapter, description, sortKey, parentChapter)"
+            "VALUES(:catalogSetID, :chapter, :desc, :sortKey, :parentChapter)");
+  q.bindValue( ":catalogSetID",  m_setID );
+  q.bindValue( ":chapter",       c.name() );
+  q.bindValue( ":desc",          c.description() );
+  q.bindValue( ":sortKey",       c.sortKey() );
+  q.bindValue( ":parentChapter", c.parentId().toInt() );
   q.exec();
 }
 

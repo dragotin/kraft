@@ -31,15 +31,28 @@ public:
   CatalogChapter( int, const QString&, int, const QString& = QString() );
 
   QString name() const;
+  void setName( const QString& );
+
   QString description() const;
+  void setDescription( const QString& );
+
   dbID id() const;
+
   dbID parentId() const;
+  void setParentId( const dbID& );
+
   QPixmap icon() const;
+  void setIcon( const QPixmap& );
+
+  int sortKey() const;
+  void setSortKey( int );
+
 private:
   QString mName;
-  dbID mId;
+  dbID    mId;
   QString mDescription;
-  int mParentId;
+  dbID    mParentId;
+  int     mSortKey;
 
 };
 
