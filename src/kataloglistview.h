@@ -33,6 +33,7 @@ class QPixmap;
 class KMenu;
 class DocPosition;
 class Katalog;
+class CatalogChapter;
 
 
 class KRAFTCAT_EXPORT KatalogListView : public QTreeWidget
@@ -61,12 +62,10 @@ public slots:
   virtual void slotRedraw();
 
 protected:
-
-  virtual QPixmap getCatalogIcon();
-
   virtual Katalog* catalog();
 
-  QTreeWidgetItem *chapterItem( const QString& chapName );
+  QTreeWidgetItem* tryAddingCatalogChapter( const CatalogChapter& );
+  QTreeWidgetItem* chapterItem( const QString& chapName );
 
   QTreeWidgetItem *m_root;
   QHash<QTreeWidgetItem*, void*> m_dataDict;

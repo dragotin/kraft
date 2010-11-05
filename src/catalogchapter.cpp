@@ -15,6 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QtCore>
+#include <QtGui>
+
+#include <kiconloader.h>
+
 #include "catalogchapter.h"
 
 CatalogChapter::CatalogChapter()
@@ -49,4 +54,9 @@ dbID CatalogChapter::id() const
 dbID CatalogChapter::parentId() const
 {
   return mParentId;
+}
+
+QPixmap CatalogChapter::icon() const
+{
+  return SmallIcon("folder-documents");
 }

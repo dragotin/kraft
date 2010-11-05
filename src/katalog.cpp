@@ -83,7 +83,7 @@ int Katalog::load()
   if( q.next() ) {
     m_setID = q.value(0).toInt();
     m_description = q.value(1).toString();
-    kDebug() << "Setting catalogSetID=" << QString( m_setID ) << " from name " << m_name << endl;
+    kDebug() << "Setting catalogSetID=" <<  m_setID << " from name " << m_name << endl;
   }
   return 0;
 }

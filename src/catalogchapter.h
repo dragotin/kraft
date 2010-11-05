@@ -34,7 +34,7 @@ public:
   QString description() const;
   dbID id() const;
   dbID parentId() const;
-
+  QPixmap icon() const;
 private:
   QString mName;
   dbID mId;

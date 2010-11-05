@@ -99,24 +99,26 @@ void BrunsKatalogListView::setupChapters()
     m_root->setExpanded(true);
   }
 
+  QPixmap icon = SmallIcon( "folder-documents");
+
   QTreeWidgetItem *topItem = new QTreeWidgetItem( m_root, QStringList(i18n( "Fruits" )) );
-  topItem->setIcon(0, getCatalogIcon());
+  topItem->setIcon(0, icon );
   m_topFolderMap[ Fruits ] = topItem;
 
   topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Azaleen and Rhododendren" ) ) );
-  topItem->setIcon(0, getCatalogIcon());
+  topItem->setIcon(0, icon);
   m_topFolderMap[ Rhodos ] = topItem;
 
   topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Roses" ) ) );
-  topItem->setIcon(0, getCatalogIcon());
+  topItem->setIcon(0, icon);
   m_topFolderMap[ Roses ] = topItem;
 
   topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Stauden" ) ) );
-  topItem->setIcon(0, getCatalogIcon());
+  topItem->setIcon(0, icon);
   m_topFolderMap[ Stauden ] = topItem;
 
   topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Sonstige" ) ) );
-  topItem->setIcon(0, getCatalogIcon());
+  topItem->setIcon(0, icon);
   m_topFolderMap[ Etc ] = topItem;
 
   const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
@@ -156,7 +158,7 @@ void BrunsKatalogListView::setupChapters()
 
     if( ! chapter.isEmpty() ) {
       QTreeWidgetItem *katItem = new QTreeWidgetItem( topFolderItem, QStringList( chapter ) );
-      katItem->setIcon( 0, getCatalogIcon() );
+      katItem->setIcon( 0, icon );
       m_catalogDict.insert( theChapter.id().toInt(), katItem );
     }
   }

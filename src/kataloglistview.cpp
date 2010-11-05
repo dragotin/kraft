@@ -36,6 +36,8 @@
 #include "templkatalog.h"
 #include "timecalcpart.h"
 #include "dbids.h"
+#include "catalogchapter.h"
+
 
 KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     m_root(0),
@@ -80,38 +82,77 @@ Katalog* KatalogListView::catalog()
 void KatalogListView::setupChapters()
 {
   Katalog *cat = catalog();
-    if( ! cat ) return;
+  if( ! cat ) return;
 
-    if( m_root ) {
-      delete m_root;
-      m_catalogDict.clear();
-    }
+  if( m_root ) {
+    delete m_root;
+    m_catalogDict.clear();
+  }
 
-    kDebug() << "Creating root item!" <<  endl;
-    QStringList list;
-    list << cat->getName();
-    m_root = new QTreeWidgetItem( this, list );
-    m_root->setIcon( 0, SmallIcon("kraft"));
-    m_root->setExpanded(true);
-    // m_root->setDragEnabled( false );
-    // m_root->setDropEnabled( false );
+  kDebug() << "Creating root item!" <<  endl;
+  QStringList list;
+  list << cat->getName();
+  m_root = new QTreeWidgetItem( this, list );
+  m_root->setIcon( 0, SmallIcon("kraft"));
+  m_root->setExpanded(true);
+  // m_root->setDragEnabled( false );
+  // m_root->setDropEnabled( false );
 
-    repaint();
-    const QList<CatalogChapter> chapters = cat->getKatalogChapters( true );
-    kDebug() << "Have count of chapters: " << chapters.size() << endl;
-    QPixmap icon = getCatalogIcon();
+  repaint();
+  const QList<CatalogChapter> chapters = cat->getKatalogChapters( true );
+  kDebug() << "Have count of chapters: " << chapters.size() << endl;
 
-    foreach( CatalogChapter chapter, chapters ) {
+  QList<CatalogChapter> strayCats;
+
+  foreach( CatalogChapter chapter, chapters ) {
+    QTreeWidgetItem *item = tryAddingCatalogChapter( chapter );
+    if( ! item ) {
+      strayCats.append( chapter );
+    } else {
       kDebug() << "Creating katalog chapter item for " << chapter.name() << endl;
-      QTreeWidgetItem *katItem = new QTreeWidgetItem( m_root, QStringList( chapter.name() ) );
-      int id = chapter.id().toInt();
-      m_catalogDict.insert( id, katItem );
+    }
+  }
 
-      katItem->setIcon( 0, icon );
-      if ( mOpenChapters.contains( chapter.name() ) ) {
-        katItem->setExpanded( true );
+  int oldStrayCatCount = strayCats.count() + 1; // to survive the first while condition
+  while( strayCats.count() && strayCats.count() < oldStrayCatCount ) {
+    QList<CatalogChapter> newStrayCats;
+    oldStrayCatCount = strayCats.count();
+    // loop as long as the overall number of straycats goes down in every round
+    foreach( CatalogChapter chapter, strayCats ) {
+      QTreeWidgetItem *katItem = tryAddingCatalogChapter( chapter );
+      if( katItem ) {
+        kDebug() << "Sucessfully added catalog chapter from strayCats";
+      } else {
+        newStrayCats.append( chapter );
+        kDebug() << "Failed to add a catalog chapter from stryCats";
       }
     }
+    strayCats = newStrayCats;
+  }
+}
+
+
+QTreeWidgetItem *KatalogListView::tryAddingCatalogChapter( const CatalogChapter& chapter )
+{
+  int parentChapter = chapter.parentId().toInt();
+  int id = chapter.id().toInt();
+  QTreeWidgetItem *katItem = 0;
+  if( parentChapter == 0 ) {
+    katItem = new QTreeWidgetItem( m_root, QStringList( chapter.name() ) );
+  } else {
+    if( m_catalogDict.contains( parentChapter ) ) {
+      katItem = new QTreeWidgetItem( m_catalogDict[parentChapter], QStringList( chapter.name() ) );
+    }
+  }
+  if( katItem ) {
+    m_catalogDict.insert( id, katItem );
+
+    katItem->setIcon( 0, chapter.icon() );
+    if ( mOpenChapters.contains( chapter.name() ) ) {
+      katItem->setExpanded( true );
+    }
+  }
+  return katItem;
 }
 
 QTreeWidgetItem *KatalogListView::chapterItem( const QString& chapName )
@@ -120,11 +161,6 @@ QTreeWidgetItem *KatalogListView::chapterItem( const QString& chapName )
     dbID chapID = kat->chapterID(chapName);
 
     return m_catalogDict[chapID.toInt()];
-}
-
-QPixmap KatalogListView::getCatalogIcon()
-{
-    return SmallIcon("folder-documents");
 }
 
 void* KatalogListView::itemData( QTreeWidgetItem *item )
