@@ -28,6 +28,7 @@ set( kraftcat_LIB_SRCS
     einheit.cpp
     attribute.cpp
     numbercycle.cpp
+    addeditchapterdialog.cpp
     )
 
 

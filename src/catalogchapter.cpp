@@ -23,6 +23,7 @@
 #include "catalogchapter.h"
 
 CatalogChapter::CatalogChapter()
+  : mSortKey(0)
 {
 
 }
@@ -31,7 +32,8 @@ CatalogChapter::CatalogChapter( int id, const QString& name, int parent, const Q
     :mName( name ),
     mId( dbID(id) ),
     mDescription( desc ),
-    mParentId( parent )
+    mParentId( parent ),
+    mSortKey(0)
 {
 
 }

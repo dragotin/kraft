@@ -60,7 +60,7 @@ void BrunsKatalogListView::addCatalogDisplay( const QString& katName )
     const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
     foreach( CatalogChapter chapter, chapters ) {
 
-        QTreeWidgetItem *katItem = chapterItem(chapter.name());
+        QTreeWidgetItem *katItem = 0; // FIXME - chapterItem(chapter.name());
 
         // fetch all Bruns-Records for the chapter
         BrunsRecordList *records = catalog->getRecordList(chapter);

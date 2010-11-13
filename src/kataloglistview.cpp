@@ -37,7 +37,7 @@
 #include "timecalcpart.h"
 #include "dbids.h"
 #include "catalogchapter.h"
-
+#include "addeditchapterdialog.h"
 
 KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     m_root(0),
@@ -151,6 +151,9 @@ QTreeWidgetItem *KatalogListView::tryAddingCatalogChapter( const CatalogChapter&
       katItem->setToolTip( 0, chapter.description() );
 
     katItem->setIcon( 0, chapter.icon() );
+    // Store the parent-ID in the item data
+    m_dataDict[katItem] = new CatalogChapter( chapter );
+
     if ( mOpenChapters.contains( chapter.name() ) ) {
       katItem->setExpanded( true );
     }
@@ -158,18 +161,9 @@ QTreeWidgetItem *KatalogListView::tryAddingCatalogChapter( const CatalogChapter&
   return katItem;
 }
 
-QTreeWidgetItem *KatalogListView::chapterItem( const QString& chapName )
-{
-    Katalog *kat = catalog();
-    if( ! kat ) return 0;
-    dbID chapID = kat->chapterID(chapName);
-
-    return mChapterDict[chapID.toInt()];
-}
-
 void* KatalogListView::itemData( QTreeWidgetItem *item )
 {
-  if ( item ) {
+  if ( item && m_dataDict.contains( item ) ) {
     return m_dataDict[item];
   }
   return 0;
@@ -177,7 +171,11 @@ void* KatalogListView::itemData( QTreeWidgetItem *item )
 
 void* KatalogListView::currentItemData()
 {
-  return itemData( currentItem() );
+  if( currentItem() ) {
+    return itemData( currentItem() );
+  } else {
+    return 0;
+  }
 }
 
 bool KatalogListView::isChapter( QTreeWidgetItem *item )
@@ -204,24 +202,30 @@ void KatalogListView::slotFreshupItem( QTreeWidgetItem*, void *, bool )
 void KatalogListView::slotCreateNewChapter()
 {
   QTreeWidgetItem *parentItem = currentItem();
-  if( ! isChapter( parentItem ) ) {
+  if( ! (isChapter( parentItem ) || isRoot( parentItem ) ) ) {
     kDebug() << "Not an chapter item selected, returning";
     return;
   }
 
-  const QString parentChapName = parentItem->text(0);
-  dbID parentId = catalog()->chapterID( parentChapName );
+  CatalogChapter *parentChapter = static_cast<CatalogChapter*>(currentItemData());
 
-  QString name("Neues Chapter");
-  QString desc("Chapter Description");
+  AddEditChapterDialog dia( this );
+  dia.setParentChapter( *parentChapter );
+  if( dia.exec() ) {
 
-  CatalogChapter c;
-  c.setName( name );
-  c.setDescription( desc );
-  c.setParentId( parentId );
+    QString name = dia.name();
+    QString desc = dia.description();
 
-  catalog()->addChapter( c );
-  tryAddingCatalogChapter( c );
+    CatalogChapter c;
+    c.setName( name );
+    c.setDescription( desc );
+    c.setParentId( parentChapter->id() );
+
+    catalog()->addChapter( c );
+    QTreeWidgetItem *newItem = tryAddingCatalogChapter( c );
+    this->scrollToItem( newItem );
+    this->setCurrentItem( newItem );
+  }
 }
 
 void KatalogListView::slotChangeChapter( QTreeWidgetItem* item, int newChapter )

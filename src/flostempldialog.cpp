@@ -312,12 +312,14 @@ void FlosTemplDialog::accept()
     }
 
     /* compare catalog chapter */
-    int chapID = m_katalog->chapterID(cbChapter->currentText()).toInt();
-    if( chapID != m_template->getChapterID() ) {
+    int chapterId = 0; // m_katalog->chapterID(cbChapter->currentText()).toInt();
+    // FIXME: need new way of picking hte chapterId bcause of hirarchical.
+
+    if( chapterId != m_template->getChapterID() ) {
       kDebug() << "Chapter ID dirty ->update" << endl;
-      if( askChapterChange( m_template, chapID )) {
-        m_template->setChapterID(chapID);
-        emit( chapterChanged(chapID));
+      if( askChapterChange( m_template, chapterId )) {
+        m_template->setChapterID( chapterId );
+        emit( chapterChanged( chapterId ));
       }
     }
 

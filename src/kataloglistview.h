@@ -67,7 +67,6 @@ protected:
   virtual Katalog* catalog();
 
   QTreeWidgetItem* tryAddingCatalogChapter( const CatalogChapter& );
-  QTreeWidgetItem* chapterItem( const QString& chapName );
 
   QTreeWidgetItem *m_root;
   QHash<QTreeWidgetItem*, void*> m_dataDict;

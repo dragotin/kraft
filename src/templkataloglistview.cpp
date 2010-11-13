@@ -68,24 +68,22 @@ void TemplKatalogListView::addCatalogDisplay( const QString& katName )
 
   const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
   foreach( CatalogChapter chap, chapters ) {
-    QString chapter = chap.name();
-    QTreeWidgetItem *katItem = chapterItem(chapter);
-    kDebug() << "KatItem is " << katItem << " for chapter " << chapter << endl;
-    FloskelTemplateList katList = catalog->getFlosTemplates(chap);
-    // kDebug() << "Items in chapter " << chapter << ": " << katList.count() << endl;
-    FloskelTemplateListIterator flosIt( katList );
+    if( mChapterDict.contains( chap.id().toInt() ) ) {
+      QTreeWidgetItem *katItem = mChapterDict[chap.id().toInt()];
+      FloskelTemplateList katList = catalog->getFlosTemplates(chap);
+      FloskelTemplateListIterator flosIt( katList );
 
-    while( flosIt.hasNext() ) {
-      FloskelTemplate *tmpl = flosIt.next();
+      while( flosIt.hasNext() ) {
+        FloskelTemplate *tmpl = flosIt.next();
 
-      /* create a ew item as the child of katalog entry */
-      addFlosTemplate( katItem, tmpl );
-      if ( mShowCalcParts )
-        addCalcParts( tmpl );
+        /* create a ew item as the child of katalog entry */
+        addFlosTemplate( katItem, tmpl );
+        if ( mShowCalcParts )
+          addCalcParts( tmpl );
+      }
     }
   }
 }
-
 /*
  * add a single template to the view with setting icon etc.
  */

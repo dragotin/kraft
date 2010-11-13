@@ -190,7 +190,8 @@ void MaterialTemplDialog::accept()
     mSaveMaterial->setUnit( UnitManager::self()->getUnit( u ) );
 
     const QString str2 = mCbChapter->currentText();
-    int chapId = m_katalog->chapterID( str2 ).toInt();
+    int chapId = 0; // FIXME: get a chapter catalog Id of hirarchical
+    // int chapId = m_katalog->chapterID( str2 ).toInt();
     if ( !templateIsNew() && chapId != mSaveMaterial->chapter() ) {
       if( askChapterChange( mSaveMaterial, chapId )) {
         mSaveMaterial->setChapter( chapId );
@@ -198,7 +199,8 @@ void MaterialTemplDialog::accept()
       }
     }
 
-    mSaveMaterial->setChapter( m_katalog->chapterID( str2 ).toInt() );
+    chapId = 0; // FIXME: get a chapter catalog Id of hirarchical
+    mSaveMaterial->setChapter( chapId );
 
     double db = mInPurchasePrice->value();
     mSaveMaterial->setPurchPrice( Geld( db ) );

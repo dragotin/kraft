@@ -111,11 +111,9 @@ void TemplKatalogView::slNewTemplate()
 
     if( parentItem ) {
       // try to find out which catalog is open/current
-      QString name = parentItem->text(0);
-      Katalog *k = getKatalog( m_katalogName );
-      if( k ) {
-        kDebug() << "setting catalog name " << name << endl;
-        flosTempl->setChapterID(k->chapterID(name).toInt() );
+      CatalogChapter *chap = static_cast<CatalogChapter*>( templListView->itemData( parentItem ) );
+      if( chap ) {
+        flosTempl->setChapterID( chap->id().toInt() );
       }
     }
 

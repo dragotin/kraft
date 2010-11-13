@@ -330,7 +330,7 @@ void KatalogView::slTreeviewItemChanged( QTreeWidgetItem *newItem, QTreeWidgetIt
   if( listview->isRoot(newItem) ) {
     // we have the root item, not editable
     itemEdit = false;
-    itemNew = false;
+    itemNew  = false;
     chapterNew = true;
   } else if( listview->isChapter(newItem) ) {
     itemEdit = false;

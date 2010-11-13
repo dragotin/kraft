@@ -58,7 +58,7 @@ public:
     virtual QString getName( ) const;
 
     /** find the ID for the corresponding chapter */
-    virtual dbID chapterID(const QString&);
+    // virtual dbID chapterID(const QString&);
 
     /** get a list of all existing chapters of this catalog */
     virtual QList<CatalogChapter> getKatalogChapters( bool freshup = false );

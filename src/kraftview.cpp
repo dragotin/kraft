@@ -947,18 +947,19 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
 
         // if it's a new position, create a catalog template in the incoming chapter
         if ( newTemplate ) {
-          const QString chapter = dia->chapter();
-          if ( !chapter.isEmpty() ) {
-            FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
-                                                         dp->unit().id(),
-                                                         kat->chapterID( chapter ).toInt(),
-                                                         1, /* CalcKind = Manual */
-                                                         QDateTime::currentDateTime(),
-                                                         QDateTime::currentDateTime() );
-            flos->setManualPrice( dp->unitPrice() );
-            flos->save(); // <- Checke das hier!
-            mNewTemplates.append( flos );
-          }
+          // const QString chapter = dia->chapter();
+          int chapterId = 0; // FIXME - need a new way of chapter picking
+
+          FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
+                                                       dp->unit().id(),
+                                                       chapterId,
+                                                       1, /* CalcKind = Manual */
+                                                       QDateTime::currentDateTime(),
+                                                       QDateTime::currentDateTime() );
+          flos->setManualPrice( dp->unitPrice() );
+          flos->save(); // <- Checke das hier!
+          mNewTemplates.append( flos );
+
         }
       } else if ( kat->type() == MaterialCatalog ) {
         KraftSettings::self()->setTemplateToPosDialogSize( s );

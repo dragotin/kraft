@@ -95,7 +95,8 @@ void MaterialKatalogView::slNewTemplate()
 
   if( parentItem ) {
     // try to find out which catalog is open/current
-      newMat->setChapter( getKatalog( MaterialCatalogName )->chapterID( parentItem->text( 0 ) ).toInt() );
+    CatalogChapter *chap = static_cast<CatalogChapter*>(listview->itemData( parentItem ));
+    newMat->setChapter( chap->id().toInt() );
   }
 
   mNewItem = matListView->addMaterialToView( parentItem, newMat );
