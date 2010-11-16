@@ -241,19 +241,23 @@ void KatalogListView::slotCreateNewChapter()
     return;
   }
 
-  CatalogChapter *parentChapter = static_cast<CatalogChapter*>(currentItemData());
-
   AddEditChapterDialog dia( this );
-  dia.setParentChapter( *parentChapter );
-  if( dia.exec() ) {
+  dbID parentId = 0;
 
+  if( ! isRoot( parentItem ) ) {
+    CatalogChapter *parentChapter = static_cast<CatalogChapter*>(currentItemData());
+    dia.setParentChapter( *parentChapter );
+    parentId = parentChapter->parentId();
+  }
+
+  if( dia.exec() ) {
     QString name = dia.name();
     QString desc = dia.description();
 
     CatalogChapter c;
     c.setName( name );
     c.setDescription( desc );
-    c.setParentId( parentChapter->id() );
+    c.setParentId( parentId );
     c.save( catalog()->id() );
     catalog()->refreshChapterList();
     QTreeWidgetItem *newItem = tryAddingCatalogChapter( c );
