@@ -1,7 +1,7 @@
 /***************************************************************************
-             catalogchapter.h  - a simle catalog chapter object
+                            -
                              -------------------
-    begin                : Thu Nov 4 2010
+    begin                : Son Nov 11 2010
     copyright            : (C) 2010 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
@@ -15,49 +15,3 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef CATALOGCHAPTER_H
-#define CATALOGCHAPTER_H
-
-#include <QtCore>
-
-#include "kraftcat_export.h"
-
-#include <dbids.h>
-
-class KRAFTCAT_EXPORT CatalogChapter
-{
-public:
-  CatalogChapter();
-  CatalogChapter( int, const QString&, int, const QString& = QString() );
-
-  QString name() const;
-  void setName( const QString& );
-
-  QString description() const;
-  void setDescription( const QString& );
-
-  dbID id() const;
-
-  dbID parentId() const;
-  void setParentId( const dbID& );
-
-  QPixmap icon() const;
-  void setIcon( const QPixmap& );
-
-  int sortKey() const;
-  void setSortKey( int );
-
-  void save( const dbID& );
-  void saveNameAndDesc();
-
-private:
-  QString mName;
-  dbID    mId;
-  QString mDescription;
-  dbID    mParentId;
-  int     mSortKey;
-
-};
-
-
-#endif // CATALOGCHAPTER_H

@@ -15,10 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPixmap>
-#include <QStringList>
-#include <QHeaderView>
-#include <QContextMenuEvent>
+#include <QtCore>
+#include <QtGui>
 
 #include <klocale.h>
 #include <kdebug.h>
@@ -142,6 +140,7 @@ QTreeWidgetItem *KatalogListView::tryAddingCatalogChapter( const CatalogChapter&
   } else {
     if( mChapterDict.contains( parentChapter ) ) {
       katItem = new QTreeWidgetItem( mChapterDict[parentChapter], QStringList( chapter.name() ) );
+      katItem->setToolTip( 0, chapter.description() );
     }
   }
   if( katItem ) {
@@ -199,6 +198,41 @@ void KatalogListView::slotFreshupItem( QTreeWidgetItem*, void *, bool )
 
 }
 
+void KatalogListView::slotEditCurrentChapter()
+{
+  QTreeWidgetItem *item = currentItem();
+  if( ! isChapter( item )) {
+    kDebug() << "Can only edit chapters!" << endl;
+  }
+  CatalogChapter *chap = static_cast<CatalogChapter*>( itemData( item ) );
+
+  AddEditChapterDialog dia( this );
+  dia.setEditChapter( *chap );
+  if( dia.exec() ) {
+    QString name = dia.name();
+    QString desc = dia.description();
+
+    if( name != chap->name() || desc != chap->description() ) {
+      chap->setName( name );
+      chap->setDescription( desc );
+      chap->saveNameAndDesc();
+
+      item->setText( 0, name);
+      item->setToolTip( 0, desc );
+      catalog()->refreshChapterList();
+    }
+  }
+}
+
+void KatalogListView::slotRemoveCurrentChapter()
+{
+  QTreeWidgetItem *item = currentItem();
+  if( ! isChapter( item )) {
+    kDebug() << "Can only edit chapters!" << endl;
+  }
+
+}
+
 void KatalogListView::slotCreateNewChapter()
 {
   QTreeWidgetItem *parentItem = currentItem();
@@ -220,11 +254,13 @@ void KatalogListView::slotCreateNewChapter()
     c.setName( name );
     c.setDescription( desc );
     c.setParentId( parentChapter->id() );
-
-    catalog()->addChapter( c );
+    c.save( catalog()->id() );
+    catalog()->refreshChapterList();
     QTreeWidgetItem *newItem = tryAddingCatalogChapter( c );
-    this->scrollToItem( newItem );
-    this->setCurrentItem( newItem );
+    if( newItem ) {
+      this->scrollToItem( newItem );
+      this->setCurrentItem( newItem );
+    }
   }
 }
 

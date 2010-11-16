@@ -42,12 +42,16 @@
 Katalog::Katalog(const QString& name):
     m_name(name),
     m_setID(-1),
-    m_readOnly( false )
+    m_readOnly( false ),
+    mChapterListNeedsRefresh( true )
 {
     init();
 }
 
-Katalog::Katalog()
+Katalog::Katalog():
+    m_setID(-1),
+    m_readOnly( false ),
+    mChapterListNeedsRefresh( true )
 {
     init();
 }
@@ -63,7 +67,7 @@ Katalog::~Katalog()
 }
 
 /**
- * virtuell load method for catalogs. Must be overwritten.
+ * virtuell load method for catalogs.
  */
 int Katalog::load()
 {  
@@ -90,7 +94,7 @@ int Katalog::load()
 
 QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
 {
-  if( mChapters.empty() || freshup ) {
+  if( mChapters.empty() || freshup || mChapterListNeedsRefresh ) {
 
     mChapters.clear();
 
@@ -101,7 +105,7 @@ QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
     //            sortKey      INT NOT NULL
     //    );
     QSqlQuery q;
-    q.prepare("SELECT chapterID, chapter, parentChapter FROM CatalogChapters WHERE "
+    q.prepare("SELECT chapterID, chapter, parentChapter, description FROM CatalogChapters WHERE "
               "catalogSetId = :catalogSetId ORDER BY parentChapter, sortKey");
     q.bindValue(":catalogSetId", m_setID);
     q.exec();
@@ -109,14 +113,16 @@ QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
 
     while ( q.next() )
     {
-      int chapID = q.value(0).toInt();
+      int chapID          = q.value(0).toInt();
       QString chapterName = q.value(1).toString();
-      int parentChapter = q.value(2).toInt();
+      int parentChapter   = q.value(2).toInt();
+      QString desc        = q.value(3).toString();
 
       kDebug() << "Adding catalog chapter " << chapterName << " with ID " << chapID << endl;
-      CatalogChapter c( chapID, chapterName, parentChapter, QString() /* description */ );
+      CatalogChapter c( chapID, chapterName, parentChapter, desc );
       mChapters.append( c );
     }
+    mChapterListNeedsRefresh = false;
   }
 
   return mChapters;
@@ -160,51 +166,28 @@ void Katalog::setName( const QString& n )
     m_name = n;
 }
 
+// Needs reimplementation in the inherited catalogs
 KatalogType Katalog::type()
 {
     return UnspecCatalog;
 }
 
-void Katalog::addChapter( const CatalogChapter& c )
+void Katalog::addChapter( const CatalogChapter& )
 {
-//  chapterID INTEGER PRIMARY KEY ASC autoincrement,
-//  catalogSetID INT NOT NULL,
-//  chapter      VARCHAR(255),
-//  sortKey      INT NOT NULL
-//, parentChapter int(11) default 0)
-
-  kDebug() << "Inserting new chapter " << c.name() << c.sortKey() << endl;
-  QSqlQuery q;
-  q.prepare("INSERT INTO CatalogChapters (catalogSetID, chapter, description, sortKey, parentChapter)"
-            "VALUES(:catalogSetID, :chapter, :desc, :sortKey, :parentChapter)");
-  q.bindValue( ":catalogSetID",  m_setID );
-  q.bindValue( ":chapter",       c.name() );
-  q.bindValue( ":desc",          c.description() );
-  q.bindValue( ":sortKey",       c.sortKey() );
-  q.bindValue( ":parentChapter", c.parentId().toInt() );
-  q.exec();
+  // refresh the internal list of chapters
+  mChapterListNeedsRefresh = true;
 }
 
-bool Katalog::removeChapter( const QString& name, const QString& )
+bool Katalog::removeChapter( const QString&, const QString& )
 {
-  kDebug() << "Deleting chapter " << name << endl;
-  QSqlQuery q;
-  q.prepare("DELETE FROM CatalogChapters WHERE catalogSetId = :catalogSetId AND chapter = :chapter");
-  q.bindValue(":catalogSetID", m_setID);
-  q.bindValue(":chapter", name);
-
-  return false;
+  // refresh the internal list of chapters
+  mChapterListNeedsRefresh = true;
+  return true;
 }
 
-void Katalog::renameChapter( const QString& from, const QString& to )
+void Katalog::refreshChapterList()
 {
-  kDebug() << "Rename chapter " << from << " to " << to << endl;
-  QSqlQuery q;
-  q.prepare("UPDATE CatalogChapters SET chapter = :newchapter WHERE catalogSetID = :catalogSetID AND chapter = :oldchapter");
-  q.bindValue(":catalogSetID", m_setID);
-  q.bindValue(":oldchapter", from);
-  q.bindValue(":newchapter", to);
-  q.exec();
+  mChapterListNeedsRefresh = true;
 }
 
 void Katalog::setChapterSortKey( const QString& chap, int key )
@@ -243,9 +226,7 @@ void Katalog::writeXMLFile()
 
 }
 
-#if 0
-int Katalog::getEntriesPerChapter( const QString& )
+dbID Katalog::id()
 {
-
+  return dbID( m_setID );
 }
-#endif

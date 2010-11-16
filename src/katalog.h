@@ -78,9 +78,6 @@ public:
         catalog. */
     virtual bool removeChapter( const QString&, const QString& replace = QString() );
 
-    /** rename catalog chapter */
-    virtual void renameChapter( const QString&, const QString& );
-
     /** set the sortkey for a chapter. Note: The organisation of the sortkeys
      * between the different chapters is up to the caller of this method.
      */
@@ -97,9 +94,12 @@ public:
     bool isReadOnly() { return m_readOnly; }
     void setReadOnly( bool state ) { m_readOnly = state; }
 
+    void refreshChapterList();
+
     virtual QDomDocument toXML();
     virtual void writeXMLFile();
-    
+    dbID id();
+
     KLocale *locale() { return mLocale; }
 protected:
     QList<CatalogChapter> mChapters;
@@ -108,7 +108,7 @@ protected:
     int         m_setID;
 
     bool        m_readOnly;
-
+    bool        mChapterListNeedsRefresh;
     KLocale *mLocale;
 
 private:

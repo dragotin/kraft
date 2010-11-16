@@ -74,5 +74,9 @@ void AddEditChapterDialog::setParentChapter( const CatalogChapter& chapter )
 void AddEditChapterDialog::setEditChapter( const CatalogChapter& chapter )
 {
   mChapter = chapter;
+
+  mTopLabel->setText( i18n("Edit name and description of chapter %1").arg( chapter.name() ));
+  mNameEdit->setText( chapter.name() );
+  mDescEdit->setText( chapter.description() );
 }
 

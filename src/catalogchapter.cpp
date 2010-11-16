@@ -17,8 +17,10 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QtSql>
 
 #include <kiconloader.h>
+#include <kdebug.h>
 
 #include "catalogchapter.h"
 
@@ -92,4 +94,29 @@ int CatalogChapter::sortKey() const
 void CatalogChapter::setSortKey( int key )
 {
   mSortKey = key;
+}
+
+void CatalogChapter::save( const dbID& catalogSetID )
+{
+  kDebug() << "Inserting new chapter " << name() << sortKey() << endl;
+  QSqlQuery q;
+  q.prepare("INSERT INTO CatalogChapters (catalogSetID, chapter, description, sortKey, parentChapter)"
+            "VALUES(:catalogSetID, :chapter, :desc, :sortKey, :parentChapter)");
+  q.bindValue( ":catalogSetID",  catalogSetID.toString() );
+  q.bindValue( ":chapter",       this->name() );
+  q.bindValue( ":desc",          this->description() );
+  q.bindValue( ":sortKey",       this->sortKey() );
+  q.bindValue( ":parentChapter", this->parentId().toInt() );
+  q.exec();
+
+}
+
+void CatalogChapter::saveNameAndDesc()
+{
+  QSqlQuery q;
+  q.prepare("UPDATE CatalogChapters SET chapter = :newchapter, description = :desc WHERE chapterID = :id");
+  q.bindValue(":id", mId.toInt() );
+  q.bindValue(":desc", this->description() );
+  q.bindValue(":newchapter", this->name() );
+  q.exec();
 }

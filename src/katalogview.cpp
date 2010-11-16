@@ -58,7 +58,6 @@
 #include "flostempldialog.h"
 #include "templkatalog.h"
 #include "filterheader.h"
-#include "catalogchapteredit.h"
 #include "docposition.h"
 #include "katalogman.h"
 
@@ -66,7 +65,7 @@
 
 KatalogView::KatalogView( QWidget* parent, const char* ) :
   KXmlGuiWindow(parent, 0),
-    m_acEditChapters(0),
+    m_acEditChapter(0),
     m_acEditItem(0),
     m_acNewItem(0),
     m_acExport(0),
@@ -111,14 +110,15 @@ void KatalogView::init(const QString& katName )
   getKatalog( katName );
   listview->addCatalogDisplay( katName );
 
-  kDebug() << "Listviews context-menu: " << m_acEditChapters << endl;
   KatalogListView *lv = getListView();
 
   // Populate the context Menu
   (lv->contextMenu())->addAction( m_acEditItem );
   (lv->contextMenu())->addAction( m_acNewItem );
-  (lv->contextMenu())->addAction( m_acEditChapters );
-
+  (lv->contextMenu())->addSeparator();
+  (lv->contextMenu())->addAction( m_acAddChapter );
+  (lv->contextMenu())->addAction( m_acEditChapter );
+  (lv->contextMenu())->addAction( m_acRemChapter );
   // m_acEditItem->plug( lv->contextMenu() );
   // m_acNewItem->plug( lv->contextMenu() );
   // m_acEditChapters->plug( lv->contextMenu() );
@@ -145,19 +145,24 @@ Katalog* KatalogView::getKatalog( const QString& name )
 }
 
 void KatalogView::initActions()
-{
-
-  m_acEditChapters = actionCollection()->addAction( "edit_chapters", this, SLOT( slEditChapters() ) );
-  m_acEditChapters->setText( i18n("Edit chapters") );
-  m_acEditChapters->setIcon( KIcon("folder-documents"));
-  m_acEditChapters->setStatusTip(i18n("Add, remove and edit catalog chapters"));
-  m_acEditChapters->setEnabled(true);
+{  
+  m_acEditChapter = actionCollection()->addAction( "edit_chapter", this, SLOT( slEditSubChapter() ) );
+  m_acEditChapter->setText( i18n("Edit Sub chapter") );
+  m_acEditChapter->setIcon( KIcon("folder-documents"));
+  m_acEditChapter->setStatusTip(i18n("Edit a catalog sub chapter"));
+  m_acEditChapter->setEnabled(true);
 
   m_acAddChapter = actionCollection()->addAction( "add_chapter", this, SLOT( slAddSubChapter() ) );
   m_acAddChapter->setText( i18n("Add a sub chapter") );
   m_acAddChapter->setIcon( KIcon("document-edit"));
   m_acAddChapter->setStatusTip(i18n("Add a sub chapter below the selected one"));
   m_acAddChapter->setEnabled(false);
+
+  m_acRemChapter = actionCollection()->addAction( "remove_chapter", this, SLOT( slRemoveSubChapter() ) );
+  m_acRemChapter->setText( i18n("Remove a sub chapter") );
+  m_acRemChapter->setIcon( KIcon("document-edit"));
+  m_acRemChapter->setStatusTip(i18n("Remove a sub chapter"));
+  m_acRemChapter->setEnabled(false);
 
   m_acEditItem = actionCollection()->addAction( "edit_vorlage", this, SLOT( slEditTemplate() ) );
   m_acEditItem->setText( i18n("Edit template") );
@@ -326,6 +331,7 @@ void KatalogView::slTreeviewItemChanged( QTreeWidgetItem *newItem, QTreeWidgetIt
   bool itemEdit = true;
   bool itemNew = true;
   bool chapterNew = false;
+  bool chapterEdit = false;
 
   if( listview->isRoot(newItem) ) {
     // we have the root item, not editable
@@ -335,10 +341,14 @@ void KatalogView::slTreeviewItemChanged( QTreeWidgetItem *newItem, QTreeWidgetIt
   } else if( listview->isChapter(newItem) ) {
     itemEdit = false;
     chapterNew = true;
+    chapterEdit = true;
   }
   m_acEditItem->setEnabled(itemEdit);
   m_acNewItem->setEnabled( itemNew );
   m_acAddChapter->setEnabled( chapterNew );
+  m_acEditChapter->setEnabled( chapterEdit );
+  m_acRemChapter->setEnabled( chapterEdit );
+
 }
 
 void KatalogView::slExport()
@@ -359,18 +369,21 @@ void KatalogView::slAddSubChapter()
   slotStatusMsg( i18n("Ready."));
 }
 
-void KatalogView::slEditChapters()
+void KatalogView::slEditSubChapter()
 {
-    CatalogChapterEditDialog d( this, m_katalogName );
-
-    d.exec();
-    if( d.dirty() ) {
-      // have to update the catalog view.
-      KatalogListView *listview = getListView();
-      // listview->setupChapters();
-      listview->addCatalogDisplay( m_katalogName );
-    } else {
-      kDebug() << "We're not dirty!" << endl;
-    }
+  slotStatusMsg( i18n("Editing a sub chapter..."));
+  KatalogListView *listview = getListView();
+  if( listview )
+    listview->slotEditCurrentChapter();
+  slotStatusMsg( i18n("Ready."));
 }
 
+void KatalogView::slRemoveSubChapter()
+{
+  slotStatusMsg( i18n("Removing a sub chapter..."));
+  KatalogListView *listview = getListView();
+  if( listview )
+    listview->slotRemoveCurrentChapter();
+  slotStatusMsg( i18n("Ready."));
+
+}

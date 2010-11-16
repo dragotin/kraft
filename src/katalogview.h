@@ -101,8 +101,10 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     virtual void slTreeviewItemChanged( QTreeWidgetItem *, QTreeWidgetItem *);
     void slExport();
 
-    virtual void slEditChapters();
+    // virtual void slEditChapters();
     virtual void slAddSubChapter();
+    virtual void slEditSubChapter();
+    virtual void slRemoveSubChapter();
 
   protected:
 
@@ -114,8 +116,10 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     KAction* m_acEditCopy;
     KAction* m_acEditPaste;
 
-    KAction* m_acEditChapters;
+    KAction* m_acEditChapter;
     KAction* m_acAddChapter;
+    KAction* m_acRemChapter;
+
     KAction* m_acEditItem;
     KAction* m_acNewItem;
     KAction* m_acExport;

@@ -22,7 +22,6 @@ set( kraftcat_LIB_SRCS
     brunskataloglistview.cpp
     brunskatalogview.cpp
     filterheader.cpp
-    catalogchapteredit.cpp
     kraftdb.cpp
     geld.cpp
     einheit.cpp
