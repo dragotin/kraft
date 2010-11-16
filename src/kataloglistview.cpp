@@ -47,6 +47,14 @@ KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     setRootIsDecorated(false);
     setAnimated(true);
     header()->setResizeMode(QHeaderView::ResizeToContents);
+
+    // Drag and Drop
+    setSelectionMode( QAbstractItemView::SingleSelection );
+    setDragDropMode( QAbstractItemView::InternalMove );
+    setDragEnabled( true );
+    setAcceptDrops( false ); // currently only internal moves
+    setDropIndicatorShown( true );
+
     // setSorting(-1);
     mMenu = new KMenu( this );
     mMenu->addTitle( i18n("Template Catalog") );
@@ -247,7 +255,7 @@ void KatalogListView::slotCreateNewChapter()
   if( ! isRoot( parentItem ) ) {
     CatalogChapter *parentChapter = static_cast<CatalogChapter*>(currentItemData());
     dia.setParentChapter( *parentChapter );
-    parentId = parentChapter->parentId();
+    parentId = parentChapter->id();
   }
 
   if( dia.exec() ) {
