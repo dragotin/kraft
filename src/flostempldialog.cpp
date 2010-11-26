@@ -311,6 +311,8 @@ void FlosTemplDialog::accept()
       m_template->setUnitId( UnitManager::self()->getUnitIDSingular(h));
     }
 
+#if 0
+    // chapter ID is not touched anymore
     /* compare catalog chapter */
     int chapterId = 0; // m_katalog->chapterID(cbChapter->currentText()).toInt();
     // FIXME: need new way of picking hte chapterId bcause of hirarchical.
@@ -322,7 +324,7 @@ void FlosTemplDialog::accept()
         emit( chapterChanged( chapterId ));
       }
     }
-
+#endif
     /* count time */
     bool c = m_addTime->isChecked();
     if( c != m_template->hasTimeslice() ) {

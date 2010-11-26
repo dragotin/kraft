@@ -30,6 +30,8 @@ class DocPosition;
 
 class TemplKatalogListView : public KatalogListView
 {
+  Q_OBJECT
+
 public:
   TemplKatalogListView(QWidget*);
 
@@ -48,7 +50,10 @@ public:
   CalcPartList itemsCalcParts( QTreeWidgetItem* it = 0 );
   public slots:
   void slFreshupItem( QTreeWidgetItem*, FloskelTemplate*, bool remChildren = false );
-    
+
+protected slots:
+  void slotUpdateSeqence();
+
 private:
   bool mShowCalcParts;
   void addCalcParts( FloskelTemplate* );

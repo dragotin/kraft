@@ -16,6 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QtSql>
+
 #include <klocale.h>
 #include <kdebug.h>
 #include <kiconloader.h>
@@ -227,4 +229,39 @@ CalcPartList TemplKatalogListView::itemsCalcParts( QTreeWidgetItem* it )
   return cpList;
 }
 
+// Updates the sequence of items below a parent item stored in the inherited
+// variable mSortChapterItem
+
+void TemplKatalogListView::slotUpdateSeqence()
+{
+  if( ! mSortChapterItem ) {
+    return;
+  }
+
+  dbID parentID;
+  CatalogChapter *parentChap = static_cast<CatalogChapter*>(itemData( mSortChapterItem ) );
+  if( parentChap ) {
+    parentID = parentChap->id();
+  }
+
+  int childCount = mSortChapterItem->childCount();
+  if( ! childCount ) return;
+
+  QSqlQuery query;
+  query.prepare("UPDATE Catalog SET sortKey=? WHERE TemplID=?)");
+
+  for( int i = 0; i < childCount; i++ ) {
+    QTreeWidgetItem *item = mSortChapterItem->child( i );
+    // set the sortKey to the sequence counter i
+    if( ! (isChapter( item ) || isRoot( item ) ) ) {
+      FloskelTemplate *flos = static_cast<FloskelTemplate*>( itemData(item) );
+      if( flos ) {
+        query.bindValue( 0, i );
+        query.bindValue( 1, flos->getTemplID() );
+        query.exec();
+      }
+    }
+  }
+  KatalogListView::slotUpdateSeqence();
+}
 

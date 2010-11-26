@@ -39,9 +39,9 @@
 
 KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     m_root(0),
+    mSortChapterItem(0),
     mMenu(0)
 {
-    // setItemMargin(4);
     setSelectionMode(QAbstractItemView::SingleSelection );
     setAlternatingRowColors( true );
     setRootIsDecorated(false);
@@ -52,7 +52,7 @@ KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     setSelectionMode( QAbstractItemView::SingleSelection );
     setDragDropMode( QAbstractItemView::InternalMove );
     setDragEnabled( true );
-    setAcceptDrops( false ); // currently only internal moves
+    setAcceptDrops( true ); // currently only internal moves
     setDropIndicatorShown( true );
 
     // setSorting(-1);
@@ -276,6 +276,77 @@ void KatalogListView::slotCreateNewChapter()
   }
 }
 
+void KatalogListView::dropEvent( QDropEvent *event )
+{
+
+  if (event->source() == this && (event->dropAction() == Qt::MoveAction ||
+                                  dragDropMode() == QAbstractItemView::InternalMove)) {
+    QModelIndex topIndex;
+    int col = -1;
+    int row = -1;
+    QModelIndex dropIndx = indexAt( event->pos() );
+    QTreeWidgetItem *droppedOnItem = itemFromIndex( dropIndx );
+    row = dropIndx.row();
+    col = dropIndx.column();
+    topIndex = dropIndx.parent();
+    // d->dropOn(event, &row, &col, &topIndex)
+    if ( 1 ) {
+      QList<QModelIndex> idxs = selectedIndexes();
+      QList<QPersistentModelIndex> indexes;
+      for (int i = 0; i < idxs.count(); i++)
+        indexes.append(idxs.at(i));
+
+      if (indexes.contains(topIndex))
+        return;
+
+      // When removing items the drop location could shift
+      QPersistentModelIndex dropRow = model()->index(row, col, topIndex);
+
+      // Remove the items
+      QList<QTreeWidgetItem *> taken;
+      for (int i = indexes.count() - 1; i >= 0; --i) {
+        QTreeWidgetItem *parent = itemFromIndex(indexes.at(i));
+        if (!parent || !parent->parent()) {
+          taken.append(takeTopLevelItem(indexes.at(i).row()));
+        } else {
+          taken.append(parent->parent()->takeChild(indexes.at(i).row()));
+        }
+      }
+
+      // insert them back in at their new positions
+      for (int i = 0; i < indexes.count(); ++i) {
+        // Either at a specific point or appended
+        if (row == -1) {
+          if (topIndex.isValid()) {
+            QTreeWidgetItem *parent = itemFromIndex(topIndex);
+            if( isChapter( droppedOnItem )) parent = droppedOnItem;
+
+            parent->insertChild(parent->childCount(), taken.takeFirst());
+          } else {
+            insertTopLevelItem(topLevelItemCount(), taken.takeFirst());
+          }
+        } else {
+          int r = dropRow.row() >= 0 ? dropRow.row() : row;
+          if (topIndex.isValid()) {
+            QTreeWidgetItem *parent = itemFromIndex(topIndex);
+            if( isChapter( droppedOnItem )) parent = droppedOnItem;
+            parent->insertChild(qMin(r, parent->childCount()), taken.takeFirst());
+          } else {
+            insertTopLevelItem(qMin(r, topLevelItemCount()), taken.takeFirst());
+          }
+        }
+      }
+
+      event->accept();
+      // Don't want QAbstractItemView to delete it because it was "moved" we already did it
+      event->setDropAction(Qt::CopyAction);
+    }
+  }
+
+  // QTreeView::dropEvent(event);
+}
+
+
 void KatalogListView::slotChangeChapter( QTreeWidgetItem* item, int newChapter )
 {
     if( ! item ) return;
@@ -297,6 +368,12 @@ void KatalogListView::slotChangeChapter( QTreeWidgetItem* item, int newChapter )
 
         scrollToItem(item);
     }
+}
+
+void KatalogListView::slotUpdateSeqence()
+{
+  kDebug() << "Updating sequence";
+  mSortChapterItem = 0;
 }
 
 void KatalogListView::slotRedraw()

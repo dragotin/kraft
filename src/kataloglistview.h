@@ -65,8 +65,12 @@ public slots:
   virtual void contextMenuEvent( QContextMenuEvent * event );
   virtual void slotRedraw();
 
+protected slots:
+  virtual void slotUpdateSeqence();
+
 protected:
   virtual Katalog* catalog();
+  void dropEvent( QDropEvent* );
 
   QTreeWidgetItem* tryAddingCatalogChapter( const CatalogChapter& );
 
@@ -75,6 +79,7 @@ protected:
   QHash<int, QTreeWidgetItem*> mChapterDict;
   QString m_catalogName;
   QStringList mOpenChapters;
+  QTreeWidgetItem *mSortChapterItem;
   KMenu *mMenu;
 };
 

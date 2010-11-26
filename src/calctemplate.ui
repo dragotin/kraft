@@ -61,7 +61,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="cbChapter"/>
+            <widget class="QComboBox" name="cbChapter">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -262,9 +266,6 @@
              <attribute name="headerStretchLastSection">
               <bool>true</bool>
              </attribute>
-             <attribute name="headerStretchLastSection">
-              <bool>true</bool>
-             </attribute>
              <column>
               <property name="text">
                <string>Label</string>
@@ -379,9 +380,6 @@
              <attribute name="headerStretchLastSection">
               <bool>true</bool>
              </attribute>
-             <attribute name="headerStretchLastSection">
-              <bool>true</bool>
-             </attribute>
              <column>
               <property name="text">
                <string>Amount</string>
@@ -493,9 +491,6 @@
              <property name="columnCount">
               <number>4</number>
              </property>
-             <attribute name="headerStretchLastSection">
-              <bool>true</bool>
-             </attribute>
              <attribute name="headerStretchLastSection">
               <bool>true</bool>
              </attribute>
