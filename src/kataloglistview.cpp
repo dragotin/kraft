@@ -278,7 +278,6 @@ void KatalogListView::slotCreateNewChapter()
 
 void KatalogListView::dropEvent( QDropEvent *event )
 {
-
   if (event->source() == this && (event->dropAction() == Qt::MoveAction ||
                                   dragDropMode() == QAbstractItemView::InternalMove)) {
     QModelIndex topIndex;
@@ -289,53 +288,53 @@ void KatalogListView::dropEvent( QDropEvent *event )
     row = dropIndx.row();
     col = dropIndx.column();
     topIndex = dropIndx.parent();
-    // d->dropOn(event, &row, &col, &topIndex)
-    if ( 1 ) {
-      QList<QModelIndex> idxs = selectedIndexes();
-      QList<QPersistentModelIndex> indexes;
-      for (int i = 0; i < idxs.count(); i++)
-        indexes.append(idxs.at(i));
 
-      if (indexes.contains(topIndex))
-        return;
 
-      // When removing items the drop location could shift
-      QPersistentModelIndex dropRow = model()->index(row, col, topIndex);
+    QList<QModelIndex> idxs = selectedIndexes();
+    QList<QPersistentModelIndex> indexes;
+    for (int i = 0; i < idxs.count(); i++)
+      indexes.append(idxs.at(i));
 
-      // Remove the items
-      QList<QTreeWidgetItem *> taken;
-      for (int i = indexes.count() - 1; i >= 0; --i) {
-        QTreeWidgetItem *parent = itemFromIndex(indexes.at(i));
-        if (!parent || !parent->parent()) {
-          taken.append(takeTopLevelItem(indexes.at(i).row()));
-        } else {
-          taken.append(parent->parent()->takeChild(indexes.at(i).row()));
+    if (indexes.contains(topIndex))
+      return;
+
+    // When removing items the drop location could shift
+    QPersistentModelIndex dropRow = model()->index(row, col, topIndex);
+
+    // Remove the items
+    QList<QTreeWidgetItem *> taken;
+    for (int i = indexes.count() - 1; i >= 0; --i) {
+      QTreeWidgetItem *parent = itemFromIndex(indexes.at(i));
+      if (!parent || !parent->parent()) {
+        taken.append(takeTopLevelItem(indexes.at(i).row()));
+      } else {
+        taken.append(parent->parent()->takeChild(indexes.at(i).row()));
+      }
+    }
+
+    // insert them back in at their new positions
+    for (int i = 0; i < indexes.count(); ++i) {
+      // Either at a specific point or appended
+      if (row == -1) {
+        QTreeWidgetItem *parent = itemFromIndex(topIndex);
+        if( isChapter( droppedOnItem ) || isRoot( droppedOnItem ))
+          parent = droppedOnItem;
+        parent->insertChild(parent->childCount(), taken.takeFirst());
+      } else {
+        int r = 1+(dropRow.row() >= 0 ? dropRow.row() : row); // insert behind the row element
+
+        QTreeWidgetItem *parent = itemFromIndex(topIndex);
+        if( isChapter( droppedOnItem )|| isRoot( droppedOnItem )) {
+          // Needs to be inserted right after the subcatalogs
+          parent = droppedOnItem;
+          int cnt = 0;
+          while( cnt < parent->childCount() && isChapter(parent->child(cnt))) { cnt++; }
+          r = cnt;
         }
+        if( parent )
+          parent->insertChild(qMin(r, parent->childCount()), taken.takeFirst());
       }
 
-      // insert them back in at their new positions
-      for (int i = 0; i < indexes.count(); ++i) {
-        // Either at a specific point or appended
-        if (row == -1) {
-          if (topIndex.isValid()) {
-            QTreeWidgetItem *parent = itemFromIndex(topIndex);
-            if( isChapter( droppedOnItem )) parent = droppedOnItem;
-
-            parent->insertChild(parent->childCount(), taken.takeFirst());
-          } else {
-            insertTopLevelItem(topLevelItemCount(), taken.takeFirst());
-          }
-        } else {
-          int r = dropRow.row() >= 0 ? dropRow.row() : row;
-          if (topIndex.isValid()) {
-            QTreeWidgetItem *parent = itemFromIndex(topIndex);
-            if( isChapter( droppedOnItem )) parent = droppedOnItem;
-            parent->insertChild(qMin(r, parent->childCount()), taken.takeFirst());
-          } else {
-            insertTopLevelItem(qMin(r, topLevelItemCount()), taken.takeFirst());
-          }
-        }
-      }
 
       event->accept();
       // Don't want QAbstractItemView to delete it because it was "moved" we already did it
