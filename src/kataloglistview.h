@@ -66,7 +66,7 @@ public slots:
   virtual void slotRedraw();
 
 protected slots:
-  virtual void slotUpdateSeqence();
+  virtual void slotUpdateSequence();
 
 protected:
   virtual Katalog* catalog();

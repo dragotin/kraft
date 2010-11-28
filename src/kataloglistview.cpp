@@ -331,10 +331,11 @@ void KatalogListView::dropEvent( QDropEvent *event )
           while( cnt < parent->childCount() && isChapter(parent->child(cnt))) { cnt++; }
           r = cnt;
         }
-        if( parent )
+        if( parent ) {
           parent->insertChild(qMin(r, parent->childCount()), taken.takeFirst());
+          mSortChapterItem = parent;
+        }
       }
-
 
       event->accept();
       // Don't want QAbstractItemView to delete it because it was "moved" we already did it
@@ -342,7 +343,8 @@ void KatalogListView::dropEvent( QDropEvent *event )
     }
   }
 
-  // QTreeView::dropEvent(event);
+  QTreeView::dropEvent(event);
+  QTimer::singleShot( 0, this, SLOT( slotUpdateSequence() ) );
 }
 
 
@@ -369,11 +371,13 @@ void KatalogListView::slotChangeChapter( QTreeWidgetItem* item, int newChapter )
     }
 }
 
-void KatalogListView::slotUpdateSeqence()
+void KatalogListView::slotUpdateSequence()
 {
   kDebug() << "Updating sequence";
   mSortChapterItem = 0;
 }
+
+
 
 void KatalogListView::slotRedraw()
 {

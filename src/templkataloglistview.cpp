@@ -232,7 +232,7 @@ CalcPartList TemplKatalogListView::itemsCalcParts( QTreeWidgetItem* it )
 // Updates the sequence of items below a parent item stored in the inherited
 // variable mSortChapterItem
 
-void TemplKatalogListView::slotUpdateSeqence()
+void TemplKatalogListView::slotUpdateSequence()
 {
   if( ! mSortChapterItem ) {
     return;
@@ -242,26 +242,30 @@ void TemplKatalogListView::slotUpdateSeqence()
   CatalogChapter *parentChap = static_cast<CatalogChapter*>(itemData( mSortChapterItem ) );
   if( parentChap ) {
     parentID = parentChap->id();
+  } else {
+    parentID = 0; // root item
   }
 
   int childCount = mSortChapterItem->childCount();
   if( ! childCount ) return;
 
   QSqlQuery query;
-  query.prepare("UPDATE Catalog SET sortKey=? WHERE TemplID=?)");
+  query.prepare("UPDATE Catalog SET sortKey=? WHERE TemplID=?");
 
+  int sequenceCnt = 1; // Start at 1
   for( int i = 0; i < childCount; i++ ) {
     QTreeWidgetItem *item = mSortChapterItem->child( i );
     // set the sortKey to the sequence counter i
-    if( ! (isChapter( item ) || isRoot( item ) ) ) {
+    if( ! (isChapter( item ) /* || isRoot( item ) */ ) ) {
       FloskelTemplate *flos = static_cast<FloskelTemplate*>( itemData(item) );
+      kDebug() << "Updating item " << flos->getTemplID() << " to sort key " << sequenceCnt;
       if( flos ) {
-        query.bindValue( 0, i );
+        query.bindValue( 0, sequenceCnt++ );
         query.bindValue( 1, flos->getTemplID() );
         query.exec();
       }
     }
   }
-  KatalogListView::slotUpdateSeqence();
+  KatalogListView::slotUpdateSequence();
 }
 

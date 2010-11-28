@@ -91,7 +91,21 @@ int TemplKatalog::load()
   Katalog::load();
   int cnt = 0;
 
-  QSqlQuery q("SELECT unitID, TemplID, chapterID, Preisart, EPreis, modifyDatum, enterDatum, Floskel, Gewinn, zeitbeitrag FROM Catalog");
+  QString chapIdList;
+  bool firstOne = true;
+  foreach( CatalogChapter chap, mChapters ) {
+    if( !firstOne ) {
+      chapIdList += ",";
+    } else {
+      firstOne = false;
+    }
+    chapIdList += chap.id().toString();
+  }
+
+  kDebug() << "The chapterIdList: " << chapIdList;
+  QSqlQuery q("SELECT unitID, TemplID, chapterID, Preisart, EPreis, modifyDatum, enterDatum, "
+              "Floskel, Gewinn, zeitbeitrag FROM Catalog WHERE chapterID IN( " + chapIdList + ") "
+              "ORDER BY chapterID, sortKey" );
   q.exec();
   while ( q.next() ) {
     cnt++;

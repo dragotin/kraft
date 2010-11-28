@@ -52,7 +52,7 @@ public:
   void slFreshupItem( QTreeWidgetItem*, FloskelTemplate*, bool remChildren = false );
 
 protected slots:
-  void slotUpdateSeqence();
+  void slotUpdateSequence();
 
 private:
   bool mShowCalcParts;
