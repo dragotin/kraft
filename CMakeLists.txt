@@ -19,3 +19,6 @@ add_subdirectory(database)
 add_subdirectory(reports)
 add_subdirectory(importfilter)
 add_subdirectory(tools)
+add_subdirectory(styles)
+
+

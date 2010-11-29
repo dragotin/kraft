@@ -81,6 +81,7 @@ protected:
   QStringList mOpenChapters;
   QTreeWidgetItem *mSortChapterItem;
   KMenu *mMenu;
+  QFont mChapterFont;
 };
 
 #endif

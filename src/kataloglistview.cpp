@@ -29,6 +29,7 @@
 #include "katalog.h"
 #include "katalogman.h"
 #include "kataloglistview.h"
+#include "defaultprovider.h"
 #include "materialcalcpart.h"
 #include "stockmaterial.h"
 #include "templkatalog.h"
@@ -44,9 +45,18 @@ KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
 {
     setSelectionMode(QAbstractItemView::SingleSelection );
     setAlternatingRowColors( true );
+    //Initialize common style options
+    QPalette palette;
+    palette.setColor( QPalette::AlternateBase, QColor("#e0fdd1") );
+    setPalette( palette );
+
     setRootIsDecorated(false);
     setAnimated(true);
     header()->setResizeMode(QHeaderView::ResizeToContents);
+
+    // custom style
+    const QString style = DefaultProvider::self()->getStyleSheet( "templcatalog");
+    setStyleSheet( style );
 
     // Drag and Drop
     setSelectionMode( QAbstractItemView::SingleSelection );
@@ -58,6 +68,9 @@ KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
     // setSorting(-1);
     mMenu = new KMenu( this );
     mMenu->addTitle( i18n("Template Catalog") );
+
+    mChapterFont = font();
+    mChapterFont.setBold( true );
 }
 
 KatalogListView::~KatalogListView()
@@ -101,8 +114,7 @@ void KatalogListView::setupChapters()
   m_root = new QTreeWidgetItem( this, list );
   m_root->setIcon( 0, SmallIcon("kraft"));
   m_root->setExpanded(true);
-  // m_root->setDragEnabled( false );
-  // m_root->setDropEnabled( false );
+  m_root->setFont( 0, mChapterFont );
 
   repaint();
   const QList<CatalogChapter> chapters = cat->getKatalogChapters( true );
@@ -158,6 +170,7 @@ QTreeWidgetItem *KatalogListView::tryAddingCatalogChapter( const CatalogChapter&
       katItem->setToolTip( 0, chapter.description() );
 
     katItem->setIcon( 0, chapter.icon() );
+    katItem->setFont( 0, mChapterFont );
     // Store the parent-ID in the item data
     m_dataDict[katItem] = new CatalogChapter( chapter );
 
@@ -285,10 +298,13 @@ void KatalogListView::dropEvent( QDropEvent *event )
     int row = -1;
     QModelIndex dropIndx = indexAt( event->pos() );
     QTreeWidgetItem *droppedOnItem = itemFromIndex( dropIndx );
+    if( ! droppedOnItem ) {
+      event->ignore();
+      return;
+    }
     row = dropIndx.row();
     col = dropIndx.column();
     topIndex = dropIndx.parent();
-
 
     QList<QModelIndex> idxs = selectedIndexes();
     QList<QPersistentModelIndex> indexes;
@@ -319,7 +335,7 @@ void KatalogListView::dropEvent( QDropEvent *event )
         QTreeWidgetItem *parent = itemFromIndex(topIndex);
         if( isChapter( droppedOnItem ) || isRoot( droppedOnItem ))
           parent = droppedOnItem;
-        parent->insertChild(parent->childCount(), taken.takeFirst());
+          parent->insertChild(parent->childCount(), taken.takeFirst());
       } else {
         int r = 1+(dropRow.row() >= 0 ? dropRow.row() : row); // insert behind the row element
 
@@ -374,6 +390,8 @@ void KatalogListView::slotChangeChapter( QTreeWidgetItem* item, int newChapter )
 void KatalogListView::slotUpdateSequence()
 {
   kDebug() << "Updating sequence";
+  if( mSortChapterItem )
+    mSortChapterItem->setExpanded( true );
   mSortChapterItem = 0;
 }
 

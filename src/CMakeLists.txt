@@ -31,6 +31,7 @@ set( kraftcat_LIB_SRCS
     )
 
 
+
 kde4_add_ui_files(kraftcat_LIB_SRCS calctemplate.ui dbinit.ui
 createdb.ui
 dbselect.ui

@@ -14,10 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qsqlrecord.h>
-#include <qsqlindex.h>
-#include <qstringlist.h>
-#include <QSqlQuery>
+#include <QtSql>
+#include <QFile>
+#include <QTextStream>
 
 #include <klocale.h>
 #include <kglobal.h>
@@ -157,6 +156,26 @@ QString DefaultProvider::currencySymbol() const
 QString DefaultProvider::iconvTool() const
 {
   return KStandardDirs::findExe( "iconv" );
+}
+
+QString DefaultProvider::getStyleSheet( const QString& styleName ) const
+{
+  QString style;
+  if( styleName.isEmpty() ) return style;
+  QString styleFile = styleName + ".style";
+
+  KStandardDirs stdDirs;
+  QString findFile = "kraft/styles/" + styleFile;
+
+  QString tmplFile = stdDirs.findResource( "data", findFile );
+
+  QFile data( tmplFile );
+  if (data.open( QFile::ReadOnly )) {
+    QTextStream readIn( &data );
+    style = readIn.readAll();
+    data.close();
+  }
+  return style;
 }
 
 DefaultProvider::~DefaultProvider()

@@ -70,7 +70,7 @@ Katalog::~Katalog()
  * virtuell load method for catalogs.
  */
 int Katalog::load()
-{  
+{
 //  CREATE TABLE CatalogSet(
 //    catalogSetID INTEGER PRIMARY KEY ASC autoincrement,
 //    name         VARCHAR(255),

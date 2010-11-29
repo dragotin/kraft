@@ -52,6 +52,7 @@ public:
 
   QString iconvTool() const;
 
+  QString getStyleSheet( const QString& ) const;
 private:
   DefaultProvider();
 
