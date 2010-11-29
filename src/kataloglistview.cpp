@@ -364,29 +364,6 @@ void KatalogListView::dropEvent( QDropEvent *event )
 }
 
 
-void KatalogListView::slotChangeChapter( QTreeWidgetItem* item, int newChapter )
-{
-    if( ! item ) return;
-
-    // QTreeWidgetItem *parent = item->parent();
-
-    /* Alten parent zuklappen falls noch offen */
-    QTreeWidgetItem *newChapFolder = mChapterDict[newChapter];
-    if( ! newChapFolder ) {
-        kDebug() << "Can not find new chapter folder for chap id " << newChapter << endl;
-    } else {
-        item->setExpanded( false );
-        newChapFolder->setExpanded( true);
-
-        QTreeWidgetItem *newItem = new QTreeWidgetItem( newChapFolder );
-
-        *newItem = *item;
-        delete item;
-
-        scrollToItem(item);
-    }
-}
-
 void KatalogListView::slotUpdateSequence()
 {
   kDebug() << "Updating sequence";

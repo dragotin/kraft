@@ -158,17 +158,6 @@ CalcPartList TemplKatalogView::currentItemsCalcParts()
 }
 
 
-void TemplKatalogView::slChangeChapter( int newID)
-{
-    KatalogListView *listview = getListView();
-    if( !listview ) return;
-    TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listview);
-
-    if( m_editListViewItem ) {
-        templListView->slotChangeChapter( m_editListViewItem, newID);
-    }
-}
-
 void TemplKatalogView::openDialog( QTreeWidgetItem *listitem, FloskelTemplate *tmpl, bool isNew )
 {
     if( ! m_flosDialog )
@@ -178,8 +167,6 @@ void TemplKatalogView::openDialog( QTreeWidgetItem *listitem, FloskelTemplate *t
                  this, SLOT( slEditOk(FloskelTemplate*)));
         connect( m_flosDialog, SIGNAL(editRejected( )),
                  this, SLOT( slEditRejected()));
-        connect( m_flosDialog, SIGNAL(chapterChanged(int)),
-                 this, SLOT(slChangeChapter(int)));
     }
     m_flosDialog->setTemplate( tmpl, m_katalogName, isNew );
     m_editListViewItem = listitem;

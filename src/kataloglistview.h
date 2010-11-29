@@ -57,7 +57,6 @@ public:
 
 public slots:
   virtual void slotFreshupItem( QTreeWidgetItem*, void*, bool remChildren = false );
-  virtual void slotChangeChapter( QTreeWidgetItem* , int );
   virtual void slotCreateNewChapter();
   virtual void slotEditCurrentChapter();
   virtual void slotRemoveCurrentChapter();

@@ -95,11 +95,10 @@ QTreeWidgetItem* TemplKatalogListView::addFlosTemplate( QTreeWidgetItem *parentI
     QTreeWidgetItem *listItem = new QTreeWidgetItem( parentItem );
     slFreshupItem( listItem, tmpl);
     tmpl->setListViewItem( listItem );
-    //listItem->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled);
 
     if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
     {
-        listItem->setIcon(0, SmallIcon("application-x-applix-spreadsheet"));
+        listItem->setIcon(0, KIcon( "kraftdice" ) ); 
     }
     else
     {

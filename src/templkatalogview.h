@@ -77,9 +77,6 @@ public slots:
   void slEditOk(FloskelTemplate*);
   void slEditRejected();
 
-  /* The catalog chapter was changed in the editor dialog */
-  void slChangeChapter(int);
-
 private:
   // opens the edit dialog.
   void openDialog( QTreeWidgetItem*, FloskelTemplate *, bool );
