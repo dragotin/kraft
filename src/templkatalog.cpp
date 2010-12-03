@@ -104,7 +104,7 @@ int TemplKatalog::load()
 
   kDebug() << "The chapterIdList: " << chapIdList;
   QSqlQuery q("SELECT unitID, TemplID, chapterID, Preisart, EPreis, modifyDatum, enterDatum, "
-              "Floskel, Gewinn, zeitbeitrag FROM Catalog WHERE chapterID IN( " + chapIdList + ") "
+              "Floskel, Gewinn, zeitbeitrag, lastUsed, useCounter FROM Catalog WHERE chapterID IN( " + chapIdList + ") "
               "ORDER BY chapterID, sortKey" );
   q.exec();
   while ( q.next() ) {
@@ -138,13 +138,17 @@ int TemplKatalog::load()
 
     FloskelTemplate *flos = new FloskelTemplate( templID,
                                                  q.value(7).toString(),
-                                                 einheit, chapID, calcKind,
-                                                 modDt, enterDt );
+                                                 einheit, chapID, calcKind );
+    flos->setEnterDate( enterDt );
+    flos->setModifyDate( modDt );
     // flos->setSortKey( sortID );
     flos->setBenefit( q.value(8).toDouble());
     flos->setManualPrice( preis );
     bool tslice = q.value(9).toInt() > 0;
     flos->setHasTimeslice( tslice );
+
+    flos->setLastUsedDate( q.value(10).toDateTime() );
+    flos->setUseCounter( q.value(11).toInt() );
 
     loadCalcParts( flos );
 

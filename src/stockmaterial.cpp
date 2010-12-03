@@ -30,6 +30,7 @@
 #include "materialsaverdb.h"
 
 StockMaterial::StockMaterial( ):
+    CatalogTemplate(),
   m_amount( 0 ),
   m_dbid( -1 )
 {
@@ -38,6 +39,7 @@ StockMaterial::StockMaterial( ):
 
 StockMaterial::StockMaterial( int dbid, int matChap, QString mat, int unitID,
                               double perPack, Geld pIn, Geld pOut ):
+CatalogTemplate(),
     m_name(mat),
     m_chapter(matChap),
     m_amount(perPack),
@@ -58,12 +60,14 @@ MaterialSaverBase* StockMaterial::getSaver()
   return MaterialSaverDB::self();
 }
 
-void StockMaterial::save()
+bool StockMaterial::save()
 {
   MaterialSaverBase *saver = getSaver();
   if ( saver ) {
     saver->saveTemplate( this );
+    return true;
   }
+  return false;
 }
 
 QString StockMaterial::name() const
@@ -136,6 +140,11 @@ Geld StockMaterial::purchPrice()
 Geld StockMaterial::salesPrice()
 {
     return m_vPrice;
+}
+
+Geld StockMaterial::unitPrice()
+{
+  return salesPrice();
 }
 
 void StockMaterial::setPurchPrice( Geld g )

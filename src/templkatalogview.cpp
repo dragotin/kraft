@@ -216,6 +216,8 @@ void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
     kDebug() << "Creating new Listview" << endl;
     m_listview = new TemplKatalogListView( w );
     box->addWidget(m_listview);
+
+    KatalogView::createCentralWidget( box, w );
 }
 
 #include "templkatalogview.moc"

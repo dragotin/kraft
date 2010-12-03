@@ -953,9 +953,8 @@ void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
           FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
                                                        dp->unit().id(),
                                                        chapterId,
-                                                       1, /* CalcKind = Manual */
-                                                       QDateTime::currentDateTime(),
-                                                       QDateTime::currentDateTime() );
+                                                       1 /* CalcKind = Manual */ );
+
           flos->setManualPrice( dp->unitPrice() );
           flos->save(); // <- Checke das hier!
           mNewTemplates.append( flos );

@@ -33,6 +33,7 @@
 #include "templkatalog.h"
 #include "timecalcpart.h"
 #include "docposition.h"
+#include "defaultprovider.h"
 
 TemplKatalogListView::TemplKatalogListView(QWidget *w)
     : KatalogListView(w),
@@ -91,23 +92,23 @@ void TemplKatalogListView::addCatalogDisplay( const QString& katName )
  */
 QTreeWidgetItem* TemplKatalogListView::addFlosTemplate( QTreeWidgetItem *parentItem, FloskelTemplate *tmpl )
 {
-    if( ! parentItem ) parentItem = m_root;
-    QTreeWidgetItem *listItem = new QTreeWidgetItem( parentItem );
-    slFreshupItem( listItem, tmpl);
-    tmpl->setListViewItem( listItem );
+  if( ! parentItem ) parentItem = m_root;
+  QTreeWidgetItem *listItem = new QTreeWidgetItem( parentItem );
+  slFreshupItem( listItem, tmpl);
+  tmpl->setListViewItem( listItem );
 
-    if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
-    {
-        listItem->setIcon(0, KIcon( "kraftdice" ) ); 
-    }
-    else
-    {
-        listItem->setIcon(0, SmallIcon("accessories-calculator"));
-    }
-    // store the connection between the listviewitem and the template in a dict.
-    m_dataDict.insert( listItem, tmpl );
+  if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
+  {
+    listItem->setIcon(0, KIcon( "kraftdice" ) );
+  }
+  else
+  {
+    listItem->setIcon(0, SmallIcon("accessories-calculator"));
+  }
+  // store the connection between the listviewitem and the template in a dict.
+  m_dataDict.insert( listItem, tmpl );
 
-    return listItem;
+  return listItem;
 }
 
 void TemplKatalogListView::slFreshupItem( QTreeWidgetItem *item, FloskelTemplate *tmpl, bool remChildren )

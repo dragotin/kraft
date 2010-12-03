@@ -45,17 +45,12 @@ FloskelTemplate::FloskelTemplate()
 }
 
 FloskelTemplate::FloskelTemplate( int tID, const QString& text,
-                                  int einheit, int chapter, int calcKind,
-                                  const QDateTime& modDate,
-                                  const QDateTime& createDate )
+                                  int einheit, int chapter, int calcKind )
  : CatalogTemplate(),
-   m_text(text),
    mUnitId(einheit),
    mTemplId(tID),
    m_chapter(chapter),
    mBenefit(0),
-   m_modifyDate(modDate),
-   m_createDate(createDate),
    m_preis(long(0)),
    m_listViewItem(0),
    m_saver(0)
@@ -67,23 +62,23 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
   } else if ( calcKind == 3 ) {
     setCalculationType( AutoCalc );
   }
-
   // m_calcParts.setAutoDelete(true);
+  setText( text );
 }
 
 FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
     : CatalogTemplate(),
-      m_text( templ.m_text ),
       mUnitId( templ.mUnitId ),
       mTemplId( templ.mTemplId ),
       m_chapter( templ.m_chapter ),
-      m_modifyDate( templ.m_modifyDate ),
-      m_createDate( templ.m_createDate ),
       m_preis( templ.m_preis ),
       m_listViewItem(templ.m_listViewItem ),
       m_saver( 0 )
 {
   deepCopyCalcParts( templ );
+  setModifyDate( templ.modifyDate() );
+  setEnterDate( templ.enterDate() );
+  setText( templ.getText() );
   // m_calcParts.setAutoDelete(true);
 }
 
@@ -91,12 +86,10 @@ FloskelTemplate& FloskelTemplate::operator= ( FloskelTemplate& src )
 {
   if ( this == &src ) return *this;
 
-  m_text = src.m_text;
+  mText = src.mText;
   mUnitId = src.mUnitId;
   mTemplId = src.mTemplId;
   m_chapter = src.m_chapter;
-  m_modifyDate = src.m_modifyDate;
-  m_createDate = src.m_createDate;
   m_preis = src.m_preis;
   m_listViewItem = src.m_listViewItem;
   m_saver = 0; // src.m_saver;

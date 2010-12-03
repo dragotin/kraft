@@ -48,7 +48,8 @@ int MatKatalog::load()
   Katalog::load();
   int cnt = 0;
 
-  QSqlQuery q("SELECT matID, chapterID, material, unitID, perPack, priceIn, priceOut, modifyDate, enterDate FROM stockMaterial");
+  QSqlQuery q("SELECT matID, chapterID, material, unitID, perPack, priceIn, "
+              "priceOut, modifyDate, enterDate FROM stockMaterial");
   q.exec();
   while ( q.next() ) {
     cnt++;

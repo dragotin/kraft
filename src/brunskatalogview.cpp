@@ -78,6 +78,8 @@ void BrunsKatalogView::createCentralWidget(QBoxLayout *box, QWidget *w)
     connect( m_brunsListView, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem* ) ),
              this, SLOT( slPlantSelected( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
+    KatalogView::createCentralWidget( box, w );
+
 }
 
 Katalog* BrunsKatalogView::getKatalog( const QString& name )

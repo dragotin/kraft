@@ -37,6 +37,9 @@ class KActionMenu;
 class DocPosition;
 class CalcPartList;
 class QTreeWidgetItem;
+class QLabel;
+class CatalogTemplate;
+
 /**
   * The base class for Kraft katalog view.
   * @see KMainWindow
@@ -106,6 +109,8 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     virtual void slEditSubChapter();
     virtual void slRemoveSubChapter();
 
+    void slotShowTemplateDetails( CatalogTemplate*);
+
   protected:
 
     /** the configuration object of the application */
@@ -126,10 +131,10 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
 
     // KToggleAction* viewToolBar;
     // KToggleAction* viewStatusBar;
-    QString         m_katalogName;
-    FilterHeader    *m_filterHead;
+    QString            m_katalogName;
+    FilterHeader      *m_filterHead;
     QTreeWidgetItem   *m_editListViewItem;
-
+    QLabel            *mTemplateDetails;
     // Fills the DocPosition with the data from the currently selected item in the view
     virtual bool currentItemToDocPosition( DocPosition& ){ return false; }
 

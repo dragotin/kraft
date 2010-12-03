@@ -21,7 +21,9 @@
 #include "catalogtemplate.h"
 
 CatalogTemplate::CatalogTemplate()
-  : m_calcType( Calculation )
+  : m_calcType( Calculation ),
+  mEntered( QDateTime::currentDateTime() ),
+  mLastModified( QDateTime::currentDateTime() )
 {
 
 }
@@ -52,6 +54,55 @@ QString CatalogTemplate::calcKindString() const
   else return i18n( "Err: Unknown type %d").arg(m_calcType);
 }
 
+void CatalogTemplate::setEnterDate( const QDateTime& d )
+{
+  mEntered = d;
+}
+
+QDateTime CatalogTemplate::enterDate()
+{
+  return mEntered;
+}
+
+void CatalogTemplate::setModifyDate( const QDateTime& d )
+{
+  mLastModified = d;
+}
+
+QDateTime CatalogTemplate::modifyDate()
+{
+  return mLastModified;
+}
+
+void CatalogTemplate::setLastUsedDate( const QDateTime &d )
+{
+  mLastUsed = d;
+}
+
+QDateTime CatalogTemplate::lastUsedDate()
+{
+  return mLastUsed;
+}
+
+void CatalogTemplate::setUseCounter( int cnt )
+{
+  mUseCounter = cnt;
+}
+
+int CatalogTemplate::useCounter()
+{
+  return mUseCounter;
+}
+
+QString CatalogTemplate::getText() const
+{
+  return mText;
+}
+
+void CatalogTemplate::setText( const QString& str )
+{
+  mText = str;
+}
 
 // ================================================================================
 

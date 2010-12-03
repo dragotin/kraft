@@ -41,8 +41,7 @@ class FloskelTemplate: public CatalogTemplate {
 public:
     FloskelTemplate();
     FloskelTemplate(int tID, const QString& text, int einheit,
-                    int chapter, int calcKind,
-                    const QDateTime&, const QDateTime& );
+                    int chapter, int calcKind );
     FloskelTemplate( FloskelTemplate& );
 
     virtual ~FloskelTemplate();
@@ -52,8 +51,6 @@ public:
     Geld unitPrice();
     Geld costsByCalcPart( const QString& part);
 
-    QString getText() const { return m_text; }
-    void setText( const QString& str ) { m_text = str; }
     void addCalcPart( CalcPart* cpart );
     void removeCalcPart( CalcPart *cpart );
     void clearCalcParts();
@@ -76,9 +73,6 @@ public:
     bool hasTimeslice() { return mTimeAdd; }
     void setHasTimeslice(bool ts) { mTimeAdd = ts; }
 
-    QDateTime modifyDate() { return m_modifyDate; }
-    QDateTime createDate() { return m_createDate; }
-
     void setListViewItem( QTreeWidgetItem *it ) { m_listViewItem = it; }
     QTreeWidgetItem* getListViewItem() { return m_listViewItem; }
 
@@ -99,14 +93,12 @@ private: // Private methods
 #endif
     virtual Geld calcPreis();
 
-    QString          m_text;
     int              mUnitId;
     int              mTemplId;  // Database ID
     int              m_chapter;
     CalcPartList     m_calcParts;
     double           mBenefit;
     bool             mTimeAdd;
-    QDateTime        m_modifyDate, m_createDate;
     Geld             m_preis; // preis only valid for manual calculation.
     QTreeWidgetItem  *m_listViewItem;
     TemplateSaverBase *m_saver;    /**  */

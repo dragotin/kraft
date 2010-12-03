@@ -16,9 +16,7 @@
  ***************************************************************************/
 #include <stdlib.h>
 // include files for QT
-#include <qdir.h>
-#include <qprinter.h>
-#include <qtreewidget.h>
+#include <QtGui>
 
 // include files for KDE
 #include <kiconloader.h>
@@ -33,7 +31,7 @@
 #include <kstandardshortcut.h>
 #include <kstandardaction.h>
 #include <kdebug.h>
-
+#include <klocale.h>
 #include <kapplication.h>
 #include <kshortcut.h>
 #include <kiconloader.h>
@@ -60,6 +58,7 @@
 #include "filterheader.h"
 #include "docposition.h"
 #include "katalogman.h"
+#include "defaultprovider.h"
 
 #define ID_STATUS_MSG 1
 
@@ -70,7 +69,8 @@ KatalogView::KatalogView( QWidget* parent, const char* ) :
     m_acNewItem(0),
     m_acExport(0),
     m_filterHead(0),
-    m_editListViewItem(0)
+    m_editListViewItem(0),
+    mTemplateDetails(0)
 {
   setObjectName( "catalogeview" );
   //We don't want to delete this view when we close it!
@@ -102,6 +102,8 @@ void KatalogView::init(const QString& katName )
                this, SLOT(slTreeviewItemChanged( QTreeWidgetItem*, QTreeWidgetItem*)) );
       connect( listview, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
                this, SLOT(slEditTemplate()));
+      connect( listview, SIGNAL(templateHoovered(CatalogTemplate*)),
+               this, SLOT(slotShowTemplateDetails( CatalogTemplate*)));
   }
 
   setCentralWidget(w);
@@ -126,9 +128,10 @@ void KatalogView::init(const QString& katName )
   setAutoSaveSettings( QString::fromLatin1( "CatalogWindow" ),  true );
 }
 
-void KatalogView::createCentralWidget(QBoxLayout*, QWidget*)
+void KatalogView::createCentralWidget(QBoxLayout *box, QWidget* )
 {
-    kDebug() << "I was called!" << endl;
+    mTemplateDetails = new QLabel( "Nothing selected.");
+    box->addWidget( mTemplateDetails );
 }
 
 KatalogView::~KatalogView()
@@ -386,4 +389,32 @@ void KatalogView::slRemoveSubChapter()
     listview->slotRemoveCurrentChapter();
   slotStatusMsg( i18n("Ready."));
 
+}
+
+void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
+{
+  if( ! mTemplateDetails ) {
+    kDebug() << "Hoover-Text: No label ready.";
+    return;
+  }
+
+  if( ! tmpl ) {
+    mTemplateDetails->setText( QString() );
+    return;
+  }
+
+  KLocale *locale = DefaultProvider::self()->locale();
+
+  QString t;
+  t = QString( "<em>%1</em>").arg( tmpl->getText().left(57) );
+  t += "<table border=\"0\">";
+  t += i18n("<tr><td>Created at:</td><td>%1</td><td>&nbsp;&nbsp;</td><td>Last used:</td><td>%2</td></tr>" )
+       .arg( locale->formatDateTime( tmpl->enterDate() ) )
+       .arg( locale->formatDateTime( tmpl->lastUsedDate() ) );
+  t += i18n("<tr><td>Modified at:</td><td>%1</td><td>&nbsp;&nbsp;</td><td>Use Count:</td><td>%2</td></tr>" )
+       .arg( locale->formatDateTime( tmpl->modifyDate() ) )
+       .arg( tmpl->useCounter() );
+  t += "</table>";
+  // kDebug() << "Hoover-String: " << t;
+  mTemplateDetails->setText( t );
 }

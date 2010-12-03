@@ -20,7 +20,7 @@
 /**
  * base class that is the base for all templates in kraft catalogs.
  */
-#include <QList>
+#include <QtCore>
 
 #include "kraftcat_export.h"
 
@@ -46,9 +46,30 @@ public:
   QString calcKindString() const ;
   int sortKey() { return mSortKey; }
   void setSortKey( int k ) { mSortKey = k; }
+
+  void setEnterDate( const QDateTime& );
+  QDateTime enterDate();
+
+  void setModifyDate( const QDateTime& );
+  QDateTime modifyDate();
+
+  void setLastUsedDate( const QDateTime& );
+  QDateTime lastUsedDate();
+
+  void setUseCounter( int );
+  int useCounter();
+
+  QString getText() const;
+  void setText( const QString& );
+
 protected:
   CalculationType m_calcType;
   int mSortKey;
+  int mUseCounter;
+  QDateTime mEntered;
+  QDateTime mLastModified;
+  QDateTime mLastUsed;
+  QString mText;
 };
 
 class KRAFTCAT_EXPORT CatalogTemplateList : public QList<CatalogTemplate*>

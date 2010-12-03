@@ -49,6 +49,7 @@ void MaterialKatalogView::createCentralWidget( QBoxLayout *box, QWidget *w )
 {
     m_materialListView = new MaterialKatalogListView( w );
     box->addWidget( m_materialListView );
+    KatalogView::createCentralWidget( box, w );
 }
 
 Katalog* MaterialKatalogView::getKatalog( const QString& name )

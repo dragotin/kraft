@@ -34,7 +34,7 @@ class KMenu;
 class DocPosition;
 class Katalog;
 class CatalogChapter;
-
+class CatalogTemplate;
 
 class KRAFTCAT_EXPORT KatalogListView : public QTreeWidget
 {
@@ -54,6 +54,8 @@ public:
 
   KMenu *contextMenu();
   // virtual DocPosition itemToDocPosition( QListViewItem *it = 0 ) = 0;
+signals:
+  void templateHoovered( CatalogTemplate* );
 
 public slots:
   virtual void slotFreshupItem( QTreeWidgetItem*, void*, bool remChildren = false );
@@ -61,11 +63,12 @@ public slots:
   virtual void slotEditCurrentChapter();
   virtual void slotRemoveCurrentChapter();
 
-  virtual void contextMenuEvent( QContextMenuEvent * event );
+  virtual void contextMenuEvent( QContextMenuEvent* );
   virtual void slotRedraw();
 
 protected slots:
   virtual void slotUpdateSequence();
+  virtual void slotItemEntered( QTreeWidgetItem*, int);
 
 protected:
   virtual Katalog* catalog();

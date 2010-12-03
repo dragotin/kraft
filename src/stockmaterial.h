@@ -24,6 +24,7 @@
 #include <kabc/addressee.h>
 #include "kraftglobals.h"
 #include "einheit.h"
+#include "catalogtemplate.h"
 /**
  *
  */
@@ -32,7 +33,7 @@ class MaterialSaverBase;
 class QDate;
 class QDateTime;
 
-class StockMaterial
+class StockMaterial : public CatalogTemplate
 {
 public:
   StockMaterial();
@@ -63,6 +64,7 @@ public:
 
   Geld purchPrice();
   Geld salesPrice();
+  Geld unitPrice();
 
   void setPurchPrice( Geld );
   void setSalesPrice( Geld );
@@ -73,7 +75,7 @@ public:
   QString entered();
 
 
-  void save();
+  bool save();
 protected:
   MaterialSaverBase* getSaver();
   QString dateShortFormat( QDate );

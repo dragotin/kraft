@@ -71,6 +71,9 @@ KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
 
     mChapterFont = font();
     mChapterFont.setBold( true );
+
+    connect( this, SIGNAL(itemActivated( QTreeWidgetItem*,int )),
+             this, SLOT( slotItemEntered( QTreeWidgetItem*, int )));
 }
 
 KatalogListView::~KatalogListView()
@@ -372,7 +375,20 @@ void KatalogListView::slotUpdateSequence()
   mSortChapterItem = 0;
 }
 
+void KatalogListView::slotItemEntered( QTreeWidgetItem *item, int )
+{
+   if( !item ) return;
 
+   if( isRoot( item )) {
+    kDebug() << "Is a root item ";
+   } else if( isChapter(item )) {
+    kDebug() << "Is a chapter item ";
+   } else {
+     CatalogTemplate *tmpl = static_cast<FloskelTemplate*>(itemData(item));
+     kDebug() << "hoovering this template: " << tmpl;
+     emit templateHoovered( tmpl );
+   }
+}
 
 void KatalogListView::slotRedraw()
 {
@@ -394,5 +410,4 @@ void KatalogListView::slotRedraw()
   addCatalogDisplay( m_catalogName );
   mOpenChapters.clear();
 }
-
 
