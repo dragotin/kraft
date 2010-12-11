@@ -38,7 +38,7 @@ public:
     virtual ~TemplateSaverDB();
 
     virtual bool saveTemplate( FloskelTemplate* );
-
+    virtual void saveTemplateChapter( FloskelTemplate* );
 private:
   void fillTemplateBuffer( QSqlRecord*, FloskelTemplate*, bool );
   QString sqlWhereFromRecord( QSqlRecord * ) const;

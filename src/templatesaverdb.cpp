@@ -355,7 +355,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
 
 void TemplateSaverDB::fillTemplateBuffer( QSqlRecord *buffer, FloskelTemplate *tmpl, bool isNew )
 {
-    buffer->setValue( "chapterID", tmpl->getChapterID());
+    buffer->setValue( "chapterID", tmpl->chapterId().toInt() );
     buffer->setValue( "unitID", tmpl->unit().id());
     buffer->setValue( "Floskel", tmpl->getText().toUtf8() );
     buffer->setValue( "Gewinn", tmpl->getBenefit() );
@@ -375,6 +375,24 @@ void TemplateSaverDB::fillTemplateBuffer( QSqlRecord *buffer, FloskelTemplate *t
     }
     buffer->setValue( "Preisart", ctype );
     buffer->setValue( "EPreis", tmpl->manualPrice().toDouble() );
+}
+
+void TemplateSaverDB::saveTemplateChapter( FloskelTemplate* tmpl )
+{
+  if( tmpl ) {
+    dbID id = tmpl->getTemplID();
+    dbID chapId = tmpl->chapterId();
+
+    QSqlQuery qUpdate;
+    kDebug() << "Updating Chapter to chapter id " << chapId.toInt() << " of id " << id.toString();
+    QString sql = "UPDATE Catalog SET chapterID=:chap WHERE TemplID=:id";
+    qUpdate.prepare( sql );
+    qUpdate.bindValue( ":chap", chapId.toInt() );
+    qUpdate.bindValue( ":id", id.toInt() );
+
+    qUpdate.exec();
+    kDebug() << "setting template chapter sql: " << qUpdate.lastError().text();
+  }
 }
 
 /* END */

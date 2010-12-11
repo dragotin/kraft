@@ -23,11 +23,13 @@
 #include <QtCore>
 
 #include "kraftcat_export.h"
+#include "dbids.h"
 
 class QWidget;
 class CatalogSelection;
 class Katalog;
 class Geld;
+class dbID;
 
 class KRAFTCAT_EXPORT CatalogTemplate
 {
@@ -62,10 +64,18 @@ public:
   QString getText() const;
   void setText( const QString& );
 
+  void setChapterId( const dbID&, bool );
+
+  dbID chapterId();
+
 protected:
+  virtual void saveChapterId();
+
   CalculationType m_calcType;
-  int mSortKey;
-  int mUseCounter;
+  int  mSortKey;
+  int  mUseCounter;
+  dbID mChapterId;  // the chapter (==parent) of the item
+
   QDateTime mEntered;
   QDateTime mLastModified;
   QDateTime mLastUsed;

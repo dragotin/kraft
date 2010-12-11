@@ -28,7 +28,7 @@ class KRAFTCAT_EXPORT CatalogChapter
 {
 public:
   CatalogChapter();
-  CatalogChapter( int, const QString&, int, const QString& = QString() );
+  CatalogChapter( int, int, const QString&, int, const QString& = QString() );
 
   QString name() const;
   void setName( const QString& );
@@ -41,18 +41,23 @@ public:
   dbID parentId() const;
   void setParentId( const dbID& );
 
+  dbID catalogSetId() const;
+  void setCatalogSetId( const dbID& );
+
   QPixmap icon() const;
   void setIcon( const QPixmap& );
 
   int sortKey() const;
   void setSortKey( int );
 
-  void save( const dbID& );
+  void save( );
   void saveNameAndDesc();
+  void reparent( const dbID& );
 
 private:
   QString mName;
   dbID    mId;
+  dbID    mCatalogSetId;
   QString mDescription;
   dbID    mParentId;
   int     mSortKey;

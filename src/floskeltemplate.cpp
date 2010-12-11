@@ -35,7 +35,6 @@ FloskelTemplate::FloskelTemplate()
     : CatalogTemplate(),
       mUnitId(0),
       mTemplId(-1),
-      m_chapter(0),
       mBenefit(0),
       mTimeAdd(true),
       m_listViewItem(0),
@@ -49,7 +48,6 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
  : CatalogTemplate(),
    mUnitId(einheit),
    mTemplId(tID),
-   m_chapter(chapter),
    mBenefit(0),
    m_preis(long(0)),
    m_listViewItem(0),
@@ -64,13 +62,13 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
   }
   // m_calcParts.setAutoDelete(true);
   setText( text );
+  setChapterId( dbID(chapter), false );
 }
 
 FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
-    : CatalogTemplate(),
+    : CatalogTemplate( templ ),
       mUnitId( templ.mUnitId ),
       mTemplId( templ.mTemplId ),
-      m_chapter( templ.m_chapter ),
       m_preis( templ.m_preis ),
       m_listViewItem(templ.m_listViewItem ),
       m_saver( 0 )
@@ -89,7 +87,7 @@ FloskelTemplate& FloskelTemplate::operator= ( FloskelTemplate& src )
   mText = src.mText;
   mUnitId = src.mUnitId;
   mTemplId = src.mTemplId;
-  m_chapter = src.m_chapter;
+  mChapterId = src.mChapterId;
   m_preis = src.m_preis;
   m_listViewItem = src.m_listViewItem;
   m_saver = 0; // src.m_saver;
@@ -161,11 +159,6 @@ double FloskelTemplate::getBenefit( )
 void FloskelTemplate::setTemplID( int newID )
 {
   mTemplId = newID;
-}
-
-void FloskelTemplate::setChapterID(int id)
-{
-  m_chapter = id;
 }
 
 Geld FloskelTemplate::unitPrice()
@@ -255,6 +248,14 @@ bool FloskelTemplate::save()
         kDebug() << "ERR: No saver available!" << endl;
         return false;
     }
+}
+
+void FloskelTemplate::saveChapterId()
+{
+  TemplateSaverBase *saver = getSaver();
+  if( saver ) {
+    saver->saveTemplateChapter( this );
+  }
 }
 
 #if 0

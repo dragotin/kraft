@@ -56,6 +56,8 @@ public:
   // virtual DocPosition itemToDocPosition( QListViewItem *it = 0 ) = 0;
 signals:
   void templateHoovered( CatalogTemplate* );
+  void sequenceUpdateProgress( int );
+  void sequenceUpdateMaximum( int );
 
 public slots:
   virtual void slotFreshupItem( QTreeWidgetItem*, void*, bool remChildren = false );

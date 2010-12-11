@@ -40,6 +40,8 @@ public:
         { return m_id == _u; }
     bool operator==( const dbID& _u ) const
         { return m_id == _u.m_id; }
+    bool operator!=( const dbID& _u ) const
+        { return m_id != _u.m_id; }
     dbID& operator=( const dbID& _u ) {
         m_id = _u.m_id;
         return *this;

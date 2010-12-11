@@ -119,7 +119,7 @@ QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
       QString desc        = q.value(3).toString();
 
       kDebug() << "Adding catalog chapter " << chapterName << " with ID " << chapID << endl;
-      CatalogChapter c( chapID, chapterName, parentChapter, desc );
+      CatalogChapter c( chapID, m_setID, chapterName, parentChapter, desc );
       mChapters.append( c );
     }
     mChapterListNeedsRefresh = false;

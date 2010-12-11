@@ -67,9 +67,6 @@ public:
     int  getTemplID() { return mTemplId; }
     void setTemplID( int );
 
-    int getChapterID() { return m_chapter; }
-    void setChapterID(int id);
-
     bool hasTimeslice() { return mTimeAdd; }
     void setHasTimeslice(bool ts) { mTimeAdd = ts; }
 
@@ -83,6 +80,7 @@ public:
 protected:
     virtual TemplateSaverBase* getSaver();
     virtual void deepCopyCalcParts( FloskelTemplate& );
+    void saveChapterId();
 
 private: // Private methods
 #if 0

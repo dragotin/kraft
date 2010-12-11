@@ -113,7 +113,7 @@ void TemplKatalogView::slNewTemplate()
       // try to find out which catalog is open/current
       CatalogChapter *chap = static_cast<CatalogChapter*>( templListView->itemData( parentItem ) );
       if( chap ) {
-        flosTempl->setChapterID( chap->id().toInt() );
+        flosTempl->setChapterId( chap->id().toInt(), true );
       }
     }
 

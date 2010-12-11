@@ -70,7 +70,8 @@ KatalogView::KatalogView( QWidget* parent, const char* ) :
     m_acExport(0),
     m_filterHead(0),
     m_editListViewItem(0),
-    mTemplateDetails(0)
+    mTemplateText(0),
+    mTemplateStats(0)
 {
   setObjectName( "catalogeview" );
   //We don't want to delete this view when we close it!
@@ -130,8 +131,30 @@ void KatalogView::init(const QString& katName )
 
 void KatalogView::createCentralWidget(QBoxLayout *box, QWidget* )
 {
-    mTemplateDetails = new QLabel( "Nothing selected.");
-    box->addWidget( mTemplateDetails );
+
+  mTemplateText = new QLabel( "Nothing selected.");
+  box->addWidget( mTemplateText );
+  QHBoxLayout *hb = new QHBoxLayout;
+  box->addLayout( hb );
+  mTemplateStats = new QLabel( );
+  mProgress = new QProgressBar;
+  hb->addWidget( mTemplateStats );
+  hb->addStretch();
+  hb->addWidget( mProgress );
+
+  connect( getListView(), SIGNAL( sequenceUpdateMaximum( int )),
+           mProgress, SLOT( setMaximum(int) ) );
+  connect( getListView(), SIGNAL( sequenceUpdateProgress( int ) ),
+           this, SLOT( setProgressValue(int) ) );
+}
+
+void KatalogView::setProgressValue( int val )
+{
+  if( ! mProgress ) return;
+  mProgress->setValue( val );
+  if( val == mProgress->maximum() ) {
+    QTimer::singleShot( 3000, mProgress, SLOT(reset()));
+  }
 }
 
 KatalogView::~KatalogView()
@@ -393,21 +416,28 @@ void KatalogView::slRemoveSubChapter()
 
 void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
 {
-  if( ! mTemplateDetails ) {
+  if( ! (mTemplateText && mTemplateStats) ) {
     kDebug() << "Hoover-Text: No label ready.";
     return;
   }
 
   if( ! tmpl ) {
-    mTemplateDetails->setText( QString() );
+    mTemplateText->setText( QString() );
+    mTemplateStats->setText( QString() );
     return;
   }
 
   KLocale *locale = DefaultProvider::self()->locale();
 
   QString t;
-  t = QString( "<em>%1</em>").arg( tmpl->getText().left(57) );
-  t += "<table border=\"0\">";
+  QString flos = tmpl->getText();
+  QFontMetrics fm( mTemplateText->font() );
+  int w = mTemplateText->width() - 30;
+
+  t = QString( "<em>%1</em>").arg( fm.elidedText(flos, Qt::ElideMiddle, w ) );
+  mTemplateText->setText( t );
+
+  t = "<table border=\"0\">";
   t += i18n("<tr><td>Created at:</td><td>%1</td><td>&nbsp;&nbsp;</td><td>Last used:</td><td>%2</td></tr>" )
        .arg( locale->formatDateTime( tmpl->enterDate() ) )
        .arg( locale->formatDateTime( tmpl->lastUsedDate() ) );
@@ -416,5 +446,5 @@ void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
        .arg( tmpl->useCounter() );
   t += "</table>";
   // kDebug() << "Hoover-String: " << t;
-  mTemplateDetails->setText( t );
+  mTemplateStats->setText( t );
 }

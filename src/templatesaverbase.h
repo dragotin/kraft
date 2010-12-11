@@ -35,6 +35,7 @@ public:
     virtual ~TemplateSaverBase();
 
     virtual bool saveTemplate( FloskelTemplate* );
+    virtual void saveTemplateChapter( FloskelTemplate* );
 private:
 
 };

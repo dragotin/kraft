@@ -30,9 +30,11 @@ CatalogChapter::CatalogChapter()
 
 }
 
-CatalogChapter::CatalogChapter( int id, const QString& name, int parent, const QString& desc )
+CatalogChapter::CatalogChapter( int id, int csId, const QString& name,
+                                int parent, const QString& desc )
     :mName( name ),
     mId( dbID(id) ),
+    mCatalogSetId( dbID(csId) ),
     mDescription( desc ),
     mParentId( parent ),
     mSortKey(0)
@@ -66,6 +68,17 @@ dbID CatalogChapter::id() const
   return mId;
 }
 
+dbID CatalogChapter::catalogSetId() const
+{
+  return mCatalogSetId;
+}
+
+void CatalogChapter::setCatalogSetId( const dbID& id )
+{
+  mCatalogSetId = id;
+}
+
+
 dbID CatalogChapter::parentId() const
 {
   return mParentId;
@@ -96,13 +109,13 @@ void CatalogChapter::setSortKey( int key )
   mSortKey = key;
 }
 
-void CatalogChapter::save( const dbID& catalogSetID )
+void CatalogChapter::save()
 {
-  kDebug() << "Inserting new chapter " << name() << sortKey() << endl;
+  kDebug() << "Inserting new chapter " << name() << mCatalogSetId.toString() << endl;
   QSqlQuery q;
   q.prepare("INSERT INTO CatalogChapters (catalogSetID, chapter, description, sortKey, parentChapter)"
             "VALUES(:catalogSetID, :chapter, :desc, :sortKey, :parentChapter)");
-  q.bindValue( ":catalogSetID",  catalogSetID.toString() );
+  q.bindValue( ":catalogSetID",  mCatalogSetId.toString() );
   q.bindValue( ":chapter",       this->name() );
   q.bindValue( ":desc",          this->description() );
   q.bindValue( ":sortKey",       this->sortKey() );
@@ -119,4 +132,16 @@ void CatalogChapter::saveNameAndDesc()
   q.bindValue(":desc", this->description() );
   q.bindValue(":newchapter", this->name() );
   q.exec();
+}
+
+void CatalogChapter::reparent( const dbID& pId )
+{
+  dbID parentId( pId );
+  setParentId( pId );
+  QSqlQuery q;
+  q.prepare("UPDATE CatalogChapters SET parentChapter= :p WHERE chapterID = :id");
+  q.bindValue(":id", mId.toInt() );
+  q.bindValue(":p", parentId.toInt() );
+  q.exec();
+  kDebug() << "Reparenting chapter " << mId.toInt() << ", reuslt: " << q.lastError().text();
 }

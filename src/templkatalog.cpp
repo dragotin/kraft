@@ -73,7 +73,7 @@ void TemplKatalog::reload( dbID id)
     {
       //templ->setEinheitId(q.value(0).toInt());
       kDebug() << "Reloading template number " << q.value(1) << endl;
-      templ->setChapterID(q.value(2).toInt());
+      templ->setChapterId(dbID( q.value(2).toInt()), false );
       //templ->setCalculationType(q.value(3).toInt());
       templ->setManualPrice(q.value(4).toDouble());
       templ->setText( q.value(7).toString() );
@@ -295,7 +295,7 @@ FloskelTemplateList TemplKatalog::getFlosTemplates( const CatalogChapter& chapte
   {
     tmpl = it.next();
 
-    int haveChap = tmpl->getChapterID();
+    int haveChap = tmpl->chapterId().toInt();
 
     // kDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
     if( haveChap == chap )

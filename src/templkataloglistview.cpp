@@ -248,6 +248,7 @@ void TemplKatalogListView::slotUpdateSequence()
 
   int childCount = mSortChapterItem->childCount();
   if( ! childCount ) return;
+  emit sequenceUpdateMaximum( childCount-1 );
 
   QSqlQuery query;
   query.prepare("UPDATE Catalog SET sortKey=? WHERE TemplID=?");
@@ -255,6 +256,7 @@ void TemplKatalogListView::slotUpdateSequence()
   int sequenceCnt = 1; // Start at 1
   for( int i = 0; i < childCount; i++ ) {
     QTreeWidgetItem *item = mSortChapterItem->child( i );
+    emit sequenceUpdateProgress( i );
     // set the sortKey to the sequence counter i
     if( ! (isChapter( item ) /* || isRoot( item ) */ ) ) {
       FloskelTemplate *flos = static_cast<FloskelTemplate*>( itemData(item) );

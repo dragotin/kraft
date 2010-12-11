@@ -38,6 +38,7 @@ class DocPosition;
 class CalcPartList;
 class QTreeWidgetItem;
 class QLabel;
+class QProgressBar;
 class CatalogTemplate;
 
 /**
@@ -110,6 +111,7 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     virtual void slRemoveSubChapter();
 
     void slotShowTemplateDetails( CatalogTemplate*);
+    void setProgressValue( int );
 
   protected:
 
@@ -134,7 +136,9 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     QString            m_katalogName;
     FilterHeader      *m_filterHead;
     QTreeWidgetItem   *m_editListViewItem;
-    QLabel            *mTemplateDetails;
+    QLabel            *mTemplateText;
+    QLabel            *mTemplateStats;
+    QProgressBar      *mProgress;
     // Fills the DocPosition with the data from the currently selected item in the view
     virtual bool currentItemToDocPosition( DocPosition& ){ return false; }
 

@@ -281,8 +281,9 @@ void KatalogListView::slotCreateNewChapter()
     CatalogChapter c;
     c.setName( name );
     c.setDescription( desc );
+    c.setCatalogSetId( catalog()->id() );
     c.setParentId( parentId );
-    c.save( catalog()->id() );
+    c.save();
     catalog()->refreshChapterList();
     QTreeWidgetItem *newItem = tryAddingCatalogChapter( c );
     if( newItem ) {
@@ -334,24 +335,58 @@ void KatalogListView::dropEvent( QDropEvent *event )
     // insert them back in at their new positions
     for (int i = 0; i < indexes.count(); ++i) {
       // Either at a specific point or appended
+      QTreeWidgetItem *parent = itemFromIndex(topIndex);
       if (row == -1) {
-        QTreeWidgetItem *parent = itemFromIndex(topIndex);
         if( isChapter( droppedOnItem ) || isRoot( droppedOnItem ))
           parent = droppedOnItem;
           parent->insertChild(parent->childCount(), taken.takeFirst());
+          // the parent chap has changed.
       } else {
         int r = 1+(dropRow.row() >= 0 ? dropRow.row() : row); // insert behind the row element
 
-        QTreeWidgetItem *parent = itemFromIndex(topIndex);
+        dbID newParentId;
+
+        // The item was dropped on a chapter item or root. That causes a change of the
+        // parent chapter.
         if( isChapter( droppedOnItem )|| isRoot( droppedOnItem )) {
-          // Needs to be inserted right after the subcatalogs
           parent = droppedOnItem;
+          // the parent id has to be updated for all inserted items
+          CatalogChapter *parentChap = static_cast<CatalogChapter*>(itemData(parent));
+          if( parentChap ) {
+            newParentId = parentChap->id();
+          }
+
+          // New chapter is inserted after the other subcatalogs, compute the index
           int cnt = 0;
-          while( cnt < parent->childCount() && isChapter(parent->child(cnt))) { cnt++; }
+          while( cnt < parent->childCount() && isChapter(parent->child(cnt))) {
+            cnt++;
+          }
           r = cnt;
+          // the parent chapter has changed.
+        } else {
+          // the item was dropped on another item. Still the parent might have changed.
+          CatalogTemplate *tmpl = static_cast<CatalogTemplate*>(itemData(droppedOnItem));
+          newParentId = tmpl->chapterId();
         }
+
         if( parent ) {
-          parent->insertChild(qMin(r, parent->childCount()), taken.takeFirst());
+          QTreeWidgetItem *dropItem = taken.takeFirst();
+          if( newParentId.isOk() ) {
+            if( isChapter( dropItem ) )   {
+              CatalogChapter* chapDrop = static_cast<CatalogChapter*>(itemData(dropItem));
+              chapDrop->reparent( newParentId );
+            } else if( isRoot( dropItem )) {
+              CatalogChapter* chapDrop = static_cast<CatalogChapter*>(itemData(dropItem));
+              chapDrop->reparent( 0 );
+            } else {
+              // ordinary template, set a new parent chapter
+              CatalogTemplate *tmpl = static_cast<CatalogTemplate*>(itemData(dropItem));
+              if( tmpl && tmpl->chapterId() != newParentId ) {
+                tmpl->setChapterId( newParentId, true );
+              }
+            }
+          }
+          parent->insertChild( qMin(r, parent->childCount()), dropItem );
           mSortChapterItem = parent;
         }
       }
@@ -369,6 +404,7 @@ void KatalogListView::dropEvent( QDropEvent *event )
 
 void KatalogListView::slotUpdateSequence()
 {
+  // check the detail implementations in inherited classes
   kDebug() << "Updating sequence";
   if( mSortChapterItem )
     mSortChapterItem->setExpanded( true );

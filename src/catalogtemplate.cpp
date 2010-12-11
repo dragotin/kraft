@@ -22,6 +22,7 @@
 
 CatalogTemplate::CatalogTemplate()
   : m_calcType( Calculation ),
+  mUseCounter(0),
   mEntered( QDateTime::currentDateTime() ),
   mLastModified( QDateTime::currentDateTime() )
 {
@@ -102,6 +103,25 @@ QString CatalogTemplate::getText() const
 void CatalogTemplate::setText( const QString& str )
 {
   mText = str;
+}
+
+void CatalogTemplate::setChapterId( const dbID& id, bool persist )
+{
+  kDebug() << "set chapterId to " << id.toString();
+  mChapterId = id;
+  if( persist ) {
+    saveChapterId();
+  }
+}
+
+void CatalogTemplate::saveChapterId()
+{
+  kDebug()  << "WRN: Chapter ID saving for template not implemented!";
+}
+
+dbID CatalogTemplate::chapterId()
+{
+  return mChapterId;
 }
 
 // ================================================================================

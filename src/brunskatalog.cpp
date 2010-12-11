@@ -294,7 +294,7 @@ void BrunsKatalog::loadDBKeys() {
         QString katName = li[1];
 
         if( doChapters ) { // maintain Stringlist only for chapters.
-          CatalogChapter c( id, katName, 0 );
+          CatalogChapter c( id, m_setID, katName, 0 );
           mChapters.append( c );
         } else {
           // kDebug() << "Inserting Brunskatalog name " << katName << endl;

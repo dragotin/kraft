@@ -149,7 +149,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
     chapNames.append( chap.name() );
   }
   cbChapter->insertItems(-1, chapNames );
-  int chapID = t->getChapterID();
+  int chapID = t->chapterId().toInt();
   QString chap = m_katalog->chapterName(dbID(chapID));
   cbChapter->setCurrentIndex(cbChapter->findText( chap ));
 
