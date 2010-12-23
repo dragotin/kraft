@@ -123,15 +123,7 @@ int TemplKatalog::load()
       kDebug() << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g << endl;
     }
 
-    QDateTime modDt;
-    QString modDate = q.value(5).toString();
-    /* modifyDatum ist TIMESTAMP und den gibt mysql offensichtlich mit einem T im
-         * String zurck */
-    if( modDate[10] == 'T' ) {
-      modDate = modDate.replace( 10, 1, QChar(' ') );
-      modDt = QDateTime::fromString(modDate, Qt::ISODate );
-    }
-
+    QDateTime modDt = q.value(5).toDateTime();
     QDateTime enterDt = q.value(6).toDateTime();
 
     kDebug() << "Chapter ID is " << chapID << endl;

@@ -314,7 +314,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
         isNew = false;
         buffer = model.record(0);
         fillTemplateBuffer( &buffer, tmpl, false );
-        buffer.setValue( "modifyDatum", "systimestamp" );
+        buffer.setValue( "modifyDatum", KraftDB::self()->currentTimeStamp() );
         model.setRecord(0, buffer);
         model.submitAll();
     }

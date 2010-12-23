@@ -133,19 +133,6 @@ bool Katalog::mayRemoveChapter( const QString& /* chapterName */ )
   return true; // FIXME !
 }
 
-#if 0
-dbID Katalog::chapterID( const QString& chapterName )
-{
-  foreach( CatalogChapter chapter, mChapters ) {
-    if( chapter.name() == chapterName ) {
-      return chapter.id();
-    }
-  }
-
-  return dbID();
-}
-#endif
-
 QString Katalog::chapterName(const dbID& id)
 {
   foreach( CatalogChapter chapter, mChapters ) {
