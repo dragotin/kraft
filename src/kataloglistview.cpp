@@ -285,6 +285,7 @@ void KatalogListView::slotCreateNewChapter()
     c.setParentId( parentId );
     c.save();
     catalog()->refreshChapterList();
+
     QTreeWidgetItem *newItem = tryAddingCatalogChapter( c );
     if( newItem ) {
       this->scrollToItem( newItem );

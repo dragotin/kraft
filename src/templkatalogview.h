@@ -69,7 +69,7 @@ protected:
   CalcPartList currentItemsCalcParts();
 
 public slots:
-  /* Editiing of templates -> open edit dialog */
+  /* Editing of templates -> open edit dialog */
   void slEditTemplate();
   void slNewTemplate();
 

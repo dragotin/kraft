@@ -90,37 +90,37 @@ void TemplKatalogView::slEditTemplate()
 
 void TemplKatalogView::slNewTemplate()
 {
-    KatalogListView *listview = getListView();
-    if( !listview ) return;
-    TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listview);
+  KatalogListView *listview = getListView();
+  if( !listview ) return;
+  TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listview);
 
-    // Anlegen eines neuen Templates
-    FloskelTemplate *flosTempl = new FloskelTemplate();
-    flosTempl->setText( i18n( "<new template>" ) );
+  // create new template object
+  FloskelTemplate *flosTempl = new FloskelTemplate();
+  flosTempl->setText( i18n( "<new template>" ) );
 
-    // Eltern = Katalogitem rausfinden
-    QTreeWidgetItem *parentItem = static_cast<QTreeWidgetItem*>(listview->currentItem());
-    if( parentItem )
+  // find the corresponding parent (==chapter) item
+  QTreeWidgetItem *parentItem = static_cast<QTreeWidgetItem*>(listview->currentItem());
+  if( parentItem )
+  {
+    // if it is not a chapter nor root, take the parent
+    if( ! (templListView->isRoot(parentItem) || templListView->isChapter(parentItem)) )
     {
-        // Wenn es kein chapter ist, nehmen wir den Parent
-        if( ! (templListView->isRoot(parentItem) || templListView->isChapter(parentItem)) )
-        {
-            parentItem = (QTreeWidgetItem*) parentItem->parent();
-        }
+      parentItem = (QTreeWidgetItem*) parentItem->parent();
     }
+  }
 
-    if( parentItem ) {
-      // try to find out which catalog is open/current
-      CatalogChapter *chap = static_cast<CatalogChapter*>( templListView->itemData( parentItem ) );
-      if( chap ) {
-        flosTempl->setChapterId( chap->id().toInt(), true );
-      }
+  if( parentItem ) {
+    // try to find out which catalog is open/current
+    CatalogChapter *chap = static_cast<CatalogChapter*>( templListView->itemData( parentItem ) );
+    if( chap ) {
+      flosTempl->setChapterId( chap->id().toInt(), true );
     }
+  }
 
-    QTreeWidgetItem *item = templListView->addFlosTemplate(parentItem, flosTempl);
-    templListView->scrollToItem( item );
-    templListView->setCurrentItem( item );
-    openDialog( item, flosTempl, true );
+  QTreeWidgetItem *item = templListView->addFlosTemplate(parentItem, flosTempl);
+  templListView->scrollToItem( item );
+  templListView->setCurrentItem( item );
+  openDialog( item, flosTempl, true );
 }
 
 bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )

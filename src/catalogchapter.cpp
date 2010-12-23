@@ -23,6 +23,7 @@
 #include <kdebug.h>
 
 #include "catalogchapter.h"
+#include "kraftdb.h"
 
 CatalogChapter::CatalogChapter()
   : mSortKey(0)
@@ -122,6 +123,7 @@ void CatalogChapter::save()
   q.bindValue( ":parentChapter", this->parentId().toInt() );
   q.exec();
 
+  mId = KraftDB::self()->getLastInsertID();
 }
 
 void CatalogChapter::saveNameAndDesc()
