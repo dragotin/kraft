@@ -467,7 +467,7 @@ void DocTypeEdit::renameTypeInDb( const QString& oldName,  const QString& newNam
   q.prepare( "UPDATE DocTypes SET name=:newName WHERE docTypeID=:oldId" );
   dbID id = DocType::docTypeId( oldName );
   if ( id.isOk() ) {
-    q.bindValue( ":newName", newName.toUtf8() );
+    q.bindValue( ":newName", newName );
     q.bindValue( ":oldId", id.toInt() );
     q.exec();
     if ( q.numRowsAffected() == 0 ) {
