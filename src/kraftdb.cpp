@@ -266,7 +266,7 @@ void KraftDB::wipeDatabase()
 SqlCommandList KraftDB::parseCommandFile( const QString& file )
 {
   QString sqlFile;
-  QString env( getenv( "KRAFT_DB_FILES" ) );
+  QString env( getenv( "BUILDDIR" ) );
   if( !env.isEmpty() && env.right(1) != QDir::separator () ) {
     env += QDir::separator ();
   }
@@ -277,7 +277,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
   }
 
   KStandardDirs stdDirs;
-  kDebug() << "XXXXXXXXXX: " << stdDirs.resourceDirs("data");
+  // kDebug() << "XXXXXXXXXX: " << stdDirs.resourceDirs("data");
 
   if( env.isEmpty() ) {
     // Environment-Variable is empty, search in KDE paths
@@ -292,11 +292,12 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
     }
   } else {
     // read from environment variable path
-    QString envPath = QString( "%1/%2/%3").arg(env).arg(driverPrefix).arg(file);
+    QString envPath = QString( "%1/database/%2/%3").arg(env).arg(driverPrefix).arg(file);
+    kDebug() << "Environment variable BUILDDIR set, searching for DB setup files in " << envPath;
     if( QFile::exists( envPath ) ) {
       sqlFile = envPath;
-    } else if( QFile::exists( QString( "%1/%2/migration/%3").arg(env).arg(driverPrefix).arg(file ) ) ){
-      sqlFile = QString( "%1/%2/migration/%3").arg(env).arg(driverPrefix).arg(file );
+    } else if( QFile::exists( QString( "%1/database/%2/migration/%3").arg(env).arg(driverPrefix).arg(file ) ) ){
+      sqlFile = QString( "%1/database/%2/migration/%3").arg(env).arg(driverPrefix).arg(file );
     }
   }
 
