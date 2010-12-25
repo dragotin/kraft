@@ -310,9 +310,7 @@ void PortalView::documentDigests()
            SIGNAL( documentSelected( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
-  connect( mDocDigestView, SIGNAL( currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-           this,  SLOT( slotDigestItemSelected( QTreeWidgetItem*,QTreeWidgetItem* ) ) );
-}
+ }
 
 void PortalView::slotCreateDocument()
 {
@@ -338,12 +336,6 @@ void PortalView::slotBuildView()
   QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
   mDocDigestView->slotBuildView();
   QApplication::restoreOverrideCursor();
-}
-
-void PortalView::slotDigestItemSelected( QTreeWidgetItem *current,QTreeWidgetItem* )
-{
-  kDebug() << "Digest Item Selected " << current << endl;
-
 }
 
 PortalView::~PortalView( )

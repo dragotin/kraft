@@ -55,7 +55,6 @@ public slots:
   void slotDocumentUpdate( DocGuardedPtr );
 
 protected slots:
-  void slotDigestItemSelected( QTreeWidgetItem *current,QTreeWidgetItem* );
   void slotCreateDocument();
 
 signals:
