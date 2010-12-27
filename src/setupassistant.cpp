@@ -373,7 +373,7 @@ SetupAssistant::SetupAssistant( QWidget *parent )
 
   connect( this, SIGNAL( currentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ),
            this, SLOT( slotCurrentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ) );
-  connect( this, SIGNAL( slotButtonClicked(int) ), this, SLOT( slotButtonClicked(int) ) );
+  connect( this, SIGNAL( buttonClicked(int) ), this, SLOT( slotButtonClicked(int) ) );
 
   setInitialSize( QSize( 450, 260 ) );
 
@@ -463,6 +463,7 @@ void SetupAssistant::slotButtonClicked( int buttCode )
       DatabaseSettings::self()->setDbPassword( mMysqlDetailsPage->dbPasswd() );
     }
     DatabaseSettings::self()->writeConfig();
+    kDebug() << "Database backend config written.";
   }
   KAssistantDialog::slotButtonClicked( buttCode );
 
@@ -473,18 +474,20 @@ void SetupAssistant::finalizePage()
   QString txt;
 
   if( mErrors.isEmpty() ) {
-    txt = i18n( "<p>The database setup was successfully completed.</p> " );
-    txt += i18n("<p>You can start to work with Kraft now. Please do not forget to");
+    txt = i18n( "<p>The database setup was successfully completed.</p>" );
+    txt += i18n("<p>You can start to work with Kraft now. Please do not forget to</p>");
+    txt += "<ul>";
     txt += i18n("<li>adjust various settings in the Kraft Preferences dialog.</li>" );
     txt += i18n("<li>Check the Catalog chapter list.</li>" );
     txt += i18n("<li>Make your business and have fun.</li>" );
-    txt += "</ul></p>";
+    txt += "</ul>";
     txt += i18n("<p>If you press <i>Finish</i> now, the new database configuration is stored in Krafts configuration.</p>");
   } else {
     foreach( QString err, mErrors ) {
       txt += "<p>" + err + "</p>";
     }
   }
+  // kDebug() << "this is the status text: " << txt;
   mFinalStatusPage->slotSetStatusText( txt );
 }
 
