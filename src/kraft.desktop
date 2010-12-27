@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Exec=kraft -caption "%c" %i %m
+Exec=kraft -caption "%c" %i
 Icon=kraft
-DocPath=kraft/index.html
+X-DocPath=kraft/index.html
 Terminal=false
 Name=Kraft
 Name[be]=Kraft
