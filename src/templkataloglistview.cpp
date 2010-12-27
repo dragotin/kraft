@@ -101,6 +101,11 @@ QTreeWidgetItem* TemplKatalogListView::addFlosTemplate( QTreeWidgetItem *parentI
   {
     listItem->setIcon(0, SmallIcon("accessories-calculator"));
   }
+
+  if ( mCheckboxes ) {
+    listItem->setCheckState(0, Qt::Unchecked);
+  }
+
   // store the connection between the listviewitem and the template in a dict.
   m_dataDict.insert( listItem, tmpl );
 

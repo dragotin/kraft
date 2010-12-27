@@ -71,6 +71,8 @@ public slots:
   virtual void contextMenuEvent( QContextMenuEvent* );
   virtual void slotRedraw();
 
+  virtual void setSelectFromMode();
+
 protected slots:
   virtual void slotUpdateSequence();
   virtual void slotItemEntered( QTreeWidgetItem*, int);

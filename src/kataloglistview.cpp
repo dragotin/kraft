@@ -59,7 +59,7 @@ KatalogListView::KatalogListView( QWidget *parent ) : QTreeWidget(parent),
     const QString style = DefaultProvider::self()->getStyleSheet( "templcatalog");
     setStyleSheet( style );
 
-    // Drag and Drop
+    // Drag and Drop for normal mode, is changed in setSelectFromMode
     setSelectionMode( QAbstractItemView::SingleSelection );
     setDragDropMode( QAbstractItemView::InternalMove );
     setDragEnabled( true );
@@ -84,7 +84,7 @@ KatalogListView::~KatalogListView()
 
 KMenu *KatalogListView::contextMenu()
 {
-  return mMenu; // ->contextMenu();
+  return mMenu;
 }
 
 void KatalogListView::addCatalogDisplay( const QString& name)
@@ -100,6 +100,16 @@ void KatalogListView::contextMenuEvent( QContextMenuEvent * event )
 Katalog* KatalogListView::catalog()
 {
   return KatalogMan::self()->getKatalog( m_catalogName );
+}
+
+void KatalogListView::setSelectFromMode()
+{
+  setSelectionMode( QAbstractItemView::SingleSelection ); // FIXME: Allow multiple selections later
+  setDragDropMode( QAbstractItemView::NoDragDrop );
+  setDragEnabled( false );
+  setAcceptDrops( false ); // currently only internal moves
+  setDropIndicatorShown( false );
+  setCheckboxes( true );
 }
 
 void KatalogListView::setupChapters()

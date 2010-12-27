@@ -155,6 +155,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
       if ( kat->type() == TemplateCatalog ) {
         TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
         katListView = tmpllistview;
+        katListView->setSelectFromMode(); // mode to only select from
         connect( tmpllistview,
                  SIGNAL( doubleClicked( QModelIndex ) ),
                  this,
@@ -169,8 +170,8 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         kDebug() << "Creating a selection list for catalog " << katName << endl;
       } else if ( kat->type() == MaterialCatalog ) {
         MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
-        matListView->setCheckboxes( true );
         katListView = matListView;
+        katListView->setSelectFromMode(); // mode to only select from
         connect( matListView,
                  SIGNAL( doubleClicked( QModelIndex ) ),
                  this,
@@ -182,6 +183,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
       } else if ( kat->type() == PlantCatalog ) {
         BrunsKatalogListView *brunsListView = new BrunsKatalogListView( this );
         katListView = brunsListView;
+        katListView->setSelectFromMode(); // mode to only select from
         brunsListView->addCatalogDisplay( katName );
         brunsListView->contextMenu()->addAction( mAcAddToDoc );
         mWidgets->addWidget( brunsListView );
@@ -193,6 +195,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         connect( katListView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
                  this, SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ) );
         KatalogMan::self()->registerKatalogListView( katName, katListView );
+
       }
     }
     if ( mWidgetMap.contains( katName ) ) {
