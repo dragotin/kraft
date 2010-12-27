@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Type=Application
 Exec=kraft -caption "%c" %i %m
 Icon=kraft
@@ -42,5 +41,4 @@ Name[tr]=Kraft
 Name[uk]=Kraft
 Name[x-test]=xxKraftxx
 Name[zh_TW]=Kraft
-Categories=Office;Finance;ProjectManagement;Database;
-Encoding=UTF-8
+Categories=Office;Finance;Database;
