@@ -38,10 +38,11 @@
 #include "catalogchapter.h"
 #include "addeditchapterdialog.h"
 
-KatalogListView::KatalogListView( QWidget *parent, bool ) : QTreeWidget(parent),
-    m_root(0),
-    mSortChapterItem(0),
-    mMenu(0)
+KatalogListView::KatalogListView( QWidget *parent ) : QTreeWidget(parent),
+  mCheckboxes( false ),
+  m_root(0),
+  mSortChapterItem(0),
+  mMenu(0)
 {
     setSelectionMode(QAbstractItemView::SingleSelection );
     setAlternatingRowColors( true );
@@ -215,6 +216,11 @@ bool KatalogListView::isChapter( QTreeWidgetItem *item )
 bool KatalogListView::isRoot( QTreeWidgetItem *item )
 {
     return (item == m_root );
+}
+
+void KatalogListView::setCheckboxes( bool cb )
+{
+  mCheckboxes = cb;
 }
 
 void KatalogListView::slotFreshupItem( QTreeWidgetItem*, void *, bool )

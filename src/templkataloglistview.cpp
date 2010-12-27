@@ -45,10 +45,6 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
   labels << i18n("Calc. Type");
 
   setHeaderLabels(labels);
-
-//    setAcceptDrops( true );
-//    setDragEnabled( true );
-//    setDropVisualizer(true);
 }
 
 /*

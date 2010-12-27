@@ -40,7 +40,7 @@ class KRAFTCAT_EXPORT KatalogListView : public QTreeWidget
 {
   Q_OBJECT
 public:
-  KatalogListView( QWidget *parent = 0, bool enableCheckboxes = false );
+  KatalogListView( QWidget *parent = 0 );
   ~KatalogListView();
 
   virtual void addCatalogDisplay( const QString& );
@@ -60,6 +60,9 @@ signals:
   void sequenceUpdateMaximum( int );
 
 public slots:
+
+  virtual void setCheckboxes( bool );
+
   virtual void slotFreshupItem( QTreeWidgetItem*, void*, bool remChildren = false );
   virtual void slotCreateNewChapter();
   virtual void slotEditCurrentChapter();
@@ -76,6 +79,7 @@ protected:
   virtual Katalog* catalog();
   void dropEvent( QDropEvent* );
 
+  bool             mCheckboxes;
   QTreeWidgetItem* tryAddingCatalogChapter( const CatalogChapter& );
 
   QTreeWidgetItem *m_root;

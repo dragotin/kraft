@@ -45,8 +45,9 @@ MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
   label->setObjectName("caption");
 
   mFilter = new FilterHeader( 0, page );
-  mKatalogListView = new MaterialKatalogListView( page, true );
+  mKatalogListView = new MaterialKatalogListView( page );
   mFilter->setListView( mKatalogListView );
+  mKatalogListView->setCheckboxes( true );
 
   Katalog *kat = KatalogMan::self()->getKatalog( MaterialKatalogView::MaterialCatalogName );
 

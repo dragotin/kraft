@@ -27,9 +27,8 @@
 #include "docposition.h"
 #include "kataloglistview.h"
 
-MaterialKatalogListView::MaterialKatalogListView( QWidget *w, bool enableCheckboxes )
-  : KatalogListView( w, enableCheckboxes ),
-    mCheckboxes( enableCheckboxes )
+MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
+  : KatalogListView( w )
 {
   setColumnCount( 6 );
 

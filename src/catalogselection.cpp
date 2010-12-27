@@ -169,6 +169,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         kDebug() << "Creating a selection list for catalog " << katName << endl;
       } else if ( kat->type() == MaterialCatalog ) {
         MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
+        matListView->setCheckboxes( true );
         katListView = matListView;
         connect( matListView,
                  SIGNAL( doubleClicked( QModelIndex ) ),
