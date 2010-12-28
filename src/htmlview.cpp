@@ -67,7 +67,9 @@ void HtmlView::setStylesheetFile( const QString &style )
 {
   char *prjPath = getenv( "KRAFT_HOME" );
   if( prjPath ) {
-    mStyleSheetFile = QString( "%1/src/%2" ).arg( prjPath ).arg( style );
+    mStyleSheetFile = QString( "%1/styles/%2" ).arg( prjPath ).arg( style );
+  } else if( getenv( "BUILDDIR" )) { // set in QCreator (at least)
+      mStyleSheetFile = QString("%1/styles/%2").arg( getenv("BUILDDIR")).arg(style);
   } else {
     mStyleSheetFile = KStandardDirs::locate( "appdata", style );
   }
