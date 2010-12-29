@@ -19,6 +19,7 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kdebug.h>
+#include <kmenu.h>
 
 #include "brunskatalog.h"
 #include "brunskataloglistview.h"
@@ -37,6 +38,8 @@ BrunsKatalogListView::BrunsKatalogListView( QWidget *w )
   headerLabels << i18n("Art-Ident");
   headerLabels << i18n("Art-Match");
   setHeaderLabels( headerLabels );
+
+  contextMenu()->addTitle( i18n("Bruns Catalog" ));
 }
 
 

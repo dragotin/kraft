@@ -43,9 +43,7 @@
 CatalogSelection::CatalogSelection( QWidget *parent )
   :QWidget( parent ),
    mCatalogSelector( 0 ),
-   mWidgets( 0 ),
-   mActions( 0 ),
-   mAcAddToDoc( 0 )
+   mWidgets( 0 )
 {
   QVBoxLayout *layout = new QVBoxLayout();
   layout->setMargin(KDialog::marginHint());
@@ -72,7 +70,6 @@ CatalogSelection::CatalogSelection( QWidget *parent )
   layout->addWidget(mWidgets);
 
   this->setLayout(layout);
-  initActions();
   setupCatalogList();
 }
 
@@ -81,16 +78,6 @@ void CatalogSelection::setupCatalogList()
   QStringList katalogNames = KatalogMan::self()->allKatalogNames();
   mCatalogSelector->insertItems(-1, katalogNames );
   slotSelectCatalog( katalogNames[0] );
-}
-
-void CatalogSelection::initActions()
-{
-  mActions     = new KActionCollection( this );
-  mActions->addAction( "appendToDoc", this, SIGNAL( actionAppendPosition()) );
-
-//  mAcAddToDoc  = new KAction( i18n("&Append to document"), "back", 0, this,
-//                              SIGNAL( actionAppendPosition() ), mActions, "appendToDoc");
-
 }
 
 void CatalogSelection::slotCatalogDoubleClicked( QModelIndex )
@@ -159,8 +146,8 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
                  SLOT( slotCatalogDoubleClicked( QModelIndex ) ) );
         tmpllistview->setShowCalcParts( false );
         tmpllistview->addCatalogDisplay( katName );
-        // mAcAddToDoc->plug( tmpllistview->contextMenu() );
-        tmpllistview->contextMenu()->addAction( mAcAddToDoc );
+        tmpllistview->contextMenu()->addAction( i18n("Append to Document"),
+                                               this, SIGNAL( actionAppendPosition() ) );
 
         mWidgets->addWidget( tmpllistview );
         mWidgetMap.insert(  katName, tmpllistview );
@@ -174,7 +161,8 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
                  this,
                  SLOT( slCatalogDoubleClicked( QModelIndex ) ) );
         matListView->addCatalogDisplay( katName );
-        matListView->contextMenu()->addAction( mAcAddToDoc );
+        matListView->contextMenu()->addAction( i18n("Append to Document"),
+                                              this, SIGNAL( actionAppendPosition() ) );
         mWidgets->addWidget( matListView );
         mWidgetMap.insert( katName, matListView );
       } else if ( kat->type() == PlantCatalog ) {
@@ -182,7 +170,8 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         katListView = brunsListView;
         katListView->setSelectFromMode(); // mode to only select from
         brunsListView->addCatalogDisplay( katName );
-        brunsListView->contextMenu()->addAction( mAcAddToDoc );
+        brunsListView->contextMenu()->addAction( i18n("Append to Document"),
+                                                this, SIGNAL( actionAppendPosition() ) );
         mWidgets->addWidget( brunsListView );
         mWidgetMap.insert(  katName, brunsListView );
         kDebug() << "Creating a selection list for catalog " << katName << endl;

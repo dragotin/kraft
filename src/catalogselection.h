@@ -45,7 +45,6 @@ public:
 
 protected:
   void setupCatalogList();
-  void initActions();
 
 signals:
   /*
@@ -70,8 +69,6 @@ private:
   QComboBox *mCatalogSelector;
   QStackedWidget *mWidgets;
   QMap<QString, KatalogListView*> mWidgetMap;
-  KActionCollection *mActions;
-  KAction *mAcAddToDoc;
   FilterHeader *mListSearchLine;
 };
 

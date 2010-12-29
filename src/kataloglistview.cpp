@@ -68,7 +68,6 @@ KatalogListView::KatalogListView( QWidget *parent ) : QTreeWidget(parent),
 
     // setSorting(-1);
     mMenu = new KMenu( this );
-    mMenu->addTitle( i18n("Template Catalog") );
 
     mChapterFont = font();
     mChapterFont.setBold( true );
@@ -104,7 +103,7 @@ Katalog* KatalogListView::catalog()
 
 void KatalogListView::setSelectFromMode()
 {
-  setSelectionMode( QAbstractItemView::NoSelection ); // FIXME: Allow multiple selections later
+  setSelectionMode( QAbstractItemView::SingleSelection /* NoSelection */ ); // FIXME: Allow multiple selections later
   setDragDropMode( QAbstractItemView::NoDragDrop );
   setDragEnabled( false );
   setAcceptDrops( false ); // currently only internal moves

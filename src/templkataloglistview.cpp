@@ -21,6 +21,7 @@
 #include <klocale.h>
 #include <kdebug.h>
 #include <kiconloader.h>
+#include <kmenu.h>
 
 #include "templkataloglistview.h"
 #include "portal.h"
@@ -45,6 +46,8 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
   labels << i18n("Calc. Type");
 
   setHeaderLabels(labels);
+
+  contextMenu()->addTitle( i18n("Template Catalog"));
 }
 
 /*

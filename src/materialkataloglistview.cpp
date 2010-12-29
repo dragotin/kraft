@@ -19,6 +19,7 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kdebug.h>
+#include <kmenu.h>
 
 #include "matkatalog.h"
 #include "stockmaterial.h"
@@ -41,6 +42,8 @@ MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
   headers << i18n("Last Modified");
 
   setHeaderLabels( headers );
+
+  contextMenu()->addTitle(i18n("Material Catalog"));
 }
 
 
