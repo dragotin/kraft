@@ -104,7 +104,7 @@ Katalog* KatalogListView::catalog()
 
 void KatalogListView::setSelectFromMode()
 {
-  setSelectionMode( QAbstractItemView::SingleSelection ); // FIXME: Allow multiple selections later
+  setSelectionMode( QAbstractItemView::NoSelection ); // FIXME: Allow multiple selections later
   setDragDropMode( QAbstractItemView::NoDragDrop );
   setDragEnabled( false );
   setAcceptDrops( false ); // currently only internal moves
@@ -193,6 +193,31 @@ QTreeWidgetItem *KatalogListView::tryAddingCatalogChapter( const CatalogChapter&
     }
   }
   return katItem;
+}
+
+CatalogTemplateList KatalogListView::selectedTemplates()
+{
+  CatalogTemplateList templates;
+
+  if( mCheckboxes ) { // checkbox mode
+    QTreeWidgetItemIterator it( this, QTreeWidgetItemIterator::Checked );
+    while (*it) {
+      QTreeWidgetItem *item = *it;
+      templates.append( static_cast<CatalogTemplate*>( itemData( item )));
+      item->setCheckState( 0, Qt::Unchecked );
+      ++it;
+    }
+  } else {
+    QList<QTreeWidgetItem*> items = selectedItems();
+
+    foreach( QTreeWidgetItem* item, items ) {
+      void *data = itemData( item );
+      if( data ) {
+        templates.append( static_cast<CatalogTemplate*>(data) );
+      }
+    }
+  }
+  return templates;
 }
 
 void* KatalogListView::itemData( QTreeWidgetItem *item )

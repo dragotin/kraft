@@ -23,6 +23,7 @@
 #include <QTreeWidget>
 
 #include "kraftcat_export.h"
+#include "catalogtemplate.h"
 
 /**
   *@author Klaas Freitag
@@ -34,7 +35,6 @@ class KMenu;
 class DocPosition;
 class Katalog;
 class CatalogChapter;
-class CatalogTemplate;
 
 class KRAFTCAT_EXPORT KatalogListView : public QTreeWidget
 {
@@ -46,6 +46,8 @@ public:
   virtual void addCatalogDisplay( const QString& );
   virtual void* currentItemData();
   virtual void* itemData( QTreeWidgetItem* );
+
+  CatalogTemplateList selectedTemplates();
 
   bool isChapter(QTreeWidgetItem*);
   bool isRoot(QTreeWidgetItem*);

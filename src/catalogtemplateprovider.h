@@ -19,6 +19,7 @@
 
 #include "templateprovider.h"
 #include "doctext.h"
+#include "catalogtemplate.h"
 
 class QWidget;
 class CatalogSelection;
@@ -32,7 +33,7 @@ public:
   void setCatalogSelection( CatalogSelection * );
 
 signals:
-  void positionSelected( Katalog*, void* );
+  void templatesToDocument( Katalog*, CatalogTemplateList );
 
 public slots:
   void slotNewTemplate();

@@ -119,8 +119,11 @@ class KraftView : public KDialog
   void slotModifiedPositions();
   void slotModifiedHeader();
   void slotModifiedFooter();
-  void slotAddPosition( Katalog*, void* );
-  void slotAddPosition();
+
+  void slotAddItem( Katalog*, void* );
+  void slotAddNewItem();
+  void slotAddItems( Katalog*, CatalogTemplateList );
+
   void slotAddExtraPosition();
   void slotImportItems();
   void slotFocusPosition( PositionViewWidget*,  int );

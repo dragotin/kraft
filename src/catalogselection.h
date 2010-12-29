@@ -41,7 +41,7 @@ public:
   ~CatalogSelection() { };
 
   Katalog* currentSelectedKat();
-  void *currentSelectedPosition();
+  CatalogTemplateList currentSelectedPositions();
 
 protected:
   void setupCatalogList();

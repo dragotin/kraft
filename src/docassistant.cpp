@@ -192,8 +192,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   /* Catalog Template Provider */
   mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
   mCatalogTemplateProvider->setCatalogSelection( mCatalogSelection );
-  connect( mCatalogTemplateProvider,  SIGNAL( positionSelected( Katalog*, void* ) ),
-           this, SIGNAL( positionSelected( Katalog*, void* ) ) );
+  connect( mCatalogTemplateProvider,  SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ),
+           this, SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ) );
 
   mAddressTemplateProvider = new AddressTemplateProvider( parent );
   connect( mHeaderSelection->addressSelection(), SIGNAL( addressSelected( const Addressee& ) ),

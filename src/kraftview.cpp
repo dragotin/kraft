@@ -162,8 +162,8 @@ KraftView::KraftView(QWidget *parent) :
   mCSplit->addWidget( mAssistant );
 
   /* catalog template selection signal */
-  connect( mAssistant,  SIGNAL( positionSelected( Katalog*, void* ) ),
-           this,  SLOT( slotAddPosition( Katalog*, void* ) ) );
+  connect( mAssistant,  SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ),
+           this,  SLOT( slotAddItems( Katalog*, CatalogTemplateList ) ) );
 
   /* signal to toggle the visibility of the template section in the assistant */
   connect(  mAssistant, SIGNAL( toggleShowTemplates( bool ) ),
@@ -861,14 +861,23 @@ void KraftView::slotNewFooterText( const QString& str )
   slotModifiedFooter();
 }
 
-void KraftView::slotAddPosition()
+// Add a new item. A katalog is required if user wants to store it in a
+// catalog immediately. FIXME - now the current active catalog in the
+// catalog selection is used.
+void KraftView::slotAddNewItem()
 {
-  // find the katalog
-  CatalogSelection *catsel = mAssistant->catalogSelection();
-  slotAddPosition( catsel->currentSelectedKat(), 0 );
+  Katalog* kat = mAssistant->catalogSelection()->currentSelectedKat();
+  slotAddItem( kat, 0 );
 }
 
-void KraftView::slotAddPosition( Katalog *kat, void *tmpl )
+void KraftView::slotAddItems( Katalog *kat, CatalogTemplateList templates)
+{
+  foreach( CatalogTemplate *templ, templates ) {
+    slotAddItem( kat, templ );
+  }
+}
+
+void KraftView::slotAddItem( Katalog *kat, void *tmpl )
 {
   // newpos is a list position, starts counting at zero!
   int newpos = mPositionWidgetList.count();

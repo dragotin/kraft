@@ -43,15 +43,11 @@ void CatalogTemplateProvider::setCatalogSelection( CatalogSelection *cs )
 void CatalogTemplateProvider::slotNewTemplate()
 {
   kDebug() << "SlotNewTemplate for Catalog called!" << endl;
-
-
 }
 
 void CatalogTemplateProvider::slotEditTemplate()
 {
   kDebug() << "SlotEditTemplate for Catalog called!" << endl;
-
-
 }
 
 void CatalogTemplateProvider::slotDeleteTemplate()
@@ -65,9 +61,8 @@ void CatalogTemplateProvider::slotTemplateToDocument()
   if ( mCatalogSelection ) {
     Katalog *catalog = mCatalogSelection->currentSelectedKat();
 
-    emit positionSelected( catalog, mCatalogSelection->currentSelectedPosition() );
+    emit templatesToDocument( catalog, mCatalogSelection->currentSelectedPositions() );
   }
 }
 
-#include "catalogtemplateprovider.moc"
 

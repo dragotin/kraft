@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "catalogselection.h"
+#include "catalogtemplate.h"
 #include "katalogman.h"
 #include "templkatalog.h"
 #include "templkataloglistview.h"
@@ -92,25 +93,21 @@ void CatalogSelection::initActions()
 
 }
 
-
 void CatalogSelection::slotCatalogDoubleClicked( QModelIndex )
 {
   emit actionAppendPosition();
 }
 
-void *CatalogSelection::currentSelectedPosition()
+CatalogTemplateList CatalogSelection::currentSelectedPositions()
 {
-  void *flosPtr = 0;
-
+  CatalogTemplateList re;
   const QString currentCat = mCatalogSelector->currentText();
   if( mWidgetMap.contains( currentCat ) ) {
     KatalogListView *lv = mWidgetMap[currentCat];
 
-    if ( lv ) {
-      flosPtr = lv->currentItemData();
-    }
+    re = lv->selectedTemplates();
   }
-  return flosPtr;
+  return re;
 }
 
 Katalog* CatalogSelection::currentSelectedKat()

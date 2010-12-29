@@ -24,6 +24,7 @@
 
 #include "kraftdoc.h"
 #include "headerselection.h"
+#include "catalogtemplate.h"
 
 class DocPostCard;
 class CatalogSelection;
@@ -87,7 +88,7 @@ protected slots:
 
 signals:
   void selectPage( int );
-  void positionSelected( Katalog*, void* );
+  void templatesToDocument( Katalog*, CatalogTemplateList );
   void toggleShowTemplates( bool );
 
   void addressTemplate( const Addressee& );
