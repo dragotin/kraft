@@ -303,7 +303,7 @@ void KraftView::setupPositions()
 
     m_positionScroll = edit->positionScroll();
 
-    connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddPosition() ) );
+    connect( edit, SIGNAL( addPositionClicked() ), SLOT( slotAddNewItem() ) );
     connect( edit, SIGNAL( addExtraClicked() ), SLOT( slotAddExtraPosition() ) );
     connect( edit, SIGNAL( importItemsClicked() ), SLOT( slotImportItems() ) );
 
