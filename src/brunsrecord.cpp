@@ -17,6 +17,7 @@
 #include <kdebug.h>
 
 #include "brunsrecord.h"
+#include "geld.h"
 
 // *********************************************** BrunsSize
 BrunsSize::BrunsSize() :
@@ -36,7 +37,8 @@ sizeAddNo( 0 )
 
 
 BrunsRecord::BrunsRecord(int d)
-    : artNo(d),
+    : CatalogTemplate(),
+      artNo(d),
       passNeeded( false ),
       plantGroup( 0 ),
       artId( 0 )
@@ -65,3 +67,13 @@ void BrunsRecord::debugOut()
     kDebug() << artNo << "  dt. Name: " << dtName << ", lt. Name. " << ltName << endl;
 }
 
+bool BrunsRecord::save()
+{
+  return true;
+}
+
+Geld BrunsRecord::unitPrice()
+{
+  Geld g;
+  return g;
+}

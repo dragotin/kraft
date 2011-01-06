@@ -877,7 +877,7 @@ void KraftView::slotAddItems( Katalog *kat, CatalogTemplateList templates)
   }
 }
 
-void KraftView::slotAddItem( Katalog *kat, void *tmpl )
+void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
 {
   // newpos is a list position, starts counting at zero!
   int newpos = mPositionWidgetList.count();

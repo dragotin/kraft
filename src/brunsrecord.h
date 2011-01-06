@@ -23,9 +23,13 @@
 
 #include "kraftcat_export.h"
 
+#include "catalogtemplate.h"
 /**
 @author Klaas Freitag
 */
+
+class Geld;
+
 class KRAFTCAT_EXPORT BrunsSize {
 
 public:
@@ -71,7 +75,8 @@ private:
 typedef QList<BrunsSize> BrunsSizeList;
 
 
-class KRAFTCAT_EXPORT BrunsRecord{
+class KRAFTCAT_EXPORT BrunsRecord : public CatalogTemplate
+{
 public:
     // Construct with an artikelID
     BrunsRecord(){};
@@ -103,6 +108,10 @@ public:
     void addSize( const BrunsSize& size );
     BrunsSizeList getSizes() { return m_sizes; }
     void clearSizes();
+
+    // pure virtuals from CatalogTemplate
+    bool save();
+    Geld unitPrice();
     
 private:
     BrunsSizeList m_sizes;

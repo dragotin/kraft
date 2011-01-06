@@ -120,7 +120,7 @@ class KraftView : public KDialog
   void slotModifiedHeader();
   void slotModifiedFooter();
 
-  void slotAddItem( Katalog*, void* );
+  void slotAddItem( Katalog*, CatalogTemplate* );
   void slotAddNewItem();
   void slotAddItems( Katalog*, CatalogTemplateList );
 
