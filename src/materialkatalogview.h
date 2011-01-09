@@ -46,6 +46,7 @@ public:
 protected slots:
   void slNewTemplate();
   void slEditTemplate();
+  void slDeleteTemplate();
 
   void openDialog( QTreeWidgetItem *, StockMaterial *, bool );
   void slotEditRejected();

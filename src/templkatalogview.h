@@ -72,6 +72,7 @@ public slots:
   /* Editing of templates -> open edit dialog */
   void slEditTemplate();
   void slNewTemplate();
+  void slDeleteTemplate();
 
   /* selected Ok in the template editor */
   void slEditOk(FloskelTemplate*);

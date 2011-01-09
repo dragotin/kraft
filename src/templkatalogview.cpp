@@ -90,20 +90,19 @@ void TemplKatalogView::slEditTemplate()
 
 void TemplKatalogView::slNewTemplate()
 {
-  KatalogListView *listview = getListView();
-  if( !listview ) return;
-  TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listview);
+  KatalogListView *listView = getListView();
+  if( !listView ) return;
 
   // create new template object
   FloskelTemplate *flosTempl = new FloskelTemplate();
   flosTempl->setText( i18n( "<new template>" ) );
 
   // find the corresponding parent (==chapter) item
-  QTreeWidgetItem *parentItem = static_cast<QTreeWidgetItem*>(listview->currentItem());
+  QTreeWidgetItem *parentItem = static_cast<QTreeWidgetItem*>(listView->currentItem());
   if( parentItem )
   {
     // if it is not a chapter nor root, take the parent
-    if( ! (templListView->isRoot(parentItem) || templListView->isChapter(parentItem)) )
+    if( ! (listView->isRoot(parentItem) || listView->isChapter(parentItem)) )
     {
       parentItem = (QTreeWidgetItem*) parentItem->parent();
     }
@@ -111,16 +110,22 @@ void TemplKatalogView::slNewTemplate()
 
   if( parentItem ) {
     // try to find out which catalog is open/current
-    CatalogChapter *chap = static_cast<CatalogChapter*>( templListView->itemData( parentItem ) );
+    CatalogChapter *chap = static_cast<CatalogChapter*>( listView->itemData( parentItem ) );
     if( chap ) {
       flosTempl->setChapterId( chap->id().toInt(), true );
     }
   }
 
+  TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listView);
   QTreeWidgetItem *item = templListView->addFlosTemplate(parentItem, flosTempl);
-  templListView->scrollToItem( item );
-  templListView->setCurrentItem( item );
+  listView->scrollToItem( item );
+  listView->setCurrentItem( item );
   openDialog( item, flosTempl, true );
+}
+
+void TemplKatalogView::slDeleteTemplate()
+{
+
 }
 
 bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )
@@ -176,6 +181,7 @@ void TemplKatalogView::openDialog( QTreeWidgetItem *listitem, FloskelTemplate *t
 
 void TemplKatalogView::slEditOk(FloskelTemplate* templ)
 {
+    // the dialog saves the template in its accept-slot.
     KatalogListView *listview = getListView();
     if( !listview ) return;
     TemplKatalogListView *templListView = static_cast<TemplKatalogListView*>(listview);
@@ -183,7 +189,7 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
     if(m_flosDialog ){
       if ( m_flosDialog->templateIsNew() ) {
          TemplKatalog *k = static_cast<TemplKatalog*>( getKatalog( m_katalogName ) );
-        if ( k ) k->addNewTemplate( templ );
+         if ( k ) k->addNewTemplate( templ );
       }
     }
 
@@ -220,4 +226,3 @@ void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
     KatalogView::createCentralWidget( box, w );
 }
 
-#include "templkatalogview.moc"

@@ -5,8 +5,9 @@
     <Action name="export_catalog"/>
   </Menu>
   <Menu name="templates"><text>&amp;Catalog</text>
-    <Action name="edit_vorlage"/>
-    <Action name="neue_vorlage"/>
+    <Action name="edit_template"/>
+    <Action name="new_template"/>
+    <Action name="delete_template"/>
     <Separator/>
     <Action name="edit_chapter"/>
     <Action name="add_chapter"/>

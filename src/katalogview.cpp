@@ -67,6 +67,7 @@ KatalogView::KatalogView( QWidget* parent, const char* ) :
     m_acEditChapter(0),
     m_acEditItem(0),
     m_acNewItem(0),
+    m_acDeleteItem(0),
     m_acExport(0),
     m_filterHead(0),
     m_editListViewItem(0),
@@ -105,26 +106,22 @@ void KatalogView::init(const QString& katName )
                this, SLOT(slEditTemplate()));
       connect( listview, SIGNAL(templateHoovered(CatalogTemplate*)),
                this, SLOT(slotShowTemplateDetails( CatalogTemplate*)));
+
+      // Populate the context Menu
+      (listview->contextMenu())->addAction( m_acEditItem );
+      (listview->contextMenu())->addAction( m_acNewItem );
+      (listview->contextMenu())->addAction( m_acDeleteItem );
+      (listview->contextMenu())->addSeparator();
+      (listview->contextMenu())->addAction( m_acAddChapter );
+      (listview->contextMenu())->addAction( m_acEditChapter );
+      (listview->contextMenu())->addAction( m_acRemChapter );
+      getKatalog( katName );
+      listview->addCatalogDisplay( katName );
   }
 
   setCentralWidget(w);
   m_editListViewItem = 0;
-  kDebug() << "Gettign katalog!" << katName << endl;
-  getKatalog( katName );
-  listview->addCatalogDisplay( katName );
-
-  KatalogListView *lv = getListView();
-
-  // Populate the context Menu
-  (lv->contextMenu())->addAction( m_acEditItem );
-  (lv->contextMenu())->addAction( m_acNewItem );
-  (lv->contextMenu())->addSeparator();
-  (lv->contextMenu())->addAction( m_acAddChapter );
-  (lv->contextMenu())->addAction( m_acEditChapter );
-  (lv->contextMenu())->addAction( m_acRemChapter );
-  // m_acEditItem->plug( lv->contextMenu() );
-  // m_acNewItem->plug( lv->contextMenu() );
-  // m_acEditChapters->plug( lv->contextMenu() );
+  kDebug() << "Getting katalog!" << katName << endl;
 
   setAutoSaveSettings( QString::fromLatin1( "CatalogWindow" ),  true );
 }
@@ -190,18 +187,25 @@ void KatalogView::initActions()
   m_acRemChapter->setStatusTip(i18n("Remove a sub chapter"));
   m_acRemChapter->setEnabled(false);
 
-  m_acEditItem = actionCollection()->addAction( "edit_vorlage", this, SLOT( slEditTemplate() ) );
+  m_acEditItem = actionCollection()->addAction( "edit_template", this, SLOT( slEditTemplate() ) );
   m_acEditItem->setText( i18n("Edit template") );
   m_acEditItem->setIcon( KIcon("document-edit"));
   m_acEditItem->setStatusTip(i18n("Opens the editor window for templates to edit the selected one"));
   m_acEditItem->setEnabled(false);
 
-  m_acNewItem = actionCollection()->addAction( "neue_vorlage", this, SLOT( slNewTemplate() ) );
+  m_acNewItem = actionCollection()->addAction( "new_template", this, SLOT( slNewTemplate() ) );
   m_acNewItem->setText( i18n("New template") );
   m_acNewItem->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::New) );
   m_acNewItem->setIcon( KIcon("document-new"));
   m_acNewItem->setStatusTip(i18n("Opens the editor window for templates to enter a new template"));
   m_acNewItem->setEnabled(true);
+
+  m_acDeleteItem = actionCollection()->addAction( "delete_template", this, SLOT( slDeleteTemplate() ) );
+  m_acDeleteItem->setText( i18n("Delete template") );
+  m_acDeleteItem->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Clear) );
+  m_acDeleteItem->setIcon( KIcon("document-delete"));
+  m_acDeleteItem->setStatusTip(i18n("Deletes the template"));
+  m_acDeleteItem->setEnabled(true);
 
   m_acExport = actionCollection()->addAction( "export_catalog", this, SLOT( slExport() ) );
   m_acExport->setText( i18n("Export catalog") );
@@ -370,6 +374,7 @@ void KatalogView::slTreeviewItemChanged( QTreeWidgetItem *newItem, QTreeWidgetIt
     chapterEdit = true;
   }
   m_acEditItem->setEnabled(itemEdit);
+  m_acDeleteItem->setEnabled(itemEdit);
   m_acNewItem->setEnabled( itemNew );
   m_acAddChapter->setEnabled( chapterNew );
   m_acEditChapter->setEnabled( chapterEdit );

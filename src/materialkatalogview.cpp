@@ -105,6 +105,11 @@ void MaterialKatalogView::slNewTemplate()
 
 }
 
+void MaterialKatalogView::slDeleteTemplate()
+{
+
+}
+
 void MaterialKatalogView::openDialog( QTreeWidgetItem *listitem, StockMaterial *tmpl, bool isNew )
 {
   mDialog = new MaterialTemplDialog( this );

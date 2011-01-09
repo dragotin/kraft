@@ -129,6 +129,7 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
 
     KAction* m_acEditItem;
     KAction* m_acNewItem;
+    KAction* m_acDeleteItem;
     KAction* m_acExport;
 
     // KToggleAction* viewToolBar;
