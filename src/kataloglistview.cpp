@@ -236,6 +236,24 @@ void* KatalogListView::currentItemData()
   }
 }
 
+void KatalogListView::removeTemplateItem( QTreeWidgetItem *item )
+{
+  if( item == mSortChapterItem )
+    mSortChapterItem = 0;
+
+  QHashIterator<int, QTreeWidgetItem*> it( mChapterDict );
+  while( it.hasNext() ) {
+    it.next();
+    if ( it.value() == item ) {
+      mChapterDict.remove(it.key());
+      break;
+    }
+  }
+
+  m_dataDict.remove( item );
+  delete item;
+}
+
 bool KatalogListView::isChapter( QTreeWidgetItem *item )
 {
   QHashIterator<int, QTreeWidgetItem*> it( mChapterDict );

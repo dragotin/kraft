@@ -125,7 +125,30 @@ void TemplKatalogView::slNewTemplate()
 
 void TemplKatalogView::slDeleteTemplate()
 {
+  kDebug() << "delete template hit";
+  TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
+  if( listview )
+  {
+    FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
+    if( currTempl ) {
+      int id = currTempl->getTemplID();
+      if( KMessageBox::questionYesNo( this,
+                                     i18n( "Do you really want to delete the template from the catalog?" ),
+                                     i18n( "Delete Template" ),
+                                     KStandardGuiItem::yes(), KStandardGuiItem::no(), "DeleteTemplate" )
+          == KMessageBox::Yes )
+      {
 
+        kDebug() << "Delete item with id " << id;
+        TemplKatalog *k = static_cast<TemplKatalog*>( getKatalog( m_katalogName ) );
+
+        if( k ) {
+          k->deleteTemplate( id );
+          listview->removeTemplateItem( listview->currentItem());
+        }
+      }
+    }
+  }
 }
 
 bool TemplKatalogView::currentItemToDocPosition( DocPosition& pos )

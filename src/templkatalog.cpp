@@ -161,6 +161,37 @@ int TemplKatalog::addNewTemplate( FloskelTemplate *tmpl )
   return re;
 }
 
+void TemplKatalog::deleteTemplate( int id )
+{
+
+  // Remove entry from the m_flosList
+  FloskelTemplateListIterator it(m_flosList);
+  FloskelTemplate *tmpl;
+  int cnt = 0;
+
+  while( it.hasNext() ) {
+    tmpl = it.next();
+    if( tmpl->getTemplID() == id ) {
+      break;
+    }
+    cnt++;
+  }
+  if( cnt < m_flosList.size()) {
+    m_flosList.removeAt( cnt );
+  }
+
+  QStringList tables;
+  tables << "Catalog" << "CalcFixed" << "CalcMaterials" << "CalcTime";
+
+  foreach( const QString table, tables ) {
+    QSqlQuery q;
+    q.prepare( "DELETE FROM " + table + " WHERE TemplID=:Id");
+    q.bindValue( ":Id", id );
+    q.exec();
+    kDebug() << "SQL Delete Success: " << q.lastError().text();
+  }
+}
+
 int TemplKatalog::loadCalcParts( FloskelTemplate *flos )
 {
   int cnt = 0;

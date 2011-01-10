@@ -75,6 +75,8 @@ public slots:
 
   virtual void setSelectFromMode();
 
+  virtual void removeTemplateItem( QTreeWidgetItem* );
+
 protected slots:
   virtual void slotUpdateSequence();
   virtual void slotItemEntered( QTreeWidgetItem*, int);

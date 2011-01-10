@@ -52,6 +52,7 @@ public:
     int addNewTemplate( FloskelTemplate *tmpl );
 public slots:
     void writeXMLFile();
+    void deleteTemplate( int );
 private:
     int loadCalcParts( FloskelTemplate* );
     int loadTimeCalcParts( FloskelTemplate* );
