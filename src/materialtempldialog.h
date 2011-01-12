@@ -57,13 +57,13 @@ protected slots:
   void slSaleAddChanged( double );
 
 private:
-  bool askChapterChange( StockMaterial*, int);
   void setPriceCalc( double, double, double );
 
   StockMaterial *mSaveMaterial;
   bool m_templateIsNew;
   Katalog *m_katalog;
   const double Eta;
+  int mChapId;
 };
 
 #endif

@@ -137,9 +137,10 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
     chapterNames.append( chap.name() );
   }
   mCbChapter->insertItems(-1, chapterNames );
-  int chapID = t->chapter();
-  QString chap = m_katalog->chapterName(dbID(chapID));
+  mChapId = t->chapter();
+  QString chap = m_katalog->chapterName(dbID( mChapId ));
   mCbChapter->setCurrentIndex(mCbChapter->findText( chap ));
+  mCbChapter->setEnabled( false );
 
   // unit settings
   mCbUnit->insertItems(-1, UnitManager::self()->allUnits() );
@@ -161,9 +162,12 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   mEditMaterial->setFocus();
   mEditMaterial->selectAll();
 
-  // percent add on sale price
-  double diff = priceOut - priceIn;
-  double percent = diff / priceIn * 100.0;
+ // percent add on sale price
+  double percent = 10.0;
+  if( priceIn > Eta ) {
+    double diff = priceOut - priceIn;
+    percent = diff / priceIn * 100.0;
+  }
   mInSaleAdd->setValue( percent );
 }
 
@@ -189,18 +193,8 @@ void MaterialTemplDialog::accept()
     kDebug() << "Setting unit id "  << u << endl;
     mSaveMaterial->setUnit( UnitManager::self()->getUnit( u ) );
 
-    const QString str2 = mCbChapter->currentText();
-    int chapId = 0; // FIXME: get a chapter catalog Id of hirarchical
-    // int chapId = m_katalog->chapterID( str2 ).toInt();
-    if ( !templateIsNew() && chapId != mSaveMaterial->chapter() ) {
-      if( askChapterChange( mSaveMaterial, chapId )) {
-        mSaveMaterial->setChapter( chapId );
-        emit( chapterChanged( chapId ));
-      }
-    }
-
-    chapId = 0; // FIXME: get a chapter catalog Id of hirarchical
-    mSaveMaterial->setChapter( chapId );
+    // chapId = 0; // FIXME: get a chapter catalog Id of hirarchical
+    mSaveMaterial->setChapter( mChapId );
 
     double db = mInPurchasePrice->value();
     mSaveMaterial->setPurchPrice( Geld( db ) );
@@ -217,20 +211,6 @@ void MaterialTemplDialog::accept()
   KDialog::accept();
 }
 
-bool MaterialTemplDialog::askChapterChange( StockMaterial*, int )
-{
-  if( KMessageBox::questionYesNo( this,
-                                  i18n( "The catalog chapter was changed for this template.\nDo you really want to move the template to the new chapter?"),
-                                  i18n("Changed Chapter"), KStandardGuiItem::yes(), KStandardGuiItem::no(),
-                                  "chapterchange" ) == KMessageBox::Yes )
-  {
-    return true;
-
-  } else {
-    return false;
-  }
-}
-
 void MaterialTemplDialog::reject()
 {
   if ( m_templateIsNew ) {
@@ -241,4 +221,3 @@ void MaterialTemplDialog::reject()
 }
 
 
-#include "materialtempldialog.moc"

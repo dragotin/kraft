@@ -39,6 +39,7 @@ public:
 
   int load();
   void reload( dbID );
+  void deleteMaterial( int );
 
   KatalogType type() { return MaterialCatalog; }
   StockMaterialList getRecordList( const CatalogChapter& );

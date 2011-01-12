@@ -21,6 +21,7 @@
 
 #include <kdebug.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 
 #include "katalogman.h"
 #include "materialkatalogview.h"
@@ -107,7 +108,30 @@ void MaterialKatalogView::slNewTemplate()
 
 void MaterialKatalogView::slDeleteTemplate()
 {
+  kDebug() << "delete template hit";
+  MaterialKatalogListView* listview = static_cast<MaterialKatalogListView*>(getListView());
+  if( listview )
+  {
+    StockMaterial *currTempl = static_cast<StockMaterial*> (listview->currentItemData());
+    if( currTempl ) {
+      int id = currTempl->getID();
+      if( KMessageBox::questionYesNo( this,
+                                     i18n( "Do you really want to delete the template from the catalog?" ),
+                                     i18n( "Delete Template" ),
+                                     KStandardGuiItem::yes(), KStandardGuiItem::no(), "DeleteTemplate" )
+          == KMessageBox::Yes )
+      {
 
+        kDebug() << "Delete item with id " << id;
+        MatKatalog *k = static_cast<MatKatalog*>( getKatalog( m_katalogName ) );
+
+        if( k ) {
+          k->deleteMaterial( id );
+          listview->removeTemplateItem( listview->currentItem());
+        }
+      }
+    }
+  }
 }
 
 void MaterialKatalogView::openDialog( QTreeWidgetItem *listitem, StockMaterial *tmpl, bool isNew )
@@ -160,4 +184,3 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
   mNewItem = 0;
 }
 
-#include "materialkatalogview.moc"

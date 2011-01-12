@@ -74,6 +74,32 @@ int MatKatalog::load()
   return cnt;
 }
 
+void MatKatalog::deleteMaterial( int id )
+{
+  StockMaterialListIterator it( mAllMaterial );
+  int cnt = 0;
+
+  kDebug() << "Deleting material id=" << id;
+  while( it.hasNext() ) {
+    StockMaterial *mat = it.next();
+    if( mat->getID() == id ) {
+      break;
+    }
+    cnt++;
+  }
+  if( cnt < mAllMaterial.count() ) {
+    mAllMaterial.removeAt( cnt );
+  }
+
+  // remove from database.
+  QSqlQuery q;
+  q.prepare( "DELETE FROM stockMaterial WHERE matID=:Id");
+  q.bindValue( ":Id", id );
+  q.exec();
+  kDebug() << "SQL Delete Success: " << q.lastError().text();
+
+}
+
 StockMaterialList MatKatalog::getRecordList( const CatalogChapter& chapter )
 {
   StockMaterialList list;
