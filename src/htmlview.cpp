@@ -154,4 +154,3 @@ void HtmlView::showWelcomePage()
   displayContent( t );
 }
 
-#include "htmlview.moc"

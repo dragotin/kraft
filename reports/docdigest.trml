@@ -1,0 +1,10 @@
+<!-- Check file docdigestview.css for stylesheet definition. It is added
+     to the html output automagically.
+  -->
+<body>
+<h2>{{HEADLINE}}</h2>
+<p>Date: {{DATE}}</p>
+<p>{{ARCHDOCS_TAG}}</p>
+</body>
+
+

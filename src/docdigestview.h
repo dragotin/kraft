@@ -19,13 +19,11 @@
 
 #include <QWidget>
 #include <QMap>
-#include <QMultiMap>
 #include <QTreeWidgetItem>
-
-#include <kabc/addressee.h>
 
 #include "docdigest.h"
 #include "docguardedptr.h"
+#include "models/documentproxymodels.h"
 
 class FilterHeader;
 class KMenu;
@@ -34,7 +32,7 @@ class dbID;
 class ArchDocDigest;
 class QContextMenuEvent;
 class QToolBox;
-class KJob;
+class HtmlView;
 
 class DocDigestView : public QWidget
 {
@@ -44,62 +42,59 @@ public:
   DocDigestView( QWidget *parent = 0 );
   ~DocDigestView();
 
-  void addItems( QTreeWidget*, DocDigestList, QTreeWidgetItem *chapParent = 0 );
-  void addArchivedItem( dbID docID, dbID archID);
-
-  QString currentDocumentId();
-
+  int currentDocumentRow() const;
+  int currentArchivedRow() const;
+  QString currentDocumentId( ) const;
   QList<KMenu*> contextMenus();
 
-  ArchDocDigest currentArchiveDoc() const;
-
 public slots:
-  void slotNewDoc( DocGuardedPtr );
-  void slotUpdateDoc( DocGuardedPtr );
-  void slotDocOpenRequest( QTreeWidgetItem*, int );
+
   void slotBuildView();
 
 protected:
   void contextMenuEvent( QContextMenuEvent* );
-  QList<QTreeWidget *> initializeTreeWidgets();
+  QList<QTreeView *> initializeTreeWidgets();
 
 protected slots:
-  // void slotOpenCurrentDoc();
-  void slotCurrentChanged( QTreeWidgetItem*, QTreeWidgetItem* = 0 );
+  void slotDocOpenRequest( QModelIndex );
+  void slotCurrentChanged( QModelIndex, QModelIndex );
   void slotCurrentChangedToolbox ( int index );
-  void setupListViewItemFromDoc( DocGuardedPtr , QTreeWidgetItem* );
-  QTreeWidgetItem *addDocToParent( DocGuardedPtr, QTreeWidget*, QTreeWidgetItem* = 0);
-  void getClientNames();
-  void readContacts( KJob* );
+  void slotShowDocDetails( DocDigest );
 
 signals:
   void createDocument();
   void openDocument( const QString& );
   void viewDocument( const QString& );
   void copyDocument( const QString& );
-  void openArchivedDocument( const ArchDocDigest& );
   void docSelected( const QString& );
-  void archivedDocSelected( const ArchDocDigest& );
-  //void currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*);
+  void openArchivedDocument( const QString& , const QString& );
+  void archivedDocSelected( const QString&, const QString&  );
 
 private:
 
-  QTreeWidget *mAllView;
-  QTreeWidget *mLatestView;
-  QTreeWidget *mTimeView;
+  QTreeView *mAllView;
+  QTreeView *mLatestView;
+  QTreeView *mTimeView;
+
+  QModelIndex mCurrentlySelected;
+
+  DocumentFilterModel *mAllDocumentsModel;
+  DocumentFilterModel *mLatestDocModel;
+  TimelineModel *mTimelineModel;
+
+  QList<QTreeView *> treeviewlist;
 
   FilterHeader *mFilterHeader;
   KMenu *mTimelineMenu;
   KMenu *mAllMenu;
   KMenu *mLatestMenu;
 
+  HtmlView    *mShowDocDetailsView;
   QToolBox    *mToolBox;
   QPushButton *mNewDocButton;
   QMap<QTreeWidgetItem*, QString> mDocIdDict;
   QMap<QTreeWidgetItem*, ArchDocDigest> mArchIdDict;
-  QMultiMap<QString, QTreeWidgetItem*> mClientIdDict;
-
-  KABC::Addressee::List mContacts;
+  QString      mTemplFile;
 };
 
 #endif

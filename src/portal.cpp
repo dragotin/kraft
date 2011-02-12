@@ -485,7 +485,7 @@ void Portal::slotPrintDocument()
     ArchiveMan *archman = ArchiveMan::self();
     dbID archID = archman->archiveDocument( docPtr );
     slotPrintDocument( ident, archID );
-    m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
+    // m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
   }
   busyCursor( false );
   slotStatusMsg( i18n( "Ready." ) );
@@ -599,9 +599,9 @@ void Portal::slotDocumentSelected( const QString& doc )
 void Portal::slotArchivedDocExecuted()
 {
 
-  ArchDocDigest dig = m_portalView->docDigestView()->currentArchiveDoc();
+  // ArchDocDigest dig = m_portalView->docDigestView()->currentArchiveDoc();
 
-  slotOpenArchivedDoc( dig );
+  // slotOpenArchivedDoc( dig );
 }
 
 void Portal::slotArchivedDocSelected( const ArchDocDigest& )

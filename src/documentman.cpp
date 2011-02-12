@@ -73,7 +73,7 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   dig.setType(  query.value(2).toString() );
   dig.setWhiteboard( KraftDB::self()->mysqlEuroDecode( query.value( 3 ).toString() ) );
   dig.setClientId( query.value(4).toString() );
-  dig.setLastModified( query.value(5).toDate() );
+  dig.setLastModified( query.value(5).toDateTime() );
   dig.setDate(     query.value(6).toDate() );
   dig.setCountryLanguage(  query.value( 7 ).toString(), query.value( 8 ).toString() );
   dig.setProjectLabel( query.value( 9 ).toString() );

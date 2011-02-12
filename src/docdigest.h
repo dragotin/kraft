@@ -45,7 +45,7 @@ public:
   void setDate( const QDate& date ) { mDate = date; }
 
   QString lastModified();
-  void setLastModified( const QDate& date ) { mLastModified = date; }
+  void setLastModified( const QDateTime& date ) { mLastModified = date; }
 
   QString id()   { return mID.toString(); }
   void setId( dbID id ) { mID = id; }
@@ -73,9 +73,9 @@ protected:
   QString mWhiteboard;
   QString mProjectLabel;
 
-  QDate   mLastModified;
-  QDate   mDate;
-  KLocale mLocale;
+  QDateTime   mLastModified;
+  QDate       mDate;
+  KLocale     mLocale;
 
   ArchDocDigestList mArchDocs;
 };

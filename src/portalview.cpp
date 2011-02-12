@@ -284,7 +284,7 @@ void PortalView::systemInitError( const QString& htmlMsg )
 void PortalView::documentDigests()
 {
   QWidget *w = new QWidget;
-  mDocsPage = addPage( w, i18n("Document Digests" ) );
+  mDocsPage = addPage( w, i18n("Documents" ) );
   mDocsPage->setIcon(KIcon("folder-documents"));
 
   QBoxLayout *b = new QHBoxLayout;
@@ -322,12 +322,12 @@ void PortalView::slotCreateDocument()
 void PortalView::slotDocumentCreated( DocGuardedPtr doc )
 {
   // the new doc is now created and can be inserted into the doc digest view
-  mDocDigestView->slotNewDoc( doc );
+  // mDocDigestView->slotNewDoc( doc );
 }
 
 void PortalView::slotDocumentUpdate( DocGuardedPtr doc )
 {
-  mDocDigestView->slotUpdateDoc( doc );
+  // mDocDigestView->slotUpdateDoc( doc );
 }
 
 void PortalView::slotBuildView()

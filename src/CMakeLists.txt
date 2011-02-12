@@ -144,6 +144,10 @@ set(kraft_SRCS
     impviewwidgets.cpp
     addressselection.cpp
     setupassistant.cpp
+    models/documentmodel.cpp
+    models/documentproxymodels.cpp
+    models/modeltest.cpp
+
 )
 
 kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)

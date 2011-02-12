@@ -44,7 +44,7 @@ QString DocDigest::date()
 
 QString DocDigest::lastModified()
 {
-  return mLocale.formatDate( mLastModified, KLocale::ShortDate );
+  return mLocale.formatDateTime( mLastModified, KLocale::ShortDate );
 }
 
 void DocDigest::addArchDocDigest( const ArchDocDigest& digest )

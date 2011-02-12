@@ -178,7 +178,7 @@ void DocLocaleDialog::changedCountry(const QString & code)
   slotUpdateSample();
 }
 
-void DocLocaleDialog::readLocale(const QString &path, QString &name,
+  void DocLocaleDialog::readLocale(const QString &path, QString &name,
                                  const QString &sub) const
 {
   // FIXME !!
