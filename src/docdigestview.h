@@ -32,7 +32,7 @@ class dbID;
 class ArchDocDigest;
 class QContextMenuEvent;
 class QToolBox;
-class HtmlView;
+class DocDigestDetailView;
 
 class DocDigestView : public QWidget
 {
@@ -59,7 +59,7 @@ protected slots:
   void slotDocOpenRequest( QModelIndex );
   void slotCurrentChanged( QModelIndex, QModelIndex );
   void slotCurrentChangedToolbox ( int index );
-  void slotShowDocDetails( DocDigest );
+
 
 signals:
   void createDocument();
@@ -76,6 +76,10 @@ private:
   QTreeView *mLatestView;
   QTreeView *mTimeView;
 
+  DocDigestDetailView *mLatestViewDetails;
+  DocDigestDetailView *mAllViewDetails;
+  DocDigestDetailView *mTimeLineViewDetails;
+
   QModelIndex mCurrentlySelected;
 
   DocumentFilterModel *mAllDocumentsModel;
@@ -89,12 +93,12 @@ private:
   KMenu *mAllMenu;
   KMenu *mLatestMenu;
 
-  HtmlView    *mShowDocDetailsView;
-  QToolBox    *mToolBox;
-  QPushButton *mNewDocButton;
+  DocDigestDetailView    *mShowDocDetailsView;
+  QToolBox               *mToolBox;
+  QPushButton            *mNewDocButton;
   QMap<QTreeWidgetItem*, QString> mDocIdDict;
   QMap<QTreeWidgetItem*, ArchDocDigest> mArchIdDict;
-  QString      mTemplFile;
+  QVector<QTreeView*>    mTreeViewIndex;
 };
 
 #endif

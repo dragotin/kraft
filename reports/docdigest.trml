@@ -3,8 +3,10 @@
   -->
 <body>
 <h2>{{HEADLINE}}</h2>
-<p>Date: {{DATE}}</p>
+<div>
+<p>{{DATE}}</p>
 <p>{{ARCHDOCS_TAG}}</p>
+</div>
 </body>
 
 

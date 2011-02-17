@@ -147,7 +147,7 @@ set(kraft_SRCS
     models/documentmodel.cpp
     models/documentproxymodels.cpp
     models/modeltest.cpp
-
+    docdigestdetailview.cpp
 )
 
 kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)

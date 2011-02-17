@@ -44,8 +44,7 @@
 #include "docguardedptr.h"
 #include "kraftdoc.h"
 #include "defaultprovider.h"
-#include "htmlview.h"
-#include "texttemplate.h"
+#include "docdigestdetailview.h"
 
 DocDigestView::DocDigestView( QWidget *parent )
 : QWidget( parent )
@@ -60,8 +59,8 @@ DocDigestView::DocDigestView( QWidget *parent )
 
   mNewDocButton = new QPushButton( i18n( "Create Document" ) );
   connect( mNewDocButton, SIGNAL( clicked() ), this, SIGNAL( createDocument() ) );
-
-  // hbox->addStretch(1);
+  hbox->addWidget( mNewDocButton );
+  hbox->addStretch(1);
   mToolBox = new QToolBox;
 
   QList<QTreeView *> treelist = initializeTreeWidgets();
@@ -90,11 +89,8 @@ DocDigestView::DocDigestView( QWidget *parent )
   QHBoxLayout *hbox3 = new QHBoxLayout;
 
   hbox3->addSpacing( KDialog::marginHint() );
-  hbox3->addWidget( mNewDocButton );
-  mShowDocDetailsView = new HtmlView( this );
-  // mShowDocDetailsView->view()->setMinimumHeight( 160 );
-  mShowDocDetailsView->view()->setFixedHeight(120);
-  hbox3->addWidget( mShowDocDetailsView->view() );
+
+  // hbox3->addWidget( mShowDocDetailsView );
   box->addLayout( hbox3 );
 }
 
@@ -111,6 +107,8 @@ QList<QTreeView *> DocDigestView::initializeTreeWidgets()
   mLatestView = new QTreeView;
   mTimeView = new QTreeView;
 
+  mTreeViewIndex.resize(3);
+
   //Add the widgets to a temporary list so we can iterate over them and centralise the common initialization
   treeviewlist.clear();
   treeviewlist.append(mAllView);
@@ -126,17 +124,29 @@ QList<QTreeView *> DocDigestView::initializeTreeWidgets()
   mLatestMenu->setTitle( i18n("Document Actions"));
 
   //Add treewidgets to the toolbox
-  int indx = mToolBox->addItem( mLatestView, i18n("Latest Documents"));
+  QVBoxLayout *vb1 = new QVBoxLayout;
+  vb1->setMargin(0);
+  vb1->addWidget( mLatestView );
+  mLatestViewDetails = new DocDigestDetailView;
+  vb1->addWidget( mLatestViewDetails );
+  QWidget *w = new QWidget;
+  w->setLayout(vb1);
+  mLatestViewDetails->setFixedHeight(160);
+
+  int indx = mToolBox->addItem( w, i18n("Latest Documents"));
   mToolBox->setItemIcon( indx, KIcon( "get-hot-new-stuff"));
   mToolBox->setItemToolTip(indx, i18n("Shows the latest ten documents"));
+  mTreeViewIndex[indx] = mLatestView;
 
   indx = mToolBox->addItem( mAllView, i18n("All Documents"));
   mToolBox->setItemIcon( indx, KIcon( "edit-clear-locationbar-ltr"));
   mToolBox->setItemToolTip(indx, i18n("Shows a complete list of all documents"));
+  mTreeViewIndex[indx] = mAllView;
 
   indx = mToolBox->addItem( mTimeView, i18n("Timelined Documents"));
   mToolBox->setItemIcon( indx, KIcon( "chronometer"));
   mToolBox->setItemToolTip(indx, i18n("Shows all documents along a timeline"));
+  mTreeViewIndex[indx] = mTimeView;
 
   return treeviewlist;
 }
@@ -144,11 +154,14 @@ QList<QTreeView *> DocDigestView::initializeTreeWidgets()
 
 void DocDigestView::slotCurrentChangedToolbox(int index)
 {
-    QTreeView *treeview = static_cast<QTreeView *>(mToolBox->widget(index));
-    if(treeview->selectionModel()->hasSelection())
-        slotCurrentChanged(treeview->selectionModel()->selectedRows().at(0), QModelIndex());
-    else
-        slotCurrentChanged(QModelIndex(), QModelIndex());
+  if( index < 0 || index > mTreeViewIndex.size() ) return;
+
+  QTreeView *treeview = mTreeViewIndex[index];
+
+  if(treeview->selectionModel()->hasSelection())
+    slotCurrentChanged(treeview->selectionModel()->selectedRows().at(0), QModelIndex());
+  else
+    slotCurrentChanged(QModelIndex(), QModelIndex());
 }
 
 void DocDigestView::slotBuildView()
@@ -194,7 +207,7 @@ void DocDigestView::slotBuildView()
 
 void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
 {
-  QTreeWidget *currView = static_cast<QTreeWidget*>(mToolBox->currentWidget());
+  QTreeView *currView = mTreeViewIndex[ mToolBox->currentIndex() ];
 
   if( currView == mLatestView ) {
     mLatestMenu->popup( event->globalPos() );
@@ -251,11 +264,11 @@ int DocDigestView::currentArchivedRow() const
 
 QString DocDigestView::currentDocumentId( ) const
 {
-  QModelIndex indx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Ident );
+  QModelIndex indx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Id);
 
   const QString data = indx.data(Qt::DisplayRole).toString();
   kDebug() << "This is the current selected docID: " << data;
-  return QString();
+  return data;
 }
 
 void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
@@ -265,15 +278,20 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
   if(index.isValid())
   {
     DocumentModel *model = 0;
+    DocDigestDetailView *view = 0;
+
     if(index.model() == static_cast<QAbstractItemModel*>(mLatestDocModel)) {
       mCurrentlySelected = mLatestDocModel->mapToSource(index);
+      view = mLatestViewDetails;
       model = static_cast<DocumentModel*>(mLatestDocModel->sourceModel());
     } else if(index.model() == static_cast<QAbstractItemModel*>(mTimelineModel)) {
       mCurrentlySelected = mTimelineModel->mapToSource(index);
       model = static_cast<DocumentModel*>( mTimelineModel->sourceModel() );
+      view = mAllViewDetails;
     } else {
       mCurrentlySelected = mAllDocumentsModel->mapToSource(index);
       model = static_cast<DocumentModel*>( mAllDocumentsModel->sourceModel() );
+      view = mTimeLineViewDetails;
     }
 
     if(mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::DocumentType) {
@@ -281,7 +299,8 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
       QString id = idIndx.data( Qt::DisplayRole ).toString();
 
       emit docSelected( id );
-      slotShowDocDetails( model->digest( index ) );
+      view->slotShowDocDetails( model->digest( index ));
+
     } else if(mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::ArchivedType) {
       emit archivedDocSelected( mCurrentlySelected.parent().data( Qt::DisplayRole).toString(),
                                mCurrentlySelected.data( Qt::DisplayRole).toString() );
@@ -293,47 +312,6 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
     emit docSelected( QString() );
   }
   //kDebug() << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);
-}
-
-#define DOCDIGEST_TAG
-
-void DocDigestView::slotShowDocDetails( DocDigest digest )
-{
-  kDebug() << "Showing details about this doc: " << digest.id();
-
-  if( mTemplFile.isEmpty() ) {
-    KStandardDirs stdDirs;
-    // QString templFileName = QString( "kraftdoc_%1_ro.trml" ).arg( doc->docType() );
-    QString templFileName = QString( "docdigest.trml" );
-    QString findFile = "kraft/reports/" + templFileName;
-
-    QString tmplFile = stdDirs.findResource( "data", findFile );
-
-    if ( tmplFile.isEmpty() ) {
-      kDebug() << "Could not find template to render document digest.";
-      return;
-    }
-    mTemplFile = tmplFile;
-  }
-
-  TextTemplate tmpl( mTemplFile ); // template file with name docdigest.trml
-
-  tmpl.setValue( DOCDIGEST_TAG( "HEADLINE" ), digest.type() + " " + digest.ident() );
-  tmpl.setValue( DOCDIGEST_TAG( "DATE" ), digest.date() );
-
-  // Information about archived documents.
-  ArchDocDigestList archDocs = digest.archDocDigestList();
-  if( archDocs.isEmpty() ) {
-    kDebug() << "No archived docs for this document!";
-    tmpl.setValue( DOCDIGEST_TAG("ARCHDOCS_TAG"), i18n("This document was never printed."));
-  } else {
-    ArchDocDigest digest = archDocs[0];
-    kDebug() << "Last printed at " << digest.printDate().toString() << " and " << archDocs.count() -1 << " other prints.";
-    tmpl.setValue( DOCDIGEST_TAG("ARCHDOCS_TAG"), i18n("Last Printed %1, %2 older prints.").arg(digest.printDate().toString()).arg(archDocs.count()-1));
-  }
-
-  mShowDocDetailsView->displayContent( tmpl.expand() );
-
 }
 
 QList<KMenu*> DocDigestView::contextMenus()

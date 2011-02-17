@@ -1,36 +1,59 @@
-body { margin:20px; 
-       background-image:url(pics/docoverviewbg.png); 
-       color: #4e4e4e;
-       font-size:x-small;
-}
 
-td { 
-  vertical-align:top;
+* { font-size: 97%;
 }
 
 div {
-  border-style:none;
-  border-width:0px;
-  border-color:#00008B;
-  margin: 1px 0px 1px 0px;
-  padding: 1px;
+  font-size:75%;
+  padding: 0px 5px 0px 10px;
+  margin: 0px 5px 0px 5px;
 }
 
-.negative {
-  color: #800040;
+p {
+  padding: 3px 3px 1px 3px;
+  margin: 0px 0px 0px 7px;
 }
 
-.positive {
-
+div.error {
+  background-color: #ffcbcb;
+  padding: 5px;
+  margin: 0px 5px 3px 5px;
+  border-left: 1px solid #ed2d00;
+  border-right: 1px solid #ed2d00;
+  border-bottom: 1px solid #ed2d00;
+  border-top:0px;
 }
 
 h2 {
-  border-bottom: 2px inset #000000;
-  vertical-align: text-bottom;
-  background-image:url(pics/docoverview_h2_bg.png);
-  background-repeat: no-repeat;
-  background-position: right;
-  image-repeat: none;
-  height: 64px;
+  margin:10px 5px 0px 5px;
+  padding:2px 2px 2px 10px;
+  border-left:10px solid #57a62f;
+  border-bottom:1px solid #57a62f;
+}
 
+h2.error {
+  background-color: #ffcbcb;
+
+  border-left: 1px solid #ed2d00;
+  border-right: 1px solid #ed2d00;
+  border-top: 1px solid #ed2d00;
+  border-bottom:0px;
+
+}
+
+table {
+  border-collapse: collapse; 
+  margin-top: 5px;
+}
+
+td {
+  margin: 0px;
+  padding-left: 5mm;
+  padding-right:5mm;
+
+  padding-top: 1mm;
+  padding-bottom: 1mm;
+}
+
+table tr.odd {
+  background: #dffdd0;
 }
