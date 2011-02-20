@@ -45,6 +45,5 @@ bool PortalHtmlView::urlSelected( const QString &url, int, int,
 }
 
 
-#include "portalhtmlview.moc"
 
 

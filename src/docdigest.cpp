@@ -47,7 +47,7 @@ QString DocDigest::lastModified()
   return mLocale.formatDateTime( mLastModified, KLocale::ShortDate );
 }
 
-void DocDigest::addArchDocDigest( const ArchDocDigest& digest )
+void DocDigest::appendArchDocDigest( const ArchDocDigest& digest )
 {
   mArchDocs.append( digest );
 }
@@ -63,6 +63,16 @@ void DocDigest::setCountryLanguage( const QString& country, const QString& lang 
   mLocale.setCountry( country, cfg );
   mLocale.setLanguage( lang, cfg ); // FIXME !!
 }
+
+KABC::Addressee DocDigest::addressee() const
+{
+  return mContact;
+}
+void DocDigest::setAddressee( const KABC::Addressee& contact )
+{
+  mContact = contact;
+}
+
 
 /* *************************************************************************** */
 

@@ -20,9 +20,25 @@
 #include <QWidget>
 
 #include "docdigest.h"
+#include "htmlview.h"
 
-class HtmlView;
+class dbID;
 
+class DocDigestHtmlView : public HtmlView
+{
+  Q_OBJECT
+
+  public:
+    DocDigestHtmlView( QWidget *parent );
+  signals:
+    void showLastPrint( const dbID& );
+
+  protected:
+    // virtual void writeBottomFrame();
+    bool urlSelected( const QString&, int, int,
+                      const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments & );
+  private:
+};
 
 class DocDigestDetailView : public QWidget
 {
@@ -31,12 +47,13 @@ public:
     explicit DocDigestDetailView(QWidget *parent = 0);
 
 signals:
+    void showLastPrint( const dbID& );
 
 public slots:
   void slotShowDocDetails( DocDigest );
 
 private:
-  HtmlView *mHtmlCanvas;
+  DocDigestHtmlView *mHtmlCanvas;
   QString   mTemplFile;
 };
 

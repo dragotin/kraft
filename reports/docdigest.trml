@@ -4,8 +4,32 @@
 <body>
 <h2>{{HEADLINE}}</h2>
 <div>
-<p>{{DATE}}</p>
-<p>{{ARCHDOCS_TAG}}</p>
+<table width="100%">
+<tr>
+  <td width="300px">
+    <p>{{DATE}}</p>
+    <p>Last printed: {{LAST_PRINT_DATE}}&nbsp;<a href="#show_last_print?id={{LAST_PRINTED_ID}}" title="opens last creatd PDF document">[show]</a></p>
+    <p>{{ARCHIVED_COUNT}} older prints</p>
+  </td>
+  <td>
+    <img align="left" src="kraft_customer.png"/>
+    {{#CLIENT_NOT_IN_ADDRESSBOOK_SECTION}}
+<p>The given client has the client Id {{CLIENTID}} but can not be found in this addressbook.</p>
+    {{/CLIENT_NOT_IN_ADDRESSBOOK_SECTION}}
+    {{#CLIENT_UNKNOWN_SECTION}}
+<p>This client has no reference to an addressbook.</p>    
+    {{/CLIENT_UNKNOWN_SECTION}}
+    {{#CLIENT_ADDRESS_SECTION}}
+    <p>Client Address:</p>
+    <p>{{CLIENT_NAME}}</p>
+    <p>{{CLIENT_ORGANISATION}}</p>
+    <p>{{CLIENT_STREET}}</p>
+    <p>{{CLIENT_LOCALITY}}</p>
+    <p>{{CLIENT_ADDRESS_TYPE}}</p>
+    {{/CLIENT_ADDRESS_SECTION}}
+  </td>
+</tr>
+</table>
 </div>
 </body>
 

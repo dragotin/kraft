@@ -18,7 +18,8 @@
 #define HTMLVIEW_H
 
 #include <khtml_part.h>
-class  KAction;
+class KAction;
+class KUrl;
 
 class HtmlView : public KHTMLPart
 {
@@ -36,6 +37,7 @@ class HtmlView : public KHTMLPart
     QString internalUrl() const;
 
     void showWelcomePage();
+    void setBaseUrl( const QString& );
 
   public slots:
     void setTitle( const QString & );
@@ -59,6 +61,7 @@ class HtmlView : public KHTMLPart
 
     KAction *mZoomInAction;
     KAction *mZoomOutAction;
+    KUrl     mBaseUrl;
 
     int mZoomStep;
 };

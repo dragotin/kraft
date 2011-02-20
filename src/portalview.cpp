@@ -308,7 +308,7 @@ void PortalView::documentDigests()
   //         SIGNAL( printDocument( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( docSelected( const QString& ) ),
            SIGNAL( documentSelected( const QString& ) ) );
-  connect( mDocDigestView, SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
+  connect( mDocDigestView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
  }
 

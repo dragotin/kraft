@@ -35,8 +35,6 @@ HtmlView::HtmlView( QWidget *parent )
   setJavaEnabled(false);
   setMetaRefreshEnabled(false);
   setPluginsEnabled(false);
-
-  showWelcomePage();
 }
 
 void HtmlView::clearView()
@@ -137,7 +135,8 @@ void HtmlView::writeBottomFrame()
 
 void HtmlView::displayContent( const QString& content )
 {
-  begin();
+  kDebug() << "BASE URL: " << mBaseUrl.prettyUrl();
+  begin( mBaseUrl );
 
   // kDebug() << "Show content: " << content;
 
@@ -154,3 +153,9 @@ void HtmlView::showWelcomePage()
   displayContent( t );
 }
 
+void HtmlView::setBaseUrl( const QString& base )
+{
+
+  mBaseUrl = KUrl( base );
+  kDebug() << "Setting base url: " << mBaseUrl.prettyUrl();
+}

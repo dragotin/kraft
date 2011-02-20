@@ -59,7 +59,7 @@ protected slots:
   void slotDocOpenRequest( QModelIndex );
   void slotCurrentChanged( QModelIndex, QModelIndex );
   void slotCurrentChangedToolbox ( int index );
-
+  void slotOpenLastPrinted();
 
 signals:
   void createDocument();
@@ -67,8 +67,8 @@ signals:
   void viewDocument( const QString& );
   void copyDocument( const QString& );
   void docSelected( const QString& );
-  void openArchivedDocument( const QString& , const QString& );
-  void archivedDocSelected( const QString&, const QString&  );
+  void openArchivedDocument( const ArchDocDigest& );
+  // void archivedDocSelected( const QString&, const QString&  );
 
 private:
 
@@ -99,6 +99,7 @@ private:
   QMap<QTreeWidgetItem*, QString> mDocIdDict;
   QMap<QTreeWidgetItem*, ArchDocDigest> mArchIdDict;
   QVector<QTreeView*>    mTreeViewIndex;
+  ArchDocDigest          mLatestArchivedDigest;
 };
 
 #endif

@@ -128,10 +128,14 @@ QList<QTreeView *> DocDigestView::initializeTreeWidgets()
   vb1->setMargin(0);
   vb1->addWidget( mLatestView );
   mLatestViewDetails = new DocDigestDetailView;
+  connect( mLatestViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
+           this, SLOT( slotOpenLastPrinted() ) );
+
   vb1->addWidget( mLatestViewDetails );
   QWidget *w = new QWidget;
   w->setLayout(vb1);
   mLatestViewDetails->setFixedHeight(160);
+  // connect( mLatestViewDetails, SIGNAL( ))
 
   int indx = mToolBox->addItem( w, i18n("Latest Documents"));
   mToolBox->setItemIcon( indx, KIcon( "get-hot-new-stuff"));
@@ -230,6 +234,12 @@ void DocDigestView::slotDocViewRequest( QTreeWidgetItem *item )
 }
 #endif
 
+void DocDigestView::slotOpenLastPrinted( )
+{
+  kDebug() << "slotOpenLastPrinted hit! ";
+  emit openArchivedDocument( mLatestArchivedDigest );
+}
+
 void DocDigestView::slotDocOpenRequest( QModelIndex index )
 {
   Q_UNUSED(index);
@@ -239,9 +249,11 @@ void DocDigestView::slotDocOpenRequest( QModelIndex index )
   kDebug() << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO "<< "about to open: " << id;
   if( index.data(DocumentModel::DataType) == DocumentModel::DocumentType)
     emit openDocument( id );
+ #if 0
   else if( index.data(DocumentModel::DataType) == DocumentModel::ArchivedType)
     emit openArchivedDocument( idIndx.parent().data( Qt::DisplayRole).toString(),
                               idIndx.data( Qt::DisplayRole).toString() );
+#endif
 }
 
 int DocDigestView::currentDocumentRow() const
@@ -299,11 +311,17 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
       QString id = idIndx.data( Qt::DisplayRole ).toString();
 
       emit docSelected( id );
-      view->slotShowDocDetails( model->digest( index ));
+      DocDigest digest = model->digest( index );
+      view->slotShowDocDetails( digest );
+      if( digest.archDocDigestList().size() > 0 ) {
+        mLatestArchivedDigest = digest.archDocDigestList()[0];
+      } else {
+        mLatestArchivedDigest = ArchDocDigest();
+      }
 
     } else if(mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::ArchivedType) {
-      emit archivedDocSelected( mCurrentlySelected.parent().data( Qt::DisplayRole).toString(),
-                               mCurrentlySelected.data( Qt::DisplayRole).toString() );
+      //emit archivedDocSelected( mCurrentlySelected.parent().data( Qt::DisplayRole).toString(),
+      //                          mCurrentlySelected.data( Qt::DisplayRole).toString() );
     } else {
       emit docSelected( QString() );
 

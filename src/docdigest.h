@@ -18,6 +18,8 @@
 #define DOCDIGEST_H
 
 #include <klocale.h>
+#include <kabc/addressee.h>
+
 #include <QList>
 
 #include "dbids.h"
@@ -37,6 +39,9 @@ public:
 
   QString clientId() { return mClientId; }
   void setClientId( const QString& id ) { mClientId = id; }
+
+  KABC::Addressee addressee() const;
+  void setAddressee( const KABC::Addressee& );
 
   QString type() { return mType; }
   void setType( const QString& t ) { mType = t; }
@@ -59,7 +64,7 @@ public:
   void setProjectLabel( const QString& prjLabel ) { mProjectLabel = prjLabel; }
   QString projectLabel() { return mProjectLabel; }
 
-  void addArchDocDigest( const ArchDocDigest& );
+  void appendArchDocDigest( const ArchDocDigest& );
   ArchDocDigestList archDocDigestList();
 
   void setCountryLanguage( const QString&, const QString& );
@@ -78,6 +83,9 @@ protected:
   KLocale     mLocale;
 
   ArchDocDigestList mArchDocs;
+
+private:
+  KABC::Addressee mContact;
 };
 
 typedef QList<DocDigest> DocDigestList;

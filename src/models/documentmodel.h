@@ -21,6 +21,8 @@
 #include <QSqlTableModel>
 #include <QVector>
 
+#include <kabc/addressbook.h>
+
 class DocDigest;
 
 class DocumentModel : public QSqlQueryModel
@@ -67,8 +69,11 @@ protected:
   static DocumentModel *mSelf;
   QVector<int> archiveCountCache;
   QVector<QDateTime> mArchiveDocCache;
+  mutable QHash<QString, KABC::Addressee> mAddressNameCache;
 
   mutable QVector<QSqlTableModel*> archiveModelCache;
+
+  KABC::AddressBook *mAdrBook;
 };
 
 #endif
