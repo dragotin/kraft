@@ -46,12 +46,11 @@ kde4_add_library(kraftcat SHARED ${kraftcat_LIB_SRCS})
 
 target_link_libraries(kraftcat ${KDE4_KDECORE_LIBS}  ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS})
 
-set_target_properties(kraftcat PROPERTIES VERSION 1.0.0 SOVERSION 1)
-install(TARGETS kraftcat ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS kraftcat LIBRARY DESTINATION lib/kraft)
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH};${CMAKE_INSTALL_PREFIX}/lib/kraft")
 
 ########### next target ###############
 
-LINK_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/lib )
 set(kplant_SRCS brunsviewmain.cpp brunsviewer.cpp)
 
 kde4_add_executable(kplant ${kplant_SRCS} )

@@ -67,7 +67,7 @@ void HtmlView::setStylesheetFile( const QString &style )
   if( prjPath ) {
     mStyleSheetFile = QString( "%1/styles/%2" ).arg( prjPath ).arg( style );
   } else if( getenv( "BUILDDIR" )) { // set in QCreator (at least)
-      mStyleSheetFile = QString("%1/styles/%2").arg( getenv("BUILDDIR")).arg(style);
+    mStyleSheetFile = QString("%1/styles/%2").arg( getenv("BUILDDIR")).arg(style);
   } else {
     mStyleSheetFile = KStandardDirs::locate( "appdata", style );
   }
@@ -136,6 +136,7 @@ void HtmlView::writeBottomFrame()
 void HtmlView::displayContent( const QString& content )
 {
   kDebug() << "BASE URL: " << mBaseUrl.prettyUrl();
+  kDebug() << "Stylesheet URL: " << mStyleSheetFile;
   begin( mBaseUrl );
 
   // kDebug() << "Show content: " << content;

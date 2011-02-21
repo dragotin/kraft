@@ -15,6 +15,9 @@
     <entry name="XmlArchivePath" type="String">
       <label>Where Kraft stores the XML archive documents. If empty, KDEHOME/share/apps is used.</label>
     </entry>
+    <entry name="XmlDocPath" type="String">
+      <label>The local xml document storage path</label>
+    </entry>
   </group>
 
   <group name="WindowSizes">

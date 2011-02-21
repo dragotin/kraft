@@ -60,6 +60,9 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   setLayout( hbox );
   mHtmlCanvas = new DocDigestHtmlView( this );
 
+  connect( mHtmlCanvas, SIGNAL(showLastPrint( const dbID& )),
+           this, SIGNAL( showLastPrint( const dbID& ) ) );
+
   QString fi = KStandardDirs::locate( "data", "kraft/reports/images/docdigestdetailview/kraft_customer.png" );
 
   QFileInfo info(fi);
@@ -159,12 +162,14 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
   ArchDocDigestList archDocs = digest.archDocDigestList();
   if( archDocs.isEmpty() ) {
     kDebug() << "No archived docs for this document!";
-    tmpl.setValue( DOCDIGEST_TAG("ARCHDOCS_TAG"), i18n("This document was never printed."));
+    tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
+    tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("ARCHDOCS_TAG"), i18n("This document was never printed."));
   } else {
     ArchDocDigest digest = archDocs[0];
-    tmpl.setValue( DOCDIGEST_TAG("LAST_PRINT_DATE"), digest.printDate().toString() );
-    tmpl.setValue( DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
-    tmpl.setValue( DOCDIGEST_TAG("ARCHIVED_COUNT"), QString::number( archDocs.count()-1 ) );
+    tmpl.createDictionary("PRINTED");
+    tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), digest.printDate().toString() );
+    tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
+    tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), QString::number( archDocs.count()-1 ) );
   }
 
   mHtmlCanvas->displayContent( tmpl.expand() );

@@ -30,6 +30,7 @@ class DocDigestHtmlView : public HtmlView
 
   public:
     DocDigestHtmlView( QWidget *parent );
+
   signals:
     void showLastPrint( const dbID& );
 

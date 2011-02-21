@@ -8,8 +8,13 @@
 <tr>
   <td width="300px">
     <p>{{DATE}}</p>
+    {{#PRINTED}}
     <p>Last printed: {{LAST_PRINT_DATE}}&nbsp;<a href="#show_last_print?id={{LAST_PRINTED_ID}}" title="opens last creatd PDF document">[show]</a></p>
     <p>{{ARCHIVED_COUNT}} older prints</p>
+    {{/PRINTED}}
+    {{#NEVER_PRINTED}}
+    <p>This document was never printed</p>
+    {{/NEVER_PRINTED}}
   </td>
   <td>
     <img align="left" src="kraft_customer.png"/>
