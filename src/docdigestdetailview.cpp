@@ -114,7 +114,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
 
     KABC::Address clientAddress;
     clientAddress = addressee.address( KABC::Address::Pref );
-    QString addressType = i18n("preffered address");
+    QString addressType = i18n("preferred address");
 
     if( clientAddress.isEmpty() ) {
       clientAddress = addressee.address( KABC::Address::Home );
