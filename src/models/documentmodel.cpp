@@ -79,15 +79,15 @@ DocumentModel::DocumentModel()
     setHeaderData( 0 /* Document_Id */, Qt::Horizontal, i18n("Id"));
     setHeaderData( 1 /* Document_Ident */, Qt::Horizontal, i18n("Doc. number"));
     setHeaderData( 2 /* Document_Type */, Qt::Horizontal, i18n("Doc. type"));
-    setHeaderData( 3 /* Document_Whiteboard */, Qt::Horizontal, i18n("Whiteboard"));
-    setHeaderData( 4, Qt::Horizontal, i18n("Client"));
+    setHeaderData( 3 /* Document_Whiteboard */,   Qt::Horizontal, i18n("Whiteboard"));
+    setHeaderData( 4 /* Document_ClientId */  ,   Qt::Horizontal, i18n("Client ID"));
     setHeaderData( 5 /* Document_LastModified */, Qt::Horizontal, i18n("Last modified"));
     setHeaderData( 6 /* Document_CreationDate */, Qt::Horizontal, i18n("Creation date"));
     setHeaderData( 7 /* Document_ProjectLabel */, Qt::Horizontal, i18n("Project label"));
-
-    //Cache the count of archived documents per document
-    QSqlQuery query("SELECT docID, count(arch.archDocID) FROM document, archdoc arch WHERE document.ident = arch.ident group by docID");
-    query.exec();
+    setHeaderData( 8 /* Document_ClientName */,   Qt::Horizontal, i18n("Client"));
+    // Cache the count of archived documents per document
+    // QSqlQuery query("SELECT docID, count(arch.archDocID) FROM document, archdoc arch WHERE document.ident = arch.ident group by docID");
+    // query.exec();
 
     mAdrBook = KABC::StdAddressBook::self();
 }
@@ -149,9 +149,14 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
       KLocale *locale = KGlobal::locale();
       QDate date = QSqlQueryModel::data( idx, role ).toDate();
       return locale->formatDate( date, KLocale::ShortDate );
+    } else if(idx.column() == Document_ClientId || idx.column() == Document_ClientName ) {
+      QString uid = QSqlQueryModel::data( idx, role ).toString();
 
-    } else if(idx.column() == Document_ClientId) {
-      QString uid = QSqlQueryModel::data(idx, role).toString();
+      if( idx.column() == Document_ClientId )
+        return uid;
+
+      QModelIndex uidIdx = idx.sibling( idx.row(), Document_ClientId );
+      uid = QSqlQueryModel::data( uidIdx, role ).toString();
       // kDebug() << "Searching address for UID " << uid;
       if( uid.isEmpty()) return "";
 
@@ -159,9 +164,13 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
       if( ! mAddressNameCache.contains( uid )) {
          contact = mAdrBook->findByUid( uid );
          mAddressNameCache[uid] = contact;
+      } else {
+        contact = mAddressNameCache[uid];
       }
       QString name = uid;
-      if( ! contact.isEmpty() ) name = contact.realName();
+      if( ! contact.isEmpty() ) {
+          name = contact.realName();
+      }
       return name;
     }
 
@@ -234,7 +243,7 @@ int DocumentModel::rowCount(const QModelIndex &parent) const
 int DocumentModel::columnCount(const QModelIndex &parent) const
 {
     if(!parent.isValid() || !parent.parent().isValid())
-        return QSqlQueryModel::columnCount(QModelIndex());
+        return 1+QSqlQueryModel::columnCount(QModelIndex());
 
     return 0;
 }

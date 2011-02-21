@@ -93,7 +93,8 @@ private:
   KMenu *mAllMenu;
   KMenu *mLatestMenu;
 
-  DocDigestDetailView    *mShowDocDetailsView;
+  // DocDigestDetailView    *mShowDocDetailsView;
+
   QToolBox               *mToolBox;
   QPushButton            *mNewDocButton;
   QMap<QTreeWidgetItem*, QString> mDocIdDict;

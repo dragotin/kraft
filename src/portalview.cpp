@@ -340,7 +340,7 @@ void PortalView::slotBuildView()
 
 PortalView::~PortalView( )
 {
-
+  delete mDocDigestView;
 }
 
 /* END */

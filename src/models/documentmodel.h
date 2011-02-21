@@ -37,7 +37,8 @@ public:
     Document_ClientId = 4,
     Document_LastModified = 5,
     Document_CreationDate = 6,
-    Document_ProjectLabel = 7
+    Document_ProjectLabel = 7,
+    Document_ClientName = 8
   };
 
   enum Roles

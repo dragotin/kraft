@@ -45,6 +45,7 @@
 #include "kraftdoc.h"
 #include "defaultprovider.h"
 #include "docdigestdetailview.h"
+#include "kraftsettings.h"
 
 DocDigestView::DocDigestView( QWidget *parent )
 : QWidget( parent )
@@ -96,6 +97,8 @@ DocDigestView::DocDigestView( QWidget *parent )
 
 DocDigestView::~DocDigestView()
 {
+  KraftSettings::self()->setDigestListColumns( mLatestView->header()->saveState() );
+  KraftSettings::self()->writeConfig();
 
 }
 
@@ -123,10 +126,11 @@ QList<QTreeView *> DocDigestView::initializeTreeWidgets()
   mLatestMenu = new KMenu( mLatestView );
   mLatestMenu->setTitle( i18n("Document Actions"));
 
-  //Add treewidgets to the toolbox
+  //Add treewidgets to the toolbox: Latest Docs view
   QVBoxLayout *vb1 = new QVBoxLayout;
   vb1->setMargin(0);
   vb1->addWidget( mLatestView );
+
   mLatestViewDetails = new DocDigestDetailView;
   connect( mLatestViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
            this, SLOT( slotOpenLastPrinted() ) );
@@ -135,19 +139,49 @@ QList<QTreeView *> DocDigestView::initializeTreeWidgets()
   QWidget *w = new QWidget;
   w->setLayout(vb1);
   mLatestViewDetails->setFixedHeight(160);
-  // connect( mLatestViewDetails, SIGNAL( ))
+  //
 
   int indx = mToolBox->addItem( w, i18n("Latest Documents"));
   mToolBox->setItemIcon( indx, KIcon( "get-hot-new-stuff"));
   mToolBox->setItemToolTip(indx, i18n("Shows the latest ten documents"));
   mTreeViewIndex[indx] = mLatestView;
 
-  indx = mToolBox->addItem( mAllView, i18n("All Documents"));
+  //Add treewidgets to the toolbox: All docs view
+  vb1 = new QVBoxLayout;
+  vb1->setMargin(0);
+  vb1->addWidget( mAllView );
+
+  mAllViewDetails = new DocDigestDetailView;
+  connect( mAllViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
+           this, SLOT( slotOpenLastPrinted() ) );
+
+  vb1->addWidget( mAllViewDetails );
+  w = new QWidget;
+  w->setLayout(vb1);
+  mAllViewDetails->setFixedHeight(160);
+  //
+
+  indx = mToolBox->addItem( w, i18n("All Documents"));
   mToolBox->setItemIcon( indx, KIcon( "edit-clear-locationbar-ltr"));
   mToolBox->setItemToolTip(indx, i18n("Shows a complete list of all documents"));
   mTreeViewIndex[indx] = mAllView;
 
-  indx = mToolBox->addItem( mTimeView, i18n("Timelined Documents"));
+  //Add treewidgets to the toolbox: Timeline view
+  vb1 = new QVBoxLayout;
+  vb1->setMargin(0);
+  vb1->addWidget( mTimeView );
+
+  mTimeLineViewDetails = new DocDigestDetailView;
+  connect( mTimeLineViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
+           this, SLOT( slotOpenLastPrinted() ) );
+
+  vb1->addWidget( mTimeLineViewDetails );
+  w = new QWidget;
+  w->setLayout(vb1);
+  mTimeLineViewDetails->setFixedHeight(160);
+  //
+
+  indx = mToolBox->addItem( w, i18n("Timelined Documents"));
   mToolBox->setItemIcon( indx, KIcon( "chronometer"));
   mToolBox->setItemToolTip(indx, i18n("Shows all documents along a timeline"));
   mTreeViewIndex[indx] = mTimeView;
@@ -172,14 +206,18 @@ void DocDigestView::slotBuildView()
 {
   //Create the latest documents view
   mLatestDocModel = new DocumentFilterModel(10, this);
-  mLatestView->setModel(mLatestDocModel);
+  mLatestView->setModel( mLatestDocModel );
   mLatestView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
+  mLatestView->hideColumn( DocumentModel::Document_ClientId );
+  mLatestView->setSortingEnabled(true);
+  mLatestView->header()->restoreState( KraftSettings::self()->digestListColumns().toAscii() );
 
   //Create the all documents view
   mAllDocumentsModel = new DocumentFilterModel(-1, this);
   mAllDocumentsModel->setSourceModel(DocumentModel::self());
   mAllView->setModel(mAllDocumentsModel);
   mAllView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
+  mAllView->hideColumn( DocumentModel::Document_ClientId );
   mAllView->setSortingEnabled(true);
 
   //Create the timeline view
