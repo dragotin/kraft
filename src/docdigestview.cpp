@@ -97,9 +97,9 @@ DocDigestView::DocDigestView( QWidget *parent )
 
 DocDigestView::~DocDigestView()
 {
-  KraftSettings::self()->setDigestListColumns( mLatestView->header()->saveState() );
+  const QString state = mLatestView->header()->saveState().toBase64();
+  KraftSettings::self()->setDigestListColumns( state );
   KraftSettings::self()->writeConfig();
-
 }
 
 QList<QTreeView *> DocDigestView::initializeTreeWidgets()
@@ -109,6 +109,8 @@ QList<QTreeView *> DocDigestView::initializeTreeWidgets()
   mAllView = new QTreeView;
   mLatestView = new QTreeView;
   mTimeView = new QTreeView;
+
+  connect( mLatestView->header(), SIGNAL( sectionMoved(int, int,int)), this, SLOT(slotSaveSections()) );
 
   mTreeViewIndex.resize(3);
 
@@ -210,7 +212,7 @@ void DocDigestView::slotBuildView()
   mLatestView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
   mLatestView->hideColumn( DocumentModel::Document_ClientId );
   mLatestView->setSortingEnabled(true);
-  mLatestView->header()->restoreState( KraftSettings::self()->digestListColumns().toAscii() );
+  mLatestView->header()->restoreState( QByteArray::fromBase64( KraftSettings::self()->digestListColumns().toAscii() ) );
 
   //Create the all documents view
   mAllDocumentsModel = new DocumentFilterModel(-1, this);
@@ -260,18 +262,6 @@ void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
   }
 }
 
-#if 0
-void DocDigestView::slotDocViewRequest( QTreeWidgetItem *item )
-{
-  QString id = mDocIdDict[ item ];
-  if( ! id.isEmpty() ) {
-    kDebug() << "Opening document " << id;
-
-    emit viewDocument( id );
-  }
-}
-#endif
-
 void DocDigestView::slotOpenLastPrinted( )
 {
   kDebug() << "slotOpenLastPrinted hit! ";
@@ -284,7 +274,6 @@ void DocDigestView::slotDocOpenRequest( QModelIndex index )
   QModelIndex idIndx = index.sibling( index.row(), DocumentModel::Document_Ident );
   QString id = idIndx.data( Qt::DisplayRole ).toString();
 
-  kDebug() << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO "<< "about to open: " << id;
   if( index.data(DocumentModel::DataType) == DocumentModel::DocumentType)
     emit openDocument( id );
  #if 0

@@ -43,12 +43,12 @@ class DocDigestHtmlView : public HtmlView
 
 class DocDigestDetailView : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit DocDigestDetailView(QWidget *parent = 0);
+  explicit DocDigestDetailView(QWidget *parent = 0);
 
 signals:
-    void showLastPrint( const dbID& );
+  void showLastPrint( const dbID& );
 
 public slots:
   void slotShowDocDetails( DocDigest );
