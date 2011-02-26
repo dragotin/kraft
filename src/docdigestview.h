@@ -43,7 +43,7 @@ public:
   ~DocDigestView();
 
   int currentDocumentRow() const;
-  int currentArchivedRow() const;
+
   QString currentDocumentId( ) const;
   QList<KMenu*> contextMenus();
 

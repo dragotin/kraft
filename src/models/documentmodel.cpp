@@ -59,23 +59,6 @@ DocumentModel::DocumentModel()
 //    +------------------+--------------+------+-----+-------------------+-----------------------------+
 //    15 rows in set (0.00 sec)
 
-//    Document_Id = 0,
-//    Document_Ident = 1,
-//    Document_Type = 2,
-//    Document_Whiteboard = 3,
-//    Document_ClientId = 4,
-//    Document_Client = 5,
-//    Document_Salut = 6,
-//    Document_Goodbye = 7,
-//    Document_LastModified = 8,
-//    Document_CreationDate = 9,
-//    Document_Pretext = 10,
-//    Document_Posttext = 11,
-//    Document_Country = 12,
-//    Document_Language = 13,
-//    Document_ProjectLabel = 14
-
-    // this->setSort(Document_Id, Qt::AscendingOrder);
     setHeaderData( 0 /* Document_Id */, Qt::Horizontal, i18n("Id"));
     setHeaderData( 1 /* Document_Ident */, Qt::Horizontal, i18n("Doc. number"));
     setHeaderData( 2 /* Document_Type */, Qt::Horizontal, i18n("Doc. type"));
@@ -85,9 +68,6 @@ DocumentModel::DocumentModel()
     setHeaderData( 6 /* Document_CreationDate */, Qt::Horizontal, i18n("Creation date"));
     setHeaderData( 7 /* Document_ProjectLabel */, Qt::Horizontal, i18n("Project label"));
     setHeaderData( 8 /* Document_ClientName */,   Qt::Horizontal, i18n("Client"));
-    // Cache the count of archived documents per document
-    // QSqlQuery query("SELECT docID, count(arch.archDocID) FROM document, archdoc arch WHERE document.ident = arch.ident group by docID");
-    // query.exec();
 
     mAdrBook = KABC::StdAddressBook::self();
 }
@@ -100,6 +80,7 @@ DocumentModel * DocumentModel::self()
 
 QVariant DocumentModel::data(const QModelIndex &idx, int role) const
 {   
+#if 0
   if(idx.parent().isValid()) {  // clicked on an archive item
     if(role == DocumentModel::DataType)
     {
@@ -133,7 +114,7 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
 
     return QSqlQueryModel::data(idx, role);
   }
-
+#endif
   if(role == DocumentModel::DataType)
   {
     return DocumentModel::DocumentType;
@@ -163,6 +144,7 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
       KABC::Addressee contact;
       if( ! mAddressNameCache.contains( uid )) {
          contact = mAdrBook->findByUid( uid );
+         kDebug() << "Setting address in hash for uid " << uid;
          mAddressNameCache[uid] = contact;
       } else {
         contact = mAddressNameCache[uid];
@@ -200,9 +182,12 @@ DocDigest DocumentModel::digest( const QModelIndex& index ) const
 
   const QString clientId = data( index.sibling( index.row(), Document_ClientId), Qt::DisplayRole).toString();
   digest.setClientId( clientId );
-  KABC::Addressee contact = mAddressNameCache[clientId];
-  if( ! contact.isEmpty() ) {
-    digest.setAddressee( contact );
+  kDebug()  << "Client-ID here: " << clientId;
+  if( !clientId.isEmpty() && mAddressNameCache.contains( clientId ) ) {
+    KABC::Addressee contact = mAddressNameCache[clientId];
+    if( ! contact.isEmpty() ) {
+      digest.setAddressee( contact );
+    }
   }
   // get the arch doc information
 
@@ -225,8 +210,6 @@ DocDigest DocumentModel::digest( const QModelIndex& index ) const
 bool DocumentModel::hasChildren(const QModelIndex &parent) const
 {
     if(!parent.isValid())
-        return true;
-    if(archiveCountCache[parent.row()] > 0 && !parent.parent().isValid())
         return true;
 
     return false;

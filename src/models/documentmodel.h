@@ -72,8 +72,6 @@ protected:
   QVector<QDateTime> mArchiveDocCache;
   mutable QHash<QString, KABC::Addressee> mAddressNameCache;
 
-  mutable QVector<QSqlTableModel*> archiveModelCache;
-
   KABC::AddressBook *mAdrBook;
 };
 

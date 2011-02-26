@@ -106,12 +106,11 @@ QList<QTreeView *> DocDigestView::initializeTreeWidgets()
 {
   //Note: Currently building the views is done in slotBuildView() that is called from the portal
   //      because otherwise we'd access the database before it is initialized
-  mAllView = new QTreeView;
+  mAllView =    new QTreeView;
   mLatestView = new QTreeView;
-  mTimeView = new QTreeView;
+  mTimeView =   new QTreeView;
 
-  connect( mLatestView->header(), SIGNAL( sectionMoved(int, int,int)), this, SLOT(slotSaveSections()) );
-
+  mLatestView->setRootIsDecorated( false );
   mTreeViewIndex.resize(3);
 
   //Add the widgets to a temporary list so we can iterate over them and centralise the common initialization
@@ -270,17 +269,11 @@ void DocDigestView::slotOpenLastPrinted( )
 
 void DocDigestView::slotDocOpenRequest( QModelIndex index )
 {
-  Q_UNUSED(index);
-  QModelIndex idIndx = index.sibling( index.row(), DocumentModel::Document_Ident );
-  QString id = idIndx.data( Qt::DisplayRole ).toString();
+  QModelIndex idIndx = index.sibling( index.row(), DocumentModel::Document_Id );
+  const QString id = idIndx.data( Qt::DisplayRole ).toString();
 
-  if( index.data(DocumentModel::DataType) == DocumentModel::DocumentType)
-    emit openDocument( id );
- #if 0
-  else if( index.data(DocumentModel::DataType) == DocumentModel::ArchivedType)
-    emit openArchivedDocument( idIndx.parent().data( Qt::DisplayRole).toString(),
-                              idIndx.data( Qt::DisplayRole).toString() );
-#endif
+  kDebug() << "Double click open document ident " << id;
+  emit openDocument( id );
 }
 
 int DocDigestView::currentDocumentRow() const
@@ -289,14 +282,6 @@ int DocDigestView::currentDocumentRow() const
         return mCurrentlySelected.row();
     else if(mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::ArchivedType)
         return mCurrentlySelected.parent().row();
-    else
-        return -1;
-}
-
-int DocDigestView::currentArchivedRow() const
-{
-    if(mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::ArchivedType)
-        return mCurrentlySelected.row();
     else
         return -1;
 }
@@ -321,24 +306,24 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
 
     if(index.model() == static_cast<QAbstractItemModel*>(mLatestDocModel)) {
       mCurrentlySelected = mLatestDocModel->mapToSource(index);
-      view = mLatestViewDetails;
       model = static_cast<DocumentModel*>(mLatestDocModel->sourceModel());
+      view = mLatestViewDetails;
     } else if(index.model() == static_cast<QAbstractItemModel*>(mTimelineModel)) {
       mCurrentlySelected = mTimelineModel->mapToSource(index);
       model = static_cast<DocumentModel*>( mTimelineModel->sourceModel() );
-      view = mAllViewDetails;
+      view = mTimeLineViewDetails;
     } else {
       mCurrentlySelected = mAllDocumentsModel->mapToSource(index);
       model = static_cast<DocumentModel*>( mAllDocumentsModel->sourceModel() );
-      view = mTimeLineViewDetails;
+      view = mAllViewDetails;
     }
 
-    if(mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::DocumentType) {
+    if( mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::DocumentType ) {
       QModelIndex idIndx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Ident );
       QString id = idIndx.data( Qt::DisplayRole ).toString();
 
       emit docSelected( id );
-      DocDigest digest = model->digest( index );
+      DocDigest digest = model->digest( /* index */ mCurrentlySelected );
       view->slotShowDocDetails( digest );
       if( digest.archDocDigestList().size() > 0 ) {
         mLatestArchivedDigest = digest.archDocDigestList()[0];

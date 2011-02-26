@@ -562,8 +562,8 @@ void Portal::slotOpenPdf( const QString& fileName )
 
 void Portal::slotOpenDocument( const QString& id )
 {
-  slotStatusMsg(i18n("Opening document..."));
-
+  slotStatusMsg( i18n("Opening document %1").arg(id ) );
+  kDebug() << "Opening document " << id;
   if( !id.isEmpty() ) {
     DocumentMan *docman = DocumentMan::self();
     DocGuardedPtr doc = docman->openDocument( id );

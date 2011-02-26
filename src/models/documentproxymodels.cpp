@@ -97,8 +97,7 @@ QVariant TimelineModel::data(const QModelIndex &index, int role) const
                 return DefaultProvider::self()->locale()->calendar()->monthName( date.month(), date.year() );
             }
         }
-
-        return mapToSource(index).data(role).toString();
+        return mapToSource(index).data(role);
     }
 
     return QAbstractProxyModel::data(index, role);
@@ -127,7 +126,7 @@ int TimelineModel::rowCount(const QModelIndex &parent) const
         int totalRows = sourceModel()->rowCount();
 
         for (int i = 0; i < totalRows; ++i) {
-            QDate rowDate = sourceModel()->index(i, 4 /* Creation Date */ ).data(Qt::EditRole).toDate();
+            QDate rowDate = sourceModel()->index(i, 6 /* Creation Date */ ).data(Qt::EditRole).toDate();
             if(rowDate.year() != currentYear)
             {
                 Helper helper;
