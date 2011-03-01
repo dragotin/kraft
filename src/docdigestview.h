@@ -25,7 +25,6 @@
 #include "docguardedptr.h"
 #include "models/documentproxymodels.h"
 
-class FilterHeader;
 class KMenu;
 class QPushButton;
 class dbID;
@@ -33,6 +32,7 @@ class ArchDocDigest;
 class QContextMenuEvent;
 class QToolBox;
 class DocDigestDetailView;
+class KTreeViewSearchLine;
 
 class DocDigestView : public QWidget
 {
@@ -88,7 +88,7 @@ private:
 
   QList<QTreeView *> treeviewlist;
 
-  FilterHeader *mFilterHeader;
+  KTreeViewSearchLine *mFilterHeader;
   KMenu *mTimelineMenu;
   KMenu *mAllMenu;
   KMenu *mLatestMenu;

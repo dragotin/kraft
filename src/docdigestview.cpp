@@ -46,6 +46,7 @@
 #include "defaultprovider.h"
 #include "docdigestdetailview.h"
 #include "kraftsettings.h"
+#include "ktreeviewsearchline.h"
 
 DocDigestView::DocDigestView( QWidget *parent )
 : QWidget( parent )
@@ -64,11 +65,12 @@ DocDigestView::DocDigestView( QWidget *parent )
   hbox->addStretch(1);
   mToolBox = new QToolBox;
 
-  QList<QTreeView *> treelist = initializeTreeWidgets();
+  initializeTreeWidgets();
   connect( mToolBox, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChangedToolbox(int)));
 
-  mFilterHeader = new FilterHeader( new QTreeWidget );
-  mFilterHeader->showCount( false );
+  // mFilterHeader = new FilterHeader( new QTreeWidget );
+  mFilterHeader = new KTreeViewSearchLine( this );
+  // mFilterHeader->showCount( false );
 
   hbox->addWidget( mFilterHeader );
   hbox->addSpacing( KDialog::marginHint() );
@@ -246,6 +248,10 @@ void DocDigestView::slotBuildView()
     widget->setEditTriggers( QAbstractItemView::NoEditTriggers );
     widget->setExpandsOnDoubleClick( false );
   }
+
+  mFilterHeader->setTreeView( mAllView );
+  mFilterHeader->setTreeView( mLatestView );
+  mFilterHeader->setTreeView( mTimeView );
 }
 
 void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
