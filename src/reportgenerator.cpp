@@ -342,11 +342,7 @@ void ReportGenerator::addressReceived( KJob* job )
 
 QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const
 {
-  QString re( Qt::escape( str ) );
-
-  // FIXME: Workaround for broken trml2pdf which needs double escaped
-  //        & characters to work properly.
-  return re.replace( QChar( '&' ), "&amp;" );
+  return( Qt::escape( str ) );
 }
 
 
