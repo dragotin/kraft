@@ -319,13 +319,13 @@ void PortalView::slotCreateDocument()
   emit createDocument();
 }
 
-void PortalView::slotDocumentCreated( DocGuardedPtr doc )
+void PortalView::slotDocumentCreated( DocGuardedPtr )
 {
   // the new doc is now created and can be inserted into the doc digest view
   // mDocDigestView->slotNewDoc( doc );
 }
 
-void PortalView::slotDocumentUpdate( DocGuardedPtr doc )
+void PortalView::slotDocumentUpdate( DocGuardedPtr )
 {
   // mDocDigestView->slotUpdateDoc( doc );
 }

@@ -148,6 +148,7 @@ set(kraft_SRCS
     models/modeltest.cpp
     docdigestdetailview.cpp
     external/ktreeviewsearchline.cpp
+    addressprovider.cpp
 )
 
 kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)

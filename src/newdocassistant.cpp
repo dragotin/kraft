@@ -22,6 +22,7 @@
 #include <QPushButton>
 
 #include <kabc/addressee.h>
+
 #include <ktextedit.h>
 #include <khbox.h>
 #include <krun.h>
@@ -57,8 +58,13 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   connect( mAddresses,  SIGNAL( addressSelected( const Addressee& ) ),
            SIGNAL( addresseeSelected( const Addressee& ) ) );
 
-  mAddresses->setupAddressList();
   vbox->addWidget( mAddresses );
+
+}
+
+void CustomerSelectPage::setupAddresses()
+{
+  mAddresses->setupAddressList();
 }
 
 CustomerSelectPage:: ~CustomerSelectPage()
@@ -147,6 +153,7 @@ void KraftWizard::init()
   setCaption( i18n( "Document Creation Wizard" ) );
 
   mCustomerPage = new CustomerSelectPage( w );
+  mCustomerPage->setupAddresses();
   connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
            this,  SLOT( slotAddressee( const Addressee& ) ) );
 }

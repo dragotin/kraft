@@ -30,7 +30,8 @@
 class dbID;
 class KJob;
 class QFile;
-
+class AddressProvider;
+class TextTemplate;
 
 class ReportGenerator : public QObject
 {
@@ -50,6 +51,7 @@ signals:
 
 public slots:
   void createPdfFromArchive( const QString&, dbID );
+  void setMyContact( const KABC::Addressee& );
 
 protected:
 
@@ -59,12 +61,13 @@ protected slots:
   void slotReceivedStderr();
   void slotError( QProcess::ProcessError );
   void slotConvertTemplate( const QString& );
-  void addressReceived( KJob* );
+  void slotAddresseeFound( const KABC::Addressee& );
+  void slotAddresseeSearchFinished( int );
 
 private:
   void fillupTemplateFromArchive( const dbID& );
   QString findTemplate( const QString& );
-
+  void contactToTemplate( TextTemplate*, const QString&, const KABC::Addressee& );
   QString registerDictionary( const QString&, const QString& ) const;
   QString registerTag( const QString&, const QString& ) const;
   QString registerDictTag( const QString&, const QString&, const QString& ) const;
@@ -84,11 +87,15 @@ private:
   dbID      mArchId;
   long      mOutputSize;
 
+  KABC::Addressee mCustomerContact;
+  KABC::Addressee myContact;
+
   QFile mFile;
   QDataStream mTargetStream;
   ArchDoc *mArchDoc;
   static ReportGenerator *mSelf;
   KProcess mProcess;
+  AddressProvider *mAddressProvider;
 };
 
 #endif

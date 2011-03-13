@@ -45,7 +45,7 @@
 #include "texttemplate.h"
 #include "defaultprovider.h"
 #include "doctype.h"
-
+#include "addressprovider.h"
 
 ReportGenerator *ReportGenerator::self()
 {
@@ -64,6 +64,12 @@ ReportGenerator::ReportGenerator()
   connect( &mProcess, SIGNAL( readyReadStandardOutput()), this, SLOT( slotReceivedStdout() ) );
   connect( &mProcess, SIGNAL( readyReadStandardError()), this, SLOT( slotReceivedStderr() ) );
   connect( &mProcess, SIGNAL( error ( QProcess::ProcessError )), this, SLOT( slotError( QProcess::ProcessError)));
+
+  mAddressProvider = new AddressProvider( this );
+  connect( mAddressProvider, SIGNAL( addresseeFound( const KABC::Addressee& )),
+           this, SLOT( slotAddresseeFound( const KABC::Addressee& ) ) );
+  connect( mAddressProvider, SIGNAL( finished(int) ),
+           this, SLOT( slotAddresseeSearchFinished(int)) );
 }
 
 ReportGenerator::~ReportGenerator()
@@ -138,49 +144,26 @@ void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 {
   mArchDoc = new ArchDoc(id);
 
-  // FIXME: Read all contacts, even if the customer is not in the address book
-  // we need to read all for our own address.
-  Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
-
-  connect( job, SIGNAL( result( KJob* ) ), SLOT( addressReceived( KJob* ) ) );
+  const QString clientUid = mArchDoc->clientUid();
+  if( ! clientUid.isEmpty() ) {
+    mAddressProvider->getAddressee( clientUid );
+  }
 }
 
-// Result Slot of the Contact Search above
-void ReportGenerator::addressReceived( KJob* job )
+void ReportGenerator::slotAddresseeFound( const KABC::Addressee& contact )
 {
-  kDebug() << "Reading Akonadi Search Job!";
-  KABC::Addressee addressee ;
-  KABC::Addressee myAddress;
+  mCustomerContact = contact;
+}
 
-  if( ! job ) {
-    kError() << "Akonadi Address search job failed!";
-    return;
-  }
+void ReportGenerator::setMyContact( const KABC::Addressee& contact )
+{
+  myContact = contact;
+}
 
-  if ( job->error() ) {
-    qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
-    return;
-  }
-
-  QString myName = KraftSettings::self()->userName();
-  kDebug() << "MY name is " << myName;
-
-  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-  KABC::Addressee::List contacts = searchJob->contacts();
-  kDebug() << "Amount of address entries: " << contacts.size();
-
-  // iterate over all found contacts and search for the customer address
-  // and 'My' address
-  foreach ( const KABC::Addressee &contact, contacts ) {
-    if( contact.uid() == mArchDoc->clientUid() ) {
-      addressee = contact;
-    }
-    if( contact.name() == myName ) {
-      myAddress = contact;
-    }
-    if( !( myAddress.isEmpty() || addressee.isEmpty() ) ) break;
-  }
-
+void ReportGenerator::slotAddresseeSearchFinished( int )
+{
+  // now the addressee search through the address provider is finished.
+  // Rendering can be started.
   QString tmplFile = findTemplate( mArchDoc->docType() );
 
   if ( tmplFile.isEmpty() ) {
@@ -233,33 +216,8 @@ void ReportGenerator::addressReceived( KJob* job )
   tmpl.setValue( TAG( "DOCTYPE" ), mArchDoc->docType() );
   tmpl.setValue( TAG( "ADDRESS" ), mArchDoc->address() );
 
-  tmpl.setValue( TAG( "CLIENT_NAME" ), addressee.realName() );
-  tmpl.setValue( TAG( "CLIENT_ORGANISATION" ), addressee.organization() );
-  tmpl.setValue( TAG( "CLIENT_URL" ), addressee.url().prettyUrl() );
-  tmpl.setValue( TAG( "CLIENT_EMAIL" ), addressee.preferredEmail() );
-  tmpl.setValue( TAG( "CLIENT_PHONE" ), addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
-  tmpl.setValue( TAG( "CLIENT_FAX" ), addressee.phoneNumber( KABC::PhoneNumber::Fax ).number() );
-  tmpl.setValue( TAG( "CLIENT_CELL" ), addressee.phoneNumber( KABC::PhoneNumber::Cell ).number() );
-  KABC::Address clientAddress;
-  clientAddress = addressee.address( KABC::Address::Pref );
-  tmpl.setValue( TAG( "CLIENT_POSTBOX" ),
-                 clientAddress.postOfficeBox() );
-  tmpl.setValue( TAG( "CLIENT_EXTENDED" ),
-                 clientAddress.extended() );
-  tmpl.setValue( TAG( "CLIENT_STREET" ),
-                 clientAddress.street() );
-  tmpl.setValue( TAG( "CLIENT_LOCALITY" ),
-                 clientAddress.locality() );
-  tmpl.setValue( TAG( "CLIENT_REGION" ),
-                 clientAddress.region() );
-  tmpl.setValue( TAG( "CLIENT_POSTCODE" ),
-                 clientAddress.postalCode() );
-  tmpl.setValue( TAG( "CLIENT_COUNTRY" ),
-                 clientAddress.country() );
-  tmpl.setValue( TAG( "CLIENT_REGION" ),
-                 clientAddress.region() );
-  tmpl.setValue( TAG( "CLIENT_LABEL" ),
-                 clientAddress.label() );
+  contactToTemplate( &tmpl, "CLIENT", mCustomerContact );
+  contactToTemplate( &tmpl, "MY", myContact );
 
   tmpl.setValue( TAG( "DOCID" ),   mArchDoc->ident() );
   tmpl.setValue( TAG( "PROJECTLABEL" ),   mArchDoc->projectLabel() );
@@ -269,7 +227,6 @@ void ReportGenerator::addressReceived( KJob* job )
   tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( mArchDoc->postText() ) );
   tmpl.setValue( TAG( "BRUTTOSUM" ), mArchDoc->bruttoSum().toString( mArchDoc->locale() ) );
   tmpl.setValue( TAG( "NETTOSUM" ),  mArchDoc->nettoSum().toString( mArchDoc->locale() ) );
-
 
   h.setNum( mArchDoc->tax(), 'f', 1 );
   kDebug() << "Tax in archive document: " << h;
@@ -297,48 +254,58 @@ void ReportGenerator::addressReceived( KJob* job )
 
   // My own contact data
 
-  tmpl.setValue( TAG( "MY_NAME" ), myAddress.realName() );
-  tmpl.setValue( TAG( "MY_ORGANISATION" ), myAddress.organization() );
-  tmpl.setValue( TAG( "MY_URL" ), myAddress.url().prettyUrl() );
-  tmpl.setValue( TAG( "MY_EMAIL" ), myAddress.preferredEmail() );
-  tmpl.setValue( TAG( "MY_PHONE" ), myAddress.phoneNumber( KABC::PhoneNumber::Work ).number() );
-  tmpl.setValue( TAG( "MY_FAX" ), myAddress.phoneNumber( KABC::PhoneNumber::Fax ).number() );
-  tmpl.setValue( TAG( "MY_CELL" ), myAddress.phoneNumber( KABC::PhoneNumber::Cell ).number() );
-
-  KABC::Address address;
-  address = myAddress.address( KABC::Address::Pref );
-  if( address.isEmpty() )
-    address = myAddress.address(KABC::Address::Work );
-  if( address.isEmpty() )
-    address = myAddress.address(KABC::Address::Home );
-  if( address.isEmpty() )
-    address = myAddress.address(KABC::Address::Postal );
-
-  tmpl.setValue( TAG( "MY_POSTBOX" ),
-              address.postOfficeBox() );
-
-  tmpl.setValue( TAG( "MY_EXTENDED" ),
-                 address.extended() );
-  tmpl.setValue( TAG( "MY_STREET" ),
-                 address.street() );
-  tmpl.setValue( TAG( "MY_LOCALITY" ),
-                 address.locality() );
-  tmpl.setValue( TAG( "MY_REGION" ),
-                 address.region() );
-  tmpl.setValue( TAG( "MY_POSTCODE" ),
-                 address.postalCode() );
-  tmpl.setValue( TAG( "MY_COUNTRY" ),
-                 address.country() );
-  tmpl.setValue( TAG( "MY_REGION" ),
-                 address.region() );
-  tmpl.setValue( TAG( "MY_LABEL" ),
-                 address.label() );
-
   QString output = tmpl.expand();
 
   emit templateGenerated( output );
 
 }
+
+#define ADDRESS_TAG( PREFIX, TAG ) QString("%1_%2").arg( PREFIX ).arg( TAG )
+
+void ReportGenerator::contactToTemplate( TextTemplate *tmpl, const QString& prefix, const KABC::Addressee& contact )
+{
+  if( contact.isEmpty() ) return;
+
+  tmpl->setValue( ADDRESS_TAG( prefix, "NAME" ),  contact.realName() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "ORGANISATION" ), contact.organization() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "URL" ),   contact.url().prettyUrl() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "EMAIL" ), contact.preferredEmail() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "PHONE" ), contact.phoneNumber( KABC::PhoneNumber::Work ).number() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "FAX" ),   contact.phoneNumber( KABC::PhoneNumber::Fax ).number() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "CELL" ),  contact.phoneNumber( KABC::PhoneNumber::Cell ).number() );
+
+  KABC::Address address;
+  address = contact.address( KABC::Address::Pref );
+  if( address.isEmpty() )
+    address = contact.address(KABC::Address::Work );
+  if( address.isEmpty() )
+    address = contact.address(KABC::Address::Home );
+  if( address.isEmpty() )
+    address = contact.address(KABC::Address::Postal );
+
+  tmpl->setValue( ADDRESS_TAG( prefix, "POSTBOX" ),
+              address.postOfficeBox() );
+
+  tmpl->setValue( ADDRESS_TAG( prefix, "EXTENDED" ),
+                 address.extended() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "STREET" ),
+                 address.street() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "LOCALITY" ),
+                 address.locality() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "REGION" ),
+                 address.region() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "POSTCODE" ),
+                 address.postalCode() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "COUNTRY" ),
+                 address.country() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "REGION" ),
+                 address.region() );
+  tmpl->setValue( ADDRESS_TAG( prefix,"LABEL" ),
+                 address.label() );
+
+
+}
+
 
 QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const
 {

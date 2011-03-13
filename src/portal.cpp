@@ -73,6 +73,7 @@
 #include "kraftview_ro.h"
 #include "databasesettings.h"
 #include "setupassistant.h"
+#include "addressprovider.h"
 
 #define ID_STATUS_MSG 1
 
@@ -93,6 +94,10 @@ Portal::Portal( QWidget *parent, KCmdLineArgs *args, const char* name)
   editCut->setEnabled(false);
   editCopy->setEnabled(false);
   editPaste->setEnabled(false);
+
+  mAddressProvider = new AddressProvider( this );
+  connect( mAddressProvider, SIGNAL( addresseeFound( const KABC::Addressee&)),
+          this, SLOT( slotReceivedMyAddress( const KABC::Addressee& ) ) );
 
   setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
@@ -321,8 +326,20 @@ void Portal::slotStartupChecks()
       mCmdLineArgs->clear();
     }
 
+    // Fetch my address
+    QString myName = KraftSettings::self()->userName();
+    kDebug() << "Got My Name: " << myName;
+    mAddressProvider->getAddressee( myName );
+
     slotStatusMsg( i18n( "Ready." ) );
   }
+}
+
+void Portal::slotReceivedMyAddress( const KABC::Addressee& contact )
+{
+  myContact = contact;
+  kDebug() << "Received my address: " << contact.realName();
+  ReportGenerator::self()->setMyContact( contact );
 }
 
 bool Portal::queryClose()
@@ -545,11 +562,11 @@ void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
 {
   if ( archID.isOk() ) {
     slotStatusMsg(i18n("Printing archived document...") );
-    mReportGenerator = ReportGenerator::self();
-    connect( mReportGenerator, SIGNAL( pdfAvailable( const QString& ) ),
+    ReportGenerator *repGen = ReportGenerator::self();
+    connect( repGen, SIGNAL( pdfAvailable( const QString& ) ),
              this,  SLOT( slotOpenPdf( const QString& ) ) );
 
-    mReportGenerator->createPdfFromArchive( id, archID ); // work on document identifier.
+    repGen->createPdfFromArchive( id, archID ); // work on document identifier.
   }
 }
 

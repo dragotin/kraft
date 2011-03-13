@@ -53,12 +53,14 @@ public:
   QString iconvTool() const;
 
   QString getStyleSheet( const QString& ) const;
+
 private:
   DefaultProvider();
 
   static DefaultProvider *mSelf;
 
   const QString EuroTag;
+
 };
 
 #endif

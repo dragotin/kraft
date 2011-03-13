@@ -28,6 +28,7 @@
 class QComboBox;
 class QPushButton;
 class KJob;
+class AddressProvider;
 
 using namespace KABC;
 
@@ -47,19 +48,21 @@ signals:
   void addressSelected( const Addressee& );
 
 protected slots:
-  void readContacts( KJob* job );
-
   void slotSelectionChanged( QTreeWidgetItem*, QTreeWidgetItem* );
-  void addressSelectedResult( KJob * );
+
   void slotUpdateAddressList( const Akonadi::Item& );
+  void slotNewAddressList( const KABC::Addressee::List& );
   void slotOpenAddressBook();
+  void addresseeFound( const KABC::Addressee& );
 
 private:
   QTreeWidgetItem* contactToWidgetEntry( const KABC::Addressee& ) ;
+  QWidget*         contactsView();
 
   QTreeWidget         *mTreeWidget;
   QMap<QTreeWidgetItem*, QString> mAddressIds;
-  QPushButton *mRefreshList;
+  QPushButton         *mRefreshList;
+  AddressProvider     *mAddressProvider;
 };
 
 #endif

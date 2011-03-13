@@ -68,7 +68,6 @@ signals:
   void copyDocument( const QString& );
   void docSelected( const QString& );
   void openArchivedDocument( const ArchDocDigest& );
-  // void archivedDocSelected( const QString&, const QString&  );
 
 private:
 
@@ -84,21 +83,18 @@ private:
 
   DocumentFilterModel *mAllDocumentsModel;
   DocumentFilterModel *mLatestDocModel;
-  TimelineModel *mTimelineModel;
+  TimelineModel       *mTimelineModel;
 
   QList<QTreeView *> treeviewlist;
 
-  KTreeViewSearchLine *mFilterHeader;
+  // KTreeViewSearchLine *mFilterHeader;
+
   KMenu *mTimelineMenu;
   KMenu *mAllMenu;
   KMenu *mLatestMenu;
 
-  // DocDigestDetailView    *mShowDocDetailsView;
-
   QToolBox               *mToolBox;
   QPushButton            *mNewDocButton;
-  QMap<QTreeWidgetItem*, QString> mDocIdDict;
-  QMap<QTreeWidgetItem*, ArchDocDigest> mArchIdDict;
   QVector<QTreeView*>    mTreeViewIndex;
   ArchDocDigest          mLatestArchivedDigest;
 };

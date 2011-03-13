@@ -58,7 +58,7 @@ class CatalogSelection;
 class KPushButton;
 class DocAssistant;
 class CalcPartList;
-class KJob;
+class AddressProvider;
 
 class Katalog;
 
@@ -148,7 +148,7 @@ class KraftView : public KDialog
 
   void slotDocTypeChanged( const QString& );
   void slotLanguageSettings();
-  void readContacts( KJob * );
+  void slotAddresseeFound( const KABC::Addressee& );
 
 signals:
   void selectPage( int );
@@ -169,7 +169,7 @@ private:
 
   QStringList generateLetterHead( Addressee adr );
 
-  KraftViewScroll *m_positionScroll;
+  KraftViewScroll   *m_positionScroll;
   Ui::DocHeaderEdit *m_headerEdit;
   Ui::DocFooterEdit *m_footerEdit;
 
@@ -184,20 +184,22 @@ private:
   QSignalMapper *mLockPositionMapper;
   QSignalMapper *mModifiedMapper;
 
-  QLabel *mDetailHeader;
-  QSplitter *mCSplit;
-  KPushButton *mCatalogToggle;
-  QLabel *mHelpLabel;
+  AddressProvider *mAddressProvider;
 
-  QWidget *mSumSpacer;
+  QLabel        *mDetailHeader;
+  QSplitter     *mCSplit;
+  KPushButton   *mCatalogToggle;
+  QLabel        *mHelpLabel;
+
+  QWidget        *mSumSpacer;
   QStackedWidget *mViewStack;
-  KVBox *mGlobalVBox;
-  int mHeaderId;
-  DocAssistant *mAssistant;
-  double mRememberAmount;
+  KVBox          *mGlobalVBox;
+  int             mHeaderId;
+  DocAssistant   *mAssistant;
+  double         mRememberAmount;
   QMap<dbID, CalcPartList> mCalculationsMap;
   CatalogTemplateList      mNewTemplates;
-  bool mModified;
+  bool           mModified;
 };
 
 #endif // KRAFTVIEW_H

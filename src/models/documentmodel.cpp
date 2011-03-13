@@ -31,6 +31,7 @@
 //Kraft includes
 #include "documentmodel.h"
 #include "docdigest.h"
+#include "addressprovider.h"
 
 DocumentModel::DocumentModel()
        : QSqlQueryModel()
@@ -69,57 +70,30 @@ DocumentModel::DocumentModel()
     setHeaderData( 7 /* Document_ProjectLabel */, Qt::Horizontal, i18n("Project label"));
     setHeaderData( 8 /* Document_ClientName */,   Qt::Horizontal, i18n("Client"));
 
-    mAdrBook = KABC::StdAddressBook::self();
+    mAddressProvider = new AddressProvider( this );
+    connect( mAddressProvider, SIGNAL( addresseeFound( const KABC::Addressee& )),
+             this, SLOT( slotAddresseeFound( const KABC::Addressee& )));
 }
 
+void DocumentModel::slotAddresseeFound( const KABC::Addressee & addressee )
+{
+  if( addressee.isEmpty() ) {
+    kDebug() << "No address found! ";
+  }
+
+  mAddresses[addressee.uid()] = addressee;
+}
+
+#if 0
 DocumentModel * DocumentModel::self()
 {
     K_GLOBAL_STATIC(DocumentModel, mSelf);
     return mSelf;
 }
+#endif
 
 QVariant DocumentModel::data(const QModelIndex &idx, int role) const
 {   
-#if 0
-  if(idx.parent().isValid()) {  // clicked on an archive item
-    if(role == DocumentModel::DataType)
-    {
-      return DocumentModel::ArchivedType;
-    }
-    if(role == Qt::DisplayRole)
-    {
-      //We're showing an archived document
-      if(idx.column() == Document_Type)
-        return QString(i18n("Archived"));
-      if(idx.column() == Document_LastModified)
-      {
-        QSqlTableModel *arcmodel = archiveModelCache[idx.parent().row()];
-        if(!arcmodel)
-        {
-          arcmodel = new QSqlTableModel;
-          arcmodel->setTable("archdoc");
-          QString filter = "ident='" + index(idx.parent().row(), Document_Ident).data(Qt::DisplayRole).toString()+"'";
-          arcmodel->setFilter(filter);
-          arcmodel->select();
-          archiveModelCache.replace(idx.parent().row(), arcmodel);
-        }
-
-        KLocale *locale = KGlobal::locale();
-        QDateTime dt;
-        dt.setTime_t(arcmodel->data(arcmodel->index(idx.row(), 7), Qt::DisplayRole).toInt());
-        return locale->formatDateTime(dt, KLocale::FancyLongDate);
-      }
-      return QString();
-    }
-
-    return QSqlQueryModel::data(idx, role);
-  }
-#endif
-  if(role == DocumentModel::DataType)
-  {
-    return DocumentModel::DocumentType;
-  }
-
   if(role == Qt::DisplayRole)
   {
     if(idx.column() == Document_LastModified ) {
@@ -130,32 +104,23 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
       KLocale *locale = KGlobal::locale();
       QDate date = QSqlQueryModel::data( idx, role ).toDate();
       return locale->formatDate( date, KLocale::ShortDate );
-    } else if(idx.column() == Document_ClientId || idx.column() == Document_ClientName ) {
-      QString uid = QSqlQueryModel::data( idx, role ).toString();
-
-      if( idx.column() == Document_ClientId )
-        return uid;
-
+    } else if(idx.column() == Document_ClientId ) {
+      const QString uid = QSqlQueryModel::data( idx, role ).toString();
+      return uid;
+    } else if( idx.column() == Document_ClientName ) {
       QModelIndex uidIdx = idx.sibling( idx.row(), Document_ClientId );
-      uid = QSqlQueryModel::data( uidIdx, role ).toString();
-      // kDebug() << "Searching address for UID " << uid;
-      if( uid.isEmpty()) return "";
+      const QString uid = QSqlQueryModel::data( uidIdx, role ).toString();
 
-      KABC::Addressee contact;
-      if( ! mAddressNameCache.contains( uid )) {
-         contact = mAdrBook->findByUid( uid );
-         kDebug() << "Setting address in hash for uid " << uid;
-         mAddressNameCache[uid] = contact;
+      kDebug() << "Checking for UID " << uid;
+      if( uid.isEmpty() ) return "";
+
+      if( mAddresses.contains( uid ) ) {
+        return mAddresses.value(uid).realName();
       } else {
-        contact = mAddressNameCache[uid];
+        mAddressProvider->getAddressee( uid );
       }
-      QString name = uid;
-      if( ! contact.isEmpty() ) {
-          name = contact.realName();
-      }
-      return name;
+      return "wait...";
     }
-
   } else if( role == RawTypes ) {
     if(idx.column() == Document_LastModified ) {
       return QSqlQueryModel::data( idx, Qt::DisplayRole ).toDateTime();
@@ -182,14 +147,8 @@ DocDigest DocumentModel::digest( const QModelIndex& index ) const
 
   const QString clientId = data( index.sibling( index.row(), Document_ClientId), Qt::DisplayRole).toString();
   digest.setClientId( clientId );
-  kDebug()  << "Client-ID here: " << clientId;
-  if( !clientId.isEmpty() && mAddressNameCache.contains( clientId ) ) {
-    KABC::Addressee contact = mAddressNameCache[clientId];
-    if( ! contact.isEmpty() ) {
-      digest.setAddressee( contact );
-    }
-  }
-  // get the arch doc information
+  if( mAddresses.contains( clientId )) digest.setAddressee( mAddresses.value( clientId ));
+
 
   kDebug() << "Querying archdocs for document ident " << ident;
   QSqlQuery query("SELECT archDocID, ident, printDate, state FROM archdoc WHERE ident='" + ident +"' ORDER BY printDate DESC" );
@@ -213,14 +172,6 @@ bool DocumentModel::hasChildren(const QModelIndex &parent) const
         return true;
 
     return false;
-}
-
-int DocumentModel::rowCount(const QModelIndex &parent) const
-{
-    if(parent.isValid() && !parent.parent().isValid())
-        return archiveCountCache[parent.row()];
-
-    return QSqlQueryModel::rowCount(parent);
 }
 
 int DocumentModel::columnCount(const QModelIndex &parent) const

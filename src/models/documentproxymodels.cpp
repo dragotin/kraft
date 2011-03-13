@@ -41,7 +41,7 @@ DocumentFilterModel::DocumentFilterModel(int maxRows, QObject *parent)
         : QSortFilterProxyModel(parent)
 {
     m_MaxRows = maxRows;
-    this->setSourceModel(DocumentModel::self());
+    this->setSourceModel(new DocumentModel() ); // ::self());
     this->setSortRole(Qt::EditRole);
 }
 

@@ -28,12 +28,9 @@
 #include <kiconloader.h>
 #include <kmenu.h>
 #include <KHTMLView>
+#include <ktreeviewsearchline.h>
 
 #include <kcalendarsystem.h>
-#include <kabc/addressbook.h>
-#include <kabc/stdaddressbook.h>
-#include <kabc/addresseedialog.h>
-#include <kabc/addressee.h>
 
 #include "models/documentmodel.h"
 #include "models/modeltest.h"
@@ -68,15 +65,14 @@ DocDigestView::DocDigestView( QWidget *parent )
   initializeTreeWidgets();
   connect( mToolBox, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChangedToolbox(int)));
 
-  // mFilterHeader = new FilterHeader( new QTreeWidget );
+#if 0
   mFilterHeader = new KTreeViewSearchLine( this );
-  // mFilterHeader->showCount( false );
 
   hbox->addWidget( mFilterHeader );
   hbox->addSpacing( KDialog::marginHint() );
 
   box->addLayout( hbox );
-
+#endif
   QHBoxLayout *hbox2 = new QHBoxLayout;
   hbox2->addWidget( mToolBox );
   hbox2->addSpacing( KDialog::marginHint() );
@@ -217,7 +213,7 @@ void DocDigestView::slotBuildView()
 
   //Create the all documents view
   mAllDocumentsModel = new DocumentFilterModel(-1, this);
-  mAllDocumentsModel->setSourceModel(DocumentModel::self());
+  mAllDocumentsModel->setSourceModel( new DocumentModel ); // ::self());
   mAllView->setModel(mAllDocumentsModel);
   mAllView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
   mAllView->hideColumn( DocumentModel::Document_ClientId );
@@ -249,9 +245,11 @@ void DocDigestView::slotBuildView()
     widget->setExpandsOnDoubleClick( false );
   }
 
+#if 0
   mFilterHeader->setTreeView( mAllView );
   mFilterHeader->setTreeView( mLatestView );
   mFilterHeader->setTreeView( mTimeView );
+#endif
 }
 
 void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
@@ -284,12 +282,7 @@ void DocDigestView::slotDocOpenRequest( QModelIndex index )
 
 int DocDigestView::currentDocumentRow() const
 {
-    if(mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::DocumentType)
-        return mCurrentlySelected.row();
-    else if(mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::ArchivedType)
-        return mCurrentlySelected.parent().row();
-    else
-        return -1;
+  return mCurrentlySelected.row();
 }
 
 QString DocDigestView::currentDocumentId( ) const
@@ -324,26 +317,19 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
       view = mAllViewDetails;
     }
 
-    if( mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::DocumentType ) {
-      QModelIndex idIndx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Ident );
-      QString id = idIndx.data( Qt::DisplayRole ).toString();
+    QModelIndex idIndx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Ident );
+    QString id = idIndx.data( Qt::DisplayRole ).toString();
 
-      emit docSelected( id );
-      DocDigest digest = model->digest( /* index */ mCurrentlySelected );
-      view->slotShowDocDetails( digest );
-      if( digest.archDocDigestList().size() > 0 ) {
-        mLatestArchivedDigest = digest.archDocDigestList()[0];
-      } else {
-        mLatestArchivedDigest = ArchDocDigest();
-      }
-
-    } else if(mCurrentlySelected.data(DocumentModel::DataType) == DocumentModel::ArchivedType) {
-      //emit archivedDocSelected( mCurrentlySelected.parent().data( Qt::DisplayRole).toString(),
-      //                          mCurrentlySelected.data( Qt::DisplayRole).toString() );
+    emit docSelected( id );
+    DocDigest digest = model->digest( /* index */ mCurrentlySelected );
+    view->slotShowDocDetails( digest );
+    if( digest.archDocDigestList().size() > 0 ) {
+      mLatestArchivedDigest = digest.archDocDigestList()[0];
     } else {
-      emit docSelected( QString() );
-
+      mLatestArchivedDigest = ArchDocDigest();
     }
+
+
   } else {
     emit docSelected( QString() );
   }

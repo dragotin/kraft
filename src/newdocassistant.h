@@ -50,6 +50,7 @@ class CustomerSelectPage: public QWidget
 public:
   CustomerSelectPage( QWidget *parent = 0 );
   ~CustomerSelectPage();
+  void setupAddresses();
 
 signals:
   void addresseeSelected( const Addressee& );

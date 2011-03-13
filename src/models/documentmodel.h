@@ -19,15 +19,17 @@
 #define DOCUMENTMODEL_H
 
 #include <QSqlTableModel>
-#include <QVector>
-
-#include <kabc/addressbook.h>
+#include <kabc/addressee.h>
 
 class DocDigest;
+class AddressProvider;
 
 class DocumentModel : public QSqlQueryModel
 {
+  Q_OBJECT
 public:
+
+  DocumentModel();
 
   enum Columns {
     Document_Id = 0,
@@ -43,20 +45,12 @@ public:
 
   enum Roles
   {
-    DataType = Qt::UserRole + 1,
-    RawTypes = Qt::UserRole + 2
+    RawTypes = Qt::UserRole + 1
   };
 
-  enum DataTypes
-  {
-    DocumentType = 0,
-    ArchivedType = 1
-  };
-
-  static DocumentModel *self();
+  // static DocumentModel *self();
   QVariant data(const QModelIndex &idx, int rol) const;
   bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
-  int rowCount(const QModelIndex &parent = QModelIndex()) const;
   int columnCount(const QModelIndex &parent = QModelIndex()) const;
   QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
   QModelIndex parent(const QModelIndex &index= QModelIndex()) const;
@@ -64,15 +58,13 @@ public:
   bool canFetchMore(const QModelIndex &parent) const;
   DocDigest digest( const QModelIndex& ) const;
 
+protected slots:
+  void slotAddresseeFound( const KABC::Addressee& );
+
 protected:
-  DocumentModel();
-
-  static DocumentModel *mSelf;
-  QVector<int> archiveCountCache;
-  QVector<QDateTime> mArchiveDocCache;
-  mutable QHash<QString, KABC::Addressee> mAddressNameCache;
-
-  KABC::AddressBook *mAdrBook;
+  AddressProvider   *mAddressProvider;
+  // static DocumentModel *mSelf;
+  QHash<QString, KABC::Addressee> mAddresses;
 };
 
 #endif

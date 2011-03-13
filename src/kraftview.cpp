@@ -30,6 +30,7 @@
 #include <QFont>
 #include <QResizeEvent>
 #include <QPalette>
+#include <QTimer>
 
 #include <kdebug.h>
 #include <kdialog.h>
@@ -44,7 +45,6 @@
 #include <kiconloader.h>
 
 #include <kabc/addressee.h>
-#include <akonadi/contact/contactsearchjob.h>
 
 // application specific includes
 #include "kraftdb.h"
@@ -77,8 +77,7 @@
 #include "doctype.h"
 #include "catalogtemplate.h"
 #include "importitemdialog.h"
-
-#include <qtimer.h>
+#include "addressprovider.h"
 #include "doclocaledialog.h"
 
 
@@ -137,6 +136,11 @@ KraftView::KraftView(QWidget *parent) :
   mDetailHeader->setFrameStyle( QFrame::Box + QFrame::Plain );
   mDetailHeader->setLineWidth( 1 );
   mDetailHeader->setAutoFillBackground(true);
+
+  mAddressProvider = new AddressProvider( this );
+  connect( mAddressProvider, SIGNAL(addresseeFound( const KABC::Addressee& )),
+           this, SLOT( slotAddresseeFound( const KABC::Addressee& )));
+
 
   QPalette palette;
   palette.setColor(mDetailHeader->backgroundRole(), QColor( "darkBlue" ));
@@ -330,8 +334,7 @@ void KraftView::redrawDocument( )
     kDebug() << "Loaded address uid from database " << mContactUid << endl;
     if( ! mContactUid.isEmpty() ) {
       // FIXME - use centralised address provider
-      Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
-      connect( job, SIGNAL( result( KJob* ) ), SLOT( readContacts( KJob* ) ) );
+      mAddressProvider->getAddressee( mContactUid );
     }
 
     if( !address.isEmpty() ) {
@@ -362,25 +365,11 @@ void KraftView::redrawDocument( )
     mModified = false;
 }
 
-void KraftView::readContacts( KJob *job )
+void KraftView::slotAddresseeFound( const KABC::Addressee& contact )
 {
-  kDebug() << "Reading Akonadi Search Job!";
-  if ( job->error() ) {
-    qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
-    return;
-  }
-
-  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-
-  // iterate over all found contacts and and find the one with the correct uid
-  foreach ( const KABC::Addressee &contact, searchJob->contacts() ) {
-    const QString uid = contact.uid();
-    if( uid == mContactUid ) {
-      slotNewAddress( contact );
-      kDebug() << "The loaded Contact has this realname: " << contact.realName() << endl;
-      break;
-    }
-  }
+  kDebug() << "Addressee Found";
+  slotNewAddress( contact );
+  kDebug() << "The loaded Contact has this realname: " << contact.realName() << endl;
 }
 
 void KraftView::redrawDocPositions( )
@@ -1408,4 +1397,3 @@ void KraftView::print(QPrinter * /* pPrinter */ )
 
 }
 
-#include "kraftview.moc"

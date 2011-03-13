@@ -1,3 +1,17 @@
+Changes since version 0.40: #########################################
+- More changes to the Akonadi based addressbook integration
+- switched to a python only version of trml2pdf called erml2pdf, 
+  makes porting to other platforms easier plus dropped dependency on 
+  java with pdftk
+- used Qt Model/View for the document lists. Way faster startup. 
+- New document digest view
+- Catalogs: Implemented nested catalog structure
+- Catalogs: Moving templates around per d&d
+- Catalogs: user defined sorting in catalogs 
+- Catalogs: dropping of templates
+
+   => released v. 0.41
+
 Changes since version 0.32: #########################################
 - Ported to the KDE 4 Platform. In particular, to KDE 4.4
 - Use Akonadi based addressbook

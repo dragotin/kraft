@@ -27,6 +27,7 @@
 
 #include <kapplication.h>
 #include <kxmlguiwindow.h>
+#include <kabc/addressee.h>
 
 #include <kaction.h>
 #include <kurl.h>
@@ -40,6 +41,8 @@ class PortalView;
 class ReportGenerator;
 class KCmdLineArgs;
 class ArchDocDigest;
+class AddressProvider;
+
 /**
   */
 class Portal : public KXmlGuiWindow
@@ -141,6 +144,7 @@ class Portal : public KXmlGuiWindow
 
     void slotOpenPdf( const QString& );
 
+    void slotReceivedMyAddress( const KABC::Addressee& );
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
@@ -157,7 +161,6 @@ class Portal : public KXmlGuiWindow
      * information such as filename and does the serialization of your files.
      */
     KraftDoc *doc;
-    ReportGenerator *mReportGenerator;
 
     // KAction pointers to enable/disable actions
     KAction* fileQuit;
@@ -182,6 +185,8 @@ class Portal : public KXmlGuiWindow
 
   QMap<QString, KatalogView*> mKatalogViews;
   QString mMailReceiver;
+  AddressProvider *mAddressProvider;
+  KABC::Addressee myContact;
 };
 
 #endif

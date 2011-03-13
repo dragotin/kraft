@@ -15,19 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 #include "addressselection.h"
-
 #include "filterheader.h"
+#include "addressprovider.h"
 
 #include <klocale.h>
 #include <kdebug.h>
 #include <kdialog.h>
 
+#include <kabc/addresseelist.h>
 #include <kabc/addressee.h>
+#include <kabc/addressbook.h>
+#include <kabc/stdaddressbook.h>
+#include <kabc/contactgroup.h>
 
 #include <akonadi/contact/contactsearchjob.h>
+#include <akonadi/contact/contactstreemodel.h>
+#include <akonadi/itemfetchscope.h>
+#include <akonadi/entitydisplayattribute.h>
+#include <akonadi/changerecorder.h>
 #include <akonadi/control.h>
 #include <akonadi/contact/contacteditor.h>
 #include <akonadi/contact/contacteditordialog.h>
+#include <akonadi/session.h>
+#include <akonadi/entitytreeview.h>
+
 
 #include <QSizePolicy>
 #include <QComboBox>
@@ -46,9 +57,16 @@ AddressSelection::AddressSelection( QWidget *parent )
   QVBoxLayout *vbox = new QVBoxLayout;
   setLayout( vbox );
 
+  mAddressProvider = new AddressProvider( this );
+  connect( mAddressProvider, SIGNAL( addressListFound( const KABC::Addressee::List& ) ),
+           this, SLOT( slotNewAddressList( const KABC::Addressee::List& ) ) );
+  connect( mAddressProvider, SIGNAL(addresseeFound( const KABC::Addressee& ) ),
+           this, SLOT( slotAddresseeFound( const KABC::Addressee& ) ) );
+
   QLabel *l = new QLabel;
   l->setText(i18n("Please select a contact from the list below: "));
   vbox->addWidget( l );
+  // vbox->addWidget( contactsView() );
 
   mTreeWidget = new QTreeWidget;
   vbox->addWidget( mTreeWidget );
@@ -75,6 +93,45 @@ AddressSelection::AddressSelection( QWidget *parent )
            SLOT( slotSelectionChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 }
 
+#if 0
+QWidget* AddressSelection::contactsView()
+{
+  // use a separated session for this model
+  Akonadi::Session *session = new Akonadi::Session( "MySession" );
+
+  Akonadi::ItemFetchScope scope;
+  // fetch all content of the contacts, including images
+  scope.fetchFullPayload( true );
+  // fetch the EntityDisplayAttribute, which contains custom names and icons
+  scope.fetchAttribute<Akonadi::EntityDisplayAttribute>();
+
+  Akonadi::ChangeRecorder *changeRecorder = new Akonadi::ChangeRecorder;
+  changeRecorder->setSession( session );
+  // include fetching the collection tree
+  changeRecorder->fetchCollection( true );
+  // set the fetch scope that shall be used
+  changeRecorder->setItemFetchScope( scope );
+  // monitor all collections below the root collection for changes
+  changeRecorder->setCollectionMonitored( Akonadi::Collection::root() );
+  // list only contacts and contact groups
+  changeRecorder->setMimeTypeMonitored( KABC::Addressee::mimeType(), true );
+  changeRecorder->setMimeTypeMonitored( KABC::ContactGroup::mimeType(), true );
+
+  Akonadi::ContactsTreeModel *model = new Akonadi::ContactsTreeModel( changeRecorder );
+
+  Akonadi::ContactsTreeModel::Columns columns;
+  columns << Akonadi::ContactsTreeModel::FullName;
+  columns << Akonadi::ContactsTreeModel::HomeAddress;
+  model->setColumns( columns );
+
+  Akonadi::EntityTreeView *view = new Akonadi::EntityTreeView;
+  view->setModel( model );
+
+  return view;
+}
+#endif
+
+
 void AddressSelection::slotOpenAddressBook()
 {
   ContactEditorDialog *dlg = new ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this );
@@ -83,47 +140,30 @@ void AddressSelection::slotOpenAddressBook()
   dlg->show();
 }
 
-void AddressSelection::slotUpdateAddressList( const Akonadi::Item& item )
+void AddressSelection::slotUpdateAddressList( const Akonadi::Item& )
 {
-  if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
-    KABC::Addressee contact = item.payload<KABC::Addressee>();
-
-    QTreeWidgetItem *treeItem = contactToWidgetEntry( contact );
-    if( treeItem ) {
-      treeItem->setSelected( true );
-      mTreeWidget->scrollToItem( treeItem );
-    }
-  } else {
-    kDebug() << "Update AddressList: Item is not valid";
-  }
+  kDebug() << "Update slot called!";
 }
 
 void AddressSelection::setupAddressList()
 {
-  mTreeWidget->clear();
-  mAddressIds.clear();
-  // Start an Akonadi Search job which returns all Addresses found in Akonadis
-  // contact storage, which can be multiple address books.
-  Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
-  connect( job, SIGNAL( result( KJob* ) ), SLOT( readContacts( KJob* ) ) );
+  // query all addresses and get the result in slotNewAddressList
+  mAddressProvider->allAddresses();
 }
 
-// Result Slot of the Contact Search above
-void AddressSelection::readContacts( KJob* job )
+void AddressSelection::slotNewAddressList( const KABC::Addressee::List& addresses )
 {
-  kDebug() << "Reading Akonadi Search Job!";
-  if ( job->error() ) {
-    qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
-    return;
-  }
+  mTreeWidget->clear();
+  mAddressIds.clear();
 
-  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-  KABC::Addressee::List contacts = searchJob->contacts();
-  kDebug() << "Amount of address entries: " << contacts.size();
-
-  // iterate over all found contacts and write build up the treeview
-  foreach ( const KABC::Addressee &contact, contacts ) {
-    contactToWidgetEntry( contact );
+  KABC::Addressee::List sorted = addresses;
+  sorted.sort();
+  kDebug() << "Amount of address entries: " << sorted.size();
+  if( sorted.size() ) {
+    // iterate over all found contacts and write build up the treeview
+    foreach ( const KABC::Addressee &contact, sorted ) {
+      contactToWidgetEntry( contact );
+    }
   }
 }
 
@@ -136,12 +176,15 @@ QTreeWidgetItem* AddressSelection::contactToWidgetEntry( const KABC::Addressee& 
     item->setText( 0, contact.name() );
 
     // remember the name as a search key for the slot selectionChanged
-    mAddressIds[item] = contact.name();
+    mAddressIds[item] = contact.uid();
 
     Address::List adr = contact.addresses();
     Address::List::iterator adrIt;
+    // FIXME
     for ( adrIt = adr.begin(); adrIt != adr.end(); ++adrIt ) {
-      item->setText( 1, ( *adrIt ).locality () );
+      const QString loc = (*adrIt).locality();
+      if( !loc.isEmpty() )
+        item->setText( 1, loc );
     }
   }
   return item;
@@ -150,48 +193,25 @@ QTreeWidgetItem* AddressSelection::contactToWidgetEntry( const KABC::Addressee& 
 // slot called if the user clicks on the treeview
 void AddressSelection::slotSelectionChanged( QTreeWidgetItem *item, QTreeWidgetItem* )
 {
-  Addressee adr;
-  QString adrName;
+  QString uid;
 
   QTreeWidgetItem *it = item;
   if ( ! it ) {
     it = mTreeWidget->currentItem();
   }
 
-  if ( it ) {
-    adrName = mAddressIds[it];
+  if ( it && mAddressIds.contains( it )) {
+    uid = mAddressIds[it];
 
-    if ( ! adrName.isEmpty() ) {
-      // fire again an akonadi search job with the name as key
-      // FIXME: Use the contacts Unique Object ID to search for, currently
-      // not supported by Akonadi.
-      Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob;
-      job->setQuery( Akonadi::ContactSearchJob::Name, adrName );
-      connect( job, SIGNAL( result( KJob* ) ), SLOT( addressSelectedResult( KJob* ) ) );
+    if ( ! uid.isEmpty() ) {
+      // search for the selected uid
+      mAddressProvider->getAddressee( uid );
     }
   }
 }
 
-// Slot to handle the selection Query Job
-void AddressSelection::addressSelectedResult( KJob *job )
+void AddressSelection::addresseeFound( const KABC::Addressee& contact )
 {
-  kDebug() << "Address Selection Job!";
-  if ( job->error() ) {
-    qDebug() << "Akonadi Contact Job Read Error: " << job->errorString();
-    return;
-  }
-
-  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-  KABC::Addressee::List contacts = searchJob->contacts();
-  kDebug() << "Amount of address entries: " << contacts.size();
-
-  // emit the selected Signal for every Contact. Usually its only one.
-  foreach ( const KABC::Addressee &contact, contacts ) {
-    kDebug() << "Found the addressee: " << contact.name();
-    emit addressSelected( contact );
-  }
+  emit addressSelected( contact );
 }
-
-
-
 
