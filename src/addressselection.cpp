@@ -173,7 +173,7 @@ QTreeWidgetItem* AddressSelection::contactToWidgetEntry( const KABC::Addressee& 
 
   if( ! contact.isEmpty() ) {
     item = new QTreeWidgetItem( mTreeWidget );
-    item->setText( 0, contact.name() );
+    item->setText( 0, contact.realName() );
 
     // remember the name as a search key for the slot selectionChanged
     mAddressIds[item] = contact.uid();
