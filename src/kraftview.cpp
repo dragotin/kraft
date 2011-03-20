@@ -138,8 +138,8 @@ KraftView::KraftView(QWidget *parent) :
   mDetailHeader->setAutoFillBackground(true);
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL(addresseeFound( const KABC::Addressee& )),
-           this, SLOT( slotAddresseeFound( const KABC::Addressee& )));
+  connect( mAddressProvider, SIGNAL(addresseeFound( const QString&, const KABC::Addressee& )),
+           this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& )));
 
 
   QPalette palette;
@@ -365,7 +365,7 @@ void KraftView::redrawDocument( )
     mModified = false;
 }
 
-void KraftView::slotAddresseeFound( const KABC::Addressee& contact )
+void KraftView::slotAddresseeFound( const QString& /* uid */, const KABC::Addressee& contact )
 {
   kDebug() << "Addressee Found";
   slotNewAddress( contact );

@@ -201,7 +201,7 @@ public:
 public slots:
   void back();
   void next();
-  void slotButtonClicked(int);
+  void slotFinishedClicked();
 
 private slots:
   void slotCurrentPageChanged( KPageWidgetItem*, KPageWidgetItem* );

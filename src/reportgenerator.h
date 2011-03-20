@@ -61,7 +61,7 @@ protected slots:
   void slotReceivedStderr();
   void slotError( QProcess::ProcessError );
   void slotConvertTemplate( const QString& );
-  void slotAddresseeFound( const KABC::Addressee& );
+  void slotAddresseeFound( const QString&, const KABC::Addressee& );
   void slotAddresseeSearchFinished( int );
 
 private:

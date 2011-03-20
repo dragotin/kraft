@@ -373,7 +373,7 @@ SetupAssistant::SetupAssistant( QWidget *parent )
 
   connect( this, SIGNAL( currentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ),
            this, SLOT( slotCurrentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ) );
-  connect( this, SIGNAL( buttonClicked(int) ), this, SLOT( slotButtonClicked(int) ) );
+  connect( this, SIGNAL( user1Clicked() ), this, SLOT( slotFinishedClicked() ) );
 
   setInitialSize( QSize( 450, 260 ) );
 
@@ -446,26 +446,24 @@ void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidg
   }
 }
 
-void SetupAssistant::slotButtonClicked( int buttCode )
+void SetupAssistant::slotFinishedClicked( )
 {
-  if( buttCode == KDialog::User1 ) { // Button "Finished"
-    // store the stakeholders own name for picking the sender address
-    mOwnAddressPage->saveOwnName();
+  // store the stakeholders own name for picking the sender address
+  mOwnAddressPage->saveOwnName();
 
-    DatabaseSettings::self()->setDbDriver( mDbSelectPage->selectedDriver() );
-    if( mDbSelectPage->selectedDriver() == "QSQLITE" ) {
-      DatabaseSettings::self()->setDbFile( mSqLiteDetailsPage->url().pathOrUrl() ); // The sqLite file name
-    }
-    if( mDbSelectPage->selectedDriver() == "QMYSQL" ) {
-      DatabaseSettings::self()->setDbDatabaseName( mMysqlDetailsPage->dbName() );
-      DatabaseSettings::self()->setDbUser( mMysqlDetailsPage->dbUser() );
-      DatabaseSettings::self()->setDbServerName( mMysqlDetailsPage->dbServer() );
-      DatabaseSettings::self()->setDbPassword( mMysqlDetailsPage->dbPasswd() );
-    }
-    DatabaseSettings::self()->writeConfig();
-    kDebug() << "Database backend config written.";
+  DatabaseSettings::self()->setDbDriver( mDbSelectPage->selectedDriver() );
+  if( mDbSelectPage->selectedDriver() == "QSQLITE" ) {
+    DatabaseSettings::self()->setDbFile( mSqLiteDetailsPage->url().pathOrUrl() ); // The sqLite file name
   }
-  KAssistantDialog::slotButtonClicked( buttCode );
+  if( mDbSelectPage->selectedDriver() == "QMYSQL" ) {
+    DatabaseSettings::self()->setDbDatabaseName( mMysqlDetailsPage->dbName() );
+    DatabaseSettings::self()->setDbUser( mMysqlDetailsPage->dbUser() );
+    DatabaseSettings::self()->setDbServerName( mMysqlDetailsPage->dbServer() );
+    DatabaseSettings::self()->setDbPassword( mMysqlDetailsPage->dbPasswd() );
+  }
+  DatabaseSettings::self()->writeConfig();
+  kDebug() << "Database backend config written.";
+  KAssistantDialog::slotButtonClicked( User1 );
 
 }
 

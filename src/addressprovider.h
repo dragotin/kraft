@@ -36,14 +36,15 @@ protected slots:
   void searchResult( KJob* );
 
 signals:
-  void addresseeFound( const KABC::Addressee& );
+  //
+  void addresseeFound( const QString&, const KABC::Addressee& );
   void addressListFound( const KABC::Addressee::List& );
 
   // emitted when the search is finished, even if there was no result.
   void finished( int );
 
 private:
-  QMap<KJob*, int> mUidSearchJobs;
+  QMap<KJob*, QString> mUidSearchJobs;
   QMap<KJob*, int> mAllAddressesJobs;
 };
 

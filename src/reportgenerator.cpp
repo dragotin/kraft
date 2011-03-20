@@ -66,8 +66,8 @@ ReportGenerator::ReportGenerator()
   connect( &mProcess, SIGNAL( error ( QProcess::ProcessError )), this, SLOT( slotError( QProcess::ProcessError)));
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( addresseeFound( const KABC::Addressee& )),
-           this, SLOT( slotAddresseeFound( const KABC::Addressee& ) ) );
+  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee& )),
+           this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& ) ) );
   connect( mAddressProvider, SIGNAL( finished(int) ),
            this, SLOT( slotAddresseeSearchFinished(int)) );
 }
@@ -150,7 +150,7 @@ void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   }
 }
 
-void ReportGenerator::slotAddresseeFound( const KABC::Addressee& contact )
+void ReportGenerator::slotAddresseeFound( const QString&, const KABC::Addressee& contact )
 {
   mCustomerContact = contact;
 }

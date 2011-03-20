@@ -71,14 +71,15 @@ DocumentModel::DocumentModel()
     setHeaderData( 8 /* Document_ClientName */,   Qt::Horizontal, i18n("Client"));
 
     mAddressProvider = new AddressProvider( this );
-    connect( mAddressProvider, SIGNAL( addresseeFound( const KABC::Addressee& )),
-             this, SLOT( slotAddresseeFound( const KABC::Addressee& )));
+    connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee& )),
+             this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& )));
 }
 
-void DocumentModel::slotAddresseeFound( const KABC::Addressee & addressee )
+void DocumentModel::slotAddresseeFound( const QString& uid, const KABC::Addressee & addressee )
 {
   if( addressee.isEmpty() ) {
-    kDebug() << "No address found! ";
+    kDebug() << "No address found for uid " << uid;
+    mAddresses[uid] = KABC::Addressee();
   }
 
   mAddresses[addressee.uid()] = addressee;
@@ -115,11 +116,15 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
       if( uid.isEmpty() ) return "";
 
       if( mAddresses.contains( uid ) ) {
+        if( mAddresses.value(uid).isEmpty() ) {
+          // empty address means that there is no valid entry in this addressbook
+          return i18n("not found");
+        }
         return mAddresses.value(uid).realName();
       } else {
         mAddressProvider->getAddressee( uid );
       }
-      return "wait...";
+      return i18n("retrieving...");
     }
   } else if( role == RawTypes ) {
     if(idx.column() == Document_LastModified ) {
@@ -147,8 +152,9 @@ DocDigest DocumentModel::digest( const QModelIndex& index ) const
 
   const QString clientId = data( index.sibling( index.row(), Document_ClientId), Qt::DisplayRole).toString();
   digest.setClientId( clientId );
-  if( mAddresses.contains( clientId )) digest.setAddressee( mAddresses.value( clientId ));
-
+  if( mAddresses.contains( clientId )) {
+    digest.setAddressee( mAddresses.value( clientId ));
+  }
 
   kDebug() << "Querying archdocs for document ident " << ident;
   QSqlQuery query("SELECT archDocID, ident, printDate, state FROM archdoc WHERE ident='" + ident +"' ORDER BY printDate DESC" );

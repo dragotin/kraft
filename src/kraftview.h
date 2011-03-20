@@ -148,7 +148,7 @@ class KraftView : public KDialog
 
   void slotDocTypeChanged( const QString& );
   void slotLanguageSettings();
-  void slotAddresseeFound( const KABC::Addressee& );
+  void slotAddresseeFound( const QString&, const KABC::Addressee& );
 
 signals:
   void selectPage( int );

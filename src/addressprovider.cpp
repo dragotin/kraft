@@ -42,7 +42,8 @@ void AddressProvider::getAddressee( const QString& uid )
   job->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
 
   connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-  mUidSearchJobs[job] = 1;
+
+  mUidSearchJobs[job] = uid;
   job->start();
 }
 
@@ -59,19 +60,24 @@ void AddressProvider::searchResult( KJob* job )
   if( contacts.size() > 0 )  {
     if( mAllAddressesJobs.contains( job )) {
       kDebug() << "Found list of " << contacts.size() << " addresses for all addresses";
+      mAllAddressesJobs.remove( job );
       emit addressListFound( contacts );
     }
     if( mUidSearchJobs.contains( job )) {
       // mUidSearchJobs.remove(job);
       KABC::Addressee contact = contacts[0];
-      const QString uid = contact.uid();
+      const QString uid = mUidSearchJobs.value( job );
       kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
-      emit addresseeFound( contact );
 
+      emit addresseeFound( uid, contact );
     }
   } else {
     kDebug() << "Akonadi search result list has size of 0";
+    if( mUidSearchJobs.contains(job)) {
+      emit addresseeFound( mUidSearchJobs.value(job), KABC::Addressee() );
+    }
   }
+  mUidSearchJobs.remove( job );
   // FIXME: Remove job entries from mUidSearchJobs and mAllAddressesJobs
   emit( finished( contacts.size() ) );
 }

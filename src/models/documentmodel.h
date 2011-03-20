@@ -59,7 +59,7 @@ public:
   DocDigest digest( const QModelIndex& ) const;
 
 protected slots:
-  void slotAddresseeFound( const KABC::Addressee& );
+  void slotAddresseeFound( const QString&, const KABC::Addressee& );
 
 protected:
   AddressProvider   *mAddressProvider;

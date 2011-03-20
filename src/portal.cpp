@@ -96,8 +96,8 @@ Portal::Portal( QWidget *parent, KCmdLineArgs *args, const char* name)
   editPaste->setEnabled(false);
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( addresseeFound( const KABC::Addressee&)),
-          this, SLOT( slotReceivedMyAddress( const KABC::Addressee& ) ) );
+  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee&)),
+          this, SLOT( slotReceivedMyAddress( const QString&, const KABC::Addressee& ) ) );
 
   setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
@@ -263,9 +263,9 @@ void Portal::slotStartupChecks()
 {
   QString dbName = DatabaseSettings::self()->dbDatabaseName();
 
-  if ( !Akonadi::Control::start( this ) ) {
-    kError() << "Failed to start Akonadi!";
-  }
+  // if ( !Akonadi::Control::start( this ) ) {
+  //  kError() << "Failed to start Akonadi!";
+  // }
 
   SetupAssistant assi(this);
   if( assi.init( SetupAssistant::Update) ) {
@@ -335,10 +335,10 @@ void Portal::slotStartupChecks()
   }
 }
 
-void Portal::slotReceivedMyAddress( const KABC::Addressee& contact )
+void Portal::slotReceivedMyAddress( const QString& uid, const KABC::Addressee& contact )
 {
   myContact = contact;
-  kDebug() << "Received my address: " << contact.realName();
+  kDebug() << "Received my address: " << contact.realName() << "(" << uid << ")";
   ReportGenerator::self()->setMyContact( contact );
 }
 

@@ -60,8 +60,8 @@ AddressSelection::AddressSelection( QWidget *parent )
   mAddressProvider = new AddressProvider( this );
   connect( mAddressProvider, SIGNAL( addressListFound( const KABC::Addressee::List& ) ),
            this, SLOT( slotNewAddressList( const KABC::Addressee::List& ) ) );
-  connect( mAddressProvider, SIGNAL(addresseeFound( const KABC::Addressee& ) ),
-           this, SLOT( slotAddresseeFound( const KABC::Addressee& ) ) );
+  // connect( mAddressProvider, SIGNAL(addresseeFound( const QString&, const KABC::Addressee& ) ),
+  //         this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& ) ) );
 
   QLabel *l = new QLabel;
   l->setText(i18n("Please select a contact from the list below: "));
@@ -210,7 +210,7 @@ void AddressSelection::slotSelectionChanged( QTreeWidgetItem *item, QTreeWidgetI
   }
 }
 
-void AddressSelection::addresseeFound( const KABC::Addressee& contact )
+void AddressSelection::addresseeFound( const QString&, const KABC::Addressee& contact )
 {
   emit addressSelected( contact );
 }

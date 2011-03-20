@@ -107,6 +107,9 @@
           <property name="value">
            <double>1.000000000000000</double>
           </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
           <property name="precision" stdset="0">
            <number>3</number>
           </property>
@@ -242,6 +245,15 @@
    <header>knuminput.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mEditMaterial</tabstop>
+  <tabstop>mDiPerPack</tabstop>
+  <tabstop>mCbUnit</tabstop>
+  <tabstop>mInPurchasePrice</tabstop>
+  <tabstop>mInSaleAdd</tabstop>
+  <tabstop>mInSalePrice</tabstop>
+  <tabstop>mCbChapter</tabstop>
+ </tabstops>
  <includes>
   <include location="local">knuminput.h</include>
  </includes>

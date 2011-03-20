@@ -49,7 +49,14 @@ MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, bool modal )
 
   const QString currSymbol = DefaultProvider::self()->locale()->currencySymbol();
   mInPurchasePrice->setPrefix( currSymbol + " " );
+  mInPurchasePrice->setMinimum( -999999.99 );
+  mInPurchasePrice->setMaximum( 999999.99 );
+  mInPurchasePrice->setDecimals( 2 );
+
   mInSalePrice->setPrefix( currSymbol + " " );
+  mInSalePrice->setMinimum( -999999.99 );
+  mInSalePrice->setMaximum( 999999.99 );
+  mInSalePrice->setDecimals( 2 );
 
   connect( mInSalePrice, SIGNAL( valueChanged( double ) ),
            SLOT( slSalePriceChanged( double ) ) );
@@ -112,9 +119,15 @@ void MaterialTemplDialog::slSaleAddChanged( double m )
 
 void MaterialTemplDialog::setPriceCalc( double purch, double addPercent, double sale )
 {
+  mInPurchasePrice->blockSignals(true);
+  mInSalePrice->blockSignals(true);
+  mInSaleAdd->blockSignals(true);
   mInPurchasePrice->setValue( purch );
   mInSalePrice->setValue( sale );
   mInSaleAdd->setValue( addPercent );
+  mInPurchasePrice->blockSignals(false);
+  mInSalePrice->blockSignals(false);
+  mInSaleAdd->blockSignals(false);
 }
 
 void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogname, bool newTempl )
