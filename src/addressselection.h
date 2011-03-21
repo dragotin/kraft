@@ -38,7 +38,7 @@ class AddressSelection : public QWidget
   Q_OBJECT
 
 public:
-  AddressSelection( QWidget *parent = 0 );
+  AddressSelection( QWidget *parent = 0, bool showText = true );
 
   ~AddressSelection() { };
   void setupAddressList( );

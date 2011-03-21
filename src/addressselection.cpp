@@ -51,7 +51,7 @@
 using namespace KABC;
 using namespace Akonadi;
 
-AddressSelection::AddressSelection( QWidget *parent )
+AddressSelection::AddressSelection( QWidget *parent, bool showText )
   : QWidget( parent )
 {
   QVBoxLayout *vbox = new QVBoxLayout;
@@ -63,11 +63,12 @@ AddressSelection::AddressSelection( QWidget *parent )
   // connect( mAddressProvider, SIGNAL(addresseeFound( const QString&, const KABC::Addressee& ) ),
   //         this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& ) ) );
 
-  QLabel *l = new QLabel;
-  l->setText(i18n("Please select a contact from the list below: "));
-  vbox->addWidget( l );
-  // vbox->addWidget( contactsView() );
-
+  if( showText ) {
+    QLabel *l = new QLabel;
+    l->setText(i18n("Please select a contact from the list below: "));
+    vbox->addWidget( l );
+    // vbox->addWidget( contactsView() );
+  }
   mTreeWidget = new QTreeWidget;
   vbox->addWidget( mTreeWidget );
 
@@ -171,7 +172,7 @@ QTreeWidgetItem* AddressSelection::contactToWidgetEntry( const KABC::Addressee& 
 {
   QTreeWidgetItem *item = 0;
 
-  if( ! contact.isEmpty() ) {
+  if( ! contact.isEmpty() && ! contact.realName().isEmpty() ) {
     item = new QTreeWidgetItem( mTreeWidget );
     item->setText( 0, contact.realName() );
 

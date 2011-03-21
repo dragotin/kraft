@@ -35,6 +35,7 @@
 #include "newdocassistant.h"
 #include "addressselection.h"
 #include "defaultprovider.h"
+#include "filterheader.h"
 #include "doctype.h"
 
 
@@ -54,11 +55,17 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   help->setWordWrap( true );
   vbox->addWidget( help );
 
-  mAddresses = new AddressSelection;
+  FilterHeader *fh = new FilterHeader( 0 );
+  vbox->addWidget(fh);
+
+  mAddresses = new AddressSelection( this, false );
   connect( mAddresses,  SIGNAL( addressSelected( const Addressee& ) ),
            SIGNAL( addresseeSelected( const Addressee& ) ) );
 
   vbox->addWidget( mAddresses );
+
+  fh->setListView( mAddresses->treeWidget() );
+  fh->showCount( false );
 
 }
 

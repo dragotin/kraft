@@ -84,13 +84,16 @@
 KraftViewScroll::KraftViewScroll( QWidget *parent ):
 QScrollArea( parent )
 {
-  widget = new QWidget;
-  setWidget(widget);
-  widget->setAutoFillBackground(false);
+  myWidget = new QWidget;
+  myWidget->setAutoFillBackground(false);
   layout = new QVBoxLayout;
   layout->setAlignment(Qt::AlignTop);
-  widget->setLayout(layout);
+  layout->setSizeConstraint( QLayout::QLayout::SetMinAndMaxSize );
+  layout->setMargin( 0 );
+  myWidget->setLayout(layout);
+  setWidget(myWidget);
   setWidgetResizable(true);
+
 }
 
 void KraftViewScroll::addChild( QWidget *child, int index )
@@ -1348,10 +1351,12 @@ void KraftView::saveChanges()
 
 void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
 {
-  kDebug() << "Focussing on widget " << posWidget << " on pos " << pos << endl;
   if( posWidget && pos > 0) {
     int w = posWidget->height();
-    m_positionScroll->ensureVisible( 0, (pos)*w, 0, w );
+    kDebug() << "Focussing on widget " << posWidget << " on pos " << pos << " with heigt " << w;
+    int y = (pos)*w;
+    kDebug() << "Focus on y-koord " << y << " on canvas height " << (m_positionScroll->widget())->height();
+    m_positionScroll->ensureVisible( 2, y, 0, 0 );
   } else {
     m_positionScroll->ensureVisible( 0, 0 );
   }

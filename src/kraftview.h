@@ -78,7 +78,7 @@ public:
   int indexOf( PositionViewWidget *child);
 
 private:
-  QWidget *widget;
+  QWidget *myWidget;
   QVBoxLayout *layout;
 };
 
