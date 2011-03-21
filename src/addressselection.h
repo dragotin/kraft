@@ -53,7 +53,7 @@ protected slots:
   void slotUpdateAddressList( const Akonadi::Item& );
   void slotNewAddressList( const KABC::Addressee::List& );
   void slotOpenAddressBook();
-  void addresseeFound( const QString&, const KABC::Addressee& );
+  void slotAddresseeFound( const QString&, const KABC::Addressee& );
 
 private:
   QTreeWidgetItem* contactToWidgetEntry( const KABC::Addressee& ) ;

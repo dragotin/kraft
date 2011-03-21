@@ -60,8 +60,8 @@ AddressSelection::AddressSelection( QWidget *parent, bool showText )
   mAddressProvider = new AddressProvider( this );
   connect( mAddressProvider, SIGNAL( addressListFound( const KABC::Addressee::List& ) ),
            this, SLOT( slotNewAddressList( const KABC::Addressee::List& ) ) );
-  // connect( mAddressProvider, SIGNAL(addresseeFound( const QString&, const KABC::Addressee& ) ),
-  //         this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& ) ) );
+  connect( mAddressProvider, SIGNAL(addresseeFound( const QString&, const KABC::Addressee& ) ),
+           this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& ) ) );
 
   if( showText ) {
     QLabel *l = new QLabel;
@@ -93,45 +93,6 @@ AddressSelection::AddressSelection( QWidget *parent, bool showText )
   connect(  mTreeWidget, SIGNAL( currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*  )),
            SLOT( slotSelectionChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 }
-
-#if 0
-QWidget* AddressSelection::contactsView()
-{
-  // use a separated session for this model
-  Akonadi::Session *session = new Akonadi::Session( "MySession" );
-
-  Akonadi::ItemFetchScope scope;
-  // fetch all content of the contacts, including images
-  scope.fetchFullPayload( true );
-  // fetch the EntityDisplayAttribute, which contains custom names and icons
-  scope.fetchAttribute<Akonadi::EntityDisplayAttribute>();
-
-  Akonadi::ChangeRecorder *changeRecorder = new Akonadi::ChangeRecorder;
-  changeRecorder->setSession( session );
-  // include fetching the collection tree
-  changeRecorder->fetchCollection( true );
-  // set the fetch scope that shall be used
-  changeRecorder->setItemFetchScope( scope );
-  // monitor all collections below the root collection for changes
-  changeRecorder->setCollectionMonitored( Akonadi::Collection::root() );
-  // list only contacts and contact groups
-  changeRecorder->setMimeTypeMonitored( KABC::Addressee::mimeType(), true );
-  changeRecorder->setMimeTypeMonitored( KABC::ContactGroup::mimeType(), true );
-
-  Akonadi::ContactsTreeModel *model = new Akonadi::ContactsTreeModel( changeRecorder );
-
-  Akonadi::ContactsTreeModel::Columns columns;
-  columns << Akonadi::ContactsTreeModel::FullName;
-  columns << Akonadi::ContactsTreeModel::HomeAddress;
-  model->setColumns( columns );
-
-  Akonadi::EntityTreeView *view = new Akonadi::EntityTreeView;
-  view->setModel( model );
-
-  return view;
-}
-#endif
-
 
 void AddressSelection::slotOpenAddressBook()
 {
@@ -206,13 +167,15 @@ void AddressSelection::slotSelectionChanged( QTreeWidgetItem *item, QTreeWidgetI
 
     if ( ! uid.isEmpty() ) {
       // search for the selected uid
+      kDebug() << "Searching selected UID: " << uid;
       mAddressProvider->getAddressee( uid );
     }
   }
 }
 
-void AddressSelection::addresseeFound( const QString&, const KABC::Addressee& contact )
+void AddressSelection::slotAddresseeFound( const QString&, const KABC::Addressee& contact )
 {
+  kDebug() << "Emitting search result: " << contact.realName();
   emit addressSelected( contact );
 }
 
