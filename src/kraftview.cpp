@@ -763,36 +763,46 @@ void KraftView::slotNewAddress( const Addressee& contact )
     return;
   }
 
+  const QString currAddress = m_headerEdit->m_postAddressEdit->toPlainText();
+
   if( ! adr.isEmpty() ) {
-    m_headerEdit->m_labName->setText( adr.realName() );
+    if( currAddress.isEmpty() ) {
+      m_headerEdit->m_labName->setText( adr.realName() );
 
-    Address address;
+      Address address;
 
-    Address::List addresses = adr.addresses();
-    if ( addresses.count() > 1 ) {
-      kDebug() << "Have more than one address, taking the default add" << endl;
-      address = adr.address( KABC::Address::Pref );
-    } else if ( addresses.count() == 0 ) {
-      kDebug() << "Have no address, problem!" << endl;
-    } else {
-      // FIXME: Handle multiple addresses
-      address = addresses.first();
+      address = contact.address( KABC::Address::Pref );
+      if( address.isEmpty() )
+        address = contact.address(KABC::Address::Work );
+      if( address.isEmpty() )
+        address = contact.address(KABC::Address::Home );
+      if( address.isEmpty() )
+        address = contact.address(KABC::Address::Postal );
+
+      mContactUid = contact.uid();
+
+      if( m_headerEdit->m_postAddressEdit->toPlainText().isEmpty() ) {
+        QString adrStr;
+        if( ! address.isEmpty() ) {
+          if( address.label().isEmpty() ) {
+            adrStr = address.formattedAddress( adr.realName() );
+          } else {
+            adrStr = address.label();
+          }
+          kDebug() << "formatted address string: " << adrStr << endl;
+        }
+        m_headerEdit->m_postAddressEdit->setText( adrStr );
+      } else {
+        kDebug() << "Address Field is custom, not overwriting.";
+      }
+
+      // Generate the welcome
+      m_headerEdit->m_letterHead->clear();
+      QStringList li = generateLetterHead( adr );
+
+      m_headerEdit->m_letterHead->insertItems(-1, li );
+      m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
     }
-
-    mContactUid = contact.uid();
-    QString adrStr;
-    if( address.label().isEmpty() ) {
-      adrStr = address.formattedAddress( adr.realName() );
-    } else {
-      adrStr = address.label();
-    }
-    kDebug() << "formatted address string: " << adrStr << endl;
-    m_headerEdit->m_postAddressEdit->setText( adrStr );
-    m_headerEdit->m_letterHead->clear();
-    QStringList li = generateLetterHead( adr );
-
-    m_headerEdit->m_letterHead->insertItems(-1, li );
-    m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
   }
 }
 

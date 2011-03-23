@@ -632,5 +632,3 @@ void PositionViewWidget::paintEvent ( QPaintEvent* )
   // check again: Ui_positionWidget::paintEvent( pe );
 }
 
-#include "positionviewwidget.moc"
-

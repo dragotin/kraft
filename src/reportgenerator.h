@@ -22,6 +22,8 @@
 #include <QProcess>
 #include <QDataStream>
 
+#include <kabc/addressee.h>
+
 #include <kprocess.h>
 
 #include "kraftdoc.h"
