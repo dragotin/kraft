@@ -114,7 +114,7 @@ class KraftView : public KDialog
   DocPositionBase::TaxType currentTaxSetting();
 
   public slots:
-  void slotNewAddress( const Addressee& contact = Addressee() );
+  void slotNewAddress( const Addressee& contact = Addressee(), bool interactive = true );
   void redrawDocument( );
   void slotModifiedPositions();
   void slotModifiedHeader();

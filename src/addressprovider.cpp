@@ -81,3 +81,25 @@ void AddressProvider::searchResult( KJob* job )
   // FIXME: Remove job entries from mUidSearchJobs and mAllAddressesJobs
   emit( finished( contacts.size() ) );
 }
+
+QString AddressProvider::formattedAddress( const KABC::Addressee& contact ) const
+{
+  QString re;
+  KABC::Address address;
+
+  address = contact.address( KABC::Address::Pref );
+  if( address.isEmpty() )
+    address = contact.address(KABC::Address::Work );
+  if( address.isEmpty() )
+    address = contact.address(KABC::Address::Home );
+  if( address.isEmpty() )
+    address = contact.address(KABC::Address::Postal );
+
+  if( address.isEmpty() ) {
+    re = contact.realName();
+  } else {
+    re = address.formattedAddress( contact.realName(), contact.organization() );
+  }
+  return re;
+}
+

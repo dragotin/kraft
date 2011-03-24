@@ -31,6 +31,7 @@ public:
 
   void getAddressee( const QString& uid );
   void allAddresses( );
+  QString formattedAddress( const KABC::Addressee& ) const;
 
 protected slots:
   void searchResult( KJob* );

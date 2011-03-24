@@ -371,7 +371,7 @@ void KraftView::redrawDocument( )
 void KraftView::slotAddresseeFound( const QString& /* uid */, const KABC::Addressee& contact )
 {
   kDebug() << "Addressee Found";
-  slotNewAddress( contact );
+  slotNewAddress( contact, false );
   kDebug() << "The loaded Contact has this realname: " << contact.realName() << endl;
 }
 
@@ -755,54 +755,48 @@ void KraftView::slotPositionModified( int pos )
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
-void KraftView::slotNewAddress( const Addressee& contact )
+void KraftView::slotNewAddress( const Addressee& contact, bool interactive )
 {
+
   Addressee adr( contact );
 
   if( contact.isEmpty() ) {
     return;
   }
-
+  QString newAddress = mAddressProvider->formattedAddress( contact );
   const QString currAddress = m_headerEdit->m_postAddressEdit->toPlainText();
 
-  if( ! adr.isEmpty() ) {
-    if( currAddress.isEmpty() ) {
-      m_headerEdit->m_labName->setText( adr.realName() );
+  bool replace = true;
 
-      Address address;
-
-      address = contact.address( KABC::Address::Pref );
-      if( address.isEmpty() )
-        address = contact.address(KABC::Address::Work );
-      if( address.isEmpty() )
-        address = contact.address(KABC::Address::Home );
-      if( address.isEmpty() )
-        address = contact.address(KABC::Address::Postal );
-
-      mContactUid = contact.uid();
-
-      if( m_headerEdit->m_postAddressEdit->toPlainText().isEmpty() ) {
-        QString adrStr;
-        if( ! address.isEmpty() ) {
-          if( address.label().isEmpty() ) {
-            adrStr = address.formattedAddress( adr.realName() );
-          } else {
-            adrStr = address.label();
-          }
-          kDebug() << "formatted address string: " << adrStr << endl;
-        }
-        m_headerEdit->m_postAddressEdit->setText( adrStr );
-      } else {
-        kDebug() << "Address Field is custom, not overwriting.";
-      }
-
-      // Generate the welcome
-      m_headerEdit->m_letterHead->clear();
-      QStringList li = generateLetterHead( adr );
-
-      m_headerEdit->m_letterHead->insertItems(-1, li );
-      m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
+  if( currAddress.isEmpty() ) {
+    replace = true;
+  } else if( currAddress != newAddress ) {
+    // non empty and current different from new address
+    // need to ask first if we overwrite
+    if( interactive ) {
+      if( KMessageBox::questionYesNo( this, i18n("The address label is not empty. Do you really want to replace it?"),
+                                     i18n("Address Overwrite") ) == KMessageBox::No ) replace = false;
+    } else {
+      // this happens when the document is loaded and the address arrives from addressbook
+      replace = false;
     }
+  } else if( currAddress == newAddress ) {
+    // both are equal, no action needed
+    return;
+  }
+
+  if( replace ) {
+    m_headerEdit->m_labName->setText( contact.realName() );
+    mContactUid = contact.uid();
+
+    m_headerEdit->m_postAddressEdit->setText( newAddress );
+
+    // Generate the welcome
+    m_headerEdit->m_letterHead->clear();
+    QStringList li = generateLetterHead( adr );
+
+    m_headerEdit->m_letterHead->insertItems(-1, li );
+    m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
   }
 }
 

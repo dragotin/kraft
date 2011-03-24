@@ -56,13 +56,18 @@ void AddressTemplateProvider::slotDeleteTemplate()
 
 void AddressTemplateProvider::slotSetCurrentAddress( const Addressee& adr )
 {
+  kDebug() << "Current Address was set to " << adr.realName();
   mCurrentAddress = adr;
 }
 
 void AddressTemplateProvider::slotTemplateToDocument()
 {
-  kDebug() << "Moving template to document" << endl;
+  if( mCurrentAddress.isEmpty() ) {
+    kDebug() << "Current address is empty, that should not happen";
+    return;
+  }
 
+  kDebug() << "Moving address of " << mCurrentAddress.realName() << " to document" << endl;
   emit addressToDocument( mCurrentAddress );
 }
 

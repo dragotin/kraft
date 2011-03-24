@@ -55,10 +55,10 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   fh->showCount( false );
   mAddressSelection->setupAddressList( );
 
-  connect( mAddressSelection, SIGNAL( currentItemChanged( QTreeWidgetItem*,QTreeWidgetItem* ) ),
+  connect( mAddressSelection->treeWidget(), SIGNAL( currentItemChanged( QTreeWidgetItem*,QTreeWidgetItem* ) ),
            SIGNAL( addressSelectionChanged() ) );
 
-  connect( mAddressSelection, SIGNAL( doubleClicked( QModelIndex ) ),
+  connect( mAddressSelection->treeWidget(), SIGNAL( doubleClicked( QModelIndex ) ),
            SIGNAL( doubleClickedOnItem() ) );
 
   /* a view for the entry text repository */
