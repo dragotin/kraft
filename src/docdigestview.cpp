@@ -252,6 +252,11 @@ void DocDigestView::slotBuildView()
 #endif
 }
 
+void DocDigestView::slotUpdateView()
+{
+  static_cast<QSqlTableModel*>(mLatestDocModel)->sourceModel()->select();
+}
+
 void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
 {
   QTreeView *currView = mTreeViewIndex[ mToolBox->currentIndex() ];

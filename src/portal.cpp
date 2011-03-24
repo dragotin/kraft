@@ -707,6 +707,7 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
     kDebug() << "A view was closed saving and doc is new: " << doc->isNew() << endl;
     if ( doc->isNew() ) {
       m_portalView->slotDocumentCreated( doc );
+      m_portalView->docDigestView()->
     } else {
       m_portalView->slotDocumentUpdate( doc );
     }

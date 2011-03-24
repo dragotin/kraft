@@ -201,7 +201,6 @@ KraftView::KraftView(QWidget *parent) :
 
   setupMappers();
 
-  // mNewTemplates.setAutoDelete( true );
 }
 
 KraftView::~KraftView()
