@@ -436,7 +436,7 @@ void Portal::slotCopyDocument( const QString& id )
     doc->setWhiteboard( wiz.whiteboard() );
     doc->setAddressUid( wiz.addressUid() );
     doc->saveDocument();
-    m_portalView->slotDocumentCreated( doc );
+    m_portalView->docDigestView()->slotUpdateView();
     kDebug() << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
   }
 }
@@ -704,13 +704,11 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
 {
   // doc is only valid on success!
   if ( doc && success )  {
+    DocDigestView *dv = m_portalView->docDigestView();
+    kDebug() << "DocDigestView: " << dv;
+
+    dv->slotUpdateView();
     kDebug() << "A view was closed saving and doc is new: " << doc->isNew() << endl;
-    if ( doc->isNew() ) {
-      m_portalView->slotDocumentCreated( doc );
-      m_portalView->docDigestView()->
-    } else {
-      m_portalView->slotDocumentUpdate( doc );
-    }
   } else {
     kDebug() << "A view was closed canceled" << endl;
   }

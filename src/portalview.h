@@ -46,13 +46,11 @@ public:
   DocDigestView* docDigestView() { return mDocDigestView; }
   void systemInitError( const QString& );
   QString ptag( const QString&,  const QString& c = QString() ) const;
+
 public slots:
   void slotBuildView();
   void fillCatalogDetails();
   void fillSystemDetails();
-
-  void slotDocumentCreated( DocGuardedPtr );
-  void slotDocumentUpdate( DocGuardedPtr );
 
 protected slots:
   void slotCreateDocument();

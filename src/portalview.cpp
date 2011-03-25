@@ -46,6 +46,7 @@
 
 PortalView::PortalView(QWidget *parent, const char*)
     : KPageWidget( parent ),
+      mDocDigestView( 0 ),
       mCatalogBrowser( 0 ),
       mSystemBrowser( 0 ),
       mSysPage(0),
@@ -317,17 +318,6 @@ void PortalView::slotCreateDocument()
   // this slot is called if the user wants to initiate the creation of a new doc
   // It is routed to higher layers.
   emit createDocument();
-}
-
-void PortalView::slotDocumentCreated( DocGuardedPtr )
-{
-  // the new doc is now created and can be inserted into the doc digest view
-  // mDocDigestView->slotNewDoc( doc );
-}
-
-void PortalView::slotDocumentUpdate( DocGuardedPtr )
-{
-  // mDocDigestView->slotUpdateDoc( doc );
 }
 
 void PortalView::slotBuildView()

@@ -206,7 +206,7 @@ void DocDigestView::slotBuildView()
   //Create the latest documents view
   mLatestDocModel = new DocumentFilterModel(10, this);
   mLatestView->setModel( mLatestDocModel );
-  mLatestView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
+  mLatestView->sortByColumn(DocumentModel::Document_CreationDate, Qt::AscendingOrder);
   mLatestView->hideColumn( DocumentModel::Document_ClientId );
   mLatestView->setSortingEnabled(true);
   mLatestView->header()->restoreState( QByteArray::fromBase64( KraftSettings::self()->digestListColumns().toAscii() ) );
@@ -254,7 +254,11 @@ void DocDigestView::slotBuildView()
 
 void DocDigestView::slotUpdateView()
 {
-  static_cast<QSqlTableModel*>(mLatestDocModel)->sourceModel()->select();
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+  static_cast<DocumentModel*>(mLatestDocModel->sourceModel())->setQueryAgain();
+  static_cast<DocumentModel*>(mTimelineModel->baseModel())->setQueryAgain();
+  static_cast<DocumentModel*>(mAllDocumentsModel->sourceModel())->setQueryAgain();
+  QApplication::restoreOverrideCursor();
 }
 
 void DocDigestView::contextMenuEvent( QContextMenuEvent * event )

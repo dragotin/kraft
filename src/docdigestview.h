@@ -50,6 +50,7 @@ public:
 public slots:
 
   void slotBuildView();
+  void slotUpdateView();
 
 protected:
   void contextMenuEvent( QContextMenuEvent* );

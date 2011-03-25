@@ -72,6 +72,11 @@ TimelineModel::TimelineModel(QObject *parent)
     reset();
 }
 
+DocumentModel *TimelineModel::baseModel()
+{
+  return static_cast<DocumentModel*>(proxy->sourceModel());
+}
+
 QSortFilterProxyModel* TimelineModel::getProxyModel()
 {
     return proxy;

@@ -57,6 +57,7 @@ public:
   QModelIndex sibling ( int row, int column, const QModelIndex & index ) const;
   bool canFetchMore(const QModelIndex &parent) const;
   DocDigest digest( const QModelIndex& ) const;
+  void setQueryAgain();
 
 protected slots:
   void slotAddresseeFound( const QString&, const KABC::Addressee& );

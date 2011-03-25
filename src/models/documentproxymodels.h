@@ -61,6 +61,7 @@ Mapping helps us to keep track of where we are in the tree
 m_yearsRowCache and it's helper struct is used to store at what row in the sourcemodel a given
 year/month starts
 */
+class DocumentModel;
 
 class TimelineModel : public QAbstractProxyModel
 {
@@ -76,7 +77,7 @@ class TimelineModel : public QAbstractProxyModel
         QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
         QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
         QModelIndex parent(const QModelIndex &index= QModelIndex()) const;
-
+        DocumentModel *baseModel();
 
         bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
         Qt::ItemFlags flags(const QModelIndex &index) const;
