@@ -244,10 +244,11 @@ void DocDigestView::slotBuildView()
     widget->setAlternatingRowColors( true );
     widget->setRootIsDecorated( true );
     widget->setSelectionMode( QAbstractItemView::SingleSelection );
-    widget->header()->setResizeMode(QHeaderView::ResizeToContents);
+    widget->header()->setResizeMode(QHeaderView::Interactive);
    // widget->header()->setResizeMode( DocumentModel::Document_Whiteboard, QHeaderView::Stretch );
     widget->setEditTriggers( QAbstractItemView::NoEditTriggers );
     widget->setExpandsOnDoubleClick( false );
+    widget->setUniformRowHeights( true );
   }
 
 #if 0
