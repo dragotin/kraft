@@ -40,7 +40,9 @@ public:
     Document_LastModified = 5,
     Document_CreationDate = 6,
     Document_ProjectLabel = 7,
-    Document_ClientName = 8
+    Document_ClientAddress = 8,
+    Document_ClientName = 9,
+
   };
 
   enum Roles
@@ -51,7 +53,7 @@ public:
   // static DocumentModel *self();
   QVariant data(const QModelIndex &idx, int rol) const;
   bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
-  int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  // int columnCount(const QModelIndex &parent = QModelIndex()) const;
   QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
   QModelIndex parent(const QModelIndex &index= QModelIndex()) const;
   QModelIndex sibling ( int row, int column, const QModelIndex & index ) const;

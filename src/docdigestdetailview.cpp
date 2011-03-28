@@ -97,19 +97,40 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
 
   TextTemplate tmpl( mTemplFile ); // template file with name docdigest.trml
   tmpl.setValue( DOCDIGEST_TAG( "HEADLINE" ), digest.type() + " " + digest.ident() );
+
   tmpl.setValue( DOCDIGEST_TAG( "DATE" ), digest.date() );
+  tmpl.setValue( DOCDIGEST_TAG( "DATE_LABEL" ), i18n("Date") );
+
+  tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD"), digest.whiteboard() );
+  tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD_LABEL"), i18n("Whiteboard"));
+
+  if( !digest.projectLabel().isEmpty() ) {
+    tmpl.createDictionary( "PROJECT_INFO" );
+    tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT"), digest.projectLabel() );
+    tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT_LABEL"), i18n("Project"));
+  }
+
   tmpl.setValue( "URL", mHtmlCanvas->baseURL().prettyUrl());
+  tmpl.setValue( DOCDIGEST_TAG( "CUSTOMER_LABEL" ), i18n("Customer"));
+
   KABC::Addressee addressee = digest.addressee();
+  QString adr = digest.clientAddress();
+  adr.replace('\n', "<br/>" );
+
+  tmpl.setValue( DOCDIGEST_TAG("CUSTOMER_ADDRESS_FIELD"),adr );
+
+  QString addressBookInfo;
   if( addressee.isEmpty() ) {
     if( digest.clientId().isEmpty() ) {
-      tmpl.createDictionary( "CLIENT_UNKNOWN_SECTION" );
+      addressBookInfo = i18n("The address is not listed in an address book.");
     } else {
-      tmpl.createDictionary( "CLIENT_NOT_IN_ADDRESSBOOK_SECTION");
-      tmpl.setValue( "CLIENT_NOT_IN_ADDRESSBOOK_SECTION", DOCDIGEST_TAG("CLIENTID"), digest.clientId() );
+      addressBookInfo = i18n("The client has the address book id %1 but can not found in our address books.").arg(digest.clientId());
     }
   } else {
+    addressBookInfo  = i18n("The client can be found in our address books.");
     tmpl.createDictionary( "CLIENT_ADDRESS_SECTION");
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENTID" ), digest.clientId() );
+    tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_ADDRESS" ), digest.clientAddress() );
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_NAME"), addressee.realName() );
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_ORGANISATION"), addressee.organization() );
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_URL"), addressee.url().prettyUrl() );
@@ -157,6 +178,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_ADDRESS_TYPE" ), addressType );
 
   }
+  tmpl.setValue( DOCDIGEST_TAG("CUSTOMER_ADDRESSBOOK_INFO"), addressBookInfo );
 
   // Information about archived documents.
   ArchDocDigestList archDocs = digest.archDocDigestList();
@@ -172,7 +194,8 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), QString::number( archDocs.count()-1 ) );
   }
 
-  mHtmlCanvas->displayContent( tmpl.expand() );
+  const QString details = tmpl.expand();
+  mHtmlCanvas->displayContent( details );
 
   kDebug() << "BASE-URL of htmlview is " << mHtmlCanvas->baseURL();
 

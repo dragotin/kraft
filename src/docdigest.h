@@ -40,6 +40,9 @@ public:
   QString clientId() { return mClientId; }
   void setClientId( const QString& id ) { mClientId = id; }
 
+  QString clientAddress() { return mClientAddress; }
+  void setClientAddress( const QString& address ) { mClientAddress = address; }
+
   KABC::Addressee addressee() const;
   void setAddressee( const KABC::Addressee& );
 
@@ -77,6 +80,7 @@ protected:
   QString mIdent;
   QString mWhiteboard;
   QString mProjectLabel;
+  QString mClientAddress ;
 
   QDateTime   mLastModified;
   QDate       mDate;

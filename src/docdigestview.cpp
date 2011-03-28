@@ -208,6 +208,7 @@ void DocDigestView::slotBuildView()
   mLatestView->setModel( mLatestDocModel );
   mLatestView->sortByColumn(DocumentModel::Document_CreationDate, Qt::AscendingOrder);
   mLatestView->hideColumn( DocumentModel::Document_ClientId );
+  mLatestView->hideColumn( DocumentModel::Document_ClientAddress );
   mLatestView->setSortingEnabled(true);
   mLatestView->header()->restoreState( QByteArray::fromBase64( KraftSettings::self()->digestListColumns().toAscii() ) );
 
@@ -217,11 +218,15 @@ void DocDigestView::slotBuildView()
   mAllView->setModel(mAllDocumentsModel);
   mAllView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
   mAllView->hideColumn( DocumentModel::Document_ClientId );
+  mAllView->hideColumn( DocumentModel::Document_ClientAddress );
   mAllView->setSortingEnabled(true);
 
   //Create the timeline view
   mTimelineModel = new TimelineModel(this);
   mTimeView->setModel(mTimelineModel);
+  mTimeView->hideColumn( DocumentModel::Document_ClientId );
+  mTimeView->hideColumn( DocumentModel::Document_ClientAddress );
+  mTimeView->setSortingEnabled(false);
 
   //Initialize common style options
   QPalette palette;

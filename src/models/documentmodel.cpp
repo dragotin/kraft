@@ -66,8 +66,8 @@ DocumentModel::DocumentModel()
     setHeaderData( 5 /* Document_LastModified */, Qt::Horizontal, i18n("Last modified"));
     setHeaderData( 6 /* Document_CreationDate */, Qt::Horizontal, i18n("Creation date"));
     setHeaderData( 7 /* Document_ProjectLabel */, Qt::Horizontal, i18n("Project label"));
-    setHeaderData( 8 /* Document_ClientName */,   Qt::Horizontal, i18n("Client"));
-
+    setHeaderData( 8 /* Document_ClientAddress */,   Qt::Horizontal, i18n("Client Address"));
+    setHeaderData( 9 /* Document_ClientName */,   Qt::Horizontal, i18n("Client"));
     mAddressProvider = new AddressProvider( this );
     connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee& )),
              this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& )));
@@ -76,7 +76,7 @@ DocumentModel::DocumentModel()
 
 void DocumentModel::setQueryAgain()
 {
-   setQuery("SELECT docID, ident, docType, docDescription, clientID, lastModified, date, projectLabel "
+   setQuery("SELECT docID, ident, docType, docDescription, clientID, lastModified, date, projectLabel, clientAddress "
             "FROM document ORDER BY date DESC");
 }
 
@@ -156,6 +156,9 @@ DocDigest DocumentModel::digest( const QModelIndex& index ) const
   digest.setDate( data( index.sibling( index.row(), Document_CreationDate ), RawTypes ).toDate() );
   digest.setLastModified( data( index.sibling( index.row(), Document_LastModified), RawTypes ).toDateTime() );
 
+  const QString clientAdr = data( index.sibling( index.row(), Document_ClientAddress), Qt::DisplayRole).toString();
+  digest.setClientAddress( clientAdr );
+
   QString ident = data( index.sibling( index.row(), Document_Ident), Qt::DisplayRole ).toString();
   digest.setIdent( ident );
   digest.setWhiteboard( data( index.sibling( index.row(), Document_Whiteboard), Qt::DisplayRole).toString() );
@@ -190,7 +193,7 @@ bool DocumentModel::hasChildren(const QModelIndex &parent) const
 
     return false;
 }
-
+#if 0
 int DocumentModel::columnCount(const QModelIndex &parent) const
 {
     if(!parent.isValid() || !parent.parent().isValid())
@@ -198,7 +201,7 @@ int DocumentModel::columnCount(const QModelIndex &parent) const
 
     return 0;
 }
-
+#endif
 QModelIndex DocumentModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (row < 0 || column < 0 || column >= columnCount() || parent.column() > 0)
