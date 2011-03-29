@@ -307,6 +307,7 @@ void OwnAddressPage::saveOwnName()
 {
   if( ! mMe.isEmpty() ) {
     KraftSettings::self()->setUserName( mMe.name() );
+    KraftSettings::self()->setUserUid( mMe.uid() );
     KraftSettings::self()->writeConfig();
   }
 }
@@ -463,8 +464,6 @@ void SetupAssistant::slotFinishedClicked( )
   }
   DatabaseSettings::self()->writeConfig();
   kDebug() << "Database backend config written.";
-  KAssistantDialog::slotButtonClicked( User1 );
-
 }
 
 void SetupAssistant::finalizePage()

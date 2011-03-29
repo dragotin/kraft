@@ -30,6 +30,7 @@ public:
   AddressProvider( QObject* parent = 0 );
 
   void getAddressee( const QString& uid );
+  void getAddresseeByName( const QString& );
   void allAddresses( );
   QString formattedAddress( const KABC::Addressee& ) const;
 
@@ -46,6 +47,7 @@ signals:
 
 private:
   QMap<KJob*, QString> mUidSearchJobs;
+  QMap<KJob*, QString> mNameSearchJobs;
   QMap<KJob*, int> mAllAddressesJobs;
 };
 

@@ -38,13 +38,26 @@ void AddressProvider::allAddresses( )
 void AddressProvider::getAddressee( const QString& uid )
 {
   Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob( this );
-  job->setLimit( 100 );
+  // job->setLimit( 100 );
   job->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
 
   connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
 
   mUidSearchJobs[job] = uid;
   job->start();
+}
+
+void AddressProvider::getAddresseeByName( const QString& name )
+{
+  Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob( this );
+  // job->setLimit( 100 );
+  job->setQuery( Akonadi::ContactSearchJob::Name , name );
+
+  connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
+
+  mNameSearchJobs[job] = name;
+  job->start();
+
 }
 
 void AddressProvider::searchResult( KJob* job )
@@ -64,12 +77,18 @@ void AddressProvider::searchResult( KJob* job )
       emit addressListFound( contacts );
     }
     if( mUidSearchJobs.contains( job )) {
-      // mUidSearchJobs.remove(job);
       KABC::Addressee contact = contacts[0];
       const QString uid = mUidSearchJobs.value( job );
       kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
-
+      mUidSearchJobs.remove(job);
       emit addresseeFound( uid, contact );
+    }
+    if( mNameSearchJobs.contains( job )) {
+      KABC::Addressee contact = contacts[0];
+      const QString name = mNameSearchJobs.value( job );
+      kDebug() << "Found name search job for Name " << name << " = " << contact.realName();
+      mNameSearchJobs.remove(job);
+      emit addresseeFound( name, contact );
     }
   } else {
     kDebug() << "Akonadi search result list has size of 0";

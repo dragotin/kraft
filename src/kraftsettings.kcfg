@@ -90,7 +90,10 @@
       <label>The name of the last used input file for items.</label>
     </entry>
     <entry name="UserName" type="String">
-      <label>User name as reference to the KAddressbook to identify 'my' address.</label>
+      <label>User name as reference to the KAddressbook to identify 'my' address (DEPRECATED).</label>
+    </entry>
+    <entry name="UserUid" type="String">
+      <label>UID of the user as reference to the KAddressbook to identify 'my' address.</label>
     </entry>
   </group>
 

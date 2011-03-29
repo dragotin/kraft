@@ -327,9 +327,15 @@ void Portal::slotStartupChecks()
     }
 
     // Fetch my address
-    QString myName = KraftSettings::self()->userName();
-    kDebug() << "Got My Name: " << myName;
-    mAddressProvider->getAddressee( myName );
+    QString myUid = KraftSettings::self()->userUid();
+    if( myUid.isEmpty() ) {
+      QString myName = KraftSettings::self()->userName();
+      kDebug() << "Got My Name: " << myName;
+      mAddressProvider->getAddresseeByName( myName );
+    } else {
+      kDebug() << "Got My UID: " << myUid;
+      mAddressProvider->getAddressee( myUid );
+    }
 
     slotStatusMsg( i18n( "Ready." ) );
   }
@@ -338,6 +344,10 @@ void Portal::slotStartupChecks()
 void Portal::slotReceivedMyAddress( const QString& uid, const KABC::Addressee& contact )
 {
   myContact = contact;
+
+  KraftSettings::self()->setUserUid( contact.uid() );
+  KraftSettings::self()->writeConfig();
+
   kDebug() << "Received my address: " << contact.realName() << "(" << uid << ")";
   ReportGenerator::self()->setMyContact( contact );
 }
