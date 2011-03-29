@@ -94,6 +94,7 @@ private:
   KMenu *mAllMenu;
   KMenu *mLatestMenu;
 
+  int                    mOldToolboxIndex;
   QToolBox               *mToolBox;
   QPushButton            *mNewDocButton;
   QVector<QTreeView*>    mTreeViewIndex;

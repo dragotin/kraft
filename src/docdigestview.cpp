@@ -46,7 +46,8 @@
 #include "ktreeviewsearchline.h"
 
 DocDigestView::DocDigestView( QWidget *parent )
-: QWidget( parent )
+: QWidget( parent ),
+  mOldToolboxIndex( -1 )
 {
   QVBoxLayout *box = new QVBoxLayout;
   setLayout( box );
@@ -193,6 +194,12 @@ void DocDigestView::slotCurrentChangedToolbox(int index)
 {
   if( index < 0 || index > mTreeViewIndex.size() ) return;
 
+  // move the state of the columns from one view to the other
+  if( mOldToolboxIndex > -1 && mOldToolboxIndex < mTreeViewIndex.size() ) {
+    mTreeViewIndex[index]->header()->restoreState( mTreeViewIndex[mOldToolboxIndex]->header()->saveState() );
+  }
+  mOldToolboxIndex = index;
+
   QTreeView *treeview = mTreeViewIndex[index];
 
   if(treeview->selectionModel()->hasSelection())
@@ -203,6 +210,7 @@ void DocDigestView::slotCurrentChangedToolbox(int index)
 
 void DocDigestView::slotBuildView()
 {
+  QByteArray headerState = QByteArray::fromBase64( KraftSettings::self()->digestListColumns().toAscii() );
   //Create the latest documents view
   mLatestDocModel = new DocumentFilterModel(10, this);
   mLatestView->setModel( mLatestDocModel );
@@ -210,7 +218,7 @@ void DocDigestView::slotBuildView()
   mLatestView->hideColumn( DocumentModel::Document_ClientId );
   mLatestView->hideColumn( DocumentModel::Document_ClientAddress );
   mLatestView->setSortingEnabled(true);
-  mLatestView->header()->restoreState( QByteArray::fromBase64( KraftSettings::self()->digestListColumns().toAscii() ) );
+  mLatestView->header()->restoreState( headerState );
 
   //Create the all documents view
   mAllDocumentsModel = new DocumentFilterModel(-1, this);
@@ -220,6 +228,7 @@ void DocDigestView::slotBuildView()
   mAllView->hideColumn( DocumentModel::Document_ClientId );
   mAllView->hideColumn( DocumentModel::Document_ClientAddress );
   mAllView->setSortingEnabled(true);
+  mAllView->header()->restoreState( headerState );
 
   //Create the timeline view
   mTimelineModel = new TimelineModel(this);
@@ -227,6 +236,7 @@ void DocDigestView::slotBuildView()
   mTimeView->hideColumn( DocumentModel::Document_ClientId );
   mTimeView->hideColumn( DocumentModel::Document_ClientAddress );
   mTimeView->setSortingEnabled(false);
+  mTimeView->header()->restoreState( headerState );
 
   //Initialize common style options
   QPalette palette;
