@@ -70,7 +70,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
     kDebug() << "Setting image base for docdigestDetailView: " << info.dir().absolutePath();
     mHtmlCanvas->setBaseUrl( info.dir().absolutePath() +"/" );
   }
-  mHtmlCanvas->setStylesheetFile( "docdigestview.css");
+
   hbox->addWidget( mHtmlCanvas->view() );
 }
 
