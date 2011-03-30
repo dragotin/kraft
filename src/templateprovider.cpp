@@ -49,4 +49,3 @@ DocText TemplateProvider::currentText()
   return dt;
 }
 
-#include "templateprovider.moc"

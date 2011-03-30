@@ -104,28 +104,40 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
 {
   dbID retVal;
 
-  QSqlQuery q;
-  if ( t.dbId().isOk() ) {
-    q.prepare( "UPDATE DocTexts SET (name=:name, description=:desc, text=:text,"
-               "docType=:doctype, docTypeId=:doctypeid, textType=:texttype, "
-               "modDate=systemtimestamp) "
-               "WHERE docTextID=:id" );
-    q.bindValue( ":id",  t.dbId().toInt() );
-  } else {
-    // Lets insert
-    q.prepare( "INSERT INTO DocTexts (name, description, text, docType, docTypeId, "
-               "textType, modDate) "
-               "VALUES (:name, :description, :text, :doctype, :doctypeid, :texttype, \"systemtimestamp\" )" );
-  }
-  q.bindValue( ":name", t.name() );
-  q.bindValue( ":description", t.description() );
-  q.bindValue( ":text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
-  q.bindValue( ":doctype", t.docType() );
-  dbID id = DocType::docTypeId( t.docType() );
-  q.bindValue( ":doctypeid", id.toInt() );
-  q.bindValue( ":texttype", t.textTypeString() );
+  QSqlTableModel model;
+  model.setTable( "DocTexts" );
 
-  q.exec();
+  if ( t.dbId().isOk() ) {
+    kDebug() << "Doing update!";
+    model.setFilter( "docTextID=" + t.dbId().toString() );
+    model.select();
+
+    if( model.rowCount() > 0 ) {
+      QSqlRecord record = model.record(0);
+      record.setValue( "docTextID", t.dbId().toString() );
+      record.setValue( "name", t.name() );
+      record.setValue( "description", t.description() );
+      record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
+      record.setValue( "docType", t.docType() );
+      record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
+      record.setValue( "textType",  t.textTypeString() );
+      model.setRecord(0, record);
+      model.submitAll();
+    }
+  } else {
+    kDebug() << "Doing insert!";
+    QSqlRecord record = model.record();
+    record.setValue( "name", t.name() );
+    record.setValue( "description", t.description() );
+    record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
+    record.setValue( "docType", t.docType() );
+    record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
+    record.setValue( "textType",  t.textTypeString() );
+
+    model.insertRecord(-1, record);
+    model.submitAll();    
+  }
+
 
   retVal = KraftDB::self()->getLastInsertID();
 
@@ -142,8 +154,7 @@ void DefaultProvider::deleteDocumentText( const DocText& dt )
 {
   if ( dt.dbId().isOk() ) {
     QSqlQuery q;
-    q.prepare("DELETE FROM DocTexts WHERE docTextID=:id") ;
-    q.bindValue( ":id", dt.dbId().toInt());
+    q.prepare("DELETE FROM DocTexts WHERE docTextID=" + dt.dbId().toString() ) ;
     q.exec();
   }
 }

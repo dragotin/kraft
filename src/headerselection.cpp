@@ -138,5 +138,3 @@ void HeaderSelection::slotCurrentTabChanged( QWidget *w )
     kError() << "Unknown Widget!" << endl;
   }
 }
-
-// #include "headerselection.moc"
