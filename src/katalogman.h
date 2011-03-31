@@ -41,11 +41,11 @@ public:
     QStringList allKatalogNames();
     Katalog* getKatalog(const QString&);
     Katalog* defaultTemplateCatalog();
-    void registerKatalog( Katalog* );
-    QString catalogTypeString( const QString& catName );
-    void notifyKatalogChange( Katalog*, dbID );
+    void     registerKatalog( Katalog* );
+    QString  catalogTypeString( const QString& catName );
+    void     notifyKatalogChange( Katalog*, dbID );
     // register a view for a catalog identified by its name.
-    void registerKatalogListView( const QString&, KatalogListView* );
+    void     registerKatalogListView( const QString&, KatalogListView* );
 private:
     KatalogMan();
     static KatalogMan *mSelf;

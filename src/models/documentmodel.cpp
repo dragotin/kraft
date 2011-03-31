@@ -36,42 +36,44 @@
 DocumentModel::DocumentModel()
        : QSqlQueryModel()
 {
-//    mysql> describe document;
-//    +------------------+--------------+------+-----+-------------------+-----------------------------+
-//    | Field            | Type         | Null | Key | Default           | Extra                       |
-//    +------------------+--------------+------+-----+-------------------+-----------------------------+
-//    |0  docID          | int(11)      | NO   | PRI | NULL              | auto_increment              |
-//    |1  ident          | varchar(32)  | YES  | MUL | NULL              |                             |
-//    |2  docType        | varchar(255) | YES  |     | NULL              |                             |
-//    |3  docDescription | text         | YES  |     | NULL              |                             |
-//    |4  clientID       | varchar(32)  | YES  | MUL | NULL              |                             |
-//    |5  clientAddress  | text         | YES  |     | NULL              |                             |
-//    |6  salut          | varchar(255) | YES  |     | NULL              |                             |
-//    |7  goodbye        | varchar(128) | YES  |     | NULL              |                             |
-//    |8  lastModified   | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
-//    |9  date           | date         | YES  |     | NULL              |                             |
-//    |10  pretext       | text         | YES  |     | NULL              |                             |
-//    |11  posttext      | text         | YES  |     | NULL              |                             |
-//    |12  country       | varchar(32)  | YES  |     | NULL              |                             |
-//    |13  language      | varchar(32)  | YES  |     | NULL              |                             |
-//    |14  projectLabel  | varchar(255) | YES  |     | NULL              |                             |
-//    +------------------+--------------+------+-----+-------------------+-----------------------------+
-//    15 rows in set (0.00 sec)
+  //    mysql> describe document;
+  //    +------------------+--------------+------+-----+-------------------+-----------------------------+
+  //    | Field            | Type         | Null | Key | Default           | Extra                       |
+  //    +------------------+--------------+------+-----+-------------------+-----------------------------+
+  //    |0  docID          | int(11)      | NO   | PRI | NULL              | auto_increment              |
+  //    |1  ident          | varchar(32)  | YES  | MUL | NULL              |                             |
+  //    |2  docType        | varchar(255) | YES  |     | NULL              |                             |
+  //    |3  docDescription | text         | YES  |     | NULL              |                             |
+  //    |4  clientID       | varchar(32)  | YES  | MUL | NULL              |                             |
+  //    |5  clientAddress  | text         | YES  |     | NULL              |                             |
+  //    |6  salut          | varchar(255) | YES  |     | NULL              |                             |
+  //    |7  goodbye        | varchar(128) | YES  |     | NULL              |                             |
+  //    |8  lastModified   | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+  //    |9  date           | date         | YES  |     | NULL              |                             |
+  //    |10  pretext       | text         | YES  |     | NULL              |                             |
+  //    |11  posttext      | text         | YES  |     | NULL              |                             |
+  //    |12  country       | varchar(32)  | YES  |     | NULL              |                             |
+  //    |13  language      | varchar(32)  | YES  |     | NULL              |                             |
+  //    |14  projectLabel  | varchar(255) | YES  |     | NULL              |                             |
+  //    +------------------+--------------+------+-----+-------------------+-----------------------------+
+  //    15 rows in set (0.00 sec)
+  mHeaders.resize(10);
 
-    setHeaderData( 0 /* Document_Id */, Qt::Horizontal, i18n("Id"));
-    setHeaderData( 1 /* Document_Ident */, Qt::Horizontal, i18n("Doc. number"));
-    setHeaderData( 2 /* Document_Type */, Qt::Horizontal, i18n("Doc. type"));
-    setHeaderData( 3 /* Document_Whiteboard */,   Qt::Horizontal, i18n("Whiteboard"));
-    setHeaderData( 4 /* Document_ClientId */  ,   Qt::Horizontal, i18n("Client ID"));
-    setHeaderData( 5 /* Document_LastModified */, Qt::Horizontal, i18n("Last modified"));
-    setHeaderData( 6 /* Document_CreationDate */, Qt::Horizontal, i18n("Creation date"));
-    setHeaderData( 7 /* Document_ProjectLabel */, Qt::Horizontal, i18n("Project label"));
-    setHeaderData( 8 /* Document_ClientAddress */,   Qt::Horizontal, i18n("Client Address"));
-    setHeaderData( 9 /* Document_ClientName */,   Qt::Horizontal, i18n("Client"));
-    mAddressProvider = new AddressProvider( this );
-    connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee& )),
-             this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& )));
-    setQueryAgain();
+  mHeaders[ Document_Id ]            = i18n("Id");
+  mHeaders[ Document_Ident ]         = i18n("Doc. Number");
+  mHeaders[ Document_Type ]          = i18n( "Doc. Type");
+  mHeaders[ Document_Whiteboard ]    = i18n( "Whiteboard" );
+  mHeaders[ Document_ClientId ]      = i18n( "Client Id" );
+  mHeaders[ Document_LastModified]   = i18n( "Last modified" );
+  mHeaders[ Document_CreationDate]   = i18n( "Creation date" );
+  mHeaders[ Document_ProjectLabel]   = i18n( "Project" );
+  mHeaders[ Document_ClientAddress ] = i18n( "Client Address" );
+  mHeaders[ Document_ClientName ]    = i18n( "Client" );
+
+  mAddressProvider = new AddressProvider( this );
+  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee& )),
+          this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& )));
+  setQueryAgain();
 }
 
 void DocumentModel::setQueryAgain()
@@ -97,6 +99,14 @@ DocumentModel * DocumentModel::self()
     return mSelf;
 }
 #endif
+
+QVariant DocumentModel::headerData( int section, Qt::Orientation /* orientation */, int role ) const
+{
+  if( role == Qt::DisplayRole && section >= 0 && section < 10 ) {
+    return mHeaders.value( section );
+  }
+  return QVariant();
+}
 
 QVariant DocumentModel::data(const QModelIndex &idx, int role) const
 {   

@@ -215,10 +215,12 @@ void DocDigestView::slotBuildView()
   mLatestDocModel = new DocumentFilterModel(10, this);
   mLatestView->setModel( mLatestDocModel );
   mLatestView->sortByColumn(DocumentModel::Document_CreationDate, Qt::AscendingOrder);
+  mLatestView->header()->restoreState( headerState );
+  mLatestView->hideColumn( DocumentModel::Document_Id );
   mLatestView->hideColumn( DocumentModel::Document_ClientId );
   mLatestView->hideColumn( DocumentModel::Document_ClientAddress );
+  mLatestView->showColumn( DocumentModel::Document_ClientName );
   mLatestView->setSortingEnabled(true);
-  mLatestView->header()->restoreState( headerState );
 
   //Create the all documents view
   mAllDocumentsModel = new DocumentFilterModel(-1, this);
