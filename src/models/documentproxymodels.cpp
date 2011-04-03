@@ -60,26 +60,21 @@ TimelineModel::TimelineModel(QObject *parent)
        : QAbstractProxyModel(parent)
 {
     //First put the documentmodel in sortfilterproxymodel to sort the items by date
-    proxy = new DocumentFilterModel(-1, this);
-    proxy->sort(DocumentModel::Document_CreationDate, Qt::AscendingOrder);
+    mProxy = new DocumentModel; // DocumentFilterModel(-1, this);
+    mProxy->sort(DocumentModel::Document_CreationDate, Qt::AscendingOrder);
 
     m_rootMap = new Mapping;
     m_rootMap->parentRow = -1;
     m_rootMap->treeLevel = -1;
     m_rootMap->parent = 0;
 
-    setSourceModel(proxy);
+    setSourceModel(mProxy);
     reset();
 }
 
 DocumentModel *TimelineModel::baseModel()
 {
-  return static_cast<DocumentModel*>(proxy->sourceModel());
-}
-
-QSortFilterProxyModel* TimelineModel::getProxyModel()
-{
-    return proxy;
+  return static_cast<DocumentModel*>( mProxy );
 }
 
 QVariant TimelineModel::headerData(int section, Qt::Orientation orientation, int role) const

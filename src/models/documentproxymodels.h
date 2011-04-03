@@ -85,14 +85,14 @@ class TimelineModel : public QAbstractProxyModel
         QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
         void setSourceModel(QAbstractItemModel *sourceModel);
-        QSortFilterProxyModel* getProxyModel();
+
     private slots:
         void sourceReset();
         void sourceRowsInserted(const QModelIndex &parent, int start, int end);
         void sourceRowsRemoved(const QModelIndex &parent, int start, int end);
 
     private:
-        DocumentFilterModel *proxy;
+        DocumentModel *mProxy;
         int sourceDateRow(int yearRow, int monthRow) const;
         mutable QVector<Helper> m_yearsRowCache;
         mutable Mapping *m_rootMap;

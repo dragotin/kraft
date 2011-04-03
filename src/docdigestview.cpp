@@ -220,6 +220,7 @@ void DocDigestView::slotBuildView()
   mLatestView->hideColumn( DocumentModel::Document_ClientId );
   mLatestView->hideColumn( DocumentModel::Document_ClientAddress );
   mLatestView->showColumn( DocumentModel::Document_ClientName );
+  mLatestView->header()->setMovable( true );
   mLatestView->setSortingEnabled(true);
 
   //Create the all documents view
@@ -230,6 +231,7 @@ void DocDigestView::slotBuildView()
   mAllView->hideColumn( DocumentModel::Document_ClientId );
   mAllView->hideColumn( DocumentModel::Document_ClientAddress );
   mAllView->setSortingEnabled(true);
+  mAllView->header()->setMovable( true );
   mAllView->header()->restoreState( headerState );
 
   //Create the timeline view
@@ -238,7 +240,9 @@ void DocDigestView::slotBuildView()
   mTimeView->hideColumn( DocumentModel::Document_ClientId );
   mTimeView->hideColumn( DocumentModel::Document_ClientAddress );
   mTimeView->setSortingEnabled(false);
-  mTimeView->header()->restoreState( headerState );
+  mTimeView->header()->setMovable( false );
+
+  // mTimeView->header()->restoreState( headerState );
 
   //Initialize common style options
   QPalette palette;
