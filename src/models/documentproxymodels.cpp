@@ -277,7 +277,7 @@ QModelIndex TimelineModel::parent(const QModelIndex &index) const
 
      Mapping *indexmap = static_cast<Mapping*>(index.internalPointer());
 
-     if(indexmap->parent == m_rootMap)
+     if( indexmap && indexmap->parent == m_rootMap )
          return QModelIndex();
 
      return createIndex(indexmap->parentRow, 0, indexmap->parent);
