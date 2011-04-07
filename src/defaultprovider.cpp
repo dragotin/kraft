@@ -92,7 +92,7 @@ QString DefaultProvider::defaultText( const QString& docType, KraftDoc::Part p, 
   DocTextList::iterator it;
 
   for ( it = list.begin(); it != list.end(); ++it ) {
-    if ( ( *it ).name() == i18n( "Standard" ) ) {
+    if( (*it).isStandardText() ) {
       re = ( *it ).text();
       break;
     }
