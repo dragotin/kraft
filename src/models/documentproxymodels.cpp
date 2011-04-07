@@ -60,7 +60,7 @@ TimelineModel::TimelineModel(QObject *parent)
        : QAbstractProxyModel(parent)
 {
     //First put the documentmodel in sortfilterproxymodel to sort the items by date
-    mProxy = new DocumentModel; // DocumentFilterModel(-1, this);
+    mProxy = new DocumentModel;
     mProxy->sort(DocumentModel::Document_CreationDate, Qt::AscendingOrder);
 
     m_rootMap = new Mapping;
@@ -156,7 +156,6 @@ int TimelineModel::rowCount(const QModelIndex &parent) const
         return rows;
     }
 
-
     Mapping *parentMap = static_cast<Mapping*>(parent.internalPointer());
 
     //Number of months in a given year
@@ -231,56 +230,60 @@ QModelIndex TimelineModel::mapToSource(const QModelIndex &proxyIndex) const
 
 QModelIndex TimelineModel::index(int row, int column, const QModelIndex &parent) const
 {
-    if (row < 0 || column < 0 || column >= columnCount(parent) || parent.column() > 0)
-        return QModelIndex();
+  if (row < 0 || column < 0 || column >= columnCount(parent) || parent.column() > 0)
+    return QModelIndex();
 
-    if (!parent.isValid())
-    {
-        Mapping *mapping = static_cast<Mapping*>(m_rootMap->childeren.at(row));
-
-        if(!mapping)
-        {
-            mapping = new Mapping;
-            mapping->parent = m_rootMap;
-            mapping->parentRow = -1;
-            mapping->treeLevel = 0;
-            m_rootMap->childeren.replace(row, mapping);
-        }
-
-        return createIndex(row, column, mapping);
+  if (!parent.isValid())
+  {
+    if( m_rootMap->childeren.count() == 0 ) {
+      // No entries at all
+      return QModelIndex();
     }
-
-
-    Mapping *parentmap = static_cast<Mapping*>(parent.internalPointer());
-    Mapping *mapping = static_cast<Mapping*>(parentmap->childeren.at(row));
+    Mapping *mapping = static_cast<Mapping*>( m_rootMap->childeren.at(row) );
 
     if(!mapping)
     {
-        mapping = new Mapping;
-        mapping->parent = parentmap;
-        mapping->parentRow = parent.row();
-        mapping->treeLevel = parentmap->treeLevel + 1;
-
-        kDebug() << "Index created " << row << " parent row " << parent.row() << " treelevel " << mapping->treeLevel;
-
-        parentmap->childeren.replace(row, mapping);
+      mapping = new Mapping;
+      mapping->parent = m_rootMap;
+      mapping->parentRow = -1;
+      mapping->treeLevel = 0;
+      m_rootMap->childeren.replace(row, mapping);
     }
 
-    //We're creating a month item
     return createIndex(row, column, mapping);
+  }
+
+
+  Mapping *parentmap = static_cast<Mapping*>(parent.internalPointer());
+  Mapping *mapping = static_cast<Mapping*>(parentmap->childeren.at(row));
+
+  if(!mapping)
+  {
+    mapping = new Mapping;
+    mapping->parent = parentmap;
+    mapping->parentRow = parent.row();
+    mapping->treeLevel = parentmap->treeLevel + 1;
+
+    kDebug() << "Index created " << row << " parent row " << parent.row() << " treelevel " << mapping->treeLevel;
+
+    parentmap->childeren.replace(row, mapping);
+  }
+
+  //We're creating a month item
+  return createIndex(row, column, mapping);
 }
 
 QModelIndex TimelineModel::parent(const QModelIndex &index) const
 {
-     if (!index.isValid())
-        return QModelIndex();
+  if ( !index.isValid() )
+    return QModelIndex();
 
-     Mapping *indexmap = static_cast<Mapping*>(index.internalPointer());
+  Mapping *indexmap = static_cast<Mapping*>(index.internalPointer());
 
-     if( indexmap && indexmap->parent == m_rootMap )
-         return QModelIndex();
+  if( indexmap && indexmap->parent == m_rootMap )
+    return QModelIndex();
 
-     return createIndex(indexmap->parentRow, 0, indexmap->parent);
+  return createIndex(indexmap->parentRow, 0, indexmap->parent);
 }
 
 bool TimelineModel::hasChildren(const QModelIndex &parent) const

@@ -128,7 +128,6 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
   }
 
   if ( mSuccess ) {
-    kDebug() << "Try to open database" << endl;
     int re = 0;
     if(mDatabaseDriver == "QMYSQL") {
       QString host = dbHost;
@@ -139,11 +138,13 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
       if( user.isEmpty() ) user = DatabaseSettings::self()->dbUser();
       QString pwd = dbPasswd;
       if( pwd.isEmpty() ) pwd = DatabaseSettings::self()->dbPassword();
+      kDebug() << "Try to open MySQL database " << name << endl;
       re = checkConnect( host, name , user, pwd );
     } else if(mDatabaseDriver == "QSQLITE") {
       // SqlLite only requires a valid file name which comes in as Database Name
       QString name = dbName;
       if( name.isEmpty() ) name = DatabaseSettings::self()->dbFile();
+      kDebug() << "Try to open SqLite database " << name << endl;
       re = checkConnect( "", name, "", "");
     }
     if ( re == 0 ) {
