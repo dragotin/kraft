@@ -94,9 +94,9 @@ PositionViewWidget::PositionViewWidget()
   // state submenu:
   mStateSubmenu = mExecPopup->addMenu(i18n( "Position Kind" ));
   mStateSubmenu->addAction( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
-  mStateSubmenu->addAction( KIcon( "alternative" ),
+  mStateSubmenu->addAction( KIcon( "kraft_alternative" ),
                             i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
-  mStateSubmenu->addAction( KIcon( "demand" ),
+  mStateSubmenu->addAction( KIcon( "kraft_demand" ),
                             i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
 
   mExecPopup->addSeparator();
@@ -537,7 +537,7 @@ void PositionViewWidget::slotSetPositionAlternative()
   lKind->show();
   lKind->setToolTip( i18n( "This is an alternative position."
                               " Use the position toolbox to change." ) );
-  lKind->setPixmap( SmallIcon( "alternative" ) );
+  lKind->setPixmap( SmallIcon( "kraft_alternative" ) );
   mKind = Alternative;
   slotRefreshPrice();
 
@@ -553,7 +553,7 @@ void PositionViewWidget::slotSetPositionDemand()
   lKind->show();
   lKind->setToolTip( i18n( "This is a as required position. "
                               "Use the position toolbox to change." ) );
-  lKind->setPixmap( SmallIcon( "demand" ) );
+  lKind->setPixmap( SmallIcon( "kraft_demand" ) );
   mKind = Demand;
   slotRefreshPrice();
 
