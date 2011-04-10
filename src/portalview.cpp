@@ -176,7 +176,7 @@ QString PortalView::systemViewHeader() const
   QString html( "" );
 
   KStandardDirs stdDirs;
-  QString logoFile = stdDirs.findResource( "data",  "kraft/pics/muckilogo_oS.png" );
+  QString logoFile = stdDirs.findResource( "data",  "kraft/pics/kraftapp_logo.png" );
   html += i18n( "<h2>Welcome to Kraft</h2>" );
   html += "<div><table width=\"100%\" border=\"0\"><tr><td>";
   html += i18n("Kraft Version: %1</td>").arg( KRAFT_VERSION );

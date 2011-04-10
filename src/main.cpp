@@ -35,18 +35,24 @@ int main(int argc, char *argv[])
                         KRAFT_VERSION,
                         ki18n("Business documents for the small enterprise"),
                         KAboutData::License_GPL,
-                        ki18n("Copyright © 2004–2010 Klaas Freitag" ) );
+                        ki18n("Copyright © 2004–2011 Klaas Freitag" ) );
 
   aboutData.addAuthor(ki18n("Klaas Freitag"), ki18n( "Developer" ), "freitag@kde.org");
   aboutData.addAuthor(ki18n("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ),
                       "kraft@spielhagen.de", "http://www.michal-spielhagen.de" );
   aboutData.addAuthor(ki18n("Thomas Richard"), ki18n("Developer"), "thomas.richard@proan.be");
-  // aboutData.setProgramLogo( logo );
+
+  KStandardDirs stdDirs;
+  QString logoFile = stdDirs.findResource( "data",  "kraft/pics/kraftapp_logo.png" );
+  if( ! logoFile.isEmpty() ) {
+    QImage img( logoFile );
+    aboutData.setProgramLogo( QVariant( img ) );
+  }
   aboutData.setOtherText( ki18n("Kraft is free software for persons in small businesses\n"
           "writing correspondence like offers and invoices to their customers" ) );
 
   aboutData.setVersion( KRAFT_VERSION );
-  aboutData.setHomepage( "http://kraft.sourceforge.net" );
+  aboutData.setHomepage( "http://www.volle-kraft-voraus.de" );
 
   KCmdLineArgs::init( argc, argv, &aboutData );
 
