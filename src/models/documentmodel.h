@@ -55,7 +55,7 @@ public:
   QVariant headerData( int, Qt::Orientation, int role = Qt::DisplayRole ) const;
 
   bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
-  // int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const;
   QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
   QModelIndex parent(const QModelIndex &index= QModelIndex()) const;
   QModelIndex sibling ( int row, int column, const QModelIndex & index ) const;

@@ -203,15 +203,12 @@ bool DocumentModel::hasChildren(const QModelIndex &parent) const
 
     return false;
 }
-#if 0
+
 int DocumentModel::columnCount(const QModelIndex &parent) const
 {
-    if(!parent.isValid() || !parent.parent().isValid())
-        return 1+QSqlQueryModel::columnCount(QModelIndex());
-
-    return 0;
+  return 10;
 }
-#endif
+
 QModelIndex DocumentModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (row < 0 || column < 0 || column >= columnCount() || parent.column() > 0)

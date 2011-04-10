@@ -96,8 +96,12 @@ DocDigestView::DocDigestView( QWidget *parent )
 
 DocDigestView::~DocDigestView()
 {
-  const QString state = mLatestView->header()->saveState().toBase64();
-  KraftSettings::self()->setDigestListColumns( state );
+  QString state = mLatestView->header()->saveState().toBase64();
+  KraftSettings::self()->setDigestListColumnsLatest( state );
+  state = mAllView->header()->saveState().toBase64();
+  KraftSettings::self()->setDigestListColumnsAll( state );
+  state = mTimeView->header()->saveState().toBase64();
+  KraftSettings::self()->setDigestListColumnsTime( state );
   KraftSettings::self()->writeConfig();
 }
 
@@ -195,9 +199,13 @@ void DocDigestView::slotCurrentChangedToolbox(int index)
   if( index < 0 || index > mTreeViewIndex.size() ) return;
 
   // move the state of the columns from one view to the other
-  if( mOldToolboxIndex > -1 && mOldToolboxIndex < mTreeViewIndex.size() ) {
-    mTreeViewIndex[index]->header()->restoreState( mTreeViewIndex[mOldToolboxIndex]->header()->saveState() );
-  }
+//  if( mOldToolboxIndex > -1 && mOldToolboxIndex < mTreeViewIndex.size() ) {
+//    mTreeViewIndex[index]->header()->restoreState( mTreeViewIndex[mOldToolboxIndex]->header()->saveState() );
+//    if( mTreeViewIndex[index] == mTimeView )
+//      mTimeView->showColumn( DocumentModel::Document_Id );
+//    else
+//      mTreeViewIndex[index]->hideColumn( DocumentModel::Document_Id );
+//  }
   mOldToolboxIndex = index;
 
   QTreeView *treeview = mTreeViewIndex[index];
@@ -210,39 +218,35 @@ void DocDigestView::slotCurrentChangedToolbox(int index)
 
 void DocDigestView::slotBuildView()
 {
-  QByteArray headerState = QByteArray::fromBase64( KraftSettings::self()->digestListColumns().toAscii() );
+  QByteArray headerStateLatest = QByteArray::fromBase64( KraftSettings::self()->digestListColumnsLatest().toAscii() );
+  QByteArray headerStateAll = QByteArray::fromBase64( KraftSettings::self()->digestListColumnsAll().toAscii() );
+  QByteArray headerStateTime = QByteArray::fromBase64( KraftSettings::self()->digestListColumnsTime().toAscii() );
   //Create the latest documents view
   mLatestDocModel = new DocumentFilterModel(10, this);
   mLatestView->setModel( mLatestDocModel );
   mLatestView->sortByColumn(DocumentModel::Document_CreationDate, Qt::AscendingOrder);
-  mLatestView->header()->restoreState( headerState );
-  mLatestView->hideColumn( DocumentModel::Document_Id );
-  mLatestView->hideColumn( DocumentModel::Document_ClientId );
-  mLatestView->hideColumn( DocumentModel::Document_ClientAddress );
-  mLatestView->showColumn( DocumentModel::Document_ClientName );
   mLatestView->header()->setMovable( true );
   mLatestView->setSortingEnabled(true);
+  mLatestView->header()->restoreState( headerStateLatest );
+  mLatestView->hideColumn( DocumentModel::Document_Id );
 
   //Create the all documents view
   mAllDocumentsModel = new DocumentFilterModel(-1, this);
   mAllDocumentsModel->setSourceModel( new DocumentModel ); // ::self());
   mAllView->setModel(mAllDocumentsModel);
   mAllView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
-  mAllView->hideColumn( DocumentModel::Document_ClientId );
-  mAllView->hideColumn( DocumentModel::Document_ClientAddress );
   mAllView->setSortingEnabled(true);
   mAllView->header()->setMovable( true );
-  mAllView->header()->restoreState( headerState );
+  mAllView->header()->restoreState( headerStateAll );
+  mAllView->hideColumn( DocumentModel::Document_Id );
 
   //Create the timeline view
   mTimelineModel = new TimelineModel(this);
   mTimeView->setModel(mTimelineModel);
-  mTimeView->hideColumn( DocumentModel::Document_ClientId );
-  mTimeView->hideColumn( DocumentModel::Document_ClientAddress );
   mTimeView->setSortingEnabled(false);
   mTimeView->header()->setMovable( false );
-
-  // mTimeView->header()->restoreState( headerState );
+  mTimeView->showColumn( DocumentModel::Document_Id );
+  mTimeView->header()->restoreState( headerStateTime);
 
   //Initialize common style options
   QPalette palette;
@@ -265,6 +269,11 @@ void DocDigestView::slotBuildView()
     widget->setEditTriggers( QAbstractItemView::NoEditTriggers );
     widget->setExpandsOnDoubleClick( false );
     widget->setUniformRowHeights( true );
+
+    widget->hideColumn( DocumentModel::Document_ClientId );
+    widget->hideColumn( DocumentModel::Document_ClientAddress );
+    widget->showColumn( DocumentModel::Document_ClientName );
+
   }
 
 #if 0

@@ -45,8 +45,14 @@
     <entry name="templateToPosDialogSize" type="Size">
       <label>The window size of the template  to document dialog</label>
     </entry>
-    <entry name="digestListColumns" type="String">
-      <label>The digest list column arrangement</label>
+    <entry name="digestListColumnsLatest" type="String">
+      <label>The digest list column arrangement for the Latest-list</label>
+    </entry>
+   <entry name="digestListColumnsAll" type="String">
+      <label>The digest list column arrangement for the all-list</label>
+    </entry>
+     <entry name="digestListColumnsTime" type="String">
+      <label>The digest list column arrangement for timeline</label>
     </entry>
   </group>
 
