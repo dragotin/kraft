@@ -1,8 +1,10 @@
 
 ====================================================================
-Please refer to the Kraft Project website under http://kraft.sf.net
+Please refer to the Kraft Project website 
+  http://volle-kraft-voraus.de/Main/Releases
 ====================================================================
 
+older entries:
 
 Das Kraft Release 0.22 verwendet ein neues Text-Template System,
 das für die benutzerkonfigurierbare PDF-Ausgabe der Dokumente
