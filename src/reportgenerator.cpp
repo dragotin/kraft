@@ -488,9 +488,9 @@ void ReportGenerator::trml2pdfFinished( int exitStatus)
     if ( mErrors.isEmpty() ) mErrors = i18n( "Unknown problem." );
     // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
     KMessageBox::detailedError ( 0,
-                                 i18n( "Could not generate the pdf file. The trml2pdf script failed." ),
+                                 i18n( "Could not generate the pdf file. The pdf creation script failed." ),
                                  mErrors,
-                                 i18n( "rml2pdf Error" ) );
+                                 i18n( "PDF Generation Error" ) );
     mErrors = QString();
   }
   QApplication::restoreOverrideCursor();

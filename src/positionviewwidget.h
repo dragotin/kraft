@@ -26,16 +26,15 @@
 
 #include "geld.h"
 #include "ui_positionwidget.h"
+#include "docposition.h"
 
 /**
 	@author Klaas Freitag <freitag@kde.org>
 */
-class DocPosition;
 class KMenu;
 class KAction;
 class Geld;
 class KLocale;
-class DocPositionBase;
 class DosPositionGuardedPtr;
 
 class PositionViewWidget : public QWidget, public Ui_positionWidget

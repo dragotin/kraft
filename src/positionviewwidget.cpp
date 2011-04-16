@@ -26,7 +26,6 @@
 #include <kmenu.h>
 #include <kiconloader.h>
 
-#include "docposition.h"
 #include "positionviewwidget.h"
 #include "unitmanager.h"
 #include "geld.h"
