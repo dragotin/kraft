@@ -15,8 +15,8 @@
   </Menu>
 </MenuBar>
 <ToolBar  name="mainToolBar" fullWidth="true">
-    <Action name="edit_vorlage"/>
-    <Action name="neue_vorlage"/>
+    <Action name="edit_template"/>
+    <Action name="new_template"/>
     <Action name="add_chapter"/>
     <Action name="edit_chapter"/>
     <Action name="go_to_document"/>
