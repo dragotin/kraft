@@ -87,9 +87,9 @@ void DocumentModel::slotAddresseeFound( const QString& uid, const KABC::Addresse
   if( addressee.isEmpty() ) {
     kDebug() << "No address found for uid " << uid;
     mAddresses[uid] = KABC::Addressee();
+  } else {
+    mAddresses[uid] = addressee;
   }
-
-  mAddresses[addressee.uid()] = addressee;
 }
 
 #if 0
@@ -135,7 +135,10 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
           // empty address means that there is no valid entry in this addressbook
           return i18n("not found");
         }
-        return mAddresses.value(uid).realName();
+        const QString realName = mAddresses.value(uid).realName();
+
+        kDebug() << "returning " << realName;
+        return realName;
       } else {
         mAddressProvider->getAddressee( uid );
       }
@@ -196,6 +199,13 @@ DocDigest DocumentModel::digest( const QModelIndex& index ) const
   return digest;
 }
 
+int DocumentModel::columnCount(const QModelIndex &parent) const
+{
+  return 10;
+}
+
+#if 0
+
 bool DocumentModel::hasChildren(const QModelIndex &parent) const
 {
     if(!parent.isValid())
@@ -204,10 +214,6 @@ bool DocumentModel::hasChildren(const QModelIndex &parent) const
     return false;
 }
 
-int DocumentModel::columnCount(const QModelIndex &parent) const
-{
-  return 10;
-}
 
 QModelIndex DocumentModel::index(int row, int column, const QModelIndex &parent) const
 {
@@ -232,6 +238,7 @@ QModelIndex DocumentModel::parent(const QModelIndex &index) const
     return QModelIndex();
 }
 
+
 QModelIndex DocumentModel::sibling ( int row, int column, const QModelIndex & index ) const
 {
     if(!index.isValid())
@@ -247,3 +254,6 @@ bool DocumentModel::canFetchMore(const QModelIndex &parent) const
 
     return QSqlQueryModel::canFetchMore(parent);
 }
+#endif
+
+

@@ -31,7 +31,7 @@ class DocumentFilterModel : public QSortFilterProxyModel
 {
     public:
         DocumentFilterModel(int maxRows = -1, QObject *parent = 0);
-
+        void setMaxRows( int );
     protected:
         bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 

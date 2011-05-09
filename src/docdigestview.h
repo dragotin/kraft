@@ -20,6 +20,7 @@
 #include <QWidget>
 #include <QMap>
 #include <QTreeWidgetItem>
+#include <QTableView>
 
 #include "docdigest.h"
 #include "docguardedptr.h"
@@ -54,7 +55,7 @@ public slots:
 
 protected:
   void contextMenuEvent( QContextMenuEvent* );
-  QList<QTreeView *> initializeTreeWidgets();
+  void initializeTreeWidgets();
 
 protected slots:
   void slotDocOpenRequest( QModelIndex );
@@ -72,8 +73,8 @@ signals:
 
 private:
 
-  QTreeView *mAllView;
-  QTreeView *mLatestView;
+  QTableView *mAllView;
+  QTableView *mLatestView;
   QTreeView *mTimeView;
 
   DocDigestDetailView *mLatestViewDetails;
@@ -86,9 +87,9 @@ private:
   DocumentFilterModel *mLatestDocModel;
   TimelineModel       *mTimelineModel;
 
-  QList<QTreeView *> treeviewlist;
+  QList<QAbstractItemView*> mTreeViewList;
 
-  // KTreeViewSearchLine *mFilterHeader;
+  KTreeViewSearchLine *mFilterHeader;
 
   KMenu *mTimelineMenu;
   KMenu *mAllMenu;
@@ -97,7 +98,7 @@ private:
   int                    mOldToolboxIndex;
   QToolBox               *mToolBox;
   QPushButton            *mNewDocButton;
-  QVector<QTreeView*>    mTreeViewIndex;
+  QVector<QAbstractItemView*>    mTreeViewIndex;
   ArchDocDigest          mLatestArchivedDigest;
 };
 

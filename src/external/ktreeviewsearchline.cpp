@@ -421,11 +421,14 @@ void KTreeViewSearchLine::setTreeViews( const QList<QTreeView *> &treeViews )
 
 bool KTreeViewSearchLine::itemMatches( const QModelIndex &index, int row, const QString &pattern ) const
 {
+  kDebug() << "XXXXX- Pattern: " << pattern;
   if ( pattern.isEmpty() )
     return true;
 
-  if ( !index.isValid() )
+  if ( !index.isValid() ) {
+    kDebug() << "Index is not valid!";
     return false;
+  }
 
   // Contruct a regular expression object with the right options.
   QRegExp expression = QRegExp( pattern,
@@ -445,7 +448,9 @@ bool KTreeViewSearchLine::itemMatches( const QModelIndex &index, int row, const 
     }
   } else {
     for ( int i = 0; i < columncount; ++i) {
-      if ( expression.indexIn( index.child( row, i ).data( Qt::DisplayRole ).toString() ) >= 0 )
+      const QString data = index.child( row, i ).data( Qt::DisplayRole ).toString();
+      kDebug() << " XXXX " << data;
+      if ( expression.indexIn( data ) >= 0 )
         return true;
     }
   }

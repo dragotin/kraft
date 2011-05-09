@@ -55,29 +55,20 @@ DocDigestView::DocDigestView( QWidget *parent )
   box->setMargin( 0 );
   box->setSpacing( 0 );
 
-  QHBoxLayout *hbox = new QHBoxLayout;
-
-  mNewDocButton = new QPushButton( i18n( "Create Document" ) );
-  connect( mNewDocButton, SIGNAL( clicked() ), this, SIGNAL( createDocument() ) );
-  hbox->addWidget( mNewDocButton );
-  hbox->addStretch(1);
   mToolBox = new QToolBox;
-
   initializeTreeWidgets();
   connect( mToolBox, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChangedToolbox(int)));
 
-#if 0
   mFilterHeader = new KTreeViewSearchLine( this );
+  mFilterHeader->setKeepParentsVisible( true );
 
+  QHBoxLayout *hbox = new QHBoxLayout;
   hbox->addWidget( mFilterHeader );
   hbox->addSpacing( KDialog::marginHint() );
-
   box->addLayout( hbox );
-#endif
-  QHBoxLayout *hbox2 = new QHBoxLayout;
-  hbox2->addWidget( mToolBox );
-  hbox2->addSpacing( KDialog::marginHint() );
-  box->addLayout( hbox2 );
+
+  box->addWidget( mToolBox );
+
 
   QFrame *f = new QFrame;
   f->setLineWidth( 2 );
@@ -85,42 +76,34 @@ DocDigestView::DocDigestView( QWidget *parent )
   f->setFrameStyle( QFrame::HLine | QFrame::Raised );
   f->setFixedHeight( 10 );
   box->addWidget( f );
-
-  QHBoxLayout *hbox3 = new QHBoxLayout;
-
-  hbox3->addSpacing( KDialog::marginHint() );
-
-  // hbox3->addWidget( mShowDocDetailsView );
-  box->addLayout( hbox3 );
 }
 
 DocDigestView::~DocDigestView()
 {
-  QString state = mLatestView->header()->saveState().toBase64();
+  QString state = mLatestView->horizontalHeader()->saveState().toBase64();
   KraftSettings::self()->setDigestListColumnsLatest( state );
-  state = mAllView->header()->saveState().toBase64();
+  state = mAllView->horizontalHeader()->saveState().toBase64();
   KraftSettings::self()->setDigestListColumnsAll( state );
   state = mTimeView->header()->saveState().toBase64();
   KraftSettings::self()->setDigestListColumnsTime( state );
   KraftSettings::self()->writeConfig();
 }
 
-QList<QTreeView *> DocDigestView::initializeTreeWidgets()
+void DocDigestView::initializeTreeWidgets()
 {
   //Note: Currently building the views is done in slotBuildView() that is called from the portal
   //      because otherwise we'd access the database before it is initialized
-  mAllView =    new QTreeView;
-  mLatestView = new QTreeView;
+  mAllView =    new QTableView;
+  mLatestView = new QTableView;
   mTimeView =   new QTreeView;
 
-  mLatestView->setRootIsDecorated( false );
   mTreeViewIndex.resize(3);
 
   //Add the widgets to a temporary list so we can iterate over them and centralise the common initialization
-  treeviewlist.clear();
-  treeviewlist.append(mAllView);
-  treeviewlist.append(mLatestView);
-  treeviewlist.append(mTimeView);
+  mTreeViewList.clear();
+  mTreeViewList.append(mAllView);
+  mTreeViewList.append(mLatestView);
+  mTreeViewList.append(mTimeView);
 
   //Initialise
   mAllMenu = new KMenu( mAllView );
@@ -189,13 +172,12 @@ QList<QTreeView *> DocDigestView::initializeTreeWidgets()
   mToolBox->setItemIcon( indx, KIcon( "chronometer"));
   mToolBox->setItemToolTip(indx, i18n("Shows all documents along a timeline"));
   mTreeViewIndex[indx] = mTimeView;
-
-  return treeviewlist;
 }
 
 
 void DocDigestView::slotCurrentChangedToolbox(int index)
 {
+  kDebug() << "INDEX: " << index;
   if( index < 0 || index > mTreeViewIndex.size() ) return;
 
   // move the state of the columns from one view to the other
@@ -208,8 +190,15 @@ void DocDigestView::slotCurrentChangedToolbox(int index)
 //  }
   mOldToolboxIndex = index;
 
-  QTreeView *treeview = mTreeViewIndex[index];
+  if( index == 0 ) { // latest
+    mLatestDocModel->setMaxRows(12);
+   } else if( index == 1 ) { // all
 
+    kDebug()<< "SHOWING all rows!";
+    mLatestDocModel->setMaxRows( -1 );
+  }
+  // QTreeView *treeview = mTreeViewIndex[index];
+  QAbstractItemView *treeview = mTreeViewIndex[index];
   if(treeview->selectionModel()->hasSelection())
     slotCurrentChanged(treeview->selectionModel()->selectedRows().at(0), QModelIndex());
   else
@@ -225,20 +214,26 @@ void DocDigestView::slotBuildView()
   mLatestDocModel = new DocumentFilterModel(10, this);
   mLatestView->setModel( mLatestDocModel );
   mLatestView->sortByColumn(DocumentModel::Document_CreationDate, Qt::AscendingOrder);
-  mLatestView->header()->setMovable( true );
+  mLatestView->horizontalHeader()->setMovable( true );
+  mLatestView->verticalHeader()->hide();
   mLatestView->setSortingEnabled(true);
-  mLatestView->header()->restoreState( headerStateLatest );
-  mLatestView->hideColumn( DocumentModel::Document_Id );
+  mLatestView->horizontalHeader()->restoreState( headerStateLatest );
+  mLatestView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mLatestView->setShowGrid( false );
+ //  mLatestView->hideColumn( DocumentModel::Document_Id );
 
   //Create the all documents view
-  mAllDocumentsModel = new DocumentFilterModel(-1, this);
-  mAllDocumentsModel->setSourceModel( new DocumentModel ); // ::self());
+  mAllDocumentsModel = mLatestDocModel; // new DocumentFilterModel(-1, this);
+  // mAllDocumentsModel->setSourceModel( new DocumentModel ); // ::self());
   mAllView->setModel(mAllDocumentsModel);
   mAllView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
+  mAllView->verticalHeader()->hide();
   mAllView->setSortingEnabled(true);
-  mAllView->header()->setMovable( true );
-  mAllView->header()->restoreState( headerStateAll );
-  mAllView->hideColumn( DocumentModel::Document_Id );
+  mAllView->horizontalHeader()->setMovable( true );
+  mAllView->horizontalHeader()->restoreState( headerStateAll );
+  mAllView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mAllView->setShowGrid( false );
+  // mAllView->hideColumn( DocumentModel::Document_Id );
 
   //Create the timeline view
   mTimelineModel = new TimelineModel(this);
@@ -252,32 +247,37 @@ void DocDigestView::slotBuildView()
   QPalette palette;
   palette.setColor( QPalette::AlternateBase, QColor("#e0fdd1") );
 
-  for(int i=0; i < treeviewlist.count(); ++i) {
-    QTreeView *widget = treeviewlist.at(i);
+  QList<QAbstractItemView*> treeviewlist;
+  treeviewlist.append( mLatestView );
+  treeviewlist.append( mAllView );
+  treeviewlist.append( mTimeView );
+
+  foreach( QAbstractItemView *widget, treeviewlist ) {
+    // QTreeView *widget = mTreeViewList.at(i);
     connect( widget->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex) ),
              this, SLOT(slotCurrentChanged(QModelIndex,QModelIndex)));
     connect( widget, SIGNAL( doubleClicked(QModelIndex) ),
              this, SLOT( slotDocOpenRequest(QModelIndex) ) );
 
-    widget->setAnimated( true );
+    // widget->setAnimated( true );
     widget->setPalette( palette );
     widget->setAlternatingRowColors( true );
-    widget->setRootIsDecorated( true );
+    // widget->setRootIsDecorated( true );
     widget->setSelectionMode( QAbstractItemView::SingleSelection );
-    widget->header()->setResizeMode(QHeaderView::Interactive);
+    // widget->header()->setResizeMode(QHeaderView::Interactive);
    // widget->header()->setResizeMode( DocumentModel::Document_Whiteboard, QHeaderView::Stretch );
     widget->setEditTriggers( QAbstractItemView::NoEditTriggers );
-    widget->setExpandsOnDoubleClick( false );
-    widget->setUniformRowHeights( true );
+    // widget->setExpandsOnDoubleClick( false );
+    // widget->setUniformRowHeights( true );
 
-    widget->hideColumn( DocumentModel::Document_ClientId );
-    widget->hideColumn( DocumentModel::Document_ClientAddress );
-    widget->showColumn( DocumentModel::Document_ClientName );
+    // widget->hideColumn( DocumentModel::Document_ClientId );
+    // widget->hideColumn( DocumentModel::Document_ClientAddress );
+    // widget->showColumn( DocumentModel::Document_ClientName );
 
   }
 
 #if 0
-  mFilterHeader->setTreeView( mAllView );
+  mFilterHeader->setTreeView( mLatestView );
   mFilterHeader->setTreeView( mLatestView );
   mFilterHeader->setTreeView( mTimeView );
 #endif
@@ -294,7 +294,7 @@ void DocDigestView::slotUpdateView()
 
 void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
 {
-  QTreeView *currView = mTreeViewIndex[ mToolBox->currentIndex() ];
+  QAbstractItemView *currView = mTreeViewIndex[ mToolBox->currentIndex() ];
 
   if( currView == mLatestView ) {
     mLatestMenu->popup( event->globalPos() );

@@ -289,6 +289,7 @@ void PortalView::documentDigests()
   mDocsPage->setIcon(KIcon("folder-documents"));
 
   QBoxLayout *b = new QHBoxLayout;
+  b->setContentsMargins( 0, 0, 0, 0 );
   w->setLayout( b );
 
   mDocDigestView = new DocDigestView( w );

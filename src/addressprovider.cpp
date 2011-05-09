@@ -37,6 +37,11 @@ void AddressProvider::allAddresses( )
 
 void AddressProvider::getAddressee( const QString& uid )
 {
+  if( uid.isEmpty() || mUidSearches.contains( uid ) ) {
+    // search is already running
+    kDebug() << "Search already underways!";
+    return;
+  }
   Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob( this );
   // job->setLimit( 100 );
   job->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
@@ -44,6 +49,7 @@ void AddressProvider::getAddressee( const QString& uid )
   connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
 
   mUidSearchJobs[job] = uid;
+  mUidSearches.insert( uid );
   job->start();
 }
 
@@ -81,6 +87,7 @@ void AddressProvider::searchResult( KJob* job )
       const QString uid = mUidSearchJobs.value( job );
       kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
       mUidSearchJobs.remove(job);
+      mUidSearches.remove( uid );
       emit addresseeFound( uid, contact );
     }
     if( mNameSearchJobs.contains( job )) {

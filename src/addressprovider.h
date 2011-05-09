@@ -18,6 +18,8 @@
 #ifndef ADDRESSPROVIDER_H
 #define ADDRESSPROVIDER_H
 
+#include <QSet>
+
 #include <kabc/addressee.h>
 #include <akonadi/job.h>
 
@@ -47,6 +49,7 @@ signals:
 
 private:
   QMap<KJob*, QString> mUidSearchJobs;
+  QSet<QString>        mUidSearches;
   QMap<KJob*, QString> mNameSearchJobs;
   QMap<KJob*, int> mAllAddressesJobs;
 };
