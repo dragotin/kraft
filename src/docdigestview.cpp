@@ -338,25 +338,27 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
 {
   Q_UNUSED(previous);
 
-  if(index.isValid())
-  {
+  if(index.isValid()) {
     DocumentModel *model = 0;
     DocDigestDetailView *view = 0;
 
-    if(index.model() == static_cast<QAbstractItemModel*>(mLatestDocModel)) {
+    int toolboxIndx = mToolBox->currentIndex();
+    if( toolboxIndx == 0 ) {
       mCurrentlySelected = mLatestDocModel->mapToSource(index);
       model = static_cast<DocumentModel*>(mLatestDocModel->sourceModel());
       view = mLatestViewDetails;
-    } else if(index.model() == static_cast<QAbstractItemModel*>(mTimelineModel)) {
-      mCurrentlySelected = mTimelineModel->mapToSource(index);
-      model = static_cast<DocumentModel*>( mTimelineModel->sourceModel() );
-      view = mTimeLineViewDetails;
-    } else {
+    } else if( toolboxIndx == 1 ) {
+      kDebug() << "Picking AllDocumentsView!";
       mCurrentlySelected = mAllDocumentsModel->mapToSource(index);
       model = static_cast<DocumentModel*>( mAllDocumentsModel->sourceModel() );
       view = mAllViewDetails;
+    } else if( toolboxIndx == 2 ) {
+      mCurrentlySelected = mTimelineModel->mapToSource(index);
+      model = static_cast<DocumentModel*>( mTimelineModel->sourceModel() );
+      view = mTimeLineViewDetails;
     }
 
+    /* get the coresponding document id */
     QModelIndex idIndx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Ident );
     QString id = idIndx.data( Qt::DisplayRole ).toString();
 
@@ -368,9 +370,8 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
     } else {
       mLatestArchivedDigest = ArchDocDigest();
     }
-
-
   } else {
+    kDebug() << "Got invalid index, clearing digest view.";
     emit docSelected( QString() );
   }
   //kDebug() << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);

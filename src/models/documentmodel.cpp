@@ -127,7 +127,7 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
       QModelIndex uidIdx = idx.sibling( idx.row(), Document_ClientId );
       const QString uid = QSqlQueryModel::data( uidIdx, role ).toString();
 
-      kDebug() << "Checking for UID " << uid;
+      // kDebug() << "Checking for UID " << uid;
       if( uid.isEmpty() ) return "";
 
       if( mAddresses.contains( uid ) ) {
@@ -137,7 +137,7 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
         }
         const QString realName = mAddresses.value(uid).realName();
 
-        kDebug() << "returning " << realName;
+        // kDebug() << "returning " << realName;
         return realName;
       } else {
         mAddressProvider->getAddressee( uid );
