@@ -60,11 +60,16 @@ DocDigestView::DocDigestView( QWidget *parent )
   connect( mToolBox, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChangedToolbox(int)));
 
   mFilterHeader = new KTreeViewSearchLine( this );
+  mFilterHeader->setMinimumWidth( 200 );
   mFilterHeader->setKeepParentsVisible( true );
 
   QHBoxLayout *hbox = new QHBoxLayout;
+  hbox->insertStretch( 0, 2 );
+  QLabel *lab = new QLabel;
+  lab->setText( i18n("&Search: ") );
+  lab->setBuddy( mFilterHeader );
+  hbox->addWidget( lab );
   hbox->addWidget( mFilterHeader );
-  hbox->addSpacing( KDialog::marginHint() );
   box->addLayout( hbox );
 
   box->addWidget( mToolBox );
@@ -220,11 +225,13 @@ void DocDigestView::slotBuildView()
   mLatestView->horizontalHeader()->restoreState( headerStateLatest );
   mLatestView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mLatestView->setShowGrid( false );
- //  mLatestView->hideColumn( DocumentModel::Document_Id );
+  mLatestView->hideColumn( DocumentModel::Document_Id );
+  mLatestView->hideColumn( DocumentModel::Document_ClientId );
+  mLatestView->hideColumn( DocumentModel::Document_ClientAddress );
+  mLatestView->showColumn( DocumentModel::Document_ClientName );
 
   //Create the all documents view
-  mAllDocumentsModel = mLatestDocModel; // new DocumentFilterModel(-1, this);
-  // mAllDocumentsModel->setSourceModel( new DocumentModel ); // ::self());
+  mAllDocumentsModel = mLatestDocModel;
   mAllView->setModel(mAllDocumentsModel);
   mAllView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
   mAllView->verticalHeader()->hide();
@@ -233,7 +240,10 @@ void DocDigestView::slotBuildView()
   mAllView->horizontalHeader()->restoreState( headerStateAll );
   mAllView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mAllView->setShowGrid( false );
-  // mAllView->hideColumn( DocumentModel::Document_Id );
+  mAllView->hideColumn( DocumentModel::Document_Id );
+  mAllView->hideColumn( DocumentModel::Document_ClientId );
+  mAllView->hideColumn( DocumentModel::Document_ClientAddress );
+  mAllView->showColumn( DocumentModel::Document_ClientName );
 
   //Create the timeline view
   mTimelineModel = new TimelineModel(this);
@@ -242,6 +252,11 @@ void DocDigestView::slotBuildView()
   mTimeView->header()->setMovable( false );
   mTimeView->showColumn( DocumentModel::Document_Id );
   mTimeView->header()->restoreState( headerStateTime);
+  mTimeView->setRootIsDecorated( true );
+  mTimeView->setUniformRowHeights( true );
+  mTimeView->hideColumn( DocumentModel::Document_ClientId );
+  mTimeView->hideColumn( DocumentModel::Document_ClientAddress );
+  mTimeView->showColumn( DocumentModel::Document_ClientName );
 
   //Initialize common style options
   QPalette palette;
@@ -253,34 +268,21 @@ void DocDigestView::slotBuildView()
   treeviewlist.append( mTimeView );
 
   foreach( QAbstractItemView *widget, treeviewlist ) {
-    // QTreeView *widget = mTreeViewList.at(i);
     connect( widget->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex) ),
              this, SLOT(slotCurrentChanged(QModelIndex,QModelIndex)));
     connect( widget, SIGNAL( doubleClicked(QModelIndex) ),
              this, SLOT( slotDocOpenRequest(QModelIndex) ) );
 
-    // widget->setAnimated( true );
     widget->setPalette( palette );
     widget->setAlternatingRowColors( true );
-    // widget->setRootIsDecorated( true );
     widget->setSelectionMode( QAbstractItemView::SingleSelection );
-    // widget->header()->setResizeMode(QHeaderView::Interactive);
-   // widget->header()->setResizeMode( DocumentModel::Document_Whiteboard, QHeaderView::Stretch );
     widget->setEditTriggers( QAbstractItemView::NoEditTriggers );
     // widget->setExpandsOnDoubleClick( false );
-    // widget->setUniformRowHeights( true );
-
-    // widget->hideColumn( DocumentModel::Document_ClientId );
-    // widget->hideColumn( DocumentModel::Document_ClientAddress );
-    // widget->showColumn( DocumentModel::Document_ClientName );
-
   }
 
-#if 0
-  mFilterHeader->setTreeView( mLatestView );
-  mFilterHeader->setTreeView( mLatestView );
+  mFilterHeader->addTableView( mLatestView );
+  mFilterHeader->addTableView( mAllView );
   mFilterHeader->setTreeView( mTimeView );
-#endif
 }
 
 void DocDigestView::slotUpdateView()

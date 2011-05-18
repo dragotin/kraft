@@ -26,6 +26,7 @@
 
 class QModelIndex;
 class QTreeView;
+class QTableView;
 
 /**
  * This class makes it easy to add a search line for filtering the items in
@@ -122,6 +123,7 @@ class KTreeViewSearchLine : public KLineEdit
      * @see treeView(), setTreeViews(), removeTreeView()
      */
     void addTreeView( QTreeView *treeView );
+    void addTableView( QTableView *);
 
     /**
      * Removes a QTreeView from the list of listviews filtered by this search
@@ -218,13 +220,13 @@ class KTreeViewSearchLine : public KLineEdit
      * \a treeView is null then nothing is done.
      */
     virtual void updateSearch( QTreeView *treeView );
-
+    virtual void updateSearch( QTableView *tableView );
     /**
      * Connects signals of this listview to the appropriate slots of the search
      * line.
      */
     virtual void connectTreeView( QTreeView* );
-
+    virtual void connectTableView( QTableView * );
     /**
      * Disconnects signals of a listviews from the search line.
      */

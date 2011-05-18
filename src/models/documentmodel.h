@@ -2,7 +2,8 @@
         documentmodel  - the database model for documents
                              -------------------
     begin                : 2010-01-11
-    copyright            : Copyright 2010 by Thomas Richard
+    copyright            : Copyright 2010 by Thomas Richard,
+                           2011 by Klaas Freitag <freitag@kde.org>
     email                : thomas.richard@proan.be
  ***************************************************************************/
 
@@ -30,6 +31,7 @@ class DocumentModel : public QSqlQueryModel
 public:
 
   DocumentModel();
+  ~DocumentModel();
 
   enum Columns {
     Document_Id = 0,
@@ -50,16 +52,10 @@ public:
     RawTypes = Qt::UserRole + 1
   };
 
-  // static DocumentModel *self();
   QVariant data(const QModelIndex &idx, int rol) const;
   QVariant headerData( int, Qt::Orientation, int role = Qt::DisplayRole ) const;
 
-  // bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
   int columnCount(const QModelIndex &parent = QModelIndex()) const;
- // QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
- // QModelIndex parent(const QModelIndex &index= QModelIndex()) const;
- // QModelIndex sibling ( int row, int column, const QModelIndex & index ) const;
-  // bool canFetchMore(const QModelIndex &parent) const;
   DocDigest digest( const QModelIndex& ) const;
   void setQueryAgain();
 
@@ -68,7 +64,6 @@ protected slots:
 
 protected:
   AddressProvider   *mAddressProvider;
-  // static DocumentModel *mSelf;
   QHash<QString, KABC::Addressee> mAddresses;
 
 private:

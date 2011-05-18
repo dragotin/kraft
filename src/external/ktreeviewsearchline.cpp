@@ -32,6 +32,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QToolButton>
 #include <QtGui/QTreeView>
+#include <QtGui/QTableView>
 
 #include <kdebug.h>
 #include <kiconloader.h>
@@ -54,6 +55,8 @@ class KTreeViewSearchLine::Private
 
     KTreeViewSearchLine *parent;
     QList<QTreeView *> treeViews;
+    QList<QTableView *> tableViews;
+
     Qt::CaseSensitivity caseSensitive;
     bool regularExpression;
     bool activeSearch;
@@ -73,6 +76,7 @@ class KTreeViewSearchLine::Private
     void checkColumns();
     void checkItemParentsNotVisible(QTreeView *treeView);
     bool checkItemParentsVisible(QTreeView *treeView, const QModelIndex &index);
+    bool checkItemVisible(QTableView*, const QRegExp&, int );
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -211,8 +215,10 @@ bool KTreeViewSearchLine::Private::checkItemParentsVisible( QTreeView *treeView,
 {
   bool childMatch = false;
   const int rowcount = treeView->model()->rowCount( index );
-  for ( int i = 0; i < rowcount; ++i )
+
+  for ( int i = 0; i < rowcount; ++i ) {
     childMatch |= checkItemParentsVisible( treeView, treeView->model()->index( i, 0, index ) );
+  }
 
   // Should this item be shown? It should if any children should be, or if it matches.
   const QModelIndex parentindex = index.parent();
@@ -226,6 +232,22 @@ bool KTreeViewSearchLine::Private::checkItemParentsVisible( QTreeView *treeView,
   return false;
 }
 
+bool KTreeViewSearchLine::Private::checkItemVisible( QTableView* tableView, const QRegExp& expression, int row )
+{
+  // If the search column list is populated, search just the columns
+  // specifified.  If it is empty default to searching all of the columns.
+
+  const int columncount = tableView->model()->columnCount();
+
+  for ( int i = 0; i < columncount; ++i) {
+    QModelIndex index = tableView->model()->index( row, i );
+    const QString data = index.data( Qt::DisplayRole ).toString();
+
+    if ( expression.indexIn( data ) >= 0 )
+      return true;
+  }
+  return false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // public methods
@@ -308,7 +330,18 @@ void KTreeViewSearchLine::addTreeView( QTreeView *treeView )
     connectTreeView( treeView );
 
     d->treeViews.append( treeView );
-    setEnabled( !d->treeViews.isEmpty() );
+    setEnabled( !(d->tableViews.isEmpty() && d->treeViews.isEmpty() ) );
+
+    d->checkColumns();
+  }
+}
+
+void KTreeViewSearchLine::addTableView( QTableView *tableView )
+{
+  if( tableView ) {
+    connectTableView( tableView );
+    d->tableViews.append( tableView );
+    setEnabled( !(d->tableViews.isEmpty() && d->treeViews.isEmpty() ) );
 
     d->checkColumns();
   }
@@ -336,6 +369,8 @@ void KTreeViewSearchLine::updateSearch( const QString &pattern )
 
   foreach ( QTreeView* treeView, d->treeViews )
     updateSearch( treeView );
+  foreach( QTableView *tableView, d->tableViews )
+    updateSearch( tableView );
 }
 
 void KTreeViewSearchLine::updateSearch( QTreeView *treeView )
@@ -360,6 +395,36 @@ void KTreeViewSearchLine::updateSearch( QTreeView *treeView )
 
   if ( currentIndex.isValid() )
     treeView->scrollTo( currentIndex );
+}
+
+void KTreeViewSearchLine::updateSearch( QTableView *tableView )
+{
+  if ( !tableView || !tableView->model()->rowCount() )
+    return;
+
+
+  // If there's a selected item that is visible, make sure that it's visible
+  // when the search changes too (assuming that it still matches).
+
+  QModelIndex currentIndex = tableView->currentIndex();
+
+  bool wasUpdateEnabled = tableView->updatesEnabled();
+  tableView->setUpdatesEnabled( false );
+
+  // Contruct a regular expression object with the right options.
+  QRegExp expression = QRegExp( d->search,
+      d->caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive,
+      d->regularExpression ? QRegExp::RegExp : QRegExp::FixedString );
+
+  for ( int i = 0; i < tableView->model()->rowCount(); ++i ) {
+    bool visible = !( d->checkItemVisible( tableView, expression, i ) );
+    tableView->setRowHidden( i, visible );
+  }
+
+  tableView->setUpdatesEnabled( wasUpdateEnabled );
+
+  if ( currentIndex.isValid() )
+    tableView->scrollTo( currentIndex );
 }
 
 void KTreeViewSearchLine::setCaseSensitivity( Qt::CaseSensitivity caseSensitive )
@@ -421,7 +486,6 @@ void KTreeViewSearchLine::setTreeViews( const QList<QTreeView *> &treeViews )
 
 bool KTreeViewSearchLine::itemMatches( const QModelIndex &index, int row, const QString &pattern ) const
 {
-  kDebug() << "XXXXX- Pattern: " << pattern;
   if ( pattern.isEmpty() )
     return true;
 
@@ -449,7 +513,7 @@ bool KTreeViewSearchLine::itemMatches( const QModelIndex &index, int row, const 
   } else {
     for ( int i = 0; i < columncount; ++i) {
       const QString data = index.child( row, i ).data( Qt::DisplayRole ).toString();
-      kDebug() << " XXXX " << data;
+
       if ( expression.indexIn( data ) >= 0 )
         return true;
     }
@@ -524,6 +588,15 @@ void KTreeViewSearchLine::connectTreeView( QTreeView *treeView )
            this, SLOT( treeViewDeleted( QObject* ) ) );
 
   connect( treeView->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int) ),
+           this, SLOT( rowsInserted( const QModelIndex&, int, int ) ) );
+}
+
+void KTreeViewSearchLine::connectTableView( QTableView *tableView )
+{
+  // connect( tableView, SIGNAL( destroyed( QObject* ) ),
+  //         this, SLOT( tableViewDeleted( QObject* ) ) );
+
+  connect( tableView->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int) ),
            this, SLOT( rowsInserted( const QModelIndex&, int, int ) ) );
 }
 

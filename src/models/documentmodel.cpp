@@ -2,7 +2,7 @@
         documentmodel  - the database model for documents
                              -------------------
     begin                : 2010-01-11
-    copyright            : (C) 2010 by Thomas Richard
+    copyright            : (C) 2010 by Thomas Richard, 2011 by Klaas Freitag
     email                : thomas.richard@proan.be
  ***************************************************************************/
 
@@ -76,6 +76,11 @@ DocumentModel::DocumentModel()
   setQueryAgain();
 }
 
+DocumentModel::~DocumentModel()
+{
+  delete mAddressProvider;
+}
+
 void DocumentModel::setQueryAgain()
 {
    setQuery("SELECT docID, ident, docType, docDescription, clientID, lastModified, date, projectLabel, clientAddress "
@@ -91,14 +96,6 @@ void DocumentModel::slotAddresseeFound( const QString& uid, const KABC::Addresse
     mAddresses[uid] = addressee;
   }
 }
-
-#if 0
-DocumentModel * DocumentModel::self()
-{
-    K_GLOBAL_STATIC(DocumentModel, mSelf);
-    return mSelf;
-}
-#endif
 
 QVariant DocumentModel::headerData( int section, Qt::Orientation /* orientation */, int role ) const
 {
@@ -203,57 +200,3 @@ int DocumentModel::columnCount(const QModelIndex &parent) const
 {
   return 10;
 }
-
-#if 0
-
-bool DocumentModel::hasChildren(const QModelIndex &parent) const
-{
-    if(!parent.isValid())
-        return true;
-
-    return false;
-}
-
-
-QModelIndex DocumentModel::index(int row, int column, const QModelIndex &parent) const
-{
-    if (row < 0 || column < 0 || column >= columnCount() || parent.column() > 0)
-        return QModelIndex();
-
-    if(parent.isValid())
-    {
-        return createIndex(row, column, parent.row()+1);
-    }
-
-    return createIndex(row, column, 0);
-}
-
-QModelIndex DocumentModel::parent(const QModelIndex &index) const
-{
-    if(!index.isValid())
-        return QModelIndex();
-    if(index.internalId() != 0)
-        return createIndex(index.internalId()-1, 0, 0);
-
-    return QModelIndex();
-}
-
-
-QModelIndex DocumentModel::sibling ( int row, int column, const QModelIndex & index ) const
-{
-    if(!index.isValid())
-        return QModelIndex();
-
-    return createIndex(row, column, (int) index.internalId());
-}
-
-bool DocumentModel::canFetchMore(const QModelIndex &parent) const
-{
-    if(parent.isValid())
-        return true;
-
-    return QSqlQueryModel::canFetchMore(parent);
-}
-#endif
-
-
