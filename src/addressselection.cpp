@@ -29,7 +29,6 @@
 #include <kabc/contactgroup.h>
 
 #include <akonadi/contact/contactsearchjob.h>
-#include <akonadi/contact/contactstreemodel.h>
 #include <akonadi/itemfetchscope.h>
 #include <akonadi/entitydisplayattribute.h>
 #include <akonadi/changerecorder.h>
