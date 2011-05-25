@@ -72,8 +72,8 @@ Since version 0.40 Kraft either can use a SQLite file based
 database or a MySQL server based database.
 
 The SQLite database is created automatically on the fly
-on first start. Its use is recommended for unexperienced users
-or if Kraft should only be quickly evaluated.
+on first start. Its use is recommended for all users who
+want to evaluate Kraft.
 
 To run Kraft with MySQL, create or pick a user on the MySQL
 server with appropiate permissions to write to a specific
@@ -87,17 +87,13 @@ Document Generation
 ===================
 
 Kraft generates PDF documents. For that it uses a python tool named
-trml2pdf. Use the provided binary packages from openSUSE Buildservice
-or other package repositories. 
+erml2pdf. The tool can be found in Kraft's tools directory in this
+source package. 
 
-You can also download the sources from
-http://sourceforge.net/projects/kraft/files/trml2pdf/1.2/
-
-trml2pdf again uses a python lib called the ReportLab Toolkit: a mature, 
+erml2pdf uses a python lib called the ReportLab Toolkit: a mature, 
 Open Source PDF library which can be found at 
 http://www.reportlab.org/rl_toolkit.html
+Furthermore it uses python-pypdf for pdf processing.
 
-trml2pdf must be in the system path to be found by kraft.
+erml2pdf must be in the system path to be found by kraft.
 
-To use the watermark feature of Kraft, the pdf toolkit pdftk must be
-installed. 

@@ -1,3 +1,12 @@
+Changes since version 0.41: #########################################
+- Added search box in digest lists again, for that enhanced the search
+  field class.
+- cleaned up the digest models
+- optimized the digest model
+- changed from treeview to tableview for latest- and all view
+
+   => release v. 0.43 (may 25, 2011)
+
 Changes since version 0.40: #########################################
 - More changes to the Akonadi based addressbook integration
 - switched to a python only version of trml2pdf called erml2pdf, 
@@ -10,7 +19,7 @@ Changes since version 0.40: #########################################
 - Catalogs: user defined sorting in catalogs 
 - Catalogs: dropping of templates
 
-   => released v. 0.41
+   => released v. 0.41 (april 18th, 2011)
 
 Changes since version 0.32: #########################################
 - Ported to the KDE 4 Platform. In particular, to KDE 4.4
