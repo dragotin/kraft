@@ -147,6 +147,9 @@ void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   const QString clientUid = mArchDoc->clientUid();
   if( ! clientUid.isEmpty() ) {
     mAddressProvider->getAddressee( clientUid );
+  } else {
+    // no address UID specified, skip the addressee search and generate the template directly
+    slotAddresseeSearchFinished(0);
   }
 }
 

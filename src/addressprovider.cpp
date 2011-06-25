@@ -76,35 +76,35 @@ void AddressProvider::searchResult( KJob* job )
   }
 
   const KABC::Addressee::List contacts = searchJob->contacts();
-  if( contacts.size() > 0 )  {
-    if( mAllAddressesJobs.contains( job )) {
-      kDebug() << "Found list of " << contacts.size() << " addresses for all addresses";
-      mAllAddressesJobs.remove( job );
-      emit addressListFound( contacts );
-    }
-    if( mUidSearchJobs.contains( job )) {
-      KABC::Addressee contact = contacts[0];
-      const QString uid = mUidSearchJobs.value( job );
-      kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
-      mUidSearchJobs.remove(job);
-      mUidSearches.remove( uid );
-      emit addresseeFound( uid, contact );
-    }
-    if( mNameSearchJobs.contains( job )) {
-      KABC::Addressee contact = contacts[0];
-      const QString name = mNameSearchJobs.value( job );
-      kDebug() << "Found name search job for Name " << name << " = " << contact.realName();
-      mNameSearchJobs.remove(job);
-      emit addresseeFound( name, contact );
-    }
-  } else {
-    kDebug() << "Akonadi search result list has size of 0";
-    if( mUidSearchJobs.contains(job)) {
-      emit addresseeFound( mUidSearchJobs.value(job), KABC::Addressee() );
-    }
+  if( mAllAddressesJobs.contains( job )) {
+    kDebug() << "Found list of " << contacts.size() << " addresses for all addresses";
+    mAllAddressesJobs.remove( job );
+    emit addressListFound( contacts ); // can also be an empty list.
   }
-  mUidSearchJobs.remove( job );
-  // FIXME: Remove job entries from mUidSearchJobs and mAllAddressesJobs
+
+  if( mUidSearchJobs.contains( job )) {
+    const QString uid = mUidSearchJobs.value( job );
+    mUidSearchJobs.remove( job );
+    mUidSearches.remove( uid );
+    KABC::Addressee contact;
+    if( contacts.size() > 0 ) {
+      contact = contacts[0];
+      kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+    }
+    emit addresseeFound( uid, contact );
+  }
+
+  if( mNameSearchJobs.contains( job )) {
+    KABC::Addressee contact;
+    if( contacts.size() > 0 ) {
+      contact = contacts[0];
+    }
+    const QString name = mNameSearchJobs.value( job );
+    kDebug() << "Found name search job for Name " << name << " = " << contact.realName();
+    mNameSearchJobs.remove(job);
+    emit addresseeFound( name, contact );
+  }
+
   emit( finished( contacts.size() ) );
 }
 
