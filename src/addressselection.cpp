@@ -118,9 +118,10 @@ void AddressSelection::slotNewAddressList( const KABC::Addressee::List& addresse
   mAddressIds.clear();
 
   KABC::Addressee::List sorted = addresses;
-  sorted.sort();
-  kDebug() << "Amount of address entries: " << sorted.size();
   if( sorted.size() ) {
+    sorted.sort();
+    kDebug() << "Amount of address entries: " << sorted.size();
+
     // iterate over all found contacts and write build up the treeview
     foreach ( const KABC::Addressee &contact, sorted ) {
       contactToWidgetEntry( contact );
