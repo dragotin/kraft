@@ -23,6 +23,7 @@
 #include <QList>
 #include <QTextDocument>
 #include <QApplication>
+#include <QTextCodec>
 
 #include <kdebug.h>
 #include <kstandarddirs.h>
@@ -102,7 +103,13 @@ void ReportGenerator::slotConvertTemplate( const QString& templ )
 
     if ( temp.open() ) {
       QTextStream s(&temp);
-      // s.setCodec( QTextCodec::codecForLocale() );
+
+      // The following explicit coding settings were needed for Qt 4.7.3, former Qt versions
+      // seemed to default on UTF-8. Try to comment the following two lines for older Qt versions
+      // if needed and see if the trml file on the disk still is UTF-8 encoded.
+      QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+      s.setCodec( codec );
+
       s << templ;
     } else {
       kDebug() << "ERROR: Could not open temporar file";
