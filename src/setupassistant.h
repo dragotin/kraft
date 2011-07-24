@@ -154,7 +154,8 @@ class OwnAddressPage:public QWidget
 
   public:
   OwnAddressPage( QWidget *parent=0 );
-  void setupAddresses();
+  ~OwnAddressPage();
+
   void saveOwnName();
 
   private:

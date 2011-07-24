@@ -287,9 +287,9 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
            SLOT( gotMyAddress( Addressee ) ) );
 }
 
-void OwnAddressPage::setupAddresses()
+OwnAddressPage::~OwnAddressPage()
 {
-  mAddresses->setupAddressList();
+  delete mAddresses;
 }
 
 void OwnAddressPage::contactStored( const Akonadi::Item& item )
@@ -366,7 +366,6 @@ SetupAssistant::SetupAssistant( QWidget *parent )
   w = new QWidget;
   mOwnAddressPageItem = addPage( w, i18n( "My Own Address Data" ));
   mOwnAddressPage = new OwnAddressPage(w);
-  mOwnAddressPage->setupAddresses();
 
   w = new QWidget;
   mFinalStatusPageItem = addPage( w, i18n("Setup Finished."));

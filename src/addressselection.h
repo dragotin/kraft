@@ -24,6 +24,12 @@
 
 #include <kabc/addressee.h>
 #include <akonadi/item.h>
+#include <akonadi/session.h>
+#include <akonadi/changerecorder.h>
+#include <akonadi/entitytreeview.h>
+#include <akonadi/contact/contactstreemodel.h>
+#include <akonadi/contact/contactsfilterproxymodel.h>
+
 
 class QComboBox;
 class QPushButton;
@@ -32,37 +38,35 @@ class AddressProvider;
 
 using namespace KABC;
 
-
 class AddressSelection : public QWidget
 {
   Q_OBJECT
 
 public:
   AddressSelection( QWidget *parent = 0, bool showText = true );
+  ~AddressSelection();
 
-  ~AddressSelection() { };
-  void setupAddressList( );
-  QTreeWidget *treeWidget() { return mTreeWidget; }
-
+  QTreeView *treeView() { return mTreeView; }
 signals:
   void addressSelected( const Addressee& );
 
 protected slots:
-  void slotSelectionChanged( QTreeWidgetItem*, QTreeWidgetItem* );
-
-  void slotUpdateAddressList( const Akonadi::Item& );
-  void slotNewAddressList( const KABC::Addressee::List& );
+  void slotViewClicked( const Akonadi::Item & );
   void slotOpenAddressBook();
-  void slotAddresseeFound( const QString&, const KABC::Addressee& );
 
 private:
-  QTreeWidgetItem* contactToWidgetEntry( const KABC::Addressee& ) ;
   QWidget*         contactsView();
 
-  QTreeWidget         *mTreeWidget;
   QMap<QTreeWidgetItem*, QString> mAddressIds;
   QPushButton         *mRefreshList;
   AddressProvider     *mAddressProvider;
+
+  Akonadi::Session           *mAkonadiSession;
+  Akonadi::ChangeRecorder    *mAkonadiChangeRecorder;
+  Akonadi::ContactsTreeModel *mModel;
+  Akonadi::ContactsFilterProxyModel *mFilterModel;
+  Akonadi::EntityTreeView    *mTreeView;
+
 };
 
 #endif

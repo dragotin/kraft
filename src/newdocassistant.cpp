@@ -55,23 +55,16 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   help->setWordWrap( true );
   vbox->addWidget( help );
 
-  FilterHeader *fh = new FilterHeader( 0 );
-  vbox->addWidget(fh);
-
   mAddresses = new AddressSelection( this, false );
   connect( mAddresses,  SIGNAL( addressSelected( const Addressee& ) ),
            SIGNAL( addresseeSelected( const Addressee& ) ) );
 
   vbox->addWidget( mAddresses );
-
-  fh->setListView( mAddresses->treeWidget() );
-  fh->showCount( false );
-
 }
 
 void CustomerSelectPage::setupAddresses()
 {
-  mAddresses->setupAddressList();
+
 }
 
 CustomerSelectPage:: ~CustomerSelectPage()

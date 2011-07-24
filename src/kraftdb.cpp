@@ -459,6 +459,7 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
   while ( query.next() ) {
     re << replaceTagsInWord( query.value(1).toString(), replaceMap );
   }
+  re.sort();
   return re;
 }
 

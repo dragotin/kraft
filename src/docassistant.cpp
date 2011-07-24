@@ -447,7 +447,7 @@ void DocAssistant::slotSetDocType( const QString& type )
 
   // nothing is selected.
   bool selector = false;
-  if ( mActivePage == KraftDoc::Header && mHeaderSelection->itemSelected() ) {
+  if ( mActivePage == KraftDoc::Header ) {
     selector = true;
   }
   if ( mActivePage == KraftDoc::Footer && mFooterSelection->textsListView()->selectedItems().count() ) {

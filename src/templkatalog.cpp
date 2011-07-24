@@ -72,7 +72,7 @@ void TemplKatalog::reload( dbID id)
     if(q.next())
     {
       //templ->setEinheitId(q.value(0).toInt());
-      kDebug() << "Reloading template number " << q.value(1) << endl;
+      // kDebug() << "Reloading template number " << q.value(1) << endl;
       templ->setChapterId(dbID( q.value(2).toInt()), false );
       //templ->setCalculationType(q.value(3).toInt());
       templ->setManualPrice(q.value(4).toDouble());
@@ -126,7 +126,7 @@ int TemplKatalog::load()
     QDateTime modDt = q.value(5).toDateTime();
     QDateTime enterDt = q.value(6).toDateTime();
 
-    kDebug() << "Chapter ID is " << chapID << endl;
+    // kDebug() << "Chapter ID is " << chapID << endl;
 
     FloskelTemplate *flos = new FloskelTemplate( templID,
                                                  q.value(7).toString(),

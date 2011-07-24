@@ -76,8 +76,9 @@ void AddressProvider::searchResult( KJob* job )
   }
 
   const KABC::Addressee::List contacts = searchJob->contacts();
+  kDebug() << "Found list of " << contacts.size() << " addresses as search result";
+
   if( mAllAddressesJobs.contains( job )) {
-    kDebug() << "Found list of " << contacts.size() << " addresses for all addresses";
     mAllAddressesJobs.remove( job );
     emit addressListFound( contacts ); // can also be an empty list.
   }

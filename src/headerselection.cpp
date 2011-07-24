@@ -17,7 +17,6 @@
 #include "headerselection.h"
 #include "addressselection.h"
 
-#include "filterheader.h"
 #include "defaultprovider.h"
 #include "textselection.h"
 
@@ -47,18 +46,13 @@ HeaderSelection::HeaderSelection( QWidget *parent )
   addTab( w, i18n( "Address Selection" ) );
   mAddressTabId = indexOf( w );
 
-  FilterHeader *fh = new FilterHeader( 0 );
-  l->addWidget(fh);
   mAddressSelection = new AddressSelection();
   l->addWidget(mAddressSelection);
-  fh->setListView( mAddressSelection->treeWidget() );
-  fh->showCount( false );
-  mAddressSelection->setupAddressList( );
 
-  connect( mAddressSelection->treeWidget(), SIGNAL( currentItemChanged( QTreeWidgetItem*,QTreeWidgetItem* ) ),
+  connect( mAddressSelection->treeView(), SIGNAL( currentItemChanged( QTreeWidgetItem*,QTreeWidgetItem* ) ),
            SIGNAL( addressSelectionChanged() ) );
 
-  connect( mAddressSelection->treeWidget(), SIGNAL( doubleClicked( QModelIndex ) ),
+  connect( mAddressSelection->treeView(), SIGNAL( doubleClicked( QModelIndex ) ),
            SIGNAL( doubleClickedOnItem() ) );
 
   /* a view for the entry text repository */
@@ -100,7 +94,7 @@ QTreeWidgetItem *HeaderSelection::itemSelected()
   if ( textPageActive() ) {
     return mTextsView->textsListView()->currentItem();
   } else {
-    return mAddressSelection->treeWidget()->currentItem();
+    // return mAddressSelection->treeView()->currentItem();
   }
   return 0;
 }

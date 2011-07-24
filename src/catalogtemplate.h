@@ -29,7 +29,6 @@ class QWidget;
 class CatalogSelection;
 class Katalog;
 class Geld;
-class dbID;
 
 class KRAFTCAT_EXPORT CatalogTemplate
 {

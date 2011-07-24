@@ -60,7 +60,8 @@ class KRAFTCAT_EXPORT FilterHeader : public QWidget
   public slots:
     void setTitleLabel();
     void clear();
-		void setListView( QTreeWidget*  );
+    void setListView( QTreeWidget*  );
+
   private:
     CountingSearchLine *mSearchLine;
     QLabel *mTitleLabel;
