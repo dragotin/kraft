@@ -149,6 +149,8 @@ set(kraft_SRCS
     docdigestdetailview.cpp
     external/ktreeviewsearchline.cpp
     addressprovider.cpp
+    akonadiaddressselector.cpp
+    models/globalcontactmodel.cpp
 )
 
 kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)

@@ -34,6 +34,7 @@
 
 #include "newdocassistant.h"
 #include "addressselection.h"
+#include "akonadiaddressselector.h"
 #include "defaultprovider.h"
 #include "filterheader.h"
 #include "doctype.h"
@@ -55,7 +56,7 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   help->setWordWrap( true );
   vbox->addWidget( help );
 
-  mAddresses = new AddressSelection( this, false );
+  mAddresses = new AkonadiAddressSelector( this, false ); // AddressSelection( this, false );
   connect( mAddresses,  SIGNAL( addressSelected( const Addressee& ) ),
            SIGNAL( addresseeSelected( const Addressee& ) ) );
 

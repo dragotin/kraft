@@ -35,6 +35,7 @@ class KraftWizard;
 class KTextEdit;
 class KHBox;
 class KPageWidgetItem;
+class AkonadiAddressSelector;
 
 using namespace KABC;
 
@@ -56,7 +57,8 @@ signals:
   void addresseeSelected( const Addressee& );
 
 private:
-  AddressSelection *mAddresses;
+  // AddressSelection *mAddresses;
+  AkonadiAddressSelector *mAddresses;
 };
 
 // ---------------------------------------------------------------------------
