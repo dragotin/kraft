@@ -151,6 +151,7 @@ set(kraft_SRCS
     addressprovider.cpp
     akonadiaddressselector.cpp
     models/globalcontactmodel.cpp
+    quicksearchwidget.cpp
 )
 
 kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)

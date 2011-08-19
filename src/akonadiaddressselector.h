@@ -22,11 +22,15 @@
 
 #include <kabc/addressee.h>
 
+class QLabel;
+class QPushButton;
+class QSplitter;
 
 namespace Akonadi {
 class Collection;
 class ContactGroupViewer;
 class ContactViewer;
+class ContactEditorDialog;
 class ContactsFilterProxyModel;
 class EntityMimeTypeFilterModel;
 class EntityTreeView;
@@ -40,6 +44,7 @@ using namespace KABC;
 class QTreeView;
 class QuickSearchWidget;
 class QItemSelectionModel;
+class QuickSearchWidget;
 
 class AkonadiAddressSelector : public QWidget
 {
@@ -52,10 +57,18 @@ public:
   // QTreeView *treeView() { return mItemView; }
 signals:
   void addressSelected( const Addressee& );
+  void itemSelected( const Akonadi::Item& );
+
+public slots:
+  void saveState();
 
 protected slots:
- // void slotViewClicked( const Akonadi::Item & );
-  void slotOpenAddressBook();
+  void slotCreateNewContact();
+  void slotEditContact();
+  void delayedInit();
+  void restoreState();
+  void slotItemSelected( const Akonadi::Item& );
+  void slotToggleBookSelection();
 
 private:
   QWidget*         contactsView();
@@ -64,14 +77,19 @@ private:
   Akonadi::EntityMimeTypeFilterModel *mCollectionTree;
   Akonadi::EntityMimeTypeFilterModel *mItemTree;
   Akonadi::EntityMimeTypeFilterModel *mAllContactsModel;
-  Akonadi::ContactsFilterProxyModel *mContactsFilterModel;
+  Akonadi::ContactsFilterProxyModel  *mContactsFilterModel;
+  Akonadi::ContactEditorDialog       *mContactsEditor;
 
-  QuickSearchWidget *mQuickSearchWidget;
+  QuickSearchWidget       *mQuickSearchWidget;
   Akonadi::EntityTreeView *mCollectionView;
   Akonadi::EntityTreeView *mItemView;
 
   QItemSelectionModel *mCollectionSelectionModel;
 
+  QSplitter         *mSplitter;
+  QLabel            *mAddressBookLabel;
+  QPushButton       *mBookButton;
+  QPushButton       *mButEditContact;
 };
 
 #endif // AKONADIADDRESSSELECTOR_H

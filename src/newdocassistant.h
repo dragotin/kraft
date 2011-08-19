@@ -53,6 +53,9 @@ public:
   ~CustomerSelectPage();
   void setupAddresses();
 
+public slots:
+  void saveState();
+
 signals:
   void addresseeSelected( const Addressee& );
 
@@ -102,6 +105,7 @@ public:
 
 protected slots:
   void slotAddressee( const Addressee& );
+  void slotFinished();
 
 private:
   CustomerSelectPage *mCustomerPage;

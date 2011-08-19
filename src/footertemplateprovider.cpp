@@ -95,5 +95,3 @@ void FooterTemplateProvider::slotTemplateToDocument()
   emit footerTextToDocument( currentText() );
 }
 
-#include "footertemplateprovider.moc"
-

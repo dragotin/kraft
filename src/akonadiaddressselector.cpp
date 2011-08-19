@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "akonadiaddressselector.h"
+#include "kraftsettings.h"
+#include "quicksearchwidget.h"
 
 #include <QtGui>
 #include <kabc/addressee.h>
 #include <kabc/contactgroup.h>
-#include <kcheckableproxymodel.h>
 #include <kselectionproxymodel.h>
 #include <klocale.h>
-
+#include <kcheckableproxymodel.h>
 
 #include <models/globalcontactmodel.h>
 
@@ -47,15 +48,18 @@
 #include <akonadi/contact/contacteditor.h>
 #include <akonadi/contact/contacteditordialog.h>
 
+
 namespace {
 static bool isStructuralCollection( const Akonadi::Collection &collection )
 {
   QStringList mimeTypes;
   mimeTypes << KABC::Addressee::mimeType() << KABC::ContactGroup::mimeType();
   const QStringList collectionMimeTypes = collection.contentMimeTypes();
+  kDebug() << "tokoe: collectionMimeTypes:" << collectionMimeTypes;
   foreach ( const QString &mimeType, mimeTypes ) {
-    if ( collectionMimeTypes.contains( mimeType ) )
+    if ( collectionMimeTypes.contains( mimeType ) ) {
       return false;
+    }
   }
   return true;
 }
@@ -74,6 +78,8 @@ public:
     if ( role == Qt::CheckStateRole ) {
       // Don't show the checkbox if the collection can't contain incidences
       const Akonadi::Collection collection = index.data( Akonadi::EntityTreeModel::CollectionRole ).value<Akonadi::Collection>();
+      // kDebug() << "Collection is Valid: " << collection.isValid();
+      // kDebug() << "Collection is Structural: " << isStructuralCollection( collection );
       if ( collection.isValid() && isStructuralCollection( collection ) ) {
         return QVariant();
       }
@@ -82,14 +88,20 @@ public:
   }
 };
 
- }
+}
 
 
-AkonadiAddressSelector::AkonadiAddressSelector(QWidget *parent, bool showText) :
-    QWidget(parent)
+AkonadiAddressSelector::AkonadiAddressSelector(QWidget *parent, bool /* showText */) :
+  QWidget(parent),
+  mContactsEditor(0)
 {
+  /* This code was borrowed from the KAddressbook Code from Tobias König.
+   * It makes good use of models and proxymodels to get the lists done.
+   * Complex stuff - be prepared ;-)
+   */
   setupGui();
 
+  // The collection tree lists the various address books, they're collections
   mCollectionTree = new Akonadi::EntityMimeTypeFilterModel( this );
   mCollectionTree->setDynamicSortFilter( true );
   mCollectionTree->setSortCaseSensitivity( Qt::CaseInsensitive );
@@ -98,11 +110,12 @@ AkonadiAddressSelector::AkonadiAddressSelector(QWidget *parent, bool showText) :
   mCollectionTree->setHeaderGroup( Akonadi::EntityTreeModel::CollectionTreeHeaders );
 
   mCollectionSelectionModel = new QItemSelectionModel( mCollectionTree );
+
   StructuralCollectionsNotCheckableProxy *checkableProxyModel = new StructuralCollectionsNotCheckableProxy( this );
   checkableProxyModel->setSelectionModel( mCollectionSelectionModel );
   checkableProxyModel->setSourceModel( mCollectionTree );
-
   mCollectionView->setModel( checkableProxyModel );
+
   mCollectionView->header()->setDefaultAlignment( Qt::AlignCenter );
   mCollectionView->header()->setSortIndicatorShown( false );
 
@@ -118,30 +131,42 @@ AkonadiAddressSelector::AkonadiAddressSelector(QWidget *parent, bool showText) :
 
   mContactsFilterModel = new Akonadi::ContactsFilterProxyModel( this );
   mContactsFilterModel->setSourceModel( mItemTree );
-  // connect( mQuickSearchWidget, SIGNAL( filterStringChanged( const QString& ) ),
-  //          mContactsFilterModel, SLOT( setFilterString( const QString& ) ) );
-  // connect( mQuickSearchWidget, SIGNAL( filterStringChanged( const QString& ) ),
-  //          this, SLOT( selectFirstItem() ) );
-  // connect( mQuickSearchWidget, SIGNAL( arrowDownKeyPressed() ),
-  //         mItemView, SLOT( setFocus() ) );
+
+
+  connect( mQuickSearchWidget, SIGNAL( filterStringChanged( const QString& ) ),
+           mContactsFilterModel, SLOT( setFilterString( const QString& ) ) );
+  connect( mQuickSearchWidget, SIGNAL( filterStringChanged( const QString& ) ),
+           this, SLOT( selectFirstItem() ) );
+  connect( mQuickSearchWidget, SIGNAL( arrowDownKeyPressed() ),
+           mItemView, SLOT( setFocus() ) );
 
   mItemView->setModel( mContactsFilterModel );
-  mItemView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mItemView->setSelectionMode( QAbstractItemView::SingleSelection );
   mItemView->setRootIsDecorated( false );
   mItemView->header()->setDefaultAlignment( Qt::AlignCenter );
 
   connect( mItemView, SIGNAL( currentChanged( const Akonadi::Item& ) ),
-           this, SLOT( itemSelected( const Akonadi::Item& ) ) );
+           this, SLOT( slotItemSelected( const Akonadi::Item& ) ) );
  // connect( mItemView, SIGNAL( doubleClicked( const Akonadi::Item& ) ),
  //          mActionManager->action( Akonadi::StandardContactActionManager::EditItem ), SLOT( trigger() ) );
   connect( mItemView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
            this, SLOT( itemSelectionChanged( const QModelIndex&, const QModelIndex& ) ) );
 
+  QMetaObject::invokeMethod( this, "delayedInit", Qt::QueuedConnection );
+}
+
+void AkonadiAddressSelector::delayedInit()
+{
+  // restore previous state
+  connect( GlobalContactModel::instance()->model(), SIGNAL(modelAboutToBeReset()), SLOT(saveState()) );
+  connect( GlobalContactModel::instance()->model(), SIGNAL(modelReset()), SLOT(restoreState()) );
+
+  restoreState();
 }
 
 AkonadiAddressSelector::~AkonadiAddressSelector()
 {
-
+  delete mContactsEditor;
 }
 
 void AkonadiAddressSelector::setupGui()
@@ -149,43 +174,178 @@ void AkonadiAddressSelector::setupGui()
   QVBoxLayout *vbox = new QVBoxLayout;
   setLayout( vbox );
 
-  // The splitter that contains the three main parts of the gui
-  //   - collection view on the left
-  //   - item view in the middle
-  //   - details pane on the right, that contains
-  //       - details view stack on the top
-  //       - contact switcher at the bottom
-
-
-  // the collection view
+  mQuickSearchWidget = new QuickSearchWidget;
+  mQuickSearchWidget->setSizePolicy( QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ));
+  QLabel *lab = new QLabel;
+  lab->setSizePolicy( QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed ));
+  lab->setText( i18n("&Search: ") );
+  lab->setBuddy( mQuickSearchWidget );
   QHBoxLayout *hbox = new QHBoxLayout;
+  hbox->addWidget( lab );
+  hbox->addWidget( mQuickSearchWidget );
+  hbox->addStretch(3);
   vbox->addLayout( hbox );
+
+  mSplitter = new QSplitter;
+  vbox->addWidget( mSplitter );
   mCollectionView = new Akonadi::EntityTreeView();
   mCollectionView->setObjectName( "CollectionView" );
-  hbox->addWidget( mCollectionView );
+  mSplitter->addWidget( mCollectionView );
 
-  // the items view
+  // the items view, items are contacts in this case
   mItemView = new Akonadi::EntityTreeView();
   mItemView->setObjectName( "ContactView" );
-  vbox->addWidget( mItemView );
+  mSplitter->addWidget( mItemView );
 
-  // the open address book button
-  QHBoxLayout *hbox1 = new QHBoxLayout;
-  vbox->addLayout( hbox1 );
+  // the viewer for the contact.
+  Akonadi::ContactViewer *viewer = new Akonadi::ContactViewer( this );
+  mSplitter->addWidget( viewer );
+  connect( mItemView, SIGNAL( currentChanged( const Akonadi::Item& ) ),
+           viewer, SLOT( setContact( const Akonadi::Item& ) ) );
 
-  QPushButton *openAdrBook = new QPushButton(i18n("New Contact..."));
-  hbox1->addWidget( openAdrBook );
-  connect( openAdrBook, SIGNAL(clicked() ), SLOT( slotOpenAddressBook() ) );
-  hbox1->addStretch(4);
+  // the open address book button is below.
+  QHBoxLayout *hboxBot = new QHBoxLayout;
+  mBookButton = new QPushButton;
+  mBookButton->setCheckable( true );
 
+  connect(mBookButton,SIGNAL(clicked()),this,SLOT(slotToggleBookSelection()));
+
+  mBookButton->setIcon( KIcon( "address-book-new" ));
+  mBookButton->setSizePolicy( QSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum ));
+  mBookButton->setToolTip( i18n("Display address book selection list and hide address details.") );
+
+  hboxBot->addWidget( mBookButton );
+  hboxBot->addStretch(4);
+  vbox->addLayout( hboxBot );
+  mButEditContact = new QPushButton(i18n("Edit Contact..."));
+  mButEditContact->setToolTip( i18n("Edit the currently selected contact" ));
+  mButEditContact->setEnabled( false );
+  hboxBot->addWidget( mButEditContact );
+  QPushButton *butCreateContact = new QPushButton(i18n("New Contact..."));
+  butCreateContact->setToolTip( i18n("Create a new Contact" ) );
+  hboxBot->addWidget( butCreateContact );
+
+  connect(butCreateContact,SIGNAL(clicked()),SLOT( slotCreateNewContact()));
+  connect(mButEditContact,SIGNAL(clicked()),SLOT(slotEditContact()));
 }
 
-
-void AkonadiAddressSelector::slotOpenAddressBook()
+void AkonadiAddressSelector::restoreState()
 {
-  // ContactEditorDialog *dlg = new ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this );
-  // connect( dlg, SIGNAL( contactStored( const Akonadi::Item& ) ),
-  //          this, SLOT( slotUpdateAddressList( const Akonadi::Item& ) ) );
-  // dlg->show();
+  // collection view
+  {
+    Akonadi::ETMViewStateSaver *saver = new Akonadi::ETMViewStateSaver;
+    saver->setView( mCollectionView );
+
+    const KConfigGroup group( KraftSettings::self()->config(), "CollectionViewState" );
+    saver->restoreState( group );
+  }
+
+  // collection view
+  {
+    Akonadi::ETMViewStateSaver *saver = new Akonadi::ETMViewStateSaver;
+    saver->setSelectionModel( mCollectionSelectionModel );
+
+    const KConfigGroup group( KraftSettings::self()->config(), "CollectionViewCheckState" );
+    saver->restoreState( group );
+  }
+
+  // restore the central slider
+  QList<int> sizes = KraftSettings::self()->addressPickerSplitterSize();
+  if( sizes.isEmpty() ) {
+    sizes << 200 << 200 << 0;
+  } else {
+    mBookButton->setDown( (sizes[0] > 0) );
+  }
+  mSplitter->setSizes( sizes );
+
+  // item view
 }
 
+void AkonadiAddressSelector::saveState()
+{
+  // collection view
+  {
+    Akonadi::ETMViewStateSaver saver;
+    saver.setView( mCollectionView );
+
+    KConfigGroup group( KraftSettings::self()->config(), "CollectionViewState" );
+    saver.saveState( group );
+    group.sync();
+  }
+
+  // collection view
+  {
+    Akonadi::ETMViewStateSaver saver;
+    saver.setSelectionModel( mCollectionSelectionModel );
+
+    KConfigGroup group( KraftSettings::self()->config(), "CollectionViewCheckState" );
+    saver.saveState( group );
+    group.sync();
+  }
+
+  KraftSettings::self()->setAddressPickerSplitterSize( mSplitter->sizes() );
+
+
+  // item view
+  {
+    Akonadi::ETMViewStateSaver saver;
+    saver.setView( mItemView );
+    saver.setSelectionModel( mItemView->selectionModel() );
+
+    KConfigGroup group( KraftSettings::self()->config(), "ItemViewState" );
+    saver.saveState( group );
+    group.sync();
+  }
+}
+
+
+void AkonadiAddressSelector::slotCreateNewContact()
+{
+  if( mContactsEditor ) delete( mContactsEditor );
+
+  mContactsEditor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this );
+  mContactsEditor->show();
+}
+
+void AkonadiAddressSelector::slotEditContact()
+{
+  if( mItemView->selectionModel()->hasSelection() ) {
+    QModelIndex index = mItemView->selectionModel()->currentIndex();
+    if ( index.isValid() ) {
+      const Akonadi::Item item = index.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
+      if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
+        if( mContactsEditor ) delete( mContactsEditor );
+        mContactsEditor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::EditMode, this );
+        mContactsEditor->setContact( item );
+        mContactsEditor->show();
+      }
+    }
+  }
+}
+
+void AkonadiAddressSelector::slotItemSelected( const Akonadi::Item& item )
+{
+  if ( item.hasPayload<KABC::Addressee>() ) {
+    const KABC::Addressee contact = item.payload<KABC::Addressee>();
+    emit addressSelected( contact );
+    mButEditContact->setEnabled( true );
+  } else {
+    kDebug() << "No address was selected!";
+    mButEditContact->setEnabled( false );
+  }
+}
+
+void AkonadiAddressSelector::slotToggleBookSelection()
+{
+  QList<int> sizes = mSplitter->sizes();
+  QList<int> newSizes;
+  if( sizes[0] == 0 ) {
+    // The address selection is currently not visible. We show it.
+    newSizes << 200 << 200 << 0;
+  } else {
+    // The address selection is currently visible
+    newSizes << 0 << 200 << 200;
+  }
+
+  mSplitter->setSizes( newSizes );
+}

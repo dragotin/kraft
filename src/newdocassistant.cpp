@@ -38,6 +38,7 @@
 #include "defaultprovider.h"
 #include "filterheader.h"
 #include "doctype.h"
+#include "kraftsettings.h"
 
 
 CustomerSelectPage::CustomerSelectPage( QWidget *parent )
@@ -52,8 +53,10 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   help->setText( i18n( "Please select a customer as addressee for the document. "
                    "If there is no entry for the customer in the addressbook yet, it can be opened "
                        "by clicking on the button below." ) );
-  help->setTextFormat( Qt::RichText );
+  // help->setTextFormat( Qt::RichText );
   help->setWordWrap( true );
+  help->setSizePolicy( QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ));
+
   vbox->addWidget( help );
 
   mAddresses = new AkonadiAddressSelector( this, false ); // AddressSelection( this, false );
@@ -61,6 +64,11 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
            SIGNAL( addresseeSelected( const Addressee& ) ) );
 
   vbox->addWidget( mAddresses );
+}
+
+void CustomerSelectPage::saveState()
+{
+  mAddresses->saveState();
 }
 
 void CustomerSelectPage::setupAddresses()
@@ -135,6 +143,9 @@ KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
 {
   setObjectName( name );
   setModal( modal );
+
+  KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
+  restoreDialogSize( config );
 }
 
 KraftWizard::~KraftWizard()
@@ -157,6 +168,14 @@ void KraftWizard::init()
   mCustomerPage->setupAddresses();
   connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
            this,  SLOT( slotAddressee( const Addressee& ) ) );
+  connect(this,SIGNAL(finished()),SLOT(slotFinished()));
+}
+
+void KraftWizard::slotFinished()
+{
+  mCustomerPage->saveState();
+  KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
+  saveDialogSize( config );
 }
 
 void KraftWizard::slotAddressee( const Addressee& addressee )
