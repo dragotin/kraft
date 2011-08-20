@@ -26,7 +26,6 @@
 
 class KComboBox;
 class FilterHeader;
-class AddressSelection;
 class KPushButton;
 class DocText;
 class TextSelection;

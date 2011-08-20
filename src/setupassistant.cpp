@@ -24,7 +24,7 @@
 #include "databasesettings.h"
 #include "defaultprovider.h"
 #include "kraftdb.h"
-#include "addressselection.h"
+#include "akonadiaddressselector.h"
 #include "kraftsettings.h"
 
 
@@ -280,7 +280,7 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
   l->setText( i18n("Select your own address from the address book. It is set as a consigner on the documents.") );
   vbox->addWidget( l );
 
-  mAddresses = new AddressSelection();
+  mAddresses = new AkonadiAddressSelector(this);
   vbox->addWidget( mAddresses );
 
   connect( mAddresses, SIGNAL( addressSelected(Addressee)),

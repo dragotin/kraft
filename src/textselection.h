@@ -31,7 +31,6 @@ class QString;
 class QPoint;
 class QMenu;
 class FilterHeader;
-class AddressSelection;
 class KPushButton;
 class DocText;
 class KAction;

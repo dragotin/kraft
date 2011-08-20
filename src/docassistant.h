@@ -101,6 +101,8 @@ private:
   QStackedWidget   *mWidgetStack;
   HeaderSelection  *mHeaderSelection;
   TextSelection    *mFooterSelection;
+  TextSelection    *mHeaderSelector;
+
   bool mFullPreview;
   int            mActivePage;
   KPushButton    *mPbAdd;

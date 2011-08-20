@@ -36,7 +36,7 @@
 
 class KPageWidgetItem;
 class KUrl;
-class AddressSelection;
+class AkonadiAddressSelector;
 
 using namespace KABC;
 
@@ -159,7 +159,7 @@ class OwnAddressPage:public QWidget
   void saveOwnName();
 
   private:
-  AddressSelection *mAddresses;
+  AkonadiAddressSelector *mAddresses;
   KABC::Addressee mMe;
 
   private slots:
