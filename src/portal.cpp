@@ -263,10 +263,10 @@ void Portal::slotStartupChecks()
 {
   QString dbName = DatabaseSettings::self()->dbDatabaseName();
 
- if ( !Akonadi::Control::start( this ) ) {
-   kError() << "Failed to start Akonadi!";
- }
-
+  if ( !Akonadi::Control::start( this ) ) {
+    kError() << "Failed to start Akonadi!";
+  }
+  Akonadi::Control::widgetNeedsAkonadi( this );
   // FIXME: This starts Akonadi and such, check if the decision if the setup
   // assistant is really needed can't be pulled here.
   SetupAssistant assi(this);
@@ -274,7 +274,7 @@ void Portal::slotStartupChecks()
     assi.exec();
   }
 
- if( ! KraftDB::self()->isOk() ) {
+  if( ! KraftDB::self()->isOk() ) {
     QSqlError err = KraftDB::self()->lastError();
     kDebug() << "The last sql error id: " << err.type() << endl;
 

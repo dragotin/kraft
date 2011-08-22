@@ -67,15 +67,28 @@ Katalog* MaterialKatalogView::getKatalog( const QString& name )
 void MaterialKatalogView::slEditTemplate()
 {
   MaterialKatalogListView *listview = static_cast<MaterialKatalogListView*>(getListView());
-
-  kDebug() << "Editing the material" << endl;
-
   if( listview )
   {
-    StockMaterial *currTempl = static_cast<StockMaterial*> ( listview->currentItemData() );
-    if( currTempl ) {
-      QTreeWidgetItem *item = (QTreeWidgetItem*) listview->currentItem();
-      openDialog( item, currTempl, false );
+    QTreeWidgetItem *item = listview->currentItem();
+    if( listview->isChapter(item) ) {
+      // check if the chapter is empty. If so, switch to slNewTempalte()
+      // if there others, open the chapter.
+      if( !listview->isRoot( item ) && item->childCount() == 0 ) {
+        slNewTemplate();
+      } else {
+        // do nothing.
+      }
+    } else {
+      kDebug() << "Editing the material" << endl;
+
+      if( listview )
+      {
+        StockMaterial *currTempl = static_cast<StockMaterial*> ( listview->currentItemData() );
+        if( currTempl ) {
+          QTreeWidgetItem *item = (QTreeWidgetItem*) listview->currentItem();
+          openDialog( item, currTempl, false );
+        }
+      }
     }
   }
 }

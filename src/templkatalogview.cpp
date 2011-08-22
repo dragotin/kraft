@@ -76,16 +76,28 @@ Katalog* TemplKatalogView::getKatalog( const QString& name )
 
 void TemplKatalogView::slEditTemplate()
 {
-    TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
+  TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
 
-    if( listview )
-    {
-        FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
-        if( currTempl ) {
-            QTreeWidgetItem *item = (QTreeWidgetItem*) listview->currentItem();
-            openDialog( item, currTempl, false );
-        }
+  if( listview )
+  {
+    QTreeWidgetItem *item = listview->currentItem();
+    if( listview->isChapter(item) ) {
+      // check if the chapter is empty. If so, switch to slNewTempalte()
+      // if there others, open the chapter.
+      if( !listview->isRoot( item ) && item->childCount() == 0 ) {
+        slNewTemplate();
+      } else {
+        // do nothing.
+      }
+    } else {
+      // the clicked item is not a chapter
+      FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
+      if( currTempl ) {
+        QTreeWidgetItem *item = (QTreeWidgetItem*) listview->currentItem();
+        openDialog( item, currTempl, false );
+      }
     }
+  }
 }
 
 void TemplKatalogView::slNewTemplate()
