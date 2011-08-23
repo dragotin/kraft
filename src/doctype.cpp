@@ -195,11 +195,12 @@ void DocType::setNumberCycleName( const QString& name )
   readIdentTemplate();
 }
 
-QString DocType::templateFile()
+QString DocType::templateFile( const QString& language )
 {
   KStandardDirs stdDirs;
+  QString tmplFile;
 
-  QString tmplFile = name().toLower() + QString( ".trml" );
+  QString reportFileName = name().toLower() + QString( ".trml" );
   if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
     tmplFile = mAttributes["docTemplateFile"].value().toString();
     if( tmplFile.isEmpty() ) {
@@ -212,13 +213,31 @@ QString DocType::templateFile()
     // all fine. The attribute has a filename
   } else {
     // No Slash in the name, search in KDE Resource path
-    QString findFile = "kraft/reports/" + tmplFile;
 
-    tmplFile = stdDirs.findResource( "data", findFile );
-
-    if ( tmplFile.isEmpty() ) {
-      findFile = "kraft/reports/invoice.trml";
+    // first, read language dependant in case its not 'C' or empty
+    QString findFile;
+    kDebug() << "LANGUAGE: " << language;
+    if( !( language.isEmpty() && language != QChar('C') ) ) {
+      findFile  = QString( "kraft/reports/%1/%2" ).arg( language ).arg( reportFileName );
+      kDebug() << "Searching for lang report: " << findFile;
       tmplFile = stdDirs.findResource( "data", findFile );
+
+      // if this cant be found, search for a lang dependant invoice.trml
+      findFile = QString( "kraft/reports/%1/invoice.trml" ).arg( language );
+      kDebug() << "Searching more for lang report: " << findFile;
+      tmplFile = stdDirs.findResource( "data", findFile );
+    }
+
+    if( tmplFile.isEmpty() ) {
+      // now try the old language indep search
+      findFile = "kraft/reports/" + reportFileName;
+
+      tmplFile = stdDirs.findResource( "data", findFile );
+
+      if ( tmplFile.isEmpty() ) {
+        findFile = "kraft/reports/invoice.trml";
+        tmplFile = stdDirs.findResource( "data", findFile );
+      }
     }
   }
   return tmplFile;

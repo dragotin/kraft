@@ -130,7 +130,7 @@ QString ReportGenerator::findTemplate( const QString& type )
 {
   DocType dType( type );
 
-  QString tmplFile = dType.templateFile();
+  QString tmplFile = dType.templateFile( mArchDoc->locale()->country() );
 
   if ( tmplFile.isEmpty() ) {
     KMessageBox::error( 0, i18n("A document template named %1 could not be loaded. "
