@@ -35,6 +35,11 @@ class KPushButton;
 class DocText;
 class KAction;
 class KActionCollection;
+class QListView;
+class QStringListModel;
+class QTextEdit;
+class QLabel;
+class QModelIndex;
 
 class TextSelection : public QWidget
 {
@@ -47,11 +52,9 @@ public:
   QString currentText() const;
   DocText currentDocText() const;
 
-  QTreeWidget *textsListView() { return mTextsView; }
-
 signals:
-  void textSelectionChanged( QTreeWidgetItem* );
   void actionCurrentTextToDoc();
+  void currentTextChanged( const QString& );
 
 public slots:
   QTreeWidgetItem* addNewDocText( const DocText& );
@@ -66,11 +69,22 @@ protected:
   QTreeWidgetItem* addOneDocText( QTreeWidgetItem*, const DocText& );
 
 protected slots:
-  void slotSelectionChanged( QTreeWidgetItem* );
+  // void slotSelectionChanged( QTreeWidgetItem* );
+  void slotTemplateNameSelected( const QModelIndex&, const QModelIndex& );
+  void showHelp( const QString& help = QString() );
 
 private:
+  QListView                       *mTextNameView;
+  QStringListModel                *mTemplNamesModel;
+  QLabel                          *mTextDisplay;
+  QLabel                          *mHelpDisplay;
+  QLabel                          *mHeadLabel;
+  KraftDoc::Part                   mPart;
+
+  QString                          mDocType;
+  QString                          mCurrTemplateName;
+
   FilterHeader                    *mListSearchLine;
-  QTreeWidget                     *mTextsView;
   QMap<QTreeWidgetItem*, DocText> mTextMap;
   QMap<QString, QTreeWidgetItem*> mDocTypeItemMap;
   QMap<QString, QTreeWidgetItem*> mStandardItemMap;

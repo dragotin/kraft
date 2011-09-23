@@ -120,7 +120,6 @@ set(kraft_SRCS
     portalhtmlview.cpp
     templtopositiondialogbase.cpp
     insertplantdialog.cpp
-    headerselection.cpp
     textselection.cpp
     newdocassistant.cpp
     docassistant.cpp
@@ -129,7 +128,6 @@ set(kraft_SRCS
     headertemplateprovider.cpp
     footertemplateprovider.cpp
     catalogtemplateprovider.cpp
-    addresstemplateprovider.cpp
     texttemplate.cpp
     doclocaledialog.cpp
     tagman.cpp
@@ -141,7 +139,6 @@ set(kraft_SRCS
     taxeditdialog.cpp
     numbercycledialog.cpp
     impviewwidgets.cpp
-    addressselection.cpp
     setupassistant.cpp
     models/documentmodel.cpp
     models/documentproxymodels.cpp

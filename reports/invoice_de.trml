@@ -14,7 +14,7 @@
 	    <lineMode width="0.5" />
             <lines>2.41cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
-            <drawCentredString x="105mm" y="2.3cm">{{MY_NAME}} {{MY_ORGANISATION}}</drawCentredString>
+            <drawCentredString x="105mm" y="2.3cm">Ürüg: {{MY_NAME}} {{MY_ORGANISATION}}</drawCentredString>
 
             <lines>7mm 19cm 12mm 19cm</lines>
             <lines>2mm 14.65cm 12mm 14.65cm</lines>
@@ -171,7 +171,7 @@
     </blockTable>
     {{#SPECIAL_POS}}
     <para style="text">
-    Bitte beachten Sie: Dieses Angebot enthÃ¤lt {{COUNT}} in SchrÃ¤gschrift gedruckte 
+    Bitte beachten Sie: Dieses Angebot enthält {{COUNT}} in Schrägschrift gedruckte 
     Alternativ- oder Bedarfsposten. Diese sind in der Endsumme nicht enthalten.
     </para>
     {{/SPECIAL_POS}}

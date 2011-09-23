@@ -28,188 +28,132 @@
 #include <kactioncollection.h>
 #include <kiconloader.h>
 
-#include <QIcon>
-#include <QSizePolicy>
-#include <QLabel>
-#include <QTreeWidgetItem>
-#include <QVBoxLayout>
-#include <QMenu>
+#include <QtGui>
 
 TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
-  :QWidget( parent )
+  :QWidget( parent ),
+    mPart( part )
 {
+  QGroupBox *groupBox = new QGroupBox(tr("Template Collection"));
+
   QVBoxLayout *layout = new QVBoxLayout;
   setLayout(layout);
 
   layout->setMargin( KDialog::marginHint() );
   layout->setSpacing( KDialog::spacingHint() );
+  layout->addWidget( groupBox );
 
   /* a view for the entry text repository */
-  QLabel *label = new QLabel( i18n( "%1 Text Selection" ).arg( KraftDoc::partToString( part ) ));
-  layout->addWidget(label);
+  QVBoxLayout *vbox = new QVBoxLayout;
 
-  mTextsView = new QTreeWidget;
-  layout->addWidget(mTextsView);
-  mTextsView->setRootIsDecorated( false );
-  mTextsView->headerItem()->setHidden( true );
-  mTextsView->setSelectionMode( QAbstractItemView::SingleSelection );
-  mTextsView->setColumnCount( 1 );
-  mTextsView->setHeaderLabel( i18n("Text"));
+  mHeadLabel = new QLabel( i18n( "%1 Templates" ).arg( KraftDoc::partToString( mPart ) ));
+  vbox->addWidget( mHeadLabel );
 
+  mTextNameView = new QListView;
+  vbox->addWidget(mTextNameView);
+  mTextNameView->setSelectionMode( QAbstractItemView::SingleSelection );
+  mTextNameView->setMaximumHeight( 200 );
+
+  connect( mTextNameView, SIGNAL(clicked(QModelIndex)),
+           this, SLOT(slotNameSelected(QModelIndex)));
+  connect( mTextNameView, SIGNAL(doubleClicked(QModelIndex)),
+           this, SLOT(slotNameDoubleClicked(QModelIndex)));
+
+  mTextDisplay = new QLabel;
+  mTextDisplay->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+  mTextDisplay->setLineWidth( 1 );
+  vbox->addWidget( mTextDisplay, 3 );
+
+  mHelpDisplay = new QLabel;
+  mHelpDisplay->setStyleSheet("background-color: #ffcbcb;");
+  mHelpDisplay->setAutoFillBackground(true);
+  QMargins m( KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint() );
+  // mHelpDisplay->setContentsMargins( m );
+  mHelpDisplay->setWordWrap( true );
+  // mHelpDisplay->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+  mHelpDisplay->setMinimumHeight( 60 );
+  mHelpDisplay->setAlignment( Qt::AlignCenter | Qt::AlignVCenter );
+  mHelpDisplay->hide();
+
+  vbox->addWidget( mHelpDisplay );
+
+  groupBox->setLayout( vbox );
+
+  mTemplNamesModel = new QStringListModel;
+  mTextNameView->setModel( mTemplNamesModel );
+  connect( mTextNameView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
+           this, SLOT( slotTemplateNameSelected( const QModelIndex&, const QModelIndex& ) ) );
+
+#if 0
   connect( mTextsView, SIGNAL( currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*) ),
            this, SLOT( slotSelectionChanged( QTreeWidgetItem* ) ) );
   connect( mTextsView, SIGNAL(doubleClicked(QModelIndex) ),
            this, SLOT( slotSelectionChanged( QTreeWidgetItem* ) ) );
-
-  buildTextList( part );
+#endif
 
   // Context Menu
-  mMenu = new QMenu( mTextsView );
+  mMenu = new QMenu( this );
   mMenu->setTitle( i18n("Template Actions") );
+#if 0
   mTextsView->setContextMenuPolicy(Qt::CustomContextMenu);
   connect( mTextsView, SIGNAL(customContextMenuRequested(QPoint) ),
             this, SLOT( slotRMB( QPoint ) ) );
+#endif
 
   initActions();
 }
 
-void TextSelection::buildTextList( KraftDoc::Part part )
+/* selected the name of a template in the listview of template names */
+void TextSelection::slotTemplateNameSelected( const QModelIndex& current, const QModelIndex& )
 {
-  QStringList docTypes = DocType::allLocalised();
-  mDocTypeItemMap.clear();
-  for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
-    QTreeWidgetItem *docTypeItem = new QTreeWidgetItem( mTextsView );
-    docTypeItem->setText(0 , *dtIt );
-    docTypeItem->setExpanded( true );
-    mDocTypeItemMap[*dtIt] = docTypeItem;
+  mCurrTemplateName = mTemplNamesModel->data( current, Qt::DisplayRole ).toString();
+  kDebug() << "New selected document type: " << mCurrTemplateName;
 
-    DocTextList dtList = DefaultProvider::self()->documentTexts( *dtIt, part );
-    DocTextList::iterator textIt;
-    for ( textIt = dtList.begin(); textIt != dtList.end(); ++textIt ) {
-      QTreeWidgetItem *item = addOneDocText( docTypeItem, *textIt );
-      QString textname = ( *textIt ).name();
-      if ( ( *textIt ).isStandardText() ) {
-        mStandardItemMap[*dtIt] = item;
-      }
-      ( *textIt ).setListViewItem( item );
-    }
-  }
-}
+  DocText dt = currentDocText();
 
-void TextSelection::slotSelectionChanged( QTreeWidgetItem* item )
-{
-  // do not fire the signal for the root element which is the doc type
-  QTreeWidgetItem *it = 0;
-  QList<QTreeWidgetItem*> itemsList = mDocTypeItemMap.values();
-  if ( itemsList.indexOf( item ) == -1 ) {
-    it = item; // was not found in the doctype item list
-  }
-  emit textSelectionChanged( it );
+  mTextDisplay->setText( dt.text() );
 }
 
 void TextSelection::slotSelectDocType( const QString& doctype )
 {
-  QStringList docTypes = DocType::allLocalised();
-  for ( QStringList::Iterator dtIt = docTypes.begin(); dtIt != docTypes.end(); ++dtIt ) {
-    QTreeWidgetItem *item = mDocTypeItemMap[ ( *dtIt ) ];
+  QString partStr = KraftDoc::partToString( mPart );
+  mHeadLabel->setText( QString( i18n( "%1 Templates for %2" ).arg( partStr ).arg(doctype) ) );
+  mDocType = doctype;
 
-    if ( doctype != *dtIt ) {
-      item->setHidden( true );
-    } else {
-      item->setHidden( false );
-    }
-  }
-  if ( mStandardItemMap.contains( doctype )  ) {
-    mStandardItemMap[doctype]->setSelected( true );
+  DocTextList dtList = DefaultProvider::self()->documentTexts( doctype, mPart );
+
+  QStringList templNames;
+  if( dtList.count() == 0 ) {
+    showHelp( i18n("There is no %1 template text available for document type %1.<br/>"
+                   "Click the add-button below to create one.").arg( partStr ).arg( doctype ) );
   } else {
-    kDebug() << "no standard text found for "<< doctype << endl;
+    foreach( DocText dt, dtList ) {
+      templNames << dt.name();
+    }
+    showHelp();
   }
+  mTemplNamesModel->setStringList( templNames );
 }
 
 QTreeWidgetItem *TextSelection::addOneDocText( QTreeWidgetItem* parent, const DocText& dt )
 {
-  QString name = dt.name();
-  DocText newDt = dt;
-
-  QTreeWidgetItem *item1 = new QTreeWidgetItem( parent );
-  item1->setText( 0, name );
-  item1->setIcon( 0, dt.pixmap() );
-  if ( dt.isStandardText() ) {
-    mTextsView->blockSignals( true );
-    item1->setSelected( true );
-    mTextsView->blockSignals( false );
-  }
-  newDt.setListViewItem( item1 );
-
-  QTreeWidgetItem *item2 = new QTreeWidgetItem( item1 );
-  item2->setText(0, dt.text() );
-  // item2->setMultiLinesEnabled( true ); FIXME
-
-  kDebug() << "Document database id is "<< dt.dbId().toString() << endl;
-  mTextMap[item1] = newDt;
-  mTextMap[item2] = newDt;
-  // kDebug() << "Document database id2 is "<< ( mTextMap[item2] ).dbId().toString() << endl;
-  // item1->setOpen( true );
-  return item1;
+  return 0;
 }
 
 QTreeWidgetItem* TextSelection::addNewDocText( const DocText& dt )
 {
-  QTreeWidgetItem *item = mDocTypeItemMap[dt.docType()];
-
-  if ( item ) {
-    mTextsView->clearSelection();
-    QTreeWidgetItem *newItem = addOneDocText( item, dt );
-    return newItem;
-  }
   return 0;
 }
 
 /* requires the QListViewItem set as a member in the doctext */
 void TextSelection::updateDocText( const DocText& dt )
 {
-  QTreeWidgetItem *item = dt.listViewItem();
 
-  if ( item ) {
-    kDebug() << "Update Doc Text Item" << item << endl;
-
-    mTextMap[item] = dt;
-
-    item->setText( 0, dt.name() );
-    item->setIcon( 0, dt.pixmap() );
-
-    QTreeWidgetItem *itChild = item->child( 0 );
-    if ( itChild ) {
-      itChild->setText( 0, dt.text() );
-      mTextMap[itChild] = dt;
-    }
-  }
 }
 
 void TextSelection::deleteCurrentText()
 {
-  QTreeWidgetItem *curr = mTextsView->selectedItems()[0];
-  if ( mDocTypeItemMap.values().indexOf( curr ) == mDocTypeItemMap.values().count() ) {
-    kDebug() << "Can not delete the doc type item" << endl;
-    return;
-  }
 
-  if ( ! curr ) return;
-
-  if ( curr->child(0) ) {
-    // If the parent item is in the docType map the child must be deleted.
-    mTextMap.remove( curr->child(0) );
-    delete curr->child(0);
-    mTextMap.remove( curr );
-    delete curr;
-  } else {
-    // If the parent is in not in a docType Item, it must be deleted.
-    mTextMap.remove( curr->parent() );
-    delete curr->parent();
-    mTextMap.remove( curr );
-    // the current item gets already deleted from its parent.
-    // delete curr;
-  }
 }
 
 
@@ -228,37 +172,53 @@ void TextSelection::initActions()
 
 }
 
-DocText TextSelection::currentDocText() const
+/* if the help string is empty, the help widget disappears. */
+void TextSelection::showHelp( const QString& help )
 {
-  DocText dt;
+  QRect r1 = mHelpDisplay->geometry();
+  r1.setHeight( 0 );
+  mHelpDisplay->setText( help );
+  mHelpDisplay->setGeometry( r1 );
 
-  QTreeWidgetItem *curr = mTextsView->selectedItems()[0];
-  if ( curr ) {
-    dt = mTextMap[curr];
+  if( help.isEmpty() ) {
+    mHelpDisplay->hide();
+  } else {
+    mHelpDisplay->show();
+
+    kDebug() << "Displaying help text: " << help;
+
+    QPropertyAnimation *ani = new QPropertyAnimation( mHelpDisplay, "geometry" );
+    QRect r2 = r1;
+    r2.setHeight( 200 );
+    ani->setDuration( 2000 );
+    ani->setStartValue( r1 );
+    ani->setEndValue( r2 );
+    ani->start();
   }
 
+}
+
+DocText TextSelection::currentDocText() const
+{
+  DocTextList dtList = DefaultProvider::self()->documentTexts( mDocType, mPart );
+  foreach( DocText dt, dtList ) {
+    if( dt.name() == mCurrTemplateName ) {
+      return dt;
+    }
+  }
+  DocText dt;
   return dt;
 }
 
 QString TextSelection::currentText() const
 {
-  QString re;
-
-  QTreeWidgetItem *curr = mTextsView->selectedItems()[0];
-  if ( curr ) {
-    DocText dt = mTextMap[curr];
-    re = dt.text();
-  } else {
-    kDebug() << "No current Item!" << endl;
-  }
-
-  return re;
+  return currentDocText().text();
 }
 
 
 void TextSelection::slotRMB(QPoint point )
 {
-  mMenu->popup( mTextsView->mapToGlobal(point) );
+  // mMenu->popup( mTextsView->mapToGlobal(point) );
 }
 
-#include "textselection.moc"
+

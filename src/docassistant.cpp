@@ -96,17 +96,11 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mCatalogSelection, SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ),
            this,  SLOT( slotCatalogSelectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ) );
 
-  mHeaderSelection = new HeaderSelection;
-  mWidgetStack->addWidget( mHeaderSelection );
+  mHeaderSelector = new TextSelection( 0, KraftDoc::Header );
+  mWidgetStack->addWidget( mHeaderSelector );
 
-  connect( mHeaderSelection, SIGNAL( addressSelectionChanged() ),
-           this, SLOT( slotAddressSelectionChanged() ) );
-  connect( mHeaderSelection, SIGNAL(textSelectionChanged( QTreeWidgetItem* ) ),
+  connect( mHeaderSelector, SIGNAL(textSelectionChanged( QTreeWidgetItem* ) ),
            this, SLOT( slotTextsSelectionChanged( QTreeWidgetItem* ) ) );
-  connect( mHeaderSelection->textSelection(), SIGNAL( actionCurrentTextToDoc() ),
-           this,  SLOT( slotAddToDocument() ) );
-  connect( mHeaderSelection, SIGNAL( doubleClickedOnItem() ),
-           this, SLOT( slotAddToDocument() ) );
 
   mFooterSelection = new TextSelection( 0, KraftDoc::Footer );
   mWidgetStack->addWidget( mFooterSelection );
@@ -116,7 +110,6 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mFooterSelection, SIGNAL( actionCurrentTextToDoc() ),
            this,  SLOT( slotAddToDocument() ) );
 
-  mWidgetStack->setCurrentWidget( mHeaderSelection );
   connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSelectDocPart( int ) ) );
 
@@ -170,11 +163,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotHeaderTextToDocument( const DocText& ) ) );
   connect( mHeaderTemplateProvider, SIGNAL( deleteHeaderText( const DocText& ) ),
            this,  SLOT( slotHeaderTextDeleted( const DocText& ) ) );
-
-  connect( mHeaderSelection, SIGNAL( switchedToHeaderTab( HeaderSelection::HeaderTabType ) ),
-           this, SLOT( slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType ) ) );
-
-  mHeaderTemplateProvider->setSelection( mHeaderSelection->textSelection() );
+  mHeaderTemplateProvider->setSelection( mHeaderSelector );
 
   mFooterTemplateProvider = new FooterTemplateProvider( parent );
 
@@ -195,13 +184,6 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mCatalogTemplateProvider,  SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ),
            this, SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ) );
 
-  mAddressTemplateProvider = new AddressTemplateProvider( parent );
-  connect( mHeaderSelection->addressSelection(), SIGNAL( addressSelected( const Addressee& ) ),
-           mAddressTemplateProvider, SLOT( slotSetCurrentAddress( const Addressee& ) ) );
-
-  connect( mAddressTemplateProvider, SIGNAL( addressToDocument( const Addressee& ) ),
-           this, SLOT( slotAddressToDocument( const Addressee& ) ) );
-
   mCurrTemplateProvider = mHeaderTemplateProvider;
 
   // mMainSplit->setSizes( KraftSettings::self()->assistantSplitterSetting() );
@@ -213,17 +195,6 @@ void DocAssistant::slotAddToDocument()
   kDebug() << "SlotAddToDocument called!" << endl;
   if ( mCurrTemplateProvider ) {
     mCurrTemplateProvider->slotTemplateToDocument();
-  }
-}
-
-void DocAssistant::slotAddressSelectionChanged()
-{
-  kDebug() << "A address template was selected!" << endl;
-  if ( mHeaderSelection->textSelection()->textsListView()->selectedItems().count() ) {
-    mPbAdd->setEnabled( true );
-    mPbEdit->setEnabled( true );
-    mPbDel->setEnabled( false );
-
   }
 }
 
@@ -262,13 +233,13 @@ void DocAssistant::slotNewTemplate()
 void DocAssistant::slotNewHeaderDocText( const DocText& dt )
 {
   /* show in list of texts in the GUI */
-  mHeaderSelection->textSelection()->addNewDocText( dt );
+  mHeaderSelector->addNewDocText( dt );
 }
 
 /* called with a changed text that needs to be updated in the view */
 void DocAssistant::slotUpdateHeaderDocText( const DocText& dt )
 {
-  mHeaderSelection->textSelection()->updateDocText( dt );
+  mHeaderSelector->updateDocText( dt );
 }
 
 /* the user hit "add to document" to use a header text template */
@@ -327,28 +298,9 @@ void DocAssistant::slotDeleteTemplate()
   }
 }
 
-void DocAssistant::slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType t )
-{
-
-  // go out here if it is not the header doc part, sometimes the tab widget
-  // seems to throw the signal a bit unwanted what results in a current template
-  // provider that points to header however we're on the footer page
-  if ( mActivePage != KraftDoc::Header ) {
-    return;
-  }
-
-  if ( t == HeaderSelection::AddressTab ) {
-    mCurrTemplateProvider = mAddressTemplateProvider;
-  } else if ( t == HeaderSelection::TextTab ) {
-    mCurrTemplateProvider = mHeaderTemplateProvider;
-  } else {
-    kDebug() << "Unknown HeaderSelection type" << endl;
-  }
-}
-
 void DocAssistant::slotHeaderTextDeleted( const DocText& /* dt */)
 {
-  mHeaderSelection->textSelection()->deleteCurrentText();
+  mHeaderSelector->deleteCurrentText();
 }
 
 void DocAssistant::slotFooterTextDeleted( const DocText& /* dt */)
@@ -409,18 +361,14 @@ void DocAssistant::slotSelectDocPart( int p )
   mPbDel->setEnabled( false );
 
   if ( p == KraftDoc::Header ) {
-    if(mHeaderSelection->currentIndex() == 0)
-      slSetHeaderTemplateProvider( HeaderSelection::AddressTab );
-    else
-      slSetHeaderTemplateProvider( HeaderSelection::TextTab );
+    mCurrTemplateProvider = mHeaderTemplateProvider;
 
     mPbNew->setEnabled( true );
-    if ( mHeaderSelection->itemSelected() ) {
+    if ( 1  ) {
       kDebug() << "Enabling Edit and Del for Header" << endl;
       mPbEdit->setEnabled( true );
       mPbDel->setEnabled( true );
     }
-
   } else if ( p == KraftDoc::Positions ) {
     mCurrTemplateProvider = mCatalogTemplateProvider;
     mPbNew->setEnabled( false );
@@ -428,7 +376,7 @@ void DocAssistant::slotSelectDocPart( int p )
     mCurrTemplateProvider = mFooterTemplateProvider;
     mPbNew->setEnabled( true );
 
-    if ( mFooterSelection->textsListView()->selectedItems().count() ) {
+    if ( 1 ) {
       mPbEdit->setEnabled( true );
       mPbDel->setEnabled( true );
     }
@@ -442,15 +390,12 @@ void DocAssistant::slotSelectDocPart( int p )
 void DocAssistant::slotSetDocType( const QString& type )
 {
   mDocType = type;
-  mHeaderSelection->slotSelectDocType( type );
+  mHeaderSelector->slotSelectDocType( type );
   mFooterSelection->slotSelectDocType( type );
 
   // nothing is selected.
   bool selector = false;
   if ( mActivePage == KraftDoc::Header ) {
-    selector = true;
-  }
-  if ( mActivePage == KraftDoc::Footer && mFooterSelection->textsListView()->selectedItems().count() ) {
     selector = true;
   }
 
@@ -468,7 +413,7 @@ void DocAssistant::slotShowCatalog( )
 void DocAssistant::slotShowHeaderTemplates()
 {
   setFullPreview( false, KraftDoc::Header );
-  mWidgetStack->setCurrentWidget( mHeaderSelection );
+  mWidgetStack->setCurrentWidget( mHeaderSelector );
 }
 
 void DocAssistant::slotShowFooterTemplates()

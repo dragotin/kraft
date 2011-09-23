@@ -72,7 +72,6 @@ public slots:
   void slotSetDocType( const QString& );
 
 protected slots:
-  void slotAddressSelectionChanged();
   void slotTextsSelectionChanged( QTreeWidgetItem* );
   void slotHeaderTextToDocument( const DocText& );
   void slotFooterTextDeleted( const DocText& );
@@ -83,7 +82,6 @@ protected slots:
   void slotNewFooterDocText( const DocText& );
   void slotUpdateFooterDocText( const DocText& );
   void slotFooterTextToDocument( const DocText& );
-  void slSetHeaderTemplateProvider( HeaderSelection::HeaderTabType );
   void slotAddressToDocument( const Addressee& adr );
 
 signals:
@@ -99,7 +97,6 @@ private:
   DocPostCard      *mPostCard;
   CatalogSelection *mCatalogSelection;
   QStackedWidget   *mWidgetStack;
-  HeaderSelection  *mHeaderSelection;
   TextSelection    *mFooterSelection;
   TextSelection    *mHeaderSelector;
 

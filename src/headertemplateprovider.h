@@ -45,7 +45,6 @@ signals:
 
 private:
 
-  HeaderSelection::HeaderTabType mCurrentTab;
 };
 
 
