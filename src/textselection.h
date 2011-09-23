@@ -57,7 +57,7 @@ signals:
   void currentTextChanged( const QString& );
 
 public slots:
-  QTreeWidgetItem* addNewDocText( const DocText& );
+  void addNewDocText( const DocText& );
   void deleteCurrentText();
   void updateDocText( const DocText& );
   void slotSelectDocType( const QString& );
@@ -66,7 +66,7 @@ public slots:
 protected:
   void initActions();
   void buildTextList( KraftDoc::Part );
-  QTreeWidgetItem* addOneDocText( QTreeWidgetItem*, const DocText& );
+  void showDocText( DocText );
 
 protected slots:
   // void slotSelectionChanged( QTreeWidgetItem* );
@@ -76,7 +76,7 @@ protected slots:
 private:
   QListView                       *mTextNameView;
   QStringListModel                *mTemplNamesModel;
-  QLabel                          *mTextDisplay;
+  QTextEdit                       *mTextDisplay;
   QLabel                          *mHelpDisplay;
   QLabel                          *mHeadLabel;
   KraftDoc::Part                   mPart;

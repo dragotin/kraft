@@ -52,26 +52,30 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   mTextNameView = new QListView;
   vbox->addWidget(mTextNameView);
   mTextNameView->setSelectionMode( QAbstractItemView::SingleSelection );
-  mTextNameView->setMaximumHeight( 200 );
+  mTextNameView->setMaximumHeight(60 );
 
   connect( mTextNameView, SIGNAL(clicked(QModelIndex)),
            this, SLOT(slotNameSelected(QModelIndex)));
   connect( mTextNameView, SIGNAL(doubleClicked(QModelIndex)),
            this, SLOT(slotNameDoubleClicked(QModelIndex)));
 
-  mTextDisplay = new QLabel;
+  mTextDisplay = new QTextEdit;
   mTextDisplay->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
   mTextDisplay->setLineWidth( 1 );
+  mTextDisplay->setReadOnly(true);
+  QPalette p = mTextDisplay->palette();
+  p.setColor( QPalette::Active, QPalette::Base, p.color(QPalette::Window));
+  mTextDisplay->setPalette(p);
   vbox->addWidget( mTextDisplay, 3 );
 
   mHelpDisplay = new QLabel;
   mHelpDisplay->setStyleSheet("background-color: #ffcbcb;");
   mHelpDisplay->setAutoFillBackground(true);
-  QMargins m( KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint() );
+  // QMargins m( KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint() );
   // mHelpDisplay->setContentsMargins( m );
   mHelpDisplay->setWordWrap( true );
   // mHelpDisplay->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-  mHelpDisplay->setMinimumHeight( 60 );
+  mHelpDisplay->setMinimumHeight( 80 );
   mHelpDisplay->setAlignment( Qt::AlignCenter | Qt::AlignVCenter );
   mHelpDisplay->hide();
 
@@ -108,8 +112,17 @@ void TextSelection::slotTemplateNameSelected( const QModelIndex& current, const 
 {
   mCurrTemplateName = mTemplNamesModel->data( current, Qt::DisplayRole ).toString();
   kDebug() << "New selected document type: " << mCurrTemplateName;
+  showHelp();
 
   DocText dt = currentDocText();
+  showDocText( dt );
+}
+
+void TextSelection::showDocText( DocText dt )
+{
+  if( dt.type() != KraftDoc::Unknown && dt.isStandardText() ) {
+    showHelp(i18n("This is the standard text used in new documents."));
+  }
 
   mTextDisplay->setText( dt.text() );
 }
@@ -124,7 +137,7 @@ void TextSelection::slotSelectDocType( const QString& doctype )
 
   QStringList templNames;
   if( dtList.count() == 0 ) {
-    showHelp( i18n("There is no %1 template text available for document type %1.<br/>"
+    showHelp( i18n("There is no %1 template text available for document type %2.<br/>"
                    "Click the add-button below to create one.").arg( partStr ).arg( doctype ) );
   } else {
     foreach( DocText dt, dtList ) {
@@ -135,25 +148,24 @@ void TextSelection::slotSelectDocType( const QString& doctype )
   mTemplNamesModel->setStringList( templNames );
 }
 
-QTreeWidgetItem *TextSelection::addOneDocText( QTreeWidgetItem* parent, const DocText& dt )
+void TextSelection::addNewDocText( const DocText& )
 {
-  return 0;
-}
-
-QTreeWidgetItem* TextSelection::addNewDocText( const DocText& dt )
-{
-  return 0;
+  slotSelectDocType( mDocType );
+  QModelIndex selected;
+  mTextNameView->selectionModel()->setCurrentIndex( selected, QItemSelectionModel::Select);
 }
 
 /* requires the QListViewItem set as a member in the doctext */
 void TextSelection::updateDocText( const DocText& dt )
 {
-
+  QModelIndex selected = mTextNameView->selectionModel()->currentIndex();
+  slotSelectDocType( mDocType );
+  mTextNameView->selectionModel()->setCurrentIndex( selected, QItemSelectionModel::Select );
 }
 
 void TextSelection::deleteCurrentText()
 {
-
+  slotSelectDocType( mDocType );
 }
 
 
@@ -175,16 +187,12 @@ void TextSelection::initActions()
 /* if the help string is empty, the help widget disappears. */
 void TextSelection::showHelp( const QString& help )
 {
-  QRect r1 = mHelpDisplay->geometry();
-  r1.setHeight( 0 );
   mHelpDisplay->setText( help );
-  mHelpDisplay->setGeometry( r1 );
-
   if( help.isEmpty() ) {
     mHelpDisplay->hide();
   } else {
     mHelpDisplay->show();
-
+#if 0
     kDebug() << "Displaying help text: " << help;
 
     QPropertyAnimation *ani = new QPropertyAnimation( mHelpDisplay, "geometry" );
@@ -194,8 +202,8 @@ void TextSelection::showHelp( const QString& help )
     ani->setStartValue( r1 );
     ani->setEndValue( r2 );
     ani->start();
+#endif
   }
-
 }
 
 DocText TextSelection::currentDocText() const
