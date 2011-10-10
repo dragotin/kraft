@@ -34,20 +34,20 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   :QWidget( parent ),
     mPart( part )
 {
-  QGroupBox *groupBox = new QGroupBox(tr("Template Collection"));
+  mGroupBox = new QGroupBox(tr("Template Collection"));
 
   QVBoxLayout *layout = new QVBoxLayout;
   setLayout(layout);
 
   layout->setMargin( KDialog::marginHint() );
   layout->setSpacing( KDialog::spacingHint() );
-  layout->addWidget( groupBox );
+  layout->addWidget( mGroupBox );
 
   /* a view for the entry text repository */
   QVBoxLayout *vbox = new QVBoxLayout;
 
-  mHeadLabel = new QLabel( i18n( "%1 Templates" ).arg( KraftDoc::partToString( mPart ) ));
-  vbox->addWidget( mHeadLabel );
+  // mHeadLabel = new QLabel( i18n( "%1 Templates" ).arg( KraftDoc::partToString( mPart ) ));
+  // vbox->addWidget( mHeadLabel );
 
   mTextNameView = new QListView;
   vbox->addWidget(mTextNameView);
@@ -75,13 +75,16 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   // mHelpDisplay->setContentsMargins( m );
   mHelpDisplay->setWordWrap( true );
   // mHelpDisplay->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-  mHelpDisplay->setMinimumHeight( 80 );
+
+  QFontMetrics fm( mHelpDisplay->font() );
+  int minHeight = 1.5 * fm.height();
+  mHelpDisplay->setMinimumHeight( minHeight );
   mHelpDisplay->setAlignment( Qt::AlignCenter | Qt::AlignVCenter );
   mHelpDisplay->hide();
 
   vbox->addWidget( mHelpDisplay );
 
-  groupBox->setLayout( vbox );
+  mGroupBox->setLayout( vbox );
 
   mTemplNamesModel = new QStringListModel;
   mTextNameView->setModel( mTemplNamesModel );
@@ -130,7 +133,8 @@ void TextSelection::showDocText( DocText dt )
 void TextSelection::slotSelectDocType( const QString& doctype )
 {
   QString partStr = KraftDoc::partToString( mPart );
-  mHeadLabel->setText( QString( i18n( "%1 Templates for %2" ).arg( partStr ).arg(doctype) ) );
+  QString t = QString( i18n( "%1 Templates for %2" ).arg( partStr ).arg(doctype) );
+  mGroupBox->setTitle( t );
   mDocType = doctype;
 
   DocTextList dtList = DefaultProvider::self()->documentTexts( doctype, mPart );
@@ -148,19 +152,27 @@ void TextSelection::slotSelectDocType( const QString& doctype )
   mTemplNamesModel->setStringList( templNames );
 }
 
-void TextSelection::addNewDocText( const DocText& )
+void TextSelection::addNewDocText( const DocText& dt )
 {
-  slotSelectDocType( mDocType );
-  QModelIndex selected;
-  mTextNameView->selectionModel()->setCurrentIndex( selected, QItemSelectionModel::Select);
+  slotSelectDocType( mDocType ); // update the list of available texts
+
+  QModelIndexList newItems = mTemplNamesModel->match( mTemplNamesModel->index(0), Qt::DisplayRole, dt.name() );
+  if( newItems.size() > 0 ) {
+    QModelIndex selected = newItems[0];
+    mTextNameView->selectionModel()->setCurrentIndex( selected, QItemSelectionModel::Select);
+  } else {
+    kDebug() << "Unable to find the new item named " << dt.name();
+  }
 }
 
 /* requires the QListViewItem set as a member in the doctext */
 void TextSelection::updateDocText( const DocText& dt )
 {
   QModelIndex selected = mTextNameView->selectionModel()->currentIndex();
-  slotSelectDocType( mDocType );
-  mTextNameView->selectionModel()->setCurrentIndex( selected, QItemSelectionModel::Select );
+  if( selected.isValid() ) {
+    slotSelectDocType( mDocType );
+    mTextNameView->selectionModel()->setCurrentIndex( selected, QItemSelectionModel::Select );
+  }
 }
 
 void TextSelection::deleteCurrentText()

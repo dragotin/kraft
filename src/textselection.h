@@ -40,6 +40,7 @@ class QStringListModel;
 class QTextEdit;
 class QLabel;
 class QModelIndex;
+class QGroupBox;
 
 class TextSelection : public QWidget
 {
@@ -90,6 +91,7 @@ private:
   QMap<QString, QTreeWidgetItem*> mStandardItemMap;
 
   QMenu             *mMenu;
+  QGroupBox         *mGroupBox;
   KActionCollection *mActions;
   KAction           *mAcMoveToDoc;
 };
