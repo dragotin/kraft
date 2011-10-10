@@ -99,14 +99,18 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mHeaderSelector = new TextSelection( 0, KraftDoc::Header );
   mWidgetStack->addWidget( mHeaderSelector );
 
-  connect( mHeaderSelector, SIGNAL(textSelectionChanged( QTreeWidgetItem* ) ),
-           this, SLOT( slotTextsSelectionChanged( QTreeWidgetItem* ) ) );
+  connect( mHeaderSelector, SIGNAL(validTemplateSelected() ),
+           this, SLOT( slotTemplateSelectionChanged() ) );
+  connect( mHeaderSelector, SIGNAL(editCurrentTemplate()),
+           this, SLOT(slotEditTemplate()));
 
   mFooterSelection = new TextSelection( 0, KraftDoc::Footer );
   mWidgetStack->addWidget( mFooterSelection );
 
-  connect( mFooterSelection, SIGNAL( textSelectionChanged( QTreeWidgetItem* ) ),
-           this, SLOT( slotTextsSelectionChanged( QTreeWidgetItem* ) ) );
+  connect( mFooterSelection, SIGNAL(validTemplateSelected(bool)),
+           this, SLOT(slotTemplateSelectionChanged(bool)));
+  connect( mFooterSelection, SIGNAL(editCurrentTemplate()),
+           this, SLOT(slotEditTemplate()));
   connect( mFooterSelection, SIGNAL( actionCurrentTextToDoc() ),
            this,  SLOT( slotAddToDocument() ) );
 
@@ -128,26 +132,27 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mPbNew  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-new
   mPbNew->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbNew, SIGNAL( clicked() ), this, SLOT( slotNewTemplate() ) );
-  mPbNew->setToolTip( i18n( "Create a new template (type depending)" ) );
+  mPbNew->setToolTip( i18n( "Create a new template" ) );
   butHBox2->addWidget( mPbNew );
 
   icons = KIcon( "document-properties" );
   mPbEdit  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-properties
   mPbEdit->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbEdit, SIGNAL( clicked() ), this, SLOT( slotEditTemplate() ) );
-  mPbEdit->setToolTip( i18n( "Edit the selected template (type depending)" ) );
+  mPbEdit->setToolTip( i18n( "Edit the current template" ) );
   butHBox2->addWidget( mPbEdit );
 
   icons = KIcon( "edit-delete" );
   mPbDel  = new KPushButton( icons, QString() ); // KDE 4 icon name: edit-delete
   mPbDel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbDel, SIGNAL( clicked() ), this, SLOT( slotDeleteTemplate() ) );
-  mPbDel->setToolTip( i18n( "Delete the selected template (type depending)" ) );
+  mPbDel->setToolTip( i18n( "Delete the current template" ) );
   butHBox2->addWidget( mPbDel );
 
   butHBox2->addStretch();
 
   mPbAdd->setEnabled( false );
+  mPbNew->setEnabled( false );
   mPbEdit->setEnabled( false );
   mPbDel->setEnabled( false );
 
@@ -198,16 +203,23 @@ void DocAssistant::slotAddToDocument()
   }
 }
 
-void DocAssistant::slotTextsSelectionChanged( QTreeWidgetItem *item )
+void DocAssistant::slotTemplateSelectionChanged( )
 {
-  if ( item ) {
-    mPbAdd->setEnabled( true );
-    mPbEdit->setEnabled( true );
-    mPbDel->setEnabled( true );
-  } else {
-    mPbAdd->setEnabled( false );
+  if( mActivePage == KraftDoc::Positions ) { // no editing on the catalogs
+    mPbNew->setEnabled( false );
     mPbEdit->setEnabled( false );
     mPbDel->setEnabled( false );
+  } else {
+    bool mv = false;
+    if( mActivePage == KraftDoc::Header ) {
+      mv = mHeaderSelector->validSelection();
+    } else if( mActivePage == KraftDoc::Footer ) {
+      mv = mFooterSelection->validSelection();
+    }
+    mPbAdd->setEnabled( mv );
+    mPbNew->setEnabled( true );
+    mPbEdit->setEnabled( mv );
+    mPbDel->setEnabled( mv );
   }
 }
 
@@ -301,11 +313,13 @@ void DocAssistant::slotDeleteTemplate()
 void DocAssistant::slotHeaderTextDeleted( const DocText& /* dt */)
 {
   mHeaderSelector->deleteCurrentText();
+  slotTemplateSelectionChanged( ); // disable the edit buttons etc.
 }
 
 void DocAssistant::slotFooterTextDeleted( const DocText& /* dt */)
 {
   mFooterSelection->deleteCurrentText();
+  slotTemplateSelectionChanged( ); // disable the edit buttons etc.
 }
 
 /* slot that opens the template details in case on == true */
@@ -356,34 +370,18 @@ CatalogSelection* DocAssistant::catalogSelection()
 void DocAssistant::slotSelectDocPart( int p )
 {
   mActivePage = p;
-  // change the currentTemplateProvider variable.
-  mPbEdit->setEnabled( false );
-  mPbDel->setEnabled( false );
-
-  if ( p == KraftDoc::Header ) {
+  if( mActivePage == KraftDoc::Header ) {
     mCurrTemplateProvider = mHeaderTemplateProvider;
-
-    mPbNew->setEnabled( true );
-    if ( 1  ) {
-      kDebug() << "Enabling Edit and Del for Header" << endl;
-      mPbEdit->setEnabled( true );
-      mPbDel->setEnabled( true );
-    }
-  } else if ( p == KraftDoc::Positions ) {
+  } else if( mActivePage == KraftDoc::Positions ) {
     mCurrTemplateProvider = mCatalogTemplateProvider;
-    mPbNew->setEnabled( false );
-  } else if ( p == KraftDoc::Footer ) {
+  } else if( mActivePage == KraftDoc::Footer ) {
     mCurrTemplateProvider = mFooterTemplateProvider;
-    mPbNew->setEnabled( true );
-
-    if ( 1 ) {
-      mPbEdit->setEnabled( true );
-      mPbDel->setEnabled( true );
-    }
+  } else {
+    kDebug() << "Alert: Unknown document part id: " << p;
   }
-
   emit selectPage( p );
   slotToggleShowTemplates( !mFullPreview );
+  slotTemplateSelectionChanged( ); // hide the add, edit- and del buttons
 }
 
 /* Doc Type like offer, invoice etc. */
@@ -392,16 +390,6 @@ void DocAssistant::slotSetDocType( const QString& type )
   mDocType = type;
   mHeaderSelector->slotSelectDocType( type );
   mFooterSelection->slotSelectDocType( type );
-
-  // nothing is selected.
-  bool selector = false;
-  if ( mActivePage == KraftDoc::Header ) {
-    selector = true;
-  }
-
-  mPbAdd->setEnabled( true );
-  mPbEdit->setEnabled( selector );
-  mPbDel->setEnabled( selector );
 }
 
 void DocAssistant::slotShowCatalog( )

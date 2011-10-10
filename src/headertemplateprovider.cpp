@@ -86,8 +86,8 @@ void HeaderTemplateProvider::slotEditTemplate()
 
 void HeaderTemplateProvider::slotDeleteTemplate()
 {
-  emit deleteHeaderText( currentText() );
   DefaultProvider::self()->deleteDocumentText( currentText() );
+  emit deleteHeaderText( currentText() );
 }
 
 void HeaderTemplateProvider::slotTemplateToDocument()
@@ -97,6 +97,4 @@ void HeaderTemplateProvider::slotTemplateToDocument()
 
   emit headerTextToDocument( currentText() );
 }
-
-#include "headertemplateprovider.moc"
 

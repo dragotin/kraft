@@ -72,7 +72,7 @@ public slots:
   void slotSetDocType( const QString& );
 
 protected slots:
-  void slotTextsSelectionChanged( QTreeWidgetItem* );
+  void slotTemplateSelectionChanged();
   void slotHeaderTextToDocument( const DocText& );
   void slotFooterTextDeleted( const DocText& );
   void slotHeaderTextDeleted( const DocText& );

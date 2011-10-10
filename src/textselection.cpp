@@ -53,11 +53,12 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   vbox->addWidget(mTextNameView);
   mTextNameView->setSelectionMode( QAbstractItemView::SingleSelection );
   mTextNameView->setMaximumHeight(60 );
+  mTextNameView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
   connect( mTextNameView, SIGNAL(clicked(QModelIndex)),
            this, SLOT(slotNameSelected(QModelIndex)));
   connect( mTextNameView, SIGNAL(doubleClicked(QModelIndex)),
-           this, SLOT(slotNameDoubleClicked(QModelIndex)));
+           this, SIGNAL(editCurrentTemplate()));
 
   mTextDisplay = new QTextEdit;
   mTextDisplay->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
@@ -113,12 +114,19 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
 /* selected the name of a template in the listview of template names */
 void TextSelection::slotTemplateNameSelected( const QModelIndex& current, const QModelIndex& )
 {
-  mCurrTemplateName = mTemplNamesModel->data( current, Qt::DisplayRole ).toString();
-  kDebug() << "New selected document type: " << mCurrTemplateName;
-  showHelp();
+  bool valid = false;
+  if( current.isValid() ) {
+    mCurrTemplateName = mTemplNamesModel->data( current, Qt::DisplayRole ).toString();
+    kDebug() << "New selected template name: " << mCurrTemplateName;
+    showHelp();
 
-  DocText dt = currentDocText();
-  showDocText( dt );
+    DocText dt = currentDocText();
+    showDocText( dt );
+    valid = true;
+  } else {
+    mCurrTemplateName.clear();
+  }
+  emit validTemplateSelected( );
 }
 
 void TextSelection::showDocText( DocText dt )
@@ -150,6 +158,9 @@ void TextSelection::slotSelectDocType( const QString& doctype )
     showHelp();
   }
   mTemplNamesModel->setStringList( templNames );
+
+  mTextDisplay->clear();
+
 }
 
 void TextSelection::addNewDocText( const DocText& dt )
@@ -173,6 +184,11 @@ void TextSelection::updateDocText( const DocText& dt )
     slotSelectDocType( mDocType );
     mTextNameView->selectionModel()->setCurrentIndex( selected, QItemSelectionModel::Select );
   }
+}
+
+bool TextSelection::validSelection() const
+{
+  return mTextNameView->selectionModel()->currentIndex().isValid();
 }
 
 void TextSelection::deleteCurrentText()

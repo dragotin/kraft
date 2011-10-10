@@ -52,10 +52,13 @@ public:
 
   QString currentText() const;
   DocText currentDocText() const;
+  bool    validSelection() const;
 
 signals:
   void actionCurrentTextToDoc();
   void currentTextChanged( const QString& );
+  void validTemplateSelected();
+  void editCurrentTemplate();
 
 public slots:
   void addNewDocText( const DocText& );
