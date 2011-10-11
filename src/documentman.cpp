@@ -144,10 +144,10 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
   return retList;
 }
 
-DocGuardedPtr DocumentMan::createDocument( const QString& copyFromId )
+DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromId )
 {
   DocGuardedPtr doc = new KraftDoc( );
-  doc->newDocument();
+  doc->newDocument( docType );
   kDebug() << "new document ID: " << doc->docID().toString() << endl;
   mDocMap[doc->docID().toString()] = doc;
 

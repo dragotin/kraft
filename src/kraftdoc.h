@@ -64,7 +64,7 @@ class KraftDoc : public QObject
   /** deletes the document's contents */
   void deleteContents();
   /** initializes the document generally */
-  bool newDocument();
+  bool newDocument( const QString& docType = QString() );
   /** closes the current document */
   void closeDocument();
   /** loads the document by filename and format and emits the updateViews() signal */

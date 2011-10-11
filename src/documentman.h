@@ -36,7 +36,7 @@ class DocumentMan
     DocDigestList latestDocs( int );
     DocDigestsTimelineList docsTimelined();
 
-    DocGuardedPtr createDocument( const QString& copyFromId = QString() );
+    DocGuardedPtr createDocument( const QString& docType, const QString& copyFromId = QString() );
     DocGuardedPtr openDocument( const QString& );
     
     QStringList openDocumentsList();

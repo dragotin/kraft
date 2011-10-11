@@ -387,11 +387,11 @@ void Portal::slotNewDocument()
   wiz.init();
   if ( wiz.exec() ) {
     DocumentMan *docman = DocumentMan::self();
-    DocGuardedPtr doc = docman->createDocument();
+    DocGuardedPtr doc = docman->createDocument( wiz.docType() );
 
     doc->setDate( wiz.date() );
     doc->setAddressUid( wiz.addressUid() );
-    doc->setDocType( wiz.docType() );
+    // doc->setDocType( wiz.docType() );
     doc->setWhiteboard( wiz.whiteboard() );
     createView( doc );
   }

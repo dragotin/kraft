@@ -143,7 +143,7 @@ void KraftDoc::closeDocument()
   deleteContents();
 }
 
-bool KraftDoc::newDocument( )
+bool KraftDoc::newDocument( const QString& docType )
 {
   modified=false;
 
@@ -155,7 +155,11 @@ bool KraftDoc::newDocument( )
   mAddress = QString::null;
   mAddressUid = QString::null;
 
-  mDocType = DefaultProvider::self()->docType();
+  if( docType.isEmpty() ) {
+    mDocType = DefaultProvider::self()->docType();
+  } else {
+    mDocType = docType;
+  }
   mPreText = DefaultProvider::self()->defaultText( mDocType, KraftDoc::Header );
   mPostText = DefaultProvider::self()->defaultText( mDocType, KraftDoc::Footer );
 
