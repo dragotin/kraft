@@ -223,6 +223,7 @@ void DocDigestView::slotBuildView()
   mLatestView->verticalHeader()->hide();
   mLatestView->setSortingEnabled(true);
   mLatestView->horizontalHeader()->restoreState( headerStateLatest );
+  mLatestView->horizontalHeader()->setSortIndicatorShown( true );
   mLatestView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mLatestView->setShowGrid( false );
   mLatestView->hideColumn( DocumentModel::Document_Id );
@@ -237,6 +238,7 @@ void DocDigestView::slotBuildView()
   mAllView->verticalHeader()->hide();
   mAllView->setSortingEnabled(true);
   mAllView->horizontalHeader()->setMovable( true );
+  mAllView->horizontalHeader()->setSortIndicatorShown( true );
   mAllView->horizontalHeader()->restoreState( headerStateAll );
   mAllView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mAllView->setShowGrid( false );
