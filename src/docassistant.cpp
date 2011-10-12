@@ -107,8 +107,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mFooterSelection = new TextSelection( 0, KraftDoc::Footer );
   mWidgetStack->addWidget( mFooterSelection );
 
-  connect( mFooterSelection, SIGNAL(validTemplateSelected(bool)),
-           this, SLOT(slotTemplateSelectionChanged(bool)));
+  connect( mFooterSelection, SIGNAL(validTemplateSelected()),
+           this, SLOT(slotTemplateSelectionChanged()));
   connect( mFooterSelection, SIGNAL(editCurrentTemplate()),
            this, SLOT(slotEditTemplate()));
   connect( mFooterSelection, SIGNAL( actionCurrentTextToDoc() ),

@@ -66,6 +66,7 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   mTextDisplay->setReadOnly(true);
   QPalette p = mTextDisplay->palette();
   p.setColor( QPalette::Active, QPalette::Base, p.color(QPalette::Window));
+  p.setColor( QPalette::Inactive, QPalette::Base, p.color(QPalette::Window));
   mTextDisplay->setPalette(p);
   vbox->addWidget( mTextDisplay, 3 );
 
@@ -174,6 +175,7 @@ void TextSelection::addNewDocText( const DocText& dt )
   } else {
     kDebug() << "Unable to find the new item named " << dt.name();
   }
+  emit validTemplateSelected();
 }
 
 /* requires the QListViewItem set as a member in the doctext */
