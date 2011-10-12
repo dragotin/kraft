@@ -31,7 +31,6 @@
 #include "docassistant.h"
 #include "docpostcard.h"
 #include "catalogselection.h"
-#include "headerselection.h"
 #include "textselection.h"
 #include "kraftsettings.h"
 #include "kataloglistview.h"

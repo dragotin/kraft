@@ -23,7 +23,6 @@
 #include <kabc/addressee.h>
 
 #include "kraftdoc.h"
-#include "headerselection.h"
 #include "catalogtemplate.h"
 
 class DocPostCard;

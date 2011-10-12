@@ -20,7 +20,6 @@
 
 #include "templateprovider.h"
 #include "doctext.h"
-#include "headerselection.h"
 
 class QWidget;
 
