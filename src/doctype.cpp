@@ -216,7 +216,7 @@ QString DocType::templateFile( const QString& language )
 
     // first, read language dependant in case its not 'C' or empty
     QString findFile;
-    kDebug() << "LANGUAGE: " << language;
+
     if( !( language.isEmpty() && language != QChar('C') ) ) {
       findFile  = QString( "kraft/reports/%1/%2" ).arg( language ).arg( reportFileName );
       kDebug() << "Searching for lang report: " << findFile;
