@@ -204,7 +204,13 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
     tmpl.setValue( "POSITIONS", "POS_TEXT",
                    rmlString( pos.text(), QString( "%1text" ).arg( pos.kind().toLower() ) ) );
 
-    h.setNum( pos.amount(), 'f', 2 );
+    // format the amount value of the item, do not show the precision if there is no fraction
+    double amount = pos.amount();
+    if( amount - qRound(amount) > 0 ) // if there is no fraction
+      h = mArchDoc->locale()->formatNumber( amount, 2 );
+    else
+      h = mArchDoc->locale()->formatNumber( amount, 0 );
+
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
     tmpl.setValue( "POSITIONS", "POS_UNIT", pos.unit() );
     tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString( mArchDoc->locale() ) );
