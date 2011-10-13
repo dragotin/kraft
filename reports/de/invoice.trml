@@ -122,7 +122,7 @@
 
     <spacer length="18mm" width="1mm"/>
 
-    <blockTable colWidths="8mm,9cm,1.0cm,1cm,2.5cm,2.5cm" style="items" repeatRows="0">
+    <blockTable colWidths="8mm,8.8cm,1.2cm,1cm,2.5cm,2.5cm" style="items" repeatRows="0">
     <tr>
         <td><para style="text">Pos.</para></td>
         <td><para style="text">Posten</para></td>
@@ -160,7 +160,7 @@
     </tr>
     {{/SECTION_FULL_TAX}}
     <tr><td></td>
-        <td><para style="text">Gesamt:</para></td>
+        <td><para style="text">Gesamt</para></td>
         <td><para style="rtext">{{BRUTTOSUM}}</para></td>
     </tr>
     </blockTable>
