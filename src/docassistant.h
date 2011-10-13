@@ -18,7 +18,8 @@
 #ifndef DOCASSISTANT_H
 #define DOCASSISTANT_H
 
-#include <qsplitter.h>
+#include <QSplitter>
+#include <QTreeWidgetItem>
 
 #include <kabc/addressee.h>
 

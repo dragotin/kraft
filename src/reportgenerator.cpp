@@ -238,13 +238,13 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   tmpl.setValue( TAG( "BRUTTOSUM" ), mArchDoc->bruttoSum().toString( mArchDoc->locale() ) );
   tmpl.setValue( TAG( "NETTOSUM" ),  mArchDoc->nettoSum().toString( mArchDoc->locale() ) );
 
-  h.setNum( mArchDoc->tax(), 'f', 1 );
+  h = mArchDoc->locale()->formatNumber( mArchDoc->tax() );
   kDebug() << "Tax in archive document: " << h;
   if ( mArchDoc->reducedTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_SUM" ),
       mArchDoc->reducedTaxSum().toString( mArchDoc->locale() ) );
-    h.setNum( mArchDoc->reducedTax(), 'f', 1 );
+    h = mArchDoc->locale()->formatNumber( mArchDoc->reducedTax() );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX" ), h );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
   }
@@ -252,12 +252,12 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
     tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_SUM" ),
       mArchDoc->fullTaxSum().toString( mArchDoc->locale() ) );
-    h.setNum( mArchDoc->tax(), 'f', 1 );
+    h = mArchDoc->locale()->formatNumber( mArchDoc->tax() );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX" ), h );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
   }
 
-  h.setNum( mArchDoc->tax(), 'f', 1 );
+  h = mArchDoc->locale()->formatNumber( mArchDoc->tax() );
   tmpl.setValue( TAG( "VAT" ), h );
 
   tmpl.setValue( TAG( "VATSUM" ), mArchDoc->taxSum().toString( mArchDoc->locale() ) );
