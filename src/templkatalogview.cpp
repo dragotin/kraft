@@ -245,11 +245,6 @@ void TemplKatalogView::slEditRejected()
     delete m_editListViewItem;
     m_editListViewItem = 0;
   }
-
-  if( m_flosDialog ) {
-    delete m_flosDialog;
-    m_flosDialog = 0;
-  }
 }
 
 void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
