@@ -42,7 +42,7 @@
 	    <lineMode width="0.5" />
             <lines>2cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
-            <drawCentredString x="105mm" y="2.3cm">{{MY_NAME}} {{MY_ORGANISATION}}</drawCentredString>
+            <drawCentredString x="105mm" y="2.3cm">{{MY_ORGANISATION}}</drawCentredString>
 	    <setFont name="Times-Roman" size="10" />
 	    <fill color="black" />
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
@@ -72,6 +72,14 @@
       <lineStyle kind="LINEABOVE" colorName="black" start="-3,-3" stop="-1,-3"/>
       <lineStyle kind="LINEABOVE" colorName="black" start="-3,-1" stop="-1,-1"/>
    </blockTableStyle>
+   
+   <blockTableStyle id="sums">
+      <lineStyle kind="LINEABOVE" colorName="black" start="2,-1" stop="3,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="black" start="1,-3" stop="3,-3"/>
+      <blockBottomPadding length="4mm" />
+      <blockTopPadding length="4mm" />
+   </blockTableStyle>
+
 
    <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
    
@@ -136,39 +144,31 @@
         <td><para style="{{POS_KIND}}rtext">{{POS_TOTAL}}</para></td>
     </tr>
     {{/POSITIONS}}
+  </blockTable>
+
+  <condPageBreak height="4cm"/>
+  <blockTable colWidths="10.8cm,3.5cm,2.5cm" style="sums" repeatRows="0">
     <tr><td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><para style="text">net:</para></td>
+        <td><para style="text">Net</para></td>
         <td><para style="rtext">{{NETTOSUM}}</para></td>
     </tr>
     {{#SECTION_REDUCED_TAX}}
     <tr><td></td>
-        <td></td>
-        <td></td>
-        <td></td>
         <td><para style="text">+{{REDUCED_TAX}}% VAT</para></td>
         <td><para style="rtext">{{REDUCED_TAX_SUM}}</para></td>
     </tr>
     {{/SECTION_REDUCED_TAX}}
     {{#SECTION_FULL_TAX}}
     <tr><td></td>
-        <td></td>
-        <td></td>
-        <td></td>
         <td><para style="text">+{{FULL_TAX}}% VAT</para></td>
         <td><para style="rtext">{{FULL_TAX_SUM}}</para></td>
     </tr>
     {{/SECTION_FULL_TAX}}
     <tr><td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><para style="text">total sum:</para></td>
+        <td><para style="text">Sum</para></td>
         <td><para style="rtext">{{BRUTTOSUM}}</para></td>
     </tr>
-    </blockTable>
+  </blockTable>
     {{#SPECIAL_POS}}
     <para style="text">
     Please note: This offer contains {{COUNT}} alternative or demand positions, 

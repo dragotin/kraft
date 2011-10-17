@@ -63,6 +63,7 @@ class KRAFTCAT_EXPORT DocType
   QString     numberCycleName();
   void        setNumberCycleName( const QString& );
 
+  QString     defaultTemplateFile() const;
   QString     templateFile( const QString& language = QString() );
   void        setTemplateFile( const QString& );
 

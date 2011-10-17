@@ -33,7 +33,8 @@
 #include "kraftsettings.h"
 #include "kraftdb.h"
 #include "numbercycle.h"
-#include <kstandarddirs.h>
+#include "defaultprovider.h"
+
 /**
 @author Klaas Freitag
 */
@@ -195,12 +196,13 @@ void DocType::setNumberCycleName( const QString& name )
   readIdentTemplate();
 }
 
-QString DocType::templateFile( const QString& language )
+QString DocType::templateFile( const QString& lang )
 {
   KStandardDirs stdDirs;
   QString tmplFile;
 
   QString reportFileName = name().toLower() + QString( ".trml" );
+
   if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
     tmplFile = mAttributes["docTemplateFile"].value().toString();
     if( tmplFile.isEmpty() ) {
@@ -209,51 +211,59 @@ QString DocType::templateFile( const QString& language )
     }
   }
 
-  if ( tmplFile.contains( "/" ) && QFile::exists( tmplFile ) ) {
-    // all fine. The attribute has a filename
-  } else {
-    // No Slash in the name, search in KDE Resource path
-
+  if ( ! QFile::exists( tmplFile ) ) {
     // first, read language dependant in case its not 'C' or empty
     QString findFile;
-
+    QString language( lang );
+    if( language.isEmpty() ) {
+      language = DefaultProvider::self()->locale()->country();
+    }
     if( !( language.isEmpty() && language != QChar('C') ) ) {
       findFile  = QString( "kraft/reports/%1/%2" ).arg( language ).arg( reportFileName );
       kDebug() << "Searching for lang report: " << findFile;
       tmplFile = stdDirs.findResource( "data", findFile );
 
-      // if this cant be found, search for a lang dependant invoice.trml
-      findFile = QString( "kraft/reports/%1/invoice.trml" ).arg( language );
-      kDebug() << "Searching more for lang report: " << findFile;
-      tmplFile = stdDirs.findResource( "data", findFile );
+      if( !QFile::exists( tmplFile )) {
+        // if this cant be found, search for a lang dependant invoice.trml
+        findFile = QString( "kraft/reports/%1/invoice.trml" ).arg( language );
+        kDebug() << "Searching more for lang report: " << findFile;
+        tmplFile = stdDirs.findResource( "data", findFile );
+      }
     }
 
-    if( tmplFile.isEmpty() ) {
+    if( !QFile::exists(tmplFile) ) {
       // now try the old language indep search
       findFile = "kraft/reports/" + reportFileName;
 
       tmplFile = stdDirs.findResource( "data", findFile );
 
-      if ( tmplFile.isEmpty() ) {
-        findFile = "kraft/reports/invoice.trml";
-        tmplFile = stdDirs.findResource( "data", findFile );
+      if ( !QFile::exists( tmplFile ) ) {
+        tmplFile = defaultTemplateFile();
       }
     }
   }
   return tmplFile;
 }
 
+QString DocType::defaultTemplateFile() const
+{
+  KStandardDirs stdDirs;
+
+  QString findFile = "kraft/reports/invoice.trml";
+  return stdDirs.findResource( "data", findFile );
+}
+
 void DocType::setTemplateFile( const QString& name )
 {
-  if ( !name.isEmpty() ) {
+  if ( name.isEmpty() || name == templateFile() ) { // the default is returned anyway.
+    // remove default value from map
+    mAttributes.markDelete( "docTemplateFile" );
+    kDebug() << "Removing docTemplateFile Attribute";
+  } else {
     Attribute att( "docTemplateFile" );
     att.setPersistant( true );
     att.setValue( name );
     mAttributes["docTemplateFile"] = att;
-  } else {
-    // remove default value from map
-    mAttributes.markDelete( "docTemplateFile" );
-    kDebug() << "Removing docTemplateFile Attribute";
   }
   mDirty = true;
 }

@@ -283,7 +283,11 @@ void ReportGenerator::contactToTemplate( TextTemplate *tmpl, const QString& pref
   if( contact.isEmpty() ) return;
 
   tmpl->setValue( ADDRESS_TAG( prefix, "NAME" ),  contact.realName() );
-  tmpl->setValue( ADDRESS_TAG( prefix, "ORGANISATION" ), contact.organization() );
+  QString co = contact.organization();
+  if( co.isEmpty() ) {
+    co = contact.realName();
+  }
+  tmpl->setValue( ADDRESS_TAG( prefix, "ORGANISATION" ), co );
   tmpl->setValue( ADDRESS_TAG( prefix, "URL" ),   contact.url().prettyUrl() );
   tmpl->setValue( ADDRESS_TAG( prefix, "EMAIL" ), contact.preferredEmail() );
   tmpl->setValue( ADDRESS_TAG( prefix, "PHONE" ), contact.phoneNumber( KABC::PhoneNumber::Work ).number() );

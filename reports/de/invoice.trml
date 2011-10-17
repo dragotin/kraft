@@ -14,7 +14,7 @@
 	    <lineMode width="0.5" />
             <lines>2.41cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
-            <drawCentredString x="105mm" y="2.3cm">{{MY_NAME}} {{MY_ORGANISATION}}</drawCentredString>
+            <drawCentredString x="105mm" y="2.3cm">{{MY_ORGANISATION}}</drawCentredString>
 
             <lines>7mm 19cm 12mm 19cm</lines>
             <lines>2mm 14.65cm 12mm 14.65cm</lines>
@@ -42,7 +42,7 @@
 	    <lineMode width="0.5" />
             <lines>2cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
-            <drawCentredString x="105mm" y="2.3cm">{{MY_NAME}} {{MY_ORGANISATION}}</drawCentredString>
+            <drawCentredString x="105mm" y="2.3cm">{{MY_ORGANISATION}}</drawCentredString>
 	    <setFont name="Times-Roman" size="10" />
 	    <fill color="black" />
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
@@ -71,11 +71,9 @@
    </blockTableStyle>
    <blockTableStyle id="sums">
       <lineStyle kind="LINEABOVE" colorName="black" start="2,-1" stop="3,-1"/>
-      <!-- lineStyle kind="LINEABOVE" colorName="black" start="2,-2" stop="3,-2"/> -->
       <lineStyle kind="LINEABOVE" colorName="black" start="1,-3" stop="3,-3"/>
       <blockBottomPadding length="4mm" />
       <blockTopPadding length="4mm" />
-
    </blockTableStyle>
 
    <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
@@ -142,6 +140,7 @@
     </tr>
     {{/POSITIONS}}
     </blockTable>
+    <condPageBreak height="4cm"/> 
     <blockTable colWidths="10.8cm,3.5cm,2.5cm" style="sums" repeatRows="0">
     <tr><td></td>
         <td><para style="text">Netto</para></td>
