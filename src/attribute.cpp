@@ -189,6 +189,16 @@ AttributeMap::AttributeMap( const QString& host)
 
 }
 
+AttributeMap& AttributeMap::operator=(const AttributeMap& am)
+{
+    if( this != &am ) {
+        kDebug() << "** In the Attribute Map assignment";
+        mHost = am.mHost;
+        this->QMap<QString, Attribute>::operator =(am);
+    }
+    return *this;
+}
+
 void AttributeMap::setHost( const QString& host )
 {
   mHost = host;
@@ -371,6 +381,7 @@ void AttributeMap::markDelete( const QString& name )
   Iterator it = find( name );
   if ( it != end() ) {
     ( *it ).mDelete = true;
+    kDebug() << "Marking attrib " << name << " to delete!";
   }
 }
 

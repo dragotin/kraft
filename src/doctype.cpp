@@ -65,6 +65,22 @@ DocType::DocType( const QString& name, bool dirty )
   readIdentTemplate();
 }
 
+DocType& DocType::operator=( const DocType& dt )
+{
+  if( this != &dt ) {
+    mAttributes = dt.mAttributes;
+    mFollowerList = dt.mFollowerList;
+    mName = dt.mName;
+    mIdentTemplate = dt.mIdentTemplate;
+    mDirty = dt.mDirty;
+    mMergeIdent = dt.mMergeIdent;
+
+    mNameMap = dt.mNameMap;
+  }
+  return *this;
+}
+
+
 void DocType::init()
 {
   // === Start to fill static content
@@ -255,7 +271,7 @@ QString DocType::defaultTemplateFile() const
 
 void DocType::setTemplateFile( const QString& name )
 {
-  if ( name.isEmpty() || name == templateFile() ) { // the default is returned anyway.
+  if ( name.isEmpty() || name == defaultTemplateFile() ) { // the default is returned anyway.
     // remove default value from map
     mAttributes.markDelete( "docTemplateFile" );
     kDebug() << "Removing docTemplateFile Attribute";

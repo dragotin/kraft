@@ -179,7 +179,7 @@ void TextSelection::addNewDocText( const DocText& dt )
 }
 
 /* requires the QListViewItem set as a member in the doctext */
-void TextSelection::updateDocText( const DocText& dt )
+void TextSelection::updateDocText( const DocText& )
 {
   QModelIndex selected = mTextNameView->selectionModel()->currentIndex();
   if( selected.isValid() ) {
@@ -254,7 +254,7 @@ QString TextSelection::currentText() const
 }
 
 
-void TextSelection::slotRMB(QPoint point )
+void TextSelection::slotRMB(QPoint )
 {
   // mMenu->popup( mTextsView->mapToGlobal(point) );
 }

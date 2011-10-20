@@ -315,10 +315,11 @@ void DocTypeEdit::slotWatermarkModeChanged( int newMode )
 
 void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )
 {
-  QString docType ;
+  QString docType;
   if(mTypeListBox->currentRow() != -1)
     docType = mTypeListBox->currentItem()->text();
 
+  if( docType.isEmpty() || ! mOrigDocTypes.contains(docType) ) return;
   DocType dt = mOrigDocTypes[docType];
   if ( mChangedDocTypes.contains( docType ) ) {
     dt = mChangedDocTypes[docType];

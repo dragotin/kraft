@@ -38,7 +38,7 @@ class KRAFTCAT_EXPORT Attribute
   public:
     Attribute();
     Attribute( const QString& name );
-    
+
     void     setValue( const QVariant& var );
     QVariant value();
     QString  name() const;
@@ -70,6 +70,8 @@ class KRAFTCAT_EXPORT AttributeMap: public QMap<QString, Attribute>
 public:
   AttributeMap();
   AttributeMap( const QString& );
+
+  AttributeMap& operator=(const AttributeMap&);
 
   bool hasAttribute( const QString& );
 

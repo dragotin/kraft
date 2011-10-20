@@ -43,6 +43,7 @@ class KRAFTCAT_EXPORT DocType
    * create a doctype from its localised or tech name 
    */
   DocType( const QString&, bool dirty = false );
+  DocType& operator=( const DocType& );
 
   static QStringList all();
   static QStringList allLocalised();
@@ -86,12 +87,13 @@ class KRAFTCAT_EXPORT DocType
   private:
   static void init();
 
+private:
   AttributeMap mAttributes;
   QStringList  mFollowerList;
   QString      mName;
   QString      mIdentTemplate;
   bool         mDirty;
-  QString     mMergeIdent;
+  QString      mMergeIdent;
 
   static idMap mNameMap;
 };
