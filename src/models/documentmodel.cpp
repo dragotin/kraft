@@ -196,7 +196,7 @@ DocDigest DocumentModel::digest( const QModelIndex& index ) const
   return digest;
 }
 
-int DocumentModel::columnCount(const QModelIndex &parent) const
+int DocumentModel::columnCount(const QModelIndex &) const
 {
   return 10;
 }

@@ -34,7 +34,7 @@ bool TemplateSaverBase::saveTemplate(FloskelTemplate*)
     return false;
 }
 
-void TemplateSaverBase::saveTemplateChapter( FloskelTemplate *flos )
+void TemplateSaverBase::saveTemplateChapter( FloskelTemplate* )
 {
   // do nothing
 }

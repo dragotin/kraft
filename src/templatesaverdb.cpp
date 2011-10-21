@@ -295,7 +295,6 @@ TemplateSaverDB::~TemplateSaverDB( )
 bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
 {
     bool res = true;
-    bool isNew = false;
 
     // Transaktion ?
 
@@ -311,7 +310,6 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
         kDebug() << "Updating template " << tmpl->getTemplID() << endl;
 
         // mach update
-        isNew = false;
         buffer = model.record(0);
         fillTemplateBuffer( &buffer, tmpl, false );
         buffer.setValue( "modifyDatum", KraftDB::self()->currentTimeStamp() );
@@ -323,7 +321,6 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
         // insert
         kDebug() << "Creating new database entry" << endl;
 
-        isNew = true;
         buffer = model.record();
         fillTemplateBuffer( &buffer, tmpl, true );
         model.insertRecord(-1, buffer);

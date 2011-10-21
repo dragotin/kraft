@@ -47,7 +47,6 @@ MaterialSaverBase *MaterialSaverDB::self()
 bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 {
     bool res = true;
-    bool isNew = false;
 
     // Transaktion ?
 
@@ -64,7 +63,6 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
         kDebug() << "Updating material " << mat->getID() << endl;
 
         // mach update
-        isNew = false;
         buffer = model.record(0);
         fillMaterialBuffer( buffer, mat, false );
         model.setRecord(0, buffer);
@@ -75,7 +73,6 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
         // insert
         kDebug() << "Creating new material database entry" << endl;
 
-        isNew = true;
         fillMaterialBuffer( buffer, mat, true );
         model.insertRecord(-1, buffer);
         model.submitAll();

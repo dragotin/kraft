@@ -115,7 +115,6 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
 /* selected the name of a template in the listview of template names */
 void TextSelection::slotTemplateNameSelected( const QModelIndex& current, const QModelIndex& )
 {
-  bool valid = false;
   if( current.isValid() ) {
     mCurrTemplateName = mTemplNamesModel->data( current, Qt::DisplayRole ).toString();
     kDebug() << "New selected template name: " << mCurrTemplateName;
@@ -123,7 +122,6 @@ void TextSelection::slotTemplateNameSelected( const QModelIndex& current, const 
 
     DocText dt = currentDocText();
     showDocText( dt );
-    valid = true;
   } else {
     mCurrTemplateName.clear();
   }

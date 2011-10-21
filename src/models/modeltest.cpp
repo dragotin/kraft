@@ -102,7 +102,6 @@ void ModelTest::nonDestructiveBasicTest()
     fetchingMore = true;
     model->fetchMore(QModelIndex());
     fetchingMore = false;
-    Qt::ItemFlags flags = model->flags(QModelIndex());
     Q_ASSERT(flags == Qt::ItemIsDropEnabled || flags == 0);
     model->hasChildren(QModelIndex());
     model->hasIndex(0, 0);
@@ -184,7 +183,6 @@ void ModelTest::hasIndex()
     Q_ASSERT(model->hasIndex(0, -2) == false);
 
     int rows = model->rowCount();
-    int columns = model->columnCount();
 
     // check out of bounds
     Q_ASSERT(model->hasIndex(rows, columns) == false);
@@ -208,7 +206,6 @@ void ModelTest::index()
     Q_ASSERT(model->index(0, -2) == QModelIndex());
 
     int rows = model->rowCount();
-    int columns = model->columnCount();
 
     if (rows == 0)
         return;
@@ -419,7 +416,6 @@ void ModelTest::data()
     // Check that the alignment is one we know about
     QVariant textAlignmentVariant = model->data(model->index(0, 0), Qt::TextAlignmentRole);
     if (textAlignmentVariant.isValid()) {
-        int alignment = textAlignmentVariant.toInt();
        Q_ASSERT(alignment == (alignment & (Qt::AlignHorizontal_Mask | Qt::AlignVertical_Mask)));
     }
 
@@ -437,7 +433,6 @@ void ModelTest::data()
     // Check that the "check state" is one we know about.
     QVariant checkStateVariant = model->data(model->index(0, 0), Qt::CheckStateRole);
     if (checkStateVariant.isValid()) {
-        int state = checkStateVariant.toInt();
         Q_ASSERT(state == Qt::Unchecked ||
                  state == Qt::PartiallyChecked ||
                  state == Qt::Checked);
