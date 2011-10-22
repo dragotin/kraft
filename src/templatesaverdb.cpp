@@ -358,12 +358,15 @@ void TemplateSaverDB::fillTemplateBuffer( QSqlRecord *buffer, FloskelTemplate *t
     buffer->setValue( "Gewinn", tmpl->getBenefit() );
     buffer->setValue( "zeitbeitrag", tmpl->hasTimeslice() );
 
-    QString dtString = KraftDB::self()->currentTimeStamp();
 
+    QDateTime dt = QDateTime::currentDateTime();
+    QString dtString = KraftDB::self()->currentTimeStamp(dt);
     if( isNew ) {
         buffer->setValue( "enterDatum", dtString);
+        tmpl->setEnterDate( dt );
     }
     buffer->setValue("modifyDatum", dtString );
+    tmpl->setModifyDate( dt );
 
     int ctype = 2;  // Calculation type Calculation
     if( tmpl->calcKind() == CatalogTemplate::ManualPrice )

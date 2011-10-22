@@ -427,10 +427,14 @@ QString KraftDB::qtDriver()
     return mDatabaseDriver;
 }
 
-QString KraftDB::currentTimeStamp()
+QString KraftDB::currentTimeStamp( const QDateTime& dt )
 {
   QString dateStr;
-  dateStr = QDateTime::currentDateTime().toString(Qt::ISODate);
+  if( dt.isValid() ) {
+    dateStr = dt.toString(Qt::ISODate);
+  } else {
+    dateStr = QDateTime::currentDateTime().toString(Qt::ISODate);
+  }
   return dateStr;
 }
 

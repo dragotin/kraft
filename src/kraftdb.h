@@ -23,6 +23,7 @@
 
 #include <QMap>
 #include <QObject>
+#include <QDateTime>
 
 #include "kraftcat_export.h"
 
@@ -102,7 +103,7 @@ public:
   void setSchemaVersion( const QString& );
 
   // database aware current time stamp
-  QString currentTimeStamp();
+  QString currentTimeStamp( const QDateTime& dt = QDateTime() );
   /**
    * Euro sign encoding to work around a problem with mysql
    */

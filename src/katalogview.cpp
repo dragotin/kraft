@@ -443,12 +443,12 @@ void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
   mTemplateText->setText( t );
 
   t = "<table border=\"0\">";
-  t += i18n("<tr><td>Created at:</td><td>%1</td><td>&nbsp;&nbsp;</td><td>Last used:</td><td>%2</td></tr>" )
-       .arg( locale->formatDateTime( tmpl->enterDate() ) )
-       .arg( locale->formatDateTime( tmpl->lastUsedDate() ) );
-  t += i18n("<tr><td>Modified at:</td><td>%1</td><td>&nbsp;&nbsp;</td><td>Use Count:</td><td>%2</td></tr>" )
-       .arg( locale->formatDateTime( tmpl->modifyDate() ) )
-       .arg( tmpl->useCounter() );
+  t += i18n("<tr><td>Created at:</td><td>%1</td></tr>" ) /* <td>&nbsp;&nbsp;</td><td>Last used:</td><td>%2</td></tr>" ) */
+       .arg( locale->formatDateTime( tmpl->enterDate() ) );
+       /* .arg( locale->formatDateTime( tmpl->lastUsedDate() ) ); */
+  t += i18n("<tr><td>Modified at:</td><td>%1</td></tr>") /* <td>&nbsp;&nbsp;</td><td>Use Count:</td><td>%2</td></tr>" ) */
+       .arg( locale->formatDateTime( tmpl->modifyDate() ) );
+       /* .arg( tmpl->useCounter() ); */
   t += "</table>";
   // kDebug() << "Hoover-String: " << t;
   mTemplateStats->setText( t );
