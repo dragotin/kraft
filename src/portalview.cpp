@@ -187,7 +187,7 @@ QString PortalView::systemViewHeader() const
     html += "&nbsp;";
   }
   html += "</td></tr>";
-  html += QString( "<tr><td>Codename <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
+  html += QString( "<tr><td>Codename: <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
   QString h1 = DefaultProvider::self()->locale()->country();
   html += QString( "<tr><td>" ) + i18n( "Country Setting: " ) +
           QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( DefaultProvider::self()->locale()->country() );

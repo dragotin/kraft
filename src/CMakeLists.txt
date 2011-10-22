@@ -142,7 +142,6 @@ set(kraft_SRCS
     setupassistant.cpp
     models/documentmodel.cpp
     models/documentproxymodels.cpp
-    models/modeltest.cpp
     docdigestdetailview.cpp
     external/ktreeviewsearchline.cpp
     addressprovider.cpp
