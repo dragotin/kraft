@@ -10,6 +10,8 @@ Changes since version 0.43: #########################################
 - Fixed bug that numbers in the doc are not localized correctly
 - Fixed bug that the doc type is not taken correctly from the new doc
   wizard
+- No need any more to checkbox single item templates to move them into
+  the document. Selecting is sufficient.
 - Added a search line in the "who am i"-dialog
 
 Changes since version 0.41: #########################################

@@ -206,7 +206,9 @@ CatalogTemplateList KatalogListView::selectedTemplates()
       item->setCheckState( 0, Qt::Unchecked );
       ++it;
     }
-  } else {
+  }
+
+  if( ! mCheckboxes || templates.isEmpty() ) {
     QList<QTreeWidgetItem*> items = selectedItems();
 
     foreach( QTreeWidgetItem* item, items ) {
