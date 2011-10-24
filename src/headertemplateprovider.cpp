@@ -58,7 +58,6 @@ void HeaderTemplateProvider::slotEditTemplate()
 {
   kDebug() << "SlotEditTemplate called!" << endl;
 
-
   TextEditDialog dia( mParent, KraftDoc::Header );
 
   /* mCurrentText is set through the slot slotSetCurrentDocText */

@@ -156,6 +156,8 @@ void DefaultProvider::deleteDocumentText( const DocText& dt )
     QSqlQuery q;
     q.prepare("DELETE FROM DocTexts WHERE docTextID=" + dt.dbId().toString() ) ;
     q.exec();
+  } else {
+    kDebug() << "Delete document text not ok: " << dt.text();
   }
 }
 

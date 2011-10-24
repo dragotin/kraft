@@ -362,7 +362,11 @@ QStringList ReportGenerator::findTrml2Pdf( )
     kDebug() << "Ermlpy: " << ermlpy;
     if( ! ermlpy.isEmpty() ) {
       // need the python interpreter
-      QString python = KStandardDirs::findExe("python");
+      // First check for python2 in python3 times. 
+      QString python = KStandardDirs::findExe("python2");
+      if( python.isEmpty() ) {
+	python = KStandardDirs::findExe("python");
+      }
       if( python.isEmpty() ) {
         kError() << "ERR: Unable to find python, thats a problem";
       } else {

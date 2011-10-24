@@ -57,7 +57,7 @@
       <alias id="style.normal" value="style.Normal"/>
     </initialize>
 
-    <blockTableStyle id="products">
+    <blockTableStyle id="items">
       <blockFont name="Helvetica-BoldOblique" size="24" start="0,0" stop="-1,0"/>
       <blockBackground colorName="lightgrey" start="0,0" stop="-1,0"/>
       <blockTextColor colorName="white" start="0,0" stop="-1,0"/>
@@ -125,7 +125,7 @@
 
     <spacer length="18mm" width="1mm"/>
 
-    <blockTable colWidths="8mm,9cm,1.0cm,1cm,2.5cm,2.5cm" style="products" repeatRows="0">
+    <blockTable colWidths="8mm,8.8cm,0.8cm,1.2cm,2.7cm,2.5cm" style="items" repeatRows="0">
     <tr>
         <td><para style="text">Pos.</para></td>
         <td><para style="text">Item</para></td>
@@ -147,7 +147,7 @@
   </blockTable>
 
   <condPageBreak height="4cm"/>
-  <blockTable colWidths="10.8cm,3.5cm,2.5cm" style="sums" repeatRows="0">
+  <blockTable colWidths="9.8cm,4cm,3cm" style="sums" repeatRows="0">
     <tr><td></td>
         <td><para style="text">Net</para></td>
         <td><para style="rtext">{{NETTOSUM}}</para></td>
