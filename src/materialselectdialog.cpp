@@ -68,12 +68,15 @@ void MaterialSelectDialog::accept()
 {
   kDebug() << "++ Material selected!" << endl;
 
-  QTreeWidgetItemIterator it( mKatalogListView, QTreeWidgetItemIterator::Checked	);
+  QTreeWidgetItemIterator it( mKatalogListView, QTreeWidgetItemIterator::Checked );
   while (*it) {
     kDebug() << "T: " << (*it)->text( 0 ) << endl;
-    StockMaterial *mat = static_cast<StockMaterial*>( mKatalogListView->itemData( *it ) );
-    if ( mat ) {
-      emit materialSelected( mat->getID(), 1 );
+    QTreeWidgetItem *item = *it;
+    if( !( mKatalogListView->isChapter( item ) || mKatalogListView->isRoot( item ))) {
+      StockMaterial *mat = static_cast<StockMaterial*>( mKatalogListView->itemData( item ) );
+      if ( mat ) {
+        emit materialSelected( mat->getID(), 1 );
+      }
     }
     ++it;
   }

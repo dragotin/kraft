@@ -202,7 +202,11 @@ CatalogTemplateList KatalogListView::selectedTemplates()
     QTreeWidgetItemIterator it( this, QTreeWidgetItemIterator::Checked );
     while (*it) {
       QTreeWidgetItem *item = *it;
-      templates.append( static_cast<CatalogTemplate*>( itemData( item )));
+      if( ! (isChapter( item ) || isRoot(item )) ) { // a template, not a chapter.
+        void *data = itemData( item );
+        if( data )
+          templates.append( static_cast<CatalogTemplate*>( data ));
+      }
       item->setCheckState( 0, Qt::Unchecked );
       ++it;
     }
@@ -212,12 +216,14 @@ CatalogTemplateList KatalogListView::selectedTemplates()
     QList<QTreeWidgetItem*> items = selectedItems();
 
     foreach( QTreeWidgetItem* item, items ) {
-      void *data = itemData( item );
-      if( data ) {
-        templates.append( static_cast<CatalogTemplate*>(data) );
+      if( !(isChapter(item) || isRoot(item))) {
+        void *data = itemData( item );
+        if( data )
+          templates.append( static_cast<CatalogTemplate*>(data) );
       }
     }
   }
+
   return templates;
 }
 
@@ -231,11 +237,7 @@ void* KatalogListView::itemData( QTreeWidgetItem *item )
 
 void* KatalogListView::currentItemData()
 {
-  if( currentItem() ) {
-    return itemData( currentItem() );
-  } else {
-    return 0;
-  }
+  return itemData( currentItem() );
 }
 
 void KatalogListView::removeTemplateItem( QTreeWidgetItem *item )
@@ -287,6 +289,7 @@ void KatalogListView::slotEditCurrentChapter()
   QTreeWidgetItem *item = currentItem();
   if( ! isChapter( item )) {
     kDebug() << "Can only edit chapters!" << endl;
+    return;
   }
   CatalogChapter *chap = static_cast<CatalogChapter*>( itemData( item ) );
 

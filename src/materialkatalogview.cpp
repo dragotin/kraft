@@ -108,7 +108,7 @@ void MaterialKatalogView::slNewTemplate()
     }
   }
 
-  if( parentItem ) {
+  if( parentItem && listview->isChapter( parentItem )) {
     // try to find out which catalog is open/current
     CatalogChapter *chap = static_cast<CatalogChapter*>(listview->itemData( parentItem ));
     newMat->setChapter( chap->id().toInt() );
