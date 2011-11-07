@@ -190,7 +190,6 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   /* A placeholder has the format <!-- %VALUE --> */
 
   ArchDocPositionList posList = mArchDoc->positions();
-  QString loopResult;
   QString h;
 
   ArchDocPositionList::iterator it;
@@ -206,10 +205,16 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
     // format the amount value of the item, do not show the precision if there is no fraction
     double amount = pos.amount();
-    if( amount - qRound(amount) > 0 ) // if there is no fraction
-      h = mArchDoc->locale()->formatNumber( amount, 2 );
-    else
-      h = mArchDoc->locale()->formatNumber( amount, 0 );
+    QString num;
+    num.setNum( amount ); // no locale awareness.
+    int prec = 0;
+    if( num.contains( QChar('.') ) ) {
+      // there is a decimal point
+      // calculate the precision
+      prec = num.length() - (1+num.lastIndexOf( QChar('.') ) );
+    }
+    // kDebug() << "**** " << num << " has precision " << prec;
+    h = mArchDoc->locale()->formatNumber( amount, prec );
 
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
     tmpl.setValue( "POSITIONS", "POS_UNIT", pos.unit() );

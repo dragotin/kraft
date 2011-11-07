@@ -1,5 +1,5 @@
 #define KPLANT_VERSION "0.4"
-#define KRAFT_VERSION "0.44"
+#define KRAFT_VERSION "0.45"
 
 #define KRAFT_CODENAME "Seelchen"
 

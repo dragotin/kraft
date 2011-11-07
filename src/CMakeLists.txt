@@ -44,7 +44,7 @@ kde4_add_kcfg_files(kraftcat_LIB_SRCS databasesettings.kcfgc kraftsettings.kcfgc
 
 kde4_add_library(kraftcat SHARED ${kraftcat_LIB_SRCS})
 
-target_link_libraries(kraftcat ${KDE4_KDECORE_LIBS}  ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS})
+target_link_libraries(kraftcat ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS})
 
 install(TARGETS kraftcat LIBRARY DESTINATION lib/kraft)
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH};${CMAKE_INSTALL_PREFIX}/lib/kraft")
