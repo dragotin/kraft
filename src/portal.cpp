@@ -419,7 +419,7 @@ void Portal::slotFollowUpDocument()
   kDebug() << "doc identifier: "<< doc->docIdentifier() << endl;
   wiz.setDocIdentifier( doc->docIdentifier() );
   if ( wiz.exec() ) {
-    DocGuardedPtr doc = DocumentMan::self()->createDocument( locId );
+    DocGuardedPtr doc = DocumentMan::self()->createDocument( dt.name(), locId );
     doc->setDate( wiz.date() );
     doc->setDocType( wiz.docType() );
     doc->setWhiteboard( wiz.whiteboard() );
@@ -438,11 +438,12 @@ void Portal::slotCopyDocument( const QString& id )
   if ( id.isEmpty() ) {
     return;
   }
+  DocGuardedPtr oldDoc = DocumentMan::self()->openDocument( id );
 
   KraftWizard wiz;
   wiz.init();
   if ( wiz.exec() ) {
-    DocGuardedPtr doc = DocumentMan::self()->createDocument( id );
+    DocGuardedPtr doc = DocumentMan::self()->createDocument( oldDoc->docType(), id );
     doc->setDate( wiz.date() );
     doc->setDocType( wiz.docType() );
     doc->setWhiteboard( wiz.whiteboard() );
