@@ -340,7 +340,7 @@ void PositionViewWidget::slotSetTax( DocPosition::TaxType tt )
   }
 
   mTaxSubmenu->setIcon( KIcon( icon ));
-
+  emit positionModified();
 }
 
 void PositionViewWidget::slotAllowIndividualTax( bool allow )

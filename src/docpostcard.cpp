@@ -91,7 +91,6 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
   mPositionCount = posList.count();
   mTotal  = posList.nettoPrice().toHtmlString( posList.locale() );
   QString brutto = posList.bruttoPrice( tax, reducedTax ).toHtmlString( posList.locale() );
-  QString taxStr = posList.taxSum( tax, reducedTax ).toHtmlString( posList.locale() );
   mPositions += QString( "<tr><td colspan=\"2\" class=\"baseline\"></td></tr>" );
 
   if ( taxType != DocPositionBase::TaxInvalid && taxType != DocPositionBase::TaxNone ) {
@@ -100,12 +99,28 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
 
     QString curTax;
     curTax.setNum( tax, 'f', 1 );
-    if ( taxType == DocPositionBase::TaxReduced ) {
+    QString taxStr;
+
+    if( taxType == DocPositionBase::TaxReduced || taxType == DocPositionBase::TaxIndividual ) {
       curTax.setNum( reducedTax, 'f', 1 );
+      taxStr = posList.reducedTaxSum( reducedTax ).toHtmlString( posList.locale() );
+      mPositions += QString( "<tr><td>" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
+          QString( "</td><td align=\"right\">%1</td></tr>" ).arg( taxStr );
     }
 
-    mPositions += QString( "<tr><td>" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
-                  QString( "</td><td align=\"right\">%1</td></tr>" ).arg( taxStr );
+    if( taxType == DocPositionBase::TaxFull || taxType == DocPositionBase::TaxIndividual ) {
+      curTax.setNum( tax, 'f', 1 );
+      taxStr = posList.fullTaxSum( tax ).toHtmlString( posList.locale() );
+      mPositions += QString( "<tr><td>" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
+          QString( "</td><td align=\"right\">%1</td></tr>" ).arg( taxStr );
+    }
+
+    if( taxType == DocPositionBase::TaxIndividual ) {
+      taxStr = posList.taxSum( tax, reducedTax ).toHtmlString( posList.locale() );
+      mPositions += QString( "<tr><td>" ) + i18n( "Sum Tax:" ) +
+          QString( "</td><td align=\"right\">%1</td></tr>" ).arg( taxStr );
+    }
+
   }
   mPositions += QString( "<tr><td><b>" ) + i18n( "Total:" )+
                 QString( "</b></td><td align=\"right\"><b>%1</b></td></tr>" ).arg( brutto );

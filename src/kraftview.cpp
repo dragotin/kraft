@@ -672,6 +672,7 @@ void KraftView::slotTaxComboChanged(int newId)
   }
 
   mTaxBefore = newId;
+  slotModifiedFooter();
 }
 
 /* This is the flow in the move up method:
