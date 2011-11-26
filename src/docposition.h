@@ -46,7 +46,7 @@ class DocPositionBase : public QObject
 {
   public:
   enum PositionType { Position, ExtraDiscount, Header };
-  enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3 };
+  enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3, TaxIndividual = 4 };
 
     DocPositionBase();
     DocPositionBase( const PositionType& );
@@ -66,7 +66,7 @@ class DocPositionBase : public QObject
     void setAttributeMap( AttributeMap );
 
     void setText( const QString& string ) { m_text = string; }
-    QString text() const { return m_text; } ;
+    QString text() const { return m_text; }
 
     void setTag( const QString& );
     void removeTag( const QString& );
@@ -74,7 +74,9 @@ class DocPositionBase : public QObject
     QStringList tags();
     
     int taxTypeNumeric();
+    TaxType taxType();
     void setTaxType( DocPositionBase::TaxType );
+    void setTaxType( int );
 
   /**
    * Position means the number in the document

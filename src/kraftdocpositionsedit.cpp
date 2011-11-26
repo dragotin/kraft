@@ -48,7 +48,7 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   m_positionScroll = new KraftViewScroll( this );
   topLayout->addWidget( m_positionScroll );
 
-  setTitle( i18n( "Document Positions" ) );
+  setTitle( i18n( "Document Items" ) );
   setColor( "#9affa9" );
   setLayout(topLayout);
 }

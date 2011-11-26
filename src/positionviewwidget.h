@@ -68,6 +68,7 @@ public:
     void setLocale( KLocale* );
     QStringList tagList() { return mTags; }
     QString extraDiscountTagRestriction();
+    DocPositionBase::TaxType taxType() const;
 
 public slots:
     void slotSetOverallPrice( Geld );
@@ -80,6 +81,8 @@ public slots:
     void slotSetState( State );
     void slotSetEnabled( bool );
     void slotEnableKindMenu( bool );
+    void slotAllowIndividualTax( bool );
+    void slotSetTax( DocPosition::TaxType );
 
 protected slots:
     void slotLockPosition();
@@ -89,6 +92,11 @@ protected slots:
     void slotSetPositionDemand();
     void slotUpdateTagToolTip();
     void paintEvent ( QPaintEvent* );
+
+    void slotSetNilTax();
+    void slotSetReducedTax();
+    void slotSetFullTax();
+
 signals:
     void positionModified();
     void deletePosition();
@@ -110,15 +118,22 @@ private:
     DocPositionGuardedPtr mPositionPtr;
     KMenu *mExecPopup;
     QMenu *mStateSubmenu;
+    QMenu *mTaxSubmenu;
+
     QStringList mTags;
     QAction * mDeleteId;
     QAction * mLockId;
     QAction * mUnlockId;
+    QAction * mNilTaxAction;
+    QAction * mRedTaxAction;
+    QAction * mFullTaxAction;
+
     Geld mPositionPrice;  // only used for Discount items to store the result
     State mState;
     Kind  mKind;
     bool mPositionPriceValid;
     KLocale *mLocale;
+    DocPosition::TaxType mTax;
 };
 
 class PositionViewWidgetList : public QList<PositionViewWidget*>

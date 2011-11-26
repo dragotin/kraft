@@ -185,9 +185,19 @@ QStringList DocPositionBase::tags()
   return tags;
 }
 
+DocPositionBase::TaxType DocPositionBase::taxType()
+{
+  return mTaxType;
+}
+
 void DocPositionBase::setTaxType( TaxType tt )
 {
   mTaxType = tt;
+}
+
+void DocPositionBase::setTaxType( int tt )
+{
+  mTaxType = (TaxType) tt;
 }
 
 int DocPositionBase::taxTypeNumeric()

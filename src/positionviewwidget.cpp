@@ -98,6 +98,30 @@ PositionViewWidget::PositionViewWidget()
   mStateSubmenu->addAction( KIcon( "kraft_demand" ),
                             i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
 
+  // mExecPopup->addSeparator();
+
+  // mTaxSubMenu
+  mTaxSubmenu = mExecPopup->addMenu(i18n( "Tax" ));
+  QActionGroup *agroup = new QActionGroup( this );
+  agroup->setExclusive ( true );
+  mNilTaxAction = new QAction( KIcon("kraft_notax"),  i18n("Taxfree Item"), this );
+  connect( mNilTaxAction, SIGNAL(triggered()), this, SLOT(slotSetNilTax()) );
+  mNilTaxAction->setCheckable( true );
+  agroup->addAction( mNilTaxAction );
+  mTaxSubmenu->addAction( mNilTaxAction );
+
+  mRedTaxAction = new QAction( KIcon("kraft_redtax"), i18n("Reduced Tax"),  this );
+  connect( mRedTaxAction, SIGNAL(triggered()), this, SLOT(slotSetReducedTax()));
+  mRedTaxAction->setCheckable( true );
+  agroup->addAction( mRedTaxAction );
+  mTaxSubmenu->addAction( mRedTaxAction );
+
+  mFullTaxAction = new QAction( KIcon("kraft_fulltax"), i18n("Full Tax"),  this );
+  connect( mFullTaxAction, SIGNAL(triggered()), this, SLOT(slotSetFullTax()));
+  mFullTaxAction->setCheckable( true );
+  agroup->addAction( mFullTaxAction );
+  mTaxSubmenu->addAction( mFullTaxAction );
+
   mExecPopup->addSeparator();
 
   mExecPopup->addAction(  KIcon("arrow-up"),
@@ -215,6 +239,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
   // set tags marked
   mTags = dp->tags();
   slotUpdateTagToolTip();
+  slotSetTax( dp->taxType() );
 
   m_skipModifiedSignal = false;
 }
@@ -283,6 +308,53 @@ void PositionViewWidget::slotTaggingButtonPressed()
   }
 }
 
+void PositionViewWidget::slotSetNilTax()
+{
+  slotSetTax( DocPositionBase::TaxNone );
+}
+
+void PositionViewWidget::slotSetReducedTax()
+{
+  slotSetTax( DocPositionBase::TaxReduced );
+}
+
+void PositionViewWidget::slotSetFullTax()
+{
+  slotSetTax( DocPositionBase::TaxFull );
+}
+
+void PositionViewWidget::slotSetTax( DocPosition::TaxType tt )
+{
+  mTax = tt;
+
+  QString icon;
+  if( tt == DocPositionBase::TaxFull ) {
+    icon = QString::fromLatin1("kraft_fulltax");
+    mFullTaxAction->setChecked( true );
+  } else if( tt == DocPositionBase::TaxReduced ) {
+    icon = QString::fromLatin1("kraft_redtax");
+    mRedTaxAction->setChecked( true );
+  } else if( tt == DocPositionBase::TaxNone ) {
+    icon = QString::fromLatin1("kraft_notax");
+    mNilTaxAction->setChecked( true );
+  }
+
+  mTaxSubmenu->setIcon( KIcon( icon ));
+
+}
+
+void PositionViewWidget::slotAllowIndividualTax( bool allow )
+{
+  mFullTaxAction->setEnabled(allow);
+  mRedTaxAction->setEnabled(allow);
+  mNilTaxAction->setEnabled(allow);
+  mTaxSubmenu->setEnabled( allow );
+}
+
+DocPositionBase::TaxType PositionViewWidget::taxType() const
+{
+  return mTax;
+}
 
 void PositionViewWidget::slotExecButtonPressed()
 {

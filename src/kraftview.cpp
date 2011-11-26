@@ -80,6 +80,10 @@
 #include "addressprovider.h"
 #include "doclocaledialog.h"
 
+#define NO_TAX   0
+#define RED_TAX  1
+#define FULL_TAX 2
+#define INDI_TAX 3
 
 KraftViewScroll::KraftViewScroll( QWidget *parent ):
 QScrollArea( parent )
@@ -414,6 +418,7 @@ void KraftView::redrawDocPositions( )
     PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
     if( !w ) {
       w = createPositionViewWidget( dp, cnt);
+      w->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
     }
     cnt++;
     kDebug() << "now position " << dp->positionNumber() << endl;
@@ -499,7 +504,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 
   w->setDocPosition( dp, getDocument()->locale() );
   w->setOrdNumber( pos+1 );
-
+  w->slotSetTax( dp->taxType() );
   return w;
 }
 
@@ -515,8 +520,8 @@ DocPositionBase::TaxType KraftView::currentTaxSetting()
     tt = DocPositionBase::TaxReduced;
   } else if ( taxKind == 3 ) { // Full tax for all items
     tt = DocPositionBase::TaxFull;
-  } else { // individual level, not yet implementend
-    kError() << "Item individual tax level is not yet implemented.";
+  } else { // individual level
+    tt = DocPositionBase::TaxIndividual;
   }
   return tt;
 }
@@ -577,9 +582,11 @@ void KraftView::setupFooter()
 
   // ATTENTION: If you change the following inserts, make sure to check the code
   //            in method currentPositionList!
-  m_footerEdit->mTaxCombo->insertItem( 0, i18n( "Display no tax at all" ));
-  m_footerEdit->mTaxCombo->insertItem( 1, i18n( "Calculate reduced tax for all items" ));
-  m_footerEdit->mTaxCombo->insertItem( 2, i18n( "Calculate full tax for all items" ));
+  m_footerEdit->mTaxCombo->insertItem( NO_TAX,   KIcon("kraft_notax"), i18n( "Display no tax at all" ));
+  m_footerEdit->mTaxCombo->insertItem( RED_TAX,  KIcon("kraft_redtax"), i18n( "Calculate reduced tax for all items" ));
+  m_footerEdit->mTaxCombo->insertItem( FULL_TAX, KIcon("kraft_fulltax"), i18n( "Calculate full tax for all items" ));
+  m_footerEdit->mTaxCombo->insertItem( INDI_TAX, i18n( "Calculate individual tax for each item"));
+
   // m_footerEdit->mTaxCombo->insertItem( i18n( 3, i18n( "Calculate on individual item tax rate" )));
 
   // set the tax type combo correctly: If all items have the same tax type, take it.
@@ -588,17 +595,17 @@ void KraftView::setupFooter()
 
   int tt = -1;
   DocPositionBase *dp = 0;
-  bool equality = true;
 
   DocPositionListIterator it( list );
+  int taxIndex = 0;
+
   while( it.hasNext()) {
     dp = it.next();
     if ( tt == -1 )
       tt = dp->taxTypeNumeric(); // store the first entry.
     else {
       if ( tt != dp->taxTypeNumeric() ) {
-        m_footerEdit->mTaxCombo->setCurrentIndex( 3 );
-        equality = false;
+        taxIndex = INDI_TAX;
       } else {
         // old and new taxtype are the same.
       }
@@ -610,25 +617,61 @@ void KraftView::setupFooter()
     if ( deflt > 0 ) {
       deflt -= 1;
     }
-    m_footerEdit->mTaxCombo->setCurrentIndex( deflt );
+    taxIndex = deflt;
   } else {
-    if ( equality ) {
-      m_footerEdit->mTaxCombo->setCurrentIndex( tt-1 );
-    } else {
-      kError() << "Problem: Not all Tax-Levels are the same! (Fixed later with tax on item base)";
+    if ( taxIndex == 0 ) {
+      taxIndex = tt-1;
     }
   }
 
-  connect( m_footerEdit->mTaxCombo, SIGNAL( activated( int ) ),
-           this, SLOT( slotModifiedFooter() ) );
+  connect( m_footerEdit->mTaxCombo,SIGNAL(currentIndexChanged(int)),this,SLOT(slotTaxComboChanged(int)));
 
-  connect( edit, SIGNAL( modified() ),
-           this, SLOT( slotModifiedFooter() ) );
+  m_footerEdit->mTaxCombo->setCurrentIndex( taxIndex );
+  slotTaxComboChanged( taxIndex );
+
+  mTaxBefore = taxIndex;
+
+  connect(edit,SIGNAL(modified()),this,SLOT(slotModifiedFooter()));
 }
 
 void KraftView::slotAboutToShow( QWidget* w )
 {
   kDebug() << "showing page " << w << endl;
+}
+
+void KraftView::slotTaxComboChanged(int newId)
+{
+  bool allowTaxSetting = false;
+
+  if( mTaxBefore == newId ) return;
+
+  if( mTaxBefore == INDI_TAX ) {
+    // we're changing away from individual settings. WARNING needed.
+    kDebug() << "You switch away from item individual tax settings.";
+    if( KMessageBox::questionYesNo( this, i18n("Really overwrite all individual tax settings of the items?"),
+                                         i18n("Tax Settings Overwrite") ) == KMessageBox::No ) {
+      m_footerEdit->mTaxCombo->setCurrentIndex( INDI_TAX );
+      return;
+    }
+  }
+  DocPositionBase::TaxType tax = DocPositionBase::TaxFull;
+
+  if( newId == INDI_TAX ) {
+    allowTaxSetting = true;
+  } else if( newId == RED_TAX ) {
+    tax = DocPositionBase::TaxReduced;
+  } else if( newId == NO_TAX ) {
+    tax = DocPositionBase::TaxNone;
+  }
+
+  PositionViewWidgetListIterator it( mPositionWidgetList );
+  while( it.hasNext() ) {
+    PositionViewWidget *w = it.next();
+    w->slotAllowIndividualTax( allowTaxSetting );
+    w->slotSetTax( tax );
+  }
+
+  mTaxBefore = newId;
 }
 
 /* This is the flow in the move up method:
@@ -941,7 +984,13 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
       *dp = diaPos;
 
       // set the tax settings
-      dp->setTaxType( currentTaxSetting() );
+      if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
+        // FIXME: In case a new item is added, add the default tax type.
+        // otherwise add the tax of the template
+        dp->setTaxType( DocPositionBase::TaxFull );
+      } else {
+        dp->setTaxType( currentTaxSetting() );
+      }
 
       // store the initial size of the template-to-doc-pos dialogs
       s = dia->size();
@@ -992,6 +1041,8 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
 
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
   widget->slotModified();
+  widget->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
+
   slotFocusPosition( widget, newpos );
   refreshPostCard();
 }
@@ -1018,6 +1069,7 @@ void KraftView::slotImportItems()
         DocPosition *dp = new DocPosition( *(dp_old) );
         dp->setTaxType( currentTaxSetting() );
         PositionViewWidget *widget = createPositionViewWidget( dp, newpos + cnt++ );
+        widget->slotSetTax( DocPositionBase::TaxFull ); // FIXME: Value from Import?
         widget->slotModified();
       }
       refreshPostCard();
@@ -1034,7 +1086,11 @@ void KraftView::slotAddExtraPosition()
   DocPosition *dp = new DocPosition( DocPosition::ExtraDiscount );
   dp->setPositionNumber( newpos+1 );
   dp->setText( i18n( "Discount" ) );
-  dp->setTaxType( currentTaxSetting() );
+  if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
+    dp->setTaxType( DocPositionBase::TaxFull );
+  } else {
+    dp->setTaxType( currentTaxSetting() );
+  }
 
   kDebug() << "New Extra position is " << dp << endl;
 
@@ -1186,7 +1242,11 @@ DocPositionList KraftView::currentPositionList()
             }
 
             // tax settings
-            newDp->setTaxType( currentTaxSetting() );
+            if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
+              newDp->setTaxType( widget->taxType() );
+            } else {
+              newDp->setTaxType( currentTaxSetting() );
+            }
             list.append( newDp );
           }
         } else {

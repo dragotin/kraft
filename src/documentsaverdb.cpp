@@ -26,6 +26,7 @@
 #include <kdebug.h>
 
 #include "documentsaverdb.h"
+#include "docposition.h"
 #include "kraftdoc.h"
 #include "kraftdb.h"
 #include "unitmanager.h"
@@ -209,6 +210,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         record.setValue( "amount",    dp->amount() );
         record.setValue( "unit",      dp->unit().id() );
         record.setValue( "price",     price );
+        record.setValue( "taxType",   dp->taxType() );
 
         ordNumber++; // FIXME
 
@@ -309,7 +311,7 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
 void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 {
     QSqlQuery q;
-    q.prepare("SELECT positionID, postype, text, amount, unit, price FROM docposition WHERE docID=:docID ORDER BY ordNumber");
+    q.prepare("SELECT positionID, postype, text, amount, unit, price, taxType FROM docposition WHERE docID=:docID ORDER BY ordNumber");
     q.bindValue(":docID", id);
     q.exec();
 
@@ -341,6 +343,8 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 
         dp->setUnit( UnitManager::self()->getUnit( q.value(4).toInt() ) );
         dp->setUnitPrice( q.value(5).toDouble() );
+        dp->setTaxType( q.value(6).toInt() );
+
         dp->loadAttributes();
     }
 }

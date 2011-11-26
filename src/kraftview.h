@@ -149,6 +149,7 @@ class KraftView : public KDialog
   void slotDocTypeChanged( const QString& );
   void slotLanguageSettings();
   void slotAddresseeFound( const QString&, const KABC::Addressee& );
+  void slotTaxComboChanged( int );
 
 signals:
   void selectPage( int );
@@ -200,6 +201,7 @@ private:
   QMap<dbID, CalcPartList> mCalculationsMap;
   CatalogTemplateList      mNewTemplates;
   bool           mModified;
+  int            mTaxBefore;
 };
 
 #endif // KRAFTVIEW_H
