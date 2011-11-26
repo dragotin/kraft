@@ -1,3 +1,12 @@
+Changes since version 0.45: #########################################
+- Handling of individual tax rates for each document item
+
+Changes since version 0.44: #########################################
+- bugfix release: Fixed the display of decimal places in the PDF 
+  document which caused broken documents.
+
+    => release v. 0.45 (nov 08,2011)
+
 Changes since version 0.43: #########################################
 - Completely reworked the addressbook widget in Kraft, used in new doc
   assistant and in the "who am i" dialog: Fully Akonadi-based, works
@@ -13,6 +22,8 @@ Changes since version 0.43: #########################################
 - No need any more to checkbox single item templates to move them into
   the document. Selecting is sufficient.
 - Added a search line in the "who am i"-dialog
+
+    => release v. 0.44 (nov 03,2011)
 
 Changes since version 0.41: #########################################
 - Added search box in digest lists again, for that enhanced the search
