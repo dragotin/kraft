@@ -51,6 +51,8 @@ QString DocPostCard::htmlify( const QString& str ) const
   return "<p>" + li.join( "</p><p>" ) + "</p>";
 }
 
+#define REDUCED_TAX_MARK "&#x2460"
+
 void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxType taxType,
                                 double tax, double reducedTax )
 {
@@ -78,10 +80,18 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
 
       if ( dp->toDelete() ) mPositions += "</strike>";
       mPositions += "</td>";
+
       mPositions += "<td width=\"50px\" align=\"right\">";
+      if( taxType == DocPositionBase::TaxIndividual && (dp->taxType() == DocPositionBase::TaxReduced) ) {
+        if ( dp->toDelete() ) mPositions += "<strike>";
+        mPositions += QString("%1&nbsp;&nbsp;").arg(REDUCED_TAX_MARK);
+        if ( dp->toDelete() ) mPositions += "</strike>";
+      }
+
       if ( dp->toDelete() ) mPositions += "<strike>";
       mPositions += dp->overallPrice().toHtmlString( posList.locale() );
       if ( dp->toDelete() ) mPositions += "</strike>";
+
       mPositions += "</td></tr>";
     }
   }
@@ -104,14 +114,18 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
     if( taxType == DocPositionBase::TaxReduced || taxType == DocPositionBase::TaxIndividual ) {
       curTax.setNum( reducedTax, 'f', 1 );
       taxStr = posList.reducedTaxSum( reducedTax ).toHtmlString( posList.locale() );
-      mPositions += QString( "<tr><td>" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
+      mPositions += QString( "<tr><td align=\"right\">" );
+      if( taxType == DocPositionBase::TaxIndividual ) {
+        mPositions += QString( "%1&nbsp;&nbsp;").arg(REDUCED_TAX_MARK);
+      }
+      mPositions += i18n( "+ %1% Tax:" ).arg( curTax ) +
           QString( "</td><td align=\"right\">%1</td></tr>" ).arg( taxStr );
     }
 
     if( taxType == DocPositionBase::TaxFull || taxType == DocPositionBase::TaxIndividual ) {
       curTax.setNum( tax, 'f', 1 );
       taxStr = posList.fullTaxSum( tax ).toHtmlString( posList.locale() );
-      mPositions += QString( "<tr><td>" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
+      mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
           QString( "</td><td align=\"right\">%1</td></tr>" ).arg( taxStr );
     }
 
