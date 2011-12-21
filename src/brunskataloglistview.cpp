@@ -33,13 +33,13 @@ BrunsKatalogListView::BrunsKatalogListView( QWidget *w )
 {
   setColumnCount( 4 );
   QStringList headerLabels;
-  headerLabels << i18n("Bot. Name");
-  headerLabels << i18n( "Dt. Name");
-  headerLabels << i18n("Art-Ident");
-  headerLabels << i18n("Art-Match");
+  headerLabels << i18nc( "Abbrev. for botanical name", "Bot. Name" );
+  headerLabels << i18nc( "Abbrev. for localized name", "Name" );
+  headerLabels << i18nc( "Abbrev. for article identification number", "Art. Id." );
+  headerLabels << i18nc( "Abbrev. for article Matchcode", "Art. Match.");
   setHeaderLabels( headerLabels );
 
-  contextMenu()->addTitle( i18n("Bruns Catalog" ));
+  contextMenu()->addTitle( QString("Bruns ") + i18n("Catalog"));
 }
 
 
@@ -111,7 +111,7 @@ void BrunsKatalogListView::setupChapters()
   topItem->setIcon(0, icon );
   m_topFolderMap[ Fruits ] = topItem;
 
-  topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Azaleen and Rhododendren" ) ) );
+  topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Azalea and Rhododendrons" ) ) );
   topItem->setIcon(0, icon);
   m_topFolderMap[ Rhodos ] = topItem;
 
@@ -119,11 +119,11 @@ void BrunsKatalogListView::setupChapters()
   topItem->setIcon(0, icon);
   m_topFolderMap[ Roses ] = topItem;
 
-  topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Stauden" ) ) );
+  topItem = new QTreeWidgetItem( m_root, QStringList( i18nc("botanical", "Bushes" ) ) );
   topItem->setIcon(0, icon);
   m_topFolderMap[ Stauden ] = topItem;
 
-  topItem = new QTreeWidgetItem( m_root, QStringList( i18n( "Sonstige" ) ) );
+  topItem = new QTreeWidgetItem( m_root, QStringList( i18nc( "Various plants (bot.)", "Others" ) ) );
   topItem->setIcon(0, icon);
   m_topFolderMap[ Etc ] = topItem;
 

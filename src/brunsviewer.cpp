@@ -48,7 +48,7 @@ Brunsviewer::Brunsviewer(QWidget* , const char* name):KMainWindow(0)
   initStatusBar();
   // initActions();
 
-  const QString kat = i18n("BRUNS Pflanzenkatalog 2005");
+  const QString kat = QString("BRUNS ") + i18n("Plant Catalog");
 
   BrunsKatalogView *lv = new BrunsKatalogView();
   lv->init( kat );

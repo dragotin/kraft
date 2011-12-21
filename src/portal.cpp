@@ -345,6 +345,11 @@ void Portal::slotStartupChecks()
 
 void Portal::slotReceivedMyAddress( const QString& uid, const KABC::Addressee& contact )
 {
+  if( contact.isEmpty() ) {
+    kDebug() << "My-Contact is empty!";
+    return;
+  }
+
   myContact = contact;
 
   KraftSettings::self()->setUserUid( contact.uid() );
@@ -379,9 +384,6 @@ void Portal::busyCursor( bool on )
 void Portal::slotNewDocument()
 {
   slotStatusMsg(i18n("Creating new document..."));
-  busyCursor( true );
-
-  busyCursor( false );
 
   KraftWizard wiz;
   wiz.init();
