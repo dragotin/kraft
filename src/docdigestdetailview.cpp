@@ -69,6 +69,13 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   if( info.exists() ) {
     kDebug() << "Setting image base for docdigestDetailView: " << info.dir().absolutePath();
     mHtmlCanvas->setBaseUrl( info.dir().absolutePath() +"/" );
+  } else {
+      QByteArray home = qgetenv( "KRAFT_HOME" );
+      if( !home.isEmpty() ) {
+          QString burl = QString( "%1/reports/pics/").arg(QString::fromLocal8Bit( home ));
+          kDebug() << "Setting base url from KRAFT_HOME: " << burl;
+          mHtmlCanvas->setBaseUrl( burl );
+      }
   }
 
   hbox->addWidget( mHtmlCanvas->view() );
@@ -89,8 +96,19 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     QString tmplFile = stdDirs.findResource( "data", findFile );
 
     if ( tmplFile.isEmpty() ) {
-      kDebug() << "Could not find template to render document digest.";
-      return;
+        QByteArray kraftHome = qgetenv("KRAFT_HOME");
+
+        if( !kraftHome.isEmpty() ) {
+            QString file = QString( "%1/reports/docdigest.trml").arg(QString::fromLocal8Bit(kraftHome));
+            QFileInfo fi(file);
+            if( fi.exists() && fi.isReadable() ) {
+                tmplFile = file;
+            }
+        }
+        if( tmplFile.isEmpty() ) {
+            kDebug() << "Could not find template to render document digest.";
+            return;
+        }
     }
     mTemplFile = tmplFile;
   }
