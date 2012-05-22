@@ -121,11 +121,22 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
   QString tmplFile = stdDirs.findResource( "data", findFile );
 
-
   if ( tmplFile.isEmpty() ) {
-    kDebug() << "Could not find template to render ro view of document.";
-    return;
+      QByteArray kraftHome = qgetenv("KRAFT_HOME");
+
+      if( !kraftHome.isEmpty() ) {
+          QString file = QString( "%1/reports/kraftdoc_ro.trml").arg(QString::fromLocal8Bit(kraftHome));
+          QFileInfo fi(file);
+          if( fi.exists() && fi.isReadable() ) {
+              tmplFile = file;
+          }
+      }
+      if( tmplFile.isEmpty() ) {
+          kDebug() << "Could not find template to render ro view of document.";
+          return;
+      }
   }
+
 
   TextTemplate tmpl( tmplFile );
   tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), doc->docType() + " " + doc->ident() );
@@ -142,14 +153,28 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
 
   DocPositionList positions = doc->positions();
-  DocPosition *dp;
 
+  // check the tax settings: If all items have the same settings, its not individual.
+  bool individualTax = false;
+  int ttype = -1;
+  foreach( DocPositionBase *dp, positions  ) {
+      if( ttype == -1 ) {
+        ttype = dp->taxType();
+      } else {
+        if( ttype != dp->taxType() ) { // different from previous one?
+          individualTax = true;
+          break;
+        }
+      }
+  }
 
-  DocPositionListIterator it( positions );
   int pos = 1;
+  int taxFreeCnt = 0;
+  int reducedTaxCnt = 0;
+  int fullTaxCnt = 0;
 
-  while ( it.hasNext() ) {
-    dp = static_cast<DocPosition*>( it.next() );
+  foreach( DocPositionBase *dpb, positions ) {
+      DocPosition *dp = static_cast<DocPosition*>(dpb);
     tmpl.createDictionary( "POSITIONS" );
 
     tmpl.setValue( "POSITIONS", "NUMBER", QString::number( pos++ ) );
@@ -166,12 +191,44 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     tmpl.setValue( "POSITIONS", "PRICE_STYLE", style );
 
     tmpl.setValue( "POSITIONS", "PRICE", locale->formatMoney( dp->overallPrice().toDouble() ) );
+
+    QString taxType;
+    if( individualTax ) {
+        if( dp->taxType() == 1 ) {
+            taxFreeCnt++;
+            taxType = "TAX_FREE";
+        } else if( dp->taxType() == 2 ) {
+            taxType = "REDUCED_TAX";
+            reducedTaxCnt++;
+        } else {
+            // ATTENTION: Default for all non known tax types is full tax.
+            fullTaxCnt++;
+            taxType = "FULL_TAX";
+        }
+
+        tmpl.createSubDictionary( "POSITIONS", taxType );
+    }
+
   }
 
   tmpl.setValue( DOC_RO_TAG( "TAXLABEL" ), i18n( "VAT" ) );
   tmpl.setValue( DOC_RO_TAG( "REDUCED_TAXLABEL" ), i18n( "Reduced TAX" ) );
   tmpl.setValue( DOC_RO_TAG( "NETTOSUM" ), locale->formatMoney( doc->nettoSum().toDouble() ) );
   tmpl.setValue( DOC_RO_TAG( "BRUTTOSUM" ), locale->formatMoney( doc->bruttoSum().toDouble() ) );
+
+  if( individualTax ) {
+    tmpl.createDictionary( "TAX_FREE_ITEMS" );
+    tmpl.setValue( "TAX_FREE_ITEMS", "COUNT", QString::number( taxFreeCnt ));
+
+    tmpl.createDictionary( "REDUCED_TAX_ITEMS" );
+    tmpl.setValue( "REDUCED_TAX_ITEMS", "COUNT", QString::number( reducedTaxCnt ));
+    tmpl.setValue( "REDUCED_TAX_ITEMS", "TAX",
+                   locale->formatNumber( DocumentMan::self()->reducedTax( doc->date() )));
+    tmpl.createDictionary( "FULL_TAX_ITEMS" );
+    tmpl.setValue( "FULL_TAX_ITEMS", "COUNT", QString::number( fullTaxCnt ));
+    tmpl.setValue( "FULL_TAX_ITEMS", "TAX",
+                   locale->formatNumber( DocumentMan::self()->tax( doc->date() )) );
+  }
 
   double redTax = DocumentMan::self()->reducedTax( doc->date() );
   double fullTax = DocumentMan::self()->tax( doc->date() );

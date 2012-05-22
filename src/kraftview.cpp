@@ -1010,7 +1010,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
                                                        1 /* CalcKind = Manual */ );
 
           flos->setManualPrice( dp->unitPrice() );
-          flos->save(); // <- Checke das hier!
+          flos->save();
           mNewTemplates.append( flos );
 
         }

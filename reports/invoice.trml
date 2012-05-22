@@ -80,14 +80,14 @@
       <blockTopPadding length="4mm" />
    </blockTableStyle>
 
-
-   <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
+   <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
    
    <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
    <paraStyle name="demandtext"      fontSize="12" alignment="justify" fontName="Times-Italic" />
    <paraStyle name="alternativetext" fontSize="12" alignment="justify" fontName="Times-Italic" />
 
    <paraStyle name="rtext" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="ctext" fontSize="12" alignment="CENTER" />
    <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
    <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
 
@@ -125,14 +125,15 @@
 
     <spacer length="18mm" width="1mm"/>
 
-    <blockTable colWidths="8mm,8.8cm,0.8cm,1.2cm,2.7cm,2.5cm" style="items" repeatRows="0">
+    <blockTable colWidths="8mm,8.6cm,1.0cm,1.2cm,2.7cm,2.5cm,4mm" style="items" repeatRows="0">
     <tr>
         <td><para style="text">Pos.</para></td>
         <td><para style="text">Item</para></td>
-        <td><para style="text">Qty.</para></td>
-        <td><para style="text">Unit</para></td>
-        <td><para style="rtext">Price</para></td>
-        <td><para style="rtext">Sum</para></td>
+        <td><para style="ctext">Qty.</para></td>
+        <td><para style="ctext">Unit</para></td>
+        <td><para style="ctext">Price</para></td>
+        <td><para style="ctext">Sum</para></td>
+	<td><para style="rtext"></para></td>
     </tr>
     {{#POSITIONS}}
     <tr>
@@ -142,45 +143,77 @@
         <td><para style="{{POS_KIND}}text">{{POS_UNIT}}   </para></td>
         <td><para style="{{POS_KIND}}rtext">{{POS_UNITPRICE}}</para></td>
         <td><para style="{{POS_KIND}}rtext">{{POS_TOTAL}}</para></td>
+        <td><para style="{{POS_KIND}}rtext">
+         {{#TAX_FREE}}
+           &#xB9;
+         {{/TAX_FREE}}
+         {{#REDUCED_TAX}}
+           &#xB2;
+         {{/REDUCED_TAX}}
+         {{#FULL_TAX}}
+           
+         {{/FULL_TAX}}
+       </para></td>
     </tr>
     {{/POSITIONS}}
   </blockTable>
 
   <condPageBreak height="4cm"/>
-  <blockTable colWidths="9.8cm,4cm,3cm" style="sums" repeatRows="0">
+  <blockTable colWidths="9.8cm,4cm,3cm,4mm" style="sums" repeatRows="0">
     <tr><td></td>
         <td><para style="text">Net</para></td>
         <td><para style="rtext">{{NETTOSUM}}</para></td>
+	<td></td>
     </tr>
     {{#SECTION_REDUCED_TAX}}
     <tr><td></td>
         <td><para style="text">+{{REDUCED_TAX}}% VAT</para></td>
         <td><para style="rtext">{{REDUCED_TAX_SUM}}</para></td>
+	<td></td>
     </tr>
     {{/SECTION_REDUCED_TAX}}
     {{#SECTION_FULL_TAX}}
     <tr><td></td>
         <td><para style="text">+{{FULL_TAX}}% VAT</para></td>
         <td><para style="rtext">{{FULL_TAX_SUM}}</para></td>
+	<td></td>
     </tr>
     {{/SECTION_FULL_TAX}}
     <tr><td></td>
         <td><para style="text">Sum</para></td>
         <td><para style="rtext">{{BRUTTOSUM}}</para></td>
+	<td></td>
     </tr>
   </blockTable>
-    {{#SPECIAL_POS}}
-    <para style="text">
+  {{#TAX_FREE_ITEMS}}
+  <para style="smallText">
+      &#xB9; &nbsp;tax free items ({{COUNT}} pcs.)
+  </para>
+  {{/TAX_FREE_ITEMS}}
+  {{#REDUCED_TAX_ITEMS}}
+  <para style="smallText">
+    &#xB2; &nbsp;items with reduced tax of {{TAX}}% ({{COUNT}} pcs.)
+  </para>
+  {{/REDUCED_TAX_ITEMS}}
+  {{#FULL_TAX_ITEMS}}
+  <para style="smallText">
+  No label: items with full tax of {{TAX}}% ({{COUNT}} pcs.)
+  </para>
+  {{/FULL_TAX_ITEMS}}
+
+  {{#SPECIAL_POS}}
+  <spacer length="3mm" width="1mm"/>
+    <para style="smalltext">
     Please note: This offer contains {{COUNT}} alternative or demand positions, 
     printed in italic font. These do not add to the overall sum. 
     </para>
-    {{/SPECIAL_POS}}
-    <spacer length="1cm" width="1mm"/>
-    <condPageBreak height="4cm"/>
-	{{POSTTEXT}}
-    <spacer length="0.5cm" width="1mm"/>
-    <para style="text">
-       {{GOODBYE}}
-    </para>
+  {{/SPECIAL_POS}}
+  <spacer length="1cm" width="1mm"/>
+  <condPageBreak height="4cm"/>
+     {{POSTTEXT}}
+  <spacer length="0.5cm" width="1mm"/>
+  <para style="text">
+     {{GOODBYE}}
+  </para>
 </story>
 </document>

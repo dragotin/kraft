@@ -100,3 +100,22 @@ td.baseline {
   margin-left: 30px;
 }
 
+td.itemnums {
+  width: 15px;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+td.itemtexts {
+}
+
+td.prices {
+  text-align: right;
+  vertical-align: bottom;
+}
+
+td.legends {
+   width: 10px;
+   text-align: right;
+   vertical-align: bottom;
+}

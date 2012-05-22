@@ -20,25 +20,45 @@
 {{#POSITIONS}}
 <tr>
 <td>{{NUMBER}}</td>
-<td colspan="2">{{TEXT}}</td>
+<td colspan="3">{{TEXT}}</td>
 <td></td>
 </tr>
 <tr>
 <td></td>
 <td>{{AMOUNT}} {{UNIT}}</td>
 <td align="right"><span class="{{PRICE_STYLE}}">je {{SINGLE_PRICE}}</span></td>
-<td align="right"><span class="{{PRICE_STYLE}}"{{PRICE}}</span></td>
+<td align="right"><span class="{{PRICE_STYLE}}">{{PRICE}}</span></td>
+<td align="right"><span class="{{PRICE_STYLE}}">
+ {{#TAX_FREE}}
+   &#xB9;
+ {{/TAX_FREE}}
+ {{#REDUCED_TAX}}
+   &#xB2;
+ {{/REDUCED_TAX}}
+ {{#FULL_TAX}}{{/FULL_TAX}}
+</td>
 </tr>
 {{/POSITIONS}}
 
-
 <tr><td colspan="4" align="right">____________________________</td></tr>
-<tr><td colspan="4" align="right">Netto Sum: {{NETTOSUM}}</td></tr>
+<tr>
+<td colspan="2">{{#TAX_FREE_ITEMS}}
+&#xB9; &nbsp;tax free items ({{COUNT}} pcs.)<br/>
+{{/TAX_FREE_ITEMS}}</td>
+<td colspan="2" align="right">Netto Sum: {{NETTOSUM}}</td></tr>
 {{#SECTION_REDUCED_TAX}}
-<tr><td colspan="4" align="right">+{{REDUCED_TAX}}% {{REDUCED_TAX_LABEL}}: {{REDUCED_TAX_SUM}}</td></tr>
+<tr>
+<td colspan="2">{{#REDUCED_TAX_ITEMS}}
+&#xB2; &nbsp;items with reduced tax of {{TAX}}% ({{COUNT}} pcs.)<br/>
+{{/REDUCED_TAX_ITEMS}}</td>
+<td colspan="2" align="right">+{{REDUCED_TAX}}% {{REDUCED_TAX_LABEL}}: {{REDUCED_TAX_SUM}}</td></tr>
 {{/SECTION_REDUCED_TAX}}
 {{#SECTION_FULL_TAX}}
-<tr><td colspan="4" align="right">+{{FULL_TAX}}% {{FULL_TAX_LABEL}}: {{FULL_TAX_SUM}}</td></tr>
+<tr>
+<td colspan="2">{{#FULL_TAX_ITEMS}}
+No label: items with full tax of {{TAX}}% ({{COUNT}} pcs.)<br/>
+{{/FULL_TAX_ITEMS}}</td>
+<td colspan="2" align="right">+{{FULL_TAX}}% {{FULL_TAX_LABEL}}: {{FULL_TAX_SUM}}</td></tr>
 {{/SECTION_FULL_TAX}}
 <tr><td colspan="4" align="right"><b>Brutto Sum: {{BRUTTOSUM}}</b></td></tr>
 </table>

@@ -77,8 +77,10 @@
    </blockTableStyle>
 
    <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
+   <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
    
    <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
+   <paraStyle name="ctext" fontSize="12" alignment="CENTER" />
    <paraStyle name="demandtext"      fontSize="12" alignment="justify" fontName="Times-Italic" />
    <paraStyle name="alternativetext" fontSize="12" alignment="justify" fontName="Times-Italic" />
 
@@ -120,14 +122,16 @@
 
     <spacer length="18mm" width="1mm"/>
 
-    <blockTable colWidths="8mm,8.8cm,0.8cm,1.2cm,2.7cm,2.5cm" style="items" repeatRows="0">
+    <blockTable colWidths="8mm,8.6cm,1cm,1.2cm,2.7cm,2.7cm,4mm"
+style="items" repeatRows="0">
     <tr>
         <td><para style="text">Pos.</para></td>
         <td><para style="text">Posten</para></td>
-        <td><para style="text">Anz.</para></td>
-        <td><para style="text">Einh.</para></td>
-        <td><para style="rtext">Preis</para></td>
-        <td><para style="rtext">Summe</para></td>
+        <td><para style="ctext">Anz.</para></td>
+        <td><para style="ctext">Einh.</para></td>
+        <td><para style="ctext">Preis</para></td>
+        <td><para style="ctext">Summe</para></td>
+	<td><para style="rtext"></para></td>
     </tr>
     {{#POSITIONS}}
     <tr>
@@ -137,6 +141,17 @@
         <td><para style="{{POS_KIND}}text">{{POS_UNIT}}   </para></td>
         <td><para style="{{POS_KIND}}rtext">{{POS_UNITPRICE}}</para></td>
         <td><para style="{{POS_KIND}}rtext">{{POS_TOTAL}}</para></td>
+	<td><para style="{{POS_KIND}}rtext">
+	  {{#TAX_FREE}}
+	    &#xB9;
+	  {{/TAX_FREE}}
+	  {{#REDUCED_TAX}}
+	    &#xB2;
+	  {{/REDUCED_TAX}}
+	  {{#FULL_TAX}}
+	    
+	  {{/FULL_TAX}}
+	</para></td>
     </tr>
     {{/POSITIONS}}
     </blockTable>
@@ -163,10 +178,28 @@
         <td><para style="rtext">{{BRUTTOSUM}}</para></td>
     </tr>
     </blockTable>
+    {{#TAX_FREE_ITEMS}}
+    <para style="smallText">
+      &#xB9; steuerfreie Positionen ({{COUNT}} Stück).
+    </para>
+    {{/TAX_FREE_ITEMS}}
+    {{#REDUCED_TAX_ITEMS}}
+    <para style="smallText">
+    &#xB2; &nbsp; Positionen zu reduziertem Steuersatz von {{TAX}}% ({{COUNT}} Stück).
+    </para>
+    {{/REDUCED_TAX_ITEMS}}
+    {{#FULL_TAX_ITEMS}}
+    <para style="smallText">
+    Nicht gekennzeichnet: Positionen zu vollem Steuersatz von {{TAX}}% ({{COUNT}} Stück).
+    </para>
+    {{/FULL_TAX_ITEMS}}
+
     {{#SPECIAL_POS}}
-    <para style="text">
-    Bitte beachten Sie: Dieses Angebot enth�lt {{COUNT}} in Schr�gschrift gedruckte 
-    Alternativ- oder Bedarfsposten. Diese sind in der Endsumme nicht enthalten.
+    <spacer length="3mm" width="1mm"/>
+    <para style="smallText">
+    Bitte beachten Sie: Dieses Angebot enthält {{COUNT}} in Schrägschrift
+gedruckte Alternativ- oder Bedarfsposten. Diese sind in der Endsumme
+nicht enthalten.
     </para>
     {{/SPECIAL_POS}}
     <spacer length="1cm" width="1mm"/>

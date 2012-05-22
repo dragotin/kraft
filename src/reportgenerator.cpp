@@ -194,7 +194,28 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
   ArchDocPositionList::iterator it;
   int specialPosCnt = 0;
+  int taxFreeCnt    = 0;
+  int reducedTaxCnt = 0;
+  int fullTaxCnt    = 0;
 
+  bool individualTax = false;
+  /* Check for the tax settings: If the taxType is not the same for all items,
+   * we have individual Tax setting and show the tax marker etc.
+   */
+  int ttype = -1;
+  for ( it = posList.begin(); it != posList.end(); ++it ) {
+    ArchDocPosition pos (*it);
+    if( ttype == -1 ) {
+      ttype = pos.taxType();
+    } else {
+      if( ttype != pos.taxType() ) { // different from previous one?
+        individualTax = true;
+        break;
+      }
+    }
+  }
+
+  /* now loop over the items to fill the template structures */
   for ( it = posList.begin(); it != posList.end(); ++it ) {
     ArchDocPosition pos (*it);
     tmpl.createDictionary( "POSITIONS" );
@@ -217,11 +238,31 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
     h = mArchDoc->locale()->formatNumber( amount, prec );
 
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
-    tmpl.setValue( "POSITIONS", "POS_UNIT", pos.unit() );
+    tmpl.setValue( "POSITIONS", "POS_UNIT", escapeTrml2pdfXML( pos.unit() ) );
     tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString( mArchDoc->locale() ) );
     tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.nettoPrice().toString( mArchDoc->locale() ) );
     tmpl.setValue( "POSITIONS", "POS_KIND", pos.kind().toLower() );
 
+    QString taxType;
+
+    if( individualTax ) {
+      if( pos.taxType() == 1 ) {
+        taxFreeCnt++;
+        taxType = "TAX_FREE";
+      } else if( pos.taxType() == 2 ) {
+        reducedTaxCnt++;
+        taxType = "REDUCED_TAX";
+      } else {
+        // ATTENTION: Default for all non known tax types is full tax.
+        fullTaxCnt++;
+        taxType = "FULL_TAX";
+      }
+
+      tmpl.createSubDictionary( "POSITIONS", taxType );
+    }
+
+    /* item kind: Normal, alternative or demand item. For normal items, the kind is empty.
+     */
     if ( !pos.kind().isEmpty() ) {
       specialPosCnt++;
     }
@@ -231,19 +272,35 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
     tmpl.setValue( "SPECIAL_POS", "COUNT", QString::number( specialPosCnt ) );
   }
 
+  /*
+   * Just show the tax index if we have multiple tax settings
+   */
+  if( individualTax ) {
+    tmpl.createDictionary( "TAX_FREE_ITEMS" );
+    tmpl.setValue( "TAX_FREE_ITEMS", "COUNT", QString::number( taxFreeCnt ));
+
+    tmpl.createDictionary( "REDUCED_TAX_ITEMS" );
+    tmpl.setValue( "REDUCED_TAX_ITEMS", "COUNT", QString::number( reducedTaxCnt ));
+    tmpl.setValue( "REDUCED_TAX_ITEMS", "TAX", mArchDoc->locale()->formatNumber( mArchDoc->reducedTax()) );
+
+    tmpl.createDictionary( "FULL_TAX_ITEMS" );
+    tmpl.setValue( "FULL_TAX_ITEMS", "COUNT", QString::number( fullTaxCnt ));
+    tmpl.setValue( "FULL_TAX_ITEMS", "TAX", mArchDoc->locale()->formatNumber( mArchDoc->tax()) );
+  }
+
   /* now replace stuff in the whole document */
   tmpl.setValue( TAG( "DATE" ), mArchDoc->locale()->formatDate(
                    mArchDoc->date(), KLocale::ShortDate ) );
-  tmpl.setValue( TAG( "DOCTYPE" ), mArchDoc->docType() );
-  tmpl.setValue( TAG( "ADDRESS" ), mArchDoc->address() );
+  tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( mArchDoc->docType() ) );
+  tmpl.setValue( TAG( "ADDRESS" ), escapeTrml2pdfXML( mArchDoc->address() ) );
 
   contactToTemplate( &tmpl, "CLIENT", mCustomerContact );
   contactToTemplate( &tmpl, "MY", myContact );
 
-  tmpl.setValue( TAG( "DOCID" ),   mArchDoc->ident() );
-  tmpl.setValue( TAG( "PROJECTLABEL" ),   mArchDoc->projectLabel() );
-  tmpl.setValue( TAG( "SALUT" ),   mArchDoc->salut() );
-  tmpl.setValue( TAG( "GOODBYE" ), mArchDoc->goodbye() );
+  tmpl.setValue( TAG( "DOCID" ),   escapeTrml2pdfXML( mArchDoc->ident() ) );
+  tmpl.setValue( TAG( "PROJECTLABEL" ),   escapeTrml2pdfXML( mArchDoc->projectLabel() ) );
+  tmpl.setValue( TAG( "SALUT" ),   escapeTrml2pdfXML( mArchDoc->salut() ) );
+  tmpl.setValue( TAG( "GOODBYE" ), escapeTrml2pdfXML( mArchDoc->goodbye() ) );
   tmpl.setValue( TAG( "PRETEXT" ),   rmlString( mArchDoc->preText() ) );
   tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( mArchDoc->postText() ) );
   tmpl.setValue( TAG( "BRUTTOSUM" ), mArchDoc->bruttoSum().toString( mArchDoc->locale() ) );
@@ -287,17 +344,17 @@ void ReportGenerator::contactToTemplate( TextTemplate *tmpl, const QString& pref
 {
   if( contact.isEmpty() ) return;
 
-  tmpl->setValue( ADDRESS_TAG( prefix, "NAME" ),  contact.realName() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "NAME" ),  escapeTrml2pdfXML( contact.realName() ) );
   QString co = contact.organization();
   if( co.isEmpty() ) {
     co = contact.realName();
   }
-  tmpl->setValue( ADDRESS_TAG( prefix, "ORGANISATION" ), co );
-  tmpl->setValue( ADDRESS_TAG( prefix, "URL" ),   contact.url().prettyUrl() );
-  tmpl->setValue( ADDRESS_TAG( prefix, "EMAIL" ), contact.preferredEmail() );
-  tmpl->setValue( ADDRESS_TAG( prefix, "PHONE" ), contact.phoneNumber( KABC::PhoneNumber::Work ).number() );
-  tmpl->setValue( ADDRESS_TAG( prefix, "FAX" ),   contact.phoneNumber( KABC::PhoneNumber::Fax ).number() );
-  tmpl->setValue( ADDRESS_TAG( prefix, "CELL" ),  contact.phoneNumber( KABC::PhoneNumber::Cell ).number() );
+  tmpl->setValue( ADDRESS_TAG( prefix, "ORGANISATION" ), escapeTrml2pdfXML( co ) );
+  tmpl->setValue( ADDRESS_TAG( prefix, "URL" ),   escapeTrml2pdfXML( contact.url().prettyUrl() ) );
+  tmpl->setValue( ADDRESS_TAG( prefix, "EMAIL" ), escapeTrml2pdfXML( contact.preferredEmail() ) );
+  tmpl->setValue( ADDRESS_TAG( prefix, "PHONE" ), escapeTrml2pdfXML( contact.phoneNumber( KABC::PhoneNumber::Work ).number() ) );
+  tmpl->setValue( ADDRESS_TAG( prefix, "FAX" ),   escapeTrml2pdfXML( contact.phoneNumber( KABC::PhoneNumber::Fax ).number() ) );
+  tmpl->setValue( ADDRESS_TAG( prefix, "CELL" ),  escapeTrml2pdfXML( contact.phoneNumber( KABC::PhoneNumber::Cell ).number() ) );
 
   KABC::Address address;
   address = contact.address( KABC::Address::Pref );
@@ -309,24 +366,24 @@ void ReportGenerator::contactToTemplate( TextTemplate *tmpl, const QString& pref
     address = contact.address(KABC::Address::Postal );
 
   tmpl->setValue( ADDRESS_TAG( prefix, "POSTBOX" ),
-              address.postOfficeBox() );
+                  escapeTrml2pdfXML( address.postOfficeBox() ) );
 
   tmpl->setValue( ADDRESS_TAG( prefix, "EXTENDED" ),
-                 address.extended() );
+                  escapeTrml2pdfXML( address.extended() ) );
   tmpl->setValue( ADDRESS_TAG( prefix, "STREET" ),
-                 address.street() );
+                  escapeTrml2pdfXML( address.street() ) );
   tmpl->setValue( ADDRESS_TAG( prefix, "LOCALITY" ),
-                 address.locality() );
+                  escapeTrml2pdfXML( address.locality() ) );
   tmpl->setValue( ADDRESS_TAG( prefix, "REGION" ),
-                 address.region() );
+                  escapeTrml2pdfXML( address.region() ) );
   tmpl->setValue( ADDRESS_TAG( prefix, "POSTCODE" ),
-                 address.postalCode() );
+                  escapeTrml2pdfXML( address.postalCode() ) );
   tmpl->setValue( ADDRESS_TAG( prefix, "COUNTRY" ),
-                 address.country() );
+                  escapeTrml2pdfXML( address.country() ) );
   tmpl->setValue( ADDRESS_TAG( prefix, "REGION" ),
-                 address.region() );
+                  escapeTrml2pdfXML( address.region() ) );
   tmpl->setValue( ADDRESS_TAG( prefix,"LABEL" ),
-                 address.label() );
+                  escapeTrml2pdfXML( address.label() ) );
 
 
 }
@@ -381,14 +438,26 @@ QStringList ReportGenerator::findTrml2Pdf( )
         mHavePdfMerge = true;
       }
     } else {
-      // tool erml2pdf.py not found. Try trml2pdf_kraft.sh for legacy reasons
-      QString trml2pdf = KStandardDirs::findExe("trml2pdf_kraft.sh");
-      if( trml2pdf.isEmpty() ) {
-        kDebug() << "Could not find trml2pdf_kraft.sh";
+      // tool erml2pdf.py not found. Check in $KRAFT_HOME/tools
+      QString p = QString::fromLocal8Bit( getenv( "KRAFT_HOME"));
+      if( !p.isEmpty() ) {
+          p += "/tools/erml2pdf.py";
+          kDebug() << "Found erml2pdf from KRAFT_HOME: " << p;
+          if( QFile::exists( p ) ) {
+              retList << "python";
+              retList << p;
+              mHavePdfMerge = true;
+          }
       } else {
-        kDebug() << "Found trml2pdf: " << trml2pdf;
-        retList << trml2pdf;
-        mHavePdfMerge = true;
+          // tool erml2pdf.py not found. Try trml2pdf_kraft.sh for legacy reasons
+          QString trml2pdf = KStandardDirs::findExe("trml2pdf_kraft.sh");
+          if( trml2pdf.isEmpty() ) {
+              kDebug() << "Could not find trml2pdf_kraft.sh";
+          } else {
+              kDebug() << "Found trml2pdf: " << trml2pdf;
+              retList << trml2pdf;
+              mHavePdfMerge = true;
+          }
       }
     }
 
