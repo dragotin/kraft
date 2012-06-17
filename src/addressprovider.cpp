@@ -72,7 +72,6 @@ void AddressProvider::searchResult( KJob* job )
 
   if( searchJob->error() ) {
     kDebug() << "Address search job failed: " << job->errorString();
-    return;
   }
 
   const KABC::Addressee::List contacts = searchJob->contacts();
