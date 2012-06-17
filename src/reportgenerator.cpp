@@ -60,7 +60,7 @@ ReportGenerator::ReportGenerator()
   connect( this, SIGNAL( templateGenerated( const QString& )),
            this, SLOT( slotConvertTemplate( const QString& )));
 
-  mProcess.setOutputChannelMode( KProcess:: OnlyStdoutChannel );
+  mProcess.setOutputChannelMode( KProcess::SeparateChannels );
   connect( &mProcess, SIGNAL( finished( int ) ),this, SLOT( trml2pdfFinished( int ) ) );
   connect( &mProcess, SIGNAL( readyReadStandardOutput()), this, SLOT( slotReceivedStdout() ) );
   connect( &mProcess, SIGNAL( readyReadStandardError()), this, SLOT( slotReceivedStderr() ) );
@@ -575,23 +575,32 @@ void ReportGenerator::slotError( QProcess::ProcessError err )
 
 void ReportGenerator::trml2pdfFinished( int exitStatus)
 {
-  mFile.close();
+    mFile.close();
 
-  kDebug() << "PDF Creation Process finished with status " << exitStatus;
-  kDebug() << "Wrote bytes to the output file: " << mOutputSize;
-  if ( exitStatus == 0 ) {
-    emit pdfAvailable( mFile.fileName() );
-    mFile.setFileName( QString() );
-  } else {
-    if ( mErrors.isEmpty() ) mErrors = i18n( "Unknown problem." );
-    // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
-    KMessageBox::detailedError ( 0,
-                                 i18n( "Could not generate the pdf file. The pdf creation script failed." ),
-                                 mErrors,
-                                 i18n( "PDF Generation Error" ) );
-    mErrors = QString();
-  }
-  QApplication::restoreOverrideCursor();
+    kDebug() << "PDF Creation Process finished with status " << exitStatus;
+    kDebug() << "Wrote bytes to the output file: " << mOutputSize;
+    if ( exitStatus == 0 ) {
+        emit pdfAvailable( mFile.fileName() );
+        mFile.setFileName( QString() );
+    } else {
+        if( mErrors.contains(QLatin1String("No module named reportlab"))) {
+            mErrors = i18n("To generate PDF output, Kraft requires the python module <b>ReportLab</b> which can not be found.<br/>"
+                           "Please make sure the package is installed on your computer.");
+        }
+        if( mErrors.contains(QLatin1String("No module named pyPdf"))) {
+            mErrors = i18n("To generate PDF output, Kraft requires the python module <b>pyPdf</b> which can not be found.<br/>"
+                           "Please make sure the package is installed on your computer.");
+        }
+
+        if ( mErrors.isEmpty() ) mErrors = i18n( "Unknown problem." );
+        // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
+        KMessageBox::detailedError ( 0,
+                                     i18n( "Could not generate the pdf file. The pdf creation script failed." ),
+                                     mErrors,
+                                     i18n( "PDF Generation Error" ) );
+        mErrors = QString();
+    }
+    QApplication::restoreOverrideCursor();
 
 }
 
