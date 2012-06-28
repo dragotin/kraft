@@ -830,6 +830,7 @@ void KraftView::slotNewAddress( const Addressee& contact, bool interactive )
 
   if( replace ) {
     m_headerEdit->m_labName->setText( contact.realName() );
+
     mContactUid = contact.uid();
 
     m_headerEdit->m_postAddressEdit->setText( newAddress );

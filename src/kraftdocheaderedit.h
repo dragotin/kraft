@@ -22,11 +22,15 @@
 
 class KraftDocHeaderEdit : public KraftDocEdit
 {
+    Q_OBJECT
 public:
   KraftDocHeaderEdit( QWidget* );
 
   // FIXME: Remove access to internal widgets
   Ui::DocHeaderEdit *docHeaderEdit() { return mDocHeaderEdit; }
+
+protected slots:
+  void slotPickAddressee();
 
 private:
   Ui::DocHeaderEdit *mDocHeaderEdit;

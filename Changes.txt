@@ -1,6 +1,8 @@
+
 Changes since version 0.45: #########################################
 - Handling of individual tax rates for each document item
 - bugfix: escape texts in reports correctly (reported by Lars Diel).
+- bugfix: if akonadi address was not found, display proper msg.
 - Proper error message if a python module is not installed but needed
   by the pdf generator.
 

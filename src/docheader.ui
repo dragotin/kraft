@@ -183,6 +183,29 @@
         </widget>
        </item>
        <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>10</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_pickAddressee">
+         <property name="text">
+          <string>pick...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="spacer1">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -262,14 +285,14 @@
  <layoutdefault spacing="6" margin="3"/>
  <customwidgets>
   <customwidget>
-   <class>KDateWidget</class>
-   <extends>QWidget</extends>
-   <header>kdatewidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>KComboBox</class>
    <extends>QComboBox</extends>
    <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KDateWidget</class>
+   <extends>QWidget</extends>
+   <header>kdatewidget.h</header>
   </customwidget>
   <customwidget>
    <class>KTextEdit</class>
