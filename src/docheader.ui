@@ -200,8 +200,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="pb_pickAddressee">
+         <property name="toolTip">
+          <string>Select an addressee from the address books.</string>
+         </property>
          <property name="text">
-          <string>pick...</string>
+          <string>select...</string>
          </property>
         </widget>
        </item>

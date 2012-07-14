@@ -54,13 +54,8 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   connect( mDocHeaderEdit->m_whiteboardEdit, SIGNAL( textChanged() ),
     SLOT( slotModified() ) );
 
-  connect( mDocHeaderEdit->pb_pickAddressee, SIGNAL(clicked()), SLOT(slotPickAddressee()));
+  connect( mDocHeaderEdit->pb_pickAddressee, SIGNAL(clicked()), SIGNAL(pickAddressee()));
 
   setTitle( i18n( "Document Header" ) );
   setColor( "#9af0ff" );
-}
-
-void KraftDocHeaderEdit::slotPickAddressee()
-{
-    kDebug() << "*** Picking Address from Addressbooks.";
 }

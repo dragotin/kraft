@@ -1,8 +1,8 @@
 /***************************************************************************
-  kraftdocheaderview.h  - inherited class from designer generated class
+    akonadiaddressselectordialog.h  - select addressee from address book.
                              -------------------
-    begin                : Sept. 2006
-    copyright            : (C) 2006 by Klaas Freitag
+    begin                : Sept. 2012
+    copyright            : (C) 2012 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -14,27 +14,30 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef KRAFTDOCHEADEREDIT_H
-#define KRAFTDOCHEADEREDIT_H
 
-#include "ui_docheader.h"
-#include "kraftdocedit.h"
+#ifndef AKONADIADDRESSSELECTORDIALOG_H
+#define AKONADIADDRESSSELECTORDIALOG_H
 
-class KraftDocHeaderEdit : public KraftDocEdit
+#include <kdialog.h>
+#include <kabc/addressee.h>
+
+class AkonadiAddressSelector;
+
+using namespace KABC;
+
+class AkonadiAddressSelectorDialog : public KDialog
 {
     Q_OBJECT
 public:
-  KraftDocHeaderEdit( QWidget* );
+    AkonadiAddressSelectorDialog( QWidget *parent = 0 );
+    KABC::Addressee addressee();
 
-  // FIXME: Remove access to internal widgets
-  Ui::DocHeaderEdit *docHeaderEdit() { return mDocHeaderEdit; }
-
-signals:
-  void pickAddressee();
+private slots:
+    void slotAddresseeSelected(const Addressee &);
 
 private:
-  Ui::DocHeaderEdit *mDocHeaderEdit;
+    AkonadiAddressSelector *m_addressSelector;
+    Addressee m_addressee;
 };
 
-#endif
-
+#endif // AKONADIADDRESSSELECTORDIALOG_H

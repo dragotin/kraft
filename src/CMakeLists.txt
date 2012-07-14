@@ -146,6 +146,7 @@ set(kraft_SRCS
     external/ktreeviewsearchline.cpp
     addressprovider.cpp
     akonadiaddressselector.cpp
+    akonadiaddressselectordialog.cpp
     models/globalcontactmodel.cpp
     quicksearchwidget.cpp
 )

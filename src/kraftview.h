@@ -148,6 +148,7 @@ class KraftView : public KDialog
 
   void slotDocTypeChanged( const QString& );
   void slotLanguageSettings();
+  void slotPickAddressee();
   void slotAddresseeFound( const QString&, const KABC::Addressee& );
   void slotTaxComboChanged( int );
 

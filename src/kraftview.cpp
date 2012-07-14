@@ -79,6 +79,7 @@
 #include "importitemdialog.h"
 #include "addressprovider.h"
 #include "doclocaledialog.h"
+#include "akonadiaddressselectordialog.h"
 
 #define NO_TAX   0
 #define RED_TAX  1
@@ -304,6 +305,7 @@ void KraftView::setupDocHeaderView()
              this, SLOT( slotLanguageSettings() ) );
     connect( edit, SIGNAL( modified() ),
               this, SLOT( slotModifiedHeader() ) );
+    connect( edit, SIGNAL(pickAddressee()), this, SLOT(slotPickAddressee()) );
 }
 
 void KraftView::setupPositions()
@@ -369,6 +371,15 @@ void KraftView::redrawDocument( )
     refreshPostCard();
 
     mModified = false;
+}
+
+void KraftView::slotPickAddressee()
+{
+    AkonadiAddressSelectorDialog dialog(this);
+
+    if( dialog.exec() ) {
+        slotNewAddress( dialog.addressee() );
+    }
 }
 
 void KraftView::slotAddresseeFound( const QString& uid, const KABC::Addressee& contact )
@@ -810,6 +821,7 @@ void KraftView::slotNewAddress( const Addressee& contact, bool interactive )
   const QString currAddress = m_headerEdit->m_postAddressEdit->toPlainText();
 
   bool replace = true;
+  m_headerEdit->m_labName->setText( contact.realName() );
 
   if( currAddress.isEmpty() ) {
     replace = true;
@@ -817,7 +829,8 @@ void KraftView::slotNewAddress( const Addressee& contact, bool interactive )
     // non empty and current different from new address
     // need to ask first if we overwrite
     if( interactive ) {
-      if( KMessageBox::questionYesNo( this, i18n("The address label is not empty. Do you really want to replace it?"),
+        if( KMessageBox::questionYesNo( this, i18n("The address label is not empty and different from the selected one.<br/>"
+                                                   "Do you really want to replace it with the text shown below?<pre>%1</pre>").arg(newAddress),
                                      i18n("Address Overwrite") ) == KMessageBox::No ) replace = false;
     } else {
       // this happens when the document is loaded and the address arrives from addressbook
@@ -829,8 +842,6 @@ void KraftView::slotNewAddress( const Addressee& contact, bool interactive )
   }
 
   if( replace ) {
-    m_headerEdit->m_labName->setText( contact.realName() );
-
     mContactUid = contact.uid();
 
     m_headerEdit->m_postAddressEdit->setText( newAddress );
