@@ -407,8 +407,8 @@ void SetupAssistant::back()
 void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidgetItem* /* previous */)
 {
   if( current == mCreateDbPageItem ) {
-    if(DatabaseSettings::self()->dbDriver() == "QMYSQL") {
-      if(!KraftDB::self()->dbConnect( "QMYSQL",
+      if( mSqlBackendDriver == QLatin1String("QMYSQL") ) {
+      if(!KraftDB::self()->dbConnect( QLatin1String("QMYSQL"),
                                       mMysqlDetailsPage->dbName(),
                                       mMysqlDetailsPage->dbUser(),
                                       mMysqlDetailsPage->dbServer(),
@@ -417,7 +417,7 @@ void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidg
         return;
       }
     } else {
-      if( !KraftDB::self()->dbConnect( "QSQLITE", mSqLiteDetailsPage->url().pathOrUrl() ) ) {
+      if( !KraftDB::self()->dbConnect( QLatin1String("QSQLITE"), mSqLiteDetailsPage->url().pathOrUrl() ) ) {
         mCreateDbPage->setStatusText( i18n("<p>Can't open your database file, check the permissions and such."));
       }
     }
@@ -643,9 +643,9 @@ void SetupAssistant::handleSqLiteDetails()
   QString file = mSqLiteDetailsPage->url().pathOrUrl();
   kDebug() << "The SqlLite database file is " << file;
 
-  QString driver = mDbSelectPage->selectedDriver();
-  kDebug() << "The database driver is " << driver;
-  KraftDB::self()->dbConnect( driver, file );
+  mSqlBackendDriver = mDbSelectPage->selectedDriver();
+  kDebug() << "The database driver is " << mSqlBackendDriver;
+  KraftDB::self()->dbConnect( mSqlBackendDriver, file );
 
   kDebug() << "############ database opened: "<< KraftDB::self()->isOk();
   bool dbExists = KraftDB::self()->databaseExists();
@@ -662,7 +662,7 @@ void SetupAssistant::handleSqLiteDetails()
 
 void SetupAssistant::handleMysqlDetails()
 {
-  QString driver = mDbSelectPage->selectedDriver();
+  QString driver   = mDbSelectPage->selectedDriver();
   QString hostName = mMysqlDetailsPage->dbServer();
   QString databaseName = mMysqlDetailsPage->dbName();
   QString userName = mMysqlDetailsPage->dbUser();
@@ -680,6 +680,8 @@ void SetupAssistant::handleMysqlDetails()
   } else {
     setAppropriate( mCreateDbPageItem, true );
   }
+  mSqlBackendDriver = QLatin1String("QMYSQL");
+
   kDebug() << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
 }
 

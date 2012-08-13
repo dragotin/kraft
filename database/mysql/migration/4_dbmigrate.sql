@@ -6,7 +6,7 @@ CREATE TABLE DocTexts (
   text           TEXT,
   docType        VARCHAR( 64 ),
   textType       VARCHAR( 64 ),
-  modDate        TIMESTAMP(14),
+  modDate        TIMESTAMP,
 
   PRIMARY KEY( docTextID ),
   INDEX( docType, textType )

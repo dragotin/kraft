@@ -46,7 +46,7 @@ CREATE TABLE Catalog (
 	Gewinn	     DECIMAL(6,2)        default 0,
 	zeitbeitrag  TINYINT             default 1,
 	enterDatum   DATETIME,
-	modifyDatum  TIMESTAMP(14),
+	modifyDatum  TIMESTAMP,
 	Preisart     INT NOT NULL  default 1,
 	EPreis       DECIMAL(10,2)       default 0,
 	PRIMARY KEY( TemplID ),
@@ -65,7 +65,7 @@ CREATE TABLE CalcTime (
 	stdHourSet    INT default 0,
 	allowGlobal   INT default 1,
 
-	modDate	      TIMESTAMP(14),
+	modDate	      TIMESTAMP,
 
 	PRIMARY KEY( TCalcID),
 	INDEX( TemplID )
@@ -79,7 +79,7 @@ CREATE TABLE CalcFixed(
 	amount        DECIMAL(10,2) default 1.0,
 	price	      DECIMAL(10,2),
 	percent       INT default 0,
-	modDate	      TIMESTAMP(14),
+	modDate	      TIMESTAMP,
 
 	PRIMARY KEY(FCalcID),
 	INDEX(TemplID)
@@ -90,7 +90,7 @@ CREATE TABLE CalcMaterials(
 	TemplID       INT NOT NULL,
 	name          VARCHAR(255),
 	percent       INT default 0,
-	modDate	      TIMESTAMP(14),
+	modDate	      TIMESTAMP,
 
 	PRIMARY KEY(MCalcID),
 	INDEX(TemplID)
@@ -129,7 +129,7 @@ CREATE TABLE stockMaterial (
 	priceIn	     DECIMAL(10,2),
 	priceOut     DECIMAL(10,2),
 	enterDate    DATETIME,
-	modifyDate   TIMESTAMP(14),
+	modifyDate   TIMESTAMP,
 
 	PRIMARY KEY(matID),
 	INDEX(chapterID)
