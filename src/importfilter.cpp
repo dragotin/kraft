@@ -197,8 +197,6 @@ DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
     if ( !f.open( QIODevice::ReadOnly ) ) {
       mError = i18n( "Could not open the import source file!" );
       ok = false;
-    } else {
-      kDebug() << "Unable to open file in read only mode";
     }
   }
   if ( ok ) {
@@ -228,7 +226,7 @@ DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
 // creates a DocPosition from one line of the imported file
 DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& ok )
 {
-  QStringList parts = mSeparator.split( l, QString::KeepEmptyParts );
+  QStringList parts = l.split( mSeparator, QString::KeepEmptyParts );
   kDebug() << "Importing raw line " << l;
 
   QString h;
@@ -246,8 +244,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
   if ( unitId > -1 ) {
     pos.setUnit( UnitManager::self()->getUnit( unitId ) );
   } else {
-    kDebug() << "WRN: Unable to get a valid unit";
-    if ( mStrict ) ok = false;
+    pos.setUnit(Einheit( unit ));
   }
 
   // Amount.
@@ -288,7 +285,9 @@ QString DocPositionImportFilter::replaceCOL( const QStringList& cols, const QStr
   QString re( in );
   for ( int i = 0; i < cols.size(); i++ ) {
     QString replacer = QString( "COL(%1)" ).arg( i+1 );
-    re.replace( replacer, cols[i], Qt::CaseInsensitive );
+    QString col = cols[i].trimmed();
+
+    re.replace( replacer, col, Qt::CaseInsensitive );
   }
   // kDebug() << "replaced line: " << re;
   return re;
