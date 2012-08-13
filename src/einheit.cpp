@@ -39,6 +39,14 @@ Einheit::Einheit( int id )
 
 }
 
+Einheit::Einheit( const QString& einhText )
+{
+    m_einheitSingular = einhText;
+    m_einheitPlural = einhText;
+    m_einheitSingularLong = einhText;
+    m_einheitPluralLong = einhText;
+}
+
 Einheit::~Einheit(){
 }
 
