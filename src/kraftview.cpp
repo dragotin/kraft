@@ -31,6 +31,7 @@
 #include <QResizeEvent>
 #include <QPalette>
 #include <QTimer>
+#include <QScrollBar>
 
 #include <kdebug.h>
 #include <kdialog.h>
@@ -93,17 +94,26 @@ QScrollArea( parent )
   myWidget->setAutoFillBackground(false);
   layout = new QVBoxLayout;
   layout->setAlignment(Qt::AlignTop);
-  layout->setSizeConstraint( QLayout::QLayout::SetMinAndMaxSize );
-  layout->setMargin( 0 );
+  layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
+  layout->setContentsMargins( 0,0,0,0 );
+  layout->setSpacing(0);
   myWidget->setLayout(layout);
   setWidget(myWidget);
   setWidgetResizable(true);
-
+  myWidget->resize(0,0);
+  myWidget->setMinimumHeight(0);
+  myWidget->setMaximumHeight(0);
+  myWidget->setContentsMargins(0, 0, 0, 0);
 }
 
 void KraftViewScroll::addChild( QWidget *child, int index )
 {
-  layout->insertWidget(index, child);
+    int y1 = myWidget->height();
+    layout->insertWidget(index, child);
+    int y2 = y1+child->height();
+    myWidget->resize( child->width(), y2);
+    myWidget->setMinimumHeight(y2);
+    myWidget->setMaximumHeight(y2);
 }
 
 void KraftViewScroll::removeChild( PositionViewWidget *child )
@@ -399,7 +409,7 @@ void KraftView::redrawDocPositions( )
   if ( list.count() == 0 ) {
     // the doc has no positions yet. Let's show a help page
     if ( ! mHelpLabel ) {
-      mHelpLabel = new QLabel(0);
+      mHelpLabel = new QLabel(this);
       mHelpLabel->setMargin( KDialog::marginHint() );
       mHelpLabel->setText( i18n( "<qt><h2>The Document Items List is still empty, but Items "
                                  "can be added now.</h2>"
@@ -1056,7 +1066,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
   widget->slotModified();
   widget->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
 
-  slotFocusPosition( widget, newpos );
+  slotFocusItem( widget, newpos );
   refreshPostCard();
 }
 
@@ -1110,7 +1120,7 @@ void KraftView::slotAddExtraPosition()
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
   kDebug() << "PositionViewWiget doc position is: " << widget->position() << endl;
   widget->slotModified();
-  slotFocusPosition( widget, newpos );
+  slotFocusItem( widget, newpos );
   refreshPostCard();
 
 }
@@ -1412,30 +1422,32 @@ void KraftView::saveChanges()
 
     // Save newly created templates
     if ( mNewTemplates.count() > 0 ) {
+      bool reload = false;
       CatalogTemplate *ct = 0;
       CatalogTemplateListIterator it( mNewTemplates );
       while( it.hasNext()) {
         ct = it.next();
+        if( ct->chapterId() != 0 ) reload = true; // only reload for chapters different from the incoming.
         ct->save();
       }
       mNewTemplates.clear();
       // reload the entire katalog
-      Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
-      KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
+      if( reload ) {
+        Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
+        KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
+      }
     }
 }
 
-void KraftView::slotFocusPosition( PositionViewWidget *posWidget, int pos )
+void KraftView::slotFocusItem( PositionViewWidget *posWidget, int pos )
 {
   if( posWidget && pos > 0) {
-    int w = posWidget->height();
-    kDebug() << "Focussing on widget " << posWidget << " on pos " << pos << " with heigt " << w;
-    int y = (pos)*w;
-    kDebug() << "Focus on y-koord " << y << " on canvas height " << (m_positionScroll->widget())->height();
-    m_positionScroll->ensureVisible( 2, y, 0, 0 );
+    int y = (1+pos)*posWidget->height();
+    m_positionScroll->ensureVisible(0, y);
   } else {
     m_positionScroll->ensureVisible( 0, 0 );
   }
+  // setting Focus within the item.
   if( posWidget ) {
     if( posWidget->m_teFloskel->toPlainText().isEmpty() ) {
       posWidget->m_teFloskel->setFocus();
