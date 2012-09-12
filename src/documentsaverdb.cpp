@@ -142,6 +142,10 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
   int ordNumber = 1;
 
+  QSqlTableModel model;
+  model.setTable("docposition");
+  model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+
   DocPositionListIterator it( posList );
   while( it.hasNext() ) {
     DocPositionBase *dpb = it.next();
@@ -150,8 +154,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         dpb->type() == DocPositionBase::ExtraDiscount ) {
       DocPosition *dp = static_cast<DocPosition*>(dpb);
       QSqlRecord record ;
-      QSqlTableModel model;
-      model.setTable("docposition");
       bool doInsert = true;
 
       int posDbID = dp->dbId().toInt();
