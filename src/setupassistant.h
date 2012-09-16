@@ -125,6 +125,8 @@ class CreateDbPage:public QWidget
 
   private:
   Ui::createDbForm ui;
+  int mCreates;
+  int mFills;
 };
 
 // ---------------------------------------------------------------------------
@@ -144,6 +146,7 @@ class UpgradeDbPage:public QWidget
   private:
   void updateCounter();
   Ui::upgradeDbForm ui;
+  int mUpgrades;
 };
 
 // ---------------------------------------------------------------------------

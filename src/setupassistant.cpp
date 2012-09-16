@@ -178,20 +178,23 @@ void CreateDbPage::setStatusText( const QString& t )
 
 void CreateDbPage::setFillCmdsCount( int cnt )
 {
-  ui.mFillProgress->setMaximum( cnt );
-  ui.mFillProgress->setValue( 0 );
-  ui.mFillCounter->setText( i18n("0/%1").arg(cnt));
+    mFills = 0;
+    ui.mFillProgress->setMaximum( cnt );
+    ui.mFillProgress->setValue( 0 );
+    ui.mFillCounter->setText( i18n("0/%1").arg(cnt));
 }
+
 void CreateDbPage::setFillCmdsCurrent( int cnt )
 {
-  ui.mFillProgress->setValue( cnt );
+    ui.mFillProgress->setValue( cnt );
 }
 
 void CreateDbPage::setCreateCmdsCount( int cnt )
 {
-  ui.mCreateProgress->setMaximum( cnt );
-  ui.mCreateProgress->setValue( 0 );
-  ui.mCreateCounter->setText( i18n("0/%1").arg(cnt));
+    mCreates = 0;
+    ui.mCreateProgress->setMaximum( cnt );
+    ui.mCreateProgress->setValue( 0 );
+    ui.mCreateCounter->setText( i18n("0/%1").arg(cnt));
 }
 
 void CreateDbPage::setCreateCmdsCurrent( int cnt )
@@ -208,18 +211,18 @@ void CreateDbPage::slotStatusMessage( const QString& msg )
 void CreateDbPage::slotCountCreateProgress( bool res )
 {
   if( res ) {
-    int cnt = ui.mCreateProgress->value();
-    ui.mCreateProgress->setValue( cnt+1 );
-    ui.mCreateCounter->setText( i18n("%1/%2").arg( cnt +1).arg( ui.mCreateProgress->maximum() ) );
+      mCreates++;
+      ui.mCreateProgress->setValue( mCreates );
+      ui.mCreateCounter->setText( i18n("%1/%2").arg(mCreates).arg( ui.mCreateProgress->maximum() ) );
   }
 }
 
 void CreateDbPage::slotCountFillProgress( bool res )
 {
   if( res ) {
-    int cnt = ui.mFillProgress->value();
-    ui.mFillProgress->setValue( cnt+1 );
-    ui.mFillCounter->setText( i18n("%1/%2").arg( cnt +1).arg( ui.mFillProgress->maximum() ) );
+      mFills++;
+    ui.mFillProgress->setValue( mFills );
+    ui.mFillCounter->setText( i18n("%1/%2").arg(mFills).arg( ui.mFillProgress->maximum() ) );
   }
 }
 
@@ -246,21 +249,22 @@ void UpgradeDbPage::slotSetStatusText( const QString& txt )
 
 void UpgradeDbPage::slotSetOverallCount( int cnt )
 {
-  ui.mUpgradeProgress->setMaximum( cnt );
-  ui.mUpgradeProgress->setValue( 0 );
-  updateCounter();
+    mUpgrades = 0;
+    ui.mUpgradeProgress->setMaximum( cnt );
+    ui.mUpgradeProgress->setValue( 0 );
+    updateCounter();
 }
 
 void UpgradeDbPage::updateCounter()
 {
-  ui.mUpgradeCounter->setText( i18n("%1/%2").arg( ui.mUpgradeProgress->value()).arg( ui.mUpgradeProgress->maximum() ));
+  ui.mUpgradeCounter->setText( i18n("%1/%2").arg(mUpgrades).arg( ui.mUpgradeProgress->maximum() ));
 }
 
 void UpgradeDbPage::slotCountFillProgress( bool res )
 {
   if( res ) {
-    int cnt = ui.mUpgradeProgress->value();
-    ui.mUpgradeProgress->setValue( cnt+1 );
+    mUpgrades++;
+    ui.mUpgradeProgress->setValue( mUpgrades );
     updateCounter();
   }
 }
@@ -604,10 +608,7 @@ void SetupAssistant::startDatabaseCreation()
     kDebug( ) << creates << "(=All) create commands succeeded!";
 
     // lets do the fillup
-    connect( KraftDB::self(), SIGNAL( statusMessage( const QString& ) ),
-             mCreateDbPage, SLOT( slotStatusMessage( const QString& ) ) );
-
-    disconnect( mCreateDbPage, SLOT( slotCountCreateProgress(bool) ) );
+    disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0,0 );
 
     connect( KraftDB::self(), SIGNAL( processedSqlCommand( bool ) ),
              mCreateDbPage, SLOT( slotCountFillProgress( bool ) ) );
@@ -622,8 +623,8 @@ void SetupAssistant::startDatabaseCreation()
     mCreateDbPage->setStatusText( i18n( "Failed to perform all commands." ) );
     // FIXME: Disable next button
   }
-  disconnect( mCreateDbPage, SLOT( slotCountFillProgress(bool) ) );
-  disconnect( mCreateDbPage, SLOT( slotStatusMessage( const QString&) ) );
+  disconnect( KraftDB::self(), SIGNAL(statusMessage( const QString&)),0 ,0 );
+  disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0 ,0 );
 }
 
 void SetupAssistant::handleDatabaseBackendSelect()
