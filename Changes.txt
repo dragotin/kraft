@@ -5,6 +5,8 @@ Changes since version 0.45: #########################################
 - bugfix: if akonadi address was not found, display proper msg.
 - Proper error message if a python module is not installed but needed
   by the pdf generator.
+- Rearragned doc type setup dialog to better display path names of 
+  template file and watermark file.
 
 Changes since version 0.44: #########################################
 - bugfix release: Fixed the display of decimal places in the PDF 
