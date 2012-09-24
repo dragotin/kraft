@@ -5,6 +5,15 @@ Changes since version 0.45: #########################################
 - bugfix: if akonadi address was not found, display proper msg.
 - Proper error message if a python module is not installed but needed
   by the pdf generator.
+- added button to assign an address book entry as document receiver 
+  for existing documents (Bug #3477467)
+- bugfix: Display of number of processed sql commands in setup 
+  assistant (Bug #3560611)
+- started to optimize database save of documents for more performant
+  saves.
+- bugfix: Fixed import of document items from csv lists.
+- added page number on default document from page two to end.
+- bugfix: Fixed mysql database setup.
 - Rearragned doc type setup dialog to better display path names of 
   template file and watermark file.
 
