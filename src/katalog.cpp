@@ -143,6 +143,16 @@ QString Katalog::chapterName(const dbID& id)
   return i18n("not found");
 }
 
+dbID Katalog::chapterID( const QString& name )
+{
+    foreach( CatalogChapter chapter, mChapters ) {
+      if( chapter.name() == name ) {
+        return chapter.id();
+      }
+    }
+    return dbID();
+}
+
 QString Katalog::getName() const
 {
     return m_name;
