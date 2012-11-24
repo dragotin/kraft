@@ -46,8 +46,10 @@ MaterialCalcPart::MaterialCalcPart(long matID, int percent, double amount)
     : CalcPart( percent), m_calcID(0), m_calcAmount(amount)
 {
   m_mat = new StockMaterial();
-  getMatFromID(matID);
-  setName(m_mat->name());
+  if( m_mat ) {
+      getMatFromID(matID);
+      setName(m_mat->name());
+  }
 }
 
 MaterialCalcPart::~MaterialCalcPart( )
