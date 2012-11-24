@@ -169,7 +169,5 @@ QString InsertTemplDialog::chapter() const
   return re;
 }
 
-#include "inserttempldialog.moc"
-
 /* END */
 

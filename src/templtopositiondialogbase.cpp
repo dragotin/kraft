@@ -71,4 +71,3 @@ int TemplToPositionDialogBase::insertAfterPosition()
   return itemPos;
 }
 
-#include "templtopositiondialogbase.moc"
