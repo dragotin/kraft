@@ -3,7 +3,7 @@
 <document filename="kraft.pdf">
 <template pageSize="(21cm, 29.7cm)" leftMargin="2.41cm" rightMargin="0.81cm"
   topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document" 
-  author="http://kraft.kde.org" allowSplitting="20"
+  author="Kraft http://www.volle-kraft-voraus.de" allowSplitting="20"
   showBoundary="0">
     <template>
       <setFont name="Times-Roman" size="12" />
