@@ -51,16 +51,6 @@ SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH};${CMAKE_INSTALL_PREFIX}/lib/kraf
 
 ########### next target ###############
 
-set(kplant_SRCS brunsviewmain.cpp brunsviewer.cpp)
-
-kde4_add_executable(kplant ${kplant_SRCS} )
-
-target_link_libraries(kplant kraftcat ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS})
-
-install(TARGETS kplant ${INSTALL_TARGETS_DEFAULT_ARGS})
-
-########### next target ###############
-
 set(kraft_SRCS
     templkatalog.cpp
     docposition.cpp
