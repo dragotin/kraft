@@ -224,7 +224,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         } else {
           kDebug() << "Updating!" << endl;
           model.setRecord(0, record);
-          model.submitAll();
         }
       } else {
         kDebug() << "ERR: No record object found!" << endl;
@@ -238,6 +237,8 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
       }
     }
   }
+  model.submitAll();
+
 }
 
 void DocumentSaverDB::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
