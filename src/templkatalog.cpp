@@ -107,6 +107,9 @@ int TemplKatalog::load()
               "Floskel, Gewinn, zeitbeitrag, lastUsed, useCounter FROM Catalog WHERE chapterID IN( " + chapIdList + ") "
               "ORDER BY chapterID, sortKey" );
   q.exec();
+
+  m_flosList.clear();
+
   while ( q.next() ) {
     cnt++;
     int einheit = q.value(0).toInt();
@@ -144,7 +147,6 @@ int TemplKatalog::load()
 
     loadCalcParts( flos );
 
-    // FIXME KDE4: Append to list sorted.
     m_flosList.append(flos);
   }
   return cnt;

@@ -1023,8 +1023,12 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
 
         // if it's a new position, create a catalog template in the incoming chapter
         if ( newTemplate ) {
-          // const QString chapter = dia->chapter();
-          int chapterId = 0; // FIXME - need a new way of chapter picking
+          const QString chapter = dia->chapter();
+
+          int chapterId = 0; // find the chapter.
+          if( !chapter.isEmpty() ) {
+              chapterId = KatalogMan::self()->defaultTemplateCatalog()->chapterID(chapter).toInt();
+          }
 
           FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
                                                        dp->unit().id(),
@@ -1033,8 +1037,13 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
 
           flos->setManualPrice( dp->unitPrice() );
           flos->save();
-          mNewTemplates.append( flos );
 
+          // reload the entire katalog
+          Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
+          if( defaultKat ) {
+              defaultKat->load();
+              KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
+          }
         }
       } else if ( kat->type() == MaterialCatalog ) {
         KraftSettings::self()->setTemplateToPosDialogSize( s );
@@ -1419,24 +1428,6 @@ void KraftView::saveChanges()
     KraftSettings::self()->setDocViewPosition( pos() );
     KraftSettings::self()->writeConfig();
     KraftSettings::self()->readConfig();
-
-    // Save newly created templates
-    if ( mNewTemplates.count() > 0 ) {
-      bool reload = false;
-      CatalogTemplate *ct = 0;
-      CatalogTemplateListIterator it( mNewTemplates );
-      while( it.hasNext()) {
-        ct = it.next();
-        if( ct->chapterId() != 0 ) reload = true; // only reload for chapters different from the incoming.
-        ct->save();
-      }
-      mNewTemplates.clear();
-      // reload the entire katalog
-      if( reload ) {
-        Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
-        KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
-      }
-    }
 }
 
 void KraftView::slotFocusItem( PositionViewWidget *posWidget, int pos )
@@ -1479,8 +1470,6 @@ void KraftView::discardChanges()
     kDebug() << "Document refetch from database" << endl;
     doc->reloadDocument();
   }
-
-  mNewTemplates.clear();
 }
 
 void KraftView::print(QPrinter * /* pPrinter */ )

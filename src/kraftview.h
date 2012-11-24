@@ -200,7 +200,7 @@ private:
   DocAssistant   *mAssistant;
   double         mRememberAmount;
   QMap<dbID, CalcPartList> mCalculationsMap;
-  CatalogTemplateList      mNewTemplates;
+
   bool           mModified;
   int            mTaxBefore;
 };
