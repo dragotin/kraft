@@ -16,6 +16,10 @@ Changes since version 0.45: #########################################
 - bugfix: Fixed mysql database setup.
 - Rearragned doc type setup dialog to better display path names of 
   template file and watermark file.
+- bugfix: If a manual entered template has checkbox "store in template
+  catalog, the template is immediately written to and catalog is
+  reloaded.
+- bugfix: Focus on the last added item on document edit.
 
 Changes since version 0.44: #########################################
 - bugfix release: Fixed the display of decimal places in the PDF 
