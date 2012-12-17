@@ -21,6 +21,8 @@ Changes since version 0.45: #########################################
   reloaded.
 - bugfix: Focus on the last added item on document edit.
 
+    => release v. 0.50 (dec 17, 2012)
+
 Changes since version 0.44: #########################################
 - bugfix release: Fixed the display of decimal places in the PDF 
   document which caused broken documents.
