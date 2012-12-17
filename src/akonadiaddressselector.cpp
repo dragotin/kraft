@@ -131,11 +131,8 @@ AkonadiAddressSelector::AkonadiAddressSelector(QWidget *parent, bool /* showText
   mContactsFilterModel = new Akonadi::ContactsFilterProxyModel( this );
   mContactsFilterModel->setSourceModel( mItemTree );
 
-
   connect( mQuickSearchWidget, SIGNAL( filterStringChanged( const QString& ) ),
            mContactsFilterModel, SLOT( setFilterString( const QString& ) ) );
-  connect( mQuickSearchWidget, SIGNAL( filterStringChanged( const QString& ) ),
-           this, SLOT( selectFirstItem() ) );
   connect( mQuickSearchWidget, SIGNAL( arrowDownKeyPressed() ),
            mItemView, SLOT( setFocus() ) );
 
@@ -146,10 +143,6 @@ AkonadiAddressSelector::AkonadiAddressSelector(QWidget *parent, bool /* showText
 
   connect( mItemView, SIGNAL( currentChanged( const Akonadi::Item& ) ),
            this, SLOT( slotItemSelected( const Akonadi::Item& ) ) );
- // connect( mItemView, SIGNAL( doubleClicked( const Akonadi::Item& ) ),
- //          mActionManager->action( Akonadi::StandardContactActionManager::EditItem ), SLOT( trigger() ) );
-  connect( mItemView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-           this, SLOT( itemSelectionChanged( const QModelIndex&, const QModelIndex& ) ) );
 
   QMetaObject::invokeMethod( this, "delayedInit", Qt::QueuedConnection );
 }
