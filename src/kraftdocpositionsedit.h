@@ -4,8 +4,32 @@
 #include "ui_docheader.h"
 #include "kraftdocedit.h"
 
+#include <QScrollArea>
+
 class KraftViewScroll;
 class KPushButton;
+
+class PositionViewWidget;
+
+class KraftViewScroll : public QScrollArea
+{
+  Q_OBJECT
+
+public:
+  KraftViewScroll( QWidget* );
+  ~KraftViewScroll() { }
+
+  void addChild( QWidget *child, int index );
+  void removeChild( PositionViewWidget *child );
+  void moveChild( PositionViewWidget *child, int index);
+  int indexOf( PositionViewWidget *child);
+
+private:
+  QWidget *myWidget;
+  QVBoxLayout *layout;
+};
+
+// ###########################################################################
 
 class KraftDocPositionsEdit : public KraftDocEdit
 {

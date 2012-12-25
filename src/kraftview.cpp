@@ -87,53 +87,6 @@
 #define FULL_TAX 2
 #define INDI_TAX 3
 
-KraftViewScroll::KraftViewScroll( QWidget *parent ):
-QScrollArea( parent )
-{
-  myWidget = new QWidget;
-  myWidget->setAutoFillBackground(false);
-  layout = new QVBoxLayout;
-  layout->setAlignment(Qt::AlignTop);
-  layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
-  layout->setContentsMargins( 0,0,0,0 );
-  layout->setSpacing(0);
-  myWidget->setLayout(layout);
-  setWidget(myWidget);
-  setWidgetResizable(true);
-  myWidget->resize(0,0);
-  myWidget->setMinimumHeight(0);
-  myWidget->setMaximumHeight(0);
-  myWidget->setContentsMargins(0, 0, 0, 0);
-}
-
-void KraftViewScroll::addChild( QWidget *child, int index )
-{
-    int y1 = myWidget->height();
-    layout->insertWidget(index, child);
-    int y2 = y1+child->height();
-    myWidget->resize( child->width(), y2);
-    myWidget->setMinimumHeight(y2);
-    myWidget->setMaximumHeight(y2);
-}
-
-void KraftViewScroll::removeChild( PositionViewWidget *child )
-{
-  layout->removeWidget( child ); // from the scrollview
-}
-
-void KraftViewScroll::moveChild( PositionViewWidget *child, int index)
-{
-  layout->removeWidget(child);
-  layout->insertWidget(index, child);
-}
-
-int KraftViewScroll::indexOf(PositionViewWidget *child)
-{
-  return layout->indexOf(child);
-}
-
-// #########################################################
-
 KraftView::KraftView(QWidget *parent) :
   KDialog( parent ),
   m_doc( 0 ),

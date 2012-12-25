@@ -32,7 +32,7 @@
 // include files for Qt
 #include <QMap>
 #include <QLabel>
-#include <QScrollArea>
+
 
 #include <kdialog.h>
 #include <kabc/addressee.h>
@@ -61,28 +61,9 @@ class CalcPartList;
 class AddressProvider;
 
 class Katalog;
+class KraftViewScroll;
 
 using namespace KABC;
-
-class KraftViewScroll : public QScrollArea
-{
-  Q_OBJECT
-
-public:
-  KraftViewScroll( QWidget* );
-  ~KraftViewScroll() { }
-
-  void addChild( QWidget *child, int index );
-  void removeChild( PositionViewWidget *child );
-  void moveChild( PositionViewWidget *child, int index);
-  int indexOf( PositionViewWidget *child);
-
-private:
-  QWidget *myWidget;
-  QVBoxLayout *layout;
-};
-
-// ###########################################################################
 
 class KraftView : public KDialog
 {
