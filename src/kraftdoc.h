@@ -152,6 +152,8 @@ private:
   QList<KraftView*> pViewList;
 
   DocumentSaverBase* getSaver( const QString& saverHint = QString() );
+  DocumentSaverBase* getLoader( const QString& saverHint = QString() );
+
   /** the modified flag of the current document */
   bool modified;
   bool mIsNew;
@@ -177,6 +179,7 @@ private:
   DocPositionList mPositions;
   DBIdList mRemovePositions;
   DocumentSaverBase *mSaver;
+  DocumentSaverBase *mLoader;
   dbID    mDocID;
 };
 

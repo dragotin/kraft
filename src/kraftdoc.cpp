@@ -36,6 +36,8 @@
 #include "docposition.h"
 #include "documentsaverdb.h"
 #include "defaultprovider.h"
+#include "documentsaverxml.h"
+
 #include "documentman.h"
 
 // FIXME: Make KraftDoc inheriting DocDigest!
@@ -44,7 +46,8 @@ KraftDoc::KraftDoc(QWidget *parent)
   : QObject(parent),
     mIsNew(true),
     mLocale(0),
-    mSaver(0)
+    mSaver(0),
+    mLoader(0)
 {
   mLocale = new KLocale( "kraft" );
   mPositions.setLocale( mLocale );
@@ -53,6 +56,8 @@ KraftDoc::KraftDoc(QWidget *parent)
 KraftDoc::~KraftDoc()
 {
   delete mLocale;
+    delete mSaver;
+    delete mLoader;
 }
 
 KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
@@ -100,6 +105,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   // setPositionList( origDoc.mPositions );
   mRemovePositions = origDoc.mRemovePositions;
   mSaver = 0;
+  mLoader = 0;
   // mDocID = origDoc.mDocID;
 
   return *this;
@@ -174,7 +180,7 @@ bool KraftDoc::newDocument( const QString& docType )
 
 bool KraftDoc::openDocument(const QString& id )
 {
-  DocumentSaverBase *loader = getSaver();
+  DocumentSaverBase *loader = getLoader();
   loader->load( id, this );
 
   modified=false;
@@ -333,9 +339,19 @@ DocumentSaverBase* KraftDoc::getSaver( const QString& )
     if( ! mSaver )
     {
         kDebug() << "Create new Document DB-Saver" << endl;
-        mSaver = new DocumentSaverDB();
+        mSaver = new DocumentSaverXML();
     }
     return mSaver;
+}
+
+DocumentSaverBase* KraftDoc::getLoader( const QString& )
+{
+    if( ! mLoader )
+    {
+        kDebug() << "Create new Document DB-Loader" << endl;
+        mLoader = new DocumentSaverDB();
+    }
+    return mLoader;
 }
 
 Geld KraftDoc::nettoSum()
