@@ -212,4 +212,3 @@ bool Kraftdocument::writeFile( const QString &filename )
   return true;
 }
 
-

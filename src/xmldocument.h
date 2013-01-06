@@ -29,7 +29,7 @@ class XmlDocument : public Kraftdocument
 public:
     XmlDocument();
     // write the KraftDoc from the pointer
-    void setKraftDoc( KraftDoc* );
+    void setKraftDoc( KraftDoc *doc );
 
     // read the KraftDoc into the pointer
     void getKraftDoc( KraftDoc* );

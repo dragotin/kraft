@@ -32,7 +32,11 @@
 	</xs:simpleContent>
       </xs:complexType>
     </xs:element>
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> Initial commit for xml based document storage, WIP
   </xs:sequence>
 </xs:complexType>
 
@@ -56,14 +60,22 @@
    </xs:sequence>
    <xs:attribute name="number" type="xs:integer" use="required"/>
  </xs:complexType>
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> Initial commit for xml based document storage, WIP
  <xs:complexType name="item_list">
    <xs:sequence>
      <xs:element name="item" type="item_type" minOccurs="0" maxOccurs="unbounded">
        </xs:element>
    </xs:sequence>
  </xs:complexType>
+<<<<<<< HEAD
    
+=======
+
+>>>>>>> Initial commit for xml based document storage, WIP
  <xs:complexType name="sums_type">
     <xs:sequence>
       <xs:element name="netto"   type="xs:string"/>
@@ -79,7 +91,7 @@
       <xs:element name="brutto"   type="xs:decimal"/>
     </xs:sequence>
  </xs:complexType>
- 
+
 <xs:element name="kraftdocument">
   <xs:complexType>
     <xs:sequence>
@@ -88,8 +100,8 @@
 	<xs:element name="items" type="item_list" maxOccurs="1"/>
 	<xs:element name="sums" type="sums_type" maxOccurs="1"/>
     </xs:sequence>
-    <xs:attribute name="version" type="xs:integer"/> 
-    <xs:attribute name="lastModified" type="xs:date"/> 
+    <xs:attribute name="version" type="xs:integer"/>
+    <xs:attribute name="lastModified" type="xs:date"/>
   </xs:complexType>
 </xs:element>
 

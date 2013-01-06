@@ -20,6 +20,8 @@
 
 #include <KDebug>
 
+#include <QDate>
+
 #include "xmldocument.h"
 #include "kraftdoc.h"
 #include "documentman.h"
@@ -125,6 +127,7 @@ void XmlDocument::setKraftDoc( KraftDoc *doc )
     Meta m;
 
     m.setCurrency(QLatin1String("EUR"));
+    m.setDocDesc(doc->whiteboard());
     m.setCountry(doc->country());
     m.setLanguage(doc->language());
     m.setOwner(QString::fromLocal8Bit( qgetenv("USER")));
