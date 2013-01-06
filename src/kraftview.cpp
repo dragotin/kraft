@@ -515,7 +515,7 @@ void KraftView::refreshPostCard()
 
 
     mAssistant->postCard()->setPositions( positions,  currentTaxSetting(),
-                                          DocumentMan::self()->tax( d ),
+                                          DocumentMan::self()->fullTax( d ),
                                           DocumentMan::self()->reducedTax( d ) );
 
     mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->toPlainText(),

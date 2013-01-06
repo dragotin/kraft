@@ -41,7 +41,7 @@ class DocumentMan
     
     QStringList openDocumentsList();
 
-    double tax( const QDate& );
+    double fullTax( const QDate& );
     double reducedTax( const QDate& );
     void clearTaxCache();
 

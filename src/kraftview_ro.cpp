@@ -227,11 +227,11 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     tmpl.createDictionary( "FULL_TAX_ITEMS" );
     tmpl.setValue( "FULL_TAX_ITEMS", "COUNT", QString::number( fullTaxCnt ));
     tmpl.setValue( "FULL_TAX_ITEMS", "TAX",
-                   locale->formatNumber( DocumentMan::self()->tax( doc->date() )) );
+                   locale->formatNumber( DocumentMan::self()->fullTax( doc->date() )) );
   }
 
   double redTax = DocumentMan::self()->reducedTax( doc->date() );
-  double fullTax = DocumentMan::self()->tax( doc->date() );
+  double fullTax = DocumentMan::self()->fullTax( doc->date() );
   QString h;
   if ( positions.reducedTaxSum( redTax ).toLong() > 0 ) {
     tmpl.createDictionary( "SECTION_REDUCED_TAX"  );

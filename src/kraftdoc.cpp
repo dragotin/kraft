@@ -352,7 +352,7 @@ Geld KraftDoc::bruttoSum()
 
 Geld KraftDoc::vatSum()
 {
-  return positions().taxSum( DocumentMan::self()->tax( date() ),
+  return positions().taxSum( DocumentMan::self()->fullTax( date() ),
                              DocumentMan::self()->reducedTax( date() ) );
 
   // return Geld( nettoSum() * DocumentMan::self()->vat()/100.0 );

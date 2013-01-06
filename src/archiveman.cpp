@@ -181,7 +181,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record.setValue( "projectLabel", KraftDB::self()->mysqlEuroEncode(doc->projectLabel() ) );
     record.setValue( "country",  doc->country() );
     record.setValue( "language", doc->language() );
-    record.setValue( "tax", DocumentMan::self()->tax( doc->date() ) );
+    record.setValue( "tax", DocumentMan::self()->fullTax( doc->date() ) );
     record.setValue( "reducedTax", DocumentMan::self()->reducedTax( doc->date() ) );
     if(!model.insertRecord(-1, record)) {
       kDebug() << model.lastError();

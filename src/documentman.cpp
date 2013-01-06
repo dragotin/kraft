@@ -195,7 +195,7 @@ void DocumentMan::clearTaxCache()
   mReducedTax = -1;
 }
 
-double DocumentMan::tax( const QDate& date )
+double DocumentMan::fullTax( const QDate& date )
 {
   if ( mFullTax < 0 || date != mTaxDate )
     readTaxes( date );
