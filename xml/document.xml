@@ -1,0 +1,57 @@
+<!DOCTYPE kraftdocument>
+<kraftdocument version="1" lastModified="2012-12-21T09:00:00">
+    <meta>
+        <docDesc>whiteboard content</docDesc>
+        <currency>EUR</currency>
+        <country>de</country>
+        <language>en_US</language>
+	<tax type="none">0.0</tax>
+	<tax type="reduced">7.0</tax>
+	<tax type="full">19.0</tax>
+	<owner>kf</owner>
+    </meta>
+    <header>
+        <docType>Rechnung</docType>
+        <project>hausgarten</project>
+        <date>2011-01-27</date>
+        <ident>unspec</ident>
+        <salut>lieber goofy,</salut>
+        <preText>Wir freuen uns, mit Dir Geschäfte machen zu können.</preText>
+    </header>
+    <client>
+        <address>Goofy Stambulchicz</address>
+        <clientId>BMhh9EhLwr</clientId>
+    </client>
+    <items>
+        <item number="1">
+            <text>Alternative: first item </text>
+            <amount>8.40</amount>
+            <unit>qm</unit>
+            <taxType>FullTax</taxType>
+            <unitprice>22.21</unitprice>
+            <itemprice>186.56</itemprice>
+            <item_attribute name="kind">Alternative</item_attribute>
+            <item_attribute name="tag">Work</item_attribute>
+        </item>
+        <item number="2">
+            <text>second item </text>
+            <amount>4.40</amount>
+            <unit>cbm</unit>
+            <taxType>reduced</taxType>
+            <unitprice>33.33</unitprice>
+            <itemprice>146.65</itemprice>
+            <item_attribute name="tag">Pflanzen</item_attribute>
+	    <item_attribute name="tag">Work</item_attribute>
+        </item>
+    </items>
+    <sums>
+        <netto>146.65</netto>
+	<taxsum type="reduced">12.22</taxsum>
+	<taxsum type="full">5.43</taxsum>
+        <brutto>174.51</brutto>
+    </sums>
+    <footer>
+        <postText>Danke für dein Interesse,</postText>        
+        <goodbye>mit den besten Grüssen,</goodbye>
+    </footer>
+</kraftdocument>
