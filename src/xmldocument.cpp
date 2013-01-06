@@ -4,6 +4,9 @@
 #include "xmldocument.h"
 #include "kraftdoc.h"
 #include "documentman.h"
+#include "docposition.h"
+#include "einheit.h"
+#include "geld.h"
 
 XmlDocument::XmlDocument()
 {
@@ -34,8 +37,8 @@ void XmlDocument::setKraftDoc( KraftDoc *doc )
     tr.setValue(QString::number(DocumentMan::self()->reducedTax( doc->date()) ));
     taxes.append(tr);
     Tax tf;
-    tr.setType(QLatin1String("full"));
-    tf.setValue(QString::number(DocumentMan::self()->tax(doc->date())));
+    tf.setType(QLatin1String("full"));
+    tf.setValue(QString::number(DocumentMan::self()->fullTax(doc->date())));
     taxes.append(tf);
     m.setTaxList(taxes);
     setMeta(m);
@@ -50,6 +53,82 @@ void XmlDocument::setKraftDoc( KraftDoc *doc )
     h.setDate(dateStr);
     setHeader(h);
 
+    Item::List items;
+    foreach( DocPositionBase* dpb, doc->positions() ) {
+        Item item;
+        DocPosition *dp = 0;
+        switch( dpb->type() ) {
+        case DocPositionBase::Position:
+            dp = static_cast<DocPosition*>(dpb);
+            item.setAmount(QString::number(dp->amount()));
+            item.setNumber( dp->positionNumber());
+            item.setUnit( QString::number(dp->unit().id()) );
+            item.setUnitprice( QString::number( dp->unitPrice().toLong()) );
+            item.setItemprice( QString::number( dp->overallPrice().toLong()) );
+            break;
+        case DocPositionBase::ExtraDiscount:
+            break;
+        case DocPositionBase::Header:
+            break;
+        default:
+            break;
+        }
+        item.setText(dpb->text());
+
+        QString tax;
+        switch( dpb->taxType()) {
+        case DocPositionBase::TaxNone:
+            tax = QLatin1String("none");
+            break;
+        case DocPositionBase::TaxReduced:
+            tax = QLatin1String("reduced");
+            break;
+        case DocPositionBase::TaxFull:
+            tax = QLatin1String("full");
+            break;
+        default:
+            tax = QLatin1String("error");
+        }
+        item.setTaxType( tax );
+
+        AttributeMap attribs = dpb->attributes();
+
+        foreach(Attribute attrib, attribs ) {
+            ItemAttribute attr;
+            QString name = attrib.name();
+            QString val = attrib.value().toString();
+            attr.setName(name);
+            attr.setValue(val);
+            item.addItemAttribute(attr);
+        }
+
+        items.append(item);
+    }
+    Items docItems;
+    docItems.setItemList( items );
+    setItems(docItems);
+
+    // The sums.
+    Sums  sums;
+    Taxsum::List taxsums;
+    Taxsum full;
+    full.setType(QLatin1String("full"));
+    Geld fullSum = doc->positions().fullTaxSum( DocumentMan::self()->fullTax( doc->date()));
+    full.setValue(QString::number(fullSum.toLong()));
+    taxsums.append(full);
+
+    Taxsum reduced;
+    reduced.setType(QLatin1String("reduced"));
+    Geld redSum = doc->positions().reducedTaxSum( DocumentMan::self()->reducedTax( doc->date()));
+    reduced.setValue(QString::number(redSum.toLong()));
+    taxsums.append(reduced);
+    sums.setTaxsumList(taxsums);
+
+    sums.setBrutto( QString::number(doc->bruttoSum().toLong()) );
+    sums.setNetto( QString::number(doc->nettoSum().toLong()) );
+    setSums(sums);
+
+    // The footer.
     Footer f;
     f.setPostText(doc->postText());
     f.setGoodbye(doc->goodbye());
