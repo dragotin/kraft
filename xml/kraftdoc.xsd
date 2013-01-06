@@ -32,11 +32,6 @@
 	</xs:simpleContent>
       </xs:complexType>
     </xs:element>
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> Initial commit for xml based document storage, WIP
   </xs:sequence>
 </xs:complexType>
 
@@ -60,22 +55,12 @@
    </xs:sequence>
    <xs:attribute name="number" type="xs:integer" use="required"/>
  </xs:complexType>
-<<<<<<< HEAD
- 
-=======
-
->>>>>>> Initial commit for xml based document storage, WIP
  <xs:complexType name="item_list">
    <xs:sequence>
      <xs:element name="item" type="item_type" minOccurs="0" maxOccurs="unbounded">
        </xs:element>
    </xs:sequence>
  </xs:complexType>
-<<<<<<< HEAD
-   
-=======
-
->>>>>>> Initial commit for xml based document storage, WIP
  <xs:complexType name="sums_type">
     <xs:sequence>
       <xs:element name="netto"   type="xs:string"/>
@@ -106,3 +91,4 @@
 </xs:element>
 
 </xs:schema>
+

@@ -61,7 +61,7 @@ void XmlDocument::getKraftDoc( KraftDoc *doc )
 
     // parse items.
     Items items = this->items();
-    foreach( Item item, items.itemList() ) {
+   foreach( Item item, items.itemList() ) {
         DocPosition *dp = doc->createPosition(DocPositionBase::Position);
         bool ok;
         double amount = item.amount().toDouble(&ok);
@@ -136,8 +136,8 @@ void XmlDocument::setKraftDoc( KraftDoc *doc )
     tr.setValue(QString::number(DocumentMan::self()->reducedTax( doc->date()) ));
     taxes.append(tr);
     Tax tf;
-    tf.setType(QLatin1String("full"));
-    tf.setValue(QString::number(DocumentMan::self()->fullTax(doc->date())));
+    tr.setType(QLatin1String("full"));
+    tf.setValue(QString::number(DocumentMan::self()->tax(doc->date())));
     taxes.append(tf);
     m.setTaxList(taxes);
     setMeta(m);

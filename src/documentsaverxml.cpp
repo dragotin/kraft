@@ -256,6 +256,7 @@ bool DocumentSaverXML::saveDocumentIndex(KraftDoc *doc )
     QSqlTableModel model;
     model.setTable("document");
     model.setEditStrategy( QSqlTableModel::OnManualSubmit );
+
     QSqlRecord record;
 
     kDebug() << "############### Document Save ################" << endl;
