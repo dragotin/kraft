@@ -27,7 +27,7 @@
 #include "dbids.h"
 #include "kraftsettings.h"
 #include "doctype.h"
-
+#include "xmldocument.h"
 /*
  * Use the kxml_compiler generated XML classes, covered by xmldocument class.
  */
@@ -45,12 +45,12 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
     bool result = false;
     if( ! doc ) return result;
 
-    QSqlTableModel model;
-    model.setTable("document");
+    kDebug() << "############### Document Save XML ################" << endl;
+    XmlDocument xmlDoc;
+    xmlDoc.setKraftDoc(doc);
+    xmlDoc.writeFile( QLatin1String("/tmp/kraft.xml"));
 
-    QSqlRecord record;
-
-    kDebug() << "############### Document Save ################" << endl;
+#if 0
 
     if( doc->isNew() ) {
         record = model.record();
@@ -98,210 +98,14 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
     saveDocumentPositions( doc );
 
     kDebug() << "Saved document no " << doc->docID().toString() << endl;
-
+#endif
     return result;
 }
 
-void DocumentSaverXML::saveDocumentPositions( KraftDoc *doc )
-{
-  DocPositionList posList = doc->positions();
-
-  // invert all pos numbers to avoid a unique violation
-  // FIXME: We need non-numeric ids
-  QSqlQuery upq;
-  QString queryStr = "UPDATE docposition SET ordNumber = -1 * ordNumber WHERE docID=";
-  queryStr +=  doc->docID().toString();
-  queryStr += " AND ordNumber > 0";
-  upq.prepare( queryStr );
-  upq.exec();
-
-  int ordNumber = 1;
-
-  QSqlTableModel model;
-  model.setTable("docposition");
-  model.setEditStrategy(QSqlTableModel::OnManualSubmit);
-
-  DocPositionListIterator it( posList );
-  while( it.hasNext() ) {
-    DocPositionBase *dpb = it.next();
-
-    if( dpb->type() == DocPositionBase::Position ||
-        dpb->type() == DocPositionBase::ExtraDiscount ) {
-      DocPosition *dp = static_cast<DocPosition*>(dpb);
-      QSqlRecord record ;
-      bool doInsert = true;
-
-      int posDbID = dp->dbId().toInt();
-      kDebug() << "Saving Position DB-Id: " << posDbID << endl;
-      if( posDbID > -1 ) {
-        const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
-        // kDebug() << "Selecting with " << selStr << endl;
-        model.setFilter( selStr );
-        model.select();
-        if ( model.rowCount() > 0 ) {
-          if( ! dp->toDelete() )
-            record = model.record(0);
-            doInsert = false;
-        } else {
-          kError() << "ERR: Could not select document position record" << endl;
-          return;
-        }
-      } else {
-        // The record is new
-        record = model.record();
-      }
-
-      if( dp->toDelete() ) {
-        kDebug() << "This one is to delete, do it!" << endl;
-        // FIXME: Delete attributes for this position
-        if( doInsert ) {
-          kWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
-        }
-        // delete all existing attributes
-        dp->attributes().dbDeleteAll( dp->dbId() );
-
-        model.removeRow(0);
-        model.submitAll();
-
-        continue;
-      }
-
-      if( record.count() > 0 ) {
-        // kDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
-        QString typeStr = PosTypePosition;
-        double price = 0;
-        if ( dp->type() == DocPositionBase::Header ) {
-          typeStr = PosTypeHeader;
-          price = 0;
-        } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
-          typeStr = PosTypeExtraDiscount;
-          price = dp->unitPrice().toDouble();
-        } else if ( dp->type() == DocPositionBase::Position ) {
-          price= dp->unitPrice().toDouble();
-        }
-
-        record.setValue( "docID",     doc->docID().toInt() );
-        record.setValue( "ordNumber", ordNumber );
-        record.setValue( "text",      dp->text() );
-        record.setValue( "postype",   typeStr );
-        record.setValue( "amount",    dp->amount() );
-        record.setValue( "unit",      dp->unit().id() );
-        record.setValue( "price",     price );
-        record.setValue( "taxType",   dp->taxType() );
-
-        ordNumber++; // FIXME
-
-        if( doInsert ) {
-          kDebug() << "Inserting!" << endl;
-          model.insertRecord(-1, record);
-          model.submitAll();
-          dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
-        } else {
-          kDebug() << "Updating!" << endl;
-          model.setRecord(0, record);
-        }
-      } else {
-        kDebug() << "ERR: No record object found!" << endl;
-      }
-
-      dp->attributes().save( dp->dbId() );
-
-      QSqlError err = model.lastError();
-      if( err.type() != QSqlError::NoError ) {
-        kDebug() << "SQL-ERR: " << err.text() << " in " << model.tableName() << endl;
-      }
-    }
-  }
-  model.submitAll();
-
-}
 
 void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 {
-    QSqlQuery q;
-    q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, pretext, posttext, docDescription, projectlabel FROM document WHERE docID=:docID");
-    q.bindValue(":docID", id);
-    q.exec();
-    kDebug() << "Loading document id " << id << endl;
 
-    if( q.next())
-    {
-        kDebug() << "loading document with id " << id << endl;
-        dbID dbid;
-        dbid = id;
-        doc->setDocID( dbid );
-
-        doc->setIdent(      q.value( 0    ).toString() );
-        doc->setDocType(    q.value( 1  ).toString() );
-        doc->setAddressUid( q.value( 2 ).toString() );
-        doc->setAddress(    q.value( 3 ).toString() );
-        doc->setSalut(      q.value( 4    ).toString() );
-        doc->setGoodbye(    q.value( 5  ).toString() );
-        doc->setDate (      q.value( 6     ).toDate() );
-        doc->setLastModified( q.value( 7 ).toDate() );
-        doc->setCountryLanguage( q.value( 8 ).toString(),
-                                 q.value( 9 ).toString());
-
-        doc->setPreText(    KraftDB::self()->mysqlEuroDecode( q.value( 10  ).toString() ) );
-        doc->setPostText(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );
-        doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( q.value( 12 ).toString() ) );
-        doc->setProjectLabel( q.value(13).toString() );
-    }
-
-    loadPositions( id, doc );
-}
-/* docposition:
-  +------------+--------------+------+-----+---------+----------------+
-  | Field      | Type         | Null | Key | Default | Extra          |
-  +------------+--------------+------+-----+---------+----------------+
-  | positionID | int(11)      |      | PRI | NULL    | auto_increment |
-  | docID      | int(11)      |      | MUL | 0       |                |
-  | ordNumber  | int(11)      |      |     | 0       |                |
-  | text       | mediumtext   | YES  |     | NULL    |                |
-  | amount     | decimal(6,2) | YES  |     | NULL    |                |
-  | unit       | varchar(64)  | YES  |     | NULL    |                |
-  | price      | decimal(6,2) | YES  |     | NULL    |                |
-  +------------+--------------+------+-----+---------+----------------+
-*/
-void DocumentSaverXML::loadPositions( const QString& id, KraftDoc *doc )
-{
-    QSqlQuery q;
-    q.prepare("SELECT positionID, postype, text, amount, unit, price, taxType FROM docposition WHERE docID=:docID ORDER BY ordNumber");
-    q.bindValue(":docID", id);
-    q.exec();
-
-    kDebug() << "* loading document positions for document id " << id << endl;
-    while( q.next() ) {
-        kDebug() << " loading position id " << q.value( 0 ).toInt() << endl;
-
-        DocPositionBase::PositionType type = DocPositionBase::Position;
-        QString typeStr = q.value( 1 ).toString();
-        if ( typeStr == PosTypeExtraDiscount ) {
-          type = DocPositionBase::ExtraDiscount;
-        } else if ( typeStr == PosTypePosition ) {
-          // nice, default position type.
-          type = DocPositionBase::Position;
-        } else if ( typeStr == PosTypeHeader ) {
-          type = DocPositionBase::Header;}
-        else if ( ! typeStr.isEmpty() ) {
-          kDebug() << "ERROR: Strange type string loaded from db: " << typeStr << endl;
-        }
-
-        DocPosition *dp = doc->createPosition( type );
-        dp->setDbId( q.value(0).toInt() );
-        dp->setText( q.value(2).toString() );
-
-        // Note: empty fields are treated as Positions which is intended because
-        // the type col was added later and thus might be empty for older entries
-
-        dp->setAmount( q.value(3).toDouble() );
-
-        dp->setUnit( UnitManager::self()->getUnit( q.value(4).toInt() ) );
-        dp->setUnitPrice( q.value(5).toDouble() );
-        dp->setTaxType( q.value(6).toInt() );
-
-        dp->loadAttributes();
-    }
 }
 
 DocumentSaverXML::~DocumentSaverXML( )

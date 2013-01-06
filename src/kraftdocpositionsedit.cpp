@@ -99,5 +99,3 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   setColor( "#9affa9" );
   setLayout(topLayout);
 }
-
-#include "kraftdocpositionsedit.moc"
