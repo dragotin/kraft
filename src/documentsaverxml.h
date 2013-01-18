@@ -35,6 +35,10 @@ public:
     virtual bool saveDocument( KraftDoc* );
     virtual void load( const QString& , KraftDoc * );
 private:
+    QString storagePath();
+    QString saveFileName( const QString& );
+    QString loadFileName( const QString& );
+
     const QString PosTypePosition;
     const QString PosTypeExtraDiscount;
     const QString PosTypeHeader;

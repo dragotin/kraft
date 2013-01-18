@@ -18,6 +18,9 @@
 // include files for KDE
 #include <klocale.h>
 #include <kdebug.h>
+#include <kstandarddirs.h>
+
+#include <QDir>
 
 #include "documentsaverxml.h"
 #include "docposition.h"
@@ -40,6 +43,75 @@ DocumentSaverXML::DocumentSaverXML( ) : DocumentSaverBase(),
 
 }
 
+QString DocumentSaverXML::storagePath()
+{
+    QString path;
+    KStandardDirs stdDirs;
+
+    path = KraftSettings::self()->xmlDocPath();
+
+    if(path.isEmpty()) {
+        path = stdDirs.saveLocation( "data", "kraft/documents", true );
+    }
+    if ( ! path.endsWith( QLatin1Char('/'))) path.append(QLatin1Char('/'));
+
+    QDir dir(path);
+    if( !dir.exists() ) {
+        dir.mkpath(path);
+    }
+    if( !dir.exists() ) {
+        kDebug() << "ERR: No document save path!";
+        path = QLatin1String("/tmp/"); // best compromise...
+    }
+
+    return path;
+}
+
+QString DocumentSaverXML::loadFileName( const QString& ident )
+{
+    if( ident.isEmpty() ) return QString::null;
+
+    QString path = storagePath();
+
+    QString file("kraft-");
+    file.append( ident );
+    file.append(QLatin1String(".xml"));
+
+    QFileInfo fi;
+    fi.setFile(path, file);
+
+    return fi.canonicalFilePath();
+}
+
+// finds a not yet used fiel name, does never overwrite an existing file.
+QString DocumentSaverXML::saveFileName( const QString& ident )
+{
+    if( ident.isEmpty() ) return QString::null;
+
+    QString path = storagePath();
+
+    QString file("kraft-");
+    file.append( ident );
+    file.append(QLatin1String(".xml"));
+
+    // make sure its not yet existing.
+    QFileInfo fi;
+    int i = 0;
+
+    fi.setFile( path, file );
+    while( ++i < 10 ) {
+        if( !fi.exists() ) return fi.canonicalFilePath();
+        QString file("kraft-");
+        file.append(ident);
+        file.append(QLatin1Char('-'));
+        file.append(i);
+        file.append(QLatin1String(".xml"));
+        fi.setFile(path, file);
+    }
+
+    return QString::null;
+}
+
 bool DocumentSaverXML::saveDocument(KraftDoc *doc )
 {
     bool result = false;
@@ -48,63 +120,20 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
     kDebug() << "############### Document Save XML ################" << endl;
     XmlDocument xmlDoc;
     xmlDoc.setKraftDoc(doc);
-    xmlDoc.writeFile( QLatin1String("/tmp/kraft.xml"));
+    QString fileName = saveFileName(doc->ident());
+    kDebug() << "Saving to file name " << fileName;
+    xmlDoc.writeFile(fileName);
 
-#if 0
-
-    if( doc->isNew() ) {
-        record = model.record();
-    } else {
-      model.setFilter("docID=" + doc->docID().toString());
-      model.select();
-      if ( model.rowCount() > 0 ) {
-        record = model.record(0);
-      } else {
-        kError() << "Could not select document record" << endl;
-        return result;
-      }
-       // The document was already saved.
-    }
-
-    fillDocumentBuffer( record, doc );
-
-    if( doc->isNew() ) {
-      kDebug() << "Doc is new, inserting" << endl;
-      model.insertRecord(-1, record);
-      model.submitAll();
-
-      dbID id = KraftDB::self()->getLastInsertID();
-      doc->setDocID( id );
-
-      // get the uniq id and write it into the db
-      DocType dt( doc->docType() );
-      QString ident = dt.generateDocumentIdent( doc );
-      doc->setIdent( ident );
-      model.setFilter("docID=" + id.toString());
-      model.select();
-      if ( model.rowCount() > 0 ) {
-        model.setData(model.index(0, 1), ident);
-        model.submitAll();
-      }
-
-    } else {
-      kDebug() << "Doc is not new, updating #" << doc->docID().intID() << endl;
-
-      record.setValue( "docID", doc->docID().toString() );
-      model.setRecord(0, record);
-      model.submitAll();
-    }
-
-    saveDocumentPositions( doc );
-
-    kDebug() << "Saved document no " << doc->docID().toString() << endl;
-#endif
-    return result;
+    return true;
 }
 
 
 void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 {
+    QString fileName = loadFileName(id);
+
+    kDebug() << "############### Document Load XML ################" << endl;
+    XmlDocument xmlDoc;
 
 }
 
