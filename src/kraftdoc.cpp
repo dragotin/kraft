@@ -349,7 +349,8 @@ DocumentSaverBase* KraftDoc::getLoader( const QString& )
     if( ! mLoader )
     {
         kDebug() << "Create new Document DB-Loader" << endl;
-        mLoader = new DocumentSaverDB();
+        // mLoader = new DocumentSaverDB();
+        mLoader = new DocumentSaverXML();
     }
     return mLoader;
 }

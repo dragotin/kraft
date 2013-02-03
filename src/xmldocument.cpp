@@ -12,6 +12,67 @@ XmlDocument::XmlDocument()
 {
 }
 
+void XmlDocument::getKraftDoc( KraftDoc *doc )
+{
+    if( ! doc ) {
+        return;
+    }
+
+    doc->setLastModified( QDate::fromString(lastModified()) );
+
+    doc->setCountryLanguage( meta().country(), meta().language() );
+
+    doc->setAddress( client().address() );
+    doc->setAddressUid( client().clientId() );
+
+    doc->setDate( QDate::fromString( header().date()) );
+    // doc->setDocID(  );
+    doc->setDocType( header().docType() );
+    doc->setIdent( header().ident() );
+    doc->setPreText( header().preText() );
+    doc->setProjectLabel( header().project() );
+    doc->setSalut( header().salut() );
+    doc->setWhiteboard( header().whiteboard());
+    QDate d = QDate::fromString( header().date(), Qt::ISODate );
+    doc->setDate( d );
+    doc->setProjectLabel( header().project() );
+
+    doc->setGoodbye( footer().goodbye() );
+    doc->setPostText( footer().postText() );
+
+    // parse items.
+    Items items = this->items();
+    foreach( Item item, items.itemList() ) {
+        DocPosition *dp = doc->createPosition(DocPositionBase::Position);
+        bool ok;
+        double amount = item.amount().toDouble(&ok);
+        dp->setAmount( amount );
+        dp->setPositionNumber( item.number() );
+        dp->setText( item.text() );
+
+        dp->setTaxType( item.taxType().toInt(&ok) );
+        Einheit unit( item.unit() );
+        dp->setUnit( unit );
+
+
+        double money = item.unitprice().toDouble( &ok );
+        Geld g(money);
+        dp->setUnitPrice( g );
+
+        ItemAttribute::List attribs = item.itemAttributeList();
+        foreach( ItemAttribute attrib, attribs ) {
+            if( attrib.name() == QLatin1String("tag") ) {
+                dp->setTag( attrib.value() );
+            } else {
+                Attribute attribute( attrib.name() );
+                attribute.setValue( attrib.value() );
+                dp->setAttribute( attribute );
+            }
+        }
+    }
+
+}
+
 void XmlDocument::setKraftDoc( KraftDoc *doc )
 {
     QString re;

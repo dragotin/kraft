@@ -13,6 +13,7 @@
     <header>
         <docType>Rechnung</docType>
         <project>hausgarten</project>
+	<whiteboard>Whiteboard text</whiteboard>
         <date>2011-01-27</date>
         <ident>unspec</ident>
         <salut>lieber goofy,</salut>

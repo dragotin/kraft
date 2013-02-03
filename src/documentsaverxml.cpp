@@ -21,6 +21,7 @@
 #include <kstandarddirs.h>
 
 #include <QDir>
+#include <QSqlQuery>
 
 #include "documentsaverxml.h"
 #include "docposition.h"
@@ -34,6 +35,7 @@
 /*
  * Use the kxml_compiler generated XML classes, covered by xmldocument class.
  */
+using namespace KraftXml;
 
 DocumentSaverXML::DocumentSaverXML( ) : DocumentSaverBase(),
                                       PosTypePosition( QString::fromLatin1( "Position" ) ),
@@ -67,9 +69,23 @@ QString DocumentSaverXML::storagePath()
     return path;
 }
 
-QString DocumentSaverXML::loadFileName( const QString& ident )
+// The incoming id is a database id from the documents table.
+// It needs to be converted to the ident.
+QString DocumentSaverXML::loadFileName( const QString& dbId )
 {
-    if( ident.isEmpty() ) return QString::null;
+    if( dbId.isEmpty() ) return QString::null;
+
+    QSqlQuery query("SELECT ident FROM document where docID="+dbId);
+    QString ident;
+
+    while (query.next()) {
+         ident = query.value(0).toString();
+    }
+
+    if( ident.isEmpty() ) {
+        qDebug() << "Could not retrieve doc ident from database cache!";
+        return QString::null;
+    }
 
     QString path = storagePath();
 
@@ -100,7 +116,7 @@ QString DocumentSaverXML::saveFileName( const QString& ident )
 
     fi.setFile( path, file );
     while( ++i < 10 ) {
-        if( !fi.exists() ) return fi.canonicalFilePath();
+        if( !fi.exists() ) return fi.filePath();
         QString file("kraft-");
         file.append(ident);
         file.append(QLatin1Char('-'));
@@ -133,8 +149,15 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
     QString fileName = loadFileName(id);
 
     kDebug() << "############### Document Load XML ################" << endl;
+    bool ok;
     XmlDocument xmlDoc;
+    xmlDoc.parseFile( fileName, &ok );
 
+    if( ok ) {
+        xmlDoc.getKraftDoc( doc );
+    } else {
+        qDebug() << "FATAL: Failed to parse XML document.";
+    }
 }
 
 DocumentSaverXML::~DocumentSaverXML( )

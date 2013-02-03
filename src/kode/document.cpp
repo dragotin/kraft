@@ -543,6 +543,16 @@ QString Header::project() const
   return mProject;
 }
 
+void Header::setWhiteboard( const QString &v )
+{
+  mWhiteboard = v;
+}
+
+QString Header::whiteboard() const
+{
+  return mWhiteboard;
+}
+
 void Header::setDate( const QString &v )
 {
   mDate = v;
@@ -602,6 +612,9 @@ Header Header::parseElement( const QDomElement &element, bool *ok )
     else if ( e.tagName() == "project" ) {
       result.setProject( e.text() );
     }
+    else if ( e.tagName() == "whiteboard" ) {
+      result.setWhiteboard( e.text() );
+    }
     else if ( e.tagName() == "date" ) {
       result.setDate( e.text() );
     }
@@ -629,6 +642,9 @@ void Header::writeElement( QXmlStreamWriter &xml )
   }
   if ( !project().isEmpty() ) {
     xml.writeTextElement(  "project", project() );
+  }
+  if ( !whiteboard().isEmpty() ) {
+    xml.writeTextElement(  "whiteboard", whiteboard() );
   }
   if ( !date().isEmpty() ) {
     xml.writeTextElement(  "date", date() );

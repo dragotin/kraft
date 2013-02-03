@@ -173,6 +173,8 @@ class Header
     QString docType() const;
     void setProject( const QString &v );
     QString project() const;
+    void setWhiteboard( const QString &v );
+    QString whiteboard() const;
     void setDate( const QString &v );
     QString date() const;
     void setIdent( const QString &v );
@@ -190,6 +192,7 @@ class Header
   private:
     QString mDocType;
     QString mProject;
+    QString mWhiteboard;
     QString mDate;
     QString mIdent;
     QString mSalut;

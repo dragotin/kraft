@@ -11,7 +11,11 @@ class XmlDocument : public Kraftdocument
 {
 public:
     XmlDocument();
-    void setKraftDoc( KraftDoc *doc );
+    // write the KraftDoc from the pointer
+    void setKraftDoc( KraftDoc* );
+
+    // read the KraftDoc into the pointer
+    void getKraftDoc( KraftDoc* );
 
 };
 
