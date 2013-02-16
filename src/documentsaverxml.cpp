@@ -150,13 +150,64 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 
     kDebug() << "############### Document Load XML ################" << endl;
     bool ok;
-    XmlDocument xmlDoc;
-    xmlDoc.parseFile( fileName, &ok );
+    Kraftdocument xmlDoc;
+    xmlDoc = Kraftdocument::parseFile( fileName, &ok );
 
-    if( ok ) {
-        xmlDoc.getKraftDoc( doc );
-    } else {
-        qDebug() << "FATAL: Failed to parse XML document.";
+    if( ! ok ) {
+        qDebug() << "FATAL: Failed to parse XML document!";
+        return;
+    }
+
+    doc->setLastModified( QDate::fromString(xmlDoc.lastModified()) );
+
+    doc->setCountryLanguage( xmlDoc.meta().country(), xmlDoc.meta().language() );
+
+    doc->setAddress( xmlDoc.client().address() );
+    doc->setAddressUid( xmlDoc.client().clientId() );
+
+    doc->setDate( QDate::fromString( xmlDoc.header().date()) );
+    // doc->setDocID(  );
+    doc->setDocType( xmlDoc.header().docType() );
+    doc->setIdent( xmlDoc.header().ident() );
+    doc->setPreText( xmlDoc.header().preText() );
+    doc->setProjectLabel( xmlDoc.header().project() );
+    doc->setSalut( xmlDoc.header().salut() );
+    doc->setWhiteboard( xmlDoc.header().whiteboard());
+    QDate d = QDate::fromString( xmlDoc.header().date(), Qt::ISODate );
+    doc->setDate( d );
+    doc->setProjectLabel( xmlDoc.header().project() );
+
+    doc->setGoodbye( xmlDoc.footer().goodbye() );
+    doc->setPostText( xmlDoc.footer().postText() );
+
+    // parse items.
+    Items items = xmlDoc.items();
+    foreach( Item item, items.itemList() ) {
+        DocPosition *dp = doc->createPosition(DocPositionBase::Position);
+        bool ok;
+        double amount = item.amount().toDouble(&ok);
+        dp->setAmount( amount );
+        dp->setPositionNumber( item.number() );
+        dp->setText( item.text() );
+
+        dp->setTaxType( item.taxType().toInt(&ok) );
+        Einheit unit( item.unit() );
+        dp->setUnit( unit );
+
+        double money = item.unitprice().toDouble( &ok );
+        Geld g(money/100.0);
+        dp->setUnitPrice( g );
+
+        ItemAttribute::List attribs = item.itemAttributeList();
+        foreach( ItemAttribute attrib, attribs ) {
+            if( attrib.name() == QLatin1String("tag") ) {
+                dp->setTag( attrib.value() );
+            } else {
+                Attribute attribute( attrib.name() );
+                attribute.setValue( attrib.value() );
+                dp->setAttribute( attribute );
+            }
+        }
     }
 }
 
