@@ -141,7 +141,6 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
         _oCSync->startSync( storagePath() );
     }
 
-
     return true;
 }
 
@@ -244,6 +243,77 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 DocumentSaverXML::~DocumentSaverXML( )
 {
     delete _oCSync;
+}
+
+// Index-funktions. Writes document table with index data to display the
+// doc overview conveniently.
+bool DocumentSaverXML::saveDocumentIndex(KraftDoc *doc )
+{
+    bool result = false;
+    if( ! doc ) return result;
+
+    QSqlTableModel model;
+    model.setTable("document");
+    model.setEditStrategy( QSqlTableModel::OnManualSubmit );
+    QSqlRecord record;
+
+    kDebug() << "############### Document Save ################" << endl;
+
+    if( doc->isNew() ) {
+        record = model.record();
+    } else {
+      model.setFilter("docID=" + doc->docID().toString());
+      model.select();
+      if ( model.rowCount() > 0 ) {
+        record = model.record(0);
+      } else {
+        kError() << "Could not select document record" << endl;
+        return result;
+      }
+       // The document was already saved.
+    }
+
+    fillDocumentBuffer( record, doc );
+
+    if( !doc->isNew() ) {
+        QString docID = doc->docID().toString();
+        kDebug() << "Doc is not new, updating #" << docID << endl;
+
+        record.setValue( "docID", docID );
+        model.setRecord(0, record);
+        model.submitAll();
+    } else {
+        model.insertRecord(-1, record);
+        model.submitAll();
+        dbID id = KraftDB::self()->getLastInsertID();
+        doc->setDocID( id );
+    }
+    kDebug() << "Saved document no " << doc->docID().toString() << endl;
+
+    return result;
+}
+
+void DocumentSaverXML::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
+{
+    if( doc ) {
+      kDebug() << "Adressstring: " << doc->address() << endl;
+      buf.setValue( "ident",    doc->ident() );
+      buf.setValue( "docType",  doc->docType() );
+      buf.setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
+      buf.setValue( "clientID", doc->addressUid() );
+      buf.setValue( "clientAddress", doc->address() );
+      buf.setValue( "salut",    doc->salut() );
+      buf.setValue( "goodbye",  doc->goodbye() );
+      buf.setValue( "date",     doc->date() );
+      // do not set that because mysql automatically updates the timestamp and
+      // sqlite3 has a trigger for it.
+      buf.setValue( "lastModified", QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+      buf.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
+      buf.setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
+      buf.setValue( "country",  doc->country() );
+      buf.setValue( "language", doc->language() );
+      buf.setValue( "projectLabel",  doc->projectLabel() );
+    }
 }
 
 // Index-funktions. Writes document table with index data to display the
