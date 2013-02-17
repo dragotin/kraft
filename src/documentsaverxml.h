@@ -38,6 +38,8 @@ private:
     QString storagePath();
     QString saveFileName( const QString& );
     QString loadFileName( const QString& );
+    bool    saveDocumentIndex(KraftDoc *);
+    void    fillDocumentBuffer(QSqlRecord&, KraftDoc *);
 
     const QString PosTypePosition;
     const QString PosTypeExtraDiscount;

@@ -22,6 +22,7 @@
 
 #include <QDir>
 #include <QSqlQuery>
+#include <QtSql>
 
 #include "documentsaverxml.h"
 #include "docposition.h"
@@ -110,22 +111,10 @@ QString DocumentSaverXML::saveFileName( const QString& ident )
     file.append( ident );
     file.append(QLatin1String(".xml"));
 
-    // make sure its not yet existing.
     QFileInfo fi;
-    int i = 0;
+    fi.setFile(path, file);
 
-    fi.setFile( path, file );
-    while( ++i < 10 ) {
-        if( !fi.exists() ) return fi.filePath();
-        QString file("kraft-");
-        file.append(ident);
-        file.append(QLatin1Char('-'));
-        file.append(i);
-        file.append(QLatin1String(".xml"));
-        fi.setFile(path, file);
-    }
-
-    return QString::null;
+    return fi.absoluteFilePath();
 }
 
 bool DocumentSaverXML::saveDocument(KraftDoc *doc )
@@ -135,10 +124,18 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
 
     kDebug() << "############### Document Save XML ################" << endl;
     XmlDocument xmlDoc;
+    if( doc->isNew() ) {
+        DocType dt( doc->docType() );
+        QString ident = dt.generateDocumentIdent( doc );
+        doc->setIdent( ident );
+    }
     xmlDoc.setKraftDoc(doc);
+
     QString fileName = saveFileName(doc->ident());
-    kDebug() << "Saving to file name " << fileName;
-    xmlDoc.writeFile(fileName);
+    kDebug() << "Saving to file name " << fileName << " is new: " << doc->isNew();
+    if( xmlDoc.writeFile(fileName) ) {
+        saveDocumentIndex(doc);
+    }
 
     return true;
 }
@@ -158,6 +155,9 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
         return;
     }
 
+    dbID dbid;
+    dbid = id;
+    doc->setDocID(dbid);
     doc->setLastModified( QDate::fromString(xmlDoc.lastModified()) );
 
     doc->setCountryLanguage( xmlDoc.meta().country(), xmlDoc.meta().language() );
@@ -214,6 +214,77 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 DocumentSaverXML::~DocumentSaverXML( )
 {
 
+}
+
+// Index-funktions. Writes document table with index data to display the
+// doc overview conveniently.
+bool DocumentSaverXML::saveDocumentIndex(KraftDoc *doc )
+{
+    bool result = false;
+    if( ! doc ) return result;
+
+    QSqlTableModel model;
+    model.setTable("document");
+    model.setEditStrategy( QSqlTableModel::OnManualSubmit );
+    QSqlRecord record;
+
+    kDebug() << "############### Document Save ################" << endl;
+
+    if( doc->isNew() ) {
+        record = model.record();
+    } else {
+      model.setFilter("docID=" + doc->docID().toString());
+      model.select();
+      if ( model.rowCount() > 0 ) {
+        record = model.record(0);
+      } else {
+        kError() << "Could not select document record" << endl;
+        return result;
+      }
+       // The document was already saved.
+    }
+
+    fillDocumentBuffer( record, doc );
+
+    if( !doc->isNew() ) {
+        QString docID = doc->docID().toString();
+        kDebug() << "Doc is not new, updating #" << docID << endl;
+
+        record.setValue( "docID", docID );
+        model.setRecord(0, record);
+        model.submitAll();
+    } else {
+        model.insertRecord(-1, record);
+        model.submitAll();
+        dbID id = KraftDB::self()->getLastInsertID();
+        doc->setDocID( id );
+    }
+    kDebug() << "Saved document no " << doc->docID().toString() << endl;
+
+    return result;
+}
+
+void DocumentSaverXML::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
+{
+    if( doc ) {
+      kDebug() << "Adressstring: " << doc->address() << endl;
+      buf.setValue( "ident",    doc->ident() );
+      buf.setValue( "docType",  doc->docType() );
+      buf.setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
+      buf.setValue( "clientID", doc->addressUid() );
+      buf.setValue( "clientAddress", doc->address() );
+      buf.setValue( "salut",    doc->salut() );
+      buf.setValue( "goodbye",  doc->goodbye() );
+      buf.setValue( "date",     doc->date() );
+      // do not set that because mysql automatically updates the timestamp and
+      // sqlite3 has a trigger for it.
+      buf.setValue( "lastModified", QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+      buf.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
+      buf.setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
+      buf.setValue( "country",  doc->country() );
+      buf.setValue( "language", doc->language() );
+      buf.setValue( "projectLabel",  doc->projectLabel() );
+    }
 }
 
 /* END */
