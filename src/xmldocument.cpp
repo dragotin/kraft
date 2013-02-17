@@ -87,7 +87,6 @@ void XmlDocument::setKraftDoc( KraftDoc *doc )
     Meta m;
 
     m.setCurrency(QLatin1String("EUR"));
-    m.setDocDesc(doc->whiteboard());
     m.setCountry(doc->country());
     m.setLanguage(doc->language());
     m.setOwner(QString::fromLocal8Bit( qgetenv("USER")));
@@ -110,6 +109,7 @@ void XmlDocument::setKraftDoc( KraftDoc *doc )
     h.setPreText(doc->preText());
     h.setProject(doc->projectLabel());
     h.setSalut(doc->salut());
+    h.setWhiteboard(doc->whiteboard());
     QString dateStr = doc->date().toString(Qt::ISODate);
     h.setDate(dateStr);
     setHeader(h);
