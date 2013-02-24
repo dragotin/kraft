@@ -38,10 +38,12 @@
  */
 using namespace KraftXml;
 
-DocumentSaverXML::DocumentSaverXML( ) : DocumentSaverBase(),
-                                      PosTypePosition( QString::fromLatin1( "Position" ) ),
-                                      PosTypeExtraDiscount( QString::fromLatin1( "ExtraDiscount" ) ),
-                                      PosTypeHeader( QString::fromLatin1( "Header" ) )
+DocumentSaverXML::DocumentSaverXML( )
+    : DocumentSaverBase(),
+      PosTypePosition( QString::fromLatin1( "Position" ) ),
+      PosTypeExtraDiscount( QString::fromLatin1( "ExtraDiscount" ) ),
+      PosTypeHeader( QString::fromLatin1( "Header" ) ),
+      _oCSync( new ownCloudSync() )
 {
 
 }
@@ -135,7 +137,10 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
     kDebug() << "Saving to file name " << fileName << " is new: " << doc->isNew();
     if( xmlDoc.writeFile(fileName) ) {
         saveDocumentIndex(doc);
+
+        _oCSync->startSync( storagePath() );
     }
+
 
     return true;
 }
@@ -213,7 +218,7 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 
 DocumentSaverXML::~DocumentSaverXML( )
 {
-
+    delete _oCSync;
 }
 
 // Index-funktions. Writes document table with index data to display the

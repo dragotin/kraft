@@ -19,6 +19,7 @@
 #define _DOCUMENTSAVERXML_H
 
 #include "documentsaverbase.h"
+#include "owncloudsync.h"
 
 class KraftDoc;
 class dbID;
@@ -44,6 +45,8 @@ private:
     const QString PosTypePosition;
     const QString PosTypeExtraDiscount;
     const QString PosTypeHeader;
+
+    ownCloudSync *_oCSync;
 
 };
 

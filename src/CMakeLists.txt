@@ -1,5 +1,8 @@
-
-include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS} external)
+# ownCloud client lib linking:
+SET( OWNCLOUD_CLIENT_INCLUDE_DIRS /home/kf/owncloud.com/mirall/src/ /home/kf/owncloud.com/csync/src/)
+include_directories(${OWNCLOUD_CLIENT_INCLUDE_DIRS} ${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS} external)
+SET( OWNCLOUD_CLIENT_LIBS /home/kf/owncloud.com/buildmirall/src/libowncloudsync.so /home/kf/owncloud.com/buildcsync/src/libocsync.so )
+SET( OWNCLOUD_CLIENT_LIB_DIR /home/kf/owncloud.com/buildmirall/src )
 
 add_subdirectory(pics)
 
@@ -44,9 +47,10 @@ kde4_add_kcfg_files(kraftcat_LIB_SRCS databasesettings.kcfgc kraftsettings.kcfgc
 
 kde4_add_library(kraftcat SHARED ${kraftcat_LIB_SRCS})
 
-target_link_libraries(kraftcat ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS})
+LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/lib ${OWNCLOUD_CLIENT_LIB_DIR})
 
-LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/lib)
+target_link_libraries(kraftcat ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS} )
+
 
 ########### next target ###############
 
@@ -141,6 +145,8 @@ set(kraft_SRCS
     akonadiaddressselectordialog.cpp
     models/globalcontactmodel.cpp
     quicksearchwidget.cpp
+    owncloudsync.cpp
+
 )
 
 kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)
@@ -168,7 +174,7 @@ kde4_add_ui_files(kraft_SRCS
 
 kde4_add_executable(kraft ${kraft_SRCS})
 
-target_link_libraries(kraft kraftcat ${QT_AND_KDECORE_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS}
+target_link_libraries(kraft kraftcat ${OWNCLOUD_CLIENT_LIBS} ${QT_AND_KDECORE_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS}
 	${KDEPIMLIBS_KABC_LIBS} ${KDEPIMLIBS_AKONADI_CONTACT_LIBS} ${KDE4_KIO_LIBS} ${CTEMPLATE_LIBRARIES} pthread)
 
 install(TARGETS kraft RUNTIME DESTINATION bin
