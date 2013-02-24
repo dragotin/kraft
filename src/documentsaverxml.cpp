@@ -141,6 +141,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
         _oCSync->startSync( storagePath() );
     }
 
+
     return true;
 }
 
