@@ -75,6 +75,5 @@ void ownCloudSync::slotSyncFinished( const SyncResult& result )
 
     }
 
-
     _syncFolder->deleteLater();
 }

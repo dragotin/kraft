@@ -20,8 +20,6 @@
 
 #include <KDebug>
 
-#include <QDate>
-
 #include "xmldocument.h"
 #include "kraftdoc.h"
 #include "documentman.h"
