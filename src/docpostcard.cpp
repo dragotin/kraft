@@ -145,7 +145,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
   mPositions += QString( "<tr><td></td><td align=\"right\"><b>" ) + i18n( "Total:" )+
                 QString( "</b></td><td align=\"right\"><b>%1</b></td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( brutto );
   mPositions += "</table></div>";
-  kDebug() << "Positions-HTML: " << mPositions << endl;
+  // kDebug() << "Positions-HTML: " << mPositions << endl;
 }
 
 void DocPostCard::setFooterData( const QString& postText,  const QString& goodbye )

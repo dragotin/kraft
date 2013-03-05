@@ -86,7 +86,7 @@ QString DocumentSaverXML::loadFileName( const QString& dbId )
     }
 
     if( ident.isEmpty() ) {
-        qDebug() << "Could not retrieve doc ident from database cache!";
+        kDebug() << "Could not retrieve doc ident from database cache!";
         return QString::null;
     }
 
@@ -156,7 +156,7 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
     xmlDoc = Kraftdocument::parseFile( fileName, &ok );
 
     if( ! ok ) {
-        qDebug() << "FATAL: Failed to parse XML document!";
+        kDebug() << "FATAL: Failed to parse XML document!";
         return;
     }
 
@@ -195,7 +195,25 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
         dp->setPositionNumber( item.number() );
         dp->setText( item.text() );
 
-        dp->setTaxType( item.taxType().toInt(&ok) );
+        QString ttype = item.taxType();
+        DocPositionBase::TaxType tt = DocPositionBase::TaxInvalid;
+
+        if( ttype.isEmpty() ) {
+            kDebug() << "TAX type is Empty, assuming full!";
+            ttype = QLatin1String("full");
+        }
+        if( ttype == QLatin1String("full")) {
+            tt = DocPositionBase::TaxFull;
+        } else if( ttype == QLatin1String("reduced")) {
+            tt = DocPositionBase::TaxReduced;
+        } else if( ttype == QLatin1String("none")) {
+            tt = DocPositionBase::TaxNone;
+        }
+        if( tt == DocPositionBase::TaxInvalid ) {
+            kDebug() << "FATAL ERROR: could not parse tax type " << ttype;
+        }
+
+        dp->setTaxType( tt );
         Einheit unit( item.unit() );
         dp->setUnit( unit );
 

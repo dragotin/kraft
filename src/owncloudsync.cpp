@@ -21,38 +21,13 @@
 
 #include <QApplication>
 
+#include <KDebug>
+
 ownCloudSync::ownCloudSync(QObject *parent) :
     QObject(parent),
     _syncFolder(0)
 {
     qApp->setApplicationName( QLatin1String("ownCloud")); // FIXME!
-}
-
-void ownCloudSync::slotCredentialsFetched(bool res )
-{
-    if( _srcPath.isEmpty() ) {
-        qDebug() << "No src-path given!";
-        return;
-    }
-
-    if( res ) {
-
-        qDebug() << "Successfully fetched credentials!";
-        MirallConfigFile cfg;
-
-        QString oCUrl = cfg.ownCloudUrl(QString::null, true);
-
-        QString kraftPath("kraft");
-        _syncFolder = new ownCloudFolder(QLatin1String("KraftFolder"), _srcPath, oCUrl+kraftPath );
-
-        connect(_syncFolder, SIGNAL(syncFinished(SyncResult)),
-                SLOT(slotSyncFinished(SyncResult)));
-
-        _syncFolder->startSync( QStringList() );
-    } else {
-        qDebug() << " XX Failed to fetch credentials for ownCloud";
-    }
-
 }
 
 bool ownCloudSync::startSync( const QString& path )
@@ -65,9 +40,36 @@ bool ownCloudSync::startSync( const QString& path )
     return true;
 }
 
+void ownCloudSync::slotCredentialsFetched(bool res )
+{
+    if( _srcPath.isEmpty() ) {
+        kDebug() << "No src-path given!";
+        return;
+    }
+
+    if( res ) {
+
+        kDebug() << "Successfully fetched credentials!";
+        MirallConfigFile cfg;
+
+        QString oCUrl = cfg.ownCloudUrl(QString::null, true);
+
+        QString kraftPath("kraft");
+        _syncFolder = new ownCloudFolder(QLatin1String("KraftFolder"), _srcPath, oCUrl+kraftPath );
+
+        connect(_syncFolder, SIGNAL(syncFinished(SyncResult)),
+                SLOT(slotSyncFinished(SyncResult)));
+
+        _syncFolder->startSync( QStringList() );
+    } else {
+        kDebug() << " XX Failed to fetch credentials for ownCloud";
+    }
+
+}
+
 void ownCloudSync::slotSyncFinished( const SyncResult& result )
 {
-    qDebug() << " *** ownCloud Sync-Result: " << result.statusString();
-
+    kDebug() << " *** ownCloud Sync-Result: " << result.statusString();
+    qApp->setApplicationName( QLatin1String("Kraft"));
     _syncFolder->deleteLater();
 }

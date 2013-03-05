@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include <QDate>
+#include <QDebug>
+
+#include <KDebug>
 
 #include "xmldocument.h"
 #include "kraftdoc.h"
@@ -66,7 +69,26 @@ void XmlDocument::getKraftDoc( KraftDoc *doc )
         dp->setPositionNumber( item.number() );
         dp->setText( item.text() );
 
-        dp->setTaxType( item.taxType().toInt(&ok) );
+        // parse tax type.
+        DocPositionBase::TaxType tt = DocPositionBase::TaxInvalid;
+
+        QString ttype = item.taxType();
+        if( ttype.isEmpty() ) {
+            qDebug() << "TaxType is empty, assuming full tax!";
+            ttype = QLatin1String("full");
+        }
+
+        if( ttype == QLatin1String("full")) {
+            tt = DocPositionBase::TaxFull;
+        } else if( ttype == QLatin1String("reduced")) {
+            tt = DocPositionBase::TaxReduced;
+        } else if( ttype == QLatin1String("none")) {
+            tt = DocPositionBase::TaxNone;
+        }
+        if( tt == DocPositionBase::TaxInvalid ) {
+            kDebug() << "FATAL ERROR: could not parse tax type " << ttype;
+        }
+        dp->setTaxType( tt );
         Einheit unit( item.unit() );
         dp->setUnit( unit );
 

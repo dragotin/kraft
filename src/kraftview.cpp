@@ -444,8 +444,6 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   connect( w, SIGNAL( unlockPosition() ),  mUnlockPositionMapper, SLOT( map() ) );
   connect( w, SIGNAL( positionModified()), mModifiedMapper,  SLOT( map() ) );
 
-  setMappingId( w, pos );
-
   QStringList units = UnitManager::self()->allUnits();
   units.sort();
 
@@ -479,6 +477,8 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
   w->setDocPosition( dp, getDocument()->locale() );
   w->setOrdNumber( pos+1 );
   w->slotSetTax( dp->taxType() );
+  setMappingId( w, pos );
+
   return w;
 }
 

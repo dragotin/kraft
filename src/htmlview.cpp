@@ -135,8 +135,8 @@ void HtmlView::writeBottomFrame()
 
 void HtmlView::displayContent( const QString& content )
 {
-  kDebug() << "BASE URL: " << mBaseUrl.prettyUrl();
-  kDebug() << "Stylesheet URL: " << mStyleSheetFile;
+  // kDebug() << "BASE URL: " << mBaseUrl.prettyUrl();
+  // kDebug() << "Stylesheet URL: " << mStyleSheetFile;
   begin( mBaseUrl );
 
   // kDebug() << "Show content: " << content;
