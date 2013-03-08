@@ -109,3 +109,32 @@ void MaterialSaverDB::fillMaterialBuffer( QSqlRecord &rec, StockMaterial *mat, b
   }
   rec.setValue("modifyDate", dtString );
 }
+
+void MaterialSaverDB::saveTemplateChapter( StockMaterial* tmpl )
+{
+    if( ! tmpl ) {
+        kDebug() << "Parameter error, zero material!";
+        return;
+    }
+    dbID id = tmpl->getID();
+    dbID chapId = tmpl->chapterId();
+
+    QSqlTableModel model;
+    model.setTable("stockMaterial");
+    QString templID = id.toString();
+    model.setFilter( "matID=" + templID );
+    model.select();
+
+    QSqlRecord buffer = model.record();
+
+    if( model.rowCount() > 0)
+    {
+        kDebug() << "Updating material chapter " << templID << endl;
+        buffer = model.record(0);
+        buffer.setValue( "chapterID", chapId.toString() );
+        model.setRecord(0, buffer);
+        model.submitAll();
+    } else {
+        kDebug() << "Could not update material chapter, not found with id " << templID;
+    }
+}
