@@ -71,5 +71,10 @@ void ownCloudSync::slotSyncFinished( const SyncResult& result )
 {
     kDebug() << " *** ownCloud Sync-Result: " << result.statusString();
     qApp->setApplicationName( QLatin1String("Kraft"));
+    if( result.status() == SyncResult::Success ) {
+
+    }
+
+
     _syncFolder->deleteLater();
 }
