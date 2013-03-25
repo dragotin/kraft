@@ -25,7 +25,7 @@ class HtmlView : public KHTMLPart
 {
     Q_OBJECT
   public:
-    HtmlView( QWidget *parent );
+    HtmlView( QWidget *parent = 0);
 
     void clearView();
 

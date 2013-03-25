@@ -110,7 +110,7 @@ void TextTemplate::setValue( Dictionary ttd, const QString& key, const QString& 
 
 bool TextTemplate::setTemplateFileName( const QString& name )
 {
-  mErrorString = QString();
+  mErrorString.clear();
 
   mFileName = name;
   return openTemplate( );
@@ -123,21 +123,19 @@ bool TextTemplate::openTemplate()
   if ( info.isAbsolute() ) {
     // assume it is a absolute path
   } else {
-    KStandardDirs stdDirs;
+    mFileName = findTemplateFile(mFileName);
+
     if ( mFileName.isEmpty() ) {
       mErrorString = i18n( "No file name given for template" );
       return false;
     }
 
-    QString findFile = stdDirs.findResource( "data", mFileName );
-    info.setFile( findFile );
+    info.setFile( mFileName );
   }
 
   if ( ! ( info.isFile() && info.isReadable() ) ) {
     mErrorString = i18n( "Could not find template file %1" ).arg( info.absoluteFilePath() );
     return false;
-  } else {
-    mFileName = info.absoluteFilePath();
   }
 
   kDebug() << "Loading this template source file: " << mFileName << endl;
@@ -177,4 +175,36 @@ QString TextTemplate::expand() const
       return QString::fromUtf8( output.c_str() );
   }
   return QString();
+}
+
+// Static method to load
+
+QString TextTemplate::findTemplateFile(const QString &filename) const
+{
+  if( filename.isEmpty() ) {
+    return QString::null;
+  }
+
+  KStandardDirs stdDirs;
+  QString templFileName = filename;
+  QString findFile = "kraft/reports/" + templFileName;
+
+  QString tmplFile = stdDirs.findResource( "data", findFile );
+
+  if ( tmplFile.isEmpty() ) {
+    QByteArray kraftHome = qgetenv("KRAFT_HOME");
+
+    if( !kraftHome.isEmpty() ) {
+      QString file = QString( "%1/reports/%2").arg(QString::fromLocal8Bit(kraftHome)).arg(templFileName);
+      QFileInfo fi(file);
+      if( fi.exists() && fi.isReadable() ) {
+        tmplFile = file;
+      }
+    }
+    if( tmplFile.isEmpty() ) {
+      kDebug() << "Could not find template " << filename;
+      return QString::null;
+    }
+  }
+  return tmplFile;
 }
