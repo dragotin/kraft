@@ -32,4 +32,3 @@ void KraftDocEdit::slotModified()
   emit modified();
 }
 
-#include "kraftdocedit.moc"
