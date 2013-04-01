@@ -76,9 +76,12 @@ public:
 
 
   bool save();
+
 protected:
   MaterialSaverBase* getSaver();
   QString dateShortFormat( QDate );
+  void saveChapterId();
+
 private:
   QString m_name;
   QString m_descr;

@@ -18,6 +18,8 @@
 #ifndef PREFSDIALOG_H
 #define PREFSDIALOG_H
 
+#include <kabc/addressee.h>
+
 #include <kpagedialog.h>
 #include <QItemDelegate>
 
@@ -40,6 +42,7 @@ class KUrlRequester;
 class ImpTreeView;
 class PrefsWages;
 class PrefsUnits;
+class HtmlView;
 
 // ################################################################################
 
@@ -52,6 +55,8 @@ public:
 
   ~PrefsDialog();
 
+  void setMyIdentity( const KABC::Addressee& );
+  KABC::Addressee myIdentity();
 
 protected:
   void readConfig();
@@ -64,6 +69,10 @@ protected slots:
   void slotDeleteTax();
   void slotTaxSelected(QModelIndex);
   void slotDocTypeRemoved( const QString& );
+  void slotChangeIdentity();
+
+signals:
+  void newOwnIdentity(const QString&, KABC::Addressee);
 
 private:
   void docTab();
@@ -72,6 +81,7 @@ private:
   void wagesTab();
   void unitsTab();
   void writeTaxes();
+  void whoIsMeTab();
 
   QComboBox *m_databaseDriver;
   QLineEdit *m_leHost;
@@ -97,9 +107,10 @@ private:
   PrefsWages *mPrefsWages;
   PrefsUnits *mPrefsUnits;
 
-  QPushButton *mDelTax;
-  ImpTreeView *mTaxTreeView;
+  QPushButton    *mDelTax;
+  ImpTreeView    *mTaxTreeView;
   QSqlTableModel *mTaxModel;
+  HtmlView       *mIdentityView;
 
 };
 

@@ -28,6 +28,7 @@
 class QSqlRecord;
 
 class QStringList;
+class TextTemplate;
 
 /**
  * encapsulates all relevant for default values for documents such as
@@ -53,6 +54,8 @@ public:
   QString iconvTool() const;
 
   QString getStyleSheet( const QString& ) const;
+
+  TextTemplate getTextTemplate( const QString& );
 
 private:
   DefaultProvider();

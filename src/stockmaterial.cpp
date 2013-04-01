@@ -184,5 +184,14 @@ QString StockMaterial::dateShortFormat( QDate d )
   return QString( "%1/%2" ).arg( d.month() ).arg( d.year() );
 }
 
+void StockMaterial::saveChapterId()
+{
+  MaterialSaverBase *saver = getSaver();
+  if( saver ) {
+    saver->saveTemplateChapter( this );
+  }
+}
+
+
 /* END */
 

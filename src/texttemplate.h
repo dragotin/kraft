@@ -95,6 +95,8 @@ public:
    */
   QString expand() const;
 
+  QString findTemplateFile(const QString &filename) const;
+
 private:
   QString mFileName;
   QString mErrorString;

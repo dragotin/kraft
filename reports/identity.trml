@@ -1,0 +1,58 @@
+<html>
+<head>
+<style type="text/css">
+
+body {
+  padding: 8px;
+  margin: 0px;
+  font-size: 85%;
+}
+
+#small {
+  font-size: smaller;
+}
+
+#identityimage {
+  padding: 5px;
+  background-color: #eeeeee;
+  padding-left: 80px;
+  background-image: url(identity.png);
+  background-repeat:no-repeat;
+  height: 100px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+}
+
+p {
+  /* padding: 4px; */
+  margin: .4em 0 .8em 0;
+  padding: 0;
+}
+
+#no_identity_warn {
+  background-color: #ffcbcb;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  padding: 5px;
+}
+
+</style>
+</head>
+<body>
+{{#IDENTITY}}
+  <div id="identityimage">
+  <table>
+    <tr><td colspan="3"><b>{{IDENTITY_NAME}}</b></td></tr>
+    <tr><td width="50%">{{IDENTITY_ORGANISATION}}</td><td>{{WORK_PHONE_LABEL}}:</td><td>{{IDENTITY_WORK_PHONE}}</td></tr>
+    <tr><td>{{IDENTITY_STREET}}</td><td>{{FAX_LABEL}}:</td><td>{{IDENTITY_FAX}}</td></tr>
+    <tr><td>{{IDENTITY_POSTCODE}} {{IDENTITY_LOCALITY}}</td><td>{{MOBILE_PHONE_LABEL}}:</td><td>{{IDENTITY_MOBILE_PHONE}}</td></tr>
+  </table>
+  </div>
+<p id="small">{{ADDRESSBOOK_INFO}} {{IDENTITY_ADDRESS_TYPE}}</p>
+{{/IDENTITY}}
+{{#NO_IDENTITY}}
+  <div id="no_identity_warn">
+  {{NO_IDENTITY_WRN}}
+  </div>
+{{/NO_IDENTITY}}
+</body>

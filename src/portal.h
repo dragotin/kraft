@@ -42,6 +42,7 @@ class ReportGenerator;
 class KCmdLineArgs;
 class ArchDocDigest;
 class AddressProvider;
+class PrefsDialog;
 
 /**
   */
@@ -90,6 +91,7 @@ class Portal : public KXmlGuiWindow
     void slotOpenArchivedDoc( const ArchDocDigest& );
     void slotMailDocument();
     void slotMailDocument( const QString& );
+    void slotPrefsDialogFinished( int );
 
   public slots:
     /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.
@@ -187,6 +189,7 @@ class Portal : public KXmlGuiWindow
   QString mMailReceiver;
   AddressProvider *mAddressProvider;
   KABC::Addressee myContact;
+  PrefsDialog *_prefsDialog;
 };
 
 #endif

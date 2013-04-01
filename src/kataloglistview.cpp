@@ -199,6 +199,7 @@ CatalogTemplateList KatalogListView::selectedTemplates()
   CatalogTemplateList templates;
 
   if( mCheckboxes ) { // checkbox mode
+    // add the checkboxed items.
     QTreeWidgetItemIterator it( this, QTreeWidgetItemIterator::Checked );
     while (*it) {
       QTreeWidgetItem *item = *it;
@@ -212,10 +213,23 @@ CatalogTemplateList KatalogListView::selectedTemplates()
     }
   }
 
+  // if no items were added yet, lets go for the selected ones.
   if( ! mCheckboxes || templates.isEmpty() ) {
     QList<QTreeWidgetItem*> items = selectedItems();
 
     foreach( QTreeWidgetItem* item, items ) {
+      if( isChapter(item) && !isRoot(item) ) {
+        // for chapters, the children are lined up.
+        int kidCnt = item->childCount();
+        for( int i=0; i < kidCnt; i++ ) {
+          QTreeWidgetItem *kid = item->child(i);
+          if( kid && !isChapter(kid) ) {
+            // only add normal templates.
+            void *data = itemData(kid);
+            if( data ) templates.append( static_cast<CatalogTemplate*>(data));
+          }
+        }
+      }
       if( !(isChapter(item) || isRoot(item))) {
         void *data = itemData( item );
         if( data )

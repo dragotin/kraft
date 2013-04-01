@@ -897,9 +897,21 @@ QString Portal::textWrap( const QString& t, int width )
 
 void Portal::preferences()
 {
-    PrefsDialog dlg( this );
-    if ( dlg.exec() ) {
-    }
+  _prefsDialog = new PrefsDialog(this);
+  connect( _prefsDialog, SIGNAL(finished(int)), SLOT(slotPrefsDialogFinished(int)) );
+  connect( _prefsDialog, SIGNAL(newOwnIdentity(const QString&, KABC::Addressee)),
+           SLOT(slotReceivedMyAddress(QString,KABC::Addressee)));
+  _prefsDialog->setMyIdentity( myContact );
+
+  _prefsDialog->open();
+}
+
+void Portal::slotPrefsDialogFinished( int result )
+{
+  if( result == QDialog::Accepted) {
+
+  }
+  _prefsDialog->deleteLater();
 }
 
 QWidget* Portal::mainWidget()

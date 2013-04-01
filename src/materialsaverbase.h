@@ -28,13 +28,14 @@ class StockMaterial;
 
 class MaterialSaverBase : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-   MaterialSaverBase();
-  ~MaterialSaverBase();
+    MaterialSaverBase();
+    ~MaterialSaverBase();
 
-  virtual bool saveTemplate( StockMaterial* ) = 0;
+    virtual bool saveTemplate( StockMaterial* ) = 0;
+    virtual void saveTemplateChapter( StockMaterial* ) = 0;
 };
 
 #endif
