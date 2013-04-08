@@ -148,7 +148,13 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
 
 void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 {
+  _success = true;
+
     QString fileName = loadFileName(id);
+    if( fileName.isEmpty() ) {
+      kDebug() << "ERROR: Invalid load file name for id " << id;
+      _success = false;
+    }
 
     kDebug() << "############### Document Load XML ################" << endl;
     bool ok;
@@ -157,6 +163,7 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 
     if( ! ok ) {
         kDebug() << "FATAL: Failed to parse XML document!";
+        _success = false;
         return;
     }
 

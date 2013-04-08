@@ -35,6 +35,8 @@ public:
 
     virtual bool saveDocument( KraftDoc* );
     virtual void load( const QString& , KraftDoc * );
+
+    bool success() { return _success; }
 private:
     QString storagePath();
     QString saveFileName( const QString& );
@@ -47,6 +49,7 @@ private:
     const QString PosTypeHeader;
 
     ownCloudSync *_oCSync;
+    bool          _success;
 
 };
 

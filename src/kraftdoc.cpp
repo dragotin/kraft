@@ -37,6 +37,7 @@
 #include "documentsaverdb.h"
 #include "defaultprovider.h"
 #include "documentsaverxml.h"
+#include "kraftsettings.h"
 
 #include "documentman.h"
 
@@ -180,12 +181,32 @@ bool KraftDoc::newDocument( const QString& docType )
 
 bool KraftDoc::openDocument(const QString& id )
 {
-  DocumentSaverBase *loader = getLoader();
-  loader->load( id, this );
+    bool rc = false;
 
-  modified=false;
-  mIsNew = false;
-  return true;
+    if( KraftSettings::self()->ownCloudSetup() ) {
+        DocumentSaverXML *xmlLoader = new DocumentSaverXML();
+        if( xmlLoader ) {
+            xmlLoader->load( id, this );
+            if( xmlLoader->success() ) {
+                kDebug() << "Document Successfully read from XML file!";
+                rc = true;
+            }
+            delete xmlLoader;
+        }
+    }
+
+    // If it could not be found as XML, try to load from DB.
+    if( ! rc ) {
+        DocumentSaverDB *loader = new DocumentSaverDB();
+        if( loader ) {
+            loader->load(id, this); // FIXME: Proper result handling.
+            rc = true;
+            delete loader;
+        }
+    }
+    modified=false;
+    mIsNew = false;
+    return rc;
 }
 
 bool KraftDoc::reloadDocument()
