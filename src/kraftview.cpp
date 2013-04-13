@@ -446,11 +446,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 
   QStringList units = UnitManager::self()->allUnits();
   units.sort();
-
-  for ( QStringList::Iterator it = units.begin(); it != units.end(); ++it ) {
-    Einheit e = UnitManager::self()->getUnit( UnitManager::self()->getUnitIDSingular( *it ) );
-    w->m_cbUnit->addItem(e.einheitSingular(), e.einheitSingularLong());
-  }
+  w->m_cbUnit->addItems(units);
 
   if( dp->dbId().toInt() < 0 ) {
     w->slotSetState( PositionViewWidget::New );

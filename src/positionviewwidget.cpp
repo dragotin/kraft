@@ -183,7 +183,8 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     m_sbAmount->blockSignals( true );
     m_sbAmount->setValue( pos->amount() );
     m_sbAmount->blockSignals( false );
-    m_cbUnit->setCurrentIndex(m_cbUnit->findText( pos->unit().einheitSingular() ));
+    QString unit = pos->unit().einheitSingular();
+    m_cbUnit->setCurrentIndex(m_cbUnit->findText( unit ));
 
     m_sbUnitPrice->blockSignals( true );
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
