@@ -205,14 +205,15 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
           price= dp->unitPrice().toDouble();
         }
 
-        record.setValue( "docID",     doc->docID().toInt() );
-        record.setValue( "ordNumber", ordNumber );
-        record.setValue( "text",      dp->text() );
-        record.setValue( "postype",   typeStr );
-        record.setValue( "amount",    dp->amount() );
-        record.setValue( "unit",      dp->unit().id() );
-        record.setValue( "price",     price );
-        record.setValue( "taxType",   dp->taxType() );
+        record.setValue( "docID",     QVariant(doc->docID().toInt()));
+        record.setValue( "ordNumber", QVariant(ordNumber));
+        record.setValue( "text",      QVariant(dp->text()));
+        record.setValue( "postype",   QVariant(typeStr));
+        record.setValue( "amount",    QVariant(dp->amount()));
+        int unitId = dp->unit().id();
+        record.setValue( "unit",      QVariant(unitId));
+        record.setValue( "price",     QVariant(price));
+        record.setValue( "taxType",   QVariant(dp->taxType()));
 
         ordNumber++; // FIXME
 
@@ -224,6 +225,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         } else {
           kDebug() << "Updating!" << endl;
           model.setRecord(0, record);
+          model.submitAll();
         }
       } else {
         kDebug() << "ERR: No record object found!" << endl;
