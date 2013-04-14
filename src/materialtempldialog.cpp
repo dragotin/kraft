@@ -58,6 +58,11 @@ MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, bool modal )
   mInSalePrice->setMaximum( 999999.99 );
   mInSalePrice->setDecimals( 2 );
 
+  double m = KraftSettings::self()->materialAddOnPercent();
+  mInSaleAdd->setValue(m);
+  mInSaleAdd->setMinimum(-99.0);
+  mInSaleAdd->setMaximum(999.0);
+
   connect( mInSalePrice, SIGNAL( valueChanged( double ) ),
            SLOT( slSalePriceChanged( double ) ) );
   connect( mInPurchasePrice, SIGNAL( valueChanged( double ) ),
@@ -90,14 +95,8 @@ void MaterialTemplDialog::slPurchPriceChanged( double purch )
   double sale = mInSalePrice->value();
   double m = mInSaleAdd->value();
 
-  if ( m > Eta && sale < Eta ) {
+  if ( m > Eta ) {
     sale = ( 1+m/100 )*purch;
-  } else if ( sale > Eta ) {
-    // sale price is here, recalc the factor
-    m = 100*( ( sale-purch )/purch );
-  } else if ( m < Eta && sale < Eta ) {
-    // take a default for the material factor
-    m = KraftSettings::self()->materialAddOnPercent();
   }
   setPriceCalc( purch, m, sale );
 }
@@ -232,5 +231,3 @@ void MaterialTemplDialog::reject()
   }
   KDialog::reject();
 }
-
-
