@@ -175,6 +175,12 @@
         </item>
         <item row="1" column="2">
          <widget class="KDoubleNumInput" name="mInSalePrice">
+          <property name="maximum">
+           <double>999999.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>1.000000000000000</double>
+          </property>
           <property name="maxValue" stdset="0">
            <number>0</number>
           </property>
@@ -182,6 +188,12 @@
         </item>
         <item row="0" column="2">
          <widget class="KDoubleNumInput" name="mInPurchasePrice">
+          <property name="maximum">
+           <double>999999.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>1.000000000000000</double>
+          </property>
           <property name="maxValue" stdset="0">
            <number>0</number>
           </property>
