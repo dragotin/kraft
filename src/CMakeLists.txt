@@ -1,4 +1,3 @@
-
 include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS} external)
 
 add_subdirectory(pics)
@@ -180,7 +179,3 @@ install( TARGETS kraftcat ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES  kraft.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
 install(FILES  kraftui.rc katalogview.rc DESTINATION ${DATA_INSTALL_DIR}/kraft)
-
-kde4_install_icons(${ICON_INSTALL_DIR})
-
-
