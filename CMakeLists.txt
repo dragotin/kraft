@@ -12,7 +12,6 @@ include(KDE4Defaults)
 
 include_directories(${KDE4_INCLUDES} ${QT_INCLUDES} src)
 
-add_subdirectory(cmake)
 add_subdirectory(src)
 add_subdirectory(database)
 add_subdirectory(reports)
