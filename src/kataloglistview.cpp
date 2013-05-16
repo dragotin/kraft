@@ -152,7 +152,7 @@ void KatalogListView::setupChapters()
     foreach( CatalogChapter chapter, strayCats ) {
       QTreeWidgetItem *katItem = tryAddingCatalogChapter( chapter );
       if( katItem ) {
-        kDebug() << "Sucessfully added catalog chapter from strayCats";
+        kDebug() << "Successfully added catalog chapter from strayCats";
       } else {
         newStrayCats.append( chapter );
         kDebug() << "Failed to add a catalog chapter from stryCats";
