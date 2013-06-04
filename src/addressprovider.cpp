@@ -43,7 +43,7 @@ void AddressProvider::getAddressee( const QString& uid )
     return;
   }
   Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob( this );
-  // job->setLimit( 100 );
+  job->setLimit( 1 );
   job->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
 
   connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
