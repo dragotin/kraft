@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
 
   KCmdLineOptions options;
-  options.add( "d <number>", ki18n("Open Document Number") );
+  options.add( "d <number>", ki18n("Open document with doc number <number>") );
 
    // Register the supported options
   KCmdLineArgs::addCmdLineOptions( options );
