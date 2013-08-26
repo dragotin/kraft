@@ -267,7 +267,7 @@ void KraftDB::wipeDatabase()
 SqlCommandList KraftDB::parseCommandFile( const QString& file )
 {
   QString sqlFile;
-  QString env( getenv( "BUILDDIR" ) );
+  QString env( getenv( "KRAFT_HOME" ) );
   if( !env.isEmpty() && env.right(1) != QDir::separator () ) {
     env += QDir::separator ();
   }
