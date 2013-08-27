@@ -140,13 +140,13 @@ bool TextTemplate::openTemplate()
 
   kDebug() << "Loading this template source file: " << mFileName << endl;
 
-  Template *tmpl = Template::GetTemplate( std::string( mFileName.toAscii().data() ), ctemplate::DO_NOT_STRIP );
-  tmpl->ReloadIfChanged();
+  Template *tmpl = Template::GetTemplate( std::string( mFileName.toUtf8() ), ctemplate::DO_NOT_STRIP );
 
   if ( !tmpl || tmpl->state() != ctemplate::TS_READY ) {
     mErrorString = i18n( "Failed to open template source" );
     return false;
   }
+  tmpl->ReloadIfChanged();
 
   mStandardDict = new TemplateDictionary( "TopLevel" );
 
@@ -166,7 +166,7 @@ QString TextTemplate::expand() const
   // if ( mStandardDict ) {
   //   mStandardDict->Dump();
   // }
-  Template *textTemplate = Template::GetTemplate( std::string( mFileName.toAscii().data() ),
+  Template *textTemplate = Template::GetTemplate( std::string( mFileName.toUtf8() ),
                                                   ctemplate::DO_NOT_STRIP );
   if ( textTemplate ) {
     bool errorFree = textTemplate->Expand(&output, mStandardDict );
