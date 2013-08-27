@@ -148,6 +148,7 @@ bool TextTemplate::openTemplate()
   }
   tmpl->ReloadIfChanged();
 
+  tmpl->ReloadIfChanged();
   mStandardDict = new TemplateDictionary( "TopLevel" );
 
   return true;
