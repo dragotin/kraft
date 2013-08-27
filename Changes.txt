@@ -4,6 +4,7 @@ Changes since version 0.50: #########################################
   if the chapter item is selected.
 - Added a new setting "Own Identity" to allow to pick the own identity
   from the address books in an installed system.
+- Make text template loading utf8 save.
 
     => release v. 0.51 (mar x, 2013)
 
