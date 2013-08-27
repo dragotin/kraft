@@ -36,7 +36,7 @@ public slots:
 
 private slots:
     void slotSyncFinished( const SyncResult& );
-    void slotCredentialsFetched(bool );
+    void slotCredentialsFetched();
 
 private:
     Folder *_syncFolder;

@@ -1,7 +1,7 @@
 # ownCloud client lib linking:
-SET( OWNCLOUD_CLIENT_INCLUDE_DIRS /home/kf/owncloud.com/mirall/src/ /home/kf/owncloud.com/csync/src/ /home/kf/owncloud.com/buildcsync/src/)
+SET( OWNCLOUD_CLIENT_INCLUDE_DIRS /home/kf/owncloud.com/mirall/src/ /home/kf/owncloud.com/ocsync/csync/src/ /home/kf/owncloud.com/ocsync/build/ /home/kf/owncloud.com/ocsync/build/src)
 include_directories(${OWNCLOUD_CLIENT_INCLUDE_DIRS} ${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS} external)
-SET( OWNCLOUD_CLIENT_LIBS /home/kf/owncloud.com/buildmirall/src/libowncloudsync.so /home/kf/owncloud.com/buildcsync/src/libocsync.so )
+SET( OWNCLOUD_CLIENT_LIBS /home/kf/owncloud.com/buildmirall/src/libowncloudsync.so /home/kf/owncloud.com/ocsync/build/src/libocsync.so )
 SET( OWNCLOUD_CLIENT_LIB_DIR /home/kf/owncloud.com/buildmirall/src )
 
 add_subdirectory(pics)

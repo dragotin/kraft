@@ -16,6 +16,11 @@
  ****************************************************************************/
 #include "owncloudsync.h"
 #include "mirall/folder.h"
+<<<<<<< HEAD
+=======
+#include "creds/abstractcredentials.h"
+
+>>>>>>> Work with more recent ocsync and mirall
 #include "mirall/mirallconfigfile.h"
 
 #include <QApplication>
@@ -39,31 +44,47 @@ bool ownCloudSync::startSync( const QString& path )
     return true;
 }
 
-void ownCloudSync::slotCredentialsFetched(bool res )
+void ownCloudSync::slotCredentialsFetched()
 {
     if( _srcPath.isEmpty() ) {
         kDebug() << "No src-path given!";
         return;
     }
 
-    if( res ) {
+    MirallConfigFile cfg;
+    AbstractCredentials* credentials(cfg.getCredentials());
 
-        kDebug() << "Successfully fetched credentials!";
-        MirallConfigFile cfg;
+    disconnect(credentials, SIGNAL(fetched()),
+               this, SLOT(slotCredentialsFetched()));
 
-        QString oCUrl = cfg.ownCloudUrl(QString::null, true);
+    qDebug() << "Successfully fetched credentials!";
 
-        QString kraftPath("kraft");
-        _syncFolder = new ownCloudFolder(QLatin1String("KraftFolder"), _srcPath, oCUrl+kraftPath );
+    QString oCUrl = cfg.ownCloudUrl();
 
-        connect(_syncFolder, SIGNAL(syncFinished(SyncResult)),
-                SLOT(slotSyncFinished(SyncResult)));
+    QString kraftPath("kraft");
+    _syncFolder = new Folder(QLatin1String("KraftFolder"), _srcPath, oCUrl+kraftPath );
 
-        _syncFolder->startSync( QStringList() );
+    connect(_syncFolder, SIGNAL(syncFinished(SyncResult)),
+            SLOT(slotSyncFinished(SyncResult)));
+
+    _syncFolder->startSync( QStringList() );
+
+}
+
+bool ownCloudSync::startSync( const QString& path )
+{
+    MirallConfigFile cfg;
+    AbstractCredentials* credentials(cfg.getCredentials());
+    _srcPath = path;
+
+    if (! credentials->ready()) {
+       connect( credentials, SIGNAL(fetched()),
+                this, SLOT(slotCredentialsFetched()));
+       credentials->fetch();
     } else {
-        kDebug() << " XX Failed to fetch credentials for ownCloud";
+	// Credentials are here already.
     }
-
+    return true;
 }
 
 void ownCloudSync::slotSyncFinished( const SyncResult& result )
