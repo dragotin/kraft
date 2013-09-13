@@ -15,8 +15,7 @@
  *                                                                         *
  ****************************************************************************/
 #include "owncloudsync.h"
-#include "mirall/owncloudfolder.h"
-#include "mirall/credentialstore.h"
+#include "mirall/folder.h"
 #include "mirall/mirallconfigfile.h"
 
 #include <QApplication>
