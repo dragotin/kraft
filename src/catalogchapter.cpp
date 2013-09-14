@@ -126,6 +126,17 @@ void CatalogChapter::save()
   mId = KraftDB::self()->getLastInsertID();
 }
 
+bool CatalogChapter::removeFromDB()
+{
+    kDebug() << "Removing chapter " << name() << " with id " << mId.toInt();
+
+    QSqlQuery q;
+    q.prepare("DELETE FROM CatalogChapters WHERE chapterID=:chapId");
+
+    q.bindValue( ":chapId",  mId.toInt() );
+    return q.exec();
+}
+
 void CatalogChapter::saveNameAndDesc()
 {
   QSqlQuery q;

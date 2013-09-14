@@ -128,11 +128,6 @@ QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
   return mChapters;
 }
 
-bool Katalog::mayRemoveChapter( const QString& /* chapterName */ )
-{
-  return true; // FIXME !
-}
-
 QString Katalog::chapterName(const dbID& id)
 {
   foreach( CatalogChapter chapter, mChapters ) {
@@ -167,19 +162,6 @@ void Katalog::setName( const QString& n )
 KatalogType Katalog::type()
 {
     return UnspecCatalog;
-}
-
-void Katalog::addChapter( const CatalogChapter& )
-{
-  // refresh the internal list of chapters
-  mChapterListNeedsRefresh = true;
-}
-
-bool Katalog::removeChapter( const QString&, const QString& )
-{
-  // refresh the internal list of chapters
-  mChapterListNeedsRefresh = true;
-  return true;
 }
 
 void Katalog::refreshChapterList()

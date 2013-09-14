@@ -24,6 +24,7 @@
 #include <kaction.h>
 #include <kactioncollection.h>
 #include <kmenu.h>
+#include <kmessagebox.h>
 
 #include "kraftglobals.h"
 #include "katalog.h"
@@ -327,11 +328,28 @@ void KatalogListView::slotEditCurrentChapter()
 
 void KatalogListView::slotRemoveCurrentChapter()
 {
-  QTreeWidgetItem *item = currentItem();
-  if( ! isChapter( item )) {
-    kDebug() << "Can only edit chapters!" << endl;
-  }
+    QTreeWidgetItem *item = currentItem();
+    if( ! isChapter( item )) {
+        kDebug() << "Can only remove chapters here!" << endl;
+    }
 
+    if( item->childCount() > 0 ) {
+        KMessageBox::sorry( this,
+                            i18n( "A catalog chapter can not be deleted as long it has children." ),
+                            i18n( "Chapter can not be deleted" ));
+        return;
+
+    } else {
+        CatalogChapter *chap = static_cast<CatalogChapter*>( itemData( item ) );
+        if( chap ) {
+            int id = chap->id().toInt();
+            if( chap->removeFromDB() ) {
+                delete item;
+                mChapterDict.remove(id);
+                delete chap;
+            }
+        }
+    }
 }
 
 void KatalogListView::slotCreateNewChapter()

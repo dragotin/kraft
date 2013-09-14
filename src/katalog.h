@@ -66,17 +66,6 @@ public:
     /** get the chapter name for the given ID */
     virtual QString chapterName(const dbID&);
 
-    /** Add a catalog chapter */
-    // virtual void addChapter( const QString&, int );
-    virtual void addChapter( const CatalogChapter& );
-
-    /** Check if a chapter may be removed, ie. its empty
-      */
-    virtual bool mayRemoveChapter( const QString& );
-
-    /** remove a catalog chapter and move existing entries in it to the replacement
-        catalog. */
-    virtual bool removeChapter( const QString&, const QString& replace = QString() );
 
     /** set the sortkey for a chapter. Note: The organisation of the sortkeys
      * between the different chapters is up to the caller of this method.

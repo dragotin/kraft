@@ -44,6 +44,8 @@ public:
   dbID catalogSetId() const;
   void setCatalogSetId( const dbID& );
 
+  bool removeFromDB();
+
   QPixmap icon() const;
   void setIcon( const QPixmap& );
 
