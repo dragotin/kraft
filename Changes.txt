@@ -1,5 +1,6 @@
 Changes since version 0.50: #########################################
 - Fix drag and drop in catalogues.
+- Implemented removal of sub chapters.
 - Add the content of an entire template catalog chapter to the document
   if the chapter item is selected.
 - Added a new setting "Own Identity" to allow to pick the own identity
