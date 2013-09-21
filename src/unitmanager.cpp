@@ -87,8 +87,7 @@ int UnitManager::getUnitIDSingular( const QString& einheitStr )
   foreach( Einheit tmp, mUnits ) {
 
     if( tmp.einheitSingular() == einheitStr ||
-        tmp.einheitPlural()   == einheitStr ||
-        einheitStr.startsWith(tmp.einheitSingular()) ) {
+        tmp.einheitPlural()   == einheitStr ) {
       // kDebug() << "Thats it, returning " << tmp.id() << endl;
       return tmp.id();
     }
