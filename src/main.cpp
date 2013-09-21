@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
                         KRAFT_VERSION,
                         ki18n("Business documents for the small enterprise"),
                         KAboutData::License_GPL,
-                        ki18n("Copyright © 2004–2012 Klaas Freitag" ) );
+                        ki18n("Copyright © 2004–2013 Klaas Freitag" ) );
 
   aboutData.addAuthor(ki18n("Klaas Freitag"), ki18n( "Developer" ), "freitag@kde.org");
   aboutData.addAuthor(ki18n("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ),
