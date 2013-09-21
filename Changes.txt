@@ -6,8 +6,10 @@ Changes since version 0.50: #########################################
 - Added a new setting "Own Identity" to allow to pick the own identity
   from the address books in an installed system.
 - Make text template loading utf8 save.
+- Reworked image-in-template example in invoice report template.
+- Fixed unit handling, no more startsWith coparison of text.
 
-    => release v. 0.51 (mar x, 2013)
+    => release v. 0.51 (sep 22, 2013)
 
 Changes since version 0.45: #########################################
 - Handling of individual tax rates for each document item
