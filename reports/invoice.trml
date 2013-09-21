@@ -27,7 +27,7 @@
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
             <drawCentredString x="105mm" y="1.4cm">Telephone {{MY_PHONE}} - Fax {{MY_FAX}}</drawCentredString>
 	    <drawCentredString x="185mm" y="1.4cm">Page <pageNumber/></drawCentredString>
-	    <!-- image x="140mm" y="22cm" width="6cm" height="6cm" file="IMAGE(lurchie.png)"  -->
+	    <!-- image x="140mm" y="22cm" width="6cm" height="6cm" file="IMAGE(lurchie.png)" / -->
 
         </pageGraphics>
         <frame id="address"  x1="2.41cm" y1="20.62cm" width="8.5cm" height="4cm"/>
