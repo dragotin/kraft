@@ -126,7 +126,23 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
             name+"&action=open\">";
     html += i18n("Open");
-    html += "</td>";
+    html += "</td></tr>";
+
+    KatalogMan::CatalogDetails details = KatalogMan::self()->catalogDetails(name);
+    html += "<tr";
+    if ( cnt % 2 ) {
+      html += " class=\"odd\"";
+    }
+    html += ">\n";
+
+    if( details.countEntries == 0 ) {
+        html += "<td colspan=\"2\"><span style=\"font-size:75%;\">No templats yet.</span></td>";
+    } else {
+        KLocale *locale = DefaultProvider::self()->locale();
+        QString dateStr = locale->formatDateTime( details.maxModDate );
+        html += QString("<td colspan=\"2\"><span style=\"font-size:75%;\">%1 templates in %2 chapters, last modified at %3</span></td>").
+                arg(details.countEntries).arg(details.countChapters).arg(dateStr);
+    }
 #if 0
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
             name+"&action=xml\">";

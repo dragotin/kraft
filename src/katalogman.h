@@ -38,16 +38,25 @@ public:
     ~KatalogMan();
     static KatalogMan *self();
 
+    struct CatalogDetails {
+        int countEntries;
+        int countChapters;
+        QDateTime maxModDate;
+    };
+
     QStringList allKatalogNames();
     Katalog* getKatalog(const QString&);
     Katalog* defaultTemplateCatalog();
     void     registerKatalog( Katalog* );
     QString  catalogTypeString( const QString& catName );
     void     notifyKatalogChange( Katalog*, dbID );
+    CatalogDetails catalogDetails( const QString& catName );
+
     // register a view for a catalog identified by its name.
     void     registerKatalogListView( const QString&, KatalogListView* );
 private:
     KatalogMan();
+
     static KatalogMan *mSelf;
     
     QHash<QString, Katalog*> m_katalogDict;

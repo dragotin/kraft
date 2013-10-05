@@ -28,6 +28,7 @@
 #include "katalogman.h"
 #include "katalog.h"
 #include "templkatalog.h"
+#include "materialkatalogview.h"
 
 KatalogMan *KatalogMan::self()
 {
@@ -147,6 +148,31 @@ Katalog* KatalogMan::defaultTemplateCatalog()
     }
   }
   return 0;
+}
+
+KatalogMan::CatalogDetails KatalogMan::catalogDetails( const QString& catName )
+{
+    KatalogMan::CatalogDetails details;
+
+    QString sql;
+    QString catTypeString = KatalogMan::catalogTypeString( catName );
+
+    if( catTypeString == QLatin1String("MaterialCatalog") ) {
+        sql = "SELECT count(matID), COUNT(distinct chapterID), MAX(modifyDate) FROM stockMaterial";
+    } else if( catTypeString == QLatin1String("TemplCatalog") ) {
+        sql = "SELECT count(TemplID), COUNT(distinct chapterID), MAX(modifyDatum) FROM Catalog";
+    }
+    QSqlQuery q;
+    q.prepare( sql );
+
+    if ( !sql.isEmpty() && q.exec() && q.next() ) {
+        details.countEntries  = q.value( 0 ).toInt();
+        details.countChapters = q.value( 1 ).toInt();
+        details.maxModDate    = q.value( 2 ).toDateTime();
+    }
+
+    return details;
+    
 }
 
 /* END */
