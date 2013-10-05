@@ -27,8 +27,8 @@
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
             <drawCentredString x="105mm" y="1.4cm">Telephone {{MY_PHONE}} - Fax {{MY_FAX}}</drawCentredString>
 	    <drawCentredString x="185mm" y="1.4cm">Page <pageNumber/></drawCentredString>
-	    <!-- image x="140mm" y="22cm" width="6cm" height="6cm" file="IMAGE(lurchie.png)" / -->
-
+	    <!-- Here is how you would insert an image at a fixed place on the page: -->
+	    <!-- image x="140mm" y="22cm" width="6cm" height="6cm" file="/path/to/the/image.png"  -->
         </pageGraphics>
         <frame id="address"  x1="2.41cm" y1="20.62cm" width="8.5cm" height="4cm"/>
         <frame id="info"     x1="12cm" y1="20.62cm" width="7.41cm" height="1.5cm"/>
