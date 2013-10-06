@@ -1,4 +1,4 @@
-#define KRAFT_VERSION "0.51"
+#define KRAFT_VERSION "0.52"
 
 #define KRAFT_CODENAME "Seelchen"
 

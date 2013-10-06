@@ -171,7 +171,7 @@ install(TARGETS kraft RUNTIME DESTINATION bin
 	   LIBRARY DESTINATION lib
 	   ARCHIVE DESTINATION lib)
 
-set_target_properties( kraftcat PROPERTIES VERSION 0.51.0 SOVERSION 0)
+set_target_properties( kraftcat PROPERTIES VERSION 0.52.0 SOVERSION 0)
 install( TARGETS kraftcat ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
