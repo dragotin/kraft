@@ -111,6 +111,7 @@ QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
     q.exec();
     kDebug() << "Selecting chapters for catalog no " << QString::number( m_setID ) << endl;
 
+    bool haveUnclassified = false;
     while ( q.next() )
     {
       int chapID          = q.value(0).toInt();
@@ -121,7 +122,14 @@ QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
       kDebug() << "Adding catalog chapter " << chapterName << " with ID " << chapID << endl;
       CatalogChapter c( chapID, m_setID, chapterName, parentChapter, desc );
       mChapters.append( c );
+
+      if( chapID == 0 ) haveUnclassified = true;
     }
+    if( !haveUnclassified ) {
+        CatalogChapter unclassified(0, m_setID, i18n("Unclassified"), 0, i18n("Templates without a valid chapter."));
+        mChapters.prepend(unclassified);
+    }
+
     mChapterListNeedsRefresh = false;
   }
 
