@@ -1,4 +1,13 @@
 Changes since version 0.50: #########################################
+- Fixes drag and drop handling in catalog window.
+- Fixes with units, do not confuse units any more
+- Utf8 fixes
+- other minor fixes
+- Releases 0.51 and 0.52 screwed.
+
+    => release v. 0.53 (oct 11, 2013)
+
+Changes since version 0.50: #########################################
 - Fix drag and drop in catalogues.
 - Implemented removal of sub chapters.
 - Add the content of an entire template catalog chapter to the document
