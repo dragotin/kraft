@@ -450,6 +450,8 @@ void KatalogListView::dropEvent( QDropEvent *event )
           CatalogChapter *parentChap = static_cast<CatalogChapter*>(itemData(parent));
           if( parentChap ) {
             newParentId = parentChap->id();
+          } else {
+              newParentId = 0;
           }
 
           // New chapter is inserted after the other subcatalogs, compute the index
