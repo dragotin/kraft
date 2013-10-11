@@ -360,7 +360,7 @@ DocumentSaverBase* KraftDoc::getSaver( const QString& )
     if( ! mSaver )
     {
         kDebug() << "Create new Document DB-Saver" << endl;
-        mSaver = new DocumentSaverXML();
+        mSaver = new DocumentSaverDB();
     }
     return mSaver;
 }
@@ -370,8 +370,8 @@ DocumentSaverBase* KraftDoc::getLoader( const QString& )
     if( ! mLoader )
     {
         kDebug() << "Create new Document DB-Loader" << endl;
-        // mLoader = new DocumentSaverDB();
-        mLoader = new DocumentSaverXML();
+        mLoader = new DocumentSaverDB();
+        // mLoader = new DocumentSaverXML();
     }
     return mLoader;
 }

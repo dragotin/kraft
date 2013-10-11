@@ -19,6 +19,7 @@
 #define _DOCUMENTSAVERXML_H
 
 #include "documentsaverbase.h"
+
 #include "owncloudsync.h"
 
 class KraftDoc;

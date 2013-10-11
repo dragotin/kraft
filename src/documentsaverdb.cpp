@@ -26,6 +26,7 @@
 #include <kdebug.h>
 
 #include "documentsaverdb.h"
+#include "documentsaverxml.h"
 #include "docposition.h"
 #include "kraftdoc.h"
 #include "kraftdb.h"
@@ -123,6 +124,11 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     saveDocumentPositions( doc );
 
     kDebug() << "Saved document no " << doc->docID().toString() << endl;
+
+    if( KraftSettings::self()->useOwnCloud() ) {
+        DocumentSaverXML *xmlDocSaver = new DocumentSaverXML;
+        xmlDocSaver->saveDocument( doc );
+    }
 
     return result;
 }

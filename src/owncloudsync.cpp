@@ -62,7 +62,7 @@ void ownCloudSync::slotCredentialsFetched()
     QString oCUrl = cfg.ownCloudUrl();
 
     QString kraftPath("kraft");
-    _syncFolder = new Folder(QLatin1String("KraftFolder"), _srcPath, oCUrl+kraftPath );
+    _syncFolder = new Folder(QLatin1String("KraftFolder"), _srcPath, kraftPath );
 
     connect(_syncFolder, SIGNAL(syncFinished(SyncResult)),
             SLOT(slotSyncFinished(SyncResult)));
@@ -82,6 +82,7 @@ bool ownCloudSync::startSync( const QString& path )
                 this, SLOT(slotCredentialsFetched()));
        credentials->fetch();
     } else {
+        slotCredentialsFetched();
 	// Credentials are here already.
     }
     return true;

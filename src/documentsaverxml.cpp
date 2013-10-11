@@ -136,9 +136,10 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
     QString fileName = saveFileName(doc->ident());
     kDebug() << "Saving to file name " << fileName << " is new: " << doc->isNew();
     if( xmlDoc.writeFile(fileName) ) {
-        saveDocumentIndex(doc);
+        // saveDocumentIndex(doc);
+        QString storage = storagePath();
 
-        _oCSync->startSync( storagePath() );
+        _oCSync->startSync( storage );
     }
 
 
