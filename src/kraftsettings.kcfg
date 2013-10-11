@@ -135,5 +135,17 @@
         <label>The label for demand positions</label>
      </entry>
   </group>
+
+  <group name="ownCloud">
+     <entry name="useOwnCloud" type="Bool">
+        <label>ownCloud coupling active or not</label>
+        <default>true</default>
+     </entry>
+     <entry name="ownCloudFolder" type="String">
+        <label>The folder on the ownCloud</label>
+        <default>false</default>
+     </entry>
+  </group>
+
 </kcfg>
 
