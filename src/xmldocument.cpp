@@ -137,7 +137,7 @@ void XmlDocument::setKraftDoc( KraftDoc *doc )
     taxes.append(tr);
     Tax tf;
     tr.setType(QLatin1String("full"));
-    tf.setValue(QString::number(DocumentMan::self()->tax(doc->date())));
+    tf.setValue(QString::number(DocumentMan::self()->fullTax(doc->date())));
     taxes.append(tf);
     m.setTaxList(taxes);
     setMeta(m);

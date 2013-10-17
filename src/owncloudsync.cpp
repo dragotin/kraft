@@ -16,11 +16,7 @@
  ****************************************************************************/
 #include "owncloudsync.h"
 #include "mirall/folder.h"
-<<<<<<< HEAD
-=======
 #include "creds/abstractcredentials.h"
-
->>>>>>> Work with more recent ocsync and mirall
 #include "mirall/mirallconfigfile.h"
 
 #include <QApplication>
@@ -32,16 +28,6 @@ ownCloudSync::ownCloudSync(QObject *parent) :
     _syncFolder(0)
 {
     qApp->setApplicationName( QLatin1String("ownCloud")); // FIXME!
-}
-
-bool ownCloudSync::startSync( const QString& path )
-{
-    _srcPath = path;
-    connect( CredentialStore::instance(), SIGNAL(fetchCredentialsFinished(bool)),
-             SLOT(slotCredentialsFetched(bool)));
-
-    CredentialStore::instance()->fetchCredentials();
-    return true;
 }
 
 void ownCloudSync::slotCredentialsFetched()
