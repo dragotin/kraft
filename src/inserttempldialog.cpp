@@ -26,6 +26,10 @@
 #include <QToolTip>
 #include <QMap>
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+
 // include files for KDE
 #include <knuminput.h>
 
@@ -89,7 +93,7 @@ void InsertTemplDialog::setDocPosition( DocPosition *dp, bool isNew )
   if ( dp ) {
     mParkPosition = *dp;
 
-    mBaseWidget->dmTextEdit->setText( mParkPosition.text() );
+    mBaseWidget->dmTextEdit->setText( prepareText(mParkPosition.text()) );
 
     mBaseWidget->dmAmount->setValue( mParkPosition.amount() );
     mBaseWidget->dmUnitCombo->setCurrentIndex(mBaseWidget->dmUnitCombo->findText( mParkPosition.unit().einheit( 1.0 )));
@@ -107,6 +111,32 @@ void InsertTemplDialog::setDocPosition( DocPosition *dp, bool isNew )
     }
   }
 }
+
+#define QL1(x) QLatin1String(x)
+QString InsertTemplDialog::prepareText( const QString& input )
+{
+    QString in(input);
+
+    KLocale *locale = DefaultProvider::self()->locale();
+    QString dateStr = locale->formatDate(QDate::currentDate(), KLocale::ShortDate);
+    in.replace(QL1("{{DATE}}"), dateStr, Qt::CaseInsensitive);
+
+    QString timeStr = locale->formatTime(QTime::currentTime());
+    in.replace(QL1("{{TIME}}"), timeStr, Qt::CaseInsensitive);
+
+    if( in.contains(QL1("{{USERNAME}}"))) {
+        register struct passwd *pw;
+        register uid_t uid;
+        uid = geteuid ();
+        pw = getpwuid (uid);
+        if (pw) {
+            in.replace(QL1("{{USERNAME}}"), QString::fromUtf8(pw->pw_gecos), Qt::CaseInsensitive);
+        }
+    }
+
+    return in;
+}
+
 
 QComboBox *InsertTemplDialog::getPositionCombo()
 {

@@ -43,6 +43,8 @@ protected:
   QComboBox *getPositionCombo();
 
 private:
+  QString prepareText( const QString& input );
+
   Ui::insertTmplBase *mBaseWidget;
   DocPosition mParkPosition;
   QMap<QCheckBox*, QString> mTagMap;
