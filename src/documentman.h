@@ -24,6 +24,8 @@
 class DocPosition;
 class QSqlQuery;
 
+class ownCloudSync;
+
 typedef QMap<QString, DocGuardedPtr> DocumentMap;
 
 class DocumentMan
@@ -41,6 +43,7 @@ class DocumentMan
     double fullTax( const QDate& );
     double reducedTax( const QDate& );
     void clearTaxCache();
+    bool saveDocument( KraftDoc *doc );
 
   private:
     bool readTaxes( const QDate& );
@@ -49,6 +52,7 @@ class DocumentMan
     double mFullTax;
     double mReducedTax;
     QDate  mTaxDate;
+    ownCloudSync *_oCSync;
 
     DocumentMan();
 

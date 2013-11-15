@@ -1363,7 +1363,8 @@ void KraftView::saveChanges()
     DocPositionList list = currentPositionList();
     doc->setPositionList( list );
 
-    doc->saveDocument( );
+    DocumentMan::self()->saveDocument(doc);
+    // doc->saveDocument( );
 
     if ( doc->isNew() ) {
       // For new documents the user had to select a greeting and we make this

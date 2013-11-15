@@ -35,6 +35,7 @@ signals:
 public slots:
 
 private slots:
+    void slotSyncStarted();
     void slotSyncFinished( const SyncResult& );
     void slotCredentialsFetched();
 

@@ -20,8 +20,6 @@
 
 #include "documentsaverbase.h"
 
-#include "owncloudsync.h"
-
 class KraftDoc;
 class dbID;
 class QString;
@@ -38,8 +36,9 @@ public:
     virtual void load( const QString& , KraftDoc * );
 
     bool success() { return _success; }
-private:
     QString storagePath();
+
+private:
     QString saveFileName( const QString& );
     QString loadFileName( const QString& );
     bool    saveDocumentIndex(KraftDoc *);
@@ -49,8 +48,6 @@ private:
     const QString PosTypePosition;
     const QString PosTypeExtraDiscount;
     const QString PosTypeHeader;
-
-    ownCloudSync *_oCSync;
     bool          _success;
 
 };

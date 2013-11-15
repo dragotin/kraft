@@ -125,11 +125,6 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
     kDebug() << "Saved document no " << doc->docID().toString() << endl;
 
-    if( KraftSettings::self()->useOwnCloud() ) {
-        DocumentSaverXML *xmlDocSaver = new DocumentSaverXML;
-        xmlDocSaver->saveDocument( doc );
-    }
-
     return result;
 }
 

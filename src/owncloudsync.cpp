@@ -50,15 +50,26 @@ void ownCloudSync::slotCredentialsFetched()
     QString kraftPath("kraft");
     _syncFolder = new Folder(QLatin1String("KraftFolder"), _srcPath, kraftPath );
 
+    connect(_syncFolder, SIGNAL(syncStarted()),
+            SLOT(slotSyncStarted()));
     connect(_syncFolder, SIGNAL(syncFinished(SyncResult)),
             SLOT(slotSyncFinished(SyncResult)));
-
+    qDebug() << "Call startSync()";
     _syncFolder->startSync( QStringList() );
+    qDebug() << "Folder Sync started.";
 
+}
+
+void ownCloudSync::slotSyncStarted()
+{
+    qDebug() << "Folder Sync has started!";
 }
 
 bool ownCloudSync::startSync( const QString& path )
 {
+
+    // rather use a folder object
+
     MirallConfigFile cfg;
     AbstractCredentials* credentials(cfg.getCredentials());
     _srcPath = path;
@@ -68,7 +79,7 @@ bool ownCloudSync::startSync( const QString& path )
                 this, SLOT(slotCredentialsFetched()));
        credentials->fetch();
     } else {
-        slotCredentialsFetched();
+        // slotCredentialsFetched();
 	// Credentials are here already.
     }
     return true;
@@ -82,5 +93,5 @@ void ownCloudSync::slotSyncFinished( const SyncResult& result )
 
     }
 
-    _syncFolder->deleteLater();
+    // _syncFolder->deleteLater();
 }

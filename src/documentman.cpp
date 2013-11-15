@@ -23,6 +23,9 @@
 #include "documentman.h"
 #include "docdigest.h"
 #include "kraftdb.h"
+#include "documentsaverxml.h"
+#include "owncloudsync.h"
+#include "kraftsettings.h"
 
 // DocGuardedPtr DocumentMan::mDocPtr = 0;
 DocumentMap DocumentMan::mDocMap = DocumentMap();
@@ -36,7 +39,8 @@ DocumentMan *DocumentMan::self()
 DocumentMan::DocumentMan()
   : mColumnList( "docID, ident, docType, docDescription, clientID, lastModified, date, country, language, projectLabel" ),
     mFullTax( -1 ),
-    mReducedTax( -1 )
+    mReducedTax( -1 ),
+    _oCSync( new ownCloudSync )
 {
 
 }
@@ -92,6 +96,26 @@ void DocumentMan::clearTaxCache()
   mReducedTax = -1;
 }
 
+bool DocumentMan::saveDocument( KraftDoc *doc )
+{
+    if( ! doc ) {
+        return false;
+    }
+
+    if( 1|| KraftSettings::self()->useOwnCloud() ) {
+        DocumentSaverXML xmlDocSaver;
+        if( xmlDocSaver.saveDocument( doc ) ) {
+            // saveDocumentIndex(doc);
+            QString storage = xmlDocSaver.storagePath();
+
+            _oCSync->startSync( storage );
+
+        }
+    }
+
+    return true;
+}
+
 double DocumentMan::fullTax( const QDate& date )
 {
   if ( mFullTax < 0 || date != mTaxDate )
@@ -130,6 +154,6 @@ bool DocumentMan::readTaxes( const QDate& date )
 
 DocumentMan::~DocumentMan()
 {
-
+    delete _oCSync;
 }
 
