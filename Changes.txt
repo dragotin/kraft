@@ -1,3 +1,6 @@
+Changes since version 0.53: #########################################
+- Allow the tags USERNAME, DATE and TIME in item templates.
+
 Changes since version 0.50: #########################################
 - Fixes drag and drop handling in catalog window.
 - Fixes with units, do not confuse units any more
