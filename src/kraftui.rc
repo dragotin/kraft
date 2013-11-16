@@ -6,6 +6,7 @@
      <Action name="document_view"/>
      <Action name="document_new"/>
      <Action name="document_copy"/>
+     <Action name="document_follow"/>
      <Separator/>
      <Action name="document_print"/>
      <Action name="archived_open"/>

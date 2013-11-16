@@ -304,6 +304,7 @@ void Portal::slotStartupChecks()
     actNewDocument->setEnabled( false );
     actPrintDocument->setEnabled( false );
     actCopyDocument->setEnabled( false );
+    actFollowDocument->setEnabled(false);
     actOpenDocument->setEnabled( false );
     actViewDocument->setEnabled( false );
     actOpenArchivedDocument->setEnabled( false );
