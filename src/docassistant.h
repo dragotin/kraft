@@ -20,16 +20,17 @@
 
 #include <QSplitter>
 #include <QTreeWidgetItem>
+#include <QScopedPointer>
+#include <QStackedWidget>
 
 #include <kabc/addressee.h>
 
 #include "kraftdoc.h"
 #include "catalogtemplate.h"
+#include "docpostcard.h"
+#include "catalogselection.h"
 
-class DocPostCard;
-class CatalogSelection;
 class TextSelection;
-class QStackedWidget;
 class QWidget;
 class KPushButton;
 class Katalog;
@@ -94,9 +95,9 @@ signals:
   void footerTextTemplate( const QString& );
 
 private:
-  DocPostCard      *mPostCard;
-  CatalogSelection *mCatalogSelection;
-  QStackedWidget   *mWidgetStack;
+  QScopedPointer<DocPostCard> mPostCard;
+  QScopedPointer<CatalogSelection> mCatalogSelection;
+  QScopedPointer<QStackedWidget>   mWidgetStack;
   TextSelection    *mFooterSelection;
   TextSelection    *mHeaderSelector;
 
