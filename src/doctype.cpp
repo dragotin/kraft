@@ -161,6 +161,16 @@ bool DocType::allowAlternative()
   return re;
 }
 
+bool DocType::pricesVisible()
+{
+    bool re = true;
+    if( mAttributes.contains("HidePrices")) {
+        re = false;
+    }
+    return re;
+}
+
+
 QStringList DocType::follower()
 {
   return mFollowerList;

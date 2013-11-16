@@ -245,6 +245,12 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
   m_skipModifiedSignal = false;
 }
 
+void PositionViewWidget::slotShowPrice( bool show )
+{
+    m_sumLabel->setVisible(show);
+    m_sbUnitPrice->setVisible(show);
+}
+
 void PositionViewWidget::slotUpdateTagToolTip()
 {
   QString tip;

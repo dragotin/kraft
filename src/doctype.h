@@ -54,6 +54,7 @@ class KRAFTCAT_EXPORT DocType
 
   bool allowDemand();
   bool allowAlternative();
+  bool pricesVisible();
 
   QStringList follower();
 

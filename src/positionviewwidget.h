@@ -83,6 +83,7 @@ public slots:
     void slotEnableKindMenu( bool );
     void slotAllowIndividualTax( bool );
     void slotSetTax( DocPosition::TaxType );
+    void slotShowPrice( bool show );  // hide the price entries for certain doc types.
 
 protected slots:
     void slotLockPosition();
