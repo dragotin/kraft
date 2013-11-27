@@ -826,7 +826,7 @@ void KraftView::slotDocTypeChanged( const QString& newType )
     w->slotEnableKindMenu( docType.allowAlternative() );
     w->slotShowPrice(docType.pricesVisible());
     mAssistant->postCard()->slotShowPrices( docType.pricesVisible() );
-
+    m_footerEdit->_taxGroup->setVisible( docType.pricesVisible() );
   }
 
 }
