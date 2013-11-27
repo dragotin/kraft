@@ -41,6 +41,8 @@ public slots:
   void setFooterData( const QString&,  const QString& );
   void renderDoc( int id = -1 );
   void slotSetMode( DisplayMode, int id = -1 );
+  void slotShowPrices( bool showIt );
+
 protected:
   bool urlSelected (const QString &url, int button, int state, const QString &_target,
                     const KParts::OpenUrlArguments &args=KParts::OpenUrlArguments(),
@@ -71,6 +73,7 @@ private:
   QString mTotal;
   int mPositionCount;
   DisplayMode mMode;
+  bool mShowPrices;
 };
 
 #endif

@@ -236,7 +236,6 @@ void KraftView::slotSwitchToPage( int id )
   mDetailHeader->setPalette( palette );
 
   mAssistant->slotSelectDocPart( mViewStack->currentIndex() );
-  // mAssistant->postCard()->renderDoc( mViewStack->id( mViewStack->visibleWidget() ) );
 }
 
 void KraftView::slotShowTemplates( bool )
@@ -826,6 +825,8 @@ void KraftView::slotDocTypeChanged( const QString& newType )
     PositionViewWidget *w = it.next();
     w->slotEnableKindMenu( docType.allowAlternative() );
     w->slotShowPrice(docType.pricesVisible());
+    mAssistant->postCard()->slotShowPrices( docType.pricesVisible() );
+
   }
 
 }
