@@ -27,6 +27,8 @@
 #include <kstandarddirs.h>
 #include <QTextDocument>
 
+#define QL1(X) QLatin1String(X)
+
 DocPostCard::DocPostCard( QWidget *parent )
     :HtmlView( parent ),  mMode( Full ), mShowPrices(true)
 {
@@ -182,9 +184,9 @@ QString DocPostCard::renderDocFull( int id )
   QString t;
   QString selString;
 
-  rethtml = QString::fromLatin1( "<body>" );
+  rethtml = QL1( "<body>" );
 
-  if ( id == KraftDoc::Header ) selString = QString::fromLatin1( "_selected" );
+  if ( id == KraftDoc::Header ) selString = QL1( "_selected" );
   t += QString( "<div class=\"head%1\">\n" ).arg( selString );
 
   t += header( id == KraftDoc::Header, "headerlink", i18n( "Header" ), "header" );
@@ -205,7 +207,7 @@ QString DocPostCard::renderDocFull( int id )
 
   // the Body section showing the positions
     selString= QString();
-  if ( id == KraftDoc::Positions ) selString = QString::fromLatin1( "_selected" );
+  if ( id == KraftDoc::Positions ) selString = QL1( "_selected" );
   t = QString( "<div class=\"body%1\">\n" ).arg( selString );
   t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions ), "positions" );
 
@@ -214,7 +216,7 @@ QString DocPostCard::renderDocFull( int id )
   rethtml += linkBit( "kraftdoc://positions", t );
 
   selString = QString();
-  if ( id == KraftDoc::Footer ) selString = QString::fromLatin1( "_selected" );
+  if ( id == KraftDoc::Footer ) selString = QL1( "_selected" );
   t = QString( "<div class=\"foot%1\">\n" ).arg( selString );
   t += header( id == KraftDoc::Footer, "footerlink", i18n( "Footer" ), "footer" );
 
@@ -232,31 +234,35 @@ QString DocPostCard::renderDocFull( int id )
 QString DocPostCard::renderDocMini( int id ) const
 {
   QString t;
-  QString rethtml = QString::fromLatin1( "<body>" );
+  QString rethtml = QL1( "<body>" );
   QString selString;
 
-  if ( id == KraftDoc::Header ) selString = QString::fromLatin1( "_selected" );
+  if ( id == KraftDoc::Header ) selString = QL1( "_selected" );
   t = QString( "<div class=\"head%1\">\n" ).arg( selString );
   t += header( id == KraftDoc::Header, "headerlink", i18n( "Header" ), "header",
-               QString( "<b>%1</b> from %2" ).arg( mType ).arg( mDate ) );
-  t += "</div>";
+               QString( "<b>%1</b>, %2" ).arg( mType ).arg( mDate ) );
+  t += QL1("</div>");
   rethtml += linkBit( "kraftdoc://header", t );
 
   selString = QString();
-  if ( id == KraftDoc::Positions ) selString = QString::fromLatin1( "_selected" );
+  if ( id == KraftDoc::Positions ) selString = QL1( "_selected" );
   t = QString( "<div class=\"body%1\">\n" ).arg( selString );
+  QString d = i18n("%1 Items").arg(mPositionCount);
+  if( mShowPrices )
+      d = i18n("%1 Items, netto %s").arg(mPositionCount).arg(mTotal);
+
   t += header( id == KraftDoc::Positions, "bodylink", i18n( "Positions" ), "positions",
-               i18n( " %1 Positions, netto %2" ).arg( mPositionCount ).arg( mTotal ) );
-  t += "</div>";
+               d );
+  t += QL1("</div>");
   rethtml += linkBit( "kraftdoc://positions", t );
 
   selString = QString();
-  if ( id == KraftDoc::Footer ) selString = QString::fromLatin1( "_selected" );
+  if ( id == KraftDoc::Footer ) selString = QL1( "_selected" );
   t = QString( "<div class=\"foot%1\">\n" ).arg( selString );
   t += header( id == KraftDoc::Footer, "footerlink", i18n( "Footer" ), "footer" );
-  t += "</div>";
+  t += QL1("</div>");
   rethtml += linkBit( "kraftdoc://footer", t );
-  rethtml += "</body>";
+  rethtml += QL1("</body>");
 
   return rethtml;
 }
@@ -278,10 +284,10 @@ QString DocPostCard::header( bool selected,
     // t += linkBit( QString( "kraftdoc://%1" ).arg( protocol ), "["+displayName+"]" );
   }
   if ( ! addons.isEmpty() ) {
-    t += "-&nbsp;";
+    t += QL1("&nbsp;-&nbsp;");
     t += addons;
   }
-  t += "</div>\n";
+  t += QL1("</div>\n");
 
   return t;
 }

@@ -1026,6 +1026,11 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
   widget->slotModified();
   widget->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
 
+  const QString dt = getDocument()->docType();
+  if( !dt.isEmpty() ) {
+      DocType docType(dt);
+      widget->slotShowPrice(docType.pricesVisible());
+  }
   slotFocusItem( widget, newpos );
   refreshPostCard();
 }
