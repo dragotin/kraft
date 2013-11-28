@@ -78,9 +78,6 @@
 
 KraftViewRO::KraftViewRO(QWidget *parent, const char *name) :
   KDialog( parent ),
-
-  // name, false /* modal */, i18n("Document"),
-  // 	      Close, Ok, true /* separator */ ),
   m_doc( 0 )
 {
   setObjectName( name );
@@ -115,26 +112,24 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
   // do stuff like open a template and render values into it.
   KStandardDirs stdDirs;
-  // QString templFileName = QString( "kraftdoc_%1_ro.trml" ).arg( doc->docType() );
   QString templFileName = QString( "kraftdoc_ro.trml" );
   QString findFile = "kraft/reports/" + templFileName;
 
   QString tmplFile = stdDirs.findResource( "data", findFile );
 
-  if ( tmplFile.isEmpty() ) {
-      QByteArray kraftHome = qgetenv("KRAFT_HOME");
 
-      if( !kraftHome.isEmpty() ) {
-          QString file = QString( "%1/reports/kraftdoc_ro.trml").arg(QString::fromLocal8Bit(kraftHome));
-          QFileInfo fi(file);
-          if( fi.exists() && fi.isReadable() ) {
-              tmplFile = file;
-          }
+  QByteArray kraftHome = qgetenv("KRAFT_HOME");
+
+  if( !kraftHome.isEmpty() ) {
+      QString file = QString( "%1/reports/kraftdoc_ro.trml").arg(QString::fromLocal8Bit(kraftHome));
+      QFileInfo fi(file);
+      if( fi.exists() && fi.isReadable() ) {
+          tmplFile = file;
       }
-      if( tmplFile.isEmpty() ) {
-          kDebug() << "Could not find template to render ro view of document.";
-          return;
-      }
+  }
+  if( tmplFile.isEmpty() ) {
+      kDebug() << "Could not find template to render ro view of document.";
+      return;
   }
 
 
@@ -252,6 +247,14 @@ void KraftViewRO::setup( DocGuardedPtr doc )
   }
 
   tmpl.setValue( DOC_RO_TAG( "TAXSUM" ), locale->formatMoney( doc->vatSum().toDouble() ) );
+
+  DocType dt(doc->docType());
+  if( dt.pricesVisible()) {
+      tmpl.createDictionary("SHOW_PRICES");
+  } else {
+      tmpl.createDictionary("HIDE_PRICES");
+  }
+
   setCaption( m_doc->docIdentifier() );
 
   mHtmlView->setTitle( doc->docIdentifier() );
