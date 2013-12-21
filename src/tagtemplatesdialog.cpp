@@ -137,7 +137,7 @@ TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
   KHBox *buttBox = new KHBox( w );
   buttBox->setSpacing( KDialog::spacingHint() );
   mAddButton = new QPushButton( i18n( "Add..." ), buttBox );
-  mEditButton = new QPushButton( i18n( "Edit.." ), buttBox );
+  mEditButton = new QPushButton( i18n( "Edit..." ), buttBox );
   mEditButton->setEnabled( false );
   mDeleteButton = new QPushButton( i18n( "Delete..." ), buttBox );
   mDeleteButton->setEnabled( false );

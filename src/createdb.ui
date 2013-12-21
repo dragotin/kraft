@@ -120,7 +120,7 @@
         <enum>QFrame::NoFrame</enum>
        </property>
        <property name="text">
-        <string>Database setup status....</string>
+        <string>Database setup status...</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
