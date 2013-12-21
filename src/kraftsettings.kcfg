@@ -43,7 +43,7 @@
       <label>The window size of the template to document dialog for plants</label>
     </entry>
     <entry name="templateToPosDialogSize" type="Size">
-      <label>The window size of the template  to document dialog</label>
+      <label>The window size of the template to document dialog</label>
     </entry>
     <entry name="digestListColumnsLatest" type="String">
       <label>The digest list column arrangement for the Latest-list</label>
