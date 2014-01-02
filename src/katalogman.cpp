@@ -1,5 +1,5 @@
 /***************************************************************************
-                     katalogman  - Catalogue manager
+                     katalogman  - Catalog manager
                              -------------------
     begin                : 2004-12-09
     copyright            : (C) 2004 by Klaas Freitag

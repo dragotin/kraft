@@ -32,7 +32,7 @@ public:
 
   Einheit();
   Einheit( int id );
-  Einheit( const QString& ); // Einheit with arbitary text.
+  Einheit( const QString& ); // Einheit with arbitrary text.
   Einheit( int id, const QString&, const QString&, const QString&, const QString& );
   ~Einheit();
 

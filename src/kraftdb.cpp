@@ -389,7 +389,7 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
       QSqlQuery q;
       q.clear();
       if ( q.exec(cmd.command()) ) {
-        kDebug() << "Successfull SQL Command: " << cmd.command() << endl;
+        kDebug() << "Successful SQL Command: " << cmd.command() << endl;
         cnt ++;
       } else {
         QSqlError err = q.lastError();

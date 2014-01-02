@@ -177,7 +177,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   QString tmplFile = findTemplate( mArchDoc->docType() );
 
   if ( tmplFile.isEmpty() ) {
-    kDebug() << "tmplFile is emty!";
+    kDebug() << "tmplFile is empty!";
     return;
   } else {
     kDebug() << "Reading this template: " << tmplFile;

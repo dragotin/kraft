@@ -20,7 +20,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QComboBox>
-#include <QLayout>
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QToolTip>
@@ -37,7 +36,6 @@
 #include <kinputdialog.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
-#include <kiconloader.h>
 #include <kglobal.h>
 #include <khtmlview.h>
 #include <kstandarddirs.h>
@@ -53,7 +51,6 @@
 #include "kraftdoc.h"
 #include "defaultprovider.h"
 #include "doctype.h"
-#include "doctypeedit.h"
 #include "doctypeedit.h"
 #include "taxeditdialog.h"
 #include "documentman.h"
@@ -271,7 +268,7 @@ void PrefsDialog::docTab()
   vboxLay->addWidget( f );
 
   // Localisation on document level
-  mCbDocLocale = new QCheckBox( i18n( "Enable &Localisation on Document Level" ) );
+  mCbDocLocale = new QCheckBox( i18n( "Enable &Localization on Document Level" ) );
   mCbDocLocale->setToolTip( i18n( "Checking this enables language settings for each document."
                                      "<br>Leave it unchecked to use the KDE Workspace default settings for "
                                      "the document localisation." ) );

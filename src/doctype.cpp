@@ -33,7 +33,6 @@
 #include "kraftsettings.h"
 #include "kraftdb.h"
 #include "numbercycle.h"
-#include "defaultprovider.h"
 
 /**
 @author Klaas Freitag

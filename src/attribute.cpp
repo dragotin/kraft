@@ -274,7 +274,7 @@ void AttributeMap::save( dbID id )
       }
     }
 
-    // store the id to be able to drop not longer existant values
+    // store the id to be able to drop not longer existent values
     kDebug() << "adding attribute id " << attribId << " for attribute " << att.name();
 
     // now there is a valid entry in the attribute table. Check the values.

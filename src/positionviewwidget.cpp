@@ -687,7 +687,7 @@ void PositionViewWidget::paintEvent ( QPaintEvent* )
   QPainter *painter;
   painter = new QPainter( this );
 
-  // visualise the tags
+  // visualize the tags
   QStringList taglist = tagList();
   if ( taglist.count() ) {
     int share = ( height() - 24 ) / taglist.count();

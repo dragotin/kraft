@@ -49,7 +49,7 @@ public:
   /**
    * take the template absolute filename of the template source and 
    * load it immediately. 
-   * returns true if successfull. Otherwise check errorString() for 
+   * returns true if successful. Otherwise check errorString() for 
    * error messages
    */
   bool setTemplateFileName( const QString& );

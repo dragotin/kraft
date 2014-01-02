@@ -20,7 +20,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QComboBox>
-#include <QLayout>
 #include <QCheckBox>
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -315,7 +314,7 @@ void NumberCycleDialog::accept()
         bool doUpdate = true;
         if ( q.value( 2 ).toInt() > cycle.counter() ) {
           if ( q.value( 3 ).toString() == cycle.getTemplate() ) {
-            // The number has become smaller but the the template remains the same.
+            // The number has become smaller but the template remains the same.
             // That has high potential to end up with duplicate doc numbers.
             if( KMessageBox::questionYesNo( this,
                                             i18n( "The new counter is lower than the old one. "

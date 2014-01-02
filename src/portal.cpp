@@ -38,7 +38,6 @@
 #include <kdebug.h>
 #include <kstandardaction.h>
 #include <kstandardshortcut.h>
-#include <kaction.h>
 #include <kcmdlineargs.h>
 #include <krun.h>
 #include <kapplication.h>
@@ -64,7 +63,6 @@
 #include "archiveman.h"
 #include "reportgenerator.h"
 #include "kraftsettings.h"
-#include "prefsdialog.h"
 #include "defaultprovider.h"
 #include "archdoc.h"
 #include "newdocassistant.h"

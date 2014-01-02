@@ -23,7 +23,7 @@
 
 /**
  * utility class that provides a simple database id object.
- * It's usefull to work with dicts which do not work on base
+ * It's useful to work with dicts which do not work on base
  * types like int
  */
 

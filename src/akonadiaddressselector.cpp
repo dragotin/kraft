@@ -46,7 +46,6 @@
 #include <akonadi/itemview.h>
 #include <akonadi/mimetypechecker.h>
 #include <akonadi/contact/contacteditor.h>
-#include <akonadi/contact/contacteditordialog.h>
 
 
 namespace {

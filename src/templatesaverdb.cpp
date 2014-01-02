@@ -129,7 +129,7 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
         model.submitAll();
       }
     } else {
-      // dont delete, update!
+      // don't delete, update!
       if( model.rowCount() > 0) {
         QSqlRecord buffer = model.record(0);
         buffer.setValue( "modDate", KraftDB::self()->currentTimeStamp() );

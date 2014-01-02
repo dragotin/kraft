@@ -20,7 +20,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QComboBox>
-#include <QLayout>
 #include <QCheckBox>
 #include <QSqlQuery>
 #include <QSpinBox>

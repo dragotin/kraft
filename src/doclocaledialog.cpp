@@ -51,7 +51,7 @@ DocLocaleDialog::DocLocaleDialog( QWidget *parent )
   w->setLayout(layout);
 
   layout->setSpacing( KDialog::spacingHint() );
-  QLabel *l = new QLabel( i18n( "<h2>Document Localisation</h2>" ));
+  QLabel *l = new QLabel( i18n( "<h2>Document Localization</h2>" ));
   layout->addWidget(l);
 
   l = new QLabel( i18n( "Select country and language for the document.\n"

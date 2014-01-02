@@ -43,7 +43,6 @@
 #include "defaultprovider.h"
 #include "docdigestdetailview.h"
 #include "kraftsettings.h"
-#include "ktreeviewsearchline.h"
 
 DocDigestView::DocDigestView( QWidget *parent )
 : QWidget( parent ),
@@ -104,7 +103,7 @@ void DocDigestView::initializeTreeWidgets()
 
   mTreeViewIndex.resize(3);
 
-  //Add the widgets to a temporary list so we can iterate over them and centralise the common initialization
+  //Add the widgets to a temporary list so we can iterate over them and centralize the common initialization
   mTreeViewList.clear();
   mTreeViewList.append(mAllView);
   mTreeViewList.append(mLatestView);
@@ -362,7 +361,7 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
       view = mTimeLineViewDetails;
     }
 
-    /* get the coresponding document id */
+    /* get the corresponding document id */
     QModelIndex idIndx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Ident );
     QString id = idIndx.data( Qt::DisplayRole ).toString();
 

@@ -29,7 +29,6 @@
 #include "timecalcpart.h"
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
-#include "kraftdb.h"
 
 
 /**

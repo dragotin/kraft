@@ -112,7 +112,7 @@
         <default>%y%w-%i</default>
      </entry>
      <entry name="ShowDocumentLocale" type="Bool">
-        <label>Localisation on document level</label>
+        <label>Localization on document level</label>
         <default>false</default>
      </entry>
 
