@@ -45,8 +45,6 @@ kde4_add_library(kraftcat SHARED ${kraftcat_LIB_SRCS})
 
 target_link_libraries(kraftcat ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS})
 
-LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/lib)
-
 ########### next target ###############
 
 set(kraft_SRCS
@@ -164,12 +162,10 @@ kde4_add_ui_files(kraft_SRCS
 
 kde4_add_executable(kraft ${kraft_SRCS})
 
-target_link_libraries(kraft kraftcat ${QT_AND_KDECORE_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS}
+target_link_libraries(kraft kraftcat ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS}
 	${KDEPIMLIBS_KABC_LIBS} ${KDEPIMLIBS_AKONADI_CONTACT_LIBS} ${KDE4_KIO_LIBS} ${CTEMPLATE_LIBRARIES} pthread)
 
-install(TARGETS kraft RUNTIME DESTINATION bin
-	   LIBRARY DESTINATION lib
-	   ARCHIVE DESTINATION lib)
+install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 set_target_properties( kraftcat PROPERTIES VERSION 0.52.0 SOVERSION 0)
 install( TARGETS kraftcat ${INSTALL_TARGETS_DEFAULT_ARGS})
