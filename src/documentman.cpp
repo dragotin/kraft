@@ -42,6 +42,10 @@ DocumentMan::DocumentMan()
     mReducedTax( -1 ),
     _oCSync( new ownCloudSync )
 {
+    DocumentSaverXML xmlDocSaver;
+
+    _oCSync->setSyncDir(xmlDocSaver.storagePath());
+    QTimer::singleShot(0, _oCSync, SLOT(slotCheckConnection()));
 
 }
 

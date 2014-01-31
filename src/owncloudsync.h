@@ -19,6 +19,7 @@
 
 #include <QObject>
 #include <mirall/folder.h>
+#include <mirall/connectionvalidator.h>
 
 using namespace Mirall;
 
@@ -30,18 +31,26 @@ public:
     
     bool startSync( const QString& path );
 
+    void setSyncDir( const QString& );
 signals:
     
 public slots:
 
 private slots:
-    void slotSyncStarted();
-    void slotSyncFinished( const SyncResult& );
+    void slotCheckConnection();
     void slotCredentialsFetched();
+    void runValidator();
+    void slotConnectionValidatorResult(ConnectionValidator::Status status);
+
+    // void slotSyncStarted();
+    // void slotSyncFinished( const SyncResult& );
 
 private:
     Folder *_syncFolder;
-    QString _srcPath;
+    QString _syncDir;
+    ConnectionValidator *_conValidator;
+    bool _startupNetworkError;
+    bool _userTriggeredConnect;
 };
 
 #endif // OWNCLOUDSYNC_H
