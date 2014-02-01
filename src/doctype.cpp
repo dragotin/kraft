@@ -356,6 +356,7 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
    * %c - the customer id from kaddressbook
    * %i - the uniq identifier from db.
    * %type - the localised doc type (offer, invoice etc.)
+   * %uid  - the customer uid
    */
 
   QString pattern = identTemplate();
@@ -410,9 +411,11 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
   if ( doc ) {
     m[ "%c" ] = doc->addressUid();
     m[ "%type" ] = doc->docType();
+    m[ "%uid" ] = doc->addressUid();
   } else {
-    m[ "%c"] = QString(" <addressUid>" );
+    m[ "%c"] = QLatin1String(" <addressUid>" );
     m[ "%type" ] = mName;
+    m[ "%uid" ] = QLatin1String("<uid>");
   }
 
   QString re = KraftDB::self()->replaceTagsInWord( pattern, m );

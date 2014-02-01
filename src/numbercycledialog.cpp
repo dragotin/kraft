@@ -81,6 +81,7 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
                             "<li>%c - the customer id from kaddressbook</li>"
                             "<li>%i - the unique counter</li>"
                             "<li>%type - the localised doc type (offer, invoice etc.)</li>"
+                            "<li>%uid - the contact id of the client.</li>"
                             "</ul>%i needs to be part of the template." );
   mBaseWidget->mIdTemplEdit->setToolTip( tip );
 
