@@ -151,7 +151,7 @@ class DocPositionList : public QList<DocPositionBase*>
 
     Geld nettoPrice();
     Geld bruttoPrice( double fullTax, double reducedTax );
-    Geld taxSum( double fullTax, double reducedTax );
+    Geld taxSum(double fullTax, double redTax );
     Geld fullTaxSum( double fullTax );
     Geld reducedTaxSum( double reducedTax );
 
