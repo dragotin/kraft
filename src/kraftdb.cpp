@@ -294,7 +294,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
   } else {
     // read from environment variable path
     QString envPath = QString( "%1/database/%2/%3").arg(env).arg(driverPrefix).arg(file);
-    kDebug() << "Environment variable BUILDDIR set, searching for DB setup files in " << envPath;
+    kDebug() << "Environment variable KRAFT_HOME set, searching for DB setup files in " << envPath;
     if( QFile::exists( envPath ) ) {
       sqlFile = envPath;
     } else if( QFile::exists( QString( "%1/database/%2/migration/%3").arg(env).arg(driverPrefix).arg(file ) ) ){
