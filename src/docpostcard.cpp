@@ -249,7 +249,7 @@ QString DocPostCard::renderDocMini( int id ) const
   t = QString( "<div class=\"body%1\">\n" ).arg( selString );
   QString d = i18n("%1 Items").arg(mPositionCount);
   if( mShowPrices )
-      d = i18n("%1 Items, netto %s").arg(mPositionCount).arg(mTotal);
+      d = i18n("%1 Items, netto %2").arg(mPositionCount).arg(mTotal);
 
   t += header( id == KraftDoc::Positions, "bodylink", i18n( "Positions" ), "positions",
                d );
