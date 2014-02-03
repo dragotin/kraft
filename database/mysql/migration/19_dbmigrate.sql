@@ -15,4 +15,8 @@ INSERT INTO DocTypeRelations VALUES( @item, @lsId, 10 );
 SELECT @follower := docTypeID FROM DocTypes WHERE name="Rechnung";
 INSERT INTO DocTypeRelations VALUES( @lsId, @follower, 11 );
 
+# enhance the clientID col in document because the ids can be larger.
+ALTER TABLE document CHANGE COLUMN clientID clientID VARCHAR(255);
+ALTER TABLE archdoc CHANGE COLUMN clientUid clientUid VARCHAR(255);
+
 # Done.
