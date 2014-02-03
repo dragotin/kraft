@@ -136,7 +136,7 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
     html += ">\n";
 
     if( details.countEntries == 0 ) {
-        html += "<td colspan=\"2\"><span style=\"font-size:75%;\">No templats yet.</span></td>";
+        html += "<td colspan=\"2\"><span style=\"font-size:75%;\">No templates yet.</span></td>";
     } else {
         KLocale *locale = DefaultProvider::self()->locale();
         QString dateStr = locale->formatDateTime( details.maxModDate );
