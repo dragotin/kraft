@@ -29,13 +29,13 @@ CREATE TABLE CatalogSet(
 );
 
 CREATE TABLE CatalogChapters(
-	chapterID    INT NOT NULL AUTO_INCREMENT,
+  chapterID    INT NOT NULL AUTO_INCREMENT,
   catalogSetID INT NOT NULL, 
-	chapter      VARCHAR(255),
+  chapter      VARCHAR(255),
   sortKey      INT NOT NULL,
 
-	PRIMARY KEY(chapterID),
-	INDEX(chapter)
+  PRIMARY KEY(chapterID),
+  INDEX(chapter)
 );
 
 CREATE TABLE Catalog (

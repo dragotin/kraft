@@ -9,12 +9,12 @@ INSERT INTO CatalogSet (name, description, catalogType, sortKey) VALUES
 SET @newCat := LAST_INSERT_ID();
 
 DELETE FROM CatalogChapters;
-INSERT INTO CatalogChapters (chapter, sortKey) VALUES ('Arbeit', 1 );
-INSERT INTO CatalogChapters (chapter, sortKey) VALUES ('Maschine', 2 );
-INSERT INTO CatalogChapters (chapter, sortKey) VALUES ('Materialeinsatz', 3 );
-INSERT INTO CatalogChapters (chapter, sortKey) VALUES ('Service', 4 );
-INSERT INTO CatalogChapters (chapter, sortKey) VALUES ('Sonstige', 5 );
-INSERT INTO CatalogChapters (chapter, sortKey) VALUES ('Transport', 6 );
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES ('Arbeit', 1, @newCat );
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES ('Maschine', 2, @newCat );
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES ('Materialeinsatz', 3, @newCat );
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES ('Service', 4, @newCat );
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES ('Sonstige', 5, @newCat );
+INSERT INTO CatalogChapters (chapter, sortKey, catalogSetID) VALUES ('Transport', 6, @newCat );
 UPDATE CatalogChapters SET catalogSetID=@newCat;
 
 INSERT INTO CatalogSet( name, description, catalogType, sortKey) VALUES ("Material",
