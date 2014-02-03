@@ -95,7 +95,10 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
     if( doc->isNew() ) {
       kDebug() << "Doc is new, inserting" << endl;
-      model.insertRecord(-1, record);
+      if( !model.insertRecord(-1, record)) {
+          QSqlError err = model.lastError();
+          kDebug() << "################# SQL Error: " << err.text();
+      }
       model.submitAll();
 
       dbID id = KraftDB::self()->getLastInsertID();
