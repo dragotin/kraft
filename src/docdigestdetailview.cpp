@@ -114,6 +114,9 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
   }
 
   TextTemplate tmpl( mTemplFile ); // template file with name docdigest.trml
+  if( !tmpl.open() ) {
+      return;
+  }
   tmpl.setValue( DOCDIGEST_TAG( "HEADLINE" ), digest.type() + " " + digest.ident() );
 
   tmpl.setValue( DOCDIGEST_TAG( "DATE" ), digest.date() );

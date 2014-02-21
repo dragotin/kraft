@@ -54,6 +54,8 @@ public:
    */
   bool setTemplateFileName( const QString& );
 
+  bool open();
+
   /** 
    * return a describing string if something went wrong when opening
    * the template.
@@ -100,8 +102,6 @@ public:
 private:
   QString mFileName;
   QString mErrorString;
-
-  bool openTemplate();
   
   TemplateDictionary *mStandardDict;
   QMap<QString, TemplateDictionary*> mDictionaries;

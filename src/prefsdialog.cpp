@@ -388,6 +388,9 @@ void PrefsDialog::setMyIdentity( const KABC::Addressee& addressee )
   // It should be refactored.
 
   TextTemplate tmpl("identity.trml");
+  if( !tmpl.open() ) {
+      return;
+  }
   if( ! tmpl.errorString().isEmpty() ) {
     mIdentityView->displayContent( QString("<h1>Unable to find template <i>identity.trml</i></h1><p>%1</p>")
                                    .arg(tmpl.errorString()));

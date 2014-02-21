@@ -185,6 +185,9 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
   // create a text template
   TextTemplate tmpl( tmplFile );
+  if( !tmpl.open() ) {
+      return;
+  }
 
   /* replace the placeholders */
   /* A placeholder has the format <!-- %VALUE --> */

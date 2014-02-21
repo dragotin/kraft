@@ -36,7 +36,6 @@ TextTemplate::TextTemplate( const QString& name )
   : mFileName( name ),
     mStandardDict( 0 )
 {
-  openTemplate();
 }
 
 TextTemplate::~TextTemplate()
@@ -85,9 +84,11 @@ void TextTemplate::setValue( const QString& dictName, const QString& key, const 
   if ( mDictionaries.contains( dictName ) ) {
     dict = mDictionaries[dictName];
   } else {
-    dict = mStandardDict->AddSectionDictionary( dictName.toAscii().data() );
-    mDictionaries[dictName] = dict;
-    mStandardDict->ShowSection( dictName.toAscii().data() );
+    if( mStandardDict ) {
+      dict = mStandardDict->AddSectionDictionary( dictName.toAscii().data() );
+      mDictionaries[dictName] = dict;
+      mStandardDict->ShowSection( dictName.toAscii().data() );
+    }
   }
 
   if ( dict )
@@ -113,10 +114,10 @@ bool TextTemplate::setTemplateFileName( const QString& name )
   mErrorString.clear();
 
   mFileName = name;
-  return openTemplate( );
+  return open();
 }
 
-bool TextTemplate::openTemplate()
+bool TextTemplate::open()
 {
   QFileInfo info( mFileName );
 
@@ -168,7 +169,7 @@ QString TextTemplate::expand() const
   // }
   Template *textTemplate = Template::GetTemplate( std::string( mFileName.toUtf8() ),
                                                   ctemplate::DO_NOT_STRIP );
-  if ( textTemplate ) {
+  if ( textTemplate && mStandardDict) {
     bool errorFree = textTemplate->Expand(&output, mStandardDict );
 
     if ( errorFree )
