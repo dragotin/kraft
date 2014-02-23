@@ -3,7 +3,6 @@
   -->
 <body>
 <h2>{{HEADLINE}}</h2>
-
 <div>
 <table width="100%" border="0">
 <tr>
@@ -17,16 +16,15 @@
 {{PRETEXT}}
 </p>
 <table width="100%" border="0">
-{{#POSITIONS}}
+{{#ITEMS}}
 <tr>
 <td>{{NUMBER}}</td>
 <td colspan="3">{{TEXT}}</td>
-<td>{{#HIDE_PRICES}}{{AMOUNT}} {{UNIT}}{{/HIDE_PRICES}}</td>
 </tr>
-{{#SHOW_PRICES}}
 <tr>
 <td></td>
-<td>{{AMOUNT}} {{UNIT}}</td>
+<td colspan="1">{{AMOUNT}} {{UNIT}}</td>
+{{#PRICE_DISPLAY}}
 <td align="right"><span class="{{PRICE_STYLE}}">je {{SINGLE_PRICE}}</span></td>
 <td align="right"><span class="{{PRICE_STYLE}}">{{PRICE}}</span></td>
 <td align="right"><span class="{{PRICE_STYLE}}">
@@ -37,11 +35,10 @@
    &#xB2;
  {{/REDUCED_TAX}}
  {{#FULL_TAX}}{{/FULL_TAX}}
+{{/PRICE_DISPLAY}}
 </td></tr>
-{{/SHOW_PRICES}}
-{{/POSITIONS}}
-
-{{#SHOW_PRICES}}
+{{/ITEMS}}
+{{#DISPLAY_SUM_BLOCK}}
 <tr><td colspan="4" align="right">____________________________</td></tr>
 <tr>
 <td colspan="2">{{#TAX_FREE_ITEMS}}
@@ -62,7 +59,8 @@ No label: items with full tax of {{TAX}}% ({{COUNT}} pcs.)<br/>
 {{/FULL_TAX_ITEMS}}</td>
 <td colspan="2" align="right">+{{FULL_TAX}}% {{FULL_TAX_LABEL}}: {{FULL_TAX_SUM}}</td></tr>
 {{/SECTION_FULL_TAX}}
-<tr><td colspan="4" align="right"><b>Brutto Sum: {{BRUTTOSUM}}</b></td></tr>{{/SHOW_PRICES}}
+<tr><td colspan="4" align="right"><b>Brutto Sum: {{BRUTTOSUM}}</b></td></tr>
+{{/DISPLAY_SUM_BLOCK}}
 </table>
 <p>
 {{POSTTEXT}}

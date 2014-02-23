@@ -55,6 +55,8 @@ class HtmlView : public KHTMLPart
     void updateZoomActions();
   private:
 
+    QString locateCSSImages( const QByteArray& line );
+
     QString mTitle;
     QString mInternalUrl;
     QString mStyleSheetFile;

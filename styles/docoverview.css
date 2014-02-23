@@ -1,5 +1,5 @@
 body { margin:2px; 
-       background-image:url(pics/docoverviewbg.png); 
+       background-image:url({{CSS_IMG_PATH}}/docoverviewbg.png);
        font-size:x-small;
 }
 

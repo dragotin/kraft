@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include "htmlview.h"
 
+#include <QFileInfo>
+
 #include <klocale.h>
 #include <kdebug.h>
 #include <kaction.h>
@@ -63,15 +65,17 @@ void HtmlView::setTitle( const QString &title )
 
 void HtmlView::setStylesheetFile( const QString &style )
 {
-  char *prjPath = getenv( "KRAFT_HOME" );
-  if( prjPath ) {
+  QString prjPath = QString::fromLocal8Bit(qgetenv( "KRAFT_HOME" ));
+  if( !prjPath.isEmpty() ) {
     mStyleSheetFile = QString( "%1/styles/%2" ).arg( prjPath ).arg( style );
   } else if( getenv( "BUILDDIR" )) { // set in QCreator (at least)
     mStyleSheetFile = QString("%1/styles/%2").arg( getenv("BUILDDIR")).arg(style);
   } else {
     mStyleSheetFile = KStandardDirs::locate( "appdata", style );
   }
-  kDebug() << "found this stylefile: " << mStyleSheetFile << " out of " << style;
+  QFileInfo fi(mStyleSheetFile);
+  bool ok = fi.exists();
+  kDebug() << "found this stylefile: " << mStyleSheetFile << ok;
 }
 
 void HtmlView::setupActions( KActionCollection *actionCollection )
@@ -108,16 +112,55 @@ void HtmlView::updateZoomActions()
   // Prefs::self()->setZoomFactor( zoomFactor() );
 }
 
+QString HtmlView::locateCSSImages( const QByteArray& line )
+{
+    QString l = QString::fromUtf8(line);
+
+    QRegExp reg( "\\{\\{CSS_IMG_PATH\\}\\}/(\\S+)\\s*\\);");
+    if( l.contains(reg) ) {
+        QString fName = reg.cap(1);
+        QString p;
+
+        if( !fName.isEmpty() ) {
+            QByteArray kraftHome = qgetenv("KRAFT_HOME");
+            if( !kraftHome.isEmpty() ) {
+                p = QString("%1/src/pics/%2").arg(QString::fromUtf8(kraftHome)).arg(fName);
+            } else {
+                KStandardDirs dirs;
+                p = dirs.findResource("data", fName);
+                if( p.isEmpty() ) {
+                    kDebug() << "ERR: Unable to find resource " << fName;
+                }
+            }
+        }
+        if( !p.isEmpty() ) {
+            p += ");";
+            l.replace(reg, p);
+        }
+    }
+    return l;
+}
+
 void HtmlView::writeTopFrame( )
 {
   QString t = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
                        "<html><head><title>%1</title>" ).arg( mTitle );
+
   if ( ! mStyleSheetFile.isEmpty() ) {
-    t += QString( "<link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">"
-                  "<style type=\"text/css\">"
-                  "</style></head>\n\n" ).arg( mStyleSheetFile );
+      QString style;
+      QFile file(mStyleSheetFile);
+      if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+          style = QLatin1String("<style type=\"text/css\">");
+          while (!file.atEnd()) {
+              QString line = locateCSSImages(file.readLine());
+              style += line;
+          }
+          file.close();
+          style += QLatin1String("</style>");
+      }
+      t += style;
   }
-  t += "<body>";
+
   write( t );
 }
 

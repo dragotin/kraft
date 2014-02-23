@@ -176,16 +176,16 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
     foreach( DocPositionBase *dpb, positions ) {
         DocPosition *dp = static_cast<DocPosition*>(dpb);
-        tmpl.createDictionary( "POSITIONS" );
+        tmpl.createDictionary( "ITEMS" );
 
-        tmpl.setValue( "POSITIONS", "NUMBER", QString::number( pos++ ) );
-        tmpl.setValue( "POSITIONS", "TEXT", dp->text() );
-        tmpl.setValue( "POSITIONS", "AMOUNT", locale->formatNumber( dp->amount() ) );
-        tmpl.setValue( "POSITIONS", "UNIT", dp->unit().einheit( dp->amount() ) );
+        tmpl.setValue( "ITEMS", "NUMBER", QString::number( pos++ ) );
+        tmpl.setValue( "ITEMS", "TEXT", dp->text() );
+        tmpl.setValue( "ITEMS", "AMOUNT", locale->formatNumber( dp->amount() ) );
+        tmpl.setValue( "ITEMS", "UNIT", dp->unit().einheit( dp->amount() ) );
         double singlePrice = dp->unitPrice().toDouble();
 
         if( dt.pricesVisible() ) {
-            tmpl.createSubDictionary("POSITIONS", "PRICE_DISPLAY");
+            tmpl.createSubDictionary("ITEMS", "PRICE_DISPLAY");
             tmpl.setValue( "PRICE_DISPLAY", "SINGLE_PRICE", locale->formatMoney( singlePrice ) );
             QString style( "positive" );
             if ( singlePrice < 0 ) {
