@@ -442,9 +442,9 @@ QStringList ReportGenerator::findTrml2Pdf( )
       }
     } else {
       // tool erml2pdf.py not found. Check in $KRAFT_HOME/tools
-      QString p = QString::fromLocal8Bit( getenv( "KRAFT_HOME"));
+      QString p = QString::fromUtf8(qgetenv("KRAFT_HOME"));
       if( !p.isEmpty() ) {
-          p += "/tools/erml2pdf.py";
+          p += QLatin1String("/tools/erml2pdf.py");
           kDebug() << "Found erml2pdf from KRAFT_HOME: " << p;
           if( QFile::exists( p ) ) {
               retList << "python";

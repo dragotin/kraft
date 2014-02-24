@@ -190,9 +190,9 @@ void Portal::initActions()
 
   actOpenArchivedDocument->setEnabled( false );
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
-  char *prjPath = getenv("KRAFT_HOME");
-  if( prjPath ) {
-      createGUI(QString(prjPath)+"/src/kraftui.rc");
+  QString prjPath = QString::fromUtf8(qgetenv("KRAFT_HOME"));
+  if( !prjPath.isEmpty() ) {
+      createGUI(QString("%1/src/kraftui.rc").arg(prjPath));
   } else {
       createGUI( "kraftui.rc");
   }

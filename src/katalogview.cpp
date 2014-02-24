@@ -225,9 +225,9 @@ void KatalogView::initActions()
   // setStandardToolBarMenuEnabled( true );
 
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
-  char *prjPath = getenv( "KRAFT_HOME" );
-  if( prjPath ) {
-      createGUI(QString(prjPath)+"/src/katalogview.rc");
+  QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
+  if( !prjPath.isEmpty() ) {
+      createGUI(prjPath + QLatin1String("/src/katalogview.rc"));
   } else {
       createGUI("katalogview.rc");
   }
