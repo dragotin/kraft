@@ -1,5 +1,5 @@
 /***************************************************************************
-                       archiveman.cpp  - Archive Manager
+                     Report Generator based on Reportlab
                              -------------------
     begin                : July 2006
     copyright            : (C) 2006 by Klaas Freitag
