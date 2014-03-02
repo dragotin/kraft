@@ -1,3 +1,20 @@
+/***************************************************************************
+         kraftdocpositionsedit.cpp - Doc item editor widget
+                             -------------------
+    begin                :
+    copyright            : (C) 2003 by Klaas Freitag
+    email                : freitag@kde.org
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "kraftdocpositionsedit.h"
 
 #include <QLayout>
@@ -78,10 +95,10 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   upperHBoxLayout->addWidget(button);
   upperHBoxLayout->setSpacing( 3 );
 
-  button = new KPushButton( i18n("Add Discount Item") );
-  connect( button, SIGNAL( clicked() ), SIGNAL( addExtraClicked() ) );
-  upperHBoxLayout->addWidget(button);
-  button->setToolTip( i18n( "Adds an item to the document that allows discounts on other items in the document" ) );
+  m_discountBtn = new KPushButton( i18n("Add Discount Item") );
+  connect( m_discountBtn, SIGNAL( clicked() ), SIGNAL( addExtraClicked() ) );
+  upperHBoxLayout->addWidget(m_discountBtn);
+  m_discountBtn->setToolTip( i18n( "Adds an item to the document that allows discounts on other items in the document" ) );
 
   button = new KPushButton( i18n("Import Items...") );
   connect( button, SIGNAL( clicked() ), SIGNAL( importItemsClicked() ) );
@@ -100,4 +117,7 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   setLayout(topLayout);
 }
 
-#include "kraftdocpositionsedit.moc"
+void KraftDocPositionsEdit::setDiscountButtonVisible( bool visible )
+{
+    m_discountBtn->setVisible( visible );
+}

@@ -1,3 +1,20 @@
+/***************************************************************************
+         kraftdocpositionsedit.h - Doc item editor widget
+                             -------------------
+    begin                :
+    copyright            : (C) 2003 by Klaas Freitag
+    email                : freitag@kde.org
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef KRAFTDOCPOSITIONSEDIT_H
 #define KRAFTDOCPOSITIONSEDIT_H
 
@@ -40,6 +57,8 @@ public:
   // FIXME: Remove access to internal widgets
   KraftViewScroll *positionScroll() { return m_positionScroll; }
 
+  void setDiscountButtonVisible( bool visible );
+
 signals:
   void addPositionClicked();
   void addExtraClicked();
@@ -47,6 +66,8 @@ signals:
 
 private:
   KraftViewScroll *m_positionScroll;
+  QPushButton *m_discountBtn;
+
 };
 
 #endif

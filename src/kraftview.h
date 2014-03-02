@@ -139,7 +139,7 @@ signals:
   void positionSelected( Katalog*, void* );
 private:
   void setupDocHeaderView();
-  void setupPositions();
+  void setupItems();
   void setupFooter();
   void setupTextsView();
   void setMappingId( QWidget *, int );
@@ -184,6 +184,7 @@ private:
 
   bool           mModified;
   int            mTaxBefore;
+  int            mDocPosEditorIndx;
 };
 
 #endif // KRAFTVIEW_H

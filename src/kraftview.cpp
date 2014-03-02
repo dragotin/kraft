@@ -209,7 +209,7 @@ void KraftView::setup( DocGuardedPtr doc )
   m_doc = doc;
 
   setupDocHeaderView();
-  setupPositions();
+  setupItems();
   setupFooter();
   setCaption( m_doc->docIdentifier() );
   slotSwitchToPage( KraftDoc::Header );
@@ -270,10 +270,10 @@ void KraftView::setupDocHeaderView()
     connect( edit, SIGNAL(pickAddressee()), this, SLOT(slotPickAddressee()) );
 }
 
-void KraftView::setupPositions()
+void KraftView::setupItems()
 {
     KraftDocPositionsEdit *edit = new KraftDocPositionsEdit( mainWidget() );
-    mViewStack->addWidget( edit ); // , KraftDoc::Positions );
+    mDocPosEditorIndx = mViewStack->addWidget( edit ); // , KraftDoc::Positions );
 
     m_positionScroll = edit->positionScroll();
 
@@ -825,10 +825,14 @@ void KraftView::slotDocTypeChanged( const QString& newType )
     PositionViewWidget *w = it.next();
     w->slotEnableKindMenu( docType.allowAlternative() );
     w->slotShowPrice(docType.pricesVisible());
-    mAssistant->postCard()->slotShowPrices( docType.pricesVisible() );
-    m_footerEdit->_taxGroup->setVisible( docType.pricesVisible() );
   }
 
+  mAssistant->postCard()->slotShowPrices( docType.pricesVisible() );
+  m_footerEdit->_taxGroup->setVisible( docType.pricesVisible() );
+  KraftDocPositionsEdit *w = dynamic_cast<KraftDocPositionsEdit*>(mViewStack->widget(mDocPosEditorIndx));
+  if(w) {
+      w->setDiscountButtonVisible(docType.pricesVisible());
+  }
 }
 
 void KraftView::slotLanguageSettings()
