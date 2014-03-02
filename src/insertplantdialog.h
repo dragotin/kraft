@@ -71,7 +71,7 @@ public:
 
   void setSelectedPlant( BrunsRecord* );
 
-  void setDocPosition( DocPosition*, bool );
+  void setDocPosition( DocPosition*, bool, bool );
 
   DocPosition docPosition();
 

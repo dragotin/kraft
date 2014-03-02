@@ -71,7 +71,7 @@
            <widget class="QComboBox" name="dmUnitCombo"/>
           </item>
           <item>
-           <widget class="QLabel" name="textLabel1">
+           <widget class="QLabel" name="priceBoxTextLabel">
             <property name="text">
              <string>à</string>
             </property>

@@ -88,7 +88,7 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   groupLay->addStretch();
 }
 
-void InsertTemplDialog::setDocPosition( DocPosition *dp, bool isNew )
+void InsertTemplDialog::setDocPosition(DocPosition *dp, bool isNew , bool showPrices)
 {
   if ( dp ) {
     mParkPosition = *dp;
@@ -109,6 +109,8 @@ void InsertTemplDialog::setDocPosition( DocPosition *dp, bool isNew )
     } else {
       mBaseWidget->dmAmount->setFocus();
     }
+    mBaseWidget->mPriceVal->setVisible(showPrices);
+    mBaseWidget->priceBoxTextLabel->setVisible(showPrices);
   }
 }
 

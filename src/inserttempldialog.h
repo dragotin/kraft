@@ -34,7 +34,7 @@ public:
   InsertTemplDialog( QWidget* );
   ~InsertTemplDialog();
 
-  void setDocPosition( DocPosition*, bool );
+  void setDocPosition( DocPosition*, bool, bool );
   DocPosition docPosition();
 
   void setCatalogChapters( const QList<CatalogChapter>& );

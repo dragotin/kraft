@@ -93,7 +93,7 @@ void InsertPlantDialog::slotSizeListSelectionChanged()
   mBaseWidget->mUpdateLabel->setText( h );
 }
 
-void InsertPlantDialog::setDocPosition( DocPosition*, bool )
+void InsertPlantDialog::setDocPosition( DocPosition*, bool, bool )
 {
   mBaseWidget->mSizeList->setFocus();
 }

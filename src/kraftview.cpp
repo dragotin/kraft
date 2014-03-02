@@ -950,8 +950,11 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
       dp->setAmount( mRememberAmount );
     }
 
-    dia->setDocPosition( dp, newTemplate );
-
+    KraftDoc *doc = getDocument();
+    if(doc) {
+        DocType docType = doc->docType();
+        dia->setDocPosition( dp, newTemplate, docType.pricesVisible() );
+    }
     DocPositionList list = currentPositionList();
     dia->setPositionList( list, newpos );
 

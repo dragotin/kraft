@@ -35,7 +35,7 @@ public:
   TemplToPositionDialogBase( QWidget* );
   ~TemplToPositionDialogBase( );
 
-  virtual void setDocPosition( DocPosition*, bool ) = 0;
+  virtual void setDocPosition( DocPosition*, bool, bool ) = 0;
   virtual void setCatalogChapters( const QList<CatalogChapter>& ) = 0;
   virtual QString chapter() const = 0;
 
