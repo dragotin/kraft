@@ -65,7 +65,7 @@ void HtmlView::setTitle( const QString &title )
 
 void HtmlView::setStylesheetFile( const QString &style )
 {
-  QString prjPath = QString::fromLocal8Bit(qgetenv( "KRAFT_HOME" ));
+  QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
   if( !prjPath.isEmpty() ) {
     mStyleSheetFile = QString( "%1/styles/%2" ).arg( prjPath ).arg( style );
   } else {
