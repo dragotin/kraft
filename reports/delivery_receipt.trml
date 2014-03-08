@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="kraft.pdf">
+<template pageSize="(21cm, 29.7cm)" leftMargin="2.41cm" rightMargin="0.81cm"
+  topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document" 
+  author="Kraft http://www.volle-kraft-voraus.de" allowSplitting="20"
+  showBoundary="0">
+    <template>
+      <setFont name="Times-Roman" size="12" />
+    </template>
+    <pageTemplate id="first">
+        <pageGraphics>
+            <setFont name="Times-Roman" size="12" />
+	    <lineMode width="0.5" />
+            <lines>2.41cm 2.2cm 19cm 2.2cm</lines>
+	    <fill color="darkgreen" />
+            <drawCentredString x="105mm" y="2.3cm">{{MY_NAME}} {{MY_ORGANISATION}}</drawCentredString>
+
+            <lines>7mm 19cm 12mm 19cm</lines>
+            <lines>2mm 14.65cm 12mm 14.65cm</lines>
+
+	    <fill color="black" />
+	    <setFont name="Times-Roman" size="8" />
+            <drawString x="25mm" y="24.7cm">{{MY_ORGANISATION}} - {{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawString>
+	    <lines>25mm 24.6cm 11cm 24.6cm</lines>
+	    <setFont name="Times-Roman" size="10" />
+            <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">Telephone {{MY_PHONE}} - Fax {{MY_FAX}}</drawCentredString>
+	    <drawCentredString x="185mm" y="1.4cm">Page <pageNumber/></drawCentredString>
+	    <!-- Here is how you would insert an image at a fixed place on the page: -->
+	    <!-- image x="140mm" y="22cm" width="6cm" height="6cm" file="/path/to/the/image.png"  -->
+        </pageGraphics>
+        <frame id="address"  x1="2.41cm" y1="20.62cm" width="8.5cm" height="4cm"/>
+        <frame id="info"     x1="12cm" y1="20.62cm" width="7.41cm" height="1.5cm"/>
+        <frame id="subject"  x1="2.41cm" y1="18.2cm" width="17cm"  height="1.2cm"/>
+        <frame id="detail"   x1="2.41cm" y1="3cm"  width="17cm"  height="15cm"/>
+
+    </pageTemplate>
+
+    <pageTemplate id="others">
+        <pageGraphics>
+            <setFont name="Times-Roman" size="12" />
+	    <lineMode width="0.5" />
+            <lines>2cm 2.2cm 19cm 2.2cm</lines>
+	    <fill color="darkgreen" />
+            <drawCentredString x="105mm" y="2.3cm">{{MY_ORGANISATION}}</drawCentredString>
+	    <setFont name="Times-Roman" size="10" />
+	    <fill color="black" />
+            <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">Telephone {{MY_PHONE}} - Fax {{MY_FAX}}</drawCentredString>
+        </pageGraphics>
+
+        <frame id="content" x1="2.0cm" y1="3.0cm" width="17cm" height="24.5cm"/>
+    </pageTemplate>
+</template>
+<stylesheet>
+    <initialize>
+      <alias id="style.normal" value="style.Normal"/>
+    </initialize>
+
+    <blockTableStyle id="items">
+      <blockFont name="Helvetica-BoldOblique" size="24" start="0,0" stop="-1,0"/>
+      <blockBackground colorName="lightgrey" start="0,0" stop="-1,0"/>
+      <blockTextColor colorName="white" start="0,0" stop="-1,0"/>
+      <blockValign value="TOP"/>
+      <blockAlignment start="0,0" stop="0,-1" value="LEFT"/>
+
+      <blockAlignment start="2,0" stop="3,-1" value="RIGHT"/>
+      <blockBottomPadding length="2mm" start="0,1" stop="-1,-1"/>
+      <blockTopPadding length="3mm" start="0,1" stop="-1,-1"/>
+
+      <lineStyle kind="LINEBELOW" colorName="black" start="0,0" stop="-1,0"/>
+   </blockTableStyle>
+   
+   <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
+   
+   <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
+   <paraStyle name="demandtext"      fontSize="12" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="alternativetext" fontSize="12" alignment="justify" fontName="Times-Italic" />
+
+   <paraStyle name="rtext" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="ctext" fontSize="12" alignment="CENTER" />
+   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
+
+   <paraStyle name="head" fontSize="12" alignment="justify"/>
+   <paraStyle name="details" fontSize="12" alignment="right"/>
+   <paraStyle name="addressStyle" fontSize="12" />
+
+</stylesheet>
+<story>
+    <!-- Address Frame -->
+    <xpre style="addressStyle">
+<br />
+<br />
+<br />
+{{ADDRESS}}
+    </xpre>
+    
+    <nextFrame/>
+    <!-- Info Frame -->
+    <para  style="text" alignment="right">{{DATE}}</para>
+
+    <nextFrame/>
+    <!-- Subject Frame -->
+    <h1>{{DOCTYPE}} Nr. {{DOCID}}</h1>
+
+    <!-- Detail Frame -->
+    <spacer length="1mm" width="1mm"/>
+    <para style="text">
+        {{SALUT}}
+    </para>
+    <spacer length="1mm" width="1mm"/>
+        {{PRETEXT}}
+
+    <setNextTemplate name="others" />
+
+    <spacer length="18mm" width="1mm"/>
+
+    <blockTable colWidths="12mm,12.6cm,1.5cm,1.5cm" style="items" repeatRows="0">
+    <tr>
+        <td><para style="text">Pos.</para></td>
+        <td><para style="text">Item</para></td>
+        <td><para style="ctext">Qty.</para></td>
+        <td><para style="ctext">Unit</para></td>
+    </tr>
+    {{#POSITIONS}}
+    <tr>
+        <td><para style="{{POS_KIND}}text">{{POS_NUMBER}}.</para></td>
+        <td>      {{POS_TEXT}}          </td>
+        <td><para style="{{POS_KIND}}text">{{POS_AMOUNT}} </para></td>
+        <td><para style="{{POS_KIND}}text">{{POS_UNIT}}   </para></td>
+    </tr>
+    {{/POSITIONS}}
+  </blockTable>
+  <spacer length="8mm" width="1mm"/>
+
+  <condPageBreak height="4cm"/>
+     {{POSTTEXT}}
+  <spacer length="0.5cm" width="1mm"/>
+  <para style="text">
+     {{GOODBYE}}
+  </para>
+</story>
+</document>
