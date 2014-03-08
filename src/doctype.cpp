@@ -226,7 +226,8 @@ QString DocType::templateFile( const QString& lang )
   KStandardDirs stdDirs;
   QString tmplFile;
 
-  QString reportFileName = name().toLower() + QString( ".trml" );
+  QString reportFileName = QString( "%1.trml").arg( name().toLower() );
+  reportFileName.replace(QChar(' '), QChar('_'));
 
   if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
     tmplFile = mAttributes["docTemplateFile"].value().toString();
@@ -234,6 +235,15 @@ QString DocType::templateFile( const QString& lang )
       // happens in case of strange db content
       tmplFile = "invoice.trml";  // the default doc
     }
+  }
+
+  QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
+  if( !prjPath.isEmpty() ) {
+      tmplFile = prjPath + "/reports/" + reportFileName;
+      if( !QFile::exists(tmplFile) ) {
+          // FIXME: Rework language handling, does not make too much sense.
+          tmplFile = prjPath + "/reports/de/" + reportFileName;
+      }
   }
 
   if ( ! QFile::exists( tmplFile ) ) {
