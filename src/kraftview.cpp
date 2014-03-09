@@ -362,14 +362,16 @@ void KraftView::redrawDocPositions( )
     // the doc has no positions yet. Let's show a help page
     if ( ! mHelpLabel ) {
       mHelpLabel = new QLabel(this);
+      mHelpLabel->setTextFormat(Qt::RichText);
+      // mHelpLabel->setMinimumHeight(400);
       mHelpLabel->setMargin( KDialog::marginHint() );
       mHelpLabel->setText( i18n( "<qt><h2>The Document Items List is still empty, but Items "
                                  "can be added now.</h2>"
                                  "To add items to the document either "
                                  "<ul>"
                                  "<li>Press the 'Add' button.</li>"
-                                 "<li>Open the template catalog clicking on the '%1' "
-                                  "button on the right and select from available templates.</li>"
+                                 "<li>Open the template catalog by clicking on the '%1' "
+                                  "button on the right and pick one of the available templates.</li>"
                                    "</ul></qt>").arg( i18n( "show Template" ) ) );
       mHelpLabel->setWordWrap(true);
       m_positionScroll->addChild( mHelpLabel, 0);
