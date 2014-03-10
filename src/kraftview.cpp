@@ -369,11 +369,12 @@ void KraftView::redrawDocPositions( )
                                  "can be added now.</h2>"
                                  "To add items to the document either "
                                  "<ul>"
-                                 "<li>Press the 'Add' button.</li>"
+                                 "<li>Press the 'Add item' button above.</li>"
                                  "<li>Open the template catalog by clicking on the '%1' "
                                   "button on the right and pick one of the available templates.</li>"
                                    "</ul></qt>").arg( i18n( "show Template" ) ) );
       mHelpLabel->setWordWrap(true);
+      mHelpLabel->setMinimumHeight(200);
       m_positionScroll->addChild( mHelpLabel, 0);
     }
     return;
