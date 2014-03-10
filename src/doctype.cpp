@@ -231,51 +231,47 @@ QString DocType::templateFile( const QString& lang )
 
   if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
     tmplFile = mAttributes["docTemplateFile"].value().toString();
-    if( tmplFile.isEmpty() ) {
-      // happens in case of strange db content
-      tmplFile = "invoice.trml";  // the default doc
+    if( !tmplFile.isEmpty() ) {
+        return tmplFile;
     }
   }
 
-  QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
-  if( !prjPath.isEmpty() ) {
-      tmplFile = prjPath + "/reports/" + reportFileName;
-      if( !QFile::exists(tmplFile) ) {
-          // FIXME: Rework language handling, does not make too much sense.
-          tmplFile = prjPath + "/reports/de/" + reportFileName;
+  // Try to find it from the installation
+  QStringList searchList;
+  if( !lang.isEmpty() ) {
+      searchList << QString("/reports/%1/%2.trml").arg(lang).arg(name().toLower());
+  }
+  searchList << QString("/reports/%1.trml").arg(name().toLower());
+  if( !lang.isEmpty() ) {
+      searchList << QString("/reports/%1/invoice.trml").arg(lang);
+  }
+  searchList << QLatin1String("/reports/invoice.trml");
+
+  foreach( QString searchPath, searchList ) {
+     const QString tFile = stdDirs.findResource( "data", searchPath );
+
+      if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
+          tmplFile = tFile;
+          kDebug() << "Found template file " << tmplFile;
+          break;
       }
   }
 
-  if ( ! QFile::exists( tmplFile ) ) {
-    // first, read language dependant in case its not 'C' or empty
-    QString findFile;
-    QString language( lang );
-    if( language.isEmpty() ) {
-      language = DefaultProvider::self()->locale()->country();
-    }
-    if( !( language.isEmpty() && language != QChar('C') ) ) {
-      findFile  = QString( "kraft/reports/%1/%2" ).arg( language ).arg( reportFileName );
-      kDebug() << "Searching for lang report: " << findFile;
-      tmplFile = stdDirs.findResource( "data", findFile );
+  const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
 
-      if( !QFile::exists( tmplFile )) {
-        // if this cant be found, search for a lang dependant invoice.trml
-        findFile = QString( "kraft/reports/%1/invoice.trml" ).arg( language );
-        kDebug() << "Searching more for lang report: " << findFile;
-        tmplFile = stdDirs.findResource( "data", findFile );
+  if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
+      foreach( QString searchPath, searchList ) {
+         const QString tFile = prjPath + searchPath;
+          if( !tFile.isEmpty() && QFile::exists(tFile) ) {
+              kDebug() << "Found template file " << tFile;
+              tmplFile = tFile;
+              break;
+          }
       }
-    }
+  }
 
-    if( !QFile::exists(tmplFile) ) {
-      // now try the old language indep search
-      findFile = "kraft/reports/" + reportFileName;
-
-      tmplFile = stdDirs.findResource( "data", findFile );
-
-      if ( !QFile::exists( tmplFile ) ) {
-        tmplFile = defaultTemplateFile();
-      }
-    }
+  if( tmplFile.isEmpty() ) {
+      kDebug() << "unable to find a template file for " << name();
   }
   return tmplFile;
 }
