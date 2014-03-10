@@ -1,11 +1,11 @@
 
 INSERT INTO DocTypes (name) VALUES ('Lieferschein');
 INSERT INTO attributes (hostObject, hostId, name, valueIsList) VALUES ('DocType', 
-(SELECT docTypeID FROM DocTypes WHERE name="Lieferschein"), 'HidePrices', 'true');
+(SELECT docTypeID FROM DocTypes WHERE name='Lieferschein'), 'HidePrices', 'true');
 
 INSERT INTO DocTypes (name) VALUES ('Delivery Receipt');
 INSERT INTO attributes (hostObject, hostId, name, valueIsList) VALUES ('DocType', 
-(SELECT docTypeID FROM DocTypes WHERE name="Delivery Receipt"), 'HidePrices', 'true');
+(SELECT docTypeID FROM DocTypes WHERE name='Delivery Receipt'), 'HidePrices', 'true');
 
 # Delivery Receipt follows Offer
 INSERT INTO DocTypeRelations VALUES( (SELECT docTypeID FROM DocTypes WHERE name="Offer"),
