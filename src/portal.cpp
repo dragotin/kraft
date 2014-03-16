@@ -44,6 +44,7 @@
 #include <akonadi/control.h>
 #include <kabc/addressee.h>
 #include <ktoolinvocation.h>
+#include <kstandarddirs.h>
 
 // application specific includes
 #include "kraftview.h"
@@ -508,15 +509,16 @@ void Portal::slotPrintDocument()
   busyCursor( true );
   slotStatusMsg( i18n( "Generating PDF..." ) );
   DocumentMan *docman = DocumentMan::self();
-  DocGuardedPtr docPtr = docman->openDocument( locId );
+  _currentDoc = docman->openDocument( locId );
   QString ident;
-  if ( docPtr ) ident = docPtr->ident();
 
-  if( docPtr ) {
-    ArchiveMan *archman = ArchiveMan::self();
-    dbID archID = archman->archiveDocument( docPtr );
-    slotPrintDocument( ident, archID );
-    // m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
+  if ( _currentDoc ) {
+      ident = _currentDoc->ident();
+
+      ArchiveMan *archman = ArchiveMan::self();
+      dbID archID = archman->archiveDocument( _currentDoc );
+      slotPrintDocument( ident, archID );
+      // m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
   }
   busyCursor( false );
   slotStatusMsg( i18n( "Ready." ) );
@@ -589,6 +591,36 @@ void Portal::slotOpenPdf( const QString& fileName )
     disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
     KUrl url( fileName );
     KRun::runUrl( url, "application/pdf", this );
+
+    // save pdf into a <customer>/<dockind> structure
+    if( _currentDoc ) {
+        QString uid = _currentDoc->addressUid();
+        QString docType = _currentDoc->docType();
+
+        if( !uid.isEmpty() ) {
+            KStandardDirs stdDirs;
+
+            QString outputDir = KraftSettings::self()->pdfOutputDir();
+            if ( outputDir.isEmpty() ) {
+                outputDir = stdDirs.saveLocation( "data", "kraft/archivePdf", true );
+            }
+
+            if ( ! outputDir.endsWith( "/" ) ) outputDir += QLatin1String("/");
+            QDir customerDir(outputDir + QString("%1/%2").arg(uid).arg(docType));
+            if( !customerDir.exists() ) {
+                customerDir.mkpath( customerDir.absolutePath());
+            }
+            if( customerDir.exists() ) {
+                QFileInfo fi(fileName);
+                QString target = customerDir.canonicalPath() + QLatin1Char('/') + fi.fileName();
+                QFileInfo tfi(target);
+                if( tfi.exists() ) {
+                    QFile::remove(target);
+                }
+                QFile::copy( fileName, target );
+            }
+        }
+    }
 }
 
 void Portal::slotOpenDocument( const QString& id )

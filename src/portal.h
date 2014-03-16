@@ -190,6 +190,7 @@ class Portal : public KXmlGuiWindow
   AddressProvider *mAddressProvider;
   KABC::Addressee myContact;
   PrefsDialog *_prefsDialog;
+  DocGuardedPtr _currentDoc;
 };
 
 #endif
