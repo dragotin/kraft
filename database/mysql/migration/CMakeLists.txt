@@ -1,9 +1,8 @@
 ########### install files ###############
 
-install(FILES  README 2_dbmigrate.sql 3_dbmigrate.sql 4_dbmigrate.sql  
-                      5_dbmigrate.sql 6_dbmigrate.sql 7_dbmigrate.sql 
-                      8_dbmigrate.sql  9_dbmigrate.sql 10_dbmigrate.sql 
-                      11_dbmigrate.sql 12_dbmigrate.sql 13_dbmigrate.sql
-                      14_dbmigrate.sql 15_dbmigrate.sql 16_dbmigrate.sql
-                      17_dbmigrate.sql 18_dbmigrate.sql
-                      DESTINATION ${DATA_INSTALL_DIR}/kraft/dbmigrate/mysql)
+file(GLOB mig_scripts *_dbmigrate.sql)
+
+
+install(FILES  README ${mig_scripts}
+        DESTINATION ${DATA_INSTALL_DIR}/kraft/dbmigrate/mysql)
+
