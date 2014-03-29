@@ -29,6 +29,7 @@
 #include "dbids.h"
 
 class KLocale;
+class AttributeMap;
 
 class ArchDocDigest
 {
@@ -102,10 +103,6 @@ public:
   QString docIdentifier() const;
 
   KLocale* locale() { return &mLocale; }
-  
-  QMap<QString, QString> attributes() const {
-    return mAttribs;
-  }
 
   Geld nettoSum();
   Geld bruttoSum();
@@ -118,9 +115,12 @@ public:
 
   ArchDocDigest toDigest();
 
+  // when the document was sent to the customer.
+  QDateTime sentOutDate();
+  void setSentOutDate( const QDateTime& dt );
+
 private:
   void loadPositions( const QString& );
-  void loadAttributes( const QString& );
   void loadFromDb( dbID );
 
   dbID mArchDocID;
@@ -144,7 +144,7 @@ private:
   ArchDocPositionList mPositions;
   dbID    mDocID;
   int     mState;
-  QMap<QString, QString> mAttribs;
+  AttributeMap mAttributes;
 };
 
 #endif // ARCHDOC_H

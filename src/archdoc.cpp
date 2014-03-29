@@ -31,18 +31,21 @@
 #include "kraftdb.h"
 #include "defaultprovider.h"
 
+const char *SentOutDateC = "SentOutDate";
 
 ArchDoc::ArchDoc()
-  :mLocale( "kraft" )
+    :mLocale( "kraft" ),
+    mAttributes( QLatin1String("ArchDoc"))
 {
 
 }
 
 ArchDoc::ArchDoc( const dbID& id )
-  :mLocale( "kraft" )
+    :mLocale( "kraft" ),
+      mAttributes( QLatin1String("ArchDoc"))
 {
-  /* load archive from database */
-  loadFromDb( id );
+    /* load archive from database */
+    loadFromDb( id );
 }
 
 ArchDoc::~ArchDoc()
@@ -136,7 +139,8 @@ void ArchDoc::loadFromDb( dbID id )
     mLocale.setLanguage( lang , cfg );
 
     loadPositions( docID );
-    loadAttributes( docID );
+
+    mAttributes.load(id);
   } else {
     kDebug() << "ERR: Could not load archived doc with id " << id.toString() << endl;
   }
@@ -179,30 +183,28 @@ void ArchDoc::loadPositions( const QString& archDocId )
   }
 }
 
-void ArchDoc::loadAttributes( const QString& archDocId )
+QDateTime ArchDoc::sentOutDate()
 {
-  mAttribs.clear();
+    QDateTime re;
 
-  if ( archDocId.isEmpty() ) {
-    kDebug() << "ArchDocId is Empty!" << endl;
-    return;
-  }
-
-  QSqlQuery q;
-  q.prepare("SELECT name, value FROM archPosAttribs WHERE archDocID=:id");
-  q.bindValue(":id", archDocId);
-  q.exec();
-
-  while ( q.next() ) {
-    QString name  = q.value( 0 ).toString();
-    QString value = q.value( 1 ).toString();
-
-    if ( !name.isEmpty() ) {
-      mAttribs[ name ] = value;
-    } else {
-      kDebug() << "Empty attribute name in archive!"  << endl;
+    if ( mAttributes.hasAttribute( SentOutDateC ) ) {
+        re = mAttributes["sentOutDate"].value().toDateTime();
     }
-  }
+    return re;
+}
+
+void ArchDoc::setSentOutDate( const QDateTime& dt )
+{
+    QString attName(SentOutDateC);
+    if( dt.isValid() ) {
+        Attribute att(attName);
+        att.setPersistant(true);
+        att.setValue(dt);
+        mAttributes[attName] = att;
+    } else {
+        mAttributes.markDelete(attName);
+    }
+    mAttributes.save(mArchDocID);
 }
 
 ArchDocDigest ArchDoc::toDigest()
