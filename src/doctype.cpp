@@ -239,16 +239,16 @@ QString DocType::templateFile( const QString& lang )
   // Try to find it from the installation
   QStringList searchList;
   if( !lang.isEmpty() ) {
-      searchList << QString("/reports/%1/%2.trml").arg(lang).arg(name().toLower());
+      searchList << QString("kraft/reports/%1/%2.trml").arg(lang).arg(name().toLower());
   }
-  searchList << QString("/reports/%1.trml").arg(name().toLower());
+  searchList << QString("kraft/reports/%1.trml").arg(name().toLower());
   if( !lang.isEmpty() ) {
-      searchList << QString("/reports/%1/invoice.trml").arg(lang);
+      searchList << QString("kraft/reports/%1/invoice.trml").arg(lang);
   }
-  searchList << QLatin1String("/reports/invoice.trml");
+  searchList << QLatin1String("kraft/reports/invoice.trml");
 
   foreach( QString searchPath, searchList ) {
-     const QString tFile = stdDirs.findResource( "data", searchPath );
+     const QString tFile = KStandardDirs::locate( "data", searchPath );
 
       if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
           tmplFile = tFile;
@@ -257,15 +257,17 @@ QString DocType::templateFile( const QString& lang )
       }
   }
 
-  const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
+  if( tmplFile.isEmpty() ) {
+      const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
 
-  if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
-      foreach( QString searchPath, searchList ) {
-         const QString tFile = prjPath + searchPath;
-          if( !tFile.isEmpty() && QFile::exists(tFile) ) {
-              kDebug() << "Found template file " << tFile;
-              tmplFile = tFile;
-              break;
+      if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
+          foreach( QString searchPath, searchList ) {
+              const QString tFile = prjPath + searchPath;
+              if( !tFile.isEmpty() && QFile::exists(tFile) ) {
+                  kDebug() << "Found template file " << tFile;
+                  tmplFile = tFile;
+                  break;
+              }
           }
       }
   }
@@ -273,6 +275,7 @@ QString DocType::templateFile( const QString& lang )
   if( tmplFile.isEmpty() ) {
       kDebug() << "unable to find a template file for " << name();
   }
+
   return tmplFile;
 }
 
