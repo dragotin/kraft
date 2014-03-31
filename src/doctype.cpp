@@ -239,9 +239,9 @@ QString DocType::templateFile( const QString& lang )
   // Try to find it from the installation
   QStringList searchList;
   if( !lang.isEmpty() ) {
-      searchList << QString("kraft/reports/%1/%2.trml").arg(lang).arg(name().toLower());
+      searchList << QString("kraft/reports/%1/%2").arg(lang).arg(reportFileName);
   }
-  searchList << QString("kraft/reports/%1.trml").arg(name().toLower());
+  searchList << QString("kraft/reports/%1").arg(reportFileName);
   if( !lang.isEmpty() ) {
       searchList << QString("kraft/reports/%1/invoice.trml").arg(lang);
   }
