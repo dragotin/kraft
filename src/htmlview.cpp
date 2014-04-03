@@ -125,7 +125,9 @@ QString HtmlView::locateCSSImages( const QByteArray& line )
                 p = QString("%1/src/pics/%2").arg(QString::fromUtf8(kraftHome)).arg(fName);
             } else {
                 KStandardDirs dirs;
-                p = dirs.findResource("data", fName);
+                QString find;
+                find = QString("kraft/pics/%1").arg(fName);
+                p = dirs.findResource("data", find);
                 if( p.isEmpty() ) {
                     kDebug() << "ERR: Unable to find resource " << fName;
                 }
@@ -176,8 +178,8 @@ void HtmlView::writeBottomFrame()
 
 void HtmlView::displayContent( const QString& content )
 {
-  kDebug() << "BASE URL: " << mBaseUrl.prettyUrl();
-  kDebug() << "Stylesheet URL: " << mStyleSheetFile;
+  // kDebug() << "BASE URL: " << mBaseUrl.prettyUrl();
+  // kDebug() << "Stylesheet URL: " << mStyleSheetFile;
   begin( mBaseUrl );
 
   // kDebug() << "Show content: " << content;
