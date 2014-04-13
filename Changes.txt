@@ -1,5 +1,18 @@
 Changes since version 0.53: #########################################
+- Support note-of-delivery documents (Lieferscheine) without prices.
+- Added findcontact utility
+- Generate a customer sorted document storage structure on disk
+- Improve stylesheet handling in templates, introduce CSS_IMG_PATH
+- Use environment variable KRAFT_HOME more consquentely
+- Fix tax sum calculation
+- Add customer address UID variable to number circle tags
+- Some memleak fixes
+- Add "followup document" to main menu
+- Fix installation of identity.trml
 - Allow the tags USERNAME, DATE and TIME in item templates.
+- Lots of other cleanups and fixes
+
+    => release v. 0.54 (april x, 2014)
 
 Changes since version 0.50: #########################################
 - Fixes drag and drop handling in catalog window.
