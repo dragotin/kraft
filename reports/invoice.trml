@@ -70,13 +70,11 @@
 
       <lineStyle kind="LINEBELOW" colorName="black" start="0,0" stop="-1,0"/>
 
-      <lineStyle kind="LINEABOVE" colorName="black" start="-3,-3" stop="-1,-3"/>
-      <lineStyle kind="LINEABOVE" colorName="black" start="-3,-1" stop="-1,-1"/>
    </blockTableStyle>
    
    <blockTableStyle id="sums">
-      <lineStyle kind="LINEABOVE" colorName="black" start="2,-1" stop="3,-1"/>
-      <lineStyle kind="LINEABOVE" colorName="black" start="1,-3" stop="3,-3"/>
+      <lineStyle kind="LINEABOVE" thickness="1" colorName="black" start="1,-1" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" thickness="0" colorName="black" start="1,0" stop="2,0"/>
       <blockBottomPadding length="4mm" />
       <blockTopPadding length="4mm" />
    </blockTableStyle>
@@ -126,7 +124,7 @@
 
     <spacer length="18mm" width="1mm"/>
 
-    <blockTable colWidths="8mm,8.6cm,1.0cm,1.2cm,2.7cm,2.5cm,4mm" style="items" repeatRows="0">
+    <blockTable colWidths="8mm,8.2cm,1.0cm,1.2cm,2.7cm,2.5cm,8mm" style="items" repeatRows="0">
     <tr>
         <td><para style="text">Pos.</para></td>
         <td><para style="text">Item</para></td>
@@ -146,10 +144,10 @@
         <td><para style="{{POS_KIND}}rtext">{{POS_TOTAL}}</para></td>
         <td><para style="{{POS_KIND}}rtext">
          {{#TAX_FREE}}
-           &#xB9;
+           a)
          {{/TAX_FREE}}
          {{#REDUCED_TAX}}
-           &#xB2;
+           b)
          {{/REDUCED_TAX}}
          {{#FULL_TAX}}
            
@@ -188,12 +186,12 @@
   </blockTable>
   {{#TAX_FREE_ITEMS}}
   <para style="smallText">
-      &#xB9; &nbsp;tax free items ({{COUNT}} pcs.)
+      a) &nbsp;tax free items ({{COUNT}} pcs.)
   </para>
   {{/TAX_FREE_ITEMS}}
   {{#REDUCED_TAX_ITEMS}}
   <para style="smallText">
-    &#xB2; &nbsp;items with reduced tax of {{TAX}}% ({{COUNT}} pcs.)
+    b) &nbsp;items with reduced tax of {{TAX}}% ({{COUNT}} pcs.)
   </para>
   {{/REDUCED_TAX_ITEMS}}
   {{#FULL_TAX_ITEMS}}
