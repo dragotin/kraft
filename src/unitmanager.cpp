@@ -55,6 +55,20 @@ void UnitManager::load()
   }
 }
 
+int UnitManager::nextFreeId()
+{
+    int id = 0;
+    if( mUnits.size() == 0 ) {
+        load();
+    }
+    foreach( Einheit u, mUnits ) {
+        if( u.id() > id ) {
+            id = u.id();
+        }
+    }
+    return id+1;
+}
+
 QStringList UnitManager::allUnits()
 {
   QStringList list;

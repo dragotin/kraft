@@ -20,6 +20,8 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QSqlTableModel>
+#include <QSqlError>
+#include <QSqlQueryModel>
 #include <QDataWidgetMapper>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
@@ -32,6 +34,7 @@
 #include "defaultprovider.h"
 #include "impviewwidgets.h"
 #include "geld.h"
+#include "unitmanager.h"
 
 #include "prefsunits.h"
 
@@ -96,7 +99,12 @@ PrefsUnits::~PrefsUnits()
 
 void PrefsUnits::save()
 {
-  mUnitsModel->submitAll();
+  bool ok = mUnitsModel->submitAll();
+  if( ! ok ) {
+      QString err = mUnitsModel->lastError().text();
+
+      kDebug() << "SQL Error: " << err;
+  }
 }
 
 void PrefsUnits::slotAddUnit()
@@ -164,8 +172,12 @@ UnitsEditDialog::UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *p
   if(row == -1)
   {
     //Insert a new row at the end
-    model->insertRow(model->rowCount());
-    mapper->toLast();
+      int row = model->rowCount();
+    if( model->insertRow(row) ) {
+        int indx = UnitManager::self()->nextFreeId();
+        model->setData( model->index(row, 0), indx );
+        mapper->toLast();
+    }
   }
   else
   {
@@ -177,8 +189,10 @@ UnitsEditDialog::UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *p
 
 void UnitsEditDialog::accept()
 {
-  mapper->submit();
+  bool ok = mapper->submit();
+  kDebug() << "Mapper submitted ok: " << ok;
   KDialog::accept();
+  deleteLater();
 }
 
 void UnitsEditDialog::reject()
@@ -186,4 +200,5 @@ void UnitsEditDialog::reject()
   if(mRow == -1)
     mModel->removeRow(mModel->rowCount()-1);
   KDialog::reject();
+  deleteLater();
 }

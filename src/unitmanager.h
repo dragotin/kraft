@@ -38,6 +38,10 @@ class UnitManager
     QStringList allUnits();
     int getUnitIDSingular( const QString& einheit );
 
+    // Workaround: since the unit table does not have an auto update id coloum,
+    // this function calculates the next free unit id to save a new one.
+    int nextFreeId();
+
   private:
     UnitManager();
     Einheit::List mUnits;
