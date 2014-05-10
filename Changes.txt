@@ -1,4 +1,6 @@
 Changes since version 0.53: #########################################
+- Use new address fetch job implementation that works independant
+  from Nepomuk- or Baloo indexing of contacts. (KDE >= 4.12)
 - Support note-of-delivery documents (Lieferscheine) without prices.
 - Added findcontact utility
 - Generate a customer sorted document storage structure on disk
