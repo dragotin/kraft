@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.6)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/ ${CMAKE_MODULE_PATH} )
 
 find_package(KDE4 4.4.0 REQUIRED) 
-find_package (KdepimLibs REQUIRED)
+find_package(KdepimLibs REQUIRED)
 find_package(Ctemplate REQUIRED)
 
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})

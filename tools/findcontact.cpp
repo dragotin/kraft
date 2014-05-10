@@ -20,9 +20,14 @@
 #include <QObject>
 
 #include <kdebug.h>
+#include <kdeversion.h>
 
 #include <akonadi/contact/contactsearchjob.h>
 #include <akonadi/session.h>
+#include <Akonadi/Item>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+
 #include <kabc/vcardconverter.h>
 #include <kabc/vcard.h>
 
@@ -55,6 +60,23 @@ public slots:
         exit(1);
     }
 
+    void gidJobFinished( KJob *job ) {
+        if (job->error()) {
+            qDebug() << "gid job error: " << job->errorString();
+            exit(1);
+        }
+
+        Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
+
+        const Akonadi::Item::List items = fetchJob->items();
+        foreach( Akonadi::Item item, items ) {
+            if( item.hasPayload<KABC::Addressee>() ) {
+                dumpContact( item.payload<KABC::Addressee>(), _options._outputType );
+            }
+        }
+        exit(0);
+    }
+
 public:
     typedef enum {
         VCard,
@@ -82,7 +104,7 @@ public:
         std::cout << std::endl;
         std::cout << "  -o <filename>: dump output to filename" << std::endl;
         std::cout << "  -c: Output format VCard." << std::endl;
-        std::cout << "  -t <template>: Output format defined by tempalte" << std::endl;
+        std::cout << "  -t <template>: Output format defined by template" << std::endl;
         std::cout << "                 Not implemented yet." << std::endl;
         std::cout << std::endl;
         exit(1);
@@ -129,6 +151,9 @@ public:
     // slot searchResult()
     void akonadiSearch( )
     {
+#if KDE_IS_VERSION(4,12,0)
+        akonadiSearchGID();
+#else
         QString uid = _options.uid;
 
         if( uid.isEmpty() ) return;
@@ -140,8 +165,26 @@ public:
         connect( _job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
 
         _job->start();
+#endif
+    }
+
+#if KDE_IS_VERSION(4,12,0)
+    void akonadiSearchGID() {
+        QString gid = _options.uid;
+
+        if( gid.isEmpty() ) return;
+
+        Akonadi::Item item;
+        item.setGid( gid );
+
+        Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(item, this);
+
+        connect( fetchJob, SIGNAL(result(KJob*)), SLOT(gidJobFinished(KJob*)) );
+        fetchJob->fetchScope().fetchFullPayload();
+        fetchJob->start();
 
     }
+#endif
 
 
 #define NL (QLatin1Char('\n'));
@@ -164,10 +207,12 @@ public:
                 address = contact.address(KABC::Address::Postal );
 
             if(address.isEmpty()) {
-                std::cout << "Warn: No address found!";
+                // std::cout << "Warn: No address found!";
+            } else {
+                out += address.street() + NL;
+                out += address.locality() + NL;
             }
-            out += address.street() + NL;
-            out += address.locality() + NL;
+            out += QLatin1Char('\n');
 
             foreach( KABC::PhoneNumber pnum, contact.phoneNumbers() ) {
                 out += QString( "Phone %1: %2").arg(pnum.typeLabel()).arg(pnum.number()) + NL;
@@ -195,6 +240,7 @@ public:
                 outFile << out;
             }
         }
+
     }
 
 private:
