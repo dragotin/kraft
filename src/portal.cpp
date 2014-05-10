@@ -330,11 +330,7 @@ void Portal::slotStartupChecks()
 
     // Fetch my address
     QString myUid = KraftSettings::self()->userUid();
-    if( myUid.isEmpty() ) {
-      QString myName = KraftSettings::self()->userName();
-      kDebug() << "Got My Name: " << myName;
-      mAddressProvider->getAddresseeByName( myName );
-    } else {
+    if( ! myUid.isEmpty() ) {
       kDebug() << "Got My UID: " << myUid;
       mAddressProvider->getAddressee( myUid );
     }

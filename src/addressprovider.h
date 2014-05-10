@@ -20,6 +20,8 @@
 
 #include <QSet>
 
+#include <kdeversion.h>
+
 #include <kabc/addressee.h>
 #include <akonadi/job.h>
 
@@ -32,26 +34,22 @@ public:
   AddressProvider( QObject* parent = 0 );
 
   void getAddressee( const QString& uid );
-  void getAddresseeByName( const QString& );
-  void allAddresses( );
   QString formattedAddress( const KABC::Addressee& ) const;
 
 protected slots:
   void searchResult( KJob* );
-
 signals:
   //
   void addresseeFound( const QString&, const KABC::Addressee& );
-  void addressListFound( const KABC::Addressee::List& );
 
   // emitted when the search is finished, even if there was no result.
   void finished( int );
 
 private:
+  KJob *searchAddressGID( const QString& );
+
   QMap<KJob*, QString> mUidSearchJobs;
   QSet<QString>        mUidSearches;
-  QMap<KJob*, QString> mNameSearchJobs;
-  QMap<KJob*, int> mAllAddressesJobs;
 };
 
 #endif // ADDRESSPROVIDER_H

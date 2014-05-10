@@ -21,91 +21,108 @@
 #include "akonadi/contact/contactsearchjob.h"
 #include "akonadi/session.h"
 
+#include <Akonadi/Item>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+
 AddressProvider::AddressProvider( QObject *parent )
   :QObject( parent )
 {
   using namespace Akonadi;
 }
 
-void AddressProvider::allAddresses( )
+KJob* AddressProvider::searchAddressGID( const QString& gid )
 {
-  Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob( this );
-  connect( job, SIGNAL(result(KJob*)), this, SLOT( searchResult( KJob*)));
-  mAllAddressesJobs[job] = 1;
-  job->start();
+    if( gid.isEmpty() ) return 0;
+
+    Akonadi::Item item;
+    item.setGid( gid );
+
+    Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(item, this);
+
+    connect( fetchJob, SIGNAL(result(KJob*)), SLOT(searchResult(KJob*)) );
+    fetchJob->fetchScope().fetchFullPayload();
+
+    fetchJob->start();
+
+    return fetchJob;
 }
 
 void AddressProvider::getAddressee( const QString& uid )
 {
-  if( uid.isEmpty() || mUidSearches.contains( uid ) ) {
-    // search is already running
-    kDebug() << "Search already underways!";
-    return;
-  }
-  Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob( this );
-  job->setLimit( 1 );
-  job->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
+    if( uid.isEmpty() || mUidSearches.contains( uid ) ) {
+        // search is already running
+        kDebug() << "Search already underways!";
+        return;
+    }
 
-  connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
+    KJob *job = NULL;
 
-  mUidSearchJobs[job] = uid;
-  mUidSearches.insert( uid );
-  job->start();
-}
+#if KDE_IS_VERSION(4,12,0)
+    job = searchAddressGID( uid );
+#else
+    Akonadi::ContactSearchJob *csjob = new Akonadi::ContactSearchJob( this );
+    csjob->setLimit( 1 );
+    csjob->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
+    mUidSearchJobs[csjob] = uid;
+    job = csjob;
+#endif
+    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
 
-void AddressProvider::getAddresseeByName( const QString& name )
-{
-  Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob( this );
-  // job->setLimit( 100 );
-  job->setQuery( Akonadi::ContactSearchJob::Name , name );
-
-  connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-
-  mNameSearchJobs[job] = name;
-  job->start();
-
+    mUidSearches.insert( uid );
+    mUidSearchJobs[job] = uid;
+    job->start();
 }
 
 void AddressProvider::searchResult( KJob* job )
 {
-  Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
+    if( !job ) return;
 
-  if( searchJob->error() ) {
-    kDebug() << "Address search job failed: " << job->errorString();
-  }
+    QString uid;
 
-  const KABC::Addressee::List contacts = searchJob->contacts();
-  kDebug() << "Found list of " << contacts.size() << " addresses as search result";
+    if( job->error() ) {
+        kDebug() << "Address Search job failed: " << job->errorString();
+        uid = mUidSearchJobs.value( job );
+    } else {
+#if KDE_IS_VERSION(4,12,0)
+        Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
 
-  if( mAllAddressesJobs.contains( job )) {
-    mAllAddressesJobs.remove( job );
-    emit addressListFound( contacts ); // can also be an empty list.
-  }
+        const Akonadi::Item::List items = fetchJob->items();
+        foreach( Akonadi::Item item, items ) {
+            if( item.hasPayload<KABC::Addressee>() ) {
+                KABC::Addressee contact;
+                contact = item.payload<KABC::Addressee>();
+                uid = contact.uid();
 
-  if( mUidSearchJobs.contains( job )) {
-    const QString uid = mUidSearchJobs.value( job );
+                kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+                emit addresseeFound( uid, contact );
+            }
+        }
+#else
+        const KABC::Addressee::List contacts = searchJob->contacts();
+        kDebug() << "Found list of " << contacts.size() << " addresses as search result";
+
+        if( mUidSearchJobs.contains( job )) {
+            KABC::Addressee contact;
+            if( contacts.size() > 0 ) {
+                contact = contacts[0];
+                kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+            }
+            emit addresseeFound( uid, contact );
+        }
+
+        emit( finished( contacts.size() ) );
+#endif
+    }
+
+    // cleanup
+    if(!uid.isEmpty()) {
+        mUidSearches.remove( uid );
+    }
+
     mUidSearchJobs.remove( job );
-    mUidSearches.remove( uid );
-    KABC::Addressee contact;
-    if( contacts.size() > 0 ) {
-      contact = contacts[0];
-      kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
-    }
-    emit addresseeFound( uid, contact );
-  }
 
-  if( mNameSearchJobs.contains( job )) {
-    KABC::Addressee contact;
-    if( contacts.size() > 0 ) {
-      contact = contacts[0];
-    }
-    const QString name = mNameSearchJobs.value( job );
-    kDebug() << "Found name search job for Name " << name << " = " << contact.realName();
-    mNameSearchJobs.remove(job);
-    emit addresseeFound( name, contact );
-  }
-
-  emit( finished( contacts.size() ) );
+    job->deleteLater();
 }
 
 QString AddressProvider::formattedAddress( const KABC::Addressee& contact ) const

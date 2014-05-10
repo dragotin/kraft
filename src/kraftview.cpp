@@ -303,7 +303,6 @@ void KraftView::redrawDocument( )
 
     kDebug() << "Loaded address uid from database " << mContactUid << endl;
     if( ! mContactUid.isEmpty() ) {
-
       mAddressProvider->getAddressee( mContactUid );
     }
 
