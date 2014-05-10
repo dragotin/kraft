@@ -36,7 +36,9 @@ KJob* AddressProvider::searchAddressGID( const QString& gid )
     if( gid.isEmpty() ) return 0;
 
     Akonadi::Item item;
+#if KDE_IS_VERSION(4,12,0)
     item.setGid( gid );
+#endif
 
     Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(item, this);
 
@@ -99,6 +101,7 @@ void AddressProvider::searchResult( KJob* job )
             }
         }
 #else
+	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
         const KABC::Addressee::List contacts = searchJob->contacts();
         kDebug() << "Found list of " << contacts.size() << " addresses as search result";
 
