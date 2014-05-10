@@ -41,7 +41,8 @@ DocumentFilterModel::DocumentFilterModel(int maxRows, QObject *parent)
         : QSortFilterProxyModel(parent)
 {
     m_MaxRows = maxRows;
-    this->setSourceModel( new DocumentModel() );
+    mProxy.reset(new DocumentModel );
+    this->setSourceModel( mProxy.data() );
     this->setSortRole(Qt::EditRole);
 }
 
@@ -66,7 +67,7 @@ TimelineModel::TimelineModel(QObject *parent)
        : QAbstractProxyModel(parent)
 {
     //First put the documentmodel in sortfilterproxymodel to sort the items by date
-    mProxy = new DocumentModel;
+    mProxy.reset( new DocumentModel );
     mProxy->sort(DocumentModel::Document_CreationDate, Qt::AscendingOrder);
 
     m_rootMap = new Mapping;
@@ -74,13 +75,13 @@ TimelineModel::TimelineModel(QObject *parent)
     m_rootMap->treeLevel = -1;
     m_rootMap->parent = 0;
 
-    setSourceModel(mProxy);
+    setSourceModel(mProxy.data());
     reset();
 }
 
 DocumentModel *TimelineModel::baseModel()
 {
-  return static_cast<DocumentModel*>( mProxy );
+    return static_cast<DocumentModel*>( mProxy.data() );
 }
 
 QVariant TimelineModel::headerData(int section, Qt::Orientation orientation, int role) const

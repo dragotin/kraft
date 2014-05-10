@@ -26,6 +26,8 @@ class QModelIndex;
 class QVariant;
 class QObject;
 
+class DocumentModel;
+
 //Filters out the last 10 items  of the DocumentModel
 class DocumentFilterModel : public QSortFilterProxyModel
 {
@@ -36,6 +38,8 @@ class DocumentFilterModel : public QSortFilterProxyModel
         bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
     private:
+        QScopedPointer<DocumentModel> mProxy;
+
         int m_MaxRows;
 };
 
@@ -61,7 +65,6 @@ Mapping helps us to keep track of where we are in the tree
 m_yearsRowCache and it's helper struct is used to store at what row in the sourcemodel a given
 year/month starts
 */
-class DocumentModel;
 
 class TimelineModel : public QAbstractProxyModel
 {
@@ -92,7 +95,7 @@ class TimelineModel : public QAbstractProxyModel
         void sourceRowsRemoved(const QModelIndex &parent, int start, int end);
 
     private:
-        DocumentModel *mProxy;
+        QScopedPointer<DocumentModel> mProxy;
         int sourceDateRow(int yearRow, int monthRow) const;
         mutable QVector<Helper> m_yearsRowCache;
         mutable Mapping *m_rootMap;
