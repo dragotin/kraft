@@ -81,10 +81,12 @@ void AddressProvider::searchResult( KJob* job )
     if( !job ) return;
 
     QString uid;
+    KABC::Addressee contact;
 
     if( job->error() ) {
         kDebug() << "Address Search job failed: " << job->errorString();
         uid = mUidSearchJobs.value( job );
+        emit addresseeFound(uid, contact);
     } else {
 #if KDE_IS_VERSION(4,12,0)
         Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
@@ -92,7 +94,7 @@ void AddressProvider::searchResult( KJob* job )
         const Akonadi::Item::List items = fetchJob->items();
         foreach( Akonadi::Item item, items ) {
             if( item.hasPayload<KABC::Addressee>() ) {
-                KABC::Addressee contact;
+
                 contact = item.payload<KABC::Addressee>();
                 uid = contact.uid();
 
@@ -105,8 +107,7 @@ void AddressProvider::searchResult( KJob* job )
         const KABC::Addressee::List contacts = searchJob->contacts();
         kDebug() << "Found list of " << contacts.size() << " addresses as search result";
 
-        if( mUidSearchJobs.contains( job )) {
-            KABC::Addressee contact;
+        if( mUidSearchJobs.contains( job )) {            
             if( contacts.size() > 0 ) {
                 contact = contacts[0];
                 kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
