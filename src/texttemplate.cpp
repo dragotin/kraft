@@ -147,7 +147,7 @@ bool TextTemplate::open()
     mErrorString = i18n( "Failed to open template source" );
     return false;
   }
-  tmpl->ReloadIfChanged();
+  tmpl->ReloadAllIfChanged();
 
   mStandardDict = new TemplateDictionary( "TopLevel" );
 
