@@ -1,3 +1,9 @@
+Changes since version 0.54: #########################################
+- Fix a bug with the PDF generation, regression in 0.54
+- Fix compiling with latest version of ctemplate
+
+    => release v. 0.55 (may 29, 2014)
+
 Changes since version 0.53: #########################################
 - Use new address fetch job implementation that works independant
   from Nepomuk- or Baloo indexing of contacts. (KDE >= 4.12)
@@ -14,7 +20,7 @@ Changes since version 0.53: #########################################
 - Allow the tags USERNAME, DATE and TIME in item templates.
 - Lots of other cleanups and fixes
 
-    => release v. 0.54 (april x, 2014)
+    => release v. 0.54 (may 13, 2014)
 
 Changes since version 0.50: #########################################
 - Fixes drag and drop handling in catalog window.
