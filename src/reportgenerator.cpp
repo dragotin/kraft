@@ -69,6 +69,7 @@ ReportGenerator::ReportGenerator()
   mAddressProvider = new AddressProvider( this );
   connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee& )),
            this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& ) ) );
+
   connect( mAddressProvider, SIGNAL( finished(int) ),
            this, SLOT( slotAddresseeSearchFinished(int)) );
 }

@@ -41,12 +41,9 @@ KJob* AddressProvider::searchAddressGID( const QString& gid )
 #endif
 
     Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(item, this);
-
-    connect( fetchJob, SIGNAL(result(KJob*)), SLOT(searchResult(KJob*)) );
+    connect( fetchJob, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
     fetchJob->fetchScope().fetchFullPayload();
-
     fetchJob->start();
-
     return fetchJob;
 }
 
@@ -68,12 +65,12 @@ void AddressProvider::getAddressee( const QString& uid )
     csjob->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
     mUidSearchJobs[csjob] = uid;
     job = csjob;
-#endif
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-
+    job->start();
+#endif
     mUidSearches.insert( uid );
     mUidSearchJobs[job] = uid;
-    job->start();
+
 }
 
 void AddressProvider::searchResult( KJob* job )
@@ -85,10 +82,10 @@ void AddressProvider::searchResult( KJob* job )
 
     int cnt = 0;
 
+    uid = mUidSearchJobs.value( job );
+
     if( job->error() ) {
         kDebug() << "Address Search job failed: " << job->errorString();
-        uid = mUidSearchJobs.value( job );
-        emit addresseeFound(uid, contact);
     } else {
 #if KDE_IS_VERSION(4,12,0)
         Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
@@ -96,13 +93,13 @@ void AddressProvider::searchResult( KJob* job )
         const Akonadi::Item::List items = fetchJob->items();
 
         foreach( Akonadi::Item item, items ) {
-            if( item.hasPayload<KABC::Addressee>() ) {
+           if( item.hasPayload<KABC::Addressee>() ) {
                 contact = item.payload<KABC::Addressee>();
                 uid = contact.uid();
                 cnt++;
                 kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
                 emit addresseeFound( uid, contact );
-            }
+           }
         }
 #else
 	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
@@ -119,7 +116,10 @@ void AddressProvider::searchResult( KJob* job )
         }
 #endif
     }
-
+    // if no address was found, emit the empty contact.
+    if( cnt == 0 ) {
+        emit addresseeFound(uid, contact);
+    }
     emit finished(cnt);
 
     // cleanup
