@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     }
 
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-    Portal *kraftPortal = new Portal( 0, args );
+    Portal *kraftPortal = new Portal( 0, args, "kraft main window" );
     kraftPortal->show();
 
     if( splash ) {
