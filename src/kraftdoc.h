@@ -50,11 +50,6 @@ class KraftDoc : public QObject
 
   KraftDoc& operator=( KraftDoc& );  
 
-  /** adds a view to the document which represents the document contents.
-   *  Usually this is your main view. */
-  void addView(KraftView *view);
-  /** removes a view from the list of currently connected views */
-  void removeView(KraftView *view);
   /** sets the modified flag for the document after a modifying action 
    *  on the view connected to the document.*/
   void setModified(bool _m=true){ modified=_m; }

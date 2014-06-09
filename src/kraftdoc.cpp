@@ -105,39 +105,6 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   return *this;
 }
 
-
-
-
-KraftView* KraftDoc::firstView()
-{
-  if( pViewList.count() > 0 ) {
-    return pViewList.first();
-  }
-  return 0;
-}
-
-void KraftDoc::addView(KraftView *view)
-{
-  pViewList.append(view);
-}
-
-void KraftDoc::removeView(KraftView *view)
-{
-  pViewList.removeAll(view);
-}
-
-void KraftDoc::slotUpdateAllViews( KraftView *sender )
-{
-  KraftView *w = 0;
-  QListIterator<KraftView*> it( pViewList );
-  while( it.hasNext() ) {
-    w = it.next();
-    if( w != sender ) {
-        w->redrawDocument( ); // no cache
-    }
-  }
-}
-
 void KraftDoc::closeDocument()
 {
   deleteContents();
