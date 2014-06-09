@@ -44,6 +44,7 @@ class DocumentMan
     double tax( const QDate& );
     double reducedTax( const QDate& );
     void clearTaxCache();
+    void clearDocList();
 
   private:
     bool readTaxes( const QDate& );

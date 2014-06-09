@@ -231,6 +231,17 @@ bool DocumentMan::readTaxes( const QDate& date )
   return ( mFullTax > 0 && mReducedTax > 0 );
 }
 
+void DocumentMan::clearDocList()
+{
+    DocumentMap::iterator i = mDocMap.begin();
+    while (i != mDocMap.end() ) {
+        KraftDoc *doc = i.value();
+        doc->deleteContents();
+        delete doc;
+        i = mDocMap.erase(i);
+    }
+}
+
 DocumentMan::~DocumentMan()
 {
 
