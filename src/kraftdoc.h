@@ -124,8 +124,6 @@ class KraftDoc : public QObject
   QString docIdentifier();
   DBIdList removePositionList() { return mRemovePositions; }
 
-  KraftView* firstView();
-
   Geld nettoSum();
   Geld bruttoSum();
   Geld vatSum();
@@ -140,7 +138,6 @@ class KraftDoc : public QObject
    *  called by the view by which the document has been changed.
    *  As this view normally repaints itself, it is excluded from the paintEvent.
    */
-  void slotUpdateAllViews( KraftView *sender );
   int slotAppendPosition( const DocPosition& );
 
   // The following slots take get the db id as argument
@@ -148,9 +145,6 @@ class KraftDoc : public QObject
   void slotMoveUpPosition( int );
   void slotMoveDownPosition( int );
 private:
-  /** the list of the views currently connected to the document */
-  QList<KraftView*> pViewList;
-
   DocumentSaverBase* getSaver( const QString& saverHint = QString() );
   /** the modified flag of the current document */
   bool modified;

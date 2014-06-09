@@ -42,6 +42,7 @@
 
 #include "positionviewwidget.h"
 #include "catalogtemplate.h"
+#include "kraftview.h"
 
 class DocHeaderEdit;
 class DocFooterEdit;
@@ -62,36 +63,24 @@ class HtmlView;
 
 class Katalog;
 
-class KraftViewRO : public KDialog
+class KraftViewRO : public KraftViewBase
 {
-  Q_OBJECT
-    public:
-  /** Constructor for the main view */
-  KraftViewRO(QWidget *parent, const char *name=0);
-  /** Destructor for the main view */
-  virtual ~KraftViewRO();
+public:
+    /** Constructor for the main view */
+    KraftViewRO(QWidget *parent, const char *name=0);
+    /** Destructor for the main view */
+    virtual ~KraftViewRO();
 
-  /** returns a pointer to the document connected to the view
-      instance. Mind that this method requires a KraftApp instance as a
-      parent * widget to get to the window document pointer by calling
-      the KraftApp::getDocument() method.
-      *
-      * @see KraftApp#getDocument
-      */
-  KraftDoc *getDocument() const;
+    void setup( DocGuardedPtr doc );
 
-  void setup( DocGuardedPtr );
-
-  protected slots:
-    void slotClose();
-    // void slotCancel();
+protected slots:
     void done( int );
 
-  signals:
-    void viewClosed( bool, DocGuardedPtr );
+signals:
     void positionSelected( Katalog*, void* );
+
+
 private:
-    DocGuardedPtr m_doc;
     KVBox *mGlobalVBox;
     HtmlView *mHtmlView;
 };

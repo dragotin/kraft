@@ -260,7 +260,6 @@ void KraftDoc::slotRemovePosition( int pos )
 {
   kDebug() << "Removing position " << pos << endl;
 
-  bool found = false;
   foreach( DocPositionBase *dp, mPositions ) {
     kDebug() << "Comparing " << pos << " with " << dp->dbId().toString() << endl;
     if( dp->dbId() == pos ) {
@@ -269,13 +268,8 @@ void KraftDoc::slotRemovePosition( int pos )
       } else {
         kDebug() << "Successfully removed the position " << dp << endl;
         mRemovePositions.append( dp->dbId() ); // remember to delete
-        found = true;
       }
     }
-  }
-
-  if( found ) {
-    slotUpdateAllViews( 0 );
   }
 }
 
@@ -295,7 +289,6 @@ void KraftDoc::slotMoveUpPosition( int dbid )
   kDebug() << "Found: "<< curPos << ", count: " << mPositions.count() << endl;
   if( curPos < mPositions.size()-1 ) {
     mPositions.swap( curPos, curPos+1 );
-    slotUpdateAllViews( 0 );
   }
 }
 
@@ -315,7 +308,6 @@ void KraftDoc::slotMoveDownPosition( int dbid )
   kDebug() << "Found: "<< curPos << ", count: " << mPositions.count();
   if( curPos > 0 ) {
     mPositions.swap( curPos, curPos-1 );
-    slotUpdateAllViews( 0 );
   }
 }
 
@@ -324,7 +316,6 @@ int KraftDoc::slotAppendPosition( const DocPosition& pos )
   DocPosition *dp = createPosition();
   *dp = pos; // FIXME: Proper assignment operator
 
-  slotUpdateAllViews( 0 );
   return mPositions.count();
 }
 

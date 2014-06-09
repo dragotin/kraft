@@ -95,9 +95,9 @@ signals:
   void footerTextTemplate( const QString& );
 
 private:
-  QScopedPointer<DocPostCard> mPostCard;
-  QScopedPointer<CatalogSelection> mCatalogSelection;
-  QScopedPointer<QStackedWidget>   mWidgetStack;
+  DocPostCard      *mPostCard;
+  CatalogSelection *mCatalogSelection;
+  QStackedWidget   *mWidgetStack;
   TextSelection    *mFooterSelection;
   TextSelection    *mHeaderSelector;
 

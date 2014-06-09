@@ -36,7 +36,7 @@
 #include "katalogview.h"
 #include "dbids.h"
 
-class KraftView;
+class KraftViewBase;
 class PortalView;
 class ReportGenerator;
 class KCmdLineArgs;
@@ -56,7 +56,6 @@ class Portal : public KXmlGuiWindow
     /** construtor of Portal, calls all init functions to create the application.
      */
     Portal( QWidget* parent = 0, KCmdLineArgs *args = 0, const char* name = 0);
-    ~Portal();
 
     static QString textWrap( const QString& t, int width=40);
 
@@ -153,17 +152,6 @@ class Portal : public KXmlGuiWindow
 
     PortalView *m_portalView;
 
-    /** view is the main widget which represents your working area. The View
-     * class should handle all events of the view widget.  It is kept empty so
-     * you can create your view according to your application's needs by
-     * changing the view class.
-     */
-    KraftView *view;
-    /** doc represents your current document and is created only once. It keeps
-     * information such as filename and does the serialization of your files.
-     */
-    KraftDoc *doc;
-
     // KAction pointers to enable/disable actions
     KAction* fileQuit;
     KAction* editCut;
@@ -185,12 +173,14 @@ class Portal : public KXmlGuiWindow
     KToggleAction* viewStatusBar;
     KCmdLineArgs *mCmdLineArgs;
 
-  QMap<QString, KatalogView*> mKatalogViews;
-  QString mMailReceiver;
-  AddressProvider *mAddressProvider;
-  KABC::Addressee myContact;
-  PrefsDialog *_prefsDialog;
-  DocGuardedPtr _currentDoc;
+    QMap<QString, KatalogView*> mKatalogViews;
+    QMap<KraftDoc*, KraftViewBase*> mViewMap;
+
+    QString mMailReceiver;
+    AddressProvider *mAddressProvider;
+    KABC::Addressee myContact;
+    PrefsDialog *_prefsDialog;
+    DocGuardedPtr _currentDoc;
 };
 
 #endif

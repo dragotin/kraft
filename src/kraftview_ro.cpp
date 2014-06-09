@@ -77,13 +77,13 @@
 // #########################################################
 
 KraftViewRO::KraftViewRO(QWidget *parent, const char *name) :
-  KDialog( parent ),
-  m_doc( 0 )
+    KraftViewBase( parent )
 {
   setObjectName( name );
   setModal( false );
   setCaption( i18n("Document" ) );
-  setButtons( Ok | Close );
+  setButtons( Close );
+  m_type = ReadOnly;
 
   KVBox *w = new KVBox( parent );
   mGlobalVBox = w;
@@ -103,7 +103,7 @@ KraftViewRO::~KraftViewRO()
 
 void KraftViewRO::setup( DocGuardedPtr doc )
 {
-    m_doc = doc;
+    KraftViewBase::setup( doc );
 
     if ( !doc ) return;
 
@@ -266,36 +266,22 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     mHtmlView->displayContent( tmpl.expand() );
 }
 
-KraftDoc *KraftViewRO::getDocument() const
-{
-  return m_doc;
-}
-
 void KraftViewRO::done( int r )
 {
   kDebug() << "View closed with ret value " << r;
-  //KraftDoc *doc = getDocument();
-  //if( doc )
-  //doc->removeView( this );
-  this->close();
+
+  KraftDoc *doc = getDocument();
+
+  if( !doc ) {
+    kDebug() << "ERR: No document available in view, return!";
+    return;
+  }
+  KraftSettings::self()->setRODocViewSize( size() );
+  KraftSettings::self()->writeConfig();
+  KraftSettings::self()->readConfig();
+
+  emit viewClosed( true, m_doc );
+
+  KraftViewBase::done(r);
 }
 
-void KraftViewRO::slotClose()
-{
-    kDebug() << "Close Slot hit!";
-
-    KraftDoc *doc = getDocument();
-
-    if( !doc ) {
-      kDebug() << "ERR: No document available in view, return!";
-      return;
-    }
-    KraftSettings::self()->setRODocViewSize( size() );
-    KraftSettings::self()->writeConfig();
-    KraftSettings::self()->readConfig();
-
-    emit viewClosed( true, m_doc );
-    KDialog::slotButtonClicked( Ok );
-}
-
-#include "kraftview_ro.moc"

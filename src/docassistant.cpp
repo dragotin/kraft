@@ -66,12 +66,12 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   buttonLayout->addStretch();
 
-  mPostCard.reset(new DocPostCard);
+  mPostCard = new DocPostCard;
 
   mPostCard->slotSetMode( DocPostCard::Full, KraftDoc::Header );
   // setResizeMode( vb /* mPostCard->view() */, KeepSize );
 
-  connect( mPostCard.data(), SIGNAL( completed() ),
+  connect( mPostCard, SIGNAL( completed() ),
            this,  SLOT( slotRenderCompleted() ) );
 
   topVBox->addWidget( mPostCard->view() );
@@ -82,20 +82,20 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mTemplatePane->setLayout( bottomVBox );
   addWidget( mTemplatePane );
 
-  mWidgetStack.reset(new QStackedWidget);
+  mWidgetStack = new QStackedWidget;
 
-  bottomVBox->addWidget( mWidgetStack.data() );
+  bottomVBox->addWidget( mWidgetStack );
   mWidgetStack->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
   /* Selections are the gui reprenentations of the template providing catalogs
    * like header- and footer texts and catalogs.
    */
-  mCatalogSelection.reset(new CatalogSelection);
-  mWidgetStack->addWidget( mCatalogSelection.data() );
-  connect( mCatalogSelection.data(), SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ),
+  mCatalogSelection = new CatalogSelection;
+  mWidgetStack->addWidget( mCatalogSelection );
+  connect( mCatalogSelection, SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ),
            this,  SLOT( slotCatalogSelectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ) );
 
-  mHeaderSelector = new TextSelection( this, KraftDoc::Header );
+  mHeaderSelector = new TextSelection( 0, KraftDoc::Header );
   mWidgetStack->addWidget( mHeaderSelector );
 
   connect( mHeaderSelector, SIGNAL(validTemplateSelected() ),
@@ -103,7 +103,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mHeaderSelector, SIGNAL(editCurrentTemplate()),
            this, SLOT(slotEditTemplate()));
 
-  mFooterSelection = new TextSelection( this, KraftDoc::Footer );
+  mFooterSelection = new TextSelection( 0, KraftDoc::Footer );
   mWidgetStack->addWidget( mFooterSelection );
 
   connect( mFooterSelection, SIGNAL(validTemplateSelected()),
@@ -113,7 +113,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mFooterSelection, SIGNAL( actionCurrentTextToDoc() ),
            this,  SLOT( slotAddToDocument() ) );
 
-  connect( mPostCard.data(), SIGNAL( selectPage( int ) ),
+  connect( mPostCard, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSelectDocPart( int ) ) );
 
   QHBoxLayout *butHBox2 = new QHBoxLayout;
@@ -184,7 +184,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   /* Catalog Template Provider */
   mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
-  mCatalogTemplateProvider->setCatalogSelection( mCatalogSelection.data() );
+  mCatalogTemplateProvider->setCatalogSelection( mCatalogSelection );
   connect( mCatalogTemplateProvider,  SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ),
            this, SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ) );
 
@@ -357,12 +357,12 @@ void DocAssistant::slotRenderCompleted()
 
 DocPostCard *DocAssistant::postCard()
 {
-    return mPostCard.data();
+    return mPostCard;
 }
 
 CatalogSelection* DocAssistant::catalogSelection()
 {
-    return mCatalogSelection.data();
+    return mCatalogSelection;
 }
 
 /* sets the Part of the doc, eg. Header, Footer */
@@ -394,7 +394,7 @@ void DocAssistant::slotSetDocType( const QString& type )
 void DocAssistant::slotShowCatalog( )
 {
   setFullPreview( false, KraftDoc::Positions );
-  mWidgetStack->setCurrentWidget( mCatalogSelection.data() );
+  mWidgetStack->setCurrentWidget( mCatalogSelection );
 }
 
 void DocAssistant::slotShowHeaderTemplates()

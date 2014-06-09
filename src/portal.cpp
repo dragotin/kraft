@@ -79,7 +79,6 @@
 Portal::Portal( QWidget *parent, KCmdLineArgs *args, const char* name)
 : KXmlGuiWindow( parent, 0 ),
   mCmdLineArgs( args )
-
 {
   setObjectName( name );
   ///////////////////////////////////////////////////////////////////
@@ -88,6 +87,7 @@ Portal::Portal( QWidget *parent, KCmdLineArgs *args, const char* name)
   initActions();
   initView();
 
+  setAttribute( Qt::WA_QuitOnClose );
   ///////////////////////////////////////////////////////////////////
   // disable actions at startup
   editCut->setEnabled(false);
@@ -100,11 +100,6 @@ Portal::Portal( QWidget *parent, KCmdLineArgs *args, const char* name)
 
   setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
-}
-
-Portal::~Portal()
-{
-
 }
 
 void Portal::initActions()
@@ -698,62 +693,84 @@ void Portal::createView( DocGuardedPtr doc )
   // FIXME: We allow only one view for the first time.
   // Later allow one write view and other read onlys.
   if ( !doc ) return;
-  KraftView *view = doc->firstView();
 
-  if( ! view ) {
-    view = new KraftView( this );
-    view->setup( doc );
-    view->redrawDocument();
-    QSize s = KraftSettings::self()->docViewSize();
-    if ( !s.isValid() ) {
-      s.setWidth( 640 );
-      s.setHeight( 400 );
-    }
-    view->setInitialSize( s );
-    view->slotSwitchToPage( KraftDoc::Positions );
-    view->show();
+  // if there is a read only view already, close it and open a
+  // editor
+  if( mViewMap.contains(doc)) {
+      if( (mViewMap[doc])->type() == KraftViewBase::ReadOnly ) {
+          KraftViewBase *view = mViewMap[doc];
+          mViewMap.remove(doc);
+          delete view;
+      }
+  }
 
-    doc->addView( view );
-    connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
-             this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
+  if( !mViewMap.contains(doc) ){
+      KraftView *view = new KraftView( this );
+      view->setup( doc );
+      view->redrawDocument();
+      QSize s = KraftSettings::self()->docViewSize();
+      if ( !s.isValid() ) {
+          s.setWidth( 640 );
+          s.setHeight( 400 );
+      }
+      view->setInitialSize( s );
+      view->slotSwitchToPage( KraftDoc::Positions );
+      view->show();
+
+      connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
+               this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
+      mViewMap[doc] = view;
   } else {
-    // pop first view to front
-    kDebug() << "There is already a view for this doc!" << endl;
+      mViewMap[doc]->raise();
+      // pop first view to front
+      kDebug() << "There is already a view for this doc!" << endl;
   }
 }
 
 void Portal::createROView( DocGuardedPtr doc )
 {
-  if ( !doc ) return;
+    if ( !doc ) return;
 
-  KraftViewRO *view = new KraftViewRO( this );
-  view->setup( doc );
-  // view->redrawDocument();
-  QSize s = KraftSettings::self()->rODocViewSize();
-  if ( !s.isValid() ) {
-    s.setWidth( 640 );
-    s.setHeight( 400 );
-  }
-  view->setInitialSize( s );
-  view->show();
+    if( !mViewMap.contains(doc)) {
+        KraftViewRO *view = new KraftViewRO( this );
+        view->setup( doc );
+        // view->redrawDocument();
+        QSize s = KraftSettings::self()->rODocViewSize();
+        if ( !s.isValid() ) {
+            s.setWidth( 640 );
+            s.setHeight( 400 );
+        }
+        view->setInitialSize( s );
+        view->show();
+        mViewMap[doc] = view;
 
-  // doc->addView( view );
-  connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
-           this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
+        connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
+                 this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
+    } else {
+        mViewMap[doc]->raise();
+    }
+
 }
 
 void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
 {
-  // doc is only valid on success!
-  if ( doc && success )  {
-    DocDigestView *dv = m_portalView->docDigestView();
-    kDebug() << "DocDigestView: " << dv;
+    // doc is only valid on success!
+    if ( doc )  {
+        KraftViewBase *view = mViewMap[doc];
+        if( success && view->type() == KraftViewBase::ReadWrite ) {
+            DocDigestView *dv = m_portalView->docDigestView();
+            dv->slotUpdateView();
+        }
+        if( mViewMap.contains(doc)) {
+            mViewMap.remove(doc);
+            view->deleteLater();
+        }
+        kDebug() << "A view was closed saving and doc is new: " << doc->isNew() << endl;
+    } else {
+        kDebug() << "A view was closed canceled" << endl;
+    }
 
-    dv->slotUpdateView();
-    kDebug() << "A view was closed saving and doc is new: " << doc->isNew() << endl;
-  } else {
-    kDebug() << "A view was closed canceled" << endl;
-  }
+
 }
 
 void Portal::slotFileQuit()
@@ -761,28 +778,30 @@ void Portal::slotFileQuit()
   closeEvent(0);
 }
 
-void Portal::closeEvent( QCloseEvent * /* event */)
+void Portal::closeEvent( QCloseEvent *event )
 {
-  slotStatusMsg(i18n("Exiting..."));
-  // close the first window, the list makes the next one the first again.
-  // This ensures that queryClose() is called on each window to ask for closing
+    slotStatusMsg(i18n("Exiting..."));
+    // close the first window, the list makes the next one the first again.
+    // This ensures that queryClose() is called on each window to ask for closing
 
- //We have to delete katalogviews ourself otherwise the application keeps running in the background
- QMap<QString, KatalogView *>::iterator i;
- for (i = mKatalogViews.begin(); i != mKatalogViews.end(); ++i)
- {
-   KatalogView *view = i.value();
-  kDebug() << "Windowstate" <<view->windowState();
-     i.value()->deleteLater();
- }
+    //We have to delete katalogviews ourself otherwise the application keeps running in the background
+    QMap<QString, KatalogView *>::iterator i;
+    for (i = mKatalogViews.begin(); i != mKatalogViews.end(); ++i) {
+        KatalogView *view = i.value();
+        kDebug() << "Windowstate" << view->windowState();
+        i.value()->deleteLater();
+    }
 
-  QListIterator<KMainWindow*> it( memberList() );
-  while( it.hasNext() ) {
-    KMainWindow *w = it.next();
-    // only close the window if the closeEvent is accepted.
-    if(!w->close())
-      break;
-  }
+    QListIterator<KMainWindow*> it( memberList() );
+    while( it.hasNext() ) {
+        KMainWindow *w = it.next();
+        // only close the window if the closeEvent is accepted.
+        if(!w->close())
+            break;
+    }
+    DocumentMan::self()->clearDocList();
+
+    KXmlGuiWindow::closeEvent(event);
 }
 
 void Portal::slotEditCut()
@@ -947,5 +966,3 @@ QWidget* Portal::mainWidget()
      return m_portalView->currentPage()->widget();
   return 0;
 }
-
-#include "portal.moc"

@@ -65,7 +65,35 @@ class KraftViewScroll;
 
 using namespace KABC;
 
-class KraftView : public KDialog
+class KraftViewBase: public KDialog
+{
+    Q_OBJECT
+public:
+    enum Type {
+        ReadWrite,
+        ReadOnly
+    };
+
+    KraftViewBase(QWidget *parent) : KDialog(parent){ };
+    virtual ~KraftViewBase() { };
+
+    Type type() { return m_type; }
+
+protected:
+    KraftDoc *getDocument() const { return m_doc; }
+
+    virtual void setup( DocGuardedPtr doc ) { m_doc = doc; }
+
+    DocGuardedPtr m_doc;
+    Type          m_type;
+signals:
+    void viewClosed( bool, DocGuardedPtr );
+
+private:
+
+};
+
+class KraftView : public KraftViewBase
 {
   Q_OBJECT
     public:
@@ -81,18 +109,13 @@ class KraftView : public KDialog
       *
       * @see KraftApp#getDocument
       */
-  KraftDoc *getDocument() const;
-
-  /** contains the implementation for printing functionality */
-  void print(QPrinter *pPrinter);
-
-  void setup( DocGuardedPtr );
-
 
   typedef QMap<DocPositionBase*, PositionViewWidget*> PositionMap;
 
   DocPositionList currentPositionList();
   DocPositionBase::TaxType currentTaxSetting();
+
+  void setup( DocGuardedPtr doc );
 
   public slots:
   void slotNewAddress( const Addressee& contact = Addressee(), bool interactive = true );
@@ -113,7 +136,7 @@ class KraftView : public KDialog
   void slotSwitchToPage( int );
   
   protected slots:
-  void closeEvent(QCloseEvent *event);
+  // void closeEvent(QCloseEvent *event);
   void redrawDocPositions( );
   void done( int );
   void slotMovePositionUp( int );
@@ -135,7 +158,6 @@ class KraftView : public KDialog
 
 signals:
   void selectPage( int );
-  void viewClosed( bool, DocGuardedPtr );
   void positionSelected( Katalog*, void* );
 private:
   void setupDocHeaderView();
@@ -159,7 +181,6 @@ private:
   PositionViewWidgetList mPositionWidgetList;
 
   QString mContactUid;
-  DocGuardedPtr m_doc;
   QSignalMapper *mDeleteMapper;
   QSignalMapper *mMoveUpMapper;
   QSignalMapper *mMoveDownMapper;

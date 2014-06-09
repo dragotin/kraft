@@ -52,7 +52,6 @@
 #include "kraftsettings.h"
 #include "kraftview.h"
 #include "kraftdoc.h"
-#include "portal.h"
 #include "ui_docheader.h"
 #include "documentman.h"
 #include "docassistant.h"
@@ -88,13 +87,13 @@
 #define INDI_TAX 3
 
 KraftView::KraftView(QWidget *parent) :
-  KDialog( parent ),
-  m_doc( 0 ),
+  KraftViewBase( parent ),
   mHelpLabel( 0 ), mRememberAmount( -1 ), mModified( false )
 {
   setCaption( i18n("Document" ) );
   setModal( false );
   setButtons( KDialog::Ok | KDialog::Cancel );
+  m_type = ReadWrite;
 
   QWidget *w = new QWidget( this );
 
@@ -173,7 +172,7 @@ KraftView::KraftView(QWidget *parent) :
 
 KraftView::~KraftView()
 {
-
+    kDebug() << "KRAFTVIEW going away." << endl;
 }
 
 void KraftView::setupMappers()
@@ -206,7 +205,7 @@ void KraftView::setupMappers()
 
 void KraftView::setup( DocGuardedPtr doc )
 {
-  m_doc = doc;
+  KraftViewBase::setup(doc);
 
   setupDocHeaderView();
   setupItems();
@@ -1302,56 +1301,22 @@ QStringList KraftView::generateLetterHead( Addressee adr )
     return KraftDB::self()->wordList( "salut", m );
 }
 
-KraftDoc *KraftView::getDocument() const
-{
-  return m_doc;
-}
-
 void KraftView::done( int r )
 {
-  bool okToContinue = true;
+    bool okToContinue = true;
 
-  //Closed using the cancel button .. Check if we can close
-  if(r == 0)
-  {
-    okToContinue = documentModifiedMessageBox();
-    if(okToContinue)
-    {
-      discardChanges();
-      emit viewClosed( false, 0 );
+    //Closed using the cancel button .. Check if we can close
+    if(r == 0) {
+        okToContinue = documentModifiedMessageBox();
+        if(!okToContinue) {
+            return;
+        }
     }
-  }
-  //Closed using the OK button .. We can close, but we have to save our data
-  else if(r == 1)
-  {
+    //Closed using the OK button .. it can be closed, but data needs saved
     saveChanges();
-    emit viewClosed( true, m_doc );
-  }
+    emit viewClosed( r == 1, m_doc );
 
-  if(okToContinue)
-  {
-    kDebug() << "View closed with ret value " << r << endl;
-    KraftDoc *doc = getDocument();
-    if( doc )
-      doc->removeView( this );
     KDialog::done( r );
-  }
-}
-
-void KraftView::closeEvent(QCloseEvent *event)
-{
-  if(documentModifiedMessageBox())
-  {
-    event->accept();
-    //Do nothing but close the dialog
-    discardChanges();
-    done(2);
-    emit viewClosed( false, 0 );
-  }
-  else
-  {
-    event->ignore();
-  }
 }
 
 void KraftView::saveChanges()
@@ -1435,12 +1400,5 @@ void KraftView::discardChanges()
     kDebug() << "Document refetch from database" << endl;
     doc->reloadDocument();
   }
-}
-
-void KraftView::print(QPrinter * /* pPrinter */ )
-{
-    // create a archive document and start printing
-    // ArchivedDoc *archDoc = doc->archive();
-
 }
 
