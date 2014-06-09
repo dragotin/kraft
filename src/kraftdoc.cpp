@@ -228,10 +228,11 @@ QString KraftDoc::docIdentifier()
 
 void KraftDoc::deleteContents()
 {
-  /////////////////////////////////////////////////
-  // TODO: Add implementation to delete the document contents
-  /////////////////////////////////////////////////
-
+    int pos = mPositions.size();
+    for( int i=0; i < pos; i++) {
+        DocPositionBase *pb = mPositions.takeFirst();
+        delete pb;
+    }
 }
 
 void KraftDoc::setPositionList( DocPositionList newList )
