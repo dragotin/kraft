@@ -1,4 +1,4 @@
-#define KRAFT_VERSION "0.54"
+#define KRAFT_VERSION "0.56"
 
 #define KRAFT_CODENAME "Jupp"
 
