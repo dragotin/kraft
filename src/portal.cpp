@@ -801,7 +801,9 @@ void Portal::closeEvent( QCloseEvent *event )
     }
     DocumentMan::self()->clearDocList();
 
-    KXmlGuiWindow::closeEvent(event);
+    if(event) {
+    	KXmlGuiWindow::closeEvent(event);
+    }
 }
 
 void Portal::slotEditCut()
