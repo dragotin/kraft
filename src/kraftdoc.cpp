@@ -60,7 +60,6 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   if ( this == &origDoc ) return *this;
 
   mLocale = new KLocale( "kraft" );
-  mLocale = origDoc.mLocale;
 
   DocPositionListIterator it( origDoc.mPositions );
 
