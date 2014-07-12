@@ -769,8 +769,6 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
     } else {
         kDebug() << "A view was closed canceled" << endl;
     }
-
-
 }
 
 void Portal::slotFileQuit()

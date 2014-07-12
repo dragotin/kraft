@@ -187,6 +187,10 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   // create a text template
   TextTemplate tmpl( tmplFile );
   if( !tmpl.open() ) {
+      kDebug() << "ERROR: Unable to open document template " << tmplFile;
+      KMessageBox::error( 0, i18n("The template file could not be opened: %1\n"
+                                  "Please check the setup and the doc type configuration.").arg(tmplFile),
+                          i18n("Template Error") );
       return;
   }
 
