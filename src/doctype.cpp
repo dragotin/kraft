@@ -262,6 +262,10 @@ QString DocType::templateFile( const QString& lang )
 
       if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
           foreach( QString searchPath, searchList ) {
+              if( searchPath.startsWith(QLatin1String("kraft"))) {
+                  // remove the kraft-String here.
+                  searchPath.remove(0, 5); // remove "kraft"
+              }
               const QString tFile = prjPath + searchPath;
               if( !tFile.isEmpty() && QFile::exists(tFile) ) {
                   kDebug() << "Found template file " << tFile;
