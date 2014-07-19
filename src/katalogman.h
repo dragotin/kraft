@@ -60,7 +60,8 @@ private:
     static KatalogMan *mSelf;
     
     QHash<QString, Katalog*> m_katalogDict;
-    QMap< QString, QList<KatalogListView*> > mKatalogListViews;
+
+    QMultiMap< QString, QPointer<KatalogListView> > mKatalogListViews;
 };
 
 #endif

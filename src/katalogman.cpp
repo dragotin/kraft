@@ -109,24 +109,25 @@ void KatalogMan::notifyKatalogChange( Katalog* k, dbID )
     const QString name = k->getName();
     k->reload( dbID() );
 
-    QList<KatalogListView*> views = mKatalogListViews[name];
+    QList< QPointer<KatalogListView> > views = mKatalogListViews.values(name);
 
     KatalogListView *view;
-    QListIterator<KatalogListView*> i( views );
+    QListIterator< QPointer<KatalogListView> > i( views );
     while ( i.hasNext() ) {
       view = i.next();
-      view->slotRedraw();
+      if( view ) {
+          view->slotRedraw();
+      }
     }
   }
 }
 
 void KatalogMan::registerKatalogListView( const QString& name, KatalogListView *view )
 {
-  QList<KatalogListView*> views = mKatalogListViews[name];
+  QList< QPointer<KatalogListView> > views = mKatalogListViews.values(name);
 
   if ( ! views.contains( view ) ) {
-    views.append( view );
-    mKatalogListViews[name] = views;
+      mKatalogListViews.insert(name, QPointer<KatalogListView>(view));
   }
 }
 
