@@ -1307,15 +1307,18 @@ void KraftView::done( int r )
 
     //Closed using the cancel button .. Check if we can close
     if(r == 0) {
-        okToContinue = documentModifiedMessageBox();
-        if(!okToContinue) {
-            return;
+        if( mModified ) {
+            okToContinue = documentModifiedMessageBox();
+            if(!okToContinue) {
+                return;
+            }
         }
     }
     //Closed using the OK button .. it can be closed, but data needs saved
-    saveChanges();
-    emit viewClosed( r == 1, m_doc );
-
+    if( mModified && r > 0 ) {
+        saveChanges();
+        emit viewClosed( r == 1, m_doc );
+    }
     KDialog::done( r );
 }
 
