@@ -91,7 +91,7 @@ PositionViewWidget::PositionViewWidget()
   mExecPopup->addTitle(i18n("Item Actions") );
 
   // state submenu:
-  mStateSubmenu = mExecPopup->addMenu(i18n( "Position Kind" ));
+  mStateSubmenu = mExecPopup->addMenu(i18n( "Item Kind" ));
   mStateSubmenu->addAction( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
   mStateSubmenu->addAction( KIcon( "kraft_alternative" ),
                             i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
@@ -129,11 +129,11 @@ PositionViewWidget::PositionViewWidget()
   mExecPopup->addAction(  KIcon("arrow-down"),
                            i18n("Move Down"),       this, SIGNAL( moveDown() ) );
   mLockId = mExecPopup->addAction(  KIcon("object-locked"),
-                           i18n("Lock Position"),   this, SIGNAL( lockPosition() ) );
+                           i18n("Lock Item"),   this, SIGNAL( lockPosition() ) );
   mUnlockId = mExecPopup->addAction(  KIcon("object-unlocked"),
-                           i18n("Unlock Position"), this, SIGNAL( unlockPosition() ) );
+                           i18n("Unlock Item"), this, SIGNAL( unlockPosition() ) );
   mDeleteId = mExecPopup->addAction(  KIcon("edit-delete"),
-                           i18n("Delete Position"), this, SIGNAL( deletePosition() ) );
+                           i18n("Delete Item"), this, SIGNAL( deletePosition() ) );
 
 
   connect( this, SIGNAL( positionStateNormal() ), this, SLOT( slotSetPositionNormal() ) );
@@ -193,7 +193,9 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     if ( amap.contains( DocPosition::Kind ) ) {
       Attribute kind = amap[DocPosition::Kind];
       const QString kindStr = kind.value().toString();
-      if ( kindStr == kindString( Alternative ) ) {
+      if ( kindStr == kindString( Normal ) ) {
+          slotSetPositionNormal();
+      } else if ( kindStr == kindString( Alternative ) ) {
         slotSetPositionAlternative();
       } else if ( kindStr == kindString( Demand ) ) {
         slotSetPositionDemand();
@@ -613,8 +615,8 @@ void PositionViewWidget::cleanKindString()
 void PositionViewWidget::slotSetPositionAlternative()
 {
   lKind->show();
-  lKind->setToolTip( i18n( "This is an alternative position."
-                              " Use the position toolbox to change." ) );
+  lKind->setToolTip( i18n( "This is an alternative item.<br/><br/>"
+                           " Use the position toolbox to change the item type." ) );
   lKind->setPixmap( SmallIcon( "kraft_alternative" ) );
   mKind = Alternative;
   slotRefreshPrice();
@@ -629,8 +631,9 @@ void PositionViewWidget::slotSetPositionAlternative()
 void PositionViewWidget::slotSetPositionDemand()
 {
   lKind->show();
-  lKind->setToolTip( i18n( "This is a as required position. "
-                              "Use the position toolbox to change." ) );
+  lKind->setToolTip( i18n( "This item is either completely optional or its "
+                           "amount varies depending on the needs.<br/><br/>"
+                           "Use the item toolbox to change the item type." ) );
   lKind->setPixmap( SmallIcon( "kraft_demand" ) );
   mKind = Demand;
   slotRefreshPrice();
