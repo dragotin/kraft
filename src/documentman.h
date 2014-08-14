@@ -38,13 +38,10 @@ class DocumentMan
 
     DocGuardedPtr createDocument( const QString& docType, const QString& copyFromId = QString() );
     DocGuardedPtr openDocument( const QString& );
-    
-    QStringList openDocumentsList();
 
     double tax( const QDate& );
     double reducedTax( const QDate& );
     void clearTaxCache();
-    void clearDocList();
 
   private:
     bool readTaxes( const QDate& );
@@ -58,7 +55,6 @@ class DocumentMan
     DocumentMan();
 
     static DocumentMan *mSelf;
-    static DocumentMap mDocMap;
 };
 
 #endif
