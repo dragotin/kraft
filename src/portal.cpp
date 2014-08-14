@@ -413,6 +413,7 @@ void Portal::slotFollowUpDocument()
 
   kDebug() << "doc identifier: "<< doc->docIdentifier() << endl;
   wiz.setDocIdentifier( doc->docIdentifier() );
+  delete doc;
   if ( wiz.exec() ) {
     DocGuardedPtr doc = DocumentMan::self()->createDocument( dt.name(), locId );
     doc->setDate( wiz.date() );
@@ -776,6 +777,7 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
             view->deleteLater();
         }
         kDebug() << "A view was closed saving and doc is new: " << doc->isNew() << endl;
+        delete doc;
     } else {
         kDebug() << "A view was closed canceled" << endl;
     }
