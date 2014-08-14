@@ -797,7 +797,6 @@ void Portal::closeEvent( QCloseEvent *event )
         if(!w->close())
             break;
     }
-    DocumentMan::self()->clearDocList();
 
     if(event) {
     	KXmlGuiWindow::closeEvent(event);

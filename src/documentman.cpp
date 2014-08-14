@@ -24,9 +24,6 @@
 #include "docdigest.h"
 #include "kraftdb.h"
 
-// DocGuardedPtr DocumentMan::mDocPtr = 0;
-DocumentMap DocumentMan::mDocMap = DocumentMap();
-
 DocumentMan *DocumentMan::self()
 {
   K_GLOBAL_STATIC(DocumentMan, mSelf);
@@ -149,7 +146,6 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
   DocGuardedPtr doc = new KraftDoc( );
   doc->newDocument( docType );
   kDebug() << "new document ID: " << doc->docID().toString() << endl;
-  mDocMap[doc->docID().toString()] = doc;
 
   if ( ! copyFromId.isEmpty() ) {
     // copy the content from the source document to the new doc.
@@ -167,26 +163,9 @@ DocGuardedPtr DocumentMan::openDocument( const QString& id )
   kDebug() << "Opening Document with id " << id << endl;
   DocGuardedPtr doc;
 
-  if( mDocMap.contains( id ) ){
-    doc = mDocMap[id];
-  } else {
-    doc = new KraftDoc();
-    doc->openDocument( id );
-    mDocMap[id] = doc;
-  }
+  doc = new KraftDoc();
+  doc->openDocument( id );
   return doc;
-}
-
-QStringList DocumentMan::openDocumentsList()
-{
-  QStringList list;
-
-  DocumentMap::Iterator it;
-  for ( it = mDocMap.begin(); it != mDocMap.end(); ++it ) {
-    DocGuardedPtr doc = it.value();
-    list.append( doc->docIdentifier() );
-  }
-  return list;
 }
 
 void DocumentMan::clearTaxCache()
@@ -229,17 +208,6 @@ bool DocumentMan::readTaxes( const QDate& date )
     kDebug() << "* Taxes: " << mFullTax << "/" << mReducedTax << " from " << q.value( 2 ).toDate();
   }
   return ( mFullTax > 0 && mReducedTax > 0 );
-}
-
-void DocumentMan::clearDocList()
-{
-    DocumentMap::iterator i = mDocMap.begin();
-    while (i != mDocMap.end() ) {
-        KraftDoc *doc = i.value();
-        doc->deleteContents();
-        delete doc;
-        i = mDocMap.erase(i);
-    }
 }
 
 DocumentMan::~DocumentMan()
