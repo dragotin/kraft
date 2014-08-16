@@ -1,3 +1,13 @@
+Changes since version 0.55: #########################################
+ - Add receipient email address if document is emailed
+ - Fix document emailing for thunderbird
+ - Fix removing of alternative- and on-demand state of items
+ - Wording fixes
+ - Fix Ok/Cancel for doc editor
+ - Better error messages if template can not be read
+ - A couple of crash fixes and memory management cleanups
+    => release v. 0.56 (aug xx, 2014)
+
 Changes since version 0.54: #########################################
 - Fix a bug with the PDF generation, regression in 0.54
 - Fix compiling with latest version of ctemplate
