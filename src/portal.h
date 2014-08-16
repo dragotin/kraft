@@ -89,7 +89,6 @@ class Portal : public KXmlGuiWindow
     void slotStartupChecks();
     void slotOpenArchivedDoc( const ArchDocDigest& );
     void slotMailDocument();
-    void slotMailDocument( const QString& );
     void slotPrefsDialogFinished( int );
 
   public slots:
@@ -147,6 +146,10 @@ class Portal : public KXmlGuiWindow
 
     void slotReceivedMyAddress( const QString&, const KABC::Addressee& );
     void slotMarkArchivedDocSent( const ArchDocDigest& );
+
+    void slotMailPdfAvailable( const QString& fileName );
+    void slotMailAddresseeFound( const QString&, const KABC::Addressee& );
+
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
@@ -177,7 +180,8 @@ class Portal : public KXmlGuiWindow
     QMap<QString, KatalogView*> mKatalogViews;
     QMap<KraftDoc*, KraftViewBase*> mViewMap;
 
-    QString mMailReceiver;
+    QString _clientId;
+    QString _pdfFileName;
     AddressProvider *mAddressProvider;
     KABC::Addressee myContact;
     PrefsDialog *_prefsDialog;
