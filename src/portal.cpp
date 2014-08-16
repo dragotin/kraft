@@ -45,6 +45,7 @@
 #include <kabc/addressee.h>
 #include <ktoolinvocation.h>
 #include <kstandarddirs.h>
+#include <kemailsettings.h>
 
 // application specific includes
 #include "kraftview.h"
@@ -348,6 +349,9 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KABC::Addressee& c
 
   kDebug() << "Received my address: " << contact.realName() << "(" << uid << ")";
   ReportGenerator::self()->setMyContact( contact );
+
+  disconnect( mAddressProvider, SIGNAL( addresseeFound(const QString&, const KABC::Addressee&)),
+              this, SLOT(slotReceivedMyAddress( const QString&, const KABC::Addressee&)));
 }
 
 bool Portal::queryClose()
@@ -522,7 +526,6 @@ void Portal::slotMailDocument()
   QString locId = m_portalView->docDigestView()->currentDocumentId();
   kDebug() << "Mailing document " << locId << endl;
 
-  busyCursor( true );
   slotStatusMsg( i18n( "Generating PDF..." ) );
   DocumentMan *docman = DocumentMan::self();
   DocGuardedPtr docPtr = docman->openDocument( locId );
@@ -533,33 +536,90 @@ void Portal::slotMailDocument()
     ArchiveMan *archman = ArchiveMan::self();
     dbID archID = archman->archiveDocument( docPtr );
 
+    _clientId = docPtr->addressUid();
+    busyCursor( true );
+
     connect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),
-             this, SLOT( slotMailDocument( const QString& ) ) );
+             this, SLOT( slotMailPdfAvailable( const QString& ) ) );
     ReportGenerator::self()->createPdfFromArchive( ident, archID );
+    busyCursor( false );
   }
-  busyCursor( false );
   slotStatusMsg( i18n( "Ready." ) );
 }
 
-void Portal::slotMailDocument( const QString& fileName )
+void Portal::slotMailPdfAvailable( const QString& fileName )
 {
-  kDebug() << "Mailing away " << fileName << endl;
+    if( fileName.isEmpty() ) {
+        kDebug() << "Filename to mail is empty!";
+        return;
+    }
 
-  disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
+    QFileInfo fi(fileName);
 
-  // FIXME: the mailed document should go to another directory to be traceable
-  // for the time being we rely on the mailer sent mail folder ;-)
+    _pdfFileName = fi.canonicalFilePath();
 
-  KUrl mailTo;
-  mailTo.setProtocol( "mailto" );
-  if ( ! mMailReceiver.isEmpty() ) {
-    mailTo.addQueryItem( "to", mMailReceiver );
-  }
-  mailTo.addQueryItem( "attach", fileName );
+    // get the email.
+    if( !_clientId.isEmpty() && mAddressProvider ) {
+        connect( mAddressProvider, SIGNAL(addresseeFound(QString,KABC::Addressee)),
+                 this, SLOT(slotMailAddresseeFound(QString, KABC::Addressee)));
+        mAddressProvider->getAddressee(_clientId);
+        _clientId.clear();
+    } else {
+        slotMailAddresseeFound( QString::null, KABC::Addressee() );
+    }
 
-  kDebug() << "Use this mailto: " << mailTo << endl;
+}
 
-  KToolInvocation::invokeMailer( mailTo, "Kraft", true );
+void Portal::slotMailAddresseeFound( const QString& uid, const KABC::Addressee& contact )
+{
+    QString mailReceiver;
+    if( !contact.isEmpty() ) {
+        mailReceiver = contact.fullEmail(); // the prefered email
+    }
+
+    kDebug() << "Found mail address " << mailReceiver << " for " << uid;
+
+    kDebug() << "Mailing away " << _pdfFileName << endl;
+
+    disconnect( mAddressProvider, SIGNAL(addresseeFound(QString,KABC::Addressee)),
+             this, SLOT(slotMailAddresseeFound(QString, KABC::Addressee)));
+    disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
+
+    // Do a special way for thunderbird, as I could not get it to run
+    // with the KToolInvocation
+    KEMailSettings emailSettings;
+    if( emailSettings.getSetting(KEMailSettings::ClientProgram).contains("thunderbird") ) {
+        QString prog = emailSettings.getSetting(KEMailSettings::ClientProgram);
+        QStringList args;
+
+        args.append("-compose");
+        QString tmp;
+        if( !mailReceiver.isEmpty() ) {
+            tmp = QString("to=%1,").arg(mailReceiver);
+        }
+        tmp += QString("attachment='file://%1'").arg(_pdfFileName);
+        args.append(tmp);
+
+        kDebug() << "Starting thunderbird: " << prog << args;
+
+        if (!QProcess::startDetached(prog, args)) {
+            kDebug() << "Failed to start thunderbird composer!";
+        }
+    } else {
+        // Use KDE Invocation tool for all other mailers, good luck.
+        // works with KMail at least.
+        KUrl mailTo;
+        mailTo.setProtocol("mailto");
+        if ( ! mailReceiver.isEmpty() ) {
+            mailTo.addQueryItem( "to", mailReceiver );
+        }
+        mailTo.addQueryItem("attach", _pdfFileName);
+
+        kDebug() << "Use this mailto: " << mailTo << endl;
+
+        KToolInvocation::self()->invokeMailer( mailTo, "Kraft", true );
+    }
+    _pdfFileName.clear();
 }
 
 /*
