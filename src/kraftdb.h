@@ -39,14 +39,16 @@ class SqlCommand
 {
 public:
   SqlCommand();
-  SqlCommand( const QString&, const QString& );
+  SqlCommand( const QString&, const QString&, bool );
 
   QString message();
   QString command();
+  bool    mayfail();
 
 private:
   QString mSql;
   QString mMessage;
+  bool    mMayFail;
 };
 
 class SqlCommandList: public QList<SqlCommand>
