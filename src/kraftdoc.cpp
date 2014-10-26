@@ -43,8 +43,11 @@
 KraftDoc::KraftDoc(QWidget *parent)
   : QObject(parent),
     mIsNew(true),
+
+    mDocTypeChanged(false),
     mLocale(0),
     mSaver(0)
+
 {
   mLocale = new KLocale( "kraft" );
   mPositions.setLocale( mLocale );
@@ -84,6 +87,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   mPreText    = origDoc.mPreText;
   mPostText   = origDoc.mPostText;
   mDocType    = origDoc.mDocType;
+  mDocTypeChanged = false;
   mSalut      = origDoc.mSalut;
   mGoodbye    = origDoc.mGoodbye;
   mIdent      = origDoc.mIdent;
@@ -134,7 +138,7 @@ bool KraftDoc::newDocument( const QString& docType )
 
   mSalut = QString::null;
   mGoodbye = QString::null;
-
+  mDocTypeChanged = false;
   return true;
 }
 
@@ -142,7 +146,7 @@ bool KraftDoc::openDocument(const QString& id )
 {
   DocumentSaverBase *loader = getSaver();
   loader->load( id, this );
-
+  mDocTypeChanged = false;
   modified=false;
   mIsNew = false;
   return true;
@@ -198,6 +202,14 @@ void KraftDoc::deleteContents()
     for( int i=0; i < pos; i++) {
         DocPositionBase *pb = mPositions.takeFirst();
         delete pb;
+    }
+}
+
+void KraftDoc::setDocType( const QString& s )
+{
+    if( s != mDocType ) {
+        mDocType = s;
+        mDocTypeChanged = true;
     }
 }
 
@@ -351,6 +363,3 @@ void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
 
   return i18n( "Unknown document part" );
 }
-
-
-#include "kraftdoc.moc"
