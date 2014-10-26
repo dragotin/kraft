@@ -30,6 +30,7 @@
 #include <kabc/addressee.h>
 
 // application specific includes
+#include "kraftsettings.h"
 #include "kraftdoc.h"
 #include "portal.h"
 #include "kraftview.h"
@@ -136,8 +137,8 @@ bool KraftDoc::newDocument( const QString& docType )
   mCountry  = DefaultProvider::self()->locale()->country();
   mLanguage = DefaultProvider::self()->locale()->language();
 
-  mSalut = QString::null;
-  mGoodbye = QString::null;
+  mSalut = KraftSettings::salut();
+  mGoodbye = KraftSettings::greeting();
   mDocTypeChanged = false;
   return true;
 }
