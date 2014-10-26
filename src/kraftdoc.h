@@ -82,7 +82,8 @@ class KraftDoc : public QObject
   void setLastModified( QDate d ) { mLastModified = d; }
 
   QString docType() { return mDocType; }
-  void setDocType( const QString& s ) {  mDocType = s; }
+  void setDocType( const QString& s );
+  bool docTypeChanged() { return mDocTypeChanged; }
 
   QString addressUid() { return mAddressUid; }
   void setAddressUid( const QString& id ) { mAddressUid = id; }
@@ -151,6 +152,7 @@ private:
   QString mPreText;
   QString mPostText;
   QString mDocType;
+  bool    mDocTypeChanged;
   QString mSalut;
   QString mGoodbye;
   QString mIdent;

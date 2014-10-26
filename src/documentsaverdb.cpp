@@ -91,6 +91,13 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
        // The document was already saved.
     }
 
+    if( !doc->isNew() && doc->docTypeChanged() ) {
+        // an existing doc has a new document type. Fix the doc number cycle and pick a new ident
+        DocType dt( doc->docType() );
+        QString ident = dt.generateDocumentIdent( doc );
+        doc->setIdent( ident );
+    }
+
     fillDocumentBuffer( record, doc );
 
     if( doc->isNew() ) {
@@ -119,6 +126,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
       kDebug() << "Doc is not new, updating #" << doc->docID().intID() << endl;
 
       record.setValue( "docID", doc->docID().toString() );
+
       model.setRecord(0, record);
       model.submitAll();
     }
