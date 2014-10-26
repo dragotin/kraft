@@ -1,4 +1,8 @@
 Changes since version 0.55: #########################################
+ - Handle document type changes correctly: Set a new ident number
+   depending on the new document id
+ - Fix behaviour of the greeting combobox: Do not loose custom entries
+   any more
  - Add receipient email address if document is emailed
  - Fix document emailing for thunderbird
  - Fix removing of alternative- and on-demand state of items
@@ -6,7 +10,8 @@ Changes since version 0.55: #########################################
  - Fix Ok/Cancel for doc editor
  - Better error messages if template can not be read
  - A couple of crash fixes and memory management cleanups
-    => release v. 0.56 (aug xx, 2014)
+
+    => release v. 0.56 (oct xx, 2014)
 
 Changes since version 0.54: #########################################
 - Fix a bug with the PDF generation, regression in 0.54
