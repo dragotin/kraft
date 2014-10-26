@@ -319,12 +319,12 @@ void KraftView::redrawDocument( )
     m_headerEdit->m_teEntry->setText( doc->preText() );
     m_headerEdit->m_whiteboardEdit->setText( doc->whiteboard() );
     m_headerEdit->mProjectLabelEdit->setText( doc->projectLabel() );
-    m_footerEdit->m_teSummary->setText( doc->postText() );
+    m_footerEdit->ui()->m_teSummary->setText( doc->postText() );
 
+    mCustomGreetingIndx = -1;
     mAssistant->slotSetDocType( doc->docType() );
-    if ( !doc->goodbye().isEmpty() ) {
-      m_footerEdit->m_cbGreeting->setCurrentIndex(m_footerEdit->m_cbGreeting->findText( doc->goodbye() ));
-    }
+    const QString goodbye = doc->goodbye();
+    m_footerEdit->slotSetGreeting(goodbye);
 
     redrawDocPositions( );
     slotDocTypeChanged( doc->docType() );
@@ -485,7 +485,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
 DocPositionBase::TaxType KraftView::currentTaxSetting()
 {
   // add 1 to the currentItem since that starts with zero.
-  int taxKind = 1+( m_footerEdit->mTaxCombo->currentIndex() );
+  int taxKind = 1+( m_footerEdit->ui()->mTaxCombo->currentIndex() );
   DocPositionBase::TaxType tt = DocPositionBase::TaxInvalid;
 
   if ( taxKind == 1 ) { // No Tax at all
@@ -504,6 +504,8 @@ void KraftView::refreshPostCard()
 {
   DocPositionList positions = currentPositionList();
 
+  if( !getDocument() ) return;
+
   if ( mAssistant->postCard() ) {
     QDate d = m_headerEdit->m_dateEdit->date();
     const QString dStr = getDocument()->locale()->formatDate( d );
@@ -518,8 +520,8 @@ void KraftView::refreshPostCard()
                                           DocumentMan::self()->tax( d ),
                                           DocumentMan::self()->reducedTax( d ) );
 
-    mAssistant->postCard()->setFooterData( m_footerEdit->m_teSummary->toPlainText(),
-                                           m_footerEdit->m_cbGreeting->currentText() );
+    mAssistant->postCard()->setFooterData( m_footerEdit->ui()->m_teSummary->toPlainText(),
+                                           m_footerEdit->greeting() );
 
     mAssistant->postCard()->renderDoc( mViewStack->currentIndex() ); // id( mViewStack->visibleWidget() ) );
   }
@@ -543,25 +545,16 @@ void KraftView::refreshPostCard()
 
 void KraftView::setupFooter()
 {
-  KraftDocFooterEdit *edit = new KraftDocFooterEdit( mainWidget() );
+  m_footerEdit = new KraftDocFooterEdit( mainWidget() );
 
-  mViewStack->addWidget( edit ); //  KraftDoc::Footer );
-
-  m_footerEdit = edit->docFooterEdit();
-
-  m_footerEdit->m_cbGreeting->insertItems(-1, KraftDB::self()->wordList( "greeting" ) );
-
-  // m_footerEdit->m_cbGreeting->setCurrentIndex(m_footerEdit->m_cbGreeting->findText( KraftSettings::self()->greeting() ));
-  m_footerEdit->m_cbGreeting->setEditText( KraftSettings::self()->greeting() );
+  mViewStack->addWidget( m_footerEdit ); //  KraftDoc::Footer );
 
   // ATTENTION: If you change the following inserts, make sure to check the code
   //            in method currentPositionList!
-  m_footerEdit->mTaxCombo->insertItem( NO_TAX,   KIcon("kraft_notax"), i18n( "Display no tax at all" ));
-  m_footerEdit->mTaxCombo->insertItem( RED_TAX,  KIcon("kraft_redtax"), i18n( "Calculate reduced tax for all items" ));
-  m_footerEdit->mTaxCombo->insertItem( FULL_TAX, KIcon("kraft_fulltax"), i18n( "Calculate full tax for all items" ));
-  m_footerEdit->mTaxCombo->insertItem( INDI_TAX, i18n( "Calculate individual tax for each item"));
-
-  // m_footerEdit->mTaxCombo->insertItem( i18n( 3, i18n( "Calculate on individual item tax rate" )));
+  m_footerEdit->ui()->mTaxCombo->insertItem( NO_TAX,   KIcon("kraft_notax"), i18n( "Display no tax at all" ));
+  m_footerEdit->ui()->mTaxCombo->insertItem( RED_TAX,  KIcon("kraft_redtax"), i18n( "Calculate reduced tax for all items" ));
+  m_footerEdit->ui()->mTaxCombo->insertItem( FULL_TAX, KIcon("kraft_fulltax"), i18n( "Calculate full tax for all items" ));
+  m_footerEdit->ui()->mTaxCombo->insertItem( INDI_TAX, i18n( "Calculate individual tax for each item"));
 
   // set the tax type combo correctly: If all items have the same tax type, take it.
   // If items have different, its the individual thing.
@@ -598,14 +591,14 @@ void KraftView::setupFooter()
     }
   }
 
-  connect( m_footerEdit->mTaxCombo,SIGNAL(currentIndexChanged(int)),this,SLOT(slotTaxComboChanged(int)));
+  connect( m_footerEdit->ui()->mTaxCombo,SIGNAL(currentIndexChanged(int)),this,SLOT(slotTaxComboChanged(int)));
 
-  m_footerEdit->mTaxCombo->setCurrentIndex( taxIndex );
+  m_footerEdit->ui()->mTaxCombo->setCurrentIndex( taxIndex );
   slotTaxComboChanged( taxIndex );
 
   mTaxBefore = taxIndex;
 
-  connect(edit,SIGNAL(modified()),this,SLOT(slotModifiedFooter()));
+  connect(m_footerEdit,SIGNAL(modified()),this,SLOT(slotModifiedFooter()));
 }
 
 void KraftView::slotAboutToShow( QWidget* w )
@@ -624,7 +617,7 @@ void KraftView::slotTaxComboChanged(int newId)
     kDebug() << "You switch away from item individual tax settings.";
     if( KMessageBox::questionYesNo( this, i18n("Really overwrite all individual tax settings of the items?"),
                                          i18n("Tax Settings Overwrite") ) == KMessageBox::No ) {
-      m_footerEdit->mTaxCombo->setCurrentIndex( INDI_TAX );
+      m_footerEdit->ui()->mTaxCombo->setCurrentIndex( INDI_TAX );
       return;
     }
   }
@@ -833,7 +826,7 @@ void KraftView::slotDocTypeChanged( const QString& newType )
   }
 
   mAssistant->postCard()->slotShowPrices( docType.pricesVisible() );
-  m_footerEdit->_taxGroup->setVisible( docType.pricesVisible() );
+  m_footerEdit->ui()->_taxGroup->setVisible( docType.pricesVisible() );
   KraftDocPositionsEdit *w = dynamic_cast<KraftDocPositionsEdit*>(mViewStack->widget(mDocPosEditorIndx));
   if(w) {
       w->setDiscountButtonVisible(docType.pricesVisible());
@@ -878,7 +871,7 @@ void KraftView::slotNewHeaderText( const QString& str )
 
 void KraftView::slotNewFooterText( const QString& str )
 {
-  m_footerEdit->m_teSummary->setText( str );
+  m_footerEdit->ui()->m_teSummary->setText( str );
   slotModifiedFooter();
 }
 
@@ -1105,7 +1098,9 @@ void KraftView::slotAddExtraPosition()
 DocPositionList KraftView::currentPositionList()
 {
     DocPositionList list;
-    list.setLocale( m_doc->locale() );
+    if( m_doc ) {
+        list.setLocale( m_doc->locale() );
+    }
     PositionViewWidget *widget;
     int cnt = 1;
 
@@ -1345,8 +1340,8 @@ void KraftView::saveChanges()
     doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->toPlainText() );
     doc->setProjectLabel( m_headerEdit->mProjectLabelEdit->text() );
     doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
-    doc->setPostText( m_footerEdit->m_teSummary->toPlainText() );
-    doc->setGoodbye(  m_footerEdit->m_cbGreeting->currentText() );
+    doc->setPostText( m_footerEdit->ui()->m_teSummary->toPlainText() );
+    doc->setGoodbye(  m_footerEdit->greeting() );
 
     DocPositionList list = currentPositionList();
     doc->setPositionList( list );
@@ -1356,7 +1351,7 @@ void KraftView::saveChanges()
     if ( doc->isNew() ) {
       // For new documents the user had to select a greeting and we make this
       // default for the future
-      KraftSettings::self()->setGreeting( m_footerEdit->m_cbGreeting->currentText() );
+      KraftSettings::self()->setGreeting( m_footerEdit->greeting() );
       KraftSettings::self()->setSalut( m_headerEdit->m_letterHead->currentIndex() );
     }
 

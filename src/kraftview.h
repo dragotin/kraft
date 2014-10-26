@@ -59,6 +59,7 @@ class KPushButton;
 class DocAssistant;
 class CalcPartList;
 class AddressProvider;
+class KraftDocFooterEdit;
 
 class Katalog;
 class KraftViewScroll;
@@ -176,7 +177,8 @@ private:
 
   KraftViewScroll   *m_positionScroll;
   Ui::DocHeaderEdit *m_headerEdit;
-  Ui::DocFooterEdit *m_footerEdit;
+  // Ui::DocFooterEdit *m_footerEdit;
+  KraftDocFooterEdit *m_footerEdit;
 
   PositionViewWidgetList mPositionWidgetList;
 
@@ -206,6 +208,7 @@ private:
   bool           mModified;
   int            mTaxBefore;
   int            mDocPosEditorIndx;
+  int            mCustomGreetingIndx;
 };
 
 #endif // KRAFTVIEW_H

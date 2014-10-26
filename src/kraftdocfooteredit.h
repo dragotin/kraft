@@ -22,14 +22,24 @@
 
 class KraftDocFooterEdit : public KraftDocEdit
 {
+    Q_OBJECT
 public:
   KraftDocFooterEdit( QWidget *parent=0 );
 
   // FIXME: Remove access to internal widgets
-  Ui::DocFooterEdit *docFooterEdit() { return mDocFooterEdit; }
+  Ui::DocFooterEdit *ui() { return mDocFooterEdit; }
+
+  QString greeting();
+
+public slots:
+  void slotGreeterIndexChanged(int newIndex);
+  void slotGreeterEditTextChanged(const QString& newText);
+  void slotSetGreeting( const QString& newText );
 
 private:
   Ui::DocFooterEdit *mDocFooterEdit;
+  QString            mGreeting;
+  int                mCustomGreetingIndex;
 };
 
 #endif
