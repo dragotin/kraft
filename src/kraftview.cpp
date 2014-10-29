@@ -320,11 +320,10 @@ void KraftView::redrawDocument( )
     m_headerEdit->m_whiteboardEdit->setText( doc->whiteboard() );
     m_headerEdit->mProjectLabelEdit->setText( doc->projectLabel() );
     m_footerEdit->ui()->m_teSummary->setText( doc->postText() );
-
-    mCustomGreetingIndx = -1;
-    mAssistant->slotSetDocType( doc->docType() );
     const QString goodbye = doc->goodbye();
     m_footerEdit->slotSetGreeting(goodbye);
+
+    mAssistant->slotSetDocType( doc->docType() );
 
     redrawDocPositions( );
     slotDocTypeChanged( doc->docType() );
