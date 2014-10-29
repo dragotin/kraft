@@ -208,7 +208,6 @@ private:
   bool           mModified;
   int            mTaxBefore;
   int            mDocPosEditorIndx;
-  int            mCustomGreetingIndx;
 };
 
 #endif // KRAFTVIEW_H
