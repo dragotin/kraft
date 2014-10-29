@@ -2,7 +2,9 @@
      to the html output automagically.
   -->
 <body>
-<h2>{{HEADLINE}}</h2>
+<div class=header>
+<span style="font-size:24px;vertical-align:bottom;"><u>{{HEADLINE}}</u></span>
+</div>
 <div>
 <table width="100%" border="0">
 <tr>

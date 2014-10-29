@@ -1,4 +1,4 @@
-body { margin:20px; 
+body { margin:15px;
        background-image:url({{CSS_IMG_PATH}}/docoverviewbg.png);
        color: #4e4e4e;
        font-size:x-small;
@@ -24,12 +24,12 @@ div {
 
 }
 
-h2 {
-  border-bottom: 2px inset #000000;
-  vertical-align: text-bottom;
-  background-image:url({{CSS_IMG_PATH}}/docoverviewbg.png);
+div.header {
+  height:54px;
+
+  background-image:url({{CSS_IMG_PATH}}/kraftapp_logo_trans.png);
   background-repeat: no-repeat;
   background-position: right;
   image-repeat: none;
-
+  vertical-align:bottom;
 }
