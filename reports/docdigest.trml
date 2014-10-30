@@ -89,9 +89,16 @@ h2 {
 <p>{{PROJECT_LABEL}}: {{PROJECT}}</p>
 {{/PROJECT_INFO}}
   {{#PRINTED}}
-<p>Last printed: {{LAST_PRINT_DATE}}&nbsp;<a href="#show_last_print?id={{LAST_PRINTED_ID}}" title="opens last creatd PDF document">[show]</a></p>
-<p>{{ARCHIVED_COUNT}} older prints</p>
+<p>Last printed: {{LAST_PRINT_DATE}}&nbsp;
+  <a href="#show_last_print?id={{LAST_PRINTED_ID}}" title="opens last creatd PDF document">[show]</a>
    {{/PRINTED}}
+  {{#MARKED_SENT}}
+  <br/>{{MARKED_SENT_DATE}}
+  {{/MARKED_SENT}}
+  {{#NOT_MARKED_SENT}}
+  <a href="#mark_sent?id={{LAST_PRINTED_ID}}" title="marks last printed doc as sent to customer">[mark sent]</a></p>
+  {{/NOT_MARKED_SENT}}
+<!-- <p>{{ARCHIVED_COUNT}} older prints</p> -->
 {{#NEVER_PRINTED}}
 <p>This document was never printed</p>
 {{/NEVER_PRINTED}}
