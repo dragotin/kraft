@@ -1,4 +1,5 @@
 Changes since version 0.55: #########################################
+ - Fix handling of custom greetings in combobox.
  - Handle document type changes correctly: Set a new ident number
    depending on the new document id
  - Fix behaviour of the greeting combobox: Do not loose custom entries
@@ -11,7 +12,7 @@ Changes since version 0.55: #########################################
  - Better error messages if template can not be read
  - A couple of crash fixes and memory management cleanups
 
-    => release v. 0.56 (oct xx, 2014)
+    => release v. 0.56 (oct 30, 2014)
 
 Changes since version 0.54: #########################################
 - Fix a bug with the PDF generation, regression in 0.54
