@@ -125,7 +125,8 @@ void DocDigestView::initializeTreeWidgets()
   mLatestViewDetails = new DocDigestDetailView;
   connect( mLatestViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
            this, SLOT( slotOpenLastPrinted() ) );
-
+  connect( mLatestViewDetails, SIGNAL( markLastArchivedSent( const dbID& )),
+           this, SLOT(slotMarkArchivedSent(const dbID& )) );
   vb1->addWidget( mLatestViewDetails );
   QWidget *w = new QWidget;
   w->setLayout(vb1);
@@ -145,6 +146,8 @@ void DocDigestView::initializeTreeWidgets()
   mAllViewDetails = new DocDigestDetailView;
   connect( mAllViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
            this, SLOT( slotOpenLastPrinted() ) );
+  connect( mAllViewDetails, SIGNAL( markLastArchivedSent( const dbID& )),
+           this, SLOT(slotMarkArchivedSent(const dbID& )) );
 
   vb1->addWidget( mAllViewDetails );
   w = new QWidget;
@@ -165,6 +168,8 @@ void DocDigestView::initializeTreeWidgets()
   mTimeLineViewDetails = new DocDigestDetailView;
   connect( mTimeLineViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
            this, SLOT( slotOpenLastPrinted() ) );
+  connect( mTimeLineViewDetails, SIGNAL( markLastArchivedSent( const dbID& )),
+           this, SLOT(slotMarkArchivedSent(const dbID& )) );
 
   vb1->addWidget( mTimeLineViewDetails );
   w = new QWidget;
@@ -312,6 +317,49 @@ void DocDigestView::slotOpenLastPrinted( )
 {
   kDebug() << "slotOpenLastPrinted hit! ";
   emit openArchivedDocument( mLatestArchivedDigest );
+}
+
+void DocDigestView::slotMarkArchivedSent(const dbID&)
+{
+    kDebug() << "slotMarkArchivedSent hit! ";
+    emit markArchivedDocSent( mLatestArchivedDigest );
+    slotUpdateDetailView();
+}
+
+void DocDigestView::slotUpdateDetailView()
+{
+    DocumentModel *model = 0;
+
+    DocDigestDetailView *view = 0;
+
+    int toolboxIndx = mToolBox->currentIndex();
+    if( toolboxIndx == 0 ) {
+      model = static_cast<DocumentModel*>(mLatestDocModel->sourceModel());
+      view = mLatestViewDetails;
+    } else if( toolboxIndx == 1 ) {
+      kDebug() << "Picking AllDocumentsView!";
+      model = static_cast<DocumentModel*>( mAllDocumentsModel->sourceModel() );
+      view = mAllViewDetails;
+    } else if( toolboxIndx == 2 ) {
+      model = static_cast<DocumentModel*>( mTimelineModel->sourceModel() );
+      view = mTimeLineViewDetails;
+    }
+
+    QAbstractItemView *listview = 0;
+    int index = mToolBox->currentIndex();
+    int cnt = mTreeViewList.count();
+    if( index > -1 && index < cnt ) {
+        listview = mTreeViewIndex[index];
+        QItemSelectionModel *model = listview->selectionModel();
+        if( model && model->hasSelection() ) {
+            slotCurrentChanged(model->selectedRows().at(0), QModelIndex());
+        }
+    }
+
+    DocDigest digest = model->digest( /* index */ mCurrentlySelected );
+
+    view->slotShowDocDetails( digest );
+
 }
 
 void DocDigestView::slotDocOpenRequest( QModelIndex index )
