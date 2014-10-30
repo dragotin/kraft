@@ -31,6 +31,8 @@
 class KLocale;
 class AttributeMap;
 
+#define ARCHDOC_STATE_SENT 1
+
 class ArchDocDigest
 {
 public:
@@ -49,7 +51,7 @@ public:
     return mState;
   }
 
-  dbID archDocId() {
+  dbID archDocId() const {
     return mArchDocId;
   }
 
