@@ -52,6 +52,7 @@ public slots:
 
   void slotBuildView();
   void slotUpdateView();
+  void slotUpdateDetailView();
 
 protected:
   void contextMenuEvent( QContextMenuEvent* );
@@ -62,6 +63,7 @@ protected slots:
   void slotCurrentChanged( QModelIndex, QModelIndex );
   void slotCurrentChangedToolbox ( int index );
   void slotOpenLastPrinted();
+  void slotMarkArchivedSent(const dbID &);
 
 signals:
   void createDocument();
@@ -70,6 +72,7 @@ signals:
   void copyDocument( const QString& );
   void docSelected( const QString& );
   void openArchivedDocument( const ArchDocDigest& );
+  void markArchivedDocSent( const ArchDocDigest& );
 
 private:
 
