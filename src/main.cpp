@@ -35,13 +35,14 @@ int main(int argc, char *argv[])
                         KRAFT_VERSION,
                         ki18n("Business documents for the small enterprise"),
                         KAboutData::License_GPL,
-                        ki18n("Copyright © 2004–2013 Klaas Freitag" ) );
+                        ki18n("Copyright © 2004–2014 Klaas Freitag" ) );
 
   aboutData.addAuthor(ki18n("Klaas Freitag"), ki18n( "Developer" ), "freitag@kde.org");
   aboutData.addAuthor(ki18n("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ),
-                      "kraft@spielhagen.de", "http://www.michal-spielhagen.de" );
+                        "kraft@spielhagen.de", "http://www.michal-spielhagen.de" );
   aboutData.addAuthor(ki18n("Thomas Richard"), ki18n("Developer"), "thomas.richard@proan.be");
 
+  aboutData.setBugAddress( "http://sourceforge.net/p/kraft/bugs/" );
   KStandardDirs stdDirs;
   QString logoFile = stdDirs.findResource( "data",  "kraft/pics/kraftapp_logo.png" );
   if( ! logoFile.isEmpty() ) {
