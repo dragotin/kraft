@@ -146,6 +146,7 @@ class Portal : public KXmlGuiWindow
     void slotOpenPdf( const QString& );
 
     void slotReceivedMyAddress( const QString&, const KABC::Addressee& );
+    void slotMarkArchivedDocSent( const ArchDocDigest& );
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );

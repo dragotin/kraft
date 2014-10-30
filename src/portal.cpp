@@ -250,6 +250,8 @@ void Portal::initView()
              this,  SLOT( slotDocumentSelected( const QString& ) ) );
     connect( m_portalView,  SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
              this,  SLOT( slotArchivedDocSelected( const ArchDocDigest& ) ) );
+    connect( m_portalView, SIGNAL( markArchivedDocSent(ArchDocDigest)),
+             this, SLOT( slotMarkArchivedDocSent(ArchDocDigest)) );
     setCentralWidget(m_portalView);
 }
 
@@ -511,6 +513,7 @@ void Portal::slotPrintDocument()
       slotPrintDocument( ident, archID );
       // m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
   }
+  m_portalView->docDigestView()->slotUpdateDetailView();
   busyCursor( false );
   slotStatusMsg( i18n( "Ready." ) );
 
@@ -666,6 +669,13 @@ void Portal::slotArchivedDocSelected( const ArchDocDigest& )
   actOpenDocument->setEnabled( false );
   actPrintDocument->setEnabled( false );
   actMailDocument->setEnabled( false );
+}
+
+void Portal::slotMarkArchivedDocSent( const ArchDocDigest& add )
+{
+    kDebug() << "OOOOOOOOOOOOOOOOOOO Marked as sent: " << add.archDocIdent();
+    ArchiveMan *archman = ArchiveMan::self();
+    archman->setDocState( add.archDocId().toInt(), ARCHDOC_STATE_SENT );
 }
 
 void Portal::slotEditTagTemplates()
