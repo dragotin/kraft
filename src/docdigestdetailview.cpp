@@ -35,19 +35,25 @@ DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
 bool DocDigestHtmlView::urlSelected( const QString &url, int, int,
                                     const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments &)
 {
-  kDebug() << "HtmlView::urlSelected(): " << url << endl;
-  QRegExp rx("#show_last_print\\?id=(\\d+)");
+    kDebug() << "HtmlView::urlSelected(): " << url << endl;
+    QRegExp rx("#show_last_print\\?id=(\\d+)");
+    QRegExp rx2("#mark_sent\\?id=(\\d+)");
 
-  if ( rx.exactMatch( url ) ) {
-    QString idStr = rx.capturedTexts()[0];
     bool ok;
-    kDebug() << "Emitting showLastPrint";
-    emit( showLastPrint( dbID( idStr.toInt( &ok ) ) ) );
-    return true;
-  } else {
-    kDebug() << "unknown action " << url << endl;
-  }
-  return false;
+    if ( rx.exactMatch( url ) ) {
+        QString idStr = rx.capturedTexts()[0];
+        kDebug() << "Emitting showLastPrint";
+        emit( showLastPrint( dbID( idStr.toInt( &ok ) ) ) );
+        return ok;
+    } else if( rx2.exactMatch( url )){
+        QString idStr = rx.capturedTexts()[0];
+        kDebug() << "Emitting markSent";
+        emit( markLastArchivedSent( dbID( idStr.toInt( &ok ) ) ) );
+        return ok;
+    } else {
+        kDebug() << "unknown action " << url << endl;
+    }
+    return false;
 }
 
 // #########################################################################################################
@@ -62,6 +68,8 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
 
   connect( mHtmlCanvas, SIGNAL(showLastPrint( const dbID& )),
            this, SIGNAL( showLastPrint( const dbID& ) ) );
+  connect( mHtmlCanvas, SIGNAL(markLastArchivedSent( const dbID& )),
+           this, SIGNAL( markLastArchivedSent(const dbID& ) ) );
 
   QString fi = KStandardDirs::locate( "data", "kraft/reports/images/docdigestdetailview/kraft_customer.png" );
 
@@ -213,6 +221,14 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), digest.printDate().toString() );
     tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
     tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), QString::number( archDocs.count()-1 ) );
+
+    if( digest.archDocState() == ARCHDOC_STATE_SENT ) {
+        tmpl.createDictionary("MARKED_SENT");
+        tmpl.setValue( "MARKED_SENT", DOCDIGEST_TAG("MARKED_SENT_DATE"), i18n("This document was sent to the client.") );
+    } else {
+        tmpl.createDictionary(DOCDIGEST_TAG("NOT_MARKED_SENT"));
+        tmpl.setValue( "NOT_MARKED_SENT", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
+    }
   }
 
   const QString details = tmpl.expand();

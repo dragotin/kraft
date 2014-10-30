@@ -328,6 +328,8 @@ void PortalView::documentDigests()
            SIGNAL( documentSelected( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
+  connect( mDocDigestView, SIGNAL(markArchivedDocSent(const ArchDocDigest&)),
+           SIGNAL( markArchivedDocSent(const ArchDocDigest& )));
  }
 
 void PortalView::slotCreateDocument()
