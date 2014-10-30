@@ -76,6 +76,31 @@ QString ArchiveMan::documentID( dbID archID ) const
   return re;
 }
 
+bool ArchiveMan::setDocState( int id, int state )
+{
+    // Fetch the print date to preserve the value. It is auto updated otherwise.
+    QSqlQuery qDate("SELECT printDate FROM archdoc WHERE archDocID="+QString::number(id));
+    QDateTime printDate;
+    while( qDate.next() ) {
+        printDate = qDate.value(0).toDateTime();
+    }
+    qDate.clear();
+
+    QSqlQuery qUpdate;
+    kDebug() << "Updating archived doc to sent: " << id;
+    QString sql = "UPDATE archdoc SET state=:state, printDate=:date WHERE archDocID=:id";
+    qUpdate.prepare( sql );
+    qUpdate.bindValue( ":state", state );
+    qUpdate.bindValue( ":id", id );
+    qUpdate.bindValue( ":date", printDate );
+    bool ok = qUpdate.exec();
+    if( !ok ) {
+        QSqlError err = qUpdate.lastError();
+        kDebug() << "ERROR while executing query: " << err.text();
+    }
+    return ok;
+}
+
 QDomElement ArchiveMan::xmlTextElement( QDomDocument doc, const QString& name, const QString& value )
 {
   QDomElement elem = doc.createElement( name );

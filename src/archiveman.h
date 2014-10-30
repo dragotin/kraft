@@ -42,6 +42,8 @@ class ArchiveMan
     QString pdfBaseDir() const;
     QString archiveFileName( const QString&, const QString&, const QString& ) const;
 
+    bool setDocState(int id, int state );
+
   protected:
     virtual QDomDocument archiveDocumentXml( KraftDoc*,  const QString& );
     virtual dbID archiveDocumentDb( KraftDoc* );
