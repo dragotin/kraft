@@ -173,55 +173,58 @@ void ReportGenerator::setMyContact( const KABC::Addressee& contact )
 
 void ReportGenerator::slotAddresseeSearchFinished( int )
 {
-  // now the addressee search through the address provider is finished.
-  // Rendering can be started.
-  QString tmplFile = findTemplate( mArchDoc->docType() );
+    // now the addressee search through the address provider is finished.
+    // Rendering can be started.
+    QString tmplFile = findTemplate( mArchDoc->docType() );
 
-  if ( tmplFile.isEmpty() ) {
-    kDebug() << "tmplFile is empty!";
-    return;
-  } else {
-    kDebug() << "Reading this template: " << tmplFile;
-  }
+    if ( tmplFile.isEmpty() ) {
+        kDebug() << "tmplFile is empty!";
+        KMessageBox::error( 0, i18n("Template file is empty for document type %1\n"
+                                    "Please check the setup and the doc type configuration.").arg(mArchDoc->docType()),
+                            i18n("Template Error") );
+        return;
+    } else {
+        kDebug() << "Reading this template: " << tmplFile;
+    }
 
-  // create a text template
-  TextTemplate tmpl( tmplFile );
-  if( !tmpl.open() ) {
-      kDebug() << "ERROR: Unable to open document template " << tmplFile;
-      KMessageBox::error( 0, i18n("The template file could not be opened: %1\n"
-                                  "Please check the setup and the doc type configuration.").arg(tmplFile),
-                          i18n("Template Error") );
-      return;
-  }
+    // create a text template
+    TextTemplate tmpl( tmplFile );
+    if( !tmpl.open() ) {
+        kDebug() << "ERROR: Unable to open document template " << tmplFile;
+        KMessageBox::error( 0, i18n("The template file could not be opened: %1\n"
+                                    "Please check the setup and the doc type configuration.").arg(tmplFile),
+                            i18n("Template Error") );
+        return;
+    }
 
-  /* replace the placeholders */
-  /* A placeholder has the format <!-- %VALUE --> */
+    /* replace the placeholders */
+    /* A placeholder has the format <!-- %VALUE --> */
 
-  ArchDocPositionList posList = mArchDoc->positions();
-  QString h;
+    ArchDocPositionList posList = mArchDoc->positions();
+    QString h;
 
-  ArchDocPositionList::iterator it;
-  int specialPosCnt = 0;
-  int taxFreeCnt    = 0;
-  int reducedTaxCnt = 0;
-  int fullTaxCnt    = 0;
+    ArchDocPositionList::iterator it;
+    int specialPosCnt = 0;
+    int taxFreeCnt    = 0;
+    int reducedTaxCnt = 0;
+    int fullTaxCnt    = 0;
 
-  bool individualTax = false;
-  /* Check for the tax settings: If the taxType is not the same for all items,
+    bool individualTax = false;
+    /* Check for the tax settings: If the taxType is not the same for all items,
    * we have individual Tax setting and show the tax marker etc.
    */
-  int ttype = -1;
-  for ( it = posList.begin(); it != posList.end(); ++it ) {
-    ArchDocPosition pos (*it);
-    if( ttype == -1 ) {
-      ttype = pos.taxType();
-    } else {
-      if( ttype != pos.taxType() ) { // different from previous one?
-        individualTax = true;
-        break;
-      }
+    int ttype = -1;
+    for ( it = posList.begin(); it != posList.end(); ++it ) {
+        ArchDocPosition pos (*it);
+        if( ttype == -1 ) {
+            ttype = pos.taxType();
+        } else {
+            if( ttype != pos.taxType() ) { // different from previous one?
+                individualTax = true;
+                break;
+            }
+        }
     }
-  }
 
   /* now loop over the items to fill the template structures */
   for ( it = posList.begin(); it != posList.end(); ++it ) {
