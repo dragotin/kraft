@@ -1,3 +1,8 @@
+Changes since version 0.56: #########################################
+ - No code changes. Just version bump because of a bogus tarball.
+
+    => release v. 0.57 (Nov 7, 2014)
+
 Changes since version 0.55: #########################################
  - Fix handling of custom greetings in combobox.
  - Handle document type changes correctly: Set a new ident number
