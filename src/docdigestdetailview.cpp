@@ -22,6 +22,7 @@
 
 #include "docdigest.h"
 #include "docdigestdetailview.h"
+#include "defaultprovider.h"
 
 #include "htmlview.h"
 #include "texttemplate.h"
@@ -97,9 +98,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
 
   if( mTemplFile.isEmpty() ) {
     KStandardDirs stdDirs;
-    // QString templFileName = QString( "kraftdoc_%1_ro.trml" ).arg( doc->docType() );
-    QString templFileName = QString( "docdigest.trml" );
-    QString findFile = "kraft/reports/" + templFileName;
+    const QString findFile = QLatin1String("kraft/reports/docdigest.trml");
 
     QString tmplFile = stdDirs.findResource( "data", findFile );
 
@@ -218,13 +217,15 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
   } else {
     ArchDocDigest digest = archDocs[0];
     tmpl.createDictionary("PRINTED");
-    tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), digest.printDate().toString() );
+    tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), DefaultProvider::self()->locale()->formatDateTime(digest.printDate()));
     tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
     tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), QString::number( archDocs.count()-1 ) );
 
-    if( digest.archDocState() == ARCHDOC_STATE_SENT ) {
+    if( digest.hasDocState(ArchDoc::Sent) ) {
         tmpl.createDictionary("MARKED_SENT");
-        tmpl.setValue( "MARKED_SENT", DOCDIGEST_TAG("MARKED_SENT_DATE"), i18n("This document was sent to the client.") );
+        QString dateStr = DefaultProvider::self()->locale()->formatDateTime(digest.sentOutDate(), KLocale::ShortDate );
+
+        tmpl.setValue( "MARKED_SENT", DOCDIGEST_TAG("MARKED_SENT_DATE"), dateStr);
     } else {
         tmpl.createDictionary(DOCDIGEST_TAG("NOT_MARKED_SENT"));
         tmpl.setValue( "NOT_MARKED_SENT", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
