@@ -33,7 +33,30 @@ class AttributeMap;
 
 #define ARCHDOC_STATE_SENT 1
 
-class ArchDocDigest
+class ArchDocAttributer
+{
+public:
+    enum State { NoState, Sent, Payed };
+
+    ArchDocAttributer();
+    ArchDocAttributer(const dbID& id);
+
+    QString stateString( State state );
+    bool hasDocState( State );
+
+    QDateTime sentOutDate();
+    void setSentOutDate( const QDateTime& dt );
+
+    dbID archDocId() const;
+
+    void setDocState( ArchDocAttributer::State state );
+
+protected:
+    AttributeMap mAttributes;
+    dbID mArchDocID;
+};
+
+class ArchDocDigest : public ArchDocAttributer
 {
 public:
 
@@ -47,14 +70,6 @@ public:
     return mPrintDate;
   }
 
-  int archDocState() {
-    return mState;
-  }
-
-  dbID archDocId() const {
-    return mArchDocId;
-  }
-
   QString archDocIdent() const {
     return mIdent;
   }
@@ -64,11 +79,11 @@ public:
 private:
   QDateTime mPrintDate;
   int       mState;
-  dbID      mArchDocId;
   QString   mIdent;
+
 };
 
-class ArchDoc
+class ArchDoc : public ArchDocAttributer
 {
 public:
 
@@ -100,8 +115,6 @@ public:
 
   QString projectLabel() const { return mProjectLabel; }
 
-  dbID docID() const { return mDocID; }
-
   QString docIdentifier() const;
 
   KLocale* locale() { return &mLocale; }
@@ -117,15 +130,10 @@ public:
 
   ArchDocDigest toDigest();
 
-  // when the document was sent to the customer.
-  QDateTime sentOutDate();
-  void setSentOutDate( const QDateTime& dt );
-
 private:
   void loadPositions( const QString& );
   void loadFromDb( dbID );
 
-  dbID mArchDocID;
   QString mAddress;
   QString mClientUid;
   QString mPreText;
@@ -144,9 +152,9 @@ private:
   KLocale   mLocale;
 
   ArchDocPositionList mPositions;
-  dbID    mDocID;
   int     mState;
   AttributeMap mAttributes;
+
 };
 
 #endif // ARCHDOC_H
