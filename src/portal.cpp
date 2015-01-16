@@ -20,6 +20,7 @@
 #include <QPrinter>
 #include <QPainter>
 #include <QApplication>
+#include <QScopedPointer>
 #include <QCursor>
 #include <QTimer>
 #include <QSqlDatabase>
@@ -734,9 +735,10 @@ void Portal::slotArchivedDocSelected( const ArchDocDigest& )
 
 void Portal::slotMarkArchivedDocSent( const ArchDocDigest& add )
 {
-    kDebug() << "OOOOOOOOOOOOOOOOOOO Marked as sent: " << add.archDocIdent();
-    ArchiveMan *archman = ArchiveMan::self();
-    archman->setDocState( add.archDocId().toInt(), ARCHDOC_STATE_SENT );
+    kDebug() << "O Arch Doc ID marked as sent: " << add.archDocIdent();
+    QScopedPointer<ArchDoc> archdoc;
+    archdoc.reset( new ArchDoc(add.archDocId() ));
+    archdoc->setSentOutDate( QDateTime::currentDateTime() );
 }
 
 void Portal::slotEditTagTemplates()
