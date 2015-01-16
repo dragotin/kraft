@@ -151,9 +151,6 @@ class Portal : public KXmlGuiWindow
 
     void slotMarkArchivedDocSent( const ArchDocDigest& );
 
-    void slotMailPdfAvailable( const QString& fileName );
-    void slotMailAddresseeFound( const QString&, const KABC::Addressee& );
-
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
