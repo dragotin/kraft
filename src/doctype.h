@@ -56,6 +56,11 @@ class KRAFTCAT_EXPORT DocType
   bool allowAlternative();
   bool pricesVisible();
 
+  /* For this doctype, a payment is expected. If the doctpye has this
+   * attribute, user should be able to set the payed sum on the docs.
+   */
+  bool paymentExpected();
+
   QStringList follower();
 
   QString     generateDocumentIdent( KraftDoc* doc, int id = -1 );
@@ -82,13 +87,12 @@ class KRAFTCAT_EXPORT DocType
 
   void        readIdentTemplate();
 
-  protected:
+protected:
   void        readFollowerList();
 
-  private:
+private:
   static void init();
 
-private:
   AttributeMap mAttributes;
   QStringList  mFollowerList;
   QString      mName;

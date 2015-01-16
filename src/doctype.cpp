@@ -169,6 +169,14 @@ bool DocType::pricesVisible()
     return re;
 }
 
+bool DocType::paymentExpected()
+{
+    bool re = false;
+    if( mAttributes.contains("paymentExpected")) {
+        re = true;
+    }
+    return re;
+}
 
 QStringList DocType::follower()
 {
