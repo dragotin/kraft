@@ -32,17 +32,114 @@
 #include "defaultprovider.h"
 
 const char *SentOutDateC = "SentOutDate";
+const char *ArchDocStateC = "ArchDocStates";
+
+ArchDocAttributer::ArchDocAttributer()
+    :mAttributes( QLatin1String("ArchDoc"))
+{
+
+}
+
+ArchDocAttributer::ArchDocAttributer(const dbID& id)
+    :mAttributes( QLatin1String("ArchDoc")),
+      mArchDocID(id)
+{
+    mAttributes.load(id);
+}
+
+QString ArchDocAttributer::stateString( State state )
+{
+    if( state == NoState ) {
+        return QLatin1String("NoState");
+    }
+    if( state == Sent ) {
+        return QLatin1String("Sent");
+    }
+    if( state == Payed ) {
+        return QLatin1String("Payed");
+    }
+    return QString();
+}
+
+bool ArchDocAttributer::hasDocState( ArchDocAttributer::State state )
+{
+    if( state == Sent ) {
+        // check if there is a sent out date set
+        return mAttributes.hasAttribute(SentOutDateC);
+    } else {
+        if( mAttributes.hasAttribute(ArchDocStateC)) {
+            QStringList states = mAttributes[ArchDocStateC].value().toStringList();
+            if( states.contains( stateString(state))) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void ArchDocAttributer::setDocState( ArchDocAttributer::State state )
+{
+    if( state == Sent ) {
+        if( ! mAttributes.hasAttribute(ArchDocStateC) ) {
+            setSentOutDate(QDateTime::currentDateTime());
+        }
+        return;
+    }
+    if( hasDocState(state )) {
+        return;
+    }
+
+    Attribute att("ArchDocState");
+    if( mAttributes.hasAttribute(ArchDocStateC)) {
+        att = mAttributes[ArchDocStateC];
+    }
+    const QString stateStr = stateString(state);
+    att.setValue(QVariant(stateStr));
+    att.setPersistant(true);
+    mAttributes[ArchDocStateC] = att;
+    mAttributes.save(mArchDocID);
+
+}
+
+QDateTime ArchDocAttributer::sentOutDate()
+{
+    QDateTime re;
+
+    if ( mAttributes.hasAttribute( SentOutDateC ) ) {
+        re = mAttributes[SentOutDateC].value().toDateTime();
+    }
+    return re;
+}
+
+void ArchDocAttributer::setSentOutDate( const QDateTime& dt )
+{
+    if( dt.isValid() ) {
+        Attribute att(SentOutDateC);
+        att.setPersistant(true);
+        att.setValue(dt);
+        mAttributes[SentOutDateC] = att;
+    } else {
+        mAttributes.markDelete(SentOutDateC);
+    }
+    mAttributes.save(mArchDocID);
+}
+
+dbID ArchDocAttributer::archDocId() const {
+    return mArchDocID;
+}
+
+/* ###################################################################### */
 
 ArchDoc::ArchDoc()
-    :mLocale( "kraft" ),
-    mAttributes( QLatin1String("ArchDoc"))
+    :ArchDocAttributer(),
+      mLocale( "kraft" )
 {
 
 }
 
 ArchDoc::ArchDoc( const dbID& id )
-    :mLocale( "kraft" ),
-      mAttributes( QLatin1String("ArchDoc"))
+    :ArchDocAttributer(id),
+      mLocale( "kraft" )
 {
     /* load archive from database */
     loadFromDb( id );
@@ -51,7 +148,6 @@ ArchDoc::ArchDoc( const dbID& id )
 ArchDoc::~ArchDoc()
 {
 }
-
 
 QString ArchDoc::docIdentifier() const
 {
@@ -183,30 +279,6 @@ void ArchDoc::loadPositions( const QString& archDocId )
   }
 }
 
-QDateTime ArchDoc::sentOutDate()
-{
-    QDateTime re;
-
-    if ( mAttributes.hasAttribute( SentOutDateC ) ) {
-        re = mAttributes["sentOutDate"].value().toDateTime();
-    }
-    return re;
-}
-
-void ArchDoc::setSentOutDate( const QDateTime& dt )
-{
-    QString attName(SentOutDateC);
-    if( dt.isValid() ) {
-        Attribute att(attName);
-        att.setPersistant(true);
-        att.setValue(dt);
-        mAttributes[attName] = att;
-    } else {
-        mAttributes.markDelete(attName);
-    }
-    mAttributes.save(mArchDocID);
-}
-
 ArchDocDigest ArchDoc::toDigest()
 {
     return ArchDocDigest(mPrintDate, mState, mIdent, mArchDocID);
@@ -215,17 +287,18 @@ ArchDocDigest ArchDoc::toDigest()
 /* ###################################################################### */
 
 ArchDocDigest::ArchDocDigest()
+    :ArchDocAttributer()
 {
 
 }
 
 ArchDocDigest::ArchDocDigest( QDateTime dt,  int s, const QString& ident, dbID id )
-  : mPrintDate( dt ),
-    mState( s ),
-    mArchDocId( id ),
-    mIdent( ident )
+    :ArchDocAttributer(id),
+      mPrintDate( dt ),
+      mState( s ),
+      mIdent( ident )
 {
-
+    mArchDocID = id;
 }
 
 ArchDocDigest::~ArchDocDigest()
