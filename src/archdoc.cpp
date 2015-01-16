@@ -33,6 +33,7 @@
 
 const char *SentOutDateC = "SentOutDate";
 const char *ArchDocStateC = "ArchDocStates";
+const char *PaymentC = "Payment";
 
 ArchDocAttributer::ArchDocAttributer()
     :mAttributes( QLatin1String("ArchDoc"))
@@ -278,6 +279,28 @@ void ArchDoc::loadPositions( const QString& archDocId )
     mPositions.append( pos );
   }
 }
+
+void ArchDoc::setPayment( Geld g )
+{
+    Attribute att(PaymentC);
+    att.setPersistant(true);
+    att.setValue( QVariant(qlonglong(g.toLong())) );
+    mAttributes[PaymentC] = att;
+
+    mAttributes.save(mArchDocID);
+}
+
+Geld ArchDoc::payment()
+{
+    Geld g;
+    if( mAttributes.hasAttribute(PaymentC)) {
+        bool ok;
+        long gg = mAttributes[PaymentC].value().toLongLong(&ok);
+        g = Geld(gg);
+    }
+    return g;
+}
+
 
 ArchDocDigest ArchDoc::toDigest()
 {
