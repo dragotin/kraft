@@ -130,6 +130,9 @@ public:
 
   ArchDocDigest toDigest();
 
+  void setPayment( Geld g );
+  Geld payment();
+
 private:
   void loadPositions( const QString& );
   void loadFromDb( dbID );
