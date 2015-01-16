@@ -293,11 +293,18 @@ void DocDigestView::slotBuildView()
 
 void DocDigestView::slotUpdateView()
 {
-  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-  static_cast<DocumentModel*>(mLatestDocModel->sourceModel())->setQueryAgain();
-  static_cast<DocumentModel*>(mTimelineModel->baseModel())->setQueryAgain();
-  static_cast<DocumentModel*>(mAllDocumentsModel->sourceModel())->setQueryAgain();
-  QApplication::restoreOverrideCursor();
+    int indx = mToolBox->currentIndex();
+    QAbstractItemView *view = mTreeViewIndex[indx];
+    QModelIndex row;
+    if( view ) {
+        row = view->selectionModel()->selectedRows().at(0);
+    }
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+    static_cast<DocumentModel*>(mLatestDocModel->sourceModel())->setQueryAgain();
+    static_cast<DocumentModel*>(mTimelineModel->baseModel())->setQueryAgain();
+    static_cast<DocumentModel*>(mAllDocumentsModel->sourceModel())->setQueryAgain();
+    slotCurrentChanged(row, QModelIndex());
+    QApplication::restoreOverrideCursor();
 }
 
 void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
