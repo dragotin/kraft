@@ -40,22 +40,25 @@ bool DocDigestHtmlView::urlSelected( const QString &url, int, int,
     kDebug() << "HtmlView::urlSelected(): " << url << endl;
     QRegExp rx("#show_last_print\\?id=(\\d+)");
     QRegExp rx2("#mark_sent\\?id=(\\d+)");
+    QRegExp rxPayment("#set_payment\\?id=(\\d+)");
 
-    bool ok;
+    bool ok = false;
     if ( rx.exactMatch( url ) ) {
-        QString idStr = rx.capturedTexts()[0];
+        const QString idStr = rx.capturedTexts()[0];
         kDebug() << "Emitting showLastPrint";
         emit( showLastPrint( dbID( idStr.toInt( &ok ) ) ) );
-        return ok;
     } else if( rx2.exactMatch( url )){
-        QString idStr = rx.capturedTexts()[0];
+        const QString idStr = rx.capturedTexts()[0];
         kDebug() << "Emitting markSent";
         emit( markLastArchivedSent( dbID( idStr.toInt( &ok ) ) ) );
-        return ok;
+    } else if( rxPayment.exactMatch( url )) {
+        const QString idStr = rxPayment.capturedTexts()[0];
+        kDebug() << "Payment dialog for id" << idStr;
+        emit( setPayment( dbID( idStr.toInt(&ok))));
     } else {
         kDebug() << "unknown action " << url << endl;
     }
-    return false;
+    return ok;
 }
 
 // #########################################################################################################
@@ -72,6 +75,8 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
              this, SIGNAL( showLastPrint( const dbID& ) ) );
     connect( mHtmlCanvas, SIGNAL(markLastArchivedSent( const dbID& )),
              this, SIGNAL( markLastArchivedSent(const dbID& ) ) );
+    connect( mHtmlCanvas, SIGNAL(setPayment(dbID)),
+             this, SIGNAL( setPayment(dbID)));
 
     QString fi = KStandardDirs::locate( "data", "kraft/reports/images/docdigestdetailview/kraft_customer.png" );
 
@@ -263,6 +268,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
             } else {
                 tmpl.createSubDictionary("PAYMENT", DOCDIGEST_TAG("PAYMENT_EXPECTED"));
                 tmpl.setValue("PAYMENT_EXPECTED", DOCDIGEST_TAG("AMOUNT_TO_PAY"), archDoc.bruttoSum().toHtmlString(docLocale ) );
+                tmpl.setValue("PAYMENT_EXPECTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), archDocDigest.archDocId().toString() );
             }
         }
     }

@@ -34,6 +34,7 @@ class DocDigestHtmlView : public HtmlView
   signals:
     void showLastPrint( const dbID& );
     void markLastArchivedSent( const dbID& );
+    void setPayment( const dbID& );
 
   protected:
     // virtual void writeBottomFrame();
@@ -51,6 +52,7 @@ public:
 signals:
   void showLastPrint( const dbID& );
   void markLastArchivedSent( const dbID& );
+  void setPayment( const dbID& );
 
 public slots:
   void slotShowDocDetails( DocDigest );
