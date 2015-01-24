@@ -89,34 +89,34 @@ h2 {
 <p>{{PROJECT_LABEL}}: {{PROJECT}}</p>
 {{/PROJECT_INFO}}
   {{#PRINTED}}
-<p>Last printed: {{LAST_PRINT_DATE}}&nbsp;
-  <a href="#show_last_print?id={{LAST_PRINTED_ID}}" title="opens last created PDF document">[show]</a>
+<p>{{LAST_PRINTED_LABEL}} {{LAST_PRINT_DATE}}&nbsp;
+  <a href="#show_last_print?id={{LAST_PRINTED_ID}}" title="{{LAST_DOC_SHOW_TITLE_LABEL}}">[show]</a>
    {{/PRINTED}}
   {{#MARKED_SENT}}
-  <br/>This document was sent to the client on {{MARKED_SENT_DATE}}.
+  <br/>{{MARKED_SENT_LABEL}} {{MARKED_SENT_DATE}}.
     {{#PAYMENT}}
     <p>
       {{#PAYED}}
-      {{PAYED_AMOUNT}} was received as payment
+      {{PAYED_AMOUNT}} {{PAYMENT_RECEIVED_LABEL}}
       {{#SUM_AS_EXPECTED}}
-      as expected.
+      {{PAYMENT_AS_EXPECTED_LABEL}}
       {{/SUM_AS_EXPECTED}}
       {{#PAYMENT_DIFFERENCE}}
-      , that is a difference of {{DIFFERENCE}}.
+      {{PAYMENT_DIFFERENCE_LABEL}} {{DIFFERENCE}}.
       {{/PAYMENT_DIFFERENCE}}
       {{/PAYED}}
       {{#PAYMENT_EXPECTED}}
-      {{AMOUNT_TO_PAY}} expected as payment.
+      {{AMOUNT_TO_PAY}} {{PAYMENT_EXPECTATION_LABEL}}
       {{/PAYMENT_EXPECTED}}
     </p>
     {{/PAYMENT}}
   {{/MARKED_SENT}}
   {{#NOT_MARKED_SENT}}
-  <a href="#mark_sent?id={{LAST_PRINTED_ID}}" title="marks last printed doc as sent to customer">[mark sent]</a></p>
+  <a href="#mark_sent?id={{LAST_PRINTED_ID}}" title="{{MARK_LAST_PRINTED_SENT_LABEL}}">[mark sent]</a></p>
   {{/NOT_MARKED_SENT}}
 <!-- <p>{{ARCHIVED_COUNT}} older prints</p> -->
 {{#NEVER_PRINTED}}
-<p>This document was never printed</p>
+<p>{{NEVER_PRINTED_LABEL}}</p>
 {{/NEVER_PRINTED}}
 </div>
 <div id="links">

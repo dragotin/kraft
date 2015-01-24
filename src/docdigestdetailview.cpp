@@ -131,7 +131,18 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     tmpl.setValue( DOCDIGEST_TAG( "DATE_LABEL" ), i18n("Date") );
 
     tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD"), digest.whiteboard() );
-    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD_LABEL"), i18n("Whiteboard"));
+    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD_LABEL"),            i18n("Whiteboard"));
+
+    // some translations
+    tmpl.setValue( DOCDIGEST_TAG("LAST_PRINTED_LABEL"),           i18n("Last printed:"));
+    tmpl.setValue( DOCDIGEST_TAG("LAST_DOC_SHOW_TITLE_LABEL"),    i18n("opens last created PDF document."));
+    tmpl.setValue( DOCDIGEST_TAG("MARKED_SENT_LABEL"),            i18n("This document was sent to the client on"));
+    tmpl.setValue( DOCDIGEST_TAG("PAYMENT_RECEIVED_LABEL"),       i18n("was received as payment"));
+    tmpl.setValue( DOCDIGEST_TAG("PAYMENT_AS_EXPECTED_LABEL"),    i18n("as expected."));
+    tmpl.setValue( DOCDIGEST_TAG("PAYMENT_DIFFERENCE_LABEL"),     i18n(", that is a difference of"));
+    tmpl.setValue( DOCDIGEST_TAG("PAYMENT_EXPECTATION_LABEL"),    i18n("expected as payment."));
+    tmpl.setValue( DOCDIGEST_TAG("MARK_LAST_PRINTED_SENT_LABEL"), i18n("marks last printed doc as sent to customer"));
+    tmpl.setValue( DOCDIGEST_TAG("NEVER_PRINTED_LABEL"),          i18n("This document was never printed"));
 
     if( !digest.projectLabel().isEmpty() ) {
         tmpl.createDictionary( "PROJECT_INFO" );
