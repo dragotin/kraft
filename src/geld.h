@@ -43,6 +43,7 @@ public:
     Geld operator/(const double);
     Geld operator*(const long);
     Geld operator*(const double);
+    Geld operator-(const Geld&);
     Geld& operator+=(const Geld&);
 
     bool operator!=(Geld);

@@ -67,6 +67,13 @@ Geld& Geld::operator+=(const Geld& g)
     return *this;
 }
 
+Geld Geld::operator-(const Geld& g)
+{
+    Geld ng( this->m_cent - g.m_cent );
+
+    return ng;
+}
+
 Geld Geld::operator/(const double divisor)
 {
     // FIXME
