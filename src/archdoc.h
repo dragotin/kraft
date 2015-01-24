@@ -76,6 +76,8 @@ public:
 
   QString printDateString() const;
 
+  Geld payment();
+
 private:
   QDateTime mPrintDate;
   int       mState;
@@ -131,7 +133,6 @@ public:
   ArchDocDigest toDigest();
 
   void setPayment( Geld g );
-  Geld payment();
 
 private:
   void loadPositions( const QString& );

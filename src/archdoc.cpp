@@ -290,18 +290,6 @@ void ArchDoc::setPayment( Geld g )
     mAttributes.save(mArchDocID);
 }
 
-Geld ArchDoc::payment()
-{
-    Geld g;
-    if( mAttributes.hasAttribute(PaymentC)) {
-        bool ok;
-        long gg = mAttributes[PaymentC].value().toLongLong(&ok);
-        g = Geld(gg);
-    }
-    return g;
-}
-
-
 ArchDocDigest ArchDoc::toDigest()
 {
     return ArchDocDigest(mPrintDate, mState, mIdent, mArchDocID);
@@ -332,6 +320,17 @@ ArchDocDigest::~ArchDocDigest()
 QString ArchDocDigest::printDateString() const
 {
   return DefaultProvider::self()->locale()->formatDateTime( mPrintDate, KLocale::ShortDate );
+}
+
+Geld ArchDocDigest::payment()
+{
+    Geld g;
+    if( mAttributes.hasAttribute(PaymentC)) {
+        bool ok;
+        long gg = mAttributes[PaymentC].value().toLongLong(&ok);
+        g = Geld(gg);
+    }
+    return g;
 }
 
 /* ###################################################################### */
