@@ -94,6 +94,22 @@ h2 {
    {{/PRINTED}}
   {{#MARKED_SENT}}
   <br/>This document was sent to the client on {{MARKED_SENT_DATE}}.
+    {{#PAYMENT}}
+    <p>
+      {{#PAYED}}
+      {{PAYED_AMOUNT}} was received as payment
+      {{#SUM_AS_EXPECTED}}
+      as expected.
+      {{/SUM_AS_EXPECTED}}
+      {{#PAYMENT_DIFFERENCE}}
+      , that is a difference of {{DIFFERENCE}}.
+      {{/PAYMENT_DIFFERENCE}}
+      {{/PAYED}}
+      {{#PAYMENT_EXPECTED}}
+      {{AMOUNT_TO_PAY}} expected as payment.
+      {{/PAYMENT_EXPECTED}}
+    </p>
+    {{/PAYMENT}}
   {{/MARKED_SENT}}
   {{#NOT_MARKED_SENT}}
   <a href="#mark_sent?id={{LAST_PRINTED_ID}}" title="marks last printed doc as sent to customer">[mark sent]</a></p>
