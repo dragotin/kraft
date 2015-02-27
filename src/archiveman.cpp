@@ -279,5 +279,7 @@ QString ArchiveMan::pdfBaseDir() const
 
 QString ArchiveMan::archiveFileName( const QString& docId, const QString& archId, const QString& ext ) const
 {
-  return QString( "%1_%2.%3" ).arg( docId ).arg( archId ).arg( ext );
+    QString re = QString( "%1_%2.%3" ).arg( docId ).arg( archId ).arg( ext );
+    re.replace(QLatin1Char('/'), QLatin1Char('_'));
+    return re;
 }
