@@ -57,9 +57,6 @@ ReportGenerator *ReportGenerator::self()
 ReportGenerator::ReportGenerator()
   :mArchDoc( 0 )
 {
-  connect( this, SIGNAL( templateGenerated( const QString& )),
-           this, SLOT( slotConvertTemplate( const QString& )));
-
   mProcess.setOutputChannelMode( KProcess::SeparateChannels );
   connect( &mProcess, SIGNAL( finished( int ) ),this, SLOT( trml2pdfFinished( int ) ) );
   connect( &mProcess, SIGNAL( readyReadStandardOutput()), this, SLOT( slotReceivedStdout() ) );
@@ -343,9 +340,10 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
   // My own contact data
 
-  QString output = tmpl.expand();
+  const QString output = tmpl.expand();
 
-  emit templateGenerated( output );
+  slotConvertTemplate(output);
+  // emit templateGenerated( output );
 
 }
 
@@ -522,7 +520,7 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
 
   QString outputDir = ArchiveMan::self()->pdfBaseDir();
   QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
-  mFile.setFileName( QString( "%1/%2").arg( outputDir).arg( filename ) );
+  mFile.setFileName( QString( "%1%2").arg( outputDir).arg( filename ) );
 
   kDebug() << "Writing output to " << mFile.fileName();
 
@@ -554,7 +552,6 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     prg << rmlFile;
   }
 
-  mFile.setFileName( mFile.fileName() );
   mOutputSize = 0;
   if ( mFile.open( QIODevice::WriteOnly ) ) {
     mProcess.setProgram( prg );

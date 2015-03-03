@@ -49,7 +49,6 @@ public:
 
 signals:
   void pdfAvailable( const QString& );
-  void templateGenerated( const QString& );
 
 public slots:
   void createPdfFromArchive( const QString&, dbID );
