@@ -32,6 +32,7 @@ class KRAFTCAT_EXPORT Geld
 public:
     Geld();
     Geld(long);
+    Geld(qlonglong);
     Geld(double);
 
     ~Geld();

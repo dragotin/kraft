@@ -36,6 +36,11 @@ Geld::Geld( long l )
     m_cent = l;
 }
 
+Geld::Geld( qlonglong l )
+{
+    m_cent = l;
+}
+
 Geld::Geld( double g )
 {
     m_cent = qRound(100*g);
