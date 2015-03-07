@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
 
 ########### next target ###############
 
-set( kraftcat_LIB_SRCS
+set(kraft_SRCS
     catalogtemplate.cpp
     catalogchapter.cpp
     katalog.cpp
@@ -27,27 +27,6 @@ set( kraftcat_LIB_SRCS
     attribute.cpp
     numbercycle.cpp
     addeditchapterdialog.cpp
-    )
-
-
-
-kde4_add_ui_files(kraftcat_LIB_SRCS calctemplate.ui dbinit.ui
-createdb.ui
-dbselect.ui
-mysqldetails.ui
-sqlitedetails.ui
-statuspage.ui
-upgradedb.ui )
-
-kde4_add_kcfg_files(kraftcat_LIB_SRCS databasesettings.kcfgc kraftsettings.kcfgc)
-
-kde4_add_library(kraftcat SHARED ${kraftcat_LIB_SRCS})
-
-target_link_libraries(kraftcat ${KDE4_KDECORE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTSQL_LIBRARY} ${KDE4_KDEUI_LIBS})
-
-########### next target ###############
-
-set(kraft_SRCS
     templkatalog.cpp
     docposition.cpp
     matkatalog.cpp
@@ -137,9 +116,21 @@ set(kraft_SRCS
     quicksearchwidget.cpp
 )
 
-kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)
+kde4_add_kcfg_files(kraft_SRCS
+    databasesettings.kcfgc
+    kraftsettings.kcfgc
+    databasesettings.kcfgc
+    kraftsettings.kcfgc)
 
 kde4_add_ui_files(kraft_SRCS
+    calctemplate.ui
+    dbinit.ui
+    createdb.ui
+    dbselect.ui
+    mysqldetails.ui
+    sqlitedetails.ui
+    statuspage.ui
+    upgradedb.ui
     timepart.ui
     fixpartui.ui
     matpartui.ui
@@ -162,13 +153,11 @@ kde4_add_ui_files(kraft_SRCS
 
 kde4_add_executable(kraft ${kraft_SRCS})
 
-target_link_libraries(kraft kraftcat ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS}
-	${KDEPIMLIBS_KABC_LIBS} ${KDEPIMLIBS_AKONADI_CONTACT_LIBS} ${KDE4_KIO_LIBS} ${CTEMPLATE_LIBRARIES} pthread)
+target_link_libraries(kraft ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS}
+	${KDEPIMLIBS_KABC_LIBS} ${KDEPIMLIBS_AKONADI_CONTACT_LIBS} ${KDE4_KIO_LIBS}
+        ${CTEMPLATE_LIBRARIES} pthread)
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
-
-set_target_properties( kraftcat PROPERTIES VERSION 0.52.0 SOVERSION 0)
-install( TARGETS kraftcat ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
