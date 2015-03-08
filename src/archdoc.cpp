@@ -18,6 +18,7 @@
 #include <QString>
 #include <QSqlQuery>
 #include <QDateTime>
+#include <QVariant>
 
 // include files for KDE
 #include <kglobal.h>
@@ -34,6 +35,8 @@
 const char *SentOutDateC = "SentOutDate";
 const char *ArchDocStateC = "ArchDocStates";
 const char *PaymentC = "Payment";
+const char *PaymentDateC = "PaymentDate";
+
 
 ArchDocAttributer::ArchDocAttributer()
     :mAttributes( QLatin1String("ArchDoc"))
@@ -287,6 +290,11 @@ void ArchDoc::setPayment( Geld g )
     att.setValue( QVariant(qlonglong(g.toLong())) );
     mAttributes[PaymentC] = att;
 
+    Attribute attDate(PaymentDateC);
+    attDate.setPersistant(true);
+    attDate.setValue(QVariant(QDate::currentDate()));
+    mAttributes[PaymentDateC] = attDate;
+
     mAttributes.save(mArchDocID);
 }
 
@@ -320,6 +328,16 @@ ArchDocDigest::~ArchDocDigest()
 QString ArchDocDigest::printDateString() const
 {
   return DefaultProvider::self()->locale()->formatDateTime( mPrintDate, KLocale::ShortDate );
+}
+
+QDate ArchDocDigest::paymentDate()
+{
+    QDate re;
+    if( mAttributes.contains(PaymentDateC)) {
+        const QVariant v = mAttributes[PaymentDateC].value();
+        re = v.toDate();
+    }
+    return re;
 }
 
 Geld ArchDocDigest::payment()

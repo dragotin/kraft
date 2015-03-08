@@ -76,6 +76,8 @@ public:
 
   QString printDateString() const;
 
+  QDate paymentDate();
+
   Geld payment();
 
 private:
