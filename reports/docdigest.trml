@@ -107,7 +107,7 @@ h2 {
       {{/PAYED}}
       {{#PAYMENT_EXPECTED}}
       {{AMOUNT_TO_PAY}} {{PAYMENT_EXPECTATION_LABEL}}
-      <a href="#set_payment?id={{LAST_PRINTED_ID}}" title="{{SET_PAYMENT_TITLE_LABEL}}">[payment]</a>
+      <a href="#set_payment?id={{LAST_PRINTED_ID}}&expectedAmount={{EXPECTED_AMOUNT}}" title="{{SET_PAYMENT_TITLE_LABEL}}">[payment]</a>
       {{/PAYMENT_EXPECTED}}
     </p>
     {{/PAYMENT}}
