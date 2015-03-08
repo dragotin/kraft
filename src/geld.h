@@ -55,6 +55,8 @@ public:
     QString toHtmlString( KLocale* ) const;
     double toDouble();
     long   toLong();
+
+    bool fromString( const QString& str );
 private:
     long m_cent;
 };

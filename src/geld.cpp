@@ -138,6 +138,51 @@ long Geld::toLong()
     return m_cent;
 }
 
+bool Geld::fromString( const QString& gg )
+{
+    if( gg.isEmpty() ) {
+        m_cent = 0;
+        return false;
+    }
+
+    QRegExp re("([\\d,\\.]+)"); // non numeric
+    bool ok;
+    QString str = gg;
+    if( gg.contains(re) ) {
+        str = re.cap(1);
+
+        // FIXME: Other currency delimiter?
+        QString centStr;
+        QString euroStr;
+        euroStr = str;
+        if( str.contains( QLatin1Char(',')) ) {
+            QStringList li = str.split(QLatin1Char(','));
+            euroStr = li.value(0);
+            centStr = li.value(1);
+        }
+
+        if( str.contains( QLatin1Char('.')) ) {
+            QStringList li = str.split(QLatin1Char('.'));
+            euroStr = li.value(0);
+            centStr = li.value(1);
+        }
+
+        if( !euroStr.isEmpty() ) {
+            long e = euroStr.toLong(&ok);
+            if( ok ) {
+                m_cent = 100 * e;
+            }
+        }
+        if( !centStr.isEmpty() ) {
+            long e = centStr.toLong(&ok);
+            if( ok ) {
+                m_cent += e;
+            }
+        }
+    }
+    return true;
+}
+
 Geld::~Geld( )
 {
 
