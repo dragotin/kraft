@@ -172,8 +172,10 @@ QString TextTemplate::expand() const
   if ( textTemplate && mStandardDict) {
     bool errorFree = textTemplate->Expand(&output, mStandardDict );
 
-    if ( errorFree )
-      return QString::fromUtf8( output.c_str() );
+    if ( errorFree ) {
+        const QByteArray ba = output.c_str();
+        return QString::fromUtf8(ba);
+    }
   }
   return QString();
 }

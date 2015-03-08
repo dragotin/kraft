@@ -34,6 +34,7 @@ class QContextMenuEvent;
 class QToolBox;
 class DocDigestDetailView;
 class KTreeViewSearchLine;
+class Payment;
 
 class DocDigestView : public QWidget
 {
@@ -64,6 +65,7 @@ protected slots:
   void slotCurrentChangedToolbox ( int index );
   void slotOpenLastPrinted();
   void slotMarkArchivedSent(const dbID &);
+  void slotSetPayment(const dbID& , qlonglong amount);
 
 signals:
   void createDocument();
@@ -73,6 +75,7 @@ signals:
   void docSelected( const QString& );
   void openArchivedDocument( const ArchDocDigest& );
   void markArchivedDocSent( const ArchDocDigest& );
+  void archivedDocSetPayment( const Payment& );
 
 private:
 

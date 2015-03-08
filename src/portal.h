@@ -43,6 +43,7 @@ class KCmdLineArgs;
 class ArchDocDigest;
 class AddressProvider;
 class PrefsDialog;
+class Payment;
 
 /**
   */
@@ -150,7 +151,7 @@ class Portal : public KXmlGuiWindow
     void slotMailAddresseeFound( const QString&, const KABC::Addressee& );
 
     void slotMarkArchivedDocSent( const ArchDocDigest& );
-
+    void slotArchivedDocSetPayment(const Payment& payment);
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );

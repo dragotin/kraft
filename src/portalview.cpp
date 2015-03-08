@@ -330,6 +330,8 @@ void PortalView::documentDigests()
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
   connect( mDocDigestView, SIGNAL(markArchivedDocSent(const ArchDocDigest&)),
            SIGNAL( markArchivedDocSent(const ArchDocDigest& )));
+  connect( mDocDigestView, SIGNAL(archivedDocSetPayment(Payment)),
+           SIGNAL( archivedDocSetPayment(Payment)));
  }
 
 void PortalView::slotCreateDocument()

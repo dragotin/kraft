@@ -43,6 +43,7 @@
 #include "defaultprovider.h"
 #include "docdigestdetailview.h"
 #include "kraftsettings.h"
+#include "paymentdialog.h"
 
 DocDigestView::DocDigestView( QWidget *parent )
 : QWidget( parent ),
@@ -127,6 +128,9 @@ void DocDigestView::initializeTreeWidgets()
            this, SLOT( slotOpenLastPrinted() ) );
   connect( mLatestViewDetails, SIGNAL( markLastArchivedSent( const dbID& )),
            this, SLOT(slotMarkArchivedSent(const dbID& )) );
+  connect( mLatestViewDetails, SIGNAL( setPayment( const dbID&, qlonglong )),
+           this, SLOT(slotSetPayment(const dbID&, qlonglong )) );
+
   vb1->addWidget( mLatestViewDetails );
   QWidget *w = new QWidget;
   w->setLayout(vb1);
@@ -331,6 +335,19 @@ void DocDigestView::slotMarkArchivedSent(const dbID&)
     kDebug() << "slotMarkArchivedSent hit! ";
     emit markArchivedDocSent( mLatestArchivedDigest );
     slotUpdateDetailView();
+}
+
+void DocDigestView::slotSetPayment( const dbID& id, qlonglong amount)
+{
+    PaymentDialog dia(this, id, amount);
+    if( dia.exec() == QDialog::Accepted	) {
+        Payment p;
+        p._expected = dia.paymentExpected();
+        p._date = dia.paymentDate();
+        p._amount = dia.amount();
+
+        emit archivedDocSetPayment( p );
+    }
 }
 
 void DocDigestView::slotUpdateDetailView()

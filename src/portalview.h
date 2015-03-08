@@ -35,6 +35,7 @@ class DocDigestView;
 class dbID;
 class PortalHtmlView;
 class ArchDocDigest;
+class Payment;
 
 class PortalView : public KPageWidget
 {
@@ -67,6 +68,7 @@ signals:
   void documentSelected( const QString& );
   void archivedDocSelected( const ArchDocDigest& );
   void printDocument( const QString& );
+  void archivedDocSetPayment( const Payment& );
 
 private:
   QString printKatLine( const QString&, int ) const;

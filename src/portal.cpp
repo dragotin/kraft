@@ -75,6 +75,7 @@
 #include "databasesettings.h"
 #include "setupassistant.h"
 #include "addressprovider.h"
+#include "paymentdialog.h"
 
 #define ID_STATUS_MSG 1
 
@@ -254,6 +255,8 @@ void Portal::initView()
              this,  SLOT( slotArchivedDocSelected( const ArchDocDigest& ) ) );
     connect( m_portalView, SIGNAL( markArchivedDocSent(ArchDocDigest)),
              this, SLOT( slotMarkArchivedDocSent(ArchDocDigest)) );
+    connect( m_portalView, SIGNAL( archivedDocSetPayment(Payment)),
+             this, SLOT(slotArchivedDocSetPayment( Payment)));
     setCentralWidget(m_portalView);
 }
 
@@ -739,6 +742,11 @@ void Portal::slotMarkArchivedDocSent( const ArchDocDigest& add )
     QScopedPointer<ArchDoc> archdoc;
     archdoc.reset( new ArchDoc(add.archDocId() ));
     archdoc->setSentOutDate( QDateTime::currentDateTime() );
+}
+
+void Portal::slotArchivedDocSetPayment( const Payment& payment)
+{
+    kDebug() << "Got payment: " << payment._amount.toString(DefaultProvider::self()->locale());
 }
 
 void Portal::slotEditTagTemplates()
