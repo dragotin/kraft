@@ -135,6 +135,7 @@ set(kraft_SRCS
     akonadiaddressselectordialog.cpp
     models/globalcontactmodel.cpp
     quicksearchwidget.cpp
+    paymentdialog.cpp
 )
 
 kde4_add_kcfg_files(kraft_SRCS databasesettings.kcfgc kraftsettings.kcfgc)
@@ -157,6 +158,7 @@ kde4_add_ui_files(kraft_SRCS
     unitseditbase.ui
     importtodocbase.ui
     numbercycleseditbase.ui
+    payment.ui
 
 )
 
