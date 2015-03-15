@@ -63,8 +63,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
 
   DocPositionListIterator it(posList);
   while( it.hasNext() ) {
-    DocPositionBase *dpb = it.next();
-    if( dpb->type() != DocPositionBase::Header ) {
+      DocPositionBase *dpb = it.next();
       DocPosition *dp = static_cast<DocPosition*>(dpb);
       mPositions += "<tr><td class=\"itemnums\">";
 
@@ -76,9 +75,9 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
       if ( dp->toDelete() ) mPositions += "<strike>";
 
       if ( dp->attributes().contains( DocPosition::Kind ) ) {
-        mPositions += "<i>" + dp->text() + "</i>";
+          mPositions += "<i>" + dp->text() + "</i>";
       } else {
-        mPositions += dp->text();
+          mPositions += dp->text();
       }
 
       if ( dp->toDelete() ) mPositions += "</strike>";
@@ -106,7 +105,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
           mPositions += "</td>";
       }
       mPositions += "</tr>";
-    }
+
   }
   mPositions += "</table></div>";
 

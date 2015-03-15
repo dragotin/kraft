@@ -45,7 +45,7 @@ class PositionViewWidget;
 class DocPositionBase : public QObject
 {
   public:
-  enum PositionType { Position, ExtraDiscount, Header };
+  enum PositionType { Position, ExtraDiscount };
   enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3, TaxIndividual = 4 };
 
     DocPositionBase();
