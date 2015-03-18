@@ -210,7 +210,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   /* Check for the tax settings: If the taxType is not the same for all items,
    * we have individual Tax setting and show the tax marker etc.
    */
-  int ttype = -1;
+  DocPositionBase::TaxType ttype = DocPositionBase::TaxInvalid;
   for ( it = posList.begin(); it != posList.end(); ++it ) {
     ArchDocPosition pos (*it);
     if( ttype == -1 ) {

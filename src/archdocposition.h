@@ -51,7 +51,7 @@ class ArchDocPosition
     Geld nettoPrice();
 
     double amount() { return mAmount; }
-    double taxType() { return mTaxType; }
+    DocPositionBase::TaxType taxType() { return mTaxType; }
     Geld   tax( double fullTax, double reducedTax );
     Geld   fullTax( double fullTax );
     Geld   reducedTax( double reducedTax );
