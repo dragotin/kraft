@@ -203,7 +203,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         if( record.count() > 0 ) {
             // kDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
             QString typeStr = PosTypePosition;
-            double price = price = dp->unitPrice().toDouble();
+            double price = dp->unitPrice().toDouble();
 
             if ( dp->type() == DocPositionBase::ExtraDiscount ) {
                 typeStr = PosTypeExtraDiscount;
