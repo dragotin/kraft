@@ -62,40 +62,42 @@ QString ArchDoc::docIdentifier() const
 
 Geld ArchDoc::nettoSum()
 {
-  return positions().sumPrice();
+    const Geld g = positions().sumPrice();
+    return g;
 }
 
 Geld ArchDoc::bruttoSum()
 {
-  Geld g = nettoSum();
-  g += taxSum();
-  return g;
+    Geld g = nettoSum();
+    const Geld ts = taxSum();
+    g += ts;
+    return g;
 }
 
 Geld ArchDoc::taxSum()
 {
-  return positions().taxSum( tax(), reducedTax() ); // DocumentMan::self()->tax( date() ),
-  // DocumentMan::self()->reducedTax( date() ) );
+    const Geld g = positions().taxSum( tax(), reducedTax() );
+    return  g;
 }
 
 Geld ArchDoc::fullTaxSum()
 {
-  return positions().fullTaxSum( tax() );
+    return positions().fullTaxSum( tax() );
 }
 
 Geld ArchDoc::reducedTaxSum()
 {
-  return positions().reducedTaxSum( reducedTax() );
+    return positions().reducedTaxSum( reducedTax() );
 }
 
 double ArchDoc::tax()
 {
-  return mTax;
+    return mTax;
 }
 
 double ArchDoc::reducedTax()
 {
-  return mReducedTax;
+    return mReducedTax;
 }
 
 void ArchDoc::loadFromDb( dbID id )
