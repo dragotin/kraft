@@ -1,3 +1,10 @@
+Changes since version 0.57: #########################################
+ - Fix handling of slashes in the doc id template
+ - Fix a bug in calculation of the VAT sum
+ - Removed kraftcat library as it was unused. Easier building now. 
+
+    => release v. 0.58 (Mar x, 2015)
+
 Changes since version 0.56: #########################################
  - No code changes. Just version bump because of a bogus tarball.
 
