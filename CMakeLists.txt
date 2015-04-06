@@ -18,7 +18,7 @@ add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0)
 # QCA still uses slots/signals keywords
 # remove_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
 
-find_package(Qt5 REQUIRED
+find_package(Qt5 CONFIG REQUIRED
     Core
     Concurrent
     DBus
