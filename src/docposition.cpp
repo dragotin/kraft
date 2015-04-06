@@ -18,11 +18,7 @@
 // include files for Qt
 #include <QString>
 #include <qdom.h>
-
-// include files for KDE
-#include <klocale.h>
 #include <QDebug>
-#include <kglobal.h>
 
 // application specific includes
 #include "einheit.h"

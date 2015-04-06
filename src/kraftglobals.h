@@ -23,10 +23,10 @@
 #include "geld.h"
 
 // schluessel um alle kalk-typen kostenPerKalcPart zurueckzugeben.
-#define ALL_KALKPARTS     I18N_NOOP("all_calculation_parts")
-#define KALKPART_TIME     I18N_NOOP("Time")
-#define KALKPART_FIX      I18N_NOOP("Fix")
-#define KALKPART_MATERIAL I18N_NOOP("Material")
+#define ALL_KALKPARTS     QLatin1String("all_calculation_parts")
+#define KALKPART_TIME     QLatin1String("Time")
+#define KALKPART_FIX      QLatin1String("Fix")
+#define KALKPART_MATERIAL QLatin1String("Material")
 
 
 // typedef long Geld;
