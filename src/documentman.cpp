@@ -17,7 +17,7 @@
 #include <QSqlQuery>
 #include <QSqlDriver>
 
-#include <kdebug.h>
+#include <QDebug>
 #include <kglobal.h>
 
 #include "documentman.h"
@@ -47,7 +47,7 @@ DocDigestList DocumentMan::latestDocs( int limit )
   if( limit > 0 )
     qStr += " LIMIT " + QString::number( limit );
   qStr +=";";
-  kDebug() << "Sending sql string " << qStr << endl;
+  // qDebug () << "Sending sql string " << qStr << endl;
 
   QSqlQuery query( qStr );
 
@@ -74,7 +74,7 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   dig.setDate(     query.value(6).toDate() );
   dig.setCountryLanguage(  query.value( 7 ).toString(), query.value( 8 ).toString() );
   dig.setProjectLabel( query.value( 9 ).toString() );
-  // kDebug() << "Adding document "<< ident << " to the latest list" << endl;
+  // qDebug() << "Adding document "<< ident << " to the latest list" << endl;
 
   QSqlQuery q;
   q.prepare("SELECT archDocId, printDate, state FROM archdoc WHERE ident=:ident");
@@ -96,7 +96,7 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
   //mColumnList = "docID, ident, docType, docDescription, clientID, lastModified, date, country, language, projectLabel";
   QString qStr;
   QVariant v = QSqlDatabase::database().driver()->handle();
-  kDebug() << "Database:" << v.typeName();
+  // qDebug () << "Database:" << v.typeName();
   if(v.isValid() && qstrcmp(v.typeName(), "MYSQL*")==0)
     qStr = QString( "SELECT %1, MONTH(date) as month, YEAR(date) as year FROM document ORDER BY date asc;" ).arg( mColumnList );
   else if(v.isValid() && qstrcmp(v.typeName(), "sqlite3*")==0)
@@ -110,12 +110,12 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
       DocDigest dig = digestFromQuery( query );
       int month = query.value( 10 /* month */ ).toInt();
       int year = query.value( 11 /* year */ ).toInt();
-      // kDebug() << "Month: " << month << " in Year: " << year << endl;
+      // qDebug() << "Month: " << month << " in Year: " << year << endl;
 
       if ( timeline.month() == 0 ) timeline.setMonth( month );
       if ( timeline.year() == 0  ) timeline.setYear( year );
 
-      // kDebug() << "timeline-month=" << timeline.month() << " while month=" << month << endl;
+      // qDebug() << "timeline-month=" << timeline.month() << " while month=" << month << endl;
       if ( month != timeline.month() || year != timeline.year() ) {
         // a new month/year pair: set digestlist to timelineobject
         timeline.setDigestList( digests );
@@ -130,10 +130,10 @@ DocDigestsTimelineList DocumentMan::docsTimelined()
         timeline.setYear( year );
       } else {
         digests.prepend( dig );
-        // kDebug() << "Prepending to digests lists: " << dig.date() << endl;
+        // qDebug() << "Prepending to digests lists: " << dig.date() << endl;
       }
     }
-    kDebug() << "Final append !" << endl;
+    // qDebug () << "Final append !" << endl;
     timeline.setDigestList( digests );
     retList.append( timeline );
 
@@ -145,7 +145,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
 {
   DocGuardedPtr doc = new KraftDoc( );
   doc->newDocument( docType );
-  kDebug() << "new document ID: " << doc->docID().toString() << endl;
+  // qDebug () << "new document ID: " << doc->docID().toString() << endl;
 
   if ( ! copyFromId.isEmpty() ) {
     // copy the content from the source document to the new doc.
@@ -160,7 +160,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
 
 DocGuardedPtr DocumentMan::openDocument( const QString& id )
 {
-  kDebug() << "Opening Document with id " << id << endl;
+  // qDebug () << "Opening Document with id " << id << endl;
   DocGuardedPtr doc;
 
   doc = new KraftDoc();
@@ -197,7 +197,7 @@ bool DocumentMan::readTaxes( const QDate& date )
 
   q.prepare( sql );
   QString dateStr = date.toString( "yyyy-MM-dd" );
-  kDebug() << "** Datestring: " << dateStr;
+  // qDebug () << "** Datestring: " << dateStr;
   q.bindValue( ":date", dateStr );
   q.exec();
 
@@ -205,7 +205,7 @@ bool DocumentMan::readTaxes( const QDate& date )
     mFullTax    = q.value( 0 ).toDouble();
     mReducedTax = q.value( 1 ).toDouble();
     mTaxDate = date;
-    kDebug() << "* Taxes: " << mFullTax << "/" << mReducedTax << " from " << q.value( 2 ).toDate();
+    // qDebug () << "* Taxes: " << mFullTax << "/" << mReducedTax << " from " << q.value( 2 ).toDate();
   }
   return ( mFullTax > 0 && mReducedTax > 0 );
 }

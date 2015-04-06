@@ -29,7 +29,7 @@
 
 // include files for KDE
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kglobal.h>
 #include <knuminput.h>
 #include <kmessagebox.h>
@@ -139,7 +139,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   m_katalog = KatalogMan::self()->getKatalog(katalogname);
 
   if( m_katalog == 0 ) {
-    kDebug() << "ERR: Floskel Dialog called without valid Katalog!" << endl;
+    // qDebug () << "ERR: Floskel Dialog called without valid Katalog!" << endl;
     return;
   }
 
@@ -245,7 +245,7 @@ void FlosTemplDialog::refreshPrices()
   QString t;
   t = i18n("Calculated Price: ");
   int kType = m_template->calcKind();
-  kDebug() << "CalcType in integer is " << kType << endl;
+  // qDebug () << "CalcType in integer is " << kType << endl;
   if( m_template->calcKind() == CatalogTemplate::ManualPrice )
   {
     t = i18n("Manual Price: ");
@@ -264,7 +264,7 @@ void FlosTemplDialog::refreshPrices()
   }
   else
   {
-    kDebug() << "ERR: unknown calculation type!" << endl;
+    // qDebug () << "ERR: unknown calculation type!" << endl;
   }
   m_resPreisName->setText(t);
 
@@ -295,19 +295,19 @@ FlosTemplDialog::~FlosTemplDialog( )
 void FlosTemplDialog::accept()
 {
   if( m_template ) {
-    kDebug() << "Saving template ID " << m_template->getTemplID() << endl;
+    // qDebug () << "Saving template ID " << m_template->getTemplID() << endl;
 
     QString h;
     h = m_text->toPlainText();
 
     if( h != m_template->getText() ) {
-      kDebug() << "Template Text dirty -> update" << endl;
+      // qDebug () << "Template Text dirty -> update" << endl;
       m_template->setText( h );
     }
 
     h = m_unit->currentText();
     if( h != m_template->unit().einheitSingular()) {
-      kDebug() << "Template Einheit dirty -> update to " << h << endl;
+      // qDebug () << "Template Einheit dirty -> update to " << h << endl;
       m_template->setUnitId( UnitManager::self()->getUnitIDSingular(h));
     }
 
@@ -318,7 +318,7 @@ void FlosTemplDialog::accept()
     // FIXME: need new way of picking hte chapterId bcause of hirarchical.
 
     if( chapterId != m_template->getChapterID() ) {
-      kDebug() << "Chapter ID dirty ->update" << endl;
+      // qDebug () << "Chapter ID dirty ->update" << endl;
       if( askChapterChange( m_template, chapterId )) {
         m_template->setChapterID( chapterId );
         emit( chapterChanged( chapterId ));
@@ -337,7 +337,7 @@ void FlosTemplDialog::accept()
     double g = h.toDouble( &b );
     if( b  && g != m_template->getBenefit() ) {
       m_template->setBenefit(g);
-      kDebug() << "benefit dirty ->update to " << g << endl;
+      // qDebug () << "benefit dirty ->update to " << g << endl;
     }
 
     h = cbMwst->currentText();
@@ -351,7 +351,7 @@ void FlosTemplDialog::accept()
     } else if( selId == 1 ) {
       calcType = CatalogTemplate::Calculation;
     } else {
-      kDebug() << "ERROR: Calculation type not selected, id is " << selId << endl;
+      // qDebug () << "ERROR: Calculation type not selected, id is " << selId << endl;
     }
     m_template->setCalculationType( calcType );
 
@@ -360,7 +360,7 @@ void FlosTemplDialog::accept()
     m_template->setManualPrice( Geld( dd ) );
 
     h = cbChapter->currentText();
-    kDebug() << "catalog chapter is " << h << endl;
+    // qDebug () << "catalog chapter is " << h << endl;
 
     if( m_template->save() ) {
       emit( editAccepted( m_template ) );
@@ -370,7 +370,7 @@ void FlosTemplDialog::accept()
                           i18n( "Template Save Error" ) );
     }
   }
-  kDebug() << "*** Saving finished " << endl;
+  // qDebug () << "*** Saving finished " << endl;
 
   modified = false;
   KDialog::accept();
@@ -434,9 +434,9 @@ bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
 
 void FlosTemplDialog::slManualPriceChanged(double dd)
 {
-  kDebug() << "Changing manual price!" << endl;
+  // qDebug () << "Changing manual price!" << endl;
   if( ! m_template ) return;
-  kDebug() << "Updating manual price!" << endl;
+  // qDebug () << "Updating manual price!" << endl;
   m_template->setManualPrice( Geld( dd ));
   refreshPrices();
 }
@@ -496,7 +496,7 @@ void FlosTemplDialog::slEditFixPart()
 {
   if( ! m_template || !m_fixParts ) return;
 
-  kDebug() << "Edit fix part!" << endl;
+  // qDebug () << "Edit fix part!" << endl;
 
   QTreeWidgetItem *item = m_fixParts->currentItem();
 
@@ -607,7 +607,7 @@ void FlosTemplDialog::slEditTimePart()
 {
   if( ! m_template || !m_timeParts ) return;
 
-  kDebug() << "Edit time part!" << endl;
+  // qDebug () << "Edit time part!" << endl;
 
   QTreeWidgetItem *item = m_timeParts->currentItem();
 
@@ -620,10 +620,10 @@ void FlosTemplDialog::slEditTimePart()
                this, SLOT(slTimeCalcPartChanged(TimeCalcPart*)) );
       m_timePartDialog->show();
     } else {
-      kDebug() << "No time calc part found for this item" << endl;
+      // qDebug () << "No time calc part found for this item" << endl;
     }
   } else {
-    kDebug() << "No current Item!";
+    // qDebug () << "No current Item!";
   }
   refreshPrices();
 }
@@ -649,7 +649,7 @@ void FlosTemplDialog::slAddMatPart()
  */
 void FlosTemplDialog::slNewMaterial( int matID, double amount )
 {
-  kDebug() << "Material ID: " << matID << endl;
+  // qDebug () << "Material ID: " << matID << endl;
 
   // TODO: Checken, ob der richtige Tab aktiv ist.
   // TODO: Check if the material is already in the calcpart (is this really needed??)
@@ -668,7 +668,7 @@ void FlosTemplDialog::slEditMatPart()
 {
   if( ! m_template || !m_matParts ) return;
 
-  kDebug() << "Edit Material part!" << endl;
+  // qDebug () << "Edit Material part!" << endl;
 
   QTreeWidgetItem *item = m_matParts->currentItem();
 
@@ -682,7 +682,7 @@ void FlosTemplDialog::slEditMatPart()
       m_matPartDialog->setModal(true);
       m_matPartDialog->show();
     } else {
-      kDebug() << "No such MaterialCalcPart!";
+      // qDebug () << "No such MaterialCalcPart!";
     }
 }
 
@@ -756,7 +756,7 @@ void FlosTemplDialog::slCalcOrFix(int button)
   else
   {
     /* unbekannter knopf -> fehler */
-    kDebug() << "--- Error: Falsche Button ID " << button <<  endl;
+    // qDebug () << "--- Error: Falsche Button ID " << button <<  endl;
     ok = false;
   }
 

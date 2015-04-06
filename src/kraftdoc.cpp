@@ -28,6 +28,7 @@
 #include <kabc/stdaddressbook.h>
 #include <kabc/addresseedialog.h>
 #include <kabc/addressee.h>
+#include <QDebug>
 
 // application specific includes
 #include "kraftsettings.h"
@@ -74,7 +75,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
     *newPos = *dp;
     newPos->setDbId( -1 );
     mPositions.append( newPos );
-    kDebug() << "Appending position " << dp->dbId().toString() << endl;
+    // qDebug () << "Appending position " << dp->dbId().toString() << endl;
   }
 
   mPositions.setLocale( mLocale );
@@ -179,7 +180,7 @@ bool KraftDoc::saveDocument( )
         while( it.hasNext() ) {
           DocPositionBase *dp = it.next();
           if( dp->toDelete() ) {
-            kDebug() << "Removing pos " << dp->dbId().toString() << " from document object" << endl;
+            // qDebug () << "Removing pos " << dp->dbId().toString() << " from document object" << endl;
             mPositions.removeAll( dp );
           }
         }
@@ -238,15 +239,15 @@ DocPosition* KraftDoc::createPosition( DocPositionBase::PositionType t )
 
 void KraftDoc::slotRemovePosition( int pos )
 {
-  kDebug() << "Removing position " << pos << endl;
+  // qDebug () << "Removing position " << pos << endl;
 
   foreach( DocPositionBase *dp, mPositions ) {
-    kDebug() << "Comparing " << pos << " with " << dp->dbId().toString() << endl;
+    // qDebug () << "Comparing " << pos << " with " << dp->dbId().toString() << endl;
     if( dp->dbId() == pos ) {
       if( ! mPositions.removeAll( dp ) ) {
-        kDebug() << "Could not remove!" << endl;
+        // qDebug () << "Could not remove!" << endl;
       } else {
-        kDebug() << "Successfully removed the position " << dp << endl;
+        // qDebug () << "Successfully removed the position " << dp << endl;
         mRemovePositions.append( dp->dbId() ); // remember to delete
       }
     }
@@ -255,7 +256,7 @@ void KraftDoc::slotRemovePosition( int pos )
 
 void KraftDoc::slotMoveUpPosition( int dbid )
 {
-  kDebug() << "Moving position " << dbid << " up" << endl;
+  // qDebug () << "Moving position " << dbid << " up" << endl;
   if( mPositions.count() < 1 ) return;
   int curPos = -1;
 
@@ -266,7 +267,7 @@ void KraftDoc::slotMoveUpPosition( int dbid )
     }
   }
 
-  kDebug() << "Found: "<< curPos << ", count: " << mPositions.count() << endl;
+  // qDebug () << "Found: "<< curPos << ", count: " << mPositions.count() << endl;
   if( curPos < mPositions.size()-1 ) {
     mPositions.swap( curPos, curPos+1 );
   }
@@ -274,7 +275,7 @@ void KraftDoc::slotMoveUpPosition( int dbid )
 
 void KraftDoc::slotMoveDownPosition( int dbid )
 {
-  kDebug() << "Moving position " << dbid << " down" << endl;
+  // qDebug () << "Moving position " << dbid << " down" << endl;
   if( mPositions.count() < 1 ) return;
   int curPos = -1;
 
@@ -285,7 +286,7 @@ void KraftDoc::slotMoveDownPosition( int dbid )
     }
   }
 
-  kDebug() << "Found: "<< curPos << ", count: " << mPositions.count();
+  // qDebug () << "Found: "<< curPos << ", count: " << mPositions.count();
   if( curPos > 0 ) {
     mPositions.swap( curPos, curPos-1 );
   }
@@ -303,7 +304,7 @@ DocumentSaverBase* KraftDoc::getSaver( const QString& )
 {
     if( ! mSaver )
     {
-        kDebug() << "Create new Document DB-Saver" << endl;
+        // qDebug () << "Create new Document DB-Saver" << endl;
         mSaver = new DocumentSaverDB();
     }
     return mSaver;
@@ -346,7 +347,7 @@ KLocale* KraftDoc::locale()
 
 void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
 {
-  kDebug()<< "Setting country " << country << " and lang " << lang << endl;
+  // qDebug ()<< "Setting country " << country << " and lang " << lang << endl;
   KConfig *cfg = KGlobal::config().data();
   mLocale->setCountry( country, cfg );
   mLocale->setLanguage( lang, cfg );

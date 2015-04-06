@@ -21,7 +21,7 @@
 #include <QLabel>
 
 #include <kdialog.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 #include <kcombobox.h>
 #include <ktextedit.h>

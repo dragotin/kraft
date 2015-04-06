@@ -18,7 +18,7 @@
 #include <QString>
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "templatesaverbase.h"
 #include "templatesaverdb.h"
@@ -123,7 +123,7 @@ void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
     } else if( cp->getType() == KALKPART_MATERIAL ) {
       ncp = new MaterialCalcPart( *( static_cast<MaterialCalcPart*>(cp) ) );
     } else {
-      kDebug() << "ERROR: Unknown Calculation-Type!" << endl;
+      // qDebug () << "ERROR: Unknown Calculation-Type!" << endl;
     }
     m_calcParts.append( ncp );
   }
@@ -244,11 +244,11 @@ TemplateSaverBase* FloskelTemplate::getSaver()
 bool FloskelTemplate::save()
 {
     TemplateSaverBase *saver = getSaver();
-    kDebug() << "Saver is " << saver << endl;
+    // qDebug () << "Saver is " << saver << endl;
     if( saver ) {
         return saver->saveTemplate( this );
     } else {
-        kDebug() << "ERR: No saver available!" << endl;
+        // qDebug () << "ERR: No saver available!" << endl;
         return false;
     }
 }

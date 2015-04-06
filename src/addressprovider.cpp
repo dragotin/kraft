@@ -24,6 +24,7 @@
 #include <Akonadi/Item>
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
+#include <QDebug>
 
 AddressProvider::AddressProvider( QObject *parent )
   :QObject( parent )
@@ -51,7 +52,7 @@ void AddressProvider::getAddressee( const QString& uid )
 {
     if( uid.isEmpty() || mUidSearches.contains( uid ) ) {
         // search is already running
-        kDebug() << "Search already underways!";
+        // qDebug () << "Search already underways!";
         return;
     }
 
@@ -85,7 +86,7 @@ void AddressProvider::searchResult( KJob* job )
     uid = mUidSearchJobs.value( job );
 
     if( job->error() ) {
-        kDebug() << "Address Search job failed: " << job->errorString();
+        // qDebug () << "Address Search job failed: " << job->errorString();
     } else {
 #if KDE_IS_VERSION(4,12,0)
         Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
@@ -97,19 +98,19 @@ void AddressProvider::searchResult( KJob* job )
                 contact = item.payload<KABC::Addressee>();
                 uid = contact.uid();
                 cnt++;
-                kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+                // qDebug () << "Found uid search job for UID " << uid << " = " << contact.realName();
                 emit addresseeFound( uid, contact );
            }
         }
 #else
 	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
         const KABC::Addressee::List contacts = searchJob->contacts();
-        kDebug() << "Found list of " << contacts.size() << " addresses as search result";
+        // qDebug () << "Found list of " << contacts.size() << " addresses as search result";
 
         if( mUidSearchJobs.contains( job )) {            
             if( contacts.size() > 0 ) {
                 contact = contacts[0];
-                kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+                // qDebug () << "Found uid search job for UID " << uid << " = " << contact.realName();
             }
             emit addresseeFound( uid, contact );
             cnt++;

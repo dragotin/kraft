@@ -18,7 +18,7 @@
 
 #include <kiconloader.h>
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kmenu.h>
 
 #include "matkatalog.h"
@@ -58,10 +58,10 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
   Katalog *k = KatalogMan::self()->getKatalog( katName );
   MatKatalog *catalog = static_cast<MatKatalog*>( k );
   if( ! catalog ) {
-    kDebug() << "No catalog in listview available!" << endl;
+    // qDebug () << "No catalog in listview available!" << endl;
     return;
   }
-  kDebug() << "setting up meterial chapters --------*********************************+++!" << endl;
+  // qDebug () << "setting up meterial chapters --------*********************************+++!" << endl;
   setupChapters();
 
   const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
@@ -105,7 +105,7 @@ void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ,
 
   if ( item && mat ) {
     Einheit e = mat->getUnit();
-    kDebug() << "Setting material name " << e.einheitSingular() << endl;
+    // qDebug () << "Setting material name " << e.einheitSingular() << endl;
     item->setText( 0, mat->name() );
     item->setText( 1, QString::number( mat->getAmountPerPack() ) );
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
@@ -113,7 +113,7 @@ void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ,
     item->setText( 4, mat->salesPrice().toString( loc ) );
     item->setText( 5, mat->lastModified() );
   } else {
-    kDebug() << "Unable to freshup item - data invalid" << endl;
+    // qDebug () << "Unable to freshup item - data invalid" << endl;
   }
 }
 

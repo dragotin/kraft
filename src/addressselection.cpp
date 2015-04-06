@@ -21,7 +21,7 @@
 #include "ktreeviewsearchline.h"
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kdialog.h>
 
 #include <kabc/addresseelist.h>

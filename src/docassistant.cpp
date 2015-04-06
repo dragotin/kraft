@@ -27,6 +27,7 @@
 #include <kvbox.h>
 #include <khtml_part.h>
 #include <khtmlview.h>
+#include <QDebug>
 
 #include "docassistant.h"
 #include "docpostcard.h"
@@ -196,7 +197,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
 void DocAssistant::slotAddToDocument()
 {
-  kDebug() << "SlotAddToDocument called!" << endl;
+  // qDebug () << "SlotAddToDocument called!" << endl;
   if ( mCurrTemplateProvider ) {
     mCurrTemplateProvider->slotTemplateToDocument();
   }
@@ -225,7 +226,7 @@ void DocAssistant::slotTemplateSelectionChanged( )
 void DocAssistant::slotCatalogSelectionChanged(QTreeWidgetItem *current ,QTreeWidgetItem *)
 {
   // enable the move-to-document button.
-  kDebug() << "catalog position selection changed!" << endl;
+  // qDebug () << "catalog position selection changed!" << endl;
   if ( current ) {
     mPbAdd->setEnabled( true );
   } else {
@@ -286,7 +287,7 @@ void DocAssistant::slotAddressToDocument( const Addressee& adr )
 /* Slot that initiates an edit */
 void DocAssistant::slotEditTemplate()
 {
-  kDebug() << "Editing a template using the currentTemplProvider" << endl;
+  // qDebug () << "Editing a template using the currentTemplProvider" << endl;
   if ( mCurrTemplateProvider ) {
     mCurrTemplateProvider->slotSetDocType( mDocType );
     mCurrTemplateProvider->slotEditTemplate();
@@ -343,7 +344,7 @@ void DocAssistant::slotToggleShowTemplates( bool on )
 
 void DocAssistant::slotRenderCompleted()
 {
-  // kDebug() << "Render completed: " << mPostCard->view()->contentsHeight() << endl;
+  // qDebug() << "Render completed: " << mPostCard->view()->contentsHeight() << endl;
 
 #if 0
   /* This is unfortunately not working because contentsHeight is always as
@@ -376,7 +377,7 @@ void DocAssistant::slotSelectDocPart( int p )
   } else if( mActivePage == KraftDoc::Footer ) {
     mCurrTemplateProvider = mFooterTemplateProvider;
   } else {
-    kDebug() << "Alert: Unknown document part id: " << p;
+    // qDebug () << "Alert: Unknown document part id: " << p;
   }
   emit selectPage( p );
   slotToggleShowTemplates( !mFullPreview );
@@ -414,9 +415,9 @@ void DocAssistant::setFullPreview( bool setFull, int id )
   if ( setFull ) {
     /* remember the sizes used before */
     if ( mTemplatePane->isVisible() ) {
-      // kDebug() << "Writing mSplitterSizes: " << mMainSplit->sizes() << endl;
+      // qDebug() << "Writing mSplitterSizes: " << mMainSplit->sizes() << endl;
       // KraftSettings::self()->setAssistantSplitterSetting( mMainSplit->sizes() );
-    //  KraftSettings::self()->writeConfig();
+      //  KraftSettings::self()->writeConfig();
     }
 
     mTemplatePane->hide();

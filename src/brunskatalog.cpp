@@ -19,7 +19,7 @@
 #include <QTextStream>
 #include <QRegExp>
 
-#include <kdebug.h>
+#include <QDebug>
 #include <kfiledialog.h>
 #include <klocale.h>
 
@@ -36,19 +36,19 @@ BrunsKatalog::BrunsKatalog( const QString& n )
   m_dataFile    = DatabaseSettings::self()->brunsDataFile();
 
   if( m_dataFile.isEmpty() ) {
-    kError() << "Unable to open bruns data file!" << endl;
+    qCritical() << "Unable to open bruns data file!" << endl;
 
     m_dataFile = KFileDialog::getOpenFileName( QUrl(),
                                                "Artikelstamm_2008_2009.txt", 0,
                                                i18n("Select Bruns Catalog Data File") );
     DatabaseSettings::self()->setBrunsDataFile( m_dataFile );
-    kDebug() << "Set data file to " << m_dataFile << endl;
+    // qDebug () << "Set data file to " << m_dataFile << endl;
   } else {
-    kDebug() << "Opening bruns data file from " << m_dataFile << endl;
+    // qDebug () << "Opening bruns data file from " << m_dataFile << endl;
   }
 
   if( m_chapterFile.isEmpty() ) {
-    kError() << "Unable to open bruns key file!" << endl;
+    qCritical() << "Unable to open bruns key file!" << endl;
 
     m_chapterFile = KFileDialog::getOpenFileName( QUrl(),
                                                   "key_2008.txt", 0,
@@ -56,7 +56,7 @@ BrunsKatalog::BrunsKatalog( const QString& n )
     DatabaseSettings::self()->setBrunsKeyFile( m_chapterFile );
     // DatabaseSettings::self()->writeConfig();
   } else {
-    kDebug() << "Opening bruns chapter file from " << m_chapterFile << endl;
+    // qDebug () << "Opening bruns chapter file from " << m_chapterFile << endl;
   }
 
   setReadOnly( true );
@@ -89,7 +89,7 @@ QStringList BrunsKatalog::formatQuality( BrunsSize& bSize ) {
   i = bSize.getSizeAdd();
   str = m_sizeAdds[i];
 
-  // kDebug() << "H ist " << *h << " and Str ist " << str << endl;
+  // qDebug() << "H ist " << *h << " and Str ist " << str << endl;
   if( h && str ) {
     res << ( *h + " " + *str );
   } else if ( h ) {
@@ -131,7 +131,7 @@ void BrunsKatalog::reload( dbID )
 int BrunsKatalog::load()
 {
   int cnt = 0;
-  kDebug() << "Loading brunskatalog from " << m_dataFile << endl;
+  // qDebug () << "Loading brunskatalog from " << m_dataFile << endl;
   loadDBKeys();
 
   QFile file( m_dataFile );
@@ -152,11 +152,11 @@ int BrunsKatalog::load()
       d = intPart(line, 0,6);
       if( d > 0) {
         if( ! ok )
-          kDebug() << "failed to parse!" << endl;
+          // qDebug () << "failed to parse!" << endl;
 
         int pgroup = intPart(line, 12,18);
         int artID = intPart(line, 18, 24);
-        // kDebug() << "Have plant group " << pgroup << endl;
+        // qDebug() << "Have plant group " << pgroup << endl;
 
         BrunsSize size;
         size.setFormNo(intPart(line, 34, 38));
@@ -209,7 +209,7 @@ int BrunsKatalog::load()
       }
     }
   } else {
-    kDebug() << "Unable to open " << m_dataFile << endl;
+    // qDebug () << "Unable to open " << m_dataFile << endl;
   }
   return cnt;
 }
@@ -260,7 +260,7 @@ BrunsRecordList* BrunsKatalog::getRecordList( const CatalogChapter& chap )
 inline int BrunsKatalog::intPart( const QString& str, int from, int to ) {
   bool ok = true;
   const QString s = str.mid(from, to-from);
-  // kDebug() << ">" << s << "<" << endl;
+  // qDebug() << ">" << s << "<" << endl;
   return s.toInt(&ok, 10);
 }
 
@@ -297,9 +297,9 @@ void BrunsKatalog::loadDBKeys() {
           CatalogChapter c( id, m_setID, katName, 0 );
           mChapters.append( c );
         } else {
-          // kDebug() << "Inserting Brunskatalog name " << katName << endl;
+          // qDebug() << "Inserting Brunskatalog name " << katName << endl;
           if( currDict == &m_rootPacks ) {
-            kDebug() << "inserting RootPack: " << katName << endl;
+            // qDebug () << "inserting RootPack: " << katName << endl;
           }
           if( currDict ) {
             currDict->insert(id, new QString(katName));
@@ -315,46 +315,46 @@ void BrunsKatalog::loadDBKeys() {
           }
         }
       } else {
-        // kDebug() << "THis is line : " << line << endl;
+        // qDebug() << "THis is line : " << line << endl;
         if( line == "Tabelle der Pflanzengruppen:" ) {
           doChapters = true;
         } else if( line == "Tabelle der Warenengruppen:" ) {
-          kDebug() << "Loading Warengruppen" << endl;
+          // qDebug () << "Loading Warengruppen" << endl;
           currDict = &m_goods;
           longDict = 0;
           doChapters = false;
         } else if( line.startsWith("Tabelle der Formzus") ) {
-          kDebug() << "Loading Formzusätze" << endl;
+          // qDebug () << "Loading Formzusätze" << endl;
           currDict = &m_formAdds;
           longDict = &m_formAddsLong;
           doChapters = false;
         } else if( line == "Tabelle der Formen:") {
-          kDebug() << "Loading Formen" << endl;
+          // qDebug () << "Loading Formen" << endl;
           currDict = &m_forms;
           longDict = &m_formsLong;
           doChapters = false;
         } else if( line == "Tabelle der Wuchsarten:") {
-          kDebug() << "Loading Wuchsarten" << endl;
+          // qDebug () << "Loading Wuchsarten" << endl;
           currDict = &m_grows;
           longDict = 0;
           doChapters = false;
         } else if( line == "Tabelle der Wurzelverpackungen:") {
-          kDebug() << "Loading Wurzelverpackungen" << endl;
+          // qDebug () << "Loading Wurzelverpackungen" << endl;
           currDict = &m_rootPacks;
           longDict = 0;
           doChapters = false;
         }  else if( line.startsWith( "Tabelle der Qualit" ) ) { // \u00e4tszus\u00e4tze:") {
-          kDebug() << "Loading Qualitätszusätze" << endl;
+          // qDebug () << "Loading Qualitätszusätze" << endl;
           currDict = &m_qualities;
           longDict = &m_qualitiesLong;
           doChapters = false;
         } else if( line.contains( rxpZusatz ) ) {
-          kDebug() << "Loading Grössenzusätze" << endl;
+          // qDebug () << "Loading Grössenzusätze" << endl;
           currDict = &m_sizeAdds;
           longDict = &m_sizeAddsLong;
           doChapters = false;
         } else if( line.contains( rxpStufe ) ) {
-          kDebug() << "Loading Grössenstufen" << endl;
+          // qDebug () << "Loading Grössenstufen" << endl;
           currDict = &m_sizes;
           longDict = 0;
           doChapters = false;

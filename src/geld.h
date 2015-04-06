@@ -20,12 +20,8 @@
 #define _GELD_H
 
 #include "kraftcat_export.h"
-// include files
-#include <klocale.h>
-/**
- *
- */
 
+class QLocale;
 
 class KRAFTCAT_EXPORT Geld
 {
@@ -49,8 +45,8 @@ public:
 
     Geld percent( double );
 
-    QString toString( KLocale* ) const;
-    QString toHtmlString( KLocale* ) const;
+    QString toString( QLocale* ) const;
+    QString toHtmlString( QLocale* ) const;
     double toDouble();
     long   toLong();
 private:

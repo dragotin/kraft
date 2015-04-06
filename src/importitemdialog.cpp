@@ -27,7 +27,7 @@
 
 // include files for KDE
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kstandarddirs.h>
 #include <kurlrequester.h>
 #include <kvbox.h>
@@ -102,7 +102,7 @@ QComboBox *ImportItemDialog::getPositionCombo()
 void ImportItemDialog::setPositionList( DocPositionList list, int intendedPos )
 {
   if ( ! getPositionCombo() ) {
-    kError() << "Can not get a ptr to the position combo";
+    qCritical() << "Can not get a ptr to the position combo";
     return;
   }
   QStringList strList;
@@ -135,7 +135,7 @@ QString ImportItemDialog::readFilterSpecs()
   QString firstFilter;
 
   for ( QStringList::Iterator it = filters.begin(); it != filters.end(); ++it ) {
-    kDebug() << " -> Import filter file " << *it;
+    // qDebug () << " -> Import filter file " << *it;
     DocPositionImportFilter filter;
     filter.readDefinition( *it );
     filter.parseDefinition();

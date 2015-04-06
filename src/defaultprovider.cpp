@@ -20,7 +20,7 @@
 
 #include <klocale.h>
 #include <kglobal.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "defaultprovider.h"
 #include "kraftdb.h"
@@ -65,7 +65,7 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
                          "DocTypes types WHERE texts.docTypeId=types.docTypeID AND "
                          "types.name=\'%1\' AND textType = \'%2\'").arg( docType ).arg( typeStr );
 
-  // kDebug() << "Reading texts from DB with: " << sql << endl;
+  // qDebug() << "Reading texts from DB with: " << sql << endl;
 
   QSqlQuery query( sql );
   if ( query.isActive() ) {
@@ -108,7 +108,7 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
   model.setTable( "DocTexts" );
 
   if ( t.dbId().isOk() ) {
-    kDebug() << "Doing update!";
+    // qDebug () << "Doing update!";
     model.setFilter( "docTextID=" + t.dbId().toString() );
     model.select();
 
@@ -125,7 +125,7 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
       model.submitAll();
     }
   } else {
-    kDebug() << "Doing insert!";
+    // qDebug () << "Doing insert!";
     QSqlRecord record = model.record();
     record.setValue( "name", t.name() );
     record.setValue( "description", t.description() );
@@ -157,7 +157,7 @@ void DefaultProvider::deleteDocumentText( const DocText& dt )
     q.prepare("DELETE FROM DocTexts WHERE docTextID=" + dt.dbId().toString() ) ;
     q.exec();
   } else {
-    kDebug() << "Delete document text not ok: " << dt.text();
+    // qDebug () << "Delete document text not ok: " << dt.text();
   }
 }
 

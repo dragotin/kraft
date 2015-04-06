@@ -20,7 +20,7 @@
 
 // include files for KDE
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "matkatalog.h"
 #include "kraftdb.h"
@@ -79,7 +79,7 @@ void MatKatalog::deleteMaterial( int id )
   StockMaterialListIterator it( mAllMaterial );
   int cnt = 0;
 
-  kDebug() << "Deleting material id=" << id;
+  // qDebug () << "Deleting material id=" << id;
   while( it.hasNext() ) {
     StockMaterial *mat = it.next();
     if( mat->getID() == id ) {
@@ -96,7 +96,7 @@ void MatKatalog::deleteMaterial( int id )
   q.prepare( "DELETE FROM stockMaterial WHERE matID=:Id");
   q.bindValue( ":Id", id );
   q.exec();
-  kDebug() << "SQL Delete Success: " << q.lastError().text();
+  // qDebug () << "SQL Delete Success: " << q.lastError().text();
 
 }
 

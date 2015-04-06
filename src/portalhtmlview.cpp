@@ -15,7 +15,7 @@
 #include "portalhtmlview.h"
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 PortalHtmlView::PortalHtmlView( QWidget *parent )
   : HtmlView( parent )
@@ -26,20 +26,20 @@ PortalHtmlView::PortalHtmlView( QWidget *parent )
 bool PortalHtmlView::urlSelected( const QString &url, int, int,
                                   const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments &)
 {
-  kDebug() << "HtmlView::urlSelected(): " << url << endl;
+  // qDebug () << "HtmlView::urlSelected(): " << url << endl;
 
   QUrl kurl( url );
   const QString katName = QUrlQuery(kurl).queryItemValue( "kat" );
   const QString action = QUrlQuery(kurl).queryItemValue( "action" );
 
-  kDebug() << "Action " << action;
+  // qDebug () << "Action " << action;
 
   if ( action == "open" ) {
-    kDebug() << "open catalog " << katName << endl;
+    // qDebug () << "open catalog " << katName << endl;
     emit( openCatalog( katName ) );
     return true;
   } else {
-    kDebug() << "unknown action " << action << endl;
+    // qDebug () << "unknown action " << action << endl;
   }
   return false;
 }

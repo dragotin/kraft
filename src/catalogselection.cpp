@@ -27,7 +27,7 @@
 #include "brunskataloglistview.h"
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kdialog.h>
 #include <kaction.h>
 #include <kactioncollection.h>
@@ -104,7 +104,7 @@ Katalog* CatalogSelection::currentSelectedKat()
   Katalog *kat = KatalogMan::self()->getKatalog( currentCat );
 
   if ( ! kat ) {
-    kError() << "Could not find catalog " << currentCat << endl;
+    qCritical() << "Could not find catalog " << currentCat << endl;
   }
   return kat;
 }
@@ -116,7 +116,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
   if ( ! kat ) {
     const QString type = KatalogMan::self()->catalogTypeString( katName );
 
-    kDebug() << "Catalog type for cat " << katName << " is " << type << endl;
+    // qDebug () << "Catalog type for cat " << katName << " is " << type << endl;
     if ( type == "TemplCatalog" ) {
       kat = new TemplKatalog( katName );
     } else if ( type == "MaterialCatalog"  ) {
@@ -128,7 +128,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
     if ( kat ) {
       KatalogMan::self()->registerKatalog( kat );
     } else {
-      kError() << "Could not find a catalog type for catname " << katName << endl;
+      qCritical() << "Could not find a catalog type for catname " << katName << endl;
     }
   }
 
@@ -151,7 +151,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
 
         mWidgets->addWidget( tmpllistview );
         mWidgetMap.insert(  katName, tmpllistview );
-        kDebug() << "Creating a selection list for catalog " << katName << endl;
+        // qDebug () << "Creating a selection list for catalog " << katName << endl;
       } else if ( kat->type() == MaterialCatalog ) {
         MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
         katListView = matListView;
@@ -174,7 +174,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
                                                 this, SIGNAL( actionAppendPosition() ) );
         mWidgets->addWidget( brunsListView );
         mWidgetMap.insert(  katName, brunsListView );
-        kDebug() << "Creating a selection list for catalog " << katName << endl;
+        // qDebug () << "Creating a selection list for catalog " << katName << endl;
       }
 
       if ( katListView ) {

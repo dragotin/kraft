@@ -1,6 +1,6 @@
 #include "kraftdocedit.h"
 
-#include <kdebug.h>
+#include <QDebug>
 
 KraftDocEdit::KraftDocEdit( QWidget *parent )
   : QWidget( parent )

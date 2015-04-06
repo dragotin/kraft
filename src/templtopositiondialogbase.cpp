@@ -18,7 +18,7 @@
 #include <QComboBox>
 
 #include <kdialog.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 
 #include "templtopositiondialogbase.h"
@@ -43,7 +43,7 @@ TemplToPositionDialogBase::~TemplToPositionDialogBase()
 void TemplToPositionDialogBase::setPositionList( DocPositionList list, int intendedPos )
 {
   if ( ! getPositionCombo() ) {
-    kError() << "Can not get a ptr to the position combo" << endl;
+    qCritical() << "Can not get a ptr to the position combo" << endl;
     return;
   }
   QStringList strList;
@@ -66,7 +66,7 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
 int TemplToPositionDialogBase::insertAfterPosition()
 {
   int itemPos = getPositionCombo()->currentIndex();
-  kDebug() << "Current item selected: " << itemPos << endl;
+  // qDebug () << "Current item selected: " << itemPos << endl;
 
   return itemPos;
 }

@@ -29,7 +29,7 @@
 
 #include <kpushbutton.h>
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "defaultprovider.h"
 #include "impviewwidgets.h"
@@ -103,7 +103,7 @@ void PrefsUnits::save()
   if( ! ok ) {
       QString err = mUnitsModel->lastError().text();
 
-      kDebug() << "SQL Error: " << err;
+      // qDebug () << "SQL Error: " << err;
   }
 }
 
@@ -190,7 +190,7 @@ UnitsEditDialog::UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *p
 void UnitsEditDialog::accept()
 {
   bool ok = mapper->submit();
-  kDebug() << "Mapper submitted ok: " << ok;
+  // qDebug () << "Mapper submitted ok: " << ok;
   KDialog::accept();
   deleteLater();
 }

@@ -23,7 +23,7 @@
 
 // include files for KDE
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kglobal.h>
 
 #include "kraftdb.h"
@@ -60,7 +60,7 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 
     if( model.rowCount() > 0)
     {
-        kDebug() << "Updating material " << mat->getID() << endl;
+        // qDebug () << "Updating material " << mat->getID() << endl;
 
         // mach update
         buffer = model.record(0);
@@ -71,7 +71,7 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
     else
     {
         // insert
-        kDebug() << "Creating new material database entry" << endl;
+        // qDebug () << "Creating new material database entry" << endl;
 
         fillMaterialBuffer( buffer, mat, true );
         model.insertRecord(-1, buffer);
@@ -79,13 +79,13 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 
         /* Jetzt die neue Template-ID selecten */
         dbID id = KraftDB::self()->getLastInsertID();
-        kDebug() << "New Database ID=" << id.toInt() << endl;
+        // qDebug () << "New Database ID=" << id.toInt() << endl;
 
         if( id.isOk() ) {
             mat->setID( id.toInt() );
             templID = id.toString();
         } else {
-            kDebug() << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
+            // qDebug () << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
             res = false;
         }
     }
@@ -113,7 +113,7 @@ void MaterialSaverDB::fillMaterialBuffer( QSqlRecord &rec, StockMaterial *mat, b
 void MaterialSaverDB::saveTemplateChapter( StockMaterial* tmpl )
 {
     if( ! tmpl ) {
-        kDebug() << "Parameter error, zero material!";
+        // qDebug () << "Parameter error, zero material!";
         return;
     }
     dbID id = tmpl->getID();
@@ -129,12 +129,12 @@ void MaterialSaverDB::saveTemplateChapter( StockMaterial* tmpl )
 
     if( model.rowCount() > 0)
     {
-        kDebug() << "Updating material chapter " << templID << endl;
+        // qDebug () << "Updating material chapter " << templID << endl;
         buffer = model.record(0);
         buffer.setValue( "chapterID", chapId.toString() );
         model.setRecord(0, buffer);
         model.submitAll();
     } else {
-        kDebug() << "Could not update material chapter, not found with id " << templID;
+        // qDebug () << "Could not update material chapter, not found with id " << templID;
     }
 }

@@ -33,6 +33,7 @@
 #include <kmessagebox.h>
 #include <kinputdialog.h>
 #include <kvbox.h>
+#include <QDebug>
 
 #include "prefsdialog.h"
 #include "kraftsettings.h"
@@ -151,21 +152,21 @@ void NumberCycleDialog::updateCycleDataFromGUI()
 {
   // Store the updated values
   if ( !mSelectedCycle.isEmpty() ) {
-    kDebug() << "Updating the cycle: " << mSelectedCycle;
+    // qDebug () << "Updating the cycle: " << mSelectedCycle;
 
     if ( mNumberCycles.contains( mSelectedCycle ) ) {
       QString h = mBaseWidget->mIdTemplEdit->text();
       mNumberCycles[mSelectedCycle].setTemplate( h );
-      kDebug() << "Number Cycle Template: " << h;
+      // qDebug () << "Number Cycle Template: " << h;
 
       int num = mBaseWidget->mCounterEdit->value();
-      kDebug() << "Number Edit: " << num;
+      // qDebug () << "Number Edit: " << num;
       mNumberCycles[mSelectedCycle].setCounter( num );
     } else {
-      kDebug() << "WRN: NumberCycle " << mSelectedCycle << " is not known";
+      // qDebug () << "WRN: NumberCycle " << mSelectedCycle << " is not known";
     }
   } else {
-    kDebug() << "The selected cycle name is Empty!";
+    // qDebug () << "The selected cycle name is Empty!";
   }
 
 }
@@ -177,10 +178,10 @@ void NumberCycleDialog::slotNumberCycleSelected( int num )
   // set the new data of the selected cycle
   QString name = mBaseWidget->mCycleListBox->item( num )->text();
   if ( ! mNumberCycles.contains( name ) ) {
-    kDebug() << "No numbercycle found at pos " << num;
+    // qDebug () << "No numbercycle found at pos " << num;
   }
   NumberCycle nc = mNumberCycles[name];
-  kDebug() << "Selected number cycle number " << num;
+  // qDebug () << "Selected number cycle number " << num;
 
   mBaseWidget->mIdTemplEdit->setText( nc.getTemplate() );
   mBaseWidget->mCounterEdit->setMinimum( 0 ); // nc.counter() );
@@ -223,7 +224,7 @@ void NumberCycleDialog::slotAddCycle()
     mNumberCycles[newName] = numCycle;
     mBaseWidget->mCycleListBox->addItem( numCycle.name() );
   } else {
-    kDebug() << "The name is not unique!";
+    // qDebug () << "The name is not unique!";
   }
   QListWidgetItem *item = mBaseWidget->mCycleListBox->findItems( newName, Qt::MatchExactly ).first();
   if ( item ) {
@@ -271,7 +272,7 @@ bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
 
 void NumberCycleDialog::accept()
 {
-  kDebug() << "Slot Ok hit";
+  // qDebug () << "Slot Ok hit";
 
   // get the changed stuff from the gui elements
   updateCycleDataFromGUI();
@@ -282,7 +283,7 @@ void NumberCycleDialog::accept()
     qDel.prepare( "DELETE FROM numberCycles WHERE name=:name" );
     for ( QStringList::Iterator it = mRemovedCycles.begin();
           it != mRemovedCycles.end(); ++it ) {
-      kDebug() << "about to drop the number cycle " << *it;
+      // qDebug () << "about to drop the number cycle " << *it;
       if ( dropOfNumberCycleOk( *it ) ) {
         qDel.bindValue( ":name", *it );
         qDel.exec();
@@ -309,7 +310,7 @@ void NumberCycleDialog::accept()
     // name changes can not happen by design
     q.exec();
     if ( q.next() ) {
-      kDebug() << "Checking existing number cycle " << cycleName << " for update";
+      // qDebug () << "Checking existing number cycle " << cycleName << " for update";
       // there is an entry
       if ( q.value( 2 ).toInt() != cycle.counter() ) {
         bool doUpdate = true;
@@ -337,7 +338,7 @@ void NumberCycleDialog::accept()
         updateField( q.value( 0 ).toInt(), "identTemplate", cycle.getTemplate() );
       }
     } else {
-      kDebug() << "This number cycle is new: " << cycleName;
+      // qDebug () << "This number cycle is new: " << cycleName;
       QSqlQuery qIns;
       qIns.prepare( "INSERT INTO numberCycles (name, lastIdentNumber, identTemplate) "
                     "VALUES (:name, :number, :templ)" );

@@ -16,7 +16,7 @@
  ***************************************************************************/
 #include <QtGui>
 
-#include <kdebug.h>
+#include <QDebug>
 #include <kstandarddirs.h>
 #include <kstringhandler.h>
 
@@ -204,7 +204,7 @@ void CreateDbPage::setCreateCmdsCurrent( int cnt )
 
 void CreateDbPage::slotStatusMessage( const QString& msg )
 {
-  kDebug() << "############### success: " << msg;
+  // qDebug () << "############### success: " << msg;
   ui.mCreateStatus->setText( msg );
 }
 
@@ -299,7 +299,7 @@ OwnAddressPage::~OwnAddressPage()
 void OwnAddressPage::contactStored( const Akonadi::Item& item )
 {
   KABC::Addressee addressee  = item.payload<KABC::Addressee>();
-  kDebug() << "Contact was stored in Akonadi: " << addressee.name();
+  // qDebug () << "Contact was stored in Akonadi: " << addressee.name();
 }
 
 void OwnAddressPage::gotMyAddress( Addressee addressee )
@@ -386,10 +386,10 @@ SetupAssistant::SetupAssistant( QWidget *parent )
 void SetupAssistant::next( )
 {
   KPageWidgetItem *item = currentPage();
-  kDebug() << "Next was hit with " << item->name();
+  // qDebug () << "Next was hit with " << item->name();
 
   if( item == mWelcomePageItem ) {
-    kDebug() << "Nothing to do for the Welcome-Page";
+    // qDebug () << "Nothing to do for the Welcome-Page";
   } else if( item == mDbSelectPageItem ) {
     handleDatabaseBackendSelect();
   } else if( item == mMysqlDetailsPageItem ) {
@@ -427,10 +427,10 @@ void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidg
     }
 
     if( !KraftDB::self()->databaseExists() ) {
-      kDebug() << "Start to create the database";
+      // qDebug () << "Start to create the database";
       startDatabaseCreation();
     } else {
-      kDebug() << "CreateDB-Page: Database already existing";
+      // qDebug () << "CreateDB-Page: Database already existing";
       mCreateDbPage->setStatusText( i18n( "<p>The database is already existing, no action needs to be taken here.</p>"
                                           "<p>Please hit <b>next</b> to proceed.</p>" ) );
     }
@@ -438,10 +438,10 @@ void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidg
 
   if( current == mUpgradeDbPageItem ) {
     if( KraftDB::self()->databaseExists() ) {
-      kDebug() << "start to update the database";
+      // qDebug () << "start to update the database";
       startDatabaseUpdate();
     } else {
-      kDebug() << "Strange problem at dbupdate: DB does not exist";
+      // qDebug () << "Strange problem at dbupdate: DB does not exist";
     }
   }
 
@@ -466,7 +466,7 @@ void SetupAssistant::slotFinishedClicked( )
     DatabaseSettings::self()->setDbPassword( mMysqlDetailsPage->dbPasswd() );
   }
   DatabaseSettings::self()->writeConfig();
-  kDebug() << "Database backend config written.";
+  // qDebug () << "Database backend config written.";
 }
 
 void SetupAssistant::finalizePage()
@@ -487,7 +487,7 @@ void SetupAssistant::finalizePage()
       txt += "<p>" + err + "</p>";
     }
   }
-  // kDebug() << "this is the status text: " << txt;
+  // qDebug() << "this is the status text: " << txt;
   mFinalStatusPage->slotSetStatusText( txt );
 }
 
@@ -522,7 +522,7 @@ void SetupAssistant::startDatabaseUpdate()
   while ( currentVer < KraftDB::self()->requiredSchemaVersion() ) {
     ++currentVer;
     const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
-    kDebug() << "######### Reading " << migrateFilename;
+    // qDebug () << "######### Reading " << migrateFilename;
     mUpgradeDbPage->slotSetStatusText( i18n("Reading upgrade command file %1").arg( migrateFilename ) );
     SqlCommandList cmds = KraftDB::self()->parseCommandFile( migrateFilename );
     overallCmdCount += cmds.count();
@@ -530,7 +530,7 @@ void SetupAssistant::startDatabaseUpdate()
   }
   mUpgradeDbPage->slotSetOverallCount( overallCmdCount );
 
-  kDebug() << "4.";
+  // qDebug () << "4.";
   connect( KraftDB::self(), SIGNAL( statusMessage( const QString& ) ),
            mUpgradeDbPage,  SLOT( slotSetStatusText( const QString& ) ) );
 
@@ -546,11 +546,11 @@ void SetupAssistant::startDatabaseUpdate()
     int goodCmds = KraftDB::self()->processSqlCommands( cmds );
     doneOverallCmds += goodCmds;
     if( goodCmds != cmds.count() ) {
-      kDebug() << "Only performned " << goodCmds << " out of " << cmds.count();
+      // qDebug () << "Only performned " << goodCmds << " out of " << cmds.count();
       errors = true;
       break;
     } else {
-      kDebug() << goodCmds << " commands performed well!";
+      // qDebug () << goodCmds << " commands performed well!";
       KraftDB::self()->setSchemaVersion( QString::number( currentVer ));
     }
   }
@@ -602,10 +602,10 @@ void SetupAssistant::startDatabaseCreation()
 
   bool res = true;
   if( creates != createCommands.count() ) {
-    kDebug() << "NOT all create commands succeeded!";
+    // qDebug () << "NOT all create commands succeeded!";
     res = false;
   } else {
-    kDebug( ) << creates << "(=All) create commands succeeded!";
+    // qDebug () << creates << "(=All) create commands succeeded!";
 
     // lets do the fillup
     disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0,0 );
@@ -629,7 +629,7 @@ void SetupAssistant::startDatabaseCreation()
 
 void SetupAssistant::handleDatabaseBackendSelect()
 {
-  kDebug() << "Set backend driver type " << mDbSelectPage->selectedDriver();
+  // qDebug () << "Set backend driver type " << mDbSelectPage->selectedDriver();
   if( mDbSelectPage->selectedDriver() == "QSQLITE" ) {
     setAppropriate( mMysqlDetailsPageItem, false );
     setAppropriate( mSqLiteDetailsPageItem, true );
@@ -642,23 +642,23 @@ void SetupAssistant::handleDatabaseBackendSelect()
 void SetupAssistant::handleSqLiteDetails()
 {
   QString file = mSqLiteDetailsPage->url().pathOrUrl();
-  kDebug() << "The SqlLite database file is " << file;
+  // qDebug () << "The SqlLite database file is " << file;
 
   mSqlBackendDriver = mDbSelectPage->selectedDriver();
-  kDebug() << "The database driver is " << mSqlBackendDriver;
+  // qDebug () << "The database driver is " << mSqlBackendDriver;
   KraftDB::self()->dbConnect( mSqlBackendDriver, file );
 
-  kDebug() << "############ database opened: "<< KraftDB::self()->isOk();
+  // qDebug () << "############ database opened: "<< KraftDB::self()->isOk();
   bool dbExists = KraftDB::self()->databaseExists();
 
-  kDebug() << "Database exists: " << dbExists;
+  // qDebug () << "Database exists: " << dbExists;
   if( dbExists ) {
-    kDebug() << "Database exists, no create needed";
+    // qDebug () << "Database exists, no create needed";
     setAppropriate( mCreateDbPageItem, false );
   } else {
     setAppropriate( mCreateDbPageItem, true );
   }
-  kDebug() << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
+  // qDebug () << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
 }
 
 void SetupAssistant::handleMysqlDetails()
@@ -671,19 +671,19 @@ void SetupAssistant::handleMysqlDetails()
 
   KraftDB::self()->dbConnect( driver, databaseName, userName, hostName, password );
 
-  kDebug() << "############ database opened: "<< KraftDB::self()->isOk();
+  // qDebug () << "############ database opened: "<< KraftDB::self()->isOk();
   bool dbExists = KraftDB::self()->databaseExists();
 
-  kDebug() << "Database exists: " << dbExists;
+  // qDebug () << "Database exists: " << dbExists;
   if( dbExists ) {
-    kDebug() << "Database exists, no create needed";
+    // qDebug () << "Database exists, no create needed";
     setAppropriate( mCreateDbPageItem, false );
   } else {
     setAppropriate( mCreateDbPageItem, true );
   }
   mSqlBackendDriver = QLatin1String("QMYSQL");
 
-  kDebug() << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
+  // qDebug () << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
 }
 
 bool SetupAssistant::init( Mode mode )
@@ -713,22 +713,22 @@ bool SetupAssistant::init( Mode mode )
       }
     } else {
       configOrigin = i18n("A valid current database configuration file was found.");
-      kDebug() << "A standard KDE Platform 4.x database config file is there.";
+      // qDebug () << "A standard KDE Platform 4.x database config file is there.";
     }
 
     if( KraftDB::self()->dbConnect() )  { // try to connect with default values
-      kDebug() << "The database can be opened!";
+      // qDebug () << "The database can be opened!";
       if( KraftDB::self()->databaseExists() ) {
-        kDebug() << "The database exists.";
+        // qDebug () << "The database exists.";
 
         if( KraftDB::self()->currentSchemaVersion() != KraftDB::self()->requiredSchemaVersion() ) {
-          kDebug() << "Need a database schema update.";
+          // qDebug () << "Need a database schema update.";
           startDialog = true;
         } else {
-          kDebug() << "Database Schema is OK. Nothing to do for StartupAssistant";
+          // qDebug () << "Database Schema is OK. Nothing to do for StartupAssistant";
         }
       } else {
-        kDebug() << "The database is not existing. It needs to be recreated.";
+        // qDebug () << "The database is not existing. It needs to be recreated.";
         startDialog = true;
 
         text = i18n( "<p>The database can be opened, but does not contain valid content.</p>"
@@ -763,19 +763,19 @@ void SetupAssistant::createDatabase( bool doIt )
 
 bool SetupAssistant::tryMigrateFromKDE3()
 {
-  kDebug() << "tryMigrate";
+  // qDebug () << "tryMigrate";
   KConfig *config = 0;
   bool haveOldConfig  = false;
 
   //We will try to look for an old katalogrc in .kde and .kde3
   if(KStandardDirs::exists(QDir::homePath() + "/.kde/share/config/katalogrc"))
   {
-    kDebug() << "katalogrc found in .kde";
+    // qDebug () << "katalogrc found in .kde";
     config = new KConfig(QDir::homePath() + "/.kde/share/config/katalogrc", KConfig::SimpleConfig);
   }
   else if(KStandardDirs::exists(QDir::homePath() + "/.kde3/share/config/katalogrc"))
   {
-    kDebug() << "katalogrc found in .kde3";
+    // qDebug () << "katalogrc found in .kde3";
     config = new KConfig(QDir::homePath() + "/.kde3/share/config/katalogrc", KConfig::SimpleConfig);
   }
 

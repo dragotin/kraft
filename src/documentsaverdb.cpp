@@ -23,7 +23,7 @@
 
 // include files for KDE
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "documentsaverdb.h"
 #include "docposition.h"
@@ -75,7 +75,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
     QSqlRecord record;
 
-    kDebug() << "############### Document Save ################" << endl;
+    // qDebug () << "############### Document Save ################" << endl;
 
     if( doc->isNew() ) {
         record = model.record();
@@ -85,7 +85,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
       if ( model.rowCount() > 0 ) {
         record = model.record(0);
       } else {
-        kError() << "Could not select document record" << endl;
+        qCritical() << "Could not select document record" << endl;
         return result;
       }
        // The document was already saved.
@@ -101,10 +101,10 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     fillDocumentBuffer( record, doc );
 
     if( doc->isNew() ) {
-      kDebug() << "Doc is new, inserting" << endl;
+      // qDebug () << "Doc is new, inserting" << endl;
       if( !model.insertRecord(-1, record)) {
           QSqlError err = model.lastError();
-          kDebug() << "################# SQL Error: " << err.text();
+          // qDebug () << "################# SQL Error: " << err.text();
       }
       model.submitAll();
 
@@ -123,7 +123,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
       }
 
     } else {
-      kDebug() << "Doc is not new, updating #" << doc->docID().intID() << endl;
+      // qDebug () << "Doc is not new, updating #" << doc->docID().intID() << endl;
 
       record.setValue( "docID", doc->docID().toString() );
 
@@ -133,7 +133,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
     saveDocumentPositions( doc );
 
-    kDebug() << "Saved document no " << doc->docID().toString() << endl;
+    // qDebug () << "Saved document no " << doc->docID().toString() << endl;
 
     return result;
 }
@@ -166,10 +166,10 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         bool doInsert = true;
 
         int posDbID = dp->dbId().toInt();
-        kDebug() << "Saving Position DB-Id: " << posDbID << endl;
+        // qDebug () << "Saving Position DB-Id: " << posDbID << endl;
         if( posDbID > -1 ) {
             const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
-            // kDebug() << "Selecting with " << selStr << endl;
+            // qDebug() << "Selecting with " << selStr << endl;
             model.setFilter( selStr );
             model.select();
             if ( model.rowCount() > 0 ) {
@@ -177,7 +177,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
                     record = model.record(0);
                 doInsert = false;
             } else {
-                kError() << "ERR: Could not select document position record" << endl;
+                qCritical() << "ERR: Could not select document position record" << endl;
                 return;
             }
         } else {
@@ -186,10 +186,10 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         }
 
         if( dp->toDelete() ) {
-            kDebug() << "This one is to delete, do it!" << endl;
+            // qDebug () << "This one is to delete, do it!" << endl;
 
             if( doInsert ) {
-                kWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
+                qWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
             }
             // delete all existing attributes
             dp->attributes().dbDeleteAll( dp->dbId() );
@@ -201,7 +201,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         }
 
         if( record.count() > 0 ) {
-            // kDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
+            // qDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
             QString typeStr = PosTypePosition;
             double price = dp->unitPrice().toDouble();
 
@@ -222,24 +222,24 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
             ordNumber++; // FIXME
 
             if( doInsert ) {
-                kDebug() << "Inserting!" << endl;
+                // qDebug () << "Inserting!" << endl;
                 model.insertRecord(-1, record);
                 model.submitAll();
                 dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
             } else {
-                kDebug() << "Updating!" << endl;
+                // qDebug () << "Updating!" << endl;
                 model.setRecord(0, record);
                 model.submitAll();
             }
         } else {
-            kDebug() << "ERR: No record object found!" << endl;
+            // qDebug () << "ERR: No record object found!" << endl;
         }
 
         dp->attributes().save( dp->dbId() );
 
         QSqlError err = model.lastError();
         if( err.type() != QSqlError::NoError ) {
-            kDebug() << "SQL-ERR: " << err.text() << " in " << model.tableName() << endl;
+            // qDebug () << "SQL-ERR: " << err.text() << " in " << model.tableName() << endl;
         }
 
     }
@@ -250,7 +250,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 void DocumentSaverDB::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
 {
     if( doc ) {
-      kDebug() << "Adressstring: " << doc->address() << endl;
+      // qDebug () << "Adressstring: " << doc->address() << endl;
       buf.setValue( "ident",    doc->ident() );
       buf.setValue( "docType",  doc->docType() );
       buf.setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
@@ -276,11 +276,11 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
     q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, pretext, posttext, docDescription, projectlabel FROM document WHERE docID=:docID");
     q.bindValue(":docID", id);
     q.exec();
-    kDebug() << "Loading document id " << id << endl;
+    // qDebug () << "Loading document id " << id << endl;
 
     if( q.next())
     {
-        kDebug() << "loading document with id " << id << endl;
+        // qDebug () << "loading document with id " << id << endl;
         dbID dbid;
         dbid = id;
         doc->setDocID( dbid );
@@ -324,9 +324,9 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
     q.bindValue(":docID", id);
     q.exec();
 
-    kDebug() << "* loading document positions for document id " << id << endl;
+    // qDebug () << "* loading document positions for document id " << id << endl;
     while( q.next() ) {
-        kDebug() << " loading position id " << q.value( 0 ).toInt() << endl;
+        // qDebug () << " loading position id " << q.value( 0 ).toInt() << endl;
 
         DocPositionBase::PositionType type = DocPositionBase::Position;
         QString typeStr = q.value( 1 ).toString();
@@ -336,7 +336,7 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
           // nice, default position type.
           type = DocPositionBase::Position;
         } else {
-          kDebug() << "ERROR: Strange type string loaded from db: " << typeStr << endl;
+          // qDebug () << "ERROR: Strange type string loaded from db: " << typeStr << endl;
         }
 
         DocPosition *dp = doc->createPosition( type );

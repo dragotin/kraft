@@ -46,6 +46,7 @@
 #include <akonadi/itemview.h>
 #include <AkonadiCore/mimetypechecker.h>
 #include <akonadi/contact/contacteditor.h>
+#include <QDebug>
 
 
 namespace {
@@ -76,8 +77,8 @@ public:
     if ( role == Qt::CheckStateRole ) {
       // Don't show the checkbox if the collection can't contain incidences
       const Akonadi::Collection collection = index.data( Akonadi::EntityTreeModel::CollectionRole ).value<Akonadi::Collection>();
-      // kDebug() << "Collection is Valid: " << collection.isValid();
-      // kDebug() << "Collection is Structural: " << isStructuralCollection( collection );
+      // qDebug() << "Collection is Valid: " << collection.isValid();
+      // qDebug() << "Collection is Structural: " << isStructuralCollection( collection );
       if ( collection.isValid() && isStructuralCollection( collection ) ) {
         return QVariant();
       }
@@ -321,7 +322,7 @@ void AkonadiAddressSelector::slotItemSelected( const Akonadi::Item& item )
     emit addressSelected( contact );
     mButEditContact->setEnabled( true );
   } else {
-    kDebug() << "No address was selected!";
+    // qDebug () << "No address was selected!";
     mButEditContact->setEnabled( false );
   }
 }

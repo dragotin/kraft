@@ -35,7 +35,7 @@
 #include <kstatusbar.h>
 #include <klocale.h>
 #include <kconfig.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kstandardaction.h>
 #include <kstandardshortcut.h>
 #include <kcmdlineargs.h>
@@ -259,7 +259,7 @@ void Portal::slotStartupChecks()
   QString dbName = DatabaseSettings::self()->dbDatabaseName();
 
   if ( !Akonadi::Control::start( this ) ) {
-    kError() << "Failed to start Akonadi!";
+    qCritical() << "Failed to start Akonadi!";
   }
   Akonadi::Control::widgetNeedsAkonadi( this );
   // FIXME: This starts Akonadi and such, check if the decision if the setup
@@ -271,7 +271,7 @@ void Portal::slotStartupChecks()
 
   if( ! KraftDB::self()->isOk() ) {
     QSqlError err = KraftDB::self()->lastError();
-    kDebug() << "The last sql error id: " << err.type() << endl;
+    // qDebug () << "The last sql error id: " << err.type() << endl;
 
     QString text;
 
@@ -317,7 +317,7 @@ void Portal::slotStartupChecks()
     if ( mCmdLineArgs ) {
       QString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
       if ( ! docId.isEmpty() ) {
-        kDebug() << "open a archived document: " << docId << endl;
+        // qDebug () << "open a archived document: " << docId << endl;
         slotPrintDocument( QString(), dbID( docId.toInt() ) );
       }
 
@@ -327,7 +327,7 @@ void Portal::slotStartupChecks()
     // Fetch my address
     QString myUid = KraftSettings::self()->userUid();
     if( ! myUid.isEmpty() ) {
-      kDebug() << "Got My UID: " << myUid;
+      // qDebug () << "Got My UID: " << myUid;
       mAddressProvider->getAddressee( myUid );
     }
 
@@ -338,7 +338,7 @@ void Portal::slotStartupChecks()
 void Portal::slotReceivedMyAddress( const QString& uid, const KABC::Addressee& contact )
 {
   if( contact.isEmpty() ) {
-    kDebug() << "My-Contact is empty!";
+    // qDebug () << "My-Contact is empty!";
     return;
   }
 
@@ -347,7 +347,7 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KABC::Addressee& c
   KraftSettings::self()->setUserUid( contact.uid() );
   KraftSettings::self()->writeConfig();
 
-  kDebug() << "Received my address: " << contact.realName() << "(" << uid << ")";
+  // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
   ReportGenerator::self()->setMyContact( contact );
 
   disconnect( mAddressProvider, SIGNAL( addresseeFound(const QString&, const KABC::Addressee&)),
@@ -413,7 +413,7 @@ void Portal::slotFollowUpDocument()
     wiz.setAvailDocTypes( dt.follower() );
   }
 
-  kDebug() << "doc identifier: "<< doc->docIdentifier() << endl;
+  // qDebug () << "doc identifier: "<< doc->docIdentifier() << endl;
   wiz.setDocIdentifier( doc->docIdentifier() );
   delete doc;
   if ( wiz.exec() ) {
@@ -448,7 +448,7 @@ void Portal::slotCopyDocument( const QString& id )
     doc->setAddressUid( wiz.addressUid() );
     doc->saveDocument();
     m_portalView->docDigestView()->slotUpdateView();
-    kDebug() << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
+    // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
   }
 }
 
@@ -490,7 +490,7 @@ void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
                                                           digest.archDocId().toString(), "pdf" );
   QString file = QString( "%1/%2" ).arg( outputDir ).arg( filename );
 
-  kDebug() << "archived doc selected: " << file << endl;
+  // qDebug () << "archived doc selected: " << file << endl;
   slotOpenPdf( file );
 
 
@@ -500,7 +500,7 @@ void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
 void Portal::slotPrintDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
-  kDebug() << "printing document " << locId << endl;
+  // qDebug () << "printing document " << locId << endl;
 
   busyCursor( true );
   slotStatusMsg( i18n( "Generating PDF..." ) );
@@ -524,7 +524,7 @@ void Portal::slotPrintDocument()
 void Portal::slotMailDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
-  kDebug() << "Mailing document " << locId << endl;
+  // qDebug () << "Mailing document " << locId << endl;
 
   slotStatusMsg( i18n( "Generating PDF..." ) );
   DocumentMan *docman = DocumentMan::self();
@@ -550,7 +550,7 @@ void Portal::slotMailDocument()
 void Portal::slotMailPdfAvailable( const QString& fileName )
 {
     if( fileName.isEmpty() ) {
-        kDebug() << "Filename to mail is empty!";
+        // qDebug () << "Filename to mail is empty!";
         return;
     }
 
@@ -577,9 +577,9 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KABC::Addressee& 
         mailReceiver = contact.fullEmail(); // the prefered email
     }
 
-    kDebug() << "Found mail address " << mailReceiver << " for " << uid;
+    // qDebug () << "Found mail address " << mailReceiver << " for " << uid;
 
-    kDebug() << "Mailing away " << _pdfFileName << endl;
+    // qDebug () << "Mailing away " << _pdfFileName << endl;
 
     disconnect( mAddressProvider, SIGNAL(addresseeFound(QString,KABC::Addressee)),
              this, SLOT(slotMailAddresseeFound(QString, KABC::Addressee)));
@@ -600,10 +600,10 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KABC::Addressee& 
         tmp += QString("attachment='file://%1'").arg(_pdfFileName);
         args.append(tmp);
 
-        kDebug() << "Starting thunderbird: " << prog << args;
+        // qDebug () << "Starting thunderbird: " << prog << args;
 
         if (!QProcess::startDetached(prog, args)) {
-            kDebug() << "Failed to start thunderbird composer!";
+            // qDebug () << "Failed to start thunderbird composer!";
         }
     } else {
         // Use KDE Invocation tool for all other mailers, good luck.
@@ -615,7 +615,7 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KABC::Addressee& 
         }
         mailTo.addQueryItem("attach", _pdfFileName);
 
-        kDebug() << "Use this mailto: " << mailTo << endl;
+        // qDebug () << "Use this mailto: " << mailTo << endl;
 
         KToolInvocation::self()->invokeMailer( mailTo, "Kraft", true );
     }
@@ -678,7 +678,7 @@ void Portal::slotOpenPdf( const QString& fileName )
 void Portal::slotOpenDocument( const QString& id )
 {
   slotStatusMsg( i18n("Opening document %1").arg(id ) );
-  kDebug() << "Opening document " << id;
+  // qDebug () << "Opening document " << id;
   if( !id.isEmpty() ) {
     DocumentMan *docman = DocumentMan::self();
     DocGuardedPtr doc = docman->openDocument( id );
@@ -690,7 +690,7 @@ void Portal::slotOpenDocument( const QString& id )
 
 void Portal::slotDocumentSelected( const QString& doc )
 {
-  // kDebug() << "a doc was selected: " << doc << endl;
+  // qDebug() << "a doc was selected: " << doc << endl;
   if( doc.isEmpty() ) {
     actViewDocument->setEnabled( false );
     actOpenDocument->setEnabled( false );
@@ -734,14 +734,14 @@ void Portal::slotEditTagTemplates()
   TagTemplatesDialog dia( this );
 
   if ( dia.exec() ) {
-    kDebug() << "Editing of tag templates succeeded!" << endl;
+    // qDebug () << "Editing of tag templates succeeded!" << endl;
 
   }
 }
 
 void Portal::slotReconfigureDatabase()
 {
-  kDebug() << "Reconfiguring the Database";
+  // qDebug () << "Reconfiguring the Database";
 
   SetupAssistant assi(this);
   if( assi.init( SetupAssistant::Reinit ) ) {
@@ -784,7 +784,7 @@ void Portal::createView( DocGuardedPtr doc )
   } else {
       mViewMap[doc]->raise();
       // pop first view to front
-      kDebug() << "There is already a view for this doc!" << endl;
+      // qDebug () << "There is already a view for this doc!" << endl;
   }
 }
 
@@ -826,10 +826,10 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
             mViewMap.remove(doc);
             view->deleteLater();
         }
-        kDebug() << "A view was closed saving and doc is new: " << doc->isNew() << endl;
+        // qDebug () << "A view was closed saving and doc is new: " << doc->isNew() << endl;
         delete doc;
     } else {
-        kDebug() << "A view was closed canceled" << endl;
+        // qDebug () << "A view was closed canceled" << endl;
     }
 }
 
@@ -848,7 +848,7 @@ void Portal::closeEvent( QCloseEvent *event )
     QMap<QString, KatalogView *>::iterator i;
     for (i = mKatalogViews.begin(); i != mKatalogViews.end(); ++i) {
         KatalogView *view = i.value();
-        kDebug() << "Windowstate" << view->windowState();
+        // qDebug () << "Windowstate" << view->windowState();
         i.value()->deleteLater();
     }
 
@@ -919,11 +919,11 @@ void Portal::slotShowTemplates(){
 
 void Portal::slotOpenKatalog(const QString& kat)
 {
-    kDebug() << "opening Katalog " << kat << endl;
+    // qDebug () << "opening Katalog " << kat << endl;
 
     if ( mKatalogViews.contains( kat ) ) {
       // bring up the katalog view window.
-      kDebug() << "Katalog " << kat << " already open in a view" << endl;
+      // qDebug () << "Katalog " << kat << " already open in a view" << endl;
 
       mKatalogViews.value(kat)->show();
       mKatalogViews.value(kat)->raise();
@@ -945,7 +945,7 @@ void Portal::slotOpenKatalog(const QString& kat)
         katView = new TemplKatalogView();
       }
       if ( katView ) {
-        kDebug() << katView;
+        // qDebug () << katView;
         katView->init(kat);
         katView->show();
         mKatalogViews.insert(kat, katView);
@@ -957,14 +957,14 @@ void Portal::slotOpenKatalog(const QString& kat)
 
 void Portal::slotOpenKatalog()
 {
-    kDebug() << "opening katalog!" << endl;
+    // qDebug () << "opening katalog!" << endl;
     KatalogView *katView = new TemplKatalogView(); //this);
     katView->show();
 }
 
 void Portal::slotKatalogToXML(const QString& katName)
 {
-    kDebug() << "Generating XML for catalog " << katName << endl;
+    // qDebug () << "Generating XML for catalog " << katName << endl;
 
     Katalog *kat = KatalogMan::self()->getKatalog(katName);
 

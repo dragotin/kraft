@@ -25,6 +25,7 @@
 #include <ktextedit.h>
 #include <kmenu.h>
 #include <kiconloader.h>
+#include <QDebug>
 
 #include "positionviewwidget.h"
 #include "unitmanager.h"
@@ -159,7 +160,7 @@ PositionViewWidget::PositionViewWidget()
 void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
 {
   if( ! dp ) {
-    kError() << "setDocPosition got empty position!" << endl;
+    qCritical() << "setDocPosition got empty position!" << endl;
     return;
   }
 
@@ -200,13 +201,13 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
       } else if ( kindStr == kindString( Demand ) ) {
         slotSetPositionDemand();
       } else {
-        kDebug() << "Unknown position kind!" << endl;
+        // qDebug () << "Unknown position kind!" << endl;
       }
     }
-    kDebug() << "Setting position ptr. in viewwidget: " << pos << endl;
+    // qDebug () << "Setting position ptr. in viewwidget: " << pos << endl;
   } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
     positionDetailStack->setCurrentWidget( discountPage );
-    // kDebug() << " " << dp->type()<< endl;
+    // qDebug() << " " << dp->type()<< endl;
     Attribute discount = amap[DocPosition::Discount];
     mDiscountPercent->setValue( discount.value().toDouble() );
 
@@ -235,7 +236,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     }
     mDiscountTag->setCurrentIndex(mDiscountTag->findText( currentEntry ));
   } else {
-    kDebug() << "unknown doc position type " << dp->type()<< endl;
+    // qDebug () << "unknown doc position type " << dp->type()<< endl;
   }
   slotSetOverallPrice( currentPrice() );
 
@@ -288,7 +289,7 @@ QString PositionViewWidget::extraDiscountTagRestriction()
     currentItem -= 1;
     return taglist[currentItem];
   } else {
-    kDebug() << "taglist index possibly out of range!";
+    // qDebug () << "taglist index possibly out of range!";
   }
   return QString();
 }
@@ -303,7 +304,7 @@ void PositionViewWidget::setLocale( KLocale *loc )
 
 void PositionViewWidget::slotTaggingButtonPressed()
 {
-  kDebug() << "opening tagging dialog" << endl;
+  // qDebug () << "opening tagging dialog" << endl;
 
   PositionTagDialog dia( 0 );
 
@@ -313,7 +314,7 @@ void PositionViewWidget::slotTaggingButtonPressed()
     slotUpdateTagToolTip();
     slotModified();
     update();
-    kDebug() << "Selected tags: " << mTags.join( ", " ) << endl;
+    // qDebug () << "Selected tags: " << mTags.join( ", " ) << endl;
   }
 }
 
@@ -367,7 +368,7 @@ DocPositionBase::TaxType PositionViewWidget::taxType() const
 
 void PositionViewWidget::slotExecButtonPressed()
 {
-  kDebug() << "Opening Context Menu over exec button" << endl;
+  // qDebug () << "Opening Context Menu over exec button" << endl;
 
   // set bg-color
   mExecPopup->popup( QWidget::mapToGlobal( pbExec->pos() ) );
@@ -383,7 +384,7 @@ void PositionViewWidget::slotMenuAboutToShow()
 
 void PositionViewWidget::slotMenuAboutToHide()
 {
-  kDebug() << "Set normal again" << endl;
+  // qDebug () << "Set normal again" << endl;
   QPalette palette;
   setPalette( palette );
   pbExec->setChecked(false);
@@ -425,7 +426,7 @@ QString PositionViewWidget::stateString( const State& state ) const
 void PositionViewWidget::slotSetState( State state )
 {
   mState = state;
-  kDebug() << "Setting new widget state " << stateString( state ) << endl;
+  // qDebug () << "Setting new widget state " << stateString( state ) << endl;
   if( state == Active ) {
     mLockId->setEnabled( true );
     mUnlockId->setEnabled( false );
@@ -503,7 +504,7 @@ Geld PositionViewWidget::currentPrice()
     if ( position()->type() == DocPosition::ExtraDiscount ) {
       sum = mPositionPrice;
       if ( ! mPositionPriceValid ) {
-        kWarning() << "Asking for price of Discount item, but invalid!" << endl;
+        qWarning() << "Asking for price of Discount item, but invalid!" << endl;
       }
     } else {
       double amount = m_sbAmount->value();
@@ -540,7 +541,7 @@ void PositionViewWidget::slotModified()
 {
   // if( mModified ) return;
   if( m_skipModifiedSignal ) return;
-  kDebug() << "Modified Position!" << endl;
+  // qDebug () << "Modified Position!" << endl;
   QColor c( "red" );
   QPalette palette;
   palette.setColor(m_labelPosition->foregroundRole(), c);
@@ -701,7 +702,7 @@ void PositionViewWidget::paintEvent ( QPaintEvent* )
       TagTemplate tagTemplate = TagTemplateMan::self()->getTagTemplate( tag );
 
       // QColor c = tagTemplate.color();
-      // kDebug() << "color: " << c.red() << ", " << c.green() << ", " << c.blue() << endl;
+      // qDebug() << "color: " << c.red() << ", " << c.green() << ", " << c.blue() << endl;
       // painter->setBrush( c );
 
       int starty = cnt*share;

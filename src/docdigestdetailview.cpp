@@ -19,6 +19,7 @@
 
 #include <khtmlview.h>
 #include <kstandarddirs.h>
+#include <QDebug>
 
 #include "docdigest.h"
 #include "docdigestdetailview.h"
@@ -35,17 +36,17 @@ DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
 bool DocDigestHtmlView::urlSelected( const QString &url, int, int,
                                     const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments &)
 {
-  kDebug() << "HtmlView::urlSelected(): " << url << endl;
+  // qDebug () << "HtmlView::urlSelected(): " << url << endl;
   QRegExp rx("#show_last_print\\?id=(\\d+)");
 
   if ( rx.exactMatch( url ) ) {
     QString idStr = rx.capturedTexts()[0];
     bool ok;
-    kDebug() << "Emitting showLastPrint";
+    // qDebug () << "Emitting showLastPrint";
     emit( showLastPrint( dbID( idStr.toInt( &ok ) ) ) );
     return true;
   } else {
-    kDebug() << "unknown action " << url << endl;
+    // qDebug () << "unknown action " << url << endl;
   }
   return false;
 }
@@ -67,13 +68,13 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
 
   QFileInfo info(fi);
   if( info.exists() ) {
-    kDebug() << "Setting image base for docdigestDetailView: " << info.dir().absolutePath();
+    // qDebug () << "Setting image base for docdigestDetailView: " << info.dir().absolutePath();
     mHtmlCanvas->setBaseUrl( info.dir().absolutePath() +"/" );
   } else {
       QByteArray home = qgetenv( "KRAFT_HOME" );
       if( !home.isEmpty() ) {
           QString burl = QString( "%1/reports/pics/").arg(QString::fromLocal8Bit( home ));
-          kDebug() << "Setting base url from KRAFT_HOME: " << burl;
+          // qDebug () << "Setting base url from KRAFT_HOME: " << burl;
           mHtmlCanvas->setBaseUrl( burl );
       }
   }
@@ -85,7 +86,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
 
 void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
 {
-  kDebug() << "Showing details about this doc: " << digest.id();
+  // qDebug () << "Showing details about this doc: " << digest.id();
 
   if( mTemplFile.isEmpty() ) {
     KStandardDirs stdDirs;
@@ -106,7 +107,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
             }
         }
         if( tmplFile.isEmpty() ) {
-            kDebug() << "Could not find template to render document digest.";
+            // qDebug () << "Could not find template to render document digest.";
             return;
         }
     }
@@ -184,7 +185,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
 
     if( clientAddress.isEmpty() ) {
       addressType = i18n("unknown");
-      kDebug() << "WRN: Address is still empty!";
+      // qDebug () << "WRN: Address is still empty!";
     }
 
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_POSTBOX" ), clientAddress.postOfficeBox() );
@@ -204,7 +205,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
   // Information about archived documents.
   ArchDocDigestList archDocs = digest.archDocDigestList();
   if( archDocs.isEmpty() ) {
-    kDebug() << "No archived docs for this document!";
+    // qDebug () << "No archived docs for this document!";
     tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
     tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("ARCHDOCS_TAG"), i18n("This document was never printed."));
   } else {
@@ -218,7 +219,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
   const QString details = tmpl.expand();
   mHtmlCanvas->displayContent( details );
 
-  kDebug() << "BASE-URL of htmlview is " << mHtmlCanvas->baseURL();
+  // qDebug () << "BASE-URL of htmlview is " << mHtmlCanvas->baseURL();
 
 
 }

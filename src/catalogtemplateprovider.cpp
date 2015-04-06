@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 
 #include "catalogtemplateprovider.h"
@@ -42,12 +42,12 @@ void CatalogTemplateProvider::setCatalogSelection( CatalogSelection *cs )
 
 void CatalogTemplateProvider::slotNewTemplate()
 {
-  kDebug() << "SlotNewTemplate for Catalog called!" << endl;
+  // qDebug () << "SlotNewTemplate for Catalog called!" << endl;
 }
 
 void CatalogTemplateProvider::slotEditTemplate()
 {
-  kDebug() << "SlotEditTemplate for Catalog called!" << endl;
+  // qDebug () << "SlotEditTemplate for Catalog called!" << endl;
 }
 
 void CatalogTemplateProvider::slotDeleteTemplate()
@@ -56,7 +56,7 @@ void CatalogTemplateProvider::slotDeleteTemplate()
 
 void CatalogTemplateProvider::slotTemplateToDocument()
 {
-  kDebug() << "Moving catalog entry to document" << endl;
+  // qDebug () << "Moving catalog entry to document" << endl;
 
   if ( mCatalogSelection ) {
     Katalog *catalog = mCatalogSelection->currentSelectedKat();

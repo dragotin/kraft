@@ -30,7 +30,7 @@
 #include <kactioncollection.h>
 #include <kstandardshortcut.h>
 #include <kstandardaction.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kapplication.h>
 #include <kshortcut.h>
 #include <ktoggleaction.h>
@@ -85,7 +85,7 @@ void KatalogView::init(const QString& katName )
   KatalogListView *listview = getListView();
 
   if( ! listview ) {
-      kDebug() << "ERROR: No listview created !!!" << endl;
+      // qDebug () << "ERROR: No listview created !!!" << endl;
   } else {
       m_filterHead = new FilterHeader(listview, w);
       m_filterHead->showCount(false);
@@ -112,7 +112,7 @@ void KatalogView::init(const QString& katName )
 
   setCentralWidget(w);
   m_editListViewItem = 0;
-  kDebug() << "Getting katalog!" << katName << endl;
+  // qDebug () << "Getting katalog!" << katName << endl;
 
   setAutoSaveSettings( QString::fromLatin1( "CatalogWindow" ),  true );
 }
@@ -413,7 +413,7 @@ void KatalogView::slRemoveSubChapter()
 void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
 {
   if( ! (mTemplateText && mTemplateStats) ) {
-    kDebug() << "Hoover-Text: No label ready.";
+    // qDebug () << "Hoover-Text: No label ready.";
     return;
   }
 
@@ -441,6 +441,6 @@ void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
        .arg( locale->formatDateTime( tmpl->modifyDate() ) );
        /* .arg( tmpl->useCounter() ); */
   t += "</table>";
-  // kDebug() << "Hoover-String: " << t;
+  // qDebug() << "Hoover-String: " << t;
   mTemplateStats->setText( t );
 }

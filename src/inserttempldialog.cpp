@@ -34,7 +34,7 @@
 #include <knuminput.h>
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kvbox.h>
 
 #include "ui_inserttmplbase.h"
@@ -163,7 +163,7 @@ DocPosition InsertTemplDialog::docPosition()
     }
   }
 
-  kDebug() << "in the dialog: " << mParkPosition.tags() << endl;
+  // qDebug () << "in the dialog: " << mParkPosition.tags() << endl;
   return mParkPosition;
 }
 

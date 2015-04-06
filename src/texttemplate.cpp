@@ -19,7 +19,7 @@
 #include "ctemplate/template.h"
 #include <kstandarddirs.h>
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include <QFile>
 #include <QFileInfo>
@@ -139,7 +139,7 @@ bool TextTemplate::open()
     return false;
   }
 
-  kDebug() << "Loading this template source file: " << mFileName << endl;
+  // qDebug () << "Loading this template source file: " << mFileName << endl;
 
   Template *tmpl = Template::GetTemplate( std::string( mFileName.toUtf8() ), ctemplate::DO_NOT_STRIP );
 
@@ -203,7 +203,7 @@ QString TextTemplate::findTemplateFile(const QString &filename) const
       }
     }
     if( tmplFile.isEmpty() ) {
-      kDebug() << "Could not find template " << filename;
+      // qDebug () << "Could not find template " << filename;
       return QString::null;
     }
   }

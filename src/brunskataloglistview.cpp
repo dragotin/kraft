@@ -18,7 +18,7 @@
 
 #include <kiconloader.h>
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kmenu.h>
 
 #include "brunskatalog.h"
@@ -54,10 +54,10 @@ void BrunsKatalogListView::addCatalogDisplay( const QString& katName )
   Katalog *k = KatalogMan::self()->getKatalog( katName );
   BrunsKatalog *catalog = static_cast<BrunsKatalog*>( k );
   if( ! catalog ) {
-    kDebug() << "No catalog in listview available!" << endl;
+    // qDebug () << "No catalog in listview available!" << endl;
     return;
   }
-  kDebug() << "setting up chapters!" << endl;
+  // qDebug () << "setting up chapters!" << endl;
   setupChapters();
 
   const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
@@ -94,12 +94,12 @@ void BrunsKatalogListView::setupChapters()
 {
   Katalog *catalog = KatalogMan::self()->getKatalog(m_catalogName);
   if( ! catalog ) {
-    kWarning() << "No catalog in setupChapters" << endl;
+    qWarning() << "No catalog in setupChapters" << endl;
     return;
   }
 
   if( ! m_root ) {
-    kDebug() << "Creating root item!" <<  endl;
+    // qDebug () << "Creating root item!" <<  endl;
     m_root = new QTreeWidgetItem(this, QStringList(catalog->getName()));
     m_root->setIcon(0, SmallIcon("system-run"));
     m_root->setExpanded(true);
@@ -159,7 +159,7 @@ void BrunsKatalogListView::setupChapters()
       topFolderItem = m_root;
     } else {
       // be in etc.
-      kDebug() << "Undetected catalog " << chapter << endl;
+      // qDebug () << "Undetected catalog " << chapter << endl;
     }
 
     if( ! chapter.isEmpty() ) {

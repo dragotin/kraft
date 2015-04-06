@@ -15,21 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kcmdlineargs.h>
+
 #include <kaboutdata.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <ksplashscreen.h>
-#include <kdebug.h>
+#include <QDebug>
+#include <QApplication>
+#include <KAboutData>
+#include <KLocalizedString>
+#include <QCommandLineParser>
 
 #include "importfilter.h"
-#include <kapplication.h>
+
 
 static const char *description =
 	I18N_NOOP("Kraft Import Test App");
 
 
-static KCmdLineOptions options[] =
+static QCommandLineParser parser[] =
+    QApplication app(argc, argv); // TODO: move this to before the KAboutData initialization
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    //PORTING SCRIPT: adapt aboutdata variable if necessary
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
 {
   // { "+[File]", I18N_NOOP("file to open"), 0 },
   { 0, 0, 0 }
@@ -40,24 +52,21 @@ int main(int argc, char *argv[])
 {
 
   KAboutData aboutData( "imporst", I18N_NOOP("Kraft import test app"),
-                        "0.1", description, KAboutData::License_GPL,
+                        "0.1", description, KAboutLicense::GPL,
                         "(c) 2008 Klaas Freitag", 0, 0, "freitag@kde.org");
   aboutData.addAuthor("Klaas Freitag",0, "freitag@kde.org");
-  KCmdLineArgs::init( argc, argv, &aboutData );
-  KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 
-  KApplication app;
 
   DocPositionImportFilter importer;
   if ( ! importer.readDefinition( "woerlein_txt.ftr" ) ) {
-    kDebug() << "Unable to import the definition!" << importer.error();
+    // qDebug () << "Unable to import the definition!" << importer.error();
   }
   if ( ! importer.parseDefinition() ) {
-    kDebug() << "** Error in definition parsing: " << importer.error();
+    // qDebug () << "** Error in definition parsing: " << importer.error();
   }
   importer.debugDefinition();
 
   DocPositionList list = importer.import( "/tmp/pflanzliste.txt" );
-  kDebug() << "********* List of " << list.count() << " items imported";
+  // qDebug () << "********* List of " << list.count() << " items imported";
   return app.exec();
 }

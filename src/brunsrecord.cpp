@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <kdebug.h>
+#include <QDebug>
 
 #include "brunsrecord.h"
 #include "geld.h"
@@ -64,7 +64,7 @@ void BrunsRecord::clearSizes()
 
 void BrunsRecord::debugOut()
 {
-    kDebug() << artNo << "  dt. Name: " << dtName << ", lt. Name. " << ltName << endl;
+    // qDebug () << artNo << "  dt. Name: " << dtName << ", lt. Name. " << ltName << endl;
 }
 
 bool BrunsRecord::save()

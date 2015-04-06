@@ -21,7 +21,7 @@
 
 // include files for KDE
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kabc/addressee.h>
 
 #include "stockmaterial.h"

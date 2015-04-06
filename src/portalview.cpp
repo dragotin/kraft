@@ -27,7 +27,7 @@
 
 // include files for KDE
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kiconloader.h>
 #include <kstandarddirs.h>
 #include <QUrl>
@@ -113,7 +113,7 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
 {
     QString urlName = Qt::escape( name );
 
-    kDebug() << "Converted Katalog name: " << urlName << endl;
+    // qDebug () << "Converted Katalog name: " << urlName << endl;
     QString html;
 
     html += "<tr";

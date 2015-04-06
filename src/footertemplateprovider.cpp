@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 
 #include "footertemplateprovider.h"
@@ -32,7 +32,7 @@ FooterTemplateProvider::FooterTemplateProvider( QWidget *parent )
 
 void FooterTemplateProvider::slotNewTemplate()
 {
-  kDebug() << "SlotNewTemplate called!" << endl;
+  // qDebug () << "SlotNewTemplate called!" << endl;
 
   TextEditDialog dia( mParent, KraftDoc::Footer );
 
@@ -43,7 +43,7 @@ void FooterTemplateProvider::slotNewTemplate()
   dia.setDocText( dt );
 
   if ( dia.exec() ) {
-    kDebug() << "Successfully edited new text" << endl;
+    // qDebug () << "Successfully edited new text" << endl;
     DocText dt = dia.docText();
     /* save to database */
     dbID newId = DefaultProvider::self()->saveDocumentText( dt );
@@ -55,7 +55,7 @@ void FooterTemplateProvider::slotNewTemplate()
 
 void FooterTemplateProvider::slotEditTemplate()
 {
-  kDebug() << "SlotEditTemplate called!" << endl;
+  // qDebug () << "SlotEditTemplate called!" << endl;
 
   TextEditDialog dia( mParent, KraftDoc::Footer );
 
@@ -69,7 +69,7 @@ void FooterTemplateProvider::slotEditTemplate()
   dia.setDocText( dt );
 
   if ( dia.exec() ) {
-    kDebug() << "Successfully edited texts" << endl;
+    // qDebug () << "Successfully edited texts" << endl;
     DocText dt = dia.docText();
 
     /* write back the listview item stored in the input text */
@@ -91,7 +91,7 @@ void FooterTemplateProvider::slotDeleteTemplate()
 
 void FooterTemplateProvider::slotTemplateToDocument()
 {
-  kDebug() << "Moving template to document" << endl;
+  // qDebug () << "Moving template to document" << endl;
   emit footerTextToDocument( currentText() );
 }
 

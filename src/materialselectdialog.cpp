@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kvbox.h>
 #include <kdialog.h>
 
@@ -66,11 +66,11 @@ MaterialSelectDialog::~MaterialSelectDialog()
 
 void MaterialSelectDialog::accept()
 {
-  kDebug() << "++ Material selected!" << endl;
+  // qDebug () << "++ Material selected!" << endl;
 
   QTreeWidgetItemIterator it( mKatalogListView, QTreeWidgetItemIterator::Checked );
   while (*it) {
-    kDebug() << "T: " << (*it)->text( 0 ) << endl;
+    // qDebug () << "T: " << (*it)->text( 0 ) << endl;
     QTreeWidgetItem *item = *it;
     if( !( mKatalogListView->isChapter( item ) || mKatalogListView->isRoot( item ))) {
       StockMaterial *mat = static_cast<StockMaterial*>( mKatalogListView->itemData( item ) );

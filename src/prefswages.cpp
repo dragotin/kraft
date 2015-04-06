@@ -27,7 +27,7 @@
 
 #include <kpushbutton.h>
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "defaultprovider.h"
 #include "impviewwidgets.h"

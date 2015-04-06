@@ -41,6 +41,7 @@
 #include <kstandarddirs.h>
 
 #include <akonadi/contact/contactviewer.h>
+#include <QDebug>
 
 #include "prefsdialog.h"
 #include "prefswages.h"
@@ -181,7 +182,7 @@ void PrefsDialog::whoIsMeTab()
 
   QFileInfo info(fi);
   if( info.exists() ) {
-    kDebug() << "Setting image base for identiy view: " << info.dir().absolutePath();
+    // qDebug () << "Setting image base for identiy view: " << info.dir().absolutePath();
     // mIdentityView->setBaseUrl( info.dir().absolutePath() +"/" );
     mIdentityView->setBaseUrl( QLatin1String("/home/kf/kde/kraft/reports/pics/"));
   }
@@ -446,7 +447,7 @@ void PrefsDialog::setMyIdentity( const KABC::Addressee& addressee )
 
     if( myAddress.isEmpty() ) {
       addressType = i18n("unknown");
-      kDebug() << "WRN: Address is still empty!";
+      // qDebug () << "WRN: Address is still empty!";
     }
 
     tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTBOX" ),  myAddress.postOfficeBox() );

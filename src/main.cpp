@@ -20,11 +20,16 @@
 #include <QPalette>
 
 #include <kstandarddirs.h>
-#include <kcmdlineargs.h>
+
 #include <kaboutdata.h>
 #include <klocale.h>
 #include <ksplashscreen.h>
-#include <kdebug.h>
+#include <QDebug>
+#include <QApplication>
+#include <KAboutData>
+#include <KLocalizedString>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 
 #include "version.h"
 #include "portal.h"
@@ -34,7 +39,7 @@ int main(int argc, char *argv[])
   KAboutData aboutData( "kraft", "kraft", ki18n("Kraft"),
                         KRAFT_VERSION,
                         ki18n("Business documents for the small enterprise"),
-                        KAboutData::License_GPL,
+                        KAboutLicense::GPL,
                         ki18n("Copyright © 2004–2014 Klaas Freitag" ) );
 
   aboutData.addAuthor(ki18n("Klaas Freitag"), ki18n( "Developer" ), "freitag@kde.org");
@@ -55,16 +60,21 @@ int main(int argc, char *argv[])
   aboutData.setVersion( KRAFT_VERSION );
   aboutData.setHomepage( "http://www.volle-kraft-voraus.de" );
 
-  KCmdLineArgs::init( argc, argv, &aboutData );
+    QApplication app(argc, argv);
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    //PORTING SCRIPT: adapt aboutdata variable if necessary
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
 
 
-  KCmdLineOptions options;
-  options.add( "d <number>", ki18n("Open document with doc number <number>") );
+  parser.addOption(QCommandLineOption(QStringList() << QLatin1String("d"), i18n("Open document with doc number <number>"), QLatin1String("number")));
 
    // Register the supported options
-  KCmdLineArgs::addCmdLineOptions( options );
 
-  KApplication app;
 
   if (app.isSessionRestored())
   {
@@ -82,7 +92,6 @@ int main(int argc, char *argv[])
       splash->show();
     }
 
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
     Portal *kraftPortal = new Portal( 0, args, "kraft main window" );
     kraftPortal->show();
 
@@ -90,7 +99,7 @@ int main(int argc, char *argv[])
       splash->finish( kraftPortal->mainWidget() );
       splash->deleteLater();
     } else {
-      kDebug() << "Could not find splash screen";
+      // qDebug () << "Could not find splash screen";
     }
   }
 

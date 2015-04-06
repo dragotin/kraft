@@ -21,7 +21,7 @@
 
 // include files for KDE
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kglobal.h>
 
 // application specific includes

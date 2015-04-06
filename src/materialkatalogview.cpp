@@ -19,7 +19,7 @@
 #include <QLabel>
 #include <QSplitter>
 
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 #include <kmessagebox.h>
 
@@ -55,7 +55,7 @@ void MaterialKatalogView::createCentralWidget( QBoxLayout *box, QWidget *w )
 
 Katalog* MaterialKatalogView::getKatalog( const QString& name )
 {
-    kDebug() << "GetKatalog of material!" << endl;
+    // qDebug () << "GetKatalog of material!" << endl;
     Katalog *k = KatalogMan::self()->getKatalog( name );
     if( ! k ) {
         k = new MatKatalog( name );
@@ -79,7 +79,7 @@ void MaterialKatalogView::slEditTemplate()
         // do nothing.
       }
     } else {
-      kDebug() << "Editing the material" << endl;
+      // qDebug () << "Editing the material" << endl;
 
       if( listview )
       {
@@ -121,7 +121,7 @@ void MaterialKatalogView::slNewTemplate()
 
 void MaterialKatalogView::slDeleteTemplate()
 {
-  kDebug() << "delete template hit";
+  // qDebug () << "delete template hit";
   MaterialKatalogListView* listview = static_cast<MaterialKatalogListView*>(getListView());
   if( listview )
   {
@@ -135,7 +135,7 @@ void MaterialKatalogView::slDeleteTemplate()
           == KMessageBox::Yes )
       {
 
-        kDebug() << "Delete item with id " << id;
+        // qDebug () << "Delete item with id " << id;
         MatKatalog *k = static_cast<MatKatalog*>( getKatalog( m_katalogName ) );
 
         if( k ) {
@@ -177,7 +177,7 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
   KatalogListView *listview = getListView();
   if( !listview ) return;
   MaterialKatalogListView *templListView = static_cast<MaterialKatalogListView*>(listview);
-  kDebug() << "****** slotEditOk for Material" << endl;
+  // qDebug () << "****** slotEditOk for Material" << endl;
 
   if( mDialog ) {
     MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );

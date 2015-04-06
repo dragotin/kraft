@@ -31,7 +31,7 @@
 #include <kpushbutton.h>
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "templtopositiondialogbase.h"
 #include "brunskatalog.h"
@@ -157,7 +157,7 @@ void InsertPlantDialog::setSelectedPlant( BrunsRecord* bruns )
     mSizeMap[guiItem] = ( qualString );
     mPriceMap[guiItem] = getPriceInfo( match );
 
-    // kDebug() << "showing new plant detail item" << endl;
+    // qDebug() << "showing new plant detail item" << endl;
   }
 }
 
@@ -179,7 +179,7 @@ PlantPriceInfo InsertPlantDialog::getPriceInfo( const QString& matchcode )
 void InsertPlantDialog::setPrice( const QString& match, double g )
 {
   QSqlQuery q;
-  kDebug() << "Writing price for " << match << ": " << g << endl;
+  // qDebug () << "Writing price for " << match << ": " << g << endl;
   Geld price = getPriceInfo( match ).price();
   if ( price.toDouble() == g ) return;
 

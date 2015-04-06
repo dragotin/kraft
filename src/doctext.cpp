@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 #include <kiconloader.h>
 

@@ -25,7 +25,7 @@
 #include <QApplication>
 #include <QTextCodec>
 
-#include <kdebug.h>
+#include <QDebug>
 #include <kstandarddirs.h>
 #include <ktemporaryfile.h>
 #include <QUrl>
@@ -76,7 +76,7 @@ ReportGenerator::ReportGenerator()
 
 ReportGenerator::~ReportGenerator()
 {
-  kDebug() << "ReportGen is destroyed!";
+  // qDebug () << "ReportGen is destroyed!";
 }
 
 /*
@@ -95,7 +95,7 @@ void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 
 void ReportGenerator::slotConvertTemplate( const QString& templ )
 {
-  // kDebug() << "Report BASE:\n" << templ;
+  // qDebug() << "Report BASE:\n" << templ;
 
   if ( ! templ.isEmpty() ) {
     KTemporaryFile temp;
@@ -113,10 +113,10 @@ void ReportGenerator::slotConvertTemplate( const QString& templ )
 
       s << templ;
     } else {
-      kDebug() << "ERROR: Could not open temporar file";
+      // qDebug () << "ERROR: Could not open temporar file";
     }
 
-    kDebug() << "Wrote rml to " << temp.fileName();
+    // qDebug () << "Wrote rml to " << temp.fileName();
 
     QString dId( mDocId );
 
@@ -178,16 +178,16 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   QString tmplFile = findTemplate( mArchDoc->docType() );
 
   if ( tmplFile.isEmpty() ) {
-    kDebug() << "tmplFile is empty!";
+    // qDebug () << "tmplFile is empty!";
     return;
   } else {
-    kDebug() << "Reading this template: " << tmplFile;
+    // qDebug () << "Reading this template: " << tmplFile;
   }
 
   // create a text template
   TextTemplate tmpl( tmplFile );
   if( !tmpl.open() ) {
-      kDebug() << "ERROR: Unable to open document template " << tmplFile;
+      // qDebug () << "ERROR: Unable to open document template " << tmplFile;
       KMessageBox::error( 0, i18n("The template file could not be opened: %1\n"
                                   "Please check the setup and the doc type configuration.").arg(tmplFile),
                           i18n("Template Error") );
@@ -242,7 +242,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
       // calculate the precision
       prec = num.length() - (1+num.lastIndexOf( QChar('.') ) );
     }
-    // kDebug() << "**** " << num << " has precision " << prec;
+    // qDebug() << "**** " << num << " has precision " << prec;
     h = mArchDoc->locale()->formatNumber( amount, prec );
 
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
@@ -315,7 +315,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   tmpl.setValue( TAG( "NETTOSUM" ),  mArchDoc->nettoSum().toString( mArchDoc->locale() ) );
 
   h = mArchDoc->locale()->formatNumber( mArchDoc->tax() );
-  kDebug() << "Tax in archive document: " << h;
+  // qDebug () << "Tax in archive document: " << h;
   if ( mArchDoc->reducedTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_SUM" ),
@@ -414,7 +414,7 @@ QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle
   QStringList li = escapeTrml2pdfXML( str ).split( "\n" );
   rml = QString( "<para style=\"%1\">" ).arg( style );
   rml += li.join( QString( "</para><para style=\"%1\">" ).arg( style ) ) + "</para>";
-  kDebug() << "Returning " << rml;
+  // qDebug () << "Returning " << rml;
   return rml;
 }
 
@@ -422,14 +422,14 @@ QStringList ReportGenerator::findTrml2Pdf( )
 {
   const QString rmlbinDefault = QString::fromLatin1( "trml2pdf" ); // FIXME: how to get the default value?
   QString rmlbin = KraftSettings::self()->trml2PdfBinary();
-  kDebug() << "### Start searching rml2pdf bin: " << rmlbin;
+  // qDebug () << "### Start searching rml2pdf bin: " << rmlbin;
 
   QStringList retList;
   mHavePdfMerge = false;
 
   if ( rmlbinDefault == rmlbin  ) {
     QString ermlpy = KStandardDirs::locate( "data", "kraft/tools/erml2pdf.py" );
-    kDebug() << "Ermlpy: " << ermlpy;
+    // qDebug () << "Ermlpy: " << ermlpy;
     if( ! ermlpy.isEmpty() ) {
       // need the python interpreter
       // First check for python2 in python3 times. 
@@ -438,9 +438,9 @@ QStringList ReportGenerator::findTrml2Pdf( )
 	python = KStandardDirs::findExe("python");
       }
       if( python.isEmpty() ) {
-        kError() << "ERR: Unable to find python, thats a problem";
+        qCritical() << "ERR: Unable to find python, thats a problem";
       } else {
-        kDebug() << "Using python: " << python;
+        // qDebug () << "Using python: " << python;
         retList << python;
         retList << ermlpy;
         mHavePdfMerge = true;
@@ -450,7 +450,7 @@ QStringList ReportGenerator::findTrml2Pdf( )
       QString p = QString::fromUtf8(qgetenv("KRAFT_HOME"));
       if( !p.isEmpty() ) {
           p += QLatin1String("/tools/erml2pdf.py");
-          kDebug() << "Found erml2pdf from KRAFT_HOME: " << p;
+          // qDebug () << "Found erml2pdf from KRAFT_HOME: " << p;
           if( QFile::exists( p ) ) {
               retList << "python";
               retList << p;
@@ -460,9 +460,9 @@ QStringList ReportGenerator::findTrml2Pdf( )
           // tool erml2pdf.py not found. Try trml2pdf_kraft.sh for legacy reasons
           QString trml2pdf = KStandardDirs::findExe("trml2pdf_kraft.sh");
           if( trml2pdf.isEmpty() ) {
-              kDebug() << "Could not find trml2pdf_kraft.sh";
+              // qDebug () << "Could not find trml2pdf_kraft.sh";
           } else {
-              kDebug() << "Found trml2pdf: " << trml2pdf;
+              // qDebug () << "Found trml2pdf: " << trml2pdf;
               retList << trml2pdf;
               mHavePdfMerge = true;
           }
@@ -472,15 +472,15 @@ QStringList ReportGenerator::findTrml2Pdf( )
     if ( ! mHavePdfMerge ) {
       QString trml2pdf = KStandardDirs::findExe( "trml2pdf");
       if( trml2pdf.isEmpty() ) {
-        kDebug() << "trml2pdf is also empty, we can not convert rml. Debug!";
+        // qDebug () << "trml2pdf is also empty, we can not convert rml. Debug!";
       } else {
-        kDebug() << "trml2pdf found here: " << trml2pdf;
+        // qDebug () << "trml2pdf found here: " << trml2pdf;
         retList << trml2pdf;
       }
     }
   }
   if ( retList.isEmpty() ) {
-    kDebug() << "We have not found the script!";
+    // qDebug () << "We have not found the script!";
   }
 
   return retList;
@@ -521,7 +521,7 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
   QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
   mFile.setFileName( QString( "%1/%2").arg( outputDir).arg( filename ) );
 
-  kDebug() << "Writing output to " << mFile.fileName();
+  // qDebug () << "Writing output to " << mFile.fileName();
 
   // check if we have etrml2pdf
   bool haveErml = false;
@@ -543,7 +543,7 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
       prg << mWatermarkFile;
     }
   } else {
-    kDebug() << "Erml2pdf available!";
+    // qDebug () << "Erml2pdf available!";
     if ( mHavePdfMerge && mMergeIdent != "0" ) {
       prg << "-m" << mMergeIdent;
       prg << "-w" << mWatermarkFile;
@@ -557,7 +557,7 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     mProcess.setProgram( prg );
     mTargetStream.setDevice( &mFile );
     QStringList args = mProcess.program();
-    kDebug() << "* rml2pdf Call-Arguments: " << args;
+    // qDebug () << "* rml2pdf Call-Arguments: " << args;
 
     mProcess.start( );
   }
@@ -585,8 +585,8 @@ void ReportGenerator::trml2pdfFinished( int exitStatus)
 {
     mFile.close();
 
-    kDebug() << "PDF Creation Process finished with status " << exitStatus;
-    kDebug() << "Wrote bytes to the output file: " << mOutputSize;
+    // qDebug () << "PDF Creation Process finished with status " << exitStatus;
+    // qDebug () << "Wrote bytes to the output file: " << mOutputSize;
     if ( exitStatus == 0 ) {
         emit pdfAvailable( mFile.fileName() );
         mFile.setFileName( QString() );

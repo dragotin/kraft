@@ -23,7 +23,7 @@
 #include <QUrl>
 #include <khtmlview.h>
 
-#include <kdebug.h>
+#include <QDebug>
 #include <kstandarddirs.h>
 #include <QTextDocument>
 
@@ -151,7 +151,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
               QString( "</b></td><td align=\"right\"><b>%1</b></td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( brutto );
   } // showPrices
   mPositions += "</table></div>";
-  // kDebug() << "Positions-HTML: " << mPositions << endl;
+  // qDebug() << "Positions-HTML: " << mPositions << endl;
 }
 
 void DocPostCard::setFooterData( const QString& postText,  const QString& goodbye )
@@ -163,17 +163,17 @@ void DocPostCard::setFooterData( const QString& postText,  const QString& goodby
 void DocPostCard::renderDoc( int id )
 {
   QString t;
-  // kDebug() << "rendering postcard for active id " << id <<
+  // qDebug() << "rendering postcard for active id " << id <<
     //( mMode == Full ? " (full) " : " (mini) " ) << endl;
   if ( mMode == Full ) {
     t = renderDocFull( id );
   } else if ( mMode == Mini ) {
     t = renderDocMini( id );
   } else {
-    kDebug() << "Unknown postcard mode" << endl;
+    // qDebug () << "Unknown postcard mode" << endl;
   }
 
-  // kDebug () << t << endl;
+  // qDebug() << t << endl;
   displayContent( t );
 }
 
@@ -300,7 +300,7 @@ bool DocPostCard::urlSelected (const QString &url, int, int, const QString &,
                     const KParts::OpenUrlArguments &,
                     const KParts::BrowserArguments &)
 {
-  kDebug() << "DocPostCard::urlSelected(): " << url << endl;
+  // qDebug () << "DocPostCard::urlSelected(): " << url << endl;
 
   QUrl kurl( url );
 
@@ -308,13 +308,13 @@ bool DocPostCard::urlSelected (const QString &url, int, int, const QString &,
 
   if ( kurl.scheme() == "kraftdoc" ) {
     if ( kurl.host() == "header" ) {
-      kDebug() << "Header selected!" << endl;
+      // qDebug () << "Header selected!" << endl;
       id = KraftDoc::Header;
     } else if ( kurl.host() == "positions" ) {
-      kDebug() << "Positions selected!" << endl;
+      // qDebug () << "Positions selected!" << endl;
       id = KraftDoc::Positions;
     } else if ( kurl.host() == "footer" ) {
-      kDebug() << "Footer selected!" << endl;
+      // qDebug () << "Footer selected!" << endl;
       id = KraftDoc::Footer;
     }
     emit selectPage( id );

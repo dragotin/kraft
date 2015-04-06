@@ -20,7 +20,7 @@
 #include <QSqlQuery>
 #include <QStringList>
 
-#include <kdebug.h>
+#include <QDebug>
 
 #include "attribute.h"
 #include "kraftdb.h"
@@ -57,14 +57,14 @@ void Attribute::setValue( const QVariant& var )
 
     q.prepare( query  );
 
-    // kDebug() << "Column: " << mIdCol << " | table " << mTable << " | string: " << mStringCol << ": " << query;
+    // qDebug() << "Column: " << mIdCol << " | table " << mTable << " | string: " << mStringCol << ": " << query;
 
     if ( listValue() ) {
       QStringList idList;
       QStringList list = var.toStringList();
       for ( QStringList::Iterator valIt = list.begin(); valIt != list.end(); ++valIt ) {
         QString curValue = *valIt;
-        // kDebug() << "Searching for " << curValue << " in relation table";
+        // qDebug() << "Searching for " << curValue << " in relation table";
         q.bindValue( ":string", curValue );
         q.exec();
         if ( q.next() ) {
@@ -75,7 +75,7 @@ void Attribute::setValue( const QVariant& var )
     } else {
       q.bindValue( ":string", var.toString() );
       q.exec();
-      // kDebug() << "ERROR" << q.lastError().text();
+      // qDebug() << "ERROR" << q.lastError().text();
       if ( q.next() ) {
         mValue = q.value( 0 );
       }
@@ -232,7 +232,7 @@ void AttributeMap::save( dbID id )
   Iterator it;
   for ( it = begin(); it != end(); ++it ) {
     Attribute att = it.value();
-    kDebug() << ">> oo-  saving attribute with name " << it.key() << " for " << id.toString() << " att-name: " << att.name();
+    // qDebug () << ">> oo-  saving attribute with name " << it.key() << " for " << id.toString() << " att-name: " << att.name();
 
     attribQuery.bindValue( ":name", att.name() );
     attribQuery.exec();
@@ -251,9 +251,9 @@ void AttributeMap::save( dbID id )
     } else {
       // the attrib does not yet exist. Create if att value is not null.
       if ( att.value().isNull() ) {
-        kDebug() << "oo- skip writing of attribute, value is empty";
+        // qDebug () << "oo- skip writing of attribute, value is empty";
       } else {
-        kDebug() << "oo- writing of attribute name " << att.name();
+        // qDebug () << "oo- writing of attribute name " << att.name();
         QSqlQuery insQuery;
         insQuery.prepare( "INSERT INTO attributes (hostObject, hostId, name, valueIsList, relationTable, "
                           "relationIDColumn, relationStringColumn) "
@@ -275,7 +275,7 @@ void AttributeMap::save( dbID id )
     }
 
     // store the id to be able to drop not longer existent values
-    kDebug() << "adding attribute id " << attribId << " for attribute " << att.name();
+    // qDebug () << "adding attribute id " << attribId << " for attribute " << att.name();
 
     // now there is a valid entry in the attribute table. Check the values.
     QSqlQuery valueQuery( "SELECT id, value FROM attributeValues WHERE attributeId=" + attribId );
@@ -294,7 +294,7 @@ void AttributeMap::save( dbID id )
     if ( att.listValue() ) {
       QStringList newValues;
       newValues = att.mValue.toStringList();
-      kDebug() << "new values are: " << newValues.join( ", " );
+      // qDebug () << "new values are: " << newValues.join( ", " );
 
       if ( newValues.empty() ) {
         // delete the entire attribute.
@@ -314,7 +314,7 @@ void AttributeMap::save( dbID id )
 
           if ( valueMap.contains( curValue ) ) {
             // the valueMap is already saved. remove it from the valueMap string
-            kDebug() << "Value " << curValue << " is already present with id " << valueMap[curValue];
+            // qDebug () << "Value " << curValue << " is already present with id " << valueMap[curValue];
             valueMap.remove( curValue );
           } else {
             // the value is not yet there, insert it.
@@ -326,7 +326,7 @@ void AttributeMap::save( dbID id )
     } else {
       // only a single entry for the attribte, update if needed.
       QString newValue = att.mValue.toString();  // access the attribute object directly to get the numeric
-      kDebug() << "NEW value String: " << newValue;
+      // qDebug () << "NEW value String: " << newValue;
       // value in case the attribute is bound to a relation table
       if ( newValue.isEmpty() ) {
         // delete the entire attribute
@@ -342,19 +342,19 @@ void AttributeMap::save( dbID id )
           insertQuery.bindValue( ":val", newValue );
 
           insertQuery.exec();
-          kDebug() << "insert new attrib value for non list: " << newValue;
+          // qDebug () << "insert new attrib value for non list: " << newValue;
 
         } else {
           QString oldValue = valueMap.begin().key();
           QString id = valueMap.begin().value();
 
           if ( newValue != oldValue ) {
-            kDebug() << "Updating " << id << " from " << oldValue << " to " << newValue;
+            // qDebug () << "Updating " << id << " from " << oldValue << " to " << newValue;
             QSqlQuery updateQuery;
             updateQuery.prepare( "UPDATE attributeValues SET value=:val WHERE id=:id" );
             updateQuery.bindValue( ":val", newValue );
             updateQuery.bindValue( ":id",  id );
-            kDebug() << "do the update!";
+            // qDebug () << "do the update!";
             updateQuery.exec();
           }
           valueMap.remove( oldValue );
@@ -380,7 +380,7 @@ void AttributeMap::markDelete( const QString& name )
   Iterator it = find( name );
   if ( it != end() ) {
     ( *it ).mDelete = true;
-    kDebug() << "Marking attrib " << name << " to delete!";
+    // qDebug () << "Marking attrib " << name << " to delete!";
   }
 }
 
@@ -389,14 +389,14 @@ void AttributeMap::markDelete( const QString& name )
  * the whole host is to delete anyway. */
 void AttributeMap::dbDeleteAll( dbID id )
 {
-  kDebug() << "This is the id for to delete: " << id.toString();
+  // qDebug () << "This is the id for to delete: " << id.toString();
   if ( !id.isOk() ) return;
   QSqlQuery listQuery;
   listQuery.prepare( "SELECT id FROM attributes WHERE hostObject=:hostObject AND hostId=:hostId" );
   listQuery.bindValue( ":hostObject", mHost );
   listQuery.bindValue( ":hostId", id.toString() );
   listQuery.exec();
-  kDebug() << "4-XXXXXXXXXXX " << listQuery.lastError().text();
+  // qDebug () << "4-XXXXXXXXXXX " << listQuery.lastError().text();
 
 
   while ( listQuery.next() ) {
@@ -410,11 +410,11 @@ void AttributeMap::dbDeleteAttribute( const QString& attribId )
   if ( attribId.isEmpty() ) return;
 
   QSqlQuery delQuery;
-  kDebug() << "Deleting attribute id " << attribId;
+  // qDebug () << "Deleting attribute id " << attribId;
   delQuery.prepare( "DELETE FROM attributes WHERE id=:id" );
   delQuery.bindValue( ":id", attribId );
   delQuery.exec();
-  kDebug() << "5-XXXXXXXXXXX " << delQuery.lastError().text();
+  // qDebug () << "5-XXXXXXXXXXX " << delQuery.lastError().text();
 
   dbDeleteValue( attribId ); // delete all values
 }
@@ -429,7 +429,7 @@ void AttributeMap::dbDeleteValue( const QString& attribId, const QString& id )
     delQuery.prepare( "DELETE FROM attributeValues WHERE id="+id );
   }
   delQuery.exec();
-  kDebug() << "6-XXXXXXXXXXX " << delQuery.lastError().text();
+  // qDebug () << "6-XXXXXXXXXXX " << delQuery.lastError().text();
 
 }
 
@@ -466,10 +466,10 @@ void AttributeMap::load( dbID id )
         values << q2.value( 0 ).toString();
       } else {
         str = q2.value( 0 ).toString();
-        // kDebug() << " attribute string " << h <<": " << str;
+        // qDebug() << " attribute string " << h <<": " << str;
       }
     }
-    // kDebug() << " attribute list " << h <<": " << values;
+    // qDebug() << " attribute list " << h <<": " << values;
 
 
     if ( isList ) {
@@ -486,7 +486,7 @@ void AttributeMap::load( dbID id )
 void AttributeMap::checkHost()
 {
   if ( mHost.isEmpty() ) {
-    kDebug() << "Host for attributes unset, assuming unknown";
+    // qDebug () << "Host for attributes unset, assuming unknown";
     mHost = "unknown";
   }
 }

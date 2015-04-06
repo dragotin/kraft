@@ -23,7 +23,7 @@
 #include <kglobal.h>
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 // application specific includes
 #include "archdoc.h"
@@ -111,7 +111,7 @@ void ArchDoc::loadFromDb( dbID id )
   q.bindValue(":id", id.toInt());
   q.exec();
 
-  kDebug() << "Loading document id " << id.toString() << endl;
+  // qDebug () << "Loading document id " << id.toString() << endl;
 
   if( q.next()) {
     QString docID;
@@ -144,7 +144,7 @@ void ArchDoc::loadFromDb( dbID id )
 
     mAttributes.load(id);
   } else {
-    kDebug() << "ERR: Could not load archived doc with id " << id.toString() << endl;
+    // qDebug () << "ERR: Could not load archived doc with id " << id.toString() << endl;
   }
 }
 
@@ -153,7 +153,7 @@ void ArchDoc::loadPositions( const QString& archDocId )
   mPositions.clear();
 
   if ( archDocId.isEmpty() /* || ! archDocId.isNum() */ ) {
-    kDebug() << "ArchDocId is not crappy: " << archDocId << endl;
+    // qDebug () << "ArchDocId is not crappy: " << archDocId << endl;
     return;
   }
 

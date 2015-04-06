@@ -20,7 +20,7 @@
 // include files for KDE
 #include <kraftdb.h>
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kglobal.h>
 
 #include "unitmanager.h"
@@ -87,7 +87,7 @@ Einheit UnitManager::getUnit( int id )
 {
   if( mUnits.size() == 0 ) load();
 
-  // kDebug() << "Searching unit ID " << id << endl;
+  // qDebug() << "Searching unit ID " << id << endl;
   foreach( Einheit e, mUnits ) {
     if( e.id() == id ) return e;
   }
@@ -102,7 +102,7 @@ int UnitManager::getUnitIDSingular( const QString& einheitStr )
 
     if( tmp.einheitSingular() == einheitStr ||
         tmp.einheitPlural()   == einheitStr ) {
-      // kDebug() << "Thats it, returning " << tmp.id() << endl;
+      // qDebug() << "Thats it, returning " << tmp.id() << endl;
       return tmp.id();
     }
   }

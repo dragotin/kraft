@@ -21,7 +21,7 @@
 #include <ktreewidgetsearchline.h>
 #include <kdialog.h>
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kapplication.h>
 #include <kiconloader.h>
 

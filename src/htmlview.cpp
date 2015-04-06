@@ -18,7 +18,7 @@
 #include <QFileInfo>
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kaction.h>
 #include <kactioncollection.h>
 #include <kstandarddirs.h>
@@ -73,7 +73,7 @@ void HtmlView::setStylesheetFile( const QString &style )
   }
   QFileInfo fi(mStyleSheetFile);
   bool ok = fi.exists();
-  kDebug() << "found this stylefile: " << mStyleSheetFile << ok;
+  // qDebug () << "found this stylefile: " << mStyleSheetFile << ok;
 }
 
 void HtmlView::setupActions( KActionCollection *actionCollection )
@@ -129,7 +129,7 @@ QString HtmlView::locateCSSImages( const QByteArray& line )
                 find = QString("kraft/pics/%1").arg(fName);
                 p = dirs.findResource("data", find);
                 if( p.isEmpty() ) {
-                    kDebug() << "ERR: Unable to find resource " << fName;
+                    // qDebug () << "ERR: Unable to find resource " << fName;
                 }
             }
         }
@@ -178,11 +178,11 @@ void HtmlView::writeBottomFrame()
 
 void HtmlView::displayContent( const QString& content )
 {
-  // kDebug() << "BASE URL: " << mBaseUrl.prettyUrl();
-  // kDebug() << "Stylesheet URL: " << mStyleSheetFile;
+  // qDebug() << "BASE URL: " << mBaseUrl.prettyUrl();
+  // qDebug() << "Stylesheet URL: " << mStyleSheetFile;
   begin( mBaseUrl );
 
-  // kDebug() << "Show content: " << content;
+  // qDebug() << "Show content: " << content;
 
   writeTopFrame();
   writeContent( content );
@@ -201,5 +201,5 @@ void HtmlView::setBaseUrl( const QString& base )
 {
 
   mBaseUrl = QUrl( base );
-  kDebug() << "Setting base url: " << mBaseUrl.prettyUrl();
+  // qDebug () << "Setting base url: " << mBaseUrl.prettyUrl();
 }

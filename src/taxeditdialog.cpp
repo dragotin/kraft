@@ -21,7 +21,7 @@
 
 #include <kdialog.h>
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kdatewidget.h>
 #include <knuminput.h>
 

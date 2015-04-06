@@ -19,7 +19,7 @@
 #include <QItemSelectionModel>
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <kstandardaction.h>
 #include <kstandarddirs.h>
 #include <kaction.h>
@@ -181,7 +181,7 @@ void DocDigestView::initializeTreeWidgets()
 
 void DocDigestView::slotCurrentChangedToolbox(int index)
 {
-  kDebug() << "INDEX: " << index;
+  // qDebug () << "INDEX: " << index;
   if( index < 0 || index > mTreeViewIndex.size() ) return;
 
   // move the state of the columns from one view to the other
@@ -198,7 +198,7 @@ void DocDigestView::slotCurrentChangedToolbox(int index)
     mLatestDocModel->setMaxRows(12);
    } else if( index == 1 ) { // all
 
-    kDebug()<< "SHOWING all rows!";
+    // qDebug ()<< "SHOWING all rows!";
     mLatestDocModel->setMaxRows( -1 );
   }
   // QTreeView *treeview = mTreeViewIndex[index];
@@ -310,7 +310,7 @@ void DocDigestView::contextMenuEvent( QContextMenuEvent * event )
 
 void DocDigestView::slotOpenLastPrinted( )
 {
-  kDebug() << "slotOpenLastPrinted hit! ";
+  // qDebug () << "slotOpenLastPrinted hit! ";
   emit openArchivedDocument( mLatestArchivedDigest );
 }
 
@@ -319,7 +319,7 @@ void DocDigestView::slotDocOpenRequest( QModelIndex index )
   QModelIndex idIndx = index.sibling( index.row(), DocumentModel::Document_Id );
   const QString id = idIndx.data( Qt::DisplayRole ).toString();
 
-  kDebug() << "Double click open document ident " << id;
+  // qDebug () << "Double click open document ident " << id;
   emit openDocument( id );
 }
 
@@ -333,7 +333,7 @@ QString DocDigestView::currentDocumentId( ) const
   QModelIndex indx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Id);
 
   const QString data = indx.data(Qt::DisplayRole).toString();
-  kDebug() << "This is the current selected docID: " << data;
+  // qDebug () << "This is the current selected docID: " << data;
   return data;
 }
 
@@ -351,7 +351,7 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
       model = static_cast<DocumentModel*>(mLatestDocModel->sourceModel());
       view = mLatestViewDetails;
     } else if( toolboxIndx == 1 ) {
-      kDebug() << "Picking AllDocumentsView!";
+      // qDebug () << "Picking AllDocumentsView!";
       mCurrentlySelected = mAllDocumentsModel->mapToSource(index);
       model = static_cast<DocumentModel*>( mAllDocumentsModel->sourceModel() );
       view = mAllViewDetails;
@@ -374,10 +374,10 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
       mLatestArchivedDigest = ArchDocDigest();
     }
   } else {
-    kDebug() << "Got invalid index, clearing digest view.";
+    // qDebug () << "Got invalid index, clearing digest view.";
     emit docSelected( QString() );
   }
-  //kDebug() << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);
+  //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);
 }
 
 QList<KMenu*> DocDigestView::contextMenus()

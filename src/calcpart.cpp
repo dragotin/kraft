@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "calcpart.h"
 #include "fixcalcpart.h"
@@ -67,16 +67,16 @@ Geld CalcPart::kosten() {
     * Der prozentuale Aufschlag kommt dann hier.
     */
    Geld g = basisKosten();
-   // kDebug() << "Basecosts: " << g.toString() << endl;
+   // qDebug() << "Basecosts: " << g.toString() << endl;
    double prozente = getProzentPlus();
 
    if( qAbs(prozente) > 0.0 )
    {
         Geld aufschlag = g * double(prozente/100.0);
-        // kDebug() << "Have Money: " << g.toString() << " und " << prozente << " macht Aufschlag: " << aufschlag.toString() << endl;
+        // qDebug() << "Have Money: " << g.toString() << " und " << prozente << " macht Aufschlag: " << aufschlag.toString() << endl;
         g += aufschlag;
    }
-   // kDebug() << "Overall sum: " << g.toString() << endl;
+   // qDebug() << "Overall sum: " << g.toString() << endl;
    return g;
 }
 

@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 #include <krun.h>
 
@@ -33,7 +33,7 @@ HeaderTemplateProvider::HeaderTemplateProvider( QWidget *parent )
 
 void HeaderTemplateProvider::slotNewTemplate()
 {
-  kDebug() << "SlotNewTemplate called!" << endl;
+  // qDebug () << "SlotNewTemplate called!" << endl;
 
   TextEditDialog dia( mParent, KraftDoc::Header );
 
@@ -44,7 +44,7 @@ void HeaderTemplateProvider::slotNewTemplate()
   dia.setDocText( dt );
 
   if ( dia.exec() ) {
-    kDebug() << "Successfully edited texts" << endl;
+    // qDebug () << "Successfully edited texts" << endl;
     DocText dt = dia.docText();
     /* save to database */
     dbID newId = DefaultProvider::self()->saveDocumentText( dt );
@@ -56,7 +56,7 @@ void HeaderTemplateProvider::slotNewTemplate()
 
 void HeaderTemplateProvider::slotEditTemplate()
 {
-  kDebug() << "SlotEditTemplate called!" << endl;
+  // qDebug () << "SlotEditTemplate called!" << endl;
 
   TextEditDialog dia( mParent, KraftDoc::Header );
 
@@ -70,7 +70,7 @@ void HeaderTemplateProvider::slotEditTemplate()
   dia.setDocText( dt );
 
   if ( dia.exec() ) {
-    kDebug() << "Successfully edited texts" << endl;
+    // qDebug () << "Successfully edited texts" << endl;
     DocText dt = dia.docText();
 
     /* write back the listview item stored in the input text */
@@ -91,7 +91,7 @@ void HeaderTemplateProvider::slotDeleteTemplate()
 
 void HeaderTemplateProvider::slotTemplateToDocument()
 {
-  kDebug() << "Moving template to document" << endl;
+  // qDebug () << "Moving template to document" << endl;
 
 
   emit headerTextToDocument( currentText() );

@@ -20,7 +20,7 @@
 #include <kdatewidget.h>
 #include <kcombobox.h>
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include <QLayout>
 #include <QComboBox>

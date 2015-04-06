@@ -30,7 +30,7 @@
 #include <kdialog.h>
 #include <kcombobox.h>
 #include <kdatewidget.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "newdocassistant.h"
 #include "addressselection.h"
@@ -180,7 +180,7 @@ void KraftWizard::slotFinished()
 
 void KraftWizard::slotAddressee( const Addressee& addressee )
 {
-  kDebug() << "Addressee Changed!";
+  // qDebug () << "Addressee Changed!";
   mAddressee = addressee;
 }
 

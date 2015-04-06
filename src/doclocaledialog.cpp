@@ -23,7 +23,7 @@
 #include <QSizePolicy>
 
 #include <kdialog.h>
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 #include <kcombobox.h>
 #include <klanguagebutton.h>
@@ -96,7 +96,7 @@ DocLocaleDialog::~DocLocaleDialog()
 
 void DocLocaleDialog::setLocale( const QString& c, const QString& lang )
 {
-  kDebug() << "Setting country " << c << " and lang " << lang << endl;
+  // qDebug () << "Setting country " << c << " and lang " << lang << endl;
   if ( !mLocale ) mLocale = new KLocale( QString::fromLatin1( "kraft" ) );
   KConfig *cfg = KGlobal::config().data();
   mLocale->setCountry( c, cfg );
@@ -159,7 +159,7 @@ void DocLocaleDialog::changedCountry(const QString & code)
   KConfig *cfg = KGlobal::config().data();
   mLocale->setCountry(code, cfg );
 
-  kDebug() << "Country selection changed to " << code << endl;
+  // qDebug () << "Country selection changed to " << code << endl;
 
   // change to the preferred languages in that country, installed only
   QStringList languages = languageList();

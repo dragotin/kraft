@@ -26,7 +26,7 @@
 #include <qtooltip.h>
 #include <qfont.h>
 
-#include <kdebug.h>
+#include <QDebug>
 #include <kdialog.h>
 #include <kpushbutton.h>
 #include <kcombobox.h>
@@ -128,7 +128,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
         }
     }
     if( tmplFile.isEmpty() ) {
-        kDebug() << "Could not find template to render ro view of document.";
+        // qDebug () << "Could not find template to render ro view of document.";
         return;
     }
 
@@ -268,12 +268,12 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
 void KraftViewRO::done( int r )
 {
-  kDebug() << "View closed with ret value " << r;
+  // qDebug () << "View closed with ret value " << r;
 
   KraftDoc *doc = getDocument();
 
   if( !doc ) {
-    kDebug() << "ERR: No document available in view, return!";
+    // qDebug () << "ERR: No document available in view, return!";
     return;
   }
   KraftSettings::self()->setRODocViewSize( size() );

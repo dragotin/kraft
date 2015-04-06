@@ -21,7 +21,7 @@
 #include <QFile>
 #include <QDir>
 
-#include <kdebug.h>
+#include <QDebug>
 #include <kfiledialog.h>
 #include <klocale.h>
 
@@ -72,7 +72,7 @@ void TemplKatalog::reload( dbID id)
     if(q.next())
     {
       //templ->setEinheitId(q.value(0).toInt());
-      // kDebug() << "Reloading template number " << q.value(1) << endl;
+      // qDebug() << "Reloading template number " << q.value(1) << endl;
       templ->setChapterId(dbID( q.value(2).toInt()), false );
       //templ->setCalculationType(q.value(3).toInt());
       templ->setManualPrice(q.value(4).toDouble());
@@ -102,7 +102,7 @@ int TemplKatalog::load()
     chapIdList += chap.id().toString();
   }
 
-  kDebug() << "The chapterIdList: " << chapIdList;
+  // qDebug () << "The chapterIdList: " << chapIdList;
   QSqlQuery q("SELECT unitID, TemplID, chapterID, Preisart, EPreis, modifyDatum, enterDatum, "
               "Floskel, Gewinn, zeitbeitrag, lastUsed, useCounter FROM Catalog WHERE chapterID IN( " + chapIdList + ") "
               "ORDER BY chapterID, sortKey" );
@@ -114,7 +114,7 @@ int TemplKatalog::load()
     cnt++;
     int einheit = q.value(0).toInt();
     int templID = q.value(1).toInt();
-    kDebug() << "Loading template number " << templID << endl;
+    // qDebug () << "Loading template number " << templID << endl;
     int chapID = q.value(2).toInt();
     // int sortID = cur.value( "sortKey" ).toInt();
     int calcKind = q.value(3).toInt();
@@ -123,13 +123,13 @@ int TemplKatalog::load()
     Geld preis(g);
     /* Only for debugging: */
     if( templID == 272 ) {
-      kDebug() << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g << endl;
+      // qDebug () << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g << endl;
     }
 
     QDateTime modDt = q.value(5).toDateTime();
     QDateTime enterDt = q.value(6).toDateTime();
 
-    // kDebug() << "Chapter ID is " << chapID << endl;
+    // qDebug() << "Chapter ID is " << chapID << endl;
 
     FloskelTemplate *flos = new FloskelTemplate( templID,
                                                  q.value(7).toString(),
@@ -190,7 +190,7 @@ void TemplKatalog::deleteTemplate( int id )
     q.prepare( "DELETE FROM " + table + " WHERE TemplID=:Id");
     q.bindValue( ":Id", id );
     q.exec();
-    kDebug() << "SQL Delete Success: " << q.lastError().text();
+    // qDebug () << "SQL Delete Success: " << q.lastError().text();
   }
 }
 
@@ -309,7 +309,7 @@ FloskelTemplateList TemplKatalog::getFlosTemplates( const CatalogChapter& chapte
 
   if( m_flosList.count() == 0 )
   {
-    kDebug() << "Empty katalog list - loading!" << endl;
+    // qDebug () << "Empty katalog list - loading!" << endl;
     load();
   }
 
@@ -322,7 +322,7 @@ FloskelTemplateList TemplKatalog::getFlosTemplates( const CatalogChapter& chapte
 
     int haveChap = tmpl->chapterId().toInt();
 
-    // kDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
+    // qDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
     if( haveChap == chap )
     {
       resultList.append( tmpl );

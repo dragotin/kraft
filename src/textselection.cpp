@@ -21,7 +21,7 @@
 #include "doctype.h"
 
 #include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include <kdialog.h>
 #include <kaction.h>
@@ -117,7 +117,7 @@ void TextSelection::slotTemplateNameSelected( const QModelIndex& current, const 
 {
   if( current.isValid() ) {
     mCurrTemplateName = mTemplNamesModel->data( current, Qt::DisplayRole ).toString();
-    kDebug() << "New selected template name: " << mCurrTemplateName;
+    // qDebug () << "New selected template name: " << mCurrTemplateName;
     showHelp();
 
     DocText dt = currentDocText();
@@ -171,7 +171,7 @@ void TextSelection::addNewDocText( const DocText& dt )
     QModelIndex selected = newItems[0];
     mTextNameView->selectionModel()->setCurrentIndex( selected, QItemSelectionModel::Select);
   } else {
-    kDebug() << "Unable to find the new item named " << dt.name();
+    // qDebug () << "Unable to find the new item named " << dt.name();
   }
   emit validTemplateSelected();
 }
@@ -221,7 +221,7 @@ void TextSelection::showHelp( const QString& help )
   } else {
     mHelpDisplay->show();
 #if 0
-    kDebug() << "Displaying help text: " << help;
+    // qDebug () << "Displaying help text: " << help;
 
     QPropertyAnimation *ani = new QPropertyAnimation( mHelpDisplay, "geometry" );
     QRect r2 = r1;

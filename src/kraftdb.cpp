@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <kdebug.h>
+#include <QDebug>
 #include <kstandarddirs.h>
 #include <kmessagebox.h>
 #include <klocale.h>
@@ -100,20 +100,20 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
     }
 
     if( mDatabaseDriver.isEmpty() ) {
-        kDebug() << "Database Driver is not specified, check katalog settings";
+        // qDebug () << "Database Driver is not specified, check katalog settings";
         mSuccess = false;
         return false;
     } else {
-        kDebug() << "Using database Driver " << mDatabaseDriver;
+        // qDebug () << "Using database Driver " << mDatabaseDriver;
     }
 
     QStringList list = QSqlDatabase::drivers();
     if( list.size() == 0 ) {
-        kDebug() << "Database Drivers could not be loaded." << endl;
+        // qDebug () << "Database Drivers could not be loaded." << endl;
         mSuccess = false ;
     } else {
         if( list.indexOf( mDatabaseDriver ) == -1 ) {
-            kDebug() << "Database Driver " << mDatabaseDriver << " could not be loaded!" << endl;
+            // qDebug () << "Database Driver " << mDatabaseDriver << " could not be loaded!" << endl;
             mSuccess = false;
         }
     }
@@ -127,7 +127,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
 
         if ( ! m_db.isValid() || m_db.isOpenError() )
         {
-            kDebug() <<  "Failed to connect to the database driver: "
+            // qDebug () <<  "Failed to connect to the database driver: "
                       << m_db.lastError().text() << endl;
             mSuccess = false;
         }
@@ -144,20 +144,20 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
             if( user.isEmpty() ) user = DatabaseSettings::self()->dbUser();
             QString pwd = dbPasswd;
             if( pwd.isEmpty() ) pwd = DatabaseSettings::self()->dbPassword();
-            kDebug() << "Try to open MySQL database " << name << endl;
+            // qDebug () << "Try to open MySQL database " << name << endl;
             re = checkConnect( host, name , user, pwd );
         } else if(mDatabaseDriver == "QSQLITE") {
             // SqlLite only requires a valid file name which comes in as Database Name
             QString name = dbName;
             if( name.isEmpty() ) name = DatabaseSettings::self()->dbFile();
-            kDebug() << "Try to open SqLite database " << name << endl;
+            // qDebug () << "Try to open SqLite database " << name << endl;
             re = checkConnect( "", name, "", "");
         }
         if ( re == 0 ) {
             // Database successfully opened; we can now issue SQL commands.
-            kDebug() << "** Database opened successfully" << endl;
+            // qDebug () << "** Database opened successfully" << endl;
         } else {
-            kDebug() << "## Could not open database" << endl;
+            // qDebug () << "## Could not open database" << endl;
             mSuccess = false;
         }
     }
@@ -173,7 +173,7 @@ KraftDB *KraftDB::self()
 void KraftDB::close()
 {
     QString name = m_db.connectionName();
-    kDebug() << "Database connection name to close: " << name;
+    // qDebug () << "Database connection name to close: " << name;
 
     m_db.close();
 }
@@ -194,7 +194,7 @@ int KraftDB::checkConnect( const QString& host, const QString& dbName,
 
     m_db.open();
     if ( m_db.isOpenError() ) {
-        kDebug() << "ERR opening the db: " << m_db.lastError().text() <<
+        // qDebug () << "ERR opening the db: " << m_db.lastError().text() <<
                     ", type is " << m_db.lastError().type() << endl;
         re = m_db.lastError().type();
     }
@@ -218,16 +218,16 @@ dbID KraftDB::getLastInsertID()
         query.prepare( "SELECT last_insert_rowid()");
         query.exec();
     } else {
-        kDebug() << "############# FATAL ERROR: Unknown database driver " << mDatabaseDriver;
+        // qDebug () << "############# FATAL ERROR: Unknown database driver " << mDatabaseDriver;
     }
     int id = -1;
 
     if( query.next() ) {
         id = query.value(0).toInt();
     } else {
-        kDebug() << "############# FATAL ERROR: Query for last insert id is invalid!";
+        // qDebug () << "############# FATAL ERROR: Query for last insert id is invalid!";
     }
-    kDebug() << "Last Insert ID: " << id;
+    // qDebug () << "Last Insert ID: " << id;
     return dbID(id);
 }
 
@@ -264,7 +264,7 @@ void KraftDB::wipeDatabase()
     emit statusMessage( i18n( "Wipe Database..." ) );
     if ( m_db.tables().size() > 0 ) {
         QString allTables = QString( "DROP TABLE %1;" ).arg( m_db.tables().join( ", " ) );
-        kDebug() << "Erasing all tables " << allTables << endl;
+        // qDebug () << "Erasing all tables " << allTables << endl;
         QSqlQuery q;
         q.exec( allTables );
     }
@@ -283,23 +283,23 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
         driverPrefix = "sqlite3";
     }
 
-    // kDebug() << "XXXXXXXXXX: " << stdDirs.resourceDirs("data");
+    // qDebug() << "XXXXXXXXXX: " << stdDirs.resourceDirs("data");
 
     if( env.isEmpty() ) {
         // Environment-Variable is empty, search in KDE paths
         QString fragment = QString("kraft/dbmigrate/%1/%2").arg(driverPrefix).arg(file );
         sqlFile = KStandardDirs::locate("data", fragment );
-        kDebug() << "Searching for this fragment: " << fragment;
+        // qDebug () << "Searching for this fragment: " << fragment;
         // search in dbcreate as well.
         if ( sqlFile.isEmpty() ) {
             fragment = QString("kraft/dbinit/%1/%2").arg(driverPrefix).arg(file );
-            kDebug() << "Also searching in " << fragment;
+            // qDebug () << "Also searching in " << fragment;
             sqlFile = KStandardDirs::locate( "data", fragment );
         }
     } else {
         // read from environment variable path
         QString envPath = QString( "%1/database/%2/%3").arg(env).arg(driverPrefix).arg(file);
-        kDebug() << "Environment variable KRAFT_HOME set, searching for DB setup files in " << envPath;
+        // qDebug () << "Environment variable KRAFT_HOME set, searching for DB setup files in " << envPath;
         if( QFile::exists( envPath ) ) {
             sqlFile = envPath;
         } else if( QFile::exists( QString( "%1/database/%2/migration/%3").arg(env).arg(driverPrefix).arg(file ) ) ){
@@ -310,11 +310,11 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
     SqlCommandList retList;
 
     if ( ! sqlFile.isEmpty() ) {
-        kDebug() << "Opening migration file " << sqlFile << endl;
+        // qDebug () << "Opening migration file " << sqlFile << endl;
 
         QFile f( sqlFile );
         if ( !f.open( QIODevice::ReadOnly ) ) {
-            kDebug() << "Could not open " << sqlFile << endl;
+            // qDebug () << "Could not open " << sqlFile << endl;
         } else {
             QTextStream ts( &f );
             ts.setCodec("UTF-8");
@@ -336,7 +336,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
                 int pos = reg.indexIn( sqlFragment.toLower(),  0 );
                 if ( pos > -1 ) {
                     msg = reg.cap( 2 );
-                    // kDebug() << "SQL-Commands-Parser: Msg: >" << msg << "<" << endl;
+                    // qDebug() << "SQL-Commands-Parser: Msg: >" << msg << "<" << endl;
                 }
 
                 bool mayfail = false;
@@ -349,13 +349,13 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
                     if(  sqlFragment.startsWith("#") || sqlFragment.startsWith("--") ) {
                         // remove the comment line.
                         int newLinePos = sqlFragment.indexOf('\n');
-                        // kDebug() << "Found newline in <" << sqlFragment << ">:" << newLinePos;
+                        // qDebug() << "Found newline in <" << sqlFragment << ">:" << newLinePos;
                         if(newLinePos > 0) {
                             sqlFragment = sqlFragment.remove( 0, 1+sqlFragment.indexOf('\n') );
                         } else {
                             sqlFragment = QString();
                         }
-                        // kDebug() << "Left over SQL Fragment:" << sqlFragment;
+                        // qDebug() << "Left over SQL Fragment:" << sqlFragment;
                     } else {
                         clean = true;
                     }
@@ -380,7 +380,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
             }
         }
     } else {
-        kDebug() << "ERR: Can not find sql file " << file;
+        // qDebug () << "ERR: Can not find sql file " << file;
     }
 
     return retList;
@@ -402,12 +402,12 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
             res = q.exec(cmd.command()) || cmd.mayfail();
 
             if ( res ) {
-                kDebug() << "Successful SQL Command: " << cmd.command() << endl;
+                // qDebug () << "Successful SQL Command: " << cmd.command() << endl;
                 cnt ++;
             } else {
                 QSqlError err = q.lastError();
                 res = false;
-                kDebug() << "###### Failed SQL Command " << cmd.command() << ": " << err.text() << endl;
+                // qDebug () << "###### Failed SQL Command " << cmd.command() << ": " << err.text() << endl;
             }
             q.clear();
             emit processedSqlCommand( res );
@@ -494,21 +494,21 @@ QString KraftDB::replaceTagsInWord( const QString& w, StringMap replaceMap ) con
     for ( reIt = reMap.end(); reIt != reMap.begin(); ) {
         --reIt;
         QStringList keys = reIt.value();
-        kDebug() << "PP: " << keys;
+        // qDebug () << "PP: " << keys;
         for ( QStringList::Iterator dtIt = keys.begin(); dtIt != keys.end(); ++dtIt ) {
             QString repKey = *dtIt;
             re.replace( repKey, replaceMap[repKey] );
         }
     }
 
-    kDebug() << "Adding to wordlist <" << re << ">";
+    // qDebug () << "Adding to wordlist <" << re << ">";
 
     return re;
 }
 
 void KraftDB::writeWordList( const QString& listName, const QStringList& list )
 {
-    kDebug() << "Saving " << list[0] << " into list " << listName << endl;
+    // qDebug () << "Saving " << list[0] << " into list " << listName << endl;
     QSqlQuery  qd;
     qd.prepare( "DELETE FROM wordLists WHERE category=:catName" );
     qd.bindValue( ":catName", listName );
