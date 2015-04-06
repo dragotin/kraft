@@ -1,32 +1,11 @@
-include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS} external)
+# include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS} external)
 
+include_directories(${QT_INCLUDES} src)
 add_subdirectory(pics)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
 
 ########### next target ###############
 
 set(kraft_SRCS
-    catalogtemplate.cpp
-    catalogchapter.cpp
-    katalog.cpp
-    katalogman.cpp
-    brunskatalog.cpp
-    brunsrecord.cpp
-    defaultprovider.cpp
-    doctext.cpp
-    doctype.cpp
-    kataloglistview.cpp
-    katalogview.cpp
-    brunskataloglistview.cpp
-    brunskatalogview.cpp
-    filterheader.cpp
-    kraftdb.cpp
-    geld.cpp
-    einheit.cpp
-    attribute.cpp
-    numbercycle.cpp
-    addeditchapterdialog.cpp
     templkatalog.cpp
     docposition.cpp
     matkatalog.cpp
@@ -116,13 +95,14 @@ set(kraft_SRCS
     quicksearchwidget.cpp
 )
 
-kde4_add_kcfg_files(kraft_SRCS
+kconfig_add_kcfg_files(kraft_SRCS
     databasesettings.kcfgc
     kraftsettings.kcfgc
     databasesettings.kcfgc
-    kraftsettings.kcfgc)
+    kraftsettings.kcfgc
+)
 
-kde4_add_ui_files(kraft_SRCS
+ki18n_wrap_ui(kraft_SRCS
     calctemplate.ui
     dbinit.ui
     createdb.ui
@@ -151,11 +131,24 @@ kde4_add_ui_files(kraft_SRCS
 
 )
 
-kde4_add_executable(kraft ${kraft_SRCS})
+# kde4_add_executable(kraft ${kraft_SRCS})
+add_executable(kraft ${kraft_SRCS})
 
-target_link_libraries(kraft ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS}
-	${KDEPIMLIBS_KABC_LIBS} ${KDEPIMLIBS_AKONADI_CONTACT_LIBS} ${KDE4_KIO_LIBS}
-        ${CTEMPLATE_LIBRARIES} pthread)
+set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
+
+target_link_libraries(kraft
+PUBLIC
+    Qt5::Core
+    Qt5::Widgets
+    Qt5::Sql
+    KF5::ConfigWidgets
+    KF5::CoreAddons
+    KF5::GlobalAccel
+    KF5::I18n
+    KF5::NotifyConfig
+    KF5::WidgetsAddons
+    KF5::XmlGui
+)
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 

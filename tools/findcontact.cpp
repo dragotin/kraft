@@ -13,7 +13,6 @@
  */
 
 #include <iostream>
-#include <qcoreapplication.h>
 #include <QStringList>
 #include <QUrl>
 #include <QFile>
