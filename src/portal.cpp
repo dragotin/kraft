@@ -41,7 +41,7 @@
 #include <kcmdlineargs.h>
 #include <krun.h>
 #include <kapplication.h>
-#include <akonadi/control.h>
+#include <AkonadiCore/control.h>
 #include <kabc/addressee.h>
 #include <ktoolinvocation.h>
 #include <kstandarddirs.h>

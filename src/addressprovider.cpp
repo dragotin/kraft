@@ -22,8 +22,8 @@
 #include "akonadi/session.h"
 
 #include <Akonadi/Item>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
+#include <AkonadiCore/ItemFetchJob>
+#include <AkonadiCore/ItemFetchScope>
 
 AddressProvider::AddressProvider( QObject *parent )
   :QObject( parent )

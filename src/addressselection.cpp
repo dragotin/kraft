@@ -31,9 +31,9 @@
 #include <kabc/contactgroup.h>
 
 #include <akonadi/contact/contactsearchjob.h>
-#include <akonadi/itemfetchscope.h>
-#include <akonadi/entitydisplayattribute.h>
-#include <akonadi/control.h>
+#include <AkonadiCore/itemfetchscope.h>
+#include <AkonadiCore/entitydisplayattribute.h>
+#include <AkonadiCore/control.h>
 #include <akonadi/contact/contacteditor.h>
 #include <akonadi/contact/contacteditordialog.h>
 

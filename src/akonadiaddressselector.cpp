@@ -28,9 +28,9 @@
 
 #include <models/globalcontactmodel.h>
 
-#include <akonadi/etmviewstatesaver.h>
-#include <akonadi/collectionfilterproxymodel.h>
-#include <akonadi/collectionmodel.h>
+#include <AkonadiWidgets/etmviewstatesaver.h>
+#include <AkonadiCore/collectionfilterproxymodel.h>
+#include <AkonadiCore/collectionmodel.h>
 #include <akonadi/contact/contactdefaultactions.h>
 #include <akonadi/contact/contacteditordialog.h>
 #include <akonadi/contact/contactgroupeditordialog.h>
@@ -39,12 +39,12 @@
 #include <akonadi/contact/contactstreemodel.h>
 #include <akonadi/contact/contactviewer.h>
 #include <akonadi/contact/standardcontactactionmanager.h>
-#include <akonadi/control.h>
-#include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/entitytreeview.h>
+#include <AkonadiCore/control.h>
+#include <AkonadiCore/entitymimetypefiltermodel.h>
+#include <AkonadiWidgets/entitytreeview.h>
 #include <akonadi/entitytreeviewstatesaver.h>
 #include <akonadi/itemview.h>
-#include <akonadi/mimetypechecker.h>
+#include <AkonadiCore/mimetypechecker.h>
 #include <akonadi/contact/contacteditor.h>
 
 

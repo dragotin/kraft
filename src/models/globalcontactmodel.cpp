@@ -20,11 +20,11 @@
 
 #include "globalcontactmodel.h"
 
-#include <akonadi/changerecorder.h>
+#include <AkonadiCore/changerecorder.h>
 #include <akonadi/contact/contactstreemodel.h>
-#include <akonadi/entitydisplayattribute.h>
-#include <akonadi/itemfetchscope.h>
-#include <akonadi/session.h>
+#include <AkonadiCore/entitydisplayattribute.h>
+#include <AkonadiCore/itemfetchscope.h>
+#include <AkonadiCore/session.h>
 #include <kabc/addressee.h>
 #include <kabc/contactgroup.h>
 #include <klocale.h>

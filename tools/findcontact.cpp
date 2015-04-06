@@ -22,10 +22,10 @@
 #include <kdeversion.h>
 
 #include <akonadi/contact/contactsearchjob.h>
-#include <akonadi/session.h>
+#include <AkonadiCore/session.h>
 #include <Akonadi/Item>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
+#include <AkonadiCore/ItemFetchJob>
+#include <AkonadiCore/ItemFetchScope>
 
 #include <kabc/vcardconverter.h>
 #include <kabc/vcard.h>
