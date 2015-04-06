@@ -28,9 +28,9 @@ bool PortalHtmlView::urlSelected( const QString &url, int, int,
 {
   kDebug() << "HtmlView::urlSelected(): " << url << endl;
 
-  KUrl kurl( url );
-  const QString katName = kurl.queryItem( "kat" );
-  const QString action = kurl.queryItem( "action" );
+  QUrl kurl( url );
+  const QString katName = QUrlQuery(kurl).queryItemValue( "kat" );
+  const QString action = QUrlQuery(kurl).queryItemValue( "action" );
 
   kDebug() << "Action " << action;
 

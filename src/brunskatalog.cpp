@@ -38,7 +38,7 @@ BrunsKatalog::BrunsKatalog( const QString& n )
   if( m_dataFile.isEmpty() ) {
     kError() << "Unable to open bruns data file!" << endl;
 
-    m_dataFile = KFileDialog::getOpenFileName( KUrl(),
+    m_dataFile = KFileDialog::getOpenFileName( QUrl(),
                                                "Artikelstamm_2008_2009.txt", 0,
                                                i18n("Select Bruns Catalog Data File") );
     DatabaseSettings::self()->setBrunsDataFile( m_dataFile );
@@ -50,7 +50,7 @@ BrunsKatalog::BrunsKatalog( const QString& n )
   if( m_chapterFile.isEmpty() ) {
     kError() << "Unable to open bruns key file!" << endl;
 
-    m_chapterFile = KFileDialog::getOpenFileName( KUrl(),
+    m_chapterFile = KFileDialog::getOpenFileName( QUrl(),
                                                   "key_2008.txt", 0,
                                                   i18n("Select Bruns Catalog Key File") );
     DatabaseSettings::self()->setBrunsKeyFile( m_chapterFile );

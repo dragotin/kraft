@@ -24,7 +24,7 @@
 #include <kapplication.h>
 #include <kxmlguiwindow.h>
 #include <kaction.h>
-#include <kurl.h>
+#include <QUrl>
 
 #include "kraftcat_export.h"
 
@@ -77,7 +77,7 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     /** open a new application window by creating a new instance of KraftApp */
     void slotFileNewWindow();
     /** clears the document in the current view to reuse it as the new document */
-    void openDocumentFile(const KUrl& url);
+    void openDocumentFile(const QUrl &url);
 
     void slotFileOpen();
     /** save a document */

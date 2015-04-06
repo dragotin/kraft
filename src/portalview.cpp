@@ -30,7 +30,7 @@
 #include <kdebug.h>
 #include <kiconloader.h>
 #include <kstandarddirs.h>
-#include <kurl.h>
+#include <QUrl>
 #include <kcalendarsystem.h>
 #include <khtmlview.h>
 

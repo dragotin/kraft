@@ -200,6 +200,6 @@ void HtmlView::showWelcomePage()
 void HtmlView::setBaseUrl( const QString& base )
 {
 
-  mBaseUrl = KUrl( base );
+  mBaseUrl = QUrl( base );
   kDebug() << "Setting base url: " << mBaseUrl.prettyUrl();
 }

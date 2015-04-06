@@ -24,7 +24,7 @@
 #include <kapplication.h>
 #include <kmainwindow.h>
 #include <kaction.h>
-#include <kurl.h>
+#include <QUrl>
 
 #include "katalogview.h"
 #include "templkataloglistview.h"

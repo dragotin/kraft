@@ -22,7 +22,7 @@
 #include "htmlview.h"
 #include "kraftdoc.h"
 
-class KUrl;
+class QUrl;
 
 class DocPostCard : public HtmlView
 {
@@ -50,7 +50,7 @@ protected:
 
   // void urlSelected( const QString &, int , int ,
   //                  const QString &, KParts::openUrlArguments& );
-  // openUrlRequestDelayed(const KUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments&)
+  // openUrlRequestDelayed(const QUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments&)
   
   QString renderDocMini( int ) const;
   QString renderDocFull( int );

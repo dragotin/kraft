@@ -102,10 +102,10 @@ void SqLiteDetailsPage::slotSelectCustom()
   ui.mRbCustom->setChecked(true);
 }
 
-KUrl SqLiteDetailsPage::url()
+QUrl SqLiteDetailsPage::url()
 {
   if( ui.mRbDefault->isChecked() ) {
-    return KUrl( KStandardDirs::locateLocal( "appdata", "sqlite/kraft.db") );
+    return QUrl( KStandardDirs::locateLocal( "appdata", "sqlite/kraft.db") );
   }
   return ui.mFileUrl->url();
 }

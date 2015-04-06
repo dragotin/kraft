@@ -28,7 +28,7 @@
 #include <kdebug.h>
 #include <kstandarddirs.h>
 #include <ktemporaryfile.h>
-#include <kurl.h>
+#include <QUrl>
 #include <kmessagebox.h>
 #include <akonadi/contact/contactsearchjob.h>
 

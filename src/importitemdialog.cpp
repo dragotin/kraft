@@ -170,7 +170,7 @@ void ImportItemDialog::slotOk()
 DocPositionList ImportItemDialog::positionList()
 {
   DocPositionList list;
-  KUrl url = mBaseWidget->mFileRequester->url();
+  QUrl url = mBaseWidget->mFileRequester->url();
 
   if ( ! url.isEmpty() ) {
     DocPositionImportFilter filter = mFilterMap[mBaseWidget->mSchemaCombo->currentText()];

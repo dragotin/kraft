@@ -608,8 +608,8 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KABC::Addressee& 
     } else {
         // Use KDE Invocation tool for all other mailers, good luck.
         // works with KMail at least.
-        KUrl mailTo;
-        mailTo.setProtocol("mailto");
+        QUrl mailTo;
+        mailTo.setScheme("mailto");
         if ( ! mailReceiver.isEmpty() ) {
             mailTo.addQueryItem( "to", mailReceiver );
         }
@@ -641,7 +641,7 @@ void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
 void Portal::slotOpenPdf( const QString& fileName )
 {
     disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
-    KUrl url( fileName );
+    QUrl url( fileName );
     KRun::runUrl( url, "application/pdf", this );
 
     // save pdf into a <customer>/<dockind> structure

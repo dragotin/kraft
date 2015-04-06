@@ -162,7 +162,7 @@ void DocPositionImportFilter::debugDefinition()
   kDebug() << "Separator: <" << mSeparator << ">";
 }
 
-DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
+DocPositionList DocPositionImportFilter::import( const QUrl &inFile )
 {
   DocPositionList list;
   bool copied = false;

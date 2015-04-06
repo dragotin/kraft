@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <klocale.h>
 #include <kdebug.h>
 
 #include "timecalcpart.h"

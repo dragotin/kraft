@@ -30,7 +30,7 @@
 #include <kabc/addressee.h>
 
 #include <kaction.h>
-#include <kurl.h>
+#include <QUrl>
 
 #include "docguardedptr.h"
 #include "katalogview.h"

@@ -18,7 +18,7 @@
 #ifndef _PORTALVIEW_H
 #define _PORTALVIEW_H
 
-#include <kurl.h>
+#include <QUrl>
 
 // include files
 #include <kpagewidget.h>

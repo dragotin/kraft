@@ -20,7 +20,7 @@
 
 #include <klocale.h>
 #include <kglobal.h>
-#include <kurl.h>
+#include <QUrl>
 #include <khtmlview.h>
 
 #include <kdebug.h>
@@ -302,11 +302,11 @@ bool DocPostCard::urlSelected (const QString &url, int, int, const QString &,
 {
   kDebug() << "DocPostCard::urlSelected(): " << url << endl;
 
-  KUrl kurl( url );
+  QUrl kurl( url );
 
   KraftDoc::Part id = KraftDoc::Header;
 
-  if ( kurl.protocol() == "kraftdoc" ) {
+  if ( kurl.scheme() == "kraftdoc" ) {
     if ( kurl.host() == "header" ) {
       kDebug() << "Header selected!" << endl;
       id = KraftDoc::Header;

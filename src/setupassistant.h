@@ -35,7 +35,7 @@
 #include "kraftcat_export.h"
 
 class KPageWidgetItem;
-class KUrl;
+class QUrl;
 class AkonadiAddressSelector;
 
 using namespace KABC;
@@ -75,7 +75,7 @@ class SqLiteDetailsPage:public QWidget
   public:
   SqLiteDetailsPage( QWidget *parent = 0 );
 
-  KUrl url();
+  QUrl url();
   protected slots:
   void slotSelectCustom();
   private:

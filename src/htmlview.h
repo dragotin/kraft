@@ -19,7 +19,7 @@
 
 #include <khtml_part.h>
 class KAction;
-class KUrl;
+class QUrl;
 
 class HtmlView : public KHTMLPart
 {
@@ -63,7 +63,7 @@ class HtmlView : public KHTMLPart
 
     KAction *mZoomInAction;
     KAction *mZoomOutAction;
-    KUrl     mBaseUrl;
+    QUrl     mBaseUrl;
 
     int mZoomStep;
 };

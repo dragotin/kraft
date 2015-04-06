@@ -234,7 +234,7 @@ void KatalogView::initActions()
 
 }
 
-void KatalogView::openDocumentFile(const KUrl& )
+void KatalogView::openDocumentFile(const QUrl& )
 {
   slotStatusMsg(i18n("Opening file..."));
 
@@ -270,7 +270,7 @@ void KatalogView::slotFileOpen()
 {
   slotStatusMsg(i18n("Opening file..."));
 
-  KUrl url=KFileDialog::getOpenUrl( KUrl(),
+  QUrl url =KFileDialog::getOpenUrl( QUrl(),
                                    i18n("*|All files"), this, i18n("Open File..."));
   if(!url.isEmpty())
   {
