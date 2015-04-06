@@ -105,7 +105,7 @@ void PrefsDialog::taxTab()
 
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Taxes" ));
 
-  topFrame->setIcon(KIcon( "accessories-text-editor" ) );
+  topFrame->setIcon(QIcon::fromTheme( "accessories-text-editor" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   vboxLay->setSpacing( spacingHint() );
@@ -141,11 +141,11 @@ void PrefsDialog::taxTab()
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  KPushButton *but = new KPushButton( KIcon("list-add"), i18n( "Add" ));
+  KPushButton *but = new KPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddTax() ) );
   butLay->addWidget( but );
 
-  mDelTax = new KPushButton( KIcon("list-remove"), i18n( "Remove" ) );
+  mDelTax = new KPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
   connect( mDelTax, SIGNAL( clicked() ), SLOT( slotDeleteTax() ) );
   butLay->addWidget( mDelTax );
   mDelTax->setEnabled( false );
@@ -160,7 +160,7 @@ void PrefsDialog::wagesTab()
 
     KPageWidgetItem *topFrame = addPage( mPrefsWages, i18n( "Wages" ));
 
-    topFrame->setIcon(KIcon( "help-donate" ) );
+    topFrame->setIcon(QIcon::fromTheme( "help-donate" ) );
 }
 
 void PrefsDialog::unitsTab()
@@ -169,7 +169,7 @@ void PrefsDialog::unitsTab()
 
     KPageWidgetItem *topFrame = addPage( mPrefsUnits, i18n( "Units" ));
 
-    topFrame->setIcon(KIcon( "chronometer" ) );
+    topFrame->setIcon(QIcon::fromTheme( "chronometer" ) );
 }
 
 void PrefsDialog::whoIsMeTab()
@@ -178,7 +178,7 @@ void PrefsDialog::whoIsMeTab()
 
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Own Identity" ));
 
-  topFrame->setIcon(KIcon( "user-identity" ) );
+  topFrame->setIcon(QIcon::fromTheme( "user-identity" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   vboxLay->setSpacing( spacingHint() );
@@ -259,7 +259,7 @@ void PrefsDialog::docTab()
   QWidget *topWidget = new QWidget;
 
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Defaults" ) );
-  topFrame->setIcon(KIcon( "edit-copy" ) );
+  topFrame->setIcon(QIcon::fromTheme( "edit-copy" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   topWidget->setLayout( vboxLay );
@@ -319,7 +319,7 @@ void PrefsDialog::doctypeTab()
 {
   QWidget *topWidget = new QWidget;
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Types" ) );
-  topFrame->setIcon(KIcon( "folder-documents" ) );
+  topFrame->setIcon(QIcon::fromTheme( "folder-documents" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   topWidget->setLayout(vboxLay);

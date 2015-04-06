@@ -132,17 +132,17 @@ void FlosTemplDialog::setupConnections()
 
 void FlosTemplDialog::setButtonIcons()
 {
-  m_butAddTime->setIcon(KIcon("list-add"));
-  m_butEditTime->setIcon(KIcon("document-edit"));
-  m_butRemoveTime->setIcon(KIcon("list-remove"));
+  m_butAddTime->setIcon(QIcon::fromTheme("list-add"));
+  m_butEditTime->setIcon(QIcon::fromTheme("document-edit"));
+  m_butRemoveTime->setIcon(QIcon::fromTheme("list-remove"));
 
-  m_butAddFix->setIcon(KIcon("list-add"));
-  m_butEditFix->setIcon(KIcon("document-edit"));
-  m_butRemoveFix->setIcon(KIcon("list-remove"));
+  m_butAddFix->setIcon(QIcon::fromTheme("list-add"));
+  m_butEditFix->setIcon(QIcon::fromTheme("document-edit"));
+  m_butRemoveFix->setIcon(QIcon::fromTheme("list-remove"));
 
-  m_butAddMat->setIcon(KIcon("list-add"));
-  m_butEditMat->setIcon(KIcon("document-edit"));
-  m_butRemoveMat->setIcon(KIcon("list-remove"));
+  m_butAddMat->setIcon(QIcon::fromTheme("list-add"));
+  m_butEditMat->setIcon(QIcon::fromTheme("document-edit"));
+  m_butRemoveMat->setIcon(QIcon::fromTheme("list-remove"));
 }
 
 void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalogname, bool newTempl )
@@ -412,7 +412,7 @@ bool FlosTemplDialog::confirmClose()
   if(modified == true) {
     if ( KMessageBox::warningContinueCancel( this, i18n( "The template was modified. Do "
                                                          "you really want to discard all changes?" ),
-                                             i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ), KIcon("edit-clear") ) )
+                                             i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ), QIcon::fromTheme("edit-clear") ) )
       == KMessageBox::Cancel  ) {
       return false;
     }

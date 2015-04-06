@@ -117,22 +117,22 @@ void Portal::initActions()
   actNewDocument = actionCollection()->addAction( "document_new", this, SLOT( slotNewDocument()) );
   actNewDocument->setText( i18n("Create Document") );
   actNewDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::New) );
-  actNewDocument->setIcon( KIcon("document-new"));
+  actNewDocument->setIcon( QIcon::fromTheme("document-new"));
 
   actCopyDocument = actionCollection()->addAction( "document_copy", this, SLOT( slotCopyDocument()) );
   actCopyDocument->setText( i18n("Copy Document"));
   actCopyDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Copy) );
-  actCopyDocument->setIcon( KIcon( "document-edit"));
+  actCopyDocument->setIcon( QIcon::fromTheme( "document-edit"));
 
   actFollowDocument = actionCollection()->addAction( "document_follow", this, SLOT( slotFollowUpDocument() ) );
   actFollowDocument->setText( i18n("Follow Document" ));
   actFollowDocument->setShortcut( KShortcut( Qt::CTRL + Qt::Key_F ));
-  actFollowDocument->setIcon( KIcon( "document-edit"));
+  actFollowDocument->setIcon( QIcon::fromTheme( "document-edit"));
 
   actPrintDocument = actionCollection()->addAction( "document_print", this, SLOT( slotPrintDocument()) );
   actPrintDocument->setText( i18n("Print Document"));
   actPrintDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Print) );
-  actPrintDocument->setIcon( KIcon("document-print"));
+  actPrintDocument->setIcon( QIcon::fromTheme("document-print"));
 
   actOpenArchivedDocument = actionCollection()->addAction( "archived_open", this, SLOT( slotArchivedDocExecuted()) );
   actOpenArchivedDocument->setText( i18n("Open Archived Document"));
@@ -141,17 +141,17 @@ void Portal::initActions()
   actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewDocument()));
   actViewDocument->setText(i18n("Show Document"));
   actViewDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Reload) );
-  actViewDocument->setIcon( KIcon("document-preview" ));
+  actViewDocument->setIcon( QIcon::fromTheme("document-preview" ));
 
   actOpenDocument = actionCollection()->addAction( "document_open", this, SLOT( slotOpenDocument()) );
   actOpenDocument->setText( i18n("Edit Document"));
   actOpenDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Open) );
-  actOpenDocument->setIcon( KIcon("document-open" ));
+  actOpenDocument->setIcon( QIcon::fromTheme("document-open" ));
 
   actMailDocument = actionCollection()->addAction( "document_mail", this, SLOT( slotMailDocument()) );
   actMailDocument->setText(i18n("&Mail Document"));
   actMailDocument->setShortcut( KShortcut(Qt::CTRL + Qt::Key_M ));
-  actMailDocument->setIcon( KIcon("mail-forward"));
+  actMailDocument->setIcon( QIcon::fromTheme("mail-forward"));
 
   actEditTemplates = actionCollection()->addAction( "edit_tag_templates", this, SLOT( slotEditTagTemplates() ) );
   actEditTemplates->setText("Edit Tag Templates");

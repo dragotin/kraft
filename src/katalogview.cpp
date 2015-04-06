@@ -163,39 +163,39 @@ void KatalogView::initActions()
 {  
   m_acEditChapter = actionCollection()->addAction( "edit_chapter", this, SLOT( slEditSubChapter() ) );
   m_acEditChapter->setText( i18n("Edit Sub chapter") );
-  m_acEditChapter->setIcon( KIcon("folder-documents"));
+  m_acEditChapter->setIcon( QIcon::fromTheme("folder-documents"));
   m_acEditChapter->setStatusTip(i18n("Edit a catalog sub chapter"));
   m_acEditChapter->setEnabled(true);
 
   m_acAddChapter = actionCollection()->addAction( "add_chapter", this, SLOT( slAddSubChapter() ) );
   m_acAddChapter->setText( i18n("Add a sub chapter") );
-  m_acAddChapter->setIcon( KIcon("document-edit"));
+  m_acAddChapter->setIcon( QIcon::fromTheme("document-edit"));
   m_acAddChapter->setStatusTip(i18n("Add a sub chapter below the selected one"));
   m_acAddChapter->setEnabled(false);
 
   m_acRemChapter = actionCollection()->addAction( "remove_chapter", this, SLOT( slRemoveSubChapter() ) );
   m_acRemChapter->setText( i18n("Remove a sub chapter") );
-  m_acRemChapter->setIcon( KIcon("document-edit"));
+  m_acRemChapter->setIcon( QIcon::fromTheme("document-edit"));
   m_acRemChapter->setStatusTip(i18n("Remove a sub chapter"));
   m_acRemChapter->setEnabled(false);
 
   m_acEditItem = actionCollection()->addAction( "edit_template", this, SLOT( slEditTemplate() ) );
   m_acEditItem->setText( i18n("Edit template") );
-  m_acEditItem->setIcon( KIcon("document-edit"));
+  m_acEditItem->setIcon( QIcon::fromTheme("document-edit"));
   m_acEditItem->setStatusTip(i18n("Opens the editor window for templates to edit the selected one"));
   m_acEditItem->setEnabled(false);
 
   m_acNewItem = actionCollection()->addAction( "new_template", this, SLOT( slNewTemplate() ) );
   m_acNewItem->setText( i18n("New template") );
   m_acNewItem->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::New) );
-  m_acNewItem->setIcon( KIcon("document-new"));
+  m_acNewItem->setIcon( QIcon::fromTheme("document-new"));
   m_acNewItem->setStatusTip(i18n("Opens the editor window for templates to enter a new template"));
   m_acNewItem->setEnabled(true);
 
   m_acDeleteItem = actionCollection()->addAction( "delete_template", this, SLOT( slDeleteTemplate() ) );
   m_acDeleteItem->setText( i18n("Delete template") );
   m_acDeleteItem->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Clear) );
-  m_acDeleteItem->setIcon( KIcon("document-delete"));
+  m_acDeleteItem->setIcon( QIcon::fromTheme("document-delete"));
   m_acDeleteItem->setStatusTip(i18n("Deletes the template"));
   m_acDeleteItem->setEnabled(true);
 

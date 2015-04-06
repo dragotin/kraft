@@ -94,9 +94,9 @@ PositionViewWidget::PositionViewWidget()
   // state submenu:
   mStateSubmenu = mExecPopup->addMenu(i18n( "Item Kind" ));
   mStateSubmenu->addAction( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
-  mStateSubmenu->addAction( KIcon( "kraft_alternative" ),
+  mStateSubmenu->addAction( QIcon::fromTheme( "kraft_alternative" ),
                             i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
-  mStateSubmenu->addAction( KIcon( "kraft_demand" ),
+  mStateSubmenu->addAction( QIcon::fromTheme( "kraft_demand" ),
                             i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
 
   // mExecPopup->addSeparator();
@@ -105,19 +105,19 @@ PositionViewWidget::PositionViewWidget()
   mTaxSubmenu = mExecPopup->addMenu(i18n( "Tax" ));
   QActionGroup *agroup = new QActionGroup( this );
   agroup->setExclusive ( true );
-  mNilTaxAction = new QAction( KIcon("kraft_notax"),  i18n("Taxfree Item"), this );
+  mNilTaxAction = new QAction( QIcon::fromTheme("kraft_notax"),  i18n("Taxfree Item"), this );
   connect( mNilTaxAction, SIGNAL(triggered()), this, SLOT(slotSetNilTax()) );
   mNilTaxAction->setCheckable( true );
   agroup->addAction( mNilTaxAction );
   mTaxSubmenu->addAction( mNilTaxAction );
 
-  mRedTaxAction = new QAction( KIcon("kraft_redtax"), i18n("Reduced Tax"),  this );
+  mRedTaxAction = new QAction( QIcon::fromTheme("kraft_redtax"), i18n("Reduced Tax"),  this );
   connect( mRedTaxAction, SIGNAL(triggered()), this, SLOT(slotSetReducedTax()));
   mRedTaxAction->setCheckable( true );
   agroup->addAction( mRedTaxAction );
   mTaxSubmenu->addAction( mRedTaxAction );
 
-  mFullTaxAction = new QAction( KIcon("kraft_fulltax"), i18n("Full Tax"),  this );
+  mFullTaxAction = new QAction( QIcon::fromTheme("kraft_fulltax"), i18n("Full Tax"),  this );
   connect( mFullTaxAction, SIGNAL(triggered()), this, SLOT(slotSetFullTax()));
   mFullTaxAction->setCheckable( true );
   agroup->addAction( mFullTaxAction );
@@ -125,15 +125,15 @@ PositionViewWidget::PositionViewWidget()
 
   mExecPopup->addSeparator();
 
-  mExecPopup->addAction(  KIcon("arrow-up"),
+  mExecPopup->addAction(  QIcon::fromTheme("arrow-up"),
                            i18n("Move Up"),         this, SIGNAL( moveUp() ) );
-  mExecPopup->addAction(  KIcon("arrow-down"),
+  mExecPopup->addAction(  QIcon::fromTheme("arrow-down"),
                            i18n("Move Down"),       this, SIGNAL( moveDown() ) );
-  mLockId = mExecPopup->addAction(  KIcon("object-locked"),
+  mLockId = mExecPopup->addAction(  QIcon::fromTheme("object-locked"),
                            i18n("Lock Item"),   this, SIGNAL( lockPosition() ) );
-  mUnlockId = mExecPopup->addAction(  KIcon("object-unlocked"),
+  mUnlockId = mExecPopup->addAction(  QIcon::fromTheme("object-unlocked"),
                            i18n("Unlock Item"), this, SIGNAL( unlockPosition() ) );
-  mDeleteId = mExecPopup->addAction(  KIcon("edit-delete"),
+  mDeleteId = mExecPopup->addAction(  QIcon::fromTheme("edit-delete"),
                            i18n("Delete Item"), this, SIGNAL( deletePosition() ) );
 
 
@@ -349,7 +349,7 @@ void PositionViewWidget::slotSetTax( DocPosition::TaxType tt )
     mNilTaxAction->setChecked( true );
   }
 
-  mTaxSubmenu->setIcon( KIcon( icon ));
+  mTaxSubmenu->setIcon( QIcon::fromTheme( icon ));
   emit positionModified();
 }
 

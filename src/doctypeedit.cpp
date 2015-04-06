@@ -68,9 +68,9 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   if(mTypeListBox->currentRow() != -1)
     dtype = mTypeListBox->currentItem()->text();
 
-  mPbAdd->setIcon( KIcon( "list-add" ) );
-  mPbEdit->setIcon( KIcon( "document-edit" ) );
-  mPbRemove->setIcon( KIcon( "list-remove" ) );
+  mPbAdd->setIcon( QIcon::fromTheme( "list-add" ) );
+  mPbEdit->setIcon( QIcon::fromTheme( "document-edit" ) );
+  mPbRemove->setIcon( QIcon::fromTheme( "list-remove" ) );
 
   connect( mPbAdd, SIGNAL( clicked() ),
            SLOT( slotAddDocType() ) );

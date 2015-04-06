@@ -566,9 +566,9 @@ void KraftView::setupFooter()
 
   // ATTENTION: If you change the following inserts, make sure to check the code
   //            in method currentPositionList!
-  m_footerEdit->ui()->mTaxCombo->insertItem( NO_TAX,   KIcon("kraft_notax"), i18n( "Display no tax at all" ));
-  m_footerEdit->ui()->mTaxCombo->insertItem( RED_TAX,  KIcon("kraft_redtax"), i18n( "Calculate reduced tax for all items" ));
-  m_footerEdit->ui()->mTaxCombo->insertItem( FULL_TAX, KIcon("kraft_fulltax"), i18n( "Calculate full tax for all items" ));
+  m_footerEdit->ui()->mTaxCombo->insertItem( NO_TAX,   QIcon::fromTheme("kraft_notax"), i18n( "Display no tax at all" ));
+  m_footerEdit->ui()->mTaxCombo->insertItem( RED_TAX,  QIcon::fromTheme("kraft_redtax"), i18n( "Calculate reduced tax for all items" ));
+  m_footerEdit->ui()->mTaxCombo->insertItem( FULL_TAX, QIcon::fromTheme("kraft_fulltax"), i18n( "Calculate full tax for all items" ));
   m_footerEdit->ui()->mTaxCombo->insertItem( INDI_TAX, i18n( "Calculate individual tax for each item"));
 
   // set the tax type combo correctly: If all items have the same tax type, take it.
@@ -1400,7 +1400,7 @@ bool KraftView::documentModifiedMessageBox()
   if ( mModified ) {
     if ( KMessageBox::warningContinueCancel( this, i18n( "The document was modified. Do "
                                                          "you really want to discard all changes?" ),
-                                             i18n( "Document Modified" ), KGuiItem( i18n( "Discard" ), KIcon("edit-clear") ) )
+                                             i18n( "Document Modified" ), KGuiItem( i18n( "Discard" ), QIcon::fromTheme("edit-clear") ) )
       == KMessageBox::Cancel  ) {
       return false;
     }

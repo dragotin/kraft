@@ -98,7 +98,7 @@ QTreeWidgetItem* TemplKatalogListView::addFlosTemplate( QTreeWidgetItem *parentI
 
   if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
   {
-    listItem->setIcon(0, KIcon( "kraftdice" ) );
+    listItem->setIcon(0, QIcon::fromTheme( "kraftdice" ) );
   }
   else
   {

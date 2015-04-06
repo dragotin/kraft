@@ -134,7 +134,7 @@ void DocDigestView::initializeTreeWidgets()
   //
 
   int indx = mToolBox->addItem( w, i18n("Latest Documents"));
-  mToolBox->setItemIcon( indx, KIcon( "get-hot-new-stuff"));
+  mToolBox->setItemIcon( indx, QIcon::fromTheme( "get-hot-new-stuff"));
   mToolBox->setItemToolTip(indx, i18n("Shows the latest ten documents"));
   mTreeViewIndex[indx] = mLatestView;
 
@@ -154,7 +154,7 @@ void DocDigestView::initializeTreeWidgets()
   //
 
   indx = mToolBox->addItem( w, i18n("All Documents"));
-  mToolBox->setItemIcon( indx, KIcon( "edit-clear-locationbar-ltr"));
+  mToolBox->setItemIcon( indx, QIcon::fromTheme( "edit-clear-locationbar-ltr"));
   mToolBox->setItemToolTip(indx, i18n("Shows a complete list of all documents"));
   mTreeViewIndex[indx] = mAllView;
 
@@ -174,7 +174,7 @@ void DocDigestView::initializeTreeWidgets()
   //
 
   indx = mToolBox->addItem( w, i18n("Timelined Documents"));
-  mToolBox->setItemIcon( indx, KIcon( "chronometer"));
+  mToolBox->setItemIcon( indx, QIcon::fromTheme( "chronometer"));
   mToolBox->setItemToolTip(indx, i18n("Shows all documents along a timeline"));
   mTreeViewIndex[indx] = mTimeView;
 }

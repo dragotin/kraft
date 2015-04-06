@@ -76,16 +76,16 @@ PrefsUnits::PrefsUnits(QWidget* parent)
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  KPushButton *but = new KPushButton( KIcon("list-add"), i18n( "Add" ));
+  KPushButton *but = new KPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddUnit() ) );
   butLay->addWidget( but );
 
-  mEditUnit = new KPushButton( KIcon("document-edit"), i18n( "Edit" ));
+  mEditUnit = new KPushButton( QIcon::fromTheme("document-edit"), i18n( "Edit" ));
   connect( mEditUnit, SIGNAL( clicked() ), SLOT( slotEditUnit() ) );
   butLay->addWidget( mEditUnit );
   mEditUnit->setEnabled(false);
 
-  mDelUnit = new KPushButton( KIcon("list-remove"), i18n( "Remove" ) );
+  mDelUnit = new KPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
   connect( mDelUnit, SIGNAL( clicked() ), SLOT( slotDeleteUnit() ) );
   butLay->addWidget( mDelUnit );
   mDelUnit->setEnabled( false );

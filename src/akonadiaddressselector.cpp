@@ -202,7 +202,7 @@ void AkonadiAddressSelector::setupGui()
 
   connect(mBookButton,SIGNAL(clicked()),this,SLOT(slotToggleBookSelection()));
 
-  mBookButton->setIcon( KIcon( "address-book-new" ));
+  mBookButton->setIcon( QIcon::fromTheme( "address-book-new" ));
   mBookButton->setSizePolicy( QSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum ));
   mBookButton->setToolTip( i18n("Display address book selection list and hide address details.") );
 

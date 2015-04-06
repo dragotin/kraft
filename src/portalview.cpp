@@ -62,7 +62,7 @@ void PortalView::katalogDetails()
 {
   QWidget *w = new QWidget;
   mCatalogPage = addPage( w, i18n("Catalogs" ) );
-  mCatalogPage->setIcon(KIcon("server-database"));
+  mCatalogPage->setIcon(QIcon::fromTheme("server-database"));
 
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );
@@ -176,7 +176,7 @@ void PortalView::systemDetails()
 {
   QWidget *w = new QWidget;
   mSysPage = addPage( w, i18n("System Details" ) );
-  mSysPage->setIcon(KIcon("dialog-information"));
+  mSysPage->setIcon(QIcon::fromTheme("dialog-information"));
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );
   mSystemBrowser = new PortalHtmlView( w );
@@ -303,7 +303,7 @@ void PortalView::documentDigests()
 {
   QWidget *w = new QWidget;
   mDocsPage = addPage( w, i18n("Documents" ) );
-  mDocsPage->setIcon(KIcon("folder-documents"));
+  mDocsPage->setIcon(QIcon::fromTheme("folder-documents"));
 
   QBoxLayout *b = new QHBoxLayout;
   b->setContentsMargins( 0, 0, 0, 0 );

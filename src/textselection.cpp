@@ -206,7 +206,7 @@ void TextSelection::initActions()
 {
   mActions     = new KActionCollection( this );
   mAcMoveToDoc = mActions->addAction( "moveToDoc", this, SIGNAL(actionCurrentTextToDoc()));
-  mAcMoveToDoc->setIcon( KIcon( "go-previous" ));
+  mAcMoveToDoc->setIcon( QIcon::fromTheme( "go-previous" ));
   mAcMoveToDoc->setText( i18n("&Use in Document") );
 
   mMenu->addAction( mAcMoveToDoc );
