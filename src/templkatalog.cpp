@@ -22,8 +22,6 @@
 #include <QDir>
 
 #include <QDebug>
-#include <kfiledialog.h>
-#include <klocale.h>
 #include <QFileDialog>
 
 #include "floskeltemplate.h"
