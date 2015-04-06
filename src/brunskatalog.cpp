@@ -22,6 +22,7 @@
 #include <QDebug>
 #include <kfiledialog.h>
 #include <klocale.h>
+#include <QFileDialog>
 
 #include "dbids.h"
 #include "brunskatalog.h"
@@ -38,7 +39,7 @@ BrunsKatalog::BrunsKatalog( const QString& n )
   if( m_dataFile.isEmpty() ) {
     qCritical() << "Unable to open bruns data file!" << endl;
 
-    m_dataFile = KFileDialog::getOpenFileName( QUrl(),
+    m_dataFile = QFileDialog::getOpenFileName(0, QString(),  QUrl(QString());
                                                "Artikelstamm_2008_2009.txt", 0,
                                                i18n("Select Bruns Catalog Data File") );
     DatabaseSettings::self()->setBrunsDataFile( m_dataFile );
@@ -50,7 +51,7 @@ BrunsKatalog::BrunsKatalog( const QString& n )
   if( m_chapterFile.isEmpty() ) {
     qCritical() << "Unable to open bruns key file!" << endl;
 
-    m_chapterFile = KFileDialog::getOpenFileName( QUrl(),
+    m_chapterFile = QFileDialog::getOpenFileName(0, QString(),  QUrl(QString());
                                                   "key_2008.txt", 0,
                                                   i18n("Select Bruns Catalog Key File") );
     DatabaseSettings::self()->setBrunsKeyFile( m_chapterFile );

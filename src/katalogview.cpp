@@ -39,6 +39,7 @@
 #include <kxmlguifactory.h>
 #include <KXmlGuiWindow>
 #include <KConfigGroup>
+#include <QFileDialog>
 
 // application specific includes
 #include "katalogview.h"
@@ -271,7 +272,7 @@ void KatalogView::slotFileOpen()
 {
   slotStatusMsg(i18n("Opening file..."));
 
-  QUrl url =KFileDialog::getOpenUrl( QUrl(),
+  QUrl url = QFileDialog::getOpenFileUrl(0, QString(), QUrl();
                                    i18n("*|All files"), this, i18n("Open File..."));
   if(!url.isEmpty())
   {

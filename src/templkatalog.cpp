@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <kfiledialog.h>
 #include <klocale.h>
+#include <QFileDialog>
 
 #include "floskeltemplate.h"
 #include "dbids.h"
@@ -340,7 +341,7 @@ int TemplKatalog::load( const QString& /* chapter */ )
 
 void TemplKatalog::writeXMLFile()
 {
-  QString filename = KFileDialog::getSaveFileName( QDir::homePath(),
+  QString filename = QFileDialog::getSaveFileName(0, QString(), QDir::homePath(, QString());
                                                    "*.xml", 0, i18n("Export XML Katalog"));
   if(filename.isEmpty()) return;
 
