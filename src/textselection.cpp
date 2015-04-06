@@ -23,12 +23,13 @@
 #include <klocale.h>
 #include <QDebug>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <kaction.h>
 #include <kactioncollection.h>
 #include <kiconloader.h>
 
 #include <QtGui>
+#include <KConfigGroup>
 
 TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   :QWidget( parent ),
@@ -39,8 +40,8 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   QVBoxLayout *layout = new QVBoxLayout;
   setLayout(layout);
 
-  layout->setMargin( KDialog::marginHint() );
-  layout->setSpacing( KDialog::spacingHint() );
+//TODO PORT QT5   layout->setMargin( QDialog::marginHint() );
+//TODO PORT QT5   layout->setSpacing( QDialog::spacingHint() );
   layout->addWidget( mGroupBox );
 
   /* a view for the entry text repository */
@@ -73,7 +74,7 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   mHelpDisplay = new QLabel;
   mHelpDisplay->setStyleSheet("background-color: #ffcbcb;");
   mHelpDisplay->setAutoFillBackground(true);
-  // QMargins m( KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint() );
+//TODO PORT QT5   // QMargins m( QDialog::marginHint(), QDialog::marginHint(), QDialog::marginHint(), QDialog::marginHint() );
   // mHelpDisplay->setContentsMargins( m );
   mHelpDisplay->setWordWrap( true );
   // mHelpDisplay->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );

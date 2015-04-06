@@ -23,7 +23,7 @@
 #include <QTreeWidget>
 #include <QPushButton>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <QDebug>
 #include <klocale.h>
 #include <kcombobox.h>
@@ -33,29 +33,43 @@
 #include <kvbox.h>
 #include <kcolorbutton.h>
 #include <kmessagebox.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 #include "tagtemplatesdialog.h"
 #include "defaultprovider.h"
 #include "tagman.h"
 
 TagTemplateEditor::TagTemplateEditor( QWidget *parent )
-  : KDialog( parent )
+  : QDialog( parent )
 {
   setObjectName("TAG_TEMPLATES_EDITOR");
   setModal( true );
-  setCaption( i18n("Edit Tag Template" ));
-  setButtons( Ok | Cancel );
+  setWindowTitle( i18n("Edit Tag Template" ));
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
-  showButtonSeparator( true );
   KVBox *w = new KVBox( this );
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 
   ( void ) new QLabel( QString::fromLatin1( "<h2>" )
                        + i18n( "<h2>Edit a Tag Template</h2>" ) + QString::fromLatin1( "</h2>" ), w );
   ( void ) new QLabel( i18n( "Adjust settings for name, color and description." ), w );
 
   KHBox *h1 = new KHBox( w );
-  h1->setSpacing( KDialog::spacingHint() );
+//TODO PORT QT5   h1->setSpacing( QDialog::spacingHint() );
   ( void ) new QLabel( i18n( "Name:" ), h1 );
   mNameEdit = new KLineEdit( h1 );
 
@@ -64,7 +78,7 @@ TagTemplateEditor::TagTemplateEditor( QWidget *parent )
   mDescriptionEdit = new KTextEdit( w );
 
   KHBox *h2 = new KHBox( w );
-  h2->setSpacing( KDialog::spacingHint() );
+//TODO PORT QT5   h2->setSpacing( QDialog::spacingHint() );
   QWidget *spaceEater = new QWidget( h2 );
   spaceEater->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   ( void ) new QLabel( i18n( "Associated Color:" ), h2 );
@@ -99,16 +113,23 @@ TagTemplate TagTemplateEditor::currentTemplate()
 // ################################################################################
 
 TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
-  : KDialog( parent )
+  : QDialog( parent )
 {
   setObjectName( "TAG_TEMPLATES_DIALOG" );
   setModal( true );
-  setCaption( i18n("Edit Tag Templates" ) );
-  setButtons( Close );
+  setWindowTitle( i18n("Edit Tag Templates" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
-  showButtonSeparator( true );
   KVBox *w= new KVBox( this );
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 
   ( void ) new QLabel( QString::fromLatin1( "<h2>" )
                        + i18n( "Edit Tag Templates" ) + QString::fromLatin1( "</h2>" ), w );
@@ -135,7 +156,7 @@ TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
   setTags();
 
   KHBox *buttBox = new KHBox( w );
-  buttBox->setSpacing( KDialog::spacingHint() );
+//TODO PORT QT5   buttBox->setSpacing( QDialog::spacingHint() );
   mAddButton = new QPushButton( i18n( "Add..." ), buttBox );
   mEditButton = new QPushButton( i18n( "Edit..." ), buttBox );
   mEditButton->setEnabled( false );

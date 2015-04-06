@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <knuminput.h>
 #include <klineedit.h>
+#include <KConfigGroup>
 
 #include "fixcalcdialog.h"
 #include "fixcalcpart.h"
@@ -32,11 +33,13 @@
 
 
 FixCalcDialog::FixCalcDialog(QWidget *parent, bool modal )
-    :KDialog( parent ), Ui::calcdetailFix(),
+    :QDialog( parent ), Ui::calcdetailFix(),
     m_part(0)
 {
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   setupUi( w );
   setModal( modal );
@@ -44,11 +47,13 @@ FixCalcDialog::FixCalcDialog(QWidget *parent, bool modal )
 }
 
 FixCalcDialog::FixCalcDialog(FixCalcPart *cp, QWidget *parent, bool modal )
-    : KDialog( parent ), Ui::calcdetailFix( ),
+    : QDialog( parent ), Ui::calcdetailFix( ),
     m_part(0)
 {
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   setupUi( w );
   setModal( modal );
@@ -83,7 +88,7 @@ void FixCalcDialog::accept()
     emit fixCalcPartChanged(m_part);
   }
 
-  KDialog::accept();
+  QDialog::accept();
 }
 
 QString FixCalcDialog::getName()

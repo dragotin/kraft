@@ -32,6 +32,7 @@
 
 #include <klocale.h>
 #include <QDebug>
+#include <KConfigGroup>
 
 #include "templtopositiondialogbase.h"
 #include "brunskatalog.h"
@@ -44,7 +45,8 @@ InsertPlantDialog::InsertPlantDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
 {
   QWidget *w = new QWidget( parent );
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 
   mBaseWidget = new Ui::insertPlantBase(  );
   mBaseWidget->setupUi( w );
@@ -67,7 +69,7 @@ InsertPlantDialog::InsertPlantDialog( QWidget *parent )
   connect( mBaseWidget->mSizeList,  SIGNAL( selectionChanged() ),
            this,  SLOT( slotSizeListSelectionChanged() ) );
 
-  button( Ok )->setEnabled( false );
+  okButton->setEnabled( false );
 
   mPriceQuery.prepare( "SELECT price, lastUpdate FROM plantPrices WHERE matchCode=:match" );
   mBaseWidget->mUpdateLabel->setText( QString() );
@@ -80,7 +82,7 @@ void InsertPlantDialog::slotSizeListSelectionChanged()
   if ( item ) {
     res = true;
   }
-  button( Ok )->setEnabled( res );
+  okButton->setEnabled( res );
 
   PlantPriceInfo ppi = mPriceMap[item];
 
@@ -202,6 +204,7 @@ void InsertPlantDialog::slotOk()
     if ( d > 0 )
       setPrice( m, d );
   }
+//Adapt code and connect okbutton or other to new slot. It doesn't exist in qdialog
   TemplToPositionDialogBase::slotButtonClicked( Ok );
 }
 

@@ -19,17 +19,28 @@
 #include "akonadiaddressselectordialog.h"
 
 AkonadiAddressSelectorDialog::AkonadiAddressSelectorDialog( QWidget *parent )
-    :KDialog(parent)
+    :QDialog(parent)
 {
     m_addressSelector = new AkonadiAddressSelector(this, false);
     connect(m_addressSelector, SIGNAL(addressSelected(Addressee)),SLOT(slotAddresseeSelected(Addressee)));
 
-    setMainWidget( m_addressSelector );
+//PORTING: Verify that widget was added to mainLayout:     setMainWidget( m_addressSelector );
+// Add mainLayout->addWidget(m_addressSelector); if necessary
 
     setModal( true );
-    setButtons(KDialog::Ok | KDialog::Cancel);
-    setDefaultButton(KDialog::Ok);
-    showButtonSeparator( true);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QWidget *mainWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
+    mainLayout->addWidget(mainWidget);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+    mainLayout->addWidget(buttonBox);
+    buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
 
 }
 

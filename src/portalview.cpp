@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <kcalendarsystem.h>
 #include <khtmlview.h>
+#include <KConfigGroup>
 
 #include "version.h"
 #include "kraftdb.h"
@@ -71,7 +72,7 @@ void PortalView::katalogDetails()
   
 
   b->addWidget( mCatalogBrowser->view() );
-  b->addSpacing( KDialog::marginHint() );
+//TODO PORT QT5   b->addSpacing( QDialog::marginHint() );
 
   QString html;
 
@@ -180,7 +181,7 @@ void PortalView::systemDetails()
   w->setLayout( b );
   mSystemBrowser = new PortalHtmlView( w );
   b->addWidget( mSystemBrowser->view() );
-  b->addSpacing( KDialog::marginHint() );
+//TODO PORT QT5   b->addSpacing( QDialog::marginHint() );
   mSystemBrowser->setStylesheetFile( "catalogview.css" ); //, "mucki_en_oS.png",
 
   // browser->setNotifyClick(false);
@@ -310,7 +311,7 @@ void PortalView::documentDigests()
 
   mDocDigestView = new DocDigestView( w );
   b->addWidget( mDocDigestView );
-  b->addSpacing( KDialog::marginHint() );
+//TODO PORT QT5   b->addSpacing( QDialog::marginHint() );
 
   connect( mDocDigestView, SIGNAL( createDocument() ),
            this, SLOT( slotCreateDocument() ) );

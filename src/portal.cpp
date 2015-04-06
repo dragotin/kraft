@@ -46,6 +46,7 @@
 #include <ktoolinvocation.h>
 #include <kstandarddirs.h>
 #include <kemailsettings.h>
+#include <KConfigGroup>
 
 // application specific includes
 #include "kraftview.h"
@@ -774,7 +775,7 @@ void Portal::createView( DocGuardedPtr doc )
           s.setWidth( 640 );
           s.setHeight( 400 );
       }
-      view->setInitialSize( s );
+      view->resize( s );
       view->slotSwitchToPage( KraftDoc::Positions );
       view->show();
 
@@ -801,7 +802,7 @@ void Portal::createROView( DocGuardedPtr doc )
             s.setWidth( 640 );
             s.setHeight( 400 );
         }
-        view->setInitialSize( s );
+        view->resize( s );
         view->show();
         mViewMap[doc] = view;
 

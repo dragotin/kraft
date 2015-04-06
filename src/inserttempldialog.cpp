@@ -36,6 +36,7 @@
 #include <klocale.h>
 #include <QDebug>
 #include <kvbox.h>
+#include <KConfigGroup>
 
 #include "ui_inserttmplbase.h"
 #include "templtopositiondialogbase.h"
@@ -50,7 +51,9 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
 {
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   mBaseWidget = new Ui::insertTmplBase;
   mBaseWidget->setupUi( w );
@@ -68,7 +71,6 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
 
   // hide the chapter combo by default
   mBaseWidget->mKeepGroup->hide();
-  showButtonSeparator( false );
 
   // Fill the tags list
   QGroupBox *group = mBaseWidget->mTagGroup;

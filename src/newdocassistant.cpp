@@ -27,10 +27,11 @@
 #include <khbox.h>
 #include <krun.h>
 #include <klocale.h>
-#include <kdialog.h>
+#include <QDialog>
 #include <kcombobox.h>
 #include <kdatewidget.h>
 #include <QDebug>
+#include <KConfigGroup>
 
 #include "newdocassistant.h"
 #include "addressselection.h"
@@ -46,8 +47,8 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QLabel *help = new QLabel;
   help->setText( i18n( "Please select a customer as addressee for the document. "
@@ -89,8 +90,8 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
 
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QLabel *help = new QLabel;
   help->setTextFormat( Qt::RichText );
@@ -101,16 +102,16 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   mCustomerLabel = new QLabel;
   mCustomerLabel->setFrameStyle( QFrame::Box + QFrame::Sunken );
   mCustomerLabel->setTextFormat( Qt::RichText );
-  mCustomerLabel->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   mCustomerLabel->setMargin( QDialog::marginHint() );
   mCustomerLabel->setText( i18n( "Customer: Not yet selected!" ) );
   vbox->addWidget( mCustomerLabel );
 
   QFormLayout *grid = new QFormLayout;
-  grid->setSpacing( KDialog::marginHint() );
+//TODO PORT QT5   grid->setSpacing( QDialog::marginHint() );
   vbox->addLayout( grid );
 
 //   QLabel *l = new QLabel( i18n( "Some Document Details: " ), vbox );
-//  l->setMargin( KDialog::marginHint() );
+//TODO PORT QT5 //  l->setMargin( QDialog::marginHint() );
 
   mTypeCombo = new KComboBox;
   mTypeCombo->insertItems( 0, DocType::allLocalised() );
@@ -162,7 +163,7 @@ void KraftWizard::init()
   QWidget *w = new QWidget;
   mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
 
-  setCaption( i18n( "Document Creation Wizard" ) );
+  setWindowTitle( i18n( "Document Creation Wizard" ) );
 
   mCustomerPage = new CustomerSelectPage( w );
   mCustomerPage->setupAddresses();

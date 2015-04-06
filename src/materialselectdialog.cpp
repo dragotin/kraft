@@ -18,9 +18,13 @@
 #include <klocale.h>
 #include <QDebug>
 #include <kvbox.h>
-#include <kdialog.h>
+#include <QDialog>
 
 #include <QLabel>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "materialkatalogview.h"
 #include "materialselectdialog.h"
@@ -31,15 +35,27 @@
 #include "filterheader.h"
 
 MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
-  : KDialog( parent )
+  : QDialog( parent )
 {
   setObjectName( name );
   setModal( true );
-  setCaption( i18n("Select Material for Calculation" ) );
-  setButtons( KDialog::Ok | KDialog::Cancel );
+  setWindowTitle( i18n("Select Material for Calculation" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
   KVBox *page = new KVBox( this );
-  setMainWidget( page );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( page );
+// Add mainLayout->addWidget(page); if necessary
   QLabel *label = new QLabel( i18n( "Select Material for Calculation" ),
                               page);
   label->setObjectName("caption");
@@ -81,7 +97,7 @@ void MaterialSelectDialog::accept()
     ++it;
   }
 
-  KDialog::accept();
+  QDialog::accept();
 }
 
 #include "materialselectdialog.moc"

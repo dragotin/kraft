@@ -30,7 +30,7 @@
 #include <QStackedWidget>
 #include <QHeaderView>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kinputdialog.h>
@@ -42,6 +42,9 @@
 
 #include <akonadi/contact/contactviewer.h>
 #include <QDebug>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 #include "prefsdialog.h"
 #include "prefswages.h"
@@ -70,9 +73,20 @@ PrefsDialog::PrefsDialog( QWidget *parent)
 {
   setFaceType( KPageDialog::List );
   setModal( true );
-  setCaption( i18n( "Configure Kraft" ) );
-  setButtons( Ok|Cancel);
-  setDefaultButton( Ok );
+  setWindowTitle( i18n( "Configure Kraft" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
+  okButton->setDefault(true);
   setMinimumWidth(700);
 
   docTab();

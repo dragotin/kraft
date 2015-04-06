@@ -35,6 +35,9 @@
 #include <kmessagebox.h>
 #include <kcombobox.h>
 #include <kpushbutton.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 #include "floskeltemplate.h"
 #include "catalogtemplate.h"
@@ -55,7 +58,7 @@
 #include "defaultprovider.h"
 
 FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
-    : KDialog( parent ),
+    : QDialog( parent ),
     m_template(0),
     m_katalog(0),
     m_fixCalcDia(0),
@@ -63,15 +66,27 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
     m_matPartDialog(0)
 {
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   setupUi( w );
 
-  setCaption( i18n("Create or Edit Template Items") );
+  setWindowTitle( i18n("Create or Edit Template Items") );
   setModal( modal );
-  setButtons( Ok | Cancel );
-  setDefaultButton( Ok );
-  showButtonSeparator( true);
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
+  okButton->setDefault(true);
 
   //Initialise the buttongroup to switch between manual and calculated price
   m_gbPriceSrc = new QButtonGroup(this);
@@ -373,14 +388,14 @@ void FlosTemplDialog::accept()
   // qDebug () << "*** Saving finished " << endl;
 
   modified = false;
-  KDialog::accept();
+  QDialog::accept();
 }
 
 void FlosTemplDialog::reject()
 {
   if(confirmClose() == true) {
-    // let KDialog clean away the dialog.
-    KDialog::reject();
+    // let QDialog clean away the dialog.
+    QDialog::reject();
   }
 }
 
@@ -770,9 +785,9 @@ void FlosTemplDialog::slCalcOrFix(int button)
 void FlosTemplDialog::slSetNewText( )
 {
   if( ! m_text || m_text->toPlainText().isEmpty() ) {
-    this->button(KDialog::Ok)->setEnabled(false);
+    this->okButton->setEnabled(false);
   } else {
-    this->button(KDialog::Ok)->setEnabled(true);
+    this->okButton->setEnabled(true);
   }
 
   if( m_text ) {

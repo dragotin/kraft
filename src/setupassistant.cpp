@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <kstandarddirs.h>
 #include <kstringhandler.h>
+#include <KConfigGroup>
 
 #include "setupassistant.h"
 #include "databasesettings.h"
@@ -33,8 +34,8 @@ WelcomePage::WelcomePage(QWidget *parent)
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QWidget *w = new QWidget;
   vbox->addWidget( w );
@@ -55,8 +56,8 @@ DbSelectPage::DbSelectPage(QWidget *parent)
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QWidget *w = new QWidget;
   vbox->addWidget( w );
@@ -80,8 +81,8 @@ SqLiteDetailsPage::SqLiteDetailsPage(QWidget *parent)
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QWidget *w = new QWidget;
   vbox->addWidget( w );
@@ -117,8 +118,8 @@ MysqlDetailsPage::MysqlDetailsPage(QWidget *parent)
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QWidget *w = new QWidget;
   vbox->addWidget( w );
@@ -162,8 +163,8 @@ CreateDbPage::CreateDbPage(QWidget *parent)
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QWidget *w = new QWidget;
   vbox->addWidget( w );
@@ -233,8 +234,8 @@ UpgradeDbPage::UpgradeDbPage(QWidget *parent)
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QWidget *w = new QWidget;
   vbox->addWidget( w );
@@ -277,8 +278,8 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QLabel *l = new QLabel;
   l->setText( i18n("Select your own address from the address book. It is set as a consigner on the documents.") );
@@ -322,8 +323,8 @@ void OwnAddressPage::saveOwnName()
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QWidget *w = new QWidget;
   vbox->addWidget( w );
@@ -377,9 +378,9 @@ SetupAssistant::SetupAssistant( QWidget *parent )
 
   connect( this, SIGNAL( currentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ),
            this, SLOT( slotCurrentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ) );
-  connect( this, SIGNAL( user1Clicked() ), this, SLOT( slotFinishedClicked() ) );
+  connect(user1Button, SIGNAL( clicked() ), this, SLOT( slotFinishedClicked() ) );
 
-  setInitialSize( QSize( 450, 260 ) );
+  resize( QSize( 450, 260 ) );
 
 }
 
@@ -495,16 +496,16 @@ void SetupAssistant::startDatabaseUpdate()
 {
   if( ! KraftDB::self()->isOk() ) {
     mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials."));
-    enableButton( KDialog::User2, false );
+    user2Button->setEnabled(false);
     return;
   }
 
   if( !KraftDB::self()->databaseExists() ) {
     mCreateDbPage->setStatusText( i18n("The database core tables do not exist. Please check initial setup."));
-    enableButton( KDialog::User2, false );
+    user2Button->setEnabled(false);
     return;
   }
-  enableButton( KDialog::User2, true );
+  user2Button->setEnabled(true);
 
   if( KraftDB::self()->currentSchemaVersion() == KraftDB::self()->requiredSchemaVersion() ) {
     mUpgradeDbPage->slotSetStatusText( i18n("Database is up to date. No upgrade is required."));
@@ -570,10 +571,10 @@ void SetupAssistant::startDatabaseCreation()
 {
   if( ! KraftDB::self()->isOk() ) {
     mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials!"));
-    enableButton( KDialog::User2, false );
+    user2Button->setEnabled(false);
     return;
   }
-  enableButton( KDialog::User2, true );
+  user2Button->setEnabled(true);
 
   mCreateDbPage->setStatusText( i18n("Parse Create Commands...") );
   SqlCommandList createCommands = KraftDB::self()->parseCommandFile( "create_schema.sql");

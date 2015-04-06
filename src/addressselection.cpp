@@ -22,7 +22,7 @@
 
 #include <klocale.h>
 #include <QDebug>
-#include <kdialog.h>
+#include <QDialog>
 
 #include <kabc/addresseelist.h>
 #include <kabc/addressee.h>
@@ -44,6 +44,7 @@
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <KConfigGroup>
 
 using namespace KABC;
 using namespace Akonadi;

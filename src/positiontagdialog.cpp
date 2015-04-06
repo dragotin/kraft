@@ -25,13 +25,17 @@
 #include <QModelIndex>
 #include <qdrawutil.h>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <QDebug>
 #include <klocale.h>
 #include <kcombobox.h>
 #include <ktextedit.h>
 #include <klineedit.h>
 #include <kvbox.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "positiontagdialog.h"
 #include "defaultprovider.h"
@@ -74,17 +78,29 @@ void TagDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, c
 // ################################################################################
 
 PositionTagDialog::PositionTagDialog( QWidget *parent )
-  : KDialog( parent )
+  : QDialog( parent )
 
 {
   setObjectName( "POSITION_TAG_DIALOG" );
   setModal( true );
-  setCaption( i18n("Edit Item Tags" ) );
-  setButtons( KDialog::Ok | KDialog::Cancel );
+  setWindowTitle( i18n("Edit Item Tags" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
   setMinimumWidth ( 375 );
 
   KVBox *w = new KVBox( this );
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 
 
   ( void ) new QLabel( QString::fromLatin1( "<h2>" )

@@ -38,6 +38,7 @@
 #include <kglobal.h>
 #include <kxmlguifactory.h>
 #include <KXmlGuiWindow>
+#include <KConfigGroup>
 
 // application specific includes
 #include "katalogview.h"
@@ -275,7 +276,7 @@ void KatalogView::slotFileOpen()
   if(!url.isEmpty())
   {
       // doc->openDocument(url);
-      setCaption(url.fileName(), false);
+      setWindowTitle(url.fileName(), false);
     }
   slotStatusMsg(i18n("Ready."));
 }

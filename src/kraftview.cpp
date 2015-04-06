@@ -34,7 +34,7 @@
 #include <QScrollBar>
 
 #include <QDebug>
-#include <kdialog.h>
+#include <QDialog>
 #include <kpushbutton.h>
 #include <kcombobox.h>
 #include <kdatewidget.h>
@@ -46,6 +46,10 @@
 #include <kiconloader.h>
 
 #include <kabc/addressee.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 // application specific includes
 #include "kraftdb.h"
@@ -90,16 +94,28 @@ KraftView::KraftView(QWidget *parent) :
   KraftViewBase( parent ),
   mHelpLabel( 0 ), mRememberAmount( -1 ), mModified( false )
 {
-  setCaption( i18n("Document" ) );
+  setWindowTitle( i18n("Document" ) );
   setModal( false );
-  setButtons( KDialog::Ok | KDialog::Cancel );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
   m_type = ReadWrite;
 
   QWidget *w = new QWidget( this );
 
   QVBoxLayout *vLayoutGlobal = new QVBoxLayout;
   w->setLayout( vLayoutGlobal );
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 
   mDetailHeader = new QLabel;
   mDetailHeader->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
@@ -210,7 +226,7 @@ void KraftView::setup( DocGuardedPtr doc )
   setupDocHeaderView();
   setupItems();
   setupFooter();
-  setCaption( m_doc->docIdentifier() );
+  setWindowTitle( m_doc->docIdentifier() );
   slotSwitchToPage( KraftDoc::Header );
 }
 
@@ -243,7 +259,7 @@ void KraftView::slotShowTemplates( bool )
 
 void KraftView::setupDocHeaderView()
 {
-    KraftDocHeaderEdit *edit = new KraftDocHeaderEdit( mainWidget() );
+    KraftDocHeaderEdit *edit = new KraftDocHeaderEdit(mainWidget);
 
     mHeaderId = mViewStack->addWidget( edit ); // , KraftDoc::Header );
 
@@ -271,7 +287,7 @@ void KraftView::setupDocHeaderView()
 
 void KraftView::setupItems()
 {
-    KraftDocPositionsEdit *edit = new KraftDocPositionsEdit( mainWidget() );
+    KraftDocPositionsEdit *edit = new KraftDocPositionsEdit(mainWidget);
     mDocPosEditorIndx = mViewStack->addWidget( edit ); // , KraftDoc::Positions );
 
     m_positionScroll = edit->positionScroll();
@@ -365,7 +381,7 @@ void KraftView::redrawDocPositions( )
       mHelpLabel = new QLabel(this);
       mHelpLabel->setTextFormat(Qt::RichText);
       // mHelpLabel->setMinimumHeight(400);
-      mHelpLabel->setMargin( KDialog::marginHint() );
+//TODO PORT QT5       mHelpLabel->setMargin( QDialog::marginHint() );
       mHelpLabel->setText( i18n( "<qt><h2>The Document Items List is still empty, but Items "
                                  "can be added now.</h2>"
                                  "To add items to the document either "
@@ -544,7 +560,7 @@ void KraftView::refreshPostCard()
 
 void KraftView::setupFooter()
 {
-  m_footerEdit = new KraftDocFooterEdit( mainWidget() );
+  m_footerEdit = new KraftDocFooterEdit(mainWidget);
 
   mViewStack->addWidget( m_footerEdit ); //  KraftDoc::Footer );
 
@@ -955,7 +971,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
     DocPositionList list = currentPositionList();
     dia->setPositionList( list, newpos );
 
-    dia->setInitialSize( s );
+    dia->resize( s );
 
     if ( dia->exec() ) {
       DocPosition diaPos = dia->docPosition();
@@ -1317,7 +1333,7 @@ void KraftView::done( int r )
         saveChanges();
         emit viewClosed( r == 1, m_doc );
     }
-    KDialog::done( r );
+    QDialog::done( r );
 }
 
 void KraftView::saveChanges()

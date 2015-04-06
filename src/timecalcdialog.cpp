@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <knuminput.h>
 #include <klineedit.h>
+#include <KConfigGroup>
 
 #include "timecalcdialog.h"
 #include "timecalcpart.h"
@@ -31,11 +32,13 @@
 
 
 TimeCalcDialog::TimeCalcDialog(QWidget *parent, bool modal )
-    : KDialog( parent ), Ui::calcdetailTime(),
+    : QDialog( parent ), Ui::calcdetailTime(),
     m_part(0)
 {
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   setupUi( w );
   setModal( modal );
@@ -43,11 +46,13 @@ TimeCalcDialog::TimeCalcDialog(QWidget *parent, bool modal )
 }
 
 TimeCalcDialog::TimeCalcDialog(TimeCalcPart *cp, QWidget *parent, bool modal )
-    : KDialog( parent ), Ui::calcdetailTime(),
+    : QDialog( parent ), Ui::calcdetailTime(),
     m_part(cp)
 {
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   setupUi( w );
   setModal( modal );
@@ -86,7 +91,7 @@ void TimeCalcDialog::accept()
     emit timeCalcPartChanged(m_part);
   }
 
-  KDialog::accept();
+  QDialog::accept();
 }
 
 QString TimeCalcDialog::getName()

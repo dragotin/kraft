@@ -22,7 +22,7 @@
 #include <QLabel>
 #include <QSizePolicy>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <QDebug>
 #include <klocale.h>
 #include <kcombobox.h>
@@ -31,26 +31,40 @@
 #include <kstandarddirs.h>
 #include <kiconloader.h>
 #include <kvbox.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 #include "doclocaledialog.h"
 #include "defaultprovider.h"
 
 
 DocLocaleDialog::DocLocaleDialog( QWidget *parent )
-  : KDialog( parent ),
+  : QDialog( parent ),
     mLocale( 0 )
 {
   setObjectName( "DOCLOCALE_DIALOG" );
   setModal( true );
-  setCaption( i18n( "Document Locale Settings" ) );
-  setButtons( KDialog::Ok | KDialog::Cancel );
+  setWindowTitle( i18n( "Document Locale Settings" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
   QWidget *w = new QWidget;
-  this->setMainWidget(w);
+  mainLayout->addWidget(w);
   QVBoxLayout *layout = new QVBoxLayout;
   w->setLayout(layout);
 
-  layout->setSpacing( KDialog::spacingHint() );
+//TODO PORT QT5   layout->setSpacing( QDialog::spacingHint() );
   QLabel *l = new QLabel( i18n( "<h2>Document Localization</h2>" ));
   layout->addWidget(l);
 
@@ -61,7 +75,7 @@ DocLocaleDialog::DocLocaleDialog( QWidget *parent )
 
   QGridLayout *g = new QGridLayout;
   layout->addLayout(g);
-  g->setSpacing( KDialog::spacingHint() );
+//TODO PORT QT5   g->setSpacing( QDialog::spacingHint() );
   l = new QLabel( i18n( "Country: " ));
   mCountryButton = new QComboBox;
 
@@ -79,14 +93,14 @@ DocLocaleDialog::DocLocaleDialog( QWidget *parent )
 
   mLabSample = new QLabel;
   layout->addWidget(mLabSample);
-  mLabSample->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   mLabSample->setMargin( QDialog::marginHint() );
   mLabSample->setFrameStyle( QFrame::Box | QFrame::Sunken );
 
 #if 0
   QWidget *dummy = new QWidget( w );
+  mainLayout->addWidget(dummy);
   dummy->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding ) );
 #endif
-  showButtonSeparator( false );
 }
 
 DocLocaleDialog::~DocLocaleDialog()

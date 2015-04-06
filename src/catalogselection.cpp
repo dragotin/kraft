@@ -28,7 +28,7 @@
 
 #include <klocale.h>
 #include <QDebug>
-#include <kdialog.h>
+#include <QDialog>
 #include <kaction.h>
 #include <kactioncollection.h>
 #include <kmenu.h>
@@ -39,6 +39,7 @@
 #include <QComboBox>
 #include <QStackedWidget>
 #include <QLabel>
+#include <KConfigGroup>
 
 CatalogSelection::CatalogSelection( QWidget *parent )
   :QWidget( parent ),
@@ -46,8 +47,8 @@ CatalogSelection::CatalogSelection( QWidget *parent )
    mWidgets( 0 )
 {
   QVBoxLayout *layout = new QVBoxLayout();
-  layout->setMargin(KDialog::marginHint());
-  layout->setSpacing(KDialog::spacingHint());
+//TODO PORT QT5   layout->setMargin(QDialog::marginHint());
+//TODO PORT QT5   layout->setSpacing(QDialog::spacingHint());
   QHBoxLayout *hb = new QHBoxLayout;
   layout->addLayout(hb);
   QWidget *spaceEater = new QWidget();

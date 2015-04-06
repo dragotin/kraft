@@ -22,17 +22,20 @@
 #include <klocale.h>
 #include <QDebug>
 #include <knuminput.h>
+#include <KConfigGroup>
 
 #include "matcalcdialog.h"
 #include "materialcalcpart.h"
 #include "stockmaterial.h"
 
 MatCalcDialog::MatCalcDialog( MaterialCalcPart *mc, QWidget *parent, bool modal )
-    : KDialog( parent ), Ui::calcdetailMat( ),
+    : QDialog( parent ), Ui::calcdetailMat( ),
     m_mc(mc)
 {
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   setupUi( w );
   setModal( modal );
@@ -50,7 +53,7 @@ void MatCalcDialog::init(double amount)
 
 void MatCalcDialog::reject()
 {
-  KDialog::reject();
+  QDialog::reject();
 }
 
 void MatCalcDialog::accept()
@@ -59,7 +62,7 @@ void MatCalcDialog::accept()
   m_mc->setCalcAmount(val);
   emit( matCalcPartChanged(m_mc));
 
-  KDialog::accept();
+  QDialog::accept();
 }
 
 MatCalcDialog::~MatCalcDialog( )

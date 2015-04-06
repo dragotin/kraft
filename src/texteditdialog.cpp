@@ -20,12 +20,16 @@
 #include <QWidget>
 #include <QLabel>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <QDebug>
 #include <klocale.h>
 #include <kcombobox.h>
 #include <ktextedit.h>
 #include <klineedit.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "templtopositiondialogbase.h"
 #include "texteditdialog.h"
@@ -34,16 +38,27 @@
 
 
 TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
-  : KDialog( parent )
+  : QDialog( parent )
 {
   setObjectName( "TEMPL_DIALOG" );
   setModal( true );
-  setCaption(  i18n("Edit Text Templates" ));
-  setButtons( KDialog::Ok | KDialog::Cancel );
-  showButtonSeparator( true );
+  setWindowTitle(  i18n("Edit Text Templates" ));
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
   QWidget *mainWidget = new QWidget( this );
-  setMainWidget( mainWidget );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( mainWidget );
+// Add mainLayout->addWidget(mainWidget); if necessary
 
   mBaseWidget = new Ui::TextEditBase;
   mBaseWidget->setupUi( mainWidget );

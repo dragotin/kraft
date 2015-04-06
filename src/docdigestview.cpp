@@ -24,13 +24,14 @@
 #include <kstandarddirs.h>
 #include <kaction.h>
 #include <ktoolbar.h>
-#include <kdialog.h>
+#include <QDialog>
 #include <kiconloader.h>
 #include <kmenu.h>
 #include <KHTMLView>
 #include <ktreeviewsearchline.h>
 
 #include <kcalendarsystem.h>
+#include <KConfigGroup>
 
 #include "models/documentmodel.h"
 #include "models/modeltest.h"

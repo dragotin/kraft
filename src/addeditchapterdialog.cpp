@@ -18,28 +18,43 @@
 #include <QtGui>
 
 #include <klocale.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "addeditchapterdialog.h"
 #include "catalogchapter.h"
 
 
 AddEditChapterDialog::AddEditChapterDialog( QWidget *parent )
-  :KDialog( parent )
+  :QDialog( parent )
 {
   setObjectName( "CHAPTER_EDIT_DIALOG" );
   setModal( true );
-  setCaption( i18n( "Add/Edit Catalog Chapter" ) );
-  setButtons( Ok|Cancel );
+  setWindowTitle( i18n( "Add/Edit Catalog Chapter" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
-  showButtonSeparator( true );
 
   QWidget *w = new QWidget(this);
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 
   QVBoxLayout *vbox = new QVBoxLayout;
   w->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   mTopLabel = new QLabel();
   mTopLabel->setText( i18n("Create a new Catalog Chapter"));

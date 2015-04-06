@@ -25,13 +25,14 @@
 #include <QSpinBox>
 #include <QListWidget>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <kurlrequester.h>
 #include <kinputdialog.h>
 #include <QDebug>
+#include <KConfigGroup>
 
 #include "prefsdialog.h"
 #include "kraftsettings.h"

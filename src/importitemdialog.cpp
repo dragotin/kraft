@@ -31,6 +31,10 @@
 #include <kstandarddirs.h>
 #include <kurlrequester.h>
 #include <kvbox.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "importfilter.h"
 #include "defaultprovider.h"
@@ -38,17 +42,28 @@
 #include "tagman.h"
 
 ImportItemDialog::ImportItemDialog( QWidget *parent )
-  : KDialog( parent )
+  : QDialog( parent )
 {
   // , "IMPORTITEMDIALOG", true, i18n( "Import Items From File" ),
   //               Ok | Cancel )
   setObjectName( "IMPORTITEMDIALOG" );
   setModal( true );
-  setCaption( i18n( "Import Items From File" ) );
-  setButtons( Ok | Cancel );
+  setWindowTitle( i18n( "Import Items From File" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
+  mainLayout->addWidget(w);
   mBaseWidget = new Ui::importToDocBase;
   mBaseWidget->setupUi( w );
 
@@ -163,7 +178,8 @@ void ImportItemDialog::slotOk()
   KraftSettings::self()->setImportItemsFileName( mBaseWidget->mFileRequester->url() );
   KraftSettings::self()->writeConfig();
 #endif
-  KDialog::slotButtonClicked( Ok );
+//Adapt code and connect okbutton or other to new slot. It doesn't exist in qdialog
+  QDialog::slotButtonClicked( Ok );
 }
 
 

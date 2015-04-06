@@ -19,26 +19,41 @@
 #include <QSqlTableModel>
 #include <QDataWidgetMapper>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <klocale.h>
 #include <QDebug>
 #include <kdatewidget.h>
 #include <knuminput.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "taxeditdialog.h"
 
 TaxEditDialog::TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent )
- : KDialog( parent )
+ : QDialog( parent )
 {
   setObjectName( "TAX_EDIT_DIALOG" );
   setModal( true );
-  setCaption( i18n( "Edit Tax Rates" ) );
-  setButtons( Ok|Cancel );
+  setWindowTitle( i18n( "Edit Tax Rates" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
-  showButtonSeparator( true );
 
   QWidget *w = new QWidget( this );
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 
   mBaseWidget = new Ui::TaxEditBase( );
   mBaseWidget->setupUi( w );
@@ -85,14 +100,14 @@ void TaxEditDialog::accept()
     } 
   }
 
-  KDialog::accept();
+  QDialog::accept();
 }
 
 void TaxEditDialog::reject()
 {
   model->removeRow(model->rowCount()-1);
 
-  KDialog::reject();
+  QDialog::reject();
 }
 
 #include "taxeditdialog.moc"

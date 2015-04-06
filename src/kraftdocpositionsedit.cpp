@@ -25,7 +25,8 @@
 
 #include <kpushbutton.h>
 #include <klocale.h>
-#include <kdialog.h>
+#include <QDialog>
+#include <KConfigGroup>
 
 #include "kraftview.h"
 
@@ -82,11 +83,11 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
 {
   QBoxLayout *topLayout = new QVBoxLayout();
   topLayout->setMargin( 0 );
-  topLayout->setSpacing( 0 ); // KDialog::spacingHint() );
+//TODO PORT QT5   topLayout->setSpacing( 0 ); // QDialog::spacingHint() );
 
   QHBoxLayout *upperHBoxLayout = new QHBoxLayout;
   //upperHBoxLayout->setFrameStyle( QFrame::Box + QFrame::Sunken );
-  upperHBoxLayout->setMargin( KDialog::marginHint()/2 );
+//TODO PORT QT5   upperHBoxLayout->setMargin( QDialog::marginHint()/2 );
   topLayout->addLayout( upperHBoxLayout );
 
   KPushButton *button = new KPushButton( i18n("Add Item...") );

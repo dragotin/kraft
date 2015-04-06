@@ -27,13 +27,16 @@
 #include <QSpinBox>
 #include <QToolTip>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <kinputdialog.h>
 #include <kvbox.h>
 #include <QDebug>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 #include "prefsdialog.h"
 #include "kraftsettings.h"
@@ -46,17 +49,28 @@
 
 
 NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
- :KDialog( parent ) //  "NUMBER_CYCLES_EDIT", true, i18n( "Edit Number Cycles" ), Ok|Cancel )
+ :QDialog( parent ) //  "NUMBER_CYCLES_EDIT", true, i18n( "Edit Number Cycles" ), Ok|Cancel )
 {
   setObjectName( "NUMBER_CYCLES_EDIT" );
   setModal( true );
-  setCaption( i18n( "Edit Number Cycles" ) );
-  setButtons( Ok|Cancel );
+  setWindowTitle( i18n( "Edit Number Cycles" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
-  showButtonSeparator( true );
 
   QWidget *w = new QWidget(this);
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 
   mBaseWidget = new Ui::NumberCycleEditBase( );
   mBaseWidget->setupUi( w );
@@ -144,7 +158,7 @@ void NumberCycleDialog::slotTemplTextChanged( const QString& str )
   if ( !str.isEmpty() && str.contains( "%i" ) ) {
     state = true;
   }
-  button( Ok )->setEnabled( state );
+  okButton->setEnabled( state );
   slotUpdateExample();
 }
 
@@ -350,7 +364,7 @@ void NumberCycleDialog::accept()
       qIns.exec();
     }
   }
-  KDialog::accept();
+  QDialog::accept();
 }
 
 void NumberCycleDialog::updateField( int id, const QString& field, const QString& value )

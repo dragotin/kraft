@@ -17,22 +17,36 @@
 
 #include <QComboBox>
 
-#include <kdialog.h>
+#include <QDialog>
 #include <QDebug>
 #include <klocale.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "templtopositiondialogbase.h"
 #include "docposition.h"
 
 TemplToPositionDialogBase::TemplToPositionDialogBase( QWidget *w )
-  : KDialog( w )
+  : QDialog( w )
 {
   setObjectName( "TEMPL_DIALOG" );
-  setButtons( KDialog::Ok | KDialog::Cancel );
-  setCaption( i18n("Create Position from Template" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
+  setWindowTitle( i18n("Create Position from Template" ) );
   setModal( true );
 
-  showButtonSeparator( true );
 }
 
 TemplToPositionDialogBase::~TemplToPositionDialogBase()

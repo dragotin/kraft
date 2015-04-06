@@ -24,6 +24,10 @@
 #include <QDebug>
 #include <kmessagebox.h>
 #include <knuminput.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "materialtempldialog.h"
 #include "katalogman.h"
@@ -33,19 +37,31 @@
 #include "defaultprovider.h"
 
 MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, bool modal )
-    : KDialog( parent ),
+    : QDialog( parent ),
     Ui::MaterialDialogBase(),
     Eta( 0.00000000001 )
 {
   /* connect a value Changed signal of the manual price field */
   QWidget *w = new QWidget(this);
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   setupUi( w );
   setModal( modal );
-  setButtons(KDialog::Ok | KDialog::Cancel);
-  setDefaultButton(KDialog::Ok);
-  showButtonSeparator( true);
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
+  buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
 
   const QString currSymbol = DefaultProvider::self()->locale()->currencySymbol();
   mInPurchasePrice->setPrefix( currSymbol + " " );
@@ -220,7 +236,7 @@ void MaterialTemplDialog::accept()
     KatalogMan::self()->notifyKatalogChange( m_katalog, mSaveMaterial->getID() );
   }
 
-  KDialog::accept();
+  QDialog::accept();
 }
 
 void MaterialTemplDialog::reject()
@@ -229,5 +245,5 @@ void MaterialTemplDialog::reject()
     // remove the listview item if it was created newly
     emit editRejected();
   }
-  KDialog::reject();
+  QDialog::reject();
 }

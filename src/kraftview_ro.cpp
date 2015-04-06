@@ -27,7 +27,7 @@
 #include <qfont.h>
 
 #include <QDebug>
-#include <kdialog.h>
+#include <QDialog>
 #include <kpushbutton.h>
 #include <kcombobox.h>
 #include <kdatewidget.h>
@@ -71,6 +71,10 @@
 #include <qtimer.h>
 #include "doclocaledialog.h"
 #include <kstandarddirs.h>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include "texttemplate.h"
 #include "documentman.h"
 
@@ -81,13 +85,22 @@ KraftViewRO::KraftViewRO(QWidget *parent, const char *name) :
 {
   setObjectName( name );
   setModal( false );
-  setCaption( i18n("Document" ) );
-  setButtons( Close );
+  setWindowTitle( i18n("Document" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
   m_type = ReadOnly;
 
   KVBox *w = new KVBox( parent );
   mGlobalVBox = w;
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
   mGlobalVBox->setMargin( 3 );
 
   mHtmlView = new HtmlView( mGlobalVBox );
@@ -260,7 +273,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
         tmpl.setValue( "DISPLAY_SUM_BLOCK", DOC_RO_TAG( "TAXSUM" ), locale->formatMoney( doc->vatSum().toDouble() ) );
     } // Visible sum block
 
-    setCaption( m_doc->docIdentifier() );
+    setWindowTitle( m_doc->docIdentifier() );
 
     mHtmlView->setTitle( doc->docIdentifier() );
     mHtmlView->displayContent( tmpl.expand() );

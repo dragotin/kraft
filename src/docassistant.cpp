@@ -28,6 +28,7 @@
 #include <khtml_part.h>
 #include <khtmlview.h>
 #include <QDebug>
+#include <KConfigGroup>
 
 #include "docassistant.h"
 #include "docpostcard.h"
@@ -56,7 +57,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   QHBoxLayout *buttonLayout = new QHBoxLayout;
   topVBox->addLayout( buttonLayout );
-  buttonLayout->setMargin( KDialog::marginHint()/2 );
+//TODO PORT QT5   buttonLayout->setMargin( QDialog::marginHint()/2 );
 
   KPushButton *pb = new KPushButton( i18n( "Show Templates" ) );
   buttonLayout->addWidget( pb );
@@ -120,7 +121,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   QHBoxLayout *butHBox2 = new QHBoxLayout;
   bottomVBox->addLayout( butHBox2 );
 
-  butHBox2->setSpacing( KDialog::spacingHint() );
+//TODO PORT QT5   butHBox2->setSpacing( QDialog::spacingHint() );
   KIcon icons = KIcon( "go-previous" ); // KDE 4 icon name: go-previous
   mPbAdd  = new KPushButton( icons, QString() );
   mPbAdd->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );

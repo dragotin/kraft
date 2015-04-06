@@ -28,6 +28,8 @@
 #include <kpushbutton.h>
 #include <klocale.h>
 #include <QDebug>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
 
 #include "defaultprovider.h"
 #include "impviewwidgets.h"
@@ -192,17 +194,28 @@ void PrefsWages::slotDown()
 }
 
 WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *parent )
- : KDialog( parent )
+ : QDialog( parent )
 {
   setObjectName( "WAGES_EDIT_DIALOG" );
   setModal( true );
-  setCaption( i18n( "Edit a wage group" ) );
-  setButtons( Ok|Cancel );
+  setWindowTitle( i18n( "Edit a wage group" ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
 
-  showButtonSeparator( true );
 
   QWidget *w = new QWidget( this );
-  setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 
   mBaseWidget = new Ui::WagesEditBase( );
   mBaseWidget->setupUi( w );
@@ -239,14 +252,14 @@ WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *p
 void WagesEditDialog::accept()
 {
   mapper->submit();
-  KDialog::accept();
+  QDialog::accept();
 }
 
 void WagesEditDialog::reject()
 {
   if(mRow == -1)
     mModel->removeRow(mModel->rowCount()-1);
-  KDialog::reject();
+  QDialog::reject();
 }
 
 

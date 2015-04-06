@@ -19,7 +19,7 @@
 #include "filterheader.h"
 
 #include <ktreewidgetsearchline.h>
-#include <kdialog.h>
+#include <QDialog>
 #include <klocale.h>
 #include <QDebug>
 #include <kapplication.h>
@@ -33,6 +33,7 @@
 #include <QBoxLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <KConfigGroup>
 
 CountingSearchLine::CountingSearchLine( QWidget *parent, QTreeWidget *listView )
   : KTreeWidgetSearchLine( parent, listView )
@@ -64,8 +65,8 @@ FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
 {
   QBoxLayout *topLayout = new QVBoxLayout;
   setLayout( topLayout );
-  topLayout->setSpacing( KDialog::spacingHint() );
-  topLayout->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   topLayout->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   topLayout->setMargin( QDialog::marginHint() );
 
   mTitleLabel = new QLabel();
   topLayout->addWidget( mTitleLabel );
@@ -93,8 +94,8 @@ FilterHeader::FilterHeader(QList<QTreeWidget *> &treewidgets, QWidget *parent)
 {
   QBoxLayout *topLayout = new QVBoxLayout;
   setLayout( topLayout );
-  topLayout->setSpacing( KDialog::spacingHint() );
-  topLayout->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   topLayout->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   topLayout->setMargin( QDialog::marginHint() );
 
   mTitleLabel = new QLabel();
   topLayout->addWidget( mTitleLabel );
