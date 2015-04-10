@@ -18,7 +18,7 @@
 #ifndef KRAFTDB_H
 #define KRAFTDB_H
 
-#include <QObject>
+#include <QtCore>
 #include <QSqlError>
 #include <QSqlDatabase>
 
@@ -60,7 +60,6 @@ public:
 
 class KRAFTCAT_EXPORT KraftDB : public QObject
 {
-
   Q_OBJECT
 
 public:

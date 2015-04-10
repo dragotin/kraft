@@ -93,6 +93,7 @@ set(kraft_SRCS
     akonadiaddressselectordialog.cpp
     models/globalcontactmodel.cpp
     quicksearchwidget.cpp
+    kraftdb.cpp
 )
 
 kconfig_add_kcfg_files(kraft_SRCS
