@@ -18,6 +18,7 @@
 #ifndef TAXEDITDIALOG_H
 #define TAXEDITDIALOG_H
 
+#include <QObject>
 #include <QSqlTableModel>
 #include <QDataWidgetMapper>
 

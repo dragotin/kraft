@@ -28,10 +28,7 @@
 #include <QHeaderView>
 
 // include files for KDE
-#include <klocale.h>
 #include <QDebug>
-#include <kglobal.h>
-#include <knuminput.h>
 #include <kmessagebox.h>
 #include <kcombobox.h>
 #include <kpushbutton.h>

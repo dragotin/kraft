@@ -20,9 +20,7 @@
 #include <QCheckBox>
 
 // include files for KDE
-#include <klocale.h>
 #include <QDebug>
-#include <knuminput.h>
 #include <klineedit.h>
 #include <KConfigGroup>
 

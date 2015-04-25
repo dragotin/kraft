@@ -18,6 +18,7 @@
 #ifndef TEMPLKATALOG_H
 #define TEMPLKATALOG_H
 
+#include <sys/types.h>
 
 #include "floskeltemplate.h"
 #include "katalog.h"

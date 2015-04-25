@@ -23,10 +23,7 @@
 #include <QSqlDatabase>
 
 #include <QMap>
-#include <QObject>
 #include <QDateTime>
-
-#include "kraftcat_export.h"
 
 class dbID;
 class DbInitDialog;
@@ -52,13 +49,15 @@ private:
   bool    mMayFail;
 };
 
+
 class SqlCommandList: public QList<SqlCommand>
 {
 public:
   SqlCommandList();
 };
 
-class KRAFTCAT_EXPORT KraftDB : public QObject
+
+class KraftDB : public QObject
 {
   Q_OBJECT
 

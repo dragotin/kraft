@@ -14,22 +14,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qdom.h>
-#include <QString>
 
-#include <klocale.h>
+#include <QString>
+#include <QObject>
 #include <QDebug>
 
+#include "kraftdb.h"
 #include "templatesaverbase.h"
 #include "templatesaverdb.h"
 #include "floskeltemplate.h"
 #include "unitmanager.h"
-#include "kraftdb.h"
 #include "calcpart.h"
 #include "materialcalcpart.h"
 #include "fixcalcpart.h"
 #include "timecalcpart.h"
 #include "stockmaterial.h"
+
 
 FloskelTemplate::FloskelTemplate()
     : CatalogTemplate(),

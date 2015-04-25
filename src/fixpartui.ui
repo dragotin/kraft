@@ -80,15 +80,18 @@
       </widget>
      </item>
      <item>
-      <widget class="KDoubleNumInput" name="m_inpMenge">
+      <widget class="QDoubleSpinBox" name="m_inpMenge">
        <property name="toolTip">
         <string>amount multiplier</string>
        </property>
-       <property name="value">
-        <double>1.000000000000000</double>
-       </property>
        <property name="suffix">
         <string/>
+       </property>
+       <property name="maximum">
+        <double>99999.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -109,18 +112,18 @@
       </widget>
      </item>
      <item>
-      <widget class="KDoubleNumInput" name="m_inpPreis">
+      <widget class="QDoubleSpinBox" name="m_inpPreis">
        <property name="toolTip">
         <string>Price for one piece</string>
        </property>
-       <property name="value">
-        <double>10.000000000000000</double>
+       <property name="suffix">
+        <string>€</string>
        </property>
        <property name="maximum">
         <double>99999.000000000000000</double>
        </property>
-       <property name="suffix">
-        <string>€</string>
+       <property name="value">
+        <double>10.000000000000000</double>
        </property>
        <property name="maxValue" stdset="0">
         <number>999999</number>
@@ -134,11 +137,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>KDoubleNumInput</class>
-   <extends>QWidget</extends>
-   <header>knuminput.h</header>
-  </customwidget>
-  <customwidget>
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
@@ -149,10 +147,6 @@
   <tabstop>m_inpMenge</tabstop>
   <tabstop>m_inpPreis</tabstop>
  </tabstops>
- <includes>
-  <include location="local">knuminput.h</include>
-  <include location="local">klineedit.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

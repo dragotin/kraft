@@ -38,7 +38,6 @@
 #include <kpushbutton.h>
 #include <kcombobox.h>
 #include <kdatewidget.h>
-#include <knuminput.h>
 #include <ktextedit.h>
 #include <kactioncollection.h>
 #include <kmessagebox.h>

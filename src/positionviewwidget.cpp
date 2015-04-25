@@ -20,8 +20,6 @@
 #include <QPainter>
 
 #include <kglobal.h>
-#include <klocale.h>
-#include <knuminput.h>
 #include <ktextedit.h>
 #include <kmenu.h>
 #include <kiconloader.h>

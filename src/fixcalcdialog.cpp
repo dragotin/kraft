@@ -20,10 +20,7 @@
 #include <qcheckbox.h>
 
 // include files for KDE
-#include <klocale.h>
 #include <QDebug>
-#include <knuminput.h>
-#include <klineedit.h>
 #include <KConfigGroup>
 
 #include "fixcalcdialog.h"

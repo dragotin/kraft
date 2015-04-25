@@ -18,6 +18,7 @@
 #ifndef FLOSKELTEMPLATE_H
 #define FLOSKELTEMPLATE_H
 
+#include <QtCore>
 
 #include <QString>
 #include <QDateTime>

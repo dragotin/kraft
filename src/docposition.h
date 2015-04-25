@@ -23,8 +23,6 @@
 
 #include <QList>
 
-#include <klocale.h>
-
 // application specific includes
 #include "dbids.h"
 #include "calcpart.h"

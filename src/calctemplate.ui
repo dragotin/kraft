@@ -588,7 +588,10 @@
        </widget>
       </item>
       <item>
-       <widget class="KDoubleNumInput" name="m_manualPriceVal">
+       <widget class="QDoubleSpinBox" name="m_manualPriceVal">
+        <property name="maximum">
+         <double>99999.000000000000000</double>
+        </property>
         <property name="minValue" stdset="0">
          <number>0</number>
         </property>
@@ -748,14 +751,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>KDoubleNumInput</class>
-   <extends>QWidget</extends>
-   <header>knuminput.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KSqueezedTextLabel</class>
-   <extends>QLabel</extends>
-   <header>ksqueezedtextlabel.h</header>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>KPushButton</class>
@@ -763,9 +761,9 @@
    <header>kpushbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
+   <class>KSqueezedTextLabel</class>
+   <extends>QLabel</extends>
+   <header>ksqueezedtextlabel.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -792,11 +790,6 @@
   <tabstop>m_butEditMat</tabstop>
   <tabstop>m_butRemoveMat</tabstop>
  </tabstops>
- <includes>
-  <include location="local">kpushbutton.h</include>
-  <include location="local">kcombobox.h</include>
-  <include location="local">knuminput.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

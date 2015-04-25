@@ -60,7 +60,7 @@
    <item row="2" column="1">
     <layout class="QGridLayout">
      <item row="0" column="1">
-      <widget class="KDoubleNumInput" name="mFullTax"/>
+      <widget class="QDoubleSpinBox" name="mFullTax"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="textLabel2_2">
@@ -76,7 +76,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="KDoubleNumInput" name="mReducedTax"/>
+      <widget class="QDoubleSpinBox" name="mReducedTax"/>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="textLabel2a">
@@ -98,9 +98,8 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>KDoubleNumInput</class>
+   <class>QDoubleSpinBox</class>
    <extends>QWidget</extends>
-   <header>knuminput.h</header>
   </customwidget>
   <customwidget>
    <class>KDateWidget</class>
@@ -108,10 +107,6 @@
    <header>kdatewidget.h</header>
   </customwidget>
  </customwidgets>
- <includes>
-  <include location="local">kdatewidget.h</include>
-  <include location="local">knuminput.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

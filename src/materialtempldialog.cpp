@@ -23,7 +23,6 @@
 #include <klocale.h>
 #include <QDebug>
 #include <kmessagebox.h>
-#include <knuminput.h>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>

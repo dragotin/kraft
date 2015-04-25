@@ -20,10 +20,8 @@
 #include <QDataWidgetMapper>
 
 #include <QDialog>
-#include <klocale.h>
 #include <QDebug>
 #include <kdatewidget.h>
-#include <knuminput.h>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>

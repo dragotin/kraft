@@ -528,3 +528,4 @@ void KraftDB::writeWordList( const QString& listName, const QStringList& list )
 KraftDB::~KraftDB()
 {
 }
+

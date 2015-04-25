@@ -85,7 +85,7 @@
          </widget>
         </item>
         <item>
-         <widget class="KDoubleNumInput" name="m_inpMenge">
+         <widget class="QDoubleSpinBox" name="m_inpMenge">
           <property name="toolTip">
            <string>Price for one piece</string>
           </property>
@@ -136,14 +136,10 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>KDoubleNumInput</class>
+   <class>QDoubleSpinBox</class>
    <extends>QWidget</extends>
-   <header>knuminput.h</header>
   </customwidget>
  </customwidgets>
- <includes>
-  <include location="local">knuminput.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

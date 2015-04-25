@@ -31,9 +31,6 @@
 #include <pwd.h>
 
 // include files for KDE
-#include <knuminput.h>
-
-#include <klocale.h>
 #include <QDebug>
 #include <kvbox.h>
 #include <KConfigGroup>

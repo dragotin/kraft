@@ -25,7 +25,6 @@
 #include <QSqlQuery>
 
 // include files for KDE
-#include <knuminput.h>
 #include <kvbox.h>
 #include <kglobal.h>
 #include <kpushbutton.h>

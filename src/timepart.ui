@@ -145,7 +145,6 @@
   <customwidget>
    <class>KIntNumInput</class>
    <extends>QWidget</extends>
-   <header>knuminput.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -154,10 +153,6 @@
   <tabstop>m_hourSets</tabstop>
   <tabstop>m_stdGlobal</tabstop>
  </tabstops>
- <includes>
-  <include location="local">klineedit.h</include>
-  <include location="local">knuminput.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>
