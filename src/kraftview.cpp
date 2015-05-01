@@ -664,18 +664,6 @@ void KraftView::slotMovePositionUp( int pos )
 
   kDebug() << "Found at pos " << pos << " the widgets " << w1 << " and " << w2 << endl;
 
-#if 0
-  PositionViewWidget *vw = 0;
-  for( vw = mPositionWidgetList.first(); vw; vw = mPositionWidgetList.next() ) {
-    DocPositionBase* pb = vw->position();
-    if( ! pb ) {
-      kDebug() << "There is no position!" << endl;
-    } else {
-      kDebug() << "Pos " << vw->ordNumber() << ": " << pb->text() << endl;
-    }
-  }
-#endif
-
   if( w1 && w2 ) {
     kDebug() << "Setting ord number: " << pos << endl;
     w1->setOrdNumber( pos );  // note: ordnumbers start with 1, thus add one
@@ -684,7 +672,8 @@ void KraftView::slotMovePositionUp( int pos )
     setMappingId( w2, pos );
 
     m_positionScroll->moveChild( w2, m_positionScroll->indexOf(w1) );
-    QTimer::singleShot( 0, this, SLOT(refreshPostCard()  ) );
+    w1->slotModified(false);
+    w2->slotModified(); // cares for refreshing the postcard
   } else {
     kDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
   }
@@ -718,8 +707,8 @@ void KraftView::slotMovePositionDown( int pos )
     setMappingId( w2, pos );
 
     m_positionScroll->moveChild( w1, m_positionScroll->indexOf( w2 ) );
-
-    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+    w1->slotModified(false);
+    w2->slotModified(); // cares for refreshing the postcard
   } else {
     kDebug() << "ERR: Did not find the two corresponding widgets!" << endl;
   }
@@ -731,7 +720,6 @@ void KraftView::slotDeletePosition( int pos )
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Deleted );
     w1->slotModified();
-    refreshPostCard();
   }
 }
 
@@ -761,6 +749,7 @@ void KraftView::slotPositionModified( int pos )
 {
   kDebug() << "Modified Position " << pos << endl;
   mModified = true;
+
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
