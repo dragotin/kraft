@@ -157,6 +157,8 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
     model.setTable("docposition");
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
 
+    QVector<int> deleteIds;
+
     DocPositionListIterator it( posList );
     while( it.hasNext() ) {
         DocPositionBase *dpb = it.next();
@@ -167,6 +169,19 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
         int posDbID = dp->dbId().toInt();
         kDebug() << "Saving Position DB-Id: " << posDbID << endl;
+
+        if( dp->toDelete() ) {
+            kDebug() << "Delete item " << dp->dbId().toString() << endl;
+
+            // store the id to delete, rather than killing the model index.
+            // did that before here, which removed wrong items.
+            deleteIds << posDbID;
+
+            // delete all existing attributes no, which will not disturb the model index
+            dp->attributes().dbDeleteAll( dp->dbId() );
+            continue;
+        }
+
         if( posDbID > -1 ) {
             const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
             // kDebug() << "Selecting with " << selStr << endl;
@@ -183,21 +198,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         } else {
             // The record is new
             record = model.record();
-        }
-
-        if( dp->toDelete() ) {
-            kDebug() << "This one is to delete, do it!" << endl;
-
-            if( doInsert ) {
-                kWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
-            }
-            // delete all existing attributes
-            dp->attributes().dbDeleteAll( dp->dbId() );
-
-            model.removeRow(0);
-            model.submitAll();
-
-            continue;
         }
 
         if( record.count() > 0 ) {
@@ -244,6 +244,18 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
     }
     model.submitAll();
+
+    /*  remove the docpositions that were marked to be deleted */
+    if( deleteIds.count() ) {
+        QSqlQuery delQuery;
+        delQuery.prepare( "DELETE FROM docposition WHERE positionID=:id" );
+        foreach( int id, deleteIds ) {
+            kDebug() << "Deleting attribute id " << id;
+            delQuery.bindValue( ":id", id );
+            delQuery.exec();
+        }
+    }
+
 
 }
 
