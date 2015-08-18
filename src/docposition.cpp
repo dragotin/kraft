@@ -19,6 +19,7 @@
 #include <QString>
 #include <qdom.h>
 #include <QDebug>
+#include <QLocale>
 
 // application specific includes
 #include "einheit.h"
@@ -84,10 +85,9 @@ DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
 
 void DocPositionBase::setAttribute( const Attribute& attrib )
 {
-  if ( attrib.name().isEmpty() )
-    // qDebug ()  << "WRN: Can not save attribute with empty name!" << endl;
-  else
-    mAttribs[ attrib.name() ] = attrib;
+  if( ! attrib.name().isEmpty() ) {
+      mAttribs[ attrib.name() ] = attrib;
+  }
 }
 
 AttributeMap DocPositionBase::attributes()
