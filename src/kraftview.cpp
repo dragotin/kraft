@@ -35,7 +35,6 @@
 
 #include <QDebug>
 #include <QDialog>
-#include <kpushbutton.h>
 #include <kcombobox.h>
 #include <kdatewidget.h>
 #include <ktextedit.h>
