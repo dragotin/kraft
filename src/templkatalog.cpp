@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QObject>
 #include <QSqlQuery>
 #include <QStringList>
 #include <qdom.h>
@@ -339,8 +340,8 @@ int TemplKatalog::load( const QString& /* chapter */ )
 
 void TemplKatalog::writeXMLFile()
 {
-  QString filename = QFileDialog::getSaveFileName(0, QString(), QDir::homePath(, QString());
-                                                   "*.xml", 0, i18n("Export XML Katalog"));
+  QString filename = QFileDialog::getSaveFileName(0, QString(), QDir::homePath(), QString());
+                                                   // "*.xml", 0, i18n("Export XML Katalog"));
   if(filename.isEmpty()) return;
 
   QDomDocument doc = toXML();

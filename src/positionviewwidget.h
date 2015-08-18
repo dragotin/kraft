@@ -23,6 +23,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QPaintEvent>
+#include <QObject>
 
 #include "geld.h"
 #include "ui_positionwidget.h"
