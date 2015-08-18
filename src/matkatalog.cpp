@@ -32,7 +32,7 @@ MatKatalog::MatKatalog( const QString& name)
 }
 
 MatKatalog::MatKatalog()
-    : Katalog( QString( "Material" ))
+    : Katalog( QLatin1String( "Material" ))
 {
 
 }
@@ -48,8 +48,8 @@ int MatKatalog::load()
   Katalog::load();
   int cnt = 0;
 
-  QSqlQuery q("SELECT matID, chapterID, material, unitID, perPack, priceIn, "
-              "priceOut, modifyDate, enterDate FROM stockMaterial");
+  QSqlQuery q(QLatin1String("SELECT matID, chapterID, material, unitID, perPack, priceIn, "
+              "priceOut, modifyDate, enterDate FROM stockMaterial"));
   q.exec();
   while ( q.next() ) {
     cnt++;
@@ -93,7 +93,7 @@ void MatKatalog::deleteMaterial( int id )
 
   // remove from database.
   QSqlQuery q;
-  q.prepare( "DELETE FROM stockMaterial WHERE matID=:Id");
+  q.prepare( QLatin1String("DELETE FROM stockMaterial WHERE matID=:Id"));
   q.bindValue( ":Id", id );
   q.exec();
   // qDebug () << "SQL Delete Success: " << q.lastError().text();
