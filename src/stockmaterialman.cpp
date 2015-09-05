@@ -19,9 +19,7 @@
 #include <QSqlQuery>
 
 // include files for KDE
-#include <klocale.h>
 #include <QDebug>
-#include <kglobal.h>
 
 #include "stockmaterialman.h"
 

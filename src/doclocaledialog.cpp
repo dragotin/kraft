@@ -111,7 +111,7 @@ DocLocaleDialog::~DocLocaleDialog()
 void DocLocaleDialog::setLocale( const QString& c, const QString& lang )
 {
   // qDebug () << "Setting country " << c << " and lang " << lang << endl;
-  if ( !mLocale ) mLocale = new KLocale( QString::fromLatin1( "kraft" ) );
+  if ( !mLocale ) mLocale = new QLocale( QString::fromLatin1( "kraft" ) );
   KConfig *cfg = KGlobal::config().data();
   mLocale->setCountry( c, cfg );
   mLocale->setLanguage( lang, cfg );
@@ -131,10 +131,10 @@ void DocLocaleDialog::slotUpdateSample()
 
   mLabSample->setText( i18n( "Money: %1\nDate: %2\nDate (short): %3" ).arg( g.toString( mLocale ) )
                        .arg( mLocale->formatDate( QDate::currentDate() ) )
-                       .arg( mLocale->formatDate( QDate::currentDate(), KLocale::ShortDate ) ) );
+                       .arg( mLocale->formatDate( QDate::currentDate(), QLocale::ShortDate ) ) );
 }
 
-KLocale DocLocaleDialog::locale() const
+QLocale DocLocaleDialog::locale() const
 {
   return *mLocale;
 }
@@ -198,7 +198,7 @@ void DocLocaleDialog::changedCountry(const QString & code)
   // FIXME !!
 #if 0
   // temperary use of our locale as the global locale
-  KLocale *lsave = KGlobal::locale();
+  QLocale *lsave = KGlobal::locale();
   KGlobal::setLocale( mLocale, KGlobal::DontCopyCatalogs );
 
   // read the name

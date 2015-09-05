@@ -298,7 +298,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
   /* now replace stuff in the whole document */
   tmpl.setValue( TAG( "DATE" ), mArchDoc->locale()->formatDate(
-                   mArchDoc->date(), KLocale::ShortDate ) );
+                   mArchDoc->date(), QLocale::ShortDate ) );
   tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( mArchDoc->docType() ) );
   tmpl.setValue( TAG( "ADDRESS" ), escapeTrml2pdfXML( mArchDoc->address() ) );
 

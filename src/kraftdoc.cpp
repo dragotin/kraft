@@ -22,8 +22,6 @@
 // include files for KDE
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kio/job.h>
-#include <kio/netaccess.h>
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
 #include <kabc/addresseedialog.h>
@@ -51,7 +49,7 @@ KraftDoc::KraftDoc(QWidget *parent)
     mSaver(0)
 
 {
-  mLocale = new KLocale( "kraft" );
+  mLocale = new QLocale( "kraft" );
   mPositions.setLocale( mLocale );
 }
 
@@ -64,7 +62,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 {
   if ( this == &origDoc ) return *this;
 
-  mLocale = new KLocale( "kraft" );
+  mLocale = new QLocale( "kraft" );
 
   DocPositionListIterator it( origDoc.mPositions );
 
@@ -340,7 +338,7 @@ QString KraftDoc::language() const
   return mLocale->language();
 }
 
-KLocale* KraftDoc::locale()
+QLocale* KraftDoc::locale()
 {
   return mLocale;
 }

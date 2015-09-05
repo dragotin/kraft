@@ -30,7 +30,7 @@ class DocText;
 class TextEditBase;
 class KLanguageButton;
 class QLabel;
-class KLocale;
+class QLocale;
 
 class DocLocaleDialog : public KDialog
 {
@@ -41,7 +41,7 @@ public:
   ~DocLocaleDialog( );
 
   void setLocale( const QString&, const QString& );
-  KLocale locale() const;
+  QLocale locale() const;
 
   void readLocale(const QString &, QString &,
 		  const QString &) const;
@@ -58,7 +58,7 @@ private:
   KLanguageButton *mLanguageButton;
   QStringList languageList() const;
 
-  KLocale *mLocale;
+  QLocale *mLocale;
   QLabel *mLabSample;
 };
 

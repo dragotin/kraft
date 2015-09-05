@@ -28,7 +28,7 @@
 #include "geld.h"
 #include "dbids.h"
 
-class KLocale;
+class QLocale;
 class AttributeMap;
 
 class ArchDocDigest
@@ -102,7 +102,7 @@ public:
 
   QString docIdentifier() const;
 
-  KLocale* locale() { return &mLocale; }
+  QLocale* locale() { return &mLocale; }
 
   Geld nettoSum();
   Geld bruttoSum();
@@ -139,7 +139,7 @@ private:
   QDate     mDate;
   QDateTime mPrintDate;
 
-  KLocale   mLocale;
+  QLocale   mLocale;
 
   ArchDocPositionList mPositions;
   dbID    mDocID;

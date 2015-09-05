@@ -32,7 +32,7 @@
 class DocumentSaverBase;
 class Geld;
 
-class KLocale;
+class QLocale;
 class KraftView;
 
 class KraftDoc : public QObject
@@ -69,7 +69,7 @@ class KraftDoc : public QObject
   /** saves the document under filename and format.*/
   bool saveDocument( );
 
-  KLocale* locale();
+  QLocale* locale();
 
   DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
   DocPositionList positions() { return mPositions; }
@@ -161,7 +161,7 @@ private:
   // Two qualifiers for the locale settings.
   QString mCountry;
   QString mLanguage;
-  KLocale *mLocale;
+  QLocale *mLocale;
 
   QDate   mDate;
   QDate   mLastModified;

@@ -98,7 +98,7 @@ bool Geld::operator!=(Geld g)
     return g.m_cent != m_cent;
 }
 
-QString Geld::toString( KLocale *loc ) const
+QString Geld::toString( QLocale *loc ) const
 {
   if( ! loc ) {
     loc =  KGlobal::locale();
@@ -106,7 +106,7 @@ QString Geld::toString( KLocale *loc ) const
     return loc->formatMoney(m_cent/100.0);
 }
 
-QString Geld::toHtmlString( KLocale *loc ) const
+QString Geld::toHtmlString( QLocale *loc ) const
 {
   QString re = toString( loc );
   re.replace( " ",  "&nbsp;" );

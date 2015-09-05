@@ -139,7 +139,7 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
     if( details.countEntries == 0 ) {
         html += "<td colspan=\"2\"><span style=\"font-size:75%;\">No templates yet.</span></td>";
     } else {
-        KLocale *locale = DefaultProvider::self()->locale();
+        QLocale *locale = DefaultProvider::self()->locale();
         QString dateStr = locale->formatDateTime( details.maxModDate );
         html += QString("<td colspan=\"2\"><span style=\"font-size:75%;\">%1 templates in %2 chapters, last modified at %3</span></td>").
                 arg(details.countEntries).arg(details.countChapters).arg(dateStr);

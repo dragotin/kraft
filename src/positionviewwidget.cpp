@@ -155,7 +155,7 @@ PositionViewWidget::PositionViewWidget()
   this->layout()->setMargin( 6 );
 }
 
-void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
+void PositionViewWidget::setDocPosition( DocPositionBase *dp, QLocale* loc )
 {
   if( ! dp ) {
     qCritical() << "setDocPosition got empty position!" << endl;
@@ -292,7 +292,7 @@ QString PositionViewWidget::extraDiscountTagRestriction()
   return QString();
 }
 
-void PositionViewWidget::setLocale( KLocale *loc )
+void PositionViewWidget::setLocale( QLocale *loc )
 {
   mLocale = loc;
   const QString currSymbol = mLocale->currencySymbol();

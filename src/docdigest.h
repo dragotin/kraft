@@ -84,7 +84,7 @@ protected:
 
   QDateTime   mLastModified;
   QDate       mDate;
-  KLocale     mLocale;
+  QLocale     mLocale;
 
   ArchDocDigestList mArchDocs;
 

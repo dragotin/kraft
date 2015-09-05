@@ -119,7 +119,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
     if ( !doc ) return;
 
-    KLocale *locale = doc->locale();
+    QLocale *locale = doc->locale();
     if ( !locale ) locale = KGlobal::locale();
 
     // do stuff like open a template and render values into it.
@@ -150,7 +150,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
         return;
     }
     tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), doc->docType() + " " + doc->ident() );
-    tmpl.setValue( DOC_RO_TAG( "DATE" ), locale->formatDate( doc->date(), KLocale::ShortDate ) );
+    tmpl.setValue( DOC_RO_TAG( "DATE" ), locale->formatDate( doc->date(), QLocale::ShortDate ) );
     tmpl.setValue( DOC_RO_TAG( "DOC_TYPE" ),  doc->docType() );
     QString address = doc->address();
     address.replace( '\n', "<br/>" );

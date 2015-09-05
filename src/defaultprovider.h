@@ -49,7 +49,7 @@ public:
   DocTextList documentTexts( const QString&, KraftDoc::Part );
 
   QString currencySymbol() const;
-  KLocale* locale();
+  QLocale* locale();
 
   QString iconvTool() const;
 

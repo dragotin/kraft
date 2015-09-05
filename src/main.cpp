@@ -19,43 +19,42 @@
 #include <QImage>
 #include <QPalette>
 
-#include <kstandarddirs.h>
-
 #include <kaboutdata.h>
-#include <klocale.h>
 #include <ksplashscreen.h>
+#include <klocalizedstring.h>
 #include <QDebug>
 #include <QApplication>
 #include <KAboutData>
 #include <KLocalizedString>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QStandardPaths>
 
 #include "version.h"
 #include "portal.h"
 
 int main(int argc, char *argv[])
 {
-  KAboutData aboutData( "kraft", "kraft", ki18n("Kraft"),
+  KAboutData aboutData( QLatin1String("kraft"),
+                        QLatin1String("Kraft"),
                         KRAFT_VERSION,
-                        ki18n("Business documents for the small enterprise"),
+                        ki18n("Business documents for the small enterprise").toString(),
                         KAboutLicense::GPL,
-                        ki18n("Copyright © 2004–2014 Klaas Freitag" ) );
+                        ki18n("Copyright © 2004–2015 Klaas Freitag" ).toString() );
 
-  aboutData.addAuthor(ki18n("Klaas Freitag"), ki18n( "Developer" ), "freitag@kde.org");
-  aboutData.addAuthor(ki18n("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ),
-                        "kraft@spielhagen.de", "http://www.michal-spielhagen.de" );
-  aboutData.addAuthor(ki18n("Thomas Richard"), ki18n("Developer"), "thomas.richard@proan.be");
+  aboutData.addAuthor(QLatin1String("Klaas Freitag"), ki18n("Developer").toString(), QLatin1String("freitag@kde.org"));
+  aboutData.addAuthor(QLatin1String("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ).toString(),
+                       QLatin1String("kraft@spielhagen.de"), QLatin1String("http://www.michal-spielhagen.de") );
+  aboutData.addAuthor(QLatin1String("Thomas Richard"), ki18n("Developer").toString(), QLatin1String("thomas.richard@proan.be"));
 
   aboutData.setBugAddress( "http://sourceforge.net/p/kraft/bugs/" );
-  KStandardDirs stdDirs;
-  QString logoFile = stdDirs.findResource( "data",  "kraft/pics/kraftapp_logo.png" );
+
+  QString logoFile = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "kraft/pics/kraftapp_logo.png" );
   if( ! logoFile.isEmpty() ) {
     QImage img( logoFile );
     aboutData.setProgramLogo( QVariant( img ) );
   }
-  aboutData.setOtherText( ki18n("Kraft is free software for persons in small businesses\n"
-          "writing correspondence like offers and invoices to their customers" ) );
+  aboutData.setOtherText( QLatin1String("Kraft is free software for persons in small businesses\nwriting correspondence like offers and invoices to their customers" ) );
 
   aboutData.setVersion( KRAFT_VERSION );
   aboutData.setHomepage( "http://www.volle-kraft-voraus.de" );
@@ -80,8 +79,7 @@ int main(int argc, char *argv[])
   {
     RESTORE(Portal);
   } else {
-    KStandardDirs stdDirs;
-    QString splashFile = stdDirs.findResource( "data", "kraft/pics/kraftsplash.png" );
+    QString splashFile = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "kraft/pics/kraftsplash.png" );
     KSplashScreen *splash = 0;
 
     if( !splashFile.isEmpty()) {

@@ -35,7 +35,7 @@
 class KMenu;
 class KAction;
 class Geld;
-class KLocale;
+class QLocale;
 class DosPositionGuardedPtr;
 
 class PositionViewWidget : public QWidget, public Ui_positionWidget
@@ -48,7 +48,7 @@ public:
     PositionViewWidget( );
     PositionViewWidget( int );
 
-    void setDocPosition( DocPositionBase*, KLocale* );
+    void setDocPosition( DocPositionBase*, QLocale* );
     virtual ~PositionViewWidget();
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }
@@ -66,7 +66,7 @@ public:
     bool priceValid();
     void setCurrentPrice( Geld );
     Geld unitPrice();
-    void setLocale( KLocale* );
+    void setLocale( QLocale* );
     QStringList tagList() { return mTags; }
     QString extraDiscountTagRestriction();
     DocPositionBase::TaxType taxType() const;
@@ -134,7 +134,7 @@ private:
     State mState;
     Kind  mKind;
     bool mPositionPriceValid;
-    KLocale *mLocale;
+    QLocale *mLocale;
     DocPosition::TaxType mTax;
 };
 

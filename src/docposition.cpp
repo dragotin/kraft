@@ -347,7 +347,7 @@ QString DocPositionList::posNumber( DocPositionBase* pos )
   return QString::number( 1+indexOf( pos ) );
 }
 
-void DocPositionList::setLocale( KLocale* loc )
+void DocPositionList::setLocale( QLocale* loc )
 {
   mLocale = loc;
 }
@@ -374,7 +374,7 @@ QDomElement DocPositionList::domElement( QDomDocument& doc )
       posElem.appendChild( xmlTextElement( doc, "text", dp->text() ) );
 
       double am = dp->amount();
-      QString h = mLocale->formatNumber( am, 2 );
+      QString h = mLocale->toString( am, 'g', 2 );
       posElem.appendChild( xmlTextElement( doc, "amount", h ));
 
       Einheit e = dp->unit();

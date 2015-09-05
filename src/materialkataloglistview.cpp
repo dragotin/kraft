@@ -99,7 +99,7 @@ QTreeWidgetItem* MaterialKatalogListView::addMaterialToView( QTreeWidgetItem *pa
   return recItem;
 }
 
-void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ, KLocale *loc )
+void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ, QLocale *loc )
 {
   StockMaterial *mat = static_cast<StockMaterial*>( templ );
 

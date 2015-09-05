@@ -32,10 +32,11 @@
 #include <QPalette>
 #include <QTimer>
 #include <QScrollBar>
+#include <QComboBox>
+#include <QDateTimeEdit>
 
 #include <QDebug>
 #include <QDialog>
-#include <kcombobox.h>
 #include <kdatewidget.h>
 #include <ktextedit.h>
 #include <kactioncollection.h>
@@ -850,7 +851,7 @@ void KraftView::slotLanguageSettings()
 {
   // qDebug () << "Language Settings" << endl;
   DocLocaleDialog dia( this );
-  KLocale *l = m_doc->locale();
+  QLocale *l = m_doc->locale();
 
   if ( m_doc ) {
     dia.setLocale( l->country(), l->language() );

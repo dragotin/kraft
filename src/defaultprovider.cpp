@@ -145,7 +145,7 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
 }
 
 
-KLocale* DefaultProvider::locale()
+QLocale* DefaultProvider::locale()
 {
   return KGlobal::locale();
 }

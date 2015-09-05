@@ -19,7 +19,6 @@
 
 // include files for KDE
 #include <kraftdb.h>
-#include <klocale.h>
 #include <QDebug>
 #include <kglobal.h>
 

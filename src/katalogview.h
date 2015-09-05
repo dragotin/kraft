@@ -21,9 +21,8 @@
 // include files for Qt
 
 // include files for KDE
-#include <kapplication.h>
 #include <kxmlguiwindow.h>
-#include <kaction.h>
+#include <QAction>
 #include <QUrl>
 
 #include "kraftcat_export.h"
@@ -117,20 +116,20 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
 
     /** the configuration object of the application */
     KConfig *config;
-    KAction* m_acFileClose;
-    KAction* m_acFilePrint;
-    KAction* m_acEditCut;
-    KAction* m_acEditCopy;
-    KAction* m_acEditPaste;
+    QAction* m_acFileClose;
+    QAction* m_acFilePrint;
+    QAction* m_acEditCut;
+    QAction* m_acEditCopy;
+    QAction* m_acEditPaste;
 
-    KAction* m_acEditChapter;
-    KAction* m_acAddChapter;
-    KAction* m_acRemChapter;
+    QAction* m_acEditChapter;
+    QAction* m_acAddChapter;
+    QAction* m_acRemChapter;
 
-    KAction* m_acEditItem;
-    KAction* m_acNewItem;
-    KAction* m_acDeleteItem;
-    KAction* m_acExport;
+    QAction* m_acEditItem;
+    QAction* m_acNewItem;
+    QAction* m_acDeleteItem;
+    QAction* m_acExport;
 
     // KToggleAction* viewToolBar;
     // KToggleAction* viewStatusBar;

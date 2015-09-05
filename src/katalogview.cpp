@@ -425,7 +425,7 @@ void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
     return;
   }
 
-  KLocale *locale = DefaultProvider::self()->locale();
+  QLocale *locale = DefaultProvider::self()->locale();
 
   QString t;
   QString flos = tmpl->getText();

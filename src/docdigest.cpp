@@ -39,12 +39,12 @@ DocDigest::DocDigest()
 
 QString DocDigest::date()
 {
-  return mLocale.formatDate( mDate, KLocale::ShortDate );
+  return mLocale.formatDate( mDate, QLocale::ShortDate );
 }
 
 QString DocDigest::lastModified()
 {
-  return mLocale.formatDateTime( mLastModified, KLocale::ShortDate );
+  return mLocale.formatDateTime( mLastModified, QLocale::ShortDate );
 }
 
 void DocDigest::appendArchDocDigest( const ArchDocDigest& digest )

@@ -118,8 +118,8 @@ QString InsertTemplDialog::prepareText( const QString& input )
 {
     QString in(input);
 
-    KLocale *locale = DefaultProvider::self()->locale();
-    QString dateStr = locale->formatDate(QDate::currentDate(), KLocale::ShortDate);
+    QLocale *locale = DefaultProvider::self()->locale();
+    QString dateStr = locale->formatDate(QDate::currentDate(), QLocale::ShortDate);
     in.replace(QL1("{{DATE}}"), dateStr, Qt::CaseInsensitive);
 
     QString timeStr = locale->formatTime(QTime::currentTime());

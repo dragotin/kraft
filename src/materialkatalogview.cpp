@@ -182,7 +182,7 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
   if( mDialog ) {
     MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );
     if ( mDialog->templateIsNew() ) {
-      KLocale *locale = 0;
+      QLocale *locale = 0;
       if ( k ) {
         k->addNewMaterial( mat );
         locale = k->locale();

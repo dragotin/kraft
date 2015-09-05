@@ -25,11 +25,9 @@
 // include files for KDE
 #include <ktoggleaction.h>
 
-#include <kapplication.h>
 #include <kxmlguiwindow.h>
 #include <kabc/addressee.h>
 
-#include <kaction.h>
 #include <QUrl>
 
 #include "docguardedptr.h"
@@ -156,24 +154,24 @@ class Portal : public KXmlGuiWindow
     PortalView *m_portalView;
 
     // KAction pointers to enable/disable actions
-    KAction* fileQuit;
-    KAction* editCut;
-    KAction* editCopy;
-    KAction* editPaste;
+    QAction* fileQuit;
+    QAction* editCut;
+    QAction* editCopy;
+    QAction* editPaste;
 
-    KAction* actNewDocument;
-    KAction* actCopyDocument;
-    KAction* actOpenDocument;
-    KAction* actViewDocument;
-    KAction* actFollowDocument;
-    KAction* actPrintDocument;
-    KAction* actMailDocument;
-    KAction* actEditTemplates;
+    QAction* actNewDocument;
+    QAction* actCopyDocument;
+    QAction* actOpenDocument;
+    QAction* actViewDocument;
+    QAction* actFollowDocument;
+    QAction* actPrintDocument;
+    QAction* actMailDocument;
+    QAction* actEditTemplates;
 
-    KAction* actOpenArchivedDocument;
+    QAction* actOpenArchivedDocument;
 
-    KToggleAction* viewFlosTemplates;
-    KToggleAction* viewStatusBar;
+    QAction* viewFlosTemplates;
+    QAction* viewStatusBar;
     KCmdLineArgs *mCmdLineArgs;
 
     QMap<QString, KatalogView*> mKatalogViews;

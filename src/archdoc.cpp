@@ -237,7 +237,7 @@ ArchDocDigest::~ArchDocDigest()
 
 QString ArchDocDigest::printDateString() const
 {
-  return DefaultProvider::self()->locale()->formatDateTime( mPrintDate, KLocale::ShortDate );
+  return DefaultProvider::self()->locale()->formatDateTime( mPrintDate, QLocale::ShortDate );
 }
 
 /* ###################################################################### */
