@@ -53,7 +53,7 @@ class Portal : public KXmlGuiWindow
   public:
     /** construtor of Portal, calls all init functions to create the application.
      */
-    Portal( QWidget* parent = 0, KCmdLineArgs *args = 0, const char* name = 0);
+    Portal( QWidget* parent = 0, QCommandLineParser *commandLineParser = 0, const char* name = 0);
 
     static QString textWrap( const QString& t, int width=40);
 

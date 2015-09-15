@@ -78,9 +78,9 @@
 
 #define ID_STATUS_MSG 1
 
-Portal::Portal( QWidget *parent, KCmdLineArgs *args, const char* name)
+Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
 : KXmlGuiWindow( parent, 0 ),
-  mCmdLineArgs( args )
+  mCmdLineArgs( commandLineParser )
 {
   setObjectName( name );
   ///////////////////////////////////////////////////////////////////

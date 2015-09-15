@@ -20,7 +20,6 @@
 #include <QWidget>
 
 // include files for KDE
-#include <klocale.h>
 #include <kmessagebox.h>
 #include <kabc/addressbook.h>
 #include <kabc/stdaddressbook.h>
