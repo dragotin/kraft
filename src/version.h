@@ -1,6 +1,6 @@
-#define KRAFT_VERSION "0.58"
+#define KRAFT_VERSION "0.80"
 
-#define KRAFT_CODENAME "Jupp"
+#define KRAFT_CODENAME "Rio"
 
 #define KRAFT_REQUIRED_SCHEMA_VERSION 19
 

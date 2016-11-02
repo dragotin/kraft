@@ -20,22 +20,26 @@
 #include "kraftdoc.h"
 #include "doctype.h"
 
-#include <klocale.h>
+#include <QLocale>
 #include <QDebug>
-
 #include <QDialog>
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <kiconloader.h>
+#include <QAction>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QListView>
+#include <QTextEdit>
+#include <QLabel>
+#include <QStringListModel>
+#include <QMenu>
 
-#include <QtGui>
+#include <KLocalizedString>
 #include <KConfigGroup>
 
 TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   :QWidget( parent ),
     mPart( part )
 {
-  mGroupBox = new QGroupBox(tr("Template Collection"));
+  mGroupBox = new QGroupBox(i18n("Template Collection"));
 
   QVBoxLayout *layout = new QVBoxLayout;
   setLayout(layout);
@@ -204,10 +208,8 @@ TextSelection::~TextSelection()
 
 void TextSelection::initActions()
 {
-  mActions     = new KActionCollection( this );
-  mAcMoveToDoc = mActions->addAction( "moveToDoc", this, SIGNAL(actionCurrentTextToDoc()));
-  mAcMoveToDoc->setIcon( QIcon::fromTheme( "go-previous" ));
-  mAcMoveToDoc->setText( i18n("&Use in Document") );
+  mAcMoveToDoc = new QAction(QIcon::fromTheme( "go-previous" ), i18n("&Use in Document"), this);
+  connect(mAcMoveToDoc, SIGNAL(triggered()), this, SIGNAL(actionCurrentTextToDoc()));
 
   mMenu->addAction( mAcMoveToDoc );
 

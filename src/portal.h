@@ -20,13 +20,14 @@
 #define PORTAL_H
 
 // include files for Qt
-#include <qmap.h>
+#include <QMap>
+#include <QCommandLineParser>
 
 // include files for KDE
 #include <ktoggleaction.h>
 
-#include <kxmlguiwindow.h>
-#include <kabc/addressee.h>
+#include <KXmlGuiWindow>
+#include <kcontacts/addressee.h>
 
 #include <QUrl>
 
@@ -59,7 +60,7 @@ class Portal : public KXmlGuiWindow
 
     QWidget* mainWidget();
   protected:
-    /** initializes the KActions of the application */
+    /** initializes the QActions of the application */
     void initActions();
     /** sets up the statusbar for the main window by initialzing a statuslabel.
      */
@@ -142,10 +143,10 @@ class Portal : public KXmlGuiWindow
 
     void slotOpenPdf( const QString& );
 
-    void slotReceivedMyAddress( const QString&, const KABC::Addressee& );
+    void slotReceivedMyAddress( const QString&, const KContacts::Addressee& );
 
     void slotMailPdfAvailable( const QString& fileName );
-    void slotMailAddresseeFound( const QString&, const KABC::Addressee& );
+    void slotMailAddresseeFound( const QString&, const KContacts::Addressee& );
 
   private:
     void createView( DocGuardedPtr );
@@ -153,7 +154,7 @@ class Portal : public KXmlGuiWindow
 
     PortalView *m_portalView;
 
-    // KAction pointers to enable/disable actions
+    // QAction pointers to enable/disable actions
     QAction* fileQuit;
     QAction* editCut;
     QAction* editCopy;
@@ -172,7 +173,7 @@ class Portal : public KXmlGuiWindow
 
     QAction* viewFlosTemplates;
     QAction* viewStatusBar;
-    KCmdLineArgs *mCmdLineArgs;
+    QCommandLineParser *mCmdLineArgs;
 
     QMap<QString, KatalogView*> mKatalogViews;
     QMap<KraftDoc*, KraftViewBase*> mViewMap;
@@ -180,7 +181,7 @@ class Portal : public KXmlGuiWindow
     QString _clientId;
     QString _pdfFileName;
     AddressProvider *mAddressProvider;
-    KABC::Addressee myContact;
+    KContacts::Addressee myContact;
     PrefsDialog *_prefsDialog;
     DocGuardedPtr _currentDoc;
 };

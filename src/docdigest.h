@@ -17,9 +17,8 @@
 #ifndef DOCDIGEST_H
 #define DOCDIGEST_H
 
-#include <klocale.h>
-#include <kabc/addressee.h>
-
+#include <kcontacts/addressee.h>
+#include <QLocale>
 #include <QList>
 
 #include "dbids.h"
@@ -43,8 +42,8 @@ public:
   QString clientAddress() { return mClientAddress; }
   void setClientAddress( const QString& address ) { mClientAddress = address; }
 
-  KABC::Addressee addressee() const;
-  void setAddressee( const KABC::Addressee& );
+  KContacts::Addressee addressee() const;
+  void setAddressee( const KContacts::Addressee& );
 
   QString type() { return mType; }
   void setType( const QString& t ) { mType = t; }
@@ -89,7 +88,7 @@ protected:
   ArchDocDigestList mArchDocs;
 
 private:
-  KABC::Addressee mContact;
+  KContacts::Addressee mContact;
 };
 
 typedef QList<DocDigest> DocDigestList;

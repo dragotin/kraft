@@ -15,20 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 #include <QtGui>
-
-#include <QToolTip>
-#include <QTimer>
-#include <QTreeWidgetItem>
-
-#include <kiconloader.h>
-#include <kpushbutton.h>
-#include <kmessagebox.h>
-#include <khbox.h>
-#include <kvbox.h>
-#include <khtml_part.h>
-#include <khtmlview.h>
 #include <QDebug>
-#include <KConfigGroup>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QMessageBox>
+
+#include <klocalizedstring.h>
 
 #include "docassistant.h"
 #include "docpostcard.h"
@@ -59,7 +51,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   topVBox->addLayout( buttonLayout );
 //TODO PORT QT5   buttonLayout->setMargin( QDialog::marginHint()/2 );
 
-  KPushButton *pb = new KPushButton( i18n( "Show Templates" ) );
+  QPushButton *pb = new QPushButton( i18n( "Show Templates" ) );
   buttonLayout->addWidget( pb );
   connect( pb, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleShowTemplates( bool ) ) );
@@ -76,7 +68,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mPostCard, SIGNAL( completed() ),
            this,  SLOT( slotRenderCompleted() ) );
 
-  topVBox->addWidget( mPostCard->view() );
+  topVBox->addWidget(mPostCard);
 
   // KVBox *stackVBox = new KVBox( this );
   mTemplatePane = new QWidget;
@@ -122,29 +114,29 @@ DocAssistant::DocAssistant( QWidget *parent ):
   bottomVBox->addLayout( butHBox2 );
 
 //TODO PORT QT5   butHBox2->setSpacing( QDialog::spacingHint() );
-  KIcon icons = QIcon::fromTheme( "go-previous" ); // KDE 4 icon name: go-previous
-  mPbAdd  = new KPushButton( icons, QString() );
+  QIcon icons = QIcon::fromTheme( "go-previous" ); // KDE 4 icon name: go-previous
+  mPbAdd  = new QPushButton( icons, QString() );
   mPbAdd->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbAdd, SIGNAL( clicked() ), this, SLOT( slotAddToDocument() ) );
   butHBox2->addWidget( mPbAdd );
   mPbAdd->setToolTip( i18n( "Add a template to the document" ) );
 
   icons = QIcon::fromTheme( "document-new" );
-  mPbNew  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-new
+  mPbNew  = new QPushButton( icons, QString() ); // KDE 4 icon name: document-new
   mPbNew->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbNew, SIGNAL( clicked() ), this, SLOT( slotNewTemplate() ) );
   mPbNew->setToolTip( i18n( "Create a new template" ) );
   butHBox2->addWidget( mPbNew );
 
   icons = QIcon::fromTheme( "document-properties" );
-  mPbEdit  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-properties
+  mPbEdit  = new QPushButton( icons, QString() ); // KDE 4 icon name: document-properties
   mPbEdit->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbEdit, SIGNAL( clicked() ), this, SLOT( slotEditTemplate() ) );
   mPbEdit->setToolTip( i18n( "Edit the current template" ) );
   butHBox2->addWidget( mPbEdit );
 
   icons = QIcon::fromTheme( "edit-delete" );
-  mPbDel  = new KPushButton( icons, QString() ); // KDE 4 icon name: edit-delete
+  mPbDel  = new QPushButton( icons, QString() ); // KDE 4 icon name: edit-delete
   mPbDel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbDel, SIGNAL( clicked() ), this, SLOT( slotDeleteTemplate() ) );
   mPbDel->setToolTip( i18n( "Delete the current template" ) );
@@ -280,11 +272,6 @@ void DocAssistant::slotFooterTextToDocument( const DocText& dt )
   emit footerTextTemplate( dt.text() );
 }
 
-void DocAssistant::slotAddressToDocument( const Addressee& adr )
-{
-  emit addressTemplate( adr );
-}
-
 /* Slot that initiates an edit */
 void DocAssistant::slotEditTemplate()
 {
@@ -298,17 +285,21 @@ void DocAssistant::slotEditTemplate()
 /* slot that initialises a delete, called from the delete button */
 void DocAssistant::slotDeleteTemplate()
 {
-  if ( KMessageBox::warningYesNo( this, i18n( "Do you really want to delete the "
-                                            "template permanently? There is no way "
-                                              "to recover!" ) )
-       == KMessageBox::No  )
-  {
-    return;
-  }
 
-  if ( mCurrTemplateProvider ) {
-    mCurrTemplateProvider->slotDeleteTemplate();
-  }
+    QMessageBox msgBox;
+    msgBox.setText(i18n( "Do you really want to delete the template permanently?\n"
+                         "It can not be recovered."));
+    msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox.exec();
+
+    if ( ret == QMessageBox::No ) {
+        return;
+    }
+
+    if ( mCurrTemplateProvider ) {
+        mCurrTemplateProvider->slotDeleteTemplate();
+    }
 }
 
 void DocAssistant::slotHeaderTextDeleted( const DocText& /* dt */)

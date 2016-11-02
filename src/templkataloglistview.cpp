@@ -17,11 +17,10 @@
  ***************************************************************************/
 
 #include <QtSql>
-
-#include <klocale.h>
 #include <QDebug>
-#include <kiconloader.h>
-#include <kmenu.h>
+#include <QMenu>
+
+#include <klocalizedstring.h>
 
 #include "templkataloglistview.h"
 #include "portal.h"
@@ -47,7 +46,7 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
 
   setHeaderLabels(labels);
 
-  contextMenu()->addTitle( i18n("Template Catalog"));
+  contextMenu()->setTitle( i18n("Template Catalog"));
 }
 
 /*
@@ -102,7 +101,7 @@ QTreeWidgetItem* TemplKatalogListView::addFlosTemplate( QTreeWidgetItem *parentI
   }
   else
   {
-    listItem->setIcon(0, SmallIcon("accessories-calculator"));
+    listItem->setIcon(0, QIcon::fromTheme("accessories-calculator"));
   }
 
   if ( mCheckboxes ) {

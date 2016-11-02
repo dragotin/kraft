@@ -16,16 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QString>
+#include <QtCore>
 #include <QSqlQuery>
-#include <QFile>
-#include <qfile.h>
-
-// include files for KDE
-#include <klocale.h>
-#include <QDebug>
-#include <kglobal.h>
-#include <kstandarddirs.h>
 
 // application specific includes
 #include "doctype.h"
@@ -223,7 +215,6 @@ void DocType::setNumberCycleName( const QString& name )
 
 QString DocType::templateFile( const QString& lang )
 {
-  KStandardDirs stdDirs;
   QString tmplFile;
 
   QString reportFileName = QString( "%1.trml").arg( name().toLower() );
@@ -248,7 +239,7 @@ QString DocType::templateFile( const QString& lang )
   searchList << QLatin1String("kraft/reports/invoice.trml");
 
   foreach( QString searchPath, searchList ) {
-     const QString tFile = KStandardDirs::locate( "data", searchPath );
+      const QString tFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, searchPath);
 
       if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
           tmplFile = tFile;
@@ -285,10 +276,9 @@ QString DocType::templateFile( const QString& lang )
 
 QString DocType::defaultTemplateFile() const
 {
-  KStandardDirs stdDirs;
-
-  QString findFile = "kraft/reports/invoice.trml";
-  return stdDirs.findResource( "data", findFile );
+  const QString findFile = "kraft/reports/invoice.trml";
+  const QString re = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
+  return re;
 }
 
 void DocType::setTemplateFile( const QString& name )
@@ -469,8 +459,7 @@ int DocType::nextIdentId( bool hot )
       setQuery.bindValue( ":newNumber", num );
       setQuery.exec();
       if ( setQuery.isActive() ) {
-        // qDebug () << "Successfully created new id number for numbercycle " << numberCycle << ": "
-                  << num << endl;
+        // qDebug () << "Successfully created new id number for numbercycle " << numberCycle << ": " << num << endl;
       }
     }
   }

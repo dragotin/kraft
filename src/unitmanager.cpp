@@ -20,16 +20,14 @@
 // include files for KDE
 #include <kraftdb.h>
 #include <QDebug>
-#include <kglobal.h>
 
 #include "unitmanager.h"
 #include "einheit.h"
 
-UnitManager* UnitManager::mSelf = 0;
+Q_GLOBAL_STATIC(UnitManager, mSelf);
 
 UnitManager* UnitManager::self()
 {
-  K_GLOBAL_STATIC(UnitManager, mSelf);
   return mSelf;
 }
 

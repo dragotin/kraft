@@ -15,13 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kglobal.h>
-
 #include "addressprovider.h"
 #include "akonadi/contact/contactsearchjob.h"
-#include "akonadi/session.h"
+// #include "akonadi/session.h"
 
-#include <Akonadi/Item>
+// #include <Akonadi/Item>
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
 #include <QDebug>
@@ -30,22 +28,6 @@ AddressProvider::AddressProvider( QObject *parent )
   :QObject( parent )
 {
   using namespace Akonadi;
-}
-
-KJob* AddressProvider::searchAddressGID( const QString& gid )
-{
-    if( gid.isEmpty() ) return 0;
-
-    Akonadi::Item item;
-#if KDE_IS_VERSION(4,12,0)
-    item.setGid( gid );
-#endif
-
-    Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(item, this);
-    connect( fetchJob, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-    fetchJob->fetchScope().fetchFullPayload();
-    fetchJob->start();
-    return fetchJob;
 }
 
 void AddressProvider::getAddressee( const QString& uid )
@@ -58,9 +40,6 @@ void AddressProvider::getAddressee( const QString& uid )
 
     KJob *job = NULL;
 
-#if KDE_IS_VERSION(4,12,0)
-    job = searchAddressGID( uid );
-#else
     Akonadi::ContactSearchJob *csjob = new Akonadi::ContactSearchJob( this );
     csjob->setLimit( 1 );
     csjob->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
@@ -68,7 +47,7 @@ void AddressProvider::getAddressee( const QString& uid )
     job = csjob;
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
     job->start();
-#endif
+
     mUidSearches.insert( uid );
     mUidSearchJobs[job] = uid;
 
@@ -79,7 +58,7 @@ void AddressProvider::searchResult( KJob* job )
     if( !job ) return;
 
     QString uid;
-    KABC::Addressee contact;
+    KContacts::Addressee contact;
 
     int cnt = 0;
 
@@ -88,23 +67,8 @@ void AddressProvider::searchResult( KJob* job )
     if( job->error() ) {
         // qDebug () << "Address Search job failed: " << job->errorString();
     } else {
-#if KDE_IS_VERSION(4,12,0)
-        Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
-
-        const Akonadi::Item::List items = fetchJob->items();
-
-        foreach( Akonadi::Item item, items ) {
-           if( item.hasPayload<KABC::Addressee>() ) {
-                contact = item.payload<KABC::Addressee>();
-                uid = contact.uid();
-                cnt++;
-                // qDebug () << "Found uid search job for UID " << uid << " = " << contact.realName();
-                emit addresseeFound( uid, contact );
-           }
-        }
-#else
 	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-        const KABC::Addressee::List contacts = searchJob->contacts();
+        const KContacts::Addressee::List contacts = searchJob->contacts();
         // qDebug () << "Found list of " << contacts.size() << " addresses as search result";
 
         if( mUidSearchJobs.contains( job )) {            
@@ -115,7 +79,6 @@ void AddressProvider::searchResult( KJob* job )
             emit addresseeFound( uid, contact );
             cnt++;
         }
-#endif
     }
     // if no address was found, emit the empty contact.
     if( cnt == 0 ) {
@@ -133,18 +96,18 @@ void AddressProvider::searchResult( KJob* job )
     job->deleteLater();
 }
 
-QString AddressProvider::formattedAddress( const KABC::Addressee& contact ) const
+QString AddressProvider::formattedAddress( const KContacts::Addressee& contact ) const
 {
   QString re;
-  KABC::Address address;
+  KContacts::Address address;
 
-  address = contact.address( KABC::Address::Pref );
+  address = contact.address( KContacts::Address::Pref );
   if( address.isEmpty() )
-    address = contact.address(KABC::Address::Work );
+    address = contact.address(KContacts::Address::Work );
   if( address.isEmpty() )
-    address = contact.address(KABC::Address::Home );
+    address = contact.address(KContacts::Address::Home );
   if( address.isEmpty() )
-    address = contact.address(KABC::Address::Postal );
+    address = contact.address(KContacts::Address::Postal );
 
   if( address.isEmpty() ) {
     re = contact.realName();

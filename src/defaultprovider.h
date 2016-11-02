@@ -17,6 +17,7 @@
 #ifndef DEFAULTPROVIDER_H
 #define DEFAULTPROVIDER_H
 
+#include <QtCore>
 #include <qdom.h>
 
 #include "kraftcat_export.h"
@@ -56,12 +57,12 @@ public:
   QString getStyleSheet( const QString& ) const;
 
   TextTemplate getTextTemplate( const QString& );
-
-private:
   DefaultProvider();
 
-  static DefaultProvider *mSelf;
+private:
 
+ //  static DefaultProvider *mSelf;
+  QLocale _locale;
   const QString EuroTag;
 
 };

@@ -20,7 +20,7 @@
 #define DOCUMENTMODEL_H
 
 #include <QSqlTableModel>
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 class DocDigest;
 class AddressProvider;
@@ -60,11 +60,11 @@ public:
   void setQueryAgain();
 
 protected slots:
-  void slotAddresseeFound( const QString&, const KABC::Addressee& );
+  void slotAddresseeFound( const QString&, const KContacts::Addressee& );
 
 protected:
   AddressProvider   *mAddressProvider;
-  QHash<QString, KABC::Addressee> mAddresses;
+  QHash<QString, KContacts::Addressee> mAddresses;
 
 private:
   QVector<QString> mHeaders;

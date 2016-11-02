@@ -35,15 +35,14 @@ public:
 
   static StockMaterialMan* self();
   StockMaterial* getMaterial( long );
+  StockMaterialMan();
 
 private:
   StockMaterial* findMaterial( long );
 
-  StockMaterialMan();
 
   void load();
   StockMaterialList mMaterials;
-  static StockMaterialMan *mSelf;
 };
 
 #endif

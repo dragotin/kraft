@@ -17,29 +17,16 @@
 #include <stdlib.h>
 // include files for QT
 #include <QtGui>
+#include <QMenu>
+#include <QProgressBar>
+#include <QDebug>
+#include <QStatusBar>
 
 // include files for KDE
-#include <kiconloader.h>
-#include <kmessagebox.h>
-#include <kfiledialog.h>
-#include <kmenubar.h>
-#include <kmenu.h>
-#include <kstatusbar.h>
-#include <klocale.h>
-#include <kconfig.h>
-#include <kactioncollection.h>
-#include <kstandardshortcut.h>
-#include <kstandardaction.h>
-#include <QDebug>
-#include <kapplication.h>
-#include <kshortcut.h>
-#include <ktoggleaction.h>
-#include <kactionmenu.h>
-#include <kglobal.h>
 #include <kxmlguifactory.h>
 #include <KXmlGuiWindow>
 #include <KConfigGroup>
-#include <QFileDialog>
+#include <KActionCollection>
 
 // application specific includes
 #include "katalogview.h"
@@ -89,9 +76,9 @@ void KatalogView::init(const QString& katName )
   if( ! listview ) {
       // qDebug () << "ERROR: No listview created !!!" << endl;
   } else {
-      m_filterHead = new FilterHeader(listview, w);
-      m_filterHead->showCount(false);
-      box->insertWidget(0, m_filterHead);
+      // m_filterHead = new FilterHeader(listview, w);
+      // m_filterHead->showCount(false);
+      // box->insertWidget(0, m_filterHead);
 
       connect( listview, SIGNAL(currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)),
                this, SLOT(slTreeviewItemChanged( QTreeWidgetItem*, QTreeWidgetItem*)) );
@@ -188,14 +175,14 @@ void KatalogView::initActions()
 
   m_acNewItem = actionCollection()->addAction( "new_template", this, SLOT( slNewTemplate() ) );
   m_acNewItem->setText( i18n("New template") );
-  m_acNewItem->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::New) );
+  m_acNewItem->setShortcut( QKeySequence::New );
   m_acNewItem->setIcon( QIcon::fromTheme("document-new"));
   m_acNewItem->setStatusTip(i18n("Opens the editor window for templates to enter a new template"));
   m_acNewItem->setEnabled(true);
 
   m_acDeleteItem = actionCollection()->addAction( "delete_template", this, SLOT( slDeleteTemplate() ) );
   m_acDeleteItem->setText( i18n("Delete template") );
-  m_acDeleteItem->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Clear) );
+  m_acDeleteItem->setShortcut( QKeySequence::Delete);
   m_acDeleteItem->setIcon( QIcon::fromTheme("document-delete"));
   m_acDeleteItem->setStatusTip(i18n("Deletes the template"));
   m_acDeleteItem->setEnabled(true);
@@ -253,96 +240,12 @@ bool KatalogView::queryExit()
   return true;
 }
 
-/////////////////////////////////////////////////////////////////////
-// SLOT IMPLEMENTATION
-/////////////////////////////////////////////////////////////////////
-
-void KatalogView::slotFileNewWindow()
-{
-  slotStatusMsg(i18n("Opening a new katalog window..."));
-
-  KatalogView *new_window= new KatalogView();
-  new_window->show();
-
-  slotStatusMsg(i18n("Ready."));
-}
-
-
-void KatalogView::slotFileOpen()
-{
-  slotStatusMsg(i18n("Opening file..."));
-
-  QUrl url = QFileDialog::getOpenFileUrl(0, QString(), QUrl();
-                                   i18n("*|All files"), this, i18n("Open File..."));
-  if(!url.isEmpty())
-  {
-      // doc->openDocument(url);
-      setWindowTitle(url.fileName(), false);
-    }
-  slotStatusMsg(i18n("Ready."));
-}
-
-
-void KatalogView::slotFileSave()
-{
-  slotStatusMsg(i18n("Saving file..."));
-
-  // doc->saveDocument(doc->URL());
-
-  slotStatusMsg(i18n("Ready."));
-}
-
-
-void KatalogView::slotFileClose()
-{
-  slotStatusMsg(i18n("Closing file..."));
-
-  close();
-
-  slotStatusMsg(i18n("Ready."));
-}
-
-void KatalogView::slotFilePrint()
-{
-  slotStatusMsg(i18n("Printing..."));
-
-#if 0
-  QPrinter printer;
-  if (printer.setup(this))
-  {
-  }
-#endif
-  slotStatusMsg(i18n("Ready."));
-}
-
-
-void KatalogView::slotEditCut()
-{
-  slotStatusMsg(i18n("Cutting selection..."));
-
-  slotStatusMsg(i18n("Ready."));
-}
-
-void KatalogView::slotEditCopy()
-{
-  slotStatusMsg(i18n("Copying selection to clipboard..."));
-
-  slotStatusMsg(i18n("Ready."));
-}
-
-void KatalogView::slotEditPaste()
-{
-  slotStatusMsg(i18n("Inserting clipboard contents..."));
-
-  slotStatusMsg(i18n("Ready."));
-}
-
 void KatalogView::slotStatusMsg(const QString &text)
 {
   ///////////////////////////////////////////////////////////////////
   // change status message permanently
   statusBar()->clearMessage();
-  statusBar()->changeItem(text, ID_STATUS_MSG);
+  // FIXME Porting statusBar()->changeItem(text, ID_STATUS_MSG);
 }
 
 void KatalogView::slTreeviewItemChanged( QTreeWidgetItem *newItem, QTreeWidgetItem * /* prevItem */ )
@@ -437,10 +340,10 @@ void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
 
   t = "<table border=\"0\">";
   t += i18n("<tr><td>Created at:</td><td>%1</td></tr>" ) /* <td>&nbsp;&nbsp;</td><td>Last used:</td><td>%2</td></tr>" ) */
-       .arg( locale->formatDateTime( tmpl->enterDate() ) );
+       .arg( locale->toString( tmpl->enterDate() ) );
        /* .arg( locale->formatDateTime( tmpl->lastUsedDate() ) ); */
   t += i18n("<tr><td>Modified at:</td><td>%1</td></tr>") /* <td>&nbsp;&nbsp;</td><td>Use Count:</td><td>%2</td></tr>" ) */
-       .arg( locale->formatDateTime( tmpl->modifyDate() ) );
+       .arg( locale->toString( tmpl->modifyDate() ) );
        /* .arg( tmpl->useCounter() ); */
   t += "</table>";
   // qDebug() << "Hoover-String: " << t;

@@ -18,10 +18,8 @@
 #include "kraftdocfooteredit.h"
 #include "kraftdb.h"
 
-#include <kcombobox.h>
-#include <klocale.h>
+#include <QLocale>
 #include <QDebug>
-
 #include <QLayout>
 #include <QComboBox>
 #include <QVBoxLayout>

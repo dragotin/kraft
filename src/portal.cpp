@@ -17,36 +17,26 @@
 
 // include files for QT
 #include <QDir>
-#include <QPrinter>
 #include <QPainter>
 #include <QApplication>
 #include <QCursor>
 #include <QTimer>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QAction>
+#include <QIcon>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QMenu>
+#include <QLocale>
+#include <QStatusBar>
+#include <QStandardPaths>
+
 
 // include files for KDE
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <kiconloader.h>
-#include <kmessagebox.h>
-#include <kfiledialog.h>
-#include <kmenu.h>
-#include <kstatusbar.h>
-#include <klocale.h>
-#include <kconfig.h>
 #include <QDebug>
-#include <kstandardaction.h>
-#include <kstandardshortcut.h>
-#include <kcmdlineargs.h>
-#include <krun.h>
-#include <kapplication.h>
-#include <AkonadiCore/control.h>
-#include <kabc/addressee.h>
-#include <ktoolinvocation.h>
-#include <kstandarddirs.h>
-#include <kemailsettings.h>
-#include <KConfigGroup>
+#include <kcontacts/addressee.h>
+#include <kactioncollection.h>
 
 // application specific includes
 #include "kraftview.h"
@@ -58,7 +48,6 @@
 #include "kraftdoc.h"
 #include "floskeltemplate.h"
 #include "templkatalogview.h"
-#include "brunskatalogview.h"
 #include "materialkatalogview.h"
 #include "prefsdialog.h"
 #include "documentman.h"
@@ -76,10 +65,9 @@
 #include "setupassistant.h"
 #include "addressprovider.h"
 
-#define ID_STATUS_MSG 1
 
 Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
-: KXmlGuiWindow( parent, 0 ),
+: KXmlGuiWindow( parent ),
   mCmdLineArgs( commandLineParser )
 {
   setObjectName( name );
@@ -97,8 +85,8 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
   editPaste->setEnabled(false);
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee&)),
-          this, SLOT( slotReceivedMyAddress( const QString&, const KABC::Addressee& ) ) );
+  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KContacts::Addressee&)),
+          this, SLOT( slotReceivedMyAddress( const QString&, const KContacts::Addressee& ) ) );
 
   setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
@@ -114,52 +102,53 @@ void Portal::initActions()
 
   actionCollection()->addAction( KStandardAction::Preferences, this, SLOT( preferences() ) );
 
+  // KF5: Set shortcuts appropiately.
   actNewDocument = actionCollection()->addAction( "document_new", this, SLOT( slotNewDocument()) );
   actNewDocument->setText( i18n("Create Document") );
-  actNewDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::New) );
+  // actNewDocument->setShortcut( QStandardShortcut::shortcut(KStandardShortcut::New) );
   actNewDocument->setIcon( QIcon::fromTheme("document-new"));
 
   actCopyDocument = actionCollection()->addAction( "document_copy", this, SLOT( slotCopyDocument()) );
   actCopyDocument->setText( i18n("Copy Document"));
-  actCopyDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Copy) );
+  // actCopyDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Copy) );
   actCopyDocument->setIcon( QIcon::fromTheme( "document-edit"));
 
   actFollowDocument = actionCollection()->addAction( "document_follow", this, SLOT( slotFollowUpDocument() ) );
   actFollowDocument->setText( i18n("Follow Document" ));
-  actFollowDocument->setShortcut( KShortcut( Qt::CTRL + Qt::Key_F ));
+  // actFollowDocument->setShortcut( KShortcut( Qt::CTRL + Qt::Key_F ));
   actFollowDocument->setIcon( QIcon::fromTheme( "document-edit"));
 
   actPrintDocument = actionCollection()->addAction( "document_print", this, SLOT( slotPrintDocument()) );
   actPrintDocument->setText( i18n("Print Document"));
-  actPrintDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Print) );
+  // actPrintDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Print) );
   actPrintDocument->setIcon( QIcon::fromTheme("document-print"));
 
   actOpenArchivedDocument = actionCollection()->addAction( "archived_open", this, SLOT( slotArchivedDocExecuted()) );
   actOpenArchivedDocument->setText( i18n("Open Archived Document"));
-  actOpenArchivedDocument->setShortcut( KShortcut(Qt::CTRL + Qt::Key_A) );
+  actOpenArchivedDocument->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_A) );
 
   actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewDocument()));
   actViewDocument->setText(i18n("Show Document"));
-  actViewDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Reload) );
+  actViewDocument->setShortcut( QKeySequence(Qt::CTRL+Qt::Key_R) );
   actViewDocument->setIcon( QIcon::fromTheme("document-preview" ));
 
   actOpenDocument = actionCollection()->addAction( "document_open", this, SLOT( slotOpenDocument()) );
   actOpenDocument->setText( i18n("Edit Document"));
-  actOpenDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Open) );
+  actOpenDocument->setShortcut( QKeySequence(Qt::CTRL+Qt::Key_O) );
   actOpenDocument->setIcon( QIcon::fromTheme("document-open" ));
 
   actMailDocument = actionCollection()->addAction( "document_mail", this, SLOT( slotMailDocument()) );
   actMailDocument->setText(i18n("&Mail Document"));
-  actMailDocument->setShortcut( KShortcut(Qt::CTRL + Qt::Key_M ));
+  actMailDocument->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_M ));
   actMailDocument->setIcon( QIcon::fromTheme("mail-forward"));
 
   actEditTemplates = actionCollection()->addAction( "edit_tag_templates", this, SLOT( slotEditTagTemplates() ) );
   actEditTemplates->setText("Edit Tag Templates");
-  actEditTemplates->setShortcut( KShortcut( Qt::CTRL + Qt::Key_E ));
+  actEditTemplates->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_E ));
 
-  KAction *reconfDb = actionCollection()->addAction( "reconfigure_db", this, SLOT( slotReconfigureDatabase() ) );
+  QAction *reconfDb = actionCollection()->addAction( "reconfigure_db", this, SLOT( slotReconfigureDatabase() ) );
   reconfDb->setText("Redo Initial Setup...");
-  reconfDb->setShortcut( KShortcut( Qt::CTRL + Qt::Key_R ));
+  reconfDb->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
 
   fileQuit->setStatusTip(i18n("Quits the application"));
   editCut->setStatusTip(i18n("Cuts the selected section and puts it to the clipboard"));
@@ -203,7 +192,7 @@ void Portal::initStatusBar()
   ///////////////////////////////////////////////////////////////////
   // STATUSBAR
   // TODO: add your own items you need for displaying current application status.
-  statusBar()->insertItem(i18n("Ready."), ID_STATUS_MSG);
+  statusBar()->showMessage(i18n("Ready."));
 }
 
 void Portal::initView()
@@ -216,8 +205,8 @@ void Portal::initView()
     // create the main widget here that is managed by KTMainWindow's view-region and
     // connect the widget to your document to display document contents.
     m_portalView = new PortalView( this, "PortalMainView" );
-    QList<KMenu*> menus = m_portalView->docDigestView()->contextMenus();
-    foreach( KMenu *menu, menus ) {
+    QVector<QMenu*> menus = m_portalView->docDigestView()->contextMenus();
+    foreach( QMenu *menu, menus ) {
       menu->setTitle( i18n("Document Actions"));
       menu->addAction( actViewDocument );
       menu->addAction( actOpenDocument );
@@ -257,86 +246,87 @@ void Portal::initView()
 
 void Portal::slotStartupChecks()
 {
-  QString dbName = DatabaseSettings::self()->dbDatabaseName();
+    QString dbName = DatabaseSettings::self()->dbDatabaseName();
 
-  if ( !Akonadi::Control::start( this ) ) {
-    qCritical() << "Failed to start Akonadi!";
-  }
-  Akonadi::Control::widgetNeedsAkonadi( this );
-  // FIXME: This starts Akonadi and such, check if the decision if the setup
-  // assistant is really needed can't be pulled here.
-  SetupAssistant assi(this);
-  if( assi.init( SetupAssistant::Update) ) {
-    assi.exec();
-  }
+    // if ( !Akonadi::Control::start( ) ) {
+    //    qCritical() << "Failed to start Akonadi!";
+    // }
+    // Akonadi::Control::widgetNeedsAkonadi( this );
+    // FIXME: This starts Akonadi and such, check if the decision if the setup
+    // assistant is really needed can't be pulled here.
+    SetupAssistant assi(this);
+    if( assi.init( SetupAssistant::Update) ) {
+        assi.exec();
+    }
 
-  if( ! KraftDB::self()->isOk() ) {
-    QSqlError err = KraftDB::self()->lastError();
-    // qDebug () << "The last sql error id: " << err.type() << endl;
+    if( ! KraftDB::self()->isOk() ) {
+        QSqlError err = KraftDB::self()->lastError();
+        // qDebug () << "The last sql error id: " << err.type() << endl;
 
-    QString text;
+        QString text;
 
-    if ( err.text().contains( "Can't connect to local MySQL server through socket" ) ) {
-      text = i18n( "Kraft can not connect to the specified MySQL server. "
-                   "Please check the Kraft database settings, check if the server is "
-                   "running and verify if a database with the name %1 exits!" ).arg( dbName );
-    } else if ( err.text().contains( "Unknown database '" + dbName + "' QMYSQL3: Unable to connect" ) ) {
-      text = i18n( "The database with the name %1 does not exist on the database server. "
-                   "Please make sure the database exists and is accessible by the user "
-                   "running Kraft." ).arg( dbName );
-    } else if ( err.text().contains( "Driver not loaded" ) ) {
-      text = i18n( "The Qt database driver could not be loaded. That probably means, that "
-                   "they are not installed. Please make sure the Qt database packages are "
-                   "installed and try again." );
+        if ( err.text().contains( "Can't connect to local MySQL server through socket" ) ) {
+            text = i18n( "Kraft can not connect to the specified MySQL server. "
+                         "Please check the Kraft database settings, check if the server is "
+                         "running and verify if a database with the name %1 exits!" ).arg( dbName );
+        } else if ( err.text().contains( "Unknown database '" + dbName + "' QMYSQL3: Unable to connect" ) ) {
+            text = i18n( "The database with the name %1 does not exist on the database server. "
+                         "Please make sure the database exists and is accessible by the user "
+                         "running Kraft." ).arg( dbName );
+        } else if ( err.text().contains( "Driver not loaded" ) ) {
+            text = i18n( "The Qt database driver could not be loaded. That probably means, that "
+                         "they are not installed. Please make sure the Qt database packages are "
+                         "installed and try again." );
+        } else {
+            text = i18n( "There is a database problem: %1" ).arg( err.text() );
+        }
+
+
+        // KMessageBox::sorry( this, text, i18n("Serious Database Problem") );
+        m_portalView->systemInitError( m_portalView->ptag( text, "problem" ) );
+
+        // disable harmfull actions
+        actNewDocument->setEnabled( false );
+        actPrintDocument->setEnabled( false );
+        actCopyDocument->setEnabled( false );
+        actFollowDocument->setEnabled(false);
+        actOpenDocument->setEnabled( false );
+        actViewDocument->setEnabled( false );
+        actOpenArchivedDocument->setEnabled( false );
+        actMailDocument->setEnabled( false );
+
+        slotStatusMsg( i18n( "Database Problem." ) );
     } else {
-      text = i18n( "There is a database problem: %1" ).arg( err.text() );
+        // Database interaction is ok after this point.
+        m_portalView->slotBuildView();
+        m_portalView->fillCatalogDetails();
+        m_portalView->fillSystemDetails();
+
+        slotStatusMsg( i18n( "Check commandline actions" ) );
+
+        if ( mCmdLineArgs ) {
+            // KF5: Proper command line option
+
+            // QString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
+            QString docId;
+            if ( ! docId.isEmpty() ) {
+                // qDebug () << "open a archived document: " << docId << endl;
+                slotPrintDocument( QString(), dbID( docId.toInt() ) );
+            }
+        }
+
+        // Fetch my address
+        QString myUid = KraftSettings::self()->userUid();
+        if( ! myUid.isEmpty() ) {
+            // qDebug () << "Got My UID: " << myUid;
+            mAddressProvider->getAddressee( myUid );
+        }
+
+        slotStatusMsg( i18n( "Ready." ) );
     }
-
-
-    // KMessageBox::sorry( this, text, i18n("Serious Database Problem") );
-    m_portalView->systemInitError( m_portalView->ptag( text, "problem" ) );
-
-    // disable harmfull actions
-    actNewDocument->setEnabled( false );
-    actPrintDocument->setEnabled( false );
-    actCopyDocument->setEnabled( false );
-    actFollowDocument->setEnabled(false);
-    actOpenDocument->setEnabled( false );
-    actViewDocument->setEnabled( false );
-    actOpenArchivedDocument->setEnabled( false );
-    actMailDocument->setEnabled( false );
-
-    slotStatusMsg( i18n( "Database Problem." ) );
-  } else {
-    // Database interaction is ok after this point.
-    m_portalView->slotBuildView();
-    m_portalView->fillCatalogDetails();
-    m_portalView->fillSystemDetails();
-
-    slotStatusMsg( i18n( "Check commandline actions" ) );
-
-    if ( mCmdLineArgs ) {
-      QString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
-      if ( ! docId.isEmpty() ) {
-        // qDebug () << "open a archived document: " << docId << endl;
-        slotPrintDocument( QString(), dbID( docId.toInt() ) );
-      }
-
-      mCmdLineArgs->clear();
-    }
-
-    // Fetch my address
-    QString myUid = KraftSettings::self()->userUid();
-    if( ! myUid.isEmpty() ) {
-      // qDebug () << "Got My UID: " << myUid;
-      mAddressProvider->getAddressee( myUid );
-    }
-
-    slotStatusMsg( i18n( "Ready." ) );
-  }
 }
 
-void Portal::slotReceivedMyAddress( const QString& uid, const KABC::Addressee& contact )
+void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Addressee& contact )
 {
   if( contact.isEmpty() ) {
     // qDebug () << "My-Contact is empty!";
@@ -351,8 +341,8 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KABC::Addressee& c
   // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
   ReportGenerator::self()->setMyContact( contact );
 
-  disconnect( mAddressProvider, SIGNAL( addresseeFound(const QString&, const KABC::Addressee&)),
-              this, SLOT(slotReceivedMyAddress( const QString&, const KABC::Addressee&)));
+  disconnect( mAddressProvider, SIGNAL( addresseeFound(const QString&, const KContacts::Addressee&)),
+              this, SLOT(slotReceivedMyAddress( const QString&, const KContacts::Addressee&)));
 }
 
 bool Portal::queryClose()
@@ -561,17 +551,17 @@ void Portal::slotMailPdfAvailable( const QString& fileName )
 
     // get the email.
     if( !_clientId.isEmpty() && mAddressProvider ) {
-        connect( mAddressProvider, SIGNAL(addresseeFound(QString,KABC::Addressee)),
-                 this, SLOT(slotMailAddresseeFound(QString, KABC::Addressee)));
+        connect( mAddressProvider, SIGNAL(addresseeFound(QString,KContacts::Addressee)),
+                 this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
         mAddressProvider->getAddressee(_clientId);
         _clientId.clear();
     } else {
-        slotMailAddresseeFound( QString::null, KABC::Addressee() );
+        slotMailAddresseeFound( QString::null, KContacts::Addressee() );
     }
 
 }
 
-void Portal::slotMailAddresseeFound( const QString& uid, const KABC::Addressee& contact )
+void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addressee& contact )
 {
     QString mailReceiver;
     if( !contact.isEmpty() ) {
@@ -582,15 +572,13 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KABC::Addressee& 
 
     // qDebug () << "Mailing away " << _pdfFileName << endl;
 
-    disconnect( mAddressProvider, SIGNAL(addresseeFound(QString,KABC::Addressee)),
-             this, SLOT(slotMailAddresseeFound(QString, KABC::Addressee)));
+    disconnect( mAddressProvider, SIGNAL(addresseeFound(QString,KContacts::Addressee)),
+             this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
     disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
 
-    // Do a special way for thunderbird, as I could not get it to run
-    // with the KToolInvocation
-    KEMailSettings emailSettings;
-    if( emailSettings.getSetting(KEMailSettings::ClientProgram).contains("thunderbird") ) {
-        QString prog = emailSettings.getSetting(KEMailSettings::ClientProgram);
+    QString mailAgent("thunderbird");
+    if( mailAgent.contains("thunderbird") ) {
+        QString prog = "/usr/bin/thunderbird";
         QStringList args;
 
         args.append("-compose");
@@ -607,18 +595,7 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KABC::Addressee& 
             // qDebug () << "Failed to start thunderbird composer!";
         }
     } else {
-        // Use KDE Invocation tool for all other mailers, good luck.
-        // works with KMail at least.
-        QUrl mailTo;
-        mailTo.setScheme("mailto");
-        if ( ! mailReceiver.isEmpty() ) {
-            mailTo.addQueryItem( "to", mailReceiver );
-        }
-        mailTo.addQueryItem("attach", _pdfFileName);
-
-        // qDebug () << "Use this mailto: " << mailTo << endl;
-
-        KToolInvocation::self()->invokeMailer( mailTo, "Kraft", true );
+       // FIXME porting
     }
     _pdfFileName.clear();
 }
@@ -643,7 +620,7 @@ void Portal::slotOpenPdf( const QString& fileName )
 {
     disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
     QUrl url( fileName );
-    KRun::runUrl( url, "application/pdf", this );
+    QDesktopServices::openUrl(url);
 
     // save pdf into a <customer>/<dockind> structure
     if( _currentDoc ) {
@@ -651,11 +628,9 @@ void Portal::slotOpenPdf( const QString& fileName )
         QString docType = _currentDoc->docType();
 
         if( !uid.isEmpty() ) {
-            KStandardDirs stdDirs;
-
             QString outputDir = KraftSettings::self()->pdfOutputDir();
             if ( outputDir.isEmpty() ) {
-                outputDir = stdDirs.saveLocation( "data", "kraft/archivePdf", true );
+                outputDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
             }
 
             if ( ! outputDir.endsWith( "/" ) ) outputDir += QLatin1String("/");
@@ -848,7 +823,7 @@ void Portal::closeEvent( QCloseEvent *event )
     //We have to delete katalogviews ourself otherwise the application keeps running in the background
     QMap<QString, KatalogView *>::iterator i;
     for (i = mKatalogViews.begin(); i != mKatalogViews.end(); ++i) {
-        KatalogView *view = i.value();
+        // KatalogView *view = i.value();
         // qDebug () << "Windowstate" << view->windowState();
         i.value()->deleteLater();
     }
@@ -911,7 +886,7 @@ void Portal::slotStatusMsg(const QString &text)
   ///////////////////////////////////////////////////////////////////
   // change status message permanently
   statusBar()->clearMessage();
-  statusBar()->changeItem(text, ID_STATUS_MSG);
+  statusBar()->showMessage(text);
 }
 
 /** Show the  window with floskeltemplates */
@@ -937,10 +912,6 @@ void Portal::slotOpenKatalog(const QString& kat)
 
         /* Materialkatalog */
         katView = new MaterialKatalogView();
-      } else if( kat.startsWith("Bruns") ) {
-        // BrunsKatalog *brunskat = new BrunsKatalog();
-        // brunskat->load();
-        katView = new BrunsKatalogView();
       } else {
         /* normaler Vorlagenkatalog */
         katView = new TemplKatalogView();
@@ -1007,8 +978,8 @@ void Portal::preferences()
 {
   _prefsDialog = new PrefsDialog(this);
   connect( _prefsDialog, SIGNAL(finished(int)), SLOT(slotPrefsDialogFinished(int)) );
-  connect( _prefsDialog, SIGNAL(newOwnIdentity(const QString&, KABC::Addressee)),
-           SLOT(slotReceivedMyAddress(QString,KABC::Addressee)));
+  connect( _prefsDialog, SIGNAL(newOwnIdentity(const QString&, KContacts::Addressee)),
+           SLOT(slotReceivedMyAddress(QString,KContacts::Addressee)));
   _prefsDialog->setMyIdentity( myContact );
 
   _prefsDialog->open();

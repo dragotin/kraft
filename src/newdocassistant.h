@@ -21,22 +21,20 @@
 #include <QMap>
 #include <QLabel>
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 #include <kassistantdialog.h>
 
-class KComboBox;
-class FilterHeader;
-class KPushButton;
 class DocText;
 class TextSelection;
-class KDateWidget;
 class KraftWizard;
-class KTextEdit;
-class KHBox;
 class KPageWidgetItem;
 class AkonadiAddressSelector;
+class QDateEdit;
+class QComboBox;
+class QHBox;
+class QTextEdit;
 
-using namespace KABC;
+using namespace KContacts;
 
 
 // ---------------------------------------------------------------------------
@@ -77,9 +75,9 @@ public:
 
 private:
   QLabel      *mCustomerLabel;
-  KDateWidget *mDateEdit;
-  KComboBox   *mTypeCombo;
-  KTextEdit   *mWhiteboardEdit;
+  QDateEdit   *mDateEdit;
+  QComboBox   *mTypeCombo;
+  QTextEdit   *mWhiteboardEdit;
 };
 
 // ---------------------------------------------------------------------------
@@ -89,7 +87,7 @@ class KraftWizard: public KAssistantDialog
   Q_OBJECT
 
 public:
-  KraftWizard(QWidget *parent = 0, const char* name = 0, bool modal = FALSE );
+  KraftWizard(QWidget *parent = 0, const char* name = 0, bool modal = false );
   void init();
 
   ~KraftWizard();
@@ -109,10 +107,10 @@ protected slots:
 private:
   CustomerSelectPage *mCustomerPage;
   DocDetailsPage *mDetailsPage;
-  KHBox *mCustomerBox;
+  QHBox *mCustomerBox;
   QWidget *mParent;
 
-  KABC::Addressee mAddressee;
+  KContacts::Addressee mAddressee;
 
   KPageWidgetItem *mCustomerPageItem;
   KPageWidgetItem *mDetailsPageItem;

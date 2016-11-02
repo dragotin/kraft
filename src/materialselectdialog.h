@@ -18,7 +18,7 @@
 #ifndef _MATERIALSELECTDIALOG_H
 #define _MATERIALSELECTDIALOG_H
 
-#include <kdialog.h>
+#include <QDialog>
 
 class MaterialKatalogListView;
 class FilterHeader;
@@ -27,7 +27,7 @@ class FilterHeader;
  * Editor that shows the MaterialKatalogListView
  * ********************************************************************************/
 
-class MaterialSelectDialog : public KDialog
+class MaterialSelectDialog : public QDialog
 {
   Q_OBJECT
 

@@ -17,9 +17,6 @@
 #include <QtSql>
 #include <QFile>
 #include <QTextStream>
-
-#include <klocale.h>
-#include <kglobal.h>
 #include <QDebug>
 
 #include "defaultprovider.h"
@@ -27,11 +24,14 @@
 #include "doctext.h"
 #include "kraftsettings.h"
 #include "doctype.h"
-#include <kstandarddirs.h>
+
+#include <klocalizedstring.h>
+
+Q_GLOBAL_STATIC(DefaultProvider, mSelf)
+
 
 DefaultProvider *DefaultProvider::self()
 {
-  K_GLOBAL_STATIC(DefaultProvider, mSelf);
   return mSelf;
 }
 
@@ -147,7 +147,7 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
 
 QLocale* DefaultProvider::locale()
 {
-  return KGlobal::locale();
+  return &_locale;
 }
 
 void DefaultProvider::deleteDocumentText( const DocText& dt )
@@ -168,7 +168,7 @@ QString DefaultProvider::currencySymbol() const
 
 QString DefaultProvider::iconvTool() const
 {
-  return KStandardDirs::findExe( "iconv" );
+  return QStandardPaths::findExecutable( "iconv" );
 }
 
 QString DefaultProvider::getStyleSheet( const QString& styleName ) const
@@ -177,10 +177,9 @@ QString DefaultProvider::getStyleSheet( const QString& styleName ) const
   if( styleName.isEmpty() ) return style;
   QString styleFile = styleName + ".style";
 
-  KStandardDirs stdDirs;
   QString findFile = "kraft/styles/" + styleFile;
 
-  QString tmplFile = stdDirs.findResource( "data", findFile );
+  QString tmplFile = QStandardPaths::locate( QStandardPaths::GenericDataLocation, findFile );
 
   QFile data( tmplFile );
   if (data.open( QFile::ReadOnly )) {

@@ -21,19 +21,18 @@
 #include <QMap>
 #include <QTreeWidgetItem>
 #include <QTableView>
+#include <QVector>
 
 #include "docdigest.h"
 #include "docguardedptr.h"
 #include "models/documentproxymodels.h"
 
-class KMenu;
 class QPushButton;
 class dbID;
 class ArchDocDigest;
 class QContextMenuEvent;
 class QToolBox;
 class DocDigestDetailView;
-class KTreeViewSearchLine;
 
 class DocDigestView : public QWidget
 {
@@ -46,7 +45,7 @@ public:
   int currentDocumentRow() const;
 
   QString currentDocumentId( ) const;
-  QList<KMenu*> contextMenus();
+  QVector<QMenu*> contextMenus();
 
 public slots:
 
@@ -89,11 +88,9 @@ private:
 
   QList<QAbstractItemView*> mTreeViewList;
 
-  KTreeViewSearchLine *mFilterHeader;
-
-  KMenu *mTimelineMenu;
-  KMenu *mAllMenu;
-  KMenu *mLatestMenu;
+  QMenu *mTimelineMenu;
+  QMenu *mAllMenu;
+  QMenu *mLatestMenu;
 
   int                    mOldToolboxIndex;
   QToolBox               *mToolBox;

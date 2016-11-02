@@ -53,7 +53,7 @@
       </widget>
      </item>
      <item>
-      <widget class="KLineEdit" name="m_nameEdit">
+      <widget class="QLineEdit" name="m_nameEdit">
        <property name="toolTip">
         <string>describing text</string>
        </property>
@@ -135,13 +135,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>m_nameEdit</tabstop>
   <tabstop>m_inpMenge</tabstop>

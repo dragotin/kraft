@@ -172,7 +172,7 @@
                </widget>
               </item>
               <item>
-               <widget class="KPushButton" name="pbRundPreis">
+               <widget class="QPushButton" name="pbRundPreis">
                 <property name="text">
                  <string>round</string>
                 </property>
@@ -208,7 +208,7 @@
                </widget>
               </item>
               <item>
-               <widget class="KComboBox" name="cbMwst">
+               <widget class="QComboBox" name="cbMwst">
                 <item>
                  <property name="text">
                   <string>full</string>
@@ -291,7 +291,7 @@
            <item>
             <layout class="QVBoxLayout" name="_14">
              <item>
-              <widget class="KPushButton" name="m_butAddTime">
+              <widget class="QPushButton" name="m_butAddTime">
                <property name="toolTip">
                 <string>Adds a new time calculation part to the template</string>
                </property>
@@ -301,7 +301,7 @@
               </widget>
              </item>
              <item>
-              <widget class="KPushButton" name="m_butEditTime">
+              <widget class="QPushButton" name="m_butEditTime">
                <property name="toolTip">
                 <string>Edits the current time calculation part</string>
                </property>
@@ -311,7 +311,7 @@
               </widget>
              </item>
              <item>
-              <widget class="KPushButton" name="m_butRemoveTime">
+              <widget class="QPushButton" name="m_butRemoveTime">
                <property name="toolTip">
                 <string>Deletes the current time calculation part</string>
                </property>
@@ -405,7 +405,7 @@
            <item>
             <layout class="QVBoxLayout" name="_18">
              <item>
-              <widget class="KPushButton" name="m_butAddFix">
+              <widget class="QPushButton" name="m_butAddFix">
                <property name="toolTip">
                 <string>adds a new fix calculation part</string>
                </property>
@@ -415,7 +415,7 @@
               </widget>
              </item>
              <item>
-              <widget class="KPushButton" name="m_butEditFix">
+              <widget class="QPushButton" name="m_butEditFix">
                <property name="toolTip">
                 <string>edits the current fix calculation part</string>
                </property>
@@ -425,7 +425,7 @@
               </widget>
              </item>
              <item>
-              <widget class="KPushButton" name="m_butRemoveFix">
+              <widget class="QPushButton" name="m_butRemoveFix">
                <property name="toolTip">
                 <string>deletes the current fix calculation part</string>
                </property>
@@ -519,7 +519,7 @@
            <item>
             <layout class="QVBoxLayout" name="_22">
              <item>
-              <widget class="KPushButton" name="m_butAddMat">
+              <widget class="QPushButton" name="m_butAddMat">
                <property name="toolTip">
                 <string>adds a new material calculation part</string>
                </property>
@@ -529,7 +529,7 @@
               </widget>
              </item>
              <item>
-              <widget class="KPushButton" name="m_butEditMat">
+              <widget class="QPushButton" name="m_butEditMat">
                <property name="toolTip">
                 <string>edits the current material part</string>
                </property>
@@ -539,7 +539,7 @@
               </widget>
              </item>
              <item>
-              <widget class="KPushButton" name="m_butRemoveMat">
+              <widget class="QPushButton" name="m_butRemoveMat">
                <property name="toolTip">
                 <string>deletes the current material calculation part</string>
                </property>
@@ -750,16 +750,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KPushButton</class>
-   <extends>QPushButton</extends>
-   <header>kpushbutton.h</header>
-  </customwidget>
   <customwidget>
    <class>KSqueezedTextLabel</class>
    <extends>QLabel</extends>

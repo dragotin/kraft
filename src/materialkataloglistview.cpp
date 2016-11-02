@@ -1,5 +1,5 @@
 /***************************************************************************
-             brunskataloglistview  - template katalog listview.
+             materialkataloglistview  - template katalog listview.
                              -------------------
     begin                : 2005-07-26
     copyright            : (C) 2005 by Klaas Freitag
@@ -14,12 +14,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qmap.h>
-
-#include <kiconloader.h>
-#include <klocale.h>
+#include <QMap>
+#include <QLocale>
 #include <QDebug>
-#include <kmenu.h>
+#include <QMenu>
+
+#include <KLocalizedString>
 
 #include "matkatalog.h"
 #include "stockmaterial.h"
@@ -28,8 +28,8 @@
 #include "docposition.h"
 #include "kataloglistview.h"
 
-MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
-  : KatalogListView( w )
+MaterialKatalogListView::MaterialKatalogListView(QWidget *parent )
+  : KatalogListView( parent )
 {
   setColumnCount( 6 );
 
@@ -43,7 +43,7 @@ MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
 
   setHeaderLabels( headers );
 
-  contextMenu()->addTitle(i18n("Material Catalog"));
+  contextMenu()->setTitle(i18n("Material Catalog"));
 }
 
 

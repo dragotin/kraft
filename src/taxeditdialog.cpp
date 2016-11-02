@@ -21,8 +21,7 @@
 
 #include <QDialog>
 #include <QDebug>
-#include <kdatewidget.h>
-#include <KConfigGroup>
+
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -36,10 +35,8 @@ TaxEditDialog::TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent )
   setModal( true );
   setWindowTitle( i18n( "Edit Tax Rates" ) );
   QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
   QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
   okButton->setDefault(true);
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
@@ -48,11 +45,8 @@ TaxEditDialog::TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent )
   //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
   mainLayout->addWidget(buttonBox);
 
-
   QWidget *w = new QWidget( this );
-//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
-// Add mainLayout->addWidget(w); if necessary
-
+  mainLayout->addWidget(w);
   mBaseWidget = new Ui::TaxEditBase( );
   mBaseWidget->setupUi( w );
   mBaseWidget->mDateWidget->setDate( QDate::currentDate() );
@@ -63,8 +57,8 @@ TaxEditDialog::TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent )
   mBaseWidget->mFullTax->setRange( 0,100.0 );
   mBaseWidget->mReducedTax->setRange( 0, 100.0 );
 
-  mBaseWidget->mFullTax->setDecimals( 1 );
-  mBaseWidget->mReducedTax->setDecimals( 1 );
+  // FIXME Porting mBaseWidget->mFullTax->setDecimals( 1 );
+  // mBaseWidget->mReducedTax->setDecimals( 1 );
 
   this->model = taxModel;
 

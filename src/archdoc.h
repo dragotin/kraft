@@ -120,7 +120,7 @@ public:
   void setSentOutDate( const QDateTime& dt );
 
 private:
-  void loadPositions( const QString& );
+  void loadItems( const QString& );
   void loadFromDb( dbID );
 
   dbID mArchDocID;

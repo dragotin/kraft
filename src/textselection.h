@@ -21,7 +21,7 @@
 #include <QMap>
 #include <QWidget>
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 #include "kraftdoc.h"
 
@@ -33,8 +33,7 @@ class QMenu;
 class FilterHeader;
 class KPushButton;
 class DocText;
-class KAction;
-class KActionCollection;
+class QAction;
 class QListView;
 class QStringListModel;
 class QTextEdit;
@@ -95,8 +94,7 @@ private:
 
   QMenu             *mMenu;
   QGroupBox         *mGroupBox;
-  KActionCollection *mActions;
-  KAction           *mAcMoveToDoc;
+  QAction           *mAcMoveToDoc;
 };
 
 #endif

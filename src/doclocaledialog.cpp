@@ -24,16 +24,13 @@
 
 #include <QDialog>
 #include <QDebug>
-#include <klocale.h>
-#include <kcombobox.h>
+#include <QLocale>
 #include <klanguagebutton.h>
-#include <ksimpleconfig.h>
-#include <kstandarddirs.h>
-#include <kiconloader.h>
-#include <kvbox.h>
-#include <KConfigGroup>
+#include <QIcon>
 #include <QDialogButtonBox>
 #include <QPushButton>
+
+#include <klocalizedstring.h>
 
 #include "doclocaledialog.h"
 #include "defaultprovider.h"
@@ -112,10 +109,11 @@ void DocLocaleDialog::setLocale( const QString& c, const QString& lang )
 {
   // qDebug () << "Setting country " << c << " and lang " << lang << endl;
   if ( !mLocale ) mLocale = new QLocale( QString::fromLatin1( "kraft" ) );
+#if 0 // FIXME Porting QT5
   KConfig *cfg = KGlobal::config().data();
   mLocale->setCountry( c, cfg );
   mLocale->setLanguage( lang, cfg );
-
+#endif
   loadCountryList();
   loadLanguageList();
 
@@ -130,8 +128,8 @@ void DocLocaleDialog::slotUpdateSample()
   Geld g( 12204.23 );
 
   mLabSample->setText( i18n( "Money: %1\nDate: %2\nDate (short): %3" ).arg( g.toString( mLocale ) )
-                       .arg( mLocale->formatDate( QDate::currentDate() ) )
-                       .arg( mLocale->formatDate( QDate::currentDate(), QLocale::ShortDate ) ) );
+                       .arg( QDate::currentDate().toString())
+                       .arg( QDate::currentDate().toString() ) );
 }
 
 QLocale DocLocaleDialog::locale() const
@@ -146,11 +144,7 @@ void DocLocaleDialog::loadLanguageList()
 
 QStringList DocLocaleDialog::languageList() const
 {
-  QStringList langlist = mLocale->allLanguagesList();
-  QStringList list2;
-
-  for (int i = 0; i < langlist.size(); ++i)
-            list2 << mLocale->languageCodeToName(langlist.at(i));
+  QStringList list2 = mLocale->uiLanguages();
 
   return list2;
 }
@@ -158,20 +152,22 @@ QStringList DocLocaleDialog::languageList() const
 void DocLocaleDialog::loadCountryList()
 {
   //Fixme: Don't just give countrycodes, but this needs some other adjustements aswell
+    QStringList countrylist;
+#if 0 // FIXME Porting
   QStringList countrylist = mLocale->allCountriesList();
   QStringList list2;
 
   for (int i = 0; i < countrylist.size(); ++i)
             list2 << mLocale->countryCodeToName(countrylist.at(i));
-
+#endif
   mCountryButton->addItems(countrylist);
 }
 
 
 void DocLocaleDialog::changedCountry(const QString & code)
 {
-  KConfig *cfg = KGlobal::config().data();
-  mLocale->setCountry(code, cfg );
+  // KConfig *cfg = KGlobal::config().data();
+  // mLocale->setCountry(code, cfg );
 
   // qDebug () << "Country selection changed to " << code << endl;
 
@@ -188,7 +184,7 @@ void DocLocaleDialog::changedCountry(const QString & code)
     if (!name.isEmpty())
       newLanguageList += *it;
   }
-  mLocale->setLanguage( newLanguageList );
+  // mLocale->setLanguage( newLanguageList );
   slotUpdateSample();
 }
 

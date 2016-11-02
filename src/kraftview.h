@@ -32,10 +32,9 @@
 // include files for Qt
 #include <QMap>
 #include <QLabel>
+#include <QLabel>
 
-
-#include <kdialog.h>
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 #include "kraftdoc.h"
 #include "positionviewwidget.h"
@@ -54,8 +53,6 @@ class KVBox;
 class QSplitter;
 class DocPostCard;
 class QTimer;
-class CatalogSelection;
-class KPushButton;
 class DocAssistant;
 class CalcPartList;
 class AddressProvider;
@@ -64,9 +61,7 @@ class KraftDocFooterEdit;
 class Katalog;
 class KraftViewScroll;
 
-using namespace KABC;
-
-class KraftViewBase: public KDialog
+class KraftViewBase: public QDialog
 {
     Q_OBJECT
 public:
@@ -75,8 +70,8 @@ public:
         ReadOnly
     };
 
-    KraftViewBase(QWidget *parent) : KDialog(parent){ };
-    virtual ~KraftViewBase() { };
+    KraftViewBase(QWidget *parent) : QDialog(parent), m_type(ReadWrite) { }
+    virtual ~KraftViewBase() { }
 
     Type type() { return m_type; }
 
@@ -119,7 +114,8 @@ class KraftView : public KraftViewBase
   void setup( DocGuardedPtr doc );
 
   public slots:
-  void slotNewAddress( const Addressee& contact = Addressee(), bool interactive = true );
+  void slotAddressFound(const QString& uid, const KContacts::Addressee &contact);
+  void slotAddresseeFound( const QString& uid, const KContacts::Addressee& contact);
   void redrawDocument( );
   void slotModifiedPositions();
   void slotModifiedHeader();
@@ -154,7 +150,6 @@ class KraftView : public KraftViewBase
   void slotDocTypeChanged( const QString& );
   void slotLanguageSettings();
   void slotPickAddressee();
-  void slotAddresseeFound( const QString&, const KABC::Addressee& );
   void slotTaxComboChanged( int );
 
 signals:
@@ -173,7 +168,7 @@ private:
 
   PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
 
-  QStringList generateLetterHead( Addressee adr );
+  QStringList generateLetterHead(const QString &familyName , const QString &givenName);
 
   KraftViewScroll   *m_positionScroll;
   Ui::DocHeaderEdit *m_headerEdit;
@@ -194,7 +189,7 @@ private:
 
   QLabel        *mDetailHeader;
   QSplitter     *mCSplit;
-  KPushButton   *mCatalogToggle;
+  QPushButton   *mCatalogToggle;
   QLabel        *mHelpLabel;
 
   QWidget        *mSumSpacer;

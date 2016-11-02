@@ -15,9 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <klocale.h>
 #include <QDebug>
-#include <kvbox.h>
 #include <QDialog>
 
 #include <QLabel>
@@ -25,6 +23,8 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
+
+#include <klocalizedstring.h>
 
 #include "materialkatalogview.h"
 #include "materialselectdialog.h"
@@ -40,11 +40,10 @@ MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
   setObjectName( name );
   setModal( true );
   setWindowTitle( i18n("Select Material for Calculation" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
   QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
   okButton->setDefault(true);
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
@@ -53,17 +52,17 @@ MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
   //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
   mainLayout->addWidget(buttonBox);
 
-  KVBox *page = new KVBox( this );
-//PORTING: Verify that widget was added to mainLayout:   setMainWidget( page );
-// Add mainLayout->addWidget(page); if necessary
-  QLabel *label = new QLabel( i18n( "Select Material for Calculation" ),
-                              page);
+  QVBoxLayout *page = new QVBoxLayout;
+  QLabel *label = new QLabel( i18n( "Select Material for Calculation" ));
+  page->addWidget(label);
   label->setObjectName("caption");
 
-  mFilter = new FilterHeader( 0, page );
-  mKatalogListView = new MaterialKatalogListView( page );
-  mFilter->setListView( mKatalogListView );
+  // mFilter = new FilterHeader( 0, page );
+  mKatalogListView = new MaterialKatalogListView;
+  page->addWidget(mKatalogListView);
+  // mFilter->setListView( mKatalogListView );
   mKatalogListView->setCheckboxes( true );
+  mainLayout->addLayout(page);
 
   Katalog *kat = KatalogMan::self()->getKatalog( MaterialKatalogView::MaterialCatalogName );
 

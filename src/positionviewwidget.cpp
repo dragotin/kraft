@@ -18,11 +18,9 @@
 #include <QWidget>
 #include <QStackedWidget>
 #include <QPainter>
-
-#include <kglobal.h>
-#include <ktextedit.h>
-#include <kmenu.h>
-#include <kiconloader.h>
+#include <QTextEdit>
+#include <QMenu>
+#include <QIcon>
 #include <QDebug>
 
 #include "positionviewwidget.h"
@@ -42,7 +40,7 @@ PositionViewWidget::PositionViewWidget()
    mToDelete(false),
    mOrdNumber(0),
    mPositionPtr( 0 ),
-   mExecPopup( new KMenu( this ) ) ,
+   mExecPopup( new QMenu( this ) ) ,
    mStateSubmenu( 0 ),
    mState( Active ),
    mKind( Normal ),
@@ -63,9 +61,9 @@ PositionViewWidget::PositionViewWidget()
   mDiscountPercent->setDecimals( 2 );
 
   pbExec->setCheckable( false );
-  pbExec->setIcon( SmallIcon( "configure") );
+  pbExec->setIcon( QIcon::fromTheme( "configure") );
   pbTagging->setCheckable( false );
-  pbTagging->setIcon( SmallIcon( "flag" ) );
+  pbTagging->setIcon( QIcon::fromTheme( "flag" ) );
 
   connect( m_sbAmount, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
@@ -87,7 +85,7 @@ PositionViewWidget::PositionViewWidget()
   connect( mDiscountPercent, SIGNAL( valueChanged( double ) ), this, SLOT( slotModified() ) );
   connect( mDiscountTag,  SIGNAL( activated( int ) ), this,    SLOT( slotModified() ) );
 
-  mExecPopup->addTitle(i18n("Item Actions") );
+  mExecPopup->setTitle(i18n("Item Actions") );
 
   // state submenu:
   mStateSubmenu = mExecPopup->addMenu(i18n( "Item Kind" ));
@@ -434,10 +432,10 @@ void PositionViewWidget::slotSetState( State state )
     mToDelete = false;
     slotSetEnabled( true );
   } else if( state == New ) {
-    lStatus->setPixmap( SmallIcon( "filenew" ) );
+    lStatus->setPixmap( QIcon::fromTheme("filenew").pixmap(QSize(20,20)));
     lStatus->show();
   } else if( state == Deleted ) {
-    lStatus->setPixmap( SmallIcon( "remove" ) );
+    lStatus->setPixmap( QIcon::fromTheme( "remove" ).pixmap(QSize(20,20)) );
     lStatus->show();
     mToDelete = true;
     slotSetEnabled( false );
@@ -445,7 +443,7 @@ void PositionViewWidget::slotSetState( State state )
     mLockId->setEnabled( false );
     mUnlockId->setEnabled( true );
     slotSetEnabled( false );
-    lStatus->setPixmap( SmallIcon( "encrypted" ) );
+    lStatus->setPixmap( QIcon::fromTheme( "encrypted" ).pixmap(QSize(20,20)));
     lStatus->show();
   }
 }
@@ -616,7 +614,7 @@ void PositionViewWidget::slotSetPositionAlternative()
   lKind->show();
   lKind->setToolTip( i18n( "This is an alternative item.<br/><br/>"
                            " Use the position toolbox to change the item type." ) );
-  lKind->setPixmap( SmallIcon( "kraft_alternative" ) );
+  lKind->setPixmap( QIcon::fromTheme( "kraft_alternative" ).pixmap(QSize(20,20)));
   mKind = Alternative;
   slotRefreshPrice();
 
@@ -633,7 +631,7 @@ void PositionViewWidget::slotSetPositionDemand()
   lKind->setToolTip( i18n( "This item is either completely optional or its "
                            "amount varies depending on the needs.<br/><br/>"
                            "Use the item toolbox to change the item type." ) );
-  lKind->setPixmap( SmallIcon( "kraft_demand" ) );
+  lKind->setPixmap( QIcon::fromTheme("kraft_demand").pixmap(QSize(20,20)));
   mKind = Demand;
   slotRefreshPrice();
 
@@ -703,8 +701,9 @@ void PositionViewWidget::paintEvent ( QPaintEvent* )
       // qDebug() << "color: " << c.red() << ", " << c.green() << ", " << c.blue() << endl;
       // painter->setBrush( c );
 
-      int starty = cnt*share;
-      qDrawShadeLine( painter, 3, starty, 3, starty+share-1, tagTemplate.palette(), false, 1, 4 );
+      // int starty = cnt*share;
+      // Porting: removed this line.
+      // qDrawShadeLine( painter, 3, starty, 3, starty+share-1, tagTemplate.palette(), false, 1, 4 );
       cnt++;
     }
   }

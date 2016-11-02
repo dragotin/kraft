@@ -23,15 +23,12 @@
 #include "matkatalog.h"
 #include "docposition.h"
 #include "filterheader.h"
-#include "brunskatalog.h"
-#include "brunskataloglistview.h"
 
-#include <klocale.h>
+#include <QLocale>
 #include <QDebug>
 #include <QDialog>
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <kmenu.h>
+#include <QAction>
+#include <QMenu>
 
 #include <QSizePolicy>
 #include <QHBoxLayout>
@@ -39,32 +36,30 @@
 #include <QComboBox>
 #include <QStackedWidget>
 #include <QLabel>
-#include <KConfigGroup>
+#include <KLocalizedString>
 
 CatalogSelection::CatalogSelection( QWidget *parent )
   :QWidget( parent ),
    mCatalogSelector( 0 ),
    mWidgets( 0 )
 {
-  QVBoxLayout *layout = new QVBoxLayout();
+  QVBoxLayout *layout = new QVBoxLayout;
 //TODO PORT QT5   layout->setMargin(QDialog::marginHint());
 //TODO PORT QT5   layout->setSpacing(QDialog::spacingHint());
   QHBoxLayout *hb = new QHBoxLayout;
   layout->addLayout(hb);
-  QWidget *spaceEater = new QWidget();
-  spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum ) );
-  hb->addWidget(spaceEater);
+  hb->addStretch();
   QLabel *l = new QLabel( i18n( "Selected &Catalog: " ) );
   hb->addWidget(l);
-  mCatalogSelector = new QComboBox();
+  mCatalogSelector = new QComboBox;
   hb->addWidget(mCatalogSelector);
   connect( mCatalogSelector, SIGNAL( activated( const QString& ) ),
            this,  SLOT( slotSelectCatalog( const QString& ) ) );
   l->setBuddy( mCatalogSelector );
 
-  mListSearchLine = new FilterHeader( 0 ) ;
-  mListSearchLine->showCount( false );
-  layout->addWidget(mListSearchLine);
+  // mListSearchLine = new FilterHeader( 0 ) ;
+  // mListSearchLine->showCount( false );
+  // layout->addWidget(mListSearchLine);
 
   mWidgets  = new QStackedWidget;
   mWidgets->setSizePolicy( QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Expanding ) );
@@ -122,10 +117,9 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
       kat = new TemplKatalog( katName );
     } else if ( type == "MaterialCatalog"  ) {
       kat = new MatKatalog( katName );
-    } else if ( type == "PlantCatalog" ) {
-      kat = new BrunsKatalog( katName );
+    } else {
+      // nothing.
     }
-
     if ( kat ) {
       KatalogMan::self()->registerKatalog( kat );
     } else {
@@ -166,18 +160,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
                                               this, SIGNAL( actionAppendPosition() ) );
         mWidgets->addWidget( matListView );
         mWidgetMap.insert( katName, matListView );
-      } else if ( kat->type() == PlantCatalog ) {
-        BrunsKatalogListView *brunsListView = new BrunsKatalogListView( this );
-        katListView = brunsListView;
-        katListView->setSelectFromMode(); // mode to only select from
-        brunsListView->addCatalogDisplay( katName );
-        brunsListView->contextMenu()->addAction( i18n("Append to Document"),
-                                                this, SIGNAL( actionAppendPosition() ) );
-        mWidgets->addWidget( brunsListView );
-        mWidgetMap.insert(  katName, brunsListView );
-        // qDebug () << "Creating a selection list for catalog " << katName << endl;
       }
-
       if ( katListView ) {
         connect( katListView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
                  this, SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ) );
@@ -187,7 +170,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
     }
     if ( mWidgetMap.contains( katName ) ) {
       mWidgets->setCurrentWidget( mWidgetMap[katName] );
-      mListSearchLine->setListView( mWidgetMap[katName] );
+     // mListSearchLine->setListView( mWidgetMap[katName] );
     }
   }
 }

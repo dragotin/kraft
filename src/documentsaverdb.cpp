@@ -22,7 +22,6 @@
 #include <QSqlError>
 
 // include files for KDE
-#include <klocale.h>
 #include <QDebug>
 
 #include "documentsaverdb.h"

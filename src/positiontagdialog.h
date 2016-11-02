@@ -22,7 +22,7 @@
 
 #include <QMap>
 
-#include <kdialog.h>
+#include <QDialog>
 
 class QWidget;
 class QStringList;
@@ -31,7 +31,7 @@ class QTreeWidgetItem;
 
 class FilterHeader;
 
-class PositionTagDialog: public KDialog
+class PositionTagDialog: public QDialog
 {
   Q_OBJECT
 

@@ -24,16 +24,11 @@
 #include <QTextDocument>
 #include <QHBoxLayout>
 #include <QBoxLayout>
-
-// include files for KDE
-#include <klocale.h>
+#include <QLocale>
 #include <QDebug>
-#include <kiconloader.h>
-#include <kstandarddirs.h>
 #include <QUrl>
-#include <kcalendarsystem.h>
-#include <khtmlview.h>
-#include <KConfigGroup>
+
+#include <KLocalizedString>
 
 #include "version.h"
 #include "kraftdb.h"
@@ -71,7 +66,7 @@ void PortalView::katalogDetails()
   mCatalogBrowser->setStylesheetFile( "catalogview.css" );
   
 
-  b->addWidget( mCatalogBrowser->view() );
+  b->addWidget( mCatalogBrowser );
 //TODO PORT QT5   b->addSpacing( QDialog::marginHint() );
 
   QString html;
@@ -90,7 +85,7 @@ void PortalView::fillCatalogDetails()
 {
   if ( ! mCatalogBrowser ) return;
 
-    QStringList katalogNamen = KatalogMan::self()->allKatalogNames();
+    const QStringList katalogNamen = KatalogMan::self()->allKatalogNames();
     QString html;
 
     html = "<html><h2>" + i18n("Available Catalogs") + "</h2>";
@@ -140,7 +135,7 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
         html += "<td colspan=\"2\"><span style=\"font-size:75%;\">No templates yet.</span></td>";
     } else {
         QLocale *locale = DefaultProvider::self()->locale();
-        QString dateStr = locale->formatDateTime( details.maxModDate );
+        QString dateStr = locale->toString(details.maxModDate);
         html += QString("<td colspan=\"2\"><span style=\"font-size:75%;\">%1 templates in %2 chapters, last modified at %3</span></td>").
                 arg(details.countEntries).arg(details.countChapters).arg(dateStr);
     }
@@ -180,7 +175,7 @@ void PortalView::systemDetails()
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );
   mSystemBrowser = new PortalHtmlView( w );
-  b->addWidget( mSystemBrowser->view() );
+  b->addWidget( mSystemBrowser );
 //TODO PORT QT5   b->addSpacing( QDialog::marginHint() );
   mSystemBrowser->setStylesheetFile( "catalogview.css" ); //, "mucki_en_oS.png",
 
@@ -192,8 +187,8 @@ QString PortalView::systemViewHeader() const
 
   QString html( "" );
 
-  KStandardDirs stdDirs;
-  QString logoFile = stdDirs.findResource( "data",  "kraft/pics/kraftapp_logo.png" );
+  // searching for   "kraft/pics/kraftapp_logo.png"
+  QString logoFile = QStandardPaths::locate( QStandardPaths::AppDataLocation, "pics/kraftapp_logo.png" );
   html += i18n( "<h2>Welcome to Kraft</h2>" );
   html += "<div><table width=\"100%\" border=\"0\"><tr><td>";
   html += i18n("Kraft Version: %1</td>").arg( KRAFT_VERSION );
@@ -205,11 +200,10 @@ QString PortalView::systemViewHeader() const
   }
   html += "</td></tr>";
   html += QString( "<tr><td>Codename: <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
-  QString h1 = DefaultProvider::self()->locale()->country();
+  QString h1 = DefaultProvider::self()->locale()->nativeCountryName();
   html += QString( "<tr><td>" ) + i18n( "Country Setting: " ) +
           QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( DefaultProvider::self()->locale()->country() );
-  h1 = DefaultProvider::self()->locale()->languageCodeToName(
-    DefaultProvider::self()->locale()->language() );
+  h1 = DefaultProvider::self()->locale()->nativeLanguageName();
   html += QString( "<tr><td>" ) + i18n( "Language Setting: " ) +
           QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( DefaultProvider::self()->locale()->language() );
   html += "</table></div>";

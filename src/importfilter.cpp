@@ -19,17 +19,16 @@
 #include <QFile>
 #include <QRegExp>
 #include <QTextStream>
-
-#include <kstandarddirs.h>
-#include <klocale.h>
+#include <QStandardPaths>
+#include <QLocale>
 #include <QDebug>
+
+#include <KLocalizedString>
 
 #include "importfilter.h"
 #include "unitmanager.h"
 #include "defaultprovider.h"
 
-#include <kio/netaccess.h>
-#include <ktemporaryfile.h>
 
 ImportFilter::ImportFilter()
   : mStrict( true )
@@ -41,12 +40,11 @@ bool ImportFilter::readDefinition( const QString& name )
 {
   QString defFile = name;
   if ( ! name.startsWith( "/" ) ) {
-    KStandardDirs stdDirs;
     QString defFileName = QString( name ).toLower();
     QString findFile = kdeStdDirPath() + defFileName;
 
     // qDebug () << "KDE StdDir Path: " << findFile;
-    defFile = stdDirs.findResource( "data", findFile );
+    defFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
     if ( defFile.isEmpty() ) {
       mError = i18n( "Unable to find filter called %1" ).arg( name );
       return false;
@@ -84,7 +82,7 @@ bool ImportFilter::recode( const QString& file, const QString& outfile )
   if ( QFile::exists( cmd ) ) {
     QString command = QString( "%1 -f %2 -t utf-8 -o %3 %4" ).arg( cmd )
                       .arg( mEncoding ).arg( outfile ).arg( file );
-    int result = system( command.toLatin1() );
+    int result = system( command.toLocal8Bit().constData() );
     // qDebug () << "Recode finished with exit code " << result;
     return true;
   } else {
@@ -218,7 +216,7 @@ DocPositionList DocPositionImportFilter::import( const QUrl &inFile )
     f.close();
   }
   if ( copied ) {
-    KIO::NetAccess::del( file, 0 );
+    QFile::remove( file );
   }
   return list;
 }

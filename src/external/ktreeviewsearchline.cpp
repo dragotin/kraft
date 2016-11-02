@@ -35,9 +35,6 @@
 #include <QtGui/QTableView>
 
 #include <kdebug.h>
-#include <kiconloader.h>
-#include <klocale.h>
-#include <ktoolbar.h>
 
 class KTreeViewSearchLine::Private
 {

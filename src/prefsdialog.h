@@ -18,7 +18,7 @@
 #ifndef PREFSDIALOG_H
 #define PREFSDIALOG_H
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 #include <kpagedialog.h>
 #include <QItemDelegate>
@@ -55,8 +55,8 @@ public:
 
   ~PrefsDialog();
 
-  void setMyIdentity( const KABC::Addressee& );
-  KABC::Addressee myIdentity();
+  void setMyIdentity( const KContacts::Addressee& );
+  KContacts::Addressee myIdentity();
 
 protected:
   void readConfig();
@@ -72,7 +72,7 @@ protected slots:
   void slotChangeIdentity();
 
 signals:
-  void newOwnIdentity(const QString&, KABC::Addressee);
+  void newOwnIdentity(const QString&, KContacts::Addressee);
 
 private:
   void docTab();

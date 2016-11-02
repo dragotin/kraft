@@ -20,17 +20,26 @@
 #include "quicksearchwidget.h"
 
 #include <QtGui>
-#include <kabc/addressee.h>
-#include <kabc/contactgroup.h>
+#include <QHeaderView>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QSplitter>
+#include <QPushButton>
+#include <QDialogButtonBox>
+#include <QDebug>
+
+#include <klocalizedstring.h>
+
+#include <kcontacts/addressee.h>
+#include <kcontacts/contactgroup.h>
 #include <kselectionproxymodel.h>
-#include <klocale.h>
 #include <kcheckableproxymodel.h>
 
 #include <models/globalcontactmodel.h>
 
 #include <AkonadiWidgets/etmviewstatesaver.h>
 #include <AkonadiCore/collectionfilterproxymodel.h>
-#include <AkonadiCore/collectionmodel.h>
 #include <akonadi/contact/contactdefaultactions.h>
 #include <akonadi/contact/contacteditordialog.h>
 #include <akonadi/contact/contactgroupeditordialog.h>
@@ -38,22 +47,18 @@
 #include <akonadi/contact/contactsfilterproxymodel.h>
 #include <akonadi/contact/contactstreemodel.h>
 #include <akonadi/contact/contactviewer.h>
-#include <akonadi/contact/standardcontactactionmanager.h>
 #include <AkonadiCore/control.h>
 #include <AkonadiCore/entitymimetypefiltermodel.h>
 #include <AkonadiWidgets/entitytreeview.h>
-#include <akonadi/entitytreeviewstatesaver.h>
-#include <akonadi/itemview.h>
 #include <AkonadiCore/mimetypechecker.h>
 #include <akonadi/contact/contacteditor.h>
-#include <QDebug>
 
 
 namespace {
 static bool isStructuralCollection( const Akonadi::Collection &collection )
 {
   QStringList mimeTypes;
-  mimeTypes << KABC::Addressee::mimeType() << KABC::ContactGroup::mimeType();
+  mimeTypes << KContacts::Addressee::mimeType() << KContacts::ContactGroup::mimeType();
   const QStringList collectionMimeTypes = collection.contentMimeTypes();
   foreach ( const QString &mimeType, mimeTypes ) {
     if ( collectionMimeTypes.contains( mimeType ) ) {
@@ -223,6 +228,7 @@ void AkonadiAddressSelector::setupGui()
 
 void AkonadiAddressSelector::restoreState()
 {
+#if 0
   // collection view
   {
     Akonadi::ETMViewStateSaver *saver = new Akonadi::ETMViewStateSaver;
@@ -240,7 +246,7 @@ void AkonadiAddressSelector::restoreState()
     const KConfigGroup group( KraftSettings::self()->config(), "CollectionViewCheckState" );
     saver->restoreState( group );
   }
-
+#endif
   // restore the central slider
   QList<int> sizes = KraftSettings::self()->addressPickerSplitterSize();
   if( sizes.isEmpty() ) {
@@ -255,6 +261,7 @@ void AkonadiAddressSelector::restoreState()
 
 void AkonadiAddressSelector::saveState()
 {
+#if 0
   // collection view
   {
     Akonadi::ETMViewStateSaver saver;
@@ -288,6 +295,7 @@ void AkonadiAddressSelector::saveState()
     saver.saveState( group );
     group.sync();
   }
+#endif
 }
 
 
@@ -305,7 +313,7 @@ void AkonadiAddressSelector::slotEditContact()
     QModelIndex index = mItemView->selectionModel()->currentIndex();
     if ( index.isValid() ) {
       const Akonadi::Item item = index.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
-      if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
+      if ( item.isValid() && item.hasPayload<KContacts::Addressee>() ) {
         if( mContactsEditor ) delete( mContactsEditor );
         mContactsEditor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::EditMode, this );
         mContactsEditor->setContact( item );
@@ -317,8 +325,8 @@ void AkonadiAddressSelector::slotEditContact()
 
 void AkonadiAddressSelector::slotItemSelected( const Akonadi::Item& item )
 {
-  if ( item.hasPayload<KABC::Addressee>() ) {
-    const KABC::Addressee contact = item.payload<KABC::Addressee>();
+  if ( item.hasPayload<KContacts::Addressee>() ) {
+    const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
     emit addressSelected( contact );
     mButEditContact->setEnabled( true );
   } else {

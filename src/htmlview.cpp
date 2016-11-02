@@ -16,98 +16,70 @@
 #include "htmlview.h"
 
 #include <QFileInfo>
-
-#include <klocale.h>
+#include <QAction>
+#include <QStandardPaths>
 #include <QDebug>
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <kstandarddirs.h>
-#include <krun.h>
-#include <kdirwatch.h>
-
 #include <QFile>
+#include <QWebView>
 
 HtmlView::HtmlView( QWidget *parent )
-  : KHTMLPart( parent ), mZoomStep( 10 )
+    : QWebView( parent ), mZoomStep( 10 )
 {
-  connect( this, SIGNAL( setWindowCaption( const QString & ) ),
-           SLOT( setTitle( const QString & ) ) );
 
-  setJScriptEnabled(false);
-  setJavaEnabled(false);
-  setMetaRefreshEnabled(false);
-  setPluginsEnabled(false);
 }
 
 void HtmlView::clearView()
 {
-  begin();
-  write( QString::null );
-  end();
-
-  setTitle( QString::null );
+    setHtml(QString::null);
+    setTitle( QString::null );
 }
 
 void HtmlView::setInternalUrl( const QString &url )
 {
-  mInternalUrl = url;
+    mInternalUrl = url;
 }
 
 QString HtmlView::internalUrl() const
 {
-  return mInternalUrl;
+    return mInternalUrl;
 }
 
 void HtmlView::setTitle( const QString &title )
 {
-  mTitle = title;
+    mTitle = title;
 }
 
 void HtmlView::setStylesheetFile( const QString &style )
 {
-  QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
-  if( !prjPath.isEmpty() ) {
-    mStyleSheetFile = QString( "%1/styles/%2" ).arg( prjPath ).arg( style );
-  } else {
-    mStyleSheetFile = KStandardDirs::locate( "appdata", style );
-  }
-  QFileInfo fi(mStyleSheetFile);
-  bool ok = fi.exists();
-  // qDebug () << "found this stylefile: " << mStyleSheetFile << ok;
-}
-
-void HtmlView::setupActions( KActionCollection *actionCollection )
-{
-//  mZoomInAction = new KAction( i18n( "Increase Font Sizes" ), "viewmag+",
-//                               KShortcut( "Qt::CTRL++" ), this,
-//                               SLOT( zoomIn() ), actionCollection, "view_zoom_in" );
-  actionCollection->addAction( "view_zoom_in", this, SLOT( zoomIn() ) );
-
-//  mZoomOutAction = new KAction( i18n( "Decrease Font Sizes" ), "viewmag-",
-//                                KShortcut( "Qt::CTRL+-" ), this,
-//                                SLOT( zoomOut() ), actionCollection, "view_zoom_out" );
-  actionCollection->addAction( "view_zoom_out", this, SLOT( zoomOut() ) );
-  updateZoomActions();
+    QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
+    if( !prjPath.isEmpty() ) {
+        mStyleSheetFile = QString( "%1/styles/%2" ).arg( prjPath ).arg( style );
+    } else {
+        mStyleSheetFile = QStandardPaths::locate( QStandardPaths::DataLocation, style );
+    }
+    QFileInfo fi(mStyleSheetFile);
+    bool ok = fi.exists();
+    qDebug () << "found this stylefile: " << mStyleSheetFile << ok;
 }
 
 void HtmlView::zoomIn()
 {
-  setZoomFactor( zoomFactor() + mZoomStep );
-  updateZoomActions();
+    setZoomFactor( zoomFactor() + mZoomStep );
+    updateZoomActions();
 }
 
 void HtmlView::zoomOut()
 {
-  setZoomFactor( zoomFactor() - mZoomStep );
-  updateZoomActions();
+    setZoomFactor( zoomFactor() - mZoomStep );
+    updateZoomActions();
 }
 
 void HtmlView::updateZoomActions()
 {
-  mZoomInAction->setEnabled( zoomFactor() + mZoomStep <= 300 );
-  mZoomOutAction->setEnabled( zoomFactor() - mZoomStep > 100 );
+    mZoomInAction->setEnabled( zoomFactor() + mZoomStep <= 300 );
+    mZoomOutAction->setEnabled( zoomFactor() - mZoomStep > 100 );
 
-  // Prefs::self()->setZoomFactor( zoomFactor() );
+    // Prefs::self()->setZoomFactor( zoomFactor() );
 }
 
 QString HtmlView::locateCSSImages( const QByteArray& line )
@@ -124,10 +96,9 @@ QString HtmlView::locateCSSImages( const QByteArray& line )
             if( !kraftHome.isEmpty() ) {
                 p = QString("%1/src/pics/%2").arg(QString::fromUtf8(kraftHome)).arg(fName);
             } else {
-                KStandardDirs dirs;
                 QString find;
                 find = QString("kraft/pics/%1").arg(fName);
-                p = dirs.findResource("data", find);
+                p = QStandardPaths::locate( QStandardPaths::AppDataLocation, find );
                 if( p.isEmpty() ) {
                     // qDebug () << "ERR: Unable to find resource " << fName;
                 }
@@ -141,65 +112,48 @@ QString HtmlView::locateCSSImages( const QByteArray& line )
     return l;
 }
 
-void HtmlView::writeTopFrame( )
+QString HtmlView::topFrame( )
 {
-  QString t = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
-                       "<html><head><title>%1</title>" ).arg( mTitle );
+    QString t = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
+                         "<html><head><title>%1</title>" ).arg( mTitle );
 
-  if ( ! mStyleSheetFile.isEmpty() ) {
-      QString style;
-      QFile file(mStyleSheetFile);
-      if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-          style = QLatin1String("<style type=\"text/css\">");
-          while (!file.atEnd()) {
-              QString line = locateCSSImages(file.readLine());
-              style += line;
-          }
-          file.close();
-          style += QLatin1String("</style>");
-      }
-      t += style;
-  }
+    if ( ! mStyleSheetFile.isEmpty() ) {
+        QString style;
+        QFile file(mStyleSheetFile);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            style = QLatin1String("<style type=\"text/css\">");
+            while (!file.atEnd()) {
+                QString line = locateCSSImages(file.readLine());
+                style += line;
+            }
+            file.close();
+            style += QLatin1String("</style>");
+        }
+        t += style;
+    }
 
-  write( t );
+    return t;
 }
 
-void HtmlView::writeContent( const QString& c )
+QString HtmlView::bottomFrame()
 {
-  write( c );
-}
+    QString t = "</body>";
 
-void HtmlView::writeBottomFrame()
-{
-  QString t = "</body>";
-
-  write( t );
+    return t;
 }
 
 void HtmlView::displayContent( const QString& content )
 {
-  // qDebug() << "BASE URL: " << mBaseUrl.prettyUrl();
-  // qDebug() << "Stylesheet URL: " << mStyleSheetFile;
-  begin( mBaseUrl );
+    // qDebug() << "BASE URL: " << mBaseUrl.pretyUrl();
+    // qDebug() << "Stylesheet URL: " << mStyleSheetFile;
 
-  // qDebug() << "Show content: " << content;
-
-  writeTopFrame();
-  writeContent( content );
-  writeBottomFrame();
-  end();
-
-}
-
-void HtmlView::showWelcomePage()
-{
-  QString t;
-  displayContent( t );
+    // qDebug() << "Show content: " << content;
+    setHtml( topFrame() + content + bottomFrame(), mBaseUrl );
 }
 
 void HtmlView::setBaseUrl( const QString& base )
 {
 
-  mBaseUrl = QUrl( base );
-  // qDebug () << "Setting base url: " << mBaseUrl.prettyUrl();
+    mBaseUrl = QUrl( base );
+    // qDebug () << "Setting base url: " << mBaseUrl.prettyUrl();
 }

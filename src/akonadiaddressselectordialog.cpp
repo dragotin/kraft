@@ -15,6 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+
 #include "akonadiaddressselector.h"
 #include "akonadiaddressselectordialog.h"
 
@@ -24,7 +29,8 @@ AkonadiAddressSelectorDialog::AkonadiAddressSelectorDialog( QWidget *parent )
     m_addressSelector = new AkonadiAddressSelector(this, false);
     connect(m_addressSelector, SIGNAL(addressSelected(Addressee)),SLOT(slotAddresseeSelected(Addressee)));
 
-//PORTING: Verify that widget was added to mainLayout:     setMainWidget( m_addressSelector );
+//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:     setMainWidget( m_addressSelector );
+// Add mainLayout->addWidget(m_addressSelector); if necessary
 // Add mainLayout->addWidget(m_addressSelector); if necessary
 
     setModal( true );
@@ -49,7 +55,7 @@ void AkonadiAddressSelectorDialog::slotAddresseeSelected(  const Addressee& addr
     m_addressee = addressee;
 }
 
-KABC::Addressee AkonadiAddressSelectorDialog::addressee()
+KContacts::Addressee AkonadiAddressSelectorDialog::addressee()
 {
     return m_addressee;
 }

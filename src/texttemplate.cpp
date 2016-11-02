@@ -17,12 +17,13 @@
 
 #include "texttemplate.h"
 #include "ctemplate/template.h"
-#include <kstandarddirs.h>
-#include <klocale.h>
 #include <QDebug>
-
+#include <QLocale>
 #include <QFile>
 #include <QFileInfo>
+#include <QStandardPaths>
+
+#include <klocalizedstring.h>
 
 #include <string.h>
 
@@ -92,20 +93,20 @@ void TextTemplate::setValue( const QString& dictName, const QString& key, const 
   }
 
   if ( dict )
-    dict->SetValue( key.toAscii().data(), std::string( val.toUtf8() ) );
+    dict->SetValue( key.toAscii().data(), val.toStdString() ); // std::string( val.toUtf8() ) );
 }
 
 void TextTemplate::setValue( const QString& key, const QString& val )
 {
   if ( mStandardDict ) {
-    mStandardDict->SetValue( key.toAscii().data(), std::string( val.toUtf8() ) );
+    mStandardDict->SetValue( key.toAscii().data(), val.toStdString() );
   }
 }
 
 void TextTemplate::setValue( Dictionary ttd, const QString& key, const QString& val )
 {
   if ( ttd.mDict ) {
-    ( ttd.mDict )->SetValue( key.toAscii().data(), std::string( val.toUtf8() ) );
+    ( ttd.mDict )->SetValue( key.toAscii().data(), val.toStdString() );
   }
 }
 
@@ -141,7 +142,7 @@ bool TextTemplate::open()
 
   // qDebug () << "Loading this template source file: " << mFileName << endl;
 
-  Template *tmpl = Template::GetTemplate( std::string( mFileName.toUtf8() ), ctemplate::DO_NOT_STRIP );
+  Template *tmpl = Template::GetTemplate(mFileName.toStdString(), ctemplate::DO_NOT_STRIP );
 
   if ( !tmpl || tmpl->state() != ctemplate::TS_READY ) {
     mErrorString = i18n( "Failed to open template source" );
@@ -167,7 +168,7 @@ QString TextTemplate::expand() const
   // if ( mStandardDict ) {
   //   mStandardDict->Dump();
   // }
-  Template *textTemplate = Template::GetTemplate( std::string( mFileName.toUtf8() ),
+  Template *textTemplate = Template::GetTemplate( mFileName.toStdString(),
                                                   ctemplate::DO_NOT_STRIP );
   if ( textTemplate && mStandardDict) {
     bool errorFree = textTemplate->Expand(&output, mStandardDict );
@@ -186,11 +187,10 @@ QString TextTemplate::findTemplateFile(const QString &filename) const
     return QString::null;
   }
 
-  KStandardDirs stdDirs;
   QString templFileName = filename;
   QString findFile = "kraft/reports/" + templFileName;
 
-  QString tmplFile = stdDirs.findResource( "data", findFile );
+  QString tmplFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile );
 
   if ( tmplFile.isEmpty() ) {
     QByteArray kraftHome = qgetenv("KRAFT_HOME");

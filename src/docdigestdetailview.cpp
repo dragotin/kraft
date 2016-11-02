@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include <QtGui>
-
-#include <khtmlview.h>
-#include <kstandarddirs.h>
 #include <QDebug>
+#include <QHBoxLayout>
+#include <QStandardPaths>
+
+#include <klocalizedstring.h>
 
 #include "docdigest.h"
 #include "docdigestdetailview.h"
@@ -30,25 +31,21 @@
 DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
   : HtmlView( parent )
 {
-
+    connect(this, SIGNAL(linkClicked(QUrl)), this, SLOT(slotLinkClicked(QUrl)));
 }
 
-bool DocDigestHtmlView::urlSelected( const QString &url, int, int,
-                                    const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments &)
+void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
 {
-  // qDebug () << "HtmlView::urlSelected(): " << url << endl;
-  QRegExp rx("#show_last_print\\?id=(\\d+)");
+    QUrlQuery q(url);
+    // Url is like "#show_last_print\\?id=(\\d+)"
 
-  if ( rx.exactMatch( url ) ) {
-    QString idStr = rx.capturedTexts()[0];
-    bool ok;
-    // qDebug () << "Emitting showLastPrint";
-    emit( showLastPrint( dbID( idStr.toInt( &ok ) ) ) );
-    return true;
-  } else {
-    // qDebug () << "unknown action " << url << endl;
-  }
-  return false;
+    QString idStr = q.queryItemValue(QLatin1String("id"));
+
+    QString path = url.path();
+    if( path.endsWith("show_last_print")) {
+        bool ok;
+        emit( showLastPrint( dbID(idStr.toInt(&ok)) ) );
+    }
 }
 
 // #########################################################################################################
@@ -57,6 +54,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
     QWidget(parent)
 {
   QHBoxLayout *hbox = new QHBoxLayout;
+
   hbox->setMargin(0);
   setLayout( hbox );
   mHtmlCanvas = new DocDigestHtmlView( this );
@@ -64,8 +62,8 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   connect( mHtmlCanvas, SIGNAL(showLastPrint( const dbID& )),
            this, SIGNAL( showLastPrint( const dbID& ) ) );
 
-  QString fi = KStandardDirs::locate( "data", "kraft/reports/images/docdigestdetailview/kraft_customer.png" );
-
+  QString fi = QStandardPaths::locate( QStandardPaths::GenericDataLocation,
+                                     "kraft/reports/images/docdigestdetailview/kraft_customer.png");
   QFileInfo info(fi);
   if( info.exists() ) {
     // qDebug () << "Setting image base for docdigestDetailView: " << info.dir().absolutePath();
@@ -79,7 +77,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
       }
   }
 
-  hbox->addWidget( mHtmlCanvas->view() );
+  hbox->addWidget( mHtmlCanvas);
 }
 
 #define DOCDIGEST_TAG
@@ -89,12 +87,11 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
   // qDebug () << "Showing details about this doc: " << digest.id();
 
   if( mTemplFile.isEmpty() ) {
-    KStandardDirs stdDirs;
     // QString templFileName = QString( "kraftdoc_%1_ro.trml" ).arg( doc->docType() );
     QString templFileName = QString( "docdigest.trml" );
     QString findFile = "kraft/reports/" + templFileName;
 
-    QString tmplFile = stdDirs.findResource( "data", findFile );
+    QString tmplFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
 
     if ( tmplFile.isEmpty() ) {
         QByteArray kraftHome = qgetenv("KRAFT_HOME");
@@ -132,10 +129,10 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT_LABEL"), i18n("Project"));
   }
 
-  tmpl.setValue( "URL", mHtmlCanvas->baseURL().prettyUrl());
+  // tmpl.setValue( "URL", mHtmlCanvas->baseURL().prettyUrl());
   tmpl.setValue( DOCDIGEST_TAG( "CUSTOMER_LABEL" ), i18n("Customer"));
 
-  KABC::Addressee addressee = digest.addressee();
+  KContacts::Addressee addressee = digest.addressee();
   QString adr = digest.clientAddress();
   adr.replace('\n', "<br/>" );
 
@@ -155,31 +152,31 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_ADDRESS" ), digest.clientAddress() );
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_NAME"), addressee.realName() );
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_ORGANISATION"), addressee.organization() );
-    tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_URL"), addressee.url().prettyUrl() );
+    tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_URL"), addressee.url().toString() );
     tmpl.setValue( "CLIENT_ADDRESS_SECTION", DOCDIGEST_TAG( "CLIENT_EMAIL"), addressee.preferredEmail() );
 
-    KABC::Address clientAddress;
-    clientAddress = addressee.address( KABC::Address::Pref );
+    KContacts::Address clientAddress;
+    clientAddress = addressee.address( KContacts::Address::Pref );
     QString addressType = i18n("preferred address");
 
     if( clientAddress.isEmpty() ) {
-      clientAddress = addressee.address( KABC::Address::Home );
+      clientAddress = addressee.address( KContacts::Address::Home );
       addressType = i18n("home address");
     }
     if( clientAddress.isEmpty() ) {
-      clientAddress = addressee.address( KABC::Address::Work );
+      clientAddress = addressee.address( KContacts::Address::Work );
       addressType = i18n("work address");
     }
     if( clientAddress.isEmpty() ) {
-      clientAddress = addressee.address( KABC::Address::Postal );
+      clientAddress = addressee.address( KContacts::Address::Postal );
       addressType = i18n("postal address");
     }
     if( clientAddress.isEmpty() ) {
-      clientAddress = addressee.address( KABC::Address::Intl );
+      clientAddress = addressee.address( KContacts::Address::Intl );
       addressType = i18n("international address");
     }
     if( clientAddress.isEmpty() ) {
-      clientAddress = addressee.address( KABC::Address::Dom );
+      clientAddress = addressee.address( KContacts::Address::Dom );
       addressType = i18n("domestic address");
     }
 

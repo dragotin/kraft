@@ -17,20 +17,10 @@
 
 // include files for QT
 #include <QDir>
-#include <QPrinter>
 #include <QPainter>
 #include <QLayout>
-
-// include files for KDE
-#include <kiconloader.h>
-#include <kmessagebox.h>
-#include <kfiledialog.h>
-#include <kmenubar.h>
-#include <kstatusbar.h>
-#include <klocale.h>
-#include <kconfig.h>
-#include <kstandardaction.h>
 #include <QDebug>
+#include <QMessageBox>
 
 // application specific includes
 #include "katalogview.h"
@@ -144,13 +134,15 @@ void TemplKatalogView::slDeleteTemplate()
     FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
     if( currTempl ) {
       int id = currTempl->getTemplID();
-      if( KMessageBox::questionYesNo( this,
-                                     i18n( "Do you really want to delete the template from the catalog?" ),
-                                     i18n( "Delete Template" ),
-                                     KStandardGuiItem::yes(), KStandardGuiItem::no(), "DeleteTemplate" )
-          == KMessageBox::Yes )
-      {
+      QMessageBox msgBox;
+      msgBox.setText(i18n( "Do you really want to delete the template from the catalog?" ));
 
+      msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+      msgBox.setDefaultButton(QMessageBox::Ok);
+      int result = msgBox.exec();
+
+      if( result == QMessageBox::Ok)
+      {
         // qDebug () << "Delete item with id " << id;
         TemplKatalog *k = static_cast<TemplKatalog*>( getKatalog( m_katalogName ) );
 

@@ -17,11 +17,9 @@
 
 #include "kraftdocheaderedit.h"
 
-#include <kdatewidget.h>
-#include <kcombobox.h>
-#include <klocale.h>
+#include <KLocalizedString>
+#include <QLocale>
 #include <QDebug>
-
 #include <QLayout>
 #include <QComboBox>
 

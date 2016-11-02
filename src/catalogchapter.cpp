@@ -19,7 +19,6 @@
 #include <QtGui>
 #include <QtSql>
 
-#include <kiconloader.h>
 #include <QDebug>
 
 #include "catalogchapter.h"
@@ -88,16 +87,6 @@ dbID CatalogChapter::parentId() const
 void CatalogChapter::setParentId( const dbID &id )
 {
   mParentId = id;
-}
-
-QPixmap CatalogChapter::icon() const
-{
-  return SmallIcon("folder-documents");
-}
-
-void CatalogChapter::setIcon( const QPixmap & )
-{
-  // do nothing for now
 }
 
 int CatalogChapter::sortKey() const

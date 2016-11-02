@@ -19,14 +19,11 @@
 #include <QComboBox>
 #include <QWidget>
 #include <QLabel>
-
+#include <QLocale>
 #include <QDialog>
 #include <QDebug>
-#include <klocale.h>
-#include <kcombobox.h>
-#include <ktextedit.h>
-#include <klineedit.h>
-#include <KConfigGroup>
+#include <QTextEdit>
+#include <QLineEdit>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -53,12 +50,10 @@ TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
 
-  QWidget *mainWidget = new QWidget( this );
-//PORTING: Verify that widget was added to mainLayout:   setMainWidget( mainWidget );
-// Add mainLayout->addWidget(mainWidget); if necessary
+  //PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( mainWidget );
+  // Add mainLayout->addWidget(mainWidget); if necessary
+  // Add mainLayout->addWidget(mainWidget); if necessary
 
   mBaseWidget = new Ui::TextEditBase;
   mBaseWidget->setupUi( mainWidget );
@@ -67,6 +62,8 @@ TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
   QString h = i18n( "Edit %1 Template" ).arg( DocText::textTypeToString( docPart  ) );
 
   mBaseWidget->dmHeaderText->setText( h );
+
+  mainLayout->addWidget(buttonBox);
 }
 
 TextEditDialog::~TextEditDialog()

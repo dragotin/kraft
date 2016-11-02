@@ -18,19 +18,19 @@
 #ifndef AKONADIADDRESSSELECTORDIALOG_H
 #define AKONADIADDRESSSELECTORDIALOG_H
 
-#include <kdialog.h>
-#include <kabc/addressee.h>
+#include <QDialog>
+#include <kcontacts/addressee.h>
 
 class AkonadiAddressSelector;
 
-using namespace KABC;
+using namespace KContacts;
 
-class AkonadiAddressSelectorDialog : public KDialog
+class AkonadiAddressSelectorDialog : public QDialog
 {
     Q_OBJECT
 public:
     AkonadiAddressSelectorDialog( QWidget *parent = 0 );
-    KABC::Addressee addressee();
+    KContacts::Addressee addressee();
 
 private slots:
     void slotAddresseeSelected(const Addressee &);

@@ -20,16 +20,16 @@
 #define FILTERHEADER_H
 
 #include <QWidget>
+#include <QLineEdit>
 
 #include "kraftcat_export.h"
-
-#include <ktreewidgetsearchline.h>
 
 class QTreeWidget;
 class QLabel;
 class QString;
 
-class KRAFTCAT_EXPORT CountingSearchLine : public KTreeWidgetSearchLine
+
+class KRAFTCAT_EXPORT CountingSearchLine : public QLineEdit
 {
     Q_OBJECT
   public:

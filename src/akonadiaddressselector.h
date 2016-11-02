@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 class QLabel;
 class QPushButton;
@@ -39,7 +39,7 @@ class ItemView;
 class StandardContactActionManager;
 }
 
-using namespace KABC;
+using namespace KContacts;
 
 class QTreeView;
 class QuickSearchWidget;

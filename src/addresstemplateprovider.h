@@ -21,9 +21,9 @@
 
 #include "templateprovider.h"
 #include "doctext.h"
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
-using namespace KABC;
+using namespace KContacts;
 
 class AddressTemplateProvider : public TemplateProvider
 {

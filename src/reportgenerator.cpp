@@ -24,13 +24,12 @@
 #include <QTextDocument>
 #include <QApplication>
 #include <QTextCodec>
-
+#include <QStandardPaths>
+#include <QMessageBox>
 #include <QDebug>
-#include <kstandarddirs.h>
-#include <ktemporaryfile.h>
 #include <QUrl>
-#include <kmessagebox.h>
-#include <akonadi/contact/contactsearchjob.h>
+
+#include <KLocalizedString>
 
 #include "reportgenerator.h"
 #include "kraftdoc.h"
@@ -48,9 +47,10 @@
 #include "doctype.h"
 #include "addressprovider.h"
 
+Q_GLOBAL_STATIC(ReportGenerator, mSelf)
+
 ReportGenerator *ReportGenerator::self()
 {
-  K_GLOBAL_STATIC(ReportGenerator, mSelf);
   return mSelf;
 }
 
@@ -60,15 +60,15 @@ ReportGenerator::ReportGenerator()
   connect( this, SIGNAL( templateGenerated( const QString& )),
            this, SLOT( slotConvertTemplate( const QString& )));
 
-  mProcess.setOutputChannelMode( KProcess::SeparateChannels );
+  // mProcess.setOutputChannelMode( KProcess::SeparateChannels );
   connect( &mProcess, SIGNAL( finished( int ) ),this, SLOT( trml2pdfFinished( int ) ) );
   connect( &mProcess, SIGNAL( readyReadStandardOutput()), this, SLOT( slotReceivedStdout() ) );
   connect( &mProcess, SIGNAL( readyReadStandardError()), this, SLOT( slotReceivedStderr() ) );
   connect( &mProcess, SIGNAL( error ( QProcess::ProcessError )), this, SLOT( slotError( QProcess::ProcessError)));
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee& )),
-           this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& ) ) );
+  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KContacts::Addressee& )),
+           this, SLOT( slotAddresseeFound( const QString&, const KContacts::Addressee& ) ) );
 
   connect( mAddressProvider, SIGNAL( finished(int) ),
            this, SLOT( slotAddresseeSearchFinished(int)) );
@@ -98,8 +98,7 @@ void ReportGenerator::slotConvertTemplate( const QString& templ )
   // qDebug() << "Report BASE:\n" << templ;
 
   if ( ! templ.isEmpty() ) {
-    KTemporaryFile temp;
-    temp.setSuffix( ".trml" );
+    QTemporaryFile temp;
     temp.setAutoRemove( false );
 
     if ( temp.open() ) {
@@ -131,12 +130,14 @@ QString ReportGenerator::findTemplate( const QString& type )
 {
   DocType dType( type );
 
-  QString tmplFile = dType.templateFile( mArchDoc->locale()->country() );
+  QString tmplFile = dType.templateFile( QLocale::countryToString(mArchDoc->locale()->country()) );
 
   if ( tmplFile.isEmpty() ) {
-    KMessageBox::error( 0, i18n("A document template named %1 could not be loaded. "
-                                "Please check the installation." ).arg( dType.templateFile() ) ,
-                        i18n( "Template not found" ) );
+      QMessageBox msgBox;
+      msgBox.setText(i18n("A document template named %1 could not be loaded. ").arg(dType.templateFile()));
+      msgBox.setInformativeText(i18n("Please check your installation!"));
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.exec();
   }
 
   mMergeIdent = dType.mergeIdent();
@@ -161,12 +162,12 @@ void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
   }
 }
 
-void ReportGenerator::slotAddresseeFound( const QString&, const KABC::Addressee& contact )
+void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addressee& contact )
 {
   mCustomerContact = contact;
 }
 
-void ReportGenerator::setMyContact( const KABC::Addressee& contact )
+void ReportGenerator::setMyContact( const KContacts::Addressee& contact )
 {
   myContact = contact;
 }
@@ -188,9 +189,13 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   TextTemplate tmpl( tmplFile );
   if( !tmpl.open() ) {
       // qDebug () << "ERROR: Unable to open document template " << tmplFile;
-      KMessageBox::error( 0, i18n("The template file could not be opened: %1\n"
-                                  "Please check the setup and the doc type configuration.").arg(tmplFile),
-                          i18n("Template Error") );
+      QMessageBox msgBox;
+      msgBox.setText(i18n("The template file could not be opened: %1\n ").arg(tmplFile));
+      msgBox.setInformativeText(i18n("Please check the setup and the doc type configuration."));
+      msgBox.setWindowTitle(i18n("Template Error"));
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.exec();
+
       return;
   }
 
@@ -243,7 +248,8 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
       prec = num.length() - (1+num.lastIndexOf( QChar('.') ) );
     }
     // qDebug() << "**** " << num << " has precision " << prec;
-    h = mArchDoc->locale()->formatNumber( amount, prec );
+
+    h = mArchDoc->locale()->toString( amount, prec );
 
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
     tmpl.setValue( "POSITIONS", "POS_UNIT", escapeTrml2pdfXML( pos.unit() ) );
@@ -289,16 +295,15 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
     tmpl.createDictionary( "REDUCED_TAX_ITEMS" );
     tmpl.setValue( "REDUCED_TAX_ITEMS", "COUNT", QString::number( reducedTaxCnt ));
-    tmpl.setValue( "REDUCED_TAX_ITEMS", "TAX", mArchDoc->locale()->formatNumber( mArchDoc->reducedTax()) );
+    tmpl.setValue( "REDUCED_TAX_ITEMS", "TAX", mArchDoc->locale()->toString( mArchDoc->reducedTax()) );
 
     tmpl.createDictionary( "FULL_TAX_ITEMS" );
     tmpl.setValue( "FULL_TAX_ITEMS", "COUNT", QString::number( fullTaxCnt ));
-    tmpl.setValue( "FULL_TAX_ITEMS", "TAX", mArchDoc->locale()->formatNumber( mArchDoc->tax()) );
+    tmpl.setValue( "FULL_TAX_ITEMS", "TAX", mArchDoc->locale()->toString( mArchDoc->tax()) );
   }
 
   /* now replace stuff in the whole document */
-  tmpl.setValue( TAG( "DATE" ), mArchDoc->locale()->formatDate(
-                   mArchDoc->date(), QLocale::ShortDate ) );
+  tmpl.setValue( TAG( "DATE" ), mArchDoc->locale()->toString(mArchDoc->date(), QLocale::NarrowFormat) );
   tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( mArchDoc->docType() ) );
   tmpl.setValue( TAG( "ADDRESS" ), escapeTrml2pdfXML( mArchDoc->address() ) );
 
@@ -314,13 +319,13 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   tmpl.setValue( TAG( "BRUTTOSUM" ), mArchDoc->bruttoSum().toString( mArchDoc->locale() ) );
   tmpl.setValue( TAG( "NETTOSUM" ),  mArchDoc->nettoSum().toString( mArchDoc->locale() ) );
 
-  h = mArchDoc->locale()->formatNumber( mArchDoc->tax() );
+  h = mArchDoc->locale()->toString( mArchDoc->tax() );
   // qDebug () << "Tax in archive document: " << h;
   if ( mArchDoc->reducedTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_SUM" ),
       mArchDoc->reducedTaxSum().toString( mArchDoc->locale() ) );
-    h = mArchDoc->locale()->formatNumber( mArchDoc->reducedTax() );
+    h = mArchDoc->locale()->toString( mArchDoc->reducedTax() );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX" ), h );
     tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
   }
@@ -328,12 +333,12 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
     tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_SUM" ),
       mArchDoc->fullTaxSum().toString( mArchDoc->locale() ) );
-    h = mArchDoc->locale()->formatNumber( mArchDoc->tax() );
+    h = mArchDoc->locale()->toString( mArchDoc->tax() );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX" ), h );
     tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
   }
 
-  h = mArchDoc->locale()->formatNumber( mArchDoc->tax() );
+  h = mArchDoc->locale()->toString( mArchDoc->tax() );
   tmpl.setValue( TAG( "VAT" ), h );
 
   tmpl.setValue( TAG( "VATSUM" ), mArchDoc->taxSum().toString( mArchDoc->locale() ) );
@@ -348,7 +353,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
 #define ADDRESS_TAG( PREFIX, TAG ) QString("%1_%2").arg( PREFIX ).arg( TAG )
 
-void ReportGenerator::contactToTemplate( TextTemplate *tmpl, const QString& prefix, const KABC::Addressee& contact )
+void ReportGenerator::contactToTemplate( TextTemplate *tmpl, const QString& prefix, const KContacts::Addressee& contact )
 {
   if( contact.isEmpty() ) return;
 
@@ -358,20 +363,20 @@ void ReportGenerator::contactToTemplate( TextTemplate *tmpl, const QString& pref
     co = contact.realName();
   }
   tmpl->setValue( ADDRESS_TAG( prefix, "ORGANISATION" ), escapeTrml2pdfXML( co ) );
-  tmpl->setValue( ADDRESS_TAG( prefix, "URL" ),   escapeTrml2pdfXML( contact.url().prettyUrl() ) );
+  tmpl->setValue( ADDRESS_TAG( prefix, "URL" ),   escapeTrml2pdfXML( contact.url().toString() ) );
   tmpl->setValue( ADDRESS_TAG( prefix, "EMAIL" ), escapeTrml2pdfXML( contact.preferredEmail() ) );
-  tmpl->setValue( ADDRESS_TAG( prefix, "PHONE" ), escapeTrml2pdfXML( contact.phoneNumber( KABC::PhoneNumber::Work ).number() ) );
-  tmpl->setValue( ADDRESS_TAG( prefix, "FAX" ),   escapeTrml2pdfXML( contact.phoneNumber( KABC::PhoneNumber::Fax ).number() ) );
-  tmpl->setValue( ADDRESS_TAG( prefix, "CELL" ),  escapeTrml2pdfXML( contact.phoneNumber( KABC::PhoneNumber::Cell ).number() ) );
+  tmpl->setValue( ADDRESS_TAG( prefix, "PHONE" ), escapeTrml2pdfXML( contact.phoneNumber( KContacts::PhoneNumber::Work ).number() ) );
+  tmpl->setValue( ADDRESS_TAG( prefix, "FAX" ),   escapeTrml2pdfXML( contact.phoneNumber( KContacts::PhoneNumber::Fax ).number() ) );
+  tmpl->setValue( ADDRESS_TAG( prefix, "CELL" ),  escapeTrml2pdfXML( contact.phoneNumber( KContacts::PhoneNumber::Cell ).number() ) );
 
-  KABC::Address address;
-  address = contact.address( KABC::Address::Pref );
+  KContacts::Address address;
+  address = contact.address( KContacts::Address::Pref );
   if( address.isEmpty() )
-    address = contact.address(KABC::Address::Work );
+    address = contact.address(KContacts::Address::Work );
   if( address.isEmpty() )
-    address = contact.address(KABC::Address::Home );
+    address = contact.address(KContacts::Address::Home );
   if( address.isEmpty() )
-    address = contact.address(KABC::Address::Postal );
+    address = contact.address(KContacts::Address::Postal );
 
   tmpl->setValue( ADDRESS_TAG( prefix, "POSTBOX" ),
                   escapeTrml2pdfXML( address.postOfficeBox() ) );
@@ -428,14 +433,14 @@ QStringList ReportGenerator::findTrml2Pdf( )
   mHavePdfMerge = false;
 
   if ( rmlbinDefault == rmlbin  ) {
-    QString ermlpy = KStandardDirs::locate( "data", "kraft/tools/erml2pdf.py" );
+    QString ermlpy = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kraft/tools/erml2pdf.py" );
     // qDebug () << "Ermlpy: " << ermlpy;
     if( ! ermlpy.isEmpty() ) {
       // need the python interpreter
       // First check for python2 in python3 times. 
-      QString python = KStandardDirs::findExe("python2");
+      QString python = QStandardPaths::findExecutable(QLatin1String("python2"));
       if( python.isEmpty() ) {
-	python = KStandardDirs::findExe("python");
+        python = QStandardPaths::findExecutable(QLatin1String("python"));
       }
       if( python.isEmpty() ) {
         qCritical() << "ERR: Unable to find python, thats a problem";
@@ -458,7 +463,7 @@ QStringList ReportGenerator::findTrml2Pdf( )
           }
       } else {
           // tool erml2pdf.py not found. Try trml2pdf_kraft.sh for legacy reasons
-          QString trml2pdf = KStandardDirs::findExe("trml2pdf_kraft.sh");
+          QString trml2pdf = QStandardPaths::findExecutable(QLatin1String("trml2pdf_kraft.sh"));
           if( trml2pdf.isEmpty() ) {
               // qDebug () << "Could not find trml2pdf_kraft.sh";
           } else {
@@ -470,7 +475,7 @@ QStringList ReportGenerator::findTrml2Pdf( )
     }
 
     if ( ! mHavePdfMerge ) {
-      QString trml2pdf = KStandardDirs::findExe( "trml2pdf");
+      QString trml2pdf = QStandardPaths::findExecutable(QLatin1String("trml2pdf"));
       if( trml2pdf.isEmpty() ) {
         // qDebug () << "trml2pdf is also empty, we can not convert rml. Debug!";
       } else {
@@ -489,32 +494,33 @@ QStringList ReportGenerator::findTrml2Pdf( )
 
 void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID, const QString& archId )
 {
-  mProcess.clearProgram();
+    mErrors = QString();
+    // findTrml2Pdf returns a list of command line parts for the converter, such as
+    // /usr/bin/pyhton /usr/local/share/erml2pdf.py
+    QStringList rmlbin = findTrml2Pdf();
 
-  QStringList prg;
-
-  mErrors = QString();
-  // findTrml2Pdf returns a list of command line parts for the converter, such as
-  // /usr/bin/pyhton /usr/local/share/erml2pdf.py
-  QStringList rmlbin = findTrml2Pdf();
-
-  if ( ! rmlbin.size() ) {
-
-    KMessageBox::error( 0, i18n("The utility to create PDF from the rml file could not be found, "
-                                "but is required to create documents."
-                                "Please make sure the package is installed accordingly." ),
-                        i18n( "Document Generation Error" ) );
-    return;
-  }
+    if ( ! rmlbin.size() ) {
+        QMessageBox msgBox;
+        msgBox.setText(i18n("The utility to create PDF from the rml file could not be found, "
+                            "but is required to create documents."));
+        msgBox.setInformativeText(i18n("Please make sure the package is installed accordingly."));
+        msgBox.setWindowTitle(i18n("Document Generation Error"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
+        return;
+    }
 
   QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
 
   if ( mHavePdfMerge && mMergeIdent != "0" &&
        ( mWatermarkFile.isEmpty() || !QFile::exists( mWatermarkFile ) ) ) {
-    KMessageBox::error( 0, i18n("The Watermark file to merge with the document could not be found. "
-                                "Merge is going to be disabled." ),
-                        i18n( "Watermark Error" ) );
-    mMergeIdent = "0";
+      QMessageBox msgBox;
+      msgBox.setText(i18n("The Watermark file to merge with the document could not be found. "
+                          "Merge is going to be disabled."));
+      msgBox.setWindowTitle(i18n("Watermark Error"));
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.exec();
+      mMergeIdent = "0";
   }
 
   QString outputDir = ArchiveMan::self()->pdfBaseDir();
@@ -532,32 +538,32 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     }
   }
 
-  prg << rmlbin;
+  const QString prg = rmlbin.join(' ');
 
+  QStringList args;
   if( !haveErml ) {
     if ( mHavePdfMerge ) {
-        prg << mMergeIdent;
+        args << mMergeIdent;
     }
-    prg << rmlFile;
+    args << rmlFile;
     if ( mHavePdfMerge && mMergeIdent != "0" ) {
-      prg << mWatermarkFile;
+      args << mWatermarkFile;
     }
   } else {
     // qDebug () << "Erml2pdf available!";
     if ( mHavePdfMerge && mMergeIdent != "0" ) {
-      prg << "-m" << mMergeIdent;
-      prg << "-w" << mWatermarkFile;
+      args << "-m" << mMergeIdent;
+      args << "-w" << mWatermarkFile;
     }
-    prg << rmlFile;
+    args << rmlFile;
   }
 
   mFile.setFileName( mFile.fileName() );
   mOutputSize = 0;
   if ( mFile.open( QIODevice::WriteOnly ) ) {
     mProcess.setProgram( prg );
+    mProcess.setArguments(args);
     mTargetStream.setDevice( &mFile );
-    QStringList args = mProcess.program();
-    // qDebug () << "* rml2pdf Call-Arguments: " << args;
 
     mProcess.start( );
   }
@@ -567,7 +573,7 @@ void ReportGenerator::slotReceivedStdout( )
 {
   QByteArray arr  = mProcess.readAllStandardOutput();
   mOutputSize += arr.size();
-  mTargetStream.writeRawData( arr, arr.size());
+  mTargetStream.writeRawData( arr.data(), arr.size());
 }
 
 void ReportGenerator::slotReceivedStderr( )
@@ -602,11 +608,13 @@ void ReportGenerator::trml2pdfFinished( int exitStatus)
 
         if ( mErrors.isEmpty() ) mErrors = i18n( "Unknown problem." );
         // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
-        KMessageBox::detailedError ( 0,
-                                     i18n( "Could not generate the pdf file. The pdf creation script failed." ),
-                                     mErrors,
-                                     i18n( "PDF Generation Error" ) );
-        mErrors = QString();
+        QMessageBox msgBox;
+        msgBox.setText(i18n("Could not generate the pdf file. The pdf creation script failed.") );
+        msgBox.setDetailedText(i18n("Errors: %1").arg(mErrors));
+        msgBox.setWindowTitle(i18n("PDF Generation Error"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
+        mErrors.clear();
     }
     QApplication::restoreOverrideCursor();
 

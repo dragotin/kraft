@@ -20,7 +20,7 @@
 #ifndef DOCLOCALE_H
 #define DOCLOCALE_H
 
-#include <kdialog.h>
+#include <QDialog>
 //Added by qt3to4:
 #include <QLabel>
 
@@ -32,7 +32,7 @@ class KLanguageButton;
 class QLabel;
 class QLocale;
 
-class DocLocaleDialog : public KDialog
+class DocLocaleDialog : public QDialog
 {
   Q_OBJECT
 

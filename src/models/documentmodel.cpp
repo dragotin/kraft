@@ -19,14 +19,15 @@
 #include <QSqlTableModel>
 #include <QDate>
 #include <QSqlQuery>
+#include <QLocale>
+#include <QFont>
+#include <QFontMetrics>
+#include <QDebug>
 
 //KDE includes
-#include <kglobal.h>
-#include <kdebug.h>
-#include <klocale.h>
-#include <kabc/addressbook.h>
-#include <kabc/addressee.h>
-#include <kabc/stdaddressbook.h>
+#include <klocalizedstring.h>
+
+#include <kcontacts/addressee.h>
 
 //Kraft includes
 #include "documentmodel.h"
@@ -87,11 +88,11 @@ void DocumentModel::setQueryAgain()
             "FROM document ORDER BY date DESC");
 }
 
-void DocumentModel::slotAddresseeFound( const QString& uid, const KABC::Addressee & addressee )
+void DocumentModel::slotAddresseeFound( const QString& uid, const KContacts::Addressee & addressee )
 {
   if( addressee.isEmpty() ) {
-    kDebug() << "No address found for uid " << uid;
-    mAddresses[uid] = KABC::Addressee();
+    qDebug() << "No address found for uid " << uid;
+    mAddresses[uid] = KContacts::Addressee();
   } else {
     mAddresses[uid] = addressee;
   }
@@ -107,16 +108,16 @@ QVariant DocumentModel::headerData( int section, Qt::Orientation /* orientation 
 
 QVariant DocumentModel::data(const QModelIndex &idx, int role) const
 {   
+    QLocale locale;
+
   if(role == Qt::DisplayRole)
   {
     if(idx.column() == Document_LastModified ) {
-      KLocale *locale = KGlobal::locale();
       QDateTime date = QSqlQueryModel::data(idx, role).toDateTime();
-      return locale->formatDateTime( date, KLocale::ShortDate );
+      return locale.toString( date, QLocale::ShortFormat );
     } else if( idx.column() == Document_CreationDate ) {
-      KLocale *locale = KGlobal::locale();
       QDate date = QSqlQueryModel::data( idx, role ).toDate();
-      return locale->formatDate( date, KLocale::ShortDate );
+      return locale.toString( date, QLocale::ShortFormat );
     } else if(idx.column() == Document_ClientId ) {
       const QString uid = QSqlQueryModel::data( idx, role ).toString();
       return uid;
@@ -124,7 +125,7 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
       QModelIndex uidIdx = idx.sibling( idx.row(), Document_ClientId );
       const QString uid = QSqlQueryModel::data( uidIdx, role ).toString();
 
-      // kDebug() << "Checking for UID " << uid;
+      // Debug() << "Checking for UID " << uid;
       if( uid.isEmpty() ) return "";
 
       if( mAddresses.contains( uid ) ) {
@@ -134,7 +135,7 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
         }
         const QString realName = mAddresses.value(uid).realName();
 
-        // kDebug() << "returning " << realName;
+        // qDebug() << "returning " << realName;
         return realName;
       } else {
         mAddressProvider->getAddressee( uid );
@@ -180,7 +181,7 @@ DocDigest DocumentModel::digest( const QModelIndex& index ) const
     digest.setAddressee( mAddresses.value( clientId ));
   }
 
-  kDebug() << "Querying archdocs for document ident " << ident;
+  qDebug() << "Querying archdocs for document ident " << ident;
   QSqlQuery query("SELECT archDocID, ident, printDate, state FROM archdoc WHERE ident='" + ident +"' ORDER BY printDate DESC" );
   query.exec();
 

@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include <QDebug>
-#include <klocale.h>
 
 #include "footertemplateprovider.h"
 #include "texteditdialog.h"

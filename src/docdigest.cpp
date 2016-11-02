@@ -15,13 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qstring.h>
-#include <kglobal.h>
-#include <klocale.h>
-#include <kconfig.h>
+#include <QString>
+#include <QLocale>
 
-
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 #include "docdigest.h"
 #include "defaultprovider.h"
@@ -39,36 +36,41 @@ DocDigest::DocDigest()
 
 QString DocDigest::date()
 {
-  return mLocale.formatDate( mDate, QLocale::ShortDate );
+    return mDate.toString();
+  // return mLocale.formatDate( mDate, QLocale::ShortDate );
 }
 
 QString DocDigest::lastModified()
 {
-  return mLocale.formatDateTime( mLastModified, QLocale::ShortDate );
+    return mLastModified.toString();
 }
 
 void DocDigest::appendArchDocDigest( const ArchDocDigest& digest )
 {
-  mArchDocs.append( digest );
+    mArchDocs.append( digest );
 }
 
 ArchDocDigestList DocDigest::archDocDigestList()
 {
-  return mArchDocs;
+    return mArchDocs;
 }
 
 void DocDigest::setCountryLanguage( const QString& country, const QString& lang )
 {
-  KConfig *cfg = KGlobal::config().data();
-  mLocale.setCountry( country, cfg );
-  mLocale.setLanguage( lang, cfg ); // FIXME !!
+
+    // FIXME KF5 porting - how to do this?
+#if 0
+    KConfig *cfg = KGlobal::config().data();
+    mLocale.setCountry( country, cfg );
+    mLocale.setLanguage( lang, cfg ); // FIXME !!
+#endif
 }
 
-KABC::Addressee DocDigest::addressee() const
+KContacts::Addressee DocDigest::addressee() const
 {
   return mContact;
 }
-void DocDigest::setAddressee( const KABC::Addressee& contact )
+void DocDigest::setAddressee( const KContacts::Addressee& contact )
 {
   mContact = contact;
 }

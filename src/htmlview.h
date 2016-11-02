@@ -17,11 +17,12 @@
 #ifndef HTMLVIEW_H
 #define HTMLVIEW_H
 
-#include <khtml_part.h>
-class KAction;
+#include <QWebView>
+
+class QAction;
 class QUrl;
 
-class HtmlView : public KHTMLPart
+class HtmlView : public QWebView
 {
     Q_OBJECT
   public:
@@ -29,14 +30,11 @@ class HtmlView : public KHTMLPart
 
     void clearView();
 
-    void setupActions( KActionCollection * );
-
     QString title() const { return mTitle; }
 
     void setInternalUrl( const QString & );
     QString internalUrl() const;
 
-    void showWelcomePage();
     void setBaseUrl( const QString& );
 
   public slots:
@@ -48,9 +46,8 @@ class HtmlView : public KHTMLPart
     void zoomOut();
 
   protected:
-    virtual void writeTopFrame();
-    virtual void writeBottomFrame();
-    virtual void writeContent( const QString& );
+    virtual QString topFrame();
+    virtual QString bottomFrame();
 
     void updateZoomActions();
   private:
@@ -61,8 +58,8 @@ class HtmlView : public KHTMLPart
     QString mInternalUrl;
     QString mStyleSheetFile;
 
-    KAction *mZoomInAction;
-    KAction *mZoomOutAction;
+    QAction *mZoomInAction;
+    QAction *mZoomOutAction;
     QUrl     mBaseUrl;
 
     int mZoomStep;

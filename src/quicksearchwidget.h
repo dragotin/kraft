@@ -24,7 +24,7 @@
 
 #include <QtGui/QWidget>
 
-class KLineEdit;
+class QLineEdit;
 
 /**
  * @short The quick search widget from the toolbar
@@ -83,7 +83,7 @@ class QuickSearchWidget : public QWidget
     virtual void keyPressEvent( QKeyEvent* );
 
   private:
-    KLineEdit *mEdit;
+    QLineEdit *mEdit;
     QTimer *mTimer;
 };
 

@@ -18,7 +18,7 @@
 #ifndef DOCTYPEEDIT_H
 #define DOCTYPEEDIT_H
 
-#include <kdialog.h>
+#include <QDialog>
 
 #include <QMap>
 #include <QLabel>

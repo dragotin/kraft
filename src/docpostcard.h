@@ -44,6 +44,7 @@ public slots:
   void slotShowPrices( bool showIt );
 
 protected:
+#if 0
   bool urlSelected (const QString &url, int button, int state, const QString &_target,
                     const KParts::OpenUrlArguments &args=KParts::OpenUrlArguments(),
                     const KParts::BrowserArguments &browserArgs=KParts::BrowserArguments());
@@ -51,7 +52,7 @@ protected:
   // void urlSelected( const QString &, int , int ,
   //                  const QString &, KParts::openUrlArguments& );
   // openUrlRequestDelayed(const QUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments&)
-  
+#endif
   QString renderDocMini( int ) const;
   QString renderDocFull( int );
   QString header( bool, const QString&, const QString&, const QString&,

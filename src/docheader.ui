@@ -52,7 +52,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="KDateWidget" name="m_dateEdit"/>
+      <widget class="QDateTimeEdit" name="m_dateEdit"/>
      </item>
     </layout>
    </item>
@@ -126,7 +126,7 @@
      <item row="3" column="1">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="KTextEdit" name="m_whiteboardEdit">
+        <widget class="QTextEdit" name="m_whiteboardEdit">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -148,7 +148,7 @@
    <item>
     <layout class="QGridLayout">
      <item row="2" column="1">
-      <widget class="KComboBox" name="m_letterHead">
+      <widget class="QComboBox" name="m_letterHead">
        <property name="editable">
         <bool>true</bool>
        </property>
@@ -250,7 +250,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="KTextEdit" name="m_postAddressEdit">
+      <widget class="QTextEdit" name="m_postAddressEdit">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -281,38 +281,16 @@
     </widget>
    </item>
    <item>
-    <widget class="KTextEdit" name="m_teEntry"/>
+    <widget class="QTextEdit" name="m_teEntry"/>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="3"/>
- <customwidgets>
-  <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KDateWidget</class>
-   <extends>QWidget</extends>
-   <header>kdatewidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>ktextedit.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>mButtLang</tabstop>
   <tabstop>m_cbType</tabstop>
   <tabstop>m_letterHead</tabstop>
  </tabstops>
- <includes>
-  <include location="local">kdatewidget.h</include>
-  <include location="local">kcombobox.h</include>
-  <include location="local">klineedit.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

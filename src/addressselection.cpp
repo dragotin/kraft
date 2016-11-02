@@ -24,11 +24,11 @@
 #include <QDebug>
 #include <QDialog>
 
-#include <kabc/addresseelist.h>
-#include <kabc/addressee.h>
-#include <kabc/addressbook.h>
-#include <kabc/stdaddressbook.h>
-#include <kabc/contactgroup.h>
+#include <kcontacts/addresseelist.h>
+#include <kcontacts/addressee.h>
+#include <kcontacts/addressbook.h>
+#include <kcontacts/stdaddressbook.h>
+#include <kcontacts/contactgroup.h>
 
 #include <akonadi/contact/contactsearchjob.h>
 #include <AkonadiCore/itemfetchscope.h>
@@ -46,7 +46,7 @@
 #include <QPushButton>
 #include <KConfigGroup>
 
-using namespace KABC;
+using namespace KContacts;
 using namespace Akonadi;
 
 AddressSelection::AddressSelection( QWidget *parent, bool showText )
@@ -94,8 +94,8 @@ AddressSelection::AddressSelection( QWidget *parent, bool showText )
   // monitor all collections below the root collection for changes
   mAkonadiChangeRecorder->setCollectionMonitored( Akonadi::Collection::root() );
   // list only contacts and contact groups
-  mAkonadiChangeRecorder->setMimeTypeMonitored( KABC::Addressee::mimeType(), true );
-  mAkonadiChangeRecorder->setMimeTypeMonitored( KABC::ContactGroup::mimeType(), true );
+  mAkonadiChangeRecorder->setMimeTypeMonitored( KContacts::Addressee::mimeType(), true );
+  mAkonadiChangeRecorder->setMimeTypeMonitored( KContacts::ContactGroup::mimeType(), true );
 
   mModel = new Akonadi::ContactsTreeModel( mAkonadiChangeRecorder );
   mFilterModel = new Akonadi::ContactsFilterProxyModel;
@@ -143,8 +143,8 @@ AddressSelection::~AddressSelection()
 
 void AddressSelection::slotViewClicked( const Akonadi::Item &item )
 {
-   if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
-     Addressee addressee = item.payload<KABC::Addressee>();
+   if ( item.isValid() && item.hasPayload<KContacts::Addressee>() ) {
+     Addressee addressee = item.payload<KContacts::Addressee>();
      emit addressSelected( addressee );
    }
 }

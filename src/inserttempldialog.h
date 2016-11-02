@@ -17,7 +17,7 @@
 #ifndef INSERTTEMPLDIALOG_H
 #define INSERTTEMPLDIALOG_H
 
-#include <kdialog.h>
+#include <QDialog>
 #include <qmap.h>
 
 #include "docposition.h"

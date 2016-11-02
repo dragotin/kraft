@@ -22,7 +22,7 @@
 #include <QSqlTableModel>
 #include <QDataWidgetMapper>
 
-#include <kdialog.h>
+#include <QDialog>
 
 #include "ui_taxeditbase.h"
 
@@ -32,7 +32,7 @@
 
 // ################################################################################
 
-class TaxEditDialog: public KDialog, protected Ui::TaxEditBase
+class TaxEditDialog: public QDialog, protected Ui::TaxEditBase
 {
   Q_OBJECT
 

@@ -19,14 +19,12 @@
 #include <QHash>
 
 // include files for KDE
-#include <klocale.h>
 #include <QDebug>
 
 #include "materialcalcpart.h"
 #include "stockmaterialman.h"
 #include "stockmaterial.h"
 #include "unitmanager.h"
-#include <kglobal.h>
 
 MaterialCalcPart::MaterialCalcPart()
   : CalcPart(),

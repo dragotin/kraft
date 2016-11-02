@@ -50,7 +50,7 @@
        </widget>
       </item>
       <item>
-       <widget class="KTextEdit" name="m_teSummary"/>
+       <widget class="QTextEdit" name="m_teSummary"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="_2">
@@ -74,7 +74,7 @@
          </widget>
         </item>
         <item>
-         <widget class="KComboBox" name="m_cbGreeting">
+         <widget class="QComboBox" name="m_cbGreeting">
           <property name="editable">
            <bool>true</bool>
           </property>
@@ -132,22 +132,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>ktextedit.h</header>
-  </customwidget>
- </customwidgets>
- <includes>
-  <include location="local">kcombobox.h</include>
-  <include location="local">klineedit.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

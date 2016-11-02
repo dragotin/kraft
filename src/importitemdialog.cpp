@@ -23,18 +23,11 @@
 #include <QCheckBox>
 #include <QToolTip>
 #include <QMap>
-
-
-// include files for KDE
-#include <klocale.h>
 #include <QDebug>
-#include <kstandarddirs.h>
-#include <kurlrequester.h>
-#include <kvbox.h>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QLocale>
 
 #include "importfilter.h"
 #include "defaultprovider.h"
@@ -50,10 +43,8 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
   setModal( true );
   setWindowTitle( i18n( "Import Items From File" ) );
   QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
   QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
   okButton->setDefault(true);
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
@@ -62,7 +53,7 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
   //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
   mainLayout->addWidget(buttonBox);
 
-  QWidget *w = new QWidget( this );
+  QWidget *w = new QWidget;
   mainLayout->addWidget(w);
   mBaseWidget = new Ui::importToDocBase;
   mBaseWidget->setupUi( w );
@@ -100,7 +91,7 @@ ImportItemDialog::ImportItemDialog( QWidget *parent )
   slotSchemaChanged( selectName );
 
   if ( ! KraftSettings::self()->importItemsFileName().isEmpty() ) {
-    mBaseWidget->mFileRequester->setUrl( KraftSettings::self()->importItemsFileName() );
+    mBaseWidget->mFileNameEdit->setText( KraftSettings::self()->importItemsFileName() );
   }
 }
 
@@ -141,11 +132,8 @@ void ImportItemDialog::setPositionList( DocPositionList list, int intendedPos )
 
 QString ImportItemDialog::readFilterSpecs()
 {
-  KStandardDirs dir;
-
   QString filter = QString::fromLatin1( "kraft/importfilter/positions/*.ftr" );
-  QStringList filters = dir.findAllResources( "data", filter );
-
+  QStringList filters = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, filter);
   QStringList combo;
   QString firstFilter;
 
@@ -170,23 +158,10 @@ void ImportItemDialog::slotSchemaChanged( const QString& name )
   mBaseWidget->mSchemaInfo->setText( desc );
 }
 
-void ImportItemDialog::slotOk()
-{
-#if 0
-  FIXME!!!
-  KraftSettings::self()->setImportItemsSchemaName( mBaseWidget->mSchemaCombo->currentText() );
-  KraftSettings::self()->setImportItemsFileName( mBaseWidget->mFileRequester->url() );
-  KraftSettings::self()->writeConfig();
-#endif
-//Adapt code and connect okbutton or other to new slot. It doesn't exist in qdialog
-  QDialog::slotButtonClicked( Ok );
-}
-
-
 DocPositionList ImportItemDialog::positionList()
 {
   DocPositionList list;
-  QUrl url = mBaseWidget->mFileRequester->url();
+  QUrl url = QUrl::fromLocalFile(mBaseWidget->mFileNameEdit->text());
 
   if ( ! url.isEmpty() ) {
     DocPositionImportFilter filter = mFilterMap[mBaseWidget->mSchemaCombo->currentText()];

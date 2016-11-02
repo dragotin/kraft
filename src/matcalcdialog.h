@@ -19,7 +19,7 @@
 #define _MATCALCDIALOG_H
 
 // include files
-#include <kdialog.h>
+#include <QDialog>
 
 #include "ui_matpartui.h"
 
@@ -29,12 +29,12 @@ class MaterialCalcPart;
  *
  */
 
-class MatCalcDialog : public KDialog, protected Ui::calcdetailMat
+class MatCalcDialog : public QDialog, protected Ui::calcdetailMat
 {
     Q_OBJECT
 
 public:
-    MatCalcDialog( MaterialCalcPart *mc, QWidget *parent=0, bool modal=FALSE );
+    MatCalcDialog( MaterialCalcPart *mc, QWidget *parent=0, bool modal=false );
     virtual ~MatCalcDialog();
 
 protected slots:

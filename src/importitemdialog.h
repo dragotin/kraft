@@ -17,7 +17,7 @@
 #ifndef IMPORTITEMDIALOG_H
 #define IMPORTITEMDIALOG_H
 
-#include <kdialog.h>
+#include <QDialog>
 #include <QMap>
 #include <QList>
 #include <QComboBox>
@@ -31,7 +31,7 @@
 class importToDocBase;
 class DocPositionList;
 
-class ImportItemDialog: public KDialog
+class ImportItemDialog: public QDialog
 {
   Q_OBJECT
 
@@ -46,9 +46,6 @@ public:
 
 signals:
   void positionImported( const DocPosition& );
-
-public slots:
-  void slotOk();
 
 protected slots:
   void slotSchemaChanged( const QString& );

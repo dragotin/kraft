@@ -26,14 +26,12 @@
 #include <QPushButton>
 #include <QCloseEvent>
 #include <QHeaderView>
+#include <QDialogButtonBox>
 
 // include files for KDE
 #include <QDebug>
-#include <kmessagebox.h>
-#include <kcombobox.h>
-#include <kpushbutton.h>
-#include <KConfigGroup>
-#include <QDialogButtonBox>
+#include <qmessagebox.h>
+#include <qcombobox.h>
 #include <QVBoxLayout>
 
 #include "floskeltemplate.h"
@@ -71,18 +69,14 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
 
   setWindowTitle( i18n("Create or Edit Template Items") );
   setModal( modal );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  _buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QPushButton *okButton = _buttonBox->button(QDialogButtonBox::Ok);
   okButton->setDefault(true);
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
   //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
+  mainLayout->addWidget(_buttonBox);
   okButton->setDefault(true);
 
   //Initialise the buttongroup to switch between manual and calculated price
@@ -256,8 +250,7 @@ void FlosTemplDialog::refreshPrices()
   /* assemble the pricing label */
   QString t;
   t = i18n("Calculated Price: ");
-  int kType = m_template->calcKind();
-  // qDebug () << "CalcType in integer is " << kType << endl;
+
   if( m_template->calcKind() == CatalogTemplate::ManualPrice )
   {
     t = i18n("Manual Price: ");
@@ -378,8 +371,8 @@ void FlosTemplDialog::accept()
       emit( editAccepted( m_template ) );
       KatalogMan::self()->notifyKatalogChange( m_katalog, m_template->getTemplID() );
     } else {
-      KMessageBox::error( this, i18n("Saving of this template failed, sorry"),
-                          i18n( "Template Save Error" ) );
+        QMessageBox::warning(0, i18n("Template Error"), i18n("Saving of this template failed, sorry"));
+
     }
   }
   // qDebug () << "*** Saving finished " << endl;
@@ -406,12 +399,17 @@ void FlosTemplDialog::closeEvent ( QCloseEvent * event )
 
 bool FlosTemplDialog::confirmClose()
 {
-  if(modified == true) {
-    if ( KMessageBox::warningContinueCancel( this, i18n( "The template was modified. Do "
-                                                         "you really want to discard all changes?" ),
-                                             i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ), QIcon::fromTheme("edit-clear") ) )
-      == KMessageBox::Cancel  ) {
-      return false;
+    if(modified == true) {
+        QMessageBox msgBox;
+        msgBox.setText(i18n("The template has been modified."));
+        msgBox.setInformativeText(i18n("Do you want to discard your changes?"));
+        msgBox.setStandardButtons(QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Cancel);
+        int ret = msgBox.exec();
+
+        if( ret == QMessageBox::Cancel  ) {
+            return false;
+        }
     }
 
     mCalcPartDict.clear();
@@ -427,21 +425,20 @@ bool FlosTemplDialog::confirmClose()
       emit editRejected();
     }
 
-  }
-  return true;
+    return true;
 }
 
 bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
 {
-  if( KMessageBox::questionYesNo( this,
-                                  i18n( "The catalog chapter was changed for this template.\nDo you really want to move the template to the new chapter?"),
-                                  i18n("Changed Chapter"), KStandardGuiItem::yes(), KStandardGuiItem::no(),
-                                  "chapterchange" ) == KMessageBox::Yes )
-  {
-    return true;
-  } else {
-    return false;
-  }
+    QMessageBox msgBox;
+    msgBox.setText(i18n( "The catalog chapter was changed for this template.\n"
+                         "Do you really want to move the template to the new chapter?"));
+    msgBox.setInformativeText(i18n("Chapter Change"));
+    msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox.exec();
+
+    return( ret == QMessageBox::Yes);
 }
 
 void FlosTemplDialog::slManualPriceChanged(double dd)
@@ -579,7 +576,7 @@ void FlosTemplDialog::drawFixListEntry( QTreeWidgetItem* it, FixCalcPart *cp )
   if( !( it && cp) )
     return;
 
-  it->setText( 0, DefaultProvider::self()->locale()->formatNumber(cp->getMenge()));
+  it->setText( 0, DefaultProvider::self()->locale()->toString(cp->getMenge()));
   it->setText( 1, cp->getName());
   it->setText( 2, cp->unitPreis().toString( m_katalog->locale() ));
   it->setText( 3, cp->basisKosten().toString( m_katalog->locale() ));
@@ -779,27 +776,25 @@ void FlosTemplDialog::slCalcOrFix(int button)
 }
 
 
-void FlosTemplDialog::slSetNewText( )
+void FlosTemplDialog::slSetNewText()
 {
-  if( ! m_text || m_text->toPlainText().isEmpty() ) {
-    this->okButton->setEnabled(false);
-  } else {
-    this->okButton->setEnabled(true);
-  }
+    QPushButton *okButton = _buttonBox->button(QDialogButtonBox::Ok);
 
-  if( m_text ) {
-    QString t = m_text->toPlainText();
+    if( ! m_text || m_text->toPlainText().isEmpty() ) {
+        okButton->setEnabled(false);
+    } else {
+        okButton->setEnabled(true);
+    }
 
-    if( m_textDispTime)
-      m_textDispTime->setText(t);
-    if( m_textDispFix)
-      m_textDispFix->setText(t);
-    if( m_textDispMat)
-      m_textDispMat->setText(t);
-  }
+    if( m_text ) {
+        QString t = m_text->toPlainText();
 
+        if( m_textDispTime)
+            m_textDispTime->setText(t);
+        if( m_textDispFix)
+            m_textDispFix->setText(t);
+        if( m_textDispMat)
+            m_textDispMat->setText(t);
+    }
 }
 /* END */
-
-
-// #include "flostempldialog.moc"

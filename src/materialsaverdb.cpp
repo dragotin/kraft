@@ -20,11 +20,8 @@
 #include <QDateTime>
 #include <QSqlTableModel>
 #include <QSqlRecord>
-
-// include files for KDE
-#include <klocale.h>
 #include <QDebug>
-#include <kglobal.h>
+#include <QGlobalStatic>
 
 #include "kraftdb.h"
 #include "kraftglobals.h"
@@ -38,9 +35,10 @@ MaterialSaverDB::MaterialSaverDB( )
 
 }
 
+Q_GLOBAL_STATIC(MaterialSaverDB, mSelf)
+
 MaterialSaverBase *MaterialSaverDB::self()
 {
-  K_GLOBAL_STATIC(MaterialSaverDB, mSelf);
   return mSelf;
 }
 

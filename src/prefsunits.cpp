@@ -25,10 +25,9 @@
 #include <QDataWidgetMapper>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
+#include <QPushButton>
+#include <QLocale>
 
-
-#include <kpushbutton.h>
-#include <klocale.h>
 #include <QDebug>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
@@ -76,16 +75,16 @@ PrefsUnits::PrefsUnits(QWidget* parent)
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  KPushButton *but = new KPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddUnit() ) );
   butLay->addWidget( but );
 
-  mEditUnit = new KPushButton( QIcon::fromTheme("document-edit"), i18n( "Edit" ));
+  mEditUnit = new QPushButton( QIcon::fromTheme("document-edit"), i18n( "Edit" ));
   connect( mEditUnit, SIGNAL( clicked() ), SLOT( slotEditUnit() ) );
   butLay->addWidget( mEditUnit );
   mEditUnit->setEnabled(false);
 
-  mDelUnit = new KPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
+  mDelUnit = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
   connect( mDelUnit, SIGNAL( clicked() ), SLOT( slotDeleteUnit() ) );
   butLay->addWidget( mDelUnit );
   mDelUnit->setEnabled( false );
@@ -165,7 +164,8 @@ UnitsEditDialog::UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *p
 
 
   QWidget *w = new QWidget( this );
-//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 // Add mainLayout->addWidget(w); if necessary
 
   mBaseWidget = new Ui::UnitsEditBase( );
@@ -203,7 +203,9 @@ UnitsEditDialog::UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *p
 void UnitsEditDialog::accept()
 {
   bool ok = mapper->submit();
-  // qDebug () << "Mapper submitted ok: " << ok;
+  if(!ok) {
+      qDebug () << "UnitsEditDialog Mapper submit result: " << ok;
+  }
   QDialog::accept();
   deleteLater();
 }

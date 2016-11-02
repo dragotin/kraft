@@ -24,8 +24,8 @@
 
 class QComboBox;
 class QStackedWidget;
-class KActionCollection;
-class KAction;
+class QActionCollection;
+class QAction;
 
 class DocPosition;
 class FilterHeader;

@@ -21,7 +21,7 @@
 #include <QWidget>
 #include <QItemDelegate>
 
-#include <kdialog.h>
+#include <QDialog>
 
 #include "ui_wageseditbase.h"
 
@@ -61,7 +61,7 @@ private:
     QSortFilterProxyModel *mProxyModel;
 };
 
-class WagesEditDialog: public KDialog, protected Ui::WagesEditBase
+class WagesEditDialog: public QDialog, protected Ui::WagesEditBase
 {
   Q_OBJECT
 

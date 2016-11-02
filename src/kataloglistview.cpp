@@ -17,14 +17,9 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QMessageBox>
 
-#include <klocale.h>
-#include <QDebug>
-#include <kiconloader.h>
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <kmenu.h>
-#include <kmessagebox.h>
+#include <klocalizedstring.h>
 
 #include "kraftglobals.h"
 #include "katalog.h"
@@ -54,7 +49,7 @@ KatalogListView::KatalogListView( QWidget *parent ) : QTreeWidget(parent),
 
     setRootIsDecorated(false);
     setAnimated(true);
-    header()->setResizeMode(QHeaderView::ResizeToContents);
+    // header()->setResizeMode(QHeaderView::ResizeToContents);
 
     // custom style
     const QString style = DefaultProvider::self()->getStyleSheet( "templcatalog");
@@ -68,7 +63,7 @@ KatalogListView::KatalogListView( QWidget *parent ) : QTreeWidget(parent),
     setDropIndicatorShown( true );
 
     // setSorting(-1);
-    mMenu = new KMenu( this );
+    mMenu = new QMenu( this );
 
     mChapterFont = font();
     mChapterFont.setBold( true );
@@ -82,7 +77,7 @@ KatalogListView::~KatalogListView()
 
 }
 
-KMenu *KatalogListView::contextMenu()
+QMenu *KatalogListView::contextMenu()
 {
   return mMenu;
 }
@@ -126,7 +121,7 @@ void KatalogListView::setupChapters()
   QStringList list;
   list << cat->getName();
   m_root = new QTreeWidgetItem( this, list );
-  m_root->setIcon( 0, SmallIcon("kraft"));
+  m_root->setIcon( 0, QIcon("kraft"));
   m_root->setExpanded(true);
   m_root->setFont( 0, mChapterFont );
 
@@ -183,7 +178,7 @@ QTreeWidgetItem *KatalogListView::tryAddingCatalogChapter( const CatalogChapter&
     if( !chapter.description().isEmpty() )
       katItem->setToolTip( 0, chapter.description() );
 
-    katItem->setIcon( 0, chapter.icon() );
+    // katItem->setIcon( 0, chapter.icon() );
     katItem->setFont( 0, mChapterFont );
     // Store the parent-ID in the item data
     m_dataDict[katItem] = new CatalogChapter( chapter );
@@ -334,9 +329,12 @@ void KatalogListView::slotRemoveCurrentChapter()
     }
 
     if( item->childCount() > 0 ) {
-        KMessageBox::sorry( this,
-                            i18n( "A catalog chapter can not be deleted as long it has children." ),
-                            i18n( "Chapter can not be deleted" ));
+        QMessageBox msgBox;
+        msgBox.setText(i18n( "A catalog chapter can not be deleted as long it has children." ));
+        msgBox.setInformativeText(i18n("Chapter can not be deleted"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
         return;
 
     } else {

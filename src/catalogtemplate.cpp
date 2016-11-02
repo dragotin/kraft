@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <QDebug>
-#include <klocale.h>
+#include <klocalizedstring.h>
 
 #include "catalogtemplate.h"
 

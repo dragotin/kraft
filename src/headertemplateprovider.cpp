@@ -17,8 +17,6 @@
  ***************************************************************************/
 
 #include <QDebug>
-#include <klocale.h>
-#include <krun.h>
 
 #include "headertemplateprovider.h"
 #include "texteditdialog.h"

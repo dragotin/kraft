@@ -23,17 +23,15 @@
 #include <QDataWidgetMapper>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
+#include <QPushButton>
 
-
-#include <kpushbutton.h>
-#include <klocale.h>
 #include <QDebug>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 
 #include "defaultprovider.h"
 #include "impviewwidgets.h"
 #include "geld.h"
+#include "defaultprovider.h"
 
 #include "prefswages.h"
 
@@ -77,26 +75,26 @@ PrefsWages::PrefsWages(QWidget* parent)
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  mUp = new KPushButton( QIcon::fromTheme("arrow-up"), i18n( "Up" ));
+  mUp = new QPushButton( QIcon::fromTheme("arrow-up"), i18n( "Up" ));
   connect( mUp, SIGNAL( clicked() ), SLOT( slotUp() ) );
   butLay->addWidget( mUp );
   mUp->setEnabled(false);
 
-  mDown = new KPushButton( QIcon::fromTheme("arrow-down"), i18n( "Down" ));
+  mDown = new QPushButton( QIcon::fromTheme("arrow-down"), i18n( "Down" ));
   connect( mDown, SIGNAL( clicked() ), SLOT( slotDown() ) );
   butLay->addWidget( mDown );
   mDown->setEnabled(false);
 
-  KPushButton *but = new KPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddWage() ) );
   butLay->addWidget( but );
 
-  mEditWage = new KPushButton( QIcon::fromTheme("document-edit"), i18n( "Edit" ));
+  mEditWage = new QPushButton( QIcon::fromTheme("document-edit"), i18n( "Edit" ));
   connect( mEditWage, SIGNAL( clicked() ), SLOT( slotEditWage() ) );
   butLay->addWidget( mEditWage );
   mEditWage->setEnabled(false);
 
-  mDelWage = new KPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
+  mDelWage = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
   connect( mDelWage, SIGNAL( clicked() ), SLOT( slotDeleteWage() ) );
   butLay->addWidget( mDelWage );
   mDelWage->setEnabled( false );
@@ -214,7 +212,8 @@ WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *p
 
 
   QWidget *w = new QWidget( this );
-//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 // Add mainLayout->addWidget(w); if necessary
 
   mBaseWidget = new Ui::WagesEditBase( );
@@ -270,7 +269,7 @@ void WagesItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem &
   if(index.column() == 2)
   {
     Geld wage = index.data(Qt::DisplayRole).toDouble();
-    QString string = wage.toString(KGlobal::locale());
+    QString string = wage.toString(DefaultProvider::self()->locale());
     drawDisplay(painter, option, option.rect, string);
   }
   else

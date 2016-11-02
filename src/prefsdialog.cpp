@@ -29,20 +29,10 @@
 #include <QSortFilterProxyModel>
 #include <QStackedWidget>
 #include <QHeaderView>
-
 #include <QDialog>
-#include <klocale.h>
-#include <kiconloader.h>
-#include <kinputdialog.h>
-#include <kmessagebox.h>
-#include <kpushbutton.h>
-#include <kglobal.h>
-#include <khtmlview.h>
-#include <kstandarddirs.h>
+#include <QMessageBox>
 
-#include <akonadi/contact/contactviewer.h>
 #include <QDebug>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 
@@ -108,7 +98,7 @@ void PrefsDialog::taxTab()
   topFrame->setIcon(QIcon::fromTheme( "accessories-text-editor" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
-  vboxLay->setSpacing( spacingHint() );
+  // vboxLay->setSpacing( spacingHint() );
 
   QLabel *label;
   label = new QLabel(i18n("Tax rates beginning at date:"));
@@ -141,11 +131,11 @@ void PrefsDialog::taxTab()
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  KPushButton *but = new KPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddTax() ) );
   butLay->addWidget( but );
 
-  mDelTax = new KPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
+  mDelTax = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
   connect( mDelTax, SIGNAL( clicked() ), SLOT( slotDeleteTax() ) );
   butLay->addWidget( mDelTax );
   mDelTax->setEnabled( false );
@@ -181,7 +171,7 @@ void PrefsDialog::whoIsMeTab()
   topFrame->setIcon(QIcon::fromTheme( "user-identity" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
-  vboxLay->setSpacing( spacingHint() );
+  // vboxLay->setSpacing( spacingHint() );
 
   QLabel *label;
   label = new QLabel(i18n("Select the identity of the sending entity of documents. That's <b>your companies</b> address."));
@@ -192,8 +182,7 @@ void PrefsDialog::whoIsMeTab()
   butLay->addStretch( 1 );
 
   mIdentityView = new HtmlView;
-  QString fi = KStandardDirs::locate( "data", "kraft/reports/images/identity.png" );
-
+  QString fi = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kraft/reports/images/identity.png" );
   QFileInfo info(fi);
   if( info.exists() ) {
     // qDebug () << "Setting image base for identiy view: " << info.dir().absolutePath();
@@ -203,7 +192,7 @@ void PrefsDialog::whoIsMeTab()
 
   mIdentityView->setBaseUrl( QLatin1String("/home/kf/kde/kraft/reports/pics/"));
 
-  butLay->addWidget(mIdentityView->view());
+  butLay->addWidget(mIdentityView);
   QPushButton *pbChangeIdentity = new QPushButton(i18n("Select Identity..."));
   connect( pbChangeIdentity, SIGNAL(clicked()), SLOT(slotChangeIdentity()) );
   butLay->addWidget(pbChangeIdentity);
@@ -265,9 +254,6 @@ void PrefsDialog::docTab()
   topWidget->setLayout( vboxLay );
   QGridLayout *topLayout = new QGridLayout;
   vboxLay->addLayout( topLayout );
-
-  topLayout->setSpacing( spacingHint() );
-  topLayout->addItem(new QSpacerItem(spacingHint(), 0), 0, 0);
 
   label = new QLabel(i18n("&Default document type on creation:") );
   topLayout->addWidget(label, 0,0);
@@ -339,12 +325,16 @@ void PrefsDialog::slotDocTypeRemoved( const QString& type )
   QString currDefault = mCbDocTypes->currentText();
 
   if ( currDefault == type ) {
-    KMessageBox::information ( this,  i18n( "The old default doc type for new documents was just deleted."
-                                            "Please check the setting in the Document Defaults in the "
-                                            "Kraft preferences Dialog." ),
-                               i18n( "Document Default Change" ),
-                               QString::fromLatin1( "DefaultDocTypeDeleted" ) );
+      QMessageBox msgBox;
+      msgBox.setText(i18n( "The old default doc type for new documents was just deleted."
+                           "Please check the setting in the Document Defaults in the "
+                           "Kraft preferences Dialog." ));
+      msgBox.setInformativeText(i18n("Document Default Change"));
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.setDefaultButton(QMessageBox::Ok);
+      msgBox.exec();
   }
+
 
   for ( int i=0; i < mCbDocTypes->count(); i++ ) {
     if ( mCbDocTypes->itemText( i ) == type ) {
@@ -397,7 +387,7 @@ void PrefsDialog::accept()
 #define IDENTITY_TAG(X) QLatin1String(X)
 #define QL1(X) QLatin1String(X)
 
-void PrefsDialog::setMyIdentity( const KABC::Addressee& addressee )
+void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee )
 {
   // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
   // It should be refactored.
@@ -424,7 +414,7 @@ void PrefsDialog::setMyIdentity( const KABC::Addressee& addressee )
     tmpl.createDictionary(QL1("IDENTITY"));
     tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_NAME"), addressee.realName() );
     tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_ORGANISATION"), addressee.organization() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_URL"), addressee.url().prettyUrl() );
+    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_URL"), addressee.url().toString() );
     tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_EMAIL"), addressee.preferredEmail() );
 
     tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_WORK_PHONE"), addressee.phoneNumber(PhoneNumber::Work).number());
@@ -434,28 +424,28 @@ void PrefsDialog::setMyIdentity( const KABC::Addressee& addressee )
     tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("WORK_PHONE_LABEL"), i18n("Work Phone") );
     tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("FAX_LABEL"), i18n("Fax") );
     tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("MOBILE_PHONE_LABEL"), i18n("Cell Phone") );
-    KABC::Address myAddress;
-    myAddress = addressee.address( KABC::Address::Pref );
+    KContacts::Address myAddress;
+    myAddress = addressee.address( KContacts::Address::Pref );
     QString addressType = i18n("preferred address");
 
     if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Home );
+      myAddress = addressee.address( KContacts::Address::Home );
       addressType = i18n("home address");
     }
     if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Work );
+      myAddress = addressee.address( KContacts::Address::Work );
       addressType = i18n("work address");
     }
     if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Postal );
+      myAddress = addressee.address( KContacts::Address::Postal );
       addressType = i18n("postal address");
     }
     if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Intl );
+      myAddress = addressee.address( KContacts::Address::Intl );
       addressType = i18n("international address");
     }
     if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Dom );
+      myAddress = addressee.address( KContacts::Address::Dom );
       addressType = i18n("domestic address");
     }
 
@@ -483,9 +473,9 @@ void PrefsDialog::setMyIdentity( const KABC::Addressee& addressee )
 
 }
 
-KABC::Addressee PrefsDialog::myIdentity()
+KContacts::Addressee PrefsDialog::myIdentity()
 {
-  KABC::Addressee me;
+  KContacts::Addressee me;
 
   return me;
 }
@@ -497,13 +487,15 @@ void TaxItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & o
   if(index.column() == 1 || index.column() == 2)
   {
     double percentage = index.data(Qt::DisplayRole).toDouble();
-    QString string = DefaultProvider::self()->locale()->formatNumber(QString::number(percentage), true, 1);
+    // QString string = DefaultProvider::self()->locale()->formatNumber(QString::number(percentage), true, 1);
+    QString string = DefaultProvider::self()->locale()->toString(percentage);
     drawDisplay(painter, option, option.rect, string);
   }
   else if(index.column() == 3)
   {
     QDate date = index.data(Qt::DisplayRole).toDate();
-    QString string = DefaultProvider::self()->locale()->formatDate(date);
+    // QString string = DefaultProvider::self()->locale()->formatDate(date);
+    QString string = DefaultProvider::self()->locale()->toString(date);
     drawDisplay(painter, option, option.rect, string);
   }
   else

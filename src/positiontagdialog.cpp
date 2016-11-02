@@ -26,16 +26,14 @@
 #include <qdrawutil.h>
 
 #include <QDialog>
+#include <QBoxLayout>
 #include <QDebug>
-#include <klocale.h>
-#include <kcombobox.h>
-#include <ktextedit.h>
-#include <klineedit.h>
-#include <kvbox.h>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QStringList>
+
+#include <klocalizedstring.h>
 
 #include "positiontagdialog.h"
 #include "defaultprovider.h"
@@ -98,16 +96,11 @@ PositionTagDialog::PositionTagDialog( QWidget *parent )
   mainLayout->addWidget(buttonBox);
   setMinimumWidth ( 375 );
 
-  KVBox *w = new KVBox( this );
-//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
-// Add mainLayout->addWidget(w); if necessary
-
-
   ( void ) new QLabel( QString::fromLatin1( "<h2>" )
-                       + i18n( "<h2>Item Tags</h2>" ) + QString::fromLatin1( "</h2>" ), w );
-  ( void ) new QLabel( i18n( "Select all tags for the item should be tagged with." ), w );
+                       + i18n( "Item Tags" ) + QString::fromLatin1( "</h2>" ), mainWidget );
+  ( void ) new QLabel( i18n( "Select all tags for the item should be tagged with." ), mainWidget);
 
-  mListView = new QTreeWidget( w );
+  mListView = new QTreeWidget( mainWidget );
   mListView->setAlternatingRowColors( true );
   mListView->setItemDelegate(new TagDelegate());
 
@@ -137,19 +130,19 @@ void PositionTagDialog::setPositionTags( const QStringList& checkedTags )
 {
   QStringList allTags = TagTemplateMan::self()->allTagTemplates();
 
-  for ( QStringList::ConstIterator it = allTags.begin(); it != allTags.end(); ++it ) {
-      TagTemplate templ = TagTemplateMan::self()->getTagTemplate( *it );
+  foreach( QString string, allTags ) {
+      TagTemplate templ = TagTemplateMan::self()->getTagTemplate( string );
 
-    QStringList contents;
-    contents << templ.name();
-    contents << templ.color().name();
-    contents << templ.description();
+      QStringList contents;
+      contents << templ.name();
+      contents << templ.color().name();
+      contents << templ.description();
 
-    QTreeWidgetItem *item = new QTreeWidgetItem( mListView, contents );
-    if(checkedTags.contains(templ.name()))
-      item->setCheckState( 0, Qt::Checked );
-    else
-      item->setCheckState( 0, Qt::Unchecked );
+      QTreeWidgetItem *item = new QTreeWidgetItem( mListView, contents );
+      if(checkedTags.contains(templ.name()))
+          item->setCheckState( 0, Qt::Checked );
+      else
+          item->setCheckState( 0, Qt::Unchecked );
   }
 }
 

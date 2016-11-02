@@ -24,12 +24,8 @@
 #include <QObject>
 #include <QVariant>
 #include <QDate>
-
-//KDE includes
-#include <kglobal.h>
-#include <klocale.h>
-#include <kdebug.h>
-#include <kcalendarsystem.h>
+#include <QLocale>
+#include <QDebug>
 
 //Kraft includes
 #include "documentmodel.h"
@@ -100,8 +96,9 @@ QVariant TimelineModel::data(const QModelIndex &index, int role) const
                 return m_yearsRowCache.at(index.row()).startDate.at(0).year();
             if(indexMap->treeLevel == 1)
             {
+                QLocale *locale = DefaultProvider::self()->locale();
                 QDate date = m_yearsRowCache.at(index.parent().row()).startDate.at(index.row());
-                return DefaultProvider::self()->locale()->calendar()->monthName( date.month(), date.year() );
+                return locale->monthName(date.month() );
             }
         }
         return mapToSource(index).data(role);
@@ -153,9 +150,9 @@ int TimelineModel::rowCount(const QModelIndex &parent) const
         //Print tree;
         for(int i=0; i< m_yearsRowCache.count(); ++i)
         {
-            kDebug() << " Year " << i;
+            qDebug() << " Year " << i;
             for(int j=0; j < m_yearsRowCache.at(i).modelRowCache.count(); ++j)
-                kDebug() << " Month " << j << " rowID" << m_yearsRowCache.at(i).modelRowCache.at(j);
+                Debug() << " Month " << j << " rowID" << m_yearsRowCache.at(i).modelRowCache.at(j);
         }
         */
         Q_ASSERT(m_yearsRowCache.count() == rows);
@@ -170,7 +167,7 @@ int TimelineModel::rowCount(const QModelIndex &parent) const
     {
         int count = m_yearsRowCache[parent.row()].modelRowCache.count();
         parentMap->childeren.resize(count);
-        //kDebug() << "Year row: " << parent.row() << " month count: " << count;
+        //qDebug() << "Year row: " << parent.row() << " month count: " << count;
         return count;
     }
 
@@ -179,7 +176,7 @@ int TimelineModel::rowCount(const QModelIndex &parent) const
      {
         int start = sourceDateRow(parent.parent().row(), parent.row());
         int end = sourceDateRow(parent.parent().row(), parent.row()+1);
-        //kDebug() << "Year row: " << parent.parent().row() << " Month row: " << parent.row() << " Doc count: " << end << " - " << start;
+        //qDebug() << "Year row: " << parent.parent().row() << " Month row: " << parent.row() << " Doc count: " << end << " - " << start;
         parentMap->childeren.resize(end - start);
         return (end - start);
     }
@@ -271,7 +268,7 @@ QModelIndex TimelineModel::index(int row, int column, const QModelIndex &parent)
     mapping->parentRow = parent.row();
     mapping->treeLevel = parentmap->treeLevel + 1;
 
-    kDebug() << "Index created " << row << " parent row " << parent.row() << " treelevel " << mapping->treeLevel;
+    qDebug() << "Index created " << row << " parent row " << parent.row() << " treelevel " << mapping->treeLevel;
 
     parentmap->childeren.replace(row, mapping);
   }

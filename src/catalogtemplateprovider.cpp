@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include <QDebug>
-#include <klocale.h>
 
 #include "catalogtemplateprovider.h"
 #include "texteditdialog.h"

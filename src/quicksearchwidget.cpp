@@ -21,12 +21,11 @@
 
 #include "quicksearchwidget.h"
 
-#include <QtCore/QTimer>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QVBoxLayout>
+#include <QTimer>
+#include <QKeyEvent>
+#include <QVBoxLayout>
+#include <QLineEdit>
 
-#include <klineedit.h>
-#include <klocale.h>
 
 QuickSearchWidget::QuickSearchWidget( QWidget *parent )
   : QWidget( parent )
@@ -34,10 +33,7 @@ QuickSearchWidget::QuickSearchWidget( QWidget *parent )
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setMargin( 0 );
 
-  mEdit = new KLineEdit;
-  mEdit->setClickMessage( i18nc( "Search contacts in list", "Search" ) );
-  mEdit->setClearButtonShown( true );
-
+  mEdit = new QLineEdit;
   mEdit->installEventFilter( this );
 
   layout->addWidget( mEdit );

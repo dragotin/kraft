@@ -22,13 +22,13 @@
 #include <qstring.h>
 #include <QTreeWidget>
 
-#include <kabc/addressee.h>
-#include <akonadi/item.h>
-#include <akonadi/session.h>
-#include <akonadi/changerecorder.h>
-#include <akonadi/entitytreeview.h>
+#include <kcontacts/addressee.h>
+#include <AkonadiCore/Session>
+#include <AkonadiCore/ChangeRecorder>
+#include <AkonadiCore/EntityTreeModel>
+#include <AkonadiWidgets/entitytreeview.h>
+#include <Akonadi/Contact/ContactsFilterProxyModel>
 #include <akonadi/contact/contactstreemodel.h>
-#include <akonadi/contact/contactsfilterproxymodel.h>
 
 
 class QComboBox;
@@ -36,7 +36,7 @@ class QPushButton;
 class KJob;
 class AddressProvider;
 
-using namespace KABC;
+using namespace KContacts;
 
 class AddressSelection : public QWidget
 {

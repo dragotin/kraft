@@ -21,8 +21,6 @@
 #include <QSqlIndex>
 #include <QFile>
 #include <QTextStream>
-
-#include <kstandarddirs.h>
 #include <QDebug>
 
 #include "archiveman.h"
@@ -33,9 +31,10 @@
 #include "kraftsettings.h"
 #include "documentman.h"
 
+Q_GLOBAL_STATIC(ArchiveMan, mSelf)
+
 ArchiveMan *ArchiveMan::self()
 {
-  K_GLOBAL_STATIC(ArchiveMan, mSelf);
   return mSelf;
 }
 
@@ -107,7 +106,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
   docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
 
   docElem.appendChild( xmlTextElement( xmldoc, "date",
-                                       doc->locale()->formatDate( doc->date() ) ) );
+                                       doc->locale()->toString( doc->date() ) ));
 
   root.appendChild( doc->positions().domElement( xmldoc ) );
 
@@ -252,10 +251,9 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 
 QString ArchiveMan::xmlBaseDir() const
 {
-  KStandardDirs stdDirs;
   QString outputDir = KraftSettings::self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
-    outputDir = stdDirs.saveLocation( "data", "kraft/archiveXml", true );
+    outputDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
   }
 
   if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
@@ -265,10 +263,9 @@ QString ArchiveMan::xmlBaseDir() const
 
 QString ArchiveMan::pdfBaseDir() const
 {
-  KStandardDirs stdDirs;
   QString outputDir = KraftSettings::self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
-    outputDir = stdDirs.saveLocation( "data", "kraft/archivePdf", true );
+    outputDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
   }
 
   if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";

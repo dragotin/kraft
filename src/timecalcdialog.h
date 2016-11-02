@@ -27,13 +27,13 @@
 
 class TimeCalcPart;
 
-class TimeCalcDialog : public KDialog, protected Ui::calcdetailTime
+class TimeCalcDialog : public QDialog, protected Ui::calcdetailTime
 {
     Q_OBJECT
 
 public:
-    TimeCalcDialog(QWidget *parent=0, bool modal=FALSE );
-    TimeCalcDialog(TimeCalcPart*, QWidget *parent=0, bool modal=FALSE );
+    TimeCalcDialog(QWidget *parent=0, bool modal=false );
+    TimeCalcDialog(TimeCalcPart*, QWidget *parent=0, bool modal=false);
     virtual ~TimeCalcDialog();
 
     QString getName();

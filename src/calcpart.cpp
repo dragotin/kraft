@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <klocale.h>
 #include <QDebug>
+#include <klocalizedstring.h>
 
 #include "calcpart.h"
 #include "fixcalcpart.h"

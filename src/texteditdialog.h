@@ -20,7 +20,7 @@
 #ifndef TEXTEDITDIALOG_H
 #define TEXTEDITDIALOG_H
 
-#include <kdialog.h>
+#include <QDialog>
 
 #include "ui_texteditbase.h"
 
@@ -32,7 +32,7 @@ class QComboBox;
 class DocText;
 class TextEditBase;
 
-class TextEditDialog: public KDialog
+class TextEditDialog: public QDialog
 {
   Q_OBJECT
 

@@ -120,6 +120,8 @@ public:
 
   int processSqlCommands( const SqlCommandList& );
 
+  KraftDB();
+
 signals:
   void statusMessage( const QString& );
   void processedSqlCommand( bool );
@@ -129,7 +131,6 @@ protected:
   void wipeDatabase();
 
 private: // Private attributes
-  KraftDB();
   void close();
   int checkConnect( const QString&, const QString&,
                     const QString&, const QString& );
@@ -139,7 +140,6 @@ private: // Private attributes
 
   QWidget *mParent;
 
-  static KraftDB *mSelf;
   bool mSuccess;
   const QString EuroTag;
   QString mDatabaseDriver;

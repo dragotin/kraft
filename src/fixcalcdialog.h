@@ -18,7 +18,7 @@
 #ifndef _FIXCALCDIALOG_H
 #define _FIXCALCDIALOG_H
 
-#include <kdialog.h>
+#include <QDialog>
 
 #include "ui_fixpartui.h"  // designer file zeitpartui.ui
 
@@ -28,13 +28,13 @@
 
 class FixCalcPart;
 
-class FixCalcDialog : public KDialog, protected Ui::calcdetailFix
+class FixCalcDialog : public QDialog, protected Ui::calcdetailFix
 {
     Q_OBJECT
 
 public:
-    FixCalcDialog(QWidget *parent=0, bool modal=FALSE );
-    FixCalcDialog(FixCalcPart*, QWidget *parent=0, bool modal=FALSE );
+    FixCalcDialog(QWidget *parent=0, bool modal=false );
+    FixCalcDialog(FixCalcPart*, QWidget *parent=0, bool modal=false );
     virtual ~FixCalcDialog();
 
     QString getName();

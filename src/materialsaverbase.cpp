@@ -33,6 +33,4 @@ MaterialSaverBase::~MaterialSaverBase( )
 
 }
 
-#include "materialsaverbase.moc"
-
 /* END */

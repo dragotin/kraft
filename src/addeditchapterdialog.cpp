@@ -17,11 +17,12 @@
 
 #include <QtGui>
 
-#include <klocale.h>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
+
+#include <klocalizedstring.h>
 
 #include "addeditchapterdialog.h"
 #include "catalogchapter.h"
@@ -48,7 +49,8 @@ AddEditChapterDialog::AddEditChapterDialog( QWidget *parent )
 
 
   QWidget *w = new QWidget(this);
-//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 // Add mainLayout->addWidget(w); if necessary
 
   QVBoxLayout *vbox = new QVBoxLayout;

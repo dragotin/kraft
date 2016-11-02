@@ -25,15 +25,13 @@
 #include <QVBoxLayout>
 #include <QToolTip>
 #include <QMap>
+#include <QDate>
+#include <QDebug>
+#include <QLocale>
 
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
-
-// include files for KDE
-#include <QDebug>
-#include <kvbox.h>
-#include <KConfigGroup>
 
 #include "ui_inserttmplbase.h"
 #include "templtopositiondialogbase.h"
@@ -119,10 +117,10 @@ QString InsertTemplDialog::prepareText( const QString& input )
     QString in(input);
 
     QLocale *locale = DefaultProvider::self()->locale();
-    QString dateStr = locale->formatDate(QDate::currentDate(), QLocale::ShortDate);
+    QString dateStr = locale->toString( QDate::currentDate() );
     in.replace(QL1("{{DATE}}"), dateStr, Qt::CaseInsensitive);
 
-    QString timeStr = locale->formatTime(QTime::currentTime());
+    QString timeStr = locale->toString(QTime::currentTime());
     in.replace(QL1("{{TIME}}"), timeStr, Qt::CaseInsensitive);
 
     if( in.contains(QL1("{{USERNAME}}"))) {

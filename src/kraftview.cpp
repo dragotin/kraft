@@ -34,21 +34,14 @@
 #include <QScrollBar>
 #include <QComboBox>
 #include <QDateTimeEdit>
+#include <QMessageBox>
 
 #include <QDebug>
 #include <QDialog>
-#include <kdatewidget.h>
-#include <ktextedit.h>
-#include <kactioncollection.h>
-#include <kmessagebox.h>
-#include <khtmlview.h>
-#include <kiconloader.h>
-
-#include <kabc/addressee.h>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <KConfigGroup>
 
 // application specific includes
 #include "kraftdb.h"
@@ -74,8 +67,6 @@
 #include "inserttempldialog.h"
 #include "defaultprovider.h"
 #include "stockmaterial.h"
-#include "brunsrecord.h"
-#include "insertplantdialog.h"
 #include "templtopositiondialogbase.h"
 #include "doctype.h"
 #include "catalogtemplate.h"
@@ -95,26 +86,9 @@ KraftView::KraftView(QWidget *parent) :
 {
   setWindowTitle( i18n("Document" ) );
   setModal( false );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
-  m_type = ReadWrite;
 
-  QWidget *w = new QWidget( this );
-
-  QVBoxLayout *vLayoutGlobal = new QVBoxLayout;
-  w->setLayout( vLayoutGlobal );
-//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
-// Add mainLayout->addWidget(w); if necessary
 
   mDetailHeader = new QLabel;
   mDetailHeader->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );
@@ -123,9 +97,7 @@ KraftView::KraftView(QWidget *parent) :
   mDetailHeader->setAutoFillBackground(true);
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL(addresseeFound( const QString&, const KABC::Addressee& )),
-           this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& )));
-
+  // this, SLOT( slotAddresseeFound( const QString&, const KContacts::Addressee& )));
 
   QPalette palette;
   palette.setColor(mDetailHeader->backgroundRole(), QColor( "darkBlue" ));
@@ -137,10 +109,10 @@ KraftView::KraftView(QWidget *parent) :
   f.setPointSize( qRound( 1.4 * f.pointSize() ) );
   f.setBold( true );
   mDetailHeader->setFont( f );
-  vLayoutGlobal->addWidget( mDetailHeader );
+  mainLayout->addWidget( mDetailHeader );
 
-  mCSplit    = new QSplitter( w );
-  vLayoutGlobal->addWidget( mCSplit );
+  mCSplit    = new QSplitter(this);
+  mainLayout->addWidget( mCSplit );
 
   mViewStack = new QStackedWidget;
   mCSplit->addWidget( mViewStack );
@@ -159,9 +131,6 @@ KraftView::KraftView(QWidget *parent) :
             this,  SLOT( slotShowTemplates( bool ) ) );
 
   /* signal that brings a new address to the document */
-  connect( mAssistant, SIGNAL( addressTemplate( const Addressee& ) ),
-           this, SLOT( slotNewAddress( const Addressee& ) ) );
-
   connect( mAssistant, SIGNAL( headerTextTemplate( const QString& ) ),
            this, SLOT( slotNewHeaderText( const QString& ) ) );
 
@@ -182,6 +151,16 @@ KraftView::KraftView(QWidget *parent) :
   mAssistant->slotSelectDocPart( KraftDoc::Header );
 
   setupMappers();
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+  mainLayout->addWidget(buttonBox);
+
 
 }
 
@@ -258,7 +237,7 @@ void KraftView::slotShowTemplates( bool )
 
 void KraftView::setupDocHeaderView()
 {
-    KraftDocHeaderEdit *edit = new KraftDocHeaderEdit(mainWidget);
+    KraftDocHeaderEdit *edit = new KraftDocHeaderEdit(this);
 
     mHeaderId = mViewStack->addWidget( edit ); // , KraftDoc::Header );
 
@@ -286,7 +265,7 @@ void KraftView::setupDocHeaderView()
 
 void KraftView::setupItems()
 {
-    KraftDocPositionsEdit *edit = new KraftDocPositionsEdit(mainWidget);
+    KraftDocPositionsEdit *edit = new KraftDocPositionsEdit(this);
     mDocPosEditorIndx = mViewStack->addWidget( edit ); // , KraftDoc::Positions );
 
     m_positionScroll = edit->positionScroll();
@@ -352,15 +331,15 @@ void KraftView::slotPickAddressee()
     AkonadiAddressSelectorDialog dialog(this);
 
     if( dialog.exec() ) {
-        slotNewAddress( dialog.addressee() );
+        // slotNewAddress( dialog.addressee() );
     }
 }
 
-void KraftView::slotAddresseeFound( const QString& uid, const KABC::Addressee& contact )
+void KraftView::slotAddresseeFound( const QString& uid, const KContacts::Addressee& contact )
 {
     if( !contact.isEmpty() ) {
         // qDebug () << "Addressee Found with uid " << uid;
-        slotNewAddress( contact, false );
+        // slotNewAddress( contact, false );
         // qDebug () << "The loaded Contact has this realname: " << contact.realName() << endl;
     } else {
         // qDebug () << "No contact found for uid " << uid;
@@ -522,7 +501,7 @@ void KraftView::refreshPostCard()
 
   if ( mAssistant->postCard() ) {
     QDate d = m_headerEdit->m_dateEdit->date();
-    const QString dStr = getDocument()->locale()->formatDate( d );
+    const QString dStr = getDocument()->locale()->toString( d, getDocument()->locale()->dateFormat(QLocale::ShortFormat));
 
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->toPlainText(),
@@ -559,7 +538,7 @@ void KraftView::refreshPostCard()
 
 void KraftView::setupFooter()
 {
-  m_footerEdit = new KraftDocFooterEdit(mainWidget);
+  m_footerEdit = new KraftDocFooterEdit(this);
 
   mViewStack->addWidget( m_footerEdit ); //  KraftDoc::Footer );
 
@@ -629,8 +608,10 @@ void KraftView::slotTaxComboChanged(int newId)
   if( mTaxBefore == INDI_TAX ) {
     // we're changing away from individual settings. WARNING needed.
     // qDebug () << "You switch away from item individual tax settings.";
-    if( KMessageBox::questionYesNo( this, i18n("Really overwrite all individual tax settings of the items?"),
-                                         i18n("Tax Settings Overwrite") ) == KMessageBox::No ) {
+    if( QMessageBox::question( this,
+                               i18n("Tax Settings Overwrite"),
+                               i18n("Really overwrite all individual tax settings of the items?")
+                               ) == QMessageBox::No ) {
       m_footerEdit->ui()->mTaxCombo->setCurrentIndex( INDI_TAX );
       return;
     }
@@ -779,50 +760,41 @@ void KraftView::slotPositionModified( int pos )
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
-void KraftView::slotNewAddress( const Addressee& contact, bool interactive )
+void KraftView::slotAddressFound(const QString& uid, const KContacts::Addressee& contact)
 {
+    const QString currAddress = m_headerEdit->m_postAddressEdit->toPlainText();
+    const QString newAddress = mAddressProvider->formattedAddress(contact);
+    bool replace = true;
 
-  Addressee adr( contact );
-
-  if( contact.isEmpty() ) {
-    return;
-  }
-  QString newAddress = mAddressProvider->formattedAddress( contact );
-  const QString currAddress = m_headerEdit->m_postAddressEdit->toPlainText();
-
-  bool replace = true;
-  m_headerEdit->m_labName->setText( contact.realName() );
-
-  if( currAddress.isEmpty() ) {
-    replace = true;
-  } else if( currAddress != newAddress ) {
-    // non empty and current different from new address
-    // need to ask first if we overwrite
-    if( interactive ) {
-        if( KMessageBox::questionYesNo( this, i18n("The address label is not empty and different from the selected one.<br/>"
-                                                   "Do you really want to replace it with the text shown below?<pre>%1</pre>").arg(newAddress),
-                                     i18n("Address Overwrite") ) == KMessageBox::No ) replace = false;
-    } else {
-      // this happens when the document is loaded and the address arrives from addressbook
-      replace = false;
+    if( currAddress.isEmpty() ) {
+        replace = true;
+    } else if(currAddress != newAddress) {
+        // non empty and current different from new address
+        // need to ask first if we overwrite
+        if( QMessageBox::question( this, i18n("Address Overwrite"),
+                                   i18n("The address label is not empty and different from the selected one.<br/>"
+                                        "Do you really want to replace it with the text shown below?<pre>%1</pre>").arg(newAddress)
+                                   ) == QMessageBox::No ) {
+            replace = false;
+        }
+    } else if( currAddress == newAddress ) {
+        // both are equal, no action needed
+        return;
     }
-  } else if( currAddress == newAddress ) {
-    // both are equal, no action needed
-    return;
-  }
 
-  if( replace ) {
-    mContactUid = contact.uid();
+    if( replace ) {
+        mContactUid = uid;
+        m_headerEdit->m_labName->setText( contact.realName() );
 
-    m_headerEdit->m_postAddressEdit->setText( newAddress );
+        m_headerEdit->m_postAddressEdit->setText( newAddress );
 
-    // Generate the welcome
-    m_headerEdit->m_letterHead->clear();
-    QStringList li = generateLetterHead( adr );
+        // Generate the welcome
+        m_headerEdit->m_letterHead->clear();
+        QStringList li = generateLetterHead( contact.familyName(), contact.givenName() );
 
-    m_headerEdit->m_letterHead->insertItems(-1, li );
-    m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
-  }
+        m_headerEdit->m_letterHead->insertItems(-1, li );
+        m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
+    }
 }
 
 void KraftView::slotDocTypeChanged( const QString& newType )
@@ -853,7 +825,9 @@ void KraftView::slotLanguageSettings()
   DocLocaleDialog dia( this );
   QLocale *l = m_doc->locale();
 
+  // FIXME locale.
   if ( m_doc ) {
+#if 0
     dia.setLocale( l->country(), l->language() );
 
     if ( dia.exec() == QDialog::Accepted  ) {
@@ -874,6 +848,7 @@ void KraftView::slotLanguageSettings()
         refreshPostCard();
       }
     }
+#endif
   }
 }
 
@@ -947,12 +922,6 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
         dp->setUnitPrice( mat->salesPrice() );
         s = KraftSettings::self()->templateToPosDialogSize();
 
-      } else if ( kat->type() == PlantCatalog ) {
-        dia = new InsertPlantDialog( this );
-        InsertPlantDialog *plantDia = static_cast<InsertPlantDialog*>( dia );
-        BrunsRecord *bruns = static_cast<BrunsRecord*>( tmpl );
-        plantDia->setSelectedPlant( bruns );
-        s = KraftSettings::self()->plantTemplateToPosDialogSize();
       }
     }
   }
@@ -1176,7 +1145,7 @@ DocPositionList KraftView::currentPositionList()
                   if ( w1->priceValid() ) {
                     sum += w1->currentPrice();
                     // qDebug () << "Summing up pos with text " << w1->ordNumber() << " and price "
-                              << w1->currentPrice().toLong() << endl;
+                             // << w1->currentPrice().toLong() << endl;
                   } else {
                     calculatable = false; // give up, we continue in outerIt
                     // qDebug () << "We skip pos " << w1->ordNumber() << endl;
@@ -1198,8 +1167,8 @@ DocPositionList KraftView::currentPositionList()
 
             // replace some tags in the text
 
-            replaceMap["%DISCOUNT"]     = getDocument()->locale()->formatNumber( discount );
-            replaceMap["%ABS_DISCOUNT"] = getDocument()->locale()->formatNumber( qAbs( discount ) );
+            replaceMap["%DISCOUNT"]     = getDocument()->locale()->toString( discount );
+            replaceMap["%ABS_DISCOUNT"] = getDocument()->locale()->toString( qAbs( discount ) );
 
           } else {
             /* Type is ordinary position */
@@ -1303,13 +1272,13 @@ void KraftView::slotModifiedFooter()
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
-QStringList KraftView::generateLetterHead( Addressee adr )
+QStringList KraftView::generateLetterHead( const QString& familyName, const QString& givenName )
 {
     QStringList s;
 
     KraftDB::StringMap m;
-    m[ "%NAME"]       = adr.familyName();
-    m[ "%GIVEN_NAME"] = adr.givenName();
+    m[ "%NAME"]       = familyName;
+    m[ "%GIVEN_NAME"] = givenName;
 
     return KraftDB::self()->wordList( "salut", m );
 }
@@ -1397,12 +1366,16 @@ void KraftView::slotFocusItem( PositionViewWidget *posWidget, int pos )
 bool KraftView::documentModifiedMessageBox()
 {
   if ( mModified ) {
-    if ( KMessageBox::warningContinueCancel( this, i18n( "The document was modified. Do "
-                                                         "you really want to discard all changes?" ),
-                                             i18n( "Document Modified" ), KGuiItem( i18n( "Discard" ), QIcon::fromTheme("edit-clear") ) )
-      == KMessageBox::Cancel  ) {
-      return false;
-    }
+      QMessageBox msgBox;
+      msgBox.setText(i18n("The document has been modified."));
+      msgBox.setInformativeText(i18n("Do you want to save your changes?"));
+      msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+      msgBox.setDefaultButton(QMessageBox::Save);
+      int ret = msgBox.exec();
+
+      if( ret == QMessageBox::Cancel  ) {
+          return false;
+      }
   }
   return true;
 

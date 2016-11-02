@@ -21,17 +21,15 @@
 #include <QFormLayout>
 #include <QPushButton>
 
-#include <kabc/addressee.h>
-
-#include <ktextedit.h>
-#include <khbox.h>
-#include <krun.h>
-#include <klocale.h>
+#include <kcontacts/addressee.h>
+#include <QComboBox>
 #include <QDialog>
-#include <kcombobox.h>
-#include <kdatewidget.h>
+#include <QDateEdit>
 #include <QDebug>
-#include <KConfigGroup>
+#include <QTextEdit>
+
+#include <klocalizedstring.h>
+#include <kassistantdialog.h>
 
 #include "newdocassistant.h"
 #include "addressselection.h"
@@ -113,16 +111,16 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
 //   QLabel *l = new QLabel( i18n( "Some Document Details: " ), vbox );
 //TODO PORT QT5 //  l->setMargin( QDialog::marginHint() );
 
-  mTypeCombo = new KComboBox;
+  mTypeCombo = new QComboBox;
   mTypeCombo->insertItems( 0, DocType::allLocalised() );
   mTypeCombo->setCurrentIndex( mTypeCombo->findText( DefaultProvider::self()->docType() ));
   grid->addRow( i18n("Document &Type:"), mTypeCombo );
 
-  mDateEdit = new KDateWidget;
+  mDateEdit = new QDateEdit;
   mDateEdit->setDate( QDate::currentDate() );
   grid->addRow( i18n( "Document Date: " ), mDateEdit );
 
-  mWhiteboardEdit = new KTextEdit;
+  mWhiteboardEdit = new QTextEdit;
   grid->addRow( i18n( "Whiteboard Content:" ), mWhiteboardEdit );
 
   vbox->addStretch( 1 );
@@ -145,8 +143,9 @@ KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
   setObjectName( name );
   setModal( modal );
 
-  KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
-  restoreDialogSize( config );
+  // FIXME porting KF5: Save and restore the dialog size
+  // KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
+  // restoreDialogSize( config );
 }
 
 KraftWizard::~KraftWizard()
@@ -175,8 +174,9 @@ void KraftWizard::init()
 void KraftWizard::slotFinished()
 {
   mCustomerPage->saveState();
-  KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
-  saveDialogSize( config );
+  // FIXME porting: Dialog size save
+  // KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
+  // saveDialogSize( config );
 }
 
 void KraftWizard::slotAddressee( const Addressee& addressee )

@@ -37,7 +37,7 @@
       </widget>
      </item>
      <item>
-      <widget class="KDateWidget" name="mDateWidget"/>
+      <widget class="QDateEdit" name="mDateWidget"/>
      </item>
     </layout>
    </item>
@@ -60,7 +60,7 @@
    <item row="2" column="1">
     <layout class="QGridLayout">
      <item row="0" column="1">
-      <widget class="QDoubleSpinBox" name="mFullTax"/>
+      <widget class="QSpinBox" name="mFullTax"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="textLabel2_2">
@@ -76,7 +76,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="mReducedTax"/>
+      <widget class="QSpinBox" name="mReducedTax"/>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="textLabel2a">
@@ -96,17 +96,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>QDoubleSpinBox</class>
-   <extends>QWidget</extends>
-  </customwidget>
-  <customwidget>
-   <class>KDateWidget</class>
-   <extends>QWidget</extends>
-   <header>kdatewidget.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

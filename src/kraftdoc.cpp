@@ -21,10 +21,12 @@
 
 // include files for KDE
 #include <kmessagebox.h>
-#include <kabc/addressbook.h>
-#include <kabc/stdaddressbook.h>
-#include <kabc/addresseedialog.h>
-#include <kabc/addressee.h>
+#if 0
+#include <kcontacts/addressbook.h>
+#include <kcontacts/stdaddressbook.h>
+#include <kcontacts/addresseedialog.h>
+#include <kcontacts/addressee.h>
+#endif
 #include <QDebug>
 
 // application specific includes
@@ -329,12 +331,12 @@ Geld KraftDoc::vatSum()
 
 QString KraftDoc::country() const
 {
-  return mLocale->country();
+  return mLocale->countryToString(mLocale->country());
 }
 
 QString KraftDoc::language() const
 {
-  return mLocale->language();
+  return mLocale->languageToString(mLocale->language());
 }
 
 QLocale* KraftDoc::locale()
@@ -344,10 +346,12 @@ QLocale* KraftDoc::locale()
 
 void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
 {
+  // FIXME Porting: set the country and language.
+    //
   // qDebug ()<< "Setting country " << country << " and lang " << lang << endl;
-  KConfig *cfg = KGlobal::config().data();
-  mLocale->setCountry( country, cfg );
-  mLocale->setLanguage( lang, cfg );
+  // KConfig *cfg = KGlobal::config().data();
+  // mLocale->setCountry( country, cfg );
+  // mLocale->setLanguage( lang, cfg );
   mPositions.setLocale( mLocale );
 }
 

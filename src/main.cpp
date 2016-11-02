@@ -19,8 +19,6 @@
 #include <QImage>
 #include <QPalette>
 
-#include <kaboutdata.h>
-#include <ksplashscreen.h>
 #include <klocalizedstring.h>
 #include <QDebug>
 #include <QApplication>
@@ -29,6 +27,7 @@
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QStandardPaths>
+#include <QSplashScreen>
 
 #include "version.h"
 #include "portal.h"
@@ -61,6 +60,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
     QCommandLineParser parser;
+
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();
     parser.addHelpOption();
@@ -80,12 +80,12 @@ int main(int argc, char *argv[])
         RESTORE(Portal);
     } else {
         QString splashFile = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "kraft/pics/kraftsplash.png" );
-        KSplashScreen *splash = 0;
+        QSplashScreen *splash = 0;
 
         if( !splashFile.isEmpty()) {
             QPixmap pixmap( splashFile );
 
-            splash = new KSplashScreen( pixmap, Qt::WindowStaysOnTopHint );
+            splash = new QSplashScreen( pixmap, Qt::WindowStaysOnTopHint );
             splash->setMask(pixmap.mask());
             splash->show();
         }

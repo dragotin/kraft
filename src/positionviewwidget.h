@@ -33,7 +33,7 @@
 	@author Klaas Freitag <freitag@kde.org>
 */
 class KMenu;
-class KAction;
+class QAction;
 class Geld;
 class QLocale;
 class DosPositionGuardedPtr;
@@ -118,7 +118,7 @@ private:
     int  mOrdNumber;
 
     DocPositionGuardedPtr mPositionPtr;
-    KMenu *mExecPopup;
+    QMenu *mExecPopup;
     QMenu *mStateSubmenu;
     QMenu *mTaxSubmenu;
 

@@ -26,19 +26,17 @@ class dbID;
 
 class DocDigestHtmlView : public HtmlView
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     DocDigestHtmlView( QWidget *parent );
 
-  signals:
+signals:
     void showLastPrint( const dbID& );
 
-  protected:
-    // virtual void writeBottomFrame();
-    bool urlSelected( const QString&, int, int,
-                      const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments & );
-  private:
+protected slots:
+    void slotLinkClicked(const QUrl& url);
+
 };
 
 class DocDigestDetailView : public QWidget

@@ -21,7 +21,6 @@
 #include <QSqlTableModel>
 
 // include files for KDE
-#include <klocale.h>
 #include <QDebug>
 
 #include "kraftdb.h"

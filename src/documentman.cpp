@@ -18,15 +18,15 @@
 #include <QSqlDriver>
 
 #include <QDebug>
-#include <kglobal.h>
 
 #include "documentman.h"
 #include "docdigest.h"
 #include "kraftdb.h"
 
+Q_GLOBAL_STATIC(DocumentMan, mSelf)
+
 DocumentMan *DocumentMan::self()
 {
-  K_GLOBAL_STATIC(DocumentMan, mSelf);
   return mSelf;
 }
 

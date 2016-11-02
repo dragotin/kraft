@@ -24,15 +24,13 @@
 #include <QSqlQuery>
 #include <QSpinBox>
 #include <QListWidget>
+#include <QLocale>
+#include <QIcon>
+#include <QMessageBox>
+#include <QInputDialog>
 
 #include <QDialog>
-#include <klocale.h>
-#include <kiconloader.h>
-#include <kmessagebox.h>
-#include <kurlrequester.h>
-#include <kinputdialog.h>
 #include <QDebug>
-#include <KConfigGroup>
 
 #include "prefsdialog.h"
 #include "kraftsettings.h"
@@ -97,13 +95,13 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   fillNumberCycleCombo();
   DocType dt( dtype );
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
-
+#if 0
   mTemplateUrl->setFilter( "*.trml" );
   mWatermarkUrl->setFilter( "*.pdf" );
 
   mTemplateUrl->setUrl( dt.templateFile() );
   mWatermarkUrl->setUrl( dt.watermarkFile() );
-
+#endif
   int newMode = dt.mergeIdent().toInt();
   mWatermarkCombo->setCurrentIndex( newMode );
   bool state = true;
@@ -129,7 +127,7 @@ void DocTypeEdit::slotAddDocType()
 {
   // qDebug () << "Adding a doctype!";
 
-  QString newName = KInputDialog::getText( i18n( "Add Document Type" ),
+  QString newName = QInputDialog::getText( this, i18n( "Add Document Type" ),
                                            i18n( "Enter the name of a new document type" ) );
   if ( newName.isEmpty() ) return;
   // qDebug () << "New Name to add: " << newName;
@@ -154,8 +152,10 @@ void DocTypeEdit::slotEditDocType()
 
   if ( currName.isEmpty() ) return;
 
-  QString newName = KInputDialog::getText( i18n( "Add Document Type" ),
+  QString newName = QInputDialog::getText( this,
+                                           i18n( "Add Document Type" ),
                                            i18n( "Edit the name of a document type" ),
+                                           QLineEdit::Normal,
                                            currName );
   if ( newName.isEmpty() ) return;
   // qDebug () << "edit: " << currName << " became " << newName;
@@ -242,8 +242,8 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     // qDebug () << "previous docType taken from ChangedDocTypes: ";
   }
   prevType.setNumberCycleName( mNumberCycleCombo->currentText() );
-  prevType.setTemplateFile( mTemplateUrl->url().toLocalFile() );
-  prevType.setWatermarkFile( mWatermarkUrl->url().toLocalFile() );
+  prevType.setTemplateFile( mTemplateUrl->text() );
+  prevType.setWatermarkFile( mWatermarkUrl->text() );
   prevType.setMergeIdent( QString::number( mWatermarkCombo->currentIndex() ) );
   mChangedDocTypes[mPreviousType] = prevType;
 
@@ -255,9 +255,9 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
   // mHeader->setText( i18n( "Details for %1:" ).arg( dt.name() ) );
   mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
-  mTemplateUrl->setUrl( dt.templateFile() );
+  mTemplateUrl->setText( dt.templateFile() );
 
-  mWatermarkUrl->setUrl( dt.watermarkFile() );
+  mWatermarkUrl->setText( dt.watermarkFile() );
   int mergeIdent = dt.mergeIdent().toInt();
   mWatermarkCombo->setCurrentIndex( mergeIdent );
   mWatermarkUrl->setEnabled( mergeIdent > 0 );

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          brunskatalogview.cpp
+                          materialkatalogview.cpp
                              -------------------
     begin                : 2005-07-26
     copyright            : (C) 2005 by Klaas Freitag
@@ -20,8 +20,7 @@
 #include <QSplitter>
 
 #include <QDebug>
-#include <klocale.h>
-#include <kmessagebox.h>
+#include <QMessageBox>
 
 #include "katalogman.h"
 #include "materialkatalogview.h"
@@ -128,13 +127,15 @@ void MaterialKatalogView::slDeleteTemplate()
     StockMaterial *currTempl = static_cast<StockMaterial*> (listview->currentItemData());
     if( currTempl ) {
       int id = currTempl->getID();
-      if( KMessageBox::questionYesNo( this,
-                                     i18n( "Do you really want to delete the template from the catalog?" ),
-                                     i18n( "Delete Template" ),
-                                     KStandardGuiItem::yes(), KStandardGuiItem::no(), "DeleteTemplate" )
-          == KMessageBox::Yes )
-      {
 
+      QMessageBox msgBox;
+      msgBox.setText(i18n( "Do you really want to delete the template from the catalog?"));
+
+      msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+      msgBox.setDefaultButton(QMessageBox::Yes);
+      int ret = msgBox.exec();
+
+      if ( ret == QMessageBox::Yes) {
         // qDebug () << "Delete item with id " << id;
         MatKatalog *k = static_cast<MatKatalog*>( getKatalog( m_katalogName ) );
 

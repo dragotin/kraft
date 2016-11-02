@@ -6,6 +6,13 @@ add_subdirectory(pics)
 ########### next target ###############
 
 set(kraft_SRCS
+    attribute.cpp
+    einheit.cpp
+    doctype.cpp
+    numbercycle.cpp
+    katalogman.cpp
+    stdsatzman.cpp
+    katalog.cpp
     templkatalog.cpp
     docposition.cpp
     matkatalog.cpp
@@ -17,6 +24,8 @@ set(kraft_SRCS
     kraftview.cpp
     kraftdoc.cpp
     main.cpp
+    catalogchapter.cpp
+    addeditchapterdialog.cpp
     unitmanager.cpp
     stockmaterial.cpp
     stockmaterialman.cpp
@@ -35,6 +44,8 @@ set(kraft_SRCS
     prefsdialog.cpp
     prefswages.cpp
     prefsunits.cpp
+    katalogview.cpp
+    kataloglistview.cpp
     templkatalogview.cpp
     templkataloglistview.cpp
     positionviewwidget.cpp
@@ -44,12 +55,14 @@ set(kraft_SRCS
     docdigest.cpp
     docdigestview.cpp
     doctypeedit.cpp
+    doctext.cpp
     portal.cpp
     portalview.cpp
     archiveman.cpp
     reportgenerator.cpp
     htmlview.cpp
     docpostcard.cpp
+    catalogtemplate.cpp
     catalogselection.cpp
     kraftdocheaderedit.cpp
     kraftdocfooteredit.cpp
@@ -63,7 +76,6 @@ set(kraft_SRCS
     kraftdocpositionsedit.cpp
     portalhtmlview.cpp
     templtopositiondialogbase.cpp
-    insertplantdialog.cpp
     textselection.cpp
     newdocassistant.cpp
     docassistant.cpp
@@ -87,13 +99,14 @@ set(kraft_SRCS
     models/documentmodel.cpp
     models/documentproxymodels.cpp
     docdigestdetailview.cpp
-    external/ktreeviewsearchline.cpp
     addressprovider.cpp
     akonadiaddressselector.cpp
     akonadiaddressselectordialog.cpp
     models/globalcontactmodel.cpp
     quicksearchwidget.cpp
     kraftdb.cpp
+    geld.cpp
+    defaultprovider.cpp
 )
 
 kconfig_add_kcfg_files(kraft_SRCS
@@ -117,7 +130,6 @@ ki18n_wrap_ui(kraft_SRCS
     matpartui.ui
     inserttmplbase.ui
     materialdialog.ui
-    insertplantbase.ui
     docheader.ui
     positionwidget.ui
     docfooter.ui
@@ -142,13 +154,22 @@ PUBLIC
     Qt5::Core
     Qt5::Widgets
     Qt5::Sql
-    KF5::ConfigWidgets
+    Qt5::WebKit
+    Qt5::WebKitWidgets
+    
     KF5::CoreAddons
     KF5::GlobalAccel
     KF5::I18n
     KF5::NotifyConfig
     KF5::WidgetsAddons
     KF5::XmlGui
+    KF5::Contacts
+    KF5::AkonadiCore
+    KF5::AkonadiContact
+    KF5::AkonadiAgentBase 
+    KF5::AkonadiWidgets 
+    KF5::AkonadiXml
+    ${CTEMPLATE_LIBRARIES} pthread
 )
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})

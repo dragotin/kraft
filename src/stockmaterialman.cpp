@@ -20,12 +20,14 @@
 
 // include files for KDE
 #include <QDebug>
+#include <QGlobalStatic>
 
 #include "stockmaterialman.h"
 
+Q_GLOBAL_STATIC(StockMaterialMan, mSelf)
+
 StockMaterialMan* StockMaterialMan::self()
 {
-  K_GLOBAL_STATIC(StockMaterialMan, mSelf);
   return mSelf;
 }
 

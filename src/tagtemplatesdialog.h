@@ -22,7 +22,7 @@
 
 #include <qmap.h>
 
-#include <kdialog.h>
+#include <QDialog>
 
 #include "tagman.h"
 
@@ -32,11 +32,10 @@ class QTreeWidgetItem;
 class QStringList;
 class FilterHeader;
 class QPushButton;
-class KColorButton;
-class KLineEdit;
-class KTextEdit;
+class QLineEdit;
+class QTextEdit;
 
-class TagTemplateEditor: public KDialog
+class TagTemplateEditor: public QDialog
 {
   Q_OBJECT
 
@@ -49,13 +48,13 @@ class TagTemplateEditor: public KDialog
    
 private:
   TagTemplate mOrigTemplate;
-  KLineEdit *mNameEdit;
-  KTextEdit *mDescriptionEdit;
-  KColorButton *mColorButton;
+  QLineEdit *mNameEdit;
+  QTextEdit *mDescriptionEdit;
+  QPushButton *mColorButton;
     
 };
 
-class TagTemplatesDialog: public KDialog
+class TagTemplatesDialog: public QDialog
 {
   Q_OBJECT
 

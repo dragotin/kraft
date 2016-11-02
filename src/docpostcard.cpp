@@ -18,13 +18,11 @@
 #include "docpostcard.h"
 #include "kraftdoc.h"
 
-#include <klocale.h>
-#include <kglobal.h>
+#include <KLocalizedString>
+#include <QLocale>
 #include <QUrl>
-#include <khtmlview.h>
-
+#include <QStandardPaths>
 #include <QDebug>
-#include <kstandarddirs.h>
 #include <QTextDocument>
 
 #define QL1(X) QLatin1String(X)
@@ -296,6 +294,7 @@ QString DocPostCard::linkBit( const QString& url, const QString& display ) const
   return QString( "<a href=\"%1\">%2</a> " ).arg( url ).arg( display );
 }
 
+#if 0
 bool DocPostCard::urlSelected (const QString &url, int, int, const QString &,
                     const KParts::OpenUrlArguments &,
                     const KParts::BrowserArguments &)
@@ -321,6 +320,7 @@ bool DocPostCard::urlSelected (const QString &url, int, int, const QString &,
   }
   return true;
 }
+#endif
 
 void DocPostCard::slotSetMode( DisplayMode mode, int id ) {
   mMode = mode;

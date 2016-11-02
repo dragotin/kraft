@@ -20,10 +20,8 @@
 
 #include <QSet>
 
-#include <kdeversion.h>
-
-#include <kabc/addressee.h>
-#include <akonadi/job.h>
+#include <kcontacts/addressee.h>
+// #include <akonadi/job.h>
 
 #include <kjob.h>
 
@@ -34,20 +32,19 @@ public:
   AddressProvider( QObject* parent = 0 );
 
   void getAddressee( const QString& uid );
-  QString formattedAddress( const KABC::Addressee& ) const;
+  QString formattedAddress( const KContacts::Addressee& ) const;
 
 protected slots:
   void searchResult( KJob* );
 signals:
   //
-  void addresseeFound( const QString&, const KABC::Addressee& );
+  void addresseeFound( const QString&, const KContacts::Addressee& );
+  void formattedAddressFound( const QString& uid, const QString& addressString );
 
   // emitted when the search is finished, even if there was no result.
   void finished( int );
 
 private:
-  KJob *searchAddressGID( const QString& );
-
   QMap<KJob*, QString> mUidSearchJobs;
   QSet<QString>        mUidSearches;
 };

@@ -20,7 +20,6 @@
 #include <QString>
 
 // include files for KDE
-#include <klocale.h>
 #include <QDebug>
 #include <kmessagebox.h>
 #include <KConfigGroup>
@@ -49,10 +48,6 @@ MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, bool modal )
   setupUi( w );
   setModal( modal );
   QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
   QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
   okButton->setDefault(true);
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);

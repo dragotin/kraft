@@ -15,14 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-// include files for Qt
 #include <QList>
 #include <QString>
-
-// include files for KDE
-#include <klocale.h>
+#include <QLocale>
 #include <QDebug>
-#include <kglobal.h>
 
 // application specific includes
 #include "einheit.h"

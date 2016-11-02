@@ -18,12 +18,10 @@
 #include <QString>
 #include <QSqlQuery>
 #include <QDateTime>
-
-// include files for KDE
-#include <kglobal.h>
-
-#include <klocale.h>
+#include <QLocale>
 #include <QDebug>
+
+#include <KLocalizedString>
 
 // application specific includes
 #include "archdoc.h"
@@ -57,7 +55,7 @@ QString ArchDoc::docIdentifier() const
 {
   QString re = docType();
 
-  return i18n("%1 for %2 (Id %3)").arg( docType() ).arg( ident() );
+  return i18n("%1 for %2 (Id %3)").arg( re ).arg( ident() );
 }
 
 Geld ArchDoc::nettoSum()
@@ -136,11 +134,13 @@ void ArchDoc::loadFromDb( dbID id )
     mReducedTax   = q.value( 15 ).toDouble();
     mState        = q.value( 16 ).toInt();
 
+    // FIXME Porting: Handle Locale properly.
+#if 0
     KConfig *cfg = KGlobal::config().data();
     mLocale.setCountry( country, cfg );
     mLocale.setLanguage( lang , cfg );
-
-    loadPositions( docID );
+#endif
+    loadItems( docID );
 
     mAttributes.load(id);
   } else {
@@ -148,7 +148,7 @@ void ArchDoc::loadFromDb( dbID id )
   }
 }
 
-void ArchDoc::loadPositions( const QString& archDocId )
+void ArchDoc::loadItems( const QString& archDocId )
 {
   mPositions.clear();
 
@@ -237,7 +237,7 @@ ArchDocDigest::~ArchDocDigest()
 
 QString ArchDocDigest::printDateString() const
 {
-  return DefaultProvider::self()->locale()->formatDateTime( mPrintDate, QLocale::ShortDate );
+    return DefaultProvider::self()->locale()->toString( mPrintDate, QLocale::ShortFormat);
 }
 
 /* ###################################################################### */

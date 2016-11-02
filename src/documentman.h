@@ -43,6 +43,8 @@ class DocumentMan
     double reducedTax( const QDate& );
     void clearTaxCache();
 
+    DocumentMan();
+
   private:
     bool readTaxes( const QDate& );
     DocDigest digestFromQuery( QSqlQuery& );
@@ -52,9 +54,7 @@ class DocumentMan
     double mReducedTax;
     QDate  mTaxDate;
 
-    DocumentMan();
 
-    static DocumentMan *mSelf;
 };
 
 #endif

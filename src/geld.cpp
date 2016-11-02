@@ -18,9 +18,7 @@
 // include files for Qt
 
 // include files for KDE
-#include <klocale.h>
 #include <QDebug>
-#include <kglobal.h>
 
 #include "geld.h"
 #include "defaultprovider.h"
@@ -100,10 +98,10 @@ bool Geld::operator!=(Geld g)
 
 QString Geld::toString( QLocale *loc ) const
 {
-  if( ! loc ) {
-    loc =  KGlobal::locale();
-  }
-    return loc->formatMoney(m_cent/100.0);
+    QLocale locale;
+    if( !loc ) loc = &locale;
+
+    return loc->toCurrencyString(m_cent/100.0);
 }
 
 QString Geld::toHtmlString( QLocale *loc ) const

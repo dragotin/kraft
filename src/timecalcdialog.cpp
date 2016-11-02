@@ -18,11 +18,8 @@
 // include files for Qt
 #include <QComboBox>
 #include <QCheckBox>
-
-// include files for KDE
 #include <QDebug>
-#include <klineedit.h>
-#include <KConfigGroup>
+#include <QDialog>
 
 #include "timecalcdialog.h"
 #include "timecalcpart.h"

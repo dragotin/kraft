@@ -16,13 +16,9 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QStringList>
+#include <QtCore>
 #include <QSqlQuery>
-
-// include files for KDE
-#include <klocale.h>
-#include <QDebug>
-#include <kglobal.h>
+#include <QGlobalStatic>
 
 #include "kraftdb.h"
 #include "katalogman.h"
@@ -30,9 +26,10 @@
 #include "templkatalog.h"
 #include "materialkatalogview.h"
 
+Q_GLOBAL_STATIC(KatalogMan, mSelf)
+
 KatalogMan *KatalogMan::self()
 {
-  K_GLOBAL_STATIC(KatalogMan, mSelf);
   return mSelf;
 }
 

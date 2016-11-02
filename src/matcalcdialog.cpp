@@ -16,12 +16,9 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <qlabel.h>
-
-// include files for KDE
-#include <klocale.h>
+#include <QLabel>
 #include <QDebug>
-#include <KConfigGroup>
+#include <QDoubleSpinBox>
 
 #include "matcalcdialog.h"
 #include "materialcalcpart.h"

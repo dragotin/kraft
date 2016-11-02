@@ -22,7 +22,7 @@
 #include <QProcess>
 #include <QDataStream>
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 #include <kprocess.h>
 
@@ -37,67 +37,66 @@ class TextTemplate;
 
 class ReportGenerator : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  ~ReportGenerator();
+    ReportGenerator();
+    ~ReportGenerator();
 
-  static ReportGenerator *self();
+    static ReportGenerator *self();
 
-  void runTrml2Pdf( const QString&, const QString&, const QString& );
-  QStringList findTrml2Pdf();
+    void runTrml2Pdf( const QString&, const QString&, const QString& );
+    QStringList findTrml2Pdf();
 
 signals:
-  void pdfAvailable( const QString& );
-  void templateGenerated( const QString& );
+    void pdfAvailable( const QString& );
+    void templateGenerated( const QString& );
 
 public slots:
-  void createPdfFromArchive( const QString&, dbID );
-  void setMyContact( const KABC::Addressee& );
+    void createPdfFromArchive( const QString&, dbID );
+    void setMyContact( const KContacts::Addressee& );
 
 protected:
 
 protected slots:
-  void trml2pdfFinished( int );
-  void slotReceivedStdout();
-  void slotReceivedStderr();
-  void slotError( QProcess::ProcessError );
-  void slotConvertTemplate( const QString& );
-  void slotAddresseeFound( const QString&, const KABC::Addressee& );
-  void slotAddresseeSearchFinished( int );
+    void trml2pdfFinished( int );
+    void slotReceivedStdout();
+    void slotReceivedStderr();
+    void slotError( QProcess::ProcessError );
+    void slotConvertTemplate( const QString& );
+    void slotAddresseeFound( const QString&, const KContacts::Addressee& );
+    void slotAddresseeSearchFinished( int );
 
 private:
-  void fillupTemplateFromArchive( const dbID& );
-  QString findTemplate( const QString& );
-  void contactToTemplate( TextTemplate*, const QString&, const KABC::Addressee& );
-  QString registerDictionary( const QString&, const QString& ) const;
-  QString registerTag( const QString&, const QString& ) const;
-  QString registerDictTag( const QString&, const QString&, const QString& ) const;
+    void fillupTemplateFromArchive( const dbID& );
+    QString findTemplate( const QString& );
+    void contactToTemplate( TextTemplate*, const QString&, const KContacts::Addressee& );
+    QString registerDictionary( const QString&, const QString& ) const;
+    QString registerTag( const QString&, const QString& ) const;
+    QString registerDictTag( const QString&, const QString&, const QString& ) const;
 
-  
-  QString escapeTrml2pdfXML( const QString& str ) const;
 
-  QString rmlString( const QString& str, const QString& paraStyle = QString() ) const;
+    QString escapeTrml2pdfXML( const QString& str ) const;
 
-  ReportGenerator();
+    QString rmlString( const QString& str, const QString& paraStyle = QString() ) const;
 
-  QString   mErrors;
-  QString   mMergeIdent;
-  bool      mHavePdfMerge;
-  QString   mWatermarkFile;
-  QString   mDocId;
-  dbID      mArchId;
-  long      mOutputSize;
 
-  KABC::Addressee mCustomerContact;
-  KABC::Addressee myContact;
+    QString   mErrors;
+    QString   mMergeIdent;
+    bool      mHavePdfMerge;
+    QString   mWatermarkFile;
+    QString   mDocId;
+    dbID      mArchId;
+    long      mOutputSize;
 
-  QFile mFile;
-  QDataStream mTargetStream;
-  ArchDoc *mArchDoc;
-  static ReportGenerator *mSelf;
-  KProcess mProcess;
-  AddressProvider *mAddressProvider;
+    KContacts::Addressee mCustomerContact;
+    KContacts::Addressee myContact;
+
+    QFile mFile;
+    QDataStream mTargetStream;
+    ArchDoc *mArchDoc;
+    QProcess mProcess;
+    AddressProvider *mAddressProvider;
 };
 
 #endif

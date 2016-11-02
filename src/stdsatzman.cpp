@@ -19,15 +19,15 @@
 #include <QStringList>
 #include <QString>
 #include <QSqlQuery>
+#include <QDebug>
+#include <QGlobalStatic>
 
 // include files for KDE
-#include <klocale.h>
-#include <QDebug>
-#include <kglobal.h>
 
 #include "stdsatzman.h"
 #include "kraftdb.h"
 
+Q_GLOBAL_STATIC(StdSatzMan, mSelf)
 
 StdSatz::StdSatz():
     m_dbId(0)
@@ -70,7 +70,6 @@ StdSatzDuration::StdSatzDuration( const StdSatz& std, int dur )
 
 StdSatzMan *StdSatzMan::self()
 {
-  K_GLOBAL_STATIC(StdSatzMan, mSelf);
   return mSelf;
 }
 

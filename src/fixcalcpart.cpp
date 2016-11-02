@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <klocale.h>
 
 #include "fixcalcpart.h"
 

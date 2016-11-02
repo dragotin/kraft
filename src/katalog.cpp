@@ -18,8 +18,6 @@
 #include <qdom.h>
 #include <QSqlQuery>
 #include <QDebug>
-#include <klocale.h>
-#include <kglobal.h>
 
 #include "floskeltemplate.h"
 #include "dbids.h"
@@ -29,7 +27,9 @@
 #include "timecalcpart.h"
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
+#include "defaultprovider.h"
 
+#include <klocalizedstring.h>
 
 /**
  *  constructor of a katalog, which is only a list of Floskel templates.
@@ -58,7 +58,7 @@ Katalog::Katalog():
 void Katalog::init()
 {
     // FIXME: Catalogs could have their own locale in the future
-  mLocale = KGlobal::locale();
+  mLocale = DefaultProvider::self()->locale();
 }
 
 Katalog::~Katalog()

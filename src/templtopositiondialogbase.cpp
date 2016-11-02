@@ -19,11 +19,11 @@
 
 #include <QDialog>
 #include <QDebug>
-#include <klocale.h>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
+
+#include <klocalizedstring.h>
 
 #include "templtopositiondialogbase.h"
 #include "docposition.h"

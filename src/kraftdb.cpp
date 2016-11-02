@@ -15,10 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include <QDebug>
-#include <kstandarddirs.h>
-#include <kmessagebox.h>
-#include <klocale.h>
-#include <kpushbutton.h>
 
 #include <QFile>
 #include <QSqlQuery>
@@ -27,12 +23,18 @@
 #include <QTextStream>
 #include <QSqlError>
 #include <QDir>
+#include <QDebug>
+
+#include <KLocalizedString>
 
 #include "version.h"
 #include "kraftdb.h"
 #include "dbids.h"
 #include "databasesettings.h"
 #include "defaultprovider.h"
+
+Q_GLOBAL_STATIC(KraftDB, mSelf)
+
 
 SqlCommand::SqlCommand()
 {
@@ -127,7 +129,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
 
         if ( ! m_db.isValid() || m_db.isOpenError() )
         {
-            // qDebug () <<  "Failed to connect to the database driver: "
+            qDebug() <<  "Failed to connect to the database driver: "
                       << m_db.lastError().text() << endl;
             mSuccess = false;
         }
@@ -166,7 +168,6 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
 
 KraftDB *KraftDB::self()
 {
-    K_GLOBAL_STATIC(KraftDB, mSelf);
     return mSelf;
 }
 
@@ -194,7 +195,7 @@ int KraftDB::checkConnect( const QString& host, const QString& dbName,
 
     m_db.open();
     if ( m_db.isOpenError() ) {
-        // qDebug () << "ERR opening the db: " << m_db.lastError().text() <<
+         qDebug () << "ERR opening the db: " << m_db.lastError().text() <<
                     ", type is " << m_db.lastError().type() << endl;
         re = m_db.lastError().type();
     }
@@ -288,13 +289,13 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
     if( env.isEmpty() ) {
         // Environment-Variable is empty, search in KDE paths
         QString fragment = QString("kraft/dbmigrate/%1/%2").arg(driverPrefix).arg(file );
-        sqlFile = KStandardDirs::locate("data", fragment );
+        sqlFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, fragment );
         // qDebug () << "Searching for this fragment: " << fragment;
         // search in dbcreate as well.
         if ( sqlFile.isEmpty() ) {
             fragment = QString("kraft/dbinit/%1/%2").arg(driverPrefix).arg(file );
             // qDebug () << "Also searching in " << fragment;
-            sqlFile = KStandardDirs::locate( "data", fragment );
+            sqlFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, fragment );
         }
     } else {
         // read from environment variable path

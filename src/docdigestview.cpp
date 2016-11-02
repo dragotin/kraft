@@ -17,21 +17,16 @@
 #include <QtGui>
 #include <QtCore>
 #include <QItemSelectionModel>
-
-#include <klocale.h>
+#include <QLocale>
 #include <QDebug>
-#include <kstandardaction.h>
-#include <kstandarddirs.h>
-#include <kaction.h>
-#include <ktoolbar.h>
 #include <QDialog>
-#include <kiconloader.h>
-#include <kmenu.h>
-#include <KHTMLView>
-#include <ktreeviewsearchline.h>
+#include <QMenu>
+#include <QVBoxLayout>
+#include <QToolBox>
+#include <QHeaderView>
+#include <QApplication>
 
-#include <kcalendarsystem.h>
-#include <KConfigGroup>
+#include <KLocalizedString>
 
 #include "models/documentmodel.h"
 #include "models/modeltest.h"
@@ -59,6 +54,7 @@ DocDigestView::DocDigestView( QWidget *parent )
   initializeTreeWidgets();
   connect( mToolBox, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChangedToolbox(int)));
 
+#if 0
   mFilterHeader = new KTreeViewSearchLine( this );
   mFilterHeader->setMinimumWidth( 200 );
   mFilterHeader->setKeepParentsVisible( true );
@@ -73,7 +69,7 @@ DocDigestView::DocDigestView( QWidget *parent )
   box->addLayout( hbox );
 
   box->addWidget( mToolBox );
-
+#endif
 
   QFrame *f = new QFrame;
   f->setLineWidth( 2 );
@@ -111,11 +107,11 @@ void DocDigestView::initializeTreeWidgets()
   mTreeViewList.append(mTimeView);
 
   //Initialise
-  mAllMenu = new KMenu( mAllView );
+  mAllMenu = new QMenu( mAllView );
   mAllMenu->setTitle( i18n("Document Actions"));
-  mTimelineMenu = new KMenu( mTimeView );
+  mTimelineMenu = new QMenu( mTimeView );
   mTimelineMenu->setTitle( i18n("Document Actions"));
-  mLatestMenu = new KMenu( mLatestView );
+  mLatestMenu = new QMenu( mLatestView );
   mLatestMenu->setTitle( i18n("Document Actions"));
 
   //Add treewidgets to the toolbox: Latest Docs view
@@ -282,9 +278,11 @@ void DocDigestView::slotBuildView()
     // widget->setExpandsOnDoubleClick( false );
   }
 
+#if 0
   mFilterHeader->addTableView( mLatestView );
   mFilterHeader->addTableView( mAllView );
   mFilterHeader->setTreeView( mTimeView );
+#endif
 }
 
 void DocDigestView::slotUpdateView()
@@ -381,9 +379,9 @@ void DocDigestView::slotCurrentChanged( QModelIndex index, QModelIndex previous 
   //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);
 }
 
-QList<KMenu*> DocDigestView::contextMenus()
+QVector<QMenu*> DocDigestView::contextMenus()
 {
-  QList<KMenu*> menus;
+  QVector<QMenu*> menus;
   menus.append( mAllMenu);
   menus.append( mTimelineMenu );
   menus.append( mLatestMenu);

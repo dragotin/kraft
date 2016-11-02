@@ -74,12 +74,12 @@ public:
   bool writeTemplate( const TagTemplate& );
   void deleteTemplate( const dbID& );
 
-private:
   TagTemplateMan();
+
+private:
   void load();
 
   TagTemplateValueVector mTagTmpl;
-  static TagTemplateMan *mSelf;
 };
 
 #endif

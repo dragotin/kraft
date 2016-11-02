@@ -26,13 +26,10 @@
 #include <QSqlQuery>
 #include <QSpinBox>
 #include <QToolTip>
+#include <QInputDialog>
+#include <QMessageBox>
 
 #include <QDialog>
-#include <klocale.h>
-#include <kiconloader.h>
-#include <kmessagebox.h>
-#include <kinputdialog.h>
-#include <kvbox.h>
 #include <QDebug>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
@@ -59,9 +56,9 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
   mainLayout->addWidget(mainWidget);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  _okButton = buttonBox->button(QDialogButtonBox::Ok);
+  _okButton->setDefault(true);
+  _okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
   //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
@@ -69,7 +66,8 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
 
 
   QWidget *w = new QWidget(this);
-//PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
+// Add mainLayout->addWidget(w); if necessary
 // Add mainLayout->addWidget(w); if necessary
 
   mBaseWidget = new Ui::NumberCycleEditBase( );
@@ -158,7 +156,10 @@ void NumberCycleDialog::slotTemplTextChanged( const QString& str )
   if ( !str.isEmpty() && str.contains( "%i" ) ) {
     state = true;
   }
-  okButton->setEnabled( state );
+
+  if( _okButton ) {
+      _okButton->setEnabled( state );
+  }
   slotUpdateExample();
 }
 
@@ -215,7 +216,7 @@ void NumberCycleDialog::slotNumberCycleSelected( int num )
 
 void NumberCycleDialog::slotAddCycle()
 {
-  QString newName = KInputDialog::getText( i18n( "Add Number Cycle" ),
+  QString newName = QInputDialog::getText( this, i18n( "Add Number Cycle" ),
                                            i18n( "Enter the name of a new number cycle." ) );
   if ( newName.isEmpty() ) return;
 
@@ -262,25 +263,26 @@ void NumberCycleDialog::slotRemoveCycle()
 
 bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
 {
-  QSqlQuery q;
-  q.prepare( "SELECT count(att.id) FROM attributes att, attributeValues attVal WHERE att.id=attVal.attributeId AND att.hostObject=:dtype AND att.name=:attName AND attVal.value=:val" );
-  q.bindValue( ":dtype", "DocType" );
-  q.bindValue( ":attName", "identNumberCycle" );
-  q.bindValue( ":val", name );
-  q.exec();
+    QSqlQuery q;
+    q.prepare( "SELECT count(att.id) FROM attributes att, attributeValues attVal WHERE att.id=attVal.attributeId AND att.hostObject=:dtype AND att.name=:attName AND attVal.value=:val" );
+    q.bindValue( ":dtype", "DocType" );
+    q.bindValue( ":attName", "identNumberCycle" );
+    q.bindValue( ":val", name );
+    q.exec();
 
-  if ( q.next() ) {
-    int cnt = q.value( 0 ).toInt();
+    if ( q.next() ) {
+        int cnt = q.value( 0 ).toInt();
 
-    if ( cnt > 0 ) {
-      KMessageBox::information( this, i18n( "The numbercycle %1 is still assigned to a document type."
-                                  "The number cycle can not be deleted as long as it "
-                                            "is assigned to a document type." ).arg( name ),
-                                i18n( "Numbercycle Deletion" ) );
+        if ( cnt > 0 ) {
+            QMessageBox msgBox;
+            msgBox.setText(i18n( "The numbercycle %1 is still assigned to a document type."));
+                    msgBox.setInformativeText(i18n("The number cycle can not be deleted as long as it "
+                                                   "is assigned to a document type." ).arg( name ));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+        }
+        return cnt == 0;
     }
-    return cnt == 0;
-  }
-  return true;
+    return true;
 }
 
 
@@ -324,44 +326,47 @@ void NumberCycleDialog::accept()
     // name changes can not happen by design
     q.exec();
     if ( q.next() ) {
-      // qDebug () << "Checking existing number cycle " << cycleName << " for update";
-      // there is an entry
-      if ( q.value( 2 ).toInt() != cycle.counter() ) {
-        bool doUpdate = true;
-        if ( q.value( 2 ).toInt() > cycle.counter() ) {
-          if ( q.value( 3 ).toString() == cycle.getTemplate() ) {
-            // The number has become smaller but the template remains the same.
-            // That has high potential to end up with duplicate doc numbers.
-            if( KMessageBox::questionYesNo( this,
-                                            i18n( "The new counter is lower than the old one. "
-                                                  "That has potential to create duplicate document numbers. Do you really want to decrease it?" ),
-                                            i18n("Dangerous Counter Change"),
-                                            KStandardGuiItem::yes(), KStandardGuiItem::no() )
-                  != KMessageBox::Yes )
-            {
-              doUpdate = false;
+        // qDebug () << "Checking existing number cycle " << cycleName << " for update";
+        // there is an entry
+        if ( q.value( 2 ).toInt() != cycle.counter() ) {
+            bool doUpdate = true;
+            if ( q.value( 2 ).toInt() > cycle.counter() ) {
+                if ( q.value( 3 ).toString() == cycle.getTemplate() ) {
+                    // The number has become smaller but the template remains the same.
+                    // That has high potential to end up with duplicate doc numbers.
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle(i18n("Dangerous Counter Change"));
+                    msgBox.setText(i18n("The new counter is lower than the old one. " ));
+                    msgBox.setInformativeText(i18n("That has potential to create duplicate document numbers. Do you really want to decrease it?" ));
+
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton( QMessageBox::Yes );
+
+                    int re = msgBox.exec();
+                    if( re != QMessageBox::Yes ) {
+                        doUpdate = false;
+                    }
+                }
             }
-          }
+            if ( doUpdate ) {
+                updateField( q.value( 0 ).toInt(),
+                             "lastIdentNumber", QString::number( cycle.counter() ) );
+            }
         }
-        if ( doUpdate ) {
-          updateField( q.value( 0 ).toInt(),
-                       "lastIdentNumber", QString::number( cycle.counter() ) );
+        if ( q.value( 3 ).toString() != cycle.getTemplate() ) {
+            updateField( q.value( 0 ).toInt(), "identTemplate", cycle.getTemplate() );
         }
-      }
-      if ( q.value( 3 ).toString() != cycle.getTemplate() ) {
-        updateField( q.value( 0 ).toInt(), "identTemplate", cycle.getTemplate() );
-      }
     } else {
-      // qDebug () << "This number cycle is new: " << cycleName;
-      QSqlQuery qIns;
-      qIns.prepare( "INSERT INTO numberCycles (name, lastIdentNumber, identTemplate) "
-                    "VALUES (:name, :number, :templ)" );
+        // qDebug () << "This number cycle is new: " << cycleName;
+        QSqlQuery qIns;
+        qIns.prepare( "INSERT INTO numberCycles (name, lastIdentNumber, identTemplate) "
+                      "VALUES (:name, :number, :templ)" );
 
-      qIns.bindValue( ":name", cycleName );
-      qIns.bindValue( ":number", cycle.counter() );
-      qIns.bindValue( ":templ", cycle.getTemplate() );
+        qIns.bindValue( ":name", cycleName );
+        qIns.bindValue( ":number", cycle.counter() );
+        qIns.bindValue( ":templ", cycle.getTemplate() );
 
-      qIns.exec();
+        qIns.exec();
     }
   }
   QDialog::accept();

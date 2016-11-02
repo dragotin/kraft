@@ -25,9 +25,8 @@
 #include <AkonadiCore/entitydisplayattribute.h>
 #include <AkonadiCore/itemfetchscope.h>
 #include <AkonadiCore/session.h>
-#include <kabc/addressee.h>
-#include <kabc/contactgroup.h>
-#include <klocale.h>
+#include <kcontacts/addressee.h>
+#include <kcontacts/contactgroup.h>
 
 GlobalContactModel* GlobalContactModel::mInstance = 0;
 
@@ -44,8 +43,8 @@ GlobalContactModel::GlobalContactModel()
   mMonitor->fetchCollection( true );
   mMonitor->setItemFetchScope( scope );
   mMonitor->setCollectionMonitored( Akonadi::Collection::root() );
-  mMonitor->setMimeTypeMonitored( KABC::Addressee::mimeType(), true );
-  mMonitor->setMimeTypeMonitored( KABC::ContactGroup::mimeType(), true );
+  mMonitor->setMimeTypeMonitored( KContacts::Addressee::mimeType(), true );
+  mMonitor->setMimeTypeMonitored( KContacts::ContactGroup::mimeType(), true );
 
   mModel = new Akonadi::ContactsTreeModel( mMonitor );
 }
