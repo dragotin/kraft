@@ -1,7 +1,7 @@
 /***************************************************************************
-                          addressprovider.h
+    akonadiaddressselector - Address Selection Widget based on Akonadi
                              -------------------
-    begin                : Fri Mar 4 2011
+    begin                : Jul 2011
     copyright            : (C) 2011 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
@@ -15,39 +15,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ADDRESSPROVIDER_H
-#define ADDRESSPROVIDER_H
+#ifndef ADDRESSSELECTORWIDGET_H
+#define ADDRESSSELECTORWIDGET_H
 
-#include <QSet>
+#include <QWidget>
 
 #include <kcontacts/addressee.h>
+#include "ui_addressselectorwidget.h"
 
-#include <kjob.h>
+using namespace KContacts;
 
-class AddressProviderPrivate;
+class QLabel;
+class QPushButton;
+class QSplitter;
+class QTreeView;
+class QuickSearchWidget;
+class QItemSelectionModel;
+class QuickSearchWidget;
 
-class AddressProvider : public QObject
+class AddressSelectorWidget : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  AddressProvider( QObject* parent = 0 );
+  explicit AddressSelectorWidget(QWidget *parent = 0, bool showText = true );
 
-  void getAddressee( const QString& uid );
-  QString formattedAddress( const KContacts::Addressee& ) const;
-
-protected slots:
-  void searchResult( KJob* );
+  ~AddressSelectorWidget();
 
 signals:
-  //
-  void addresseeFound( const QString&, const KContacts::Addressee& );
-  void formattedAddressFound( const QString& uid, const QString& addressString );
+  void addressSelected( const Addressee& );
 
-  // emitted when the search is finished, even if there was no result.
-  void finished( int );
+public slots:
+  void saveState();
+
+protected slots:
+  void slotCreateNewContact();
+  void slotEditContact();
+  void restoreState();
+  void slotItemActivated( const QModelIndex& index );
 
 private:
-  AddressProviderPrivate *_d;
+  void setupGui();
+
+  QPushButton       *mButEditContact;
+
+  Ui::AddressSelectorWidget *mAddressSelectorUi;
 };
 
-#endif // ADDRESSPROVIDER_H
+#endif // AKONADIADDRESSSELECTOR_H

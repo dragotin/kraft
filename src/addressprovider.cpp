@@ -16,84 +16,31 @@
  ***************************************************************************/
 
 #include "addressprovider.h"
-#include "akonadi/contact/contactsearchjob.h"
-// #include "akonadi/session.h"
-
-// #include <Akonadi/Item>
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
 #include <QDebug>
 
+// FIXME this needs to change once there are more address book providers, ie.
+// on Mac.
+#include "addressprovider_akonadi.h"
+
 AddressProvider::AddressProvider( QObject *parent )
-  :QObject( parent )
+  :QObject( parent ),
+    _d( new AddressProviderPrivate(parent) )
 {
-  using namespace Akonadi;
+    connect(_d, SIGNAL(addresseeFound( const QString&, const KContacts::Addressee& )),
+            this, SIGNAL(addresseeFound( const QString&, const KContacts::Addressee& )));
+
+    // emitted when the search is finished, even if there was no result.
+    connect(_d, SIGNAL(finished(int)), this, SIGNAL(finished(int)));
 }
 
 void AddressProvider::getAddressee( const QString& uid )
 {
-    if( uid.isEmpty() || mUidSearches.contains( uid ) ) {
-        // search is already running
-        // qDebug () << "Search already underways!";
-        return;
-    }
-
-    KJob *job = NULL;
-
-    Akonadi::ContactSearchJob *csjob = new Akonadi::ContactSearchJob( this );
-    csjob->setLimit( 1 );
-    csjob->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
-    mUidSearchJobs[csjob] = uid;
-    job = csjob;
-    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-    job->start();
-
-    mUidSearches.insert( uid );
-    mUidSearchJobs[job] = uid;
-
+    _d->getAddressee(uid);
 }
 
 void AddressProvider::searchResult( KJob* job )
 {
-    if( !job ) return;
-
-    QString uid;
-    KContacts::Addressee contact;
-
-    int cnt = 0;
-
-    uid = mUidSearchJobs.value( job );
-
-    if( job->error() ) {
-        // qDebug () << "Address Search job failed: " << job->errorString();
-    } else {
-	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-        const KContacts::Addressee::List contacts = searchJob->contacts();
-        // qDebug () << "Found list of " << contacts.size() << " addresses as search result";
-
-        if( mUidSearchJobs.contains( job )) {            
-            if( contacts.size() > 0 ) {
-                contact = contacts[0];
-                // qDebug () << "Found uid search job for UID " << uid << " = " << contact.realName();
-            }
-            emit addresseeFound( uid, contact );
-            cnt++;
-        }
-    }
-    // if no address was found, emit the empty contact.
-    if( cnt == 0 ) {
-        emit addresseeFound(uid, contact);
-    }
-    emit finished(cnt);
-
-    // cleanup
-    if(!uid.isEmpty()) {
-        mUidSearches.remove( uid );
-    }
-
-    mUidSearchJobs.remove( job );
-
-    job->deleteLater();
+    _d->searchResult(job);
 }
 
 QString AddressProvider::formattedAddress( const KContacts::Addressee& contact ) const

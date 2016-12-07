@@ -72,8 +72,8 @@ DocumentModel::DocumentModel()
   mHeaders[ Document_ClientName ]    = i18n( "Client" );
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KABC::Addressee& )),
-          this, SLOT( slotAddresseeFound( const QString&, const KABC::Addressee& )));
+  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KContacts::Addressee& )),
+          this, SLOT( slotAddresseeFound( const QString&, const KContacts::Addressee& )));
   setQueryAgain();
 }
 

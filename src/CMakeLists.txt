@@ -100,6 +100,8 @@ set(kraft_SRCS
     models/documentproxymodels.cpp
     docdigestdetailview.cpp
     addressprovider.cpp
+    addressselectorwidget.cpp
+    addressprovider_akonadi.cpp
     akonadiaddressselector.cpp
     akonadiaddressselectordialog.cpp
     models/globalcontactmodel.cpp
@@ -141,7 +143,7 @@ ki18n_wrap_ui(kraft_SRCS
     unitseditbase.ui
     importtodocbase.ui
     numbercycleseditbase.ui
-
+    addressselectorwidget.ui
 )
 
 # kde4_add_executable(kraft ${kraft_SRCS})

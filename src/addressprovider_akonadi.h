@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ADDRESSPROVIDER_H
-#define ADDRESSPROVIDER_H
+#ifndef ADDRESSPROVIDER_AKONADI_H
+#define ADDRESSPROVIDER_AKONADI_H
 
 #include <QSet>
 
@@ -24,18 +24,16 @@
 
 #include <kjob.h>
 
-class AddressProviderPrivate;
-
-class AddressProvider : public QObject
+class AddressProviderPrivate : public QObject
 {
   Q_OBJECT
 public:
-  AddressProvider( QObject* parent = 0 );
+  AddressProviderPrivate( QObject* parent = 0 );
 
   void getAddressee( const QString& uid );
   QString formattedAddress( const KContacts::Addressee& ) const;
 
-protected slots:
+public slots:
   void searchResult( KJob* );
 
 signals:
@@ -47,7 +45,8 @@ signals:
   void finished( int );
 
 private:
-  AddressProviderPrivate *_d;
+  QMap<KJob*, QString> mUidSearchJobs;
+  QSet<QString>        mUidSearches;
 };
 
 #endif // ADDRESSPROVIDER_H

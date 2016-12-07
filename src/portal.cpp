@@ -316,7 +316,7 @@ void Portal::slotStartupChecks()
         }
 
         // Fetch my address
-        QString myUid = KraftSettings::self()->userUid();
+        const QString myUid = KraftSettings::self()->userUid();
         if( ! myUid.isEmpty() ) {
             // qDebug () << "Got My UID: " << myUid;
             mAddressProvider->getAddressee( myUid );
