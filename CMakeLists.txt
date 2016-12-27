@@ -34,8 +34,8 @@ find_package(Qt5 CONFIG REQUIRED
     Network
     Widgets
     Sql
-    WebKit
-    WebKitWidgets
+    WebEngine
+    WebEngineWidgets
 )
 
 find_package(KF5 REQUIRED COMPONENTS

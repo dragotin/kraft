@@ -20,7 +20,7 @@
 PortalHtmlView::PortalHtmlView( QWidget *parent )
   : HtmlView( parent )
 {
-
+    connect( this, SIGNAL(openUrl(const QUrl&)), this, SLOT(slotLinkClicked(const QUrl&)));
 }
 
 void PortalHtmlView::slotLinkClicked(const QUrl& url)

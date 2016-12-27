@@ -20,28 +20,15 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QFile>
-#include <QWebView>
+#include <QWebEnginePage>
+
 
 HtmlView::HtmlView( QWidget *parent )
-    : QWebView( parent ), mZoomStep( 10 )
+    : QWebEngineView( parent ), mZoomStep( 10 )
 {
-
-}
-
-void HtmlView::clearView()
-{
-    setHtml(QString::null);
-    setTitle( QString::null );
-}
-
-void HtmlView::setInternalUrl( const QString &url )
-{
-    mInternalUrl = url;
-}
-
-QString HtmlView::internalUrl() const
-{
-    return mInternalUrl;
+    _webPage.reset(new UrlEmitWebEnginePage);
+    setPage( _webPage.data() );
+    connect(_webPage.data(), SIGNAL(openUrl(const QUrl&)), this, SIGNAL(openUrl(const QUrl&)));
 }
 
 void HtmlView::setTitle( const QString &title )

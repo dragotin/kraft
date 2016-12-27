@@ -156,8 +156,8 @@ PUBLIC
     Qt5::Core
     Qt5::Widgets
     Qt5::Sql
-    Qt5::WebKit
-    Qt5::WebKitWidgets
+    Qt5::WebEngine
+    Qt5::WebEngineWidgets
     
     KF5::CoreAddons
     KF5::GlobalAccel

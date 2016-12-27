@@ -17,23 +17,36 @@
 #ifndef HTMLVIEW_H
 #define HTMLVIEW_H
 
-#include <QWebView>
+#include <QWebEngineView>
 
 class QAction;
 class QUrl;
 
-class HtmlView : public QWebView
+class UrlEmitWebEnginePage : public QWebEnginePage
+{
+    Q_OBJECT
+
+signals:
+    void openUrl( const QUrl& );
+
+protected:
+
+    bool acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool isMainFrame)
+    {
+        QString urlStr = url.toString();
+        qDebug() << "openUrl hit:" << urlStr;
+        emit openUrl(url);
+        return false;
+    }
+};
+
+class HtmlView : public QWebEngineView
 {
     Q_OBJECT
   public:
     HtmlView( QWidget *parent = 0);
 
-    void clearView();
-
     QString title() const { return mTitle; }
-
-    void setInternalUrl( const QString & );
-    QString internalUrl() const;
 
     void setBaseUrl( const QString& );
 
@@ -50,6 +63,10 @@ class HtmlView : public QWebView
     virtual QString bottomFrame();
 
     void updateZoomActions();
+
+  signals:
+    void openUrl( const QUrl& );
+
   private:
 
     QString locateCSSImages( const QByteArray& line );
@@ -63,6 +80,8 @@ class HtmlView : public QWebView
     QUrl     mBaseUrl;
 
     int mZoomStep;
+
+    QScopedPointer<UrlEmitWebEnginePage> _webPage;
 };
 
 #endif
