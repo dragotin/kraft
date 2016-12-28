@@ -22,6 +22,9 @@
 // on Mac.
 #include "addressprovider_akonadi.h"
 
+
+/* ==================================================================================== */
+
 AddressProvider::AddressProvider( QObject *parent )
   :QObject( parent ),
     _d( new AddressProviderPrivate(parent) )
@@ -33,14 +36,24 @@ AddressProvider::AddressProvider( QObject *parent )
     connect(_d, SIGNAL(finished(int)), this, SIGNAL(finished(int)));
 }
 
-void AddressProvider::getAddressee( const QString& uid )
+void AddressProvider::lookupAddressee( const QString& uid )
 {
-    _d->getAddressee(uid);
+    _d->lookupAddressee(uid);
+}
+
+KContacts::Addressee AddressProvider::getAddressee( int row, const QModelIndex &parent)
+{
+    return _d->getAddressee(row, parent);
 }
 
 void AddressProvider::searchResult( KJob* job )
 {
     _d->searchResult(job);
+}
+
+QAbstractItemModel *AddressProvider::model()
+{
+    return _d->model();
 }
 
 QString AddressProvider::formattedAddress( const KContacts::Addressee& contact ) const

@@ -73,7 +73,7 @@
 #include "importitemdialog.h"
 #include "addressprovider.h"
 #include "doclocaledialog.h"
-#include "akonadiaddressselectordialog.h"
+#include "addressselectordialog.h"
 
 #define NO_TAX   0
 #define RED_TAX  1
@@ -296,7 +296,7 @@ void KraftView::redrawDocument( )
 
     // qDebug () << "Loaded address uid from database " << mContactUid << endl;
     if( ! mContactUid.isEmpty() ) {
-      mAddressProvider->getAddressee( mContactUid );
+      mAddressProvider->lookupAddressee( mContactUid );
     }
 
     if( !address.isEmpty() ) {
@@ -328,7 +328,7 @@ void KraftView::redrawDocument( )
 
 void KraftView::slotPickAddressee()
 {
-    AkonadiAddressSelectorDialog dialog(this);
+    AddressSelectorDialog dialog(this);
 
     if( dialog.exec() ) {
         // slotNewAddress( dialog.addressee() );

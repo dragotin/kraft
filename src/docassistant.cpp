@@ -34,7 +34,6 @@
 #include "footertemplateprovider.h"
 #include "catalogtemplateprovider.h"
 #include "addresstemplateprovider.h"
-#include "addressselection.h"
 
 DocAssistant::DocAssistant( QWidget *parent ):
   QSplitter( parent ), mFullPreview( true ),

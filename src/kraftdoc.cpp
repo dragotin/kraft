@@ -21,12 +21,6 @@
 
 // include files for KDE
 #include <kmessagebox.h>
-#if 0
-#include <kcontacts/addressbook.h>
-#include <kcontacts/stdaddressbook.h>
-#include <kcontacts/addresseedialog.h>
-#include <kcontacts/addressee.h>
-#endif
 #include <QDebug>
 
 // application specific includes
@@ -190,9 +184,7 @@ bool KraftDoc::saveDocument( )
 
 QString KraftDoc::docIdentifier()
 {
-  QString re = docType();
-
-  const QString realName = ""; // FIXME: get Realname out of Akonadi
+  const QString realName = ""; // FIXME: get Realname out of addressbook or from a manually added address
   return i18n("%1 for %2 (Id %3)").arg( docType() ).arg( realName ).arg( ident() );
 
 }

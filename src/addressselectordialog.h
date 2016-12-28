@@ -15,29 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AKONADIADDRESSSELECTORDIALOG_H
-#define AKONADIADDRESSSELECTORDIALOG_H
+#ifndef ADDRESSSELECTORDIALOG_H
+#define ADDRESSSELECTORDIALOG_H
 
 #include <QDialog>
 #include <kcontacts/addressee.h>
 
-class AkonadiAddressSelector;
+class AddressSelectorWidget;
 
 using namespace KContacts;
 
-class AkonadiAddressSelectorDialog : public QDialog
+class AddressSelectorDialog : public QDialog
 {
     Q_OBJECT
 public:
-    AkonadiAddressSelectorDialog( QWidget *parent = 0 );
+    AddressSelectorDialog( QWidget *parent = 0 );
     KContacts::Addressee addressee();
 
 private slots:
     void slotAddresseeSelected(const Addressee &);
 
 private:
-    AkonadiAddressSelector *m_addressSelector;
-    Addressee m_addressee;
+    AddressSelectorWidget *_addressSelectorWidget;
+    Addressee _addressee;
 };
 
-#endif // AKONADIADDRESSSELECTORDIALOG_H
+#endif // ADDRESSSELECTORDIALOG_H

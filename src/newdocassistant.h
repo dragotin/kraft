@@ -27,8 +27,7 @@
 class DocText;
 class TextSelection;
 class KraftWizard;
-class KPageWidgetItem;
-class AkonadiAddressSelector;
+class AddressSelectorWidget;
 class QDateEdit;
 class QComboBox;
 class QHBox;
@@ -57,8 +56,7 @@ signals:
   void addresseeSelected( const Addressee& );
 
 private:
-  // AddressSelection *mAddresses;
-  AkonadiAddressSelector *mAddresses;
+  AddressSelectorWidget *mAddresses;
 };
 
 // ---------------------------------------------------------------------------

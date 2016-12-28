@@ -102,8 +102,7 @@ set(kraft_SRCS
     addressprovider.cpp
     addressselectorwidget.cpp
     addressprovider_akonadi.cpp
-    akonadiaddressselector.cpp
-    akonadiaddressselectordialog.cpp
+    addressselectordialog.cpp
     models/globalcontactmodel.cpp
     quicksearchwidget.cpp
     kraftdb.cpp

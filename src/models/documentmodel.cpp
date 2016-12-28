@@ -138,7 +138,7 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
         // qDebug() << "returning " << realName;
         return realName;
       } else {
-        mAddressProvider->getAddressee( uid );
+        mAddressProvider->lookupAddressee( uid );
       }
       return i18n("retrieving...");
     }

@@ -33,7 +33,7 @@
 #include "kraftcat_export.h"
 
 class QUrl;
-class AkonadiAddressSelector;
+class AddressSelectorWidget;
 
 using namespace KContacts;
 
@@ -154,11 +154,10 @@ class OwnAddressPage:public QWizardPage
   void saveOwnName();
 
   private:
-  AkonadiAddressSelector *mAddresses;
+  AddressSelectorWidget *mAddresses;
   KContacts::Addressee mMe;
 
   private slots:
-  // void contactStored( const Akonadi::Item& );
   void gotMyAddress( Addressee );
 
 };

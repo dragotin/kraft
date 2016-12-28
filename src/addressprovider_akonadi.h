@@ -24,14 +24,28 @@
 
 #include <kjob.h>
 
+#include <AkonadiCore/session.h>
+#include <AkonadiCore/changerecorder.h>
+#include <akonadi/contact/contactstreemodel.h>
+
+
+class QAbstractItemModel;
+class AddressItemModel;
+
+// An akonadi based provider.
 class AddressProviderPrivate : public QObject
 {
   Q_OBJECT
 public:
   AddressProviderPrivate( QObject* parent = 0 );
 
-  void getAddressee( const QString& uid );
+  void lookupAddressee( const QString& uid );
   QString formattedAddress( const KContacts::Addressee& ) const;
+
+  QAbstractItemModel *model();
+
+  KContacts::Addressee getAddressee(int row, const QModelIndex &parent);
+
 
 public slots:
   void searchResult( KJob* );
@@ -47,6 +61,10 @@ signals:
 private:
   QMap<KJob*, QString> mUidSearchJobs;
   QSet<QString>        mUidSearches;
+
+  Akonadi::Session *mSession;
+  Akonadi::ChangeRecorder* mMonitor; // FIXME: Must static somehow
+  Akonadi::ContactsTreeModel *_model;
 };
 
 #endif // ADDRESSPROVIDER_H

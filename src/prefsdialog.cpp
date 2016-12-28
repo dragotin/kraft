@@ -49,12 +49,10 @@
 #include "taxeditdialog.h"
 #include "documentman.h"
 #include "impviewwidgets.h"
-#include "akonadiaddressselector.h"
 #include "texttemplate.h"
 #include "htmlview.h"
-#include "akonadiaddressselectordialog.h"
+#include "addressselectordialog.h"
 
-using namespace Akonadi;
 
 // ################################################################################
 
@@ -205,7 +203,7 @@ void PrefsDialog::whoIsMeTab()
 
 void PrefsDialog::slotChangeIdentity()
 {
-  AkonadiAddressSelectorDialog dialog(this);
+  AddressSelectorDialog dialog(this);
 
   if( dialog.exec() ) {
     Addressee identity = dialog.addressee();

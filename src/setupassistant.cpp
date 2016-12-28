@@ -22,7 +22,7 @@
 #include "databasesettings.h"
 #include "defaultprovider.h"
 #include "kraftdb.h"
-#include "akonadiaddressselector.h"
+#include "addressselectorwidget.h"
 #include "kraftsettings.h"
 
 
@@ -278,7 +278,7 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
     l->setText( i18n("Select your own address from the address book. It is set as a consigner on the documents.") );
     vbox->addWidget( l );
 
-    mAddresses = new AkonadiAddressSelector(this);
+    mAddresses = new AddressSelectorWidget(this);
     vbox->addWidget( mAddresses );
 
     connect( mAddresses, SIGNAL( addressSelected(Addressee)),
@@ -289,14 +289,6 @@ OwnAddressPage::~OwnAddressPage()
 {
     delete mAddresses;
 }
-
-#if 0
-void OwnAddressPage::contactStored( const Akonadi::Item& item )
-{
-  KContacts::Addressee addressee  = item.payload<KContacts::Addressee>();
-  // qDebug () << "Contact was stored in Akonadi: " << addressee.name();
-}
-#endif
 
 void OwnAddressPage::gotMyAddress( Addressee addressee )
 {

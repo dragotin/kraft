@@ -248,12 +248,6 @@ void Portal::slotStartupChecks()
 {
     QString dbName = DatabaseSettings::self()->dbDatabaseName();
 
-    // if ( !Akonadi::Control::start( ) ) {
-    //    qCritical() << "Failed to start Akonadi!";
-    // }
-    // Akonadi::Control::widgetNeedsAkonadi( this );
-    // FIXME: This starts Akonadi and such, check if the decision if the setup
-    // assistant is really needed can't be pulled here.
     SetupAssistant assi(this);
     if( assi.init( SetupAssistant::Update) ) {
         assi.exec();
@@ -319,7 +313,7 @@ void Portal::slotStartupChecks()
         const QString myUid = KraftSettings::self()->userUid();
         if( ! myUid.isEmpty() ) {
             // qDebug () << "Got My UID: " << myUid;
-            mAddressProvider->getAddressee( myUid );
+            mAddressProvider->lookupAddressee( myUid );
         }
 
         slotStatusMsg( i18n( "Ready." ) );
@@ -553,7 +547,7 @@ void Portal::slotMailPdfAvailable( const QString& fileName )
     if( !_clientId.isEmpty() && mAddressProvider ) {
         connect( mAddressProvider, SIGNAL(addresseeFound(QString,KContacts::Addressee)),
                  this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
-        mAddressProvider->getAddressee(_clientId);
+        mAddressProvider->lookupAddressee(_clientId);
         _clientId.clear();
     } else {
         slotMailAddresseeFound( QString::null, KContacts::Addressee() );

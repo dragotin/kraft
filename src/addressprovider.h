@@ -19,6 +19,7 @@
 #define ADDRESSPROVIDER_H
 
 #include <QSet>
+#include <QAbstractItemModel>
 
 #include <kcontacts/addressee.h>
 
@@ -26,14 +27,18 @@
 
 class AddressProviderPrivate;
 
+
 class AddressProvider : public QObject
 {
   Q_OBJECT
 public:
   AddressProvider( QObject* parent = 0 );
 
-  void getAddressee( const QString& uid );
+  void lookupAddressee( const QString& uid );
   QString formattedAddress( const KContacts::Addressee& ) const;
+
+  QAbstractItemModel *model();
+  KContacts::Addressee getAddressee( int row, const QModelIndex &parent);
 
 protected slots:
   void searchResult( KJob* );

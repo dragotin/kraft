@@ -1,8 +1,8 @@
 /***************************************************************************
-   akonadiaddressselectordialog.cpp  - select addressee from address book.
+   addressselectordialog.cpp  - select addressee from address book.
                              -------------------
-    begin                : Sept. 2012
-    copyright            : (C) 2012 by Klaas Freitag
+    begin                : Sept. 2016
+    copyright            : (C) 2016 by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -20,42 +20,36 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 
-#include "akonadiaddressselector.h"
-#include "akonadiaddressselectordialog.h"
+#include "addressselectorwidget.h"
+#include "addressselectordialog.h"
 
-AkonadiAddressSelectorDialog::AkonadiAddressSelectorDialog( QWidget *parent )
+AddressSelectorDialog::AddressSelectorDialog( QWidget *parent )
     :QDialog(parent)
 {
-    m_addressSelector = new AkonadiAddressSelector(this, false);
-    connect(m_addressSelector, SIGNAL(addressSelected(Addressee)),SLOT(slotAddresseeSelected(Addressee)));
-
-//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:     setMainWidget( m_addressSelector );
-// Add mainLayout->addWidget(m_addressSelector); if necessary
-// Add mainLayout->addWidget(m_addressSelector); if necessary
-
     setModal( true );
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-    QWidget *mainWidget = new QWidget(this);
+
+    _addressSelectorWidget = new AddressSelectorWidget(this, false);
+    connect(_addressSelectorWidget, SIGNAL(addressSelected(Addressee)),SLOT(slotAddresseeSelected(Addressee)));
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, this);
     QVBoxLayout *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
-    mainLayout->addWidget(mainWidget);
+    mainLayout->addWidget(_addressSelectorWidget);
+
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setDefault(true);
     okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-    //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
     mainLayout->addWidget(buttonBox);
-    buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
-
 }
 
-void AkonadiAddressSelectorDialog::slotAddresseeSelected(  const Addressee& addressee )
+void AddressSelectorDialog::slotAddresseeSelected(  const Addressee& addressee )
 {
-    m_addressee = addressee;
+    _addressee = addressee;
 }
 
-KContacts::Addressee AkonadiAddressSelectorDialog::addressee()
+KContacts::Addressee AddressSelectorDialog::addressee()
 {
-    return m_addressee;
+    return _addressee;
 }

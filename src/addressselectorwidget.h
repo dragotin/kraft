@@ -1,8 +1,8 @@
 /***************************************************************************
-    akonadiaddressselector - Address Selection Widget based on Akonadi
+    addressselectorwidget - Address Selection Widget
                              -------------------
     begin                : Jul 2011
-    copyright            : (C) 2011 by Klaas Freitag
+    copyright            : (C) 2011- by Klaas Freitag
     email                : freitag@kde.org
  ***************************************************************************/
 
@@ -19,9 +19,12 @@
 #define ADDRESSSELECTORWIDGET_H
 
 #include <QWidget>
+#include <QSortFilterProxyModel>
 
 #include <kcontacts/addressee.h>
 #include "ui_addressselectorwidget.h"
+
+#include "addressprovider.h"
 
 using namespace KContacts;
 
@@ -32,6 +35,24 @@ class QTreeView;
 class QuickSearchWidget;
 class QItemSelectionModel;
 class QuickSearchWidget;
+
+class AddressSortProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+public:
+    AddressSortProxyModel(AddressProvider *provider, QObject *parent = 0);
+
+protected:
+    bool filterAcceptsRow(int row, const QModelIndex &parent) const;
+    // bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
+
+public:
+    QString mFilter;
+    AddressProvider *_provider;
+};
+
+/* =============================================================== */
 
 class AddressSelectorWidget : public QWidget
 {
@@ -52,6 +73,7 @@ protected slots:
   void slotEditContact();
   void restoreState();
   void slotItemActivated( const QModelIndex& index );
+  void slotFilterTextChanged( const QString& filter);
 
 private:
   void setupGui();
@@ -59,6 +81,8 @@ private:
   QPushButton       *mButEditContact;
 
   Ui::AddressSelectorWidget *mAddressSelectorUi;
+  AddressProvider *_provider;
+  AddressSortProxyModel *mProxyModel;
 };
 
 #endif // AKONADIADDRESSSELECTOR_H

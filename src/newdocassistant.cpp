@@ -32,8 +32,7 @@
 #include <kassistantdialog.h>
 
 #include "newdocassistant.h"
-#include "addressselection.h"
-#include "akonadiaddressselector.h"
+#include "addressselectorwidget.h"
 #include "defaultprovider.h"
 #include "filterheader.h"
 #include "doctype.h"
@@ -58,7 +57,8 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
 
   vbox->addWidget( help );
 
-  mAddresses = new AkonadiAddressSelector( this, false ); // AddressSelection( this, false );
+  mAddresses = new AddressSelectorWidget(this);
+
   connect( mAddresses,  SIGNAL( addressSelected( const Addressee& ) ),
            SIGNAL( addresseeSelected( const Addressee& ) ) );
 
