@@ -62,7 +62,6 @@ public slots:
   void slotShowHeaderTemplates();
   void slotShowFooterTemplates();
   void setFullPreview( bool, int );
-  void slotRenderCompleted();
   void slotSelectDocPart( int );
   void slotToggleShowTemplates( bool );
   void slotAddToDocument();

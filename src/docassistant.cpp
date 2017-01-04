@@ -64,9 +64,6 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mPostCard->slotSetMode( DocPostCard::Full, KraftDoc::Header );
   // setResizeMode( vb /* mPostCard->view() */, KeepSize );
 
-  connect( mPostCard, SIGNAL( completed() ),
-           this,  SLOT( slotRenderCompleted() ) );
-
   topVBox->addWidget(mPostCard);
 
   // KVBox *stackVBox = new KVBox( this );
@@ -331,20 +328,6 @@ void DocAssistant::slotToggleShowTemplates( bool on )
     setFullPreview( true, mActivePage );
   }
   emit toggleShowTemplates( on );
-}
-
-void DocAssistant::slotRenderCompleted()
-{
-  // qDebug() << "Render completed: " << mPostCard->view()->contentsHeight() << endl;
-
-#if 0
-  /* This is unfortunately not working because contentsHeight is always as
-     heigh as the viewport is. Must be fixed in khtmlpart. */
-  QList<int> sizes;
-  sizes << mPostCard->view()->contentsHeight();
-  setSizes( sizes );
-#endif
-
 }
 
 DocPostCard *DocAssistant::postCard()
