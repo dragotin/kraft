@@ -25,6 +25,8 @@
 #include <QToolBox>
 #include <QHeaderView>
 #include <QApplication>
+#include <QLabel>
+#include <QLineEdit>
 
 #include <KLocalizedString>
 
@@ -50,26 +52,25 @@ DocDigestView::DocDigestView( QWidget *parent )
   box->setMargin( 0 );
   box->setSpacing( 0 );
 
-  mToolBox = new QToolBox;
+  mToolBox = new QToolBox(this);
   initializeTreeWidgets();
+
   connect( mToolBox, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChangedToolbox(int)));
 
-#if 0
-  mFilterHeader = new KTreeViewSearchLine( this );
-  mFilterHeader->setMinimumWidth( 200 );
-  mFilterHeader->setKeepParentsVisible( true );
+  _searchLine = new QLineEdit(this);
+  _searchLine->setMinimumWidth(200);
+  connect( _searchLine, SIGNAL(textChanged(QString)), this, SLOT(slotSearchTextChanged(QString)) );
 
   QHBoxLayout *hbox = new QHBoxLayout;
   hbox->insertStretch( 0, 2 );
   QLabel *lab = new QLabel;
   lab->setText( i18n("&Search: ") );
-  lab->setBuddy( mFilterHeader );
+  lab->setBuddy( _searchLine);
   hbox->addWidget( lab );
-  hbox->addWidget( mFilterHeader );
+  hbox->addWidget( _searchLine);
   box->addLayout( hbox );
 
   box->addWidget( mToolBox );
-#endif
 
   QFrame *f = new QFrame;
   f->setLineWidth( 2 );
@@ -88,6 +89,12 @@ DocDigestView::~DocDigestView()
   state = mTimeView->header()->saveState().toBase64();
   KraftSettings::self()->setDigestListColumnsTime( state );
   KraftSettings::self()->writeConfig();
+}
+
+void DocDigestView::slotSearchTextChanged(const QString& newStr )
+{
+    mLatestDocModel->setFilterRegExp(newStr);
+    mAllDocumentsModel->setFilterRegExp(newStr);
 }
 
 void DocDigestView::initializeTreeWidgets()

@@ -33,6 +33,8 @@ protected:
 
     bool acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool isMainFrame)
     {
+        Q_UNUSED(type);
+        Q_UNUSED(isMainFrame);
         QString urlStr = url.toString();
         qDebug() << "openUrl hit:" << urlStr;
         emit openUrl(url);

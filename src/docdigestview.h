@@ -61,6 +61,7 @@ protected slots:
   void slotCurrentChanged( QModelIndex, QModelIndex );
   void slotCurrentChangedToolbox ( int index );
   void slotOpenLastPrinted();
+  void slotSearchTextChanged(const QString& newStr );
 
 signals:
   void createDocument();
@@ -97,6 +98,7 @@ private:
   QPushButton            *mNewDocButton;
   QVector<QAbstractItemView*>    mTreeViewIndex;
   ArchDocDigest          mLatestArchivedDigest;
+  QLineEdit              *_searchLine;
 };
 
 #endif

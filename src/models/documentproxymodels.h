@@ -38,9 +38,8 @@ class DocumentFilterModel : public QSortFilterProxyModel
         bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
     private:
-        QScopedPointer<DocumentModel> mProxy;
-
         int m_MaxRows;
+        QScopedPointer<DocumentModel> _sourceModel;
 };
 
 struct Helper

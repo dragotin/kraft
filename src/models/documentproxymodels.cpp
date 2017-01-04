@@ -30,6 +30,7 @@
 //Kraft includes
 #include "documentmodel.h"
 #include "defaultprovider.h"
+#include "docdigest.h"
 
 #include "documentproxymodels.h"
 
@@ -37,9 +38,9 @@ DocumentFilterModel::DocumentFilterModel(int maxRows, QObject *parent)
         : QSortFilterProxyModel(parent)
 {
     m_MaxRows = maxRows;
-    mProxy.reset(new DocumentModel );
-    this->setSourceModel( mProxy.data() );
-    this->setSortRole(Qt::EditRole);
+    _sourceModel.reset(new DocumentModel);
+    this->setSourceModel( _sourceModel.data() );
+    this->setFilterCaseSensitivity(Qt::CaseInsensitive);
 }
 
 void DocumentFilterModel::setMaxRows( int max )
@@ -51,9 +52,26 @@ void DocumentFilterModel::setMaxRows( int max )
 bool DocumentFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     //The documentmodel is sorted by date, we only want to accept the last n items as they are the newest
-    if(!sourceParent.isValid() && m_MaxRows != -1)
+    if(!sourceParent.isValid() && m_MaxRows != -1) {
         if( sourceRow > m_MaxRows ) // sourceModel()->rowCount() - m_MaxRows)
             return false;
+    }
+    // filter works on the document ID, the client name and the document type.
+    const QRegExp filter = filterRegExp();
+    const QModelIndex index0 = sourceModel()->index(sourceRow, DocumentModel::Document_Ident, sourceParent);
+    const QString idStr = sourceModel()->data(index0).toString();
+
+    const QModelIndex index1 = sourceModel()->index(sourceRow, DocumentModel::Document_Type, sourceParent);
+    const QString typeStr = sourceModel()->data(index1).toString();
+
+    const QModelIndex index2 = sourceModel()->index(sourceRow, DocumentModel::Document_ClientName, sourceParent);
+    const QString clientNameStr = sourceModel()->data(index2).toString();
+
+
+    if( !( idStr.contains(filter) || typeStr.contains(filter) || clientNameStr.contains(filter)) ) {
+        return false;
+    }
+
     return true;
 }
 

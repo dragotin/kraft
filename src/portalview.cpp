@@ -64,10 +64,8 @@ void PortalView::katalogDetails()
   mCatalogBrowser = new PortalHtmlView( w );
   mCatalogBrowser->setTitle( i18n( "Kraft Document Overview" ) );
   mCatalogBrowser->setStylesheetFile( "catalogview.css" );
-  
 
   b->addWidget( mCatalogBrowser );
-//TODO PORT QT5   b->addSpacing( QDialog::marginHint() );
 
   QString html;
 
