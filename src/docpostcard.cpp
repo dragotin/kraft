@@ -32,6 +32,8 @@ DocPostCard::DocPostCard( QWidget *parent )
 {
   setStylesheetFile( "docoverview.css" );
   setTitle( i18n( "Document Overview" ) );
+
+  connect( this, SIGNAL(openUrl(QUrl)), this, SLOT(slotUrlSelected(QUrl)) );
 }
 
 void DocPostCard::setHeaderData( const QString& type,  const QString& date,
@@ -294,33 +296,24 @@ QString DocPostCard::linkBit( const QString& url, const QString& display ) const
   return QString( "<a href=\"%1\">%2</a> " ).arg( url ).arg( display );
 }
 
-#if 0
-bool DocPostCard::urlSelected (const QString &url, int, int, const QString &,
-                    const KParts::OpenUrlArguments &,
-                    const KParts::BrowserArguments &)
+void DocPostCard::slotUrlSelected( const QUrl& kurl)
 {
-  // qDebug () << "DocPostCard::urlSelected(): " << url << endl;
+    KraftDoc::Part id = KraftDoc::Header;
 
-  QUrl kurl( url );
-
-  KraftDoc::Part id = KraftDoc::Header;
-
-  if ( kurl.scheme() == "kraftdoc" ) {
-    if ( kurl.host() == "header" ) {
-      // qDebug () << "Header selected!" << endl;
-      id = KraftDoc::Header;
-    } else if ( kurl.host() == "positions" ) {
-      // qDebug () << "Positions selected!" << endl;
-      id = KraftDoc::Positions;
-    } else if ( kurl.host() == "footer" ) {
-      // qDebug () << "Footer selected!" << endl;
-      id = KraftDoc::Footer;
+    if ( kurl.scheme() == "kraftdoc" ) {
+        if ( kurl.host() == "header" ) {
+            // qDebug () << "Header selected!" << endl;
+            id = KraftDoc::Header;
+        } else if ( kurl.host() == "positions" ) {
+            // qDebug () << "Positions selected!" << endl;
+            id = KraftDoc::Positions;
+        } else if ( kurl.host() == "footer" ) {
+            // qDebug () << "Footer selected!" << endl;
+            id = KraftDoc::Footer;
+        }
+        emit selectPage( id );
     }
-    emit selectPage( id );
-  }
-  return true;
 }
-#endif
 
 void DocPostCard::slotSetMode( DisplayMode mode, int id ) {
   mMode = mode;

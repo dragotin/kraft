@@ -31,7 +31,7 @@
 DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
   : HtmlView( parent )
 {
-    connect(this, SIGNAL(linkClicked(QUrl)), this, SLOT(slotLinkClicked(QUrl)));
+    connect(this, SIGNAL(openUrl(QUrl)), this, SLOT(slotLinkClicked(QUrl)));
 }
 
 void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
