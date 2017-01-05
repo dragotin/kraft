@@ -87,7 +87,7 @@ set(kraft_SRCS
     texttemplate.cpp
     doclocaledialog.cpp
     tagman.cpp
-    positiontagdialog.cpp
+    itemtagdialog.cpp
     tagtemplatesdialog.cpp
     importitemdialog.cpp
     importfilter.cpp

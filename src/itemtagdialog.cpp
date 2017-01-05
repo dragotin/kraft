@@ -35,7 +35,7 @@
 
 #include <klocalizedstring.h>
 
-#include "positiontagdialog.h"
+#include "itemtagdialog.h"
 #include "defaultprovider.h"
 #include "tagman.h"
 
@@ -160,4 +160,3 @@ QStringList ItemTagDialog::getSelectedTags()
 }
 
 
-#include "positiontagdialog.moc"

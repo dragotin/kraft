@@ -29,7 +29,7 @@
 #include "kraftsettings.h"
 #include "defaultprovider.h"
 #include "kraftdb.h"
-#include "positiontagdialog.h"
+#include "itemtagdialog.h"
 #include "tagman.h"
 
 
