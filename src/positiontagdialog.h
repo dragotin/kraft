@@ -17,8 +17,8 @@
  ***************************************************************************/
 
 
-#ifndef POSITIONTAGDIALOG_H
-#define POSITIONTAGDIALOG_H
+#ifndef ITEMTAGDIALOG_H
+#define ITEMTAGDIALOG_H
 
 #include <QMap>
 
@@ -31,13 +31,13 @@ class QTreeWidgetItem;
 
 class FilterHeader;
 
-class PositionTagDialog: public QDialog
+class ItemTagDialog: public QDialog
 {
   Q_OBJECT
 
 public:
-  PositionTagDialog( QWidget* );
-  virtual ~PositionTagDialog( );
+  ItemTagDialog( QWidget* );
+  virtual ~ItemTagDialog( );
 
   void setPositionTags( const QStringList& checkedTags);
   QStringList getSelectedTags();

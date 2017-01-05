@@ -302,7 +302,7 @@ void PositionViewWidget::slotTaggingButtonPressed()
 {
   // qDebug () << "opening tagging dialog" << endl;
 
-  PositionTagDialog dia( 0 );
+  ItemTagDialog dia( 0 );
 
   dia.setPositionTags( mTags );
   if ( dia.exec() ) {

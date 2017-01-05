@@ -64,7 +64,6 @@ void TagDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, c
     int y = option.rect.top();
     int height = option.rect.height();
     int width = option.rect.width();
-    QColor test(index.data(1).toString());
     qDrawShadeRect( painter, x+5, y+4, width-10, height-8, c, false, 1, 0, &b );
   }
   else
@@ -75,32 +74,22 @@ void TagDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, c
 
 // ################################################################################
 
-PositionTagDialog::PositionTagDialog( QWidget *parent )
+ItemTagDialog::ItemTagDialog( QWidget *parent )
   : QDialog( parent )
-
 {
-  setObjectName( "POSITION_TAG_DIALOG" );
+  setObjectName( "ITEM_TAG_DIALOG" );
   setModal( true );
   setWindowTitle( i18n("Edit Item Tags" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
+
   setMinimumWidth ( 375 );
 
-  ( void ) new QLabel( QString::fromLatin1( "<h2>" )
-                       + i18n( "Item Tags" ) + QString::fromLatin1( "</h2>" ), mainWidget );
-  ( void ) new QLabel( i18n( "Select all tags for the item should be tagged with." ), mainWidget);
+  mainLayout->addWidget( new QLabel( QString::fromLatin1( "<h2>" )
+                                     + i18n( "Item Tags" ) + QString::fromLatin1( "</h2>" ), this ) );
+  mainLayout->addWidget( new QLabel( i18n( "Select all tags for the item should be tagged with." ), this) );
 
-  mListView = new QTreeWidget( mainWidget );
+  mListView = new QTreeWidget( this );
   mListView->setAlternatingRowColors( true );
   mListView->setItemDelegate(new TagDelegate());
 
@@ -119,14 +108,24 @@ PositionTagDialog::PositionTagDialog( QWidget *parent )
   mListView->setHeaderLabels( headers );
   mListView->setSelectionMode( QAbstractItemView::NoSelection );
   mListView->setColumnWidth(1, 50);
+  mainLayout->addWidget(mListView);
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
+
 }
 
-PositionTagDialog::~PositionTagDialog()
+ItemTagDialog::~ItemTagDialog()
 {
 
 }
 
-void PositionTagDialog::setPositionTags( const QStringList& checkedTags )
+void ItemTagDialog::setPositionTags( const QStringList& checkedTags )
 {
   QStringList allTags = TagTemplateMan::self()->allTagTemplates();
 
@@ -146,7 +145,7 @@ void PositionTagDialog::setPositionTags( const QStringList& checkedTags )
   }
 }
 
-QStringList PositionTagDialog::getSelectedTags()
+QStringList ItemTagDialog::getSelectedTags()
 {
   QStringList re;
 
