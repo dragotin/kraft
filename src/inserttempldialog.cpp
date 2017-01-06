@@ -46,9 +46,6 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
 {
   QWidget *w = new QWidget( this );
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  setLayout(mainLayout);
-  mainLayout->addWidget(w);
 
   mBaseWidget = new Ui::insertTmplBase;
   mBaseWidget->setupUi( w );
@@ -83,6 +80,14 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
     mTagMap[cb] = *it;
   }
   groupLay->addStretch();
+
+  QVBoxLayout *lay = new QVBoxLayout(this);
+  lay->setMargin(0);
+  lay->addWidget(w);
+  setLayout(lay);
+
+  connect(mBaseWidget->mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+  connect(mBaseWidget->mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 void InsertTemplDialog::setDocPosition(DocPosition *dp, bool isNew , bool showPrices)
@@ -193,7 +198,7 @@ void InsertTemplDialog::setCatalogChapters( const QList<CatalogChapter>& chapter
 QString InsertTemplDialog::chapter() const
 {
   QString re;
-  if ( mBaseWidget->mCbSave->isChecked() )
+  if ( mBaseWidget->mKeepGroup->isChecked() )
     re = mBaseWidget->mComboChapter->currentText();
   return re;
 }

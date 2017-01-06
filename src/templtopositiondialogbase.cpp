@@ -32,21 +32,8 @@ TemplToPositionDialogBase::TemplToPositionDialogBase( QWidget *w )
   : QDialog( w )
 {
   setObjectName( "TEMPL_DIALOG" );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
-  setWindowTitle( i18n("Create Position from Template" ) );
+  setWindowTitle( i18n("Create Item from Template" ) );
   setModal( true );
-
 }
 
 TemplToPositionDialogBase::~TemplToPositionDialogBase()
@@ -61,7 +48,7 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
     return;
   }
   QStringList strList;
-  strList << i18n( "the Header of the Document as first position" );
+  strList << i18n( "the Header of the Document as first item" );
   DocPositionListIterator it( list );
   while( it.hasNext() ) {
     DocPosition *dp = static_cast<DocPosition*>( it.next() );
