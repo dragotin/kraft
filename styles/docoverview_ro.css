@@ -1,7 +1,8 @@
 body { margin:15px; 
-       background-image:url({{CSS_IMG_PATH}}/docoverviewbg.png);
+       background-image:url(docoverviewbg.png);
        color: #4e4e4e;
        font-size:x-small;
+       font-family: 'Source Sans Pro', sans-serif;
 }
 
 td { 
@@ -27,7 +28,7 @@ div {
 div.header {
   height:54px;
   
-  background-image:url({{CSS_IMG_PATH}}/kraftapp_logo_trans.png);
+  background-image:url(kraftapp_logo_trans.png);
   background-repeat: no-repeat;
   background-position: right;
   image-repeat: none;

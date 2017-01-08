@@ -180,15 +180,22 @@ void PrefsDialog::whoIsMeTab()
   butLay->addStretch( 1 );
 
   mIdentityView = new HtmlView;
-  QString fi = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kraft/reports/images/identity.png" );
-  QFileInfo info(fi);
-  if( info.exists() ) {
-    // qDebug () << "Setting image base for identiy view: " << info.dir().absolutePath();
-    // mIdentityView->setBaseUrl( info.dir().absolutePath() +"/" );
-    mIdentityView->setBaseUrl( QLatin1String("/home/kf/kde/kraft/reports/pics/"));
-  }
+  QString home = QString::fromLatin1(qgetenv("KRAFT_HOME"));
+  QString idFile = QString("%1/reports/images/identity.png").arg(home);
+  QFileInfo fi(idFile);
 
-  mIdentityView->setBaseUrl( QLatin1String("/home/kf/kde/kraft/reports/pics/"));
+  if(! fi.exists() ) {
+      QString idFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kraft/reports/images/identity.png" );
+      fi.setFile(idFile);
+      fi.refresh();
+
+      if( fi.exists() ) {
+          idFile = fi.path();
+      }
+  } else {
+      idFile = fi.path();
+  }
+  mIdentityView->setBaseUrl(idFile);
 
   butLay->addWidget(mIdentityView);
   QPushButton *pbChangeIdentity = new QPushButton(i18n("Select Identity..."));

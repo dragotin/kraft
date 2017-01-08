@@ -45,8 +45,13 @@ void HtmlView::setStylesheetFile( const QString &style )
         mStyleSheetFile = QStandardPaths::locate( QStandardPaths::DataLocation, style );
     }
     QFileInfo fi(mStyleSheetFile);
-    bool ok = fi.exists();
-    qDebug () << "found this stylefile: " << mStyleSheetFile << ok;
+
+    if( fi.exists() ) {
+        qDebug () << "Found this stylefile: " << mStyleSheetFile;
+        setBaseUrl(fi.path()+QLatin1String("/pics/"));
+    } else {
+        qDebug() << "Unable to find stylesheet file "<< style;
+    }
 }
 
 void HtmlView::zoomIn()
@@ -69,40 +74,10 @@ void HtmlView::updateZoomActions()
     // Prefs::self()->setZoomFactor( zoomFactor() );
 }
 
-QString HtmlView::locateCSSImages( const QByteArray& line )
+QString HtmlView::topFrame( ) const
 {
-    QString l = QString::fromUtf8(line);
-
-    QRegExp reg( "\\{\\{CSS_IMG_PATH\\}\\}/(\\S+)\\s*\\);");
-    if( l.contains(reg) ) {
-        QString fName = reg.cap(1);
-        QString p;
-
-        if( !fName.isEmpty() ) {
-            QByteArray kraftHome = qgetenv("KRAFT_HOME");
-            if( !kraftHome.isEmpty() ) {
-                p = QString("%1/src/pics/%2").arg(QString::fromUtf8(kraftHome)).arg(fName);
-            } else {
-                QString find;
-                find = QString("kraft/pics/%1").arg(fName);
-                p = QStandardPaths::locate( QStandardPaths::AppDataLocation, find );
-                if( p.isEmpty() ) {
-                    // qDebug () << "ERR: Unable to find resource " << fName;
-                }
-            }
-        }
-        if( !p.isEmpty() ) {
-            p += ");";
-            l.replace(reg, p);
-        }
-    }
-    return l;
-}
-
-QString HtmlView::topFrame( )
-{
-    QString t = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
-                         "<html><head><title>%1</title>" ).arg( mTitle );
+    QString t( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">");
+    t += QString("<html><head><title>%1</title>").arg( mTitle );
 
     if ( ! mStyleSheetFile.isEmpty() ) {
         QString style;
@@ -110,11 +85,12 @@ QString HtmlView::topFrame( )
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             style = QLatin1String("<style type=\"text/css\">");
             while (!file.atEnd()) {
-                QString line = locateCSSImages(file.readLine());
-                style += line;
+                const QString l =  QString::fromUtf8(file.readLine());
+                style += l;
+                // qDebug() << "*******" << l;
             }
-            file.close();
             style += QLatin1String("</style>");
+            file.close();
         }
         t += style;
     }
@@ -122,25 +98,23 @@ QString HtmlView::topFrame( )
     return t;
 }
 
-QString HtmlView::bottomFrame()
+QString HtmlView::bottomFrame() const
 {
-    QString t = "</body>";
+    const QString t("</body>");
 
     return t;
 }
 
 void HtmlView::displayContent( const QString& content )
 {
-    // qDebug() << "BASE URL: " << mBaseUrl.pretyUrl();
-    // qDebug() << "Stylesheet URL: " << mStyleSheetFile;
-
-    // qDebug() << "Show content: " << content;
-    setHtml( topFrame() + content + bottomFrame(), mBaseUrl );
+    const QString out = topFrame() + content + bottomFrame();
+    // qDebug() << "OOOOOOOOOOOOOOOOOOOOOO " << out;
+    setHtml( out , mBaseUrl );
 }
 
 void HtmlView::setBaseUrl( const QString& base )
 {
 
-    mBaseUrl = QUrl( base );
+    mBaseUrl = QUrl::fromLocalFile(base);
     // qDebug () << "Setting base url: " << mBaseUrl.prettyUrl();
 }

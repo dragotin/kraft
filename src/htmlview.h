@@ -61,8 +61,8 @@ class HtmlView : public QWebEngineView
     void zoomOut();
 
   protected:
-    virtual QString topFrame();
-    virtual QString bottomFrame();
+    virtual QString topFrame() const;
+    virtual QString bottomFrame() const;
 
     void updateZoomActions();
 
@@ -70,9 +70,6 @@ class HtmlView : public QWebEngineView
     void openUrl( const QUrl& );
 
   private:
-
-    QString locateCSSImages( const QByteArray& line );
-
     QString mTitle;
     QString mInternalUrl;
     QString mStyleSheetFile;

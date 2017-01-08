@@ -58,24 +58,10 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   hbox->setMargin(0);
   setLayout( hbox );
   mHtmlCanvas = new DocDigestHtmlView( this );
+  mHtmlCanvas->setStylesheetFile("docdigestview.css");
 
   connect( mHtmlCanvas, SIGNAL(showLastPrint( const dbID& )),
            this, SIGNAL( showLastPrint( const dbID& ) ) );
-
-  QString fi = QStandardPaths::locate( QStandardPaths::GenericDataLocation,
-                                     "kraft/reports/images/docdigestdetailview/kraft_customer.png");
-  QFileInfo info(fi);
-  if( info.exists() ) {
-    // qDebug () << "Setting image base for docdigestDetailView: " << info.dir().absolutePath();
-    mHtmlCanvas->setBaseUrl( info.dir().absolutePath() +"/" );
-  } else {
-      QByteArray home = qgetenv( "KRAFT_HOME" );
-      if( !home.isEmpty() ) {
-          QString burl = QString( "%1/reports/pics/").arg(QString::fromLocal8Bit( home ));
-          // qDebug () << "Setting base url from KRAFT_HOME: " << burl;
-          mHtmlCanvas->setBaseUrl( burl );
-      }
-  }
 
   hbox->addWidget( mHtmlCanvas);
 }
