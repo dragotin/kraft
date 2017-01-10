@@ -75,7 +75,7 @@ QString DocText::textTypeToString( KraftDoc::Part tt )
 {
   if ( tt == KraftDoc::Header ) return i18n( "Header Text" );
   if ( tt == KraftDoc::Footer ) return i18n( "Footer Text" );
-  if ( tt == KraftDoc::Positions ) return i18n( "Positions" );
+  if ( tt == KraftDoc::Positions ) return i18n( "Items" );
 
   return i18n( "Unknown" );
 }

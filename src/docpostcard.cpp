@@ -208,7 +208,7 @@ QString DocPostCard::renderDocFull( int id )
     selString= QString();
   if ( id == KraftDoc::Positions ) selString = QL1( "_selected" );
   t = QString( "<div class=\"body%1\">\n" ).arg( selString );
-  t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions ), "positions" );
+  t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions), "positions" );
 
   t += mPositions;
   t += "\n</div>\n";
@@ -250,7 +250,7 @@ QString DocPostCard::renderDocMini( int id ) const
   if( mShowPrices )
       d = i18n("%1 Items, netto %2").arg(mPositionCount).arg(mTotal);
 
-  t += header( id == KraftDoc::Positions, "bodylink", i18n( "Positions" ), "positions",
+  t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions), "positions",
                d );
   t += QL1("</div>");
   rethtml += linkBit( "kraftdoc://positions", t );
