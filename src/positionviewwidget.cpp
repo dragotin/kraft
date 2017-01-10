@@ -22,6 +22,7 @@
 #include <QMenu>
 #include <QIcon>
 #include <QDebug>
+#include <qdrawutil.h>
 
 #include "positionviewwidget.h"
 #include "unitmanager.h"
@@ -541,7 +542,9 @@ void PositionViewWidget::slotModified()
   QColor c( "red" );
   QPalette palette;
   palette.setColor(m_labelPosition->foregroundRole(), c);
+  setPalette(palette );
   mModified = true;
+
   emit positionModified();
 }
 
@@ -682,32 +685,28 @@ QString PositionViewWidget::kindLabel( Kind k ) const
   return re;
 }
 
-void PositionViewWidget::paintEvent ( QPaintEvent* )
+void PositionViewWidget::paintEvent ( QPaintEvent*)
 {
-  QPainter *painter;
-  painter = new QPainter( this );
+  QScopedPointer<QPainter> painter(new QPainter( this ));
 
   // visualize the tags
-  QStringList taglist = tagList();
+  const QStringList taglist = tagList();
   if ( taglist.count() ) {
     int share = ( height() - 24 ) / taglist.count();
     int cnt = 0;
 
-    for ( QStringList::Iterator it = taglist.begin(); it != taglist.end(); ++it ) {
-      QString tag = *it;
+    for ( QStringList::ConstIterator it = taglist.begin(); it != taglist.end(); ++it ) {
+      const QString tag(*it);
       TagTemplate tagTemplate = TagTemplateMan::self()->getTagTemplate( tag );
 
-      // QColor c = tagTemplate.color();
+      const QColor c = tagTemplate.color();
       // qDebug() << "color: " << c.red() << ", " << c.green() << ", " << c.blue() << endl;
-      // painter->setBrush( c );
+      painter->setBrush( c );
 
-      // int starty = cnt*share;
-      // Porting: removed this line.
-      // qDrawShadeLine( painter, 3, starty, 3, starty+share-1, tagTemplate.palette(), false, 1, 4 );
+      int starty = 6+cnt*share;
+      qDrawShadeLine( painter.data(), QPoint(3, starty), QPoint(3, starty+share-1), tagTemplate.palette(), false, 1, 4 );
       cnt++;
     }
   }
-  delete painter;
-  // check again: Ui_positionWidget::paintEvent( pe );
 }
 
