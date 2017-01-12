@@ -449,7 +449,7 @@ void PositionViewWidget::slotSetState( State state )
   }
 }
 
-void PositionViewWidget::setOrdNumber( int o )
+void PositionViewWidget::setOrdNumber(int o)
 {
   mOrdNumber = o;
   m_labelPosition->setText( QString("%1.").arg( mOrdNumber ) );
@@ -536,14 +536,12 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
 
 void PositionViewWidget::slotModified()
 {
-  // if( mModified ) return;
-  if( m_skipModifiedSignal ) return;
+  if(m_skipModifiedSignal) return;
   // qDebug () << "Modified Position!" << endl;
-  QColor c( "red" );
-  QPalette palette;
-  palette.setColor(m_labelPosition->foregroundRole(), c);
-  setPalette(palette );
+
   mModified = true;
+
+  m_labelPosition->setStyleSheet("font-weight: bold; color: red");
 
   emit positionModified();
 }
