@@ -108,8 +108,14 @@ QString HtmlView::bottomFrame() const
 void HtmlView::displayContent( const QString& content )
 {
     const QString out = topFrame() + content + bottomFrame();
-    // qDebug() << "OOOOOOOOOOOOOOOOOOOOOO " << out;
+
+    // the QWebEngineView needs to be disabled, otherwise it steels the focus
+    // of the current widget:
+    // http://stackoverflow.com/questions/36609489/how-to-prevent-qwebengineview-to-grab-focus-on-sethtml-and-load-calls
+    setEnabled(false);
     setHtml( out , mBaseUrl );
+    setEnabled(true);
+
 }
 
 void HtmlView::setBaseUrl( const QString& base )
