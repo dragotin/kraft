@@ -37,62 +37,62 @@
 ImportItemDialog::ImportItemDialog( QWidget *parent )
   : QDialog( parent )
 {
-  // , "IMPORTITEMDIALOG", true, i18n( "Import Items From File" ),
-  //               Ok | Cancel )
-  setObjectName( "IMPORTITEMDIALOG" );
-  setModal( true );
-  setWindowTitle( i18n( "Import Items From File" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  setLayout(mainLayout);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
 
-  QWidget *w = new QWidget;
-  mainLayout->addWidget(w);
-  mBaseWidget = new Ui::importToDocBase;
-  mBaseWidget->setupUi( w );
+    setObjectName( "IMPORTITEMDIALOG" );
 
-  // Fill the tags list
-  group = new QButtonGroup(this);
-  group->setExclusive(false);
+    setModal( true );
+    setWindowTitle( i18n( "Import Items From File" ) );
 
-  QStringList tags = TagTemplateMan::self()->allTagTemplates();
-  int c = 0;
+    QWidget *w = new QWidget(this);
+    mBaseWidget = new Ui::importToDocBase;
+    mBaseWidget->setupUi(w);
+    mainLayout->addWidget(w);
 
-  QVBoxLayout *checkboxLayout = new QVBoxLayout;
+    // Fill the tags list
+    group = new QButtonGroup(this);
+    group->setExclusive(false);
 
-  for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-    QCheckBox *cb = new QCheckBox( *it );
-    group->addButton(cb, c);
-    checkboxLayout->addWidget(cb);
-    QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
-    cb->setToolTip( desc );
-    mTagMap[c] = *it;
-    c++;
-  }
+    QStringList tags = TagTemplateMan::self()->allTagTemplates();
+    int c = 0;
 
-  checkboxLayout->addStretch(2);
-  mBaseWidget->mTagGroup->setLayout(checkboxLayout);
+    QVBoxLayout *checkboxLayout = new QVBoxLayout;
 
-  connect( mBaseWidget->mSchemaCombo, SIGNAL( activated( const QString& ) ),
-           SLOT( slotSchemaChanged( const QString& ) ) );
-  QString selectName = readFilterSpecs();
+    for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
+        QCheckBox *cb = new QCheckBox( *it );
+        group->addButton(cb, c);
+        checkboxLayout->addWidget(cb);
+        QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
+        cb->setToolTip( desc );
+        mTagMap[c] = *it;
+        c++;
+    }
 
-  if ( ! KraftSettings::self()->importItemsSchemaName().isEmpty() ) {
-    selectName = KraftSettings::self()->importItemsSchemaName();
-  }
-  mBaseWidget->mSchemaCombo->setCurrentIndex(mBaseWidget->mSchemaCombo->findText( selectName ));
-  slotSchemaChanged( selectName );
+    checkboxLayout->addStretch(2);
+    mBaseWidget->mTagGroup->setLayout(checkboxLayout);
 
-  if ( ! KraftSettings::self()->importItemsFileName().isEmpty() ) {
-    mBaseWidget->mFileNameEdit->setText( KraftSettings::self()->importItemsFileName() );
-  }
+    connect( mBaseWidget->mSchemaCombo, SIGNAL( activated( const QString& ) ),
+             SLOT( slotSchemaChanged( const QString& ) ) );
+    QString selectName = readFilterSpecs();
+
+    if ( ! KraftSettings::self()->importItemsSchemaName().isEmpty() ) {
+        selectName = KraftSettings::self()->importItemsSchemaName();
+    }
+    mBaseWidget->mSchemaCombo->setCurrentIndex(mBaseWidget->mSchemaCombo->findText( selectName ));
+    slotSchemaChanged( selectName );
+
+    if ( ! KraftSettings::self()->importItemsFileName().isEmpty() ) {
+        mBaseWidget->mFileNameEdit->setText( KraftSettings::self()->importItemsFileName() );
+    }
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 }
 
 ImportItemDialog::~ImportItemDialog()
