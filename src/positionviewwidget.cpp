@@ -295,7 +295,7 @@ void PositionViewWidget::setLocale( QLocale *loc )
 {
   mLocale = loc;
   const QString currSymbol = mLocale->currencySymbol();
-  m_sbUnitPrice->setPrefix( currSymbol + " " );
+  m_sbUnitPrice->setSuffix(" " + currSymbol);
   slotSetOverallPrice( currentPrice() );
 }
 

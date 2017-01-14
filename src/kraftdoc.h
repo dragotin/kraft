@@ -161,7 +161,7 @@ private:
   // Two qualifiers for the locale settings.
   QString mCountry;
   QString mLanguage;
-  QLocale *mLocale;
+  QScopedPointer<QLocale> mLocale;
 
   QDate   mDate;
   QDate   mLastModified;

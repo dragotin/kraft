@@ -38,26 +38,22 @@
 KraftDoc::KraftDoc(QWidget *parent)
   : QObject(parent),
     mIsNew(true),
-
     mDocTypeChanged(false),
-    mLocale(0),
     mSaver(0)
-
 {
-  mLocale = new QLocale( "kraft" );
-  mPositions.setLocale( mLocale );
+    mLocale.reset(new QLocale());
+    mPositions.setLocale( mLocale.data() );
 }
 
 KraftDoc::~KraftDoc()
 {
-  delete mLocale;
 }
 
 KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 {
   if ( this == &origDoc ) return *this;
 
-  mLocale = new QLocale( "kraft" );
+  mLocale.reset(new QLocale());
 
   DocPositionListIterator it( origDoc.mPositions );
 
@@ -71,7 +67,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
     // qDebug () << "Appending position " << dp->dbId().toString() << endl;
   }
 
-  mPositions.setLocale( mLocale );
+  mPositions.setLocale( mLocale.data() );
 
   modified = origDoc.modified;
   mIsNew = true;
@@ -333,7 +329,7 @@ QString KraftDoc::language() const
 
 QLocale* KraftDoc::locale()
 {
-  return mLocale;
+  return mLocale.data();
 }
 
 void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
@@ -344,7 +340,7 @@ void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
   // KConfig *cfg = KGlobal::config().data();
   // mLocale->setCountry( country, cfg );
   // mLocale->setLanguage( lang, cfg );
-  mPositions.setLocale( mLocale );
+  mPositions.setLocale( mLocale.data() );
 }
 
  QString KraftDoc::partToString( Part p )
