@@ -35,17 +35,15 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
 
   mDocHeaderEdit->mButtLang->setIcon(QIcon::fromTheme("preferences-desktop-locale"));
 
-  connect( mDocHeaderEdit->m_cbType, SIGNAL( activated( int ) ),
+  connect( mDocHeaderEdit->m_cbType, SIGNAL( currentIndexChanged(int)),
     SLOT( slotModified() ) );
-  connect( mDocHeaderEdit->m_cbType, SIGNAL( textChanged( const QString & ) ),
-    SLOT( slotModified() ) );
-  connect( mDocHeaderEdit->m_dateEdit, SIGNAL( changed( QDate ) ),
+  connect( mDocHeaderEdit->m_dateEdit, SIGNAL( dateChanged( QDate ) ),
     SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_postAddressEdit, SIGNAL( textChanged() ),
     SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_letterHead, SIGNAL( activated( int ) ),
     SLOT( slotModified() ) );
-  connect( mDocHeaderEdit->m_letterHead, SIGNAL( textChanged( const QString & ) ),
+  connect( mDocHeaderEdit->m_letterHead, SIGNAL( currentIndexChanged(int)),
     SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_teEntry, SIGNAL( textChanged() ),
     SLOT( slotModified() ) );

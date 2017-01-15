@@ -43,25 +43,21 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
 
   QVBoxLayout *layout = new QVBoxLayout;
   setLayout(layout);
-
-//TODO PORT QT5   layout->setMargin( QDialog::marginHint() );
-//TODO PORT QT5   layout->setSpacing( QDialog::spacingHint() );
   layout->addWidget( mGroupBox );
 
   /* a view for the entry text repository */
   QVBoxLayout *vbox = new QVBoxLayout;
+  vbox->setMargin(0);
 
   // mHeadLabel = new QLabel( i18n( "%1 Templates" ).arg( KraftDoc::partToString( mPart ) ));
-  // vbox->addWidget( mHeadLabel );
+  vbox->addWidget( mHeadLabel );
 
   mTextNameView = new QListView;
   vbox->addWidget(mTextNameView);
   mTextNameView->setSelectionMode( QAbstractItemView::SingleSelection );
-  mTextNameView->setMaximumHeight(60 );
+  mTextNameView->setMaximumHeight(120 );
   mTextNameView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
-  connect( mTextNameView, SIGNAL(clicked(QModelIndex)),
-           this, SLOT(slotNameSelected(QModelIndex)));
   connect( mTextNameView, SIGNAL(doubleClicked(QModelIndex)),
            this, SIGNAL(editCurrentTemplate()));
 
