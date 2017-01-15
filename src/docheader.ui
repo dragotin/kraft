@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>614</width>
-    <height>387</height>
+    <height>420</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,1">
@@ -52,7 +52,11 @@
       </spacer>
      </item>
      <item>
-      <widget class="QDateTimeEdit" name="m_dateEdit"/>
+      <widget class="QDateEdit" name="m_dateEdit">
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

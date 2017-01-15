@@ -680,6 +680,7 @@ void KraftView::slotMovePositionUp( int pos )
     setMappingId( w2, pos );
 
     m_positionScroll->moveChild( w2, m_positionScroll->indexOf(w1) );
+    mModified = true;
     QTimer::singleShot( 0, this, SLOT(refreshPostCard()  ) );
   } else {
     // qDebug () << "ERR: Did not find the two corresponding widgets!" << endl;
@@ -715,6 +716,7 @@ void KraftView::slotMovePositionDown( int pos )
 
     m_positionScroll->moveChild( w1, m_positionScroll->indexOf( w2 ) );
 
+    mModified = true;
     QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
   } else {
     // qDebug () << "ERR: Did not find the two corresponding widgets!" << endl;

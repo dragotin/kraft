@@ -49,9 +49,6 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   QVBoxLayout *vbox = new QVBoxLayout;
   vbox->setMargin(0);
 
-  // mHeadLabel = new QLabel( i18n( "%1 Templates" ).arg( KraftDoc::partToString( mPart ) ));
-  vbox->addWidget( mHeadLabel );
-
   mTextNameView = new QListView;
   vbox->addWidget(mTextNameView);
   mTextNameView->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -74,10 +71,7 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   mHelpDisplay = new QLabel;
   mHelpDisplay->setStyleSheet("background-color: #ffcbcb;");
   mHelpDisplay->setAutoFillBackground(true);
-//TODO PORT QT5   // QMargins m( QDialog::marginHint(), QDialog::marginHint(), QDialog::marginHint(), QDialog::marginHint() );
-  // mHelpDisplay->setContentsMargins( m );
   mHelpDisplay->setWordWrap( true );
-  // mHelpDisplay->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
 
   QFontMetrics fm( mHelpDisplay->font() );
   int minHeight = 1.5 * fm.height();

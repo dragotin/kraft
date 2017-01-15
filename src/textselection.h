@@ -81,7 +81,6 @@ private:
   QStringListModel                *mTemplNamesModel;
   QTextEdit                       *mTextDisplay;
   QLabel                          *mHelpDisplay;
-  QLabel                          *mHeadLabel;
   KraftDoc::Part                   mPart;
 
   QString                          mDocType;
