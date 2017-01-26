@@ -284,13 +284,14 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         dbid = id;
         doc->setDocID( dbid );
 
-        doc->setIdent(      q.value( 0    ).toString() );
-        doc->setDocType(    q.value( 1  ).toString() );
+        doc->setIdent(      q.value( 0 ).toString() );
+        doc->setDocType(    q.value( 1 ).toString() );
         doc->setAddressUid( q.value( 2 ).toString() );
         doc->setAddress(    q.value( 3 ).toString() );
-        doc->setSalut(      q.value( 4    ).toString() );
-        doc->setGoodbye(    q.value( 5  ).toString() );
-        doc->setDate (      q.value( 6     ).toDate() );
+        QString salut = q.value(4).toString();
+        doc->setSalut(      salut );
+        doc->setGoodbye(    q.value( 5 ).toString() );
+        doc->setDate (      q.value( 6 ).toDate() );
         doc->setLastModified( q.value( 7 ).toDate() );
         doc->setCountryLanguage( q.value( 8 ).toString(),
                                  q.value( 9 ).toString());

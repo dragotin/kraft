@@ -74,20 +74,21 @@ KraftViewRO::KraftViewRO(QWidget *parent, const char *name) :
   setObjectName( name );
   setModal( false );
   setWindowTitle( i18n("Document" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
   QWidget *mainWidget = new QWidget(this);
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
   mainLayout->addWidget(mainWidget);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
+
   m_type = ReadOnly;
 
   mHtmlView = new HtmlView( this );
   mainLayout->addWidget(mHtmlView);
   mHtmlView->setStylesheetFile( "docoverview_ro.css" );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
 }
 
 KraftViewRO::~KraftViewRO()
@@ -95,7 +96,7 @@ KraftViewRO::~KraftViewRO()
 
 }
 
-#define DOC_RO_TAG
+#define DOC_RO_TAG(X) QLatin1String(X)
 
 void KraftViewRO::setup( DocGuardedPtr doc )
 {
@@ -124,6 +125,8 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     if( tmplFile.isEmpty() ) {
         // qDebug () << "Could not find template to render ro view of document.";
         return;
+    } else {
+        qDebug() << "Template file: " << tmplFile;
     }
 
 
@@ -257,7 +260,8 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     setWindowTitle( m_doc->docIdentifier() );
 
     mHtmlView->setTitle( doc->docIdentifier() );
-    mHtmlView->displayContent( tmpl.expand() );
+    const QString content = tmpl.expand();
+    mHtmlView->displayContent( content );
 }
 
 void KraftViewRO::done( int r )
