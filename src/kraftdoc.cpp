@@ -127,7 +127,8 @@ bool KraftDoc::newDocument( const QString& docType )
   mCountry  = DefaultProvider::self()->locale()->country();
   mLanguage = DefaultProvider::self()->locale()->language();
 
-  mSalut = KraftSettings::salut();
+  // Do not set the salut as it is an integer. Resolved later when filling the
+  // combobox in the view
   mGoodbye = KraftSettings::greeting();
   mDocTypeChanged = false;
   return true;

@@ -795,7 +795,14 @@ void KraftView::slotAddressFound(const QString& uid, const KContacts::Addressee&
         QStringList li = generateLetterHead( contact.familyName(), contact.givenName() );
 
         m_headerEdit->m_letterHead->insertItems(-1, li );
-        m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
+        KraftDoc *doc = getDocument();
+        if( doc->isNew() ) {
+            m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
+        } else {
+            if(!doc->salut().isEmpty()) {
+                m_headerEdit->m_letterHead->setCurrentText( doc->salut() );
+            }
+        }
     }
 }
 
