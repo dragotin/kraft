@@ -174,7 +174,6 @@ void PortalView::systemDetails()
   w->setLayout( b );
   mSystemBrowser = new PortalHtmlView( w );
   b->addWidget( mSystemBrowser );
-//TODO PORT QT5   b->addSpacing( QDialog::marginHint() );
   mSystemBrowser->setStylesheetFile( "catalogview.css" ); //, "mucki_en_oS.png",
 
   // browser->setNotifyClick(false);
