@@ -190,7 +190,5 @@ DocPositionList ImportItemDialog::positionList()
   return list;
 }
 
-#include "importitemdialog.moc"
-
 /* END */
 

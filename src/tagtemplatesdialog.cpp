@@ -256,5 +256,3 @@ void TagTemplatesDialog::setTags()
 }
 
 
-
-#include "tagtemplatesdialog.moc"

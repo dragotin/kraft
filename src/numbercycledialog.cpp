@@ -384,5 +384,3 @@ void NumberCycleDialog::updateField( int id, const QString& field, const QString
   qUpdate.exec();
 }
 
-#include "numbercycledialog.moc"
-

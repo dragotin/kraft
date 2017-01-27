@@ -102,5 +102,4 @@ void TaxEditDialog::reject()
   QDialog::reject();
 }
 
-#include "taxeditdialog.moc"
 

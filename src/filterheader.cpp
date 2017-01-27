@@ -166,4 +166,3 @@ void FilterHeader::showCount( bool show )
   else mTitleLabel->hide();
 }
 
-#include "filterheader.moc"

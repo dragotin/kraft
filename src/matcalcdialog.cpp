@@ -68,5 +68,3 @@ MatCalcDialog::~MatCalcDialog( )
 
 /* END */
 
-
-#include "matcalcdialog.moc"

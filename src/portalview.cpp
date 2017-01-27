@@ -345,5 +345,3 @@ PortalView::~PortalView( )
 
 /* END */
 
-
-#include "portalview.moc"

@@ -363,5 +363,3 @@ DocumentSaverDB::~DocumentSaverDB( )
 
 /* END */
 
-
-#include "documentsaverdb.moc"

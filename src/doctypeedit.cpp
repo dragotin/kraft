@@ -482,5 +482,4 @@ void DocTypeEdit::renameTypeInDb( const QString& oldName,  const QString& newNam
   }
 }
 
-#include "doctypeedit.moc"
 

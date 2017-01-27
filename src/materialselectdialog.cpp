@@ -99,4 +99,3 @@ void MaterialSelectDialog::accept()
   QDialog::accept();
 }
 
-#include "materialselectdialog.moc"

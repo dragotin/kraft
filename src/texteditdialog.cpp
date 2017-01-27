@@ -102,4 +102,3 @@ DocText TextEditDialog::docText()
   return dt;
 }
 
-#include "texteditdialog.moc"

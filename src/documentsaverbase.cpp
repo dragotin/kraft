@@ -35,5 +35,3 @@ DocumentSaverBase::~DocumentSaverBase( )
 
 /* END */
 
-
-#include "documentsaverbase.moc"

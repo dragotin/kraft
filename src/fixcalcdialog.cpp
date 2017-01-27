@@ -106,5 +106,3 @@ double FixCalcDialog::getPreis()
 
 /* END */
 
-
-#include "fixcalcdialog.moc"
