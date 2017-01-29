@@ -25,11 +25,13 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QMessageBox>
+#include <QPainter>
 
 #include <QDialog>
 #include <QDebug>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
+#include <QColorDialog>
 
 #include <klocalizedstring.h>
 
@@ -43,23 +45,10 @@ TagTemplateEditor::TagTemplateEditor( QWidget *parent )
   setObjectName("TAG_TEMPLATES_EDITOR");
   setModal( true );
   setWindowTitle( i18n("Edit Tag Template" ));
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
 
   QVBoxLayout *w = new QVBoxLayout( this );
-//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
-// Add mainLayout->addWidget(w); if necessary
-// Add mainLayout->addWidget(w); if necessary
 
   w->addWidget(new QLabel( QString::fromLatin1( "<h2>" )
                            + i18n( "Edit a Tag Template" ) + QString::fromLatin1( "</h2>" )));
@@ -69,7 +58,7 @@ TagTemplateEditor::TagTemplateEditor( QWidget *parent )
   h1->addWidget( new QLabel( i18n( "Name:" ) ));
   mNameEdit = new QLineEdit;
   h1->addWidget(mNameEdit);
-
+  w->addLayout(h1);
   // QHBox *h2 = new QHBox( w );
   w->addWidget(new QLabel( i18n( "Description:" )));
   mDescriptionEdit = new QTextEdit;
@@ -80,11 +69,41 @@ TagTemplateEditor::TagTemplateEditor( QWidget *parent )
   h2->addWidget(new QLabel( i18n( "Associated Color:" )));
   mColorButton = new QPushButton;
   h2->addWidget(mColorButton);
+  connect( mColorButton, SIGNAL(clicked(bool)), SLOT(slotColorSelect(bool)));
+
+  w->addLayout(h2);
+  mainLayout->addLayout(w);
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  mOkButton = buttonBox->button(QDialogButtonBox::Ok);
+  mOkButton->setDefault(true);
+  mOkButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+  mainLayout->addWidget(buttonBox);
 }
 
 TagTemplateEditor::~TagTemplateEditor()
 {
 
+}
+
+void TagTemplateEditor::slotColorSelect(bool)
+{
+    mColor = QColorDialog::getColor(mOrigTemplate.color(), this);
+    setColorButton();
+    mOkButton->setFocus();
+}
+
+void TagTemplateEditor::setColorButton()
+{
+    QPixmap pix(32, 32);
+
+    QPainter painter(&pix);
+    painter.setBrush(QBrush(mColor));
+    painter.drawRect( QRect(0 ,0 , 32, 32));
+    mColorButton->setIcon(QIcon(pix));
 }
 
 void TagTemplateEditor::setTemplate( const TagTemplate& tt )
@@ -93,8 +112,8 @@ void TagTemplateEditor::setTemplate( const TagTemplate& tt )
 
   mNameEdit->setText( tt.name() );
   mDescriptionEdit->setText( tt.description() );
-  // FIXME Porting: set the color
-  // mColorButton->setColor( tt.color() );
+  mColor = tt.color();
+  setColorButton();
 }
 
 TagTemplate TagTemplateEditor::currentTemplate()
@@ -102,9 +121,7 @@ TagTemplate TagTemplateEditor::currentTemplate()
   TagTemplate tt = mOrigTemplate;
   tt.setName( mNameEdit->text() );
   tt.setDescription( mDescriptionEdit->toPlainText() );
-  // FIXME Porting: set the color
-  //tt.setColor( mColorButton->color() );
-
+  tt.setColor(mColor);
   return tt;
 }
 
@@ -116,12 +133,6 @@ TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
   setObjectName( "TAG_TEMPLATES_DIALOG" );
   setModal( true );
   setWindowTitle( i18n("Edit Tag Templates" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
 
@@ -165,6 +176,15 @@ TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
   connect( mEditButton, SIGNAL( clicked() ), SLOT( slotEditTemplate() ) );
   connect( mDeleteButton, SIGNAL( clicked() ), SLOT( slotDeleteTemplate() ) );
 
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
+
+  setLayout(mainLayout);
   slotSelectionChanged();
 }
 

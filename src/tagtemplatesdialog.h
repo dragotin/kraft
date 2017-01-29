@@ -46,11 +46,17 @@ class TagTemplateEditor: public QDialog
   void setTemplate( const TagTemplate& );
   TagTemplate currentTemplate();
    
+private slots:
+  void slotColorSelect(bool);
+  void setColorButton();
+
 private:
   TagTemplate mOrigTemplate;
   QLineEdit *mNameEdit;
   QTextEdit *mDescriptionEdit;
   QPushButton *mColorButton;
+  QPushButton *mOkButton;
+  QColor mColor;
     
 };
 
