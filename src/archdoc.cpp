@@ -32,15 +32,13 @@
 const char *SentOutDateC = "SentOutDate";
 
 ArchDoc::ArchDoc()
-    :mLocale( "kraft" ),
-    mAttributes( QLatin1String("ArchDoc"))
+    : mAttributes( QLatin1String("ArchDoc"))
 {
 
 }
 
 ArchDoc::ArchDoc( const dbID& id )
-    :mLocale( "kraft" ),
-      mAttributes( QLatin1String("ArchDoc"))
+    : mAttributes( QLatin1String("ArchDoc"))
 {
     /* load archive from database */
     loadFromDb( id );
