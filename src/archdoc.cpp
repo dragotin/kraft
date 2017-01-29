@@ -158,8 +158,10 @@ void ArchDoc::loadItems( const QString& archDocId )
   QSqlQuery q;
   q.prepare("SELECT archPosID, archDocID, ordNumber, kind, postype, text, amount, " // pos 0..6
             "unit, price, overallPrice, taxType FROM archdocpos WHERE archDocID=:id ORDER BY ordNumber"); // pos 7..10
-  q.bindValue("id", archDocId);
-  q.exec();
+  q.bindValue(":id", archDocId);
+  if( !q.exec() ) {
+      qDebug() << "Error: " << q.lastError().nativeErrorCode();
+  }
 
   while( q.next() ) {
     ArchDocPosition pos;
