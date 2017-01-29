@@ -60,12 +60,6 @@ ReportGenerator::ReportGenerator()
   connect( this, SIGNAL( templateGenerated( const QString& )),
            this, SLOT( slotConvertTemplate( const QString& )));
 
-  // mProcess.setOutputChannelMode( KProcess::SeparateChannels );
-  connect( &mProcess, SIGNAL( finished( int ) ),this, SLOT( trml2pdfFinished( int ) ) );
-  connect( &mProcess, SIGNAL( readyReadStandardOutput()), this, SLOT( slotReceivedStdout() ) );
-  connect( &mProcess, SIGNAL( readyReadStandardError()), this, SLOT( slotReceivedStderr() ) );
-  connect( &mProcess, SIGNAL( error ( QProcess::ProcessError )), this, SLOT( slotError( QProcess::ProcessError)));
-
   mAddressProvider = new AddressProvider( this );
   connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KContacts::Addressee& )),
            this, SLOT( slotAddresseeFound( const QString&, const KContacts::Addressee& ) ) );
@@ -248,8 +242,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
       prec = num.length() - (1+num.lastIndexOf( QChar('.') ) );
     }
     // qDebug() << "**** " << num << " has precision " << prec;
-
-    h = mArchDoc->locale()->toString( amount, prec );
+    h = mArchDoc->locale()->toString( amount, 'f', prec );
 
     tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
     tmpl.setValue( "POSITIONS", "POS_UNIT", escapeTrml2pdfXML( pos.unit() ) );
@@ -345,7 +338,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
   // My own contact data
 
-  QString output = tmpl.expand();
+  const QString output = tmpl.expand();
 
   emit templateGenerated( output );
 
@@ -401,12 +394,10 @@ void ReportGenerator::contactToTemplate( TextTemplate *tmpl, const QString& pref
 
 }
 
-
 QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const
 {
   return( Qt::escape( str ) );
 }
-
 
 QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle ) const
 {
@@ -510,90 +501,100 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
         return;
     }
 
-  QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
+    QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
 
-  if ( mHavePdfMerge && mMergeIdent != "0" &&
-       ( mWatermarkFile.isEmpty() || !QFile::exists( mWatermarkFile ) ) ) {
-      QMessageBox msgBox;
-      msgBox.setText(i18n("The Watermark file to merge with the document could not be found. "
-                          "Merge is going to be disabled."));
-      msgBox.setWindowTitle(i18n("Watermark Error"));
-      msgBox.setStandardButtons(QMessageBox::Ok);
-      msgBox.exec();
-      mMergeIdent = "0";
-  }
-
-  QString outputDir = ArchiveMan::self()->pdfBaseDir();
-  QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
-  mFile.setFileName( QString( "%1/%2").arg( outputDir).arg( filename ) );
-
-  // qDebug () << "Writing output to " << mFile.fileName();
-
-  // check if we have etrml2pdf
-  bool haveErml = false;
-  if( rmlbin.size() > 1 ) {
-    QString ermlbin = rmlbin[1];
-    if( ermlbin.endsWith( "erml2pdf.py") ) {
-      haveErml = true;
+    if ( mHavePdfMerge && mMergeIdent != "0" &&
+         ( mWatermarkFile.isEmpty() || !QFile::exists( mWatermarkFile ) ) ) {
+        QMessageBox msgBox;
+        msgBox.setText(i18n("The Watermark file to merge with the document could not be found. "
+                            "Merge is going to be disabled."));
+        msgBox.setWindowTitle(i18n("Watermark Error"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
+        mMergeIdent = "0";
     }
-  }
 
-  const QString prg = rmlbin.join(' ');
+    QString outputDir = ArchiveMan::self()->pdfBaseDir();
+    QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
+    mFile.setFileName( QString( "%1/%2").arg( outputDir).arg( filename ) );
 
-  QStringList args;
-  if( !haveErml ) {
-    if ( mHavePdfMerge ) {
-        args << mMergeIdent;
+    // qDebug () << "Writing output to " << mFile.fileName();
+
+    // check if we have etrml2pdf
+    bool haveErml = false;
+    QStringList args;
+
+    if( rmlbin.size() > 1 ) {
+        QString ermlbin = rmlbin[1];
+        if( ermlbin.endsWith( "erml2pdf.py") ) {
+            haveErml = true;
+        }
+        args.append(rmlbin.at(1));
     }
-    args << rmlFile;
-    if ( mHavePdfMerge && mMergeIdent != "0" ) {
-      args << mWatermarkFile;
-    }
-  } else {
-    // qDebug () << "Erml2pdf available!";
-    if ( mHavePdfMerge && mMergeIdent != "0" ) {
-      args << "-m" << mMergeIdent;
-      args << "-w" << mWatermarkFile;
-    }
-    args << rmlFile;
-  }
 
-  mFile.setFileName( mFile.fileName() );
-  mOutputSize = 0;
-  if ( mFile.open( QIODevice::WriteOnly ) ) {
-    mProcess.setProgram( prg );
-    mProcess.setArguments(args);
-    mTargetStream.setDevice( &mFile );
+    const QString prg = rmlbin.at(0);
 
-    mProcess.start( );
-  }
+    if( !haveErml ) {
+        if ( mHavePdfMerge ) {
+            args << mMergeIdent;
+        }
+        args << rmlFile;
+        if ( mHavePdfMerge && mMergeIdent != "0" ) {
+            args << mWatermarkFile;
+        }
+    } else {
+        // qDebug () << "Erml2pdf available!";
+        if ( mHavePdfMerge && mMergeIdent != "0" ) {
+            args << "-m" << mMergeIdent;
+            args << "-w" << mWatermarkFile;
+        }
+        args << rmlFile;
+    }
+
+    mFile.setFileName( mFile.fileName() );
+    mOutputSize = 0;
+    if ( mFile.open( QIODevice::WriteOnly ) ) {
+        mProcess = new QProcess(this);
+        connect(mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotReceivedStdout()));
+        connect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotReceivedStderr()));
+        connect(mProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this,
+                SLOT(trml2pdfFinished(int,QProcess::ExitStatus)));
+
+        mProcess->setProgram( prg );
+        mProcess->setArguments(args);
+        mTargetStream.setDevice( &mFile );
+
+        mProcess->start( );
+    }
 }
 
 void ReportGenerator::slotReceivedStdout( )
 {
-  QByteArray arr  = mProcess.readAllStandardOutput();
-  mOutputSize += arr.size();
-  mTargetStream.writeRawData( arr.data(), arr.size());
+    QByteArray arr  = mProcess->readAllStandardOutput();
+    mOutputSize += arr.size();
+    mTargetStream.writeRawData( arr.data(), arr.size());
 }
 
 void ReportGenerator::slotReceivedStderr( )
 {
-  QByteArray arr  = mProcess.readAllStandardError();
-  mErrors.append( arr );
+    QByteArray arr  = mProcess->readAllStandardError();
+    mErrors.append( arr );
 }
 
 void ReportGenerator::slotError( QProcess::ProcessError err )
 {
-  mErrors.append( i18n("Program ended with status %1").arg(err));
+    mErrors.append( i18n("Program ended with status %1").arg(err));
 }
 
-void ReportGenerator::trml2pdfFinished( int exitStatus)
+void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
 {
     mFile.close();
+    mProcess->deleteLater();
+    Q_UNUSED(stat);
 
     // qDebug () << "PDF Creation Process finished with status " << exitStatus;
     // qDebug () << "Wrote bytes to the output file: " << mOutputSize;
-    if ( exitStatus == 0 ) {
+    if ( exitCode == 0 ) {
         emit pdfAvailable( mFile.fileName() );
         mFile.setFileName( QString() );
     } else {
@@ -607,7 +608,7 @@ void ReportGenerator::trml2pdfFinished( int exitStatus)
         }
 
         if ( mErrors.isEmpty() ) mErrors = i18n( "Unknown problem." );
-        // KMessageBox::detailedError (QWidget *parent, const QString &text, const QString &details, const QString &caption=QString::null, int options=Notify)
+
         QMessageBox msgBox;
         msgBox.setText(i18n("Could not generate the pdf file. The pdf creation script failed.") );
         msgBox.setDetailedText(i18n("Errors: %1").arg(mErrors));
@@ -617,7 +618,6 @@ void ReportGenerator::trml2pdfFinished( int exitStatus)
         mErrors.clear();
     }
     QApplication::restoreOverrideCursor();
-
 }
 
 

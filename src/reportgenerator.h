@@ -59,7 +59,7 @@ public slots:
 protected:
 
 protected slots:
-    void trml2pdfFinished( int );
+    void trml2pdfFinished(int exitCode, QProcess::ExitStatus stat);
     void slotReceivedStdout();
     void slotReceivedStderr();
     void slotError( QProcess::ProcessError );
@@ -92,10 +92,11 @@ private:
     KContacts::Addressee mCustomerContact;
     KContacts::Addressee myContact;
 
+    QProcess *mProcess;
+
     QFile mFile;
     QDataStream mTargetStream;
     ArchDoc *mArchDoc;
-    QProcess mProcess;
     AddressProvider *mAddressProvider;
 };
 
