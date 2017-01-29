@@ -108,7 +108,7 @@ DocLocaleDialog::~DocLocaleDialog()
 void DocLocaleDialog::setLocale( const QString& c, const QString& lang )
 {
   // qDebug () << "Setting country " << c << " and lang " << lang << endl;
-  if ( !mLocale ) mLocale = new QLocale( QString::fromLatin1( "kraft" ) );
+  if ( !mLocale ) mLocale = new QLocale;
 #if 0 // FIXME Porting QT5
   KConfig *cfg = KGlobal::config().data();
   mLocale->setCountry( c, cfg );
