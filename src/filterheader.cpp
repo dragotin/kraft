@@ -18,13 +18,8 @@
 
 #include "filterheader.h"
 
-#include <ktreewidgetsearchline.h>
-#include <QDialog>
-#include <klocale.h>
+#include <klocalizedstring.h>
 #include <QDebug>
-#include <kapplication.h>
-#include <kiconloader.h>
-
 #include <QTreeWidget>
 
 #include <QLayout>
@@ -33,40 +28,14 @@
 #include <QBoxLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <KConfigGroup>
-
-CountingSearchLine::CountingSearchLine( QWidget *parent, QTreeWidget *listView )
-  : KTreeWidgetSearchLine( parent, listView )
-{
-}
-
-CountingSearchLine::CountingSearchLine( QWidget *parent, const QList< QTreeWidget * > &treeWidgets )
-  : KTreeWidgetSearchLine( parent, treeWidgets )
-{
-}
-
-void CountingSearchLine::searchUpdate( const QString &s )
-{
-  KTreeWidgetSearchLine::updateSearch( s );
-}
-
-int CountingSearchLine::searchCount()
-{
-  int count = 0;
-  // FIXME KDE4
-  return count;
-}
-
+#include <QLineEdit>
 
 FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
-  : QWidget( parent ), mItemNameNone( i18n("No Items") ),
-    mItemNameOne( i18n("1 Item") ),
-    mItemNameMultiple( i18n("%1 of %2 Items") )
+  : QWidget( parent ),
+    _treeWidget(listView)
 {
   QBoxLayout *topLayout = new QVBoxLayout;
   setLayout( topLayout );
-//TODO PORT QT5   topLayout->setSpacing( QDialog::spacingHint() );
-//TODO PORT QT5   topLayout->setMargin( QDialog::marginHint() );
 
   mTitleLabel = new QLabel();
   topLayout->addWidget( mTitleLabel );
@@ -76,93 +45,43 @@ FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
   QLabel *label = new QLabel( i18n("Search:"));
   filterLayout->addWidget( label );
 
-  mSearchLine = new CountingSearchLine( 0, listView );
-  mSearchLine-> setClearButtonShown(true);
-  connect( mSearchLine, SIGNAL( searchCountChanged() ),
-    SLOT( setTitleLabel() ) );
+  mSearchLine = new QLineEdit( this );
+  mSearchLine-> setClearButtonEnabled(true);
+  connect( mSearchLine, SIGNAL(textChanged(QString) ),
+    SLOT( slotTextChanged(QString) ) );
   filterLayout->addWidget( mSearchLine );
-  
-  //setTabOrder( mSearchLine, listView );
-
-  setTitleLabel();
 }
 
-FilterHeader::FilterHeader(QList<QTreeWidget *> &treewidgets, QWidget *parent)
-  : QWidget( parent ), mItemNameNone( i18n("No Items")),
-  mItemNameOne( i18n("1 Item") ),
-  mItemNameMultiple( i18n("%1 of %2 Items") )
+void FilterHeader::slotTextChanged( const QString& filter )
 {
-  QBoxLayout *topLayout = new QVBoxLayout;
-  setLayout( topLayout );
-//TODO PORT QT5   topLayout->setSpacing( QDialog::spacingHint() );
-//TODO PORT QT5   topLayout->setMargin( QDialog::marginHint() );
-
-  mTitleLabel = new QLabel();
-  topLayout->addWidget( mTitleLabel );
-
-  QBoxLayout *filterLayout = new QHBoxLayout;
-  topLayout->addLayout( filterLayout );
-  QLabel *label = new QLabel( i18n("Search:"));
-  filterLayout->addWidget( label );
-
-  mSearchLine = new CountingSearchLine( parent, treewidgets );
-
-  mSearchLine-> setClearButtonShown(true);
-  connect( mSearchLine, SIGNAL( searchCountChanged() ),
-    SLOT( setTitleLabel() ) );
-  filterLayout->addWidget( mSearchLine );
-
-  //setTabOrder( mSearchLine, listView );
-
-  setTitleLabel();
-}
-
-void FilterHeader::setItemName( const QString &none, const QString &one,
-      const QString &multiple )
-{
-  mItemNameNone = none;
-  mItemNameOne = one;
-  mItemNameMultiple = multiple;
-
-  setTitleLabel();
+    if( ! _treeWidget ) {
+        return;
+    }
+    QTreeWidgetItemIterator it(_treeWidget);
+    while (*it) {
+        // items without parent are root items. Never hide.
+        if( (*it)->parent() ) {
+            bool showIt = false;
+            for(int i = 0; !showIt && i < (*it)->columnCount(); i++) {
+                if( (*it)->text(i).contains(filter, Qt::CaseInsensitive)) {
+                    showIt = true;
+                }
+            }
+            (*it)->setHidden(!showIt);
+        }
+        ++it;
+    }
 }
 
 void FilterHeader::setListView( QTreeWidget* view )
 {
-  mSearchLine->setTreeWidget( view );
+  _treeWidget = view;
 }
 
 void FilterHeader::clear()
 {
-  mSearchLine->setText( QString::null );
-
-  setTitleLabel();
+  mSearchLine->clear();
 }
 
-void FilterHeader::setTitleLabel()
-{
-  int total = 0;
 
-  //if ( mListView ) total = 0; // FIXME KDE4 mListView->childCount();
-
-  QString txt;
-
-  if ( total == 0 ) txt = mItemNameNone;
-  else {
-    int current = mSearchLine->searchCount();
-
-    if ( total == 1 && current == 1 ) txt = mItemNameOne;
-    else {
-      txt = mItemNameMultiple.arg( current ).arg( total );
-    }
-  }
-
-  mTitleLabel->setText( "<b>" + txt + "</b>" );
-}
-
-void FilterHeader::showCount( bool show )
-{
-  if ( show ) mTitleLabel->show();
-  else mTitleLabel->hide();
-}
 

@@ -45,6 +45,7 @@ set(kraft_SRCS
     prefswages.cpp
     prefsunits.cpp
     katalogview.cpp
+    filterheader.cpp
     kataloglistview.cpp
     templkatalogview.cpp
     templkataloglistview.cpp
