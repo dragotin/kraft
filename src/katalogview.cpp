@@ -76,7 +76,7 @@ void KatalogView::init(const QString& katName )
   if( ! listview ) {
       // qDebug () << "ERROR: No listview created !!!" << endl;
   } else {
-      m_filterHead = new FilterHeader(listview, w);
+      m_filterHead = new FilterHeader(w, listview);
       box->insertWidget(0, m_filterHead);
 
       connect( listview, SIGNAL(currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)),

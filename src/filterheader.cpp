@@ -30,26 +30,21 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 
-FilterHeader::FilterHeader( QTreeWidget *listView, QWidget *parent )
+FilterHeader::FilterHeader(QWidget *parent , QTreeWidget *listView)
   : QWidget( parent ),
     _treeWidget(listView)
 {
-  QBoxLayout *topLayout = new QVBoxLayout;
-  setLayout( topLayout );
+    QBoxLayout *filterLayout = new QHBoxLayout;
+    setLayout(filterLayout);
+    QLabel *label = new QLabel( i18n("&Search:"));
+    filterLayout->addWidget( label );
 
-  mTitleLabel = new QLabel();
-  topLayout->addWidget( mTitleLabel );
-
-  QBoxLayout *filterLayout = new QHBoxLayout;
-  topLayout->addLayout( filterLayout );
-  QLabel *label = new QLabel( i18n("Search:"));
-  filterLayout->addWidget( label );
-
-  mSearchLine = new QLineEdit( this );
-  mSearchLine-> setClearButtonEnabled(true);
-  connect( mSearchLine, SIGNAL(textChanged(QString) ),
-    SLOT( slotTextChanged(QString) ) );
-  filterLayout->addWidget( mSearchLine );
+    mSearchLine = new QLineEdit( this );
+    mSearchLine-> setClearButtonEnabled(true);
+    label->setBuddy(mSearchLine);
+    connect( mSearchLine, SIGNAL(textChanged(QString) ),
+             SLOT( slotTextChanged(QString) ) );
+    filterLayout->addWidget( mSearchLine );
 }
 
 void FilterHeader::slotTextChanged( const QString& filter )
@@ -60,14 +55,27 @@ void FilterHeader::slotTextChanged( const QString& filter )
     QTreeWidgetItemIterator it(_treeWidget);
     while (*it) {
         // items without parent are root items. Never hide.
-        if( (*it)->parent() ) {
+        QTreeWidgetItem *item = (*it);
+        if( item->parent() ) {
             bool showIt = false;
-            for(int i = 0; !showIt && i < (*it)->columnCount(); i++) {
-                if( (*it)->text(i).contains(filter, Qt::CaseInsensitive)) {
+            for(int i = 0; !showIt && i < item->columnCount(); i++) {
+                if( item->text(i).contains(filter, Qt::CaseInsensitive)) {
                     showIt = true;
                 }
             }
-            (*it)->setHidden(!showIt);
+
+            item->setHidden(!showIt);
+            if( showIt && !filter.isEmpty() ) {
+                // Make sure that all the parent items are visible too
+                QTreeWidgetItem *parent = 0, *child = item;
+                while((parent = child->parent()) != 0) {
+                    parent->setHidden(false);
+                    if( !parent->isExpanded() ) {
+                        parent->setExpanded(true);
+                    }
+                    child = parent;
+                }
+            }
         }
         ++it;
     }
@@ -75,12 +83,12 @@ void FilterHeader::slotTextChanged( const QString& filter )
 
 void FilterHeader::setListView( QTreeWidget* view )
 {
-  _treeWidget = view;
+    _treeWidget = view;
 }
 
 void FilterHeader::clear()
 {
-  mSearchLine->clear();
+    mSearchLine->clear();
 }
 
 

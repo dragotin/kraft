@@ -28,7 +28,6 @@ class TemplKatalog;
 class KatalogListView;
 class FloskelTemplate;
 class FlosTemplDialog;
-class FilterHeader;
 class QBoxLayout;
 /**
   * The base class for Kraft katalog view.

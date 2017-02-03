@@ -29,8 +29,6 @@ class QStringList;
 class QTreeWidget;
 class QTreeWidgetItem;
 
-class FilterHeader;
-
 class ItemTagDialog: public QDialog
 {
   Q_OBJECT
@@ -44,7 +42,6 @@ public:
 
 private:
   QTreeWidget* mListView;
-  FilterHeader *mFilterHeader;
   QMap<QString, QTreeWidgetItem*> mItemMap;
 };
 

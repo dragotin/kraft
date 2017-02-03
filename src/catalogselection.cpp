@@ -39,34 +39,32 @@
 #include <KLocalizedString>
 
 CatalogSelection::CatalogSelection( QWidget *parent )
-  :QWidget( parent ),
-   mCatalogSelector( 0 ),
-   mWidgets( 0 )
+    :QWidget( parent ),
+      mCatalogSelector( 0 ),
+      mWidgets( 0 )
 {
-  QVBoxLayout *layout = new QVBoxLayout;
-//TODO PORT QT5   layout->setMargin(QDialog::marginHint());
-//TODO PORT QT5   layout->setSpacing(QDialog::spacingHint());
-  QHBoxLayout *hb = new QHBoxLayout;
-  layout->addLayout(hb);
-  hb->addStretch();
-  QLabel *l = new QLabel( i18n( "Selected &Catalog: " ) );
-  hb->addWidget(l);
-  mCatalogSelector = new QComboBox;
-  hb->addWidget(mCatalogSelector);
-  connect( mCatalogSelector, SIGNAL( activated( const QString& ) ),
-           this,  SLOT( slotSelectCatalog( const QString& ) ) );
-  l->setBuddy( mCatalogSelector );
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setMargin(0);
+    QHBoxLayout *hb = new QHBoxLayout(this);
+    layout->addLayout(hb);
+    QLabel *l = new QLabel( i18n( "Selected &Catalog: " ) );
+    hb->addWidget(l);
+    mCatalogSelector = new QComboBox(this);
+    hb->addWidget(mCatalogSelector);
+    connect( mCatalogSelector, SIGNAL( activated( const QString& ) ),
+             this,  SLOT( slotSelectCatalog( const QString& ) ) );
+    l->setBuddy( mCatalogSelector );
 
-  // mListSearchLine = new FilterHeader( 0 ) ;
-  // mListSearchLine->showCount( false );
-  // layout->addWidget(mListSearchLine);
+    hb->addStretch();
+    mListSearchLine = new FilterHeader( this ) ;
+    hb->addWidget(mListSearchLine);
 
-  mWidgets  = new QStackedWidget;
-  mWidgets->setSizePolicy( QSizePolicy( QSizePolicy::Expanding,  QSizePolicy::Expanding ) );
-  layout->addWidget(mWidgets);
+    mWidgets  = new QStackedWidget(this);
+    //mWidgets->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
+    layout->addWidget(mWidgets);
 
-  this->setLayout(layout);
-  setupCatalogList();
+    this->setLayout(layout);
+    setupCatalogList();
 }
 
 void CatalogSelection::setupCatalogList()
@@ -170,7 +168,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
     }
     if ( mWidgetMap.contains( katName ) ) {
       mWidgets->setCurrentWidget( mWidgetMap[katName] );
-     // mListSearchLine->setListView( mWidgetMap[katName] );
+      mListSearchLine->setListView( mWidgetMap[katName] );
     }
   }
 }

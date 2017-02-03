@@ -30,7 +30,6 @@ class QWidget;
 class QTreeWidget;
 class QTreeWidgetItem;
 class QStringList;
-class FilterHeader;
 class QPushButton;
 class QLineEdit;
 class QTextEdit;

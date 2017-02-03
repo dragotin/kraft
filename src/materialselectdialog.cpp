@@ -43,26 +43,25 @@ MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
 
+  QVBoxLayout *page = new QVBoxLayout;
+  QLabel *label = new QLabel( i18n( "Select Material for Calculation" ));
+  page->addWidget(label);
+  label->setObjectName("caption");
+
+  mKatalogListView = new MaterialKatalogListView;
+  FilterHeader *filter = new FilterHeader(this, mKatalogListView);
+  page->addWidget(filter);
+  page->addWidget(mKatalogListView);
+  mKatalogListView->setCheckboxes( true );
+  mainLayout->addLayout(page);
+
   QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
   QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
   okButton->setDefault(true);
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
-
-  QVBoxLayout *page = new QVBoxLayout;
-  QLabel *label = new QLabel( i18n( "Select Material for Calculation" ));
-  page->addWidget(label);
-  label->setObjectName("caption");
-
-  // mFilter = new FilterHeader( 0, page );
-  mKatalogListView = new MaterialKatalogListView;
-  page->addWidget(mKatalogListView);
-  // mFilter->setListView( mKatalogListView );
-  mKatalogListView->setCheckboxes( true );
-  mainLayout->addLayout(page);
+  page->addWidget(buttonBox);
 
   Katalog *kat = KatalogMan::self()->getKatalog( MaterialKatalogView::MaterialCatalogName );
 

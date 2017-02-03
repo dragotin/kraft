@@ -284,12 +284,6 @@ void DocDigestView::slotBuildView()
     widget->setEditTriggers( QAbstractItemView::NoEditTriggers );
     // widget->setExpandsOnDoubleClick( false );
   }
-
-#if 0
-  mFilterHeader->addTableView( mLatestView );
-  mFilterHeader->addTableView( mAllView );
-  mFilterHeader->setTreeView( mTimeView );
-#endif
 }
 
 void DocDigestView::slotUpdateView()

@@ -44,22 +44,8 @@
 #include "catalogtemplate.h"
 #include "kraftview.h"
 
-class DocHeaderEdit;
-class DocFooterEdit;
-class PositionViewWidget;
-class DocPosition;
-class QLabel;
-class QResizeEvent;
-class QSignalMapper;
-class QSplitter;
-class DocPostCard;
-class QTimer;
-class CatalogSelection;
-class DocAssistant;
-class CalcPartList;
-class HtmlView;
-
 class Katalog;
+class HtmlView;
 
 class KraftViewRO : public KraftViewBase
 {

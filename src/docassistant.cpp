@@ -50,7 +50,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   topVBox->addLayout( buttonLayout );
 //TODO PORT QT5   buttonLayout->setMargin( QDialog::marginHint()/2 );
 
-  QPushButton *pb = new QPushButton( i18n( "Show Templates" ) );
+  QPushButton *pb = new QPushButton( i18n( "Show &Templates" ) );
   buttonLayout->addWidget( pb );
   connect( pb, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleShowTemplates( bool ) ) );

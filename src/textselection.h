@@ -30,8 +30,6 @@ class QTreeWidgetItem;
 class QString;
 class QPoint;
 class QMenu;
-class FilterHeader;
-class KPushButton;
 class DocText;
 class QAction;
 class QListView;
@@ -86,7 +84,6 @@ private:
   QString                          mDocType;
   QString                          mCurrTemplateName;
 
-  FilterHeader                    *mListSearchLine;
   QMap<QTreeWidgetItem*, DocText> mTextMap;
   QMap<QString, QTreeWidgetItem*> mDocTypeItemMap;
   QMap<QString, QTreeWidgetItem*> mStandardItemMap;

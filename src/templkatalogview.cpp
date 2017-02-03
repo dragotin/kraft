@@ -31,9 +31,8 @@
 #include "templkatalog.h"
 #include "templkataloglistview.h"
 #include "katalogman.h"
-#include "filterheader.h"
 #include "documentman.h"
-#
+
 #define ID_STATUS_MSG 1
 
 TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
