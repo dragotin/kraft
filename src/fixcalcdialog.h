@@ -20,6 +20,8 @@
 
 #include <QDialog>
 
+#include "calcdialogbase.h"
+
 #include "ui_fixpartui.h"  // designer file zeitpartui.ui
 
 /**
@@ -28,14 +30,12 @@
 
 class FixCalcPart;
 
-class FixCalcDialog : public QDialog, protected Ui::calcdetailFix
+class FixCalcDialog : public CalcDialogBase
 {
     Q_OBJECT
 
 public:
-    FixCalcDialog(QWidget *parent=0, bool modal=false );
-    FixCalcDialog(FixCalcPart*, QWidget *parent=0, bool modal=false );
-    virtual ~FixCalcDialog();
+    FixCalcDialog(QWidget *parent=0);
 
     QString getName();
     double  getMenge();
@@ -49,7 +49,9 @@ protected slots:
     void accept();
 private:
 
-    FixCalcPart *m_part;
+    Ui_calcdetailFix *_fixWidget;
+    FixCalcPart      *m_part;
+
 };
 
 #endif

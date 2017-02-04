@@ -19,7 +19,10 @@
 #define _TimeCALCDIALOG_H
 
 // include files
-#include "ui_timepart.h"  // designer file Timepartui.ui
+#include "calcdialogbase.h"
+
+
+#include "ui_timepart.h"
 
 /**
  *
@@ -27,15 +30,14 @@
 
 class TimeCalcPart;
 
-class TimeCalcDialog : public QDialog, protected Ui::calcdetailTime
+class TimeCalcDialog : public CalcDialogBase
 {
     Q_OBJECT
 
 public:
-    TimeCalcDialog(QWidget *parent=0, bool modal=false );
-    TimeCalcDialog(TimeCalcPart*, QWidget *parent=0, bool modal=false);
-    virtual ~TimeCalcDialog();
+    TimeCalcDialog(QWidget *parent=0);
 
+    void setTimeCalcPart(TimeCalcPart *cp);
     QString getName();
     QString getStundensatzName();
     int     getDauer();
@@ -46,7 +48,8 @@ protected slots:
     void accept();
 
 private:
-    TimeCalcPart *m_part;
+    Ui_calcdetailTime *_timeWidget;
+    TimeCalcPart      *_part;
 };
 
 #endif

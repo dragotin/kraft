@@ -514,9 +514,8 @@ void FlosTemplDialog::slEditFixPart()
     FixCalcPart *cp = static_cast<FixCalcPart*>(mCalcPartDict[item]);
     if( cp )
     {
-      // FixCalcDialog dia(cp, this);
-      m_fixCalcDia = new FixCalcDialog(cp, this);
-      m_fixCalcDia->setModal(true);
+      m_fixCalcDia = new FixCalcDialog(this);
+      m_fixCalcDia->setCalcPart(cp);
       connect( m_fixCalcDia, SIGNAL(fixCalcPartChanged(FixCalcPart*)),
                this, SLOT(slFixCalcPartChanged(FixCalcPart*)));
       m_fixCalcDia->show();
@@ -623,8 +622,8 @@ void FlosTemplDialog::slEditTimePart()
   if( item ) {
     TimeCalcPart *cp = static_cast<TimeCalcPart*>(mCalcPartDict[item]);
     if( cp ) {
-      m_timePartDialog = new TimeCalcDialog(cp, this);
-      m_timePartDialog->setModal(true);
+      m_timePartDialog = new TimeCalcDialog(this);
+      m_timePartDialog->setTimeCalcPart(cp);
       connect( m_timePartDialog, SIGNAL(timeCalcPartChanged(TimeCalcPart*)),
                this, SLOT(slTimeCalcPartChanged(TimeCalcPart*)) );
       m_timePartDialog->show();

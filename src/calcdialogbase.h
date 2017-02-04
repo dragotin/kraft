@@ -1,9 +1,9 @@
 /***************************************************************************
-             matcalcdialog  -
+         CalcDialogBase  - base class for calculation detail dialogs
                              -------------------
-    begin                : 2005-03-00
-    copyright            : (C) 2005 by Klaas Freitag
-    email                : freitag@kde.org
+    begin                : 2017-01-31
+    copyright            : (C) 2017 by Klaas Freitag
+    email                : kraft@freisturz.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,42 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _MATCALCDIALOG_H
-#define _MATCALCDIALOG_H
+#ifndef _CALCDIALOGBASE_H
+#define _CALCDIALOGBASE_H
 
-// include files
 #include <QDialog>
+#include <QWidget>
 
-#include "ui_matpartui.h"
-#include "calcdialogbase.h"
-
-
-class StockMaterial;
-class MaterialCalcPart;
 /**
  *
  */
 
-class MatCalcDialog : public CalcDialogBase
+class CalcDialogBase: public QDialog
 {
     Q_OBJECT
 
 public:
-    MatCalcDialog(MaterialCalcPart *mc, QWidget *parent=0);
-    virtual ~MatCalcDialog();
+    CalcDialogBase(QWidget *parent);
 
-protected slots:
-    void accept();
-    
-  signals:
-    void matCalcPartChanged(MaterialCalcPart *mc);
-private:
-    void init(double);
-    Ui::calcdetailMat *_matWidget;
-    MaterialCalcPart *m_mc;
+protected:
+    QWidget *_centralWidget;
 };
 
 #endif
 
 /* END */
-

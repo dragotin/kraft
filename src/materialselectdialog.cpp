@@ -34,34 +34,23 @@
 #include "katalog.h"
 #include "filterheader.h"
 
-MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
-  : QDialog( parent )
+MaterialSelectDialog::MaterialSelectDialog( QWidget *parent)
+  : CalcDialogBase( parent )
 {
-  setObjectName( name );
-  setModal( true );
-  setWindowTitle( i18n("Select Material for Calculation" ) );
+  setWindowTitle( i18n("Add Material to Calculation" ) );
   QVBoxLayout *mainLayout = new QVBoxLayout;
-  setLayout(mainLayout);
 
-  QVBoxLayout *page = new QVBoxLayout;
-  QLabel *label = new QLabel( i18n( "Select Material for Calculation" ));
-  page->addWidget(label);
-  label->setObjectName("caption");
+  _centralWidget->setLayout(mainLayout);
+
+  QLabel *label = new QLabel( i18n( "<h1>Add Material to Calculation</h1>" ));
+  mainLayout->addWidget(label);
 
   mKatalogListView = new MaterialKatalogListView;
   FilterHeader *filter = new FilterHeader(this, mKatalogListView);
-  page->addWidget(filter);
-  page->addWidget(mKatalogListView);
-  mKatalogListView->setCheckboxes( true );
-  mainLayout->addLayout(page);
+  mainLayout->addWidget(filter);
+  mainLayout->addWidget(mKatalogListView);
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  page->addWidget(buttonBox);
+  mKatalogListView->setCheckboxes( true );
 
   Katalog *kat = KatalogMan::self()->getKatalog( MaterialKatalogView::MaterialCatalogName );
 

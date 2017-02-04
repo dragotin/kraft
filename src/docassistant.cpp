@@ -41,14 +41,13 @@ DocAssistant::DocAssistant( QWidget *parent ):
 {
   setOrientation( Qt::Vertical );
 
-  QWidget *w = new QWidget;
-  addWidget( w );
+  QWidget *topWidget = new QWidget;
   QVBoxLayout *topVBox = new QVBoxLayout;
-  w->setLayout( topVBox );
+  topVBox->setMargin(0);
+  topWidget->setLayout( topVBox );
 
   QHBoxLayout *buttonLayout = new QHBoxLayout;
   topVBox->addLayout( buttonLayout );
-//TODO PORT QT5   buttonLayout->setMargin( QDialog::marginHint()/2 );
 
   QPushButton *pb = new QPushButton( i18n( "Show &Templates" ) );
   buttonLayout->addWidget( pb );
@@ -58,17 +57,19 @@ DocAssistant::DocAssistant( QWidget *parent ):
   pb->setToolTip( i18n( "Show mask to create or select templates to be used in the document" ) );
 
   buttonLayout->addStretch();
-
+  topVBox->addLayout(buttonLayout);
   mPostCard = new DocPostCard;
-
   mPostCard->slotSetMode( DocPostCard::Full, KraftDoc::Header );
   // setResizeMode( vb /* mPostCard->view() */, KeepSize );
 
   topVBox->addWidget(mPostCard);
 
-  // KVBox *stackVBox = new KVBox( this );
+  addWidget(topWidget);
+
   mTemplatePane = new QWidget;
   QVBoxLayout *bottomVBox = new QVBoxLayout;
+  bottomVBox->setMargin(0);
+
   mTemplatePane->setLayout( bottomVBox );
   addWidget( mTemplatePane );
 
@@ -109,7 +110,6 @@ DocAssistant::DocAssistant( QWidget *parent ):
   QHBoxLayout *butHBox2 = new QHBoxLayout;
   bottomVBox->addLayout( butHBox2 );
 
-//TODO PORT QT5   butHBox2->setSpacing( QDialog::spacingHint() );
   QIcon icons = QIcon::fromTheme( "go-previous" ); // KDE 4 icon name: go-previous
   mPbAdd  = new QPushButton( icons, QString() );
   mPbAdd->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
@@ -180,7 +180,10 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   mCurrTemplateProvider = mHeaderTemplateProvider;
 
-  // mMainSplit->setSizes( KraftSettings::self()->assistantSplitterSetting() );
+  const QList<int> sizes = KraftSettings::self()->assistantSplitterSetting();
+  if( sizes.count() > 0 ) {
+      setSizes( sizes );
+  }
   mTemplatePane->hide();
 }
 
@@ -390,8 +393,8 @@ void DocAssistant::setFullPreview( bool setFull, int id )
     /* remember the sizes used before */
     if ( mTemplatePane->isVisible() ) {
       // qDebug() << "Writing mSplitterSizes: " << mMainSplit->sizes() << endl;
-      // KraftSettings::self()->setAssistantSplitterSetting( mMainSplit->sizes() );
-      //  KraftSettings::self()->writeConfig();
+      KraftSettings::self()->setAssistantSplitterSetting( sizes() );
+      KraftSettings::self()->save();
     }
 
     mTemplatePane->hide();
@@ -402,7 +405,7 @@ void DocAssistant::setFullPreview( bool setFull, int id )
     mPostCard->slotSetMode( DocPostCard::Mini, id );
 
     if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
-      // mMainSplit->setSizes( KraftSettings::self()->assistantSplitterSetting() );
+        setSizes( KraftSettings::self()->assistantSplitterSetting() );
     }
     mFullPreview = false;
   }

@@ -43,24 +43,24 @@ CatalogSelection::CatalogSelection( QWidget *parent )
       mCatalogSelector( 0 ),
       mWidgets( 0 )
 {
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
-    QHBoxLayout *hb = new QHBoxLayout(this);
+    QHBoxLayout *hb = new QHBoxLayout;
     layout->addLayout(hb);
     QLabel *l = new QLabel( i18n( "Selected &Catalog: " ) );
     hb->addWidget(l);
-    mCatalogSelector = new QComboBox(this);
+    mCatalogSelector = new QComboBox;
     hb->addWidget(mCatalogSelector);
     connect( mCatalogSelector, SIGNAL( activated( const QString& ) ),
              this,  SLOT( slotSelectCatalog( const QString& ) ) );
     l->setBuddy( mCatalogSelector );
 
     hb->addStretch();
-    mListSearchLine = new FilterHeader( this ) ;
+    mListSearchLine = new FilterHeader;
     hb->addWidget(mListSearchLine);
 
-    mWidgets  = new QStackedWidget(this);
-    //mWidgets->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
+    mWidgets  = new QStackedWidget;
+    mWidgets->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
     layout->addWidget(mWidgets);
 
     this->setLayout(layout);

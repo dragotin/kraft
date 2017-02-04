@@ -16,6 +16,7 @@ set(kraft_SRCS
     templkatalog.cpp
     docposition.cpp
     matkatalog.cpp
+    calcdialogbase.cpp
     timecalcpart.cpp
     fixcalcpart.cpp
     floskeltemplate.cpp

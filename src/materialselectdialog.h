@@ -18,7 +18,7 @@
 #ifndef _MATERIALSELECTDIALOG_H
 #define _MATERIALSELECTDIALOG_H
 
-#include <QDialog>
+#include "calcdialogbase.h"
 
 class MaterialKatalogListView;
 
@@ -26,12 +26,12 @@ class MaterialKatalogListView;
  * Editor that shows the MaterialKatalogListView
  * ********************************************************************************/
 
-class MaterialSelectDialog : public QDialog
+class MaterialSelectDialog : public CalcDialogBase
 {
   Q_OBJECT
 
 public:
-  MaterialSelectDialog( QWidget * parent = 0, const char * name = 0 );
+  MaterialSelectDialog(QWidget * parent = 0);
   ~MaterialSelectDialog();
 
 public slots:
