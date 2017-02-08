@@ -598,20 +598,20 @@ void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
         emit pdfAvailable( mFile.fileName() );
         mFile.setFileName( QString() );
     } else {
-        if( mErrors.contains(QLatin1String("No module named reportlab"))) {
-            mErrors = i18n("To generate PDF output, Kraft requires the python module <b>ReportLab</b> which can not be found.<br/>"
+        if( mErrors.contains(QLatin1String("No module named Reportlab"))) {
+            mErrors = i18n("To generate PDF output, Kraft requires the python module ReportLab which can not be found.\n\n"
                            "Please make sure the package is installed on your computer.");
         }
         if( mErrors.contains(QLatin1String("No module named pyPdf"))) {
-            mErrors = i18n("To generate PDF output, Kraft requires the python module <b>pyPdf</b> which can not be found.<br/>"
+            mErrors = i18n("To generate PDF output, Kraft requires the python module pyPdf which can not be found.\n\n"
                            "Please make sure the package is installed on your computer.");
         }
 
         if ( mErrors.isEmpty() ) mErrors = i18n( "Unknown problem." );
 
         QMessageBox msgBox;
-        msgBox.setText(i18n("Could not generate the pdf file. The pdf creation script failed.") );
-        msgBox.setDetailedText(i18n("Errors: %1").arg(mErrors));
+        msgBox.setText(i18n("The PDF output file could not be generated. The creation script failed.") );
+        msgBox.setDetailedText(mErrors);
         msgBox.setWindowTitle(i18n("PDF Generation Error"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();

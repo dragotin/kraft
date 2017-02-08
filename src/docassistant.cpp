@@ -42,6 +42,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   setOrientation( Qt::Vertical );
 
   QWidget *topWidget = new QWidget;
+  topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
   QVBoxLayout *topVBox = new QVBoxLayout;
   topVBox->setMargin(0);
   topWidget->setLayout( topVBox );
