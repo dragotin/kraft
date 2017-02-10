@@ -142,7 +142,6 @@ class KraftView : public KraftViewBase
   void slotUnlockPosition( int );
   void slotLockPosition( int );
   void slotPositionModified( int );
-  void slotAboutToShow( QWidget* );
   void refreshPostCard( );
   void slotShowCatalog( bool );
   void slotShowTemplates( bool );

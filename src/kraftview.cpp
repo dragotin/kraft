@@ -594,11 +594,6 @@ void KraftView::setupFooter()
   connect(m_footerEdit,SIGNAL(modified()),this,SLOT(slotModifiedFooter()));
 }
 
-void KraftView::slotAboutToShow( QWidget* w )
-{
-  // qDebug () << "showing page " << w << endl;
-}
-
 void KraftView::slotTaxComboChanged(int newId)
 {
   bool allowTaxSetting = false;
@@ -755,7 +750,7 @@ void KraftView::slotUnlockPosition( int pos )
   }
 }
 
-void KraftView::slotPositionModified( int pos )
+void KraftView::slotPositionModified( int )
 {
   // qDebug () << "Modified Position " << pos << endl;
   mModified = true;
@@ -1261,7 +1256,7 @@ void KraftView::slotShowCatalog( bool on )
 
 void KraftView::slotModifiedPositions()
 {
-  // qDebug () << "Position Modified" << endl;
+  qDebug () << "Position Modified" << endl;
   mModified = true;
 }
 
@@ -1310,6 +1305,14 @@ void KraftView::done( int r )
         saveChanges();
         emit viewClosed( r == 1, m_doc );
     }
+
+    // save the size also if the doc was not modified.
+    if( r > 0 ) {
+        KraftSettings::self()->setDocViewSplitter( mCSplit->sizes() );
+        KraftSettings::self()->setDocViewSize( size() );
+        KraftSettings::self()->setDocViewPosition( pos() );
+        KraftSettings::self()->save();
+    }
     QDialog::done( r );
 }
 
@@ -1346,12 +1349,6 @@ void KraftView::saveChanges()
       KraftSettings::self()->setGreeting( m_footerEdit->greeting() );
       KraftSettings::self()->setSalut( m_headerEdit->m_letterHead->currentIndex() );
     }
-
-    KraftSettings::self()->setDocViewSplitter( mCSplit->sizes() );
-    KraftSettings::self()->setDocViewSize( size() );
-    KraftSettings::self()->setDocViewPosition( pos() );
-    KraftSettings::self()->writeConfig();
-    KraftSettings::self()->readConfig();
 }
 
 void KraftView::slotFocusItem( PositionViewWidget *posWidget, int pos )
