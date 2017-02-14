@@ -149,27 +149,24 @@ UnitsEditDialog::UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *p
   setObjectName( "UNITS_EDIT_DIALOG" );
   setModal( true );
   setWindowTitle( i18n( "Edit a unit" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
   QWidget *mainWidget = new QWidget(this);
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
   mainLayout->addWidget(mainWidget);
+
+  QWidget *w = new QWidget( this );
+  mainLayout->addWidget(w);
+
+  mBaseWidget = new Ui::UnitsEditBase( );
+  mBaseWidget->setupUi( w );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
   QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
   okButton->setDefault(true);
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
   mainLayout->addWidget(buttonBox);
-
-
-  QWidget *w = new QWidget( this );
-//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
-// Add mainLayout->addWidget(w); if necessary
-// Add mainLayout->addWidget(w); if necessary
-
-  mBaseWidget = new Ui::UnitsEditBase( );
-  mBaseWidget->setupUi( w );
 
   mModel = model;
 

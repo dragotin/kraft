@@ -39,9 +39,9 @@ int main(int argc, char *argv[])
                           KRAFT_VERSION,
                           ki18n("Business documents for the small enterprise").toString(),
                           KAboutLicense::GPL,
-                          ki18n("Copyright © 2004–2015 Klaas Freitag" ).toString() );
+                          ki18n("Copyright © 2004–2017 Klaas Freitag" ).toString() );
 
-    aboutData.addAuthor(QLatin1String("Klaas Freitag"), ki18n("Developer").toString(), QLatin1String("freitag@kde.org"));
+    aboutData.addAuthor(QLatin1String("Klaas Freitag"), ki18n("Developer").toString(), QLatin1String("kraft@freisturz.de"));
     aboutData.addAuthor(QLatin1String("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ).toString(),
                         QLatin1String("kraft@spielhagen.de"), QLatin1String("http://www.michal-spielhagen.de") );
     aboutData.addAuthor(QLatin1String("Thomas Richard"), ki18n("Developer").toString(), QLatin1String("thomas.richard@proan.be"));
@@ -64,7 +64,6 @@ int main(int argc, char *argv[])
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();
     parser.addHelpOption();
-    //PORTING SCRIPT: adapt aboutdata variable if necessary
     aboutData.setupCommandLine(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
@@ -73,10 +72,7 @@ int main(int argc, char *argv[])
     parser.addOption(QCommandLineOption(QStringList() << QLatin1String("d"), i18n("Open document with doc number <number>"), QLatin1String("number")));
 
     // Register the supported options
-
-
-    if (app.isSessionRestored())
-    {
+    if (app.isSessionRestored()) {
         RESTORE(Portal);
     } else {
         QString splashFile = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "kraft/pics/kraftsplash.png" );

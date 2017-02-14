@@ -158,7 +158,6 @@ KraftView::KraftView(QWidget *parent) :
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
   mainLayout->addWidget(buttonBox);
 
 
@@ -247,11 +246,12 @@ void KraftView::setupDocHeaderView()
     // m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
     m_headerEdit->m_cbType->insertItems(-1, DocType::allLocalised() );
 
-    if ( KraftSettings::self()->showDocumentLocale() ) {
-      m_headerEdit->mButtLang->show();
-    } else {
-      m_headerEdit->mButtLang->hide();
-    }
+    // if ( KraftSettings::self()->showDocumentLocale() ) {
+    //   m_headerEdit->mButtLang->show();
+    // } else {
+    // Hide the locale select button for now.
+    m_headerEdit->mButtLang->hide();
+    // }
 
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
              this, SLOT( slotDocTypeChanged( const QString& ) ) );

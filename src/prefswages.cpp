@@ -197,25 +197,11 @@ WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *p
   setObjectName( "WAGES_EDIT_DIALOG" );
   setModal( true );
   setWindowTitle( i18n( "Edit a wage group" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
+  QWidget *mainWidget = new QWidget;
   QVBoxLayout *mainLayout = new QVBoxLayout;
-  setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
 
-
-  QWidget *w = new QWidget( this );
-//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
-// Add mainLayout->addWidget(w); if necessary
-// Add mainLayout->addWidget(w); if necessary
-
+  QWidget *w = new QWidget;
+  mainLayout->addWidget(w);
   mBaseWidget = new Ui::WagesEditBase( );
   mBaseWidget->setupUi( w );
 
@@ -224,6 +210,17 @@ WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *p
   mBaseWidget->mWage->setMinimum( 0 );
   mBaseWidget->mWage->setMaximum( 100000 );
   mBaseWidget->mWage->setDecimals( 2 );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
 
   mModel = model;
 
@@ -234,14 +231,11 @@ WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *p
   mapper->addMapping(mBaseWidget->mGroupName, 1);
   mapper->addMapping(mBaseWidget->mWage, 2);
 
-  if(row == -1)
-  {
+  if(row == -1) {
     //Insert a new row at the end
     model->insertRow(model->rowCount());
     mapper->toLast();
-  }
-  else
-  {
+  } else {
     mBaseWidget->mLabel->setText(i18n("<h1>Edit wage group</h1>"));
     mapper->setCurrentIndex(row);
   }

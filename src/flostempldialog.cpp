@@ -75,7 +75,6 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
   connect(_buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
   mainLayout->addWidget(_buttonBox);
   okButton->setDefault(true);
 

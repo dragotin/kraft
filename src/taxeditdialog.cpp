@@ -34,18 +34,10 @@ TaxEditDialog::TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent )
   setObjectName( "TAX_EDIT_DIALOG" );
   setModal( true );
   setWindowTitle( i18n( "Edit Tax Rates" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
-
-  QWidget *w = new QWidget( this );
+  QWidget *w = new QWidget;
   mainLayout->addWidget(w);
   mBaseWidget = new Ui::TaxEditBase( );
   mBaseWidget->setupUi( w );
@@ -55,10 +47,18 @@ TaxEditDialog::TaxEditDialog( QSqlTableModel *taxModel, QWidget *parent )
   mBaseWidget->mReducedTax->setSuffix( "%" );
 
   mBaseWidget->mFullTax->setRange( 0,100.0 );
+  mBaseWidget->mFullTax->setDecimals( 1 );
   mBaseWidget->mReducedTax->setRange( 0, 100.0 );
+  mBaseWidget->mReducedTax->setDecimals( 1 );
 
-  // FIXME Porting mBaseWidget->mFullTax->setDecimals( 1 );
-  // mBaseWidget->mReducedTax->setDecimals( 1 );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
 
   this->model = taxModel;
 

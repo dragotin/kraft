@@ -31,7 +31,6 @@
 
 #include <QDialog>
 #include <QDebug>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 
@@ -51,25 +50,12 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
   setObjectName( "NUMBER_CYCLES_EDIT" );
   setModal( true );
   setWindowTitle( i18n( "Edit Number Cycles" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
-  _okButton = buttonBox->button(QDialogButtonBox::Ok);
-  _okButton->setDefault(true);
-  _okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
 
+  QVBoxLayout *layout = new QVBoxLayout;
+  setLayout(layout);
 
-  QWidget *w = new QWidget(this);
-//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
-// Add mainLayout->addWidget(w); if necessary
-// Add mainLayout->addWidget(w); if necessary
-
+  QWidget *w = new QWidget;
+  layout->addWidget(w);
   mBaseWidget = new Ui::NumberCycleEditBase( );
   mBaseWidget->setupUi( w );
 
@@ -112,6 +98,14 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
   if ( initItem ) {
     mBaseWidget->mCycleListBox->setCurrentItem( initItem,  QItemSelectionModel::Select );
   }
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  _okButton = buttonBox->button(QDialogButtonBox::Ok);
+  _okButton->setDefault(true);
+  _okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  layout->addWidget(buttonBox);
   slotUpdateExample();
 
   connect( mBaseWidget->mIdTemplEdit, SIGNAL( textChanged( const QString& ) ),

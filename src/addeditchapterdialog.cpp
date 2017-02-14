@@ -34,29 +34,9 @@ AddEditChapterDialog::AddEditChapterDialog( QWidget *parent )
   setObjectName( "CHAPTER_EDIT_DIALOG" );
   setModal( true );
   setWindowTitle( i18n( "Add/Edit Catalog Chapter" ) );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  setLayout(mainLayout);
-  mainLayout->addWidget(mainWidget);
-  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-  okButton->setDefault(true);
-  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  //PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-  mainLayout->addWidget(buttonBox);
-
-
-  QWidget *w = new QWidget(this);
-//PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( w );
-// Add mainLayout->addWidget(w); if necessary
-// Add mainLayout->addWidget(w); if necessary
 
   QVBoxLayout *vbox = new QVBoxLayout;
-  w->setLayout( vbox );
-//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
-//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
+  this->setLayout( vbox );
 
   mTopLabel = new QLabel();
   mTopLabel->setText( i18n("Create a new Catalog Chapter"));
@@ -70,6 +50,15 @@ AddEditChapterDialog::AddEditChapterDialog( QWidget *parent )
   vbox->addWidget( new QLabel( i18n("Chapter Description:")));
   mDescEdit = new QLineEdit;
   vbox->addWidget( mDescEdit );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  vbox->addWidget(buttonBox);
 }
 
 QString AddEditChapterDialog::name() const
