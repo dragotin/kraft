@@ -1305,14 +1305,9 @@ void KraftView::done( int r )
         saveChanges();
         emit viewClosed( r == 1, m_doc );
     }
+    // remember the sizes of the docassistant splitter if visible.
+    mAssistant->saveSplitterSizes();
 
-    // save the size also if the doc was not modified.
-    if( r > 0 ) {
-        KraftSettings::self()->setDocViewSplitter( mCSplit->sizes() );
-        KraftSettings::self()->setDocViewSize( size() );
-        KraftSettings::self()->setDocViewPosition( pos() );
-        KraftSettings::self()->save();
-    }
     QDialog::done( r );
 }
 

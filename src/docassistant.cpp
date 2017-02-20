@@ -42,8 +42,6 @@ DocAssistant::DocAssistant( QWidget *parent ):
   setOrientation( Qt::Vertical );
 
   QWidget *topWidget = new QWidget;
-  topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
   QVBoxLayout *topVBox = new QVBoxLayout;
   topVBox->setMargin(0);
   topWidget->setLayout( topVBox );
@@ -74,6 +72,9 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   mTemplatePane->setLayout( bottomVBox );
   addWidget( mTemplatePane );
+
+  setStretchFactor(0, 0);
+  setStretchFactor(1, 0);
 
   mWidgetStack = new QStackedWidget;
 
@@ -395,8 +396,7 @@ void DocAssistant::setFullPreview( bool setFull, int id )
     /* remember the sizes used before */
     if ( mTemplatePane->isVisible() ) {
       // qDebug() << "Writing mSplitterSizes: " << mMainSplit->sizes() << endl;
-      KraftSettings::self()->setAssistantSplitterSetting( sizes() );
-      KraftSettings::self()->save();
+        saveSplitterSizes();
     }
 
     mTemplatePane->hide();
@@ -407,9 +407,15 @@ void DocAssistant::setFullPreview( bool setFull, int id )
     mPostCard->slotSetMode( DocPostCard::Mini, id );
 
     if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
-        setSizes( KraftSettings::self()->assistantSplitterSetting() );
+        QList<int> sizes = KraftSettings::self()->assistantSplitterSetting();
+        setSizes( sizes );
     }
     mFullPreview = false;
   }
 }
 
+void DocAssistant::saveSplitterSizes()
+{
+    KraftSettings::self()->setAssistantSplitterSetting( sizes() );
+    KraftSettings::self()->save();
+}

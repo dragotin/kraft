@@ -54,9 +54,8 @@ public:
   DocPostCard *postCard();
   CatalogSelection *catalogSelection();
 
-  bool isFullPreview() {
-    return mFullPreview;
-  }
+  void saveSplitterSizes();
+
 public slots:
   void slotShowCatalog();
   void slotShowHeaderTemplates();
