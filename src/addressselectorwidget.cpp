@@ -216,10 +216,28 @@ bool AddressSortProxyModel::filterAcceptsRow(int row, const QModelIndex &parent)
 
 /* ------------------------------------------------------------------------------ */
 
-AddressSelectorWidget::AddressSelectorWidget(QWidget *parent, bool /* showText */)
-    : QWidget(parent)
+KraftContactViewer::KraftContactViewer(QWidget *parent)
+    :_contactViewer(0)
 {
-    setupGui();
+#ifdef HAVE_AKONADI
+    _contactViewer = new Akonadi::ContactViewer(parent);
+#endif
+}
+
+void KraftContactViewer::setContact( const KContacts::Addressee& contact)
+{
+#ifdef HAVE_AKONADI
+    _contactViewer->setRawContact(contact);
+#endif
+
+}
+
+/* ------------------------------------------------------------------------------ */
+
+AddressSelectorWidget::AddressSelectorWidget(QWidget *parent, bool /* showText */)
+    : QSplitter(parent)
+{
+    setupUi();
 }
 
 
@@ -227,47 +245,65 @@ AddressSelectorWidget::~AddressSelectorWidget()
 {
 }
 
-void AddressSelectorWidget::setupGui()
+void AddressSelectorWidget::setupUi()
 {
-  QVBoxLayout *vbox = new QVBoxLayout;
-  setLayout( vbox );
+    _provider = new AddressProvider(this);
 
-  _provider = new AddressProvider(this);
+    QSplitter *split = this;
+    QWidget *wLeft =new QWidget;
+    QVBoxLayout *leftLay = new QVBoxLayout;
+    wLeft->setLayout(leftLay);
+    split->addWidget(wLeft);
+    QHBoxLayout *searchLay = new QHBoxLayout;
+    leftLay->addLayout(searchLay);
 
-  mAddressSelectorUi = new Ui::AddressSelectorWidget;
-  QWidget *w = new QWidget;
-  mAddressSelectorUi->setupUi( w );
-  vbox->addWidget( w );
+    QLabel *searchLabel = new QLabel(i18n("&Search:"));
+    searchLay->addWidget( searchLabel );
+    QLineEdit *edit = new QLineEdit;
+    searchLabel->setBuddy(edit);
 
-  QHBoxLayout *hboxBot = new QHBoxLayout;
-  hboxBot->addStretch(4);
-  vbox->addLayout( hboxBot );
-  mButEditContact = new QPushButton(i18n("Edit Contact..."));
-  mButEditContact->setToolTip( i18n("Edit the currently selected contact" ));
-  mButEditContact->setEnabled( false );
-  hboxBot->addWidget( mButEditContact );
-  QPushButton *butCreateContact = new QPushButton(i18n("New Contact..."));
-  butCreateContact->setToolTip( i18n("Create a new Contact" ) );
-  hboxBot->addWidget( butCreateContact );
+    edit->setClearButtonEnabled(true);
+    searchLay->addWidget( edit );
+    connect(edit, SIGNAL(textChanged(QString)), SLOT(slotFilterTextChanged(QString)));
 
-  mProxyModel = new AddressSortProxyModel(_provider, this);
-  mProxyModel->setSourceModel(_provider->model());
-  mAddressSelectorUi->mAddressList->setModel(mProxyModel);
-  mProxyModel->sort(0);
+    _addressTreeView = new QTreeView;
+    leftLay->addWidget(_addressTreeView);
+    mProxyModel = new AddressSortProxyModel(_provider, this);
+    mProxyModel->setSourceModel(_provider->model());
+    _addressTreeView->setModel(mProxyModel);
+    connect(_addressTreeView, SIGNAL(activated(QModelIndex)),
+            this, SLOT(slotAddresseeSelected(QModelIndex)));
 
-  connect(butCreateContact,SIGNAL(clicked()),SLOT( slotCreateNewContact()));
-  connect(mButEditContact,SIGNAL(clicked()),SLOT(slotEditContact()));
+    mProxyModel->sort(0);
 
-  mAddressSelectorUi->mSearchEdit->setClearButtonEnabled(true);
-  connect(mAddressSelectorUi->mSearchEdit, SIGNAL(textChanged(QString)),
-          SLOT(slotFilterTextChanged(QString)));
+    // the right side
+    QVBoxLayout *rightLay = new QVBoxLayout;
+    _contactViewer = new KraftContactViewer;
+    rightLay->addWidget(_contactViewer);
 
+    // Buttons to create and edit
+    QHBoxLayout *hboxBot = new QHBoxLayout;
+    hboxBot->addStretch(4);
+    rightLay->addLayout( hboxBot );
+    mButEditContact = new QPushButton(i18n("Edit Contact..."));
+    mButEditContact->setToolTip( i18n("Edit the currently selected contact" ));
+    mButEditContact->setEnabled( false );
+    hboxBot->addWidget( mButEditContact );
+    QPushButton *butCreateContact = new QPushButton(i18n("New Contact..."));
+    butCreateContact->setToolTip( i18n("Create a new Contact" ) );
+    hboxBot->addWidget( butCreateContact );
 
+    connect(butCreateContact,SIGNAL(clicked()),SLOT(slotCreateNewContact()));
+    connect(mButEditContact,SIGNAL(clicked()),SLOT(slotEditContact()));
+
+    QWidget *wRight = new QWidget;
+    wRight->setLayout(rightLay);
+    split->addWidget(wRight);
 }
 
 void AddressSelectorWidget::slotFilterTextChanged( const QString& filter)
 {
-    qDebug() << "Filter: " << filter;
+    // qDebug() << "Filter: " << filter;
     mProxyModel->setFilterRegExp(QRegExp(filter, Qt::CaseInsensitive, QRegExp::RegExp));
     // mProxyModel.setFilterFixedString(filter);
 }
@@ -288,6 +324,16 @@ void AddressSelectorWidget::slotCreateNewContact()
     // FIXME
     //  mContactsEditor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this );
     //   mContactsEditor->show();
+}
+
+void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
+{
+    if ( index.isValid() ) {
+        QModelIndex sourceIdx = mProxyModel->mapToSource(index);
+        KContacts::Addressee contact = _provider->getAddressee( sourceIdx );
+        qDebug() << "----------- " << contact.formattedName() << contact.uid();
+        _contactViewer->setContact(contact);
+    }
 }
 
 void AddressSelectorWidget::slotEditContact()

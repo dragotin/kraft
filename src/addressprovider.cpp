@@ -41,6 +41,11 @@ void AddressProvider::lookupAddressee( const QString& uid )
     _d->lookupAddressee(uid);
 }
 
+KContacts::Addressee AddressProvider::getAddressee(const QModelIndex& indx)
+{
+    return _d->getAddressee(indx);
+}
+
 KContacts::Addressee AddressProvider::getAddressee( int row, const QModelIndex &parent)
 {
     return _d->getAddressee(row, parent);

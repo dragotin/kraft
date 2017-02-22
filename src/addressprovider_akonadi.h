@@ -35,36 +35,36 @@ class AddressItemModel;
 // An akonadi based provider.
 class AddressProviderPrivate : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  AddressProviderPrivate( QObject* parent = 0 );
+    AddressProviderPrivate( QObject* parent = 0 );
 
-  void lookupAddressee( const QString& uid );
-  QString formattedAddress( const KContacts::Addressee& ) const;
+    void lookupAddressee( const QString& uid );
+    QString formattedAddress( const KContacts::Addressee& ) const;
 
-  QAbstractItemModel *model();
+    QAbstractItemModel *model();
 
-  KContacts::Addressee getAddressee(int row, const QModelIndex &parent);
-
+    KContacts::Addressee getAddressee(int row, const QModelIndex &parent);
+    KContacts::Addressee getAddressee(const QModelIndex& indx);
 
 public slots:
-  void searchResult( KJob* );
+    void searchResult( KJob* );
 
 signals:
-  //
-  void addresseeFound( const QString&, const KContacts::Addressee& );
-  void formattedAddressFound( const QString& uid, const QString& addressString );
+    //
+    void addresseeFound( const QString&, const KContacts::Addressee& );
+    void formattedAddressFound( const QString& uid, const QString& addressString );
 
-  // emitted when the search is finished, even if there was no result.
-  void finished( int );
+    // emitted when the search is finished, even if there was no result.
+    void finished( int );
 
 private:
-  QMap<KJob*, QString> mUidSearchJobs;
-  QSet<QString>        mUidSearches;
+    QMap<KJob*, QString> mUidSearchJobs;
+    QSet<QString>        mUidSearches;
 
-  Akonadi::Session *mSession;
-  Akonadi::ChangeRecorder* mMonitor; // FIXME: Must static somehow
-  Akonadi::ContactsTreeModel *_model;
+    Akonadi::Session *mSession;
+    Akonadi::ChangeRecorder* mMonitor; // FIXME: Must static somehow
+    Akonadi::ContactsTreeModel *_model;
 };
 
 #endif // ADDRESSPROVIDER_H

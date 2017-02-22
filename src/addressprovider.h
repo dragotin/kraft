@@ -38,7 +38,9 @@ public:
   QString formattedAddress( const KContacts::Addressee& ) const;
 
   QAbstractItemModel *model();
-  KContacts::Addressee getAddressee( int row, const QModelIndex &parent);
+
+  KContacts::Addressee getAddressee(const QModelIndex& indx);
+  KContacts::Addressee getAddressee( int row, const QModelIndex &parent = QModelIndex());
 
 protected slots:
   void searchResult( KJob* );

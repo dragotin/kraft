@@ -20,6 +20,13 @@
 
 #include <QWidget>
 #include <QSortFilterProxyModel>
+#include <QSplitter>
+
+#define HAVE_AKONADI 1
+
+#ifdef HAVE_AKONADI
+#include <Akonadi/Contact/ContactViewer>
+#endif
 
 #include <kcontacts/addressee.h>
 #include "ui_addressselectorwidget.h"
@@ -30,11 +37,28 @@ using namespace KContacts;
 
 class QLabel;
 class QPushButton;
-class QSplitter;
 class QTreeView;
 class QuickSearchWidget;
 class QItemSelectionModel;
 class QuickSearchWidget;
+
+/* =============================================================== */
+
+
+class KraftContactViewer : public QWidget
+{
+    Q_OBJECT
+    public:
+
+    explicit KraftContactViewer(QWidget *parent = 0);
+
+    void setContact( const KContacts::Addressee& contact);
+
+private:
+#ifdef HAVE_AKONADI
+    Akonadi::ContactViewer *_contactViewer;
+#endif
+};
 
 class AddressSortProxyModel : public QSortFilterProxyModel
 {
@@ -54,7 +78,7 @@ public:
 
 /* =============================================================== */
 
-class AddressSelectorWidget : public QWidget
+class AddressSelectorWidget : public QSplitter
 {
     Q_OBJECT
 public:
@@ -75,14 +99,20 @@ protected slots:
   void slotItemActivated( const QModelIndex& index );
   void slotFilterTextChanged( const QString& filter);
 
+private slots:
+  void slotAddresseeSelected(QModelIndex index);
+
 private:
-  void setupGui();
+  void setupUi();
 
   QPushButton       *mButEditContact;
 
   Ui::AddressSelectorWidget *mAddressSelectorUi;
   AddressProvider *_provider;
   AddressSortProxyModel *mProxyModel;
+  QTreeView *_addressTreeView;
+  KraftContactViewer *_contactViewer;
+
 };
 
 #endif // AKONADIADDRESSSELECTOR_H

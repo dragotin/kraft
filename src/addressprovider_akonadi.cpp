@@ -35,7 +35,9 @@
 using namespace Akonadi;
 
 AddressProviderPrivate::AddressProviderPrivate( QObject *parent )
-  :QObject( parent )
+  :QObject( parent ),
+    mMonitor(0),
+    _model(0)
 {
     if ( !Akonadi::Control::start( ) ) {
         qDebug() << "Failed to start Akonadi!";
@@ -64,6 +66,8 @@ void AddressProviderPrivate::lookupAddressee( const QString& uid )
 
     mUidSearches.insert( uid );
     mUidSearchJobs[job] = uid;
+
+    model();
 
 }
 
@@ -117,37 +121,50 @@ QAbstractItemModel *AddressProviderPrivate::model()
     scope.fetchFullPayload( true );
     // fetch the EntityDisplayAttribute, which contains custom names and icons
     scope.fetchAttribute<Akonadi::EntityDisplayAttribute>();
-    mMonitor = new Akonadi::ChangeRecorder;
-    mMonitor->setSession( mSession );
-    // include fetching the collection tree
-    mMonitor->fetchCollection( true );
-    // set the fetch scope that shall be used
-    mMonitor->setItemFetchScope( scope );
-    // monitor all collections below the root collection for changes
-    mMonitor->setCollectionMonitored( Akonadi::Collection::root() );
-    // list only contacts and contact groups
-    mMonitor->setMimeTypeMonitored( KContacts::Addressee::mimeType(), true );
-    mMonitor->setMimeTypeMonitored( KContacts::ContactGroup::mimeType(), true );
-    _model = new Akonadi::ContactsTreeModel( mMonitor );
-    Akonadi::ContactsTreeModel::Columns columns;
-    columns << Akonadi::ContactsTreeModel::FullName;
-    columns << Akonadi::ContactsTreeModel::HomeAddress;
-    _model->setColumns( columns );
+    if( ! mMonitor ) {
+        mMonitor = new Akonadi::ChangeRecorder;
+        mMonitor->setSession( mSession );
+        // include fetching the collection tree
+        mMonitor->fetchCollection( true );
+        // set the fetch scope that shall be used
+        mMonitor->setItemFetchScope( scope );
+        // monitor all collections below the root collection for changes
+        mMonitor->setCollectionMonitored( Akonadi::Collection::root() );
+        // list only contacts and contact groups
+        mMonitor->setMimeTypeMonitored( KContacts::Addressee::mimeType(), true );
+        mMonitor->setMimeTypeMonitored( KContacts::ContactGroup::mimeType(), true );
+    }
+    if( !_model ) {
+        _model = new Akonadi::ContactsTreeModel( mMonitor );
+        Akonadi::ContactsTreeModel::Columns columns;
+        columns << Akonadi::ContactsTreeModel::FullName;
+        columns << Akonadi::ContactsTreeModel::HomeAddress;
 
+        _model->setColumns( columns );
+    }
     return _model;
+}
+
+KContacts::Addressee AddressProviderPrivate::getAddressee(const QModelIndex& indx)
+{
+    KContacts::Addressee contact;
+
+    if( indx.isValid() ) {
+        const Akonadi::Item item = indx.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+
+        if (item.hasPayload<KContacts::Addressee>()) {
+            contact = item.payload<KContacts::Addressee>();
+        }
+    }
+    return contact;
+
 }
 
 KContacts::Addressee AddressProviderPrivate::getAddressee(int row, const QModelIndex &parent)
 {
     const QModelIndex index = _model->index(row, 0, parent);
-    KContacts::Addressee contact;
 
-    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-
-    if (item.hasPayload<KContacts::Addressee>()) {
-        contact = item.payload<KContacts::Addressee>();
-    }
-    return contact;
+    return getAddressee(index);
 }
 
 QString AddressProviderPrivate::formattedAddress( const KContacts::Addressee& contact ) const
