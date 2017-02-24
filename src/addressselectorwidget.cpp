@@ -217,10 +217,14 @@ bool AddressSortProxyModel::filterAcceptsRow(int row, const QModelIndex &parent)
 /* ------------------------------------------------------------------------------ */
 
 KraftContactViewer::KraftContactViewer(QWidget *parent)
-    :_contactViewer(0)
+    :QWidget(parent), _contactViewer(0)
 {
+    QVBoxLayout *lay = new QVBoxLayout;
+    lay->setMargin(0);
+    setLayout(lay);
 #ifdef HAVE_AKONADI
-    _contactViewer = new Akonadi::ContactViewer(parent);
+    _contactViewer = new Akonadi::ContactViewer;
+    lay->addWidget(_contactViewer);
 #endif
 }
 
@@ -249,11 +253,12 @@ void AddressSelectorWidget::setupUi()
 {
     _provider = new AddressProvider(this);
 
-    QSplitter *split = this;
+    // Left page of the splitter
     QWidget *wLeft =new QWidget;
     QVBoxLayout *leftLay = new QVBoxLayout;
     wLeft->setLayout(leftLay);
-    split->addWidget(wLeft);
+    addWidget(wLeft);
+
     QHBoxLayout *searchLay = new QHBoxLayout;
     leftLay->addLayout(searchLay);
 
@@ -277,7 +282,11 @@ void AddressSelectorWidget::setupUi()
     mProxyModel->sort(0);
 
     // the right side
+    QWidget *wRight = new QWidget;
     QVBoxLayout *rightLay = new QVBoxLayout;
+    wRight->setLayout(rightLay);
+    addWidget(wRight); // parent splitter
+
     _contactViewer = new KraftContactViewer;
     rightLay->addWidget(_contactViewer);
 
@@ -296,9 +305,6 @@ void AddressSelectorWidget::setupUi()
     connect(butCreateContact,SIGNAL(clicked()),SLOT(slotCreateNewContact()));
     connect(mButEditContact,SIGNAL(clicked()),SLOT(slotEditContact()));
 
-    QWidget *wRight = new QWidget;
-    wRight->setLayout(rightLay);
-    split->addWidget(wRight);
 }
 
 void AddressSelectorWidget::slotFilterTextChanged( const QString& filter)

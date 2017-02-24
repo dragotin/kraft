@@ -139,6 +139,8 @@ QAbstractItemModel *AddressProviderPrivate::model()
         Akonadi::ContactsTreeModel::Columns columns;
         columns << Akonadi::ContactsTreeModel::FullName;
         columns << Akonadi::ContactsTreeModel::HomeAddress;
+        // columns << Akonadi::ContactsTreeModel::FamilyName;
+        // columns << Akonadi::ContactsTreeModel::GivenName;
 
         _model->setColumns( columns );
     }
