@@ -87,7 +87,7 @@ public:
   ~AddressSelectorWidget();
 
 signals:
-  void addressSelected( const Addressee& );
+  void addressSelected(KContacts::Addressee);
 
 public slots:
   void saveState();

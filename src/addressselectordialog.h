@@ -33,7 +33,7 @@ public:
     KContacts::Addressee addressee();
 
 private slots:
-    void slotAddresseeSelected(const Addressee &);
+    void slotAddresseeSelected(const KContacts::Addressee&);
 
 private:
     AddressSelectorWidget *_addressSelectorWidget;

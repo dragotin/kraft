@@ -29,7 +29,8 @@ AddressSelectorDialog::AddressSelectorDialog( QWidget *parent )
     setModal( true );
 
     _addressSelectorWidget = new AddressSelectorWidget(this, false);
-    connect(_addressSelectorWidget, SIGNAL(addressSelected(Addressee)),SLOT(slotAddresseeSelected(Addressee)));
+    connect(_addressSelectorWidget, SIGNAL(addressSelected(KContacts::Addressee)),
+            SLOT(slotAddresseeSelected(KContacts::Addressee)));
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, this);
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -44,7 +45,7 @@ AddressSelectorDialog::AddressSelectorDialog( QWidget *parent )
     mainLayout->addWidget(buttonBox);
 }
 
-void AddressSelectorDialog::slotAddresseeSelected(  const Addressee& addressee )
+void AddressSelectorDialog::slotAddresseeSelected(  const KContacts::Addressee& addressee )
 {
     _addressee = addressee;
 }

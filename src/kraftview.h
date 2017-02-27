@@ -150,6 +150,9 @@ class KraftView : public KraftViewBase
   void slotLanguageSettings();
   void slotPickAddressee();
   void slotTaxComboChanged( int );
+  void slotNewAddress( const KContacts::Addressee& contact,
+                       bool interactive = true );
+
 
 signals:
   void selectPage( int );

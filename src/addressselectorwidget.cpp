@@ -339,6 +339,8 @@ void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
         KContacts::Addressee contact = _provider->getAddressee( sourceIdx );
         qDebug() << "----------- " << contact.formattedName() << contact.uid();
         _contactViewer->setContact(contact);
+
+        emit addressSelected(contact);
     }
 }
 

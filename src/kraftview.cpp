@@ -97,7 +97,8 @@ KraftView::KraftView(QWidget *parent) :
   mDetailHeader->setAutoFillBackground(true);
 
   mAddressProvider = new AddressProvider( this );
-  // this, SLOT( slotAddresseeFound( const QString&, const KContacts::Addressee& )));
+  connect( mAddressProvider, SIGNAL(addresseeFound( const QString&, const KContacts::Addressee& )),
+           this, SLOT( slotAddresseeFound( const QString&, const KContacts::Addressee& )));
 
   QPalette palette;
   palette.setColor(mDetailHeader->backgroundRole(), QColor( "darkBlue" ));
@@ -331,7 +332,8 @@ void KraftView::slotPickAddressee()
     AddressSelectorDialog dialog(this);
 
     if( dialog.exec() ) {
-        // slotNewAddress( dialog.addressee() );
+        const KContacts::Addressee contact = dialog.addressee();
+        slotNewAddress( contact );
     }
 }
 
@@ -339,10 +341,64 @@ void KraftView::slotAddresseeFound( const QString& uid, const KContacts::Address
 {
     if( !contact.isEmpty() ) {
         // qDebug () << "Addressee Found with uid " << uid;
-        // slotNewAddress( contact, false );
+        slotNewAddress( contact, false );
         // qDebug () << "The loaded Contact has this realname: " << contact.realName() << endl;
     } else {
-        // qDebug () << "No contact found for uid " << uid;
+        qDebug () << "No contact found for uid " << uid;
+    }
+}
+
+void KraftView::slotNewAddress( const KContacts::Addressee& contact, bool interactive )
+{
+
+    Addressee adr( contact );
+
+    if( contact.isEmpty() ) {
+        return;
+    }
+    QString newAddress = mAddressProvider->formattedAddress( contact );
+    const QString currAddress = m_headerEdit->m_postAddressEdit->toPlainText();
+
+    bool replace = true;
+    m_headerEdit->m_labName->setText( contact.realName() );
+
+    if( currAddress.isEmpty() ) {
+        replace = true;
+    } else if( currAddress != newAddress ) {
+        // non empty and current different from new address
+        // need to ask first if we overwrite
+        if( interactive ) {
+            QMessageBox msgBox;
+            msgBox.setText(i18n( "The address label is not empty and different from the selected one.<br/>"
+                                 "Do you really want to replace it with the text shown below?<pre>%1</pre>").arg(newAddress));
+
+            msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+
+            if ( ret != QMessageBox::Yes) {
+                replace = false;
+            }
+        } else {
+            // this happens when the document is loaded and the address arrives from addressbook
+            replace = false;
+        }
+    } else if( currAddress == newAddress ) {
+        // both are equal, no action needed
+        replace = false;
+    }
+
+    if( replace ) {
+        mContactUid = contact.uid();
+
+        m_headerEdit->m_postAddressEdit->setText( newAddress );
+
+        // Generate the welcome
+        m_headerEdit->m_letterHead->clear();
+        QStringList li = generateLetterHead(adr.familyName(), adr.givenName());
+
+        m_headerEdit->m_letterHead->insertItems(-1, li );
+        m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
     }
 }
 
