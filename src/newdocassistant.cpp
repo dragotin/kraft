@@ -32,12 +32,11 @@
 #include <kassistantdialog.h>
 
 #include "newdocassistant.h"
-#include "addressselectorwidget.h"
 #include "defaultprovider.h"
 #include "filterheader.h"
 #include "doctype.h"
 #include "kraftsettings.h"
-
+#include "addressselectorwidget.h"
 
 CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   :QWidget( parent )

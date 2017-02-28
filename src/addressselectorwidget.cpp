@@ -26,6 +26,8 @@
 #include <QHBoxLayout>
 #include <QSplitter>
 #include <QPushButton>
+#include <QLineEdit>
+#include <QTreeView>
 #include <QDialogButtonBox>
 #include <QDebug>
 
@@ -346,8 +348,8 @@ void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
 
 void AddressSelectorWidget::slotEditContact()
 {
-  if( mAddressSelectorUi->mAddressList->selectionModel()->hasSelection() ) {
 #if 0
+  if( mAddressSelectorUi->mAddressList->selectionModel()->hasSelection() ) {
       QModelIndex index = mItemView->selectionModel()->currentIndex();
     if ( index.isValid() ) {
       const Akonadi::Item item = index.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
@@ -358,8 +360,8 @@ void AddressSelectorWidget::slotEditContact()
         mContactsEditor->show();
       }
     }
-#endif
   }
+#endif
 }
 
 void AddressSelectorWidget::slotItemActivated( const QModelIndex& index )

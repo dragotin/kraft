@@ -29,7 +29,6 @@
 #endif
 
 #include <kcontacts/addressee.h>
-#include "ui_addressselectorwidget.h"
 
 #include "addressprovider.h"
 
@@ -107,7 +106,6 @@ private:
 
   QPushButton       *mButEditContact;
 
-  Ui::AddressSelectorWidget *mAddressSelectorUi;
   AddressProvider *_provider;
   AddressSortProxyModel *mProxyModel;
   QTreeView *_addressTreeView;
