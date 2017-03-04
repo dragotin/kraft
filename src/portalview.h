@@ -19,6 +19,8 @@
 #define _PORTALVIEW_H
 
 #include <QUrl>
+#include <QStackedWidget>
+#include <QListWidget>
 
 // include files
 #include <kpagewidget.h>
@@ -29,14 +31,12 @@
  *
  */
 class QWidget;
-class KPageWidgetItem;
-class QTreeWidgetItem;
 class DocDigestView;
 class dbID;
 class PortalHtmlView;
 class ArchDocDigest;
 
-class PortalView : public KPageWidget
+class PortalView : public QWidget
 {
   Q_OBJECT
 
@@ -55,6 +55,9 @@ public slots:
 protected slots:
   void slotCreateDocument();
 
+private slots:
+  void changePage(QListWidgetItem *current, QListWidgetItem *previous);
+
 signals:
   void openKatalog( const QString& );
   void katalogToXML( const QString& );
@@ -69,19 +72,19 @@ signals:
 
 private:
   QString printKatLine( const QString&, int ) const;
-  void katalogDetails();
-  void systemDetails();
-  void documentDigests();
+  void createIcons();
+  QWidget *katalogDetails();
+  QWidget *systemDetails();
+  QWidget *documentDigests();
 
   QString systemViewHeader() const;
 
-  DocDigestView *mDocDigestView;
+  DocDigestView   *mDocDigestView;
   PortalHtmlView  *mCatalogBrowser;
   PortalHtmlView  *mSystemBrowser;
 
-  KPageWidgetItem *mSysPage;
-  KPageWidgetItem *mCatalogPage;
-  KPageWidgetItem *mDocsPage;
+  QListWidget     *_contentsWidget;
+  QStackedWidget  *_pagesWidget;
 
   int mDocDigestIndex;
   int mCatalogIndex;

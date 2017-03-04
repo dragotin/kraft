@@ -989,7 +989,5 @@ void Portal::slotPrefsDialogFinished( int result )
 
 QWidget* Portal::mainWidget()
 {
-  if( m_portalView && m_portalView->currentPage() )
-     return m_portalView->currentPage()->widget();
-  return 0;
+     return m_portalView;
 }

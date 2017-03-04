@@ -160,12 +160,9 @@ PUBLIC
     Qt5::WebEngine
     Qt5::WebEngineWidgets
     
-    KF5::CoreAddons
-    KF5::GlobalAccel
     KF5::I18n
-    KF5::NotifyConfig
-    KF5::WidgetsAddons
     KF5::XmlGui
+
     KF5::Contacts
     KF5::AkonadiCore
     KF5::AkonadiContact

@@ -18,12 +18,9 @@
 #ifndef KATALOGVIEW_H
 #define KATALOGVIEW_H
 
-// include files for Qt
-
-// include files for KDE
-#include <kxmlguiwindow.h>
 #include <QAction>
 #include <QUrl>
+#include <kxmlguiwindow.h>
 
 #include "kraftcat_export.h"
 
@@ -95,7 +92,6 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
   protected:
 
     /** the configuration object of the application */
-    KConfig *config;
     QAction* m_acFileClose;
     QAction* m_acFilePrint;
     QAction* m_acEditCut;

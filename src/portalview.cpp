@@ -18,15 +18,9 @@
 // include files for Qt
 #include <QSqlQuery>
 #include <QSqlDatabase>
-#include <QApplication>
-#include <QCursor>
-#include <QLayout>
-#include <QTextDocument>
-#include <QHBoxLayout>
-#include <QBoxLayout>
-#include <QLocale>
 #include <QDebug>
-#include <QUrl>
+#include <QHBoxLayout>
+#include <QtCore>
 
 #include <KLocalizedString>
 
@@ -41,23 +35,75 @@
 #include "reportgenerator.h"
 
 PortalView::PortalView(QWidget *parent, const char*)
-    : KPageWidget( parent ),
+    : QWidget( parent ),
       mDocDigestView( 0 ),
       mCatalogBrowser( 0 ),
-      mSystemBrowser( 0 ),
-      mSysPage(0),
-      mDocsPage(0)
+      mSystemBrowser( 0 )
 {
-  documentDigests();
-  katalogDetails();
-  systemDetails();
+    _contentsWidget = new QListWidget;
+    _contentsWidget->setViewMode(QListView::IconMode);
+    _contentsWidget->setIconSize(QSize(96, 84));
+    _contentsWidget->setMovement(QListView::Static);
+    _contentsWidget->setMaximumWidth(128);
+    _contentsWidget->setSpacing(12);
+
+    _pagesWidget = new QStackedWidget;
+    _pagesWidget->addWidget(documentDigests());
+    _pagesWidget->addWidget(new QWidget());  // doc timeline
+    _pagesWidget->addWidget(katalogDetails()); // catalogs
+    _pagesWidget->addWidget(systemDetails()); // system
+
+    createIcons();
+    _contentsWidget->setCurrentRow(0);
+
+    QHBoxLayout *horizontalLayout = new QHBoxLayout;
+    horizontalLayout->addWidget(_contentsWidget);
+    horizontalLayout->addWidget(_pagesWidget, 1);
+    setLayout(horizontalLayout);
 }
 
-void PortalView::katalogDetails()
+void PortalView::createIcons()
+{
+    QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
+    documentsButton->setIcon(QIcon::fromTheme("server-database"));
+    documentsButton->setText(i18n("Documents"));
+    documentsButton->setTextAlignment(Qt::AlignHCenter);
+    documentsButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+    QListWidgetItem *timeLineButton = new QListWidgetItem(_contentsWidget);
+    timeLineButton->setIcon(QIcon::fromTheme("document-open-recent"));
+    timeLineButton->setText(tr("Timeline"));
+    timeLineButton->setTextAlignment(Qt::AlignHCenter);
+    timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+    QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
+    catButton->setIcon(QIcon::fromTheme("anchor"));
+    catButton->setText(tr("Catalogs"));
+    catButton->setTextAlignment(Qt::AlignHCenter);
+    catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+    QListWidgetItem *systemButton = new QListWidgetItem(_contentsWidget);
+    systemButton->setIcon(QIcon::fromTheme("applications-system"));
+    systemButton->setText(tr("Kraft"));
+    systemButton->setTextAlignment(Qt::AlignHCenter);
+    systemButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+    connect(_contentsWidget,
+            SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
+            this, SLOT(changePage(QListWidgetItem*,QListWidgetItem*)));
+}
+
+void PortalView::changePage(QListWidgetItem *current, QListWidgetItem *previous)
+{
+    if (!current)
+        current = previous;
+
+    _pagesWidget->setCurrentIndex(_contentsWidget->row(current));
+}
+
+QWidget* PortalView::katalogDetails()
 {
   QWidget *w = new QWidget;
-  mCatalogPage = addPage( w, i18n("Catalogs" ) );
-  mCatalogPage->setIcon(QIcon::fromTheme("server-database"));
 
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );
@@ -77,6 +123,8 @@ void PortalView::katalogDetails()
 
   connect( mCatalogBrowser, SIGNAL( openCatalog( const QString& ) ),
            SIGNAL( openKatalog( const QString& ) ) );
+
+  return w;
 }
 
 void PortalView::fillCatalogDetails()
@@ -165,11 +213,9 @@ QString PortalView::ptag( const QString& content,  const QString& c ) const
   return html;
 }
 
-void PortalView::systemDetails()
+QWidget* PortalView::systemDetails()
 {
   QWidget *w = new QWidget;
-  mSysPage = addPage( w, i18n("System Details" ) );
-  mSysPage->setIcon(QIcon::fromTheme("dialog-information"));
   QBoxLayout *b = new QHBoxLayout;
   w->setLayout( b );
   mSystemBrowser = new PortalHtmlView( w );
@@ -177,6 +223,7 @@ void PortalView::systemDetails()
   mSystemBrowser->setStylesheetFile( "catalogview.css" ); //, "mucki_en_oS.png",
 
   // browser->setNotifyClick(false);
+  return w;
 }
 
 QString PortalView::systemViewHeader() const
@@ -283,18 +330,11 @@ void PortalView::systemInitError( const QString& htmlMsg )
   html += "</div>";
 
   mSystemBrowser->displayContent( html ); // , "error" );
-
-  mDocsPage->setEnabled( false );
-  mCatalogPage->setEnabled( false );
-
-  setCurrentPage( mSysPage );
 }
 
-void PortalView::documentDigests()
+QWidget* PortalView::documentDigests()
 {
   QWidget *w = new QWidget;
-  mDocsPage = addPage( w, i18n("Documents" ) );
-  mDocsPage->setIcon(QIcon::fromTheme("folder-documents"));
 
   QBoxLayout *b = new QHBoxLayout;
   b->setContentsMargins( 0, 0, 0, 0 );
@@ -302,7 +342,6 @@ void PortalView::documentDigests()
 
   mDocDigestView = new DocDigestView( w );
   b->addWidget( mDocDigestView );
-//TODO PORT QT5   b->addSpacing( QDialog::marginHint() );
 
   connect( mDocDigestView, SIGNAL( createDocument() ),
            this, SLOT( slotCreateDocument() ) );
@@ -320,6 +359,8 @@ void PortalView::documentDigests()
            SIGNAL( documentSelected( const QString& ) ) );
   connect( mDocDigestView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
+
+  return w;
  }
 
 void PortalView::slotCreateDocument()
@@ -332,9 +373,9 @@ void PortalView::slotCreateDocument()
 void PortalView::slotBuildView()
 {
 
-  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+  // QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
   mDocDigestView->slotBuildView();
-  QApplication::restoreOverrideCursor();
+  // QApplication::restoreOverrideCursor();
 }
 
 PortalView::~PortalView( )
