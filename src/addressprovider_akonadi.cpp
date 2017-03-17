@@ -24,6 +24,8 @@
 // #include "akonadi/session.h"
 
 // #include <Akonadi/Item>
+#include <AkonadiCore/CollectionFetchJob>
+
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
 #include <kcontacts/contactgroup.h>
@@ -44,13 +46,34 @@ AddressProviderPrivate::AddressProviderPrivate( QObject *parent )
     }
     mSession = new Akonadi::Session( "KraftSession" );
 
+    // fetching all collections recursive, starting at the root collection
+    CollectionFetchJob *job = new CollectionFetchJob( Collection::root(), CollectionFetchJob::Recursive );
+    connect( job, SIGNAL(result(KJob*)), SLOT(fetchFinished(KJob*)) );
+
+}
+
+void AddressProviderPrivate::fetchFinished( KJob *job )
+{
+  if ( job->error() ) {
+    qDebug() << "Error occurred";
+    return;
+  }
+  CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
+  const Collection::List collections = fetchJob->collections();
+  QStringList mimes = QStringList() << KContacts::Addressee::mimeType() << KContacts::ContactGroup::mimeType();
+
+  foreach ( const Collection &collection, collections ) {
+      // if( collection.contentMimeTypes().contains(mimes) ) {
+      //    qDebug() << "Name:" << collection.name() << collection.contentMimeTypes();
+      // }
+  }
 }
 
 void AddressProviderPrivate::lookupAddressee( const QString& uid )
 {
     if( uid.isEmpty() || mUidSearches.contains( uid ) ) {
         // search is already running
-        // qDebug () << "Search already underways!";
+        // qDebug () << "Search already underways!";^
         return;
     }
 
