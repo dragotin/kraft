@@ -1,9 +1,9 @@
 /***************************************************************************
-                          docdigestview.h  -
+           alldocsview.h - digest view of all docs with filter
                              -------------------
-    begin                : Wed Mar 15 2006
-    copyright            : (C) 2006 by Klaas Freitag
-    email                : freitag@kde.org
+    begin                : Sat Mar 11 2017
+    copyright            : (C) 2017 by Klaas Freitag
+    email                : kraft@freisturz.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef DOCDIGESTVIEW_H
-#define DOCDIGESTVIEW_H
+#ifndef ALLDOCSVIEW_H
+#define ALLDOCSVIEW_H
 
 #include <QWidget>
 #include <QMap>
@@ -34,13 +34,13 @@ class QContextMenuEvent;
 class QToolBox;
 class DocDigestDetailView;
 
-class DocDigestView : public QWidget
+class AllDocsView : public QWidget
 {
   Q_OBJECT
 
 public:
-  DocDigestView( QWidget *parent = 0 );
-  ~DocDigestView();
+  AllDocsView( QWidget *parent = 0 );
+  ~AllDocsView();
 
   int currentDocumentRow() const;
 
@@ -54,12 +54,11 @@ public slots:
 
 protected:
   void contextMenuEvent( QContextMenuEvent* );
-  void initializeTreeWidgets();
+  QWidget *initializeTreeWidget();
 
 protected slots:
   void slotDocOpenRequest( QModelIndex );
   void slotCurrentChanged( QModelIndex, QModelIndex );
-  void slotCurrentChangedToolbox ( int index );
   void slotOpenLastPrinted();
   void slotSearchTextChanged(const QString& newStr );
 
@@ -74,29 +73,18 @@ signals:
 private:
 
   QTableView *mAllView;
-  QTableView *mLatestView;
-  QTreeView *mTimeView;
 
-  DocDigestDetailView *mLatestViewDetails;
   DocDigestDetailView *mAllViewDetails;
-  DocDigestDetailView *mTimeLineViewDetails;
 
   QModelIndex mCurrentlySelected;
 
   DocumentFilterModel *mAllDocumentsModel;
-  DocumentFilterModel *mLatestDocModel;
-  TimelineModel       *mTimelineModel;
 
   QList<QAbstractItemView*> mTreeViewList;
 
-  QMenu *mTimelineMenu;
   QMenu *mAllMenu;
-  QMenu *mLatestMenu;
 
-  int                    mOldToolboxIndex;
-  QToolBox               *mToolBox;
   QPushButton            *mNewDocButton;
-  QVector<QAbstractItemView*>    mTreeViewIndex;
   ArchDocDigest          mLatestArchivedDigest;
   QLineEdit              *_searchLine;
 };

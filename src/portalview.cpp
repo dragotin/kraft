@@ -29,14 +29,14 @@
 #include "portalview.h"
 #include "portalhtmlview.h"
 #include "katalogman.h"
-#include "docdigestview.h"
+#include "alldocsview.h"
 #include "documentman.h"
 #include "defaultprovider.h"
 #include "reportgenerator.h"
 
 PortalView::PortalView(QWidget *parent, const char*)
     : QWidget( parent ),
-      mDocDigestView( 0 ),
+      _allDocsView( 0 ),
       mCatalogBrowser( 0 ),
       mSystemBrowser( 0 )
 {
@@ -65,7 +65,7 @@ PortalView::PortalView(QWidget *parent, const char*)
 void PortalView::createIcons()
 {
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
-    documentsButton->setIcon(QIcon::fromTheme("server-database"));
+    documentsButton->setIcon(QIcon::fromTheme("document-new"));
     documentsButton->setText(i18n("Documents"));
     documentsButton->setTextAlignment(Qt::AlignHCenter);
     documentsButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -340,24 +340,24 @@ QWidget* PortalView::documentDigests()
   b->setContentsMargins( 0, 0, 0, 0 );
   w->setLayout( b );
 
-  mDocDigestView = new DocDigestView( w );
-  b->addWidget( mDocDigestView );
+  _allDocsView = new AllDocsView( w );
+  b->addWidget( _allDocsView );
 
-  connect( mDocDigestView, SIGNAL( createDocument() ),
+  connect( _allDocsView, SIGNAL( createDocument() ),
            this, SLOT( slotCreateDocument() ) );
-  connect( mDocDigestView, SIGNAL( openDocument( const QString& ) ),
+  connect( _allDocsView, SIGNAL( openDocument( const QString& ) ),
            SIGNAL( openDocument( const QString& ) ) );
-  connect( mDocDigestView, SIGNAL( viewDocument( const QString& ) ),
+  connect( _allDocsView, SIGNAL( viewDocument( const QString& ) ),
            SIGNAL( viewDocument( const QString& ) ) );
-  connect( mDocDigestView, SIGNAL( copyDocument( const QString& ) ),
+  connect( _allDocsView, SIGNAL( copyDocument( const QString& ) ),
            SIGNAL( copyDocument( const QString& ) ) );
-  connect( mDocDigestView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
+  connect( _allDocsView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
            SIGNAL( openArchivedDocument( const ArchDocDigest& ) ) );
   // connect( mDocDigestView, SIGNAL( printDocument( const QString& ) ),
   //         SIGNAL( printDocument( const QString& ) ) );
-  connect( mDocDigestView, SIGNAL( docSelected( const QString& ) ),
+  connect( _allDocsView, SIGNAL( docSelected( const QString& ) ),
            SIGNAL( documentSelected( const QString& ) ) );
-  connect( mDocDigestView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
+  connect( _allDocsView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
            SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
 
   return w;
@@ -374,13 +374,13 @@ void PortalView::slotBuildView()
 {
 
   // QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-  mDocDigestView->slotBuildView();
+  _allDocsView->slotBuildView();
   // QApplication::restoreOverrideCursor();
 }
 
 PortalView::~PortalView( )
 {
-  delete mDocDigestView;
+  delete _allDocsView;
 }
 
 /* END */

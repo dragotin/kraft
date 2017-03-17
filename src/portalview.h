@@ -31,7 +31,7 @@
  *
  */
 class QWidget;
-class DocDigestView;
+class AllDocsView;
 class dbID;
 class PortalHtmlView;
 class ArchDocDigest;
@@ -43,7 +43,7 @@ class PortalView : public QWidget
 public:
   PortalView (QWidget *parent=0, const char *name=0 );
   ~PortalView();
-  DocDigestView* docDigestView() { return mDocDigestView; }
+  AllDocsView* docDigestView() { return _allDocsView; }
   void systemInitError( const QString& );
   QString ptag( const QString&,  const QString& c = QString() ) const;
 
@@ -79,7 +79,7 @@ private:
 
   QString systemViewHeader() const;
 
-  DocDigestView   *mDocDigestView;
+  AllDocsView   *_allDocsView;
   PortalHtmlView  *mCatalogBrowser;
   PortalHtmlView  *mSystemBrowser;
 

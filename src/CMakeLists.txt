@@ -55,7 +55,7 @@ set(kraft_SRCS
     documentsaverdb.cpp
     documentman.cpp
     docdigest.cpp
-    docdigestview.cpp
+    alldocsview.cpp
     doctypeedit.cpp
     doctext.cpp
     portal.cpp

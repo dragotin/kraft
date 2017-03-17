@@ -51,7 +51,6 @@
 #include "materialkatalogview.h"
 #include "prefsdialog.h"
 #include "documentman.h"
-#include "docdigestview.h"
 #include "archiveman.h"
 #include "reportgenerator.h"
 #include "kraftsettings.h"
@@ -64,6 +63,7 @@
 #include "databasesettings.h"
 #include "setupassistant.h"
 #include "addressprovider.h"
+#include "alldocsview.h"
 
 
 Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
@@ -789,7 +789,7 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
     if ( doc )  {
         KraftViewBase *view = mViewMap[doc];
         if( success && view->type() == KraftViewBase::ReadWrite ) {
-            DocDigestView *dv = m_portalView->docDigestView();
+            AllDocsView *dv = m_portalView->docDigestView();
             dv->slotUpdateView();
         }
         if( mViewMap.contains(doc)) {
