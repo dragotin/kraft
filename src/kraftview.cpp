@@ -97,8 +97,8 @@ KraftView::KraftView(QWidget *parent) :
   mDetailHeader->setAutoFillBackground(true);
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL(addresseeFound( const QString&, const KContacts::Addressee& )),
-           this, SLOT( slotAddresseeFound( const QString&, const KContacts::Addressee& )));
+  connect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
+           this, SLOT( slotAddresseeFound(QString,KContacts::Addressee)));
 
   QPalette palette;
   palette.setColor(mDetailHeader->backgroundRole(), QColor( "darkBlue" ));

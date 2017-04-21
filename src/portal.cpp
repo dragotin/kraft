@@ -85,8 +85,8 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
   editPaste->setEnabled(false);
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KContacts::Addressee&)),
-          this, SLOT( slotReceivedMyAddress( const QString&, const KContacts::Addressee& ) ) );
+  connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
+          this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
 
   setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
@@ -338,8 +338,8 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
     // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
     ReportGenerator::self()->setMyContact( contact );
 
-    disconnect( mAddressProvider, SIGNAL( addresseeFound(const QString&, const KContacts::Addressee&)),
-                this, SLOT(slotReceivedMyAddress( const QString&, const KContacts::Addressee&)));
+    disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
+                this, SLOT(slotReceivedMyAddress(QString, KContacts::Addressee)));
 }
 
 bool Portal::queryClose()
@@ -548,7 +548,7 @@ void Portal::slotMailPdfAvailable( const QString& fileName )
 
     // get the email.
     if( !_clientId.isEmpty() && mAddressProvider ) {
-        connect( mAddressProvider, SIGNAL(addresseeFound(QString,KContacts::Addressee)),
+        connect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
                  this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
         mAddressProvider->lookupAddressee(_clientId);
         _clientId.clear();
@@ -569,7 +569,7 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addres
 
     // qDebug () << "Mailing away " << _pdfFileName << endl;
 
-    disconnect( mAddressProvider, SIGNAL(addresseeFound(QString,KContacts::Addressee)),
+    disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
              this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
     disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
 

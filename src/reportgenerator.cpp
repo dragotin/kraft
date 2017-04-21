@@ -61,8 +61,8 @@ ReportGenerator::ReportGenerator()
            this, SLOT( slotConvertTemplate( const QString& )));
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KContacts::Addressee& )),
-           this, SLOT( slotAddresseeFound( const QString&, const KContacts::Addressee& ) ) );
+  connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
+           this, SLOT( slotAddresseeFound(QString, KContacts::Addressee)));
 }
 
 ReportGenerator::~ReportGenerator()

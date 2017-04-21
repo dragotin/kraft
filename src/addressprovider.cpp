@@ -29,7 +29,7 @@ AddressProvider::AddressProvider( QObject *parent )
   :QObject( parent ),
     _d( new AddressProviderPrivate(parent) )
 {
-    connect(_d, SIGNAL(addresseeFound( const QString&, const KContacts::Addressee& )),
+    connect(_d, SIGNAL(addresseeFound(QString, KContacts::Addressee)),
             this, SLOT(slotAddresseeFound(QString, KContacts::Addressee)));
     connect(_d, SIGNAL(lookupError( QString, QString)), this,
             SLOT(slotErrorMsg(QString, QString)));
@@ -43,7 +43,7 @@ void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::A
     if( !( uid.isEmpty() || contact.isEmpty()) ) {
         _errMessages.remove(uid);
     }
-    emit addresseeFound(uid, contact);
+    emit lookupResult(uid, contact);
 }
 
 void AddressProvider::slotErrorMsg(const QString& uid, const QString& msg)
@@ -64,6 +64,8 @@ QString AddressProvider::errorMsg( const QString& uid )
 
 void AddressProvider::lookupAddressee( const QString& uid )
 {
+    // FIXME: Check for the size of the err messages. If it is big,
+    // maybe do not bother the backend more
     _d->lookupAddressee(uid);
 }
 

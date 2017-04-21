@@ -34,16 +34,44 @@ class AddressProvider : public QObject
 public:
   AddressProvider( QObject* parent = 0 );
 
+  /**
+   * @brief lookupAddressee - look up an addressee by it's uid.
+   * @param uid - A unique string identifying the contact
+   *
+   * This is asynchron an asynchronous method that returns immediately.
+   * Connect to the signal lookupResult() for the result.
+   *
+   * Make sure to always use a non empty uid.
+   */
   void lookupAddressee( const QString& uid );
   QString formattedAddress( const KContacts::Addressee& ) const;
 
+  /**
+   * @brief model - returns an Qt model for a tree view.
+   * @return a QAbstractItemModel
+   */
   QAbstractItemModel *model();
 
+  /**
+   * @brief getAddressee - get the contact from an index
+   * @param indx
+   *
+   * Depending on the underlying model in the private implementation
+   * advantage can be taken from this functions.
+   * Used by the addressselectorwidget
+   * @return the found addressee
+   */
   KContacts::Addressee getAddressee(const QModelIndex& indx);
   KContacts::Addressee getAddressee( int row, const QModelIndex &parent = QModelIndex());
 
-  // returns an error for the last attempt to retrieve the addressee for uid.
-  // might be empty in case there was no error.
+  /**
+   * @brief errorMsg - returns the error string for retrieval by uid
+   * @param uid - the UID of the lookup job
+   *
+   * If the lookup job failed for whatever reason, this returns an error
+   * message why, if that was available from the private implementation.
+   * @return QString error message
+   */
   QString errorMsg( const QString& uid );
 
 protected slots:
@@ -53,11 +81,16 @@ protected slots:
   void slotAddresseeFound( const QString& uid, const KContacts::Addressee contact);
 
 signals:
-  //
-  void addresseeFound( const QString&, const KContacts::Addressee& );
-
-  // emitted when the search is finished, even if there was no result.
-  void finished( int );
+  /**
+   * @brief lookupResult - deliver lookup result
+   * @param uid - the uid of the lookup, and the contact
+   *
+   * If the contact is empty, it was simply not found. It can be checked
+   * if there was an error using the errorMsg method for the uid. If there
+   * was no error (errorMsg returns empty string) the addressbook just
+   * did not contain the address.
+   */
+  void lookupResult( const QString&, const KContacts::Addressee& );
 
 private:
   AddressProviderPrivate *_d;
