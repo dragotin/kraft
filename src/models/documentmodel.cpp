@@ -90,12 +90,15 @@ void DocumentModel::setQueryAgain()
 
 void DocumentModel::slotAddresseeFound( const QString& uid, const KContacts::Addressee & addressee )
 {
-  if( addressee.isEmpty() ) {
-    qDebug() << "No address found for uid " << uid;
-    mAddresses[uid] = KContacts::Addressee();
-  } else {
-    mAddresses[uid] = addressee;
-  }
+    if( addressee.isEmpty() ) {
+        if( !uid.isEmpty() ) {
+            const QString err = mAddressProvider->errorMsg(uid);
+            qDebug() << "No address found for uid " << uid << ":"<< err;
+            mAddresses[uid] = KContacts::Addressee();
+        }
+    } else {
+        mAddresses[uid] = addressee;
+    }
 }
 
 QVariant DocumentModel::headerData( int section, Qt::Orientation /* orientation */, int role ) const

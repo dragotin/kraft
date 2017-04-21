@@ -45,53 +45,32 @@ AddressProviderPrivate::AddressProviderPrivate( QObject *parent )
         qDebug() << "Failed to start Akonadi!";
     }
     mSession = new Akonadi::Session( "KraftSession" );
-
-    // fetching all collections recursive, starting at the root collection
-    CollectionFetchJob *job = new CollectionFetchJob( Collection::root(), CollectionFetchJob::Recursive );
-    connect( job, SIGNAL(result(KJob*)), SLOT(fetchFinished(KJob*)) );
-
-}
-
-void AddressProviderPrivate::fetchFinished( KJob *job )
-{
-  if ( job->error() ) {
-    qDebug() << "Error occurred";
-    return;
-  }
-  CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
-  const Collection::List collections = fetchJob->collections();
-  QStringList mimes = QStringList() << KContacts::Addressee::mimeType() << KContacts::ContactGroup::mimeType();
-
-  foreach ( const Collection &collection, collections ) {
-      // if( collection.contentMimeTypes().contains(mimes) ) {
-      //    qDebug() << "Name:" << collection.name() << collection.contentMimeTypes();
-      // }
-  }
 }
 
 void AddressProviderPrivate::lookupAddressee( const QString& uid )
 {
-    if( uid.isEmpty() || mUidSearches.contains( uid ) ) {
+    if( uid.isEmpty() ) {
+        qDebug() << "Invalid: UID to lookup is empty.";
+        return;
+    }
+
+    if( mUidSearches.contains( uid ) ) {
         // search is already running
         // qDebug () << "Search already underways!";^
         return;
     }
 
-    KJob *job = NULL;
-
     Akonadi::ContactSearchJob *csjob = new Akonadi::ContactSearchJob( this );
     csjob->setLimit( 1 );
-    csjob->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
-    mUidSearchJobs[csjob] = uid;
-    job = csjob;
-    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-    job->start();
+    csjob->setQuery(ContactSearchJob::ContactUid , uid, ContactSearchJob::ExactMatch);
+
+    csjob->setProperty("UID", uid);
+    connect( csjob, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
+    csjob->start();
 
     mUidSearches.insert( uid );
-    mUidSearchJobs[job] = uid;
 
     model();
-
 }
 
 void AddressProviderPrivate::searchResult( KJob* job )
@@ -101,38 +80,30 @@ void AddressProviderPrivate::searchResult( KJob* job )
     QString uid;
     KContacts::Addressee contact;
 
-    int cnt = 0;
-
-    uid = mUidSearchJobs.value( job );
+    uid = job->property("UID").toString();
 
     if( job->error() ) {
+        // both uid and err message can be empty
+        const QString errMsg = job->errorString();
+        emit lookupError(uid, errMsg );
         // qDebug () << "Address Search job failed: " << job->errorString();
     } else {
 	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
         const KContacts::Addressee::List contacts = searchJob->contacts();
         // qDebug () << "Found list of " << contacts.size() << " addresses as search result";
 
-        if( mUidSearchJobs.contains( job )) {            
-            if( contacts.size() > 0 ) {
-                contact = contacts[0];
-                qDebug () << "Found uid search job for UID " << uid << " = " << contact.realName();
-            }
-            emit addresseeFound( uid, contact );
-            cnt++;
+        if( contacts.size() > 0 ) {
+            contact = contacts[0];
+            qDebug () << "Found uid search job for UID " << uid << " = " << contact.realName();
         }
     }
-    // if no address was found, emit the empty contact.
-    if( cnt == 0 ) {
-        emit addresseeFound(uid, contact);
-    }
-    emit finished(cnt);
 
     // cleanup
     if(!uid.isEmpty()) {
+        // if no address was found, emit the empty contact.
+        emit addresseeFound(uid, contact);
         mUidSearches.remove( uid );
     }
-
-    mUidSearchJobs.remove( job );
 
     job->deleteLater();
 }

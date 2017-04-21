@@ -53,16 +53,14 @@ public slots:
 signals:
     //
     void addresseeFound( const QString&, const KContacts::Addressee& );
-    void formattedAddressFound( const QString& uid, const QString& addressString );
+
+    // error message when looking up the address for a UID
+    void lookupError( const QString&, const QString&);
 
     // emitted when the search is finished, even if there was no result.
     void finished( int );
 
-private slots:
-    void fetchFinished( KJob *job );
-
 private:
-    QMap<KJob*, QString> mUidSearchJobs;
     QSet<QString>        mUidSearches;
 
     Akonadi::Session *mSession;

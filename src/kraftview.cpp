@@ -339,11 +339,13 @@ void KraftView::slotPickAddressee()
 
 void KraftView::slotAddresseeFound( const QString& uid, const KContacts::Addressee& contact )
 {
-    if( !contact.isEmpty() ) {
-        // qDebug () << "Addressee Found with uid " << uid;
-        slotNewAddress( contact, false );
-        // qDebug () << "The loaded Contact has this realname: " << contact.realName() << endl;
+    if( contact.isEmpty() ) {
+        const QString err = mAddressProvider->errorMsg(uid);
+        if( !err.isEmpty() ) {
+            qDebug () << "Error while looking up address for uid" << uid << ":" << err;
+        }
     } else {
+        slotNewAddress( contact, false );
         qDebug () << "No contact found for uid " << uid;
     }
 }

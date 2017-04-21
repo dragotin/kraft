@@ -42,19 +42,26 @@ public:
   KContacts::Addressee getAddressee(const QModelIndex& indx);
   KContacts::Addressee getAddressee( int row, const QModelIndex &parent = QModelIndex());
 
+  // returns an error for the last attempt to retrieve the addressee for uid.
+  // might be empty in case there was no error.
+  QString errorMsg( const QString& uid );
+
 protected slots:
   void searchResult( KJob* );
+
+  void slotErrorMsg(const QString& uid, const QString& msg);
+  void slotAddresseeFound( const QString& uid, const KContacts::Addressee contact);
 
 signals:
   //
   void addresseeFound( const QString&, const KContacts::Addressee& );
-  void formattedAddressFound( const QString& uid, const QString& addressString );
 
   // emitted when the search is finished, even if there was no result.
   void finished( int );
 
 private:
   AddressProviderPrivate *_d;
+  QHash<QString, QString> _errMessages;
 };
 
 #endif // ADDRESSPROVIDER_H

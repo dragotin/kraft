@@ -30,11 +30,37 @@ AddressProvider::AddressProvider( QObject *parent )
     _d( new AddressProviderPrivate(parent) )
 {
     connect(_d, SIGNAL(addresseeFound( const QString&, const KContacts::Addressee& )),
-            this, SIGNAL(addresseeFound( const QString&, const KContacts::Addressee& )));
-
+            this, SLOT(slotAddresseeFound(QString, KContacts::Addressee)));
+    connect(_d, SIGNAL(lookupError( QString, QString)), this,
+            SLOT(slotErrorMsg(QString, QString)));
     // emitted when the search is finished, even if there was no result.
     connect(_d, SIGNAL(finished(int)), this, SIGNAL(finished(int)));
 }
+
+void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::Addressee contact)
+{
+    // remove a potential error message in case an error happened before
+    if( !( uid.isEmpty() || contact.isEmpty()) ) {
+        _errMessages.remove(uid);
+    }
+    emit addresseeFound(uid, contact);
+}
+
+void AddressProvider::slotErrorMsg(const QString& uid, const QString& msg)
+{
+    if( !uid.isEmpty() ) {
+        _errMessages[uid] = msg;
+    }
+}
+
+QString AddressProvider::errorMsg( const QString& uid )
+{
+   if( _errMessages.contains(uid) ) {
+       return _errMessages[uid];
+   }
+   return QString::null;
+}
+
 
 void AddressProvider::lookupAddressee( const QString& uid )
 {

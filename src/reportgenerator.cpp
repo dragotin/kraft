@@ -63,9 +63,6 @@ ReportGenerator::ReportGenerator()
   mAddressProvider = new AddressProvider( this );
   connect( mAddressProvider, SIGNAL( addresseeFound( const QString&, const KContacts::Addressee& )),
            this, SLOT( slotAddresseeFound( const QString&, const KContacts::Addressee& ) ) );
-
-  connect( mAddressProvider, SIGNAL( finished(int) ),
-           this, SLOT( slotAddresseeSearchFinished(int)) );
 }
 
 ReportGenerator::~ReportGenerator()
@@ -158,7 +155,8 @@ void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 
 void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addressee& contact )
 {
-  mCustomerContact = contact;
+    mCustomerContact = contact;
+    slotAddresseeSearchFinished(0);
 }
 
 void ReportGenerator::setMyContact( const KContacts::Addressee& contact )

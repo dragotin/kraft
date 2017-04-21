@@ -322,21 +322,24 @@ void Portal::slotStartupChecks()
 
 void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Addressee& contact )
 {
-  if( contact.isEmpty() ) {
-    // qDebug () << "My-Contact is empty!";
-    return;
-  }
+    if( contact.isEmpty() ) {
+        if( !uid.isEmpty() ) {
+            const QString err = mAddressProvider->errorMsg(uid);
+            qDebug () << "My-Contact is empty: " << err;
+        }
+        return;
+    }
 
-  myContact = contact;
+    myContact = contact;
 
-  KraftSettings::self()->setUserUid( contact.uid() );
-  KraftSettings::self()->writeConfig();
+    KraftSettings::self()->setUserUid( contact.uid() );
+    KraftSettings::self()->writeConfig();
 
-  // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
-  ReportGenerator::self()->setMyContact( contact );
+    // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
+    ReportGenerator::self()->setMyContact( contact );
 
-  disconnect( mAddressProvider, SIGNAL( addresseeFound(const QString&, const KContacts::Addressee&)),
-              this, SLOT(slotReceivedMyAddress( const QString&, const KContacts::Addressee&)));
+    disconnect( mAddressProvider, SIGNAL( addresseeFound(const QString&, const KContacts::Addressee&)),
+                this, SLOT(slotReceivedMyAddress( const QString&, const KContacts::Addressee&)));
 }
 
 bool Portal::queryClose()
