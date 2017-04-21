@@ -105,7 +105,6 @@ set(kraft_SRCS
     addressselectorwidget.cpp
     addressprovider_akonadi.cpp
     addressselectordialog.cpp
-    models/globalcontactmodel.cpp
     quicksearchwidget.cpp
     kraftdb.cpp
     geld.cpp
