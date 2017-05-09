@@ -100,6 +100,7 @@ set(kraft_SRCS
     setupassistant.cpp
     models/documentmodel.cpp
     models/documentproxymodels.cpp
+    models/datemodel.cpp
     docdigestdetailview.cpp
     addressprovider.cpp
     addressselectorwidget.cpp

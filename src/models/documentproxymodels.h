@@ -26,7 +26,7 @@ class QModelIndex;
 class QVariant;
 class QObject;
 
-class DocumentModel;
+class DateModel;
 
 //Filters out the last 10 items  of the DocumentModel
 class DocumentFilterModel : public QSortFilterProxyModel
@@ -34,14 +34,17 @@ class DocumentFilterModel : public QSortFilterProxyModel
     public:
         DocumentFilterModel(int maxRows = -1, QObject *parent = 0);
         void setMaxRows( int );
+        void setEnableTreeview( bool treeview );
     protected:
         bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
     private:
         int m_MaxRows;
-        QScopedPointer<DocumentModel> _sourceModel;
+        bool _enableTreeView;
+        QScopedPointer<DateModel> _sourceModel;
 };
 
+#if 0
 struct Helper
 {
     QVector<int> modelRowCache;
@@ -99,5 +102,6 @@ class TimelineModel : public QAbstractProxyModel
         mutable QVector<Helper> m_yearsRowCache;
         mutable Mapping *m_rootMap;
 };
+#endif
 
 #endif

@@ -22,7 +22,9 @@
 #include <QTreeWidgetItem>
 #include <QTableView>
 #include <QVector>
+#include <QStackedWidget>
 
+#include "models/datemodel.h"
 #include "docdigest.h"
 #include "docguardedptr.h"
 #include "models/documentproxymodels.h"
@@ -36,57 +38,61 @@ class DocDigestDetailView;
 
 class AllDocsView : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  AllDocsView( QWidget *parent = 0 );
-  ~AllDocsView();
+    typedef enum {FlatList, TreeView} ViewType;
 
-  int currentDocumentRow() const;
+    AllDocsView( QWidget *parent = 0 );
+    ~AllDocsView();
 
-  QString currentDocumentId( ) const;
-  QVector<QMenu*> contextMenus();
+    int currentDocumentRow() const;
+
+    QString currentDocumentId( ) const;
+    QVector<QMenu*> contextMenus();
 
 public slots:
 
-  void slotBuildView();
-  void slotUpdateView();
+    void slotBuildView();
+    void slotUpdateView();
+
+    void setView(ViewType type);
 
 protected:
-  void contextMenuEvent( QContextMenuEvent* );
-  QWidget *initializeTreeWidget();
+    void contextMenuEvent( QContextMenuEvent* );
+    QWidget *initializeTreeWidget();
 
 protected slots:
-  void slotDocOpenRequest( QModelIndex );
-  void slotCurrentChanged( QModelIndex, QModelIndex );
-  void slotOpenLastPrinted();
-  void slotSearchTextChanged(const QString& newStr );
+    void slotDocOpenRequest( QModelIndex );
+    void slotCurrentChanged( QModelIndex, QModelIndex );
+    void slotOpenLastPrinted();
+    void slotSearchTextChanged(const QString& newStr );
 
 signals:
-  void createDocument();
-  void openDocument( const QString& );
-  void viewDocument( const QString& );
-  void copyDocument( const QString& );
-  void docSelected( const QString& );
-  void openArchivedDocument( const ArchDocDigest& );
+    void createDocument();
+    void openDocument( const QString& );
+    void viewDocument( const QString& );
+    void copyDocument( const QString& );
+    void docSelected( const QString& );
+    void openArchivedDocument( const ArchDocDigest& );
 
 private:
 
-  QTableView *mAllView;
+    QTableView *mAllView;
+    QTreeView  *_dateView;
+    QStackedWidget *_stack;
 
-  DocDigestDetailView *mAllViewDetails;
+    DocDigestDetailView *mAllViewDetails;
 
-  QModelIndex mCurrentlySelected;
+    QModelIndex mCurrentlySelected;
 
-  DocumentFilterModel *mAllDocumentsModel;
+    DocumentFilterModel *mAllDocumentsModel;
 
-  QList<QAbstractItemView*> mTreeViewList;
+    QMenu *mAllMenu;
 
-  QMenu *mAllMenu;
-
-  QPushButton            *mNewDocButton;
-  ArchDocDigest          mLatestArchivedDigest;
-  QLineEdit              *_searchLine;
+    QPushButton            *mNewDocButton;
+    ArchDocDigest          mLatestArchivedDigest;
+    QLineEdit              *_searchLine;
 };
 
 #endif

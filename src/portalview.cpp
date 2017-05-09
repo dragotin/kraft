@@ -97,8 +97,17 @@ void PortalView::changePage(QListWidgetItem *current, QListWidgetItem *previous)
 {
     if (!current)
         current = previous;
+    int indx = _contentsWidget->row(current);
+    if( indx == 0 ) {
+        // the flat documents list
+        _allDocsView->setView( AllDocsView::FlatList );
+    } else if( indx == 1 ) {
+        // the timeline
+        _allDocsView->setView( AllDocsView::TreeView );
+        indx = 0;
+    }
 
-    _pagesWidget->setCurrentIndex(_contentsWidget->row(current));
+    _pagesWidget->setCurrentIndex(indx);
 }
 
 QWidget* PortalView::katalogDetails()

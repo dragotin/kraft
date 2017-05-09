@@ -28,6 +28,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QStackedWidget>
 
 #include <KLocalizedString>
 
@@ -44,7 +45,8 @@
 #include "kraftsettings.h"
 
 AllDocsView::AllDocsView( QWidget *parent )
-: QWidget( parent )
+: QWidget( parent ),
+  mAllDocumentsModel(0)
 {
   QVBoxLayout *box = new QVBoxLayout;
   setLayout( box );
@@ -103,7 +105,8 @@ QWidget* AllDocsView::initializeTreeWidget()
 {
   //Note: Currently building the views is done in slotBuildView() that is called from the portal
   //      because otherwise we'd access the database before it is initialized
-  mAllView =    new QTableView;
+  mAllView = new QTableView;
+  _dateView = new QTreeView;
 
   //Initialise
   mAllMenu = new QMenu( mAllView );
@@ -112,7 +115,11 @@ QWidget* AllDocsView::initializeTreeWidget()
   //Add treewidgets to the toolbox: All docs view
   QVBoxLayout *vb1 = new QVBoxLayout;
   vb1->setMargin(0);
-  vb1->addWidget( mAllView );
+  _stack = new QStackedWidget(this);
+  _stack->addWidget(mAllView);
+  _stack->addWidget(_dateView);
+
+  vb1->addWidget( _stack );
 
   mAllViewDetails = new DocDigestDetailView;
   connect( mAllViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
@@ -126,6 +133,17 @@ QWidget* AllDocsView::initializeTreeWidget()
   return w;
 }
 
+void AllDocsView::setView( ViewType type )
+{
+    if( !mAllDocumentsModel) return;
+    if( type == FlatList) {
+        _stack->setCurrentIndex(0);
+        mAllDocumentsModel->setEnableTreeview(false);
+    } else {
+        _stack->setCurrentIndex(1);
+        mAllDocumentsModel->setEnableTreeview(true);
+    }
+}
 
 void AllDocsView::slotBuildView()
 {
@@ -134,7 +152,9 @@ void AllDocsView::slotBuildView()
 
     //Create the all documents view
     mAllDocumentsModel = new DocumentFilterModel(-1, this);
+
     mAllView->setModel(mAllDocumentsModel);
+    _dateView->setModel(mAllDocumentsModel);
     mAllView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
     mAllView->verticalHeader()->hide();
     mAllView->setSortingEnabled(true);
@@ -162,12 +182,14 @@ void AllDocsView::slotBuildView()
     mAllView->setSelectionMode( QAbstractItemView::SingleSelection );
     mAllView->setEditTriggers( QAbstractItemView::NoEditTriggers );
     // mAllView->setExpandsOnDoubleClick( false );
+    slotUpdateView();
+
 }
 
 void AllDocsView::slotUpdateView()
 {
   QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-  static_cast<DocumentModel*>(mAllDocumentsModel->sourceModel())->setQueryAgain();
+  // static_cast<DateModel*>(mAllDocumentsModel->sourceModel())->setQueryAgain();
   QApplication::restoreOverrideCursor();
 }
 
