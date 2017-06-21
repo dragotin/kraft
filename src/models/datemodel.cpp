@@ -169,7 +169,7 @@ void DateModel::setHeaderStrings( const QStringList& headers)
 
 QVariant DateModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if( role == Qt::DisplayRole && orientation == Qt::Horizontal && section < _headers.count() ) {
+    if( section > -1 && role == Qt::DisplayRole && orientation == Qt::Horizontal && section < _headers.count() ) {
         return _headers.at(section);
     }
     return QVariant();
