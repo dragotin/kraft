@@ -101,12 +101,12 @@ set(kraft_SRCS
     models/documentmodel.cpp
     models/documentproxymodels.cpp
     models/datemodel.cpp
+    models/docbasemodel.cpp
     docdigestdetailview.cpp
     addressprovider.cpp
     addressselectorwidget.cpp
     addressprovider_akonadi.cpp
     addressselectordialog.cpp
-    quicksearchwidget.cpp
     kraftdb.cpp
     geld.cpp
     defaultprovider.cpp
