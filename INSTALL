@@ -33,6 +33,22 @@ be provided:
   packages from the openSUSE Buildservice or from the website
   https://github.com/OlafvdSpek/ctemplate
 
+
+Required packages for building with openSUSE Leap 42.2:
+
+- gcc-c++
+- extra-cmake-modules
+- libqt5-qtbase-devel
+- akonadi-contact-devel
+- gettext
+- gettext-tools
+- qt5-qtwebengine-devel
+- kwallet-devel
+- knotifyconfig-devel
+- kglobalaccel-devel
+- libctemplate-devel
+  
+
 -----------------------------------------------------
 Quick-start 1: Build Kraft
 -----------------------------------------------------
