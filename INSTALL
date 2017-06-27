@@ -31,7 +31,7 @@ be provided:
 - KDE Pimlibs (for Akonadi based kaddressbook access)
 - google ctemplate, A simple but powerful template language for C++,
   packages from the openSUSE Buildservice or from the website
-  http://code.google.com/p/google-ctemplate/
+  https://github.com/OlafvdSpek/ctemplate
 
 -----------------------------------------------------
 Quick-start 1: Build Kraft
