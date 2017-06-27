@@ -22,7 +22,7 @@
 #ifndef QUICKSEARCHWIDGET_H
 #define QUICKSEARCHWIDGET_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 class QLineEdit;
 
