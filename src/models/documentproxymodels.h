@@ -27,6 +27,7 @@ class QVariant;
 class QObject;
 
 class DateModel;
+class DocumentModel;
 
 //Filters out the last 10 items  of the DocumentModel
 class DocumentFilterModel : public QSortFilterProxyModel
@@ -41,67 +42,9 @@ class DocumentFilterModel : public QSortFilterProxyModel
     private:
         int m_MaxRows;
         bool _enableTreeView;
-        QScopedPointer<DateModel> _sourceModel;
+
+        QScopedPointer<DateModel> _treeModel;
+        QScopedPointer<DocumentModel> _tableModel;
 };
-
-#if 0
-struct Helper
-{
-    QVector<int> modelRowCache;
-    QVector<QDate> startDate;
-};
-
-struct Mapping
-{
-    Mapping *parent;
-    QVector<Mapping *> childeren;
-    int parentRow;
-    int treeLevel;
-};
-
-/*
-Creates a timelined view of the DocumentModel
-
-Mapping helps us to keep track of where we are in the tree
-
-m_yearsRowCache and it's helper struct is used to store at what row in the sourcemodel a given
-year/month starts
-*/
-
-class TimelineModel : public QAbstractProxyModel
-{
-    Q_OBJECT
-
-    public:
-        TimelineModel(QObject *parent = 0);
-
-        QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-        int columnCount(const QModelIndex &parent) const;
-        int rowCount(const QModelIndex &parent = QModelIndex()) const;
-        QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
-        QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
-        QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-        QModelIndex parent(const QModelIndex &index= QModelIndex()) const;
-        DocumentModel *baseModel();
-
-        bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
-        Qt::ItemFlags flags(const QModelIndex &index) const;
-        bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
-        QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-
-        void setSourceModel(QAbstractItemModel *sourceModel);
-
-    private slots:
-        void sourceReset();
-        void sourceRowsInserted(const QModelIndex &parent, int start, int end);
-        void sourceRowsRemoved(const QModelIndex &parent, int start, int end);
-
-    private:
-        QScopedPointer<DocumentModel> mProxy;
-        int sourceDateRow(int yearRow, int monthRow) const;
-        mutable QVector<Helper> m_yearsRowCache;
-        mutable Mapping *m_rootMap;
-};
-#endif
 
 #endif

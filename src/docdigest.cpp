@@ -34,13 +34,18 @@ DocDigest::DocDigest()
 {
 }
 
-QString DocDigest::date()
+QString DocDigest::date() const
 {
     return mDate.toString();
   // return mLocale.formatDate( mDate, QLocale::ShortDate );
 }
 
-QString DocDigest::lastModified()
+QDate DocDigest::rawDate() const
+{
+    return mDate;
+}
+
+QString DocDigest::lastModified() const
 {
     return mLastModified.toString();
 }

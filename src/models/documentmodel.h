@@ -19,55 +19,45 @@
 #ifndef DOCUMENTMODEL_H
 #define DOCUMENTMODEL_H
 
+#include "docbasemodel.h"
 #include <QSqlTableModel>
-#include <kcontacts/addressee.h>
+
 
 class DocDigest;
 class AddressProvider;
 
-class DocumentModel : public QSqlQueryModel
+class DocumentModel : public DocBaseModel
 {
   Q_OBJECT
 public:
 
-  DocumentModel();
+  DocumentModel(QObject *parent = 0);
   ~DocumentModel();
 
-  enum Columns {
-    Document_Id = 0,
-    Document_Ident = 1,
-    Document_Type = 2,
-    Document_Whiteboard = 3,
-    Document_ClientId = 4,
-    Document_LastModified = 5,
-    Document_CreationDate = 6,
-    Document_ProjectLabel = 7,
-    Document_ClientAddress = 8,
-    Document_ClientName = 9,
+  QVariant data(const QModelIndex &idx, int role) const;
+ // QVariant headerData( int, Qt::Orientation, int role = Qt::DisplayRole ) const;
+  QModelIndex index(int row, int column, const QModelIndex &parent) const;
+  QModelIndex parent(const QModelIndex &index) const;
+  int rowCount(const QModelIndex &parent) const;
 
-  };
-
-  enum Roles
-  {
-    RawTypes = Qt::UserRole + 1
-  };
-
-  QVariant data(const QModelIndex &idx, int rol) const;
-  QVariant headerData( int, Qt::Orientation, int role = Qt::DisplayRole ) const;
-
-  int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  // int columnCount(const QModelIndex &parent = QModelIndex()) const;
   DocDigest digest( const QModelIndex& ) const;
   void setQueryAgain();
 
-protected slots:
-  void slotAddresseeFound( const QString&, const KContacts::Addressee& );
+  void addData( const DocDigest& );
+
+  bool isDocument(const QModelIndex& indx) const;
+
+
+// protected slots:
+//  void slotAddresseeFound( const QString&, const KContacts::Addressee& );
 
 protected:
-  AddressProvider   *mAddressProvider;
-  QHash<QString, KContacts::Addressee> mAddresses;
+
 
 private:
-  QVector<QString> mHeaders;
+  DocDigestList _digests;
+
 };
 
 #endif

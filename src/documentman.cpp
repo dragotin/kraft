@@ -89,6 +89,7 @@ DocDigest DocumentMan::digestFromQuery( QSqlQuery& query )
   return dig;
 }
 
+// FIXME: Can that be removed?
 DocDigestsTimelineList DocumentMan::docsTimelined()
 {
   DocDigestsTimelineList retList; // a list of timelined digest objects

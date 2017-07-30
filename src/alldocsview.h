@@ -78,7 +78,7 @@ signals:
 
 private:
 
-    QTableView *mAllView;
+    QTableView *_tableView;
     QTreeView  *_dateView;
     QStackedWidget *_stack;
 
@@ -86,7 +86,8 @@ private:
 
     QModelIndex mCurrentlySelected;
 
-    DocumentFilterModel *mAllDocumentsModel;
+    DocumentFilterModel *mTableModel;
+    DocumentFilterModel *mDateModel;
 
     QMenu *mAllMenu;
 

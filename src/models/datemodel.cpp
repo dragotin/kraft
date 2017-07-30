@@ -15,10 +15,12 @@
  ***************************************************************************/
 
 #include "datemodel.h"
+#include "docdigest.h"
 
 #include <QStringList>
 #include <QColor>
 #include <QSqlQuery>
+#include <QFont>
 
 class TreeItem
 {
@@ -30,7 +32,6 @@ public:
 
     TreeItem *child(int row);
     int childCount() const;
-    int columnCount() const;
     QVariant data(int column) const;
     int row() const;
     TreeItem *parent();
@@ -53,16 +54,9 @@ TreeItem::TreeItem(AbstractIndx *indx, TreeItem *parent)
     }
 }
 
-int TreeItem::columnCount() const
-{
-    if( dataPtr ) {
-        return dataPtr->columnCount();
-    }
-    return 0;
-}
-
 TreeItem* TreeItem::child(int row)
 {
+    int num = childItems.count();
     return childItems.value(row);
 }
 
@@ -90,38 +84,43 @@ void TreeItem::appendChild(TreeItem *child)
 }
 
 /* ================================================================== */
-
-QVariant AbstractIndx::data(int column) const
+AbstractIndx::AbstractIndx()
+    :_type(Invalid)
 {
-    if( _data.count() > column ) {
-        return _data.at(column);
-    }
-    return QVariant();
+
 }
 
-int AbstractIndx::columnCount()
+AbstractIndx::AbstractIndx(IndxType t)
+    :_type(t)
 {
-    return _data.count();
+
 }
+
+AbstractIndx::AbstractIndx(IndxType t, DocDigest(digest))
+    :_type(t), _docDigest(digest)
+{
+
+}
+
 
 AbstractIndx::IndxType AbstractIndx::type()
 {
     return _type;
 }
 
-void AbstractIndx::setData( const QVariantList& list )
+DocDigest AbstractIndx::digest() const
 {
-    _data = list;
+    return _docDigest;
 }
 
 int AbstractIndx::year()
 {
-    return _date.year();
+    return _docDigest.rawDate().year();
 }
 
 int AbstractIndx::month()
 {
-    return _date.month();
+    return _docDigest.rawDate().month();
 }
 
 /* ================================================================== */
@@ -130,8 +129,9 @@ class YearIndx : public AbstractIndx
 {
 public:
     explicit YearIndx(int year)
-        :AbstractIndx(IndxType::YearType, QDate(year, 1, 1)) {
-        _data << QString::number(year);
+        :AbstractIndx(IndxType::YearType) {
+         QDate d (year, 1, 1);
+         _docDigest.setDate(d);
     }
 };
 
@@ -141,38 +141,19 @@ class MonthIndx : public AbstractIndx
 {
 public:
     explicit MonthIndx(int year, int month)
-        :AbstractIndx(IndxType::MonthType, QDate(year, month, 1)) {
-
-        _data << QDate::longMonthName(month);
+        :AbstractIndx(IndxType::MonthType) {
+        QDate d(year, month, 1);
+        _docDigest.setDate(d);
     }
 };
 
 /* ================================================================== */
 
 DateModel::DateModel(QObject *parent)
-    :QAbstractItemModel(parent)
+    :DocBaseModel(parent)
 {
     rootItem = new TreeItem(NULL);
 
-}
-
-int DateModel::columnCount(const QModelIndex &parent) const
-{
-    Q_UNUSED(parent);
-    return _columnCount;
-}
-
-void DateModel::setHeaderStrings( const QStringList& headers)
-{
-    _headers = headers;
-}
-
-QVariant DateModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if( section > -1 && role == Qt::DisplayRole && orientation == Qt::Horizontal && section < _headers.count() ) {
-        return _headers.at(section);
-    }
-    return QVariant();
 }
 
 QVariant DateModel::data(const QModelIndex &index, int role) const
@@ -182,7 +163,7 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
     TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
 
     AbstractIndx *indx = item->payload();
-
+#if 0
     if( role == Qt::BackgroundColorRole ) {
         if( indx->type() == AbstractIndx::YearType ) {
             return QColor(0x80, 0xC8, 0xFE);
@@ -191,11 +172,27 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
         }
         return QVariant();
     }
+#endif
+    if( role == Qt::FontRole ) {
+        QFont f;
+        if( indx->type() == AbstractIndx::YearType ) {
+            f.setPointSize(22);
+            return f;
+        } else if( indx->type() == AbstractIndx::MonthType ) {
+            f.setPointSize(16);
+            return f;
+        }
+    }
 
     if (role != Qt::DisplayRole)
         return QVariant();
 
     if( indx->type() == AbstractIndx::YearType ) {
+        if( index.column() == 0 ) {
+            return item->payload()->year();
+        }
+
+#if 0
         int col = index.column();
         QList<TreeItem*> monthItems = item->children();
         if( _yearExtra[col] == Sum ) {
@@ -215,11 +212,16 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
         } else {
             return item->payload()->data(col);
         }
+#endif
     }
 
     if( indx->type() == AbstractIndx::MonthType ) {
         // there might be a special column type
         int col = index.column();
+        if( col == 0 ) {
+            return QDate::shortMonthName(item->payload()->month());
+        }
+#if 0
         QList<TreeItem*> childitems = item->children();
         if( _monthExtra[col] == Sum ) {
             float sum = 0.0;
@@ -230,12 +232,19 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
         } else if( _monthExtra[col] == Count ) {
             return childitems.count();
         } else {
-            return item->payload()->data(col);
         }
+#endif
     }
 
     if( indx->type() == AbstractIndx::DocumentType ) {
-        return item->payload()->data(index.column());
+        DocDigest digest = item->payload()->digest();
+        if( index.column() == Document_Id ) {
+            // In column zero the day has to be displayed here
+            const QDate date = digest.rawDate();
+            return date.day();
+        } else {
+            return columnValueFromDigest( digest, index.column() );
+        }
     }
     return QVariant();
 }
@@ -296,39 +305,30 @@ int DateModel::rowCount(const QModelIndex &parent) const
      return parentItem->childCount();
 }
 
-void DateModel::setColumnCount(int columns)
-{
-    if( columns > 0 ) {
-        _columnCount = columns;
-        _monthExtra.resize(columns);
-        _yearExtra.resize(columns);
-    }
-}
-
 void DateModel::setMonthSumColumn( int column )
 {
-    if(column < _columnCount) {
-        _monthExtra[column] = Sum;
+    if(column < columnCount( QModelIndex() )) {
+         _monthExtra[column] = Sum;
     }
 }
 
 void DateModel::setMonthCountColumn( int column )
 {
-    if( column < _columnCount ) {
+    if( column < columnCount(QModelIndex()) ) {
         _monthExtra[column] = Count;
     }
 }
 
 void DateModel::setYearSumColumn( int column )
 {
-    if(column < _columnCount) {
+    if(column < columnCount(QModelIndex())) {
         _yearExtra[column] = Sum;
     }
 }
 
 void DateModel::setYearCountColumn( int column )
 {
-    if( column < _columnCount ) {
+    if( column < columnCount(QModelIndex()) ) {
         _yearExtra[column] = Count;
     }
 }
@@ -368,10 +368,42 @@ TreeItem *DateModel::findMonthItem(int year, int month)
     return monthItem;
 }
 
-void DateModel::addData( DocumentIndx doc )
+bool DateModel::isDocument(const QModelIndex& indx) const
 {
-    int month = doc.month();
-    int year = doc.year();
+    bool re = false;
+    if( indx.isValid() ) {
+        TreeItem *item = static_cast<TreeItem*>(indx.internalPointer());
+        if( item ) {
+            AbstractIndx *abstractindx = item->payload();
+
+            re = !(abstractindx->type() == AbstractIndx::YearType ||
+                    abstractindx->type() == AbstractIndx::MonthType );
+        }
+    }
+    return re;
+}
+
+DocDigest DateModel::digest(const QModelIndex& indx) const
+{
+    DocDigest dig;
+
+    TreeItem *item = static_cast<TreeItem*>(indx.internalPointer());
+
+    AbstractIndx *abstractindx = item->payload();
+
+    if( abstractindx->type() == AbstractIndx::YearType ||
+            abstractindx->type() == AbstractIndx::MonthType ) {
+        // there is no digest
+    } else {
+        dig = abstractindx->digest();
+    }
+    return dig;
+}
+
+void DateModel::addData( const DocDigest& digest ) // DocumentIndx doc )
+{
+    int month = digest.rawDate().month();
+    int year = digest.rawDate().year();
 
     TreeItem *yearItem = NULL;
     TreeItem *monthItem = NULL;
@@ -391,40 +423,10 @@ void DateModel::addData( DocumentIndx doc )
         monthItem = new TreeItem( newIndx, yearItem);
     }
 
-    DocumentIndx *itemIndx = new DocumentIndx(doc);
+    DocumentIndx *itemIndx = new DocumentIndx(digest);
     TreeItem *newItem = new TreeItem( itemIndx, monthItem );
 
     Q_UNUSED(newItem);
 
 }
 
-int DateModel::fromTable()
-{
-    int cnt = 0;
-
-    QSqlQuery query;
-    query.prepare("SELECT ident, docType, docDescription, clientID, "
-                    "lastModified, date, projectLabel, clientAddress "
-                    "FROM document ORDER BY date DESC");
-    query.exec();
-
-    while (query.next()) {
-        const QDate date(query.value(5).toDate());
-        if( date.isValid()) {
-            DocumentIndx doc(date);
-            QVariantList vl;
-            vl.insert(0, QLatin1String(""));
-            vl.insert(1, query.value(0).toString()); // docID
-            vl.insert(2, query.value(1).toString()); //column 2
-            vl.insert(3, query.value(2).toString());
-            vl.insert(4, query.value(3).toString());
-            vl.insert(5, query.value(4).toString());
-            vl.insert(6, query.value(7).toString());
-
-            doc.setData(vl);
-            this->addData( doc );
-            cnt++;
-        }
-    }
-    return cnt;
-}
