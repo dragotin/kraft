@@ -18,6 +18,7 @@
 #define HTMLVIEW_H
 
 #include <QWebEngineView>
+#include <QDesktopServices>
 
 class QAction;
 class QUrl;
@@ -35,7 +36,13 @@ protected:
     {
         Q_UNUSED(type);
         Q_UNUSED(isMainFrame);
-        QString urlStr = url.toString();
+        if( url.scheme().startsWith("http") && url.host() != "localhost" ) {
+            // open normal pages.
+            QDesktopServices::openUrl(url);
+            return false;
+        }
+
+        const QString urlStr = url.toString();
         qDebug() << "openUrl hit:" << urlStr;
         emit openUrl(url);
         return false;

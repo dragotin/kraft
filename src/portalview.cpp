@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QtCore>
+#include <QPushButton>
 
 #include <KLocalizedString>
 
@@ -51,13 +52,20 @@ PortalView::PortalView(QWidget *parent, const char*)
     _pagesWidget->addWidget(documentDigests());
     _pagesWidget->addWidget(new QWidget());  // doc timeline
     _pagesWidget->addWidget(katalogDetails()); // catalogs
-    _pagesWidget->addWidget(systemDetails()); // system
+    _sysPageIndx = _pagesWidget->addWidget(systemDetails()); // system
 
     createIcons();
     _contentsWidget->setCurrentRow(0);
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout;
-    horizontalLayout->addWidget(_contentsWidget);
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(_contentsWidget);
+
+    QPushButton *pb = new QPushButton(i18n("Kraft"));
+    pb->setIcon(QIcon::fromTheme("kraft"));
+    vbox->addWidget(pb);
+    connect(pb, SIGNAL(clicked(bool)), this, SLOT(displaySystemsTab()));
+    horizontalLayout->addLayout(vbox);
     horizontalLayout->addWidget(_pagesWidget, 1);
     setLayout(horizontalLayout);
 }
@@ -77,16 +85,11 @@ void PortalView::createIcons()
     timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
-    catButton->setIcon(QIcon::fromTheme("anchor"));
+
+    catButton->setIcon(QIcon::fromTheme("catalogue"));
     catButton->setText(tr("Catalogs"));
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    QListWidgetItem *systemButton = new QListWidgetItem(_contentsWidget);
-    systemButton->setIcon(QIcon::fromTheme("applications-system"));
-    systemButton->setText(tr("Kraft"));
-    systemButton->setTextAlignment(Qt::AlignHCenter);
-    systemButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     connect(_contentsWidget,
             SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
@@ -108,6 +111,11 @@ void PortalView::changePage(QListWidgetItem *current, QListWidgetItem *previous)
     }
 
     _pagesWidget->setCurrentIndex(indx);
+}
+
+void PortalView::displaySystemsTab()
+{
+    _pagesWidget->setCurrentIndex(_sysPageIndx);
 }
 
 QWidget* PortalView::katalogDetails()
@@ -323,6 +331,12 @@ void PortalView::fillSystemDetails()
   html += DefaultProvider::self()->iconvTool() + "</td></tr>";
 
   html += "</table></div>";
+
+  html += "<h2>" + i18n( "Acknowledgements" ) + "</h2>";
+  html += "<p><div>Some Icons are made by <a href=\"https://www.flaticon.com/authors/madebyoliver\" "
+          "title=\"Madebyoliver\">Madebyoliver</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\">www.flaticon.com</a> "
+          ", licensed by <a href=\"http://creativecommons.org/licenses/by/3.0/\" "
+          "title=\"Creative Commons BY 3.0\">CC 3.0 BY</a></div><p>";
 
   mSystemBrowser->displayContent( html );
 }
