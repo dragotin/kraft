@@ -61,7 +61,7 @@ PortalView::PortalView(QWidget *parent, const char*)
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addWidget(_contentsWidget);
 
-    QPushButton *pb = new QPushButton(i18n("Kraft"));
+    QPushButton *pb = new QPushButton(i18n("Information"));
     pb->setIcon(QIcon::fromTheme("kraft"));
     vbox->addWidget(pb);
     connect(pb, SIGNAL(clicked(bool)), this, SLOT(displaySystemsTab()));
@@ -249,17 +249,17 @@ QString PortalView::systemViewHeader() const
   QString html( "" );
 
   // searching for   "kraft/pics/kraftapp_logo.png"
-  QString logoFile = QStandardPaths::locate( QStandardPaths::AppDataLocation, "pics/kraftapp_logo.png" );
+  QString logoFile = DefaultProvider::self()->locateFile("pics/kraftapp_logo.png" );
   html += i18n( "<h2>Welcome to Kraft</h2>" );
   html += "<div><table width=\"100%\" border=\"0\"><tr><td>";
   html += i18n("Kraft Version: %1</td>").arg( KRAFT_VERSION );
   html += "<td align=\"right\" rowspan=\"3\">";
   if ( ! logoFile.isEmpty() ) {
-    html += QString( "<img src=\"%1\"/>" ).arg( logoFile );
-  } else {
-    html += "&nbsp;";
+    html += QString( "<img src=\"%1\"/><br/>" ).arg( logoFile );
   }
+  html += QString("<a href=\"http://www.volle-kraft-voraus.de\">%1</a>&nbsp;").arg(i18n("Kraft Website"));
   html += "</td></tr>";
+
   html += QString( "<tr><td>Codename: <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
   QString h1 = DefaultProvider::self()->locale()->nativeCountryName();
   html += QString( "<tr><td>" ) + i18n( "Country Setting: " ) +
@@ -279,7 +279,7 @@ void PortalView::fillSystemDetails()
 
   html = systemViewHeader();
 
-  html += "<h2>" + i18n("Database Information") + "</h2>";
+  html += "<h3>" + i18n("Database Information") + "</h3>";
   html += "<div><table>";
   html += "<tr><td>" + i18n( "Kraft database name:" ) + "</td>";
   html += "<td>" + KraftDB::self()->databaseName() + "</td></tr>";
@@ -318,7 +318,7 @@ void PortalView::fillSystemDetails()
   }
   html += "</table></div>";
   // external tools
-  html += "<h2>" + i18n( "External Tools" ) + "</h2>";
+  html += "<h3>" + i18n( "External Tools" ) + "</h3>";
   html += "<div><table>";
   html += "<tr><td>" + i18n( "RML to PDF conversion tool:" ) + "</td><td>";
   QStringList trml2pdf = ReportGenerator::self()->findTrml2Pdf();
@@ -332,7 +332,7 @@ void PortalView::fillSystemDetails()
 
   html += "</table></div>";
 
-  html += "<h2>" + i18n( "Acknowledgements" ) + "</h2>";
+  html += "<h3>" + i18n( "Acknowledgements" ) + "</h3>";
   html += "<p><div>Some Icons are made by <a href=\"https://www.flaticon.com/authors/madebyoliver\" "
           "title=\"Madebyoliver\">Madebyoliver</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\">www.flaticon.com</a> "
           ", licensed by <a href=\"http://creativecommons.org/licenses/by/3.0/\" "
