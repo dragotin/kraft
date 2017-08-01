@@ -57,6 +57,8 @@ public:
   QString getStyleSheet( const QString& ) const;
 
   TextTemplate getTextTemplate( const QString& );
+  QString locateFile(const QString& findFile) const;
+
   DefaultProvider();
 
 private:

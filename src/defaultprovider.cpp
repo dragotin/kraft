@@ -175,11 +175,10 @@ QString DefaultProvider::getStyleSheet( const QString& styleName ) const
 {
   QString style;
   if( styleName.isEmpty() ) return style;
-  QString styleFile = styleName + ".style";
 
-  QString findFile = "kraft/styles/" + styleFile;
+  const QString findFile = QString("styles/%1.style").arg(styleName);
 
-  QString tmplFile = QStandardPaths::locate( QStandardPaths::GenericDataLocation, findFile );
+  const QString tmplFile = locateFile(findFile);
 
   QFile data( tmplFile );
   if (data.open( QFile::ReadOnly )) {
@@ -188,6 +187,41 @@ QString DefaultProvider::getStyleSheet( const QString& styleName ) const
     data.close();
   }
   return style;
+}
+
+// this method uses QStandardPath::locate from the AppDataLocation to find
+// files, but if KRAFT_HOME is set, that one is preffered.
+QString DefaultProvider::locateFile(const QString& findFile) const
+{
+    QString re;
+    const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
+
+    if( prjPath.isEmpty()) {
+        re = QStandardPaths::locate( QStandardPaths::AppDataLocation, findFile );
+    } else {
+        re = prjPath;
+        if( !re.endsWith(QChar('/')) ) {
+            re.append( QChar('/'));
+        }
+
+        re.append(findFile);
+        QFileInfo fi(re);
+        if( !fi.exists() ) {
+            if( findFile.startsWith("pics")) {
+                // special handling: formerly the pics in KRAFT_HOME were in src.
+                re = prjPath;
+                if( !re.endsWith(QChar('/')) ) {
+                    re.append( QChar('/'));
+                }
+                re.append("src/");
+                re.append(findFile);
+            } else {
+                qDebug() << "WARN: locateFile could not find file " << findFile;
+            }
+        }
+    }
+
+    return re;
 }
 
 DefaultProvider::~DefaultProvider()
