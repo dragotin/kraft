@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
     aboutData.setBugAddress( "http://sourceforge.net/p/kraft/bugs/" );
 
-    QString logoFile = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "kraft/pics/kraftapp_logo.png" );
+    QString logoFile = DefaultProvider::self()->locateFile( "pics/kraftapp_logo.png" );
     if( ! logoFile.isEmpty() ) {
         QImage img( logoFile );
         aboutData.setProgramLogo( QVariant( img ) );
