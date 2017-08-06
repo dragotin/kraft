@@ -4,6 +4,7 @@ include_directories(${QT_INCLUDES} src)
 add_subdirectory(pics)
 
 ########### next target ###############
+qt5_add_resources(KRAFT_RC_SRC pics/kraft.qrc)
 
 set(kraft_SRCS
     attribute.cpp
@@ -147,7 +148,7 @@ ki18n_wrap_ui(kraft_SRCS
 )
 
 # kde4_add_executable(kraft ${kraft_SRCS})
-add_executable(kraft ${kraft_SRCS})
+add_executable(kraft ${KRAFT_RC_SRC} ${kraft_SRCS})
 
 set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
 

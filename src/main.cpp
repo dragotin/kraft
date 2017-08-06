@@ -49,6 +49,8 @@ int main(int argc, char *argv[])
 
     aboutData.setBugAddress( "http://sourceforge.net/p/kraft/bugs/" );
 
+    Q_INIT_RESOURCE(kraft);
+
     QString logoFile = DefaultProvider::self()->locateFile( "pics/kraftapp_logo.png" );
     if( ! logoFile.isEmpty() ) {
         QImage img( logoFile );
