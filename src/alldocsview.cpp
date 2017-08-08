@@ -45,7 +45,9 @@
 #include "kraftsettings.h"
 
 AllDocsView::AllDocsView( QWidget *parent )
-: QWidget( parent )
+: QWidget( parent ),
+  mTableModel(0),
+  mDateModel(0)
 {
   QVBoxLayout *box = new QVBoxLayout;
   setLayout( box );
@@ -135,11 +137,16 @@ QWidget* AllDocsView::initializeTreeWidget()
 
 void AllDocsView::setView( ViewType type )
 {
+    // change the document listing widget
     if( type == FlatList) {
         _stack->setCurrentIndex(0);
     } else {
         _stack->setCurrentIndex(1);
     }
+    // clear the details view
+    mAllViewDetails->slotClearView();
+
+    mCurrentlySelected = QModelIndex();
 }
 
 void AllDocsView::slotBuildView()
@@ -273,7 +280,9 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         /* get the corresponding document id */
         DocDigest digest;
         if( isDoc ) {
-            QModelIndex idIndx = model->index(mCurrentlySelected.row(), DocumentModel::Document_Ident, mCurrentlySelected.parent());
+            QModelIndex idIndx = model->index(mCurrentlySelected.row(),
+                                              DocumentModel::Document_Ident,
+                                              mCurrentlySelected.parent());
 
             const QString id = idIndx.data( Qt::DisplayRole ).toString();
 

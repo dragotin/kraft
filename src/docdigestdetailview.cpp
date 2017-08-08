@@ -66,6 +66,12 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   hbox->addWidget( mHtmlCanvas);
 }
 
+void DocDigestDetailView::slotClearView()
+{
+    const QString details;
+    mHtmlCanvas->displayContent( details );
+}
+
 #define DOCDIGEST_TAG
 
 void DocDigestDetailView::slotShowDocDetails( DocDigest digest )

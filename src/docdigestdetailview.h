@@ -50,6 +50,7 @@ signals:
 
 public slots:
   void slotShowDocDetails( DocDigest );
+  void slotClearView();
 
 private:
   DocDigestHtmlView *mHtmlCanvas;
