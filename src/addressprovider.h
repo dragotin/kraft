@@ -34,6 +34,8 @@ class AddressProvider : public QObject
 public:
   AddressProvider( QObject* parent = 0 );
 
+  enum LookupState { LookupOngoing, LookupStarted, LookupFromCache, Error };
+
   /**
    * @brief lookupAddressee - look up an addressee by it's uid.
    * @param uid - A unique string identifying the contact
@@ -43,8 +45,18 @@ public:
    *
    * Make sure to always use a non empty uid.
    */
-  void lookupAddressee( const QString& uid );
+  LookupState lookupAddressee( const QString& uid );
   QString formattedAddress( const KContacts::Addressee& ) const;
+
+  /**
+    * @brief return an address from cache
+    * @param uid - the unique address uid
+    *
+    * Use this method to get the address if the lookupAddressee method
+    * returned LookupFromCache. In this case, the address is already
+    * known and can be fetched synchronously
+    */
+  KContacts::Addressee getAddresseeFromCache(const QString& uid);
 
   /**
    * @brief model - returns an Qt model for a tree view.
@@ -93,6 +105,8 @@ signals:
   void lookupResult( const QString&, const KContacts::Addressee& );
 
 private:
+  QHash<QString, KContacts::Addressee> _addressCache;
+
   AddressProviderPrivate *_d;
   QHash<QString, QString> _errMessages;
 };

@@ -80,14 +80,30 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
     case Document_ProjectLabel:
         var = digest.projectLabel();
         break;
-    case Document_ClientAddress:
+    case Document_ClientAddress: {
         help = digest.clientAddress();
-        li = help.split(QChar('\n'));
-        var = li[0];
+        var = help;
+        if( !help.isEmpty() ) {
+            li = help.split(QChar('\n'));
+            var = li[0];
+        }
         break;
-    case Document_ClientName:
-        var = QLatin1String("FIXME");
+    }
+    case Document_ClientName: {
+        help = digest.clientId();
+        AddressProvider::LookupState state = mAddressProvider->lookupAddressee(help);
+        if( state == AddressProvider::LookupFromCache ) {
+            KContacts::Addressee addressee = mAddressProvider->getAddresseeFromCache(help);
+            var = addressee.assembledName();
+        } else if( state == AddressProvider::LookupOngoing ) {
+            var = tr("Looking up address");
+        } else if( state == AddressProvider::LookupStarted ) {
+            var = tr("Lookup started");
+        } else {
+            var = tr("Error"); // FIXME
+        }
         break;
+    }
     default:
         break;
     }

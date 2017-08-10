@@ -47,17 +47,22 @@ AddressProviderPrivate::AddressProviderPrivate( QObject *parent )
     mSession = new Akonadi::Session( "KraftSession" );
 }
 
-void AddressProviderPrivate::lookupAddressee( const QString& uid )
+bool AddressProviderPrivate::isSearchOngoing(const QString& uid)
+{
+    return mUidSearches.contains(uid);
+}
+
+bool AddressProviderPrivate::lookupAddressee( const QString& uid )
 {
     if( uid.isEmpty() ) {
         qDebug() << "Invalid: UID to lookup is empty.";
-        return;
+        return false;
     }
 
     if( mUidSearches.contains( uid ) ) {
         // search is already running
         // qDebug () << "Search already underways!";^
-        return;
+        return false;
     }
 
     Akonadi::ContactSearchJob *csjob = new Akonadi::ContactSearchJob( this );
@@ -71,6 +76,7 @@ void AddressProviderPrivate::lookupAddressee( const QString& uid )
     mUidSearches.insert( uid );
 
     model();
+    return true;
 }
 
 void AddressProviderPrivate::searchResult( KJob* job )

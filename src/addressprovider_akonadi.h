@@ -39,13 +39,15 @@ class AddressProviderPrivate : public QObject
 public:
     AddressProviderPrivate( QObject* parent = 0 );
 
-    void lookupAddressee( const QString& uid );
+    bool lookupAddressee( const QString& uid );
     QString formattedAddress( const KContacts::Addressee& ) const;
 
     QAbstractItemModel *model();
 
     KContacts::Addressee getAddressee(int row, const QModelIndex &parent);
     KContacts::Addressee getAddressee(const QModelIndex& indx);
+
+    bool isSearchOngoing(const QString& uid);
 
 public slots:
     void searchResult( KJob* );

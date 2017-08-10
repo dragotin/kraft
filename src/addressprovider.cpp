@@ -43,6 +43,8 @@ void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::A
     if( !( uid.isEmpty() || contact.isEmpty()) ) {
         _errMessages.remove(uid);
     }
+    _addressCache[uid] = contact;
+
     emit lookupResult(uid, contact);
 }
 
@@ -61,12 +63,30 @@ QString AddressProvider::errorMsg( const QString& uid )
    return QString::null;
 }
 
+KContacts::Addressee AddressProvider::getAddresseeFromCache(const QString& uid)
+{
+    KContacts::Addressee adr;
+    if( _addressCache.contains(uid)) {
+        adr = _addressCache[uid];
+    }
+    return adr;
+}
 
-void AddressProvider::lookupAddressee( const QString& uid )
+AddressProvider::LookupState AddressProvider::lookupAddressee( const QString& uid )
 {
     // FIXME: Check for the size of the err messages. If it is big,
     // maybe do not bother the backend more
-    _d->lookupAddressee(uid);
+    if( _addressCache.contains(uid)) {
+        return LookupFromCache;
+    }
+    if( _d->isSearchOngoing(uid) ) {
+        return  LookupOngoing;
+    }
+    if( _d->lookupAddressee(uid) ) {
+        return LookupStarted;
+    } else {
+        return Error;
+    }
 }
 
 KContacts::Addressee AddressProvider::getAddressee(const QModelIndex& indx)
