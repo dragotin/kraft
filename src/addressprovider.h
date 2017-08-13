@@ -34,7 +34,10 @@ class AddressProvider : public QObject
 public:
   AddressProvider( QObject* parent = 0 );
 
-  enum LookupState { LookupOngoing, LookupStarted, LookupFromCache, Error };
+  enum LookupState { LookupOngoing, LookupStarted, LookupFromCache, LookupNotFound, ItemError, BackendError };
+
+  bool backendUp();
+  QString backendName() const;
 
   /**
    * @brief lookupAddressee - look up an addressee by it's uid.
@@ -86,11 +89,13 @@ public:
    */
   QString errorMsg( const QString& uid );
 
-protected slots:
-  void searchResult( KJob* );
+public slots:
+  void slotResetNotFoundCache();
 
+protected slots:
   void slotErrorMsg(const QString& uid, const QString& msg);
   void slotAddresseeFound( const QString& uid, const KContacts::Addressee contact);
+  void slotAddresseeNotFound( const QString& uid );
 
 signals:
   /**
@@ -109,6 +114,7 @@ private:
 
   AddressProviderPrivate *_d;
   QHash<QString, QString> _errMessages;
+  QSet<QString> _notFoundUids;
 };
 
 #endif // ADDRESSPROVIDER_H

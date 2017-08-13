@@ -22,6 +22,7 @@
 // on Mac.
 #include "addressprovider_akonadi.h"
 
+#include "klocalizedstring.h"
 
 /* ==================================================================================== */
 
@@ -33,8 +34,19 @@ AddressProvider::AddressProvider( QObject *parent )
             this, SLOT(slotAddresseeFound(QString, KContacts::Addressee)));
     connect(_d, SIGNAL(lookupError( QString, QString)), this,
             SLOT(slotErrorMsg(QString, QString)));
+    connect(_d, SIGNAL(addresseeNotFound(QString)), SLOT(slotAddresseeNotFound(QString)));
     // emitted when the search is finished, even if there was no result.
     connect(_d, SIGNAL(finished(int)), this, SIGNAL(finished(int)));
+}
+
+bool AddressProvider::backendUp()
+{
+    return _d->backendUp();
+}
+
+QString AddressProvider::backendName() const
+{
+    return _d->backendName();
 }
 
 void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::Addressee contact)
@@ -48,6 +60,16 @@ void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::A
     emit lookupResult(uid, contact);
 }
 
+void AddressProvider::slotAddresseeNotFound( const QString& uid )
+{
+    _notFoundUids.insert(uid);
+}
+
+void AddressProvider::slotResetNotFoundCache()
+{
+    _notFoundUids.clear();
+}
+
 void AddressProvider::slotErrorMsg(const QString& uid, const QString& msg)
 {
     if( !uid.isEmpty() ) {
@@ -57,10 +79,13 @@ void AddressProvider::slotErrorMsg(const QString& uid, const QString& msg)
 
 QString AddressProvider::errorMsg( const QString& uid )
 {
-   if( _errMessages.contains(uid) ) {
-       return _errMessages[uid];
-   }
-   return QString::null;
+    if( !_d->backendUp() ) {
+        return i18n("Backend down");
+    }
+    if( _errMessages.contains(uid) ) {
+        return _errMessages[uid];
+    }
+    return QString::null;
 }
 
 KContacts::Addressee AddressProvider::getAddresseeFromCache(const QString& uid)
@@ -76,6 +101,13 @@ AddressProvider::LookupState AddressProvider::lookupAddressee( const QString& ui
 {
     // FIXME: Check for the size of the err messages. If it is big,
     // maybe do not bother the backend more
+    if( !_d->backendUp() ) {
+        return BackendError;
+    }
+    if( _notFoundUids.contains(uid)) {
+        qDebug() << uid << "was not found before";
+        return LookupNotFound;
+    }
     if( _addressCache.contains(uid)) {
         return LookupFromCache;
     }
@@ -84,9 +116,10 @@ AddressProvider::LookupState AddressProvider::lookupAddressee( const QString& ui
     }
     if( _d->lookupAddressee(uid) ) {
         return LookupStarted;
-    } else {
-        return Error;
     }
+
+    return ItemError;
+
 }
 
 KContacts::Addressee AddressProvider::getAddressee(const QModelIndex& indx)
@@ -97,11 +130,6 @@ KContacts::Addressee AddressProvider::getAddressee(const QModelIndex& indx)
 KContacts::Addressee AddressProvider::getAddressee( int row, const QModelIndex &parent)
 {
     return _d->getAddressee(row, parent);
-}
-
-void AddressProvider::searchResult( KJob* job )
-{
-    _d->searchResult(job);
 }
 
 QAbstractItemModel *AddressProvider::model()

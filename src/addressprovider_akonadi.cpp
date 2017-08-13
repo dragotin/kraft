@@ -38,13 +38,28 @@ using namespace Akonadi;
 
 AddressProviderPrivate::AddressProviderPrivate( QObject *parent )
   :QObject( parent ),
+    _akonadiUp(false),
+    mSession(0),
     mMonitor(0),
     _model(0)
 {
+}
+
+bool AddressProviderPrivate::init()
+{
     if ( !Akonadi::Control::start( ) ) {
         qDebug() << "Failed to start Akonadi!";
+        _akonadiUp = false;
+    } else {
+        mSession = new Akonadi::Session( "KraftSession" );
+        _akonadiUp = true;
     }
-    mSession = new Akonadi::Session( "KraftSession" );
+    return _akonadiUp;
+}
+
+bool AddressProviderPrivate::backendUp()
+{
+    return _akonadiUp;
 }
 
 bool AddressProviderPrivate::isSearchOngoing(const QString& uid)
@@ -100,7 +115,10 @@ void AddressProviderPrivate::searchResult( KJob* job )
 
         if( contacts.size() > 0 ) {
             contact = contacts[0];
-            qDebug () << "Found uid search job for UID " << uid << " = " << contact.realName();
+            qDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+        } else {
+            qDebug() << "No search result for UID" << uid;
+            emit addresseeNotFound(uid);
         }
     }
 
@@ -116,6 +134,10 @@ void AddressProviderPrivate::searchResult( KJob* job )
 
 QAbstractItemModel *AddressProviderPrivate::model()
 {
+    if( !_akonadiUp ) {
+        return 0;
+    }
+
     Akonadi::ItemFetchScope scope;
     // fetch all content of the contacts, including images
     scope.fetchFullPayload( true );

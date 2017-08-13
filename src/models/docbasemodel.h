@@ -67,6 +67,8 @@ protected:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 private:
+    QString firstLineOf( const QString& str) const;
+
     QVector<QString> _headers;
 
     AddressProvider   *mAddressProvider;

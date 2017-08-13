@@ -45,6 +45,16 @@ DocBaseModel::DocBaseModel(QObject *parent)
 
 }
 
+QString DocBaseModel::firstLineOf( const QString& str) const
+{
+    QString var;
+    if( !str.isEmpty() ) {
+        QStringList li = str.split(QChar('\n'));
+        var = li[0];
+    }
+    return var;
+}
+
 QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col ) const
 {
     if( col < 0 || col > 10 ) return QVariant();
@@ -81,12 +91,7 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
         var = digest.projectLabel();
         break;
     case Document_ClientAddress: {
-        help = digest.clientAddress();
-        var = help;
-        if( !help.isEmpty() ) {
-            li = help.split(QChar('\n'));
-            var = li[0];
-        }
+        help = firstLineOf( digest.clientAddress());
         break;
     }
     case Document_ClientName: {
@@ -95,12 +100,15 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
         if( state == AddressProvider::LookupFromCache ) {
             KContacts::Addressee addressee = mAddressProvider->getAddresseeFromCache(help);
             var = addressee.assembledName();
+            qDebug() << "Address from Cache: " << var.toString();
         } else if( state == AddressProvider::LookupOngoing ) {
             var = tr("Looking up address");
         } else if( state == AddressProvider::LookupStarted ) {
             var = tr("Lookup started");
-        } else {
-            var = tr("Error"); // FIXME
+        } else if( state == AddressProvider::LookupNotFound ||
+                   state == AddressProvider::BackendError   ||
+                   state == AddressProvider::ItemError ) {
+            var = firstLineOf(digest.clientAddress());
         }
         break;
     }

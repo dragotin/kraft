@@ -19,6 +19,7 @@
 #define ADDRESSPROVIDER_AKONADI_H
 
 #include <QSet>
+#include <QLatin1String>
 
 #include <kcontacts/addressee.h>
 
@@ -39,6 +40,12 @@ class AddressProviderPrivate : public QObject
 public:
     AddressProviderPrivate( QObject* parent = 0 );
 
+    // initialize the backend and return true if that worked.
+    bool init();
+    // returns the result of the init process later on
+    bool backendUp();
+    QString backendName() const { return QLatin1String("Akonadi"); }
+
     bool lookupAddressee( const QString& uid );
     QString formattedAddress( const KContacts::Addressee& ) const;
 
@@ -55,6 +62,7 @@ public slots:
 signals:
     //
     void addresseeFound( const QString&, const KContacts::Addressee& );
+    void addresseeNotFound( const QString& );
 
     // error message when looking up the address for a UID
     void lookupError( const QString&, const QString&);
@@ -64,10 +72,13 @@ signals:
 
 private:
     QSet<QString>        mUidSearches;
+    bool                 _akonadiUp;
 
     Akonadi::Session *mSession;
     Akonadi::ChangeRecorder* mMonitor; // FIXME: Must static somehow
     Akonadi::ContactsTreeModel *_model;
+
+
 };
 
 #endif // ADDRESSPROVIDER_H
