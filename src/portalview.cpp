@@ -316,6 +316,16 @@ void PortalView::fillSystemDetails()
     }
   }
   html += "</table></div>";
+
+  // Akonadi and friends
+  QScopedPointer<AddressProvider> aprov;
+  aprov.reset( new AddressProvider);
+  html += "<h3>" + i18n("Addressbook Backend") + "</h3>";
+  html += "<div><table>";
+  html += "<tr><td>" + i18n( "Backend type %1" ).arg(aprov->backendName()) + "</td><td>";
+  html += aprov->backendUp() ? i18n("running") : i18n("not running");
+  html += "</td></tr></table></div>";
+
   // external tools
   html += "<h3>" + i18n( "External Tools" ) + "</h3>";
   html += "<div><table>";
