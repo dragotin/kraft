@@ -67,6 +67,7 @@ protected slots:
     void slotCurrentChanged( QModelIndex, QModelIndex );
     void slotOpenLastPrinted();
     void slotSearchTextChanged(const QString& newStr );
+    void slotAmountFilterChanged(int entryNo);
 
 signals:
     void createDocument();

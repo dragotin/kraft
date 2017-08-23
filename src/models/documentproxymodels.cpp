@@ -80,37 +80,55 @@ bool DocumentFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sou
         return false;
     }
 
+    bool accepted = false;
+
     // filter works on the document ID, the client name and the document type.
     const QRegExp filter = filterRegExp();
-    const QModelIndex index0 = sourceModel()->index(sourceRow, DocumentModel::Document_Ident, sourceParent);
-    const QString idStr = sourceModel()->data(index0).toString();
+    if( filter.pattern().isEmpty() ) {
+        accepted = true;
+    } else {
+        const QModelIndex index0 = sourceModel()->index(sourceRow, DocumentModel::Document_Ident, sourceParent);
+        const QString idStr = sourceModel()->data(index0).toString();
 
-    const QModelIndex index1 = sourceModel()->index(sourceRow, DocumentModel::Document_Type, sourceParent);
-    const QString typeStr = sourceModel()->data(index1).toString();
+        const QModelIndex index1 = sourceModel()->index(sourceRow, DocumentModel::Document_Type, sourceParent);
+        const QString typeStr = sourceModel()->data(index1).toString();
 
-    const QModelIndex index2 = sourceModel()->index(sourceRow, DocumentModel::Document_ClientName, sourceParent);
-    const QString clientNameStr = sourceModel()->data(index2).toString();
+        const QModelIndex index2 = sourceModel()->index(sourceRow, DocumentModel::Document_ClientName, sourceParent);
+        const QString clientNameStr = sourceModel()->data(index2).toString();
 
-    const QModelIndex index3 = sourceModel()->index(sourceRow, DocumentModel::Document_Whiteboard, sourceParent);
-    const QString whiteboardStr = sourceModel()->data(index3).toString();
+        const QModelIndex index3 = sourceModel()->index(sourceRow, DocumentModel::Document_Whiteboard, sourceParent);
+        const QString whiteboardStr = sourceModel()->data(index3).toString();
 
-    const QModelIndex index4 = sourceModel()->index(sourceRow, DocumentModel::Document_ProjectLabel, sourceParent);
-    const QString projectStr = sourceModel()->data(index4).toString();
+        const QModelIndex index4 = sourceModel()->index(sourceRow, DocumentModel::Document_ProjectLabel, sourceParent);
+        const QString projectStr = sourceModel()->data(index4).toString();
 
-    if( idStr.contains(filter) || typeStr.contains(filter) || clientNameStr.contains(filter)
-           || whiteboardStr.contains(filter) || projectStr.contains(filter)) {
-        return true;
+        if( idStr.contains(filter) || typeStr.contains(filter) || clientNameStr.contains(filter)
+                || whiteboardStr.contains(filter) || projectStr.contains(filter)) {
+            accepted = true;
+        }
     }
 
     // for the treeview, check all the children
     if( _enableTreeView ) {
         int rows = sourceModel()->rowCount(index);
-        for (int row = 0; row < rows; row++)
+        for (int row = 0; row < rows; row++) {
             if (filterAcceptsRow(row, index)) {
-                return true;
+                accepted = true;
             }
+        }
     }
 
-    return false;
+    // if the entry is accepted so far, check if it is within the time limit
+    if( accepted && m_MaxRows > -1 ) {
+        const QModelIndex index = sourceModel()->index(sourceRow, DocumentModel::Document_CreationDateRaw, sourceParent);
+        const QDate docDate = sourceModel()->data(index).toDate();
+
+        int dateDiff = docDate.daysTo(QDate::currentDate());
+        if( dateDiff > m_MaxRows ) {
+            accepted = false;
+        }
+    }
+
+    return accepted;
 }
 

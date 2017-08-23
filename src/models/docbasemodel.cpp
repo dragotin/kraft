@@ -57,7 +57,7 @@ QString DocBaseModel::firstLineOf( const QString& str) const
 
 QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col ) const
 {
-    if( col < 0 || col > 10 ) return QVariant();
+    if( col < 0 || col >= Max_Column_Marker ) return QVariant();
     QVariant var;
     QStringList li;
     QString help;
@@ -86,6 +86,9 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
         break;
     case Document_CreationDate:
         var = digest.date();
+        break;
+    case Document_CreationDateRaw:
+        var = digest.rawDate();
         break;
     case Document_ProjectLabel:
         var = digest.projectLabel();
@@ -121,7 +124,7 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
 int DocBaseModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return 11;
+    return Max_Column_Marker;
 }
 
 QVariant DocBaseModel::headerData(int section, Qt::Orientation orientation, int role) const

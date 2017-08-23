@@ -75,7 +75,8 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
 {   
     // QLocale locale;
 
-    if( !idx.isValid() ) return QVariant();
+    if( !idx.isValid() )
+        return QVariant();
 
     int row = idx.row();
     if( row < 0 || row >= _digests.count() ) {
@@ -83,8 +84,7 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
     }
     const DocDigest digest = _digests.at(row);
 
-    if(role == Qt::DisplayRole)
-    {
+    if(role == Qt::DisplayRole) {
         return columnValueFromDigest( digest, idx.column() );
     } else if( role == Qt::SizeHintRole ) {
         QFont f = data(idx, Qt::FontRole).value<QFont>();

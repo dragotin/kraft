@@ -61,9 +61,12 @@ AllDocsView::AllDocsView( QWidget *parent )
   connect( _searchLine, SIGNAL(textChanged(QString)), this, SLOT(slotSearchTextChanged(QString)) );
 
   QComboBox *filterCombo = new QComboBox;
-  filterCombo->addItem("Recent 10 Documents");
   filterCombo->addItem("All documents");
-  filterCombo->addItem("Document Type");
+  filterCombo->addItem("Documents of last week");
+  filterCombo->addItem("Documents of last month");
+  // filterCombo->addItem("Document Type");
+  connect( filterCombo, SIGNAL(activated(int)),
+           this, SLOT(slotAmountFilterChanged(int)));
 
   QHBoxLayout *hbox = new QHBoxLayout;
   QLabel *l1 = new QLabel(i18n("&Show: "));
@@ -95,6 +98,18 @@ AllDocsView::~AllDocsView()
   QString state = _tableView->horizontalHeader()->saveState().toBase64();
   KraftSettings::self()->setDigestListColumnsAll( state );
   KraftSettings::self()->save();
+}
+
+void AllDocsView::slotAmountFilterChanged(int entryNo)
+{
+    int num = -1;
+    if( entryNo == 1 ) {
+        num = 7;
+    } else if( entryNo == 2 ) {
+        num = 31;
+    }
+    mTableModel->setMaxRows(num);
+    mDateModel->setMaxRows(num);
 }
 
 void AllDocsView::slotSearchTextChanged(const QString& newStr )
@@ -175,10 +190,14 @@ void AllDocsView::slotBuildView()
     _tableView->hideColumn( DocumentModel::Document_ClientId );
     _tableView->hideColumn( DocumentModel::Document_ClientAddress );
     _tableView->showColumn( DocumentModel::Document_ClientName );
+    _tableView->hideColumn( DocumentModel::Document_CreationDateRaw);
+    _tableView->hideColumn( DocumentModel::Document_Id_Raw);
 
     _dateView->hideColumn( DocumentModel::Document_ClientId );
     _dateView->hideColumn( DocumentModel::Document_ClientAddress );
     _dateView->showColumn( DocumentModel::Document_ClientName );
+    _dateView->hideColumn( DocumentModel::Document_CreationDateRaw);
+    _dateView->hideColumn( DocumentModel::Document_Id_Raw);
 
     //Initialize common style options
     QPalette palette;

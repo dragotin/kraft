@@ -34,7 +34,7 @@ class DocBaseModel : public QAbstractItemModel
 {
 public:
     DocBaseModel(QObject *parent = 0);
-    virtual ~DocBaseModel() {};
+    virtual ~DocBaseModel() {}
 
     enum Columns {
         Document_Id = 0,
@@ -48,6 +48,8 @@ public:
         Document_ClientAddress = 8,
         Document_ClientName = 9,
         Document_Id_Raw = 10,
+        Document_CreationDateRaw = 11,
+        Max_Column_Marker = 12   // leave this as last enum
     };
 
     int columnCount(const QModelIndex &parent) const;
