@@ -95,9 +95,13 @@ AllDocsView::AllDocsView( QWidget *parent )
 
 AllDocsView::~AllDocsView()
 {
-  QString state = _tableView->horizontalHeader()->saveState().toBase64();
-  KraftSettings::self()->setDigestListColumnsAll( state );
-  KraftSettings::self()->save();
+    const QByteArray state = _tableView->horizontalHeader()->saveState().toBase64();
+    KraftSettings::self()->setDigestListColumnsAll( state );
+
+    const QByteArray state1 = _dateView->header()->saveState().toBase64();
+    KraftSettings::self()->setDigestListColumnsTime(state1);
+
+    KraftSettings::self()->save();
 }
 
 void AllDocsView::slotAmountFilterChanged(int entryNo)
@@ -166,10 +170,9 @@ void AllDocsView::setView( ViewType type )
 
 void AllDocsView::slotBuildView()
 {
-    QByteArray headerStateAll = QByteArray::fromBase64( KraftSettings::self()->digestListColumnsAll().toAscii() );
-    //Create the latest documents view
+    const QByteArray headerStateTable = QByteArray::fromBase64( KraftSettings::self()->digestListColumnsAll().toAscii() );
+    const QByteArray headerStateDate =  QByteArray::fromBase64( KraftSettings::self()->digestListColumnsTime().toAscii() );
 
-    //Create the all documents view
     mDateModel = new DocumentFilterModel(-1, this);
     mDateModel->setEnableTreeview(true);
     mTableModel = new DocumentFilterModel(-1, this);
@@ -183,7 +186,7 @@ void AllDocsView::slotBuildView()
     _tableView->setSortingEnabled(true);
     _tableView->horizontalHeader()->setMovable( true );
     _tableView->horizontalHeader()->setSortIndicatorShown( true );
-    _tableView->horizontalHeader()->restoreState( headerStateAll );
+    _tableView->horizontalHeader()->restoreState( headerStateTable );
     _tableView->setSelectionBehavior( QAbstractItemView::SelectRows );
     _tableView->setShowGrid( false );
     _tableView->hideColumn( DocumentModel::Document_Id );
@@ -198,10 +201,9 @@ void AllDocsView::slotBuildView()
     _dateView->showColumn( DocumentModel::Document_ClientName );
     _dateView->hideColumn( DocumentModel::Document_CreationDateRaw);
     _dateView->hideColumn( DocumentModel::Document_Id_Raw);
+    _dateView->header()->restoreState( headerStateDate );
 
     //Initialize common style options
-    QPalette palette;
-    palette.setColor( QPalette::AlternateBase, QColor("#e0fdd1") );
 
     connect( _tableView->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex) ),
              this, SLOT(slotCurrentChanged(QModelIndex,QModelIndex)));
