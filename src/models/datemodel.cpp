@@ -152,8 +152,7 @@ public:
 DateModel::DateModel(QObject *parent)
     :DocBaseModel(parent)
 {
-    rootItem = new TreeItem(NULL);
-
+    rootItem = new TreeItem(0);
 }
 
 QVariant DateModel::data(const QModelIndex &index, int role) const
@@ -186,14 +185,16 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
 
     if (role != Qt::DisplayRole)
         return QVariant();
+    int col = index.column();
 
     if( indx->type() == AbstractIndx::YearType ) {
-        if( index.column() == 0 ) {
+        if( col == 0 ) {
+            return item->payload()->year();
+        } else if(col == Treestruct_Year) {
             return item->payload()->year();
         }
 
 #if 0
-        int col = index.column();
         QList<TreeItem*> monthItems = item->children();
         if( _yearExtra[col] == Sum ) {
             float sum = 0.0;
@@ -217,9 +218,10 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
 
     if( indx->type() == AbstractIndx::MonthType ) {
         // there might be a special column type
-        int col = index.column();
         if( col == 0 ) {
             return QDate::shortMonthName(item->payload()->month());
+        } else if(col == Treestruct_Month) {
+            return item->payload()->month();
         }
 #if 0
         QList<TreeItem*> childitems = item->children();

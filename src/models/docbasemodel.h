@@ -49,7 +49,9 @@ public:
         Document_ClientName = 9,
         Document_Id_Raw = 10,
         Document_CreationDateRaw = 11,
-        Max_Column_Marker = 12   // leave this as last enum
+        Treestruct_Year = 12,
+        Treestruct_Month = 13,
+        Max_Column_Marker = 14   // leave this as last enum
     };
 
     int columnCount(const QModelIndex &parent) const;

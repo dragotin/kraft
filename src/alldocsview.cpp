@@ -204,7 +204,6 @@ void AllDocsView::slotBuildView()
     _dateView->header()->restoreState( headerStateDate );
 
     //Initialize common style options
-
     connect( _tableView->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex) ),
              this, SLOT(slotCurrentChanged(QModelIndex,QModelIndex)));
     connect( _dateView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
@@ -215,16 +214,31 @@ void AllDocsView::slotBuildView()
     connect( _dateView, SIGNAL( doubleClicked(QModelIndex) ),
              this, SLOT( slotDocOpenRequest(QModelIndex) ) );
 
- //   _tableView->setPalette( palette );
- //   _dateView->setPalette( palette );
     _tableView->setAlternatingRowColors( true );
     _dateView->setAlternatingRowColors(false);
     _tableView->setSelectionMode( QAbstractItemView::SingleSelection );
     _tableView->setEditTriggers( QAbstractItemView::NoEditTriggers );
     _dateView->setEditTriggers( QAbstractItemView::NoEditTriggers );
     _dateView->setExpandsOnDoubleClick( false );
-    slotUpdateView();
 
+    // expand the current year and month
+    QModelIndex startIdx = mDateModel->index(0,DocBaseModel::Treestruct_Year, QModelIndex());
+    QModelIndexList yearIndexes = mDateModel->match(startIdx, Qt::DisplayRole,
+                                          QVariant(QDate::currentDate().year()) );
+
+    if( yearIndexes.size() > 0 ) {
+        QModelIndex yearIndx = mDateModel->index(yearIndexes.first().row(), 0, yearIndexes.first().parent());
+        _dateView->setExpanded(yearIndx,true);
+
+        QModelIndex startIdxM = mDateModel->index(0, DocBaseModel::Treestruct_Month, yearIndx);
+        QModelIndexList monthIndexes = mDateModel->match(startIdxM, Qt::DisplayRole,
+                                                         QVariant(QDate::currentDate().month()) );
+        if( monthIndexes.size() > 0 ) {
+            QModelIndex mIdx = monthIndexes.first();
+            QModelIndex rIdx = mDateModel->index(mIdx.row(), 0, mIdx.parent());
+            _dateView->setExpanded(rIdx, true);
+        }
+    }
 }
 
 void AllDocsView::slotUpdateView()
