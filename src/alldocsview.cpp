@@ -195,12 +195,17 @@ void AllDocsView::slotBuildView()
     _tableView->showColumn( DocumentModel::Document_ClientName );
     _tableView->hideColumn( DocumentModel::Document_CreationDateRaw);
     _tableView->hideColumn( DocumentModel::Document_Id_Raw);
+    _tableView->hideColumn( DocumentModel::Treestruct_Month);
+    _tableView->hideColumn( DocumentModel::Treestruct_Year);
 
     _dateView->hideColumn( DocumentModel::Document_ClientId );
     _dateView->hideColumn( DocumentModel::Document_ClientAddress );
     _dateView->showColumn( DocumentModel::Document_ClientName );
     _dateView->hideColumn( DocumentModel::Document_CreationDateRaw);
     _dateView->hideColumn( DocumentModel::Document_Id_Raw);
+    _dateView->hideColumn( DocumentModel::Treestruct_Month);
+    _dateView->hideColumn( DocumentModel::Treestruct_Year);
+
     _dateView->header()->restoreState( headerStateDate );
 
     //Initialize common style options

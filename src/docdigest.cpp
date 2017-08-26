@@ -36,8 +36,7 @@ DocDigest::DocDigest()
 
 QString DocDigest::date() const
 {
-    return mDate.toString();
-  // return mLocale.formatDate( mDate, QLocale::ShortDate );
+    return DefaultProvider::self()->locale()->toString(mDate, QLocale::ShortFormat);
 }
 
 QDate DocDigest::rawDate() const
@@ -47,7 +46,7 @@ QDate DocDigest::rawDate() const
 
 QString DocDigest::lastModified() const
 {
-    return mLastModified.toString();
+    return DefaultProvider::self()->locale()->toString(mLastModified, QLocale::ShortFormat);
 }
 
 void DocDigest::appendArchDocDigest( const ArchDocDigest& digest )
