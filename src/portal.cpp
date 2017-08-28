@@ -742,12 +742,8 @@ void Portal::createView( DocGuardedPtr doc )
       KraftView *view = new KraftView( this );
       view->setup( doc );
       view->redrawDocument();
-      QSize s = KraftSettings::self()->docViewSize();
-      if ( !s.isValid() ) {
-          s.setWidth( 640 );
-          s.setHeight( 400 );
-      }
-      view->resize( s );
+      const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->docEditGeometry().toAscii() );
+      view->restoreGeometry(geo);
       view->slotSwitchToPage( KraftDoc::Positions );
       view->show();
 
@@ -769,12 +765,8 @@ void Portal::createROView( DocGuardedPtr doc )
         KraftViewRO *view = new KraftViewRO( this );
         view->setup( doc );
         // view->redrawDocument();
-        QSize s = KraftSettings::self()->rODocViewSize();
-        if ( !s.isValid() ) {
-            s.setWidth( 640 );
-            s.setHeight( 400 );
-        }
-        view->resize( s );
+        const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->docViewROGeometry().toAscii() );
+        view->restoreGeometry(geo);
         view->show();
         mViewMap[doc] = view;
 
@@ -791,14 +783,21 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
     // doc is only valid on success!
     if ( doc )  {
         KraftViewBase *view = mViewMap[doc];
-        if( success && view->type() == KraftViewBase::ReadWrite ) {
-            AllDocsView *dv = m_portalView->docDigestView();
-            dv->slotUpdateView();
+        const QByteArray geo = view->saveGeometry().toBase64();
+        if( success ) {
+            if( view->type() == KraftViewBase::ReadWrite ) {
+                AllDocsView *dv = m_portalView->docDigestView();
+                dv->slotUpdateView();
+                KraftSettings::self()->setDocEditGeometry(geo);
+            } else {
+                KraftSettings::self()->setDocViewROGeometry(geo);
+            }
         }
         if( mViewMap.contains(doc)) {
             mViewMap.remove(doc);
             view->deleteLater();
         }
+
         // qDebug () << "A view was closed saving and doc is new: " << doc->isNew() << endl;
         delete doc;
     } else {
