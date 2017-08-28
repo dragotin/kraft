@@ -27,6 +27,14 @@
     <entry name="docViewROGeometry" type="String">
       <label>The default geometry of the document view dialog</label>
     </entry>
+   <entry name="portalState" type="String">
+      <label>The current state of the portal</label>
+    </entry>
+   <entry name="portalGeometry" type="String">
+      <label>The current geometry of the portal</label>
+   </entry>
+
+
 
 
     <entry name="docViewSplitter" type="IntList">

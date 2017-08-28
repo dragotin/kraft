@@ -88,6 +88,11 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
   connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
           this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
 
+  const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->portalState().toAscii() );
+  restoreState(state);
+  const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->portalGeometry().toAscii() );
+  restoreGeometry(geo);
+
   setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
 }
@@ -831,6 +836,11 @@ void Portal::closeEvent( QCloseEvent *event )
         if(!w->close())
             break;
     }
+
+    const QByteArray state = saveState().toBase64();
+    KraftSettings::self()->setPortalState(state);
+    const QByteArray geo = saveGeometry().toBase64();
+    KraftSettings::self()->setPortalGeometry(geo);
 
     if(event) {
     	KXmlGuiWindow::closeEvent(event);

@@ -274,9 +274,6 @@ void KraftViewRO::done( int r )
     // qDebug () << "ERR: No document available in view, return!";
     return;
   }
-  KraftSettings::self()->setRODocViewSize( size() );
-  KraftSettings::self()->writeConfig();
-  KraftSettings::self()->readConfig();
 
   emit viewClosed( true, m_doc );
 

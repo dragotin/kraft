@@ -144,11 +144,6 @@ KraftView::KraftView(QWidget *parent) :
   connect( mAssistant, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSwitchToPage( int ) ) );
 
-  QSize size = KraftSettings::self()->docViewSize();
-  if ( !size.isEmpty() ) resize( size );
-  QPoint pos = KraftSettings::self()->docViewPosition();
-  if ( !pos.isNull() ) move( pos );
-
   mAssistant->slotSelectDocPart( KraftDoc::Header );
 
   setupMappers();
