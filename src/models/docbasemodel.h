@@ -51,7 +51,8 @@ public:
         Document_CreationDateRaw = 11,
         Treestruct_Year = 12,
         Treestruct_Month = 13,
-        Max_Column_Marker = 14   // leave this as last enum
+        Treestruct_Type  = 14,
+        Max_Column_Marker = 15   // leave this as last enum
     };
 
     int columnCount(const QModelIndex &parent) const;

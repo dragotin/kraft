@@ -52,9 +52,14 @@ public slots:
   void slotShowDocDetails( DocDigest );
   void slotClearView();
 
+  void slotShowMonthDetails( int year, int month );
+  void slotShowYearDetails( int year);
+
 private:
   DocDigestHtmlView *mHtmlCanvas;
-  QString   mTemplFile;
+  QString   _docTemplFileName;
+  QString   _monthTemplFileName;
+  QString   _yearTemplFileName;
 };
 
 #endif // DOCDIGESTDETAILVIEW_H

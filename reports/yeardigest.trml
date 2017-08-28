@@ -1,0 +1,10 @@
+<div id="inhalt">
+<h2>{{HEADLINE}}</h2>
+
+</div>
+<div id="links">
+    <p>{{MONTH_LABEL}} {{YEAR_LABEL}}</p>
+</div>
+<div id="rechts">
+
+</div>

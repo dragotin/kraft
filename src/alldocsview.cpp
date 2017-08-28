@@ -205,6 +205,7 @@ void AllDocsView::slotBuildView()
     _dateView->hideColumn( DocumentModel::Document_Id_Raw);
     _dateView->hideColumn( DocumentModel::Treestruct_Month);
     _dateView->hideColumn( DocumentModel::Treestruct_Year);
+    _dateView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
     _dateView->header()->restoreState( headerStateDate );
 
@@ -307,19 +308,21 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
 
         DocBaseModel *model;
         bool isDoc = true;
+        bool isDateModel= false;
 
         if( _stack->currentIndex() == 0 ) {
             mCurrentlySelected = mTableModel->mapToSource(index);
             model = static_cast<DocumentModel*>( mTableModel->sourceModel() );
         } else {
+            isDateModel = true;
             mCurrentlySelected = mDateModel->mapToSource(index);
             model = static_cast<DateModel*>( mDateModel->sourceModel() );
             isDoc = model->isDocument(mCurrentlySelected);
         }
 
         /* get the corresponding document id */
-        DocDigest digest;
         if( isDoc ) {
+            DocDigest digest;
             QModelIndex idIndx = model->index(mCurrentlySelected.row(),
                                               DocumentModel::Document_Ident,
                                               mCurrentlySelected.parent());
@@ -334,10 +337,34 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
             } else {
                 mLatestArchivedDigest = ArchDocDigest();
             }
+        } else {
+            const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
+                                                    DocumentModel::Treestruct_Type,
+                                                    mCurrentlySelected.parent());
+
+            int type = idIndx.data( Qt::DisplayRole ).toInt();
+            if( isDateModel) {
+                const QModelIndex yIndx = model->index(mCurrentlySelected.row(),
+                                                       DocumentModel::Treestruct_Year,
+                                                       mCurrentlySelected.parent());
+                int year = yIndx.data( Qt::DisplayRole ).toInt();
+
+                if( type == AbstractIndx::MonthType ) {
+                    const QModelIndex mIndx = model->index(mCurrentlySelected.row(),
+                                                     DocumentModel::Treestruct_Month,
+                                                     mCurrentlySelected.parent());
+                    int month = mIndx.data( Qt::DisplayRole ).toInt();
+
+                    mAllViewDetails->slotShowMonthDetails(year, month);
+                } else if( type == AbstractIndx::YearType ) {
+                    mAllViewDetails->slotShowYearDetails(year);
+                }
+            }
         }
     } else {
         // qDebug () << "Got invalid index, clearing digest view.";
         emit docSelected( QString() );
+        mAllViewDetails->slotClearView();
     }
     //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);
 }

@@ -192,6 +192,8 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
             return item->payload()->year();
         } else if(col == Treestruct_Year) {
             return item->payload()->year();
+        } else if(col == Treestruct_Type) {
+            return AbstractIndx::YearType;
         }
 
 #if 0
@@ -222,6 +224,10 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
             return QDate::shortMonthName(item->payload()->month());
         } else if(col == Treestruct_Month) {
             return item->payload()->month();
+        } else if(col == Treestruct_Year) {
+            return item->payload()->year();
+        } else if(col == Treestruct_Type) {
+            return AbstractIndx::MonthType;
         }
 #if 0
         QList<TreeItem*> childitems = item->children();
