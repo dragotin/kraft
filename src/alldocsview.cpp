@@ -249,9 +249,10 @@ void AllDocsView::slotBuildView()
 
 void AllDocsView::slotUpdateView()
 {
-  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-
-  QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+    static_cast<DocBaseModel*>(mDateModel->sourceModel())->resetData();
+    static_cast<DocBaseModel*>(mTableModel->sourceModel())->resetData();
+    QApplication::restoreOverrideCursor();
 }
 
 void AllDocsView::contextMenuEvent( QContextMenuEvent * event )

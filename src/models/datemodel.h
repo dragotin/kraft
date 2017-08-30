@@ -99,6 +99,7 @@ public:
 
     int rowCount(const QModelIndex &parent) const;
 
+    void removeAllData();
     void addData(const DocDigest& digest);
 
     bool isDocument(const QModelIndex& indx) const;

@@ -60,13 +60,16 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
     virtual int rowCount(const QModelIndex &parent) const = 0;
-
+    virtual void removeAllData() = 0;
     virtual void addData(const DocDigest& digest) = 0;
 
     virtual DocDigest digest(const QModelIndex& indx) const = 0;
     virtual bool isDocument(const QModelIndex& indx) const = 0;
 
     int loadFromTable();
+
+    void resetData();
+
 protected:
     QVariant columnValueFromDigest( const DocDigest& digest, int col ) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;

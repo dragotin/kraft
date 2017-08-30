@@ -44,6 +44,7 @@ public:
   DocDigest digest( const QModelIndex& ) const;
   void setQueryAgain();
 
+  void removeAllData();
   void addData( const DocDigest& );
 
   bool isDocument(const QModelIndex& indx) const;

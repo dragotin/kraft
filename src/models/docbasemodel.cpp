@@ -143,6 +143,15 @@ Qt::ItemFlags DocBaseModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
+void DocBaseModel::resetData()
+{
+    beginResetModel();
+    removeAllData();
+    loadFromTable();
+    endResetModel();
+
+}
+
 int DocBaseModel::loadFromTable()
 {
     int cnt = 0;
@@ -186,7 +195,7 @@ int DocBaseModel::loadFromTable()
 
         const QString clientId = query.value(Document_ClientId).toString();
         digest.setClientId( clientId );
-        if( mAddresses.contains( clientId )) {
+        if( mAddresses.contains( clientId )) {  // FIXME: is this needed?
             digest.setAddressee( mAddresses.value( clientId ));
         }
 

@@ -46,6 +46,11 @@ int DocumentModel::rowCount(const QModelIndex &parent) const
     return _digests.count();
 }
 
+void DocumentModel::removeAllData()
+{
+    _digests.clear();
+}
+
 void DocumentModel::addData( const DocDigest& digest )
 {
     _digests.append(digest);

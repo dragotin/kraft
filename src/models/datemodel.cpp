@@ -54,9 +54,15 @@ TreeItem::TreeItem(AbstractIndx *indx, TreeItem *parent)
     }
 }
 
+TreeItem::~TreeItem()
+{
+    foreach( TreeItem *i, childItems ) {
+        delete i;
+    }
+}
+
 TreeItem* TreeItem::child(int row)
 {
-    int num = childItems.count();
     return childItems.value(row);
 }
 
@@ -97,7 +103,7 @@ AbstractIndx::AbstractIndx(IndxType t)
 }
 
 AbstractIndx::AbstractIndx(IndxType t, DocDigest(digest))
-    :_type(t), _docDigest(digest)
+    :_docDigest(digest), _type(t)
 {
 
 }
@@ -406,6 +412,13 @@ DocDigest DateModel::digest(const QModelIndex& indx) const
         dig = abstractindx->digest();
     }
     return dig;
+}
+
+void DateModel::removeAllData()
+{
+    // the destructor of the TreeItem removes the entire tree recursivly
+    delete rootItem;
+    rootItem = new TreeItem(0);
 }
 
 void DateModel::addData( const DocDigest& digest ) // DocumentIndx doc )
