@@ -142,15 +142,33 @@ QString ReportGenerator::findTemplate( const QString& type )
 
 void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 {
-  mArchDoc = new ArchDoc(id);
+    mArchDoc = new ArchDoc(id);
 
-  const QString clientUid = mArchDoc->clientUid();
-  if( ! clientUid.isEmpty() ) {
-    mAddressProvider->lookupAddressee( clientUid );
-  } else {
-    // no address UID specified, skip the addressee search and generate the template directly
-    slotAddresseeSearchFinished(0);
-  }
+    const QString clientUid = mArchDoc->clientUid();
+    if( ! clientUid.isEmpty() ) {
+        AddressProvider::LookupState state = mAddressProvider->lookupAddressee( clientUid );
+        KContacts::Addressee contact;
+        switch( state ) {
+        case AddressProvider::LookupFromCache:
+            contact = mAddressProvider->getAddresseeFromCache(clientUid);
+            slotAddresseeFound(clientUid, contact);
+            break;
+        case AddressProvider::LookupNotFound:
+        case AddressProvider::ItemError:
+        case AddressProvider::BackendError:
+            // set an empty contact
+            slotAddresseeFound(clientUid, contact);
+            break;
+        case AddressProvider::LookupOngoing:
+        case AddressProvider::LookupStarted:
+            // Not much to do, just wait and let the addressprovider
+            // hit the slotAddresseFound
+            break;
+        }
+    } else {
+        // no address UID specified, skip the addressee search and generate the template directly
+        slotAddresseeSearchFinished(0);
+    }
 }
 
 void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addressee& contact )
