@@ -252,6 +252,7 @@ void AllDocsView::slotUpdateView()
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
     static_cast<DocBaseModel*>(mDateModel->sourceModel())->resetData();
     static_cast<DocBaseModel*>(mTableModel->sourceModel())->resetData();
+    mCurrentlySelected = QModelIndex();
     QApplication::restoreOverrideCursor();
 }
 
@@ -331,7 +332,7 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
             const QString id = idIndx.data( Qt::DisplayRole ).toString();
 
             emit docSelected( id );
-            digest = model->digest( /* index */ mCurrentlySelected );
+            digest = model->digest( mCurrentlySelected );
             mAllViewDetails->slotShowDocDetails( digest );
             if( digest.archDocDigestList().size() > 0 ) {
                 mLatestArchivedDigest = digest.archDocDigestList()[0];

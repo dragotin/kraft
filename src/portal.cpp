@@ -85,8 +85,6 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
   editPaste->setEnabled(false);
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
-          this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
 
   const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->portalState().toAscii() );
   restoreState(state);
@@ -318,7 +316,27 @@ void Portal::slotStartupChecks()
         const QString myUid = KraftSettings::self()->userUid();
         if( ! myUid.isEmpty() ) {
             // qDebug () << "Got My UID: " << myUid;
-            mAddressProvider->lookupAddressee( myUid );
+            connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
+                    this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
+
+            AddressProvider::LookupState state = mAddressProvider->lookupAddressee( myUid );
+            KContacts::Addressee contact;
+            switch( state ) {
+            case AddressProvider::LookupFromCache:
+                contact = mAddressProvider->getAddresseeFromCache(myUid);
+                slotReceivedMyAddress(myUid, contact);
+                break;
+            case AddressProvider::LookupNotFound:
+            case AddressProvider::ItemError:
+            case AddressProvider::BackendError:
+                // set an empty contact
+                slotReceivedMyAddress(myUid, contact);
+                break;
+            case AddressProvider::LookupOngoing:
+            case AddressProvider::LookupStarted:
+                // Not much to do, just wait
+                break;
+            }
         }
 
         slotStatusMsg( i18n( "Ready." ) );
@@ -327,6 +345,9 @@ void Portal::slotStartupChecks()
 
 void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Addressee& contact )
 {
+    disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
+                this, SLOT(slotReceivedMyAddress(QString, KContacts::Addressee)));
+
     if( contact.isEmpty() ) {
         if( !uid.isEmpty() ) {
             const QString err = mAddressProvider->errorMsg(uid);
@@ -342,9 +363,6 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
 
     // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
     ReportGenerator::self()->setMyContact( contact );
-
-    disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
-                this, SLOT(slotReceivedMyAddress(QString, KContacts::Addressee)));
 }
 
 bool Portal::queryClose()

@@ -32,6 +32,8 @@
 
 class DocBaseModel : public QAbstractItemModel
 {
+    Q_OBJECT
+
 public:
     DocBaseModel(QObject *parent = 0);
     virtual ~DocBaseModel() {}
@@ -74,13 +76,15 @@ protected:
     QVariant columnValueFromDigest( const DocDigest& digest, int col ) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
+protected slots:
+    void slotAddresseeFound(const QString &uid, const KContacts::Addressee &contact);
+
 private:
     QString firstLineOf( const QString& str) const;
 
     QVector<QString> _headers;
 
     AddressProvider   *mAddressProvider;
-    QHash<QString, KContacts::Addressee> mAddresses;
 };
 
 #endif // DATEMODEL_H

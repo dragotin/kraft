@@ -35,11 +35,11 @@
 using namespace KContacts;
 
 class QLabel;
-class QPushButton;
 class QTreeView;
 class QuickSearchWidget;
 class QItemSelectionModel;
 class QuickSearchWidget;
+class QPushButton;
 
 /* =============================================================== */
 

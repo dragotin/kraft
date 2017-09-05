@@ -41,7 +41,7 @@ DocBaseModel::DocBaseModel(QObject *parent)
 
     mAddressProvider = new AddressProvider( this );
     connect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
-            this, SLOT(slotAddresseeFound(QString, KContacts::Addressee)));
+             this, SLOT(slotAddresseeFound(QString, KContacts::Addressee)));
 
 }
 
@@ -50,7 +50,7 @@ QString DocBaseModel::firstLineOf( const QString& str) const
     QString var;
     if( !str.isEmpty() ) {
         QStringList li = str.split(QChar('\n'));
-        var = li[0];
+        var = QString( "> %1").arg(li[0]);
     }
     return var;
 }
@@ -151,6 +151,14 @@ void DocBaseModel::resetData()
     endResetModel();
 
 }
+void DocBaseModel::slotAddresseeFound( const QString& uid, const KContacts::Addressee& contact)
+{
+    // FIXME: Update the data in the model and update the view accordingly.
+    // Given that the view is updated so often, it does not seem to be neccessary
+    // to do at all. Maybe later...
+    Q_UNUSED(uid);
+    Q_UNUSED(contact);
+}
 
 int DocBaseModel::loadFromTable()
 {
@@ -195,9 +203,6 @@ int DocBaseModel::loadFromTable()
 
         const QString clientId = query.value(Document_ClientId).toString();
         digest.setClientId( clientId );
-        if( mAddresses.contains( clientId )) {  // FIXME: is this needed?
-            digest.setAddressee( mAddresses.value( clientId ));
-        }
 
         this->addData( digest );
     }

@@ -78,8 +78,6 @@ bool DocumentModel::isDocument(const QModelIndex& indx) const
 
 QVariant DocumentModel::data(const QModelIndex &idx, int role) const
 {   
-    // QLocale locale;
-
     if( !idx.isValid() )
         return QVariant();
 

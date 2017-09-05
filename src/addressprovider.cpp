@@ -35,8 +35,6 @@ AddressProvider::AddressProvider( QObject *parent )
     connect(_d, SIGNAL(lookupError( QString, QString)), this,
             SLOT(slotErrorMsg(QString, QString)));
     connect(_d, SIGNAL(addresseeNotFound(QString)), SLOT(slotAddresseeNotFound(QString)));
-    // emitted when the search is finished, even if there was no result.
-    connect(_d, SIGNAL(finished(int)), this, SIGNAL(finished(int)));
 }
 
 bool AddressProvider::backendUp()
@@ -62,7 +60,9 @@ void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::A
 
 void AddressProvider::slotAddresseeNotFound( const QString& uid )
 {
+    KContacts::Addressee contact; // Empty for not found.
     _notFoundUids.insert(uid);
+    emit lookupResult(uid, contact);
 }
 
 void AddressProvider::slotResetNotFoundCache()

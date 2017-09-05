@@ -43,6 +43,7 @@ AddressProviderPrivate::AddressProviderPrivate( QObject *parent )
     mMonitor(0),
     _model(0)
 {
+    init();
 }
 
 bool AddressProviderPrivate::init()
@@ -132,7 +133,7 @@ void AddressProviderPrivate::searchResult( KJob* job )
     job->deleteLater();
 }
 
-QAbstractItemModel *AddressProviderPrivate::model()
+QAbstractItemModel* AddressProviderPrivate::model()
 {
     if( !_akonadiUp ) {
         return 0;
