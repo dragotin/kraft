@@ -274,6 +274,7 @@ void AddressSelectorWidget::setupUi()
     connect(edit, SIGNAL(textChanged(QString)), SLOT(slotFilterTextChanged(QString)));
 
     _addressTreeView = new QTreeView;
+    _addressTreeView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     leftLay->addWidget(_addressTreeView);
     mProxyModel = new AddressSortProxyModel(_provider, this);
     mProxyModel->setSourceModel(_provider->model());

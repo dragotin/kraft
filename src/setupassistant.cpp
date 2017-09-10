@@ -270,9 +270,6 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
 {
     setTitle(i18n("Your Own Identity"));
     QVBoxLayout *vbox = new QVBoxLayout;
-    setLayout( vbox );
-    //TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
-    //TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
     QLabel *l = new QLabel;
     l->setText( i18n("Select your own address from the address book. It is set as a consigner on the documents.") );
@@ -280,6 +277,7 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
 
     mAddresses = new AddressSelectorWidget(this);
     vbox->addWidget( mAddresses );
+    this->setLayout( vbox );
 
     connect( mAddresses, SIGNAL( addressSelected(Addressee)),
              SLOT( gotMyAddress( Addressee ) ) );
