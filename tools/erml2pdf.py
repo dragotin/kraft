@@ -31,6 +31,7 @@ import shlex
 import tempfile
 import getopt
 import re
+import StringIO
 
 import reportlab
 from reportlab.pdfgen import canvas
