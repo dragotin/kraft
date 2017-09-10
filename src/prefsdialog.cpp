@@ -198,9 +198,9 @@ void PrefsDialog::whoIsMeTab()
   mIdentityView->setBaseUrl(idFile);
 
   butLay->addWidget(mIdentityView);
-  QPushButton *pbChangeIdentity = new QPushButton(i18n("Select Identity..."));
-  connect( pbChangeIdentity, SIGNAL(clicked()), SLOT(slotChangeIdentity()) );
-  butLay->addWidget(pbChangeIdentity);
+  _pbChangeIdentity = new QPushButton(i18n("Select Identity..."));
+  connect( _pbChangeIdentity, SIGNAL(clicked()), SLOT(slotChangeIdentity()) );
+  butLay->addWidget(_pbChangeIdentity);
 
   vboxLay->addLayout( butLay );
 
@@ -215,7 +215,7 @@ void PrefsDialog::slotChangeIdentity()
   if( dialog.exec() ) {
     Addressee identity = dialog.addressee();
     if( ! identity.isEmpty() ) {
-      setMyIdentity(identity);
+      setMyIdentity(identity, true);
       emit newOwnIdentity(identity.uid(), identity);
     }
   }
@@ -392,7 +392,7 @@ void PrefsDialog::accept()
 #define IDENTITY_TAG(X) QLatin1String(X)
 #define QL1(X) QLatin1String(X)
 
-void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee )
+void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool backendUp )
 {
   // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
   // It should be refactored.
@@ -408,69 +408,78 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee )
   }
 
   QString addressBookInfo;
-  if( addressee.isEmpty() ) {
-    addressBookInfo = i18n("The identity is not listed in an address book.");
-    tmpl.createDictionary(QL1("NO_IDENTITY"));
-    tmpl.setValue(QL1("NO_IDENTITY_WRN"), i18n("<p><b>Kraft does not know your identity.</b></p>"
-                                           "<p>Please pick one from the address books by clicking on the Button below.</p>"
-                                           "<p>Not having an identity selected can make your documents look incomplete.</p>"));
+  _pbChangeIdentity->setEnabled(backendUp);
+  if( !backendUp ) {
+      addressBookInfo = i18n("The identity can not be found.");
+      tmpl.createDictionary(QL1("NO_IDENTITY"));
+      tmpl.setValue(QL1("NO_IDENTITY_WRN"), i18n("<p><b>Kraft Addressbook Integration down.</b></p>"
+                                             "<p>The address book backend is not up and running.</p>"
+                                             "<p>Please check your addressbook integration setup.</p>"));
   } else {
-    addressBookInfo  = i18n("Your identity can be found in the address books.");
-    tmpl.createDictionary(QL1("IDENTITY"));
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_NAME"), addressee.realName() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_ORGANISATION"), addressee.organization() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_URL"), addressee.url().toString() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_EMAIL"), addressee.preferredEmail() );
+      if( addressee.isEmpty() ) {
+          addressBookInfo = i18n("The identity is not listed in an address book.");
+          tmpl.createDictionary(QL1("NO_IDENTITY"));
+          tmpl.setValue(QL1("NO_IDENTITY_WRN"), i18n("<p><b>Kraft does not know your identity.</b></p>"
+                                                     "<p>Please pick one from the address books by clicking on the Button below.</p>"
+                                                     "<p>Not having an identity selected can make your documents look incomplete.</p>"));
+      } else {
+          addressBookInfo  = i18n("Your identity can be found in the address books.");
+          tmpl.createDictionary(QL1("IDENTITY"));
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_NAME"), addressee.realName() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_ORGANISATION"), addressee.organization() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_URL"), addressee.url().toString() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_EMAIL"), addressee.preferredEmail() );
 
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_WORK_PHONE"), addressee.phoneNumber(PhoneNumber::Work).number());
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_MOBILE_PHONE"), addressee.phoneNumber(PhoneNumber::Cell).number());
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_FAX"), addressee.phoneNumber(PhoneNumber::Fax).number());
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_WORK_PHONE"), addressee.phoneNumber(PhoneNumber::Work).number());
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_MOBILE_PHONE"), addressee.phoneNumber(PhoneNumber::Cell).number());
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_FAX"), addressee.phoneNumber(PhoneNumber::Fax).number());
 
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("WORK_PHONE_LABEL"), i18n("Work Phone") );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("FAX_LABEL"), i18n("Fax") );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("MOBILE_PHONE_LABEL"), i18n("Cell Phone") );
-    KContacts::Address myAddress;
-    myAddress = addressee.address( KContacts::Address::Pref );
-    QString addressType = i18n("preferred address");
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("WORK_PHONE_LABEL"), i18n("Work Phone") );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("FAX_LABEL"), i18n("Fax") );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("MOBILE_PHONE_LABEL"), i18n("Cell Phone") );
+          KContacts::Address myAddress;
+          myAddress = addressee.address( KContacts::Address::Pref );
+          QString addressType = i18n("preferred address");
 
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KContacts::Address::Home );
-      addressType = i18n("home address");
-    }
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KContacts::Address::Work );
-      addressType = i18n("work address");
-    }
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KContacts::Address::Postal );
-      addressType = i18n("postal address");
-    }
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KContacts::Address::Intl );
-      addressType = i18n("international address");
-    }
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KContacts::Address::Dom );
-      addressType = i18n("domestic address");
-    }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Home );
+              addressType = i18n("home address");
+          }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Work );
+              addressType = i18n("work address");
+          }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Postal );
+              addressType = i18n("postal address");
+          }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Intl );
+              addressType = i18n("international address");
+          }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Dom );
+              addressType = i18n("domestic address");
+          }
 
-    if( myAddress.isEmpty() ) {
-      addressType = i18n("unknown");
-      // qDebug () << "WRN: Address is still empty!";
-    }
+          if( myAddress.isEmpty() ) {
+              addressType = i18n("unknown");
+              // qDebug () << "WRN: Address is still empty!";
+          }
 
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTBOX" ),  myAddress.postOfficeBox() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_EXTENDED" ), myAddress.extended() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_STREET" ),   myAddress.street() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LOCALITY" ), myAddress.locality() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTCODE" ), myAddress.postalCode() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_COUNTRY" ),  myAddress.country() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LABEL" ),    myAddress.label() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_ADDRESS_TYPE" ), QL1("(")+addressType+QL1(")") );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTBOX" ),  myAddress.postOfficeBox() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_EXTENDED" ), myAddress.extended() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_STREET" ),   myAddress.street() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LOCALITY" ), myAddress.locality() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTCODE" ), myAddress.postalCode() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_COUNTRY" ),  myAddress.country() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LABEL" ),    myAddress.label() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_ADDRESS_TYPE" ), QL1("(")+addressType+QL1(")") );
 
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("ADDRESSBOOK_INFO"), addressBookInfo );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("ADDRESSBOOK_INFO"), addressBookInfo );
+      }
   }
 
   const QString details = tmpl.expand();

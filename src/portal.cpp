@@ -1004,7 +1004,7 @@ void Portal::preferences()
   connect( _prefsDialog, SIGNAL(finished(int)), SLOT(slotPrefsDialogFinished(int)) );
   connect( _prefsDialog, SIGNAL(newOwnIdentity(const QString&, KContacts::Addressee)),
            SLOT(slotReceivedMyAddress(QString,KContacts::Addressee)));
-  _prefsDialog->setMyIdentity( myContact );
+  _prefsDialog->setMyIdentity( myContact, mAddressProvider->backendUp() );
 
   _prefsDialog->open();
 }

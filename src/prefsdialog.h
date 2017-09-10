@@ -55,7 +55,7 @@ public:
 
   ~PrefsDialog();
 
-  void setMyIdentity( const KContacts::Addressee& );
+  void setMyIdentity(const KContacts::Addressee& , bool backendUp);
   KContacts::Addressee myIdentity();
 
 protected:
@@ -98,7 +98,7 @@ private:
   QComboBox *mCbDocTypes;
   QComboBox *mCbDefaultTaxType;
 
-  QPushButton *m_pbCheck;
+  QPushButton *_pbChangeIdentity;
 
   QCheckBox *mCbDocLocale;
 
