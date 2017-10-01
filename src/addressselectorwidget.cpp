@@ -36,6 +36,11 @@
 #include <kcontacts/addressee.h>
 #include <kcontacts/contactgroup.h>
 
+#ifdef HAVE_AKONADI
+#include <entitytreemodel.h>
+#include <entitytreeview.h>
+#endif
+
 /* ==================================================================== */
 AddressSortProxyModel::AddressSortProxyModel(AddressProvider *provider, QObject *parent)
     : QSortFilterProxyModel(parent),
@@ -216,6 +221,18 @@ bool AddressSortProxyModel::filterAcceptsRow(int row, const QModelIndex &parent)
     return true;
 }
 
+QVariant AddressSortProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if ( orientation == Qt::Horizontal &&
+         role == Qt::DisplayRole) {
+        if( section == 0 ) {
+            return i18n("Name");
+        } else if ( section == 1 ) {
+            return i18n("Address");
+        }
+    }
+    return QVariant();
+}
 /* ------------------------------------------------------------------------------ */
 
 KraftContactViewer::KraftContactViewer(QWidget *parent)
@@ -273,7 +290,11 @@ void AddressSelectorWidget::setupUi()
     searchLay->addWidget( edit );
     connect(edit, SIGNAL(textChanged(QString)), SLOT(slotFilterTextChanged(QString)));
 
+#ifdef HAVE_AKONADI
+    _addressTreeView = new Akonadi::EntityTreeView( this );
+#else
     _addressTreeView = new QTreeView;
+#endif
     _addressTreeView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     leftLay->addWidget(_addressTreeView);
     mProxyModel = new AddressSortProxyModel(_provider, this);

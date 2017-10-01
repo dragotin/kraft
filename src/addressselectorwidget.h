@@ -65,6 +65,7 @@ class AddressSortProxyModel : public QSortFilterProxyModel
 
 public:
     AddressSortProxyModel(AddressProvider *provider, QObject *parent = 0);
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 protected:
     bool filterAcceptsRow(int row, const QModelIndex &parent) const;
