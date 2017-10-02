@@ -58,8 +58,8 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
 
   mAddresses = new AddressSelectorWidget(this);
 
-  connect( mAddresses,  SIGNAL( addressSelected( const Addressee& ) ),
-           SIGNAL( addresseeSelected( const Addressee& ) ) );
+  connect( mAddresses,  SIGNAL( addressSelected( const KContacts::Addressee& ) ),
+           SIGNAL( addresseeSelected( const KContacts::Addressee& ) ) );
 
   vbox->addWidget( mAddresses );
 }
@@ -168,8 +168,8 @@ void KraftWizard::init()
 
         mCustomerPage = new CustomerSelectPage( w );
         mCustomerPage->setupAddresses();
-        connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
-                 this,  SLOT( slotAddressee( const Addressee& ) ) );
+        connect( mCustomerPage, SIGNAL( addresseeSelected(KContacts::Addressee)),
+                 this,  SLOT( slotAddressee(KContacts::Addressee)));
     }
 
     connect(this,SIGNAL(finished()),SLOT(slotFinished()));
@@ -183,7 +183,7 @@ void KraftWizard::slotFinished()
   // saveDialogSize( config );
 }
 
-void KraftWizard::slotAddressee( const Addressee& addressee )
+void KraftWizard::slotAddressee(const KContacts::Addressee& addressee)
 {
   // qDebug () << "Addressee Changed!";
   mAddressee = addressee;
