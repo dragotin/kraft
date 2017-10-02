@@ -1,4 +1,4 @@
-#The Kraft Project
+# The Kraft Project
 
 **Kraft is free software to help to handle your daily quotes and invoices
 in your small business.**
@@ -22,7 +22,7 @@ Kraft utilizes a bunch of very useful tools of the free softare world:
 - [ReportLab](http://www.reportlab.com/opensource/) for PDF generation:
 - [ctemplate](https://github.com/OlafvdSpek/ctemplate) templating library.
 
-##Interested?
+## Interested?
 
 [Install Kraft](http://volle-kraft-voraus.de/Main/Download) on your Linux desktop.
 
