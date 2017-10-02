@@ -142,9 +142,8 @@ KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
   setObjectName( name );
   setModal( modal );
 
-  // FIXME porting KF5: Save and restore the dialog size
-  // KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
-  // restoreDialogSize( config );
+  const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->newDocWizardGeometry().toAscii() );
+  restoreGeometry(geo);
 }
 
 KraftWizard::~KraftWizard()
@@ -171,16 +170,15 @@ void KraftWizard::init()
         connect( mCustomerPage, SIGNAL( addresseeSelected(KContacts::Addressee)),
                  this,  SLOT( slotAddressee(KContacts::Addressee)));
     }
-
-    connect(this,SIGNAL(finished()),SLOT(slotFinished()));
 }
 
-void KraftWizard::slotFinished()
+void KraftWizard::done( int r )
 {
-  mCustomerPage->saveState();
-  // FIXME porting: Dialog size save
-  // KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
-  // saveDialogSize( config );
+    mCustomerPage->saveState();
+    const QByteArray geo = saveGeometry().toBase64();
+    KraftSettings::self()->setNewDocWizardGeometry(geo);
+
+    KAssistantDialog::done(r);
 }
 
 void KraftWizard::slotAddressee(const KContacts::Addressee& addressee)

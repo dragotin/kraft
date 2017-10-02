@@ -53,7 +53,7 @@ public slots:
   void saveState();
 
 signals:
-  void addresseeSelected( const Addressee& );
+  void addresseeSelected( const KContacts::Addressee& );
 
 private:
   AddressSelectorWidget *mAddresses;
@@ -97,10 +97,10 @@ public:
   void setCustomer( const QString& );
   void setDocIdentifier( const QString& );
   void setAvailDocTypes( const QStringList& );
+  void done(int r);
 
 protected slots:
-  void slotAddressee( const Addressee& );
-  void slotFinished();
+  void slotAddressee( const KContacts::Addressee& );
 
 private:
   CustomerSelectPage *mCustomerPage;

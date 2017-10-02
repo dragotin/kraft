@@ -33,7 +33,9 @@
    <entry name="portalGeometry" type="String">
       <label>The current geometry of the portal</label>
    </entry>
-
+   <entry name="newDocWizardGeometry" type="String">
+      <label>The current geometry of the new doc assistant</label>
+   </entry>
 
 
 
