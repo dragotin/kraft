@@ -154,20 +154,25 @@ KraftWizard::~KraftWizard()
 
 void KraftWizard::init()
 {
-  QWidget *w1 = new QWidget;
-  mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
-  mDetailsPage = new DocDetailsPage( w1 );
+    QScopedPointer<AddressProvider> addressProvider;
+    addressProvider.reset(new AddressProvider);
 
-  QWidget *w = new QWidget;
-  mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
+    setWindowTitle( i18n( "Document Creation Wizard" ) );
+    QWidget *w1 = new QWidget;
+    mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
+    mDetailsPage = new DocDetailsPage( w1 );
 
-  setWindowTitle( i18n( "Document Creation Wizard" ) );
+    if( addressProvider->backendUp() ) {
+        QWidget *w = new QWidget;
+        mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
 
-  mCustomerPage = new CustomerSelectPage( w );
-  mCustomerPage->setupAddresses();
-  connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
-           this,  SLOT( slotAddressee( const Addressee& ) ) );
-  connect(this,SIGNAL(finished()),SLOT(slotFinished()));
+        mCustomerPage = new CustomerSelectPage( w );
+        mCustomerPage->setupAddresses();
+        connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
+                 this,  SLOT( slotAddressee( const Addressee& ) ) );
+    }
+
+    connect(this,SIGNAL(finished()),SLOT(slotFinished()));
 }
 
 void KraftWizard::slotFinished()
