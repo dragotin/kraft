@@ -31,7 +31,13 @@ import shlex
 import tempfile
 import getopt
 import re
-import StringIO
+
+# StringIO is not longer separate in python3, but in io
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 
 import reportlab
 from reportlab.pdfgen import canvas
