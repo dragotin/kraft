@@ -67,7 +67,6 @@ public:
   void setProjectLabel( const QString& prjLabel ) { mProjectLabel = prjLabel; }
   QString projectLabel() const { return mProjectLabel; }
 
-  void appendArchDocDigest( const ArchDocDigest& );
   ArchDocDigestList archDocDigestList();
 
   void setCountryLanguage( const QString&, const QString& );

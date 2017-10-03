@@ -51,12 +51,6 @@ QString DocDigest::lastModified() const
     return DefaultProvider::self()->locale()->toString(mLastModified, QLocale::ShortFormat);
 }
 
-// FIXME remove
-void DocDigest::appendArchDocDigest( const ArchDocDigest& digest )
-{
-    mArchDocs.append( digest );
-}
-
 ArchDocDigestList DocDigest::archDocDigestList()
 {
     if( !_archDocLazyLoaded ) {
