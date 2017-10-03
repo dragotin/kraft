@@ -109,23 +109,6 @@ DocDigest DocumentModel::digest( const QModelIndex& index ) const
 
     if( row > -1 && row < _digests.count() ) {
         digest = _digests.at(index.row());
-
-        const QString ident = digest.ident();
-        qDebug() << "Querying archdocs for document ident " << ident;
-        QSqlQuery query("SELECT archDocID, ident, printDate, state FROM archdoc WHERE"
-                        " ident=:ident ORDER BY printDate DESC" );
-        query.bindValue(":ident", ident);
-        query.exec();
-
-        while(query.next())
-        {
-            int archDocID = query.value(0).toInt();
-            const QString dbIdent = query.value(1).toString();
-            QDateTime printDateTime = query.value(2).toDateTime();
-            int state = query.value(3).toInt();
-
-            digest.appendArchDocDigest( ArchDocDigest( printDateTime, state, dbIdent, dbID(archDocID) ) );
-        }
     }
     return digest;
 }

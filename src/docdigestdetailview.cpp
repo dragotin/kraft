@@ -36,12 +36,12 @@ DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
 
 void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
 {
-    QUrlQuery q(url);
-    // Url is like "#show_last_print\\?id=(\\d+)"
+    const QUrlQuery q(url);
+    // Url is like "http://localhost/show_last_print?id=5"
 
-    QString idStr = q.queryItemValue(QLatin1String("id"));
+    const QString idStr = q.queryItemValue(QLatin1String("id"));
 
-    QString path = url.path();
+    const QString path = url.path();
     if( path.endsWith("show_last_print")) {
         bool ok;
         emit( showLastPrint( dbID(idStr.toInt(&ok)) ) );

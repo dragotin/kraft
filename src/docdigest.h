@@ -87,7 +87,7 @@ protected:
   QLocale     mLocale;
 
   ArchDocDigestList mArchDocs;
-
+  bool        _archDocLazyLoaded;
 private:
   KContacts::Addressee mContact;
 };
