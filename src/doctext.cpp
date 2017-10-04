@@ -58,7 +58,7 @@ void DocText::setTextType( KraftDoc::Part t )
 
 bool DocText::isStandardText() const
 {
-  return ( mName == i18n( "Standard" ) ); // can surely be improved...
+  return QString::compare(mName, i18n( "Standard" ),  Qt::CaseInsensitive) == 0; // can surely be improved...
 }
 
 KraftDoc::Part DocText::stringToTextType( const QString& str )
