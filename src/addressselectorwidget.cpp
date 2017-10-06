@@ -261,6 +261,7 @@ AddressSelectorWidget::AddressSelectorWidget(QWidget *parent, bool /* showText *
     : QSplitter(parent)
 {
     setupUi();
+    restoreState();
 }
 
 
@@ -340,10 +341,22 @@ void AddressSelectorWidget::slotFilterTextChanged( const QString& filter)
 
 void AddressSelectorWidget::restoreState()
 {
+    const QList<int> sizes = KraftSettings::self()->addressPickerSplitterSize();
+    setSizes(sizes);
+
+    const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->addressPickerTreeviewState().toAscii() );
+    _addressTreeView->header()->restoreState(state);
+
 }
 
 void AddressSelectorWidget::saveState()
 {
+    const QList<int> s = sizes();
+    KraftSettings::self()->setAddressPickerSplitterSize(s);
+
+    const QByteArray state = _addressTreeView->header()->saveState().toBase64();
+    KraftSettings::self()->setAddressPickerTreeviewState(state);
+
 }
 
 

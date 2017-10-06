@@ -32,6 +32,8 @@ public:
     AddressSelectorDialog( QWidget *parent = 0 );
     KContacts::Addressee addressee();
 
+    void done(int r);
+
 private slots:
     void slotAddresseeSelected(const KContacts::Addressee&);
 
