@@ -195,19 +195,22 @@ void AllDocsView::slotBuildView()
     _tableView->showColumn( DocumentModel::Document_ClientName );
     _tableView->hideColumn( DocumentModel::Document_CreationDateRaw);
     _tableView->hideColumn( DocumentModel::Document_Id_Raw);
+    _tableView->hideColumn( DocumentModel::Treestruct_Type);
     _tableView->hideColumn( DocumentModel::Treestruct_Month);
     _tableView->hideColumn( DocumentModel::Treestruct_Year);
+
+    _dateView->header()->restoreState( headerStateDate );
 
     _dateView->hideColumn( DocumentModel::Document_ClientId );
     _dateView->hideColumn( DocumentModel::Document_ClientAddress );
     _dateView->showColumn( DocumentModel::Document_ClientName );
     _dateView->hideColumn( DocumentModel::Document_CreationDateRaw);
     _dateView->hideColumn( DocumentModel::Document_Id_Raw);
+    _dateView->hideColumn( DocumentModel::Treestruct_Type);
     _dateView->hideColumn( DocumentModel::Treestruct_Month);
     _dateView->hideColumn( DocumentModel::Treestruct_Year);
-    _dateView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
-    _dateView->header()->restoreState( headerStateDate );
+    _dateView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
     //Initialize common style options
     connect( _tableView->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex) ),
