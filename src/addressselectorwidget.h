@@ -26,6 +26,8 @@
 
 #ifdef HAVE_AKONADI
 #include <Akonadi/Contact/ContactViewer>
+#include <Akonadi/Contact/ContactEditorDialog>
+
 #endif
 
 #include <kcontacts/addressee.h>
@@ -96,7 +98,6 @@ protected slots:
   void slotCreateNewContact();
   void slotEditContact();
   void restoreState();
-  void slotItemActivated( const QModelIndex& index );
   void slotFilterTextChanged( const QString& filter);
 
 private slots:
@@ -111,6 +112,7 @@ private:
   AddressSortProxyModel *mProxyModel;
   QTreeView *_addressTreeView;
   KraftContactViewer *_contactViewer;
+  QScopedPointer<Akonadi::ContactEditorDialog> _addressEditor;
 
 };
 

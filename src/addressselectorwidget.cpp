@@ -362,11 +362,11 @@ void AddressSelectorWidget::saveState()
 
 void AddressSelectorWidget::slotCreateNewContact()
 {
-    // if( mContactsEditor ) delete( mContactsEditor );
-
+#ifdef HAVE_AKONADI
     // FIXME
-    //  mContactsEditor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this );
-    //   mContactsEditor->show();
+_addressEditor.reset(new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this ));
+_addressEditor->show();
+#endif
 }
 
 void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
@@ -378,34 +378,26 @@ void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
         _contactViewer->setContact(contact);
 
         emit addressSelected(contact);
+
+        mButEditContact->setEnabled( true );
+    } else {
+        // qDebug () << "No address was selected!";
+        mButEditContact->setEnabled( false );
     }
 }
 
 void AddressSelectorWidget::slotEditContact()
 {
-#if 0
-  if( mAddressSelectorUi->mAddressList->selectionModel()->hasSelection() ) {
-      QModelIndex index = mItemView->selectionModel()->currentIndex();
+  if( _addressTreeView->selectionModel()->hasSelection() ) {
+      QModelIndex index = _addressTreeView->selectionModel()->currentIndex();
     if ( index.isValid() ) {
       const Akonadi::Item item = index.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
       if ( item.isValid() && item.hasPayload<KContacts::Addressee>() ) {
-        if( mContactsEditor ) delete( mContactsEditor );
-        mContactsEditor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::EditMode, this );
-        mContactsEditor->setContact( item );
-        mContactsEditor->show();
+        _addressEditor.reset(new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::EditMode, this ));
+        _addressEditor->setContact( item );
+        _addressEditor->show();
       }
     }
   }
-#endif
-}
-
-void AddressSelectorWidget::slotItemActivated( const QModelIndex& index )
-{
-    if ( index.isValid() ) {
-      mButEditContact->setEnabled( true );
-    } else {
-      // qDebug () << "No address was selected!";
-      mButEditContact->setEnabled( false );
-    }
 }
 
