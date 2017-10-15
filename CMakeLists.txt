@@ -29,8 +29,6 @@ find_package(KF5AkonadiContact)
 
 find_package(Qt5 CONFIG REQUIRED
     Core
-    Concurrent
-    DBus
     Network
     Widgets
     Sql
@@ -41,23 +39,13 @@ find_package(Qt5 CONFIG REQUIRED
 find_package(KF5 REQUIRED COMPONENTS
     Akonadi
     Contacts
-    CoreAddons
-    DocTools
     I18n
-    Emoticons
-    GlobalAccel
-    GuiAddons
-    KIO
-    NotifyConfig
-    Sonnet
-    TextWidgets
-    Wallet
-    WidgetsAddons
     XmlGui
 )
 
 find_package(Ctemplate REQUIRED)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 #option(QTINDICATE_DISABLE "Disable support for notifications via indicator")
 
 add_definitions(${QT_DEFINITIONS} )
