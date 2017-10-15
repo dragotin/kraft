@@ -879,12 +879,12 @@ void KraftView::slotDocTypeChanged( const QString& newType )
 void KraftView::slotLanguageSettings()
 {
   // qDebug () << "Language Settings" << endl;
+#if 0
   DocLocaleDialog dia( this );
   QLocale *l = m_doc->locale();
 
   // FIXME locale.
   if ( m_doc ) {
-#if 0
     dia.setLocale( l->country(), l->language() );
 
     if ( dia.exec() == QDialog::Accepted  ) {
@@ -905,8 +905,8 @@ void KraftView::slotLanguageSettings()
         refreshPostCard();
       }
     }
-#endif
   }
+#endif
 }
 
 void KraftView::slotNewHeaderText( const QString& str )

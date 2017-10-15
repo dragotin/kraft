@@ -75,17 +75,6 @@ ArchDocDigestList DocDigest::archDocDigestList()
     return mArchDocs;
 }
 
-void DocDigest::setCountryLanguage( const QString& country, const QString& lang )
-{
-
-    // FIXME KF5 porting - how to do this?
-#if 0
-    KConfig *cfg = KGlobal::config().data();
-    mLocale.setCountry( country, cfg );
-    mLocale.setLanguage( lang, cfg ); // FIXME !!
-#endif
-}
-
 KContacts::Addressee DocDigest::addressee() const
 {
   return mContact;

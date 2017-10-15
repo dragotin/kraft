@@ -69,8 +69,6 @@ public:
 
   ArchDocDigestList archDocDigestList();
 
-  void setCountryLanguage( const QString&, const QString& );
-
 protected:
 
   dbID mID;

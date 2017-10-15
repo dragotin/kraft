@@ -293,8 +293,9 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setGoodbye(    q.value( 5 ).toString() );
         doc->setDate (      q.value( 6 ).toDate() );
         doc->setLastModified( q.value( 7 ).toDate() );
-        doc->setCountryLanguage( q.value( 8 ).toString(),
-                                 q.value( 9 ).toString());
+        // Removed, as with Kraft 0.80 there is no locale management on doc level any more
+        // doc->setCountryLanguage( q.value( 8 ).toString(),
+        //                         q.value( 9 ).toString());
 
         doc->setPreText(    KraftDB::self()->mysqlEuroDecode( q.value( 10  ).toString() ) );
         doc->setPostText(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );

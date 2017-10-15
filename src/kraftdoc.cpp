@@ -333,17 +333,6 @@ QLocale* KraftDoc::locale()
   return mLocale.data();
 }
 
-void KraftDoc::setCountryLanguage( const QString& lang, const QString& country )
-{
-  // FIXME Porting: set the country and language.
-    //
-  // qDebug ()<< "Setting country " << country << " and lang " << lang << endl;
-  // KConfig *cfg = KGlobal::config().data();
-  // mLocale->setCountry( country, cfg );
-  // mLocale->setLanguage( lang, cfg );
-  mPositions.setLocale( mLocale.data() );
-}
-
  QString KraftDoc::partToString( Part p )
 {
   if ( p == Header )
