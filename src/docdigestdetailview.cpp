@@ -84,8 +84,13 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
     if( !tmpl.open() ) {
         return;
     }
-    tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), QString::number(year));
-    tmpl.setValue( DOCDIGEST_TAG("MONTH_LABEL"), QDate::longMonthName(month));
+    const QString monthStr = QDate::longMonthName(month);
+    const QString yearStr = QString::number(year);
+    tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in %1 %2").arg(monthStr).arg(yearStr) );
+    tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), i18n("Year"));
+    tmpl.setValue( DOCDIGEST_TAG("YEAR_NUMBER"), yearStr);
+    tmpl.setValue( DOCDIGEST_TAG("MONTH_LABEL"), i18n("Month"));
+    tmpl.setValue( DOCDIGEST_TAG("MONTH_NAME"), monthStr);
 
     const QString details = tmpl.expand();
     mHtmlCanvas->displayContent( details );
@@ -102,7 +107,11 @@ void DocDigestDetailView::slotShowYearDetails( int year )
     if( !tmpl.open() ) {
         return;
     }
-    tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), QString::number(year));
+
+    const QString yearStr = QString::number(year);
+    tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), i18n("Year"));
+    tmpl.setValue( DOCDIGEST_TAG("YEAR_NUMBER"), yearStr);
+    tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in Year %1").arg(yearStr) );
 
     const QString details = tmpl.expand();
     mHtmlCanvas->displayContent( details );

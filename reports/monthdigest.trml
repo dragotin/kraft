@@ -1,10 +1,7 @@
-<div id="inhalt">
+<div id="inhalt_calendar">
 <h2>{{HEADLINE}}</h2>
 
 </div>
-<div id="links">
-    <p>{{MONTH_LABEL}} {{YEAR_LABEL}}</p>
-</div>
-<div id="rechts">
-
+<div id="links_calendar">
+   <div style="width:120px;">{{MONTH_NAME}}<br/>{{YEAR_NUMBER}}</div>
 </div>

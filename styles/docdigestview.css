@@ -26,17 +26,26 @@ h2 {
 }
 #inhalt {
   width: auto;
-  margin: 0px 280px;
+  margin: 0px 220px;
 
   padding: 5px;
   height: 140px;
 
 }
+
+#inhalt_calendar {
+  width: auto;
+  margin: 0px 160px;
+
+  padding: 5px;
+  height: 140px;
+}
+
 #links {
   position: absolute;
   top: 5px;
   left: 5px;
-  width: 260px;
+  width: 200px;
   height: 140px;
 
   background-color: #eeeeee;
@@ -44,22 +53,39 @@ h2 {
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
 }
+
+#links_calendar {
+  position: absolute;
+  top: 5px;
+  left: 20px;
+  width: 140px;
+  height: 100px;
+
+  padding-top: 60px;
+  padding-left:0px;
+  background-image: url(Calendar_page.png);
+  background-repeat:no-repeat;
+  font-size: 32px;
+  text-align:center;
+
+}
+
 #rechts {
   position: absolute;
   top: 5px;
   right: 5px;
-  width: 270px;
+  width: 250px;
   height: 150px;
-  background-color: #ffcc00;
+  background-color: #ffffff;
   padding: 0px;
-  background-image: url(postit.png);
+  background-image: url(sticky_note.png);
   background-repeat:no-repeat;
 }
 
 #rechts #rcontent {
-  padding-top: 34px;
+  padding-top: 44px;
   padding-left: 28px;
-  padding-right: 28px;
+  padding-right: 33px;
   padding-bottom: 5px;
 }
 
