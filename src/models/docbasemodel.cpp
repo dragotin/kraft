@@ -103,7 +103,7 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
         if( state == AddressProvider::LookupFromCache ) {
             KContacts::Addressee addressee = mAddressProvider->getAddresseeFromCache(help);
             var = addressee.assembledName();
-            qDebug() << "Address from Cache: " << var.toString();
+            // qDebug() << "Address from Cache: " << var.toString();
         } else if( state == AddressProvider::LookupOngoing ) {
             var = tr("Looking up address");
         } else if( state == AddressProvider::LookupStarted ) {
