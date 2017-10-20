@@ -567,7 +567,6 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
         args << rmlFile;
     }
 
-    mFile.setFileName( mFile.fileName() );
     mOutputSize = 0;
     if ( mFile.open( QIODevice::WriteOnly ) ) {
         mProcess = new QProcess(this);
@@ -612,7 +611,6 @@ void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
     // qDebug () << "Wrote bytes to the output file: " << mOutputSize;
     if ( exitCode == 0 ) {
         emit pdfAvailable( mFile.fileName() );
-        mFile.setFileName( QString() );
     } else {
         if( mErrors.contains(QLatin1String("No module named Reportlab"))) {
             mErrors = i18n("To generate PDF output, Kraft requires the python module ReportLab which can not be found.\n\n"
@@ -633,6 +631,8 @@ void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
         msgBox.exec();
         mErrors.clear();
     }
+    mFile.setFileName( QString() );
+
     QApplication::restoreOverrideCursor();
 }
 
