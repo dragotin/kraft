@@ -279,8 +279,8 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
     vbox->addWidget( mAddresses );
     this->setLayout( vbox );
 
-    connect( mAddresses, SIGNAL( addressSelected(Addressee)),
-             SLOT( gotMyAddress( Addressee ) ) );
+    connect( mAddresses, SIGNAL( addressSelected(KContacts::Addressee)),
+             SLOT( gotMyAddress( KContacts::Addressee ) ) );
 }
 
 OwnAddressPage::~OwnAddressPage()
@@ -288,7 +288,7 @@ OwnAddressPage::~OwnAddressPage()
     delete mAddresses;
 }
 
-void OwnAddressPage::gotMyAddress( Addressee addressee )
+void OwnAddressPage::gotMyAddress(const KContacts::Addressee& addressee)
 {
     mMe = addressee;
 }
@@ -758,6 +758,7 @@ bool SetupAssistant::init( Mode mode )
 
 void SetupAssistant::createDatabase( bool doIt )
 {
+    Q_UNUSED(doIt);
     // FIXME Porting.
     // setAppropriate( mDbSelectPageItem, doIt );
 }

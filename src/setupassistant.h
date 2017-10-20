@@ -158,7 +158,7 @@ class OwnAddressPage:public QWizardPage
   KContacts::Addressee mMe;
 
   private slots:
-  void gotMyAddress( Addressee );
+  void gotMyAddress( const KContacts::Addressee& addressee);
 
 };
 
