@@ -50,7 +50,6 @@ public:
 
 signals:
     void pdfAvailable( const QString& );
-    void templateGenerated( const QString& );
 
 public slots:
     void createPdfFromArchive( const QString&, dbID );
@@ -63,11 +62,11 @@ protected slots:
     void slotReceivedStdout();
     void slotReceivedStderr();
     void slotError( QProcess::ProcessError );
-    void slotConvertTemplate( const QString& );
     void slotAddresseeFound( const QString&, const KContacts::Addressee& );
     void slotAddresseeSearchFinished( int );
 
 private:
+    void convertTemplate( const QString& );
     void fillupTemplateFromArchive( const dbID& );
     QString findTemplate( const QString& );
     void contactToTemplate( TextTemplate*, const QString&, const KContacts::Addressee& );

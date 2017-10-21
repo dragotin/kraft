@@ -583,6 +583,8 @@ void Portal::slotMailPdfAvailable( const QString& fileName )
 
 void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addressee& contact )
 {
+    Q_UNUSED(uid);
+
     QString mailReceiver;
     if( !contact.isEmpty() ) {
         mailReceiver = contact.fullEmail(); // the prefered email
