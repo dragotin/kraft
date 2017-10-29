@@ -15,4 +15,4 @@
 ########### install files ###############
 # install(TARGETS ${findcontact_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-# install(FILES erml2pdf.py  DESTINATION ${DATA_INSTALL_DIR}/kraft/tools )
+install(FILES erml2pdf.py  DESTINATION ${DATA_INSTALL_DIR}/kraft/tools )
