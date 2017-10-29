@@ -25,8 +25,6 @@ ADD_DEFINITIONS(-Doverride=)
 remove_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
-find_package(KF5AkonadiContact)
-
 find_package(Qt5 CONFIG REQUIRED
     Core
     Network
@@ -37,11 +35,17 @@ find_package(Qt5 CONFIG REQUIRED
 )
 
 find_package(KF5 REQUIRED COMPONENTS
-    Akonadi
     Contacts
     I18n
     XmlGui
+    OPTIONAL_COMPONENTS
+    Akonadi
+    AkonadiContact
 )
+
+if(KF5Akonadi_FOUND)
+   # add_definitions(-DHAVE_AKONADI)
+endif()
 
 find_package(Ctemplate REQUIRED)
 
