@@ -25,10 +25,11 @@
 
 #include <kjob.h>
 
+#ifdef HAVE_AKONADI
 #include <AkonadiCore/session.h>
 #include <AkonadiCore/changerecorder.h>
 #include <akonadi/contact/contactstreemodel.h>
-
+#endif
 
 class QAbstractItemModel;
 class AddressItemModel;
@@ -44,7 +45,7 @@ public:
     bool init();
     // returns the result of the init process later on
     bool backendUp();
-    QString backendName() const { return QLatin1String("Akonadi"); }
+    QString backendName() const;
 
     bool lookupAddressee( const QString& uid );
     QString formattedAddress( const KContacts::Addressee& ) const;
@@ -74,11 +75,15 @@ private:
     QSet<QString>        mUidSearches;
     bool                 _akonadiUp;
 
+#ifdef HAVE_AKONADI
     Akonadi::Session *mSession;
     Akonadi::ChangeRecorder* mMonitor; // FIXME: Must static somehow
     Akonadi::ContactsTreeModel *_model;
-
-
+#else
+    void *mSession;
+    void *mMonitor;
+    void *_model;
+#endif
 };
 
-#endif // ADDRESSPROVIDER_H
+#endif // ADDRESSPROVIDER_AKONADI_H

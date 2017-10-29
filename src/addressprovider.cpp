@@ -20,6 +20,7 @@
 
 // FIXME this needs to change once there are more address book providers, ie.
 // on Mac.
+
 #include "addressprovider_akonadi.h"
 
 #include "klocalizedstring.h"

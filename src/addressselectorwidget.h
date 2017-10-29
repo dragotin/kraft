@@ -22,8 +22,6 @@
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
-#define HAVE_AKONADI 1
-
 #ifdef HAVE_AKONADI
 #include <Akonadi/Contact/ContactViewer>
 #include <Akonadi/Contact/ContactEditorDialog>
@@ -112,8 +110,9 @@ private:
   AddressSortProxyModel *mProxyModel;
   QTreeView *_addressTreeView;
   KraftContactViewer *_contactViewer;
+#ifdef HAVE_AKONADI
   QScopedPointer<Akonadi::ContactEditorDialog> _addressEditor;
-
+#endif
 };
 
 #endif // AKONADIADDRESSSELECTOR_H

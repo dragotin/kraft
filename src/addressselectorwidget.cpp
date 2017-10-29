@@ -236,7 +236,10 @@ QVariant AddressSortProxyModel::headerData(int section, Qt::Orientation orientat
 /* ------------------------------------------------------------------------------ */
 
 KraftContactViewer::KraftContactViewer(QWidget *parent)
-    :QWidget(parent), _contactViewer(0)
+    :QWidget(parent)
+#ifdef HAVE_AKONADI
+    , _contactViewer(0)
+#endif
 {
     QVBoxLayout *lay = new QVBoxLayout;
     lay->setMargin(0);
@@ -251,6 +254,8 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 {
 #ifdef HAVE_AKONADI
     _contactViewer->setRawContact(contact);
+#else
+    Q_UNUSED(contact);
 #endif
 
 }
@@ -388,6 +393,8 @@ void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
 
 void AddressSelectorWidget::slotEditContact()
 {
+#ifdef HAVE_AKONADI
+
   if( _addressTreeView->selectionModel()->hasSelection() ) {
       QModelIndex index = _addressTreeView->selectionModel()->currentIndex();
     if ( index.isValid() ) {
@@ -399,5 +406,6 @@ void AddressSelectorWidget::slotEditContact()
       }
     }
   }
+#endif
 }
 

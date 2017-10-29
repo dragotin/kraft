@@ -1,5 +1,5 @@
 /***************************************************************************
-    akonadiaddressselectordialog.h  - select addressee from address book.
+       addressselectordialog.h  - select addressee from address book.
                              -------------------
     begin                : Sept. 2012
     copyright            : (C) 2012 by Klaas Freitag
