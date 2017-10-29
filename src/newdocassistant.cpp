@@ -136,6 +136,7 @@ DocDetailsPage::~DocDetailsPage()
 
 KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
   :KAssistantDialog( parent ),
+   mCustomerPage( 0 ),
    mCustomerBox( 0 ),
    mParent( parent )
 {
@@ -174,7 +175,9 @@ void KraftWizard::init()
 
 void KraftWizard::done( int r )
 {
-    mCustomerPage->saveState();
+    if( mCustomerPage ) {
+        mCustomerPage->saveState();
+    }
     const QByteArray geo = saveGeometry().toBase64();
     KraftSettings::self()->setNewDocWizardGeometry(geo);
 
