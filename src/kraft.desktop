@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=kraft -caption %c %i
+Exec=kraft %u 
 Icon=kraft
 X-DocPath=kraft/index.html
 Terminal=false
