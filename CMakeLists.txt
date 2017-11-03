@@ -14,14 +14,12 @@ include(KDEFrameworkCompilerSettings)
 include(KDECMakeSettings)
 include(FeatureSummary)
 
+# Uncomment to enable some tweaks for AppImage build
+# add_definitions(-DBUILD_APPIMAGE=1)
+
 # TODO: Build without deprecated QUrl methods
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0)
 
-# remove override later, this is for a bug in kxmlguiwindow.h which
-# does not implement the member of QTabWidget hasHeightForWidth
-ADD_DEFINITIONS(-Doverride=)
-
-# QCA still uses slots/signals keywords
 remove_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
@@ -44,7 +42,7 @@ find_package(KF5 REQUIRED COMPONENTS
 )
 
 if(KF5Akonadi_FOUND)
-   # add_definitions(-DHAVE_AKONADI)
+   add_definitions(-DHAVE_AKONADI)
 endif()
 
 find_package(Ctemplate REQUIRED)
