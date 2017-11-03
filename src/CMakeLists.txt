@@ -152,8 +152,7 @@ add_executable(kraft ${KRAFT_RC_SRC} ${kraft_SRCS})
 
 set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
 
-target_link_libraries(kraft
-PUBLIC
+set(KRAFT_LINK_LIBS
     Qt5::Core
     Qt5::Widgets
     Qt5::Sql
@@ -162,14 +161,22 @@ PUBLIC
     
     KF5::I18n
     KF5::XmlGui
-
     KF5::Contacts
+    ${CTEMPLATE_LIBRARIES} pthread
+)
+if(KF5Akonadi_FOUND)
+  list(APPEND KRAFT_LINK_LIBS
     KF5::AkonadiCore
     KF5::AkonadiContact
     KF5::AkonadiAgentBase 
     KF5::AkonadiWidgets 
     KF5::AkonadiXml
-    ${CTEMPLATE_LIBRARIES} pthread
+  )
+endif()
+
+target_link_libraries(kraft
+PUBLIC
+    ${KRAFT_LINK_LIBS}
 )
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
