@@ -638,11 +638,25 @@ void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
   }
 }
 
+void Portal::openFile( const QUrl& url )
+{
+#ifdef BUILD_APPIMAGE
+    // use xdg-open in AppImages because that is should be on every DE but
+    // does not add a DE dependent dependency to the AppImage
+    QStringList args;
+    args << url.toLocalFile();
+    QProcess::execute( "/usr/bin/xdg-open", args );
+#else
+    QDesktopServices::openUrl(url);
+#endif
+
+}
+
 void Portal::slotOpenPdf( const QString& fileName )
 {
     disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
-    QUrl url( fileName );
-    QDesktopServices::openUrl(url);
+    const QUrl url = QUrl::fromLocalFile(fileName);
+    openFile(url);
 
     // save pdf into a <customer>/<dockind> structure
     if( _currentDoc ) {
