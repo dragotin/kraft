@@ -865,22 +865,16 @@ class PdfWatermark:
             outputStream.close()
             return self.outputFile
         else:
-            stringIO = StringIO.StringIO();
+            stringIO = StringIO();
             outputPdf.write( stringIO )
             return stringIO.getvalue()
 
 
-def parseString(data, fout=None):
+def parseString(data):
     r = _rml_doc(data.strip())
-    if fout:
-            fp = file(fout,'wb')
-            r.render(fp)
-            fp.close()
-            return fout
-    else:
-            fp = io.BytesIO()
-            r.render(fp)
-            return fp.getvalue()
+    fp = io.BytesIO()
+    r.render(fp)
+    return fp.getvalue()
 
 def erml2pdf_help():
     print( 'Usage: erml2pdf [options] input.rml > output.pdf')
@@ -929,16 +923,16 @@ if __name__=="__main__":
         # a input file needs to be there
         erml2pdf_help()
     else:
-        # print "Args:" + args[0]
+        print "Args:" + args[0]
         infile = args[0]
         # create the PDF with the help of reportlab
-        pdf = parseString( file( infile, 'r' ).read() )
+        pdf = parseString( open( infile, 'r' ).read() )
 
         # apply the watermark if required
         # print "############ Watermark-Mode: " + watermarkMode
         if watermarkMode != Mark.NOTHING:
             wm = PdfWatermark()
-            pdfStringFile = StringIO.StringIO()
+            pdfStringFile = StringIO()
             pdfStringFile.write( pdf )
             pdf = wm.watermark( pdfStringFile, watermarkFile, watermarkMode )
 
