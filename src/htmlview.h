@@ -19,7 +19,6 @@
 
 #include <QWebEngineView>
 #include <QDesktopServices>
-#include <QProcess>
 
 class QAction;
 class QUrl;
@@ -38,15 +37,8 @@ protected:
         Q_UNUSED(type);
         Q_UNUSED(isMainFrame);
         if( url.scheme().startsWith("http") && url.host() != "localhost" ) {
-#ifdef BUILD_APPIMAGE
-            // use xdg-open in AppImages because that is should be on every DE but
-            // does not add a DE dependent dependency to the AppImage
-            QStringList args;
-            args << url.toEncoded();
-            QProcess::execute( "/usr/bin/xdg-open", args );
-#else
+            // open normal pages.
             QDesktopServices::openUrl(url);
-#endif
             return false;
         }
 

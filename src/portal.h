@@ -152,8 +152,6 @@ class Portal : public KXmlGuiWindow
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
 
-    void openFile( const QUrl& url );
-
     PortalView *m_portalView;
 
     // QAction pointers to enable/disable actions
