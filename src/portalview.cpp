@@ -132,7 +132,7 @@ QWidget* PortalView::katalogDetails()
 
   QString html;
 
-  html = "<html><h2>" + i18n("Available Catalogs") + "</h2>";
+  html = "<h2>" + i18n("Available Catalogs") + "</h2>";
   html += "<div>\n";
   html += i18n( "No catalogs available." );
   html += "</div>";
@@ -151,7 +151,7 @@ void PortalView::fillCatalogDetails()
     const QStringList katalogNamen = KatalogMan::self()->allKatalogNames();
     QString html;
 
-    html = "<html><h2>" + i18n("Available Catalogs") + "</h2>";
+    html = "<h2>" + i18n("Available Catalogs") + "</h2>";
     html += "<div>\n";
     html += "<table border=\"0\">";
 
@@ -163,7 +163,7 @@ void PortalView::fillCatalogDetails()
         html += printKatLine( katName, cnt++ );
     }
 
-    html += "</table></div></html>\n";
+    html += "</table></div>\n";
 
     mCatalogBrowser->displayContent( html );
 }
@@ -181,7 +181,7 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
     }
     html += ">\n";
 
-    html += "<td><b>"+urlName+"</b></td>";
+    html += "<td><h3>"+urlName+"</h3></td>";
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
             name+"&action=open\">";
     html += i18n("Open");
@@ -195,12 +195,14 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
     html += ">\n";
 
     if( details.countEntries == 0 ) {
-        html += "<td colspan=\"2\"><span style=\"font-size:75%;\">No templates yet.</span></td>";
+        html += QString("<td colspan=\"2\"><span style=\"font-size:75%;\">%1</span></td>").arg(i18n("No templates yet."));
     } else {
         QLocale *locale = DefaultProvider::self()->locale();
         QString dateStr = locale->toString(details.maxModDate);
-        html += QString("<td colspan=\"2\"><span style=\"font-size:75%;\">%1 templates in %2 chapters, last modified at %3</span></td>").
-                arg(details.countEntries).arg(details.countChapters).arg(dateStr);
+        html += QString("<td colspan=\"2\"><span style=\"font-size:75%;\">") +
+                i18n("%1 templates in %2 chapters<br/>last modified at %3")
+                .arg(details.countEntries).arg(details.countChapters).arg(dateStr)
+                + QLatin1String("</span></td>");
     }
 #if 0
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
