@@ -28,8 +28,6 @@ find_package(Qt5 CONFIG REQUIRED
     Network
     Widgets
     Sql
-    WebEngine
-    WebEngineWidgets
 )
 
 find_package(KF5 REQUIRED COMPONENTS

@@ -156,8 +156,6 @@ set(KRAFT_LINK_LIBS
     Qt5::Core
     Qt5::Widgets
     Qt5::Sql
-    Qt5::WebEngine
-    Qt5::WebEngineWidgets
     
     KF5::I18n
     KF5::XmlGui

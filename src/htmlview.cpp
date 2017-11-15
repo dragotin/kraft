@@ -20,15 +20,14 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QFile>
-#include <QWebEnginePage>
 
 
 HtmlView::HtmlView( QWidget *parent )
-    : QWebEngineView( parent ), mZoomStep( 10 )
+    : QTextBrowser( parent ), mZoomStep( 10 )
 {
-    _webPage.reset(new UrlEmitWebEnginePage);
-    setPage( _webPage.data() );
-    connect(_webPage.data(), SIGNAL(openUrl(const QUrl&)), this, SIGNAL(openUrl(const QUrl&)));
+    this->setReadOnly(true);
+    this->setOpenLinks(false); // get only the signal below
+    connect (this, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(openUrl(QUrl)));
 }
 
 void HtmlView::setTitle( const QString &title )
@@ -42,13 +41,14 @@ void HtmlView::setStylesheetFile( const QString &style )
     if( !prjPath.isEmpty() ) {
         mStyleSheetFile = QString( "%1/styles/%2" ).arg( prjPath ).arg( style );
     } else {
-        mStyleSheetFile = QStandardPaths::locate( QStandardPaths::DataLocation, style );
+        mStyleSheetFile = QStandardPaths::locate( QStandardPaths::DataLocation, QString("styles/%1").arg(style));
     }
     QFileInfo fi(mStyleSheetFile);
 
     if( fi.exists() ) {
         qDebug () << "Found this stylefile: " << mStyleSheetFile;
-        setBaseUrl(fi.path()+QLatin1String("/pics/"));
+        // Important: Append the slash here, otherwise the base url is wrong.
+        setBaseUrl(fi.path()+"/");
     } else {
         qDebug() << "Unable to find stylesheet file "<< style;
     }
@@ -56,71 +56,110 @@ void HtmlView::setStylesheetFile( const QString &style )
 
 void HtmlView::zoomIn()
 {
-    setZoomFactor( zoomFactor() + mZoomStep );
+    // setZoomFactor( zoomFactor() + mZoomStep );
     updateZoomActions();
 }
 
 void HtmlView::zoomOut()
 {
-    setZoomFactor( zoomFactor() - mZoomStep );
+    // setZoomFactor( zoomFactor() - mZoomStep );
     updateZoomActions();
 }
 
 void HtmlView::updateZoomActions()
 {
-    mZoomInAction->setEnabled( zoomFactor() + mZoomStep <= 300 );
-    mZoomOutAction->setEnabled( zoomFactor() - mZoomStep > 100 );
+   // mZoomInAction->setEnabled( zoomFactor() + mZoomStep <= 300 );
+   // mZoomOutAction->setEnabled( zoomFactor() - mZoomStep > 100 );
 
     // Prefs::self()->setZoomFactor( zoomFactor() );
 }
 
 QString HtmlView::topFrame( ) const
 {
-    QString t( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">");
-    t += QString("<html><head><title>%1</title>").arg( mTitle );
+    QStringList stringList;
+    stringList << QLatin1String("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">");
+    stringList << QLatin1String("<html>");
 
-    if ( ! mStyleSheetFile.isEmpty() ) {
-        QString style;
-        QFile file(mStyleSheetFile);
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            style = QLatin1String("<style type=\"text/css\">");
-            while (!file.atEnd()) {
-                const QString l =  QString::fromUtf8(file.readLine());
-                style += l;
-                // qDebug() << "*******" << l;
-            }
-            style += QLatin1String("</style>");
-            file.close();
-        }
-        t += style;
+    if(!mTitle.isEmpty()) {
+        stringList << QString("<head><title>%1</title></head>").arg( mTitle );
     }
+    stringList << QLatin1String("<body>");
+    return stringList.join(QChar('\n'));
+}
 
-    return t;
+QString HtmlView::styles() const
+{
+    QFile file(mStyleSheetFile);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream textStream(&file);
+        QString styles = textStream.readAll();
+        file.close();
+
+        // replace the relative urls of images with absolute pathes
+        QRegExp rx("(image:\\s*url\\()(.+)\\)");
+        rx.setMinimal(true);
+        int pos;
+        while ((pos = rx.indexIn(styles, pos)) != -1) {
+            QString m = rx.cap(2);
+            if( m.startsWith("/")) {
+                // absolute path, all fine
+            } else {
+                int oldLen = m.length();
+                m.prepend( mBase);
+                int newLength = m.length();
+                int standingLen = rx.cap(1).length();
+                styles.replace(pos + standingLen, oldLen, m);
+                pos += standingLen+newLength;
+            }
+            // qDebug() << "+++++++++++++++++++++++++++++++++++++++++++++" << m;
+            pos += rx.matchedLength();
+        }
+        return styles;
+    }
+    return QString::null;
 }
 
 QString HtmlView::bottomFrame() const
 {
-    const QString t("</body>");
+    const QString t("</body>\n"
+                    "</html>");
 
     return t;
 }
 
 void HtmlView::displayContent( const QString& content )
 {
+    // on empty content just clear and leave.
+    if( content.isEmpty() ) {
+        this->clear();
+        return;
+    }
+
     const QString out = topFrame() + content + bottomFrame();
+    const QString s = styles();
 
-    // the QWebEngineView needs to be disabled, otherwise it steels the focus
-    // of the current widget:
-    // http://stackoverflow.com/questions/36609489/how-to-prevent-qwebengineview-to-grab-focus-on-sethtml-and-load-calls
-    setEnabled(false);
-    setHtml( out , mBaseUrl );
-    setEnabled(true);
+#ifdef QT_DEBUG
+    qDebug() << "########## HtmlView output written to /tmp/kraft.html";
+    QFile caFile("/tmp/kraft.html");
+    caFile.open(QIODevice::WriteOnly | QIODevice::Text);
 
+    if(!caFile.isOpen()){
+        qDebug() << "- Error, unable to open" << "outputFilename" << "for output";
+    }
+    QTextStream outStream(&caFile);
+    outStream << s;
+    outStream << "##############" << endl;
+    outStream << out;
+    caFile.close();
+#endif
+
+    this->document()->setDefaultStyleSheet(s);
+    setHtml(out);
 }
 
 void HtmlView::setBaseUrl( const QString& base )
 {
 
-    mBaseUrl = QUrl::fromLocalFile(base);
-    // qDebug () << "Setting base url: " << mBaseUrl.prettyUrl();
+    mBase = base;
+    qDebug () << "Setting base url: " << mBase;
 }

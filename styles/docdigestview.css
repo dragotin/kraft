@@ -63,7 +63,7 @@ h2 {
 
   padding-top: 60px;
   padding-left:0px;
-  background-image: url(Calendar_page.png);
+  background-image: url(pics/Calendar_page.png);
   background-repeat:no-repeat;
   font-size: 32px;
   text-align:center;
@@ -78,7 +78,7 @@ h2 {
   height: 150px;
   background-color: #ffffff;
   padding: 0px;
-  background-image: url(sticky_note.png);
+  background-image: url(pics/sticky_note.png);
   background-repeat:no-repeat;
 }
 
@@ -90,7 +90,7 @@ h2 {
 }
 
 #custimage {
-  background-image: url(kraft_customer.png);
+  background-image: url(pics/kraft_customer.png);
   background-repeat:no-repeat;
   height: 48px;
 }
