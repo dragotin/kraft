@@ -25,21 +25,40 @@ remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
 find_package(Qt5 CONFIG REQUIRED
     Core
-    Network
-    Widgets
+    Gui
     Sql
+    Widgets
+    Xml
 )
 
 find_package(KF5 REQUIRED COMPONENTS
-    Contacts
+    Config
+    ConfigWidgets
+    CoreAddons
     I18n
+    WidgetsAddons
     XmlGui
-    OPTIONAL_COMPONENTS
-    Akonadi
-    AkonadiContact
 )
 
-if(KF5Akonadi_FOUND)
+find_package(KF5Contacts REQUIRED)
+
+find_package(KF5Akonadi)
+set_package_properties(KF5Akonadi PROPERTIES
+    DESCRIPTION "Library for general Access to Akonadi"
+    URL "https://www.kde.org/"
+    PURPOSE "Optionally used for addressbook integration"
+    TYPE OPTIONAL
+)
+
+find_package(KF5AkonadiContact)
+set_package_properties(KF5AkonadiContact PROPERTIES
+    DESCRIPTION "Library for Accessing Contacts stored in Akonadi"
+    URL "https://www.kde.org/"
+    PURPOSE "Optionally used for addressbook integration"
+    TYPE OPTIONAL
+)
+
+if(KF5Akonadi_FOUND AND KF5AkonadiContact_FOUND)
    add_definitions(-DHAVE_AKONADI)
 endif()
 
