@@ -53,8 +53,8 @@ QString DocPostCard::htmlify( const QString& str ) const
   return "<p>" + li.join( "</p><p>" ) + "</p>";
 }
 
-#define REDUCED_TAX_MARK "&sup2"
-#define NO_TAX_MARK "&sup1"
+#define REDUCED_TAX_MARK "&#xB2;"
+#define NO_TAX_MARK "&#xB9;"
 
 void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxType taxType,
                                 double tax, double reducedTax )
@@ -90,7 +90,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
           if ( dp->toDelete() ) mPositions += "</strike>";
           mPositions += "</td>";
 
-          mPositions += "<td class=\"legends\">";
+          mPositions += "<td width=\"12\" class=\"legends\">";
           if( taxType == DocPositionBase::TaxIndividual && (dp->taxType() == DocPositionBase::TaxReduced) ) {
               if ( dp->toDelete() ) mPositions += "<strike>";
               mPositions += QString(REDUCED_TAX_MARK);
@@ -111,15 +111,15 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
 
   // Create the sum table
   if( mShowPrices ) {
-      mPositions += "<div class=\"alignright\" align=\"right\"><table border=\"0\" width=\"99%\">";
+      mPositions += "<div align=\"right\"><table border=\"0\" width=\"66%\">";
       mPositionCount = posList.count();
       mTotal  = posList.nettoPrice().toHtmlString( posList.locale() );
       QString brutto = posList.bruttoPrice( tax, reducedTax ).toHtmlString( posList.locale() );
-      mPositions += QString( "<tr><td width=\"45%\"></td><td colspan=\"2\" class=\"baseline\"></td><td width=\"10px\" align=\"right\"></td></tr>" );
+      mPositions += QString( "<tr><td align=\"right\" colspan=\"2\" class=\"baseline\">______________________________</td><td width=\"12\" class=\"legends\"></td></tr>" );
 
       if ( taxType != DocPositionBase::TaxInvalid && taxType != DocPositionBase::TaxNone ) {
-          mPositions += QString( "<tr><td></td><td align=\"right\">&nbsp;&nbsp;&nbsp;" ) + i18n( "Netto:" )+
-                  QString( "</td><td align=\"right\">%1</td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( mTotal );
+          mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "Netto:" )+
+                  QString( "</td><td align=\"right\">%1</td><td width=\"12\" class=\"legends\"></td></tr>" ).arg( mTotal );
 
           QString curTax;
           curTax.setNum( tax, 'f', 1 );
@@ -128,27 +128,27 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
           if( taxType == DocPositionBase::TaxReduced || taxType == DocPositionBase::TaxIndividual ) {
               curTax.setNum( reducedTax, 'f', 1 );
               taxStr = posList.reducedTaxSum( reducedTax ).toHtmlString( posList.locale() );
-              mPositions += QString( "<tr><td></td><td align=\"right\">" );
+              mPositions += QString( "<tr><td align=\"right\">" );
               mPositions += i18n( "+ %1% Tax:" ).arg( curTax ) +
-                      QString( "</td><td align=\"right\">%1</td><td width=\"10px\" align=\"right\">%2</td></tr>" ).arg( taxStr ).arg(REDUCED_TAX_MARK);
+                      QString( "</td><td align=\"right\">%1</td><td width=\"12\" class=\"legends\">%2</td></tr>" ).arg( taxStr ).arg(REDUCED_TAX_MARK);
           }
 
           if( taxType == DocPositionBase::TaxFull || taxType == DocPositionBase::TaxIndividual ) {
               curTax.setNum( tax, 'f', 1 );
               taxStr = posList.fullTaxSum( tax ).toHtmlString( posList.locale() );
-              mPositions += QString( "<tr><td></td><td align=\"right\">" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
-                      QString( "</td><td align=\"right\">%1</td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( taxStr );
+              mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
+                      QString( "</td><td align=\"right\">%1</td><td width=\"12\" class=\"legends\"></td></tr>" ).arg( taxStr );
           }
 
           if( taxType == DocPositionBase::TaxIndividual ) {
               taxStr = posList.taxSum( tax, reducedTax ).toHtmlString( posList.locale() );
-              mPositions += QString( "<tr><td></td><td align=\"right\">" ) + i18n( "Sum Tax:" ) +
-                      QString( "</td><td align=\"right\">%1</td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( taxStr );
+              mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "Sum Tax:" ) +
+                      QString( "</td><td align=\"right\">%1</td><td width=\"12\" class=\"legends\"></td></tr>" ).arg( taxStr );
           }
 
       }
-      mPositions += QString( "<tr><td></td><td align=\"right\"><b>" ) + i18n( "Total:" )+
-              QString( "</b></td><td align=\"right\"><b>%1</b></td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( brutto );
+      mPositions += QString( "<tr><td align=\"right\"><b>" ) + i18n( "Total:" )+
+              QString( "</b></td><td align=\"right\"><b>%1</b></td><td width=\"12\" class=\"legends\"></td></tr>" ).arg( brutto );
   } // showPrices
   mPositions += "</table></div>";
   // qDebug() << "Positions-HTML: " << mPositions << endl;

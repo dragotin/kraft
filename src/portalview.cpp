@@ -151,9 +151,8 @@ void PortalView::fillCatalogDetails()
     const QStringList katalogNamen = KatalogMan::self()->allKatalogNames();
     QString html;
 
-    html = "<h2>" + i18n("Available Catalogs") + "</h2>";
-    html += "<div>\n";
-    html += "<table border=\"0\">";
+    html = "<br/><h2>" + i18n("Available Catalogs") + "</h2>";
+    html += "<div><table width=\"60%\" cellpadding=\"4\" cellspacing=\"0\" border=\"0\">\n";
 
     int cnt = 0;
     for(QStringList::ConstIterator namesIt = katalogNamen.begin();
@@ -164,6 +163,7 @@ void PortalView::fillCatalogDetails()
     }
 
     html += "</table></div>\n";
+    // qDebug() << html;
 
     mCatalogBrowser->displayContent( html );
 }
@@ -181,11 +181,11 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
     }
     html += ">\n";
 
-    html += "<td><h3>"+urlName+"</h3></td>";
-    html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
+    html += "<td class=\"bigfont\"><div>"+urlName+"</div></td>";
+    html += "<td class=\"bigfont\" align=\"right\"><a href=\"http://localhost/katalog.cgi?kat="+
             name+"&action=open\">";
     html += i18n("Open");
-    html += "</td></tr>";
+    html += "</a></td></tr>";
 
     KatalogMan::CatalogDetails details = KatalogMan::self()->catalogDetails(name);
     html += "<tr";
@@ -199,10 +199,10 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
     } else {
         QLocale *locale = DefaultProvider::self()->locale();
         QString dateStr = locale->toString(details.maxModDate);
-        html += QString("<td colspan=\"2\"><span style=\"font-size:75%;\">") +
+        html += QString("<td class=\"sub\" colspan=\"2\">") +
                 i18n("%1 templates in %2 chapters<br/>last modified at %3")
                 .arg(details.countEntries).arg(details.countChapters).arg(dateStr)
-                + QLatin1String("</span></td>");
+                + QLatin1String("</td>");
     }
 #if 0
     html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
