@@ -1,16 +1,16 @@
 
-body { margin:2px; 
+body {
        background-image:url(pics/docoverviewbg.png);
-       font-size:small;
        font-family: 'Source Sans Pro', sans-serif;
 }
 
-table {
-      color: #898989;
+td {
+  vertical-align:top;
 }
 
-td { 
-  vertical-align:top;
+div {
+  padding: 1px;
+  color: #898989;
 }
 
 a:link {
@@ -19,106 +19,73 @@ a:link {
 }
 
 a:visited {
-  font-weight: bold;
   text-decoration: none;
-  color: 00008b;
+  color: #00008b;
 }
 
 a:hover {
-  color: #c81e1e;
+  color: #00008b;
   text-decoration: none;
 
 }
 
 a:active {
-  color: #cccccc;
+  color: #00008b;
   text-decoration: underline;
 }
 
-.links {
-  border-style: dotted;
-  border-width: thin;
-  width: 100%;
-  padding: 1px;
+.headerlink {
+  background: #8ddbe9;
 }
 
-div {
-  border-style:dotted;
-  border-width:1px;
-  border-color:#00008B;
-  margin: 1px 0px 1px 0px;
-  padding: 1px;
-  color: #898989;
+.headerlink_selected {
+  background: #9af0ff;
+  font-weight: bold;
 }
 
-div.alignright {
-  border-style:none;
-  border-width:0px;
-  margin: 1px 0px 1px 0px;
-  padding: 1px;
-  color: #898989;
+.bodylink {
+  background: #8de99a;
+}
+
+.bodylink_selected   {
+  background: #9affaa;
+  font-weight: bold;
+}
+
+.footerlink {
+  background: #dbe98d;
+}
+
+.footerlink_selected {
+  background: #f0ff9a;
+  font-weight: bold;
 }
 
 .negative {
   color: #800040;
 }
 
-.head_selected {   
-    border-width:1px;
-    border-style:solid;
-    border-color:#00008b;
-    padding: 15;
-}
-.body_selected {   border-width:1px;
-  border-style:solid;
-  border-color:00008b;
-}
-.foot_selected {   border-width:1px;
-  border-style:solid;
-  border-color:#00008b;
-}
-
-.headerlink { background: #8ddbe9; }
-.headerlink_selected { 
-  background: #9af0ff;   
-  font-weight: bolder;
-      color: #898989;
+.head_selected {
 
 }
 
-.bodylink   { background: #8de99a; }
-.bodylink_selected   { 
-  background: #9affa9;   
-  font-weight: bolder;
+.body_selected {
+
 }
 
-.footerlink { background: #dbe98d; }
-.footerlink_selected { 
-  background: #f0ff9a;   
-  font-weight: bolder;
+.foot_selected {
+
 }
 
 td.baseline {
-    border-style: solid;
-    
 }
 
 td.itemnums {
-  width: 8px;
-  text-align: right;
-  vertical-align: bottom;
 }
 
 td.itemtexts {
 }
 
 td.prices {
-  text-align: right;
-  vertical-align: bottom;
 }
 
-td.legends {
-   width: 5%;
-   text-align: right;
-   vertical-align: bottom;
-}

@@ -46,14 +46,13 @@ public slots:
 protected:
   QString renderDocMini( int ) const;
   QString renderDocFull( int );
-  QString header( bool, const QString&, const QString&, const QString&,
+  QString header(bool, const QString&, const QString&, const QString& protocol,
                   const QString& = QString() ) const;
 
 private slots:
   void slotUrlSelected( const QUrl& kurl);
 
 private:
-  QString linkBit( const QString&, const QString& ) const;
   QString htmlify( const QString& ) const;
 
   DocGuardedPtr mDoc;
