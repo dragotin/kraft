@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/kraft">
+        <file>user.png</file>
         <file>catalogue.png</file>
 	<file>document-new.png</file>
 	<file>document-open-recent.png</file>

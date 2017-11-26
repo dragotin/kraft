@@ -54,7 +54,22 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
     QWidget(parent)
 {
   QHBoxLayout *hbox = new QHBoxLayout;
+  const int detailMinWidth = 220;
+  // --- The left details box
+  _leftDetails = new QLabel;
+  hbox->addWidget(_leftDetails);
+  _leftDetails->setTextFormat(Qt::RichText);
+  _leftDetails->setMinimumWidth(detailMinWidth);
+  const QString style("QLabel { "
+                      "background-image: url(:/kraft/user.png); background-repeat: repeat-none;"
+                      "background-position: top right;"
+                      "padding: 10px; "
+                      "}");
 
+  _leftDetails->setStyleSheet(style);
+
+
+  // --- The middle HTML based view
   hbox->setMargin(0);
   setLayout( hbox );
   mHtmlCanvas = new DocDigestHtmlView( this );
@@ -64,6 +79,14 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
            this, SIGNAL( showLastPrint( const dbID& ) ) );
 
   hbox->addWidget( mHtmlCanvas);
+
+  // --- The right details Box
+  _rightDetails = new QLabel;
+  _rightDetails->setTextFormat(Qt::RichText);
+  _rightDetails->setStyleSheet("QLabel { background-color : red; color : blue; }");
+  _rightDetails->setText("Hallo!");
+  _rightDetails->setMinimumWidth(detailMinWidth);
+  hbox->addWidget(_rightDetails);
 }
 
 void DocDigestDetailView::slotClearView()
@@ -93,7 +116,7 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
     tmpl.setValue( DOCDIGEST_TAG("MONTH_NAME"), monthStr);
 
     const QString details = tmpl.expand();
-    mHtmlCanvas->displayContent( details );
+    _leftDetails->setText( details );
 
 }
 
@@ -118,33 +141,16 @@ void DocDigestDetailView::slotShowYearDetails( int year )
 
 }
 
-void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
+void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, const QString& manAddress )
 {
-    // qDebug () << "Showing details about this doc: " << digest.id();
+    QString content = i18n("Customer");
+    if( !manAddress.isEmpty() ) {
+        content += "<pre>" + manAddress +"</pre>";
+    } else {
 
-    if( _docTemplFileName.isEmpty() ) {
-        // QString templFileName = QString( "kraftdoc_%1_ro.trml" ).arg( doc->docType() );
-        _docTemplFileName = DefaultProvider::self()->locateFile( "reports/docdigest.trml" );
     }
-
-    TextTemplate tmpl( _docTemplFileName ); // template file with name docdigest.trml
-    if( !tmpl.open() ) {
-        return;
-    }
-    tmpl.setValue( DOCDIGEST_TAG( "HEADLINE" ), digest.type() + " " + digest.ident() );
-
-    tmpl.setValue( DOCDIGEST_TAG( "DATE" ), digest.date() );
-    tmpl.setValue( DOCDIGEST_TAG( "DATE_LABEL" ), i18n("Date") );
-
-    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD"), digest.whiteboard() );
-    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD_LABEL"), i18n("Whiteboard"));
-
-    if( !digest.projectLabel().isEmpty() ) {
-        tmpl.createDictionary( "PROJECT_INFO" );
-        tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT"), digest.projectLabel() );
-        tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT_LABEL"), i18n("Project"));
-    }
-
+    _leftDetails->setText( content );
+#if 0
     // tmpl.setValue( "URL", mHtmlCanvas->baseURL().prettyUrl());
     tmpl.setValue( DOCDIGEST_TAG( "CUSTOMER_LABEL" ), i18n("Customer"));
 
@@ -214,6 +220,37 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
 
     }
     tmpl.setValue( DOCDIGEST_TAG("CUSTOMER_ADDRESSBOOK_INFO"), addressBookInfo );
+#endif
+}
+
+void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
+{
+    // qDebug () << "Showing details about this doc: " << digest.id();
+
+    if( _docTemplFileName.isEmpty() ) {
+        // QString templFileName = QString( "kraftdoc_%1_ro.trml" ).arg( doc->docType() );
+        _docTemplFileName = DefaultProvider::self()->locateFile( "reports/docdigest.trml" );
+    }
+
+    TextTemplate tmpl( _docTemplFileName ); // template file with name docdigest.trml
+    if( !tmpl.open() ) {
+        return;
+    }
+    tmpl.setValue( DOCDIGEST_TAG( "HEADLINE" ), digest.type() + " " + digest.ident() );
+
+    tmpl.setValue( DOCDIGEST_TAG( "DATE" ), digest.date() );
+    tmpl.setValue( DOCDIGEST_TAG( "DATE_LABEL" ), i18n("Date") );
+
+    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD"), digest.whiteboard() );
+    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD_LABEL"), i18n("Whiteboard"));
+
+    if( !digest.projectLabel().isEmpty() ) {
+        tmpl.createDictionary( "PROJECT_INFO" );
+        tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT"), digest.projectLabel() );
+        tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT_LABEL"), i18n("Project"));
+    }
+
+    showAddress( digest.addressee(), digest.clientAddress() );
 
     // Information about archived documents.
     ArchDocDigestList archDocs = digest.archDocDigestList();

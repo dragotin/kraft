@@ -18,6 +18,7 @@
 #define DOCDIGESTDETAILVIEW_H
 
 #include <QWidget>
+#include <QLabel>
 
 #include "docdigest.h"
 #include "htmlview.h"
@@ -56,7 +57,11 @@ public slots:
   void slotShowYearDetails( int year);
 
 private:
+  void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
+
   DocDigestHtmlView *mHtmlCanvas;
+  QLabel    *_leftDetails;
+  QLabel    *_rightDetails;
   QString   _docTemplFileName;
   QString   _monthTemplFileName;
   QString   _yearTemplFileName;

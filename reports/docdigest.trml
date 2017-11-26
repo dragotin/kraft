@@ -13,12 +13,3 @@
 <p>This document was never printed</p>
 {{/NEVER_PRINTED}}
 </div>
-<div id="links">
-    <div id="custimage"><div id="custlabel">{{CUSTOMER_LABEL}}:</div></div>
-    <p>{{CUSTOMER_ADDRESS_FIELD}}</p>
-</div>
-<div id="rechts">
-  <div id="rcontent">
-   <p>{{WHITEBOARD}}</p>
-  </div>
-</div>
