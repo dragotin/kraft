@@ -51,13 +51,15 @@ void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
 // #########################################################################################################
 
 DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
-    QWidget(parent)
+    QFrame(parent)
 {
+    setFrameStyle(QFrame::StyledPanel+QFrame::Raised);
   QHBoxLayout *hbox = new QHBoxLayout;
   hbox->setSpacing(0);
 
 
-  const int detailMinWidth = 280;
+  const int detailMinWidth = 260;
+  setFixedHeight(200);
   // --- The left details box
   _leftDetails = new QLabel;
   hbox->addWidget(_leftDetails);
@@ -81,7 +83,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   const QString style = QString("QLabel { "
                                 "background-color: %1; "
                                 "background-image: url(:/kraft/kraft_customer.png); background-repeat: repeat-none;"
-                                "background-position: top center; "
+                                "background-position: top left; "
                                 "padding: 10px; "
                                 "}").arg(bgColor);
 
@@ -93,13 +95,13 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
                                  "background-image: url(:/kraft/postit.png); background-repeat: repeat-none;"
                                  "background-position: top center;"
                                  "padding: 0px; "
+                                 "padding-left: 30px; "
                                  "}").arg(bgColor);
 
 
   _rightDetails = new QLabel;
   _rightDetails->setTextFormat(Qt::RichText);
   _rightDetails->setStyleSheet(styleR);
-  _rightDetails->setText("Hallo!");
   _rightDetails->setMinimumWidth(detailMinWidth);
   hbox->addWidget(_rightDetails);
 }
@@ -256,6 +258,8 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     tmpl.setValue( DOCDIGEST_TAG( "DATE" ), digest.date() );
     tmpl.setValue( DOCDIGEST_TAG( "DATE_LABEL" ), i18n("Date") );
 
+
+
     tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD"), digest.whiteboard() );
     tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD_LABEL"), i18n("Whiteboard"));
 
@@ -284,6 +288,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     const QString details = tmpl.expand();
     mHtmlCanvas->displayContent( details );
 
+    _rightDetails->setText(digest.whiteboard());
     // qDebug () << "BASE-URL of htmlview is " << mHtmlCanvas->baseURL();
 
 

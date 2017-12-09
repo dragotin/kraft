@@ -40,7 +40,7 @@ protected slots:
 
 };
 
-class DocDigestDetailView : public QWidget
+class DocDigestDetailView : public QFrame
 {
   Q_OBJECT
 public:
