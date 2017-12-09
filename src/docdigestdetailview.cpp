@@ -54,36 +54,51 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
     QWidget(parent)
 {
   QHBoxLayout *hbox = new QHBoxLayout;
-  const int detailMinWidth = 220;
+  hbox->setSpacing(0);
+
+
+  const int detailMinWidth = 280;
   // --- The left details box
   _leftDetails = new QLabel;
   hbox->addWidget(_leftDetails);
   _leftDetails->setTextFormat(Qt::RichText);
   _leftDetails->setMinimumWidth(detailMinWidth);
-  const QString style("QLabel { "
-                      "background-image: url(:/kraft/user.png); background-repeat: repeat-none;"
-                      "background-position: top right;"
-                      "padding: 10px; "
-                      "}");
-
-  _leftDetails->setStyleSheet(style);
-
+  _leftDetails->setFrameStyle(0);
 
   // --- The middle HTML based view
   hbox->setMargin(0);
   setLayout( hbox );
   mHtmlCanvas = new DocDigestHtmlView( this );
+  mHtmlCanvas->setFrameStyle(0);
   mHtmlCanvas->setStylesheetFile("docdigestview.css");
+  const QString bgColor = mHtmlCanvas->palette().base().color().name();
 
   connect( mHtmlCanvas, SIGNAL(showLastPrint( const dbID& )),
            this, SIGNAL( showLastPrint( const dbID& ) ) );
 
   hbox->addWidget( mHtmlCanvas);
 
+  const QString style = QString("QLabel { "
+                                "background-color: %1; "
+                                "background-image: url(:/kraft/kraft_customer.png); background-repeat: repeat-none;"
+                                "background-position: top center; "
+                                "padding: 10px; "
+                                "}").arg(bgColor);
+
+  _leftDetails->setStyleSheet(style);
+
   // --- The right details Box
+  const QString styleR = QString("QLabel { "
+                                 "background-color: %1;"
+                                 "background-image: url(:/kraft/postit.png); background-repeat: repeat-none;"
+                                 "background-position: top center;"
+                                 "padding: 0px; "
+                                 "}").arg(bgColor);
+
+
   _rightDetails = new QLabel;
   _rightDetails->setTextFormat(Qt::RichText);
-  _rightDetails->setStyleSheet("QLabel { background-color : red; color : blue; }");
+  _rightDetails->setStyleSheet(styleR);
   _rightDetails->setText("Hallo!");
   _rightDetails->setMinimumWidth(detailMinWidth);
   hbox->addWidget(_rightDetails);

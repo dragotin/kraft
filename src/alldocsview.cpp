@@ -149,7 +149,7 @@ QWidget* AllDocsView::initializeTreeWidget()
   vb1->addWidget( mAllViewDetails );
   QWidget *w = new QWidget;
   w->setLayout(vb1);
-  mAllViewDetails->setFixedHeight(160);
+  mAllViewDetails->setFixedHeight(210);
   //
   return w;
 }

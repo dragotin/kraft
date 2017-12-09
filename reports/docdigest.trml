@@ -1,6 +1,5 @@
 <div id="inhalt">
 <h2>{{HEADLINE}}</h2>
-
 <p>{{DATE_LABEL}}: {{DATE}}</p>
 {{#PROJECT_INFO}}
 <p>{{PROJECT_LABEL}}: {{PROJECT}}</p>
