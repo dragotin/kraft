@@ -71,7 +71,6 @@
 #include "catalogtemplate.h"
 #include "importitemdialog.h"
 #include "addressprovider.h"
-#include "doclocaledialog.h"
 #include "addressselectordialog.h"
 
 #define NO_TAX   0

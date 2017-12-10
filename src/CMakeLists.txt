@@ -88,7 +88,6 @@ set(kraft_SRCS
     footertemplateprovider.cpp
     catalogtemplateprovider.cpp
     texttemplate.cpp
-    doclocaledialog.cpp
     tagman.cpp
     itemtagdialog.cpp
     tagtemplatesdialog.cpp
