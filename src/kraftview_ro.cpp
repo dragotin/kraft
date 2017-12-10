@@ -59,7 +59,6 @@
 #include "catalogtemplate.h"
 
 #include "doclocaledialog.h"
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>

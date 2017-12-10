@@ -25,7 +25,6 @@
 // include files for KDE
 #include <kxmlguifactory.h>
 #include <KXmlGuiWindow>
-#include <KConfigGroup>
 #include <KActionCollection>
 
 // application specific includes

@@ -28,7 +28,6 @@
 #include <QDialog>
 
 #include <KLocalizedString>
-#include <KConfigGroup>
 
 #include "kraftview.h"
 

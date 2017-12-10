@@ -41,7 +41,6 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <KConfigGroup>
 
 // application specific includes
 #include "kraftdb.h"

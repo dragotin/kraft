@@ -21,7 +21,6 @@
 
 // include files for KDE
 #include <QDebug>
-#include <KConfigGroup>
 
 #include "fixcalcdialog.h"
 #include "fixcalcpart.h"

@@ -33,7 +33,6 @@
 #include <QMenu>
 
 #include <KLocalizedString>
-#include <KConfigGroup>
 
 TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   :QWidget( parent ),
