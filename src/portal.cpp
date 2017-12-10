@@ -278,8 +278,6 @@ void Portal::slotStartupChecks()
             text = i18n( "There is a database problem: %1" ).arg( err.text() );
         }
 
-
-        // KMessageBox::sorry( this, text, i18n("Serious Database Problem") );
         m_portalView->systemInitError( m_portalView->ptag( text, "problem" ) );
 
         // disable harmfull actions

@@ -19,8 +19,6 @@
 #include <QDir>
 #include <QWidget>
 
-// include files for KDE
-#include <kmessagebox.h>
 #include <QDebug>
 
 // application specific includes
