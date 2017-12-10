@@ -2,6 +2,7 @@
     <qresource prefix="/kraft">
     <file>user.png</file>
     <file>catalogue.png</file>
+    <file>Calendar_page.png</file>
 	<file>document-new.png</file>
 	<file>document-open-recent.png</file>
     <file>postit.png</file>

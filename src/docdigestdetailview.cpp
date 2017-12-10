@@ -73,13 +73,13 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   mHtmlCanvas = new DocDigestHtmlView( this );
   mHtmlCanvas->setFrameStyle(0);
   mHtmlCanvas->setStylesheetFile("docdigestview.css");
-  const QString bgColor = mHtmlCanvas->palette().base().color().name();
 
   connect( mHtmlCanvas, SIGNAL(showLastPrint( const dbID& )),
            this, SIGNAL( showLastPrint( const dbID& ) ) );
 
   hbox->addWidget( mHtmlCanvas);
 
+  const QString bgColor = mHtmlCanvas->palette().base().color().name();
   const QString style = QString("QLabel { "
                                 "background-color: %1; "
                                 "background-image: url(:/kraft/kraft_customer.png); background-repeat: repeat-none;"
@@ -112,6 +112,61 @@ void DocDigestDetailView::slotClearView()
     mHtmlCanvas->displayContent( details );
 }
 
+QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
+{
+    const QString bgColor = mHtmlCanvas->palette().base().color().name();
+    QString style = QString("QLabel { background-color: %1; ").arg(bgColor);
+    QString image;
+    QString bgPos;
+
+    if( loc == Left ) {
+        if( det == Year ) {
+            image = "Calendar_page.png";
+            bgPos = "center top";
+            style += QLatin1String("padding-top: 95px; ");
+        } else if( det == Month ) {
+            image = "Calendar_page.png";
+            bgPos = "center top";
+            style += QLatin1String("padding-top: 75px; ");
+        } else {
+            // Document
+            image = "kraft_customer.png";
+            bgPos = "top left";
+            style += QLatin1String( "padding-top: 50px; padding-left:15px;");
+        }
+    } else if(loc == Middle ) {
+        if( det == Year ) {
+
+        } else if( det == Month ) {
+
+        } else {
+            // Document
+        }
+
+    } else if(loc == Right ) {
+        if( det == Year ) {
+
+        } else if( det == Month ) {
+
+        } else {
+            // Document
+            image = "postit.png";
+            bgPos = "top center";
+            style += QLatin1String("padding: 0px; padding-left: 30px; ");
+        }
+
+    } else {
+        // undef.
+    }
+
+    if( !image.isEmpty() ) {
+        style += QString("background-image: url(:/kraft/%1); background-repeat: repeat-none;"
+                         "background-position: %2;").arg(image).arg(bgPos);
+    }
+    style += QLatin1String("}");
+    return style;
+}
+
 #define DOCDIGEST_TAG
 
 void DocDigestDetailView::slotShowMonthDetails( int year, int month )
@@ -132,8 +187,14 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
     tmpl.setValue( DOCDIGEST_TAG("MONTH_LABEL"), i18n("Month"));
     tmpl.setValue( DOCDIGEST_TAG("MONTH_NAME"), monthStr);
 
+    _leftDetails->setStyleSheet(widgetStylesheet(Left, Month));
+    _leftDetails->setText( "<h1>"+monthStr + "<br/>" + yearStr + "</h1>");
+    _leftDetails->setAlignment(Qt::AlignHCenter);
+
+    _rightDetails->setStyleSheet(widgetStylesheet(Right, Month));
+    _rightDetails->clear();
     const QString details = tmpl.expand();
-    _leftDetails->setText( details );
+    mHtmlCanvas->displayContent(details);
 
 }
 
@@ -154,13 +215,20 @@ void DocDigestDetailView::slotShowYearDetails( int year )
     tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in Year %1").arg(yearStr) );
 
     const QString details = tmpl.expand();
+    _leftDetails->setStyleSheet(widgetStylesheet(Left, Year));
+    _leftDetails->setText("<h1>"+ yearStr +"</h1>");
+    _leftDetails->setAlignment(Qt::AlignHCenter);
+
+    _rightDetails->setStyleSheet(widgetStylesheet(Right, Year));
+    _rightDetails->clear();
+
     mHtmlCanvas->displayContent( details );
 
 }
 
 void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, const QString& manAddress )
 {
-    QString content = i18n("Customer");
+    QString content = "<h3>" + i18n("Customer") +"</h3>";
     if( !manAddress.isEmpty() ) {
         content += "<pre>" + manAddress +"</pre>";
     } else {
@@ -289,6 +357,10 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     mHtmlCanvas->displayContent( details );
 
     _rightDetails->setText(digest.whiteboard());
+    _leftDetails->setStyleSheet(widgetStylesheet(Left, Document));
+    _leftDetails->setAlignment(Qt::AlignLeft);
+
+    _rightDetails->setStyleSheet(widgetStylesheet(Right, Document));
     // qDebug () << "BASE-URL of htmlview is " << mHtmlCanvas->baseURL();
 
 

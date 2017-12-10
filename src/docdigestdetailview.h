@@ -58,6 +58,10 @@ public slots:
 
 private:
   void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
+  enum Location { Left, Middle, Right };
+  enum Detail { Month, Year, Document };
+
+  QString widgetStylesheet( Location loc, Detail det );
 
   DocDigestHtmlView *mHtmlCanvas;
   QLabel    *_leftDetails;
