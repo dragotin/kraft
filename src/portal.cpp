@@ -763,10 +763,10 @@ void Portal::createView( DocGuardedPtr doc )
 
   if( !mViewMap.contains(doc) ){
       KraftView *view = new KraftView( this );
-      view->setup( doc );
-      view->redrawDocument();
       const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->docEditGeometry().toAscii() );
       view->restoreGeometry(geo);
+      view->setup( doc );
+      view->redrawDocument();
       view->slotSwitchToPage( KraftDoc::Positions );
       view->show();
 

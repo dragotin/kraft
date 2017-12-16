@@ -136,9 +136,6 @@ KraftView::KraftView(QWidget *parent) :
   connect( mAssistant, SIGNAL( footerTextTemplate( const QString& ) ),
            this, SLOT( slotNewFooterText( const QString& ) ) );
 
-  if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
-    mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
-  }
   connect( mAssistant, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSwitchToPage( int ) ) );
 
@@ -193,6 +190,10 @@ void KraftView::setupMappers()
 void KraftView::setup( DocGuardedPtr doc )
 {
   KraftViewBase::setup(doc);
+
+  if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
+    mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
+  }
 
   setupDocHeaderView();
   setupItems();
@@ -1358,7 +1359,7 @@ void KraftView::done( int r )
     }
     // remember the sizes of the docassistant splitter if visible.
     mAssistant->saveSplitterSizes();
-
+    KraftSettings::self()->setDocViewSplitter(mCSplit->sizes());
     QDialog::done( r );
 }
 
