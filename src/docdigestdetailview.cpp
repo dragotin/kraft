@@ -88,6 +88,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
                                 "}").arg(bgColor);
 
   _leftDetails->setStyleSheet(style);
+  _leftDetails->setWordWrap(true);
 
   // --- The right details Box
   const QString styleR = QString("QLabel { "
@@ -95,7 +96,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
                                  "background-image: url(:/kraft/postit.png); background-repeat: repeat-none;"
                                  "background-position: top center;"
                                  "padding: 0px; "
-                                 "padding-left: 30px; "
+                                 "padding-left: 10px; "
                                  "}").arg(bgColor);
 
 
@@ -103,6 +104,8 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   _rightDetails->setTextFormat(Qt::RichText);
   _rightDetails->setStyleSheet(styleR);
   _rightDetails->setMinimumWidth(detailMinWidth);
+  _rightDetails->setWordWrap(true);
+
   hbox->addWidget(_rightDetails);
 }
 
@@ -228,11 +231,12 @@ void DocDigestDetailView::slotShowYearDetails( int year )
 
 void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, const QString& manAddress )
 {
+    Q_UNUSED(addressee);
     QString content = "<h3>" + i18n("Customer") +"</h3>";
     if( !manAddress.isEmpty() ) {
         content += "<pre>" + manAddress +"</pre>";
     } else {
-
+        content += QLatin1String("<p>")+i18n("not set")+QLatin1String("</p>");
     }
     _leftDetails->setText( content );
 #if 0

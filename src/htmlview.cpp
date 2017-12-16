@@ -163,3 +163,4 @@ void HtmlView::setBaseUrl( const QString& base )
     mBase = base;
     qDebug () << "Setting base url: " << mBase;
 }
+
