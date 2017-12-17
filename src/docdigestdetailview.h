@@ -24,6 +24,7 @@
 #include "htmlview.h"
 
 class dbID;
+class TextTemplate;
 
 class DocDigestHtmlView : public HtmlView
 {
@@ -58,6 +59,8 @@ public slots:
 
 private:
   void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
+    void documentListing( TextTemplate *tmpl, int year, int month );
+
   enum Location { Left, Middle, Right };
   enum Detail { Month, Year, Document };
 

@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QStandardPaths>
+#include <QSqlQuery>
 
 #include <klocalizedstring.h>
 
@@ -27,6 +28,7 @@
 #include "defaultprovider.h"
 #include "htmlview.h"
 #include "texttemplate.h"
+#include "archdoc.h"
 
 DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
   : HtmlView( parent )
@@ -172,6 +174,68 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
 
 #define DOCDIGEST_TAG
 
+void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int month )
+{
+
+    QString minDate;
+    QString maxDate;
+    if( month > -1 ) {
+        // not a year
+        minDate = QString("%1-%2-01").arg(year).arg(month, 2, 10, QChar('0'));
+        maxDate = QString("%1-%2-31").arg(year).arg(month, 2, 10, QChar('0'));
+    } else {
+        // is is a year
+        minDate = QString::number(year)+"-01-01";
+        maxDate = QString::number(year)+"-12-31";
+    }
+
+    // read data in the given timeframe from database
+    QSqlQuery q;
+    const QString query = QString("SELECT archDocID, ident, MAX(printDate) FROM archdoc WHERE "
+                                  "date BETWEEN date('%1') AND date('%2') "
+                                  "GROUP BY ident").arg(minDate, maxDate);
+
+    // qDebug() << "***" << query;
+    QMap<QString, QPair<int, Geld> > docMatrix;
+    q.prepare(query);
+    q.exec();
+    while( q.next() ) {
+       dbID archDocId(q.value(0).toInt());
+
+       const ArchDoc doc(archDocId);
+       const QString docType = doc.docType();
+       Geld g;
+       int n = 0;
+       if( docMatrix.contains(docType)) {
+           g = docMatrix[docType].second;
+           n = docMatrix[docType].first;
+       }
+       Geld g1 = doc.nettoSum();
+       g += g1;
+       docMatrix[docType].first = n+1;
+       docMatrix[docType].second = g;
+     }
+
+    // now create the template
+
+    tmpl->setValue("I18N_AMOUNT", i18n("Amount"));
+    tmpl->setValue("I18N_TYPE",   i18n("Type"));
+    tmpl->setValue("I18N_SUM",    i18n("Sum"));
+
+    QStringList doctypes = docMatrix.keys();
+    doctypes.sort();
+
+    foreach( const QString dtype, doctypes ) {
+        qDebug() << "creating doc list for "<<dtype;
+        tmpl->createDictionary( "DOCUMENTS" );
+        tmpl->setValue("DOCUMENTS", "DOCTYPE", dtype);
+        const QString am = QString::number(docMatrix[dtype].first);
+        tmpl->setValue("DOCUMENTS", "AMOUNT", am);
+        const QString sm = docMatrix[dtype].second.toString(DefaultProvider::self()->locale());
+        tmpl->setValue("DOCUMENTS", "SUM", sm);
+    }
+}
+
 void DocDigestDetailView::slotShowMonthDetails( int year, int month )
 {
     if( _monthTemplFileName.isEmpty() ) {
@@ -190,6 +254,10 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
     tmpl.setValue( DOCDIGEST_TAG("MONTH_LABEL"), i18n("Month"));
     tmpl.setValue( DOCDIGEST_TAG("MONTH_NAME"), monthStr);
 
+    // Document listing
+    documentListing(&tmpl, year, month);
+
+    // left and right information blocks
     _leftDetails->setStyleSheet(widgetStylesheet(Left, Month));
     _leftDetails->setText( "<h1>"+monthStr + "<br/>" + yearStr + "</h1>");
     _leftDetails->setAlignment(Qt::AlignHCenter);
@@ -216,6 +284,8 @@ void DocDigestDetailView::slotShowYearDetails( int year )
     tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), i18n("Year"));
     tmpl.setValue( DOCDIGEST_TAG("YEAR_NUMBER"), yearStr);
     tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in Year %1").arg(yearStr) );
+
+    documentListing(&tmpl, year, -1);
 
     const QString details = tmpl.expand();
     _leftDetails->setStyleSheet(widgetStylesheet(Left, Year));

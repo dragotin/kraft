@@ -1,6 +1,15 @@
-<div id="inhalt_calendar">
 <h2>{{HEADLINE}}</h2>
-</div>
-<div id="links_calendar">
-   <div style="width:120px;">{{YEAR_LABEL}}<br/>{{YEAR_NUMBER}}</div>
-</div>
+<table border="0" width="50%">
+<tr>
+  <td>{{I18N_AMOUNT}}</td>
+  <td>{{I18N_TYPE}}</td>
+  <td>{{I18N_SUM}}</td>
+</tr>
+{{#DOCUMENTS}}
+<tr>
+<td>{{AMOUNT}}</td>
+<td>{{DOCTYPE}}</td>
+<td>{{SUM}}</td>
+</tr>
+{{/DOCUMENTS}}
+</table>
