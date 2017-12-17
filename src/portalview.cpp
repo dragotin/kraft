@@ -61,7 +61,7 @@ PortalView::PortalView(QWidget *parent, const char*)
     QVBoxLayout *vbox = new QVBoxLayout;
     vbox->addWidget(_contentsWidget);
 
-    QPushButton *pb = new QPushButton(i18n("Information"));
+    QPushButton *pb = new QPushButton(i18n("About Kraft"));
     pb->setIcon(QIcon::fromTheme("kraft", QIcon(":/kraft/global/kraft_small_arm.png")));
     vbox->addWidget(pb);
     connect(pb, SIGNAL(clicked(bool)), this, SLOT(displaySystemsTab()));
