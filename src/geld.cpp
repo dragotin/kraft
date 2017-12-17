@@ -65,7 +65,7 @@ Geld& Geld::operator+=(const Geld& g)
     return *this;
 }
 
-Geld Geld::operator/(const double divisor)
+Geld Geld::operator/(const double divisor) const
 {
     // FIXME
     Geld g( this->m_cent / divisor / 100 );
@@ -78,14 +78,14 @@ Geld Geld::percent( double p )
   return g;
 }
 
-Geld Geld::operator*(const long mult)
+Geld Geld::operator*(const long mult) const
 {
     // FIXME
     Geld g( this->m_cent * mult / 100);
     return  g;
 }
 
-Geld Geld::operator*(const double mult)
+Geld Geld::operator*(const double mult) const
 {
     Geld g(double(this->m_cent) * mult / 100);
     return g;

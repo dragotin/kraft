@@ -104,14 +104,14 @@ public:
 
   QLocale* locale() { return &mLocale; }
 
-  Geld nettoSum();
-  Geld bruttoSum();
-  Geld taxSum();
-  Geld fullTaxSum( );
-  Geld reducedTaxSum();
+  Geld nettoSum() const;
+  Geld bruttoSum() const;
+  Geld taxSum() const;
+  Geld fullTaxSum() const;
+  Geld reducedTaxSum() const;
 
-  double tax();
-  double reducedTax();
+  double tax() const;
+  double reducedTax() const;
 
   ArchDocDigest toDigest();
 

@@ -56,13 +56,13 @@ QString ArchDoc::docIdentifier() const
   return i18n("%1 for %2 (Id %3)").arg( re ).arg( ident() );
 }
 
-Geld ArchDoc::nettoSum()
+Geld ArchDoc::nettoSum() const
 {
     const Geld g = positions().sumPrice();
     return g;
 }
 
-Geld ArchDoc::bruttoSum()
+Geld ArchDoc::bruttoSum() const
 {
     Geld g = nettoSum();
     const Geld ts = taxSum();
@@ -70,28 +70,28 @@ Geld ArchDoc::bruttoSum()
     return g;
 }
 
-Geld ArchDoc::taxSum()
+Geld ArchDoc::taxSum() const
 {
     const Geld g = positions().taxSum( tax(), reducedTax() );
     return  g;
 }
 
-Geld ArchDoc::fullTaxSum()
+Geld ArchDoc::fullTaxSum() const
 {
     return positions().fullTaxSum( tax() );
 }
 
-Geld ArchDoc::reducedTaxSum()
+Geld ArchDoc::reducedTaxSum() const
 {
     return positions().reducedTaxSum( reducedTax() );
 }
 
-double ArchDoc::tax()
+double ArchDoc::tax() const
 {
     return mTax;
 }
 
-double ArchDoc::reducedTax()
+double ArchDoc::reducedTax() const
 {
     return mReducedTax;
 }
