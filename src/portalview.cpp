@@ -73,20 +73,20 @@ PortalView::PortalView(QWidget *parent, const char*)
 void PortalView::createIcons()
 {
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
-    documentsButton->setIcon(QIcon::fromTheme("document-new", QIcon(":/kraft/document-new.png")));
+    documentsButton->setIcon(QIcon(":/kraft/document-new.png"));
     documentsButton->setText(i18n("Documents"));
     documentsButton->setTextAlignment(Qt::AlignHCenter);
     documentsButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *timeLineButton = new QListWidgetItem(_contentsWidget);
-    timeLineButton->setIcon(QIcon::fromTheme("document-open-recent", QIcon(":/kraft/document-open-recent.png")));
+    timeLineButton->setIcon(QIcon(":/kraft/document-open-recent.png"));
     timeLineButton->setText(tr("Timeline"));
     timeLineButton->setTextAlignment(Qt::AlignHCenter);
     timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
 
-    catButton->setIcon(QIcon::fromTheme("catalogue", QIcon(":/kraft/catalogue.png")));
+    catButton->setIcon(QIcon(":/kraft/catalogue.png"));
     catButton->setText(tr("Catalogs"));
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);

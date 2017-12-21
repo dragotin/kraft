@@ -1,14 +1,14 @@
 <RCC>
-    <qresource prefix="/kraft">
+  <qresource prefix="/kraft">
     <file>user.png</file>
     <file>catalogue.png</file>
     <file>Calendar_page.png</file>
-	<file>document-new.png</file>
-	<file>document-open-recent.png</file>
+    <file>document-new.png</file>
+    <file>document-open-recent.png</file>
     <file>postit.png</file>
     <file>kraft_customer.png</file>
     
-	<file>global/cr32-app-kraft.png</file>
-	<file>global/kraft_small_arm.png</file>
-    </qresource>
+    <file>global/cr32-app-kraft.png</file>
+    <file>global/kraft_small_arm.png</file>
+  </qresource>
 </RCC>
