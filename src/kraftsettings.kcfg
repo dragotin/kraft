@@ -72,6 +72,13 @@
     <entry name="addressSelectDialogSize" type="String">
       <label>Size of the address select dialog</label>
     </entry>
+    <entry name="materialCatViewState" type="String">
+      <label>State of the header of the material catalog</label>
+    </entry>
+    <entry name="templateCatViewState" type="String">
+      <label>State of the header of the template catalog</label>
+    </entry>
+
   </group>
 
   <group name="material">
