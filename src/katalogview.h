@@ -92,12 +92,6 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
   protected:
 
     /** the configuration object of the application */
-    QAction* m_acFileClose;
-    QAction* m_acFilePrint;
-    QAction* m_acEditCut;
-    QAction* m_acEditCopy;
-    QAction* m_acEditPaste;
-
     QAction* m_acEditChapter;
     QAction* m_acAddChapter;
     QAction* m_acRemChapter;

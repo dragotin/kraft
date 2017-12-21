@@ -190,27 +190,6 @@ void KatalogView::initActions()
   m_acExport->setStatusTip(i18n("Export the whole catalog as XML encoded file"));
   m_acExport->setEnabled(false); // FIXME: Repair XML Export
 
-  m_acFileClose = actionCollection()->addAction( KStandardAction::Close, this, SLOT( slotFileClose() ) );
-  m_acFileClose->setStatusTip( i18n("Close the katalog view"));
-
-  m_acFilePrint = actionCollection()->addAction( KStandardAction::Print, this, SLOT( slotFilePrint() ) );
-  m_acFilePrint ->setStatusTip( i18n("Prints out the current document"));
-  m_acFilePrint->setEnabled(false);
-
-  m_acEditCut = actionCollection()->addAction( KStandardAction::Cut, this, SLOT( slotEditCut() ) );
-  m_acEditCut->setStatusTip(i18n("Cuts the selected section and puts it to the clipboard"));
-  m_acEditCut->setEnabled(false);
-
-  m_acEditCopy = actionCollection()->addAction( KStandardAction::Copy, this, SLOT( slotEditCopy() ) );
-  m_acEditCopy->setStatusTip(i18n("Copies the selected section to the clipboard"));
-  m_acEditCopy->setEnabled(false);
-
-  m_acEditPaste = actionCollection()->addAction( KStandardAction::Paste, this, SLOT( slotEditPaste() ) );
-  m_acEditPaste->setStatusTip(i18n("Pastes the clipboard contents to current position"));
-  m_acEditPaste->setEnabled(false);
-  // createStandardStatusBarAction();
-  // setStandardToolBarMenuEnabled( true );
-
   // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
   QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
   if( !prjPath.isEmpty() ) {
