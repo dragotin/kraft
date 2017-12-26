@@ -236,6 +236,10 @@ void CreateDbPage::slotCountFillProgress( bool res )
     }
 }
 
+int CreateDbPage::nextId() const
+{
+    return SetupAssistant::upgradeDbPageNo;
+}
 // ---------------------------------------------------------------------------
 
 UpgradeDbPage::UpgradeDbPage(QWidget *parent)
@@ -280,6 +284,10 @@ void UpgradeDbPage::slotCountFillProgress( bool res )
     }
 }
 
+int UpgradeDbPage::nextId() const
+{
+    return SetupAssistant::ownAddressPageNo;
+}
 
 // ---------------------------------------------------------------------------
 
@@ -320,6 +328,10 @@ void OwnAddressPage::saveOwnName()
     }
 }
 
+int OwnAddressPage::nextId() const
+{
+    return SetupAssistant::finalStatusPageNo;
+}
 // ---------------------------------------------------------------------------
 FinalStatusPage::FinalStatusPage(QWidget *parent)
     :QWizardPage(parent)

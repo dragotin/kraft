@@ -113,6 +113,7 @@ class CreateDbPage:public QWizardPage
   void setCreateCmdsCurrent( int );
   void setFillCmdsCurrent( int );
 
+  int nextId() const;
   public slots:
   void slotStatusMessage( const QString& );
   void slotCountCreateProgress( bool );
@@ -132,6 +133,8 @@ class UpgradeDbPage:public QWizardPage
 
   public:
   UpgradeDbPage( QWidget *parent = 0 );
+
+  int nextId() const;
 
   public slots:
   void slotSetStatusText( const QString& );
@@ -156,6 +159,7 @@ class OwnAddressPage:public QWizardPage
 
   void saveOwnName();
 
+  int nextId() const;
   private:
   AddressSelectorWidget *mAddresses;
   KContacts::Addressee mMe;
