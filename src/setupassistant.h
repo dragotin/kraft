@@ -57,7 +57,7 @@ class DbSelectPage:public QWizardPage
 
   public:
   DbSelectPage( QWidget *parent = 0 );
-  QString selectedDriver();
+  QString selectedDriver() const;
   int nextId() const;
 
   private:
@@ -74,6 +74,8 @@ class SqLiteDetailsPage:public QWizardPage
   SqLiteDetailsPage( QWidget *parent = 0 );
 
   QUrl url();
+  int nextId() const;
+
   protected slots:
   private:
   Ui::sqLiteDetailsForm ui;
@@ -83,15 +85,16 @@ class SqLiteDetailsPage:public QWizardPage
 
 class MysqlDetailsPage:public QWizardPage
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
-  MysqlDetailsPage( QWidget *parent = 0 );
-  
-  void reloadSettings();
+    MysqlDetailsPage( QWidget *parent = 0 );
+
+    void reloadSettings();
+    int nextId() const;
 
   private:
-  Ui::mySqlDetailsForm ui;
+    Ui::mySqlDetailsForm ui;
 };
 
 // ---------------------------------------------------------------------------
@@ -198,26 +201,23 @@ public:
 
     SetupAssistant( QWidget *parent = 0 );
     bool init( Mode );
-    void createDatabase( bool );
 
     ~SetupAssistant();
 
 public slots:
-    void back();
-    void next();
     void done( int );
 
 private slots:
     void slotCurrentPageChanged(int currId);
 
 private:
-    void handleDatabaseBackendSelect();
+    void handleDatabaseBackendSelect() const;
     void handleSqLiteDetails();
     void handleMysqlDetails();
     void startDatabaseCreation();
     void startDatabaseUpdate();
     void finalizePage();
-    QString defaultSqliteFilename();
+    QString defaultSqliteFilename() const;
 
 
     Mode mMode;

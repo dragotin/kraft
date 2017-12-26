@@ -71,7 +71,7 @@ int DbSelectPage::nextId() const
     }
 }
 
-QString DbSelectPage::selectedDriver()
+QString DbSelectPage::selectedDriver() const
 {
     QString re = "QSQLITE";
     if( field("SelectedDbDriverMySql").toBool() ) {
@@ -119,6 +119,15 @@ QUrl SqLiteDetailsPage::url()
     return QUrl::fromLocalFile(fileName);
 }
 
+int SqLiteDetailsPage::nextId() const
+{
+    if( KraftDB::self()->databaseExists() ) {
+        return SetupAssistant::upgradeDbPageNo;
+    } else {
+        return SetupAssistant::createDbPageNo;
+    }
+}
+
 // ---------------------------------------------------------------------------
 
 MysqlDetailsPage::MysqlDetailsPage(QWidget *parent)
@@ -144,6 +153,15 @@ void MysqlDetailsPage::reloadSettings()
     setField("MySqlUser",   DatabaseSettings::self()->dbUser());
     setField("MySqlDbName", DatabaseSettings::self()->dbDatabaseName());
     setField("MySqlPwd", DatabaseSettings::self()->dbPassword());
+}
+
+int MysqlDetailsPage::nextId() const
+{
+    if( KraftDB::self()->databaseExists() ) {
+        return SetupAssistant::upgradeDbPageNo;
+    } else {
+        return SetupAssistant::createDbPageNo;
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -347,52 +365,48 @@ SetupAssistant::SetupAssistant( QWidget *parent )
 
 }
 
-void SetupAssistant::next( )
+/*
+ * Current Database Setup Wizard        +----------------+    check if db already exists
+   -----------------------------      > |  MySQL Page    ----------------------------------+
+                                    -/  +--------+-------+                                 v
+   +------------+   +--------------/             |            +----------------+    +---------------+
+   |  Welcome   --->|  DB Select   |         +--->+---------> | create DB Page +--->|  upgrade DB   |
+   +------------+   +--------------\         |                +----------------+    +-----------+---+
+                                    -\   +---+------------+                                 ^   |
+                                      >  |  SQLite Page   ----------------------------------+   |
+                                         +----------------+                                     |
+                                                                                                |
+                                                               +---------------+    +-----------v---+
+                                                               | Final Status  |<---+  Own Address  |
+                                                               +---------------+    +---------------+
+
+ */
+
+QString SetupAssistant::defaultSqliteFilename() const
 {
-  int currId = currentId();
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    QFileInfo fi(path, "kraft.db");
 
-  // qDebug () << "Next was hit with " << item->name();
-
-  if( currId == welcomePageNo ) {
-    // qDebug () << "Nothing to do for the Welcome-Page";
-  } else if( currId == dbSelectPageNo ) {
-    handleDatabaseBackendSelect();
-  } else if( currId == mySqlPageNo ) {
-    // get the mysql datails
-    handleMysqlDetails();
-  } else if( currId == mySqlPageNo) {
-    // get the sqlite filename
-    handleSqLiteDetails();
-  }
-
-  QWizard::next();
-
-}
-
-void SetupAssistant::back()
-{
-    // KAssistantDialog::back();
-}
-
-QString SetupAssistant::defaultSqliteFilename()
-{
-    QString filename = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-    QDir dir(filename); // only the path
-    if( !dir.exists() ) {
-        if (! dir.mkpath(filename) ) {
-            qDebug() << "Failed to create directory "<< filename << "for sqlite db";
+    if( !fi.dir().exists() ) {
+        if (! fi.dir().mkpath(path) ) {
+            qDebug() << "Failed to create directory "<< path << "for sqlite db";
             return QString();
         }
     }
-
-    filename += "/kraft.db";
-    return filename;
-
+    return fi.filePath();
 }
 
 void SetupAssistant::slotCurrentPageChanged( int currId )
 {
-    if( currId == createDbPageNo ) {
+    if( currId == dbSelectPageNo ) {
+        handleDatabaseBackendSelect(); // does nothing currently
+    } else if( currId == mySqlPageNo ) {
+        // get the mysql datails
+        handleMysqlDetails();
+    } else if( currId == mySqlPageNo) {
+        // get the sqlite filename
+        handleSqLiteDetails();
+    } else if( currId == createDbPageNo ) {
         if( mSqlBackendDriver == QLatin1String("QMYSQL") ) {
             if(!KraftDB::self()->dbConnect( QLatin1String("QMYSQL"),
                                             field("MySqlDbName").toString(),
@@ -403,7 +417,6 @@ void SetupAssistant::slotCurrentPageChanged( int currId )
                 return;
             }
         } else {
-            // Fixme - use the default
             QString filename = field("SqliteStorageFile").toString();
             if(filename.isEmpty()) {
                 filename = defaultSqliteFilename();
@@ -624,18 +637,8 @@ void SetupAssistant::startDatabaseCreation()
     disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0 ,0 );
 }
 
-void SetupAssistant::handleDatabaseBackendSelect()
+void SetupAssistant::handleDatabaseBackendSelect() const
 {
-    DbSelectPage *mDbSelectPage = qobject_cast<DbSelectPage*>(page(dbSelectPageNo));
-
-  // qDebug () << "Set backend driver type " << mDbSelectPage->selectedDriver();
-  if( mDbSelectPage->selectedDriver() == QLatin1String("QSQLITE") ) {
-    // setAppropriate( mMysqlDetailsPageItem, false );
-    // FIXME Port setAppropriate( mSqLiteDetailsPageItem, true );
-  } else {
-    // setAppropriate( mMysqlDetailsPageItem, true );
-    // setAppropriate( mSqLiteDetailsPageItem, false );
-  }
 }
 
 void SetupAssistant::handleSqLiteDetails()
@@ -648,48 +651,24 @@ void SetupAssistant::handleSqLiteDetails()
 
     mSqlBackendDriver = mDbSelectPage->selectedDriver();
     // qDebug () << "The database driver is " << mSqlBackendDriver;
-    KraftDB::self()->dbConnect( mSqlBackendDriver, file );
-
-    // qDebug () << "############ database opened: "<< KraftDB::self()->isOk();
-    bool dbExists = KraftDB::self()->databaseExists();
-
-    // qDebug () << "Database exists: " << dbExists;
-    if( dbExists ) {
-        // FIXME porting
-        // qDebug () << "Database exists, no create needed";
-        // setAppropriate( mCreateDbPageItem, false );
-    } else {
-        // setAppropriate( mCreateDbPageItem, true );
+    if( KraftDB::self()->dbConnect( mSqlBackendDriver, file ) ) {
+        // FIXME error handling
     }
-    // qDebug () << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
 }
 
 void SetupAssistant::handleMysqlDetails()
 {
     DbSelectPage *mDbSelectPage = qobject_cast<DbSelectPage*>(page(dbSelectPageNo));
-    QString driver   = mDbSelectPage->selectedDriver();
+    mSqlBackendDriver = mDbSelectPage->selectedDriver();
 
     QString hostName = field("MySqlHost").toString();
     QString databaseName = field("MySqlDbName").toString();
     QString userName = field("MySqlUser").toString();
     QString password = field("MySqlPwd").toString();
 
-    KraftDB::self()->dbConnect( driver, databaseName, userName, hostName, password );
-
-    // qDebug () << "############ database opened: "<< KraftDB::self()->isOk();
-    bool dbExists = KraftDB::self()->databaseExists();
-
-    // qDebug () << "Database exists: " << dbExists;
-    if( dbExists ) {
-        // FIXME Porting
-        // qDebug () << "Database exists, no create needed";
-        // setAppropriate( mCreateDbPageItem, false );
-    } else {
-        // setAppropriate( mCreateDbPageItem, true );
+    if( KraftDB::self()->dbConnect( mSqlBackendDriver, databaseName, userName, hostName, password ) ) {
+        //  FIXME error handling
     }
-    mSqlBackendDriver = QLatin1String("QMYSQL");
-
-    // qDebug () << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
 }
 
 bool SetupAssistant::init( Mode mode )
@@ -754,13 +733,6 @@ bool SetupAssistant::init( Mode mode )
         welcomePage->setWelcomeText( configOrigin + text );
     }
     return startDialog ;
-}
-
-void SetupAssistant::createDatabase( bool doIt )
-{
-    Q_UNUSED(doIt);
-    // FIXME Porting.
-    // setAppropriate( mDbSelectPageItem, doIt );
 }
 
 SetupAssistant::~SetupAssistant()
