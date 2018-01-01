@@ -20,6 +20,10 @@
       <label>Database Server:</label>  
       <default>localhost</default>
     </entry> 
+    <entry name="DbServerPort" type="Int">
+      <label>Server Port:</label>
+      <default>-1</default>
+    </entry>
     <entry name="DbDatabaseName" type="String">
       <label>Database Name</label> 
     </entry>
