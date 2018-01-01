@@ -68,17 +68,17 @@ class DbSelectPage:public QWizardPage
 
 class SqLiteDetailsPage:public QWizardPage
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
-  SqLiteDetailsPage( QWidget *parent = 0 );
+    SqLiteDetailsPage( QWidget *parent = 0 );
 
-  QUrl url();
-  int nextId() const;
+    QUrl url();
+    int nextId() const;
+    bool validatePage();
 
-  protected slots:
   private:
-  Ui::sqLiteDetailsForm ui;
+    Ui::sqLiteDetailsForm ui;
 };
 
 // ---------------------------------------------------------------------------
@@ -92,6 +92,7 @@ class MysqlDetailsPage:public QWizardPage
 
     void reloadSettings();
     int nextId() const;
+    bool validatePage();
 
   private:
     Ui::mySqlDetailsForm ui;
@@ -177,6 +178,7 @@ class FinalStatusPage:public QWizardPage
 
   public:
   FinalStatusPage( QWidget *parent = 0 );
+  int nextId() const;
 
   public slots:
   void slotSetStatusText( const QString& );
@@ -208,6 +210,9 @@ public:
 
     ~SetupAssistant();
 
+    bool handleSqLiteDetails();
+    bool handleMysqlDetails();
+
 public slots:
     void done( int );
 
@@ -215,9 +220,6 @@ private slots:
     void slotCurrentPageChanged(int currId);
 
 private:
-    void handleDatabaseBackendSelect() const;
-    void handleSqLiteDetails();
-    void handleMysqlDetails();
     void startDatabaseCreation();
     void startDatabaseUpdate();
     void finalizePage();

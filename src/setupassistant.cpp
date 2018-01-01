@@ -119,6 +119,11 @@ QUrl SqLiteDetailsPage::url()
     return QUrl::fromLocalFile(fileName);
 }
 
+bool SqLiteDetailsPage::validatePage()
+{
+    return qobject_cast<SetupAssistant*>(wizard())->handleSqLiteDetails();
+}
+
 int SqLiteDetailsPage::nextId() const
 {
     if( KraftDB::self()->databaseExists() ) {
@@ -162,6 +167,12 @@ int MysqlDetailsPage::nextId() const
     } else {
         return SetupAssistant::createDbPageNo;
     }
+}
+
+bool MysqlDetailsPage::validatePage()
+{
+    bool re = qobject_cast<SetupAssistant*>(wizard())->handleMysqlDetails();
+    return re;
 }
 
 // ---------------------------------------------------------------------------
@@ -248,8 +259,6 @@ UpgradeDbPage::UpgradeDbPage(QWidget *parent)
     setTitle(i18n("Upgrade the Database"));
     QVBoxLayout *vbox = new QVBoxLayout;
     setLayout( vbox );
-    //TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
-    //TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
     QWidget *w = new QWidget;
     vbox->addWidget( w );
@@ -354,6 +363,11 @@ void FinalStatusPage::slotSetStatusText( const QString& txt )
     ui.mStatusText->setText( txt );
 }
 
+int FinalStatusPage::nextId() const
+{
+    return -1; // final page
+}
+
 // ---------------------------------------------------------------------------
 
 SetupAssistant::SetupAssistant( QWidget *parent )
@@ -410,18 +424,18 @@ QString SetupAssistant::defaultSqliteFilename() const
 
 void SetupAssistant::slotCurrentPageChanged( int currId )
 {
+    qDebug() << "Page changed to " << currId;
+
     if( currId == dbSelectPageNo ) {
-        handleDatabaseBackendSelect(); // does nothing currently
     } else if( currId == mySqlPageNo ) {
-        // get the mysql datails
-        handleMysqlDetails();
-    } else if( currId == mySqlPageNo) {
-        // get the sqlite filename
-        handleSqLiteDetails();
+        // TODO: set the mysql datails
+    } else if( currId == sqlitePageNo) {
+        // TODO set the sqlite filename
     } else if( currId == createDbPageNo ) {
         if( mSqlBackendDriver == QLatin1String("QMYSQL") ) {
+            const QString dbName = field("MySqlDbName").toString();
             if(!KraftDB::self()->dbConnect( QLatin1String("QMYSQL"),
-                                            field("MySqlDbName").toString(),
+                                            dbName,
                                             field("MySqlUser").toString(),
                                             field("MySqlHost").toString(),
                                             field("MySqlPwd").toString() ) ) {
@@ -477,7 +491,8 @@ void SetupAssistant::done( int result )
     if( selectedDriver == "QMYSQL" ) {
         DatabaseSettings::self()->setDbDatabaseName( field("MySqlDbName").toString() );
         DatabaseSettings::self()->setDbUser( field("MySqlUser").toString() );
-        DatabaseSettings::self()->setDbServerName( field("MySqlHost").toString() );
+        const QString host = field("MySqlHost").toString();
+        DatabaseSettings::self()->setDbServerName( host );
         DatabaseSettings::self()->setDbPassword( field("MySqlPwd").toString() );
     }
     DatabaseSettings::self()->writeConfig();
@@ -649,11 +664,7 @@ void SetupAssistant::startDatabaseCreation()
     disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0 ,0 );
 }
 
-void SetupAssistant::handleDatabaseBackendSelect() const
-{
-}
-
-void SetupAssistant::handleSqLiteDetails()
+bool SetupAssistant::handleSqLiteDetails()
 {
     DbSelectPage *mDbSelectPage = qobject_cast<DbSelectPage*>(page(dbSelectPageNo));
 
@@ -663,12 +674,12 @@ void SetupAssistant::handleSqLiteDetails()
 
     mSqlBackendDriver = mDbSelectPage->selectedDriver();
     // qDebug () << "The database driver is " << mSqlBackendDriver;
-    if( KraftDB::self()->dbConnect( mSqlBackendDriver, file ) ) {
-        // FIXME error handling
-    }
+    bool re = KraftDB::self()->dbConnect( mSqlBackendDriver, file );
+
+    return re;
 }
 
-void SetupAssistant::handleMysqlDetails()
+bool SetupAssistant::handleMysqlDetails()
 {
     DbSelectPage *mDbSelectPage = qobject_cast<DbSelectPage*>(page(dbSelectPageNo));
     mSqlBackendDriver = mDbSelectPage->selectedDriver();
@@ -678,9 +689,7 @@ void SetupAssistant::handleMysqlDetails()
     QString userName = field("MySqlUser").toString();
     QString password = field("MySqlPwd").toString();
 
-    if( KraftDB::self()->dbConnect( mSqlBackendDriver, databaseName, userName, hostName, password ) ) {
-        //  FIXME error handling
-    }
+    return KraftDB::self()->dbConnect( mSqlBackendDriver, databaseName, userName, hostName, password );
 }
 
 bool SetupAssistant::init( Mode mode )
