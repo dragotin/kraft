@@ -31,8 +31,7 @@ DocumentMan *DocumentMan::self()
 }
 
 DocumentMan::DocumentMan()
-  : mColumnList( "docID, ident, docType, docDescription, clientID, lastModified, date, country, language, projectLabel" ),
-    mFullTax( -1 ),
+  : mFullTax( -1 ),
     mReducedTax( -1 )
 {
 

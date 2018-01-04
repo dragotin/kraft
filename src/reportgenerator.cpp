@@ -125,8 +125,7 @@ void ReportGenerator::convertTemplate( const QString& templ )
 QString ReportGenerator::findTemplate( const QString& type )
 {
   DocType dType( type );
-
-  const QString country = QLocale::countryToString(mArchDoc->locale()->country());
+  const QString country = mArchDoc->locale()->bcp47Name();
   const QString tmplFile = dType.templateFile(country);
 
   if ( tmplFile.isEmpty() ) {

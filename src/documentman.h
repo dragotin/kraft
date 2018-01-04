@@ -44,7 +44,6 @@ class DocumentMan
 
   private:
     bool readTaxes( const QDate& );
-    const QString mColumnList;
 
     double mFullTax;
     double mReducedTax;

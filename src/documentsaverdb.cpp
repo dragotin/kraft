@@ -263,8 +263,8 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
       // buf->setValue( "lastModified", "NOW()" );
       buf.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
       buf.setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
-      buf.setValue( "country",  doc->country() );
-      buf.setValue( "language", doc->language() );
+      buf.setValue( "country",  doc->locale()->bcp47Name() );
+      buf.setValue( "language", "" );
       buf.setValue( "projectLabel",  doc->projectLabel() );
     }
 }
