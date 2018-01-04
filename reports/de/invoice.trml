@@ -6,11 +6,11 @@
   author="http://www.volle-kraft-voraus.de/De/De" allowSplitting="20"
   showBoundary="0">
     <template>
-      <setFont name="Times-Roman" size="12" />
+      <setFont name="Times-Roman" size="11" />
     </template>
     <pageTemplate id="first">
         <pageGraphics>
-            <setFont name="Times-Roman" size="12" />
+            <setFont name="Times-Roman" size="11" />
 	    <lineMode width="0.5" />
             <lines>2.41cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
@@ -39,7 +39,7 @@
 
     <pageTemplate id="others">
         <pageGraphics>
-            <setFont name="Times-Roman" size="12" />
+            <setFont name="Times-Roman" size="11" />
 	    <lineMode width="0.5" />
             <lines>2cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
@@ -74,25 +74,30 @@
    <blockTableStyle id="sums">
       <lineStyle kind="LINEABOVE" thickness="1" colorName="black" start="1,-1" stop="2,-1"/>
       <lineStyle kind="LINEABOVE" thickness="0" colorName="black" start="1,0" stop="2,0"/>
-      <blockBottomPadding length="4mm" />
-      <blockTopPadding length="4mm" />
+      <blockBottomPadding length="2mm" />
+      <blockTopPadding length="2mm" />
    </blockTableStyle>
 
    <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
    <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
    
-   <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
-   <paraStyle name="ctext" fontSize="12" alignment="CENTER" />
-   <paraStyle name="demandtext"      fontSize="12" alignment="justify" fontName="Times-Italic" />
-   <paraStyle name="alternativetext" fontSize="12" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="small_text" fontSize="8" alignment="justify" spaceBefore="1mm" />
+   <paraStyle name="small_ctext" fontSize="8" alignment="CENTER" />
+   <paraStyle name="small_rtext" fontSize="8" alignment="RIGHT" spaceBefore="1mm" />
+   
+   
+   <paraStyle name="text" fontSize="11" alignment="justify" spaceBefore="3mm" />
+   <paraStyle name="ctext" fontSize="11" alignment="CENTER" />
+   <paraStyle name="demandtext"      fontSize="11" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="alternativetext" fontSize="11" alignment="justify" fontName="Times-Italic" />
 
-   <paraStyle name="rtext" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
-   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
-   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="rtext" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
 
-   <paraStyle name="head" fontSize="12" alignment="justify"/>
-   <paraStyle name="details" fontSize="12" alignment="right"/>
-   <paraStyle name="addressStyle" fontSize="12" />
+   <paraStyle name="head" fontSize="11" alignment="justify"/>
+   <paraStyle name="details" fontSize="11" alignment="right"/>
+   <paraStyle name="addressStyle" fontSize="11" />
 
 </stylesheet>
 <story>
@@ -124,15 +129,15 @@
 
     <spacer length="18mm" width="1mm"/>
 
-    <blockTable colWidths="8mm,8.2cm,1cm,1.2cm,2.7cm,2.7cm,8mm" style="items" repeatRows="0">
+    <blockTable colWidths="10mm,8.2cm,1cm,1.2cm,2.7cm,2.7cm,8mm" style="items" repeatRows="0">
     <tr>
-        <td><para style="text">Pos.</para></td>
-        <td><para style="text">Posten</para></td>
-        <td><para style="ctext">Anz.</para></td>
-        <td><para style="ctext">Einh.</para></td>
-        <td><para style="ctext">Preis</para></td>
-        <td><para style="ctext">Summe</para></td>
-	<td><para style="rtext"></para></td>
+        <td><para style="small_text">Pos.</para></td>
+        <td><para style="small_text">Posten</para></td>
+        <td><para style="small_ctext">Anz.</para></td>
+        <td><para style="small_ctext">Einh.</para></td>
+        <td><para style="small_ctext">Preis</para></td>
+        <td><para style="small_ctext">Summe</para></td>
+	<td><para style="small_rtext"></para></td>
     </tr>
     {{#POSITIONS}}
     <tr>
@@ -157,26 +162,29 @@
     {{/POSITIONS}}
     </blockTable>
     <condPageBreak height="4cm"/> 
-    <blockTable colWidths="9.8cm,4cm,3cm" style="sums" repeatRows="0">
+    <blockTable colWidths="10.4cm,3.7cm,2.7cm,8mm" style="sums" repeatRows="0">
     <tr><td></td>
         <td><para style="text">Netto</para></td>
-        <td><para style="rtext">{{NETTOSUM}}</para></td>
+        <td><para style="rtext">{{NETTOSUM}}</para></td><td></td>
     </tr>
     {{#SECTION_REDUCED_TAX}}
     <tr><td></td>
         <td><para style="text">+{{REDUCED_TAX}}% MwSt.</para></td>
         <td><para style="rtext">{{REDUCED_TAX_SUM}}</para></td>
+        <td></td>
     </tr>
     {{/SECTION_REDUCED_TAX}}
     {{#SECTION_FULL_TAX}}
     <tr><td></td>
         <td><para style="text">+{{FULL_TAX}}% MwSt.</para></td>
         <td><para style="rtext">{{FULL_TAX_SUM}}</para></td>
+        <td></td>
     </tr>
     {{/SECTION_FULL_TAX}}
     <tr><td></td>
         <td><para style="text">Gesamt</para></td>
         <td><para style="rtext">{{BRUTTOSUM}}</para></td>
+        <td></td>
     </tr>
     </blockTable>
     {{#TAX_FREE_ITEMS}}
