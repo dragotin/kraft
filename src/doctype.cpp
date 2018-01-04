@@ -238,39 +238,40 @@ QString DocType::templateFile( const QString& lang )
   }
   searchList << QLatin1String("kraft/reports/invoice.trml");
 
-  foreach( QString searchPath, searchList ) {
-      const QString tFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, searchPath);
+  const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
 
-      if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
-          tmplFile = tFile;
-          // qDebug () << "Found template file " << tmplFile;
-          break;
-      }
-  }
-
-  if( tmplFile.isEmpty() ) {
-      const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
-
-      if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
-          foreach( QString searchPath, searchList ) {
-              if( searchPath.startsWith(QLatin1String("kraft"))) {
-                  // remove the kraft-String here.
-                  searchPath.remove(0, 5); // remove "kraft"
-              }
-              const QString tFile = prjPath + searchPath;
-              if( !tFile.isEmpty() && QFile::exists(tFile) ) {
-                  // qDebug () << "Found template file " << tFile;
-                  tmplFile = tFile;
-                  break;
-              }
+  if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
+      foreach( QString searchPath, searchList ) {
+          if( searchPath.startsWith(QLatin1String("kraft"))) {
+              // remove the kraft-String here.
+              searchPath.remove(0, 5); // remove "kraft"
+          }
+          const QString tFile = prjPath + searchPath;
+          if( !tFile.isEmpty() && QFile::exists(tFile) ) {
+              // qDebug () << "Found template file " << tFile;
+              tmplFile = tFile;
+              break;
           }
       }
   }
 
   if( tmplFile.isEmpty() ) {
-      // qDebug () << "unable to find a template file for " << name();
+      foreach( QString searchPath, searchList ) {
+          const QString tFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, searchPath);
+
+          if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
+              tmplFile = tFile;
+              // qDebug () << "Found template file " << tmplFile;
+              break;
+          }
+      }
   }
 
+  if( tmplFile.isEmpty() ) {
+      qDebug () << "unable to find a template file for " << name();
+  } else {
+      qDebug () << "Found template file " << tmplFile;
+  }
   return tmplFile;
 }
 
