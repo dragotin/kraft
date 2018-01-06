@@ -335,6 +335,8 @@ void AddressSelectorWidget::setupUi()
     connect(butCreateContact,SIGNAL(clicked()),SLOT(slotCreateNewContact()));
     connect(mButEditContact,SIGNAL(clicked()),SLOT(slotEditContact()));
 
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 }
 
 void AddressSelectorWidget::slotFilterTextChanged( const QString& filter)
