@@ -18,6 +18,9 @@
 
 #include <QDebug>
 
+#include <kcontacts/address.h>
+#include <kcontacts/vcardconverter.h>
+
 #include "setupassistant.h"
 #include "databasesettings.h"
 #include "defaultprovider.h"
@@ -303,19 +306,44 @@ int UpgradeDbPage::nextId() const
 OwnAddressPage::OwnAddressPage(QWidget *parent)
   :QWizardPage(parent)
 {
-    setTitle(i18n("Your Own Identity"));
+    setTitle(i18n("Your Company Address"));
     QVBoxLayout *vbox = new QVBoxLayout;
+    QTabWidget *tabWidget = new QTabWidget;
 
     QLabel *l = new QLabel;
-    l->setText( i18n("Select your own address from the address book. It is set as a consigner on the documents.") );
+    l->setText( i18n("Select your companies address either from the address book or enter it manually. It is set as a consigner on the documents.") );
     vbox->addWidget( l );
 
+    vbox->addWidget(tabWidget);
+
+    // == The AddressSelector page
+    QWidget *w = new QWidget;
+    tabWidget->addTab(w, i18n("Select from Addressbook"));
+
+    QVBoxLayout *vbox1 = new QVBoxLayout;
+
     mAddresses = new AddressSelectorWidget(this);
-    vbox->addWidget( mAddresses );
-    this->setLayout( vbox );
+    vbox1->addWidget( mAddresses );
+    w->setLayout( vbox1 );
+    setLayout(vbox);
 
     connect( mAddresses, SIGNAL( addressSelected(KContacts::Addressee)),
              SLOT( gotMyAddress( KContacts::Addressee ) ) );
+
+    // == The manual page
+    QWidget *w1 = new QWidget;
+    ui.setupUi(w1);
+    tabWidget->addTab(w1, i18n("Manual Entry"));
+    ui.nameLabel->setText( KContacts::Addressee::formattedNameLabel() );
+    ui.orgLabel->setText( KContacts::Addressee::organizationLabel());
+    ui.streetLabel->setText(KContacts::Addressee::businessAddressStreetLabel());
+    ui.postCodeLabel->setText(KContacts::Addressee::businessAddressPostalCodeLabel());
+    ui.cityLabel->setText(KContacts::Addressee::businessAddressLocalityLabel());
+    ui.phoneLabel->setText(KContacts::Addressee::businessPhoneLabel());
+    ui.faxLabel->setText(KContacts::Addressee::businessFaxLabel());
+    ui.mobileLabel->setText(KContacts::Addressee::mobilePhoneLabel());
+    ui.emailLabel->setText(KContacts::Addressee::emailLabel());
+    ui.websiteLabel->setText(KContacts::Addressee::urlLabel());
 }
 
 OwnAddressPage::~OwnAddressPage()
@@ -334,6 +362,38 @@ void OwnAddressPage::saveOwnName()
         KraftSettings::self()->setUserName( mMe.name() );
         KraftSettings::self()->setUserUid( mMe.uid() );
         KraftSettings::self()->writeConfig();
+    } else {
+        // check for the manual.
+        KContacts::Addressee add;
+        add.setFormattedName(ui.leName->text());
+        add.setOrganization(ui.leOrganization->text());
+        KContacts::Address workAddress;
+
+        workAddress.setStreet(ui.leStreet->text());
+        workAddress.setPostalCode(ui.lePostcode->text());
+        workAddress.setLocality(ui.leCity->text());
+        workAddress.setType(KContacts::Address::Work);
+        add.insertAddress(workAddress);
+
+        add.insertPhoneNumber(PhoneNumber(ui.lePhone->text(), KContacts::PhoneNumber::Work));
+        add.insertPhoneNumber(PhoneNumber(ui.leFax->text(), KContacts::PhoneNumber::Fax));
+        add.insertPhoneNumber(PhoneNumber(ui.leMobile->text(), KContacts::PhoneNumber::Cell));
+        ResourceLocatorUrl resUrl;
+        resUrl.setUrl(QUrl(ui.leWebsite->text()));
+        add.setUrl(resUrl);
+        add.insertEmail(ui.leEmail->text(), true /* prefered */ );
+
+        VCardConverter vcc;
+        QByteArray vcard = vcc.createVCard(add);
+
+        QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+        file += "/myidentity.vcd";
+        QFile f ( file );
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            f.write(vcard);
+            f.close();
+            qDebug() << "Saved own identity to " << file;
+        }
     }
 }
 

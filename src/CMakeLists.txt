@@ -126,6 +126,7 @@ ki18n_wrap_ui(kraft_SRCS
     dbselect.ui
     mysqldetails.ui
     sqlitedetails.ui
+    identity.ui
     statuspage.ui
     upgradedb.ui
     timepart.ui

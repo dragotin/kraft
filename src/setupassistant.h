@@ -29,6 +29,7 @@
 #include "ui_createdb.h"
 #include "ui_upgradedb.h"
 #include "ui_sqlitedetails.h"
+#include "ui_identity.h"
 
 #include "kraftcat_export.h"
 
@@ -164,6 +165,7 @@ class OwnAddressPage:public QWizardPage
   private:
   AddressSelectorWidget *mAddresses;
   KContacts::Addressee mMe;
+  Ui::manualOwnIdentity ui;
 
   private slots:
   void gotMyAddress( const KContacts::Addressee& addressee);

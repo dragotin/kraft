@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>manualOwnIdentity</class>
+ <widget class="QWidget" name="manualOwnIdentity">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>586</width>
+    <height>428</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="nameLabel">
+       <property name="text">
+        <string>Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="leName"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="orgLabel">
+       <property name="text">
+        <string>Organization:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="leOrganization"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="streetLabel">
+       <property name="text">
+        <string>Street:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="leStreet"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="postCodeLabel">
+       <property name="text">
+        <string>Post Code:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="lePostcode"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="cityLabel">
+       <property name="text">
+        <string>City:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="leCity"/>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="phoneLabel">
+       <property name="text">
+        <string>Phone:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lePhone"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="faxLabel">
+       <property name="text">
+        <string>Fax:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="leFax"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mobileLabel">
+       <property name="text">
+        <string>Mobile Phone:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="leMobile"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="emailLabel">
+       <property name="text">
+        <string>EMail:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="leEmail"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="websiteLabel">
+       <property name="text">
+        <string>Website:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="leWebsite"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

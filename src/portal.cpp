@@ -37,6 +37,7 @@
 #include <QDebug>
 #include <kcontacts/addressee.h>
 #include <kactioncollection.h>
+#include <kcontacts/vcardconverter.h>
 
 // application specific includes
 #include "kraftview.h"
@@ -327,13 +328,30 @@ void Portal::slotStartupChecks()
             case AddressProvider::LookupNotFound:
             case AddressProvider::ItemError:
             case AddressProvider::BackendError:
-                // set an empty contact
+                // Try to read from stored vcard.
                 slotReceivedMyAddress(myUid, contact);
                 break;
             case AddressProvider::LookupOngoing:
             case AddressProvider::LookupStarted:
                 // Not much to do, just wait
                 break;
+            }
+        } else {
+            // check if the vcard can be read
+            QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+            file += "/myidentity.vcd";
+            QFile f(file);
+            if( f.exists() ) {
+                if( f.open( QIODevice::ReadOnly )) {
+                    QByteArray data = f.readAll();
+
+                    VCardConverter converter;
+                    Addressee::List list = converter.parseVCards( data );
+
+                    if( list.count() > 0 ) {
+                        slotReceivedMyAddress(QString::null, list.at(0));
+                    }
+                }
             }
         }
 
@@ -356,8 +374,10 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
 
     myContact = contact;
 
-    KraftSettings::self()->setUserUid( contact.uid() );
-    KraftSettings::self()->writeConfig();
+    if( !uid.isEmpty() ) {
+        KraftSettings::self()->setUserUid( contact.uid() );
+        KraftSettings::self()->writeConfig();
+    }
 
     // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
     ReportGenerator::self()->setMyContact( contact );
