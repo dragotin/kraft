@@ -263,7 +263,8 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 /* ------------------------------------------------------------------------------ */
 
 AddressSelectorWidget::AddressSelectorWidget(QWidget *parent, bool /* showText */)
-    : QSplitter(parent)
+    : QSplitter(parent),
+      _provider(0)
 {
     setupUi();
     restoreState();
@@ -366,6 +367,14 @@ void AddressSelectorWidget::saveState()
 
 }
 
+bool AddressSelectorWidget::backendUp() const
+{
+    bool re = false;
+    if( _provider ) {
+        re = _provider->backendUp();
+    }
+    return re;
+}
 
 void AddressSelectorWidget::slotCreateNewContact()
 {

@@ -86,6 +86,8 @@ public:
 
   ~AddressSelectorWidget();
 
+    bool backendUp() const;
+
 signals:
   void addressSelected(KContacts::Addressee);
 
