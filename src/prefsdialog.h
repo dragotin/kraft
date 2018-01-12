@@ -23,6 +23,8 @@
 #include <kpagedialog.h>
 #include <QItemDelegate>
 
+#include "ui_identity.h"
+
 #include "doctypeedit.h"
 #include "doctype.h"
 #include "taxeditdialog.h"
@@ -80,7 +82,9 @@ private:
   void wagesTab();
   void unitsTab();
   void writeTaxes();
+  void writeIdentity();
   void whoIsMeTab();
+  void fillManualIdentityForm(const KContacts::Addressee& addressee);
 
   QComboBox *m_databaseDriver;
   QLineEdit *m_leHost;
@@ -106,11 +110,14 @@ private:
   PrefsWages *mPrefsWages;
   PrefsUnits *mPrefsUnits;
 
+  KContacts::Addressee _newIdentity;
+
   QPushButton    *mDelTax;
   ImpTreeView    *mTaxTreeView;
   QSqlTableModel *mTaxModel;
   HtmlView       *mIdentityView;
-
+  QTabWidget     *_tabWidget;
+  Ui::manualOwnIdentity ui;
 };
 
 class TaxItemDelegate : public QItemDelegate

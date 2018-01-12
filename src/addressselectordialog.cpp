@@ -51,6 +51,7 @@ AddressSelectorDialog::AddressSelectorDialog( QWidget *parent )
 void AddressSelectorDialog::slotAddresseeSelected(  const KContacts::Addressee& addressee )
 {
     _addressee = addressee;
+    _addressee.insertCustom(CUSTOM_ADDRESS_MARKER, "addressbook");
 }
 
 KContacts::Addressee AddressSelectorDialog::addressee()

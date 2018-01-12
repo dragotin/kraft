@@ -25,6 +25,9 @@
 
 #include <kjob.h>
 
+// use define CUSTOM_ADDRESS_MARKER to mark the origin of addresses with .insertCustom
+#define CUSTOM_ADDRESS_MARKER "kraft", "identity_source"
+
 class AddressProviderPrivate;
 
 

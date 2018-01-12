@@ -55,8 +55,8 @@ void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::A
         _errMessages.remove(uid);
     }
     _addressCache[uid] = contact;
-
-    emit lookupResult(uid, contact);
+    _addressCache[uid].insertCustom(CUSTOM_ADDRESS_MARKER, "addressbook");
+    emit lookupResult(uid, _addressCache[uid]);
 }
 
 void AddressProvider::slotAddresseeNotFound( const QString& uid )

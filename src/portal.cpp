@@ -313,13 +313,15 @@ void Portal::slotStartupChecks()
 
         // Fetch my address
         const QString myUid = KraftSettings::self()->userUid();
+        bool useManual = false;
+
         if( ! myUid.isEmpty() ) {
+            KContacts::Addressee contact;
             // qDebug () << "Got My UID: " << myUid;
             connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
                     this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
 
             AddressProvider::LookupState state = mAddressProvider->lookupAddressee( myUid );
-            KContacts::Addressee contact;
             switch( state ) {
             case AddressProvider::LookupFromCache:
                 contact = mAddressProvider->getAddresseeFromCache(myUid);
@@ -329,7 +331,7 @@ void Portal::slotStartupChecks()
             case AddressProvider::ItemError:
             case AddressProvider::BackendError:
                 // Try to read from stored vcard.
-                slotReceivedMyAddress(myUid, contact);
+                useManual = true;
                 break;
             case AddressProvider::LookupOngoing:
             case AddressProvider::LookupStarted:
@@ -337,19 +339,25 @@ void Portal::slotStartupChecks()
                 break;
             }
         } else {
+            // in case there is no uid in the settings file, try to use the manual address.
+            useManual = true;
+        }
+
+        if( useManual ) {
             // check if the vcard can be read
             QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
             file += "/myidentity.vcd";
             QFile f(file);
             if( f.exists() ) {
                 if( f.open( QIODevice::ReadOnly )) {
-                    QByteArray data = f.readAll();
-
+                    const QByteArray data = f.readAll();
                     VCardConverter converter;
                     Addressee::List list = converter.parseVCards( data );
 
                     if( list.count() > 0 ) {
-                        slotReceivedMyAddress(QString::null, list.at(0));
+                        KContacts::Addressee c = list.at(0);
+                        c.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
+                        slotReceivedMyAddress(QString::null, c);
                     }
                 }
             }
@@ -366,21 +374,18 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
 
     if( contact.isEmpty() ) {
         if( !uid.isEmpty() ) {
+            // FIXME: Read the stored Address and compare the uid
             const QString err = mAddressProvider->errorMsg(uid);
-            qDebug () << "My-Contact is empty: " << err;
+            qDebug () << "My-Contact could not be found:" << err;
         }
         return;
     }
 
     myContact = contact;
 
-    if( !uid.isEmpty() ) {
-        KraftSettings::self()->setUserUid( contact.uid() );
-        KraftSettings::self()->writeConfig();
-    }
-
     // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
-    ReportGenerator::self()->setMyContact( contact );
+    ReportGenerator::self()->setMyContact( myContact );
+
     QString name = myContact.formattedName();
     if( !name.isEmpty() ) {
         name = i18n("Welcome to Kraft, %1").arg(name);

@@ -189,6 +189,8 @@ void ReportGenerator::setMyContact( const KContacts::Addressee& contact )
 
 void ReportGenerator::slotAddresseeSearchFinished( int )
 {
+    qDebug() << "** Reached slotAddresseeSearchFinished!";
+
   // now the addressee search through the address provider is finished.
   // Rendering can be started.
   QString tmplFile = findTemplate( mArchDoc->docType() );
