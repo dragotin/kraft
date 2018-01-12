@@ -137,17 +137,16 @@ void AddressProviderPrivate::searchResult( KJob* job )
 
         if( contacts.size() > 0 ) {
             contact = contacts[0];
-            qDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+            // qDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+            emit addresseeFound(uid, contact);
         } else {
-            qDebug() << "No search result for UID" << uid;
+            // qDebug() << "No search result for UID" << uid;
             emit addresseeNotFound(uid);
         }
     }
 
     // cleanup
     if(!uid.isEmpty()) {
-        // if no address was found, emit the empty contact.
-        emit addresseeFound(uid, contact);
         mUidSearches.remove( uid );
     }
 
