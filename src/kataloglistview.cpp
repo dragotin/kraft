@@ -431,12 +431,13 @@ void KatalogListView::dropEvent( QDropEvent *event )
       // Either at a specific point or appended
       QTreeWidgetItem *parent = itemFromIndex(topIndex);
       if (row == -1) {
-        if( isChapter( droppedOnItem ) || isRoot( droppedOnItem ))
-          parent = droppedOnItem;
-          parent->insertChild(parent->childCount(), taken.takeFirst());
+          if( isChapter( droppedOnItem ) || isRoot( droppedOnItem )) {
+              parent = droppedOnItem;
+              parent->insertChild(parent->childCount(), taken.takeFirst());
+          }
           // the parent chap has changed.
       } else {
-        int r = 1+(dropRow.row() >= 0 ? dropRow.row() : row); // insert behind the row element
+          int r = 1+(dropRow.row() >= 0 ? dropRow.row() : row); // insert behind the row element
 
         dbID newParentId;
 

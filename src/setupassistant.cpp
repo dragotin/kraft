@@ -361,7 +361,7 @@ void OwnAddressPage::saveOwnName()
     if( ! mMe.isEmpty() ) {
         KraftSettings::self()->setUserName( mMe.name() );
         KraftSettings::self()->setUserUid( mMe.uid() );
-        KraftSettings::self()->writeConfig();
+        KraftSettings::self()->save();
     } else {
         // check for the manual.
         KContacts::Addressee add;
@@ -555,7 +555,7 @@ void SetupAssistant::done( int result )
         DatabaseSettings::self()->setDbServerName( host );
         DatabaseSettings::self()->setDbPassword( field("MySqlPwd").toString() );
     }
-    DatabaseSettings::self()->writeConfig();
+    DatabaseSettings::self()->save();
     qDebug () << "Database backend config written";
     QWizard::done(result);
 }
@@ -663,7 +663,6 @@ void SetupAssistant::startDatabaseUpdate()
 void SetupAssistant::startDatabaseCreation()
 {
     CreateDbPage *mCreateDbPage = qobject_cast<CreateDbPage*>(page(createDbPageNo));
-    UpgradeDbPage *mUpgradeDbPage = qobject_cast<UpgradeDbPage*>(page(upgradeDbPageNo));
 
     if( ! KraftDB::self()->isOk() ) {
         mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials!"));

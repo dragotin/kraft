@@ -1053,8 +1053,8 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
         }
 
       }
-      KraftSettings::self()->writeConfig();
-      KraftSettings::self()->readConfig();
+      KraftSettings::self()->save();
+      KraftSettings::self()->load();
 
       newpos = dia->insertAfterPosition();
 

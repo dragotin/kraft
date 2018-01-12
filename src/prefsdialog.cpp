@@ -367,7 +367,7 @@ void PrefsDialog::writeConfig()
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
 
-    KraftSettings::self()->writeConfig();
+    KraftSettings::self()->save();
 }
 
 void PrefsDialog::writeTaxes()
@@ -485,13 +485,6 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool bac
   const QString details = tmpl.expand();
   mIdentityView->displayContent( details );
 
-}
-
-KContacts::Addressee PrefsDialog::myIdentity()
-{
-  KContacts::Addressee me;
-
-  return me;
 }
 
 TaxItemDelegate::TaxItemDelegate(QObject * parent) : QItemDelegate(parent) {}

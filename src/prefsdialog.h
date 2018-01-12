@@ -56,7 +56,6 @@ public:
   ~PrefsDialog();
 
   void setMyIdentity(const KContacts::Addressee& , bool backendUp);
-  KContacts::Addressee myIdentity();
 
 protected:
   void readConfig();
