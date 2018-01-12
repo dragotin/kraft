@@ -333,7 +333,7 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
     // == The manual page
     QWidget *w1 = new QWidget;
     ui.setupUi(w1);
-    tabWidget->addTab(w1, i18n("Manual Entry"));
+    int id = tabWidget->addTab(w1, i18n("Manual Entry"));
     ui.nameLabel->setText( KContacts::Addressee::formattedNameLabel() );
     ui.orgLabel->setText( KContacts::Addressee::organizationLabel());
     ui.streetLabel->setText(KContacts::Addressee::businessAddressStreetLabel());
@@ -344,6 +344,10 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
     ui.mobileLabel->setText(KContacts::Addressee::mobilePhoneLabel());
     ui.emailLabel->setText(KContacts::Addressee::emailLabel());
     ui.websiteLabel->setText(KContacts::Addressee::urlLabel());
+
+    if( !mAddresses->backendUp() ) {
+        tabWidget->setCurrentIndex(id);
+    }
 }
 
 OwnAddressPage::~OwnAddressPage()
