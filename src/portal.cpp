@@ -381,6 +381,11 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
 
     // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
     ReportGenerator::self()->setMyContact( contact );
+    QString name = myContact.formattedName();
+    if( !name.isEmpty() ) {
+        name = i18n("Welcome to Kraft, %1").arg(name);
+        statusBar()->showMessage(name, 30*1000);
+    }
 }
 
 bool Portal::queryClose()

@@ -219,10 +219,11 @@ bool KatalogView::queryExit()
 
 void KatalogView::slotStatusMsg(const QString &text)
 {
-  ///////////////////////////////////////////////////////////////////
-  // change status message permanently
-  statusBar()->clearMessage();
-  // FIXME Porting statusBar()->changeItem(text, ID_STATUS_MSG);
+    if( text.isEmpty() ) {
+        statusBar()->clearMessage();
+    } else {
+        statusBar()->showMessage(text, 30*1000 /* milliseconds timeout */ );
+    }
 }
 
 void KatalogView::slTreeviewItemChanged( QTreeWidgetItem *newItem, QTreeWidgetItem * /* prevItem */ )
