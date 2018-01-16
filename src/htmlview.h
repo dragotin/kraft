@@ -30,8 +30,6 @@ class HtmlView : public QTextBrowser
 
     QString title() const { return mTitle; }
 
-    void setBaseUrl( const QString& );
-
   public slots:
     void setTitle( const QString & );
     void setStylesheetFile( const QString & );
@@ -50,15 +48,14 @@ class HtmlView : public QTextBrowser
   private:
     QString topFrame() const;
     QString bottomFrame() const;
-    QString styles() const;
+    QString readStyles(const QString &styleFile) const;
 
     QString mTitle;
     QString mInternalUrl;
-    QString mStyleSheetFile;
+    QString mStyles;
 
     QAction *mZoomInAction;
     QAction *mZoomOutAction;
-    QString  mBase;
 
     int mZoomStep;
 };

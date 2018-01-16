@@ -21,6 +21,8 @@
 #include <QDebug>
 #include <QFile>
 
+#include "defaultprovider.h"
+
 
 HtmlView::HtmlView( QWidget *parent )
     : QTextBrowser( parent ), mZoomStep( 10 )
@@ -37,20 +39,15 @@ void HtmlView::setTitle( const QString &title )
 
 void HtmlView::setStylesheetFile( const QString &style )
 {
-    QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
-    if( !prjPath.isEmpty() ) {
-        mStyleSheetFile = QString( "%1/styles/%2" ).arg( prjPath ).arg( style );
-    } else {
-        mStyleSheetFile = QStandardPaths::locate( QStandardPaths::DataLocation, QString("styles/%1").arg(style));
-    }
-    QFileInfo fi(mStyleSheetFile);
+    const QString file = QString("styles/%1").arg(style);
+    const QString stylesheetFile = DefaultProvider::self()->locateFile(file);
 
-    if( fi.exists() ) {
-        qDebug () << "Found this stylefile: " << mStyleSheetFile;
-        // Important: Append the slash here, otherwise the base url is wrong.
-        setBaseUrl(fi.path()+"/");
+    if( QFile::exists(stylesheetFile) ) {
+        qDebug () << "Found this stylefile: " << stylesheetFile;
+        mStyles = readStyles(stylesheetFile);
     } else {
         qDebug() << "Unable to find stylesheet file "<< style;
+        mStyles.clear();
     }
 }
 
@@ -87,33 +84,28 @@ QString HtmlView::topFrame( ) const
     return stringList.join(QChar('\n'));
 }
 
-QString HtmlView::styles() const
+QString HtmlView::readStyles(const QString& styleFile) const
 {
-    QFile file(mStyleSheetFile);
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream textStream(&file);
-        QString styles = textStream.readAll();
-        file.close();
+    QFile file(styleFile);
 
-        // replace the relative urls of images with absolute pathes
-        QRegExp rx("(image:\\s*url\\()(.+)\\)");
-        rx.setMinimal(true);
-        int pos;
-        while ((pos = rx.indexIn(styles, pos)) != -1) {
-            QString m = rx.cap(2);
-            if( m.startsWith("/")) {
-                // absolute path, all fine
-            } else {
-                int oldLen = m.length();
-                m.prepend( mBase);
-                int newLength = m.length();
-                int standingLen = rx.cap(1).length();
-                styles.replace(pos + standingLen, oldLen, m);
-                pos += standingLen+newLength;
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QString styles;
+        QFileInfo fi(styleFile);
+        const QString base = fi.path()+"/";
+        QTextStream textStream(&file);
+
+        while( !textStream.atEnd() ) {
+            QString line = textStream.readLine().trimmed();
+            if( line.startsWith("background-image:url(") ) {
+                QString relative = line.remove(0, 21); // remove background...
+                relative.prepend(base);
+                line = QString( "background-image:url(%1").arg(relative);
             }
-            // qDebug() << "+++++++++++++++++++++++++++++++++++++++++++++" << m;
-            pos += rx.matchedLength();
+            line.append('\n');
+            styles.append(line);
         }
+
+        // qDebug() << "+++++++++++++++++++++++++++++++++++++++++++++" << styles;
         return styles;
     }
     return QString::null;
@@ -136,7 +128,7 @@ void HtmlView::displayContent( const QString& content )
     }
 
     const QString out = topFrame() + content + bottomFrame();
-    const QString s = styles();
+    const QString s = mStyles;
 
 #ifdef QT_DEBUG
     qDebug() << "########## HtmlView output written to /tmp/kraft.html";
@@ -155,12 +147,5 @@ void HtmlView::displayContent( const QString& content )
 
     this->document()->setDefaultStyleSheet(s);
     setHtml(out);
-}
-
-void HtmlView::setBaseUrl( const QString& base )
-{
-
-    mBase = base;
-    qDebug () << "Setting base url: " << mBase;
 }
 

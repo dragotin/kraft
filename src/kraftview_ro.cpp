@@ -105,21 +105,8 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     QLocale *locale = doc->locale();
 
     // do stuff like open a template and render values into it.
-    QString templFileName = QString( "kraftdoc_ro.trml" );
-    QString findFile = "kraft/reports/" + templFileName;
+    QString tmplFile = DefaultProvider::self()->locateFile( "reports/kraftdoc_ro.trml" );
 
-    QString tmplFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
-
-
-    QByteArray kraftHome = qgetenv("KRAFT_HOME");
-
-    if( !kraftHome.isEmpty() ) {
-        QString file = QString( "%1/reports/kraftdoc_ro.trml").arg(QString::fromLocal8Bit(kraftHome));
-        QFileInfo fi(file);
-        if( fi.exists() && fi.isReadable() ) {
-            tmplFile = file;
-        }
-    }
     if( tmplFile.isEmpty() ) {
         // qDebug () << "Could not find template to render ro view of document.";
         return;
