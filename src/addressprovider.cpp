@@ -106,7 +106,7 @@ AddressProvider::LookupState AddressProvider::lookupAddressee( const QString& ui
         return BackendError;
     }
     if( _notFoundUids.contains(uid)) {
-        qDebug() << uid << "was not found before";
+        // qDebug() << uid << "was not found before";
         return LookupNotFound;
     }
     if( _addressCache.contains(uid)) {

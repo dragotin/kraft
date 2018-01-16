@@ -185,12 +185,6 @@ void PrefsDialog::whoIsMeTab()
   mIdentityView = new HtmlView;
   mIdentityView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
 
-  const QString idFile = DefaultProvider::self()->locateFile("reports/images/identity.png");
-  if( !idFile.isEmpty() ) {
-      QFileInfo fi(idFile);
-      mIdentityView->setBaseUrl(fi.path());
-  }
-
   t1Lay->addWidget(mIdentityView);
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
