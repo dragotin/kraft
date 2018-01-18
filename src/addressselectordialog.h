@@ -1,5 +1,5 @@
 /***************************************************************************
-    akonadiaddressselectordialog.h  - select addressee from address book.
+       addressselectordialog.h  - select addressee from address book.
                              -------------------
     begin                : Sept. 2012
     copyright            : (C) 2012 by Klaas Freitag
@@ -31,6 +31,8 @@ class AddressSelectorDialog : public QDialog
 public:
     AddressSelectorDialog( QWidget *parent = 0 );
     KContacts::Addressee addressee();
+
+    void done(int r);
 
 private slots:
     void slotAddresseeSelected(const KContacts::Addressee&);

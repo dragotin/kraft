@@ -392,30 +392,33 @@ void DocAssistant::slotShowFooterTemplates()
 
 void DocAssistant::setFullPreview( bool setFull, int id )
 {
-  if ( setFull ) {
-    /* remember the sizes used before */
-    if ( mTemplatePane->isVisible() ) {
-      // qDebug() << "Writing mSplitterSizes: " << mMainSplit->sizes() << endl;
+    if ( setFull ) {
+        /* remember the sizes used before */
         saveSplitterSizes();
-    }
 
-    mTemplatePane->hide();
-    mPostCard->slotSetMode( DocPostCard::Full, id );
-    mFullPreview = true;
-  } else {
-    mTemplatePane->show();
-    mPostCard->slotSetMode( DocPostCard::Mini, id );
+        mTemplatePane->hide();
+        mPostCard->slotSetMode( DocPostCard::Full, id );
+        mFullPreview = true;
+    } else {
+        mTemplatePane->show();
+        mPostCard->slotSetMode( DocPostCard::Mini, id );
 
-    if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
-        QList<int> sizes = KraftSettings::self()->assistantSplitterSetting();
-        setSizes( sizes );
+        if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
+            QList<int> sizes = KraftSettings::self()->assistantSplitterSetting();
+            if( sizes.contains(0)) {
+                sizes[0] = 50;
+                sizes[1] = 50;
+            }
+            setSizes( sizes );
+        }
+        mFullPreview = false;
     }
-    mFullPreview = false;
-  }
 }
 
 void DocAssistant::saveSplitterSizes()
 {
-    KraftSettings::self()->setAssistantSplitterSetting( sizes() );
-    KraftSettings::self()->save();
+    if( mTemplatePane->isVisible() ) {
+        const QList<int> s = sizes();
+        KraftSettings::self()->setAssistantSplitterSetting( s );
+    }
 }

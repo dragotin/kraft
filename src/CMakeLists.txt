@@ -4,6 +4,7 @@ include_directories(${QT_INCLUDES} src)
 add_subdirectory(pics)
 
 ########### next target ###############
+qt5_add_resources(KRAFT_RC_SRC pics/kraft.qrc)
 
 set(kraft_SRCS
     attribute.cpp
@@ -87,7 +88,6 @@ set(kraft_SRCS
     footertemplateprovider.cpp
     catalogtemplateprovider.cpp
     texttemplate.cpp
-    doclocaledialog.cpp
     tagman.cpp
     itemtagdialog.cpp
     tagtemplatesdialog.cpp
@@ -101,12 +101,12 @@ set(kraft_SRCS
     models/documentmodel.cpp
     models/documentproxymodels.cpp
     models/datemodel.cpp
+    models/docbasemodel.cpp
     docdigestdetailview.cpp
     addressprovider.cpp
     addressselectorwidget.cpp
     addressprovider_akonadi.cpp
     addressselectordialog.cpp
-    quicksearchwidget.cpp
     kraftdb.cpp
     geld.cpp
     defaultprovider.cpp
@@ -126,6 +126,7 @@ ki18n_wrap_ui(kraft_SRCS
     dbselect.ui
     mysqldetails.ui
     sqlitedetails.ui
+    identity.ui
     statuspage.ui
     upgradedb.ui
     timepart.ui
@@ -147,34 +148,38 @@ ki18n_wrap_ui(kraft_SRCS
 )
 
 # kde4_add_executable(kraft ${kraft_SRCS})
-add_executable(kraft ${kraft_SRCS})
+add_executable(kraft ${KRAFT_RC_SRC} ${kraft_SRCS})
 
 set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
 
-target_link_libraries(kraft
-PUBLIC
+set(KRAFT_LINK_LIBS
     Qt5::Core
     Qt5::Widgets
     Qt5::Sql
-    Qt5::WebEngine
-    Qt5::WebEngineWidgets
     
     KF5::I18n
     KF5::XmlGui
-
     KF5::Contacts
+    ${CTEMPLATE_LIBRARIES} pthread
+)
+if(KF5Akonadi_FOUND)
+  list(APPEND KRAFT_LINK_LIBS
     KF5::AkonadiCore
     KF5::AkonadiContact
     KF5::AkonadiAgentBase 
     KF5::AkonadiWidgets 
     KF5::AkonadiXml
-    ${CTEMPLATE_LIBRARIES} pthread
+  )
+endif()
+
+target_link_libraries(kraft
+PUBLIC
+    ${KRAFT_LINK_LIBS}
 )
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kraft.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
-install(FILES  kraftui.rc katalogview.rc DESTINATION ${DATA_INSTALL_DIR}/kraft)
+install(FILES  kraftui.rc katalogview.rc DESTINATION ${KXMLGUI_INSTALL_DIR}/kraft)

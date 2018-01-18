@@ -32,6 +32,7 @@
 #include "templkataloglistview.h"
 #include "katalogman.h"
 #include "documentman.h"
+#include "kraftsettings.h"
 
 #define ID_STATUS_MSG 1
 
@@ -45,6 +46,9 @@ TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
 
 TemplKatalogView::~TemplKatalogView()
 {
+    const QByteArray state = m_listview->header()->saveState().toBase64();
+    KraftSettings::self()->setTemplateCatViewState(state);
+
   delete m_flosDialog;
 }
 
@@ -243,6 +247,10 @@ void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
     // qDebug () << "Creating new Listview" << endl;
     m_listview = new TemplKatalogListView( w );
     box->addWidget(m_listview);
+
+    const QByteArray state = QByteArray::fromBase64(KraftSettings::self()->templateCatViewState().toAscii());
+    m_listview->header()->restoreState(state);
+
 
     KatalogView::createCentralWidget( box, w );
 }

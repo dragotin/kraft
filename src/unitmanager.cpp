@@ -24,7 +24,7 @@
 #include "unitmanager.h"
 #include "einheit.h"
 
-Q_GLOBAL_STATIC(UnitManager, mSelf);
+Q_GLOBAL_STATIC(UnitManager, mSelf)
 
 UnitManager* UnitManager::self()
 {

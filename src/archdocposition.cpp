@@ -35,12 +35,12 @@ ArchDocPosition::ArchDocPosition()
 
 }
 
-Geld ArchDocPosition::nettoPrice()
+Geld ArchDocPosition::nettoPrice() const
 {
   return mOverallPrice;
 }
 
-Geld ArchDocPosition::fullTax( double fullTax )
+Geld ArchDocPosition::fullTax( double fullTax ) const
 {
   Geld tax;
 
@@ -50,7 +50,7 @@ Geld ArchDocPosition::fullTax( double fullTax )
   return tax / 100.0;
 }
 
-Geld ArchDocPosition::reducedTax( double reducedTax )
+Geld ArchDocPosition::reducedTax( double reducedTax ) const
 {
   Geld tax;
 
@@ -61,7 +61,7 @@ Geld ArchDocPosition::reducedTax( double reducedTax )
 }
 
 
-Geld ArchDocPosition::tax( double fullTax, double reducedTax )
+Geld ArchDocPosition::tax( double fullTax, double reducedTax ) const
 {
   Geld tax;
 
@@ -91,12 +91,12 @@ Geld ArchDocPositionList::sumPrice()
     return g;
 }
 
-Geld ArchDocPositionList::taxSum( double fullTax, double reducedTax )
+Geld ArchDocPositionList::taxSum( double fullTax, double reducedTax ) const
 {
     Geld reduced;
     Geld gfullTax;
 
-    iterator it;
+    const_iterator it;
     for ( it = begin(); it != end(); ++it ) {
         if( (*it).taxType() == DocPositionBase::TaxFull) {
             gfullTax += (*it).nettoPrice();

@@ -58,8 +58,8 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
 
   mAddresses = new AddressSelectorWidget(this);
 
-  connect( mAddresses,  SIGNAL( addressSelected( const Addressee& ) ),
-           SIGNAL( addresseeSelected( const Addressee& ) ) );
+  connect( mAddresses,  SIGNAL( addressSelected( const KContacts::Addressee& ) ),
+           SIGNAL( addresseeSelected( const KContacts::Addressee& ) ) );
 
   vbox->addWidget( mAddresses );
 }
@@ -136,15 +136,15 @@ DocDetailsPage::~DocDetailsPage()
 
 KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
   :KAssistantDialog( parent ),
+   mCustomerPage( 0 ),
    mCustomerBox( 0 ),
    mParent( parent )
 {
   setObjectName( name );
   setModal( modal );
 
-  // FIXME porting KF5: Save and restore the dialog size
-  // KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
-  // restoreDialogSize( config );
+  const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->newDocWizardGeometry().toAscii() );
+  restoreGeometry(geo);
 }
 
 KraftWizard::~KraftWizard()
@@ -154,31 +154,37 @@ KraftWizard::~KraftWizard()
 
 void KraftWizard::init()
 {
-  QWidget *w1 = new QWidget;
-  mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
-  mDetailsPage = new DocDetailsPage( w1 );
+    QScopedPointer<AddressProvider> addressProvider;
+    addressProvider.reset(new AddressProvider);
 
-  QWidget *w = new QWidget;
-  mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
+    setWindowTitle( i18n( "Document Creation Wizard" ) );
+    QWidget *w1 = new QWidget;
+    mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
+    mDetailsPage = new DocDetailsPage( w1 );
 
-  setWindowTitle( i18n( "Document Creation Wizard" ) );
+    if( addressProvider->backendUp() ) {
+        QWidget *w = new QWidget;
+        mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
 
-  mCustomerPage = new CustomerSelectPage( w );
-  mCustomerPage->setupAddresses();
-  connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
-           this,  SLOT( slotAddressee( const Addressee& ) ) );
-  connect(this,SIGNAL(finished()),SLOT(slotFinished()));
+        mCustomerPage = new CustomerSelectPage( w );
+        mCustomerPage->setupAddresses();
+        connect( mCustomerPage, SIGNAL( addresseeSelected(KContacts::Addressee)),
+                 this,  SLOT( slotAddressee(KContacts::Addressee)));
+    }
 }
 
-void KraftWizard::slotFinished()
+void KraftWizard::done( int r )
 {
-  mCustomerPage->saveState();
-  // FIXME porting: Dialog size save
-  // KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
-  // saveDialogSize( config );
+    if( mCustomerPage ) {
+        mCustomerPage->saveState();
+    }
+    const QByteArray geo = saveGeometry().toBase64();
+    KraftSettings::self()->setNewDocWizardGeometry(geo);
+
+    KAssistantDialog::done(r);
 }
 
-void KraftWizard::slotAddressee( const Addressee& addressee )
+void KraftWizard::slotAddressee(const KContacts::Addressee& addressee)
 {
   // qDebug () << "Addressee Changed!";
   mAddressee = addressee;

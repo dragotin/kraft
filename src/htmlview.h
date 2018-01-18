@@ -17,40 +17,18 @@
 #ifndef HTMLVIEW_H
 #define HTMLVIEW_H
 
-#include <QWebEngineView>
+#include <QTextBrowser>
+#include <QDesktopServices>
 
-class QAction;
 class QUrl;
 
-class UrlEmitWebEnginePage : public QWebEnginePage
-{
-    Q_OBJECT
-
-signals:
-    void openUrl( const QUrl& );
-
-protected:
-
-    bool acceptNavigationRequest(const QUrl &url, QWebEnginePage::NavigationType type, bool isMainFrame)
-    {
-        Q_UNUSED(type);
-        Q_UNUSED(isMainFrame);
-        QString urlStr = url.toString();
-        qDebug() << "openUrl hit:" << urlStr;
-        emit openUrl(url);
-        return false;
-    }
-};
-
-class HtmlView : public QWebEngineView
+class HtmlView : public QTextBrowser
 {
     Q_OBJECT
   public:
     HtmlView( QWidget *parent = 0);
 
     QString title() const { return mTitle; }
-
-    void setBaseUrl( const QString& );
 
   public slots:
     void setTitle( const QString & );
@@ -61,8 +39,6 @@ class HtmlView : public QWebEngineView
     void zoomOut();
 
   protected:
-    virtual QString topFrame() const;
-    virtual QString bottomFrame() const;
 
     void updateZoomActions();
 
@@ -70,17 +46,18 @@ class HtmlView : public QWebEngineView
     void openUrl( const QUrl& );
 
   private:
+    QString topFrame() const;
+    QString bottomFrame() const;
+    QString readStyles(const QString &styleFile) const;
+
     QString mTitle;
     QString mInternalUrl;
-    QString mStyleSheetFile;
+    QString mStyles;
 
     QAction *mZoomInAction;
     QAction *mZoomOutAction;
-    QUrl     mBaseUrl;
 
     int mZoomStep;
-
-    QScopedPointer<UrlEmitWebEnginePage> _webPage;
 };
 
 #endif

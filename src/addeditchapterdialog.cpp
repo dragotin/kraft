@@ -17,7 +17,6 @@
 
 #include <QtGui>
 
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>

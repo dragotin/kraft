@@ -263,8 +263,8 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
       // buf->setValue( "lastModified", "NOW()" );
       buf.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
       buf.setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
-      buf.setValue( "country",  doc->country() );
-      buf.setValue( "language", doc->language() );
+      buf.setValue( "country",  doc->locale()->bcp47Name() );
+      buf.setValue( "language", "" );
       buf.setValue( "projectLabel",  doc->projectLabel() );
     }
 }
@@ -293,8 +293,9 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setGoodbye(    q.value( 5 ).toString() );
         doc->setDate (      q.value( 6 ).toDate() );
         doc->setLastModified( q.value( 7 ).toDate() );
-        doc->setCountryLanguage( q.value( 8 ).toString(),
-                                 q.value( 9 ).toString());
+        // Removed, as with Kraft 0.80 there is no locale management on doc level any more
+        // doc->setCountryLanguage( q.value( 8 ).toString(),
+        //                         q.value( 9 ).toString());
 
         doc->setPreText(    KraftDB::self()->mysqlEuroDecode( q.value( 10  ).toString() ) );
         doc->setPostText(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );

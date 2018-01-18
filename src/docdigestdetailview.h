@@ -18,11 +18,13 @@
 #define DOCDIGESTDETAILVIEW_H
 
 #include <QWidget>
+#include <QLabel>
 
 #include "docdigest.h"
 #include "htmlview.h"
 
 class dbID;
+class TextTemplate;
 
 class DocDigestHtmlView : public HtmlView
 {
@@ -39,7 +41,7 @@ protected slots:
 
 };
 
-class DocDigestDetailView : public QWidget
+class DocDigestDetailView : public QFrame
 {
   Q_OBJECT
 public:
@@ -50,10 +52,26 @@ signals:
 
 public slots:
   void slotShowDocDetails( DocDigest );
+  void slotClearView();
+
+  void slotShowMonthDetails( int year, int month );
+  void slotShowYearDetails( int year);
 
 private:
+  void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
+    void documentListing( TextTemplate *tmpl, int year, int month );
+
+  enum Location { Left, Middle, Right };
+  enum Detail { Month, Year, Document };
+
+  QString widgetStylesheet( Location loc, Detail det );
+
   DocDigestHtmlView *mHtmlCanvas;
-  QString   mTemplFile;
+  QLabel    *_leftDetails;
+  QLabel    *_rightDetails;
+  QString   _docTemplFileName;
+  QString   _monthTemplFileName;
+  QString   _yearTemplFileName;
 };
 
 #endif // DOCDIGESTDETAILVIEW_H

@@ -58,8 +58,6 @@
 #include "doctype.h"
 #include "catalogtemplate.h"
 
-#include "doclocaledialog.h"
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -107,21 +105,8 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     QLocale *locale = doc->locale();
 
     // do stuff like open a template and render values into it.
-    QString templFileName = QString( "kraftdoc_ro.trml" );
-    QString findFile = "kraft/reports/" + templFileName;
+    QString tmplFile = DefaultProvider::self()->locateFile( "reports/kraftdoc_ro.trml" );
 
-    QString tmplFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
-
-
-    QByteArray kraftHome = qgetenv("KRAFT_HOME");
-
-    if( !kraftHome.isEmpty() ) {
-        QString file = QString( "%1/reports/kraftdoc_ro.trml").arg(QString::fromLocal8Bit(kraftHome));
-        QFileInfo fi(file);
-        if( fi.exists() && fi.isReadable() ) {
-            tmplFile = file;
-        }
-    }
     if( tmplFile.isEmpty() ) {
         // qDebug () << "Could not find template to render ro view of document.";
         return;
@@ -192,23 +177,23 @@ void KraftViewRO::setup( DocGuardedPtr doc )
             tmpl.setValue( "PRICE_DISPLAY", "PRICE_STYLE", style );
 
             tmpl.setValue( "PRICE_DISPLAY", "PRICE", locale->toCurrencyString( dp->overallPrice().toDouble() ) );
-        }
-#if 0
-        QString taxType;
-        if( individualTax ) {
-            if( dp->taxType() == 1 ) {
-                taxFreeCnt++;
-                taxType = "TAX_FREE";
-            } else if( dp->taxType() == 2 ) {
-                taxType = "REDUCED_TAX";
-                reducedTaxCnt++;
-            } else {
-                // ATTENTION: Default for all non known tax types is full tax.
-                fullTaxCnt++;
-                taxType = "FULL_TAX";
+
+            QString taxType;
+            if( individualTax ) {
+                if( dp->taxType() == 1 ) {
+                    taxFreeCnt++;
+                    taxType = "TAX_FREE";
+                } else if( dp->taxType() == 2 ) {
+                    taxType = "REDUCED_TAX";
+                    reducedTaxCnt++;
+                } else {
+                    // ATTENTION: Default for all non known tax types is full tax.
+                    fullTaxCnt++;
+                    taxType = "FULL_TAX";
+                }
             }
+            tmpl.createSubDictionary("PRICE_DISPLAY", taxType);
         }
-#endif
     }
 
     if( dt.pricesVisible()) {
@@ -274,9 +259,6 @@ void KraftViewRO::done( int r )
     // qDebug () << "ERR: No document available in view, return!";
     return;
   }
-  KraftSettings::self()->setRODocViewSize( size() );
-  KraftSettings::self()->writeConfig();
-  KraftSettings::self()->readConfig();
 
   emit viewClosed( true, m_doc );
 

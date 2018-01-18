@@ -175,8 +175,8 @@ InsertTemplDialog::~InsertTemplDialog()
   QString c = mBaseWidget->mComboChapter->currentText();
   if ( ! c.isEmpty() ) {
     KraftSettings::self()->setInsertTemplChapterName( c );
-    KraftSettings::self()->writeConfig();
-    KraftSettings::self()->readConfig();
+    KraftSettings::self()->save();
+    KraftSettings::self()->load();
   }
 }
 

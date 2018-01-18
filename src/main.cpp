@@ -31,6 +31,7 @@
 
 #include "version.h"
 #include "portal.h"
+#include "defaultprovider.h"
 
 int main(int argc, char *argv[])
 {
@@ -48,7 +49,9 @@ int main(int argc, char *argv[])
 
     aboutData.setBugAddress( "http://sourceforge.net/p/kraft/bugs/" );
 
-    QString logoFile = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "kraft/pics/kraftapp_logo.png" );
+    Q_INIT_RESOURCE(kraft);
+
+    QString logoFile = DefaultProvider::self()->locateFile( "pics/kraftapp_logo.png" );
     if( ! logoFile.isEmpty() ) {
         QImage img( logoFile );
         aboutData.setProgramLogo( QVariant( img ) );
@@ -75,7 +78,7 @@ int main(int argc, char *argv[])
     if (app.isSessionRestored()) {
         RESTORE(Portal);
     } else {
-        QString splashFile = QStandardPaths::locate( QStandardPaths::GenericDataLocation, "kraft/pics/kraftsplash.png" );
+        QString splashFile = DefaultProvider::self()->locateFile("pics/kraftsplash.png" );
         QSplashScreen *splash = 0;
 
         if( !splashFile.isEmpty()) {
@@ -90,7 +93,7 @@ int main(int argc, char *argv[])
         kraftPortal->show();
 
         if( splash ) {
-            splash->finish( kraftPortal->mainWidget() );
+            splash->finish( kraftPortal );
             splash->deleteLater();
         } else {
             // qDebug () << "Could not find splash screen";

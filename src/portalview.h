@@ -57,6 +57,7 @@ protected slots:
 
 private slots:
   void changePage(QListWidgetItem *current, QListWidgetItem *previous);
+  void displaySystemsTab();
 
 signals:
   void openKatalog( const QString& );
@@ -86,9 +87,7 @@ private:
   QListWidget     *_contentsWidget;
   QStackedWidget  *_pagesWidget;
 
-  int mDocDigestIndex;
-  int mCatalogIndex;
-  int mSystemIndex;
+  int _sysPageIndx;
 };
 
 #endif

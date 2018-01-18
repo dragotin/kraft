@@ -32,13 +32,20 @@ import tempfile
 import getopt
 import re
 
+# StringIO is not longer separate in python3, but in io
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+
 import reportlab
 from reportlab.pdfgen import canvas
 from reportlab import platypus
 from reportlab.lib import colors
 
 from six import text_type
-from pyPdf import PdfFileWriter, PdfFileReader
+from PyPDF2 import PdfFileWriter, PdfFileReader
 
 
 #
@@ -835,70 +842,64 @@ class PdfWatermark:
         outputPdf = PdfFileWriter()
 
         # flag for the first page of the source file
-     	firstPage = True
+        firstPage = True
 
-     	# Loop over source document pages and merge with the first page of the watermark
-     	# file.
-     	watermarkPage = inputWatermark.getPage(0)
-     	for page in generatedPdf.pages:
-	    if (spec == Mark.FIRST_PAGE and firstPage) or spec == Mark.ALL_PAGES:
-		# deep copy the watermark page here, otherwise the watermark page
-		# gets merged over and over because p would only be a reference
-		p = copy.copy( watermarkPage )
-		p.mergePage( page )
-		outputPdf.addPage( p )
-		firstPage = False
-	    else:
-                outputPdf.addPage(page)
+        # Loop over source document pages and merge with the first page of the watermark
+        # file.
+        watermarkPage = inputWatermark.getPage(0)
+        for page in generatedPdf.pages:
+            if (spec == Mark.FIRST_PAGE and firstPage) or spec == Mark.ALL_PAGES:
+                # deep copy the watermark page here, otherwise the watermark page
+                # gets merged over and over because p would only be a reference
+                p = copy.copy( watermarkPage )
+                p.mergePage( page )
+                outputPdf.addPage( p )
+                firstPage = False
+        else:
+            outputPdf.addPage(page)
 
-     	if self.outputFile:
-     	    # Write to outputfile
-     	    outputStream = file( self.outputFile, "wb" )
-     	    outputPdf.write( outputStream )
-     	    outputStream.close()
-     	    return self.outputFile
-     	else:
-     	    stringIO = StringIO.StringIO();
-     	    outputPdf.write( stringIO )
-     	    return stringIO.getvalue()
+        if self.outputFile:
+            # Write to outputfile
+            outputStream = file( self.outputFile, "wb" )
+            outputPdf.write( outputStream )
+            outputStream.close()
+            return self.outputFile
+        else:
+            stringIO = StringIO();
+            outputPdf.write( stringIO )
+            return stringIO.getvalue()
 
 
-def parseString(data, fout=None):
-	r = _rml_doc(data.strip())
-	if fout:
-		fp = file(fout,'wb')
-		r.render(fp)
-		fp.close()
-		return fout
-	else:
-		fp = io.BytesIO()
-	        r.render(fp)
-	        return fp.getvalue()
+def parseString(data):
+    r = _rml_doc(data.strip())
+    fp = io.BytesIO()
+    r.render(fp)
+    return fp.getvalue()
 
 def erml2pdf_help():
-	print 'Usage: erml2pdf [options] input.rml > output.pdf'
-	print ''
-	print 'Tool to render a file of the xml based markup language RML to PDF'
-	print 'with option to merge another PDF file as watermark.'
-	print ''
-	print 'Options:'
-	print '-o, --output <file>           output file, instead of standard out'
-	print '-m, --watermark-mode <mode>   set the watermark mode with '
-	print '                              0 = no watermark (default)'
-	print '                              1 = watermark on first page'
-	print '                              2 = watermark on all pages'
-	print '                              Note: a watermark file must be specified for 1, 2'
-	print '-w, --watermark-file <file>   watermark file, the first page is used.'
-	print ''
-	sys.exit(0)
+    print( 'Usage: erml2pdf [options] input.rml > output.pdf')
+    print( '')
+    print( 'Tool to render a file of the xml based markup language RML to PDF')
+    print( 'with option to merge another PDF file as watermark.')
+    print( '')
+    print( 'Options:')
+    print( '-o, --output <file>           output file, instead of standard out')
+    print( '-m, --watermark-mode <mode>   set the watermark mode with ')
+    print( '                              0 = no watermark (default)')
+    print( '                              1 = watermark on first page')
+    print( '                              2 = watermark on all pages')
+    print( '                              Note: a watermark file must be specified for 1, 2')
+    print( '-w, --watermark-file <file>   watermark file, the first page is used.')
+    print( '')
+    sys.exit(0)
 
 if __name__=="__main__":
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "ho:w:m:", ["help", "output=", "watermark-file=", "watermark-mode="])
-    except getopt.GetoptError, err:
+    except(getopt.GetoptError, err):
         # print help information and exit:
-        print str(err) # will print something like "option -a not recognized"
+        print( str(err)) # will print something like "option -a not recognized"
         erml2pdf_help()
         sys.exit(2)
     output = None
@@ -919,26 +920,26 @@ if __name__=="__main__":
             assert False, "unhandled option"
     #
     if len(args) == 0:
-	# a input file needs to be there
-	erml2pdf_help()
+        # a input file needs to be there
+        erml2pdf_help()
     else:
-	# print "Args:" + args[0]
-	infile = args[0]
-	# create the PDF with the help of reportlab
-	pdf = parseString( file( infile, 'r' ).read() )
+        print "Args:" + args[0]
+        infile = args[0]
+        # create the PDF with the help of reportlab
+        pdf = parseString( open( infile, 'r' ).read() )
 
-	# apply the watermark if required
-	# print "############ Watermark-Mode: " + watermarkMode
-	if watermarkMode != Mark.NOTHING:
-	    wm = PdfWatermark()
-	    pdfStringFile = StringIO.StringIO()
-	    pdfStringFile.write( pdf )
-	    pdf = wm.watermark( pdfStringFile, watermarkFile, watermarkMode )
+        # apply the watermark if required
+        # print "############ Watermark-Mode: " + watermarkMode
+        if watermarkMode != Mark.NOTHING:
+            wm = PdfWatermark()
+            pdfStringFile = StringIO()
+            pdfStringFile.write( pdf )
+            pdf = wm.watermark( pdfStringFile, watermarkFile, watermarkMode )
 
-	# handle output option, either file or stdout
-	if output:
-	    outfile = open(output, 'w')
-	    outfile.write( pdf )
-	    outfile.close()
-	else:
-            print pdf
+        # handle output option, either file or stdout
+        if output:
+            outfile = open(output, 'w')
+            outfile.write( pdf )
+            outfile.close()
+        else:
+            print( pdf )

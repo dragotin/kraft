@@ -21,8 +21,7 @@
 
 // include files for KDE
 #include <QDebug>
-#include <kmessagebox.h>
-#include <KConfigGroup>
+#include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>

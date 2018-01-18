@@ -28,6 +28,7 @@
 #include "stockmaterial.h"
 #include "matkatalog.h"
 #include "materialtempldialog.h"
+#include "kraftsettings.h"
 
 const QString MaterialKatalogView::MaterialCatalogName( "Material" );
 
@@ -43,12 +44,19 @@ MaterialKatalogView::MaterialKatalogView()
 
 MaterialKatalogView::~MaterialKatalogView()
 {
+    const QByteArray state = m_materialListView->header()->saveState().toBase64();
+    KraftSettings::self()->setMaterialCatViewState(state);
 }
 
 void MaterialKatalogView::createCentralWidget( QBoxLayout *box, QWidget *w )
 {
     m_materialListView = new MaterialKatalogListView( w );
     box->addWidget( m_materialListView );
+
+    // read the header settings
+    const QByteArray state = QByteArray::fromBase64(KraftSettings::self()->materialCatViewState().toAscii());
+    m_materialListView->header()->restoreState(state);
+
     KatalogView::createCentralWidget( box, w );
 }
 

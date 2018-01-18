@@ -24,6 +24,9 @@
 #include <QDebug>
 #include <QStringList>
 
+#include "docbasemodel.h"
+#include "docdigest.h"
+
 
 class TreeItem;
 
@@ -37,29 +40,25 @@ public:
         MonthType
     };
 
-    AbstractIndx()
-        :_type(Invalid) { }
+    explicit AbstractIndx();
+    virtual ~AbstractIndx() { }
 
-    explicit AbstractIndx(IndxType t, QDate d)
-        :_type(t), _date(d) { }
+    explicit AbstractIndx(IndxType t);
 
-    virtual QVariant data(int column) const;
+    explicit AbstractIndx(IndxType t, DocDigest(digest));
 
     virtual IndxType type();
 
-    virtual int columnCount();
-
-    void setData( const QVariantList& list );
+    DocDigest digest() const;
 
     int year();
     int month();
 
 protected:
-    QVariantList _data;
+    DocDigest    _docDigest;
 
 private:
     IndxType     _type;
-    QDate        _date;
 };
 
 /* ================================================================== */
@@ -67,14 +66,14 @@ private:
 class DocumentIndx : public AbstractIndx
 {
 public:
-    DocumentIndx( QDate d)
-        :AbstractIndx(IndxType::DocumentType, d) {
+    DocumentIndx(const DocDigest& digest)
+        :AbstractIndx(IndxType::DocumentType, digest) {
     }
 };
 
 /* ================================================================== */
 
-class DateModel : public QAbstractItemModel
+class DateModel : public DocBaseModel
 {
 public:
     DateModel(QObject *parent = 0);
@@ -84,9 +83,6 @@ public:
         Count
     };
 
-    void setColumnCount(int columns);
-    void setHeaderStrings( const QStringList& headers);
-
     TreeItem* findYearItem(int year);
     TreeItem* findMonthItem(int year, int month);
 
@@ -95,27 +91,23 @@ public:
     void setYearSumColumn( int column );
     void setYearCountColumn( int column );
 
-    int columnCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
-
     QModelIndex parent(const QModelIndex &index) const;
+    DocDigest digest(const QModelIndex& indx) const;
+
     int rowCount(const QModelIndex &parent) const;
 
-    void addData(DocumentIndx doc);
+    void removeAllData();
+    void addData(const DocDigest& digest);
 
-    int fromTable();
-protected:
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    bool isDocument(const QModelIndex& indx) const;
 
 private:
     TreeItem          *rootItem;
-    int               _columnCount;
     QVector<CalcType> _monthExtra;
     QVector<CalcType> _yearExtra;
-    QStringList       _headers;
-
 };
 
 #endif // DATEMODEL_H

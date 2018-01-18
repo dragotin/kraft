@@ -4,7 +4,7 @@
     begin                : July 2006
     copyright            : (C) 2006 by Klaas Freitag
     email                : freitag@kde.org
-   ***************************************************************************/
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -55,11 +55,9 @@ ReportGenerator *ReportGenerator::self()
 }
 
 ReportGenerator::ReportGenerator()
-  :mArchDoc( 0 )
+  :mProcess(0),
+    mArchDoc( 0 )
 {
-  connect( this, SIGNAL( templateGenerated( const QString& )),
-           this, SLOT( slotConvertTemplate( const QString& )));
-
   mAddressProvider = new AddressProvider( this );
   connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
            this, SLOT( slotAddresseeFound(QString, KContacts::Addressee)));
@@ -73,18 +71,25 @@ ReportGenerator::~ReportGenerator()
 /*
  * docID: document ID
  *  dbId: database ID of the archived doc.
+ *
+ * This is the starting point of a report creation.
  */
 void ReportGenerator::createPdfFromArchive( const QString& docID, dbID archId )
 {
   mDocId = docID;
   mArchId = archId;
+
+  if( mProcess && mProcess->state() != QProcess::NotRunning ) {
+      qDebug() << "===> WRN: Process still running, try again later.";
+      return;
+  }
   fillupTemplateFromArchive( archId );
   // Method fillupTemplateFromArchive raises a signal when the archive was
   // generated. This signal gets connected to slotConvertTemplate in the
   // constructor of this class.
 }
 
-void ReportGenerator::slotConvertTemplate( const QString& templ )
+void ReportGenerator::convertTemplate( const QString& templ )
 {
   // qDebug() << "Report BASE:\n" << templ;
 
@@ -120,8 +125,8 @@ void ReportGenerator::slotConvertTemplate( const QString& templ )
 QString ReportGenerator::findTemplate( const QString& type )
 {
   DocType dType( type );
-
-  QString tmplFile = dType.templateFile( QLocale::countryToString(mArchDoc->locale()->country()) );
+  const QString country = mArchDoc->locale()->bcp47Name();
+  const QString tmplFile = dType.templateFile(country);
 
   if ( tmplFile.isEmpty() ) {
       QMessageBox msgBox;
@@ -142,15 +147,33 @@ QString ReportGenerator::findTemplate( const QString& type )
 
 void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 {
-  mArchDoc = new ArchDoc(id);
+    mArchDoc = new ArchDoc(id);
 
-  const QString clientUid = mArchDoc->clientUid();
-  if( ! clientUid.isEmpty() ) {
-    mAddressProvider->lookupAddressee( clientUid );
-  } else {
-    // no address UID specified, skip the addressee search and generate the template directly
-    slotAddresseeSearchFinished(0);
-  }
+    const QString clientUid = mArchDoc->clientUid();
+    if( ! clientUid.isEmpty() ) {
+        AddressProvider::LookupState state = mAddressProvider->lookupAddressee( clientUid );
+        KContacts::Addressee contact;
+        switch( state ) {
+        case AddressProvider::LookupFromCache:
+            contact = mAddressProvider->getAddresseeFromCache(clientUid);
+            slotAddresseeFound(clientUid, contact);
+            break;
+        case AddressProvider::LookupNotFound:
+        case AddressProvider::ItemError:
+        case AddressProvider::BackendError:
+            // set an empty contact
+            slotAddresseeFound(clientUid, contact);
+            break;
+        case AddressProvider::LookupOngoing:
+        case AddressProvider::LookupStarted:
+            // Not much to do, just wait and let the addressprovider
+            // hit the slotAddresseFound
+            break;
+        }
+    } else {
+        // no address UID specified, skip the addressee search and generate the template directly
+        slotAddresseeSearchFinished(0);
+    }
 }
 
 void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addressee& contact )
@@ -166,6 +189,8 @@ void ReportGenerator::setMyContact( const KContacts::Addressee& contact )
 
 void ReportGenerator::slotAddresseeSearchFinished( int )
 {
+    qDebug() << "** Reached slotAddresseeSearchFinished!";
+
   // now the addressee search through the address provider is finished.
   // Rendering can be started.
   QString tmplFile = findTemplate( mArchDoc->docType() );
@@ -337,9 +362,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   // My own contact data
 
   const QString output = tmpl.expand();
-
-  emit templateGenerated( output );
-
+  convertTemplate(output);
 }
 
 #define ADDRESS_TAG( PREFIX, TAG ) QString("%1_%2").arg( PREFIX ).arg( TAG )
@@ -483,7 +506,7 @@ QStringList ReportGenerator::findTrml2Pdf( )
 
 void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID, const QString& archId )
 {
-    mErrors = QString();
+    mErrors.clear();
     // findTrml2Pdf returns a list of command line parts for the converter, such as
     // /usr/bin/pyhton /usr/local/share/erml2pdf.py
     QStringList rmlbin = findTrml2Pdf();
@@ -549,9 +572,9 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
         args << rmlFile;
     }
 
-    mFile.setFileName( mFile.fileName() );
     mOutputSize = 0;
     if ( mFile.open( QIODevice::WriteOnly ) ) {
+        qDebug() << "Converting " << rmlFile << "using" << prg << args.join(QChar(' '));
         mProcess = new QProcess(this);
         connect(mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(slotReceivedStdout()));
         connect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(slotReceivedStderr()));
@@ -587,6 +610,7 @@ void ReportGenerator::slotError( QProcess::ProcessError err )
 void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
 {
     mFile.close();
+    const QString rmlFile = mProcess->arguments().last(); // the file name of the temp rmlfile
     mProcess->deleteLater();
     Q_UNUSED(stat);
 
@@ -594,7 +618,7 @@ void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
     // qDebug () << "Wrote bytes to the output file: " << mOutputSize;
     if ( exitCode == 0 ) {
         emit pdfAvailable( mFile.fileName() );
-        mFile.setFileName( QString() );
+        QFile::remove(rmlFile); // remove the rmlFile
     } else {
         if( mErrors.contains(QLatin1String("No module named Reportlab"))) {
             mErrors = i18n("To generate PDF output, Kraft requires the python module ReportLab which can not be found.\n\n"
@@ -615,7 +639,10 @@ void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
         msgBox.exec();
         mErrors.clear();
     }
+    mFile.setFileName( QString() );
+
     QApplication::restoreOverrideCursor();
+    mProcess = 0;
 }
 
 

@@ -46,7 +46,8 @@
 
 AllDocsView::AllDocsView( QWidget *parent )
 : QWidget( parent ),
-  mAllDocumentsModel(0)
+  mTableModel(0),
+  mDateModel(0)
 {
   QVBoxLayout *box = new QVBoxLayout;
   setLayout( box );
@@ -60,9 +61,12 @@ AllDocsView::AllDocsView( QWidget *parent )
   connect( _searchLine, SIGNAL(textChanged(QString)), this, SLOT(slotSearchTextChanged(QString)) );
 
   QComboBox *filterCombo = new QComboBox;
-  filterCombo->addItem("Recent 10 Documents");
   filterCombo->addItem("All documents");
-  filterCombo->addItem("Document Type");
+  filterCombo->addItem("Documents of last week");
+  filterCombo->addItem("Documents of last month");
+  // filterCombo->addItem("Document Type");
+  connect( filterCombo, SIGNAL(activated(int)),
+           this, SLOT(slotAmountFilterChanged(int)));
 
   QHBoxLayout *hbox = new QHBoxLayout;
   QLabel *l1 = new QLabel(i18n("&Show: "));
@@ -91,32 +95,49 @@ AllDocsView::AllDocsView( QWidget *parent )
 
 AllDocsView::~AllDocsView()
 {
-  QString state = mAllView->horizontalHeader()->saveState().toBase64();
-  KraftSettings::self()->setDigestListColumnsAll( state );
-  KraftSettings::self()->save();
+    const QByteArray state = _tableView->horizontalHeader()->saveState().toBase64();
+    KraftSettings::self()->setDigestListColumnsAll( state );
+
+    const QByteArray state1 = _dateView->header()->saveState().toBase64();
+    KraftSettings::self()->setDigestListColumnsTime(state1);
+
+    KraftSettings::self()->save();
+}
+
+void AllDocsView::slotAmountFilterChanged(int entryNo)
+{
+    int num = -1;
+    if( entryNo == 1 ) {
+        num = 7;
+    } else if( entryNo == 2 ) {
+        num = 31;
+    }
+    mTableModel->setMaxRows(num);
+    mDateModel->setMaxRows(num);
 }
 
 void AllDocsView::slotSearchTextChanged(const QString& newStr )
 {
-    mAllDocumentsModel->setFilterRegExp(newStr);
+    mTableModel->setFilterRegExp(newStr);
+    mDateModel->setFilterRegExp(newStr);
 }
 
 QWidget* AllDocsView::initializeTreeWidget()
 {
   //Note: Currently building the views is done in slotBuildView() that is called from the portal
   //      because otherwise we'd access the database before it is initialized
-  mAllView = new QTableView;
+  _tableView = new QTableView;
   _dateView = new QTreeView;
 
   //Initialise
-  mAllMenu = new QMenu( mAllView );
+  mAllMenu = new QMenu( _tableView );
   mAllMenu->setTitle( i18n("Document Actions"));
 
   //Add treewidgets to the toolbox: All docs view
   QVBoxLayout *vb1 = new QVBoxLayout;
   vb1->setMargin(0);
   _stack = new QStackedWidget(this);
-  _stack->addWidget(mAllView);
+  _stack->addWidget(_tableView);
   _stack->addWidget(_dateView);
 
   vb1->addWidget( _stack );
@@ -128,69 +149,113 @@ QWidget* AllDocsView::initializeTreeWidget()
   vb1->addWidget( mAllViewDetails );
   QWidget *w = new QWidget;
   w->setLayout(vb1);
-  mAllViewDetails->setFixedHeight(160);
   //
   return w;
 }
 
 void AllDocsView::setView( ViewType type )
 {
-    if( !mAllDocumentsModel) return;
+    // change the document listing widget
     if( type == FlatList) {
         _stack->setCurrentIndex(0);
-        mAllDocumentsModel->setEnableTreeview(false);
     } else {
         _stack->setCurrentIndex(1);
-        mAllDocumentsModel->setEnableTreeview(true);
     }
+    // clear the details view
+    mAllViewDetails->slotClearView();
+
+    mCurrentlySelected = QModelIndex();
 }
 
 void AllDocsView::slotBuildView()
 {
-    QByteArray headerStateAll = QByteArray::fromBase64( KraftSettings::self()->digestListColumnsAll().toAscii() );
-    //Create the latest documents view
+    const QByteArray headerStateTable = QByteArray::fromBase64( KraftSettings::self()->digestListColumnsAll().toAscii() );
+    const QByteArray headerStateDate =  QByteArray::fromBase64( KraftSettings::self()->digestListColumnsTime().toAscii() );
 
-    //Create the all documents view
-    mAllDocumentsModel = new DocumentFilterModel(-1, this);
+    mDateModel = new DocumentFilterModel(-1, this);
+    mDateModel->setEnableTreeview(true);
+    mTableModel = new DocumentFilterModel(-1, this);
+    mTableModel->setEnableTreeview(false);
 
-    mAllView->setModel(mAllDocumentsModel);
-    _dateView->setModel(mAllDocumentsModel);
-    mAllView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
-    mAllView->verticalHeader()->hide();
-    mAllView->setSortingEnabled(true);
-    mAllView->horizontalHeader()->setMovable( true );
-    mAllView->horizontalHeader()->setSortIndicatorShown( true );
-    mAllView->horizontalHeader()->restoreState( headerStateAll );
-    mAllView->setSelectionBehavior( QAbstractItemView::SelectRows );
-    mAllView->setShowGrid( false );
-    mAllView->hideColumn( DocumentModel::Document_Id );
-    mAllView->hideColumn( DocumentModel::Document_ClientId );
-    mAllView->hideColumn( DocumentModel::Document_ClientAddress );
-    mAllView->showColumn( DocumentModel::Document_ClientName );
+    _tableView->setModel(mTableModel);
+    _dateView->setModel(mDateModel);
+
+    _tableView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
+    _tableView->verticalHeader()->hide();
+    _tableView->setSortingEnabled(true);
+    _tableView->horizontalHeader()->setMovable( true );
+    _tableView->horizontalHeader()->setSortIndicatorShown( true );
+    _tableView->horizontalHeader()->restoreState( headerStateTable );
+    _tableView->setSelectionBehavior( QAbstractItemView::SelectRows );
+    _tableView->setShowGrid( false );
+    _tableView->hideColumn( DocumentModel::Document_Id );
+    _tableView->hideColumn( DocumentModel::Document_ClientId );
+    _tableView->hideColumn( DocumentModel::Document_ClientAddress );
+    _tableView->showColumn( DocumentModel::Document_ClientName );
+    _tableView->hideColumn( DocumentModel::Document_CreationDateRaw);
+    _tableView->hideColumn( DocumentModel::Document_Id_Raw);
+    _tableView->hideColumn( DocumentModel::Treestruct_Type);
+    _tableView->hideColumn( DocumentModel::Treestruct_Month);
+    _tableView->hideColumn( DocumentModel::Treestruct_Year);
+
+    _dateView->header()->restoreState( headerStateDate );
+
+    _dateView->hideColumn( DocumentModel::Document_ClientId );
+    _dateView->hideColumn( DocumentModel::Document_ClientAddress );
+    _dateView->showColumn( DocumentModel::Document_ClientName );
+    _dateView->hideColumn( DocumentModel::Document_CreationDateRaw);
+    _dateView->hideColumn( DocumentModel::Document_Id_Raw);
+    _dateView->hideColumn( DocumentModel::Treestruct_Type);
+    _dateView->hideColumn( DocumentModel::Treestruct_Month);
+    _dateView->hideColumn( DocumentModel::Treestruct_Year);
+
+    _dateView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
     //Initialize common style options
-    QPalette palette;
-    palette.setColor( QPalette::AlternateBase, QColor("#e0fdd1") );
-
-    connect( mAllView->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex) ),
+    connect( _tableView->selectionModel(), SIGNAL( currentRowChanged(QModelIndex,QModelIndex) ),
              this, SLOT(slotCurrentChanged(QModelIndex,QModelIndex)));
-    connect( mAllView, SIGNAL( doubleClicked(QModelIndex) ),
+    connect( _dateView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+             this, SLOT(slotCurrentChanged(QModelIndex,QModelIndex)));
+
+    connect( _tableView, SIGNAL( doubleClicked(QModelIndex) ),
+             this, SLOT( slotDocOpenRequest(QModelIndex) ) );
+    connect( _dateView, SIGNAL( doubleClicked(QModelIndex) ),
              this, SLOT( slotDocOpenRequest(QModelIndex) ) );
 
-    mAllView->setPalette( palette );
-    mAllView->setAlternatingRowColors( true );
-    mAllView->setSelectionMode( QAbstractItemView::SingleSelection );
-    mAllView->setEditTriggers( QAbstractItemView::NoEditTriggers );
-    // mAllView->setExpandsOnDoubleClick( false );
-    slotUpdateView();
+    _tableView->setAlternatingRowColors( true );
+    _dateView->setAlternatingRowColors(false);
+    _tableView->setSelectionMode( QAbstractItemView::SingleSelection );
+    _tableView->setEditTriggers( QAbstractItemView::NoEditTriggers );
+    _dateView->setEditTriggers( QAbstractItemView::NoEditTriggers );
+    _dateView->setExpandsOnDoubleClick( false );
 
+    // expand the current year and month
+    QModelIndex startIdx = mDateModel->index(0,DocBaseModel::Treestruct_Year, QModelIndex());
+    QModelIndexList yearIndexes = mDateModel->match(startIdx, Qt::DisplayRole,
+                                          QVariant(QDate::currentDate().year()) );
+
+    if( yearIndexes.size() > 0 ) {
+        QModelIndex yearIndx = mDateModel->index(yearIndexes.first().row(), 0, yearIndexes.first().parent());
+        _dateView->setExpanded(yearIndx,true);
+
+        QModelIndex startIdxM = mDateModel->index(0, DocBaseModel::Treestruct_Month, yearIndx);
+        QModelIndexList monthIndexes = mDateModel->match(startIdxM, Qt::DisplayRole,
+                                                         QVariant(QDate::currentDate().month()) );
+        if( monthIndexes.size() > 0 ) {
+            QModelIndex mIdx = monthIndexes.first();
+            QModelIndex rIdx = mDateModel->index(mIdx.row(), 0, mIdx.parent());
+            _dateView->setExpanded(rIdx, true);
+        }
+    }
 }
 
 void AllDocsView::slotUpdateView()
 {
-  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-  // static_cast<DateModel*>(mAllDocumentsModel->sourceModel())->setQueryAgain();
-  QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+    static_cast<DocBaseModel*>(mDateModel->sourceModel())->resetData();
+    static_cast<DocBaseModel*>(mTableModel->sourceModel())->resetData();
+    mCurrentlySelected = QModelIndex();
+    QApplication::restoreOverrideCursor();
 }
 
 void AllDocsView::contextMenuEvent( QContextMenuEvent * event )
@@ -206,11 +271,10 @@ void AllDocsView::slotOpenLastPrinted( )
 
 void AllDocsView::slotDocOpenRequest( QModelIndex index )
 {
-  QModelIndex idIndx = index.sibling( index.row(), DocumentModel::Document_Id );
-  const QString id = idIndx.data( Qt::DisplayRole ).toString();
+    Q_UNUSED(index);
+    const QString id = currentDocumentId();
 
-  // qDebug () << "Double click open document ident " << id;
-  emit openDocument( id );
+    emit openDocument( id );
 }
 
 int AllDocsView::currentDocumentRow() const
@@ -220,43 +284,93 @@ int AllDocsView::currentDocumentRow() const
 
 QString AllDocsView::currentDocumentId( ) const
 {
-  QModelIndex indx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Id);
+    bool isDoc = true;
+    DocBaseModel *model;
 
-  const QString data = indx.data(Qt::DisplayRole).toString();
-  // qDebug () << "This is the current selected docID: " << data;
-  return data;
+    if( _stack->currentIndex() == 0 ) {
+        model = static_cast<DocumentModel*>( mTableModel->sourceModel() );
+    } else {
+        model = static_cast<DateModel*>( mDateModel->sourceModel() );
+        isDoc = model->isDocument(mCurrentlySelected);
+    }
+
+    QString id;
+    if( isDoc ) {
+        QModelIndex idIndx = model->index(mCurrentlySelected.row(),
+                                          DocumentModel::Document_Id_Raw, mCurrentlySelected.parent());
+
+        id = idIndx.data( Qt::DisplayRole ).toString();
+    }
+    return id;
 }
 
 void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
 {
-  Q_UNUSED(previous);
+    Q_UNUSED(previous);
 
-  if(index.isValid()) {
-    DocumentModel *model = 0;
-    DocDigestDetailView *view = 0;
+    if(index.isValid()) {
 
-    // qDebug () << "Picking AllDocumentsView!";
-    mCurrentlySelected = mAllDocumentsModel->mapToSource(index);
-    model = static_cast<DocumentModel*>( mAllDocumentsModel->sourceModel() );
-    view = mAllViewDetails;
+        DocBaseModel *model;
+        bool isDoc = true;
+        bool isDateModel= false;
 
-    /* get the corresponding document id */
-    QModelIndex idIndx = mCurrentlySelected.sibling( mCurrentlySelected.row(), DocumentModel::Document_Ident );
-    QString id = idIndx.data( Qt::DisplayRole ).toString();
+        if( _stack->currentIndex() == 0 ) {
+            mCurrentlySelected = mTableModel->mapToSource(index);
+            model = static_cast<DocumentModel*>( mTableModel->sourceModel() );
+        } else {
+            isDateModel = true;
+            mCurrentlySelected = mDateModel->mapToSource(index);
+            model = static_cast<DateModel*>( mDateModel->sourceModel() );
+            isDoc = model->isDocument(mCurrentlySelected);
+        }
 
-    emit docSelected( id );
-    DocDigest digest = model->digest( /* index */ mCurrentlySelected );
-    view->slotShowDocDetails( digest );
-    if( digest.archDocDigestList().size() > 0 ) {
-      mLatestArchivedDigest = digest.archDocDigestList()[0];
+        /* get the corresponding document id */
+        if( isDoc ) {
+            DocDigest digest;
+            QModelIndex idIndx = model->index(mCurrentlySelected.row(),
+                                              DocumentModel::Document_Ident,
+                                              mCurrentlySelected.parent());
+
+            const QString id = idIndx.data( Qt::DisplayRole ).toString();
+
+            emit docSelected( id );
+            digest = model->digest( mCurrentlySelected );
+            mAllViewDetails->slotShowDocDetails( digest );
+            if( digest.archDocDigestList().size() > 0 ) {
+                mLatestArchivedDigest = digest.archDocDigestList()[0];
+            } else {
+                mLatestArchivedDigest = ArchDocDigest();
+            }
+        } else {
+            const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
+                                                    DocumentModel::Treestruct_Type,
+                                                    mCurrentlySelected.parent());
+
+            int type = idIndx.data( Qt::DisplayRole ).toInt();
+            if( isDateModel) {
+                const QModelIndex yIndx = model->index(mCurrentlySelected.row(),
+                                                       DocumentModel::Treestruct_Year,
+                                                       mCurrentlySelected.parent());
+                int year = yIndx.data( Qt::DisplayRole ).toInt();
+
+                if( type == AbstractIndx::MonthType ) {
+                    const QModelIndex mIndx = model->index(mCurrentlySelected.row(),
+                                                     DocumentModel::Treestruct_Month,
+                                                     mCurrentlySelected.parent());
+                    int month = mIndx.data( Qt::DisplayRole ).toInt();
+
+                    mAllViewDetails->slotShowMonthDetails(year, month);
+                } else if( type == AbstractIndx::YearType ) {
+                    mAllViewDetails->slotShowYearDetails(year);
+                }
+            }
+        }
     } else {
-      mLatestArchivedDigest = ArchDocDigest();
+        // qDebug () << "Got invalid index, clearing digest view.";
+        emit docSelected( QString() );
+        mAllViewDetails->slotClearView();
     }
-  } else {
-    // qDebug () << "Got invalid index, clearing digest view.";
-    emit docSelected( QString() );
-  }
-  //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);
+    //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);
 }
 
 QVector<QMenu*> AllDocsView::contextMenus()

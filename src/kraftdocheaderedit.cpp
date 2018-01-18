@@ -23,6 +23,8 @@
 #include <QLayout>
 #include <QComboBox>
 
+#include "addressprovider.h"
+
 KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   : KraftDocEdit( parent )
 {
@@ -54,4 +56,12 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
 
   setTitle( i18n( "Document Header" ) );
   setColor( "#9af0ff" );
+
+  // if the Akonadi-Backend is down, just show a text
+  QScopedPointer<AddressProvider> addressProvider;
+  addressProvider.reset(new AddressProvider);
+  if( !addressProvider->backendUp() ) {
+      mDocHeaderEdit->pb_pickAddressee->hide();
+      mDocHeaderEdit->m_labName->setText( i18n("Manually set in address field."));
+  }
 }

@@ -20,6 +20,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 
+#include "kraftsettings.h"
 #include "addressselectorwidget.h"
 #include "addressselectordialog.h"
 
@@ -27,6 +28,8 @@ AddressSelectorDialog::AddressSelectorDialog( QWidget *parent )
     :QDialog(parent)
 {
     setModal( true );
+    const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->addressSelectDialogSize().toAscii() );
+    restoreGeometry(geo);
 
     _addressSelectorWidget = new AddressSelectorWidget(this, false);
     connect(_addressSelectorWidget, SIGNAL(addressSelected(KContacts::Addressee)),
@@ -48,9 +51,19 @@ AddressSelectorDialog::AddressSelectorDialog( QWidget *parent )
 void AddressSelectorDialog::slotAddresseeSelected(  const KContacts::Addressee& addressee )
 {
     _addressee = addressee;
+    _addressee.insertCustom(CUSTOM_ADDRESS_MARKER, "addressbook");
 }
 
 KContacts::Addressee AddressSelectorDialog::addressee()
 {
     return _addressee;
+}
+
+void AddressSelectorDialog::done(int r)
+{
+    const QByteArray geo = saveGeometry().toBase64();
+    KraftSettings::self()->setAddressSelectDialogSize(geo);
+    _addressSelectorWidget->saveState();
+
+    QDialog::done(r);
 }

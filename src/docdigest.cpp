@@ -17,6 +17,7 @@
 
 #include <QString>
 #include <QLocale>
+#include <QSqlQuery>
 
 #include <kcontacts/addressee.h>
 
@@ -24,46 +25,54 @@
 #include "defaultprovider.h"
 
 DocDigest::DocDigest( dbID id, const QString& type, const QString& clientID )
-  :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" )
+  :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" ),
+    _archDocLazyLoaded(false)
 {
 
 }
 
 DocDigest::DocDigest()
-  :mLocale( "kraft" )
+  :mLocale( "kraft" ), _archDocLazyLoaded(false)
 {
 }
 
-QString DocDigest::date()
+QString DocDigest::date() const
 {
-    return mDate.toString();
-  // return mLocale.formatDate( mDate, QLocale::ShortDate );
+    return DefaultProvider::self()->locale()->toString(mDate, QLocale::ShortFormat);
 }
 
-QString DocDigest::lastModified()
+QDate DocDigest::rawDate() const
 {
-    return mLastModified.toString();
+    return mDate;
 }
 
-void DocDigest::appendArchDocDigest( const ArchDocDigest& digest )
+QString DocDigest::lastModified() const
 {
-    mArchDocs.append( digest );
+    return DefaultProvider::self()->locale()->toString(mLastModified, QLocale::ShortFormat);
 }
 
 ArchDocDigestList DocDigest::archDocDigestList()
 {
+    if( !_archDocLazyLoaded ) {
+        const QString id(ident());
+
+        qDebug() << "Querying archdocs for document ident " << id;
+        QSqlQuery query;
+        query.prepare("SELECT archDocID, ident, printDate, state FROM archdoc WHERE"
+                      " ident=:id ORDER BY printDate DESC" );
+        query.bindValue(":id", id);
+        query.exec();
+
+        while(query.next()) {
+            int archDocID = query.value(0).toInt();
+            const QString dbIdent = query.value(1).toString();
+            QDateTime printDateTime = query.value(2).toDateTime();
+            int state = query.value(3).toInt();
+            mArchDocs.append( ArchDocDigest( printDateTime, state, dbIdent, dbID(archDocID) ) );
+        }
+        _archDocLazyLoaded = true;
+    }
     return mArchDocs;
-}
-
-void DocDigest::setCountryLanguage( const QString& country, const QString& lang )
-{
-
-    // FIXME KF5 porting - how to do this?
-#if 0
-    KConfig *cfg = KGlobal::config().data();
-    mLocale.setCountry( country, cfg );
-    mLocale.setLanguage( lang, cfg ); // FIXME !!
-#endif
 }
 
 KContacts::Addressee DocDigest::addressee() const

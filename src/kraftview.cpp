@@ -41,7 +41,6 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <KConfigGroup>
 
 // application specific includes
 #include "kraftdb.h"
@@ -72,7 +71,6 @@
 #include "catalogtemplate.h"
 #include "importitemdialog.h"
 #include "addressprovider.h"
-#include "doclocaledialog.h"
 #include "addressselectordialog.h"
 
 #define NO_TAX   0
@@ -138,16 +136,8 @@ KraftView::KraftView(QWidget *parent) :
   connect( mAssistant, SIGNAL( footerTextTemplate( const QString& ) ),
            this, SLOT( slotNewFooterText( const QString& ) ) );
 
-  if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
-    mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
-  }
   connect( mAssistant, SIGNAL( selectPage( int ) ),
            this,  SLOT( slotSwitchToPage( int ) ) );
-
-  QSize size = KraftSettings::self()->docViewSize();
-  if ( !size.isEmpty() ) resize( size );
-  QPoint pos = KraftSettings::self()->docViewPosition();
-  if ( !pos.isNull() ) move( pos );
 
   mAssistant->slotSelectDocPart( KraftDoc::Header );
 
@@ -200,6 +190,10 @@ void KraftView::setupMappers()
 void KraftView::setup( DocGuardedPtr doc )
 {
   KraftViewBase::setup(doc);
+
+  if ( KraftSettings::self()->docViewSplitter().count() == 2 ) {
+    mCSplit->setSizes( KraftSettings::self()->docViewSplitter() );
+  }
 
   setupDocHeaderView();
   setupItems();
@@ -884,12 +878,12 @@ void KraftView::slotDocTypeChanged( const QString& newType )
 void KraftView::slotLanguageSettings()
 {
   // qDebug () << "Language Settings" << endl;
+#if 0
   DocLocaleDialog dia( this );
   QLocale *l = m_doc->locale();
 
   // FIXME locale.
   if ( m_doc ) {
-#if 0
     dia.setLocale( l->country(), l->language() );
 
     if ( dia.exec() == QDialog::Accepted  ) {
@@ -910,8 +904,8 @@ void KraftView::slotLanguageSettings()
         refreshPostCard();
       }
     }
-#endif
   }
+#endif
 }
 
 void KraftView::slotNewHeaderText( const QString& str )
@@ -1059,8 +1053,8 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
         }
 
       }
-      KraftSettings::self()->writeConfig();
-      KraftSettings::self()->readConfig();
+      KraftSettings::self()->save();
+      KraftSettings::self()->load();
 
       newpos = dia->insertAfterPosition();
 
@@ -1365,7 +1359,7 @@ void KraftView::done( int r )
     }
     // remember the sizes of the docassistant splitter if visible.
     mAssistant->saveSplitterSizes();
-
+    KraftSettings::self()->setDocViewSplitter(mCSplit->sizes());
     QDialog::done( r );
 }
 

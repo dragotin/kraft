@@ -36,6 +36,11 @@
 #include <kcontacts/addressee.h>
 #include <kcontacts/contactgroup.h>
 
+#ifdef HAVE_AKONADI
+#include <entitytreemodel.h>
+#include <entitytreeview.h>
+#endif
+
 /* ==================================================================== */
 AddressSortProxyModel::AddressSortProxyModel(AddressProvider *provider, QObject *parent)
     : QSortFilterProxyModel(parent),
@@ -216,10 +221,25 @@ bool AddressSortProxyModel::filterAcceptsRow(int row, const QModelIndex &parent)
     return true;
 }
 
+QVariant AddressSortProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if ( orientation == Qt::Horizontal &&
+         role == Qt::DisplayRole) {
+        if( section == 0 ) {
+            return i18n("Name");
+        } else if ( section == 1 ) {
+            return i18n("Address");
+        }
+    }
+    return QVariant();
+}
 /* ------------------------------------------------------------------------------ */
 
 KraftContactViewer::KraftContactViewer(QWidget *parent)
-    :QWidget(parent), _contactViewer(0)
+    :QWidget(parent)
+#ifdef HAVE_AKONADI
+    , _contactViewer(0)
+#endif
 {
     QVBoxLayout *lay = new QVBoxLayout;
     lay->setMargin(0);
@@ -234,6 +254,8 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 {
 #ifdef HAVE_AKONADI
     _contactViewer->setRawContact(contact);
+#else
+    Q_UNUSED(contact);
 #endif
 
 }
@@ -241,9 +263,11 @@ void KraftContactViewer::setContact( const KContacts::Addressee& contact)
 /* ------------------------------------------------------------------------------ */
 
 AddressSelectorWidget::AddressSelectorWidget(QWidget *parent, bool /* showText */)
-    : QSplitter(parent)
+    : QSplitter(parent),
+      _provider(0)
 {
     setupUi();
+    restoreState();
 }
 
 
@@ -273,7 +297,12 @@ void AddressSelectorWidget::setupUi()
     searchLay->addWidget( edit );
     connect(edit, SIGNAL(textChanged(QString)), SLOT(slotFilterTextChanged(QString)));
 
+#ifdef HAVE_AKONADI
+    _addressTreeView = new Akonadi::EntityTreeView( this );
+#else
     _addressTreeView = new QTreeView;
+#endif
+    _addressTreeView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     leftLay->addWidget(_addressTreeView);
     mProxyModel = new AddressSortProxyModel(_provider, this);
     mProxyModel->setSourceModel(_provider->model());
@@ -307,6 +336,8 @@ void AddressSelectorWidget::setupUi()
     connect(butCreateContact,SIGNAL(clicked()),SLOT(slotCreateNewContact()));
     connect(mButEditContact,SIGNAL(clicked()),SLOT(slotEditContact()));
 
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 }
 
 void AddressSelectorWidget::slotFilterTextChanged( const QString& filter)
@@ -318,20 +349,40 @@ void AddressSelectorWidget::slotFilterTextChanged( const QString& filter)
 
 void AddressSelectorWidget::restoreState()
 {
+    const QList<int> sizes = KraftSettings::self()->addressPickerSplitterSize();
+    setSizes(sizes);
+
+    const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->addressPickerTreeviewState().toAscii() );
+    _addressTreeView->header()->restoreState(state);
+
 }
 
 void AddressSelectorWidget::saveState()
 {
+    const QList<int> s = sizes();
+    KraftSettings::self()->setAddressPickerSplitterSize(s);
+
+    const QByteArray state = _addressTreeView->header()->saveState().toBase64();
+    KraftSettings::self()->setAddressPickerTreeviewState(state);
+
 }
 
+bool AddressSelectorWidget::backendUp() const
+{
+    bool re = false;
+    if( _provider ) {
+        re = _provider->backendUp();
+    }
+    return re;
+}
 
 void AddressSelectorWidget::slotCreateNewContact()
 {
-    // if( mContactsEditor ) delete( mContactsEditor );
-
+#ifdef HAVE_AKONADI
     // FIXME
-    //  mContactsEditor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this );
-    //   mContactsEditor->show();
+_addressEditor.reset(new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this ));
+_addressEditor->show();
+#endif
 }
 
 void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
@@ -343,34 +394,29 @@ void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
         _contactViewer->setContact(contact);
 
         emit addressSelected(contact);
+
+        mButEditContact->setEnabled( true );
+    } else {
+        // qDebug () << "No address was selected!";
+        mButEditContact->setEnabled( false );
     }
 }
 
 void AddressSelectorWidget::slotEditContact()
 {
-#if 0
-  if( mAddressSelectorUi->mAddressList->selectionModel()->hasSelection() ) {
-      QModelIndex index = mItemView->selectionModel()->currentIndex();
+#ifdef HAVE_AKONADI
+
+  if( _addressTreeView->selectionModel()->hasSelection() ) {
+      QModelIndex index = _addressTreeView->selectionModel()->currentIndex();
     if ( index.isValid() ) {
       const Akonadi::Item item = index.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
       if ( item.isValid() && item.hasPayload<KContacts::Addressee>() ) {
-        if( mContactsEditor ) delete( mContactsEditor );
-        mContactsEditor = new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::EditMode, this );
-        mContactsEditor->setContact( item );
-        mContactsEditor->show();
+        _addressEditor.reset(new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::EditMode, this ));
+        _addressEditor->setContact( item );
+        _addressEditor->show();
       }
     }
   }
 #endif
-}
-
-void AddressSelectorWidget::slotItemActivated( const QModelIndex& index )
-{
-    if ( index.isValid() ) {
-      mButEditContact->setEnabled( true );
-    } else {
-      // qDebug () << "No address was selected!";
-      mButEditContact->setEnabled( false );
-    }
 }
 

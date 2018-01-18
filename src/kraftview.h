@@ -33,6 +33,7 @@
 #include <QMap>
 #include <QLabel>
 #include <QLabel>
+#include <QDialog>
 
 #include <kcontacts/addressee.h>
 

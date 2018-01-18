@@ -25,6 +25,9 @@
 
 #include <kjob.h>
 
+// use define CUSTOM_ADDRESS_MARKER to mark the origin of addresses with .insertCustom
+#define CUSTOM_ADDRESS_MARKER "kraft", "identity_source"
+
 class AddressProviderPrivate;
 
 
@@ -33,6 +36,11 @@ class AddressProvider : public QObject
   Q_OBJECT
 public:
   AddressProvider( QObject* parent = 0 );
+
+  enum LookupState { LookupOngoing, LookupStarted, LookupFromCache, LookupNotFound, ItemError, BackendError };
+
+  bool backendUp();
+  QString backendName() const;
 
   /**
    * @brief lookupAddressee - look up an addressee by it's uid.
@@ -43,8 +51,18 @@ public:
    *
    * Make sure to always use a non empty uid.
    */
-  void lookupAddressee( const QString& uid );
+  LookupState lookupAddressee( const QString& uid );
   QString formattedAddress( const KContacts::Addressee& ) const;
+
+  /**
+    * @brief return an address from cache
+    * @param uid - the unique address uid
+    *
+    * Use this method to get the address if the lookupAddressee method
+    * returned LookupFromCache. In this case, the address is already
+    * known and can be fetched synchronously
+    */
+  KContacts::Addressee getAddresseeFromCache(const QString& uid);
 
   /**
    * @brief model - returns an Qt model for a tree view.
@@ -74,11 +92,13 @@ public:
    */
   QString errorMsg( const QString& uid );
 
-protected slots:
-  void searchResult( KJob* );
+public slots:
+  void slotResetNotFoundCache();
 
+protected slots:
   void slotErrorMsg(const QString& uid, const QString& msg);
   void slotAddresseeFound( const QString& uid, const KContacts::Addressee contact);
+  void slotAddresseeNotFound( const QString& uid );
 
 signals:
   /**
@@ -93,8 +113,11 @@ signals:
   void lookupResult( const QString&, const KContacts::Addressee& );
 
 private:
+  QHash<QString, KContacts::Addressee> _addressCache;
+
   AddressProviderPrivate *_d;
   QHash<QString, QString> _errMessages;
+  QSet<QString> _notFoundUids;
 };
 
 #endif // ADDRESSPROVIDER_H

@@ -29,6 +29,7 @@
 #include "ui_createdb.h"
 #include "ui_upgradedb.h"
 #include "ui_sqlitedetails.h"
+#include "ui_identity.h"
 
 #include "kraftcat_export.h"
 
@@ -57,7 +58,7 @@ class DbSelectPage:public QWizardPage
 
   public:
   DbSelectPage( QWidget *parent = 0 );
-  QString selectedDriver();
+  QString selectedDriver() const;
   int nextId() const;
 
   private:
@@ -68,30 +69,34 @@ class DbSelectPage:public QWizardPage
 
 class SqLiteDetailsPage:public QWizardPage
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
-  SqLiteDetailsPage( QWidget *parent = 0 );
+    SqLiteDetailsPage( QWidget *parent = 0 );
 
-  QUrl url();
-  protected slots:
+    QUrl url();
+    int nextId() const;
+    bool validatePage();
+
   private:
-  Ui::sqLiteDetailsForm ui;
+    Ui::sqLiteDetailsForm ui;
 };
 
 // ---------------------------------------------------------------------------
 
 class MysqlDetailsPage:public QWizardPage
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
-  MysqlDetailsPage( QWidget *parent = 0 );
-  
-  void reloadSettings();
+    MysqlDetailsPage( QWidget *parent = 0 );
+
+    void reloadSettings();
+    int nextId() const;
+    bool validatePage();
 
   private:
-  Ui::mySqlDetailsForm ui;
+    Ui::mySqlDetailsForm ui;
 };
 
 // ---------------------------------------------------------------------------
@@ -110,6 +115,7 @@ class CreateDbPage:public QWizardPage
   void setCreateCmdsCurrent( int );
   void setFillCmdsCurrent( int );
 
+  int nextId() const;
   public slots:
   void slotStatusMessage( const QString& );
   void slotCountCreateProgress( bool );
@@ -129,6 +135,8 @@ class UpgradeDbPage:public QWizardPage
 
   public:
   UpgradeDbPage( QWidget *parent = 0 );
+
+  int nextId() const;
 
   public slots:
   void slotSetStatusText( const QString& );
@@ -153,12 +161,14 @@ class OwnAddressPage:public QWizardPage
 
   void saveOwnName();
 
+  int nextId() const;
   private:
   AddressSelectorWidget *mAddresses;
   KContacts::Addressee mMe;
+  Ui::manualOwnIdentity ui;
 
   private slots:
-  void gotMyAddress( Addressee );
+  void gotMyAddress( const KContacts::Addressee& addressee);
 
 };
 
@@ -170,6 +180,7 @@ class FinalStatusPage:public QWizardPage
 
   public:
   FinalStatusPage( QWidget *parent = 0 );
+  int nextId() const;
 
   public slots:
   void slotSetStatusText( const QString& );
@@ -198,26 +209,23 @@ public:
 
     SetupAssistant( QWidget *parent = 0 );
     bool init( Mode );
-    void createDatabase( bool );
 
     ~SetupAssistant();
 
+    bool handleSqLiteDetails();
+    bool handleMysqlDetails();
+
 public slots:
-    void back();
-    void next();
     void done( int );
 
 private slots:
     void slotCurrentPageChanged(int currId);
 
 private:
-    void handleDatabaseBackendSelect();
-    void handleSqLiteDetails();
-    void handleMysqlDetails();
     void startDatabaseCreation();
     void startDatabaseUpdate();
     void finalizePage();
-    QString defaultSqliteFilename();
+    QString defaultSqliteFilename() const;
 
 
     Mode mMode;

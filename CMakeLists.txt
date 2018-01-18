@@ -14,50 +14,55 @@ include(KDEFrameworkCompilerSettings)
 include(KDECMakeSettings)
 include(FeatureSummary)
 
+# Uncomment to enable some tweaks for AppImage build
+# add_definitions(-DBUILD_APPIMAGE=1)
+
 # TODO: Build without deprecated QUrl methods
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0)
 
-# remove override later, this is for a bug in kxmlguiwindow.h which
-# does not implement the member of QTabWidget hasHeightForWidth
-ADD_DEFINITIONS(-Doverride=)
-
-# QCA still uses slots/signals keywords
 remove_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
-find_package(KF5AkonadiContact)
-
 find_package(Qt5 CONFIG REQUIRED
     Core
-    Concurrent
-    DBus
-    Network
-    Widgets
+    Gui
     Sql
-    WebEngine
-    WebEngineWidgets
+    Widgets
+    Xml
 )
 
 find_package(KF5 REQUIRED COMPONENTS
-    Akonadi
-    Contacts
     CoreAddons
-    DocTools
     I18n
-    Emoticons
-    GlobalAccel
-    GuiAddons
-    KIO
-    NotifyConfig
-    Sonnet
-    TextWidgets
-    Wallet
     WidgetsAddons
     XmlGui
 )
 
+find_package(KF5Contacts REQUIRED)
+
+find_package(KF5Akonadi)
+set_package_properties(KF5Akonadi PROPERTIES
+    DESCRIPTION "Library for general Access to Akonadi"
+    URL "https://www.kde.org/"
+    PURPOSE "Optionally used for addressbook integration"
+    TYPE OPTIONAL
+)
+
+find_package(KF5AkonadiContact)
+set_package_properties(KF5AkonadiContact PROPERTIES
+    DESCRIPTION "Library for Accessing Contacts stored in Akonadi"
+    URL "https://www.kde.org/"
+    PURPOSE "Optionally used for addressbook integration"
+    TYPE OPTIONAL
+)
+
+if(KF5Akonadi_FOUND AND KF5AkonadiContact_FOUND)
+   add_definitions(-DHAVE_AKONADI)
+endif()
+
 find_package(Ctemplate REQUIRED)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 #option(QTINDICATE_DISABLE "Disable support for notifications via indicator")
 
 add_definitions(${QT_DEFINITIONS} )
@@ -71,5 +76,6 @@ add_subdirectory(reports)
 add_subdirectory(importfilter)
 add_subdirectory(tools)
 add_subdirectory(styles)
+add_subdirectory(meta)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

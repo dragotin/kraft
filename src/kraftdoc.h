@@ -127,7 +127,6 @@ class KraftDoc : public QObject
   QString country() const;
   QString language() const;
 
-  void setCountryLanguage( const QString&, const QString& );
 
   public slots:
   /** calls redrawDocument() on all views connected to the document object and is 

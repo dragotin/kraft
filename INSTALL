@@ -47,7 +47,11 @@ Required packages for building with openSUSE Leap 42.2:
 - knotifyconfig-devel
 - kglobalaccel-devel
 - libctemplate-devel
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> upstream/kf5
 
 -----------------------------------------------------
 Quick-start 1: Build Kraft

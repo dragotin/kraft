@@ -29,7 +29,6 @@
 #include <QLocale>
 
 #include <QDebug>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 
 #include "defaultprovider.h"

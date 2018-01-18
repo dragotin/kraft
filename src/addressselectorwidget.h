@@ -22,10 +22,10 @@
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
-#define HAVE_AKONADI 1
-
 #ifdef HAVE_AKONADI
 #include <Akonadi/Contact/ContactViewer>
+#include <Akonadi/Contact/ContactEditorDialog>
+
 #endif
 
 #include <kcontacts/addressee.h>
@@ -35,11 +35,11 @@
 using namespace KContacts;
 
 class QLabel;
-class QPushButton;
 class QTreeView;
 class QuickSearchWidget;
 class QItemSelectionModel;
 class QuickSearchWidget;
+class QPushButton;
 
 /* =============================================================== */
 
@@ -65,6 +65,7 @@ class AddressSortProxyModel : public QSortFilterProxyModel
 
 public:
     AddressSortProxyModel(AddressProvider *provider, QObject *parent = 0);
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 protected:
     bool filterAcceptsRow(int row, const QModelIndex &parent) const;
@@ -85,6 +86,8 @@ public:
 
   ~AddressSelectorWidget();
 
+    bool backendUp() const;
+
 signals:
   void addressSelected(KContacts::Addressee);
 
@@ -95,7 +98,6 @@ protected slots:
   void slotCreateNewContact();
   void slotEditContact();
   void restoreState();
-  void slotItemActivated( const QModelIndex& index );
   void slotFilterTextChanged( const QString& filter);
 
 private slots:
@@ -110,7 +112,9 @@ private:
   AddressSortProxyModel *mProxyModel;
   QTreeView *_addressTreeView;
   KraftContactViewer *_contactViewer;
-
+#ifdef HAVE_AKONADI
+  QScopedPointer<Akonadi::ContactEditorDialog> _addressEditor;
+#endif
 };
 
 #endif // AKONADIADDRESSSELECTOR_H

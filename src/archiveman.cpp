@@ -178,8 +178,9 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
     record.setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
     record.setValue( "projectLabel", KraftDB::self()->mysqlEuroEncode(doc->projectLabel() ) );
-    record.setValue( "country",  doc->country() );
-    record.setValue( "language", doc->language() );
+    QLocale *loc = doc->locale();
+    record.setValue( "country",  loc->bcp47Name() );
+    record.setValue( "language", "" );
     record.setValue( "tax", DocumentMan::self()->tax( doc->date() ) );
     record.setValue( "reducedTax", DocumentMan::self()->reducedTax( doc->date() ) );
     if(!model.insertRecord(-1, record)) {

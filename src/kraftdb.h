@@ -132,8 +132,8 @@ protected:
 
 private: // Private attributes
   void close();
-  int checkConnect( const QString&, const QString&,
-                    const QString&, const QString& );
+  int checkConnect(const QString&, const QString&,
+                    const QString&, const QString& , int port);
 
   /** The default database */
   QSqlDatabase m_db;

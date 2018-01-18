@@ -37,6 +37,7 @@
 #include <QDebug>
 #include <kcontacts/addressee.h>
 #include <kactioncollection.h>
+#include <kcontacts/vcardconverter.h>
 
 // application specific includes
 #include "kraftview.h"
@@ -85,8 +86,11 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
   editPaste->setEnabled(false);
 
   mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
-          this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
+
+  const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->portalState().toAscii() );
+  restoreState(state);
+  const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->portalGeometry().toAscii() );
+  restoreGeometry(geo);
 
   setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
@@ -275,8 +279,6 @@ void Portal::slotStartupChecks()
             text = i18n( "There is a database problem: %1" ).arg( err.text() );
         }
 
-
-        // KMessageBox::sorry( this, text, i18n("Serious Database Problem") );
         m_portalView->systemInitError( m_portalView->ptag( text, "problem" ) );
 
         // disable harmfull actions
@@ -311,9 +313,54 @@ void Portal::slotStartupChecks()
 
         // Fetch my address
         const QString myUid = KraftSettings::self()->userUid();
+        bool useManual = false;
+
         if( ! myUid.isEmpty() ) {
+            KContacts::Addressee contact;
             // qDebug () << "Got My UID: " << myUid;
-            mAddressProvider->lookupAddressee( myUid );
+            connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
+                    this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
+
+            AddressProvider::LookupState state = mAddressProvider->lookupAddressee( myUid );
+            switch( state ) {
+            case AddressProvider::LookupFromCache:
+                contact = mAddressProvider->getAddresseeFromCache(myUid);
+                slotReceivedMyAddress(myUid, contact);
+                break;
+            case AddressProvider::LookupNotFound:
+            case AddressProvider::ItemError:
+            case AddressProvider::BackendError:
+                // Try to read from stored vcard.
+                useManual = true;
+                break;
+            case AddressProvider::LookupOngoing:
+            case AddressProvider::LookupStarted:
+                // Not much to do, just wait
+                break;
+            }
+        } else {
+            // in case there is no uid in the settings file, try to use the manual address.
+            useManual = true;
+        }
+
+        if( useManual ) {
+            // check if the vcard can be read
+            QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+            file += "/myidentity.vcd";
+            QFile f(file);
+            if( f.exists() ) {
+                if( f.open( QIODevice::ReadOnly )) {
+                    const QByteArray data = f.readAll();
+                    VCardConverter converter;
+                    Addressee::List list = converter.parseVCards( data );
+
+                    if( list.count() > 0 ) {
+                        KContacts::Addressee c = list.at(0);
+                        c.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
+                        slotReceivedMyAddress(QString::null, c);
+                    }
+                }
+            }
         }
 
         slotStatusMsg( i18n( "Ready." ) );
@@ -322,24 +369,28 @@ void Portal::slotStartupChecks()
 
 void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Addressee& contact )
 {
+    disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
+                this, SLOT(slotReceivedMyAddress(QString, KContacts::Addressee)));
+
     if( contact.isEmpty() ) {
         if( !uid.isEmpty() ) {
+            // FIXME: Read the stored Address and compare the uid
             const QString err = mAddressProvider->errorMsg(uid);
-            qDebug () << "My-Contact is empty: " << err;
+            qDebug () << "My-Contact could not be found:" << err;
         }
         return;
     }
 
     myContact = contact;
 
-    KraftSettings::self()->setUserUid( contact.uid() );
-    KraftSettings::self()->writeConfig();
-
     // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
-    ReportGenerator::self()->setMyContact( contact );
+    ReportGenerator::self()->setMyContact( myContact );
 
-    disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
-                this, SLOT(slotReceivedMyAddress(QString, KContacts::Addressee)));
+    QString name = myContact.formattedName();
+    if( !name.isEmpty() ) {
+        name = i18n("Welcome to Kraft, %1").arg(name);
+        statusBar()->showMessage(name, 30*1000);
+    }
 }
 
 bool Portal::queryClose()
@@ -560,6 +611,8 @@ void Portal::slotMailPdfAvailable( const QString& fileName )
 
 void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addressee& contact )
 {
+    Q_UNUSED(uid);
+
     QString mailReceiver;
     if( !contact.isEmpty() ) {
         mailReceiver = contact.fullEmail(); // the prefered email
@@ -740,14 +793,10 @@ void Portal::createView( DocGuardedPtr doc )
 
   if( !mViewMap.contains(doc) ){
       KraftView *view = new KraftView( this );
+      const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->docEditGeometry().toAscii() );
+      view->restoreGeometry(geo);
       view->setup( doc );
       view->redrawDocument();
-      QSize s = KraftSettings::self()->docViewSize();
-      if ( !s.isValid() ) {
-          s.setWidth( 640 );
-          s.setHeight( 400 );
-      }
-      view->resize( s );
       view->slotSwitchToPage( KraftDoc::Positions );
       view->show();
 
@@ -769,12 +818,8 @@ void Portal::createROView( DocGuardedPtr doc )
         KraftViewRO *view = new KraftViewRO( this );
         view->setup( doc );
         // view->redrawDocument();
-        QSize s = KraftSettings::self()->rODocViewSize();
-        if ( !s.isValid() ) {
-            s.setWidth( 640 );
-            s.setHeight( 400 );
-        }
-        view->resize( s );
+        const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->docViewROGeometry().toAscii() );
+        view->restoreGeometry(geo);
         view->show();
         mViewMap[doc] = view;
 
@@ -791,14 +836,21 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
     // doc is only valid on success!
     if ( doc )  {
         KraftViewBase *view = mViewMap[doc];
-        if( success && view->type() == KraftViewBase::ReadWrite ) {
-            AllDocsView *dv = m_portalView->docDigestView();
-            dv->slotUpdateView();
+        const QByteArray geo = view->saveGeometry().toBase64();
+        if( success ) {
+            if( view->type() == KraftViewBase::ReadWrite ) {
+                AllDocsView *dv = m_portalView->docDigestView();
+                dv->slotUpdateView();
+                KraftSettings::self()->setDocEditGeometry(geo);
+            } else {
+                KraftSettings::self()->setDocViewROGeometry(geo);
+            }
         }
         if( mViewMap.contains(doc)) {
             mViewMap.remove(doc);
             view->deleteLater();
         }
+
         // qDebug () << "A view was closed saving and doc is new: " << doc->isNew() << endl;
         delete doc;
     } else {
@@ -832,6 +884,11 @@ void Portal::closeEvent( QCloseEvent *event )
         if(!w->close())
             break;
     }
+
+    const QByteArray state = saveState().toBase64();
+    KraftSettings::self()->setPortalState(state);
+    const QByteArray geo = saveGeometry().toBase64();
+    KraftSettings::self()->setPortalGeometry(geo);
 
     if(event) {
     	KXmlGuiWindow::closeEvent(event);
@@ -977,7 +1034,7 @@ void Portal::preferences()
   connect( _prefsDialog, SIGNAL(finished(int)), SLOT(slotPrefsDialogFinished(int)) );
   connect( _prefsDialog, SIGNAL(newOwnIdentity(const QString&, KContacts::Addressee)),
            SLOT(slotReceivedMyAddress(QString,KContacts::Addressee)));
-  _prefsDialog->setMyIdentity( myContact );
+  _prefsDialog->setMyIdentity( myContact, mAddressProvider->backendUp() );
 
   _prefsDialog->open();
 }

@@ -146,14 +146,17 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
             if( user.isEmpty() ) user = DatabaseSettings::self()->dbUser();
             QString pwd = dbPasswd;
             if( pwd.isEmpty() ) pwd = DatabaseSettings::self()->dbPassword();
+
+            // FIXME: get port from user interface
+            int port = DatabaseSettings::self()->dbServerPort();
             // qDebug () << "Try to open MySQL database " << name << endl;
-            re = checkConnect( host, name , user, pwd );
+            re = checkConnect( host, name , user, pwd, port);
         } else if(mDatabaseDriver == "QSQLITE") {
             // SqlLite only requires a valid file name which comes in as Database Name
             QString name = dbName;
             if( name.isEmpty() ) name = DatabaseSettings::self()->dbFile();
             // qDebug () << "Try to open SqLite database " << name << endl;
-            re = checkConnect( "", name, "", "");
+            re = checkConnect( "", name, "", "", -1);
         }
         if ( re == 0 ) {
             // Database successfully opened; we can now issue SQL commands.
@@ -181,7 +184,7 @@ void KraftDB::close()
 
 
 int KraftDB::checkConnect( const QString& host, const QString& dbName,
-                           const QString& user, const QString& pwd )
+                           const QString& user, const QString& pwd, int port )
 {
     // works for both mysql and sqlite if the filename for sqlite comes in
     // as parameter two
@@ -190,7 +193,9 @@ int KraftDB::checkConnect( const QString& host, const QString& dbName,
     m_db.setDatabaseName( dbName );
     m_db.setUserName( user );
     m_db.setPassword( pwd );
-
+    if( port > -1 ) {
+        m_db.setPort(port);
+    }
     int re = 0;
 
     m_db.open();

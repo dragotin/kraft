@@ -30,8 +30,8 @@
 class dbID
 {
 public:
-    dbID(int id):m_id(id){};
-    dbID():m_id(-1){};
+    dbID(int id):m_id(id){}
+    dbID():m_id(-1){}
     int intID() const { return m_id; }
 
     bool operator==( const int& _u ) const

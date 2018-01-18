@@ -19,15 +19,17 @@
 #define ADDRESSPROVIDER_AKONADI_H
 
 #include <QSet>
+#include <QLatin1String>
 
 #include <kcontacts/addressee.h>
 
 #include <kjob.h>
 
+#ifdef HAVE_AKONADI
 #include <AkonadiCore/session.h>
 #include <AkonadiCore/changerecorder.h>
 #include <akonadi/contact/contactstreemodel.h>
-
+#endif
 
 class QAbstractItemModel;
 class AddressItemModel;
@@ -39,7 +41,13 @@ class AddressProviderPrivate : public QObject
 public:
     AddressProviderPrivate( QObject* parent = 0 );
 
-    void lookupAddressee( const QString& uid );
+    // initialize the backend and return true if that worked.
+    bool init();
+    // returns the result of the init process later on
+    bool backendUp();
+    QString backendName() const;
+
+    bool lookupAddressee( const QString& uid );
     QString formattedAddress( const KContacts::Addressee& ) const;
 
     QAbstractItemModel *model();
@@ -47,12 +55,15 @@ public:
     KContacts::Addressee getAddressee(int row, const QModelIndex &parent);
     KContacts::Addressee getAddressee(const QModelIndex& indx);
 
+    bool isSearchOngoing(const QString& uid);
+
 public slots:
     void searchResult( KJob* );
 
 signals:
     //
     void addresseeFound( const QString&, const KContacts::Addressee& );
+    void addresseeNotFound( const QString& );
 
     // error message when looking up the address for a UID
     void lookupError( const QString&, const QString&);
@@ -62,10 +73,17 @@ signals:
 
 private:
     QSet<QString>        mUidSearches;
+    bool                 _akonadiUp;
 
+#ifdef HAVE_AKONADI
     Akonadi::Session *mSession;
     Akonadi::ChangeRecorder* mMonitor; // FIXME: Must static somehow
     Akonadi::ContactsTreeModel *_model;
+#else
+    void *mSession;
+    void *mMonitor;
+    void *_model;
+#endif
 };
 
-#endif // ADDRESSPROVIDER_H
+#endif // ADDRESSPROVIDER_AKONADI_H

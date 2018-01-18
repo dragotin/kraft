@@ -18,6 +18,9 @@
 
 #include <QDebug>
 
+#include <kcontacts/address.h>
+#include <kcontacts/vcardconverter.h>
+
 #include "setupassistant.h"
 #include "databasesettings.h"
 #include "defaultprovider.h"
@@ -71,7 +74,7 @@ int DbSelectPage::nextId() const
     }
 }
 
-QString DbSelectPage::selectedDriver()
+QString DbSelectPage::selectedDriver() const
 {
     QString re = "QSQLITE";
     if( field("SelectedDbDriverMySql").toBool() ) {
@@ -119,6 +122,20 @@ QUrl SqLiteDetailsPage::url()
     return QUrl::fromLocalFile(fileName);
 }
 
+bool SqLiteDetailsPage::validatePage()
+{
+    return qobject_cast<SetupAssistant*>(wizard())->handleSqLiteDetails();
+}
+
+int SqLiteDetailsPage::nextId() const
+{
+    if( KraftDB::self()->databaseExists() ) {
+        return SetupAssistant::upgradeDbPageNo;
+    } else {
+        return SetupAssistant::createDbPageNo;
+    }
+}
+
 // ---------------------------------------------------------------------------
 
 MysqlDetailsPage::MysqlDetailsPage(QWidget *parent)
@@ -144,6 +161,21 @@ void MysqlDetailsPage::reloadSettings()
     setField("MySqlUser",   DatabaseSettings::self()->dbUser());
     setField("MySqlDbName", DatabaseSettings::self()->dbDatabaseName());
     setField("MySqlPwd", DatabaseSettings::self()->dbPassword());
+}
+
+int MysqlDetailsPage::nextId() const
+{
+    if( KraftDB::self()->databaseExists() ) {
+        return SetupAssistant::upgradeDbPageNo;
+    } else {
+        return SetupAssistant::createDbPageNo;
+    }
+}
+
+bool MysqlDetailsPage::validatePage()
+{
+    bool re = qobject_cast<SetupAssistant*>(wizard())->handleMysqlDetails();
+    return re;
 }
 
 // ---------------------------------------------------------------------------
@@ -218,6 +250,10 @@ void CreateDbPage::slotCountFillProgress( bool res )
     }
 }
 
+int CreateDbPage::nextId() const
+{
+    return SetupAssistant::upgradeDbPageNo;
+}
 // ---------------------------------------------------------------------------
 
 UpgradeDbPage::UpgradeDbPage(QWidget *parent)
@@ -226,8 +262,6 @@ UpgradeDbPage::UpgradeDbPage(QWidget *parent)
     setTitle(i18n("Upgrade the Database"));
     QVBoxLayout *vbox = new QVBoxLayout;
     setLayout( vbox );
-    //TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
-    //TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
     QWidget *w = new QWidget;
     vbox->addWidget( w );
@@ -262,27 +296,58 @@ void UpgradeDbPage::slotCountFillProgress( bool res )
     }
 }
 
+int UpgradeDbPage::nextId() const
+{
+    return SetupAssistant::ownAddressPageNo;
+}
 
 // ---------------------------------------------------------------------------
 
 OwnAddressPage::OwnAddressPage(QWidget *parent)
   :QWizardPage(parent)
 {
-    setTitle(i18n("Your Own Identity"));
+    setTitle(i18n("Your Company Address"));
     QVBoxLayout *vbox = new QVBoxLayout;
-    setLayout( vbox );
-    //TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
-    //TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
+    QTabWidget *tabWidget = new QTabWidget;
 
     QLabel *l = new QLabel;
-    l->setText( i18n("Select your own address from the address book. It is set as a consigner on the documents.") );
+    l->setText( i18n("Select your companies address either from the address book or enter it manually. It is set as a consigner on the documents.") );
     vbox->addWidget( l );
 
-    mAddresses = new AddressSelectorWidget(this);
-    vbox->addWidget( mAddresses );
+    vbox->addWidget(tabWidget);
 
-    connect( mAddresses, SIGNAL( addressSelected(Addressee)),
-             SLOT( gotMyAddress( Addressee ) ) );
+    // == The AddressSelector page
+    QWidget *w = new QWidget;
+    tabWidget->addTab(w, i18n("Select from Addressbook"));
+
+    QVBoxLayout *vbox1 = new QVBoxLayout;
+
+    mAddresses = new AddressSelectorWidget(this);
+    vbox1->addWidget( mAddresses );
+    w->setLayout( vbox1 );
+    setLayout(vbox);
+
+    connect( mAddresses, SIGNAL( addressSelected(KContacts::Addressee)),
+             SLOT( gotMyAddress( KContacts::Addressee ) ) );
+
+    // == The manual page
+    QWidget *w1 = new QWidget;
+    ui.setupUi(w1);
+    int id = tabWidget->addTab(w1, i18n("Manual Entry"));
+    ui.nameLabel->setText( KContacts::Addressee::formattedNameLabel() );
+    ui.orgLabel->setText( KContacts::Addressee::organizationLabel());
+    ui.streetLabel->setText(KContacts::Addressee::businessAddressStreetLabel());
+    ui.postCodeLabel->setText(KContacts::Addressee::businessAddressPostalCodeLabel());
+    ui.cityLabel->setText(KContacts::Addressee::businessAddressLocalityLabel());
+    ui.phoneLabel->setText(KContacts::Addressee::businessPhoneLabel());
+    ui.faxLabel->setText(KContacts::Addressee::businessFaxLabel());
+    ui.mobileLabel->setText(KContacts::Addressee::mobilePhoneLabel());
+    ui.emailLabel->setText(KContacts::Addressee::emailLabel());
+    ui.websiteLabel->setText(KContacts::Addressee::urlLabel());
+
+    if( !mAddresses->backendUp() ) {
+        tabWidget->setCurrentIndex(id);
+    }
 }
 
 OwnAddressPage::~OwnAddressPage()
@@ -290,7 +355,7 @@ OwnAddressPage::~OwnAddressPage()
     delete mAddresses;
 }
 
-void OwnAddressPage::gotMyAddress( Addressee addressee )
+void OwnAddressPage::gotMyAddress(const KContacts::Addressee& addressee)
 {
     mMe = addressee;
 }
@@ -300,10 +365,46 @@ void OwnAddressPage::saveOwnName()
     if( ! mMe.isEmpty() ) {
         KraftSettings::self()->setUserName( mMe.name() );
         KraftSettings::self()->setUserUid( mMe.uid() );
-        KraftSettings::self()->writeConfig();
+        KraftSettings::self()->save();
+    } else {
+        // check for the manual.
+        KContacts::Addressee add;
+        add.setFormattedName(ui.leName->text());
+        add.setOrganization(ui.leOrganization->text());
+        KContacts::Address workAddress;
+
+        workAddress.setStreet(ui.leStreet->text());
+        workAddress.setPostalCode(ui.lePostcode->text());
+        workAddress.setLocality(ui.leCity->text());
+        workAddress.setType(KContacts::Address::Work);
+        add.insertAddress(workAddress);
+
+        add.insertPhoneNumber(PhoneNumber(ui.lePhone->text(), KContacts::PhoneNumber::Work));
+        add.insertPhoneNumber(PhoneNumber(ui.leFax->text(), KContacts::PhoneNumber::Fax));
+        add.insertPhoneNumber(PhoneNumber(ui.leMobile->text(), KContacts::PhoneNumber::Cell));
+        ResourceLocatorUrl resUrl;
+        resUrl.setUrl(QUrl(ui.leWebsite->text()));
+        add.setUrl(resUrl);
+        add.insertEmail(ui.leEmail->text(), true /* prefered */ );
+
+        VCardConverter vcc;
+        QByteArray vcard = vcc.createVCard(add);
+
+        QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+        file += "/myidentity.vcd";
+        QFile f ( file );
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            f.write(vcard);
+            f.close();
+            qDebug() << "Saved own identity to " << file;
+        }
     }
 }
 
+int OwnAddressPage::nextId() const
+{
+    return SetupAssistant::finalStatusPageNo;
+}
 // ---------------------------------------------------------------------------
 FinalStatusPage::FinalStatusPage(QWidget *parent)
     :QWizardPage(parent)
@@ -324,6 +425,11 @@ FinalStatusPage::FinalStatusPage(QWidget *parent)
 void FinalStatusPage::slotSetStatusText( const QString& txt )
 {
     ui.mStatusText->setText( txt );
+}
+
+int FinalStatusPage::nextId() const
+{
+    return -1; // final page
 }
 
 // ---------------------------------------------------------------------------
@@ -349,55 +455,51 @@ SetupAssistant::SetupAssistant( QWidget *parent )
 
 }
 
-void SetupAssistant::next( )
+/*
+ * Current Database Setup Wizard        +----------------+    check if db already exists
+   -----------------------------      > |  MySQL Page    ----------------------------------+
+                                    -/  +--------+-------+                                 v
+   +------------+   +--------------/             |            +----------------+    +---------------+
+   |  Welcome   --->|  DB Select   |         +--->+---------> | create DB Page +--->|  upgrade DB   |
+   +------------+   +--------------\         |                +----------------+    +-----------+---+
+                                    -\   +---+------------+                                 ^   |
+                                      >  |  SQLite Page   ----------------------------------+   |
+                                         +----------------+                                     |
+                                                                                                |
+                                                               +---------------+    +-----------v---+
+                                                               | Final Status  |<---+  Own Address  |
+                                                               +---------------+    +---------------+
+
+ */
+
+QString SetupAssistant::defaultSqliteFilename() const
 {
-  int currId = currentId();
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    QFileInfo fi(path, "kraft.db");
 
-  // qDebug () << "Next was hit with " << item->name();
-
-  if( currId == welcomePageNo ) {
-    // qDebug () << "Nothing to do for the Welcome-Page";
-  } else if( currId == dbSelectPageNo ) {
-    handleDatabaseBackendSelect();
-  } else if( currId == mySqlPageNo ) {
-    // get the mysql datails
-    handleMysqlDetails();
-  } else if( currId == mySqlPageNo) {
-    // get the sqlite filename
-    handleSqLiteDetails();
-  }
-
-  QWizard::next();
-
-}
-
-void SetupAssistant::back()
-{
-    // KAssistantDialog::back();
-}
-
-QString SetupAssistant::defaultSqliteFilename()
-{
-    QString filename = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-    QDir dir(filename); // only the path
-    if( !dir.exists() ) {
-        if (! dir.mkpath(filename) ) {
-            qDebug() << "Failed to create directory "<< filename << "for sqlite db";
+    if( !fi.dir().exists() ) {
+        if (! fi.dir().mkpath(path) ) {
+            qDebug() << "Failed to create directory "<< path << "for sqlite db";
             return QString();
         }
     }
-
-    filename += "/kraft.db";
-    return filename;
-
+    return fi.filePath();
 }
 
 void SetupAssistant::slotCurrentPageChanged( int currId )
 {
-    if( currId == createDbPageNo ) {
+    qDebug() << "Page changed to " << currId;
+
+    if( currId == dbSelectPageNo ) {
+    } else if( currId == mySqlPageNo ) {
+        // TODO: set the mysql datails
+    } else if( currId == sqlitePageNo) {
+        // TODO set the sqlite filename
+    } else if( currId == createDbPageNo ) {
         if( mSqlBackendDriver == QLatin1String("QMYSQL") ) {
+            const QString dbName = field("MySqlDbName").toString();
             if(!KraftDB::self()->dbConnect( QLatin1String("QMYSQL"),
-                                            field("MySqlDbName").toString(),
+                                            dbName,
                                             field("MySqlUser").toString(),
                                             field("MySqlHost").toString(),
                                             field("MySqlPwd").toString() ) ) {
@@ -405,7 +507,6 @@ void SetupAssistant::slotCurrentPageChanged( int currId )
                 return;
             }
         } else {
-            // Fixme - use the default
             QString filename = field("SqliteStorageFile").toString();
             if(filename.isEmpty()) {
                 filename = defaultSqliteFilename();
@@ -454,10 +555,11 @@ void SetupAssistant::done( int result )
     if( selectedDriver == "QMYSQL" ) {
         DatabaseSettings::self()->setDbDatabaseName( field("MySqlDbName").toString() );
         DatabaseSettings::self()->setDbUser( field("MySqlUser").toString() );
-        DatabaseSettings::self()->setDbServerName( field("MySqlHost").toString() );
+        const QString host = field("MySqlHost").toString();
+        DatabaseSettings::self()->setDbServerName( host );
         DatabaseSettings::self()->setDbPassword( field("MySqlPwd").toString() );
     }
-    DatabaseSettings::self()->writeConfig();
+    DatabaseSettings::self()->save();
     qDebug () << "Database backend config written";
     QWizard::done(result);
 }
@@ -565,7 +667,6 @@ void SetupAssistant::startDatabaseUpdate()
 void SetupAssistant::startDatabaseCreation()
 {
     CreateDbPage *mCreateDbPage = qobject_cast<CreateDbPage*>(page(createDbPageNo));
-    UpgradeDbPage *mUpgradeDbPage = qobject_cast<UpgradeDbPage*>(page(upgradeDbPageNo));
 
     if( ! KraftDB::self()->isOk() ) {
         mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials!"));
@@ -626,21 +727,7 @@ void SetupAssistant::startDatabaseCreation()
     disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0 ,0 );
 }
 
-void SetupAssistant::handleDatabaseBackendSelect()
-{
-    DbSelectPage *mDbSelectPage = qobject_cast<DbSelectPage*>(page(dbSelectPageNo));
-
-  // qDebug () << "Set backend driver type " << mDbSelectPage->selectedDriver();
-  if( mDbSelectPage->selectedDriver() == QLatin1String("QSQLITE") ) {
-    // setAppropriate( mMysqlDetailsPageItem, false );
-    // FIXME Port setAppropriate( mSqLiteDetailsPageItem, true );
-  } else {
-    // setAppropriate( mMysqlDetailsPageItem, true );
-    // setAppropriate( mSqLiteDetailsPageItem, false );
-  }
-}
-
-void SetupAssistant::handleSqLiteDetails()
+bool SetupAssistant::handleSqLiteDetails()
 {
     DbSelectPage *mDbSelectPage = qobject_cast<DbSelectPage*>(page(dbSelectPageNo));
 
@@ -650,48 +737,22 @@ void SetupAssistant::handleSqLiteDetails()
 
     mSqlBackendDriver = mDbSelectPage->selectedDriver();
     // qDebug () << "The database driver is " << mSqlBackendDriver;
-    KraftDB::self()->dbConnect( mSqlBackendDriver, file );
+    bool re = KraftDB::self()->dbConnect( mSqlBackendDriver, file );
 
-    // qDebug () << "############ database opened: "<< KraftDB::self()->isOk();
-    bool dbExists = KraftDB::self()->databaseExists();
-
-    // qDebug () << "Database exists: " << dbExists;
-    if( dbExists ) {
-        // FIXME porting
-        // qDebug () << "Database exists, no create needed";
-        // setAppropriate( mCreateDbPageItem, false );
-    } else {
-        // setAppropriate( mCreateDbPageItem, true );
-    }
-    // qDebug () << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
+    return re;
 }
 
-void SetupAssistant::handleMysqlDetails()
+bool SetupAssistant::handleMysqlDetails()
 {
     DbSelectPage *mDbSelectPage = qobject_cast<DbSelectPage*>(page(dbSelectPageNo));
-    QString driver   = mDbSelectPage->selectedDriver();
+    mSqlBackendDriver = mDbSelectPage->selectedDriver();
 
     QString hostName = field("MySqlHost").toString();
     QString databaseName = field("MySqlDbName").toString();
     QString userName = field("MySqlUser").toString();
     QString password = field("MySqlPwd").toString();
 
-    KraftDB::self()->dbConnect( driver, databaseName, userName, hostName, password );
-
-    // qDebug () << "############ database opened: "<< KraftDB::self()->isOk();
-    bool dbExists = KraftDB::self()->databaseExists();
-
-    // qDebug () << "Database exists: " << dbExists;
-    if( dbExists ) {
-        // FIXME Porting
-        // qDebug () << "Database exists, no create needed";
-        // setAppropriate( mCreateDbPageItem, false );
-    } else {
-        // setAppropriate( mCreateDbPageItem, true );
-    }
-    mSqlBackendDriver = QLatin1String("QMYSQL");
-
-    // qDebug () << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
+    return KraftDB::self()->dbConnect( mSqlBackendDriver, databaseName, userName, hostName, password );
 }
 
 bool SetupAssistant::init( Mode mode )
@@ -756,12 +817,6 @@ bool SetupAssistant::init( Mode mode )
         welcomePage->setWelcomeText( configOrigin + text );
     }
     return startDialog ;
-}
-
-void SetupAssistant::createDatabase( bool doIt )
-{
-    // FIXME Porting.
-    // setAppropriate( mDbSelectPageItem, doIt );
 }
 
 SetupAssistant::~SetupAssistant()
