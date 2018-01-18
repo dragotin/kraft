@@ -18,11 +18,8 @@
 // include files for Qt
 #include <QString>
 #include <qdom.h>
-
-// include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kglobal.h>
+#include <QDebug>
+#include <QLocale>
 
 // application specific includes
 #include "einheit.h"
@@ -88,10 +85,9 @@ DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
 
 void DocPositionBase::setAttribute( const Attribute& attrib )
 {
-  if ( attrib.name().isEmpty() )
-    kDebug()  << "WRN: Can not save attribute with empty name!" << endl;
-  else
-    mAttribs[ attrib.name() ] = attrib;
+  if( ! attrib.name().isEmpty() ) {
+      mAttribs[ attrib.name() ] = attrib;
+  }
 }
 
 AttributeMap DocPositionBase::attributes()
@@ -107,7 +103,7 @@ void DocPositionBase::setAttributeMap( AttributeMap attmap )
 void DocPositionBase::loadAttributes()
 {
   if ( m_dbId == -1 ) {
-    kDebug() << "Can not load attributes, no valid database id!" << endl;
+    // qDebug () << "Can not load attributes, no valid database id!" << endl;
     return;
   }
   mAttribs.load( m_dbId );
@@ -179,7 +175,7 @@ QStringList DocPositionBase::tags()
 {
   QStringList tags;
   if ( mAttribs.contains( DocPosition::Tags ) ) {
-    kDebug() << mAttribs[DocPosition::Tags].toString() << endl;
+    // qDebug () << mAttribs[DocPosition::Tags].toString() << endl;
     tags = mAttribs[DocPosition::Tags].value().toStringList();
   }
   return tags;
@@ -209,7 +205,7 @@ int DocPositionBase::taxTypeNumeric()
   else if ( mTaxType == TaxFull )
     return 3;
 
-  kDebug() << "ERR: Vat-type ambigous!";
+  // qDebug () << "ERR: Vat-type ambigous!";
   return 0; // Invalid
 }
 
@@ -290,7 +286,7 @@ Geld DocPositionList::fullTaxSum( double fullTax )
   Geld sum;
 
   if ( fullTax < 0 ) {
-    kError() << "Full Tax is not loaded!";
+    qCritical() << "Full Tax is not loaded!";
   }
   DocPositionListIterator it( *this );
   while( it.hasNext() ) {
@@ -314,7 +310,7 @@ Geld DocPositionList::reducedTaxSum( double reducedTax )
   Geld sum;
 
   if ( reducedTax < 0 ) {
-    kError() << "Reduced Tax is not loaded!";
+    qCritical() << "Reduced Tax is not loaded!";
   }
   DocPositionListIterator it( *this );
   while( it.hasNext() ) {
@@ -351,7 +347,7 @@ QString DocPositionList::posNumber( DocPositionBase* pos )
   return QString::number( 1+indexOf( pos ) );
 }
 
-void DocPositionList::setLocale( KLocale* loc )
+void DocPositionList::setLocale( QLocale* loc )
 {
   mLocale = loc;
 }
@@ -378,7 +374,7 @@ QDomElement DocPositionList::domElement( QDomDocument& doc )
       posElem.appendChild( xmlTextElement( doc, "text", dp->text() ) );
 
       double am = dp->amount();
-      QString h = mLocale->formatNumber( am, 2 );
+      QString h = mLocale->toString( am, 'g', 2 );
       posElem.appendChild( xmlTextElement( doc, "amount", h ));
 
       Einheit e = dp->unit();
@@ -405,7 +401,7 @@ int DocPositionList::compareItems ( DocPosition *dp1, DocPosition *dp2 )
   if( sortkey1 > sortkey2 ) res = 1;
   if( sortkey2 < sortkey1 ) res = -1;
 
-  // kDebug()<< "In sort: comparing " << p1 << " with " << p2 << " = " << res << endl;
+  // qDebug()<< "In sort: comparing " << p1 << " with " << p2 << " = " << res << endl;
   return res;
 }
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #The Kraft Project
 
 **Kraft is free software to help to handle your daily quotes and invoices
@@ -6,6 +7,20 @@ in your small business.**
 Check out the website http://volle-kraft-voraus.de for more information.
 
 Kraft runs on your Linux desktop. No web service, your data stays with you!
+=======
+# The Kraft Project
+
+**Kraft is free software to help to handle documents like quotes and invoices
+in your small business.**
+
+It is a Qt/KF5 based desktop software with a strong focus on ease of use
+and the just enough feature set for the use case. With Kraft, creating documents
+will run smooth and free time for more enjoyable things than office work.
+
+Check out the website http://volle-kraft-voraus.de for more information.
+
+Kraft runs on your Linux desktop. No cloud involved, your data stays with you!
+>>>>>>> upstream/kf5
 
 With Kraft, writing documents like quotes and invoices is very easy and fast.
 Repeating tasks are supported, documents can be generated semi automatically,
@@ -22,11 +37,20 @@ Kraft utilizes a bunch of very useful tools of the free softare world:
 - [ReportLab](http://www.reportlab.com/opensource/) for PDF generation:
 - [ctemplate](https://github.com/OlafvdSpek/ctemplate) templating library.
 
+<<<<<<< HEAD
 ##Interested?
+=======
+## Interested?
+>>>>>>> upstream/kf5
 
 [Install Kraft](http://volle-kraft-voraus.de/Main/Download) on your Linux desktop.
 
 For questions and comments, please speak up. Check the [web site](http://volle-kraft-voraus.de/Main/Contribution)
 for contact details.
 
+<<<<<<< HEAD
 Jun 2005-2017, Klaas Freitag <freitag@kde.org>
+=======
+Jun 2005-2018, Klaas Freitag <freitag@kde.org>
+
+>>>>>>> upstream/kf5

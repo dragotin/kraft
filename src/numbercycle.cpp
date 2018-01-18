@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <klocale.h>
-
 #include "numbercycle.h"
 
 NumberCycle::NumberCycle()

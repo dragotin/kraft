@@ -25,7 +25,7 @@
 #include <kmainwindow.h>
 
 #include <kaction.h>
-#include <kurl.h>
+#include <QUrl>
 
 
 class Brunsviewer : public KMainWindow

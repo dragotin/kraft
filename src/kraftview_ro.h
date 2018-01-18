@@ -24,8 +24,8 @@
 #include <QResizeEvent>
 #include <QLabel>
 
-#include <kdialog.h>
-#include <kabc/addressee.h>
+#include <QDialog>
+#include <kcontacts/addressee.h>
 
 #include "kraftdoc.h"
 
@@ -44,24 +44,8 @@
 #include "catalogtemplate.h"
 #include "kraftview.h"
 
-class DocHeaderEdit;
-class DocFooterEdit;
-class PositionViewWidget;
-class DocPosition;
-class QLabel;
-class QResizeEvent;
-class QSignalMapper;
-class KVBox;
-class QSplitter;
-class DocPostCard;
-class QTimer;
-class CatalogSelection;
-class KPushButton;
-class DocAssistant;
-class CalcPartList;
-class HtmlView;
-
 class Katalog;
+class HtmlView;
 
 class KraftViewRO : public KraftViewBase
 {
@@ -81,7 +65,6 @@ signals:
 
 
 private:
-    KVBox *mGlobalVBox;
     HtmlView *mHtmlView;
 };
 

@@ -15,12 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <klocale.h>
-#include <kdebug.h>
-#include <kvbox.h>
-#include <kdialog.h>
+#include <QDebug>
+#include <QDialog>
 
 #include <QLabel>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
+#include <klocalizedstring.h>
 
 #include "materialkatalogview.h"
 #include "materialselectdialog.h"
@@ -30,23 +33,22 @@
 #include "katalog.h"
 #include "filterheader.h"
 
-MaterialSelectDialog::MaterialSelectDialog( QWidget *parent, const char *name )
-  : KDialog( parent )
+MaterialSelectDialog::MaterialSelectDialog( QWidget *parent)
+  : CalcDialogBase( parent )
 {
-  setObjectName( name );
-  setModal( true );
-  setCaption( i18n("Select Material for Calculation" ) );
-  setButtons( KDialog::Ok | KDialog::Cancel );
+  setWindowTitle( i18n("Add Material to Calculation" ) );
+  QVBoxLayout *mainLayout = new QVBoxLayout;
 
-  KVBox *page = new KVBox( this );
-  setMainWidget( page );
-  QLabel *label = new QLabel( i18n( "Select Material for Calculation" ),
-                              page);
-  label->setObjectName("caption");
+  _centralWidget->setLayout(mainLayout);
 
-  mFilter = new FilterHeader( 0, page );
-  mKatalogListView = new MaterialKatalogListView( page );
-  mFilter->setListView( mKatalogListView );
+  QLabel *label = new QLabel( i18n( "<h1>Add Material to Calculation</h1>" ));
+  mainLayout->addWidget(label);
+
+  mKatalogListView = new MaterialKatalogListView;
+  FilterHeader *filter = new FilterHeader(this, mKatalogListView);
+  mainLayout->addWidget(filter);
+  mainLayout->addWidget(mKatalogListView);
+
   mKatalogListView->setCheckboxes( true );
 
   Katalog *kat = KatalogMan::self()->getKatalog( MaterialKatalogView::MaterialCatalogName );
@@ -66,11 +68,11 @@ MaterialSelectDialog::~MaterialSelectDialog()
 
 void MaterialSelectDialog::accept()
 {
-  kDebug() << "++ Material selected!" << endl;
+  // qDebug () << "++ Material selected!" << endl;
 
   QTreeWidgetItemIterator it( mKatalogListView, QTreeWidgetItemIterator::Checked );
   while (*it) {
-    kDebug() << "T: " << (*it)->text( 0 ) << endl;
+    // qDebug () << "T: " << (*it)->text( 0 ) << endl;
     QTreeWidgetItem *item = *it;
     if( !( mKatalogListView->isChapter( item ) || mKatalogListView->isRoot( item ))) {
       StockMaterial *mat = static_cast<StockMaterial*>( mKatalogListView->itemData( item ) );
@@ -81,7 +83,6 @@ void MaterialSelectDialog::accept()
     ++it;
   }
 
-  KDialog::accept();
+  QDialog::accept();
 }
 
-#include "materialselectdialog.moc"

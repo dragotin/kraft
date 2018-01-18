@@ -49,7 +49,6 @@ public:
   }
 
   bool isStandardText() const;
-  QPixmap pixmap() const;
 
   void setTextType( KraftDoc::Part );
   KraftDoc::Part textType() const { return mTextType; }

@@ -19,17 +19,16 @@
 #include <QFile>
 #include <QRegExp>
 #include <QTextStream>
+#include <QStandardPaths>
+#include <QLocale>
+#include <QDebug>
 
-#include <kstandarddirs.h>
-#include <klocale.h>
-#include <kdebug.h>
+#include <KLocalizedString>
 
 #include "importfilter.h"
 #include "unitmanager.h"
 #include "defaultprovider.h"
 
-#include <kio/netaccess.h>
-#include <ktemporaryfile.h>
 
 ImportFilter::ImportFilter()
   : mStrict( true )
@@ -41,19 +40,18 @@ bool ImportFilter::readDefinition( const QString& name )
 {
   QString defFile = name;
   if ( ! name.startsWith( "/" ) ) {
-    KStandardDirs stdDirs;
     QString defFileName = QString( name ).toLower();
     QString findFile = kdeStdDirPath() + defFileName;
 
-    kDebug() << "KDE StdDir Path: " << findFile;
-    defFile = stdDirs.findResource( "data", findFile );
+    // qDebug () << "KDE StdDir Path: " << findFile;
+    defFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
     if ( defFile.isEmpty() ) {
       mError = i18n( "Unable to find filter called %1" ).arg( name );
       return false;
     }
   }
 
-  kDebug() << "Reading definition file " << defFile;
+  // qDebug () << "Reading definition file " << defFile;
   QFile f( defFile );
   if ( !f.open( QIODevice::ReadOnly ) ) {
     mError = i18n( "Could not open the definition file!" );
@@ -84,11 +82,11 @@ bool ImportFilter::recode( const QString& file, const QString& outfile )
   if ( QFile::exists( cmd ) ) {
     QString command = QString( "%1 -f %2 -t utf-8 -o %3 %4" ).arg( cmd )
                       .arg( mEncoding ).arg( outfile ).arg( file );
-    int result = system( command.toLatin1() );
-    kDebug() << "Recode finished with exit code " << result;
+    int result = system( command.toLocal8Bit().constData() );
+    // qDebug () << "Recode finished with exit code " << result;
     return true;
   } else {
-    kDebug() << "Recode-tool does not exist!";
+    // qDebug () << "Recode-tool does not exist!";
   }
   return false;
 }
@@ -134,12 +132,12 @@ bool DocPositionImportFilter::parseDefinition()
     } else if ( l.startsWith( FILTER_TAG("encoding:", "The encoding of the source file" ),  Qt::CaseInsensitive ) ) {
       mEncoding = ( l.right( l.length()-9 ) ).trimmed();
     } else if ( l.startsWith( FILTER_TAG( "separator:", "The separator used in the source file" ),  Qt::CaseInsensitive ) ) {
-      kDebug() << "Separator found: " << l.right( l.length()-10 );
+      // qDebug () << "Separator found: " << l.right( l.length()-10 );
       mSeparator = ( l.right( l.length()-10 ) ).trimmed();
     } else if ( l.startsWith( FILTER_TAG( "tags:", "Comma separated list of tags for one item" ),  Qt::CaseInsensitive ) ) {
       mTags = ( l.right( l.length()-5 ) ).trimmed();
     } else {
-      kDebug() << "WRN: Unknown filter tag found: " << l;
+      // qDebug () << "WRN: Unknown filter tag found: " << l;
       if ( mError.isEmpty() ) mError = i18n( "Unknown tags: " );
       mError.append( l );
       ret = false;
@@ -155,14 +153,14 @@ bool DocPositionImportFilter::parseDefinition()
 
 void DocPositionImportFilter::debugDefinition()
 {
-  kDebug() << "Amount: " << mAmount;
-  kDebug() << "Unit: " << mUnit;
-  kDebug() << "UnitPrice: " << mUnitPrice;
-  kDebug() << "Text: " << mText;
-  kDebug() << "Separator: <" << mSeparator << ">";
+  // qDebug () << "Amount: " << mAmount;
+  // qDebug () << "Unit: " << mUnit;
+  // qDebug () << "UnitPrice: " << mUnitPrice;
+  // qDebug () << "Text: " << mText;
+  // qDebug () << "Separator: <" << mSeparator << ">";
 }
 
-DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
+DocPositionList DocPositionImportFilter::import( const QUrl &inFile )
 {
   DocPositionList list;
   bool copied = false;
@@ -176,11 +174,11 @@ DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
   if ( !mEncoding.isEmpty() ) {
     file += ".tmp";
     copied = true;
-    kDebug() << "Encoding file to " << file;
+    // qDebug () << "Encoding file to " << file;
 
     ok = recode( inFile.toLocalFile(), file );
     if ( !ok ) {
-      kDebug() << "Recoding failed!";
+      // qDebug () << "Recoding failed!";
       mError = i18n( "Could not recode input file!" );
     }
   }
@@ -188,7 +186,7 @@ DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
   QFile f( file );
 
   if ( ! f.exists() ) {
-    kDebug() << "File " << file << " could not be found!";
+    // qDebug () << "File " << file << " could not be found!";
     mError = i18n( "Unable to open temp file " ) + file;
     ok = false;
   }
@@ -207,7 +205,7 @@ DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
     while ( !t.atEnd() ) {
       cnt++;
       QString l = t.readLine().trimmed();
-      kDebug() << "Importing line " << l;
+      // qDebug () << "Importing line " << l;
       if ( !( l.isEmpty() || l.startsWith( "#" ) ) ) {
         bool ok;
         DocPosition dp = importDocPosition( l, ok );
@@ -218,7 +216,7 @@ DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
     f.close();
   }
   if ( copied ) {
-    KIO::NetAccess::del( file, 0 );
+    QFile::remove( file );
   }
   return list;
 }
@@ -227,7 +225,7 @@ DocPositionList DocPositionImportFilter::import( const KUrl& inFile )
 DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& ok )
 {
   QStringList parts = l.split( mSeparator, QString::KeepEmptyParts );
-  kDebug() << "Importing raw line " << l;
+  // qDebug () << "Importing raw line " << l;
 
   QString h;
   ok = true;
@@ -254,7 +252,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
   if ( convOk ) {
     pos.setAmount( a );
   } else {
-    kDebug() << "WRN: Unable to convert amount to double: " << h;
+    // qDebug () << "WRN: Unable to convert amount to double: " << h;
     if ( mStrict ) ok = false;
   }
 
@@ -264,7 +262,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
  if ( convOk ) {
    pos.setUnitPrice( Geld( a ) );
  } else {
-    kDebug() << "WRN: Unable to convert unit price to double: " << h;
+    // qDebug () << "WRN: Unable to convert unit price to double: " << h;
     if ( mStrict ) ok = false;
  }
 
@@ -289,6 +287,6 @@ QString DocPositionImportFilter::replaceCOL( const QStringList& cols, const QStr
 
     re.replace( replacer, col, Qt::CaseInsensitive );
   }
-  // kDebug() << "replaced line: " << re;
+  // qDebug() << "replaced line: " << re;
   return re;
 }

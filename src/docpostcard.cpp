@@ -18,13 +18,11 @@
 #include "docpostcard.h"
 #include "kraftdoc.h"
 
-#include <klocale.h>
-#include <kglobal.h>
-#include <kurl.h>
-#include <khtmlview.h>
-
-#include <kdebug.h>
-#include <kstandarddirs.h>
+#include <KLocalizedString>
+#include <QLocale>
+#include <QUrl>
+#include <QStandardPaths>
+#include <QDebug>
 #include <QTextDocument>
 
 #define QL1(X) QLatin1String(X)
@@ -34,6 +32,8 @@ DocPostCard::DocPostCard( QWidget *parent )
 {
   setStylesheetFile( "docoverview.css" );
   setTitle( i18n( "Document Overview" ) );
+
+  connect( this, SIGNAL(openUrl(QUrl)), this, SLOT(slotUrlSelected(QUrl)) );
 }
 
 void DocPostCard::setHeaderData( const QString& type,  const QString& date,
@@ -50,22 +50,22 @@ void DocPostCard::setHeaderData( const QString& type,  const QString& date,
 QString DocPostCard::htmlify( const QString& str ) const
 {
   QStringList li = Qt::escape(str).split( "\n" );
-  return "<p>" + li.join( "</p><p>" ) + "</p>";
+  return QL1("<p>") + li.join( "</p><p>" ) + QL1("</p>");
 }
 
-#define REDUCED_TAX_MARK "&sup2"
-#define NO_TAX_MARK "&sup1"
+#define REDUCED_TAX_MARK "&#xB2;"
+#define NO_TAX_MARK "&#xB9;"
 
 void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxType taxType,
                                 double tax, double reducedTax )
 {
-  mPositions = "<div class=\"alignright\" align=\"right\"><table border=\"0\" width=\"99%\">";
+  mPositions = "<div  align=\"right\"><table border=\"0\" width=\"99%\">";
 
   DocPositionListIterator it(posList);
   while( it.hasNext() ) {
       DocPositionBase *dpb = it.next();
       DocPosition *dp = static_cast<DocPosition*>(dpb);
-      mPositions += "<tr><td class=\"itemnums\">";
+      mPositions += "<tr><td valign=\"top\" width=\"20\" class=\"itemnums\">";
 
       if ( dp->toDelete() ) mPositions += "<strike>";
       mPositions += posList.posNumber( dpb ) + ". ";
@@ -84,13 +84,13 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
       mPositions += "</td>";
 
       if( mShowPrices ) {
-          mPositions += "<td class=\"prices\">";
+          mPositions += "<td align=\"right\" valign=\"bottom\" class=\"prices\">";
           if ( dp->toDelete() ) mPositions += "<strike>";
           mPositions += dp->overallPrice().toHtmlString( posList.locale() );
           if ( dp->toDelete() ) mPositions += "</strike>";
           mPositions += "</td>";
 
-          mPositions += "<td class=\"legends\">";
+          mPositions += "<td align=\"right\" valign=\"bottom\" width=\"12\">";
           if( taxType == DocPositionBase::TaxIndividual && (dp->taxType() == DocPositionBase::TaxReduced) ) {
               if ( dp->toDelete() ) mPositions += "<strike>";
               mPositions += QString(REDUCED_TAX_MARK);
@@ -111,15 +111,15 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
 
   // Create the sum table
   if( mShowPrices ) {
-      mPositions += "<div class=\"alignright\" align=\"right\"><table border=\"0\" width=\"99%\">";
+      mPositions += "<div align=\"right\"><table border=\"0\" width=\"66%\">";
       mPositionCount = posList.count();
       mTotal  = posList.nettoPrice().toHtmlString( posList.locale() );
       QString brutto = posList.bruttoPrice( tax, reducedTax ).toHtmlString( posList.locale() );
-      mPositions += QString( "<tr><td width=\"45%\"></td><td colspan=\"2\" class=\"baseline\"></td><td width=\"10px\" align=\"right\"></td></tr>" );
+      mPositions += QString( "<tr><td align=\"right\" colspan=\"2\" class=\"baseline\">______________________________</td><td width=\"12\" align=\"right\"></td></tr>" );
 
       if ( taxType != DocPositionBase::TaxInvalid && taxType != DocPositionBase::TaxNone ) {
-          mPositions += QString( "<tr><td></td><td align=\"right\">&nbsp;&nbsp;&nbsp;" ) + i18n( "Netto:" )+
-                  QString( "</td><td align=\"right\">%1</td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( mTotal );
+          mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "Netto:" )+
+                  QString( "</td><td align=\"right\">%1</td><td width=\"12\" align=\"right\"></td></tr>" ).arg( mTotal );
 
           QString curTax;
           curTax.setNum( tax, 'f', 1 );
@@ -128,30 +128,30 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
           if( taxType == DocPositionBase::TaxReduced || taxType == DocPositionBase::TaxIndividual ) {
               curTax.setNum( reducedTax, 'f', 1 );
               taxStr = posList.reducedTaxSum( reducedTax ).toHtmlString( posList.locale() );
-              mPositions += QString( "<tr><td></td><td align=\"right\">" );
+              mPositions += QString( "<tr><td align=\"right\">" );
               mPositions += i18n( "+ %1% Tax:" ).arg( curTax ) +
-                      QString( "</td><td align=\"right\">%1</td><td width=\"10px\" align=\"right\">%2</td></tr>" ).arg( taxStr ).arg(REDUCED_TAX_MARK);
+                      QString( "</td><td align=\"right\">%1</td><td width=\"12\" align=\"right\">%2</td></tr>" ).arg( taxStr ).arg(REDUCED_TAX_MARK);
           }
 
           if( taxType == DocPositionBase::TaxFull || taxType == DocPositionBase::TaxIndividual ) {
               curTax.setNum( tax, 'f', 1 );
               taxStr = posList.fullTaxSum( tax ).toHtmlString( posList.locale() );
-              mPositions += QString( "<tr><td></td><td align=\"right\">" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
-                      QString( "</td><td align=\"right\">%1</td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( taxStr );
+              mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
+                      QString( "</td><td align=\"right\">%1</td><td width=\"12\" align=\"right\"></td></tr>" ).arg( taxStr );
           }
 
           if( taxType == DocPositionBase::TaxIndividual ) {
               taxStr = posList.taxSum( tax, reducedTax ).toHtmlString( posList.locale() );
-              mPositions += QString( "<tr><td></td><td align=\"right\">" ) + i18n( "Sum Tax:" ) +
-                      QString( "</td><td align=\"right\">%1</td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( taxStr );
+              mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "Sum Tax:" ) +
+                      QString( "</td><td align=\"right\">%1</td><td width=\"12\" align=\"right\"></td></tr>" ).arg( taxStr );
           }
 
       }
-      mPositions += QString( "<tr><td></td><td align=\"right\"><b>" ) + i18n( "Total:" )+
-              QString( "</b></td><td align=\"right\"><b>%1</b></td><td width=\"10px\" align=\"right\"></td></tr>" ).arg( brutto );
+      mPositions += QString( "<tr><td align=\"right\"><b>" ) + i18n( "Total:" )+
+              QString( "</b></td><td align=\"right\"><b>%1</b></td><td width=\"12\" align=\"right\"></td></tr>" ).arg( brutto );
   } // showPrices
   mPositions += "</table></div>";
-  // kDebug() << "Positions-HTML: " << mPositions << endl;
+  // qDebug() << "Positions-HTML: " << mPositions << endl;
 }
 
 void DocPostCard::setFooterData( const QString& postText,  const QString& goodbye )
@@ -163,32 +163,33 @@ void DocPostCard::setFooterData( const QString& postText,  const QString& goodby
 void DocPostCard::renderDoc( int id )
 {
   QString t;
-  // kDebug() << "rendering postcard for active id " << id <<
+  // qDebug() << "rendering postcard for active id " << id <<
     //( mMode == Full ? " (full) " : " (mini) " ) << endl;
   if ( mMode == Full ) {
     t = renderDocFull( id );
   } else if ( mMode == Mini ) {
     t = renderDocMini( id );
   } else {
-    kDebug() << "Unknown postcard mode" << endl;
+    // qDebug () << "Unknown postcard mode" << endl;
   }
 
-  // kDebug () << t << endl;
+  // qDebug() << t << endl;
   displayContent( t );
 }
+
+#define SEL_STRING(X) ( id == X ? QL1("_selected"): QL1(""))
 
 QString DocPostCard::renderDocFull( int id )
 {
   QString rethtml;
   QString t;
-  QString selString;
 
   rethtml = QL1( "<body>" );
 
-  if ( id == KraftDoc::Header ) selString = QL1( "_selected" );
-  t += QString( "<div class=\"head%1\">\n" ).arg( selString );
+  t += QL1("<a href=\"kraftdoc://header\">");
+  t += QString( "<div class=\"head%1\">\n" ).arg( SEL_STRING(KraftDoc::Header) );
 
-  t += header( id == KraftDoc::Header, "headerlink", i18n( "Header" ), "header" );
+  t += header( id == KraftDoc::Header, "headerlink", KraftDoc::partToString(KraftDoc::Header), "kraftdoc://header" );
 
   QString h = mAddress;
   h.replace( '\n', "<br/>" );
@@ -200,32 +201,28 @@ QString DocPostCard::renderDocFull( int id )
   t += "</td></tr></table>";
 
   t += "<p class=\"longtext\">" + mPreText + "</p>\n";
-  t += "</div>\n";
-  rethtml += linkBit( "kraftdoc://header", t );
-
+  t += "</div></a>\n";
+    rethtml += t;
 
   // the Body section showing the positions
-    selString= QString();
-  if ( id == KraftDoc::Positions ) selString = QL1( "_selected" );
-  t = QString( "<div class=\"body%1\">\n" ).arg( selString );
-  t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions ), "positions" );
+  t = QL1("<a href=\"kraftdoc://positions\">");
+  t += QString( "<div class=\"body%1\">\n" ).arg( SEL_STRING(KraftDoc::Positions ) );
+  t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions), "kraftdoc://positions" );
 
   t += mPositions;
-  t += "\n</div>\n";
-  rethtml += linkBit( "kraftdoc://positions", t );
+  t += "\n</div></a>\n";
+  rethtml += t;
 
-  selString = QString();
-  if ( id == KraftDoc::Footer ) selString = QL1( "_selected" );
-  t = QString( "<div class=\"foot%1\">\n" ).arg( selString );
-  t += header( id == KraftDoc::Footer, "footerlink", i18n( "Footer" ), "footer" );
+  t = QL1("<a href=\"kraftdoc://footer\">");
+  t += QString( "<div class=\"foot%1\">\n" ).arg( SEL_STRING(KraftDoc::Footer) );
+  t += header( id == KraftDoc::Footer, "footerlink", KraftDoc::partToString(KraftDoc::Footer), "kraftdoc://footer" );
 
   t += "<p class=\"longtext\">" + mPostText + "</p>\n";
   if ( ! mGoodbye.isEmpty() )
     t += "<p>" + mGoodbye + "</p>\n";
-  t += "</div>\n";
+  t += "</div></a>\n";
 
-  rethtml += linkBit( "kraftdoc://footer", t );
-  rethtml += "</body>";
+  rethtml += t + "</body>";
 
   return rethtml;
 }
@@ -234,33 +231,27 @@ QString DocPostCard::renderDocMini( int id ) const
 {
   QString t;
   QString rethtml = QL1( "<body>" );
-  QString selString;
 
-  if ( id == KraftDoc::Header ) selString = QL1( "_selected" );
-  t = QString( "<div class=\"head%1\">\n" ).arg( selString );
-  t += header( id == KraftDoc::Header, "headerlink", i18n( "Header" ), "header",
+  t = QString( "<div class=\"head%1\">\n" ).arg( SEL_STRING(KraftDoc::Header) );
+  t += header( id == KraftDoc::Header, "headerlink", KraftDoc::partToString(KraftDoc::Header), "kraftdoc://header",
                QString( "<b>%1</b>, %2" ).arg( mType ).arg( mDate ) );
   t += QL1("</div>");
-  rethtml += linkBit( "kraftdoc://header", t );
+  rethtml += t;
 
-  selString = QString();
-  if ( id == KraftDoc::Positions ) selString = QL1( "_selected" );
-  t = QString( "<div class=\"body%1\">\n" ).arg( selString );
+  t = QString( "<div class=\"body%1\">\n" ).arg( SEL_STRING(KraftDoc::Positions));
   QString d = i18n("%1 Items").arg(mPositionCount);
   if( mShowPrices )
       d = i18n("%1 Items, netto %2").arg(mPositionCount).arg(mTotal);
 
-  t += header( id == KraftDoc::Positions, "bodylink", i18n( "Positions" ), "positions",
+  t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions), "kraftdoc://positions",
                d );
   t += QL1("</div>");
-  rethtml += linkBit( "kraftdoc://positions", t );
+  rethtml += t;
 
-  selString = QString();
-  if ( id == KraftDoc::Footer ) selString = QL1( "_selected" );
-  t = QString( "<div class=\"foot%1\">\n" ).arg( selString );
-  t += header( id == KraftDoc::Footer, "footerlink", i18n( "Footer" ), "footer" );
+  t = QString( "<div class=\"foot%1\">\n" ).arg(SEL_STRING(KraftDoc::Footer));
+  t += header( id == KraftDoc::Footer, "footerlink", KraftDoc::partToString(KraftDoc::Footer), "kraftdoc://footer" );
   t += QL1("</div>");
-  rethtml += linkBit( "kraftdoc://footer", t );
+  rethtml += t;
   rethtml += QL1("</body>");
 
   return rethtml;
@@ -269,57 +260,39 @@ QString DocPostCard::renderDocMini( int id ) const
 QString DocPostCard::header( bool selected,
                              const QString& styleName,
                              const QString& displayName,
-                             const QString& /* protocol */,
+                             const QString& protocol,
                              const QString& addons ) const
 {
-  QString t;
-  if ( selected ) {
-    t += QString( "<div class=\"%1_selected\">" ).arg( styleName );
-    t += displayName;
-  } else {
-    t += QString( "<div class=\"%1\">" ).arg( styleName );
-    t += displayName;
+  const QString content = QString("<p class=\"%1\">%2&nbsp;&nbsp;%3</p>")
+    .arg( styleName + (selected ? QL1("_selected") : QL1("")))
+        .arg(displayName).arg(addons);
 
-    // t += linkBit( QString( "kraftdoc://%1" ).arg( protocol ), "["+displayName+"]" );
-  }
-  if ( ! addons.isEmpty() ) {
-    t += QL1("&nbsp;-&nbsp;");
-    t += addons;
-  }
-  t += QL1("</div>\n");
+  // These colors do the frame around the header boxes
+  QString bgCol("#aaaaaa");
+  if( !selected ) bgCol = QL1("#cccccc");
 
-  return t;
+  return QString( "<table width=\"99%\" bgcolor=\"%1\" cellpadding=\"3\"><tr>"
+                  "<td>< a href=\"%2\">%3</a></td>"
+                  "</tr></table>").arg(bgCol).arg(protocol).arg(content);
 }
 
-QString DocPostCard::linkBit( const QString& url, const QString& display ) const
+void DocPostCard::slotUrlSelected( const QUrl& kurl)
 {
-  return QString( "<a href=\"%1\">%2</a> " ).arg( url ).arg( display );
-}
+    KraftDoc::Part id = KraftDoc::Header;
 
-bool DocPostCard::urlSelected (const QString &url, int, int, const QString &,
-                    const KParts::OpenUrlArguments &,
-                    const KParts::BrowserArguments &)
-{
-  kDebug() << "DocPostCard::urlSelected(): " << url << endl;
-
-  KUrl kurl( url );
-
-  KraftDoc::Part id = KraftDoc::Header;
-
-  if ( kurl.protocol() == "kraftdoc" ) {
-    if ( kurl.host() == "header" ) {
-      kDebug() << "Header selected!" << endl;
-      id = KraftDoc::Header;
-    } else if ( kurl.host() == "positions" ) {
-      kDebug() << "Positions selected!" << endl;
-      id = KraftDoc::Positions;
-    } else if ( kurl.host() == "footer" ) {
-      kDebug() << "Footer selected!" << endl;
-      id = KraftDoc::Footer;
+    if ( kurl.scheme() == "kraftdoc" ) {
+        if ( kurl.host() == "header" ) {
+            // qDebug () << "Header selected!" << endl;
+            id = KraftDoc::Header;
+        } else if ( kurl.host() == "positions" ) {
+            // qDebug () << "Positions selected!" << endl;
+            id = KraftDoc::Positions;
+        } else if ( kurl.host() == "footer" ) {
+            // qDebug () << "Footer selected!" << endl;
+            id = KraftDoc::Footer;
+        }
+        emit selectPage( id );
     }
-    emit selectPage( id );
-  }
-  return true;
 }
 
 void DocPostCard::slotSetMode( DisplayMode mode, int id ) {

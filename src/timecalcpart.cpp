@@ -15,8 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "timecalcpart.h"
 
@@ -50,7 +49,7 @@ StdSatz& TimeCalcPart::getStundensatz()
 /** Write property of Geld m_stundensatz. */
 void TimeCalcPart::setStundensatz( const StdSatz& _newVal)
 {
-    // kDebug() << "stundensatz gesetzt: " << _newVal.toString() << endl;
+    // qDebug() << "stundensatz gesetzt: " << _newVal.toString() << endl;
     m_stundensatz = _newVal;
     setDirty(true);
 }

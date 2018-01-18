@@ -20,8 +20,7 @@
 
 // include files
 
-#include <klocale.h>
-#include <kdialog.h>
+#include <QDialog>
 
 #include "kraftglobals.h"
 #include "ui_calctemplate.h"
@@ -36,8 +35,9 @@ class FixCalcDialog;
 class MatCalcDialog;
 class TimeCalcDialog;
 class Katalog;
+class QDialogButtonBox;
 
-class FlosTemplDialog : public KDialog, protected Ui::d_calcTempl
+class FlosTemplDialog : public QDialog, protected Ui::d_calcTempl
 {
     Q_OBJECT
 
@@ -108,6 +108,7 @@ private:
     QHash<QTreeWidgetItem*, CalcPart*> mCalcPartDict;
 
     QButtonGroup *m_gbPriceSrc;
+    QDialogButtonBox *_buttonBox;
 
     FixCalcDialog   *m_fixCalcDia;
     TimeCalcDialog  *m_timePartDialog;

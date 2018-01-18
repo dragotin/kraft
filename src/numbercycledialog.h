@@ -18,7 +18,7 @@
 #ifndef NUMBERCYCLEDIALOG_H
 #define NUMBERCYCLEDIALOG_H
 
-#include <kdialog.h>
+#include <QDialog>
 
 #include <qmap.h>
 #include <QLabel>
@@ -40,7 +40,7 @@ class QCheckBox;
 
 // ################################################################################
 
-class NumberCycleDialog: public KDialog
+class NumberCycleDialog: public QDialog
 {
   Q_OBJECT
 
@@ -68,6 +68,8 @@ private:
   QStringList mRemovedCycles;
   QMap<QString,NumberCycle> mNumberCycles;
   QString mSelectedCycle;
+
+  QPushButton *_okButton;
   
 };
 

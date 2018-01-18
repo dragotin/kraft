@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 #include <krun.h>
 
@@ -33,7 +33,7 @@ AddressTemplateProvider::AddressTemplateProvider( QWidget *parent )
 
 void AddressTemplateProvider::slotNewTemplate()
 {
-  kDebug() << "SlotNewTemplate for addresses called!" << endl;
+  // qDebug () << "SlotNewTemplate for addresses called!" << endl;
 
   KRun::runCommand( QString::fromLatin1( "kaddressbook --new-contact" ),
                     QString::fromLatin1("kaddressbook" ), "address", mParent, "" );
@@ -41,7 +41,7 @@ void AddressTemplateProvider::slotNewTemplate()
 
 void AddressTemplateProvider::slotEditTemplate()
 {
-  kDebug() << "SlotEditTemplate called!" << endl;
+  // qDebug () << "SlotEditTemplate called!" << endl;
 
   KRun::runCommand( QString::fromLatin1( "kaddressbook --uid %1" ).arg(
                     mCurrentAddress.uid() ),
@@ -56,18 +56,18 @@ void AddressTemplateProvider::slotDeleteTemplate()
 
 void AddressTemplateProvider::slotSetCurrentAddress( const Addressee& adr )
 {
-  kDebug() << "Current Address was set to " << adr.realName();
+  // qDebug () << "Current Address was set to " << adr.realName();
   mCurrentAddress = adr;
 }
 
 void AddressTemplateProvider::slotTemplateToDocument()
 {
   if( mCurrentAddress.isEmpty() ) {
-    kDebug() << "Current address is empty, that should not happen";
+    // qDebug () << "Current address is empty, that should not happen";
     return;
   }
 
-  kDebug() << "Moving address of " << mCurrentAddress.realName() << " to document" << endl;
+  // qDebug () << "Moving address of " << mCurrentAddress.realName() << " to document" << endl;
   emit addressToDocument( mCurrentAddress );
 }
 

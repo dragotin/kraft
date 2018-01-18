@@ -17,11 +17,10 @@
  ***************************************************************************/
 
 #include <QtSql>
+#include <QDebug>
+#include <QMenu>
 
-#include <klocale.h>
-#include <kdebug.h>
-#include <kiconloader.h>
-#include <kmenu.h>
+#include <klocalizedstring.h>
 
 #include "templkataloglistview.h"
 #include "portal.h"
@@ -47,7 +46,7 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
 
   setHeaderLabels(labels);
 
-  contextMenu()->addTitle( i18n("Template Catalog"));
+  contextMenu()->setTitle( i18n("Template Catalog"));
 }
 
 /*
@@ -62,7 +61,7 @@ void TemplKatalogListView::addCatalogDisplay( const QString& katName )
   TemplKatalog* catalog = static_cast<TemplKatalog*>(KatalogMan::self()->getKatalog(katName));
 
   if ( !catalog ) {
-    kError() << "Could not load catalog " << katName << endl;
+    qCritical() << "Could not load catalog " << katName << endl;
     return;
   }
 
@@ -98,11 +97,11 @@ QTreeWidgetItem* TemplKatalogListView::addFlosTemplate( QTreeWidgetItem *parentI
 
   if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
   {
-    listItem->setIcon(0, KIcon( "kraftdice" ) );
+    listItem->setIcon(0, QIcon::fromTheme( "kraftdice" ) );
   }
   else
   {
-    listItem->setIcon(0, SmallIcon("accessories-calculator"));
+    listItem->setIcon(0, QIcon::fromTheme("accessories-calculator"));
   }
 
   if ( mCheckboxes ) {
@@ -161,7 +160,7 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
     CalcPart *cp = it.next();
     QString title = cp->getName();
     QString type = cp->getType();
-    kDebug() << "Type is " << type << endl;
+    // qDebug () << "Type is " << type << endl;
     if( type  == KALKPART_TIME ) {
       TimeCalcPart *zcp = static_cast<TimeCalcPart*>(cp);
       StdSatz stdsatz = zcp->getStundensatz();
@@ -209,7 +208,7 @@ DocPosition TemplKatalogListView::itemToDocPosition( QTreeWidgetItem *it )
     pos.setUnit( flos->unit() );
     pos.setUnitPrice( flos->unitPrice() );
   } else {
-    kDebug() << "Can not find a template for the item" << endl;
+    // qDebug () << "Can not find a template for the item" << endl;
   }
 
   return pos;
@@ -227,7 +226,7 @@ CalcPartList TemplKatalogListView::itemsCalcParts( QTreeWidgetItem* it )
 
   FloskelTemplate *flos = static_cast<FloskelTemplate*>( m_dataDict[ it ] );
   if ( flos ) {
-    kDebug() << "We have calc parts: " << flos->getCalcPartsList().count()<< endl;
+    // qDebug () << "We have calc parts: " << flos->getCalcPartsList().count()<< endl;
     cpList = flos->getCalcPartsList();
   }
   return cpList;
@@ -264,7 +263,7 @@ void TemplKatalogListView::slotUpdateSequence()
     // set the sortKey to the sequence counter i
     if( ! (isChapter( item ) /* || isRoot( item ) */ ) ) {
       FloskelTemplate *flos = static_cast<FloskelTemplate*>( itemData(item) );
-      kDebug() << "Updating item " << flos->getTemplID() << " to sort key " << sequenceCnt;
+      // qDebug () << "Updating item " << flos->getTemplID() << " to sort key " << sequenceCnt;
       if( flos ) {
         query.bindValue( 0, sequenceCnt++ );
         query.bindValue( 1, flos->getTemplID() );

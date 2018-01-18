@@ -19,8 +19,7 @@
 #include <QSqlQuery>
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "matkatalog.h"
 #include "kraftdb.h"
@@ -32,7 +31,7 @@ MatKatalog::MatKatalog( const QString& name)
 }
 
 MatKatalog::MatKatalog()
-    : Katalog( QString( "Material" ))
+    : Katalog( QLatin1String( "Material" ))
 {
 
 }
@@ -48,8 +47,8 @@ int MatKatalog::load()
   Katalog::load();
   int cnt = 0;
 
-  QSqlQuery q("SELECT matID, chapterID, material, unitID, perPack, priceIn, "
-              "priceOut, modifyDate, enterDate FROM stockMaterial");
+  QSqlQuery q(QLatin1String("SELECT matID, chapterID, material, unitID, perPack, priceIn, "
+              "priceOut, modifyDate, enterDate FROM stockMaterial"));
   q.exec();
   while ( q.next() ) {
     cnt++;
@@ -79,7 +78,7 @@ void MatKatalog::deleteMaterial( int id )
   StockMaterialListIterator it( mAllMaterial );
   int cnt = 0;
 
-  kDebug() << "Deleting material id=" << id;
+  // qDebug () << "Deleting material id=" << id;
   while( it.hasNext() ) {
     StockMaterial *mat = it.next();
     if( mat->getID() == id ) {
@@ -93,10 +92,10 @@ void MatKatalog::deleteMaterial( int id )
 
   // remove from database.
   QSqlQuery q;
-  q.prepare( "DELETE FROM stockMaterial WHERE matID=:Id");
+  q.prepare( QLatin1String("DELETE FROM stockMaterial WHERE matID=:Id"));
   q.bindValue( ":Id", id );
   q.exec();
-  kDebug() << "SQL Delete Success: " << q.lastError().text();
+  // qDebug () << "SQL Delete Success: " << q.lastError().text();
 
 }
 

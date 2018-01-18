@@ -29,18 +29,12 @@
 #include <QSortFilterProxyModel>
 #include <QStackedWidget>
 #include <QHeaderView>
+#include <QDialog>
+#include <QMessageBox>
 
-#include <kdialog.h>
-#include <klocale.h>
-#include <kiconloader.h>
-#include <kinputdialog.h>
-#include <kmessagebox.h>
-#include <kpushbutton.h>
-#include <kglobal.h>
-#include <khtmlview.h>
-#include <kstandarddirs.h>
-
-#include <akonadi/contact/contactviewer.h>
+#include <QDebug>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 #include "prefsdialog.h"
 #include "prefswages.h"
@@ -55,12 +49,12 @@
 #include "taxeditdialog.h"
 #include "documentman.h"
 #include "impviewwidgets.h"
-#include "akonadiaddressselector.h"
 #include "texttemplate.h"
 #include "htmlview.h"
-#include "akonadiaddressselectordialog.h"
+#include "addressselectordialog.h"
+#include "addressprovider.h"
 
-using namespace Akonadi;
+#include "kcontacts/vcardconverter.h"
 
 // ################################################################################
 
@@ -69,9 +63,20 @@ PrefsDialog::PrefsDialog( QWidget *parent)
 {
   setFaceType( KPageDialog::List );
   setModal( true );
-  setCaption( i18n( "Configure Kraft" ) );
-  setButtons( Ok|Cancel);
-  setDefaultButton( Ok );
+  setWindowTitle( i18n( "Configure Kraft" ) );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
+  okButton->setDefault(true);
   setMinimumWidth(700);
 
   docTab();
@@ -90,10 +95,10 @@ void PrefsDialog::taxTab()
 
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Taxes" ));
 
-  topFrame->setIcon(KIcon( "accessories-text-editor" ) );
+  topFrame->setIcon(QIcon::fromTheme( "accessories-text-editor" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
-  vboxLay->setSpacing( spacingHint() );
+  // vboxLay->setSpacing( spacingHint() );
 
   QLabel *label;
   label = new QLabel(i18n("Tax rates beginning at date:"));
@@ -126,11 +131,11 @@ void PrefsDialog::taxTab()
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  KPushButton *but = new KPushButton( KIcon("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddTax() ) );
   butLay->addWidget( but );
 
-  mDelTax = new KPushButton( KIcon("list-remove"), i18n( "Remove" ) );
+  mDelTax = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
   connect( mDelTax, SIGNAL( clicked() ), SLOT( slotDeleteTax() ) );
   butLay->addWidget( mDelTax );
   mDelTax->setEnabled( false );
@@ -145,7 +150,7 @@ void PrefsDialog::wagesTab()
 
     KPageWidgetItem *topFrame = addPage( mPrefsWages, i18n( "Wages" ));
 
-    topFrame->setIcon(KIcon( "help-donate" ) );
+    topFrame->setIcon(QIcon::fromTheme( "help-donate" ) );
 }
 
 void PrefsDialog::unitsTab()
@@ -154,7 +159,7 @@ void PrefsDialog::unitsTab()
 
     KPageWidgetItem *topFrame = addPage( mPrefsUnits, i18n( "Units" ));
 
-    topFrame->setIcon(KIcon( "chronometer" ) );
+    topFrame->setIcon(QIcon::fromTheme( "chronometer" ) );
 }
 
 void PrefsDialog::whoIsMeTab()
@@ -163,37 +168,50 @@ void PrefsDialog::whoIsMeTab()
 
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Own Identity" ));
 
-  topFrame->setIcon(KIcon( "user-identity" ) );
+  topFrame->setIcon(QIcon::fromTheme( "user-identity" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
-  vboxLay->setSpacing( spacingHint() );
 
-  QLabel *label;
-  label = new QLabel(i18n("Select the identity of the sending entity of documents. That's <b>your companies</b> address."));
+  QLabel *label = new QLabel(i18n("Select the identity of the sending entity of documents. That's <b>your companies</b> address."));
   label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   vboxLay->addWidget( label );
 
-  QVBoxLayout *butLay = new QVBoxLayout;
-  butLay->addStretch( 1 );
+  _tabWidget = new QTabWidget;
+  vboxLay->addWidget(_tabWidget);
 
+  // == Tab that displays the Addressbook widget
+  QWidget *w = new QWidget;
+  QVBoxLayout *t1Lay = new QVBoxLayout;
   mIdentityView = new HtmlView;
-  QString fi = KStandardDirs::locate( "data", "kraft/reports/images/identity.png" );
+  mIdentityView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
 
-  QFileInfo info(fi);
-  if( info.exists() ) {
-    kDebug() << "Setting image base for identiy view: " << info.dir().absolutePath();
-    // mIdentityView->setBaseUrl( info.dir().absolutePath() +"/" );
-    mIdentityView->setBaseUrl( QLatin1String("/home/kf/kde/kraft/reports/pics/"));
-  }
+  t1Lay->addWidget(mIdentityView);
+  QHBoxLayout *butLay = new QHBoxLayout;
+  butLay->addStretch( 1 );
+  _pbChangeIdentity = new QPushButton(i18n("Select Identity..."));
+  connect( _pbChangeIdentity, SIGNAL(clicked()), SLOT(slotChangeIdentity()) );
+  butLay->addWidget(_pbChangeIdentity);
+  t1Lay->addLayout( butLay );
 
-  mIdentityView->setBaseUrl( QLatin1String("/home/kf/kde/kraft/reports/pics/"));
+  w->setLayout(t1Lay);
+  _tabWidget->insertTab(0, w, i18n("From AddressBook"));
 
-  butLay->addWidget(mIdentityView->view());
-  QPushButton *pbChangeIdentity = new QPushButton(i18n("Select Identity..."));
-  connect( pbChangeIdentity, SIGNAL(clicked()), SLOT(slotChangeIdentity()) );
-  butLay->addWidget(pbChangeIdentity);
+  // == Tab that displays the manual widget
+  QWidget *w1 = new QWidget;
+  ui.setupUi(w1);
+  _tabWidget->insertTab(1, w1, QIcon(), i18n("Manual Entry"));
+  ui.nameLabel->setText( KContacts::Addressee::formattedNameLabel() );
+  ui.orgLabel->setText( KContacts::Addressee::organizationLabel());
+  ui.streetLabel->setText(KContacts::Addressee::businessAddressStreetLabel());
+  ui.postCodeLabel->setText(KContacts::Addressee::businessAddressPostalCodeLabel());
+  ui.cityLabel->setText(KContacts::Addressee::businessAddressLocalityLabel());
+  ui.phoneLabel->setText(KContacts::Addressee::businessPhoneLabel());
+  ui.faxLabel->setText(KContacts::Addressee::businessFaxLabel());
+  ui.mobileLabel->setText(KContacts::Addressee::mobilePhoneLabel());
+  ui.emailLabel->setText(KContacts::Addressee::emailLabel());
+  ui.websiteLabel->setText(KContacts::Addressee::urlLabel());
 
-  vboxLay->addLayout( butLay );
+  _tabWidget->insertTab(1, w1, i18n("Manual Address"));
 
   topWidget->setLayout( vboxLay );
 
@@ -201,13 +219,12 @@ void PrefsDialog::whoIsMeTab()
 
 void PrefsDialog::slotChangeIdentity()
 {
-  AkonadiAddressSelectorDialog dialog(this);
+  AddressSelectorDialog dialog(this);
 
   if( dialog.exec() ) {
-    Addressee identity = dialog.addressee();
-    if( ! identity.isEmpty() ) {
-      setMyIdentity(identity);
-      emit newOwnIdentity(identity.uid(), identity);
+    _newIdentity = dialog.addressee();
+    if( ! _newIdentity.isEmpty() ) {
+      setMyIdentity(_newIdentity, true);
     }
   }
 }
@@ -244,15 +261,12 @@ void PrefsDialog::docTab()
   QWidget *topWidget = new QWidget;
 
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Defaults" ) );
-  topFrame->setIcon(KIcon( "edit-copy" ) );
+  topFrame->setIcon(QIcon::fromTheme( "edit-copy" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   topWidget->setLayout( vboxLay );
   QGridLayout *topLayout = new QGridLayout;
   vboxLay->addLayout( topLayout );
-
-  topLayout->setSpacing( spacingHint() );
-  topLayout->addItem(new QSpacerItem(spacingHint(), 0), 0, 0);
 
   label = new QLabel(i18n("&Default document type on creation:") );
   topLayout->addWidget(label, 0,0);
@@ -304,7 +318,7 @@ void PrefsDialog::doctypeTab()
 {
   QWidget *topWidget = new QWidget;
   KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Types" ) );
-  topFrame->setIcon(KIcon( "folder-documents" ) );
+  topFrame->setIcon(QIcon::fromTheme( "folder-documents" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   topWidget->setLayout(vboxLay);
@@ -324,12 +338,16 @@ void PrefsDialog::slotDocTypeRemoved( const QString& type )
   QString currDefault = mCbDocTypes->currentText();
 
   if ( currDefault == type ) {
-    KMessageBox::information ( this,  i18n( "The old default doc type for new documents was just deleted."
-                                            "Please check the setting in the Document Defaults in the "
-                                            "Kraft preferences Dialog." ),
-                               i18n( "Document Default Change" ),
-                               QString::fromLatin1( "DefaultDocTypeDeleted" ) );
+      QMessageBox msgBox;
+      msgBox.setText(i18n( "The old default doc type for new documents was just deleted."
+                           "Please check the setting in the Document Defaults in the "
+                           "Kraft preferences Dialog." ));
+      msgBox.setInformativeText(i18n("Document Default Change"));
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.setDefaultButton(QMessageBox::Ok);
+      msgBox.exec();
   }
+
 
   for ( int i=0; i < mCbDocTypes->count(); i++ ) {
     if ( mCbDocTypes->itemText( i ) == type ) {
@@ -351,13 +369,65 @@ void PrefsDialog::readConfig()
     mCbDefaultTaxType->setCurrentIndex( KraftSettings::self()->defaultTaxType()-1 );
 }
 
+void PrefsDialog::writeIdentity()
+{
+    /*
+     * Save either the manually added address, or the Addressbook-ID
+     * If the user fills in the manual form, the addressbook ID is removed.
+     * FIXME: The handling of the ownIdentity should be refactored to its
+     * own class.
+     */
+
+    if(_tabWidget->currentIndex() == 1 /* manually entered */ ) {
+        KContacts::Addressee add;
+        add.setFormattedName(ui.leName->text());
+        add.setOrganization(ui.leOrganization->text());
+        KContacts::Address workAddress;
+
+        workAddress.setStreet(ui.leStreet->text());
+        workAddress.setPostalCode(ui.lePostcode->text());
+        workAddress.setLocality(ui.leCity->text());
+        workAddress.setType(KContacts::Address::Work);
+        add.insertAddress(workAddress);
+
+        add.insertPhoneNumber(PhoneNumber(ui.lePhone->text(), KContacts::PhoneNumber::Work));
+        add.insertPhoneNumber(PhoneNumber(ui.leFax->text(), KContacts::PhoneNumber::Fax));
+        add.insertPhoneNumber(PhoneNumber(ui.leMobile->text(), KContacts::PhoneNumber::Cell));
+        ResourceLocatorUrl resUrl;
+        resUrl.setUrl(QUrl(ui.leWebsite->text()));
+        add.setUrl(resUrl);
+        add.insertEmail(ui.leEmail->text(), true /* prefered */ );
+
+        VCardConverter vcc;
+        QByteArray vcard = vcc.createVCard(add);
+
+        QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+        file += "/myidentity.vcd";
+        QFile f ( file );
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            f.write(vcard);
+            f.close();
+            qDebug() << "Saved own identity to " << file;
+
+            KraftSettings::self()->setUserName( QString::null );
+            KraftSettings::self()->setUserUid( QString::null );
+            KraftSettings::self()->save();
+        }
+    } else { /* AddressBook */
+        KraftSettings::self()->setUserName( _newIdentity.name() );
+        KraftSettings::self()->setUserUid( _newIdentity.uid() );
+        KraftSettings::self()->save();
+    }
+    emit newOwnIdentity(_newIdentity.uid(), _newIdentity);
+}
+
 void PrefsDialog::writeConfig()
 {
     KraftSettings::self()->setShowDocumentLocale( mCbDocLocale->isChecked() );
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
 
-    KraftSettings::self()->writeConfig();
+    KraftSettings::self()->save();
 }
 
 void PrefsDialog::writeTaxes()
@@ -376,13 +446,29 @@ void PrefsDialog::accept()
   mPrefsUnits->save();
   writeTaxes();
   writeConfig();
+  writeIdentity();
   QDialog::accept();
 }
 
 #define IDENTITY_TAG(X) QLatin1String(X)
 #define QL1(X) QLatin1String(X)
 
-void PrefsDialog::setMyIdentity( const KABC::Addressee& addressee )
+void PrefsDialog::fillManualIdentityForm(const KContacts::Addressee& addressee)
+{
+    ui.leName->setText(addressee.formattedName());
+    ui.leStreet->setText(addressee.address(Address::Work).street());
+    ui.leCity->setText(addressee.address(Address::Work).locality());
+    ui.lePostcode->setText(addressee.address(Address::Work).postalCode());
+
+    ui.leEmail->setText(addressee.preferredEmail());
+    ui.leFax->setText(addressee.phoneNumber(PhoneNumber::Fax).number());
+    ui.leOrganization->setText(addressee.organization());
+    ui.lePhone->setText(addressee.phoneNumber(PhoneNumber::Work).number());
+    ui.leMobile->setText(addressee.phoneNumber(PhoneNumber::Cell).number());
+    ui.leWebsite->setText(addressee.url().url().toDisplayString());
+}
+
+void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool backendUp )
 {
   // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
   // It should be refactored.
@@ -398,81 +484,97 @@ void PrefsDialog::setMyIdentity( const KABC::Addressee& addressee )
   }
 
   QString addressBookInfo;
+  _pbChangeIdentity->setEnabled(backendUp);
+  if( !backendUp ) {
+      addressBookInfo = i18n("The identity can not be found.");
+      tmpl.createDictionary(QL1("NO_IDENTITY"));
+      tmpl.setValue(QL1("NO_IDENTITY_WRN"), i18n("<p><b>Kraft Addressbook Integration down.</b></p>"
+                                             "<p>The address book backend is not up and running.</p>"
+                                             "<p>Please check your addressbook integration setup.</p>"));
+  }
+
   if( addressee.isEmpty() ) {
-    addressBookInfo = i18n("The identity is not listed in an address book.");
-    tmpl.createDictionary(QL1("NO_IDENTITY"));
-    tmpl.setValue(QL1("NO_IDENTITY_WRN"), i18n("<p><b>Kraft does not know your identity.</b></p>"
-                                           "<p>Please pick one from the address books by clicking on the Button below.</p>"
-                                           "<p>Not having an identity selected can make your documents look incomplete.</p>"));
+      addressBookInfo = i18n("The identity is not listed in an address book.");
+      tmpl.createDictionary(QL1("NO_IDENTITY"));
+      tmpl.setValue(QL1("NO_IDENTITY_WRN"), i18n("<p><b>Kraft does not know your identity.</b></p>"
+                                                 "<p>Please pick one from the address books by clicking on the Button below.</p>"
+                                                 "<p>Not having an identity selected can make your documents look incomplete.</p>"));
   } else {
-    addressBookInfo  = i18n("Your identity can be found in the address books.");
-    tmpl.createDictionary(QL1("IDENTITY"));
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_NAME"), addressee.realName() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_ORGANISATION"), addressee.organization() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_URL"), addressee.url().prettyUrl() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_EMAIL"), addressee.preferredEmail() );
+      const QString origin = addressee.custom( CUSTOM_ADDRESS_MARKER );
+      if( origin.isEmpty() || origin == "manual") {
+          // it is an manually added address.
+          fillManualIdentityForm(addressee);
+          _tabWidget->setTabIcon(1, QIcon::fromTheme("checkmark"));
+          _tabWidget->setTabIcon(0, QIcon());
+          _tabWidget->setCurrentIndex(1);
+      } else {
+          _tabWidget->setTabIcon(0, QIcon::fromTheme("checkmark"));
+          _tabWidget->setTabIcon(1, QIcon());
+          _tabWidget->setCurrentIndex(0);
 
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_WORK_PHONE"), addressee.phoneNumber(PhoneNumber::Work).number());
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_MOBILE_PHONE"), addressee.phoneNumber(PhoneNumber::Cell).number());
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_FAX"), addressee.phoneNumber(PhoneNumber::Fax).number());
+          // it is an address from the address book
+          addressBookInfo  = i18n("Your identity can be found in the address books.");
+          tmpl.createDictionary(QL1("IDENTITY"));
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_NAME"), addressee.realName() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_ORGANISATION"), addressee.organization() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_URL"), addressee.url().toString() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_EMAIL"), addressee.preferredEmail() );
 
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("WORK_PHONE_LABEL"), i18n("Work Phone") );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("FAX_LABEL"), i18n("Fax") );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("MOBILE_PHONE_LABEL"), i18n("Cell Phone") );
-    KABC::Address myAddress;
-    myAddress = addressee.address( KABC::Address::Pref );
-    QString addressType = i18n("preferred address");
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_WORK_PHONE"), addressee.phoneNumber(PhoneNumber::Work).number());
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_MOBILE_PHONE"), addressee.phoneNumber(PhoneNumber::Cell).number());
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("IDENTITY_FAX"), addressee.phoneNumber(PhoneNumber::Fax).number());
 
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Home );
-      addressType = i18n("home address");
-    }
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Work );
-      addressType = i18n("work address");
-    }
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Postal );
-      addressType = i18n("postal address");
-    }
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Intl );
-      addressType = i18n("international address");
-    }
-    if( myAddress.isEmpty() ) {
-      myAddress = addressee.address( KABC::Address::Dom );
-      addressType = i18n("domestic address");
-    }
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("WORK_PHONE_LABEL"), i18n("Work Phone") );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("FAX_LABEL"), i18n("Fax") );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("MOBILE_PHONE_LABEL"), i18n("Cell Phone") );
+          KContacts::Address myAddress;
+          myAddress = addressee.address( KContacts::Address::Pref );
+          QString addressType = i18n("preferred address");
 
-    if( myAddress.isEmpty() ) {
-      addressType = i18n("unknown");
-      kDebug() << "WRN: Address is still empty!";
-    }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Home );
+              addressType = i18n("home address");
+          }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Work );
+              addressType = i18n("work address");
+          }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Postal );
+              addressType = i18n("postal address");
+          }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Intl );
+              addressType = i18n("international address");
+          }
+          if( myAddress.isEmpty() ) {
+              myAddress = addressee.address( KContacts::Address::Dom );
+              addressType = i18n("domestic address");
+          }
 
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTBOX" ),  myAddress.postOfficeBox() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_EXTENDED" ), myAddress.extended() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_STREET" ),   myAddress.street() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LOCALITY" ), myAddress.locality() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTCODE" ), myAddress.postalCode() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_COUNTRY" ),  myAddress.country() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LABEL" ),    myAddress.label() );
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_ADDRESS_TYPE" ), QL1("(")+addressType+QL1(")") );
+          if( myAddress.isEmpty() ) {
+              addressType = i18n("unknown");
+              // qDebug () << "WRN: Address is still empty!";
+          }
 
-    tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("ADDRESSBOOK_INFO"), addressBookInfo );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTBOX" ),  myAddress.postOfficeBox() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_EXTENDED" ), myAddress.extended() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_STREET" ),   myAddress.street() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LOCALITY" ), myAddress.locality() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_POSTCODE" ), myAddress.postalCode() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_COUNTRY" ),  myAddress.country() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_REGION" ),   myAddress.region() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_LABEL" ),    myAddress.label() );
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG( "IDENTITY_ADDRESS_TYPE" ), QL1("(")+addressType+QL1(")") );
+
+          tmpl.setValue( QL1("IDENTITY"), IDENTITY_TAG("ADDRESSBOOK_INFO"), addressBookInfo );
+      }
   }
 
   const QString details = tmpl.expand();
   mIdentityView->displayContent( details );
 
-}
-
-KABC::Addressee PrefsDialog::myIdentity()
-{
-  KABC::Addressee me;
-
-  return me;
 }
 
 TaxItemDelegate::TaxItemDelegate(QObject * parent) : QItemDelegate(parent) {}
@@ -482,13 +584,15 @@ void TaxItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & o
   if(index.column() == 1 || index.column() == 2)
   {
     double percentage = index.data(Qt::DisplayRole).toDouble();
-    QString string = DefaultProvider::self()->locale()->formatNumber(QString::number(percentage), true, 1);
+    // QString string = DefaultProvider::self()->locale()->formatNumber(QString::number(percentage), true, 1);
+    QString string = DefaultProvider::self()->locale()->toString(percentage);
     drawDisplay(painter, option, option.rect, string);
   }
   else if(index.column() == 3)
   {
     QDate date = index.data(Qt::DisplayRole).toDate();
-    QString string = DefaultProvider::self()->locale()->formatDate(date);
+    // QString string = DefaultProvider::self()->locale()->formatDate(date);
+    QString string = DefaultProvider::self()->locale()->toString(date);
     drawDisplay(painter, option, option.rect, string);
   }
   else

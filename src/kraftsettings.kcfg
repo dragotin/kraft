@@ -21,15 +21,24 @@
   </group>
 
   <group name="WindowSizes">
-    <entry name="docViewSize" type="Size">
-      <label>The default size of the document view dialog</label>
+    <entry name="docEditGeometry" type="String">
+      <label>The default geometry of the document view dialog</label>
     </entry>
-    <entry name="RODocViewSize" type="Size">
-      <label>The default size of the read only document view dialog</label>
+    <entry name="docViewROGeometry" type="String">
+      <label>The default geometry of the document view dialog</label>
     </entry>
-    <entry name="docViewPosition" type="Point">
-      <label>The default position of the document view dialog</label>
+   <entry name="portalState" type="String">
+      <label>The current state of the portal</label>
     </entry>
+   <entry name="portalGeometry" type="String">
+      <label>The current geometry of the portal</label>
+   </entry>
+   <entry name="newDocWizardGeometry" type="String">
+      <label>The current geometry of the new doc assistant</label>
+   </entry>
+
+
+
     <entry name="docViewSplitter" type="IntList">
       <label>The splitter position of the document view dialog</label>
     </entry>
@@ -57,6 +66,19 @@
     <entry name="addressPickerSplitterSize" type="IntList">
       <label>The sizes of the slider in the address picker Widget</label>
     </entry>
+    <entry name="addressPickerTreeviewState" type="String">
+      <label>The state of the treeview inside the address selector widget</label>
+    </entry>
+    <entry name="addressSelectDialogSize" type="String">
+      <label>Size of the address select dialog</label>
+    </entry>
+    <entry name="materialCatViewState" type="String">
+      <label>State of the header of the material catalog</label>
+    </entry>
+    <entry name="templateCatViewState" type="String">
+      <label>State of the header of the template catalog</label>
+    </entry>
+
   </group>
 
   <group name="material">

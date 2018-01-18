@@ -19,8 +19,7 @@
 #include <QtGui>
 #include <QtSql>
 
-#include <kiconloader.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "catalogchapter.h"
 #include "kraftdb.h"
@@ -90,16 +89,6 @@ void CatalogChapter::setParentId( const dbID &id )
   mParentId = id;
 }
 
-QPixmap CatalogChapter::icon() const
-{
-  return SmallIcon("folder-documents");
-}
-
-void CatalogChapter::setIcon( const QPixmap & )
-{
-  // do nothing for now
-}
-
 int CatalogChapter::sortKey() const
 {
   return mSortKey;
@@ -112,7 +101,7 @@ void CatalogChapter::setSortKey( int key )
 
 void CatalogChapter::save()
 {
-  kDebug() << "Inserting new chapter " << name() << mCatalogSetId.toString() << endl;
+  // qDebug () << "Inserting new chapter " << name() << mCatalogSetId.toString() << endl;
   QSqlQuery q;
   q.prepare("INSERT INTO CatalogChapters (catalogSetID, chapter, description, sortKey, parentChapter)"
             "VALUES(:catalogSetID, :chapter, :desc, :sortKey, :parentChapter)");
@@ -128,7 +117,7 @@ void CatalogChapter::save()
 
 bool CatalogChapter::removeFromDB()
 {
-    kDebug() << "Removing chapter " << name() << " with id " << mId.toInt();
+    // qDebug () << "Removing chapter " << name() << " with id " << mId.toInt();
 
     QSqlQuery q;
     q.prepare("DELETE FROM CatalogChapters WHERE chapterID=:chapId");
@@ -156,5 +145,5 @@ void CatalogChapter::reparent( const dbID& pId )
   q.bindValue(":id", mId.toInt() );
   q.bindValue(":p", parentId.toInt() );
   q.exec();
-  kDebug() << "Reparenting chapter " << mId.toInt() << ", reuslt: " << q.lastError().text();
+  // qDebug () << "Reparenting chapter " << mId.toInt() << ", reuslt: " << q.lastError().text();
 }

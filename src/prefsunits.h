@@ -21,7 +21,7 @@
 #include <QWidget>
 #include <QItemDelegate>
 
-#include <kdialog.h>
+#include <QDialog>
 
 #include "ui_unitseditbase.h"
 
@@ -57,7 +57,7 @@ private:
     QSortFilterProxyModel *mProxyModel;
 };
 
-class UnitsEditDialog: public KDialog, protected Ui::UnitsEditBase
+class UnitsEditDialog: public QDialog, protected Ui::UnitsEditBase
 {
   Q_OBJECT
 

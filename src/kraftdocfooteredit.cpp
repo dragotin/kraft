@@ -18,10 +18,8 @@
 #include "kraftdocfooteredit.h"
 #include "kraftdb.h"
 
-#include <kcombobox.h>
-#include <klocale.h>
-#include <kdebug.h>
-
+#include <QLocale>
+#include <QDebug>
 #include <QLayout>
 #include <QComboBox>
 #include <QVBoxLayout>
@@ -75,7 +73,7 @@ void KraftDocFooterEdit::slotGreeterEditTextChanged(const QString& newText)
 {
     QComboBox *greeterCombo = qobject_cast<QComboBox*>(mDocFooterEdit->m_cbGreeting);
     if( !greeterCombo ) return;
-    kDebug() << "II Combo box text changed to" << newText << "in" << greeterCombo;
+    // qDebug () << "II Combo box text changed to" << newText << "in" << greeterCombo;
 
     const QStringList texts = KraftDB::self()->wordList("greeting");
     int indx = greeterCombo->currentIndex();

@@ -19,12 +19,7 @@
 #define TEMPLKATALOGVIEW_H
 
 // include files for Qt
-
-// include files for KDE
-#include <kapplication.h>
-#include <kmainwindow.h>
-#include <kaction.h>
-#include <kurl.h>
+#include <QUrl>
 
 #include "katalogview.h"
 #include "templkataloglistview.h"
@@ -33,7 +28,6 @@ class TemplKatalog;
 class KatalogListView;
 class FloskelTemplate;
 class FlosTemplDialog;
-class FilterHeader;
 class QBoxLayout;
 /**
   * The base class for Kraft katalog view.

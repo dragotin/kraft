@@ -17,22 +17,23 @@
 
 #include <QComboBox>
 
-#include <kdialog.h>
-#include <kdebug.h>
-#include <klocale.h>
+#include <QDialog>
+#include <QDebug>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
+#include <klocalizedstring.h>
 
 #include "templtopositiondialogbase.h"
 #include "docposition.h"
 
 TemplToPositionDialogBase::TemplToPositionDialogBase( QWidget *w )
-  : KDialog( w )
+  : QDialog( w )
 {
   setObjectName( "TEMPL_DIALOG" );
-  setButtons( KDialog::Ok | KDialog::Cancel );
-  setCaption( i18n("Create Position from Template" ) );
+  setWindowTitle( i18n("Create Item from Template" ) );
   setModal( true );
-
-  showButtonSeparator( true );
 }
 
 TemplToPositionDialogBase::~TemplToPositionDialogBase()
@@ -43,11 +44,11 @@ TemplToPositionDialogBase::~TemplToPositionDialogBase()
 void TemplToPositionDialogBase::setPositionList( DocPositionList list, int intendedPos )
 {
   if ( ! getPositionCombo() ) {
-    kError() << "Can not get a ptr to the position combo" << endl;
+    qCritical() << "Can not get a ptr to the position combo" << endl;
     return;
   }
   QStringList strList;
-  strList << i18n( "the Header of the Document as first position" );
+  strList << i18n( "the Header of the Document as first item" );
   DocPositionListIterator it( list );
   while( it.hasNext() ) {
     DocPosition *dp = static_cast<DocPosition*>( it.next() );
@@ -66,7 +67,7 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
 int TemplToPositionDialogBase::insertAfterPosition()
 {
   int itemPos = getPositionCombo()->currentIndex();
-  kDebug() << "Current item selected: " << itemPos << endl;
+  // qDebug () << "Current item selected: " << itemPos << endl;
 
   return itemPos;
 }

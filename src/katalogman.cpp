@@ -16,13 +16,9 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QStringList>
+#include <QtCore>
 #include <QSqlQuery>
-
-// include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kglobal.h>
+#include <QGlobalStatic>
 
 #include "kraftdb.h"
 #include "katalogman.h"
@@ -30,9 +26,10 @@
 #include "templkatalog.h"
 #include "materialkatalogview.h"
 
+Q_GLOBAL_STATIC(KatalogMan, mSelf)
+
 KatalogMan *KatalogMan::self()
 {
-  K_GLOBAL_STATIC(KatalogMan, mSelf);
   return mSelf;
 }
 
@@ -79,11 +76,11 @@ void KatalogMan::registerKatalog( Katalog *k )
     Katalog* kat = m_katalogDict[k->getName()];
 
     if( kat ) {
-        kWarning() << "Katalog with same name already here -> deleting!" << endl;
+        qWarning() << "Katalog with same name already here -> deleting!" << endl;
         delete kat;
     } else {
         // not found, try to open it
-        kDebug() << "Katalog " << k->getName() << " registered and loading..." << endl;
+        // qDebug () << "Katalog " << k->getName() << " registered and loading..." << endl;
         m_katalogDict.insert( k->getName(), k );
         k->load ();
     }
@@ -94,9 +91,9 @@ Katalog *KatalogMan::getKatalog(const QString& name)
     Katalog* kat = m_katalogDict[name];
 
     if( !kat ) {
-        kDebug() << "No katalog " << name << " found" << endl;
+        // qDebug () << "No katalog " << name << " found" << endl;
     } else {
-        // kDebug() << "Returning existing katalog " << name << endl;
+        // qDebug() << "Returning existing katalog " << name << endl;
     }
     return kat;
 }
@@ -144,7 +141,7 @@ Katalog* KatalogMan::defaultTemplateCatalog()
     it.next();
     Katalog *k = it.value();
     if ( k->type() == TemplateCatalog ) {
-      kDebug() << "Found default template catalog: " << k->getName() << endl;
+      // qDebug () << "Found default template catalog: " << k->getName() << endl;
       return k;
     }
   }

@@ -23,6 +23,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QPaintEvent>
+#include <QObject>
 
 #include "geld.h"
 #include "ui_positionwidget.h"
@@ -32,9 +33,9 @@
 	@author Klaas Freitag <freitag@kde.org>
 */
 class KMenu;
-class KAction;
+class QAction;
 class Geld;
-class KLocale;
+class QLocale;
 class DosPositionGuardedPtr;
 
 class PositionViewWidget : public QWidget, public Ui_positionWidget
@@ -47,7 +48,7 @@ public:
     PositionViewWidget( );
     PositionViewWidget( int );
 
-    void setDocPosition( DocPositionBase*, KLocale* );
+    void setDocPosition( DocPositionBase*, QLocale* );
     virtual ~PositionViewWidget();
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }
@@ -65,7 +66,7 @@ public:
     bool priceValid();
     void setCurrentPrice( Geld );
     Geld unitPrice();
-    void setLocale( KLocale* );
+    void setLocale( QLocale* );
     QStringList tagList() { return mTags; }
     QString extraDiscountTagRestriction();
     DocPositionBase::TaxType taxType() const;
@@ -117,7 +118,7 @@ private:
     int  mOrdNumber;
 
     DocPositionGuardedPtr mPositionPtr;
-    KMenu *mExecPopup;
+    QMenu *mExecPopup;
     QMenu *mStateSubmenu;
     QMenu *mTaxSubmenu;
 
@@ -133,7 +134,7 @@ private:
     State mState;
     Kind  mKind;
     bool mPositionPriceValid;
-    KLocale *mLocale;
+    QLocale *mLocale;
     DocPosition::TaxType mTax;
 };
 

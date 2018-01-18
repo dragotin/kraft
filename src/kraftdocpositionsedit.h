@@ -24,7 +24,6 @@
 #include <QScrollArea>
 
 class KraftViewScroll;
-class KPushButton;
 
 class PositionViewWidget;
 

@@ -43,18 +43,18 @@ class ArchDocPosition
 
     QString posNumber() const { return mPosNo; }
 
-    QString text() const { return mText; } ;
+    QString text() const { return mText; }
 
     QString unit() const { return mUnit; }
 
     Geld unitPrice() const { return mUnitPrice; }
-    Geld nettoPrice();
+    Geld nettoPrice() const;
 
     double amount() { return mAmount; }
-    DocPositionBase::TaxType taxType() { return mTaxType; }
-    Geld   tax( double fullTax, double reducedTax );
-    Geld   fullTax( double fullTax );
-    Geld   reducedTax( double reducedTax );
+    DocPositionBase::TaxType taxType() const { return mTaxType; }
+    Geld   tax( double fullTax, double reducedTax ) const;
+    Geld   fullTax( double fullTax ) const;
+    Geld   reducedTax( double reducedTax ) const;
 
     QString kind() { return mKind; }
   private:
@@ -74,7 +74,7 @@ class ArchDocPositionList : public QList<ArchDocPosition>
   public:
     ArchDocPositionList();
     Geld sumPrice();
-    Geld taxSum( double, double );
+    Geld taxSum( double, double ) const;
     Geld fullTaxSum( double );
     Geld reducedTaxSum( double );
 };

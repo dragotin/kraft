@@ -18,8 +18,7 @@
 // include files for Qt
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "templatesaverbase.h"
 

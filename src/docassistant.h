@@ -23,7 +23,7 @@
 #include <QScopedPointer>
 #include <QStackedWidget>
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 #include "kraftdoc.h"
 #include "catalogtemplate.h"
@@ -32,7 +32,7 @@
 
 class TextSelection;
 class QWidget;
-class KPushButton;
+class QPushButton;
 class Katalog;
 class TemplateProvider;
 class HeaderTemplateProvider;
@@ -42,7 +42,7 @@ class AddressTemplateProvider;
 class DocText;
 class QSplitter;
 
-using namespace KABC;
+using namespace KContacts;
 
 class DocAssistant : public QSplitter
 {
@@ -54,15 +54,13 @@ public:
   DocPostCard *postCard();
   CatalogSelection *catalogSelection();
 
-  bool isFullPreview() {
-    return mFullPreview;
-  }
+  void saveSplitterSizes();
+
 public slots:
   void slotShowCatalog();
   void slotShowHeaderTemplates();
   void slotShowFooterTemplates();
   void setFullPreview( bool, int );
-  void slotRenderCompleted();
   void slotSelectDocPart( int );
   void slotToggleShowTemplates( bool );
   void slotAddToDocument();
@@ -83,7 +81,6 @@ protected slots:
   void slotNewFooterDocText( const DocText& );
   void slotUpdateFooterDocText( const DocText& );
   void slotFooterTextToDocument( const DocText& );
-  void slotAddressToDocument( const Addressee& adr );
 
 signals:
   void selectPage( int );
@@ -103,10 +100,10 @@ private:
 
   bool mFullPreview;
   int            mActivePage;
-  KPushButton    *mPbAdd;
-  KPushButton    *mPbNew;
-  KPushButton    *mPbEdit;
-  KPushButton    *mPbDel;
+  QPushButton    *mPbAdd;
+  QPushButton    *mPbNew;
+  QPushButton    *mPbEdit;
+  QPushButton    *mPbDel;
   QWidget        *mTemplatePane;
   QString         mDocType;
 

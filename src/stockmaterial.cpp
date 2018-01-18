@@ -20,9 +20,8 @@
 #include <QDate>
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kabc/addressee.h>
+#include <QDebug>
+#include <kcontacts/addressee.h>
 
 #include "stockmaterial.h"
 #include "unitmanager.h"
@@ -120,13 +119,13 @@ void StockMaterial::setID( int id )
     m_dbid = id;
 }
 
-KABC::Addressee StockMaterial::getSupplier()
+KContacts::Addressee StockMaterial::getSupplier()
 {
-    KABC::Addressee a;
+    KContacts::Addressee a;
     return a;
 }
 
-void StockMaterial::setSupplier( KABC::Addressee *a )
+void StockMaterial::setSupplier( KContacts::Addressee *a )
 {
     if( a )
         m_delivererUID = a->uid();

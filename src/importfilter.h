@@ -68,7 +68,7 @@ public:
 
   bool parseDefinition();
 
-  DocPositionList import( const KUrl& );
+  DocPositionList import( const QUrl& );
   void debugDefinition();
 
 private:

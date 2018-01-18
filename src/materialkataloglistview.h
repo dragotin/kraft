@@ -23,7 +23,7 @@
 
 class QTreeWidgetItem;
 class StockMaterial;
-class KLocale;
+class QLocale;
 
 /**
 A listview that presents the contents of the Bruns Catalog
@@ -33,14 +33,14 @@ A listview that presents the contents of the Bruns Catalog
 class MaterialKatalogListView : public KatalogListView
 {
 public:
-  MaterialKatalogListView(QWidget * );
+  MaterialKatalogListView(QWidget *parent=0 );
 
   ~MaterialKatalogListView();
   void addCatalogDisplay( const QString& katName );
   DocPosition itemToDocPosition( QTreeWidgetItem *it = 0 );
   QTreeWidgetItem* addMaterialToView( QTreeWidgetItem*, StockMaterial* );
 public slots:
-  void slFreshupItem( QTreeWidgetItem *, void*, KLocale* = 0  );
+  void slFreshupItem( QTreeWidgetItem *, void*, QLocale* = 0  );
 
 };
 

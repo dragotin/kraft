@@ -15,60 +15,71 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qstring.h>
-#include <kglobal.h>
-#include <klocale.h>
-#include <kconfig.h>
+#include <QString>
+#include <QLocale>
+#include <QSqlQuery>
 
-
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 #include "docdigest.h"
 #include "defaultprovider.h"
 
 DocDigest::DocDigest( dbID id, const QString& type, const QString& clientID )
-  :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" )
+  :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" ),
+    _archDocLazyLoaded(false)
 {
 
 }
 
 DocDigest::DocDigest()
-  :mLocale( "kraft" )
+  :mLocale( "kraft" ), _archDocLazyLoaded(false)
 {
 }
 
-QString DocDigest::date()
+QString DocDigest::date() const
 {
-  return mLocale.formatDate( mDate, KLocale::ShortDate );
+    return DefaultProvider::self()->locale()->toString(mDate, QLocale::ShortFormat);
 }
 
-QString DocDigest::lastModified()
+QDate DocDigest::rawDate() const
 {
-  return mLocale.formatDateTime( mLastModified, KLocale::ShortDate );
+    return mDate;
 }
 
-void DocDigest::appendArchDocDigest( const ArchDocDigest& digest )
+QString DocDigest::lastModified() const
 {
-  mArchDocs.append( digest );
+    return DefaultProvider::self()->locale()->toString(mLastModified, QLocale::ShortFormat);
 }
 
 ArchDocDigestList DocDigest::archDocDigestList()
 {
-  return mArchDocs;
+    if( !_archDocLazyLoaded ) {
+        const QString id(ident());
+
+        qDebug() << "Querying archdocs for document ident " << id;
+        QSqlQuery query;
+        query.prepare("SELECT archDocID, ident, printDate, state FROM archdoc WHERE"
+                      " ident=:id ORDER BY printDate DESC" );
+        query.bindValue(":id", id);
+        query.exec();
+
+        while(query.next()) {
+            int archDocID = query.value(0).toInt();
+            const QString dbIdent = query.value(1).toString();
+            QDateTime printDateTime = query.value(2).toDateTime();
+            int state = query.value(3).toInt();
+            mArchDocs.append( ArchDocDigest( printDateTime, state, dbIdent, dbID(archDocID) ) );
+        }
+        _archDocLazyLoaded = true;
+    }
+    return mArchDocs;
 }
 
-void DocDigest::setCountryLanguage( const QString& country, const QString& lang )
-{
-  KConfig *cfg = KGlobal::config().data();
-  mLocale.setCountry( country, cfg );
-  mLocale.setLanguage( lang, cfg ); // FIXME !!
-}
-
-KABC::Addressee DocDigest::addressee() const
+KContacts::Addressee DocDigest::addressee() const
 {
   return mContact;
 }
-void DocDigest::setAddressee( const KABC::Addressee& contact )
+void DocDigest::setAddressee( const KContacts::Addressee& contact )
 {
   mContact = contact;
 }

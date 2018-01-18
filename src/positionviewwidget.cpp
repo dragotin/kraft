@@ -18,13 +18,11 @@
 #include <QWidget>
 #include <QStackedWidget>
 #include <QPainter>
-
-#include <kglobal.h>
-#include <klocale.h>
-#include <knuminput.h>
-#include <ktextedit.h>
-#include <kmenu.h>
-#include <kiconloader.h>
+#include <QTextEdit>
+#include <QMenu>
+#include <QIcon>
+#include <QDebug>
+#include <qdrawutil.h>
 
 #include "positionviewwidget.h"
 #include "unitmanager.h"
@@ -32,7 +30,7 @@
 #include "kraftsettings.h"
 #include "defaultprovider.h"
 #include "kraftdb.h"
-#include "positiontagdialog.h"
+#include "itemtagdialog.h"
 #include "tagman.h"
 
 
@@ -43,7 +41,7 @@ PositionViewWidget::PositionViewWidget()
    mToDelete(false),
    mOrdNumber(0),
    mPositionPtr( 0 ),
-   mExecPopup( new KMenu( this ) ) ,
+   mExecPopup( new QMenu( this ) ) ,
    mStateSubmenu( 0 ),
    mState( Active ),
    mKind( Normal ),
@@ -64,9 +62,9 @@ PositionViewWidget::PositionViewWidget()
   mDiscountPercent->setDecimals( 2 );
 
   pbExec->setCheckable( false );
-  pbExec->setIcon( SmallIcon( "configure") );
+  pbExec->setIcon( QIcon::fromTheme( "configure") );
   pbTagging->setCheckable( false );
-  pbTagging->setIcon( SmallIcon( "flag" ) );
+  pbTagging->setIcon( QIcon::fromTheme( "flag" ) );
 
   connect( m_sbAmount, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
@@ -88,14 +86,14 @@ PositionViewWidget::PositionViewWidget()
   connect( mDiscountPercent, SIGNAL( valueChanged( double ) ), this, SLOT( slotModified() ) );
   connect( mDiscountTag,  SIGNAL( activated( int ) ), this,    SLOT( slotModified() ) );
 
-  mExecPopup->addTitle(i18n("Item Actions") );
+  mExecPopup->setTitle(i18n("Item Actions") );
 
   // state submenu:
   mStateSubmenu = mExecPopup->addMenu(i18n( "Item Kind" ));
   mStateSubmenu->addAction( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
-  mStateSubmenu->addAction( KIcon( "kraft_alternative" ),
+  mStateSubmenu->addAction( QIcon::fromTheme( "kraft_alternative" ),
                             i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
-  mStateSubmenu->addAction( KIcon( "kraft_demand" ),
+  mStateSubmenu->addAction( QIcon::fromTheme( "kraft_demand" ),
                             i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
 
   // mExecPopup->addSeparator();
@@ -104,19 +102,19 @@ PositionViewWidget::PositionViewWidget()
   mTaxSubmenu = mExecPopup->addMenu(i18n( "Tax" ));
   QActionGroup *agroup = new QActionGroup( this );
   agroup->setExclusive ( true );
-  mNilTaxAction = new QAction( KIcon("kraft_notax"),  i18n("Taxfree Item"), this );
+  mNilTaxAction = new QAction( QIcon::fromTheme("kraft_notax"),  i18n("Taxfree Item"), this );
   connect( mNilTaxAction, SIGNAL(triggered()), this, SLOT(slotSetNilTax()) );
   mNilTaxAction->setCheckable( true );
   agroup->addAction( mNilTaxAction );
   mTaxSubmenu->addAction( mNilTaxAction );
 
-  mRedTaxAction = new QAction( KIcon("kraft_redtax"), i18n("Reduced Tax"),  this );
+  mRedTaxAction = new QAction( QIcon::fromTheme("kraft_redtax"), i18n("Reduced Tax"),  this );
   connect( mRedTaxAction, SIGNAL(triggered()), this, SLOT(slotSetReducedTax()));
   mRedTaxAction->setCheckable( true );
   agroup->addAction( mRedTaxAction );
   mTaxSubmenu->addAction( mRedTaxAction );
 
-  mFullTaxAction = new QAction( KIcon("kraft_fulltax"), i18n("Full Tax"),  this );
+  mFullTaxAction = new QAction( QIcon::fromTheme("kraft_fulltax"), i18n("Full Tax"),  this );
   connect( mFullTaxAction, SIGNAL(triggered()), this, SLOT(slotSetFullTax()));
   mFullTaxAction->setCheckable( true );
   agroup->addAction( mFullTaxAction );
@@ -124,15 +122,15 @@ PositionViewWidget::PositionViewWidget()
 
   mExecPopup->addSeparator();
 
-  mExecPopup->addAction(  KIcon("arrow-up"),
+  mExecPopup->addAction(  QIcon::fromTheme("arrow-up"),
                            i18n("Move Up"),         this, SIGNAL( moveUp() ) );
-  mExecPopup->addAction(  KIcon("arrow-down"),
+  mExecPopup->addAction(  QIcon::fromTheme("arrow-down"),
                            i18n("Move Down"),       this, SIGNAL( moveDown() ) );
-  mLockId = mExecPopup->addAction(  KIcon("object-locked"),
+  mLockId = mExecPopup->addAction(  QIcon::fromTheme("object-locked"),
                            i18n("Lock Item"),   this, SIGNAL( lockPosition() ) );
-  mUnlockId = mExecPopup->addAction(  KIcon("object-unlocked"),
+  mUnlockId = mExecPopup->addAction(  QIcon::fromTheme("object-unlocked"),
                            i18n("Unlock Item"), this, SIGNAL( unlockPosition() ) );
-  mDeleteId = mExecPopup->addAction(  KIcon("edit-delete"),
+  mDeleteId = mExecPopup->addAction(  QIcon::fromTheme("edit-delete"),
                            i18n("Delete Item"), this, SIGNAL( deletePosition() ) );
 
 
@@ -156,10 +154,10 @@ PositionViewWidget::PositionViewWidget()
   this->layout()->setMargin( 6 );
 }
 
-void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
+void PositionViewWidget::setDocPosition( DocPositionBase *dp, QLocale* loc )
 {
   if( ! dp ) {
-    kError() << "setDocPosition got empty position!" << endl;
+    qCritical() << "setDocPosition got empty position!" << endl;
     return;
   }
 
@@ -200,13 +198,13 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
       } else if ( kindStr == kindString( Demand ) ) {
         slotSetPositionDemand();
       } else {
-        kDebug() << "Unknown position kind!" << endl;
+        // qDebug () << "Unknown position kind!" << endl;
       }
     }
-    kDebug() << "Setting position ptr. in viewwidget: " << pos << endl;
+    // qDebug () << "Setting position ptr. in viewwidget: " << pos << endl;
   } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
     positionDetailStack->setCurrentWidget( discountPage );
-    // kDebug() << " " << dp->type()<< endl;
+    // qDebug() << " " << dp->type()<< endl;
     Attribute discount = amap[DocPosition::Discount];
     mDiscountPercent->setValue( discount.value().toDouble() );
 
@@ -235,7 +233,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, KLocale* loc )
     }
     mDiscountTag->setCurrentIndex(mDiscountTag->findText( currentEntry ));
   } else {
-    kDebug() << "unknown doc position type " << dp->type()<< endl;
+    // qDebug () << "unknown doc position type " << dp->type()<< endl;
   }
   slotSetOverallPrice( currentPrice() );
 
@@ -288,24 +286,24 @@ QString PositionViewWidget::extraDiscountTagRestriction()
     currentItem -= 1;
     return taglist[currentItem];
   } else {
-    kDebug() << "taglist index possibly out of range!";
+    // qDebug () << "taglist index possibly out of range!";
   }
   return QString();
 }
 
-void PositionViewWidget::setLocale( KLocale *loc )
+void PositionViewWidget::setLocale( QLocale *loc )
 {
   mLocale = loc;
   const QString currSymbol = mLocale->currencySymbol();
-  m_sbUnitPrice->setPrefix( currSymbol + " " );
+  m_sbUnitPrice->setSuffix(" " + currSymbol);
   slotSetOverallPrice( currentPrice() );
 }
 
 void PositionViewWidget::slotTaggingButtonPressed()
 {
-  kDebug() << "opening tagging dialog" << endl;
+  // qDebug () << "opening tagging dialog" << endl;
 
-  PositionTagDialog dia( 0 );
+  ItemTagDialog dia( 0 );
 
   dia.setPositionTags( mTags );
   if ( dia.exec() ) {
@@ -313,7 +311,7 @@ void PositionViewWidget::slotTaggingButtonPressed()
     slotUpdateTagToolTip();
     slotModified();
     update();
-    kDebug() << "Selected tags: " << mTags.join( ", " ) << endl;
+    // qDebug () << "Selected tags: " << mTags.join( ", " ) << endl;
   }
 }
 
@@ -348,7 +346,7 @@ void PositionViewWidget::slotSetTax( DocPosition::TaxType tt )
     mNilTaxAction->setChecked( true );
   }
 
-  mTaxSubmenu->setIcon( KIcon( icon ));
+  mTaxSubmenu->setIcon( QIcon::fromTheme( icon ));
   emit positionModified();
 }
 
@@ -367,7 +365,7 @@ DocPositionBase::TaxType PositionViewWidget::taxType() const
 
 void PositionViewWidget::slotExecButtonPressed()
 {
-  kDebug() << "Opening Context Menu over exec button" << endl;
+  // qDebug () << "Opening Context Menu over exec button" << endl;
 
   // set bg-color
   mExecPopup->popup( QWidget::mapToGlobal( pbExec->pos() ) );
@@ -383,7 +381,7 @@ void PositionViewWidget::slotMenuAboutToShow()
 
 void PositionViewWidget::slotMenuAboutToHide()
 {
-  kDebug() << "Set normal again" << endl;
+  // qDebug () << "Set normal again" << endl;
   QPalette palette;
   setPalette( palette );
   pbExec->setChecked(false);
@@ -425,7 +423,7 @@ QString PositionViewWidget::stateString( const State& state ) const
 void PositionViewWidget::slotSetState( State state )
 {
   mState = state;
-  kDebug() << "Setting new widget state " << stateString( state ) << endl;
+  // qDebug () << "Setting new widget state " << stateString( state ) << endl;
   if( state == Active ) {
     mLockId->setEnabled( true );
     mUnlockId->setEnabled( false );
@@ -435,10 +433,10 @@ void PositionViewWidget::slotSetState( State state )
     mToDelete = false;
     slotSetEnabled( true );
   } else if( state == New ) {
-    lStatus->setPixmap( SmallIcon( "filenew" ) );
+    lStatus->setPixmap( QIcon::fromTheme("filenew").pixmap(QSize(20,20)));
     lStatus->show();
   } else if( state == Deleted ) {
-    lStatus->setPixmap( SmallIcon( "remove" ) );
+    lStatus->setPixmap( QIcon::fromTheme( "remove" ).pixmap(QSize(20,20)) );
     lStatus->show();
     mToDelete = true;
     slotSetEnabled( false );
@@ -446,12 +444,12 @@ void PositionViewWidget::slotSetState( State state )
     mLockId->setEnabled( false );
     mUnlockId->setEnabled( true );
     slotSetEnabled( false );
-    lStatus->setPixmap( SmallIcon( "encrypted" ) );
+    lStatus->setPixmap( QIcon::fromTheme( "encrypted" ).pixmap(QSize(20,20)));
     lStatus->show();
   }
 }
 
-void PositionViewWidget::setOrdNumber( int o )
+void PositionViewWidget::setOrdNumber(int o)
 {
   mOrdNumber = o;
   if( mModified ) {
@@ -509,7 +507,7 @@ Geld PositionViewWidget::currentPrice()
     if ( position()->type() == DocPosition::ExtraDiscount ) {
       sum = mPositionPrice;
       if ( ! mPositionPriceValid ) {
-        kWarning() << "Asking for price of Discount item, but invalid!" << endl;
+        qWarning() << "Asking for price of Discount item, but invalid!" << endl;
       }
     } else {
       double amount = m_sbAmount->value();
@@ -544,6 +542,7 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
 
 void PositionViewWidget::slotModified( bool emitSignal )
 {
+<<<<<<< HEAD
   if( mModified ) return;
   if( m_skipModifiedSignal ) return;
 
@@ -558,6 +557,16 @@ void PositionViewWidget::slotModified( bool emitSignal )
   if( emitSignal ) {
       emit positionModified();
   }
+=======
+  if(m_skipModifiedSignal) return;
+  // qDebug () << "Modified Position!" << endl;
+
+  mModified = true;
+
+  m_labelPosition->setStyleSheet("font-weight: bold; color: red");
+
+  emit positionModified();
+>>>>>>> upstream/kf5
 }
 
 PositionViewWidget::~PositionViewWidget()
@@ -629,7 +638,7 @@ void PositionViewWidget::slotSetPositionAlternative()
   lKind->show();
   lKind->setToolTip( i18n( "This is an alternative item.<br/><br/>"
                            " Use the position toolbox to change the item type." ) );
-  lKind->setPixmap( SmallIcon( "kraft_alternative" ) );
+  lKind->setPixmap( QIcon::fromTheme( "kraft_alternative" ).pixmap(QSize(20,20)));
   mKind = Alternative;
   slotRefreshPrice();
 
@@ -646,7 +655,7 @@ void PositionViewWidget::slotSetPositionDemand()
   lKind->setToolTip( i18n( "This item is either completely optional or its "
                            "amount varies depending on the needs.<br/><br/>"
                            "Use the item toolbox to change the item type." ) );
-  lKind->setPixmap( SmallIcon( "kraft_demand" ) );
+  lKind->setPixmap( QIcon::fromTheme("kraft_demand").pixmap(QSize(20,20)));
   mKind = Demand;
   slotRefreshPrice();
 
@@ -697,31 +706,28 @@ QString PositionViewWidget::kindLabel( Kind k ) const
   return re;
 }
 
-void PositionViewWidget::paintEvent ( QPaintEvent* )
+void PositionViewWidget::paintEvent ( QPaintEvent*)
 {
-  QPainter *painter;
-  painter = new QPainter( this );
+  QScopedPointer<QPainter> painter(new QPainter( this ));
 
   // visualize the tags
-  QStringList taglist = tagList();
+  const QStringList taglist = tagList();
   if ( taglist.count() ) {
     int share = ( height() - 24 ) / taglist.count();
     int cnt = 0;
 
-    for ( QStringList::Iterator it = taglist.begin(); it != taglist.end(); ++it ) {
-      QString tag = *it;
+    for ( QStringList::ConstIterator it = taglist.begin(); it != taglist.end(); ++it ) {
+      const QString tag(*it);
       TagTemplate tagTemplate = TagTemplateMan::self()->getTagTemplate( tag );
 
-      // QColor c = tagTemplate.color();
-      // kDebug() << "color: " << c.red() << ", " << c.green() << ", " << c.blue() << endl;
-      // painter->setBrush( c );
+      const QColor c = tagTemplate.color();
+      // qDebug() << "color: " << c.red() << ", " << c.green() << ", " << c.blue() << endl;
+      painter->setBrush( c );
 
-      int starty = cnt*share;
-      qDrawShadeLine( painter, 3, starty, 3, starty+share-1, tagTemplate.palette(), false, 1, 4 );
+      int starty = 6+cnt*share;
+      qDrawShadeLine( painter.data(), QPoint(3, starty), QPoint(3, starty+share-1), tagTemplate.palette(), false, 1, 4 );
       cnt++;
     }
   }
-  delete painter;
-  // check again: Ui_positionWidget::paintEvent( pe );
 }
 

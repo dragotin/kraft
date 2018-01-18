@@ -20,10 +20,11 @@
 #include <QString>
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kmessagebox.h>
-#include <knuminput.h>
+#include <QDebug>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "materialtempldialog.h"
 #include "katalogman.h"
@@ -33,19 +34,27 @@
 #include "defaultprovider.h"
 
 MaterialTemplDialog::MaterialTemplDialog( QWidget *parent, bool modal )
-    : KDialog( parent ),
+    : QDialog( parent ),
     Ui::MaterialDialogBase(),
     Eta( 0.00000000001 )
 {
   /* connect a value Changed signal of the manual price field */
   QWidget *w = new QWidget(this);
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   setupUi( w );
   setModal( modal );
-  setButtons(KDialog::Ok | KDialog::Cancel);
-  setDefaultButton(KDialog::Ok);
-  showButtonSeparator( true);
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
+  buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
 
   const QString currSymbol = DefaultProvider::self()->locale()->currencySymbol();
   mInPurchasePrice->setPrefix( currSymbol + " " );
@@ -139,7 +148,7 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   m_katalog = KatalogMan::self()->getKatalog(katalogname);
 
   if( m_katalog == 0 ) {
-    kDebug() << "ERR: Floskel Dialog called without valid Katalog!" << endl;
+    // qDebug () << "ERR: Floskel Dialog called without valid Katalog!" << endl;
     return;
   }
 
@@ -190,11 +199,11 @@ MaterialTemplDialog::~MaterialTemplDialog( )
 
 void MaterialTemplDialog::accept()
 {
-  kDebug() << "*** Saving finished " << endl;
+  // qDebug () << "*** Saving finished " << endl;
   const QString newMat = mEditMaterial->toPlainText();
 
   if ( newMat.isEmpty() ) {
-    kDebug() << "We do not want to store empty materials" << endl;
+    // qDebug () << "We do not want to store empty materials" << endl;
   } else {
     mSaveMaterial->setName( mEditMaterial->toPlainText() );
     mSaveMaterial->setAmountPerPack( mDiPerPack->value() );
@@ -202,7 +211,7 @@ void MaterialTemplDialog::accept()
     const QString str = mCbUnit->currentText();
 
     int u = UnitManager::self()->getUnitIDSingular( str );
-    kDebug() << "Setting unit id "  << u << endl;
+    // qDebug () << "Setting unit id "  << u << endl;
     mSaveMaterial->setUnit( UnitManager::self()->getUnit( u ) );
 
     // chapId = 0; // FIXME: get a chapter catalog Id of hirarchical
@@ -220,7 +229,7 @@ void MaterialTemplDialog::accept()
     KatalogMan::self()->notifyKatalogChange( m_katalog, mSaveMaterial->getID() );
   }
 
-  KDialog::accept();
+  QDialog::accept();
 }
 
 void MaterialTemplDialog::reject()
@@ -229,5 +238,5 @@ void MaterialTemplDialog::reject()
     // remove the listview item if it was created newly
     emit editRejected();
   }
-  KDialog::reject();
+  QDialog::reject();
 }

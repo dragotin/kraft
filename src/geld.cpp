@@ -18,9 +18,7 @@
 // include files for Qt
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kglobal.h>
+#include <QDebug>
 
 #include "geld.h"
 #include "defaultprovider.h"
@@ -67,7 +65,7 @@ Geld& Geld::operator+=(const Geld& g)
     return *this;
 }
 
-Geld Geld::operator/(const double divisor)
+Geld Geld::operator/(const double divisor) const
 {
     // FIXME
     Geld g( this->m_cent / divisor / 100 );
@@ -80,14 +78,14 @@ Geld Geld::percent( double p )
   return g;
 }
 
-Geld Geld::operator*(const long mult)
+Geld Geld::operator*(const long mult) const
 {
     // FIXME
     Geld g( this->m_cent * mult / 100);
     return  g;
 }
 
-Geld Geld::operator*(const double mult)
+Geld Geld::operator*(const double mult) const
 {
     Geld g(double(this->m_cent) * mult / 100);
     return g;
@@ -98,15 +96,15 @@ bool Geld::operator!=(Geld g)
     return g.m_cent != m_cent;
 }
 
-QString Geld::toString( KLocale *loc ) const
+QString Geld::toString( QLocale *loc ) const
 {
-  if( ! loc ) {
-    loc =  KGlobal::locale();
-  }
-    return loc->formatMoney(m_cent/100.0);
+    QLocale locale;
+    if( !loc ) loc = &locale;
+
+    return loc->toCurrencyString(m_cent/100.0);
 }
 
-QString Geld::toHtmlString( KLocale *loc ) const
+QString Geld::toHtmlString( QLocale *loc ) const
 {
   QString re = toString( loc );
   re.replace( " ",  "&nbsp;" );

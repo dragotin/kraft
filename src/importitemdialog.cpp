@@ -23,14 +23,11 @@
 #include <QCheckBox>
 #include <QToolTip>
 #include <QMap>
-
-
-// include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kstandarddirs.h>
-#include <kurlrequester.h>
-#include <kvbox.h>
+#include <QDebug>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QLocale>
 
 #include "importfilter.h"
 #include "defaultprovider.h"
@@ -38,55 +35,64 @@
 #include "tagman.h"
 
 ImportItemDialog::ImportItemDialog( QWidget *parent )
-  : KDialog( parent )
+  : QDialog( parent )
 {
-  // , "IMPORTITEMDIALOG", true, i18n( "Import Items From File" ),
-  //               Ok | Cancel )
-  setObjectName( "IMPORTITEMDIALOG" );
-  setModal( true );
-  setCaption( i18n( "Import Items From File" ) );
-  setButtons( Ok | Cancel );
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
 
-  QWidget *w = new QWidget( this );
-  setMainWidget(w);
-  mBaseWidget = new Ui::importToDocBase;
-  mBaseWidget->setupUi( w );
+    setObjectName( "IMPORTITEMDIALOG" );
 
-  // Fill the tags list
-  group = new QButtonGroup(this);
-  group->setExclusive(false);
+    setModal( true );
+    setWindowTitle( i18n( "Import Items From File" ) );
 
-  QStringList tags = TagTemplateMan::self()->allTagTemplates();
-  int c = 0;
+    QWidget *w = new QWidget(this);
+    mBaseWidget = new Ui::importToDocBase;
+    mBaseWidget->setupUi(w);
+    mainLayout->addWidget(w);
 
-  QVBoxLayout *checkboxLayout = new QVBoxLayout;
+    // Fill the tags list
+    group = new QButtonGroup(this);
+    group->setExclusive(false);
 
-  for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-    QCheckBox *cb = new QCheckBox( *it );
-    group->addButton(cb, c);
-    checkboxLayout->addWidget(cb);
-    QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
-    cb->setToolTip( desc );
-    mTagMap[c] = *it;
-    c++;
-  }
+    QStringList tags = TagTemplateMan::self()->allTagTemplates();
+    int c = 0;
 
-  checkboxLayout->addStretch(2);
-  mBaseWidget->mTagGroup->setLayout(checkboxLayout);
+    QVBoxLayout *checkboxLayout = new QVBoxLayout;
 
-  connect( mBaseWidget->mSchemaCombo, SIGNAL( activated( const QString& ) ),
-           SLOT( slotSchemaChanged( const QString& ) ) );
-  QString selectName = readFilterSpecs();
+    for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
+        QCheckBox *cb = new QCheckBox( *it );
+        group->addButton(cb, c);
+        checkboxLayout->addWidget(cb);
+        QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
+        cb->setToolTip( desc );
+        mTagMap[c] = *it;
+        c++;
+    }
 
-  if ( ! KraftSettings::self()->importItemsSchemaName().isEmpty() ) {
-    selectName = KraftSettings::self()->importItemsSchemaName();
-  }
-  mBaseWidget->mSchemaCombo->setCurrentIndex(mBaseWidget->mSchemaCombo->findText( selectName ));
-  slotSchemaChanged( selectName );
+    checkboxLayout->addStretch(2);
+    mBaseWidget->mTagGroup->setLayout(checkboxLayout);
 
-  if ( ! KraftSettings::self()->importItemsFileName().isEmpty() ) {
-    mBaseWidget->mFileRequester->setUrl( KraftSettings::self()->importItemsFileName() );
-  }
+    connect( mBaseWidget->mSchemaCombo, SIGNAL( activated( const QString& ) ),
+             SLOT( slotSchemaChanged( const QString& ) ) );
+    QString selectName = readFilterSpecs();
+
+    if ( ! KraftSettings::self()->importItemsSchemaName().isEmpty() ) {
+        selectName = KraftSettings::self()->importItemsSchemaName();
+    }
+    mBaseWidget->mSchemaCombo->setCurrentIndex(mBaseWidget->mSchemaCombo->findText( selectName ));
+    slotSchemaChanged( selectName );
+
+    if ( ! KraftSettings::self()->importItemsFileName().isEmpty() ) {
+        mBaseWidget->mFileNameEdit->setText( KraftSettings::self()->importItemsFileName() );
+    }
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setDefault(true);
+    okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttonBox);
 }
 
 ImportItemDialog::~ImportItemDialog()
@@ -102,7 +108,7 @@ QComboBox *ImportItemDialog::getPositionCombo()
 void ImportItemDialog::setPositionList( DocPositionList list, int intendedPos )
 {
   if ( ! getPositionCombo() ) {
-    kError() << "Can not get a ptr to the position combo";
+    qCritical() << "Can not get a ptr to the position combo";
     return;
   }
   QStringList strList;
@@ -126,16 +132,13 @@ void ImportItemDialog::setPositionList( DocPositionList list, int intendedPos )
 
 QString ImportItemDialog::readFilterSpecs()
 {
-  KStandardDirs dir;
-
   QString filter = QString::fromLatin1( "kraft/importfilter/positions/*.ftr" );
-  QStringList filters = dir.findAllResources( "data", filter );
-
+  QStringList filters = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, filter);
   QStringList combo;
   QString firstFilter;
 
   for ( QStringList::Iterator it = filters.begin(); it != filters.end(); ++it ) {
-    kDebug() << " -> Import filter file " << *it;
+    // qDebug () << " -> Import filter file " << *it;
     DocPositionImportFilter filter;
     filter.readDefinition( *it );
     filter.parseDefinition();
@@ -155,22 +158,10 @@ void ImportItemDialog::slotSchemaChanged( const QString& name )
   mBaseWidget->mSchemaInfo->setText( desc );
 }
 
-void ImportItemDialog::slotOk()
-{
-#if 0
-  FIXME!!!
-  KraftSettings::self()->setImportItemsSchemaName( mBaseWidget->mSchemaCombo->currentText() );
-  KraftSettings::self()->setImportItemsFileName( mBaseWidget->mFileRequester->url() );
-  KraftSettings::self()->writeConfig();
-#endif
-  KDialog::slotButtonClicked( Ok );
-}
-
-
 DocPositionList ImportItemDialog::positionList()
 {
   DocPositionList list;
-  KUrl url = mBaseWidget->mFileRequester->url();
+  QUrl url = QUrl::fromLocalFile(mBaseWidget->mFileNameEdit->text());
 
   if ( ! url.isEmpty() ) {
     DocPositionImportFilter filter = mFilterMap[mBaseWidget->mSchemaCombo->currentText()];
@@ -198,8 +189,6 @@ DocPositionList ImportItemDialog::positionList()
   }
   return list;
 }
-
-#include "importitemdialog.moc"
 
 /* END */
 

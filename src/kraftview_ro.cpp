@@ -25,18 +25,10 @@
 #include <qsplitter.h>
 #include <qtooltip.h>
 #include <qfont.h>
+#include <qtimer.h>
 
-#include <kdebug.h>
-#include <kdialog.h>
-#include <kpushbutton.h>
-#include <kcombobox.h>
-#include <kdatewidget.h>
-#include <knuminput.h>
-#include <kactioncollection.h>
-#include <kmessagebox.h>
-#include <khtmlview.h>
-#include <kiconloader.h>
-#include <kvbox.h>
+#include <QDebug>
+#include <QDialog>
 
 // application specific includes
 #include "kraftdb.h"
@@ -62,15 +54,13 @@
 #include "inserttempldialog.h"
 #include "defaultprovider.h"
 #include "stockmaterial.h"
-#include "brunsrecord.h"
-#include "insertplantdialog.h"
 #include "templtopositiondialogbase.h"
 #include "doctype.h"
 #include "catalogtemplate.h"
 
-#include <qtimer.h>
-#include "doclocaledialog.h"
-#include <kstandarddirs.h>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 #include "texttemplate.h"
 #include "documentman.h"
 
@@ -81,17 +71,22 @@ KraftViewRO::KraftViewRO(QWidget *parent, const char *name) :
 {
   setObjectName( name );
   setModal( false );
-  setCaption( i18n("Document" ) );
-  setButtons( Close );
+  setWindowTitle( i18n("Document" ) );
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+
   m_type = ReadOnly;
 
-  KVBox *w = new KVBox( parent );
-  mGlobalVBox = w;
-  setMainWidget( w );
-  mGlobalVBox->setMargin( 3 );
-
-  mHtmlView = new HtmlView( mGlobalVBox );
+  mHtmlView = new HtmlView( this );
+  mainLayout->addWidget(mHtmlView);
   mHtmlView->setStylesheetFile( "docoverview_ro.css" );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
 }
 
 KraftViewRO::~KraftViewRO()
@@ -99,7 +94,7 @@ KraftViewRO::~KraftViewRO()
 
 }
 
-#define DOC_RO_TAG
+#define DOC_RO_TAG(X) QLatin1String(X)
 
 void KraftViewRO::setup( DocGuardedPtr doc )
 {
@@ -107,29 +102,16 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
     if ( !doc ) return;
 
-    KLocale *locale = doc->locale();
-    if ( !locale ) locale = KGlobal::locale();
+    QLocale *locale = doc->locale();
 
     // do stuff like open a template and render values into it.
-    KStandardDirs stdDirs;
-    QString templFileName = QString( "kraftdoc_ro.trml" );
-    QString findFile = "kraft/reports/" + templFileName;
+    QString tmplFile = DefaultProvider::self()->locateFile( "reports/kraftdoc_ro.trml" );
 
-    QString tmplFile = stdDirs.findResource( "data", findFile );
-
-
-    QByteArray kraftHome = qgetenv("KRAFT_HOME");
-
-    if( !kraftHome.isEmpty() ) {
-        QString file = QString( "%1/reports/kraftdoc_ro.trml").arg(QString::fromLocal8Bit(kraftHome));
-        QFileInfo fi(file);
-        if( fi.exists() && fi.isReadable() ) {
-            tmplFile = file;
-        }
-    }
     if( tmplFile.isEmpty() ) {
-        kDebug() << "Could not find template to render ro view of document.";
+        // qDebug () << "Could not find template to render ro view of document.";
         return;
+    } else {
+        qDebug() << "Template file: " << tmplFile;
     }
 
 
@@ -138,7 +120,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
         return;
     }
     tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), doc->docType() + " " + doc->ident() );
-    tmpl.setValue( DOC_RO_TAG( "DATE" ), locale->formatDate( doc->date(), KLocale::ShortDate ) );
+    tmpl.setValue( DOC_RO_TAG( "DATE" ), doc->date().toString());
     tmpl.setValue( DOC_RO_TAG( "DOC_TYPE" ),  doc->docType() );
     QString address = doc->address();
     address.replace( '\n', "<br/>" );
@@ -180,13 +162,13 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
         tmpl.setValue( "ITEMS", "NUMBER", QString::number( pos++ ) );
         tmpl.setValue( "ITEMS", "TEXT", dp->text() );
-        tmpl.setValue( "ITEMS", "AMOUNT", locale->formatNumber( dp->amount() ) );
+        tmpl.setValue( "ITEMS", "AMOUNT", locale->toString( dp->amount() ) );
         tmpl.setValue( "ITEMS", "UNIT", dp->unit().einheit( dp->amount() ) );
         double singlePrice = dp->unitPrice().toDouble();
 
         if( dt.pricesVisible() ) {
             tmpl.createSubDictionary("ITEMS", "PRICE_DISPLAY");
-            tmpl.setValue( "PRICE_DISPLAY", "SINGLE_PRICE", locale->formatMoney( singlePrice ) );
+            tmpl.setValue( "PRICE_DISPLAY", "SINGLE_PRICE", locale->toCurrencyString( singlePrice ) );
             QString style( "positive" );
             if ( singlePrice < 0 ) {
                 style = "negative";
@@ -194,24 +176,24 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
             tmpl.setValue( "PRICE_DISPLAY", "PRICE_STYLE", style );
 
-            tmpl.setValue( "PRICE_DISPLAY", "PRICE", locale->formatMoney( dp->overallPrice().toDouble() ) );
-        }
-#if 0
-        QString taxType;
-        if( individualTax ) {
-            if( dp->taxType() == 1 ) {
-                taxFreeCnt++;
-                taxType = "TAX_FREE";
-            } else if( dp->taxType() == 2 ) {
-                taxType = "REDUCED_TAX";
-                reducedTaxCnt++;
-            } else {
-                // ATTENTION: Default for all non known tax types is full tax.
-                fullTaxCnt++;
-                taxType = "FULL_TAX";
+            tmpl.setValue( "PRICE_DISPLAY", "PRICE", locale->toCurrencyString( dp->overallPrice().toDouble() ) );
+
+            QString taxType;
+            if( individualTax ) {
+                if( dp->taxType() == 1 ) {
+                    taxFreeCnt++;
+                    taxType = "TAX_FREE";
+                } else if( dp->taxType() == 2 ) {
+                    taxType = "REDUCED_TAX";
+                    reducedTaxCnt++;
+                } else {
+                    // ATTENTION: Default for all non known tax types is full tax.
+                    fullTaxCnt++;
+                    taxType = "FULL_TAX";
+                }
             }
+            tmpl.createSubDictionary("PRICE_DISPLAY", taxType);
         }
-#endif
     }
 
     if( dt.pricesVisible()) {
@@ -219,8 +201,8 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
         tmpl.setValue( "DISPLAY_SUM_BLOCK", DOC_RO_TAG( "TAXLABEL" ), i18n( "VAT" ) );
         tmpl.setValue( "DISPLAY_SUM_BLOCK", DOC_RO_TAG( "REDUCED_TAXLABEL" ), i18n( "Reduced TAX" ) );
-        tmpl.setValue( "DISPLAY_SUM_BLOCK", DOC_RO_TAG( "NETTOSUM" ), locale->formatMoney( doc->nettoSum().toDouble() ) );
-        tmpl.setValue( "DISPLAY_SUM_BLOCK", DOC_RO_TAG( "BRUTTOSUM" ), locale->formatMoney( doc->bruttoSum().toDouble() ) );
+        tmpl.setValue( "DISPLAY_SUM_BLOCK", DOC_RO_TAG( "NETTOSUM" ), locale->toCurrencyString( doc->nettoSum().toDouble() ) );
+        tmpl.setValue( "DISPLAY_SUM_BLOCK", DOC_RO_TAG( "BRUTTOSUM" ), locale->toCurrencyString( doc->bruttoSum().toDouble() ) );
 
         if( individualTax ) {
             tmpl.createSubDictionary( "DISPLAY_SUM_BLOCK", "TAX_FREE_ITEMS" );
@@ -229,11 +211,11 @@ void KraftViewRO::setup( DocGuardedPtr doc )
             tmpl.createSubDictionary( "DISPLAY_SUM_BLOCK", "REDUCED_TAX_ITEMS" );
             tmpl.setValue( "REDUCED_TAX_ITEMS", "COUNT", QString::number( reducedTaxCnt ));
             tmpl.setValue( "REDUCED_TAX_ITEMS", "TAX",
-                           locale->formatNumber( DocumentMan::self()->reducedTax( doc->date() )));
+                           locale->toString( DocumentMan::self()->reducedTax( doc->date() )));
             tmpl.createSubDictionary( "DISPLAY_SUM_BLOCK", "FULL_TAX_ITEMS" );
             tmpl.setValue( "FULL_TAX_ITEMS", "COUNT", QString::number( fullTaxCnt ));
             tmpl.setValue( "FULL_TAX_ITEMS", "TAX",
-                           locale->formatNumber( DocumentMan::self()->tax( doc->date() )) );
+                           locale->toString( DocumentMan::self()->tax( doc->date() )) );
         }
 
         double redTax = DocumentMan::self()->reducedTax( doc->date() );
@@ -257,28 +239,26 @@ void KraftViewRO::setup( DocGuardedPtr doc )
             tmpl.setValue( "SECTION_FULL_TAX", DOC_RO_TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
         }
 
-        tmpl.setValue( "DISPLAY_SUM_BLOCK", DOC_RO_TAG( "TAXSUM" ), locale->formatMoney( doc->vatSum().toDouble() ) );
+        tmpl.setValue( "DISPLAY_SUM_BLOCK", DOC_RO_TAG( "TAXSUM" ), locale->toCurrencyString( doc->vatSum().toDouble() ) );
     } // Visible sum block
 
-    setCaption( m_doc->docIdentifier() );
+    setWindowTitle( m_doc->docIdentifier() );
 
     mHtmlView->setTitle( doc->docIdentifier() );
-    mHtmlView->displayContent( tmpl.expand() );
+    const QString content = tmpl.expand();
+    mHtmlView->displayContent( content );
 }
 
 void KraftViewRO::done( int r )
 {
-  kDebug() << "View closed with ret value " << r;
+  // qDebug () << "View closed with ret value " << r;
 
   KraftDoc *doc = getDocument();
 
   if( !doc ) {
-    kDebug() << "ERR: No document available in view, return!";
+    // qDebug () << "ERR: No document available in view, return!";
     return;
   }
-  KraftSettings::self()->setRODocViewSize( size() );
-  KraftSettings::self()->writeConfig();
-  KraftSettings::self()->readConfig();
 
   emit viewClosed( true, m_doc );
 

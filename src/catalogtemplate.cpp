@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kdebug.h>
-#include <klocale.h>
+#include <QDebug>
+#include <klocalizedstring.h>
 
 #include "catalogtemplate.h"
 
@@ -107,7 +107,7 @@ void CatalogTemplate::setText( const QString& str )
 
 void CatalogTemplate::setChapterId( const dbID& id, bool persist )
 {
-  kDebug() << "set chapterId to " << id.toString();
+  // qDebug () << "set chapterId to " << id.toString();
   mChapterId = id;
   if( persist ) {
     saveChapterId();
@@ -116,7 +116,7 @@ void CatalogTemplate::setChapterId( const dbID& id, bool persist )
 
 void CatalogTemplate::saveChapterId()
 {
-  kDebug()  << "WRN: Chapter ID saving for template not implemented!";
+  // qDebug ()  << "WRN: Chapter ID saving for template not implemented!";
 }
 
 dbID CatalogTemplate::chapterId()
@@ -142,7 +142,7 @@ int CatalogTemplateList::compareItems( CatalogTemplate *ct1,  CatalogTemplate *c
   // CatalogTemplate* ct1 = static_cast<CatalogTemplate*>( i1 );
   // CatalogTemplate* ct2 = static_cast<CatalogTemplate*>( i2 );
 
-  kDebug() << "********************************* In Sort!" << endl;
+  // qDebug () << "********************************* In Sort!" << endl;
 
   if ( !( ct1 && ct2 ) ) return 0;
 

@@ -17,14 +17,9 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QMessageBox>
 
-#include <klocale.h>
-#include <kdebug.h>
-#include <kiconloader.h>
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <kmenu.h>
-#include <kmessagebox.h>
+#include <klocalizedstring.h>
 
 #include "kraftglobals.h"
 #include "katalog.h"
@@ -54,7 +49,7 @@ KatalogListView::KatalogListView( QWidget *parent ) : QTreeWidget(parent),
 
     setRootIsDecorated(false);
     setAnimated(true);
-    header()->setResizeMode(QHeaderView::ResizeToContents);
+    // header()->setResizeMode(QHeaderView::ResizeToContents);
 
     // custom style
     const QString style = DefaultProvider::self()->getStyleSheet( "templcatalog");
@@ -68,7 +63,7 @@ KatalogListView::KatalogListView( QWidget *parent ) : QTreeWidget(parent),
     setDropIndicatorShown( true );
 
     // setSorting(-1);
-    mMenu = new KMenu( this );
+    mMenu = new QMenu( this );
 
     mChapterFont = font();
     mChapterFont.setBold( true );
@@ -82,7 +77,7 @@ KatalogListView::~KatalogListView()
 
 }
 
-KMenu *KatalogListView::contextMenu()
+QMenu *KatalogListView::contextMenu()
 {
   return mMenu;
 }
@@ -122,17 +117,17 @@ void KatalogListView::setupChapters()
     mChapterDict.clear();
   }
 
-  kDebug() << "Creating root item!" <<  endl;
+  // qDebug () << "Creating root item!" <<  endl;
   QStringList list;
   list << cat->getName();
   m_root = new QTreeWidgetItem( this, list );
-  m_root->setIcon( 0, SmallIcon("kraft"));
+  m_root->setIcon( 0, QIcon("kraft"));
   m_root->setExpanded(true);
   m_root->setFont( 0, mChapterFont );
 
   repaint();
   const QList<CatalogChapter> chapters = cat->getKatalogChapters( true );
-  kDebug() << "Have count of chapters: " << chapters.size() << endl;
+  // qDebug () << "Have count of chapters: " << chapters.size() << endl;
 
   QList<CatalogChapter> strayCats;
 
@@ -141,7 +136,7 @@ void KatalogListView::setupChapters()
     if( ! item ) {
       strayCats.append( chapter );
     } else {
-      kDebug() << "Creating katalog chapter item for " << chapter.name() << endl;
+      // qDebug () << "Creating katalog chapter item for " << chapter.name() << endl;
     }
   }
 
@@ -153,10 +148,10 @@ void KatalogListView::setupChapters()
     foreach( CatalogChapter chapter, strayCats ) {
       QTreeWidgetItem *katItem = tryAddingCatalogChapter( chapter );
       if( katItem ) {
-        kDebug() << "Successfully added catalog chapter from strayCats";
+        // qDebug () << "Successfully added catalog chapter from strayCats";
       } else {
         newStrayCats.append( chapter );
-        kDebug() << "Failed to add a catalog chapter from stryCats";
+        // qDebug () << "Failed to add a catalog chapter from stryCats";
       }
     }
     strayCats = newStrayCats;
@@ -183,7 +178,7 @@ QTreeWidgetItem *KatalogListView::tryAddingCatalogChapter( const CatalogChapter&
     if( !chapter.description().isEmpty() )
       katItem->setToolTip( 0, chapter.description() );
 
-    katItem->setIcon( 0, chapter.icon() );
+    // katItem->setIcon( 0, chapter.icon() );
     katItem->setFont( 0, mChapterFont );
     // Store the parent-ID in the item data
     m_dataDict[katItem] = new CatalogChapter( chapter );
@@ -303,7 +298,7 @@ void KatalogListView::slotEditCurrentChapter()
 {
   QTreeWidgetItem *item = currentItem();
   if( ! isChapter( item )) {
-    kDebug() << "Can only edit chapters!" << endl;
+    // qDebug () << "Can only edit chapters!" << endl;
     return;
   }
   CatalogChapter *chap = static_cast<CatalogChapter*>( itemData( item ) );
@@ -330,13 +325,16 @@ void KatalogListView::slotRemoveCurrentChapter()
 {
     QTreeWidgetItem *item = currentItem();
     if( ! isChapter( item )) {
-        kDebug() << "Can only remove chapters here!" << endl;
+        // qDebug () << "Can only remove chapters here!" << endl;
     }
 
     if( item->childCount() > 0 ) {
-        KMessageBox::sorry( this,
-                            i18n( "A catalog chapter can not be deleted as long it has children." ),
-                            i18n( "Chapter can not be deleted" ));
+        QMessageBox msgBox;
+        msgBox.setText(i18n( "A catalog chapter can not be deleted as long it has children." ));
+        msgBox.setInformativeText(i18n("Chapter can not be deleted"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
         return;
 
     } else {
@@ -356,7 +354,7 @@ void KatalogListView::slotCreateNewChapter()
 {
   QTreeWidgetItem *parentItem = currentItem();
   if( ! (isChapter( parentItem ) || isRoot( parentItem ) ) ) {
-    kDebug() << "Not an chapter item selected, returning";
+    // qDebug () << "Not an chapter item selected, returning";
     return;
   }
 
@@ -433,12 +431,13 @@ void KatalogListView::dropEvent( QDropEvent *event )
       // Either at a specific point or appended
       QTreeWidgetItem *parent = itemFromIndex(topIndex);
       if (row == -1) {
-        if( isChapter( droppedOnItem ) || isRoot( droppedOnItem ))
-          parent = droppedOnItem;
-          parent->insertChild(parent->childCount(), taken.takeFirst());
+          if( isChapter( droppedOnItem ) || isRoot( droppedOnItem )) {
+              parent = droppedOnItem;
+              parent->insertChild(parent->childCount(), taken.takeFirst());
+          }
           // the parent chap has changed.
       } else {
-        int r = 1+(dropRow.row() >= 0 ? dropRow.row() : row); // insert behind the row element
+          int r = 1+(dropRow.row() >= 0 ? dropRow.row() : row); // insert behind the row element
 
         dbID newParentId;
 
@@ -503,7 +502,7 @@ void KatalogListView::dropEvent( QDropEvent *event )
 void KatalogListView::slotUpdateSequence()
 {
   // check the detail implementations in inherited classes
-  kDebug() << "Updating sequence";
+  // qDebug () << "Updating sequence";
   if( mSortChapterItem )
     mSortChapterItem->setExpanded( true );
   mSortChapterItem = 0;
@@ -514,12 +513,12 @@ void KatalogListView::slotItemEntered( QTreeWidgetItem *item, int )
    if( !item ) return;
 
    if( isRoot( item )) {
-    kDebug() << "Is a root item ";
+    // qDebug () << "Is a root item ";
    } else if( isChapter(item )) {
-    kDebug() << "Is a chapter item ";
+    // qDebug () << "Is a chapter item ";
    } else {
      CatalogTemplate *tmpl = static_cast<FloskelTemplate*>(itemData(item));
-     kDebug() << "hoovering this template: " << tmpl;
+     // qDebug () << "hoovering this template: " << tmpl;
      emit templateHoovered( tmpl );
    }
 }
@@ -532,7 +531,7 @@ void KatalogListView::slotRedraw()
   while( it.hasNext() ) {
     it.next();
     if ( it.value()->isExpanded() ) {
-      kDebug() << "Adding open Chapter " << it.value()->text( 0 ) << endl;
+      // qDebug () << "Adding open Chapter " << it.value()->text( 0 ) << endl;
       mOpenChapters << it.value()->text( 0 );
     }
   }

@@ -18,14 +18,12 @@
 #ifndef KRAFTDB_H
 #define KRAFTDB_H
 
+#include <QtCore>
 #include <QSqlError>
 #include <QSqlDatabase>
 
 #include <QMap>
-#include <QObject>
 #include <QDateTime>
-
-#include "kraftcat_export.h"
 
 class dbID;
 class DbInitDialog;
@@ -51,15 +49,16 @@ private:
   bool    mMayFail;
 };
 
+
 class SqlCommandList: public QList<SqlCommand>
 {
 public:
   SqlCommandList();
 };
 
-class KRAFTCAT_EXPORT KraftDB : public QObject
-{
 
+class KraftDB : public QObject
+{
   Q_OBJECT
 
 public:
@@ -121,6 +120,8 @@ public:
 
   int processSqlCommands( const SqlCommandList& );
 
+  KraftDB();
+
 signals:
   void statusMessage( const QString& );
   void processedSqlCommand( bool );
@@ -130,17 +131,15 @@ protected:
   void wipeDatabase();
 
 private: // Private attributes
-  KraftDB();
   void close();
-  int checkConnect( const QString&, const QString&,
-                    const QString&, const QString& );
+  int checkConnect(const QString&, const QString&,
+                    const QString&, const QString& , int port);
 
   /** The default database */
   QSqlDatabase m_db;
 
   QWidget *mParent;
 
-  static KraftDB *mSelf;
   bool mSuccess;
   const QString EuroTag;
   QString mDatabaseDriver;

@@ -22,7 +22,7 @@
 #include "htmlview.h"
 #include "kraftdoc.h"
 
-class KUrl;
+class QUrl;
 
 class DocPostCard : public HtmlView
 {
@@ -44,21 +44,15 @@ public slots:
   void slotShowPrices( bool showIt );
 
 protected:
-  bool urlSelected (const QString &url, int button, int state, const QString &_target,
-                    const KParts::OpenUrlArguments &args=KParts::OpenUrlArguments(),
-                    const KParts::BrowserArguments &browserArgs=KParts::BrowserArguments());
-
-  // void urlSelected( const QString &, int , int ,
-  //                  const QString &, KParts::openUrlArguments& );
-  // openUrlRequestDelayed(const KUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments&)
-  
   QString renderDocMini( int ) const;
   QString renderDocFull( int );
-  QString header( bool, const QString&, const QString&, const QString&,
+  QString header(bool, const QString&, const QString&, const QString& protocol,
                   const QString& = QString() ) const;
 
+private slots:
+  void slotUrlSelected( const QUrl& kurl);
+
 private:
-  QString linkBit( const QString&, const QString& ) const;
   QString htmlify( const QString& ) const;
 
   DocGuardedPtr mDoc;

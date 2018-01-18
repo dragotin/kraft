@@ -19,15 +19,15 @@
 #include <QStringList>
 #include <QString>
 #include <QSqlQuery>
+#include <QDebug>
+#include <QGlobalStatic>
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kglobal.h>
 
 #include "stdsatzman.h"
 #include "kraftdb.h"
 
+Q_GLOBAL_STATIC(StdSatzMan, mSelf)
 
 StdSatz::StdSatz():
     m_dbId(0)
@@ -70,7 +70,6 @@ StdSatzDuration::StdSatzDuration( const StdSatz& std, int dur )
 
 StdSatzMan *StdSatzMan::self()
 {
-  K_GLOBAL_STATIC(StdSatzMan, mSelf);
   return mSelf;
 }
 
@@ -134,7 +133,7 @@ void StdSatzMan::load()
     q.next();
     max = q.value(0).toInt();
   }
-  kDebug() << "Groesse fuer Stundensatzliste: " << max << endl;
+  // qDebug () << "Groesse fuer Stundensatzliste: " << max << endl;
 
   mStdSaetze.resize( max );
 
@@ -145,7 +144,7 @@ void StdSatzMan::load()
   while( q.next() )
   {
     int satzID = q.value(0).toInt();
-    kDebug() << "Neue StdSatz ID " << satzID << endl;
+    // qDebug () << "Neue StdSatz ID " << satzID << endl;
     // resize if index is to big.
     StdSatz ss( satzID, q.value(1).toString(),
                 Geld( q.value(2).toDouble()));

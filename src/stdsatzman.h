@@ -86,18 +86,18 @@ typedef QVector<StdSatz> StdSatzVector;
 class StdSatzMan
 {
 public:
-  ~StdSatzMan();
+  virtual ~StdSatzMan();
   static StdSatzMan *self();
 
   QStringList allStdSaetze();
   StdSatz     getStdSatz( const QString& name );
   StdSatz     getStdSatz( dbID id );
-private:
+  // static StdSatzMan *mSelf;
   StdSatzMan();
+private:
   void load();
 
   StdSatzVector mStdSaetze;
-  static StdSatzMan *mSelf;
 };
 
 #endif

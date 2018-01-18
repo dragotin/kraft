@@ -26,15 +26,13 @@
 #include <QPushButton>
 #include <QCloseEvent>
 #include <QHeaderView>
+#include <QDialogButtonBox>
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kglobal.h>
-#include <knuminput.h>
-#include <kmessagebox.h>
-#include <kcombobox.h>
-#include <kpushbutton.h>
+#include <QDebug>
+#include <qmessagebox.h>
+#include <qcombobox.h>
+#include <QVBoxLayout>
 
 #include "floskeltemplate.h"
 #include "catalogtemplate.h"
@@ -55,7 +53,7 @@
 #include "defaultprovider.h"
 
 FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
-    : KDialog( parent ),
+    : QDialog( parent ),
     m_template(0),
     m_katalog(0),
     m_fixCalcDia(0),
@@ -63,15 +61,22 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
     m_matPartDialog(0)
 {
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(w);
 
   setupUi( w );
 
-  setCaption( i18n("Create or Edit Template Items") );
+  setWindowTitle( i18n("Create or Edit Template Items") );
   setModal( modal );
-  setButtons( Ok | Cancel );
-  setDefaultButton( Ok );
-  showButtonSeparator( true);
+  _buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QPushButton *okButton = _buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(_buttonBox);
+  okButton->setDefault(true);
 
   //Initialise the buttongroup to switch between manual and calculated price
   m_gbPriceSrc = new QButtonGroup(this);
@@ -117,17 +122,17 @@ void FlosTemplDialog::setupConnections()
 
 void FlosTemplDialog::setButtonIcons()
 {
-  m_butAddTime->setIcon(KIcon("list-add"));
-  m_butEditTime->setIcon(KIcon("document-edit"));
-  m_butRemoveTime->setIcon(KIcon("list-remove"));
+  m_butAddTime->setIcon(QIcon::fromTheme("list-add"));
+  m_butEditTime->setIcon(QIcon::fromTheme("document-edit"));
+  m_butRemoveTime->setIcon(QIcon::fromTheme("list-remove"));
 
-  m_butAddFix->setIcon(KIcon("list-add"));
-  m_butEditFix->setIcon(KIcon("document-edit"));
-  m_butRemoveFix->setIcon(KIcon("list-remove"));
+  m_butAddFix->setIcon(QIcon::fromTheme("list-add"));
+  m_butEditFix->setIcon(QIcon::fromTheme("document-edit"));
+  m_butRemoveFix->setIcon(QIcon::fromTheme("list-remove"));
 
-  m_butAddMat->setIcon(KIcon("list-add"));
-  m_butEditMat->setIcon(KIcon("document-edit"));
-  m_butRemoveMat->setIcon(KIcon("list-remove"));
+  m_butAddMat->setIcon(QIcon::fromTheme("list-add"));
+  m_butEditMat->setIcon(QIcon::fromTheme("document-edit"));
+  m_butRemoveMat->setIcon(QIcon::fromTheme("list-remove"));
 }
 
 void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalogname, bool newTempl )
@@ -139,7 +144,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   m_katalog = KatalogMan::self()->getKatalog(katalogname);
 
   if( m_katalog == 0 ) {
-    kDebug() << "ERR: Floskel Dialog called without valid Katalog!" << endl;
+    // qDebug () << "ERR: Floskel Dialog called without valid Katalog!" << endl;
     return;
   }
 
@@ -244,8 +249,7 @@ void FlosTemplDialog::refreshPrices()
   /* assemble the pricing label */
   QString t;
   t = i18n("Calculated Price: ");
-  int kType = m_template->calcKind();
-  kDebug() << "CalcType in integer is " << kType << endl;
+
   if( m_template->calcKind() == CatalogTemplate::ManualPrice )
   {
     t = i18n("Manual Price: ");
@@ -264,7 +268,7 @@ void FlosTemplDialog::refreshPrices()
   }
   else
   {
-    kDebug() << "ERR: unknown calculation type!" << endl;
+    // qDebug () << "ERR: unknown calculation type!" << endl;
   }
   m_resPreisName->setText(t);
 
@@ -295,19 +299,19 @@ FlosTemplDialog::~FlosTemplDialog( )
 void FlosTemplDialog::accept()
 {
   if( m_template ) {
-    kDebug() << "Saving template ID " << m_template->getTemplID() << endl;
+    // qDebug () << "Saving template ID " << m_template->getTemplID() << endl;
 
     QString h;
     h = m_text->toPlainText();
 
     if( h != m_template->getText() ) {
-      kDebug() << "Template Text dirty -> update" << endl;
+      // qDebug () << "Template Text dirty -> update" << endl;
       m_template->setText( h );
     }
 
     h = m_unit->currentText();
     if( h != m_template->unit().einheitSingular()) {
-      kDebug() << "Template Einheit dirty -> update to " << h << endl;
+      // qDebug () << "Template Einheit dirty -> update to " << h << endl;
       m_template->setUnitId( UnitManager::self()->getUnitIDSingular(h));
     }
 
@@ -318,7 +322,7 @@ void FlosTemplDialog::accept()
     // FIXME: need new way of picking hte chapterId bcause of hirarchical.
 
     if( chapterId != m_template->getChapterID() ) {
-      kDebug() << "Chapter ID dirty ->update" << endl;
+      // qDebug () << "Chapter ID dirty ->update" << endl;
       if( askChapterChange( m_template, chapterId )) {
         m_template->setChapterID( chapterId );
         emit( chapterChanged( chapterId ));
@@ -337,7 +341,7 @@ void FlosTemplDialog::accept()
     double g = h.toDouble( &b );
     if( b  && g != m_template->getBenefit() ) {
       m_template->setBenefit(g);
-      kDebug() << "benefit dirty ->update to " << g << endl;
+      // qDebug () << "benefit dirty ->update to " << g << endl;
     }
 
     h = cbMwst->currentText();
@@ -351,7 +355,7 @@ void FlosTemplDialog::accept()
     } else if( selId == 1 ) {
       calcType = CatalogTemplate::Calculation;
     } else {
-      kDebug() << "ERROR: Calculation type not selected, id is " << selId << endl;
+      // qDebug () << "ERROR: Calculation type not selected, id is " << selId << endl;
     }
     m_template->setCalculationType( calcType );
 
@@ -360,27 +364,27 @@ void FlosTemplDialog::accept()
     m_template->setManualPrice( Geld( dd ) );
 
     h = cbChapter->currentText();
-    kDebug() << "catalog chapter is " << h << endl;
+    // qDebug () << "catalog chapter is " << h << endl;
 
     if( m_template->save() ) {
       emit( editAccepted( m_template ) );
       KatalogMan::self()->notifyKatalogChange( m_katalog, m_template->getTemplID() );
     } else {
-      KMessageBox::error( this, i18n("Saving of this template failed, sorry"),
-                          i18n( "Template Save Error" ) );
+        QMessageBox::warning(0, i18n("Template Error"), i18n("Saving of this template failed, sorry"));
+
     }
   }
-  kDebug() << "*** Saving finished " << endl;
+  // qDebug () << "*** Saving finished " << endl;
 
   modified = false;
-  KDialog::accept();
+  QDialog::accept();
 }
 
 void FlosTemplDialog::reject()
 {
   if(confirmClose() == true) {
-    // let KDialog clean away the dialog.
-    KDialog::reject();
+    // let QDialog clean away the dialog.
+    QDialog::reject();
   }
 }
 
@@ -394,12 +398,17 @@ void FlosTemplDialog::closeEvent ( QCloseEvent * event )
 
 bool FlosTemplDialog::confirmClose()
 {
-  if(modified == true) {
-    if ( KMessageBox::warningContinueCancel( this, i18n( "The template was modified. Do "
-                                                         "you really want to discard all changes?" ),
-                                             i18n( "Template Modified" ), KGuiItem( i18n( "Discard" ), KIcon("edit-clear") ) )
-      == KMessageBox::Cancel  ) {
-      return false;
+    if(modified == true) {
+        QMessageBox msgBox;
+        msgBox.setText(i18n("The template has been modified."));
+        msgBox.setInformativeText(i18n("Do you want to discard your changes?"));
+        msgBox.setStandardButtons(QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Cancel);
+        int ret = msgBox.exec();
+
+        if( ret == QMessageBox::Cancel  ) {
+            return false;
+        }
     }
 
     mCalcPartDict.clear();
@@ -415,28 +424,27 @@ bool FlosTemplDialog::confirmClose()
       emit editRejected();
     }
 
-  }
-  return true;
+    return true;
 }
 
 bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
 {
-  if( KMessageBox::questionYesNo( this,
-                                  i18n( "The catalog chapter was changed for this template.\nDo you really want to move the template to the new chapter?"),
-                                  i18n("Changed Chapter"), KStandardGuiItem::yes(), KStandardGuiItem::no(),
-                                  "chapterchange" ) == KMessageBox::Yes )
-  {
-    return true;
-  } else {
-    return false;
-  }
+    QMessageBox msgBox;
+    msgBox.setText(i18n( "The catalog chapter was changed for this template.\n"
+                         "Do you really want to move the template to the new chapter?"));
+    msgBox.setInformativeText(i18n("Chapter Change"));
+    msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox.exec();
+
+    return( ret == QMessageBox::Yes);
 }
 
 void FlosTemplDialog::slManualPriceChanged(double dd)
 {
-  kDebug() << "Changing manual price!" << endl;
+  // qDebug () << "Changing manual price!" << endl;
   if( ! m_template ) return;
-  kDebug() << "Updating manual price!" << endl;
+  // qDebug () << "Updating manual price!" << endl;
   m_template->setManualPrice( Geld( dd ));
   refreshPrices();
 }
@@ -496,7 +504,7 @@ void FlosTemplDialog::slEditFixPart()
 {
   if( ! m_template || !m_fixParts ) return;
 
-  kDebug() << "Edit fix part!" << endl;
+  // qDebug () << "Edit fix part!" << endl;
 
   QTreeWidgetItem *item = m_fixParts->currentItem();
 
@@ -505,9 +513,8 @@ void FlosTemplDialog::slEditFixPart()
     FixCalcPart *cp = static_cast<FixCalcPart*>(mCalcPartDict[item]);
     if( cp )
     {
-      // FixCalcDialog dia(cp, this);
-      m_fixCalcDia = new FixCalcDialog(cp, this);
-      m_fixCalcDia->setModal(true);
+      m_fixCalcDia = new FixCalcDialog(this);
+      m_fixCalcDia->setCalcPart(cp);
       connect( m_fixCalcDia, SIGNAL(fixCalcPartChanged(FixCalcPart*)),
                this, SLOT(slFixCalcPartChanged(FixCalcPart*)));
       m_fixCalcDia->show();
@@ -567,7 +574,7 @@ void FlosTemplDialog::drawFixListEntry( QTreeWidgetItem* it, FixCalcPart *cp )
   if( !( it && cp) )
     return;
 
-  it->setText( 0, DefaultProvider::self()->locale()->formatNumber(cp->getMenge()));
+  it->setText( 0, DefaultProvider::self()->locale()->toString(cp->getMenge()));
   it->setText( 1, cp->getName());
   it->setText( 2, cp->unitPreis().toString( m_katalog->locale() ));
   it->setText( 3, cp->basisKosten().toString( m_katalog->locale() ));
@@ -607,23 +614,23 @@ void FlosTemplDialog::slEditTimePart()
 {
   if( ! m_template || !m_timeParts ) return;
 
-  kDebug() << "Edit time part!" << endl;
+  // qDebug () << "Edit time part!" << endl;
 
   QTreeWidgetItem *item = m_timeParts->currentItem();
 
   if( item ) {
     TimeCalcPart *cp = static_cast<TimeCalcPart*>(mCalcPartDict[item]);
     if( cp ) {
-      m_timePartDialog = new TimeCalcDialog(cp, this);
-      m_timePartDialog->setModal(true);
+      m_timePartDialog = new TimeCalcDialog(this);
+      m_timePartDialog->setTimeCalcPart(cp);
       connect( m_timePartDialog, SIGNAL(timeCalcPartChanged(TimeCalcPart*)),
                this, SLOT(slTimeCalcPartChanged(TimeCalcPart*)) );
       m_timePartDialog->show();
     } else {
-      kDebug() << "No time calc part found for this item" << endl;
+      // qDebug () << "No time calc part found for this item" << endl;
     }
   } else {
-    kDebug() << "No current Item!";
+    // qDebug () << "No current Item!";
   }
   refreshPrices();
 }
@@ -649,7 +656,7 @@ void FlosTemplDialog::slAddMatPart()
  */
 void FlosTemplDialog::slNewMaterial( int matID, double amount )
 {
-  kDebug() << "Material ID: " << matID << endl;
+  // qDebug () << "Material ID: " << matID << endl;
 
   // TODO: Checken, ob der richtige Tab aktiv ist.
   // TODO: Check if the material is already in the calcpart (is this really needed??)
@@ -668,7 +675,7 @@ void FlosTemplDialog::slEditMatPart()
 {
   if( ! m_template || !m_matParts ) return;
 
-  kDebug() << "Edit Material part!" << endl;
+  // qDebug () << "Edit Material part!" << endl;
 
   QTreeWidgetItem *item = m_matParts->currentItem();
 
@@ -682,7 +689,7 @@ void FlosTemplDialog::slEditMatPart()
       m_matPartDialog->setModal(true);
       m_matPartDialog->show();
     } else {
-      kDebug() << "No such MaterialCalcPart!";
+      // qDebug () << "No such MaterialCalcPart!";
     }
 }
 
@@ -756,7 +763,7 @@ void FlosTemplDialog::slCalcOrFix(int button)
   else
   {
     /* unbekannter knopf -> fehler */
-    kDebug() << "--- Error: Falsche Button ID " << button <<  endl;
+    // qDebug () << "--- Error: Falsche Button ID " << button <<  endl;
     ok = false;
   }
 
@@ -767,27 +774,25 @@ void FlosTemplDialog::slCalcOrFix(int button)
 }
 
 
-void FlosTemplDialog::slSetNewText( )
+void FlosTemplDialog::slSetNewText()
 {
-  if( ! m_text || m_text->toPlainText().isEmpty() ) {
-    this->button(KDialog::Ok)->setEnabled(false);
-  } else {
-    this->button(KDialog::Ok)->setEnabled(true);
-  }
+    QPushButton *okButton = _buttonBox->button(QDialogButtonBox::Ok);
 
-  if( m_text ) {
-    QString t = m_text->toPlainText();
+    if( ! m_text || m_text->toPlainText().isEmpty() ) {
+        okButton->setEnabled(false);
+    } else {
+        okButton->setEnabled(true);
+    }
 
-    if( m_textDispTime)
-      m_textDispTime->setText(t);
-    if( m_textDispFix)
-      m_textDispFix->setText(t);
-    if( m_textDispMat)
-      m_textDispMat->setText(t);
-  }
+    if( m_text ) {
+        QString t = m_text->toPlainText();
 
+        if( m_textDispTime)
+            m_textDispTime->setText(t);
+        if( m_textDispFix)
+            m_textDispFix->setText(t);
+        if( m_textDispMat)
+            m_textDispMat->setText(t);
+    }
 }
 /* END */
-
-
-// #include "flostempldialog.moc"

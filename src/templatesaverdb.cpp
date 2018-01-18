@@ -21,8 +21,7 @@
 #include <QSqlTableModel>
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "kraftdb.h"
 #include "kraftglobals.h"
@@ -44,7 +43,7 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
     int cpId = cp->getDbID().toInt();
     model.setFilter("FCalcID=" + QString::number( cpId ));
     model.select();
-    kDebug() << "CalcFix calcpart-ID is " << cpId << endl;
+    // qDebug () << "CalcFix calcpart-ID is " << cpId << endl;
     if( cpId < 0 ) { // no db entry yet => INSERT
         if( !cp->isToDelete() ) {
             QSqlRecord buffer = model.record();
@@ -54,20 +53,20 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
             model.submitAll();
 
             dbID id = KraftDB::self()->getLastInsertID();
-            kDebug() << "Setting db-ID " << id.toString() << endl;
+            // qDebug () << "Setting db-ID " << id.toString() << endl;
             cp->setDbID(id);
         } else {
-            kDebug() << "new element, but set to delete" << endl;
+            // qDebug () << "new element, but set to delete" << endl;
         }
     } else {
         if( cp->isToDelete() ) {
-            kDebug() << "deleting fix calc part " << cpId << endl;
+            // qDebug () << "deleting fix calc part " << cpId << endl;
             // delete this calcpart.
             if ( model.rowCount() > 0 ) {
                 int cnt = model.rowCount();
                 model.removeRows(0, cnt);
                 model.submitAll();
-                kDebug() << "Amount of deleted entries: " << cnt << endl;
+                // qDebug () << "Amount of deleted entries: " << cnt << endl;
             }
         } else {
             // der Datensatz ist bereits in der Datenbank => UPDATE
@@ -78,7 +77,7 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
                 model.setRecord(0, buffer);
                 model.submitAll();
             } else {
-                kError() << "Can not select FCalcID, corrupt data!" << endl;
+                qCritical() << "Can not select FCalcID, corrupt data!" << endl;
             }
         }
     }
@@ -109,7 +108,7 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
   int cpId = cp->getDbID().toInt();
   model.setFilter("MCalcID=" + QString::number( cpId ));
   model.select();
-  kDebug() << "Saving material calcpart id=" << cpId << endl;
+  // qDebug () << "Saving material calcpart id=" << cpId << endl;
 
   if( cpId < 0 ) { // no entry in database yet, need to insert
     QSqlRecord buffer = model.record();
@@ -137,7 +136,7 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
         model.setRecord(0, buffer);
         model.submitAll();
       } else {
-        kError() << "Can not select MCalcID, corrupt data!" << endl;
+        qCritical() << "Can not select MCalcID, corrupt data!" << endl;
       }
     }
   }
@@ -201,7 +200,7 @@ bool CalculationsSaverDB::saveCalculations( CalcPartList parts, dbID parentID )
         res = saveMaterialCalcPart( static_cast<MaterialCalcPart*>(cp), parentID );
         Q_ASSERT( res );
       } else {
-        kDebug() << "ERROR: Unbekannter Kalkulations-Anteil-Typ!" << endl;
+        // qDebug () << "ERROR: Unbekannter Kalkulations-Anteil-Typ!" << endl;
       }
     }
   }
@@ -221,7 +220,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( TimeCalcPart *cp, dbID parentId )
     model.setFilter( "TCalcID="+QString::number(cpId) );
     model.select();
 
-    kDebug() << "Models last error: " << model.lastError() << model.rowCount();
+    // qDebug () << "Models last error: " << model.lastError() << model.rowCount();
 
     if( cpId < 0 )
     { // no entry in db yet => INSERT
@@ -234,7 +233,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( TimeCalcPart *cp, dbID parentId )
             dbID id = KraftDB::self()->getLastInsertID();
             cp->setDbID(id);
         } else {
-            kDebug() << "delete flag is set -> skip saving." << endl;
+            // qDebug () << "delete flag is set -> skip saving." << endl;
         }
     }
 
@@ -256,7 +255,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( TimeCalcPart *cp, dbID parentId )
                 model.setRecord(0, buffer);
                 model.submitAll();
             } else {
-                kError() << "Unable to select TCalcID, corrupt data!" << endl;
+                qCritical() << "Unable to select TCalcID, corrupt data!" << endl;
             }
         }
     }
@@ -307,7 +306,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
     QSqlRecord buffer;
     if( model.rowCount() > 0)
     {
-        kDebug() << "Updating template " << tmpl->getTemplID() << endl;
+        // qDebug () << "Updating template " << tmpl->getTemplID() << endl;
 
         // mach update
         buffer = model.record(0);
@@ -319,7 +318,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
     else
     {
         // insert
-        kDebug() << "Creating new database entry" << endl;
+        // qDebug () << "Creating new database entry" << endl;
 
         buffer = model.record();
         fillTemplateBuffer( &buffer, tmpl, true );
@@ -328,13 +327,13 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
 
         /* Jetzt die neue Template-ID selecten */
         dbID id = KraftDB::self()->getLastInsertID();
-        kDebug() << "New Database ID=" << id.toInt() << endl;
+        // qDebug () << "New Database ID=" << id.toInt() << endl;
 
         if( id.isOk() ) {
             tmpl->setTemplID(id.toInt() );
             templID = id.toString();
         } else {
-            kDebug() << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
+            // qDebug () << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
             res = false;
         }
     }
@@ -384,14 +383,14 @@ void TemplateSaverDB::saveTemplateChapter( FloskelTemplate* tmpl )
     dbID chapId = tmpl->chapterId();
 
     QSqlQuery qUpdate;
-    kDebug() << "Updating Chapter to chapter id " << chapId.toInt() << " of id " << id.toString();
+    // qDebug () << "Updating Chapter to chapter id " << chapId.toInt() << " of id " << id.toString();
     QString sql = "UPDATE Catalog SET chapterID=:chap WHERE TemplID=:id";
     qUpdate.prepare( sql );
     qUpdate.bindValue( ":chap", chapId.toInt() );
     qUpdate.bindValue( ":id", id.toInt() );
 
     qUpdate.exec();
-    kDebug() << "setting template chapter sql: " << qUpdate.lastError().text();
+    // qDebug () << "setting template chapter sql: " << qUpdate.lastError().text();
   }
 }
 

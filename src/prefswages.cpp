@@ -23,15 +23,15 @@
 #include <QDataWidgetMapper>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
+#include <QPushButton>
 
-
-#include <kpushbutton.h>
-#include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
+#include <QDialogButtonBox>
 
 #include "defaultprovider.h"
 #include "impviewwidgets.h"
 #include "geld.h"
+#include "defaultprovider.h"
 
 #include "prefswages.h"
 
@@ -75,26 +75,26 @@ PrefsWages::PrefsWages(QWidget* parent)
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  mUp = new KPushButton( KIcon("arrow-up"), i18n( "Up" ));
+  mUp = new QPushButton( QIcon::fromTheme("arrow-up"), i18n( "Up" ));
   connect( mUp, SIGNAL( clicked() ), SLOT( slotUp() ) );
   butLay->addWidget( mUp );
   mUp->setEnabled(false);
 
-  mDown = new KPushButton( KIcon("arrow-down"), i18n( "Down" ));
+  mDown = new QPushButton( QIcon::fromTheme("arrow-down"), i18n( "Down" ));
   connect( mDown, SIGNAL( clicked() ), SLOT( slotDown() ) );
   butLay->addWidget( mDown );
   mDown->setEnabled(false);
 
-  KPushButton *but = new KPushButton( KIcon("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddWage() ) );
   butLay->addWidget( but );
 
-  mEditWage = new KPushButton( KIcon("document-edit"), i18n( "Edit" ));
+  mEditWage = new QPushButton( QIcon::fromTheme("document-edit"), i18n( "Edit" ));
   connect( mEditWage, SIGNAL( clicked() ), SLOT( slotEditWage() ) );
   butLay->addWidget( mEditWage );
   mEditWage->setEnabled(false);
 
-  mDelWage = new KPushButton( KIcon("list-remove"), i18n( "Remove" ) );
+  mDelWage = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
   connect( mDelWage, SIGNAL( clicked() ), SLOT( slotDeleteWage() ) );
   butLay->addWidget( mDelWage );
   mDelWage->setEnabled( false );
@@ -192,18 +192,16 @@ void PrefsWages::slotDown()
 }
 
 WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *parent )
- : KDialog( parent )
+ : QDialog( parent )
 {
   setObjectName( "WAGES_EDIT_DIALOG" );
   setModal( true );
-  setCaption( i18n( "Edit a wage group" ) );
-  setButtons( Ok|Cancel );
+  setWindowTitle( i18n( "Edit a wage group" ) );
+  QWidget *mainWidget = new QWidget;
+  QVBoxLayout *mainLayout = new QVBoxLayout;
 
-  showButtonSeparator( true );
-
-  QWidget *w = new QWidget( this );
-  setMainWidget( w );
-
+  QWidget *w = new QWidget;
+  mainLayout->addWidget(w);
   mBaseWidget = new Ui::WagesEditBase( );
   mBaseWidget->setupUi( w );
 
@@ -212,6 +210,17 @@ WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *p
   mBaseWidget->mWage->setMinimum( 0 );
   mBaseWidget->mWage->setMaximum( 100000 );
   mBaseWidget->mWage->setDecimals( 2 );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
 
   mModel = model;
 
@@ -222,14 +231,11 @@ WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *p
   mapper->addMapping(mBaseWidget->mGroupName, 1);
   mapper->addMapping(mBaseWidget->mWage, 2);
 
-  if(row == -1)
-  {
+  if(row == -1) {
     //Insert a new row at the end
     model->insertRow(model->rowCount());
     mapper->toLast();
-  }
-  else
-  {
+  } else {
     mBaseWidget->mLabel->setText(i18n("<h1>Edit wage group</h1>"));
     mapper->setCurrentIndex(row);
   }
@@ -239,14 +245,14 @@ WagesEditDialog::WagesEditDialog( QAbstractItemModel *model, int row, QWidget *p
 void WagesEditDialog::accept()
 {
   mapper->submit();
-  KDialog::accept();
+  QDialog::accept();
 }
 
 void WagesEditDialog::reject()
 {
   if(mRow == -1)
     mModel->removeRow(mModel->rowCount()-1);
-  KDialog::reject();
+  QDialog::reject();
 }
 
 
@@ -257,7 +263,7 @@ void WagesItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem &
   if(index.column() == 2)
   {
     Geld wage = index.data(Qt::DisplayRole).toDouble();
-    QString string = wage.toString(KGlobal::locale());
+    QString string = wage.toString(DefaultProvider::self()->locale());
     drawDisplay(painter, option, option.rect, string);
   }
   else

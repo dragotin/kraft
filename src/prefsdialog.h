@@ -18,10 +18,12 @@
 #ifndef PREFSDIALOG_H
 #define PREFSDIALOG_H
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 #include <kpagedialog.h>
 #include <QItemDelegate>
+
+#include "ui_identity.h"
 
 #include "doctypeedit.h"
 #include "doctype.h"
@@ -55,8 +57,7 @@ public:
 
   ~PrefsDialog();
 
-  void setMyIdentity( const KABC::Addressee& );
-  KABC::Addressee myIdentity();
+  void setMyIdentity(const KContacts::Addressee& , bool backendUp);
 
 protected:
   void readConfig();
@@ -72,7 +73,7 @@ protected slots:
   void slotChangeIdentity();
 
 signals:
-  void newOwnIdentity(const QString&, KABC::Addressee);
+  void newOwnIdentity(const QString&, KContacts::Addressee);
 
 private:
   void docTab();
@@ -81,7 +82,9 @@ private:
   void wagesTab();
   void unitsTab();
   void writeTaxes();
+  void writeIdentity();
   void whoIsMeTab();
+  void fillManualIdentityForm(const KContacts::Addressee& addressee);
 
   QComboBox *m_databaseDriver;
   QLineEdit *m_leHost;
@@ -98,7 +101,7 @@ private:
   QComboBox *mCbDocTypes;
   QComboBox *mCbDefaultTaxType;
 
-  QPushButton *m_pbCheck;
+  QPushButton *_pbChangeIdentity;
 
   QCheckBox *mCbDocLocale;
 
@@ -107,11 +110,14 @@ private:
   PrefsWages *mPrefsWages;
   PrefsUnits *mPrefsUnits;
 
+  KContacts::Addressee _newIdentity;
+
   QPushButton    *mDelTax;
   ImpTreeView    *mTaxTreeView;
   QSqlTableModel *mTaxModel;
   HtmlView       *mIdentityView;
-
+  QTabWidget     *_tabWidget;
+  Ui::manualOwnIdentity ui;
 };
 
 class TaxItemDelegate : public QItemDelegate

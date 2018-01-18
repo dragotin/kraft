@@ -17,6 +17,7 @@
 #ifndef DEFAULTPROVIDER_H
 #define DEFAULTPROVIDER_H
 
+#include <QtCore>
 #include <qdom.h>
 
 #include "kraftcat_export.h"
@@ -49,19 +50,20 @@ public:
   DocTextList documentTexts( const QString&, KraftDoc::Part );
 
   QString currencySymbol() const;
-  KLocale* locale();
+  QLocale* locale();
 
   QString iconvTool() const;
 
   QString getStyleSheet( const QString& ) const;
 
-  TextTemplate getTextTemplate( const QString& );
+  QString locateFile(const QString& findFile) const;
 
-private:
   DefaultProvider();
 
-  static DefaultProvider *mSelf;
+private:
 
+ //  static DefaultProvider *mSelf;
+  QLocale _locale;
   const QString EuroTag;
 
 };

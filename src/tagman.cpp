@@ -17,15 +17,11 @@
 
 // include files for Qt
 #include <QSqlQuery>
-#include <QColorGroup>
 #include <QString>
 #include <QPalette>
 #include <QStringList>
 
-// include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kglobal.h>
+#include <QDebug>
 
 #include "tagman.h"
 #include "kraftdb.h"
@@ -62,10 +58,10 @@ bool TagTemplate::operator!= ( const TagTemplate& tt ) const
 /*
  * ********** Tag Template Manager **********
  */
+Q_GLOBAL_STATIC(TagTemplateMan, mSelf);
 
 TagTemplateMan *TagTemplateMan::self()
 {
-  K_GLOBAL_STATIC(TagTemplateMan, mSelf);
   return mSelf;
 }
 
@@ -132,10 +128,10 @@ bool TagTemplateMan::writeTemplate( const TagTemplate& tt )
   }
 
   if ( cnt == -1 ) {
-    kError() << "DB does not know the number of affected rows, poor!" << endl;
+    qCritical() << "DB does not know the number of affected rows, poor!" << endl;
     ret = false;
   } else if ( cnt == 0 ) {
-    kDebug() << "need to insert the tag template into db" << endl;
+    // qDebug () << "need to insert the tag template into db" << endl;
     QSqlQuery qi;
     qi.prepare( "INSERT INTO tagTemplates (name, sortKey, description, color) VALUES "
                 "( :name, :sortKey, :desc, :col )" );

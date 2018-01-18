@@ -19,7 +19,6 @@
 #define _MATERIALTEMPLDIALOG_H
 
 // include files
-#include <klocale.h>
 
 #include "kraftglobals.h"
 #include "ui_materialdialog.h"
@@ -29,7 +28,7 @@
  */
 class Katalog;
 
-class MaterialTemplDialog : public KDialog, protected Ui::MaterialDialogBase
+class MaterialTemplDialog : public QDialog, protected Ui::MaterialDialogBase
 {
     Q_OBJECT
 

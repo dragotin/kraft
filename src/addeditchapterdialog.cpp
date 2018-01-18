@@ -17,29 +17,25 @@
 
 #include <QtGui>
 
-#include <klocale.h>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
+
+#include <klocalizedstring.h>
 
 #include "addeditchapterdialog.h"
 #include "catalogchapter.h"
 
 
 AddEditChapterDialog::AddEditChapterDialog( QWidget *parent )
-  :KDialog( parent )
+  :QDialog( parent )
 {
   setObjectName( "CHAPTER_EDIT_DIALOG" );
   setModal( true );
-  setCaption( i18n( "Add/Edit Catalog Chapter" ) );
-  setButtons( Ok|Cancel );
-
-  showButtonSeparator( true );
-
-  QWidget *w = new QWidget(this);
-  setMainWidget( w );
+  setWindowTitle( i18n( "Add/Edit Catalog Chapter" ) );
 
   QVBoxLayout *vbox = new QVBoxLayout;
-  w->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+  this->setLayout( vbox );
 
   mTopLabel = new QLabel();
   mTopLabel->setText( i18n("Create a new Catalog Chapter"));
@@ -53,6 +49,15 @@ AddEditChapterDialog::AddEditChapterDialog( QWidget *parent )
   vbox->addWidget( new QLabel( i18n("Chapter Description:")));
   mDescEdit = new QLineEdit;
   vbox->addWidget( mDescEdit );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  vbox->addWidget(buttonBox);
 }
 
 QString AddEditChapterDialog::name() const

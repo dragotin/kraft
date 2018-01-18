@@ -17,27 +17,18 @@
 #ifndef HTMLVIEW_H
 #define HTMLVIEW_H
 
-#include <khtml_part.h>
-class KAction;
-class KUrl;
+#include <QTextBrowser>
+#include <QDesktopServices>
 
-class HtmlView : public KHTMLPart
+class QUrl;
+
+class HtmlView : public QTextBrowser
 {
     Q_OBJECT
   public:
     HtmlView( QWidget *parent = 0);
 
-    void clearView();
-
-    void setupActions( KActionCollection * );
-
     QString title() const { return mTitle; }
-
-    void setInternalUrl( const QString & );
-    QString internalUrl() const;
-
-    void showWelcomePage();
-    void setBaseUrl( const QString& );
 
   public slots:
     void setTitle( const QString & );
@@ -48,22 +39,23 @@ class HtmlView : public KHTMLPart
     void zoomOut();
 
   protected:
-    virtual void writeTopFrame();
-    virtual void writeBottomFrame();
-    virtual void writeContent( const QString& );
 
     void updateZoomActions();
-  private:
 
-    QString locateCSSImages( const QByteArray& line );
+  signals:
+    void openUrl( const QUrl& );
+
+  private:
+    QString topFrame() const;
+    QString bottomFrame() const;
+    QString readStyles(const QString &styleFile) const;
 
     QString mTitle;
     QString mInternalUrl;
-    QString mStyleSheetFile;
+    QString mStyles;
 
-    KAction *mZoomInAction;
-    KAction *mZoomOutAction;
-    KUrl     mBaseUrl;
+    QAction *mZoomInAction;
+    QAction *mZoomOutAction;
 
     int mZoomStep;
 };

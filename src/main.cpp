@@ -19,80 +19,86 @@
 #include <QImage>
 #include <QPalette>
 
-#include <kstandarddirs.h>
-#include <kcmdlineargs.h>
-#include <kaboutdata.h>
-#include <klocale.h>
-#include <ksplashscreen.h>
-#include <kdebug.h>
+#include <klocalizedstring.h>
+#include <QDebug>
+#include <QApplication>
+#include <KAboutData>
+#include <KLocalizedString>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+#include <QStandardPaths>
+#include <QSplashScreen>
 
 #include "version.h"
 #include "portal.h"
+#include "defaultprovider.h"
 
 int main(int argc, char *argv[])
 {
-  KAboutData aboutData( "kraft", "kraft", ki18n("Kraft"),
-                        KRAFT_VERSION,
-                        ki18n("Business documents for the small enterprise"),
-                        KAboutData::License_GPL,
-                        ki18n("Copyright © 2004–2014 Klaas Freitag" ) );
+    KAboutData aboutData( QLatin1String("kraft"),
+                          QLatin1String("Kraft"),
+                          KRAFT_VERSION,
+                          ki18n("Business documents for the small enterprise").toString(),
+                          KAboutLicense::GPL,
+                          ki18n("Copyright © 2004–2017 Klaas Freitag" ).toString() );
 
-  aboutData.addAuthor(ki18n("Klaas Freitag"), ki18n( "Developer" ), "freitag@kde.org");
-  aboutData.addAuthor(ki18n("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ),
-                        "kraft@spielhagen.de", "http://www.michal-spielhagen.de" );
-  aboutData.addAuthor(ki18n("Thomas Richard"), ki18n("Developer"), "thomas.richard@proan.be");
+    aboutData.addAuthor(QLatin1String("Klaas Freitag"), ki18n("Developer").toString(), QLatin1String("kraft@freisturz.de"));
+    aboutData.addAuthor(QLatin1String("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ).toString(),
+                        QLatin1String("kraft@spielhagen.de"), QLatin1String("http://www.michal-spielhagen.de") );
+    aboutData.addAuthor(QLatin1String("Thomas Richard"), ki18n("Developer").toString(), QLatin1String("thomas.richard@proan.be"));
 
-  aboutData.setBugAddress( "http://sourceforge.net/p/kraft/bugs/" );
-  KStandardDirs stdDirs;
-  QString logoFile = stdDirs.findResource( "data",  "kraft/pics/kraftapp_logo.png" );
-  if( ! logoFile.isEmpty() ) {
-    QImage img( logoFile );
-    aboutData.setProgramLogo( QVariant( img ) );
-  }
-  aboutData.setOtherText( ki18n("Kraft is free software for persons in small businesses\n"
-          "writing correspondence like offers and invoices to their customers" ) );
+    aboutData.setBugAddress( "http://sourceforge.net/p/kraft/bugs/" );
 
-  aboutData.setVersion( KRAFT_VERSION );
-  aboutData.setHomepage( "http://www.volle-kraft-voraus.de" );
+    Q_INIT_RESOURCE(kraft);
 
-  KCmdLineArgs::init( argc, argv, &aboutData );
-
-
-  KCmdLineOptions options;
-  options.add( "d <number>", ki18n("Open document with doc number <number>") );
-
-   // Register the supported options
-  KCmdLineArgs::addCmdLineOptions( options );
-
-  KApplication app;
-
-  if (app.isSessionRestored())
-  {
-    RESTORE(Portal);
-  } else {
-    KStandardDirs stdDirs;
-    QString splashFile = stdDirs.findResource( "data", "kraft/pics/kraftsplash.png" );
-    KSplashScreen *splash = 0;
-
-    if( !splashFile.isEmpty()) {
-      QPixmap pixmap( splashFile );
-
-      splash = new KSplashScreen( pixmap, Qt::WindowStaysOnTopHint );
-      splash->setMask(pixmap.mask());
-      splash->show();
+    QString logoFile = DefaultProvider::self()->locateFile( "pics/kraftapp_logo.png" );
+    if( ! logoFile.isEmpty() ) {
+        QImage img( logoFile );
+        aboutData.setProgramLogo( QVariant( img ) );
     }
+    aboutData.setOtherText( QLatin1String("Kraft is free software for persons in small businesses\nwriting correspondence like offers and invoices to their customers" ) );
 
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-    Portal *kraftPortal = new Portal( 0, args, "kraft main window" );
-    kraftPortal->show();
+    aboutData.setVersion( KRAFT_VERSION );
+    aboutData.setHomepage( "http://www.volle-kraft-voraus.de" );
 
-    if( splash ) {
-      splash->finish( kraftPortal->mainWidget() );
-      splash->deleteLater();
+    QApplication app(argc, argv);
+    QCommandLineParser parser;
+
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
+
+
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("d"), i18n("Open document with doc number <number>"), QLatin1String("number")));
+
+    // Register the supported options
+    if (app.isSessionRestored()) {
+        RESTORE(Portal);
     } else {
-      kDebug() << "Could not find splash screen";
-    }
-  }
+        QString splashFile = DefaultProvider::self()->locateFile("pics/kraftsplash.png" );
+        QSplashScreen *splash = 0;
 
-  return app.exec();
+        if( !splashFile.isEmpty()) {
+            QPixmap pixmap( splashFile );
+
+            splash = new QSplashScreen( pixmap, Qt::WindowStaysOnTopHint );
+            splash->setMask(pixmap.mask());
+            splash->show();
+        }
+
+        Portal *kraftPortal = new Portal( 0, &parser, "kraft main window" );
+        kraftPortal->show();
+
+        if( splash ) {
+            splash->finish( kraftPortal );
+            splash->deleteLater();
+        } else {
+            // qDebug () << "Could not find splash screen";
+        }
+    }
+
+    return app.exec();
 }

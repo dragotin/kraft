@@ -21,33 +21,30 @@
 #include <QFormLayout>
 #include <QPushButton>
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
+#include <QComboBox>
+#include <QDialog>
+#include <QDateEdit>
+#include <QDebug>
+#include <QTextEdit>
 
-#include <ktextedit.h>
-#include <khbox.h>
-#include <krun.h>
-#include <klocale.h>
-#include <kdialog.h>
-#include <kcombobox.h>
-#include <kdatewidget.h>
-#include <kdebug.h>
+#include <klocalizedstring.h>
+#include <kassistantdialog.h>
 
 #include "newdocassistant.h"
-#include "addressselection.h"
-#include "akonadiaddressselector.h"
 #include "defaultprovider.h"
 #include "filterheader.h"
 #include "doctype.h"
 #include "kraftsettings.h"
-
+#include "addressselectorwidget.h"
 
 CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   :QWidget( parent )
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QLabel *help = new QLabel;
   help->setText( i18n( "Please select a customer as addressee for the document. "
@@ -59,9 +56,10 @@ CustomerSelectPage::CustomerSelectPage( QWidget *parent )
 
   vbox->addWidget( help );
 
-  mAddresses = new AkonadiAddressSelector( this, false ); // AddressSelection( this, false );
-  connect( mAddresses,  SIGNAL( addressSelected( const Addressee& ) ),
-           SIGNAL( addresseeSelected( const Addressee& ) ) );
+  mAddresses = new AddressSelectorWidget(this);
+
+  connect( mAddresses,  SIGNAL( addressSelected( const KContacts::Addressee& ) ),
+           SIGNAL( addresseeSelected( const KContacts::Addressee& ) ) );
 
   vbox->addWidget( mAddresses );
 }
@@ -89,8 +87,8 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
 
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QLabel *help = new QLabel;
   help->setTextFormat( Qt::RichText );
@@ -101,27 +99,27 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   mCustomerLabel = new QLabel;
   mCustomerLabel->setFrameStyle( QFrame::Box + QFrame::Sunken );
   mCustomerLabel->setTextFormat( Qt::RichText );
-  mCustomerLabel->setMargin( KDialog::marginHint() );
+//TODO PORT QT5   mCustomerLabel->setMargin( QDialog::marginHint() );
   mCustomerLabel->setText( i18n( "Customer: Not yet selected!" ) );
   vbox->addWidget( mCustomerLabel );
 
   QFormLayout *grid = new QFormLayout;
-  grid->setSpacing( KDialog::marginHint() );
+//TODO PORT QT5   grid->setSpacing( QDialog::marginHint() );
   vbox->addLayout( grid );
 
 //   QLabel *l = new QLabel( i18n( "Some Document Details: " ), vbox );
-//  l->setMargin( KDialog::marginHint() );
+//TODO PORT QT5 //  l->setMargin( QDialog::marginHint() );
 
-  mTypeCombo = new KComboBox;
+  mTypeCombo = new QComboBox;
   mTypeCombo->insertItems( 0, DocType::allLocalised() );
   mTypeCombo->setCurrentIndex( mTypeCombo->findText( DefaultProvider::self()->docType() ));
   grid->addRow( i18n("Document &Type:"), mTypeCombo );
 
-  mDateEdit = new KDateWidget;
+  mDateEdit = new QDateEdit;
   mDateEdit->setDate( QDate::currentDate() );
   grid->addRow( i18n( "Document Date: " ), mDateEdit );
 
-  mWhiteboardEdit = new KTextEdit;
+  mWhiteboardEdit = new QTextEdit;
   grid->addRow( i18n( "Whiteboard Content:" ), mWhiteboardEdit );
 
   vbox->addStretch( 1 );
@@ -138,14 +136,15 @@ DocDetailsPage::~DocDetailsPage()
 
 KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
   :KAssistantDialog( parent ),
+   mCustomerPage( 0 ),
    mCustomerBox( 0 ),
    mParent( parent )
 {
   setObjectName( name );
   setModal( modal );
 
-  KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
-  restoreDialogSize( config );
+  const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->newDocWizardGeometry().toAscii() );
+  restoreGeometry(geo);
 }
 
 KraftWizard::~KraftWizard()
@@ -155,32 +154,39 @@ KraftWizard::~KraftWizard()
 
 void KraftWizard::init()
 {
-  QWidget *w1 = new QWidget;
-  mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
-  mDetailsPage = new DocDetailsPage( w1 );
+    QScopedPointer<AddressProvider> addressProvider;
+    addressProvider.reset(new AddressProvider);
 
-  QWidget *w = new QWidget;
-  mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
+    setWindowTitle( i18n( "Document Creation Wizard" ) );
+    QWidget *w1 = new QWidget;
+    mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
+    mDetailsPage = new DocDetailsPage( w1 );
 
-  setCaption( i18n( "Document Creation Wizard" ) );
+    if( addressProvider->backendUp() ) {
+        QWidget *w = new QWidget;
+        mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
 
-  mCustomerPage = new CustomerSelectPage( w );
-  mCustomerPage->setupAddresses();
-  connect( mCustomerPage, SIGNAL( addresseeSelected( const Addressee& ) ),
-           this,  SLOT( slotAddressee( const Addressee& ) ) );
-  connect(this,SIGNAL(finished()),SLOT(slotFinished()));
+        mCustomerPage = new CustomerSelectPage( w );
+        mCustomerPage->setupAddresses();
+        connect( mCustomerPage, SIGNAL( addresseeSelected(KContacts::Addressee)),
+                 this,  SLOT( slotAddressee(KContacts::Addressee)));
+    }
 }
 
-void KraftWizard::slotFinished()
+void KraftWizard::done( int r )
 {
-  mCustomerPage->saveState();
-  KConfigGroup config( KraftSettings::self()->config(), "AddressPickerWindowSizes" );
-  saveDialogSize( config );
+    if( mCustomerPage ) {
+        mCustomerPage->saveState();
+    }
+    const QByteArray geo = saveGeometry().toBase64();
+    KraftSettings::self()->setNewDocWizardGeometry(geo);
+
+    KAssistantDialog::done(r);
 }
 
-void KraftWizard::slotAddressee( const Addressee& addressee )
+void KraftWizard::slotAddressee(const KContacts::Addressee& addressee)
 {
-  kDebug() << "Addressee Changed!";
+  // qDebug () << "Addressee Changed!";
   mAddressee = addressee;
 }
 

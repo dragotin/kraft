@@ -32,12 +32,9 @@ class MaterialSaverDB : public MaterialSaverBase
 {
 public:
     static MaterialSaverBase* self();
-
-private:
     MaterialSaverDB();
 
-    static MaterialSaverDB *mSelf;
-
+private:
     virtual bool saveTemplate( StockMaterial* );
     virtual void fillMaterialBuffer( QSqlRecord &, StockMaterial* , bool );
     virtual void saveTemplateChapter( StockMaterial* );

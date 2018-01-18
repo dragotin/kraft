@@ -17,9 +17,8 @@
 #ifndef DOCDIGEST_H
 #define DOCDIGEST_H
 
-#include <klocale.h>
-#include <kabc/addressee.h>
-
+#include <kcontacts/addressee.h>
+#include <QLocale>
 #include <QList>
 
 #include "dbids.h"
@@ -37,40 +36,38 @@ public:
   DocDigest( dbID id, const QString& type, const QString& clientID );
   DocDigest();
 
-  QString clientId() { return mClientId; }
+  QString clientId() const { return mClientId; }
   void setClientId( const QString& id ) { mClientId = id; }
 
-  QString clientAddress() { return mClientAddress; }
+  QString clientAddress() const { return mClientAddress; }
   void setClientAddress( const QString& address ) { mClientAddress = address; }
 
-  KABC::Addressee addressee() const;
-  void setAddressee( const KABC::Addressee& );
+  KContacts::Addressee addressee() const;
+  void setAddressee( const KContacts::Addressee& );
 
-  QString type() { return mType; }
+  QString type() const { return mType; }
   void setType( const QString& t ) { mType = t; }
 
-  QString date();
+  QString date() const;
   void setDate( const QDate& date ) { mDate = date; }
+  QDate rawDate() const;
 
-  QString lastModified();
+  QString lastModified() const;
   void setLastModified( const QDateTime& date ) { mLastModified = date; }
 
-  QString id()   { return mID.toString(); }
+  QString id() const  { return mID.toString(); }
   void setId( dbID id ) { mID = id; }
 
-  QString ident()   { return mIdent; }
+  QString ident() const   { return mIdent; }
   void setIdent( const QString& ident ) { mIdent = ident; }
 
-  QString whiteboard()   { return mWhiteboard; }
+  QString whiteboard() const  { return mWhiteboard; }
   void setWhiteboard( const QString& white ) { mWhiteboard = white; }
 
   void setProjectLabel( const QString& prjLabel ) { mProjectLabel = prjLabel; }
-  QString projectLabel() { return mProjectLabel; }
+  QString projectLabel() const { return mProjectLabel; }
 
-  void appendArchDocDigest( const ArchDocDigest& );
   ArchDocDigestList archDocDigestList();
-
-  void setCountryLanguage( const QString&, const QString& );
 
 protected:
 
@@ -84,12 +81,12 @@ protected:
 
   QDateTime   mLastModified;
   QDate       mDate;
-  KLocale     mLocale;
+  QLocale     mLocale;
 
   ArchDocDigestList mArchDocs;
-
+  bool        _archDocLazyLoaded;
 private:
-  KABC::Addressee mContact;
+  KContacts::Addressee mContact;
 };
 
 typedef QList<DocDigest> DocDigestList;
