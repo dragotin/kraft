@@ -77,7 +77,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
       if ( dp->attributes().contains( DocPosition::Kind ) ) {
           mPositions += "<i>" + dp->text() + "</i>";
       } else {
-          mPositions += dp->text();
+          mPositions += htmlify(dp->text());
       }
 
       if ( dp->toDelete() ) mPositions += "</strike>";

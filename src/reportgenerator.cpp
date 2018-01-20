@@ -417,7 +417,7 @@ void ReportGenerator::contactToTemplate( TextTemplate *tmpl, const QString& pref
 
 QString ReportGenerator::escapeTrml2pdfXML( const QString& str ) const
 {
-  return( Qt::escape( str ) );
+  return( str.toHtmlEscaped() );
 }
 
 QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle ) const
