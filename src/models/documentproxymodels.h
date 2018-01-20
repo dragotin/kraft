@@ -38,6 +38,7 @@ class DocumentFilterModel : public QSortFilterProxyModel
         void setEnableTreeview( bool treeview );
     protected:
         bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+        bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const;
 
     private:
         int m_MaxRows;
