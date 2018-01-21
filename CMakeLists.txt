@@ -70,6 +70,10 @@ add_definitions(${QT_DEFINITIONS} )
 include_directories(${QT_INCLUDES} src)
 include_directories( /usr/include/KF5/AkonadiCore )
 
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
+        ki18n_install(po)
+endif()
+
 add_subdirectory(src)
 add_subdirectory(database)
 add_subdirectory(reports)
