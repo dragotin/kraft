@@ -26,7 +26,7 @@
 DocBaseModel::DocBaseModel(QObject *parent)
     :QAbstractItemModel(parent)
 {
-    _headers.resize(10);
+    _headers.resize(12);
 
     _headers[ Document_Id ]            = i18n("Date"); // this is only displayed by the date model
     _headers[ Document_Ident ]         = i18n("Doc. Number");
@@ -34,7 +34,7 @@ DocBaseModel::DocBaseModel(QObject *parent)
     _headers[ Document_Whiteboard ]    = i18n( "Whiteboard" );
     _headers[ Document_ClientId ]      = i18n( "Client Id" );
     _headers[ Document_LastModified]   = i18n( "Last modified" );
-    _headers[ Document_CreationDate]   = i18n( "Creation date" );
+    _headers[ Document_CreationDateRaw]   = i18n( "Creation date" );
     _headers[ Document_ProjectLabel]   = i18n( "Project" );
     _headers[ Document_ClientAddress ] = i18n( "Client Address" );
     _headers[ Document_ClientName ]    = i18n( "Client" );

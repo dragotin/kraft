@@ -94,6 +94,14 @@ KraftViewRO::~KraftViewRO()
 
 }
 
+#define QL1(X) QLatin1String(X)
+
+QString KraftViewRO::htmlify( const QString& str ) const
+{
+  QStringList li = Qt::escape(str).split( "\n" );
+  return QL1("<p>") + li.join( "</p><p>" ) + QL1("</p>");
+}
+
 #define DOC_RO_TAG(X) QLatin1String(X)
 
 void KraftViewRO::setup( DocGuardedPtr doc )
@@ -126,7 +134,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     address.replace( '\n', "<br/>" );
     tmpl.setValue( DOC_RO_TAG( "ADDRESS" ), address );
     tmpl.setValue( DOC_RO_TAG( "DOCNO" ), doc->ident() );
-    tmpl.setValue( DOC_RO_TAG( "PRETEXT" ), doc->preText() );
+    tmpl.setValue( DOC_RO_TAG( "PRETEXT" ), htmlify(doc->preText()) );
     tmpl.setValue( DOC_RO_TAG( "POSTTEXT" ), doc->postText() );
     tmpl.setValue( DOC_RO_TAG( "SALUT" ), doc->salut() );
     tmpl.setValue( DOC_RO_TAG( "GOODBYE" ), doc->goodbye() );
@@ -161,7 +169,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
         tmpl.createDictionary( "ITEMS" );
 
         tmpl.setValue( "ITEMS", "NUMBER", QString::number( pos++ ) );
-        tmpl.setValue( "ITEMS", "TEXT", dp->text() );
+        tmpl.setValue( "ITEMS", "TEXT", htmlify(dp->text() ));
         tmpl.setValue( "ITEMS", "AMOUNT", locale->toString( dp->amount() ) );
         tmpl.setValue( "ITEMS", "UNIT", dp->unit().einheit( dp->amount() ) );
         double singlePrice = dp->unitPrice().toDouble();

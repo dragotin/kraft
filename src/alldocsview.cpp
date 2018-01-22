@@ -180,7 +180,7 @@ void AllDocsView::slotBuildView()
     _tableView->setModel(mTableModel);
     _dateView->setModel(mDateModel);
 
-    _tableView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
+    _tableView->sortByColumn(DocumentModel::Document_CreationDateRaw, Qt::DescendingOrder);
     _tableView->verticalHeader()->hide();
     _tableView->setSortingEnabled(true);
     _tableView->horizontalHeader()->setMovable( true );
@@ -192,7 +192,8 @@ void AllDocsView::slotBuildView()
     _tableView->hideColumn( DocumentModel::Document_ClientId );
     _tableView->hideColumn( DocumentModel::Document_ClientAddress );
     _tableView->showColumn( DocumentModel::Document_ClientName );
-    _tableView->hideColumn( DocumentModel::Document_CreationDateRaw);
+    _tableView->showColumn( DocumentModel::Document_CreationDateRaw);
+    _tableView->hideColumn( DocumentModel::Document_CreationDate);
     _tableView->hideColumn( DocumentModel::Document_Id_Raw);
     _tableView->hideColumn( DocumentModel::Treestruct_Type);
     _tableView->hideColumn( DocumentModel::Treestruct_Month);
@@ -203,7 +204,9 @@ void AllDocsView::slotBuildView()
     _dateView->hideColumn( DocumentModel::Document_ClientId );
     _dateView->hideColumn( DocumentModel::Document_ClientAddress );
     _dateView->showColumn( DocumentModel::Document_ClientName );
-    _dateView->hideColumn( DocumentModel::Document_CreationDateRaw);
+    _dateView->showColumn( DocumentModel::Document_CreationDateRaw);
+    _dateView->hideColumn( DocumentModel::Document_CreationDate);
+
     _dateView->hideColumn( DocumentModel::Document_Id_Raw);
     _dateView->hideColumn( DocumentModel::Treestruct_Type);
     _dateView->hideColumn( DocumentModel::Treestruct_Month);

@@ -19,6 +19,7 @@
 <p>
 {{PRETEXT}}
 </p>
+<p></p>
 <table width="100%" border="0">
 {{#ITEMS}}
 <tr>

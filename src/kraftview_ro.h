@@ -56,6 +56,7 @@ public:
     virtual ~KraftViewRO();
 
     void setup( DocGuardedPtr doc );
+    QString htmlify( const QString& str ) const;
 
 protected slots:
     void done( int );

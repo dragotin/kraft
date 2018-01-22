@@ -132,3 +132,20 @@ bool DocumentFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sou
     return accepted;
 }
 
+bool DocumentFilterModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
+{
+    QVariant leftData = sourceModel()->data(source_left);
+    QVariant rightData = sourceModel()->data(source_right);
+
+    if (leftData.type() == QVariant::DateTime) {
+        return leftData.toDateTime() < rightData.toDateTime();
+    } if(leftData.type() == QVariant::Date ) {
+        return leftData.toDate() < rightData.toDate();
+    } else {
+        const QString leftString = leftData.toString();
+
+        const QString rightString = rightData.toString();
+
+        return QString::localeAwareCompare(leftString, rightString) < 0;
+    }
+}
