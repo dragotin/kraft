@@ -80,14 +80,14 @@ void PortalView::createIcons()
 
     QListWidgetItem *timeLineButton = new QListWidgetItem(_contentsWidget);
     timeLineButton->setIcon(QIcon(":/kraft/document-open-recent.png"));
-    timeLineButton->setText(tr("Timeline"));
+    timeLineButton->setText(i18n("Timeline"));
     timeLineButton->setTextAlignment(Qt::AlignHCenter);
     timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
 
     catButton->setIcon(QIcon(":/kraft/catalogue.png"));
-    catButton->setText(tr("Catalogs"));
+    catButton->setText(i18n("Catalogs"));
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
@@ -344,7 +344,7 @@ void PortalView::fillSystemDetails()
   html += "</table></div>";
 
   html += "<h3>" + i18n( "Acknowledgements" ) + "</h3>";
-  html += "<p><div>Some Icons are made by <a href=\"https://www.flaticon.com/authors/madebyoliver\" "
+  html += "<p><div>" + i18n("Some Icons are made by") + "<a href=\"https://www.flaticon.com/authors/madebyoliver\" "
           "title=\"Madebyoliver\">Madebyoliver</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\">www.flaticon.com</a> "
           ", licensed by <a href=\"http://creativecommons.org/licenses/by/3.0/\" "
           "title=\"Creative Commons BY 3.0\">CC 3.0 BY</a></div><p>";

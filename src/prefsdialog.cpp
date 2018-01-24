@@ -109,10 +109,10 @@ void PrefsDialog::taxTab()
   mTaxModel->setSort(3, Qt::DescendingOrder);
   mTaxModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
   mTaxModel->select();
-  mTaxModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-  mTaxModel->setHeaderData(1, Qt::Horizontal, tr("Full Tax [%]"));
-  mTaxModel->setHeaderData(2, Qt::Horizontal, tr("Reduced Tax [%]"));
-  mTaxModel->setHeaderData(3, Qt::Horizontal, tr("Start Date"));
+  mTaxModel->setHeaderData(0, Qt::Horizontal, i18n("ID"));
+  mTaxModel->setHeaderData(1, Qt::Horizontal, i18n("Full Tax [%]"));
+  mTaxModel->setHeaderData(2, Qt::Horizontal, i18n("Reduced Tax [%]"));
+  mTaxModel->setHeaderData(3, Qt::Horizontal, i18n("Start Date"));
 
   mTaxTreeView = new ImpTreeView;
   vboxLay->addWidget( mTaxTreeView );

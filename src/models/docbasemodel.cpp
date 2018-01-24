@@ -105,9 +105,9 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
             var = addressee.assembledName();
             // qDebug() << "Address from Cache: " << var.toString();
         } else if( state == AddressProvider::LookupOngoing ) {
-            var = tr("Looking up address");
+            var = i18n("Looking up address");
         } else if( state == AddressProvider::LookupStarted ) {
-            var = tr("Lookup started");
+            var = i18n("Lookup started");
         } else if( state == AddressProvider::LookupNotFound ||
                    state == AddressProvider::BackendError   ||
                    state == AddressProvider::ItemError ) {

@@ -28,6 +28,8 @@
 #include <QDebug>
 #include <QDialogButtonBox>
 
+#include <klocalizedstring.h>
+
 #include "defaultprovider.h"
 #include "impviewwidgets.h"
 #include "geld.h"
@@ -46,10 +48,10 @@ PrefsWages::PrefsWages(QWidget* parent)
   mWagesModel->setSort(3, Qt::AscendingOrder);
   mWagesModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
   mWagesModel->select();
-  mWagesModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-  mWagesModel->setHeaderData(1, Qt::Horizontal, tr("Code"));
-  mWagesModel->setHeaderData(2, Qt::Horizontal, tr("Price"));
-  mWagesModel->setHeaderData(3, Qt::Horizontal, tr("Sortkey"));
+  mWagesModel->setHeaderData(0, Qt::Horizontal, i18n("ID"));
+  mWagesModel->setHeaderData(1, Qt::Horizontal, i18n("Code"));
+  mWagesModel->setHeaderData(2, Qt::Horizontal, i18n("Price"));
+  mWagesModel->setHeaderData(3, Qt::Horizontal, i18n("Sortkey"));
 
   mProxyModel = new QSortFilterProxyModel(this);
   mProxyModel->setSourceModel(mWagesModel);
