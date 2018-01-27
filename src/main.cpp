@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
                           KRAFT_VERSION,
                           ki18n("Business documents for the small enterprise").toString(),
                           KAboutLicense::GPL,
-                          ki18n("Copyright © 2004–2017 Klaas Freitag" ).toString() );
+                          ki18n("Copyright © 2004–2018 Klaas Freitag" ).toString() );
 
     aboutData.addAuthor(QLatin1String("Klaas Freitag"), ki18n("Developer").toString(), QLatin1String("kraft@freisturz.de"));
     aboutData.addAuthor(QLatin1String("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ).toString(),
