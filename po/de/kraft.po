@@ -3404,6 +3404,7 @@ msgid ""
 "The template file could not be opened: %1\n"
 " "
 msgstr "Vorlagendatei kann nicht geöffnet werden: %1\n"
+" "
 
 #: reportgenerator.cpp:211
 #, kde-format
