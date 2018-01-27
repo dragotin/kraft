@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: kraft\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2018-01-20 20:45+0100\n"
-"PO-Revision-Date: 2018-01-20 20:59+0100\n"
+"PO-Revision-Date: 2018-01-27 12:54+0100\n"
 "Last-Translator: Klaas Freitag <klaas@freisturz.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
 "Language: de\n"
@@ -73,20 +73,20 @@ msgid "No backend"
 msgstr "Kein Backend"
 
 #: addressselectorwidget.cpp:229
-#, fuzzy, kde-format
+#, kde-format
 #| msgctxt "Abbrev. for localized name"
 #| msgid "Name"
 msgid "Name"
 msgstr "Name"
 
 #: addressselectorwidget.cpp:231
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Client Address"
 msgid "Address"
 msgstr "Kundenadresse"
 
 #: addressselectorwidget.cpp:291 filterheader.cpp:39
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "&Search: "
 msgid "&Search:"
 msgstr "&Suchen: "
@@ -702,7 +702,7 @@ msgstr "Status:"
 
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: dbselect.ui:17
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "Kraft uses a database backend to store values. By default it uses a file "
 #| "based database with easy setup targeted to single user mode.\n"
@@ -713,10 +713,11 @@ msgid ""
 "default it uses a file based database with easy setup targeted to single "
 "user mode.</p><p><br/></p></body></html>"
 msgstr ""
-"Kraft nutzt ein Datenbank-Backend, um Werte zu speichern. Standardmäßig wird "
-"eine dateibasierte Datenbank mit einfacher Einrichtung verwendet, die auf "
-"Einbenutzerbetrieb ausgerichtet ist. \n"
-"\n"
+"<html><head/><body><p>Kraft nutzt ein Datenbank-Backend, um Werte zu"
+" speichern. Standardmäßig wird "
+"eine dateibasierte Datenbank mit einfacher Einrichtung verwendet, die auf"
+" Einbenutzerbetrieb ausgelegt ist. "
+"</p><p><br/></p></body></html>"
 "Bitte wählen Sie das Datenbank-Backend, das Sie verwenden möchten:"
 
 #. i18n: ectx: property (text), widget (QRadioButton, mRbSqlite3)
@@ -737,7 +738,7 @@ msgid "Unknown"
 msgstr "Unbekannt"
 
 #: docassistant.cpp:52
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Show Templates"
 msgid "Show &Templates"
 msgstr "Vorlagen anzeigen"
@@ -768,7 +769,7 @@ msgid "Delete the current template"
 msgstr "Aktuelle Vorlage löschen"
 
 #: docassistant.cpp:292
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "Do you really want to delete the template permanently? There is no way to "
 #| "recover!"
@@ -815,7 +816,7 @@ msgid "Customer"
 msgstr "Kunde:"
 
 #: docdigestdetailview.cpp:309
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "not selected"
 msgid "not set"
 msgstr "nicht ausgewählt"
@@ -1216,7 +1217,7 @@ msgid "S&earch:"
 msgstr "Such&en:"
 
 #: fixcalcdialog.cpp:36
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Calculation Item Time"
 msgid "Calculation Fix Item"
 msgstr "Zeitkostenanteil"
@@ -1339,13 +1340,13 @@ msgid "Saving of this template failed, sorry"
 msgstr "Das Speichern der Vorlage ist fehlgeschlagen."
 
 #: flostempldialog.cpp:403
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Template Modified"
 msgid "The template has been modified."
 msgstr "Vorlage geändert"
 
 #: flostempldialog.cpp:404
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "The template was modified. Do you really want to discard all changes?"
 msgid "Do you want to discard your changes?"
@@ -1363,10 +1364,10 @@ msgstr ""
 "Möchten Sie diese Vorlage wirklich in die neue Kategorie verschieben?"
 
 #: flostempldialog.cpp:435
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Chapter Name:"
 msgid "Chapter Change"
-msgstr "Kapitelname:"
+msgstr "Kapitelveränderung"
 
 #: flostempldialog.cpp:567
 #, kde-format
@@ -1398,10 +1399,10 @@ msgstr "Straße"
 
 #. i18n: ectx: property (text), widget (QLabel, postCodeLabel)
 #: identity.ui:52
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Postal &Address:"
 msgid "Post Code:"
-msgstr "&Anschrift:"
+msgstr "Postleitzahl:"
 
 #. i18n: ectx: property (text), widget (QLabel, cityLabel)
 #: identity.ui:62
@@ -1424,10 +1425,10 @@ msgstr "Fax:"
 
 #. i18n: ectx: property (text), widget (QLabel, mobileLabel)
 #: identity.ui:96
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Work Phone"
 msgid "Mobile Phone:"
-msgstr "Telefon (Arbeit)"
+msgstr "Mobil:"
 
 #. i18n: ectx: property (text), widget (QLabel, emailLabel)
 #: identity.ui:106
@@ -1552,14 +1553,14 @@ msgstr "Posten aus Vorlage erstellen"
 
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: inserttmplbase.ui:45
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "New Item"
 msgid "New Item Text"
 msgstr "Neuer Posten"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel4)
 #: inserttmplbase.ui:56
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "insert"
 msgid "&insert"
 msgstr "Einfügen"
@@ -1572,24 +1573,24 @@ msgstr "à"
 
 #. i18n: ectx: property (text), widget (QLabel, textLabel3)
 #: inserttmplbase.ui:116
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "&after"
 msgid "&after item"
 msgstr "&nach"
 
 #. i18n: ectx: property (title), widget (QGroupBox, mKeepGroup)
 #: inserttmplbase.ui:153
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Add a template to the document"
 msgid "Keep this item as template for future documents"
-msgstr "Vorlage zum Dokument hinzufügen"
+msgstr "Diesen Posten als Vorlage für zukünftige Dokumente speichern"
 
 #. i18n: ectx: property (text), widget (QLabel, mChapterText)
 #: inserttmplbase.ui:173
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "in &chapter"
 msgid "save in &chapter"
-msgstr "in &Kategorie"
+msgstr "in &Kapitel"
 
 #: itemtagdialog.cpp:82
 #, kde-format
@@ -1597,10 +1598,10 @@ msgid "Edit Item Tags"
 msgstr "Posten-Markierungen bearbeiten"
 
 #: itemtagdialog.cpp:89
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Edit Item Tags"
 msgid "Item Tags"
-msgstr "Posten-Markierungen bearbeiten"
+msgstr "Posten-Markierungen"
 
 #: itemtagdialog.cpp:90
 #, kde-format
@@ -1865,7 +1866,7 @@ msgstr "Der lokale Speicherpfad für XML-Dokumente"
 #. i18n: ectx: label, entry (docEditGeometry), group (WindowSizes)
 #. i18n: ectx: label, entry (docViewROGeometry), group (WindowSizes)
 #: kraftsettings.kcfg:25 kraftsettings.kcfg:28
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "The default size of the document view dialog"
 msgid "The default geometry of the document view dialog"
 msgstr "Standardgröße der Dokumentansicht"
@@ -1884,10 +1885,10 @@ msgstr "Die aktuelle Geometry des Portals"
 
 #. i18n: ectx: label, entry (newDocWizardGeometry), group (WindowSizes)
 #: kraftsettings.kcfg:37
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "The splitter setting for the doc assistant"
 msgid "The current geometry of the new doc assistant"
-msgstr "Splitter-Einstellung für den Dokument-Assistenten"
+msgstr "Aktuelle Geometry des Dokument-Neu Assistenten"
 
 #. i18n: ectx: label, entry (docViewSplitter), group (WindowSizes)
 #: kraftsettings.kcfg:43
@@ -1948,10 +1949,10 @@ msgstr "Die Größe der Schieberegler im Adress-Auswahlfenster"
 
 #. i18n: ectx: label, entry (addressPickerTreeviewState), group (WindowSizes)
 #: kraftsettings.kcfg:70
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "The sizes of the slider in the address picker Widget"
 msgid "The state of the treeview inside the address selector widget"
-msgstr "Die Größe der Schieberegler im Adress-Auswahlfenster"
+msgstr "Der Status der Baumansicht im Address-Auswahlwidget"
 
 #. i18n: ectx: label, entry (addressSelectDialogSize), group (WindowSizes)
 #: kraftsettings.kcfg:73
@@ -1961,17 +1962,17 @@ msgstr "Größe des Adressauswahldialoges"
 
 #. i18n: ectx: label, entry (materialCatViewState), group (WindowSizes)
 #: kraftsettings.kcfg:76
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "The default size of the material catalog view"
 msgid "State of the header of the material catalog"
 msgstr "Standardgröße der Material-Katalogs-Ansicht"
 
 #. i18n: ectx: label, entry (templateCatViewState), group (WindowSizes)
 #: kraftsettings.kcfg:79
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Set Chapter of the marked Material:"
 msgid "State of the header of the template catalog"
-msgstr "Kategorie für das gewählte Material festlegen:"
+msgstr "Status der Kopfzeile des Vorlagenkatalogs"
 
 #. i18n: ectx: label, entry (materialAddOnPercent), group (material)
 #: kraftsettings.kcfg:86
@@ -2180,10 +2181,10 @@ msgid "Discount"
 msgstr "Rabatt"
 
 #: kraftview.cpp:1423
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "This document was never printed."
 msgid "The document has been modified."
-msgstr "Das Dokuments wurde nie gedruckt."
+msgstr "Das Dokuments wurde verändert."
 
 #: kraftview.cpp:1424
 #, kde-format
@@ -2206,10 +2207,10 @@ msgid "Business documents for the small enterprise"
 msgstr "Geschäftsdokumente für das kleine Unternehmen"
 
 #: main.cpp:43
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Copyright © 2004–2014 Klaas Freitag"
 msgid "Copyright © 2004–2017 Klaas Freitag"
-msgstr "Copyright © 2004–2014 Klaas Freitag"
+msgstr "Copyright © 2004–2018 Klaas Freitag"
 
 #: main.cpp:45 main.cpp:48
 #, kde-format
@@ -2317,16 +2318,16 @@ msgid "Do you really want to delete the template from the catalog?"
 msgstr "Möchten Sie die ausgewählte Vorlage wirklich aus dem Katalog löschen?"
 
 #: materialselectdialog.cpp:39
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Select Material for Calculation"
 msgid "Add Material to Calculation"
-msgstr "Material für Kalkulation auswählen"
+msgstr "Material zur Kalkulation hinzufügen"
 
 #: materialselectdialog.cpp:44
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Select Material for Calculation"
 msgid "<h1>Add Material to Calculation</h1>"
-msgstr "Material für Kalkulation auswählen"
+msgstr "<h1>Material zur Kalkulation hinzufügen</h1>"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, calcdetailMat)
 #: matpartui.ui:14
@@ -2486,7 +2487,7 @@ msgid "Edit Number Cycles"
 msgstr "Nummernbestimmung ändern"
 
 #: numbercycledialog.cpp:67
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "The template may contain the following tags:<ul><li>%y or %yyyy - the "
 #| "year of the documents date.</li><li>%yy - the year of the document (two "
@@ -2541,7 +2542,7 @@ msgid "The numbercycle %1 is still assigned to a document type."
 msgstr "Der Nummernkreis %1 ist noch einem Dokumenttyp zugeordnet."
 
 #: numbercycledialog.cpp:273
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "The numbercycle %1 is still assigned to a document type.The number cycle "
 #| "can not be deleted as long as it is assigned to a document type."
@@ -2549,7 +2550,7 @@ msgid ""
 "The number cycle can not be deleted as long as it is assigned to a document "
 "type."
 msgstr ""
-"Die Nummernbestimmung %1 ist noch einer oder mehreren Dokumentenarten "
+"Der Nummernkreis ist noch einer oder mehreren Dokumentenarten "
 "zugeordnet und kann erst nach Aufhebung aller Zuordnungen gelöscht werden."
 
 #: numbercycledialog.cpp:332
@@ -2563,7 +2564,7 @@ msgid "The new counter is lower than the old one. "
 msgstr "Der neue Zähler ist kleiner als der alte."
 
 #: numbercycledialog.cpp:334
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "The new counter is lower than the old one. That has potential to create "
 #| "duplicate document numbers. Do you really want to decrease it?"
@@ -2799,10 +2800,10 @@ msgid "Check commandline actions"
 msgstr "Befehlszeilenaktionen prüfen"
 
 #: portal.cpp:391
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "<h2>Welcome to Kraft</h2>"
 msgid "Welcome to Kraft, %1"
-msgstr "<h2>Willkommen zu Kraft</h2>"
+msgstr "Willkommen zu Kraft, %1"
 
 #: portal.cpp:420
 #, kde-format
@@ -2855,10 +2856,10 @@ msgid "Toggle the statusbar..."
 msgstr "Statusleiste anzeigen/ausblenden ..."
 
 #: portalview.cpp:64
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Kraft"
 msgid "About Kraft"
-msgstr "Kraft"
+msgstr "Über Kraft"
 
 #: portalview.cpp:77
 #, kde-format
@@ -2886,10 +2887,10 @@ msgid "Open"
 msgstr "Öffnen"
 
 #: portalview.cpp:198
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "New template"
 msgid "No templates yet."
-msgstr "Neue Vorlage"
+msgstr "Noch keine Vorlage angelegt."
 
 #: portalview.cpp:203
 #, kde-format
@@ -2967,10 +2968,10 @@ msgid "Database Version:"
 msgstr "Datenbankversion:"
 
 #: portalview.cpp:325
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Addressbook out of sync"
 msgid "Addressbook Backend"
-msgstr "Das Adressbuch ist nicht abgeglichen."
+msgstr "Adressbuch-Backend"
 
 #: portalview.cpp:327
 #, kde-format
@@ -2983,10 +2984,10 @@ msgid "running"
 msgstr "läuft"
 
 #: portalview.cpp:328
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "not found"
 msgid "not running"
-msgstr "nicht gefunden"
+msgstr "nicht funktionsfähig"
 
 #: portalview.cpp:332
 #, kde-format
@@ -3219,22 +3220,22 @@ msgid "Select Identity..."
 msgstr "Identität auswählen ..."
 
 #: prefsdialog.cpp:197
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "home address"
 msgid "From AddressBook"
-msgstr "Privatanschrift"
+msgstr "aus dem Adressbuch"
 
 #: prefsdialog.cpp:202 setupassistant.cpp:336
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Manual Price"
 msgid "Manual Entry"
-msgstr "Manueller Preis"
+msgstr "Manueller Eintrag"
 
 #: prefsdialog.cpp:214
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Manual Price"
 msgid "Manual Address"
-msgstr "Manueller Preis"
+msgstr "Manuelle Adresse"
 
 #: prefsdialog.cpp:263
 #, kde-format
@@ -3299,7 +3300,7 @@ msgid "Document Default Change"
 msgstr "Änderung des Standard-Dokumenttyps"
 
 #: prefsdialog.cpp:489
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "The identity is not listed in an address book."
 msgid "The identity can not be found."
 msgstr "Die Identität ist in keinem Adressbuch enthalten."
@@ -3382,14 +3383,12 @@ msgid "<h1>Edit wage group</h1>"
 msgstr "<h1>Lohngruppe bearbeiten</h1>"
 
 #: reportgenerator.cpp:133
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "A document template named %1 could not be loaded. Please check the "
 #| "installation."
 msgid "A document template named %1 could not be loaded. "
-msgstr ""
-"Eine Dokumentvorlage namens %1 kann nicht geladen werden. Bitte überprüfen "
-"Sie die Installation."
+msgstr "Eine Dokumentvorlage namens %1 kann nicht geladen werden. "
 
 #: reportgenerator.cpp:134
 #, kde-format
@@ -3397,29 +3396,27 @@ msgid "Please check your installation!"
 msgstr "Bitte Installation überprüfen!"
 
 #: reportgenerator.cpp:210
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "The template file could not be opened: %1\n"
 #| "Please check the setup and the doc type configuration."
 msgid ""
 "The template file could not be opened: %1\n"
 " "
-msgstr ""
-"Vorlagendatei kann nicht geöffnet werden: %1\n"
-"Bitte überprüfen Sie die Einrichtung und die Dokumentenart."
+msgstr "Vorlagendatei kann nicht geöffnet werden: %1\n"
 
 #: reportgenerator.cpp:211
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "The template file could not be opened: %1\n"
 #| "Please check the setup and the doc type configuration."
 msgid "Please check the setup and the doc type configuration."
 msgstr ""
-"Vorlagendatei kann nicht geöffnet werden: %1\n"
-"Bitte überprüfen Sie die Einrichtung und die Dokumentenart."
+"Bitte überprüfen Sie die Einrichtung und die Konfiguration der"
+" Dokumentenarten."
 
 #: reportgenerator.cpp:516
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "The utility to create PDF from the rml file could not be found, but is "
 #| "required to create documents.Please make sure the package is installed "
@@ -3428,8 +3425,8 @@ msgid ""
 "The utility to create PDF from the rml file could not be found, but is "
 "required to create documents."
 msgstr ""
-"Das zur Dokumenterzeugung notwendige Dienstprogramm „trml2pdf“ kann nicht "
-"gefunden werden. Bitte überprüfen Sie die Installation."
+"Das Dienstprogramm zur Konvertierung von rml Dateien kann nicht gefunden"
+" werden, aber es ist nötig, um PDF Dokumente zu erzeugen."
 
 #: reportgenerator.cpp:518
 #, kde-format
@@ -3461,7 +3458,7 @@ msgid "Program ended with status %1"
 msgstr "Das Programm ist mit Status %1 beendet worden."
 
 #: reportgenerator.cpp:624
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "To generate PDF output, Kraft requires the python module <b>ReportLab</b> "
 #| "which can not be found.<br/>Please make sure the package is installed on "
@@ -3477,7 +3474,7 @@ msgstr ""
 "auf Ihrem Rechner installiert ist."
 
 #: reportgenerator.cpp:628
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "To generate PDF output, Kraft requires the python module <b>pyPdf</b> "
 #| "which can not be found.<br/>Please make sure the package is installed on "
@@ -3498,7 +3495,7 @@ msgid "Unknown problem."
 msgstr "Unbekanntes Problem."
 
 #: reportgenerator.cpp:635
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Could not generate the pdf file. The pdf creation script failed."
 msgid "The PDF output file could not be generated. The creation script failed."
 msgstr ""
@@ -3521,19 +3518,19 @@ msgid "Select the Database Backend"
 msgstr "Bitte wählen Sie das Datenbank-Modul"
 
 #: setupassistant.cpp:91
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "File Name"
 msgid "Sqlite File Name"
-msgstr "Dateiname"
+msgstr "Dateiname der Sqlite-Datenbank"
 
 #: setupassistant.cpp:144
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Database Information"
 msgid "MySql Detail Information"
-msgstr "Datenbank-Informationen"
+msgstr "MySQL Datenbank-Informationen"
 
 #: setupassistant.cpp:186
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Recreate Database"
 msgid "Create Database"
 msgstr "Datenbank neu erzeugen"
@@ -3549,19 +3546,19 @@ msgid "%1/%2"
 msgstr "%1 / %2"
 
 #: setupassistant.cpp:262
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Upgrade the Database Schema"
 msgid "Upgrade the Database"
 msgstr "Datenbankschema aktualisieren"
 
 #: setupassistant.cpp:309
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "work address"
 msgid "Your Company Address"
-msgstr "Arbeitsplatzadresse"
+msgstr "Adresse der Firma"
 
 #: setupassistant.cpp:314
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "Select your own address from the address book. It is set as a consigner "
 #| "on the documents."
@@ -3569,20 +3566,20 @@ msgid ""
 "Select your companies address either from the address book or enter it "
 "manually. It is set as a consigner on the documents."
 msgstr ""
-"Wählen Sie Ihre eigene Adresse aus dem Adressbuch. Sie wird als Absender der "
-"Dokumente verwendet."
+"Wählen Sie die Adresse Ihrer Firma aus dem Adressbuch oder tragen Sie sie"
+" manuell ein. Sie wird als Absender der Dokumente verwendet."
 
 #: setupassistant.cpp:321
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Select an addressee from the address books."
 msgid "Select from Addressbook"
-msgstr "Wählt eine Adresse aus den Adressbüchern."
+msgstr "Aus dem Adressbuch"
 
 #: setupassistant.cpp:412
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Status:"
 msgid "Final Status"
-msgstr "Status:"
+msgstr "Endergebnis"
 
 #: setupassistant.cpp:506
 #, kde-format
@@ -3595,7 +3592,7 @@ msgstr ""
 "ist.</p>"
 
 #: setupassistant.cpp:516
-#, fuzzy, kde-format
+#, kde-format
 #| msgid ""
 #| "<p>Can't open your database file, check the permissions and such.</p>"
 msgid "<p>Can't open your database file, check the permissions and such."
@@ -3761,7 +3758,7 @@ msgstr ""
 "p> <p>Eine neue Datenbank kann automatisch von Grund auf erzeugt werden.</p>"
 
 #: setupassistant.cpp:802
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "<p>Kraft could not connect to the configured database.</p>"
 msgid "<p>Kraft could not connect to the configured database.<p>"
 msgstr ""
@@ -3780,7 +3777,7 @@ msgid "<p>Please check the database file."
 msgstr "<p>Bitte überprüfen Sie die Datenbank-Datei."
 
 #: setupassistant.cpp:808
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Or create a new database by hitting <b>next</b>.</p>"
 msgid "or create a new database by hitting <b>next</b>.</p>"
 msgstr ""
@@ -3818,10 +3815,10 @@ msgid "Edit Tag Template"
 msgstr "Stichwort-Vorlage bearbeiten"
 
 #: tagtemplatesdialog.cpp:54
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Edit Tag Template"
 msgid "Edit a Tag Template"
-msgstr "Stichwort-Vorlage bearbeiten"
+msgstr "Marker-Vorlage bearbeiten"
 
 #: tagtemplatesdialog.cpp:55
 #, kde-format
@@ -3915,10 +3912,10 @@ msgid "<new template>"
 msgstr "<neue Vorlage>"
 
 #: templtopositiondialogbase.cpp:51
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "the Header of the Document as first position"
 msgid "the Header of the Document as first item"
-msgstr "Der Kopfbereich des Dokuments als erster Posten"
+msgstr "als ersten Posten"
 
 #. i18n: ectx: property (text), widget (QLabel, dmHeaderText)
 #: texteditbase.ui:32
@@ -3961,10 +3958,10 @@ msgid "Edit %1 Template"
 msgstr "Vorlage „%1“ bearbeiten"
 
 #: textselection.cpp:41
-#, fuzzy, kde-format
+#, kde-format
 #| msgid "Template Actions"
 msgid "Template Collection"
-msgstr "Vorlagenaktionen"
+msgstr "Vorlagensammlung"
 
 #: textselection.cpp:99
 #, kde-format
