@@ -34,6 +34,7 @@
 #include "documentman.h"
 #include "defaultprovider.h"
 #include "reportgenerator.h"
+#include "texttemplate.h"
 
 PortalView::PortalView(QWidget *parent, const char*)
     : QWidget( parent ),
@@ -239,131 +240,121 @@ QWidget* PortalView::systemDetails()
   w->setLayout( b );
   mSystemBrowser = new PortalHtmlView( w );
   b->addWidget( mSystemBrowser );
-  mSystemBrowser->setStylesheetFile( "catalogview.css" ); //, "mucki_en_oS.png",
+  mSystemBrowser->setStylesheetFile( "systemview.css" ); //, "mucki_en_oS.png",
 
   // browser->setNotifyClick(false);
   return w;
 }
 
-QString PortalView::systemViewHeader() const
-{
-
-  QString html( "" );
-
-  QString logoFile = DefaultProvider::self()->locateFile("pics/kraftapp_logo.png" );
-  html += i18n( "<h2>Welcome to Kraft</h2>" );
-  html += "<div><table width=\"100%\" border=\"0\"><tr><td>";
-  html += i18n("Kraft Version: %1</td>").arg( KRAFT_VERSION );
-  html += "<td align=\"right\" rowspan=\"3\">";
-  if ( ! logoFile.isEmpty() ) {
-    html += QString( "<img src=\"%1\"/><br/>" ).arg( logoFile );
-  }
-  html += QString("<a href=\"http://www.volle-kraft-voraus.de\">%1</a>&nbsp;").arg(i18n("Kraft Website"));
-  html += "</td></tr>";
-
-  html += QString( "<tr><td>Codename: <i>%1</i></td></tr>" ).arg( KRAFT_CODENAME );
-  QString h1 = DefaultProvider::self()->locale()->nativeCountryName();
-  html += QString( "<tr><td>" ) + i18n( "Country Setting: " ) +
-          QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( DefaultProvider::self()->locale()->country() );
-  h1 = DefaultProvider::self()->locale()->nativeLanguageName();
-  html += QString( "<tr><td>" ) + i18n( "Language Setting: " ) +
-          QString( "<i>%1 (%2)</i></td></tr>" ).arg( h1 ).arg( DefaultProvider::self()->locale()->language() );
-  html += "</table></div>";
-
-  return html;
-}
-
-void PortalView::fillSystemDetails()
+QString PortalView::systemView( const QString& htmlMsg ) const
 {
   QString html;
-  if ( ! mSystemBrowser ) return;
+  if ( ! mSystemBrowser ) return QString ("");
 
-  html = systemViewHeader();
+  QString templateName = ( htmlMsg.isNull() ? QString( "systemviewdetails.thtml" ) : QString ( "systemviewerror.thtml" ) );
+  
+  // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
+  // It should be refactored.
+  TextTemplate tmpl( templateName );
+  if( !tmpl.open() ) {
+      return QString ("");
+  }
 
-  html += "<h3>" + i18n("Database Information") + "</h3>";
-  html += "<div><table>";
-  html += "<tr><td>" + i18n( "Kraft database name:" ) + "</td>";
-  html += "<td>" + KraftDB::self()->databaseName() + "</td></tr>";
+  qDebug () << tmpl.expand();
+  
+  QString logoFile = DefaultProvider::self()->locateFile("pics/kraftapp_logo_trans.png" ); 
 
-  html += "<tr><td>" + i18n( "Database schema version:" ) + "</td>";
-  html += "<td>" + QString::number( KraftDB::self()->currentSchemaVersion() );
+  tmpl.setValue( "KRAFT_LOGO_FILE", logoFile ); 
+  tmpl.setValue( "KRAFT_WEBSITE", i18n( "Kraft Website" ) );
+
+  // kraft infos
+  tmpl.setValue( "KRAFT_WELCOME_LABEL", i18n( "Welcome to Kraft" ) );
+  tmpl.setValue( "KRAFT_VERSION_LABEL", i18n( "Kraft Version" ) );
+  tmpl.setValue( "KRAFT_VERSION", KRAFT_VERSION );
+  tmpl.setValue( "KRAFT_CODENAME_LABEL", i18n( "Codename" ) );
+  tmpl.setValue( "KRAFT_CODENAME", KRAFT_CODENAME );
+  QString countryName = DefaultProvider::self()->locale()->nativeCountryName();
+  tmpl.setValue( "COUNTRY_SETTING_LABEL", i18n( "Country Setting" ) );
+  tmpl.setValue( "COUNTRY_SETTING", QString( "%1 (%2)" ).arg( countryName ).arg( DefaultProvider::self()->locale()->country() ));
+  QString languageName = DefaultProvider::self()->locale()->nativeLanguageName();
+  tmpl.setValue( "LANGUAGE_SETTING_LABEL", i18n( "Language Setting" ) );
+  tmpl.setValue( "LANGUAGE_SETTING", QString( "%1 (%2)" ).arg( languageName ).arg( DefaultProvider::self()->locale()->language() ));
+
+  if ( !htmlMsg.isNull() ) {
+      tmpl.setValue( "ERROR_TITLE_LABEL", i18n( "Kraft Initialisation Problem" ) );
+      QString errorMessage = i18n( "There is a initialisation error on your system. Kraft will not work that way." );
+      errorMessage += htmlMsg;
+      tmpl.setValue( "ERROR_TEXT", errorMessage );
+      
+      return tmpl.expand();
+  }
+  
+  // database infos
+  tmpl.setValue( "DATABASE_TITLE_LABEL", i18n( "Database Information" ) );
+  tmpl.setValue( "DATABASE_NAME_LABEL", i18n( "Kraft database name" ) );
+  tmpl.setValue( "DATABASE_NAME", KraftDB::self()->databaseName() );
+
+  QString schemaVersion = QString::number( KraftDB::self()->currentSchemaVersion() );
   if ( KraftDB::self()->currentSchemaVersion() != KRAFT_REQUIRED_SCHEMA_VERSION ) {
-    html += "&nbsp;-&nbsp;" + QString( "<font color=\"red\">Required Version: %1</font>" )
+    schemaVersion += " - " + QString( "<font color='red'>%1: %2</font>" ).arg( i18n ( "Required Version" )) 
             .arg( KRAFT_REQUIRED_SCHEMA_VERSION );
   }
-  html += "</td></tr>";
+  tmpl.setValue( "DATABASE_SCHEMA_VERSION_LABEL", i18n( "Database schema version" ) );
+  tmpl.setValue( "DATABASE_SCHEMA_VERSION", schemaVersion );
+  tmpl.setValue( "DATABASE_DRIVER_LABEL", i18n( "Qt database driver" ) );
+  tmpl.setValue( "DATABASE_DRIVER", KraftDB::self()->qtDriver() );
 
-  html += "<tr><td>" + i18n( "Qt database driver:" ) + "</td>";
-  html += "<td>" +  KraftDB::self()->qtDriver() + "</td></tr>";
-
-  html += "<tr><td>" + i18n( "Database connection:" ) + "</td>";
-  html += "<td>";
-
-  bool dbOk = false;
-  if( KraftDB::self()->getDB()->isOpen() ) {
-    dbOk = true;
-    html += i18n("established");
-  } else {
-    html += i18n("<font color=\"red\">NOT AVAILABLE!</font>");
-  }
-  html += "</td></tr>";
+  bool dbOk = KraftDB::self()->getDB()->isOpen();
+  QString databaseConnection = ( dbOk ? i18n("established") : QString( "<font color='red'>%1</font>" ).arg( i18n( "NOT AVAILABLE!" ) ) );
+  tmpl.setValue( "DATABASE_CONNECTION_LABEL", i18n( "Database connection" ) );
+  tmpl.setValue( "DATABASE_CONNECTION", databaseConnection );
 
   if( dbOk ) {
     QSqlQuery q("SHOW VARIABLES like 'version';");
     if( q.isActive() ) {
       q.next();
       QString version = q.value(1).toString();
-      html += "<tr><td>" + i18n( "Database Version:" ) + "</td>";
-      html += "<td>" +  version + "</td></tr>";
+      tmpl.setValue( "DATABASE_VERSION_SECTION", "DATABASE_VERSION_LABEL", i18n( "Database Version:" ) );
+      tmpl.setValue( "DATABASE_VERSION_SECTION", "DATABASE_VERSION", version );
     }
   }
-  html += "</table></div>";
 
   // Akonadi and friends
   QScopedPointer<AddressProvider> aprov;
   aprov.reset( new AddressProvider);
-  html += "<h3>" + i18n("Addressbook Backend") + "</h3>";
-  html += "<div><table>";
-  html += "<tr><td>" + i18n( "Backend type %1" ).arg(aprov->backendName()) + "</td><td>";
-  html += aprov->backendUp() ? i18n("running") : i18n("not running");
-  html += "</td></tr></table></div>";
+  tmpl.setValue( "ADDRESSBOOK_BACKEND_LABEL", i18n( "Addressbook Backend" ) );
+  tmpl.setValue( "ADDRESSBOOK_BACKEND_TYPE_LABEL", i18n( "Backend type" ) );
+  QString backendTypeValue = QString( "%1 (%2)" ).arg( aprov->backendName() ).arg( aprov->backendUp() ? i18n("running") : i18n("not running") );
+  tmpl.setValue( "ADDRESSBOOK_BACKEND_TYPE", backendTypeValue );
 
   // external tools
-  html += "<h3>" + i18n( "External Tools" ) + "</h3>";
-  html += "<div><table>";
-  html += "<tr><td>" + i18n( "RML to PDF conversion tool:" ) + "</td><td>";
+  tmpl.setValue( "EXTERNAL_TOOLS_LABEL", i18n( "External Tools" ) );
+  tmpl.setValue( "RML2PDF_TOOL_LABEL", i18n( "RML to PDF conversion tool" ) );
   QStringList trml2pdf = ReportGenerator::self()->findTrml2Pdf();
-  if( trml2pdf.count() ) {
-    html += trml2pdf.join(" ")+ "</td></tr>";
-  } else {
-    html += i18n("not found!") + "</td></tr>";
-  }
-  html += "<tr><td>" + i18n( "iconv tool for text import:" ) + "</td><td>";
-  html += DefaultProvider::self()->iconvTool() + "</td></tr>";
 
-  html += "</table></div>";
+  QString trml2pdfValue = (trml2pdf.count() ? trml2pdf.join(" ") : i18n("not found!") );
+  tmpl.setValue( "RML2PDF_TOOL", trml2pdfValue );
+  
+  tmpl.setValue( "ICONV_TOOL_LABEL", i18n( "iconv tool for text import" ) );
+  tmpl.setValue( "ICONV_TOOL", DefaultProvider::self()->iconvTool() );
+  
+  // aknowledgement 
+  tmpl.setValue( "ICON_ACKNOWLEDGEMENT_LABEL", i18n("Some Icons are made by") );
+  tmpl.setValue( "ACKNOWLEGEMENT_LABEL", i18n( "Acknowledgements" ) );
 
-  html += "<h3>" + i18n( "Acknowledgements" ) + "</h3>";
-  html += "<p><div>" + i18n("Some Icons are made by") + "<a href=\"https://www.flaticon.com/authors/madebyoliver\" "
-          "title=\"Madebyoliver\">Madebyoliver</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\">www.flaticon.com</a> "
-          ", licensed by <a href=\"http://creativecommons.org/licenses/by/3.0/\" "
-          "title=\"Creative Commons BY 3.0\">CC 3.0 BY</a></div><p>";
+  return tmpl.expand();
+}
 
+void PortalView::fillSystemDetails()
+{
+  QString html = systemView( QString() );
   mSystemBrowser->displayContent( html );
 }
 
 void PortalView::systemInitError( const QString& htmlMsg )
 {
-  QString html = systemViewHeader(); // "<h2>" + i18n("Kraft System Information") + "</h2>";
-
-  html += "<h2 class=\"error\">Kraft Initialisation Problem:</h2>";
-  html += "<div class=\"error\">";
-  html += ptag( i18n( "There is a initialisation error on your system. "
-                       "Kraft will not work that way." ) );
-  html += ptag( htmlMsg );
-  html += "</div>";
-
-  mSystemBrowser->displayContent( html ); // , "error" );
+  QString html = systemView( htmlMsg );
+  mSystemBrowser->displayContent( html );
 }
 
 QWidget* PortalView::documentDigests()
