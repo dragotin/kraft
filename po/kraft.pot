@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2018-01-20 20:45+0100\n"
+"POT-Creation-Date: 2018-01-27 12:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -454,7 +454,7 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QTreeWidget, m_matParts)
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: calctemplate.ui:514 calctemplate.ui:580 templkataloglistview.cpp:44
+#: calctemplate.ui:514 calctemplate.ui:580 prefswages.cpp:53 templkataloglistview.cpp:44
 #, kde-format
 msgid "Price"
 msgstr ""
@@ -1034,8 +1034,8 @@ msgid "Click to add a new document type to the list."
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, mPbAdd)
-#: doctypeeditbase.ui:46 prefsdialog.cpp:134 prefsunits.cpp:77
-#: prefswages.cpp:88
+#: doctypeeditbase.ui:46 prefsdialog.cpp:134 prefsunits.cpp:79
+#: prefswages.cpp:90
 #, kde-format
 msgid "Add"
 msgstr ""
@@ -1047,7 +1047,7 @@ msgid "click to edit the selected document type name"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, mPbEdit)
-#: doctypeeditbase.ui:56 prefsunits.cpp:81 prefswages.cpp:92
+#: doctypeeditbase.ui:56 prefsunits.cpp:83 prefswages.cpp:94
 #, kde-format
 msgid "Edit"
 msgstr ""
@@ -1060,7 +1060,7 @@ msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, mPbRemove)
 #: doctypeeditbase.ui:66 portalview.cpp:215 prefsdialog.cpp:138
-#: prefsunits.cpp:86 prefswages.cpp:97
+#: prefsunits.cpp:88 prefswages.cpp:99
 #, kde-format
 msgid "Remove"
 msgstr ""
@@ -2136,7 +2136,7 @@ msgstr ""
 msgid "Graphics and Artwork"
 msgstr ""
 
-#: main.cpp:75
+#: main.cpp:76
 #, kde-format
 msgid "Open document with doc number <number>"
 msgstr ""
@@ -2304,6 +2304,16 @@ msgstr ""
 #: models/docbasemodel.cpp:40
 #, kde-format
 msgid "Client"
+msgstr ""
+
+#: models/docbasemodel.cpp:108
+#, kde-format
+msgid "Looking up address"
+msgstr ""
+
+#: models/docbasemodel.cpp:110
+#, kde-format
+msgid "Lookup started"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -2721,6 +2731,16 @@ msgstr ""
 msgid "Documents"
 msgstr ""
 
+#: portalview.cpp:83
+#, kde-format
+msgid "Timeline"
+msgstr ""
+
+#: portalview.cpp:90
+#, kde-format
+msgid "Catalogs"
+msgstr ""
+
 #: portalview.cpp:128
 #, kde-format
 msgid "Kraft Document Overview"
@@ -2864,6 +2884,11 @@ msgstr ""
 #: portalview.cpp:346
 #, kde-format
 msgid "Acknowledgements"
+msgstr ""
+
+#: portalview.cpp:347
+#, kde-format
+msgid "Some Icons are made by"
 msgstr ""
 
 #: portalview.cpp:361
@@ -3035,6 +3060,26 @@ msgstr ""
 msgid "Tax rates beginning at date:"
 msgstr ""
 
+#: prefsdialog.cpp:112 prefsunits.cpp:53 prefswages.cpp:51
+#, kde-format
+msgid "ID"
+msgstr ""
+
+#: prefsdialog.cpp:113
+#, kde-format
+msgid "Full Tax [%]"
+msgstr ""
+
+#: prefsdialog.cpp:114
+#, kde-format
+msgid "Reduced Tax [%]"
+msgstr ""
+
+#: prefsdialog.cpp:115
+#, kde-format
+msgid "Start Date"
+msgstr ""
+
 #: prefsdialog.cpp:151
 #, kde-format
 msgid "Wages"
@@ -3178,32 +3223,62 @@ msgstr ""
 msgid "Cell Phone"
 msgstr ""
 
-#: prefsunits.cpp:150
+#: prefsunits.cpp:54
+#, kde-format
+msgid "Short"
+msgstr ""
+
+#: prefsunits.cpp:55
+#, kde-format
+msgid "Long"
+msgstr ""
+
+#: prefsunits.cpp:56
+#, kde-format
+msgid "Short plural"
+msgstr ""
+
+#: prefsunits.cpp:57
+#, kde-format
+msgid "Long plural"
+msgstr ""
+
+#: prefsunits.cpp:152
 #, kde-format
 msgid "Edit a unit"
 msgstr ""
 
-#: prefsunits.cpp:193
+#: prefsunits.cpp:195
 #, kde-format
 msgid "<h1>Edit unit</h1>"
 msgstr ""
 
-#: prefswages.cpp:78
+#: prefswages.cpp:52
+#, kde-format
+msgid "Code"
+msgstr ""
+
+#: prefswages.cpp:54
+#, kde-format
+msgid "Sortkey"
+msgstr ""
+
+#: prefswages.cpp:80
 #, kde-format
 msgid "Up"
 msgstr ""
 
-#: prefswages.cpp:83
+#: prefswages.cpp:85
 #, kde-format
 msgid "Down"
 msgstr ""
 
-#: prefswages.cpp:199
+#: prefswages.cpp:201
 #, kde-format
 msgid "Edit a wage group"
 msgstr ""
 
-#: prefswages.cpp:239
+#: prefswages.cpp:241
 #, kde-format
 msgid "<h1>Edit wage group</h1>"
 msgstr ""

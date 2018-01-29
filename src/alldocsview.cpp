@@ -156,15 +156,23 @@ QWidget* AllDocsView::initializeTreeWidget()
 void AllDocsView::setView( ViewType type )
 {
     // change the document listing widget
+    QModelIndex current;
     if( type == FlatList) {
         _stack->setCurrentIndex(0);
+        current = _tableView->currentIndex();
     } else {
         _stack->setCurrentIndex(1);
+        current = _dateView->currentIndex();
     }
     // clear the details view
     mAllViewDetails->slotClearView();
 
-    mCurrentlySelected = QModelIndex();
+    if( current.isValid() > 0 ) {
+        slotCurrentChanged(current, QModelIndex());
+    } else {
+        // workaround, not cool.
+        mCurrentlySelected = QModelIndex();
+    }
 }
 
 void AllDocsView::slotBuildView()

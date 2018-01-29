@@ -81,14 +81,14 @@ void PortalView::createIcons()
 
     QListWidgetItem *timeLineButton = new QListWidgetItem(_contentsWidget);
     timeLineButton->setIcon(QIcon(":/kraft/document-open-recent.png"));
-    timeLineButton->setText(tr("Timeline"));
+    timeLineButton->setText(i18n("Timeline"));
     timeLineButton->setTextAlignment(Qt::AlignHCenter);
     timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
 
     catButton->setIcon(QIcon(":/kraft/catalogue.png"));
-    catButton->setText(tr("Catalogs"));
+    catButton->setText(i18n("Catalogs"));
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
@@ -251,7 +251,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   QString html;
   if ( ! mSystemBrowser ) return QString ("");
 
-  QString templateName = ( htmlMsg.isNull() ? QString( "systemviewdetails.thtml" ) : QString ( "systemviewerror.thtml" ) );
+  QString templateName = ( htmlMsg.isNull() ? QString( "reports/systemviewdetails.thtml" ) : QString ( "reports/systemviewerror.thtml" ) );
   
   // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
   // It should be refactored.
@@ -259,8 +259,6 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   if( !tmpl.open() ) {
       return QString ("");
   }
-
-  qDebug () << tmpl.expand();
   
   QString logoFile = DefaultProvider::self()->locateFile("pics/kraftapp_logo_trans.png" ); 
 
@@ -337,8 +335,13 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   tmpl.setValue( "ICONV_TOOL_LABEL", i18n( "iconv tool for text import" ) );
   tmpl.setValue( "ICONV_TOOL", DefaultProvider::self()->iconvTool() );
   
-  // aknowledgement 
+  // aknowledgement -
+  // TODO rework - should be one string with placeholder
   tmpl.setValue( "AKNOWLEGEMENT_LABEL", i18n( "Acknowledgements" ) );
+  tmpl.setValue( "AKNOWLEGEMENT_SOME_ICONS", i18n ( "Some Icons are made by" ) );
+  tmpl.setValue( "AKNOWLEGEMENT_FROM", i18n ( "from" ) );
+  tmpl.setValue( "AKNOWLEGEMENT_LICENSED_BY", i18n ( "licensed by" ) );
+  
 
   return tmpl.expand();
 }
