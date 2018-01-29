@@ -78,7 +78,7 @@ private:
   QWidget *systemDetails();
   QWidget *documentDigests();
 
-  QString systemViewHeader() const;
+  QString systemView( const QString& ) const;
 
   AllDocsView   *_allDocsView;
   PortalHtmlView  *mCatalogBrowser;
