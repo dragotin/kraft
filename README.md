@@ -1,3 +1,4 @@
+
 # The Kraft Project
 
 **Kraft is free software to help to handle documents like quotes and invoices
