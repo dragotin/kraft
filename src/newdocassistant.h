@@ -21,22 +21,19 @@
 #include <QMap>
 #include <QLabel>
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 #include <kassistantdialog.h>
 
-class KComboBox;
-class FilterHeader;
-class KPushButton;
 class DocText;
 class TextSelection;
-class KDateWidget;
 class KraftWizard;
-class KTextEdit;
-class KHBox;
-class KPageWidgetItem;
-class AkonadiAddressSelector;
+class AddressSelectorWidget;
+class QDateEdit;
+class QComboBox;
+class QHBox;
+class QTextEdit;
 
-using namespace KABC;
+using namespace KContacts;
 
 
 // ---------------------------------------------------------------------------
@@ -56,11 +53,10 @@ public slots:
   void saveState();
 
 signals:
-  void addresseeSelected( const Addressee& );
+  void addresseeSelected( const KContacts::Addressee& );
 
 private:
-  // AddressSelection *mAddresses;
-  AkonadiAddressSelector *mAddresses;
+  AddressSelectorWidget *mAddresses;
 };
 
 // ---------------------------------------------------------------------------
@@ -77,9 +73,9 @@ public:
 
 private:
   QLabel      *mCustomerLabel;
-  KDateWidget *mDateEdit;
-  KComboBox   *mTypeCombo;
-  KTextEdit   *mWhiteboardEdit;
+  QDateEdit   *mDateEdit;
+  QComboBox   *mTypeCombo;
+  QTextEdit   *mWhiteboardEdit;
 };
 
 // ---------------------------------------------------------------------------
@@ -89,7 +85,7 @@ class KraftWizard: public KAssistantDialog
   Q_OBJECT
 
 public:
-  KraftWizard(QWidget *parent = 0, const char* name = 0, bool modal = FALSE );
+  KraftWizard(QWidget *parent = 0, const char* name = 0, bool modal = false );
   void init();
 
   ~KraftWizard();
@@ -101,18 +97,18 @@ public:
   void setCustomer( const QString& );
   void setDocIdentifier( const QString& );
   void setAvailDocTypes( const QStringList& );
+  void done(int r);
 
 protected slots:
-  void slotAddressee( const Addressee& );
-  void slotFinished();
+  void slotAddressee( const KContacts::Addressee& );
 
 private:
   CustomerSelectPage *mCustomerPage;
   DocDetailsPage *mDetailsPage;
-  KHBox *mCustomerBox;
+  QHBox *mCustomerBox;
   QWidget *mParent;
 
-  KABC::Addressee mAddressee;
+  KContacts::Addressee mAddressee;
 
   KPageWidgetItem *mCustomerPageItem;
   KPageWidgetItem *mDetailsPageItem;

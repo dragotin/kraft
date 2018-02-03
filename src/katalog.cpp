@@ -17,9 +17,7 @@
 
 #include <qdom.h>
 #include <QSqlQuery>
-#include <kdebug.h>
-#include <klocale.h>
-#include <kglobal.h>
+#include <QDebug>
 
 #include "floskeltemplate.h"
 #include "dbids.h"
@@ -29,7 +27,9 @@
 #include "timecalcpart.h"
 #include "fixcalcpart.h"
 #include "materialcalcpart.h"
+#include "defaultprovider.h"
 
+#include <klocalizedstring.h>
 
 /**
  *  constructor of a katalog, which is only a list of Floskel templates.
@@ -58,7 +58,7 @@ Katalog::Katalog():
 void Katalog::init()
 {
     // FIXME: Catalogs could have their own locale in the future
-  mLocale = KGlobal::locale();
+  mLocale = DefaultProvider::self()->locale();
 }
 
 Katalog::~Katalog()
@@ -86,7 +86,7 @@ int Katalog::load()
   if( q.next() ) {
     m_setID = q.value(0).toInt();
     m_description = q.value(1).toString();
-    kDebug() << "Setting catalogSetID=" <<  m_setID << " from name " << m_name << endl;
+    // qDebug () << "Setting catalogSetID=" <<  m_setID << " from name " << m_name << endl;
   }
   return 0;
 }
@@ -108,7 +108,7 @@ QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
               "catalogSetId = :catalogSetId ORDER BY parentChapter, sortKey");
     q.bindValue(":catalogSetId", m_setID);
     q.exec();
-    kDebug() << "Selecting chapters for catalog no " << QString::number( m_setID ) << endl;
+    // qDebug () << "Selecting chapters for catalog no " << QString::number( m_setID ) << endl;
 
     while ( q.next() )
     {
@@ -117,7 +117,7 @@ QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
       int parentChapter   = q.value(2).toInt();
       QString desc        = q.value(3).toString();
 
-      kDebug() << "Adding catalog chapter " << chapterName << " with ID " << chapID << endl;
+      // qDebug () << "Adding catalog chapter " << chapterName << " with ID " << chapID << endl;
       CatalogChapter c( chapID, m_setID, chapterName, parentChapter, desc );
       mChapters.append( c );
     }
@@ -170,7 +170,7 @@ void Katalog::refreshChapterList()
 
 void Katalog::setChapterSortKey( const QString& chap, int key )
 {
-  kDebug() << "Set chapter sortKey for " << chap << " to " << key << endl;
+  // qDebug () << "Set chapter sortKey for " << chap << " to " << key << endl;
   QSqlQuery q;
   q.prepare("UPDATE CatalogChapters SET sortKey = :sortKey WHERE catalogSetID = :catalogSetID AND chapter = :chapter");
   q.bindValue(":catalogSetID", m_setID);

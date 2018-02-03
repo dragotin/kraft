@@ -21,6 +21,7 @@
 #include <QPixmap>
 #include <QTreeWidgetItem>
 #include <QTreeWidget>
+#include <QMenu>
 
 #include "kraftcat_export.h"
 #include "catalogtemplate.h"
@@ -31,7 +32,6 @@
 
 class TemplKatalog;
 class QPixmap;
-class KMenu;
 class DocPosition;
 class Katalog;
 class CatalogChapter;
@@ -54,7 +54,7 @@ public:
 
   virtual void setupChapters();
 
-  KMenu *contextMenu();
+  QMenu *contextMenu();
   // virtual DocPosition itemToDocPosition( QListViewItem *it = 0 ) = 0;
 signals:
   void templateHoovered( CatalogTemplate* );
@@ -94,7 +94,7 @@ protected:
   QString m_catalogName;
   QStringList mOpenChapters;
   QTreeWidgetItem *mSortChapterItem;
-  KMenu *mMenu;
+  QMenu *mMenu;
   QFont mChapterFont;
 };
 

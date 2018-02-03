@@ -54,11 +54,12 @@ public:
 
     // register a view for a catalog identified by its name.
     void     registerKatalogListView( const QString&, KatalogListView* );
-private:
+
+    // static KatalogMan *mSelf;
     KatalogMan();
 
-    static KatalogMan *mSelf;
-    
+private:
+
     QHash<QString, Katalog*> m_katalogDict;
 
     QMultiMap< QString, QPointer<KatalogListView> > mKatalogListViews;

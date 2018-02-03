@@ -103,12 +103,15 @@
          </widget>
         </item>
         <item>
-         <widget class="KDoubleNumInput" name="mDiPerPack">
-          <property name="value">
-           <double>1.000000000000000</double>
+         <widget class="QDoubleSpinBox" name="mDiPerPack">
+          <property name="maximum">
+           <double>99999.000000000000000</double>
           </property>
           <property name="singleStep">
-           <double>0.100000000000000</double>
+           <double>1.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
           </property>
           <property name="precision" stdset="0">
            <number>3</number>
@@ -174,7 +177,7 @@
          </widget>
         </item>
         <item row="1" column="2">
-         <widget class="KDoubleNumInput" name="mInSalePrice">
+         <widget class="QDoubleSpinBox" name="mInSalePrice">
           <property name="maximum">
            <double>999999.000000000000000</double>
           </property>
@@ -187,7 +190,7 @@
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="KDoubleNumInput" name="mInPurchasePrice">
+         <widget class="QDoubleSpinBox" name="mInPurchasePrice">
           <property name="maximum">
            <double>999999.000000000000000</double>
           </property>
@@ -215,12 +218,15 @@
            </widget>
           </item>
           <item>
-           <widget class="KDoubleNumInput" name="mInSaleAdd">
-            <property name="label">
-             <string/>
-            </property>
+           <widget class="QDoubleSpinBox" name="mInSaleAdd">
             <property name="suffix">
              <string>%</string>
+            </property>
+            <property name="maximum">
+             <double>999.000000000000000</double>
+            </property>
+            <property name="label" stdset="0">
+             <string/>
             </property>
             <property name="precision" stdset="0">
              <number>1</number>
@@ -250,13 +256,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>KDoubleNumInput</class>
-   <extends>QWidget</extends>
-   <header>knuminput.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>mEditMaterial</tabstop>
   <tabstop>mDiPerPack</tabstop>
@@ -266,9 +265,6 @@
   <tabstop>mInSalePrice</tabstop>
   <tabstop>mCbChapter</tabstop>
  </tabstops>
- <includes>
-  <include location="local">knuminput.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

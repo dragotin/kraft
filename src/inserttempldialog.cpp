@@ -25,17 +25,13 @@
 #include <QVBoxLayout>
 #include <QToolTip>
 #include <QMap>
+#include <QDate>
+#include <QDebug>
+#include <QLocale>
 
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
-
-// include files for KDE
-#include <knuminput.h>
-
-#include <klocale.h>
-#include <kdebug.h>
-#include <kvbox.h>
 
 #include "ui_inserttmplbase.h"
 #include "templtopositiondialogbase.h"
@@ -50,7 +46,6 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   : TemplToPositionDialogBase( parent )
 {
   QWidget *w = new QWidget( this );
-  setMainWidget(w);
 
   mBaseWidget = new Ui::insertTmplBase;
   mBaseWidget->setupUi( w );
@@ -68,7 +63,6 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
 
   // hide the chapter combo by default
   mBaseWidget->mKeepGroup->hide();
-  showButtonSeparator( false );
 
   // Fill the tags list
   QGroupBox *group = mBaseWidget->mTagGroup;
@@ -86,6 +80,14 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
     mTagMap[cb] = *it;
   }
   groupLay->addStretch();
+
+  QVBoxLayout *lay = new QVBoxLayout(this);
+  lay->setMargin(0);
+  lay->addWidget(w);
+  setLayout(lay);
+
+  connect(mBaseWidget->mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+  connect(mBaseWidget->mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 void InsertTemplDialog::setDocPosition(DocPosition *dp, bool isNew , bool showPrices)
@@ -119,11 +121,11 @@ QString InsertTemplDialog::prepareText( const QString& input )
 {
     QString in(input);
 
-    KLocale *locale = DefaultProvider::self()->locale();
-    QString dateStr = locale->formatDate(QDate::currentDate(), KLocale::ShortDate);
+    QLocale *locale = DefaultProvider::self()->locale();
+    QString dateStr = locale->toString( QDate::currentDate() );
     in.replace(QL1("{{DATE}}"), dateStr, Qt::CaseInsensitive);
 
-    QString timeStr = locale->formatTime(QTime::currentTime());
+    QString timeStr = locale->toString(QTime::currentTime());
     in.replace(QL1("{{TIME}}"), timeStr, Qt::CaseInsensitive);
 
     if( in.contains(QL1("{{USERNAME}}"))) {
@@ -163,7 +165,7 @@ DocPosition InsertTemplDialog::docPosition()
     }
   }
 
-  kDebug() << "in the dialog: " << mParkPosition.tags() << endl;
+  // qDebug () << "in the dialog: " << mParkPosition.tags() << endl;
   return mParkPosition;
 }
 
@@ -173,8 +175,8 @@ InsertTemplDialog::~InsertTemplDialog()
   QString c = mBaseWidget->mComboChapter->currentText();
   if ( ! c.isEmpty() ) {
     KraftSettings::self()->setInsertTemplChapterName( c );
-    KraftSettings::self()->writeConfig();
-    KraftSettings::self()->readConfig();
+    KraftSettings::self()->save();
+    KraftSettings::self()->load();
   }
 }
 
@@ -196,7 +198,7 @@ void InsertTemplDialog::setCatalogChapters( const QList<CatalogChapter>& chapter
 QString InsertTemplDialog::chapter() const
 {
   QString re;
-  if ( mBaseWidget->mCbSave->isChecked() )
+  if ( mBaseWidget->mKeepGroup->isChecked() )
     re = mBaseWidget->mComboChapter->currentText();
   return re;
 }

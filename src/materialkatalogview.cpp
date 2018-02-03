@@ -1,5 +1,5 @@
 /***************************************************************************
-                          brunskatalogview.cpp
+                          materialkatalogview.cpp
                              -------------------
     begin                : 2005-07-26
     copyright            : (C) 2005 by Klaas Freitag
@@ -19,9 +19,8 @@
 #include <QLabel>
 #include <QSplitter>
 
-#include <kdebug.h>
-#include <klocale.h>
-#include <kmessagebox.h>
+#include <QDebug>
+#include <QMessageBox>
 
 #include "katalogman.h"
 #include "materialkatalogview.h"
@@ -29,6 +28,7 @@
 #include "stockmaterial.h"
 #include "matkatalog.h"
 #include "materialtempldialog.h"
+#include "kraftsettings.h"
 
 const QString MaterialKatalogView::MaterialCatalogName( "Material" );
 
@@ -44,18 +44,25 @@ MaterialKatalogView::MaterialKatalogView()
 
 MaterialKatalogView::~MaterialKatalogView()
 {
+    const QByteArray state = m_materialListView->header()->saveState().toBase64();
+    KraftSettings::self()->setMaterialCatViewState(state);
 }
 
 void MaterialKatalogView::createCentralWidget( QBoxLayout *box, QWidget *w )
 {
     m_materialListView = new MaterialKatalogListView( w );
     box->addWidget( m_materialListView );
+
+    // read the header settings
+    const QByteArray state = QByteArray::fromBase64(KraftSettings::self()->materialCatViewState().toAscii());
+    m_materialListView->header()->restoreState(state);
+
     KatalogView::createCentralWidget( box, w );
 }
 
 Katalog* MaterialKatalogView::getKatalog( const QString& name )
 {
-    kDebug() << "GetKatalog of material!" << endl;
+    // qDebug () << "GetKatalog of material!" << endl;
     Katalog *k = KatalogMan::self()->getKatalog( name );
     if( ! k ) {
         k = new MatKatalog( name );
@@ -79,7 +86,7 @@ void MaterialKatalogView::slEditTemplate()
         // do nothing.
       }
     } else {
-      kDebug() << "Editing the material" << endl;
+      // qDebug () << "Editing the material" << endl;
 
       if( listview )
       {
@@ -121,21 +128,23 @@ void MaterialKatalogView::slNewTemplate()
 
 void MaterialKatalogView::slDeleteTemplate()
 {
-  kDebug() << "delete template hit";
+  // qDebug () << "delete template hit";
   MaterialKatalogListView* listview = static_cast<MaterialKatalogListView*>(getListView());
   if( listview )
   {
     StockMaterial *currTempl = static_cast<StockMaterial*> (listview->currentItemData());
     if( currTempl ) {
       int id = currTempl->getID();
-      if( KMessageBox::questionYesNo( this,
-                                     i18n( "Do you really want to delete the template from the catalog?" ),
-                                     i18n( "Delete Template" ),
-                                     KStandardGuiItem::yes(), KStandardGuiItem::no(), "DeleteTemplate" )
-          == KMessageBox::Yes )
-      {
 
-        kDebug() << "Delete item with id " << id;
+      QMessageBox msgBox;
+      msgBox.setText(i18n( "Do you really want to delete the template from the catalog?"));
+
+      msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+      msgBox.setDefaultButton(QMessageBox::Yes);
+      int ret = msgBox.exec();
+
+      if ( ret == QMessageBox::Yes) {
+        // qDebug () << "Delete item with id " << id;
         MatKatalog *k = static_cast<MatKatalog*>( getKatalog( m_katalogName ) );
 
         if( k ) {
@@ -177,12 +186,12 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
   KatalogListView *listview = getListView();
   if( !listview ) return;
   MaterialKatalogListView *templListView = static_cast<MaterialKatalogListView*>(listview);
-  kDebug() << "****** slotEditOk for Material" << endl;
+  // qDebug () << "****** slotEditOk for Material" << endl;
 
   if( mDialog ) {
     MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );
     if ( mDialog->templateIsNew() ) {
-      KLocale *locale = 0;
+      QLocale *locale = 0;
       if ( k ) {
         k->addNewMaterial( mat );
         locale = k->locale();

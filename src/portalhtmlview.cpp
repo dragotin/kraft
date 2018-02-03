@@ -14,34 +14,27 @@
  ***************************************************************************/
 #include "portalhtmlview.h"
 
-#include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
+#include <QUrlQuery>
 
 PortalHtmlView::PortalHtmlView( QWidget *parent )
   : HtmlView( parent )
 {
-
+    connect( this, SIGNAL(openUrl(const QUrl&)), this, SLOT(slotLinkClicked(const QUrl&)));
 }
 
-bool PortalHtmlView::urlSelected( const QString &url, int, int,
-                                  const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments &)
+void PortalHtmlView::slotLinkClicked(const QUrl& url)
 {
-  kDebug() << "HtmlView::urlSelected(): " << url << endl;
+    QUrlQuery q(url);
 
-  KUrl kurl( url );
-  const QString katName = kurl.queryItem( "kat" );
-  const QString action = kurl.queryItem( "action" );
-
-  kDebug() << "Action " << action;
-
-  if ( action == "open" ) {
-    kDebug() << "open catalog " << katName << endl;
-    emit( openCatalog( katName ) );
-    return true;
-  } else {
-    kDebug() << "unknown action " << action << endl;
-  }
-  return false;
+    const QString katName = q.queryItemValue(QLatin1String("kat"));
+    const QString action  = q.queryItemValue(QLatin1String("action"));
+    if ( action == QLatin1String("open") ) {
+      // qDebug () << "open catalog " << katName << endl;
+      emit( openCatalog( katName ) );
+    } else {
+      // qDebug () << "unknown action " << action << endl;
+    }
 }
 
 

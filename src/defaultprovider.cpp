@@ -17,21 +17,21 @@
 #include <QtSql>
 #include <QFile>
 #include <QTextStream>
-
-#include <klocale.h>
-#include <kglobal.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "defaultprovider.h"
 #include "kraftdb.h"
 #include "doctext.h"
 #include "kraftsettings.h"
 #include "doctype.h"
-#include <kstandarddirs.h>
+
+#include <klocalizedstring.h>
+
+Q_GLOBAL_STATIC(DefaultProvider, mSelf)
+
 
 DefaultProvider *DefaultProvider::self()
 {
-  K_GLOBAL_STATIC(DefaultProvider, mSelf);
   return mSelf;
 }
 
@@ -65,7 +65,7 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
                          "DocTypes types WHERE texts.docTypeId=types.docTypeID AND "
                          "types.name=\'%1\' AND textType = \'%2\'").arg( docType ).arg( typeStr );
 
-  // kDebug() << "Reading texts from DB with: " << sql << endl;
+  // qDebug() << "Reading texts from DB with: " << sql << endl;
 
   QSqlQuery query( sql );
   if ( query.isActive() ) {
@@ -108,7 +108,7 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
   model.setTable( "DocTexts" );
 
   if ( t.dbId().isOk() ) {
-    kDebug() << "Doing update!";
+    // qDebug () << "Doing update!";
     model.setFilter( "docTextID=" + t.dbId().toString() );
     model.select();
 
@@ -125,7 +125,7 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
       model.submitAll();
     }
   } else {
-    kDebug() << "Doing insert!";
+    // qDebug () << "Doing insert!";
     QSqlRecord record = model.record();
     record.setValue( "name", t.name() );
     record.setValue( "description", t.description() );
@@ -145,9 +145,9 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
 }
 
 
-KLocale* DefaultProvider::locale()
+QLocale* DefaultProvider::locale()
 {
-  return KGlobal::locale();
+  return &_locale;
 }
 
 void DefaultProvider::deleteDocumentText( const DocText& dt )
@@ -157,7 +157,7 @@ void DefaultProvider::deleteDocumentText( const DocText& dt )
     q.prepare("DELETE FROM DocTexts WHERE docTextID=" + dt.dbId().toString() ) ;
     q.exec();
   } else {
-    kDebug() << "Delete document text not ok: " << dt.text();
+    // qDebug () << "Delete document text not ok: " << dt.text();
   }
 }
 
@@ -168,19 +168,17 @@ QString DefaultProvider::currencySymbol() const
 
 QString DefaultProvider::iconvTool() const
 {
-  return KStandardDirs::findExe( "iconv" );
+  return QStandardPaths::findExecutable( "iconv" );
 }
 
 QString DefaultProvider::getStyleSheet( const QString& styleName ) const
 {
   QString style;
   if( styleName.isEmpty() ) return style;
-  QString styleFile = styleName + ".style";
 
-  KStandardDirs stdDirs;
-  QString findFile = "kraft/styles/" + styleFile;
+  const QString findFile = QString("styles/%1.style").arg(styleName);
 
-  QString tmplFile = stdDirs.findResource( "data", findFile );
+  const QString tmplFile = locateFile(findFile);
 
   QFile data( tmplFile );
   if (data.open( QFile::ReadOnly )) {
@@ -189,6 +187,41 @@ QString DefaultProvider::getStyleSheet( const QString& styleName ) const
     data.close();
   }
   return style;
+}
+
+// this method uses QStandardPath::locate from the AppDataLocation to find
+// files, but if KRAFT_HOME is set, that one is preffered.
+QString DefaultProvider::locateFile(const QString& findFile) const
+{
+    QString re;
+    const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
+
+    if( prjPath.isEmpty()) {
+        re = QStandardPaths::locate( QStandardPaths::AppDataLocation, findFile );
+    } else {
+        re = prjPath;
+        if( !re.endsWith(QChar('/')) ) {
+            re.append( QChar('/'));
+        }
+
+        re.append(findFile);
+        QFileInfo fi(re);
+        if( !fi.exists() ) {
+            if( findFile.startsWith("pics")) {
+                // special handling: formerly the pics in KRAFT_HOME were in src.
+                re = prjPath;
+                if( !re.endsWith(QChar('/')) ) {
+                    re.append( QChar('/'));
+                }
+                re.append("src/");
+                re.append(findFile);
+            } else {
+                qDebug() << "WARN: locateFile could not find file " << findFile;
+            }
+        }
+    }
+
+    return re;
 }
 
 DefaultProvider::~DefaultProvider()

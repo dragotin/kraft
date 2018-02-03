@@ -17,20 +17,10 @@
 
 // include files for QT
 #include <QDir>
-#include <QPrinter>
 #include <QPainter>
 #include <QLayout>
-
-// include files for KDE
-#include <kiconloader.h>
-#include <kmessagebox.h>
-#include <kfiledialog.h>
-#include <kmenubar.h>
-#include <kstatusbar.h>
-#include <klocale.h>
-#include <kconfig.h>
-#include <kstandardaction.h>
-#include <kdebug.h>
+#include <QDebug>
+#include <QMessageBox>
 
 // application specific includes
 #include "katalogview.h"
@@ -41,9 +31,9 @@
 #include "templkatalog.h"
 #include "templkataloglistview.h"
 #include "katalogman.h"
-#include "filterheader.h"
 #include "documentman.h"
-#
+#include "kraftsettings.h"
+
 #define ID_STATUS_MSG 1
 
 TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
@@ -56,6 +46,9 @@ TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
 
 TemplKatalogView::~TemplKatalogView()
 {
+    const QByteArray state = m_listview->header()->saveState().toBase64();
+    KraftSettings::self()->setTemplateCatViewState(state);
+
   delete m_flosDialog;
 }
 
@@ -137,21 +130,23 @@ void TemplKatalogView::slNewTemplate()
 
 void TemplKatalogView::slDeleteTemplate()
 {
-  kDebug() << "delete template hit";
+  // qDebug () << "delete template hit";
   TemplKatalogListView* listview = static_cast<TemplKatalogListView*>(getListView());
   if( listview )
   {
     FloskelTemplate *currTempl = static_cast<FloskelTemplate*> (listview->currentItemData());
     if( currTempl ) {
       int id = currTempl->getTemplID();
-      if( KMessageBox::questionYesNo( this,
-                                     i18n( "Do you really want to delete the template from the catalog?" ),
-                                     i18n( "Delete Template" ),
-                                     KStandardGuiItem::yes(), KStandardGuiItem::no(), "DeleteTemplate" )
-          == KMessageBox::Yes )
-      {
+      QMessageBox msgBox;
+      msgBox.setText(i18n( "Do you really want to delete the template from the catalog?" ));
 
-        kDebug() << "Delete item with id " << id;
+      msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+      msgBox.setDefaultButton(QMessageBox::Ok);
+      int result = msgBox.exec();
+
+      if( result == QMessageBox::Ok)
+      {
+        // qDebug () << "Delete item with id " << id;
         TemplKatalog *k = static_cast<TemplKatalog*>( getKatalog( m_katalogName ) );
 
         if( k ) {
@@ -229,7 +224,7 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
     }
 
     if( templListView && m_editListViewItem ) {
-      kDebug() << "Edit was ok, refreshing item in list " << m_editListViewItem << endl;
+      // qDebug () << "Edit was ok, refreshing item in list " << m_editListViewItem << endl;
       templListView->setCurrentItem( m_editListViewItem );
       templListView->slFreshupItem( m_editListViewItem, templ, true );
       templListView->scrollToItem( m_editListViewItem );
@@ -240,7 +235,7 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
 
 void TemplKatalogView::slEditRejected()
 {
-  kDebug() << "Rejecting Edit!";
+  // qDebug () << "Rejecting Edit!";
   if ( m_editListViewItem ) {
     delete m_editListViewItem;
     m_editListViewItem = 0;
@@ -249,9 +244,13 @@ void TemplKatalogView::slEditRejected()
 
 void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
 {
-    kDebug() << "Creating new Listview" << endl;
+    // qDebug () << "Creating new Listview" << endl;
     m_listview = new TemplKatalogListView( w );
     box->addWidget(m_listview);
+
+    const QByteArray state = QByteArray::fromBase64(KraftSettings::self()->templateCatViewState().toAscii());
+    m_listview->header()->restoreState(state);
+
 
     KatalogView::createCentralWidget( box, w );
 }

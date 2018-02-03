@@ -20,17 +20,16 @@
 #define PORTAL_H
 
 // include files for Qt
-#include <qmap.h>
+#include <QMap>
+#include <QCommandLineParser>
 
 // include files for KDE
 #include <ktoggleaction.h>
 
-#include <kapplication.h>
-#include <kxmlguiwindow.h>
-#include <kabc/addressee.h>
+#include <KXmlGuiWindow>
+#include <kcontacts/addressee.h>
 
-#include <kaction.h>
-#include <kurl.h>
+#include <QUrl>
 
 #include "docguardedptr.h"
 #include "katalogview.h"
@@ -55,13 +54,13 @@ class Portal : public KXmlGuiWindow
   public:
     /** construtor of Portal, calls all init functions to create the application.
      */
-    Portal( QWidget* parent = 0, KCmdLineArgs *args = 0, const char* name = 0);
+    Portal( QWidget* parent = 0, QCommandLineParser *commandLineParser = 0, const char* name = 0);
 
     static QString textWrap( const QString& t, int width=40);
 
     QWidget* mainWidget();
   protected:
-    /** initializes the KActions of the application */
+    /** initializes the QActions of the application */
     void initActions();
     /** sets up the statusbar for the main window by initialzing a statuslabel.
      */
@@ -144,10 +143,10 @@ class Portal : public KXmlGuiWindow
 
     void slotOpenPdf( const QString& );
 
-    void slotReceivedMyAddress( const QString&, const KABC::Addressee& );
+    void slotReceivedMyAddress( const QString&, const KContacts::Addressee& );
 
     void slotMailPdfAvailable( const QString& fileName );
-    void slotMailAddresseeFound( const QString&, const KABC::Addressee& );
+    void slotMailAddresseeFound( const QString&, const KContacts::Addressee& );
 
   private:
     void createView( DocGuardedPtr );
@@ -155,26 +154,26 @@ class Portal : public KXmlGuiWindow
 
     PortalView *m_portalView;
 
-    // KAction pointers to enable/disable actions
-    KAction* fileQuit;
-    KAction* editCut;
-    KAction* editCopy;
-    KAction* editPaste;
+    // QAction pointers to enable/disable actions
+    QAction* fileQuit;
+    QAction* editCut;
+    QAction* editCopy;
+    QAction* editPaste;
 
-    KAction* actNewDocument;
-    KAction* actCopyDocument;
-    KAction* actOpenDocument;
-    KAction* actViewDocument;
-    KAction* actFollowDocument;
-    KAction* actPrintDocument;
-    KAction* actMailDocument;
-    KAction* actEditTemplates;
+    QAction* actNewDocument;
+    QAction* actCopyDocument;
+    QAction* actOpenDocument;
+    QAction* actViewDocument;
+    QAction* actFollowDocument;
+    QAction* actPrintDocument;
+    QAction* actMailDocument;
+    QAction* actEditTemplates;
 
-    KAction* actOpenArchivedDocument;
+    QAction* actOpenArchivedDocument;
 
-    KToggleAction* viewFlosTemplates;
-    KToggleAction* viewStatusBar;
-    KCmdLineArgs *mCmdLineArgs;
+    QAction* viewFlosTemplates;
+    QAction* viewStatusBar;
+    QCommandLineParser *mCmdLineArgs;
 
     QMap<QString, KatalogView*> mKatalogViews;
     QMap<KraftDoc*, KraftViewBase*> mViewMap;
@@ -182,7 +181,7 @@ class Portal : public KXmlGuiWindow
     QString _clientId;
     QString _pdfFileName;
     AddressProvider *mAddressProvider;
-    KABC::Addressee myContact;
+    KContacts::Addressee myContact;
     PrefsDialog *_prefsDialog;
     DocGuardedPtr _currentDoc;
 };

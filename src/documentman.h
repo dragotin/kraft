@@ -33,9 +33,6 @@ class DocumentMan
 
     static DocumentMan *self();
 
-    DocDigestList latestDocs( int );
-    DocDigestsTimelineList docsTimelined();
-
     DocGuardedPtr createDocument( const QString& docType, const QString& copyFromId = QString() );
     DocGuardedPtr openDocument( const QString& );
 
@@ -43,18 +40,16 @@ class DocumentMan
     double reducedTax( const QDate& );
     void clearTaxCache();
 
+    DocumentMan();
+
   private:
     bool readTaxes( const QDate& );
-    DocDigest digestFromQuery( QSqlQuery& );
-    const QString mColumnList;
 
     double mFullTax;
     double mReducedTax;
     QDate  mTaxDate;
 
-    DocumentMan();
 
-    static DocumentMan *mSelf;
 };
 
 #endif

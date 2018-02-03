@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+ <id type="desktop">kraft.desktop</id>
+ <licence>GPL-2.0+</licence>
+ <name>Kraft</name>
+ <summary>Kraft helps to handle documents in small business.</summary>
+ <description>
+  <p>Kraft is free software to help to handle documents like quotes and invoices in your small business.</p>
+  <p>Kraft is a Qt/KF5 based desktop software with a strong focus on ease of use and the just enough feature set for the use case. With Kraft, creating documents will run smooth and free time for more enjoyable things than office work.</p>
+
+  <p>Check out the website http://volle-kraft-voraus.de for more information.</p>
+
+  <p>Kraft runs on your Linux desktop. No cloud involved, your data stays with you!</p>
+
+  <p>With Kraft, writing documents like quotes and invoices is very easy and fast. Repeating tasks are supported, documents can be generated semi automatically, ie. invoices from offers sent out before.</p>
+
+  <p>For efficient work, Kraft supports catalogs to organize materials and template texts. It focuses on high quality printouts because paper is still the main communication media in the small business world. However, it also sends documents via email.</p>
+
+ </description>
+ <screenshots>
+  <screenshot type="default" width="990" height="659">http://volle-kraft-voraus.de/images/appmeta1.png</screenshot>
+  <screenshot width="1127" height="677">http://volle-kraft-voraus.de/images/appmeta2.png</screenshot>
+ </screenshots>
+ <url type="homepage">http://volle-kraft-voraus.de/</url>
+</application>

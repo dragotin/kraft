@@ -20,43 +20,40 @@
 #include "kraftdoc.h"
 #include "doctype.h"
 
-#include <klocale.h>
-#include <kdebug.h>
+#include <QLocale>
+#include <QDebug>
+#include <QDialog>
+#include <QAction>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QListView>
+#include <QTextEdit>
+#include <QLabel>
+#include <QStringListModel>
+#include <QMenu>
 
-#include <kdialog.h>
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <kiconloader.h>
-
-#include <QtGui>
+#include <KLocalizedString>
 
 TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   :QWidget( parent ),
     mPart( part )
 {
-  mGroupBox = new QGroupBox(tr("Template Collection"));
+  mGroupBox = new QGroupBox(i18n("Template Collection"));
 
   QVBoxLayout *layout = new QVBoxLayout;
   setLayout(layout);
-
-  layout->setMargin( KDialog::marginHint() );
-  layout->setSpacing( KDialog::spacingHint() );
   layout->addWidget( mGroupBox );
 
   /* a view for the entry text repository */
   QVBoxLayout *vbox = new QVBoxLayout;
-
-  // mHeadLabel = new QLabel( i18n( "%1 Templates" ).arg( KraftDoc::partToString( mPart ) ));
-  // vbox->addWidget( mHeadLabel );
+  vbox->setMargin(0);
 
   mTextNameView = new QListView;
   vbox->addWidget(mTextNameView);
   mTextNameView->setSelectionMode( QAbstractItemView::SingleSelection );
-  mTextNameView->setMaximumHeight(60 );
+  mTextNameView->setMaximumHeight(120 );
   mTextNameView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
-  connect( mTextNameView, SIGNAL(clicked(QModelIndex)),
-           this, SLOT(slotNameSelected(QModelIndex)));
   connect( mTextNameView, SIGNAL(doubleClicked(QModelIndex)),
            this, SIGNAL(editCurrentTemplate()));
 
@@ -73,10 +70,7 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
   mHelpDisplay = new QLabel;
   mHelpDisplay->setStyleSheet("background-color: #ffcbcb;");
   mHelpDisplay->setAutoFillBackground(true);
-  // QMargins m( KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint(), KDialog::marginHint() );
-  // mHelpDisplay->setContentsMargins( m );
   mHelpDisplay->setWordWrap( true );
-  // mHelpDisplay->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
 
   QFontMetrics fm( mHelpDisplay->font() );
   int minHeight = 1.5 * fm.height();
@@ -117,7 +111,7 @@ void TextSelection::slotTemplateNameSelected( const QModelIndex& current, const 
 {
   if( current.isValid() ) {
     mCurrTemplateName = mTemplNamesModel->data( current, Qt::DisplayRole ).toString();
-    kDebug() << "New selected template name: " << mCurrTemplateName;
+    // qDebug () << "New selected template name: " << mCurrTemplateName;
     showHelp();
 
     DocText dt = currentDocText();
@@ -171,7 +165,7 @@ void TextSelection::addNewDocText( const DocText& dt )
     QModelIndex selected = newItems[0];
     mTextNameView->selectionModel()->setCurrentIndex( selected, QItemSelectionModel::Select);
   } else {
-    kDebug() << "Unable to find the new item named " << dt.name();
+    // qDebug () << "Unable to find the new item named " << dt.name();
   }
   emit validTemplateSelected();
 }
@@ -203,10 +197,8 @@ TextSelection::~TextSelection()
 
 void TextSelection::initActions()
 {
-  mActions     = new KActionCollection( this );
-  mAcMoveToDoc = mActions->addAction( "moveToDoc", this, SIGNAL(actionCurrentTextToDoc()));
-  mAcMoveToDoc->setIcon( KIcon( "go-previous" ));
-  mAcMoveToDoc->setText( i18n("&Use in Document") );
+  mAcMoveToDoc = new QAction(QIcon::fromTheme( "go-previous" ), i18n("&Use in Document"), this);
+  connect(mAcMoveToDoc, SIGNAL(triggered()), this, SIGNAL(actionCurrentTextToDoc()));
 
   mMenu->addAction( mAcMoveToDoc );
 
@@ -221,7 +213,7 @@ void TextSelection::showHelp( const QString& help )
   } else {
     mHelpDisplay->show();
 #if 0
-    kDebug() << "Displaying help text: " << help;
+    // qDebug () << "Displaying help text: " << help;
 
     QPropertyAnimation *ani = new QPropertyAnimation( mHelpDisplay, "geometry" );
     QRect r2 = r1;

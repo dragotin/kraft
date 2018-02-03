@@ -42,16 +42,15 @@ class ArchiveMan
     QString pdfBaseDir() const;
     QString archiveFileName( const QString&, const QString&, const QString& ) const;
 
+    ArchiveMan();
   protected:
     virtual QDomDocument archiveDocumentXml( KraftDoc*,  const QString& );
     virtual dbID archiveDocumentDb( KraftDoc* );
 
   private:
-    ArchiveMan();
     QDomElement xmlTextElement( QDomDocument, const QString&, const QString& );
     int archivePos( int, KraftDoc* );
 
-    static ArchiveMan *mSelf;
 };
 
 #endif

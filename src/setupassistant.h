@@ -19,11 +19,9 @@
 #define SETUPASSISTANT_H
 
 #include <QtGui>
+#include <QWizard>
 
-#include <kassistantdialog.h>
-#include <kabc/addressee.h>
-
-#include <akonadi/item.h>
+#include <kcontacts/addressee.h>
 
 #include "ui_statuspage.h"
 #include "ui_dbselect.h"
@@ -31,16 +29,16 @@
 #include "ui_createdb.h"
 #include "ui_upgradedb.h"
 #include "ui_sqlitedetails.h"
+#include "ui_identity.h"
 
 #include "kraftcat_export.h"
 
-class KPageWidgetItem;
-class KUrl;
-class AkonadiAddressSelector;
+class QUrl;
+class AddressSelectorWidget;
 
-using namespace KABC;
+using namespace KContacts;
 
-class WelcomePage:public QWidget
+class WelcomePage:public QWizardPage
 {
   Q_OBJECT
 
@@ -54,13 +52,14 @@ class WelcomePage:public QWidget
 
 // ---------------------------------------------------------------------------
 
-class DbSelectPage:public QWidget
+class DbSelectPage:public QWizardPage
 {
   Q_OBJECT
 
   public:
   DbSelectPage( QWidget *parent = 0 );
-  QString selectedDriver();
+  QString selectedDriver() const;
+  int nextId() const;
 
   private:
   Ui::dbSelectForm ui;
@@ -68,43 +67,41 @@ class DbSelectPage:public QWidget
 
 // ---------------------------------------------------------------------------
 
-class SqLiteDetailsPage:public QWidget
+class SqLiteDetailsPage:public QWizardPage
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
-  SqLiteDetailsPage( QWidget *parent = 0 );
+    SqLiteDetailsPage( QWidget *parent = 0 );
 
-  KUrl url();
-  protected slots:
-  void slotSelectCustom();
+    QUrl url();
+    int nextId() const;
+    bool validatePage();
+
   private:
-  Ui::sqLiteDetailsForm ui;
+    Ui::sqLiteDetailsForm ui;
 };
 
 // ---------------------------------------------------------------------------
 
-class MysqlDetailsPage:public QWidget
+class MysqlDetailsPage:public QWizardPage
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
-  MysqlDetailsPage( QWidget *parent = 0 );
-  
-  void reloadSettings();
+    MysqlDetailsPage( QWidget *parent = 0 );
 
-  QString dbName();
-  QString dbUser();
-  QString dbServer();
-  QString dbPasswd();
+    void reloadSettings();
+    int nextId() const;
+    bool validatePage();
 
   private:
-  Ui::mySqlDetailsForm ui;
+    Ui::mySqlDetailsForm ui;
 };
 
 // ---------------------------------------------------------------------------
 
-class CreateDbPage:public QWidget
+class CreateDbPage:public QWizardPage
 {
   Q_OBJECT
 
@@ -118,6 +115,7 @@ class CreateDbPage:public QWidget
   void setCreateCmdsCurrent( int );
   void setFillCmdsCurrent( int );
 
+  int nextId() const;
   public slots:
   void slotStatusMessage( const QString& );
   void slotCountCreateProgress( bool );
@@ -131,12 +129,14 @@ class CreateDbPage:public QWidget
 
 // ---------------------------------------------------------------------------
 
-class UpgradeDbPage:public QWidget
+class UpgradeDbPage:public QWizardPage
 {
   Q_OBJECT
 
   public:
   UpgradeDbPage( QWidget *parent = 0 );
+
+  int nextId() const;
 
   public slots:
   void slotSetStatusText( const QString& );
@@ -151,7 +151,7 @@ class UpgradeDbPage:public QWidget
 
 // ---------------------------------------------------------------------------
 
-class OwnAddressPage:public QWidget
+class OwnAddressPage:public QWizardPage
 {
   Q_OBJECT
 
@@ -161,24 +161,26 @@ class OwnAddressPage:public QWidget
 
   void saveOwnName();
 
+  int nextId() const;
   private:
-  AkonadiAddressSelector *mAddresses;
-  KABC::Addressee mMe;
+  AddressSelectorWidget *mAddresses;
+  KContacts::Addressee mMe;
+  Ui::manualOwnIdentity ui;
 
   private slots:
-  void contactStored( const Akonadi::Item& );
-  void gotMyAddress( Addressee );
+  void gotMyAddress( const KContacts::Addressee& addressee);
 
 };
 
 // ---------------------------------------------------------------------------
 
-class FinalStatusPage:public QWidget
+class FinalStatusPage:public QWizardPage
 {
   Q_OBJECT
 
   public:
   FinalStatusPage( QWidget *parent = 0 );
+  int nextId() const;
 
   public slots:
   void slotSetStatusText( const QString& );
@@ -189,57 +191,46 @@ class FinalStatusPage:public QWidget
 
 // ---------------------------------------------------------------------------
 
-class SetupAssistant: public KAssistantDialog
+class SetupAssistant: public QWizard
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  enum Mode{ Reinit, Update };
+    enum { welcomePageNo,
+           dbSelectPageNo,
+           mySqlPageNo,
+           sqlitePageNo,
+           createDbPageNo,
+           upgradeDbPageNo,
+           finalStatusPageNo,
+           ownAddressPageNo };
 
-  SetupAssistant( QWidget *parent = 0 );
-  bool init( Mode );
-  void createDatabase( bool );
+    enum Mode{ Reinit, Update };
 
-  ~SetupAssistant();
+    SetupAssistant( QWidget *parent = 0 );
+    bool init( Mode );
+
+    ~SetupAssistant();
+
+    bool handleSqLiteDetails();
+    bool handleMysqlDetails();
 
 public slots:
-  void back();
-  void next();
-  void slotFinishedClicked();
+    void done( int );
 
 private slots:
-  void slotCurrentPageChanged( KPageWidgetItem*, KPageWidgetItem* );
+    void slotCurrentPageChanged(int currId);
 
 private:
-  void handleDatabaseBackendSelect();
-  void handleSqLiteDetails();
-  void handleMysqlDetails();
-  void startDatabaseCreation();
-  void startDatabaseUpdate();
-  void finalizePage();
-  bool tryMigrateFromKDE3();
+    void startDatabaseCreation();
+    void startDatabaseUpdate();
+    void finalizePage();
+    QString defaultSqliteFilename() const;
 
-  WelcomePage       *mWelcomePage;
-  DbSelectPage      *mDbSelectPage;
-  MysqlDetailsPage  *mMysqlDetailsPage;
-  CreateDbPage      *mCreateDbPage;
-  UpgradeDbPage     *mUpgradeDbPage;
-  FinalStatusPage   *mFinalStatusPage;
-  SqLiteDetailsPage *mSqLiteDetailsPage;
-  OwnAddressPage    *mOwnAddressPage;
 
-  KPageWidgetItem *mWelcomePageItem;
-  KPageWidgetItem *mDbSelectPageItem;
-  KPageWidgetItem *mMysqlDetailsPageItem;
-  KPageWidgetItem *mSqLiteDetailsPageItem;
-  KPageWidgetItem *mCreateDbPageItem;
-  KPageWidgetItem *mUpgradeDbPageItem;
-  KPageWidgetItem *mFinalStatusPageItem;
-  KPageWidgetItem *mOwnAddressPageItem;
-
-  Mode mMode;
-  QStringList mErrors;
-  QString mSqlBackendDriver;
+    Mode mMode;
+    QStringList mErrors;
+    QString mSqlBackendDriver;
 };
 
 #endif // SETUPASSISTANT_H

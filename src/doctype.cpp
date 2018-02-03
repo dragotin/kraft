@@ -16,16 +16,8 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QString>
+#include <QtCore>
 #include <QSqlQuery>
-#include <QFile>
-#include <qfile.h>
-
-// include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kglobal.h>
-#include <kstandarddirs.h>
 
 // application specific includes
 #include "doctype.h"
@@ -135,7 +127,7 @@ dbID DocType::docTypeId( const QString& docType )
 
     return id;
   } else {
-    kError()<< "Can not find id for doctype named " << docType;
+    qCritical()<< "Can not find id for doctype named " << docType;
   }
   return id;
 }
@@ -215,7 +207,7 @@ void DocType::setNumberCycleName( const QString& name )
   } else {
     // remove default value from map
     mAttributes.markDelete( "identNumberCycle" );
-    kDebug() << "Removing identNumberCycle Attribute";
+    // qDebug () << "Removing identNumberCycle Attribute";
   }
   mDirty = true;
   readIdentTemplate();
@@ -223,7 +215,6 @@ void DocType::setNumberCycleName( const QString& name )
 
 QString DocType::templateFile( const QString& lang )
 {
-  KStandardDirs stdDirs;
   QString tmplFile;
 
   QString reportFileName = QString( "%1.trml").arg( name().toLower() );
@@ -247,48 +238,48 @@ QString DocType::templateFile( const QString& lang )
   }
   searchList << QLatin1String("kraft/reports/invoice.trml");
 
-  foreach( QString searchPath, searchList ) {
-     const QString tFile = KStandardDirs::locate( "data", searchPath );
+  const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
 
-      if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
-          tmplFile = tFile;
-          kDebug() << "Found template file " << tmplFile;
-          break;
-      }
-  }
-
-  if( tmplFile.isEmpty() ) {
-      const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
-
-      if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
-          foreach( QString searchPath, searchList ) {
-              if( searchPath.startsWith(QLatin1String("kraft"))) {
-                  // remove the kraft-String here.
-                  searchPath.remove(0, 5); // remove "kraft"
-              }
-              const QString tFile = prjPath + searchPath;
-              if( !tFile.isEmpty() && QFile::exists(tFile) ) {
-                  kDebug() << "Found template file " << tFile;
-                  tmplFile = tFile;
-                  break;
-              }
+  if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
+      foreach( QString searchPath, searchList ) {
+          if( searchPath.startsWith(QLatin1String("kraft"))) {
+              // remove the kraft-String here.
+              searchPath.remove(0, 5); // remove "kraft"
+          }
+          const QString tFile = prjPath + searchPath;
+          if( !tFile.isEmpty() && QFile::exists(tFile) ) {
+              // qDebug () << "Found template file " << tFile;
+              tmplFile = tFile;
+              break;
           }
       }
   }
 
   if( tmplFile.isEmpty() ) {
-      kDebug() << "unable to find a template file for " << name();
+      foreach( QString searchPath, searchList ) {
+          const QString tFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, searchPath);
+
+          if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
+              tmplFile = tFile;
+              // qDebug () << "Found template file " << tmplFile;
+              break;
+          }
+      }
   }
 
+  if( tmplFile.isEmpty() ) {
+      qDebug () << "unable to find a template file for " << name();
+  } else {
+      qDebug () << "Found template file " << tmplFile;
+  }
   return tmplFile;
 }
 
 QString DocType::defaultTemplateFile() const
 {
-  KStandardDirs stdDirs;
-
-  QString findFile = "kraft/reports/invoice.trml";
-  return stdDirs.findResource( "data", findFile );
+  const QString findFile = "kraft/reports/invoice.trml";
+  const QString re = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
+  return re;
 }
 
 void DocType::setTemplateFile( const QString& name )
@@ -296,7 +287,7 @@ void DocType::setTemplateFile( const QString& name )
   if ( name.isEmpty() || name == defaultTemplateFile() ) { // the default is returned anyway.
     // remove default value from map
     mAttributes.markDelete( "docTemplateFile" );
-    kDebug() << "Removing docTemplateFile Attribute";
+    // qDebug () << "Removing docTemplateFile Attribute";
   } else {
     Attribute att( "docTemplateFile" );
     att.setPersistant( true );
@@ -326,7 +317,7 @@ void DocType::setMergeIdent( const QString& ident )
   } else {
     // remove default value from map
     mAttributes.markDelete( "docMergeIdent" );
-    kDebug() << "Removing docMergeIdent Attribute";
+    // qDebug () << "Removing docMergeIdent Attribute";
   }
   mDirty = true;
 
@@ -353,7 +344,7 @@ void DocType::setWatermarkFile( const QString& file )
   } else {
     // remove default value from map
     mAttributes.markDelete( "watermarkFile" );
-    kDebug() << "Removing docMergeFile Attribute";
+    // qDebug () << "Removing docMergeFile Attribute";
   }
   mDirty = true;
 }
@@ -374,7 +365,7 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
 
   QString pattern = identTemplate();
   if ( pattern.indexOf( "%i" ) == -1 ) {
-    kWarning() << "No %i found in identTemplate, appending it to meet law needs!";
+    qWarning() << "No %i found in identTemplate, appending it to meet law needs!";
     pattern += "-%i";
   }
   QDate d = QDate::currentDate();
@@ -432,7 +423,7 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
   }
 
   QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
-  kDebug() << "Generated document ident: " << re;
+  // qDebug () << "Generated document ident: " << re;
 
   return re;
 }
@@ -443,7 +434,7 @@ int DocType::nextIdentId( bool hot )
   QString numberCycle = numberCycleName();
 
   if ( numberCycle.isEmpty() ) {
-    kError() << "NumberCycle name is empty";
+    qCritical() << "NumberCycle name is empty";
     return -1;
   }
 
@@ -460,7 +451,7 @@ int DocType::nextIdentId( bool hot )
   q.exec();
   if ( q.next() ) {
     num = 1+( q.value( 0 ).toInt() );
-    kDebug() << "Got current number: " << num;
+    // qDebug () << "Got current number: " << num;
 
     if ( hot ) {
       QSqlQuery setQuery;
@@ -469,8 +460,7 @@ int DocType::nextIdentId( bool hot )
       setQuery.bindValue( ":newNumber", num );
       setQuery.exec();
       if ( setQuery.isActive() ) {
-        kDebug() << "Successfully created new id number for numbercycle " << numberCycle << ": "
-                  << num << endl;
+        // qDebug () << "Successfully created new id number for numbercycle " << numberCycle << ": " << num << endl;
       }
     }
   }
@@ -500,10 +490,10 @@ void DocType::readIdentTemplate()
 
   QString numberCycle = numberCycleName();
   if ( numberCycle.isEmpty() ) {
-    kError() << "Numbercycle for doctype is empty, returning default";
+    qCritical() << "Numbercycle for doctype is empty, returning default";
     mIdentTemplate = defaultTempl;
   }
-  kDebug() << "Picking ident Template for numberCycle " << numberCycle;
+  // qDebug () << "Picking ident Template for numberCycle " << numberCycle;
 
   q.prepare( "SELECT identTemplate FROM numberCycles WHERE name=:name" );
 
@@ -511,7 +501,7 @@ void DocType::readIdentTemplate()
   q.exec();
   if ( q.next() ) {
     tmpl = q.value( 0 ).toString();
-    kDebug() << "Read ident template from database: " << tmpl;
+    // qDebug () << "Read ident template from database: " << tmpl;
   }
 
   // FIXME: Check again.
@@ -523,7 +513,7 @@ void DocType::readIdentTemplate()
       // There is nothing in KConfig File, so we use our default from here.
       pattern = defaultTempl;
     }
-    kDebug() << "Writing ident template to database: " << pattern;
+    // qDebug () << "Writing ident template to database: " << pattern;
     QSqlQuery insQuery;
     insQuery.prepare( "UPDATE numberCycles SET identTemplate=:pattern WHERE name=:name" );
     insQuery.bindValue( ":name", numberCycle );
@@ -556,12 +546,12 @@ void DocType::setName( const QString& name )
 void DocType::save()
 {
   if ( !mDirty ) {
-    kDebug() << "Saving: not DIRTY!";
+    // qDebug () << "Saving: not DIRTY!";
     return;
   }
 
   if ( !mNameMap.contains( mName ) ) {
-    kError() << "nameMap does not contain id for " << mName;
+    qCritical() << "nameMap does not contain id for " << mName;
     return;
   }
   dbID id = mNameMap[ mName ];

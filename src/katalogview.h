@@ -18,13 +18,9 @@
 #ifndef KATALOGVIEW_H
 #define KATALOGVIEW_H
 
-// include files for Qt
-
-// include files for KDE
-#include <kapplication.h>
+#include <QAction>
+#include <QUrl>
 #include <kxmlguiwindow.h>
-#include <kaction.h>
-#include <kurl.h>
 
 #include "kraftcat_export.h"
 
@@ -33,7 +29,7 @@ class Katalog;
 class FilterHeader;
 class CatalogWidget;
 class QBoxLayout;
-class KActionMenu;
+class QActionMenu;
 class DocPosition;
 class CalcPartList;
 class QTreeWidgetItem;
@@ -74,30 +70,10 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     virtual Katalog* getKatalog( const QString& );
 
   public slots:
-    /** open a new application window by creating a new instance of KraftApp */
-    void slotFileNewWindow();
     /** clears the document in the current view to reuse it as the new document */
-    void openDocumentFile(const KUrl& url);
+    void openDocumentFile(const QUrl &url);
 
-    void slotFileOpen();
-    /** save a document */
-    void slotFileSave();
-    /** asks for saving if the file is modified, then closes the current file and window*/
-    void slotFileClose();
-    /** print the current file */
-    void slotFilePrint();
-    /** put the marked text/object into the clipboard and remove
-     *	it from the document
-     */
-    void slotEditCut();
-    /** put the marked text/object into the clipboard
-     */
-    void slotEditCopy();
-    /** paste the clipboard into the document
-     */
-    void slotEditPaste();
-
-    /** changes the statusbar contents for the standard label permanently, used to indicate current actions.
+     /** changes the statusbar contents for the standard label permanently, used to indicate current actions.
      * @param text the text that is displayed in the statusbar
      */
     void slotStatusMsg(const QString &text);
@@ -116,21 +92,14 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
   protected:
 
     /** the configuration object of the application */
-    KConfig *config;
-    KAction* m_acFileClose;
-    KAction* m_acFilePrint;
-    KAction* m_acEditCut;
-    KAction* m_acEditCopy;
-    KAction* m_acEditPaste;
+    QAction* m_acEditChapter;
+    QAction* m_acAddChapter;
+    QAction* m_acRemChapter;
 
-    KAction* m_acEditChapter;
-    KAction* m_acAddChapter;
-    KAction* m_acRemChapter;
-
-    KAction* m_acEditItem;
-    KAction* m_acNewItem;
-    KAction* m_acDeleteItem;
-    KAction* m_acExport;
+    QAction* m_acEditItem;
+    QAction* m_acNewItem;
+    QAction* m_acDeleteItem;
+    QAction* m_acExport;
 
     // KToggleAction* viewToolBar;
     // KToggleAction* viewStatusBar;
@@ -143,7 +112,7 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     // Fills the DocPosition with the data from the currently selected item in the view
     virtual bool currentItemToDocPosition( DocPosition& ){ return false; }
 
-    /** initializes the KActions of the application */
+    /** initializes the QActions of the application */
     void initActions();
     /** sets up the statusbar for the main window by initialzing a statuslabel.
      */

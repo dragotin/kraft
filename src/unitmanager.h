@@ -30,6 +30,7 @@
 class UnitManager
 {
   public:
+    UnitManager();
 
     virtual ~UnitManager();
     static UnitManager* self();
@@ -43,11 +44,11 @@ class UnitManager
     int nextFreeId();
 
   private:
-    UnitManager();
     Einheit::List mUnits;
-    static UnitManager* mSelf;
 
     void load();
+
+
 };
 
 #endif

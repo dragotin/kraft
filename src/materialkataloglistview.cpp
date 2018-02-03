@@ -1,5 +1,5 @@
 /***************************************************************************
-             brunskataloglistview  - template katalog listview.
+             materialkataloglistview  - template katalog listview.
                              -------------------
     begin                : 2005-07-26
     copyright            : (C) 2005 by Klaas Freitag
@@ -14,12 +14,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qmap.h>
+#include <QMap>
+#include <QLocale>
+#include <QDebug>
+#include <QMenu>
 
-#include <kiconloader.h>
-#include <klocale.h>
-#include <kdebug.h>
-#include <kmenu.h>
+#include <KLocalizedString>
 
 #include "matkatalog.h"
 #include "stockmaterial.h"
@@ -28,8 +28,8 @@
 #include "docposition.h"
 #include "kataloglistview.h"
 
-MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
-  : KatalogListView( w )
+MaterialKatalogListView::MaterialKatalogListView(QWidget *parent )
+  : KatalogListView( parent )
 {
   setColumnCount( 6 );
 
@@ -43,7 +43,7 @@ MaterialKatalogListView::MaterialKatalogListView( QWidget *w )
 
   setHeaderLabels( headers );
 
-  contextMenu()->addTitle(i18n("Material Catalog"));
+  contextMenu()->setTitle(i18n("Material Catalog"));
 }
 
 
@@ -58,10 +58,10 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
   Katalog *k = KatalogMan::self()->getKatalog( katName );
   MatKatalog *catalog = static_cast<MatKatalog*>( k );
   if( ! catalog ) {
-    kDebug() << "No catalog in listview available!" << endl;
+    // qDebug () << "No catalog in listview available!" << endl;
     return;
   }
-  kDebug() << "setting up meterial chapters --------*********************************+++!" << endl;
+  // qDebug () << "setting up meterial chapters --------*********************************+++!" << endl;
   setupChapters();
 
   const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
@@ -99,13 +99,13 @@ QTreeWidgetItem* MaterialKatalogListView::addMaterialToView( QTreeWidgetItem *pa
   return recItem;
 }
 
-void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ, KLocale *loc )
+void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ, QLocale *loc )
 {
   StockMaterial *mat = static_cast<StockMaterial*>( templ );
 
   if ( item && mat ) {
     Einheit e = mat->getUnit();
-    kDebug() << "Setting material name " << e.einheitSingular() << endl;
+    // qDebug () << "Setting material name " << e.einheitSingular() << endl;
     item->setText( 0, mat->name() );
     item->setText( 1, QString::number( mat->getAmountPerPack() ) );
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
@@ -113,7 +113,7 @@ void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ,
     item->setText( 4, mat->salesPrice().toString( loc ) );
     item->setText( 5, mat->lastModified() );
   } else {
-    kDebug() << "Unable to freshup item - data invalid" << endl;
+    // qDebug () << "Unable to freshup item - data invalid" << endl;
   }
 }
 

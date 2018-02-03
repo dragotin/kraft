@@ -18,8 +18,7 @@
 // include files for Qt
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "documentsaverbase.h"
 
@@ -36,5 +35,3 @@ DocumentSaverBase::~DocumentSaverBase( )
 
 /* END */
 
-
-#include "documentsaverbase.moc"

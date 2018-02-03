@@ -21,7 +21,7 @@
 // include files
 #include <QList>
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 #include "kraftglobals.h"
 #include "einheit.h"
 #include "catalogtemplate.h"
@@ -59,8 +59,8 @@ public:
   int chapter() { return m_chapter; }
   void setChapter( int c ) { m_chapter = c; }
 
-  KABC::Addressee getSupplier();
-  void setSupplier( KABC::Addressee *supp );
+  KContacts::Addressee getSupplier();
+  void setSupplier( KContacts::Addressee *supp );
 
   Geld purchPrice();
   Geld salesPrice();

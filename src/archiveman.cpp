@@ -21,9 +21,7 @@
 #include <QSqlIndex>
 #include <QFile>
 #include <QTextStream>
-
-#include <kstandarddirs.h>
-#include <kdebug.h>
+#include <QDebug>
 
 #include "archiveman.h"
 #include "kraftdoc.h"
@@ -33,9 +31,10 @@
 #include "kraftsettings.h"
 #include "documentman.h"
 
+Q_GLOBAL_STATIC(ArchiveMan, mSelf)
+
 ArchiveMan *ArchiveMan::self()
 {
-  K_GLOBAL_STATIC(ArchiveMan, mSelf);
   return mSelf;
 }
 
@@ -107,19 +106,19 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
   docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
 
   docElem.appendChild( xmlTextElement( xmldoc, "date",
-                                       doc->locale()->formatDate( doc->date() ) ) );
+                                       doc->locale()->toString( doc->date() ) ));
 
   root.appendChild( doc->positions().domElement( xmldoc ) );
 
   QString xml = xmldoc.toString();
-  // kDebug() << "Resulting XML: " << xml << endl;
+  // qDebug() << "Resulting XML: " << xml << endl;
 
   QString outputDir = ArchiveMan::self()->xmlBaseDir();
   QString filename = ArchiveMan::self()->archiveFileName( doc->ident(), archId, "xml" );
 
   QString xmlFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
 
-  kDebug() << "Storing XML to " << xmlFile << endl;
+  // qDebug () << "Storing XML to " << xmlFile << endl;
 
   if ( KraftSettings::self()->doXmlArchive() ) {
     QFile file( xmlFile );
@@ -128,7 +127,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
       stream << xml << "\n";
       file.close();
     } else {
-      kDebug() << "Saving failed" << endl;
+      // qDebug () << "Saving failed" << endl;
     }
   }
   return xmldoc ;
@@ -165,7 +164,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     QSqlRecord record = model.record();
 
     if( doc->isNew() ) {
-      kDebug() << "Strange: Document in archiving is new!" << endl;
+      // qDebug () << "Strange: Document in archiving is new!" << endl;
     }
     record.setValue( "ident", doc->ident() );
     record.setValue( "docType", doc->docType() );
@@ -179,12 +178,13 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
     record.setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
     record.setValue( "projectLabel", KraftDB::self()->mysqlEuroEncode(doc->projectLabel() ) );
-    record.setValue( "country",  doc->country() );
-    record.setValue( "language", doc->language() );
+    QLocale *loc = doc->locale();
+    record.setValue( "country",  loc->bcp47Name() );
+    record.setValue( "language", "" );
     record.setValue( "tax", DocumentMan::self()->tax( doc->date() ) );
     record.setValue( "reducedTax", DocumentMan::self()->reducedTax( doc->date() ) );
     if(!model.insertRecord(-1, record)) {
-      kDebug() << model.lastError();
+      // qDebug () << model.lastError();
 	}
     dbID id = KraftDB::self()->getLastInsertID();
     archivePos( id.toInt(), doc );
@@ -220,7 +220,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
     DocPositionList posList = doc->positions();
     DocPositionListIterator it( posList );
 
-    kDebug() << "Archiving pos for " << archDocId << endl;
+    // qDebug () << "Archiving pos for " << archDocId << endl;
     while ( it.hasNext() ) {
       DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
@@ -235,10 +235,10 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
       record.setValue( "taxType", dp->taxTypeNumeric() );
 
       if(!model.insertRecord(-1, record)) {
-        kDebug() << model.lastError();
+        // qDebug () << model.lastError();
 	  }
       dbID id = KraftDB::self()->getLastInsertID();
-      // kDebug() << "Inserted for id " << id.toString() << endl;
+      // qDebug() << "Inserted for id " << id.toString() << endl;
       cnt++;
 
       // save the attributes of the positions in the attributes
@@ -252,10 +252,9 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 
 QString ArchiveMan::xmlBaseDir() const
 {
-  KStandardDirs stdDirs;
   QString outputDir = KraftSettings::self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
-    outputDir = stdDirs.saveLocation( "data", "kraft/archiveXml", true );
+    outputDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
   }
 
   if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
@@ -265,10 +264,9 @@ QString ArchiveMan::xmlBaseDir() const
 
 QString ArchiveMan::pdfBaseDir() const
 {
-  KStandardDirs stdDirs;
   QString outputDir = KraftSettings::self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
-    outputDir = stdDirs.saveLocation( "data", "kraft/archivePdf", true );
+    outputDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
   }
 
   if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";

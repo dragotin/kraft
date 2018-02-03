@@ -23,8 +23,6 @@
 
 #include <QList>
 
-#include <klocale.h>
-
 // application specific includes
 #include "dbids.h"
 #include "calcpart.h"
@@ -39,7 +37,7 @@ class QDomElement;
 class QDomDocument;
 class Geld;
 class dbID;
-class KLocale;
+class QLocale;
 class PositionViewWidget;
 
 class DocPositionBase : public QObject
@@ -146,8 +144,8 @@ class DocPositionList : public QList<DocPositionBase*>
     QDomElement domElement( QDomDocument& );
     DocPositionBase *positionFromId( int id );
     QString posNumber( DocPositionBase* );
-    void setLocale( KLocale* );
-    KLocale* locale() { return mLocale; }
+    void setLocale( QLocale* );
+    QLocale* locale() { return mLocale; }
 
     Geld nettoPrice();
     Geld bruttoPrice( double fullTax, double reducedTax );
@@ -160,7 +158,7 @@ class DocPositionList : public QList<DocPositionBase*>
 
   private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
-    KLocale *mLocale;
+    QLocale *mLocale;
 };
 
 typedef QListIterator<DocPositionBase*> DocPositionListIterator;

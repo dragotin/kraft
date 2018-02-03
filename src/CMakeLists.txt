@@ -1,35 +1,23 @@
-include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS} external)
+# include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS} external)
 
+include_directories(${QT_INCLUDES} src)
 add_subdirectory(pics)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
-
 ########### next target ###############
+qt5_add_resources(KRAFT_RC_SRC pics/kraft.qrc)
 
 set(kraft_SRCS
-    catalogtemplate.cpp
-    catalogchapter.cpp
-    katalog.cpp
-    katalogman.cpp
-    brunskatalog.cpp
-    brunsrecord.cpp
-    defaultprovider.cpp
-    doctext.cpp
-    doctype.cpp
-    kataloglistview.cpp
-    katalogview.cpp
-    brunskataloglistview.cpp
-    brunskatalogview.cpp
-    filterheader.cpp
-    kraftdb.cpp
-    geld.cpp
-    einheit.cpp
     attribute.cpp
+    einheit.cpp
+    doctype.cpp
     numbercycle.cpp
-    addeditchapterdialog.cpp
+    katalogman.cpp
+    stdsatzman.cpp
+    katalog.cpp
     templkatalog.cpp
     docposition.cpp
     matkatalog.cpp
+    calcdialogbase.cpp
     timecalcpart.cpp
     fixcalcpart.cpp
     floskeltemplate.cpp
@@ -38,6 +26,8 @@ set(kraft_SRCS
     kraftview.cpp
     kraftdoc.cpp
     main.cpp
+    catalogchapter.cpp
+    addeditchapterdialog.cpp
     unitmanager.cpp
     stockmaterial.cpp
     stockmaterialman.cpp
@@ -56,6 +46,9 @@ set(kraft_SRCS
     prefsdialog.cpp
     prefswages.cpp
     prefsunits.cpp
+    katalogview.cpp
+    filterheader.cpp
+    kataloglistview.cpp
     templkatalogview.cpp
     templkataloglistview.cpp
     positionviewwidget.cpp
@@ -63,14 +56,16 @@ set(kraft_SRCS
     documentsaverdb.cpp
     documentman.cpp
     docdigest.cpp
-    docdigestview.cpp
+    alldocsview.cpp
     doctypeedit.cpp
+    doctext.cpp
     portal.cpp
     portalview.cpp
     archiveman.cpp
     reportgenerator.cpp
     htmlview.cpp
     docpostcard.cpp
+    catalogtemplate.cpp
     catalogselection.cpp
     kraftdocheaderedit.cpp
     kraftdocfooteredit.cpp
@@ -84,7 +79,6 @@ set(kraft_SRCS
     kraftdocpositionsedit.cpp
     portalhtmlview.cpp
     templtopositiondialogbase.cpp
-    insertplantdialog.cpp
     textselection.cpp
     newdocassistant.cpp
     docassistant.cpp
@@ -94,9 +88,8 @@ set(kraft_SRCS
     footertemplateprovider.cpp
     catalogtemplateprovider.cpp
     texttemplate.cpp
-    doclocaledialog.cpp
     tagman.cpp
-    positiontagdialog.cpp
+    itemtagdialog.cpp
     tagtemplatesdialog.cpp
     importitemdialog.cpp
     importfilter.cpp
@@ -107,28 +100,33 @@ set(kraft_SRCS
     setupassistant.cpp
     models/documentmodel.cpp
     models/documentproxymodels.cpp
+    models/datemodel.cpp
+    models/docbasemodel.cpp
     docdigestdetailview.cpp
-    external/ktreeviewsearchline.cpp
     addressprovider.cpp
-    akonadiaddressselector.cpp
-    akonadiaddressselectordialog.cpp
-    models/globalcontactmodel.cpp
-    quicksearchwidget.cpp
+    addressselectorwidget.cpp
+    addressprovider_akonadi.cpp
+    addressselectordialog.cpp
+    kraftdb.cpp
+    geld.cpp
+    defaultprovider.cpp
 )
 
-kde4_add_kcfg_files(kraft_SRCS
+kconfig_add_kcfg_files(kraft_SRCS
     databasesettings.kcfgc
     kraftsettings.kcfgc
     databasesettings.kcfgc
-    kraftsettings.kcfgc)
+    kraftsettings.kcfgc
+)
 
-kde4_add_ui_files(kraft_SRCS
+ki18n_wrap_ui(kraft_SRCS
     calctemplate.ui
     dbinit.ui
     createdb.ui
     dbselect.ui
     mysqldetails.ui
     sqlitedetails.ui
+    identity.ui
     statuspage.ui
     upgradedb.ui
     timepart.ui
@@ -136,7 +134,6 @@ kde4_add_ui_files(kraft_SRCS
     matpartui.ui
     inserttmplbase.ui
     materialdialog.ui
-    insertplantbase.ui
     docheader.ui
     positionwidget.ui
     docfooter.ui
@@ -148,19 +145,41 @@ kde4_add_ui_files(kraft_SRCS
     unitseditbase.ui
     importtodocbase.ui
     numbercycleseditbase.ui
-
 )
 
-kde4_add_executable(kraft ${kraft_SRCS})
+# kde4_add_executable(kraft ${kraft_SRCS})
+add_executable(kraft ${KRAFT_RC_SRC} ${kraft_SRCS})
 
-target_link_libraries(kraft ${QT_QTSQL_LIBRARY} ${KDE4_KHTML_LIBS} ${KDE4_KDEUI_LIBS}
-	${KDEPIMLIBS_KABC_LIBS} ${KDEPIMLIBS_AKONADI_CONTACT_LIBS} ${KDE4_KIO_LIBS}
-        ${CTEMPLATE_LIBRARIES} pthread)
+set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
+
+set(KRAFT_LINK_LIBS
+    Qt5::Core
+    Qt5::Widgets
+    Qt5::Sql
+    
+    KF5::I18n
+    KF5::XmlGui
+    KF5::Contacts
+    ${CTEMPLATE_LIBRARIES} pthread
+)
+if(KF5Akonadi_FOUND)
+  list(APPEND KRAFT_LINK_LIBS
+    KF5::AkonadiCore
+    KF5::AkonadiContact
+    KF5::AkonadiAgentBase 
+    KF5::AkonadiWidgets 
+    KF5::AkonadiXml
+  )
+endif()
+
+target_link_libraries(kraft
+PUBLIC
+    ${KRAFT_LINK_LIBS}
+)
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kraft.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
-install(FILES  kraftui.rc katalogview.rc DESTINATION ${DATA_INSTALL_DIR}/kraft)
+install(FILES  kraftui.rc katalogview.rc DESTINATION ${KXMLGUI_INSTALL_DIR}/kraft)

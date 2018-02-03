@@ -19,15 +19,15 @@
 #include <QSqlQuery>
 
 // include files for KDE
-#include <klocale.h>
-#include <kdebug.h>
-#include <kglobal.h>
+#include <QDebug>
+#include <QGlobalStatic>
 
 #include "stockmaterialman.h"
 
+Q_GLOBAL_STATIC(StockMaterialMan, mSelf)
+
 StockMaterialMan* StockMaterialMan::self()
 {
-  K_GLOBAL_STATIC(StockMaterialMan, mSelf);
   return mSelf;
 }
 

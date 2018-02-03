@@ -16,31 +16,29 @@
  ***************************************************************************/
 #include <QtGui>
 
-#include <kdebug.h>
-#include <kstandarddirs.h>
-#include <kstringhandler.h>
+#include <QDebug>
+
+#include <kcontacts/address.h>
+#include <kcontacts/vcardconverter.h>
 
 #include "setupassistant.h"
 #include "databasesettings.h"
 #include "defaultprovider.h"
 #include "kraftdb.h"
-#include "akonadiaddressselector.h"
+#include "addressselectorwidget.h"
 #include "kraftsettings.h"
 
 
 WelcomePage::WelcomePage(QWidget *parent)
-  :QWidget(parent)
+  :QWizardPage(parent)
 {
-  QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+    setTitle( i18n("Welcome to the Kraft Setup Assistant"));
+    QVBoxLayout *vbox = new QVBoxLayout;
+    setLayout( vbox );
 
-  QWidget *w = new QWidget;
-  vbox->addWidget( w );
-
-  ui.setupUi(w);
-
+    QWidget *w = new QWidget;
+    vbox->addWidget( w );
+    ui.setupUi(w);
 }
 
 void WelcomePage::setWelcomeText( const QString& txt )
@@ -51,129 +49,155 @@ void WelcomePage::setWelcomeText( const QString& txt )
 // ---------------------------------------------------------------------------
 
 DbSelectPage::DbSelectPage(QWidget *parent)
-  :QWidget(parent)
+    :QWizardPage(parent)
 {
-  QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+    setTitle(i18n("Select the Database Backend"));
+    QVBoxLayout *vbox = new QVBoxLayout;
+    setLayout( vbox );
 
-  QWidget *w = new QWidget;
-  vbox->addWidget( w );
+    QWidget *w = new QWidget;
+    vbox->addWidget( w );
 
-  ui.setupUi(w);
+    ui.setupUi(w);
+
+    registerField("SelectedDbDriverSqlite", ui.mRbSqlite3);
+    registerField("SelectedDbDriverMySql",  ui.mRbMySQL);
+
 }
 
-QString DbSelectPage::selectedDriver()
+int DbSelectPage::nextId() const
 {
-  QString re = "QSQLITE";
-  if( ui.mRbMySQL->isChecked() ) {
-    re = "QMYSQL";
-  }
-  return re;
+    if( ui.mRbSqlite3->isChecked() ) {
+        return SetupAssistant::sqlitePageNo;
+    } else {
+        return SetupAssistant::mySqlPageNo;
+    }
+}
+
+QString DbSelectPage::selectedDriver() const
+{
+    QString re = "QSQLITE";
+    if( field("SelectedDbDriverMySql").toBool() ) {
+        re = "QMYSQL";
+    }
+    return re;
 }
 
 // ---------------------------------------------------------------------------
 
 SqLiteDetailsPage::SqLiteDetailsPage(QWidget *parent)
-  :QWidget(parent)
+    :QWizardPage(parent)
 {
-  QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+    setTitle(i18n("Sqlite File Name"));
+    QVBoxLayout *vbox = new QVBoxLayout;
+    setLayout(vbox);
 
-  QWidget *w = new QWidget;
-  vbox->addWidget( w );
+    QWidget *w = new QWidget;
+    vbox->addWidget( w );
 
-  ui.setupUi(w);
+    ui.setupUi(w);
 
-  ui.mFileUrl->setMode( KFile::File | KFile::LocalOnly );
-  // ui.mFileUrl->setText(DatabaseSettings::self()->dbFile());
+    // ui.mFileUrl->setText(DatabaseSettings::self()->dbFile());
+    registerField("DefaultSqliteStorage", ui.mRbDefault );
+    registerField("SqliteStorageFile", ui._fileName);
 
-  if(!DatabaseSettings::self()->dbFile().isEmpty())
-    ui.mRbCustom->setChecked(true);
-
-  connect( ui.mFileUrl, SIGNAL( textChanged( const QString& )), this, SLOT( slotSelectCustom() ) );
+    // Preset the sqlite storage
+    if( ! DatabaseSettings::self()->dbFile().isEmpty()) {
+        ui.mRbCustom->setChecked(true);
+        setField("SqliteStorageFile", DatabaseSettings::self()->dbFile());
+    }
 }
 
-void SqLiteDetailsPage::slotSelectCustom()
+QUrl SqLiteDetailsPage::url()
 {
-  ui.mRbCustom->setChecked(true);
+    QString fileName;
+    if( ui.mRbDefault->isChecked() ) {
+        fileName = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    } else {
+        fileName = ui._fileName->text();
+    }
+    if( ! fileName.endsWith("/")) fileName += QLatin1String("/");
+    fileName += QLatin1String("kraft.db");
+
+    return QUrl::fromLocalFile(fileName);
 }
 
-KUrl SqLiteDetailsPage::url()
+bool SqLiteDetailsPage::validatePage()
 {
-  if( ui.mRbDefault->isChecked() ) {
-    return KUrl( KStandardDirs::locateLocal( "appdata", "sqlite/kraft.db") );
-  }
-  return ui.mFileUrl->url();
+    return qobject_cast<SetupAssistant*>(wizard())->handleSqLiteDetails();
+}
+
+int SqLiteDetailsPage::nextId() const
+{
+    if( KraftDB::self()->databaseExists() ) {
+        return SetupAssistant::upgradeDbPageNo;
+    } else {
+        return SetupAssistant::createDbPageNo;
+    }
 }
 
 // ---------------------------------------------------------------------------
 
 MysqlDetailsPage::MysqlDetailsPage(QWidget *parent)
-  :QWidget(parent)
+  :QWizardPage(parent)
 {
-  QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+    setTitle(i18n("MySql Detail Information"));
+    QVBoxLayout *vbox = new QVBoxLayout;
+    setLayout( vbox );
+    QWidget *w = new QWidget;
+    vbox->addWidget( w );
 
-  QWidget *w = new QWidget;
-  vbox->addWidget( w );
-
-  ui.setupUi(w);
-
-  reloadSettings();
+    ui.setupUi(w);
+    registerField("MySqlHost",   ui.mMysqlHost);
+    registerField("MySqlUser",   ui.mMysqUser );
+    registerField("MySqlDbName", ui.mMysqlDbName);
+    registerField("MySqlPwd",    ui.mMysqlPwd );
+    reloadSettings();
 }
 
 void MysqlDetailsPage::reloadSettings()
 {
-  ui.mMysqlHost->setText(DatabaseSettings::self()->dbServerName());
-  ui.mMysqUser->setText(DatabaseSettings::self()->dbUser());
-  ui.mMysqlDbName->setText(DatabaseSettings::self()->dbDatabaseName());
-  ui.mMysqlPwd->setText(DatabaseSettings::self()->dbPassword());
+    setField("MySqlHost",   DatabaseSettings::self()->dbServerName());
+    setField("MySqlUser",   DatabaseSettings::self()->dbUser());
+    setField("MySqlDbName", DatabaseSettings::self()->dbDatabaseName());
+    setField("MySqlPwd", DatabaseSettings::self()->dbPassword());
 }
 
-QString MysqlDetailsPage::dbName()
+int MysqlDetailsPage::nextId() const
 {
-  return ui.mMysqlDbName->text();
+    if( KraftDB::self()->databaseExists() ) {
+        return SetupAssistant::upgradeDbPageNo;
+    } else {
+        return SetupAssistant::createDbPageNo;
+    }
 }
 
-QString MysqlDetailsPage::dbUser()
+bool MysqlDetailsPage::validatePage()
 {
-  return ui.mMysqUser->text();
+    bool re = qobject_cast<SetupAssistant*>(wizard())->handleMysqlDetails();
+    return re;
 }
 
-QString MysqlDetailsPage::dbServer()
-{
-  return ui.mMysqlHost->text();
-}
-
-QString MysqlDetailsPage::dbPasswd()
-{
-  return ui.mMysqlPwd->text();
-}
 // ---------------------------------------------------------------------------
 
 CreateDbPage::CreateDbPage(QWidget *parent)
-  :QWidget(parent)
+  :QWizardPage(parent)
 {
-  QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+    setTitle(i18n("Create Database"));
+    QVBoxLayout *vbox = new QVBoxLayout;
+    setLayout( vbox );
 
-  QWidget *w = new QWidget;
-  vbox->addWidget( w );
+    QWidget *w = new QWidget;
+    vbox->addWidget( w );
 
-  ui.setupUi(w);
+    ui.setupUi(w);
+
+    registerField("CreateDbStatusText", ui.mCreateStatus);
 }
 
 void CreateDbPage::setStatusText( const QString& t )
 {
-  ui.mCreateStatus->setText( t );
+    ui.mCreateStatus->setText( t );
 }
 
 void CreateDbPage::setFillCmdsCount( int cnt )
@@ -199,52 +223,55 @@ void CreateDbPage::setCreateCmdsCount( int cnt )
 
 void CreateDbPage::setCreateCmdsCurrent( int cnt )
 {
-  ui.mCreateProgress->setValue( cnt );
+    ui.mCreateProgress->setValue( cnt );
 }
 
 void CreateDbPage::slotStatusMessage( const QString& msg )
 {
-  kDebug() << "############### success: " << msg;
-  ui.mCreateStatus->setText( msg );
+    // qDebug () << "############### success: " << msg;
+    ui.mCreateStatus->setText( msg );
 }
 
 void CreateDbPage::slotCountCreateProgress( bool res )
 {
-  if( res ) {
-      mCreates++;
-      ui.mCreateProgress->setValue( mCreates );
-      ui.mCreateCounter->setText( i18n("%1/%2").arg(mCreates).arg( ui.mCreateProgress->maximum() ) );
-  }
+    if( res ) {
+        mCreates++;
+        ui.mCreateProgress->setValue( mCreates );
+        ui.mCreateCounter->setText( i18n("%1/%2").arg(mCreates).arg( ui.mCreateProgress->maximum() ) );
+    }
 }
 
 void CreateDbPage::slotCountFillProgress( bool res )
 {
-  if( res ) {
-      mFills++;
-    ui.mFillProgress->setValue( mFills );
-    ui.mFillCounter->setText( i18n("%1/%2").arg(mFills).arg( ui.mFillProgress->maximum() ) );
-  }
+    if( res ) {
+        mFills++;
+        ui.mFillProgress->setValue( mFills );
+        ui.mFillCounter->setText( i18n("%1/%2").arg(mFills).arg( ui.mFillProgress->maximum() ) );
+    }
 }
 
+int CreateDbPage::nextId() const
+{
+    return SetupAssistant::upgradeDbPageNo;
+}
 // ---------------------------------------------------------------------------
 
 UpgradeDbPage::UpgradeDbPage(QWidget *parent)
-  :QWidget(parent)
+  :QWizardPage(parent)
 {
-  QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+    setTitle(i18n("Upgrade the Database"));
+    QVBoxLayout *vbox = new QVBoxLayout;
+    setLayout( vbox );
 
-  QWidget *w = new QWidget;
-  vbox->addWidget( w );
+    QWidget *w = new QWidget;
+    vbox->addWidget( w );
 
-  ui.setupUi(w);
+    ui.setupUi(w);
 }
 
 void UpgradeDbPage::slotSetStatusText( const QString& txt )
 {
-  ui.mUpgradeStatus->setText( txt );
+    ui.mUpgradeStatus->setText( txt );
 }
 
 void UpgradeDbPage::slotSetOverallCount( int cnt )
@@ -257,216 +284,284 @@ void UpgradeDbPage::slotSetOverallCount( int cnt )
 
 void UpgradeDbPage::updateCounter()
 {
-  ui.mUpgradeCounter->setText( i18n("%1/%2").arg(mUpgrades).arg( ui.mUpgradeProgress->maximum() ));
+    ui.mUpgradeCounter->setText( i18n("%1/%2").arg(mUpgrades).arg( ui.mUpgradeProgress->maximum() ));
 }
 
 void UpgradeDbPage::slotCountFillProgress( bool res )
 {
-  if( res ) {
-    mUpgrades++;
-    ui.mUpgradeProgress->setValue( mUpgrades );
-    updateCounter();
-  }
+    if( res ) {
+        mUpgrades++;
+        ui.mUpgradeProgress->setValue( mUpgrades );
+        updateCounter();
+    }
 }
 
+int UpgradeDbPage::nextId() const
+{
+    return SetupAssistant::ownAddressPageNo;
+}
 
 // ---------------------------------------------------------------------------
 
 OwnAddressPage::OwnAddressPage(QWidget *parent)
-  :QWidget(parent)
+  :QWizardPage(parent)
 {
-  QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+    setTitle(i18n("Your Company Address"));
+    QVBoxLayout *vbox = new QVBoxLayout;
+    QTabWidget *tabWidget = new QTabWidget;
 
-  QLabel *l = new QLabel;
-  l->setText( i18n("Select your own address from the address book. It is set as a consigner on the documents.") );
-  vbox->addWidget( l );
+    QLabel *l = new QLabel;
+    l->setText( i18n("Select your companies address either from the address book or enter it manually. It is set as a consigner on the documents.") );
+    vbox->addWidget( l );
 
-  mAddresses = new AkonadiAddressSelector(this);
-  vbox->addWidget( mAddresses );
+    vbox->addWidget(tabWidget);
 
-  connect( mAddresses, SIGNAL( addressSelected(Addressee)),
-           SLOT( gotMyAddress( Addressee ) ) );
+    // == The AddressSelector page
+    QWidget *w = new QWidget;
+    tabWidget->addTab(w, i18n("Select from Addressbook"));
+
+    QVBoxLayout *vbox1 = new QVBoxLayout;
+
+    mAddresses = new AddressSelectorWidget(this);
+    vbox1->addWidget( mAddresses );
+    w->setLayout( vbox1 );
+    setLayout(vbox);
+
+    connect( mAddresses, SIGNAL( addressSelected(KContacts::Addressee)),
+             SLOT( gotMyAddress( KContacts::Addressee ) ) );
+
+    // == The manual page
+    QWidget *w1 = new QWidget;
+    ui.setupUi(w1);
+    int id = tabWidget->addTab(w1, i18n("Manual Entry"));
+    ui.nameLabel->setText( KContacts::Addressee::formattedNameLabel() );
+    ui.orgLabel->setText( KContacts::Addressee::organizationLabel());
+    ui.streetLabel->setText(KContacts::Addressee::businessAddressStreetLabel());
+    ui.postCodeLabel->setText(KContacts::Addressee::businessAddressPostalCodeLabel());
+    ui.cityLabel->setText(KContacts::Addressee::businessAddressLocalityLabel());
+    ui.phoneLabel->setText(KContacts::Addressee::businessPhoneLabel());
+    ui.faxLabel->setText(KContacts::Addressee::businessFaxLabel());
+    ui.mobileLabel->setText(KContacts::Addressee::mobilePhoneLabel());
+    ui.emailLabel->setText(KContacts::Addressee::emailLabel());
+    ui.websiteLabel->setText(KContacts::Addressee::urlLabel());
+
+    if( !mAddresses->backendUp() ) {
+        tabWidget->setCurrentIndex(id);
+    }
 }
 
 OwnAddressPage::~OwnAddressPage()
 {
-  delete mAddresses;
+    delete mAddresses;
 }
 
-void OwnAddressPage::contactStored( const Akonadi::Item& item )
+void OwnAddressPage::gotMyAddress(const KContacts::Addressee& addressee)
 {
-  KABC::Addressee addressee  = item.payload<KABC::Addressee>();
-  kDebug() << "Contact was stored in Akonadi: " << addressee.name();
-}
-
-void OwnAddressPage::gotMyAddress( Addressee addressee )
-{
-  mMe = addressee;
+    mMe = addressee;
 }
 
 void OwnAddressPage::saveOwnName()
 {
-  if( ! mMe.isEmpty() ) {
-    KraftSettings::self()->setUserName( mMe.name() );
-    KraftSettings::self()->setUserUid( mMe.uid() );
-    KraftSettings::self()->writeConfig();
-  }
+    if( ! mMe.isEmpty() ) {
+        KraftSettings::self()->setUserName( mMe.name() );
+        KraftSettings::self()->setUserUid( mMe.uid() );
+        KraftSettings::self()->save();
+    } else {
+        // check for the manual.
+        KContacts::Addressee add;
+        add.setFormattedName(ui.leName->text());
+        add.setOrganization(ui.leOrganization->text());
+        KContacts::Address workAddress;
+
+        workAddress.setStreet(ui.leStreet->text());
+        workAddress.setPostalCode(ui.lePostcode->text());
+        workAddress.setLocality(ui.leCity->text());
+        workAddress.setType(KContacts::Address::Work);
+        add.insertAddress(workAddress);
+
+        add.insertPhoneNumber(PhoneNumber(ui.lePhone->text(), KContacts::PhoneNumber::Work));
+        add.insertPhoneNumber(PhoneNumber(ui.leFax->text(), KContacts::PhoneNumber::Fax));
+        add.insertPhoneNumber(PhoneNumber(ui.leMobile->text(), KContacts::PhoneNumber::Cell));
+        ResourceLocatorUrl resUrl;
+        resUrl.setUrl(QUrl(ui.leWebsite->text()));
+        add.setUrl(resUrl);
+        add.insertEmail(ui.leEmail->text(), true /* prefered */ );
+
+        VCardConverter vcc;
+        QByteArray vcard = vcc.createVCard(add);
+
+        QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+        file += "/myidentity.vcd";
+        QFile f ( file );
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            f.write(vcard);
+            f.close();
+            qDebug() << "Saved own identity to " << file;
+        }
+    }
 }
 
-// ---------------------------------------------------------------------------
-  FinalStatusPage::FinalStatusPage(QWidget *parent)
-  :QWidget(parent)
+int OwnAddressPage::nextId() const
 {
-  QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
-  vbox->setSpacing( KDialog::spacingHint() );
-  vbox->setMargin( KDialog::marginHint() );
+    return SetupAssistant::finalStatusPageNo;
+}
+// ---------------------------------------------------------------------------
+FinalStatusPage::FinalStatusPage(QWidget *parent)
+    :QWizardPage(parent)
+{
+    setTitle(i18n("Final Status"));
+    QVBoxLayout *vbox = new QVBoxLayout;
+    setLayout( vbox );
+    //TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
+    //TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
-  QWidget *w = new QWidget;
-  vbox->addWidget( w );
+    QWidget *w = new QWidget;
+    vbox->addWidget( w );
 
-  ui.setupUi(w);
-  ui.mStatusText->setTextFormat( Qt::RichText );
+    ui.setupUi(w);
+    ui.mStatusText->setTextFormat( Qt::RichText );
 }
 
 void FinalStatusPage::slotSetStatusText( const QString& txt )
 {
-  ui.mStatusText->setText( txt );
+    ui.mStatusText->setText( txt );
+}
+
+int FinalStatusPage::nextId() const
+{
+    return -1; // final page
 }
 
 // ---------------------------------------------------------------------------
 
 SetupAssistant::SetupAssistant( QWidget *parent )
-  :KAssistantDialog( parent ),
+  :QWizard( parent ),
   mMode( Reinit )
 {
-  QWidget *w = new QWidget;
-  mWelcomePageItem = addPage( w, i18n("Welcome to the Kraft Setup Assistant"));
-  mWelcomePage = new WelcomePage(w);
 
-  w = new QWidget;
-  mDbSelectPageItem = addPage( w, i18n("Select the Database Backend"));
-  mDbSelectPage = new DbSelectPage(w);
+    setPage( welcomePageNo,  new WelcomePage);
+    setPage( dbSelectPageNo, new DbSelectPage);
+    setPage( mySqlPageNo,    new MysqlDetailsPage);
+    setPage( sqlitePageNo,   new SqLiteDetailsPage);
+    setPage( createDbPageNo, new CreateDbPage);
+    setPage( upgradeDbPageNo,   new UpgradeDbPage);
+    setPage( ownAddressPageNo,  new OwnAddressPage);
+    setPage( finalStatusPageNo, new FinalStatusPage);
 
-  w = new QWidget;
-  mMysqlDetailsPageItem = addPage( w, i18n("Enter MySQL Database Setup Details"));
-  mMysqlDetailsPage = new MysqlDetailsPage(w);
+    connect( this, SIGNAL( currentIdChanged( int) ),
+             this, SLOT( slotCurrentPageChanged( int) ) );
 
-  w = new QWidget;
-  mSqLiteDetailsPageItem = addPage( w, i18n("Enter SQLite Filename"));
-  mSqLiteDetailsPage = new SqLiteDetailsPage(w);
-
-  w = new QWidget;
-  mCreateDbPageItem = addPage( w, i18n("Creating the Database..."));
-  mCreateDbPage= new CreateDbPage(w);
-
-  w = new QWidget;
-  mUpgradeDbPageItem = addPage( w, i18n("Upgrade the Database Schema"));
-  mUpgradeDbPage = new UpgradeDbPage(w);
-
-  w = new QWidget;
-  mOwnAddressPageItem = addPage( w, i18n( "My Own Address Data" ));
-  mOwnAddressPage = new OwnAddressPage(w);
-
-  w = new QWidget;
-  mFinalStatusPageItem = addPage( w, i18n("Setup Finished."));
-  mFinalStatusPage = new FinalStatusPage(w);
-
-  connect( this, SIGNAL( currentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ),
-           this, SLOT( slotCurrentPageChanged( KPageWidgetItem*,KPageWidgetItem*) ) );
-  connect( this, SIGNAL( user1Clicked() ), this, SLOT( slotFinishedClicked() ) );
-
-  setInitialSize( QSize( 450, 260 ) );
+    resize( QSize( 450, 260 ) );
 
 }
 
-void SetupAssistant::next( )
+/*
+ * Current Database Setup Wizard        +----------------+    check if db already exists
+   -----------------------------      > |  MySQL Page    ----------------------------------+
+                                    -/  +--------+-------+                                 v
+   +------------+   +--------------/             |            +----------------+    +---------------+
+   |  Welcome   --->|  DB Select   |         +--->+---------> | create DB Page +--->|  upgrade DB   |
+   +------------+   +--------------\         |                +----------------+    +-----------+---+
+                                    -\   +---+------------+                                 ^   |
+                                      >  |  SQLite Page   ----------------------------------+   |
+                                         +----------------+                                     |
+                                                                                                |
+                                                               +---------------+    +-----------v---+
+                                                               | Final Status  |<---+  Own Address  |
+                                                               +---------------+    +---------------+
+
+ */
+
+QString SetupAssistant::defaultSqliteFilename() const
 {
-  KPageWidgetItem *item = currentPage();
-  kDebug() << "Next was hit with " << item->name();
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+    QFileInfo fi(path, "kraft.db");
 
-  if( item == mWelcomePageItem ) {
-    kDebug() << "Nothing to do for the Welcome-Page";
-  } else if( item == mDbSelectPageItem ) {
-    handleDatabaseBackendSelect();
-  } else if( item == mMysqlDetailsPageItem ) {
-    // get the mysql datails
-    handleMysqlDetails();
-  } else if( item == mSqLiteDetailsPageItem ) {
-    // get the sqlite filename
-    handleSqLiteDetails();
-  }
-
-  KAssistantDialog::next();
+    if( !fi.dir().exists() ) {
+        if (! fi.dir().mkpath(path) ) {
+            qDebug() << "Failed to create directory "<< path << "for sqlite db";
+            return QString();
+        }
+    }
+    return fi.filePath();
 }
 
-void SetupAssistant::back()
+void SetupAssistant::slotCurrentPageChanged( int currId )
 {
-  KAssistantDialog::back();
-}
+    qDebug() << "Page changed to " << currId;
 
-void SetupAssistant::slotCurrentPageChanged( KPageWidgetItem *current, KPageWidgetItem* /* previous */)
-{
-  if( current == mCreateDbPageItem ) {
-      if( mSqlBackendDriver == QLatin1String("QMYSQL") ) {
-      if(!KraftDB::self()->dbConnect( QLatin1String("QMYSQL"),
-                                      mMysqlDetailsPage->dbName(),
-                                      mMysqlDetailsPage->dbUser(),
-                                      mMysqlDetailsPage->dbServer(),
-                                      mMysqlDetailsPage->dbPasswd() ) ) {
-        mCreateDbPage->setStatusText( i18n( "<p>Can't connect to your database. Are you sure your credentials are correct and the database exists?</p>") );
-        return;
-      }
-    } else {
-      if( !KraftDB::self()->dbConnect( QLatin1String("QSQLITE"), mSqLiteDetailsPage->url().pathOrUrl() ) ) {
-        mCreateDbPage->setStatusText( i18n("<p>Can't open your database file, check the permissions and such."));
-      }
+    if( currId == dbSelectPageNo ) {
+    } else if( currId == mySqlPageNo ) {
+        // TODO: set the mysql datails
+    } else if( currId == sqlitePageNo) {
+        // TODO set the sqlite filename
+    } else if( currId == createDbPageNo ) {
+        if( mSqlBackendDriver == QLatin1String("QMYSQL") ) {
+            const QString dbName = field("MySqlDbName").toString();
+            if(!KraftDB::self()->dbConnect( QLatin1String("QMYSQL"),
+                                            dbName,
+                                            field("MySqlUser").toString(),
+                                            field("MySqlHost").toString(),
+                                            field("MySqlPwd").toString() ) ) {
+                setField("CreateDbStatusText", i18n( "<p>Can't connect to your database. Are you sure your credentials are correct and the database exists?</p>") );
+                return;
+            }
+        } else {
+            QString filename = field("SqliteStorageFile").toString();
+            if(filename.isEmpty()) {
+                filename = defaultSqliteFilename();
+                setField("SqliteStorageFile", filename);
+            }
+            if( !KraftDB::self()->dbConnect( QLatin1String("QSQLITE"), filename ) ) {
+                setField("CreateDbStatusText", i18n("<p>Can't open your database file, check the permissions and such."));
+            }
+        }
+
+        if( !KraftDB::self()->databaseExists() ) {
+            // qDebug () << "Start to create the database";
+            startDatabaseCreation();
+        } else {
+            // qDebug () << "CreateDB-Page: Database already existing";
+            setField("CreateDbStatusText", i18n( "<p>The database is already existing, no action needs to be taken here.</p>"
+                                                 "<p>Please hit <b>next</b> to proceed.</p>" ) );
+        }
     }
 
-    if( !KraftDB::self()->databaseExists() ) {
-      kDebug() << "Start to create the database";
-      startDatabaseCreation();
-    } else {
-      kDebug() << "CreateDB-Page: Database already existing";
-      mCreateDbPage->setStatusText( i18n( "<p>The database is already existing, no action needs to be taken here.</p>"
-                                          "<p>Please hit <b>next</b> to proceed.</p>" ) );
+    if( currId == upgradeDbPageNo ) {
+        if( KraftDB::self()->databaseExists() ) {
+            // qDebug () << "start to update the database";
+            startDatabaseUpdate();
+        } else {
+            // qDebug () << "Strange problem at dbupdate: DB does not exist";
+        }
     }
-  }
 
-  if( current == mUpgradeDbPageItem ) {
-    if( KraftDB::self()->databaseExists() ) {
-      kDebug() << "start to update the database";
-      startDatabaseUpdate();
-    } else {
-      kDebug() << "Strange problem at dbupdate: DB does not exist";
+    if( currId == finalStatusPageNo )  {
+        finalizePage();
     }
-  }
-
-  if( current == mFinalStatusPageItem )  {
-    finalizePage();
-  }
 }
 
-void SetupAssistant::slotFinishedClicked( )
+void SetupAssistant::done( int result )
 {
-  // store the stakeholders own name for picking the sender address
-  mOwnAddressPage->saveOwnName();
+    // store the stakeholders own name for picking the sender address
+    qobject_cast<OwnAddressPage*>(page(ownAddressPageNo))->saveOwnName();
 
-  DatabaseSettings::self()->setDbDriver( mDbSelectPage->selectedDriver() );
-  if( mDbSelectPage->selectedDriver() == "QSQLITE" ) {
-    DatabaseSettings::self()->setDbFile( mSqLiteDetailsPage->url().pathOrUrl() ); // The sqLite file name
-  }
-  if( mDbSelectPage->selectedDriver() == "QMYSQL" ) {
-    DatabaseSettings::self()->setDbDatabaseName( mMysqlDetailsPage->dbName() );
-    DatabaseSettings::self()->setDbUser( mMysqlDetailsPage->dbUser() );
-    DatabaseSettings::self()->setDbServerName( mMysqlDetailsPage->dbServer() );
-    DatabaseSettings::self()->setDbPassword( mMysqlDetailsPage->dbPasswd() );
-  }
-  DatabaseSettings::self()->writeConfig();
-  kDebug() << "Database backend config written.";
+    const QString selectedDriver = qobject_cast<DbSelectPage*>(page(dbSelectPageNo))->selectedDriver();
+    DatabaseSettings::self()->setDbDriver( selectedDriver );
+    if( selectedDriver == QLatin1String("QSQLITE") ) {
+        const QString file = field("SqliteStorageFile").toString();
+        DatabaseSettings::self()->setDbFile(file);
+    }
+    if( selectedDriver == "QMYSQL" ) {
+        DatabaseSettings::self()->setDbDatabaseName( field("MySqlDbName").toString() );
+        DatabaseSettings::self()->setDbUser( field("MySqlUser").toString() );
+        const QString host = field("MySqlHost").toString();
+        DatabaseSettings::self()->setDbServerName( host );
+        DatabaseSettings::self()->setDbPassword( field("MySqlPwd").toString() );
+    }
+    DatabaseSettings::self()->save();
+    qDebug () << "Database backend config written";
+    QWizard::done(result);
 }
 
 void SetupAssistant::finalizePage()
@@ -487,320 +582,241 @@ void SetupAssistant::finalizePage()
       txt += "<p>" + err + "</p>";
     }
   }
-  // kDebug() << "this is the status text: " << txt;
-  mFinalStatusPage->slotSetStatusText( txt );
+  // qDebug() << "this is the status text: " << txt;
+  qobject_cast<FinalStatusPage*>(page(finalStatusPageNo))->slotSetStatusText( txt );
 }
 
 void SetupAssistant::startDatabaseUpdate()
 {
-  if( ! KraftDB::self()->isOk() ) {
-    mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials."));
-    enableButton( KDialog::User2, false );
-    return;
-  }
+    CreateDbPage *mCreateDbPage = qobject_cast<CreateDbPage*>(page(createDbPageNo));
+    UpgradeDbPage *mUpgradeDbPage = qobject_cast<UpgradeDbPage*>(page(upgradeDbPageNo));
 
-  if( !KraftDB::self()->databaseExists() ) {
-    mCreateDbPage->setStatusText( i18n("The database core tables do not exist. Please check initial setup."));
-    enableButton( KDialog::User2, false );
-    return;
-  }
-  enableButton( KDialog::User2, true );
-
-  if( KraftDB::self()->currentSchemaVersion() == KraftDB::self()->requiredSchemaVersion() ) {
-    mUpgradeDbPage->slotSetStatusText( i18n("Database is up to date. No upgrade is required."));
-    return;
-  }
-
-  // Database really needs update
-  mUpgradeDbPage->slotSetStatusText( i18n("Parse Update Commands..."));
-
-  int overallCmdCount = 0;
-  QList<SqlCommandList> commandLists;
-  int currentVer = KraftDB::self()->currentSchemaVersion();
-  if( currentVer == -1 ) currentVer = 1; // set to initial version
-
-  while ( currentVer < KraftDB::self()->requiredSchemaVersion() ) {
-    ++currentVer;
-    const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
-    kDebug() << "######### Reading " << migrateFilename;
-    mUpgradeDbPage->slotSetStatusText( i18n("Reading upgrade command file %1").arg( migrateFilename ) );
-    SqlCommandList cmds = KraftDB::self()->parseCommandFile( migrateFilename );
-    overallCmdCount += cmds.count();
-    commandLists << cmds;
-  }
-  mUpgradeDbPage->slotSetOverallCount( overallCmdCount );
-
-  kDebug() << "4.";
-  connect( KraftDB::self(), SIGNAL( statusMessage( const QString& ) ),
-           mUpgradeDbPage,  SLOT( slotSetStatusText( const QString& ) ) );
-
-  connect( KraftDB::self(), SIGNAL( processedSqlCommand( bool ) ),
-           mUpgradeDbPage, SLOT( slotCountFillProgress( bool ) ) );
-
-  int doneOverallCmds =  0;
-  bool errors = false;
-
-  currentVer = KraftDB::self()->currentSchemaVersion();
-  foreach( SqlCommandList cmds, commandLists ) {
-    currentVer++;
-    int goodCmds = KraftDB::self()->processSqlCommands( cmds );
-    doneOverallCmds += goodCmds;
-    if( goodCmds != cmds.count() ) {
-      kDebug() << "Only performned " << goodCmds << " out of " << cmds.count();
-      errors = true;
-      break;
-    } else {
-      kDebug() << goodCmds << " commands performed well!";
-      KraftDB::self()->setSchemaVersion( QString::number( currentVer ));
+    if( ! KraftDB::self()->isOk() ) {
+        mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials."));
+        button(NextButton)->setEnabled(false);
+        return;
     }
-  }
 
-  if( errors ) {
-    mUpgradeDbPage->slotSetStatusText( i18n("The Upgrade failed!") );;
-  } else {
-    mUpgradeDbPage->slotSetStatusText( i18n("The Upgrade succeeded, the current schema version is %1!")
-                                       .arg( KraftDB::self()->requiredSchemaVersion() ) );;
-  }
+    if( !KraftDB::self()->databaseExists() ) {
+        mCreateDbPage->setStatusText( i18n("The database core tables do not exist. Please check initial setup."));
+        button(NextButton)->setEnabled(false);
+        return;
+    }
+    button(NextButton)->setEnabled(true);
 
-  disconnect( mUpgradeDbPage, SLOT( slotSetStatusText( const QString& )));
+    if( KraftDB::self()->currentSchemaVersion() == KraftDB::self()->requiredSchemaVersion() ) {
+        mUpgradeDbPage->slotSetStatusText( i18n("Database is up to date. No upgrade is required."));
+        return;
+    }
+
+    // Database really needs update
+    mUpgradeDbPage->slotSetStatusText( i18n("Parse Update Commands..."));
+
+    int overallCmdCount = 0;
+    QList<SqlCommandList> commandLists;
+    int currentVer = KraftDB::self()->currentSchemaVersion();
+    if( currentVer == -1 ) currentVer = 1; // set to initial version
+
+    while ( currentVer < KraftDB::self()->requiredSchemaVersion() ) {
+        ++currentVer;
+        const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
+        // qDebug () << "######### Reading " << migrateFilename;
+        mUpgradeDbPage->slotSetStatusText( i18n("Reading upgrade command file %1").arg( migrateFilename ) );
+        SqlCommandList cmds = KraftDB::self()->parseCommandFile( migrateFilename );
+        overallCmdCount += cmds.count();
+        commandLists << cmds;
+    }
+    mUpgradeDbPage->slotSetOverallCount( overallCmdCount );
+
+    // qDebug () << "4.";
+    connect( KraftDB::self(), SIGNAL( statusMessage( const QString& ) ),
+             mUpgradeDbPage,  SLOT( slotSetStatusText( const QString& ) ) );
+
+    connect( KraftDB::self(), SIGNAL( processedSqlCommand( bool ) ),
+             mUpgradeDbPage, SLOT( slotCountFillProgress( bool ) ) );
+
+    int doneOverallCmds =  0;
+    bool errors = false;
+
+    currentVer = KraftDB::self()->currentSchemaVersion();
+    foreach( SqlCommandList cmds, commandLists ) {
+        currentVer++;
+        int goodCmds = KraftDB::self()->processSqlCommands( cmds );
+        doneOverallCmds += goodCmds;
+        if( goodCmds != cmds.count() ) {
+            // qDebug () << "Only performned " << goodCmds << " out of " << cmds.count();
+            errors = true;
+            break;
+        } else {
+            // qDebug () << goodCmds << " commands performed well!";
+            KraftDB::self()->setSchemaVersion( QString::number( currentVer ));
+        }
+    }
+
+    if( errors ) {
+        mUpgradeDbPage->slotSetStatusText( i18n("The Upgrade failed!") );;
+    } else {
+        mUpgradeDbPage->slotSetStatusText( i18n("The Upgrade succeeded, the current schema version is %1!")
+                                           .arg( KraftDB::self()->requiredSchemaVersion() ) );;
+    }
+
+    disconnect( mUpgradeDbPage, SLOT( slotSetStatusText( const QString& )));
 }
 
 
 void SetupAssistant::startDatabaseCreation()
 {
-  if( ! KraftDB::self()->isOk() ) {
-    mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials!"));
-    enableButton( KDialog::User2, false );
-    return;
-  }
-  enableButton( KDialog::User2, true );
+    CreateDbPage *mCreateDbPage = qobject_cast<CreateDbPage*>(page(createDbPageNo));
 
-  mCreateDbPage->setStatusText( i18n("Parse Create Commands...") );
-  SqlCommandList createCommands = KraftDB::self()->parseCommandFile( "create_schema.sql");
+    if( ! KraftDB::self()->isOk() ) {
+        mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials!"));
+        button(NextButton)->setEnabled(false);
+        return;
+    }
+    button(NextButton)->setEnabled(true);
 
-  QString dbFill( "fill_schema_en.sql" );
+    mCreateDbPage->setStatusText( i18n("Parse Create Commands...") );
+    SqlCommandList createCommands = KraftDB::self()->parseCommandFile( "create_schema.sql");
 
-  if ( DefaultProvider::self()->locale()->country() == "de" ) {
-    dbFill = "fill_schema_de.sql";
-  }
-  mCreateDbPage->setStatusText( i18n( "Parse database fillup commands..." ) );
+    QString dbFill( "fill_schema_en.sql" );
 
-  SqlCommandList fillCommands = KraftDB::self()->parseCommandFile( dbFill );
-  mCreateDbPage->setCreateCmdsCount( createCommands.count() );
-  mCreateDbPage->setCreateCmdsCurrent( 0 );
-  mCreateDbPage->setFillCmdsCount( fillCommands.count() );
-  mCreateDbPage->setFillCmdsCurrent( 0 );
+    if ( DefaultProvider::self()->locale()->country() == QLocale::Germany	) {
+        dbFill = "fill_schema_de.sql";
+    }
+    mCreateDbPage->setStatusText( i18n( "Parse database fillup commands..." ) );
 
-  connect( KraftDB::self(), SIGNAL( statusMessage( const QString& ) ),
-           mCreateDbPage, SLOT( slotStatusMessage( const QString& ) ) );
-  connect( KraftDB::self(), SIGNAL( processedSqlCommand( bool ) ),
-           mCreateDbPage, SLOT( slotCountCreateProgress( bool ) ) );
+    SqlCommandList fillCommands = KraftDB::self()->parseCommandFile( dbFill );
+    mCreateDbPage->setCreateCmdsCount( createCommands.count() );
+    mCreateDbPage->setCreateCmdsCurrent( 0 );
+    mCreateDbPage->setFillCmdsCount( fillCommands.count() );
+    mCreateDbPage->setFillCmdsCurrent( 0 );
 
-  mCreateDbPage->setStatusText( i18n( "Processing database creation commands...") );
-
-  int creates = KraftDB::self()->processSqlCommands( createCommands );
-
-  bool res = true;
-  if( creates != createCommands.count() ) {
-    kDebug() << "NOT all create commands succeeded!";
-    res = false;
-  } else {
-    kDebug( ) << creates << "(=All) create commands succeeded!";
-
-    // lets do the fillup
-    disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0,0 );
-
+    connect( KraftDB::self(), SIGNAL( statusMessage( const QString& ) ),
+             mCreateDbPage, SLOT( slotStatusMessage( const QString& ) ) );
     connect( KraftDB::self(), SIGNAL( processedSqlCommand( bool ) ),
-             mCreateDbPage, SLOT( slotCountFillProgress( bool ) ) );
+             mCreateDbPage, SLOT( slotCountCreateProgress( bool ) ) );
 
-    mCreateDbPage->setStatusText( i18n( "Process database fillup commands..." ) );
-    creates = KraftDB::self()->processSqlCommands( fillCommands );
-  }
+    mCreateDbPage->setStatusText( i18n( "Processing database creation commands...") );
 
-  if( res ) {
-    mCreateDbPage->setStatusText( i18n( "Successfully finished commands." ) );
-  } else {
-    mCreateDbPage->setStatusText( i18n( "Failed to perform all commands." ) );
-    // FIXME: Disable next button
-  }
-  disconnect( KraftDB::self(), SIGNAL(statusMessage( const QString&)),0 ,0 );
-  disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0 ,0 );
+    int creates = KraftDB::self()->processSqlCommands( createCommands );
+
+    bool res = true;
+    if( creates != createCommands.count() ) {
+        // qDebug () << "NOT all create commands succeeded!";
+        res = false;
+    } else {
+        // qDebug () << creates << "(=All) create commands succeeded!";
+
+        // lets do the fillup
+        disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0,0 );
+
+        connect( KraftDB::self(), SIGNAL( processedSqlCommand( bool ) ),
+                 mCreateDbPage, SLOT( slotCountFillProgress( bool ) ) );
+
+        mCreateDbPage->setStatusText( i18n( "Process database fillup commands..." ) );
+        creates = KraftDB::self()->processSqlCommands( fillCommands );
+    }
+
+    if( res ) {
+        mCreateDbPage->setStatusText( i18n( "Successfully finished commands." ) );
+    } else {
+        mCreateDbPage->setStatusText( i18n( "Failed to perform all commands." ) );
+        // FIXME: Disable next button
+    }
+    disconnect( KraftDB::self(), SIGNAL(statusMessage( const QString&)),0 ,0 );
+    disconnect( KraftDB::self(), SIGNAL(processedSqlCommand(bool)),0 ,0 );
 }
 
-void SetupAssistant::handleDatabaseBackendSelect()
+bool SetupAssistant::handleSqLiteDetails()
 {
-  kDebug() << "Set backend driver type " << mDbSelectPage->selectedDriver();
-  if( mDbSelectPage->selectedDriver() == "QSQLITE" ) {
-    setAppropriate( mMysqlDetailsPageItem, false );
-    setAppropriate( mSqLiteDetailsPageItem, true );
-  } else {
-    setAppropriate( mMysqlDetailsPageItem, true );
-    setAppropriate( mSqLiteDetailsPageItem, false );
-  }
+    DbSelectPage *mDbSelectPage = qobject_cast<DbSelectPage*>(page(dbSelectPageNo));
+
+    QString file = field("SqliteStorageFile").toString();
+
+    qDebug () << "The SqlLite database file is " << file;
+
+    mSqlBackendDriver = mDbSelectPage->selectedDriver();
+    // qDebug () << "The database driver is " << mSqlBackendDriver;
+    bool re = KraftDB::self()->dbConnect( mSqlBackendDriver, file );
+
+    return re;
 }
 
-void SetupAssistant::handleSqLiteDetails()
+bool SetupAssistant::handleMysqlDetails()
 {
-  QString file = mSqLiteDetailsPage->url().pathOrUrl();
-  kDebug() << "The SqlLite database file is " << file;
+    DbSelectPage *mDbSelectPage = qobject_cast<DbSelectPage*>(page(dbSelectPageNo));
+    mSqlBackendDriver = mDbSelectPage->selectedDriver();
 
-  mSqlBackendDriver = mDbSelectPage->selectedDriver();
-  kDebug() << "The database driver is " << mSqlBackendDriver;
-  KraftDB::self()->dbConnect( mSqlBackendDriver, file );
+    QString hostName = field("MySqlHost").toString();
+    QString databaseName = field("MySqlDbName").toString();
+    QString userName = field("MySqlUser").toString();
+    QString password = field("MySqlPwd").toString();
 
-  kDebug() << "############ database opened: "<< KraftDB::self()->isOk();
-  bool dbExists = KraftDB::self()->databaseExists();
-
-  kDebug() << "Database exists: " << dbExists;
-  if( dbExists ) {
-    kDebug() << "Database exists, no create needed";
-    setAppropriate( mCreateDbPageItem, false );
-  } else {
-    setAppropriate( mCreateDbPageItem, true );
-  }
-  kDebug() << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
-}
-
-void SetupAssistant::handleMysqlDetails()
-{
-  QString driver   = mDbSelectPage->selectedDriver();
-  QString hostName = mMysqlDetailsPage->dbServer();
-  QString databaseName = mMysqlDetailsPage->dbName();
-  QString userName = mMysqlDetailsPage->dbUser();
-  QString password = mMysqlDetailsPage->dbPasswd();
-
-  KraftDB::self()->dbConnect( driver, databaseName, userName, hostName, password );
-
-  kDebug() << "############ database opened: "<< KraftDB::self()->isOk();
-  bool dbExists = KraftDB::self()->databaseExists();
-
-  kDebug() << "Database exists: " << dbExists;
-  if( dbExists ) {
-    kDebug() << "Database exists, no create needed";
-    setAppropriate( mCreateDbPageItem, false );
-  } else {
-    setAppropriate( mCreateDbPageItem, true );
-  }
-  mSqlBackendDriver = QLatin1String("QMYSQL");
-
-  kDebug() << "required Schema version: " << KraftDB::self()->requiredSchemaVersion();
+    return KraftDB::self()->dbConnect( mSqlBackendDriver, databaseName, userName, hostName, password );
 }
 
 bool SetupAssistant::init( Mode mode )
 {
-  bool startDialog = false;
-  QString text;
-  QString configOrigin;
-  mMode = mode;
+    bool startDialog = false;
+    QString text;
+    QString configOrigin;
+    mMode = mode;
 
-  text = i18n("This assistant guides you through the basic settings of your Kraft installation.");
+    text = i18n("This assistant guides you through the basic settings of your Kraft installation.");
 
-  bool hitNextClosing = true;
+    bool hitNextClosing = true;
 
-  if( mMode == Reinit ) {
-    startDialog = true;
-  } else if( mode == Update ) {
-    //We're going to check if there's a config file for the KDE Platform 4.x version already
-    KStandardDirs stdDirs;
-
-    if( stdDirs.findResource( "config", "kraftdatabaserc" ) == QString() ) {
-      // No KDE Platform 4.x config file there.
-      if( tryMigrateFromKDE3() ) {
-        configOrigin = i18n("The database configuration was converted from a former configuration file.");
-      } else {
-        // migration failed and we do not have a config file. All from scratch
-        configOrigin = i18n("There was no database configuration found.");
-      }
-    } else {
-      configOrigin = i18n("A valid current database configuration file was found.");
-      kDebug() << "A standard KDE Platform 4.x database config file is there.";
-    }
-
-    if( KraftDB::self()->dbConnect() )  { // try to connect with default values
-      kDebug() << "The database can be opened!";
-      if( KraftDB::self()->databaseExists() ) {
-        kDebug() << "The database exists.";
-
-        if( KraftDB::self()->currentSchemaVersion() != KraftDB::self()->requiredSchemaVersion() ) {
-          kDebug() << "Need a database schema update.";
-          startDialog = true;
-        } else {
-          kDebug() << "Database Schema is OK. Nothing to do for StartupAssistant";
-        }
-      } else {
-        kDebug() << "The database is not existing. It needs to be recreated.";
+    if( mMode == Reinit ) {
         startDialog = true;
+    } else if( mode == Update ) {
+        if( QStandardPaths::locate(QStandardPaths::GenericConfigLocation, "kraft/kraftdatabaserc" ).isEmpty() ) {
+            // migration failed and we do not have a config file. All from scratch
+            configOrigin = i18n("There was no database configuration found.");
+        } else {
+            configOrigin = i18n("A valid current database configuration file was found.");
+            // qDebug () << "A standard KDE Platform 4.x database config file is there.";
+        }
 
-        text = i18n( "<p>The database can be opened, but does not contain valid content.</p>"
-                     "<p>A new database can be created automatically from scratch.</p>");
-      }
-    } else {
-      // unable to connect to the database at all
-      startDialog = true;
-      hitNextClosing = false;
-      text = i18n( "<p>Kraft could not connect to the configured database.<p>" );
-      if( KraftDB::self()->qtDriver().toUpper() == "QMYSQL" ) {
-          text += i18n( "<p>Please check the database server setup and restart Kraft to connect." );
-      } else {
-          text += i18n("<p>Please check the database file.");
-      }
-      text += " " + i18n( "or create a new database by hitting <b>next</b>.</p>" );
+        if( KraftDB::self()->dbConnect() )  { // try to connect with default values
+            // qDebug () << "The database can be opened!";
+            if( KraftDB::self()->databaseExists() ) {
+                // qDebug () << "The database exists.";
+
+                if( KraftDB::self()->currentSchemaVersion() != KraftDB::self()->requiredSchemaVersion() ) {
+                    // qDebug () << "Need a database schema update.";
+                    startDialog = true;
+                } else {
+                    // qDebug () << "Database Schema is OK. Nothing to do for StartupAssistant";
+                }
+            } else {
+                // qDebug () << "The database is not existing. It needs to be recreated.";
+                startDialog = true;
+
+                text = i18n( "<p>The database can be opened, but does not contain valid content.</p>"
+                             "<p>A new database can be created automatically from scratch.</p>");
+            }
+        } else {
+            // unable to connect to the database at all
+            startDialog = true;
+            hitNextClosing = false;
+            text = i18n( "<p>Kraft could not connect to the configured database.<p>" );
+            if( KraftDB::self()->qtDriver().toUpper() == "QMYSQL" ) {
+                text += i18n( "<p>Please check the database server setup and restart Kraft to connect." );
+            } else {
+                text += i18n("<p>Please check the database file.");
+            }
+            text += " " + i18n( "or create a new database by hitting <b>next</b>.</p>" );
+        }
     }
-  }
 
-  if( startDialog ) {
-    if( hitNextClosing )
-      text += "<p>Please hit next and follow the instructions.</p>";
-    mWelcomePage->setWelcomeText( configOrigin + text );
-  }
-  return startDialog ;
-}
+    if( startDialog ) {
+        WelcomePage *welcomePage = qobject_cast<WelcomePage*>(page(welcomePageNo));
 
-void SetupAssistant::createDatabase( bool doIt )
-{
-  setAppropriate( mDbSelectPageItem, doIt );
-}
-
-bool SetupAssistant::tryMigrateFromKDE3()
-{
-  kDebug() << "tryMigrate";
-  KConfig *config = 0;
-  bool haveOldConfig  = false;
-
-  //We will try to look for an old katalogrc in .kde and .kde3
-  if(KStandardDirs::exists(QDir::homePath() + "/.kde/share/config/katalogrc"))
-  {
-    kDebug() << "katalogrc found in .kde";
-    config = new KConfig(QDir::homePath() + "/.kde/share/config/katalogrc", KConfig::SimpleConfig);
-  }
-  else if(KStandardDirs::exists(QDir::homePath() + "/.kde3/share/config/katalogrc"))
-  {
-    kDebug() << "katalogrc found in .kde3";
-    config = new KConfig(QDir::homePath() + "/.kde3/share/config/katalogrc", KConfig::SimpleConfig);
-  }
-
-  if(config)
-  {
-    //The old config file always uses mysql as database driver
-    DatabaseSettings::self()->setDbDriver("QMYSQL");
-
-    QMap<QString, QString> entries = config->entryMap("database");
-
-    if(!entries.value("DbServername").isEmpty())
-      DatabaseSettings::self()->setDbServerName(entries.value("DbServername"));
-    if(!entries.value("DbFile").isEmpty())
-      DatabaseSettings::self()->setDbDatabaseName(entries.value("DbFile"));
-    if(!entries.value("DbPassword").isEmpty())
-      DatabaseSettings::self()->setDbPassword(KStringHandler::obscure( entries.value("DbPassword")));
-    if(!entries.value("DbUser").isEmpty())
-      DatabaseSettings::self()->setDbUser(entries.value("DbUser"));
-
-    mMysqlDetailsPage->reloadSettings();
-    haveOldConfig = true;
-    DatabaseSettings::self()->writeConfig();
-    delete config;
-  }
-  return haveOldConfig;
+        if( hitNextClosing )
+            text += "<p>Please hit next and follow the instructions.</p>";
+        welcomePage->setWelcomeText( configOrigin + text );
+    }
+    return startDialog ;
 }
 
 SetupAssistant::~SetupAssistant()

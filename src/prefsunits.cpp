@@ -25,11 +25,13 @@
 #include <QDataWidgetMapper>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
+#include <QPushButton>
+#include <QLocale>
 
+#include <QDebug>
+#include <QDialogButtonBox>
 
-#include <kpushbutton.h>
-#include <klocale.h>
-#include <kdebug.h>
+#include <klocalizedstring.h>
 
 #include "defaultprovider.h"
 #include "impviewwidgets.h"
@@ -48,11 +50,11 @@ PrefsUnits::PrefsUnits(QWidget* parent)
   mUnitsModel->setTable("units");
   mUnitsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
   mUnitsModel->select();
-  mUnitsModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-  mUnitsModel->setHeaderData(1, Qt::Horizontal, tr("Short"));
-  mUnitsModel->setHeaderData(2, Qt::Horizontal, tr("Long"));
-  mUnitsModel->setHeaderData(3, Qt::Horizontal, tr("Short plural"));
-  mUnitsModel->setHeaderData(4, Qt::Horizontal, tr("Long plural"));
+  mUnitsModel->setHeaderData(0, Qt::Horizontal, i18n("ID"));
+  mUnitsModel->setHeaderData(1, Qt::Horizontal, i18n("Short"));
+  mUnitsModel->setHeaderData(2, Qt::Horizontal, i18n("Long"));
+  mUnitsModel->setHeaderData(3, Qt::Horizontal, i18n("Short plural"));
+  mUnitsModel->setHeaderData(4, Qt::Horizontal, i18n("Long plural"));
 
   mProxyModel = new QSortFilterProxyModel(this);
   mProxyModel->setSourceModel(mUnitsModel);
@@ -74,16 +76,16 @@ PrefsUnits::PrefsUnits(QWidget* parent)
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  KPushButton *but = new KPushButton( KIcon("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddUnit() ) );
   butLay->addWidget( but );
 
-  mEditUnit = new KPushButton( KIcon("document-edit"), i18n( "Edit" ));
+  mEditUnit = new QPushButton( QIcon::fromTheme("document-edit"), i18n( "Edit" ));
   connect( mEditUnit, SIGNAL( clicked() ), SLOT( slotEditUnit() ) );
   butLay->addWidget( mEditUnit );
   mEditUnit->setEnabled(false);
 
-  mDelUnit = new KPushButton( KIcon("list-remove"), i18n( "Remove" ) );
+  mDelUnit = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
   connect( mDelUnit, SIGNAL( clicked() ), SLOT( slotDeleteUnit() ) );
   butLay->addWidget( mDelUnit );
   mDelUnit->setEnabled( false );
@@ -103,7 +105,7 @@ void PrefsUnits::save()
   if( ! ok ) {
       QString err = mUnitsModel->lastError().text();
 
-      kDebug() << "SQL Error: " << err;
+      // qDebug () << "SQL Error: " << err;
   }
 }
 
@@ -143,20 +145,29 @@ void PrefsUnits::slotUnitSelected(QModelIndex)
 }
 
 UnitsEditDialog::UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *parent )
- : KDialog( parent )
+ : QDialog( parent )
 {
   setObjectName( "UNITS_EDIT_DIALOG" );
   setModal( true );
-  setCaption( i18n( "Edit a unit" ) );
-  setButtons( Ok|Cancel );
-
-  showButtonSeparator( true );
+  setWindowTitle( i18n( "Edit a unit" ) );
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
 
   QWidget *w = new QWidget( this );
-  setMainWidget( w );
+  mainLayout->addWidget(w);
 
   mBaseWidget = new Ui::UnitsEditBase( );
   mBaseWidget->setupUi( w );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  mainLayout->addWidget(buttonBox);
 
   mModel = model;
 
@@ -190,8 +201,10 @@ UnitsEditDialog::UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *p
 void UnitsEditDialog::accept()
 {
   bool ok = mapper->submit();
-  kDebug() << "Mapper submitted ok: " << ok;
-  KDialog::accept();
+  if(!ok) {
+      qDebug () << "UnitsEditDialog Mapper submit result: " << ok;
+  }
+  QDialog::accept();
   deleteLater();
 }
 
@@ -199,6 +212,6 @@ void UnitsEditDialog::reject()
 {
   if(mRow == -1)
     mModel->removeRow(mModel->rowCount()-1);
-  KDialog::reject();
+  QDialog::reject();
   deleteLater();
 }

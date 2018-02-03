@@ -17,13 +17,13 @@
 
 #include "kraftdocheaderedit.h"
 
-#include <kdatewidget.h>
-#include <kcombobox.h>
-#include <klocale.h>
-#include <kdebug.h>
-
+#include <KLocalizedString>
+#include <QLocale>
+#include <QDebug>
 #include <QLayout>
 #include <QComboBox>
+
+#include "addressprovider.h"
 
 KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   : KraftDocEdit( parent )
@@ -35,19 +35,17 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   mDocHeaderEdit->setupUi( w );
   topLayout->addWidget( w );
 
-  mDocHeaderEdit->mButtLang->setIcon(KIcon("preferences-desktop-locale"));
+  mDocHeaderEdit->mButtLang->setIcon(QIcon::fromTheme("preferences-desktop-locale"));
 
-  connect( mDocHeaderEdit->m_cbType, SIGNAL( activated( int ) ),
+  connect( mDocHeaderEdit->m_cbType, SIGNAL( currentIndexChanged(int)),
     SLOT( slotModified() ) );
-  connect( mDocHeaderEdit->m_cbType, SIGNAL( textChanged( const QString & ) ),
-    SLOT( slotModified() ) );
-  connect( mDocHeaderEdit->m_dateEdit, SIGNAL( changed( QDate ) ),
+  connect( mDocHeaderEdit->m_dateEdit, SIGNAL( dateChanged( QDate ) ),
     SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_postAddressEdit, SIGNAL( textChanged() ),
     SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_letterHead, SIGNAL( activated( int ) ),
     SLOT( slotModified() ) );
-  connect( mDocHeaderEdit->m_letterHead, SIGNAL( textChanged( const QString & ) ),
+  connect( mDocHeaderEdit->m_letterHead, SIGNAL( currentIndexChanged(int)),
     SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_teEntry, SIGNAL( textChanged() ),
     SLOT( slotModified() ) );
@@ -58,4 +56,12 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
 
   setTitle( i18n( "Document Header" ) );
   setColor( "#9af0ff" );
+
+  // if the Akonadi-Backend is down, just show a text
+  QScopedPointer<AddressProvider> addressProvider;
+  addressProvider.reset(new AddressProvider);
+  if( !addressProvider->backendUp() ) {
+      mDocHeaderEdit->pb_pickAddressee->hide();
+      mDocHeaderEdit->m_labName->setText( i18n("Manually set in address field."));
+  }
 }

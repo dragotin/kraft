@@ -83,9 +83,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <includes>
-  <include location="local">knuminput.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

@@ -19,13 +19,14 @@
 #include <QComboBox>
 #include <QWidget>
 #include <QLabel>
-
-#include <kdialog.h>
-#include <kdebug.h>
-#include <klocale.h>
-#include <kcombobox.h>
-#include <ktextedit.h>
-#include <klineedit.h>
+#include <QLocale>
+#include <QDialog>
+#include <QDebug>
+#include <QTextEdit>
+#include <QLineEdit>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "templtopositiondialogbase.h"
 #include "texteditdialog.h"
@@ -34,16 +35,25 @@
 
 
 TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
-  : KDialog( parent )
+  : QDialog( parent )
 {
   setObjectName( "TEMPL_DIALOG" );
   setModal( true );
-  setCaption(  i18n("Edit Text Templates" ));
-  setButtons( KDialog::Ok | KDialog::Cancel );
-  showButtonSeparator( true );
+  setWindowTitle(  i18n("Edit Text Templates" ));
+  QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
+  QWidget *mainWidget = new QWidget(this);
+  QVBoxLayout *mainLayout = new QVBoxLayout;
+  setLayout(mainLayout);
+  mainLayout->addWidget(mainWidget);
+  QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+  okButton->setDefault(true);
+  okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-  QWidget *mainWidget = new QWidget( this );
-  setMainWidget( mainWidget );
+  //PORTING: Verify that widget was added to mainLayout: //PORTING: Verify that widget was added to mainLayout:   setMainWidget( mainWidget );
+  // Add mainLayout->addWidget(mainWidget); if necessary
+  // Add mainLayout->addWidget(mainWidget); if necessary
 
   mBaseWidget = new Ui::TextEditBase;
   mBaseWidget->setupUi( mainWidget );
@@ -52,6 +62,8 @@ TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
   QString h = i18n( "Edit %1 Template" ).arg( DocText::textTypeToString( docPart  ) );
 
   mBaseWidget->dmHeaderText->setText( h );
+
+  mainLayout->addWidget(buttonBox);
 }
 
 TextEditDialog::~TextEditDialog()
@@ -90,4 +102,3 @@ DocText TextEditDialog::docText()
   return dt;
 }
 
-#include "texteditdialog.moc"

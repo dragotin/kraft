@@ -21,12 +21,12 @@
 #include <QLabel>
 #include <QLineEdit>
 
-#include <KDialog>
+#include <QDialog>
 
 #include "catalogchapter.h"
 
 
-class AddEditChapterDialog : public KDialog
+class AddEditChapterDialog : public QDialog
 {
   Q_OBJECT
 

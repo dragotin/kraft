@@ -33,6 +33,9 @@ Pick a filename to name the SQLite database file or leave the default setting.</
        <property name="checked">
         <bool>true</bool>
        </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
       </widget>
      </item>
      <item>
@@ -42,10 +45,13 @@ Pick a filename to name the SQLite database file or leave the default setting.</
          <property name="text">
           <string>select a file name:</string>
          </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup</string>
+         </attribute>
         </widget>
        </item>
        <item>
-        <widget class="KUrlRequester" name="mFileUrl"/>
+        <widget class="QLineEdit" name="_fileName"/>
        </item>
       </layout>
      </item>
@@ -66,13 +72,9 @@ Pick a filename to name the SQLite database file or leave the default setting.</
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>KUrlRequester</class>
-   <extends>QFrame</extends>
-   <header>kurlrequester.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>

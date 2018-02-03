@@ -15,18 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 #include <QtGui>
+#include <QDebug>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QMessageBox>
 
-#include <QToolTip>
-#include <QTimer>
-#include <QTreeWidgetItem>
-
-#include <kiconloader.h>
-#include <kpushbutton.h>
-#include <kmessagebox.h>
-#include <khbox.h>
-#include <kvbox.h>
-#include <khtml_part.h>
-#include <khtmlview.h>
+#include <klocalizedstring.h>
 
 #include "docassistant.h"
 #include "docpostcard.h"
@@ -40,7 +34,6 @@
 #include "footertemplateprovider.h"
 #include "catalogtemplateprovider.h"
 #include "addresstemplateprovider.h"
-#include "addressselection.h"
 
 DocAssistant::DocAssistant( QWidget *parent ):
   QSplitter( parent ), mFullPreview( true ),
@@ -48,16 +41,15 @@ DocAssistant::DocAssistant( QWidget *parent ):
 {
   setOrientation( Qt::Vertical );
 
-  QWidget *w = new QWidget;
-  addWidget( w );
+  QWidget *topWidget = new QWidget;
   QVBoxLayout *topVBox = new QVBoxLayout;
-  w->setLayout( topVBox );
+  topVBox->setMargin(0);
+  topWidget->setLayout( topVBox );
 
   QHBoxLayout *buttonLayout = new QHBoxLayout;
   topVBox->addLayout( buttonLayout );
-  buttonLayout->setMargin( KDialog::marginHint()/2 );
 
-  KPushButton *pb = new KPushButton( i18n( "Show Templates" ) );
+  QPushButton *pb = new QPushButton( i18n( "Show &Templates" ) );
   buttonLayout->addWidget( pb );
   connect( pb, SIGNAL( toggled( bool ) ),
            this, SLOT( slotToggleShowTemplates( bool ) ) );
@@ -65,22 +57,24 @@ DocAssistant::DocAssistant( QWidget *parent ):
   pb->setToolTip( i18n( "Show mask to create or select templates to be used in the document" ) );
 
   buttonLayout->addStretch();
-
+  topVBox->addLayout(buttonLayout);
   mPostCard = new DocPostCard;
-
   mPostCard->slotSetMode( DocPostCard::Full, KraftDoc::Header );
   // setResizeMode( vb /* mPostCard->view() */, KeepSize );
 
-  connect( mPostCard, SIGNAL( completed() ),
-           this,  SLOT( slotRenderCompleted() ) );
+  topVBox->addWidget(mPostCard);
 
-  topVBox->addWidget( mPostCard->view() );
+  addWidget(topWidget);
 
-  // KVBox *stackVBox = new KVBox( this );
   mTemplatePane = new QWidget;
   QVBoxLayout *bottomVBox = new QVBoxLayout;
+  bottomVBox->setMargin(0);
+
   mTemplatePane->setLayout( bottomVBox );
   addWidget( mTemplatePane );
+
+  setStretchFactor(0, 0);
+  setStretchFactor(1, 0);
 
   mWidgetStack = new QStackedWidget;
 
@@ -119,30 +113,29 @@ DocAssistant::DocAssistant( QWidget *parent ):
   QHBoxLayout *butHBox2 = new QHBoxLayout;
   bottomVBox->addLayout( butHBox2 );
 
-  butHBox2->setSpacing( KDialog::spacingHint() );
-  KIcon icons = KIcon( "go-previous" ); // KDE 4 icon name: go-previous
-  mPbAdd  = new KPushButton( icons, QString() );
+  QIcon icons = QIcon::fromTheme( "go-previous" ); // KDE 4 icon name: go-previous
+  mPbAdd  = new QPushButton( icons, QString() );
   mPbAdd->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbAdd, SIGNAL( clicked() ), this, SLOT( slotAddToDocument() ) );
   butHBox2->addWidget( mPbAdd );
   mPbAdd->setToolTip( i18n( "Add a template to the document" ) );
 
-  icons = KIcon( "document-new" );
-  mPbNew  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-new
+  icons = QIcon::fromTheme( "document-new" );
+  mPbNew  = new QPushButton( icons, QString() ); // KDE 4 icon name: document-new
   mPbNew->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbNew, SIGNAL( clicked() ), this, SLOT( slotNewTemplate() ) );
   mPbNew->setToolTip( i18n( "Create a new template" ) );
   butHBox2->addWidget( mPbNew );
 
-  icons = KIcon( "document-properties" );
-  mPbEdit  = new KPushButton( icons, QString() ); // KDE 4 icon name: document-properties
+  icons = QIcon::fromTheme( "document-properties" );
+  mPbEdit  = new QPushButton( icons, QString() ); // KDE 4 icon name: document-properties
   mPbEdit->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbEdit, SIGNAL( clicked() ), this, SLOT( slotEditTemplate() ) );
   mPbEdit->setToolTip( i18n( "Edit the current template" ) );
   butHBox2->addWidget( mPbEdit );
 
-  icons = KIcon( "edit-delete" );
-  mPbDel  = new KPushButton( icons, QString() ); // KDE 4 icon name: edit-delete
+  icons = QIcon::fromTheme( "edit-delete" );
+  mPbDel  = new QPushButton( icons, QString() ); // KDE 4 icon name: edit-delete
   mPbDel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   connect( mPbDel, SIGNAL( clicked() ), this, SLOT( slotDeleteTemplate() ) );
   mPbDel->setToolTip( i18n( "Delete the current template" ) );
@@ -190,13 +183,16 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   mCurrTemplateProvider = mHeaderTemplateProvider;
 
-  // mMainSplit->setSizes( KraftSettings::self()->assistantSplitterSetting() );
+  const QList<int> sizes = KraftSettings::self()->assistantSplitterSetting();
+  if( sizes.count() > 0 ) {
+      setSizes( sizes );
+  }
   mTemplatePane->hide();
 }
 
 void DocAssistant::slotAddToDocument()
 {
-  kDebug() << "SlotAddToDocument called!" << endl;
+  // qDebug () << "SlotAddToDocument called!" << endl;
   if ( mCurrTemplateProvider ) {
     mCurrTemplateProvider->slotTemplateToDocument();
   }
@@ -225,7 +221,7 @@ void DocAssistant::slotTemplateSelectionChanged( )
 void DocAssistant::slotCatalogSelectionChanged(QTreeWidgetItem *current ,QTreeWidgetItem *)
 {
   // enable the move-to-document button.
-  kDebug() << "catalog position selection changed!" << endl;
+  // qDebug () << "catalog position selection changed!" << endl;
   if ( current ) {
     mPbAdd->setEnabled( true );
   } else {
@@ -278,15 +274,10 @@ void DocAssistant::slotFooterTextToDocument( const DocText& dt )
   emit footerTextTemplate( dt.text() );
 }
 
-void DocAssistant::slotAddressToDocument( const Addressee& adr )
-{
-  emit addressTemplate( adr );
-}
-
 /* Slot that initiates an edit */
 void DocAssistant::slotEditTemplate()
 {
-  kDebug() << "Editing a template using the currentTemplProvider" << endl;
+  // qDebug () << "Editing a template using the currentTemplProvider" << endl;
   if ( mCurrTemplateProvider ) {
     mCurrTemplateProvider->slotSetDocType( mDocType );
     mCurrTemplateProvider->slotEditTemplate();
@@ -296,17 +287,21 @@ void DocAssistant::slotEditTemplate()
 /* slot that initialises a delete, called from the delete button */
 void DocAssistant::slotDeleteTemplate()
 {
-  if ( KMessageBox::warningYesNo( this, i18n( "Do you really want to delete the "
-                                            "template permanently? There is no way "
-                                              "to recover!" ) )
-       == KMessageBox::No  )
-  {
-    return;
-  }
 
-  if ( mCurrTemplateProvider ) {
-    mCurrTemplateProvider->slotDeleteTemplate();
-  }
+    QMessageBox msgBox;
+    msgBox.setText(i18n( "Do you really want to delete the template permanently?\n"
+                         "It can not be recovered."));
+    msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox.exec();
+
+    if ( ret == QMessageBox::No ) {
+        return;
+    }
+
+    if ( mCurrTemplateProvider ) {
+        mCurrTemplateProvider->slotDeleteTemplate();
+    }
 }
 
 void DocAssistant::slotHeaderTextDeleted( const DocText& /* dt */)
@@ -341,20 +336,6 @@ void DocAssistant::slotToggleShowTemplates( bool on )
   emit toggleShowTemplates( on );
 }
 
-void DocAssistant::slotRenderCompleted()
-{
-  // kDebug() << "Render completed: " << mPostCard->view()->contentsHeight() << endl;
-
-#if 0
-  /* This is unfortunately not working because contentsHeight is always as
-     heigh as the viewport is. Must be fixed in khtmlpart. */
-  QList<int> sizes;
-  sizes << mPostCard->view()->contentsHeight();
-  setSizes( sizes );
-#endif
-
-}
-
 DocPostCard *DocAssistant::postCard()
 {
     return mPostCard;
@@ -376,7 +357,7 @@ void DocAssistant::slotSelectDocPart( int p )
   } else if( mActivePage == KraftDoc::Footer ) {
     mCurrTemplateProvider = mFooterTemplateProvider;
   } else {
-    kDebug() << "Alert: Unknown document part id: " << p;
+    // qDebug () << "Alert: Unknown document part id: " << p;
   }
   emit selectPage( p );
   slotToggleShowTemplates( !mFullPreview );
@@ -411,25 +392,33 @@ void DocAssistant::slotShowFooterTemplates()
 
 void DocAssistant::setFullPreview( bool setFull, int id )
 {
-  if ( setFull ) {
-    /* remember the sizes used before */
-    if ( mTemplatePane->isVisible() ) {
-      // kDebug() << "Writing mSplitterSizes: " << mMainSplit->sizes() << endl;
-      // KraftSettings::self()->setAssistantSplitterSetting( mMainSplit->sizes() );
-    //  KraftSettings::self()->writeConfig();
-    }
+    if ( setFull ) {
+        /* remember the sizes used before */
+        saveSplitterSizes();
 
-    mTemplatePane->hide();
-    mPostCard->slotSetMode( DocPostCard::Full, id );
-    mFullPreview = true;
-  } else {
-    mTemplatePane->show();
-    mPostCard->slotSetMode( DocPostCard::Mini, id );
+        mTemplatePane->hide();
+        mPostCard->slotSetMode( DocPostCard::Full, id );
+        mFullPreview = true;
+    } else {
+        mTemplatePane->show();
+        mPostCard->slotSetMode( DocPostCard::Mini, id );
 
-    if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
-      // mMainSplit->setSizes( KraftSettings::self()->assistantSplitterSetting() );
+        if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
+            QList<int> sizes = KraftSettings::self()->assistantSplitterSetting();
+            if( sizes.contains(0)) {
+                sizes[0] = 50;
+                sizes[1] = 50;
+            }
+            setSizes( sizes );
+        }
+        mFullPreview = false;
     }
-    mFullPreview = false;
-  }
 }
 
+void DocAssistant::saveSplitterSizes()
+{
+    if( mTemplatePane->isVisible() ) {
+        const QList<int> s = sizes();
+        KraftSettings::self()->setAssistantSplitterSetting( s );
+    }
+}

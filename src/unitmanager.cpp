@@ -19,18 +19,15 @@
 
 // include files for KDE
 #include <kraftdb.h>
-#include <klocale.h>
-#include <kdebug.h>
-#include <kglobal.h>
+#include <QDebug>
 
 #include "unitmanager.h"
 #include "einheit.h"
 
-UnitManager* UnitManager::mSelf = 0;
+Q_GLOBAL_STATIC(UnitManager, mSelf)
 
 UnitManager* UnitManager::self()
 {
-  K_GLOBAL_STATIC(UnitManager, mSelf);
   return mSelf;
 }
 
@@ -87,7 +84,7 @@ Einheit UnitManager::getUnit( int id )
 {
   if( mUnits.size() == 0 ) load();
 
-  // kDebug() << "Searching unit ID " << id << endl;
+  // qDebug() << "Searching unit ID " << id << endl;
   foreach( Einheit e, mUnits ) {
     if( e.id() == id ) return e;
   }
@@ -102,7 +99,7 @@ int UnitManager::getUnitIDSingular( const QString& einheitStr )
 
     if( tmp.einheitSingular() == einheitStr ||
         tmp.einheitPlural()   == einheitStr ) {
-      // kDebug() << "Thats it, returning " << tmp.id() << endl;
+      // qDebug() << "Thats it, returning " << tmp.id() << endl;
       return tmp.id();
     }
   }

@@ -46,9 +46,6 @@ public:
 
   bool removeFromDB();
 
-  QPixmap icon() const;
-  void setIcon( const QPixmap& );
-
   int sortKey() const;
   void setSortKey( int );
 

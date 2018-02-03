@@ -22,7 +22,7 @@
 #ifndef KTREEVIEWSEARCHLINE_H
 #define KTREEVIEWSEARCHLINE_H
 
-#include <klineedit.h>
+#include <QLineEdit>
 
 class QModelIndex;
 class QTreeView;
@@ -36,7 +36,7 @@ class QTableView;
  * appropriate QTreeViews should be needed.
  */
 
-class KTreeViewSearchLine : public KLineEdit
+class KTreeViewSearchLine : public QLineEdit
 {
     Q_OBJECT
 

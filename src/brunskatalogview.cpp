@@ -24,7 +24,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include <kdebug.h>
+#include <QDebug>
 #include <klocale.h>
 
 #include "katalogman.h"
@@ -50,7 +50,7 @@ BrunsKatalogView::~BrunsKatalogView()
 
 void BrunsKatalogView::createCentralWidget(QBoxLayout *box, QWidget *w)
 {
-    kDebug() << "Creating new Bruns-Listview" << endl;
+    // qDebug () << "Creating new Bruns-Listview" << endl;
     QSplitter *split = new QSplitter(Qt::Vertical, w);
 
     m_brunsListView = new BrunsKatalogListView(split);
@@ -84,7 +84,7 @@ void BrunsKatalogView::createCentralWidget(QBoxLayout *box, QWidget *w)
 
 Katalog* BrunsKatalogView::getKatalog( const QString& name )
 {
-    kDebug() << "GetKatalog of bruns!" << endl;
+    // qDebug () << "GetKatalog of bruns!" << endl;
     Katalog *k = KatalogMan::self()->getKatalog( name );
     if( ! k ) {
         k = new BrunsKatalog( name );
@@ -112,7 +112,7 @@ void BrunsKatalogView::slPlantSelected( QTreeWidgetItem *item, QTreeWidgetItem*)
       list.prepend( (*it).getPrimMatchcode() );
       
       items.append( new QTreeWidgetItem( list ) );
-        // kDebug() << "showing new plant detail item" << endl;
+        // qDebug() << "showing new plant detail item" << endl;
     }
     m_details->addTopLevelItems( items );
 }

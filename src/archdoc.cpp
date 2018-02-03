@@ -18,12 +18,10 @@
 #include <QString>
 #include <QSqlQuery>
 #include <QDateTime>
+#include <QLocale>
+#include <QDebug>
 
-// include files for KDE
-#include <kglobal.h>
-
-#include <klocale.h>
-#include <kdebug.h>
+#include <KLocalizedString>
 
 // application specific includes
 #include "archdoc.h"
@@ -34,15 +32,13 @@
 const char *SentOutDateC = "SentOutDate";
 
 ArchDoc::ArchDoc()
-    :mLocale( "kraft" ),
-    mAttributes( QLatin1String("ArchDoc"))
+    : mAttributes( QLatin1String("ArchDoc"))
 {
 
 }
 
 ArchDoc::ArchDoc( const dbID& id )
-    :mLocale( "kraft" ),
-      mAttributes( QLatin1String("ArchDoc"))
+    : mAttributes( QLatin1String("ArchDoc"))
 {
     /* load archive from database */
     loadFromDb( id );
@@ -57,16 +53,16 @@ QString ArchDoc::docIdentifier() const
 {
   QString re = docType();
 
-  return i18n("%1 for %2 (Id %3)").arg( docType() ).arg( ident() );
+  return i18n("%1 for %2 (Id %3)").arg( re ).arg( ident() );
 }
 
-Geld ArchDoc::nettoSum()
+Geld ArchDoc::nettoSum() const
 {
     const Geld g = positions().sumPrice();
     return g;
 }
 
-Geld ArchDoc::bruttoSum()
+Geld ArchDoc::bruttoSum() const
 {
     Geld g = nettoSum();
     const Geld ts = taxSum();
@@ -74,28 +70,28 @@ Geld ArchDoc::bruttoSum()
     return g;
 }
 
-Geld ArchDoc::taxSum()
+Geld ArchDoc::taxSum() const
 {
     const Geld g = positions().taxSum( tax(), reducedTax() );
     return  g;
 }
 
-Geld ArchDoc::fullTaxSum()
+Geld ArchDoc::fullTaxSum() const
 {
     return positions().fullTaxSum( tax() );
 }
 
-Geld ArchDoc::reducedTaxSum()
+Geld ArchDoc::reducedTaxSum() const
 {
     return positions().reducedTaxSum( reducedTax() );
 }
 
-double ArchDoc::tax()
+double ArchDoc::tax() const
 {
     return mTax;
 }
 
-double ArchDoc::reducedTax()
+double ArchDoc::reducedTax() const
 {
     return mReducedTax;
 }
@@ -111,7 +107,7 @@ void ArchDoc::loadFromDb( dbID id )
   q.bindValue(":id", id.toInt());
   q.exec();
 
-  kDebug() << "Loading document id " << id.toString() << endl;
+  // qDebug () << "Loading document id " << id.toString() << endl;
 
   if( q.next()) {
     QString docID;
@@ -136,32 +132,36 @@ void ArchDoc::loadFromDb( dbID id )
     mReducedTax   = q.value( 15 ).toDouble();
     mState        = q.value( 16 ).toInt();
 
+    // FIXME Porting: Handle Locale properly.
+#if 0
     KConfig *cfg = KGlobal::config().data();
     mLocale.setCountry( country, cfg );
     mLocale.setLanguage( lang , cfg );
-
-    loadPositions( docID );
+#endif
+    loadItems( docID );
 
     mAttributes.load(id);
   } else {
-    kDebug() << "ERR: Could not load archived doc with id " << id.toString() << endl;
+    // qDebug () << "ERR: Could not load archived doc with id " << id.toString() << endl;
   }
 }
 
-void ArchDoc::loadPositions( const QString& archDocId )
+void ArchDoc::loadItems( const QString& archDocId )
 {
   mPositions.clear();
 
   if ( archDocId.isEmpty() /* || ! archDocId.isNum() */ ) {
-    kDebug() << "ArchDocId is not crappy: " << archDocId << endl;
+    // qDebug () << "ArchDocId is not crappy: " << archDocId << endl;
     return;
   }
 
   QSqlQuery q;
   q.prepare("SELECT archPosID, archDocID, ordNumber, kind, postype, text, amount, " // pos 0..6
             "unit, price, overallPrice, taxType FROM archdocpos WHERE archDocID=:id ORDER BY ordNumber"); // pos 7..10
-  q.bindValue("id", archDocId);
-  q.exec();
+  q.bindValue(":id", archDocId);
+  if( !q.exec() ) {
+      qDebug() << "Error: " << q.lastError().nativeErrorCode();
+  }
 
   while( q.next() ) {
     ArchDocPosition pos;
@@ -237,7 +237,7 @@ ArchDocDigest::~ArchDocDigest()
 
 QString ArchDocDigest::printDateString() const
 {
-  return DefaultProvider::self()->locale()->formatDateTime( mPrintDate, KLocale::ShortDate );
+    return DefaultProvider::self()->locale()->toString( mPrintDate, QLocale::ShortFormat);
 }
 
 /* ###################################################################### */

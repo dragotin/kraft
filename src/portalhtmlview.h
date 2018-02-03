@@ -20,18 +20,16 @@
 
 class PortalHtmlView : public HtmlView
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     PortalHtmlView( QWidget *parent );
-  signals:
-  void openCatalog( const QString& );
+signals:
+    void openCatalog( const QString& );
 
-  protected:
-    // virtual void writeBottomFrame();
-    bool urlSelected( const QString&, int, int,
-                      const QString &, const KParts::OpenUrlArguments &, const KParts::BrowserArguments & );
-  private:
+protected slots:
+    void slotLinkClicked(const QUrl& url);
+
 };
 
 #endif

@@ -21,7 +21,7 @@
 #include <QMap>
 #include <QWidget>
 
-#include <kabc/addressee.h>
+#include <kcontacts/addressee.h>
 
 #include "kraftdoc.h"
 
@@ -30,11 +30,8 @@ class QTreeWidgetItem;
 class QString;
 class QPoint;
 class QMenu;
-class FilterHeader;
-class KPushButton;
 class DocText;
-class KAction;
-class KActionCollection;
+class QAction;
 class QListView;
 class QStringListModel;
 class QTextEdit;
@@ -82,21 +79,18 @@ private:
   QStringListModel                *mTemplNamesModel;
   QTextEdit                       *mTextDisplay;
   QLabel                          *mHelpDisplay;
-  QLabel                          *mHeadLabel;
   KraftDoc::Part                   mPart;
 
   QString                          mDocType;
   QString                          mCurrTemplateName;
 
-  FilterHeader                    *mListSearchLine;
   QMap<QTreeWidgetItem*, DocText> mTextMap;
   QMap<QString, QTreeWidgetItem*> mDocTypeItemMap;
   QMap<QString, QTreeWidgetItem*> mStandardItemMap;
 
   QMenu             *mMenu;
   QGroupBox         *mGroupBox;
-  KActionCollection *mActions;
-  KAction           *mAcMoveToDoc;
+  QAction           *mAcMoveToDoc;
 };
 
 #endif

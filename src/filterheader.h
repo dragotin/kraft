@@ -20,55 +20,32 @@
 #define FILTERHEADER_H
 
 #include <QWidget>
+#include <QLineEdit>
 
 #include "kraftcat_export.h"
-
-#include <ktreewidgetsearchline.h>
 
 class QTreeWidget;
 class QLabel;
 class QString;
-
-class KRAFTCAT_EXPORT CountingSearchLine : public KTreeWidgetSearchLine
-{
-    Q_OBJECT
-  public:
-    CountingSearchLine( QWidget *parent, QTreeWidget *listView );
-    CountingSearchLine( QWidget *parent, const QList< QTreeWidget * > &treeWidgets );
-    int searchCount();
-
-  protected:
-    void searchUpdate( const QString &s = QString::null );
-
-  signals:
-    void searchCountChanged();
-};
 
 
 class KRAFTCAT_EXPORT FilterHeader : public QWidget
 {
     Q_OBJECT
   public:
-    FilterHeader( QTreeWidget *tree, QWidget *parent = 0 );
-    FilterHeader( QList<QTreeWidget *> &treewidgets, QWidget *parent = 0);
-
-    void setItemName( const QString &none, const QString &one,
-    const QString &multiple );
-
-    void showCount( bool );
+    FilterHeader(QWidget *parent = 0, QTreeWidget *tree = 0);
 
   public slots:
-    void setTitleLabel();
     void clear();
-    void setListView( QTreeWidget*  );
+    void setListView( QTreeWidget* );
+
+private slots:
+    void slotTextChanged( const QString& filter );
 
   private:
-    CountingSearchLine *mSearchLine;
-    QLabel *mTitleLabel;
-
-    QString mItemNameNone;
-    QString mItemNameOne;
-    QString mItemNameMultiple;
+    QLineEdit   *mSearchLine;
+    QLabel      *mTitleLabel;
+    QTreeWidget *_treeWidget;
 };
 
 #endif

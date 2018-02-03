@@ -15,135 +15,141 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kglobal.h>
-
 #include "addressprovider.h"
-#include "akonadi/contact/contactsearchjob.h"
-#include "akonadi/session.h"
+#include <QDebug>
 
-#include <Akonadi/Item>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
+// FIXME this needs to change once there are more address book providers, ie.
+// on Mac.
+
+#include "addressprovider_akonadi.h"
+
+#include "klocalizedstring.h"
+
+/* ==================================================================================== */
 
 AddressProvider::AddressProvider( QObject *parent )
-  :QObject( parent )
+  :QObject( parent ),
+    _d( new AddressProviderPrivate(parent) )
 {
-  using namespace Akonadi;
+    connect(_d, SIGNAL(addresseeFound(QString, KContacts::Addressee)),
+            this, SLOT(slotAddresseeFound(QString, KContacts::Addressee)));
+    connect(_d, SIGNAL(lookupError( QString, QString)), this,
+            SLOT(slotErrorMsg(QString, QString)));
+    connect(_d, SIGNAL(addresseeNotFound(QString)), SLOT(slotAddresseeNotFound(QString)));
 }
 
-KJob* AddressProvider::searchAddressGID( const QString& gid )
+bool AddressProvider::backendUp()
 {
-    if( gid.isEmpty() ) return 0;
-
-    Akonadi::Item item;
-#if KDE_IS_VERSION(4,12,0)
-    item.setGid( gid );
-#endif
-
-    Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(item, this);
-    connect( fetchJob, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-    fetchJob->fetchScope().fetchFullPayload();
-    fetchJob->start();
-    return fetchJob;
+    return _d->backendUp();
 }
 
-void AddressProvider::getAddressee( const QString& uid )
+QString AddressProvider::backendName() const
 {
-    if( uid.isEmpty() || mUidSearches.contains( uid ) ) {
-        // search is already running
-        kDebug() << "Search already underways!";
-        return;
+    return _d->backendName();
+}
+
+void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::Addressee contact)
+{
+    // remove a potential error message in case an error happened before
+    if( !( uid.isEmpty() || contact.isEmpty()) ) {
+        _errMessages.remove(uid);
+    }
+    _addressCache[uid] = contact;
+    _addressCache[uid].insertCustom(CUSTOM_ADDRESS_MARKER, "addressbook");
+    emit lookupResult(uid, _addressCache[uid]);
+}
+
+void AddressProvider::slotAddresseeNotFound( const QString& uid )
+{
+    KContacts::Addressee contact; // Empty for not found.
+    _notFoundUids.insert(uid);
+    emit lookupResult(uid, contact);
+}
+
+void AddressProvider::slotResetNotFoundCache()
+{
+    _notFoundUids.clear();
+}
+
+void AddressProvider::slotErrorMsg(const QString& uid, const QString& msg)
+{
+    if( !uid.isEmpty() ) {
+        _errMessages[uid] = msg;
+    }
+}
+
+QString AddressProvider::errorMsg( const QString& uid )
+{
+    if( !_d->backendUp() ) {
+        return i18n("Backend down");
+    }
+    if( _errMessages.contains(uid) ) {
+        return _errMessages[uid];
+    }
+    return QString::null;
+}
+
+KContacts::Addressee AddressProvider::getAddresseeFromCache(const QString& uid)
+{
+    KContacts::Addressee adr;
+    if( _addressCache.contains(uid)) {
+        adr = _addressCache[uid];
+    }
+    return adr;
+}
+
+AddressProvider::LookupState AddressProvider::lookupAddressee( const QString& uid )
+{
+    // FIXME: Check for the size of the err messages. If it is big,
+    // maybe do not bother the backend more
+    if( !_d->backendUp() ) {
+        return BackendError;
+    }
+    if( _notFoundUids.contains(uid)) {
+        // qDebug() << uid << "was not found before";
+        return LookupNotFound;
+    }
+    if( _addressCache.contains(uid)) {
+        return LookupFromCache;
+    }
+    if( _d->isSearchOngoing(uid) ) {
+        return  LookupOngoing;
+    }
+    if( _d->lookupAddressee(uid) ) {
+        return LookupStarted;
     }
 
-    KJob *job = NULL;
-
-#if KDE_IS_VERSION(4,12,0)
-    job = searchAddressGID( uid );
-#else
-    Akonadi::ContactSearchJob *csjob = new Akonadi::ContactSearchJob( this );
-    csjob->setLimit( 1 );
-    csjob->setQuery( Akonadi::ContactSearchJob::ContactUid , uid );
-    mUidSearchJobs[csjob] = uid;
-    job = csjob;
-    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-    job->start();
-#endif
-    mUidSearches.insert( uid );
-    mUidSearchJobs[job] = uid;
+    return ItemError;
 
 }
 
-void AddressProvider::searchResult( KJob* job )
+KContacts::Addressee AddressProvider::getAddressee(const QModelIndex& indx)
 {
-    if( !job ) return;
-
-    QString uid;
-    KABC::Addressee contact;
-
-    int cnt = 0;
-
-    uid = mUidSearchJobs.value( job );
-
-    if( job->error() ) {
-        kDebug() << "Address Search job failed: " << job->errorString();
-    } else {
-#if KDE_IS_VERSION(4,12,0)
-        Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
-
-        const Akonadi::Item::List items = fetchJob->items();
-
-        foreach( Akonadi::Item item, items ) {
-           if( item.hasPayload<KABC::Addressee>() ) {
-                contact = item.payload<KABC::Addressee>();
-                uid = contact.uid();
-                cnt++;
-                kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
-                emit addresseeFound( uid, contact );
-           }
-        }
-#else
-	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-        const KABC::Addressee::List contacts = searchJob->contacts();
-        kDebug() << "Found list of " << contacts.size() << " addresses as search result";
-
-        if( mUidSearchJobs.contains( job )) {            
-            if( contacts.size() > 0 ) {
-                contact = contacts[0];
-                kDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
-            }
-            emit addresseeFound( uid, contact );
-            cnt++;
-        }
-#endif
-    }
-    // if no address was found, emit the empty contact.
-    if( cnt == 0 ) {
-        emit addresseeFound(uid, contact);
-    }
-    emit finished(cnt);
-
-    // cleanup
-    if(!uid.isEmpty()) {
-        mUidSearches.remove( uid );
-    }
-
-    mUidSearchJobs.remove( job );
-
-    job->deleteLater();
+    return _d->getAddressee(indx);
 }
 
-QString AddressProvider::formattedAddress( const KABC::Addressee& contact ) const
+KContacts::Addressee AddressProvider::getAddressee( int row, const QModelIndex &parent)
+{
+    return _d->getAddressee(row, parent);
+}
+
+QAbstractItemModel *AddressProvider::model()
+{
+    return _d->model();
+}
+
+QString AddressProvider::formattedAddress( const KContacts::Addressee& contact ) const
 {
   QString re;
-  KABC::Address address;
+  KContacts::Address address;
 
-  address = contact.address( KABC::Address::Pref );
+  address = contact.address( KContacts::Address::Pref );
   if( address.isEmpty() )
-    address = contact.address(KABC::Address::Work );
+    address = contact.address(KContacts::Address::Work );
   if( address.isEmpty() )
-    address = contact.address(KABC::Address::Home );
+    address = contact.address(KContacts::Address::Home );
   if( address.isEmpty() )
-    address = contact.address(KABC::Address::Postal );
+    address = contact.address(KContacts::Address::Postal );
 
   if( address.isEmpty() ) {
     re = contact.realName();

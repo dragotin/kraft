@@ -23,9 +23,11 @@
 #include <QBoxLayout>
 #include <QToolTip>
 
-#include <kpushbutton.h>
-#include <klocale.h>
-#include <kdialog.h>
+#include <QPushButton>
+#include <QLocale>
+#include <QDialog>
+
+#include <KLocalizedString>
 
 #include "kraftview.h"
 
@@ -82,29 +84,30 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
 {
   QBoxLayout *topLayout = new QVBoxLayout();
   topLayout->setMargin( 0 );
-  topLayout->setSpacing( 0 ); // KDialog::spacingHint() );
+//TODO PORT QT5   topLayout->setSpacing( 0 ); // QDialog::spacingHint() );
 
   QHBoxLayout *upperHBoxLayout = new QHBoxLayout;
   //upperHBoxLayout->setFrameStyle( QFrame::Box + QFrame::Sunken );
-  upperHBoxLayout->setMargin( KDialog::marginHint()/2 );
+//TODO PORT QT5   upperHBoxLayout->setMargin( QDialog::marginHint()/2 );
   topLayout->addLayout( upperHBoxLayout );
 
-  KPushButton *button = new KPushButton( i18n("Add Item...") );
+  QPushButton *button = new QPushButton( i18n("Add Item...") );
   connect( button, SIGNAL( clicked() ), SIGNAL( addPositionClicked() ) );
   button->setToolTip( i18n( "Add a normal item to the document manually." ) );
   upperHBoxLayout->addWidget(button);
   upperHBoxLayout->setSpacing( 3 );
 
-  m_discountBtn = new KPushButton( i18n("Add Discount Item") );
+  m_discountBtn = new QPushButton( i18n("Add Discount Item") );
   connect( m_discountBtn, SIGNAL( clicked() ), SIGNAL( addExtraClicked() ) );
   upperHBoxLayout->addWidget(m_discountBtn);
   m_discountBtn->setToolTip( i18n( "Adds an item to the document that allows discounts on other items in the document" ) );
 
-  button = new KPushButton( i18n("Import Items...") );
+#if 0 // commented, rarely used feature.
+  button = new QPushButton( i18n("Import Items...") );
   connect( button, SIGNAL( clicked() ), SIGNAL( importItemsClicked() ) );
   upperHBoxLayout->addWidget(button);
   button->setToolTip( i18n( "Opens a dialog where multiple items can be imported from a text file." ) );
-
+#endif
   QWidget *spaceEater = new QWidget( );
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum ) );
   upperHBoxLayout->addWidget(spaceEater);
