@@ -61,9 +61,9 @@ AllDocsView::AllDocsView( QWidget *parent )
   connect( _searchLine, SIGNAL(textChanged(QString)), this, SLOT(slotSearchTextChanged(QString)) );
 
   QComboBox *filterCombo = new QComboBox;
-  filterCombo->addItem("All documents");
-  filterCombo->addItem("Documents of last week");
-  filterCombo->addItem("Documents of last month");
+  filterCombo->addItem(i18n("All documents"));
+  filterCombo->addItem(i18n("Documents of last week"));
+  filterCombo->addItem(i18n("Documents of last month"));
   // filterCombo->addItem("Document Type");
   connect( filterCombo, SIGNAL(activated(int)),
            this, SLOT(slotAmountFilterChanged(int)));
