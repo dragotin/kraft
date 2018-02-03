@@ -707,18 +707,6 @@ void KraftView::slotMovePositionUp( int pos )
 
   // qDebug () << "Found at pos " << pos << " the widgets " << w1 << " and " << w2 << endl;
 
-#if 0
-  PositionViewWidget *vw = 0;
-  for( vw = mPositionWidgetList.first(); vw; vw = mPositionWidgetList.next() ) {
-    DocPositionBase* pb = vw->position();
-    if( ! pb ) {
-      // qDebug () << "There is no position!" << endl;
-    } else {
-      // qDebug () << "Pos " << vw->ordNumber() << ": " << pb->text() << endl;
-    }
-  }
-#endif
-
   if( w1 && w2 ) {
     // qDebug () << "Setting ord number: " << pos << endl;
     w1->setOrdNumber( pos );  // note: ordnumbers start with 1, thus add one
@@ -776,7 +764,6 @@ void KraftView::slotDeletePosition( int pos )
   if( w1 ) {
     w1->slotSetState( PositionViewWidget::Deleted );
     w1->slotModified();
-    refreshPostCard();
   }
 }
 
@@ -806,6 +793,7 @@ void KraftView::slotPositionModified( int )
 {
   // qDebug () << "Modified Position " << pos << endl;
   mModified = true;
+
   QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 

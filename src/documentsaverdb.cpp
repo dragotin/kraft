@@ -156,6 +156,8 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
     model.setTable("docposition");
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
 
+    QVector<int> deleteIds;
+
     DocPositionListIterator it( posList );
     while( it.hasNext() ) {
         DocPositionBase *dpb = it.next();
@@ -165,7 +167,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         bool doInsert = true;
 
         int posDbID = dp->dbId().toInt();
-        // qDebug () << "Saving Position DB-Id: " << posDbID << endl;
         if( posDbID > -1 ) {
             const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
             // qDebug() << "Selecting with " << selStr << endl;
@@ -243,6 +244,18 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
     }
     model.submitAll();
+
+    /*  remove the docpositions that were marked to be deleted */
+    if( deleteIds.count() ) {
+        QSqlQuery delQuery;
+        delQuery.prepare( "DELETE FROM docposition WHERE positionID=:id" );
+        foreach( int id, deleteIds ) {
+            // kDebug() << "Deleting attribute id " << id;
+            delQuery.bindValue( ":id", id );
+            delQuery.exec();
+        }
+    }
+
 
 }
 

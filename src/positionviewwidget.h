@@ -74,7 +74,7 @@ public:
 public slots:
     void slotSetOverallPrice( Geld );
     void slotRefreshPrice();
-    void slotModified();
+    void slotModified( bool emitSignal = true );
     void slotExecButtonPressed();
     void slotTaggingButtonPressed();
     void slotMenuAboutToHide();
