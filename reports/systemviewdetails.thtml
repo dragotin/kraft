@@ -1,0 +1,107 @@
+
+<table width="100%" border="0" id="main">
+  <tr>
+    <td width="35%" class="title" colspan="2">{{KRAFT_WELCOME_LABEL}}</td>
+    <td rowspan="13" style="vertical-align: top; padding: 0px; margin: 0px;">
+      <table width="100%" border="0">
+        <tr>
+          <td align="right" rowspan="4" style="padding-right: 20px">
+            <img src="{{KRAFT_LOGO_FILE}}" /><br/><a href="http://www.volle-kraft-voraus.de">{{KRAFT_WEBSITE}}</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="label">{{KRAFT_VERSION_LABEL}}:</td>
+    <td class="value">{{KRAFT_VERSION}}</td>
+  </tr>
+  
+  <tr>
+    <td class="label">{{KRAFT_CODENAME_LABEL}}:</td>
+    <td class="value"><i>{{KRAFT_CODENAME}}</i></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{COUNTRY_SETTING_LABEL}}:</td>
+    <td class="value"><i>{{COUNTRY_SETTING}}</i></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{LANGUAGE_SETTING_LABEL}}:</td>
+    <td class="value"><i>{{LANGUAGE_SETTING}}</i></td>
+  </tr>
+  
+  <tr>
+    <td colspan="2" class="header">{{DATABASE_TITLE_LABEL}}</td>
+  </tr>
+  
+  <tr>
+    <td class="label">{{DATABASE_NAME_LABEL}}:</td>
+    <td class="value">{{DATABASE_NAME}}</td>
+  </tr>
+    
+  <tr>
+    <td class="label">{{DATABASE_SCHEMA_VERSION_LABEL}}:</td>
+    <td class="value">{{DATABASE_SCHEMA_VERSION}}</td>
+  </tr>
+
+  <tr>
+    <td class="label">{{DATABASE_DRIVER_LABEL}}:</td>
+    <td class="value">{{DATABASE_DRIVER}}</td>
+  </tr>
+
+  <tr>
+    <td class="label">{{DATABASE_CONNECTION_LABEL}}:</td>
+    <td class="value">{{DATABASE_CONNECTION}}</td>
+  </tr>
+
+  {{#DATABASE_VERSION_SECTION}} 
+  <tr>
+    <td>{{DATABASE_VERSION_LABEL}}:</td>
+    <td>{{DATABASE_VERSION}}</td>
+  </tr>
+  {{/DATABASE_VERSION_SECTION}}
+  
+  
+  <tr>
+    <td colspan="2" class="header">{{ADDRESSBOOK_BACKEND_LABEL}}</td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ADDRESSBOOK_BACKEND_TYPE_LABEL}}:</td>
+    <td class="value">{{ADDRESSBOOK_BACKEND_TYPE}}</td>
+  </tr>
+    
+  <tr>
+    <td colspan="2" class="header">{{EXTERNAL_TOOLS_LABEL}}</td>
+  </tr>
+
+  <tr>
+    <td class="label">{{RML2PDF_TOOL_LABEL}}:</td>
+    <td class="value">{{RML2PDF_TOOL}}</td>
+  </tr>
+
+  <tr>
+    <td class="label">{{ICONV_TOOL_LABEL}}:</td>
+    <td class="value">{{ICONV_TOOL}}</td>
+  </tr>
+  
+  <tr>
+    <td colspan="2" class="header">{{AKNOWLEGEMENT_LABEL}}</td>
+  </tr>
+   
+  <tr>
+    <td colspan="3" class="label">
+        {{AKNOWLEGEMENT_SOME_ICONS}}
+        <a href="https://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> 
+        {{AKNOWLEGEMENT_FROM}}
+        <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>, 
+        {{AKNOWLEGEMENT_LICENSED_BY}}
+        <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC 3.0 BY</a>
+    </td>
+  </tr>
+   
+</table>
+
