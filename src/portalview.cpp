@@ -240,18 +240,16 @@ QWidget* PortalView::systemDetails()
   w->setLayout( b );
   mSystemBrowser = new PortalHtmlView( w );
   b->addWidget( mSystemBrowser );
-  mSystemBrowser->setStylesheetFile( "systemview.css" ); //, "mucki_en_oS.png",
+  mSystemBrowser->setStylesheetFile( "systemview.css" );
 
-  // browser->setNotifyClick(false);
   return w;
 }
 
 QString PortalView::systemView( const QString& htmlMsg ) const
 {
-  QString html;
   if ( ! mSystemBrowser ) return QString ("");
 
-  QString templateName = ( htmlMsg.isNull() ? QString( "systemviewdetails.thtml" ) : QString ( "systemviewerror.thtml" ) );
+  const QString templateName = ( htmlMsg.isNull() ? QString( "systemviewdetails.thtml" ) : QString ( "systemviewerror.thtml" ) );
   
   // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
   // It should be refactored.
@@ -259,10 +257,8 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   if( !tmpl.open() ) {
       return QString ("");
   }
-
-  qDebug () << tmpl.expand();
   
-  QString logoFile = DefaultProvider::self()->locateFile("pics/kraftapp_logo_trans.png" ); 
+  const QString logoFile = DefaultProvider::self()->locateFile("styles/pics/kraftapp_logo_trans.png" );
 
   tmpl.setValue( "KRAFT_LOGO_FILE", logoFile ); 
   tmpl.setValue( "KRAFT_WEBSITE", i18n( "Kraft Website" ) );
@@ -273,10 +269,10 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   tmpl.setValue( "KRAFT_VERSION", KRAFT_VERSION );
   tmpl.setValue( "KRAFT_CODENAME_LABEL", i18n( "Codename" ) );
   tmpl.setValue( "KRAFT_CODENAME", KRAFT_CODENAME );
-  QString countryName = DefaultProvider::self()->locale()->nativeCountryName();
+  const QString countryName = DefaultProvider::self()->locale()->nativeCountryName();
   tmpl.setValue( "COUNTRY_SETTING_LABEL", i18n( "Country Setting" ) );
   tmpl.setValue( "COUNTRY_SETTING", QString( "%1 (%2)" ).arg( countryName ).arg( DefaultProvider::self()->locale()->country() ));
-  QString languageName = DefaultProvider::self()->locale()->nativeLanguageName();
+  const QString languageName = DefaultProvider::self()->locale()->nativeLanguageName();
   tmpl.setValue( "LANGUAGE_SETTING_LABEL", i18n( "Language Setting" ) );
   tmpl.setValue( "LANGUAGE_SETTING", QString( "%1 (%2)" ).arg( languageName ).arg( DefaultProvider::self()->locale()->language() ));
 
@@ -305,7 +301,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   tmpl.setValue( "DATABASE_DRIVER", KraftDB::self()->qtDriver() );
 
   bool dbOk = KraftDB::self()->getDB()->isOpen();
-  QString databaseConnection = ( dbOk ? i18n("established") : QString( "<font color='red'>%1</font>" ).arg( i18n( "NOT AVAILABLE!" ) ) );
+  const QString databaseConnection = ( dbOk ? i18n("established") : QString( "<font color='red'>%1</font>" ).arg( i18n( "NOT AVAILABLE!" ) ) );
   tmpl.setValue( "DATABASE_CONNECTION_LABEL", i18n( "Database connection" ) );
   tmpl.setValue( "DATABASE_CONNECTION", databaseConnection );
 
@@ -313,8 +309,9 @@ QString PortalView::systemView( const QString& htmlMsg ) const
     QSqlQuery q("SHOW VARIABLES like 'version';");
     if( q.isActive() ) {
       q.next();
-      QString version = q.value(1).toString();
-      tmpl.setValue( "DATABASE_VERSION_SECTION", "DATABASE_VERSION_LABEL", i18n( "Database Version:" ) );
+      const QString version = q.value(1).toString();
+      tmpl.createDictionary("DATABASE_VERSION_SECTION");
+      tmpl.setValue( "DATABASE_VERSION_SECTION", "DATABASE_VERSION_LABEL", i18n( "Database Version" ) );
       tmpl.setValue( "DATABASE_VERSION_SECTION", "DATABASE_VERSION", version );
     }
   }
@@ -324,7 +321,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   aprov.reset( new AddressProvider);
   tmpl.setValue( "ADDRESSBOOK_BACKEND_LABEL", i18n( "Addressbook Backend" ) );
   tmpl.setValue( "ADDRESSBOOK_BACKEND_TYPE_LABEL", i18n( "Backend type" ) );
-  QString backendTypeValue = QString( "%1 (%2)" ).arg( aprov->backendName() ).arg( aprov->backendUp() ? i18n("running") : i18n("not running") );
+  const QString backendTypeValue = QString( "%1 (%2)" ).arg( aprov->backendName() ).arg( aprov->backendUp() ? i18n("running") : i18n("not running") );
   tmpl.setValue( "ADDRESSBOOK_BACKEND_TYPE", backendTypeValue );
 
   // external tools
@@ -347,13 +344,13 @@ QString PortalView::systemView( const QString& htmlMsg ) const
 
 void PortalView::fillSystemDetails()
 {
-  QString html = systemView( QString() );
+  const QString html = systemView( QString::null );
   mSystemBrowser->displayContent( html );
 }
 
 void PortalView::systemInitError( const QString& htmlMsg )
 {
-  QString html = systemView( htmlMsg );
+  const QString html = systemView( htmlMsg );
   mSystemBrowser->displayContent( html );
 }
 

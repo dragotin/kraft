@@ -20,7 +20,7 @@
 PortalHtmlView::PortalHtmlView( QWidget *parent )
   : HtmlView( parent )
 {
-    connect( this, SIGNAL(openUrl(const QUrl&)), this, SLOT(slotLinkClicked(const QUrl&)));
+    connect( this, SIGNAL(openUrl(QUrl)), this, SLOT(slotLinkClicked(QUrl)));
 }
 
 void PortalHtmlView::slotLinkClicked(const QUrl& url)
@@ -33,7 +33,9 @@ void PortalHtmlView::slotLinkClicked(const QUrl& url)
       // qDebug () << "open catalog " << katName << endl;
       emit( openCatalog( katName ) );
     } else {
-      // qDebug () << "unknown action " << action << endl;
+        if( url.isValid() ) {
+            QDesktopServices::openUrl(url);
+        }
     }
 }
 
