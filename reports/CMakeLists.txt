@@ -2,7 +2,7 @@ add_subdirectory(pics)
 
 ########### install files ###############
 
-install(FILES identity.trml invoice.trml kraftdoc_ro.trml docdigest.trml delivery_receipt.trml
+install(FILES identity.trml invoice.trml kraftdoc_ro.trml docdigest.trml delivery_receipt.trml monthdigest.trml yeardigest.trml
 	DESTINATION ${DATA_INSTALL_DIR}/kraft/reports)
 
 # localised document templates:

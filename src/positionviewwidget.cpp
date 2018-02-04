@@ -543,6 +543,7 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
 void PositionViewWidget::slotModified( bool emitSignal )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   if( mModified ) return;
   if( m_skipModifiedSignal ) return;
 
@@ -558,6 +559,8 @@ void PositionViewWidget::slotModified( bool emitSignal )
       emit positionModified();
   }
 =======
+=======
+>>>>>>> upstream/master
   if(m_skipModifiedSignal) return;
   // qDebug () << "Modified Position!" << endl;
 
@@ -566,7 +569,10 @@ void PositionViewWidget::slotModified( bool emitSignal )
   m_labelPosition->setStyleSheet("font-weight: bold; color: red");
 
   emit positionModified();
+<<<<<<< HEAD
 >>>>>>> upstream/kf5
+=======
+>>>>>>> upstream/master
 }
 
 PositionViewWidget::~PositionViewWidget()

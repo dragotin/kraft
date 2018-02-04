@@ -1,0 +1,35 @@
+
+* { 
+  font-family: sans-serif;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+td.label {
+  padding-left: 15px;
+  white-space: nowrap;
+}
+
+td.value {
+  white-space: nowrap;
+}
+   
+td.title {
+  padding-top: 10px;
+  padding-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  width: 20%;
+}
+   
+td.header {
+  padding-top: 20px;
+  padding-bottom: 15px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+
+
+
+

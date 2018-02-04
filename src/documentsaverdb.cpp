@@ -168,6 +168,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 
         int posDbID = dp->dbId().toInt();
 <<<<<<< HEAD
+<<<<<<< HEAD
         kDebug() << "Saving Position DB-Id: " << posDbID << endl;
 
         if( dp->toDelete() ) {
@@ -185,6 +186,8 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
 =======
         // qDebug () << "Saving Position DB-Id: " << posDbID << endl;
 >>>>>>> upstream/kf5
+=======
+>>>>>>> upstream/master
         if( posDbID > -1 ) {
             const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
             // qDebug() << "Selecting with " << selStr << endl;
@@ -204,7 +207,10 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> upstream/master
         if( dp->toDelete() ) {
             // qDebug () << "This one is to delete, do it!" << endl;
 
@@ -220,7 +226,10 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
             continue;
         }
 
+<<<<<<< HEAD
 >>>>>>> upstream/kf5
+=======
+>>>>>>> upstream/master
         if( record.count() > 0 ) {
             // qDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
             QString typeStr = PosTypePosition;
@@ -271,7 +280,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         QSqlQuery delQuery;
         delQuery.prepare( "DELETE FROM docposition WHERE positionID=:id" );
         foreach( int id, deleteIds ) {
-            kDebug() << "Deleting attribute id " << id;
+            // kDebug() << "Deleting attribute id " << id;
             delQuery.bindValue( ":id", id );
             delQuery.exec();
         }

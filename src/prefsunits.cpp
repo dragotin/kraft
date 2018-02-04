@@ -31,6 +31,8 @@
 #include <QDebug>
 #include <QDialogButtonBox>
 
+#include <klocalizedstring.h>
+
 #include "defaultprovider.h"
 #include "impviewwidgets.h"
 #include "geld.h"
@@ -48,11 +50,11 @@ PrefsUnits::PrefsUnits(QWidget* parent)
   mUnitsModel->setTable("units");
   mUnitsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
   mUnitsModel->select();
-  mUnitsModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
-  mUnitsModel->setHeaderData(1, Qt::Horizontal, tr("Short"));
-  mUnitsModel->setHeaderData(2, Qt::Horizontal, tr("Long"));
-  mUnitsModel->setHeaderData(3, Qt::Horizontal, tr("Short plural"));
-  mUnitsModel->setHeaderData(4, Qt::Horizontal, tr("Long plural"));
+  mUnitsModel->setHeaderData(0, Qt::Horizontal, i18n("ID"));
+  mUnitsModel->setHeaderData(1, Qt::Horizontal, i18n("Short"));
+  mUnitsModel->setHeaderData(2, Qt::Horizontal, i18n("Long"));
+  mUnitsModel->setHeaderData(3, Qt::Horizontal, i18n("Short plural"));
+  mUnitsModel->setHeaderData(4, Qt::Horizontal, i18n("Long plural"));
 
   mProxyModel = new QSortFilterProxyModel(this);
   mProxyModel->setSourceModel(mUnitsModel);

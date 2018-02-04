@@ -708,6 +708,7 @@ void KraftView::slotMovePositionUp( int pos )
   // qDebug () << "Found at pos " << pos << " the widgets " << w1 << " and " << w2 << endl;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if 0
   PositionViewWidget *vw = 0;
@@ -722,6 +723,8 @@ void KraftView::slotMovePositionUp( int pos )
 #endif
 
 >>>>>>> upstream/kf5
+=======
+>>>>>>> upstream/master
   if( w1 && w2 ) {
     // qDebug () << "Setting ord number: " << pos << endl;
     w1->setOrdNumber( pos );  // note: ordnumbers start with 1, thus add one
@@ -731,12 +734,17 @@ void KraftView::slotMovePositionUp( int pos )
 
     m_positionScroll->moveChild( w2, m_positionScroll->indexOf(w1) );
 <<<<<<< HEAD
+<<<<<<< HEAD
     w1->slotModified(false);
     w2->slotModified(); // cares for refreshing the postcard
 =======
     mModified = true;
     QTimer::singleShot( 0, this, SLOT(refreshPostCard()  ) );
 >>>>>>> upstream/kf5
+=======
+    mModified = true;
+    QTimer::singleShot( 0, this, SLOT(refreshPostCard()  ) );
+>>>>>>> upstream/master
   } else {
     // qDebug () << "ERR: Did not find the two corresponding widgets!" << endl;
   }
@@ -771,6 +779,7 @@ void KraftView::slotMovePositionDown( int pos )
 
     m_positionScroll->moveChild( w1, m_positionScroll->indexOf( w2 ) );
 <<<<<<< HEAD
+<<<<<<< HEAD
     w1->slotModified(false);
     w2->slotModified(); // cares for refreshing the postcard
 =======
@@ -778,6 +787,11 @@ void KraftView::slotMovePositionDown( int pos )
     mModified = true;
     QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 >>>>>>> upstream/kf5
+=======
+
+    mModified = true;
+    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+>>>>>>> upstream/master
   } else {
     // qDebug () << "ERR: Did not find the two corresponding widgets!" << endl;
   }

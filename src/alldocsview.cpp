@@ -61,9 +61,9 @@ AllDocsView::AllDocsView( QWidget *parent )
   connect( _searchLine, SIGNAL(textChanged(QString)), this, SLOT(slotSearchTextChanged(QString)) );
 
   QComboBox *filterCombo = new QComboBox;
-  filterCombo->addItem("All documents");
-  filterCombo->addItem("Documents of last week");
-  filterCombo->addItem("Documents of last month");
+  filterCombo->addItem(i18n("All documents"));
+  filterCombo->addItem(i18n("Documents of last week"));
+  filterCombo->addItem(i18n("Documents of last month"));
   // filterCombo->addItem("Document Type");
   connect( filterCombo, SIGNAL(activated(int)),
            this, SLOT(slotAmountFilterChanged(int)));
@@ -156,15 +156,23 @@ QWidget* AllDocsView::initializeTreeWidget()
 void AllDocsView::setView( ViewType type )
 {
     // change the document listing widget
+    QModelIndex current;
     if( type == FlatList) {
         _stack->setCurrentIndex(0);
+        current = _tableView->currentIndex();
     } else {
         _stack->setCurrentIndex(1);
+        current = _dateView->currentIndex();
     }
     // clear the details view
     mAllViewDetails->slotClearView();
 
-    mCurrentlySelected = QModelIndex();
+    if( current.isValid() > 0 ) {
+        slotCurrentChanged(current, QModelIndex());
+    } else {
+        // workaround, not cool.
+        mCurrentlySelected = QModelIndex();
+    }
 }
 
 void AllDocsView::slotBuildView()
@@ -180,7 +188,7 @@ void AllDocsView::slotBuildView()
     _tableView->setModel(mTableModel);
     _dateView->setModel(mDateModel);
 
-    _tableView->sortByColumn(DocumentModel::Document_CreationDate, Qt::DescendingOrder);
+    _tableView->sortByColumn(DocumentModel::Document_CreationDateRaw, Qt::DescendingOrder);
     _tableView->verticalHeader()->hide();
     _tableView->setSortingEnabled(true);
     _tableView->horizontalHeader()->setMovable( true );
@@ -192,7 +200,8 @@ void AllDocsView::slotBuildView()
     _tableView->hideColumn( DocumentModel::Document_ClientId );
     _tableView->hideColumn( DocumentModel::Document_ClientAddress );
     _tableView->showColumn( DocumentModel::Document_ClientName );
-    _tableView->hideColumn( DocumentModel::Document_CreationDateRaw);
+    _tableView->showColumn( DocumentModel::Document_CreationDateRaw);
+    _tableView->hideColumn( DocumentModel::Document_CreationDate);
     _tableView->hideColumn( DocumentModel::Document_Id_Raw);
     _tableView->hideColumn( DocumentModel::Treestruct_Type);
     _tableView->hideColumn( DocumentModel::Treestruct_Month);
@@ -203,7 +212,9 @@ void AllDocsView::slotBuildView()
     _dateView->hideColumn( DocumentModel::Document_ClientId );
     _dateView->hideColumn( DocumentModel::Document_ClientAddress );
     _dateView->showColumn( DocumentModel::Document_ClientName );
-    _dateView->hideColumn( DocumentModel::Document_CreationDateRaw);
+    _dateView->showColumn( DocumentModel::Document_CreationDateRaw);
+    _dateView->hideColumn( DocumentModel::Document_CreationDate);
+
     _dateView->hideColumn( DocumentModel::Document_Id_Raw);
     _dateView->hideColumn( DocumentModel::Treestruct_Type);
     _dateView->hideColumn( DocumentModel::Treestruct_Month);
