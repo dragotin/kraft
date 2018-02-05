@@ -542,25 +542,6 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
 
 void PositionViewWidget::slotModified( bool emitSignal )
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
-  if( mModified ) return;
-  if( m_skipModifiedSignal ) return;
-
-  kDebug() << "Modified Position!" << endl;
-  QColor c( "darkred" );
-  QPalette palette = m_labelPosition->palette();
-  palette.setColor(m_labelPosition->foregroundRole(), c);
-  m_labelPosition->setPalette(palette);
-  m_labelPosition->setText( QString("%1.").arg( mOrdNumber ) );
-
-  mModified = true;
-  if( emitSignal ) {
-      emit positionModified();
-  }
-=======
-=======
->>>>>>> upstream/master
   if(m_skipModifiedSignal) return;
   // qDebug () << "Modified Position!" << endl;
 
@@ -569,10 +550,6 @@ void PositionViewWidget::slotModified( bool emitSignal )
   m_labelPosition->setStyleSheet("font-weight: bold; color: red");
 
   emit positionModified();
-<<<<<<< HEAD
->>>>>>> upstream/kf5
-=======
->>>>>>> upstream/master
 }
 
 PositionViewWidget::~PositionViewWidget()
@@ -736,4 +713,5 @@ void PositionViewWidget::paintEvent ( QPaintEvent*)
     }
   }
 }
+
 

@@ -707,24 +707,6 @@ void KraftView::slotMovePositionUp( int pos )
 
   // qDebug () << "Found at pos " << pos << " the widgets " << w1 << " and " << w2 << endl;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-#if 0
-  PositionViewWidget *vw = 0;
-  for( vw = mPositionWidgetList.first(); vw; vw = mPositionWidgetList.next() ) {
-    DocPositionBase* pb = vw->position();
-    if( ! pb ) {
-      // qDebug () << "There is no position!" << endl;
-    } else {
-      // qDebug () << "Pos " << vw->ordNumber() << ": " << pb->text() << endl;
-    }
-  }
-#endif
-
->>>>>>> upstream/kf5
-=======
->>>>>>> upstream/master
   if( w1 && w2 ) {
     // qDebug () << "Setting ord number: " << pos << endl;
     w1->setOrdNumber( pos );  // note: ordnumbers start with 1, thus add one
@@ -733,18 +715,8 @@ void KraftView::slotMovePositionUp( int pos )
     setMappingId( w2, pos );
 
     m_positionScroll->moveChild( w2, m_positionScroll->indexOf(w1) );
-<<<<<<< HEAD
-<<<<<<< HEAD
-    w1->slotModified(false);
-    w2->slotModified(); // cares for refreshing the postcard
-=======
     mModified = true;
     QTimer::singleShot( 0, this, SLOT(refreshPostCard()  ) );
->>>>>>> upstream/kf5
-=======
-    mModified = true;
-    QTimer::singleShot( 0, this, SLOT(refreshPostCard()  ) );
->>>>>>> upstream/master
   } else {
     // qDebug () << "ERR: Did not find the two corresponding widgets!" << endl;
   }
@@ -778,20 +750,9 @@ void KraftView::slotMovePositionDown( int pos )
     setMappingId( w2, pos );
 
     m_positionScroll->moveChild( w1, m_positionScroll->indexOf( w2 ) );
-<<<<<<< HEAD
-<<<<<<< HEAD
-    w1->slotModified(false);
-    w2->slotModified(); // cares for refreshing the postcard
-=======
 
     mModified = true;
     QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
->>>>>>> upstream/kf5
-=======
-
-    mModified = true;
-    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
->>>>>>> upstream/master
   } else {
     // qDebug () << "ERR: Did not find the two corresponding widgets!" << endl;
   }
@@ -1470,4 +1431,5 @@ void KraftView::discardChanges()
     doc->reloadDocument();
   }
 }
+
 
