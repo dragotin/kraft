@@ -167,27 +167,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         bool doInsert = true;
 
         int posDbID = dp->dbId().toInt();
-<<<<<<< HEAD
-<<<<<<< HEAD
-        kDebug() << "Saving Position DB-Id: " << posDbID << endl;
-
-        if( dp->toDelete() ) {
-            kDebug() << "Delete item " << dp->dbId().toString() << endl;
-
-            // store the id to delete, rather than killing the model index.
-            // did that before here, which removed wrong items.
-            deleteIds << posDbID;
-
-            // delete all existing attributes no, which will not disturb the model index
-            dp->attributes().dbDeleteAll( dp->dbId() );
-            continue;
-        }
-
-=======
-        // qDebug () << "Saving Position DB-Id: " << posDbID << endl;
->>>>>>> upstream/kf5
-=======
->>>>>>> upstream/master
         if( posDbID > -1 ) {
             const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
             // qDebug() << "Selecting with " << selStr << endl;
@@ -206,11 +185,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
             record = model.record();
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> upstream/master
         if( dp->toDelete() ) {
             // qDebug () << "This one is to delete, do it!" << endl;
 
@@ -226,10 +200,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
             continue;
         }
 
-<<<<<<< HEAD
->>>>>>> upstream/kf5
-=======
->>>>>>> upstream/master
         if( record.count() > 0 ) {
             // qDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
             QString typeStr = PosTypePosition;
@@ -406,4 +376,5 @@ DocumentSaverDB::~DocumentSaverDB( )
 }
 
 /* END */
+
 
