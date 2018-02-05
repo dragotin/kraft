@@ -4,4 +4,3 @@
 
 #define KRAFT_REQUIRED_SCHEMA_VERSION 19
 
-

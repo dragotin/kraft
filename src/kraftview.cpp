@@ -1432,4 +1432,3 @@ void KraftView::discardChanges()
   }
 }
 
-

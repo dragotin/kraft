@@ -714,4 +714,3 @@ void PositionViewWidget::paintEvent ( QPaintEvent*)
   }
 }
 
-
