@@ -418,13 +418,13 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
     if( archDocs.isEmpty() ) {
         // qDebug () << "No archived docs for this document!";
         tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
-        tmpl.setValue( "NEVER_PRINTED", "NEVER_PRINTED_LABEL", i18n("This document was never printed."));
+        tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("This document was never printed."));
     } else {
         ArchDocDigest digest = archDocs[0];
-        tmpl.createDictionary("PRINTED");
-        tmpl.setValue( "PRINTED", "LAST_PRINT_LABEL", i18n( "Last printed" ) );
-        tmpl.setValue( "PRINTED", "LAST_PRINT_TITLE", i18n( "Opens last created PDF document" ) );
-        tmpl.setValue( "PRINTED", "LAST_PRINT_LINK_TEXT", i18n( "open" ) );
+        tmpl.createDictionary( DOCDIGEST_TAG( "PRINTED" ));
+        tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LABEL"), i18n( "Last printed" ) );
+        tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_TITLE"), i18n( "Opens last created PDF document" ) );
+        tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
         tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), digest.printDate().toString() );
         tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
         const QString archivedCount = (archDocs.size() == 1 ? i18n( "%1 older print" ) : i18n( "%1 older prints" ));
@@ -440,6 +440,4 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
 
     _rightDetails->setStyleSheet(widgetStylesheet(Right, Document));
     // qDebug () << "BASE-URL of htmlview is " << mHtmlCanvas->baseURL();
-
-
 }
