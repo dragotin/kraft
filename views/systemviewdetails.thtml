@@ -6,13 +6,13 @@
       <a href="http://www.volle-kraft-voraus.de"><img src="{{KRAFT_LOGO_FILE}}" /><br/>{{KRAFT_WEBSITE}}</a>
     </td>
   </tr>
-  
+
   <tr>
     <td class="label">{{KRAFT_VERSION_LABEL}}:</td>
     <td class="value">{{KRAFT_VERSION}}</td>
     <td></td>
   </tr>
-  
+
   <tr>
     <td class="label">{{KRAFT_CODENAME_LABEL}}:</td>
     <td class="value"><i>{{KRAFT_CODENAME}}</i></td>
@@ -30,17 +30,17 @@
     <td class="value"><i>{{LANGUAGE_SETTING}}</i></td>
     <td></td>
   </tr>
-  
+
   <tr>
     <td colspan="3" class="header">{{DATABASE_TITLE_LABEL}}</td>
   </tr>
-  
+
   <tr>
     <td class="label">{{DATABASE_NAME_LABEL}}:</td>
     <td class="value">{{DATABASE_NAME}}</td>
     <td></td>
   </tr>
-    
+
   <tr>
     <td class="label">{{DATABASE_SCHEMA_VERSION_LABEL}}:</td>
     <td class="value">{{DATABASE_SCHEMA_VERSION}}</td>
@@ -59,15 +59,15 @@
     <td></td>
   </tr>
 
-  {{#DATABASE_VERSION_SECTION}} 
+  {{#DATABASE_VERSION_SECTION}}
   <tr>
     <td class="label">{{DATABASE_VERSION_LABEL}}:</td>
     <td class="value">{{DATABASE_VERSION}}</td>
     <td></td>
   </tr>
   {{/DATABASE_VERSION_SECTION}}
-  
-  
+
+
   <tr>
     <td colspan="3" class="header">{{ADDRESSBOOK_BACKEND_LABEL}}</td>
   </tr>
@@ -77,7 +77,7 @@
     <td class="value">{{ADDRESSBOOK_BACKEND_TYPE}}</td>
     <td></td>
   </tr>
-    
+
   <tr>
     <td colspan="3" class="header">{{EXTERNAL_TOOLS_LABEL}}</td>
   </tr>
@@ -93,21 +93,20 @@
     <td class="value">{{ICONV_TOOL}}</td>
     <td></td>
   </tr>
-  
+
   <tr>
     <td colspan="3" class="header">{{ACKNOWLEGEMENT_LABEL}}</td>
   </tr>
-   
+
   <tr>
     <td colspan="3" class="label">
         {{ICON_ACKNOWLEDGEMENT_LABEL}}
-        <a href="https://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a> 
+        <a href="https://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a>
         from
-        <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>, 
-        licensed by 
+        <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>,
+        licensed by
         <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC 3.0 BY</a>
     </td>
   </tr>
-   
-</table>
 
+</table>

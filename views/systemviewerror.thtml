@@ -12,12 +12,12 @@
       </table>
     </td>
   </tr>
-  
+
   <tr>
     <td class="label">{{KRAFT_VERSION_LABEL}}:</td>
     <td class="value">{{KRAFT_VERSION}}</td>
   </tr>
-  
+
   <tr>
     <td class="label">{{KRAFT_CODENAME_LABEL}}:</td>
     <td class="value"><i>{{KRAFT_CODENAME}}</i></td>
@@ -32,7 +32,7 @@
     <td class="label">{{LANGUAGE_SETTING_LABEL}}:</td>
     <td class="value"><i>{{LANGUAGE_SETTING}}</i></td>
   </tr>
-  
+
   <tr>
     <td colspan="2" class="header">{{ERROR_TITLE_LABEL}}:</td>
   </tr>
@@ -42,6 +42,5 @@
       <font color="red">{{ERROR_TEXT}}</div>
     </td>
   </tr>
-    
-</table>
 
+</table>
