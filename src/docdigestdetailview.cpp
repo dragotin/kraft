@@ -239,7 +239,7 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
 void DocDigestDetailView::slotShowMonthDetails( int year, int month )
 {
     if( _monthTemplFileName.isEmpty() ) {
-        _monthTemplFileName = DefaultProvider::self()->locateFile( "reports/monthdigest.trml" );
+        _monthTemplFileName = DefaultProvider::self()->locateFile( "views/monthdigest.thtml" );
     }
 
     TextTemplate tmpl( _monthTemplFileName );
@@ -272,7 +272,7 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
 void DocDigestDetailView::slotShowYearDetails( int year )
 {
     if( _yearTemplFileName.isEmpty() ) {
-        _yearTemplFileName = DefaultProvider::self()->locateFile( "reports/yeardigest.trml" );
+        _yearTemplFileName = DefaultProvider::self()->locateFile( "views/yeardigest.thtml" );
     }
 
     TextTemplate tmpl( _yearTemplFileName );
@@ -388,7 +388,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
 
     if( _docTemplFileName.isEmpty() ) {
         // QString templFileName = QString( "kraftdoc_%1_ro.trml" ).arg( doc->docType() );
-        _docTemplFileName = DefaultProvider::self()->locateFile( "reports/docdigest.trml" );
+        _docTemplFileName = DefaultProvider::self()->locateFile( "views/docdigest.thtml" );
     }
 
     TextTemplate tmpl( _docTemplFileName ); // template file with name docdigest.trml

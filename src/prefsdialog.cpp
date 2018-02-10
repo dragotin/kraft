@@ -473,7 +473,8 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool bac
   // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
   // It should be refactored.
 
-  TextTemplate tmpl("identity.trml");
+    const QString tmplFile = DefaultProvider::self()->locateFile( "views/identity.thtml" );
+  TextTemplate tmpl(tmplFile);
   if( !tmpl.open() ) {
       return;
   }

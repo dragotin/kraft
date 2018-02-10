@@ -249,11 +249,12 @@ QString PortalView::systemView( const QString& htmlMsg ) const
 {
   if ( ! mSystemBrowser ) return QString ("");
 
-  const QString templateName = ( htmlMsg.isNull() ? QString( "systemviewdetails.thtml" ) : QString ( "systemviewerror.thtml" ) );
-  
+  const QString templateName = ( htmlMsg.isNull() ? QString( "views/systemviewdetails.thtml" ) : QString ( "views/systemviewerror.thtml" ) );
+  const QString tmplFile = DefaultProvider::self()->locateFile( templateName );
+
   // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
   // It should be refactored.
-  TextTemplate tmpl( templateName );
+  TextTemplate tmpl( tmplFile );
   if( !tmpl.open() ) {
       return QString ("");
   }
