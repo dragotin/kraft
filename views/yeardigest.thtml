@@ -1,9 +1,9 @@
 <h2>{{HEADLINE}}</h2>
 <table border="0" width="50%">
 <tr>
-  <td>{{I18N_AMOUNT}}</td>
-  <td>{{I18N_TYPE}}</td>
-  <td>{{I18N_SUM}}</td>
+  <td><b>{{I18N_AMOUNT}}</b></td>
+  <td><b>{{I18N_TYPE}}</b></td>
+  <td><b>{{I18N_SUM}}</b></td>
 </tr>
 {{#DOCUMENTS}}
 <tr>

@@ -180,9 +180,12 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
     QString minDate;
     QString maxDate;
     if( month > -1 ) {
+        QDate theDate(year, month, 1);
         // not a year
-        minDate = QString("%1-%2-01").arg(year).arg(month, 2, 10, QChar('0'));
-        maxDate = QString("%1-%2-31").arg(year).arg(month, 2, 10, QChar('0'));
+        minDate = theDate.toString("yyyy-MM-dd");
+        int lastDay = theDate.daysInMonth();
+        theDate.setDate(year, month, lastDay);
+        maxDate = theDate.toString("yyyy-MM-dd");
     } else {
         // is is a year
         minDate = QString::number(year)+"-01-01";
