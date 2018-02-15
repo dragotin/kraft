@@ -246,6 +246,8 @@ KraftContactViewer::KraftContactViewer(QWidget *parent)
     setLayout(lay);
 #ifdef HAVE_AKONADI
     _contactViewer = new Akonadi::ContactViewer;
+    _contactViewer->setShowQRCode(false);
+
     lay->addWidget(_contactViewer);
 #endif
 }
@@ -279,11 +281,12 @@ void AddressSelectorWidget::setupUi()
 {
     _provider = new AddressProvider(this);
 
+    setChildrenCollapsible(false);
     // Left page of the splitter
-    QWidget *wLeft =new QWidget;
+    QWidget *leftW = new QWidget;
     QVBoxLayout *leftLay = new QVBoxLayout;
-    wLeft->setLayout(leftLay);
-    addWidget(wLeft);
+    leftW->setLayout(leftLay);
+    this->addWidget(leftW);
 
     QHBoxLayout *searchLay = new QHBoxLayout;
     leftLay->addLayout(searchLay);
@@ -313,12 +316,12 @@ void AddressSelectorWidget::setupUi()
     mProxyModel->sort(0);
 
     // the right side
-    QWidget *wRight = new QWidget;
+    QWidget *rightW = new QWidget;
     QVBoxLayout *rightLay = new QVBoxLayout;
-    wRight->setLayout(rightLay);
-    addWidget(wRight); // parent splitter
-
+    rightW->setLayout(rightLay);
+    this->addWidget(rightW);
     _contactViewer = new KraftContactViewer;
+    _contactViewer->setMinimumWidth(200);
     rightLay->addWidget(_contactViewer);
 
     // Buttons to create and edit
@@ -334,7 +337,7 @@ void AddressSelectorWidget::setupUi()
     hboxBot->addWidget( butCreateContact );
 
     connect(butCreateContact,SIGNAL(clicked()),SLOT(slotCreateNewContact()));
-    connect(mButEditContact,SIGNAL(clicked()),SLOT(slotEditContact()));
+    connect(mButEditContact, SIGNAL(clicked()),SLOT(slotEditContact()));
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
