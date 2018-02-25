@@ -43,6 +43,7 @@ import reportlab
 from reportlab.pdfgen import canvas
 from reportlab import platypus
 from reportlab.lib import colors
+from reportlab.platypus.flowables import KeepTogether 
 
 from six import text_type
 from PyPDF2 import PdfFileWriter, PdfFileReader
@@ -710,7 +711,7 @@ class _rml_flowable(object):
         elif node.localName == 'illustration':
             return self._illustration(node)
         elif node.localName == 'blockTable':
-            return self._table(node)
+            return KeepTogether(self._table(node))
         elif node.localName == 'title':
             styles = reportlab.lib.styles.getSampleStyleSheet()
             style = styles['Title']
@@ -745,7 +746,8 @@ class _rml_flowable(object):
         elif node.localName == 'setNextTemplate':
             return platypus.NextPageTemplate(str(node.getAttribute('name')))
         elif node.localName == 'nextFrame':
-            return platypus.CondPageBreak(1000)  # TODO: change the 1000 !
+            return platypus.FrameBreak()
+            # return platypus.CondPageBreak(1000)  # TODO: change the 1000 !
         elif node.localName == 'ul':
             return self._list(node)
         elif node.localName == 'keepInFrame':
