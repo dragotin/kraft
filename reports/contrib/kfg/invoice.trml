@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <!DOCTYPE document SYSTEM "rml_1_0.dtd">
 <document filename="kraft.pdf">
 <template pageSize="(21cm, 29.7cm)" leftMargin="2.41cm" rightMargin="0.81cm"
@@ -9,22 +9,32 @@
       <setFont name="Helvetica" size="12" />
     </template>
     <pageTemplate id="first">
-        <frame id="address"  x1="2.41cm" y1="20.5cm" width="8.5cm" height="4cm"/>
-        <frame id="info"     x1="12cm" y1="19.5cm" width="7.41cm" height="5cm"/>
-        <frame id="subject"  x1="2.41cm" y1="18.2cm" width="17cm"  height="1.2cm"/>
-        <frame id="detail"   x1="2.41cm" y1="3cm"  width="17cm"  height="15cm"/>
+        <pageGraphics>
+          <setFont name="Helvetica" size="12"/>
+          <fill color="black"/>
+          <drawString x="17.2cm" y="21.0cm">{{DATE}}</drawString>
+          <setFont name="Helvetica" size="8"/>
+	  <drawString x="2.8cm" y="2.6cm">Sparkasse Forchheim</drawString>
+	  <drawString x="2.8cm" y="2.2cm">BIC: BYLADEM1FOR</drawString>
+	  <drawString x="2.8cm" y="1.8cm">IBAN: DE35 XXXX</drawString>
 
+	  <drawString x="6.2cm" y="2.6cm">Finanzamt Forchheim</drawString>
+	  <drawString x="6.2cm" y="2.2cm">UST-ID DE XXXX</drawString>
+        </pageGraphics>
+        <frame id="address"  x1="2.41cm" y1="20.5cm" width="8.5cm" height="4cm"/>
+        <frame id="subject"  x1="2.41cm" y1="18.2cm" width="17cm"  height="1.2cm"/>
+        <frame id="detail"   x1="2.41cm" y1="4cm"    width="17cm"  height="14cm"/>
     </pageTemplate> 
 
     <pageTemplate id="others">
         <frame id="content" x1="2.41cm" y1="2.2cm" width="17cm" height="24.5cm"/>
 
         <pageGraphics>
-          <setFont name="Times-Roman" size="12" />
+          <setFont name="Helvetica" size="12" />
           <lineMode width="0.5" />
           <!-- <lines>8.75cm 2.0cm 12.75cm 2.0cm</lines> -->
           <fill color="black" />
-          <drawCentredString x="107.5mm" y="1.5cm">Seite <pageNumber/></drawCentredString>
+          <drawCentredString x="107.5mm" y="1.8cm">Seite <pageNumber/></drawCentredString>
         </pageGraphics>
 
     </pageTemplate>
@@ -41,56 +51,45 @@
       <blockSpan start="1,0" stop="3,0"/>
    </blockTableStyle>
 
-    <blockTableStyle id="sums">
-      <blockValign value="TOP"/>
-      <blockAlignment value="LEFT"/>
-      <lineStyle start="2,0" stop="3,0" kind="LINEABOVE" thickness="0.5" colorName="black"  />
-      <lineStyle start="2,2" stop="3,2" kind="LINEABOVE" thickness="1" colorName="black"  />
+   <blockTableStyle id="sums">
+      <lineStyle kind="LINEABOVE" colorName="black" start="2,-1" stop="3,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="black" start="1,-3" stop="3,-3"/>
+      <blockBottomPadding length="4mm" />
+      <blockTopPadding length="4mm" />
    </blockTableStyle>
 
-   <paraStyle name="conditions" fontName="Times-Roman" fontSize="8" alignment="justify"/>
+   <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
    
-   <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
-   <paraStyle name="demandtext"      fontSize="12" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="text" fontName="Helvetica" fontSize="12" alignment="LEFT" spaceBefore="1mm" />
+   <paraStyle name="demandtext" fontSize="12" alignment="justify" fontName="Times-Italic" />
    <paraStyle name="alternativetext" fontSize="12" alignment="justify" fontName="Times-Italic" />
 
-   <paraStyle name="rtext" fontSize="12" fontName="Times-Roman" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="rtext" fontName="Helvetica" fontSize="12" alignment="RIGHT" spaceBefore="1mm" />
    <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
    <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
-   <paraStyle name="smallrtext" fontSize="10" fontName="Times-Roman" alignment="RIGHT" spaceBefore="0mm" />
+   <paraStyle name="smallrtext" fontName="Helvetica" fontSize="10" alignment="RIGHT" spaceBefore="0mm" />
+   <paraStyle name="subjecttext" fontName="Helvetica" fontSize="13" alignment="LEFT" spaceBefore="3mm" />
 
-   <paraStyle name="head" fontSize="12" alignment="justify"/>
-   <paraStyle name="details" fontSize="12" alignment="right"/>
-   <paraStyle name="addressStyle" fontName="Times-Roman" fontSize="12" />
+   <paraStyle name="head" fontName="Helvetica" fontSize="12" alignment="justify"/>
+   <paraStyle name="details" fontName="Helvetica" fontSize="12" alignment="right"/>
+   <paraStyle name="addressStyle" fontName="Helvetica" fontSize="12" />
 
 </stylesheet>
 <story>
     <!-- Address Frame -->
+    <keepInFrame frame="address" onOverflow="shrink">
     <xpre style="addressStyle">
-<br />
 <br />
 <br />
 {{ADDRESS}}
     </xpre>
-    
-    <nextFrame/>
-    <!-- Info Frame -->
-    <para  style="rtext" alignment="right"></para>
-    <para  style="rtext">{{DATE}}</para>
-    <para  style="rtext">{{DOCTYPE}}</para>
-    <para  style="rtext">Nr. {{DOCID}} </para>
+    </keepInFrame>
 
-    <spacer length="3mm" width="1mm"/>
-    <para  style="smallrtext">Sparkasse Forchheim</para>
-    <para  style="smallrtext">BLZ 763 510 40</para>
-    <para  style="smallrtext">Kto. Nr. xxxxxxxx</para>
-
-    <spacer length="3mm" width="1mm"/>
-    <para  style="smallrtext">Finanzamt Forchheim</para>
-    <para  style="smallrtext">Steuernr. 217/218/10175</para>
     <nextFrame/>
     <!-- Subject Frame -->
+     <para style="subjecttext">{{DOCTYPE}} Nr. {{DOCID}}</para>
 
+    <nextFrame/>
     <!-- Detail Frame -->
     <spacer length="1mm" width="1mm"/>
     <para style="text">
@@ -105,50 +104,55 @@
 
 
     {{#POSITIONS}}
-    <blockTable colWidths="8mm,8cm,4cm,4cm" style="products" repeatRows="0">
+    <blockTable colWidths="11mm,7.9cm,4cm,4cm" style="products" repeatRows="0">
     <tr>
-        <td><para style="text">{{POS_NUMBER}}.</para></td>
+        <td><para style="{{POS_KIND}}text">{{POS_NUMBER}}.</para></td>
         <td>{{POS_TEXT}}</td>
-        <td></td>
+	<td></td>
         <td></td>
     </tr>
     <tr>
         <td></td>
-        <td><para style="rtext">{{POS_AMOUNT}} {{POS_UNIT}}</para></td>
-        <td><para style="rtext">je {{POS_UNITPRICE}}   </para></td>
-        <td><para style="rtext">{{POS_TOTAL}}  </para></td>
+	<td><para style="{{POS_KIND}}rtext">{{POS_AMOUNT}} {{POS_UNIT}}</para></td>
+	<td><para style="{{POS_KIND}}rtext">je {{POS_UNITPRICE}}</para></td>
+	<td><para style="{{POS_KIND}}rtext">{{POS_TOTAL}}</para></td>
     </tr>
     </blockTable>
     <spacer length="4mm" width="1mm"/>
     {{/POSITIONS}}
 
-    <blockTable colWidths="8mm,8cm,4cm,4cm" style="sums" repeatRows="0">
+    <blockTable colWidths="9.8cm,4cm,3cm" style="sums" repeatRows="0">
     <tr><td></td>
-        <td></td>
-        <td><para style="text">Nettosumme:</para></td>
+        <td><para style="text">Netto</para></td>
         <td><para style="rtext">{{NETTOSUM}}</para></td>
     </tr>
+    {{#SECTION_REDUCED_TAX}}
     <tr><td></td>
-        <td></td>
-        <td><para style="text">+{{VAT}}% MwSt.</para></td>
-        <td><para style="rtext">{{VATSUM}}</para></td>
+        <td><para style="text">+{{REDUCED_TAX}}% MwSt.</para></td>
+        <td><para style="rtext">{{REDUCED_TAX_SUM}}</para></td>
     </tr>
+    {{/SECTION_REDUCED_TAX}}
+    {{#SECTION_FULL_TAX}}
     <tr><td></td>
-        <td></td>
-        <td><para style="text">Gesamtsumme:</para></td>
+        <td><para style="text">+{{FULL_TAX}}% MwSt.</para></td>
+        <td><para style="rtext">{{FULL_TAX_SUM}}</para></td>
+    </tr>
+    {{/SECTION_FULL_TAX}}
+    <tr><td></td>
+        <td><para style="text">Gesamt</para></td>
         <td><para style="rtext">{{BRUTTOSUM}}</para></td>
     </tr>
     </blockTable>
+    {{#SPECIAL_POS}}
+    <para style="text">
+    Bitte beachten Sie: Dieses Angebot enthält {{COUNT}} in Schrägschrift gedruckte
+    Alternativ- oder Bedarfsposten. Diese sind in der Endsumme nicht enthalten.
+    </para>
+    {{/SPECIAL_POS}}
 
     <spacer length="1cm" width="1mm"/>
     <condPageBreak height="8cm"/>
-    {{#SPECIAL_POS}}
-    <para style="text">
-    Bitte beachten Sie: Dieses Dokument enth�lt {{COUNT}} Alternativ- oder Bedarfsposition(en).
-    Sie sind in kursiver Schrift gedruckt. Ihre Postensumme ist in der Endsumme nicht enthalten.
-    </para>
-    {{/SPECIAL_POS}}
-    {{POSTTEXT}}
+	{{POSTTEXT}}
     <spacer length="0.5cm" width="1mm"/>
     <para style="text">
        {{GOODBYE}}
