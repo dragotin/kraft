@@ -855,8 +855,8 @@ class PdfWatermark:
                 p.mergePage( page )
                 outputPdf.addPage( p )
                 firstPage = False
-        else:
-            outputPdf.addPage(page)
+            else:
+                outputPdf.addPage(page)
 
         if self.outputFile:
             # Write to outputfile
