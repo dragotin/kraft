@@ -90,13 +90,13 @@
 </stylesheet>
 <story>
     <!-- Address Frame -->
+    <keepInFrame frame="address" onOverflow="shrink">
     <xpre style="addressStyle">
-<br />
 <br />
 <br />
 {{ADDRESS}}
     </xpre>
-    
+    </keepInFrame>
     <nextFrame/>
     <!-- Info Frame -->
     <para  style="text" alignment="right">{{DATE}}</para>
