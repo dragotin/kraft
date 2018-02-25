@@ -6,11 +6,11 @@
   author="Kraft http://www.volle-kraft-voraus.de" allowSplitting="20"
   showBoundary="0">
     <template>
-      <setFont name="Times-Roman" size="12" />
+      <setFont name="Times-Roman" size="11" />
     </template>
     <pageTemplate id="first">
         <pageGraphics>
-            <setFont name="Times-Roman" size="12" />
+            <setFont name="Times-Roman" size="11" />
 	    <lineMode width="0.5" />
             <lines>2.41cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
@@ -39,7 +39,7 @@
 
     <pageTemplate id="others">
         <pageGraphics>
-            <setFont name="Times-Roman" size="12" />
+            <setFont name="Times-Roman" size="11" />
 	    <lineMode width="0.5" />
             <lines>2cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
@@ -81,29 +81,33 @@
 
    <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
    
-   <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
-   <paraStyle name="demandtext"      fontSize="12" alignment="justify" fontName="Times-Italic" />
-   <paraStyle name="alternativetext" fontSize="12" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="text" fontSize="11" alignment="justify" spaceBefore="1mm" />
+   <paraStyle name="stext" fontSize="8" alignment="justify" spaceBefore="1mm" />
+   <paraStyle name="demandtext"      fontSize="11" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="alternativetext" fontSize="11" alignment="justify" fontName="Times-Italic" />
 
-   <paraStyle name="rtext" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
-   <paraStyle name="ctext" fontSize="12" alignment="CENTER" />
-   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
-   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="rtext" fontSize="11" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="rstext" fontSize="8" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="ctext" fontSize="11" alignment="CENTER" />
+   <paraStyle name="cstext" fontSize="8" alignment="CENTER" />
 
-   <paraStyle name="head" fontSize="12" alignment="justify"/>
-   <paraStyle name="details" fontSize="12" alignment="right"/>
-   <paraStyle name="addressStyle" fontSize="12" />
+   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
+
+   <paraStyle name="head" fontSize="8" alignment="justify"/>
+   <paraStyle name="details" fontSize="11" alignment="right"/>
+   <paraStyle name="addressStyle" fontSize="11" />
 
 </stylesheet>
 <story>
     <!-- Address Frame -->
+    <keepInFrame frame="address" onOverflow="shrink">
     <xpre style="addressStyle">
-<br />
 <br />
 <br />
 {{ADDRESS}}
     </xpre>
-    
+    </keepInFrame>
     <nextFrame/>
     <!-- Info Frame -->
     <para  style="text" alignment="right">{{DATE}}</para>
@@ -126,13 +130,13 @@
 
     <blockTable colWidths="8mm,8.2cm,1.0cm,1.2cm,2.7cm,2.5cm,8mm" style="items" repeatRows="0">
     <tr>
-        <td><para style="text">Pos.</para></td>
-        <td><para style="text">Item</para></td>
-        <td><para style="ctext">Qty.</para></td>
-        <td><para style="ctext">Unit</para></td>
-        <td><para style="ctext">Price</para></td>
-        <td><para style="ctext">Sum</para></td>
-	<td><para style="rtext"></para></td>
+        <td><para style="stext">No</para></td>
+        <td><para style="stext">Item</para></td>
+        <td><para style="cstext">Qty.</para></td>
+        <td><para style="cstext">Unit</para></td>
+        <td><para style="cstext">Price</para></td>
+        <td><para style="cstext">Sum</para></td>
+	<td><para style="rstext"></para></td>
     </tr>
     {{#POSITIONS}}
     <tr>
