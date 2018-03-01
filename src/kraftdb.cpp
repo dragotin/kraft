@@ -251,9 +251,13 @@ bool KraftDB::databaseExists()
 {
     bool re = false;
 
-    if(m_db.isOpen())
-        re = m_db.tables().contains( "kraftsystem");
-
+    if(!m_db.isOpen()) {
+        m_db.open();
+    }
+    if(m_db.isOpen()) {
+        const QStringList t = m_db.tables();
+        re = t.contains( "kraftsystem");
+    }
     return re;
 }
 
