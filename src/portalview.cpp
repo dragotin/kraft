@@ -65,7 +65,8 @@ PortalView::PortalView(QWidget *parent, const char*)
     QPushButton *pb = new QPushButton(i18n("About Kraft"));
     pb->setIcon(QIcon::fromTheme("kraft", QIcon(":/kraft/global/kraft_small_arm.png")));
     vbox->addWidget(pb);
-    connect(pb, SIGNAL(clicked(bool)), this, SLOT(displaySystemsTab()));
+
+    connect(pb, &QPushButton::clicked, this, &PortalView::displaySystemsTab);
     horizontalLayout->addLayout(vbox);
     horizontalLayout->addWidget(_pagesWidget, 1);
     setLayout(horizontalLayout);
@@ -92,15 +93,15 @@ void PortalView::createIcons()
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-    connect(_contentsWidget,
-            SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-            this, SLOT(changePage(QListWidgetItem*,QListWidgetItem*)));
+    connect( _contentsWidget, &QListWidget::itemClicked,
+             this, &PortalView::changePage);
 }
 
-void PortalView::changePage(QListWidgetItem *current, QListWidgetItem *previous)
+void PortalView::changePage(QListWidgetItem *current)
 {
     if (!current)
-        current = previous;
+        return;
+
     int indx = _contentsWidget->row(current);
     if( indx == 0 ) {
         // the flat documents list

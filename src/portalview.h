@@ -56,7 +56,7 @@ protected slots:
   void slotCreateDocument();
 
 private slots:
-  void changePage(QListWidgetItem *current, QListWidgetItem *previous);
+  void changePage(QListWidgetItem *current);
   void displaySystemsTab();
 
 signals:
