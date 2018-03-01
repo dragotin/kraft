@@ -813,7 +813,7 @@ bool SetupAssistant::init( Mode mode )
         WelcomePage *welcomePage = qobject_cast<WelcomePage*>(page(welcomePageNo));
 
         if( hitNextClosing )
-            text += "<p>Please hit next and follow the instructions.</p>";
+            text += i18n("<p>Please hit next and follow the instructions.</p>");
         welcomePage->setWelcomeText( configOrigin + text );
     }
     return startDialog ;

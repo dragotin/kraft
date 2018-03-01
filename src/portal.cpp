@@ -250,7 +250,7 @@ void Portal::initView()
 
 void Portal::slotStartupChecks()
 {
-    QString dbName = DatabaseSettings::self()->dbDatabaseName();
+    const QString dbName = DatabaseSettings::self()->dbDatabaseName();
 
     SetupAssistant assi(this);
     if( assi.init( SetupAssistant::Update) ) {
