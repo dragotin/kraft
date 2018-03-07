@@ -1,3 +1,26 @@
+Changes since version 0.59: #########################################
+
+- Port to Qt5/KDE Frameworks 5
+- Reduction of build and runtime dependencies, especially
+  of KDE Frameworks
+- Dropped Webkit. Use QTextbrowser instead. Ported html
+  generating code and CSS accordingly
+- Dependency on Akonadi is now optional, so builds without
+  Akonadi are possible
+- Address management in Kraft was abstracted to work with or
+  without Akonadi, other address backends could be implemented
+  much easier now
+- Refresh of the GUI plus new icons, easier.
+- Refactored time line models completely
+- Show summaries for month and year items: Amount of doc types
+  and added sums for each document type
+- Use templates for system view (contributed by Andy Wuest)
+- Ship an AppImage for easy test of Kraft
+- Updated ReportLab based PDF generation script (erml2pdf)
+- countless bug fixes and improvements
+
+=> release v. 0.80 (Mar x, 2018)
+
 Changes since version 0.57: #########################################
  - Fix handling of slashes in the doc id template
  - Fix a bug in calculation of the VAT sum
