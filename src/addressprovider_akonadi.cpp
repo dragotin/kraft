@@ -17,7 +17,6 @@
 
 #include "addressprovider_akonadi.h"
 #include <kcontacts/contactgroup.h>
-#include <klocalizedstring.h>
 
 #include <QDebug>
 
@@ -65,7 +64,7 @@ QString AddressProviderPrivate::backendName() const
 #ifdef HAVE_AKONADI
     return QLatin1String("Akonadi");
 #else
-    return i18n("No backend");
+    return "No backend";
 #endif
 }
 

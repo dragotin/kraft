@@ -17,63 +17,26 @@
 #include <QUrl>
 #include <QFile>
 #include <QObject>
+#include <QDebug>
+#include <QCoreApplication>
 
-#include <kdebug.h>
-#include <kdeversion.h>
+#include "addressprovider.h"
 
-#include <akonadi/contact/contactsearchjob.h>
-#include <AkonadiCore/session.h>
-#include <Akonadi/Item>
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
-
-#include <kabc/vcardconverter.h>
-#include <kabc/vcard.h>
+#include <kcontacts/vcardconverter.h>
 
 
 class FindContact : public QObject
 {
     Q_OBJECT
 
+signals:
+    void quitLoop();
+
 public slots:
-    void searchResult(KJob* job ) {
-        if( !job ) {
-            return;
-        }
-
-        Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-
-        if( searchJob->error() ) {
-          kDebug() << "Address search job failed: " << job->errorString();
-        }
-
-        const KABC::Addressee::List contacts = searchJob->contacts();
-        // we set a limit to 1, so there is only one result.
-        if( contacts.size() > 0 ) {
-            KABC::Addressee contact;
-            contact = contacts.at(0);
-            dumpContact(contact, _options._outputType);
-        }
-
-        job->deleteLater();
-        exit(1);
-    }
-
-    void gidJobFinished( KJob *job ) {
-        if (job->error()) {
-            qDebug() << "gid job error: " << job->errorString();
-            exit(1);
-        }
-
-        Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
-
-        const Akonadi::Item::List items = fetchJob->items();
-        foreach( Akonadi::Item item, items ) {
-            if( item.hasPayload<KABC::Addressee>() ) {
-                dumpContact( item.payload<KABC::Addressee>(), _options._outputType );
-            }
-        }
-        exit(0);
+    void slotAddresseeFound( const QString&, const KContacts::Addressee& contact )
+    {
+        dumpContact(contact, _options._outputType);
+        emit quitLoop();
     }
 
 public:
@@ -92,7 +55,12 @@ public:
 
     // Constructor, called to initialize object
     FindContact() : QObject() {
-        using namespace Akonadi;
+                _addressProvider.reset( new AddressProvider(this) );
+
+        connect( _addressProvider.data(),
+                 SIGNAL(lookupResult(QString,KContacts::Addressee)),
+                 this,
+                 SLOT(slotAddresseeFound(QString, KContacts::Addressee)));
     }
 
     void help()
@@ -148,62 +116,51 @@ public:
 
     // method to start the search job. It is asynchronous and ends up in the
     // slot searchResult()
-    void akonadiSearch( )
+    void search( )
     {
-#if KDE_IS_VERSION(4,12,0)
-        akonadiSearchGID();
-#else
-        QString uid = _options.uid;
+        const QString uid = _options.uid;
 
         if( uid.isEmpty() ) return;
 
-        _job = new Akonadi::ContactSearchJob( );
-        _job->setLimit( 1 );
-        _job->setQuery( Akonadi::ContactSearchJob::ContactUid , uid);
-
-        connect( _job, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-
-        _job->start();
-#endif
+        AddressProvider::LookupState state = _addressProvider->lookupAddressee(uid);
+        if( state == AddressProvider::LookupFromCache ) {
+            const KContacts::Addressee addressee = _addressProvider->getAddresseeFromCache(uid);
+            // this cant actually happen because the cache can not be prefilled.
+            slotAddresseeFound( QString::null, addressee );
+        } else if( state == AddressProvider::LookupOngoing ) {
+        } else if( state == AddressProvider::LookupStarted ) {
+            // thats the supposed return type.
+        } else if( state == AddressProvider::LookupNotFound ||
+                   state == AddressProvider::BackendError   ||
+                   state == AddressProvider::ItemError ) {
+            // errors
+            exit(1);
+        }
     }
-
-#if KDE_IS_VERSION(4,12,0)
-    void akonadiSearchGID() {
-        QString gid = _options.uid;
-
-        if( gid.isEmpty() ) return;
-
-        Akonadi::Item item;
-        item.setGid( gid );
-
-        Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(item, this);
-
-        connect( fetchJob, SIGNAL(result(KJob*)), SLOT(gidJobFinished(KJob*)) );
-        fetchJob->fetchScope().fetchFullPayload();
-        fetchJob->start();
-
-    }
-#endif
 
 
 #define NL (QLatin1Char('\n'));
     // print the output
-    void dumpContact( KABC::Addressee contact, OutputType dt) {
+    void dumpContact( KContacts::Addressee contact, OutputType dt) {
         QString out;
 
+        if( contact.isEmpty() ) {
+            return;
+        }
+
         if( dt == VCard ) {
-            KABC::VCardConverter convert;
-            QByteArray arr = convert.exportVCard(contact, KABC::VCardConverter::v3_0);
+            KContacts::VCardConverter convert;
+            QByteArray arr = convert.exportVCard(contact, KContacts::VCardConverter::v3_0);
             out = QString::fromUtf8(arr);
         } else if( dt == Pretty ) {
             out += contact.realName() + NL;
-            KABC::Address address = contact.address(KABC::Address::Pref);
+            KContacts::Address address = contact.address(KContacts::Address::Pref);
             if( address.isEmpty() )
-                address = contact.address(KABC::Address::Work );
+                address = contact.address(KContacts::Address::Work );
             if( address.isEmpty() )
-                address = contact.address(KABC::Address::Home );
+                address = contact.address(KContacts::Address::Home );
             if( address.isEmpty() )
-                address = contact.address(KABC::Address::Postal );
+                address = contact.address(KContacts::Address::Postal );
 
             if(address.isEmpty()) {
                 // std::cout << "Warn: No address found!";
@@ -213,7 +170,7 @@ public:
             }
             out += QLatin1Char('\n');
 
-            foreach( KABC::PhoneNumber pnum, contact.phoneNumbers() ) {
+            foreach( KContacts::PhoneNumber pnum, contact.phoneNumbers() ) {
                 out += QString( "Phone %1: %2").arg(pnum.typeLabel()).arg(pnum.number()) + NL;
             }
 
@@ -243,7 +200,7 @@ public:
     }
 
 private:
-    Akonadi::ContactSearchJob *_job;
+    QScopedPointer<AddressProvider> _addressProvider;
     CmdOptions _options;
 };
 
@@ -254,7 +211,12 @@ int main(int argc, char **argv) {
 
     FindContact fc;
     fc.parseOptions( app.arguments());
-    fc.akonadiSearch();
+    fc.search();
+
+    QEventLoop loop;
+    QObject::connect(&fc, SIGNAL(quitLoop()), &loop, SLOT(quit()), Qt::QueuedConnection);
+    loop.exec();
+
     app.exec();
     return 0;
 }

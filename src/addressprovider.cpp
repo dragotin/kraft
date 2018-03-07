@@ -23,8 +23,6 @@
 
 #include "addressprovider_akonadi.h"
 
-#include "klocalizedstring.h"
-
 /* ==================================================================================== */
 
 AddressProvider::AddressProvider( QObject *parent )
@@ -81,7 +79,7 @@ void AddressProvider::slotErrorMsg(const QString& uid, const QString& msg)
 QString AddressProvider::errorMsg( const QString& uid )
 {
     if( !_d->backendUp() ) {
-        return i18n("Backend down");
+        return "Backend down";
     }
     if( _errMessages.contains(uid) ) {
         return _errMessages[uid];
