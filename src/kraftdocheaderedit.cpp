@@ -38,20 +38,19 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   mDocHeaderEdit->mButtLang->setIcon(QIcon::fromTheme("preferences-desktop-locale"));
 
   connect( mDocHeaderEdit->m_cbType, SIGNAL( currentIndexChanged(int)),
-    SLOT( slotModified() ) );
+           SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_dateEdit, SIGNAL( dateChanged( QDate ) ),
-    SLOT( slotModified() ) );
+           SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_postAddressEdit, SIGNAL( textChanged() ),
-    SLOT( slotModified() ) );
-  connect( mDocHeaderEdit->m_letterHead, SIGNAL( activated( int ) ),
-    SLOT( slotModified() ) );
-  connect( mDocHeaderEdit->m_letterHead, SIGNAL( currentIndexChanged(int)),
-    SLOT( slotModified() ) );
+           SLOT( slotModified() ) );
+  connect( mDocHeaderEdit->m_letterHead, SIGNAL( currentTextChanged(QString)),
+           SLOT(slotModified() ) );
   connect( mDocHeaderEdit->m_teEntry, SIGNAL( textChanged() ),
-    SLOT( slotModified() ) );
+           SLOT( slotModified() ) );
   connect( mDocHeaderEdit->m_whiteboardEdit, SIGNAL( textChanged() ),
-    SLOT( slotModified() ) );
-
+           SLOT( slotModified() ) );
+  connect( mDocHeaderEdit->mProjectLabelEdit, SIGNAL( textChanged(QString) ),
+           SLOT(slotModified() ) );
   connect( mDocHeaderEdit->pb_pickAddressee, SIGNAL(clicked()), SIGNAL(pickAddressee()));
 
   setTitle( i18n( "Document Header" ) );
