@@ -55,10 +55,10 @@ INSERT INTO wordLists VALUES ('greeting', 'liebe Grüsse,' );
 INSERT INTO wordLists VALUES ('greeting', 'Hochachtungsvoll,' );
 INSERT INTO wordLists VALUES ('greeting', 'mit freundlichem Gruß,' );
 
-INSERT INTO wordLists VALUES ('salut', 'Sehr geehrter Herr %NAME' );
-INSERT INTO wordLists VALUES ('salut', 'Sehr geehrte Frau %NAME' );
-INSERT INTO wordLists VALUES ('salut', 'Sehr geehrte Frau %NAME, sehr geehrter Herr %NAME' );
-INSERT INTO wordLists VALUES ('salut', 'Lieber %GIVEN_NAME' );
-INSERT INTO wordLists VALUES ('salut', 'Liebe %GIVEN_NAME' );
+INSERT INTO wordLists VALUES ('salut', 'Sehr geehrter Herr %NAME,' );
+INSERT INTO wordLists VALUES ('salut', 'Sehr geehrte Frau %NAME,' );
+INSERT INTO wordLists VALUES ('salut', 'Sehr geehrte Frau %NAME, sehr geehrter Herr %NAME,' );
+INSERT INTO wordLists VALUES ('salut', 'Lieber %GIVEN_NAME,' );
+INSERT INTO wordLists VALUES ('salut', 'Liebe %GIVEN_NAME,' );
 
 
