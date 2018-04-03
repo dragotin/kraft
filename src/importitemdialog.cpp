@@ -19,6 +19,7 @@
 
 // include files for Qt
 #include <QLabel>
+#include <QButtonGroup>
 #include <QComboBox>
 #include <QCheckBox>
 #include <QToolTip>

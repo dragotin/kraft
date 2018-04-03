@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 // include files for Qt
+#include <QButtonGroup>
 #include <QRadioButton>
 #include <QLabel>
 #include <QString>
