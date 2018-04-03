@@ -17,6 +17,7 @@
 #include <QtGui>
 
 #include <QDebug>
+#include <QTabWidget>
 
 #include <kcontacts/address.h>
 #include <kcontacts/vcardconverter.h>

@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QHeaderView>
 #include <QLayout>
 #include <QLabel>
 #include <QSplitter>
