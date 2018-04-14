@@ -476,11 +476,13 @@ void Portal::slotCopyDocument( const QString& id )
     return;
   }
   DocGuardedPtr oldDoc = DocumentMan::self()->openDocument( id );
+  const DocType dt = oldDoc->docType();
+  delete oldDoc;
 
   KraftWizard wiz;
   wiz.init();
   if ( wiz.exec() ) {
-    DocGuardedPtr doc = DocumentMan::self()->createDocument( oldDoc->docType(), id );
+    DocGuardedPtr doc = DocumentMan::self()->createDocument(dt.name(), id);
     doc->setDate( wiz.date() );
     doc->setDocType( wiz.docType() );
     doc->setWhiteboard( wiz.whiteboard() );

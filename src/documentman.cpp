@@ -39,19 +39,20 @@ DocumentMan::DocumentMan()
 
 DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromId )
 {
-  DocGuardedPtr doc = new KraftDoc( );
-  doc->newDocument( docType );
-  // qDebug () << "new document ID: " << doc->docID().toString() << endl;
+    DocGuardedPtr doc = new KraftDoc( );
+    doc->newDocument( docType );
+    // qDebug () << "new document ID: " << doc->docID().toString() << endl;
 
-  if ( ! copyFromId.isEmpty() ) {
-    // copy the content from the source document to the new doc.
-    DocGuardedPtr sourceDoc = openDocument( copyFromId );
-    if ( sourceDoc ) {
-      *doc = *sourceDoc;
+    if ( ! copyFromId.isEmpty() ) {
+        // copy the content from the source document to the new doc.
+        DocGuardedPtr sourceDoc = openDocument( copyFromId );
+        if ( sourceDoc ) {
+            *doc = *sourceDoc;
+            delete sourceDoc;
+        }
     }
-  }
 
-  return doc;
+    return doc;
 }
 
 DocGuardedPtr DocumentMan::openDocument( const QString& id )
