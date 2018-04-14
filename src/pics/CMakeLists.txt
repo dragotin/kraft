@@ -12,6 +12,5 @@ ecm_install_icons( ICONS
 	16-actions-kraft_redtax.png
 	22-actions-kraftdice.png
 	sc-apps-kraft_catalogue.svg
-        sc-apps-kraft.svg
 	DESTINATION share/icons)
 
