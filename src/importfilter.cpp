@@ -22,6 +22,7 @@
 #include <QStandardPaths>
 #include <QLocale>
 #include <QDebug>
+#include <QProcess>
 
 #include <KLocalizedString>
 
@@ -80,9 +81,9 @@ bool ImportFilter::recode( const QString& file, const QString& outfile )
   QString cmd = DefaultProvider::self()->iconvTool();
 
   if ( QFile::exists( cmd ) ) {
-    QString command = QString( "%1 -f %2 -t utf-8 -o %3 %4" ).arg( cmd )
-                      .arg( mEncoding ).arg( outfile ).arg( file );
-    int result = system( command.toLocal8Bit().constData() );
+    QStringList args = QStringList()
+      << "-f" << mEncoding << "-t" << "utf-8" << "-o" << outfile << file;
+    int result = QProcess::execute( cmd, args );
     // qDebug () << "Recode finished with exit code " << result;
     return true;
   } else {
