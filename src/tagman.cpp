@@ -58,7 +58,7 @@ bool TagTemplate::operator!= ( const TagTemplate& tt ) const
 /*
  * ********** Tag Template Manager **********
  */
-Q_GLOBAL_STATIC(TagTemplateMan, mSelf);
+Q_GLOBAL_STATIC(TagTemplateMan, mSelf)
 
 TagTemplateMan *TagTemplateMan::self()
 {
