@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
- <id>kraft</id>
+ <id>de.volle_kraft_voraus.kraft</id>
  <project_license>GPL-2.0+</project_license>
+ <metadata_license>CC0-1.0</metadata_license>
  <name>Kraft</name>
  <summary>Kraft helps to handle documents in small business</summary>
  <description>
@@ -20,9 +21,11 @@
  <screenshots>
   <screenshot type="default">
    <image width="990" height="659">http://volle-kraft-voraus.de/images/appmeta1.png</image>
+   <caption>Main window of Kraft</caption>
   </screenshot>
   <screenshot>
    <image width="1127" height="677">http://volle-kraft-voraus.de/images/appmeta2.png</image>
+   <caption>Document edit window, header section</caption>
   </screenshot>
  </screenshots>
  <url type="homepage">http://volle-kraft-voraus.de/</url>
