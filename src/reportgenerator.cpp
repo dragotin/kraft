@@ -219,10 +219,10 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   /* replace the placeholders */
   /* A placeholder has the format <!-- %VALUE --> */
 
-  ArchDocPositionList posList = mArchDoc->positions();
+  const ArchDocPositionList posList = mArchDoc->positions();
   QString h;
 
-  ArchDocPositionList::iterator it;
+  ArchDocPositionList::const_iterator it;
   int specialPosCnt = 0;
   int taxFreeCnt    = 0;
   int reducedTaxCnt = 0;
@@ -235,7 +235,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   DocPositionBase::TaxType ttype = DocPositionBase::TaxInvalid;
   for ( it = posList.begin(); it != posList.end(); ++it ) {
     ArchDocPosition pos (*it);
-    if( ttype == -1 ) {
+    if( ttype == DocPositionBase::TaxInvalid  ) {
       ttype = pos.taxType();
     } else {
       if( ttype != pos.taxType() ) { // different from previous one?
