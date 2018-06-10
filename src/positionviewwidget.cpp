@@ -542,6 +542,7 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
 
 void PositionViewWidget::slotModified( bool emitSignal )
 {
+    Q_UNUSED(emitSignal)
   if(m_skipModifiedSignal) return;
   // qDebug () << "Modified Position!" << endl;
 
