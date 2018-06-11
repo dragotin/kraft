@@ -1,4 +1,4 @@
-#define KRAFT_VERSION "0.80"
+#define KRAFT_VERSION "0.81"
 
 #define KRAFT_CODENAME "Rio"
 
