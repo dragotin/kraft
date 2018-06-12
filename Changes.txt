@@ -1,3 +1,13 @@
+Changes since version 0.80: #########################################
+
+- Fix to build with Qt 5.11
+- CMake fixes: Installation directories
+- Use QProcess instead of system call
+- Fix appstream XML data
+- Fix display of individual tax block on documents
+
+=> release v. 0.81 (June 12, 2018)
+
 Changes since version 0.59: #########################################
 
 - Port to Qt5/KDE Frameworks 5
@@ -27,7 +37,7 @@ Changes since version 0.59: #########################################
 Changes since version 0.57: #########################################
  - Fix handling of slashes in the doc id template
  - Fix a bug in calculation of the VAT sum
- - Removed kraftcat library as it was unused. Easier building now. 
+ - Removed kraftcat library as it was unused. Easier building now.
 
     => release v. 0.58 (Mar x, 2015)
 
@@ -104,16 +114,16 @@ Changes since version 0.45: #########################################
 - bugfix: if akonadi address was not found, display proper msg.
 - Proper error message if a python module is not installed but needed
   by the pdf generator.
-- added button to assign an address book entry as document receiver 
+- added button to assign an address book entry as document receiver
   for existing documents (Bug #3477467)
-- bugfix: Display of number of processed sql commands in setup 
+- bugfix: Display of number of processed sql commands in setup
   assistant (Bug #3560611)
 - started to optimize database save of documents for more performant
   saves.
 - bugfix: Fixed import of document items from csv lists.
 - added page number on default document from page two to end.
 - bugfix: Fixed mysql database setup.
-- Rearragned doc type setup dialog to better display path names of 
+- Rearragned doc type setup dialog to better display path names of
   template file and watermark file.
 - bugfix: If a manual entered template has checkbox "store in template
   catalog, the template is immediately written to and catalog is
@@ -123,7 +133,7 @@ Changes since version 0.45: #########################################
     => release v. 0.50 (dec 17, 2012)
 
 Changes since version 0.44: #########################################
-- bugfix release: Fixed the display of decimal places in the PDF 
+- bugfix release: Fixed the display of decimal places in the PDF
   document which caused broken documents.
 
     => release v. 0.45 (nov 08,2011)
@@ -157,14 +167,14 @@ Changes since version 0.41: #########################################
 
 Changes since version 0.40: #########################################
 - More changes to the Akonadi based addressbook integration
-- switched to a python only version of trml2pdf called erml2pdf, 
-  makes porting to other platforms easier plus dropped dependency on 
+- switched to a python only version of trml2pdf called erml2pdf,
+  makes porting to other platforms easier plus dropped dependency on
   java with pdftk
-- used Qt Model/View for the document lists. Way faster startup. 
+- used Qt Model/View for the document lists. Way faster startup.
 - New document digest view
 - Catalogs: Implemented nested catalog structure
 - Catalogs: Moving templates around per d&d
-- Catalogs: user defined sorting in catalogs 
+- Catalogs: user defined sorting in catalogs
 - Catalogs: dropping of templates
 
    => released v. 0.41 (april 18th, 2011)
@@ -173,40 +183,40 @@ Changes since version 0.32: #########################################
 - Ported to the KDE 4 Platform. In particular, to KDE 4.4
 - Use Akonadi based addressbook
 - Edit dialog for Wages and Units
-- SQLite-Support 
+- SQLite-Support
 - Setup Assistant for SQLite and MySQL Databases
 
    => released v. 0.40
 
 Changes since version 0.31: #########################################
-- Tax: Added more flexible tax calculation. Kraft now has the tax in 
-  a table for easy changing, supports no, reduced and full tax on 
+- Tax: Added more flexible tax calculation. Kraft now has the tax in
+  a table for easy changing, supports no, reduced and full tax on
   document level for this release, on item level later.
-- Numbercycles: All Kraft documents need an unique document number. 
+- Numbercycles: All Kraft documents need an unique document number.
   These are taken from numbercycles now which can be edited and shared
   between document types.
 - Watermark: Kraft documents can now be merged with an existing pdf file
   with the company logo. Configuration through the Kraft settings on
   a per document type basis
-- Templates: Kraft now supports different templates for each document 
+- Templates: Kraft now supports different templates for each document
   type. Templates can be configured through the Kraft settings.
-- Project-String: There is a project label at the document. It is 
+- Project-String: There is a project label at the document. It is
   exported to the document template.
 - System-Tab: Display of some interesting setup information
 - Templates for PDF and HTML output are reloaded if modified
 
-   => released v. 0.32 
+   => released v. 0.32
 
 Changes since version 0.30: #########################################
-- added a read only view on documents, customizable with ctemplate 
+- added a read only view on documents, customizable with ctemplate
   as html page
-- added importing items from text files with configurable import 
-  filters, to enable usage of special software which is able to 
+- added importing items from text files with configurable import
+  filters, to enable usage of special software which is able to
   export text files
 - added document number cycles: The unique id of a document depends
-  on a unique number. Now there can be multiple number cycles which 
+  on a unique number. Now there can be multiple number cycles which
   can be used by document types. Multiple doc types can use the same
-  number cycle, that means that for example all types of invoices 
+  number cycle, that means that for example all types of invoices
   count the same number cycle while offers are in another.
 
    => released v. 0.31
@@ -214,7 +224,7 @@ Changes since version 0.30: #########################################
 Changes since version 0.25: #########################################
 - introduced the extended combo box with explanation line for units.
 - added document item tagging
-- added discount item system, based on tagging 
+- added discount item system, based on tagging
 - tag templates with tag template edit dialog
 - fixed a bunch of bugs with text templates (header- and footer text)
 - tag selection in ordinary add-item-to-document dialog
@@ -233,12 +243,12 @@ Changes since version 0.24: #########################################
 Changes since version 0.23: #########################################
 - internationalisation: Ability to do documents in a different location
   than the desktop is running under.
-  
+
   => released BETA v. 0.24
 
 Changes since version 0.22: #########################################
 
-- fixed: database migration 5: added IF EXISTS 
+- fixed: database migration 5: added IF EXISTS
 - fixed: encoding in the report file
 - improved: The document digest overview is not longer always redrawed
             and looses its selected item.
@@ -273,13 +283,13 @@ Changes since version 0.14: #########################################
   ones.
 - more beautifull and working navigation block in the document dialog
 - mailing documents added
-- Completely changed header- and footer text template system: 
+- Completely changed header- and footer text template system:
   * now there is more than one text available per text- and doc type
   * direct adding, editing and removing of texts from the dialog
-  * selecting template texts in the same way as selecting position 
+  * selecting template texts in the same way as selecting position
     templates, more intuitive GUI
 - Addresses also selectable from an address catalog
-- persist the selection of the greeting and salut text 
+- persist the selection of the greeting and salut text
 - Document ID now configurable in the settings file, key DocIdent:
   [document]
   DocIdent=T-%y%w%i
