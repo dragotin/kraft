@@ -84,6 +84,7 @@ bool ImportFilter::recode( const QString& file, const QString& outfile )
     QStringList args = QStringList()
       << "-f" << mEncoding << "-t" << "utf-8" << "-o" << outfile << file;
     int result = QProcess::execute( cmd, args );
+    Q_UNUSED(result);
     // qDebug () << "Recode finished with exit code " << result;
     return true;
   } else {
