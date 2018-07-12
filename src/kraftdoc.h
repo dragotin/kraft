@@ -75,49 +75,49 @@ class KraftDoc : public QObject
   DocPositionList positions() { return mPositions; }
   void setPositionList( DocPositionList );
 
-  QDate date() { return mDate; }
+  QDate date() const { return mDate; }
   void setDate( QDate d ) { mDate = d; }
 
-  QDate lastModified() { return mLastModified; }
+  QDate lastModified() const { return mLastModified; }
   void setLastModified( QDate d ) { mLastModified = d; }
 
-  QString docType() { return mDocType; }
+  QString docType() const { return mDocType; }
   void setDocType( const QString& s );
   bool docTypeChanged() { return mDocTypeChanged; }
 
-  QString addressUid() { return mAddressUid; }
+  QString addressUid() const { return mAddressUid; }
   void setAddressUid( const QString& id ) { mAddressUid = id; }
 
-  QString& address() { return mAddress; } 
+  QString address() const { return mAddress; }
   void setAddress( const QString& adr ) { mAddress = adr; }
 
-  bool isNew() { return mIsNew; }
+  bool isNew() const { return mIsNew; }
 
-  QString ident()    { return mIdent;    }
+  QString ident() const   { return mIdent;    }
   void setIdent( const QString& str ) { mIdent = str; }
 
-  QString salut()    { return mSalut;    }
+  QString salut() const   { return mSalut;    }
   void setSalut( const QString& str ) { mSalut = str; }
 
-  QString goodbye()    { return mGoodbye;    }
+  QString goodbye() const   { return mGoodbye;    }
   void setGoodbye( const QString& str ) { mGoodbye = str; }
 
-  QString preText()  { return mPreText;  }
+  QString preText() const   { return mPreText;  }
   void setPreText( const QString& str ) { mPreText = str; }
 
-  QString postText() { return mPostText; }
+  QString postText() const { return mPostText; }
   void setPostText( const QString& str ) { mPostText = str; }
 
-  QString whiteboard() { return mWhiteboard; }
+  QString whiteboard() const { return mWhiteboard; }
   void setWhiteboard( const QString& w ) { mWhiteboard = w; }
 
-  QString projectLabel() { return mProjectLabel; }
+  QString projectLabel() const { return mProjectLabel; }
   void setProjectLabel( const QString& w ) { mProjectLabel = w; }
 
   void setDocID( dbID id ) { mDocID = id; }
-  dbID docID() { return mDocID; }
+  dbID docID() const { return mDocID; }
 
-  QString docIdentifier();
+  QString docIdentifier() const;
   DBIdList removePositionList() { return mRemovePositions; }
 
   Geld nettoSum();
