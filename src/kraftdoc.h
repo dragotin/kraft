@@ -114,6 +114,9 @@ class KraftDoc : public QObject
   QString projectLabel() const { return mProjectLabel; }
   void setProjectLabel( const QString& w ) { mProjectLabel = w; }
 
+  QString predecessor() const { return mPredecessor; }
+  void setPredecessor( const QString& w ) { mPredecessor = w; }
+
   void setDocID( dbID id ) { mDocID = id; }
   dbID docID() const { return mDocID; }
 
@@ -156,6 +159,7 @@ private:
   QString mGoodbye;
   QString mIdent;
   QString mWhiteboard;
+  QString mPredecessor;
 
   // Two qualifiers for the locale settings.
   QString mCountry;

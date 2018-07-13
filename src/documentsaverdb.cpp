@@ -51,6 +51,8 @@
  * | posttext       | text         | YES  |     | NULL              |                |
  * | country        | varchar(32)  | YES  |     | NULL              |                |
  * | language       | varchar(32)  | YES  |     | NULL              |                |
+ * | projectLabel   | varchar(255) | YES  |     | NULL              |                |
+ * | predecessor    | varchar(32)  | YES  |     | NULL              |                |
  * +----------------+--------------+------+-----+-------------------+----------------+
  * 14 rows in set (0.00 sec)
  *
@@ -279,13 +281,15 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
       buf.setValue( "country",  doc->locale()->bcp47Name() );
       buf.setValue( "language", "" );
       buf.setValue( "projectLabel",  doc->projectLabel() );
+      buf.setValue( "predecessor", doc->predecessor() );
     }
 }
 
 void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
 {
     QSqlQuery q;
-    q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, pretext, posttext, docDescription, projectlabel FROM document WHERE docID=:docID");
+    q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, "
+              "pretext, posttext, docDescription, projectlabel, predecessor FROM document WHERE docID=:docID");
     q.bindValue(":docID", id);
     q.exec();
     // qDebug () << "Loading document id " << id << endl;
@@ -314,6 +318,7 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
         doc->setPostText(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );
         doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( q.value( 12 ).toString() ) );
         doc->setProjectLabel( q.value(13).toString() );
+        doc->setPredecessor(  q.value(14).toString() );
     }
 
     loadPositions( id, doc );

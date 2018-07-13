@@ -99,6 +99,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
   docElem.appendChild( xmlTextElement( xmldoc, "docType", doc->docType() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "docDesc", doc->whiteboard() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "ident", doc->ident() ) );
+  docElem.appendChild( xmlTextElement( xmldoc, "predecessor", doc->predecessor() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "preText", doc->preText() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "postText", doc->postText() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "projectLabel", doc->projectLabel() ) );
@@ -178,6 +179,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode(doc->preText() ) );
     record.setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
     record.setValue( "projectLabel", KraftDB::self()->mysqlEuroEncode(doc->projectLabel() ) );
+    record.setValue( "predecessor", doc->predecessor() );
     QLocale *loc = doc->locale();
     record.setValue( "country",  loc->bcp47Name() );
     record.setValue( "language", "" );
