@@ -131,7 +131,7 @@ void Portal::initActions()
   actOpenArchivedDocument->setText( i18n("Open Archived Document"));
   actOpenArchivedDocument->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_A) );
 
-  actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewDocument()));
+  actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewCurrentDocument()));
   actViewDocument->setText(i18n("Show Document"));
   actViewDocument->setShortcut( QKeySequence(Qt::CTRL+Qt::Key_R) );
   actViewDocument->setIcon( QIcon::fromTheme("document-preview" ));
@@ -499,7 +499,7 @@ void Portal::slotOpenDocument()
   slotOpenDocument( locId );
 }
 
-void Portal::slotViewDocument()
+void Portal::slotViewCurrentDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
   slotViewDocument( locId );
@@ -507,8 +507,6 @@ void Portal::slotViewDocument()
 
 void Portal::slotViewDocument( const QString& id )
 {
-  QString locId = m_portalView->docDigestView()->currentDocumentId();
-
   slotStatusMsg(i18n("Opening document to view..."));
 
   if( !id.isEmpty() ) {
@@ -837,6 +835,8 @@ void Portal::createView( DocGuardedPtr doc )
 
       connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
                this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
+      connect( view, &KraftViewBase::openROView, this, &Portal::slotViewDocument );
+
       mViewMap[doc] = view;
   } else {
       mViewMap[doc]->raise();

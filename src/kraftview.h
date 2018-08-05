@@ -83,8 +83,12 @@ protected:
 
     DocGuardedPtr m_doc;
     Type          m_type;
+
+protected slots:
+    virtual void slotLinkClicked(const QString& link) = 0;
 signals:
     void viewClosed( bool, DocGuardedPtr );
+    void openROView( QString docId );
 
 private:
 
@@ -153,6 +157,7 @@ class KraftView : public KraftViewBase
   void slotTaxComboChanged( int );
   void slotNewAddress( const KContacts::Addressee& contact,
                        bool interactive = true );
+  void slotLinkClicked(const QString& link);
 
 
 signals:

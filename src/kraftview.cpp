@@ -265,6 +265,16 @@ void KraftView::setupDocHeaderView()
     connect( edit, SIGNAL(pickAddressee()), this, SLOT(slotPickAddressee()) );
 }
 
+void KraftView::slotLinkClicked(const QString& link)
+{
+    QUrl u(link);
+    if( u.scheme() == "doc" && u.host() == "show" ) {
+        const QString ident = u.queryItemValue("id");
+        qDebug() << "Link clicked to open document " << ident;
+        emit openROView( ident );
+    }
+}
+
 void KraftView::setupItems()
 {
     KraftDocPositionsEdit *edit = new KraftDocPositionsEdit(this);

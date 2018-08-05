@@ -257,6 +257,13 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     mHtmlView->displayContent( content );
 }
 
+void KraftViewRO::slotLinkClicked(const QString& link)
+{
+    Q_UNUSED(link);
+    // nothing we do here yet
+}
+
+
 void KraftViewRO::done( int r )
 {
   // qDebug () << "View closed with ret value " << r;

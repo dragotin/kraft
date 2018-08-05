@@ -7,12 +7,12 @@
     <x>0</x>
     <y>0</y>
     <width>614</width>
-    <height>420</height>
+    <height>451</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,1">
    <item>
-    <layout class="QHBoxLayout" stretch="0,0,1,0">
+    <layout class="QHBoxLayout" stretch="0,0,0,1,0">
      <item>
       <widget class="QPushButton" name="mButtLang">
        <property name="minimumSize">
@@ -34,6 +34,13 @@
      </item>
      <item>
       <widget class="QComboBox" name="m_cbType"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="_labFollowup">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="spacer2">
