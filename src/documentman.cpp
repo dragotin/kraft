@@ -48,6 +48,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
         DocGuardedPtr sourceDoc = openDocument( copyFromId );
         if ( sourceDoc ) {
             *doc = *sourceDoc;
+            doc->setPredecessor(sourceDoc->ident());
             delete sourceDoc;
         }
     }

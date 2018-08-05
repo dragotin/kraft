@@ -287,40 +287,55 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
 
 void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
 {
-    QSqlQuery q;
-    q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, "
-              "pretext, posttext, docDescription, projectlabel, predecessor FROM document WHERE docID=:docID");
-    q.bindValue(":docID", id);
-    q.exec();
-    // qDebug () << "Loading document id " << id << endl;
+    if( !id.isEmpty() ) {
+        QSqlQuery q;
+        q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, "
+                  "pretext, posttext, docDescription, projectlabel, predecessor FROM document WHERE docID=:docID");
+        q.bindValue(":docID", id);
+        q.exec();
+        // qDebug () << "Loading document id " << id << endl;
 
-    if( q.next())
-    {
-        // qDebug () << "loading document with id " << id << endl;
-        dbID dbid;
-        dbid = id;
-        doc->setDocID( dbid );
+        if( q.next())
+        {
+            // qDebug () << "loading document with id " << id << endl;
+            dbID dbid;
+            dbid = id;
+            doc->setDocID( dbid );
 
-        doc->setIdent(      q.value( 0 ).toString() );
-        doc->setDocType(    q.value( 1 ).toString() );
-        doc->setAddressUid( q.value( 2 ).toString() );
-        doc->setAddress(    q.value( 3 ).toString() );
-        QString salut = q.value(4).toString();
-        doc->setSalut(      salut );
-        doc->setGoodbye(    q.value( 5 ).toString() );
-        doc->setDate (      q.value( 6 ).toDate() );
-        doc->setLastModified( q.value( 7 ).toDate() );
-        // Removed, as with Kraft 0.80 there is no locale management on doc level any more
-        // doc->setCountryLanguage( q.value( 8 ).toString(),
-        //                         q.value( 9 ).toString());
+            doc->setIdent(      q.value( 0 ).toString() );
+            doc->setDocType(    q.value( 1 ).toString() );
+            doc->setAddressUid( q.value( 2 ).toString() );
+            doc->setAddress(    q.value( 3 ).toString() );
+            QString salut = q.value(4).toString();
+            doc->setSalut(      salut );
+            doc->setGoodbye(    q.value( 5 ).toString() );
+            doc->setDate (      q.value( 6 ).toDate() );
+            doc->setLastModified( q.value( 7 ).toDate() );
+            // Removed, as with Kraft 0.80 there is no locale management on doc level any more
+            // doc->setCountryLanguage( q.value( 8 ).toString(),
+            //                         q.value( 9 ).toString());
 
-        doc->setPreText(    KraftDB::self()->mysqlEuroDecode( q.value( 10  ).toString() ) );
-        doc->setPostText(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );
-        doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( q.value( 12 ).toString() ) );
-        doc->setProjectLabel( q.value(13).toString() );
-        doc->setPredecessor(  q.value(14).toString() );
+            doc->setPreText(    KraftDB::self()->mysqlEuroDecode( q.value( 10  ).toString() ) );
+            doc->setPostText(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );
+            doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( q.value( 12 ).toString() ) );
+            doc->setProjectLabel( q.value(13).toString() );
+            doc->setPredecessor(  q.value(14).toString() );
+        }
+    }
+    // load the dbID of the predecessor document from the database.
+    const QString pIdent = doc->predecessor();
+    if( ! pIdent.isEmpty() ) {
+        QSqlQuery q1;
+        q1.prepare("SELECT docID FROM document WHERE ident=:docID");
+        q1.bindValue(":docID", pIdent);
+        q1.exec();
+        if( q1.next() ) {
+            const QString pDbId = q1.value(0).toString();
+            doc->setPredecessorDbId(pDbId);
+        }
     }
 
+    // finally load the item data.
     loadPositions( id, doc );
 }
 /* docposition:

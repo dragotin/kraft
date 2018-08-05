@@ -116,6 +116,8 @@ class KraftDoc : public QObject
 
   QString predecessor() const { return mPredecessor; }
   void setPredecessor( const QString& w ) { mPredecessor = w; }
+  QString predecessorDbId() const { return mPredecessorDbId; }
+  void setPredecessorDbId( const QString& pId ) { mPredecessorDbId = pId; }
 
   void setDocID( dbID id ) { mDocID = id; }
   dbID docID() const { return mDocID; }
@@ -160,6 +162,7 @@ private:
   QString mIdent;
   QString mWhiteboard;
   QString mPredecessor;
+  QString mPredecessorDbId;
 
   // Two qualifiers for the locale settings.
   QString mCountry;

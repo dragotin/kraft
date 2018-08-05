@@ -254,6 +254,16 @@ void KraftView::setupDocHeaderView()
     // Hide the locale select button for now.
     m_headerEdit->mButtLang->hide();
     // }
+    const QString predecessor = m_doc->predecessorDbId();
+    bool predecIsVisible = false;
+    if( !predecessor.isEmpty() ) {
+        const QString link = QString("<a href=\"doc://show?id=%1\">%1</a>").arg(predecessor);
+        m_headerEdit->_labFollowup->setText( i18n("Successor of %1").arg(link));
+        predecIsVisible = true;
+        connect( m_headerEdit->_labFollowup, SIGNAL(linkActivated(QString)),
+                 this, SLOT(slotLinkClicked(QString)));
+    }
+    m_headerEdit->_labFollowup->setVisible(predecIsVisible);
 
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
              this, SLOT( slotDocTypeChanged( const QString& ) ) );

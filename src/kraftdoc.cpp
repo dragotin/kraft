@@ -72,6 +72,8 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
   mAddressUid = origDoc.mAddressUid;
   mProjectLabel = origDoc.mProjectLabel;
+  mPredecessor = origDoc.mPredecessor;
+  mPredecessorDbId = origDoc.mPredecessorDbId;
   mAddress    = origDoc.mAddress;
   mPreText    = origDoc.mPreText;
   mPostText   = origDoc.mPostText;
