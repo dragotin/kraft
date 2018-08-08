@@ -1,6 +1,6 @@
 
 Generic compile and installation instructions in the beginning of
-this file. 
+this file.
 
 => Find Kraft specific instructions below. Make sure to read them!
 
@@ -14,7 +14,7 @@ this file.
 The following section briefly describes how to build Kraft with cmake.
 
 -----------------------------------------------------
-Quick-start 0: Precondition
+Precondition
 -----------------------------------------------------
 
 Check that cmake is installed on your machine and is in your PATH.
@@ -27,36 +27,52 @@ stable version of cmake is preferred.
 
 To build Kraft, the following libs and software versions have to
 be provided:
-- KDE libs incl. devel packages version > 4.4.0
-- KDE Pimlibs (for Akonadi based kaddressbook access)
+- cmake and the cmake extra modules
+- Qt libs incl. devel packages version 5.5.0 or later
+- kcontacts for using the KDE contact classes
+- A few other KDE classes (kxmlgui, ki18n)
 - google ctemplate, A simple but powerful template language for C++,
   packages from the openSUSE Buildservice or from the website
   https://github.com/OlafvdSpek/ctemplate
+- optional: akonadi contact for Akonadi based addressbook access
 
 
-Required packages for building with openSUSE Leap 42.2:
+Required packages for building with openSUSE Leap 42.3:
 
-- gcc-c++
+- cmake
 - extra-cmake-modules
-- libqt5-qtbase-devel
+- gcc-c++
+- kcontacts-devel
 - akonadi-contact-devel
 - gettext
-- gettext-tools
-- qt5-qtwebengine-devel
-- kwallet-devel
-- knotifyconfig-devel
-- kglobalaccel-devel
 - libctemplate-devel
+- ki18n-devel
+- kxmlgui-devel
+- libQt5Core-devel
+- libQt5Gui-devel
+- libQt5Sql-devel
+- libQt5Widgets-devel
 
+Required packages for building with Kubuntu 18.04
+
+- cmake
+- extra-cmake-modules
+- qt5-default
+- gettext
+- libkf5xmlgui-dev
+- libkf5contacts-dev
+- libkf5akonadi-dev
+- libkf5akonadicontact-dev
+- libctemplate-dev
 
 -----------------------------------------------------
-Quick-start 1: Build Kraft
+Build Kraft
 -----------------------------------------------------
 
 cmake is designed so that the build process can be done in a separate
 directory. This is highly recommended for users and required for packagers.
 
-Go to the top level of the cvs working directory or the source tarball.
+Go to the top level of the source directory.
 To build Kraft in the subdirectory ./build/ type
 
 $ mkdir build
@@ -66,7 +82,10 @@ $ cmake ..
 $ ccmake .
     to change the configuration of the build process. (optional)
 
-Congratulations, your Makefiles were generated!
+Check out for errors during the cmake run. Fix them, usually you need
+more devel packages installed.
+
+Ready? Congratulations, your Makefiles were generated!
 Now you could just type
 
 $ make
@@ -75,16 +94,24 @@ $ make
 Note that 'make' automatically checks whether any CMakeLists.txt file
 has changed and reruns cmake if necessary.
 
-Congratulations, you will never have a chaos of generated files
-between the important source files again!
+To start Kraft from the build directory, set the environment variable
+KRAFT_HOME to the root of the _source_ directory to let Kraft find its
+resource files:
+$ KRAFT_HOME=/home/me/kraft build/src/kraft
 
 Kraft Installation
 ==================
 
+Type
+$ make install
+
+To change the target root directory to where it is installed, call
+cmake with the parameter -DCMAKE_INSTALL_PREFIX=/my_dir
+
 Database
 ========
 
-Since version 0.40 Kraft either can use a SQLite file based 
+Since version 0.40 Kraft either can use a SQLite file based
 database or a MySQL server based database.
 
 The SQLite database is created automatically on the fly
@@ -104,12 +131,14 @@ Document Generation
 
 Kraft generates PDF documents. For that it uses a python tool named
 erml2pdf. The tool can be found in Kraft's tools directory in this
-source package. 
+source package.
 
-erml2pdf uses a python lib called the ReportLab Toolkit: a mature, 
-Open Source PDF library which can be found at 
+erml2pdf uses a python lib called the ReportLab Toolkit: a mature,
+Open Source PDF library which can be found at
 http://www.reportlab.org/rl_toolkit.html
-Furthermore it uses python-pypdf for pdf processing.
+Furthermore it uses python-pypdf for pdf processing. Both python
+modules are not part of Kraft and should be installed separately
+on the system.
 
-erml2pdf must be in the system path to be found by kraft.
+
 
