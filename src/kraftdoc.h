@@ -44,7 +44,7 @@ class KraftDoc : public QObject
   static QString partToString( Part );
 
   /** Constructor for the fileclass of the application */
-  KraftDoc(QWidget *parent = 0);
+  KraftDoc(QWidget *parent = nullptr);
   /** Destructor for the fileclass of the application */
   ~KraftDoc();
 

@@ -50,7 +50,7 @@ class ArchiveMan
   private:
     QDomElement xmlTextElement( QDomDocument, const QString&, const QString& );
     int archivePos( int, KraftDoc* );
-
+    void ensureDirIsExisting( const QString& dir ) const;
 };
 
 #endif

@@ -250,6 +250,19 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
     return cnt;
 }
 
+void ArchiveMan::ensureDirIsExisting( const QString& dir ) const
+{
+    if( ! QFile::exists(dir)) {
+        qDebug() << "pdfBaseDir does not exist! Trying to create" << dir;
+        QDir d;
+        if( d.mkpath(dir) ) {
+            qDebug() << "Successfully created" << dir;
+        } else {
+            qDebug() << "Failed to create" << dir;
+        }
+    }
+}
+
 QString ArchiveMan::xmlBaseDir() const
 {
   QString outputDir = KraftSettings::self()->pdfOutputDir();
@@ -258,6 +271,7 @@ QString ArchiveMan::xmlBaseDir() const
   }
 
   if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
+  ensureDirIsExisting(outputDir);
 
   return outputDir;
 }
@@ -270,6 +284,7 @@ QString ArchiveMan::pdfBaseDir() const
   }
 
   if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
+  ensureDirIsExisting(outputDir);
 
   return outputDir;
 
