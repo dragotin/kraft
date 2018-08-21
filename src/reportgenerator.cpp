@@ -55,8 +55,8 @@ ReportGenerator *ReportGenerator::self()
 }
 
 ReportGenerator::ReportGenerator()
-  :mProcess(0),
-    mArchDoc( 0 )
+  :mProcess(nullptr),
+    mArchDoc(nullptr)
 {
   mAddressProvider = new AddressProvider( this );
   connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
@@ -512,14 +512,11 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
     QStringList rmlbin = findTrml2Pdf();
 
     if ( ! rmlbin.size() ) {
-        QMessageBox msgBox;
-        msgBox.setText(i18n("The utility to create PDF from the rml file could not be found, "
-                            "but is required to create documents."));
-        msgBox.setInformativeText(i18n("Please make sure the package is installed accordingly."));
-        msgBox.setWindowTitle(i18n("Document Generation Error"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.exec();
-        return;
+        mErrors = i18n("The utility to create PDF from the rml file could not be found, "
+                       "but is required to create documents.\n");
+        mErrors += i18n("Please make sure the package is installed accordingly.");
+
+        trml2pdfFinished(1, QProcess::NormalExit);
     }
 
     QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
@@ -535,8 +532,8 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
         mMergeIdent = "0";
     }
 
-    QString outputDir = ArchiveMan::self()->pdfBaseDir();
-    QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
+    const QString outputDir = ArchiveMan::self()->pdfBaseDir();
+    const QString filename = ArchiveMan::self()->archiveFileName( docID, archId, "pdf" );
     mFile.setFileName( QString( "%1/%2").arg( outputDir).arg( filename ) );
 
     // qDebug () << "Writing output to " << mFile.fileName();
@@ -586,6 +583,11 @@ void ReportGenerator::runTrml2Pdf( const QString& rmlFile, const QString& docID,
         mTargetStream.setDevice( &mFile );
 
         mProcess->start( );
+    } else {
+        mErrors = i18n("The file to save the PDF could not be written in folder %1\n", outputDir);
+        mErrors += i18n("Please make sure that the output folder exists and is writeable.");
+        trml2pdfFinished(1, QProcess::NormalExit);
+
     }
 }
 
@@ -609,16 +611,19 @@ void ReportGenerator::slotError( QProcess::ProcessError err )
 
 void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
 {
-    mFile.close();
-    const QString rmlFile = mProcess->arguments().last(); // the file name of the temp rmlfile
-    mProcess->deleteLater();
+    if( mFile.isOpen() ) {
+        mFile.close();
+    }
     Q_UNUSED(stat);
 
     // qDebug () << "PDF Creation Process finished with status " << exitStatus;
     // qDebug () << "Wrote bytes to the output file: " << mOutputSize;
     if ( exitCode == 0 ) {
         emit pdfAvailable( mFile.fileName() );
-        QFile::remove(rmlFile); // remove the rmlFile
+        if( mProcess) {
+            const QString rmlFile = mProcess->arguments().last(); // the file name of the temp rmlfile
+            QFile::remove(rmlFile); // remove the rmlFile
+        }
     } else {
         if( mErrors.contains(QLatin1String("No module named Reportlab"))) {
             mErrors = i18n("To generate PDF output, Kraft requires the python module ReportLab which can not be found.\n\n"
@@ -639,10 +644,14 @@ void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
         msgBox.exec();
         mErrors.clear();
     }
+
+    if(mProcess) {
+        mProcess->deleteLater();
+        mProcess = nullptr;
+    }
     mFile.setFileName( QString() );
 
     QApplication::restoreOverrideCursor();
-    mProcess = 0;
 }
 
 
