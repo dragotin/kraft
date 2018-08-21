@@ -253,7 +253,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   int nextNum = dt.nextIdentId( false )-1;
   mCounter->setText( QString::number( nextNum ) );
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
-  // mHeader->setText( i18n( "Details for %1:" ).arg( dt.name() ) );
+  // mHeader->setText( i18n( "Details for %1:", dt.name() ) );
   mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
   mTemplateUrl->setText( dt.templateFile() );
 

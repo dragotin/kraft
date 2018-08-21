@@ -258,11 +258,11 @@ void FlosTemplDialog::refreshPrices()
   else if( m_template->calcKind() == CatalogTemplate::Calculation )
   {
     int benefit = spBenefit->value();
-    QString benefitStr = i18n("(+%1%)").arg(benefit);
+    QString benefitStr = i18n("(+%1%)", benefit);
 
     if( benefit < 0 )
     {
-      benefitStr = "<font color=\"red\">"+i18n("%1%").arg(benefit)+"</font>";
+      benefitStr = "<font color=\"red\">"+i18n("%1%", benefit)+"</font>";
     }
     benefitStr += i18n(": ");
     t += benefitStr;
@@ -565,7 +565,7 @@ void FlosTemplDialog::drawTimeListEntry( QTreeWidgetItem *it, TimeCalcPart *cp )
     return;
 
   it->setText( 0, cp->getName());
-  it->setText( 1, i18n("%1 Min.").arg(cp->getMinuten()));
+  it->setText( 1, i18n("%1 Min.", cp->getMinuten()));
   it->setText( 2, cp->getStundensatz().getName());
   it->setText( 3, cp->globalStdSetAllowed() ? i18n("Yes") : i18n("No"));
 }

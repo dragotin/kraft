@@ -206,7 +206,7 @@ void CreateDbPage::setFillCmdsCount( int cnt )
     mFills = 0;
     ui.mFillProgress->setMaximum( cnt );
     ui.mFillProgress->setValue( 0 );
-    ui.mFillCounter->setText( i18n("0/%1").arg(cnt));
+    ui.mFillCounter->setText( i18n("0/%1", cnt) );
 }
 
 void CreateDbPage::setFillCmdsCurrent( int cnt )
@@ -219,7 +219,7 @@ void CreateDbPage::setCreateCmdsCount( int cnt )
     mCreates = 0;
     ui.mCreateProgress->setMaximum( cnt );
     ui.mCreateProgress->setValue( 0 );
-    ui.mCreateCounter->setText( i18n("0/%1").arg(cnt));
+    ui.mCreateCounter->setText( i18n("0/%1", cnt));
 }
 
 void CreateDbPage::setCreateCmdsCurrent( int cnt )
@@ -238,7 +238,8 @@ void CreateDbPage::slotCountCreateProgress( bool res )
     if( res ) {
         mCreates++;
         ui.mCreateProgress->setValue( mCreates );
-        ui.mCreateCounter->setText( i18n("%1/%2").arg(mCreates).arg( ui.mCreateProgress->maximum() ) );
+        ui.mCreateCounter->setText( i18n("%1/%2", mCreates,
+                                         ui.mCreateProgress->maximum() ) );
     }
 }
 
@@ -247,7 +248,7 @@ void CreateDbPage::slotCountFillProgress( bool res )
     if( res ) {
         mFills++;
         ui.mFillProgress->setValue( mFills );
-        ui.mFillCounter->setText( i18n("%1/%2").arg(mFills).arg( ui.mFillProgress->maximum() ) );
+        ui.mFillCounter->setText( i18n("%1/%2", mFills, ui.mFillProgress->maximum() ) );
     }
 }
 
@@ -285,7 +286,8 @@ void UpgradeDbPage::slotSetOverallCount( int cnt )
 
 void UpgradeDbPage::updateCounter()
 {
-    ui.mUpgradeCounter->setText( i18n("%1/%2").arg(mUpgrades).arg( ui.mUpgradeProgress->maximum() ));
+    ui.mUpgradeCounter->setText( i18n("%1/%2", mUpgrades,
+                                      ui.mUpgradeProgress->maximum() ));
 }
 
 void UpgradeDbPage::slotCountFillProgress( bool res )
@@ -622,7 +624,7 @@ void SetupAssistant::startDatabaseUpdate()
         ++currentVer;
         const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
         // qDebug () << "######### Reading " << migrateFilename;
-        mUpgradeDbPage->slotSetStatusText( i18n("Reading upgrade command file %1").arg( migrateFilename ) );
+        mUpgradeDbPage->slotSetStatusText( i18n("Reading upgrade command file %1", migrateFilename ) );
         SqlCommandList cmds = KraftDB::self()->parseCommandFile( migrateFilename );
         overallCmdCount += cmds.count();
         commandLists << cmds;

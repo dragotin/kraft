@@ -180,7 +180,7 @@ bool KraftDoc::saveDocument( )
 QString KraftDoc::docIdentifier()
 {
   const QString realName = ""; // FIXME: get Realname out of addressbook or from a manually added address
-  return i18n("%1 for %2 (Id %3)").arg( docType() ).arg( realName ).arg( ident() );
+  return i18n("%1 for %2 (Id %3)", docType(), realName, ident() );
 
 }
 

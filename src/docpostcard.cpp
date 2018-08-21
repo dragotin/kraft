@@ -129,14 +129,14 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
               curTax.setNum( reducedTax, 'f', 1 );
               taxStr = posList.reducedTaxSum( reducedTax ).toHtmlString( posList.locale() );
               mPositions += QString( "<tr><td align=\"right\">" );
-              mPositions += i18n( "+ %1% Tax:" ).arg( curTax ) +
+              mPositions += i18n( "+ %1% Tax:", curTax ) +
                       QString( "</td><td align=\"right\">%1</td><td width=\"12\" align=\"right\">%2</td></tr>" ).arg( taxStr ).arg(REDUCED_TAX_MARK);
           }
 
           if( taxType == DocPositionBase::TaxFull || taxType == DocPositionBase::TaxIndividual ) {
               curTax.setNum( tax, 'f', 1 );
               taxStr = posList.fullTaxSum( tax ).toHtmlString( posList.locale() );
-              mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "+ %1% Tax:" ).arg( curTax ) +
+              mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "+ %1% Tax:", curTax ) +
                       QString( "</td><td align=\"right\">%1</td><td width=\"12\" align=\"right\"></td></tr>" ).arg( taxStr );
           }
 
@@ -239,9 +239,9 @@ QString DocPostCard::renderDocMini( int id ) const
   rethtml += t;
 
   t = QString( "<div class=\"body%1\">\n" ).arg( SEL_STRING(KraftDoc::Positions));
-  QString d = i18n("%1 Items").arg(mPositionCount);
+  QString d = i18n("%1 Items", mPositionCount);
   if( mShowPrices )
-      d = i18n("%1 Items, netto %2").arg(mPositionCount).arg(mTotal);
+      d = i18n("%1 Items, netto %2", mPositionCount, mTotal);
 
   t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions), "kraftdoc://positions",
                d );

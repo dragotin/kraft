@@ -59,7 +59,7 @@ TextEditDialog::TextEditDialog( QWidget *parent, KraftDoc::Part docPart )
   mBaseWidget->setupUi( mainWidget );
   mBaseWidget->mDocTypeLabel->setText( DocText::textTypeToString( docPart ) );
 
-  QString h = i18n( "Edit %1 Template" ).arg( DocText::textTypeToString( docPart  ) );
+  QString h = i18n( "Edit %1 Template", DocText::textTypeToString( docPart  ) );
 
   mBaseWidget->dmHeaderText->setText( h );
 

@@ -266,17 +266,17 @@ void Portal::slotStartupChecks()
         if ( err.text().contains( "Can't connect to local MySQL server through socket" ) ) {
             text = i18n( "Kraft can not connect to the specified MySQL server. "
                          "Please check the Kraft database settings, check if the server is "
-                         "running and verify if a database with the name %1 exits!" ).arg( dbName );
+                         "running and verify if a database with the name %1 exits!" , dbName );
         } else if ( err.text().contains( "Unknown database '" + dbName + "' QMYSQL3: Unable to connect" ) ) {
             text = i18n( "The database with the name %1 does not exist on the database server. "
                          "Please make sure the database exists and is accessible by the user "
-                         "running Kraft." ).arg( dbName );
+                         "running Kraft.", dbName );
         } else if ( err.text().contains( "Driver not loaded" ) ) {
             text = i18n( "The Qt database driver could not be loaded. That probably means, that "
                          "they are not installed. Please make sure the Qt database packages are "
                          "installed and try again." );
         } else {
-            text = i18n( "There is a database problem: %1" ).arg( err.text() );
+            text = i18n( "There is a database problem: %1", err.text() );
         }
 
         m_portalView->systemInitError( m_portalView->ptag( text, "problem" ) );
@@ -388,7 +388,7 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
 
     QString name = myContact.formattedName();
     if( !name.isEmpty() ) {
-        name = i18n("Welcome to Kraft, %1").arg(name);
+        name = i18n("Welcome to Kraft, %1", name);
         statusBar()->showMessage(name, 30*1000);
     }
 }
@@ -703,7 +703,7 @@ void Portal::slotOpenPdf( const QString& fileName )
 
 void Portal::slotOpenDocument( const QString& id )
 {
-  slotStatusMsg( i18n("Opening document %1").arg(id ) );
+  slotStatusMsg( i18n("Opening document %1", id ) );
   // qDebug () << "Opening document " << id;
   if( !id.isEmpty() ) {
     DocumentMan *docman = DocumentMan::self();

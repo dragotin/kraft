@@ -73,14 +73,14 @@ QString AddEditChapterDialog::description() const
 void AddEditChapterDialog::setParentChapter( const CatalogChapter& chapter )
 {
   mParentChapter = chapter;
-  mTopLabel->setText( i18n("Create new Catalog Chapter below chapter %1").arg( chapter.name() ));
+  mTopLabel->setText( i18n("Create new Catalog Chapter below chapter %1", chapter.name() ));
 }
 
 void AddEditChapterDialog::setEditChapter( const CatalogChapter& chapter )
 {
   mChapter = chapter;
 
-  mTopLabel->setText( i18n("Edit name and description of chapter %1").arg( chapter.name() ));
+  mTopLabel->setText( i18n("Edit name and description of chapter %1", chapter.name() ));
   mNameEdit->setText( chapter.name() );
   mDescEdit->setText( chapter.description() );
 }

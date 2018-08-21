@@ -366,7 +366,7 @@ void KraftView::slotNewAddress( const KContacts::Addressee& contact, bool intera
         if( interactive ) {
             QMessageBox msgBox;
             msgBox.setText(i18n( "The address label is not empty and different from the selected one.<br/>"
-                                 "Do you really want to replace it with the text shown below?<pre>%1</pre>").arg(newAddress));
+                                 "Do you really want to replace it with the text shown below?<pre>%1</pre>", newAddress));
 
             msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
             msgBox.setDefaultButton(QMessageBox::Yes);
@@ -417,9 +417,9 @@ void KraftView::redrawDocPositions( )
                                  "To add items to the document either "
                                  "<ul>"
                                  "<li>Press the 'Add item' button above.</li>"
-                                 "<li>Open the template catalog by clicking on the '%1' "
+                                 "<li>Open the template catalog by clicking on the 'show Template' "
                                   "button on the right and pick one of the available templates.</li>"
-                                   "</ul></qt>").arg( i18n( "show Template" ) ) );
+                                   "</ul></qt>" ) );
       mHelpLabel->setWordWrap(true);
       mHelpLabel->setMinimumHeight(200);
       m_positionScroll->addChild( mHelpLabel, 0);
@@ -810,7 +810,8 @@ void KraftView::slotAddressFound(const QString& uid, const KContacts::Addressee&
         // need to ask first if we overwrite
         if( QMessageBox::question( this, i18n("Address Overwrite"),
                                    i18n("The address label is not empty and different from the selected one.<br/>"
-                                        "Do you really want to replace it with the text shown below?<pre>%1</pre>").arg(newAddress)
+                                        "Do you really want to replace it with the text shown below?<pre>%1</pre>", 
+					newAddress)
                                    ) == QMessageBox::No ) {
             replace = false;
         }

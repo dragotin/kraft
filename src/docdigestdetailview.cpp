@@ -251,7 +251,7 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
     }
     const QString monthStr = QDate::longMonthName(month);
     const QString yearStr = QString::number(year);
-    tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in %1 %2").arg(monthStr).arg(yearStr) );
+    tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in %1 %2", monthStr, yearStr) );
     tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), i18n("Year"));
     tmpl.setValue( DOCDIGEST_TAG("YEAR_NUMBER"), yearStr);
     tmpl.setValue( DOCDIGEST_TAG("MONTH_LABEL"), i18n("Month"));
@@ -286,7 +286,7 @@ void DocDigestDetailView::slotShowYearDetails( int year )
     const QString yearStr = QString::number(year);
     tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), i18n("Year"));
     tmpl.setValue( DOCDIGEST_TAG("YEAR_NUMBER"), yearStr);
-    tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in Year %1").arg(yearStr) );
+    tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in Year %1", yearStr) );
 
     documentListing(&tmpl, year, -1);
 
@@ -327,7 +327,7 @@ void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, co
         if( digest.clientId().isEmpty() ) {
             addressBookInfo = i18n("The address is not listed in an address book.");
         } else {
-            addressBookInfo = i18n("The client has the address book id %1 but can not found in our address books.").arg(digest.clientId());
+            addressBookInfo = i18n("The client has the address book id %1 but can not found in our address books.", digest.clientId());
         }
     } else {
         addressBookInfo  = i18n("The client can be found in our address books.");

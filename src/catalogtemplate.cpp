@@ -52,7 +52,7 @@ QString CatalogTemplate::calcKindString() const
     return i18n("Calculated");
   else if( m_calcType == AutoCalc )
     return i18n("AutoCalc");
-  else return i18n( "Err: Unknown type %d").arg(m_calcType);
+  else return i18n( "Err: Unknown type %d", m_calcType);
 }
 
 void CatalogTemplate::setEnterDate( const QDateTime& d )

@@ -130,7 +130,7 @@ QString ReportGenerator::findTemplate( const QString& type )
 
   if ( tmplFile.isEmpty() ) {
       QMessageBox msgBox;
-      msgBox.setText(i18n("A document template named %1 could not be loaded. ").arg(dType.templateFile()));
+      msgBox.setText(i18n("A document template named %1 could not be loaded. ", dType.templateFile()));
       msgBox.setInformativeText(i18n("Please check your installation!"));
       msgBox.setStandardButtons(QMessageBox::Ok);
       msgBox.exec();
@@ -207,7 +207,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   if( !tmpl.open() ) {
       // qDebug () << "ERROR: Unable to open document template " << tmplFile;
       QMessageBox msgBox;
-      msgBox.setText(i18n("The template file could not be opened: %1\n ").arg(tmplFile));
+      msgBox.setText(i18n("The template file could not be opened: %1\n ", tmplFile));
       msgBox.setInformativeText(i18n("Please check the setup and the doc type configuration."));
       msgBox.setWindowTitle(i18n("Template Error"));
       msgBox.setStandardButtons(QMessageBox::Ok);
@@ -449,7 +449,7 @@ QStringList ReportGenerator::findTrml2Pdf( )
     // qDebug () << "Ermlpy: " << ermlpy;
     if( ! ermlpy.isEmpty() ) {
       // need the python interpreter
-      // First check for python2 in python3 times. 
+      // First check for python2 in python3 times.
       QString python = QStandardPaths::findExecutable(QLatin1String("python2"));
       if( python.isEmpty() ) {
         python = QStandardPaths::findExecutable(QLatin1String("python"));
@@ -604,7 +604,7 @@ void ReportGenerator::slotReceivedStderr( )
 
 void ReportGenerator::slotError( QProcess::ProcessError err )
 {
-    mErrors.append( i18n("Program ended with status %1").arg(err));
+    mErrors.append( i18n("Program ended with status %1", err));
 }
 
 void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)

@@ -136,7 +136,7 @@ bool TextTemplate::open()
   }
 
   if ( ! ( info.isFile() && info.isReadable() ) ) {
-    mErrorString = i18n( "Could not find template file %1" ).arg( info.absoluteFilePath() );
+    mErrorString = i18n( "Could not find template file %1", info.absoluteFilePath() );
     return false;
   }
 

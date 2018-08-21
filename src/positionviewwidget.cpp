@@ -225,7 +225,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, QLocale* loc )
       TagTemplate tmpl = TagTemplateMan::self()->getTagTemplate( *tagIt );
       QPixmap pix( 16, 12 );
       pix.fill( tmpl.color() );
-      tagger = i18n( "%1-tagged items" ).arg( *tagIt );
+      tagger = i18n( "%1-tagged items", *tagIt );
       mDiscountTag->addItem(pix, tagger);
       if ( selTag == *tagIt ) {
         currentEntry = tagger;
@@ -257,7 +257,7 @@ void PositionViewWidget::slotUpdateTagToolTip()
   bool first = true;
 
   if ( mTags.count() == 1 ) {
-    tip = i18n( "Tag: %1" ).arg( mTags.first() );
+    tip = i18n( "Tag: %1", mTags.first() );
   } else if ( mTags.count() > 1 ) {
     tip = i18n( "Tags:<ul>" );
     for ( QStringList::Iterator it = mTags.begin(); it != mTags.end(); ++it ) {

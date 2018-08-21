@@ -53,7 +53,7 @@ QString ArchDoc::docIdentifier() const
 {
   QString re = docType();
 
-  return i18n("%1 for %2 (Id %3)").arg( re ).arg( ident() );
+  return i18n("%1 for %2 (Id %3)", re, ident() );
 }
 
 Geld ArchDoc::nettoSum() const

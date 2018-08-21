@@ -202,8 +202,8 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
         QLocale *locale = DefaultProvider::self()->locale();
         QString dateStr = locale->toString(details.maxModDate);
         html += QString("<td class=\"sub\" colspan=\"2\">") +
-                i18n("%1 templates in %2 chapters<br/>last modified at %3")
-                .arg(details.countEntries).arg(details.countChapters).arg(dateStr)
+                i18n("%1 templates in %2 chapters<br/>last modified at %3",
+                details.countEntries, details.countChapters, dateStr)
                 + QLatin1String("</td>");
     }
 #if 0
@@ -259,10 +259,10 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   if( !tmpl.open() ) {
       return QString ("");
   }
-  
+
   const QString logoFile = DefaultProvider::self()->locateFile("styles/pics/kraftapp_logo_trans.png" );
 
-  tmpl.setValue( "KRAFT_LOGO_FILE", logoFile ); 
+  tmpl.setValue( "KRAFT_LOGO_FILE", logoFile );
   tmpl.setValue( "KRAFT_WEBSITE", i18n( "Kraft Website" ) );
 
   // kraft infos
@@ -283,10 +283,10 @@ QString PortalView::systemView( const QString& htmlMsg ) const
       QString errorMessage = i18n( "There is a initialisation error on your system. Kraft will not work that way." );
       errorMessage += htmlMsg;
       tmpl.setValue( "ERROR_TEXT", errorMessage );
-      
+
       return tmpl.expand();
   }
-  
+
   // database infos
   tmpl.setValue( "DATABASE_TITLE_LABEL", i18n( "Database Information" ) );
   tmpl.setValue( "DATABASE_NAME_LABEL", i18n( "Kraft database name" ) );
@@ -294,7 +294,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
 
   QString schemaVersion = QString::number( KraftDB::self()->currentSchemaVersion() );
   if ( KraftDB::self()->currentSchemaVersion() != KRAFT_REQUIRED_SCHEMA_VERSION ) {
-    schemaVersion += " - " + QString( "<font color='red'>%1: %2</font>" ).arg( i18n ( "Required Version" )) 
+    schemaVersion += " - " + QString( "<font color='red'>%1: %2</font>" ).arg( i18n ( "Required Version" ))
             .arg( KRAFT_REQUIRED_SCHEMA_VERSION );
   }
   tmpl.setValue( "DATABASE_SCHEMA_VERSION_LABEL", i18n( "Database schema version" ) );
@@ -323,7 +323,8 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   aprov.reset( new AddressProvider);
   tmpl.setValue( "ADDRESSBOOK_BACKEND_LABEL", i18n( "Addressbook Backend" ) );
   tmpl.setValue( "ADDRESSBOOK_BACKEND_TYPE_LABEL", i18n( "Backend type" ) );
-  const QString backendTypeValue = QString( "%1 (%2)" ).arg( aprov->backendName() ).arg( aprov->backendUp() ? i18n("running") : i18n("not running") );
+  const QString backendTypeValue = QString( "%1 (%2)").arg( aprov->backendName())
+          .arg(aprov->backendUp() ? i18n("running") : i18n("not running") );
   tmpl.setValue( "ADDRESSBOOK_BACKEND_TYPE", backendTypeValue );
 
   // external tools
@@ -333,11 +334,11 @@ QString PortalView::systemView( const QString& htmlMsg ) const
 
   QString trml2pdfValue = (trml2pdf.count() ? trml2pdf.join(" ") : i18n("not found!") );
   tmpl.setValue( "RML2PDF_TOOL", trml2pdfValue );
-  
+
   tmpl.setValue( "ICONV_TOOL_LABEL", i18n( "iconv tool for text import" ) );
   tmpl.setValue( "ICONV_TOOL", DefaultProvider::self()->iconvTool() );
-  
-  // aknowledgement 
+
+  // aknowledgement
   tmpl.setValue( "ICON_ACKNOWLEDGEMENT_LABEL", i18n("Some Icons are made by") );
   tmpl.setValue( "ACKNOWLEGEMENT_LABEL", i18n( "Acknowledgements" ) );
 

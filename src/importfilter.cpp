@@ -47,7 +47,7 @@ bool ImportFilter::readDefinition( const QString& name )
     // qDebug () << "KDE StdDir Path: " << findFile;
     defFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
     if ( defFile.isEmpty() ) {
-      mError = i18n( "Unable to find filter called %1" ).arg( name );
+      mError = i18n( "Unable to find filter called %1", name );
       return false;
     }
   }

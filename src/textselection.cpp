@@ -134,7 +134,7 @@ void TextSelection::showDocText( DocText dt )
 void TextSelection::slotSelectDocType( const QString& doctype )
 {
   QString partStr = KraftDoc::partToString( mPart );
-  QString t = QString( i18n( "%1 Templates for %2" ).arg( partStr ).arg(doctype) );
+  QString t = QString( i18n( "%1 Templates for %2", partStr, doctype) );
   mGroupBox->setTitle( t );
   mDocType = doctype;
 
