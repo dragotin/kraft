@@ -42,6 +42,7 @@ public:
     QString getStundensatzName();
     int     getDauer();
     bool    allowGlobal();
+    QString unitStr() const;
 signals:
     void timeCalcPartChanged(TimeCalcPart*);
 protected slots:

@@ -164,8 +164,10 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
     if( type  == KALKPART_TIME ) {
       TimeCalcPart *zcp = static_cast<TimeCalcPart*>(cp);
       StdSatz stdsatz = zcp->getStundensatz();
-      title = QString( "%1, %2 Min. %3" ).arg( cp->getName() )
-              .arg( QString::number( zcp->getMinuten() ) )
+      title = QString( "%1, %2 %3 %4" )
+              .arg( cp->getName() )
+              .arg( QString::number(zcp->duration()))
+              .arg( TimeCalcPart::timeUnitString(zcp->timeUnit()))
               .arg( stdsatz.getName() );
     }
 

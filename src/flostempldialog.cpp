@@ -540,9 +540,10 @@ void FlosTemplDialog::slAddTimePart()
   if( ! m_template ) return;
   TimeCalcDialog dia(this);
 
-  if( dia.exec() == QDialog::Accepted )
-  {
-    TimeCalcPart *cp = new TimeCalcPart( dia.getName(), dia.getDauer(), 0 );
+  if( dia.exec() == QDialog::Accepted ) {
+    TimeCalcPart *cp = new TimeCalcPart( dia.getName(), dia.getDauer(),
+                                         TimeCalcPart::timeUnitFromString(dia.unitStr()),
+                                         0 );
     cp->setGlobalStdSetAllowed( dia.allowGlobal());
     StdSatz std = StdSatzMan::self()->getStdSatz( dia.getStundensatzName());
     cp->setStundensatz( std );
@@ -565,7 +566,8 @@ void FlosTemplDialog::drawTimeListEntry( QTreeWidgetItem *it, TimeCalcPart *cp )
     return;
 
   it->setText( 0, cp->getName());
-  it->setText( 1, i18n("%1 Min.", cp->getMinuten()));
+  it->setText( 1, i18n("%1 %2", cp->duration(),
+                       TimeCalcPart::timeUnitString(cp->timeUnit())));
   it->setText( 2, cp->getStundensatz().getName());
   it->setText( 3, cp->globalStdSetAllowed() ? i18n("Yes") : i18n("No"));
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
-    <height>233</height>
+    <width>432</width>
+    <height>275</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,14 +91,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="textLabel4">
-         <property name="text">
-          <string>Minutes</string>
-         </property>
-         <property name="wordWrap">
-          <bool>false</bool>
-         </property>
-        </widget>
+        <widget class="QComboBox" name="_cbTimeUnit"/>
        </item>
       </layout>
      </item>
@@ -127,7 +120,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Apply the &amp;global hourly rate.</string>
+        <string>Apply the &amp;global hourly rate</string>
        </property>
       </widget>
      </item>

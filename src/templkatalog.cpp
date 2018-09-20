@@ -210,22 +210,24 @@ int TemplKatalog::loadTimeCalcParts( FloskelTemplate *flos )
   int cnt = 0;
 
   QSqlQuery q;
-  q.prepare("SELECT TCalcID, TemplID, name, minutes, percent, stdHourSet, allowGlobal FROM CalcTime WHERE TemplID=:TemplID");
+  q.prepare("SELECT TCalcID, TemplID, name, minutes, percent, stdHourSet, allowGlobal, timeUnit"
+            " FROM CalcTime WHERE TemplID=:TemplID");
   q.bindValue(":TemplID", QString::number( flos->getTemplID()));
   q.exec();
 
-  while( q.next() )
-  {
+  while( q.next() ) {
     cnt++;
     int tcalcid = q.value(0).toInt();
     int templid = q.value(1).toInt();
-    QString name = q.value(2).toString();
+    const QString name = q.value(2).toString();
     int minutes = q.value(3).toInt();
     int prozent = q.value(4).toInt();
     int hourSet = q.value(5).toInt();
     bool globAllowed = q.value(6).toInt() > 0;
+    int timeUnit = q.value(7).toInt();
 
-    TimeCalcPart *zcp = new TimeCalcPart( name, minutes, prozent );
+    TimeCalcPart::TimeUnit unit = TimeCalcPart::timeUnitFromInt(timeUnit);
+    TimeCalcPart *zcp = new TimeCalcPart( name, minutes, unit, prozent );
     zcp->setGlobalStdSetAllowed( globAllowed );
     zcp->setStundensatz( StdSatzMan::self()->getStdSatz(hourSet) );
 

@@ -33,6 +33,7 @@ TimeCalcDialog::TimeCalcDialog(QWidget *parent)
     _timeWidget->setupUi(_centralWidget);
 
     _timeWidget->m_hourSets->insertItems(-1, StdSatzMan::self()->allStdSaetze());
+    _timeWidget->_cbTimeUnit->addItems(TimeCalcPart::timeUnitStrings());
 }
 
 void TimeCalcDialog::setTimeCalcPart(TimeCalcPart *cp)
@@ -41,7 +42,8 @@ void TimeCalcDialog::setTimeCalcPart(TimeCalcPart *cp)
     if( ! cp ) return;
 
     _timeWidget->m_nameEdit->setText( cp->getName());
-    _timeWidget->m_dauer->setValue( cp->getMinuten());
+    _timeWidget->m_dauer->setValue( cp->duration());
+    _timeWidget->_cbTimeUnit->setCurrentText( TimeCalcPart::timeUnitString(cp->timeUnit()));
     _timeWidget->m_stdGlobal->setChecked(cp->globalStdSetAllowed());
     StdSatz std = cp->getStundensatz();
     _timeWidget->m_hourSets->setCurrentIndex(_timeWidget->m_hourSets->findText( std.getName() ));
@@ -51,7 +53,7 @@ void TimeCalcDialog::accept()
 {
   if( _part ) {
     _part->setGlobalStdSetAllowed(_timeWidget->m_stdGlobal->isChecked());
-    _part->setMinuten(_timeWidget->m_dauer->value());
+    _part->setDuration(_timeWidget->m_dauer->value(), _timeWidget->_cbTimeUnit->currentText());
     _part->setName(_timeWidget->m_nameEdit->text());
 
     QString selHourSet = _timeWidget->m_hourSets->currentText();
@@ -85,6 +87,11 @@ bool TimeCalcDialog::allowGlobal()
 QString TimeCalcDialog::getStundensatzName()
 {
   return _timeWidget->m_hourSets->currentText();
+}
+
+QString TimeCalcDialog::unitStr() const
+{
+    return _timeWidget->_cbTimeUnit->currentText();
 }
 
 /* END */

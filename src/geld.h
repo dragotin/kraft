@@ -48,6 +48,7 @@ public:
     QString toString( QLocale* ) const;
     QString toHtmlString( QLocale* ) const;
     double toDouble();
+    // toLong returns the amount in cents!
     long   toLong();
 private:
     long m_cent;

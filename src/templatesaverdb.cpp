@@ -267,7 +267,8 @@ void CalculationsSaverDB::fillTimeCalcBuffer( QSqlRecord *buffer, TimeCalcPart *
 {
     if( ! (buffer && cp )) return;
     buffer->setValue( "name",    cp->getName() );
-    buffer->setValue( "minutes", cp->getMinuten() );
+    buffer->setValue( "minutes", cp->duration() );
+    buffer->setValue( "timeUnit", cp->timeUnitIndex());
     buffer->setValue( "percent", cp->getProzentPlus() );
 
     StdSatz std = cp->getStundensatz();

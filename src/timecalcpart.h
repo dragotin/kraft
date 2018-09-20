@@ -29,12 +29,25 @@
 class TimeCalcPart : public CalcPart  {
 
 public:
-    TimeCalcPart( const QString& name, int minutes, int prozent = 0);
-  TimeCalcPart();
+    enum TimeUnit {Minutes, Seconds, Hours};
+
+    TimeCalcPart( const QString& name, int minutes, TimeUnit unit, int prozent = 0);
+    TimeCalcPart();
     ~TimeCalcPart();
 
     bool globalStdSetAllowed() { return m_allowGlobalStundensatz; }
     void setGlobalStdSetAllowed( bool s );
+    void setDuration(int duration, const QString &unitStr );
+
+    static QStringList timeUnitStrings();
+    static QString timeUnitString( const TimeUnit& unit );
+    static TimeCalcPart::TimeUnit timeUnitFromString( const QString& unit);
+    static TimeCalcPart::TimeUnit timeUnitFromInt(int index);
+
+    qint32 durationToSeconds() const;
+    qint32 duration()  const  { return _duration; }
+    TimeUnit timeUnit() const { return _timeUnit; }
+    int timeUnitIndex() const;
 
     virtual Geld basisKosten();
     /** Write property of Geld m_stundensatz. */
@@ -44,14 +57,12 @@ public:
 
     virtual QString getType() const;
 
-    virtual void setMinuten( int m );
-    virtual int getMinuten() { return m_minuten; }
-
 private:
-    int m_minuten;
+    qint32 _duration;
     /**  */
     StdSatz m_stundensatz;
     bool m_allowGlobalStundensatz;
+    TimeUnit _timeUnit;
 };
 
 #endif

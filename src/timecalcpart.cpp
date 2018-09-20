@@ -17,21 +17,25 @@
 
 #include <QDebug>
 
+#include "klocalizedstring.h"
+
 #include "timecalcpart.h"
 
 
 TimeCalcPart::TimeCalcPart()
   :CalcPart(),
-   m_minuten( 0 ),
-   m_allowGlobalStundensatz( false )
+   _duration( 0 ),
+   m_allowGlobalStundensatz(false),
+   _timeUnit(Minutes)
 {
 
 }
 
-TimeCalcPart::TimeCalcPart(const QString& name, int minutes, int prozent)
-:CalcPart( name, prozent ),
- m_minuten( minutes ),
- m_allowGlobalStundensatz(true)
+TimeCalcPart::TimeCalcPart(const QString& name, int minutes, TimeUnit unit, int prozent)
+    :CalcPart( name, prozent ),
+      _duration( minutes ),
+      m_allowGlobalStundensatz(true),
+      _timeUnit( unit )
 {
 
 }
@@ -63,22 +67,84 @@ void TimeCalcPart::setGlobalStdSetAllowed( bool s  )
     }
 }
 
-void TimeCalcPart::setMinuten( int m )
+void TimeCalcPart::setDuration( int duration, const QString& unitStr )
 {
-    if( m_minuten != m )
-    {
-        m_minuten = m;
+    if( _duration != duration || timeUnitString(_timeUnit) != unitStr ) {
+        _duration = duration;
+        _timeUnit = timeUnitFromString(unitStr);
         setDirty(true);
     }
 }
 
+QString TimeCalcPart::timeUnitString( const TimeUnit& unit )
+{
+    if( unit == Minutes ) {
+        return i18n("Minutes");
+    } else if( unit == Hours) {
+        return i18n("Hours");
+    }
+    return i18n("Seconds");
+}
+
+QStringList TimeCalcPart::timeUnitStrings()
+{
+    // When adding something here make sure to adjust other places in the file
+    return QStringList() << timeUnitString(Minutes) <<
+                            timeUnitString(Seconds) <<
+                            timeUnitString(Hours);
+}
+
+TimeCalcPart::TimeUnit TimeCalcPart::timeUnitFromString( const QString& unit)
+{
+    const QStringList li = timeUnitStrings();
+    int pos = li.indexOf(unit);
+
+    return timeUnitFromInt(pos);
+}
+
+TimeCalcPart::TimeUnit TimeCalcPart::timeUnitFromInt( int index )
+{
+    // the static_cast here need to be updated if new enums are added
+    if( index > -1 && index <= static_cast<int>(Hours)) {
+        switch (index) {
+            case static_cast<int>(Minutes):
+            case static_cast<int>(Seconds):
+            case static_cast<int>(Hours):
+                return static_cast<TimeUnit>(index);
+            default:
+                // this is actually an error case, forgot to add a pot. new enum...
+                return Minutes;
+        }
+    }
+    return Minutes;
+}
+
+int TimeCalcPart::timeUnitIndex() const
+{
+    // Make sure to adopt this if a new unit is added!
+    if( _timeUnit == Hours )
+        return 2;
+    else if( _timeUnit == Seconds )
+        return 1;
+    else
+        return 0;
+}
+
+qint32 TimeCalcPart::durationToSeconds() const
+{
+    if( _timeUnit == Minutes ) {
+        return _duration * 60;
+    } else if( _timeUnit == Hours ) {
+        return 60*60*_duration;
+    }
+    // seconds is default
+    return _duration;
+}
 
 Geld TimeCalcPart::basisKosten()
 {
     StdSatz stdSatz = getStundensatz();
-
-    // Wichtig hier: toDouble, sonst wird wild gecastet !!
-    Geld g( stdSatz.getPreis().toDouble() * long(m_minuten) / 60);
+    const Geld g( (stdSatz.getPreis().toLong() * durationToSeconds()) / 360000.0);
     return g;
 }
 
