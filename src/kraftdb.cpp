@@ -323,8 +323,11 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
         // qDebug () << "Opening migration file " << sqlFile << endl;
 
         QFile f( sqlFile );
+        if ( !f.exists() ) {
+            qDebug() << "FATAL: File" << sqlFile << "does not exist!";
+        }
         if ( !f.open( QIODevice::ReadOnly ) ) {
-            // qDebug () << "Could not open " << sqlFile << endl;
+            qDebug () << "FATAL: Could not open " << sqlFile << endl;
         } else {
             QTextStream ts( &f );
             ts.setCodec("UTF-8");
