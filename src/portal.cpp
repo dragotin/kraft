@@ -624,7 +624,7 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addres
 
     disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
              this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
-    disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
+    disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ), nullptr, nullptr );
 
     QString mailAgent("thunderbird");
     if( mailAgent.contains("thunderbird") ) {
@@ -668,7 +668,7 @@ void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
 
 void Portal::slotOpenPdf( const QString& fileName )
 {
-    disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),0,0 );
+    disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),nullptr, nullptr );
     QUrl url( fileName );
     QDesktopServices::openUrl(url);
 
@@ -961,7 +961,7 @@ void Portal::slotOpenKatalog(const QString& kat)
     } else {
       QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-      KatalogView *katView = 0;
+      KatalogView *katView = nullptr;
       if( kat == MaterialKatalogView::MaterialCatalogName ) {
 
         /* Materialkatalog */
@@ -1009,9 +1009,9 @@ QString Portal::textWrap( const QString& t, int width )
     }
     else
     {
-        unsigned int start = 0;
+        int start = 0;
         int pos = width;
-        while( pos < (int) t.length() )
+        while( pos < t.length() )
         {
             pos = t.indexOf( ' ', start+width );
             if( pos > -1 ) {
