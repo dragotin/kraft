@@ -598,15 +598,36 @@ void Portal::slotMailPdfAvailable( const QString& fileName )
     _pdfFileName = fi.canonicalFilePath();
 
     // get the email.
+    bool noEmail = true;
     if( !_clientId.isEmpty() && mAddressProvider ) {
         connect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
                  this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
-        mAddressProvider->lookupAddressee(_clientId);
+        AddressProvider::LookupState state = mAddressProvider->lookupAddressee( _clientId);
+        switch( state ) {
+        case AddressProvider::LookupFromCache: {
+            const KContacts::Addressee contact = mAddressProvider->getAddresseeFromCache(_clientId);
+            slotMailAddresseeFound(_clientId, contact);
+            noEmail = false;
+            break;
+        }
+        case AddressProvider::LookupNotFound:
+        case AddressProvider::ItemError:
+        case AddressProvider::BackendError: {
+            // No EMail available.
+            break;
+        }
+        case AddressProvider::LookupOngoing:
+        case AddressProvider::LookupStarted:
+            // Not much to do, just wait for the lookup slot to arrive
+            noEmail = false;
+            break;
+        }
         _clientId.clear();
-    } else {
-        slotMailAddresseeFound( QString::null, KContacts::Addressee() );
     }
 
+    if( noEmail ){
+        slotMailAddresseeFound( QString::null, KContacts::Addressee() );
+    }
 }
 
 void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addressee& contact )
@@ -618,6 +639,13 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addres
         mailReceiver = contact.fullEmail(); // the prefered email
     }
 
+    if( mailReceiver.isEmpty() ) {
+        QMessageBox::warning( this, i18n("Send per Email"),
+                              i18n("The email address of the contact is empty!\n"
+                                   "Please add an email address to the addressbook."));
+        return;
+    }
+
     // qDebug () << "Found mail address " << mailReceiver << " for " << uid;
 
     // qDebug () << "Mailing away " << _pdfFileName << endl;
@@ -626,10 +654,18 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addres
              this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
     disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ), nullptr, nullptr );
 
-    QString mailAgent("thunderbird");
-    if( mailAgent.contains("thunderbird") ) {
-        QString prog = "/usr/bin/thunderbird";
-        QStringList args;
+    QStringList args;
+    QString prog;
+
+    if( KraftSettings::self()->mailUA().startsWith("xdg") ) {
+        args.append( "--utf8");
+        args.append( "--attach");
+        args.append(_pdfFileName );
+        args.append( mailReceiver);
+        prog = QLatin1String("/usr/bin/xdg-email");
+    } else {
+        // Fallback to thunderbird
+        prog = QLatin1String("/usr/bin/thunderbird");
 
         args.append("-compose");
         QString tmp;
@@ -638,14 +674,11 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addres
         }
         tmp += QString("attachment='file://%1'").arg(_pdfFileName);
         args.append(tmp);
+    }
+    qDebug () << "Starting mailer: " << prog << args;
 
-        // qDebug () << "Starting thunderbird: " << prog << args;
-
-        if (!QProcess::startDetached(prog, args)) {
-            // qDebug () << "Failed to start thunderbird composer!";
-        }
-    } else {
-       // FIXME porting
+    if (!QProcess::startDetached(prog, args)) {
+        qDebug () << "Failed to start thunderbird composer!";
     }
     _pdfFileName.clear();
 }
