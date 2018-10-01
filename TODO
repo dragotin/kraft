@@ -1,29 +1,7 @@
 Todo list for Kraft
 ===================
 
-Configuration and Management
-----------------------------
-* Edit Header and Footer texts should go to their own dialog
-* Greetings should be editable
-* Saluts should be editable
+Please use the github issue tracker for enhancements and bug reports:
+https://github.com/dragotin/kraft/issues
 
 
-Document Assembly
------------------
-* Catalogs for footer and header texts
-* position groups
-
-Catalog Management
-------------------
-* XML Export for Catalogs
-* Deletion of Catalogs
-* Creation of new Catalogs
-* Importing existing Catalogs of different types
-
-Portal
-------
-* no more complete redraw after doc window closes.
-
-Unsorted
---------
-* 
