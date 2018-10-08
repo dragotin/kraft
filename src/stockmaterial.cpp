@@ -46,7 +46,7 @@ CatalogTemplate(),
     m_ePrice(pIn),
     m_vPrice(pOut)
 {
-    m_unit = UnitManager::self()->getUnit( unitID );
+    this->setUnitId(unitID);
 }
 
 StockMaterial::~StockMaterial( )
@@ -99,16 +99,6 @@ void StockMaterial::setAmountPerPack( double am )
     m_amount = am;
 }
 
-Einheit StockMaterial::getUnit( )
-{
-    return m_unit;
-}
-
-void StockMaterial::setUnit( const Einheit& e )
-{
-    m_unit = e;
-}
-
 int StockMaterial::getID()
 {
     return m_dbid;
@@ -143,7 +133,7 @@ Geld StockMaterial::salesPrice()
 
 Geld StockMaterial::unitPrice()
 {
-  return salesPrice();
+  return salesPrice() / m_amount;
 }
 
 void StockMaterial::setPurchPrice( Geld g )

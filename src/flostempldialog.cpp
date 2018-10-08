@@ -587,7 +587,7 @@ void FlosTemplDialog::drawMatListEntry( QTreeWidgetItem *it, MaterialCalcPart *m
 {
   it->setText( 0, mc->getName());
   it->setText( 1, QString::number(mc->getCalcAmount(), 'f',2));
-  it->setText( 2, mc->getMaterial()->getUnit().einheitSingular());
+  it->setText( 2, mc->getMaterial()->unit().einheitSingular());
   it->setText( 3, mc->basisKosten().toString( m_katalog->locale() ));
   it->setText( 4, QString::number(mc->getMaterial()->getAmountPerPack(), 'f',2));
   it->setText( 5, mc->getMaterial()->salesPrice().toString( m_katalog->locale() ));

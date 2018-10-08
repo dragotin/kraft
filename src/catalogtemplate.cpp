@@ -19,12 +19,14 @@
 #include <klocalizedstring.h>
 
 #include "catalogtemplate.h"
+#include "unitmanager.h"
 
 CatalogTemplate::CatalogTemplate()
   : m_calcType( Calculation ),
   mUseCounter(0),
   mEntered( QDateTime::currentDateTime() ),
-  mLastModified( QDateTime::currentDateTime() )
+  mLastModified( QDateTime::currentDateTime() ),
+  mUnitId(0)
 {
 
 }
@@ -103,6 +105,16 @@ QString CatalogTemplate::getText() const
 void CatalogTemplate::setText( const QString& str )
 {
   mText = str;
+}
+
+void CatalogTemplate::setUnitId(int id)
+{
+    mUnitId = id;
+}
+
+Einheit CatalogTemplate::unit() const
+{
+    return UnitManager::self()->getUnit(mUnitId);
 }
 
 void CatalogTemplate::setChapterId( const dbID& id, bool persist )

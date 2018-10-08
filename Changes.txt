@@ -1,3 +1,11 @@
+
+Changes since version 0.81: #########################################
+
+- Fix send document by email
+- Allow emailing through xdg-email and not only through thunderbird
+  To enable, set mailUA=xdg in the config file in the system section.
+=> release v. 0.82 (Oct x, 2018)
+
 Changes since version 0.80: #########################################
 
 - Fix to build with Qt 5.11

@@ -29,6 +29,7 @@ class QWidget;
 class CatalogSelection;
 class Katalog;
 class Geld;
+class Einheit;
 
 class KRAFTCAT_EXPORT CatalogTemplate
 {
@@ -67,6 +68,9 @@ public:
 
   dbID chapterId();
 
+  Einheit unit() const;
+  void setUnitId(int id);
+
 protected:
   virtual void saveChapterId();
 
@@ -79,6 +83,9 @@ protected:
   QDateTime mLastModified;
   QDateTime mLastUsed;
   QString mText;
+
+private:
+  int mUnitId;
 };
 
 class KRAFTCAT_EXPORT CatalogTemplateList : public QList<CatalogTemplate*>

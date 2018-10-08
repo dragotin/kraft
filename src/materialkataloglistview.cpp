@@ -104,7 +104,7 @@ void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ,
   StockMaterial *mat = static_cast<StockMaterial*>( templ );
 
   if ( item && mat ) {
-    Einheit e = mat->getUnit();
+    Einheit e = mat->unit();
     // qDebug () << "Setting material name " << e.einheitSingular() << endl;
     item->setText( 0, mat->name() );
     item->setText( 1, QString::number( mat->getAmountPerPack() ) );
@@ -130,7 +130,7 @@ DocPosition MaterialKatalogListView::itemToDocPosition( QTreeWidgetItem *item )
   StockMaterial *mat = static_cast<StockMaterial*>( m_dataDict[item] );
   if ( mat ) {
     pos.setText( mat->name() );
-    pos.setUnit( mat->getUnit() );
+    pos.setUnit( mat->unit() );
     pos.setUnitPrice( mat->salesPrice() );
   }
 

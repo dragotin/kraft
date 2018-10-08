@@ -33,7 +33,6 @@
 
 FloskelTemplate::FloskelTemplate()
     : CatalogTemplate(),
-      mUnitId(0),
       mTemplId(-1),
       m_chapter(0),
       mBenefit(0),
@@ -47,7 +46,6 @@ FloskelTemplate::FloskelTemplate()
 FloskelTemplate::FloskelTemplate( int tID, const QString& text,
                                   int einheit, int chapter, int calcKind )
  : CatalogTemplate(),
-   mUnitId(einheit),
    mTemplId(tID),
    m_chapter(chapter),
    mBenefit(0),
@@ -63,14 +61,14 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
   } else if ( calcKind == 3 ) {
     setCalculationType( AutoCalc );
   }
-  // m_calcParts.setAutoDelete(true);
+
   setText( text );
+  this->setUnitId(einheit);
   setChapterId( dbID(chapter), false );
 }
 
 FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
     : CatalogTemplate( templ ),
-      mUnitId( templ.mUnitId ),
       mTemplId( templ.mTemplId ),
       m_preis( templ.m_preis ),
       m_listViewItem(templ.m_listViewItem ),
@@ -80,6 +78,7 @@ FloskelTemplate::FloskelTemplate( FloskelTemplate& templ )
   setModifyDate( templ.modifyDate() );
   setEnterDate( templ.enterDate() );
   setText( templ.getText() );
+  setUnitId(templ.unit().id());
   // m_calcParts.setAutoDelete(true);
 }
 
@@ -88,7 +87,7 @@ FloskelTemplate& FloskelTemplate::operator= ( FloskelTemplate& src )
   if ( this == &src ) return *this;
 
   mText = src.mText;
-  mUnitId = src.mUnitId;
+  setUnitId(src.unit().id());
   mTemplId = src.mTemplId;
   mChapterId = src.mChapterId;
   m_preis = src.m_preis;
@@ -127,16 +126,6 @@ void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
     }
     m_calcParts.append( ncp );
   }
-}
-
-Einheit FloskelTemplate::unit() const
-{
-    return UnitManager::self()->getUnit( mUnitId );
-}
-
-void FloskelTemplate::setUnitId(int id)
-{
-    mUnitId = id;
 }
 
 void FloskelTemplate::setBenefit( double g )
@@ -266,7 +255,7 @@ QDomElement FloskelTemplate::toXML( QDomDocument& doc)
 {
     QDomElement templ = doc.createElement("template");
 
-    templ.appendChild( createDomNode(doc, "unit",   UnitManager::self()->getUnit(mUnitId).einheitSingular()));
+    templ.appendChild( createDomNode(doc, "unit", getUnit().einheitSingular()));
     templ.appendChild( createDomNode(doc, "text", getText()));
     templ.appendChild( createDomNode(doc, "id", QString::number(getTemplID())));
     templ.appendChild( createDomNode(doc, "benefit", QString::number(getBenefit())));

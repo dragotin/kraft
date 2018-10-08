@@ -50,9 +50,6 @@ public:
   double getAmountPerPack();
   void setAmountPerPack( double am );
 
-  Einheit getUnit();
-  void setUnit(const Einheit& );
-
   int getID();
   void setID( int );
 
@@ -89,7 +86,7 @@ private:
 
   // per package:
   double  m_amount;
-  Einheit m_unit;
+  int     m_unit;
   int     m_dbid;
 
   // FIXME: introduce supplier list

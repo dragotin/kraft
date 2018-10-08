@@ -68,8 +68,7 @@ QString MaterialCalcPart::getType() const
 
 Geld MaterialCalcPart::basisKosten()
 {
-  double d = m_calcAmount / m_mat->getAmountPerPack();
-  return m_mat->salesPrice() * d;
+  return m_mat->unitPrice() * m_calcAmount;
 }
 
 StockMaterial * MaterialCalcPart::getMaterial()

@@ -59,9 +59,6 @@ public:
     CalcPartList getCalcPartsList(const QString& );
     CalcPartList decoupledCalcPartsList();
 
-    Einheit unit() const;
-    void setUnitId(int id);
-
     void setBenefit( double );
     double getBenefit();
 
@@ -92,7 +89,6 @@ private: // Private methods
 #endif
     virtual Geld calcPreis();
 
-    int              mUnitId;
     int              mTemplId;  // Database ID
     int              m_chapter;
     CalcPartList     m_calcParts;

@@ -36,7 +36,7 @@ MatCalcDialog::MatCalcDialog( MaterialCalcPart *mc, QWidget *parent )
 
 void MatCalcDialog::init(double amount)
 {
-    Einheit e = m_mc->getMaterial()->getUnit();
+    Einheit e = m_mc->getMaterial()->unit();
 
     _matWidget->matLabel->setText( m_mc->getMaterial()->name());
     _matWidget->einheitLabel->setText( e.einheit(amount) );

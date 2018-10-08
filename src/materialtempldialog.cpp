@@ -165,7 +165,7 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
 
   // unit settings
   mCbUnit->insertItems(-1, UnitManager::self()->allUnits() );
-  Einheit e = t->getUnit();
+  Einheit e = t->unit();
   mCbUnit->setCurrentIndex(mCbUnit->findText( e.einheitSingular() ));
 
   // text
@@ -212,7 +212,7 @@ void MaterialTemplDialog::accept()
 
     int u = UnitManager::self()->getUnitIDSingular( str );
     // qDebug () << "Setting unit id "  << u << endl;
-    mSaveMaterial->setUnit( UnitManager::self()->getUnit( u ) );
+    mSaveMaterial->setUnitId( u );
 
     // chapId = 0; // FIXME: get a chapter catalog Id of hirarchical
     mSaveMaterial->setChapter( mChapId );

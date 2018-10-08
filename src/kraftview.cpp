@@ -931,7 +931,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
   int newpos = mPositionWidgetList.count();
   // qDebug () << "Adding Position at list position " << newpos << endl;
 
-  TemplToPositionDialogBase *dia = 0;
+  QScopedPointer<TemplToPositionDialogBase> dia;
 
   DocPosition *dp = new DocPosition();
   dp->setPositionNumber( newpos +1 );
@@ -942,123 +942,97 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
     newTemplate = true;
   }
 
+  dia.reset(new InsertTemplDialog( this ));
+  dia->setCatalogChapters( kat->getKatalogChapters() );
+
   if ( newTemplate ) {
-    // New templates may only go to the standard template catalog, FIXME
-    dia = new InsertTemplDialog( this );
-    dia->setCatalogChapters( kat->getKatalogChapters() );
+      // New templates may only go to the standard template catalog, FIXME
   } else {
-    // it's not a new template
-    if ( kat ) {
-      // For empty template in plants dialog come up with standard dialog
-      if ( kat->type() == TemplateCatalog ) {
-        dia = new InsertTemplDialog( this );
-        FloskelTemplate *ftmpl = static_cast<FloskelTemplate*>( tmpl );
-        dp->setText( ftmpl->getText() );
-        dp->setUnit( ftmpl->unit() );
-        dp->setUnitPrice( ftmpl->unitPrice() );
+      // it's not a new template
+      dp->setText(tmpl->getText());
+      dp->setUnit(tmpl->unit());
+      dp->setUnitPrice(tmpl->unitPrice());
 
-        s = KraftSettings::self()->templateToPosDialogSize();
-
-      } else if ( kat->type() == MaterialCatalog ) {
-        dia = new InsertTemplDialog( this );
-        StockMaterial *mat = static_cast<StockMaterial*>( tmpl );
-        dp->setText( mat->name() );
-        dp->setUnit( mat->getUnit() );
-        dp->setUnitPrice( mat->salesPrice() );
-        s = KraftSettings::self()->templateToPosDialogSize();
-
-      }
-    }
+      s = KraftSettings::self()->templateToPosDialogSize();
   }
 
-  if ( dia ) {
-    if ( mRememberAmount > 0 ) {
+  if ( mRememberAmount > 0 ) {
       dp->setAmount( mRememberAmount );
-    }
+  }
 
-    KraftDoc *doc = getDocument();
-    if(doc) {
-        DocType docType = doc->docType();
-        dia->setDocPosition( dp, newTemplate, docType.pricesVisible() );
-    }
-    DocPositionList list = currentPositionList();
-    dia->setPositionList( list, newpos );
+  KraftDoc *doc = getDocument();
+  if(doc) {
+      DocType docType = doc->docType();
+      dia->setDocPosition( dp, newTemplate, docType.pricesVisible() );
+  }
+  DocPositionList list = currentPositionList();
+  dia->setPositionList( list, newpos );
 
-    dia->resize( s );
+  dia->resize( s );
 
-    if ( dia->exec() ) {
+  if ( dia->exec() == QDialog::Accepted ) {
       DocPosition diaPos = dia->docPosition();
       *dp = diaPos;
 
       // set the tax settings
       if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
-        // FIXME: In case a new item is added, add the default tax type.
-        // otherwise add the tax of the template
-        dp->setTaxType( DocPositionBase::TaxFull );
+          // FIXME: In case a new item is added, add the default tax type.
+          // otherwise add the tax of the template
+          dp->setTaxType( DocPositionBase::TaxFull );
       } else {
-        dp->setTaxType( currentTaxSetting() );
+          dp->setTaxType( currentTaxSetting() );
       }
 
       // store the initial size of the template-to-doc-pos dialogs
       s = dia->size();
+      KraftSettings::self()->setTemplateToPosDialogSize( s );
 
       if ( kat->type() == TemplateCatalog ) {
-        KraftSettings::self()->setTemplateToPosDialogSize( s );
 
-        // if it's a new position, create a catalog template in the incoming chapter
-        if ( newTemplate ) {
-          const QString chapter = dia->chapter();
+          // if it's a new position, create a catalog template in the incoming chapter
+          if ( newTemplate ) {
+              const QString chapter = dia->chapter();
 
-          int chapterId = 0; // find the chapter.
-          if( !chapter.isEmpty() ) {
-              chapterId = KatalogMan::self()->defaultTemplateCatalog()->chapterID(chapter).toInt();
+              int chapterId = 0; // find the chapter.
+              if( !chapter.isEmpty() ) {
+                  chapterId = KatalogMan::self()->defaultTemplateCatalog()->chapterID(chapter).toInt();
+              }
+
+              FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
+                                                           dp->unit().id(),
+                                                           chapterId,
+                                                           1 /* CalcKind = Manual */ );
+
+              flos->setManualPrice( dp->unitPrice() );
+              flos->save();
+
+              // reload the entire katalog
+              Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
+              if( defaultKat ) {
+                  defaultKat->load();
+                  KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
+              }
           }
-
-          FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
-                                                       dp->unit().id(),
-                                                       chapterId,
-                                                       1 /* CalcKind = Manual */ );
-
-          flos->setManualPrice( dp->unitPrice() );
-          flos->save();
-
-          // reload the entire katalog
-          Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
-          if( defaultKat ) {
-              defaultKat->load();
-              KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
-          }
-        }
       } else if ( kat->type() == MaterialCatalog ) {
-        KraftSettings::self()->setTemplateToPosDialogSize( s );
-        if ( newTemplate ) {
+          if ( newTemplate ) {
 
-        }
-
-      } else if ( kat->type() == PlantCatalog ) {
-        KraftSettings::self()->setPlantTemplateToPosDialogSize( s );
-        if ( newTemplate ) {
-
-        }
-
+          }
       }
-      KraftSettings::self()->save();
-      KraftSettings::self()->load();
 
       newpos = dia->insertAfterPosition();
 
       mRememberAmount = dp->amount();
-    } else {
+  } else {
+      delete dp;
       return;
-    }
   }
-
-  delete dia;
 
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
   widget->slotModified();
   widget->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
 
+  // Check if the new widget is supposed to display prices, based on the doc type
+  // FIXME: Shouldn't this be done by the positionViewWidget rather than here?
   const QString dt = getDocument()->docType();
   if( !dt.isEmpty() ) {
       DocType docType(dt);
