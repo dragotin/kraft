@@ -37,7 +37,7 @@ MaterialCalcPart::MaterialCalcPart( long mCalcID, long matID, int percent, doubl
 {
   m_mat = new StockMaterial();
   getMatFromID(matID);
-  setName(m_mat->name());
+  setName(m_mat->getText());
 }
 
 MaterialCalcPart::MaterialCalcPart(long matID, int percent, double amount)
@@ -46,7 +46,7 @@ MaterialCalcPart::MaterialCalcPart(long matID, int percent, double amount)
   m_mat = new StockMaterial();
   if( m_mat ) {
       getMatFromID(matID);
-      setName(m_mat->name());
+      setName(m_mat->getText());
   }
 }
 

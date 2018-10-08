@@ -38,8 +38,7 @@ StockMaterial::StockMaterial( ):
 
 StockMaterial::StockMaterial( int dbid, int matChap, QString mat, int unitID,
                               double perPack, Geld pIn, Geld pOut ):
-CatalogTemplate(),
-    m_name(mat),
+    CatalogTemplate(),
     m_chapter(matChap),
     m_amount(perPack),
     m_dbid(dbid),
@@ -47,6 +46,7 @@ CatalogTemplate(),
     m_vPrice(pOut)
 {
     this->setUnitId(unitID);
+    this->setText(mat);
 }
 
 StockMaterial::~StockMaterial( )
@@ -69,16 +69,7 @@ bool StockMaterial::save()
   return false;
 }
 
-QString StockMaterial::name() const
-{
-    return m_name;
-}
-
-void StockMaterial::setName( const QString& str )
-{
-  m_name = str;
-}
-
+#if 0
 QString StockMaterial::description() const
 {
     return m_descr;
@@ -88,6 +79,7 @@ void StockMaterial::setDescription( const QString& str )
 {
   m_descr = str;
 }
+#endif
 
 double StockMaterial::getAmountPerPack()
 {

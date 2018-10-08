@@ -169,7 +169,7 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   mCbUnit->setCurrentIndex(mCbUnit->findText( e.einheitSingular() ));
 
   // text
-  mEditMaterial->setText( t->name() );
+  mEditMaterial->setText( t->getText() );
 
   double priceIn = t->purchPrice().toDouble();
   double priceOut = t->salesPrice().toDouble();
@@ -205,7 +205,7 @@ void MaterialTemplDialog::accept()
   if ( newMat.isEmpty() ) {
     // qDebug () << "We do not want to store empty materials" << endl;
   } else {
-    mSaveMaterial->setName( mEditMaterial->toPlainText() );
+    mSaveMaterial->setText( mEditMaterial->toPlainText() );
     mSaveMaterial->setAmountPerPack( mDiPerPack->value() );
 
     const QString str = mCbUnit->currentText();

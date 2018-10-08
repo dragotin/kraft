@@ -94,7 +94,7 @@ void MaterialSaverDB::fillMaterialBuffer( QSqlRecord &rec, StockMaterial *mat, b
 {
   if( ! ( mat ) ) return;
   rec.setValue( "chapterID", mat->chapter() );
-  rec.setValue( "material", mat->name() );
+  rec.setValue( "material", mat->getText() );
   rec.setValue( "unitID", mat->unit().id() );
   rec.setValue( "perPack", mat->getAmountPerPack() );
   rec.setValue( "priceIn", mat->purchPrice().toDouble() );

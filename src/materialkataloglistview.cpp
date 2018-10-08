@@ -91,7 +91,7 @@ QTreeWidgetItem* MaterialKatalogListView::addMaterialToView( QTreeWidgetItem *pa
     recItem->setCheckState(0, Qt::Unchecked);
   }
   //recItem->setFlags( flags );
-  recItem->setText( 0, mat->name() );
+  recItem->setText( 0, mat->getText() );
   // recItem->setMultiLinesEnabled( true );  FIXME
   slFreshupItem( recItem,  mat, catalog()->locale() );
   m_dataDict.insert( recItem, mat );
@@ -106,7 +106,7 @@ void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ,
   if ( item && mat ) {
     Einheit e = mat->unit();
     // qDebug () << "Setting material name " << e.einheitSingular() << endl;
-    item->setText( 0, mat->name() );
+    item->setText( 0, mat->getText() );
     item->setText( 1, QString::number( mat->getAmountPerPack() ) );
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
     item->setText( 3, mat->purchPrice().toString( loc ) );
@@ -129,7 +129,7 @@ DocPosition MaterialKatalogListView::itemToDocPosition( QTreeWidgetItem *item )
   // FIXME
   StockMaterial *mat = static_cast<StockMaterial*>( m_dataDict[item] );
   if ( mat ) {
-    pos.setText( mat->name() );
+    pos.setText( mat->getText() );
     pos.setUnit( mat->unit() );
     pos.setUnitPrice( mat->salesPrice() );
   }

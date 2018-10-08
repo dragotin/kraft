@@ -38,7 +38,7 @@ void MatCalcDialog::init(double amount)
 {
     Einheit e = m_mc->getMaterial()->unit();
 
-    _matWidget->matLabel->setText( m_mc->getMaterial()->name());
+    _matWidget->matLabel->setText( m_mc->getMaterial()->getText());
     _matWidget->einheitLabel->setText( e.einheit(amount) );
 }
 

@@ -93,7 +93,7 @@ void MaterialKatalogView::slEditTemplate()
       {
         StockMaterial *currTempl = static_cast<StockMaterial*> ( listview->currentItemData() );
         if( currTempl ) {
-          QTreeWidgetItem *item = (QTreeWidgetItem*) listview->currentItem();
+          QTreeWidgetItem *item = static_cast<QTreeWidgetItem*>(listview->currentItem());
           openDialog( item, currTempl, false );
         }
       }
@@ -108,11 +108,11 @@ void MaterialKatalogView::slNewTemplate()
   MaterialKatalogListView *matListView = static_cast<MaterialKatalogListView*>(listview);
 
   StockMaterial *newMat = new StockMaterial();
-  newMat->setName( i18n( "<new material>" ) );
+  newMat->setText( i18n( "<new material>" ) );
   QTreeWidgetItem *parentItem = static_cast<QTreeWidgetItem*>( listview->currentItem() );
   if ( parentItem ) {
     if ( ! ( matListView->isRoot( parentItem ) || matListView->isChapter( parentItem ) ) ) {
-      parentItem = ( QTreeWidgetItem* ) parentItem->parent();
+      parentItem = static_cast<QTreeWidgetItem*>(parentItem->parent());
     }
   }
 

@@ -41,11 +41,11 @@ public:
                  double perPack, Geld pIn, Geld pOut );
   ~StockMaterial();
 
-  QString name() const;
-  void setName( const QString& );
-
+#if 0
+  // currently not used.
   QString description() const;
   void setDescription( const QString& );
+#endif
 
   double getAmountPerPack();
   void setAmountPerPack( double am );
@@ -80,8 +80,7 @@ protected:
   void saveChapterId();
 
 private:
-  QString m_name;
-  QString m_descr;
+  // QString m_descr;
   int     m_chapter;
 
   // per package:
