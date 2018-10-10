@@ -91,7 +91,6 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
   // disable for now, not used
   cbMwst->setVisible(false);
   m_mwstLabel->setVisible(false);
-
   setupConnections();
   setButtonIcons();
 }
@@ -163,6 +162,8 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   QString chap = m_katalog->chapterName(dbID(chapID));
   cbChapter->setCurrentIndex(cbChapter->findText( chap ));
 
+  m_manualPriceVal->setSuffix(m_katalog->locale()->currencySymbol());
+
   /* Text of the template */
   m_text->setText( t->getText());
 
@@ -174,15 +175,12 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   m_manualPriceVal->setValue( t->unitPrice().toDouble());
 
   /* Kind of Calculation: Manual or calculated?  */
-  if( t->calcKind() == CatalogTemplate::ManualPrice )
-  {
+  _origCalcType = m_template->calcKind();
+  if( t->calcKind() == CatalogTemplate::ManualPrice ) {
     slCalcOrFix(0);
     m_rbManual->setChecked(true);
     m_rbCalculation->setChecked(false);
-
-  }
-  else /* if( t->calcKind() == Calculation ) */
-  {
+  } else {
     slCalcOrFix(1);
     m_rbManual->setChecked(false);
     m_rbCalculation->setChecked(true);
@@ -190,6 +188,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
 
   /* set up the different calculation parts */
   setCalcparts();
+  _calcPartsModified = false;
 
   /* set text */
   slSetNewText();
@@ -198,8 +197,6 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   m_text->setFocus();
   m_text->selectAll();
 
-  //Fixme: Only set this to true if something really changed
-  modified = true;
 }
 
 void FlosTemplDialog::setCalcparts( )
@@ -303,71 +300,97 @@ FlosTemplDialog::~FlosTemplDialog( )
   delete m_matPartDialog;
 }
 
+// Check if the template was modified in the dialog
+bool FlosTemplDialog::templModified()
+{
+    bool modified = false;
+
+    QString str = m_text->toPlainText();
+    modified = str != m_template->getText();
+
+    modified = modified || (m_unit->currentText() != m_template->unit().einheitSingular());
+
+    modified = modified || (m_addTime->isChecked() != m_template->hasTimeslice());
+
+    str = spBenefit->cleanText();
+    bool b;
+    int new_val = str.toInt(&b);
+    modified = modified || ( b && new_val != qRound(m_template->getBenefit()));
+
+    // calculation kind
+    CatalogTemplate::CalculationType currCalcType = m_template->calcKind();
+    modified = modified || (currCalcType != _origCalcType);
+
+    modified = modified || _calcPartsModified;
+
+    return modified;
+}
+
 void FlosTemplDialog::accept()
 {
-  if( m_template ) {
-    // qDebug () << "Saving template ID " << m_template->getTemplID() << endl;
+    if( m_template ) {
+        // qDebug () << "Saving template ID " << m_template->getTemplID() << endl;
 
-    QString h;
-    h = m_text->toPlainText();
+        QString h;
+        h = m_text->toPlainText();
 
-    if( h != m_template->getText() ) {
-      // qDebug () << "Template Text dirty -> update" << endl;
-      m_template->setText( h );
+        if( h != m_template->getText() ) {
+            // qDebug () << "Template Text dirty -> update" << endl;
+            m_template->setText( h );
+        }
+
+        h = m_unit->currentText();
+        if( h != m_template->unit().einheitSingular()) {
+            // qDebug () << "Template Einheit dirty -> update to " << h << endl;
+            m_template->setUnitId( UnitManager::self()->getUnitIDSingular(h));
+        }
+
+        /* count time */
+        bool c = m_addTime->isChecked();
+        if( c != m_template->hasTimeslice() ) {
+            m_template->setHasTimeslice(c);
+        }
+
+        /* benefit */
+        h = spBenefit->cleanText();
+        bool b;
+        int new_val = h.toInt(&b);
+        if( b && new_val != qRound(m_template->getBenefit())) {
+            m_template->setBenefit(new_val);
+            // qDebug () << "benefit dirty ->update to " << g << endl;
+        }
+
+        // Calculationtype
+        int selId = m_gbPriceSrc->checkedId();
+        CatalogTemplate::CalculationType calcType = CatalogTemplate::Unknown;
+        if( selId == 0 ) {
+            calcType = CatalogTemplate::ManualPrice;
+        } else if( selId == 1 ) {
+            calcType = CatalogTemplate::Calculation;
+        } else {
+            // qDebug () << "ERROR: Calculation type not selected, id is " << selId << endl;
+        }
+        m_template->setCalculationType( calcType );
+
+        // reread the manual price
+        double dd = m_manualPriceVal->value();
+        m_template->setManualPrice( Geld( dd ) );
+
+        h = cbChapter->currentText();
+        // qDebug () << "catalog chapter is " << h << endl;
+
+        _calcPartsModified = false;
+
+        if( m_template->save() ) {
+            emit( editAccepted( m_template ) );
+            KatalogMan::self()->notifyKatalogChange( m_katalog, m_template->getTemplID() );
+        } else {
+            QMessageBox::warning(0, i18n("Template Error"), i18n("Saving of this template failed, sorry"));
+
+        }
     }
-
-    h = m_unit->currentText();
-    if( h != m_template->unit().einheitSingular()) {
-      // qDebug () << "Template Einheit dirty -> update to " << h << endl;
-      m_template->setUnitId( UnitManager::self()->getUnitIDSingular(h));
-    }
-
-    /* count time */
-    bool c = m_addTime->isChecked();
-    if( c != m_template->hasTimeslice() ) {
-      m_template->setHasTimeslice(c);
-    }
-
-    /* benefit */
-    h = spBenefit->cleanText();
-    bool b;
-    int new_val = h.toInt(&b);
-    if( b && new_val != qRound(m_template->getBenefit())) {
-      m_template->setBenefit(new_val);
-      // qDebug () << "benefit dirty ->update to " << g << endl;
-    }
-
-    // Calculationtype
-    int selId = m_gbPriceSrc->checkedId();
-    CatalogTemplate::CalculationType calcType = CatalogTemplate::Unknown;
-    if( selId == 0 ) {
-      calcType = CatalogTemplate::ManualPrice;
-    } else if( selId == 1 ) {
-      calcType = CatalogTemplate::Calculation;
-    } else {
-      // qDebug () << "ERROR: Calculation type not selected, id is " << selId << endl;
-    }
-    m_template->setCalculationType( calcType );
-
-    // reread the manual price
-    double dd = m_manualPriceVal->value();
-    m_template->setManualPrice( Geld( dd ) );
-
-    h = cbChapter->currentText();
-    // qDebug () << "catalog chapter is " << h << endl;
-
-    if( m_template->save() ) {
-      emit( editAccepted( m_template ) );
-      KatalogMan::self()->notifyKatalogChange( m_katalog, m_template->getTemplID() );
-    } else {
-        QMessageBox::warning(0, i18n("Template Error"), i18n("Saving of this template failed, sorry"));
-
-    }
-  }
-  // qDebug () << "*** Saving finished " << endl;
-
-  modified = false;
-  QDialog::accept();
+    // qDebug () << "*** Saving finished " << endl;
+    QDialog::accept();
 }
 
 void FlosTemplDialog::reject()
@@ -388,7 +411,7 @@ void FlosTemplDialog::closeEvent ( QCloseEvent * event )
 
 bool FlosTemplDialog::confirmClose()
 {
-    if(modified == true) {
+    if( templModified() ) {
         QMessageBox msgBox;
         msgBox.setText(i18n("The template has been modified."));
         msgBox.setInformativeText(i18n("Do you want to discard your changes?"));
@@ -432,23 +455,35 @@ bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
 
 void FlosTemplDialog::slManualPriceChanged(double dd)
 {
-  // qDebug () << "Changing manual price!" << endl;
+    qDebug () << "Changing manual price:" << dd << endl;
   if( ! m_template ) return;
   // qDebug () << "Updating manual price!" << endl;
   m_template->setManualPrice( Geld( dd ));
   refreshPrices();
 }
 
-
-void FlosTemplDialog::slBenefitChange( int neuPreis )
+double FlosTemplDialog::benefitValue()
 {
-  CalcPartList tpList = m_template->getCalcPartsList( );
-  QListIterator<CalcPart*> it( tpList );
-  while( it.hasNext() ) {
-    CalcPart *cp = it.next();
-    cp->setProzentPlus( neuPreis );
-  }
-  refreshPrices();
+    double val = 0;
+    CalcPartList cparts = m_template->getCalcPartsList();
+
+    // Currently still all calcparts have the same value of benefit.
+    // once this changes, this needs to be fixed accordingly.
+    if( cparts.size() > 0 ) {
+        val = cparts.at(0)->getProzentPlus();
+    }
+
+    return val;
+}
+
+void FlosTemplDialog::slBenefitChange( int newBen )
+{
+    int oldBen = qRound(m_template->getBenefit());
+    if( oldBen != newBen ) {
+        m_template->setBenefit(newBen);
+        refreshPrices();
+        _calcPartsModified = true;
+    }
 }
 
 void FlosTemplDialog::slAddFixPart()
@@ -470,6 +505,7 @@ void FlosTemplDialog::slAddFixPart()
     mCalcPartDict.insert( lvItem, cp );
     m_template->addCalcPart( cp );
     refreshPrices();
+    _calcPartsModified = true;
   }
 }
 
@@ -489,6 +525,7 @@ void FlosTemplDialog::slRemoveFixPart()
     delete item;
 
     refreshPrices();
+    _calcPartsModified = true;
   }
 }
 
@@ -517,27 +554,15 @@ void FlosTemplDialog::slEditFixPart()
 void FlosTemplDialog::slFixCalcPartChanged(FixCalcPart *cp)
 {
   refreshPrices();
+  _calcPartsModified = true;
   drawFixListEntry(m_fixParts->currentItem(), cp);
 }
 
 void FlosTemplDialog::slTimeCalcPartChanged(TimeCalcPart *cp)
 {
   refreshPrices();
+  _calcPartsModified = true;
   drawTimeListEntry(m_timeParts->currentItem(), cp);
-}
-
-double FlosTemplDialog::benefitValue()
-{
-    double val = 0;
-    CalcPartList cparts = m_template->getCalcPartsList();
-
-    // Currently still all calcparts have the same value of benefit.
-    // once this changes, this needs to be fixed accordingly.
-    if( cparts.size() > 0 ) {
-        val = cparts.at(0)->getProzentPlus();
-    }
-
-    return val;
 }
 
 void FlosTemplDialog::slAddTimePart()
@@ -558,6 +583,7 @@ void FlosTemplDialog::slAddTimePart()
     mCalcPartDict.insert( lvItem, cp );
     m_template->addCalcPart( cp );
     refreshPrices();
+    _calcPartsModified = true;
   }
 }
 
@@ -616,6 +642,7 @@ void FlosTemplDialog::slRemoveTimePart()
     delete item;
 
     refreshPrices();
+    _calcPartsModified = true;
   }
 }
 
@@ -642,6 +669,7 @@ void FlosTemplDialog::slEditTimePart()
     // qDebug () << "No current Item!";
   }
   refreshPrices();
+  _calcPartsModified = true;
 }
 
 /*
@@ -680,6 +708,7 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
         drawMatListEntry( lvItem, mc );
         mCalcPartDict.insert( lvItem, mc );
         refreshPrices();
+        _calcPartsModified = true;
     }
 }
 
@@ -710,6 +739,7 @@ void FlosTemplDialog::slMatCalcPartChanged(MaterialCalcPart *mc)
 {
   drawMatListEntry(m_matParts->currentItem(), mc);
   refreshPrices();
+  _calcPartsModified = true;
 }
 
 void FlosTemplDialog::slRemoveMatPart()
@@ -728,6 +758,7 @@ void FlosTemplDialog::slRemoveMatPart()
     delete item;
 
     refreshPrices();
+    _calcPartsModified = true;
   }
 }
 
@@ -743,7 +774,7 @@ void FlosTemplDialog::slCalcOrFix(int button)
   if( button == 0 ) {
     /* switched to manual price */
     if( m_template ) {
-      m_template->setCalculationType( CatalogTemplate::ManualPrice );
+        m_template->setCalculationType( CatalogTemplate::ManualPrice );
     }
   } else if( button == 1 ) {
     /* switched to calculated */

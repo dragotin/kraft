@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>605</width>
-    <height>713</height>
+    <width>513</width>
+    <height>567</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -547,11 +547,11 @@
         </item>
         <item row="1" column="0" colspan="2">
          <widget class="QDoubleSpinBox" name="m_manualPriceVal">
-          <property name="suffix">
-           <string> Euro</string>
-          </property>
           <property name="maximum">
            <double>99999.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.000000000000000</double>
           </property>
           <property name="minValue" stdset="0">
            <number>0</number>

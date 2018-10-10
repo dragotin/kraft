@@ -69,7 +69,7 @@ public slots:
     virtual void slRemoveMatPart();
 
     virtual void slCalcOrFix(int);
-    virtual void slBenefitChange( int neuPreis );
+    virtual void slBenefitChange(int newBen );
 
     /* slot for adding a new material to the material calculation */
     void slNewMaterial( int, double );
@@ -91,6 +91,7 @@ private:
     void setupConnections();
     void setButtonIcons();
     double benefitValue();
+    bool templModified();
 
     virtual void drawTimeListEntry( QTreeWidgetItem *, TimeCalcPart * );
     virtual void drawFixListEntry( QTreeWidgetItem*, FixCalcPart* );
@@ -116,7 +117,8 @@ private:
     TimeCalcDialog  *m_timePartDialog;
     MatCalcDialog   *m_matPartDialog;
     bool             m_templateIsNew;
-    bool             modified;
+    bool             _calcPartsModified;
+    CatalogTemplate::CalculationType _origCalcType;
 };
 
 #endif
