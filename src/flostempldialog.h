@@ -90,6 +90,8 @@ public slots:
 private:
     void setupConnections();
     void setButtonIcons();
+    double benefitValue();
+
     virtual void drawTimeListEntry( QTreeWidgetItem *, TimeCalcPart * );
     virtual void drawFixListEntry( QTreeWidgetItem*, FixCalcPart* );
     virtual void drawMatListEntry( QTreeWidgetItem*, MaterialCalcPart* );
@@ -113,9 +115,8 @@ private:
     FixCalcDialog   *m_fixCalcDia;
     TimeCalcDialog  *m_timePartDialog;
     MatCalcDialog   *m_matPartDialog;
-    CalcPart *m_cpChange;
-    bool m_templateIsNew;
-    bool modified;
+    bool             m_templateIsNew;
+    bool             modified;
 };
 
 #endif

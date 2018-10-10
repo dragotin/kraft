@@ -35,7 +35,6 @@ FloskelTemplate::FloskelTemplate()
     : CatalogTemplate(),
       mTemplId(-1),
       m_chapter(0),
-      mBenefit(0),
       mTimeAdd(true),
       m_listViewItem(0),
       m_saver(0)
@@ -48,7 +47,6 @@ FloskelTemplate::FloskelTemplate( int tID, const QString& text,
  : CatalogTemplate(),
    mTemplId(tID),
    m_chapter(chapter),
-   mBenefit(0),
    mTimeAdd(true),
    m_preis(long(0)),
    m_listViewItem(0),
@@ -130,22 +128,28 @@ void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
 
 void FloskelTemplate::setBenefit( double g )
 {
-  mBenefit = g;
-  CalcPart *cp = 0;
-  /* Every calc part has an value for benefit. Set the benefit value for
-     each calc part, later on each can have its own value
-   */
-  QListIterator<CalcPart*> i( m_calcParts );
-  while( i.hasNext()) {
-    cp = i.next();
-
-    cp->setProzentPlus(g);
-  }
+    /* Every calc part has an value for benefit. Set the benefit value for
+       each calc part, later on each can have its own value
+     */
+    for( auto *cp: m_calcParts) {
+        cp->setProzentPlus(g);
+    }
 }
 
 double FloskelTemplate::getBenefit( )
 {
-  return mBenefit;
+    bool first = true;
+    double b = 0.0;
+
+    for( auto *cp: m_calcParts) {
+        if( first ) {
+            b = cp->getProzentPlus();
+            first = false;
+        }
+        // all benefits are the same atm, thus this ASSERT.
+        Q_ASSERT( fabs(b - cp->getProzentPlus()) < std::numeric_limits<double>::epsilon());
+    }
+    return b;
 }
 
 void FloskelTemplate::setTemplID( int newID )
@@ -163,13 +167,12 @@ Geld FloskelTemplate::calcPreis()
 {
   Geld g;
 
-    if( calcKind() == ManualPrice )
-    {
+    if( calcKind() == ManualPrice ) {
         g = m_preis;
-    }
-    else
-    {
+    } else {
         g = m_calcParts.calcPrice();
+       double b = getBenefit();
+       g += g.percent(b);
     }
     return g;
 }

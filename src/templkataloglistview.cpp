@@ -173,7 +173,7 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
 
     QStringList list;
     list << title;
-    list << cp->kosten().toString( catalog()->locale() );
+    list << cp->basisKosten().toString( catalog()->locale() );
     list << cp->getType();
     QTreeWidgetItem *cpItem =  new QTreeWidgetItem( item, list );
     cpItem->setDisabled(true);

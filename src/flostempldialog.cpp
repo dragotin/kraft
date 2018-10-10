@@ -88,6 +88,10 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
   m_fixParts->header()->setResizeMode(QHeaderView::ResizeToContents);
   m_matParts->header()->setResizeMode(QHeaderView::ResizeToContents);
 
+  // disable for now, not used
+  cbMwst->setVisible(false);
+  m_mwstLabel->setVisible(false);
+
   setupConnections();
   setButtonIcons();
 }
@@ -170,7 +174,6 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   m_manualPriceVal->setValue( t->unitPrice().toDouble());
 
   /* Kind of Calculation: Manual or calculated?  */
-
   if( t->calcKind() == CatalogTemplate::ManualPrice )
   {
     slCalcOrFix(0);
@@ -191,10 +194,9 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   /* set text */
   slSetNewText();
 
+  m_addTime->setChecked( m_template->hasTimeslice() );
   m_text->setFocus();
   m_text->selectAll();
-
-  pbRundPreis->setEnabled(false);
 
   //Fixme: Only set this to true if something really changed
   modified = true;
@@ -262,7 +264,7 @@ void FlosTemplDialog::refreshPrices()
 
     if( benefit < 0 )
     {
-      benefitStr = "<font color=\"red\">"+i18n("%1%", benefit)+"</font>";
+      benefitStr = QLatin1String("<font color=\"red\">")+i18n("%1%", benefit)+QLatin1String("</font>");
     }
     benefitStr += i18n(": ");
     t += benefitStr;
@@ -272,6 +274,7 @@ void FlosTemplDialog::refreshPrices()
     // qDebug () << "ERR: unknown calculation type!" << endl;
   }
   m_resPreisName->setText(t);
+  m_resPreisName->setTextFormat(Qt::RichText);
 
   /* set Price */
   t = m_template->unitPrice().toString( m_katalog->locale() );
@@ -288,6 +291,9 @@ void FlosTemplDialog::refreshPrices()
   g = m_template->costsByCalcPart( KALKPART_MATERIAL );
   m_textMaterialPart->setText(g.toString( m_katalog->locale() ));
 
+  // Benefit
+  double b = m_template->getBenefit();
+  spBenefit->setValue( qRound(b));
 }
 
 FlosTemplDialog::~FlosTemplDialog( )
@@ -316,20 +322,6 @@ void FlosTemplDialog::accept()
       m_template->setUnitId( UnitManager::self()->getUnitIDSingular(h));
     }
 
-#if 0
-    // chapter ID is not touched anymore
-    /* compare catalog chapter */
-    int chapterId = 0; // m_katalog->chapterID(cbChapter->currentText()).toInt();
-    // FIXME: need new way of picking hte chapterId bcause of hirarchical.
-
-    if( chapterId != m_template->getChapterID() ) {
-      // qDebug () << "Chapter ID dirty ->update" << endl;
-      if( askChapterChange( m_template, chapterId )) {
-        m_template->setChapterID( chapterId );
-        emit( chapterChanged( chapterId ));
-      }
-    }
-#endif
     /* count time */
     bool c = m_addTime->isChecked();
     if( c != m_template->hasTimeslice() ) {
@@ -339,14 +331,11 @@ void FlosTemplDialog::accept()
     /* benefit */
     h = spBenefit->cleanText();
     bool b;
-    double g = h.toDouble( &b );
-    if( b  && g != m_template->getBenefit() ) {
-      m_template->setBenefit(g);
+    int new_val = h.toInt(&b);
+    if( b && new_val != qRound(m_template->getBenefit())) {
+      m_template->setBenefit(new_val);
       // qDebug () << "benefit dirty ->update to " << g << endl;
     }
-
-    h = cbMwst->currentText();
-    // TODO!
 
     // Calculationtype
     int selId = m_gbPriceSrc->checkedId();
@@ -472,6 +461,8 @@ void FlosTemplDialog::slAddFixPart()
   {
     FixCalcPart *cp = new FixCalcPart( dia.getName(), dia.getPreis());
     cp->setMenge( dia.getMenge());
+    cp->setProzentPlus(benefitValue());
+
     cp->setDirty(true);
 
     QTreeWidgetItem *lvItem = new QTreeWidgetItem( m_fixParts);
@@ -535,6 +526,20 @@ void FlosTemplDialog::slTimeCalcPartChanged(TimeCalcPart *cp)
   drawTimeListEntry(m_timeParts->currentItem(), cp);
 }
 
+double FlosTemplDialog::benefitValue()
+{
+    double val = 0;
+    CalcPartList cparts = m_template->getCalcPartsList();
+
+    // Currently still all calcparts have the same value of benefit.
+    // once this changes, this needs to be fixed accordingly.
+    if( cparts.size() > 0 ) {
+        val = cparts.at(0)->getProzentPlus();
+    }
+
+    return val;
+}
+
 void FlosTemplDialog::slAddTimePart()
 {
   if( ! m_template ) return;
@@ -547,6 +552,7 @@ void FlosTemplDialog::slAddTimePart()
     cp->setGlobalStdSetAllowed( dia.allowGlobal());
     StdSatz std = StdSatzMan::self()->getStdSatz( dia.getStundensatzName());
     cp->setStundensatz( std );
+    cp->setProzentPlus(benefitValue());
     QTreeWidgetItem *lvItem = new QTreeWidgetItem( m_timeParts);
     drawTimeListEntry( lvItem, cp );
     mCalcPartDict.insert( lvItem, cp );
@@ -659,18 +665,22 @@ void FlosTemplDialog::slAddMatPart()
  */
 void FlosTemplDialog::slNewMaterial( int matID, double amount )
 {
-  // qDebug () << "Material ID: " << matID << endl;
+    // qDebug () << "Material ID: " << matID << endl;
 
-  // TODO: Checken, ob der richtige Tab aktiv ist.
-  // TODO: Check if the material is already in the calcpart (is this really needed??)
-  MaterialCalcPart *mc;
+    // TODO: Checken, ob der richtige Tab aktiv ist.
+    // TODO: Check if the material is already in the calcpart (is this really needed??)
+    MaterialCalcPart *mc;
 
-  mc = new MaterialCalcPart(matID, 0, amount);
-  m_template->addCalcPart( mc );
-  QTreeWidgetItem *lvItem = new QTreeWidgetItem(m_matParts);
-  drawMatListEntry( lvItem, mc );
-  mCalcPartDict.insert( lvItem, mc );
-  refreshPrices();
+    mc = new MaterialCalcPart(matID, 0, amount);
+    if( mc ) {
+        mc->setProzentPlus(benefitValue());
+
+        m_template->addCalcPart( mc );
+        QTreeWidgetItem *lvItem = new QTreeWidgetItem(m_matParts);
+        drawMatListEntry( lvItem, mc );
+        mCalcPartDict.insert( lvItem, mc );
+        refreshPrices();
+    }
 }
 
 
@@ -722,57 +732,44 @@ void FlosTemplDialog::slRemoveMatPart()
 }
 
 /*
- * dieser Slot wird betreten, wenn der Radiobutton Kalkulierter
- * Preis/Manueller Preis umgeschaltet wird.
+ * Slot for managing the switch from manual to calculated price
+ * and vice versa
  */
 void FlosTemplDialog::slCalcOrFix(int button)
 {
   bool ok = true;
+  bool manualEnabled = true;
 
-  if( button == 0 )
-  {
-    /* auf manuell geschaltet */
-    if( m_template )
+  if( button == 0 ) {
+    /* switched to manual price */
+    if( m_template ) {
       m_template->setCalculationType( CatalogTemplate::ManualPrice );
-
-    m_manualPriceVal->setEnabled( true );
-
-    m_textTimePart->setEnabled(false);
-    m_textFixPart->setEnabled(false);
-    m_textMaterialPart->setEnabled(false);
-
-    m_tLabelMat->setEnabled(false);
-    m_tLabelFix->setEnabled(false);
-    m_tLabelTime->setEnabled(false);
-    spBenefit->setEnabled(false);
-  }
-  else if( button == 1 )
-  {
-    /* auf kalkuliert geschaltet */
-    if( m_template )
+    }
+  } else if( button == 1 ) {
+    /* switched to calculated */
+    if( m_template ) {
       m_template->setCalculationType( CatalogTemplate::Calculation );
-
-    m_manualPriceVal->setEnabled( false );
-
-    m_textTimePart->setEnabled(true);
-    m_textFixPart->setEnabled(true);
-    m_textMaterialPart->setEnabled(true);
-
-    m_tLabelMat->setEnabled(true);
-    m_tLabelFix->setEnabled(true);
-    m_tLabelTime->setEnabled(true);
-    spBenefit->setEnabled(true);
-  }
-  else
-  {
-    /* unbekannter knopf -> fehler */
-    // qDebug () << "--- Error: Falsche Button ID " << button <<  endl;
+    }
+    manualEnabled = false;
+  } else {
+    /* unknown knob*/
     ok = false;
   }
 
-  if( ok )
-  {
-    refreshPrices();
+  if( ok ) {
+      m_manualPriceVal->setEnabled( manualEnabled );
+
+      m_textTimePart->setEnabled(!manualEnabled);
+      m_textFixPart->setEnabled(!manualEnabled);
+      m_textMaterialPart->setEnabled(!manualEnabled);
+
+      m_tLabelMat->setEnabled(!manualEnabled);
+      m_tLabelFix->setEnabled(!manualEnabled);
+      m_tLabelTime->setEnabled(!manualEnabled);
+      m_tLabelProfit->setEnabled(!manualEnabled);
+      spBenefit->setEnabled(!manualEnabled);
+
+      refreshPrices();
   }
 }
 

@@ -60,25 +60,6 @@ CalcPart::~CalcPart()
 {
 
 }
-/** costs for this calculation part */
-Geld CalcPart::kosten() {
-   /* Hier die virtuelle Funktion basisKosten aufrufen,
-    * die in abgeleiteten Klassen die Basiskosten berechnet.
-    * Der prozentuale Aufschlag kommt dann hier.
-    */
-   Geld g = basisKosten();
-   // qDebug() << "Basecosts: " << g.toString() << endl;
-   double prozente = getProzentPlus();
-
-   if( qAbs(prozente) > 0.0 )
-   {
-        Geld aufschlag = g * double(prozente/100.0);
-        // qDebug() << "Have Money: " << g.toString() << " und " << prozente << " macht Aufschlag: " << aufschlag.toString() << endl;
-        g += aufschlag;
-   }
-   // qDebug() << "Overall sum: " << g.toString() << endl;
-   return g;
-}
 
 /** Read property of int m_prozentPlus. */
 const double& CalcPart::getProzentPlus()
@@ -153,7 +134,7 @@ Geld CalcPartList::costPerCalcPart( const QString& calcPart )
 
     if( ( calcPart == ALL_KALKPARTS || calcPart == cp->getType() ) && ! cp->isToDelete() )
     {
-      g += cp->kosten();
+      g += cp->basisKosten();
     }
   }
   return g;

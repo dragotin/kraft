@@ -34,8 +34,7 @@ public:
     CalcPart( int prozent );
     CalcPart( const QString& name, int prozent = 0 );
     virtual ~CalcPart();
-    /** overall costs for this calculation */
-    virtual Geld kosten();
+
     /** Write property of int m_prozentPlus. */
     virtual void setProzentPlus( const double& _newVal);
     /** Read property of int m_prozentPlus. */

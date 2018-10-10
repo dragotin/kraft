@@ -92,7 +92,6 @@ private: // Private methods
     int              mTemplId;  // Database ID
     int              m_chapter;
     CalcPartList     m_calcParts;
-    double           mBenefit;
     bool             mTimeAdd;
     Geld             m_preis; // preis only valid for manual calculation.
     QTreeWidgetItem  *m_listViewItem;
