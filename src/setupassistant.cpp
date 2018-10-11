@@ -546,24 +546,26 @@ void SetupAssistant::slotCurrentPageChanged( int currId )
 
 void SetupAssistant::done( int result )
 {
-    // store the stakeholders own name for picking the sender address
-    qobject_cast<OwnAddressPage*>(page(ownAddressPageNo))->saveOwnName();
+    if( result > 0 ) {
+        // store the stakeholders own name for picking the sender address
+        qobject_cast<OwnAddressPage*>(page(ownAddressPageNo))->saveOwnName();
 
-    const QString selectedDriver = qobject_cast<DbSelectPage*>(page(dbSelectPageNo))->selectedDriver();
-    DatabaseSettings::self()->setDbDriver( selectedDriver );
-    if( selectedDriver == QLatin1String("QSQLITE") ) {
-        const QString file = field("SqliteStorageFile").toString();
-        DatabaseSettings::self()->setDbFile(file);
+        const QString selectedDriver = qobject_cast<DbSelectPage*>(page(dbSelectPageNo))->selectedDriver();
+        DatabaseSettings::self()->setDbDriver( selectedDriver );
+        if( selectedDriver == QLatin1String("QSQLITE") ) {
+            const QString file = field("SqliteStorageFile").toString();
+            DatabaseSettings::self()->setDbFile(file);
+        }
+        if( selectedDriver == "QMYSQL" ) {
+            DatabaseSettings::self()->setDbDatabaseName( field("MySqlDbName").toString() );
+            DatabaseSettings::self()->setDbUser( field("MySqlUser").toString() );
+            const QString host = field("MySqlHost").toString();
+            DatabaseSettings::self()->setDbServerName( host );
+            DatabaseSettings::self()->setDbPassword( field("MySqlPwd").toString() );
+        }
+        DatabaseSettings::self()->save();
+        qDebug () << "Database backend config written";
     }
-    if( selectedDriver == "QMYSQL" ) {
-        DatabaseSettings::self()->setDbDatabaseName( field("MySqlDbName").toString() );
-        DatabaseSettings::self()->setDbUser( field("MySqlUser").toString() );
-        const QString host = field("MySqlHost").toString();
-        DatabaseSettings::self()->setDbServerName( host );
-        DatabaseSettings::self()->setDbPassword( field("MySqlPwd").toString() );
-    }
-    DatabaseSettings::self()->save();
-    qDebug () << "Database backend config written";
     QWizard::done(result);
 }
 
@@ -765,14 +767,16 @@ bool SetupAssistant::init( Mode mode )
     QString configOrigin;
     mMode = mode;
 
-    text = i18n("This assistant guides you through the basic settings of your Kraft installation.");
+    text = QLatin1String("<p>")
+            + i18n("This assistant guides you through the basic settings of your Kraft installation.")
+            + QLatin1String("</p>");
 
     bool hitNextClosing = true;
 
     if( mMode == Reinit ) {
         startDialog = true;
     } else if( mode == Update ) {
-        if( QStandardPaths::locate(QStandardPaths::GenericConfigLocation, "kraft/kraftdatabaserc" ).isEmpty() ) {
+        if( QStandardPaths::locate(QStandardPaths::GenericConfigLocation, "kraftdatabaserc" ).isEmpty() ) {
             // migration failed and we do not have a config file. All from scratch
             configOrigin = i18n("There was no database configuration found.");
         } else {
@@ -785,10 +789,13 @@ bool SetupAssistant::init( Mode mode )
             if( KraftDB::self()->databaseExists() ) {
                 // qDebug () << "The database exists.";
 
-                if( KraftDB::self()->currentSchemaVersion() != KraftDB::self()->requiredSchemaVersion() ) {
+                if( KraftDB::self()->currentSchemaVersion() < KraftDB::self()->requiredSchemaVersion() ) {
                     // qDebug () << "Need a database schema update.";
                     startDialog = true;
-                } else {
+                    configOrigin += QLatin1String(" ") + i18n("The database schema version is too low. "
+                                                              "It will be updated.");
+                } else if( KraftDB::self()->currentSchemaVersion() > KraftDB::self()->requiredSchemaVersion() ) {
+                    configOrigin += QLatin1Char(' ') + i18n("The current database schema version si too high. Leaving untouched! ");
                     // qDebug () << "Database Schema is OK. Nothing to do for StartupAssistant";
                 }
             } else {
