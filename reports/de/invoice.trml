@@ -2,7 +2,7 @@
 <!DOCTYPE document SYSTEM "rml_1_0.dtd">
 <document filename="kraft.pdf">
 <template pageSize="(21cm, 29.7cm)" leftMargin="2.41cm" rightMargin="0.81cm"
-  topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document" 
+  topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document"
   author="http://www.volle-kraft-voraus.de/De/De" allowSplitting="20"
   showBoundary="0">
     <template>
@@ -66,8 +66,8 @@
       <blockValign value="TOP"/>
       <blockAlignment value="LEFT"/>
 
-      <blockBottomPadding length="8mm" start="0,1" stop="-1,-1"/>
-      <blockTopPadding length="4mm" start="0,1" stop="-1,-1"/>
+      <blockBottomPadding length="4mm" start="0,1" stop="-1,-1"/>
+      <blockTopPadding length="3mm" start="0,1" stop="-1,-1"/>
 
       <lineStyle kind="LINEBELOW" colorName="black" start="0,0" stop="-1,0"/>
    </blockTableStyle>
@@ -80,24 +80,24 @@
 
    <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
    <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
-   
+
    <paraStyle name="small_text" fontSize="8" alignment="justify" spaceBefore="1mm" />
    <paraStyle name="small_ctext" fontSize="8" alignment="CENTER" />
    <paraStyle name="small_rtext" fontSize="8" alignment="RIGHT" spaceBefore="1mm" />
-   
-   
-   <paraStyle name="text" fontSize="11" alignment="justify" spaceBefore="3mm" />
-   <paraStyle name="ctext" fontSize="11" alignment="CENTER" />
-   <paraStyle name="demandtext"      fontSize="11" alignment="justify" fontName="Times-Italic" />
-   <paraStyle name="alternativetext" fontSize="11" alignment="justify" fontName="Times-Italic" />
 
-   <paraStyle name="rtext" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
+
+   <paraStyle name="text" fontSize="10" alignment="justify" spaceBefore="3mm" />
+   <paraStyle name="ctext" fontSize="10" alignment="CENTER" />
+   <paraStyle name="demandtext"      fontSize="10" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="alternativetext" fontSize="10" alignment="justify" fontName="Times-Italic" />
+
+   <paraStyle name="rtext" fontSize="10" alignment="RIGHT" spaceBefore="3mm" />
    <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
    <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
 
-   <paraStyle name="head" fontSize="11" alignment="justify"/>
-   <paraStyle name="details" fontSize="11" alignment="right"/>
-   <paraStyle name="addressStyle" fontSize="11" />
+   <paraStyle name="head" fontSize="8" alignment="justify"/>
+   <paraStyle name="details" fontSize="10" alignment="right"/>
+   <paraStyle name="addressStyle" fontSize="10" />
 
 </stylesheet>
 <story>
@@ -129,12 +129,12 @@
 
     <spacer length="18mm" width="1mm"/>
 
-    <blockTable colWidths="10mm,8.2cm,1cm,1.2cm,2.7cm,2.7cm,8mm" style="items" repeatRows="0">
+    <blockTable colWidths="10mm,6.4cm,2.0cm,2.0cm,2.7cm,2.7cm,8mm" style="items" repeatRows="0">
     <tr>
         <td><para style="small_text">Pos.</para></td>
         <td><para style="small_text">Posten</para></td>
-        <td><para style="small_ctext">Anz.</para></td>
-        <td><para style="small_ctext">Einh.</para></td>
+        <td><para style="small_text">Anz.</para></td>
+        <td><para style="small_text">Einh.</para></td>
         <td><para style="small_ctext">Preis</para></td>
         <td><para style="small_ctext">Summe</para></td>
 	<td><para style="small_rtext"></para></td>
@@ -155,13 +155,13 @@
 	    b)
 	  {{/REDUCED_TAX}}
 	  {{#FULL_TAX}}
-	    
+
 	  {{/FULL_TAX}}
 	</para></td>
     </tr>
     {{/POSITIONS}}
     </blockTable>
-    <condPageBreak height="4cm"/> 
+    <condPageBreak height="4cm"/>
     <blockTable colWidths="10.4cm,3.7cm,2.7cm,8mm" style="sums" repeatRows="0">
     <tr><td></td>
         <td><para style="text">Netto</para></td>
