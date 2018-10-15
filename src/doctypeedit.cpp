@@ -255,7 +255,9 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
   // mHeader->setText( i18n( "Details for %1:", dt.name() ) );
   mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
-  mTemplateUrl->setText( dt.templateFile() );
+
+  const QString country = DefaultProvider::self()->locale()->bcp47Name();
+  mTemplateUrl->setText( dt.templateFile(country) );
 
   mWatermarkUrl->setText( dt.watermarkFile() );
   int mergeIdent = dt.mergeIdent().toInt();
@@ -326,7 +328,7 @@ void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )
     dt = mChangedDocTypes[docType];
   }
 
-  if ( newUrl != dt.templateFile() ) {
+  if ( newUrl != dt.defaultTemplateFile() ) {
     dt.setTemplateFile( newUrl );
     mChangedDocTypes[docType] = dt;
   }

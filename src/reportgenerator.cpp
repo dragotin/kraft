@@ -130,7 +130,7 @@ QString ReportGenerator::findTemplate( const QString& type )
 
   if ( tmplFile.isEmpty() ) {
       QMessageBox msgBox;
-      msgBox.setText(i18n("A document template named %1 could not be loaded. ", dType.templateFile()));
+      msgBox.setText(i18n("A document template named %1 could not be loaded. ", tmplFile));
       msgBox.setInformativeText(i18n("Please check your installation!"));
       msgBox.setStandardButtons(QMessageBox::Ok);
       msgBox.exec();

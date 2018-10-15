@@ -277,9 +277,17 @@ QString DocType::templateFile( const QString& lang )
 
 QString DocType::defaultTemplateFile() const
 {
-  const QString findFile = "kraft/reports/invoice.trml";
-  const QString re = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
-  return re;
+    // first check for a country specific file
+    const QString country = DefaultProvider::self()->locale()->bcp47Name();
+    QString findFile = QString("kraft/reports/%1/invoice.trml").arg(country);
+    QString re = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
+
+    if( re.isEmpty() ) {
+        // No lang specific one.
+        findFile = "kraft/reports/invoice.trml";
+        re = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
+    }
+    return re;
 }
 
 void DocType::setTemplateFile( const QString& name )
