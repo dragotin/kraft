@@ -4,6 +4,17 @@ Changes since version 0.81: #########################################
 - Fix send document by email
 - Allow emailing through xdg-email and not only through thunderbird
   To enable, set mailUA=xdg in the config file in the system section.
+- Fixed wrong usage of i18n command which caused a lot of error
+  messages on the console. (#37)
+- Time calculation: Add a time unit to the form, allow to calculate
+  times in hours, minutes and seconds (#43)
+- Refactored the calculation dialog, fixed using margin. (#42)
+- Properly ask to waste changes if user hits cancel in Calc dialog.
+- Fix some glitches in the setup code path, ie. db update.
+- Relaxed the document layout a bit by choosing a smaller font and
+  adjusting the table column settings a bit.
+- More minor bug fixes and improvements
+
 => release v. 0.82 (Oct x, 2018)
 
 Changes since version 0.80: #########################################
