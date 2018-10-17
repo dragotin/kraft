@@ -598,8 +598,8 @@ void FlosTemplDialog::drawTimeListEntry( QTreeWidgetItem *it, TimeCalcPart *cp )
     return;
 
   it->setText( 0, cp->getName());
-  it->setText( 1, i18n("%1 %2", cp->duration(),
-                       TimeCalcPart::timeUnitString(cp->timeUnit())));
+  it->setText( 1, QString::number(cp->duration())
+               + QLatin1Char(' ') + TimeCalcPart::timeUnitString(cp->timeUnit()));
   it->setText( 2, cp->getStundensatz().getName());
   it->setText( 3, cp->globalStdSetAllowed() ? i18n("Yes") : i18n("No"));
 }
