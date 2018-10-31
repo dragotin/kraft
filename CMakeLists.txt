@@ -63,6 +63,8 @@ endif()
 find_package(Ctemplate REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
+# disable the warning about null-pointer zero. FIXME.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
 #option(QTINDICATE_DISABLE "Disable support for notifications via indicator")
 
 add_definitions(${QT_DEFINITIONS} )
