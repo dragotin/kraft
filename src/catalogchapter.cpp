@@ -17,7 +17,7 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <QtSql>
+#include <QSqlQuery>
 
 #include <QDebug>
 
