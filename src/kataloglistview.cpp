@@ -124,6 +124,7 @@ void KatalogListView::setupChapters()
   m_root->setIcon( 0, QIcon("kraft"));
   m_root->setExpanded(true);
   m_root->setFont( 0, mChapterFont );
+  m_root->setToolTip( 0, QString() );
 
   repaint();
   const QList<CatalogChapter> chapters = cat->getKatalogChapters( true );
@@ -175,8 +176,7 @@ QTreeWidgetItem *KatalogListView::tryAddingCatalogChapter( const CatalogChapter&
   if( katItem ) {
     mChapterDict.insert( id, katItem );
 
-    if( !chapter.description().isEmpty() )
-      katItem->setToolTip( 0, chapter.description() );
+    katItem->setToolTip( 0, chapter.description() );
 
     // katItem->setIcon( 0, chapter.icon() );
     katItem->setFont( 0, mChapterFont );

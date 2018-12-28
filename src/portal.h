@@ -56,7 +56,7 @@ class Portal : public KXmlGuiWindow
      */
     Portal( QWidget* parent = 0, QCommandLineParser *commandLineParser = 0, const char* name = 0);
 
-    static QString textWrap( const QString& t, int width=40);
+    static QString textWrap(const QString& t, int width=40, int maxLines = -1 );
 
     QWidget* mainWidget();
   protected:

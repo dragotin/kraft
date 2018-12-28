@@ -119,10 +119,13 @@ void TemplKatalogListView::slFreshupItem( QTreeWidgetItem *item, FloskelTemplate
   if( !(item && tmpl) ) return;
 
   Geld g     = tmpl->unitPrice();
-  QString ck = tmpl->calcKindString();
-  QString t  = Portal::textWrap(tmpl->getText(), 60);
+  const QString ck = tmpl->calcKindString();
+  const QString t  = Portal::textWrap(tmpl->getText(), 72, 4);
 
   item->setText( 0, t );
+  if( t.endsWith(QLatin1Literal("..."))) {
+      item->setToolTip(0, Portal::textWrap(tmpl->getText(), 72, 22));
+  }
   QString h;
   h = QString( "%1 / %2" ).arg( g.toString( catalog()->locale() ) )
       .arg( tmpl->unit().einheitSingular() );

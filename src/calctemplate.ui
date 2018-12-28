@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
-    <height>567</height>
+    <width>657</width>
+    <height>801</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="Widget8">
       <attribute name="title">
@@ -184,7 +184,14 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="_12">
          <item>
-          <widget class="KSqueezedTextLabel" name="m_textDispTime"/>
+          <widget class="QLabel" name="m_textDispTime">
+           <property name="text">
+            <string>text</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="textLabel2">
@@ -298,7 +305,14 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="_16">
          <item>
-          <widget class="KSqueezedTextLabel" name="m_textDispFix"/>
+          <widget class="QLabel" name="m_textDispFix">
+           <property name="text">
+            <string>text</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="textLabel2_3">
@@ -412,7 +426,14 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="_20">
          <item>
-          <widget class="KSqueezedTextLabel" name="m_textDispMat"/>
+          <widget class="QLabel" name="m_textDispMat">
+           <property name="text">
+            <string>text</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="textLabel2_2">
@@ -576,16 +597,6 @@
         </item>
         <item row="1" column="3" rowspan="2">
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="m_tLabelTime">
-            <property name="text">
-             <string>Time Calculation Part:</string>
-            </property>
-            <property name="wordWrap">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="m_textTimePart">
             <property name="text">
@@ -689,6 +700,16 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="m_tLabelTime">
+            <property name="text">
+             <string>Time Calculation Part:</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item row="2" column="1">
@@ -763,13 +784,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>KSqueezedTextLabel</class>
-   <extends>QLabel</extends>
-   <header>ksqueezedtextlabel.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>cbChapter</tabstop>

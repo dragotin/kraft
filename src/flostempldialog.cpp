@@ -41,6 +41,7 @@
 #include "unitmanager.h"
 #include "timecalcpart.h"
 #include "fixcalcpart.h"
+#include "portal.h"
 #include "materialcalcpart.h"
 #include "matcalcdialog.h"
 #include "stockmaterial.h"
@@ -816,14 +817,28 @@ void FlosTemplDialog::slSetNewText()
     }
 
     if( m_text ) {
-        QString t = m_text->toPlainText();
+        const QString t = Portal::textWrap( m_text->toPlainText(), 80, 5 );
+        const QStringList li = t.split(QChar('\n'));
+        QString longest;
+        for( const QString p : li ) {
+            if( p.length() > longest.length() )
+                longest = p;
+        }
+        QFontMetrics fm(m_textDispFix->font());
+        int w = 10+fm.width(longest);
 
-        if( m_textDispTime)
+        if( m_textDispTime) {
             m_textDispTime->setText(t);
-        if( m_textDispFix)
+            m_textDispTime->setMinimumWidth(w);
+        }
+        if( m_textDispFix) {
             m_textDispFix->setText(t);
-        if( m_textDispMat)
+            m_textDispFix->setMinimumWidth(w);
+        }
+        if( m_textDispMat) {
             m_textDispMat->setText(t);
+            m_textDispMat->setMinimumWidth(w);
+        }
     }
 }
 /* END */

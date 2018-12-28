@@ -1032,9 +1032,10 @@ void Portal::slotKatalogToXML(const QString& katName)
     }
 }
 
-QString Portal::textWrap( const QString& t, int width )
+QString Portal::textWrap( const QString& t, int width, int maxLines )
 {
     QString re;
+    int lines = 0;
 
     if( t.length() <= width )
     {
@@ -1044,17 +1045,26 @@ QString Portal::textWrap( const QString& t, int width )
     {
         int start = 0;
         int pos = width;
-        while( pos < t.length() )
+        while( pos < t.length() && (lines < maxLines || maxLines < 0) )
         {
-            pos = t.indexOf( ' ', start+width );
-            if( pos > -1 ) {
-                re += t.mid( start, pos-start)+'\n';
-                start = pos;
+            pos = t.indexOf( QLatin1Char('\n'), start );
+            if( (pos-start) < width ) {
+                re += t.mid(start, pos-start)+QLatin1Char('\n');
+                start = pos+1;
             } else {
-                re += t.mid( start );
-                pos = t.length();
+                pos = t.indexOf( ' ', start+width );
+                if( pos > -1 ) {
+                    re += t.mid( start, pos-start)+QLatin1Char('\n');
+                    start = pos+1;
+                } else {
+                    re += t.mid( start );
+                    pos = t.length();
+                }
             }
+            lines++;
         }
+        if( lines == maxLines && pos != t.length() )
+            re += QLatin1Literal("...");
 
     }
 
