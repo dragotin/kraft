@@ -795,7 +795,7 @@ bool SetupAssistant::init( Mode mode )
                     configOrigin += QLatin1String(" ") + i18n("The database schema version is too low. "
                                                               "It will be updated.");
                 } else if( KraftDB::self()->currentSchemaVersion() > KraftDB::self()->requiredSchemaVersion() ) {
-                    configOrigin += QLatin1Char(' ') + i18n("The current database schema version si too high. Leaving untouched! ");
+                    configOrigin += QLatin1Char(' ') + i18n("The current database schema version is too high. Leaving untouched! ");
                     // qDebug () << "Database Schema is OK. Nothing to do for StartupAssistant";
                 }
             } else {
