@@ -661,8 +661,8 @@ void SetupAssistant::startDatabaseUpdate()
     if( errors ) {
         mUpgradeDbPage->slotSetStatusText( i18n("The Upgrade failed!") );;
     } else {
-        mUpgradeDbPage->slotSetStatusText( i18n("The Upgrade succeeded, the current schema version is %1!")
-                                           .arg( KraftDB::self()->requiredSchemaVersion() ) );;
+        mUpgradeDbPage->slotSetStatusText( i18n("The Upgrade succeeded, the current schema version is %1!",
+                                           KraftDB::self()->requiredSchemaVersion() ) );;
     }
 
     disconnect( mUpgradeDbPage, SLOT( slotSetStatusText( const QString& )));

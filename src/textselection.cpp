@@ -144,7 +144,7 @@ void TextSelection::slotSelectDocType( const QString& doctype )
   QStringList templNames;
   if( dtList.count() == 0 ) {
     showHelp( i18n("There is no %1 template text available for document type %2.<br/>"
-                   "Click the add-button below to create one.").arg( partStr ).arg( doctype ) );
+                   "Click the add-button below to create one.", partStr, doctype ) );
   } else {
     foreach( DocText dt, dtList ) {
       templNames << dt.name();
