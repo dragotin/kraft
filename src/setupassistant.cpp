@@ -809,7 +809,7 @@ bool SetupAssistant::init( Mode mode )
             // unable to connect to the database at all
             startDialog = true;
             hitNextClosing = false;
-            text = i18n( "<p>Kraft failed to connect to the configured database.<p>" );
+            text = i18n( "<p>Kraft failed to connect to the configured database.</p>" );
             if( KraftDB::self()->qtDriver().toUpper() == "QMYSQL" ) {
                 text += i18n( "<p>Please check the database server setup and restart Kraft to connect." );
             } else {
