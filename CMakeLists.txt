@@ -84,5 +84,6 @@ add_subdirectory(importfilter)
 add_subdirectory(tools)
 add_subdirectory(styles)
 add_subdirectory(meta)
+add_subdirectory(tests)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
