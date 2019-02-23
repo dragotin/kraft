@@ -14,7 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtSql>
+#include <QSqlQuery>
+#include <QSqlTableModel>
+#include <QSqlRecord>
+
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -24,6 +27,8 @@
 #include "doctext.h"
 #include "kraftsettings.h"
 #include "doctype.h"
+#include "kraftdoc.h"
+#include "dbids.h"
 
 #include <klocalizedstring.h>
 

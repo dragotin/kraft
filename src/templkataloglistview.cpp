@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtSql>
+#include <QSqlQuery>
 #include <QDebug>
 #include <QMenu>
 
