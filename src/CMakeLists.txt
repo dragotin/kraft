@@ -110,6 +110,7 @@ set(kraft_SRCS
     kraftdb.cpp
     geld.cpp
     defaultprovider.cpp
+    metaxmlparser.cpp
 )
 
 kconfig_add_kcfg_files(kraft_SRCS
@@ -156,6 +157,7 @@ set(KRAFT_LINK_LIBS
     Qt5::Core
     Qt5::Widgets
     Qt5::Sql
+    Qt5::Xml
     
     KF5::I18n
     KF5::XmlGui
