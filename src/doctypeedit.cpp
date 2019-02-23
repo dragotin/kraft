@@ -44,7 +44,9 @@
 // --------------------------------------------------------------------------------
 
 DocTypeEdit::DocTypeEdit( QWidget *parent )
-  : QWidget(parent), Ui::DocTypeEditBase( )
+  : QWidget(parent), Ui::DocTypeEditBase( ),
+    mExampleDocType(i18n("<document type>")),
+    mExampleAddressUid(i18n("<address Id>"))
 {
   setupUi( this );
 
@@ -254,7 +256,10 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   mCounter->setText( QString::number( nextNum ) );
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
   // mHeader->setText( i18n( "Details for %1:", dt.name() ) );
-  mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
+  mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(),
+                                                 mExampleDocType,
+                                                 mExampleAddressUid,
+                                                 nextNum ) );
 
   const QString country = DefaultProvider::self()->locale()->bcp47Name();
   mTemplateUrl->setText( dt.templateFile(country) );
@@ -284,7 +289,8 @@ void DocTypeEdit::slotEditNumberCycles()
     mIdent->setText( dt.identTemplate() );
     int nextNum = dt.nextIdentId( false )-1;
     mCounter->setText( QString::number( nextNum ) );
-    mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
+    mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(), mExampleDocType,
+                                                   mExampleAddressUid, nextNum ) );
   }
 }
 
@@ -360,7 +366,9 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
   mIdent->setText( dt.identTemplate() );
   int nextNum = dt.nextIdentId( false )-1;
   mCounter->setText( QString::number( nextNum ) );
-  mExampleId->setText( dt.generateDocumentIdent( 0, nextNum ) );
+  mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(),
+                                                 mExampleDocType,
+                                                 mExampleAddressUid, nextNum ) );
 }
 
 QStringList DocTypeEdit::allNumberCycles()

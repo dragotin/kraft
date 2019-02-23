@@ -95,7 +95,8 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
     if( !doc->isNew() && doc->docTypeChanged() ) {
         // an existing doc has a new document type. Fix the doc number cycle and pick a new ident
         DocType dt( doc->docType() );
-        QString ident = dt.generateDocumentIdent( doc );
+        QString ident = dt.generateDocumentIdent( doc->date(), doc->docType(),
+                                                  doc->addressUid() );
         doc->setIdent( ident );
     }
 
@@ -114,7 +115,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
       // get the uniq id and write it into the db
       DocType dt( doc->docType() );
-      QString ident = dt.generateDocumentIdent( doc );
+      QString ident = dt.generateDocumentIdent( doc->date(), doc->docType(), doc->addressUid() );
       doc->setIdent( ident );
       model.setFilter("docID=" + id.toString());
       model.select();
