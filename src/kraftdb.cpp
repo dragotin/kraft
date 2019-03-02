@@ -24,13 +24,13 @@
 #include <QSqlError>
 #include <QDir>
 #include <QDebug>
-
-#include <KLocalizedString>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include "version.h"
 #include "kraftdb.h"
+#include "doctype.h"
 #include "dbids.h"
-#include "databasesettings.h"
 #include "defaultprovider.h"
 
 Q_GLOBAL_STATIC(KraftDB, mSelf)
@@ -77,13 +77,22 @@ SqlCommandList::SqlCommandList()
 
 }
 
+void SqlCommandList::setMetaAddDocTypeList( QList<MetaDocTypeAdd> list )
+{
+    _docTypeMetaList = list;
+}
+
+QList<MetaDocTypeAdd> SqlCommandList::metaAddDocTypeList() const
+{
+    return _docTypeMetaList;
+}
 // ==========================================================================
 
 KraftDB::KraftDB()
-    :QObject (), mParent(0),
+    :QObject (), mParent(nullptr),
       mSuccess( true ),
       EuroTag( QString::fromLatin1( "%EURO" ) ),
-      mInitDialog(0)
+      mInitDialog(nullptr)
 {
     // Attention: Before setup assistant rewrite, dbConnect() was called here.
     // Keep that in mind, maybe the auto connect to the DB now misses somewhere.
@@ -97,9 +106,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
     mSuccess = true;
 
     mDatabaseDriver = driver;
-    if( driver.isEmpty() ) {
-        mDatabaseDriver = DatabaseSettings::self()->dbDriver().toUpper();
-    }
+    mDatabaseName = dbName;
 
     if( mDatabaseDriver.isEmpty() ) {
         // qDebug () << "Database Driver is not specified, check katalog settings";
@@ -138,25 +145,14 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
     if ( mSuccess ) {
         int re = 0;
         if(mDatabaseDriver == "QMYSQL") {
-            QString host = dbHost;
-            if( host.isEmpty() ) host = DatabaseSettings::self()->dbServerName();
-            QString name = dbName;
-            if( name.isEmpty() ) name = DatabaseSettings::self()->dbDatabaseName();
-            QString user = dbUser;
-            if( user.isEmpty() ) user = DatabaseSettings::self()->dbUser();
-            QString pwd = dbPasswd;
-            if( pwd.isEmpty() ) pwd = DatabaseSettings::self()->dbPassword();
-
+            int port = -1; // use the default port so far
             // FIXME: get port from user interface
-            int port = DatabaseSettings::self()->dbServerPort();
             // qDebug () << "Try to open MySQL database " << name << endl;
-            re = checkConnect( host, name , user, pwd, port);
+            re = checkConnect( dbHost, dbName , dbUser, dbPasswd, port);
         } else if(mDatabaseDriver == "QSQLITE") {
             // SqlLite only requires a valid file name which comes in as Database Name
-            QString name = dbName;
-            if( name.isEmpty() ) name = DatabaseSettings::self()->dbFile();
             // qDebug () << "Try to open SqLite database " << name << endl;
-            re = checkConnect( "", name, "", "", -1);
+            re = checkConnect( QString::null, dbName, QString::null, QString::null, -1);
         }
         if ( re == 0 ) {
             // Database successfully opened; we can now issue SQL commands.
@@ -186,6 +182,7 @@ void KraftDB::close()
 int KraftDB::checkConnect( const QString& host, const QString& dbName,
                            const QString& user, const QString& pwd, int port )
 {
+    mDatabaseName = dbName;
     // works for both mysql and sqlite if the filename for sqlite comes in
     // as parameter two
     if ( dbName.isEmpty() || !(m_db.isValid()) ) return false;
@@ -239,12 +236,7 @@ dbID KraftDB::getLastInsertID()
 
 QString KraftDB::databaseName() const
 {
-    if(DatabaseSettings::self()->dbDriver() == "QMYSQL")
-        return DatabaseSettings::self()->dbDatabaseName();
-    else if(DatabaseSettings::self()->dbDriver() == "QSQLITE")
-        return DatabaseSettings::self()->dbFile();
-
-    return "";
+    return mDatabaseName;
 }
 
 bool KraftDB::databaseExists()
@@ -269,15 +261,13 @@ void KraftDB::setSchemaVersion( const QString& versionStr )
     q.exec();
 }
 
-void KraftDB::wipeDatabase()
+SqlCommandList KraftDB::parseCommandFile( int currentVersion )
 {
-    emit statusMessage( i18n( "Wipe Database..." ) );
-    if ( m_db.tables().size() > 0 ) {
-        QString allTables = QString( "DROP TABLE %1;" ).arg( m_db.tables().join( ", " ) );
-        // qDebug () << "Erasing all tables " << allTables << endl;
-        QSqlQuery q;
-        q.exec( allTables );
-    }
+    SqlCommandList list;
+    const QString& file = QString("%1_dbmigrate.sql").arg(currentVersion);
+    list = parseCommandFile(file);
+    list.setMetaAddDocTypeList( parseMetaFile(currentVersion) );
+    return list;
 }
 
 SqlCommandList KraftDB::parseCommandFile( const QString& file )
@@ -396,12 +386,70 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
         // qDebug () << "ERR: Can not find sql file " << file;
     }
 
+
+
     return retList;
+}
+
+QList<MetaDocTypeAdd> KraftDB::parseMetaFile( int currentVersion )
+{
+    const QString fileName = QString("%1_meta.xml").arg(currentVersion);
+
+    QString env = QString::fromUtf8( qgetenv( "KRAFT_HOME" ) );
+    if( !env.isEmpty() && env.right(1) != QDir::separator () ) {
+        env += QDir::separator ();
+    }
+    QString xmlFile;
+    if( !env.isEmpty() ) {
+        xmlFile = env + QLatin1String("database/meta/") + fileName;
+    } else {
+        const QString fragment = QString("kraft/meta/") + fileName;
+        xmlFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, fragment );
+    }
+    QFile f( xmlFile );
+    if ( !f.exists() ) {
+        qDebug() << "FATAL: File" << xmlFile << "does not exist!";
+    }
+    MetaXMLParser parser;
+    if ( !f.open( QIODevice::ReadOnly ) ) {
+        qDebug () << "FATAL: Could not open " << xmlFile << endl;
+    } else {
+        QTextStream ts( &f );
+        ts.setCodec("UTF-8");
+        parser.parse( &f );
+    }
+
+    return parser.metaDocTypeAddList();
 }
 
 int KraftDB::processSqlCommands( const SqlCommandList& commands )
 {
     int cnt = 0;
+
+    // first do the doctype definitions
+    QList<MetaDocTypeAdd> newDocTypes = commands.metaAddDocTypeList();
+
+    // loop over all doctypes first, later loop again to create the followers.
+    // The followers might reference each other and thus must exist.
+    for( auto newDocType : newDocTypes ) {
+       const QString name = newDocType.name();
+       DocType type(name, true);
+
+       for( QString attr : newDocType._attribs.keys() ) {
+           type.setAttribute(attr, newDocType._attribs[attr]);
+       }
+       type.save();
+    }
+
+    // now loop again to process the followers
+    for( auto newDocType : newDocTypes ) {
+        const QString name = newDocType.name();
+        if( newDocType._follower.count() > 0 ) {
+            DocType type(name, true);
+            type.setAllFollowers(newDocType._follower);
+            type.save();
+        }
+    }
 
     foreach( SqlCommand cmd, commands ) {
         if( !cmd.message().isEmpty() ) {
@@ -420,7 +468,7 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
             } else {
                 QSqlError err = q.lastError();
                 res = false;
-                // qDebug () << "###### Failed SQL Command " << cmd.command() << ": " << err.text() << endl;
+                qDebug () << "###### Failed SQL Command " << cmd.command() << ": " << err.text() << endl;
             }
             q.clear();
             emit processedSqlCommand( res );
@@ -537,6 +585,25 @@ void KraftDB::writeWordList( const QString& listName, const QStringList& list )
     }
 }
 
+bool KraftDB::checkTableExistsSqlite(const QString& name, const QStringList& lookupCols)
+{
+    const QString query = QLatin1Literal("PRAGMA table_info(")+name+(")");
+    QSqlQuery q(query);
+    QStringList cols = lookupCols;
+
+    q.exec();
+    QSqlError err = q.lastError();
+    if( err.isValid() ) {
+        qDebug() << "Error: " << err.text();
+    }
+
+    while( q.next() ) {
+        const QString colName = q.value(1).toString();
+        qDebug() << "checking colum" << colName;
+        cols.removeAll(colName);
+    }
+    return cols.isEmpty();
+}
 
 KraftDB::~KraftDB()
 {

@@ -63,6 +63,8 @@ endif()
 find_package(Ctemplate REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
+# disable the warning about null-pointer zero. FIXME.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
 #option(QTINDICATE_DISABLE "Disable support for notifications via indicator")
 # disable the warning about null-pointer zero. FIXME.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
@@ -84,5 +86,6 @@ add_subdirectory(importfilter)
 add_subdirectory(tools)
 add_subdirectory(styles)
 add_subdirectory(meta)
+add_subdirectory(tests)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

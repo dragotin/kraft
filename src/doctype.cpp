@@ -21,10 +21,9 @@
 
 // application specific includes
 #include "doctype.h"
-#include "defaultprovider.h"
-#include "kraftsettings.h"
 #include "kraftdb.h"
 #include "numbercycle.h"
+#include "attribute.h"
 
 /**
 @author Klaas Freitag
@@ -32,16 +31,15 @@
 
 idMap DocType::mNameMap = idMap();
 
-
 DocType::DocType()
-  : mAttributes( QString::fromLatin1( "DocType" ) ),
+  : mAttributes( QLatin1Literal( "DocType" ) ),
     mDirty( false )
 {
   init();
 }
 
 DocType::DocType( const QString& name, bool dirty )
-  : mAttributes( QString::fromLatin1( "DocType" ) ),
+  : mAttributes( QLatin1Literal( "DocType" ) ),
     mName( name ),
     mDirty( dirty )
 {
@@ -55,22 +53,6 @@ DocType::DocType( const QString& name, bool dirty )
   readFollowerList();
   readIdentTemplate();
 }
-
-DocType& DocType::operator=( const DocType& dt )
-{
-  if( this != &dt ) {
-    mAttributes = dt.mAttributes;
-    mFollowerList = dt.mFollowerList;
-    mName = dt.mName;
-    mIdentTemplate = dt.mIdentTemplate;
-    mDirty = dt.mDirty;
-    mMergeIdent = dt.mMergeIdent;
-
-    mNameMap = dt.mNameMap;
-  }
-  return *this;
-}
-
 
 void DocType::init()
 {
@@ -159,6 +141,68 @@ bool DocType::pricesVisible()
         re = false;
     }
     return re;
+}
+
+bool DocType::substractPartialInvoice()
+{
+    bool re = false;
+    if( mAttributes.contains("SubstractPartialInvoice")) {
+        re = true;
+    }
+    return re;
+}
+
+bool DocType::partialInvoice()
+{
+    bool re = false;
+    if( mAttributes.contains("PartialInvoice")) {
+        re = true;
+    }
+    return re;
+}
+
+// returns the amount of followers added
+int DocType::setAllFollowers( const QStringList& followers)
+{
+    QSqlQuery q;
+    q.prepare("INSERT INTO DocTypeRelations (typeId, followerId, sequence) VALUES (:typeId, :followerId, 0)");
+    QSqlQuery qu;
+    qu.prepare("UPDATE DocTypeRelations SET sequence=:seq WHERE typeId=:typeId AND followerId=:followerId");
+
+    // get "my" doc type Id
+    int typeId = mNameMap[mName].toInt();
+    q.bindValue(":typeId", typeId);
+    qu.bindValue(":typeId", typeId);
+
+    // get the max sequence for me
+    int seq = 0;
+    {
+        QSqlQuery cq;
+        cq.prepare("SELECT MAX(sequence) FROM DocTypeRelations WHERE typeId=:tdId");
+        cq.bindValue(":tdId", typeId);
+        cq.exec();
+        if( cq.next() ) {
+            seq = cq.value(0).toInt();
+        }
+    }
+
+    const QStringList existingFollowers = follower();
+    int cnt = 0; // simple counter to return.
+    for( const QString& f : followers ) {
+        if( mNameMap.contains(f) ) {
+            int followerId = mNameMap[f].toInt();
+            if( !existingFollowers.contains(f) ) {
+                q.bindValue(":followerId", followerId );
+                q.exec();
+                cnt++;
+            }
+            // use the updater
+            qu.bindValue(":seq", ++seq);
+            qu.bindValue(":followerId", followerId);
+            qu.exec();
+        }
+    }
+    return cnt;
 }
 
 
@@ -278,7 +322,8 @@ QString DocType::templateFile( const QString& lang )
 QString DocType::defaultTemplateFile() const
 {
     // first check for a country specific file
-    const QString country = DefaultProvider::self()->locale()->bcp47Name();
+    QLocale locale;
+    const QString country = locale.bcp47Name();
     QString findFile = QString("kraft/reports/%1/invoice.trml").arg(country);
     QString re = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
 
@@ -331,6 +376,17 @@ void DocType::setMergeIdent( const QString& ident )
 
 }
 
+void DocType::setAttribute( const QString& attribute, const QString& val)
+{
+    if ( !(attribute.isEmpty() || val.isEmpty()) ) {
+      Attribute att( attribute );
+      att.setPersistant( true );
+      att.setValue( val);
+      mAttributes[attribute] = att;
+      mDirty = true;
+    }
+}
+
 QString DocType::watermarkFile()
 {
   QString re;
@@ -357,7 +413,8 @@ void DocType::setWatermarkFile( const QString& file )
   mDirty = true;
 }
 
-QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
+QString DocType::generateDocumentIdent( const QDate& docDate, const QString& docType,
+                                        const QString& addressUid, int id )
 {
   /*
    * The pattern may contain the following tags:
@@ -376,27 +433,25 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
     qWarning() << "No %i found in identTemplate, appending it to meet law needs!";
     pattern += "-%i";
   }
-  QDate d = QDate::currentDate();
-  if ( doc ) d = doc->date();
 
   KraftDB::StringMap m;
 
-  m[ "%yyyy" ] = d.toString( "yyyy" );
-  m[ "%yy" ] = d.toString( "yy" );
-  m[ "%y" ] = d.toString( "yyyy" );
+  m[ "%yyyy" ] = docDate.toString( "yyyy" );
+  m[ "%yy" ] = docDate.toString( "yy" );
+  m[ "%y" ] = docDate.toString( "yyyy" );
 
   QString h;
-  h.sprintf( "%02d", d.weekNumber( ) );
+  h.sprintf( "%02d", docDate.weekNumber( ) );
   m[ "%ww" ] = h;
-  m[ "%w" ] = QString::number( d.weekNumber( ) );
+  m[ "%w" ] = QString::number( docDate.weekNumber( ) );
 
-  m[ "%dd" ] = d.toString( "dd" );
-  m[ "%d" ] = d.toString( "d" );
+  m[ "%dd" ] = docDate.toString( "dd" );
+  m[ "%d" ] = docDate.toString( "d" );
 
-  m[ "%m" ] = QString::number( d.month() );
+  m[ "%m" ] = QString::number( docDate.month() );
 
-  m[ "%MM" ] = d.toString( "MM" );
-  m[ "%M" ] = d.toString( "M" );
+  m[ "%MM" ] = docDate.toString( "MM" );
+  m[ "%M" ] = docDate.toString( "M" );
 
   int i = id;
   if ( id == -1 ) { // hot mode: The database id is incremented by nextIdentId()
@@ -420,15 +475,9 @@ QString DocType::generateDocumentIdent( KraftDoc *doc, int id )
 
   m[ "%i" ] = QString::number( i );
 
-  if ( doc ) {
-    m[ "%c" ] = doc->addressUid();
-    m[ "%type" ] = doc->docType();
-    m[ "%uid" ] = doc->addressUid();
-  } else {
-    m[ "%c"] = QLatin1String(" <addressUid>" );
-    m[ "%type" ] = mName;
-    m[ "%uid" ] = QLatin1String("<uid>");
-  }
+  m[ "%c" ] = addressUid;
+  m[ "%type" ] = docType;
+  m[ "%uid" ] = addressUid;
 
   QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
   // qDebug () << "Generated document ident: " << re;
@@ -514,20 +563,13 @@ void DocType::readIdentTemplate()
 
   // FIXME: Check again.
   if ( tmpl.isEmpty() ) {
-    // migration: If there is nothing yet in the database, check the local config and
-    // transfer the setting to the db
-    QString pattern = KraftSettings::self()->docIdent();
-    if ( pattern.isEmpty() ) {
-      // There is nothing in KConfig File, so we use our default from here.
-      pattern = defaultTempl;
-    }
     // qDebug () << "Writing ident template to database: " << pattern;
     QSqlQuery insQuery;
     insQuery.prepare( "UPDATE numberCycles SET identTemplate=:pattern WHERE name=:name" );
     insQuery.bindValue( ":name", numberCycle );
-    insQuery.bindValue( ":pattern", pattern );
+    insQuery.bindValue( ":pattern", defaultTempl);
     insQuery.exec();
-    tmpl = pattern;
+    tmpl = defaultTempl;
   }
   mIdentTemplate = tmpl;
 }

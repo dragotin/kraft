@@ -185,6 +185,9 @@ void KraftView::setupMappers()
   mModifiedMapper = new QSignalMapper( this );
   connect( mModifiedMapper,  SIGNAL( mapped( int ) ),
            this,  SLOT( slotPositionModified( int ) ) );
+  // block signals as long as the widget is built up.
+  // unblocking happens in redrawDocument()
+  mModifiedMapper->blockSignals(true);
 }
 
 void KraftView::setup( DocGuardedPtr doc )
@@ -200,6 +203,10 @@ void KraftView::setup( DocGuardedPtr doc )
   setupFooter();
   setWindowTitle( m_doc->docIdentifier() );
   slotSwitchToPage( KraftDoc::Header );
+
+  if( doc->isNew() ) {
+      mModified = true;
+  }
 }
 
 
@@ -247,6 +254,17 @@ void KraftView::setupDocHeaderView()
     // Hide the locale select button for now.
     m_headerEdit->mButtLang->hide();
     // }
+    const QString predecessorDbId = m_doc->predecessorDbId();
+    bool predecIsVisible = false;
+    if( !predecessorDbId.isEmpty() ) {
+        const QString id = m_doc->docIdentifier();
+        const QString link = QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorDbId).arg(id);
+        m_headerEdit->_labFollowup->setText( i18n("Successor of %1").arg(link));
+        predecIsVisible = true;
+        connect( m_headerEdit->_labFollowup, SIGNAL(linkActivated(QString)),
+                 this, SLOT(slotLinkClicked(QString)));
+    }
+    m_headerEdit->_labFollowup->setVisible(predecIsVisible);
 
     connect( m_headerEdit->m_cbType,  SIGNAL( activated( const QString& ) ),
              this, SLOT( slotDocTypeChanged( const QString& ) ) );
@@ -256,6 +274,16 @@ void KraftView::setupDocHeaderView()
     connect( edit, SIGNAL( modified() ),
               this, SLOT( slotModifiedHeader() ) );
     connect( edit, SIGNAL(pickAddressee()), this, SLOT(slotPickAddressee()) );
+}
+
+void KraftView::slotLinkClicked(const QString& link)
+{
+    QUrl u(link);
+    if( u.scheme() == "doc" && u.host() == "show" ) {
+        const QString ident = u.queryItemValue("id");
+        qDebug() << "Link clicked to open document " << ident;
+        emit openROView( ident );
+    }
 }
 
 void KraftView::setupItems()
@@ -317,8 +345,9 @@ void KraftView::redrawDocument( )
     redrawDocPositions( );
     slotDocTypeChanged( doc->docType() );
     refreshPostCard();
+    mModifiedMapper->blockSignals(false);
 
-    mModified = false;
+   // mModified = false;
 }
 
 void KraftView::slotPickAddressee()
@@ -791,10 +820,10 @@ void KraftView::slotUnlockPosition( int pos )
 
 void KraftView::slotPositionModified( int )
 {
-  // qDebug () << "Modified Position " << pos << endl;
-  mModified = true;
+    // qDebug () << "Modified Position " << pos << endl;
+    mModified = true;
 
-  QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
 void KraftView::slotAddressFound(const QString& uid, const KContacts::Addressee& contact)
@@ -1271,24 +1300,39 @@ void KraftView::slotShowCatalog( bool on )
 
 void KraftView::slotModifiedPositions()
 {
-  qDebug () << "Position Modified" << endl;
-  mModified = true;
+    // As long as the modified mapper is blocked, ignore this.
+    if( mModifiedMapper->signalsBlocked() ) {
+        return;
+    }
+
+    qDebug () << "Position Modified" << endl;
+    mModified = true;
 }
 
 void KraftView::slotModifiedHeader()
 {
-  // qDebug () << "Modified the header!" << endl;
-  mModified = true;
+    // qDebug () << "Modified the header!" << endl;
+    // As long as the modified mapper is blocked, ignore this.
+    if( mModifiedMapper->signalsBlocked() ) {
+        return;
+    }
 
-  QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+    mModified = true;
+
+    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
 void KraftView::slotModifiedFooter()
 {
-  // qDebug () << "Modified the footer!" << endl;
-  mModified = true;
+    // qDebug () << "Modified the footer!" << endl;
+    // As long as the modified mapper is blocked, ignore this.
+    if( mModifiedMapper->signalsBlocked() ) {
+        return;
+    }
 
-  QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
+    mModified = true;
+
+    QTimer::singleShot( 0, this, SLOT( refreshPostCard() ) );
 }
 
 QStringList KraftView::generateLetterHead( const QString& familyName, const QString& givenName )

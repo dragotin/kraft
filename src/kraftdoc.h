@@ -52,14 +52,13 @@ class KraftDoc : public QObject
 
   /** sets the modified flag for the document after a modifying action 
    *  on the view connected to the document.*/
-  void setModified(bool _m=true){ modified=_m; }
+  void setModified(bool _m=true){ _modified=_m; }
   /** returns if the document is modified or not. Use this to determine 
    *  if your document needs saving by the user on closing.*/
-  bool isModified(){ return modified; }
+  bool isModified(){ return _modified; }
   /** deletes the document's contents */
-  void deleteContents();
-  /** initializes the document generally */
-  bool newDocument( const QString& docType = QString() );
+  void deleteItems();
+
   /** closes the current document */
   void closeDocument();
   /** loads the document by filename and format and emits the updateViews() signal */
@@ -75,49 +74,54 @@ class KraftDoc : public QObject
   DocPositionList positions() { return mPositions; }
   void setPositionList( DocPositionList );
 
-  QDate date() { return mDate; }
+  QDate date() const { return mDate; }
   void setDate( QDate d ) { mDate = d; }
 
-  QDate lastModified() { return mLastModified; }
+  QDate lastModified() const { return mLastModified; }
   void setLastModified( QDate d ) { mLastModified = d; }
 
-  QString docType() { return mDocType; }
+  QString docType() const { return mDocType; }
   void setDocType( const QString& s );
   bool docTypeChanged() { return mDocTypeChanged; }
 
-  QString addressUid() { return mAddressUid; }
+  QString addressUid() const { return mAddressUid; }
   void setAddressUid( const QString& id ) { mAddressUid = id; }
 
-  QString& address() { return mAddress; } 
+  QString address() const { return mAddress; }
   void setAddress( const QString& adr ) { mAddress = adr; }
 
-  bool isNew() { return mIsNew; }
+  bool isNew() const { return mIsNew; }
 
-  QString ident()    { return mIdent;    }
+  QString ident() const   { return mIdent;    }
   void setIdent( const QString& str ) { mIdent = str; }
 
-  QString salut()    { return mSalut;    }
+  QString salut() const   { return mSalut;    }
   void setSalut( const QString& str ) { mSalut = str; }
 
-  QString goodbye()    { return mGoodbye;    }
+  QString goodbye() const   { return mGoodbye;    }
   void setGoodbye( const QString& str ) { mGoodbye = str; }
 
-  QString preText()  { return mPreText;  }
+  QString preText() const   { return mPreText;  }
   void setPreText( const QString& str ) { mPreText = str; }
 
-  QString postText() { return mPostText; }
+  QString postText() const { return mPostText; }
   void setPostText( const QString& str ) { mPostText = str; }
 
-  QString whiteboard() { return mWhiteboard; }
+  QString whiteboard() const { return mWhiteboard; }
   void setWhiteboard( const QString& w ) { mWhiteboard = w; }
 
-  QString projectLabel() { return mProjectLabel; }
+  QString projectLabel() const { return mProjectLabel; }
   void setProjectLabel( const QString& w ) { mProjectLabel = w; }
 
-  void setDocID( dbID id ) { mDocID = id; }
-  dbID docID() { return mDocID; }
+  QString predecessor() const { return mPredecessor; }
+  void setPredecessor( const QString& w );
+  QString predecessorDbId() const { return mPredecessorDbId; }
+  void setPredecessorDbId( const QString& pId ) { mPredecessorDbId = pId; }
 
-  QString docIdentifier();
+  void setDocID( dbID id ) { mDocID = id; }
+  dbID docID() const { return mDocID; }
+
+  QString docIdentifier() const;
   DBIdList removePositionList() { return mRemovePositions; }
 
   Geld nettoSum();
@@ -142,7 +146,7 @@ class KraftDoc : public QObject
 private:
   DocumentSaverBase* getSaver( const QString& saverHint = QString() );
   /** the modified flag of the current document */
-  bool modified;
+  bool _modified;
   bool mIsNew;
 
   QString mAddressUid;
@@ -156,6 +160,8 @@ private:
   QString mGoodbye;
   QString mIdent;
   QString mWhiteboard;
+  QString mPredecessor;
+  QString mPredecessorDbId;
 
   // Two qualifiers for the locale settings.
   QString mCountry;

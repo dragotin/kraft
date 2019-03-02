@@ -515,7 +515,8 @@ void SetupAssistant::slotCurrentPageChanged( int currId )
                 filename = defaultSqliteFilename();
                 setField("SqliteStorageFile", filename);
             }
-            if( !KraftDB::self()->dbConnect( QLatin1String("QSQLITE"), filename ) ) {
+            if( !KraftDB::self()->dbConnect( QLatin1String("QSQLITE"), filename,
+                                             QString::null, QString::null, QString::null) ) {
                 setField("CreateDbStatusText", i18n("<p>Can't open your database file, check the permissions and such."));
             }
         }
@@ -624,12 +625,12 @@ void SetupAssistant::startDatabaseUpdate()
 
     while ( currentVer < KraftDB::self()->requiredSchemaVersion() ) {
         ++currentVer;
-        const QString migrateFilename = QString( "%1_dbmigrate.sql" ).arg( currentVer );
         // qDebug () << "######### Reading " << migrateFilename;
-        mUpgradeDbPage->slotSetStatusText( i18n("Reading upgrade command file %1", migrateFilename ) );
-        SqlCommandList cmds = KraftDB::self()->parseCommandFile( migrateFilename );
-        overallCmdCount += cmds.count();
-        commandLists << cmds;
+        const SqlCommandList cmds = KraftDB::self()->parseCommandFile( currentVer );
+        if( cmds.count() ) {
+            commandLists.append(cmds);
+            overallCmdCount += cmds.count();
+        }
     }
     mUpgradeDbPage->slotSetOverallCount( overallCmdCount );
 
@@ -644,11 +645,11 @@ void SetupAssistant::startDatabaseUpdate()
     bool errors = false;
 
     currentVer = KraftDB::self()->currentSchemaVersion();
-    foreach( SqlCommandList cmds, commandLists ) {
+    for( SqlCommandList cmdList : commandLists ) {
         currentVer++;
-        int goodCmds = KraftDB::self()->processSqlCommands( cmds );
+        int goodCmds = KraftDB::self()->processSqlCommands( cmdList );
         doneOverallCmds += goodCmds;
-        if( goodCmds != cmds.count() ) {
+        if( goodCmds != cmdList.count() ) {
             // qDebug () << "Only performned " << goodCmds << " out of " << cmds.count();
             errors = true;
             break;
@@ -742,7 +743,8 @@ bool SetupAssistant::handleSqLiteDetails()
 
     mSqlBackendDriver = mDbSelectPage->selectedDriver();
     // qDebug () << "The database driver is " << mSqlBackendDriver;
-    bool re = KraftDB::self()->dbConnect( mSqlBackendDriver, file );
+    bool re = KraftDB::self()->dbConnect( mSqlBackendDriver, file,
+                                          QString::null, QString::null, QString::null );
 
     return re;
 }
@@ -784,7 +786,11 @@ bool SetupAssistant::init( Mode mode )
             // qDebug () << "A standard KDE Platform 4.x database config file is there.";
         }
 
-        if( KraftDB::self()->dbConnect() )  { // try to connect with default values
+        if( KraftDB::self()->dbConnect(DatabaseSettings::self()->dbDriver().toUpper(),
+                                       DatabaseSettings::self()->dbDatabaseName(),
+                                       DatabaseSettings::self()->dbUser(),
+                                       DatabaseSettings::self()->dbServerName(),
+                                       DatabaseSettings::self()->dbPassword()) )  { // try to connect with default values
             // qDebug () << "The database can be opened!";
             if( KraftDB::self()->databaseExists() ) {
                 // qDebug () << "The database exists.";

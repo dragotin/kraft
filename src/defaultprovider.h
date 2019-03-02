@@ -18,17 +18,15 @@
 #define DEFAULTPROVIDER_H
 
 #include <QtCore>
-#include <qdom.h>
 
 #include "kraftcat_export.h"
 
-#include "dbids.h"
 #include "kraftdoc.h"
 #include "doctext.h"
 
 class QSqlRecord;
-
 class QStringList;
+class dbID;
 
 /**
  * encapsulates all relevant for default values for documents such as

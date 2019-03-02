@@ -126,7 +126,7 @@ class Portal : public KXmlGuiWindow
     void slotOpenDocument( const QString& );
     void slotOpenDocument();
 
-    void slotViewDocument();
+    void slotViewCurrentDocument();
     void slotViewDocument( const QString& );
 
     void slotFollowUpDocument();

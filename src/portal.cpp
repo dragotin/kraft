@@ -131,7 +131,7 @@ void Portal::initActions()
   actOpenArchivedDocument->setText( i18n("Open Archived Document"));
   actOpenArchivedDocument->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_A) );
 
-  actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewDocument()));
+  actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewCurrentDocument()));
   actViewDocument->setText(i18n("Show Document"));
   actViewDocument->setShortcut( QKeySequence(Qt::CTRL+Qt::Key_R) );
   actViewDocument->setIcon( QIcon::fromTheme("document-preview" ));
@@ -420,14 +420,13 @@ void Portal::slotNewDocument()
   slotStatusMsg(i18n("Creating new document..."));
 
   KraftWizard wiz;
-  wiz.init();
+  wiz.init(true);
   if ( wiz.exec() ) {
     DocumentMan *docman = DocumentMan::self();
     DocGuardedPtr doc = docman->createDocument( wiz.docType() );
 
     doc->setDate( wiz.date() );
     doc->setAddressUid( wiz.addressUid() );
-    // doc->setDocType( wiz.docType() );
     doc->setWhiteboard( wiz.whiteboard() );
     createView( doc );
   }
@@ -436,32 +435,32 @@ void Portal::slotNewDocument()
 
 void Portal::slotFollowUpDocument()
 {
-  const QString locId = m_portalView->docDigestView()->currentDocumentId();
+    const QString locId = m_portalView->docDigestView()->currentDocumentId();
 
-  DocGuardedPtr doc = DocumentMan::self()->openDocument( locId );
+    DocGuardedPtr sourceDoc = DocumentMan::self()->openDocument( locId );
 
-  DocType dt( doc->docType() );
+    DocType dt( sourceDoc->docType() );
 
-  KraftWizard wiz;
-  wiz.init();
+    KraftWizard wiz;
+    wiz.init( false, sourceDoc->ident() );
 
-  QStringList followers = dt.follower();
-  if ( followers.count() > 0 ) {
-    // only if there are currently followers defined, if not the default wiht
-    // all doc types works.
-    wiz.setAvailDocTypes( dt.follower() );
-  }
+    QStringList followers = dt.follower();
+    if ( followers.count() > 0 ) {
+        // only if there are currently followers defined, if not the default wiht
+        // all doc types works.
+        wiz.setAvailDocTypes( dt.follower() );
+    }
 
-  // qDebug () << "doc identifier: "<< doc->docIdentifier() << endl;
-  wiz.setDocIdentifier( doc->docIdentifier() );
-  delete doc;
-  if ( wiz.exec() ) {
-    DocGuardedPtr doc = DocumentMan::self()->createDocument( dt.name(), locId );
-    doc->setDate( wiz.date() );
-    doc->setDocType( wiz.docType() );
-    doc->setWhiteboard( wiz.whiteboard() );
-    createView( doc );
-  }
+    // qDebug () << "doc identifier: "<< doc->docIdentifier() << endl;
+    wiz.setDocIdentifierToFollow( i18n("Followup Document for %1", sourceDoc->docIdentifier() ));
+    delete sourceDoc;
+    if ( wiz.exec() ) {
+        bool keepItems = wiz.copyItemsFromPredecessor();
+        DocGuardedPtr doc = DocumentMan::self()->createDocument( wiz.docType(), locId, keepItems );
+        doc->setDate( wiz.date() );
+        doc->setWhiteboard( wiz.whiteboard() );
+        createView( doc );
+    }
 }
 
 void Portal::slotCopyDocument()
@@ -475,15 +474,24 @@ void Portal::slotCopyDocument( const QString& id )
   if ( id.isEmpty() ) {
     return;
   }
+  QString oldDocIdent;
   DocGuardedPtr oldDoc = DocumentMan::self()->openDocument( id );
+  if(oldDoc) {
+      const DocType dt = oldDoc->docType();
+      oldDocIdent = i18n("Create new Document as Copy of %1", oldDoc->ident());
+      delete oldDoc;
+  }
 
   KraftWizard wiz;
-  wiz.init();
+  wiz.init(true, oldDocIdent);
   if ( wiz.exec() ) {
-    DocGuardedPtr doc = DocumentMan::self()->createDocument( oldDoc->docType(), id );
+    DocGuardedPtr doc = DocumentMan::self()->copyDocument(id);
     doc->setDate( wiz.date() );
     doc->setDocType( wiz.docType() );
     doc->setWhiteboard( wiz.whiteboard() );
+    if(doc->addressUid() != wiz.addressUid() ) {
+        doc->setAddress(QString::null);
+    }
     doc->setAddressUid( wiz.addressUid() );
     doc->saveDocument();
     m_portalView->docDigestView()->slotUpdateView();
@@ -497,7 +505,7 @@ void Portal::slotOpenDocument()
   slotOpenDocument( locId );
 }
 
-void Portal::slotViewDocument()
+void Portal::slotViewCurrentDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
   slotViewDocument( locId );
@@ -505,8 +513,6 @@ void Portal::slotViewDocument()
 
 void Portal::slotViewDocument( const QString& id )
 {
-  QString locId = m_portalView->docDigestView()->currentDocumentId();
-
   slotStatusMsg(i18n("Opening document to view..."));
 
   if( !id.isEmpty() ) {
@@ -835,6 +841,8 @@ void Portal::createView( DocGuardedPtr doc )
 
       connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
                this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
+      connect( view, &KraftViewBase::openROView, this, &Portal::slotViewDocument );
+
       mViewMap[doc] = view;
   } else {
       mViewMap[doc]->raise();
@@ -893,7 +901,7 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
 
 void Portal::slotFileQuit()
 {
-  closeEvent(0);
+  closeEvent(nullptr);
 }
 
 void Portal::closeEvent( QCloseEvent *event )
@@ -1048,11 +1056,11 @@ QString Portal::textWrap( const QString& t, int width, int maxLines )
         while( pos < t.length() && (lines < maxLines || maxLines < 0) )
         {
             pos = t.indexOf( QLatin1Char('\n'), start );
-            if( (pos-start) < width ) {
+            if( pos > -1 && (pos-start) < width ) {
                 re += t.mid(start, pos-start)+QLatin1Char('\n');
                 start = pos+1;
             } else {
-                pos = t.indexOf( ' ', start+width );
+                pos = t.indexOf( QLatin1Char(' '), start+width );
                 if( pos > -1 ) {
                     re += t.mid( start, pos-start)+QLatin1Char('\n');
                     start = pos+1;
@@ -1063,9 +1071,9 @@ QString Portal::textWrap( const QString& t, int width, int maxLines )
             }
             lines++;
         }
-        if( lines == maxLines && pos != t.length() )
+        if( lines == maxLines && pos != t.length() ) {
             re += QLatin1Literal("...");
-
+        }
     }
 
     return re;

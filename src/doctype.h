@@ -23,17 +23,15 @@
 
 #include "kraftcat_export.h"
 
-#include "attribute.h"
 #include "dbids.h"
+#include "attribute.h"
 
-// application specific includes
 
 /**
 @author Klaas Freitag
 */
 
 typedef QMap<QString, dbID> idMap;
-class KraftDoc;
 
 class KRAFTCAT_EXPORT DocType
 {
@@ -43,7 +41,6 @@ class KRAFTCAT_EXPORT DocType
    * create a doctype from its localised or tech name 
    */
   DocType( const QString&, bool dirty = false );
-  DocType& operator=( const DocType& );
 
   static QStringList all();
   static QStringList allLocalised();
@@ -55,10 +52,14 @@ class KRAFTCAT_EXPORT DocType
   bool allowDemand();
   bool allowAlternative();
   bool pricesVisible();
+  bool partialInvoice();
+  bool substractPartialInvoice();
 
   QStringList follower();
+  int setAllFollowers( const QStringList& followers);
 
-  QString     generateDocumentIdent( KraftDoc* doc, int id = -1 );
+  QString     generateDocumentIdent( const QDate& docDate, const QString& docType,
+                                     const QString& addressUid, int id = 1 );
   QString     identTemplate();
   void        setIdentTemplate( const QString& );
 
@@ -74,6 +75,8 @@ class KRAFTCAT_EXPORT DocType
 
   QString     mergeIdent();
   void        setMergeIdent( const QString& );
+
+  void        setAttribute( const QString& attribute, const QString& val);
 
   static void  clearMap();
 

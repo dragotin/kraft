@@ -19,6 +19,7 @@
 #include "defaultprovider.h"
 #include "kraftdoc.h"
 #include "doctype.h"
+#include "doctext.h"
 
 #include <QLocale>
 #include <QDebug>

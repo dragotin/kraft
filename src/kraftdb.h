@@ -21,14 +21,14 @@
 #include <QtCore>
 #include <QSqlError>
 #include <QSqlDatabase>
-
 #include <QMap>
 #include <QDateTime>
+
+#include "metaxmlparser.h"
 
 class dbID;
 class DbInitDialog;
 class SetupAssistant;
-
 /**
   *@author Klaas Freitag
   */
@@ -49,11 +49,15 @@ private:
   bool    mMayFail;
 };
 
-
 class SqlCommandList: public QList<SqlCommand>
 {
 public:
   SqlCommandList();
+  QList<MetaDocTypeAdd> metaAddDocTypeList() const;
+  void setMetaAddDocTypeList( QList<MetaDocTypeAdd> list );
+
+private:
+  QList<MetaDocTypeAdd> _docTypeMetaList;
 };
 
 
@@ -83,9 +87,9 @@ public:
     return mSuccess;
   }
 
-  bool dbConnect( const QString& driver= QString(), const QString& dbName= QString(),
-                const QString& dbUser= QString(), const QString& dbHost= QString(),
-                const QString& dbPasswd= QString() );
+  bool dbConnect( const QString& driver, const QString& dbName,
+                  const QString& dbUser, const QString& dbHost,
+                  const QString& dbPasswd );
 
   /**
    * check if the database is open and contains the table kraftsystem. Still
@@ -116,19 +120,20 @@ public:
 
   // void checkDatabaseSetup( QWidget* );
 
-  SqlCommandList parseCommandFile( const QString& );
+  SqlCommandList parseCommandFile( int currentVersion );
+  SqlCommandList parseCommandFile( const QString& file );
+
+  QList<MetaDocTypeAdd> parseMetaFile( int currentVersion );
 
   int processSqlCommands( const SqlCommandList& );
+
+  bool checkTableExistsSqlite(const QString& name, const QStringList& lookupCols);
 
   KraftDB();
 
 signals:
   void statusMessage( const QString& );
   void processedSqlCommand( bool );
-
-protected:
-  // void checkSchemaVersion();
-  void wipeDatabase();
 
 private: // Private attributes
   void close();
@@ -143,6 +148,7 @@ private: // Private attributes
   bool mSuccess;
   const QString EuroTag;
   QString mDatabaseDriver;
+  QString mDatabaseName;
   DbInitDialog *mInitDialog;
   SetupAssistant *mSetupAssistant;
 };

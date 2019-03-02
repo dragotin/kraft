@@ -19,9 +19,14 @@
 
 #include <QDebug>
 
+#include <klocalizedstring.h>
+
 #include "documentman.h"
+#include "defaultprovider.h"
 #include "docdigest.h"
 #include "kraftdb.h"
+#include "doctype.h"
+#include "kraftsettings.h"
 
 Q_GLOBAL_STATIC(DocumentMan, mSelf)
 
@@ -37,21 +42,71 @@ DocumentMan::DocumentMan()
 
 }
 
-DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromId )
+DocGuardedPtr DocumentMan::copyDocument( const QString& copyFromId )
 {
-  DocGuardedPtr doc = new KraftDoc( );
-  doc->newDocument( docType );
-  // qDebug () << "new document ID: " << doc->docID().toString() << endl;
-
-  if ( ! copyFromId.isEmpty() ) {
-    // copy the content from the source document to the new doc.
-    DocGuardedPtr sourceDoc = openDocument( copyFromId );
-    if ( sourceDoc ) {
-      *doc = *sourceDoc;
+    DocGuardedPtr doc = new KraftDoc( );
+    if ( ! copyFromId.isEmpty() ) {
+        // copy the content from the source document to the new doc.
+        DocGuardedPtr sourceDoc = openDocument( copyFromId );
+        if ( sourceDoc ) {
+            *doc = *sourceDoc; // copies all data from the previous doc
+            doc->setPredecessor(QString::null); // clear the predecessor
+        }
+        doc->setLastModified( QDate::currentDate());
     }
-  }
+    return doc;
+}
 
-  return doc;
+DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromId, bool keepItems )
+{
+    DocGuardedPtr doc = new KraftDoc( );
+    // qDebug () << "new document ID: " << doc->docID().toString() << endl;
+
+    if ( ! copyFromId.isEmpty() ) {
+        // copy the content from the source document to the new doc.
+        DocGuardedPtr sourceDoc = openDocument( copyFromId );
+        if ( sourceDoc ) {
+            *doc = *sourceDoc; // copies all data from the previous doc
+            doc->setDocType(docType); // sets the defaults for the new doc type
+            if( !keepItems ) {
+                doc->deleteItems();       // remove all items that exist so far
+            }
+            // check for relations between old and new doc
+            DocType sourceDocType( sourceDoc->docType() );
+            // for new docs check if it should substract the sum of the predecessor doc
+            DocType newDocType(docType);
+            if( newDocType.substractPartialInvoice() ) {
+                if( sourceDocType.partialInvoice()  ) {
+                    Geld g = sourceDoc->nettoSum();
+                    DocPosition *pos = doc->createPosition(DocPositionBase::Position);
+                    if(pos) {
+                        Einheit e;
+                        pos->setUnit(e);
+                        pos->setAmount(1.0);
+                        Geld ng(-1 * g.toLong());
+
+                        pos->setUnitPrice(ng);
+                        pos->setText(i18n("Substract sum from %1 %2",
+                                          sourceDocType.name(), sourceDoc->ident()));
+                    }
+                }
+            }
+
+            doc->setPredecessor(sourceDoc->ident());
+            delete sourceDoc;
+        }
+    } else {
+        // Absolute new document
+        doc->setDocType(docType);
+        doc->setGoodbye( KraftSettings::greeting() );
+    }
+
+    // set the proper texts and other data
+    doc->setLastModified( QDate::currentDate());
+    doc->setPreText(DefaultProvider::self()->defaultText( docType, KraftDoc::Header ));
+    doc->setPostText(DefaultProvider::self()->defaultText( docType, KraftDoc::Footer));
+
+    return doc;
 }
 
 DocGuardedPtr DocumentMan::openDocument( const QString& id )

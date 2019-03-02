@@ -87,6 +87,8 @@ private:
   QStringList mRemovedTypes;
 
   QString mPreviousType;
+  QString mExampleDocType;
+  QString mExampleAddressUid;
 };
 
 #endif

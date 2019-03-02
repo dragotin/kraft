@@ -60,6 +60,7 @@ public:
 
 protected slots:
     void done( int );
+    void slotLinkClicked(const QString& link);
 
 signals:
     void positionSelected( Katalog*, void* );

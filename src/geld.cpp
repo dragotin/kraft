@@ -51,14 +51,6 @@ Geld& Geld::operator=(const double d)
     return *this;
 }
 
-Geld& Geld::operator=(const Geld& g)
-{
-  if ( this == &g ) return *this;
-
-  m_cent = g.m_cent;
-  return *this;
-}
-
 Geld& Geld::operator+=(const Geld& g)
 {
     m_cent += g.m_cent;

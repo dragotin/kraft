@@ -818,9 +818,9 @@ void FlosTemplDialog::slSetNewText()
 
     if( m_text ) {
         const QString t = Portal::textWrap( m_text->toPlainText(), 80, 5 );
-        const QStringList li = t.split(QChar('\n'));
+        const QStringList li = t.split(QLatin1Char('\n'));
         QString longest;
-        for( const QString p : li ) {
+        for( const QString& p : li ) {
             if( p.length() > longest.length() )
                 longest = p;
         }
