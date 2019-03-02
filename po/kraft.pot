@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-16 20:26+0200\n"
+"POT-Creation-Date: 2019-03-02 14:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,72 +89,508 @@ msgstr ""
 msgid "&Search: "
 msgstr ""
 
-#: alldocsview.cpp:134 portal.cpp:214 rc.cpp:613 rc.cpp:1475
+#: alldocsview.cpp:134 portal.cpp:214 rc.cpp:613 rc.cpp:1475 rc.cpp:2298
 msgid "Document Actions"
 msgstr ""
 
-#: archdoc.cpp:56 kraftdoc.cpp:183
+#: archdoc.cpp:56
 msgid "%1 for %2 (Id %3)"
 msgstr ""
 
-#: brunskatalog.cpp:44
-msgid "Select Bruns Catalog Data File"
+#: defaultprovider.cpp:56 doctext.cpp:80 positionviewwidget.cpp:418
+msgid "Unknown"
 msgstr ""
 
-#: brunskatalog.cpp:56
-msgid "Select Bruns Catalog Key File"
+#: flostempldialog.cpp:72
+msgid "Create or Edit Template Items"
 msgstr ""
 
-#: brunskataloglistview.cpp:42
-msgid "Catalog"
+#: flostempldialog.cpp:214 flostempldialog.cpp:605
+msgid "No"
 msgstr ""
 
-#: brunskataloglistview.cpp:110
-msgid "Fruits"
+#: flostempldialog.cpp:215 flostempldialog.cpp:605
+msgid "Yes"
 msgstr ""
 
-#: brunskataloglistview.cpp:114
-msgid "Azalea and Rhododendrons"
+#: flostempldialog.cpp:252
+msgid "Calculated Price: "
 msgstr ""
 
-#: brunskataloglistview.cpp:118
-msgid "Roses"
+#: flostempldialog.cpp:256
+msgid "Manual Price: "
 msgstr ""
 
-#: brunskatalogview.cpp:61
-msgid "Plant Details (Sizes, Root Forms etc.):"
+#: flostempldialog.cpp:261
+msgid "(+%1%)"
 msgstr ""
 
-#: brunskatalogview.cpp:67
-msgid "Matchcode"
+#: flostempldialog.cpp:265
+msgid "%1%"
 msgstr ""
 
-#: brunskatalogview.cpp:68 rc.cpp:400 rc.cpp:1235
-msgid "Form"
+#: flostempldialog.cpp:267
+msgid ": "
 msgstr ""
 
-#: brunskatalogview.cpp:69
-msgid "Form Add"
+#: flostempldialog.cpp:389 reportgenerator.cpp:212
+msgid "Template Error"
 msgstr ""
 
-#: brunskatalogview.cpp:70
-msgid "Wuchs"
+#: flostempldialog.cpp:389
+msgid "Saving of this template failed, sorry"
 msgstr ""
 
-#: brunskatalogview.cpp:71
-msgid "Root"
+#: flostempldialog.cpp:417
+msgid "The template has been modified."
 msgstr ""
 
-#: brunskatalogview.cpp:72
-msgid "Quality"
+#: flostempldialog.cpp:418
+msgid "Do you want to discard your changes?"
 msgstr ""
 
-#: brunskatalogview.cpp:73
-msgid "Group"
+#: flostempldialog.cpp:447
+msgid ""
+"The catalog chapter was changed for this template.\n"
+"Do you really want to move the template to the new chapter?"
+msgstr ""
+
+#: flostempldialog.cpp:449
+msgid "Chapter Change"
+msgstr ""
+
+#: kataloglistview.cpp:333
+msgid "A catalog chapter can not be deleted as long it has children."
+msgstr ""
+
+#: kataloglistview.cpp:334
+msgid "Chapter can not be deleted"
+msgstr ""
+
+#: portal.cpp:111
+msgid "Create Document"
+msgstr ""
+
+#: portal.cpp:116
+msgid "Copy Document"
+msgstr ""
+
+#: portal.cpp:121
+msgid "Follow Document"
+msgstr ""
+
+#: portal.cpp:126
+msgid "Print Document"
+msgstr ""
+
+#: portal.cpp:131
+msgid "Open Archived Document"
+msgstr ""
+
+#: portal.cpp:135
+msgid "Show Document"
+msgstr ""
+
+#: portal.cpp:140
+msgid "Edit Document"
+msgstr ""
+
+#: portal.cpp:145
+msgid "&Mail Document"
+msgstr ""
+
+#: portal.cpp:154
+msgid "Redo Initial Setup..."
+msgstr ""
+
+#: portal.cpp:157
+msgid "Quits the application"
+msgstr ""
+
+#: portal.cpp:158
+msgid "Cuts the selected section and puts it to the clipboard"
+msgstr ""
+
+#: portal.cpp:159
+msgid "Copies the selected section to the clipboard"
+msgstr ""
+
+#: portal.cpp:160
+msgid "Pastes the clipboard contents to current position"
+msgstr ""
+
+#: portal.cpp:161
+msgid "Enables/disables the statusbar"
+msgstr ""
+
+#: portal.cpp:163
+msgid "Creates a new Document"
+msgstr ""
+
+#: portal.cpp:164
+msgid "Print and archive this Document"
+msgstr ""
+
+#: portal.cpp:165
+msgid "Creates a new document which is a copy of the selected document"
+msgstr ""
+
+#: portal.cpp:166
+msgid "Create a followup document for the current document"
+msgstr ""
+
+#: portal.cpp:167
+msgid "Opens the document for editing"
+msgstr ""
+
+#: portal.cpp:168
+msgid "Opens a read only view on the document."
+msgstr ""
+
+#: portal.cpp:169
+msgid "Send document per mail"
+msgstr ""
+
+#: portal.cpp:170
+msgid ""
+"Edit the available tag templates which can be assigned to document items."
+msgstr ""
+
+#: portal.cpp:171
+msgid "Configure the Database Kraft is working on."
+msgstr ""
+
+#: portal.cpp:173
+msgid "Open a viewer on an archived document"
+msgstr ""
+
+#: portal.cpp:199 portal.cpp:366 portal.cpp:433 portal.cpp:524 portal.cpp:565
+#: portal.cpp:592 portal.cpp:753 portal.cpp:943 portal.cpp:950 portal.cpp:957
+#: portal.cpp:974 katalogview.cpp:207 katalogview.cpp:265 katalogview.cpp:274
+#: katalogview.cpp:283 katalogview.cpp:292
+msgid "Ready."
+msgstr ""
+
+#: portal.cpp:267
+msgid ""
+"Kraft can not connect to the specified MySQL server. Please check the Kraft "
+"database settings, check if the server is running and verify if a database "
+"with the name %1 exits!"
+msgstr ""
+
+#: portal.cpp:271
+msgid ""
+"The database with the name %1 does not exist on the database server. Please "
+"make sure the database exists and is accessible by the user running Kraft."
+msgstr ""
+
+#: portal.cpp:275
+msgid ""
+"The Qt database driver could not be loaded. That probably means, that they "
+"are not installed. Please make sure the Qt database packages are installed "
+"and try again."
+msgstr ""
+
+#: portal.cpp:279
+msgid "There is a database problem: %1"
+msgstr ""
+
+#: portal.cpp:294
+msgid "Database Problem."
+msgstr ""
+
+#: portal.cpp:301
+msgid "Check commandline actions"
+msgstr ""
+
+#: portal.cpp:391
+msgid "Welcome to Kraft, %1"
+msgstr ""
+
+#: portal.cpp:420
+msgid "Creating new document..."
+msgstr ""
+
+#: portal.cpp:455
+msgid "Followup Document for %1"
+msgstr ""
+
+#: portal.cpp:481
+msgid "Create new Document as Copy of %1"
+msgstr ""
+
+#: portal.cpp:516
+msgid "Opening document to view..."
+msgstr ""
+
+#: portal.cpp:551 portal.cpp:574
+msgid "Generating PDF..."
+msgstr ""
+
+#: portal.cpp:649
+msgid "Send per Email"
+msgstr ""
+
+#: portal.cpp:650
+msgid ""
+"The email address of the contact is empty!\n"
+"Please add an email address to the addressbook."
+msgstr ""
+
+#: portal.cpp:699
+msgid "Printing archived document..."
+msgstr ""
+
+#: portal.cpp:745
+msgid "Opening document %1"
+msgstr ""
+
+#: portal.cpp:909
+msgid "Exiting..."
+msgstr ""
+
+#: portal.cpp:941
+msgid "Cutting selection..."
+msgstr ""
+
+#: portal.cpp:948
+msgid "Copying selection to clipboard..."
+msgstr ""
+
+#: portal.cpp:955
+msgid "Inserting clipboard contents..."
+msgstr ""
+
+#: portal.cpp:962
+msgid "Toggle the statusbar..."
+msgstr ""
+
+#: setupassistant.cpp:36
+msgid "Welcome to the Kraft Setup Assistant"
+msgstr ""
+
+#: setupassistant.cpp:55
+msgid "Select the Database Backend"
+msgstr ""
+
+#: setupassistant.cpp:92
+msgid "Sqlite File Name"
+msgstr ""
+
+#: setupassistant.cpp:145
+msgid "MySql Detail Information"
+msgstr ""
+
+#: setupassistant.cpp:187
+msgid "Create Database"
+msgstr ""
+
+#: setupassistant.cpp:209 setupassistant.cpp:222
+msgid "0/%1"
+msgstr ""
+
+#: setupassistant.cpp:241 setupassistant.cpp:251 setupassistant.cpp:289
+msgid "%1/%2"
+msgstr ""
+
+#: setupassistant.cpp:264
+msgid "Upgrade the Database"
+msgstr ""
+
+#: setupassistant.cpp:312
+msgid "Your Company Address"
+msgstr ""
+
+#: setupassistant.cpp:317
+msgid ""
+"Select your companies address either from the address book or enter it "
+"manually. It is set as a consigner on the documents."
+msgstr ""
+
+#: setupassistant.cpp:324
+msgid "Select from Addressbook"
+msgstr ""
+
+#: setupassistant.cpp:339 prefsdialog.cpp:202
+msgid "Manual Entry"
+msgstr ""
+
+#: setupassistant.cpp:415
+msgid "Final Status"
+msgstr ""
+
+#: setupassistant.cpp:509
+msgid ""
+"<p>Can't connect to your database. Are you sure your credentials are correct "
+"and the database exists?</p>"
+msgstr ""
+
+#: setupassistant.cpp:520
+msgid "<p>Can't open your database file, check the permissions and such."
+msgstr ""
+
+#: setupassistant.cpp:529
+msgid ""
+"<p>The database is already existing, no action needs to be taken here.</"
+"p><p>Please hit <b>next</b> to proceed.</p>"
+msgstr ""
+
+#: setupassistant.cpp:578
+msgid "<p>The database setup was successfully completed.</p>"
+msgstr ""
+
+#: setupassistant.cpp:579
+msgid "<p>You can start to work with Kraft now. Please do not forget to</p>"
+msgstr ""
+
+#: setupassistant.cpp:581
+msgid "<li>adjust various settings in the Kraft Preferences dialog.</li>"
+msgstr ""
+
+#: setupassistant.cpp:582
+msgid "<li>Check the Catalog chapter list.</li>"
+msgstr ""
+
+#: setupassistant.cpp:583
+msgid "<li>Make your business and have fun.</li>"
+msgstr ""
+
+#: setupassistant.cpp:585
+msgid ""
+"<p>If you press <i>Finish</i> now, the new database configuration is stored "
+"in Krafts configuration.</p>"
+msgstr ""
+
+#: setupassistant.cpp:601
+msgid ""
+"The Database can not be connected. Please check the database credentials."
+msgstr ""
+
+#: setupassistant.cpp:607
+msgid "The database core tables do not exist. Please check initial setup."
+msgstr ""
+
+#: setupassistant.cpp:614
+msgid "Database is up to date. No upgrade is required."
+msgstr ""
+
+#: setupassistant.cpp:619
+msgid "Parse Update Commands..."
+msgstr ""
+
+#: setupassistant.cpp:663
+msgid "The Upgrade failed!"
+msgstr ""
+
+#: setupassistant.cpp:665
+msgid "The Upgrade succeeded, the current schema version is %1!"
+msgstr ""
+
+#: setupassistant.cpp:678
+msgid ""
+"The Database can not be connected. Please check the database credentials!"
+msgstr ""
+
+#: setupassistant.cpp:684
+msgid "Parse Create Commands..."
+msgstr ""
+
+#: setupassistant.cpp:692
+msgid "Parse database fillup commands..."
+msgstr ""
+
+#: setupassistant.cpp:705
+msgid "Processing database creation commands..."
+msgstr ""
+
+#: setupassistant.cpp:722
+msgid "Process database fillup commands..."
+msgstr ""
+
+#: setupassistant.cpp:727
+msgid "Successfully finished commands."
+msgstr ""
+
+#: setupassistant.cpp:729
+msgid "Failed to perform all commands."
+msgstr ""
+
+#: setupassistant.cpp:773
+msgid ""
+"This assistant guides you through the basic settings of your Kraft "
+"installation."
+msgstr ""
+
+#: setupassistant.cpp:783
+msgid "There was no database configuration found."
+msgstr ""
+
+#: setupassistant.cpp:785
+msgid "A valid current database configuration file was found."
+msgstr ""
+
+#: setupassistant.cpp:801
+msgid "The database schema version is too low. It will be updated."
+msgstr ""
+
+#: setupassistant.cpp:804
+msgid "The current database schema version is too high. Leaving untouched! "
+msgstr ""
+
+#: setupassistant.cpp:811
+msgid ""
+"<p>The database can be opened, but does not contain valid content.</p><p>A "
+"new database can be created automatically from scratch.</p>"
+msgstr ""
+
+#: setupassistant.cpp:818
+msgid "<p>Kraft failed to connect to the configured database.</p>"
+msgstr ""
+
+#: setupassistant.cpp:820
+msgid "<p>Please check the database server setup and restart Kraft to connect."
+msgstr ""
+
+#: setupassistant.cpp:822
+msgid "<p>Please check the database file."
+msgstr ""
+
+#: setupassistant.cpp:824
+msgid "or create a new database by hitting <b>next</b>.</p>"
+msgstr ""
+
+#: setupassistant.cpp:832
+msgid "<p>Please hit next and follow the instructions.</p>"
+msgstr ""
+
+#: documentman.cpp:89
+msgid "Substract sum from %1 %2"
 msgstr ""
 
 #: calcpart.cpp:98
 msgid "Base"
+msgstr ""
+
+#: templkataloglistview.cpp:43 texteditdialog.cpp:76 rc.cpp:6 rc.cpp:12
+#: rc.cpp:850 rc.cpp:1685
+msgid "Template"
+msgstr ""
+
+#: templkataloglistview.cpp:44 prefswages.cpp:53 rc.cpp:127 rc.cpp:148
+#: rc.cpp:961 rc.cpp:1805
+msgid "Price"
+msgstr ""
+
+#: templkataloglistview.cpp:45
+msgid "Calc. Type"
+msgstr ""
+
+#: templkataloglistview.cpp:49
+msgid "Template Catalog"
+msgstr ""
+
+#: kraftdoc.cpp:320
+msgid "Unknown document part"
 msgstr ""
 
 #: catalogselection.cpp:50
@@ -163,27 +599,6 @@ msgstr ""
 
 #: catalogselection.cpp:142 catalogselection.cpp:157
 msgid "Append to Document"
-msgstr ""
-
-#: defaultprovider.cpp:51 doctext.cpp:80 positionviewwidget.cpp:418
-msgid "Unknown"
-msgstr ""
-
-#: kraftview_ro.cpp:74 kraftview.cpp:85
-msgid "Document"
-msgstr ""
-
-#: kraftview_ro.cpp:210 kraftview_ro.cpp:247 reportgenerator.cpp:354 rc.cpp:31
-#: rc.cpp:865
-msgid "VAT"
-msgstr ""
-
-#: kraftview_ro.cpp:211
-msgid "Reduced TAX"
-msgstr ""
-
-#: kraftview_ro.cpp:238 reportgenerator.cpp:346
-msgid "reduced VAT"
 msgstr ""
 
 #: docassistant.cpp:52
@@ -256,19 +671,27 @@ msgstr ""
 msgid "Footer Text"
 msgstr ""
 
-#: doctext.cpp:78 kraftdoc.cpp:341
+#: doctext.cpp:78
 msgid "Items"
 msgstr ""
 
-#: doctypeedit.cpp:130 doctypeedit.cpp:156
+#: doctypeedit.cpp:48
+msgid "<document type>"
+msgstr ""
+
+#: doctypeedit.cpp:49
+msgid "<address Id>"
+msgstr ""
+
+#: doctypeedit.cpp:132 doctypeedit.cpp:158
 msgid "Add Document Type"
 msgstr ""
 
-#: doctypeedit.cpp:131
+#: doctypeedit.cpp:133
 msgid "Enter the name of a new document type"
 msgstr ""
 
-#: doctypeedit.cpp:157
+#: doctypeedit.cpp:159
 msgid "Edit the name of a document type"
 msgstr ""
 
@@ -307,68 +730,6 @@ msgstr ""
 #: catalogtemplate.cpp:57
 #, c-format
 msgid "Err: Unknown type %d"
-msgstr ""
-
-#: flostempldialog.cpp:71
-msgid "Create or Edit Template Items"
-msgstr ""
-
-#: flostempldialog.cpp:213 flostempldialog.cpp:604
-msgid "No"
-msgstr ""
-
-#: flostempldialog.cpp:214 flostempldialog.cpp:604
-msgid "Yes"
-msgstr ""
-
-#: flostempldialog.cpp:251
-msgid "Calculated Price: "
-msgstr ""
-
-#: flostempldialog.cpp:255
-msgid "Manual Price: "
-msgstr ""
-
-#: flostempldialog.cpp:260
-msgid "(+%1%)"
-msgstr ""
-
-#: flostempldialog.cpp:264
-msgid "%1%"
-msgstr ""
-
-#: flostempldialog.cpp:266
-msgid ": "
-msgstr ""
-
-#: flostempldialog.cpp:388 reportgenerator.cpp:212
-msgid "Template Error"
-msgstr ""
-
-#: flostempldialog.cpp:388
-msgid "Saving of this template failed, sorry"
-msgstr ""
-
-#: flostempldialog.cpp:416
-msgid "The template has been modified."
-msgstr ""
-
-#: flostempldialog.cpp:417
-msgid "Do you want to discard your changes?"
-msgstr ""
-
-#: flostempldialog.cpp:446
-msgid ""
-"The catalog chapter was changed for this template.\n"
-"Do you really want to move the template to the new chapter?"
-msgstr ""
-
-#: flostempldialog.cpp:448
-msgid "Chapter Change"
-msgstr ""
-
-#: flostempldialog.cpp:601
-msgid "%1 %2"
 msgstr ""
 
 #: flostempldialog.h:104
@@ -447,14 +808,6 @@ msgstr ""
 msgid "not found"
 msgstr ""
 
-#: kataloglistview.cpp:333
-msgid "A catalog chapter can not be deleted as long it has children."
-msgstr ""
-
-#: kataloglistview.cpp:334
-msgid "Chapter can not be deleted"
-msgstr ""
-
 #: katalogview.cpp:151
 msgid "Edit Sub chapter"
 msgstr ""
@@ -511,13 +864,6 @@ msgstr ""
 msgid "Opening file..."
 msgstr ""
 
-#: katalogview.cpp:207 katalogview.cpp:265 katalogview.cpp:274
-#: katalogview.cpp:283 katalogview.cpp:292 portal.cpp:199 portal.cpp:366
-#: portal.cpp:434 portal.cpp:518 portal.cpp:559 portal.cpp:586 portal.cpp:747
-#: portal.cpp:935 portal.cpp:942 portal.cpp:949 portal.cpp:966
-msgid "Ready."
-msgstr ""
-
 #: katalogview.cpp:261
 msgid "Exporting file..."
 msgstr ""
@@ -542,20 +888,124 @@ msgstr ""
 msgid "<tr><td>Modified at:</td><td>%1</td></tr>"
 msgstr ""
 
-#: kraftdoc.cpp:337
-msgid "Header"
+#: kraftview.cpp:85 kraftview_ro.cpp:74
+msgid "Document"
 msgstr ""
 
-#: kraftdoc.cpp:339
-msgid "Footer"
+#: kraftview.cpp:262
+msgid "Successor of %1"
 msgstr ""
 
-#: kraftdoc.cpp:343
-msgid "Unknown document part"
+#: kraftview.cpp:397 kraftview.cpp:841
+msgid ""
+"The address label is not empty and different from the selected one.<br/>Do "
+"you really want to replace it with the text shown below?<pre>%1</pre>"
 msgstr ""
 
-#: kraftdb.cpp:274
-msgid "Wipe Database..."
+#: kraftview.cpp:444
+msgid ""
+"<qt><h2>The Document Items List is still empty, but Items can be added now.</"
+"h2>To add items to the document either <ul><li>Press the 'Add item' button "
+"above.</li><li>Open the template catalog by clicking on the 'show Template' "
+"button on the right and pick one of the available templates.</li></ul></qt>"
+msgstr ""
+
+#: kraftview.cpp:628 prefsdialog.cpp:305
+msgid "Display no tax at all"
+msgstr ""
+
+#: kraftview.cpp:629 prefsdialog.cpp:306
+msgid "Calculate reduced tax for all items"
+msgstr ""
+
+#: kraftview.cpp:630 prefsdialog.cpp:307
+msgid "Calculate full tax for all items"
+msgstr ""
+
+#: kraftview.cpp:631
+msgid "Calculate individual tax for each item"
+msgstr ""
+
+#: kraftview.cpp:688
+msgid "Tax Settings Overwrite"
+msgstr ""
+
+#: kraftview.cpp:689
+msgid "Really overwrite all individual tax settings of the items?"
+msgstr ""
+
+#: kraftview.cpp:840
+msgid "Address Overwrite"
+msgstr ""
+
+#: kraftview.cpp:1112
+msgid "Discount"
+msgstr ""
+
+#: kraftview.cpp:1430
+msgid "The document has been modified."
+msgstr ""
+
+#: kraftview.cpp:1431
+msgid "Do you want to save your changes?"
+msgstr ""
+
+#: kraftview_ro.cpp:210 kraftview_ro.cpp:247 reportgenerator.cpp:354 rc.cpp:31
+#: rc.cpp:865 rc.cpp:1700
+msgid "VAT"
+msgstr ""
+
+#: kraftview_ro.cpp:211
+msgid "Reduced TAX"
+msgstr ""
+
+#: kraftview_ro.cpp:238 reportgenerator.cpp:346
+msgid "reduced VAT"
+msgstr ""
+
+#: newdocassistant.cpp:51
+msgid ""
+"Please select a customer as addressee for the document. If there is no entry "
+"for the customer in the addressbook yet, it can be opened by clicking on the "
+"button below."
+msgstr ""
+
+#: newdocassistant.cpp:93
+msgid ""
+"Select a document type and a date. A comment on the whiteboard helps to "
+"classify the document."
+msgstr ""
+
+#: newdocassistant.cpp:100
+msgid "Customer: Not yet selected!"
+msgstr ""
+
+#: newdocassistant.cpp:103
+msgid "Copy document items from predecessor document"
+msgstr ""
+
+#: newdocassistant.cpp:114
+msgid "Document &Type:"
+msgstr ""
+
+#: newdocassistant.cpp:118
+msgid "Document Date: "
+msgstr ""
+
+#: newdocassistant.cpp:121
+msgid "Whiteboard Content:"
+msgstr ""
+
+#: newdocassistant.cpp:159
+msgid "Create a new Kraft Document"
+msgstr ""
+
+#: newdocassistant.cpp:165
+msgid "<h2>Document Details</h2>"
+msgstr ""
+
+#: newdocassistant.cpp:171
+msgid "<h2>Select an Addressee</h2>"
 msgstr ""
 
 #: kraftdocfooteredit.cpp:52
@@ -645,7 +1095,7 @@ msgid "XML Export"
 msgstr ""
 
 #: portalview.cpp:217 prefsdialog.cpp:138 prefsunits.cpp:88 prefswages.cpp:99
-#: rc.cpp:316 rc.cpp:1151
+#: rc.cpp:316 rc.cpp:1151 rc.cpp:1998
 msgid "Remove"
 msgstr ""
 
@@ -849,6 +1299,7 @@ msgid "<h1>Add Material to Calculation</h1>"
 msgstr ""
 
 #: materialkataloglistview.cpp:37 rc.cpp:112 rc.cpp:622 rc.cpp:946 rc.cpp:1484
+#: rc.cpp:1787 rc.cpp:2307
 msgid "Material"
 msgstr ""
 
@@ -856,7 +1307,7 @@ msgstr ""
 msgid "Pack"
 msgstr ""
 
-#: materialkataloglistview.cpp:39 rc.cpp:124 rc.cpp:958
+#: materialkataloglistview.cpp:39 rc.cpp:124 rc.cpp:958 rc.cpp:1802
 msgid "Unit"
 msgstr ""
 
@@ -924,45 +1375,30 @@ msgstr ""
 msgid "Lookup started"
 msgstr ""
 
-#: newdocassistant.cpp:50
+#: textselection.cpp:42
+msgid "Template Collection"
+msgstr ""
+
+#: textselection.cpp:100
+msgid "Template Actions"
+msgstr ""
+
+#: textselection.cpp:129
+msgid "This is the standard text used in new documents."
+msgstr ""
+
+#: textselection.cpp:138
+msgid "%1 Templates for %2"
+msgstr ""
+
+#: textselection.cpp:146
 msgid ""
-"Please select a customer as addressee for the document. If there is no entry "
-"for the customer in the addressbook yet, it can be opened by clicking on the "
-"button below."
+"There is no %1 template text available for document type %2.<br/>Click the "
+"add-button below to create one."
 msgstr ""
 
-#: newdocassistant.cpp:95
-msgid ""
-"Select a document type and a date. A comment on the whiteboard helps to "
-"classify the document."
-msgstr ""
-
-#: newdocassistant.cpp:103
-msgid "Customer: Not yet selected!"
-msgstr ""
-
-#: newdocassistant.cpp:116
-msgid "Document &Type:"
-msgstr ""
-
-#: newdocassistant.cpp:120
-msgid "Document Date: "
-msgstr ""
-
-#: newdocassistant.cpp:123
-msgid "Whiteboard Content:"
-msgstr ""
-
-#: newdocassistant.cpp:160
-msgid "Document Creation Wizard"
-msgstr ""
-
-#: newdocassistant.cpp:162
-msgid "<h2>Document Details</h2>"
-msgstr ""
-
-#: newdocassistant.cpp:167
-msgid "<h2>Select an Addressee</h2>"
+#: textselection.cpp:201
+msgid "&Use in Document"
 msgstr ""
 
 #: numbercycledialog.cpp:52
@@ -987,39 +1423,40 @@ msgstr ""
 msgid "Doc-Type"
 msgstr ""
 
-#: numbercycledialog.cpp:213
+#: numbercycledialog.cpp:215
 msgid "Add Number Cycle"
 msgstr ""
 
-#: numbercycledialog.cpp:214
+#: numbercycledialog.cpp:216
 msgid "Enter the name of a new number cycle."
 msgstr ""
 
-#: numbercycledialog.cpp:272
+#: numbercycledialog.cpp:274
 msgid "The numbercycle %1 is still assigned to a document type."
 msgstr ""
 
-#: numbercycledialog.cpp:273
+#: numbercycledialog.cpp:275
 msgid ""
 "The number cycle can not be deleted as long as it is assigned to a document "
 "type."
 msgstr ""
 
-#: numbercycledialog.cpp:332
+#: numbercycledialog.cpp:334
 msgid "Dangerous Counter Change"
 msgstr ""
 
-#: numbercycledialog.cpp:333
+#: numbercycledialog.cpp:335
 msgid "The new counter is lower than the old one. "
 msgstr ""
 
-#: numbercycledialog.cpp:334
+#: numbercycledialog.cpp:336
 msgid ""
 "That has potential to create duplicate document numbers. Do you really want "
 "to decrease it?"
 msgstr ""
 
 #: docdigestdetailview.cpp:224 rc.cpp:82 rc.cpp:121 rc.cpp:916 rc.cpp:955
+#: rc.cpp:1757 rc.cpp:1799
 msgid "Amount"
 msgstr ""
 
@@ -1120,189 +1557,6 @@ msgstr ""
 msgid "%1 older prints"
 msgstr ""
 
-#: portal.cpp:111
-msgid "Create Document"
-msgstr ""
-
-#: portal.cpp:116
-msgid "Copy Document"
-msgstr ""
-
-#: portal.cpp:121
-msgid "Follow Document"
-msgstr ""
-
-#: portal.cpp:126
-msgid "Print Document"
-msgstr ""
-
-#: portal.cpp:131
-msgid "Open Archived Document"
-msgstr ""
-
-#: portal.cpp:135
-msgid "Show Document"
-msgstr ""
-
-#: portal.cpp:140
-msgid "Edit Document"
-msgstr ""
-
-#: portal.cpp:145
-msgid "&Mail Document"
-msgstr ""
-
-#: portal.cpp:154
-msgid "Redo Initial Setup..."
-msgstr ""
-
-#: portal.cpp:157
-msgid "Quits the application"
-msgstr ""
-
-#: portal.cpp:158
-msgid "Cuts the selected section and puts it to the clipboard"
-msgstr ""
-
-#: portal.cpp:159
-msgid "Copies the selected section to the clipboard"
-msgstr ""
-
-#: portal.cpp:160
-msgid "Pastes the clipboard contents to current position"
-msgstr ""
-
-#: portal.cpp:161
-msgid "Enables/disables the statusbar"
-msgstr ""
-
-#: portal.cpp:163
-msgid "Creates a new Document"
-msgstr ""
-
-#: portal.cpp:164
-msgid "Print and archive this Document"
-msgstr ""
-
-#: portal.cpp:165
-msgid "Creates a new document which is a copy of the selected document"
-msgstr ""
-
-#: portal.cpp:166
-msgid "Create a followup document for the current document"
-msgstr ""
-
-#: portal.cpp:167
-msgid "Opens the document for editing"
-msgstr ""
-
-#: portal.cpp:168
-msgid "Opens a read only view on the document."
-msgstr ""
-
-#: portal.cpp:169
-msgid "Send document per mail"
-msgstr ""
-
-#: portal.cpp:170
-msgid ""
-"Edit the available tag templates which can be assigned to document items."
-msgstr ""
-
-#: portal.cpp:171
-msgid "Configure the Database Kraft is working on."
-msgstr ""
-
-#: portal.cpp:173
-msgid "Open a viewer on an archived document"
-msgstr ""
-
-#: portal.cpp:267
-msgid ""
-"Kraft can not connect to the specified MySQL server. Please check the Kraft "
-"database settings, check if the server is running and verify if a database "
-"with the name %1 exits!"
-msgstr ""
-
-#: portal.cpp:271
-msgid ""
-"The database with the name %1 does not exist on the database server. Please "
-"make sure the database exists and is accessible by the user running Kraft."
-msgstr ""
-
-#: portal.cpp:275
-msgid ""
-"The Qt database driver could not be loaded. That probably means, that they "
-"are not installed. Please make sure the Qt database packages are installed "
-"and try again."
-msgstr ""
-
-#: portal.cpp:279
-msgid "There is a database problem: %1"
-msgstr ""
-
-#: portal.cpp:294
-msgid "Database Problem."
-msgstr ""
-
-#: portal.cpp:301
-msgid "Check commandline actions"
-msgstr ""
-
-#: portal.cpp:391
-msgid "Welcome to Kraft, %1"
-msgstr ""
-
-#: portal.cpp:420
-msgid "Creating new document..."
-msgstr ""
-
-#: portal.cpp:510
-msgid "Opening document to view..."
-msgstr ""
-
-#: portal.cpp:545 portal.cpp:568
-msgid "Generating PDF..."
-msgstr ""
-
-#: portal.cpp:643
-msgid "Send per Email"
-msgstr ""
-
-#: portal.cpp:644
-msgid ""
-"The email address of the contact is empty!\n"
-"Please add an email address to the addressbook."
-msgstr ""
-
-#: portal.cpp:693
-msgid "Printing archived document..."
-msgstr ""
-
-#: portal.cpp:739
-msgid "Opening document %1"
-msgstr ""
-
-#: portal.cpp:901
-msgid "Exiting..."
-msgstr ""
-
-#: portal.cpp:933
-msgid "Cutting selection..."
-msgstr ""
-
-#: portal.cpp:940
-msgid "Copying selection to clipboard..."
-msgstr ""
-
-#: portal.cpp:947
-msgid "Inserting clipboard contents..."
-msgstr ""
-
-#: portal.cpp:954
-msgid "Toggle the statusbar..."
-msgstr ""
-
 #: prefsdialog.cpp:66
 msgid "Configure Kraft"
 msgstr ""
@@ -1332,7 +1586,7 @@ msgid "Start Date"
 msgstr ""
 
 #: prefsdialog.cpp:134 prefsunits.cpp:79 prefswages.cpp:90 rc.cpp:304
-#: rc.cpp:1139
+#: rc.cpp:1139 rc.cpp:1986
 msgid "Add"
 msgstr ""
 
@@ -1360,10 +1614,6 @@ msgstr ""
 
 #: prefsdialog.cpp:197
 msgid "From AddressBook"
-msgstr ""
-
-#: prefsdialog.cpp:202 setupassistant.cpp:339
-msgid "Manual Entry"
 msgstr ""
 
 #: prefsdialog.cpp:214
@@ -1399,18 +1649,6 @@ msgstr ""
 
 #: prefsdialog.cpp:304
 msgid "The default tax setting for all documents."
-msgstr ""
-
-#: prefsdialog.cpp:305 kraftview.cpp:599
-msgid "Display no tax at all"
-msgstr ""
-
-#: prefsdialog.cpp:306 kraftview.cpp:600
-msgid "Calculate reduced tax for all items"
-msgstr ""
-
-#: prefsdialog.cpp:307 kraftview.cpp:601
-msgid "Calculate full tax for all items"
 msgstr ""
 
 #: prefsdialog.cpp:320
@@ -1481,7 +1719,7 @@ msgstr ""
 msgid "Long plural"
 msgstr ""
 
-#: prefsunits.cpp:83 prefswages.cpp:94 rc.cpp:310 rc.cpp:1145
+#: prefsunits.cpp:83 prefswages.cpp:94 rc.cpp:310 rc.cpp:1145 rc.cpp:1992
 msgid "Edit"
 msgstr ""
 
@@ -1495,11 +1733,6 @@ msgstr ""
 
 #: prefswages.cpp:52
 msgid "Code"
-msgstr ""
-
-#: prefswages.cpp:53 templkataloglistview.cpp:44 rc.cpp:127 rc.cpp:148
-#: rc.cpp:961
-msgid "Price"
 msgstr ""
 
 #: prefswages.cpp:54
@@ -1522,246 +1755,6 @@ msgstr ""
 msgid "<h1>Edit wage group</h1>"
 msgstr ""
 
-#: kraftview.cpp:368 kraftview.cpp:812
-msgid ""
-"The address label is not empty and different from the selected one.<br/>Do "
-"you really want to replace it with the text shown below?<pre>%1</pre>"
-msgstr ""
-
-#: kraftview.cpp:415
-msgid ""
-"<qt><h2>The Document Items List is still empty, but Items can be added now.</"
-"h2>To add items to the document either <ul><li>Press the 'Add item' button "
-"above.</li><li>Open the template catalog by clicking on the 'show Template' "
-"button on the right and pick one of the available templates.</li></ul></qt>"
-msgstr ""
-
-#: kraftview.cpp:602
-msgid "Calculate individual tax for each item"
-msgstr ""
-
-#: kraftview.cpp:659
-msgid "Tax Settings Overwrite"
-msgstr ""
-
-#: kraftview.cpp:660
-msgid "Really overwrite all individual tax settings of the items?"
-msgstr ""
-
-#: kraftview.cpp:811
-msgid "Address Overwrite"
-msgstr ""
-
-#: kraftview.cpp:1083
-msgid "Discount"
-msgstr ""
-
-#: kraftview.cpp:1386
-msgid "The document has been modified."
-msgstr ""
-
-#: kraftview.cpp:1387
-msgid "Do you want to save your changes?"
-msgstr ""
-
-#: setupassistant.cpp:36
-msgid "Welcome to the Kraft Setup Assistant"
-msgstr ""
-
-#: setupassistant.cpp:55
-msgid "Select the Database Backend"
-msgstr ""
-
-#: setupassistant.cpp:92
-msgid "Sqlite File Name"
-msgstr ""
-
-#: setupassistant.cpp:145
-msgid "MySql Detail Information"
-msgstr ""
-
-#: setupassistant.cpp:187
-msgid "Create Database"
-msgstr ""
-
-#: setupassistant.cpp:209 setupassistant.cpp:222
-msgid "0/%1"
-msgstr ""
-
-#: setupassistant.cpp:241 setupassistant.cpp:251 setupassistant.cpp:289
-msgid "%1/%2"
-msgstr ""
-
-#: setupassistant.cpp:264
-msgid "Upgrade the Database"
-msgstr ""
-
-#: setupassistant.cpp:312
-msgid "Your Company Address"
-msgstr ""
-
-#: setupassistant.cpp:317
-msgid ""
-"Select your companies address either from the address book or enter it "
-"manually. It is set as a consigner on the documents."
-msgstr ""
-
-#: setupassistant.cpp:324
-msgid "Select from Addressbook"
-msgstr ""
-
-#: setupassistant.cpp:415
-msgid "Final Status"
-msgstr ""
-
-#: setupassistant.cpp:509
-msgid ""
-"<p>Can't connect to your database. Are you sure your credentials are correct "
-"and the database exists?</p>"
-msgstr ""
-
-#: setupassistant.cpp:519
-msgid "<p>Can't open your database file, check the permissions and such."
-msgstr ""
-
-#: setupassistant.cpp:528
-msgid ""
-"<p>The database is already existing, no action needs to be taken here.</"
-"p><p>Please hit <b>next</b> to proceed.</p>"
-msgstr ""
-
-#: setupassistant.cpp:577
-msgid "<p>The database setup was successfully completed.</p>"
-msgstr ""
-
-#: setupassistant.cpp:578
-msgid "<p>You can start to work with Kraft now. Please do not forget to</p>"
-msgstr ""
-
-#: setupassistant.cpp:580
-msgid "<li>adjust various settings in the Kraft Preferences dialog.</li>"
-msgstr ""
-
-#: setupassistant.cpp:581
-msgid "<li>Check the Catalog chapter list.</li>"
-msgstr ""
-
-#: setupassistant.cpp:582
-msgid "<li>Make your business and have fun.</li>"
-msgstr ""
-
-#: setupassistant.cpp:584
-msgid ""
-"<p>If you press <i>Finish</i> now, the new database configuration is stored "
-"in Krafts configuration.</p>"
-msgstr ""
-
-#: setupassistant.cpp:600
-msgid ""
-"The Database can not be connected. Please check the database credentials."
-msgstr ""
-
-#: setupassistant.cpp:606
-msgid "The database core tables do not exist. Please check initial setup."
-msgstr ""
-
-#: setupassistant.cpp:613
-msgid "Database is up to date. No upgrade is required."
-msgstr ""
-
-#: setupassistant.cpp:618
-msgid "Parse Update Commands..."
-msgstr ""
-
-#: setupassistant.cpp:629
-msgid "Reading upgrade command file %1"
-msgstr ""
-
-#: setupassistant.cpp:662
-msgid "The Upgrade failed!"
-msgstr ""
-
-#: setupassistant.cpp:664
-msgid "The Upgrade succeeded, the current schema version is %1!"
-msgstr ""
-
-#: setupassistant.cpp:677
-msgid ""
-"The Database can not be connected. Please check the database credentials!"
-msgstr ""
-
-#: setupassistant.cpp:683
-msgid "Parse Create Commands..."
-msgstr ""
-
-#: setupassistant.cpp:691
-msgid "Parse database fillup commands..."
-msgstr ""
-
-#: setupassistant.cpp:704
-msgid "Processing database creation commands..."
-msgstr ""
-
-#: setupassistant.cpp:721
-msgid "Process database fillup commands..."
-msgstr ""
-
-#: setupassistant.cpp:726
-msgid "Successfully finished commands."
-msgstr ""
-
-#: setupassistant.cpp:728
-msgid "Failed to perform all commands."
-msgstr ""
-
-#: setupassistant.cpp:771
-msgid ""
-"This assistant guides you through the basic settings of your Kraft "
-"installation."
-msgstr ""
-
-#: setupassistant.cpp:781
-msgid "There was no database configuration found."
-msgstr ""
-
-#: setupassistant.cpp:783
-msgid "A valid current database configuration file was found."
-msgstr ""
-
-#: setupassistant.cpp:795
-msgid "The database schema version is too low. It will be updated."
-msgstr ""
-
-#: setupassistant.cpp:798
-msgid "The current database schema version si too high. Leaving untouched! "
-msgstr ""
-
-#: setupassistant.cpp:805
-msgid ""
-"<p>The database can be opened, but does not contain valid content.</p><p>A "
-"new database can be created automatically from scratch.</p>"
-msgstr ""
-
-#: setupassistant.cpp:812
-msgid "<p>Kraft could not connect to the configured database.<p>"
-msgstr ""
-
-#: setupassistant.cpp:814
-msgid "<p>Please check the database server setup and restart Kraft to connect."
-msgstr ""
-
-#: setupassistant.cpp:816
-msgid "<p>Please check the database file."
-msgstr ""
-
-#: setupassistant.cpp:818
-msgid "or create a new database by hitting <b>next</b>.</p>"
-msgstr ""
-
-#: setupassistant.cpp:826
-msgid "<p>Please hit next and follow the instructions.</p>"
-msgstr ""
-
 #: tagtemplatesdialog.cpp:47
 msgid "Edit Tag Template"
 msgstr ""
@@ -1774,7 +1767,7 @@ msgstr ""
 msgid "Adjust settings for name, color and description."
 msgstr ""
 
-#: tagtemplatesdialog.cpp:58 rc.cpp:403 rc.cpp:1238
+#: tagtemplatesdialog.cpp:58 rc.cpp:403 rc.cpp:1238 rc.cpp:2085
 msgid "Name:"
 msgstr ""
 
@@ -1814,19 +1807,6 @@ msgstr ""
 msgid "Edit Tax Rates"
 msgstr ""
 
-#: templkataloglistview.cpp:43 texteditdialog.cpp:76 rc.cpp:6 rc.cpp:12
-#: rc.cpp:850
-msgid "Template"
-msgstr ""
-
-#: templkataloglistview.cpp:45
-msgid "Calc. Type"
-msgstr ""
-
-#: templkataloglistview.cpp:49
-msgid "Template Catalog"
-msgstr ""
-
 #: templkatalogview.cpp:103
 msgid "<new template>"
 msgstr ""
@@ -1835,7 +1815,7 @@ msgstr ""
 msgid "Do you really want to delete the template from the catalog?"
 msgstr ""
 
-#: templtopositiondialogbase.cpp:35 rc.cpp:457 rc.cpp:1292
+#: templtopositiondialogbase.cpp:35 rc.cpp:457 rc.cpp:1292 rc.cpp:2139
 msgid "Create Item from Template"
 msgstr ""
 
@@ -1849,32 +1829,6 @@ msgstr ""
 
 #: texteditdialog.cpp:62
 msgid "Edit %1 Template"
-msgstr ""
-
-#: textselection.cpp:41
-msgid "Template Collection"
-msgstr ""
-
-#: textselection.cpp:99
-msgid "Template Actions"
-msgstr ""
-
-#: textselection.cpp:128
-msgid "This is the standard text used in new documents."
-msgstr ""
-
-#: textselection.cpp:137
-msgid "%1 Templates for %2"
-msgstr ""
-
-#: textselection.cpp:145
-msgid ""
-"There is no %1 template text available for document type %2.<br/>Click the "
-"add-button below to create one."
-msgstr ""
-
-#: textselection.cpp:200
-msgid "&Use in Document"
 msgstr ""
 
 #: texttemplate.cpp:131
@@ -1901,19 +1855,19 @@ msgstr ""
 msgid "Seconds"
 msgstr ""
 
-#: rc.cpp:3 rc.cpp:847
+#: rc.cpp:3 rc.cpp:847 rc.cpp:1682
 msgid "Edit Template"
 msgstr ""
 
-#: rc.cpp:9 rc.cpp:856
+#: rc.cpp:9 rc.cpp:856 rc.cpp:1691
 msgid "&Store in Chapter"
 msgstr ""
 
-#: rc.cpp:15 rc.cpp:859
+#: rc.cpp:15 rc.cpp:859 rc.cpp:1694
 msgid "&Unit"
 msgstr ""
 
-#: rc.cpp:18 rc.cpp:862
+#: rc.cpp:18 rc.cpp:862 rc.cpp:1697
 msgid "&Count Time for Overalltime"
 msgstr ""
 
@@ -1921,7 +1875,7 @@ msgstr ""
 msgid "Margin"
 msgstr ""
 
-#: rc.cpp:25 rc.cpp:1004
+#: rc.cpp:25 rc.cpp:1004 rc.cpp:1845
 #, no-c-format
 msgid " %"
 msgstr ""
@@ -1930,103 +1884,107 @@ msgstr ""
 msgid "round"
 msgstr ""
 
-#: rc.cpp:34 rc.cpp:868
+#: rc.cpp:34 rc.cpp:868 rc.cpp:1703
 msgid "full"
 msgstr ""
 
-#: rc.cpp:37 rc.cpp:871
+#: rc.cpp:37 rc.cpp:871 rc.cpp:1706
 msgid "half"
 msgstr ""
 
-#: rc.cpp:40 rc.cpp:874
+#: rc.cpp:40 rc.cpp:874 rc.cpp:1709
 msgid "Time Calculation"
 msgstr ""
 
-#: rc.cpp:43 rc.cpp:877
+#: rc.cpp:43 rc.cpp:877 rc.cpp:1715
 msgid "Time measureable effort for this template:"
 msgstr ""
 
-#: rc.cpp:46 rc.cpp:85 rc.cpp:118 rc.cpp:880 rc.cpp:919 rc.cpp:952
+#: rc.cpp:46 rc.cpp:85 rc.cpp:118 rc.cpp:880 rc.cpp:919 rc.cpp:952 rc.cpp:1718
+#: rc.cpp:1760 rc.cpp:1796
 msgid "Label"
 msgstr ""
 
-#: rc.cpp:49 rc.cpp:883
+#: rc.cpp:49 rc.cpp:883 rc.cpp:1721
 msgid "Duration"
 msgstr ""
 
-#: rc.cpp:52 rc.cpp:886
+#: rc.cpp:52 rc.cpp:886 rc.cpp:1724
 msgid "Hourly Rate"
 msgstr ""
 
-#: rc.cpp:55 rc.cpp:889
+#: rc.cpp:55 rc.cpp:889 rc.cpp:1727
 msgid "Glob. Rate"
 msgstr ""
 
-#: rc.cpp:58 rc.cpp:892
+#: rc.cpp:58 rc.cpp:892 rc.cpp:1730
 msgid "Adds a new time calculation part to the template"
 msgstr ""
 
-#: rc.cpp:61 rc.cpp:97 rc.cpp:133 rc.cpp:895 rc.cpp:931 rc.cpp:967
+#: rc.cpp:61 rc.cpp:97 rc.cpp:133 rc.cpp:895 rc.cpp:931 rc.cpp:967 rc.cpp:1733
+#: rc.cpp:1772 rc.cpp:1811
 msgid "new..."
 msgstr ""
 
-#: rc.cpp:64 rc.cpp:898
+#: rc.cpp:64 rc.cpp:898 rc.cpp:1736
 msgid "Edits the current time calculation part"
 msgstr ""
 
-#: rc.cpp:67 rc.cpp:103 rc.cpp:139 rc.cpp:901 rc.cpp:937 rc.cpp:973
+#: rc.cpp:67 rc.cpp:103 rc.cpp:139 rc.cpp:901 rc.cpp:937 rc.cpp:973 rc.cpp:1739
+#: rc.cpp:1778 rc.cpp:1817
 msgid "edit..."
 msgstr ""
 
-#: rc.cpp:70 rc.cpp:904
+#: rc.cpp:70 rc.cpp:904 rc.cpp:1742
 msgid "Deletes the current time calculation part"
 msgstr ""
 
-#: rc.cpp:73 rc.cpp:109 rc.cpp:145 rc.cpp:907 rc.cpp:943 rc.cpp:979
+#: rc.cpp:73 rc.cpp:109 rc.cpp:145 rc.cpp:907 rc.cpp:943 rc.cpp:979 rc.cpp:1745
+#: rc.cpp:1784 rc.cpp:1823
 msgid "delete"
 msgstr ""
 
-#: rc.cpp:76 rc.cpp:910
+#: rc.cpp:76 rc.cpp:910 rc.cpp:1748
 msgid "Fix Costs"
 msgstr ""
 
-#: rc.cpp:79 rc.cpp:913
+#: rc.cpp:79 rc.cpp:913 rc.cpp:1754
 msgid "Fix costs for this template per one unit:"
 msgstr ""
 
-#: rc.cpp:88 rc.cpp:922
+#: rc.cpp:88 rc.cpp:922 rc.cpp:1763
 msgid "Single Price"
 msgstr ""
 
-#: rc.cpp:91 rc.cpp:925
+#: rc.cpp:91 rc.cpp:925 rc.cpp:1766
 msgid "Overall Price"
 msgstr ""
 
-#: rc.cpp:94 rc.cpp:928
+#: rc.cpp:94 rc.cpp:928 rc.cpp:1769
 msgid "adds a new fix calculation part"
 msgstr ""
 
-#: rc.cpp:100 rc.cpp:934
+#: rc.cpp:100 rc.cpp:934 rc.cpp:1775
 msgid "edits the current fix calculation part"
 msgstr ""
 
-#: rc.cpp:106 rc.cpp:940
+#: rc.cpp:106 rc.cpp:940 rc.cpp:1781
 msgid "deletes the current fix calculation part"
 msgstr ""
 
-#: rc.cpp:115 rc.cpp:949
+#: rc.cpp:115 rc.cpp:949 rc.cpp:1793
 msgid "Needed materials for one unit of this template:"
 msgstr ""
 
-#: rc.cpp:130 rc.cpp:964
+#: rc.cpp:130 rc.cpp:964 rc.cpp:1808
 msgid "adds a new material calculation part"
 msgstr ""
 
-#: rc.cpp:136 rc.cpp:970
+#: rc.cpp:136 rc.cpp:970 rc.cpp:1814
 msgid "edits the current material part"
 msgstr ""
 
-#: rc.cpp:142 rc.cpp:976
+#: rc.cpp:142 rc.cpp:976 rc.cpp:1820
 msgid "deletes the current material calculation part"
 msgstr ""
 
@@ -2038,634 +1996,640 @@ msgstr ""
 msgid "Euro"
 msgstr ""
 
-#: rc.cpp:157 rc.cpp:988
+#: rc.cpp:157 rc.cpp:988 rc.cpp:1832
 msgid "Calculated Price"
 msgstr ""
 
-#: rc.cpp:160 rc.cpp:982
+#: rc.cpp:160 rc.cpp:982 rc.cpp:1826
 msgid "Overall Price per Unit"
 msgstr ""
 
-#: rc.cpp:163 rc.cpp:991
+#: rc.cpp:163 rc.cpp:991 rc.cpp:1848
 msgid "Time Calculation Part:"
 msgstr ""
 
-#: rc.cpp:166 rc.cpp:994
+#: rc.cpp:166 rc.cpp:994 rc.cpp:1835
 msgid "Fix Costs Part:"
 msgstr ""
 
-#: rc.cpp:169 rc.cpp:997
+#: rc.cpp:169 rc.cpp:997 rc.cpp:1838
 msgid "Material Part:"
 msgstr ""
 
-#: rc.cpp:172 rc.cpp:1007
+#: rc.cpp:172 rc.cpp:1007 rc.cpp:1851
 msgid "Calculated Price:"
 msgstr ""
 
-#: rc.cpp:175 rc.cpp:1010
+#: rc.cpp:175 rc.cpp:1010 rc.cpp:1854
 msgid "88.888,88 €"
 msgstr ""
 
-#: rc.cpp:178 rc.cpp:1013
+#: rc.cpp:178 rc.cpp:1013 rc.cpp:1857
 msgid "Database creation and initial schema setup:"
 msgstr ""
 
 #: rc.cpp:181 rc.cpp:190 rc.cpp:826 rc.cpp:1016 rc.cpp:1025 rc.cpp:1661
+#: rc.cpp:1860 rc.cpp:1869 rc.cpp:2508
 msgid "0 / 129"
 msgstr ""
 
 #: rc.cpp:184 rc.cpp:193 rc.cpp:829 rc.cpp:1019 rc.cpp:1028 rc.cpp:1664
+#: rc.cpp:1863 rc.cpp:1872 rc.cpp:2511
 msgid "X"
 msgstr ""
 
-#: rc.cpp:187 rc.cpp:1022
+#: rc.cpp:187 rc.cpp:1022 rc.cpp:1866
 msgid "Filling the database with initial values:"
 msgstr ""
 
-#: rc.cpp:196 rc.cpp:832 rc.cpp:1031 rc.cpp:1667
+#: rc.cpp:196 rc.cpp:832 rc.cpp:1031 rc.cpp:1667 rc.cpp:1875 rc.cpp:2514
 msgid "Status: "
 msgstr ""
 
-#: rc.cpp:199 rc.cpp:1034
+#: rc.cpp:199 rc.cpp:1034 rc.cpp:1878
 msgid "Database setup status..."
 msgstr ""
 
-#: rc.cpp:202 rc.cpp:1037
+#: rc.cpp:202 rc.cpp:1037 rc.cpp:1881
 msgid "Bruns Data File:"
 msgstr ""
 
-#: rc.cpp:205 rc.cpp:1040
+#: rc.cpp:205 rc.cpp:1040 rc.cpp:1884
 msgid "Bruns Key File:"
 msgstr ""
 
-#: rc.cpp:208 rc.cpp:1043
+#: rc.cpp:208 rc.cpp:1043 rc.cpp:1887
 msgid "Qt Database Driver:"
 msgstr ""
 
-#: rc.cpp:211 rc.cpp:1046
+#: rc.cpp:211 rc.cpp:1046 rc.cpp:1890
 msgid "Database Server:"
 msgstr ""
 
-#: rc.cpp:214 rc.cpp:1049
+#: rc.cpp:214 rc.cpp:1049 rc.cpp:1893
 msgid "Server Port:"
 msgstr ""
 
-#: rc.cpp:217 rc.cpp:1052
+#: rc.cpp:217 rc.cpp:1052 rc.cpp:1896
 msgid "Database Name"
 msgstr ""
 
-#: rc.cpp:220 rc.cpp:679 rc.cpp:1055 rc.cpp:1541
+#: rc.cpp:220 rc.cpp:679 rc.cpp:1055 rc.cpp:1541 rc.cpp:1899 rc.cpp:2364
 msgid "Database User:"
 msgstr ""
 
-#: rc.cpp:223 rc.cpp:1058
+#: rc.cpp:223 rc.cpp:1058 rc.cpp:1902
 msgid "Database Password:"
 msgstr ""
 
-#: rc.cpp:226 rc.cpp:1061
+#: rc.cpp:226 rc.cpp:1061 rc.cpp:1905
 msgid "The default database name when creating new databases"
 msgstr ""
 
-#: rc.cpp:229 rc.cpp:1064
+#: rc.cpp:229 rc.cpp:1064 rc.cpp:1908
 msgid "File Name"
 msgstr ""
 
-#: rc.cpp:232 rc.cpp:1067
+#: rc.cpp:232 rc.cpp:1067 rc.cpp:1911
 msgid "The path where database file are stored. Leave empty!"
 msgstr ""
 
-#: rc.cpp:235 rc.cpp:1070
+#: rc.cpp:235 rc.cpp:1070 rc.cpp:1914
 msgid "Database Update:"
 msgstr ""
 
-#: rc.cpp:238 rc.cpp:1073
+#: rc.cpp:238 rc.cpp:1073 rc.cpp:1917
 msgid "Overall Progress:"
 msgstr ""
 
-#: rc.cpp:241 rc.cpp:1076
+#: rc.cpp:241 rc.cpp:1076 rc.cpp:1920
 msgid "Detail Progress:"
 msgstr ""
 
-#: rc.cpp:244 rc.cpp:1079
+#: rc.cpp:244 rc.cpp:1079 rc.cpp:1923
 msgid "Status:"
 msgstr ""
 
-#: rc.cpp:247 rc.cpp:1082
+#: rc.cpp:247 rc.cpp:1082 rc.cpp:1926
 msgid ""
 "<html><head/><body><p>Kraft uses a database backend to store values. By "
 "default it uses a file based database with easy setup targeted to single "
 "user mode.</p><p><br/></p></body></html>"
 msgstr ""
 
-#: rc.cpp:250 rc.cpp:1085
+#: rc.cpp:250 rc.cpp:1085 rc.cpp:1929
 msgid "SQLite 3 - file based database (default)"
 msgstr ""
 
-#: rc.cpp:253 rc.cpp:1088
+#: rc.cpp:253 rc.cpp:1088 rc.cpp:1932
 msgid "MySQL Serverbased Database for advanced Setups"
 msgstr ""
 
-#: rc.cpp:256 rc.cpp:1091
+#: rc.cpp:256 rc.cpp:1091 rc.cpp:1968
 msgid "Footer Texts"
 msgstr ""
 
-#: rc.cpp:259 rc.cpp:1094
+#: rc.cpp:259 rc.cpp:1094 rc.cpp:1971
 msgid "&Summary Text on Last Page:"
 msgstr ""
 
-#: rc.cpp:262 rc.cpp:1097
+#: rc.cpp:262 rc.cpp:1097 rc.cpp:1974
 msgid "&Greeting:"
 msgstr ""
 
-#: rc.cpp:265 rc.cpp:1100 positionviewwidget.cpp:102
+#: rc.cpp:265 rc.cpp:1100 rc.cpp:1977 positionviewwidget.cpp:102
 msgid "Tax"
 msgstr ""
 
-#: rc.cpp:268 rc.cpp:1103
+#: rc.cpp:268 rc.cpp:1103 rc.cpp:1980
 msgid "Document &Tax:"
 msgstr ""
 
-#: rc.cpp:271 rc.cpp:1106
+#: rc.cpp:271 rc.cpp:1106 rc.cpp:1938
 msgid "&Project:"
 msgstr ""
 
-#: rc.cpp:274 rc.cpp:1109
+#: rc.cpp:274 rc.cpp:1109 rc.cpp:1941
 msgid "&Whiteboard:"
 msgstr ""
 
-#: rc.cpp:277 rc.cpp:1112
+#: rc.cpp:277 rc.cpp:1112 rc.cpp:1944
 msgid ""
 "Enter a label that describes the project. This may appear on the customer "
 "document."
 msgstr ""
 
-#: rc.cpp:280 rc.cpp:1115
+#: rc.cpp:280 rc.cpp:1115 rc.cpp:1947
 msgid "Postal &Address:"
 msgstr ""
 
-#: rc.cpp:283 rc.cpp:1118
+#: rc.cpp:283 rc.cpp:1118 rc.cpp:1950
 msgid "not selected"
 msgstr ""
 
-#: rc.cpp:286 rc.cpp:1121
+#: rc.cpp:286 rc.cpp:1121 rc.cpp:1953
 msgid "Select an addressee from the address books."
 msgstr ""
 
-#: rc.cpp:289 rc.cpp:1124
+#: rc.cpp:289 rc.cpp:1124 rc.cpp:1956
 msgid "select..."
 msgstr ""
 
-#: rc.cpp:292 rc.cpp:1127
+#: rc.cpp:292 rc.cpp:1127 rc.cpp:1959
 msgid "&Salutatory Address:"
 msgstr ""
 
-#: rc.cpp:295 rc.cpp:1130
+#: rc.cpp:295 rc.cpp:1130 rc.cpp:1962
 msgid "Customer:"
 msgstr ""
 
-#: rc.cpp:298 rc.cpp:1133
+#: rc.cpp:298 rc.cpp:1133 rc.cpp:1965
 msgid "&Entry Text on First Page:"
 msgstr ""
 
-#: rc.cpp:301 rc.cpp:712 rc.cpp:1136 rc.cpp:1574
+#: rc.cpp:301 rc.cpp:712 rc.cpp:1136 rc.cpp:1574 rc.cpp:1983 rc.cpp:2397
 msgid "Click to add a new document type to the list."
 msgstr ""
 
-#: rc.cpp:307 rc.cpp:1142
+#: rc.cpp:307 rc.cpp:1142 rc.cpp:1989
 msgid "click to edit the selected document type name"
 msgstr ""
 
-#: rc.cpp:313 rc.cpp:718 rc.cpp:1148 rc.cpp:1580
+#: rc.cpp:313 rc.cpp:718 rc.cpp:1148 rc.cpp:1580 rc.cpp:1995 rc.cpp:2403
 msgid "click to remove the current document type"
 msgstr ""
 
-#: rc.cpp:319 rc.cpp:1154
+#: rc.cpp:319 rc.cpp:1154 rc.cpp:2001
 msgid "Unique Document Number"
 msgstr ""
 
-#: rc.cpp:322 rc.cpp:1157
+#: rc.cpp:322 rc.cpp:1157 rc.cpp:2004
 msgid "Number &Cycle:"
 msgstr ""
 
 #: rc.cpp:325 rc.cpp:334 rc.cpp:337 rc.cpp:703 rc.cpp:1160 rc.cpp:1169
-#: rc.cpp:1172 rc.cpp:1565
+#: rc.cpp:1172 rc.cpp:1565 rc.cpp:2007 rc.cpp:2016 rc.cpp:2019 rc.cpp:2388
 msgid "example"
 msgstr ""
 
-#: rc.cpp:328 rc.cpp:1163
+#: rc.cpp:328 rc.cpp:1163 rc.cpp:2010
 msgid "ident Template:"
 msgstr ""
 
-#: rc.cpp:331 rc.cpp:697 rc.cpp:1166 rc.cpp:1559
+#: rc.cpp:331 rc.cpp:697 rc.cpp:1166 rc.cpp:1559 rc.cpp:2013 rc.cpp:2382
 msgid "Example Id:"
 msgstr ""
 
-#: rc.cpp:340 rc.cpp:1175
+#: rc.cpp:340 rc.cpp:1175 rc.cpp:2022
 msgid "Counter:"
 msgstr ""
 
-#: rc.cpp:343 rc.cpp:1178
+#: rc.cpp:343 rc.cpp:1178 rc.cpp:2025
 msgid "&Edit Number Cycles..."
 msgstr ""
 
-#: rc.cpp:346 rc.cpp:1181
+#: rc.cpp:346 rc.cpp:1181 rc.cpp:2028
 msgid "Template for PDF Creation"
 msgstr ""
 
-#: rc.cpp:349 rc.cpp:1184
+#: rc.cpp:349 rc.cpp:1184 rc.cpp:2031
 msgid "&Template File"
 msgstr ""
 
-#: rc.cpp:352 rc.cpp:1187
+#: rc.cpp:352 rc.cpp:1187 rc.cpp:2034
 msgid "W&atermark:"
 msgstr ""
 
-#: rc.cpp:355 rc.cpp:1190
+#: rc.cpp:355 rc.cpp:1190 rc.cpp:2037
 msgid "no watermark"
 msgstr ""
 
-#: rc.cpp:358 rc.cpp:1193
+#: rc.cpp:358 rc.cpp:1193 rc.cpp:2040
 msgid "on first page"
 msgstr ""
 
-#: rc.cpp:361 rc.cpp:1196
+#: rc.cpp:361 rc.cpp:1196 rc.cpp:2043
 msgid "on all pages"
 msgstr ""
 
-#: rc.cpp:364 rc.cpp:1199
+#: rc.cpp:364 rc.cpp:1199 rc.cpp:2046
 msgid "&Watermark File"
 msgstr ""
 
-#: rc.cpp:367 rc.cpp:1202
+#: rc.cpp:367 rc.cpp:1202 rc.cpp:2049
 msgid "Calculation Parts Fix"
 msgstr ""
 
-#: rc.cpp:370 rc.cpp:1205
+#: rc.cpp:370 rc.cpp:1205 rc.cpp:2052
 msgid "<h1>Fix Cost Parts</h1>"
 msgstr ""
 
-#: rc.cpp:373 rc.cpp:1208
+#: rc.cpp:373 rc.cpp:1208 rc.cpp:2055
 msgid "Add a fix cost for one unit of the template:"
 msgstr ""
 
-#: rc.cpp:376 rc.cpp:787 rc.cpp:1211 rc.cpp:1331
+#: rc.cpp:376 rc.cpp:787 rc.cpp:1211 rc.cpp:1331 rc.cpp:2058 rc.cpp:2418
 msgid "&Label:"
 msgstr ""
 
-#: rc.cpp:379 rc.cpp:1214
+#: rc.cpp:379 rc.cpp:1214 rc.cpp:2061
 msgid "describing text"
 msgstr ""
 
-#: rc.cpp:382 rc.cpp:1217
+#: rc.cpp:382 rc.cpp:1217 rc.cpp:2064
 msgid "amortisation"
 msgstr ""
 
-#: rc.cpp:385 rc.cpp:659 rc.cpp:1220 rc.cpp:1521
+#: rc.cpp:385 rc.cpp:659 rc.cpp:1220 rc.cpp:1521 rc.cpp:2067 rc.cpp:2344
 msgid "&Amount:"
 msgstr ""
 
-#: rc.cpp:388 rc.cpp:1223
+#: rc.cpp:388 rc.cpp:1223 rc.cpp:2070
 msgid "amount multiplier"
 msgstr ""
 
-#: rc.cpp:391 rc.cpp:1226
+#: rc.cpp:391 rc.cpp:1226 rc.cpp:2073
 msgid "at &Price:"
 msgstr ""
 
-#: rc.cpp:394 rc.cpp:662 rc.cpp:1229 rc.cpp:1524
+#: rc.cpp:394 rc.cpp:662 rc.cpp:1229 rc.cpp:1524 rc.cpp:2076 rc.cpp:2347
 msgid "Price for one piece"
 msgstr ""
 
-#: rc.cpp:397 rc.cpp:1232
+#: rc.cpp:397 rc.cpp:1232 rc.cpp:2079
 msgid "€"
 msgstr ""
 
-#: rc.cpp:406 rc.cpp:1241
+#: rc.cpp:400 rc.cpp:1235 rc.cpp:2082
+msgid "Form"
+msgstr ""
+
+#: rc.cpp:406 rc.cpp:1241 rc.cpp:2088
 msgid "Organization:"
 msgstr ""
 
-#: rc.cpp:409 rc.cpp:1244
+#: rc.cpp:409 rc.cpp:1244 rc.cpp:2091
 msgid "Street:"
 msgstr ""
 
-#: rc.cpp:412 rc.cpp:1247
+#: rc.cpp:412 rc.cpp:1247 rc.cpp:2094
 msgid "Post Code:"
 msgstr ""
 
-#: rc.cpp:415 rc.cpp:1250
+#: rc.cpp:415 rc.cpp:1250 rc.cpp:2097
 msgid "City:"
 msgstr ""
 
-#: rc.cpp:418 rc.cpp:1253
+#: rc.cpp:418 rc.cpp:1253 rc.cpp:2100
 msgid "Phone:"
 msgstr ""
 
-#: rc.cpp:421 rc.cpp:1256
+#: rc.cpp:421 rc.cpp:1256 rc.cpp:2103
 msgid "Fax:"
 msgstr ""
 
-#: rc.cpp:424 rc.cpp:1259
+#: rc.cpp:424 rc.cpp:1259 rc.cpp:2106
 msgid "Mobile Phone:"
 msgstr ""
 
-#: rc.cpp:427 rc.cpp:1262
+#: rc.cpp:427 rc.cpp:1262 rc.cpp:2109
 msgid "EMail:"
 msgstr ""
 
-#: rc.cpp:430 rc.cpp:1265
+#: rc.cpp:430 rc.cpp:1265 rc.cpp:2112
 msgid "Website:"
 msgstr ""
 
-#: rc.cpp:433 rc.cpp:1268
+#: rc.cpp:433 rc.cpp:1268 rc.cpp:2115
 msgid "Import Document Items"
 msgstr ""
 
-#: rc.cpp:436 rc.cpp:1271
+#: rc.cpp:436 rc.cpp:1271 rc.cpp:2118
 msgid "Import information"
 msgstr ""
 
-#: rc.cpp:439 rc.cpp:1274
+#: rc.cpp:439 rc.cpp:1274 rc.cpp:2121
 msgid "Select a &File to import from:"
 msgstr ""
 
-#: rc.cpp:442 rc.cpp:1277
+#: rc.cpp:442 rc.cpp:1277 rc.cpp:2124
 msgid "FixMe!"
 msgstr ""
 
-#: rc.cpp:445 rc.cpp:1280
+#: rc.cpp:445 rc.cpp:1280 rc.cpp:2127
 msgid "Import &Schema:"
 msgstr ""
 
-#: rc.cpp:448 rc.cpp:1283
+#: rc.cpp:448 rc.cpp:1283 rc.cpp:2130
 msgid "this is interesting information about the selected schema"
 msgstr ""
 
-#: rc.cpp:451 rc.cpp:1286
+#: rc.cpp:451 rc.cpp:1286 rc.cpp:2133
 msgid "Insert all Items &after"
 msgstr ""
 
-#: rc.cpp:454 rc.cpp:478 rc.cpp:1289 rc.cpp:1313
+#: rc.cpp:454 rc.cpp:478 rc.cpp:1289 rc.cpp:1313 rc.cpp:2136 rc.cpp:2160
 msgid "Tags"
 msgstr ""
 
-#: rc.cpp:460 rc.cpp:1295
+#: rc.cpp:460 rc.cpp:1295 rc.cpp:2142
 msgid "New Item Text"
 msgstr ""
 
-#: rc.cpp:463 rc.cpp:1298
+#: rc.cpp:463 rc.cpp:1298 rc.cpp:2145
 msgid "&insert"
 msgstr ""
 
-#: rc.cpp:466 rc.cpp:1301
+#: rc.cpp:466 rc.cpp:1301 rc.cpp:2148
 msgid "à"
 msgstr ""
 
-#: rc.cpp:469 rc.cpp:1304
+#: rc.cpp:469 rc.cpp:1304 rc.cpp:2151
 msgid "&after item"
 msgstr ""
 
-#: rc.cpp:472 rc.cpp:1307
+#: rc.cpp:472 rc.cpp:1307 rc.cpp:2154
 msgid "Keep this item as template for future documents"
 msgstr ""
 
-#: rc.cpp:475 rc.cpp:1310
+#: rc.cpp:475 rc.cpp:1310 rc.cpp:2157
 msgid "save in &chapter"
 msgstr ""
 
-#: rc.cpp:481 rc.cpp:1316
+#: rc.cpp:481 rc.cpp:1316 rc.cpp:2163
 msgid "&File"
 msgstr ""
 
-#: rc.cpp:484 rc.cpp:1319
+#: rc.cpp:484 rc.cpp:1319 rc.cpp:2166
 msgid "&Catalog"
 msgstr ""
 
-#: rc.cpp:487 rc.cpp:1346
+#: rc.cpp:487 rc.cpp:1346 rc.cpp:2169
 msgid "Do Database Initialisation"
 msgstr ""
 
-#: rc.cpp:490 rc.cpp:1349
+#: rc.cpp:490 rc.cpp:1349 rc.cpp:2172
 msgid "Do XML archiving of documents they're printed?"
 msgstr ""
 
-#: rc.cpp:493 rc.cpp:1352
+#: rc.cpp:493 rc.cpp:1352 rc.cpp:2175
 msgid ""
 "Where Kraft stores the XML archive documents. If empty, KDEHOME/share/apps "
 "is used."
 msgstr ""
 
-#: rc.cpp:496 rc.cpp:1355
+#: rc.cpp:496 rc.cpp:1355 rc.cpp:2178
 msgid "The local xml document storage path"
 msgstr ""
 
-#: rc.cpp:499 rc.cpp:502 rc.cpp:1361 rc.cpp:1364
+#: rc.cpp:499 rc.cpp:502 rc.cpp:1361 rc.cpp:1364 rc.cpp:2184 rc.cpp:2187
 msgid "The default geometry of the document view dialog"
 msgstr ""
 
-#: rc.cpp:505 rc.cpp:1367
+#: rc.cpp:505 rc.cpp:1367 rc.cpp:2190
 msgid "The current state of the portal"
 msgstr ""
 
-#: rc.cpp:508 rc.cpp:1370
+#: rc.cpp:508 rc.cpp:1370 rc.cpp:2193
 msgid "The current geometry of the portal"
 msgstr ""
 
-#: rc.cpp:511 rc.cpp:1373
+#: rc.cpp:511 rc.cpp:1373 rc.cpp:2196
 msgid "The current geometry of the new doc assistant"
 msgstr ""
 
-#: rc.cpp:514 rc.cpp:1376
+#: rc.cpp:514 rc.cpp:1376 rc.cpp:2199
 msgid "The splitter position of the document view dialog"
 msgstr ""
 
-#: rc.cpp:517 rc.cpp:1379
+#: rc.cpp:517 rc.cpp:1379 rc.cpp:2202
 msgid "The default size of the material catalog view"
 msgstr ""
 
-#: rc.cpp:520 rc.cpp:1382
+#: rc.cpp:520 rc.cpp:1382 rc.cpp:2205
 msgid "The splitter setting for the doc assistant"
 msgstr ""
 
-#: rc.cpp:523 rc.cpp:1385
+#: rc.cpp:523 rc.cpp:1385 rc.cpp:2208
 msgid "The window size of the template to document dialog for plants"
 msgstr ""
 
-#: rc.cpp:526 rc.cpp:1388
+#: rc.cpp:526 rc.cpp:1388 rc.cpp:2211
 msgid "The window size of the template to document dialog"
 msgstr ""
 
-#: rc.cpp:529 rc.cpp:1391
+#: rc.cpp:529 rc.cpp:1391 rc.cpp:2214
 msgid "The digest list column arrangement for the Latest-list"
 msgstr ""
 
-#: rc.cpp:532 rc.cpp:1394
+#: rc.cpp:532 rc.cpp:1394 rc.cpp:2217
 msgid "The digest list column arrangement for the all-list"
 msgstr ""
 
-#: rc.cpp:535 rc.cpp:1397
+#: rc.cpp:535 rc.cpp:1397 rc.cpp:2220
 msgid "The digest list column arrangement for timeline"
 msgstr ""
 
-#: rc.cpp:538 rc.cpp:1400
+#: rc.cpp:538 rc.cpp:1400 rc.cpp:2223
 msgid "The sizes of the slider in the address picker Widget"
 msgstr ""
 
-#: rc.cpp:541 rc.cpp:1403
+#: rc.cpp:541 rc.cpp:1403 rc.cpp:2226
 msgid "The state of the treeview inside the address selector widget"
 msgstr ""
 
-#: rc.cpp:544 rc.cpp:1406
+#: rc.cpp:544 rc.cpp:1406 rc.cpp:2229
 msgid "Size of the address select dialog"
 msgstr ""
 
-#: rc.cpp:547 rc.cpp:1409
+#: rc.cpp:547 rc.cpp:1409 rc.cpp:2232
 msgid "State of the header of the material catalog"
 msgstr ""
 
-#: rc.cpp:550 rc.cpp:1412
+#: rc.cpp:550 rc.cpp:1412 rc.cpp:2235
 msgid "State of the header of the template catalog"
 msgstr ""
 
-#: rc.cpp:553 rc.cpp:1415
+#: rc.cpp:553 rc.cpp:1415 rc.cpp:2238
 msgid ""
 "Default percentage the sale price for a material should be higher than its "
 "purchase price"
 msgstr ""
 
-#: rc.cpp:556 rc.cpp:1418
+#: rc.cpp:556 rc.cpp:1418 rc.cpp:2241
 msgid "The name of the last selected chapter in the catalog"
 msgstr ""
 
-#: rc.cpp:559 rc.cpp:1421
+#: rc.cpp:559 rc.cpp:1421 rc.cpp:2244
 msgid "The complete filename of the trml2pdf binary"
 msgstr ""
 
-#: rc.cpp:562 rc.cpp:1424
+#: rc.cpp:562 rc.cpp:1424 rc.cpp:2247
 msgid "The path to the output directory for document pdfs"
 msgstr ""
 
-#: rc.cpp:565 rc.cpp:1427
+#: rc.cpp:565 rc.cpp:1427 rc.cpp:2250
 msgid "The last created doc type."
 msgstr ""
 
-#: rc.cpp:568 rc.cpp:1430
+#: rc.cpp:568 rc.cpp:1430 rc.cpp:2253
 msgid "The greeting below on the document footer."
 msgstr ""
 
-#: rc.cpp:571 rc.cpp:1433
+#: rc.cpp:571 rc.cpp:1433 rc.cpp:2256
 msgid "The salut message on the document header."
 msgstr ""
 
-#: rc.cpp:574 rc.cpp:1436
+#: rc.cpp:574 rc.cpp:1436 rc.cpp:2259
 msgid ""
 "The name of the catalog chapter where to store new templates in by default"
 msgstr ""
 
-#: rc.cpp:577 rc.cpp:1439
+#: rc.cpp:577 rc.cpp:1439 rc.cpp:2262
 msgid "The name of the last used import schema for items."
 msgstr ""
 
-#: rc.cpp:580 rc.cpp:1442
+#: rc.cpp:580 rc.cpp:1442 rc.cpp:2265
 msgid "The name of the last used input file for items."
 msgstr ""
 
-#: rc.cpp:583 rc.cpp:1445
+#: rc.cpp:583 rc.cpp:1445 rc.cpp:2268
 msgid ""
 "User name as reference to the KAddressbook to identify 'my' address "
 "(DEPRECATED)."
 msgstr ""
 
-#: rc.cpp:586 rc.cpp:1448
+#: rc.cpp:586 rc.cpp:1448 rc.cpp:2271
 msgid ""
 "UID of the user as reference to the KAddressbook to identify 'my' address."
 msgstr ""
 
-#: rc.cpp:589 rc.cpp:1451
+#: rc.cpp:589 rc.cpp:1451 rc.cpp:2274
 msgid "The doc id template"
 msgstr ""
 
-#: rc.cpp:592 rc.cpp:1454
+#: rc.cpp:592 rc.cpp:1454 rc.cpp:2277
 msgid "Localization on document level"
 msgstr ""
 
-#: rc.cpp:595 rc.cpp:1457
+#: rc.cpp:595 rc.cpp:1457 rc.cpp:2280
 msgid "The tax default for new documents."
 msgstr ""
 
-#: rc.cpp:598 rc.cpp:1460
+#: rc.cpp:598 rc.cpp:1460 rc.cpp:2283
 msgid "The label for alternative positions"
 msgstr ""
 
-#: rc.cpp:601 rc.cpp:604 rc.cpp:1463 rc.cpp:1466
+#: rc.cpp:601 rc.cpp:604 rc.cpp:1463 rc.cpp:1466 rc.cpp:2286 rc.cpp:2289
 msgid "The label for demand positions"
 msgstr ""
 
-#: rc.cpp:607 rc.cpp:1469
+#: rc.cpp:607 rc.cpp:1469 rc.cpp:2292
 msgid "&Document"
 msgstr ""
 
-#: rc.cpp:610 rc.cpp:1472
+#: rc.cpp:610 rc.cpp:1472 rc.cpp:2295
 msgid "Settings"
 msgstr ""
 
-#: rc.cpp:616 rc.cpp:1478
+#: rc.cpp:616 rc.cpp:1478 rc.cpp:2301
 msgid "Edit Material"
 msgstr ""
 
-#: rc.cpp:619 rc.cpp:1481
+#: rc.cpp:619 rc.cpp:1481 rc.cpp:2304
 msgid "Store in C&hapter"
 msgstr ""
 
-#: rc.cpp:625 rc.cpp:1487
+#: rc.cpp:625 rc.cpp:1487 rc.cpp:2310
 msgid "Pac&kaged:"
 msgstr ""
 
-#: rc.cpp:628 rc.cpp:1490
+#: rc.cpp:628 rc.cpp:1490 rc.cpp:2313
 msgid "per P&ackage"
 msgstr ""
 
-#: rc.cpp:631 rc.cpp:1493
+#: rc.cpp:631 rc.cpp:1493 rc.cpp:2316
 msgid "Prices"
 msgstr ""
 
-#: rc.cpp:634 rc.cpp:1496
+#: rc.cpp:634 rc.cpp:1496 rc.cpp:2319
 msgid "= Price of &Sale:"
 msgstr ""
 
-#: rc.cpp:637 rc.cpp:1499
+#: rc.cpp:637 rc.cpp:1499 rc.cpp:2322
 msgid "pl&us"
 msgstr ""
 
-#: rc.cpp:641 rc.cpp:734 rc.cpp:1503 rc.cpp:1596
+#: rc.cpp:641 rc.cpp:734 rc.cpp:1503 rc.cpp:1596 rc.cpp:2326 rc.cpp:2443
 #, no-c-format
 msgid "%"
 msgstr ""
 
-#: rc.cpp:644 rc.cpp:1506
+#: rc.cpp:644 rc.cpp:1506 rc.cpp:2329
 msgid "&Purchase Price:"
 msgstr ""
 
-#: rc.cpp:647 rc.cpp:1509
+#: rc.cpp:647 rc.cpp:1509 rc.cpp:2332
 msgid "Calculation Item Material"
 msgstr ""
 
-#: rc.cpp:650 rc.cpp:1512
+#: rc.cpp:650 rc.cpp:1512 rc.cpp:2335
 msgid "<h1>Calculation Part  'Material'</h1>"
 msgstr ""
 
-#: rc.cpp:653 rc.cpp:1515
+#: rc.cpp:653 rc.cpp:1515 rc.cpp:2338
 msgid "Add Material to the template calculation."
 msgstr ""
 
-#: rc.cpp:656 rc.cpp:1518
+#: rc.cpp:656 rc.cpp:1518 rc.cpp:2341
 msgid "material"
 msgstr ""
 
-#: rc.cpp:665 rc.cpp:1527
+#: rc.cpp:665 rc.cpp:1527 rc.cpp:2350
 msgid "unit"
 msgstr ""
 
-#: rc.cpp:668 rc.cpp:1530
+#: rc.cpp:668 rc.cpp:1530 rc.cpp:2353
 msgid ""
 "Please enter the MySQL Database server settings. \n"
 "\n"
@@ -2673,67 +2637,67 @@ msgid ""
 "the Kraft website."
 msgstr ""
 
-#: rc.cpp:673 rc.cpp:1535
+#: rc.cpp:673 rc.cpp:1535 rc.cpp:2358
 msgid "Database Host:"
 msgstr ""
 
-#: rc.cpp:676 rc.cpp:1538
+#: rc.cpp:676 rc.cpp:1538 rc.cpp:2361
 msgid "Database Name:"
 msgstr ""
 
-#: rc.cpp:682 rc.cpp:1544
+#: rc.cpp:682 rc.cpp:1544 rc.cpp:2367
 msgid "Password:"
 msgstr ""
 
-#: rc.cpp:685 rc.cpp:1547
+#: rc.cpp:685 rc.cpp:1547 rc.cpp:2370
 msgid "<h3>Edit Number Cycles</h3>"
 msgstr ""
 
-#: rc.cpp:688 rc.cpp:1550
+#: rc.cpp:688 rc.cpp:1550 rc.cpp:2373
 msgid "Number Cycle Details"
 msgstr ""
 
-#: rc.cpp:691 rc.cpp:1553
+#: rc.cpp:691 rc.cpp:1553 rc.cpp:2376
 msgid "&Number Cycle:"
 msgstr ""
 
-#: rc.cpp:694 rc.cpp:1556
+#: rc.cpp:694 rc.cpp:1556 rc.cpp:2379
 msgid "&Counter:"
 msgstr ""
 
-#: rc.cpp:700 rc.cpp:1562
+#: rc.cpp:700 rc.cpp:1562 rc.cpp:2385
 msgid "ident &Template:"
 msgstr ""
 
-#: rc.cpp:706 rc.cpp:1568
+#: rc.cpp:706 rc.cpp:1568 rc.cpp:2391
 msgid "&Select a number cycle and edit the details on the right:"
 msgstr ""
 
-#: rc.cpp:709 rc.cpp:1571
+#: rc.cpp:709 rc.cpp:1571 rc.cpp:2394
 msgid "New Item"
 msgstr ""
 
-#: rc.cpp:715 rc.cpp:1577
+#: rc.cpp:715 rc.cpp:1577 rc.cpp:2400
 msgid "add"
 msgstr ""
 
-#: rc.cpp:721 rc.cpp:1583
+#: rc.cpp:721 rc.cpp:1583 rc.cpp:2406
 msgid "remove"
 msgstr ""
 
-#: rc.cpp:724 rc.cpp:1586
+#: rc.cpp:724 rc.cpp:1586 rc.cpp:2433
 msgid "1."
 msgstr ""
 
-#: rc.cpp:727 rc.cpp:730 rc.cpp:1589 rc.cpp:1592
+#: rc.cpp:727 rc.cpp:730 rc.cpp:1589 rc.cpp:1592 rc.cpp:2436 rc.cpp:2439
 msgid "D"
 msgstr ""
 
-#: rc.cpp:737 rc.cpp:1599
+#: rc.cpp:737 rc.cpp:1599 rc.cpp:2446
 msgid "of the sum of"
 msgstr ""
 
-#: rc.cpp:740 rc.cpp:1602
+#: rc.cpp:740 rc.cpp:1602 rc.cpp:2449
 msgid ""
 "Please enter the SQLite Database Settings.\n"
 "\n"
@@ -2741,73 +2705,73 @@ msgid ""
 "setting."
 msgstr ""
 
-#: rc.cpp:745 rc.cpp:1607
+#: rc.cpp:745 rc.cpp:1607 rc.cpp:2454
 msgid "store the database file at default place."
 msgstr ""
 
-#: rc.cpp:748 rc.cpp:1610
+#: rc.cpp:748 rc.cpp:1610 rc.cpp:2457
 msgid "select a file name:"
 msgstr ""
 
-#: rc.cpp:751 rc.cpp:1613
+#: rc.cpp:751 rc.cpp:1613 rc.cpp:2460
 msgid "<h2>Add a Tax Rate</h2>"
 msgstr ""
 
-#: rc.cpp:754 rc.cpp:1616
+#: rc.cpp:754 rc.cpp:1616 rc.cpp:2463
 msgid "Start-Date:"
 msgstr ""
 
-#: rc.cpp:757 rc.cpp:1619
+#: rc.cpp:757 rc.cpp:1619 rc.cpp:2466
 msgid "&Reduced Tax Rate:"
 msgstr ""
 
-#: rc.cpp:760 rc.cpp:1622
+#: rc.cpp:760 rc.cpp:1622 rc.cpp:2469
 msgid "&Full Tax Rate:"
 msgstr ""
 
-#: rc.cpp:763 rc.cpp:1625
+#: rc.cpp:763 rc.cpp:1625 rc.cpp:2472
 msgid "Edit Document Text Template"
 msgstr ""
 
-#: rc.cpp:766 rc.cpp:1628
+#: rc.cpp:766 rc.cpp:1628 rc.cpp:2475
 msgid "&Name:"
 msgstr ""
 
-#: rc.cpp:769 rc.cpp:1631
+#: rc.cpp:769 rc.cpp:1631 rc.cpp:2478
 msgid "displayed as"
 msgstr ""
 
-#: rc.cpp:772 rc.cpp:1634
+#: rc.cpp:772 rc.cpp:1634 rc.cpp:2481
 msgid "in doc type"
 msgstr ""
 
-#: rc.cpp:775 rc.cpp:1637
+#: rc.cpp:775 rc.cpp:1637 rc.cpp:2484
 msgid "&Text:"
 msgstr ""
 
-#: rc.cpp:778 rc.cpp:1322
+#: rc.cpp:778 rc.cpp:1322 rc.cpp:2409
 msgid "Calculation Item Time"
 msgstr ""
 
-#: rc.cpp:781 rc.cpp:1325
+#: rc.cpp:781 rc.cpp:1325 rc.cpp:2412
 msgid "<h1>Calculation Part 'Time'</h1>"
 msgstr ""
 
-#: rc.cpp:784 rc.cpp:1328
+#: rc.cpp:784 rc.cpp:1328 rc.cpp:2415
 msgid ""
 "Calculate time efforts here for one unit of the template. <br/>Note that the "
 "costs may depend on a global hourly rate."
 msgstr ""
 
-#: rc.cpp:790 rc.cpp:1334
+#: rc.cpp:790 rc.cpp:1334 rc.cpp:2421
 msgid "Work"
 msgstr ""
 
-#: rc.cpp:793 rc.cpp:1337
+#: rc.cpp:793 rc.cpp:1337 rc.cpp:2424
 msgid "&Time Effort:"
 msgstr ""
 
-#: rc.cpp:799 rc.cpp:1340
+#: rc.cpp:799 rc.cpp:1340 rc.cpp:2427
 msgid "&Hourly Rate:"
 msgstr ""
 
@@ -2815,27 +2779,27 @@ msgstr ""
 msgid "Apply the &global hourly rate."
 msgstr ""
 
-#: rc.cpp:805 rc.cpp:1640
+#: rc.cpp:805 rc.cpp:1640 rc.cpp:2487
 msgid "<h1>Add a unit</h1>"
 msgstr ""
 
-#: rc.cpp:808 rc.cpp:1643
+#: rc.cpp:808 rc.cpp:1643 rc.cpp:2490
 msgid "Unit short"
 msgstr ""
 
-#: rc.cpp:811 rc.cpp:1646
+#: rc.cpp:811 rc.cpp:1646 rc.cpp:2493
 msgid "Unit long"
 msgstr ""
 
-#: rc.cpp:814 rc.cpp:1649
+#: rc.cpp:814 rc.cpp:1649 rc.cpp:2496
 msgid "Unit plural short"
 msgstr ""
 
-#: rc.cpp:817 rc.cpp:1652
+#: rc.cpp:817 rc.cpp:1652 rc.cpp:2499
 msgid "Unit plural long"
 msgstr ""
 
-#: rc.cpp:820 rc.cpp:1655
+#: rc.cpp:820 rc.cpp:1655 rc.cpp:2502
 msgid ""
 "This step checks if the database schema version is sufficient for this "
 "version of Kraft. \n"
@@ -2843,40 +2807,48 @@ msgid ""
 "In case it is not, the schema is updated automatically.\n"
 msgstr ""
 
-#: rc.cpp:835 rc.cpp:1670
+#: rc.cpp:835 rc.cpp:1670 rc.cpp:2517
 msgid "Upgrade not yet started"
 msgstr ""
 
-#: rc.cpp:838 rc.cpp:1673
+#: rc.cpp:838 rc.cpp:1673 rc.cpp:2520
 msgid "<h1>Add a Wage group</h1>"
 msgstr ""
 
-#: rc.cpp:841 rc.cpp:1676
+#: rc.cpp:841 rc.cpp:1676 rc.cpp:2523
 msgid "Group name"
 msgstr ""
 
-#: rc.cpp:844 rc.cpp:1679
+#: rc.cpp:844 rc.cpp:1679 rc.cpp:2526
 msgid "Wage"
 msgstr ""
 
-#: rc.cpp:853
+#: rc.cpp:853 rc.cpp:1688
 msgid "Text:"
 msgstr ""
 
-#: rc.cpp:985
+#: rc.cpp:985 rc.cpp:1829
 msgid "&Manual Price"
 msgstr ""
 
-#: rc.cpp:1000
+#: rc.cpp:1000 rc.cpp:1841
 msgid "Profit:"
 msgstr ""
 
-#: rc.cpp:1343
+#: rc.cpp:1343 rc.cpp:2430
 msgid "Apply the &global hourly rate"
 msgstr ""
 
-#: rc.cpp:1358
+#: rc.cpp:1358 rc.cpp:2181
 msgid "Default mail user agent. Set xdg for xdg-email"
+msgstr ""
+
+#: rc.cpp:1712 rc.cpp:1751 rc.cpp:1790
+msgid "text"
+msgstr ""
+
+#: rc.cpp:1935
+msgid "TextLabel"
 msgstr ""
 
 #: positionviewwidget.cpp:89
@@ -2887,11 +2859,11 @@ msgstr ""
 msgid "Item Kind"
 msgstr ""
 
-#: positionviewwidget.cpp:93 positionviewwidget.cpp:675
+#: positionviewwidget.cpp:93 positionviewwidget.cpp:676
 msgid "Normal"
 msgstr ""
 
-#: positionviewwidget.cpp:95 positionviewwidget.cpp:683
+#: positionviewwidget.cpp:95 positionviewwidget.cpp:684
 msgid "Alternative"
 msgstr ""
 
@@ -2967,19 +2939,19 @@ msgstr ""
 msgid "Locked"
 msgstr ""
 
-#: positionviewwidget.cpp:622
+#: positionviewwidget.cpp:623
 msgid ""
 "This is an alternative item.<br/><br/> Use the position toolbox to change "
 "the item type."
 msgstr ""
 
-#: positionviewwidget.cpp:638
+#: positionviewwidget.cpp:639
 msgid ""
 "This item is either completely optional or its amount varies depending on "
 "the needs.<br/><br/>Use the item toolbox to change the item type."
 msgstr ""
 
-#: positionviewwidget.cpp:679
+#: positionviewwidget.cpp:680
 msgid "Demand"
 msgstr ""
 
