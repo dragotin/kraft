@@ -30,14 +30,17 @@
 #include "documentsaverdb.h"
 #include "defaultprovider.h"
 #include "documentman.h"
+#include "doctype.h"
+#include "documentman.h"
 
 // FIXME: Make KraftDoc inheriting DocDigest!
 
 KraftDoc::KraftDoc(QWidget *parent)
   : QObject(parent),
+    _modified(false),
     mIsNew(true),
     mDocTypeChanged(false),
-    mSaver(0)
+    mSaver(nullptr)
 {
     mLocale.reset(new QLocale());
     mPositions.setLocale( mLocale.data() );
@@ -67,7 +70,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
   mPositions.setLocale( mLocale.data() );
 
-  modified = origDoc.modified;
+  _modified = origDoc._modified;
   mIsNew = true;
 
   mAddressUid = origDoc.mAddressUid;
@@ -93,7 +96,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
   // setPositionList( origDoc.mPositions );
   mRemovePositions = origDoc.mRemovePositions;
-  mSaver = 0;
+  mSaver = nullptr;
   // mDocID = origDoc.mDocID;
 
   return *this;
@@ -101,37 +104,12 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
 void KraftDoc::closeDocument()
 {
-  deleteContents();
+  deleteItems();
 }
 
-bool KraftDoc::newDocument( const QString& docType )
+void KraftDoc::setPredecessor( const QString& w )
 {
-  modified=false;
-
-  /* initialise data */
-  mDate = QDate::currentDate();
-  mIdent = QString();
-
-  mIsNew = true;
-  mAddress = QString::null;
-  mAddressUid = QString::null;
-
-  if( docType.isEmpty() ) {
-    mDocType = DefaultProvider::self()->docType();
-  } else {
-    mDocType = docType;
-  }
-  mPreText = DefaultProvider::self()->defaultText( mDocType, KraftDoc::Header );
-  mPostText = DefaultProvider::self()->defaultText( mDocType, KraftDoc::Footer );
-
-  mCountry  = DefaultProvider::self()->locale()->country();
-  mLanguage = DefaultProvider::self()->locale()->language();
-
-  // Do not set the salut as it is an integer. Resolved later when filling the
-  // combobox in the view
-  mGoodbye = KraftSettings::greeting();
-  mDocTypeChanged = false;
-  return true;
+    mPredecessor = w;
 }
 
 bool KraftDoc::openDocument(const QString& id )
@@ -139,7 +117,7 @@ bool KraftDoc::openDocument(const QString& id )
   DocumentSaverBase *loader = getSaver();
   loader->load( id, this );
   mDocTypeChanged = false;
-  modified=false;
+  _modified=false;
   mIsNew = false;
   return true;
 }
@@ -174,7 +152,7 @@ bool KraftDoc::saveDocument( )
             mPositions.removeAll( dp );
           }
         }
-        modified = false;
+        _modified = false;
     }
     return result;
 }
@@ -182,17 +160,14 @@ bool KraftDoc::saveDocument( )
 QString KraftDoc::docIdentifier() const
 {
   const QString realName = ""; // FIXME: get Realname out of addressbook or from a manually added address
-  return i18n("%1 for %2 (Id %3)", docType(), realName, ident() );
-
+  return i18nc("First argument is the doctype, like Invoice, followed by the ID",
+               "%1 (Id %2)", docType(), ident() );
 }
 
-void KraftDoc::deleteContents()
+void KraftDoc::deleteItems()
 {
-    int pos = mPositions.size();
-    for( int i=0; i < pos; i++) {
-        DocPositionBase *pb = mPositions.takeFirst();
-        delete pb;
-    }
+    qDeleteAll(mPositions);
+    mPositions.clear();
 }
 
 void KraftDoc::setDocType( const QString& s )
@@ -336,11 +311,11 @@ QLocale* KraftDoc::locale()
  QString KraftDoc::partToString( Part p )
 {
   if ( p == Header )
-    return i18n( "Header" );
+    return i18nc( "Document part header", "Header" );
   else if ( p == Footer )
-    return i18n( "Footer" );
+    return i18nc( "Document part footer", "Footer" );
   else if ( p == Positions )
-    return i18n( "Items" );
+    return i18nc( "Document part containing the items", "Items" );
 
   return i18n( "Unknown document part" );
 }

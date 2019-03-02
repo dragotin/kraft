@@ -33,7 +33,8 @@ class DocumentMan
 
     static DocumentMan *self();
 
-    DocGuardedPtr createDocument( const QString& docType, const QString& copyFromId = QString() );
+    DocGuardedPtr createDocument( const QString& docType, const QString& copyFromId = QString(), bool keepItems = false);
+    DocGuardedPtr copyDocument( const QString& copyFromId );
     DocGuardedPtr openDocument( const QString& );
 
     double tax( const QDate& );

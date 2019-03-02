@@ -20,6 +20,7 @@
 #include <QVBoxLayout>
 #include <QFormLayout>
 #include <QPushButton>
+#include <QCheckBox>
 
 #include <kcontacts/addressee.h>
 #include <QComboBox>
@@ -82,13 +83,10 @@ CustomerSelectPage:: ~CustomerSelectPage()
 // ###########################################################################
 
 DocDetailsPage::DocDetailsPage( QWidget *parent )
-  :mCustomerLabel( 0 )
+  :mCustomerLabel( nullptr )
 {
   QVBoxLayout *vbox = new QVBoxLayout;
   parent->setLayout( vbox );
-
-//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
-//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
   QLabel *help = new QLabel;
   help->setTextFormat( Qt::RichText );
@@ -99,16 +97,16 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   mCustomerLabel = new QLabel;
   mCustomerLabel->setFrameStyle( QFrame::Box + QFrame::Sunken );
   mCustomerLabel->setTextFormat( Qt::RichText );
-//TODO PORT QT5   mCustomerLabel->setMargin( QDialog::marginHint() );
   mCustomerLabel->setText( i18n( "Customer: Not yet selected!" ) );
   vbox->addWidget( mCustomerLabel );
 
-  QFormLayout *grid = new QFormLayout;
-//TODO PORT QT5   grid->setSpacing( QDialog::marginHint() );
-  vbox->addLayout( grid );
+  mKeepItemsCB = new QCheckBox( i18n("Copy document items from predecessor document"));
+  vbox->addWidget( mKeepItemsCB );
+  mKeepItemsCB->setChecked(true);
+  mKeepItemsCB->setVisible(false);
 
-//   QLabel *l = new QLabel( i18n( "Some Document Details: " ), vbox );
-//TODO PORT QT5 //  l->setMargin( QDialog::marginHint() );
+  QFormLayout *grid = new QFormLayout;
+  vbox->addLayout( grid );
 
   mTypeCombo = new QComboBox;
   mTypeCombo->insertItems( 0, DocType::allLocalised() );
@@ -136,8 +134,8 @@ DocDetailsPage::~DocDetailsPage()
 
 KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
   :KAssistantDialog( parent ),
-   mCustomerPage( 0 ),
-   mCustomerBox( 0 ),
+   mCustomerPage( nullptr ),
+   mCustomerBox( nullptr ),
    mParent( parent )
 {
   setObjectName( name );
@@ -152,17 +150,23 @@ KraftWizard::~KraftWizard()
 
 }
 
-void KraftWizard::init()
+void KraftWizard::init( bool haveAddressSelect, const QString& followUpDoc )
 {
     QScopedPointer<AddressProvider> addressProvider;
     addressProvider.reset(new AddressProvider);
 
-    setWindowTitle( i18n( "Document Creation Wizard" ) );
+    if( followUpDoc.isEmpty() ) {
+        setWindowTitle( i18n( "Create a new Kraft Document" ) );
+    } else {
+        setWindowTitle( followUpDoc );
+    }
+
     QWidget *w1 = new QWidget;
     mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
     mDetailsPage = new DocDetailsPage( w1 );
 
-    if( addressProvider->backendUp() ) {
+    // only pick an addressee if the document is really new
+    if( addressProvider->backendUp() && haveAddressSelect ) {
         QWidget *w = new QWidget;
         mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
 
@@ -210,14 +214,22 @@ QString KraftWizard::whiteboard() const
   return mDetailsPage->mWhiteboardEdit->toPlainText();
 }
 
-void KraftWizard::setDocIdentifier( const QString& ident )
+void KraftWizard::setDocIdentifierToFollow( const QString& ident )
 {
-  // we already know the customer, disable the customer select page.
-  setAppropriate( mCustomerPageItem, false );
+    // we already know the customer, disable the customer select page.
+    if( !ident.isEmpty() ) {
+        setAppropriate( mCustomerPageItem, false );
+        mDetailsPage->mKeepItemsCB->setVisible(true);
 
-  if ( mDetailsPage->mCustomerLabel ) {
-    mDetailsPage->mCustomerLabel->setText( ident );
-  }
+        if ( mDetailsPage->mCustomerLabel ) {
+            mDetailsPage->mCustomerLabel->setText( ident );
+        }
+    }
+}
+
+bool KraftWizard::copyItemsFromPredecessor()
+{
+    return (mDetailsPage->mKeepItemsCB->checkState() == Qt::Checked );
 }
 
 void KraftWizard::setAvailDocTypes( const QStringList& list )

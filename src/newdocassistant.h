@@ -32,6 +32,7 @@ class QDateEdit;
 class QComboBox;
 class QHBox;
 class QTextEdit;
+class QCheckBox;
 
 using namespace KContacts;
 
@@ -76,6 +77,7 @@ private:
   QDateEdit   *mDateEdit;
   QComboBox   *mTypeCombo;
   QTextEdit   *mWhiteboardEdit;
+  QCheckBox   *mKeepItemsCB;
 };
 
 // ---------------------------------------------------------------------------
@@ -86,7 +88,7 @@ class KraftWizard: public KAssistantDialog
 
 public:
   KraftWizard(QWidget *parent = 0, const char* name = 0, bool modal = false );
-  void init();
+  void init(bool haveAddressSelect, const QString& followUpDoc = QString::null);
 
   ~KraftWizard();
 
@@ -95,9 +97,10 @@ public:
   QString docType() const;
   QString whiteboard() const;
   void setCustomer( const QString& );
-  void setDocIdentifier( const QString& );
+  void setDocIdentifierToFollow( const QString& );
   void setAvailDocTypes( const QStringList& );
   void done(int r);
+  bool copyItemsFromPredecessor();
 
 protected slots:
   void slotAddressee( const KContacts::Addressee& );

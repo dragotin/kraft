@@ -52,14 +52,13 @@ class KraftDoc : public QObject
 
   /** sets the modified flag for the document after a modifying action 
    *  on the view connected to the document.*/
-  void setModified(bool _m=true){ modified=_m; }
+  void setModified(bool _m=true){ _modified=_m; }
   /** returns if the document is modified or not. Use this to determine 
    *  if your document needs saving by the user on closing.*/
-  bool isModified(){ return modified; }
+  bool isModified(){ return _modified; }
   /** deletes the document's contents */
-  void deleteContents();
-  /** initializes the document generally */
-  bool newDocument( const QString& docType = QString() );
+  void deleteItems();
+
   /** closes the current document */
   void closeDocument();
   /** loads the document by filename and format and emits the updateViews() signal */
@@ -115,7 +114,7 @@ class KraftDoc : public QObject
   void setProjectLabel( const QString& w ) { mProjectLabel = w; }
 
   QString predecessor() const { return mPredecessor; }
-  void setPredecessor( const QString& w ) { mPredecessor = w; }
+  void setPredecessor( const QString& w );
   QString predecessorDbId() const { return mPredecessorDbId; }
   void setPredecessorDbId( const QString& pId ) { mPredecessorDbId = pId; }
 
@@ -147,7 +146,7 @@ class KraftDoc : public QObject
 private:
   DocumentSaverBase* getSaver( const QString& saverHint = QString() );
   /** the modified flag of the current document */
-  bool modified;
+  bool _modified;
   bool mIsNew;
 
   QString mAddressUid;
