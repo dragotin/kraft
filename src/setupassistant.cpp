@@ -627,10 +627,9 @@ void SetupAssistant::startDatabaseUpdate()
         ++currentVer;
         // qDebug () << "######### Reading " << migrateFilename;
         const SqlCommandList cmds = KraftDB::self()->parseCommandFile( currentVer );
-        if( cmds.count() ) {
-            commandLists.append(cmds);
-            overallCmdCount += cmds.count();
-        }
+        commandLists.append(cmds);
+        overallCmdCount += cmds.count();
+        qDebug() << "Appending" << cmds.count() << "commands for version" << currentVer;
     }
     mUpgradeDbPage->slotSetOverallCount( overallCmdCount );
 
@@ -650,11 +649,11 @@ void SetupAssistant::startDatabaseUpdate()
         int goodCmds = KraftDB::self()->processSqlCommands( cmdList );
         doneOverallCmds += goodCmds;
         if( goodCmds != cmdList.count() ) {
-            // qDebug () << "Only performned " << goodCmds << " out of " << cmds.count();
+            qDebug () << "Only performned " << goodCmds << " out of " << cmdList.count();
             errors = true;
             break;
         } else {
-            // qDebug () << goodCmds << " commands performed well!";
+            qDebug () << goodCmds << " commands performed well, version is " << currentVer << ", listversion:" << cmdList.number();
             KraftDB::self()->setSchemaVersion( QString::number( currentVer ));
         }
     }
@@ -721,6 +720,11 @@ void SetupAssistant::startDatabaseCreation()
 
         mCreateDbPage->setStatusText( i18n( "Process database fillup commands..." ) );
         creates = KraftDB::self()->processSqlCommands( fillCommands );
+
+        if( creates != fillCommands.count() ) {
+            qDebug() << "Could not execute all fill commands";
+            res = false;
+        }
     }
 
     if( res ) {

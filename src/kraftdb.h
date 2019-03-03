@@ -53,11 +53,14 @@ class SqlCommandList: public QList<SqlCommand>
 {
 public:
   SqlCommandList();
+
   QList<MetaDocTypeAdd> metaAddDocTypeList() const;
   void setMetaAddDocTypeList( QList<MetaDocTypeAdd> list );
-
+  void setNumber(int no);
+  int number();
 private:
   QList<MetaDocTypeAdd> _docTypeMetaList;
+  int _number;
 };
 
 

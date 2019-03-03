@@ -72,9 +72,20 @@ bool SqlCommand::mayfail()
 // ============================
 
 SqlCommandList::SqlCommandList()
-    :QList<SqlCommand>()
+    :QList<SqlCommand>(),
+      _number(0)
 {
 
+}
+
+void SqlCommandList::setNumber(int no)
+{
+    _number = no;
+}
+
+int SqlCommandList::number()
+{
+    return _number;
 }
 
 void SqlCommandList::setMetaAddDocTypeList( QList<MetaDocTypeAdd> list )
@@ -267,6 +278,7 @@ SqlCommandList KraftDB::parseCommandFile( int currentVersion )
     const QString& file = QString("%1_dbmigrate.sql").arg(currentVersion);
     list = parseCommandFile(file);
     list.setMetaAddDocTypeList( parseMetaFile(currentVersion) );
+    list.setNumber(currentVersion);
     return list;
 }
 
@@ -310,7 +322,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
     SqlCommandList retList;
 
     if ( ! sqlFile.isEmpty() ) {
-        // qDebug () << "Opening migration file " << sqlFile << endl;
+        qDebug () << "Opening migration file " << sqlFile << endl;
 
         QFile f( sqlFile );
         if ( !f.exists() ) {
@@ -376,14 +388,14 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
                         // ordinary command, we take it as it is.
                         command = sqlFragment;
                     }
-                    if( !( command.isEmpty() && msg.isEmpty() ) ) {
+                    if( !command.isEmpty() ) {
                         retList.append( SqlCommand( command, msg, mayfail ) );
                     }
                 }
             }
         }
     } else {
-        // qDebug () << "ERR: Can not find sql file " << file;
+        qDebug () << "ERR: Can not find sql file " << file;
     }
 
 
@@ -407,16 +419,17 @@ QList<MetaDocTypeAdd> KraftDB::parseMetaFile( int currentVersion )
         xmlFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, fragment );
     }
     QFile f( xmlFile );
-    if ( !f.exists() ) {
-        qDebug() << "FATAL: File" << xmlFile << "does not exist!";
-    }
     MetaXMLParser parser;
-    if ( !f.open( QIODevice::ReadOnly ) ) {
-        qDebug () << "FATAL: Could not open " << xmlFile << endl;
+    if( f.exists() ) {
+        if ( !f.open( QIODevice::ReadOnly ) ) {
+            qDebug () << "FATAL: Could not open " << xmlFile << endl;
+        } else {
+            QTextStream ts( &f );
+            ts.setCodec("UTF-8");
+            parser.parse( &f );
+        }
     } else {
-        QTextStream ts( &f );
-        ts.setCodec("UTF-8");
-        parser.parse( &f );
+        qDebug() << "XML Metafile" << xmlFile << "does not exist!";
     }
 
     return parser.metaDocTypeAddList();
