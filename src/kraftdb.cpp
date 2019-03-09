@@ -322,7 +322,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
     SqlCommandList retList;
 
     if ( ! sqlFile.isEmpty() ) {
-        qDebug () << "Opening migration file " << sqlFile << endl;
+        // qDebug () << "Opening migration file " << sqlFile << endl;
 
         QFile f( sqlFile );
         if ( !f.exists() ) {

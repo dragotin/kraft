@@ -790,11 +790,17 @@ bool SetupAssistant::init( Mode mode )
             // qDebug () << "A standard KDE Platform 4.x database config file is there.";
         }
 
-        if( KraftDB::self()->dbConnect(DatabaseSettings::self()->dbDriver().toUpper(),
-                                       DatabaseSettings::self()->dbDatabaseName(),
-                                       DatabaseSettings::self()->dbUser(),
-                                       DatabaseSettings::self()->dbServerName(),
-                                       DatabaseSettings::self()->dbPassword()) )  { // try to connect with default values
+        const QString dbDriver = DatabaseSettings::self()->dbDriver().toUpper();
+        QString dbName = DatabaseSettings::self()->dbDatabaseName();
+        if( dbDriver == QLatin1String("QSQLITE")) {
+            dbName = DatabaseSettings::self()->dbFile();
+        }
+
+        if( KraftDB::self()->dbConnect( dbDriver,
+                                        dbName,
+                                        DatabaseSettings::self()->dbUser(),
+                                        DatabaseSettings::self()->dbServerName(),
+                                        DatabaseSettings::self()->dbPassword()) )  { // try to connect with default values
             // qDebug () << "The database can be opened!";
             if( KraftDB::self()->databaseExists() ) {
                 // qDebug () << "The database exists.";
