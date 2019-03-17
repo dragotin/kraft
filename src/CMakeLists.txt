@@ -30,7 +30,6 @@ set(kraft_SRCS
     addeditchapterdialog.cpp
     unitmanager.cpp
     stockmaterial.cpp
-    stockmaterialman.cpp
     materialcalcpart.cpp
     flostempldialog.cpp
     stdsatzman.cpp
