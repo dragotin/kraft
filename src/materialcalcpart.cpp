@@ -22,9 +22,11 @@
 #include <QDebug>
 
 #include "materialcalcpart.h"
-#include "stockmaterialman.h"
+#include "materialkatalogview.h"
+#include "katalogman.h"
 #include "stockmaterial.h"
 #include "unitmanager.h"
+#include "matkatalog.h"
 
 MaterialCalcPart::MaterialCalcPart()
   : CalcPart(),
@@ -33,56 +35,71 @@ MaterialCalcPart::MaterialCalcPart()
 }
 
 MaterialCalcPart::MaterialCalcPart( long mCalcID, long matID, int percent, double amount  )
-    : CalcPart( percent), m_calcID( mCalcID ), m_calcAmount(amount)
+    : CalcPart( percent), m_calcID( mCalcID ),
+      m_calcAmount(amount),
+      m_mat(nullptr)
 {
-  m_mat = new StockMaterial();
-  getMatFromID(matID);
-  setName(m_mat->getText());
+    getMatFromID(matID); // overwrites m_mat
+    if( m_mat ) {
+        setName(m_mat->getText());
+    }
 }
 
 MaterialCalcPart::MaterialCalcPart(long matID, int percent, double amount)
     : CalcPart( percent), m_calcID(0), m_calcAmount(amount)
 {
-  m_mat = new StockMaterial();
-  if( m_mat ) {
-      getMatFromID(matID);
-      setName(m_mat->getText());
-  }
+    getMatFromID(matID);
+    if( m_mat ) {
+        setName(m_mat->getText());
+    }
 }
 
 MaterialCalcPart::~MaterialCalcPart( )
 {
-  //We won't delete m_mat because it comes straight from stockmaterialman
+  // do not delete m_mat because it comes straight from stockmaterialman
 }
 
 void MaterialCalcPart::getMatFromID(long matID)
 {
-  delete m_mat;
-  m_mat = StockMaterialMan::self()->getMaterial(matID);
+    MatKatalog *k = static_cast<MatKatalog*>(KatalogMan::self()->getKatalog( MaterialKatalogView::MaterialCatalogName ));
+    if( !k ) {
+        k = new MatKatalog( MaterialKatalogView::MaterialCatalogName );
+        if( k ) {
+            KatalogMan::self()->registerKatalog(k);
+        }
+    }
+    if( k ) {
+        m_mat = k->materialFromId(matID);
+    }
 }
 
 QString MaterialCalcPart::getType() const
-{   //This seems to be bad
+{
     return KALKPART_MATERIAL;
 }
 
 Geld MaterialCalcPart::basisKosten()
 {
-  return m_mat->unitPrice() * m_calcAmount;
+    Geld g;
+    if( m_mat ) {
+        g = m_mat->unitPrice() * m_calcAmount;
+    }
+    return g;
 }
 
 StockMaterial * MaterialCalcPart::getMaterial()
 {
-  return m_mat;
+    return m_mat;
 }
 
 bool MaterialCalcPart::setCalcAmount( double newAmount )
 {
-    m_calcAmount = newAmount;
-    bool updated = true;
-    setDirty(true);
-
-    return updated;
+    // Check for a change first
+    if( qAbs(newAmount - m_calcAmount) > 0.00001 ) {
+        m_calcAmount = newAmount;
+        setDirty(true);
+    }
+    return isDirty();
 }
 
 /* END */

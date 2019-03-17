@@ -117,6 +117,20 @@ StockMaterialList MatKatalog::getRecordList( const CatalogChapter& chapter )
 
 }
 
+StockMaterial* MatKatalog::materialFromId( long id )
+{
+    StockMaterialListIterator it( mAllMaterial );
+
+    while( it.hasNext() ) {
+        StockMaterial *mat = it.next();
+
+        if ( mat->getID() == id ) {
+            return mat;
+        }
+    }
+    return nullptr;
+}
+
 void MatKatalog::addNewMaterial( StockMaterial *mat )
 {
   mAllMaterial.append( mat );

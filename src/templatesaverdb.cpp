@@ -104,6 +104,7 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
 
   QSqlTableModel model;
   model.setTable( mTableMatCalc );
+  model.setEditStrategy(QSqlTableModel::OnManualSubmit);
 
   int cpId = cp->getDbID().toInt();
   model.setFilter("MCalcID=" + QString::number( cpId ));
@@ -299,6 +300,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
     // Transaktion ?
 
     QSqlTableModel model;
+    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     model.setTable("Catalog");
     QString templID = QString::number(tmpl->getTemplID());
     model.setFilter("TemplID=" + templID);

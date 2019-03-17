@@ -45,7 +45,6 @@
 #include "materialcalcpart.h"
 #include "matcalcdialog.h"
 #include "stockmaterial.h"
-#include "stockmaterialman.h"
 #include "timecalcdialog.h"
 #include "fixcalcdialog.h"
 #include "stdsatzman.h"
@@ -698,9 +697,14 @@ void FlosTemplDialog::slNewMaterial( int matID, double amount )
 
     // TODO: Checken, ob der richtige Tab aktiv ist.
     // TODO: Check if the material is already in the calcpart (is this really needed??)
-    MaterialCalcPart *mc;
+    MaterialCalcPart *mc = new MaterialCalcPart(matID, 0, amount);
+    if( mc && ! mc->getMaterial() ) {
+        // the material is still unknown to the catalog because it was just entered
+        // in the material catalog
+        qDebug() << "ERR: MaterialCalcPart without Material!";
+        return;
+    }
 
-    mc = new MaterialCalcPart(matID, 0, amount);
     if( mc ) {
         mc->setProzentPlus(benefitValue());
 
