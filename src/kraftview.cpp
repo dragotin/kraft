@@ -257,12 +257,16 @@ void KraftView::setupDocHeaderView()
     const QString predecessorDbId = m_doc->predecessorDbId();
     bool predecIsVisible = false;
     if( !predecessorDbId.isEmpty() ) {
-        const QString id = m_doc->docIdentifier();
-        const QString link = QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorDbId).arg(id);
-        m_headerEdit->_labFollowup->setText( i18n("Successor of %1").arg(link));
-        predecIsVisible = true;
-        connect( m_headerEdit->_labFollowup, SIGNAL(linkActivated(QString)),
-                 this, SLOT(slotLinkClicked(QString)));
+        DocGuardedPtr predecDoc = DocumentMan::self()->openDocument(predecessorDbId);
+        if( predecDoc ) {
+            const QString id = predecDoc->docIdentifier();
+            const QString link = QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorDbId).arg(id);
+            m_headerEdit->_labFollowup->setText( i18n("Successor of %1").arg(link));
+            predecIsVisible = true;
+            connect( m_headerEdit->_labFollowup, SIGNAL(linkActivated(QString)),
+                     this, SLOT(slotLinkClicked(QString)));
+            delete predecDoc;
+        }
     }
     m_headerEdit->_labFollowup->setVisible(predecIsVisible);
 
