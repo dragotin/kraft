@@ -67,6 +67,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
         DocGuardedPtr sourceDoc = openDocument( copyFromId );
         if ( sourceDoc ) {
             *doc = *sourceDoc; // copies all data from the previous doc
+            doc->setIdent(QString::null);
             doc->setDocType(docType); // sets the defaults for the new doc type
             if( !keepItems ) {
                 doc->deleteItems();       // remove all items that exist so far

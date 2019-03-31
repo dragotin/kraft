@@ -59,7 +59,7 @@ class KRAFTCAT_EXPORT DocType
   int setAllFollowers( const QStringList& followers);
 
   QString     generateDocumentIdent( const QDate& docDate, const QString& docType,
-                                     const QString& addressUid, int id = 1 );
+                                     const QString& addressUid, int id = -1 );
   QString     identTemplate();
   void        setIdentTemplate( const QString& );
 
