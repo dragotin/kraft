@@ -14,7 +14,7 @@ private slots:
     void goodParser() {
         QByteArray xml = "<kraftmeta>\
                 <migrate>\
-                <add_doctype>\
+                <doctype>\
                 <name>Progress Payment Invoice</name>\
                 <numbercycle>default</numbercycle>\
                 <lang>en</lang>\
@@ -28,7 +28,7 @@ private slots:
                 </attrib>\
                 <follower>Final Invoice</follower>\
                 <follower>Invoice</follower>\
-                </add_doctype>\
+                </doctype>\
                 </migrate>\
                 </kraftmeta>";
 
