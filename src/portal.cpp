@@ -452,11 +452,19 @@ void Portal::slotFollowUpDocument()
     }
 
     // qDebug () << "doc identifier: "<< doc->docIdentifier() << endl;
-    wiz.setDocIdentifierToFollow( i18n("Followup Document for %1", sourceDoc->docIdentifier() ));
+    wiz.setDocToFollow( sourceDoc );
+    DocPositionList posToCopy = sourceDoc->positions();
     delete sourceDoc;
+
     if ( wiz.exec() ) {
-        bool keepItems = wiz.copyItemsFromPredecessor();
-        DocGuardedPtr doc = DocumentMan::self()->createDocument( wiz.docType(), locId, keepItems );
+        QString selectedId = wiz.copyItemsFromPredecessor();
+        if(!selectedId.isEmpty() && selectedId != locId ) {
+            DocGuardedPtr copyDoc = DocumentMan::self()->openDocument( selectedId );
+            posToCopy = copyDoc->positions();
+            delete copyDoc;
+        }
+
+        DocGuardedPtr doc = DocumentMan::self()->createDocument(wiz.docType(), locId, posToCopy);
         doc->setDate( wiz.date() );
         doc->setWhiteboard( wiz.whiteboard() );
         createView( doc );

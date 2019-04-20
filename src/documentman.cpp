@@ -57,7 +57,7 @@ DocGuardedPtr DocumentMan::copyDocument( const QString& copyFromId )
     return doc;
 }
 
-DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromId, bool keepItems )
+DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromId, const DocPositionList& listToCopy)
 {
     DocGuardedPtr doc = new KraftDoc( );
     // qDebug () << "new document ID: " << doc->docID().toString() << endl;
@@ -69,9 +69,9 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
             *doc = *sourceDoc; // copies all data from the previous doc
             doc->setIdent(QString::null);
             doc->setDocType(docType); // sets the defaults for the new doc type
-            if( !keepItems ) {
-                doc->deleteItems();       // remove all items that exist so far
-            }
+            doc->deleteItems();       // remove all items that exist so far
+            doc->setPositionList(listToCopy);
+
             // check for relations between old and new doc
             DocType sourceDocType( sourceDoc->docType() );
             // for new docs check if it should substract the sum of the predecessor doc
@@ -110,12 +110,23 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
     return doc;
 }
 
+DocGuardedPtr DocumentMan::openDocumentbyIdent( const QString& ident )
+{
+    QSqlQuery q;
+    q.prepare("SELECT docID FROM document WHERE ident=:ident");
+    q.bindValue(":ident", ident);
+    q.exec();
+    if( q.next() ) {
+        const QString id = q.value(0).toString();
+        return openDocument(id);
+    }
+    return nullptr;
+}
+
 DocGuardedPtr DocumentMan::openDocument( const QString& id )
 {
   // qDebug () << "Opening Document with id " << id << endl;
-  DocGuardedPtr doc;
-
-  doc = new KraftDoc();
+  DocGuardedPtr doc = new KraftDoc();
   doc->openDocument( id );
   return doc;
 }
