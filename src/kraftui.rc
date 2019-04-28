@@ -22,6 +22,7 @@
     <Action name="document_new"/>
     <Action name="document_open"/>
     <Action name="document_view"/>
+    <Action name="document_follow"/>
     <Action name="document_print"/>
 </ToolBar>
 
