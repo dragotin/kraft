@@ -430,8 +430,11 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
         tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
         tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), digest.printDate().toString() );
         tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
-        const QString archivedCount = (archDocs.size() == 1 ? i18n( "%1 older print" ) : i18n( "%1 older prints" ));
-        tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), archivedCount.arg( QString::number( archDocs.count()-1 )) );
+        if( archDocs.size() == 1 ) {
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("One older print"));
+        } else {
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("%1 older prints", archDocs.count()));
+        }
     }
 
     const QString details = tmpl.expand();
