@@ -261,7 +261,7 @@ void KraftView::setupDocHeaderView()
         if( predecDoc ) {
             const QString id = predecDoc->docIdentifier();
             const QString link = QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorDbId).arg(id);
-            m_headerEdit->_labFollowup->setText( i18n("Successor of %1").arg(link));
+            m_headerEdit->_labFollowup->setText( i18n("Successor of %1", link));
             predecIsVisible = true;
             connect( m_headerEdit->_labFollowup, SIGNAL(linkActivated(QString)),
                      this, SLOT(slotLinkClicked(QString)));
