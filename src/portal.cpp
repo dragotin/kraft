@@ -453,12 +453,12 @@ void Portal::slotFollowUpDocument()
 
     // qDebug () << "doc identifier: "<< doc->docIdentifier() << endl;
     wiz.setDocToFollow( sourceDoc );
-    DocPositionList posToCopy = sourceDoc->positions();
+    DocPositionList posToCopy;
     delete sourceDoc;
 
     if ( wiz.exec() ) {
         QString selectedId = wiz.copyItemsFromPredecessor();
-        if(!selectedId.isEmpty() && selectedId != locId ) {
+        if(!selectedId.isEmpty()) {
             DocGuardedPtr copyDoc = DocumentMan::self()->openDocument( selectedId );
             posToCopy = copyDoc->positions();
             delete copyDoc;
