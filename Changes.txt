@@ -7,6 +7,12 @@ Changes since version 0.82: #########################################
 - New feature: partial invoices that are substracted in the final invoice
 - Use an XML based migration system for document types
 - Added the first unit tests to Kraft
+- Made the document templates not containing any language specific
+  strings any more. There is only one doc now for all languages,
+  getting translated strings as template variables.
+- Removed KeepTogether flag for tables to avoid that a long list of
+  items only starts on the next page. Might have impact on some docs.
+- Fixed formatting of the amount number in the XML output
 
 => release v. 0.90 (Mar x, 2019)
 
