@@ -25,8 +25,7 @@
 	    <lines>25mm 24.6cm 11cm 24.6cm</lines>
 	    <setFont name="Times-Roman" size="10" />
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
-            <drawCentredString x="105mm" y="1.4cm">Telephone {{MY_PHONE}} - Fax {{MY_FAX}}</drawCentredString>
-	    <drawCentredString x="185mm" y="1.4cm">Page <pageNumber/></drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">{{LAB_PHONE}} {{MY_PHONE}} - {{LAB_FAX}} {{MY_FAX}}</drawCentredString>
 	    <!-- Here is how you would insert an image at a fixed place on the page: -->
 	    <!-- image x="140mm" y="22cm" width="6cm" height="6cm" file="/path/to/the/image.png"  -->
         </pageGraphics>
@@ -47,10 +46,11 @@
 	    <setFont name="Times-Roman" size="10" />
 	    <fill color="black" />
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
-            <drawCentredString x="105mm" y="1.4cm">Telephone {{MY_PHONE}} - Fax {{MY_FAX}}</drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">{{LAB_PHONE}} {{MY_PHONE}} - {{LAB_FAX}} {{MY_FAX}}</drawCentredString>
+            <drawCentredString x="185mm" y="1.4cm">{{LAB_PAGE_NO}}Seite <pageNumber/></drawCentredString>
         </pageGraphics>
 
-        <frame id="content" x1="2.0cm" y1="3.0cm" width="17cm" height="24.5cm"/>
+        <frame id="content" x1="2.41cm" y1="3.0cm" width="17cm" height="24.5cm"/>
     </pageTemplate>
 </template>
 <stylesheet>
@@ -112,7 +112,7 @@
 
     <nextFrame/>
     <!-- Subject Frame -->
-    <h1>{{DOCTYPE}} Nr. {{DOCID}}</h1>
+    <h1>{{DOCTYPE}} {{LAB_NR_SHORT}} {{DOCID}}</h1>
 
     <!-- Detail Frame -->
     <spacer length="1mm" width="1mm"/>
@@ -124,16 +124,16 @@
 
     <setNextTemplate name="others" />
 
-    <spacer length="18mm" width="1mm"/>
+    <spacer length="1cm" width="1mm"/>
 
-    <blockTable colWidths="8mm,6.4cm,2.0cm,2.0cm,2.7cm,2.5cm,8mm" style="items" repeatRows="0">
+    <blockTable colWidths="12mm,6.4cm,2.0cm,2.0cm,2.7cm,2.5cm,8mm" style="items" repeatRows="0">
     <tr>
-        <td><para style="stext">No</para></td>
-        <td><para style="stext">Item</para></td>
-        <td><para style="stext">Qty.</para></td>
-        <td><para style="stext">Unit</para></td>
-        <td><para style="cstext">Price</para></td>
-        <td><para style="cstext">Sum</para></td>
+        <td><para style="stext">{{LAB_NO_SHORT}}</para></td>
+        <td><para style="stext">{{LAB_ITEM}}</para></td>
+        <td><para style="stext">{{LAB_QUANTITY_SHORT}}</para></td>
+        <td><para style="stext">{{LAB_UNIT}}</para></td>
+        <td><para style="cstext">{{LAB_PRICE}}</para></td>
+        <td><para style="cstext">{{LAB_SUM}}</para></td>
 	<td><para style="rstext"></para></td>
     </tr>
     {{#POSITIONS}}
@@ -160,53 +160,52 @@
   </blockTable>
 
   <condPageBreak height="4cm"/>
-  <blockTable colWidths="9.4cm,4cm,3cm,8mm" style="sums" repeatRows="0">
+  <blockTable colWidths="9.8cm,4cm,3cm,8mm" style="sums" repeatRows="0">
     <tr><td></td>
-        <td><para style="text">Net</para></td>
+        <td><para style="text">{{LAB_NET}}</para></td>
         <td><para style="rtext">{{NETTOSUM}}</para></td>
 	<td></td>
     </tr>
     {{#SECTION_REDUCED_TAX}}
     <tr><td></td>
-        <td><para style="text">+{{REDUCED_TAX}}% VAT</para></td>
+        <td><para style="text">+{{REDUCED_TAX}}% {{LAB_VAT}}</para></td>
         <td><para style="rtext">{{REDUCED_TAX_SUM}}</para></td>
 	<td></td>
     </tr>
     {{/SECTION_REDUCED_TAX}}
     {{#SECTION_FULL_TAX}}
     <tr><td></td>
-        <td><para style="text">+{{FULL_TAX}}% VAT</para></td>
+        <td><para style="text">+{{FULL_TAX}}% {{LAB_VAT}}</para></td>
         <td><para style="rtext">{{FULL_TAX_SUM}}</para></td>
 	<td></td>
     </tr>
     {{/SECTION_FULL_TAX}}
     <tr><td></td>
-        <td><para style="text">Sum</para></td>
+        <td><para style="text">{{LAB_SUM}}</para></td>
         <td><para style="rtext">{{BRUTTOSUM}}</para></td>
 	<td></td>
     </tr>
   </blockTable>
   {{#TAX_FREE_ITEMS}}
   <para style="smallText">
-      a) &nbsp;tax free items ({{COUNT}} pcs.)
+      a) &nbsp;{{LAB_TAX_FREE_ITEMS}}
   </para>
   {{/TAX_FREE_ITEMS}}
   {{#REDUCED_TAX_ITEMS}}
   <para style="smallText">
-    b) &nbsp;items with reduced tax of {{TAX}}% ({{COUNT}} pcs.)
+    b) &nbsp;{{LAB_TAX_REDUCED_ITEMS}}
   </para>
   {{/REDUCED_TAX_ITEMS}}
   {{#FULL_TAX_ITEMS}}
   <para style="smallText">
-  No label: items with full tax of {{TAX}}% ({{COUNT}} pcs.)
+    {{LAB_TAX_FULL_ITEMS}}
   </para>
   {{/FULL_TAX_ITEMS}}
 
   {{#SPECIAL_POS}}
   <spacer length="3mm" width="1mm"/>
     <para style="smalltext">
-    Please note: This offer contains {{COUNT}} alternative or demand positions,
-    printed in italic font. These do not add to the overall sum.
+      {{LAB_SPECIAL_ITEMS}}
     </para>
   {{/SPECIAL_POS}}
   <spacer length="1cm" width="1mm"/>

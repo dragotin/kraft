@@ -2,7 +2,7 @@
 <!DOCTYPE document SYSTEM "rml_1_0.dtd">
 <document filename="kraft.pdf">
 <template pageSize="(21cm, 29.7cm)" leftMargin="2.41cm" rightMargin="0.81cm"
-  topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document" 
+  topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document"
   author="Kraft http://www.volle-kraft-voraus.de" allowSplitting="20"
   showBoundary="0">
     <template>
@@ -25,7 +25,7 @@
 	    <lines>25mm 24.6cm 11cm 24.6cm</lines>
 	    <setFont name="Times-Roman" size="10" />
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
-            <drawCentredString x="105mm" y="1.4cm">Telephone {{MY_PHONE}} - Fax {{MY_FAX}}</drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">{{LAB_PHONE}} {{MY_PHONE}} - {{LAB_FAX}} {{MY_FAX}}</drawCentredString>
 	    <drawCentredString x="185mm" y="1.4cm">Page <pageNumber/></drawCentredString>
 	    <!-- Here is how you would insert an image at a fixed place on the page: -->
 	    <!-- image x="140mm" y="22cm" width="6cm" height="6cm" file="/path/to/the/image.png"  -->
@@ -47,7 +47,7 @@
 	    <setFont name="Times-Roman" size="10" />
 	    <fill color="black" />
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
-            <drawCentredString x="105mm" y="1.4cm">Telephone {{MY_PHONE}} - Fax {{MY_FAX}}</drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">{{LAB_PHONE}} {{MY_PHONE}} - {{LAB_FAX}} {{MY_FAX}}</drawCentredString>
         </pageGraphics>
 
         <frame id="content" x1="2.0cm" y1="3.0cm" width="17cm" height="24.5cm"/>
@@ -71,9 +71,9 @@
 
       <lineStyle kind="LINEBELOW" colorName="black" start="0,0" stop="-1,0"/>
    </blockTableStyle>
-   
+
    <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
-   
+
    <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
    <paraStyle name="demandtext"      fontSize="12" alignment="justify" fontName="Times-Italic" />
    <paraStyle name="alternativetext" fontSize="12" alignment="justify" fontName="Times-Italic" />
@@ -103,7 +103,7 @@
 
     <nextFrame/>
     <!-- Subject Frame -->
-    <h1>{{DOCTYPE}} Nr. {{DOCID}}</h1>
+    <h1>{{DOCTYPE}} {{LAB_NO_SHORT}} {{DOCID}}</h1>
 
     <!-- Detail Frame -->
     <spacer length="1mm" width="1mm"/>
@@ -119,15 +119,15 @@
 
     <blockTable colWidths="12mm,12.6cm,1.5cm,1.5cm" style="items" repeatRows="0">
     <tr>
-        <td><para style="text">Pos.</para></td>
-        <td><para style="text">Item</para></td>
-        <td><para style="ctext">Qty.</para></td>
-        <td><para style="ctext">Unit</para></td>
+        <td><para style="text">{{LAB_NO_SHORT}}</para></td>
+        <td><para style="text">{{LAB_ITEM}}</para></td>
+        <td><para style="ctext">{{LAB_QUANTITY_SHORT}}</para></td>
+        <td><para style="ctext">{{LAB_UNIT}}</para></td>
     </tr>
     {{#POSITIONS}}
     <tr>
         <td><para style="{{POS_KIND}}text">{{POS_NUMBER}}.</para></td>
-        <td>      {{POS_TEXT}}          </td>
+        <td>{{POS_TEXT}}</td>
         <td><para style="{{POS_KIND}}text">{{POS_AMOUNT}} </para></td>
         <td><para style="{{POS_KIND}}text">{{POS_UNIT}}   </para></td>
     </tr>
