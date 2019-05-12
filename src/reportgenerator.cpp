@@ -142,8 +142,8 @@ QString ReportGenerator::findTemplate( const QString& type )
   return tmplFile;
 }
 
-#define TAG( THE_TAG )  QString( "%1").arg( THE_TAG )
-#define DICT( THE_DICT )  QString( "%1").arg( THE_DICT )
+#define TAG( THE_TAG )  QStringLiteral( THE_TAG )
+#define DICT( THE_DICT )  QStringLiteral( THE_DICT )
 
 void ReportGenerator::fillupTemplateFromArchive( const dbID& id )
 {
@@ -249,9 +249,9 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   for ( it = posList.begin(); it != posList.end(); ++it ) {
     ArchDocPosition pos (*it);
     tmpl.createDictionary( "POSITIONS" );
-    tmpl.setValue( "POSITIONS", TAG( "POS_NUMBER" )
+    tmpl.setValue( DICT("POSITIONS"), TAG( "POS_NUMBER" )
                    , pos.posNumber() );
-    tmpl.setValue( "POSITIONS", "POS_TEXT",
+    tmpl.setValue( DICT("POSITIONS"), TAG("POS_TEXT"),
                    rmlString( pos.text(), QString( "%1text" ).arg( pos.kind().toLower() ) ) );
 
     // format the amount value of the item, do not show the precision if there is no fraction
@@ -267,11 +267,11 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
     // qDebug() << "**** " << num << " has precision " << prec;
     h = mArchDoc->locale()->toString( amount, 'f', prec );
 
-    tmpl.setValue( "POSITIONS", "POS_AMOUNT", h );
-    tmpl.setValue( "POSITIONS", "POS_UNIT", escapeTrml2pdfXML( pos.unit() ) );
-    tmpl.setValue( "POSITIONS", "POS_UNITPRICE", pos.unitPrice().toString( mArchDoc->locale() ) );
-    tmpl.setValue( "POSITIONS", "POS_TOTAL", pos.nettoPrice().toString( mArchDoc->locale() ) );
-    tmpl.setValue( "POSITIONS", "POS_KIND", pos.kind().toLower() );
+    tmpl.setValue( DICT("POSITIONS"), TAG("POS_AMOUNT"), h );
+    tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNIT"), escapeTrml2pdfXML( pos.unit() ) );
+    tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNITPRICE"), pos.unitPrice().toString( mArchDoc->locale() ) );
+    tmpl.setValue( DICT("POSITIONS"), TAG("POS_TOTAL"), pos.nettoPrice().toString( mArchDoc->locale() ) );
+    tmpl.setValue( DICT("POSITIONS"), TAG("POS_KIND"), pos.kind().toLower() );
 
     QString taxType;
 
@@ -299,8 +299,8 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   }
   if ( specialPosCnt ) {
     tmpl.createDictionary( "SPECIAL_POS" );
-    tmpl.setValue( "SPECIAL_POS", "COUNT", QString::number( specialPosCnt ) );
-    tmpl.setValue( "SPECIAL_POS", "LAB_SPECIAL_ITEMS",
+    tmpl.setValue( DICT("SPECIAL_POS"), TAG("COUNT"), QString::number( specialPosCnt ) );
+    tmpl.setValue( DICT("SPECIAL_POS"), TAG("LAB_SPECIAL_ITEMS"),
                    i18n("Please note: This offer contains %1 alternative or demand positions, printed in italic font. These do not add to the overall sum.",
                         QString::number( specialPosCnt ) ) );
   }
@@ -310,23 +310,23 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
    */
   if( individualTax ) {
     tmpl.createDictionary( "TAX_FREE_ITEMS" );
-    tmpl.setValue( "TAX_FREE_ITEMS", "COUNT", QString::number( taxFreeCnt ));
-    tmpl.setValue( "TAX_FREE_ITEMS", TAG( "LAB_TAX_FREE_ITEMS"),
+    tmpl.setValue( DICT("TAX_FREE_ITEMS"), TAG("COUNT"), QString::number( taxFreeCnt ));
+    tmpl.setValue( DICT("TAX_FREE_ITEMS"), TAG( "LAB_TAX_FREE_ITEMS"),
                    i18n("tax free items (%1 pcs.)", QString::number( taxFreeCnt )) );
 
     tmpl.createDictionary( "REDUCED_TAX_ITEMS" );
-    tmpl.setValue( "REDUCED_TAX_ITEMS", "COUNT", QString::number( reducedTaxCnt ));
-    tmpl.setValue( "REDUCED_TAX_ITEMS", "TAX", mArchDoc->locale()->toString( mArchDoc->reducedTax()) );
-    tmpl.setValue( "REDUCED_TAX_ITEMS", TAG("LAB_TAX_REDUCED_ITEMS"),
+    tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("COUNT"), QString::number( reducedTaxCnt ));
+    tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("TAX"), mArchDoc->locale()->toString( mArchDoc->reducedTax()) );
+    tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("LAB_TAX_REDUCED_ITEMS"),
                    i18n("items with reduced tax of %1% (%2 pcs.)",
                         mArchDoc->locale()->toString( mArchDoc->reducedTax()),
                         QString::number( reducedTaxCnt )) );
 
 
     tmpl.createDictionary( "FULL_TAX_ITEMS" );
-    tmpl.setValue( "FULL_TAX_ITEMS", "COUNT", QString::number( fullTaxCnt ));
-    tmpl.setValue( "FULL_TAX_ITEMS", "TAX", mArchDoc->locale()->toString( mArchDoc->tax()) );
-    tmpl.setValue( "FULL_TAX_ITEMS", TAG("LAB_TAX_FULL_ITEMS"),
+    tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("COUNT"), QString::number( fullTaxCnt ));
+    tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("TAX"), mArchDoc->locale()->toString( mArchDoc->tax()) );
+    tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("LAB_TAX_FULL_ITEMS"),
                    i18n("No label: items with full tax of %1% (%2 pcs.)",
                         mArchDoc->locale()->toString( mArchDoc->tax()),
                         QString::number( fullTaxCnt )) );
@@ -353,19 +353,19 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   // qDebug () << "Tax in archive document: " << h;
   if ( mArchDoc->reducedTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
-    tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_SUM" ),
+    tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_SUM" ),
       mArchDoc->reducedTaxSum().toString( mArchDoc->locale() ) );
     h = mArchDoc->locale()->toString( mArchDoc->reducedTax() );
-    tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX" ), h );
-    tmpl.setValue( "SECTION_REDUCED_TAX", TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
+    tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX" ), h );
+    tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
   }
   if ( mArchDoc->fullTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
-    tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_SUM" ),
+    tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_SUM" ),
       mArchDoc->fullTaxSum().toString( mArchDoc->locale() ) );
     h = mArchDoc->locale()->toString( mArchDoc->tax() );
-    tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX" ), h );
-    tmpl.setValue( "SECTION_FULL_TAX", TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
+    tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX" ), h );
+    tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
   }
 
   h = mArchDoc->locale()->toString( mArchDoc->tax() );
@@ -373,19 +373,19 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
   tmpl.setValue( TAG( "VATSUM" ), mArchDoc->taxSum().toString( mArchDoc->locale() ) );
 
-  tmpl.setValue( TAG( "LAB_NO_SHORT"), i18n("No.") );
-  tmpl.setValue( TAG( "LAB_ITEM"), i18n("Item") );
-  tmpl.setValue( TAG( "LAB_QANTITY_SHORT"), i18n("Qty.") );
-  tmpl.setValue( TAG( "LAB_UNIT"), i18n("Unit") );
-  tmpl.setValue( TAG( "LAB_PRICE"), i18n("Price") );
-  tmpl.setValue( TAG( "LAB_SUM"), i18n("Sum") );
-  tmpl.setValue( TAG( "LAB_NET"), i18n("Net") );
-  tmpl.setValue( TAG( "LAB_VAT"), i18n("VAT") );
+  tmpl.setValue( TAG( "LAB_NO_SHORT"), i18nc("Sequence number printed on the document", "No.") );
+  tmpl.setValue( TAG( "LAB_ITEM"), i18nc("Document item printed on the document", "Item") );
+  tmpl.setValue( TAG( "LAB_QANTITY_SHORT"), i18nc("Abbrev. of Quantity printed on the document", "Qty.") );
+  tmpl.setValue( TAG( "LAB_UNIT"), i18nc("Unit printed on the document", "Unit") );
+  tmpl.setValue( TAG( "LAB_PRICE"), i18nc("Price of an item printed on the document", "Price") );
+  tmpl.setValue( TAG( "LAB_SUM"), i18nc("Printed on the document", "Sum") );
+  tmpl.setValue( TAG( "LAB_NET"), i18nc("printed on the document", "Net") );
+  tmpl.setValue( TAG( "LAB_VAT"), i18nc("Printed on the document", "VAT") );
 
-  tmpl.setValue( TAG( "LAB_PHONE"), i18n("Phone"));
-  tmpl.setValue( TAG( "LAB_FAX"), i18n("FAX"));
-  tmpl.setValue( TAG( "LAB_MOBILE"), i18n("Mobile"));
-  tmpl.setValue( TAG( "LAB_EMAIL"), i18n("Email"));
+  tmpl.setValue( TAG( "LAB_PHONE"), i18nc("Printed on the document", "Phone"));
+  tmpl.setValue( TAG( "LAB_FAX"), i18nc("Printed on the document", "FAX"));
+  tmpl.setValue( TAG( "LAB_MOBILE"), i18nc("Printed on the document", "Mobile"));
+  tmpl.setValue( TAG( "LAB_EMAIL"), i18nc("Printed on the document", "Email"));
 
   // finalize the template
   const QString output = tmpl.expand();
