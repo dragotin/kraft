@@ -118,7 +118,7 @@
 
     <spacer length="18mm" width="1mm"/>
 
-    <blockTable colWidths="12mm,12.6cm,1.5cm,1.5cm" style="items" repeatRows="0">
+    <blockTable colWidths="12mm,12.0cm,1.8cm,1.8cm" style="items" repeatRows="0">
     <tr>
         <td><para style="text">Nr.</para></td>
         <td><para style="text">Artikel</para></td>

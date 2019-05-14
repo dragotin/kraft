@@ -1,6 +1,6 @@
 <kraftmeta>
   <migrate>
-    <add_doctype>
+    <doctype>
         <name>Progress Payment Invoice</name>
         <numbercycle>default</numbercycle>
         <lang>en</lang>
@@ -10,8 +10,8 @@
         </attrib>
         <follower>Final Invoice</follower>
         <follower>Invoice</follower>
-    </add_doctype>
-    <add_doctype>
+    </doctype>
+    <doctype>
         <name>Partial Invoice</name>
         <numbercycle>default</numbercycle>
         <lang>en</lang>
@@ -21,8 +21,8 @@
         </attrib>
         <follower>Final Invoice</follower>
         <follower>Invoice</follower>
-    </add_doctype>
-    <add_doctype>
+    </doctype>
+    <doctype>
         <name>Final Invoice</name>
         <numbercycle>default</numbercycle>
         <lang>en</lang>
@@ -30,9 +30,9 @@
             <key>SubstractPartialInvoice</key>
             <value>true</value>
         </attrib>
-    </add_doctype>
+    </doctype>
 
-    <add_doctype>
+    <doctype>
         <name>Teilrechnung</name>
         <numbercycle>default</numbercycle>
         <lang>de</lang>
@@ -42,8 +42,8 @@
         </attrib>
         <follower>Schlussrechnung</follower>
         <follower>Rechnung</follower>
-    </add_doctype>
-    <add_doctype>
+    </doctype>
+    <doctype>
         <name>Abschlagsrechnung</name>
         <numbercycle>default</numbercycle>
         <lang>de</lang>
@@ -53,8 +53,8 @@
         </attrib>
         <follower>Schlussrechnung</follower>
         <follower>Rechnung</follower>
-    </add_doctype>
-    <add_doctype>
+    </doctype>
+    <doctype>
         <name>Schlussrechnung</name>
         <numbercycle>default</numbercycle>
         <lang>de</lang>
@@ -62,21 +62,63 @@
             <key>SubstractPartialInvoice</key>
             <value>true</value>
         </attrib>
-    </add_doctype>
-    <add_doctype>
+    </doctype>
+    <doctype>
         <name>Angebot</name>
+        <lang>de</lang>
         <follower>Abschlagsrechnung</follower>
         <follower>Teilrechnung</follower>
         <follower>Schlussrechnung</follower>
         <follower>Rechnung</follower>
-    </add_doctype>
-    <add_doctype>
+    </doctype>
+    <doctype>
         <name>Auftragsbestätigung</name>
+        <lang>de</lang>
         <follower>Abschlagsrechnung</follower>
         <follower>Teilrechnung</follower>
         <follower>Schlussrechnung</follower>
         <follower>Rechnung</follower>
-    </add_doctype>
+    </doctype>
+    <doctype>
+        <name>Lieferschein</name>
+        <lang>de</lang>
+        <follower>Abschlagsrechnung</follower>
+        <follower>Teilrechnung</follower>
+        <follower>Schlussrechnung</follower>
+        <follower>Rechnung</follower>
+    </doctype>
+    <doctype>
+        <name>Acceptance of Order</name>
+        <lang>en</lang>
+        <follower>Final Invoice</follower>
+        <follower>Partial Invoice</follower>
+        <follower>Progress Payment Invoice</follower>
+        <follower>Invoice</follower>
+    </doctype>
+    <doctype>
+        <name>Delivery Receipt</name>
+        <lang>en</lang>
+        <follower>Final Invoice</follower>
+        <follower>Partial Invoice</follower>
+        <follower>Progress Payment Invoice</follower>
+        <follower>Invoice</follower>
+    </doctype>
+    <doctype>
+        <name>Acceptance of Order</name>
+        <lang>en</lang>
+        <follower>Final Invoice</follower>
+        <follower>Partial Invoice</follower>
+        <follower>Progress Payment Invoice</follower>
+        <follower>Invoice</follower>
+    </doctype>
+    <doctype>
+        <name>Offer</name>
+        <lang>en</lang>
+        <follower>Final Invoice</follower>
+        <follower>Partial Invoice</follower>
+        <follower>Progress Payment Invoice</follower>
+        <follower>Invoice</follower>
+    </doctype>
 
   </migrate>
 </kraftmeta>

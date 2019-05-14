@@ -45,7 +45,7 @@ bool MetaXMLParser::parse( QIODevice *device )
     }
     QDomElement migrateElem = root.firstChildElement("migrate");
 
-    QDomElement addDtXml = migrateElem.firstChildElement("add_doctype");
+    QDomElement addDtXml = migrateElem.firstChildElement("doctype");
 
     while( ! addDtXml.isNull() ) {
         MetaDocTypeAdd docTypeAdd;
@@ -83,7 +83,7 @@ bool MetaXMLParser::parse( QIODevice *device )
             _docTypeAddList.append(docTypeAdd);
         }
 
-        addDtXml = addDtXml.nextSiblingElement("add_doctype");
+        addDtXml = addDtXml.nextSiblingElement("doctype");
     }
 
     return true;

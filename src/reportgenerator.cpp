@@ -300,6 +300,9 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   if ( specialPosCnt ) {
     tmpl.createDictionary( "SPECIAL_POS" );
     tmpl.setValue( "SPECIAL_POS", "COUNT", QString::number( specialPosCnt ) );
+    tmpl.setValue( "SPECIAL_POS", "LAB_SPECIAL_ITEMS",
+                   i18n("Please note: This offer contains %1 alternative or demand positions, printed in italic font. These do not add to the overall sum.",
+                        QString::number( specialPosCnt ) ) );
   }
 
   /*
@@ -308,14 +311,25 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   if( individualTax ) {
     tmpl.createDictionary( "TAX_FREE_ITEMS" );
     tmpl.setValue( "TAX_FREE_ITEMS", "COUNT", QString::number( taxFreeCnt ));
+    tmpl.setValue( "TAX_FREE_ITEMS", TAG( "LAB_TAX_FREE_ITEMS"),
+                   i18n("tax free items (%1 pcs.)", QString::number( taxFreeCnt )) );
 
     tmpl.createDictionary( "REDUCED_TAX_ITEMS" );
     tmpl.setValue( "REDUCED_TAX_ITEMS", "COUNT", QString::number( reducedTaxCnt ));
     tmpl.setValue( "REDUCED_TAX_ITEMS", "TAX", mArchDoc->locale()->toString( mArchDoc->reducedTax()) );
+    tmpl.setValue( "REDUCED_TAX_ITEMS", TAG("LAB_TAX_REDUCED_ITEMS"),
+                   i18n("items with reduced tax of %1% (%2 pcs.)",
+                        mArchDoc->locale()->toString( mArchDoc->reducedTax()),
+                        QString::number( reducedTaxCnt )) );
+
 
     tmpl.createDictionary( "FULL_TAX_ITEMS" );
     tmpl.setValue( "FULL_TAX_ITEMS", "COUNT", QString::number( fullTaxCnt ));
     tmpl.setValue( "FULL_TAX_ITEMS", "TAX", mArchDoc->locale()->toString( mArchDoc->tax()) );
+    tmpl.setValue( "FULL_TAX_ITEMS", TAG("LAB_TAX_FULL_ITEMS"),
+                   i18n("No label: items with full tax of %1% (%2 pcs.)",
+                        mArchDoc->locale()->toString( mArchDoc->tax()),
+                        QString::number( fullTaxCnt )) );
   }
 
   /* now replace stuff in the whole document */
@@ -359,8 +373,21 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
   tmpl.setValue( TAG( "VATSUM" ), mArchDoc->taxSum().toString( mArchDoc->locale() ) );
 
-  // My own contact data
+  tmpl.setValue( TAG( "LAB_NO_SHORT"), i18n("No.") );
+  tmpl.setValue( TAG( "LAB_ITEM"), i18n("Item") );
+  tmpl.setValue( TAG( "LAB_QANTITY_SHORT"), i18n("Qty.") );
+  tmpl.setValue( TAG( "LAB_UNIT"), i18n("Unit") );
+  tmpl.setValue( TAG( "LAB_PRICE"), i18n("Price") );
+  tmpl.setValue( TAG( "LAB_SUM"), i18n("Sum") );
+  tmpl.setValue( TAG( "LAB_NET"), i18n("Net") );
+  tmpl.setValue( TAG( "LAB_VAT"), i18n("VAT") );
 
+  tmpl.setValue( TAG( "LAB_PHONE"), i18n("Phone"));
+  tmpl.setValue( TAG( "LAB_FAX"), i18n("FAX"));
+  tmpl.setValue( TAG( "LAB_MOBILE"), i18n("Mobile"));
+  tmpl.setValue( TAG( "LAB_EMAIL"), i18n("Email"));
+
+  // finalize the template
   const QString output = tmpl.expand();
   convertTemplate(output);
 }

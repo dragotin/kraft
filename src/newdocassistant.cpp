@@ -18,6 +18,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QFormLayout>
 #include <QPushButton>
 #include <QCheckBox>
@@ -28,6 +29,7 @@
 #include <QDateEdit>
 #include <QDebug>
 #include <QTextEdit>
+#include <QPointer>
 
 #include <klocalizedstring.h>
 #include <kassistantdialog.h>
@@ -38,6 +40,8 @@
 #include "doctype.h"
 #include "kraftsettings.h"
 #include "addressselectorwidget.h"
+#include "documentman.h"
+
 
 CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   :QWidget( parent )
@@ -100,11 +104,6 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   mCustomerLabel->setText( i18n( "Customer: Not yet selected!" ) );
   vbox->addWidget( mCustomerLabel );
 
-  mKeepItemsCB = new QCheckBox( i18n("Copy document items from predecessor document"));
-  vbox->addWidget( mKeepItemsCB );
-  mKeepItemsCB->setChecked(true);
-  mKeepItemsCB->setVisible(false);
-
   QFormLayout *grid = new QFormLayout;
   vbox->addLayout( grid );
 
@@ -120,9 +119,18 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   mWhiteboardEdit = new QTextEdit;
   grid->addRow( i18n( "Whiteboard Content:" ), mWhiteboardEdit );
 
+  QHBoxLayout *hbox = new QHBoxLayout;
+  vbox->addLayout(hbox);
+  mKeepItemsCB = new QCheckBox( i18n("Copy document items from predecessor document"));
+  hbox->addWidget( mKeepItemsCB );
+  mSourceDocIdentsCombo = new QComboBox;
+  hbox->addWidget(mSourceDocIdentsCombo);
+  mSourceDocIdentsCombo->setVisible(false);
+
+  mKeepItemsCB->setChecked(true);
+  mKeepItemsCB->setVisible(false);
+
   vbox->addStretch( 1 );
-
-
 }
 
 DocDetailsPage::~DocDetailsPage()
@@ -158,17 +166,17 @@ void KraftWizard::init( bool haveAddressSelect, const QString& followUpDoc )
     if( followUpDoc.isEmpty() ) {
         setWindowTitle( i18n( "Create a new Kraft Document" ) );
     } else {
-        setWindowTitle( followUpDoc );
+        setWindowTitle( i18n("Create followup document for %1", followUpDoc ));
     }
 
     QWidget *w1 = new QWidget;
-    mDetailsPageItem = addPage( w1, i18n( "<h2>Document Details</h2>" ) );
+    mDetailsPageItem = addPage( w1, QLatin1Literal("<h2>") + i18n( "New Document Settings" ) + QLatin1Literal("</h2>") );
     mDetailsPage = new DocDetailsPage( w1 );
 
     // only pick an addressee if the document is really new
     if( addressProvider->backendUp() && haveAddressSelect ) {
         QWidget *w = new QWidget;
-        mCustomerPageItem = addPage( w, i18n( "<h2>Select an Addressee</h2>" ) );
+        mCustomerPageItem = addPage( w, QLatin1Literal("<h2>") + i18n( "Select an Addressee" ) + QLatin1Literal("</h2>") );
 
         mCustomerPage = new CustomerSelectPage( w );
         mCustomerPage->setupAddresses();
@@ -214,22 +222,52 @@ QString KraftWizard::whiteboard() const
   return mDetailsPage->mWhiteboardEdit->toPlainText();
 }
 
-void KraftWizard::setDocIdentifierToFollow( const QString& ident )
+void KraftWizard::setDocToFollow( DocGuardedPtr sourceDoc)
 {
-    // we already know the customer, disable the customer select page.
-    if( !ident.isEmpty() ) {
-        setAppropriate( mCustomerPageItem, false );
-        mDetailsPage->mKeepItemsCB->setVisible(true);
+    if( !sourceDoc ) {
+        return;
+    }
+    DocGuardedPtr dPtr = sourceDoc;
 
-        if ( mDetailsPage->mCustomerLabel ) {
-            mDetailsPage->mCustomerLabel->setText( ident );
+    QString id = sourceDoc->docID().toString();
+    while( ! id.isEmpty() ) {
+        // store the id of the follower and clear id
+        const QString idT = dPtr->docIdentifier();
+        mDetailsPage->mSourceDocIdentsCombo->addItem(idT, id);
+        id = QString::null;
+
+        // remember the current dptr to be able to delete it soon
+        DocGuardedPtr oldDptr = dPtr;
+        dPtr =  DocumentMan::self()->openDocumentbyIdent( dPtr->predecessor() );
+        if( dPtr ) {
+            id = dPtr->docID().toString();
+        }
+        if( oldDptr != sourceDoc ) {
+            delete oldDptr;
         }
     }
+    if( mDetailsPage->mSourceDocIdentsCombo->count() > 0  ) {
+        mDetailsPage->mKeepItemsCB->setVisible(true);
+        mDetailsPage->mSourceDocIdentsCombo->setVisible(true);
+    }
+
+    // we already know the customer, disable the customer select page.
+    setAppropriate( mCustomerPageItem, false );
+
+    if ( mDetailsPage->mCustomerLabel ) {
+        const QString followText = i18n("Followup Document for %1", sourceDoc->docIdentifier() );
+        mDetailsPage->mCustomerLabel->setText( followText );
+    }
+
 }
 
-bool KraftWizard::copyItemsFromPredecessor()
+QString KraftWizard::copyItemsFromPredecessor()
 {
-    return (mDetailsPage->mKeepItemsCB->checkState() == Qt::Checked );
+    QString re;
+    if( mDetailsPage->mKeepItemsCB->checkState() == Qt::Checked ) {
+        re = mDetailsPage->mSourceDocIdentsCombo->currentData().toString();
+    }
+    return re;
 }
 
 void KraftWizard::setAvailDocTypes( const QStringList& list )

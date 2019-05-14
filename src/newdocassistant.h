@@ -24,6 +24,9 @@
 #include <kcontacts/addressee.h>
 #include <kassistantdialog.h>
 
+#include "kraftdoc.h"
+#include "docguardedptr.h"
+
 class DocText;
 class TextSelection;
 class KraftWizard;
@@ -78,6 +81,7 @@ private:
   QComboBox   *mTypeCombo;
   QTextEdit   *mWhiteboardEdit;
   QCheckBox   *mKeepItemsCB;
+  QComboBox   *mSourceDocIdentsCombo;
 };
 
 // ---------------------------------------------------------------------------
@@ -97,10 +101,10 @@ public:
   QString docType() const;
   QString whiteboard() const;
   void setCustomer( const QString& );
-  void setDocIdentifierToFollow( const QString& );
+  void setDocToFollow( DocGuardedPtr sourceDoc);
   void setAvailDocTypes( const QStringList& );
   void done(int r);
-  bool copyItemsFromPredecessor();
+  QString copyItemsFromPredecessor();
 
 protected slots:
   void slotAddressee( const KContacts::Addressee& );
