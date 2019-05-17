@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="kraft.pdf">
+
+<template pageSize="(21cm, 29.7cm)" leftMargin="2.41cm" rightMargin="0.81cm"
+  topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document" 
+  author="Kraft http://www.volle-kraft-voraus.de" allowSplitting="20"
+  showBoundary="0">
+
+    <template>
+
+<!-- Change Font. -->
+      <setFont name="Times-Roman" size="11" />
+
+    </template>
+
+    <pageTemplate id="first">
+        <pageGraphics>
+
+<!-- Change Font. -->
+            <setFont name="Times-Roman" size="11" />
+
+	    <lineMode width="0.5" />
+             <lines>2.41cm 2.2cm 19cm 2.2cm</lines>
+	    <fill color="black" />
+     
+<!-- Change to your company name. -->      
+            <drawCentredString x="105mm" y="2.3cm">CompanyName</drawCentredString>
+
+<!-- Disabled lines (from original) -->
+        <!--  <lines>7mm 19cm 12mm 19cm</lines>
+               <lines>2mm 14.65cm 12mm 14.65cm</lines> -->
+
+	    <fill color="black" />
+	    <setFont name="Times-Roman" size="8" />
+
+<!-- Change your Address, Email & Website. -->    
+             <drawString x="45mm" y="24.7cm">Number - Street | City Postalcode | Phone: 123456789 | Phone: 123456789 | Landline: 123456789</drawString> 
+             <drawString x="63mm" y="24.4cm">E-Mail: your@email.com | Website: https://your-website.com</drawString> 
+
+<!-- Disabled lines (from original) -->
+             <!--     <lines>77mm 24.6cm 20cm 24.6cm</lines> -->
+
+<!-- Change your Address. -->
+	    <setFont name="Times-Roman" size="10" />
+
+<!-- Change your Address & Phone. -->
+            <drawCentredString x="105mm" y="1.8cm">Number - Street | City Postalcode</drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">Phone: 123456789 | Phone: 123456789 | Landline: 123456789</drawCentredString>
+
+	    <drawCentredString x="185mm" y="1.4cm">Page <pageNumber/></drawCentredString>
+
+<!-- Here is how you would insert an image at a fixed place on the page: -->
+	   <!-- <image x="75mm" y="25.3cm" width="6cm" height="6cm" file="/usr/share/kraft/reports/images/kraft.jpg" /> -->
+
+        </pageGraphics>
+        <frame id="address"  x1="1.90cm" y1="18.62cm" width="8.5cm" height="4cm"/>
+        <frame id="info"     x1="12cm" y1="20.62cm" width="7.41cm" height="2cm"/> 
+        <frame id="subject"  x1="1.90cm" y1="18.2cm" width="17cm"  height="1.2cm"/> 
+        <frame id="detail"   x1="1.90cm" y1="3cm"  width="17cm"  height="15cm"/>
+
+    </pageTemplate>
+
+    <pageTemplate id="others">
+        <pageGraphics>
+
+<!-- Change Font. -->
+            <setFont name="Times-Roman" size="11" />
+
+	    <lineMode width="0.5" />
+            <lines>2cm 2.2cm 19cm 2.2cm</lines>
+	    <fill color="black" />
+
+<!-- Change to your company name. --> 
+            <drawCentredString x="105mm" y="2.3cm">CompanyName</drawCentredString>
+
+<!-- Change Font. -->
+	    <setFont name="Times-Roman" size="10" />
+
+        <fill color="black" />
+
+<!-- Change your Address & Phone. -->
+            <drawCentredString x="105mm" y="1.8cm">Number - Street | City Postalcode</drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">Phone: 123456789 | Phone: 123456789 | Landline: 123456789</drawCentredString>
+
+            <drawCentredString x="185mm" y="1.4cm">Page <pageNumber/></drawCentredString>
+        </pageGraphics>
+
+        <frame id="content" x1="2.0cm" y1="3.0cm" width="17cm" height="24.5cm"/>
+    </pageTemplate>
+</template>
+<stylesheet>
+    <initialize>
+      <alias id="style.normal" value="style.Normal"/>
+    </initialize>
+
+    <blockTableStyle id="items">
+      <blockFont name="Helvetica-BoldOblique" size="24" start="0,0" stop="-1,0"/>
+      <blockBackground colorName="white" start="0,0" stop="-1,0"/>
+      <blockTextColor colorName="white" start="0,0" stop="-1,0"/>
+      <blockValign value="TOP"/>
+      <blockAlignment value="LEFT"/>
+
+      <blockBottomPadding length="8mm" start="0,1" stop="-1,-1"/>
+      <blockTopPadding length="4mm" start="0,1" stop="-1,-1"/>
+
+      <lineStyle kind="LINEABOVE" colorName="black" start="0,0" stop="-1,0"/>            
+      <lineStyle kind="LINEBELOW" colorName="black" start="0,0" stop="-1,0"/>
+
+   </blockTableStyle>
+   
+   <blockTableStyle id="sums">
+      <lineStyle kind="LINEABOVE" thickness="2" colorName="black" start="1,-1" stop="2,-1"/>
+      <lineStyle kind="LINEBELOW" thickness="2" colorName="black" start="1,-1" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" thickness="-1" colorName="black" start="0,0" stop="-1,0"/>
+      <blockBottomPadding length="4mm" />
+      <blockTopPadding length="4mm" />
+   </blockTableStyle>
+
+   <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
+   
+   <paraStyle name="text" fontSize="10" alignment="justify" spaceBefore="1mm" />
+   <paraStyle name="stext" fontSize="12" alignment="justify" spaceBefore="1mm" />
+   <paraStyle name="demandtext"      fontSize="11" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="alternativetext" fontSize="11" alignment="justify" fontName="Times-Italic" />
+
+   <paraStyle name="rtext" fontSize="11" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="rstext" fontSize="8" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="ctext" fontSize="11" alignment="CENTER" />
+   <paraStyle name="cstext" fontSize="12" alignment="CENTER" />
+
+   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />   
+   <paraStyle name="addressStyle" fontSize="10" />
+
+</stylesheet>
+<story>
+    <!-- Address Frame -->
+    <para  style="text" alignment="left"><strong>To:</strong></para>
+    <keepInFrame frame="address" onOverflow="shrink">
+    <xpre style="addressStyle">
+<!--<br />
+        <br /> -->
+{{ADDRESS}}
+    </xpre>
+    </keepInFrame>
+    <nextFrame/>
+    <!-- Info Frame -->
+    <para style="text" alignment="right"><strong>Date:</strong>&#160;&#160;&#160;&#160;&#160;&#160; {{DATE}}</para>
+    <para style="text" alignment="right"><strong>{{DOCTYPE}} No:</strong>&#160;&#160;&#160;&#160;&#160; {{DOCID}}</para>
+    <para style="text" alignment="right"><strong>GST Number:</strong> 123456789</para>
+
+    <nextFrame/>
+    <!-- Subject Frame -->
+    <!-- Original <h3>{{DOCTYPE}} No: {{DOCID}}</h3>-->
+    <h1>{{DOCTYPE}}</h1>
+    
+    <!-- Detail Frame -->
+    <spacer length="1mm" width="1mm"/> 
+    <para style="text">
+        {{SALUT}}
+    </para>
+    <spacer length="1mm" width="1mm"/>
+        {{PRETEXT}}
+
+    <setNextTemplate name="others" />
+
+    <spacer length="18mm" width="1mm"/>
+
+<!-- Without Units etc. --> 
+    <blockTable colWidths="16.2cm,0cm,0cm,0cm,1.9cm,0mm" style="items" repeatRows="0"> 
+
+<!-- With Units etc. --> 
+<!--  <blockTable colWidths="10.2cm,2.0cm,2.0cm,2.5cm,2.5cm,8mm" style="items" repeatRows="0"> -->
+
+    <tr>
+
+<!-- Without Units etc. --> 
+        <td><para style="stext">Description</para></td>
+        <td><para style="stext"></para></td>
+        <td><para style="stext"></para></td>
+        <td><para style="cstext"></para></td>
+        <td><para style="cstext">Amount</para></td>
+
+<!-- With Units etc. --> 
+      <!-- <td><para style="stext">No</para></td>
+        <td><para style="stext">Item</para></td>
+        <td><para style="stext">Qty.</para></td>
+        <td><para style="stext">Unit</para></td>
+        <td><para style="cstext">Price</para></td>
+        <td><para style="cstext">Sum</para></td> -->
+
+	<td><para style="cstext"></para></td>
+    </tr>
+    {{#POSITIONS}}
+    <tr>
+
+<!-- With Units etc. --> 
+        <!-- <td><para style="{{POS_KIND}}text">{{POS_NUMBER}}.</para></td> -->
+
+           <td>      {{POS_TEXT}}          </td>
+
+<!-- With Units etc. --> 
+      <!-- <td><para style="{{POS_KIND}}text">{{POS_AMOUNT}} </para></td>
+        <td><para style="{{POS_KIND}}text">{{POS_UNIT}}</para></td>
+        <td><para style="{{POS_KIND}}ctext">{{POS_UNITPRICE}}</para></td> 
+        <td><para style="{{POS_KIND}}ctext">{{POS_TOTAL}}</para></td> -->
+
+        <td><para style="{{POS_KIND}}rtext">
+         {{#TAX_FREE}}
+           a)
+         {{/TAX_FREE}}
+         {{#REDUCED_TAX}}
+           b)
+         {{/REDUCED_TAX}}
+         {{#FULL_TAX}}
+           
+         {{/FULL_TAX}}
+       </para></td>
+    </tr>
+    {{/POSITIONS}}
+  </blockTable>
+
+  <condPageBreak height="4cm"/>
+  
+<!-- Without Units etc. --> 
+    <blockTable colWidths="9.8cm,4cm,3cm,4mm" style="sums" repeatRows="0"> -->
+
+<!-- With Units etc. -->   
+    <!-- <blockTable colWidths="9.4cm,4cm,3cm,8mm" style="sums" repeatRows="0"> -->
+
+    <tr><td></td>
+        <td><para style="text">Subtotal</para></td>
+        <td><para style="rtext">{{NETTOSUM}}</para></td>
+	<td></td>
+    </tr>
+    {{#SECTION_REDUCED_TAX}}
+    <tr><td></td>
+        <td><para style="text">TOTAL GST {{REDUCED_TAX}}%</para></td>
+        <td><para style="rtext">{{REDUCED_TAX_SUM}}</para></td>
+	<td></td>
+    </tr>
+    {{/SECTION_REDUCED_TAX}}
+    {{#SECTION_FULL_TAX}}
+    <tr><td></td>
+        <td><para style="text">TOTAL GST {{FULL_TAX}}%</para></td>
+        <td><para style="rtext">{{FULL_TAX_SUM}}</para></td>
+	<td></td>
+    </tr>
+    {{/SECTION_FULL_TAX}}
+    <tr><td></td>
+        <td><para style="text"><strong>TOTAL NZD</strong></para></td>
+        <td><para style="rtext"><strong>{{BRUTTOSUM}}</strong></para></td>
+	<td></td>
+    </tr>
+  </blockTable>
+  {{#TAX_FREE_ITEMS}}
+  <para style="smallText">
+      a) &nbsp;tax free items ({{COUNT}} pcs.)
+  </para>
+  {{/TAX_FREE_ITEMS}}
+  {{#REDUCED_TAX_ITEMS}}
+  <para style="smallText">
+    b) &nbsp;items with reduced tax of {{TAX}}% ({{COUNT}} pcs.)
+  </para>
+  {{/REDUCED_TAX_ITEMS}}
+  {{#FULL_TAX_ITEMS}}
+  <para style="smallText">
+  No label: items with full tax of {{TAX}}% ({{COUNT}} pcs.)
+  </para>
+  {{/FULL_TAX_ITEMS}}
+
+  {{#SPECIAL_POS}}
+  <spacer length="3mm" width="1mm"/>
+    <para style="smalltext">
+    Please note: This offer contains {{COUNT}} alternative or demand positions, 
+    printed in italic font. These do not add to the overall sum. 
+    </para>
+  {{/SPECIAL_POS}}
+  <spacer length="1cm" width="1mm"/>
+  <condPageBreak height="4cm"/>
+     {{POSTTEXT}}
+  <spacer length="0.5cm" width="1mm"/>
+  <para style="text">
+     {{GOODBYE}}
+  </para>
+</story>
+</document>
