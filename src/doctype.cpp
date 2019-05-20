@@ -259,6 +259,11 @@ void DocType::setNumberCycleName( const QString& name )
 
 QString DocType::templateFile( const QString& lang )
 {
+    Q_UNUSED(lang);
+    // Maybe at some point kraft should use the templates of a different
+    // language than the system locale is, with that the lang here could
+    // be used to pick a translation dictionary.
+
   QString tmplFile;
 
   QString reportFileName = QString( "%1.trml").arg( name().toLower() );
@@ -269,17 +274,12 @@ QString DocType::templateFile( const QString& lang )
     if( !tmplFile.isEmpty() ) {
         return tmplFile;
     }
+    tmplFile.clear();  // clear if file does not exist
   }
 
   // Try to find it from the installation
   QStringList searchList;
-  if( !lang.isEmpty() ) {
-      searchList << QString("kraft/reports/%1/%2").arg(lang).arg(reportFileName);
-  }
   searchList << QString("kraft/reports/%1").arg(reportFileName);
-  if( !lang.isEmpty() ) {
-      searchList << QString("kraft/reports/%1/invoice.trml").arg(lang);
-  }
   searchList << QLatin1String("kraft/reports/invoice.trml");
 
   const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
