@@ -72,7 +72,7 @@ class KraftDoc : public QObject
 
   DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
   DocPositionList positions() { return mPositions; }
-  void setPositionList( DocPositionList );
+  void setPositionList(DocPositionList , bool isNew = false);
 
   QDate date() const { return mDate; }
   void setDate( QDate d ) { mDate = d; }

@@ -178,7 +178,7 @@ void KraftDoc::setDocType( const QString& s )
     }
 }
 
-void KraftDoc::setPositionList( DocPositionList newList )
+void KraftDoc::setPositionList( DocPositionList newList, bool isNew)
 {
   mPositions.clear();
 
@@ -188,6 +188,9 @@ void KraftDoc::setPositionList( DocPositionList newList )
     DocPosition *dp = static_cast<DocPosition*>( dpb );
     DocPosition *newDp = createPosition( dp->type() );
     *newDp = *dp;
+    if(isNew) {
+        newDp->setDbId(-1);
+    }
   }
 
   mPositions.setLocale( newList.locale() );

@@ -70,7 +70,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
             doc->setIdent(QString::null);
             doc->setDocType(docType); // sets the defaults for the new doc type
             doc->deleteItems();       // remove all items that exist so far
-            doc->setPositionList(listToCopy);
+            doc->setPositionList(listToCopy, true);
 
             // check for relations between old and new doc
             DocType sourceDocType( sourceDoc->docType() );
