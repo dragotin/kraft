@@ -1,6 +1,6 @@
 #!bin/sh
 
-EXTRACTRC=extractrc
+EXTRACTRC=$KRAFT_HOME/src/extractrc
 XGETTEXT=xgettext
 
 if [ -z "$KRAFT_HOME" ]; then
@@ -12,4 +12,4 @@ podir=$KRAFT_HOME/po
 echo "PODir: " $podir
 pushd $KRAFT_HOME/src
 $EXTRACTRC `find . -name \*.rc -o -name \*.ui -o -name \*.kcfg` >> rc.cpp
-$XGETTEXT --keyword=i18n --language=C++ --from-code=UTF-8 `find . -name \*.cc -o -name \*.cpp -o -name \*.h` -o $podir/kraft.pot
+$XGETTEXT --kde --language=C++ --from-code=UTF-8 `find . -name \*.cc -o -name \*.cpp -o -name \*.h` -o $podir/kraft.pot
