@@ -147,7 +147,7 @@ void Portal::initActions()
   actMailDocument->setIcon( QIcon::fromTheme("mail-forward"));
 
   actEditTemplates = actionCollection()->addAction( "edit_tag_templates", this, SLOT( slotEditTagTemplates() ) );
-  actEditTemplates->setText("Edit Tag Templates");
+  actEditTemplates->setText(i18n("Edit Tag Templates"));
   actEditTemplates->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_E ));
 
   QAction *reconfDb = actionCollection()->addAction( "reconfigure_db", this, SLOT( slotReconfigureDatabase() ) );
