@@ -82,22 +82,23 @@
     <doctype>
         <name>Lieferschein</name>
         <lang>de</lang>
+        <attrib>
+            <key>docTemplateFile</key>
+            <value>delivery_receipt.trml</value>
+        </attrib>
         <follower>Abschlagsrechnung</follower>
         <follower>Teilrechnung</follower>
         <follower>Schlussrechnung</follower>
         <follower>Rechnung</follower>
-    </doctype>
-    <doctype>
-        <name>Acceptance of Order</name>
-        <lang>en</lang>
-        <follower>Final Invoice</follower>
-        <follower>Partial Invoice</follower>
-        <follower>Progress Payment Invoice</follower>
-        <follower>Invoice</follower>
+
     </doctype>
     <doctype>
         <name>Delivery Receipt</name>
         <lang>en</lang>
+        <attrib>
+            <key>docTemplateFile</key>
+            <value>delivery_receipt.trml</value>
+        </attrib>
         <follower>Final Invoice</follower>
         <follower>Partial Invoice</follower>
         <follower>Progress Payment Invoice</follower>
@@ -118,6 +119,25 @@
         <follower>Partial Invoice</follower>
         <follower>Progress Payment Invoice</follower>
         <follower>Invoice</follower>
+    </doctype>
+    <doctype>
+        <name>Offerte</name>
+        <lang>nl</lang>
+        <follower>Rekening</follower>
+        <follower>Pakbon</follower>
+    </doctype>
+    <doctype>
+        <name>Pakbon</name>
+        <lang>nl</lang>
+        <attrib>
+            <key>docTemplateFile</key>
+            <value>delivery_receipt.trml</value>
+        </attrib>
+        <follower>Rekening</follower>
+    </doctype>
+    <doctype>
+        <name>Rekening</name>
+        <lang>nl</lang>
     </doctype>
 
   </migrate>
