@@ -6,11 +6,11 @@
   author="Kraft http://www.volle-kraft-voraus.de" allowSplitting="20"
   showBoundary="0">
     <template>
-      <setFont name="Times-Roman" size="12" />
+      <setFont name="Times-Roman" size="11" />
     </template>
     <pageTemplate id="first">
         <pageGraphics>
-            <setFont name="Times-Roman" size="12" />
+            <setFont name="Times-Roman" size="11" />
 	    <lineMode width="0.5" />
             <lines>2.41cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
@@ -26,7 +26,6 @@
 	    <setFont name="Times-Roman" size="10" />
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
             <drawCentredString x="105mm" y="1.4cm">{{LAB_PHONE}} {{MY_PHONE}} - {{LAB_FAX}} {{MY_FAX}}</drawCentredString>
-	    <drawCentredString x="185mm" y="1.4cm">Page <pageNumber/></drawCentredString>
 	    <!-- Here is how you would insert an image at a fixed place on the page: -->
 	    <!-- image x="140mm" y="22cm" width="6cm" height="6cm" file="/path/to/the/image.png"  -->
         </pageGraphics>
@@ -39,7 +38,7 @@
 
     <pageTemplate id="others">
         <pageGraphics>
-            <setFont name="Times-Roman" size="12" />
+            <setFont name="Times-Roman" size="11" />
 	    <lineMode width="0.5" />
             <lines>2cm 2.2cm 19cm 2.2cm</lines>
 	    <fill color="darkgreen" />
@@ -48,9 +47,10 @@
 	    <fill color="black" />
             <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
             <drawCentredString x="105mm" y="1.4cm">{{LAB_PHONE}} {{MY_PHONE}} - {{LAB_FAX}} {{MY_FAX}}</drawCentredString>
+            <drawCentredString x="185mm" y="1.4cm">{{LAB_PAGE_NO}}Seite <pageNumber/></drawCentredString>
         </pageGraphics>
 
-        <frame id="content" x1="2.0cm" y1="3.0cm" width="17cm" height="24.5cm"/>
+        <frame id="content" x1="2.41cm" y1="3.0cm" width="17cm" height="24.5cm"/>
     </pageTemplate>
 </template>
 <stylesheet>
@@ -63,29 +63,38 @@
       <blockBackground colorName="lightgrey" start="0,0" stop="-1,0"/>
       <blockTextColor colorName="white" start="0,0" stop="-1,0"/>
       <blockValign value="TOP"/>
-      <blockAlignment start="0,0" stop="0,-1" value="LEFT"/>
+      <blockAlignment value="LEFT"/>
 
-      <blockAlignment start="2,0" stop="3,-1" value="RIGHT"/>
-      <blockBottomPadding length="2mm" start="0,1" stop="-1,-1"/>
+      <blockBottomPadding length="4mm" start="0,1" stop="-1,-1"/>
       <blockTopPadding length="3mm" start="0,1" stop="-1,-1"/>
 
       <lineStyle kind="LINEBELOW" colorName="black" start="0,0" stop="-1,0"/>
+
+   </blockTableStyle>
+
+   <blockTableStyle id="sums">
+      <lineStyle kind="LINEABOVE" thickness="1" colorName="black" start="1,-1" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" thickness="0" colorName="black" start="1,0" stop="2,0"/>
+      <blockBottomPadding length="2mm" />
+      <blockTopPadding length="2mm" />
    </blockTableStyle>
 
    <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
 
-   <paraStyle name="text" fontSize="12" alignment="justify" spaceBefore="3mm" />
-   <paraStyle name="demandtext"      fontSize="12" alignment="justify" fontName="Times-Italic" />
-   <paraStyle name="alternativetext" fontSize="12" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="text" fontSize="10" alignment="justify" spaceBefore="1mm" />
+   <paraStyle name="stext" fontSize="8" alignment="justify" spaceBefore="1mm" />
+   <paraStyle name="demandtext"      fontSize="10" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="alternativetext" fontSize="10" alignment="justify" fontName="Times-Italic" />
 
-   <paraStyle name="rtext" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
-   <paraStyle name="ctext" fontSize="12" alignment="CENTER" />
-   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
-   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="12" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="rtext" fontSize="10" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="rstext" fontSize="8" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="ctext" fontSize="10" alignment="CENTER" />
+   <paraStyle name="cstext" fontSize="8" alignment="CENTER" />
 
-   <paraStyle name="head" fontSize="12" alignment="justify"/>
-   <paraStyle name="details" fontSize="12" alignment="right"/>
-   <paraStyle name="addressStyle" fontSize="12" />
+   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="10" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="10" alignment="RIGHT" spaceBefore="3mm" />
+
+   <paraStyle name="addressStyle" fontSize="10" />
 
 </stylesheet>
 <story>
@@ -117,7 +126,7 @@
 
     <spacer length="18mm" width="1mm"/>
 
-    <blockTable colWidths="12mm,12.6cm,1.5cm,1.5cm" style="items" repeatRows="0">
+    <blockTable colWidths="14mm,11.8cm,1.8cm,1.8cm" style="items" repeatRows="0">
     <tr>
         <td><para style="text">{{LAB_NO_SHORT}}</para></td>
         <td><para style="text">{{LAB_ITEM}}</para></td>
