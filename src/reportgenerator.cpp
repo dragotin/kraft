@@ -375,7 +375,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
   tmpl.setValue( TAG( "LAB_NO_SHORT"), i18nc("Sequence number printed on the document", "No.") );
   tmpl.setValue( TAG( "LAB_ITEM"), i18nc("Document item printed on the document", "Item") );
-  tmpl.setValue( TAG( "LAB_QANTITY_SHORT"), i18nc("Abbrev. of Quantity printed on the document", "Qty.") );
+  tmpl.setValue( TAG( "LAB_QUANTITY_SHORT"), i18nc("Abbrev. of Quantity printed on the document", "Qty.") );
   tmpl.setValue( TAG( "LAB_UNIT"), i18nc("Unit printed on the document", "Unit") );
   tmpl.setValue( TAG( "LAB_PRICE"), i18nc("Price of an item printed on the document", "Price") );
   tmpl.setValue( TAG( "LAB_SUM"), i18nc("Printed on the document", "Sum") );
