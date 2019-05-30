@@ -272,9 +272,15 @@ QString DocType::templateFile( const QString& lang )
   if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
     tmplFile = mAttributes["docTemplateFile"].value().toString();
     if( !tmplFile.isEmpty() ) {
-        return tmplFile;
+        QFileInfo fi(tmplFile);
+        if( fi.isAbsolute() ) {
+            return tmplFile;
+        } else {
+            // it is not an absolute file name, try to find it
+            reportFileName = tmplFile;
+        }
+        tmplFile.clear();
     }
-    tmplFile.clear();  // clear if file does not exist
   }
 
   // Try to find it from the installation
