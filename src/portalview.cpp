@@ -38,9 +38,9 @@
 
 PortalView::PortalView(QWidget *parent, const char*)
     : QWidget( parent ),
-      _allDocsView( 0 ),
-      mCatalogBrowser( 0 ),
-      mSystemBrowser( 0 )
+      _allDocsView(nullptr),
+      mCatalogBrowser(nullptr),
+      mSystemBrowser(nullptr)
 {
     _contentsWidget = new QListWidget;
     _contentsWidget->setViewMode(QListView::IconMode);

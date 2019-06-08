@@ -26,7 +26,7 @@
 // include files for KDE
 #include <ktoggleaction.h>
 
-#include <KXmlGuiWindow>
+#include <QMainWindow>
 #include <kcontacts/addressee.h>
 
 #include <QUrl>
@@ -45,7 +45,7 @@ class PrefsDialog;
 
 /**
   */
-class Portal : public KXmlGuiWindow
+class Portal : public QMainWindow
 {
   Q_OBJECT
 
@@ -91,10 +91,9 @@ class Portal : public KXmlGuiWindow
     void slotPrefsDialogFinished( int );
 
   public slots:
-    /** closes all open windows by calling close() on each memberList item until the list is empty, then quits the application.
-     * If queryClose() returns false because the user canceled the saveModified() dialog, the closing breaks.
+
+    /** closes all open windows, then quits the application.
      */
-    void slotFileQuit();
     void closeEvent( QCloseEvent * event );
     /** put the marked text/object into the clipboard and remove
      *	it from the document
@@ -106,9 +105,6 @@ class Portal : public KXmlGuiWindow
     /** paste the clipboard into the document
      */
     void slotEditPaste();
-    /** toggles the statusbar
-     */
-    void slotViewStatusBar();
     /** changes the statusbar contents for the standard label permanently, used to indicate current actions.
      * @param text the text that is displayed in the statusbar
      */
@@ -121,10 +117,10 @@ class Portal : public KXmlGuiWindow
     void slotKatalogToXML(const QString&);
     void preferences();
     void slotNewDocument();
-    void slotCopyDocument();
+    void slotCopyCurrentDocument();
     void slotCopyDocument( const QString& );
     void slotOpenDocument( const QString& );
-    void slotOpenDocument();
+    void slotOpenCurrentDocument();
 
     void slotViewCurrentDocument();
     void slotViewDocument( const QString& );
@@ -133,11 +129,14 @@ class Portal : public KXmlGuiWindow
     void slotDocumentSelected( const QString& );
     void slotArchivedDocExecuted();
     void slotArchivedDocSelected( const ArchDocDigest& );
-    void slotPrintDocument();
+    void slotPrintCurrentDocument();
     void slotPrintDocument( const QString&, const dbID& );
     void slotViewClosed( bool, DocGuardedPtr );
     void slotEditTagTemplates();
     void slotReconfigureDatabase();
+    void slotAboutQt();
+    void slotAboutKraft();
+    void slotHandbook();
 
     void busyCursor( bool );
 
@@ -155,24 +154,29 @@ class Portal : public KXmlGuiWindow
     PortalView *m_portalView;
 
     // QAction pointers to enable/disable actions
-    QAction* fileQuit;
-    QAction* editCut;
-    QAction* editCopy;
-    QAction* editPaste;
+    QAction* _actFileQuit;
+    QAction* _actEditCut;
+    QAction* _actEditCopy;
+    QAction* _actEditPaste;
+    QAction* _actAboutQt;
+    QAction* _actAboutKraft;
+    QAction* _actHandbook;
+    QAction* _actPreferences;
+    QAction* _actReconfDb;
 
-    QAction* actNewDocument;
-    QAction* actCopyDocument;
-    QAction* actOpenDocument;
-    QAction* actViewDocument;
-    QAction* actFollowDocument;
-    QAction* actPrintDocument;
-    QAction* actMailDocument;
-    QAction* actEditTemplates;
+    QAction* _actNewDocument;
+    QAction* _actCopyDocument;
+    QAction* _actOpenDocument;
+    QAction* _actViewDocument;
+    QAction* _actFollowDocument;
+    QAction* _actPrintDocument;
+    QAction* _actMailDocument;
+    QAction* _actEditTemplates;
 
-    QAction* actOpenArchivedDocument;
+    QAction* _actOpenArchivedDocument;
 
-    QAction* viewFlosTemplates;
-    QAction* viewStatusBar;
+    QAction* _actViewFlosTemplates;
+
     QCommandLineParser *mCmdLineArgs;
 
     QMap<QString, KatalogView*> mKatalogViews;

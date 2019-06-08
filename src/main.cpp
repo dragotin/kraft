@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 
     // Register the supported options
     if (app.isSessionRestored()) {
-        RESTORE(Portal);
+        // RESTORE(Portal);
     } else {
         QString splashFile = DefaultProvider::self()->locateFile("pics/kraftsplash.png" );
         QSplashScreen *splash = 0;

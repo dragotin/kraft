@@ -51,13 +51,13 @@ public slots:
   void slotBuildView();
   void fillCatalogDetails();
   void fillSystemDetails();
+  void displaySystemsTab();
 
 protected slots:
   void slotCreateDocument();
 
 private slots:
   void changePage(QListWidgetItem *current);
-  void displaySystemsTab();
 
 signals:
   void openKatalog( const QString& );

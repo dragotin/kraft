@@ -32,10 +32,7 @@ find_package(Qt5 CONFIG REQUIRED
 )
 
 find_package(KF5 REQUIRED COMPONENTS
-    CoreAddons
     I18n
-    WidgetsAddons
-    XmlGui
 )
 
 find_package(KF5Contacts REQUIRED)

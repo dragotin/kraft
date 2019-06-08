@@ -28,9 +28,12 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QMenu>
+#include <QMenuBar>
 #include <QLocale>
 #include <QStatusBar>
 #include <QStandardPaths>
+#include <QToolBar>
+#include <QDesktopServices>
 
 
 // include files for KDE
@@ -68,7 +71,7 @@
 
 
 Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
-: KXmlGuiWindow( parent ),
+: QMainWindow( parent ),
   mCmdLineArgs( commandLineParser )
 {
   setObjectName( name );
@@ -80,10 +83,6 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
 
   setAttribute( Qt::WA_QuitOnClose );
   ///////////////////////////////////////////////////////////////////
-  // disable actions at startup
-  editCut->setEnabled(false);
-  editCopy->setEnabled(false);
-  editPaste->setEnabled(false);
 
   mAddressProvider = new AddressProvider( this );
 
@@ -92,101 +91,170 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
   const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->portalGeometry().toAscii() );
   restoreGeometry(geo);
 
-  setAutoSaveSettings();
+  // setAutoSaveSettings();
   QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
 }
 
 void Portal::initActions()
 {
-  fileQuit = actionCollection()->addAction( KStandardAction::Quit, this, SLOT(slotFileQuit() ) );
-  editCut = actionCollection()->addAction( KStandardAction::Cut, this, SLOT(slotEditCut() ) );
-  editCopy = actionCollection()->addAction( KStandardAction::Copy, this, SLOT(slotEditCopy() ) );
-  editPaste = actionCollection()->addAction( KStandardAction::Paste, this, SLOT(slotEditPaste() ) );
-  viewStatusBar = KStandardAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
+    QIcon newIcon;
+    newIcon = QIcon::fromTheme( "application-exit");
+    _actFileQuit = new QAction(newIcon, i18n("&Quit"), this);
+    _actFileQuit->setShortcuts(QKeySequence::Quit);
+    connect(_actFileQuit, &QAction::triggered, this, &QWidget::close);
 
-  actionCollection()->addAction( KStandardAction::Preferences, this, SLOT( preferences() ) );
+    newIcon = QIcon::fromTheme( "edit-cut");
+    _actEditCut = new QAction(newIcon, i18n("&Cut"), this);
+    _actEditCut->setShortcuts(QKeySequence::Cut);
+    connect(_actEditCut, &QAction::triggered, this, &Portal::slotEditCut);
 
-  // KF5: Set shortcuts appropiately.
-  actNewDocument = actionCollection()->addAction( "document_new", this, SLOT( slotNewDocument()) );
-  actNewDocument->setText( i18n("Create Document") );
-  // actNewDocument->setShortcut( QStandardShortcut::shortcut(KStandardShortcut::New) );
-  actNewDocument->setIcon( QIcon::fromTheme("document-new"));
+    newIcon = QIcon::fromTheme( "edit-copy");
+    _actEditCopy = new QAction(newIcon, i18n("C&opy"), this);
+    _actEditCopy->setShortcuts(QKeySequence::Copy);
+    connect(_actFileQuit, &QAction::triggered, this, &Portal::slotEditCopy);
 
-  actCopyDocument = actionCollection()->addAction( "document_copy", this, SLOT( slotCopyDocument()) );
-  actCopyDocument->setText( i18n("Copy Document"));
-  // actCopyDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Copy) );
-  actCopyDocument->setIcon( QIcon::fromTheme( "document-edit"));
+    newIcon = QIcon::fromTheme( "edit-paste");
+    _actEditPaste = new QAction(newIcon, i18n("&Paste"), this);
+    _actEditPaste->setShortcuts(QKeySequence::Paste);
+    connect(_actEditPaste, &QAction::triggered, this, &Portal::slotEditPaste);
 
-  actFollowDocument = actionCollection()->addAction( "document_follow", this, SLOT( slotFollowUpDocument() ) );
-  actFollowDocument->setText( i18n("Follow Document" ));
-  // actFollowDocument->setShortcut( KShortcut( Qt::CTRL + Qt::Key_F ));
-  actFollowDocument->setIcon( QIcon::fromTheme( "document-edit"));
+    newIcon = QIcon::fromTheme( "settings-configure");
+    _actPreferences = new QAction(newIcon, i18n("&Settings"), this);
+    _actPreferences->setShortcuts(QKeySequence::Preferences);
+    connect(_actPreferences, &QAction::triggered, this, &Portal::preferences);
 
-  actPrintDocument = actionCollection()->addAction( "document_print", this, SLOT( slotPrintDocument()) );
-  actPrintDocument->setText( i18n("Print Document"));
-  // actPrintDocument->setShortcut( KStandardShortcut::shortcut(KStandardShortcut::Print) );
-  actPrintDocument->setIcon( QIcon::fromTheme("document-print"));
+    newIcon = QIcon::fromTheme( "document-new");
+    _actNewDocument = new QAction(newIcon, i18n("&Create Document"), this);
+    _actNewDocument->setShortcuts(QKeySequence::New);
+    connect(_actNewDocument, &QAction::triggered, this, &Portal::slotNewDocument);
 
-  actOpenArchivedDocument = actionCollection()->addAction( "archived_open", this, SLOT( slotArchivedDocExecuted()) );
-  actOpenArchivedDocument->setText( i18n("Open Archived Document"));
-  actOpenArchivedDocument->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_A) );
+    _actCopyDocument = new QAction(newIcon, i18n("&Copy Document"), this);
+    // _actCopyDocument->setShortcuts();
+    connect(_actCopyDocument, &QAction::triggered, this, &Portal::slotCopyCurrentDocument);
 
-  actViewDocument  = actionCollection()->addAction( "document_view", this, SLOT( slotViewCurrentDocument()));
-  actViewDocument->setText(i18n("Show Document"));
-  actViewDocument->setShortcut( QKeySequence(Qt::CTRL+Qt::Key_R) );
-  actViewDocument->setIcon( QIcon::fromTheme("document-preview" ));
+    _actFollowDocument = new QAction(newIcon, i18n("Create &Followup Document"), this);
+    _actFollowDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ));
+    connect(_actFollowDocument, &QAction::triggered, this, &Portal::slotFollowUpDocument);
 
-  actOpenDocument = actionCollection()->addAction( "document_open", this, SLOT( slotOpenDocument()) );
-  actOpenDocument->setText( i18n("Edit Document"));
-  actOpenDocument->setShortcut( QKeySequence(Qt::CTRL+Qt::Key_O) );
-  actOpenDocument->setIcon( QIcon::fromTheme("document-open" ));
+    newIcon = QIcon::fromTheme( "document-print");
+    _actPrintDocument = new QAction(newIcon, i18n("Print Document"), this);
+    _actPrintDocument->setShortcut( QKeySequence::Print);
+    connect(_actPrintDocument, &QAction::triggered, this, &Portal::slotPrintCurrentDocument);
 
-  actMailDocument = actionCollection()->addAction( "document_mail", this, SLOT( slotMailDocument()) );
-  actMailDocument->setText(i18n("&Mail Document"));
-  actMailDocument->setShortcut( QKeySequence(Qt::CTRL + Qt::Key_M ));
-  actMailDocument->setIcon( QIcon::fromTheme("mail-forward"));
+    newIcon = QIcon::fromTheme( "document-view");
+    _actViewDocument = new QAction(newIcon, i18n("Show Document"), this);
+    _actViewDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
+    connect(_actViewDocument, &QAction::triggered, this, &Portal::slotViewCurrentDocument);
 
-  actEditTemplates = actionCollection()->addAction( "edit_tag_templates", this, SLOT( slotEditTagTemplates() ) );
-  actEditTemplates->setText(i18n("Edit Tag Templates"));
-  actEditTemplates->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_E ));
+    newIcon = QIcon::fromTheme( "document-edit");
+    _actOpenDocument = new QAction(newIcon, i18n("Edit Document"), this);
+    _actOpenDocument->setShortcut( QKeySequence::Open );
+    connect(_actOpenDocument, &QAction::triggered, this, &Portal::slotOpenCurrentDocument);
+    
+    newIcon = QIcon::fromTheme( "document-edit");
+    _actOpenArchivedDocument = new QAction(newIcon, i18n("Open Archived Document"), this);
+    _actOpenArchivedDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_A ));
+    connect(_actOpenArchivedDocument, &QAction::triggered, this, &Portal::slotArchivedDocExecuted);
 
-  QAction *reconfDb = actionCollection()->addAction( "reconfigure_db", this, SLOT( slotReconfigureDatabase() ) );
-  reconfDb->setText(i18n("Redo Initial Setup..."));
-  reconfDb->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
+    newIcon = QIcon::fromTheme( "mail-forward");
+    _actMailDocument = new QAction(newIcon, i18n("Mail Document"), this);
+    _actMailDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
+    connect(_actMailDocument, &QAction::triggered, this, &Portal::slotMailDocument);
 
-  fileQuit->setStatusTip(i18n("Quits the application"));
-  editCut->setStatusTip(i18n("Cuts the selected section and puts it to the clipboard"));
-  editCopy->setStatusTip(i18n("Copies the selected section to the clipboard"));
-  editPaste->setStatusTip(i18n("Pastes the clipboard contents to current position"));
-  viewStatusBar->setStatusTip(i18n("Enables/disables the statusbar"));
+    newIcon = QIcon::fromTheme( "settings-configure");
+    _actEditTemplates= new QAction(newIcon, i18n("Edit Tag Templates"), this);
+    _actEditTemplates->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_E ));
+    connect(_actEditTemplates, &QAction::triggered, this, &Portal::slotEditTagTemplates);
+    
+    newIcon = QIcon::fromTheme( "settings-configure");
+    _actReconfDb = new QAction(newIcon, i18n("Redo Initial Setup..."), this);
+    _actReconfDb->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
+    connect(_actReconfDb, &QAction::triggered, this, &Portal::slotReconfigureDatabase);
 
-  actNewDocument->setStatusTip( i18n( "Creates a new Document" ) );
-  actPrintDocument->setStatusTip( i18n( "Print and archive this Document" ) );
-  actCopyDocument->setStatusTip( i18n( "Creates a new document which is a copy of the selected document" ) );
-  actFollowDocument->setStatusTip( i18n( "Create a followup document for the current document" ) );
-  actOpenDocument->setStatusTip( i18n( "Opens the document for editing" ) );
-  actViewDocument->setStatusTip( i18n( "Opens a read only view on the document." ) );
-  actMailDocument->setStatusTip( i18n( "Send document per mail" ) );
-  actEditTemplates->setStatusTip( i18n("Edit the available tag templates which can be assigned to document items.") );
-  reconfDb->setStatusTip( i18n( "Configure the Database Kraft is working on." ) );
+    newIcon = QIcon::fromTheme( "help-about");
+    _actHandbook = new QAction(newIcon, i18n("Kraft Handbook..."), this);
+    _actHandbook->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_H ));
+    connect(_actHandbook, &QAction::triggered, this, &Portal::slotHandbook);
 
-  actOpenArchivedDocument->setStatusTip( i18n( "Open a viewer on an archived document" ) );
-  setStandardToolBarMenuEnabled( true );
-  actOpenDocument->setEnabled( false );
-  actViewDocument->setEnabled( false );
-  actPrintDocument->setEnabled( false );
-  actCopyDocument->setEnabled( false );
-  actFollowDocument->setEnabled( false );
-  actMailDocument->setEnabled( false );
+    _actAboutQt = new QAction(newIcon, i18n("About Qt..."), this);
+    _actAboutQt->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Q ));
+    connect(_actAboutQt, &QAction::triggered, this, &Portal::slotAboutQt);
 
-  actOpenArchivedDocument->setEnabled( false );
-  // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
-  QString prjPath = QString::fromUtf8(qgetenv("KRAFT_HOME"));
-  if( !prjPath.isEmpty() ) {
-      createGUI(QString("%1/src/kraftui.rc").arg(prjPath));
-  } else {
-      createGUI( "kraftui.rc");
-  }
+    _actAboutKraft = new QAction(newIcon, i18n("About Kraft..."), this);
+    _actAboutKraft->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_K ));
+    connect(_actAboutKraft, &QAction::triggered, this, &Portal::slotAboutKraft);
+
+    _actFileQuit->setStatusTip(i18n("Quits the application"));
+
+    _actEditCut->setStatusTip(i18n("Cuts the selected section and puts it to the clipboard"));
+    _actEditCopy->setStatusTip(i18n("Copies the selected section to the clipboard"));
+    _actEditPaste->setStatusTip(i18n("Pastes the clipboard contents to current position"));
+
+    _actNewDocument->setStatusTip( i18n( "Creates a new Document" ) );
+    _actPrintDocument->setStatusTip( i18n( "Print and archive this Document" ) );
+    _actCopyDocument->setStatusTip( i18n( "Creates a new document which is a copy of the selected document" ) );
+    _actFollowDocument->setStatusTip( i18n( "Create a followup document for the current document" ) );
+    _actOpenDocument->setStatusTip( i18n( "Opens the document for editing" ) );
+    _actViewDocument->setStatusTip( i18n( "Opens a read only view on the document." ) );
+    _actMailDocument->setStatusTip( i18n( "Send document per mail" ) );
+    _actEditTemplates->setStatusTip( i18n("Edit the available tag templates which can be assigned to document items.") );
+    _actReconfDb->setStatusTip( i18n( "Configure the Database Kraft is working on." ) );
+    _actOpenArchivedDocument->setStatusTip( i18n( "Open a viewer on an archived document" ) );
+
+    _actOpenDocument->setEnabled( false );
+    _actViewDocument->setEnabled( false );
+    _actPrintDocument->setEnabled( false );
+    _actCopyDocument->setEnabled( false );
+    _actFollowDocument->setEnabled( false );
+    _actMailDocument->setEnabled( false );
+
+    _actOpenArchivedDocument->setEnabled( false );
+    // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
+    QString prjPath = QString::fromUtf8(qgetenv("KRAFT_HOME"));
+
+    QMenu *fileMenu = menuBar()->addMenu(i18n("&File"));
+    fileMenu->addAction(_actFileQuit);
+
+#if 0
+    QMenu *editMenu = menuBar()->addMenu(i18n("&Edit"));
+    editMenu->addAction(_actEditCopy);
+    editMenu->addAction(_actEditCut);
+    editMenu->addAction(_actEditPaste);
+#endif
+    QMenu *docMenu = menuBar()->addMenu(i18n("&Document"));
+    docMenu->addAction(_actNewDocument);
+    docMenu->addAction(_actOpenDocument);
+    docMenu->addAction(_actViewDocument);
+    docMenu->addAction(_actFollowDocument);
+    docMenu->addSeparator();
+    docMenu->addAction(_actPrintDocument);
+    docMenu->addAction(_actMailDocument);
+
+    QMenu *prefsMenu = menuBar()->addMenu(i18n("&Preferences"));
+    prefsMenu->addAction(_actEditTemplates);
+    prefsMenu->addAction(_actReconfDb);
+    prefsMenu->addSeparator();
+    prefsMenu->addAction(_actPreferences);
+
+    QMenu *helpMenu = menuBar()->addMenu(i18n("&Help"));
+    helpMenu->addAction(_actHandbook);
+    helpMenu->addSeparator();
+    helpMenu->addAction(_actAboutKraft);
+    helpMenu->addAction(_actAboutQt);
+
+    // Toolbar
+    QToolBar *toolBar = addToolBar(i18n("Kraft"));
+    toolBar->addAction(_actNewDocument);
+    toolBar->addAction(_actCopyDocument);
+    toolBar->addAction(_actFollowDocument);
+    toolBar->addAction(_actPrintDocument);
+
+
+    // initial enablements
+    _actEditCut->setEnabled(false);
+    _actEditCopy->setEnabled(false);
+    _actEditPaste->setEnabled(false);
+
 
 }
 
@@ -212,15 +280,15 @@ void Portal::initView()
     QVector<QMenu*> menus = m_portalView->docDigestView()->contextMenus();
     foreach( QMenu *menu, menus ) {
       menu->setTitle( i18n("Document Actions"));
-      menu->addAction( actViewDocument );
-      menu->addAction( actOpenDocument );
-      menu->addAction( actNewDocument );
-      menu->addAction( actCopyDocument );
-      menu->addAction( actFollowDocument );
+      menu->addAction( _actViewDocument );
+      menu->addAction( _actOpenDocument );
+      menu->addAction( _actNewDocument );
+      menu->addAction( _actCopyDocument );
+      menu->addAction( _actFollowDocument );
       menu->addSeparator();
-      menu->addAction( actPrintDocument );
-      menu->addAction( actMailDocument );
-      menu->addAction( actOpenArchivedDocument );
+      menu->addAction( _actPrintDocument );
+      menu->addAction( _actMailDocument );
+      menu->addAction( _actOpenArchivedDocument );
     }
 
     connect( m_portalView, SIGNAL(openKatalog( const QString&)),
@@ -282,14 +350,14 @@ void Portal::slotStartupChecks()
         m_portalView->systemInitError( m_portalView->ptag( text, "problem" ) );
 
         // disable harmfull actions
-        actNewDocument->setEnabled( false );
-        actPrintDocument->setEnabled( false );
-        actCopyDocument->setEnabled( false );
-        actFollowDocument->setEnabled(false);
-        actOpenDocument->setEnabled( false );
-        actViewDocument->setEnabled( false );
-        actOpenArchivedDocument->setEnabled( false );
-        actMailDocument->setEnabled( false );
+        _actNewDocument->setEnabled( false );
+        _actPrintDocument->setEnabled( false );
+        _actCopyDocument->setEnabled( false );
+        _actFollowDocument->setEnabled(false);
+        _actOpenDocument->setEnabled( false );
+        _actViewDocument->setEnabled( false );
+        _actOpenArchivedDocument->setEnabled( false );
+        _actMailDocument->setEnabled( false );
 
         slotStatusMsg( i18n( "Database Problem." ) );
     } else {
@@ -471,7 +539,7 @@ void Portal::slotFollowUpDocument()
     }
 }
 
-void Portal::slotCopyDocument()
+void Portal::slotCopyCurrentDocument()
 {
   const QString locId = m_portalView->docDigestView()->currentDocumentId();
   slotCopyDocument( locId );
@@ -507,7 +575,7 @@ void Portal::slotCopyDocument( const QString& id )
   }
 }
 
-void Portal::slotOpenDocument()
+void Portal::slotOpenCurrentDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
   slotOpenDocument( locId );
@@ -550,7 +618,7 @@ void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
   busyCursor( false );
 }
 
-void Portal::slotPrintDocument()
+void Portal::slotPrintCurrentDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
   // qDebug () << "printing document " << locId << endl;
@@ -763,25 +831,17 @@ void Portal::slotOpenDocument( const QString& id )
 
 void Portal::slotDocumentSelected( const QString& doc )
 {
-  // qDebug() << "a doc was selected: " << doc << endl;
-  if( doc.isEmpty() ) {
-    actViewDocument->setEnabled( false );
-    actOpenDocument->setEnabled( false );
-    actPrintDocument->setEnabled( false );
-    actCopyDocument->setEnabled( false );
-    actFollowDocument->setEnabled( false );
+    // qDebug() << "a doc was selected: " << doc << endl;
+    bool enable = !doc.isEmpty();
+    _actViewDocument->setEnabled( enable );
+    _actOpenDocument->setEnabled( enable );
+    _actPrintDocument->setEnabled( enable );
+    _actCopyDocument->setEnabled( enable );
+    _actMailDocument->setEnabled( enable );
+    _actFollowDocument->setEnabled( enable );
 
-    actMailDocument->setEnabled( false );
-  } else {
-    actViewDocument->setEnabled( true );
-    actOpenDocument->setEnabled( true );
-    actPrintDocument->setEnabled( true );
-    actCopyDocument->setEnabled( true );
-    actMailDocument->setEnabled( true );
-    actFollowDocument->setEnabled( true );
+    _actOpenArchivedDocument->setEnabled( enable );
 
-    actOpenArchivedDocument->setEnabled( false );
-  }
 }
 
 void Portal::slotArchivedDocExecuted()
@@ -795,11 +855,11 @@ void Portal::slotArchivedDocExecuted()
 void Portal::slotArchivedDocSelected( const ArchDocDigest& )
 {
   // slotDocumentSelected( QString() );
-  actOpenArchivedDocument->setEnabled( true );
-  actViewDocument->setEnabled( false );
-  actOpenDocument->setEnabled( false );
-  actPrintDocument->setEnabled( false );
-  actMailDocument->setEnabled( false );
+  _actOpenArchivedDocument->setEnabled( true );
+  _actViewDocument->setEnabled( false );
+  _actOpenDocument->setEnabled( false );
+  _actPrintDocument->setEnabled( false );
+  _actMailDocument->setEnabled( false );
 }
 
 void Portal::slotEditTagTemplates()
@@ -907,11 +967,6 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
     }
 }
 
-void Portal::slotFileQuit()
-{
-  closeEvent(nullptr);
-}
-
 void Portal::closeEvent( QCloseEvent *event )
 {
     slotStatusMsg(i18n("Exiting..."));
@@ -926,22 +981,15 @@ void Portal::closeEvent( QCloseEvent *event )
         i.value()->deleteLater();
     }
 
-    QListIterator<KMainWindow*> it( memberList() );
-    while( it.hasNext() ) {
-        KMainWindow *w = it.next();
-        // only close the window if the closeEvent is accepted.
-        if(!w->close())
-            break;
-    }
+    // FIXME: Close the document windows.
 
     const QByteArray state = saveState().toBase64();
     KraftSettings::self()->setPortalState(state);
     const QByteArray geo = saveGeometry().toBase64();
     KraftSettings::self()->setPortalGeometry(geo);
 
-    if(event) {
-    	KXmlGuiWindow::closeEvent(event);
-    }
+    if( event )
+        event->accept();
 }
 
 void Portal::slotEditCut()
@@ -964,24 +1012,6 @@ void Portal::slotEditPaste()
 
   slotStatusMsg(i18n("Ready."));
 }
-
-void Portal::slotViewStatusBar()
-{
-  slotStatusMsg(i18n("Toggle the statusbar..."));
-  ///////////////////////////////////////////////////////////////////
-  //turn Statusbar on or off
-  if(!viewStatusBar->isChecked())
-  {
-    statusBar()->hide();
-  }
-  else
-  {
-    statusBar()->show();
-  }
-
-  slotStatusMsg(i18n("Ready."));
-}
-
 
 
 void Portal::slotStatusMsg(const QString &text)
@@ -1104,6 +1134,27 @@ void Portal::slotPrefsDialogFinished( int result )
 
   }
   _prefsDialog->deleteLater();
+}
+
+void Portal::slotHandbook()
+{
+    QUrl url("http://volle-kraft-voraus.de/Main/Documentation");
+
+    if( locale().language() == QLocale::German ) {
+        url.setUrl("http://volle-kraft-voraus.de/De/Dokumentation");
+    }
+    QDesktopServices::openUrl(url);
+
+}
+
+void Portal::slotAboutQt()
+{
+    QApplication::aboutQt();
+}
+
+void Portal::slotAboutKraft()
+{
+    m_portalView->displaySystemsTab();
 }
 
 QWidget* Portal::mainWidget()
