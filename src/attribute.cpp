@@ -189,15 +189,6 @@ AttributeMap::AttributeMap( const QString& host)
 
 }
 
-AttributeMap& AttributeMap::operator=(const AttributeMap& am)
-{
-    if( this != &am ) {
-        mHost = am.mHost;
-        this->QMap<QString, Attribute>::operator =(am);
-    }
-    return *this;
-}
-
 void AttributeMap::setHost( const QString& host )
 {
   mHost = host;

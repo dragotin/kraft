@@ -241,20 +241,6 @@ Geld DocPosition::overallPrice()
     return g;
 }
 
-
-DocPosition& DocPosition::operator=( const DocPosition& dp )
-{
-  if ( this == &dp ) return *this;
-
-  DocPositionBase::operator=( dp );
-  m_unit = dp.m_unit;
-  m_unitPrice = dp.m_unitPrice;
-  m_amount = dp.m_amount;
-  mWidget = dp.mWidget;
-
-  return *this;
-}
-
 // ##############################################################
 
 DocPositionList::DocPositionList()

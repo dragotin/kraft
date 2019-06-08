@@ -46,7 +46,6 @@ public:
 
   int     id() { return m_dbId; }
 
-  Einheit& operator=( const Einheit& e );
 private:
   int m_dbId;
   QString m_einheitSingular;
