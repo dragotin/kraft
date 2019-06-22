@@ -20,7 +20,7 @@
 
 #include <QAction>
 #include <QUrl>
-#include <kxmlguiwindow.h>
+#include <QMainWindow>
 
 #include "kraftcat_export.h"
 
@@ -46,7 +46,7 @@ class CatalogTemplate;
   * @author Klaas Freitag <freitag@kde.org>
   * @version $Id$
   */
-class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
+class KRAFTCAT_EXPORT KatalogView : public QMainWindow
 {
   Q_OBJECT
 
@@ -80,11 +80,15 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
 
     virtual void slTreeviewItemChanged( QTreeWidgetItem *, QTreeWidgetItem *);
     void slExport();
+    void slImport();
 
     // virtual void slEditChapters();
     virtual void slAddSubChapter();
     virtual void slEditSubChapter();
     virtual void slRemoveSubChapter();
+    virtual void slNewTemplate() = 0;
+    virtual void slEditTemplate() = 0;
+    virtual void slDeleteTemplate() = 0;
 
     void slotShowTemplateDetails( CatalogTemplate*);
     void setProgressValue( int );
@@ -100,6 +104,7 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     QAction* m_acNewItem;
     QAction* m_acDeleteItem;
     QAction* m_acExport;
+    QAction* m_acImport;
 
     // KToggleAction* viewToolBar;
     // KToggleAction* viewStatusBar;
