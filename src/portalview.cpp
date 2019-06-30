@@ -264,8 +264,17 @@ QString PortalView::systemView( const QString& htmlMsg ) const
 
   tmpl.setValue( "KRAFT_LOGO_FILE", logoFile );
   tmpl.setValue( "KRAFT_WEBSITE", i18n( "Kraft Website" ) );
+  QDate d = QDate::currentDate();
+  tmpl.setValue( "KRAFT_COPYRIGHT_YEAR", QString::number(d.year()) );
+  tmpl.setValue( "KRAFT_LICENSE_TEXT", i18nc("The string is followed by a link to the GPL2 text", "Kraft is free software licensed under the"));
+  tmpl.setValue( "KRAFT_GITHUB", i18nc("The string is followed by the link to github", "Kraft is maintained on "));
+  tmpl.setValue( "KRAFT_AUTHORS", i18n("Authors"));
+  tmpl.setValue( "KRAFT_MAINTAINER", i18n("Developer and Maintainer"));
+  tmpl.setValue( "KRAFT_DEVELOPER", i18n("Developer"));
+  tmpl.setValue( "KRAFT_GRAPHICS", i18nc("The person who provided the logo graphics", "Logo design"));
 
   // kraft infos
+  tmpl.setValue("KRAFT_INTRO_DESC", i18n("Kraft helps you to handle documents like quotes and invoices in your small business."));
   tmpl.setValue( "KRAFT_WELCOME_LABEL", i18n( "Welcome to Kraft" ) );
   tmpl.setValue( "KRAFT_VERSION_LABEL", i18n( "Kraft Version" ) );
   tmpl.setValue( "KRAFT_VERSION", KRAFT_VERSION );
