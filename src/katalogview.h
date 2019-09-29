@@ -93,6 +93,8 @@ class KRAFTCAT_EXPORT KatalogView : public QMainWindow
     void slotShowTemplateDetails( CatalogTemplate*);
     void setProgressValue( int );
 
+    void closeEvent( QCloseEvent *event );
+
   protected:
 
     /** the configuration object of the application */
@@ -140,6 +142,18 @@ class KRAFTCAT_EXPORT KatalogView : public QMainWindow
      * @see KTMainWindow#closeEvent
      */
     virtual bool queryExit();
+
+    /** Save the state of the window to the right settings value. Needs to be reimplemented in the special window implementation,
+     * thus virtual here.
+     */
+    virtual void saveWindowState( const QByteArray& arr ) = 0;
+    virtual QByteArray windowState() = 0;
+
+    /** Save the geomentry of the window to the right settings value. Needs to be reimplemented in the special window implementation,
+     * thus virtual here.
+     */
+    virtual void saveWindowGeo( const QByteArray& arr ) = 0;
+    virtual QByteArray windowGeo() = 0;
 
 };
 

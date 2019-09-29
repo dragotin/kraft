@@ -51,8 +51,15 @@ protected slots:
   void openDialog( QTreeWidgetItem *, StockMaterial *, bool );
   void slotEditRejected();
   void slotEditOk( StockMaterial * );
+
 protected:
   Katalog* getKatalog( const QString& );
+
+  void saveWindowState( const QByteArray& arr );
+  QByteArray windowState();
+
+  void saveWindowGeo( const QByteArray& arr );
+  QByteArray windowGeo();
 
   MaterialKatalogListView *m_materialListView;
   QLabel               *m_detailLabel;

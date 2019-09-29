@@ -117,6 +117,11 @@ void KatalogView::createCentralWidget(QBoxLayout *box, QWidget* )
            mProgress, SLOT( setMaximum(int) ) );
   connect( getListView(), SIGNAL( sequenceUpdateProgress( int ) ),
            this, SLOT( setProgressValue(int) ) );
+
+  const QByteArray state = windowState();
+  restoreState(state);
+  const QByteArray geo = windowGeo();
+  restoreGeometry(geo);
 }
 
 void KatalogView::setProgressValue( int val )
@@ -227,6 +232,23 @@ bool KatalogView::queryClose()
 bool KatalogView::queryExit()
 {
   return true;
+}
+
+void KatalogView::closeEvent( QCloseEvent *event )
+{
+    slotStatusMsg(i18n("Exiting..."));
+    // close the first window, the list makes the next one the first again.
+    // This ensures that queryClose() is called on each window to ask for closing
+
+    getListView()->saveState(); // saves the header state
+
+    const QByteArray state = saveState().toBase64();
+    saveWindowState(state);
+    const QByteArray geo = saveGeometry().toBase64();
+    saveWindowGeo(geo);
+
+    if( event )
+        event->accept();
 }
 
 void KatalogView::slotStatusMsg(const QString &text)

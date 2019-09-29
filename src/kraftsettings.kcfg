@@ -77,9 +77,22 @@
       <label>Size of the address select dialog</label>
     </entry>
     <entry name="materialCatViewState" type="String">
+      <label>State of the window of the material catalog</label>
+    </entry>
+    <entry name="materialCatViewGeo" type="String">
+      <label>Geometry of the material catalog</label>
+    </entry>
+    <entry name="materialCatViewHeader" type="String">
       <label>State of the header of the material catalog</label>
     </entry>
+
     <entry name="templateCatViewState" type="String">
+      <label>State of the window of the template catalog</label>
+    </entry>
+    <entry name="templateCatViewGeo" type="String">
+      <label>Geometry the template catalog</label>
+    </entry>
+    <entry name="templateCatViewHeader" type="String">
       <label>State of the header of the template catalog</label>
     </entry>
 

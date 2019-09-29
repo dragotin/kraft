@@ -18,6 +18,7 @@
 #include <QLocale>
 #include <QDebug>
 #include <QMenu>
+#include <QHeaderView>
 
 #include <KLocalizedString>
 
@@ -27,6 +28,7 @@
 #include "katalogman.h"
 #include "docposition.h"
 #include "kataloglistview.h"
+#include "kraftsettings.h"
 
 MaterialKatalogListView::MaterialKatalogListView(QWidget *parent )
   : KatalogListView( parent )
@@ -43,9 +45,10 @@ MaterialKatalogListView::MaterialKatalogListView(QWidget *parent )
 
   setHeaderLabels( headers );
 
+  QByteArray headerState = QByteArray::fromBase64( KraftSettings::self()->materialCatViewHeader().toAscii() );
+  header()->restoreState(headerState);
   contextMenu()->setTitle(i18n("Material Catalog"));
 }
-
 
 MaterialKatalogListView::~MaterialKatalogListView()
 {
@@ -136,3 +139,11 @@ DocPosition MaterialKatalogListView::itemToDocPosition( QTreeWidgetItem *item )
 
   return pos;
 }
+
+void MaterialKatalogListView::saveState()
+{
+    QByteArray state = this->header()->saveState();
+
+    KraftSettings::self()->setMaterialCatViewHeader(state.toBase64());
+}
+

@@ -248,10 +248,29 @@ void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
     m_listview = new TemplKatalogListView( w );
     box->addWidget(m_listview);
 
-    const QByteArray state = QByteArray::fromBase64(KraftSettings::self()->templateCatViewState().toAscii());
-    m_listview->header()->restoreState(state);
-
-
     KatalogView::createCentralWidget( box, w );
 }
 
+void TemplKatalogView::saveWindowState( const QByteArray& arr )
+{
+    KraftSettings::self()->setTemplateCatViewState(arr);
+}
+
+QByteArray TemplKatalogView::windowState()
+{
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->templateCatViewState().toAscii() );
+
+    return re;
+}
+
+void TemplKatalogView::saveWindowGeo( const QByteArray& arr )
+{
+    KraftSettings::self()->setTemplateCatViewGeo( QString::fromAscii(arr) );
+}
+
+QByteArray TemplKatalogView::windowGeo()
+{
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->templateCatViewGeo().toAscii() );
+
+    return re;
+}

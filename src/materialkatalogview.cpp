@@ -45,18 +45,12 @@ MaterialKatalogView::MaterialKatalogView()
 
 MaterialKatalogView::~MaterialKatalogView()
 {
-    const QByteArray state = m_materialListView->header()->saveState().toBase64();
-    KraftSettings::self()->setMaterialCatViewState(state);
 }
 
 void MaterialKatalogView::createCentralWidget( QBoxLayout *box, QWidget *w )
 {
     m_materialListView = new MaterialKatalogListView( w );
     box->addWidget( m_materialListView );
-
-    // read the header settings
-    const QByteArray state = QByteArray::fromBase64(KraftSettings::self()->materialCatViewState().toAscii());
-    m_materialListView->header()->restoreState(state);
 
     KatalogView::createCentralWidget( box, w );
 }
@@ -207,3 +201,27 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
   mNewItem = nullptr;
 }
 
+
+void MaterialKatalogView::saveWindowState( const QByteArray& arr )
+{
+    KraftSettings::self()->setMaterialCatViewState(arr);
+    KraftSettings::self()->save();
+}
+
+QByteArray MaterialKatalogView::windowState()
+{
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->materialCatViewState().toAscii() );
+    return re;
+}
+
+void MaterialKatalogView::saveWindowGeo( const QByteArray& arr )
+{
+    KraftSettings::self()->setMaterialCatViewGeo(arr);
+    KraftSettings::self()->save();
+}
+
+QByteArray MaterialKatalogView::windowGeo()
+{
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->materialCatViewGeo().toAscii() );
+    return re;
+}

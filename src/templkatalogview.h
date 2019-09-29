@@ -62,6 +62,12 @@ protected:
   bool currentItemToDocPosition( DocPosition& );
   CalcPartList currentItemsCalcParts();
 
+  void saveWindowState( const QByteArray& arr );
+  QByteArray windowState();
+
+  void saveWindowGeo( const QByteArray& arr );
+  QByteArray windowGeo();
+
 public slots:
   /* Editing of templates -> open edit dialog */
   void slEditTemplate();

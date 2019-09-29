@@ -39,6 +39,9 @@ public:
   void addCatalogDisplay( const QString& katName );
   DocPosition itemToDocPosition( QTreeWidgetItem *it = 0 );
   QTreeWidgetItem* addMaterialToView( QTreeWidgetItem*, StockMaterial* );
+
+  void saveState();
+
 public slots:
   void slFreshupItem( QTreeWidgetItem *, void*, QLocale* = 0  );
 
