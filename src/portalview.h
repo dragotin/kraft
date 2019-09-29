@@ -23,8 +23,6 @@
 #include <QListWidget>
 
 // include files
-#include <kpagewidget.h>
-
 #include "docguardedptr.h"
 
 /**

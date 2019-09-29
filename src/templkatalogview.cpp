@@ -230,7 +230,7 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
       templListView->scrollToItem( m_editListViewItem );
     }
 
-    m_editListViewItem = 0;
+    m_editListViewItem = nullptr;
 }
 
 void TemplKatalogView::slEditRejected()
@@ -238,7 +238,7 @@ void TemplKatalogView::slEditRejected()
   // qDebug () << "Rejecting Edit!";
   if ( m_editListViewItem ) {
     delete m_editListViewItem;
-    m_editListViewItem = 0;
+    m_editListViewItem = nullptr;
   }
 }
 

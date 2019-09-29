@@ -178,7 +178,7 @@ void MaterialKatalogView::slotEditRejected()
 {
   if ( mNewItem ) {
     delete mNewItem;
-    mNewItem = 0;
+    mNewItem = nullptr;
   }
 }
 
@@ -192,7 +192,7 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
   if( mDialog ) {
     MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );
     if ( mDialog->templateIsNew() ) {
-      QLocale *locale = 0;
+      QLocale *locale = nullptr;
       if ( k ) {
         k->addNewMaterial( mat );
         locale = k->locale();
@@ -204,6 +204,6 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
       }
     }
   }
-  mNewItem = 0;
+  mNewItem = nullptr;
 }
 
