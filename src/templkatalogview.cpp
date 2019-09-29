@@ -38,18 +38,15 @@
 
 TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
     : KatalogView(parent, name),
-      m_flosDialog(0),
-      m_listview(0)
+      m_flosDialog(nullptr),
+      m_listview(nullptr)
 {
 
 }
 
 TemplKatalogView::~TemplKatalogView()
 {
-    const QByteArray state = m_listview->header()->saveState().toBase64();
-    KraftSettings::self()->setTemplateCatViewState(state);
-
-  delete m_flosDialog;
+    delete m_flosDialog;
 }
 
 Katalog* TemplKatalogView::getKatalog( const QString& name )
