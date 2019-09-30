@@ -41,6 +41,8 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/kraft/global/32-apps-kraft.png"));
     app.setApplicationName("kraft");
+    app.setApplicationDisplayName("Kraft");
+    app.setApplicationVersion(QString("version %1").arg(KRAFT_VERSION));
 
     QCommandLineParser parser;
     parser.addVersionOption();
