@@ -41,6 +41,7 @@ class PortalView : public QWidget
 public:
   PortalView (QWidget *parent=0, const char *name=0 );
   ~PortalView();
+
   AllDocsView* docDigestView() { return _allDocsView; }
   void systemInitError( const QString& );
   QString ptag( const QString&,  const QString& c = QString() ) const;

@@ -276,7 +276,7 @@ void Portal::initView()
     ////////////////////////////////////////////////////////////////////
     // create the main widget here that is managed by KTMainWindow's view-region and
     // connect the widget to your document to display document contents.
-    m_portalView = new PortalView( this, "PortalMainView" );
+    m_portalView.reset(new PortalView( this, "PortalMainView" ));
     QVector<QMenu*> menus = m_portalView->docDigestView()->contextMenus();
     foreach( QMenu *menu, menus ) {
       menu->setTitle( i18n("Document Actions"));
@@ -291,29 +291,29 @@ void Portal::initView()
       menu->addAction( _actOpenArchivedDocument );
     }
 
-    connect( m_portalView, SIGNAL(openKatalog( const QString&)),
+    connect( m_portalView.data(), SIGNAL(openKatalog( const QString&)),
              this, SLOT(slotOpenKatalog(const QString&)));
-    connect( m_portalView, SIGNAL(katalogToXML(const QString& )),
+    connect( m_portalView.data(), SIGNAL(katalogToXML(const QString& )),
              this, SLOT(slotKatalogToXML(const QString&)));
 
     // document related connections
-    connect( m_portalView, SIGNAL( createDocument() ),
+    connect( m_portalView.data(), SIGNAL( createDocument() ),
              this, SLOT( slotNewDocument() ) );
-    connect( m_portalView, SIGNAL( copyDocument( const QString& ) ),
+    connect( m_portalView.data(), SIGNAL( copyDocument( const QString& ) ),
              this, SLOT( slotCopyDocument( const QString& ) ) );
-    connect( m_portalView, SIGNAL( openDocument( const QString& ) ),
+    connect( m_portalView.data(), SIGNAL( openDocument( const QString& ) ),
              this, SLOT( slotOpenDocument( const QString& ) ) );
-    connect( m_portalView, SIGNAL( viewDocument( const QString& ) ),
+    connect( m_portalView.data(), SIGNAL( viewDocument( const QString& ) ),
              this, SLOT( slotViewDocument( const QString& ) ) );
-    connect( m_portalView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
+    connect( m_portalView.data(), SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
              this, SLOT( slotOpenArchivedDoc( const ArchDocDigest& ) ) );
-    connect( m_portalView, SIGNAL( printDocument( const QString& ) ),
+    connect( m_portalView.data(), SIGNAL( printDocument( const QString& ) ),
              this, SLOT( slotPrintDocument() ) );
-    connect( m_portalView,  SIGNAL( documentSelected( const QString& ) ),
+    connect( m_portalView.data(),  SIGNAL( documentSelected( const QString& ) ),
              this,  SLOT( slotDocumentSelected( const QString& ) ) );
-    connect( m_portalView,  SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
+    connect( m_portalView.data(),  SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
              this,  SLOT( slotArchivedDocSelected( const ArchDocDigest& ) ) );
-    setCentralWidget(m_portalView);
+    setCentralWidget(m_portalView.data());
 }
 
 void Portal::slotStartupChecks()
@@ -988,6 +988,8 @@ void Portal::closeEvent( QCloseEvent *event )
     const QByteArray geo = saveGeometry().toBase64();
     KraftSettings::self()->setPortalGeometry(geo);
 
+    KraftSettings::self()->save();
+
     if( event )
         event->accept();
 }
@@ -1159,5 +1161,5 @@ void Portal::slotAboutKraft()
 
 QWidget* Portal::mainWidget()
 {
-     return m_portalView;
+     return m_portalView.data();
 }

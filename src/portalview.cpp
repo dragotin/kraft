@@ -42,14 +42,14 @@ PortalView::PortalView(QWidget *parent, const char*)
       mCatalogBrowser(nullptr),
       mSystemBrowser(nullptr)
 {
-    _contentsWidget = new QListWidget;
+    _contentsWidget = new QListWidget(this);
     _contentsWidget->setViewMode(QListView::IconMode);
     _contentsWidget->setIconSize(QSize(96, 84));
     _contentsWidget->setMovement(QListView::Static);
     _contentsWidget->setMaximumWidth(128);
     _contentsWidget->setSpacing(12);
 
-    _pagesWidget = new QStackedWidget;
+    _pagesWidget = new QStackedWidget(this);
     _pagesWidget->addWidget(documentDigests());
     _pagesWidget->addWidget(new QWidget());  // doc timeline
     _pagesWidget->addWidget(katalogDetails()); // catalogs
@@ -70,6 +70,10 @@ PortalView::PortalView(QWidget *parent, const char*)
     horizontalLayout->addLayout(vbox);
     horizontalLayout->addWidget(_pagesWidget, 1);
     setLayout(horizontalLayout);
+}
+
+PortalView::~PortalView( )
+{
 }
 
 void PortalView::createIcons()
@@ -410,11 +414,6 @@ void PortalView::slotBuildView()
   // QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
   _allDocsView->slotBuildView();
   // QApplication::restoreOverrideCursor();
-}
-
-PortalView::~PortalView( )
-{
-  delete _allDocsView;
 }
 
 /* END */

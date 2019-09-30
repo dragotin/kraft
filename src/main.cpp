@@ -19,15 +19,15 @@
 #include <QImage>
 #include <QPalette>
 
-#include <klocalizedstring.h>
 #include <QDebug>
 #include <QApplication>
-#include <KAboutData>
-#include <KLocalizedString>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QStandardPaths>
 #include <QSplashScreen>
+#include <QScopedPointer>
+
+#include <KLocalizedString>
 
 #include "version.h"
 #include "portal.h"
@@ -35,52 +35,27 @@
 
 int main(int argc, char *argv[])
 {
-    KAboutData aboutData( QLatin1String("kraft"),
-                          QLatin1String("Kraft"),
-                          KRAFT_VERSION,
-                          ki18n("Business documents for the small enterprise").toString(),
-                          KAboutLicense::GPL,
-                          ki18n("Copyright © 2004–2018 Klaas Freitag" ).toString() );
-
-    aboutData.addAuthor(QLatin1String("Klaas Freitag"), ki18n("Developer").toString(), QLatin1String("kraft@freisturz.de"));
-    aboutData.addAuthor(QLatin1String("Johannes Spielhagen"), ki18n( "Graphics and Artwork" ).toString(),
-                        QLatin1String("kraft@spielhagen.de"), QLatin1String("http://www.michal-spielhagen.de") );
-    aboutData.addAuthor(QLatin1String("Thomas Richard"), ki18n("Developer").toString(), QLatin1String("thomas.richard@proan.be"));
-
-    aboutData.setBugAddress( "http://sourceforge.net/p/kraft/bugs/" );
-
     KLocalizedString::setApplicationDomain("kraft");
     Q_INIT_RESOURCE(kraft);
 
-    QString logoFile = DefaultProvider::self()->locateFile( "pics/kraftapp_logo.png" );
-    if( ! logoFile.isEmpty() ) {
-        QImage img( logoFile );
-        aboutData.setProgramLogo( QVariant( img ) );
-    }
-    aboutData.setOtherText( QLatin1String("Kraft is free software for persons in small businesses\nwriting correspondence like offers and invoices to their customers" ) );
-
-    aboutData.setVersion( KRAFT_VERSION );
-    aboutData.setHomepage( "http://www.volle-kraft-voraus.de" );
-
     QApplication app(argc, argv);
-    QCommandLineParser parser;
+    app.setWindowIcon(QIcon(":/kraft/global/32-apps-kraft.png"));
+    app.setApplicationName("kraft");
 
-    KAboutData::setApplicationData(aboutData);
+    QCommandLineParser parser;
     parser.addVersionOption();
     parser.addHelpOption();
-    aboutData.setupCommandLine(&parser);
-    parser.process(app);
-    aboutData.processCommandLine(&parser);
-
-
     parser.addOption(QCommandLineOption(QStringList() << QLatin1String("d"), i18n("Open document with doc number <number>"), QLatin1String("number")));
+    parser.process(app);
 
     // Register the supported options
+    QScopedPointer<Portal> kraftPortal;
     if (app.isSessionRestored()) {
+        // FIXME: Add session management
         // RESTORE(Portal);
     } else {
         QString splashFile = DefaultProvider::self()->locateFile("pics/kraftsplash.png" );
-        QSplashScreen *splash = 0;
+        QSplashScreen *splash = nullptr;
 
         if( !splashFile.isEmpty()) {
             QPixmap pixmap( splashFile );
@@ -90,11 +65,11 @@ int main(int argc, char *argv[])
             splash->show();
         }
 
-        Portal *kraftPortal = new Portal( 0, &parser, "kraft main window" );
+        kraftPortal.reset( new Portal( nullptr, &parser, "kraft main window" ));
         kraftPortal->show();
 
         if( splash ) {
-            splash->finish( kraftPortal );
+            splash->finish( kraftPortal.data() );
             splash->deleteLater();
         } else {
             // qDebug () << "Could not find splash screen";

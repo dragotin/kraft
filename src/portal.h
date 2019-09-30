@@ -34,9 +34,9 @@
 #include "docguardedptr.h"
 #include "katalogview.h"
 #include "dbids.h"
+#include "portalview.h"
 
 class KraftViewBase;
-class PortalView;
 class ReportGenerator;
 class KCmdLineArgs;
 class ArchDocDigest;
@@ -151,7 +151,7 @@ class Portal : public QMainWindow
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
 
-    PortalView *m_portalView;
+    QScopedPointer<PortalView> m_portalView;
 
     // QAction pointers to enable/disable actions
     QAction* _actFileQuit;
