@@ -510,7 +510,8 @@ void Portal::slotFollowUpDocument()
     DocType dt( sourceDoc->docType() );
 
     KraftWizard wiz;
-    wiz.init( false, sourceDoc->ident() );
+    wiz.init( false, i18nc("Dialog title of the followup doc dialog, followed by the id of the  source doc",
+                           "Create follow up document for %1", sourceDoc->ident()));
 
     QStringList followers = dt.follower();
     if ( followers.count() > 0 ) {
@@ -554,7 +555,8 @@ void Portal::slotCopyDocument( const QString& id )
   DocGuardedPtr oldDoc = DocumentMan::self()->openDocument( id );
   if(oldDoc) {
       const DocType dt = oldDoc->docType();
-      oldDocIdent = i18n("Create new Document as Copy of %1", oldDoc->ident());
+      oldDocIdent = i18nc("Title of the new doc dialog, %1 is the source doc id",
+                          "Create new Document as Copy of %1", oldDoc->ident());
       delete oldDoc;
   }
 
