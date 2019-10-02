@@ -425,7 +425,7 @@ void Portal::slotStartupChecks()
                     if( list.count() > 0 ) {
                         KContacts::Addressee c = list.at(0);
                         c.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
-                        slotReceivedMyAddress(QString::null, c);
+                        slotReceivedMyAddress(QString(), c);
                     }
                 }
             }
@@ -568,7 +568,7 @@ void Portal::slotCopyDocument( const QString& id )
     doc->setDocType( wiz.docType() );
     doc->setWhiteboard( wiz.whiteboard() );
     if(doc->addressUid() != wiz.addressUid() ) {
-        doc->setAddress(QString::null);
+        doc->setAddress(QString());
     }
     doc->setAddressUid( wiz.addressUid() );
     doc->saveDocument();
@@ -710,13 +710,13 @@ void Portal::slotMailPdfAvailable( const QString& fileName )
     }
 
     if( noEmail ){
-        slotMailAddresseeFound( QString::null, KContacts::Addressee() );
+        slotMailAddresseeFound( QString(), KContacts::Addressee() );
     }
 }
 
 void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addressee& contact )
 {
-    Q_UNUSED(uid);
+    Q_UNUSED(uid)
 
     QString mailReceiver;
     if( !contact.isEmpty() ) {
