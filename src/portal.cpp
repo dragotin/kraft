@@ -243,6 +243,7 @@ void Portal::initActions()
 
     // Toolbar
     QToolBar *toolBar = addToolBar(i18n("Kraft"));
+    toolBar->setObjectName("PortalToolbar");
     toolBar->addAction(_actNewDocument);
     toolBar->addAction(_actCopyDocument);
     toolBar->addAction(_actFollowDocument);
