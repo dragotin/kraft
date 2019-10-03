@@ -159,8 +159,9 @@ set(KRAFT_LINK_LIBS
     Qt5::Xml
     
     KF5::I18n
-    KF5::XmlGui
     KF5::Contacts
+    KF5::ConfigCore
+    KF5::ConfigGui
     ${CTEMPLATE_LIBRARIES} pthread
 )
 if(KF5Akonadi_FOUND)

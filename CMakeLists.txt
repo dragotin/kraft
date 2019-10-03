@@ -34,9 +34,9 @@ find_package(Qt5 CONFIG REQUIRED
 # XmlGui for the ConfigSkeleton
 find_package(KF5 REQUIRED COMPONENTS
     I18n
-    )
-
-find_package(KF5Contacts REQUIRED)
+    Config
+    Contacts
+)
 
 find_package(KF5Akonadi)
 set_package_properties(KF5Akonadi PROPERTIES
