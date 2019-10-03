@@ -15,6 +15,8 @@ Changes since version 0.82: #########################################
 - Fixed formatting of the amount number in the XML output
 - More Less-KDE: Removed more mandatory dependencies on KDE.
 - Added 'About Kraft' information to Krafts system view.
+- Added document type 'Offer without price tags', which does not 
+  print price tags on the PDF (issue #58).
 
 => release v. 0.90 (Mar x, 2019)
 
