@@ -139,7 +139,7 @@
     {{#POSITIONS}}
     <tr>
         <td><para style="{{POS_KIND}}text">{{POS_NUMBER}}.</para></td>
-        <td>      {{POS_TEXT}}          </td>
+        <td>{{POS_TEXT}}</td>
         <td><para style="{{POS_KIND}}text">{{POS_AMOUNT}} </para></td>
         <td><para style="{{POS_KIND}}text">{{POS_UNIT}}   </para></td>
         <td><para style="{{POS_KIND}}rtext">{{POS_UNITPRICE}}</para></td>
