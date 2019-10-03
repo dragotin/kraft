@@ -132,12 +132,6 @@ void ArchDoc::loadFromDb( dbID id )
     mReducedTax   = q.value( 15 ).toDouble();
     mState        = q.value( 16 ).toInt();
 
-    // FIXME Porting: Handle Locale properly.
-#if 0
-    KConfig *cfg = KGlobal::config().data();
-    mLocale.setCountry( country, cfg );
-    mLocale.setLanguage( lang , cfg );
-#endif
     loadItems( docID );
 
     mAttributes.load(id);

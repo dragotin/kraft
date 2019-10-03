@@ -115,8 +115,6 @@ class DocPosition : public DocPositionBase
 
     void setAmount( double amount ) { m_amount = amount; }
     double amount() { return m_amount; }
-
-    DocPosition& operator=( const DocPosition& );
     
     PositionViewWidget* associatedWidget() { return mWidget; }
     void setAssociatedWidget( PositionViewWidget *w ) { mWidget = w; }

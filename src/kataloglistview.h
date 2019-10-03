@@ -56,6 +56,10 @@ public:
 
   QMenu *contextMenu();
   // virtual DocPosition itemToDocPosition( QListViewItem *it = 0 ) = 0;
+
+  // Save the header state of the tree view
+  virtual void saveState() = 0;
+
 signals:
   void templateHoovered( CatalogTemplate* );
   void sequenceUpdateProgress( int );

@@ -20,7 +20,7 @@
 
 #include <QAction>
 #include <QUrl>
-#include <kxmlguiwindow.h>
+#include <QMainWindow>
 
 #include "kraftcat_export.h"
 
@@ -39,14 +39,11 @@ class CatalogTemplate;
 
 /**
   * The base class for Kraft katalog view.
-  * @see KMainWindow
-  * @see KApplication
-  * @see KConfig
   *
-  * @author Klaas Freitag <freitag@kde.org>
+  * @author Klaas Freitag <kraft@freisturz.de>
   * @version $Id$
   */
-class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
+class KRAFTCAT_EXPORT KatalogView : public QMainWindow
 {
   Q_OBJECT
 
@@ -80,14 +77,20 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
 
     virtual void slTreeviewItemChanged( QTreeWidgetItem *, QTreeWidgetItem *);
     void slExport();
+    void slImport();
 
     // virtual void slEditChapters();
     virtual void slAddSubChapter();
     virtual void slEditSubChapter();
     virtual void slRemoveSubChapter();
+    virtual void slNewTemplate() = 0;
+    virtual void slEditTemplate() = 0;
+    virtual void slDeleteTemplate() = 0;
 
     void slotShowTemplateDetails( CatalogTemplate*);
     void setProgressValue( int );
+
+    void closeEvent( QCloseEvent *event );
 
   protected:
 
@@ -100,6 +103,7 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
     QAction* m_acNewItem;
     QAction* m_acDeleteItem;
     QAction* m_acExport;
+    QAction* m_acImport;
 
     // KToggleAction* viewToolBar;
     // KToggleAction* viewStatusBar;
@@ -135,6 +139,18 @@ class KRAFTCAT_EXPORT KatalogView : public KXmlGuiWindow
      * @see KTMainWindow#closeEvent
      */
     virtual bool queryExit();
+
+    /** Save the state of the window to the right settings value. Needs to be reimplemented in the special window implementation,
+     * thus virtual here.
+     */
+    virtual void saveWindowState( const QByteArray& arr ) = 0;
+    virtual QByteArray windowState() = 0;
+
+    /** Save the geomentry of the window to the right settings value. Needs to be reimplemented in the special window implementation,
+     * thus virtual here.
+     */
+    virtual void saveWindowGeo( const QByteArray& arr ) = 0;
+    virtual QByteArray windowGeo() = 0;
 
 };
 

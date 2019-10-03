@@ -31,14 +31,12 @@ find_package(Qt5 CONFIG REQUIRED
     Xml
 )
 
+# XmlGui for the ConfigSkeleton
 find_package(KF5 REQUIRED COMPONENTS
-    CoreAddons
     I18n
-    WidgetsAddons
-    XmlGui
+    Config
+    Contacts
 )
-
-find_package(KF5Contacts REQUIRED)
 
 find_package(KF5Akonadi)
 set_package_properties(KF5Akonadi PROPERTIES

@@ -23,8 +23,6 @@
 #include <QListWidget>
 
 // include files
-#include <kpagewidget.h>
-
 #include "docguardedptr.h"
 
 /**
@@ -43,6 +41,7 @@ class PortalView : public QWidget
 public:
   PortalView (QWidget *parent=0, const char *name=0 );
   ~PortalView();
+
   AllDocsView* docDigestView() { return _allDocsView; }
   void systemInitError( const QString& );
   QString ptag( const QString&,  const QString& c = QString() ) const;
@@ -51,13 +50,13 @@ public slots:
   void slotBuildView();
   void fillCatalogDetails();
   void fillSystemDetails();
+  void displaySystemsTab();
 
 protected slots:
   void slotCreateDocument();
 
 private slots:
   void changePage(QListWidgetItem *current);
-  void displaySystemsTab();
 
 signals:
   void openKatalog( const QString& );

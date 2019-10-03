@@ -38,18 +38,15 @@
 
 TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
     : KatalogView(parent, name),
-      m_flosDialog(0),
-      m_listview(0)
+      m_flosDialog(nullptr),
+      m_listview(nullptr)
 {
 
 }
 
 TemplKatalogView::~TemplKatalogView()
 {
-    const QByteArray state = m_listview->header()->saveState().toBase64();
-    KraftSettings::self()->setTemplateCatViewState(state);
-
-  delete m_flosDialog;
+    delete m_flosDialog;
 }
 
 Katalog* TemplKatalogView::getKatalog( const QString& name )
@@ -230,7 +227,7 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
       templListView->scrollToItem( m_editListViewItem );
     }
 
-    m_editListViewItem = 0;
+    m_editListViewItem = nullptr;
 }
 
 void TemplKatalogView::slEditRejected()
@@ -238,7 +235,7 @@ void TemplKatalogView::slEditRejected()
   // qDebug () << "Rejecting Edit!";
   if ( m_editListViewItem ) {
     delete m_editListViewItem;
-    m_editListViewItem = 0;
+    m_editListViewItem = nullptr;
   }
 }
 
@@ -248,10 +245,29 @@ void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
     m_listview = new TemplKatalogListView( w );
     box->addWidget(m_listview);
 
-    const QByteArray state = QByteArray::fromBase64(KraftSettings::self()->templateCatViewState().toAscii());
-    m_listview->header()->restoreState(state);
-
-
     KatalogView::createCentralWidget( box, w );
 }
 
+void TemplKatalogView::saveWindowState( const QByteArray& arr )
+{
+    KraftSettings::self()->setTemplateCatViewState(arr);
+}
+
+QByteArray TemplKatalogView::windowState()
+{
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->templateCatViewState().toAscii() );
+
+    return re;
+}
+
+void TemplKatalogView::saveWindowGeo( const QByteArray& arr )
+{
+    KraftSettings::self()->setTemplateCatViewGeo( QString::fromAscii(arr) );
+}
+
+QByteArray TemplKatalogView::windowGeo()
+{
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->templateCatViewGeo().toAscii() );
+
+    return re;
+}

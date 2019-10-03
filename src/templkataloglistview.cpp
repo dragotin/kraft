@@ -19,6 +19,8 @@
 #include <QSqlQuery>
 #include <QDebug>
 #include <QMenu>
+#include <QHeaderView>
+#include <QByteArray>
 
 #include <klocalizedstring.h>
 
@@ -34,6 +36,7 @@
 #include "timecalcpart.h"
 #include "docposition.h"
 #include "defaultprovider.h"
+#include "kraftsettings.h"
 
 TemplKatalogListView::TemplKatalogListView(QWidget *w)
     : KatalogListView(w),
@@ -45,6 +48,9 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
   labels << i18n("Calc. Type");
 
   setHeaderLabels(labels);
+
+  QByteArray headerState = QByteArray::fromBase64( KraftSettings::self()->templateCatViewHeader().toAscii() );
+  header()->restoreState(headerState);
 
   contextMenu()->setTitle( i18n("Template Catalog"));
 }
@@ -279,3 +285,10 @@ void TemplKatalogListView::slotUpdateSequence()
   KatalogListView::slotUpdateSequence();
 }
 
+void TemplKatalogListView::saveState()
+{
+    const QByteArray state = this->header()->saveState();
+
+    KraftSettings::self()->setTemplateCatViewHeader(state.toBase64());
+    KraftSettings::self()->save();
+}

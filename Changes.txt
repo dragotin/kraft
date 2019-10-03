@@ -13,6 +13,8 @@ Changes since version 0.82: #########################################
 - Removed KeepTogether flag for tables to avoid that a long list of
   items only starts on the next page. Might have impact on some docs.
 - Fixed formatting of the amount number in the XML output
+- More Less-KDE: Removed more mandatory dependencies on KDE.
+- Added 'About Kraft' information to Krafts system view.
 
 => release v. 0.90 (Mar x, 2019)
 

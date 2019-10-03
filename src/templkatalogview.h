@@ -31,11 +31,8 @@ class FlosTemplDialog;
 class QBoxLayout;
 /**
   * The base class for Kraft katalog view.
-  * @see KMainWindow
-  * @see KApplication
-  * @see KConfig
-  *
-  * @author Klaas Freitag <freitag@kde.org>
+
+  * @author Klaas Freitag <kraft@freisturz.de>
   * @version $Id$
   */
 
@@ -61,6 +58,12 @@ protected:
   Katalog* getKatalog( const QString& );
   bool currentItemToDocPosition( DocPosition& );
   CalcPartList currentItemsCalcParts();
+
+  void saveWindowState( const QByteArray& arr );
+  QByteArray windowState();
+
+  void saveWindowGeo( const QByteArray& arr );
+  QByteArray windowGeo();
 
 public slots:
   /* Editing of templates -> open edit dialog */

@@ -166,7 +166,7 @@ void KraftWizard::init( bool haveAddressSelect, const QString& followUpDoc )
     if( followUpDoc.isEmpty() ) {
         setWindowTitle( i18n( "Create a new Kraft Document" ) );
     } else {
-        setWindowTitle( i18n("Create followup document for %1", followUpDoc ));
+        setWindowTitle(followUpDoc);
     }
 
     QWidget *w1 = new QWidget;

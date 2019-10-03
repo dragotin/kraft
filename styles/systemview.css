@@ -1,12 +1,12 @@
 
-* { 
+table { 
   font-family: sans-serif;
   margin-left: 10px;
   margin-top: 10px;
 }
 
 td.label {
-  padding-left: 15px;
+  padding-left: 0px;
   white-space: nowrap;
 }
 
@@ -28,8 +28,5 @@ td.header {
   font-size: 15px;
   font-weight: bold;
 }
-
-
-
 
 

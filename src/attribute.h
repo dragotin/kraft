@@ -71,8 +71,6 @@ public:
   AttributeMap();
   AttributeMap( const QString& );
 
-  AttributeMap& operator=(const AttributeMap&);
-
   bool hasAttribute( const QString& );
 
   void setHost( const QString& );

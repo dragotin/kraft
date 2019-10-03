@@ -21,11 +21,7 @@
 #include <QProgressBar>
 #include <QDebug>
 #include <QStatusBar>
-
-// include files for KDE
-#include <kxmlguifactory.h>
-#include <KXmlGuiWindow>
-#include <KActionCollection>
+#include <QMenuBar>
 
 // application specific includes
 #include "katalogview.h"
@@ -42,16 +38,16 @@
 #define ID_STATUS_MSG 1
 
 KatalogView::KatalogView( QWidget* parent, const char* ) :
-  KXmlGuiWindow(parent, 0),
-    m_acEditChapter(0),
-    m_acEditItem(0),
-    m_acNewItem(0),
-    m_acDeleteItem(0),
-    m_acExport(0),
-    m_filterHead(0),
-    m_editListViewItem(0),
-    mTemplateText(0),
-    mTemplateStats(0)
+    QMainWindow(parent, nullptr),
+    m_acEditChapter(nullptr),
+    m_acEditItem(nullptr),
+    m_acNewItem(nullptr),
+    m_acDeleteItem(nullptr),
+    m_acExport(nullptr),
+    m_filterHead(nullptr),
+    m_editListViewItem(nullptr),
+    mTemplateText(nullptr),
+    mTemplateStats(nullptr)
 {
   setObjectName( "catalogeview" );
   //We don't want to delete this view when we close it!
@@ -98,10 +94,10 @@ void KatalogView::init(const QString& katName )
   }
 
   setCentralWidget(w);
-  m_editListViewItem = 0;
+  m_editListViewItem = nullptr;
   // qDebug () << "Getting katalog!" << katName << endl;
 
-  setAutoSaveSettings( QString::fromLatin1( "CatalogWindow" ),  true );
+  // setAutoSaveSettings( QString::fromLatin1( "CatalogWindow" ),  true );
 }
 
 void KatalogView::createCentralWidget(QBoxLayout *box, QWidget* )
@@ -121,6 +117,11 @@ void KatalogView::createCentralWidget(QBoxLayout *box, QWidget* )
            mProgress, SLOT( setMaximum(int) ) );
   connect( getListView(), SIGNAL( sequenceUpdateProgress( int ) ),
            this, SLOT( setProgressValue(int) ) );
+
+  const QByteArray state = windowState();
+  restoreState(state);
+  const QByteArray geo = windowGeo();
+  restoreGeometry(geo);
 }
 
 void KatalogView::setProgressValue( int val )
@@ -142,61 +143,77 @@ Katalog* KatalogView::getKatalog( const QString& name )
 
   KatalogMan::self()->registerKatalogListView( name, getListView() );
 
-  return 0;
+  return nullptr;
 }
 
 void KatalogView::initActions()
 {  
-  m_acEditChapter = actionCollection()->addAction( "edit_chapter", this, SLOT( slEditSubChapter() ) );
-  m_acEditChapter->setText( i18n("Edit Sub chapter") );
-  m_acEditChapter->setIcon( QIcon::fromTheme("folder-documents"));
-  m_acEditChapter->setStatusTip(i18n("Edit a catalog sub chapter"));
-  m_acEditChapter->setEnabled(true);
+    QIcon newIcon = QIcon::fromTheme( "folder-documents");
+     m_acEditChapter = new QAction(newIcon, i18n("Edit Sub chapter"), this);
+     m_acEditChapter->setShortcut( Qt::CTRL + Qt::Key_S);
+     m_acEditChapter->setStatusTip(i18n("Edit a catalog sub chapter"));
+     connect(m_acEditChapter, &QAction::triggered, this, &KatalogView::slEditSubChapter);
 
-  m_acAddChapter = actionCollection()->addAction( "add_chapter", this, SLOT( slAddSubChapter() ) );
-  m_acAddChapter->setText( i18n("Add a sub chapter") );
-  m_acAddChapter->setIcon( QIcon::fromTheme("document-edit"));
-  m_acAddChapter->setStatusTip(i18n("Add a sub chapter below the selected one"));
-  m_acAddChapter->setEnabled(false);
+     newIcon = QIcon::fromTheme( "document-edit");
+      m_acAddChapter = new QAction(newIcon, i18n("Add a sub chapter"), this);
+      m_acAddChapter->setShortcut( Qt::CTRL + Qt::Key_A);
+      m_acAddChapter->setStatusTip(i18n("Add a sub chapter below the selected one"));
+      connect(m_acAddChapter, &QAction::triggered, this, &KatalogView::slAddSubChapter);
 
-  m_acRemChapter = actionCollection()->addAction( "remove_chapter", this, SLOT( slRemoveSubChapter() ) );
-  m_acRemChapter->setText( i18n("Remove a sub chapter") );
-  m_acRemChapter->setIcon( QIcon::fromTheme("document-edit"));
-  m_acRemChapter->setStatusTip(i18n("Remove a sub chapter"));
-  m_acRemChapter->setEnabled(false);
+      newIcon = QIcon::fromTheme( "document-edit");
+       m_acRemChapter = new QAction(newIcon, i18n("Remove a sub chapter"), this);
+       m_acRemChapter->setShortcut( Qt::CTRL + Qt::Key_R);
+       m_acRemChapter->setStatusTip(i18n("Remove a sub chapter"));
+       connect(m_acRemChapter, &QAction::triggered, this, &KatalogView::slRemoveSubChapter);
 
-  m_acEditItem = actionCollection()->addAction( "edit_template", this, SLOT( slEditTemplate() ) );
-  m_acEditItem->setText( i18n("Edit template") );
-  m_acEditItem->setIcon( QIcon::fromTheme("document-edit"));
-  m_acEditItem->setStatusTip(i18n("Opens the editor window for templates to edit the selected one"));
-  m_acEditItem->setEnabled(false);
+       newIcon = QIcon::fromTheme( "document-edit");
+        m_acEditItem = new QAction(newIcon, i18n("Edit Template"), this);
+        m_acEditItem->setShortcut( Qt::CTRL + Qt::Key_T);
+        m_acEditItem->setStatusTip(i18n("Opens the editor window for templates to edit the selected one"));
+        m_acEditItem->setEnabled(false);
+        connect(m_acEditItem, &QAction::triggered, this, &KatalogView::slEditTemplate);
 
-  m_acNewItem = actionCollection()->addAction( "new_template", this, SLOT( slNewTemplate() ) );
-  m_acNewItem->setText( i18n("New template") );
-  m_acNewItem->setShortcut( QKeySequence::New );
-  m_acNewItem->setIcon( QIcon::fromTheme("document-new"));
-  m_acNewItem->setStatusTip(i18n("Opens the editor window for templates to enter a new template"));
-  m_acNewItem->setEnabled(true);
+        newIcon = QIcon::fromTheme( "document-new");
+        m_acNewItem = new QAction(newIcon, i18n("New template"), this);
+        m_acNewItem->setShortcut( Qt::CTRL + Qt::Key_N);
+        m_acNewItem->setStatusTip(i18n("Opens the editor window for templates to enter a new template"));
+        connect(m_acNewItem, &QAction::triggered, this, &KatalogView::slNewTemplate);
+        m_acNewItem->setEnabled(true);
 
-  m_acDeleteItem = actionCollection()->addAction( "delete_template", this, SLOT( slDeleteTemplate() ) );
-  m_acDeleteItem->setText( i18n("Delete template") );
-  m_acDeleteItem->setShortcut( QKeySequence::Delete);
-  m_acDeleteItem->setIcon( QIcon::fromTheme("document-delete"));
-  m_acDeleteItem->setStatusTip(i18n("Deletes the template"));
-  m_acDeleteItem->setEnabled(true);
+        newIcon = QIcon::fromTheme( "document-delete");
+        m_acDeleteItem = new QAction(newIcon, i18n("Delete template"), this);
+        m_acDeleteItem->setShortcut( QKeySequence::Delete);
+        m_acDeleteItem->setStatusTip(i18n("Deletes the template"));
+        connect(m_acDeleteItem, &QAction::triggered, this, &KatalogView::slDeleteTemplate);
+        m_acDeleteItem->setEnabled(true);
 
-  m_acExport = actionCollection()->addAction( "export_catalog", this, SLOT( slExport() ) );
-  m_acExport->setText( i18n("Export catalog") );
-  m_acExport->setStatusTip(i18n("Export the whole catalog as XML encoded file"));
-  m_acExport->setEnabled(false); // FIXME: Repair XML Export
+        newIcon = QIcon(); // QIcon::fromTheme( "document-delete");
+        m_acExport = new QAction(newIcon, i18n("Export catalog"), this);
+        m_acExport->setShortcut( Qt::Key_E);
+        m_acExport->setStatusTip(i18n("Export the whole catalog as XML encoded file"));
+        connect(m_acExport, &QAction::triggered, this, &KatalogView::slExport);
+        m_acExport->setEnabled(false);
 
-  // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
-  QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
-  if( !prjPath.isEmpty() ) {
-      createGUI(prjPath + QLatin1String("/src/katalogview.rc"));
-  } else {
-      createGUI("katalogview.rc");
-  }
+        newIcon = QIcon(); // QIcon::fromTheme( "document-delete");
+        m_acImport = new QAction(newIcon, i18n("Import catalog"), this);
+        m_acExport->setShortcut( Qt::Key_I);
+        m_acExport->setStatusTip(i18n("Import a catalog from a XML file"));
+        connect(m_acExport, &QAction::triggered, this, &KatalogView::slImport);
+        m_acExport->setEnabled(false);
+
+        QMenu *catalogMenu = menuBar()->addMenu(i18n("&Catalog"));
+        catalogMenu->addAction(m_acAddChapter);
+        catalogMenu->addAction(m_acEditChapter);
+        catalogMenu->addAction(m_acRemChapter);
+        catalogMenu->addSeparator();
+        catalogMenu->addAction(m_acNewItem);
+        catalogMenu->addAction(m_acEditItem);
+        catalogMenu->addAction(m_acDeleteItem);
+#ifdef HAVE_EXPORT
+        catalogMenu->addSeparator();
+        catalogMenu->addAction(m_acExport);
+        catalogMenu->addAction(m_acImport);
+#endif
 
 }
 
@@ -215,6 +232,23 @@ bool KatalogView::queryClose()
 bool KatalogView::queryExit()
 {
   return true;
+}
+
+void KatalogView::closeEvent( QCloseEvent *event )
+{
+    slotStatusMsg(i18n("Exiting..."));
+    // close the first window, the list makes the next one the first again.
+    // This ensures that queryClose() is called on each window to ask for closing
+
+    getListView()->saveState(); // saves the header state
+
+    const QByteArray state = saveState().toBase64();
+    saveWindowState(state);
+    const QByteArray geo = saveGeometry().toBase64();
+    saveWindowGeo(geo);
+
+    if( event )
+        event->accept();
 }
 
 void KatalogView::slotStatusMsg(const QString &text)
@@ -263,6 +297,11 @@ void KatalogView::slExport()
     if(k)
         k->writeXMLFile();
     slotStatusMsg(i18n("Ready."));
+}
+
+void KatalogView::slImport()
+{
+    slotStatusMsg(i18n("Importfile... (not yet implemented"));
 }
 
 void KatalogView::slAddSubChapter()

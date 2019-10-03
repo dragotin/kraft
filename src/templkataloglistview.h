@@ -50,6 +50,7 @@ public:
   CalcPartList itemsCalcParts( QTreeWidgetItem* it = 0 );
   public slots:
   void slFreshupItem( QTreeWidgetItem*, FloskelTemplate*, bool remChildren = false );
+  void saveState();
 
 protected slots:
   void slotUpdateSequence();
