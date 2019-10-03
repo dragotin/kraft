@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="kraft.pdf">
+
+<template pageSize="(21cm, 29.7cm)" leftMargin="2.41cm" rightMargin="0.81cm"
+  topMargin="2.0cm" bottomMargin="2.0cm" title="Kraft Document"
+  author="Kraft http://www.volle-kraft-voraus.de" allowSplitting="20"
+  showBoundary="0">
+
+    <template>
+
+<!-- Change Font. -->
+      <setFont name="Times-Roman" size="11" />
+
+    </template>
+
+    <pageTemplate id="first">
+        <pageGraphics>
+
+<!-- Change Font. -->
+            <setFont name="Times-Roman" size="11" />
+
+	    <lineMode width="0.5" />
+             <lines>2.41cm 2.2cm 19cm 2.2cm</lines>
+	    <fill color="black" />
+
+<!-- Change to your company name. -->
+            <drawCentredString x="105mm" y="2.3cm">{{MY_NAME}} {{MY_ORGANISATION}}</drawCentredString>
+
+        <!--  <lines>7mm 19cm 12mm 19cm</lines>
+               <lines>2mm 14.65cm 12mm 14.65cm</lines> -->
+
+	    <fill color="black" />
+	    <setFont name="Times-Roman" size="8" />
+
+<!-- Change your Address, Email & Website. -->
+<drawString x="25mm" y="24.7cm">{{MY_ORGANISATION}} - {{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawString>
+	    <lines>25mm 24.6cm 11cm 24.6cm</lines>
+	    <setFont name="Times-Roman" size="10" />
+            <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">{{LAB_PHONE}} {{MY_PHONE}} - {{LAB_FAX}} {{MY_FAX}}</drawCentredString>
+<!-- Disabled lines (from original) -->
+             <!--     <lines>77mm 24.6cm 20cm 24.6cm</lines> -->
+
+<!-- Here is how you would insert an image at a fixed place on the page: -->
+	   <!-- <image x="75mm" y="25.3cm" width="6cm" height="6cm" file="/usr/share/kraft/reports/images/kraft.jpg" /> -->
+
+        </pageGraphics>
+        <frame id="address"  x1="1.90cm" y1="18.62cm" width="8.5cm" height="4cm"/>
+        <frame id="info"     x1="12cm" y1="20.62cm" width="7.41cm" height="2cm"/>
+        <frame id="subject"  x1="1.90cm" y1="18.2cm" width="17cm"  height="1.2cm"/>
+        <frame id="detail"   x1="1.90cm" y1="3cm"  width="17cm"  height="15cm"/>
+
+    </pageTemplate>
+
+    <pageTemplate id="others">
+        <pageGraphics>
+
+<!-- Change Font. -->
+            <setFont name="Times-Roman" size="11" />
+
+	    <lineMode width="0.5" />
+            <lines>2cm 2.2cm 19cm 2.2cm</lines>
+	    <fill color="black" />
+
+<!-- Change to your company name. -->
+            <drawCentredString x="105mm" y="2.3cm">{{MY_ORGANISATION}}</drawCentredString>
+
+<!-- Change Font. -->
+	    <setFont name="Times-Roman" size="10" />
+
+        <fill color="black" />
+
+<!-- Change your Address & Phone. -->
+            <drawCentredString x="105mm" y="1.8cm">{{MY_STREET}} - {{MY_POSTCODE}} {{MY_LOCALITY}}</drawCentredString>
+            <drawCentredString x="105mm" y="1.4cm">{{LAB_PHONE}} {{MY_PHONE}} - {{LAB_FAX}} {{MY_FAX}}</drawCentredString>
+
+            <drawCentredString x="185mm" y="1.4cm">Page <pageNumber/></drawCentredString>
+        </pageGraphics>
+
+        <frame id="content" x1="2.0cm" y1="3.0cm" width="17cm" height="24.5cm"/>
+    </pageTemplate>
+</template>
+<stylesheet>
+    <initialize>
+      <alias id="style.normal" value="style.Normal"/>
+    </initialize>
+
+    <blockTableStyle id="items">
+      <blockFont name="Helvetica-BoldOblique" size="24" start="0,0" stop="-1,0"/>
+      <blockBackground colorName="white" start="0,0" stop="-1,0"/>
+      <blockTextColor colorName="white" start="0,0" stop="-1,0"/>
+      <blockValign value="TOP"/>
+      <blockAlignment value="LEFT"/>
+
+      <blockBottomPadding length="8mm" start="0,1" stop="-1,-1"/>
+      <blockTopPadding length="4mm" start="0,1" stop="-1,-1"/>
+
+      <lineStyle kind="LINEABOVE" colorName="black" start="0,0" stop="-1,0"/>
+      <lineStyle kind="LINEBELOW" colorName="black" start="0,0" stop="-1,0"/>
+
+   </blockTableStyle>
+
+   <blockTableStyle id="sums">
+      <lineStyle kind="LINEABOVE" thickness="2" colorName="black" start="1,-1" stop="2,-1"/>
+      <lineStyle kind="LINEBELOW" thickness="2" colorName="black" start="1,-1" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" thickness="-1" colorName="black" start="0,0" stop="-1,0"/>
+      <blockBottomPadding length="4mm" />
+      <blockTopPadding length="4mm" />
+   </blockTableStyle>
+
+   <paraStyle name="smallText"  fontName="Helvetica" fontSize="10" alignment="justify"/>
+
+   <paraStyle name="text" fontSize="10" alignment="justify" spaceBefore="1mm" />
+   <paraStyle name="stext" fontSize="12" alignment="justify" spaceBefore="1mm" />
+   <paraStyle name="demandtext"      fontSize="11" alignment="justify" fontName="Times-Italic" />
+   <paraStyle name="alternativetext" fontSize="11" alignment="justify" fontName="Times-Italic" />
+
+   <paraStyle name="rtext" fontSize="11" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="rstext" fontSize="8" alignment="RIGHT" spaceBefore="1mm" />
+   <paraStyle name="ctext" fontSize="11" alignment="CENTER" />
+   <paraStyle name="cstext" fontSize="12" alignment="CENTER" />
+
+   <paraStyle name="demandrtext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="alternativertext" fontName="Times-Italic" fontSize="11" alignment="RIGHT" spaceBefore="3mm" />
+   <paraStyle name="addressStyle" fontSize="10" />
+
+</stylesheet>
+<story>
+    <!-- Address Frame -->
+    <keepInFrame frame="address" onOverflow="shrink">
+    <xpre style="addressStyle">
+{{ADDRESS}}
+    </xpre>
+    </keepInFrame>
+    <nextFrame/>
+    <!-- Info Frame -->
+    <para style="text" alignment="right">{{DATE}}</para>
+    <nextFrame/>
+    <!-- Subject Frame -->
+    <!-- Original <h3>{{DOCTYPE}} No: {{DOCID}}</h3>-->
+    <h1>{{DOCTYPE}} {{LAB_NO_SHORT}} {{DOCID}}</h1>
+
+    <!-- Detail Frame -->
+    <spacer length="1mm" width="1mm"/>
+    <para style="text">
+        {{SALUT}}
+    </para>
+    <spacer length="1mm" width="1mm"/>
+        {{PRETEXT}}
+
+    <setNextTemplate name="others" />
+
+    <spacer length="18mm" width="1mm"/>
+
+    <condPageBreak height="1cm"/>
+
+    <blockTable colWidths="1.2cm, 15cm, 1.9cm" style="items" repeatRows="1">
+
+<!-- Header of the item table -->
+    <tr>
+        <td><para style="stext">{{LAB_NO_SHORT}}</para></td>
+        <td><para style="stext">{{LAB_ITEM}}</para></td>
+        <td><para style="cstext">{{LAB_QUANTITY_SHORT}}</para></td>
+    </tr>
+    {{#POSITIONS}}
+    <tr>
+        <td><para style="{{POS_KIND}}text">{{POS_NUMBER}}.</para></td>
+        <td>{{POS_TEXT}}</td>
+        <td><para style="{{POS_KIND}}text">{{POS_AMOUNT}} {{POS_UNIT}}</para></td>
+    </tr>
+    {{/POSITIONS}}
+  </blockTable>
+
+  <condPageBreak height="4cm"/>
+
+  {{#SPECIAL_POS}}
+  <spacer length="3mm" width="1mm"/>
+    <para style="smalltext">
+        {{LAB_SPECIAL_ITEMS}}
+    </para>
+  {{/SPECIAL_POS}}
+  <spacer length="1cm" width="1mm"/>
+  <condPageBreak height="4cm"/>
+     {{POSTTEXT}}
+  <spacer length="0.5cm" width="1mm"/>
+  <para style="text">
+     {{GOODBYE}}
+  </para>
+</story>
+</document>
