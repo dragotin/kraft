@@ -39,7 +39,6 @@
 // include files for KDE
 #include <QDebug>
 #include <kcontacts/addressee.h>
-#include <kactioncollection.h>
 #include <kcontacts/vcardconverter.h>
 
 // application specific includes
