@@ -86,6 +86,10 @@
             <key>docTemplateFile</key>
             <value>delivery_receipt.trml</value>
         </attrib>
+        <attrib>
+ 	    <key>HidePrices</key>
+	    <value>1</value>
+        </attrib>
         <follower>Abschlagsrechnung</follower>
         <follower>Teilrechnung</follower>
         <follower>Schlussrechnung</follower>
@@ -93,11 +97,27 @@
 
     </doctype>
     <doctype>
+        <name>Angebot (keine Preise)</name>
+        <lang>de</lang>
+        <attrib>
+            <key>docTemplateFile</key>
+            <value>offer_no_prices.trml</value>
+        </attrib>
+        <attrib>
+            <key>HidePrices</key>
+            <value>1</value>
+        </attrib>
+    </doctype>
+    <doctype>
         <name>Delivery Receipt</name>
         <lang>en</lang>
         <attrib>
             <key>docTemplateFile</key>
             <value>delivery_receipt.trml</value>
+        </attrib>
+        <attrib>
+ 	    <key>HidePrices</key>
+	    <value>1</value>
         </attrib>
         <follower>Final Invoice</follower>
         <follower>Partial Invoice</follower>
@@ -119,6 +139,18 @@
         <follower>Partial Invoice</follower>
         <follower>Progress Payment Invoice</follower>
         <follower>Invoice</follower>
+    </doctype>
+    <doctype>
+        <name>Offer (No Pricetags)</name>
+        <lang>en</lang>
+        <attrib>
+            <key>docTemplateFile</key>
+            <value>offer_no_prices.trml</value>
+        </attrib>
+        <attrib>
+            <key>HidePrices</key>
+            <value>1</value>
+        </attrib>
     </doctype>
     <doctype>
         <name>Offerte</name>
