@@ -464,70 +464,72 @@ QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle
 
 QStringList ReportGenerator::findTrml2Pdf( )
 {
-  const QString rmlbinDefault = QString::fromLatin1( "trml2pdf" ); // FIXME: how to get the default value?
-  QString rmlbin = KraftSettings::self()->trml2PdfBinary();
-  // qDebug () << "### Start searching rml2pdf bin: " << rmlbin;
+    const QString rmlbinDefault = QStringLiteral( "trml2pdf" ); // FIXME: how to get the default value?
+    QString rmlbin = KraftSettings::self()->trml2PdfBinary();
+    // qDebug () << "### Start searching rml2pdf bin: " << rmlbin;
 
-  QStringList retList;
-  mHavePdfMerge = false;
+    QStringList retList;
+    mHavePdfMerge = false;
 
-  if ( rmlbinDefault == rmlbin  ) {
-    QString ermlpy = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kraft/tools/erml2pdf.py" );
-    // qDebug () << "Ermlpy: " << ermlpy;
-    if( ! ermlpy.isEmpty() ) {
-      // need the python interpreter
-      // First check for python2 in python3 times.
-      QString python = QStandardPaths::findExecutable(QLatin1String("python2"));
-      if( python.isEmpty() ) {
-        python = QStandardPaths::findExecutable(QLatin1String("python"));
-      }
-      if( python.isEmpty() ) {
-        qCritical() << "ERR: Unable to find python, thats a problem";
-      } else {
-        // qDebug () << "Using python: " << python;
-        retList << python;
-        retList << ermlpy;
-        mHavePdfMerge = true;
-      }
-    } else {
-      // tool erml2pdf.py not found. Check in $KRAFT_HOME/tools
-      QString p = QString::fromUtf8(qgetenv("KRAFT_HOME"));
-      if( !p.isEmpty() ) {
-          p += QLatin1String("/tools/erml2pdf.py");
-          // qDebug () << "Found erml2pdf from KRAFT_HOME: " << p;
-          if( QFile::exists( p ) ) {
-              retList << "python";
-              retList << p;
-              mHavePdfMerge = true;
-          }
-      } else {
-          // tool erml2pdf.py not found. Try trml2pdf_kraft.sh for legacy reasons
-          QString trml2pdf = QStandardPaths::findExecutable(QLatin1String("trml2pdf_kraft.sh"));
-          if( trml2pdf.isEmpty() ) {
-              // qDebug () << "Could not find trml2pdf_kraft.sh";
-          } else {
-              // qDebug () << "Found trml2pdf: " << trml2pdf;
-              retList << trml2pdf;
-              mHavePdfMerge = true;
-          }
-      }
+
+    if ( rmlbinDefault == rmlbin  ) {
+        QString p = QString::fromUtf8(qgetenv("KRAFT_HOME"));
+        if( !p.isEmpty() ) {
+            p += QLatin1String("/tools/erml2pdf.py");
+            // qDebug () << "Found erml2pdf from KRAFT_HOME: " << p;
+            if( QFile::exists( p ) ) {
+                retList << "python";
+                retList << p;
+                mHavePdfMerge = true;
+            }
+        } else {
+            const QString ermlpy = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kraft/tools/erml2pdf.py" );
+            // qDebug () << "Ermlpy: " << ermlpy;
+            if( ! ermlpy.isEmpty() ) {
+                // need the python interpreter
+                // First check for python2 in python3 times.
+                QString python = QStandardPaths::findExecutable(QLatin1String("python2"));
+                if( python.isEmpty() ) {
+                    python = QStandardPaths::findExecutable(QLatin1String("python"));
+                }
+                if( python.isEmpty() ) {
+                    qCritical() << "ERR: Unable to find python, thats a problem";
+                } else {
+                    // qDebug () << "Using python: " << python;
+                    retList << python;
+                    retList << ermlpy;
+                    mHavePdfMerge = true;
+                }
+            }
+        }
+        if (retList.isEmpty() ){
+            // tool erml2pdf.py not found. Try trml2pdf_kraft.sh for legacy reasons
+            QString trml2pdf = QStandardPaths::findExecutable(QLatin1String("trml2pdf_kraft.sh"));
+            if( trml2pdf.isEmpty() ) {
+                // qDebug () << "Could not find trml2pdf_kraft.sh";
+            } else {
+                // qDebug () << "Found trml2pdf: " << trml2pdf;
+                retList << trml2pdf;
+                mHavePdfMerge = true;
+            }
+        }
+
+
+        if ( ! mHavePdfMerge ) {
+            QString trml2pdf = QStandardPaths::findExecutable(QLatin1String("trml2pdf"));
+            if( trml2pdf.isEmpty() ) {
+                // qDebug () << "trml2pdf is also empty, we can not convert rml. Debug!";
+            } else {
+                // qDebug () << "trml2pdf found here: " << trml2pdf;
+                retList << trml2pdf;
+            }
+        }
+    }
+    if ( retList.isEmpty() ) {
+        qDebug () << "PDF conversion script not found!";
     }
 
-    if ( ! mHavePdfMerge ) {
-      QString trml2pdf = QStandardPaths::findExecutable(QLatin1String("trml2pdf"));
-      if( trml2pdf.isEmpty() ) {
-        // qDebug () << "trml2pdf is also empty, we can not convert rml. Debug!";
-      } else {
-        // qDebug () << "trml2pdf found here: " << trml2pdf;
-        retList << trml2pdf;
-      }
-    }
-  }
-  if ( retList.isEmpty() ) {
-    // qDebug () << "We have not found the script!";
-  }
-
-  return retList;
+    return retList;
 }
 
 
