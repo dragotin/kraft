@@ -900,34 +900,7 @@ void KraftView::slotDocTypeChanged( const QString& newType )
 void KraftView::slotLanguageSettings()
 {
   // qDebug () << "Language Settings" << endl;
-#if 0
-  DocLocaleDialog dia( this );
-  QLocale *l = m_doc->locale();
-
-  // FIXME locale.
-  if ( m_doc ) {
-    dia.setLocale( l->country(), l->language() );
-
-    if ( dia.exec() == QDialog::Accepted  ) {
-      QString c = dia.locale().country();
-      if ( c != m_doc->locale()->country() ) {
-
-        KConfig *cfg = KGlobal::config().data();
-        m_doc->locale()->setCountry( c, cfg );
-        m_doc->locale()->setLanguage( dia.locale().language(), cfg );
-
-        PositionViewWidgetListIterator it( mPositionWidgetList );
-        while( it.hasNext() ) {
-          PositionViewWidget *w = it.next(); //  = 0;
-          w->setLocale( m_doc->locale() );
-          w->repaint();
-        }
-
-        refreshPostCard();
-      }
-    }
-  }
-#endif
+  // FIXME 
 }
 
 void KraftView::slotNewHeaderText( const QString& str )

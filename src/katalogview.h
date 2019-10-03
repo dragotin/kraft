@@ -39,11 +39,8 @@ class CatalogTemplate;
 
 /**
   * The base class for Kraft katalog view.
-  * @see KMainWindow
-  * @see KApplication
-  * @see KConfig
   *
-  * @author Klaas Freitag <freitag@kde.org>
+  * @author Klaas Freitag <kraft@freisturz.de>
   * @version $Id$
   */
 class KRAFTCAT_EXPORT KatalogView : public QMainWindow
