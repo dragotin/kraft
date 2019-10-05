@@ -221,9 +221,11 @@ void Portal::initActions()
     editMenu->addAction(_actEditPaste);
 #endif
     QMenu *docMenu = menuBar()->addMenu(i18n("&Document"));
-    docMenu->addAction(_actNewDocument);
-    docMenu->addAction(_actOpenDocument);
     docMenu->addAction(_actViewDocument);
+    docMenu->addAction(_actOpenDocument);
+    docMenu->addSeparator();
+    docMenu->addAction(_actNewDocument);
+    docMenu->addAction(_actCopyDocument);
     docMenu->addAction(_actFollowDocument);
     docMenu->addSeparator();
     docMenu->addAction(_actPrintDocument);
@@ -248,6 +250,7 @@ void Portal::initActions()
     toolBar->addAction(_actCopyDocument);
     toolBar->addAction(_actFollowDocument);
     toolBar->addAction(_actPrintDocument);
+    toolBar->addAction(_actMailDocument);
 
 
     // initial enablements
@@ -280,8 +283,10 @@ void Portal::initView()
     QVector<QMenu*> menus = m_portalView->docDigestView()->contextMenus();
     foreach( QMenu *menu, menus ) {
       menu->setTitle( i18n("Document Actions"));
+      menu->addSection(i18n("Document Actions"));
       menu->addAction( _actViewDocument );
       menu->addAction( _actOpenDocument );
+      menu->addSeparator();
       menu->addAction( _actNewDocument );
       menu->addAction( _actCopyDocument );
       menu->addAction( _actFollowDocument );
