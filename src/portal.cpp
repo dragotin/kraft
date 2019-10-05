@@ -223,6 +223,7 @@ void Portal::initActions()
     QMenu *docMenu = menuBar()->addMenu(i18n("&Document"));
     docMenu->addAction(_actViewDocument);
     docMenu->addAction(_actOpenDocument);
+    docMenu->addAction(_actOpenArchivedDocument);
     docMenu->addSeparator();
     docMenu->addAction(_actNewDocument);
     docMenu->addAction(_actCopyDocument);
@@ -286,6 +287,7 @@ void Portal::initView()
       menu->addSection(i18n("Document Actions"));
       menu->addAction( _actViewDocument );
       menu->addAction( _actOpenDocument );
+      menu->addAction( _actOpenArchivedDocument );
       menu->addSeparator();
       menu->addAction( _actNewDocument );
       menu->addAction( _actCopyDocument );
@@ -293,7 +295,6 @@ void Portal::initView()
       menu->addSeparator();
       menu->addAction( _actPrintDocument );
       menu->addAction( _actMailDocument );
-      menu->addAction( _actOpenArchivedDocument );
     }
 
     connect( m_portalView.data(), SIGNAL(openKatalog( const QString&)),
@@ -312,8 +313,6 @@ void Portal::initView()
              this, SLOT( slotViewDocument( const QString& ) ) );
     connect( m_portalView.data(), SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
              this, SLOT( slotOpenArchivedDoc( const ArchDocDigest& ) ) );
-    connect( m_portalView.data(), SIGNAL( printDocument( const QString& ) ),
-             this, SLOT( slotPrintDocument() ) );
     connect( m_portalView.data(),  SIGNAL( documentSelected( const QString& ) ),
              this,  SLOT( slotDocumentSelected( const QString& ) ) );
     connect( m_portalView.data(),  SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
@@ -844,10 +843,8 @@ void Portal::slotDocumentSelected( const QString& doc )
 
 void Portal::slotArchivedDocExecuted()
 {
-
-  // ArchDocDigest dig = m_portalView->docDigestView()->currentArchiveDoc();
-
-  // slotOpenArchivedDoc( dig );
+  ArchDocDigest dig = m_portalView->docDigestView()->currentLatestArchivedDoc();
+  slotOpenArchivedDoc( dig );
 }
 
 void Portal::slotArchivedDocSelected( const ArchDocDigest& )

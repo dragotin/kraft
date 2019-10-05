@@ -68,7 +68,6 @@ signals:
   void openArchivedDocument( const ArchDocDigest& );
   void documentSelected( const QString& );
   void archivedDocSelected( const ArchDocDigest& );
-  void printDocument( const QString& );
 
 private:
   QString printKatLine( const QString&, int ) const;

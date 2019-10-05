@@ -280,9 +280,14 @@ void AllDocsView::slotOpenLastPrinted( )
   emit openArchivedDocument( mLatestArchivedDigest );
 }
 
+ArchDocDigest AllDocsView::currentLatestArchivedDoc() const
+{
+    return mLatestArchivedDigest;
+}
+
 void AllDocsView::slotDocOpenRequest( QModelIndex index )
 {
-    Q_UNUSED(index);
+    Q_UNUSED(index)
     const QString id = currentDocumentId();
 
     emit openDocument( id );

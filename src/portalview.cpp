@@ -391,8 +391,6 @@ QWidget* PortalView::documentDigests()
            SIGNAL( copyDocument( const QString& ) ) );
   connect( _allDocsView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
            SIGNAL( openArchivedDocument( const ArchDocDigest& ) ) );
-  // connect( mDocDigestView, SIGNAL( printDocument( const QString& ) ),
-  //         SIGNAL( printDocument( const QString& ) ) );
   connect( _allDocsView, SIGNAL( docSelected( const QString& ) ),
            SIGNAL( documentSelected( const QString& ) ) );
   connect( _allDocsView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
