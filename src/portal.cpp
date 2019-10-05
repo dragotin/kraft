@@ -728,17 +728,6 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addres
         mailReceiver = contact.fullEmail(); // the prefered email
     }
 
-    if( mailReceiver.isEmpty() ) {
-        QMessageBox::warning( this, i18n("Send per Email"),
-                              i18n("The email address of the contact is empty!\n"
-                                   "Please add an email address to the addressbook."));
-        return;
-    }
-
-    // qDebug () << "Found mail address " << mailReceiver << " for " << uid;
-
-    // qDebug () << "Mailing away " << _pdfFileName << endl;
-
     disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
              this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
     disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ), nullptr, nullptr );
@@ -750,7 +739,9 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addres
         args.append( "--utf8");
         args.append( "--attach");
         args.append(_pdfFileName );
-        args.append( mailReceiver);
+        if( !mailReceiver.isEmpty() ) {
+            args.append( mailReceiver);
+        }
         prog = QLatin1String("/usr/bin/xdg-email");
     } else {
         // Fallback to thunderbird
