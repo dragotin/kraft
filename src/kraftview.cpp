@@ -80,7 +80,8 @@
 
 KraftView::KraftView(QWidget *parent) :
   KraftViewBase( parent ),
-  mHelpLabel( 0 ), mRememberAmount( -1 ), mModified( false )
+  mHelpLabel( 0 ), mRememberAmount( -1 ), mModified( false ),
+  mTaxBefore( -1 ), mDocPosEditorIndx( -1 )
 {
   setWindowTitle( i18n("Document" ) );
   setModal( false );
@@ -891,9 +892,11 @@ void KraftView::slotDocTypeChanged( const QString& newType )
 
   mAssistant->postCard()->slotShowPrices( docType.pricesVisible() );
   m_footerEdit->ui()->_taxGroup->setVisible( docType.pricesVisible() );
-  KraftDocPositionsEdit *w = dynamic_cast<KraftDocPositionsEdit*>(mViewStack->widget(mDocPosEditorIndx));
-  if(w) {
-      w->setDiscountButtonVisible(docType.pricesVisible());
+  if( mDocPosEditorIndx > -1 ) {
+      KraftDocPositionsEdit *w = dynamic_cast<KraftDocPositionsEdit*>(mViewStack->widget(mDocPosEditorIndx));
+      if(w) {
+          w->setDiscountButtonVisible(docType.pricesVisible());
+      }
   }
 }
 
