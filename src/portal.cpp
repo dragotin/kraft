@@ -232,9 +232,14 @@ void Portal::initActions()
     docMenu->addAction(_actPrintDocument);
     docMenu->addAction(_actMailDocument);
 
+    QToolBar *toolBar = addToolBar(i18n("Kraft"));
+
     QMenu *prefsMenu = menuBar()->addMenu(i18n("&Preferences"));
     prefsMenu->addAction(_actEditTemplates);
     prefsMenu->addAction(_actReconfDb);
+    prefsMenu->addSeparator();
+    QMenu *submen = prefsMenu->addMenu(i18n("Toolbars"));
+    submen->addAction(toolBar->toggleViewAction());
     prefsMenu->addSeparator();
     prefsMenu->addAction(_actPreferences);
 
@@ -245,7 +250,6 @@ void Portal::initActions()
     helpMenu->addAction(_actAboutQt);
 
     // Toolbar
-    QToolBar *toolBar = addToolBar(i18n("Kraft"));
     toolBar->setObjectName("PortalToolbar");
     toolBar->addAction(_actNewDocument);
     toolBar->addAction(_actCopyDocument);
