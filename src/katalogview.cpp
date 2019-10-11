@@ -301,7 +301,7 @@ void KatalogView::slExport()
 
 void KatalogView::slImport()
 {
-    slotStatusMsg(i18n("Importfile... (not yet implemented"));
+    slotStatusMsg(i18n("Importfile... (not yet implemented)"));
 }
 
 void KatalogView::slAddSubChapter()
