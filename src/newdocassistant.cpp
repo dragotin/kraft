@@ -22,6 +22,7 @@
 #include <QFormLayout>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QWizard>
 
 #include <kcontacts/addressee.h>
 #include <QComboBox>
@@ -32,7 +33,6 @@
 #include <QPointer>
 
 #include <klocalizedstring.h>
-#include <kassistantdialog.h>
 
 #include "newdocassistant.h"
 #include "defaultprovider.h"
@@ -44,12 +44,12 @@
 
 
 CustomerSelectPage::CustomerSelectPage( QWidget *parent )
-  :QWidget( parent )
+  :QWizardPage ( parent )
 {
   QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
-//TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
-//TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
+  setLayout( vbox );
+
+  setTitle(i18n( "New Document Settings" ));
 
   QLabel *help = new QLabel;
   help->setText( i18n( "Please select a customer as addressee for the document. "
@@ -87,10 +87,13 @@ CustomerSelectPage:: ~CustomerSelectPage()
 // ###########################################################################
 
 DocDetailsPage::DocDetailsPage( QWidget *parent )
-  :mCustomerLabel( nullptr )
+  : QWizardPage(parent),
+    _haveAddressSelect(true),
+    mCustomerLabel( nullptr )
 {
   QVBoxLayout *vbox = new QVBoxLayout;
-  parent->setLayout( vbox );
+  setLayout( vbox );
+  setTitle(i18n( "New Document Settings" ));
 
   QLabel *help = new QLabel;
   help->setTextFormat( Qt::RichText );
@@ -138,10 +141,15 @@ DocDetailsPage::~DocDetailsPage()
 
 }
 
+void DocDetailsPage::setNoAddresses()
+{
+    _haveAddressSelect = false;
+}
+
 // ###########################################################################
 
 KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
-  :KAssistantDialog( parent ),
+  :QWizard( parent ),
    mCustomerPage( nullptr ),
    mCustomerBox( nullptr ),
    mParent( parent )
@@ -169,16 +177,15 @@ void KraftWizard::init( bool haveAddressSelect, const QString& followUpDoc )
         setWindowTitle(followUpDoc);
     }
 
-    QWidget *w1 = new QWidget;
-    mDetailsPageItem = addPage( w1, QLatin1Literal("<h2>") + i18n( "New Document Settings" ) + QLatin1Literal("</h2>") );
-    mDetailsPage = new DocDetailsPage( w1 );
+    mDetailsPage = new DocDetailsPage();
+    addPage(mDetailsPage);
+    // w1, QLatin1Literal("<h2>") +  + QLatin1Literal("</h2>") );
 
     // only pick an addressee if the document is really new
     if( addressProvider->backendUp() && haveAddressSelect ) {
-        QWidget *w = new QWidget;
-        mCustomerPageItem = addPage( w, QLatin1Literal("<h2>") + i18n( "Select an Addressee" ) + QLatin1Literal("</h2>") );
+        mCustomerPage = new CustomerSelectPage( );
+        addPage( mCustomerPage); // w, QLatin1Literal("<h2>") + i18n( "Select an Addressee" ) + QLatin1Literal("</h2>") );
 
-        mCustomerPage = new CustomerSelectPage( w );
         mCustomerPage->setupAddresses();
         connect( mCustomerPage, SIGNAL( addresseeSelected(KContacts::Addressee)),
                  this,  SLOT( slotAddressee(KContacts::Addressee)));
@@ -193,7 +200,7 @@ void KraftWizard::done( int r )
     const QByteArray geo = saveGeometry().toBase64();
     KraftSettings::self()->setNewDocWizardGeometry(geo);
 
-    KAssistantDialog::done(r);
+    QWizard::done(r);
 }
 
 void KraftWizard::slotAddressee(const KContacts::Addressee& addressee)
@@ -252,7 +259,7 @@ void KraftWizard::setDocToFollow( DocGuardedPtr sourceDoc)
     }
 
     // we already know the customer, disable the customer select page.
-    setAppropriate( mCustomerPageItem, false );
+     mDetailsPage->setNoAddresses();
 
     if ( mDetailsPage->mCustomerLabel ) {
         const QString followText = i18n("Followup Document for %1", sourceDoc->docIdentifier() );

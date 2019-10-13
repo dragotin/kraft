@@ -20,7 +20,6 @@
 
 #include <kcontacts/addressee.h>
 
-#include <kpagedialog.h>
 #include <QItemDelegate>
 
 #include "ui_identity.h"
@@ -48,7 +47,7 @@ class HtmlView;
 
 // ################################################################################
 
-class PrefsDialog : public KPageDialog
+class PrefsDialog : public QDialog
 {
   Q_OBJECT
 
@@ -76,14 +75,12 @@ signals:
   void newOwnIdentity(const QString&, KContacts::Addressee);
 
 private:
-  void docTab();
-  void doctypeTab();
-  void taxTab();
-  void wagesTab();
-  void unitsTab();
+  QWidget *docTab();
+  QWidget* doctypeTab();
+  QWidget *taxTab();
   void writeTaxes();
   void writeIdentity();
-  void whoIsMeTab();
+  QWidget *whoIsMeTab();
   void fillManualIdentityForm(const KContacts::Addressee& addressee);
 
   QComboBox *m_databaseDriver;

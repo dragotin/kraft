@@ -59,16 +59,19 @@
 // ################################################################################
 
 PrefsDialog::PrefsDialog( QWidget *parent)
-    : KPageDialog( parent )
+    :QDialog( parent )
 {
-  setFaceType( KPageDialog::List );
+  //  setFaceType( KPageDialog::List );
   setModal( true );
   setWindowTitle( i18n( "Configure Kraft" ) );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QWidget *mainWidget = new QWidget(this);
   QVBoxLayout *mainLayout = new QVBoxLayout;
   setLayout(mainLayout);
+  QLabel *lab { new QLabel( "<h2>"+i18n("Preferences")+"</h2>") };
+  mainLayout->addWidget(lab);
+  QTabWidget *mainWidget = new QTabWidget;
+  mainWidget->setTabPosition(QTabWidget::West);
   mainLayout->addWidget(mainWidget);
   QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
   okButton->setDefault(true);
@@ -79,23 +82,19 @@ PrefsDialog::PrefsDialog( QWidget *parent)
   okButton->setDefault(true);
   setMinimumWidth(700);
 
-  docTab();
-  doctypeTab();
-  taxTab();
-  wagesTab();
-  unitsTab();
-  whoIsMeTab();
+  mainWidget->addTab( docTab(), QIcon::fromTheme( "edit-copy"), i18n( "Document Defaults" ));
+  mainWidget->addTab( taxTab(), QIcon::fromTheme( "accessories-text-editor" ), i18n("Taxes"));
+  mainWidget->addTab( doctypeTab(), QIcon::fromTheme( "folder-documents"), i18n( "Document Types" ));
+  mainWidget->addTab(new PrefsWages(this), QIcon::fromTheme( "help-donate" ), i18n( "Wages" ));
+  mainWidget->addTab(new PrefsUnits(this), QIcon::fromTheme( "chronometer" ), i18n("Units"));
+  mainWidget->addTab( whoIsMeTab(), QIcon::fromTheme( "user-identity" ), i18n( "Own Identity" ));
 
   readConfig();
 }
 
-void PrefsDialog::taxTab()
+QWidget* PrefsDialog::taxTab()
 {
   QWidget *topWidget = new QWidget;
-
-  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Taxes" ));
-
-  topFrame->setIcon(QIcon::fromTheme( "accessories-text-editor" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   // vboxLay->setSpacing( spacingHint() );
@@ -142,33 +141,13 @@ void PrefsDialog::taxTab()
 
   vboxLay->addLayout( butLay );
   topWidget->setLayout( vboxLay );
+
+  return topWidget;
 }
 
-void PrefsDialog::wagesTab()
-{
-    mPrefsWages = new PrefsWages(this);
-
-    KPageWidgetItem *topFrame = addPage( mPrefsWages, i18n( "Wages" ));
-
-    topFrame->setIcon(QIcon::fromTheme( "help-donate" ) );
-}
-
-void PrefsDialog::unitsTab()
-{
-    mPrefsUnits = new PrefsUnits(this);
-
-    KPageWidgetItem *topFrame = addPage( mPrefsUnits, i18n( "Units" ));
-
-    topFrame->setIcon(QIcon::fromTheme( "chronometer" ) );
-}
-
-void PrefsDialog::whoIsMeTab()
+QWidget* PrefsDialog::whoIsMeTab()
 {
   QWidget *topWidget = new QWidget;
-
-  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Own Identity" ));
-
-  topFrame->setIcon(QIcon::fromTheme( "user-identity" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
 
@@ -215,6 +194,7 @@ void PrefsDialog::whoIsMeTab()
 
   topWidget->setLayout( vboxLay );
 
+  return topWidget;
 }
 
 void PrefsDialog::slotChangeIdentity()
@@ -255,13 +235,10 @@ void PrefsDialog::slotTaxSelected(QModelIndex)
   mDelTax->setEnabled( state );
 }
 
-void PrefsDialog::docTab()
+QWidget* PrefsDialog::docTab()
 {
   QLabel *label;
   QWidget *topWidget = new QWidget;
-
-  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Defaults" ) );
-  topFrame->setIcon(QIcon::fromTheme( "edit-copy" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   topWidget->setLayout( vboxLay );
@@ -312,13 +289,13 @@ void PrefsDialog::docTab()
   QWidget *spaceEater = new QWidget;
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
   vboxLay->addWidget( spaceEater );
+
+    return topWidget;
 }
 
-void PrefsDialog::doctypeTab()
+QWidget* PrefsDialog::doctypeTab()
 {
   QWidget *topWidget = new QWidget;
-  KPageWidgetItem *topFrame = addPage( topWidget, i18n( "Document Types" ) );
-  topFrame->setIcon(QIcon::fromTheme( "folder-documents" ) );
 
   QVBoxLayout *vboxLay = new QVBoxLayout;
   topWidget->setLayout(vboxLay);
@@ -330,6 +307,7 @@ void PrefsDialog::doctypeTab()
   connect( mDocTypeEdit, SIGNAL( removedType( const QString& ) ),
            SLOT( slotDocTypeRemoved( const QString& ) ) );
 
+  return topWidget;
 }
 
 void PrefsDialog::slotDocTypeRemoved( const QString& type )

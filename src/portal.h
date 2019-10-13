@@ -22,14 +22,10 @@
 // include files for Qt
 #include <QMap>
 #include <QCommandLineParser>
-
-// include files for KDE
-#include <ktoggleaction.h>
-
 #include <QMainWindow>
-#include <kcontacts/addressee.h>
-
 #include <QUrl>
+
+#include <kcontacts/addressee.h>
 
 #include "docguardedptr.h"
 #include "katalogview.h"

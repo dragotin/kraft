@@ -20,9 +20,9 @@
 
 #include <QMap>
 #include <QLabel>
+#include <QWizard>
 
 #include <kcontacts/addressee.h>
-#include <kassistantdialog.h>
 
 #include "kraftdoc.h"
 #include "docguardedptr.h"
@@ -42,7 +42,7 @@ using namespace KContacts;
 
 // ---------------------------------------------------------------------------
 
-class CustomerSelectPage: public QWidget
+class CustomerSelectPage: public QWizardPage
 {
   Q_OBJECT
 
@@ -65,7 +65,7 @@ private:
 
 // ---------------------------------------------------------------------------
 
-class DocDetailsPage : public QWidget
+class DocDetailsPage : public QWizardPage
 {
   Q_OBJECT
 
@@ -75,7 +75,10 @@ public:
   DocDetailsPage( QWidget *parent = 0 );
   ~DocDetailsPage();
 
+  void setNoAddresses();
+
 private:
+  bool        _haveAddressSelect;
   QLabel      *mCustomerLabel;
   QDateEdit   *mDateEdit;
   QComboBox   *mTypeCombo;
@@ -86,7 +89,7 @@ private:
 
 // ---------------------------------------------------------------------------
 
-class KraftWizard: public KAssistantDialog
+class KraftWizard: public QWizard
 {
   Q_OBJECT
 
@@ -116,9 +119,6 @@ private:
   QWidget *mParent;
 
   KContacts::Addressee mAddressee;
-
-  KPageWidgetItem *mCustomerPageItem;
-  KPageWidgetItem *mDetailsPageItem;
 };
 
 #endif
