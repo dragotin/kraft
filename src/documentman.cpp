@@ -87,7 +87,10 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
                         Geld ng(-1 * g.toLong());
 
                         pos->setUnitPrice(ng);
-                        pos->setText(i18n("Substract sum from %1 %2",
+                        pos->setText(i18nc("Text to be inserted into a doc, if the sum of another doc needs to be substracted "
+					   "ie. in a final invoice if there was a partial invoice before"
+					   "%1 is substited by the doc type, %2 by the id of the predecessor doc.",
+					   "Substract sum from %1 %2",
                                           sourceDocType.name(), sourceDoc->ident()));
                     }
                 }
