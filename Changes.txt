@@ -17,6 +17,7 @@ Changes since version 0.82: #########################################
 - Added 'About Kraft' information to Krafts system view.
 - Added document type 'Offer without price tags', which does not 
   print price tags on the PDF (issue #58).
+- Internationalization: Added dutch translation
 
 => release v. 0.90 (Mar x, 2019)
 
