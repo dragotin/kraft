@@ -108,7 +108,7 @@ QString HtmlView::readStyles(const QString& styleFile) const
         // qDebug() << "+++++++++++++++++++++++++++++++++++++++++++++" << styles;
         return styles;
     }
-    return QString::null;
+    return QString();
 }
 
 QString HtmlView::bottomFrame() const

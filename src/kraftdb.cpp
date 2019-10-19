@@ -163,7 +163,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
         } else if(mDatabaseDriver == "QSQLITE") {
             // SqlLite only requires a valid file name which comes in as Database Name
             // qDebug () << "Try to open SqLite database " << name << endl;
-            re = checkConnect( QString::null, dbName, QString::null, QString::null, -1);
+            re = checkConnect( QString(), dbName, QString(), QString(), -1);
         }
         if ( re == 0 ) {
             // Database successfully opened; we can now issue SQL commands.

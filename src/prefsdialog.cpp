@@ -409,8 +409,8 @@ void PrefsDialog::writeIdentity()
             f.close();
             qDebug() << "Saved own identity to " << file;
 
-            KraftSettings::self()->setUserName( QString::null );
-            KraftSettings::self()->setUserUid( QString::null );
+            KraftSettings::self()->setUserName( QString() );
+            KraftSettings::self()->setUserUid( QString() );
             KraftSettings::self()->save();
         }
     } else { /* AddressBook */

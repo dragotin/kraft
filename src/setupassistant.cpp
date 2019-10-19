@@ -516,7 +516,7 @@ void SetupAssistant::slotCurrentPageChanged( int currId )
                 setField("SqliteStorageFile", filename);
             }
             if( !KraftDB::self()->dbConnect( QLatin1String("QSQLITE"), filename,
-                                             QString::null, QString::null, QString::null) ) {
+                                             QString(), QString(), QString()) ) {
                 setField("CreateDbStatusText", i18n("<p>Can't open your database file, check the permissions and such."));
             }
         }
@@ -748,7 +748,7 @@ bool SetupAssistant::handleSqLiteDetails()
     mSqlBackendDriver = mDbSelectPage->selectedDriver();
     // qDebug () << "The database driver is " << mSqlBackendDriver;
     bool re = KraftDB::self()->dbConnect( mSqlBackendDriver, file,
-                                          QString::null, QString::null, QString::null );
+                                          QString(), QString(), QString() );
 
     return re;
 }

@@ -92,7 +92,7 @@ class KraftWizard: public KAssistantDialog
 
 public:
   KraftWizard(QWidget *parent = 0, const char* name = 0, bool modal = false );
-  void init(bool haveAddressSelect, const QString& followUpDoc = QString::null);
+  void init(bool haveAddressSelect, const QString& followUpDoc = QString());
 
   ~KraftWizard();
 

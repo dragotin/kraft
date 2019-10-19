@@ -234,7 +234,7 @@ void KraftWizard::setDocToFollow( DocGuardedPtr sourceDoc)
         // store the id of the follower and clear id
         const QString idT = dPtr->docIdentifier();
         mDetailsPage->mSourceDocIdentsCombo->addItem(idT, id);
-        id = QString::null;
+        id = QString();
 
         // remember the current dptr to be able to delete it soon
         DocGuardedPtr oldDptr = dPtr;

@@ -360,7 +360,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
 
 void PortalView::fillSystemDetails()
 {
-  const QString html = systemView( QString::null );
+  const QString html = systemView( QString() );
   mSystemBrowser->displayContent( html );
 }
 

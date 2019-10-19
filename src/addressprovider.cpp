@@ -84,7 +84,7 @@ QString AddressProvider::errorMsg( const QString& uid )
     if( _errMessages.contains(uid) ) {
         return _errMessages[uid];
     }
-    return QString::null;
+    return QString();
 }
 
 KContacts::Addressee AddressProvider::getAddresseeFromCache(const QString& uid)

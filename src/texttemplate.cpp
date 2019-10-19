@@ -184,7 +184,7 @@ QString TextTemplate::expand() const
 QString TextTemplate::findTemplateFile(const QString &filename) const
 {
   if( filename.isEmpty() ) {
-    return QString::null;
+    return QString();
   }
 
   QString templFileName = filename;
@@ -204,7 +204,7 @@ QString TextTemplate::findTemplateFile(const QString &filename) const
     }
     if( tmplFile.isEmpty() ) {
       // qDebug () << "Could not find template " << filename;
-      return QString::null;
+      return QString();
     }
   }
   return tmplFile;

@@ -14,7 +14,7 @@ void init_test_db()
 
     QFile::remove(dbName);
 
-    KraftDB::self()->dbConnect("QSQLITE", dbName, QString::null, QString::null, QString::null);
+    KraftDB::self()->dbConnect("QSQLITE", dbName, QString(), QString(), QString());
 
     SqlCommandList sqls = KraftDB::self()->parseCommandFile("5_dbmigrate.sql");
     KraftDB::self()->processSqlCommands(sqls);

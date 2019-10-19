@@ -50,7 +50,7 @@ DocGuardedPtr DocumentMan::copyDocument( const QString& copyFromId )
         DocGuardedPtr sourceDoc = openDocument( copyFromId );
         if ( sourceDoc ) {
             *doc = *sourceDoc; // copies all data from the previous doc
-            doc->setPredecessor(QString::null); // clear the predecessor
+            doc->setPredecessor(QString()); // clear the predecessor
         }
         doc->setLastModified( QDate::currentDate());
     }
@@ -67,7 +67,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
         DocGuardedPtr sourceDoc = openDocument( copyFromId );
         if ( sourceDoc ) {
             *doc = *sourceDoc; // copies all data from the previous doc
-            doc->setIdent(QString::null);
+            doc->setIdent(QString());
             doc->setDocType(docType); // sets the defaults for the new doc type
             doc->deleteItems();       // remove all items that exist so far
             doc->setPositionList(listToCopy, true);
