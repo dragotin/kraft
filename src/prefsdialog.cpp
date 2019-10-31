@@ -61,35 +61,85 @@
 PrefsDialog::PrefsDialog( QWidget *parent)
     :QDialog( parent )
 {
-  //  setFaceType( KPageDialog::List );
   setModal( true );
   setWindowTitle( i18n( "Configure Kraft" ) );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel);
-  QVBoxLayout *mainLayout = new QVBoxLayout;
+  QHBoxLayout *mainLayout = new QHBoxLayout;
+
+  _navigationBar = new QListWidget(this);
+  _navigationBar->setViewMode(QListView::IconMode);
+  _navigationBar->setIconSize(QSize(96, 64));
+  _navigationBar->setMovement(QListView::Static);
+  //_navigationBar->setSpacing(6);
+  _navigationBar->setCurrentRow(0);
+  _navigationBar->setFixedWidth(248);
+
   setLayout(mainLayout);
-  QLabel *lab { new QLabel( "<h2>"+i18n("Preferences")+"</h2>") };
-  mainLayout->addWidget(lab);
-  QTabWidget *mainWidget = new QTabWidget;
-  mainWidget->setTabPosition(QTabWidget::West);
-  mainLayout->addWidget(mainWidget);
+
+  QVBoxLayout *vbox = new QVBoxLayout;
+  _pagesWidget = new QStackedWidget(this);
+  vbox->addWidget( _pagesWidget );
+
+  vbox->addWidget( buttonBox );
+
+  mainLayout->addWidget(_navigationBar);
+
   QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
   okButton->setDefault(true);
   okButton->setShortcut(Qt::CTRL | Qt::Key_Return);
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  mainLayout->addWidget(buttonBox);
+  mainLayout->addLayout(vbox);
   okButton->setDefault(true);
   setMinimumWidth(700);
 
-  mainWidget->addTab( docTab(), QIcon::fromTheme( "edit-copy"), i18n( "Document Defaults" ));
-  mainWidget->addTab( taxTab(), QIcon::fromTheme( "accessories-text-editor" ), i18n("Taxes"));
-  mainWidget->addTab( doctypeTab(), QIcon::fromTheme( "folder-documents"), i18n( "Document Types" ));
-  mainWidget->addTab(new PrefsWages(this), QIcon::fromTheme( "help-donate" ), i18n( "Wages" ));
-  mainWidget->addTab(new PrefsUnits(this), QIcon::fromTheme( "chronometer" ), i18n("Units"));
-  mainWidget->addTab( whoIsMeTab(), QIcon::fromTheme( "user-identity" ), i18n( "Own Identity" ));
+  _maxNavBarTextWidth = 0;
+
+  addDialogPage( docTab(), QIcon::fromTheme( "edit-copy"), i18n( "Document Defaults" ));
+  addDialogPage( taxTab(), QIcon::fromTheme( "accessories-text-editor" ), i18n("Taxes"));
+  addDialogPage( doctypeTab(), QIcon::fromTheme( "folder-documents"), i18n( "Document Types" ));
+  mPrefsWages = new PrefsWages(this);
+  addDialogPage(mPrefsWages, QIcon::fromTheme( "help-donate" ), i18n( "Wages" ));
+  mPrefsUnits = new PrefsUnits(this);
+  addDialogPage(mPrefsUnits, QIcon::fromTheme( "chronometer" ), i18n("Units"));
+  addDialogPage( whoIsMeTab(), QIcon::fromTheme( "user-identity" ), i18n( "Own Identity" ));
 
   readConfig();
+
+
+  connect( _navigationBar, &QListWidget::itemClicked,
+           this, &PrefsDialog::changePage);
+}
+
+void PrefsDialog::changePage(QListWidgetItem *current)
+{
+  if (!current)
+      return;
+
+  int indx = _navigationBar->row(current);
+  _pagesWidget->setCurrentIndex(indx);
+}
+
+int PrefsDialog::addDialogPage( QWidget *w, const QIcon& icon, const QString& title)
+{
+    QListWidgetItem *listWidgetItem = new QListWidgetItem(_navigationBar);
+    listWidgetItem->setIcon(icon);
+    listWidgetItem->setText(title);
+    listWidgetItem->setTextAlignment(Qt::AlignCenter);
+    listWidgetItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    listWidgetItem->setSizeHint( QSize(220, 100));
+
+    _navigationBar->addItem(listWidgetItem);
+
+    QWidget *w_with_title = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(new QLabel(QStringLiteral("<h1>")+title+QStringLiteral("</h1>")));
+    w_with_title->setLayout(layout);
+    layout->addWidget(w);
+    int indx = _pagesWidget->addWidget(w_with_title);
+
+    return indx;
 }
 
 QWidget* PrefsDialog::taxTab()

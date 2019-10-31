@@ -57,6 +57,7 @@ public:
   ~PrefsDialog();
 
   void setMyIdentity(const KContacts::Addressee& , bool backendUp);
+  int addPage( QWidget *w, const QIcon& icon, const QString& title);
 
 protected:
   void readConfig();
@@ -70,11 +71,14 @@ protected slots:
   void slotTaxSelected(QModelIndex);
   void slotDocTypeRemoved( const QString& );
   void slotChangeIdentity();
+  void changePage(QListWidgetItem *current);
 
 signals:
   void newOwnIdentity(const QString&, KContacts::Addressee);
 
 private:
+  int addDialogPage( QWidget *w, const QIcon& icon, const QString& title);
+
   QWidget *docTab();
   QWidget* doctypeTab();
   QWidget *taxTab();
@@ -113,8 +117,13 @@ private:
   ImpTreeView    *mTaxTreeView;
   QSqlTableModel *mTaxModel;
   HtmlView       *mIdentityView;
+  QListWidget    *_navigationBar;
+  QStackedWidget *_pagesWidget;
+
   QTabWidget     *_tabWidget;
   Ui::manualOwnIdentity ui;
+
+    int _maxNavBarTextWidth;
 };
 
 class TaxItemDelegate : public QItemDelegate
