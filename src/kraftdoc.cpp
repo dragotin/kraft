@@ -159,9 +159,12 @@ bool KraftDoc::saveDocument( )
 
 QString KraftDoc::docIdentifier() const
 {
-  const QString realName = ""; // FIXME: get Realname out of addressbook or from a manually added address
+  const QString id = ident();
+  if( id.isEmpty() ) {
+      return docType();
+  }
   return i18nc("First argument is the doctype, like Invoice, followed by the ID",
-               "%1 (Id %2)", docType(), ident() );
+               "%1 (Id %2)", docType(), id );
 }
 
 void KraftDoc::deleteItems()
