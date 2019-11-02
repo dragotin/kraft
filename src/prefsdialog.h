@@ -104,8 +104,6 @@ private:
 
   QPushButton *_pbChangeIdentity;
 
-  QCheckBox *mCbDocLocale;
-
   DocTypeEdit *mDocTypeEdit;
   
   PrefsWages *mPrefsWages;

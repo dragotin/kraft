@@ -248,13 +248,8 @@ void KraftView::setupDocHeaderView()
     m_headerEdit->m_cbType->clear();
     // m_headerEdit->m_cbType->insertStringList( DefaultProvider::self()->docTypes() );
     m_headerEdit->m_cbType->insertItems(-1, DocType::allLocalised() );
-
-    // if ( KraftSettings::self()->showDocumentLocale() ) {
-    //   m_headerEdit->mButtLang->show();
-    // } else {
-    // Hide the locale select button for now.
     m_headerEdit->mButtLang->hide();
-    // }
+
     const QString predecessorDbId = m_doc->predecessorDbId();
     bool predecIsVisible = false;
     if( !predecessorDbId.isEmpty() ) {

@@ -73,7 +73,7 @@ PrefsDialog::PrefsDialog( QWidget *parent)
   _navigationBar->setMovement(QListView::Static);
   //_navigationBar->setSpacing(6);
   _navigationBar->setCurrentRow(0);
-  _navigationBar->setFixedWidth(248);
+  _navigationBar->setFixedWidth(195);
 
   setLayout(mainLayout);
 
@@ -128,7 +128,7 @@ int PrefsDialog::addDialogPage( QWidget *w, const QIcon& icon, const QString& ti
     listWidgetItem->setText(title);
     listWidgetItem->setTextAlignment(Qt::AlignCenter);
     listWidgetItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    listWidgetItem->setSizeHint( QSize(220, 100));
+    listWidgetItem->setSizeHint( QSize(170, 100));
 
     _navigationBar->addItem(listWidgetItem);
 
@@ -308,19 +308,6 @@ QWidget* PrefsDialog::docTab()
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
   vboxLay->addWidget( f );
 
-  // Localisation on document level
-  mCbDocLocale = new QCheckBox( i18n( "Enable &Localization on Document Level" ) );
-  mCbDocLocale->setToolTip( i18n( "Checking this enables language settings for each document."
-                                     "<br>Leave it unchecked to use the KDE Workspace default settings for "
-                                     "the document localisation." ) );
-  vboxLay->addWidget( mCbDocLocale );
-
-  vboxLay->addWidget( new QWidget );
-
-  f = new QLabel;
-  f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
-  vboxLay->addWidget( f );
-
   QHBoxLayout *butLay = new QHBoxLayout;
   QLabel *l = new QLabel( i18n( "Default &Tax for Documents:" ) );
   butLay->addWidget( l );
@@ -387,8 +374,6 @@ void PrefsDialog::slotDocTypeRemoved( const QString& type )
 
 void PrefsDialog::readConfig()
 {
-    mCbDocLocale->setChecked( KraftSettings::self()->showDocumentLocale() );
-
     QString t = KraftSettings::self()->doctype();
     if ( t.isEmpty() ) t = DefaultProvider::self()->docType();
 
@@ -451,7 +436,6 @@ void PrefsDialog::writeIdentity()
 
 void PrefsDialog::writeConfig()
 {
-    KraftSettings::self()->setShowDocumentLocale( mCbDocLocale->isChecked() );
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
 
