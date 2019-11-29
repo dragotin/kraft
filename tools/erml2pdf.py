@@ -48,7 +48,6 @@ from reportlab.platypus.flowables import KeepTogether
 from six import text_type
 from PyPDF2 import PdfFileWriter, PdfFileReader
 
-
 #
 # Change this to UTF-8 if you plan tu use Reportlab's UTF-8 support
 #
@@ -840,8 +839,11 @@ class PdfWatermark:
 
     def watermark( self, pdfStr, watermarkFile, spec ):
         # Read the watermark- and document pdf file
-        inputWatermark = PdfFileReader( file( watermarkFile, "rb" ) )
-        generatedPdf = PdfFileReader( pdfStr )
+        watermark = PdfFileReader(watermarkFile)
+        watermark_page = watermark.getPage(0)
+
+        pdfStr.seek(0)
+        inputPdf = PdfFileReader( pdfStr )
         outputPdf = PdfFileWriter()
 
         # flag for the first page of the source file
@@ -849,28 +851,26 @@ class PdfWatermark:
 
         # Loop over source document pages and merge with the first page of the watermark
         # file.
-        watermarkPage = inputWatermark.getPage(0)
-        for page in generatedPdf.pages:
+        for page in range(inputPdf.getNumPages()):
+            pdf_page = inputPdf.getPage(page)
             if (spec == Mark.FIRST_PAGE and firstPage) or spec == Mark.ALL_PAGES:
                 # deep copy the watermark page here, otherwise the watermark page
                 # gets merged over and over because p would only be a reference
-                p = copy.copy( watermarkPage )
-                p.mergePage( page )
-                outputPdf.addPage( p )
+                pdf_page.mergePage(watermark_page)
+                outputPdf.addPage( pdf_page )
                 firstPage = False
             else:
-                outputPdf.addPage(page)
+                outputPdf.addPage(pdf_page)
 
         if self.outputFile:
-            # Write to outputfile
-            outputStream = file( self.outputFile, "wb" )
-            outputPdf.write( outputStream )
-            outputStream.close()
+            with open(self.outputFile, 'wb') as fh:
+                outputPdf.write(fh)
+
             return self.outputFile
         else:
-            stringIO = StringIO();
-            outputPdf.write( stringIO )
-            return stringIO.getvalue()
+            bytesIO = io.BytesIO();
+            outputPdf.write(bytesIO)
+            return bytesIO.getvalue()
 
 
 def parseString(data):
@@ -926,23 +926,26 @@ if __name__=="__main__":
         # a input file needs to be there
         erml2pdf_help()
     else:
-        print "Args:" + args[0]
+        # print ("Args:" + args[0])
         infile = args[0]
         # create the PDF with the help of reportlab
-        pdf = parseString( open( infile, 'r' ).read() )
-
-        # apply the watermark if required
+        content = open(infile, 'r').read()
+        pdf = parseString( content )
+       # apply the watermark if required
         # print "############ Watermark-Mode: " + watermarkMode
         if watermarkMode != Mark.NOTHING:
             wm = PdfWatermark()
-            pdfStringFile = StringIO()
+            pdfStringFile = io.BytesIO()
             pdfStringFile.write( pdf )
             pdf = wm.watermark( pdfStringFile, watermarkFile, watermarkMode )
 
         # handle output option, either file or stdout
         if output:
-            outfile = open(output, 'w')
+            outfile = open(output, 'wb')
             outfile.write( pdf )
             outfile.close()
         else:
-            print( pdf )
+            if sys.version_info[0] < 3:
+                sys.stdout.write(pdf)
+            else:
+                sys.stdout.buffer.write(pdf)
