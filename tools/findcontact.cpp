@@ -18,6 +18,7 @@
 #include <QFile>
 #include <QObject>
 #include <QDebug>
+#include <QTimer>
 #include <QCoreApplication>
 
 #include "addressprovider.h"
@@ -39,6 +40,16 @@ public slots:
         emit quitLoop();
     }
 
+    void run()
+    {
+        if( parseOptions() ) {
+            search();
+        } else {
+            help();
+            emit quitLoop();
+        }
+    }
+
 public:
     typedef enum {
         VCard,
@@ -54,7 +65,10 @@ public:
     };
 
     // Constructor, called to initialize object
-    FindContact() : QObject() {
+    FindContact( const QStringList& args )
+    : QObject(),
+    _args(args)
+    {
                 _addressProvider.reset( new AddressProvider(this) );
 
         connect( _addressProvider.data(),
@@ -74,17 +88,17 @@ public:
         std::cout << "  -t <template>: Output format defined by template" << std::endl;
         std::cout << "                 Not implemented yet." << std::endl;
         std::cout << std::endl;
-        exit(1);
-
+        std::cout << " findcontact is part of the Kraft project." << std::endl;
+        std::cout << std::endl;
     }
 
     // method to parse the options coming from command line
-    void parseOptions( const QStringList& app_args )
+    bool parseOptions( )
     {
-        QStringList args(app_args);
+        QStringList args(_args);
 
         if( args.count() < 2 ) {
-            help();
+            return false;
         }
 
         // fetch the last command line option, it's the UID to query for.
@@ -109,10 +123,12 @@ public:
                 _options.outTemplate = it.next();
                 std::cout << "Not yet implemented!" << std::endl;
             } else {
-                help();
+                return false;
             }
         }
+        return true;
     }
+
 
     // method to start the search job. It is asynchronous and ends up in the
     // slot searchResult()
@@ -202,23 +218,19 @@ public:
 private:
     QScopedPointer<AddressProvider> _addressProvider;
     CmdOptions _options;
+    QStringList _args;
 };
 
 // main function, not part of the object, program start.
 int main(int argc, char **argv) {
     QCoreApplication app(argc, argv);
 
+    QScopedPointer<FindContact> fc;
+    fc.reset(new FindContact( app.arguments()));
+    QObject::connect(fc.data(), SIGNAL(quitLoop()), &app, SLOT(quit()));
 
-    FindContact fc;
-    fc.parseOptions( app.arguments());
-    fc.search();
-
-    QEventLoop loop;
-    QObject::connect(&fc, SIGNAL(quitLoop()), &loop, SLOT(quit()), Qt::QueuedConnection);
-    loop.exec();
-
-    app.exec();
-    return 0;
+    QTimer::singleShot( 0, fc.data(), SLOT(run()));
+    return app.exec();
 }
 
 // Needed to pull in the generated moc file for QObject (signals, slots...)
