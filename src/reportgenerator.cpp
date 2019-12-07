@@ -464,16 +464,17 @@ QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle
 
 QStringList ReportGenerator::findTrml2Pdf( )
 {
-    // Get the item to check if it is set to default
-    KConfigSkeletonItem *item = KraftSettings::self()->findItem("Trml2PdfBinary");
+    // define the default value to compare against, to see if there is a custom
+    // value in the settings file.
+    const QString rmlbinDefault = QStringLiteral( "trml2pdf" ); // FIXME: how to get the default value?
+    const QString rmlbin = KraftSettings::self()->trml2PdfBinary();
 
     // qDebug () << "### Start searching rml2pdf bin: " << rmlbin;
 
     QStringList retList;
     mHavePdfMerge = false;
 
-    if ( item && !item->isDefault() ) {
-        const QString rmlbin = KraftSettings::self()->trml2PdfBinary();
+    if ( rmlbin != rmlbinDefault ) {
         retList = rmlbin.split(' ', QString::SkipEmptyParts);
     } else {
         // The value in the config is not, as it is still the same as the default
