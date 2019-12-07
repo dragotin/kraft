@@ -464,15 +464,20 @@ QString ReportGenerator::rmlString( const QString& str, const QString& paraStyle
 
 QStringList ReportGenerator::findTrml2Pdf( )
 {
-    const QString rmlbinDefault = QStringLiteral( "trml2pdf" ); // FIXME: how to get the default value?
-    QString rmlbin = KraftSettings::self()->trml2PdfBinary();
+    // Get the item to check if it is set to default
+    KConfigSkeletonItem *item = KraftSettings::self()->findItem("Trml2PdfBinary");
+
     // qDebug () << "### Start searching rml2pdf bin: " << rmlbin;
 
     QStringList retList;
     mHavePdfMerge = false;
 
-
-    if ( rmlbinDefault == rmlbin  ) {
+    if ( item && !item->isDefault() ) {
+        const QString rmlbin = KraftSettings::self()->trml2PdfBinary();
+        retList = rmlbin.split(' ', QString::SkipEmptyParts);
+    } else {
+        // The value in the config is not, as it is still the same as the default
+        // read from either KRAFT_HOME or search in the system.
         QString p = QString::fromUtf8(qgetenv("KRAFT_HOME"));
         if( !p.isEmpty() ) {
             p += QLatin1String("/tools/erml2pdf.py");
@@ -643,15 +648,18 @@ void ReportGenerator::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
     if( mFile.isOpen() ) {
         mFile.close();
     }
-    Q_UNUSED(stat);
+    Q_UNUSED(stat)
 
     // qDebug () << "PDF Creation Process finished with status " << exitStatus;
     // qDebug () << "Wrote bytes to the output file: " << mOutputSize;
     if ( exitCode == 0 ) {
-        emit pdfAvailable( mFile.fileName() );
-        if( mProcess) {
-            const QString rmlFile = mProcess->arguments().last(); // the file name of the temp rmlfile
-            QFile::remove(rmlFile); // remove the rmlFile
+        QFileInfo fi(mFile.fileName());
+        if( fi.exists() ) {
+            emit pdfAvailable( mFile.fileName() );
+            if( mProcess) {
+                const QString rmlFile = mProcess->arguments().last(); // the file name of the temp rmlfile
+                QFile::remove(rmlFile); // remove the rmlFile
+            }
         }
     } else {
         if( mErrors.contains(QLatin1String("No module named Reportlab"))) {
