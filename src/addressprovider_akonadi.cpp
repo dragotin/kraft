@@ -108,6 +108,7 @@ bool AddressProviderPrivate::lookupAddressee( const QString& uid )
     return false;
 }
 
+#ifdef HAVE_AKONADI
 void AddressProviderPrivate::searchResult( KJob* job )
 {
     if( !job ) return;
@@ -123,15 +124,10 @@ void AddressProviderPrivate::searchResult( KJob* job )
         emit lookupError(uid, errMsg );
         // qDebug () << "Address Search job failed: " << job->errorString();
     } else {
-#ifdef HAVE_AKONADI
 	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-#endif
         const KContacts::Addressee::List contacts =
-#ifdef HAVE_AKONADI
                 searchJob->contacts();
-#else
                 KContacts::Addressee::List();
-#endif
         // qDebug () << "Found list of " << contacts.size() << " addresses as search result";
 
         if( contacts.size() > 0 ) {
@@ -151,6 +147,7 @@ void AddressProviderPrivate::searchResult( KJob* job )
 
     job->deleteLater();
 }
+#endif
 
 QAbstractItemModel* AddressProviderPrivate::model()
 {

@@ -55,10 +55,10 @@ public:
     KContacts::Addressee getAddressee(const QModelIndex& indx);
 
     bool isSearchOngoing(const QString& uid);
-
+#ifdef HAVE_AKONADI
 public slots:
     void searchResult( KJob* );
-
+#endif
 signals:
     //
     void addresseeFound( const QString&, const KContacts::Addressee& );
