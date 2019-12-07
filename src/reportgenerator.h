@@ -24,8 +24,6 @@
 
 #include <kcontacts/addressee.h>
 
-#include <kprocess.h>
-
 #include "kraftdoc.h"
 #include "archdoc.h"
 

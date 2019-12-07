@@ -23,9 +23,8 @@
 
 #include <kcontacts/addressee.h>
 
-#include <kjob.h>
-
 #ifdef HAVE_AKONADI
+#include <kjob.h>
 #include <AkonadiCore/session.h>
 #include <AkonadiCore/changerecorder.h>
 #include <akonadi/contact/contactstreemodel.h>
