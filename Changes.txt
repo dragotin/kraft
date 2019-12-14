@@ -19,7 +19,7 @@ Changes since version 0.82: #########################################
   print price tags on the PDF (issue #58).
 - Internationalization: Added dutch translation
 
-=> release v. 0.90 (Mar x, 2019)
+=> release v. 0.90 (Dec. 14, 2019)
 
 Changes since version 0.81: #########################################
 
