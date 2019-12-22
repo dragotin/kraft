@@ -347,8 +347,6 @@ void DateModel::setYearCountColumn( int column )
     }
 }
 
-void DateModel::setYearCountColumn( int column );
-
 TreeItem *DateModel::findYearItem(int year)
 {
     TreeItem *yearItem = NULL;
