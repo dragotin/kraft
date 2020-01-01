@@ -1,3 +1,9 @@
+Changes since version 0.90: #########################################
+
+- Removed Splash screen completely for simplification.
+- Switch to invoke the conversation script with python3 directly.
+
+=> release v. 0.91 (xx, 2020)
 
 Changes since version 0.82: #########################################
 
