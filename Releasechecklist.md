@@ -7,7 +7,6 @@ Release Checklist for Kraft Version XX
 
 ### Before the first beta
 
-- [ ] Update the version number on the splash screen
 - [ ] Check entries in `src/version.h`
 - [ ] Check the database scheme version number.
 

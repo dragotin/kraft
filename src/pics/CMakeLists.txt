@@ -2,7 +2,7 @@ add_subdirectory(global)
 
 ########### install files ###############
 
-install(FILES kraftsplash.png kraftapp_logo.png DESTINATION ${DATA_INSTALL_DIR}/kraft/pics)
+install(FILES kraftapp_logo.png DESTINATION ${DATA_INSTALL_DIR}/kraft/pics)
 
 ecm_install_icons( ICONS
 	16-actions-kraft_alternative.png
