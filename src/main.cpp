@@ -52,31 +52,8 @@ int main(int argc, char *argv[])
 
     // Register the supported options
     QScopedPointer<Portal> kraftPortal;
-    if (app.isSessionRestored()) {
-        // FIXME: Add session management
-        // RESTORE(Portal);
-    } else {
-        QString splashFile = DefaultProvider::self()->locateFile("pics/kraftsplash.png" );
-        QSplashScreen *splash = nullptr;
-
-        if( !splashFile.isEmpty()) {
-            QPixmap pixmap( splashFile );
-
-            splash = new QSplashScreen( pixmap, Qt::WindowStaysOnTopHint );
-            splash->setMask(pixmap.mask());
-            splash->show();
-        }
-
-        kraftPortal.reset( new Portal( nullptr, &parser, "kraft main window" ));
-        kraftPortal->show();
-
-        if( splash ) {
-            splash->finish( kraftPortal.data() );
-            splash->deleteLater();
-        } else {
-            // qDebug () << "Could not find splash screen";
-        }
-    }
+    kraftPortal.reset( new Portal( nullptr, &parser, "kraft main window" ));
+    kraftPortal->show();
 
     return app.exec();
 }
