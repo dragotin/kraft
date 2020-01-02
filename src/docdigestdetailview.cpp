@@ -249,7 +249,7 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
     if( !tmpl.open() ) {
         return;
     }
-    const QString monthStr = QDate::longMonthName(month);
+    const QString monthStr = DefaultProvider::self()->locale()->monthName(month);
     const QString yearStr = QString::number(year);
     tmpl.setValue( DOCDIGEST_TAG("HEADLINE"), i18n("Results in %1 %2", monthStr, yearStr) );
     tmpl.setValue( DOCDIGEST_TAG("YEAR_LABEL"), i18n("Year"));
