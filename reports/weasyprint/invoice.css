@@ -156,6 +156,7 @@ html table#items {
    * The table to display the document sum
    */
   html table#total {
+      border-collapse: collapse;
       text-align: right;
       width: 6cm;
       table-layout: fixed;
