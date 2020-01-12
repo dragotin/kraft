@@ -1,0 +1,182 @@
+@charset "UTF-8";
+
+/* Use google web fonts */
+@import url("https://fonts.googleapis.com/css?family=Pacifico|Open+Sans+Pro:400,700");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+/* The CSS for printing */
+@page {
+  margin-left: 2.4cm;
+  margin-top:27mm;
+  margin-right: 1.6cm;
+  margin-bottom: 2cm;
+  color: #2f590a;
+
+  @bottom-left {
+    font-family: Pacifico;
+    content: 'Kraft ♥ Weasyprint';
+  }
+  @bottom-right {
+    content: "Seite " counter(page) " von " counter(pages);
+    font-family: Pacifico;
+    font-size: 9pt; }
+}
+
+/* Do not display the page number on first page. */
+@page :first {
+  @bottom-right {
+    content: 'Kraft Enterprises | +49 423 434294 | kraft@freisturz.de';
+    font-family: Pacifico;
+    font-size: 9pt; }
+}
+
+html {
+  color: #14213d;
+  font-family: Source Sans Pro;
+  font-size: 11pt;
+  line-height: 1.6;
+}
+
+html body {
+    margin: 0;
+    padding-top: 2mm;
+
+}
+
+html h1 {
+    color: #2f590a;
+    font-family: Roboto;
+    font-size: 16pt;
+    margin: 0;
+}
+
+html address {
+    font-style: normal;
+    white-space: pre-line;
+    margin-bottom: 9mm;
+    height: 40mm;
+    border: solid 0px;
+}
+
+html aside {
+    display: flex;
+    margin: 2em 0 4em; }
+    html aside address {
+      font-style: normal;
+      white-space: pre-line; }
+      html aside address#to {
+        color: #a9a;
+        flex: 1; }
+      html aside address#from {
+        text-align: right;
+}
+
+/*
+ * A absolute positioned block to display document extra info
+ * on the right top of the document.
+ */
+html dl {
+    text-align: right;
+    position: absolute;
+    right: 0;
+    top: 8mm; }
+    html dl dt, html dl dd {
+      display: inline;
+      margin: 0; }
+    html dl dt {
+      color: #a9a; }
+      html dl dt::before {
+        content: '';
+        display: block; }
+      html dl dt::after {
+        content: ':';
+}
+
+/*
+ */
+html p#letterheader {
+     font-size: 8pt;
+     text-decoration: underline;
+}
+
+html p.entrytext {
+}
+
+html p.bottomtext {
+}
+
+html p.goodbye {
+}
+
+/*
+ * Item-Table
+ * formats the item list. Each item is a line.
+ */
+html table#items {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  /*
+   * Table header. It is repeated on every page.
+   */
+  html table th {
+      border-bottom: .2mm solid #555;
+      color: #555;
+      font-size: 10pt;
+      font-weight: 400;
+      padding-bottom: .25cm;
+      text-transform: uppercase;
+  }
+  html table td {
+      vertical-align: top;
+      padding-top: 6mm;
+  }
+  /* Last column of an item line: the overall price */
+  html table td:last-of-type {
+        color: #2f590a;
+        font-weight: bold; }
+  html table th, html table td {
+      text-align: left; }
+
+  /* Alignment for special purpose columns */
+  html table th:nth-of-type(3), html table td:nth-of-type(3) {
+    text-align: right;
+    padding-right:0.8em;
+  }
+
+  html table th:nth-of-type(5), html table td:nth-of-type(5) {
+    text-align: right;
+  }
+  html table th:nth-of-type(6), html table td:nth-of-type(6) {
+    padding-left:1em;
+    text-align: right;
+  }
+
+  /*
+   * The table to display the document sum
+   */
+  html table#total {
+      text-align: right;
+      width: 6cm;
+      table-layout: fixed;
+      bottom: 0;
+      font-size: 12pt;
+
+      /* The following margins pull the whole box to the right */
+      margin-right: 0px;
+      margin-left: auto;
+      margin-bottom: 12mm;
+
+   }
+  html table#total td {
+      padding-top: 1mm;
+      text-align: right;
+  }
+
+  /* the lines above the sums */
+  html table#total tr:nth-of-type(1) {
+      border-top: solid 1px;
+  }
+  html table#total tr:last-of-type {
+      border-top: solid 2px;
+  }

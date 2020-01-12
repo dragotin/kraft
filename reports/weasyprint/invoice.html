@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <link href="invoice.css" media="print" rel="stylesheet"/>
+    <title>Invoice</title>
+    <meta name="description" content="Kraft Invoice document"/>
+    <meta name="author" content="Klaas Freitag"/>
+  </head>
+
+  <body>
+    <p id="letterheader">
+    Kraft Enterprises - Seestraße 23 - 21843 Bad Beldorf
+    </p>
+    <address id="to">
+    Bernd Bolzen
+    Bevenser Weg 4
+    91221 Bad Bildburg
+    </address>
+
+    <dl id="information">
+      <dt>Dokumentnummer</dt>
+      <dd>7-2019</dd>
+      <dt>Leistungszeitraum</dt>
+      <dd>12.04.-28.04.2010</dd>
+      <dt>Datum</dt>
+      <dd>31. März 2018</dd>
+    </dl>
+
+    <h1>Schlussrechnung 7-2019</h1>
+
+    <p class="salut">Sehr geehrter Herr Bolzen,</p>
+    <p class="entrytext">
+    wir erlauben uns hiermit, die auf Ihrem Anwesen erbrachten Leistungen im Bereich Garten- und Landschaftsbau in Rechnung zu stellen.
+    </p>
+    <p class="entrytext">
+    Wir hoffen, alles wurde zu Ihrer vollsten Zufriedenheit durchgeführt.
+    </p>
+
+    <table id="items">
+      <thead>
+        <th>Nr.</th>
+        <th>Posten</th>
+        <th>Menge</th>
+        <th></th>
+        <th>E.-Preis</th>
+        <th>Summe</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1.</td>
+          <td>Website design</td>
+          <td>10.0</td>
+          <td>Std.</td>
+          <td>€134.20</td>
+          <td>€3,420.00</td>
+        </tr>
+        <tr>
+          <td>2.</td>
+          <td>Website development</td>
+          <td>100</td>
+          <td>pausch.</td>
+          <td>€&nbsp;2.345,50</td>
+          <td>€&nbsp;4,550.00</td>
+        </tr>
+        <tr>
+          <td>3.</td>
+          <td>Website integration. Items are evenly distributed in the line with equal space around them. Note that visually the spaces aren't equal, since all the items have equal space on both sides. The first item will have one unit of space against the container edge, but two units of space between the next item because that next item has its own spacing that applies.</td>
+          <td>1</td>
+          <td>Stück</td>
+          <td>€2.225,75</td>
+          <td>€2,575.00</td>
+        </tr>
+
+        <tr>
+          <td>4.</td>
+          <td>More Website design</td>
+          <td>1465</td>
+          <td>Std.</td>
+          <td>€34.20</td>
+          <td>€3,420.00</td>
+        </tr>
+        <tr>
+          <td>5.</td>
+          <td>More Website development</td>
+          <td>13.20</td>
+          <td>Std.</td>
+          <td>€45.50</td>
+          <td>€4,550.00</td>
+        </tr>
+        <tr>
+          <td>6.</td>
+          <td>More Website integration.  items are evenly distributed in the line with equal space around them. Note that visually the spaces aren't equal, since all the items have equal space on both sides. The first item will have one unit of space against the container edge, but two units of space between the next item because that next item has its own spacing that applies.</td>
+          <td>102</td>
+          <td>Std.</td>
+          <td>€25.75</td>
+          <td>€2,575.00</td>
+        </tr>
+        <tr>
+          <td>7.</td>
+          <td>More Website integration.  items are evenly distributed in the line with equal space around them. Note that visually the spaces aren't equal, since all the items have equal space on both sides. The first item will have one unit of space against the container edge, but two units of space between the next item because that next item has its own spacing that applies.</td>
+          <td>100</td>
+          <td>Std.</td>
+          <td>€25.75</td>
+          <td>€2,575.00</td>
+        </tr>
+        <tr>
+          <td>8.</td>
+          <td>More Website integration.  items are evenly distributed in the line with equal space around them. Note that visually the spaces aren't equal, since all the items have equal space on both sides. The first item will have one unit of space against the container edge, but two units of space between the next item because that next item has its own spacing that applies.</td>
+          <td>100</td>
+          <td>Std.</td>
+          <td>€25.75</td>
+          <td>€2,575.00</td>
+        </tr>
+        <tr>
+          <td>9.</td>
+          <td>More Website integration.  items are evenly distributed in the line with equal space around them. Note that visually the spaces aren't equal, since all the items have equal space on both sides. The first item will have one unit of space against the container edge, but two units of space between the next item because that next item has its own spacing that applies.</td>
+          <td>100</td>
+          <td>Std.</td>
+          <td>€25.75</td>
+          <td>€2,575.00</td>
+        </tr>
+       <tr>
+          <td>10.</td>
+          <td>If you mean that Caption and Enter here are not vertically aligned, despite using the suggested 'vertical-align: middle;' you may have to look into giving the columns a specific or minimum width. I am suspecting that the elements may not be perfectly positioned visually next to each other on the 'reading' level, due to the columns adjusting with top/bottom padding in order to maintain vertical alignment. Therefore being strict about the width of your columns may help.</td>
+          <td>100</td>
+          <td>Std.</td>
+          <td>€25.75</td>
+          <td>€2,575.00</td>
+        </tr>
+        <tfoot>
+          <tr>
+            <td>Footer!</td>
+          </tr>
+        </tfoot>
+      </tbody>
+    </table>
+
+    <table id="total">
+      <tbody>
+        <tr>
+          <td>Netto</td>
+          <td>€&nbsp;10.545,00</td>
+        </tr>
+        <tr>
+          <td>+19% MwSt.</td>
+          <td>€&nbsp;2.003,55</td>
+        </tr>
+        <tr>
+          <td><b>Gesamt</b></td>
+          <td>€&nbsp;12.548,55</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="bottomtext">
+    Bitte überweisen Sie den ausstehenden Betrag <i>ohne Abzug</i> bis zum 21.01.2020 auf eines unserer angegebenen Konten.
+    </p>
+    <p class="goodbye">
+    Mit freundlichem Gruß,
+    </p>
+  </body>
+</html>
