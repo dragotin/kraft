@@ -34,6 +34,13 @@
 
 Q_GLOBAL_STATIC(DefaultProvider, mSelf)
 
+#if 0
+// translations for table DocTypes
+I18N_NOOP("Acceptance of Order")
+I18N_NOOP("Delivery Receipt")
+I18N_NOOP("Invoice")
+I18N_NOOP("Offer")
+#endif
 
 DefaultProvider *DefaultProvider::self()
 {
