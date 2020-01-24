@@ -42,8 +42,6 @@ KraftDoc::KraftDoc(QWidget *parent)
     mDocTypeChanged(false),
     mSaver(nullptr)
 {
-    mLocale.reset(new QLocale());
-    mPositions.setLocale( mLocale.data() );
 }
 
 KraftDoc::~KraftDoc()
@@ -53,8 +51,6 @@ KraftDoc::~KraftDoc()
 KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 {
   if ( this == &origDoc ) return *this;
-
-  mLocale.reset(new QLocale());
 
   DocPositionListIterator it( origDoc.mPositions );
 
@@ -67,8 +63,6 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
     mPositions.append( newPos );
     // qDebug () << "Appending position " << dp->dbId().toString() << endl;
   }
-
-  mPositions.setLocale( mLocale.data() );
 
   _modified = origDoc._modified;
   mIsNew = true;
@@ -195,8 +189,6 @@ void KraftDoc::setPositionList( DocPositionList newList, bool isNew)
         newDp->setDbId(-1);
     }
   }
-
-  mPositions.setLocale( newList.locale() );
 }
 
 DocPosition* KraftDoc::createPosition( DocPositionBase::PositionType t )
@@ -301,17 +293,14 @@ Geld KraftDoc::vatSum()
 
 QString KraftDoc::country() const
 {
-  return mLocale->countryToString(mLocale->country());
+    QLocale *loc = DefaultProvider::self()->locale();
+    return loc->countryToString(loc->country());
 }
 
 QString KraftDoc::language() const
 {
-  return mLocale->languageToString(mLocale->language());
-}
-
-QLocale* KraftDoc::locale()
-{
-  return mLocale.data();
+    QLocale *loc = DefaultProvider::self()->locale();
+    return loc->languageToString(loc->language());
 }
 
  QString KraftDoc::partToString( Part p )

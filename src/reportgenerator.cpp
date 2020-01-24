@@ -125,7 +125,7 @@ void ReportGenerator::convertTemplate( const QString& templ )
 QString ReportGenerator::findTemplate( const QString& type )
 {
   DocType dType( type );
-  const QString country = mArchDoc->locale()->bcp47Name();
+  const QString country = DefaultProvider::self()->locale()->bcp47Name();
   const QString tmplFile = dType.templateFile(country);
 
   if ( tmplFile.isEmpty() ) {
@@ -265,12 +265,12 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
       prec = num.length() - (1+num.lastIndexOf( QChar('.') ) );
     }
     // qDebug() << "**** " << num << " has precision " << prec;
-    h = mArchDoc->locale()->toString( amount, 'f', prec );
+    h = DefaultProvider::self()->locale()->toString( amount, 'f', prec );
 
     tmpl.setValue( DICT("POSITIONS"), TAG("POS_AMOUNT"), h );
     tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNIT"), escapeTrml2pdfXML( pos.unit() ) );
-    tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNITPRICE"), pos.unitPrice().toString( mArchDoc->locale() ) );
-    tmpl.setValue( DICT("POSITIONS"), TAG("POS_TOTAL"), pos.nettoPrice().toString( mArchDoc->locale() ) );
+    tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNITPRICE"), pos.unitPrice().toString() );
+    tmpl.setValue( DICT("POSITIONS"), TAG("POS_TOTAL"), pos.nettoPrice().toString() );
     tmpl.setValue( DICT("POSITIONS"), TAG("POS_KIND"), pos.kind().toLower() );
 
     QString taxType;
@@ -316,35 +316,24 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
     tmpl.createDictionary( "REDUCED_TAX_ITEMS" );
     tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("COUNT"), QString::number( reducedTaxCnt ));
-    tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("TAX"), mArchDoc->locale()->toString( mArchDoc->reducedTax()) );
+    tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("TAX"), DefaultProvider::self()->locale()->toString( mArchDoc->reducedTax()) );
     tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("LAB_TAX_REDUCED_ITEMS"),
                    i18n("items with reduced tax of %1% (%2 pcs.)",
-                        mArchDoc->locale()->toString( mArchDoc->reducedTax()),
+                        DefaultProvider::self()->locale()->toString( mArchDoc->reducedTax()),
                         QString::number( reducedTaxCnt )) );
 
 
     tmpl.createDictionary( "FULL_TAX_ITEMS" );
     tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("COUNT"), QString::number( fullTaxCnt ));
-    tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("TAX"), mArchDoc->locale()->toString( mArchDoc->tax()) );
+    tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("TAX"), DefaultProvider::self()->locale()->toString( mArchDoc->tax()) );
     tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("LAB_TAX_FULL_ITEMS"),
                    i18n("No label: items with full tax of %1% (%2 pcs.)",
-                        mArchDoc->locale()->toString( mArchDoc->tax()),
+                        DefaultProvider::self()->locale()->toString( mArchDoc->tax()),
                         QString::number( fullTaxCnt )) );
   }
 
   /* now replace stuff in the whole document */
-  const QDate d(mArchDoc->date());
-  tmpl.setValue( TAG( "DATE" ), DefaultProvider::self()->formatDate(mArchDoc->date()));
-  h = QString("%1").arg(d.day(), 2, 10, QLatin1Char('0'));
-  tmpl.setValue( TAG( "DATE_DD"), h);
-  tmpl.setValue( TAG("DATE_D"), QString::number(d.day()));
-  h = QString("%1").arg(d.month(), 2, 10, QLatin1Char('0'));
-  tmpl.setValue( TAG( "DATE_MM"), h);
-  tmpl.setValue( TAG("DATE_M"), QString::number(d.month()));
-  int year = d.year();
-  tmpl.setValue( TAG("DATE_YYYY"), QString::number(year));
-
-
+  tmpl.setValue( TAG( "DATE" ), DefaultProvider::self()->locale()->toString(mArchDoc->date(), QLocale::NarrowFormat) );
   tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( mArchDoc->docType() ) );
   tmpl.setValue( TAG( "ADDRESS" ), escapeTrml2pdfXML( mArchDoc->address() ) );
 
@@ -357,32 +346,32 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   tmpl.setValue( TAG( "GOODBYE" ), escapeTrml2pdfXML( mArchDoc->goodbye() ) );
   tmpl.setValue( TAG( "PRETEXT" ),   rmlString( mArchDoc->preText() ) );
   tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( mArchDoc->postText() ) );
-  tmpl.setValue( TAG( "BRUTTOSUM" ), mArchDoc->bruttoSum().toString( mArchDoc->locale() ) );
-  tmpl.setValue( TAG( "NETTOSUM" ),  mArchDoc->nettoSum().toString( mArchDoc->locale() ) );
+  tmpl.setValue( TAG( "BRUTTOSUM" ), mArchDoc->bruttoSum().toString() );
+  tmpl.setValue( TAG( "NETTOSUM" ),  mArchDoc->nettoSum().toString() );
 
-  h = mArchDoc->locale()->toString( mArchDoc->tax() );
+  h = DefaultProvider::self()->locale()->toString( mArchDoc->tax() );
   // qDebug () << "Tax in archive document: " << h;
   if ( mArchDoc->reducedTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
     tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_SUM" ),
-      mArchDoc->reducedTaxSum().toString( mArchDoc->locale() ) );
-    h = mArchDoc->locale()->toString( mArchDoc->reducedTax() );
+      mArchDoc->reducedTaxSum().toString() );
+    h = DefaultProvider::self()->locale()->toString( mArchDoc->reducedTax() );
     tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX" ), h );
     tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
   }
   if ( mArchDoc->fullTaxSum().toLong() > 0 ) {
     tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
     tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_SUM" ),
-      mArchDoc->fullTaxSum().toString( mArchDoc->locale() ) );
-    h = mArchDoc->locale()->toString( mArchDoc->tax() );
+      mArchDoc->fullTaxSum().toString() );
+    h = DefaultProvider::self()->locale()->toString( mArchDoc->tax() );
     tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX" ), h );
     tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
   }
 
-  h = mArchDoc->locale()->toString( mArchDoc->tax() );
+  h = DefaultProvider::self()->locale()->toString( mArchDoc->tax() );
   tmpl.setValue( TAG( "VAT" ), h );
 
-  tmpl.setValue( TAG( "VATSUM" ), mArchDoc->taxSum().toString( mArchDoc->locale() ) );
+  tmpl.setValue( TAG( "VATSUM" ), mArchDoc->taxSum().toString() );
 
   tmpl.setValue( TAG( "LAB_NO_SHORT"), i18nc("Sequence number printed on the document", "No.") );
   tmpl.setValue( TAG( "LAB_ITEM"), i18nc("Document item printed on the document", "Item") );

@@ -32,7 +32,6 @@
 class DocumentSaverBase;
 class Geld;
 
-class QLocale;
 class KraftView;
 
 class KraftDoc : public QObject
@@ -166,7 +165,6 @@ private:
   // Two qualifiers for the locale settings.
   QString mCountry;
   QString mLanguage;
-  QScopedPointer<QLocale> mLocale;
 
   QDate   mDate;
   QDate   mLastModified;

@@ -133,7 +133,7 @@ void TemplKatalogListView::slFreshupItem( QTreeWidgetItem *item, FloskelTemplate
       item->setToolTip(0, Portal::textWrap(tmpl->getText(), 72, 22));
   }
   QString h;
-  h = QString( "%1 / %2" ).arg( g.toString( catalog()->locale() ) )
+  h = QString( "%1 / %2" ).arg( g.toString() )
       .arg( tmpl->unit().einheitSingular() );
   item->setText( 1,  h );
   item->setText( 2, ck );
@@ -182,7 +182,7 @@ void TemplKatalogListView::addCalcParts( FloskelTemplate *tmpl )
 
     QStringList list;
     list << title;
-    list << cp->basisKosten().toString( catalog()->locale() );
+    list << cp->basisKosten().toString();
     list << cp->getType();
     QTreeWidgetItem *cpItem =  new QTreeWidgetItem( item, list );
     cpItem->setDisabled(true);

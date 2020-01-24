@@ -142,8 +142,6 @@ class DocPositionList : public QList<DocPositionBase*>
     QDomElement domElement( QDomDocument& );
     DocPositionBase *positionFromId( int id );
     QString posNumber( DocPositionBase* );
-    void setLocale( QLocale* );
-    QLocale* locale() { return mLocale; }
 
     Geld nettoPrice();
     Geld bruttoPrice( double fullTax, double reducedTax );
@@ -156,7 +154,6 @@ class DocPositionList : public QList<DocPositionBase*>
 
   private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
-    QLocale *mLocale;
 };
 
 typedef QListIterator<DocPositionBase*> DocPositionListIterator;

@@ -244,7 +244,7 @@ Geld DocPosition::overallPrice()
 // ##############################################################
 
 DocPositionList::DocPositionList()
-  : QList<DocPositionBase*>(), mLocale( 0 )
+  : QList<DocPositionBase*>()
 {
   // setAutoDelete( true );
 }
@@ -333,17 +333,10 @@ QString DocPositionList::posNumber( DocPositionBase* pos )
   return QString::number( 1+indexOf( pos ) );
 }
 
-void DocPositionList::setLocale( QLocale* loc )
-{
-  mLocale = loc;
-}
-
 QDomElement DocPositionList::domElement( QDomDocument& doc )
 {
   QDomElement topElem = doc.createElement( "positions" );
   QDomElement posElem;
-
-  if ( !mLocale ) mLocale = DefaultProvider::self()->locale();
 
   int num = 1;
 
@@ -360,16 +353,16 @@ QDomElement DocPositionList::domElement( QDomDocument& doc )
       posElem.appendChild( xmlTextElement( doc, "text", dp->text() ) );
 
       double am = dp->amount();
-      QString h = mLocale->toString( am, 'f', 2 );
+      QString h = DefaultProvider::self()->locale()->toString( am, 'f', 2 );
       posElem.appendChild( xmlTextElement( doc, "amount", h ));
 
       Einheit e = dp->unit();
       posElem.appendChild( xmlTextElement( doc, "unit", e.einheit( am ) ) );
 
       Geld g = dp->unitPrice();
-      posElem.appendChild( xmlTextElement( doc, "unitprice", g.toString( mLocale ) ) );
+      posElem.appendChild( xmlTextElement( doc, "unitprice", g.toString() ) );
 
-      posElem.appendChild( xmlTextElement( doc, "sumprice", Geld( g*am).toString( mLocale ) ) );
+      posElem.appendChild( xmlTextElement( doc, "sumprice", Geld( g*am).toString() ) );
     }
   }
   return topElem;

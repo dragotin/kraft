@@ -20,8 +20,9 @@
 #define _GELD_H
 
 #include "kraftcat_export.h"
+#include <QString>
+#include <QLocale>
 
-class QLocale;
 
 class KRAFTCAT_EXPORT Geld
 {
@@ -44,8 +45,8 @@ public:
 
     Geld percent( double );
 
-    QString toString( QLocale* ) const;
-    QString toHtmlString( QLocale* ) const;
+    QString toString() const;
+    QString toHtmlString() const;
     double toDouble();
     // toLong returns the amount in cents!
     long   toLong();

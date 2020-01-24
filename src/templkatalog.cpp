@@ -381,7 +381,7 @@ QDomDocument TemplKatalog::toXML()
     QDomElement rateelem = doc.createElement("rate");
     StdSatz satz = StdSatzMan::self()->getStdSatz(*it);
     Geld g = satz.getPreis();
-    QDomText rname = doc.createTextNode(g.toString( mLocale ));
+    QDomText rname = doc.createTextNode(g.toString());
     rateelem.appendChild(rname);
     set.appendChild(rateelem);
 

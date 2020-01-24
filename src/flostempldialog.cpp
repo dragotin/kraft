@@ -274,19 +274,19 @@ void FlosTemplDialog::refreshPrices()
   m_resPreisName->setTextFormat(Qt::RichText);
 
   /* set Price */
-  t = m_template->unitPrice().toString( m_katalog->locale() );
+  t = m_template->unitPrice().toString();
   m_resultPrice->setText( t );
   m_manualPriceVal->setValue( m_template->unitPrice().toDouble() );
 
   /* Price parts per calculation part */
   Geld g( m_template->costsByCalcPart( KALKPART_TIME ));
-  m_textTimePart->setText( g.toString( m_katalog->locale() ));
+  m_textTimePart->setText( g.toString());
 
   g = m_template->costsByCalcPart( KALKPART_FIX );
-  m_textFixPart->setText( g.toString( m_katalog->locale() ));
+  m_textFixPart->setText( g.toString());
 
   g = m_template->costsByCalcPart( KALKPART_MATERIAL );
-  m_textMaterialPart->setText(g.toString( m_katalog->locale() ));
+  m_textMaterialPart->setText(g.toString());
 
   // Benefit
   double b = m_template->getBenefit();
@@ -611,8 +611,8 @@ void FlosTemplDialog::drawFixListEntry( QTreeWidgetItem* it, FixCalcPart *cp )
 
   it->setText( 0, DefaultProvider::self()->locale()->toString(cp->getMenge()));
   it->setText( 1, cp->getName());
-  it->setText( 2, cp->unitPreis().toString( m_katalog->locale() ));
-  it->setText( 3, cp->basisKosten().toString( m_katalog->locale() ));
+  it->setText( 2, cp->unitPreis().toString());
+  it->setText( 3, cp->basisKosten().toString());
 }
 
 void FlosTemplDialog::drawMatListEntry( QTreeWidgetItem *it, MaterialCalcPart *mc )
@@ -620,9 +620,9 @@ void FlosTemplDialog::drawMatListEntry( QTreeWidgetItem *it, MaterialCalcPart *m
   it->setText( 0, mc->getName());
   it->setText( 1, QString::number(mc->getCalcAmount(), 'f',2));
   it->setText( 2, mc->getMaterial()->unit().einheitSingular());
-  it->setText( 3, mc->basisKosten().toString( m_katalog->locale() ));
+  it->setText( 3, mc->basisKosten().toString());
   it->setText( 4, QString::number(mc->getMaterial()->getAmountPerPack(), 'f',2));
-  it->setText( 5, mc->getMaterial()->salesPrice().toString( m_katalog->locale() ));
+  it->setText( 5, mc->getMaterial()->salesPrice().toString());
 }
 
 

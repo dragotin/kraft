@@ -102,8 +102,6 @@ public:
 
   QString docIdentifier() const;
 
-  QLocale* locale() { return &mLocale; }
-
   Geld nettoSum() const;
   Geld bruttoSum() const;
   Geld taxSum() const;
@@ -138,8 +136,6 @@ private:
 
   QDate     mDate;
   QDateTime mPrintDate;
-
-  QLocale   mLocale;
 
   ArchDocPositionList mPositions;
   dbID    mDocID;

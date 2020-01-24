@@ -234,7 +234,7 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
         tmpl->setValue("DOCUMENTS", "DOCTYPE", dtype);
         const QString am = QString::number(docMatrix[dtype].first);
         tmpl->setValue("DOCUMENTS", "AMOUNT", am);
-        const QString sm = docMatrix[dtype].second.toString(DefaultProvider::self()->locale());
+        const QString sm = docMatrix[dtype].second.toString();
         tmpl->setValue("DOCUMENTS", "SUM", sm);
     }
 }

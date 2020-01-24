@@ -110,7 +110,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
 
     if ( !doc ) return;
 
-    QLocale *locale = doc->locale();
+    QLocale *locale = DefaultProvider::self()->locale();
 
     // do stuff like open a template and render values into it.
     QString tmplFile = DefaultProvider::self()->locateFile( "views/kraftdoc_ro.thtml" );
@@ -232,7 +232,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
         if ( positions.reducedTaxSum( redTax ).toLong() > 0 ) {
             tmpl.createSubDictionary( "DISPLAY_SUM_BLOCK", "SECTION_REDUCED_TAX"  );
             tmpl.setValue( "SECTION_REDUCED_TAX", DOC_RO_TAG( "REDUCED_TAX_SUM" ),
-                           positions.reducedTaxSum( redTax ).toString( positions.locale() ) );
+                           positions.reducedTaxSum( redTax ).toString() );
             h.setNum( redTax, 'f', 1 );
             tmpl.setValue( "SECTION_REDUCED_TAX", DOC_RO_TAG( "REDUCED_TAX" ), h );
             tmpl.setValue( "SECTION_REDUCED_TAX", DOC_RO_TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
@@ -241,7 +241,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
         if ( positions.fullTaxSum( fullTax ).toLong() > 0 ) {
             tmpl.createSubDictionary( "DISPLAY_SUM_BLOCK", "SECTION_FULL_TAX" );
             tmpl.setValue( "SECTION_FULL_TAX", DOC_RO_TAG( "FULL_TAX_SUM" ),
-                           positions.fullTaxSum( fullTax ).toString( positions.locale() ) );
+                           positions.fullTaxSum( fullTax ).toString() );
             h.setNum( fullTax, 'f', 1 );
             tmpl.setValue( "SECTION_FULL_TAX", DOC_RO_TAG( "FULL_TAX" ), h );
             tmpl.setValue( "SECTION_FULL_TAX", DOC_RO_TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );

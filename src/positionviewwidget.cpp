@@ -52,6 +52,9 @@ PositionViewWidget::PositionViewWidget()
   m_sbUnitPrice->setMinimum( -999999.99 );
   m_sbUnitPrice->setMaximum( 999999.99 );
   m_sbUnitPrice->setDecimals( 2 );
+  const QString currSymbol = DefaultProvider::self()->locale()->currencySymbol();
+  m_sbUnitPrice->setSuffix(" " + currSymbol);
+
 
   m_sbAmount->setMinimum( -999999.99 );
   m_sbAmount->setMaximum( 999999.99 );
@@ -154,7 +157,7 @@ PositionViewWidget::PositionViewWidget()
   this->layout()->setMargin( 6 );
 }
 
-void PositionViewWidget::setDocPosition( DocPositionBase *dp, QLocale* loc )
+void PositionViewWidget::setDocPosition( DocPositionBase *dp)
 {
   if( ! dp ) {
     qCritical() << "setDocPosition got empty position!" << endl;
@@ -172,7 +175,6 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp, QLocale* loc )
   lStatus->hide();
   lKind->hide();
 
-  setLocale( loc );
   AttributeMap amap = dp->attributes();
 
   if( dp->type() == DocPositionBase::Position ) {
@@ -289,14 +291,6 @@ QString PositionViewWidget::extraDiscountTagRestriction()
     // qDebug () << "taglist index possibly out of range!";
   }
   return QString();
-}
-
-void PositionViewWidget::setLocale( QLocale *loc )
-{
-  mLocale = loc;
-  const QString currSymbol = mLocale->currencySymbol();
-  m_sbUnitPrice->setSuffix(" " + currSymbol);
-  slotSetOverallPrice( currentPrice() );
 }
 
 void PositionViewWidget::slotTaggingButtonPressed()
@@ -536,7 +530,7 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
   // if ( mPositionPtr->type() == DocPosition::ExtraDiscount ) {
   //   m_sumLabel->setText( "--" );
   // } else {
-    m_sumLabel->setText( g.toString( mLocale ) );
+    m_sumLabel->setText( g.toString() );
     // }
 }
 
