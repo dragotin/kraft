@@ -5,10 +5,14 @@
 :description: Kraft is a Qt program for organizing documents like quotes and invoices in a small business.
 :keywords: Qt;office;bookkeeping
 :stylesheet: kraftmanual.css
+:experimental:
+:imagesdir: images/en/
+
 == Introduction
 
 Kraft is a Qt program for organizing documents like quotes and invoices in a small business.
 
+Features::
 * Customer management, deeply integrated in the KDE infrastructure using KAddressbook.
 * Automated creation of offers, invoices and similar documents
 * Text templates
@@ -16,49 +20,73 @@ Kraft is a Qt program for organizing documents like quotes and invoices in a sma
 * Material management
 * Configurable document creation in PDF format
 
-== First use and basic configuration
-
 Kraft is designed to use the data entries from the KDE address book
-which is a module of the `KDE-PIM`, an information management application.
-All addresses are collected in the `KADDRESSBOOK`.
+which is a module of the https://community.kde.org/KDE_PIM[KDE PIM], an information management application.
+All addresses are collected in the https://userbase.kde.org/KAddressBook[KAdressBook].
 
-During the initial setup you are asked to give the address of your
-company.
+== First Use and Basic Configuration
 
-You can fill in your company address (that appears on the printed
-documents) on two ways: use in the setup procedure the first tab Select
-from Addressbook for to select your on address in KAddressBook (if you
-have filled your own address in KaddressBook) or use the second tab
-Manual entry for to fill in the information of the address from your
-company by hand. This step is necessary for the correct generation of
-your documents.
+During the initial setup you are asked to select a database to use and give the address of your company.
 
-After the initial setup, we go to:
+You can fill in your company address (that appears on the printed documents) on two ways: use in the setup procedure the first tab Select from Addressbook for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab Manual entry for to fill in the information of the address from your company by hand. This step is necessary for the correct generation of your documents.
 
-Configuration>Configure Kraft for preparing Kraft correctly so we can use it
-on a useful way.
+After the initial setup, select menu:Preferences[Settings].
+That allows to prepare Kraft correctly so it can be used in a useful way.
 
-In the configuration-window we have the next tabs:
+In the Preferences window we have the tabs:
 
- *Document defaults
- *Documunt types
+ *Document Defaults
  *Taxes
+ *Documunt Types
  *Wages
  *Units
  *Own identity
 
-We are going to these tabs for to fill it on a useful way in.
+Each of the tabs allows to enter useful values for our use case.
 
-=== document types
+=== Document Types
 
-At the first use there are in this map four kind of documents like the:
+At the first use you find a list of different document types, such as:
 
-`Acceptance of order`
-`Delivery receipt`
-`Invoice`
-`Offer`
+* Acceptance of order
+* Delivery receipt
+* Invoice
+* Offer
 
 Translate this types to your own language.
+You can also add new ones and remove document types you wont use.
+
+==== Numbercycles
+
+image:numbercycles.png[Numbercycles,float="right"]
+Numbercycles are used to define the *document number* which is printed on every document.
+The document number is an important unique identifier of the document and often must follow regulations.
+
+Different document types can use the same number cycle to generate ids from.
+Number cycles are identified by their name.
+User can create new number cycles and edit them clicking on the button btn:[Edit Number Cycles...]
+
+Kraft supports a counter that is incremented for every new document of a certain type.
+In addition to the counter, more information can be added to form an useful number, such as constant text or parts of the date.
+
+See the following table for available variables which can be used:
+
+|===
+
+| `%y` or `%yyyy` | the year of the document date.
+| `%yy`           | the year of the document (two digits).
+| `%w`            | the week number of the document date.
+| `%ww`           | the week number of the document date with leading zero.
+| `%d`            | the day number of the document date.
+| `%dd`           | the day number of the document date with leading zero.
+| `%m` or `%M`    | the month number of the document date.
+| `%MM`           | the month number with leading zero.
+| `%c`            | the customer id from kaddressbook
+| `%i`            | the unique counter *(mandatory)*
+| `%type`         | the localised doc type (offer, invoice etc.)
+| `%uid`          | the contact id of the client.
+
+|===
 
 === Taxes
 
