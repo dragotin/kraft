@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
-<kcfg> 
-  <kcfgfile name="kraftrc"/> 
+<kcfg>
+  <kcfgfile name="kraftrc"/>
 
   <group name="system">
     <entry name="DoInit" type="Bool">
@@ -115,12 +115,15 @@
     </entry>
     <entry name="PdfOutputDir" type="Path">
       <label>The path to the output directory for document pdfs</label>
-    </entry>    
+    </entry>
   </group>
 
   <group name="userdefaults">
     <entry name="doctype" type="String">
       <label>The last created doc type.</label>
+    </entry>
+    <entry name="DateFormat" type="String">
+      <label>The date format for print.</label>
     </entry>
     <entry name="greeting" type="String">
       <label>The greeting below on the document footer.</label>
@@ -130,10 +133,10 @@
     </entry>
     <entry name="InsertTemplChapterName" type="String">
       <label>The name of the catalog chapter where to store new templates in by default</label>
-    </entry>  
+    </entry>
     <entry name="ImportItemsSchemaName" type="String">
       <label>The name of the last used import schema for items.</label>
-    </entry>  
+    </entry>
     <entry name="ImportItemsFileName" type="String">
       <label>The name of the last used input file for items.</label>
     </entry>

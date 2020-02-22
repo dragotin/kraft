@@ -295,7 +295,7 @@ QWidget* PrefsDialog::docTab()
   QGridLayout *topLayout = new QGridLayout;
   vboxLay->addLayout( topLayout );
 
-  label = new QLabel(i18n("&Default document type on creation:") );
+  label = new QLabel(i18n("&Default document type on creation:"), this );
   topLayout->addWidget(label, 0,0);
 
   mCbDocTypes = new QComboBox;
@@ -304,22 +304,46 @@ QWidget* PrefsDialog::docTab()
   topLayout->addWidget( mCbDocTypes, 0, 1 );
   mCbDocTypes->insertItems(-1, DocType::allLocalised() );
 
-  QLabel *f = new QLabel;
+  QLabel *f = new QLabel(this);
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
   vboxLay->addWidget( f );
 
   QHBoxLayout *butLay = new QHBoxLayout;
-  QLabel *l = new QLabel( i18n( "Default &Tax for Documents:" ) );
+  QLabel *l = new QLabel( i18n( "Default &Tax for Documents:" ), this );
   butLay->addWidget( l );
-  mCbDefaultTaxType = new QComboBox;
+  mCbDefaultTaxType = new QComboBox(this);
   butLay->addWidget( mCbDefaultTaxType );
   l->setBuddy( mCbDefaultTaxType );
-
   mCbDefaultTaxType->setToolTip( i18n( "The default tax setting for all documents." ) );
   mCbDefaultTaxType->insertItem( 0, i18n("Display no tax at all" , 0));
   mCbDefaultTaxType->insertItem( 1, i18n("Calculate reduced tax for all items" ));
   mCbDefaultTaxType->insertItem( 2, i18n("Calculate full tax for all items" ) );
   // mCbDefaultTaxType->insertItem( 3, i18n("Calculate on individual item tax rate" ));
+  vboxLay->addLayout( butLay );
+
+  f = new QLabel(this);
+  f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+  vboxLay->addWidget( f );
+
+  butLay = new QHBoxLayout;
+  l = new QLabel( i18n( "Document Date Format:" ), this );
+  butLay->addWidget( l );
+  mCbDateFormats = new QComboBox(this);
+  butLay->addWidget( mCbDateFormats );
+  l->setBuddy( mCbDateFormats);
+  const QDate d = QDate::currentDate();
+  mCbDateFormats->setToolTip( i18n( "The default date format for documents." ) );
+  QString formattedDate = d.toString(Qt::ISODate);
+  mCbDateFormats->insertItem( 0, i18n("ISO-Format: %1").arg(formattedDate));
+  formattedDate = d.toString(Qt::DefaultLocaleShortDate);
+  mCbDateFormats->insertItem( 1, i18n("Short-Date: %1").arg(formattedDate));
+  formattedDate = d.toString(Qt::DefaultLocaleLongDate);
+  mCbDateFormats->insertItem( 2, i18n("Long-Date: %1").arg(formattedDate));
+  formattedDate = d.toString(Qt::RFC2822Date);
+  mCbDateFormats->insertItem( 3, i18n("RFC 2822-Format: %1").arg(formattedDate));
+  formattedDate = d.toString("dd.MM.yyyy");
+  mCbDateFormats->insertItem( 4, i18n("\"German Format\": %1").arg(formattedDate));
+  mCbDateFormats->insertItem( 5, i18n("Custom Setting in Settingsfile"));
   vboxLay->addLayout( butLay );
 
   // space eater
@@ -380,6 +404,37 @@ void PrefsDialog::readConfig()
     mCbDocTypes->setCurrentIndex( mCbDocTypes->findText( t ));
 
     mCbDefaultTaxType->setCurrentIndex( KraftSettings::self()->defaultTaxType()-1 );
+
+    int index {5};
+    const QString dFormat = KraftSettings::self()->dateFormat();
+    if (dFormat == DefaultProvider::DateFormatIso) {
+        // iso
+        index = 0;
+    } else if (dFormat == DefaultProvider::DateFormatShort) {
+        // short
+        index = 1;
+    } else if (dFormat == DefaultProvider::DateFormatLong) {
+        // long
+        index = 2;
+    } else if (dFormat == DefaultProvider::DateFormatRFC) {
+        // RFC
+        index = 3;
+    } else if (dFormat == DefaultProvider::DateFormatGerman) {
+        // German
+        index = 4;
+    }
+
+    if (index == 5 && dFormat.isEmpty()) { // default case - no entry
+        // HACK: If it is german, choose the "german" format
+        const QString ln = DefaultProvider::self()->locale()->name();
+        if( ln == QStringLiteral("de_DE")) {
+            index = 4;
+        } else {
+            index = 1; // Short locale aware.
+        }
+    }
+
+    mCbDateFormats->setCurrentIndex(index);
 }
 
 void PrefsDialog::writeIdentity()
@@ -438,6 +493,32 @@ void PrefsDialog::writeConfig()
 {
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
+
+    int dateFormat = mCbDateFormats->currentIndex();
+
+    QString dateFormatString;
+    if (dateFormat == 0) {
+        // iso
+        dateFormatString = DefaultProvider::DateFormatIso;
+    } else if (dateFormat == 1) {
+        // short
+        dateFormatString = DefaultProvider::DateFormatShort;
+    } else if (dateFormat == 2) {
+        // long
+        dateFormatString = DefaultProvider::DateFormatLong;
+    } else if (dateFormat == 3) {
+        // RFC
+        dateFormatString = DefaultProvider::DateFormatRFC;
+    } else if (dateFormat == 4) {
+        // German
+        dateFormatString = DefaultProvider::DateFormatGerman;
+    }
+
+    if (dateFormatString.isEmpty()) {
+        // do not touch!
+    } else {
+        KraftSettings::self()->setDateFormat(dateFormatString);
+    }
 
     KraftSettings::self()->save();
 }
