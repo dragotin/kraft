@@ -110,9 +110,9 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
   mPositions += "</table></div>";
 
   // Create the sum table
+  mPositionCount = posList.count();
   if( mShowPrices ) {
       mPositions += "<div align=\"right\"><table border=\"0\" width=\"66%\">";
-      mPositionCount = posList.count();
       mTotal  = posList.nettoPrice().toHtmlString( posList.locale() );
       QString brutto = posList.bruttoPrice( tax, reducedTax ).toHtmlString( posList.locale() );
       mPositions += QString( "<tr><td align=\"right\" colspan=\"2\" class=\"baseline\">______________________________</td><td width=\"12\" align=\"right\"></td></tr>" );
@@ -243,7 +243,8 @@ QString DocPostCard::renderDocMini( int id ) const
   if( mShowPrices )
       d = i18n("%1 Items, netto %2", mPositionCount, mTotal);
 
-  t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions), "kraftdoc://positions",
+  // do not add another "Items" string to the header to not bloat
+  t += header( id == KraftDoc::Positions, "bodylink", QString(), "kraftdoc://positions",
                d );
   t += QL1("</div>");
   rethtml += t;
