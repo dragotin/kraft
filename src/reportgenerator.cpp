@@ -334,7 +334,7 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
 
   /* now replace stuff in the whole document */
   const QDate d(mArchDoc->date());
-  tmpl.setValue( TAG( "DATE" ), mArchDoc->locale()->toString(mArchDoc->date(), QLocale::NarrowFormat) );
+  tmpl.setValue( TAG( "DATE" ), DefaultProvider::self()->formatDate(mArchDoc->date()));
   h = QString("%1").arg(d.day(), 2, 10, QLatin1Char('0'));
   tmpl.setValue( TAG( "DATE_DD"), h);
   tmpl.setValue( TAG("DATE_D"), QString::number(d.day()));
