@@ -32,14 +32,14 @@
 idMap DocType::mNameMap = idMap();
 
 DocType::DocType()
-  : mAttributes( QLatin1Literal( "DocType" ) ),
+  : mAttributes( QStringLiteral( "DocType" ) ),
     mDirty( false )
 {
   init();
 }
 
 DocType::DocType( const QString& name, bool dirty )
-  : mAttributes( QLatin1Literal( "DocType" ) ),
+  : mAttributes( QStringLiteral( "DocType" ) ),
     mName( name ),
     mDirty( dirty )
 {
@@ -259,7 +259,7 @@ void DocType::setNumberCycleName( const QString& name )
 
 QString DocType::templateFile( const QString& lang )
 {
-    Q_UNUSED(lang);
+    Q_UNUSED(lang)
     // Maybe at some point kraft should use the templates of a different
     // language than the system locale is, with that the lang here could
     // be used to pick a translation dictionary.
