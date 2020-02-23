@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.11)
 project(kraft)
 
+cmake_policy(SET CMP0063 NEW)
+
 enable_testing()
 
 # Tell CMake to run moc when necessary:

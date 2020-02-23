@@ -1111,7 +1111,7 @@ QString Portal::textWrap( const QString& t, int width, int maxLines )
             lines++;
         }
         if( lines == maxLines && pos != t.length() ) {
-            re += QLatin1Literal("...");
+            re += QStringLiteral("...");
         }
     }
 
