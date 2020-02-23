@@ -2,6 +2,10 @@ Changes since version 0.90: #########################################
 
 - Removed Splash screen completely for simplification.
 - Switch to invoke the conversation script with python3 directly.
+- Add a date format selector to settings. Allow to set a four 
+  digit year in dates.
+- Fix: Show proper amount of items in no-price-display mode.
+- Add the user manual installed locally.
 
 => release v. 0.91 (xx, 2020)
 

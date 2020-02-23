@@ -333,7 +333,18 @@ void ReportGenerator::slotAddresseeSearchFinished( int )
   }
 
   /* now replace stuff in the whole document */
-  tmpl.setValue( TAG( "DATE" ), mArchDoc->locale()->toString(mArchDoc->date(), QLocale::NarrowFormat) );
+  const QDate d(mArchDoc->date());
+  tmpl.setValue( TAG( "DATE" ), DefaultProvider::self()->formatDate(mArchDoc->date()));
+  h = QString("%1").arg(d.day(), 2, 10, QLatin1Char('0'));
+  tmpl.setValue( TAG( "DATE_DD"), h);
+  tmpl.setValue( TAG("DATE_D"), QString::number(d.day()));
+  h = QString("%1").arg(d.month(), 2, 10, QLatin1Char('0'));
+  tmpl.setValue( TAG( "DATE_MM"), h);
+  tmpl.setValue( TAG("DATE_M"), QString::number(d.month()));
+  int year = d.year();
+  tmpl.setValue( TAG("DATE_YYYY"), QString::number(year));
+
+
   tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( mArchDoc->docType() ) );
   tmpl.setValue( TAG( "ADDRESS" ), escapeTrml2pdfXML( mArchDoc->address() ) );
 

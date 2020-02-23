@@ -47,6 +47,8 @@ public:
   DocTextList documentTexts( const QString&, KraftDoc::Part );
 
   QString currencySymbol() const;
+  QString formatDate( const QDate& date ) const;
+
   QLocale* locale();
 
   QString iconvTool() const;
@@ -56,6 +58,12 @@ public:
   QString locateFile(const QString& findFile) const;
 
   DefaultProvider();
+
+  static const QString DateFormatIso;
+  static const QString DateFormatShort;
+  static const QString DateFormatLong;
+  static const QString DateFormatRFC;
+  static const QString DateFormatGerman;
 
 private:
 

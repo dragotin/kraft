@@ -30,6 +30,7 @@
 #include "documentmodel.h"
 #include "docdigest.h"
 #include "docbasemodel.h"
+#include "defaultprovider.h"
 
 DocumentModel::DocumentModel(QObject *parent)
        : DocBaseModel(parent)

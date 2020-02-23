@@ -27,6 +27,7 @@
 #include "unitmanager.h"
 #include "materialsaverbase.h"
 #include "materialsaverdb.h"
+#include "defaultprovider.h"
 
 StockMaterial::StockMaterial( ):
     CatalogTemplate(),
@@ -150,19 +151,12 @@ void StockMaterial::setEnterDate( QDate dt )
 
 QString StockMaterial::lastModified()
 {
-  return dateShortFormat( mLastModified );
+  return DefaultProvider::self()->formatDate( mLastModified );
 }
 
 QString StockMaterial::entered()
 {
-  return dateShortFormat( mEnteredDate );
-}
-
-
-QString StockMaterial::dateShortFormat( QDate d )
-{
-  // return d.toString();
-  return QString( "%1/%2" ).arg( d.month() ).arg( d.year() );
+  return DefaultProvider::self()->formatDate( mEnteredDate );
 }
 
 void StockMaterial::saveChapterId()

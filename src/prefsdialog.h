@@ -101,7 +101,7 @@ private:
 
   QComboBox *mCbDocTypes;
   QComboBox *mCbDefaultTaxType;
-
+  QComboBox *mCbDateFormats;
   QPushButton *_pbChangeIdentity;
 
   DocTypeEdit *mDocTypeEdit;

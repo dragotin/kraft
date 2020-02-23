@@ -582,7 +582,7 @@ void KraftView::refreshPostCard()
 
   if ( mAssistant->postCard() ) {
     QDate d = m_headerEdit->m_dateEdit->date();
-    const QString dStr = getDocument()->locale()->toString( d, getDocument()->locale()->dateFormat(QLocale::ShortFormat));
+    const QString dStr = DefaultProvider::self()->formatDate( d );
 
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->toPlainText(),

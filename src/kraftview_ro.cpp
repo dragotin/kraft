@@ -128,7 +128,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
         return;
     }
     tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), doc->docType() + " " + doc->ident() );
-    tmpl.setValue( DOC_RO_TAG( "DATE" ), doc->date().toString());
+    tmpl.setValue( DOC_RO_TAG( "DATE" ), DefaultProvider::self()->formatDate(doc->date()));
     tmpl.setValue( DOC_RO_TAG( "DOC_TYPE" ),  doc->docType() );
     QString address = doc->address();
     address.replace( '\n', "<br/>" );

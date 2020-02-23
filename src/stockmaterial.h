@@ -76,7 +76,6 @@ public:
 
 protected:
   MaterialSaverBase* getSaver();
-  QString dateShortFormat( QDate );
   void saveChapterId();
 
 private:
