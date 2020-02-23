@@ -1,4 +1,4 @@
-#define KRAFT_VERSION "0.90"
+#define KRAFT_VERSION "0.91"
 
 #define KRAFT_CODENAME "Greta"
 
