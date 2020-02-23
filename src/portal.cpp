@@ -1139,13 +1139,16 @@ void Portal::slotPrefsDialogFinished( int result )
 
 void Portal::slotHandbook()
 {
-    QUrl url("http://volle-kraft-voraus.de/Main/Documentation");
+    QUrl url;
 
-    if( locale().language() == QLocale::German ) {
-        url.setUrl("http://volle-kraft-voraus.de/De/Dokumentation");
+    const QString hbFile = DefaultProvider::self()->locateFile("manual/kraft_en.html");
+
+    if( !hbFile.isEmpty() ) {
+        url = QUrl::fromLocalFile(hbFile);
     }
-    QDesktopServices::openUrl(url);
 
+    if (!url.isEmpty())
+        QDesktopServices::openUrl(url);
 }
 
 void Portal::slotAboutQt()

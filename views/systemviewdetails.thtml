@@ -12,6 +12,7 @@
           <li>{{KRAFT_MAINTAINER}}: Klaas Freitag &lt;kraft@freisturz.de&gt;</li>
           <li>{{KRAFT_DEVELOPER}}: Thomas Richard</li>
           <li>{{KRAFT_GRAPHICS}}: Johannes Spielhagen</li>
+          <li>{{KRAFT_MANUAL}}: Ronald Stroethoff &lt;stroet43@zonnet.nl&gt;</li>
         </ul>
       </p>
       <p>{{KRAFT_GITHUB}} <a href="https://www.github.com/dragotin/kraft">Github</a></p>
