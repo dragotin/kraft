@@ -176,7 +176,7 @@ void PortalView::fillCatalogDetails()
 
 QString PortalView::printKatLine( const QString& name, int cnt ) const
 {
-    QString urlName = Qt::escape( name );
+    QString urlName = name.toHtmlEscaped();
 
     // qDebug () << "Converted Katalog name: " << urlName << endl;
     QString html;
@@ -276,7 +276,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   tmpl.setValue( "KRAFT_MAINTAINER", i18n("Developer and Maintainer"));
   tmpl.setValue( "KRAFT_DEVELOPER", i18n("Developer"));
   tmpl.setValue( "KRAFT_GRAPHICS", i18nc("The person who provided the logo graphics", "Logo design"));
-
+  tmpl.setValue( "KRAFT_MANUAL", i18nc("The person who provided the user manual", "User Manual"));
   // kraft infos
   tmpl.setValue("KRAFT_INTRO_DESC", i18n("Kraft helps you to handle documents like quotes and invoices in your small business."));
   tmpl.setValue( "KRAFT_WELCOME_LABEL", i18n( "Welcome to Kraft" ) );

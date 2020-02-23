@@ -1,0 +1,630 @@
+= The Kraft Handbook
+:author: Ronald Stroethoff
+:email: <stroet43@zonnet.nl>
+:toc:
+:description: Kraft is a Qt program for organizing documents like quotes and invoices in a small business.
+:keywords: Qt;office;bookkeeping
+:stylesheet: kraftmanual.css
+:experimental:
+:imagesdir: images/en/
+
+== Introduction
+
+Kraft is a Qt program for organizing documents like quotes and invoices in a small business.
+
+Features::
+* Customer management, deeply integrated in the KDE infrastructure using KAddressbook.
+* Automated creation of offers, invoices and similar documents
+* Text templates
+* Calculation
+* Material management
+* Configurable document creation in PDF format
+
+Kraft is designed to use the data entries from the KDE address book
+which is a module of the https://community.kde.org/KDE_PIM[KDE PIM], an information management application.
+All addresses are collected in the https://userbase.kde.org/KAddressBook[KAdressBook].
+
+== First Use and Basic Configuration
+
+During the initial setup you are asked to select a database to use and give the address of your company.
+
+You can fill in your company address (that appears on the printed documents) on two ways: use in the setup procedure the first tab Select from Addressbook for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab Manual entry for to fill in the information of the address from your company by hand. This step is necessary for the correct generation of your documents.
+
+After the initial setup, select menu:Preferences[Settings].
+That allows to prepare Kraft correctly so it can be used in a useful way.
+
+In the Preferences window we have the tabs:
+
+ *Document Defaults
+ *Taxes
+ *Documunt Types
+ *Wages
+ *Units
+ *Own identity
+
+Each of the tabs allows to enter useful values for our use case.
+
+=== Document Types
+
+At the first use you find a list of different document types, such as:
+
+* Acceptance of order
+* Delivery receipt
+* Invoice
+* Offer
+
+Translate this types to your own language.
+You can also add new ones and remove document types you wont use.
+
+==== Numbercycles
+
+image:numbercycles.png[Numbercycles,float="right"]
+Numbercycles are used to define the *document number* which is printed on every document.
+The document number is an important unique identifier of the document and often must follow regulations.
+
+Different document types can use the same number cycle to generate ids from.
+Number cycles are identified by their name.
+User can create new number cycles and edit them clicking on the button btn:[Edit Number Cycles...]
+
+Kraft supports a counter that is incremented for every new document of a certain type.
+In addition to the counter, more information can be added to form an useful number, such as constant text or parts of the date.
+
+See the following table for available variables which can be used:
+
+|===
+
+| `%y` or `%yyyy` | the year of the document date.
+| `%yy`           | the year of the document (two digits).
+| `%w`            | the week number of the document date.
+| `%ww`           | the week number of the document date with leading zero.
+| `%d`            | the day number of the document date.
+| `%dd`           | the day number of the document date with leading zero.
+| `%m` or `%M`    | the month number of the document date.
+| `%MM`           | the month number with leading zero.
+| `%c`            | the customer id from kaddressbook
+| `%i`            | the unique counter *(mandatory)*
+| `%type`         | the localised doc type (offer, invoice etc.)
+| `%uid`          | the contact id of the client.
+
+|===
+
+=== Taxes
+
+In many countries there are two kinds of VAT-taxes for sold products.
+
+A high level and
+a low level.
+
+Fill here the appropriate amounts in for the high level and the low level.
+If the tax-level is changing, then you add here the start date with the new tax-levels.
+
+=== Wages
+
+A list of wage costs is maintained in Kraft. The items are used in
+templates and during calculation.
+
+All data can be edited, customized and new items can be added in the
+Kraft Configuration Dialog reachable through the Settings menu.
+
+Remember that these units are later used in the documents, it is
+therefor important that you translate them to your own language and to
+fill in the correct prices.
+
+=== Units of measurement
+
+A list of units of measurement is maintained in Kraft. In Kraft Configuration Dialog reachable through the Settings menu can you edit and customize items already in the
+list, and also can you add new items to the list.
+
+Remember that these units are later used in the documents, it is
+therefor important that you translate them to your own language.
+
+=== Own identity
+
+Check here if the information that you have given during the initial
+setup is correct for the use in the documents.
+
+____
+WARNING:
+If you made the choice to use the information from KaddressBook then is
+the information from a later manual entry ignored.
+____
+
+After we have made some corrections to the configuration, we go back to
+the main window.Here we see three tabs:
+
+* Documents
+* Timeline
+* Catalogs
+
+We go first to catalogs.
+
+=== Catalog
+
+In the tab catalog are two different catalogs:
+
+`Material`
+
+A catalog of material that are sold, with their purchase prices, the
+profit and the sell-price.
+
+and `Standard Templates`
+
+A catalog of standard recipes of work like planting trees.
+
+Both catalogs can have chapters and sub-chapters for to organize your
+templates. First we are going to fill in the
+
+==== Material-catalog
+
+A catalog of material that are sold, with their purchase prices, the
+profit and the sell-price. First we are going to add new chapters and
+subchapters.
+
+===== New chapters
+
+Select with the mouse the column-name `material`, select now in the
+context-menu [Add a sub chapter]
+
+and add an extra chapter like `Trees`
+
+===== New sub chapters
+
+We are going to ad sub chapters in the map `Trees`. Select with the mouse
+the name of the chapter where you like to add a subchapter, select now
+in the context-menu [Add a sub chapter]
+and ad an extra subchapters like `Loaf trees` and `needle trees`.
+After adding the extra chapters and subchapters for dividing the
+material, we are going to add the material themself.
+
+===== New template
+
+Select with the mouse the name of the sub-chapter or chapter where you
+like to add a material.
+Select the sub map Loaf trees and select now in the context-menu
+[Add a template]
+
+Add the extra materials `coconut tree`, `apple tree` and `pine-apple tree`.
+
+Fill in the price that we have paid.
+
+Fill in the profit that we want to have on the material
+
+And fill in how much is in a packet.
+
+Now we are going to:
+
+==== Standard Templates
+
+This is a catalog of standard recipes of work like:
+
+* planting trees
+* cutting grass
+* transport costs
+* planting grass
+* sowing grass-seed
+
+We add here the standard work of planting a tree.
+
+Select with the mouse the name of the chapter [Work] where you
+like to add the new template,
+
+select now the context-menu [New template]
+
+and the extra templates `Plant tree` and `cut grass`.
+
+After we made the new template, a window opens with 4 tabs:
+
+* Template
+* Time calculation
+* Fix costs
+* Material
+
+First we go to the tab:
+
+===== Template
+
+We give here the name of the new standard template like `Plant tree`
+
+____
+WARNING:
+be careful, this name is later used in the invoice
+____
+
+we select that this is per piece and that the margin is 8% and that the
+full VAT is applicable.
+
+===== Time calculation
+
+We fill here in a number of work with the time:
+
+.Spent time
+[cols=",,",]
+|===
+|Dig hole |32 min. |worker
+|Place tree |12 min. |worker
+|Fill hole |17 min. |worker
+|give water |5 min. |worker
+|===
+
+The cost for worker which we have earlier filled in is now used.
+
+____
+NOTE:
+in the invoice we see later only Plant tree, we will not see the parts
+dig hole,place tree,fill hole,give water
+____
+
+Now we go to the tab
+
+===== Fixed costs
+
+and fill in:
+
+.Fixed item
+[cols=",,",]
+|===
+|Transportcost |35 euro |1 pcs.
+|===
+
+After this we go to the tab:
+
+===== Material
+
+Here we fill in:
+
+.Used materials
+[cols=",,",]
+|===
+|1 |support pole |3,5 euro
+|===
+
+We go now back to the first tab template
+
+On the first tab [template], we can now see the overall cost per
+one unit
+
+Click on [OK] for saving the result or on [cancel] for discarding the
+result.
+
+We make a second template `cut grass`
+
+we fill in `cut grass`, as unit we choose sm (square meter), on the second
+tab we fill in that we need 3 min per square meter.
+
+Click on [OK] for saving the result or on [Cancel] for discarding the
+result.
+
+We are now ready for the first invoice.
+
+[[Invoice]]
+== Creating Documents
+
+=== The first Invoice
+
+Open the tab btn:[documents]
+
+Click on btn:[create document]
+
+The window document [creation wizard opens].
+
+Select in document type `invoice`.
+
+Fill in on the whiteboard content a short text about what the invoice
+is, like: `cut grass and planted tree for mister Jonson`
+
+Click on btn:[next]
+
+Select on the new window the name and address from the client.
+
+(if the name and address is not there, click then on btn:[new contact] or on
+btn:[edit contact] if you want to edit the contact)
+
+Click on btn:[OK].
+
+Now opens the window document [items].
+
+this window has 2 tabs and the 3 buttons on the top:
+
+* btn:[Add item...],
+* btn:[Add discount item],
+* btn:[Show templates].
+
+In the left tab you can see all the items that we want to place on the
+invoice, on the right tab we see the text from the header, the total
+price and the footer.
+
+If you click on the text of the header or the footer on the right side
+then the window changes in such a way that you can edit the header or
+the footer.
+
+Adapt the header and the footer to your situation, on the footer you can
+place a text: `We make your garden-dream come to reality.`.
+
+Click on the button btn:[Show templates].
+
+The right tab changes and show now the earlier made templates, we select
+in the group Work, the subgroup Plant tree and click then on the button
+with the to the left pointing arrow on the bottom side.
+
+A new window [Create Item from Template] opens.
+
+Because we have planted 2 trees, we go to the field [insert] and change
+this to 2 pcs.
+
+Click on btn:[OK] for saving the result or on btn:[cancel] for discarding the
+result.
+
+The window close and we go back to the main window.
+
+We click again on btn:[Show templates] and select this time `cut grass`, we
+click again on the button with the arrow, in the opened window we select
+that the grass-field was 24 square meter.
+
+Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
+result.
+
+We add now manually an item by clicking on the button btn:[Add item…] and the window [create new item] opens.
+
+Because we have delivered a special tree, we fill here in the name of
+the special tree `liguster`, at the field insert we fill in the number
+of the special trees that we have delivered and the price of them.
+
+____
+WARNING:
+Remind that in the catalog we can add a profit on the price of the
+material, in the invoice and in the offer we can not add a profit on the
+price of the material.
+____
+
+We have now an invoice with 3 items.
+
+Click on btn:[OK] for saving the invoice or on btn:[Cancel] for discarding the
+invoice.
+
+We click on btn:[OK] and save the result.
+
+Your first invoice is now ready for sending.
+
+In the window documents we see our first invoice, notice that this
+document has a document number which we can see on the left side.
+
+On top of the window with all the invoices we see the button [Print
+Document], on which we click.
+
+From the invoice will now a PDF be made which we can print on paper or
+send by email to the client.
+
+After this we are going to create a offer for some work in a garden.
+
+[[Offer]]
+=== Creating an Offer
+
+The client has asked to plant a tree, we will offer 3 different trees which we can plant.
+
+Beside this, we have seen that there is a lifeless three, which we will offer to remove as extra work.
+image:create_new_doc.png[Numbercycles,float="right"]
+
+For the total price we do not want to show the price of the removal of the lifeless tree and we want for the total price only to show the price of one tree and not three.
+
+Open again the tab btn:[documents].
+
+Click on btn:[create document]
+
+The window _Document Creation Wizard_ opens.
+
+select in btn:[document type] > btn:[Offer].
+
+Fill in on the whiteboard content a short text about what the offer is,
+like: `plant one tree and removal of lifeless tree`
+
+Click on btn:[next]
+
+Select on the new window the name and address from the client.
+
+(if the name and address is not there, click then on btn:[new contact] or on
+btn:[edit contact] if you want to edit the contact)
+
+Click on btn:[OK].
+
+Now the window [edit document] opens.
+
+This window has 2 tabs and the 3 buttons on the top:
+
+* btn:[Add item...],
+* btn:[Add discount item],
+* btn:[Show templates].
+
+Click on the button btn:[Show templates].
+
+The right tab changes and show now the earlier made templates, we select
+in the group `Work`, the subgroup `Plant tree` and click then on the button
+with the to the left pointing arrow on the bottom side.
+
+A new window [Create Item from Template] opens.
+
+Because we want to plant 1 tree, we go to the field [insert] and keep this
+on 1 pcs.
+
+Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
+result.
+
+The window close and we go back to the main window.
+
+We click on the button btn:[Show templates] and this time we select in
+catalog Material
+
+The material-catalog opens, and we can select in the chapter `trees` the
+subchapter `loaf trees` in which we select the `apple tree` which we made
+earlier.
+
+Click on we btn:[OK] for saving the result or on btn:[cancel] for discarding the result.
+
+The window close and we go back to the main window.
+
+We add now manually an item by clicking on the button `Add item…`.
+
+the window [create new item] opens.
+
+We want that the client can make a choice from an apple, a pear tree and the liguster.
+
+Therefor we are going to add also a pear tree manually.
+
+We click on the button btn:[Add item…] and the window [create new item] opens.
+
+We fill here in the name of the tree `Pear tree`, at the field insert we
+fill in the number of the special trees that we have delivered and the
+price of them.
+
+We want add this to the material catalog for future use, therefor we
+select also [select this item as template for future documents] and we select in [save in chapter]`trees`.
+
+Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
+result.
+
+We does this again but then for the liguster.
+
+We have now 3 items with trees in the offer.
+
+As last item we add an item with `remove tree` with 0,5 hour for 32 euro.
+
+On the left side of an item we can see 2 buttons:
+
+a button with a flag and a button with what looks like a page.
+
+We select the upper button with the page after which opens a
+context-menu with the items:
+
+ [Item kind]->[Normal]
+ [Item kind]>[Alternative]
+ [Item kind]>[On demand]
+ [Tax]
+ [Move up]
+ [Move down]
+ [Lock item]
+ [Unlock item]
+ [Delete item]
+
+We choose here [Item kind] and change for `pear tree` from [normal] to
+[alternative].
+
+We do this also for [liguster] and for [remove tree] we change this from
+[normal] to [on demand].
+
+Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
+result.
+
+We want to see the result and therefor we click on the button [show
+document].
+
+We see now that the prize of the pear tree, the liguster and the removal
+of the tree is not used for the total prize. When we are happy with the
+result, we can click on the button btn:[close] after which we click on the
+button btn:[Print Document] for making a PDF what we can print out or send to
+the client.
+
+After your first invoice is now your first offer now also ready for
+sending.
+
+[[Menu]]
+== Menus and Shortcuts
+
+=== Main Application Menu
+
+[[File]]
+==== The File Menu
+
+ [File]>[Quit]
+ [Ctrl]+[Q]
+ Quits the application.
+
+[[Document]]
+==== The Document Menu
+
+[[Show_document]]
+ [Document]>[Show Document]
+ [Ctrl]+[R]
+ Opens a window with the selected document for showing it.
+[[Edit_document]]
+ [Document]>[Edit Document]
+ [Ctrl+O]
+ Opens a window with the selected document for editing it.
+[[Open_document]]
+ [Document]>[Open Archived document]
+ [Ctrl]+[A]
+ Opens an archived document.
+[[Create_document]]
+ [Document]>[Create Document]
+ Opens a window with a wizard for creating a new client-document.
+[[Copy_document]]
+ [Document]>[Copy Document]
+ Makes a copy of the selected client-document to a new client-document
+ which can belong to an other client or an other documenttype.
+[[Follow_document]]
+ [Document]>[Follow Document]
+ Opens the selected client-document for editing.
+[[Print_document]]
+ [Document]>[Print document]
+ Makes a PDf from the selected client-document for to be mailed or
+ printed.
+[[Mail_document]]
+ [Document]>[Mail document]
+ [Ctrl]+[M]
+ Mails a document.
+
+
+[[settings]]
+==== The Settings menu
+[[edit_template]]
+ [Settings]>[Edit Tag Templates]
+ [Ctrl]+[E]
+ Opens a window where you add, edit or translate the tags (like work,
+ material, plants or discounts).
+[[redo]]
+ [Settings]>[Redo initial setup]
+ [Ctrl+R]
+ Redoes the initial setup. After this, a restart of Kraft is required.
+[[toolbars]]
+ [Settings]>[Showed toolbars]
+ Here you can decide if the `main toolbar` and the toolbar `Document Actions`
+ are shown.
+[[configure]]
+ [Settings]>[Configure Kraft]
+ [Ctrl]+[Shft]+[,]
+ Here you can configure Kraft.
+
+=== Document Edit Window
+
+[[context]]
+==== The context Menu
+
+ [Context]>[Item kind]
+ change the status from this item between
+* Normal
+* Alternative
+* On demand
+[[Tax]]
+ [Context]>[Tax]
+ Seems not working.
+[[Move_up]]
+ [Context]>[Move up]
+ Moves this item a place up in document.
+[[Move_down]]
+ [Context]>[Move down]
+ Moves this item a place down in document.
+[[Lock_item]]
+ [Context]>[Lock item]
+ It is not clear what is does.
+[[Unlock_item]]
+ [Context]>[Unlock item]
+ It is not clear what is does.
+[[Delete_item]]
+ [Context]>[Delete item]
+ Removes this item from document.
+
+
+[[Credits]]
+== Credits and License
+
+Program copyright 2004–2020 Klaas Freitag
+
+Documentation copyright 2020 Ronald Stroethoff

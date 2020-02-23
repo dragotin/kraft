@@ -1,6 +1,7 @@
 project(kraft)
 
 cmake_minimum_required(VERSION 2.8.12)
+cmake_policy(SET CMP0063 NEW)
 
 find_package(ECM REQUIRED NO_MODULE)
 
@@ -60,6 +61,9 @@ endif()
 
 find_package(Ctemplate REQUIRED)
 
+find_package(Asciidoctor)
+# Sets the variable ASCIIDOCTOR_FOUND
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 # disable the warning about null-pointer zero. FIXME.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
@@ -85,5 +89,9 @@ add_subdirectory(tools)
 add_subdirectory(styles)
 add_subdirectory(meta)
 add_subdirectory(tests)
+IF (ASCIIDOCTOR_FOUND)
+  add_subdirectory(manual)
+ENDIF (ASCIIDOCTOR_FOUND)
+
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
