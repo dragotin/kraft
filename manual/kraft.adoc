@@ -297,34 +297,37 @@ result.
 We are now ready for the first invoice.
 
 [[Invoice]]
-== Creating a Invoice
+== Creating Documents
 
-Open the tab [documents]
+=== The first Invoice
 
-Click on [create document]
+Open the tab btn:[documents]
+
+Click on btn:[create document]
 
 The window document [creation wizard opens].
 
-select in document type `invoice`.
+Select in document type `invoice`.
 
 Fill in on the whiteboard content a short text about what the invoice
 is, like: `cut grass and planted tree for mister Jonson`
 
-Click on [next]
+Click on btn:[next]
 
 Select on the new window the name and address from the client.
 
-(if the name and address is not there, click then on [new contact] or on
-[edit contact] if you want to edit the contact)
+(if the name and address is not there, click then on btn:[new contact] or on
+btn:[edit contact] if you want to edit the contact)
 
-Click on [OK].
+Click on btn:[OK].
 
 Now opens the window document [items].
 
 this window has 2 tabs and the 3 buttons on the top:
-[Add item...],
-[Add discount item],
-[Show templates].
+
+* btn:[Add item...],
+* btn:[Add discount item],
+* btn:[Show templates].
 
 In the left tab you can see all the items that we want to place on the
 invoice, on the right tab we see the text from the header, the total
@@ -337,7 +340,7 @@ the footer.
 Adapt the header and the footer to your situation, on the footer you can
 place a text: `We make your garden-dream come to reality.`.
 
-Click on the button [Show templates].
+Click on the button btn:[Show templates].
 
 The right tab changes and show now the earlier made templates, we select
 in the group Work, the subgroup Plant tree and click then on the button
@@ -348,21 +351,19 @@ A new window [Create Item from Template] opens.
 Because we have planted 2 trees, we go to the field [insert] and change
 this to 2 pcs.
 
-Click on [OK] for saving the result or on [cancel] for discarding the
+Click on btn:[OK] for saving the result or on btn:[cancel] for discarding the
 result.
 
 The window close and we go back to the main window.
 
-We click again on [Show templates] and select this time `cut grass`, we
+We click again on btn:[Show templates] and select this time `cut grass`, we
 click again on the button with the arrow, in the opened window we select
 that the grass-field was 24 square meter.
 
-Click on [OK] for saving the result or on [Cancel] for discarding the
+Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
 result.
 
-We add now manually an item by clicking on the button [Add item…]
-
-the window [create new item] opens.
+We add now manually an item by clicking on the button btn:[Add item…] and the window [create new item] opens.
 
 Because we have delivered a special tree, we fill here in the name of
 the special tree `liguster`, at the field insert we fill in the number
@@ -370,20 +371,17 @@ of the special trees that we have delivered and the price of them.
 
 ____
 WARNING:
-remark that in the catalog we can add a profit on the price of the
+Remind that in the catalog we can add a profit on the price of the
 material, in the invoice and in the offer we can not add a profit on the
 price of the material.
 ____
 
-Click on [OK] for saving the result or on [Cancel] for discarding the
-result.
-
 We have now an invoice with 3 items.
 
-Click on [OK] for saving the invoice or on [Cancel] for discarding the
+Click on btn:[OK] for saving the invoice or on btn:[Cancel] for discarding the
 invoice.
 
-We click on [OK] and save the result.
+We click on btn:[OK] and save the result.
 
 Your first invoice is now ready for sending.
 
@@ -399,46 +397,44 @@ send by email to the client.
 After this we are going to create a offer for some work in a garden.
 
 [[Offer]]
-== Creating a Offer
+=== Creating an Offer
 
-The client has asked to plant a tree, we will offer 3 different trees
-which we can plant.
+The client has asked to plant a tree, we will offer 3 different trees which we can plant.
 
-Beside this, we have seen that there is a death three, which we will
-offer to remove as extra work.
+Beside this, we have seen that there is a lifeless three, which we will offer to remove as extra work.
+image:create_new_doc.png[Numbercycles,float="right"]
 
-For the total price we do not want to show the price of the removal of
-the death tree and we want for the total price only to show the price of
-one tree and not 3.
+For the total price we do not want to show the price of the removal of the lifeless tree and we want for the total price only to show the price of one tree and not three.
 
-Open again the tab [documents].
+Open again the tab btn:[documents].
 
-Click on [create document]
+Click on btn:[create document]
 
-The window [document creation wizard] opens.
+The window _Document Creation Wizard_ opens.
 
-select in [document type] > [Offer].
+select in btn:[document type] > btn:[Offer].
 
 Fill in on the whiteboard content a short text about what the offer is,
-like: `plant one tree and removal of death tree`
+like: `plant one tree and removal of lifeless tree`
 
-Click on [next]
+Click on btn:[next]
 
 Select on the new window the name and address from the client.
 
-(if the name and address is not there, click then on [new contact] or on
-[edit contact] if you want to edit the contact)
+(if the name and address is not there, click then on btn:[new contact] or on
+btn:[edit contact] if you want to edit the contact)
 
-Click on [OK].
+Click on btn:[OK].
 
-Now opens the window [document items].
+Now the window [edit document] opens.
 
-this window has 2 tabs and the 3 buttons on the top:
- [Add item...],
- [Add discount item],
- [Show templates].
+This window has 2 tabs and the 3 buttons on the top:
 
-Click on the button [Show templates].
+* btn:[Add item...],
+* btn:[Add discount item],
+* btn:[Show templates].
+
+Click on the button btn:[Show templates].
 
 The right tab changes and show now the earlier made templates, we select
 in the group `Work`, the subgroup `Plant tree` and click then on the button
@@ -449,20 +445,19 @@ A new window [Create Item from Template] opens.
 Because we want to plant 1 tree, we go to the field [insert] and keep this
 on 1 pcs.
 
-Click on [OK] for saving the result or on [Cancel] for discarding the
+Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
 result.
 
 The window close and we go back to the main window.
 
-We click again on the button [Show templates] and we select this time in
-the selected catalog material
+We click on the button btn:[Show templates] and this time we select in
+catalog Material
 
 The material-catalog opens, and we can select in the chapter `trees` the
 subchapter `loaf trees` in which we select the `apple tree` which we made
 earlier.
 
-Click on [OK] for saving the result or on [cancel] for discarding the
-result.
+Click on we btn:[OK] for saving the result or on btn:[cancel] for discarding the result.
 
 The window close and we go back to the main window.
 
@@ -470,14 +465,11 @@ We add now manually an item by clicking on the button `Add item…`.
 
 the window [create new item] opens.
 
-We want that the client can make a choice from an apple, a pear tree and
-the liguster.
+We want that the client can make a choice from an apple, a pear tree and the liguster.
 
 Therefor we are going to add also a pear tree manually.
 
-We click on the button `Add item…`
-
-the window [create new item] opens.
+We click on the button btn:[Add item…] and the window [create new item] opens.
 
 We fill here in the name of the tree `Pear tree`, at the field insert we
 fill in the number of the special trees that we have delivered and the
@@ -486,7 +478,7 @@ price of them.
 We want add this to the material catalog for future use, therefor we
 select also [select this item as template for future documents] and we select in [save in chapter]`trees`.
 
-Click on [OK] for saving the result or on [Cancel] for discarding the
+Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
 result.
 
 We does this again but then for the liguster.
@@ -500,7 +492,7 @@ On the left side of an item we can see 2 buttons:
 a button with a flag and a button with what looks like a page.
 
 We select the upper button with the page after which opens a
-context-menu with the next items:
+context-menu with the items:
 
  [Item kind]->[Normal]
  [Item kind]>[Alternative]
@@ -518,7 +510,7 @@ We choose here [Item kind] and change for `pear tree` from [normal] to
 We do this also for [liguster] and for [remove tree] we change this from
 [normal] to [on demand].
 
-Click on [OK] for saving the result or on [Cancel] for discarding the
+Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
 result.
 
 We want to see the result and therefor we click on the button [show
@@ -526,8 +518,8 @@ document].
 
 We see now that the prize of the pear tree, the liguster and the removal
 of the tree is not used for the total prize. When we are happy with the
-result, we can click on the button [close] after which we click on the
-button [Print Document] for making a PDF what we can print out or send to
+result, we can click on the button btn:[close] after which we click on the
+button btn:[Print Document] for making a PDF what we can print out or send to
 the client.
 
 After your first invoice is now your first offer now also ready for
@@ -536,6 +528,8 @@ sending.
 [[Menu]]
 == Menus and Shortcuts
 
+=== Main Application Menu
+
 [[File]]
 ==== The File Menu
 
@@ -543,60 +537,62 @@ sending.
  [Ctrl]+[Q]
  Quits the application.
 
-[[Edit]]
-==== The Edit Menu
-[[cut]]
- [Edit]>[Cut]
- [Ctrl]+[X]
- Cut the current selected text to the clipboard which you can paste in other applications.
-[[copy]]
- [Edit]>[Copy]
- [Ctrl]+[C]
- Copy the current selected text to the clipboard which you can paste in other applications.
-[[paste]]
- [Edit]>[Paste]
- [Ctrl]+[V]
- Paste the current content from the clipboard to this program.
-
-____
-NOTE:
-the edit menu appears only in the main window where it is not
-functional. In other windows it does not appear.
-____
-
 [[Document]]
 ==== The Document Menu
 
-[[Edit_document]]
- [Document]>[Edit document]
- [Ctrl+O]
- Opens a window with the selected document for editing it.
 [[Show_document]]
- [Document]>[Show document]
+ [Document]>[Show Document]
  [Ctrl]+[R]
  Opens a window with the selected document for showing it.
+[[Edit_document]]
+ [Document]>[Edit Document]
+ [Ctrl+O]
+ Opens a window with the selected document for editing it.
+[[Open_document]]
+ [Document]>[Open Archived document]
+ [Ctrl]+[A]
+ Opens an archived document.
 [[Create_document]]
- [Document]>[Create document]
+ [Document]>[Create Document]
  Opens a window with a wizard for creating a new client-document.
 [[Copy_document]]
- [Document]>[Copy document]
+ [Document]>[Copy Document]
  Makes a copy of the selected client-document to a new client-document
  which can belong to an other client or an other documenttype.
 [[Follow_document]]
- [Document]>[Follow document]
+ [Document]>[Follow Document]
  Opens the selected client-document for editing.
 [[Print_document]]
  [Document]>[Print document]
  Makes a PDf from the selected client-document for to be mailed or
  printed.
-[[Open_document]]
- [Document]>[Open archived document]
- [Ctrl]+[A]
- Opens an archived document.
 [[Mail_document]]
  [Document]>[Mail document]
  [Ctrl]+[M]
  Mails a document.
+
+
+[[settings]]
+==== The Settings menu
+[[edit_template]]
+ [Settings]>[Edit Tag Templates]
+ [Ctrl]+[E]
+ Opens a window where you add, edit or translate the tags (like work,
+ material, plants or discounts).
+[[redo]]
+ [Settings]>[Redo initial setup]
+ [Ctrl+R]
+ Redoes the initial setup. After this, a restart of Kraft is required.
+[[toolbars]]
+ [Settings]>[Showed toolbars]
+ Here you can decide if the `main toolbar` and the toolbar `Document Actions`
+ are shown.
+[[configure]]
+ [Settings]>[Configure Kraft]
+ [Ctrl]+[Shft]+[,]
+ Here you can configure Kraft.
+
+=== Document Edit Window
 
 [[context]]
 ==== The context Menu
@@ -625,28 +621,6 @@ ____
  [Context]>[Delete item]
  Removes this item from document.
 
-[[settings]]
-==== The Settings menu
-[[edit_template]]
- [Settings]>[Edit Tag Templates]
- [Ctrl]+[E]
- Opens a window where you add, edit or translate the tags (like work,
- material, plants or discounts).
-[[redo]]
- [Settings]>[Redo initial setup]
- [Ctrl+R]
- Redoes the initial setup.
-[[toolbars]]
- [Settings]>[Showed toolbars]
- Here you can decide if the `main toolbar` and the toolbar `Document Actions`
- are shown.
-[[statusbar]]
- [Settings]>[Show status-bar]
- Here you can decide if the statusbar are shown.
-[[configure]]
- [Settings]>[Configure Kraft]
- [Ctrl]+[Shft]+[,]
- Here you can configure Kraft.
 
 [[Credits]]
 == Credits and License
