@@ -224,31 +224,22 @@ void KatalogView::openDocumentFile(const QUrl& )
   slotStatusMsg(i18n("Ready."));
 }
 
-bool KatalogView::queryClose()
-{
-    return true;
-}
-
-bool KatalogView::queryExit()
-{
-  return true;
-}
-
 void KatalogView::closeEvent( QCloseEvent *event )
 {
     slotStatusMsg(i18n("Exiting..."));
-    // close the first window, the list makes the next one the first again.
-    // This ensures that queryClose() is called on each window to ask for closing
 
+    if( event )
+        event->accept();
+}
+
+void KatalogView::slotSaveState()
+{
     getListView()->saveState(); // saves the header state
 
     const QByteArray state = saveState().toBase64();
     saveWindowState(state);
     const QByteArray geo = saveGeometry().toBase64();
     saveWindowGeo(geo);
-
-    if( event )
-        event->accept();
 }
 
 void KatalogView::slotStatusMsg(const QString &text)

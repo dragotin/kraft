@@ -36,8 +36,8 @@ const QString MaterialKatalogView::MaterialCatalogName( "Material" );
 
 MaterialKatalogView::MaterialKatalogView()
  : KatalogView(),
-   m_materialListView(0),
-   m_details(0)
+   m_materialListView(nullptr),
+   m_details(nullptr)
 {
 
 }
@@ -45,6 +45,7 @@ MaterialKatalogView::MaterialKatalogView()
 
 MaterialKatalogView::~MaterialKatalogView()
 {
+    slotSaveState();
 }
 
 void MaterialKatalogView::createCentralWidget( QBoxLayout *box, QWidget *w )

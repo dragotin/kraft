@@ -46,6 +46,7 @@ TemplKatalogView::TemplKatalogView(QWidget* parent, const char* name)
 
 TemplKatalogView::~TemplKatalogView()
 {
+    slotSaveState();
     delete m_flosDialog;
 }
 

@@ -92,6 +92,9 @@ class KRAFTCAT_EXPORT KatalogView : public QMainWindow
 
     void closeEvent( QCloseEvent *event );
 
+protected slots:
+    void slotSaveState();
+
   protected:
 
     /** the configuration object of the application */
@@ -125,20 +128,6 @@ class KRAFTCAT_EXPORT KatalogView : public QMainWindow
      * @see initView();
      */
     void initView();
-    /** queryClose is called by KTMainWindow on each closeEvent of a window. Against the
-     * default implementation (only returns true), this calles saveModified() on the document object to ask if the document shall
-     * be saved if Modified; on cancel the closeEvent is rejected.
-     * @see KTMainWindow#queryClose
-     * @see KTMainWindow#closeEvent
-     */
-    virtual bool queryClose();
-    /** queryExit is called by KTMainWindow when the last window of the application is going to be closed during the closeEvent().
-     * Against the default implementation that just returns true, this calls saveOptions() to save the settings of the last window's
-     * properties.
-     * @see KTMainWindow#queryExit
-     * @see KTMainWindow#closeEvent
-     */
-    virtual bool queryExit();
 
     /** Save the state of the window to the right settings value. Needs to be reimplemented in the special window implementation,
      * thus virtual here.
