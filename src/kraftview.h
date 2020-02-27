@@ -50,7 +50,6 @@ class QWidget;
 class QResizeEvent;
 class QSignalMapper;
 class QStackedWidget;
-class KVBox;
 class QSplitter;
 class DocPostCard;
 class QTimer;
@@ -202,7 +201,6 @@ private:
 
   QWidget        *mSumSpacer;
   QStackedWidget *mViewStack;
-  KVBox          *mGlobalVBox;
   int             mHeaderId;
   DocAssistant   *mAssistant;
   double         mRememberAmount;
