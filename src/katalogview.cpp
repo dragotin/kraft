@@ -71,8 +71,11 @@ void KatalogView::init(const QString& katName )
   if( ! listview ) {
       // qDebug () << "ERROR: No listview created !!!" << endl;
   } else {
+      QHBoxLayout *horizLay = new QHBoxLayout;
       m_filterHead = new FilterHeader(w, listview);
-      box->insertWidget(0, m_filterHead);
+      horizLay->insertWidget(0, m_filterHead, 2);
+      horizLay->addStretch(1);
+      box->insertLayout(0, horizLay);
 
       connect( listview, SIGNAL(currentItemChanged ( QTreeWidgetItem*, QTreeWidgetItem*)),
                this, SLOT(slTreeviewItemChanged( QTreeWidgetItem*, QTreeWidgetItem*)) );

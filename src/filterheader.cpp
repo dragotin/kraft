@@ -24,6 +24,7 @@
 
 #include <QLayout>
 #include <QLabel>
+#include <QAction>
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QHBoxLayout>
@@ -40,7 +41,8 @@ FilterHeader::FilterHeader(QWidget *parent , QTreeWidget *listView)
     filterLayout->addWidget( label );
 
     mSearchLine = new QLineEdit( this );
-    mSearchLine-> setClearButtonEnabled(true);
+    mSearchLine->setClearButtonEnabled(true);
+
     label->setBuddy(mSearchLine);
     connect( mSearchLine, SIGNAL(textChanged(QString) ),
              SLOT( slotTextChanged(QString) ) );
