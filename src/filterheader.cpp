@@ -65,16 +65,23 @@ void FilterHeader::slotTextChanged( const QString& filter )
             }
 
             item->setHidden(!showIt);
-            if( showIt && !filter.isEmpty() ) {
+            if( showIt && ! filter.isEmpty() ) {
                 // Make sure that all the parent items are visible too
-                QTreeWidgetItem *parent = 0, *child = item;
-                while((parent = child->parent()) != 0) {
+                QTreeWidgetItem *parent = nullptr, *child = item;
+                while((parent = child->parent()) != nullptr) {
                     parent->setHidden(false);
                     if( !parent->isExpanded() ) {
                         parent->setExpanded(true);
+                        _openedItems[parent] = 1;
                     }
                     child = parent;
                 }
+            }
+            if (filter.isEmpty()) {
+                for( auto item : _openedItems.uniqueKeys()) {
+                    item->setExpanded(false);
+                }
+                _openedItems.clear();
             }
         }
         ++it;

@@ -21,6 +21,7 @@
 
 #include <QWidget>
 #include <QLineEdit>
+#include <QTreeWidgetItem>
 
 #include "kraftcat_export.h"
 
@@ -46,6 +47,7 @@ private slots:
     QLineEdit   *mSearchLine;
     QLabel      *mTitleLabel;
     QTreeWidget *_treeWidget;
+    QHash<QTreeWidgetItem*, int> _openedItems;
 };
 
 #endif
