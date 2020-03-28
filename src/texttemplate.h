@@ -19,16 +19,18 @@
 
 #include <qmap.h>
 #include <qstring.h>
+
+#include "texttemplateinterface.h"
+
 #include <ctemplate/template_dictionary.h>
 #include <ctemplate/template_modifiers.h>
 
 using ctemplate::Template;
 using ctemplate::TemplateDictionary;
 
-class TextTemplate
+class TextTemplate : public TextTemplateInterface
 {
-
-public:
+private:
   struct Dictionary
   {
     QString mParent;
@@ -36,36 +38,16 @@ public:
     TemplateDictionary *mDict;
   };
 
+public:
+
   TextTemplate();
-  /**
-   * constructs a text template and loads the template source file
-   * via KStandardDirs immediately. No need to call setTemplateFilename
-   * and openTemlate().
-   */
-  TextTemplate( const QString& );
   
-  ~TextTemplate();
-
-  /**
-   * take the template absolute filename of the template source and 
-   * load it immediately. 
-   * returns true if successful. Otherwise check errorString() for 
-   * error messages
-   */
-  bool setTemplateFileName( const QString& );
-
-  bool open();
-
-  /** 
-   * return a describing string if something went wrong when opening
-   * the template.
-   */
-  QString errorString() const;
+  ~TextTemplate() override;
 
   /**
    * set a value in the default dictionary
    */
-  void setValue( const QString&, const QString& );
+  void setValue( const QString&, const QString& ) override;
   
   /**
    * set a value in the named dictionary
@@ -74,16 +56,16 @@ public:
    * the key name
    * the value
    */
-  void setValue( const QString&, const QString&, const QString& );
+  void setValue( const QString&, const QString&, const QString& ) override;
   void setValue( Dictionary, const QString& , const QString& );
 
-  void createDictionary( const QString& );
+  void createDictionary( const QString& ) override;
 
   /**
    * creates a sub dictionary to a given dictionary. 
    * Parameter 1 is the parent dict, Param 2 the sub dictionary name.
    */
-  Dictionary createSubDictionary( const QString& , const QString& );
+  bool createSubDictionary( const QString& , const QString& ) override;
 
   /**
    * creates a dictionary with the name given in parameter two nested 
@@ -91,18 +73,16 @@ public:
    *
    * The dictionary struck is given back to use with setValue.
    */
-  Dictionary createSubDictionary( Dictionary, const QString& );
+  // Dictionary createSubDictionary( Dictionary, const QString& );
   /**
    * get the expanded output 
    */
-  QString expand() const;
+  QString expand() override;
 
-  QString findTemplateFile(const QString &filename) const;
+protected:
+  virtual bool initialize() override;
 
-private:
-  QString mFileName;
-  QString mErrorString;
-  
+private:  
   TemplateDictionary *mStandardDict;
   QMap<QString, TemplateDictionary*> mDictionaries;
 };
