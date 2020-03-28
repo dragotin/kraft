@@ -271,19 +271,29 @@ DocumentSaverBase* KraftDoc::getSaver( const QString& )
     return mSaver;
 }
 
-Geld KraftDoc::nettoSum()
+Geld KraftDoc::nettoSum() const
 {
   return positions().nettoPrice();
 }
 
-Geld KraftDoc::bruttoSum()
+Geld KraftDoc::bruttoSum() const
 {
   Geld g = nettoSum();
   g += vatSum();
   return g;
 }
 
-Geld KraftDoc::vatSum()
+Geld KraftDoc::fullTaxSum() const
+{
+    return positions().fullTaxSum(DocumentMan::self()->tax(date()));
+}
+
+Geld KraftDoc::reducedTaxSum() const
+{
+    return positions().reducedTaxSum(DocumentMan::self()->reducedTax(date()));
+}
+
+Geld KraftDoc::vatSum() const
 {
   return positions().taxSum( DocumentMan::self()->tax( date() ),
                              DocumentMan::self()->reducedTax( date() ) );
