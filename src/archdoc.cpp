@@ -179,6 +179,17 @@ void ArchDoc::loadItems( const QString& archDocId )
   }
 }
 
+QList<ArchDocPosition> ArchDoc::itemslist() const
+{
+    QList<ArchDocPosition> re;
+
+    for( ArchDocPosition pos : mPositions) {
+        re.append(pos);
+    }
+
+    return re;
+}
+
 QDateTime ArchDoc::sentOutDate()
 {
     QDateTime re;

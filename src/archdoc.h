@@ -22,8 +22,8 @@
 #include <QString>
 #include <QDateTime>
 #include <QMap>
+#include <QObject>
 
-// include files for KDE
 #include "archdocposition.h"
 #include "geld.h"
 #include "dbids.h"
@@ -66,8 +66,34 @@ private:
   QString   mIdent;
 };
 
-class ArchDoc
+
+
+class ArchDoc : public QObject
 {
+    Q_OBJECT
+
+    Q_PROPERTY(QString docType READ docType)
+    Q_PROPERTY(QString address READ address)
+    Q_PROPERTY(QString clientUid READ clientUid)
+    Q_PROPERTY(QString ident READ ident)
+    Q_PROPERTY(QString salut READ salut)
+    Q_PROPERTY(QString goodbye READ goodbye)
+    Q_PROPERTY(QString preText READ preText)
+    Q_PROPERTY(QString postText READ postText)
+    Q_PROPERTY(QString projectLabel READ projectLabel)
+    Q_PROPERTY(QString docIDStr READ docIdStr)
+    Q_PROPERTY(QString docIdentifier READ docIdentifier)
+    Q_PROPERTY(QString postText READ postText)
+    Q_PROPERTY(QDate date READ date)
+
+    Q_PROPERTY(QString nettoSumStr READ nettoSumStr)
+    Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr)
+    Q_PROPERTY(QString taxSumStr READ taxSumStr)
+    Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
+    Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
+
+    Q_PROPERTY(ArchDocPositionList items READ positions)
+    Q_PROPERTY(QList<ArchDocPosition> itemslist READ itemslist)
 public:
 
   /** Constructor for the fileclass of the application */
@@ -77,6 +103,7 @@ public:
   ~ArchDoc();
 
   ArchDocPositionList positions() const { return mPositions; }
+  QList<ArchDocPosition> itemslist() const;
 
   QDate date() const      { return mDate; }
 
@@ -99,14 +126,20 @@ public:
   QString projectLabel() const { return mProjectLabel; }
 
   dbID docID() const { return mDocID; }
+  QString docIdStr() const { return docID().toString(); }
 
   QString docIdentifier() const;
 
   Geld nettoSum() const;
+  QString nettoSumStr() const { return nettoSum().toString(); }
   Geld bruttoSum() const;
+  QString bruttoSumStr() const { return bruttoSum().toString(); }
   Geld taxSum() const;
+  QString taxSumStr() const { return taxSum().toString(); }
   Geld fullTaxSum() const;
+  QString fullTaxSumStr() const { return fullTaxSum().toString(); }
   Geld reducedTaxSum() const;
+  QString reducedTaxSumStr() const { return reducedTaxSum().toString(); }
 
   double tax() const;
   double reducedTax() const;

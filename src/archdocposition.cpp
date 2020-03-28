@@ -29,8 +29,10 @@
 @author Klaas Freitag
 */
 
+
+
 ArchDocPosition::ArchDocPosition()
-  : mAmount( 0 )
+    : mAmount( 0 )
 {
 
 }
@@ -79,11 +81,11 @@ ArchDocPositionList::ArchDocPositionList()
 
 }
 
-Geld ArchDocPositionList::sumPrice()
+Geld ArchDocPositionList::sumPrice() const
 {
     Geld g;
 
-    iterator it;
+    const_iterator it;
     for ( it = begin(); it != end(); ++it ) {
       g += ( *it ).nettoPrice();
     }
@@ -108,14 +110,14 @@ Geld ArchDocPositionList::taxSum( double fullTax, double reducedTax ) const
     return fullTaxSum;
 }
 
-Geld ArchDocPositionList::fullTaxSum( double fullTax )
+Geld ArchDocPositionList::fullTaxSum( double fullTax ) const
 {
     const Geld g = taxSum( fullTax, 0.0);
 
     return g;
 }
 
-Geld ArchDocPositionList::reducedTaxSum( double reducedTax )
+Geld ArchDocPositionList::reducedTaxSum( double reducedTax ) const
 {
     const Geld g = taxSum( 0.0, reducedTax);
 

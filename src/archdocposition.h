@@ -21,6 +21,8 @@
 #include <QString>
 #include <QList>
 
+#include <grantlee/metatype.h>
+
 // include files for KDE
 
 // application specific includes
@@ -28,6 +30,7 @@
 #include "geld.h"
 #include "dbids.h"
 #include "docposition.h"
+#include "defaultprovider.h"
 
 class ArchDoc;
 /**
@@ -37,7 +40,7 @@ class ArchDoc;
 class ArchDocPosition
 {
     friend class ArchDoc;
-  public:
+public:
     ArchDocPosition();
     ~ArchDocPosition(){};
 
@@ -50,13 +53,13 @@ class ArchDocPosition
     Geld unitPrice() const { return mUnitPrice; }
     Geld nettoPrice() const;
 
-    double amount() { return mAmount; }
+    double amount() const { return mAmount; }
     DocPositionBase::TaxType taxType() const { return mTaxType; }
     Geld   tax( double fullTax, double reducedTax ) const;
     Geld   fullTax( double fullTax ) const;
     Geld   reducedTax( double reducedTax ) const;
 
-    QString kind() { return mKind; }
+    QString kind() const { return mKind; }
   private:
     QString mText;
     QString mPosNo;
@@ -73,11 +76,57 @@ class ArchDocPositionList : public QList<ArchDocPosition>
 {
   public:
     ArchDocPositionList();
-    Geld sumPrice();
+    Geld sumPrice() const;
     Geld taxSum( double, double ) const;
-    Geld fullTaxSum( double );
-    Geld reducedTaxSum( double );
+    Geld fullTaxSum( double ) const;
+    Geld reducedTaxSum( double ) const;
 };
+
+
+Q_DECLARE_METATYPE(ArchDocPosition)
+Q_DECLARE_METATYPE(ArchDocPositionList)
+
+
+// Read-only introspection of Person object.
+GRANTLEE_BEGIN_LOOKUP(ArchDocPosition)
+if ( property == "itemNumber" )
+    return object.posNumber();
+else if ( property == "text" )
+    return object.text();
+else if ( property == "unit" )
+    return object.unit();
+else if ( property == "unitPrice" ) {
+    return object.unitPrice().toString();
+}
+else if ( property == "nettoPrice" )
+    return object.nettoPrice().toString();
+else if ( property == "amount" ) {
+    QLocale *loc = DefaultProvider::self()->locale();
+    return loc->toString(object.amount());
+} else if ( property == "taxTypeStr" )
+    return "taxType";
+else if ( property == "itemType" )
+    return object.kind();
+else
+    return QStringLiteral("undefined");
+GRANTLEE_END_LOOKUP
+
+
+
+GRANTLEE_BEGIN_LOOKUP(ArchDocPositionList)
+if (property == "sumPrice")
+    return object.sumPrice().toString();
+else if (property == "taxSum")
+    return object.taxSum(7.0, 19.0).toString();
+else if (property == "fullTaxSum")
+    return object.fullTaxSum(19.0).toString();
+else if (property == "reducedTaxSum")
+    return object.reducedTaxSum(19.0).toString();
+else if (property == "reducedTaxSum")
+    return object.reducedTaxSum(19.0).toString();
+else
+    return QStringLiteral("Undefined");
+GRANTLEE_END_LOOKUP
 
 
 #endif
