@@ -256,6 +256,67 @@ QString DefaultProvider::locateFile(const QString& findFile) const
     return re;
 }
 
+QStringList DefaultProvider::findTrml2Pdf( ) const
+{
+    // define the default value to compare against, to see if there is a custom
+    // value in the settings file.
+    const QString rmlbinDefault = QStringLiteral( "trml2pdf" ); // FIXME: how to get the default value?
+    const QString rmlbin = KraftSettings::self()->trml2PdfBinary();
+
+    // qDebug () << "### Start searching rml2pdf bin: " << rmlbin;
+
+    QStringList retList;
+    // mHavePdfMerge = false;
+
+    if ( rmlbin != rmlbinDefault ) {
+        retList = rmlbin.split(' ', QString::SkipEmptyParts);
+    } else {
+        // The value in the config is not, as it is still the same as the default
+        // read from either KRAFT_HOME or search in the system.
+        QString p = QString::fromUtf8(qgetenv("KRAFT_HOME"));
+        if( !p.isEmpty() ) {
+            p += QLatin1String("/tools/erml2pdf.py");
+            // qDebug () << "Found erml2pdf from KRAFT_HOME: " << p;
+            if( QFile::exists( p ) ) {
+                retList << "python3";
+                retList << p;
+                // mHavePdfMerge = true;
+            }
+        } else {
+            const QString ermlpy = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kraft/tools/erml2pdf.py" );
+            // qDebug () << "Ermlpy: " << ermlpy;
+            if( ! ermlpy.isEmpty() ) {
+                // need the python3 interpreter, check for it
+                QString python = QStandardPaths::findExecutable(QLatin1String("python3"));
+                if( python.isEmpty() ) {
+                    qCritical() << "ERR: Unable to find python3, thats a problem";
+                } else {
+                    // qDebug () << "Using python: " << python;
+                    retList << python;
+                    retList << ermlpy;
+                    // mHavePdfMerge = true;
+                }
+            }
+        }
+        if (retList.isEmpty() ){
+            // tool erml2pdf.py not found. Try trml2pdf_kraft.sh for legacy reasons
+            QString trml2pdf = QStandardPaths::findExecutable(QLatin1String("trml2pdf_kraft.sh"));
+            if( trml2pdf.isEmpty() ) {
+                // qDebug () << "Could not find trml2pdf_kraft.sh";
+            } else {
+                // qDebug () << "Found trml2pdf: " << trml2pdf;
+                retList << trml2pdf;
+                // mHavePdfMerge = true;
+            }
+        }
+    }
+    if ( retList.isEmpty() ) {
+        qDebug () << "ReportLab based PDF conversion script not found!";
+    }
+
+    return retList;
+}
+
 DefaultProvider::~DefaultProvider()
 {
 
