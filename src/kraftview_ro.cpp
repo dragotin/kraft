@@ -123,8 +123,9 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     }
 
 
-    TextTemplate tmpl( tmplFile );
-    if( !tmpl.open() ) {
+    TextTemplate tmpl;
+    tmpl.setTemplateFileName(tmplFile);
+    if( !tmpl.isOk() ) {
         return;
     }
     tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), doc->docType() + " " + doc->ident() );

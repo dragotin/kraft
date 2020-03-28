@@ -157,8 +157,8 @@ void PortalView::fillCatalogDetails()
     const QStringList katalogNamen = KatalogMan::self()->allKatalogNames();
     QString html;
 
-    html = "<br/><h2>" + i18n("Available Catalogs") + "</h2>";
-    html += "<div><table width=\"60%\" cellpadding=\"4\" cellspacing=\"0\" border=\"0\">\n";
+    html = QStringLiteral("<br/><h2>") + i18n("Available Catalogs") + QStringLiteral("</h2>");
+    html += QStringLiteral("<div><table width=\"60%\" cellpadding=\"4\" cellspacing=\"0\" border=\"0\">\n");
 
     int cnt = 0;
     for(QStringList::ConstIterator namesIt = katalogNamen.begin();
@@ -168,8 +168,7 @@ void PortalView::fillCatalogDetails()
         html += printKatLine( katName, cnt++ );
     }
 
-    html += "</table></div>\n";
-    // qDebug() << html;
+    html += QStringLiteral("</table></div>\n");
 
     mCatalogBrowser->displayContent( html );
 }
@@ -259,8 +258,9 @@ QString PortalView::systemView( const QString& htmlMsg ) const
 
   // Note: This code is stolen from DocDigestDetailView::slotShowDocDetails
   // It should be refactored.
-  TextTemplate tmpl( tmplFile );
-  if( !tmpl.open() ) {
+  TextTemplate tmpl;
+  tmpl.setTemplateFileName(tmplFile);
+  if( !tmpl.isOk() ) {
       return QString ("");
   }
 
