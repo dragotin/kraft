@@ -87,6 +87,7 @@ set(kraft_SRCS
     footertemplateprovider.cpp
     catalogtemplateprovider.cpp
     texttemplate.cpp
+    grantleetemplate.cpp
     tagman.cpp
     itemtagdialog.cpp
     tagtemplatesdialog.cpp
@@ -110,6 +111,7 @@ set(kraft_SRCS
     geld.cpp
     defaultprovider.cpp
     metaxmlparser.cpp
+    texttemplateinterface.cpp
 )
 
 kconfig_add_kcfg_files(kraft_SRCS
@@ -163,6 +165,7 @@ set(KRAFT_LINK_LIBS
     KF5::ConfigCore
     KF5::ConfigGui
     ${CTEMPLATE_LIBRARIES} pthread
+    Grantlee5::Templates
 )
 if(KF5Akonadi_FOUND)
   list(APPEND KRAFT_LINK_LIBS
