@@ -37,31 +37,6 @@ public:
     virtual void setValue( const QString&, const QString& ) = 0;
 
     /**
-     * set a value in the named dictionary
-     * Parameters:
-     * the parameter group name
-     * the key name
-     * the value
-     */
-    virtual void setValue( const QString&, const QString&, const QString& ) = 0;
-   // virtual void setValue( Dictionary, const QString& , const QString& );
-
-    virtual void createDictionary( const QString& ) = 0;
-
-    /**
-     * creates a sub dictionary to a given dictionary.
-     * Parameter 1 is the parent dict, Param 2 the sub dictionary name.
-     */
-    virtual bool createSubDictionary( const QString& , const QString& ) = 0;
-
-    /**
-     * creates a dictionary with the name given in parameter two nested
-     * in the parent dictionary given in the first parameter.
-     *
-     * The dictionary struck is given back to use with setValue.
-     */
-    // virtual Dictionary createSubDictionary( Dictionary, const QString& );
-    /**
      * get the expanded output
      */
     virtual QString expand() = 0;

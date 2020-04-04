@@ -261,8 +261,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
                                                  mExampleAddressUid,
                                                  nextNum ) );
 
-  const QString country = DefaultProvider::self()->locale()->bcp47Name();
-  mTemplateUrl->setText( dt.templateFile(country) );
+  mTemplateUrl->setText( dt.templateFile() );
 
   mWatermarkUrl->setText( dt.watermarkFile() );
   int mergeIdent = dt.mergeIdent().toInt();

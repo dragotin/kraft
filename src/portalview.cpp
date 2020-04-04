@@ -296,7 +296,6 @@ QString PortalView::systemView( const QString& htmlMsg ) const
       QString errorMessage = i18n( "There is a initialisation error on your system. Kraft will not work that way." );
       errorMessage += htmlMsg;
       tmpl.setValue( "ERROR_TEXT", errorMessage );
-
       return tmpl.expand();
   }
 

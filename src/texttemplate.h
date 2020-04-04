@@ -56,16 +56,16 @@ public:
    * the key name
    * the value
    */
-  void setValue( const QString&, const QString&, const QString& ) override;
+  void setValue( const QString&, const QString&, const QString& );
   void setValue( Dictionary, const QString& , const QString& );
 
-  void createDictionary( const QString& ) override;
+  void createDictionary( const QString& );
 
   /**
    * creates a sub dictionary to a given dictionary. 
    * Parameter 1 is the parent dict, Param 2 the sub dictionary name.
    */
-  bool createSubDictionary( const QString& , const QString& ) override;
+  bool createSubDictionary( const QString& , const QString& );
 
   /**
    * creates a dictionary with the name given in parameter two nested 
@@ -77,7 +77,7 @@ public:
   /**
    * get the expanded output 
    */
-  QString expand() override;
+   QString expand() override;
 
 protected:
   virtual bool initialize() override;

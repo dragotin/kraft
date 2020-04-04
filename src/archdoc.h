@@ -150,9 +150,10 @@ public:
   QDateTime sentOutDate();
   void setSentOutDate( const QDateTime& dt );
 
+  void loadFromDb( dbID );
+
 private:
   void loadItems( const QString& );
-  void loadFromDb( dbID );
 
   dbID mArchDocID;
   QString mAddress;

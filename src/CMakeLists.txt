@@ -112,6 +112,8 @@ set(kraft_SRCS
     defaultprovider.cpp
     metaxmlparser.cpp
     texttemplateinterface.cpp
+    documenttemplate.cpp
+    pdfconverter.cpp
 )
 
 kconfig_add_kcfg_files(kraft_SRCS

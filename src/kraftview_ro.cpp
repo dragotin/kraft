@@ -254,8 +254,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     setWindowTitle( m_doc->docIdentifier() );
 
     mHtmlView->setTitle( doc->docIdentifier() );
-    const QString content = tmpl.expand();
-    mHtmlView->displayContent( content );
+    mHtmlView->displayContent(tmpl.expand());
 }
 
 void KraftViewRO::slotLinkClicked(const QString& link)
