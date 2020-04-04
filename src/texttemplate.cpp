@@ -163,20 +163,19 @@ QString TextTemplate::errorString() const
 
 QString TextTemplate::expand() const
 {
-  std::string output;
+    std::string output;
 
-  // if ( mStandardDict ) {
-  //   mStandardDict->Dump();
-  // }
-  Template *textTemplate = Template::GetTemplate( mFileName.toStdString(),
-                                                  ctemplate::DO_NOT_STRIP );
-  if ( textTemplate && mStandardDict) {
-    bool errorFree = textTemplate->Expand(&output, mStandardDict );
+    if ( mStandardDict) {
+        bool errorFree = ExpandTemplate( mFileName.toStdString(), ctemplate::DO_NOT_STRIP ,mStandardDict, &output );
 
-    if ( errorFree )
-      return QString::fromUtf8( output.c_str() );
-  }
-  return QString();
+        QString qout = QString::fromStdString(output);
+        qout.remove(QChar(0));
+
+        if ( errorFree ) {
+            return qout;
+        }
+    }
+    return QStringLiteral("Unable to expand template");
 }
 
 // Static method to load
