@@ -117,7 +117,7 @@ QString TextTemplate::expand()
     std::string output;
 
     if ( mStandardDict) {
-        bool errorFree = ExpandTemplate( mFileName.toStdString(), ctemplate::DO_NOT_STRIP ,mStandardDict, &output );
+        bool errorFree = ExpandTemplate( fileName().toStdString(), ctemplate::DO_NOT_STRIP ,mStandardDict, &output );
 
         QString qout = QString::fromStdString(output);
         qout.remove(QChar(0));
