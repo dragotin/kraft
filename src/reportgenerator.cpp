@@ -183,19 +183,29 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     // expand the template...
     const QString expanded = templateEngine->expand(&_archDoc, myContact, mCustomerContact);
 
+    if (expanded.isEmpty()) {
+        emit failure(i18n("The template conversion failed."));
+        delete converter;
+        return;
+    }
     // ... and save to a tempoarary file
     const QString tempFile = saveToTempFile(expanded);
 
     if (tempFile.isEmpty()) {
+        emit failure(i18n("Saving to temporar file failed."));
+        delete converter;
         return;
     }
+
+    const QString filename = ArchiveMan::self()->archiveFileName( mDocId, mArchId.toString(), "pdf" );
+    const QString fullOutputPath = QString("%1/%2").arg(ArchiveMan::self()->pdfBaseDir()).arg(filename);
 
     // Now there is the completed, expanded document source.
     connect( converter, &PDFConverter::docAvailable,
              this, &ReportGenerator::slotDocAvailable);
     connect( converter, &PDFConverter::converterError,
              this, &ReportGenerator::slotConverterError);
-    converter->convert(tempFile, mArchId, mDocId);
+    converter->convert(tempFile, fullOutputPath);
 
 }
 
