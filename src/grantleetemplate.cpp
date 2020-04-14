@@ -1,9 +1,9 @@
 /***************************************************************************
            GrantleeTemplate.cpp - fill a template with text tags
                              -------------------
-    begin                : Sep 2007
-    copyright            : (C) 2007 by Klaas Freitag
-    email                : freitag@kde.org
+    begin                : March 2020
+    copyright            : (C) 2020 by Klaas Freitag
+    email                : kraft@freisturz.de
  ***************************************************************************/
 
 /***************************************************************************
