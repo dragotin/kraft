@@ -1,39 +1,8 @@
-@charset "UTF-8";
-
-/* Use google web fonts */
-@import url("https://fonts.googleapis.com/css?family=Pacifico|Open+Sans+Pro:400,700");
-@import url("https://fonts.googleapis.com/css?family=Roboto");
-
-/* The CSS for printing */
-@page {
-  margin-left: 2.4cm;
-  margin-top:27mm;
-  margin-right: 1.6cm;
-  margin-bottom: 2cm;
-  color: #2f590a;
-
-  @bottom-left {
-    font-family: Pacifico;
-    content: 'Kraft ♥ Weasyprint';
-  }
-  @bottom-right {
-    content: "Seite " counter(page) " von " counter(pages);
-    font-family: Pacifico;
-    font-size: 9pt; }
-}
-
-/* Do not display the page number on first page. */
-@page :first {
-  @bottom-right {
-    content: 'Kraft Enterprises | +49 423 434294 | kraft@freisturz.de';
-    font-family: Pacifico;
-    font-size: 9pt; }
-}
 
 html {
   color: #14213d;
-  font-family: Source Sans Pro;
-  font-size: 11pt;
+  font-family: Oxygen;
+  font-size: 10pt;
   line-height: 1.6;
 }
 
@@ -46,7 +15,7 @@ html body {
 html h1 {
     color: #2f590a;
     font-family: Roboto;
-    font-size: 16pt;
+    font-size: 14pt;
     margin: 0;
 }
 
@@ -92,6 +61,11 @@ html dl {
         content: ':';
 }
 
+sup {
+   position: relative;
+   vertical-align: baseline;
+   top: -0.4em;
+}
 /*
  */
 html p#letterheader {
@@ -115,6 +89,7 @@ html p.goodbye {
 html table#items {
     border-collapse: collapse;
     width: 100%;
+    table-layout: fixed;
   }
   /*
    * Table header. It is repeated on every page.
@@ -127,51 +102,71 @@ html table#items {
       padding-bottom: .25cm;
       text-transform: uppercase;
   }
+
   html table td {
       vertical-align: top;
       padding-top: 6mm;
+      // to debug: border: 1px solid black;
   }
-  /* Last column of an item line: the overall price */
-  html table td:last-of-type {
-        color: #2f590a;
-        font-weight: bold; }
-  html table th, html table td {
-      text-align: left; }
 
-  /* Alignment for special purpose columns */
-  html table th:nth-of-type(3), html table td:nth-of-type(3) {
+  .col-center {
+    text-align: center;
+  }
+  .col-right {
     text-align: right;
+  }
+  .col-left {
+    text-align: left;
+  }
+
+  // The columns of the items table
+  .col-No {
+    width: 5%;
+  }
+  .col-Text {
+    width: 50%;
+  }
+  .col-Amount {
+    width: 8%;
     padding-right:0.8em;
   }
-
-  html table th:nth-of-type(5), html table td:nth-of-type(5) {
-    text-align: right;
+  .col-Unit {
+    width: 10%;
   }
-  html table th:nth-of-type(6), html table td:nth-of-type(6) {
-    padding-left:1em;
-    text-align: right;
+  .col-SPrice {
+    width: 11%;
+  }
+  .col-Sum {
+    width: 14%;
+    color: #2f590a;
+    font-weight: bold;
   }
 
   /*
    * The table to display the document sum
    */
   html table#total {
-      border-collapse: collapse;
-      text-align: right;
-      width: 6cm;
-      table-layout: fixed;
-      bottom: 0;
-      font-size: 12pt;
+    border-collapse: collapse;
+    width: 40%;
+    table-layout: fixed;
+    text-align: right;
+    bottom: 0;
+    font-size: 10pt;
 
-      /* The following margins pull the whole box to the right */
-      margin-right: 0px;
-      margin-left: auto;
-      margin-bottom: 12mm;
+    /* The following margins pull the whole box to the right */
+    margin-right: 0px;
+    margin-left: auto;
+    margin-bottom: 12mm;
 
-   }
+  }
   html table#total td {
       padding-top: 1mm;
       text-align: right;
+  }
+
+  .col-TotalSum {
+    color: #2f590a;
+    font-weight: bold;
   }
 
   /* the lines above the sums */

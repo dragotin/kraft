@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="description" content="Kraft Invoice document"/>
+    <meta name="author" content="Klaas Freitag"/>
+    <style>
+    @charset "UTF-8";
+
+    /* Use google web fonts */
+    @import url("https://fonts.googleapis.com/css?family=Pacifico|Open+Sans+Pro:400,700");
+    @import url("https://fonts.googleapis.com/css?family=Roboto");
+    @import url("https://fonts.googleapis.com/css?family=Oxygen");
+
+    /* The CSS for printing */
+    @page {
+        margin-left: 2.4cm;
+        margin-top:27mm;
+        margin-right: 1.6cm;
+        margin-bottom: 2cm;
+        color: #2f590a;
+
+        @bottom-left {
+            font-family: Oxygen;
+            content: '{{ me.ORGANISATION }} | {{ label.PHONE }}: {{ me.PHONE }} | {{ label.EMAIL }}: {{ me.EMAIL }}';
+            font-size: 9pt;
+        }
+        @bottom-right {
+            content: "{{ label.PAGE }} " counter(page) " {{ label.PAGE_OF }} " counter(pages);
+            font-family: Oxygen;
+            font-size: 9pt;
+        }
+    }
+    /* Do not display the page number on first page. */
+    @page :first {
+        @bottom-right {
+            font-family: Oxygen;
+            font-size: 9pt;
+            content: '{{ label.WEBSITE }}: {{ me.URL }}';
+        }
+    }
+    </style>
+
+    <link href="kraft.css" media="print" rel="stylesheet"/>
+    <title>Kraft Document</title>
+  </head>
+{% autoescape on %}
+  <body>
+    <p id="letterheader">
+    {{ me.ORGANISATION }} - {{ me.STREET }} - {{ me.POSTCODE }} {{ me.LOCALITY }}
+    </p>
+    <address id="to">{{ doc.address }}</address>
+
+    <dl id="information">
+      <dt>{{ label.DOC_NO }}</dt> <dd>{{ doc.ident }}</dd>
+      <dt>Leistungszeitraum</dt>  <dd>12.04.-28.04.2010</dd>
+      <dt>{{ label.DATE }}</dt>   <dd>{{ doc.dateStr }}</dd>
+      {% if doc.projectLabel %}
+        <dt>{{ label.PROJECT }}</dt>
+        <dd>{{ doc.projectLabel }}</dd>
+      {% endif %}
+      <dt>{{ label.CUST_ID }}</dt> <dd>{{ customer.NAME }}</dd>
+    </dl>
+
+    <h1>{{ doc.docType }} {{ doc.ident }}</h1>
+
+    <p class="salut">{{ doc.salut }}</p>
+    <p class="entrytext">
+    {{ doc.preText }}
+    </p>
+
+    <table id="items">
+      <thead>
+        <th class="col-No col-left">{{ label.NO_SHORT }}</th>
+        <th class="col-Text col-left">{{ label.ITEM }}</th>
+        <th class="col-Amount col-center">{{ label.QUANTITY_SHORT }}</th>
+        <th class="col-Unit col-center">{{ label.UNIT }}</th>
+        <th class="col-SPrice col-center">{{ label.PRICE }}</th>
+        <th class="col-Sum col-center">{{ label.SUM }}</th>
+      </thead>
+      <tbody>
+        {% for item in doc.items %}
+        <tr>
+          <td class="col-No col-left">{{ item.itemNumber }}.</td>
+          <td class="col-Text col-left">{{ item.text }}</td>
+          <td class="col-Amount col-right">{{ item.amount }}</td>
+          <td class="col-Unit col-left">{{ item.unit }}</td>
+          <td class="col-SPrice col-right">{{ item.unitPrice }}</td>
+          <td class="col-Sum col-right">{{ item.nettoPrice }}
+          {% if doc.hasIndividualTaxation %}
+         <sup><small>{{ item.taxMarker }}</small></sup>&nbsp;
+         {% endif %}
+         </td>
+         </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+      </tfoot>
+    </table>
+
+    <table id="total">
+      <tbody>
+        <tr>
+          <td>{{ label.NET }}</td>
+          <td class="col-TotalSum">{{ doc.nettoSumStr }}</td>
+        </tr>
+        <tr>
+        {% if doc.hasIndividualTaxation %}
+        <!-- This section is shown for documents with individual tax rates -->
+        <tr>
+          <td><sup><small>{{ doc.taxMarkerReduced }}</small></sup>&nbsp;
+          +{{ doc.reducedTaxPercentStr }}% {{ label.VAT }}</td>
+          <td class="col-TotalSum">{{ doc.reducedTaxSumStr }}</td>
+        </tr>
+        <tr>
+          <td><sup><small>{{ doc.taxMarkerFull }}</small></sup>&nbsp;
+          +{{ doc.fullTaxPercentStr }}% {{ label.VAT }}</td>
+          <td class="col-TotalSum">{{ doc.fullTaxSumStr }}</td>
+        </tr>
+        {% else %}
+        <tr>
+        <!-- This section is shown for documents with one consistent tax rate -->
+
+        <!-- Note: taxPercentStr can either be reduced or full, depending on
+                   the tax settings of the document -->
+          <td>+{{ doc.taxPercentStr }}% {{ label.VAT }}</td>
+          <td>{{ doc.taxSumStr }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td><b>{{ label.SUM }}</b></td>
+          <td class="col-TotalSum">{{ doc.bruttoSumStr }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="bottomtext">
+    {{ doc.postText }}
+    </p>
+    <p class="goodbye">
+    {{ doc.goodbye }}
+    </p>
+  </body>
+{% endautoescape %}
+</html>
