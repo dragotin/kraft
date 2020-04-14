@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
                           archdoc.h  -
                              -------------------
     begin                : Sep 2006
@@ -57,8 +57,6 @@ public:
     return mIdent;
   }
 
-  QString printDateString() const;
-
 private:
   QDateTime mPrintDate;
   int       mState;
@@ -83,8 +81,7 @@ class ArchDoc : public QObject
     Q_PROPERTY(QString projectLabel READ projectLabel)
     Q_PROPERTY(QString docIDStr READ docIdStr)
     Q_PROPERTY(QString docIdentifier READ docIdentifier)
-    Q_PROPERTY(QString postText READ postText)
-    Q_PROPERTY(QDate date READ date)
+    Q_PROPERTY(QString dateStr READ dateStr)
 
     Q_PROPERTY(QString nettoSumStr READ nettoSumStr)
     Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr)
@@ -92,9 +89,18 @@ class ArchDoc : public QObject
     Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
     Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
 
-    Q_PROPERTY(ArchDocPositionList items READ positions)
-    Q_PROPERTY(QList<ArchDocPosition> itemslist READ itemslist)
+    Q_PROPERTY(QString reducedTaxPercentStr READ reducedTaxPercentStr)
+    Q_PROPERTY(QString fullTaxPercentStr READ fullTaxPercentStr)
+    Q_PROPERTY(QString taxPercentStr READ taxPercentStr)
+
+    Q_PROPERTY(QString taxMarkerFull READ taxMarkerFull)
+    Q_PROPERTY(QString taxMarkerReduced READ taxMarkerReduced)
+
+    Q_PROPERTY(QList<ArchDocPosition> items READ itemslist)
+    Q_PROPERTY(bool hasIndividualTaxation READ hasIndividualTaxation)
 public:
+
+    const QString SentOutDateC {"SentOutDate"};
 
   /** Constructor for the fileclass of the application */
   ArchDoc();
@@ -106,6 +112,7 @@ public:
   QList<ArchDocPosition> itemslist() const;
 
   QDate date() const      { return mDate; }
+  QString dateStr() const;
 
   QString docType() const { return mDocType; }
 
@@ -140,6 +147,16 @@ public:
   QString fullTaxSumStr() const { return fullTaxSum().toString(); }
   Geld reducedTaxSum() const;
   QString reducedTaxSumStr() const { return reducedTaxSum().toString(); }
+
+  QString fullTaxPercentStr() const;
+  QString reducedTaxPercentStr() const;
+  QString taxPercentStr() const;
+
+  static QString taxMarkerNoTax()   { return QStringLiteral("1"); }
+  static QString taxMarkerReduced() { return QStringLiteral("2"); }
+  static QString taxMarkerFull()    { return QStringLiteral("");  }
+
+  bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
 
   double tax() const;
   double reducedTax() const;

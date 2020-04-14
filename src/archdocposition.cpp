@@ -24,6 +24,7 @@
 #include "einheit.h"
 #include "geld.h"
 #include "archdocposition.h"
+#include "archdoc.h"
 
 /**
 @author Klaas Freitag
@@ -75,6 +76,22 @@ Geld ArchDocPosition::tax( double fullTax, double reducedTax ) const
   return tax / 100.0;
 }
 
+QString ArchDocPosition::taxMarkerHelper() const
+{
+    QString re;
+
+    if ( mTaxType == DocPositionBase::TaxReduced ) {
+        re = ArchDoc::taxMarkerReduced();
+    } else if ( mTaxType == DocPositionBase::TaxNone) {
+        re = ArchDoc::taxMarkerNoTax();
+    } else if ( mTaxType == DocPositionBase::TaxFull) {
+        re = ArchDoc::taxMarkerFull();
+    }
+    return re;
+}
+
+// ==================================================================
+
 ArchDocPositionList::ArchDocPositionList()
     : QList<ArchDocPosition>()
 {
@@ -93,35 +110,79 @@ Geld ArchDocPositionList::sumPrice() const
     return g;
 }
 
-Geld ArchDocPositionList::taxSum( double fullTax, double reducedTax ) const
+Geld ArchDocPositionList::taxSum() const
 {
-    Geld reduced;
-    Geld gfullTax;
+    Geld allTaxSum = fullTaxSum();
+    allTaxSum += reducedTaxSum();
+    return allTaxSum;
+}
+
+Geld ArchDocPositionList::fullTaxSum() const
+{
+    Geld g;
+    const_iterator it;
+    for ( it = begin(); it != end(); ++it ) {
+        if( (*it).taxType() == DocPositionBase::TaxFull) {
+            g += (*it).nettoPrice();
+        }
+    }
+    const Geld ftSum(g.percent(_fullTax).toLong());
+    return ftSum;
+}
+
+Geld ArchDocPositionList::reducedTaxSum() const
+{
+    Geld g;
+    const_iterator it;
+    for ( it = begin(); it != end(); ++it ) {
+        if( (*it).taxType() == DocPositionBase::TaxReduced) {
+            g += (*it).nettoPrice();
+        }
+    }
+    const Geld rtSum(g.percent(_reducedTax).toLong());
+    return rtSum;
+}
+
+DocPositionBase::TaxType ArchDocPositionList::listTaxation() const
+{
+    int fullTax = 0;
+    int noTax = 0;
+    int redTax = 0;
+
+    DocPositionBase::TaxType ret = DocPositionBase::TaxType::TaxNone;
 
     const_iterator it;
     for ( it = begin(); it != end(); ++it ) {
         if( (*it).taxType() == DocPositionBase::TaxFull) {
-            gfullTax += (*it).nettoPrice();
+            fullTax++;
         } else if( (*it).taxType() == DocPositionBase::TaxReduced ) {
-            reduced += (*it).nettoPrice();
+            redTax++;
+        } else if( (*it).taxType() == DocPositionBase::TaxNone ) {
+            noTax++;
         }
     }
-    const Geld fullTaxSum( gfullTax.percent(fullTax).toLong() + reduced.percent(reducedTax).toLong() );
-    return fullTaxSum;
+
+    int cnt = count();
+    if (noTax == cnt) {
+        ret = DocPositionBase::TaxType::TaxNone;
+    } else if (redTax == cnt) {
+        ret = DocPositionBase::TaxType::TaxReduced;
+    } else if (fullTax == cnt) {
+        ret = DocPositionBase::TaxType::TaxFull;
+    } else
+        ret = DocPositionBase::TaxType::TaxIndividual;
+
+    return ret;
 }
 
-Geld ArchDocPositionList::fullTaxSum( double fullTax ) const
+bool ArchDocPositionList::hasIndividualTaxes() const
 {
-    const Geld g = taxSum( fullTax, 0.0);
-
-    return g;
+    qDebug() << "Has INDIVIDUAL taxes.";
+    return (listTaxation() == DocPositionBase::TaxType::TaxIndividual);
 }
 
-Geld ArchDocPositionList::reducedTaxSum( double reducedTax ) const
+void ArchDocPositionList::setTaxes(double fullTax, double reducedTax)
 {
-    const Geld g = taxSum( 0.0, reducedTax);
-
-    return g;
+    _fullTax = fullTax;
+    _reducedTax = reducedTax;
 }
-
-

@@ -37,6 +37,7 @@ class ArchDoc;
 @author Klaas Freitag
 */
 
+
 class ArchDocPosition
 {
     friend class ArchDoc;
@@ -60,7 +61,11 @@ public:
     Geld   reducedTax( double reducedTax ) const;
 
     QString kind() const { return mKind; }
+    QString taxMarkerHelper() const;
+
   private:
+
+
     QString mText;
     QString mPosNo;
     QString mUnit;
@@ -77,11 +82,19 @@ class ArchDocPositionList : public QList<ArchDocPosition>
   public:
     ArchDocPositionList();
     Geld sumPrice() const;
-    Geld taxSum( double, double ) const;
-    Geld fullTaxSum( double ) const;
-    Geld reducedTaxSum( double ) const;
-};
+    Geld taxSum() const;
+    Geld fullTaxSum() const;
+    Geld reducedTaxSum() const;
+    DocPositionBase::TaxType listTaxation() const;
 
+    bool hasIndividualTaxes() const;
+
+    void setTaxes(double fullTax, double reducedTax);
+
+private:
+    double _fullTax;
+    double _reducedTax;
+};
 
 Q_DECLARE_METATYPE(ArchDocPosition)
 Q_DECLARE_METATYPE(ArchDocPositionList)
@@ -97,17 +110,25 @@ else if ( property == "unit" )
     return object.unit();
 else if ( property == "unitPrice" ) {
     return object.unitPrice().toString();
-}
-else if ( property == "nettoPrice" )
+} else if ( property == "nettoPrice" )
     return object.nettoPrice().toString();
 else if ( property == "amount" ) {
     QLocale *loc = DefaultProvider::self()->locale();
     return loc->toString(object.amount());
-} else if ( property == "taxTypeStr" )
-    return "taxType";
-else if ( property == "itemType" )
+} else if ( property == "taxType" ) {
+    if (object.taxType() == DocPositionBase::TaxType::TaxFull) {
+        return QStringLiteral("fullTax");
+    } else if (object.taxType() == DocPositionBase::TaxType::TaxReduced) {
+        return QStringLiteral("reducedTax");
+    } else if (object.taxType() == DocPositionBase::TaxType::TaxNone) {
+        return QStringLiteral("noTax");
+    }
+    return QStringLiteral("Invalid");
+} else if ( property == "itemType" ) {
     return object.kind();
-else
+} else if ( property == "taxMarker") {
+    return object.taxMarkerHelper();
+} else
     return QStringLiteral("undefined");
 GRANTLEE_END_LOOKUP
 
@@ -117,13 +138,15 @@ GRANTLEE_BEGIN_LOOKUP(ArchDocPositionList)
 if (property == "sumPrice")
     return object.sumPrice().toString();
 else if (property == "taxSum")
-    return object.taxSum(7.0, 19.0).toString();
+    return object.taxSum().toString();
 else if (property == "fullTaxSum")
-    return object.fullTaxSum(19.0).toString();
+    return object.fullTaxSum().toString();
 else if (property == "reducedTaxSum")
-    return object.reducedTaxSum(19.0).toString();
+    return object.reducedTaxSum().toString();
 else if (property == "reducedTaxSum")
-    return object.reducedTaxSum(19.0).toString();
+    return object.reducedTaxSum().toString();
+else if (property == "hasIndividualTaxes")
+    return object.hasIndividualTaxes();
 else
     return QStringLiteral("Undefined");
 GRANTLEE_END_LOOKUP
