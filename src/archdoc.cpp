@@ -28,22 +28,7 @@
 #include "documentman.h"
 #include "kraftdb.h"
 #include "defaultprovider.h"
-
-namespace {
-
-QString localeDoubleToString(double val)
-{
-    QLocale *loc = DefaultProvider::self()->locale();
-    QString re;
-    if (qRound(10*val) != 10*qRound(val)) {
-        re = loc->toString(val, 'f', 1);
-    } else {
-        re = loc->toString(val, 'f', 0);
-    }
-    return re;
-}
-
-}
+#include "format.h"
 
 ArchDoc::ArchDoc()
     : mAttributes( QLatin1String("ArchDoc"))
@@ -108,12 +93,12 @@ Geld ArchDoc::reducedTaxSum() const
 
 QString ArchDoc::fullTaxPercentStr() const
 {
-   return localeDoubleToString(mTax);
+   return Format::localeDoubleToString(mTax, *DefaultProvider::self()->locale());
 }
 
 QString ArchDoc::reducedTaxPercentStr() const
 {
-   return localeDoubleToString(mReducedTax);
+   return Format::localeDoubleToString(mReducedTax, *DefaultProvider::self()->locale());
 }
 
 QString ArchDoc::taxPercentStr() const

@@ -229,14 +229,8 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
         double amount = pos.amount();
         QString num;
         num.setNum( amount ); // no locale awareness.
-        int prec = 0;
-        if( num.contains( QChar('.') ) ) {
-            // there is a decimal point
-            // calculate the precision
-            prec = num.length() - (1+num.lastIndexOf( QChar('.') ) );
-        }
         // qDebug() << "**** " << num << " has precision " << prec;
-        h = DefaultProvider::self()->locale()->toString( amount, 'f', prec );
+        h = Format::localeDoubleToString(amount, *DefaultProvider::self()->locale() );
 
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_AMOUNT"), h );
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNIT"), escapeTrml2pdfXML( pos.unit() ) );
