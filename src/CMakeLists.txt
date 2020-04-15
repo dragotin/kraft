@@ -114,6 +114,7 @@ set(kraft_SRCS
     texttemplateinterface.cpp
     documenttemplate.cpp
     pdfconverter.cpp
+    format.cpp
 )
 
 kconfig_add_kcfg_files(kraft_SRCS

@@ -16,6 +16,13 @@ include_directories( "${CMAKE_CURRENT_BINARY_DIR}/../src" )
 
 find_package(Qt5Test REQUIRED)
 
+set(format_src
+    ../src/format.cpp
+)
+add_executable(t_format t_format.cpp ${format_src})
+add_test(t_format t_format)
+target_link_libraries(t_format Qt5::Test Qt5::Core) 
+
 set(metaparser_src
     ../src/metaxmlparser.cpp
 )
