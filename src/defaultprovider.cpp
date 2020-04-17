@@ -34,12 +34,6 @@
 
 Q_GLOBAL_STATIC(DefaultProvider, mSelf)
 
-const QString DefaultProvider::DateFormatIso = QStringLiteral("ISO");
-const QString DefaultProvider::DateFormatShort = QStringLiteral("Short");
-const QString DefaultProvider::DateFormatLong = QStringLiteral("Long");
-const QString DefaultProvider::DateFormatRFC = QStringLiteral("RFC");
-const QString DefaultProvider::DateFormatGerman = QStringLiteral("German");
-
 DefaultProvider *DefaultProvider::self()
 {
   return mSelf;
@@ -167,7 +161,7 @@ dbID DefaultProvider::saveDocumentText( const DocText& t )
     record.setValue( "textType",  t.textTypeString() );
 
     model.insertRecord(-1, record);
-    model.submitAll();    
+    model.submitAll();
   }
 
 
@@ -254,6 +248,23 @@ QString DefaultProvider::locateFile(const QString& findFile) const
     }
 
     return re;
+}
+
+QString DefaultProvider::locateKraftTool(const QString& toolName) const
+{
+    QString fullPath;
+
+    fullPath = locateFile("tools/" + toolName);
+
+    if (fullPath.isEmpty()) {
+        fullPath = QStandardPaths::findExecutable(toolName);
+    }
+
+    QFileInfo fi(fullPath);
+    if (!fi.exists()) {
+        fullPath.clear();
+    }
+    return fullPath;
 }
 
 QStringList DefaultProvider::findTrml2Pdf( ) const
