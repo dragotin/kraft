@@ -80,6 +80,8 @@ QString saveToTempFile( const QString& doc )
 }
 
 }
+
+
 ReportGenerator::ReportGenerator()
     : _useGrantlee(true),
       mProcess(nullptr),
@@ -117,6 +119,7 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& docID,
     // Rendering can be started.
     _archDoc.loadFromDb(archId);
 
+    // the next call also sets the watermark options
     _tmplFile = findTemplateFile( _archDoc.docType() );
 
     if ( _tmplFile.isEmpty() ) {
@@ -197,25 +200,86 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
         return;
     }
 
-    const QString filename = ArchiveMan::self()->archiveFileName( mDocId, mArchId.toString(), "pdf" );
-    const QString fullOutputPath = QString("%1/%2").arg(ArchiveMan::self()->pdfBaseDir()).arg(filename);
+    QString fullOutputPath = targetFileName();
+
+    if (mMergeIdent == "1" || mMergeIdent == "2") {
+        // check if the watermark file exists
+        QFileInfo fi(mWatermarkFile);
+        if (!mWatermarkFile.isEmpty() && fi.isReadable()) {
+            QTemporaryFile tmpFile;
+            tmpFile.open();
+            tmpFile.close();
+
+            // PDF merge is required. Write to temp file
+            fullOutputPath = tmpFile.fileName() + QStringLiteral(".pdf");
+        } else {
+            mMergeIdent = "0";
+            qDebug() << "Can not read watermark file, generating without" << mWatermarkFile;
+        }
+    }
 
     // Now there is the completed, expanded document source.
     connect( converter, &PDFConverter::docAvailable,
-             this, &ReportGenerator::slotDocAvailable);
+             this, &ReportGenerator::slotPdfDocAvailable);
     connect( converter, &PDFConverter::converterError,
              this, &ReportGenerator::slotConverterError);
     converter->convert(tempFile, fullOutputPath);
 
 }
 
-void ReportGenerator::slotDocAvailable(const QString& file)
+void ReportGenerator::slotPdfDocAvailable(const QString& file)
 {
     QObject *s = sender();
     qDebug() << "The document is finished!:" << file;
-    emit docAvailable(_requestedFormat, file, mCustomerContact);
+
     s->deleteLater();
+    // check for the watermark requirements
+    if (mMergeIdent == "1" || mMergeIdent == "2") {
+        // check if the watermark file exists
+        mergePdfWatermark(file);
+    } else {
+        emit docAvailable(_requestedFormat, file, mCustomerContact);
+    }
 }
+
+void ReportGenerator::mergePdfWatermark(const QString& file)
+{
+    mProcess = new QProcess();
+    // connect(mProcess, &QProcess::readyReadStandardOutput, this, &ReportGenerator::slotReceivedStdout);
+    // connect(mProcess, &QProcess::readyReadStandardError,  this, &ReportGenerator::slotReceivedStderr);
+    connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            this, &ReportGenerator::pdfMergeFinished);
+
+    const QString prg = DefaultProvider::self()->locateKraftTool(QStringLiteral("watermarkpdf.py"));
+    if (!prg.isEmpty()) {
+        mProcess->setProgram( QStringLiteral("python3") );
+        QStringList args;
+        args << prg;
+        args << QStringLiteral("-m") << mMergeIdent;
+        args << QStringLiteral("-o") << targetFileName();
+        args << mWatermarkFile;
+        args << file;
+
+        mProcess->setArguments(args);
+
+        mProcess->start( );
+    }
+}
+
+void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    if (exitStatus == QProcess::ExitStatus::NormalExit && exitCode == 0) {
+        const QString fileName = targetFileName();
+
+        const QString tmpFile = mProcess->arguments().last();
+        QFile::remove(tmpFile);
+        mProcess->deleteLater();
+        emit docAvailable(_requestedFormat, fileName, mCustomerContact);
+    } else {
+        slotConverterError(PDFConverter::ConvError::PDFMergerError);
+    }
+}
+
 
 void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
 {
@@ -247,9 +311,20 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
     case PDFConverter::ConvError::WeasyPrintNotFound:
         errMsg = i18n("The WeasyPrint tool is not installed.");
         break;
+    case PDFConverter::ConvError::PDFMergerError:
+        errMsg = i18n("The PDF merger utility failed.");
+        break;
     }
     emit failure(errMsg);
     s->deleteLater();
+}
+
+QString ReportGenerator::targetFileName() const
+{
+    const QString filename = ArchiveMan::self()->archiveFileName( mDocId, mArchId.toString(), "pdf" );
+    const QString fullOutputPath = QString("%1/%2").arg(ArchiveMan::self()->pdfBaseDir()).arg(filename);
+
+    return fullOutputPath;
 }
 
 QString ReportGenerator::findTemplateFile( const QString& type )

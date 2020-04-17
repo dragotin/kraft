@@ -39,7 +39,9 @@ public:
                            NoReportLabMod,
                            TargetFileMissing,
                            UnknownError,
-                           WeasyPrintNotFound };
+                           WeasyPrintNotFound,
+                           PDFMergerError
+                         };
 
     virtual void convert(const QString& sourceFile, const QString& outputPath) = 0;
 

@@ -55,8 +55,10 @@ public slots:
     void setMyContact( const KContacts::Addressee& );
 
 private slots:
-    void slotDocAvailable(const QString& file);
+    void slotPdfDocAvailable(const QString& file);
     void slotConverterError(PDFConverter::ConvError err);
+    void mergePdfWatermark(const QString &file);
+    void pdfMergeFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
     QString findTemplateFile( const QString& );
@@ -77,7 +79,7 @@ private:
     QString registerDictionary( const QString&, const QString& ) const;
     QString registerTag( const QString&, const QString& ) const;
     QString registerDictTag( const QString&, const QString&, const QString& ) const;
-
+    QString targetFileName() const;
 
     QString escapeTrml2pdfXML( const QString& str ) const;
 
