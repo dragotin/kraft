@@ -106,13 +106,15 @@ if ( property == "itemNumber" )
     return object.posNumber();
 else if ( property == "text" )
     return object.text();
+else if ( property == "kind" )
+    return object.kind();
 else if ( property == "unit" )
     return object.unit();
 else if ( property == "unitPrice" ) {
     return object.unitPrice().toString();
-} else if ( property == "nettoPrice" )
+} else if ( property == "nettoPrice" ) {
     return object.nettoPrice().toString();
-else if ( property == "amount" ) {
+} else if ( property == "amount" ) {
     QLocale *loc = DefaultProvider::self()->locale();
     return loc->toString(object.amount());
 } else if ( property == "taxType" ) {
@@ -128,8 +130,9 @@ else if ( property == "amount" ) {
     return object.kind();
 } else if ( property == "taxMarker") {
     return object.taxMarkerHelper();
-} else
+} else {
     return QStringLiteral("undefined");
+}
 GRANTLEE_END_LOOKUP
 
 

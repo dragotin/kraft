@@ -234,6 +234,7 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
         if( mErrors.contains(QLatin1String("No module named Reportlab"))) {
             emit converterError( ConvError::NoReportLabMod);
         } else {
+            qDebug() << "Failed: " << mProcess->arguments();
             emit converterError( ConvError::UnknownError);
         }
     }

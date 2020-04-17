@@ -83,7 +83,15 @@
         {% for item in doc.items %}
         <tr>
           <td class="col-No col-left">{{ item.itemNumber }}.</td>
-          <td class="col-Text col-left">{{ item.text }}</td>
+          <td class="col-Text col-left">
+          {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
+            <i>
+          {% endif %}
+          {{ item.text }}
+          {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
+            </i>
+          {% endif %}
+          </td>
           <td class="col-Amount col-right">{{ item.amount }}</td>
           <td class="col-Unit col-left">{{ item.unit }}</td>
           <td class="col-SPrice col-right">{{ item.unitPrice }}</td>

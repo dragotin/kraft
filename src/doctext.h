@@ -17,7 +17,6 @@
 #ifndef DOCTEXT_H
 #define DOCTEXT_H
 
-#include <QPixmap>
 #include <QList>
 
 #include "kraftcat_export.h"
