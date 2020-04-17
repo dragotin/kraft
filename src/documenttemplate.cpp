@@ -18,6 +18,7 @@
 #include "documenttemplate.h"
 #include "texttemplate.h"
 #include "grantleetemplate.h"
+#include "format.h"
 
 #include <klocalizedstring.h>
 
@@ -106,7 +107,6 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
 QVariantHash labelVariantHash()
 {
     QVariantHash hash;
-    QLocale *loc = DefaultProvider::self()->locale();
 
     hash.insert( TAG( "NO_SHORT"), i18nc("Sequence number printed on the document", "No.") );
     hash.insert( TAG( "ITEM"), i18nc("Document item printed on the document", "Item") );
@@ -129,7 +129,7 @@ QVariantHash labelVariantHash()
     hash.insert( TAG( "DATE"), i18nc("Date on document", "Date"));
     hash.insert( TAG( "PROJECT"), i18nc("Project label", "Project"));
     hash.insert( TAG( "CUST_ID"), i18nc("Customer ID on document", "Customer Id"));
-    hash.insert( TAG( "CURRENCY_SIGN"), loc->currencySymbol());
+    hash.insert( TAG( "CURRENCY_SIGN"), DefaultProvider::self()->currencySymbol());
 
 
     return hash;
@@ -227,10 +227,7 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
 
         // format the amount value of the item, do not show the precision if there is no fraction
         double amount = pos.amount();
-        QString num;
-        num.setNum( amount ); // no locale awareness.
-        // qDebug() << "**** " << num << " has precision " << prec;
-        h = Format::localeDoubleToString(amount, *DefaultProvider::self()->locale() );
+        h = Format::localeDoubleToString(amount, *DefaultProvider::self()->locale());
 
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_AMOUNT"), h );
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNIT"), escapeTrml2pdfXML( pos.unit() ) );
