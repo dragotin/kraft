@@ -34,6 +34,12 @@
 
 Q_GLOBAL_STATIC(DefaultProvider, mSelf)
 
+const QString DefaultProvider::DateFormatIso = QStringLiteral("ISO");
+const QString DefaultProvider::DateFormatShort = QStringLiteral("Short");
+const QString DefaultProvider::DateFormatLong = QStringLiteral("Long");
+const QString DefaultProvider::DateFormatRFC = QStringLiteral("RFC");
+const QString DefaultProvider::DateFormatGerman = QStringLiteral("German");
+
 DefaultProvider *DefaultProvider::self()
 {
   return mSelf;
