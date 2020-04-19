@@ -442,7 +442,7 @@ QString DocType::generateDocumentIdent( const QDate& docDate, const QString& doc
   m[ "%y" ] = docDate.toString( "yyyy" );
 
   QString h;
-  h.sprintf( "%02d", docDate.weekNumber( ) );
+  h = QString("%1").arg( docDate.weekNumber(), 2, 10, QChar('0') );
   m[ "%ww" ] = h;
   m[ "%w" ] = QString::number( docDate.weekNumber( ) );
 
@@ -459,19 +459,19 @@ QString DocType::generateDocumentIdent( const QDate& docDate, const QString& doc
     i = nextIdentId();
   }
 
-  h.sprintf( "%06d", i );
+  h = QString("%1").arg(i, 6, 10, QChar('0') );
   m[ "%iiiiii" ] = h;
 
-  h.sprintf( "%05d", i );
+  h = QString("%1").arg(i, 5, 10, QChar('0') );
   m[ "%iiiii" ] = h;
 
-  h.sprintf( "%04d", i );
+  h = QString("%1").arg(i, 4, 10, QChar('0') );
   m[ "%iiii" ] = h;
 
-  h.sprintf( "%03d", i );
+  h = QString("%1").arg(i, 3, 10, QChar('0') );
   m[ "%iii" ] = h;
 
-  h.sprintf( "%02d", i );
+  h = QString("%1").arg(i, 2, 10, QChar('0') );
   m[ "%ii" ] = h;
 
   m[ "%i" ] = QString::number( i );
