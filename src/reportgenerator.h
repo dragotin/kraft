@@ -98,11 +98,10 @@ private:
     KContacts::Addressee mCustomerContact;
     KContacts::Addressee myContact;
 
-    QProcess *mProcess;
+    QPointer<QProcess> mProcess;
 
     QFile mFile;
     QDataStream mTargetStream;
-    ArchDoc *mArchDoc;
     AddressProvider *mAddressProvider;
     ReportFormat _requestedFormat;
 };

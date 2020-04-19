@@ -84,12 +84,11 @@ QString saveToTempFile( const QString& doc )
 
 ReportGenerator::ReportGenerator()
     : _useGrantlee(true),
-      mProcess(nullptr),
-      mArchDoc(nullptr)
+      mProcess(nullptr)
 {
-  mAddressProvider = new AddressProvider( this );
-  connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
-           this, SLOT( slotAddresseeFound(QString, KContacts::Addressee)));
+  mAddressProvider = new AddressProvider(this);
+  connect(mAddressProvider, &AddressProvider::lookupResult,
+          this, &ReportGenerator::slotAddresseeFound);
 }
 
 ReportGenerator::~ReportGenerator()
@@ -245,8 +244,6 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
 void ReportGenerator::mergePdfWatermark(const QString& file)
 {
     mProcess = new QProcess();
-    // connect(mProcess, &QProcess::readyReadStandardOutput, this, &ReportGenerator::slotReceivedStdout);
-    // connect(mProcess, &QProcess::readyReadStandardError,  this, &ReportGenerator::slotReceivedStderr);
     connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, &ReportGenerator::pdfMergeFinished);
 
@@ -274,6 +271,7 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
         const QString tmpFile = mProcess->arguments().last();
         QFile::remove(tmpFile);
         mProcess->deleteLater();
+        mProcess = nullptr;
         emit docAvailable(_requestedFormat, fileName, mCustomerContact);
     } else {
         slotConverterError(PDFConverter::ConvError::PDFMergerError);
