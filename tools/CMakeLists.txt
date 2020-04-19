@@ -23,4 +23,4 @@ if(KF5Akonadi_FOUND)
     install(TARGETS ${findcontact_NAME} ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif()
 
-install(FILES erml2pdf.py  DESTINATION ${DATA_INSTALL_DIR}/kraft/tools )
+install(FILES erml2pdf.py watermarkpdf.py  DESTINATION ${DATA_INSTALL_DIR}/kraft/tools )

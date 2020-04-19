@@ -18,7 +18,7 @@
 #include <QBitmap>
 #include <QImage>
 #include <QPalette>
-
+#include <QMetaType>
 #include <QDebug>
 #include <QApplication>
 #include <QCommandLineParser>
@@ -32,11 +32,14 @@
 #include "version.h"
 #include "portal.h"
 #include "defaultprovider.h"
+#include "archdocposition.h"
 
 int main(int argc, char *argv[])
 {
     KLocalizedString::setApplicationDomain("kraft");
     Q_INIT_RESOURCE(kraft);
+
+    qRegisterMetaType<ArchDocPositionList>("ArchDocPositionList");
 
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/kraft/global/32-apps-kraft.png"));

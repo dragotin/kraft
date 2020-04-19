@@ -86,7 +86,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
       if( mShowPrices ) {
           mPositions += "<td align=\"right\" valign=\"bottom\" class=\"prices\">";
           if ( dp->toDelete() ) mPositions += "<strike>";
-          mPositions += dp->overallPrice().toHtmlString( posList.locale() );
+          mPositions += dp->overallPrice().toHtmlString();
           if ( dp->toDelete() ) mPositions += "</strike>";
           mPositions += "</td>";
 
@@ -113,8 +113,9 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
   mPositionCount = posList.count();
   if( mShowPrices ) {
       mPositions += "<div align=\"right\"><table border=\"0\" width=\"66%\">";
-      mTotal  = posList.nettoPrice().toHtmlString( posList.locale() );
-      QString brutto = posList.bruttoPrice( tax, reducedTax ).toHtmlString( posList.locale() );
+      mPositionCount = posList.count();
+      mTotal  = posList.nettoPrice().toHtmlString();
+      QString brutto = posList.bruttoPrice( tax, reducedTax ).toHtmlString();
       mPositions += QString( "<tr><td align=\"right\" colspan=\"2\" class=\"baseline\">______________________________</td><td width=\"12\" align=\"right\"></td></tr>" );
 
       if ( taxType != DocPositionBase::TaxInvalid && taxType != DocPositionBase::TaxNone ) {
@@ -127,7 +128,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
 
           if( taxType == DocPositionBase::TaxReduced || taxType == DocPositionBase::TaxIndividual ) {
               curTax.setNum( reducedTax, 'f', 1 );
-              taxStr = posList.reducedTaxSum( reducedTax ).toHtmlString( posList.locale() );
+              taxStr = posList.reducedTaxSum( reducedTax ).toHtmlString();
               mPositions += QString( "<tr><td align=\"right\">" );
               mPositions += i18n( "+ %1% Tax:", curTax ) +
                       QString( "</td><td align=\"right\">%1</td><td width=\"12\" align=\"right\">%2</td></tr>" ).arg( taxStr ).arg(REDUCED_TAX_MARK);
@@ -135,13 +136,13 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
 
           if( taxType == DocPositionBase::TaxFull || taxType == DocPositionBase::TaxIndividual ) {
               curTax.setNum( tax, 'f', 1 );
-              taxStr = posList.fullTaxSum( tax ).toHtmlString( posList.locale() );
+              taxStr = posList.fullTaxSum( tax ).toHtmlString();
               mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "+ %1% Tax:", curTax ) +
                       QString( "</td><td align=\"right\">%1</td><td width=\"12\" align=\"right\"></td></tr>" ).arg( taxStr );
           }
 
           if( taxType == DocPositionBase::TaxIndividual ) {
-              taxStr = posList.taxSum( tax, reducedTax ).toHtmlString( posList.locale() );
+              taxStr = posList.taxSum( tax, reducedTax ).toHtmlString();
               mPositions += QString( "<tr><td align=\"right\">" ) + i18n( "Sum Tax:" ) +
                       QString( "</td><td align=\"right\">%1</td><td width=\"12\" align=\"right\"></td></tr>" ).arg( taxStr );
           }

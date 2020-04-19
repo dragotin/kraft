@@ -550,7 +550,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
     }
   }
 
-  w->setDocPosition( dp, getDocument()->locale() );
+  w->setDocPosition(dp);
   w->setOrdNumber( pos+1 );
   w->slotSetTax( dp->taxType() );
   return w;
@@ -1104,10 +1104,7 @@ void KraftView::slotAddExtraPosition()
 DocPositionList KraftView::currentPositionList()
 {
     DocPositionList list;
-    if( m_doc ) {
-        list.setLocale( m_doc->locale() );
-    }
-    PositionViewWidget *widget;
+    PositionViewWidget *widget = nullptr;
     int cnt = 1;
 
     PositionViewWidgetListIterator outerIt( mPositionWidgetList );
@@ -1190,8 +1187,8 @@ DocPositionList KraftView::currentPositionList()
 
             // replace some tags in the text
 
-            replaceMap["%DISCOUNT"]     = getDocument()->locale()->toString( discount );
-            replaceMap["%ABS_DISCOUNT"] = getDocument()->locale()->toString( qAbs( discount ) );
+            replaceMap["%DISCOUNT"]     = DefaultProvider().self()->locale()->toString( discount );
+            replaceMap["%ABS_DISCOUNT"] = DefaultProvider().self()->locale()->toString( qAbs( discount ) );
 
           } else {
             /* Type is ordinary position */

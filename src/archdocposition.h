@@ -21,6 +21,8 @@
 #include <QString>
 #include <QList>
 
+#include <grantlee/metatype.h>
+
 // include files for KDE
 
 // application specific includes
@@ -28,16 +30,18 @@
 #include "geld.h"
 #include "dbids.h"
 #include "docposition.h"
+#include "defaultprovider.h"
 
 class ArchDoc;
 /**
 @author Klaas Freitag
 */
 
+
 class ArchDocPosition
 {
     friend class ArchDoc;
-  public:
+public:
     ArchDocPosition();
     ~ArchDocPosition(){};
 
@@ -50,14 +54,18 @@ class ArchDocPosition
     Geld unitPrice() const { return mUnitPrice; }
     Geld nettoPrice() const;
 
-    double amount() { return mAmount; }
+    double amount() const { return mAmount; }
     DocPositionBase::TaxType taxType() const { return mTaxType; }
     Geld   tax( double fullTax, double reducedTax ) const;
     Geld   fullTax( double fullTax ) const;
     Geld   reducedTax( double reducedTax ) const;
 
-    QString kind() { return mKind; }
+    QString kind() const { return mKind; }
+    QString taxMarkerHelper() const;
+
   private:
+
+
     QString mText;
     QString mPosNo;
     QString mUnit;
@@ -73,11 +81,78 @@ class ArchDocPositionList : public QList<ArchDocPosition>
 {
   public:
     ArchDocPositionList();
-    Geld sumPrice();
-    Geld taxSum( double, double ) const;
-    Geld fullTaxSum( double );
-    Geld reducedTaxSum( double );
+    Geld sumPrice() const;
+    Geld taxSum() const;
+    Geld fullTaxSum() const;
+    Geld reducedTaxSum() const;
+    DocPositionBase::TaxType listTaxation() const;
+
+    bool hasIndividualTaxes() const;
+
+    void setTaxes(double fullTax, double reducedTax);
+
+private:
+    double _fullTax;
+    double _reducedTax;
 };
+
+Q_DECLARE_METATYPE(ArchDocPosition)
+Q_DECLARE_METATYPE(ArchDocPositionList)
+
+
+// Read-only introspection of Person object.
+GRANTLEE_BEGIN_LOOKUP(ArchDocPosition)
+if ( property == "itemNumber" )
+    return object.posNumber();
+else if ( property == "text" )
+    return object.text();
+else if ( property == "kind" )
+    return object.kind();
+else if ( property == "unit" )
+    return object.unit();
+else if ( property == "unitPrice" ) {
+    return object.unitPrice().toString();
+} else if ( property == "nettoPrice" ) {
+    return object.nettoPrice().toString();
+} else if ( property == "amount" ) {
+    QLocale *loc = DefaultProvider::self()->locale();
+    return loc->toString(object.amount());
+} else if ( property == "taxType" ) {
+    if (object.taxType() == DocPositionBase::TaxType::TaxFull) {
+        return QStringLiteral("fullTax");
+    } else if (object.taxType() == DocPositionBase::TaxType::TaxReduced) {
+        return QStringLiteral("reducedTax");
+    } else if (object.taxType() == DocPositionBase::TaxType::TaxNone) {
+        return QStringLiteral("noTax");
+    }
+    return QStringLiteral("Invalid");
+} else if ( property == "itemType" ) {
+    return object.kind();
+} else if ( property == "taxMarker") {
+    return object.taxMarkerHelper();
+} else {
+    return QStringLiteral("undefined");
+}
+GRANTLEE_END_LOOKUP
+
+
+
+GRANTLEE_BEGIN_LOOKUP(ArchDocPositionList)
+if (property == "sumPrice")
+    return object.sumPrice().toString();
+else if (property == "taxSum")
+    return object.taxSum().toString();
+else if (property == "fullTaxSum")
+    return object.fullTaxSum().toString();
+else if (property == "reducedTaxSum")
+    return object.reducedTaxSum().toString();
+else if (property == "reducedTaxSum")
+    return object.reducedTaxSum().toString();
+else if (property == "hasIndividualTaxes")
+    return object.hasIndividualTaxes();
+else
+    return QStringLiteral("Undefined");
+GRANTLEE_END_LOOKUP
 
 
 #endif

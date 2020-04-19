@@ -567,8 +567,9 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool bac
   // It should be refactored.
 
     const QString tmplFile = DefaultProvider::self()->locateFile( "views/identity.thtml" );
-  TextTemplate tmpl(tmplFile);
-  if( !tmpl.open() ) {
+  TextTemplate tmpl;
+  tmpl.setTemplateFileName(tmplFile);
+  if( !tmpl.isOk() ) {
       return;
   }
   if( ! tmpl.errorString().isEmpty() ) {
@@ -666,9 +667,7 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool bac
       }
   }
 
-  const QString details = tmpl.expand();
-  mIdentityView->displayContent( details );
-
+  mIdentityView->displayContent(tmpl.expand());
 }
 
 TaxItemDelegate::TaxItemDelegate(QObject * parent) : QItemDelegate(parent) {}

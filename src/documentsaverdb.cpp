@@ -32,6 +32,7 @@
 #include "dbids.h"
 #include "kraftsettings.h"
 #include "doctype.h"
+#include "defaultprovider.h"
 
 /* Table document:
  * +----------------+--------------+------+-----+-------------------+----------------+
@@ -279,7 +280,7 @@ void DocumentSaverDB::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
       // buf->setValue( "lastModified", "NOW()" );
       buf.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
       buf.setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
-      buf.setValue( "country",  doc->locale()->bcp47Name() );
+      buf.setValue( "country",  DefaultProvider::self()->locale()->bcp47Name() );
       buf.setValue( "language", "" );
       buf.setValue( "projectLabel",  doc->projectLabel() );
       buf.setValue( "predecessor", doc->predecessor() );

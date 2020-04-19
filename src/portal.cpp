@@ -439,6 +439,11 @@ void Portal::slotStartupChecks()
             }
         }
 
+        connect( &_reportGenerator, &ReportGenerator::docAvailable,
+                 this, &Portal::slotDocConverted);
+        connect( &_reportGenerator, &ReportGenerator::failure,
+                 this, &Portal::slotDocConvertionFail);
+
         slotStatusMsg( i18n( "Ready." ) );
     }
 }
@@ -460,7 +465,7 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
     myContact = contact;
 
     // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
-    ReportGenerator::self()->setMyContact( myContact );
+    _reportGenerator.setMyContact( myContact );
 
     QString name = myContact.formattedName();
     if( !name.isEmpty() ) {
@@ -654,10 +659,10 @@ void Portal::slotPrintCurrentDocument()
 
 void Portal::slotMailDocument()
 {
-  QString locId = m_portalView->docDigestView()->currentDocumentId();
+  const QString locId = m_portalView->docDigestView()->currentDocumentId();
   // qDebug () << "Mailing document " << locId << endl;
 
-  slotStatusMsg( i18n( "Generating PDF..." ) );
+  slotStatusMsg( i18n( "Generating PDF for EMail" ) );
   DocumentMan *docman = DocumentMan::self();
   DocGuardedPtr docPtr = docman->openDocument( locId );
   QString ident;
@@ -670,70 +675,32 @@ void Portal::slotMailDocument()
     _clientId = docPtr->addressUid();
     busyCursor( true );
 
-    connect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),
-             this, SLOT( slotMailPdfAvailable( const QString& ) ) );
-    ReportGenerator::self()->createPdfFromArchive( ident, archID );
+    _reportGenerator.createDocument(ReportFormat::PDFMail, ident, archID );
     busyCursor( false );
   }
   slotStatusMsg( i18n( "Ready." ) );
 }
 
-void Portal::slotMailPdfAvailable( const QString& fileName )
+void Portal::slotDocConvertionFail(const QString& failString)
 {
-    if( fileName.isEmpty() ) {
-        // qDebug () << "Filename to mail is empty!";
-        return;
-    }
+    QMessageBox::warning(this, i18n("Doc Generation Error"),failString);
+}
 
-    QFileInfo fi(fileName);
-
-    _pdfFileName = fi.canonicalFilePath();
-
-    // get the email.
-    bool noEmail = true;
-    if( !_clientId.isEmpty() && mAddressProvider ) {
-        connect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
-                 this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
-        AddressProvider::LookupState state = mAddressProvider->lookupAddressee( _clientId);
-        switch( state ) {
-        case AddressProvider::LookupFromCache: {
-            const KContacts::Addressee contact = mAddressProvider->getAddresseeFromCache(_clientId);
-            slotMailAddresseeFound(_clientId, contact);
-            noEmail = false;
-            break;
-        }
-        case AddressProvider::LookupNotFound:
-        case AddressProvider::ItemError:
-        case AddressProvider::BackendError: {
-            // No EMail available.
-            break;
-        }
-        case AddressProvider::LookupOngoing:
-        case AddressProvider::LookupStarted:
-            // Not much to do, just wait for the lookup slot to arrive
-            noEmail = false;
-            break;
-        }
-        _clientId.clear();
-    }
-
-    if( noEmail ){
-        slotMailAddresseeFound( QString(), KContacts::Addressee() );
+void Portal::slotDocConverted(ReportFormat format, const QString& file, const KContacts::Addressee& customerContact)
+{
+    if (format == ReportFormat::PDF) {
+        slotOpenPdf(file);
+    } else if (format == ReportFormat::PDFMail) {
+        openInMailer(file, customerContact);
     }
 }
 
-void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addressee& contact )
+void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& contact)
 {
-    Q_UNUSED(uid)
-
-    QString mailReceiver;
+   QString mailReceiver;
     if( !contact.isEmpty() ) {
         mailReceiver = contact.fullEmail(); // the prefered email
     }
-
-    disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
-             this, SLOT(slotMailAddresseeFound(QString, KContacts::Addressee)));
-    disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ), nullptr, nullptr );
 
     QStringList args;
     QString prog;
@@ -755,7 +722,7 @@ void Portal::slotMailAddresseeFound( const QString& uid, const KContacts::Addres
         if( !mailReceiver.isEmpty() ) {
             tmp = QString("to=%1,").arg(mailReceiver);
         }
-        tmp += QString("attachment='file://%1'").arg(_pdfFileName);
+        tmp += QString("attachment='file://%1'").arg(fileName);
         args.append(tmp);
     }
     qDebug () << "Starting mailer: " << prog << args;
@@ -774,20 +741,22 @@ void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
 {
   if ( archID.isOk() ) {
     slotStatusMsg(i18n("Printing archived document...") );
-    ReportGenerator *repGen = ReportGenerator::self();
-    connect( repGen, SIGNAL( pdfAvailable( const QString& ) ),
-             this,  SLOT( slotOpenPdf( const QString& ) ) );
 
-    repGen->createPdfFromArchive( id, archID ); // work on document identifier.
+    _reportGenerator.createDocument(ReportFormat::PDF, id, archID ); // work on document identifier.
   }
 }
 
 void Portal::slotOpenPdf( const QString& fileName )
 {
-    disconnect( ReportGenerator::self(), SIGNAL( pdfAvailable( const QString& ) ),nullptr, nullptr );
     QUrl url( fileName );
     QDesktopServices::openUrl(url);
+}
 
+/*
+ * A special document tree is built up here.
+ */
+void Portal::savePdfInCustomerStructure(const QString& fileName)
+{
     // save pdf into a <customer>/<dockind> structure
     if( _currentDoc ) {
         QString uid = _currentDoc->addressUid();

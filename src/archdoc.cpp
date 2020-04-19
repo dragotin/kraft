@@ -28,8 +28,7 @@
 #include "documentman.h"
 #include "kraftdb.h"
 #include "defaultprovider.h"
-
-const char *SentOutDateC = "SentOutDate";
+#include "format.h"
 
 ArchDoc::ArchDoc()
     : mAttributes( QLatin1String("ArchDoc"))
@@ -56,6 +55,12 @@ QString ArchDoc::docIdentifier() const
   return i18n("%1 for %2 (Id %3)", re, ident() );
 }
 
+QString ArchDoc::dateStr() const
+{
+    // FIXME: Use DefaultProvider::self()->formatDate() once all is merged together.
+    return DefaultProvider::self()->locale()->toString(mDate, QLocale::ShortFormat);
+}
+
 Geld ArchDoc::nettoSum() const
 {
     const Geld g = positions().sumPrice();
@@ -72,18 +77,39 @@ Geld ArchDoc::bruttoSum() const
 
 Geld ArchDoc::taxSum() const
 {
-    const Geld g = positions().taxSum( tax(), reducedTax() );
+    const Geld g = positions().taxSum();
     return  g;
 }
 
 Geld ArchDoc::fullTaxSum() const
 {
-    return positions().fullTaxSum( tax() );
+    return positions().fullTaxSum();
 }
 
 Geld ArchDoc::reducedTaxSum() const
 {
-    return positions().reducedTaxSum( reducedTax() );
+    return positions().reducedTaxSum();
+}
+
+QString ArchDoc::fullTaxPercentStr() const
+{
+   return Format::localeDoubleToString(mTax, *DefaultProvider::self()->locale());
+}
+
+QString ArchDoc::reducedTaxPercentStr() const
+{
+   return Format::localeDoubleToString(mReducedTax, *DefaultProvider::self()->locale());
+}
+
+QString ArchDoc::taxPercentStr() const
+{
+     DocPositionBase::TaxType tt = mPositions.listTaxation();
+     if (tt == DocPositionBase::TaxType::TaxFull) {
+         return fullTaxPercentStr();
+     } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+         return reducedTaxSumStr();
+     }
+     return QString();
 }
 
 double ArchDoc::tax() const
@@ -157,6 +183,8 @@ void ArchDoc::loadItems( const QString& archDocId )
       qDebug() << "Error: " << q.lastError().nativeErrorCode();
   }
 
+  mPositions.setTaxes(mTax, mReducedTax);
+
   while( q.next() ) {
     ArchDocPosition pos;
     pos.mPosNo = q.value( 2 ).toString();
@@ -177,6 +205,11 @@ void ArchDoc::loadItems( const QString& archDocId )
 
     mPositions.append( pos );
   }
+}
+
+QList<ArchDocPosition> ArchDoc::itemslist() const
+{
+    return mPositions;
 }
 
 QDateTime ArchDoc::sentOutDate()
@@ -229,10 +262,6 @@ ArchDocDigest::~ArchDocDigest()
 
 }
 
-QString ArchDocDigest::printDateString() const
-{
-    return DefaultProvider::self()->locale()->toString( mPrintDate, QLocale::ShortFormat);
-}
 
 /* ###################################################################### */
 

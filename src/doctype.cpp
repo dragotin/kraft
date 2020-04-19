@@ -257,13 +257,8 @@ void DocType::setNumberCycleName( const QString& name )
   readIdentTemplate();
 }
 
-QString DocType::templateFile( const QString& lang )
+QString DocType::templateFile( )
 {
-    Q_UNUSED(lang)
-    // Maybe at some point kraft should use the templates of a different
-    // language than the system locale is, with that the lang here could
-    // be used to pick a translation dictionary.
-
   QString tmplFile;
 
   QString reportFileName = QString( "%1.trml").arg( name().toLower() );

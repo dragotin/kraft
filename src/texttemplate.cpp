@@ -17,57 +17,39 @@
 
 #include "texttemplate.h"
 #include "ctemplate/template.h"
-#include <QDebug>
-#include <QLocale>
-#include <QFile>
-#include <QFileInfo>
-#include <QStandardPaths>
+#include "klocalizedstring.h"
 
-#include <klocalizedstring.h>
+#include <QDebug>
 
 #include <string.h>
 
+
 TextTemplate::TextTemplate()
-  :mStandardDict( 0 )
+    :TextTemplateInterface(),
+      mStandardDict( nullptr )
 {
 
-}
-
-TextTemplate::TextTemplate( const QString& name )
-  : mFileName( name ),
-    mStandardDict( 0 )
-{
 }
 
 TextTemplate::~TextTemplate()
 {
-  delete mStandardDict;
+    if (mStandardDict)
+        delete mStandardDict;
 }
 
-TextTemplate::Dictionary TextTemplate::createSubDictionary( const QString& parent, const QString& name )
+bool TextTemplate::createSubDictionary( const QString& parent, const QString& name )
 {
   Dictionary ttd;
+  bool re = false;
 
   if ( mDictionaries.contains( parent ) ) {
     ttd.mDict = mDictionaries[parent]->AddSectionDictionary( name.toAscii().data() );
     ttd.mParent = parent;
     ttd.mName = name;
     mDictionaries[name] = ttd.mDict;
+    re = true;
   }
-  return ttd;
-}
-
-TextTemplate::Dictionary TextTemplate::createSubDictionary( Dictionary parentTtd, const QString& name )
-{
-  Dictionary ttd;
-
-  if ( parentTtd.mDict ) {
-    ttd.mDict = ( parentTtd.mDict )->AddSectionDictionary( name.toAscii().data() );
-    ttd.mParent = parentTtd.mName;
-    ttd.mName = name;
-    // mDictionaries[name] = ttd.mDict;
-  }
-  return ttd;
+  return re;
 }
 
 void TextTemplate::createDictionary( const QString& dictName )
@@ -80,7 +62,7 @@ void TextTemplate::createDictionary( const QString& dictName )
 
 void TextTemplate::setValue( const QString& dictName, const QString& key, const QString& val )
 {
-  TemplateDictionary *dict = 0;
+  TemplateDictionary *dict = nullptr;
 
   if ( mDictionaries.contains( dictName ) ) {
     dict = mDictionaries[dictName];
@@ -110,63 +92,32 @@ void TextTemplate::setValue( Dictionary ttd, const QString& key, const QString& 
   }
 }
 
-bool TextTemplate::setTemplateFileName( const QString& name )
+
+
+bool TextTemplate::initialize()
 {
-  mErrorString.clear();
 
-  mFileName = name;
-  return open();
-}
-
-bool TextTemplate::open()
-{
-  QFileInfo info( mFileName );
-
-  if ( info.isAbsolute() ) {
-    // assume it is a absolute path
-  } else {
-    mFileName = findTemplateFile(mFileName);
-
-    if ( mFileName.isEmpty() ) {
-      mErrorString = i18n( "No file name given for template" );
-      return false;
-    }
-
-    info.setFile( mFileName );
-  }
-
-  if ( ! ( info.isFile() && info.isReadable() ) ) {
-    mErrorString = i18n( "Could not find template file %1", info.absoluteFilePath() );
-    return false;
-  }
-
-  // qDebug () << "Loading this template source file: " << mFileName << endl;
-
-  Template *tmpl = Template::GetTemplate(mFileName.toStdString(), ctemplate::DO_NOT_STRIP );
+   Template *tmpl = Template::GetTemplate(fileName().toStdString(), ctemplate::DO_NOT_STRIP );
 
   if ( !tmpl || tmpl->state() != ctemplate::TS_READY ) {
-    mErrorString = i18n( "Failed to open template source" );
+    setError( i18n( "Failed to open template source" ) );
     return false;
   }
   tmpl->ReloadAllIfChanged();
 
+  if (mStandardDict)
+      delete mStandardDict;
   mStandardDict = new TemplateDictionary( "TopLevel" );
 
   return true;
 }
 
-
-QString TextTemplate::errorString() const
-{
-  return mErrorString;
-}
-
-QString TextTemplate::expand() const
+QString TextTemplate::expand()
 {
     std::string output;
 
     if ( mStandardDict) {
-        bool errorFree = ExpandTemplate( mFileName.toStdString(), ctemplate::DO_NOT_STRIP ,mStandardDict, &output );
+        bool errorFree = ExpandTemplate( fileName().toStdString(), ctemplate::DO_NOT_STRIP ,mStandardDict, &output );
 
         QString qout = QString::fromStdString(output);
         qout.remove(QChar(0));
@@ -178,33 +129,5 @@ QString TextTemplate::expand() const
     return QStringLiteral("Unable to expand template");
 }
 
-// Static method to load
 
-QString TextTemplate::findTemplateFile(const QString &filename) const
-{
-  if( filename.isEmpty() ) {
-    return QString();
-  }
 
-  QString templFileName = filename;
-  QString findFile = "kraft/reports/" + templFileName;
-
-  QString tmplFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile );
-
-  if ( tmplFile.isEmpty() ) {
-    QByteArray kraftHome = qgetenv("KRAFT_HOME");
-
-    if( !kraftHome.isEmpty() ) {
-      QString file = QString( "%1/reports/%2").arg(QString::fromLocal8Bit(kraftHome)).arg(templFileName);
-      QFileInfo fi(file);
-      if( fi.exists() && fi.isReadable() ) {
-        tmplFile = file;
-      }
-    }
-    if( tmplFile.isEmpty() ) {
-      // qDebug () << "Could not find template " << filename;
-      return QString();
-    }
-  }
-  return tmplFile;
-}

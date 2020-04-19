@@ -234,7 +234,7 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
         tmpl->setValue("DOCUMENTS", "DOCTYPE", dtype);
         const QString am = QString::number(docMatrix[dtype].first);
         tmpl->setValue("DOCUMENTS", "AMOUNT", am);
-        const QString sm = docMatrix[dtype].second.toString(DefaultProvider::self()->locale());
+        const QString sm = docMatrix[dtype].second.toString();
         tmpl->setValue("DOCUMENTS", "SUM", sm);
     }
 }
@@ -245,8 +245,9 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
         _monthTemplFileName = DefaultProvider::self()->locateFile( "views/monthdigest.thtml" );
     }
 
-    TextTemplate tmpl( _monthTemplFileName );
-    if( !tmpl.open() ) {
+    TextTemplate tmpl;
+    tmpl.setTemplateFileName(_monthTemplFileName);
+    if( !tmpl.isOk() ) {
         return;
     }
     const QString monthStr = DefaultProvider::self()->locale()->monthName(month);
@@ -278,8 +279,9 @@ void DocDigestDetailView::slotShowYearDetails( int year )
         _yearTemplFileName = DefaultProvider::self()->locateFile( "views/yeardigest.thtml" );
     }
 
-    TextTemplate tmpl( _yearTemplFileName );
-    if( !tmpl.open() ) {
+    TextTemplate tmpl;
+    tmpl.setTemplateFileName(_yearTemplFileName);
+    if( !tmpl.isOk() ) {
         return;
     }
 
@@ -304,7 +306,7 @@ void DocDigestDetailView::slotShowYearDetails( int year )
 
 void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, const QString& manAddress )
 {
-    Q_UNUSED(addressee);
+    Q_UNUSED(addressee)
     QString content = "<h3>" + i18n("Customer") +"</h3>";
     if( !manAddress.isEmpty() ) {
         content += "<pre>" + manAddress +"</pre>";
@@ -394,8 +396,9 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
         _docTemplFileName = DefaultProvider::self()->locateFile( "views/docdigest.thtml" );
     }
 
-    TextTemplate tmpl( _docTemplFileName ); // template file with name docdigest.trml
-    if( !tmpl.open() ) {
+    TextTemplate tmpl; // template file with name docdigest.trml
+    tmpl.setTemplateFileName(_docTemplFileName);
+    if( !tmpl.isOk() ) {
         return;
     }
     tmpl.setValue( DOCDIGEST_TAG( "HEADLINE" ), digest.type() + " " + digest.ident() );

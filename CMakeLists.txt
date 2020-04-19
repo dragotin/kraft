@@ -39,6 +39,15 @@ find_package(KF5 REQUIRED COMPONENTS
     Contacts
 )
 
+# Grantlee templating engine
+find_package(Grantlee5)
+set_package_properties(Grantlee5 PROPERTIES
+    DESCRIPTION "Library for templating html and pdf output"
+    URL "https://www.grantlee.org/"
+    PURPOSE "Optionally used for templating"
+    TYPE OPTIONAL
+)
+
 find_package(KF5Akonadi)
 set_package_properties(KF5Akonadi PROPERTIES
     DESCRIPTION "Library for general Access to Akonadi"

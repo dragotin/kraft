@@ -30,6 +30,7 @@
 #include "dbids.h"
 #include "kraftsettings.h"
 #include "documentman.h"
+#include "defaultprovider.h"
 
 Q_GLOBAL_STATIC(ArchiveMan, mSelf)
 
@@ -107,7 +108,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
   docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
 
   docElem.appendChild( xmlTextElement( xmldoc, "date",
-                                       doc->locale()->toString( doc->date() ) ));
+                                       DefaultProvider::self()->locale()->toString( doc->date() ) ));
 
   root.appendChild( doc->positions().domElement( xmldoc ) );
 
@@ -180,7 +181,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     record.setValue( "posttext", KraftDB::self()->mysqlEuroEncode(doc->postText() ) );
     record.setValue( "projectLabel", KraftDB::self()->mysqlEuroEncode(doc->projectLabel() ) );
     record.setValue( "predecessor", doc->predecessor() );
-    QLocale *loc = doc->locale();
+    QLocale *loc = DefaultProvider::self()->locale();
     record.setValue( "country",  loc->bcp47Name() );
     record.setValue( "language", "" );
     record.setValue( "tax", DocumentMan::self()->tax( doc->date() ) );

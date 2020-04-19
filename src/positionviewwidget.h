@@ -48,7 +48,7 @@ public:
     PositionViewWidget( );
     PositionViewWidget( int );
 
-    void setDocPosition( DocPositionBase*, QLocale* );
+    void setDocPosition(DocPositionBase*);
     virtual ~PositionViewWidget();
     bool modified() { return mModified; }
     int ordNumber() { return mOrdNumber; }
@@ -66,7 +66,6 @@ public:
     bool priceValid();
     void setCurrentPrice( Geld );
     Geld unitPrice();
-    void setLocale( QLocale* );
     QStringList tagList() { return mTags; }
     QString extraDiscountTagRestriction();
     DocPositionBase::TaxType taxType() const;

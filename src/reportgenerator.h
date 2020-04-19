@@ -26,12 +26,15 @@
 
 #include "kraftdoc.h"
 #include "archdoc.h"
+#include "pdfconverter.h"
 
 class dbID;
 class KJob;
 class QFile;
 class AddressProvider;
 class TextTemplate;
+
+enum class ReportFormat { PDF, PDFMail, HTML };
 
 class ReportGenerator : public QObject
 {
@@ -41,42 +44,48 @@ public:
     ReportGenerator();
     ~ReportGenerator();
 
-    static ReportGenerator *self();
-
-    void runTrml2Pdf( const QString&, const QString&, const QString& );
-    QStringList findTrml2Pdf();
-
 signals:
-    void pdfAvailable( const QString& );
+    void docAvailable( ReportFormat, const QString& file,
+                       const KContacts::Addressee& customerContact);
+    void failure(const QString&);
 
 public slots:
-    void createPdfFromArchive( const QString&, dbID );
+    void createDocument(ReportFormat, const QString&, dbID );
+
     void setMyContact( const KContacts::Addressee& );
 
+private slots:
+    void slotPdfDocAvailable(const QString& file);
+    void slotConverterError(PDFConverter::ConvError err);
+    void mergePdfWatermark(const QString &file);
+    void pdfMergeFinished(int exitCode, QProcess::ExitStatus exitStatus);
+
+private:
+    QString findTemplateFile( const QString& );
+
+    void lookupCustomerAddress();
+
+    QString _tmplFile;
+    ArchDoc _archDoc;
 protected:
 
 protected slots:
-    void trml2pdfFinished(int exitCode, QProcess::ExitStatus stat);
-    void slotReceivedStdout();
-    void slotReceivedStderr();
-    void slotError( QProcess::ProcessError );
     void slotAddresseeFound( const QString&, const KContacts::Addressee& );
-    void slotAddresseeSearchFinished( int );
 
 private:
     void convertTemplate( const QString& );
     void fillupTemplateFromArchive( const dbID& );
-    QString findTemplate( const QString& );
     void contactToTemplate( TextTemplate*, const QString&, const KContacts::Addressee& );
     QString registerDictionary( const QString&, const QString& ) const;
     QString registerTag( const QString&, const QString& ) const;
     QString registerDictTag( const QString&, const QString&, const QString& ) const;
-
+    QString targetFileName() const;
 
     QString escapeTrml2pdfXML( const QString& str ) const;
 
     QString rmlString( const QString& str, const QString& paraStyle = QString() ) const;
 
+    bool _useGrantlee;
 
     QString   mErrors;
     QString   mMergeIdent;
@@ -89,12 +98,12 @@ private:
     KContacts::Addressee mCustomerContact;
     KContacts::Addressee myContact;
 
-    QProcess *mProcess;
+    QPointer<QProcess> mProcess;
 
     QFile mFile;
     QDataStream mTargetStream;
-    ArchDoc *mArchDoc;
     AddressProvider *mAddressProvider;
+    ReportFormat _requestedFormat;
 };
 
 #endif

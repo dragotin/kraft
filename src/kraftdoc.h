@@ -32,148 +32,173 @@
 class DocumentSaverBase;
 class Geld;
 
-class QLocale;
 class KraftView;
 
 class KraftDoc : public QObject
 {
-  Q_OBJECT
-    public:
-  enum Part { Header,  Positions, Footer, Unknown };
+    Q_OBJECT
+    Q_PROPERTY(QString docType READ docType)
+    Q_PROPERTY(QString address READ address)
+    Q_PROPERTY(QString clientUid READ addressUid)
+    Q_PROPERTY(QString ident READ ident)
+    Q_PROPERTY(QString salut READ salut)
+    Q_PROPERTY(QString goodbye READ goodbye)
+    Q_PROPERTY(QString preText READ preText)
+    Q_PROPERTY(QString postText READ postText)
+    Q_PROPERTY(QString projectLabel READ projectLabel)
+    Q_PROPERTY(QString docIDStr READ docIdStr)
+    Q_PROPERTY(QString docIdentifier READ docIdentifier)
+    Q_PROPERTY(QString postText READ postText)
 
-  static QString partToString( Part );
+    Q_PROPERTY(QString nettoSumStr READ nettoSumStr)
+    Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr)
+    Q_PROPERTY(QString taxSumStr READ vatSumStr)
+    Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
+    Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
+public:
+    enum Part { Header,  Positions, Footer, Unknown };
 
-  /** Constructor for the fileclass of the application */
-  KraftDoc(QWidget *parent = nullptr);
-  /** Destructor for the fileclass of the application */
-  ~KraftDoc();
+    static QString partToString( Part );
 
-  KraftDoc& operator=( KraftDoc& );  
+    /** Constructor for the fileclass of the application */
+    KraftDoc(QWidget *parent = nullptr);
+    /** Destructor for the fileclass of the application */
+    ~KraftDoc();
 
-  /** sets the modified flag for the document after a modifying action 
+    KraftDoc& operator=( KraftDoc& );
+
+    /** sets the modified flag for the document after a modifying action
    *  on the view connected to the document.*/
-  void setModified(bool _m=true){ _modified=_m; }
-  /** returns if the document is modified or not. Use this to determine 
+    void setModified(bool _m=true){ _modified=_m; }
+    /** returns if the document is modified or not. Use this to determine
    *  if your document needs saving by the user on closing.*/
-  bool isModified(){ return _modified; }
-  /** deletes the document's contents */
-  void deleteItems();
+    bool isModified(){ return _modified; }
+    /** deletes the document's contents */
+    void deleteItems();
 
-  /** closes the current document */
-  void closeDocument();
-  /** loads the document by filename and format and emits the updateViews() signal */
-  bool openDocument(const QString& );
-  /** fetch the document from database back */
-  bool reloadDocument();
-  /** saves the document under filename and format.*/
-  bool saveDocument( );
+    /** closes the current document */
+    void closeDocument();
+    /** loads the document by filename and format and emits the updateViews() signal */
+    bool openDocument(const QString& );
+    /** fetch the document from database back */
+    bool reloadDocument();
+    /** saves the document under filename and format.*/
+    bool saveDocument( );
 
-  QLocale* locale();
+    QLocale* locale();
 
-  DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
-  DocPositionList positions() { return mPositions; }
-  void setPositionList(DocPositionList , bool isNew = false);
+    DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
+    DocPositionList positions() const { return mPositions; }
+    void setPositionList(DocPositionList , bool isNew = false);
 
-  QDate date() const { return mDate; }
-  void setDate( QDate d ) { mDate = d; }
+    QDate date() const { return mDate; }
+    void setDate( QDate d ) { mDate = d; }
 
-  QDate lastModified() const { return mLastModified; }
-  void setLastModified( QDate d ) { mLastModified = d; }
+    QDate lastModified() const { return mLastModified; }
+    void setLastModified( QDate d ) { mLastModified = d; }
 
-  QString docType() const { return mDocType; }
-  void setDocType( const QString& s );
-  bool docTypeChanged() { return mDocTypeChanged; }
+    QString docType() const { return mDocType; }
+    void setDocType( const QString& s );
+    bool docTypeChanged() { return mDocTypeChanged; }
 
-  QString addressUid() const { return mAddressUid; }
-  void setAddressUid( const QString& id ) { mAddressUid = id; }
+    QString addressUid() const { return mAddressUid; }
+    void setAddressUid( const QString& id ) { mAddressUid = id; }
 
-  QString address() const { return mAddress; }
-  void setAddress( const QString& adr ) { mAddress = adr; }
+    QString address() const { return mAddress; }
+    void setAddress( const QString& adr ) { mAddress = adr; }
 
-  bool isNew() const { return mIsNew; }
+    bool isNew() const { return mIsNew; }
 
-  QString ident() const   { return mIdent;    }
-  void setIdent( const QString& str ) { mIdent = str; }
+    QString ident() const   { return mIdent;    }
+    void setIdent( const QString& str ) { mIdent = str; }
 
-  QString salut() const   { return mSalut;    }
-  void setSalut( const QString& str ) { mSalut = str; }
+    QString salut() const   { return mSalut;    }
+    void setSalut( const QString& str ) { mSalut = str; }
 
-  QString goodbye() const   { return mGoodbye;    }
-  void setGoodbye( const QString& str ) { mGoodbye = str; }
+    QString goodbye() const   { return mGoodbye;    }
+    void setGoodbye( const QString& str ) { mGoodbye = str; }
 
-  QString preText() const   { return mPreText;  }
-  void setPreText( const QString& str ) { mPreText = str; }
+    QString preText() const   { return mPreText;  }
+    void setPreText( const QString& str ) { mPreText = str; }
 
-  QString postText() const { return mPostText; }
-  void setPostText( const QString& str ) { mPostText = str; }
+    QString postText() const { return mPostText; }
+    void setPostText( const QString& str ) { mPostText = str; }
 
-  QString whiteboard() const { return mWhiteboard; }
-  void setWhiteboard( const QString& w ) { mWhiteboard = w; }
+    QString whiteboard() const { return mWhiteboard; }
+    void setWhiteboard( const QString& w ) { mWhiteboard = w; }
 
-  QString projectLabel() const { return mProjectLabel; }
-  void setProjectLabel( const QString& w ) { mProjectLabel = w; }
+    QString projectLabel() const { return mProjectLabel; }
+    void setProjectLabel( const QString& w ) { mProjectLabel = w; }
 
-  QString predecessor() const { return mPredecessor; }
-  void setPredecessor( const QString& w );
-  QString predecessorDbId() const { return mPredecessorDbId; }
-  void setPredecessorDbId( const QString& pId ) { mPredecessorDbId = pId; }
+    QString predecessor() const { return mPredecessor; }
+    void setPredecessor( const QString& w );
+    QString predecessorDbId() const { return mPredecessorDbId; }
+    void setPredecessorDbId( const QString& pId ) { mPredecessorDbId = pId; }
 
-  void setDocID( dbID id ) { mDocID = id; }
-  dbID docID() const { return mDocID; }
+    void setDocID( dbID id ) { mDocID = id; }
+    dbID docID() const { return mDocID; }
+    QString docIdStr() const { return docID().toString(); }
 
-  QString docIdentifier() const;
-  DBIdList removePositionList() { return mRemovePositions; }
+    QString docIdentifier() const;
+    DBIdList removePositionList() { return mRemovePositions; }
 
-  Geld nettoSum();
-  Geld bruttoSum();
-  Geld vatSum();
+    Geld nettoSum() const;
+    QString nettoSumStr() const { return nettoSum().toString(); }
+    Geld bruttoSum() const;
+    QString bruttoSumStr() const { return bruttoSum().toString(); }
+    Geld fullTaxSum() const;
+    QString fullTaxSumStr() const { return fullTaxSum().toString(); }
+    Geld reducedTaxSum() const;
+    QString reducedTaxSumStr() const { return reducedTaxSum().toString(); }
 
-  QString country() const;
-  QString language() const;
+    Geld vatSum() const;
+    QString vatSumStr() const { return vatSum().toString(); }
+
+    QString country() const;
+    QString language() const;
 
 
-  public slots:
-  /** calls redrawDocument() on all views connected to the document object and is 
+public slots:
+    /** calls redrawDocument() on all views connected to the document object and is
    *  called by the view by which the document has been changed.
    *  As this view normally repaints itself, it is excluded from the paintEvent.
    */
-  int slotAppendPosition( const DocPosition& );
+    int slotAppendPosition( const DocPosition& );
 
-  // The following slots take get the db id as argument
-  void slotRemovePosition( int );
-  void slotMoveUpPosition( int );
-  void slotMoveDownPosition( int );
+    // The following slots take get the db id as argument
+    void slotRemovePosition( int );
+    void slotMoveUpPosition( int );
+    void slotMoveDownPosition( int );
 private:
-  DocumentSaverBase* getSaver( const QString& saverHint = QString() );
-  /** the modified flag of the current document */
-  bool _modified;
-  bool mIsNew;
+    DocumentSaverBase* getSaver( const QString& saverHint = QString() );
+    /** the modified flag of the current document */
+    bool _modified;
+    bool mIsNew;
 
-  QString mAddressUid;
-  QString mProjectLabel;
-  QString mAddress;
-  QString mPreText;
-  QString mPostText;
-  QString mDocType;
-  bool    mDocTypeChanged;
-  QString mSalut;
-  QString mGoodbye;
-  QString mIdent;
-  QString mWhiteboard;
-  QString mPredecessor;
-  QString mPredecessorDbId;
+    QString mAddressUid;
+    QString mProjectLabel;
+    QString mAddress;
+    QString mPreText;
+    QString mPostText;
+    QString mDocType;
+    bool    mDocTypeChanged;
+    QString mSalut;
+    QString mGoodbye;
+    QString mIdent;
+    QString mWhiteboard;
+    QString mPredecessor;
+    QString mPredecessorDbId;
 
-  // Two qualifiers for the locale settings.
-  QString mCountry;
-  QString mLanguage;
-  QScopedPointer<QLocale> mLocale;
+    // Two qualifiers for the locale settings.
+    QString mCountry;
+    QString mLanguage;
 
-  QDate   mDate;
-  QDate   mLastModified;
-  DocPositionList mPositions;
-  DBIdList mRemovePositions;
-  DocumentSaverBase *mSaver;
-  dbID    mDocID;
+    QDate   mDate;
+    QDate   mLastModified;
+    DocPositionList mPositions;
+    DBIdList mRemovePositions;
+    DocumentSaverBase *mSaver;
+    dbID    mDocID;
 };
 
 #endif // KraftDoc_H

@@ -112,8 +112,8 @@ void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ,
     item->setText( 0, mat->getText() );
     item->setText( 1, QString::number( mat->getAmountPerPack() ) );
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
-    item->setText( 3, mat->purchPrice().toString( loc ) );
-    item->setText( 4, mat->salesPrice().toString( loc ) );
+    item->setText( 3, mat->purchPrice().toString() );
+    item->setText( 4, mat->salesPrice().toString() );
     item->setText( 5, mat->lastModified() );
   } else {
     // qDebug () << "Unable to freshup item - data invalid" << endl;

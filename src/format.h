@@ -1,10 +1,9 @@
-
 /***************************************************************************
-             geld  -
+                  Simple format functions for double, date etc.
                              -------------------
-    begin                : 2004-16-08
-    copyright            : (C) 2004 by Klaas Freitag
-    email                : freitag@kde.org
+    begin                : March 2020
+    copyright            : (C) 2020 by Klaas Freitag
+    email                : kraft@freisturz.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,54 +14,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef FORMAT_H
+#define FORMAT_H
 
-#ifndef _GELD_H
-#define _GELD_H
-
-#include "kraftcat_export.h"
-#include <QString>
 #include <QLocale>
 
+class QString;
 
-class KRAFTCAT_EXPORT Geld
-{
-public:
-    Geld();
-    Geld(long);
-    Geld(double);
+namespace Format {
 
-    ~Geld();
+    QString localeDoubleToString(double val, const QLocale& loc = QLocale());
 
-    Geld& operator=(const long);
-    Geld& operator=(const double);
-
-    Geld operator/(const double) const;
-    Geld operator*(const long)   const;
-    Geld operator*(const double) const;
-    Geld& operator+=(const Geld&);
-
-    bool operator!=(Geld);
-
-    Geld percent( double );
-
-    QString toString() const;
-    QString toHtmlString() const;
-    double toDouble();
-    // toLong returns the amount in cents!
-    long   toLong();
-private:
-    long m_cent;
-};
-
-#endif
-
-/* END */
+}
 
 
-
-
-
-
-
-
-
+#endif // FORMAT_H

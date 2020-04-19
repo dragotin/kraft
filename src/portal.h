@@ -31,10 +31,9 @@
 #include "katalogview.h"
 #include "dbids.h"
 #include "portalview.h"
+#include "reportgenerator.h"
 
 class KraftViewBase;
-class ReportGenerator;
-class KCmdLineArgs;
 class ArchDocDigest;
 class AddressProvider;
 class PrefsDialog;
@@ -83,8 +82,12 @@ class Portal : public QMainWindow
   protected slots:
     void slotStartupChecks();
     void slotOpenArchivedDoc( const ArchDocDigest& );
-    void slotMailDocument();
+
     void slotPrefsDialogFinished( int );
+    void slotDocConverted(ReportFormat format, const QString& file,
+                          const KContacts::Addressee& customerContact);
+    void slotDocConvertionFail(const QString& failString);
+    void openInMailer(const QString& fileName, const KContacts::Addressee& contact);
 
   public slots:
 
@@ -135,17 +138,15 @@ class Portal : public QMainWindow
     void slotHandbook();
 
     void busyCursor( bool );
-
+    void slotMailDocument();
     void slotOpenPdf( const QString& );
 
     void slotReceivedMyAddress( const QString&, const KContacts::Addressee& );
 
-    void slotMailPdfAvailable( const QString& fileName );
-    void slotMailAddresseeFound( const QString&, const KContacts::Addressee& );
-
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
+    void savePdfInCustomerStructure(const QString& fileName);
 
     QScopedPointer<PortalView> m_portalView;
 
@@ -184,6 +185,8 @@ class Portal : public QMainWindow
     KContacts::Addressee myContact;
     PrefsDialog *_prefsDialog;
     DocGuardedPtr _currentDoc;
+
+    ReportGenerator _reportGenerator;
 };
 
 #endif

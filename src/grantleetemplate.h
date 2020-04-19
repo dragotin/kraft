@@ -1,10 +1,9 @@
-
 /***************************************************************************
-             geld  -
+           GrantleeTemplate.cpp - fill a template with text tags
                              -------------------
-    begin                : 2004-16-08
-    copyright            : (C) 2004 by Klaas Freitag
-    email                : freitag@kde.org
+    begin                : March 2020
+    copyright            : (C) 2020 by Klaas Freitag
+    email                : kraft@freisturz.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,54 +14,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef GRANTLEETEMPLATE_H
+#define GRANTLEETEMPLATE_H
 
-#ifndef _GELD_H
-#define _GELD_H
+#include <qmap.h>
+#include <qstring.h>
 
-#include "kraftcat_export.h"
-#include <QString>
-#include <QLocale>
+#include "texttemplateinterface.h"
 
+#include <grantlee/engine.h>
+#include <grantlee/template.h>
 
-class KRAFTCAT_EXPORT Geld
+class GrantleeFileTemplate
 {
 public:
-    Geld();
-    Geld(long);
-    Geld(double);
+    GrantleeFileTemplate( const QString& file);
 
-    ~Geld();
+    void addToMapping(const QString& key, const QVariant& variant);
+    void addToObjMapping(const QString& key, QObject *obj);
 
-    Geld& operator=(const long);
-    Geld& operator=(const double);
+    QString render(bool& ok) const;
 
-    Geld operator/(const double) const;
-    Geld operator*(const long)   const;
-    Geld operator*(const double) const;
-    Geld& operator+=(const Geld&);
-
-    bool operator!=(Geld);
-
-    Geld percent( double );
-
-    QString toString() const;
-    QString toHtmlString() const;
-    double toDouble();
-    // toLong returns the amount in cents!
-    long   toLong();
 private:
-    long m_cent;
+    QVariantHash _mapping;
+    const QString& _tmplFileName;
+    QHash<QString, QObject*> _objs;
 };
 
 #endif
-
-/* END */
-
-
-
-
-
-
-
-
-
