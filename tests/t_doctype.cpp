@@ -117,6 +117,35 @@ private slots:
         QVERIFY( li.contains("Offer"));
     }
 
+    void checkVariableReplacement() {
+        DocType dt("Test");
+
+        dt.setIdentTemplate("FOO-%y-%w-%d-%i");
+        QString re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QVERIFY(re.startsWith("FOO-2020-4-23-")); // the id can change
+
+        dt.setIdentTemplate("FOO-%y-%ww-%d-%i");
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QVERIFY(re.startsWith("FOO-2020-04-23-")); // the id can change
+
+        dt.setIdentTemplate("FOO-%y-%ww-%d-%iiiii");
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QCOMPARE(re, "FOO-2020-04-23-00122"); // the id can change
+
+        dt.setIdentTemplate("FOO-%y-%ww-%d-%iiii");
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QCOMPARE(re, "FOO-2020-04-23-0122"); // the id can change
+
+        dt.setIdentTemplate("FOO-%y-%ww-%d-%iii");
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QCOMPARE(re, "FOO-2020-04-23-122"); // the id can change
+
+        dt.setIdentTemplate("FOO-%y-%ww-%d-%ii");
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QCOMPARE(re, "FOO-2020-04-23-122"); // the id can change
+
+    }
+
 private:
     QString _docTypeName;
 
