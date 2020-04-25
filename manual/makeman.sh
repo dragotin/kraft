@@ -26,7 +26,7 @@ showhelp() {
 srcdir="${1:-.}"
 srcfile="${srcdir}/kraft.adoc"
 version="1.0"
-outfile="kraft_en.html"
+outfile="kraft-en.html"
 
 if [ "$1" == "-h" ]; then
   showhelp
@@ -42,11 +42,11 @@ languages="de nl"
 
 for lang in ${languages}
 do
-    transsrc="${srcdir}/po/kraft_${lang}.po"
+    transsrc="${srcdir}/po/kraft-${lang}.po"
     if [ -f "${transsrc}" ]; then
-        po4a-translate -f asciidoc -M utf-8 -m ${srcfile} -p ${transsrc} -k 0 -l kraft_${lang}.adoc
-        outfile="kraft_${lang}.html"
-        asciidoctor -a VERSION="${version}" -o ${outfile} kraft_${lang}.adoc
+        po4a-translate -f asciidoc -M utf-8 -m ${srcfile} -p ${transsrc} -k 0 -l kraft-${lang}.adoc
+        outfile="kraft-${lang}.html"
+        asciidoctor -a VERSION="${version}" -a lang="${lang}" -o ${outfile} kraft-${lang}.adoc
 
         echo "built ${transsrc} to ${outfile}"
     else

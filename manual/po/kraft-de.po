@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-03-29 12:50+0200\n"
+"POT-Creation-Date: 2020-04-25 11:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,13 +86,13 @@ msgstr "Konfigurierbare Dokument-Erstellung in PDF"
 msgid ""
 "Kraft is designed to use the data entries from the KDE address book which is "
 "a module of the https://community.kde.org/KDE_PIM[KDE PIM], an information "
-"management application.  All addresses are collected in the "
-"https://userbase.kde.org/KAddressBook[KAdressBook]."
+"management application.  All addresses are collected in the https://userbase."
+"kde.org/KAddressBook[KAdressBook]."
 msgstr ""
 "Kraft arbeitet mit den Adressdaten aus dem KDE Adressbuch, das ein Modul von "
-"https://community.kde.org/KDE_PIM[KDE PIM], einer "
-"Informations-Management-Anwendung ist. Alle Adressen werden in der Anwendung "
-"https://userbase.kde.org/KAddressBook[KAdressBook] gesammelt."
+"https://community.kde.org/KDE_PIM[KDE PIM], einer Informations-Management-"
+"Anwendung ist. Alle Adressen werden in der Anwendung https://userbase.kde."
+"org/KAddressBook[KAdressBook] gesammelt."
 
 #. type: Title ==
 #: kraft.adoc:27
@@ -205,9 +205,10 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:68
 msgid ""
-"Different document types can use the same number cycle to generate ids from. "
-" Number cycles are identified by their name.  User can create new number "
-"cycles and edit them clicking on the button btn:[Edit Number Cycles...]"
+"Different document types can use the same number cycle to generate ids "
+"from.  Number cycles are identified by their name.  User can create new "
+"number cycles and edit them clicking on the button btn:[Edit Number "
+"Cycles...]"
 msgstr ""
 
 #. type: Plain text
@@ -223,15 +224,11 @@ msgstr ""
 msgid "See the following table for available variables which can be used:"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:75 kraft.adoc:90
-msgid "|==="
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:88
+#. type: Table
+#: kraft.adoc:89
 #, no-wrap
 msgid ""
+"\n"
 "| `%y` or `%yyyy` | the year of the document date.\n"
 "| `%yy`           | the year of the document (two digits).\n"
 "| `%w`            | the week number of the document date.\n"
@@ -244,6 +241,7 @@ msgid ""
 "| `%i`            | the unique counter *(mandatory)*\n"
 "| `%type`         | the localised doc type (offer, invoice etc.)\n"
 "| `%uid`          | the contact id of the client.\n"
+"\n"
 msgstr ""
 
 #. type: Title ===
@@ -429,8 +427,8 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:167
 msgid ""
-"Select with the mouse the column-name `material`, select now in the "
-"context-menu [Add a sub chapter]"
+"Select with the mouse the column-name `material`, select now in the context-"
+"menu [Add a sub chapter]"
 msgstr ""
 
 #. type: Plain text
@@ -613,11 +611,14 @@ msgstr ""
 msgid "Spent time"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:248
+#. type: Table
+#: kraft.adoc:247
+#, no-wrap
 msgid ""
-"|=== |Dig hole |32 min. |worker |Place tree |12 min. |worker |Fill hole |17 "
-"min. |worker |give water |5 min. |worker |==="
+"|Dig hole |32 min. |worker\n"
+"|Place tree |12 min. |worker\n"
+"|Fill hole |17 min. |worker\n"
+"|give water |5 min. |worker\n"
 msgstr ""
 
 #. type: Plain text
@@ -654,9 +655,10 @@ msgstr ""
 msgid "Fixed item"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:268
-msgid "|=== |Transportcost |35 euro |1 pcs.  |==="
+#. type: Table
+#: kraft.adoc:267
+#, no-wrap
+msgid "|Transportcost |35 euro |1 pcs.\n"
 msgstr ""
 
 #. type: Plain text
@@ -675,9 +677,10 @@ msgstr ""
 msgid "Used materials"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:280
-msgid "|=== |1 |support pole |3,5 euro |==="
+#. type: Table
+#: kraft.adoc:279
+#, no-wrap
+msgid "|1 |support pole |3,5 euro\n"
 msgstr ""
 
 #. type: Plain text
@@ -968,8 +971,8 @@ msgstr ""
 #: kraft.adoc:406
 msgid ""
 "Beside this, we have seen that there is a lifeless three, which we will "
-"offer to remove as extra work.  "
-"image:create_new_doc.png[Numbercycles,float=\"right\"]"
+"offer to remove as extra work.  image:create_new_doc.png[Numbercycles,float="
+"\"right\"]"
 msgstr ""
 
 #. type: Plain text
