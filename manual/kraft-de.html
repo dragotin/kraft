@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.6.1">
+<meta name="description" content="Kraft is a Qt program for organizing documents like quotes and invoices in a small business.">
+<meta name="keywords" content="Qt;office;bookkeeping">
+<meta name="author" content="Ronald Stroethoff">
+<title>Das Kraft Handbuch</title>
+<style>
+@import url(http://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.0/css/font-awesome.css);
+/* normalize.css v2.1.1 | MIT License | git.io/normalize */
+/* ========================================================================== HTML5 display definitions ========================================================================== */
+/** Correct `block` display not defined in IE 8/9. */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
+
+/** Correct `inline-block` display not defined in IE 8/9. */
+audio, canvas, video { display: inline-block; }
+
+/** Prevent modern browsers from displaying `audio` without controls. Remove excess height in iOS 5 devices. */
+audio:not([controls]) { display: none; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+[hidden] { display: none; }
+
+/* ========================================================================== Base ========================================================================== */
+/** 1. Prevent system color scheme's background color being used in Firefox, IE, and Opera. 2. Prevent system color scheme's text color being used in Firefox, IE, and Opera. 3. Set default font family to sans-serif. 4. Prevent iOS text size adjust after orientation change, without disabling user zoom. */
+html { background: #fff; /* 1 */ color: #000; /* 2 */ font-family: sans-serif; /* 3 */ -ms-text-size-adjust: 100%; /* 4 */ -webkit-text-size-adjust: 100%; /* 4 */ }
+
+/** Remove default margin. */
+body { margin: 0; }
+
+/* ========================================================================== Links ========================================================================== */
+/** Address `outline` inconsistency between Chrome and other browsers. */
+a:focus { outline: thin dotted; }
+
+/** Improve readability when focused and also mouse hovered in all browsers. */
+a:active, a:hover { outline: 0; }
+
+/* ========================================================================== Typography ========================================================================== */
+/** Address variable `h1` font-size and margin within `section` and `article` contexts in Firefox 4+, Safari 5, and Chrome. */
+h1 { font-size: 2em; margin: 0.67em 0; }
+
+/** Address styling not present in IE 8/9, Safari 5, and Chrome. */
+abbr[title] { border-bottom: 1px dotted; }
+
+/** Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome. */
+b, strong { font-weight: bold; }
+
+/** Address styling not present in Safari 5 and Chrome. */
+dfn { font-style: italic; }
+
+/** Address differences between Firefox and other browsers. */
+hr { -moz-box-sizing: content-box; box-sizing: content-box; height: 0; }
+
+/** Address styling not present in IE 8/9. */
+mark { background: #ff0; color: #000; }
+
+/** Correct font family set oddly in Safari 5 and Chrome. */
+code, kbd, pre, samp { font-family: monospace, serif; font-size: 1em; }
+
+/** Improve readability of pre-formatted text in all browsers. */
+pre { white-space: pre-wrap; }
+
+/** Set consistent quote types. */
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+
+/** Address inconsistent and variable font size in all browsers. */
+small { font-size: 80%; }
+
+/** Prevent `sub` and `sup` affecting `line-height` in all browsers. */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+sup { top: -0.5em; }
+
+sub { bottom: -0.25em; }
+
+/* ========================================================================== Embedded content ========================================================================== */
+/** Remove border when inside `a` element in IE 8/9. */
+img { border: 0; }
+
+/** Correct overflow displayed oddly in IE 9. */
+svg:not(:root) { overflow: hidden; }
+
+/* ========================================================================== Figures ========================================================================== */
+/** Address margin not present in IE 8/9 and Safari 5. */
+figure { margin: 0; }
+
+/* ========================================================================== Forms ========================================================================== */
+/** Define consistent border, margin, and padding. */
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+
+/** 1. Correct `color` not being inherited in IE 8/9. 2. Remove padding so people aren't caught out if they zero out fieldsets. */
+legend { border: 0; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Correct font family not being inherited in all browsers. 2. Correct font size not being inherited in all browsers. 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome. */
+button, input, select, textarea { font-family: inherit; /* 1 */ font-size: 100%; /* 2 */ margin: 0; /* 3 */ }
+
+/** Address Firefox 4+ setting `line-height` on `input` using `!important` in the UA stylesheet. */
+button, input { line-height: normal; }
+
+/** Address inconsistent `text-transform` inheritance for `button` and `select`. All other form control elements do not inherit `text-transform` values. Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+. Correct `select` style inheritance in Firefox 4+ and Opera. */
+button, select { text-transform: none; }
+
+/** 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls. 2. Correct inability to style clickable `input` types in iOS. 3. Improve usability and consistency of cursor style between image-type `input` and others. */
+button, html input[type="button"], input[type="reset"], input[type="submit"] { -webkit-appearance: button; /* 2 */ cursor: pointer; /* 3 */ }
+
+/** Re-set default cursor for disabled elements. */
+button[disabled], html input[disabled] { cursor: default; }
+
+/** 1. Address box sizing set to `content-box` in IE 8/9. 2. Remove excess padding in IE 8/9. */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; /* 1 */ padding: 0; /* 2 */ }
+
+/** 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome. 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome (include `-moz` to future-proof). */
+input[type="search"] { -webkit-appearance: textfield; /* 1 */ -moz-box-sizing: content-box; -webkit-box-sizing: content-box; /* 2 */ box-sizing: content-box; }
+
+/** Remove inner padding and search cancel button in Safari 5 and Chrome on OS X. */
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+
+/** Remove inner padding and border in Firefox 4+. */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/** 1. Remove default vertical scrollbar in IE 8/9. 2. Improve readability and alignment in all browsers. */
+textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
+
+/* ========================================================================== Tables ========================================================================== */
+/** Remove most spacing between table cells. */
+table { border-collapse: collapse; border-spacing: 0; }
+
+*, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html, body { font-size: 100%; }
+
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
+
+a:hover { cursor: pointer; }
+
+a:focus { outline: none; }
+
+img, object, embed { max-width: 100%; height: auto; }
+
+object, embed { height: 100%; }
+
+img { -ms-interpolation-mode: bicubic; }
+
+#map_canvas img, #map_canvas embed, #map_canvas object, .map_canvas img, .map_canvas embed, .map_canvas object { max-width: none !important; }
+
+.left { float: left !important; }
+
+.right { float: right !important; }
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }
+
+.text-center { text-align: center !important; }
+
+.text-justify { text-align: justify !important; }
+
+.hide { display: none; }
+
+.antialiased, body { -webkit-font-smoothing: antialiased; }
+
+img { display: inline-block; vertical-align: middle; }
+
+textarea { height: auto; min-height: 50px; }
+
+select { width: 100%; }
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
+
+.subheader, #content #toctitle, .admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .videoblock > .title, .listingblock > .title, .literalblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .sidebarblock > .title, .tableblock > .title, .verseblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title, .tableblock > caption { line-height: 1.4; color: #777777; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+
+/* Typography resets */
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
+
+/* Default Link Styles */
+a { color: #417b06; text-decoration: none; line-height: inherit; }
+a:hover, a:focus { color: #417b06; }
+a img { border: none; }
+
+/* Default paragraph styles */
+p { font-family: inherit; font-weight: normal; font-size: 1em; line-height: 1.6; margin-bottom: 1.25em; text-rendering: optimizeLegibility; }
+p aside { font-size: 0.875em; line-height: 1.35; font-style: italic; }
+
+/* Default header styles */
+h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; color: #417b06; text-rendering: optimizeLegibility; margin-top: 1em; margin-bottom: 0.5em; line-height: 1.2125em; }
+h1 small, h2 small, h3 small, #toctitle small, .sidebarblock > .content > .title small, h4 small, h5 small, h6 small { font-size: 60%; color: gray; line-height: 0; }
+
+h1 { font-size: 2.125em; }
+
+h2 { font-size: 1.6875em; }
+
+h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.375em; }
+
+h4 { font-size: 1.125em; }
+
+h5 { font-size: 1.125em; }
+
+h6 { font-size: 1em; }
+
+hr { border: dotted #cccccc; border-width: 1px 0 0; clear: both; margin: 1.25em 0 1.1875em; height: 0; }
+
+/* Helpful Typography Defaults */
+em, i { font-style: italic; line-height: inherit; }
+
+strong, b { font-weight: bold; line-height: inherit; }
+
+small { font-size: 60%; line-height: inherit; }
+
+code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: bold; color: #417b06; }
+
+/* Lists */
+ul, ol, dl { font-size: 1em; line-height: 1.6; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
+
+ul, ol { margin-left: 1.5em; }
+
+/* Unordered Lists */
+ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; /* Override nested font-size change */ }
+ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
+ul.square { list-style-type: square; }
+ul.circle { list-style-type: circle; }
+ul.disc { list-style-type: disc; }
+ul.no-bullet { list-style: none; }
+
+/* Ordered Lists */
+ol li ul, ol li ol { margin-left: 1.25em; margin-bottom: 0; }
+
+/* Definition Lists */
+dl dt { margin-bottom: 0.3125em; font-weight: bold; }
+dl dd { margin-bottom: 1.25em; }
+
+/* Abbreviations */
+abbr, acronym { text-transform: uppercase; font-size: 90%; color: #555555; border-bottom: 1px dotted #dddddd; cursor: help; }
+
+abbr { text-transform: none; }
+
+/* Blockquotes */
+blockquote { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #efefef; }
+blockquote cite { display: block; font-size: 0.8125em; color: #5e5e5e; }
+blockquote cite:before { content: "\2014 \0020"; }
+blockquote cite a, blockquote cite a:visited { color: #5e5e5e; }
+
+blockquote, blockquote p { line-height: 1.6; color: #777777; }
+
+/* Microformats */
+.vcard { display: inline-block; margin: 0 0 1.25em 0; border: 1px solid #dddddd; padding: 0.625em 0.75em; }
+.vcard li { margin: 0; display: block; }
+.vcard .fn { font-weight: bold; font-size: 0.9375em; }
+
+.vevent .summary { font-weight: bold; }
+.vevent abbr { cursor: auto; text-decoration: none; font-weight: bold; border: none; padding: 0 0.0625em; }
+
+@media only screen and (min-width: 768px) { h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6 { line-height: 1.4; }
+  h1 { font-size: 2.75em; }
+  h2 { font-size: 2.3125em; }
+  h3, #toctitle, .sidebarblock > .content > .title { font-size: 1.6875em; }
+  h4 { font-size: 1.4375em; } }
+/* Print styles.  Inlined to avoid required HTTP connection: www.phpied.com/delay-loading-your-print-css/ Credit to Paul Irish and HTML5 Boilerplate (html5boilerplate.com)
+*/
+.print-only { display: none !important; }
+
+@media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
+  a, a:visited { text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  thead { display: table-header-group; /* h5bp.com/t */ }
+  tr, img { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  @page { margin: 0.5cm; }
+  p, h2, h3, #toctitle, .sidebarblock > .content > .title { orphans: 3; widows: 3; }
+  h2, h3, #toctitle, .sidebarblock > .content > .title { page-break-after: avoid; }
+  .hide-on-print { display: none !important; }
+  .print-only { display: block !important; }
+  .hide-for-print { display: none !important; }
+  .show-for-print { display: inherit !important; } }
+/* Tables */
+table { background: white; margin-bottom: 1.25em; border: solid 1px #dddddd; }
+table thead, table tfoot { background: whitesmoke; font-weight: normal; }
+table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5em 0.625em 0.625em; font-size: inherit; color: #333333; text-align: left; }
+table tr th, table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #555555; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.4; }
+
+.clearfix:before, .clearfix:after, .float-group:before, .float-group:after { content: " "; display: table; }
+.clearfix:after, .float-group:after { clear: both; }
+
+*:not(pre) > code { font-size: inherit; padding: 0; white-space: nowrap; background-color: inherit; border: 0 solid #dddddd; -webkit-border-radius: 0; border-radius: 0; text-shadow: none; }
+
+pre, pre > code { line-height: 1.4; color: black; font-family: monospace, serif; font-weight: normal; }
+
+kbd.keyseq { color: #888888; }
+
+kbd:not(.keyseq) { display: inline-block; color: #555555; font-size: 0.75em; line-height: 1.4; background-color: #F7F7F7; border: 1px solid #ccc; -webkit-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset; box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset; margin: -0.15em 0.15em 0 0.15em; padding: 0.2em 0.6em 0.2em 0.5em; vertical-align: middle; white-space: nowrap; }
+
+kbd kbd:first-child { margin-left: 0; }
+
+kbd kbd:last-child { margin-right: 0; }
+
+.menuseq, .menu { color: #3b3b3b; }
+
+#header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
+#header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
+#header:after, #content:after, #footnotes:after, #footer:after { clear: both; }
+
+#header { margin-bottom: 2.5em; }
+#header > h1 { color: #417b06; font-weight: bold; border-bottom: 1px dotted #cccccc; margin-bottom: -28px; padding-bottom: 32px; }
+#header span { color: #777777; }
+#header #revnumber { text-transform: capitalize; }
+#header br { display: none; }
+#header br + span { padding-left: 3px; }
+#header br + span:before { content: "\2013 \0020"; }
+#header br + span.author { padding-left: 0; }
+#header br + span.author:before { content: ", "; }
+
+#toc { border-bottom: 1px solid #cccccc; padding-bottom: 1.25em; }
+#toc > ul { margin-left: 0.25em; }
+#toc ul.sectlevel0 > li > a { font-style: italic; }
+#toc ul.sectlevel0 ul.sectlevel1 { margin-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+#toc ul { list-style-type: none; }
+
+#toctitle { color: #777777; }
+
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; }
+  #toc.toc2 { position: fixed; width: 20em; left: 0; top: 0; border-right: 1px solid #cccccc; border-bottom: 0; z-index: 1000; padding: 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; }
+  #toc.toc2 > ul { font-size: .95em; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1.25em; }
+  #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; }
+  body.toc2.toc-right #toc.toc2 { border-right: 0; border-left: 1px solid #cccccc; left: auto; right: 0; } }
+#content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; border-width: 0; -webkit-border-radius: 0; border-radius: 0; }
+#content #toc > :first-child { margin-top: 0; }
+#content #toc > :last-child { margin-bottom: 0; }
+#content #toc a { text-decoration: none; }
+
+#content #toctitle { font-weight: bold; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-size: 1em; padding-left: 0.125em; }
+
+#footer { max-width: 100%; background-color: #272727; padding: 1.25em; }
+
+#footer-text { color: #bcbcbc; line-height: 1.44; }
+
+.sect1 { padding-bottom: 1.25em; }
+
+.sect1 + .sect1 { border-top: 1px solid #cccccc; }
+
+#content h1 > a.anchor, h2 > a.anchor, h3 > a.anchor, #toctitle > a.anchor, .sidebarblock > .content > .title > a.anchor, h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { position: absolute; width: 1em; margin-left: -1em; display: block; text-decoration: none; visibility: hidden; text-align: center; font-weight: normal; }
+#content h1 > a.anchor:before, h2 > a.anchor:before, h3 > a.anchor:before, #toctitle > a.anchor:before, .sidebarblock > .content > .title > a.anchor:before, h4 > a.anchor:before, h5 > a.anchor:before, h6 > a.anchor:before { content: '\00A7'; font-size: .85em; vertical-align: text-top; display: block; margin-top: 0.05em; }
+#content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
+#content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #333333; text-decoration: none; }
+#content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #262626; }
+
+.imageblock, .literalblock, .listingblock, .verseblock, .videoblock { margin-bottom: 1.25em; }
+
+.admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .videoblock > .title, .listingblock > .title, .literalblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .sidebarblock > .title, .tableblock > .title, .verseblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-align: left; font-weight: bold; }
+
+.tableblock > caption { text-align: left; font-weight: bold; white-space: nowrap; overflow: visible; max-width: 0; }
+
+table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
+
+.admonitionblock > table { border: 0; background: none; width: 100%; }
+.admonitionblock > table td.icon { text-align: center; width: 80px; }
+.admonitionblock > table td.icon img { max-width: none; }
+.admonitionblock > table td.icon .title { font-weight: bold; text-transform: uppercase; }
+.admonitionblock > table td.content { padding-left: 1.125em; padding-right: 1.25em; border-left: 1px dotted #cccccc; color: #777777; }
+.admonitionblock > table td.content > :last-child > :last-child { margin-bottom: 0; }
+
+.exampleblock > .content { border-style: solid; border-width: 1px; border-color: #e6e6e6; margin-bottom: 1.25em; padding: 1.25em; background: white; -webkit-border-radius: 0; border-radius: 0; }
+.exampleblock > .content > :first-child { margin-top: 0; }
+.exampleblock > .content > :last-child { margin-bottom: 0; }
+.exampleblock > .content h1, .exampleblock > .content h2, .exampleblock > .content h3, .exampleblock > .content #toctitle, .sidebarblock.exampleblock > .content > .title, .exampleblock > .content h4, .exampleblock > .content h5, .exampleblock > .content h6, .exampleblock > .content p { color: #555555; }
+.exampleblock > .content h1, .exampleblock > .content h2, .exampleblock > .content h3, .exampleblock > .content #toctitle, .sidebarblock.exampleblock > .content > .title, .exampleblock > .content h4, .exampleblock > .content h5, .exampleblock > .content h6 { line-height: 1; margin-bottom: 0.625em; }
+.exampleblock > .content h1.subheader, .exampleblock > .content h2.subheader, .exampleblock > .content h3.subheader, .exampleblock > .content .subheader#toctitle, .sidebarblock.exampleblock > .content > .subheader.title, .exampleblock > .content h4.subheader, .exampleblock > .content h5.subheader, .exampleblock > .content h6.subheader { line-height: 1.4; }
+
+.exampleblock.result > .content { -webkit-box-shadow: 0 1px 8px #d9d9d9; box-shadow: 0 1px 8px #d9d9d9; }
+
+.sidebarblock { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; -webkit-border-radius: 0; border-radius: 0; }
+.sidebarblock > :first-child { margin-top: 0; }
+.sidebarblock > :last-child { margin-bottom: 0; }
+.sidebarblock h1, .sidebarblock h2, .sidebarblock h3, .sidebarblock #toctitle, .sidebarblock > .content > .title, .sidebarblock h4, .sidebarblock h5, .sidebarblock h6, .sidebarblock p { color: #555555; }
+.sidebarblock h1, .sidebarblock h2, .sidebarblock h3, .sidebarblock #toctitle, .sidebarblock > .content > .title, .sidebarblock h4, .sidebarblock h5, .sidebarblock h6 { line-height: 1; margin-bottom: 0.625em; }
+.sidebarblock h1.subheader, .sidebarblock h2.subheader, .sidebarblock h3.subheader, .sidebarblock .subheader#toctitle, .sidebarblock > .content > .subheader.title, .sidebarblock h4.subheader, .sidebarblock h5.subheader, .sidebarblock h6.subheader { line-height: 1.4; }
+.sidebarblock > .content > .title { color: #777777; margin-top: 0; line-height: 1.6; }
+
+.exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
+
+.literalblock > .content pre, .listingblock > .content pre { background: #efefef; border-width: 1px; border-style: solid; border-color: #cccccc; -webkit-border-radius: 0; border-radius: 0; padding: 0.75em 0.75em 0.625em 0.75em; word-wrap: break-word; }
+.literalblock > .content pre.nowrap, .listingblock > .content pre.nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+.literalblock > .content pre > code, .listingblock > .content pre > code { display: block; }
+@media only screen { .literalblock > .content pre, .listingblock > .content pre { font-size: 0.72em; } }
+@media only screen and (min-width: 768px) { .literalblock > .content pre, .listingblock > .content pre { font-size: 0.81em; } }
+@media only screen and (min-width: 1280px) { .literalblock > .content pre, .listingblock > .content pre { font-size: 0.9em; } }
+
+.listingblock > .content { position: relative; }
+
+.listingblock:hover code[class*=" language-"]:before { text-transform: uppercase; font-size: 0.9em; color: #999; position: absolute; top: 0.375em; right: 0.375em; }
+
+.listingblock:hover code.asciidoc:before { content: "asciidoc"; }
+.listingblock:hover code.clojure:before { content: "clojure"; }
+.listingblock:hover code.css:before { content: "css"; }
+.listingblock:hover code.groovy:before { content: "groovy"; }
+.listingblock:hover code.html:before { content: "html"; }
+.listingblock:hover code.java:before { content: "java"; }
+.listingblock:hover code.javascript:before { content: "javascript"; }
+.listingblock:hover code.python:before { content: "python"; }
+.listingblock:hover code.ruby:before { content: "ruby"; }
+.listingblock:hover code.scss:before { content: "scss"; }
+.listingblock:hover code.xml:before { content: "xml"; }
+.listingblock:hover code.yaml:before { content: "yaml"; }
+
+.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
+
+.listingblock.terminal pre .command:not([data-prompt]):before { content: '$'; }
+
+table.pyhltable { border: 0; margin-bottom: 0; }
+
+table.pyhltable td { vertical-align: top; padding-top: 0; padding-bottom: 0; }
+
+table.pyhltable td.code { padding-left: .75em; padding-right: 0; }
+
+.highlight.pygments .lineno, table.pyhltable td:not(.code) { color: #999; padding-left: 0; padding-right: .5em; border-right: 1px solid #cccccc; }
+
+.highlight.pygments .lineno { display: inline-block; margin-right: .25em; }
+
+table.pyhltable .linenodiv { background-color: transparent !important; padding-right: 0 !important; }
+
+.quoteblock { margin: 0 0 1.25em; padding: 0.5625em 1.25em 0 1.1875em; border-left: 1px solid #efefef; }
+.quoteblock blockquote { margin: 0 0 1.25em 0; padding: 0 0 0.5625em 0; border: 0; }
+.quoteblock blockquote > .paragraph:last-child p { margin-bottom: 0; }
+.quoteblock .attribution { margin-top: -.25em; padding-bottom: 0.5625em; font-size: 0.8125em; color: #5e5e5e; }
+.quoteblock .attribution br { display: none; }
+.quoteblock .attribution cite { display: block; margin-bottom: 0.625em; }
+
+table thead th, table tfoot th { font-weight: normal; }
+
+table.tableblock.grid-all { border-collapse: separate; border-spacing: 1px; -webkit-border-radius: 0; border-radius: 0; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; }
+
+table.tableblock.frame-topbot, table.tableblock.frame-none { border-left: 0; border-right: 0; }
+
+table.tableblock.frame-sides, table.tableblock.frame-none { border-top: 0; border-bottom: 0; }
+
+table.tableblock td .paragraph:last-child p, table.tableblock td > p:last-child { margin-bottom: 0; }
+
+th.tableblock.halign-left, td.tableblock.halign-left { text-align: left; }
+
+th.tableblock.halign-right, td.tableblock.halign-right { text-align: right; }
+
+th.tableblock.halign-center, td.tableblock.halign-center { text-align: center; }
+
+th.tableblock.valign-top, td.tableblock.valign-top { vertical-align: top; }
+
+th.tableblock.valign-bottom, td.tableblock.valign-bottom { vertical-align: bottom; }
+
+th.tableblock.valign-middle, td.tableblock.valign-middle { vertical-align: middle; }
+
+p.tableblock.header { color: #333333; font-weight: normal; }
+
+td > div.verse { white-space: pre; }
+
+ol { margin-left: 1.75em; }
+
+ul li ol { margin-left: 1.5em; }
+
+dl dd { margin-left: 1.125em; }
+
+dl dd:last-child, dl dd:last-child > :last-child { margin-bottom: 0; }
+
+ol > li p, ul > li p, ul dd, ol dd, .olist .olist, .ulist .ulist, .ulist .olist, .olist .ulist { margin-bottom: 0.625em; }
+
+ul.unstyled, ol.unnumbered, ul.checklist, ul.none { list-style-type: none; }
+
+ul.unstyled, ol.unnumbered, ul.checklist { margin-left: 0.625em; }
+
+ul.checklist li > p:first-child > i[class^="icon-check"]:first-child, ul.checklist li > p:first-child > input[type="checkbox"]:first-child { margin-right: 0.25em; }
+
+ul.checklist li > p:first-child > input[type="checkbox"]:first-child { position: relative; top: 1px; }
+
+ul.inline { margin: 0 auto 0.625em auto; margin-left: -1.375em; margin-right: 0; padding: 0; list-style: none; overflow: hidden; }
+ul.inline > li { list-style: none; float: left; margin-left: 1.375em; display: block; }
+ul.inline > li > * { display: block; }
+
+.unstyled dl dt { font-weight: normal; font-style: normal; }
+
+ol.arabic { list-style-type: decimal; }
+
+ol.decimal { list-style-type: decimal-leading-zero; }
+
+ol.loweralpha { list-style-type: lower-alpha; }
+
+ol.upperalpha { list-style-type: upper-alpha; }
+
+ol.lowerroman { list-style-type: lower-roman; }
+
+ol.upperroman { list-style-type: upper-roman; }
+
+ol.lowergreek { list-style-type: lower-greek; }
+
+.hdlist > table, .colist > table { border: 0; background: none; }
+.hdlist > table > tbody > tr, .colist > table > tbody > tr { background: none; }
+
+td.hdlist1 { padding-right: .8em; font-weight: bold; }
+
+td.hdlist1, td.hdlist2 { vertical-align: top; }
+
+.literalblock + .colist, .listingblock + .colist { margin-top: -0.5em; }
+
+.colist > table tr > td:first-of-type { padding: 0 .8em; line-height: 1; }
+.colist > table tr > td:last-of-type { padding: 0.25em 0; }
+
+.qanda > ol > li > p > em:only-child { color: #cde62c; }
+
+.thumb, .th { line-height: 0; display: inline-block; border: solid 4px white; -webkit-box-shadow: 0 0 0 1px #dddddd; box-shadow: 0 0 0 1px #dddddd; }
+
+.imageblock.left, .imageblock[style*="float: left"] { margin: 0.25em 0.625em 1.25em 0; }
+.imageblock.right, .imageblock[style*="float: right"] { margin: 0.25em 0 1.25em 0.625em; }
+.imageblock > .title { margin-bottom: 0; }
+.imageblock.thumb, .imageblock.th { border-width: 6px; }
+.imageblock.thumb > .title, .imageblock.th > .title { padding: 0 0.125em; }
+
+.image.left, .image.right { margin-top: 0.25em; margin-bottom: 0.25em; display: inline-block; line-height: 0; }
+.image.left { margin-right: 0.625em; }
+.image.right { margin-left: 0.625em; }
+
+a.image { text-decoration: none; }
+
+span.footnote, span.footnoteref { vertical-align: super; font-size: 0.875em; }
+span.footnote a, span.footnoteref a { text-decoration: none; }
+
+#footnotes { padding-top: 0.75em; padding-bottom: 0.75em; margin-bottom: 0.625em; }
+#footnotes hr { width: 20%; min-width: 6.25em; margin: -.25em 0 .75em 0; border-width: 1px 0 0 0; }
+#footnotes .footnote { padding: 0 0.375em; line-height: 1.3; font-size: 0.875em; margin-left: 1.2em; text-indent: -1.2em; margin-bottom: .2em; }
+#footnotes .footnote a:first-of-type { font-weight: bold; text-decoration: none; }
+#footnotes .footnote:last-of-type { margin-bottom: 0; }
+
+#content #footnotes { margin-top: -0.625em; margin-bottom: 0; padding: 0.75em 0; }
+
+.gist .file-data > table { border: none; background: #fff; width: 100%; margin-bottom: 0; }
+.gist .file-data > table td.line-data { width: 99%; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+.big { font-size: larger; }
+
+.small { font-size: smaller; }
+
+.underline { text-decoration: underline; }
+
+.overline { text-decoration: overline; }
+
+.line-through { text-decoration: line-through; }
+
+.aqua { color: #00bfbf; }
+
+.aqua-background { background-color: #00fafa; }
+
+.black { color: black; }
+
+.black-background { background-color: black; }
+
+.blue { color: #0000bf; }
+
+.blue-background { background-color: #0000fa; }
+
+.fuchsia { color: #bf00bf; }
+
+.fuchsia-background { background-color: #fa00fa; }
+
+.gray { color: #606060; }
+
+.gray-background { background-color: #7d7d7d; }
+
+.green { color: #006000; }
+
+.green-background { background-color: #007d00; }
+
+.lime { color: #00bf00; }
+
+.lime-background { background-color: #00fa00; }
+
+.maroon { color: #600000; }
+
+.maroon-background { background-color: #7d0000; }
+
+.navy { color: #000060; }
+
+.navy-background { background-color: #00007d; }
+
+.olive { color: #606000; }
+
+.olive-background { background-color: #7d7d00; }
+
+.purple { color: #600060; }
+
+.purple-background { background-color: #7d007d; }
+
+.red { color: #bf0000; }
+
+.red-background { background-color: #fa0000; }
+
+.silver { color: #909090; }
+
+.silver-background { background-color: #bcbcbc; }
+
+.teal { color: #006060; }
+
+.teal-background { background-color: #007d7d; }
+
+.white { color: #bfbfbf; }
+
+.white-background { background-color: #fafafa; }
+
+.yellow { color: #bfbf00; }
+
+.yellow-background { background-color: #fafa00; }
+
+span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
+
+.admonitionblock td.icon [class^="icon-"]:before { font-size: 2.5em; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); cursor: default; }
+.admonitionblock td.icon .icon-note:before { content: "\f05a"; color: #d2e943; color: #b1c918; }
+.admonitionblock td.icon .icon-tip:before { content: "\f0eb"; text-shadow: 1px 1px 2px rgba(155, 155, 0, 0.8); color: #111; }
+.admonitionblock td.icon .icon-warning:before { content: "\f071"; color: #bf6900; }
+.admonitionblock td.icon .icon-caution:before { content: "\f06d"; color: #bf3400; }
+.admonitionblock td.icon .icon-important:before { content: "\f06a"; color: #bf0000; }
+
+.conum { display: inline-block; color: white !important; background-color: #555555; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 20px; height: 20px; font-size: 12px; font-weight: bold; line-height: 20px; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -2px; letter-spacing: -1px; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+
+#header > h1 { border-bottom-style: solid; }
+
+#toctitle { color: #333333; }
+
+.listingblock > .content > pre, .literalblock > .content > pre { background: -moz-linear-gradient(top, white 0%, #f4f4f4 100%); background: -webkit-linear-gradient(top, white 0%, #f4f4f4 100%); background: linear-gradient(to bottom, #ffffff 0%, #f4f4f4 100%); -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); }
+
+.sidebarblock { background: none; border: none; -webkit-box-shadow: 0 0 5px rgba(118, 137, 4, 0.5); box-shadow: 0 0 5px rgba(118, 137, 4, 0.5); }
+.sidebarblock > .content > .title { color: #181818; }
+
+</style>
+</head>
+<body class="article">
+<div id="header">
+<h1>Das Kraft Handbuch</h1>
+<div class="details">
+<span id="author" class="author">Ronald Stroethoff</span><br>
+<span id="email" class="email">&lt;<a href="mailto:stroet43@zonnet.nl">stroet43@zonnet.nl</a>&gt;</span><br>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_einführung">Einführung</a></li>
+<li><a href="#_erstbenutzung_und_grundkonfiguration">Erstbenutzung und Grundkonfiguration</a>
+<ul class="sectlevel2">
+<li><a href="#_document_types">Document Types</a></li>
+<li><a href="#_taxes">Taxes</a></li>
+<li><a href="#_wages">Wages</a></li>
+<li><a href="#_units_of_measurement">Units of measurement</a></li>
+<li><a href="#_own_identity">Own identity</a></li>
+<li><a href="#_catalog">Catalog</a></li>
+</ul>
+</li>
+<li><a href="#Invoice">Creating Documents</a>
+<ul class="sectlevel2">
+<li><a href="#_the_first_invoice">The first Invoice</a></li>
+<li><a href="#Offer">Creating an Offer</a></li>
+</ul>
+</li>
+<li><a href="#Menu">Menus and Shortcuts</a>
+<ul class="sectlevel2">
+<li><a href="#_main_application_menu">Main Application Menu</a></li>
+<li><a href="#_document_edit_window">Document Edit Window</a></li>
+</ul>
+</li>
+<li><a href="#Credits">Credits and License</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_einführung">Einführung</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kraft ist ein Qt Programm zum Organisieren von Bürodokumenten wie Angeboten
+und Rechnungen in kleinen Unternehmen.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Funktionen</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Kundenverwaltung, durch die Verwendung von KAdressbuch tief in die KDE
+Infrastruktur integriert.</p>
+</li>
+<li>
+<p>Unterstütztes Erstellen von Angeboten, Rechnungen und ähnlichen Dokumenten</p>
+</li>
+<li>
+<p>Textvorlagen</p>
+</li>
+<li>
+<p>Kalkulation</p>
+</li>
+<li>
+<p>Materialverwaltung</p>
+</li>
+<li>
+<p>Konfigurierbare Dokument-Erstellung in PDF</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Kraft arbeitet mit den Adressdaten aus dem KDE Adressbuch, das ein Modul von
+<a href="https://community.kde.org/KDE_PIM">KDE PIM</a>, einer
+Informations-Management-Anwendung ist. Alle Adressen werden in der Anwendung
+<a href="https://userbase.kde.org/KAddressBook">KAdressBook</a> gesammelt.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_erstbenutzung_und_grundkonfiguration">Erstbenutzung und Grundkonfiguration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Während des initialen Setup wird der Datenbank-Typ und die Adresse der Firma
+abgefragt.</p>
+</div>
+<div class="paragraph">
+<p>You can fill in your company address (that appears on the printed documents)
+on two ways: use in the setup procedure the first tab Select from
+Addressbook for to select your on address in KAddressBook (if you have
+filled your own address in KaddressBook) or use the second tab Manual entry
+for to fill in the information of the address from your company by
+hand. This step is necessary for the correct generation of your documents.</p>
+</div>
+<div class="paragraph">
+<p>After the initial setup, select <span class="menuseq"><b class="menu">Preferences</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Settings</b></span>.  That allows to
+prepare Kraft correctly so it can be used in a useful way.</p>
+</div>
+<div class="paragraph">
+<p>In the Preferences window we have the tabs:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>*Document Defaults
+*Taxes
+*Documunt Types
+*Wages
+*Units
+*Own identity</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each of the tabs allows to enter useful values for our use case.</p>
+</div>
+<div class="sect2">
+<h3 id="_document_types">Document Types</h3>
+<div class="paragraph">
+<p>At the first use you find a list of different document types, such as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Acceptance of order</p>
+</li>
+<li>
+<p>Delivery receipt</p>
+</li>
+<li>
+<p>Invoice</p>
+</li>
+<li>
+<p>Offer</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Translate this types to your own language.  You can also add new ones and
+remove document types you wont use.</p>
+</div>
+<div class="sect3">
+<h4 id="_numbercycles">Numbercycles</h4>
+<div class="paragraph">
+<p><span class="image" style="float: right"><img src="images/en/numbercycles.png" alt="Numbercycles"></span> Numbercycles are used to
+define the <strong>document number</strong> which is printed on every document.  The
+document number is an important unique identifier of the document and often
+must follow regulations.</p>
+</div>
+<div class="paragraph">
+<p>Different document types can use the same number cycle to generate ids
+from.  Number cycles are identified by their name.  User can create new
+number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
+</div>
+<div class="paragraph">
+<p>Kraft supports a counter that is incremented for every new document of a
+certain type.  In addition to the counter, more information can be added to
+form an useful number, such as constant text or parts of the date.</p>
+</div>
+<div class="paragraph">
+<p>See the following table for available variables which can be used:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%y</code> or <code>%yyyy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the year of the document date.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%yy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the year of the document (two digits).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%w</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the week number of the document date.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%ww</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the week number of the document date with leading zero.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the day number of the document date.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%dd</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the day number of the document date with leading zero.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%m</code> or <code>%M</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the month number of the document date.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%MM</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the month number with leading zero.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%c</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the customer id from kaddressbook</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%i</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the unique counter <strong>(mandatory)</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the localised doc type (offer, invoice etc.)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%uid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the contact id of the client.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_taxes">Taxes</h3>
+<div class="paragraph">
+<p>In many countries there are two kinds of VAT-taxes for sold products.</p>
+</div>
+<div class="paragraph">
+<p>A high level and a low level.</p>
+</div>
+<div class="paragraph">
+<p>Fill here the appropriate amounts in for the high level and the low level.
+If the tax-level is changing, then you add here the start date with the new
+tax-levels.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_wages">Wages</h3>
+<div class="paragraph">
+<p>A list of wage costs is maintained in Kraft. The items are used in templates
+and during calculation.</p>
+</div>
+<div class="paragraph">
+<p>All data can be edited, customized and new items can be added in the Kraft
+Configuration Dialog reachable through the Settings menu.</p>
+</div>
+<div class="paragraph">
+<p>Remember that these units are later used in the documents, it is therefor
+important that you translate them to your own language and to fill in the
+correct prices.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_units_of_measurement">Units of measurement</h3>
+<div class="paragraph">
+<p>A list of units of measurement is maintained in Kraft. In Kraft
+Configuration Dialog reachable through the Settings menu can you edit and
+customize items already in the list, and also can you add new items to the
+list.</p>
+</div>
+<div class="paragraph">
+<p>Remember that these units are later used in the documents, it is therefor
+important that you translate them to your own language.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_own_identity">Own identity</h3>
+<div class="paragraph">
+<p>Check here if the information that you have given during the initial setup
+is correct for the use in the documents.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+If you made the choice to use the information from KaddressBook
+then is the information from a later manual entry ignored.
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>After we have made some corrections to the configuration, we go back to the
+main window.Here we see three tabs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Documents</p>
+</li>
+<li>
+<p>Timeline</p>
+</li>
+<li>
+<p>Catalogs</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We go first to catalogs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_catalog">Catalog</h3>
+<div class="paragraph">
+<p>In the tab catalog are two different catalogs:</p>
+</div>
+<div class="paragraph">
+<p><code>Material</code></p>
+</div>
+<div class="paragraph">
+<p>A catalog of material that are sold, with their purchase prices, the profit
+and the sell-price.</p>
+</div>
+<div class="paragraph">
+<p>and <code>Standard Templates</code></p>
+</div>
+<div class="paragraph">
+<p>A catalog of standard recipes of work like planting trees.</p>
+</div>
+<div class="paragraph">
+<p>Both catalogs can have chapters and sub-chapters for to organize your
+templates. First we are going to fill in the</p>
+</div>
+<div class="sect3">
+<h4 id="_material_catalog">Material-catalog</h4>
+<div class="paragraph">
+<p>A catalog of material that are sold, with their purchase prices, the profit
+and the sell-price. First we are going to add new chapters and subchapters.</p>
+</div>
+<div class="sect4">
+<h5 id="_new_chapters">New chapters</h5>
+<div class="paragraph">
+<p>Select with the mouse the column-name <code>material</code>, select now in the
+context-menu [Add a sub chapter]</p>
+</div>
+<div class="paragraph">
+<p>and add an extra chapter like <code>Trees</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_new_sub_chapters">New sub chapters</h5>
+<div class="paragraph">
+<p>We are going to ad sub chapters in the map <code>Trees</code>. Select with the mouse
+the name of the chapter where you like to add a subchapter, select now in
+the context-menu [Add a sub chapter] and ad an extra subchapters like <code>Loaf
+trees</code> and <code>needle trees</code>.  After adding the extra chapters and subchapters
+for dividing the material, we are going to add the material themself.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_new_template">New template</h5>
+<div class="paragraph">
+<p>Select with the mouse the name of the sub-chapter or chapter where you like
+to add a material.  Select the sub map Loaf trees and select now in the
+context-menu</p>
+</div>
+<div class="paragraph">
+<p>Add the extra materials <code>coconut tree</code>, <code>apple tree</code> and <code>pine-apple tree</code>.</p>
+</div>
+<div class="paragraph">
+<p>Fill in the price that we have paid.</p>
+</div>
+<div class="paragraph">
+<p>Fill in the profit that we want to have on the material</p>
+</div>
+<div class="paragraph">
+<p>And fill in how much is in a packet.</p>
+</div>
+<div class="paragraph">
+<p>Now we are going to:</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_standard_templates">Standard Templates</h4>
+<div class="paragraph">
+<p>This is a catalog of standard recipes of work like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>planting trees</p>
+</li>
+<li>
+<p>cutting grass</p>
+</li>
+<li>
+<p>transport costs</p>
+</li>
+<li>
+<p>planting grass</p>
+</li>
+<li>
+<p>sowing grass-seed</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We add here the standard work of planting a tree.</p>
+</div>
+<div class="paragraph">
+<p>Select with the mouse the name of the chapter [Work] where you like to add
+the new template,</p>
+</div>
+<div class="paragraph">
+<p>select now the context-menu [New template]</p>
+</div>
+<div class="paragraph">
+<p>and the extra templates <code>Plant tree</code> and <code>cut grass</code>.</p>
+</div>
+<div class="paragraph">
+<p>After we made the new template, a window opens with 4 tabs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Template</p>
+</li>
+<li>
+<p>Time calculation</p>
+</li>
+<li>
+<p>Fix costs</p>
+</li>
+<li>
+<p>Material</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>First we go to the tab:</p>
+</div>
+<div class="sect4">
+<h5 id="_template">Template</h5>
+<div class="paragraph">
+<p>We give here the name of the new standard template like <code>Plant tree</code></p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+be careful, this name is later used in the invoice
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>we select that this is per piece and that the margin is 8% and that the full
+VAT is applicable.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_time_calculation">Time calculation</h5>
+<div class="paragraph">
+<p>We fill here in a number of work with the time:</p>
+</div>
+<div class="paragraph">
+<div class="title">Spent time</div>
+<p>|=== |Dig hole |32 min. |worker |Place tree |12 min. |worker |Fill hole |17
+min. |worker |give water |5 min. |worker |===</p>
+</div>
+<div class="paragraph">
+<p>The cost for worker which we have earlier filled in is now used.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+in the invoice we see later only Plant tree, we will not see the parts
+dig hole,place tree,fill hole,give water
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Now we go to the tab</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_fixed_costs">Fixed costs</h5>
+<div class="paragraph">
+<p>and fill in:</p>
+</div>
+<div class="paragraph">
+<div class="title">Fixed item</div>
+<p>|=== |Transportcost |35 euro |1 pcs.  |===</p>
+</div>
+<div class="paragraph">
+<p>After this we go to the tab:</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_material">Material</h5>
+<div class="paragraph">
+<p>Here we fill in:</p>
+</div>
+<div class="paragraph">
+<div class="title">Used materials</div>
+<p>|=== |1 |support pole |3,5 euro |===</p>
+</div>
+<div class="paragraph">
+<p>We go now back to the first tab template</p>
+</div>
+<div class="paragraph">
+<p>On the first tab [template], we can now see the overall cost per one unit</p>
+</div>
+<div class="paragraph">
+<p>Click on [OK] for saving the result or on [cancel] for discarding the
+result.</p>
+</div>
+<div class="paragraph">
+<p>We make a second template <code>cut grass</code></p>
+</div>
+<div class="paragraph">
+<p>we fill in <code>cut grass</code>, as unit we choose sm (square meter), on the second
+tab we fill in that we need 3 min per square meter.</p>
+</div>
+<div class="paragraph">
+<p>Click on [OK] for saving the result or on [Cancel] for discarding the
+result.</p>
+</div>
+<div class="paragraph">
+<p>We are now ready for the first invoice.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Invoice">Creating Documents</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_the_first_invoice">The first Invoice</h3>
+<div class="paragraph">
+<p>Open the tab <b class="button">documents</b></p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">create document</b></p>
+</div>
+<div class="paragraph">
+<p>The window document [creation wizard opens].</p>
+</div>
+<div class="paragraph">
+<p>Select in document type <code>invoice</code>.</p>
+</div>
+<div class="paragraph">
+<p>Fill in on the whiteboard content a short text about what the invoice is,
+like: <code>cut grass and planted tree for mister Jonson</code></p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">next</b></p>
+</div>
+<div class="paragraph">
+<p>Select on the new window the name and address from the client.</p>
+</div>
+<div class="paragraph">
+<p>(if the name and address is not there, click then on <b class="button">new contact</b> or on
+<b class="button">edit contact</b> if you want to edit the contact)</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b>.</p>
+</div>
+<div class="paragraph">
+<p>Now opens the window document [items].</p>
+</div>
+<div class="paragraph">
+<p>this window has 2 tabs and the 3 buttons on the top:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><b class="button">Add item&#8230;&#8203;</b>,</p>
+</li>
+<li>
+<p><b class="button">Add discount item</b>,</p>
+</li>
+<li>
+<p><b class="button">Show templates</b>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the left tab you can see all the items that we want to place on the
+invoice, on the right tab we see the text from the header, the total price
+and the footer.</p>
+</div>
+<div class="paragraph">
+<p>If you click on the text of the header or the footer on the right side then
+the window changes in such a way that you can edit the header or the footer.</p>
+</div>
+<div class="paragraph">
+<p>Adapt the header and the footer to your situation, on the footer you can
+place a text: <code>We make your garden-dream come to reality.</code>.</p>
+</div>
+<div class="paragraph">
+<p>Click on the button <b class="button">Show templates</b>.</p>
+</div>
+<div class="paragraph">
+<p>The right tab changes and show now the earlier made templates, we select in
+the group Work, the subgroup Plant tree and click then on the button with
+the to the left pointing arrow on the bottom side.</p>
+</div>
+<div class="paragraph">
+<p>A new window [Create Item from Template] opens.</p>
+</div>
+<div class="paragraph">
+<p>Because we have planted 2 trees, we go to the field [insert] and change this
+to 2 pcs.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">cancel</b> for discarding
+the result.</p>
+</div>
+<div class="paragraph">
+<p>The window close and we go back to the main window.</p>
+</div>
+<div class="paragraph">
+<p>We click again on <b class="button">Show templates</b> and select this time <code>cut grass</code>, we
+click again on the button with the arrow, in the opened window we select
+that the grass-field was 24 square meter.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">Cancel</b> for discarding
+the result.</p>
+</div>
+<div class="paragraph">
+<p>We add now manually an item by clicking on the button <b class="button">Add item…</b> and
+the window [create new item] opens.</p>
+</div>
+<div class="paragraph">
+<p>Because we have delivered a special tree, we fill here in the name of the
+special tree <code>liguster</code>, at the field insert we fill in the number of the
+special trees that we have delivered and the price of them.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Remind that in the catalog we can add a profit on the price of the
+material, in the invoice and in the offer we can not add a profit on the
+price of the material.
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>We have now an invoice with 3 items.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the invoice or on <b class="button">Cancel</b> for discarding
+the invoice.</p>
+</div>
+<div class="paragraph">
+<p>We click on <b class="button">OK</b> and save the result.</p>
+</div>
+<div class="paragraph">
+<p>Your first invoice is now ready for sending.</p>
+</div>
+<div class="paragraph">
+<p>In the window documents we see our first invoice, notice that this document
+has a document number which we can see on the left side.</p>
+</div>
+<div class="paragraph">
+<p>On top of the window with all the invoices we see the button [Print
+Document], on which we click.</p>
+</div>
+<div class="paragraph">
+<p>From the invoice will now a PDF be made which we can print on paper or send
+by email to the client.</p>
+</div>
+<div class="paragraph">
+<p>After this we are going to create a offer for some work in a garden.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Offer">Creating an Offer</h3>
+<div class="paragraph">
+<p>The client has asked to plant a tree, we will offer 3 different trees which
+we can plant.</p>
+</div>
+<div class="paragraph">
+<p>Beside this, we have seen that there is a lifeless three, which we will
+offer to remove as extra work.
+<span class="image" style="float: right"><img src="images/en/create_new_doc.png" alt="Numbercycles"></span></p>
+</div>
+<div class="paragraph">
+<p>For the total price we do not want to show the price of the removal of the
+lifeless tree and we want for the total price only to show the price of one
+tree and not three.</p>
+</div>
+<div class="paragraph">
+<p>Open again the tab <b class="button">documents</b>.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">create document</b></p>
+</div>
+<div class="paragraph">
+<p>The window <em>Document Creation Wizard</em> opens.</p>
+</div>
+<div class="paragraph">
+<p>select in <b class="button">document type</b> &gt; <b class="button">Offer</b>.</p>
+</div>
+<div class="paragraph">
+<p>Fill in on the whiteboard content a short text about what the offer is,
+like: <code>plant one tree and removal of lifeless tree</code></p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">next</b></p>
+</div>
+<div class="paragraph">
+<p>Select on the new window the name and address from the client.</p>
+</div>
+<div class="paragraph">
+<p>(if the name and address is not there, click then on <b class="button">new contact</b> or on
+<b class="button">edit contact</b> if you want to edit the contact)</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b>.</p>
+</div>
+<div class="paragraph">
+<p>Now the window [edit document] opens.</p>
+</div>
+<div class="paragraph">
+<p>This window has 2 tabs and the 3 buttons on the top:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><b class="button">Add item&#8230;&#8203;</b>,</p>
+</li>
+<li>
+<p><b class="button">Add discount item</b>,</p>
+</li>
+<li>
+<p><b class="button">Show templates</b>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Click on the button <b class="button">Show templates</b>.</p>
+</div>
+<div class="paragraph">
+<p>The right tab changes and show now the earlier made templates, we select in
+the group <code>Work</code>, the subgroup <code>Plant tree</code> and click then on the button
+with the to the left pointing arrow on the bottom side.</p>
+</div>
+<div class="paragraph">
+<p>A new window [Create Item from Template] opens.</p>
+</div>
+<div class="paragraph">
+<p>Because we want to plant 1 tree, we go to the field [insert] and keep this
+on 1 pcs.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">Cancel</b> for discarding
+the result.</p>
+</div>
+<div class="paragraph">
+<p>The window close and we go back to the main window.</p>
+</div>
+<div class="paragraph">
+<p>We click on the button <b class="button">Show templates</b> and this time we select in
+catalog Material</p>
+</div>
+<div class="paragraph">
+<p>The material-catalog opens, and we can select in the chapter <code>trees</code> the
+subchapter <code>loaf trees</code> in which we select the <code>apple tree</code> which we made
+earlier.</p>
+</div>
+<div class="paragraph">
+<p>Click on we <b class="button">OK</b> for saving the result or on <b class="button">cancel</b> for discarding
+the result.</p>
+</div>
+<div class="paragraph">
+<p>The window close and we go back to the main window.</p>
+</div>
+<div class="paragraph">
+<p>We add now manually an item by clicking on the button <code>Add item…</code>.</p>
+</div>
+<div class="paragraph">
+<p>the window [create new item] opens.</p>
+</div>
+<div class="paragraph">
+<p>We want that the client can make a choice from an apple, a pear tree and the
+liguster.</p>
+</div>
+<div class="paragraph">
+<p>Therefor we are going to add also a pear tree manually.</p>
+</div>
+<div class="paragraph">
+<p>We click on the button <b class="button">Add item…</b> and the window [create new item]
+opens.</p>
+</div>
+<div class="paragraph">
+<p>We fill here in the name of the tree <code>Pear tree</code>, at the field insert we
+fill in the number of the special trees that we have delivered and the price
+of them.</p>
+</div>
+<div class="paragraph">
+<p>We want add this to the material catalog for future use, therefor we select
+also [select this item as template for future documents] and we select in
+<code class="save in chapter">trees</code>.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">Cancel</b> for discarding
+the result.</p>
+</div>
+<div class="paragraph">
+<p>We does this again but then for the liguster.</p>
+</div>
+<div class="paragraph">
+<p>We have now 3 items with trees in the offer.</p>
+</div>
+<div class="paragraph">
+<p>As last item we add an item with <code>remove tree</code> with 0,5 hour for 32 euro.</p>
+</div>
+<div class="paragraph">
+<p>On the left side of an item we can see 2 buttons:</p>
+</div>
+<div class="paragraph">
+<p>a button with a flag and a button with what looks like a page.</p>
+</div>
+<div class="paragraph">
+<p>We select the upper button with the page after which opens a context-menu
+with the items:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>[Item kind]-&gt;[Normal]
+[Item kind]&gt;[Alternative]
+[Item kind]&gt;[On demand]
+[Tax]
+[Move up]
+[Move down]
+[Lock item]
+[Unlock item]
+[Delete item]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We choose here [Item kind] and change for <code>pear tree</code> from [normal] to
+[alternative].</p>
+</div>
+<div class="paragraph">
+<p>We do this also for [liguster] and for [remove tree] we change this from
+[normal] to [on demand].</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">Cancel</b> for discarding
+the result.</p>
+</div>
+<div class="paragraph">
+<p>We want to see the result and therefor we click on the button [show
+document].</p>
+</div>
+<div class="paragraph">
+<p>We see now that the prize of the pear tree, the liguster and the removal of
+the tree is not used for the total prize. When we are happy with the result,
+we can click on the button <b class="button">close</b> after which we click on the button
+<b class="button">Print Document</b> for making a PDF what we can print out or send to the
+client.</p>
+</div>
+<div class="paragraph">
+<p>After your first invoice is now your first offer now also ready for sending.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Menu">Menus and Shortcuts</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_main_application_menu">Main Application Menu</h3>
+<div class="sect3">
+<h4 id="File">The File Menu</h4>
+<div class="literalblock">
+<div class="content">
+<pre>[File]&gt;[Quit]
+[Ctrl]+[Q]
+Quits the application.</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Document">The Document Menu</h4>
+<div id="Show_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Show Document]
+[Ctrl]+[R]
+Opens a window with the selected document for showing it.</pre>
+</div>
+</div>
+<div id="Edit_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Edit Document]
+[Ctrl+O]
+Opens a window with the selected document for editing it.</pre>
+</div>
+</div>
+<div id="Open_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Open Archived document]
+[Ctrl]+[A]
+Opens an archived document.</pre>
+</div>
+</div>
+<div id="Create_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Create Document]
+Opens a window with a wizard for creating a new client-document.</pre>
+</div>
+</div>
+<div id="Copy_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Copy Document]
+Makes a copy of the selected client-document to a new client-document
+which can belong to an other client or an other documenttype.</pre>
+</div>
+</div>
+<div id="Follow_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Follow Document]
+Opens the selected client-document for editing.</pre>
+</div>
+</div>
+<div id="Print_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Print document]
+Makes a PDf from the selected client-document for to be mailed or
+printed.</pre>
+</div>
+</div>
+<div id="Mail_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Mail document]
+[Ctrl]+[M]
+Mails a document.</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="settings">The Settings menu</h4>
+<div id="edit_template" class="literalblock">
+<div class="content">
+<pre>[Settings]&gt;[Edit Tag Templates]
+[Ctrl]+[E]
+Opens a window where you add, edit or translate the tags (like work,
+material, plants or discounts).</pre>
+</div>
+</div>
+<div id="redo" class="literalblock">
+<div class="content">
+<pre>[Settings]&gt;[Redo initial setup]
+[Ctrl+R]
+Redoes the initial setup. After this, a restart of Kraft is required.</pre>
+</div>
+</div>
+<div id="toolbars" class="literalblock">
+<div class="content">
+<pre>[Settings]&gt;[Showed toolbars]
+Here you can decide if the `main toolbar` and the toolbar `Document Actions`
+are shown.</pre>
+</div>
+</div>
+<div id="configure" class="literalblock">
+<div class="content">
+<pre>[Settings]&gt;[Configure Kraft]
+[Ctrl]+[Shft]+[,]
+Here you can configure Kraft.</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_document_edit_window">Document Edit Window</h3>
+<div class="sect3">
+<h4 id="context">The context Menu</h4>
+<div class="literalblock">
+<div class="content">
+<pre> [Context]&gt;[Item kind]
+ change the status from this item between
+* Normal
+* Alternative
+* On demand</pre>
+</div>
+</div>
+<div id="Tax" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Tax]
+Seems not working.</pre>
+</div>
+</div>
+<div id="Move_up" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Move up]
+Moves this item a place up in document.</pre>
+</div>
+</div>
+<div id="Move_down" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Move down]
+Moves this item a place down in document.</pre>
+</div>
+</div>
+<div id="Lock_item" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Lock item]
+It is not clear what is does.</pre>
+</div>
+</div>
+<div id="Unlock_item" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Unlock item]
+It is not clear what is does.</pre>
+</div>
+</div>
+<div id="Delete_item" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Delete item]
+Removes this item from document.</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Credits">Credits and License</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Program copyright 2004–2020 Klaas Freitag</p>
+</div>
+<div class="paragraph">
+<p>Documentation copyright 2020 Ronald Stroethoff</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-04-19 20:18:21 CEST
+</div>
+</div>
+</body>
+</html>

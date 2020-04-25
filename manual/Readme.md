@@ -37,7 +37,7 @@ be done once. Later, the pot file is only going to be updated.
 
 ### Step 2: Translation
 
-Copy the template into our nationalized version:
+Copy the template into the nationalized version:
 
  cp po/kraft.pot po/kraft-de.po
 
