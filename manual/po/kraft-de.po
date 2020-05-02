@@ -86,19 +86,19 @@ msgstr "Konfigurierbare Dokument-Erstellung in PDF"
 msgid ""
 "Kraft is designed to use the data entries from the KDE address book which is "
 "a module of the https://community.kde.org/KDE_PIM[KDE PIM], an information "
-"management application.  All addresses are collected in the https://userbase."
-"kde.org/KAddressBook[KAdressBook]."
+"management application.  All addresses are collected in the "
+"https://userbase.kde.org/KAddressBook[KAdressBook]."
 msgstr ""
 "Kraft arbeitet mit den Adressdaten aus dem KDE Adressbuch, das ein Modul von "
-"https://community.kde.org/KDE_PIM[KDE PIM], einer Informations-Management-"
-"Anwendung ist. Alle Adressen werden in der Anwendung https://userbase.kde."
-"org/KAddressBook[KAdressBook] gesammelt."
+"https://community.kde.org/KDE_PIM[KDE PIM], einer "
+"Informations-Management-Anwendung ist. Alle Adressen werden in der Anwendung "
+"https://userbase.kde.org/KAddressBook[KAdressBook] gesammelt."
 
 #. type: Title ==
 #: kraft.adoc:27
-#, no-wrap
+#, fuzzy, no-wrap
 msgid "First Use and Basic Configuration"
-msgstr "Erstbenutzung und Grundkonfiguration"
+msgstr "Erster Start und Grundkonfiguration"
 
 #. type: Plain text
 #: kraft.adoc:30
@@ -119,6 +119,12 @@ msgid ""
 "for to fill in the information of the address from your company by hand. "
 "This step is necessary for the correct generation of your documents."
 msgstr ""
+"Die Adresse der eigenen Firma, die automatisch auf dem Ausgabedokument "
+"erscheint, kann auf zwei Arten eingegeben werden: In der Prozedur nach dem "
+"ersten Start im entsprechenden Tab, oder später über den Einstellungsdialog. "
+"Die Adresse kann entweder aus dem Adressbuch gewählt werden oder per Hand "
+"eingegeben werden. Dieser Schritt ist für die fehlerfreie Erstellung der "
+"Dokumente nötig."
 
 #. type: Plain text
 #: kraft.adoc:35
@@ -126,11 +132,14 @@ msgid ""
 "After the initial setup, select menu:Preferences[Settings].  That allows to "
 "prepare Kraft correctly so it can be used in a useful way."
 msgstr ""
+"Nach dem initialen Setup kann Kraft über das Menü Preferences[Settings] "
+"konfiguriert werden. Das erlaubt, Kraft für die eigenen Bedürfnisse "
+"anzupassen."
 
 #. type: Plain text
 #: kraft.adoc:37
 msgid "In the Preferences window we have the tabs:"
-msgstr ""
+msgstr "Im Einstellungsfenster befinden sich die Tabs:"
 
 #. type: Plain text
 #: kraft.adoc:44
@@ -143,22 +152,30 @@ msgid ""
 " *Units\n"
 " *Own identity\n"
 msgstr ""
+" *Dokument Voreinstellungen\n"
+" *Steuern\n"
+" *Dokumenttypen\n"
+" *Stundensätze\n"
+" *Einheiten\n"
+" *die eigene Identität\n"
 
 #. type: Plain text
 #: kraft.adoc:46
 msgid "Each of the tabs allows to enter useful values for our use case."
 msgstr ""
+"Jeder der Tabs erlaub es, sinnvolle Werte für die spezielle Anforderung "
+"einzugeben."
 
 #. type: Title ===
 #: kraft.adoc:47
 #, no-wrap
 msgid "Document Types"
-msgstr ""
+msgstr "Dokumenttypen"
 
 #. type: Plain text
 #: kraft.adoc:50
 msgid "At the first use you find a list of different document types, such as:"
-msgstr ""
+msgstr "Beim ersten Start finden sich folgende Dokumenttypen:"
 
 #. type: Plain text
 #: kraft.adoc:52
@@ -168,17 +185,17 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:53
 msgid "Delivery receipt"
-msgstr ""
+msgstr "Lieferschein"
 
 #. type: Plain text
 #: kraft.adoc:54
 msgid "Invoice"
-msgstr ""
+msgstr "Rechnung"
 
 #. type: Plain text
 #: kraft.adoc:55
 msgid "Offer"
-msgstr ""
+msgstr "Angebot"
 
 #. type: Plain text
 #: kraft.adoc:58
@@ -186,12 +203,14 @@ msgid ""
 "Translate this types to your own language.  You can also add new ones and "
 "remove document types you wont use."
 msgstr ""
+"Übersetze diese Typen in die eigene Sprache. Du kannst ebenso neue "
+"hinzufügen und Einträge entfernen, die Du nicht benutzen wirst."
 
 #. type: Title ====
 #: kraft.adoc:59
 #, no-wrap
 msgid "Numbercycles"
-msgstr ""
+msgstr "Nummernkreise"
 
 #. type: Plain text
 #: kraft.adoc:64
@@ -205,10 +224,9 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:68
 msgid ""
-"Different document types can use the same number cycle to generate ids "
-"from.  Number cycles are identified by their name.  User can create new "
-"number cycles and edit them clicking on the button btn:[Edit Number "
-"Cycles...]"
+"Different document types can use the same number cycle to generate ids from. "
+" Number cycles are identified by their name.  User can create new number "
+"cycles and edit them clicking on the button btn:[Edit Number Cycles...]"
 msgstr ""
 
 #. type: Plain text
@@ -427,8 +445,8 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:167
 msgid ""
-"Select with the mouse the column-name `material`, select now in the context-"
-"menu [Add a sub chapter]"
+"Select with the mouse the column-name `material`, select now in the "
+"context-menu [Add a sub chapter]"
 msgstr ""
 
 #. type: Plain text
@@ -971,8 +989,8 @@ msgstr ""
 #: kraft.adoc:406
 msgid ""
 "Beside this, we have seen that there is a lifeless three, which we will "
-"offer to remove as extra work.  image:create_new_doc.png[Numbercycles,float="
-"\"right\"]"
+"offer to remove as extra work.  "
+"image:create_new_doc.png[Numbercycles,float=\"right\"]"
 msgstr ""
 
 #. type: Plain text

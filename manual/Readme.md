@@ -35,11 +35,17 @@ be done once. Later, the pot file is only going to be updated.
   po4a-gettextize -f asciidoc -M utf-8 -m kraft.adoc -p po/kraft.pot
 ```
 
+The update works with the command msgmerge:
+
+```
+  msgmerge -vU kraft-de.po kraft.pot
+```
+
 ### Step 2: Translation
 
 Copy the template into the nationalized version:
 
- cp po/kraft.pot po/kraft-de.po
+`cp po/kraft.pot po/kraft-de.po`
 
 and use the gettext editor you like or upload to Transifex.
 
