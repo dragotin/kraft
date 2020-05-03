@@ -98,9 +98,7 @@ add_subdirectory(tools)
 add_subdirectory(styles)
 add_subdirectory(meta)
 add_subdirectory(tests)
-IF (ASCIIDOCTOR_FOUND)
-  add_subdirectory(manual)
-ENDIF (ASCIIDOCTOR_FOUND)
+add_subdirectory(manual)
 
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

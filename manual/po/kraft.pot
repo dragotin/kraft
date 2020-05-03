@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-04-25 11:11+0200\n"
+"POT-Creation-Date: 2020-04-25 11:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,15 +210,11 @@ msgstr ""
 msgid "See the following table for available variables which can be used:"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:75 kraft.adoc:90
-msgid "|==="
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:88
+#. type: Table
+#: kraft.adoc:89
 #, no-wrap
 msgid ""
+"\n"
 "| `%y` or `%yyyy` | the year of the document date.\n"
 "| `%yy`           | the year of the document (two digits).\n"
 "| `%w`            | the week number of the document date.\n"
@@ -232,6 +228,7 @@ msgid ""
 "| `%i`            | the unique counter *(mandatory)*\n"
 "| `%type`         | the localised doc type (offer, invoice etc.)\n"
 "| `%uid`          | the contact id of the client.\n"
+"\n"
 msgstr ""
 
 #. type: Title ===
@@ -600,11 +597,14 @@ msgstr ""
 msgid "Spent time"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:248
+#. type: Table
+#: kraft.adoc:247
+#, no-wrap
 msgid ""
-"|=== |Dig hole |32 min. |worker |Place tree |12 min. |worker |Fill hole |17 "
-"min. |worker |give water |5 min. |worker |==="
+"|Dig hole |32 min. |worker\n"
+"|Place tree |12 min. |worker\n"
+"|Fill hole |17 min. |worker\n"
+"|give water |5 min. |worker\n"
 msgstr ""
 
 #. type: Plain text
@@ -641,9 +641,10 @@ msgstr ""
 msgid "Fixed item"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:268
-msgid "|=== |Transportcost |35 euro |1 pcs.  |==="
+#. type: Table
+#: kraft.adoc:267
+#, no-wrap
+msgid "|Transportcost |35 euro |1 pcs.\n"
 msgstr ""
 
 #. type: Plain text
@@ -662,9 +663,10 @@ msgstr ""
 msgid "Used materials"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:280
-msgid "|=== |1 |support pole |3,5 euro |==="
+#. type: Table
+#: kraft.adoc:279
+#, no-wrap
+msgid "|1 |support pole |3,5 euro\n"
 msgstr ""
 
 #. type: Plain text

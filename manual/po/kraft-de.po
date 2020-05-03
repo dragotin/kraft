@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-03-29 12:50+0200\n"
+"POT-Creation-Date: 2020-04-25 11:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -96,9 +96,9 @@ msgstr ""
 
 #. type: Title ==
 #: kraft.adoc:27
-#, no-wrap
+#, fuzzy, no-wrap
 msgid "First Use and Basic Configuration"
-msgstr "Erstbenutzung und Grundkonfiguration"
+msgstr "Erster Start und Grundkonfiguration"
 
 #. type: Plain text
 #: kraft.adoc:30
@@ -119,6 +119,12 @@ msgid ""
 "for to fill in the information of the address from your company by hand. "
 "This step is necessary for the correct generation of your documents."
 msgstr ""
+"Die Adresse der eigenen Firma, die automatisch auf dem Ausgabedokument "
+"erscheint, kann auf zwei Arten eingegeben werden: In der Prozedur nach dem "
+"ersten Start im entsprechenden Tab, oder später über den Einstellungsdialog. "
+"Die Adresse kann entweder aus dem Adressbuch gewählt werden oder per Hand "
+"eingegeben werden. Dieser Schritt ist für die fehlerfreie Erstellung der "
+"Dokumente nötig."
 
 #. type: Plain text
 #: kraft.adoc:35
@@ -126,11 +132,14 @@ msgid ""
 "After the initial setup, select menu:Preferences[Settings].  That allows to "
 "prepare Kraft correctly so it can be used in a useful way."
 msgstr ""
+"Nach dem initialen Setup kann Kraft über das Menü Preferences[Settings] "
+"konfiguriert werden. Das erlaubt, Kraft für die eigenen Bedürfnisse "
+"anzupassen."
 
 #. type: Plain text
 #: kraft.adoc:37
 msgid "In the Preferences window we have the tabs:"
-msgstr ""
+msgstr "Im Einstellungsfenster befinden sich die Tabs:"
 
 #. type: Plain text
 #: kraft.adoc:44
@@ -143,22 +152,30 @@ msgid ""
 " *Units\n"
 " *Own identity\n"
 msgstr ""
+" *Dokument Voreinstellungen\n"
+" *Steuern\n"
+" *Dokumenttypen\n"
+" *Stundensätze\n"
+" *Einheiten\n"
+" *die eigene Identität\n"
 
 #. type: Plain text
 #: kraft.adoc:46
 msgid "Each of the tabs allows to enter useful values for our use case."
 msgstr ""
+"Jeder der Tabs erlaub es, sinnvolle Werte für die spezielle Anforderung "
+"einzugeben."
 
 #. type: Title ===
 #: kraft.adoc:47
 #, no-wrap
 msgid "Document Types"
-msgstr ""
+msgstr "Dokumenttypen"
 
 #. type: Plain text
 #: kraft.adoc:50
 msgid "At the first use you find a list of different document types, such as:"
-msgstr ""
+msgstr "Beim ersten Start finden sich folgende Dokumenttypen:"
 
 #. type: Plain text
 #: kraft.adoc:52
@@ -168,17 +185,17 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:53
 msgid "Delivery receipt"
-msgstr ""
+msgstr "Lieferschein"
 
 #. type: Plain text
 #: kraft.adoc:54
 msgid "Invoice"
-msgstr ""
+msgstr "Rechnung"
 
 #. type: Plain text
 #: kraft.adoc:55
 msgid "Offer"
-msgstr ""
+msgstr "Angebot"
 
 #. type: Plain text
 #: kraft.adoc:58
@@ -186,12 +203,14 @@ msgid ""
 "Translate this types to your own language.  You can also add new ones and "
 "remove document types you wont use."
 msgstr ""
+"Übersetze diese Typen in die eigene Sprache. Du kannst ebenso neue "
+"hinzufügen und Einträge entfernen, die Du nicht benutzen wirst."
 
 #. type: Title ====
 #: kraft.adoc:59
 #, no-wrap
 msgid "Numbercycles"
-msgstr ""
+msgstr "Nummernkreise"
 
 #. type: Plain text
 #: kraft.adoc:64
@@ -223,15 +242,11 @@ msgstr ""
 msgid "See the following table for available variables which can be used:"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:75 kraft.adoc:90
-msgid "|==="
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:88
+#. type: Table
+#: kraft.adoc:89
 #, no-wrap
 msgid ""
+"\n"
 "| `%y` or `%yyyy` | the year of the document date.\n"
 "| `%yy`           | the year of the document (two digits).\n"
 "| `%w`            | the week number of the document date.\n"
@@ -244,6 +259,7 @@ msgid ""
 "| `%i`            | the unique counter *(mandatory)*\n"
 "| `%type`         | the localised doc type (offer, invoice etc.)\n"
 "| `%uid`          | the contact id of the client.\n"
+"\n"
 msgstr ""
 
 #. type: Title ===
@@ -613,11 +629,14 @@ msgstr ""
 msgid "Spent time"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:248
+#. type: Table
+#: kraft.adoc:247
+#, no-wrap
 msgid ""
-"|=== |Dig hole |32 min. |worker |Place tree |12 min. |worker |Fill hole |17 "
-"min. |worker |give water |5 min. |worker |==="
+"|Dig hole |32 min. |worker\n"
+"|Place tree |12 min. |worker\n"
+"|Fill hole |17 min. |worker\n"
+"|give water |5 min. |worker\n"
 msgstr ""
 
 #. type: Plain text
@@ -654,9 +673,10 @@ msgstr ""
 msgid "Fixed item"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:268
-msgid "|=== |Transportcost |35 euro |1 pcs.  |==="
+#. type: Table
+#: kraft.adoc:267
+#, no-wrap
+msgid "|Transportcost |35 euro |1 pcs.\n"
 msgstr ""
 
 #. type: Plain text
@@ -675,9 +695,10 @@ msgstr ""
 msgid "Used materials"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:280
-msgid "|=== |1 |support pole |3,5 euro |==="
+#. type: Table
+#: kraft.adoc:279
+#, no-wrap
+msgid "|1 |support pole |3,5 euro\n"
 msgstr ""
 
 #. type: Plain text
