@@ -1110,14 +1110,30 @@ void Portal::slotHandbook()
 {
     QUrl url;
 
-    const QString hbFile = DefaultProvider::self()->locateFile("manual/kraft_en.html");
+    QLocale *loc = DefaultProvider::self()->locale();
+
+    QString hbLocale;
+    if (loc) {
+        hbLocale = loc->bcp47Name();
+    }
+
+    // find the localized version
+    QString hbFile = DefaultProvider::self()->locateFile(QString("manual/kraft-%1.html").arg(hbLocale));
+
+    // if not found, fall back to the english manual
+    QFileInfo fi(hbFile);
+    if (hbFile.isEmpty() || !fi.exists()) {
+        hbFile = DefaultProvider::self()->locateFile(QStringLiteral("manual/kraft-en.html"));
+    }
 
     if( !hbFile.isEmpty() ) {
         url = QUrl::fromLocalFile(hbFile);
+        qDebug() << "opening manual url" << url.toString();
     }
 
-    if (!url.isEmpty())
+    if (!url.isEmpty()) {
         QDesktopServices::openUrl(url);
+    }
 }
 
 void Portal::slotAboutQt()
