@@ -34,6 +34,8 @@
 #include "docposition.h"
 #include "katalogman.h"
 #include "defaultprovider.h"
+#include "format.h"
+#include "kraftsettings.h"
 
 #define ID_STATUS_MSG 1
 
@@ -339,8 +341,6 @@ void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
     return;
   }
 
-  QLocale *locale = DefaultProvider::self()->locale();
-
   QString t;
   QString flos = tmpl->getText();
   QFontMetrics fm( mTemplateText->font() );
@@ -351,11 +351,13 @@ void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
 
   t = "<table border=\"0\">";
   t += i18n("<tr><td>Created at:</td><td>%1</td></tr>" ) /* <td>&nbsp;&nbsp;</td><td>Last used:</td><td>%2</td></tr>" ) */
-       .arg( locale->toString( tmpl->enterDate() ) );
-       /* .arg( locale->formatDateTime( tmpl->lastUsedDate() ) ); */
-  t += i18n("<tr><td>Modified at:</td><td>%1</td></tr>") /* <td>&nbsp;&nbsp;</td><td>Use Count:</td><td>%2</td></tr>" ) */
-       .arg( locale->toString( tmpl->modifyDate() ) );
-       /* .arg( tmpl->useCounter() ); */
+          .arg( Format::toDateTimeString(tmpl->enterDate(), KraftSettings::self()-> dateFormat()) );
+  const QDateTime dt = tmpl->modifyDate();
+  if (dt.isValid()) {
+      t += i18n("<tr><td>Modified at:</td><td>%1</td></tr>") /* <td>&nbsp;&nbsp;</td><td>Use Count:</td><td>%2</td></tr>" ) */
+              .arg( Format::toDateTimeString( tmpl->modifyDate(), KraftSettings::self()-> dateFormat()) );
+      /* .arg( tmpl->useCounter() ); */
+  }
   t += "</table>";
   // qDebug() << "Hoover-String: " << t;
   mTemplateStats->setText( t );

@@ -17,20 +17,12 @@
 
 #include <QString>
 #include <QLocale>
+#include <QDate>
 
-
+#include "format.h"
 
 namespace Format {
 
-/**
- * @brief localeDoubleToString - convert a double into a string locale aware.
- * @param val - the value
- * @param loc - a locale, if skipped, the default locale is used.
- * @return the string
- *
- * The additional cleverness is that the returned string has the right
- * precision, ie. it returns "2" for val = 2.00 but "2.23" if val is 2.23.
- */
 QString localeDoubleToString(double val, const QLocale& loc)
 {
     int prec = 0;
@@ -44,6 +36,34 @@ QString localeDoubleToString(double val, const QLocale& loc)
 
     const QString re = loc.toString(val, 'f', prec);
     return re;
+}
+
+QString toDateString( const QDate& date, const QString& format )
+{
+    if (format == Format::DateFormatIso) {
+        return date.toString(Qt::ISODate);
+    }
+    if (format == DateFormatShort || format.isEmpty()) {
+        return date.toString(Qt::DefaultLocaleShortDate);
+    }
+    if (format == DateFormatLong) {
+        return date.toString(Qt::DefaultLocaleLongDate);
+    }
+    if (format == DateFormatRFC) {
+        return date.toString(Qt::RFC2822Date);
+    }
+    if (format == DateFormatGerman) {
+        return date.toString("dd.MM.yyyy");
+    }
+    return date.toString(format); // good luck!
+}
+
+QString toDateTimeString(const QDateTime& dt, const QString &format)
+{
+    const QString dateStr = QString("%1, %2:%3").arg(toDateString(dt.date(), format))
+            .arg(dt.time().hour(), 2, 10, QLatin1Char('0'))
+            .arg(dt.time().minute(), 2, 10, QLatin1Char('0'));
+    return dateStr;
 }
 
 }

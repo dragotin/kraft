@@ -23,6 +23,8 @@
 
 #include "docdigest.h"
 #include "defaultprovider.h"
+#include "format.h"
+#include "kraftsettings.h"
 
 DocDigest::DocDigest( dbID id, const QString& type, const QString& clientID )
   :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" ),
@@ -38,7 +40,7 @@ DocDigest::DocDigest()
 
 QString DocDigest::date() const
 {
-    return DefaultProvider::self()->formatDate(mDate);
+    return Format::toDateString(mDate, KraftSettings::self()->dateFormat());
 }
 
 QDate DocDigest::rawDate() const
@@ -48,7 +50,7 @@ QDate DocDigest::rawDate() const
 
 QString DocDigest::lastModified() const
 {
-    const QString re = QString( "%1 %2").arg( DefaultProvider::self()->formatDate(mLastModified.date()))
+    const QString re = QString( "%1 %2").arg( Format::toDateString(mLastModified.date(), KraftSettings::self()->dateFormat()))
             .arg(mLastModified.time().toString("hh:mm"));
     return re;
 }

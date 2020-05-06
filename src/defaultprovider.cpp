@@ -34,12 +34,6 @@
 
 Q_GLOBAL_STATIC(DefaultProvider, mSelf)
 
-const QString DefaultProvider::DateFormatIso = QStringLiteral("ISO");
-const QString DefaultProvider::DateFormatShort = QStringLiteral("Short");
-const QString DefaultProvider::DateFormatLong = QStringLiteral("Long");
-const QString DefaultProvider::DateFormatRFC = QStringLiteral("RFC");
-const QString DefaultProvider::DateFormatGerman = QStringLiteral("German");
-
 DefaultProvider *DefaultProvider::self()
 {
   return mSelf;
@@ -48,28 +42,6 @@ DefaultProvider *DefaultProvider::self()
 DefaultProvider::DefaultProvider()
 {
 
-}
-
-QString DefaultProvider::formatDate( const QDate& date ) const
-{
-    const QString format = KraftSettings::self()->dateFormat();
-
-    if (format == DateFormatIso) {
-        return date.toString(Qt::ISODate);
-    }
-    if (format == DateFormatShort || format.isEmpty()) {
-        return date.toString(Qt::DefaultLocaleShortDate);
-    }
-    if (format == DateFormatLong) {
-        return date.toString(Qt::DefaultLocaleLongDate);
-    }
-    if (format == DateFormatRFC) {
-        return date.toString(Qt::RFC2822Date);
-    }
-    if (format == DateFormatGerman) {
-        return date.toString("dd.MM.yyyy");
-    }
-    return date.toString(format); // good luck!
 }
 
 QString DefaultProvider::docType()

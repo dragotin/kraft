@@ -57,6 +57,7 @@
 #include "templtopositiondialogbase.h"
 #include "doctype.h"
 #include "catalogtemplate.h"
+#include "format.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
@@ -129,7 +130,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
         return;
     }
     tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), doc->docType() + " " + doc->ident() );
-    tmpl.setValue( DOC_RO_TAG( "DATE" ), DefaultProvider::self()->formatDate(doc->date()));
+    tmpl.setValue( DOC_RO_TAG( "DATE" ), Format::toDateString(doc->date(), KraftSettings::self()->dateFormat()));
     tmpl.setValue( DOC_RO_TAG( "DOC_TYPE" ),  doc->docType() );
     QString address = doc->address();
     address.replace( '\n', "<br/>" );

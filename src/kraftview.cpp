@@ -72,6 +72,7 @@
 #include "importitemdialog.h"
 #include "addressprovider.h"
 #include "addressselectordialog.h"
+#include "format.h"
 
 #define NO_TAX   0
 #define RED_TAX  1
@@ -582,7 +583,7 @@ void KraftView::refreshPostCard()
 
   if ( mAssistant->postCard() ) {
     QDate d = m_headerEdit->m_dateEdit->date();
-    const QString dStr = DefaultProvider::self()->formatDate( d );
+    const QString dStr = Format::toDateString( d, KraftSettings::self()->dateFormat() );
 
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->toPlainText(),

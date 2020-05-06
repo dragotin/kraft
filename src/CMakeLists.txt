@@ -120,8 +120,6 @@ set(kraft_SRCS
 kconfig_add_kcfg_files(kraft_SRCS
     databasesettings.kcfgc
     kraftsettings.kcfgc
-    databasesettings.kcfgc
-    kraftsettings.kcfgc
 )
 
 ki18n_wrap_ui(kraft_SRCS

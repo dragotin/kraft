@@ -53,6 +53,7 @@
 #include "htmlview.h"
 #include "addressselectordialog.h"
 #include "addressprovider.h"
+#include "format.h"
 
 #include "kcontacts/vcardconverter.h"
 
@@ -407,19 +408,19 @@ void PrefsDialog::readConfig()
 
     int index {5};
     const QString dFormat = KraftSettings::self()->dateFormat();
-    if (dFormat == DefaultProvider::DateFormatIso) {
+    if (dFormat == Format::DateFormatIso) {
         // iso
         index = 0;
-    } else if (dFormat == DefaultProvider::DateFormatShort) {
+    } else if (dFormat == Format::DateFormatShort) {
         // short
         index = 1;
-    } else if (dFormat == DefaultProvider::DateFormatLong) {
+    } else if (dFormat == Format::DateFormatLong) {
         // long
         index = 2;
-    } else if (dFormat == DefaultProvider::DateFormatRFC) {
+    } else if (dFormat == Format::DateFormatRFC) {
         // RFC
         index = 3;
-    } else if (dFormat == DefaultProvider::DateFormatGerman) {
+    } else if (dFormat == Format::DateFormatGerman) {
         // German
         index = 4;
     }
@@ -499,19 +500,19 @@ void PrefsDialog::writeConfig()
     QString dateFormatString;
     if (dateFormat == 0) {
         // iso
-        dateFormatString = DefaultProvider::DateFormatIso;
+        dateFormatString = Format::DateFormatIso;
     } else if (dateFormat == 1) {
         // short
-        dateFormatString = DefaultProvider::DateFormatShort;
+        dateFormatString = Format::DateFormatShort;
     } else if (dateFormat == 2) {
         // long
-        dateFormatString = DefaultProvider::DateFormatLong;
+        dateFormatString = Format::DateFormatLong;
     } else if (dateFormat == 3) {
         // RFC
-        dateFormatString = DefaultProvider::DateFormatRFC;
+        dateFormatString = Format::DateFormatRFC;
     } else if (dateFormat == 4) {
         // German
-        dateFormatString = DefaultProvider::DateFormatGerman;
+        dateFormatString = Format::DateFormatGerman;
     }
 
     if (dateFormatString.isEmpty()) {

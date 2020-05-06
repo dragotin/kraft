@@ -28,6 +28,8 @@
 #include "materialsaverbase.h"
 #include "materialsaverdb.h"
 #include "defaultprovider.h"
+#include "format.h"
+#include "kraftsettings.h"
 
 StockMaterial::StockMaterial( ):
     CatalogTemplate(),
@@ -151,12 +153,12 @@ void StockMaterial::setEnterDate( QDate dt )
 
 QString StockMaterial::lastModified()
 {
-  return DefaultProvider::self()->formatDate( mLastModified );
+  return Format::toDateString( mLastModified, KraftSettings::self()->dateFormat());
 }
 
 QString StockMaterial::entered()
 {
-  return DefaultProvider::self()->formatDate( mEnteredDate );
+  return Format::toDateString( mEnteredDate, KraftSettings::self()->dateFormat() );
 }
 
 void StockMaterial::saveChapterId()

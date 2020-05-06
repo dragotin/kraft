@@ -28,6 +28,7 @@
 #include "documentman.h"
 #include "kraftdb.h"
 #include "defaultprovider.h"
+#include "kraftsettings.h"
 #include "format.h"
 
 ArchDoc::ArchDoc()
@@ -57,8 +58,7 @@ QString ArchDoc::docIdentifier() const
 
 QString ArchDoc::dateStr() const
 {
-    // FIXME: Use DefaultProvider::self()->formatDate() once all is merged together.
-    return DefaultProvider::self()->locale()->toString(mDate, QLocale::ShortFormat);
+    return Format::toDateString(mDate, KraftSettings::self()->dateFormat());
 }
 
 Geld ArchDoc::nettoSum() const
