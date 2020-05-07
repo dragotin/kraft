@@ -1,15 +1,18 @@
 
-Generic compile and installation instructions in the beginning of
-this file.
+-----------------------------------------------------
+Packages
+-----------------------------------------------------
 
-=> Find Kraft specific instructions below. Make sure to read them!
+Linux Distributions have package management systems to provide users
+with all kind of software in a clean and easy way.
+This should be the prefered way to install Kraft. Check the package
+pools of your prefered distribution first.
 
-+------------------------------------------------------------------+
-|    Please use binary Packages from the openSUSE Buildservice     |
-|        or the binary package repository of your joice.           |
-|          Go to http://software.opensuse.org/search               |
-|      and search for Kraft. Use the openSUSE 1-Click-Install      |
-+------------------------------------------------------------------+
+If the package is outdated, consider asking your distribution to upgrade!
+
+-----------------------------------------------------
+Compiling Kraft
+-----------------------------------------------------
 
 The following section briefly describes how to build Kraft with cmake.
 
@@ -35,9 +38,9 @@ be provided:
   packages from the openSUSE Buildservice or from the website
   https://github.com/OlafvdSpek/ctemplate
 - optional: akonadi contact for Akonadi based addressbook access
+- optional: grantlee, an C++ text template framework
 
-
-Required packages for building with openSUSE Leap 42.3:
+Required packages for building with openSUSE:
 
 - cmake
 - extra-cmake-modules
@@ -52,18 +55,6 @@ Required packages for building with openSUSE Leap 42.3:
 - libQt5Gui-devel
 - libQt5Sql-devel
 - libQt5Widgets-devel
-
-Required packages for building with Kubuntu 18.04
-
-- cmake
-- extra-cmake-modules
-- qt5-default
-- gettext
-- libkf5xmlgui-dev
-- libkf5contacts-dev
-- libkf5akonadi-dev
-- libkf5akonadicontact-dev
-- libctemplate-dev
 
 -----------------------------------------------------
 Build Kraft
@@ -108,11 +99,22 @@ $ make install
 To change the target root directory to where it is installed, call
 cmake with the parameter -DCMAKE_INSTALL_PREFIX=/my_dir
 
+Kraft Manual
+============
+
+Kraft ships a user manual in different languages. To rebuild it, asciidoctor
+is required. If that dependency is found, cmake detects it and gives a new
+make target:
+
+$ make manual
+
+to re-create the docs.
+
 Database
 ========
 
-Since version 0.40 Kraft either can use a SQLite file based
-database or a MySQL server based database.
+Kraft either can use a SQLite file based database or a MySQL server based
+database.
 
 The SQLite database is created automatically on the fly
 on first start. Its use is recommended for all users who
