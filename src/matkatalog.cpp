@@ -73,6 +73,11 @@ int MatKatalog::load()
   return cnt;
 }
 
+void MatKatalog::recordUsage(int id)
+{
+    Q_UNUSED(id); // FIXME: Implement this!
+}
+
 void MatKatalog::deleteMaterial( int id )
 {
   StockMaterialListIterator it( mAllMaterial );

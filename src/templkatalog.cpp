@@ -24,6 +24,8 @@
 
 #include <QDebug>
 #include <QFileDialog>
+#include <QSqlRecord>
+#include <QSqlTableModel>
 
 #include "floskeltemplate.h"
 #include "dbids.h"
@@ -152,6 +154,31 @@ int TemplKatalog::load()
   return cnt;
 }
 
+void TemplKatalog::recordUsage(int id)
+{
+    QSqlTableModel model;
+    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model.setTable("Catalog");
+    model.setFilter(QString("TemplID=%1").arg(id));
+    model.select();
+
+    if( model.rowCount() > 0) {
+        // qDebug () << "Updating template " << tmpl->getTemplID() << endl;
+        bool ok;
+        QSqlRecord buffer = model.record(0);
+        int currCnt = buffer.value("useCounter").toInt(&ok);
+        int newCnt = 0;
+        if (ok) {
+            newCnt = currCnt+1;
+        }
+        // mach update
+        buffer.setValue( "useCounter", newCnt);
+        buffer.setValue( "lastUsed", KraftDB::self()->currentTimeStamp() );
+        model.setRecord(0, buffer);
+        model.submitAll();
+    }
+}
+
 int TemplKatalog::addNewTemplate( FloskelTemplate *tmpl )
 {
   int re = -1;
@@ -185,7 +212,7 @@ void TemplKatalog::deleteTemplate( int id )
   QStringList tables;
   tables << "Catalog" << "CalcFixed" << "CalcMaterials" << "CalcTime";
 
-  foreach( const QString table, tables ) {
+  for(const QString& table : tables ) {
     QSqlQuery q;
     q.prepare( "DELETE FROM " + table + " WHERE TemplID=:Id");
     q.bindValue( ":Id", id );

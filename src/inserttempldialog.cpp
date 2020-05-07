@@ -176,7 +176,6 @@ InsertTemplDialog::~InsertTemplDialog()
   if ( ! c.isEmpty() ) {
     KraftSettings::self()->setInsertTemplChapterName( c );
     KraftSettings::self()->save();
-    KraftSettings::self()->load();
   }
 }
 

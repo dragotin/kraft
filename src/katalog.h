@@ -86,6 +86,9 @@ public:
 
     virtual QDomDocument toXML();
     virtual void writeXMLFile();
+
+    virtual void recordUsage(int id) = 0;
+
     dbID id();
 
     QLocale *locale() { return mLocale; }

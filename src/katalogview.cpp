@@ -349,14 +349,26 @@ void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
   t = QString( "<em>%1</em>").arg( fm.elidedText(flos, Qt::ElideMiddle, w ) );
   mTemplateText->setText( t );
 
+  int useCount = tmpl->useCounter();
+
   t = "<table border=\"0\">";
-  t += i18n("<tr><td>Created at:</td><td>%1</td></tr>" ) /* <td>&nbsp;&nbsp;</td><td>Last used:</td><td>%2</td></tr>" ) */
+  t += i18n("<tr><td>Created at:</td><td>%1</td>")
           .arg( Format::toDateTimeString(tmpl->enterDate(), KraftSettings::self()-> dateFormat()) );
+  if (useCount > 0) {
+      t += i18n("<td>&nbsp;&nbsp;Last used:</td><td>%1</td>" )
+          .arg( Format::toDateTimeString(tmpl->lastUsedDate(), KraftSettings::self()-> dateFormat()));
+  }
+  t += QStringLiteral("</tr>");
+
   const QDateTime dt = tmpl->modifyDate();
   if (dt.isValid()) {
-      t += i18n("<tr><td>Modified at:</td><td>%1</td></tr>") /* <td>&nbsp;&nbsp;</td><td>Use Count:</td><td>%2</td></tr>" ) */
-              .arg( Format::toDateTimeString( tmpl->modifyDate(), KraftSettings::self()-> dateFormat()) );
-      /* .arg( tmpl->useCounter() ); */
+      t += i18n("<tr><td>Modified at:</td><td>%1</td>")
+              .arg( Format::toDateTimeString( dt, KraftSettings::self()-> dateFormat()) );
+      if (useCount > 0) {
+          t += i18n("<td>&nbsp;&nbsp;Use Count:</td><td>%1</td>" )
+              .arg(useCount);
+      }
+      t += QStringLiteral("</tr>");
   }
   t += "</table>";
   // qDebug() << "Hoover-String: " << t;

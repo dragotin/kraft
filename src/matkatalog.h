@@ -45,6 +45,7 @@ public:
   KatalogType type() { return MaterialCatalog; }
   StockMaterialList getRecordList( const CatalogChapter& );
   void addNewMaterial( StockMaterial* );
+  void recordUsage(int) override;
 private:
   StockMaterialList mAllMaterial;
 };

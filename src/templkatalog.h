@@ -51,6 +51,9 @@ public:
     int getEntriesPerChapter( const CatalogChapter& );
 
     int addNewTemplate( FloskelTemplate *tmpl );
+
+    void recordUsage(int id) override;
+
 public slots:
     void writeXMLFile();
     void deleteTemplate( int );

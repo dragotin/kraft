@@ -950,6 +950,8 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
   dia.reset(new InsertTemplDialog( this ));
   dia->setCatalogChapters( kat->getKatalogChapters() );
 
+  int tmplId = 0;
+
   if ( newTemplate ) {
       // New templates may only go to the standard template catalog, FIXME
   } else {
@@ -1010,6 +1012,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
 
               flos->setManualPrice( dp->unitPrice() );
               flos->save();
+              tmplId = flos->getTemplID();
 
               // reload the entire katalog
               Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
@@ -1017,6 +1020,8 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
                   defaultKat->load();
                   KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
               }
+          } else {
+              tmplId = static_cast<FloskelTemplate*>(tmpl)->getTemplID();
           }
       } else if ( kat->type() == MaterialCatalog ) {
           if ( newTemplate ) {
@@ -1030,6 +1035,10 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
   } else {
       delete dp;
       return;
+  }
+
+  if (tmplId > 0) {
+      kat->recordUsage(tmplId);
   }
 
   PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
