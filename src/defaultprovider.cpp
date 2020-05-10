@@ -172,7 +172,7 @@ QString DefaultProvider::currencySymbol() const
 
 QString DefaultProvider::iconvTool() const
 {
-  return QStandardPaths::findExecutable( "iconv" );
+  return locateBinary( "iconv" );
 }
 
 QString DefaultProvider::getStyleSheet( const QString& styleName ) const
@@ -244,6 +244,16 @@ QString DefaultProvider::locateKraftTool(const QString& toolName) const
     }
     return fullPath;
 }
+
+QString DefaultProvider::locateBinary(const QString& name) const
+{
+    QString bin;
+    if (!name.isEmpty()) {
+        bin = QStandardPaths::findExecutable( name );
+    }
+    return bin;
+}
+
 
 QStringList DefaultProvider::findTrml2Pdf( ) const
 {

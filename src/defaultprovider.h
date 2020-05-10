@@ -53,10 +53,10 @@ public:
   QString iconvTool() const;
   QStringList findTrml2Pdf() const;
   QString locateKraftTool(const QString& toolName) const;
+  QString locateBinary(const QString& name) const;
+  QString locateFile(const QString& findFile) const;
 
   QString getStyleSheet( const QString& ) const;
-
-  QString locateFile(const QString& findFile) const;
 
   DefaultProvider();
 

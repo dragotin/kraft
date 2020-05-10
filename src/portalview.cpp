@@ -350,6 +350,9 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   tmpl.setValue( "ICONV_TOOL_LABEL", i18n( "iconv tool for text import" ) );
   tmpl.setValue( "ICONV_TOOL", DefaultProvider::self()->iconvTool() );
 
+  tmpl.setValue( "WEASYPRINT_TOOL_LABEL", i18n( "<a href=\"https://weasyprint.org/\">weasyprint</a> for PDF generation" ) );
+  tmpl.setValue( "WEASYPRINT_TOOL", DefaultProvider::self()->locateBinary("weasyprint") );
+
   // aknowledgement
   tmpl.setValue( "ICON_ACKNOWLEDGEMENT_LABEL", i18n("Some Icons are made by") );
   tmpl.setValue( "ACKNOWLEGEMENT_LABEL", i18n( "Acknowledgements" ) );

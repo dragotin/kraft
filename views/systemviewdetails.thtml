@@ -18,7 +18,8 @@
       <p>{{KRAFT_GITHUB}} <a href="https://www.github.com/dragotin/kraft">Github</a></p>
     </td>
     <td width="15%" align="center" style="vertical-align: top; padding-right: 20px; margin: 0px;">
-      <a href="http://www.volle-kraft-voraus.de"><img src="{{KRAFT_LOGO_FILE}}" /><br/>{{KRAFT_WEBSITE}}</a>
+      <a href="http://www.volle-kraft-voraus.de"><img src="{{KRAFT_LOGO_FILE}}" />
+      <br/>{{KRAFT_WEBSITE}}</a>
     </td>
   </tr>
 </table>
@@ -108,6 +109,12 @@
   <tr>
     <td class="label">{{ICONV_TOOL_LABEL}}:</td>
     <td class="value">{{ICONV_TOOL}}</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="label">{{WEASYPRINT_TOOL_LABEL}}:</td>
+    <td class="value">{{WEASYPRINT_TOOL}}</td>
     <td></td>
   </tr>
 
