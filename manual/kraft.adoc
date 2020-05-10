@@ -7,24 +7,36 @@
 :keywords: Qt;office;bookkeeping
 :experimental:
 :imagesdir: images/
+:toc:
 
 include::{path}/locale/attributes.adoc[]
 
 == Introduction
 
-Kraft is a Qt program for organizing documents like quotes and invoices in a small business.
+Kraft is a Qt and KDE application to organize office documents like quotes and invoices in a small business. It eases the creation of these of documents and helps with repeating tasks.
 
-Features::
+With Kraft, there is no need for a text processor any more. Documents are created by a few clicks and archived automatically. Kraft generates high quality PDF output.
+
+Feature Overview::
+
 * Customer management, deeply integrated in the KDE infrastructure using KAddressbook.
-* Automated creation of offers, invoices and similar documents
-* Text templates
-* Calculation
-* Material management
-* Configurable document creation in PDF format
+* Automated creation of offers, invoices and similar documents.
+* Templates for document header- and footertexts and for document items.
+* Calculation of items.
+* Material management.
+* Configurable document creation in PDF format for print and email.
 
 Kraft is designed to use the data entries from the KDE address book
 which is a module of the https://community.kde.org/KDE_PIM[KDE PIM], an information management application.
 All addresses are collected in the https://userbase.kde.org/KAddressBook[KAdressBook].
+
+The code of Kraft is open source and is released under the https://en.wikipedia.org/wiki/GNU_General_Public_License[GNU General Public License].
+
+NOTE: Kraft is driven by community of users, coders and others. +
+Also this manual needs contributions! +
+ +
+ Learn more on https://github.com/dragotin/kraft/blob/master/manual/Readme.md[how to contribute]!
+
 
 == First Use and Basic Configuration
 
@@ -527,6 +539,29 @@ the client.
 After your first invoice is now your first offer now also ready for
 sending.
 
+[[Customization]]
+== Customization
+
+Kraft can be customized in most of it's graphical user interface, and certainly
+in the output it generates.
+
+=== Document Customization
+
+Each document type in Kraft can have it's own template that is used to create
+a PDF. The template is filled with values from the document content and processed
+using a document creation script.
+
+This makes sure that Kraft documents are always high standard quality, similar looking
+and generated very quickly.
+
+==== WeasyPrint Documents
+
+With [WeasyPrint] Kraft uses a very powerful HTML and CSS based generator that makes
+it very easy to create highly customized documents. The general idea is that weasyprint
+loads html output that is processed to PDF, considering a Cascading Stylesheet file
+which has a huge impact on how the PDF document looks in the end.
+
+
 [[Menu]]
 == Menus and Shortcuts
 
@@ -622,7 +657,6 @@ sending.
 [[Delete_item]]
  [Context]>[Delete item]
  Removes this item from document.
-
 
 [[Credits]]
 == Credits and License

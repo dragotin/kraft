@@ -649,11 +649,14 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kraft is a Qt program for organizing documents like quotes and invoices in a small business.</p>
+<p>Kraft is a Qt and KDE application to organize office documents like quotes and invoices in a small business. It eases the creation of these of documents and helps with repeating tasks.</p>
+</div>
+<div class="paragraph">
+<p>With Kraft, there is no need for a text processor any more. Documents are created by a few clicks and archived automatically. Kraft generates high quality PDF output.</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">Features</dt>
+<dt class="hdlist1">Basic Features</dt>
 <dd>
 <div class="ulist">
 <ul>
@@ -661,19 +664,19 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <p>Customer management, deeply integrated in the KDE infrastructure using KAddressbook.</p>
 </li>
 <li>
-<p>Automated creation of offers, invoices and similar documents</p>
+<p>Automated creation of offers, invoices and similar documents.</p>
 </li>
 <li>
-<p>Text templates</p>
+<p>Templates for document header- and footertexts and for document items.</p>
 </li>
 <li>
-<p>Calculation</p>
+<p>Calculation of items.</p>
 </li>
 <li>
-<p>Material management</p>
+<p>Material management.</p>
 </li>
 <li>
-<p>Configurable document creation in PDF format</p>
+<p>Configurable document creation in PDF format for print and email.</p>
 </li>
 </ul>
 </div>
@@ -684,6 +687,24 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <p>Kraft is designed to use the data entries from the KDE address book
 which is a module of the <a href="https://community.kde.org/KDE_PIM">KDE PIM</a>, an information management application.
 All addresses are collected in the <a href="https://userbase.kde.org/KAddressBook">KAdressBook</a>.</p>
+</div>
+<div class="paragraph">
+<p>The code of Kraft is open source and is released under the <a href="https://en.wikipedia.org/wiki/GNU_General_Public_License">GNU General Public License</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Kraft is driven by community of users, coders and others.<br>
+Also this manual needs contributions!<br>
+<br>
+ Learn more on <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.md">how to contribute</a>!
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1504,6 +1525,36 @@ sending.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="Customization">Customization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kraft can be customized in most of it&#8217;s graphical user interface, and certainly
+in the output it generates.</p>
+</div>
+<div class="sect2">
+<h3 id="_document_customization">Document Customization</h3>
+<div class="paragraph">
+<p>Each document type in Kraft can have it&#8217;s own template that is used to create
+a PDF. The template is filled with values from the document content and processed
+using a document creation script.</p>
+</div>
+<div class="paragraph">
+<p>This makes sure that Kraft documents are always high standard quality, similar looking
+and generated very quickly.</p>
+</div>
+<div class="sect3">
+<h4 id="_weasyprint_documents">WeasyPrint Documents</h4>
+<div class="paragraph">
+<p>With [WeasyPrint] Kraft uses a very powerful HTML and CSS based generator that makes
+it very easy to create highly customized documents. The general idea is that weasyprint
+loads html output that is processed to PDF, considering a Cascading Stylesheet file
+which has a huge impact on how the PDF document looks in the end.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="Menu">Menus and Shortcuts</h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -1675,7 +1726,7 @@ Removes this item from document.</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-02 13:23:30 +0200
+Last updated 2020-05-08 14:10:02 +0200
 </div>
 </div>
 </body>
