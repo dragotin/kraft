@@ -177,14 +177,15 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
 
   AttributeMap amap = dp->attributes();
 
+  QString unit = pos->unit().einheitSingular();
+  m_cbUnit->setCurrentIndex(m_cbUnit->findText( unit ));
+
   if( dp->type() == DocPositionBase::Position ) {
     positionDetailStack->setCurrentWidget( positionPage );
 
     m_sbAmount->blockSignals( true );
     m_sbAmount->setValue( pos->amount() );
     m_sbAmount->blockSignals( false );
-    QString unit = pos->unit().einheitSingular();
-    m_cbUnit->setCurrentIndex(m_cbUnit->findText( unit ));
 
     m_sbUnitPrice->blockSignals( true );
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );

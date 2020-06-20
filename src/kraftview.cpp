@@ -1095,6 +1095,8 @@ void KraftView::slotAddExtraPosition()
   DocPosition *dp = new DocPosition( DocPosition::ExtraDiscount );
   dp->setPositionNumber( newpos+1 );
   dp->setText( i18n( "Discount" ) );
+  Einheit e = UnitManager::self()->getPauschUnit();
+  dp->setUnit(e);
   if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
     dp->setTaxType( DocPositionBase::TaxFull );
   } else {

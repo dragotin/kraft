@@ -36,6 +36,7 @@ class UnitManager
     static UnitManager* self();
 
     Einheit getUnit( int id );
+    Einheit getPauschUnit();
     QStringList allUnits();
     int getUnitIDSingular( const QString& einheit );
 

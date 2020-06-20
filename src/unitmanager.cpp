@@ -79,6 +79,13 @@ QStringList UnitManager::allUnits()
   return list;
 }
 
+Einheit UnitManager::getPauschUnit()
+{
+    int id = getUnitIDSingular(QStringLiteral("pausch."));
+    if (id > -1)
+        return getUnit(id);
+    return Einheit();
+}
 
 Einheit UnitManager::getUnit( int id )
 {
