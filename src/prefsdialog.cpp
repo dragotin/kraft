@@ -316,7 +316,7 @@ QWidget* PrefsDialog::docTab()
   butLay->addWidget( mCbDefaultTaxType );
   l->setBuddy( mCbDefaultTaxType );
   mCbDefaultTaxType->setToolTip( i18n( "The default tax setting for all documents." ) );
-  mCbDefaultTaxType->insertItem( 0, i18n("Display no tax at all" , 0));
+  mCbDefaultTaxType->insertItem( 0, i18n("Display no tax at all"));
   mCbDefaultTaxType->insertItem( 1, i18n("Calculate reduced tax for all items" ));
   mCbDefaultTaxType->insertItem( 2, i18n("Calculate full tax for all items" ) );
   // mCbDefaultTaxType->insertItem( 3, i18n("Calculate on individual item tax rate" ));
