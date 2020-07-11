@@ -351,7 +351,12 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   tmpl.setValue( "ICONV_TOOL", DefaultProvider::self()->iconvTool() );
 
   tmpl.setValue( "WEASYPRINT_TOOL_LABEL", i18n( "<a href=\"https://weasyprint.org/\">weasyprint</a> for PDF generation" ) );
-  tmpl.setValue( "WEASYPRINT_TOOL", DefaultProvider::self()->locateBinary("weasyprint") );
+
+  QString wp = DefaultProvider::self()->locateBinary("weasyprint");
+  if (wp.isEmpty()) {
+      wp = i18n("not available");
+  }
+  tmpl.setValue( "WEASYPRINT_TOOL", wp);
 
   // aknowledgement
   tmpl.setValue( "ICON_ACKNOWLEDGEMENT_LABEL", i18n("Some Icons are made by") );

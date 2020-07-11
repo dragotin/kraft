@@ -137,9 +137,10 @@ void ReportLabPDFConverter::trml2pdfFinished( int exitCode, QProcess::ExitStatus
         }
     } else {
         if( mErrors.contains(QLatin1String("No module named Reportlab"))) {
-            emit converterError( ConvError::NoReportLabMod);
+            emit converterError(ConvError::NoReportLabMod);
         } else {
-            emit converterError( ConvError::UnknownError);
+            qDebug() << "Trml2Pdf Error:" << mErrors;
+            emit converterError(ConvError::UnknownError);
         }
     }
     mProcess->deleteLater();

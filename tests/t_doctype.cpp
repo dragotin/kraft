@@ -130,19 +130,19 @@ private slots:
 
         dt.setIdentTemplate("FOO-%y-%ww-%d-%iiiii");
         re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QCOMPARE(re, "FOO-2020-04-23-00122"); // the id can change
+        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-00122")); // the id can change
 
         dt.setIdentTemplate("FOO-%y-%ww-%d-%iiii");
         re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QCOMPARE(re, "FOO-2020-04-23-0122"); // the id can change
+        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-0122")); // the id can change
 
         dt.setIdentTemplate("FOO-%y-%ww-%d-%iii");
         re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QCOMPARE(re, "FOO-2020-04-23-122"); // the id can change
+        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-122")); // the id can change
 
         dt.setIdentTemplate("FOO-%y-%ww-%d-%ii");
         re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QCOMPARE(re, "FOO-2020-04-23-122"); // the id can change
+        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-122")); // the id can change
 
     }
 

@@ -40,7 +40,7 @@ find_package(KF5 REQUIRED COMPONENTS
 )
 
 # Grantlee templating engine
-find_package(Grantlee5)
+find_package(Grantlee5 REQUIRED)
 set_package_properties(Grantlee5 PROPERTIES
     DESCRIPTION "Library for templating html and pdf output"
     URL "https://www.grantlee.org/"
