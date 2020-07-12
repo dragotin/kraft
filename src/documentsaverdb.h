@@ -42,8 +42,6 @@ private:
     const QString PosTypePosition;
     const QString PosTypeExtraDiscount;
     const QString PosTypeHeader;
-
-    void fillDocumentBuffer( QSqlRecord &, KraftDoc* );
 };
 
 #endif

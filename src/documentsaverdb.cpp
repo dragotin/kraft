@@ -59,6 +59,42 @@
  *
  */
 
+namespace {
+void checkAndSet(bool& changes, QSqlRecord& record, const QString& name, const QVariant& setValue)
+{
+    Q_ASSERT(record.contains(name)); // the record must have the column
+
+    if( record.value(name) != setValue) {
+        record.setValue(name, setValue);
+        changes = true;
+    }
+}
+
+
+bool fillDocumentBuffer(QSqlRecord &buf, KraftDoc *doc)
+{
+    bool changes {false};
+    if( doc ) {
+        checkAndSet(changes, buf, "ident", doc->ident());
+        checkAndSet(changes, buf, "docType", doc->docType());
+        checkAndSet(changes, buf, "docDescription", KraftDB::self()->mysqlEuroEncode(doc->whiteboard()));
+        checkAndSet(changes, buf, "clientID", doc->addressUid());
+        checkAndSet(changes, buf, "clientAddress", doc->address());
+        checkAndSet(changes, buf, "salut", doc->salut());
+        checkAndSet(changes, buf, "goodbye", doc->goodbye());
+        checkAndSet(changes, buf, "date", doc->date());
+        checkAndSet(changes, buf, "pretext", KraftDB::self()->mysqlEuroEncode( doc->preText()));
+        checkAndSet(changes, buf, "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText()));
+        checkAndSet(changes, buf, "country", DefaultProvider::self()->locale()->bcp47Name());
+        checkAndSet(changes, buf, "language", "");
+        checkAndSet(changes, buf, "projectLabel", doc->projectLabel());
+        checkAndSet(changes, buf, "predecessor", doc->predecessor());
+
+    }
+    return changes;
+}
+}
+
 DocumentSaverDB::DocumentSaverDB( ) : DocumentSaverBase(),
                                       PosTypePosition( QString::fromLatin1( "Position" ) ),
                                       PosTypeExtraDiscount( QString::fromLatin1( "ExtraDiscount" ) ),
@@ -101,38 +137,42 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
         doc->setIdent( ident );
     }
 
-    fillDocumentBuffer( record, doc );
+    bool hasChanges = fillDocumentBuffer( record, doc );
 
     if( doc->isNew() ) {
-      // qDebug () << "Doc is new, inserting" << endl;
-      if( !model.insertRecord(-1, record)) {
-          QSqlError err = model.lastError();
-          // qDebug () << "################# SQL Error: " << err.text();
-      }
-      model.submitAll();
-
-      dbID id = KraftDB::self()->getLastInsertID();
-      doc->setDocID( id );
-
-      // get the uniq id and write it into the db
-      DocType dt( doc->docType() );
-      QString ident = dt.generateDocumentIdent( doc->date(), doc->docType(), doc->addressUid() );
-      doc->setIdent( ident );
-      model.setFilter("docID=" + id.toString());
-      model.select();
-      if ( model.rowCount() > 0 ) {
-        model.setData(model.index(0, 1), ident);
+        // qDebug () << "Doc is new, inserting" << endl;
+        if( !model.insertRecord(-1, record)) {
+            QSqlError err = model.lastError();
+            // qDebug () << "################# SQL Error: " << err.text();
+        }
         model.submitAll();
-      }
+
+        dbID id = KraftDB::self()->getLastInsertID();
+        doc->setDocID( id );
+
+        // get the uniq id and write it into the db
+        DocType dt( doc->docType() );
+        QString ident = dt.generateDocumentIdent( doc->date(), doc->docType(), doc->addressUid() );
+        doc->setIdent( ident );
+        model.setFilter("docID=" + id.toString());
+        model.select();
+        if ( model.rowCount() > 0 ) {
+            model.setData(model.index(0, 1), ident);
+            model.submitAll();
+        }
 
     } else {
-      // qDebug () << "Doc is not new, updating #" << doc->docID().intID() << endl;
-
-      record.setValue( "docID", doc->docID().toString() );
-
-      model.setRecord(0, record);
-      model.submitAll();
+        // qDebug () << "Doc is not new, updating #" << doc->docID().intID() << endl;
+        checkAndSet(hasChanges, record, "docID", doc->docID().toString());
+        if (!hasChanges) {
+            // if there haven't been changes in the document record, we update the changes
+            // timestamp manually, otherwise it is not updated at all.
+            const QString dt = QDateTime::currentDateTime().toString("yyyy-MM-ddThh:mm:ss");
+            checkAndSet(hasChanges, record, "lastModified", QVariant(dt));
+        }
     }
+    model.setRecord(0, record);
+    model.submitAll();
 
     saveDocumentPositions( doc );
 
@@ -261,30 +301,6 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
     }
 
 
-}
-
-void DocumentSaverDB::fillDocumentBuffer( QSqlRecord &buf, KraftDoc *doc )
-{
-    if( doc ) {
-      // qDebug () << "Adressstring: " << doc->address() << endl;
-      buf.setValue( "ident",    doc->ident() );
-      buf.setValue( "docType",  doc->docType() );
-      buf.setValue( "docDescription", KraftDB::self()->mysqlEuroEncode( doc->whiteboard() ) );
-      buf.setValue( "clientID", doc->addressUid() );
-      buf.setValue( "clientAddress", doc->address() );
-      buf.setValue( "salut",    doc->salut() );
-      buf.setValue( "goodbye",  doc->goodbye() );
-      buf.setValue( "date",     doc->date() );
-      // do not set that because mysql automatically updates the timestamp and
-      // sqlite3 has a trigger for it.
-      // buf->setValue( "lastModified", "NOW()" );
-      buf.setValue( "pretext",  KraftDB::self()->mysqlEuroEncode( doc->preText() ) );
-      buf.setValue( "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText() ) );
-      buf.setValue( "country",  DefaultProvider::self()->locale()->bcp47Name() );
-      buf.setValue( "language", "" );
-      buf.setValue( "projectLabel",  doc->projectLabel() );
-      buf.setValue( "predecessor", doc->predecessor() );
-    }
 }
 
 void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
