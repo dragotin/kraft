@@ -52,7 +52,7 @@ DocGuardedPtr DocumentMan::copyDocument( const QString& copyFromId )
             *doc = *sourceDoc; // copies all data from the previous doc
             doc->setPredecessor(QString()); // clear the predecessor
         }
-        doc->setLastModified( QDate::currentDate());
+        doc->setLastModified( QDateTime::currentDateTime());
     }
     return doc;
 }
@@ -106,7 +106,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
     }
 
     // set the proper texts and other data
-    doc->setLastModified( QDate::currentDate());
+    doc->setLastModified( QDateTime::currentDateTime());
     doc->setPreText(DefaultProvider::self()->defaultText( docType, KraftDoc::Header ));
     doc->setPostText(DefaultProvider::self()->defaultText( docType, KraftDoc::Footer));
 

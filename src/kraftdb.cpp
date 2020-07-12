@@ -189,6 +189,12 @@ void KraftDB::close()
     m_db.close();
 }
 
+bool KraftDB::isSqlite()
+{
+    const QString dbDriver = qtDriver().toUpper();
+
+    return (dbDriver.startsWith("QSQLITE"));
+}
 
 int KraftDB::checkConnect( const QString& host, const QString& dbName,
                            const QString& user, const QString& pwd, int port )

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "docbasemodel.h"
+#include "kraftdb.h"
 
 #include <QStringList>
 #include <QColor>
@@ -191,7 +192,14 @@ int DocBaseModel::loadFromTable()
                          query.value(Document_ClientId).toString());
 
         digest.setDate( query.value( Document_CreationDate ).toDate() );
-        digest.setLastModified( query.value(Document_LastModified).toDateTime() );
+        QDateTime dt = query.value(Document_LastModified).toDateTime();
+        if (KraftDB::self()->isSqlite()) {
+            // The timestamps in Sqlite are in UTC
+            dt.setTimeSpec(Qt::UTC);
+            digest.setLastModified(dt.toLocalTime());
+        } else {
+            digest.setLastModified(dt);
+        }
 
         const QString clientAdr = query.value(Document_ClientAddress).toString();
         digest.setClientAddress( clientAdr );

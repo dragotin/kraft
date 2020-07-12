@@ -132,7 +132,7 @@ bool KraftDoc::saveDocument( )
     if( saver ) {
         result = saver->saveDocument( this );
         if ( isNew() ) {
-          setLastModified( QDate::currentDate() );
+          setLastModified( QDateTime::currentDateTime() );
         }
 
         // We go through the whole document and remove the positions

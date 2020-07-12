@@ -318,7 +318,7 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
             // qDebug () << "loading document with id " << id << endl;
             dbID dbid;
             dbid = id;
-            doc->setDocID( dbid );
+            doc->setDocID(dbid);
 
             doc->setIdent(      q.value( 0 ).toString() );
             doc->setDocType(    q.value( 1 ).toString() );
@@ -328,7 +328,16 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
             doc->setSalut(      salut );
             doc->setGoodbye(    q.value( 5 ).toString() );
             doc->setDate (      q.value( 6 ).toDate() );
-            doc->setLastModified( q.value( 7 ).toDate() );
+            QDateTime dt = q.value(7).toDateTime();
+
+            // Sqlite stores the timestamp as UTC in the database. Mysql does not.
+            if (KraftDB::self()->isSqlite()) {
+                dt.setTimeSpec(Qt::UTC);
+                doc->setLastModified(dt.toLocalTime());
+            } else {
+                doc->setLastModified(dt);
+            }
+
             // Removed, as with Kraft 0.80 there is no locale management on doc level any more
             // doc->setCountryLanguage( q.value( 8 ).toString(),
             //                         q.value( 9 ).toString());

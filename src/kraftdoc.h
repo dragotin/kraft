@@ -94,8 +94,8 @@ public:
     QDate date() const { return mDate; }
     void setDate( QDate d ) { mDate = d; }
 
-    QDate lastModified() const { return mLastModified; }
-    void setLastModified( QDate d ) { mLastModified = d; }
+    QDateTime lastModified() const { return mLastModified; }
+    void setLastModified( QDateTime d ) { mLastModified = d; }
 
     QString docType() const { return mDocType; }
     void setDocType( const QString& s );
@@ -194,7 +194,7 @@ private:
     QString mLanguage;
 
     QDate   mDate;
-    QDate   mLastModified;
+    QDateTime   mLastModified;
     DocPositionList mPositions;
     DBIdList mRemovePositions;
     DocumentSaverBase *mSaver;

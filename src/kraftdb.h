@@ -86,6 +86,8 @@ public:
 
   QSqlError lastError();
 
+  bool isSqlite();
+
   bool isOk() {
     return mSuccess;
   }
