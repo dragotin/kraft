@@ -1,13 +1,21 @@
 Changes since version 0.90: #########################################
 
+- Add Grantlee as templating engine.
+- Add Weasyprint as rendering engine for PDFs.
 - Removed Splash screen completely for simplification.
-- Switch to invoke the doc creation script using python3 directly.
-- Add a date format selector to Kraft settings. Allow to set a four 
+- Switch to python3 with the erml2pdf tool.
+- Add a date format selector to Kraft settings. Allow to set a four
   digit year in dates and other formats.
 - Fix: Show proper amount of items in no-price-display mode.
-- Add the user manual, invoke it locale dependant.
+- Fix: Show proper timestamp of last change of catalog items with
+  SQLite database.
+- Fix: show proper number of items also in Lieferschein.
+- Fix: Save some more window states (size, position)
+- Fix: Set the unit of discount items to pauschal.
+- Fix: Also change lastmodified-Timestamp if only an item was added.
+- Add the user manual. Open it according to user language.
 
-=> release v. 0.91 (xx, 2020)
+=> release v. 0.95 (xx, 2020)
 
 Changes since version 0.82: #########################################
 
@@ -25,7 +33,7 @@ Changes since version 0.82: #########################################
 - Fixed formatting of the amount number in the XML output
 - More Less-KDE: Removed more mandatory dependencies on KDE.
 - Added 'About Kraft' information to Krafts system view.
-- Added document type 'Offer without price tags', which does not 
+- Added document type 'Offer without price tags', which does not
   print price tags on the PDF (issue #58).
 - Internationalization: Added dutch translation
 

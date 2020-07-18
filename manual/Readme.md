@@ -1,20 +1,19 @@
 ## How to Contribute
 
-To contribute to the manual of Kraft there are two ways. 
+There are two ways to contribute to the user manual of Kraft.
 
 ### Work on the English Manual
 
 Just improve the English Manual that is stored in the file `kraft.adoc` in this file.
-Just concentrate on writing and do not deal with scripting etc. Content rules! 
-Send your changes either as pull request, or via email to the project maintainers. 
-They will care for the rest.
+With that you can concentrate on writing and do not deal with scripting etc. Content rules!
+Please send your changes either as pull request, or via email to the project maintainers. They will care for the rest.
 
 Every change that is done to the master document in English language will be translated
-to all the other internationalized versions of the doc. 
+to all the other internationalized versions of the doc.
 
 ### Translate
 
-The translations of Kraft will be maintained on Transifex, just like the normal 
+The translations of Kraft will be maintained on Transifex, just like the normal
 software strings. Check there for translation tasks.
 
 ## Internationalization of the Manual
@@ -78,7 +77,7 @@ correctly translate image reference to enable the fallback.
 With the following command the .po file will be updated automatically.
 
 ```
-  po4a-updatepo -f asciidoc -m kraft.adoc -p po/kraft-de.po
+  po4a-updatepo -M utf8 -f asciidoc -m kraft.adoc -p po/kraft-de.po
 ```
 
 ### Step 6: Loop
