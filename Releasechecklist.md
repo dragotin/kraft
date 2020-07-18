@@ -9,6 +9,7 @@ Release Checklist for Kraft Version XX
 
 - [ ] Check entries in `src/version.h`
 - [ ] Check the database scheme version number.
+- [ ] Update Changes file
 
 ### Before the first RC
 
