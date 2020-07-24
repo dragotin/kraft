@@ -77,7 +77,9 @@ class ArchDoc : public QObject
     Q_PROPERTY(QString salut READ salut)
     Q_PROPERTY(QString goodbye READ goodbye)
     Q_PROPERTY(QString preText READ preText)
+    Q_PROPERTY(QString preTextHtml READ preTextHtml)
     Q_PROPERTY(QString postText READ postText)
+    Q_PROPERTY(QString postTextHtml READ postTextHtml)
     Q_PROPERTY(QString projectLabel READ projectLabel)
     Q_PROPERTY(QString docIDStr READ docIdStr)
     Q_PROPERTY(QString docIdentifier READ docIdentifier)
@@ -126,9 +128,11 @@ public:
 
   QString goodbye() const { return mGoodbye;    }
 
-  QString preText() const { return mPreText;  }
+  QString preText() const;
+  QString preTextHtml() const;
 
-  QString postText() const { return mPostText; }
+  QString postText() const;
+  QString postTextHtml() const;
 
   QString projectLabel() const { return mProjectLabel; }
 

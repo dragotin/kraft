@@ -20,6 +20,7 @@
 #include <QDateTime>
 #include <QLocale>
 #include <QDebug>
+#include <QRegExp>
 
 #include <KLocalizedString>
 
@@ -30,6 +31,18 @@
 #include "defaultprovider.h"
 #include "kraftsettings.h"
 #include "format.h"
+
+namespace {
+
+QString multilineHtml( const QString& str )
+{
+    QString re {str.toHtmlEscaped()};
+
+    re.replace( '\n', "<br/>");
+    return re;
+}
+
+} // end namespace
 
 ArchDoc::ArchDoc()
     : mAttributes( QLatin1String("ArchDoc"))
@@ -60,6 +73,28 @@ QString ArchDoc::dateStr() const
 {
     return Format::toDateString(mDate, KraftSettings::self()->dateFormat());
 }
+
+
+QString ArchDoc::preText() const
+{
+    return mPreText;
+}
+
+QString ArchDoc::preTextHtml() const
+{
+    return multilineHtml(mPreText);
+}
+
+QString ArchDoc::postText() const
+{
+    return mPostText;
+}
+
+QString ArchDoc::postTextHtml() const
+{
+    return multilineHtml(mPostText);
+}
+
 
 Geld ArchDoc::nettoSum() const
 {

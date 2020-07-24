@@ -34,6 +34,7 @@
     }
     /* Do not display the page number on first page. */
     @page :first {
+        margin-top: 46mm;
         @bottom-right {
             font-family: Oxygen;
             font-size: 9pt;
@@ -54,20 +55,18 @@
 
     <dl id="information">
       <dt>{{ label.DOC_NO }}</dt> <dd>{{ doc.ident }}</dd>
-      <dt>Leistungszeitraum</dt>  <dd>12.04.-28.04.2010</dd>
       <dt>{{ label.DATE }}</dt>   <dd>{{ doc.dateStr }}</dd>
       {% if doc.projectLabel %}
         <dt>{{ label.PROJECT }}</dt>
         <dd>{{ doc.projectLabel }}</dd>
       {% endif %}
-      <dt>{{ label.CUST_ID }}</dt> <dd>{{ customer.NAME }}</dd>
     </dl>
 
     <h1>{{ doc.docType }} {{ doc.ident }}</h1>
 
     <p class="salut">{{ doc.salut }}</p>
-    <p class="entrytext">
-    {{ doc.preText }}
+    <p class="entrytext">Foofoo<br/>
+    {{ doc.preTextHtml|safe }}
     </p>
 
     <table id="items">
@@ -144,7 +143,7 @@
       </tbody>
     </table>
     <p class="bottomtext">
-    {{ doc.postText }}
+    {{ doc.postTextHtml|safe }}
     </p>
     <p class="goodbye">
     {{ doc.goodbye }}
