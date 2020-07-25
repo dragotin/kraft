@@ -103,9 +103,10 @@ SqLiteDetailsPage::SqLiteDetailsPage(QWidget *parent)
     registerField("SqliteStorageFile", ui._fileName);
 
     // Preset the sqlite storage
-    if( ! DatabaseSettings::self()->dbFile().isEmpty()) {
+    const QString fileName = DatabaseSettings::self()->dbFile();
+    if( ! fileName.isEmpty()) {
         ui.mRbCustom->setChecked(true);
-        setField("SqliteStorageFile", DatabaseSettings::self()->dbFile());
+        setField("SqliteStorageFile", fileName);
     }
 }
 
