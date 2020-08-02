@@ -226,7 +226,7 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
             emit docAvailable( mFile.fileName() );
             if( mProcess) {
                 const QString htmlFile = mProcess->arguments().first(); // the file name of the temp rmlfile
-                // QFile::remove(htmlFile); // remove the rmlFile
+                QFile::remove(htmlFile); // remove the rmlFile
             }
         } else {
             emit  converterError(ConvError::TargetFileMissing);
