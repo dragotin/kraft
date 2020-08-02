@@ -162,7 +162,7 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
 {
     mErrors.clear();
 
-    const QString prg = QStringLiteral("/usr/bin/weasyprint"); // FIXME
+    const QString prg = DefaultProvider::self()->locateBinary("weasyprint");
     const QString styleSheet = DefaultProvider::self()->locateFile("reports/kraft.css");
 
     QFileInfo prgInfo(prg);
