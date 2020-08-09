@@ -37,25 +37,25 @@ public:
     ~TemplKatalog();
 
     int load(const QString&);
-    int load();
-    void reload( dbID );
+    int load() override;
+    void reload( dbID ) override;
 
     /** No descriptions */
     FloskelTemplateList getFlosTemplates( const CatalogChapter& chapter );
 
-    KatalogType type() { return TemplateCatalog; }
+    KatalogType type() override { return TemplateCatalog; }
 
-    QDomDocument toXML();
+    QDomDocument toXML() override;
 
     /** get the amount of entries in a chapter or the entire catalog */
-    int getEntriesPerChapter( const CatalogChapter& );
+    int getEntriesPerChapter( const CatalogChapter& ) override;
 
     int addNewTemplate( FloskelTemplate *tmpl );
 
     void recordUsage(int id) override;
 
 public slots:
-    void writeXMLFile();
+    void writeXMLFile() override;
     void deleteTemplate( int );
 private:
     int loadCalcParts( FloskelTemplate* );

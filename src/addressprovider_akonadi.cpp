@@ -62,9 +62,9 @@ bool AddressProviderPrivate::init()
 QString AddressProviderPrivate::backendName() const
 {
 #ifdef HAVE_AKONADI
-    return QLatin1String("Akonadi");
+    return QStringLiteral("Akonadi");
 #else
-    return "No backend";
+    return QStringLiteral("Akonadi disabled by compile option!");
 #endif
 }
 

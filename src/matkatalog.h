@@ -35,14 +35,14 @@ public:
   MatKatalog();
   ~MatKatalog();
 
-  int getEntriesPerChapter( const CatalogChapter& ) { return 0; } // FIXME
+  int getEntriesPerChapter( const CatalogChapter& ) override { return 0; } // FIXME
 
-  int load();
-  void reload( dbID );
+  int load() override;
+  void reload( dbID ) override;
   void deleteMaterial( int );
   StockMaterial *materialFromId(long id);
 
-  KatalogType type() { return MaterialCatalog; }
+  KatalogType type() override { return MaterialCatalog; }
   StockMaterialList getRecordList( const CatalogChapter& );
   void addNewMaterial( StockMaterial* );
   void recordUsage(int) override;
