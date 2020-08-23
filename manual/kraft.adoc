@@ -542,7 +542,7 @@ sending.
 [[Customization]]
 == Customization
 
-Kraft can be customized in most of it's graphical user interface, and certainly
+Kraft can be customized in most of the graphical user interface and in particular
 in the output it generates.
 
 === Document Customization
@@ -560,6 +560,20 @@ With [WeasyPrint] Kraft uses a very powerful HTML and CSS based generator that m
 it very easy to create highly customized documents. The general idea is that weasyprint
 loads html output that is processed to PDF, considering a Cascading Stylesheet file
 which has a huge impact on how the PDF document looks in the end.
+
+To use a WeasyPrint based template for a document simply create a template file and
+save it with the extension *.gtmpl*. With that extension Kraft automatically uses
+WeasyPrint for rendering. An example for a WeasyPrint document is can be found in the
+Kraft package in the reports directory and is called invoice.gtmpl.
+
+==== Template Variables
+
+To generate the PDF, Kraft has to transfer data from the document you have been working
+on in Kraft to the input document that is processed to an PDF utilising WeasyPrint. For
+that, Kraft uses a text template. In that, Kraft replaces variables with the actual values.
+
+The syntax is based on the Django syntax for templates described in the https://docs.djangoproject.com/en/3.1/topics/templates/[the docs].
+
 
 
 [[Menu]]
