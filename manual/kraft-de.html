@@ -762,7 +762,7 @@ einzugeben.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Acceptance of order</p>
+<p>Auftragsbestätigung</p>
 </li>
 <li>
 <p>Lieferschein</p>
@@ -1585,15 +1585,16 @@ client.</p>
 <h2 id="Customization">Customization</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kraft can be customized in most of it&#8217;s graphical user interface, and
-certainly in the output it generates.</p>
+<p>Kraft can be customized in most of the graphical user interface and in
+particular in the output it generates.</p>
 </div>
 <div class="sect2">
-<h3 id="_document_customization">Document Customization</h3>
+<h3 id="_output_document_customization">Output Document Customization</h3>
 <div class="paragraph">
 <p>Each document type in Kraft can have it&#8217;s own template that is used to
 create a PDF. The template is filled with values from the document content
-and processed using a document creation script.</p>
+that the user entered in Krafts specialized editors on the desktop. After
+that it is converted to PDF using a document creation script.</p>
 </div>
 <div class="paragraph">
 <p>This makes sure that Kraft documents are always high standard quality,
@@ -1602,11 +1603,49 @@ similar looking and generated very quickly.</p>
 <div class="sect3">
 <h4 id="_weasyprint_documents">WeasyPrint Documents</h4>
 <div class="paragraph">
-<p>With [WeasyPrint] Kraft uses a very powerful HTML and CSS based generator
-that makes it very easy to create highly customized documents. The general
-idea is that weasyprint loads html output that is processed to PDF,
-considering a Cascading Stylesheet file which has a huge impact on how the
-PDF document looks in the end.</p>
+<p>With <a href="https://weasyprint.org">WeasyPrint</a> Kraft uses a very powerful HTML and
+CSS based generator that makes it very easy to create highly customized
+documents which fit the users expectations. The general idea is that
+Weasyprint loads html output that is processed to PDF, considering a
+Cascading Stylesheet file which has a huge impact on how the PDF document
+looks in the end.</p>
+</div>
+<div class="paragraph">
+<p>To use a WeasyPrint based template for a document simply create a template
+file and save it with the extension <strong>.gtmpl</strong>. With that file extension Kraft
+automatically uses WeasyPrint and also the Grantlee templating for
+rendering. An example for a WeasyPrint document is can be found in the Kraft
+package in the reports directory and is called invoice.gtmpl.</p>
+</div>
+<div class="paragraph">
+<p>To use a WeasyPrint template with one of the Kraft document types just
+select the template file name (with the right extension <code>*.gtml</code>) in the
+Kraft Settings Dialog.</p>
+</div>
+<div class="paragraph">
+<p>From version 0.95 on Kraft ships with an example document in the Grantlee-
+and WeasyPrint format. It can be found at
+<code>/usr/share/kraft/reports/invoice.gtmpl</code> or
+<a href="https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl">online
+on Github</a>.</p>
+</div>
+<div class="paragraph">
+<p>To effectively change the look of the document <code>kraft.css</code>
+(<a href="https://github.com/dragotin/kraft/blob/master/reports/kraft.css">on Github</a>)
+needs to be considered. It defines most of the look.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_template_variables">Template Variables</h4>
+<div class="paragraph">
+<p>To generate the PDF, Kraft has to transfer data from the document you have
+been working on in Kraft to the input document that is processed to an PDF
+utilising WeasyPrint. For that, Kraft uses a text template. In that, Kraft
+replaces variables with the actual values.</p>
+</div>
+<div class="paragraph">
+<p>The syntax is based on the Django syntax for templates described in the
+<a href="https://docs.djangoproject.com/en/3.1/topics/templates/">the docs</a>.</p>
 </div>
 </div>
 </div>
@@ -1784,7 +1823,7 @@ Removes this item from document.</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-18 12:06:31 +0200
+Last updated 2020-08-28 17:50:02 +0200
 </div>
 </div>
 </body>

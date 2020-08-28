@@ -545,10 +545,11 @@ sending.
 Kraft can be customized in most of the graphical user interface and in particular
 in the output it generates.
 
-=== Document Customization
+=== Output Document Customization
 
 Each document type in Kraft can have it's own template that is used to create
-a PDF. The template is filled with values from the document content and processed
+a PDF. The template is filled with values from the document content that the user
+entered in Krafts specialized editors on the desktop. After that it is converted to PDF
 using a document creation script.
 
 This makes sure that Kraft documents are always high standard quality, similar looking
@@ -556,21 +557,19 @@ and generated very quickly.
 
 ==== WeasyPrint Documents
 
-With [WeasyPrint] Kraft uses a very powerful HTML and CSS based generator that makes
-it very easy to create highly customized documents. The general idea is that weasyprint
-loads html output that is processed to PDF, considering a Cascading Stylesheet file
-which has a huge impact on how the PDF document looks in the end.
+With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful HTML and CSS based generator that makes it very easy to create highly customized documents which fit the users expectations. The general idea is that Weasyprint loads html output that is processed to PDF, considering a Cascading Stylesheet file which has a huge impact on how the PDF document looks in the end.
 
-To use a WeasyPrint based template for a document simply create a template file and
-save it with the extension *.gtmpl*. With that extension Kraft automatically uses
-WeasyPrint for rendering. An example for a WeasyPrint document is can be found in the
-Kraft package in the reports directory and is called invoice.gtmpl.
+To use a WeasyPrint based template for a document simply create a template file and save it with the extension *.gtmpl*. With that file extension Kraft automatically uses WeasyPrint and also the Grantlee templating for rendering. An example for a WeasyPrint document is can be found in the Kraft package in the reports directory and is called invoice.gtmpl.
+
+To use a WeasyPrint template with one of the Kraft document types just select the template file name (with the right extension `*.gtml`) in the Kraft Settings Dialog.
+
+From version 0.95 on Kraft ships with an example document in the Grantlee- and WeasyPrint format. It can be found at `/usr/share/kraft/reports/invoice.gtmpl` or https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl[online on Github].
+
+To effectively change the look of the document `kraft.css` (https://github.com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) needs to be considered. It defines most of the look.
 
 ==== Template Variables
 
-To generate the PDF, Kraft has to transfer data from the document you have been working
-on in Kraft to the input document that is processed to an PDF utilising WeasyPrint. For
-that, Kraft uses a text template. In that, Kraft replaces variables with the actual values.
+To generate the PDF, Kraft has to transfer data from the document you have been working on in Kraft to the input document that is processed to an PDF utilising WeasyPrint. For that, Kraft uses a text template. In that, Kraft replaces variables with the actual values.
 
 The syntax is based on the Django syntax for templates described in the https://docs.djangoproject.com/en/3.1/topics/templates/[the docs].
 
