@@ -921,7 +921,7 @@ msgstr "<tr><td>Gewijzigd op:</td><td>%1</td>"
 #: katalogview.cpp:368
 #, kde-format
 msgid "<td>&nbsp;&nbsp;Use Count:</td><td>%1</td>"
-msgstr ""
+msgstr "<td>%1</td><td>&nbsp;&nbsp; keer toegepast:</td>"
 
 #: kraftdoc.cpp:161
 #, kde-format
