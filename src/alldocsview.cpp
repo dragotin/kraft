@@ -33,7 +33,6 @@
 #include <KLocalizedString>
 
 #include "models/documentmodel.h"
-#include "models/modeltest.h"
 #include "models/documentproxymodels.h"
 #include "filterheader.h"
 #include "alldocsview.h"
