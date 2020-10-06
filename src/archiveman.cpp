@@ -268,15 +268,19 @@ void ArchiveMan::ensureDirIsExisting( const QString& dir ) const
 
 QString ArchiveMan::xmlBaseDir() const
 {
-  QString outputDir = KraftSettings::self()->pdfOutputDir();
-  if ( outputDir.isEmpty() ) {
-    outputDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
-  }
+    QString outputDir = KraftSettings::self()->xmlArchivePath();
+    if ( outputDir.isEmpty() ) {
+        // stay bug compatible: Before issue #80, this was the pdfOutputDir
+        outputDir = KraftSettings::self()->pdfOutputDir();
+    }
+    if (outputDir.isEmpty()) {
+        outputDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+    }
 
-  if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
-  ensureDirIsExisting(outputDir);
+    if ( ! outputDir.endsWith('/') ) outputDir += QChar('/');
+    ensureDirIsExisting(outputDir);
 
-  return outputDir;
+    return outputDir;
 }
 
 QString ArchiveMan::pdfBaseDir() const
@@ -286,7 +290,7 @@ QString ArchiveMan::pdfBaseDir() const
     outputDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
   }
 
-  if ( ! outputDir.endsWith( "/" ) ) outputDir += "/";
+  if ( ! outputDir.endsWith('/') ) outputDir += QChar('/');
   ensureDirIsExisting(outputDir);
 
   return outputDir;
