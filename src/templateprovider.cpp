@@ -20,7 +20,7 @@
 #include "textselection.h"
 
 TemplateProvider::TemplateProvider( QWidget *parent )
-  : QObject(), mParent( parent ), mTextSelection( 0 )
+  : QObject(), mParent( parent ), mTextSelection(nullptr)
 {
 
 }

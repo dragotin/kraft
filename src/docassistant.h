@@ -84,7 +84,7 @@ protected slots:
 
 signals:
   void selectPage( int );
-  void templatesToDocument( Katalog*, CatalogTemplateList );
+  void templatesToDocument( Katalog*, CatalogTemplateList, const QString&);
   void toggleShowTemplates( bool );
 
   void addressTemplate( const Addressee& );

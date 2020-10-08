@@ -34,13 +34,13 @@ public:
   InsertTemplDialog( QWidget* );
   ~InsertTemplDialog();
 
-  void setDocPosition( DocPosition*, bool, bool );
-  DocPosition docPosition();
+  void setDocPosition( DocPosition*, bool, bool ) override;
+  DocPosition docPosition() override;
 
-  void setCatalogChapters( const QList<CatalogChapter>& );
-  QString chapter() const;
+  void setCatalogChapters( const QList<CatalogChapter>&, const QString& selectedChap) override;
+  QString chapter() const override;
 protected:
-  QComboBox *getPositionCombo();
+  QComboBox *getPositionCombo() override;
 
 private:
   QString prepareText( const QString& input );

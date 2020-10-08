@@ -237,6 +237,23 @@ CatalogTemplateList KatalogListView::selectedTemplates()
   return templates;
 }
 
+QString KatalogListView::selectedCatalogChapter()
+{
+    QList<QTreeWidgetItem*> items = selectedItems();
+    QString chap;
+
+    if (items.size() == 1) {
+        QTreeWidgetItem *item = items.first();
+        if (!isChapter(item) && !isRoot(item)) {
+            item = item->parent();
+        }
+        if (isChapter(item)) {
+            chap = static_cast<CatalogChapter*>(itemData(item))->name();
+        }
+    }
+    return chap;
+}
+
 void* KatalogListView::itemData( QTreeWidgetItem *item )
 {
   if ( item && m_dataDict.contains( item ) ) {

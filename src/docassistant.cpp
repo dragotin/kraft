@@ -178,9 +178,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   /* Catalog Template Provider */
   mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
   mCatalogTemplateProvider->setCatalogSelection( mCatalogSelection );
-  connect( mCatalogTemplateProvider,  SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ),
-           this, SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ) );
-
+  connect(mCatalogTemplateProvider, &CatalogTemplateProvider::templatesToDocument,
+          this, &DocAssistant::templatesToDocument);
   mCurrTemplateProvider = mHeaderTemplateProvider;
 
   const QList<int> sizes = KraftSettings::self()->assistantSplitterSetting();
@@ -201,7 +200,7 @@ void DocAssistant::slotAddToDocument()
 void DocAssistant::slotTemplateSelectionChanged( )
 {
   if( mActivePage == KraftDoc::Positions ) { // no editing on the catalogs
-    mPbNew->setEnabled( false );
+    mPbNew->setEnabled( true );
     mPbEdit->setEnabled( false );
     mPbDel->setEnabled( false );
   } else {

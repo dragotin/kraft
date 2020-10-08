@@ -51,6 +51,7 @@ public:
 
   bool isChapter(QTreeWidgetItem*);
   bool isRoot(QTreeWidgetItem*);
+  QString selectedCatalogChapter();
 
   virtual void setupChapters();
 

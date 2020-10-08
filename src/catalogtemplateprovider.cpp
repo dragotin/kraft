@@ -26,7 +26,7 @@
 
 CatalogTemplateProvider::CatalogTemplateProvider( QWidget *parent )
   :TemplateProvider( parent ),
-   mCatalogSelection( 0 )
+   mCatalogSelection(nullptr)
 {
 
 }
@@ -41,12 +41,20 @@ void CatalogTemplateProvider::setCatalogSelection( CatalogSelection *cs )
 
 void CatalogTemplateProvider::slotNewTemplate()
 {
-  // qDebug () << "SlotNewTemplate for Catalog called!" << endl;
+    qDebug () << "SlotNewTemplate for Catalog called!" << endl;
+    if ( mCatalogSelection ) {
+      Katalog *catalog = mCatalogSelection->currentSelectedKat();
+
+      CatalogTemplateList list;
+      const QString currKat = mCatalogSelection->currentSelectedKatChapter();
+      emit templatesToDocument(catalog, list, currKat);
+    }
 }
 
 void CatalogTemplateProvider::slotEditTemplate()
 {
   // qDebug () << "SlotEditTemplate for Catalog called!" << endl;
+    // mCatalogSelection->currentSelectedPositions
 }
 
 void CatalogTemplateProvider::slotDeleteTemplate()
@@ -60,7 +68,8 @@ void CatalogTemplateProvider::slotTemplateToDocument()
   if ( mCatalogSelection ) {
     Katalog *catalog = mCatalogSelection->currentSelectedKat();
 
-    emit templatesToDocument( catalog, mCatalogSelection->currentSelectedPositions() );
+    emit templatesToDocument(catalog, mCatalogSelection->currentSelectedPositions(),
+                             QString());
   }
 }
 

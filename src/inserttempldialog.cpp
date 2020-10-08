@@ -179,18 +179,26 @@ InsertTemplDialog::~InsertTemplDialog()
   }
 }
 
-void InsertTemplDialog::setCatalogChapters( const QList<CatalogChapter>& chapters )
+void InsertTemplDialog::setCatalogChapters( const QList<CatalogChapter>& chapters, const QString& selectedChap)
 {
-  if ( chapters.count() > 0 ) {
-    QStringList chapterNames;
-    foreach( CatalogChapter chapter, chapters ) {
-      chapterNames.append( chapter.name() );
+    if ( chapters.count() > 0 ) {
+        QStringList chapterNames;
+        for( CatalogChapter chapter: chapters ) {
+            if (!chapter.name().isEmpty())
+                chapterNames.append( chapter.name() );
+        }
+        mBaseWidget->mKeepGroup->show();
+        mBaseWidget->mComboChapter->insertItems( -1, chapterNames );
+
+        QString selChap { selectedChap };
+        if (!selectedChap.isEmpty())  {
+            mBaseWidget->mKeepGroup->setChecked(true);
+        } else {
+            selChap = KraftSettings::self()->insertTemplChapterName();
+        }
+        if (!selChap.isEmpty() && chapterNames.contains(selChap))
+            mBaseWidget->mComboChapter->setCurrentIndex(mBaseWidget->mComboChapter->findText(selChap));
     }
-    mBaseWidget->mKeepGroup->show();
-    mBaseWidget->mComboChapter->insertItems( -1, chapterNames );
-    mBaseWidget->mComboChapter->setCurrentIndex(mBaseWidget->mComboChapter->findText(
-      KraftSettings::self()->insertTemplChapterName() ));
-  }
 }
 
 // return only a chapter if the checkbox is checked.

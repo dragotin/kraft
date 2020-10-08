@@ -81,7 +81,7 @@
 
 KraftView::KraftView(QWidget *parent) :
   KraftViewBase( parent ),
-  mHelpLabel( 0 ), mRememberAmount( -1 ), mModified( false ),
+  mHelpLabel(nullptr), mRememberAmount( -1 ), mModified( false ),
   mTaxBefore( -1 ), mDocPosEditorIndx( -1 )
 {
   setWindowTitle( i18n("Document" ) );
@@ -124,8 +124,8 @@ KraftView::KraftView(QWidget *parent) :
   mCSplit->addWidget( mAssistant );
 
   /* catalog template selection signal */
-  connect( mAssistant,  SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ),
-           this,  SLOT( slotAddItems( Katalog*, CatalogTemplateList ) ) );
+  connect(mAssistant, &DocAssistant::templatesToDocument,
+          this, &KraftView::slotAddItems);
 
   /* signal to toggle the visibility of the template section in the assistant */
   connect(  mAssistant, SIGNAL( toggleShowTemplates( bool ) ),
@@ -459,7 +459,7 @@ void KraftView::redrawDocPositions( )
   } else {
     if ( mHelpLabel ) {
       delete mHelpLabel;
-      mHelpLabel = 0;
+      mHelpLabel = nullptr;
     }
   }
 
@@ -636,7 +636,7 @@ void KraftView::setupFooter()
   DocPositionList list = m_doc->positions();
 
   int tt = -1;
-  DocPositionBase *dp = 0;
+  DocPositionBase *dp = nullptr;
 
   DocPositionListIterator it( list );
   int taxIndex = 0;
@@ -722,8 +722,8 @@ void KraftView::slotTaxComboChanged(int newId)
  */
 void KraftView::slotMovePositionUp( int pos )
 {
-  PositionViewWidget *w1 = 0;
-  PositionViewWidget *w2 = 0;
+  PositionViewWidget *w1 = nullptr;
+  PositionViewWidget *w2 = nullptr;
 
   // qDebug () << "Moving position up: " << pos << endl;
   if( pos < 1 || pos > mPositionWidgetList.count() ) {
@@ -759,8 +759,8 @@ void KraftView::slotMovePositionUp( int pos )
 */
 void KraftView::slotMovePositionDown( int pos )
 {
-  PositionViewWidget *w1 = 0;
-  PositionViewWidget *w2 = 0;
+  PositionViewWidget *w1 = nullptr;
+  PositionViewWidget *w2 = nullptr;
   // qDebug () << "Moving position down: " << pos << endl;
 
   if( pos < 0 || pos >= mPositionWidgetList.count() -1 ) {
@@ -920,17 +920,22 @@ void KraftView::slotNewFooterText( const QString& str )
 void KraftView::slotAddNewItem()
 {
   Katalog* kat = mAssistant->catalogSelection()->currentSelectedKat();
-  slotAddItem( kat, 0 );
+  slotAddItem( kat, nullptr, QString() );
 }
 
-void KraftView::slotAddItems( Katalog *kat, CatalogTemplateList templates)
+void KraftView::slotAddItems( Katalog *kat, CatalogTemplateList templates, const QString& selectedChapter)
 {
-  foreach( CatalogTemplate *templ, templates ) {
-    slotAddItem( kat, templ );
-  }
+
+    if(templates.count() == 0) {
+        slotAddItem(kat, nullptr, selectedChapter);
+    } else {
+        for(CatalogTemplate *templ : templates ) {
+            slotAddItem( kat, templ, selectedChapter );
+        }
+    }
 }
 
-void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
+void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString& selectedChapter )
 {
   // newpos is a list position, starts counting at zero!
   int newpos = mPositionWidgetList.count();
@@ -940,7 +945,6 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
 
   DocPosition *dp = new DocPosition();
   dp->setPositionNumber( newpos +1 );
-  QSize s;
 
   bool newTemplate = false;
   if ( !tmpl ) {
@@ -948,19 +952,15 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
   }
 
   dia.reset(new InsertTemplDialog( this ));
-  dia->setCatalogChapters( kat->getKatalogChapters() );
+  dia->setCatalogChapters( kat->getKatalogChapters(), selectedChapter);
 
   int tmplId = 0;
 
-  if ( newTemplate ) {
-      // New templates may only go to the standard template catalog, FIXME
-  } else {
-      // it's not a new template
+  if ( !newTemplate ) {
+      //  it's not a new template
       dp->setText(tmpl->getText());
       dp->setUnit(tmpl->unit());
       dp->setUnitPrice(tmpl->unitPrice());
-
-      s = KraftSettings::self()->templateToPosDialogSize();
   }
 
   if ( mRememberAmount > 0 ) {
@@ -975,6 +975,7 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
   DocPositionList list = currentPositionList();
   dia->setPositionList( list, newpos );
 
+  QSize s = KraftSettings::self()->templateToPosDialogSize();
   dia->resize( s );
 
   if ( dia->exec() == QDialog::Accepted ) {
@@ -996,20 +997,18 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
 
       if ( kat->type() == TemplateCatalog ) {
 
-          // if it's a new position, create a catalog template in the incoming chapter
-          if ( newTemplate ) {
-              const QString chapter = dia->chapter();
+          // save the template if it is has a valid chapter.
+          // the method chapter() considers the checkbox. If it is not checked to keep the template,
+          // an empty chapter is returned.
 
-              int chapterId = 0; // find the chapter.
-              if( !chapter.isEmpty() ) {
-                  chapterId = KatalogMan::self()->defaultTemplateCatalog()->chapterID(chapter).toInt();
-              }
+          const QString chapter = dia->chapter();
+          if (!chapter.isEmpty()) {
+              int chapterId = KatalogMan::self()->defaultTemplateCatalog()->chapterID(chapter).toInt();
 
               FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
                                                            dp->unit().id(),
                                                            chapterId,
                                                            1 /* CalcKind = Manual */ );
-
               flos->setManualPrice( dp->unitPrice() );
               flos->save();
               tmplId = flos->getTemplID();
@@ -1020,22 +1019,21 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl )
                   defaultKat->load();
                   KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
               }
-          } else {
-              tmplId = static_cast<FloskelTemplate*>(tmpl)->getTemplID();
-          }
-      } else if ( kat->type() == MaterialCatalog ) {
-          if ( newTemplate ) {
-
           }
       }
-
-      newpos = dia->insertAfterPosition();
-
-      mRememberAmount = dp->amount();
-  } else {
-      delete dp;
-      return;
+      if (!newTemplate){
+          tmplId = static_cast<FloskelTemplate*>(tmpl)->getTemplID();
+      }
+  } else if ( kat->type() == MaterialCatalog ) {
+      if ( newTemplate ) {
+          // FIXME
+      }
   }
+
+  newpos = dia->insertAfterPosition();
+
+  mRememberAmount = dp->amount();
+
 
   if (tmplId > 0) {
       kat->recordUsage(tmplId);

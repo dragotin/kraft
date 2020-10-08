@@ -20,10 +20,10 @@
 #include "templateprovider.h"
 #include "doctext.h"
 #include "catalogtemplate.h"
+#include "katalog.h"
 
 class QWidget;
 class CatalogSelection;
-class Katalog;
 
 class CatalogTemplateProvider : public TemplateProvider
 {
@@ -33,7 +33,7 @@ public:
   void setCatalogSelection( CatalogSelection * );
 
 signals:
-  void templatesToDocument( Katalog*, CatalogTemplateList );
+  void templatesToDocument( Katalog*, CatalogTemplateList, const QString& );
 
 public slots:
   void slotNewTemplate();

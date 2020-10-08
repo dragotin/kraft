@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
         katalogselection  - widget to select catalog entries from
                              -------------------
     begin                : 2006-08-30
@@ -101,6 +101,19 @@ Katalog* CatalogSelection::currentSelectedKat()
     qCritical() << "Could not find catalog " << currentCat << endl;
   }
   return kat;
+}
+
+QString CatalogSelection::currentSelectedKatChapter()
+{
+    QString chap;
+    const QString currentCat = mCatalogSelector->currentText();
+    if( mWidgetMap.contains( currentCat ) ) {
+      KatalogListView *lv = mWidgetMap[currentCat];
+
+      chap = lv->selectedCatalogChapter();
+    }
+
+    return chap;
 }
 
 void CatalogSelection::slotSelectCatalog( const QString& katName )
