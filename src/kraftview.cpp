@@ -937,121 +937,124 @@ void KraftView::slotAddItems( Katalog *kat, CatalogTemplateList templates, const
 
 void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString& selectedChapter )
 {
-  // newpos is a list position, starts counting at zero!
-  int newpos = mPositionWidgetList.count();
-  // qDebug () << "Adding Position at list position " << newpos << endl;
+    // newpos is a list position, starts counting at zero!
+    int newpos = mPositionWidgetList.count();
+    // qDebug () << "Adding Position at list position " << newpos << endl;
 
-  QScopedPointer<TemplToPositionDialogBase> dia;
+    QScopedPointer<TemplToPositionDialogBase> dia;
 
-  DocPosition *dp = new DocPosition();
-  dp->setPositionNumber( newpos +1 );
+    DocPosition *dp = new DocPosition();
+    dp->setPositionNumber( newpos +1 );
 
-  bool newTemplate = false;
-  if ( !tmpl ) {
-    newTemplate = true;
-  }
+    bool newTemplate = false;
+    if ( !tmpl ) {
+        newTemplate = true;
+    }
 
-  dia.reset(new InsertTemplDialog( this ));
-  dia->setCatalogChapters( kat->getKatalogChapters(), selectedChapter);
+    dia.reset(new InsertTemplDialog( this ));
+    dia->setCatalogChapters( kat->getKatalogChapters(), selectedChapter);
 
-  int tmplId = 0;
+    int tmplId = 0;
 
-  if ( !newTemplate ) {
-      //  it's not a new template
-      dp->setText(tmpl->getText());
-      dp->setUnit(tmpl->unit());
-      dp->setUnitPrice(tmpl->unitPrice());
-  }
+    if ( !newTemplate ) {
+        //  it's not a new template
+        dp->setText(tmpl->getText());
+        dp->setUnit(tmpl->unit());
+        dp->setUnitPrice(tmpl->unitPrice());
+    }
 
-  if ( mRememberAmount > 0 ) {
-      dp->setAmount( mRememberAmount );
-  }
+    if ( mRememberAmount > 0 ) {
+        dp->setAmount( mRememberAmount );
+    }
 
-  KraftDoc *doc = getDocument();
-  if(doc) {
-      DocType docType = doc->docType();
-      dia->setDocPosition( dp, newTemplate, docType.pricesVisible() );
-  }
-  DocPositionList list = currentPositionList();
-  dia->setPositionList( list, newpos );
+    KraftDoc *doc = getDocument();
+    if(doc) {
+        DocType docType = doc->docType();
+        dia->setDocPosition( dp, newTemplate, docType.pricesVisible() );
+    }
+    DocPositionList list = currentPositionList();
+    dia->setPositionList( list, newpos );
 
-  QSize s = KraftSettings::self()->templateToPosDialogSize();
-  dia->resize( s );
+    QSize s = KraftSettings::self()->templateToPosDialogSize();
+    dia->resize( s );
 
-  if ( dia->exec() == QDialog::Accepted ) {
-      DocPosition diaPos = dia->docPosition();
-      *dp = diaPos;
+    int execResult = dia->exec();
 
-      // set the tax settings
-      if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
-          // FIXME: In case a new item is added, add the default tax type.
-          // otherwise add the tax of the template
-          dp->setTaxType( DocPositionBase::TaxFull );
-      } else {
-          dp->setTaxType( currentTaxSetting() );
-      }
+    if ( execResult == QDialog::Accepted ) {
+        DocPosition diaPos = dia->docPosition();
+        *dp = diaPos;
 
-      // store the initial size of the template-to-doc-pos dialogs
-      s = dia->size();
-      KraftSettings::self()->setTemplateToPosDialogSize( s );
+        // set the tax settings
+        if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
+            // FIXME: In case a new item is added, add the default tax type.
+            // otherwise add the tax of the template
+            dp->setTaxType( DocPositionBase::TaxFull );
+        } else {
+            dp->setTaxType( currentTaxSetting() );
+        }
 
-      if ( kat->type() == TemplateCatalog ) {
+        // store the initial size of the template-to-doc-pos dialogs
+        s = dia->size();
+        KraftSettings::self()->setTemplateToPosDialogSize( s );
 
-          // save the template if it is has a valid chapter.
-          // the method chapter() considers the checkbox. If it is not checked to keep the template,
-          // an empty chapter is returned.
+        if ( kat->type() == TemplateCatalog ) {
 
-          const QString chapter = dia->chapter();
-          if (!chapter.isEmpty()) {
-              int chapterId = KatalogMan::self()->defaultTemplateCatalog()->chapterID(chapter).toInt();
+            // save the template if it is has a valid chapter.
+            // the method chapter() considers the checkbox. If it is not checked to keep the template,
+            // an empty chapter is returned.
 
-              FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
-                                                           dp->unit().id(),
-                                                           chapterId,
-                                                           1 /* CalcKind = Manual */ );
-              flos->setManualPrice( dp->unitPrice() );
-              flos->save();
-              tmplId = flos->getTemplID();
+            const QString chapter = dia->chapter();
+            if (!chapter.isEmpty()) {
+                int chapterId = KatalogMan::self()->defaultTemplateCatalog()->chapterID(chapter).toInt();
 
-              // reload the entire katalog
-              Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
-              if( defaultKat ) {
-                  defaultKat->load();
-                  KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
-              }
-          }
-      }
-      if (!newTemplate){
-          tmplId = static_cast<FloskelTemplate*>(tmpl)->getTemplID();
-      }
-  } else if ( kat->type() == MaterialCatalog ) {
-      if ( newTemplate ) {
-          // FIXME
-      }
-  }
+                FloskelTemplate *flos = new FloskelTemplate( -1, dp->text(),
+                                                             dp->unit().id(),
+                                                             chapterId,
+                                                             1 /* CalcKind = Manual */ );
+                flos->setManualPrice( dp->unitPrice() );
+                flos->save();
+                tmplId = flos->getTemplID();
 
-  newpos = dia->insertAfterPosition();
+                // reload the entire katalog
+                Katalog *defaultKat = KatalogMan::self()->defaultTemplateCatalog();
+                if( defaultKat ) {
+                    defaultKat->load();
+                    KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
+                }
+            }
+        }
+        if (!newTemplate){
+            tmplId = static_cast<FloskelTemplate*>(tmpl)->getTemplID();
+        }
+    } else if ( kat->type() == MaterialCatalog ) {
+        if ( newTemplate ) {
+            // FIXME
+        }
+    }
 
-  mRememberAmount = dp->amount();
+    if (execResult == QDialog::Accepted) {
+        newpos = dia->insertAfterPosition();
 
+        mRememberAmount = dp->amount();
 
-  if (tmplId > 0) {
-      kat->recordUsage(tmplId);
-  }
+        if (tmplId > 0) {
+            kat->recordUsage(tmplId);
+        }
 
-  PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
-  widget->slotModified();
-  widget->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
+        PositionViewWidget *widget = createPositionViewWidget( dp, newpos );
+        widget->slotModified();
+        widget->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
 
-  // Check if the new widget is supposed to display prices, based on the doc type
-  // FIXME: Shouldn't this be done by the positionViewWidget rather than here?
-  const QString dt = getDocument()->docType();
-  if( !dt.isEmpty() ) {
-      DocType docType(dt);
-      widget->slotShowPrice(docType.pricesVisible());
-  }
-  slotFocusItem( widget, newpos );
-  refreshPostCard();
+        // Check if the new widget is supposed to display prices, based on the doc type
+        // FIXME: Shouldn't this be done by the positionViewWidget rather than here?
+        const QString dt = getDocument()->docType();
+        if( !dt.isEmpty() ) {
+            DocType docType(dt);
+            widget->slotShowPrice(docType.pricesVisible());
+        }
+        slotFocusItem( widget, newpos );
+        refreshPostCard();
+    }
 }
 
 void KraftView::slotImportItems()
