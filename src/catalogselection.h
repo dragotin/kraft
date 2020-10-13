@@ -41,6 +41,7 @@ public:
   ~CatalogSelection() { };
 
   Katalog* currentSelectedKat();
+  QString currentSelectedKatChapter();
   CatalogTemplateList currentSelectedPositions();
 
 protected:

@@ -178,9 +178,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
   /* Catalog Template Provider */
   mCatalogTemplateProvider = new CatalogTemplateProvider( parent );
   mCatalogTemplateProvider->setCatalogSelection( mCatalogSelection );
-  connect( mCatalogTemplateProvider,  SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ),
-           this, SIGNAL( templatesToDocument(Katalog*,CatalogTemplateList) ) );
-
+  connect(mCatalogTemplateProvider, &CatalogTemplateProvider::templatesToDocument,
+          this, &DocAssistant::templatesToDocument);
   mCurrTemplateProvider = mHeaderTemplateProvider;
 
   const QList<int> sizes = KraftSettings::self()->assistantSplitterSetting();
@@ -200,12 +199,25 @@ void DocAssistant::slotAddToDocument()
 
 void DocAssistant::slotTemplateSelectionChanged( )
 {
+    if (!mCurrTemplateProvider) {
+        mPbNew->setEnabled(false);
+        mPbEdit->setEnabled(false);
+        mPbDel->setEnabled(false);
+        return;
+    }
+
   if( mActivePage == KraftDoc::Positions ) { // no editing on the catalogs
-    mPbNew->setEnabled( false );
+      bool enableNew {false};
+
+      auto kat = static_cast<CatalogTemplateProvider*>(mCurrTemplateProvider)->currentCatalog();
+      if (kat->type() == KatalogType::TemplateCatalog) {
+          enableNew = true;
+      }
+    mPbNew->setEnabled(enableNew);
     mPbEdit->setEnabled( false );
     mPbDel->setEnabled( false );
   } else {
-    bool mv = false;
+    bool mv {false};
     if( mActivePage == KraftDoc::Header ) {
       mv = mHeaderSelector->validSelection();
     } else if( mActivePage == KraftDoc::Footer ) {
@@ -220,13 +232,14 @@ void DocAssistant::slotTemplateSelectionChanged( )
 
 void DocAssistant::slotCatalogSelectionChanged(QTreeWidgetItem *current ,QTreeWidgetItem *)
 {
-  // enable the move-to-document button.
-  // qDebug () << "catalog position selection changed!" << endl;
-  if ( current ) {
-    mPbAdd->setEnabled( true );
-  } else {
-    mPbAdd->setEnabled( false );
-  }
+    // enable the move-to-document button.
+    // qDebug () << "catalog position selection changed!" << endl;
+    if ( current ) {
+        mPbAdd->setEnabled( true );
+    } else {
+        mPbAdd->setEnabled( false );
+    }
+    slotTemplateSelectionChanged();
 }
 
 void DocAssistant::slotNewTemplate()

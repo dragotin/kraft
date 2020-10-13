@@ -125,9 +125,9 @@ class KraftView : public KraftViewBase
   void slotModifiedHeader();
   void slotModifiedFooter();
 
-  void slotAddItem( Katalog*, CatalogTemplate* );
+  void slotAddItem( Katalog*, CatalogTemplate*, const QString& selectedChapter);
   void slotAddNewItem();
-  void slotAddItems( Katalog*, CatalogTemplateList );
+  void slotAddItems(Katalog*, CatalogTemplateList , const QString &selectedChapter);
 
   void slotAddExtraPosition();
   void slotImportItems();
