@@ -353,16 +353,18 @@ QDomElement DocPositionList::domElement( QDomDocument& doc )
       posElem.appendChild( xmlTextElement( doc, "text", dp->text() ) );
 
       double am = dp->amount();
-      QString h = DefaultProvider::self()->locale()->toString( am, 'f', 2 );
+      QString h = QString::number(am, 'f', 2 );
       posElem.appendChild( xmlTextElement( doc, "amount", h ));
 
       Einheit e = dp->unit();
       posElem.appendChild( xmlTextElement( doc, "unit", e.einheit( am ) ) );
 
       Geld g = dp->unitPrice();
-      posElem.appendChild( xmlTextElement( doc, "unitprice", g.toString() ) );
+      posElem.appendChild( xmlTextElement( doc, "unitprice", QString::number(g.toDouble(), 'f', 2 )));
 
-      posElem.appendChild( xmlTextElement( doc, "sumprice", Geld( g*am).toString() ) );
+      Geld sum(g * am);
+
+      posElem.appendChild( xmlTextElement( doc, "sumprice", QString::number(sum.toDouble(), 'f', 2 ) ) );
     }
   }
   return topElem;
