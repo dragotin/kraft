@@ -40,8 +40,8 @@
 
 CatalogSelection::CatalogSelection( QWidget *parent )
     :QWidget( parent ),
-      mCatalogSelector( 0 ),
-      mWidgets( 0 )
+      mCatalogSelector(nullptr),
+      mWidgets(nullptr)
 {
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setMargin(0);
@@ -118,71 +118,64 @@ QString CatalogSelection::currentSelectedKatChapter()
 
 void CatalogSelection::slotSelectCatalog( const QString& katName )
 {
-  Katalog *kat = KatalogMan::self()->getKatalog( katName );
+    Katalog *kat = KatalogMan::self()->getKatalog( katName );
 
-  if ( ! kat ) {
-    const QString type = KatalogMan::self()->catalogTypeString( katName );
+    if ( !kat ) {
+        const QString type = KatalogMan::self()->catalogTypeString( katName );
 
-    // qDebug () << "Catalog type for cat " << katName << " is " << type << endl;
-    if ( type == "TemplCatalog" ) {
-      kat = new TemplKatalog( katName );
-    } else if ( type == "MaterialCatalog"  ) {
-      kat = new MatKatalog( katName );
-    } else {
-      // nothing.
+        // qDebug () << "Catalog type for cat " << katName << " is " << type << endl;
+        if ( type == QStringLiteral("TemplCatalog") ) {
+            kat = new TemplKatalog( katName );
+        } else if ( type == QStringLiteral("MaterialCatalog") ) {
+            kat = new MatKatalog( katName );
+        }
+
+        if ( kat ) {
+            KatalogMan::self()->registerKatalog( kat );
+        } else {
+            qCritical() << "Could not find a valid catalog type for catalog named " << katName << endl;
+        }
     }
+
     if ( kat ) {
-      KatalogMan::self()->registerKatalog( kat );
-    } else {
-      qCritical() << "Could not find a catalog type for catname " << katName << endl;
+        KatalogListView *katListView = nullptr;
+        if ( ! mWidgetMap.contains( katName ) ) {
+
+            if ( kat->type() == TemplateCatalog ) {
+                TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
+                katListView = tmpllistview;
+                tmpllistview->setShowCalcParts( false );
+
+                // qDebug () << "Creating a selection list for catalog " << katName << endl;
+            } else if ( kat->type() == MaterialCatalog ) {
+                MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
+                katListView = matListView;
+            }
+
+            if ( katListView ) {
+                mWidgets->addWidget(katListView);
+                mWidgetMap.insert(  katName, katListView );
+                katListView->contextMenu()->addAction( i18n("Append to Document"),
+                                                       this, &CatalogSelection::actionAppendPosition);
+                katListView->addCatalogDisplay( katName );
+                katListView->setSelectFromMode(); // mode to only select from
+                connect(katListView, &KatalogListView::doubleClicked,
+                        this, &CatalogSelection::slotCatalogDoubleClicked);
+                connect(katListView, &KatalogListView::currentItemChanged,
+                        this, &CatalogSelection::selectionChanged);
+                KatalogMan::self()->registerKatalogListView( katName, katListView );
+
+            }
+        } else {
+            katListView = mWidgetMap[katName];
+        }
+
+        // Select the widget
+        if ( katListView ) {
+            mWidgets->setCurrentWidget(katListView);
+            mListSearchLine->setListView(katListView);
+            emit selectionChanged(katListView->currentItem(), nullptr);
+        }
     }
-  }
-
-  if ( kat ) {
-    if ( ! mWidgetMap.contains( katName ) ) {
-      KatalogListView *katListView = 0;
-
-      if ( kat->type() == TemplateCatalog ) {
-        TemplKatalogListView *tmpllistview = new TemplKatalogListView( this );
-        katListView = tmpllistview;
-        katListView->setSelectFromMode(); // mode to only select from
-        connect( tmpllistview,
-                 SIGNAL( doubleClicked( QModelIndex ) ),
-                 this,
-                 SLOT( slotCatalogDoubleClicked( QModelIndex ) ) );
-        tmpllistview->setShowCalcParts( false );
-        tmpllistview->addCatalogDisplay( katName );
-        tmpllistview->contextMenu()->addAction( i18n("Append to Document"),
-                                               this, SIGNAL( actionAppendPosition() ) );
-
-        mWidgets->addWidget( tmpllistview );
-        mWidgetMap.insert(  katName, tmpllistview );
-        // qDebug () << "Creating a selection list for catalog " << katName << endl;
-      } else if ( kat->type() == MaterialCatalog ) {
-        MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
-        katListView = matListView;
-        katListView->setSelectFromMode(); // mode to only select from
-        connect( matListView,
-                 SIGNAL( doubleClicked( QModelIndex ) ),
-                 this,
-                 SLOT( slCatalogDoubleClicked( QModelIndex ) ) );
-        matListView->addCatalogDisplay( katName );
-        matListView->contextMenu()->addAction( i18n("Append to Document"),
-                                              this, SIGNAL( actionAppendPosition() ) );
-        mWidgets->addWidget( matListView );
-        mWidgetMap.insert( katName, matListView );
-      }
-      if ( katListView ) {
-        connect( katListView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-                 this, SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ) );
-        KatalogMan::self()->registerKatalogListView( katName, katListView );
-
-      }
-    }
-    if ( mWidgetMap.contains( katName ) ) {
-      mWidgets->setCurrentWidget( mWidgetMap[katName] );
-      mListSearchLine->setListView( mWidgetMap[katName] );
-    }
-  }
 }
 

@@ -199,12 +199,25 @@ void DocAssistant::slotAddToDocument()
 
 void DocAssistant::slotTemplateSelectionChanged( )
 {
+    if (!mCurrTemplateProvider) {
+        mPbNew->setEnabled(false);
+        mPbEdit->setEnabled(false);
+        mPbDel->setEnabled(false);
+        return;
+    }
+
   if( mActivePage == KraftDoc::Positions ) { // no editing on the catalogs
-    mPbNew->setEnabled( true );
+      bool enableNew {false};
+
+      auto kat = static_cast<CatalogTemplateProvider*>(mCurrTemplateProvider)->currentCatalog();
+      if (kat->type() == KatalogType::TemplateCatalog) {
+          enableNew = true;
+      }
+    mPbNew->setEnabled(enableNew);
     mPbEdit->setEnabled( false );
     mPbDel->setEnabled( false );
   } else {
-    bool mv = false;
+    bool mv {false};
     if( mActivePage == KraftDoc::Header ) {
       mv = mHeaderSelector->validSelection();
     } else if( mActivePage == KraftDoc::Footer ) {
@@ -219,13 +232,14 @@ void DocAssistant::slotTemplateSelectionChanged( )
 
 void DocAssistant::slotCatalogSelectionChanged(QTreeWidgetItem *current ,QTreeWidgetItem *)
 {
-  // enable the move-to-document button.
-  // qDebug () << "catalog position selection changed!" << endl;
-  if ( current ) {
-    mPbAdd->setEnabled( true );
-  } else {
-    mPbAdd->setEnabled( false );
-  }
+    // enable the move-to-document button.
+    // qDebug () << "catalog position selection changed!" << endl;
+    if ( current ) {
+        mPbAdd->setEnabled( true );
+    } else {
+        mPbAdd->setEnabled( false );
+    }
+    slotTemplateSelectionChanged();
 }
 
 void DocAssistant::slotNewTemplate()

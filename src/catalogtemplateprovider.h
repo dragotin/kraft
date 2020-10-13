@@ -32,8 +32,11 @@ public:
   CatalogTemplateProvider( QWidget* );
   void setCatalogSelection( CatalogSelection * );
 
+  Katalog *currentCatalog();
+
 signals:
   void templatesToDocument( Katalog*, CatalogTemplateList, const QString& );
+  void catalogSelected(Katalog*);
 
 public slots:
   void slotNewTemplate();

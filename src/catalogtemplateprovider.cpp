@@ -31,6 +31,16 @@ CatalogTemplateProvider::CatalogTemplateProvider( QWidget *parent )
 
 }
 
+Katalog *CatalogTemplateProvider::currentCatalog()
+{
+    Katalog *kat {nullptr};
+    if (mCatalogSelection) {
+        kat = mCatalogSelection->currentSelectedKat();
+    }
+    return kat;
+}
+
+
 void CatalogTemplateProvider::setCatalogSelection( CatalogSelection *cs )
 {
   mCatalogSelection = cs;

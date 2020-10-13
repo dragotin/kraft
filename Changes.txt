@@ -5,6 +5,7 @@ Changes since version 0.95: #########################################
   catalog templates. It presets the correct chapter.
 
 - Fix: Use the xmlArchivePath correctly (#80)
+- Fix: Handling of Cancel button in template to doc dialog.
 
 Changes since version 0.90: #########################################
 
