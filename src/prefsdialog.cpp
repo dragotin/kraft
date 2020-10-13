@@ -545,7 +545,7 @@ void PrefsDialog::accept()
 }
 
 #define IDENTITY_TAG(X) QLatin1String(X)
-#define QL1(X) QLatin1String(X)
+#define QL1(X) QStringLiteral(X)
 
 void PrefsDialog::fillManualIdentityForm(const KContacts::Addressee& addressee)
 {
@@ -581,6 +581,14 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool bac
 
   QString addressBookInfo;
   _pbChangeIdentity->setEnabled(backendUp);
+
+  QPalette p;
+  QColor c = p.color(QPalette::Normal, QPalette::ToolTipBase);
+  tmpl.setValue(IDENTITY_TAG("CSS_WARN_BACKGROUND_COLOR"), c.name());
+
+  c =  p.color(QPalette::Normal, QPalette::QPalette::Base);
+  tmpl.setValue(IDENTITY_TAG("CSS_IDENTITY_IMAGE_BACKGROUND"), "#ea4e1d"); // c.name());
+
   if( !backendUp ) {
       addressBookInfo = i18n("The identity can not be found.");
       tmpl.createDictionary(QL1("NO_IDENTITY"));
@@ -668,7 +676,8 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool bac
       }
   }
 
-  mIdentityView->displayContent(tmpl.expand());
+  const QString ex = tmpl.expand();
+  mIdentityView->displayContent(ex);
 }
 
 TaxItemDelegate::TaxItemDelegate(QObject * parent) : QItemDelegate(parent) {}
