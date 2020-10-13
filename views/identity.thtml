@@ -14,7 +14,7 @@ body {
 
 #identityimage {
   padding: 5px;
-  background-color: #eeeeee;
+  background-color: {{CSS_IDENTITY_IMAGE_BACKGROUND}};
   padding-left: 80px;
   background-image: url(identity.png);
   background-repeat:no-repeat;
@@ -30,7 +30,7 @@ p {
 }
 
 #no_identity_warn {
-  background-color: #ffcbcb;
+  background-color: {{CSS_WARN_BACKGROUND_COLOR}};
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
   padding: 5px;
