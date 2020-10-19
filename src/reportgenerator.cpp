@@ -165,6 +165,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {
         emit failure(i18n("Template file is not accessible."));
+        return;
     }
     const QString ext = fi.completeSuffix();
 
