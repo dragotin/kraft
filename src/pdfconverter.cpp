@@ -188,7 +188,12 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
     args << mFile.fileName();
     args << "-u";
     args << styleSheetDir;
+    if (!_templatePath.isEmpty() && _templatePath != styleSheetDir) {
+        args << "-u";
+        args << _templatePath;
+    }
 
+    qDebug() << "Arguments for weasyprint:" << args;
     mProcess->setProgram( prg );
     mProcess->setArguments(args);
     mOutput.clear();

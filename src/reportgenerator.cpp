@@ -182,6 +182,8 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
         converter = new WeasyPrintPDFConverter;
     }
 
+    converter->setTemplatePath(fi.path());
+
     // expand the template...
     const QString expanded = templateEngine->expand(&_archDoc, myContact, mCustomerContact);
 

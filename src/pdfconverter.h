@@ -47,6 +47,12 @@ public:
 
     QString getErrors() { return mErrors; }
 
+    /*
+     * Sets the path of the template which can be used as base path to find
+     * stylesheets and images and such.
+     */
+    void setTemplatePath(const QString& path) { _templatePath = path; }
+
 signals:
     void docAvailable(const QString& fileName);
     void converterError( ConvError );
@@ -55,6 +61,7 @@ protected:
     QString mErrors;
     QProcess *mProcess;
     QFile mFile;
+    QString _templatePath;
 
 };
 
