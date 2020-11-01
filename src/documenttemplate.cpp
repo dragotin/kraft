@@ -314,7 +314,7 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
 
     h = DefaultProvider::self()->locale()->toString( archDoc->tax() );
     // qDebug () << "Tax in archive document: " << h;
-    if ( archDoc->reducedTaxSum().toLong() > 0 ) {
+    if ( archDoc->reducedTaxSum().toLong() != 0 ) {
         tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
         tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_SUM" ),
                        archDoc->reducedTaxSum().toString() );
@@ -322,7 +322,7 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
         tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX" ), h );
         tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
     }
-    if ( archDoc->fullTaxSum().toLong() > 0 ) {
+    if ( archDoc->fullTaxSum().toLong() != 0 ) {
         tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
         tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_SUM" ),
                        archDoc->fullTaxSum().toString() );
