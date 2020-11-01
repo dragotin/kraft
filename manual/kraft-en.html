@@ -1534,22 +1534,24 @@ in the output it generates.</p>
 <div class="sect2">
 <h3 id="_output_document_customization">Output Document Customization</h3>
 <div class="paragraph">
-<p>Each document type in Kraft can have it&#8217;s own template that is used to create
-a PDF. The template is filled with values from the document content that the user
-entered in Krafts specialized editors on the desktop. After that it is converted to PDF
-using a document creation script.</p>
+<p>To create PDF output documents, the document data that was edited in the Kraft app is filled into a template. The template defines how the output document looks like, ie. through font settings, placing of elements etc.</p>
 </div>
 <div class="paragraph">
-<p>This makes sure that Kraft documents are always high standard quality, similar looking
-and generated very quickly.</p>
+<p>The file that is assembled from data and the template is converted to PDF using a special document creation script. All that is started automatically by Kraft if a document should be printed.</p>
+</div>
+<div class="paragraph">
+<p>Each document type in Kraft can have it&#8217;s own template that is used to create a PDF. Which one can be set in the  Settings dialog for document types.</p>
 </div>
 <div class="sect3">
 <h4 id="_weasyprint_documents">WeasyPrint Documents</h4>
 <div class="paragraph">
-<p>With <a href="https://weasyprint.org">WeasyPrint</a> Kraft uses a very powerful HTML and CSS based generator that makes it very easy to create highly customized documents which fit the users expectations. The general idea is that Weasyprint loads html output that is processed to PDF, considering a Cascading Stylesheet file which has a huge impact on how the PDF document looks in the end.</p>
+<p>With <a href="https://weasyprint.org">WeasyPrint</a> Kraft uses a very powerful HTML and CSS based generator that makes it very easy to create highly customized documents which fit the users expectations. The general idea is that Weasyprint loads html output that is processed to PDF. Usually it is considering a Cascading Stylesheet file which has a huge impact on how the PDF document looks in the end.</p>
 </div>
 <div class="paragraph">
-<p>To use a WeasyPrint based template for a document simply create a template file and save it with the extension <strong>.gtmpl</strong>. With that file extension Kraft automatically uses WeasyPrint and also the Grantlee templating for rendering. An example for a WeasyPrint document is can be found in the Kraft package in the reports directory and is called invoice.gtmpl.</p>
+<p>To use a WeasyPrint based template for a document simply create a template file and save it with the extension <strong>.gtmpl</strong>. With that file extension Kraft automatically uses WeasyPrint and also the Grantlee templating for rendering.</p>
+</div>
+<div class="paragraph">
+<p>An example for a WeasyPrint document can be found in the Kraft package in the reports directory and is called invoice.gtmpl.</p>
 </div>
 <div class="paragraph">
 <p>To use a WeasyPrint template with one of the Kraft document types just select the template file name (with the right extension <code>*.gtml</code>) in the Kraft Settings Dialog.</p>
@@ -1745,7 +1747,7 @@ Removes this item from document.</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-28 17:49:59 +0200
+Last updated 2020-11-01 12:44:30 +0100
 </div>
 </div>
 </body>

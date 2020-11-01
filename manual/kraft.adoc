@@ -547,19 +547,19 @@ in the output it generates.
 
 === Output Document Customization
 
-Each document type in Kraft can have it's own template that is used to create
-a PDF. The template is filled with values from the document content that the user
-entered in Krafts specialized editors on the desktop. After that it is converted to PDF
-using a document creation script.
+To create PDF output documents, the document data that was edited in the Kraft app is filled into a template. The template defines how the output document looks like, ie. by font settings, placing of elements and such.
 
-This makes sure that Kraft documents are always high standard quality, similar looking
-and generated very quickly.
+The file that is assembled from data and the template is converted to PDF using a special document creation script. All that is started automatically by Kraft if a document should be printed.
+
+Each document type in Kraft can have it's own template that is used to create a PDF. Which one can be set in the  Settings dialog for document types.
 
 ==== WeasyPrint Documents
 
-With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful HTML and CSS based generator that makes it very easy to create highly customized documents which fit the users expectations. The general idea is that Weasyprint loads html output that is processed to PDF, considering a Cascading Stylesheet file which has a huge impact on how the PDF document looks in the end.
+With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful HTML and CSS based generator that makes it very easy to create highly customized documents which fit the users expectations. The general idea is that Weasyprint loads html output that is processed to PDF. Usually it is considering a Cascading Stylesheet file which has a huge impact on how the PDF document looks in the end.
 
-To use a WeasyPrint based template for a document simply create a template file and save it with the extension *.gtmpl*. With that file extension Kraft automatically uses WeasyPrint and also the Grantlee templating for rendering. An example for a WeasyPrint document is can be found in the Kraft package in the reports directory and is called invoice.gtmpl.
+To use a WeasyPrint based template for a document simply create a template file and save it with the extension *.gtmpl*. With that file extension Kraft automatically uses WeasyPrint and also the Grantlee templating for rendering.
+
+An example for a WeasyPrint document can be found in the Kraft package in the reports directory and is called invoice.gtmpl.
 
 To use a WeasyPrint template with one of the Kraft document types just select the template file name (with the right extension `*.gtml`) in the Kraft Settings Dialog.
 
