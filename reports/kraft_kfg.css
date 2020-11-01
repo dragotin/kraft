@@ -1,0 +1,226 @@
+
+@charset "UTF-8";
+
+/* Use google web fonts */
+@import url("https://fonts.googleapis.com/css?family=Pacifico|Open+Sans+Pro:400,700");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+@import url("https://fonts.googleapis.com/css?family=Oxygen");
+@import url("https://fonts.googleapis.com/css2?family=Raleway");
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@700");
+
+/* General page settings for print */
+@page {
+    size: A4;
+    margin-left: 2.4cm;
+    margin-top:27mm;
+    margin-right: 1.6cm;
+    margin-bottom: 2cm;
+    color: #2f590a;
+}
+
+
+html {
+  font-family: 'Oxygen';
+
+  font-size: 10pt;
+  line-height: 1.6;
+}
+
+html body {
+    margin: 0;
+    padding-top: 2mm;
+
+}
+
+html h1 {
+    color: #2f590a;
+    font-family: Roboto;
+    font-size: 14pt;
+    margin: 0;
+}
+
+html address {
+    font-style: normal;
+    white-space: pre-line;
+    margin-bottom: 9mm;
+    height: 40mm;
+    border: solid 0px;
+}
+
+html aside {
+    display: flex;
+    margin: 2em 0 4em; }
+    html aside address {
+      font-style: normal;
+      white-space: pre-line; }
+      html aside address#to {
+        color: #a9a;
+        flex: 1; }
+      html aside address#from {
+        text-align: right;
+}
+
+/*
+ * A absolute positioned block to display document extra info
+ * on the right top of the document.
+ */
+html dl {
+    text-align: right;
+    position: absolute;
+    right: 0;
+    top: 8mm; }
+    html dl dt, html dl dd {
+      display: inline;
+      margin: 0; }
+    html dl dt {
+      color: #a9a; }
+      html dl dt::before {
+        content: '';
+        display: block; }
+      html dl dt::after {
+        content: ':';
+}
+
+sup {
+   position: relative;
+   vertical-align: baseline;
+   top: -0.4em;
+}
+
+img#logo {
+  position: absolute;
+  right: 0px;
+  top: -150px;
+  width: 178px;
+  height: 191px;
+  z-index: -1;
+}
+
+
+html p.letterheader {
+     font-size: 8pt;
+     text-decoration: underline;
+}
+
+html p.entrytext {
+}
+
+html p.bottomtext {
+}
+
+html p.goodbye {
+}
+
+/*
+ * Item-Table
+ * formats the item list. Each item is a line.
+ */
+  html table.items {
+    border-collapse: collapse;
+    width: 16.8cm;
+    table-layout: fixed;
+    page-break-inside:avoid;
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+
+  html table tr {
+    page-break-inside:avoid;
+    page-break-after:auto;
+  }
+
+  /*
+   * Table header. It is repeated on every page.
+   */
+  html table th {
+      border-bottom: .2mm solid #555;
+      color: #555;
+      font-size: 10pt;
+      font-weight: 400;
+      padding-bottom: .25cm;
+      text-transform: uppercase;
+  }
+
+  html table td {
+    vertical-align: top;
+    padding: 0px;
+    padding-top: 3mm;
+  }
+
+  html table tr.secondline td {
+    padding-top: 1mm;
+  }
+
+  .col-center {
+    text-align: center;
+  }
+  .col-right {
+    text-align: right;
+  }
+  .col-left {
+    text-align: left;
+  }
+
+  /* The columns of the items table */
+  .col-No {
+    width: 6%;
+  }
+  .col-Text {
+    width: 75%;
+  }
+
+  .col-Amount {
+    width: 52%;
+  }
+  .col-Unit {
+    width: 12%;
+  }
+  .col-SPrice {
+    width: 15%;
+  }
+  .col-Sum {
+    width: 15%;
+    color: #2f590a;
+    font-weight: bold;
+  }
+
+  .col-total-first {
+    width: 60%;
+  }
+  .col-total-mid {
+    width: 20%;
+  }
+  .col-total-last {
+    width: 20%;
+  }
+  /*
+   * The table to display the document sum
+   */
+  html table#total {
+    border-collapse: collapse;
+    width: 16.8cm;
+
+    table-layout: fixed;
+    text-align: right;
+    bottom: 0;
+    font-size: 10pt;
+
+    /* The following margins pull the whole box to the right */
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-bottom: 12mm;
+    margin-top: 8mm;
+  }
+
+  html table#total td {
+    padding-top: 1mm;
+    text-align: right;
+  }
+
+  .col-total-line1 {
+      border-top: solid black 1px;
+  }
+
+  .col-total-line2 {
+      border-top: solid black 2px;
+  }

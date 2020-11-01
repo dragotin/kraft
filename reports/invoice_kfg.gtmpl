@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="description" content="Kraft Invoice document"/>
+    <meta name="author" content="Klaas Freitag"/>
+
+    <!-- This style can not be moved to the css file because it contains template
+         variables that need to be replaced. That is only happening in the gtmpl
+         files, not in the style files.
+     -->
+
+    <style>
+    /* Specific page settings */
+
+    @page {
+        /* Display the sender data on footer section of the document */
+
+        /* If you have no working addressbook integration, the templates can be
+         * replaced by the real text here.
+         */
+        @bottom-left {
+            font-family: Oxygen;
+            content: '{{ me.ORGANISATION }} | {{ label.PHONE }}: {{ me.PHONE }} | {{ label.EMAIL }}: {{ me.EMAIL }}';
+            font-size: 9pt;
+        }
+        @bottom-right {
+            content: "{{ label.PAGE }} " counter(page) " {{ label.PAGE_OF }} " counter(pages);
+            font-family: Oxygen;
+            font-size: 9pt;
+        }
+    }
+    /* Specific for the first document page: Do not display the page number. */
+    @page :first {
+        margin-top: 46mm;
+        @bottom-right {
+            font-family: Oxygen;
+            font-size: 9pt;
+            content: '{{ label.WEBSITE }}: {{ me.URL }}';
+        }
+        @top-right {
+        }
+    }
+    </style>
+
+    <!-- Load the full css file -->
+    <!-- Attention: Specify the correct absolute path here for custom style! -->
+    <link href="/home/kf/opensource/kraft/reports/kraft_kfg.css" media="print" rel="stylesheet"/>
+    <title>Kraft Document</title>
+  </head>
+
+  {% autoescape on %}
+  <body>
+
+    <!-- id vs class of html elements:
+         ids have to be unique and can only be once per document. ids are only
+         used for elements that must not appear multiple times in the doc.
+         For all others, class is used. -->
+
+    <p class="letterheader">
+    {{ me.ORGANISATION }} - {{ me.STREET }} - {{ me.POSTCODE }} {{ me.LOCALITY }}
+    </p>
+
+    <!-- Logo image
+         The position and size and such are defined in the css file at the logo
+         element.
+    -->
+    <img id="logo" src="https://raw.githubusercontent.com/dragotin/kraft/master/reports/pics/lurchie.png">
+
+    <address id="to">{{ doc.address }}</address>
+
+    <dl class="information">
+      <dt>{{ label.DOC_NO }}</dt> <dd>{{ doc.ident }}</dd>
+      <dt>{{ label.DATE }}</dt>   <dd>{{ doc.dateStr }}</dd>
+      {% if doc.projectLabel %}
+        <dt>{{ label.PROJECT }}</dt>
+        <dd>{{ doc.projectLabel }}</dd>
+      {% endif %}
+    </dl>
+
+    <h1>{{ doc.docType }} {{ doc.ident }}</h1>
+
+    <p class="salut">{{ doc.salut }}</p>
+    <p class="entrytext">
+    {{ doc.preTextHtml|safe }}
+    </p>
+
+    {% for item in doc.items %}
+    <table class="items" >
+      <tbody>
+        <!-- this empty row is needed to define the width of the columns. In tables
+             with fixed width defined in CSS the first row is the defining one. -->
+      <tr>
+          <td class="col-No"></td>
+          <td class="col-Amount"></td>
+          <td class="col-Unit"></td>
+          <td class="col-SPrice"></td>
+          <td class="col-Sum"></td>
+      </tr>
+
+        <!-- This line prints the item number and the text over the whole width -->
+      <tr>
+          <td class="col-No col-left">{{ item.itemNumber }}.</td>
+          <td colspan="4" class="col-left">
+          {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
+            <i>
+          {% endif %}
+          {{ item.text }}
+          {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
+            </i>
+          {% endif %}
+          </td>
+      </tr>
+
+        <!-- This line prints the amount and prices at defined positions. -->
+      <tr class="secondline">
+          <td class="col-No"></td>
+          <td class="col-Amount col-right">{{ item.amount }}</td>
+          <td class="col-Unit col-left">&nbsp;{{ item.unit }}</td>
+          <td class="col-SPrice col-right">{{ item.unitPrice }}</td>
+          <td class="col-Sum col-right">{{ item.nettoPrice }}
+          {% if doc.hasIndividualTaxation %}
+         <sup><small>{{ item.taxMarker }}</small></sup>&nbsp;
+         {% endif %}
+         </td>
+      </tr>
+      </tbody>
+    </table>
+   {% endfor %}
+
+    <table id="total">
+      <tbody>
+        <tr>
+          <td class="col-total-first"></td>
+          <td class="col-total-mid col-total-line1">{{ label.NET }}</td>
+          <td class="col-total-last col-total-line1">{{ doc.nettoSumStr }}</td>
+        </tr>
+        <tr>
+        {% if doc.hasIndividualTaxation %}
+        <!-- This section is shown for documents with individual tax rates -->
+        <tr>
+          <td class="col-total-first"></td>
+          <td class="col-total-mid"><sup><small>{{ doc.taxMarkerReduced }}</small></sup>&nbsp;
+          +{{ doc.reducedTaxPercentStr }}% {{ label.VAT }}</td>
+          <td class="col-total-last">{{ doc.reducedTaxSumStr }}</td>
+        </tr>
+        <tr>
+          <td class="col-total-first"></td>
+          <td class="col-total-mid"><sup><small>{{ doc.taxMarkerFull }}</small></sup>&nbsp;
+          +{{ doc.fullTaxPercentStr }}% {{ label.VAT }}</td>
+          <td class="col-total-last">{{ doc.fullTaxSumStr }}</td>
+        </tr>
+        {% else %}
+        <tr>
+        <!-- This section is shown for documents with one consistent tax rate -->
+
+        <!-- Note: taxPercentStr can either be reduced or full, depending on
+                   the tax settings of the document -->
+          <td class="col-total-first"></td>
+          <td class="col-total-mid">+{{ doc.taxPercentStr }}% {{ label.VAT }}</td>
+          <td class="col-total-last">{{ doc.taxSumStr }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td class="col-total-first"></td>
+          <td class="col-total-mid col-total-line2"><b>{{ label.SUM }}</b></td>
+          <td class="col-total-last col-total-line2"><b>{{ doc.bruttoSumStr }}</b></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="bottomtext">
+    {{ doc.postTextHtml|safe }}
+    </p>
+    <p class="goodbye">
+    {{ doc.goodbye }}
+    </p>
+  </body>
+{% endautoescape %}
+</html>
