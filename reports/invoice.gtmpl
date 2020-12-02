@@ -46,7 +46,7 @@
     <link href="kraft.css" media="print" rel="stylesheet"/>
     <title>Kraft Document</title>
   </head>
-{% autoescape on %}
+{% autoescape off %}
   <body>
     <p id="letterheader">
     {{ me.ORGANISATION }} - {{ me.STREET }} - {{ me.POSTCODE }} {{ me.LOCALITY }}
@@ -86,7 +86,7 @@
           {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
             <i>
           {% endif %}
-          {{ item.text }}
+          {{ item.htmlText }}
           {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
             </i>
           {% endif %}
