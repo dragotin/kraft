@@ -48,6 +48,7 @@ public:
     QString posNumber() const { return mPosNo; }
 
     QString text() const { return mText; }
+    QString htmlText(const QString &paraStyle = QString()) const;
 
     QString unit() const { return mUnit; }
 
@@ -106,6 +107,8 @@ if ( property == "itemNumber" )
     return object.posNumber();
 else if ( property == "text" )
     return object.text();
+else if ( property == "htmlText" )
+    return object.htmlText();
 else if ( property == "kind" )
     return object.kind();
 else if ( property == "unit" )
