@@ -1,4 +1,4 @@
-#define KRAFT_VERSION "0.95"
+#define KRAFT_VERSION "0.96"
 
 #define KRAFT_CODENAME "Gunny"
 
