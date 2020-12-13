@@ -59,7 +59,7 @@ DocGuardedPtr DocumentMan::copyDocument( const QString& copyFromId )
 
 DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromId, const DocPositionList& listToCopy)
 {
-    DocGuardedPtr doc = new KraftDoc( );
+    DocGuardedPtr doc = new KraftDoc();
     // qDebug () << "new document ID: " << doc->docID().toString() << endl;
 
     if ( ! copyFromId.isEmpty() ) {
@@ -97,18 +97,32 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
             }
 
             doc->setPredecessor(sourceDoc->ident());
+
+            // Take the default pre- and posttext for the new docType, or, if that is empty, the texts of the old doc
+            QString newText = DefaultProvider::self()->defaultText( docType, KraftDoc::Header );
+            if (newText.isEmpty() ) {
+                newText = sourceDoc->preText();
+            }
+            doc->setPreText(newText);
+
+            newText = DefaultProvider::self()->defaultText( docType, KraftDoc::Footer );
+            if (newText.isEmpty() ) {
+                newText = sourceDoc->postText();
+            }
+            doc->setPostText(newText);
+
             delete sourceDoc;
         }
     } else {
         // Absolute new document
         doc->setDocType(docType);
+        doc->setPreText(DefaultProvider::self()->defaultText(docType, KraftDoc::Header));
+        doc->setPostText(DefaultProvider::self()->defaultText(docType, KraftDoc::Footer));
         doc->setGoodbye( KraftSettings::greeting() );
     }
 
     // set the proper texts and other data
     doc->setLastModified( QDateTime::currentDateTime());
-    doc->setPreText(DefaultProvider::self()->defaultText( docType, KraftDoc::Header ));
-    doc->setPostText(DefaultProvider::self()->defaultText( docType, KraftDoc::Footer));
 
     return doc;
 }
