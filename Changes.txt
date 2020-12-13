@@ -8,6 +8,9 @@ Changes since version 0.95: #########################################
 - Fix: Handling of Cancel button in template to doc dialog.
 - Fix: Convert newlines in the items to <p> for the weasyprint doc 
        generation.
+- Fix: In Followup document: If the standard text for pre and post
+       text of the target document type is empty, the one from the
+       source document is copied over instead. (#91)
 
 Changes since version 0.90: #########################################
 
