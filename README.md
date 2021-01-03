@@ -24,8 +24,8 @@ it also sends documents via email.
 Kraft utilizes a bunch of very useful tools of the free softare world:
 - KDE addressbook for customer management
 - MySQL or alternatively SQLite for database support
-- [ReportLab](http://www.reportlab.com/opensource/) for PDF generation:
-- [ctemplate](https://github.com/OlafvdSpek/ctemplate) templating library.
+- [WeasyPrint](https://weasyprint.org) or [ReportLab](http://www.reportlab.com/opensource/) for PDF generation.
+- [Grantlee](https://github.com/steveire/grantlee) or [ctemplate](https://github.com/OlafvdSpek/ctemplate) templating library.
 
 ## Interested?
 
@@ -34,5 +34,5 @@ Kraft utilizes a bunch of very useful tools of the free softare world:
 For questions and comments, please speak up. Check the [web site](http://volle-kraft-voraus.de/Main/Contribution)
 for contact details.
 
-Jun 2005-2020, Klaas Freitag <kraft@freisturz.de>
+Jun 2005-2021, Klaas Freitag <kraft@freisturz.de>
 
