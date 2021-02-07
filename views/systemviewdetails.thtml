@@ -117,20 +117,4 @@
     <td class="value">{{WEASYPRINT_TOOL}}</td>
     <td></td>
   </tr>
-
-  <tr>
-    <td colspan="3" class="header">{{ACKNOWLEGEMENT_LABEL}}</td>
-  </tr>
-
-  <tr>
-    <td colspan="3" class="label">
-        {{ICON_ACKNOWLEDGEMENT_LABEL}}
-        <a href="https://www.flaticon.com/authors/madebyoliver" title="Madebyoliver">Madebyoliver</a>
-        from
-        <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>,
-        licensed by
-        <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC 3.0 BY</a>
-    </td>
-  </tr>
-
 </table>
