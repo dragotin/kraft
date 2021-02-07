@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!DOCTYPE kraftdocument>
+<kraftdocument schemaversion="1">
+    <meta>
+        <docType>Rechnung</docType>
+        <docDesc>whiteboard content</docDesc>
+        <currency>EUR</currency>
+        <country>de</country>
+        <locale>en_US</locale>
+        
+        <tax>
+            <type>None</type>
+            <value>0.0</value>
+        </tax>
+        <tax>
+            <type>Reduced</type>
+            <value>7.0</value>
+        </tax>
+        <tax>
+            <type>Full</type>
+            <value>19.0</value>
+        </tax>
+        
+        <owner>kf</owner>
+        <creationDate>2018-12-12T12:01:34</creationDate>
+        <lastModified>2018-12-15T18:22:20</lastModified>
+        
+        <docAttrib>
+            <name>valid until</name>
+            <value>2012-01-21</value>
+            <type>date</type>
+        </docAttrib>
+        
+        <!-- Generic sort criteria -->
+        <tag>foo</tag>
+        <tag>bar</tag>
+    </meta>
+    <client>
+        <address>Goofy Stambulchicz</address>
+        <clientId>BMhh9EhLwr</clientId>
+    </client>
+    <header>
+        <project>
+            <name>hausgarten</name>
+        </project>
+        <date>2011-01-27</date>
+        <ident>unspec</ident>
+        <salut>lieber goofy,</salut>
+        <preText>Wir freuen uns, mit Dir Gesch&#xE4;fte machen zu k&#xF6;nnen.</preText>
+        <customValue>
+                <name>valid until</name>
+                <value>2012-01-21</value>
+                <type>date</type>
+        </customValue>
+        <customValue>
+                <name>date of supply</name>
+                <value>2011-12-21</value>
+                <type>date</type>
+        </customValue>
+    </header>
+    <itemGroup>
+        <name>General</name>
+        <collapsed>false</collapsed>
+        <item>
+            <type>Normal</type>
+            <text>Alternative: first item </text>
+            <amount>8.40</amount>
+            <unit>qm</unit>
+            <taxType>FullTax</taxType>
+            <unitprice>22.21</unitprice>
+            <itemprice>186.56</itemprice>
+            <tag>Work</tag>
+        </item>
+        <item>
+            <type>Normal</type>
+            <text>second item </text>
+            <amount>4.40</amount>
+            <unit>cbm</unit>
+            <taxType>reduced</taxType>
+            <unitprice>33.33</unitprice>
+            <itemprice>146.65</itemprice>
+            <tag>Pflanzen</tag>
+            <tag>Work&gt;</tag>
+        </item>
+    </itemGroup>
+    <itemGroup>
+        <name>Backyard</name>
+        <collapsed>false</collapsed>
+        <item>
+            <type>Alternative</type>
+            <text>Alternative: first item </text>
+            <amount>8.40</amount>
+            <unit>qm</unit>
+            <taxType>FullTax</taxType>
+            <unitprice>22.21</unitprice>
+            <itemprice>186.56</itemprice>
+            <tag>Work</tag>
+        </item>
+        <item>
+            <type>Normal</type>
+            <text>second item </text>
+            <amount>4.40</amount>
+            <unit>cbm</unit>
+            <taxType>reduced</taxType>
+            <unitprice>33.33</unitprice>
+            <itemprice>146.65</itemprice>
+            <tag>Pflanzen</tag>
+            <tag>Work</tag>
+        </item>
+    </itemGroup>
+    <footer>
+        <postText>Danke f&#xFC;r dein Interesse,</postText>        
+        <goodbye>mit den besten Gr&#xFC;ssen,</goodbye>
+    </footer>
+    
+    <sums>
+        <netto>146.65</netto>
+	<taxsum type="Reduced">12.22</taxsum>
+	<taxsum type="Full">5.43</taxsum>
+        <brutto>174.51</brutto>
+    </sums>
+</kraftdocument>
