@@ -79,20 +79,20 @@ PortalView::~PortalView( )
 void PortalView::createIcons()
 {
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
-    documentsButton->setIcon(QIcon(":/kraft/document-new.png"));
+    documentsButton->setIcon(QIcon(":/kraft/document.svg"));
     documentsButton->setText(i18n("Documents"));
     documentsButton->setTextAlignment(Qt::AlignHCenter);
     documentsButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *timeLineButton = new QListWidgetItem(_contentsWidget);
-    timeLineButton->setIcon(QIcon(":/kraft/document-open-recent.png"));
+    timeLineButton->setIcon(QIcon(":/kraft/document-clock.svg"));
     timeLineButton->setText(i18n("Timeline"));
     timeLineButton->setTextAlignment(Qt::AlignHCenter);
     timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
 
-    catButton->setIcon(QIcon(":/kraft/catalogue.png"));
+    catButton->setIcon(QIcon(":/kraft/book-open.svg"));
     catButton->setText(i18n("Catalogs"));
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);

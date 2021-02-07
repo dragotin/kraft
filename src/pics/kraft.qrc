@@ -1,12 +1,17 @@
 <RCC>
   <qresource prefix="/kraft">
-    <file>user.png</file>
-    <file>catalogue.png</file>
     <file>Calendar_page.png</file>
-    <file>document-new.png</file>
-    <file>document-open-recent.png</file>
     <file>postit.png</file>
     <file>kraft_customer.png</file>
+    
+    <file>book-open.svg</file>
+    <file>cloud.svg</file>
+    <file>cloud-up.svg</file>
+    <file>document-clock.svg</file>
+    <file>document-search.svg</file>
+    <file>document.svg</file>
+    <file>folders.svg</file>
+    <file>puzzlepart.svg</file>
     
     <file>global/32-apps-kraft.png</file>
     <file>global/kraft_small_arm.png</file>
