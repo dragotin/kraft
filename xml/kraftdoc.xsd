@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:complexType name="client_type">
+  <xs:sequence>
+    <xs:element name="address" type="xs:string"/>
+    <xs:element name="clientId" type="xs:string"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="value_type">
+  <xs:sequence>
+    <xs:element name="name" type="xs:string"/>
+    <xs:element name="value" type="xs:date"/>
+    <xs:element name="type" type="xs:string"/> <!-- Fixme, could be enum -->
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="tag_type">
+	  <xs:simpleContent>
+	    <xs:extension base="xs:string"/>
+	  </xs:simpleContent>
+</xs:complexType>
+
+<xs:complexType name="tax_type">
+  <xs:sequence>
+    <xs:element name="type" type="xs:string"/> <!-- Fixme, could be enum -->
+    <xs:element name="value" type="xs:decimal"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="meta_type">
+  <xs:sequence>
+      <xs:element name="docType" type="xs:string"/> <!-- Fixme, could be enum -->
+    <xs:element name="docDesc" type="xs:string"/>
+    <xs:element name="currency" type="xs:string"/>
+    <xs:element name="country" type="xs:string"/>
+    <xs:element name="locale" type="xs:string"/>
+    <xs:element name="tax" type="tax_type" minOccurs="3" maxOccurs="3"/>
+    <xs:element name="owner" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="creationDate" type="xs:dateTime"/>
+    <xs:element name="lastModified" type="xs:dateTime"/>
+    <xs:element name="docAttrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="tag" type="tag_type" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="header_type">
+  <xs:sequence>
+    <xs:element name="project" type="project_type" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="date" type="xs:date"/>
+    <xs:element name="ident" type="xs:string"/>
+    <xs:element name="salut" type="xs:string"/>
+    <xs:element name="preText" type="xs:string"/>
+    <xs:element name="customValue" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="project_type">
+  <xs:sequence>
+    <xs:element name="name" type="xs:string"/>
+    <xs:element name="id" type="xs:integer" minOccurs="0" maxOccurs="1" />
+  </xs:sequence>
+</xs:complexType>
+  
+<xs:complexType name="itemGroup_type">
+    <xs:sequence>
+        <xs:element name="name" type="xs:string"/>
+        <xs:element name="collapsed" type="xs:boolean"/>
+        <xs:element name="item" type="item_type" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="itemtype_type" final="restriction" >
+    <xs:restriction base="xs:string">
+        <xs:enumeration value="Normal"/>
+        <xs:enumeration value="Alternative"/>
+        <xs:enumeration value="Demand"/>
+        <xs:enumeration value="Text"/>
+    </xs:restriction>
+</xs:simpleType>
+
+ <xs:complexType name="item_type">
+   <xs:sequence>
+     <xs:element name="type"    type="itemtype_type"/>
+     <xs:element name="text"    type="xs:string"/>
+     <xs:element name="amount"  type="xs:decimal"/>
+     <xs:element name="unit"    type="xs:string"/>
+     <xs:element name="taxType" type="xs:string"/>
+     <xs:element name="unitprice" type="xs:decimal"/>
+     <xs:element name="itemprice" type="xs:decimal"/>
+     <xs:element name="itemAttrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+     <xs:element name="tag" type="tag_type" minOccurs="0" maxOccurs="unbounded"/>
+
+   </xs:sequence>
+</xs:complexType>
+
+ <xs:complexType name="footer_type">
+   <xs:sequence>
+     <xs:element name="postText"    type="xs:string"/>
+     <xs:element name="goodbye"    type="xs:string"/>
+     <xs:element name="customValue" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+   </xs:sequence>
+</xs:complexType>
+
+ <xs:complexType name="sums_type">
+    <xs:sequence>
+      <xs:element name="netto"   type="xs:string"/>
+      <xs:element name="taxsum" minOccurs="0" maxOccurs="2">
+        <xs:complexType>
+	  <xs:simpleContent>
+	    <xs:extension base="xs:decimal">
+              <xs:attribute name="type" type="xs:string"  use="required" />
+	    </xs:extension>
+	  </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="brutto"   type="xs:decimal"/>
+    </xs:sequence>
+ </xs:complexType>
+
+<xs:element name="kraftdocument">
+  <xs:complexType>
+    <xs:sequence>
+	<xs:element name="meta"   type="meta_type" maxOccurs="1"/>
+	<xs:element name="client" type="client_type" maxOccurs="1"/>
+	<xs:element name="header" type="header_type" maxOccurs="1"/>
+	<xs:element name="itemGroup" type="itemGroup_type" minOccurs="1" maxOccurs="unbounded"/>
+    <xs:element name="footer" type="footer_type" maxOccurs="1"/>
+	<xs:element name="sums" type="sums_type" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="schemaversion" type="xs:integer"/>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>
+
