@@ -31,6 +31,7 @@
 #include "kraftsettings.h"
 #include "documentman.h"
 #include "defaultprovider.h"
+#include "format.h"
 
 Q_GLOBAL_STATIC(ArchiveMan, mSelf)
 
@@ -107,8 +108,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
   docElem.appendChild( xmlTextElement( xmldoc, "salut", doc->salut() ) );
   docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
 
-  docElem.appendChild( xmlTextElement( xmldoc, "date",
-                                       DefaultProvider::self()->locale()->toString( doc->date() ) ));
+  docElem.appendChild( xmlTextElement( xmldoc, "date", Format::toDateString(doc->date(), Format::DateFormatIso)));
 
   root.appendChild( doc->positions().domElement( xmldoc ) );
 
