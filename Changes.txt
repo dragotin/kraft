@@ -1,6 +1,7 @@
 
 Changes since version 0.95: #########################################
 
+- Found new MIT licensed icons to avoid uncertainess with CC license.
 - Allow to use the "add new" button in the doc editor to add new 
   catalog templates. It presets the correct chapter.
 
@@ -11,6 +12,8 @@ Changes since version 0.95: #########################################
 - Fix: In Followup document: If the standard text for pre and post
        text of the target document type is empty, the one from the
        source document is copied over instead. (#91)
+
+=> release v. 0.96 (xx, 2021)
 
 Changes since version 0.90: #########################################
 
@@ -29,7 +32,7 @@ Changes since version 0.90: #########################################
 - Fix: Also change lastmodified-Timestamp if only an item was added.
 - Add the user manual. Open it according to user language.
 
-=> release v. 0.95 (xx, 2020)
+=> release v. 0.95 (Aug. 28, 2020)
 
 Changes since version 0.82: #########################################
 
