@@ -7,7 +7,7 @@
         <currency>EUR</currency>
         <country>de</country>
         <locale>en_US</locale>
-        
+
         <tax>
             <type>None</type>
             <value>0.0</value>
@@ -20,17 +20,18 @@
             <type>Full</type>
             <value>19.0</value>
         </tax>
-        
+
         <owner>kf</owner>
-        <creationDate>2018-12-12T12:01:34</creationDate>
         <lastModified>2018-12-15T18:22:20</lastModified>
-        
+
+        <predecessor>id</predecessor>
+
         <docAttrib>
             <name>valid until</name>
             <value>2012-01-21</value>
             <type>date</type>
         </docAttrib>
-        
+
         <!-- Generic sort criteria -->
         <tag>foo</tag>
         <tag>bar</tag>
@@ -109,14 +110,20 @@
         </item>
     </itemGroup>
     <footer>
-        <postText>Danke f&#xFC;r dein Interesse,</postText>        
+        <postText>Danke f&#xFC;r dein Interesse,</postText>
         <goodbye>mit den besten Gr&#xFC;ssen,</goodbye>
     </footer>
-    
+
     <sums>
         <netto>146.65</netto>
-	<taxsum type="Reduced">12.22</taxsum>
-	<taxsum type="Full">5.43</taxsum>
+        <taxSum>
+            <type>Reduced</type>
+            <value>12.22</value>
+        </taxSum>
+        <taxsum>
+            <type>Full</type>
+            <value>12.24</value>
+        </taxSum>
         <brutto>174.51</brutto>
     </sums>
 </kraftdocument>

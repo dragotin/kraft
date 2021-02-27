@@ -11,7 +11,7 @@
 <xs:complexType name="value_type">
   <xs:sequence>
     <xs:element name="name" type="xs:string"/>
-    <xs:element name="value" type="xs:date"/>
+    <xs:element name="value" type="xs:string"/>
     <xs:element name="type" type="xs:string"/> <!-- Fixme, could be enum -->
   </xs:sequence>
 </xs:complexType>
@@ -38,7 +38,7 @@
     <xs:element name="locale" type="xs:string"/>
     <xs:element name="tax" type="tax_type" minOccurs="3" maxOccurs="3"/>
     <xs:element name="owner" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element name="creationDate" type="xs:dateTime"/>
+    <xs:element name="date" type="xs:dateTime"/>
     <xs:element name="lastModified" type="xs:dateTime"/>
     <xs:element name="docAttrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
     <xs:element name="tag" type="tag_type" minOccurs="0" maxOccurs="unbounded"/>
@@ -62,7 +62,7 @@
     <xs:element name="id" type="xs:integer" minOccurs="0" maxOccurs="1" />
   </xs:sequence>
 </xs:complexType>
-  
+
 <xs:complexType name="itemGroup_type">
     <xs:sequence>
         <xs:element name="name" type="xs:string"/>
@@ -119,19 +119,19 @@
     </xs:sequence>
  </xs:complexType>
 
-<xs:element name="kraftdocument">
-  <xs:complexType>
-    <xs:sequence>
-	<xs:element name="meta"   type="meta_type" maxOccurs="1"/>
-	<xs:element name="client" type="client_type" maxOccurs="1"/>
-	<xs:element name="header" type="header_type" maxOccurs="1"/>
-	<xs:element name="itemGroup" type="itemGroup_type" minOccurs="1" maxOccurs="unbounded"/>
-    <xs:element name="footer" type="footer_type" maxOccurs="1"/>
-	<xs:element name="sums" type="sums_type" maxOccurs="1"/>
-    </xs:sequence>
-    <xs:attribute name="schemaversion" type="xs:integer"/>
-  </xs:complexType>
-</xs:element>
+    <xs:element name="kraftdocument">
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element name="meta"   type="meta_type" maxOccurs="1"/>
+            <xs:element name="client" type="client_type" maxOccurs="1"/>
+            <xs:element name="header" type="header_type" maxOccurs="1"/>
+            <xs:element name="itemGroup" type="itemGroup_type" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="sums" type="sums_type" maxOccurs="1"/>
+        <xs:element name="footer" type="footer_type" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="schemaversion" type="xs:integer"/>
+    </xs:complexType>
+    </xs:element>
 
 </xs:schema>
 
