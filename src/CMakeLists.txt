@@ -54,6 +54,7 @@ set(kraft_SRCS
     documentsaverbase.cpp
     documentsaverdb.cpp
     exportxrechnung.cpp
+    documentsaverxml.cpp
     documentman.cpp
     docdigest.cpp
     alldocsview.cpp
