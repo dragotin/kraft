@@ -20,3 +20,13 @@ Release Checklist for Kraft Version XX
 - [ ] Create a proper tag
 - [ ] Update the packages in a hidden repo on OBS
 - [ ] x
+
+### Build packages
+
+- [ ] in OBS for KDE:Extra
+- [ ] Submit to Tumbleweed
+
+### AppImage
+
+- Update the Kraft package for the AppImage
+
