@@ -66,7 +66,7 @@
          The position and size and such are defined in the css file at the logo
          element.
     -->
-    <img id="logo" src="https://raw.githubusercontent.com/dragotin/kraft/master/reports/pics/lurchie.png">
+    <img id="logo" src="file:///home/kf/opensource/kraft/reports/pics/lurchie.png">
 
     <address id="to">{{ doc.address }}</address>
 
@@ -175,6 +175,7 @@
     <p class="goodbye">
     {{ doc.goodbye }}
     </p>
+    <img id="Unterschrift" src="file:///home/kf/opensource/kraft/reports/pics/unterschrift.png"/>
   </body>
 {% endautoescape %}
 </html>
