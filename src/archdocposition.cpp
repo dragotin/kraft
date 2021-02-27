@@ -97,11 +97,11 @@ QString ArchDocPosition::htmlText(const QString& paraStyle) const
     QString style( paraStyle );
     if ( style.isEmpty() ) style = QStringLiteral("text");
 
-    // QStringList li = QStringList::split( "\n", escapeTrml2pdfXML( str ) );
-    QStringList li = mText.toHtmlEscaped().split( "\n" );
-    re = QString( "<p style=\"%1\">" ).arg( style );
-    re += li.join( QString( "</p><p style=\"%1\">" ).arg( style ) ) + QStringLiteral("</p>");
-    // qDebug () << "Returning " << rml;
+    // Keep empty parts allows multiple newlines here
+    const QStringList li = mText.toHtmlEscaped().split( "\n", Qt::KeepEmptyParts );
+
+    re = li.join("<br/>");
+
     return re;
 }
 
