@@ -96,6 +96,11 @@ img#logo {
   z-index: -1;
 }
 
+img#Unterschrift {
+  width: 178px;
+  height: 48px;
+  z-index: -1;
+}
 
 html p.letterheader {
      font-size: 8pt;
