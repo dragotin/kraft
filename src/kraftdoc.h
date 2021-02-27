@@ -84,8 +84,6 @@ public:
     /** saves the document under filename and format.*/
     bool saveDocument( );
 
-    QLocale* locale();
-
     DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
     DocPositionList positions() const { return mPositions; }
     void setPositionList(DocPositionList , bool isNew = false);
