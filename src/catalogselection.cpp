@@ -153,12 +153,12 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
             }
 
             if ( katListView ) {
+                katListView->setSelectFromMode(); // mode to only select from
                 mWidgets->addWidget(katListView);
                 mWidgetMap.insert(  katName, katListView );
                 katListView->contextMenu()->addAction( i18n("Append to Document"),
                                                        this, &CatalogSelection::actionAppendPosition);
                 katListView->addCatalogDisplay( katName );
-                katListView->setSelectFromMode(); // mode to only select from
                 connect(katListView, &KatalogListView::doubleClicked,
                         this, &CatalogSelection::slotCatalogDoubleClicked);
                 connect(katListView, &KatalogListView::currentItemChanged,
