@@ -55,6 +55,7 @@ set(kraft_SRCS
     documentsaverdb.cpp
     exportxrechnung.cpp
     documentsaverxml.cpp
+    dbtoxmlconverter.cpp
     documentman.cpp
     docdigest.cpp
     alldocsview.cpp

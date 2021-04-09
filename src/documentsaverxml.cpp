@@ -1,9 +1,9 @@
 /***************************************************************************
-             templatesaverbase  -
+             DocumentSaverXML  - Save Documents as XML
                              -------------------
-    begin                : 2005-20-01
-    copyright            : (C) 2005 by Klaas Freitag
-    email                : freitag@kde.org
+    begin                : Jan. 2021
+    copyright            : (C) 2021 by Klaas Freitag
+    email                : kraft@freisturz.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,13 +16,10 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QSqlRecord>
-#include <QSqlTableModel>
-#include <QSqlQuery>
-#include <QSqlError>
-
-// include files for KDE
+#include <QStandardPaths>
 #include <QDebug>
+#include <QSqlQuery>
+
 
 #include "documentsaverxml.h"
 #include "documentman.h"
@@ -38,39 +35,18 @@
 
 
 namespace {
-void checkAndSet(bool& changes, QSqlRecord& record, const QString& name, const QVariant& setValue)
-{
-    Q_ASSERT(record.contains(name)); // the record must have the column
 
-    if( record.value(name) != setValue) {
-        record.setValue(name, setValue);
-        changes = true;
+QString xmlBasePath()
+{
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
+    QByteArray ba = qgetenv("KRAFT_XML_STOREPATH");
+    if (!ba.isEmpty()) {
+        path = QString::fromUtf8(ba);
     }
+    return path;
 }
 
-
-bool fillDocumentBuffer(QSqlRecord &buf, KraftDoc *doc)
-{
-    bool changes {false};
-    if( doc ) {
-        checkAndSet(changes, buf, "ident", doc->ident());
-        checkAndSet(changes, buf, "docType", doc->docType());
-        checkAndSet(changes, buf, "docDescription", KraftDB::self()->mysqlEuroEncode(doc->whiteboard()));
-        checkAndSet(changes, buf, "clientID", doc->addressUid());
-        checkAndSet(changes, buf, "clientAddress", doc->address());
-        checkAndSet(changes, buf, "salut", doc->salut());
-        checkAndSet(changes, buf, "goodbye", doc->goodbye());
-        checkAndSet(changes, buf, "date", doc->date());
-        checkAndSet(changes, buf, "pretext", KraftDB::self()->mysqlEuroEncode( doc->preText()));
-        checkAndSet(changes, buf, "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText()));
-        checkAndSet(changes, buf, "country", DefaultProvider::self()->locale()->bcp47Name());
-        checkAndSet(changes, buf, "language", "");
-        checkAndSet(changes, buf, "projectLabel", doc->projectLabel());
-        checkAndSet(changes, buf, "predecessor", doc->predecessor());
-
-    }
-    return changes;
-}
 
 QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
 {
@@ -299,129 +275,6 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
     // qDebug () << "Saved document no " << doc->docID().toString() << endl;
 
     return result;
-}
-
-void DocumentSaverXML::saveDocumentPositions( KraftDoc *doc )
-{
-    DocPositionList posList = doc->positions();
-
-    // invert all pos numbers to avoid a unique violation
-    // FIXME: We need non-numeric ids
-    QSqlQuery upq;
-    QString queryStr = "UPDATE docposition SET ordNumber = -1 * ordNumber WHERE docID=";
-    queryStr +=  doc->docID().toString();
-    queryStr += " AND ordNumber > 0";
-    upq.prepare( queryStr );
-    upq.exec();
-
-    int ordNumber = 1;
-
-    QSqlTableModel model;
-    model.setTable("docposition");
-    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
-
-    QVector<int> deleteIds;
-
-    DocPositionListIterator it( posList );
-    while( it.hasNext() ) {
-        DocPositionBase *dpb = it.next();
-
-        DocPosition *dp = static_cast<DocPosition*>(dpb);
-        QSqlRecord record ;
-        bool doInsert = true;
-
-        int posDbID = dp->dbId().toInt();
-        if( posDbID > -1 ) {
-            const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
-            // qDebug() << "Selecting with " << selStr << endl;
-            model.setFilter( selStr );
-            model.select();
-            if ( model.rowCount() > 0 ) {
-                if( ! dp->toDelete() )
-                    record = model.record(0);
-                doInsert = false;
-            } else {
-                qCritical() << "ERR: Could not select document position record" << endl;
-                return;
-            }
-        } else {
-            // The record is new
-            record = model.record();
-        }
-
-        if( dp->toDelete() ) {
-            // qDebug () << "This one is to delete, do it!" << endl;
-
-            if( doInsert ) {
-                qWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
-            }
-            // delete all existing attributes
-            dp->attributes().dbDeleteAll( dp->dbId() );
-
-            model.removeRow(0);
-            model.submitAll();
-
-            continue;
-        }
-
-        if( record.count() > 0 ) {
-            // qDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
-            // QString typeStr = PosTypePosition;
-            QString typeStr = "FIXME!";
-            double price = dp->unitPrice().toDouble();
-
-            if ( dp->type() == DocPositionBase::ExtraDiscount ) {
-              //  typeStr = PosTypeExtraDiscount;
-            }
-
-            record.setValue( "docID",     QVariant(doc->docID().toInt()));
-            record.setValue( "ordNumber", QVariant(ordNumber));
-            record.setValue( "text",      QVariant(dp->text()));
-            record.setValue( "postype",   QVariant(typeStr));
-            record.setValue( "amount",    QVariant(dp->amount()));
-            int unitId = dp->unit().id();
-            record.setValue( "unit",      QVariant(unitId));
-            record.setValue( "price",     QVariant(price));
-            record.setValue( "taxType",   QVariant(dp->taxType()));
-
-            ordNumber++; // FIXME
-
-            if( doInsert ) {
-                // qDebug () << "Inserting!" << endl;
-                model.insertRecord(-1, record);
-                model.submitAll();
-                dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
-            } else {
-                // qDebug () << "Updating!" << endl;
-                model.setRecord(0, record);
-                model.submitAll();
-            }
-        } else {
-            // qDebug () << "ERR: No record object found!" << endl;
-        }
-
-        dp->attributes().save( dp->dbId() );
-
-        QSqlError err = model.lastError();
-        if( err.type() != QSqlError::NoError ) {
-            // qDebug () << "SQL-ERR: " << err.text() << " in " << model.tableName() << endl;
-        }
-
-    }
-    model.submitAll();
-
-    /*  remove the docpositions that were marked to be deleted */
-    if( deleteIds.count() ) {
-        QSqlQuery delQuery;
-        delQuery.prepare( "DELETE FROM docposition WHERE positionID=:id" );
-        foreach( int id, deleteIds ) {
-            // kDebug() << "Deleting attribute id " << id;
-            delQuery.bindValue( ":id", id );
-            delQuery.exec();
-        }
-    }
-
-
 }
 
 void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
