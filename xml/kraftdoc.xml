@@ -8,6 +8,13 @@
         <country>de</country>
         <locale>en_US</locale>
 
+        <ident>id</ident>
+        <date>2011-01-27</date>
+        <timeOfSupply>
+            <start>2019-11-21</start>
+            <end>2019-11-23</end>
+        </timeOfSupply>
+
         <tax>
             <type>None</type>
             <value>0.0</value>
@@ -44,8 +51,6 @@
         <project>
             <name>hausgarten</name>
         </project>
-        <date>2011-01-27</date>
-        <ident>unspec</ident>
         <salut>lieber goofy,</salut>
         <preText>Wir freuen uns, mit Dir Gesch&#xE4;fte machen zu k&#xF6;nnen.</preText>
         <customValue>
@@ -81,7 +86,7 @@
             <unitprice>33.33</unitprice>
             <itemprice>146.65</itemprice>
             <tag>Pflanzen</tag>
-            <tag>Work&gt;</tag>
+            <tag>Work</tag>
         </item>
     </itemGroup>
     <itemGroup>
