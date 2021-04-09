@@ -1,7 +1,7 @@
 /***************************************************************************
-             DocumentSaverXML  - Save Documents as XML
+             DbToXMLConverter  - Convert the DB to XML
                              -------------------
-    begin                : Jan. 2021
+    begin                : Feb. 2021
     copyright            : (C) 2021 by Klaas Freitag
     email                : kraft@freisturz.de
  ***************************************************************************/
@@ -15,32 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _DocumentSaverXML_H
-#define _DocumentSaverXML_H
+#ifndef DBTOXMLCONVERTER_H
+#define DBTOXMLCONVERTER_H
 
-#include "documentsaverbase.h"
+#include <QObject>
 
-class KraftDoc;
-class QSqlRecord;
-class dbID;
-class QString;
-
-class DocumentSaverXML : public DocumentSaverBase
+class DbToXMLConverter : public QObject
 {
     Q_OBJECT
-
 public:
-    DocumentSaverXML();
-    virtual ~DocumentSaverXML();
+    explicit DbToXMLConverter(QObject *parent = nullptr);
 
-    virtual bool saveDocument( KraftDoc* ) override;
-    virtual void load( const QString& , KraftDoc * ) override;
-protected:
-    virtual void loadPositions( const QString&, KraftDoc* );
-private:
+    int convertDocs(int year);
+    int amountOfDocs(int year);
+
+signals:
+
 };
 
-#endif
-
-/* END */
-
+#endif // DBTOXMLCONVERTER_H
