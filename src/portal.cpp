@@ -377,10 +377,7 @@ void Portal::slotStartupChecks()
         slotStatusMsg( i18n( "Check commandline actions" ) );
 
         if ( mCmdLineArgs ) {
-            // KF5: Proper command line option
-
-            // QString docId = mCmdLineArgs->getOption( "d" ); //  <documentId>" );
-            QString docId;
+            const QString docId = mCmdLineArgs->value("d");
             if ( ! docId.isEmpty() ) {
                 // qDebug () << "open a archived document: " << docId << endl;
                 slotPrintDocument( QString(), dbID( docId.toInt() ) );

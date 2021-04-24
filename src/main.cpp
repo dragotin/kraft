@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     QCommandLineParser parser;
     parser.addVersionOption();
     parser.addHelpOption();
-    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("d"), i18n("Open document with doc number <number>"), QLatin1String("number")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("d"), i18n("Open document with arch doc number <number>"), QLatin1String("number")));
     parser.process(app);
 
     // Register the supported options
