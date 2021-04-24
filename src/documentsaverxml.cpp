@@ -233,7 +233,15 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
     if( ! doc ) return result;
 
     QDomDocument xmldoc = xmlDocument(doc);
-    QString xml = xmldoc.toString();
+
+    if (doc->isNew()) {
+        // generate a document ident first.
+        qDebug() << "Not yet implemented!";
+        return false;
+    }
+
+    const QString xml = xmldoc.toString();
+
     // qDebug() << "Resulting XML: " << xml << endl;
 
     QString outputDir {"/tmp/"};       // ArchiveMan::self()->xmlBaseDir();
