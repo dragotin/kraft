@@ -26,6 +26,8 @@ class DbToXMLConverter : public QObject
 public:
     explicit DbToXMLConverter(QObject *parent = nullptr);
 
+    QMap <int, int> yearMap();
+
     int convertDocs(int year);
     int amountOfDocs(int year);
 

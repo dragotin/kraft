@@ -17,6 +17,16 @@ DbToXMLConverter::DbToXMLConverter(QObject *parent) : QObject(parent)
 
 }
 
+QMap <int, int> DbToXMLConverter::yearMap()
+{
+    QMap<int, int> reMap;
+
+    // const QString sql {"SELECT "};
+    // QSqlQuery q;
+
+    return reMap;
+}
+
 int DbToXMLConverter::amountOfDocs(int year)
 {
     const QString sql {"SELECT count(docID) FROM document where DATE(date) BETWEEN ':year-01-01' AND ':nextyear-01-01'"};
