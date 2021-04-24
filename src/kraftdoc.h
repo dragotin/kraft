@@ -26,6 +26,7 @@
 #include "docposition.h"
 #include "dbids.h"
 #include "docguardedptr.h"
+#include "extravariablesmodel.h"
 
 // forward declaration of the Kraft classes
 
@@ -55,10 +56,12 @@ class KraftDoc : public QObject
     Q_PROPERTY(QString taxSumStr READ vatSumStr)
     Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
     Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
+    Q_PROPERTY(QList<ExtraVariable> extraVariables READ extraVariables)
 public:
     enum Part { Header,  Positions, Footer, Unknown };
-
     static QString partToString( Part );
+
+    const QString ExtraVars;
 
     /** Constructor for the fileclass of the application */
     KraftDoc(QWidget *parent = nullptr);
@@ -157,7 +160,10 @@ public:
     QString country() const;
     QString language() const;
 
+    void setExtraVariables( QList<ExtraVariable> variables);
+    QList<ExtraVariable> extraVariables();
 
+    AttributeMap attributes() { return mAttribs; }
 public slots:
     /** calls redrawDocument() on all views connected to the document object and is
    *  called by the view by which the document has been changed.
@@ -197,6 +203,7 @@ private:
     DocPositionList mPositions;
     DBIdList mRemovePositions;
     dbID    mDocID;
+    AttributeMap mAttribs;
 };
 
 #endif // KraftDoc_H

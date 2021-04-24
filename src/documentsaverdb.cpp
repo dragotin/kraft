@@ -179,6 +179,8 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
     saveDocumentPositions( doc );
 
+    doc->attributes().save(doc->docID());
+
     // qDebug () << "Saved document no " << doc->docID().toString() << endl;
 
     return result;

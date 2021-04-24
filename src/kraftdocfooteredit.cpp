@@ -17,6 +17,7 @@
 
 #include "kraftdocfooteredit.h"
 #include "kraftdb.h"
+#include "comboboxitemdelegate.h"
 
 #include <QLocale>
 #include <QDebug>
@@ -51,6 +52,21 @@ KraftDocFooterEdit::KraftDocFooterEdit( QWidget *parent )
 
   setTitle( i18n( "Document Footer" ) );
   setColor( "#f0ff9a" );
+
+  // _ Extra Variables
+  mDocFooterEdit->m_tvCustomVars->setModel(&_extraVarModel);
+  mDocFooterEdit->m_tvCustomVars->horizontalHeader()->setStretchLastSection(true);
+  mDocFooterEdit->m_tvCustomVars->setItemDelegateForColumn(1, new ComboBoxItemDelegate(this));
+}
+
+QList<ExtraVariable> KraftDocFooterEdit::extraVariables()
+{
+    return _extraVarModel.extraVariables();
+}
+
+void KraftDocFooterEdit::setExtraVariables(QList<ExtraVariable> variables)
+{
+    _extraVarModel.setVariablesList(variables);
 }
 
 void KraftDocFooterEdit::slotSetGreeting( const QString& newText )

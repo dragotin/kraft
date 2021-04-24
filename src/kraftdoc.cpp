@@ -38,9 +38,11 @@
 
 KraftDoc::KraftDoc(QWidget *parent)
   : QObject(parent),
+    ExtraVars("ExtraVariables"),
     _modified(false),
     mIsNew(true),
-    mDocTypeChanged(false)
+    mDocTypeChanged(false),
+    mAttribs( QStringLiteral( "KraftDoc" ) )
 {
 }
 
@@ -109,6 +111,7 @@ void KraftDoc::setPredecessor( const QString& w )
 bool KraftDoc::openDocument(const QString& id )
 {
     KraftDB::self()->loadDocument(id, this);
+    mAttribs.load(docID());
     mDocTypeChanged = false;
     _modified=false;
     mIsNew = false;
@@ -312,3 +315,38 @@ QString KraftDoc::language() const
 
   return i18n( "Unknown document part" );
 }
+
+void KraftDoc::setExtraVariables(QList<ExtraVariable> variables)
+{
+    QStringList li;
+    const QChar sep {'|'};
+    for (auto var : variables) {
+        const QString val { var.name() + sep + var.kindToStr() + sep + var.value() };
+        li.append(val);
+    }
+
+    Attribute a( ExtraVars);
+    a.setListValue( true );
+    a.setPersistant( true );
+    a.setValue( QVariant( li ) );
+    mAttribs.insert(ExtraVars, a);
+}
+
+QList<ExtraVariable> KraftDoc::extraVariables()
+{
+    QList<ExtraVariable> list;
+
+    if (mAttribs.contains(ExtraVars)) {
+        Attribute a = mAttribs[ExtraVars];
+
+        const QStringList exvar = a.value().toString().split('|');
+        if (exvar.size() > 1) {
+            QString val;
+            if (exvar.size() > 2) val = exvar.at(2);
+            const ExtraVariable var(exvar[0], exvar[1], val);
+            list.append(var);
+        }
+    }
+    return list;
+}
+

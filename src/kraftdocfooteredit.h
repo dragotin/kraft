@@ -20,6 +20,8 @@
 #include "ui_docfooter.h"
 #include "kraftdocedit.h"
 
+#include "extravariablesmodel.h"
+
 class KraftDocFooterEdit : public KraftDocEdit
 {
     Q_OBJECT
@@ -36,10 +38,15 @@ public slots:
   void slotGreeterEditTextChanged(const QString& newText);
   void slotSetGreeting( const QString& newText );
 
+  QList<ExtraVariable> extraVariables();
+  void setExtraVariables(QList<ExtraVariable> variables);
+
 private:
   Ui::DocFooterEdit *mDocFooterEdit;
   QString            mGreeting;
   int                mCustomGreetingIndex;
+
+  ExtraVariablesModel _extraVarModel;
 };
 
 #endif
