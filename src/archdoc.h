@@ -41,21 +41,23 @@ public:
   /** Destructor for the fileclass of the application */
   ~ArchDocDigest();
 
-  QDateTime printDate() {
+  QDateTime printDate() const {
     return mPrintDate;
   }
 
-  int archDocState() {
+  int archDocState() const {
     return mState;
   }
 
-  dbID archDocId() {
+  dbID archDocId() const {
     return mArchDocId;
   }
 
   QString archDocIdent() const {
     return mIdent;
   }
+
+  QString pdfArchiveFileName() const;
 
 private:
   QDateTime mPrintDate;

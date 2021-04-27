@@ -427,16 +427,23 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
         tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("This document was never printed."));
     } else {
         ArchDocDigest digest = archDocs[0];
-        tmpl.createDictionary( DOCDIGEST_TAG( "PRINTED" ));
-        tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LABEL"), i18n( "Last printed" ) );
-        tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_TITLE"), i18n( "Opens last created PDF document" ) );
-        tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
-        tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), digest.printDate().toString() );
-        tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
-        if( archDocs.size() == 1 ) {
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("One older print"));
+
+        QFileInfo fi(digest.pdfArchiveFileName());
+        if (fi.exists()) {
+            tmpl.createDictionary( DOCDIGEST_TAG( "PRINTED" ));
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LABEL"), i18n( "Last printed" ) );
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_TITLE"), i18n( "Opens last created PDF document" ) );
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), digest.printDate().toString() );
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
+            if( archDocs.size() == 1 ) {
+                tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("One older print"));
+            } else {
+                tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("%1 older prints", archDocs.count()));
+            }
         } else {
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("%1 older prints", archDocs.count()));
+            tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
+            tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("Archived documents can not be found. Check PDF Output dir."));
         }
     }
 

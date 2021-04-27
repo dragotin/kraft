@@ -71,12 +71,14 @@
 
 Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
 : QMainWindow( parent ),
-  mCmdLineArgs( commandLineParser )
+  mCmdLineArgs( commandLineParser ),
+  _readOnlyMode {false}
 {
   setObjectName( name );
+  _readOnlyMode = mCmdLineArgs->isSet("r");
+
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
-  initStatusBar();
   initActions();
   initView();
 
@@ -222,26 +224,30 @@ void Portal::initActions()
 #endif
     QMenu *docMenu = menuBar()->addMenu(i18n("&Document"));
     docMenu->addAction(_actViewDocument);
-    docMenu->addAction(_actOpenDocument);
+    if (!_readOnlyMode) docMenu->addAction(_actOpenDocument);
     docMenu->addAction(_actOpenArchivedDocument);
-    docMenu->addSeparator();
-    docMenu->addAction(_actNewDocument);
-    docMenu->addAction(_actCopyDocument);
-    docMenu->addAction(_actFollowDocument);
-    docMenu->addSeparator();
-    docMenu->addAction(_actPrintDocument);
-    docMenu->addAction(_actMailDocument);
+    if (!_readOnlyMode) {
+        docMenu->addSeparator();
+        docMenu->addAction(_actNewDocument);
+        docMenu->addAction(_actCopyDocument);
+        docMenu->addAction(_actFollowDocument);
+        docMenu->addSeparator();
+        docMenu->addAction(_actPrintDocument);
+        docMenu->addAction(_actMailDocument);
+    }
 
     QToolBar *toolBar = addToolBar(i18n("Kraft"));
 
-    QMenu *prefsMenu = menuBar()->addMenu(i18n("&Preferences"));
-    prefsMenu->addAction(_actEditTemplates);
-    prefsMenu->addAction(_actReconfDb);
-    prefsMenu->addSeparator();
-    QMenu *submen = prefsMenu->addMenu(i18n("Toolbars"));
-    submen->addAction(toolBar->toggleViewAction());
-    prefsMenu->addSeparator();
-    prefsMenu->addAction(_actPreferences);
+    if (!_readOnlyMode) {
+        QMenu *prefsMenu = menuBar()->addMenu(i18n("&Preferences"));
+        prefsMenu->addAction(_actEditTemplates);
+        prefsMenu->addAction(_actReconfDb);
+        prefsMenu->addSeparator();
+        QMenu *submen = prefsMenu->addMenu(i18n("Toolbars"));
+        submen->addAction(toolBar->toggleViewAction());
+        prefsMenu->addSeparator();
+        prefsMenu->addAction(_actPreferences);
+    }
 
     QMenu *helpMenu = menuBar()->addMenu(i18n("&Help"));
     helpMenu->addAction(_actHandbook);
@@ -251,28 +257,22 @@ void Portal::initActions()
 
     // Toolbar
     toolBar->setObjectName("PortalToolbar");
-    toolBar->addAction(_actNewDocument);
-    toolBar->addAction(_actCopyDocument);
-    toolBar->addAction(_actFollowDocument);
-    toolBar->addAction(_actPrintDocument);
-    toolBar->addAction(_actMailDocument);
+    if (!_readOnlyMode) {
+        toolBar->addAction(_actNewDocument);
+        toolBar->addAction(_actCopyDocument);
+        toolBar->addAction(_actFollowDocument);
+        toolBar->addAction(_actPrintDocument);
+        toolBar->addAction(_actMailDocument);
+    } else {
+        toolBar->addAction(_actOpenArchivedDocument);
+        toolBar->addAction(_actViewDocument);
+    }
 
 
     // initial enablements
     _actEditCut->setEnabled(false);
     _actEditCopy->setEnabled(false);
     _actEditPaste->setEnabled(false);
-
-
-}
-
-
-void Portal::initStatusBar()
-{
-  ///////////////////////////////////////////////////////////////////
-  // STATUSBAR
-  // TODO: add your own items you need for displaying current application status.
-  statusBar()->showMessage(i18n("Ready."));
 }
 
 void Portal::initView()
@@ -290,15 +290,17 @@ void Portal::initView()
       menu->setTitle( i18n("Document Actions"));
       menu->addSection(i18n("Document Actions"));
       menu->addAction( _actViewDocument );
-      menu->addAction( _actOpenDocument );
+      if (!_readOnlyMode) menu->addAction( _actOpenDocument );
       menu->addAction( _actOpenArchivedDocument );
-      menu->addSeparator();
-      menu->addAction( _actNewDocument );
-      menu->addAction( _actCopyDocument );
-      menu->addAction( _actFollowDocument );
-      menu->addSeparator();
-      menu->addAction( _actPrintDocument );
-      menu->addAction( _actMailDocument );
+      if (!_readOnlyMode) {
+          menu->addSeparator();
+          menu->addAction( _actNewDocument );
+          menu->addAction( _actCopyDocument );
+          menu->addAction( _actFollowDocument );
+          menu->addSeparator();
+          menu->addAction( _actPrintDocument );
+          menu->addAction( _actMailDocument );
+      }
     }
 
     connect( m_portalView.data(), SIGNAL(openKatalog( const QString&)),
@@ -358,12 +360,14 @@ void Portal::slotStartupChecks()
         m_portalView->systemInitError( m_portalView->ptag( text, "problem" ) );
 
         // disable harmfull actions
-        _actNewDocument->setEnabled( false );
-        _actPrintDocument->setEnabled( false );
-        _actCopyDocument->setEnabled( false );
-        _actFollowDocument->setEnabled(false);
-        _actOpenDocument->setEnabled( false );
+        if( !_readOnlyMode) {
+            _actNewDocument->setEnabled( false );
+            _actCopyDocument->setEnabled( false );
+            _actFollowDocument->setEnabled(false);
+            _actOpenDocument->setEnabled( false );
+        }
         _actViewDocument->setEnabled( false );
+        _actPrintDocument->setEnabled( false );
         _actOpenArchivedDocument->setEnabled( false );
         _actMailDocument->setEnabled( false );
 
@@ -441,7 +445,7 @@ void Portal::slotStartupChecks()
         connect( &_reportGenerator, &ReportGenerator::failure,
                  this, &Portal::slotDocConvertionFail);
 
-        slotStatusMsg( i18n( "Ready." ) );
+        slotStatusMsg();
     }
 }
 
@@ -508,7 +512,7 @@ void Portal::slotNewDocument()
     doc->setWhiteboard( wiz.whiteboard() );
     createView( doc );
   }
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg();
 }
 
 void Portal::slotFollowUpDocument()
@@ -609,7 +613,7 @@ void Portal::slotViewDocument( const QString& id )
     createROView( doc );
   }
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg();
 
 }
 
@@ -618,14 +622,9 @@ void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
   busyCursor( true );
   ArchDocDigest digest( d );
 
-  QString outputDir = ArchiveMan::self()->pdfBaseDir();
-  QString filename = ArchiveMan::self()->archiveFileName( digest.archDocIdent(),
-                                                          digest.archDocId().toString(), "pdf" );
-  QString file = QString( "%1/%2" ).arg( outputDir ).arg( filename );
-
+  const QString file = d.pdfArchiveFileName();
   // qDebug () << "archived doc selected: " << file << endl;
   slotOpenPdf( file );
-
 
   busyCursor( false );
 }
@@ -785,15 +784,19 @@ void Portal::savePdfInCustomerStructure(const QString& fileName)
 
 void Portal::slotOpenDocument( const QString& id )
 {
-  slotStatusMsg( i18n("Opening document %1", id ) );
-  // qDebug () << "Opening document " << id;
-  if( !id.isEmpty() ) {
-    DocumentMan *docman = DocumentMan::self();
-    DocGuardedPtr doc = docman->openDocument( id );
-    createView( doc );
-  }
+    if (_readOnlyMode) {
+        slotViewDocument(id);
+        return;
+    }
+    slotStatusMsg( i18n("Opening document %1", id ) );
+    // qDebug () << "Opening document " << id;
+    if( !id.isEmpty() ) {
+        DocumentMan *docman = DocumentMan::self();
+        DocGuardedPtr doc = docman->openDocument( id );
+        createView( doc );
+    }
 
-  slotStatusMsg(i18n("Ready."));
+    slotStatusMsg();
 }
 
 void Portal::slotDocumentSelected( const QString& doc )
@@ -801,11 +804,11 @@ void Portal::slotDocumentSelected( const QString& doc )
     // qDebug() << "a doc was selected: " << doc << endl;
     bool enable = !doc.isEmpty();
     _actViewDocument->setEnabled( enable );
-    _actOpenDocument->setEnabled( enable );
-    _actPrintDocument->setEnabled( enable );
-    _actCopyDocument->setEnabled( enable );
-    _actMailDocument->setEnabled( enable );
-    _actFollowDocument->setEnabled( enable );
+    _actOpenDocument->setEnabled( (!_readOnlyMode) && enable );
+    _actPrintDocument->setEnabled( (!_readOnlyMode) && enable );
+    _actCopyDocument->setEnabled( (!_readOnlyMode) && enable );
+    _actMailDocument->setEnabled( (!_readOnlyMode) && enable );
+    _actFollowDocument->setEnabled( (!_readOnlyMode) && enable );
 
     _actOpenArchivedDocument->setEnabled( enable );
 
@@ -963,21 +966,21 @@ void Portal::slotEditCut()
 {
   slotStatusMsg(i18n("Cutting selection..."));
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg();
 }
 
 void Portal::slotEditCopy()
 {
   slotStatusMsg(i18n("Copying selection to clipboard..."));
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg();
 }
 
 void Portal::slotEditPaste()
 {
   slotStatusMsg(i18n("Inserting clipboard contents..."));
 
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg();
 }
 
 
@@ -986,7 +989,14 @@ void Portal::slotStatusMsg(const QString &text)
   ///////////////////////////////////////////////////////////////////
   // change status message permanently
   statusBar()->clearMessage();
-  statusBar()->showMessage(text);
+  if (text.isEmpty()) {
+      if (_readOnlyMode)
+          statusBar()->showMessage(i18n("Ready. Kraft is running in read only mode. Document editing is prohibited."));
+      else
+          statusBar()->showMessage(i18n("Ready."));
+  } else {
+      statusBar()->showMessage(text);
+  }
 }
 
 /** Show the  window with floskeltemplates */

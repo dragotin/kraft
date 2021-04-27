@@ -51,6 +51,8 @@ int main(int argc, char *argv[])
     parser.addVersionOption();
     parser.addHelpOption();
     parser.addOption(QCommandLineOption(QStringList() << QLatin1String("d"), i18n("Open document with arch doc number <number>"), QLatin1String("number")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("r"), i18n("Open Kraft in read only mode - document changes prohibited") ));
+
     parser.process(app);
 
     // Register the supported options

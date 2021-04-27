@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QTimer>
 
 #include "version.h"
 #include "kraftdb.h"
@@ -103,7 +104,9 @@ KraftDB::KraftDB()
     :QObject (), mParent(nullptr),
       mSuccess( true ),
       EuroTag( QString::fromLatin1( "%EURO" ) ),
-      mInitDialog(nullptr)
+      mInitDialog(nullptr),
+      _amountOfDocs(-1),
+      _amountOfArchs(-1)
 {
     // Attention: Before setup assistant rewrite, dbConnect() was called here.
     // Keep that in mind, maybe the auto connect to the DB now misses somewhere.
@@ -172,6 +175,14 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
             // qDebug () << "## Could not open database" << endl;
             mSuccess = false;
         }
+    }
+
+    bool detectChanges {true};
+
+    connect( &_timer, &QTimer::timeout, this, &KraftDB::slotCheckDocDatabaseChanged);
+
+    if (mSuccess && detectChanges) {
+        _timer.start(10*1000);
     }
     return mSuccess;
 }
@@ -606,7 +617,7 @@ void KraftDB::writeWordList( const QString& listName, const QStringList& list )
 
 bool KraftDB::checkTableExistsSqlite(const QString& name, const QStringList& lookupCols)
 {
-    const QString query = QLatin1Literal("PRAGMA table_info(")+name+(")");
+    const QString query = QString("PRAGMA table_info(%1)").arg(name);
     QSqlQuery q(query);
     QStringList cols = lookupCols;
 
@@ -628,3 +639,50 @@ KraftDB::~KraftDB()
 {
 }
 
+void KraftDB::slotCheckDocDatabaseChanged()
+{
+    bool changed{false};
+    {
+        QSqlQuery q("SELECT count(*) FROM document");
+
+        q.exec();
+        QSqlError err = q.lastError();
+        if( err.isValid() ) {
+            qDebug() << "Error: " << err.text();
+            return;
+        }
+
+        if ( q.next() ) {
+            bool ok;
+            int cnt = q.value(0).toInt(&ok);
+
+            if (_amountOfDocs != -1 && cnt != _amountOfDocs ) {
+                qDebug() << "Docs from" << _amountOfDocs << "to" << cnt;
+                changed = true;
+            }
+            _amountOfDocs = cnt;
+        }
+    }
+    if (!changed) {
+        QSqlQuery qArch("SELECT count(*) FROM archdoc");
+
+        qArch.exec();
+        QSqlError err = qArch.lastError();
+        if( err.isValid() ) {
+            qDebug() << "Error: " << err.text();
+            return;
+        }
+
+        if ( qArch.next() ) {
+            bool ok;
+            int cnt = qArch.value(0).toInt(&ok);
+
+            if (_amountOfArchs != -1 && cnt != _amountOfArchs) {
+                qDebug() << "Arched docs from" << _amountOfArchs << "to" << cnt;
+                changed = true;
+            }
+            _amountOfArchs = cnt;
+        }
+    }
+    if (changed) emit docDatabaseChanged();
+}

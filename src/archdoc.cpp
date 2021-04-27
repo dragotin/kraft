@@ -26,6 +26,7 @@
 
 // application specific includes
 #include "archdoc.h"
+#include "archiveman.h"
 #include "documentman.h"
 #include "kraftdb.h"
 #include "defaultprovider.h"
@@ -297,6 +298,15 @@ ArchDocDigest::~ArchDocDigest()
 
 }
 
+QString ArchDocDigest::pdfArchiveFileName() const
+{
+    const QString outputDir = ArchiveMan::self()->pdfBaseDir();
+    const QString filename = ArchiveMan::self()->archiveFileName(archDocIdent(),
+                                                           archDocId().toString(), "pdf" );
+    const QString file = QString( "%1/%2" ).arg( outputDir ).arg( filename );
+
+    return file;
+}
 
 /* ###################################################################### */
 

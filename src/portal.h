@@ -57,9 +57,6 @@ class Portal : public QMainWindow
   protected:
     /** initializes the QActions of the application */
     void initActions();
-    /** sets up the statusbar for the main window by initialzing a statuslabel.
-     */
-    void initStatusBar();
     /** creates the centerwidget of the KTMainWindow instance and sets it as the view
      */
     void initView();
@@ -107,7 +104,7 @@ class Portal : public QMainWindow
     /** changes the statusbar contents for the standard label permanently, used to indicate current actions.
      * @param text the text that is displayed in the statusbar
      */
-    void slotStatusMsg(const QString &text);
+    void slotStatusMsg(const QString &text = QString());
     /** Show the  window with floskeltemplates */
     void slotShowTemplates();
 
@@ -187,6 +184,8 @@ class Portal : public QMainWindow
     DocGuardedPtr _currentDoc;
 
     ReportGenerator _reportGenerator;
+
+    bool _readOnlyMode;
 };
 
 #endif

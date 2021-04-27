@@ -39,6 +39,7 @@
 #include "documentman.h"
 #include "docguardedptr.h"
 #include "kraftdoc.h"
+#include "kraftdb.h"
 #include "defaultprovider.h"
 #include "docdigestdetailview.h"
 #include "kraftsettings.h"
@@ -257,6 +258,8 @@ void AllDocsView::slotBuildView()
             _dateView->setExpanded(rIdx, true);
         }
     }
+
+    connect(KraftDB::self(), &KraftDB::docDatabaseChanged, this, &AllDocsView::slotUpdateView);
 }
 
 void AllDocsView::slotUpdateView()

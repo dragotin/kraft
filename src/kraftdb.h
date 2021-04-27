@@ -136,9 +136,13 @@ public:
 
   KraftDB();
 
+private slots:
+  void slotCheckDocDatabaseChanged();
+
 signals:
   void statusMessage( const QString& );
   void processedSqlCommand( bool );
+  void docDatabaseChanged();
 
 private: // Private attributes
   void close();
@@ -156,6 +160,9 @@ private: // Private attributes
   QString mDatabaseName;
   DbInitDialog *mInitDialog;
   SetupAssistant *mSetupAssistant;
+  QTimer _timer;
+
+  int _amountOfDocs, _amountOfArchs;
 };
 
 #endif
