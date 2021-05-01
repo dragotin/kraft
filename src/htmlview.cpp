@@ -131,18 +131,20 @@ void HtmlView::displayContent( const QString& content )
     const QString s = mStyles;
 
 #ifdef QT_DEBUG
-    qDebug() << "########## HtmlView output written to /tmp/kraft.html";
-    QFile caFile("/tmp/kraft.html");
-    caFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    // this file gets written and removed immediately, so if it should be kept,
+    // set the autoDelete to false
+    QTemporaryFile tempFile("/tmp/kraft_XXXXXX");
+    // tempFile.setAutoRemove(false);
+    if (tempFile.open()) {
+        const QString fName = tempFile.fileName();
+        qDebug() << "########## HtmlView output written to" << fName;
 
-    if(!caFile.isOpen()){
-        qDebug() << "- Error, unable to open" << "outputFilename" << "for output";
+        QTextStream outStream(&tempFile);
+        outStream << s;
+        outStream << "##############" << endl;
+        outStream << out;
+        tempFile.close();
     }
-    QTextStream outStream(&caFile);
-    outStream << s;
-    outStream << "##############" << endl;
-    outStream << out;
-    caFile.close();
 #endif
 
     this->document()->setDefaultStyleSheet(s);
