@@ -25,7 +25,6 @@ set(kraft_SRCS
     calcpart.cpp
     kraftview.cpp
     kraftdoc.cpp
-    main.cpp
     catalogchapter.cpp
     addeditchapterdialog.cpp
     unitmanager.cpp
@@ -150,11 +149,6 @@ ki18n_wrap_ui(kraft_SRCS
     numbercycleseditbase.ui
 )
 
-# kde4_add_executable(kraft ${kraft_SRCS})
-add_executable(kraft ${KRAFT_RC_SRC} ${kraft_SRCS})
-
-set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
-
 set(KRAFT_LINK_LIBS
     Qt5::Core
     Qt5::Widgets
@@ -178,9 +172,20 @@ if(KF5Akonadi_FOUND)
   )
 endif()
 
-target_link_libraries(kraft
+add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
+
+add_executable(kraft main.cpp)
+
+set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
+
+target_link_libraries(kraftlib
 PUBLIC
     ${KRAFT_LINK_LIBS}
+)
+
+target_link_libraries(kraft
+  PUBLIC
+    kraftlib
 )
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
