@@ -137,7 +137,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     tmpl.setValue( DOC_RO_TAG( "ADDRESS" ), address );
     tmpl.setValue( DOC_RO_TAG( "DOCNO" ), doc->ident() );
     tmpl.setValue( DOC_RO_TAG( "PRETEXT" ), htmlify(doc->preText()) );
-    tmpl.setValue( DOC_RO_TAG( "POSTTEXT" ), doc->postText() );
+    tmpl.setValue( DOC_RO_TAG( "POSTTEXT" ), htmlify(doc->postText()) );
     tmpl.setValue( DOC_RO_TAG( "SALUT" ), doc->salut() );
     tmpl.setValue( DOC_RO_TAG( "GOODBYE" ), doc->goodbye() );
 

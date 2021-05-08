@@ -54,7 +54,6 @@
 #include "materialkatalogview.h"
 #include "prefsdialog.h"
 #include "documentman.h"
-#include "archiveman.h"
 #include "reportgenerator.h"
 #include "kraftsettings.h"
 #include "defaultprovider.h"
@@ -643,8 +642,7 @@ void Portal::slotPrintCurrentDocument()
   if ( _currentDoc ) {
       ident = _currentDoc->ident();
 
-      ArchiveMan *archman = ArchiveMan::self();
-      dbID archID = archman->archiveDocument( _currentDoc );
+      dbID archID = KraftDB::self()->archiveDocument(_currentDoc);
       slotPrintDocument( ident, archID );
       // m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
   }
@@ -665,8 +663,7 @@ void Portal::slotMailDocument()
   if ( docPtr ) {
     ident = docPtr->ident();
 
-    ArchiveMan *archman = ArchiveMan::self();
-    dbID archID = archman->archiveDocument( docPtr );
+    dbID archID = KraftDB::self()->archiveDocument( docPtr );
 
     _clientId = docPtr->addressUid();
     busyCursor( true );

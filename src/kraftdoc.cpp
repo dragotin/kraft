@@ -32,6 +32,7 @@
 #include "documentman.h"
 #include "doctype.h"
 #include "documentman.h"
+#include "kraftdb.h"
 
 // FIXME: Make KraftDoc inheriting DocDigest!
 
@@ -39,8 +40,7 @@ KraftDoc::KraftDoc(QWidget *parent)
   : QObject(parent),
     _modified(false),
     mIsNew(true),
-    mDocTypeChanged(false),
-    mSaver(nullptr)
+    mDocTypeChanged(false)
 {
 }
 
@@ -90,7 +90,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
   // setPositionList( origDoc.mPositions );
   mRemovePositions = origDoc.mRemovePositions;
-  mSaver = nullptr;
+
   // mDocID = origDoc.mDocID;
 
   return *this;
@@ -108,12 +108,11 @@ void KraftDoc::setPredecessor( const QString& w )
 
 bool KraftDoc::openDocument(const QString& id )
 {
-  DocumentSaverBase *loader = getSaver();
-  loader->load( id, this );
-  mDocTypeChanged = false;
-  _modified=false;
-  mIsNew = false;
-  return true;
+    KraftDB::self()->loadDocument(id, this);
+    mDocTypeChanged = false;
+    _modified=false;
+    mIsNew = false;
+    return true;
 }
 
 bool KraftDoc::reloadDocument()
@@ -128,23 +127,22 @@ bool KraftDoc::saveDocument( )
 {
     bool result = false;
 
-    DocumentSaverBase *saver = getSaver();
-    if( saver ) {
-        result = saver->saveDocument( this );
+    result = KraftDB::self()->saveDocument(this);
+    if(result) {
         if ( isNew() ) {
-          setLastModified( QDateTime::currentDateTime() );
+            setLastModified( QDateTime::currentDateTime() );
         }
 
-        // We go through the whole document and remove the positions
+        // Go through the whole document and remove the positions
         // that are to delete because they now were deleted in the
         // database.
         DocPositionListIterator it( mPositions );
         while( it.hasNext() ) {
-          DocPositionBase *dp = it.next();
-          if( dp->toDelete() ) {
-            // qDebug () << "Removing pos " << dp->dbId().toString() << " from document object" << endl;
-            mPositions.removeAll( dp );
-          }
+            DocPositionBase *dp = it.next();
+            if( dp->toDelete() ) {
+                // qDebug () << "Removing pos " << dp->dbId().toString() << " from document object" << endl;
+                mPositions.removeAll( dp );
+            }
         }
         _modified = false;
     }
@@ -259,16 +257,6 @@ int KraftDoc::slotAppendPosition( const DocPosition& pos )
   *dp = pos; // FIXME: Proper assignment operator
 
   return mPositions.count();
-}
-
-DocumentSaverBase* KraftDoc::getSaver( const QString& )
-{
-    if( ! mSaver )
-    {
-        // qDebug () << "Create new Document DB-Saver" << endl;
-        mSaver = new DocumentSaverDB();
-    }
-    return mSaver;
 }
 
 Geld KraftDoc::nettoSum() const

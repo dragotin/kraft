@@ -170,7 +170,6 @@ public slots:
     void slotMoveUpPosition( int );
     void slotMoveDownPosition( int );
 private:
-    DocumentSaverBase* getSaver( const QString& saverHint = QString() );
     /** the modified flag of the current document */
     bool _modified;
     bool mIsNew;
@@ -197,7 +196,6 @@ private:
     QDateTime   mLastModified;
     DocPositionList mPositions;
     DBIdList mRemovePositions;
-    DocumentSaverBase *mSaver;
     dbID    mDocID;
 };
 

@@ -60,6 +60,10 @@ public:
 
   DefaultProvider();
 
+  bool writeXmlArchive();
+  QString pdfOutputDir();
+  QString xmlArchivePath();
+
 private:
 
  //  static DefaultProvider *mSelf;

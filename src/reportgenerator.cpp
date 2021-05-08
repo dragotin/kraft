@@ -322,10 +322,8 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
 
 QString ReportGenerator::targetFileName() const
 {
-    const QString filename = ArchiveMan::self()->archiveFileName( mDocId, mArchId.toString(), "pdf" );
-    const QString fullOutputPath = QString("%1/%2").arg(ArchiveMan::self()->pdfBaseDir()).arg(filename);
-
-    return fullOutputPath;
+    ArchDocDigest dig = _archDoc.toDigest();
+    return dig.pdfArchiveFileName();
 }
 
 QString ReportGenerator::findTemplateFile( const QString& type )

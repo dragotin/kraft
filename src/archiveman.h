@@ -24,14 +24,16 @@
 class KraftDoc;
 class dbID;
 class QDomDocument;
+class DocPositionList;
 
 class ArchiveMan
 {
-  public:
+    friend class KraftDB;
+
+public:
     virtual ~ArchiveMan();
 
     static ArchiveMan *self();
-    dbID archiveDocument( KraftDoc* );
 
     /**
      * query the document identifier id for a given database archive id
@@ -43,12 +45,19 @@ class ArchiveMan
     QString archiveFileName( const QString&, const QString&, const QString& ) const;
 
     ArchiveMan();
-  protected:
+
+protected:
+    /* do not use the archive function directly, but always via KraftDB, to let the DB
+     * class update the counters of documents. */
+    dbID archiveDocument( KraftDoc* );
+
     virtual QDomDocument archiveDocumentXml( KraftDoc*,  const QString& );
     virtual dbID archiveDocumentDb( KraftDoc* );
 
-  private:
+private:
     QDomElement xmlTextElement( QDomDocument, const QString&, const QString& );
+    QDomElement positionsDomElement( DocPositionList *positions, QDomDocument& doc );
+
     int archivePos( int, KraftDoc* );
     void ensureDirIsExisting( const QString& dir ) const;
 };

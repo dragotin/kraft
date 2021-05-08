@@ -167,7 +167,7 @@ public:
   double tax() const;
   double reducedTax() const;
 
-  ArchDocDigest toDigest();
+  ArchDocDigest toDigest() const;
 
   // when the document was sent to the customer.
   QDateTime sentOutDate();

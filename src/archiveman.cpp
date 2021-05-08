@@ -28,7 +28,6 @@
 #include "kraftdb.h"
 #include "unitmanager.h"
 #include "dbids.h"
-#include "kraftsettings.h"
 #include "documentman.h"
 #include "defaultprovider.h"
 #include "format.h"
@@ -56,7 +55,9 @@ dbID ArchiveMan::archiveDocument( KraftDoc *doc )
 
   dbID archId = archiveDocumentDb( doc );
 
-  archiveDocumentXml( doc, archId.toString() );
+  if ( DefaultProvider::self()->writeXmlArchive() ) {
+      archiveDocumentXml( doc, archId.toString());
+  }
 
   return archId;
 }
@@ -85,54 +86,91 @@ QDomElement ArchiveMan::xmlTextElement( QDomDocument doc, const QString& name, c
   return elem;
 }
 
+QDomElement ArchiveMan::positionsDomElement( DocPositionList *positions, QDomDocument& doc )
+{
+    QDomElement topElem = doc.createElement( "positions" );
+    QDomElement posElem;
+
+    int num = 1;
+
+    DocPositionListIterator it(*positions);
+    while( it.hasNext() ) {
+        DocPosition *dpb = static_cast<DocPosition*>( it.next() );
+
+        if( dpb->type() == DocPositionBase::Position ) {
+            DocPosition *dp = static_cast<DocPosition*>(dpb);
+
+            posElem = doc.createElement( "position" );
+            posElem.setAttribute( "number", num++ );
+            topElem.appendChild( posElem );
+            posElem.appendChild( xmlTextElement( doc, "text", dp->text() ) );
+
+            double am = dp->amount();
+            QString h = QString::number(am, 'f', 2 );
+            posElem.appendChild( xmlTextElement( doc, "amount", h ));
+
+            Einheit e = dp->unit();
+            posElem.appendChild( xmlTextElement( doc, "unit", e.einheit( am ) ) );
+
+            Geld g = dp->unitPrice();
+            posElem.appendChild( xmlTextElement( doc, "unitprice", QString::number(g.toDouble(), 'f', 2 )));
+
+            Geld sum(g * am);
+
+            posElem.appendChild( xmlTextElement( doc, "sumprice", QString::number(sum.toDouble(), 'f', 2 ) ) );
+        }
+    }
+    return topElem;
+}
+
 QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archId )
 {
-  QDomDocument xmldoc( "kraftdocument" );
-  QDomElement root = xmldoc.createElement( "kraftdocument" );
-  // Fixme:
-  xmldoc.appendChild( root );
-  QDomElement cust = xmldoc.createElement( "client" );
-  root.appendChild( cust );
-  cust.appendChild( xmlTextElement( xmldoc, "address", doc->address() ) );
-  cust.appendChild( xmlTextElement( xmldoc, "clientId", doc->addressUid() ) );
+    QDomDocument xmldoc( "kraftdocument" );
+    QDomElement root = xmldoc.createElement( "kraftdocument" );
+    // Fixme:
+    xmldoc.appendChild( root );
+    QDomElement cust = xmldoc.createElement( "client" );
+    root.appendChild( cust );
+    cust.appendChild( xmlTextElement( xmldoc, "address", doc->address() ) );
+    cust.appendChild( xmlTextElement( xmldoc, "clientId", doc->addressUid() ) );
 
-  QDomElement docElem = xmldoc.createElement( "docframe" );
-  root.appendChild( docElem );
-  docElem.appendChild( xmlTextElement( xmldoc, "docType", doc->docType() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "docDesc", doc->whiteboard() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "ident", doc->ident() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "predecessor", doc->predecessor() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "preText", doc->preText() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "postText", doc->postText() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "projectLabel", doc->projectLabel() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "salut", doc->salut() ) );
-  docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
+    QDomElement docElem = xmldoc.createElement( "docframe" );
+    root.appendChild( docElem );
+    docElem.appendChild( xmlTextElement( xmldoc, "docType", doc->docType() ) );
+    docElem.appendChild( xmlTextElement( xmldoc, "docDesc", doc->whiteboard() ) );
+    docElem.appendChild( xmlTextElement( xmldoc, "ident", doc->ident() ) );
+    docElem.appendChild( xmlTextElement( xmldoc, "predecessor", doc->predecessor() ) );
+    docElem.appendChild( xmlTextElement( xmldoc, "preText", doc->preText() ) );
+    docElem.appendChild( xmlTextElement( xmldoc, "postText", doc->postText() ) );
+    docElem.appendChild( xmlTextElement( xmldoc, "projectLabel", doc->projectLabel() ) );
+    docElem.appendChild( xmlTextElement( xmldoc, "salut", doc->salut() ) );
+    docElem.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
 
-  docElem.appendChild( xmlTextElement( xmldoc, "date", Format::toDateString(doc->date(), Format::DateFormatIso)));
+    docElem.appendChild( xmlTextElement( xmldoc, "date", Format::toDateString(doc->date(), Format::DateFormatIso)));
 
-  root.appendChild( doc->positions().domElement( xmldoc ) );
+    DocPositionList dpList = doc->positions();
+    root.appendChild( positionsDomElement(&dpList, xmldoc) );
 
-  QString xml = xmldoc.toString();
-  // qDebug() << "Resulting XML: " << xml << endl;
+    QString xml = xmldoc.toString();
+    // qDebug() << "Resulting XML: " << xml << endl;
 
-  QString outputDir = ArchiveMan::self()->xmlBaseDir();
-  QString filename = ArchiveMan::self()->archiveFileName( doc->ident(), archId, "xml" );
+    const QString outputDir = xmlBaseDir();
+    const QString filename = archiveFileName( doc->ident(), archId, "xml" );
 
-  QString xmlFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
+    const QString xmlFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
 
-  // qDebug () << "Storing XML to " << xmlFile << endl;
+    // qDebug () << "Storing XML to " << xmlFile << endl;
 
-  if ( KraftSettings::self()->doXmlArchive() ) {
     QFile file( xmlFile );
     if ( file.open( QIODevice::WriteOnly ) ) {
-      QTextStream stream( &file );
-      stream << xml << "\n";
-      file.close();
+        QTextStream stream( &file );
+        stream << xml << "\n";
+        file.close();
     } else {
-      // qDebug () << "Saving failed" << endl;
+        // qDebug () << "Saving failed" << endl;
     }
-  }
-  return xmldoc ;
+
+    return xmldoc ;
 }
 
 dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
@@ -268,10 +306,10 @@ void ArchiveMan::ensureDirIsExisting( const QString& dir ) const
 
 QString ArchiveMan::xmlBaseDir() const
 {
-    QString outputDir = KraftSettings::self()->xmlArchivePath();
+    QString outputDir = DefaultProvider::self()->xmlArchivePath();
     if ( outputDir.isEmpty() ) {
         // stay bug compatible: Before issue #80, this was the pdfOutputDir
-        outputDir = KraftSettings::self()->pdfOutputDir();
+        outputDir = DefaultProvider::self()->pdfOutputDir();
     }
     if (outputDir.isEmpty()) {
         outputDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
@@ -285,7 +323,7 @@ QString ArchiveMan::xmlBaseDir() const
 
 QString ArchiveMan::pdfBaseDir() const
 {
-  QString outputDir = KraftSettings::self()->pdfOutputDir();
+  QString outputDir = DefaultProvider::self()->pdfOutputDir();
   if ( outputDir.isEmpty() ) {
     outputDir = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
   }

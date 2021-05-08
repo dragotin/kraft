@@ -18,7 +18,6 @@
 #ifndef DOCUMENTMAN_H
 #define DOCUMENTMAN_H
 
-#include "docdigest.h"
 #include "kraftdoc.h"
 
 class DocPosition;

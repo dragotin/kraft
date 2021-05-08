@@ -33,6 +33,8 @@
 #include "doctype.h"
 #include "dbids.h"
 #include "defaultprovider.h"
+#include "archiveman.h"
+#include "documentsaverdb.h"
 
 Q_GLOBAL_STATIC(KraftDB, mSelf)
 
@@ -106,7 +108,8 @@ KraftDB::KraftDB()
       EuroTag( QString::fromLatin1( "%EURO" ) ),
       mInitDialog(nullptr),
       _amountOfDocs(-1),
-      _amountOfArchs(-1)
+      _amountOfArchs(-1),
+      _emitDBChangeSignal(true)
 {
     // Attention: Before setup assistant rewrite, dbConnect() was called here.
     // Keep that in mind, maybe the auto connect to the DB now misses somewhere.
@@ -663,7 +666,7 @@ void KraftDB::slotCheckDocDatabaseChanged()
             _amountOfDocs = cnt;
         }
     }
-    if (!changed) {
+    {
         QSqlQuery qArch("SELECT count(*) FROM archdoc");
 
         qArch.exec();
@@ -684,5 +687,43 @@ void KraftDB::slotCheckDocDatabaseChanged()
             _amountOfArchs = cnt;
         }
     }
-    if (changed) emit docDatabaseChanged();
+    if (changed && _emitDBChangeSignal) emit docDatabaseChanged();
 }
+
+dbID KraftDB::archiveDocument( KraftDoc *docPtr )
+{
+    dbID archID = ArchiveMan::self()->archiveDocument( docPtr );
+
+    if (archID.isOk()) {
+        _emitDBChangeSignal = false; // block sending of the signal
+        slotCheckDocDatabaseChanged();
+        _emitDBChangeSignal = true;
+    }
+
+    return archID;
+}
+
+void KraftDB::loadDocument(const QString& id, KraftDoc *docPtr)
+{
+    DocumentSaverDB loader;
+
+    loader.load(id, docPtr);
+}
+
+bool KraftDB::saveDocument(KraftDoc *docPtr)
+{
+    bool res {false};
+    DocumentSaverDB saver;
+
+    if (docPtr) {
+        res  = saver.saveDocument(docPtr);
+        if (res) {
+            _emitDBChangeSignal = false; // block sending of the signal
+            slotCheckDocDatabaseChanged();
+            _emitDBChangeSignal = true;
+        }
+    }
+
+    return res;
+}
+

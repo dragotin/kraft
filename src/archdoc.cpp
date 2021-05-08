@@ -25,8 +25,8 @@
 #include <KLocalizedString>
 
 // application specific includes
-#include "archdoc.h"
 #include "archiveman.h"
+#include "archdoc.h"
 #include "documentman.h"
 #include "kraftdb.h"
 #include "defaultprovider.h"
@@ -272,7 +272,7 @@ void ArchDoc::setSentOutDate( const QDateTime& dt )
     mAttributes.save(mArchDocID);
 }
 
-ArchDocDigest ArchDoc::toDigest()
+ArchDocDigest ArchDoc::toDigest() const
 {
     return ArchDocDigest(mPrintDate, mState, mIdent, mArchDocID);
 }

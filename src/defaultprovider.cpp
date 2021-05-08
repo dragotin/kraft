@@ -316,6 +316,21 @@ QStringList DefaultProvider::findTrml2Pdf( ) const
     return retList;
 }
 
+bool DefaultProvider::writeXmlArchive()
+{
+    return KraftSettings::self()->doXmlArchive();
+}
+
+QString DefaultProvider::xmlArchivePath()
+{
+    return KraftSettings::self()->xmlArchivePath();
+}
+
+QString DefaultProvider::pdfOutputDir()
+{
+    return KraftSettings::self()->pdfOutputDir();
+}
+
 DefaultProvider::~DefaultProvider()
 {
 

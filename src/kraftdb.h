@@ -29,6 +29,8 @@
 class dbID;
 class DbInitDialog;
 class SetupAssistant;
+
+class KraftDoc;
 /**
   *@author Klaas Freitag
   */
@@ -136,6 +138,12 @@ public:
 
   KraftDB();
 
+  dbID archiveDocument( KraftDoc *docPtr );
+
+  void loadDocument(const QString& id, KraftDoc *docPtr);
+  bool saveDocument(KraftDoc *docPtr);
+
+
 private slots:
   void slotCheckDocDatabaseChanged();
 
@@ -163,6 +171,11 @@ private: // Private attributes
   QTimer _timer;
 
   int _amountOfDocs, _amountOfArchs;
+
+  // if this is set to false, the slotCheckDatabaseChanged() can be called
+  // to update the members that hold the amount of docs, but the update signal
+  // is not sent out.
+  bool _emitDBChangeSignal;
 };
 
 #endif
