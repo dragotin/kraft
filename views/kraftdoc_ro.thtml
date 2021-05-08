@@ -23,7 +23,7 @@
 <table width="100%" border="0">
 {{#ITEMS}}
 <tr>
-<td width="15">{{NUMBER}}</td>
+<td width="20">{{NUMBER}}.</td>
 <td colspan="3">{{TEXT}}</td>
 <td></td>
 </tr>
