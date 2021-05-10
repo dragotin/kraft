@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.12">
 <title>The Kraft Handbook</title>
 <style>
 @import url(http://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.0/css/font-awesome.css);
@@ -652,7 +652,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <p>Kraft is a Qt and KDE application to organize office documents like quotes and invoices in a small business. It eases the creation of these of documents and helps with repeating tasks.</p>
 </div>
 <div class="paragraph">
-<p>With Kraft, there is no need for a text processor any more. Documents are created by a few clicks and archived automatically. Kraft generates high quality PDF output.</p>
+<p>With Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks and archived automatically. Kraft generates high quality PDF output for printing, mailing and archiving.</p>
 </div>
 <div class="dlist">
 <dl>
@@ -1534,7 +1534,7 @@ in the output it generates.</p>
 <div class="sect2">
 <h3 id="_output_document_customization">Output Document Customization</h3>
 <div class="paragraph">
-<p>To create PDF output documents, the document data that was edited in the Kraft app is filled into a template. The template defines how the output document looks like, ie. through font settings, placing of elements etc.</p>
+<p>To create PDF output documents, the document data that was edited in the Kraft app is filled into a template. The template defines how the output document looks like, ie. by font settings, placing of elements and such.</p>
 </div>
 <div class="paragraph">
 <p>The file that is assembled from data and the template is converted to PDF using a special document creation script. All that is started automatically by Kraft if a document should be printed.</p>
@@ -1734,10 +1734,96 @@ Removes this item from document.</pre>
 </div>
 </div>
 <div class="sect1">
+<h2 id="AdvancedTopics">Advanced Topics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter describes advanced topics around Kraft. Some Linux knowledge is required, and setups should be done by experienced Linux administrators and should be tested carefully.</p>
+</div>
+<div class="sect2">
+<h3 id="_using_kraft_collaborative">Using Kraft Collaborative</h3>
+<div class="paragraph">
+<p>Kraft can be used collaborative in a distributed environment. That means that multiple users work on their desktops with their own Kraft instance on the same data.</p>
+</div>
+<div class="paragraph">
+<p>This whole topic is a subject to change, as Kraft will evolve to use ownCloud as a private cloud solution to store the data.</p>
+</div>
+<div class="sect3">
+<h4 id="_sharing_database_and_document_pool">Sharing Database and Document Pool</h4>
+<div class="paragraph">
+<p>The simplest case is that two or more Kraft instances use a database together and access the same pool of PDF documents on the harddisk. For simplicity this describes only two Kraft instances.</p>
+</div>
+<div class="paragraph">
+<p>A typical use case would be: Two different Linux users want to use Kraft. They both have their own computer but only work in the same network. For example this would describe a situation with one main office machine that runs Kraft in normal mode, plus a notebook with Kraft in read only mode to view documents, check catalogs and such.</p>
+</div>
+<div class="paragraph">
+<p>For that, the following prerequisites have to be met:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>MySQL or MariaDB is used as database backend. Sqlite is not supported.</p>
+</li>
+<li>
+<p>The database is accessible with a mysql user and from each machine for both users.</p>
+</li>
+<li>
+<p>The document store directory has to be shared.</p>
+</li>
+</ol>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>WARNING:
+There is no protection against having both users editing the same document. Because that is dangerous and can lead to unpredictable results, it is recommended to run all instances of Kraft except the main one in read only mode. This is done by starting Kraft with the <code>-r</code> command line switch.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p><strong>Sharing the Database</strong></p>
+</div>
+<div class="paragraph">
+<p>The database server should be installed on the main machine or a dedicated device like a NAS. Networking speed influences the comfort to use obviously.</p>
+</div>
+<div class="paragraph">
+<p>Find howtos on the internet how to setup MySQL accordingly.</p>
+</div>
+<div class="paragraph">
+<p><strong>Sharing the Document Pool Directory</strong></p>
+</div>
+<div class="paragraph">
+<p>Kraft writes generated PDF documents into a local directory. Where that is can be configured in the Kraft Config file. The config file has to be adopted on all instances.</p>
+</div>
+<div class="paragraph">
+<p>That is located in each users home directory, in the path <code>.config/kraftrc</code>. It has to contain the following config value:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[reporting]
+PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are different ways how share that directory, ie. NFS or SMB storages. It is important that both users from both machines can list and access the files. The main user needs read and write access, read only users only need read access to the files.</p>
+</div>
+<div class="paragraph">
+<p>A recommended setup is a NFS share with autofs which is set up on the main machine. To manage file access a certain group should be set up on the machines with which access can be managed.</p>
+</div>
+<div class="paragraph">
+<p><strong>Starting Kraft in read-only mode</strong></p>
+</div>
+<div class="paragraph">
+<p>To start Kraft in read-only mode, start the binary with the <code>-r</code> command line switch.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="Credits">Credits and License</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Program copyright 2004–2020 Klaas Freitag</p>
+<p>Program and documentation copyright 2004–2021 Klaas Freitag</p>
 </div>
 <div class="paragraph">
 <p>Documentation copyright 2020 Ronald Stroethoff</p>
@@ -1747,7 +1833,7 @@ Removes this item from document.</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-11-01 12:44:30 +0100
+Last updated 2021-05-10 21:06:28 +0200
 </div>
 </div>
 </body>

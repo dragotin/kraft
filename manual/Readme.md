@@ -4,7 +4,7 @@ There are two ways to contribute to the user manual of Kraft.
 
 ### Work on the English Manual
 
-Just improve the English Manual that is stored in the file `kraft.adoc` in this file.
+Just improve the English Manual that is stored in the file `kraft.adoc` in this directory.
 With that you can concentrate on writing and do not deal with scripting etc. Content rules!
 Please send your changes either as pull request, or via email to the project maintainers. They will care for the rest.
 
