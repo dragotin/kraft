@@ -1,4 +1,17 @@
 
+Changes since version 0.96: #########################################
+
+Add read only mode to kraft. Documents can not be edited, but viewed
+and printed. Needs to be configured to share database and the PDF 
+store directory.
+
+- Fix: Bring back the checkbox for items, this fixes #103
+- Fix: Command line option -d works again
+- Cmake: Build a static lib of all sources to link with kraft and all
+  the tests.
+
+=> release v. 0.97 (xx, 2021)
+
 Changes since version 0.95: #########################################
 
 - Found new MIT licensed icons to avoid uncertainess with CC license.
@@ -13,7 +26,7 @@ Changes since version 0.95: #########################################
        text of the target document type is empty, the one from the
        source document is copied over instead. (#91)
 
-=> release v. 0.96 (xx, 2021)
+=> release v. 0.96 (Feb. 27, 2021)
 
 Changes since version 0.90: #########################################
 
