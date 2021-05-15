@@ -331,7 +331,16 @@ void Portal::slotStartupChecks()
 
     SetupAssistant assi(this);
     if( assi.init( SetupAssistant::Update) ) {
-        assi.exec();
+        if (_readOnlyMode) {
+            // Update not under our control here.
+            QMessageBox::warning(this, i18n("Database not running"),
+                                 i18n("Kraft was started in readonly mode, but the configured "
+    "database can not be connected.\n\nKraft will abort."));
+            QTimer::singleShot(500, this, [this] { close(); });
+            return;
+        } else {
+            assi.exec();
+        }
     }
 
     if( ! KraftDB::self()->isOk() ) {
