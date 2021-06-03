@@ -548,6 +548,7 @@ PositionViewWidget *KraftView::createPositionViewWidget( DocPositionBase *dp, in
     for(int i = pos+1; i < mPositionWidgetList.count(); ++i)
     {
       mPositionWidgetList.at(i)->setOrdNumber(i+1);
+      setMappingId(mPositionWidgetList.at(i), i);
     }
   }
 
