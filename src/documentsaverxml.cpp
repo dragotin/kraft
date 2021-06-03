@@ -19,6 +19,9 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QSqlQuery>
+#include <QDir>
+#include <QXmlSchemaValidator>
+#include <QXmlSchema>
 
 
 #include "documentsaverxml.h"
@@ -119,7 +122,8 @@ QDomDocument xmlDocument( KraftDoc *doc)
     QDomDocument xmldoc( "kraftdocument" );
     QDomElement root = xmldoc.createElement( "kraftdocument" );
     root.setAttribute("schemaVersion", "1");
-    // Fixme:
+    xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
+
     xmldoc.appendChild( root );
 
     QDomElement meta = xmldoc.createElement( "meta" );
@@ -221,12 +225,30 @@ QDomDocument xmlDocument( KraftDoc *doc)
 }
 
 
-DocumentSaverXML::DocumentSaverXML( ) : DocumentSaverBase()
+QString DocumentSaverXML::basePath()
 {
-
+    return _basePath.path();
 }
 
-bool DocumentSaverXML::saveDocument(KraftDoc *doc )
+void DocumentSaverXML::setBasePath(const QString& path)
+{
+    _basePath.setPath(path);
+}
+
+DocumentSaverXML::DocumentSaverXML()
+    : DocumentSaverBase(),
+    _validateWithSchema {false}
+{
+    const QUrl schemaFile = QUrl::fromLocalFile(DefaultProvider::self()->locateFile("xml/kraftdoc.xsd"));
+
+    if (_schema.load(schemaFile)) {
+        _validateWithSchema = true;
+    } else {
+        qDebug() << "Failed to load schema" << schemaFile.toLocalFile();
+    }
+}
+
+bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 {
 
     bool result = false;
@@ -243,11 +265,12 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
     const QString xml = xmldoc.toString();
 
     // qDebug() << "Resulting XML: " << xml << endl;
+    QString path {basePath()};
+    QDate d = doc->date();
+    path.append(QString("/%1/%2/").arg(d.year()).arg(d.month()));
 
-    QString outputDir {"/tmp/"};       // ArchiveMan::self()->xmlBaseDir();
-    QString filename {"kraftdoc.xml"}; // ArchiveMan::self()->archiveFileName( doc->ident(), archId, "xml" );
-
-    QString xmlFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
+    _basePath.mkpath(path);
+    const QString xmlFile = path + doc->ident() + ".xml";
 
     // qDebug () << "Storing XML to " << xmlFile << endl;
 
@@ -258,6 +281,15 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc )
         file.close();
     } else {
         // qDebug () << "Saving failed" << endl;
+    }
+
+    if (_validateWithSchema && _schema.isValid() && file.open(QIODevice::ReadOnly)) {
+
+        QXmlSchemaValidator validator(_schema);
+        if (validator.validate(&file, QUrl::fromLocalFile(xmlFile)))
+            qDebug() << "instance document is valid";
+        else
+            qDebug() << "instance document is invalid";
     }
 
 #if 0
