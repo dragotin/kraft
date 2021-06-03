@@ -20,6 +20,9 @@
 
 #include "documentsaverbase.h"
 
+#include <QDir>
+#include <QXmlSchema>
+
 class KraftDoc;
 class QSqlRecord;
 class dbID;
@@ -33,11 +36,21 @@ public:
     DocumentSaverXML();
     virtual ~DocumentSaverXML();
 
-    virtual bool saveDocument( KraftDoc* ) override;
+    virtual bool saveDocument(KraftDoc*) override;
     virtual void load( const QString& , KraftDoc * ) override;
+
+    void setBasePath(const QString& path);
+
 protected:
     virtual void loadPositions( const QString&, KraftDoc* );
+
+    QString basePath();
+
 private:
+
+    QDir _basePath;
+    bool _validateWithSchema;
+    QXmlSchema _schema;
 };
 
 #endif

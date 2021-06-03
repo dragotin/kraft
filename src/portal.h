@@ -88,6 +88,8 @@ class Portal : public QMainWindow
     void slotDocConvertionFail(const QString& failString, const QString &details);
     void openInMailer(const QString& fileName, const KContacts::Addressee& contact);
 
+    void slotConvertToXML();
+
   public slots:
 
     /** closes all open windows, then quits the application.
@@ -159,6 +161,7 @@ class Portal : public QMainWindow
     QAction* _actHandbook;
     QAction* _actPreferences;
     QAction* _actReconfDb;
+    QAction* _actXmlConvert;
 
     QAction* _actNewDocument;
     QAction* _actCopyDocument;
