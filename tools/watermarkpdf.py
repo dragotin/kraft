@@ -63,11 +63,10 @@ class PdfWatermark:
         # file.
         for page in range(inputPdf.getNumPages()):
             pdf_page = inputPdf.getPage(page)
+            bg_page = watermark_page
             if (spec == Mark.FIRST_PAGE and firstPage) or spec == Mark.ALL_PAGES:
-                # deep copy the watermark page here, otherwise the watermark page
-                # gets merged over and over because p would only be a reference
-                pdf_page.mergePage(watermark_page)
-                outputPdf.addPage( pdf_page )
+                bg_page.mergePage(pdf_page)
+                outputPdf.addPage( bg_page )
                 firstPage = False
             else:
                 outputPdf.addPage(pdf_page)
