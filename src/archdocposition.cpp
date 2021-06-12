@@ -98,7 +98,7 @@ QString ArchDocPosition::htmlText(const QString& paraStyle) const
     if ( style.isEmpty() ) style = QStringLiteral("text");
 
     // Keep empty parts allows multiple newlines here
-    const QStringList li = mText.toHtmlEscaped().split( "\n", Qt::KeepEmptyParts );
+    const QStringList li = mText.toHtmlEscaped().split( "\n", QString::KeepEmptyParts );
 
     re = li.join("<br/>");
 
