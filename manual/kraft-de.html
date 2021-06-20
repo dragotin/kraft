@@ -652,7 +652,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <p>Kraft ist ein Qt- und KDE-Programm zum Organisieren von Bürodokumenten wie Angeboten und Rechnungen in kleinen Unternehmen. Es erleichtert die Erstellung der Dokument und vereinfacht wiederkehrende Aufgaben.</p>
 </div>
 <div class="paragraph">
-<p>With Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks and archived automatically. Kraft generates high quality PDF output for printing, mailing and archiving.</p>
+<p>Mit Kraft wird kein Textbearbeitungsprogramm mehr benötigt. Rechnungs- und Angebotsdokumente werden mit ein paar Klicks erstellt und automatisch abgelegt. Kraft generiert hochqualitative PDF Dokumente für Druck, EMail und Archivierung.</p>
 </div>
 <div class="dlist">
 <dl>
@@ -761,13 +761,13 @@ Lernen Sie mehr auf <a href="https://github.com/dragotin/kraft/blob/master/manua
 <div class="sect3">
 <h4 id="_nummernkreise">Nummernkreise</h4>
 <div class="paragraph">
-<p><span class="image right"><img src="images/numbercycles.png" alt="Numbercycles"></span> Numbercycles are used to define the <strong>document number</strong> which is printed on every document. The document number is an important unique identifier of the document and often must follow regulations.</p>
+<p><span class="image right"><img src="images/numbercycles.png" alt="Numbercycles"></span> Nummernkreise werden zur Definition der <strong>Dokumentnummern</strong> benötigt, die auf jedem Dokument gedruckt wird. Die Dokumentnummer ist eine wichtige und eindeutige Kennzahl des Dokuments und muss Regularien gehorchen.</p>
 </div>
 <div class="paragraph">
-<p>Different document types can use the same number cycle to generate ids from. Number cycles are identified by their name. User can create new number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
+<p>Verschiedene Dokumenttypen können die selben Nummernkreise verwenden um Ids aus ihnen zu generieren. Nummernkreise werden durch ihren Namen identifiziert. Benutzer können neue Nummernkreise anlegen und sie durch Klicken auf <b class="button">Nummernkreise bearbeiten&#8230;&#8203;</b> bearbeiten</p>
 </div>
 <div class="paragraph">
-<p>Kraft supports a counter that is incremented for every new document of a certain type. In addition to the counter, more information can be added to form an useful number, such as constant text or parts of the date.</p>
+<p>Kraft unterstützt Zähler, die automatisch für jedes neue Dokument eines bestimmten Dokumenttypes erhöht werden. Zusätzlich zu dem Zähler können weitere Informationen hinzugefügt werden um eine nützliche Dokumentnummer zu erzeugen, so wie konstanten Text oder Teile des Datums.</p>
 </div>
 <div class="paragraph">
 <p>See the following table for available variables which can be used:</p>
@@ -831,9 +831,9 @@ Lernen Sie mehr auf <a href="https://github.com/dragotin/kraft/blob/master/manua
 </div>
 </div>
 <div class="sect2">
-<h3 id="_taxes">Taxes</h3>
+<h3 id="_steuern">Steuern</h3>
 <div class="paragraph">
-<p>In many countries there are two kinds of VAT-taxes for sold products.</p>
+<p>In vielen Ländern gibt es zwei Arten von Mehrwertsteuer für veräusserte Produkte.</p>
 </div>
 <div class="paragraph">
 <p>A high level and a low level.</p>
@@ -1680,76 +1680,67 @@ Removes this item from document.</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="AdvancedTopics">Advanced Topics</h2>
+<h2 id="AdvancedTopics">Fortgeschrittene Themen</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This chapter describes advanced topics around Kraft. Some Linux knowledge is required, and setups should be done by experienced Linux administrators and should be tested carefully.</p>
+<p>Dieses Kapitel beschreibt fortgeschrittene Themen um Kraft. Dabei wird etwas Linux-Kenntnis vorausgesetzt, und das Aufsetzen sollte von erfahreneren Linux Administratoren durchgeführt und gut testet werden.</p>
 </div>
 <div class="sect2">
-<h3 id="_using_kraft_collaborative">Using Kraft Collaborative</h3>
+<h3 id="_kraft_kollaborativ_verwenden">Kraft kollaborativ verwenden</h3>
 <div class="paragraph">
-<p>Kraft can be used collaborative in a distributed environment. That means that multiple users work on their desktops with their own Kraft instance on the same data.</p>
+<p>Kraft kann kollaborativ in einer verteilten Umgebung verwendet werden. Das heisst, dass mehrere Benutzer an ihren jeweiligen Arbeitsplatzrechnern mit ihrer eigenen Kraft Instanz arbeiten können und dabei die selben Daten verwenden.</p>
 </div>
 <div class="paragraph">
-<p>This whole topic is a subject to change, as Kraft will evolve to use ownCloud as a private cloud solution to store the data.</p>
+<p>Das ganze Thema ist Veränderung unterworfen, da Kraft in naher Zukunft ownCloud als private Cloud Lösung zur Datenspeicherung verwenden wird.</p>
 </div>
 <div class="sect3">
-<h4 id="_sharing_database_and_document_pool">Sharing Database and Document Pool</h4>
+<h4 id="_datenbank_und_dokumentpool_teilen">Datenbank und Dokumentpool teilen</h4>
 <div class="paragraph">
-<p>The simplest case is that two or more Kraft instances use a database together and access the same pool of PDF documents on the harddisk. For simplicity this describes only two Kraft instances.</p>
+<p>Der einfachste Fall ist das zwei oder wenige mehr Kraft Instanzen die Datenbank gemeinsam benutzen und den Pool von PDF Dokumenten gemeinsam verwenden. Um es einfach zu halten werden hier zwei Instanzen beschrieben.</p>
 </div>
 <div class="paragraph">
-<p>A typical use case would be: Two different Linux users want to use Kraft. They both have their own computer but only work in the same network. For example this would describe a situation with one main office machine that runs Kraft in normal mode, plus a notebook with Kraft in read only mode to view documents, check catalogs and such.</p>
+<p>Ein typischer Anwendungsfall könnte sein: Zwei verschiedene Linux user möchten Kraft verwenden. Sie haben beide ihren eigenen Computer und arbeiten im selben Netzwerk. Dieses Beispiel beschreibt eine Situation mit einem Hauptbüro das Kraft im normalen Modus betreibt, und einem Notebook mit Kraft, das im NurLesen Modus um Dokumente anzusehen, Kataloge zu überprüfen und ähnliches.</p>
 </div>
 <div class="paragraph">
-<p>For that, the following prerequisites have to be met:</p>
+<p>Dafür müssen die folgenden Voraussetzungen erfüllt sein:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>MySQL or MariaDB is used as database backend. Sqlite is not supported.</p>
+<p>Als Datenbank-Backend wird MySQL oder MariaDB verwendet. Sqlite wird nicht unterstützt.</p>
 </li>
 <li>
-<p>The database is accessible with a mysql user and from each machine for both users.</p>
+<p>Die Datenbank ist mit dem MySQL Benutzer von beiden Rechnern aus erreichbar.</p>
 </li>
 <li>
-<p>The document store directory has to be shared.</p>
+<p>Das Dokument-Speicher-Verzeichnis muss geteilt werden.</p>
 </li>
 </ol>
 </div>
 <div class="quoteblock">
 <blockquote>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Warning</div>
-</td>
-<td class="content">
-There is no protection against having both users editing the same document. Because that is dangerous and can lead to unpredictable results, it is recommended to run all instances of Kraft except the main one in read only mode. This is done by starting Kraft with the <code>-r</code> command line switch.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>Achtung: Es gibt keinen Schutz dagegen, dass beide Benutzer das gleiche Dokument zur gleichen Zeit bearbeiten. Weil das gefährlich ist und zu unvorhersehbaren Resultaten führen kann, ist es empfohlen, Kraft in allen ausser der Haupt-Instanz im Nur-Lese Modus zu betreiben. Der Nur-Lese Modus wird mit Krafts Kommandozeilenschalter -r eingeschaltet.</p>
 </div>
 </blockquote>
 </div>
 <div class="paragraph">
-<p><strong>Sharing the Database</strong></p>
+<p><strong>Die Datenbank teilen</strong></p>
 </div>
 <div class="paragraph">
-<p>The database server should be installed on the main machine or a dedicated device like a NAS. Networking speed influences the comfort to use obviously.</p>
+<p>Der Datenbankserver sollte auf der Haupt-Maschine installiert sein, oder es sollte ein spezialisiertes Gerät wie ein NAS verwendet werden. Die Netzwerk Geschwindigkeit beeinflusst die Benutzbarkeit natürlich erheblich.</p>
 </div>
 <div class="paragraph">
-<p>Find howtos on the internet how to setup MySQL accordingly.</p>
+<p>Howtos um MySQL aufzusetzen sind im Internet zu finden.</p>
 </div>
 <div class="paragraph">
-<p><strong>Sharing the Document Pool Directory</strong></p>
+<p><strong>Den Dokument Pool teilen</strong></p>
 </div>
 <div class="paragraph">
-<p>Kraft writes generated PDF documents into a local directory. Where that is can be configured in the Kraft Config file. The config file has to be adopted on all instances.</p>
+<p>Kraft schreibt generierte PDFs in ein lokales Verzeichnis. Welches Verzeichnis das ist kann im Kraft Konfigfile eingerichtet werden. Das Konfigfile muss auf allen Instanzen angepasst werden.</p>
 </div>
 <div class="paragraph">
-<p>That is located in each users home directory, in the path <code>.config/kraftrc</code>. It has to contain the following config value:</p>
+<p>Es ist in jedem Benutzer Homeverzeichnis unter dem releativen Pfad <code>.config/kraftrc</code>. Es muss den folgenden Konfigurations-Wert enthalten:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1758,36 +1749,36 @@ PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>There are different ways how share that directory, ie. NFS or SMB storages. It is important that both users from both machines can list and access the files. The main user needs read and write access, read only users only need read access to the files.</p>
+<p>Es gibt verschiedene Wege wie das Verzeichnis geteilt werden kann, zum Beispiel NFS und SMB Server. Es ist entscheidend, dass beide Benutzer von beiden Maschinen die Dateien auflisten und zugreifen können. Der Hauptbenutzer braucht Schreib- und Leserecht., Nur-Lese Bentuzer brauchen nur Lesezugriff auf die Dateien.</p>
 </div>
 <div class="paragraph">
-<p>A recommended setup is a NFS share with autofs which is set up on the main machine. To manage file access a certain group should be set up on the machines with which access can be managed.</p>
+<p>Ein empfohlenes Setup benutzt ein NFS Share über autofs, das auf der Hauptmaschine aufgesetzt werden muss. Um Dateizugriff zu verwalten, sollte eine Gruppe aufgesetzt werden.</p>
 </div>
 <div class="paragraph">
-<p><strong>Starting Kraft in read-only mode</strong></p>
+<p><strong>Kraft im Nur-Lesen Modus</strong></p>
 </div>
 <div class="paragraph">
-<p>To start Kraft in read-only mode, start the binary with the <code>-r</code> command line switch.</p>
+<p>Um Kraft im Nur-Lese Modus zu starten, muss das Programm mit dem Kommandozeilenschalter <code>-r</code> gestartet werden.</p>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="Credits">Credits and License</h2>
+<h2 id="Credits">Credits und Lizenz</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Program and documentation copyright 2004–2021 Klaas Freitag</p>
+<p>Software und Dokumentation Copyright 2004-2021 Klaas Freitag</p>
 </div>
 <div class="paragraph">
-<p>Documentation copyright 2020 Ronald Stroethoff</p>
+<p>Dokumentation Copyright 2020 Ronald Stroethoff</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-10 21:06:37 +0200
+Last updated 2021-06-20 14:36:47 +0200
 </div>
 </div>
 </body>

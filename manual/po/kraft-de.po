@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-07-18 11:55+0200\n"
+"POT-Creation-Date: 2021-06-12 15:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,9 +33,6 @@ msgstr "Einführung"
 
 #. type: Plain text
 #: kraft.adoc:17
-#| msgid ""
-#| "Kraft is a Qt program for organizing documents like quotes and invoices "
-#| "in a small business."
 msgid ""
 "Kraft is a Qt and KDE application to organize office documents like quotes "
 "and invoices in a small business. It eases the creation of these of "
@@ -48,13 +45,14 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:19
 msgid ""
-"With Kraft, there is no need for a text processor any more. Documents are "
-"created by a few clicks and archived automatically. Kraft generates high "
-"quality PDF output."
+"With Kraft, there is no need for fiddling with a text processor any more. "
+"Documents are created by a few clicks and archived automatically. Kraft "
+"generates high quality PDF output for printing, mailing and archiving."
 msgstr ""
 "Mit Kraft wird kein Textbearbeitungsprogramm mehr benötigt. Rechnungs- und "
 "Angebotsdokumente werden mit ein paar Klicks erstellt und automatisch "
-"abgelegt. Kraft generiert hochqualitative PDF Dokumente."
+"abgelegt. Kraft generiert hochqualitative PDF Dokumente für Druck, EMail und "
+"Archivierung."
 
 #. type: Labeled list
 #: kraft.adoc:20
@@ -73,7 +71,6 @@ msgstr ""
 
 #. type: Plain text
 #: kraft.adoc:24
-#| msgid "Automated creation of offers, invoices and similar documents"
 msgid "Automated creation of offers, invoices and similar documents."
 msgstr ""
 "Unterstütztes Erstellen von Angeboten, Rechnungen und ähnlichen Dokumenten."
@@ -85,19 +82,16 @@ msgstr "Vorlagen für Dokument-Kopf- und Fusstexte sowie Dokumentposten."
 
 #. type: Plain text
 #: kraft.adoc:26
-#| msgid "Calculation"
 msgid "Calculation of items."
 msgstr "Kalkulation von einzelnen Posten."
 
 #. type: Plain text
 #: kraft.adoc:27
-#| msgid "Material management"
 msgid "Material management."
 msgstr "Materialverwaltung."
 
 #. type: Plain text
 #: kraft.adoc:28
-#| msgid "Configurable document creation in PDF format"
 msgid "Configurable document creation in PDF format for print and email."
 msgstr ""
 "Konfigurierbare Dokument-Erstellung im PDF Format zum Druck und Versenden "
@@ -267,6 +261,10 @@ msgid ""
 "document number is an important unique identifier of the document and often "
 "must follow regulations."
 msgstr ""
+"image:numbercycles.png[Numbercycles,float=\"right\"] Nummernkreise werden "
+"zur Definition der *Dokumentnummern* benötigt, die auf jedem Dokument "
+"gedruckt wird. Die Dokumentnummer ist eine wichtige und eindeutige Kennzahl "
+"des Dokuments und muss Regularien gehorchen."
 
 #. type: Plain text
 #: kraft.adoc:82
@@ -275,6 +273,10 @@ msgid ""
 " Number cycles are identified by their name.  User can create new number "
 "cycles and edit them clicking on the button btn:[Edit Number Cycles...]"
 msgstr ""
+"Verschiedene Dokumenttypen können die selben Nummernkreise verwenden um Ids "
+"aus ihnen zu generieren. Nummernkreise werden durch ihren Namen "
+"identifiziert. Benutzer können neue Nummernkreise anlegen und sie durch "
+"Klicken auf btn:[Nummernkreise bearbeiten...] bearbeiten"
 
 #. type: Plain text
 #: kraft.adoc:85
@@ -283,6 +285,10 @@ msgid ""
 "certain type.  In addition to the counter, more information can be added to "
 "form an useful number, such as constant text or parts of the date."
 msgstr ""
+"Kraft unterstützt Zähler, die automatisch für jedes neue Dokument eines "
+"bestimmten Dokumenttypes erhöht werden. Zusätzlich zu dem Zähler können "
+"weitere Informationen hinzugefügt werden um eine nützliche Dokumentnummer zu "
+"erzeugen, so wie konstanten Text oder Teile des Datums."
 
 #. type: Plain text
 #: kraft.adoc:87
@@ -293,7 +299,6 @@ msgstr ""
 #: kraft.adoc:103
 #, no-wrap
 msgid ""
-"\n"
 "| `%y` or `%yyyy` | the year of the document date.\n"
 "| `%yy`           | the year of the document (two digits).\n"
 "| `%w`            | the week number of the document date.\n"
@@ -313,12 +318,14 @@ msgstr ""
 #: kraft.adoc:105
 #, no-wrap
 msgid "Taxes"
-msgstr ""
+msgstr "Steuern"
 
 #. type: Plain text
 #: kraft.adoc:108
 msgid "In many countries there are two kinds of VAT-taxes for sold products."
 msgstr ""
+"In vielen Ländern gibt es zwei Arten von Mehrwertsteuer für veräusserte "
+"Produkte."
 
 #. type: Plain text
 #: kraft.adoc:111
@@ -1256,67 +1263,139 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:547
 msgid ""
-"Kraft can be customized in most of it's graphical user interface, and "
-"certainly in the output it generates."
+"Kraft can be customized in most of the graphical user interface and in "
+"particular in the output it generates."
 msgstr ""
 
 #. type: Title ===
 #: kraft.adoc:548
 #, no-wrap
-msgid "Document Customization"
+msgid "Output Document Customization"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:551
+msgid ""
+"To create PDF output documents, the document data that was edited in the "
+"Kraft app is filled into a template. The template defines how the output "
+"document looks like, ie. by font settings, placing of elements and such."
 msgstr ""
 
 #. type: Plain text
 #: kraft.adoc:553
 msgid ""
-"Each document type in Kraft can have it's own template that is used to "
-"create a PDF. The template is filled with values from the document content "
-"and processed using a document creation script."
+"The file that is assembled from data and the template is converted to PDF "
+"using a special document creation script. All that is started automatically "
+"by Kraft if a document should be printed."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:556
+#: kraft.adoc:555
 msgid ""
-"This makes sure that Kraft documents are always high standard quality, "
-"similar looking and generated very quickly."
+"Each document type in Kraft can have it's own template that is used to "
+"create a PDF. Which one can be set in the Settings dialog for document types."
 msgstr ""
 
 #. type: Title ====
-#: kraft.adoc:557
+#: kraft.adoc:556
 #, no-wrap
 msgid "WeasyPrint Documents"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:563
+#: kraft.adoc:559
 msgid ""
-"With [WeasyPrint] Kraft uses a very powerful HTML and CSS based generator "
-"that makes it very easy to create highly customized documents. The general "
-"idea is that weasyprint loads html output that is processed to PDF, "
+"With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful HTML and "
+"CSS based generator that makes it very easy to create highly customized "
+"documents which fit the users expectations. The general idea is that "
+"Weasyprint loads html output that is processed to PDF. Usually it is "
 "considering a Cascading Stylesheet file which has a huge impact on how the "
 "PDF document looks in the end."
 msgstr ""
 
+#. type: Plain text
+#: kraft.adoc:561
+msgid ""
+"To use a WeasyPrint based template for a document simply create a template "
+"file and save it with the extension *.gtmpl*. With that file extension Kraft "
+"automatically uses WeasyPrint and also the Grantlee templating for rendering."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:563
+msgid ""
+"An example for a WeasyPrint document can be found in the Kraft package in "
+"the reports directory and is called invoice.gtmpl."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:565
+msgid ""
+"To use a WeasyPrint template with one of the Kraft document types just "
+"select the template file name (with the right extension `*.gtml`) in the "
+"Kraft Settings Dialog."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:567
+msgid ""
+"From version 0.95 on Kraft ships with an example document in the Grantlee- "
+"and WeasyPrint format. It can be found at "
+"`/usr/share/kraft/reports/invoice.gtmpl` or "
+"https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl[online "
+"on Github]."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:569
+msgid ""
+"To effectively change the look of the document `kraft.css` "
+"(https://github.com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) "
+"needs to be considered. It defines most of the look."
+msgstr ""
+
+#. type: Title ====
+#: kraft.adoc:570
+#, no-wrap
+msgid "Template Variables"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:573
+msgid ""
+"To generate the PDF, Kraft has to transfer data from the document you have "
+"been working on in Kraft to the input document that is processed to an PDF "
+"utilising WeasyPrint. For that, Kraft uses a text template. In that, Kraft "
+"replaces variables with the actual values."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:575
+msgid ""
+"The syntax is based on the Django syntax for templates described in the "
+"https://docs.djangoproject.com/en/3.1/topics/templates/[the docs]."
+msgstr ""
+
 #. type: Title ==
-#: kraft.adoc:566
+#: kraft.adoc:579
 #, no-wrap
 msgid "Menus and Shortcuts"
 msgstr ""
 
 #. type: Title ===
-#: kraft.adoc:568
+#: kraft.adoc:581
 #, no-wrap
 msgid "Main Application Menu"
 msgstr ""
 
 #. type: Title ====
-#: kraft.adoc:571
+#: kraft.adoc:584
 #, no-wrap
 msgid "The File Menu"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:576
+#: kraft.adoc:589
 #, no-wrap
 msgid ""
 " [File]>[Quit]\n"
@@ -1325,13 +1404,13 @@ msgid ""
 msgstr ""
 
 #. type: Title ====
-#: kraft.adoc:578
+#: kraft.adoc:591
 #, no-wrap
 msgid "The Document Menu"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:584
+#: kraft.adoc:597
 #, no-wrap
 msgid ""
 " [Document]>[Show Document]\n"
@@ -1340,7 +1419,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:588
+#: kraft.adoc:601
 #, no-wrap
 msgid ""
 " [Document]>[Edit Document]\n"
@@ -1349,7 +1428,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:592
+#: kraft.adoc:605
 #, no-wrap
 msgid ""
 " [Document]>[Open Archived document]\n"
@@ -1358,7 +1437,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:595
+#: kraft.adoc:608
 #, no-wrap
 msgid ""
 " [Document]>[Create Document]\n"
@@ -1366,7 +1445,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:599
+#: kraft.adoc:612
 #, no-wrap
 msgid ""
 " [Document]>[Copy Document]\n"
@@ -1375,7 +1454,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:602
+#: kraft.adoc:615
 #, no-wrap
 msgid ""
 " [Document]>[Follow Document]\n"
@@ -1383,7 +1462,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:606
+#: kraft.adoc:619
 #, no-wrap
 msgid ""
 " [Document]>[Print document]\n"
@@ -1392,7 +1471,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:610
+#: kraft.adoc:623
 #, no-wrap
 msgid ""
 " [Document]>[Mail document]\n"
@@ -1401,13 +1480,13 @@ msgid ""
 msgstr ""
 
 #. type: Title ====
-#: kraft.adoc:613
+#: kraft.adoc:626
 #, no-wrap
 msgid "The Settings menu"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:619
+#: kraft.adoc:632
 #, no-wrap
 msgid ""
 " [Settings]>[Edit Tag Templates]\n"
@@ -1417,7 +1496,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:623
+#: kraft.adoc:636
 #, no-wrap
 msgid ""
 " [Settings]>[Redo initial setup]\n"
@@ -1426,7 +1505,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:627
+#: kraft.adoc:640
 #, no-wrap
 msgid ""
 " [Settings]>[Showed toolbars]\n"
@@ -1435,7 +1514,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:631
+#: kraft.adoc:644
 #, no-wrap
 msgid ""
 " [Settings]>[Configure Kraft]\n"
@@ -1444,19 +1523,19 @@ msgid ""
 msgstr ""
 
 #. type: Title ===
-#: kraft.adoc:632
+#: kraft.adoc:645
 #, no-wrap
 msgid "Document Edit Window"
 msgstr ""
 
 #. type: Title ====
-#: kraft.adoc:635
+#: kraft.adoc:648
 #, no-wrap
 msgid "The context Menu"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:639
+#: kraft.adoc:652
 #, no-wrap
 msgid ""
 " [Context]>[Item kind]\n"
@@ -1464,25 +1543,25 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:640
+#: kraft.adoc:653
 #, no-wrap
 msgid "Normal\n"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:641
+#: kraft.adoc:654
 #, no-wrap
 msgid "Alternative\n"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:642
+#: kraft.adoc:655
 #, no-wrap
 msgid "On demand\n"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:645
+#: kraft.adoc:658
 #, no-wrap
 msgid ""
 " [Context]>[Tax]\n"
@@ -1490,7 +1569,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:648
+#: kraft.adoc:661
 #, no-wrap
 msgid ""
 " [Context]>[Move up]\n"
@@ -1498,7 +1577,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:651
+#: kraft.adoc:664
 #, no-wrap
 msgid ""
 " [Context]>[Move down]\n"
@@ -1506,7 +1585,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:654
+#: kraft.adoc:667
 #, no-wrap
 msgid ""
 " [Context]>[Lock item]\n"
@@ -1514,7 +1593,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:657
+#: kraft.adoc:670
 #, no-wrap
 msgid ""
 " [Context]>[Unlock item]\n"
@@ -1522,7 +1601,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:660
+#: kraft.adoc:673
 #, no-wrap
 msgid ""
 " [Context]>[Delete item]\n"
@@ -1530,20 +1609,233 @@ msgid ""
 msgstr ""
 
 #. type: Title ==
-#: kraft.adoc:662
+#: kraft.adoc:676
+#, no-wrap
+msgid "Advanced Topics"
+msgstr "Fortgeschrittene Themen"
+
+#. type: Plain text
+#: kraft.adoc:679
+msgid ""
+"This chapter describes advanced topics around Kraft. Some Linux knowledge is "
+"required, and setups should be done by experienced Linux administrators and "
+"should be tested carefully."
+msgstr ""
+"Dieses Kapitel beschreibt fortgeschrittene Themen um Kraft. Dabei wird etwas "
+"Linux-Kenntnis vorausgesetzt, und das Aufsetzen sollte von erfahreneren "
+"Linux Administratoren durchgeführt und gut testet werden."
+
+#. type: Title ===
+#: kraft.adoc:680
+#, no-wrap
+msgid "Using Kraft Collaborative"
+msgstr "Kraft kollaborativ verwenden"
+
+#. type: Plain text
+#: kraft.adoc:683
+msgid ""
+"Kraft can be used collaborative in a distributed environment. That means "
+"that multiple users work on their desktops with their own Kraft instance on "
+"the same data."
+msgstr ""
+"Kraft kann kollaborativ in einer verteilten Umgebung verwendet werden. Das "
+"heisst, dass mehrere Benutzer an ihren jeweiligen Arbeitsplatzrechnern mit "
+"ihrer eigenen Kraft Instanz arbeiten können und dabei die selben Daten "
+"verwenden."
+
+#. type: Plain text
+#: kraft.adoc:685
+msgid ""
+"This whole topic is a subject to change, as Kraft will evolve to use "
+"ownCloud as a private cloud solution to store the data."
+msgstr ""
+"Das ganze Thema ist Veränderung unterworfen, da Kraft in naher Zukunft "
+"ownCloud als private Cloud Lösung zur Datenspeicherung verwenden wird."
+
+#. type: Title ====
+#: kraft.adoc:686
+#, no-wrap
+msgid "Sharing Database and Document Pool"
+msgstr "Datenbank und Dokumentpool teilen"
+
+#. type: Plain text
+#: kraft.adoc:689
+msgid ""
+"The simplest case is that two or more Kraft instances use a database "
+"together and access the same pool of PDF documents on the harddisk. For "
+"simplicity this describes only two Kraft instances."
+msgstr ""
+"Der einfachste Fall ist das zwei oder wenige mehr Kraft Instanzen die "
+"Datenbank gemeinsam benutzen und den Pool von PDF Dokumenten gemeinsam "
+"verwenden. Um es einfach zu halten werden hier zwei Instanzen beschrieben."
+
+#. type: Plain text
+#: kraft.adoc:691
+msgid ""
+"A typical use case would be: Two different Linux users want to use Kraft. "
+"They both have their own computer but only work in the same network. For "
+"example this would describe a situation with one main office machine that "
+"runs Kraft in normal mode, plus a notebook with Kraft in read only mode to "
+"view documents, check catalogs and such."
+msgstr ""
+"Ein typischer Anwendungsfall könnte sein: Zwei verschiedene Linux user "
+"möchten Kraft verwenden. Sie haben beide ihren eigenen Computer und arbeiten "
+"im selben Netzwerk. Dieses Beispiel beschreibt eine Situation mit einem "
+"Hauptbüro das Kraft im normalen Modus betreibt, und einem Notebook mit "
+"Kraft, das im NurLesen Modus um Dokumente anzusehen, Kataloge zu überprüfen "
+"und ähnliches."
+
+#. type: Plain text
+#: kraft.adoc:693
+msgid "For that, the following prerequisites have to be met:"
+msgstr "Dafür müssen die folgenden Voraussetzungen erfüllt sein:"
+
+#. type: Plain text
+#: kraft.adoc:695
+msgid "MySQL or MariaDB is used as database backend. Sqlite is not supported."
+msgstr ""
+"Als Datenbank-Backend wird MySQL oder MariaDB verwendet. Sqlite wird nicht "
+"unterstützt."
+
+#. type: Plain text
+#: kraft.adoc:696
+msgid ""
+"The database is accessible with a mysql user and from each machine for both "
+"users."
+msgstr ""
+"Die Datenbank ist mit dem MySQL Benutzer von beiden Rechnern aus erreichbar."
+
+#. type: Plain text
+#: kraft.adoc:697
+msgid "The document store directory has to be shared."
+msgstr "Das Dokument-Speicher-Verzeichnis muss geteilt werden."
+
+#. type: delimited block _
+#: kraft.adoc:701
+msgid ""
+"WARNING: There is no protection against having both users editing the same "
+"document. Because that is dangerous and can lead to unpredictable results, "
+"it is recommended to run all instances of Kraft except the main one in read "
+"only mode. This is done by starting Kraft with the `-r` command line switch."
+msgstr ""
+"Achtung: Es gibt keinen Schutz dagegen, dass beide Benutzer das gleiche "
+"Dokument zur gleichen Zeit bearbeiten. Weil das gefährlich ist und zu "
+"unvorhersehbaren Resultaten führen kann, ist es empfohlen, Kraft in allen "
+"ausser der Haupt-Instanz im Nur-Lese Modus zu betreiben. Der Nur-Lese Modus "
+"wird mit Krafts Kommandozeilenschalter -r eingeschaltet."
+
+#. type: Plain text
+#: kraft.adoc:704
+#, no-wrap
+msgid "**Sharing the Database**\n"
+msgstr "**Die Datenbank teilen**\n"
+
+#. type: Plain text
+#: kraft.adoc:706
+msgid ""
+"The database server should be installed on the main machine or a dedicated "
+"device like a NAS. Networking speed influences the comfort to use obviously."
+msgstr ""
+"Der Datenbankserver sollte auf der Haupt-Maschine installiert sein, oder es "
+"sollte ein spezialisiertes Gerät wie ein NAS verwendet werden. Die Netzwerk "
+"Geschwindigkeit beeinflusst die Benutzbarkeit natürlich erheblich."
+
+#. type: Plain text
+#: kraft.adoc:708
+msgid "Find howtos on the internet how to setup MySQL accordingly."
+msgstr "Howtos um MySQL aufzusetzen sind im Internet zu finden."
+
+#. type: Plain text
+#: kraft.adoc:710
+#, no-wrap
+msgid "**Sharing the Document Pool Directory**\n"
+msgstr "**Den Dokument Pool teilen**\n"
+
+#. type: Plain text
+#: kraft.adoc:712
+msgid ""
+"Kraft writes generated PDF documents into a local directory. Where that is "
+"can be configured in the Kraft Config file. The config file has to be "
+"adopted on all instances."
+msgstr ""
+"Kraft schreibt generierte PDFs in ein lokales Verzeichnis. Welches "
+"Verzeichnis das ist kann im Kraft Konfigfile eingerichtet werden. Das "
+"Konfigfile muss auf allen Instanzen angepasst werden."
+
+#. type: Plain text
+#: kraft.adoc:714
+msgid ""
+"That is located in each users home directory, in the path `.config/kraftrc`. "
+"It has to contain the following config value:"
+msgstr ""
+"Es ist in jedem Benutzer Homeverzeichnis unter dem releativen Pfad "
+"`.config/kraftrc`. Es muss den folgenden Konfigurations-Wert enthalten:"
+
+#. type: Plain text
+#: kraft.adoc:716 kraft.adoc:720
+msgid "```"
+msgstr "```"
+
+#. type: Plain text
+#: kraft.adoc:718
+msgid "PdfOutputDir=/data/space/kraftdoc/pdf"
+msgstr "PdfOutputDir=/data/space/kraftdoc/pdf"
+
+#. type: Plain text
+#: kraft.adoc:722
+msgid ""
+"There are different ways how share that directory, ie. NFS or SMB storages. "
+"It is important that both users from both machines can list and access the "
+"files. The main user needs read and write access, read only users only need "
+"read access to the files."
+msgstr ""
+"Es gibt verschiedene Wege wie das Verzeichnis geteilt werden kann, zum "
+"Beispiel NFS und SMB Server. Es ist entscheidend, dass beide Benutzer von "
+"beiden Maschinen die Dateien auflisten und zugreifen können. Der "
+"Hauptbenutzer braucht Schreib- und Leserecht., Nur-Lese Bentuzer brauchen "
+"nur Lesezugriff auf die Dateien."
+
+#. type: Plain text
+#: kraft.adoc:724
+msgid ""
+"A recommended setup is a NFS share with autofs which is set up on the main "
+"machine. To manage file access a certain group should be set up on the "
+"machines with which access can be managed."
+msgstr ""
+"Ein empfohlenes Setup benutzt ein NFS Share über autofs, das auf der "
+"Hauptmaschine aufgesetzt werden muss. Um Dateizugriff zu verwalten, sollte "
+"eine Gruppe aufgesetzt werden."
+
+#. type: Plain text
+#: kraft.adoc:726
+#, no-wrap
+msgid "**Starting Kraft in read-only mode**\n"
+msgstr "**Kraft im Nur-Lesen Modus**\n"
+
+#. type: Plain text
+#: kraft.adoc:728
+msgid ""
+"To start Kraft in read-only mode, start the binary with the `-r` command "
+"line switch."
+msgstr ""
+"Um Kraft im Nur-Lese Modus zu starten, muss das Programm mit dem "
+"Kommandozeilenschalter `-r` gestartet werden."
+
+#. type: Title ==
+#: kraft.adoc:730
 #, no-wrap
 msgid "Credits and License"
-msgstr ""
+msgstr "Credits und Lizenz"
 
 #. type: Plain text
-#: kraft.adoc:665
-msgid "Program copyright 2004–2020 Klaas Freitag"
-msgstr ""
+#: kraft.adoc:733
+msgid "Program and documentation copyright 2004–2021 Klaas Freitag"
+msgstr "Software und Dokumentation Copyright 2004-2021 Klaas Freitag"
 
 #. type: Plain text
-#: kraft.adoc:666
+#: kraft.adoc:734
 msgid "Documentation copyright 2020 Ronald Stroethoff"
-msgstr ""
+msgstr "Dokumentation Copyright 2020 Ronald Stroethoff"
 
 #, no-wrap
 #~ msgid "Features"
