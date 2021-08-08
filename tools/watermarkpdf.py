@@ -23,6 +23,7 @@
 import io
 import os
 import sys
+import copy
 
 import getopt
 
@@ -50,10 +51,10 @@ class PdfWatermark:
 
     def watermark( self, pdfFile, watermarkFile, spec ):
         # Read the watermark- and document pdf file
-        watermark = PdfFileReader(watermarkFile)
+        watermark = PdfFileReader(open(watermarkFile, "rb"))
         watermark_page = watermark.getPage(0)
 
-        inputPdf = PdfFileReader( pdfFile )
+        inputPdf = PdfFileReader( open(pdfFile, "rb"))
         outputPdf = PdfFileWriter()
 
         # flag for the first page of the source file
@@ -63,7 +64,9 @@ class PdfWatermark:
         # file.
         for page in range(inputPdf.getNumPages()):
             pdf_page = inputPdf.getPage(page)
-            bg_page = watermark_page
+
+            # need to take a full copy as the pyPDF lib seems to return the same object again
+            bg_page = copy.copy(watermark.getPage(0))
             if (spec == Mark.FIRST_PAGE and firstPage) or spec == Mark.ALL_PAGES:
                 bg_page.mergePage(pdf_page)
                 outputPdf.addPage( bg_page )

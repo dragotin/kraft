@@ -9,6 +9,7 @@ store directory.
 - Fix: Command line option -d works again
 - Fix: Fix out of index deletes of items, #102
 - Fix: Do watermark on PDFs properly
+- Fix: Fix watermark on all pages functionality
 - Cmake: Build a static lib of all sources to link with kraft and all
   the tests.
 

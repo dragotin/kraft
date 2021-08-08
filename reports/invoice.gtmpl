@@ -32,7 +32,7 @@
             font-size: 9pt;
         }
     }
-    /* Do not display the page number on first page. */
+    /* Do not display the page number on first page, but the website. */
     @page :first {
         margin-top: 46mm;
         @bottom-right {
@@ -43,10 +43,12 @@
     }
     </style>
 
+    <!-- Include the stylesheet file. It will have to reside in the same dir as the template file -->
     <link href="kraft.css" media="print" rel="stylesheet"/>
+
     <title>Kraft Document</title>
   </head>
-{% autoescape off %}
+  {% autoescape off %}
   <body>
     <p id="letterheader">
     {{ me.ORGANISATION }} - {{ me.STREET }} - {{ me.POSTCODE }} {{ me.LOCALITY }}
