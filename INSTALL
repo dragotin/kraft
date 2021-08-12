@@ -70,7 +70,7 @@ $ mkdir build
 $ cd build
 $ cmake ..
     to generate the Makefiles.
-$ ccmake .
+$ cmake .
     to change the configuration of the build process. (optional)
 
 Check out for errors during the cmake run. Fix them, usually you need
