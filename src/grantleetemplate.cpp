@@ -26,7 +26,11 @@
 #include <grantlee/engine.h>
 #include <grantlee/context.h>
 #include <grantlee/template.h>
+#ifdef USE_KFGRANTLEE
+#include <grantlee/filesystemtemplateloader.h>
+#else
 #include <grantlee/templateloader.h>
+#endif
 
 GrantleeFileTemplate::GrantleeFileTemplate( const QString& file)
     :_tmplFileName(file)
@@ -50,7 +54,11 @@ QString GrantleeFileTemplate::render(bool &ok) const
     QFileInfo fi(_tmplFileName);
     ok = true; // assume all goes well.
 
+#ifdef USE_KFGRANTLEE
+    auto loader = std::make_shared<Grantlee::FileSystemTemplateLoader>();
+#else
     auto loader = QSharedPointer<Grantlee::FileSystemTemplateLoader>::create();
+#endif
     loader->setTemplateDirs( {fi.absolutePath()} );
     engine->addTemplateLoader( loader );
 

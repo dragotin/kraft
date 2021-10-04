@@ -160,8 +160,13 @@ set(KRAFT_LINK_LIBS
     KF5::ConfigCore
     KF5::ConfigGui
     ${CTEMPLATE_LIBRARIES} pthread
-    Grantlee5::Templates
 )
+if(USE_KFGRANTLEE)
+    list(APPEND KRAFT_LINK_LIBS KF5::Grantlee)
+else()
+    list(APPEND KRAFT_LINK_LIBS Grantlee5::Templates)
+endif()
+
 if(KF5Akonadi_FOUND)
   list(APPEND KRAFT_LINK_LIBS
     KF5::AkonadiCore
@@ -173,6 +178,9 @@ if(KF5Akonadi_FOUND)
 endif()
 
 add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
+if(USE_KFGRANTLEE)
+    target_compile_definitions(kraftlib PUBLIC USE_KFGRANTLEE)
+endif()
 
 add_executable(kraft main.cpp)
 

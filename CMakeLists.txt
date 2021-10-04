@@ -40,13 +40,23 @@ find_package(KF5 REQUIRED COMPONENTS
 )
 
 # Grantlee templating engine
-find_package(Grantlee5 REQUIRED)
-set_package_properties(Grantlee5 PROPERTIES
-    DESCRIPTION "Library for templating html and pdf output"
-    URL "https://www.grantlee.org/"
-    PURPOSE "Optionally used for templating"
-    TYPE OPTIONAL
-)
+set(USE_KFGRANTLEE FALSE)
+find_package(KF5Grantlee "5.88.0" CONFIG QUIET)
+if(KF5Grantlee_FOUND)
+    set_package_properties(KF5Grantlee PROPERTIES
+        TYPE REQUIRED
+    )
+    set(USE_KFGRANTLEE TRUE)
+else()
+    # try old non KFied Grantlee
+    find_package(Grantlee5 REQUIRED)
+    set_package_properties(Grantlee5 PROPERTIES
+        DESCRIPTION "Library for templating html and pdf output"
+        URL "https://www.grantlee.org/"
+        PURPOSE "Optionally used for templating"
+        TYPE OPTIONAL
+    )
+endif()
 
 find_package(KF5Akonadi)
 set_package_properties(KF5Akonadi PROPERTIES
