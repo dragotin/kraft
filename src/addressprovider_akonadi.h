@@ -25,9 +25,15 @@
 
 #ifdef HAVE_AKONADI
 #include <kjob.h>
+#include <akonadi/contact/contactstreemodel.h>
+#include <akonadi_version.h>
+#if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
+#include <Akonadi/Session>
+#include <Akonadi/ChangeRecorder>
+#else
 #include <AkonadiCore/session.h>
 #include <AkonadiCore/changerecorder.h>
-#include <akonadi/contact/contactstreemodel.h>
+#endif
 #endif
 
 class QAbstractItemModel;

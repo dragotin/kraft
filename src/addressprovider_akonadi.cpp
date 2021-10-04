@@ -21,16 +21,29 @@
 #include <QDebug>
 
 #ifdef HAVE_AKONADI
+#include "akonadi/contact/contactsearchjob.h"
+#include <akonadi_version.h>
+#if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+
+#include <Akonadi/CollectionFetchJob>
+
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/EntityDisplayAttribute>
+#include <Akonadi/Control>
+#else
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
 
-#include "akonadi/contact/contactsearchjob.h"
 #include <AkonadiCore/CollectionFetchJob>
 
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/entitydisplayattribute.h>
 #include <AkonadiCore/control.h>
+#endif
 
 using namespace Akonadi;
 #endif
