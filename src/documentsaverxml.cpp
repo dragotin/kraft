@@ -54,7 +54,7 @@ QString xmlBasePath()
 QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
 {
   QDomElement elem = doc.createElement( name );
-  QDomText t = doc.createTextNode( value );
+  QDomText t = doc.createTextNode( value.toHtmlEscaped() );
   elem.appendChild( t );
   return elem;
 }
@@ -83,35 +83,38 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
         auto t = pos->type();
         if (t == DocPosition::ExtraDiscount) {
             tStr = QStringLiteral("Discount");
+            // Only add the type item if the type is not "Normal", which is the default.
+            itemType.appendChild(xmlTextElement(xmldoc, "type", tStr));
         }
-        itemType.appendChild(xmlTextElement(xmldoc, "type", tStr));
+        itemType.appendChild(xmlTextElement(xmldoc, "text", pos->text().toHtmlEscaped()));
+
         itemType.appendChild(xmlTextElement(xmldoc, "amount", QString::number(pos->amount(), 'f', 2)));
-        itemType.appendChild(xmlTextElement(xmldoc, "unit", pos->unit().einheitSingular()));
+        itemType.appendChild(xmlTextElement(xmldoc, "unit", pos->unit().einheitSingular().toHtmlEscaped()));
 
         QString ttStr;
         DocPositionBase::TaxType tt = pos->taxType();
-        if (tt == DocPositionBase::TaxType::TaxFull) ttStr = QStringLiteral("Full");
-        else if (tt == DocPositionBase::TaxType::TaxReduced) ttStr = QStringLiteral("Reduced");
-        else if (tt == DocPositionBase::TaxType::TaxNone) ttStr = QStringLiteral("None");
-        else ttStr = QStringLiteral("Invalid");
+        // The Full Taxtype is default.
+        if (tt != DocPositionBase::TaxType::TaxFull) {
+            if (tt == DocPositionBase::TaxType::TaxReduced)
+                ttStr = QStringLiteral("Reduced");
+            else if (tt == DocPositionBase::TaxType::TaxNone)
+                ttStr = QStringLiteral("None");
+            else ttStr = QStringLiteral("Invalid");
 
-        itemType.appendChild(xmlTextElement(xmldoc, "taxtype", ttStr));
+            itemType.appendChild(xmlTextElement(xmldoc, "taxtype", ttStr));
+        }
         itemType.appendChild(xmlTextElement(xmldoc, "unitprice", QString::number(pos->unitPrice().toDouble(), 'f', 2)));
-        itemType.appendChild(xmlTextElement(xmldoc, "unitprice", QString::number(pos->overallPrice().toDouble(), 'f', 2)));
+        itemType.appendChild(xmlTextElement(xmldoc, "itemtotal", QString::number(pos->overallPrice().toDouble(), 'f', 2)));
 
         AttributeMap attribs = pos->attributes();
         for(const auto &k : attribs.keys()) {
             QDomElement attribElem = xmldoc.createElement("itemAttrib");
             itemType.appendChild(attribElem);
-            attribElem.appendChild(xmlTextElement(xmldoc, "name", k));
-            attribElem.appendChild(xmlTextElement(xmldoc, "value", attribs[k].value().toString()));
+            attribElem.appendChild(xmlTextElement(xmldoc, "name", k.toHtmlEscaped()));
+            attribElem.appendChild(xmlTextElement(xmldoc, "value", attribs[k].value().toString().toHtmlEscaped()));
             attribElem.appendChild(xmlTextElement(xmldoc, "type", "string"));
         }
 
-        const QStringList tags = pos->tags();
-        for( const auto &t : tags) {
-            itemType.appendChild(xmlTextElement(xmldoc, "tag", t));
-        }
         cnt++;
     }
     return cnt;
@@ -120,40 +123,23 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
 QDomDocument xmlDocument( KraftDoc *doc)
 {
     QDomDocument xmldoc( "kraftdocument" );
+    QDomProcessingInstruction instr = xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
+    xmldoc.appendChild(instr);
+
     QDomElement root = xmldoc.createElement( "kraftdocument" );
     root.setAttribute("schemaVersion", "1");
-    xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
-
     xmldoc.appendChild( root );
 
     QDomElement meta = xmldoc.createElement( "meta" );
     root.appendChild(meta);
-    meta.appendChild(xmlTextElement(xmldoc, "docType", doc->docType()));
-    meta.appendChild(xmlTextElement(xmldoc, "docDesc", doc->whiteboard()));
-    meta.appendChild(xmlTextElement(xmldoc, "currency", DefaultProvider::self()->locale()->currencySymbol()));
-    meta.appendChild(xmlTextElement(xmldoc, "country", DefaultProvider::self()->locale()->countryToString(DefaultProvider::self()->locale()->country())));
-    meta.appendChild(xmlTextElement(xmldoc, "locale", DefaultProvider::self()->locale()->languageToString(DefaultProvider::self()->locale()->language())));
+    meta.appendChild(xmlTextElement(xmldoc, "docDesc", doc->whiteboard().toHtmlEscaped()));
+    meta.appendChild(xmlTextElement(xmldoc, "currency", DefaultProvider::self()->locale()->currencySymbol().toHtmlEscaped()));
+    meta.appendChild(xmlTextElement(xmldoc, "country", DefaultProvider::self()->locale()->countryToString(DefaultProvider::self()->locale()->country()).toHtmlEscaped()));
+    meta.appendChild(xmlTextElement(xmldoc, "locale", DefaultProvider::self()->locale()->languageToString(DefaultProvider::self()->locale()->language()).toHtmlEscaped()));
 
-    QDomElement taxNone = xmldoc.createElement("tax");
-    meta.appendChild(taxNone);
-    taxNone.appendChild(xmlTextElement(xmldoc, "type", "None"));
-    taxNone.appendChild(xmlTextElement(xmldoc, "value", QStringLiteral("0")));
-
-    QDomElement taxReduced = xmldoc.createElement("tax");
-    meta.appendChild(taxReduced);
-    taxReduced.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
-    double t = DocumentMan::self()->reducedTax(doc->date());
-    taxReduced.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
-
-    QDomElement taxFull = xmldoc.createElement("tax");
-    meta.appendChild(taxFull);
-    taxFull.appendChild(xmlTextElement(xmldoc, "type", "Full"));
-    t = DocumentMan::self()->tax(doc->date());
-    taxFull.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
-
-    QString owner = qgetenv("USER");
+    QString owner = QString::fromLocal8Bit(qgetenv("USER"));
     if (owner.isEmpty())
-        owner = qgetenv("USERNAME");
+        owner = QString::fromLocal8Bit(qgetenv("USERNAME"));
     if (!owner.isEmpty()) {
         meta.appendChild(xmlTextElement(xmldoc, "owner", owner));
     }
@@ -176,9 +162,14 @@ QDomDocument xmlDocument( KraftDoc *doc)
     // **** Next toplevel: header
     QDomElement headerElem = xmldoc.createElement( "header" );
     root.appendChild( headerElem );
-    QDomElement projectElem = xmldoc.createElement( "project" );
-    headerElem.appendChild( projectElem );
-    projectElem.appendChild( xmlTextElement(xmldoc, "name", doc->projectLabel()));
+
+    headerElem.appendChild(xmlTextElement(xmldoc, "docType", doc->docType()));
+    const QString prjLabel = doc->projectLabel();
+    if (!prjLabel.isEmpty()) {
+        QDomElement projectElem = xmldoc.createElement( "project" );
+        headerElem.appendChild( projectElem );
+        projectElem.appendChild( xmlTextElement(xmldoc, "name", prjLabel));
+    }
     QDate d = doc->date();
     headerElem.appendChild(xmlTextElement(xmldoc, "date", d.toString(Qt::ISODate)));
 
@@ -186,6 +177,40 @@ QDomDocument xmlDocument( KraftDoc *doc)
     headerElem.appendChild( xmlTextElement( xmldoc, "salut", doc->salut() ) );
     headerElem.appendChild( xmlTextElement( xmldoc, "preText", doc->preText() ) );
     // custom Values to be added.
+    // **** Next toplevel: sums
+    QDomElement itemGroupTotals = xmldoc.createElement("totals");
+    root.appendChild(itemGroupTotals);
+    itemGroupTotals.appendChild( xmlTextElement(xmldoc, "netto", QString::number(doc->nettoSum().toDouble(), 'f', 2)));
+    itemGroupTotals.appendChild( xmlTextElement(xmldoc, "brutto", QString::number(doc->bruttoSum().toDouble(), 'f', 2)));
+
+    QDomElement taxNone = xmldoc.createElement("tax");
+    itemGroupTotals.appendChild(taxNone);
+    taxNone.appendChild(xmlTextElement(xmldoc, "type", "None"));
+    taxNone.appendChild(xmlTextElement(xmldoc, "value", QStringLiteral("0")));
+
+    QDomElement taxReduced = xmldoc.createElement("tax");
+    itemGroupTotals.appendChild(taxReduced);
+    taxReduced.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
+    double t = DocumentMan::self()->reducedTax(doc->date());
+    taxReduced.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
+
+    QDomElement taxFull = xmldoc.createElement("tax");
+    itemGroupTotals.appendChild(taxFull);
+    taxFull.appendChild(xmlTextElement(xmldoc, "type", "Full"));
+    t = DocumentMan::self()->tax(doc->date());
+    taxFull.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
+
+    QDomElement taxReducedSum = xmldoc.createElement("taxTotal");
+    itemGroupTotals.appendChild(taxReducedSum);
+    taxReducedSum.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
+    t = doc->reducedTaxSum().toDouble();
+    taxReducedSum.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
+
+    QDomElement taxFullSum = xmldoc.createElement("taxTotal");
+    itemGroupTotals.appendChild(taxFullSum);
+    taxFullSum.appendChild(xmlTextElement(xmldoc, "type", "Full"));
+    t = doc->fullTaxSum().toDouble();
+    taxFullSum.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
 
     // **** Next toplevel: itemGroup
     QDomElement itemGroupElem = xmldoc.createElement( "itemGroup" );
@@ -196,25 +221,10 @@ QDomDocument xmlDocument( KraftDoc *doc)
     auto cnt = xmlAppendItemsToGroup(xmldoc, itemGroupElem, doc);
     qDebug() << "Amount of items went to XML" << cnt;
 
-    // **** Next toplevel: sums
-    QDomElement itemGroupSums = xmldoc.createElement("sums");
-    itemGroupSums.appendChild( xmlTextElement(xmldoc, "netto", QString::number(doc->nettoSum().toDouble(), 'f', 2)));
-    itemGroupSums.appendChild( xmlTextElement(xmldoc, "brutto", QString::number(doc->bruttoSum().toDouble(), 'f', 2)));
-
-    QDomElement taxReducedSum = xmldoc.createElement("taxSum");
-    itemGroupSums.appendChild(taxReducedSum);
-    taxReducedSum.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
-    t = doc->reducedTaxSum().toDouble();
-    taxReducedSum.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
-
-    QDomElement taxFullSum = xmldoc.createElement("taxSum");
-    itemGroupSums.appendChild(taxFullSum);
-    taxFullSum.appendChild(xmlTextElement(xmldoc, "type", "Full"));
-    t = doc->fullTaxSum().toDouble();
-    taxFullSum.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
 
     // **** Next toplevel: footer
     QDomElement itemGroupFooter = xmldoc.createElement("footer");
+    root.appendChild(itemGroupFooter);
     itemGroupFooter.appendChild( xmlTextElement( xmldoc, "postText", doc->postText() ) );
     itemGroupFooter.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
 

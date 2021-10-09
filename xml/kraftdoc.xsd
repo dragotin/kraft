@@ -16,12 +16,6 @@
   </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="tag_type">
-	  <xs:simpleContent>
-	    <xs:extension base="xs:string"/>
-	  </xs:simpleContent>
-</xs:complexType>
-
 <xs:complexType name="tax_type">
   <xs:sequence>
     <xs:element name="type" type="xs:string"/> <!-- Fixme, could be enum -->
@@ -31,22 +25,20 @@
 
 <xs:complexType name="meta_type">
   <xs:sequence>
-      <xs:element name="docType" type="xs:string"/> <!-- Fixme, could be enum -->
     <xs:element name="docDesc" type="xs:string"/>
     <xs:element name="currency" type="xs:string"/>
     <xs:element name="country" type="xs:string"/>
     <xs:element name="locale" type="xs:string"/>
-    <xs:element name="tax" type="tax_type" minOccurs="3" maxOccurs="3"/>
     <xs:element name="owner" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element name="date" type="xs:dateTime"/>
     <xs:element name="lastModified" type="xs:dateTime"/>
+    <xs:element name="predecessor" type="xs:string"/>
     <xs:element name="docAttrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element name="tag" type="tag_type" minOccurs="0" maxOccurs="unbounded"/>
   </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="header_type">
   <xs:sequence>
+    <xs:element name="docType" type="xs:string"/> <!-- Fixme, could be enum -->
     <xs:element name="project" type="project_type" minOccurs="0" maxOccurs="1"/>
     <xs:element name="date" type="xs:date"/>
     <xs:element name="ident" type="xs:string"/>
@@ -58,15 +50,15 @@
 
 <xs:complexType name="project_type">
   <xs:sequence>
-    <xs:element name="name" type="xs:string"/>
+    <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
     <xs:element name="id" type="xs:integer" minOccurs="0" maxOccurs="1" />
   </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="itemGroup_type">
     <xs:sequence>
-        <xs:element name="name" type="xs:string"/>
-        <xs:element name="collapsed" type="xs:boolean"/>
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="collapsed" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
         <xs:element name="item" type="item_type" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
 </xs:complexType>
@@ -82,40 +74,41 @@
 
  <xs:complexType name="item_type">
    <xs:sequence>
-     <xs:element name="type"    type="itemtype_type"/>
-     <xs:element name="text"    type="xs:string"/>
-     <xs:element name="amount"  type="xs:decimal"/>
-     <xs:element name="unit"    type="xs:string"/>
-     <xs:element name="taxType" type="xs:string"/>
-     <xs:element name="unitprice" type="xs:decimal"/>
-     <xs:element name="itemprice" type="xs:decimal"/>
+     <xs:element name="type"    type="itemtype_type" minOccurs="0" maxOccurs="unbounded"/>
+     <xs:element name="text"    type="xs:string" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="amount"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="unit"    type="xs:string" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="taxType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="unitprice" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="itemtotal" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
      <xs:element name="itemAttrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
-     <xs:element name="tag" type="tag_type" minOccurs="0" maxOccurs="unbounded"/>
 
    </xs:sequence>
 </xs:complexType>
 
  <xs:complexType name="footer_type">
    <xs:sequence>
-     <xs:element name="postText"    type="xs:string"/>
-     <xs:element name="goodbye"    type="xs:string"/>
+     <xs:element name="postText"    type="xs:string" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="goodbye"    type="xs:string" minOccurs="1" maxOccurs="1"/>
      <xs:element name="customValue" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
    </xs:sequence>
 </xs:complexType>
 
- <xs:complexType name="sums_type">
+ <xs:complexType name="totals_type">
     <xs:sequence>
-      <xs:element name="netto"   type="xs:string"/>
-      <xs:element name="taxsum" minOccurs="0" maxOccurs="2">
+      <xs:element name="netto"   type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="brutto"   type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="tax" type="tax_type" minOccurs="3" maxOccurs="3"/>
+      <xs:element name="taxTotal" minOccurs="0" maxOccurs="2">
         <xs:complexType>
 	  <xs:simpleContent>
 	    <xs:extension base="xs:decimal">
               <xs:attribute name="type" type="xs:string"  use="required" />
 	    </xs:extension>
 	  </xs:simpleContent>
+          <xs:element name="value"   type="xs:decimal"/>
         </xs:complexType>
       </xs:element>
-      <xs:element name="brutto"   type="xs:decimal"/>
     </xs:sequence>
  </xs:complexType>
 
@@ -125,11 +118,11 @@
             <xs:element name="meta"   type="meta_type" maxOccurs="1"/>
             <xs:element name="client" type="client_type" maxOccurs="1"/>
             <xs:element name="header" type="header_type" maxOccurs="1"/>
+            <xs:element name="totals" type="totals_type" maxOccurs="1"/>
             <xs:element name="itemGroup" type="itemGroup_type" minOccurs="1" maxOccurs="unbounded"/>
-            <xs:element name="sums" type="sums_type" maxOccurs="1"/>
-        <xs:element name="footer" type="footer_type" maxOccurs="1"/>
+            <xs:element name="footer" type="footer_type" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="schemaversion" type="xs:integer"/>
+        <xs:attribute name="schemaVersion" type="xs:integer"/>
     </xs:complexType>
     </xs:element>
 
