@@ -37,8 +37,14 @@
 #include <kcontacts/contactgroup.h>
 
 #ifdef HAVE_AKONADI
+#include <akonadi_version.h>
+#if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
+#include <Akonadi/EntityTreeModel>
+#include <Akonadi/EntityTreeView>
+#else
 #include <entitytreemodel.h>
 #include <entitytreeview.h>
+#endif
 #endif
 
 /* ==================================================================== */
