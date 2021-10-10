@@ -31,14 +31,25 @@ public:
     GrantleeFileTemplate( const QString& file);
 
     void addToMapping(const QString& key, const QVariant& variant);
+    void setValue(const QString& key, const QString& value) { addToMapping(key, value); }
     void addToObjMapping(const QString& key, QObject *obj);
 
-    QString render(bool& ok) const;
+    QString render(bool *ok = nullptr) const;
+    QString expand() const { return render (); }
+
+
+    Grantlee::Template gTemplate() { return _template; }
+    bool isOk() const;
 
 private:
     QVariantHash _mapping;
     const QString& _tmplFileName;
     QHash<QString, QObject*> _objs;
+
+    Grantlee::Engine *_engine;
+    Grantlee::Template _template;
+    bool _ok;
+
 };
 
 #endif

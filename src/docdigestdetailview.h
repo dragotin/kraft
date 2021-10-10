@@ -25,6 +25,7 @@
 
 class dbID;
 class TextTemplate;
+class GrantleeFileTemplate;
 
 class DocDigestHtmlView : public HtmlView
 {
@@ -40,6 +41,38 @@ protected slots:
     void slotLinkClicked(const QUrl& url);
 
 };
+
+// #########################################################################################################
+
+class GrantleeDocWrapper : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString type READ type)
+    Q_PROPERTY(QString sum  READ sum)
+    Q_PROPERTY(QString amount READ amount)
+
+public:
+    QString type() const { return _type; }
+    QString sum() const { return _sum; }
+    QString amount() const {return QString::number(_amount); }
+
+    int _amount;
+    QString _type;
+    QString _sum;
+};
+
+class GrantleeDocListWrapper : public QObject{
+    Q_OBJECT
+    Q_PROPERTY(QList<GrantleeDocWrapper*> docs READ docs)
+
+public:
+    QList<GrantleeDocWrapper*> docs() { return _list; }
+
+    QList<GrantleeDocWrapper*> _list;
+
+};
+
+// #########################################################################################################
 
 class DocDigestDetailView : public QFrame
 {
@@ -59,7 +92,7 @@ public slots:
 
 private:
   void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
-    void documentListing( TextTemplate *tmpl, int year, int month );
+    void documentListing(GrantleeFileTemplate *tmpl, int year, int month );
 
   enum Location { Left, Middle, Right };
   enum Detail { Month, Year, Document };

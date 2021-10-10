@@ -28,6 +28,7 @@
 #include "defaultprovider.h"
 #include "htmlview.h"
 #include "texttemplate.h"
+#include "grantleetemplate.h"
 #include "archdoc.h"
 
 DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
@@ -49,6 +50,7 @@ void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
         emit( showLastPrint( dbID(idStr.toInt(&ok)) ) );
     }
 }
+
 
 // #########################################################################################################
 
@@ -174,7 +176,7 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
 
 #define DOCDIGEST_TAG
 
-void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int month )
+void DocDigestDetailView::documentListing( GrantleeFileTemplate *tmpl, int year, int month )
 {
 
     QString minDate;
@@ -228,15 +230,15 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
     QStringList doctypes = docMatrix.keys();
     doctypes.sort();
 
-    foreach( const QString dtype, doctypes ) {
-        qDebug() << "creating doc list for "<<dtype;
-        tmpl->createDictionary( "DOCUMENTS" );
-        tmpl->setValue("DOCUMENTS", "DOCTYPE", dtype);
-        const QString am = QString::number(docMatrix[dtype].first);
-        tmpl->setValue("DOCUMENTS", "AMOUNT", am);
-        const QString sm = docMatrix[dtype].second.toString();
-        tmpl->setValue("DOCUMENTS", "SUM", sm);
+    GrantleeDocListWrapper *listWrapper = new GrantleeDocListWrapper;
+    for( const QString &dtype : doctypes) {
+        GrantleeDocWrapper *wrapper = new GrantleeDocWrapper;
+        wrapper->_amount = docMatrix[dtype].first;
+        wrapper->_sum = docMatrix[dtype].second.toString();
+        wrapper->_type = dtype;
+        listWrapper->_list.append(wrapper);
     }
+    tmpl->addToObjMapping("DocList", listWrapper);
 }
 
 void DocDigestDetailView::slotShowMonthDetails( int year, int month )
@@ -245,8 +247,7 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
         _monthTemplFileName = DefaultProvider::self()->locateFile( "views/monthdigest.thtml" );
     }
 
-    TextTemplate tmpl;
-    tmpl.setTemplateFileName(_monthTemplFileName);
+   GrantleeFileTemplate tmpl(_monthTemplFileName);
     if( !tmpl.isOk() ) {
         return;
     }
@@ -276,11 +277,11 @@ void DocDigestDetailView::slotShowMonthDetails( int year, int month )
 void DocDigestDetailView::slotShowYearDetails( int year )
 {
     if( _yearTemplFileName.isEmpty() ) {
-        _yearTemplFileName = DefaultProvider::self()->locateFile( "views/yeardigest.thtml" );
+        _yearTemplFileName = DefaultProvider::self()->locateFile( "views/yeardigest.gtmpl" );
     }
 
-    TextTemplate tmpl;
-    tmpl.setTemplateFileName(_yearTemplFileName);
+    GrantleeFileTemplate tmpl(_yearTemplFileName);
+
     if( !tmpl.isOk() ) {
         return;
     }

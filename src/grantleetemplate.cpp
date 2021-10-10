@@ -31,6 +31,24 @@
 GrantleeFileTemplate::GrantleeFileTemplate( const QString& file)
     :_tmplFileName(file)
 {
+    _engine = new Grantlee::Engine();
+
+    QFileInfo fi(_tmplFileName);
+
+    auto loader = QSharedPointer<Grantlee::FileSystemTemplateLoader>::create();
+    loader->setTemplateDirs( {fi.absolutePath()} );
+    _engine->addTemplateLoader( loader );
+
+    _template = _engine->loadByName(fi.fileName());
+    if (_template->error() != Grantlee::Error::NoError) {
+        qDebug() << "Grantlee template load failed:" << _template->errorString();
+    }
+
+}
+
+bool GrantleeFileTemplate::isOk() const
+{
+    return _template->error() == Grantlee::Error::NoError;
 }
 
 void GrantleeFileTemplate::addToMapping(const QString& key, const QVariant& variant)
@@ -43,43 +61,26 @@ void GrantleeFileTemplate::addToObjMapping(const QString& key, QObject *obj)
     _objs.insert(key, obj);
 }
 
-QString GrantleeFileTemplate::render(bool &ok) const
+QString GrantleeFileTemplate::render(bool *ok) const
 {
     QScopedPointer<Grantlee::Engine> engine(new Grantlee::Engine());
 
-    QFileInfo fi(_tmplFileName);
-    ok = true; // assume all goes well.
+    Grantlee::Context c(_mapping);
 
-    auto loader = QSharedPointer<Grantlee::FileSystemTemplateLoader>::create();
-    loader->setTemplateDirs( {fi.absolutePath()} );
-    engine->addTemplateLoader( loader );
-
-    QString output;
-    auto t = engine->loadByName(fi.fileName());
-    if (t->error() != Grantlee::Error::NoError) {
-        ok = false;
-        output = t->errorString();
-        qDebug() << "Grantlee template load failed:" << output;
+    QHash<QString, QObject*>::const_iterator i = _objs.constBegin();
+    while (i != _objs.constEnd()) {
+        const QString k = i.key();
+        QObject *obj = i.value();
+        c.insert(k, obj);
+        ++i;
     }
 
-    if (ok) {
-        Grantlee::Context c(_mapping);
-
-        QHash<QString, QObject*>::const_iterator i = _objs.constBegin();
-        while (i != _objs.constEnd()) {
-            const QString k = i.key();
-            QObject *obj = i.value();
-            c.insert(k, obj);
-            ++i;
-        }
-
-        output = t->render(&c);
-        if (t->error() != Grantlee::Error::NoError) {
-            ok = false;
-            // Rendering error.
-            output = t->errorString();
-            qDebug() << "Grantlee template err:" << output;
-        }
+    QString output = _template->render(&c);
+    if (_template->error() != Grantlee::Error::NoError) {
+        if (ok) *ok = false;
+        // Rendering error.
+        output = _template->errorString();
+        qDebug() << "Grantlee template err:" << output;
     }
 
     return output;

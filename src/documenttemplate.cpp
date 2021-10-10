@@ -377,7 +377,7 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
         const QVariantHash labelHash = labelVariantHash();
         gtmpl.addToMapping(QStringLiteral("label"), labelHash);
         bool ok;
-        rendered = gtmpl.render(ok);
+        rendered = gtmpl.render(&ok);
         if (!ok) {
             _errorStr = rendered;
             rendered.clear();

@@ -2,11 +2,11 @@
 
 <table border="0" width="98%">
 <tr><td><b>{{I18N_AMOUNT}}</b></td><td><b>{{I18N_TYPE}}</b></td><td><b>{{I18N_SUM}}</b></td></tr>
-{{#DOCUMENTS}}
+{% for doc in DocList.docs %}
 <tr>
-<td>{{AMOUNT}}</td>
-<td>{{DOCTYPE}}</td>
-<td>{{SUM}}</td>
+<td>{{amount}}</td>
+<td>{{type}}</td>
+<td>{{sum}}</td>
 </tr>
-{{/DOCUMENTS}}
+{% endfor %}
 </table>
