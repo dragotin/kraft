@@ -1,13 +1,14 @@
 = The Kraft Handbook
+Ronald Stroethoff, Klaas Freitag
+:toc:
 
 :author: Ronald Stroethoff
 :email: <stroet43@zonnet.nl>
-:toc:
 :description: Kraft is a Qt program for organizing documents like quotes and invoices in a small business.
 :keywords: Qt;office;bookkeeping
 :experimental:
 :imagesdir: images/
-:toc:
+
 
 include::{path}/locale/attributes.adoc[]
 
