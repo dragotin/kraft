@@ -83,6 +83,7 @@ class ArchDoc : public QObject
     Q_PROPERTY(QString postText READ postText)
     Q_PROPERTY(QString postTextHtml READ postTextHtml)
     Q_PROPERTY(QString projectLabel READ projectLabel)
+    Q_PROPERTY(QString predecessor READ predecessor)
     Q_PROPERTY(QString docIDStr READ docIdStr)
     Q_PROPERTY(QString docIdentifier READ docIdentifier)
     Q_PROPERTY(QString dateStr READ dateStr)
@@ -137,6 +138,7 @@ public:
   QString postTextHtml() const;
 
   QString projectLabel() const { return mProjectLabel; }
+  QString predecessor() const { return mPredecessor; }
 
   dbID docID() const { return mDocID; }
   QString docIdStr() const { return docID().toString(); }
@@ -188,6 +190,7 @@ private:
   QString mGoodbye;
   QString mIdent;
   QString mProjectLabel;
+  QString mPredecessor;
   double  mTax;
   double  mReducedTax;
 

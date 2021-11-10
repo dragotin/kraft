@@ -62,6 +62,11 @@
         <dt>{{ label.PROJECT }}</dt>
         <dd>{{ doc.projectLabel }}</dd>
       {% endif %}
+      {% if doc.predecessor > 0 %}
+      <dt>{{ label.PREDECESSOR }}</dt>
+      <dd>{{ doc.predecessor }}</dd>
+      {% endif %}
+
     </dl>
 
     <h1>{{ doc.docType }} {{ doc.ident }}</h1>
