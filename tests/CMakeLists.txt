@@ -22,20 +22,20 @@ add_executable(t_unitman t_unitman.cpp)
 target_link_libraries(t_unitman ${test_libs})
 add_test(t_unitman t_unitman)
 
-# ============================================================ 
+# ============================================================
 
 add_executable(t_format t_format.cpp)
 add_test(t_format t_format)
 target_link_libraries(t_format ${test_libs})
 
-# ============================================================ 
+# ============================================================
 
 add_executable(t_metaparser t_metaparser.cpp)
 add_test(t_metaparser t_metaparser)
 
 target_link_libraries(t_metaparser ${test_libs})
 
-# ============================================================ 
+# ============================================================
 
 add_executable(t_defaultprovider t_defaultprovider.cpp)
 add_test(t_defaultprovider t_defaultprovider)
@@ -75,4 +75,11 @@ target_link_libraries(t_kraftdoc ${test_libs})
 
 set(TESTS_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 configure_file ("testconfig.h.in" "testconfig.h")
+
+# ============================================================
+
+add_executable(t_xmlsaver t_xmlsaver.cpp)
+add_test(t_xmlsaver t_xmlsaver)
+
+target_link_libraries(t_xmlsaver ${test_libs})
 
