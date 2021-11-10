@@ -19,7 +19,8 @@
 <xs:complexType name="tax_type">
   <xs:sequence>
     <xs:element name="type" type="xs:string"/> <!-- Fixme, could be enum -->
-    <xs:element name="value" type="xs:decimal"/>
+    <xs:element name="percent" type="xs:decimal"/>
+    <xs:element name="total" type="xs:decimal"/>
   </xs:sequence>
 </xs:complexType>
 
@@ -66,6 +67,7 @@
 <xs:simpleType name="itemtype_type" final="restriction" >
     <xs:restriction base="xs:string">
         <xs:enumeration value="Normal"/>
+        <xs:enumeration value="Discount"/>
         <xs:enumeration value="Alternative"/>
         <xs:enumeration value="Demand"/>
         <xs:enumeration value="Text"/>
@@ -96,19 +98,9 @@
 
  <xs:complexType name="totals_type">
     <xs:sequence>
-      <xs:element name="netto"   type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="netto"    type="xs:decimal" minOccurs="1" maxOccurs="1"/>
       <xs:element name="brutto"   type="xs:decimal" minOccurs="1" maxOccurs="1"/>
-      <xs:element name="tax" type="tax_type" minOccurs="3" maxOccurs="3"/>
-      <xs:element name="taxTotal" minOccurs="0" maxOccurs="2">
-        <xs:complexType>
-	  <xs:simpleContent>
-	    <xs:extension base="xs:decimal">
-              <xs:attribute name="type" type="xs:string"  use="required" />
-	    </xs:extension>
-	  </xs:simpleContent>
-          <xs:element name="value"   type="xs:decimal"/>
-        </xs:complexType>
-      </xs:element>
+      <xs:element name="tax"      type="tax_type" minOccurs="3" maxOccurs="3"/>
     </xs:sequence>
  </xs:complexType>
 

@@ -50,7 +50,6 @@ QString xmlBasePath()
     return path;
 }
 
-
 QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
 {
   QDomElement elem = doc.createElement( name );
@@ -186,31 +185,24 @@ QDomDocument xmlDocument( KraftDoc *doc)
     QDomElement taxNone = xmldoc.createElement("tax");
     itemGroupTotals.appendChild(taxNone);
     taxNone.appendChild(xmlTextElement(xmldoc, "type", "None"));
-    taxNone.appendChild(xmlTextElement(xmldoc, "value", QStringLiteral("0")));
+    taxNone.appendChild(xmlTextElement(xmldoc, "percent", QStringLiteral("0")));
+    taxNone.appendChild(xmlTextElement(xmldoc, "total", QStringLiteral("0")));
 
     QDomElement taxReduced = xmldoc.createElement("tax");
     itemGroupTotals.appendChild(taxReduced);
     taxReduced.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
     double t = DocumentMan::self()->reducedTax(doc->date());
-    taxReduced.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
+    taxReduced.appendChild(xmlTextElement(xmldoc, "percent", QString::number(t, 'f', 2)));
+    t = doc->reducedTaxSum().toDouble();
+    taxReduced.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
 
     QDomElement taxFull = xmldoc.createElement("tax");
     itemGroupTotals.appendChild(taxFull);
     taxFull.appendChild(xmlTextElement(xmldoc, "type", "Full"));
     t = DocumentMan::self()->tax(doc->date());
-    taxFull.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
-
-    QDomElement taxReducedSum = xmldoc.createElement("taxTotal");
-    itemGroupTotals.appendChild(taxReducedSum);
-    taxReducedSum.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
-    t = doc->reducedTaxSum().toDouble();
-    taxReducedSum.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
-
-    QDomElement taxFullSum = xmldoc.createElement("taxTotal");
-    itemGroupTotals.appendChild(taxFullSum);
-    taxFullSum.appendChild(xmlTextElement(xmldoc, "type", "Full"));
+    taxFull.appendChild(xmlTextElement(xmldoc, "percent", QString::number(t, 'f', 2)));
     t = doc->fullTaxSum().toDouble();
-    taxFullSum.appendChild(xmlTextElement(xmldoc, "value", QString::number(t, 'f', 2)));
+    taxFull.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
 
     // **** Next toplevel: itemGroup
     QDomElement itemGroupElem = xmldoc.createElement( "itemGroup" );
@@ -245,6 +237,32 @@ void DocumentSaverXML::setBasePath(const QString& path)
     _basePath.setPath(path);
 }
 
+QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
+{
+    QString path {basePath()};
+    QDate d = doc->date();
+    path.append(QString("/%1/%2/").arg(d.year()).arg(d.month()));
+
+    _basePath.mkpath(path);
+    path.append(doc->ident());
+    path.append(".xml");
+
+    return path;
+}
+
+QString DocumentSaverXML::xmlDocFileNameFromId(const QString& id)
+{
+    QString path {basePath()};
+
+    const QString file {id + ".xml"};
+
+    QDirIterator it("/sys", {file}, QDir::NoFilter, QDirIterator::Subdirectories);
+    if (it.hasNext()) {
+        return it.filePath();
+    }
+    return QString();
+}
+
 DocumentSaverXML::DocumentSaverXML()
     : DocumentSaverBase(),
     _validateWithSchema {false}
@@ -273,16 +291,9 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     }
 
     const QString xml = xmldoc.toString();
+    const QString xmlFile = xmlDocFileName(doc);
 
-    // qDebug() << "Resulting XML: " << xml << endl;
-    QString path {basePath()};
-    QDate d = doc->date();
-    path.append(QString("/%1/%2/").arg(d.year()).arg(d.month()));
-
-    _basePath.mkpath(path);
-    const QString xmlFile = path + doc->ident() + ".xml";
-
-    // qDebug () << "Storing XML to " << xmlFile << endl;
+    qDebug () << "Storing XML to " << xmlFile << endl;
 
     QFile file( xmlFile );
     if ( file.open( QIODevice::WriteOnly ) ) {
@@ -291,6 +302,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         file.close();
     } else {
         // qDebug () << "Saving failed" << endl;
+        return false;
     }
 
     if (_validateWithSchema && _schema.isValid() && file.open(QIODevice::ReadOnly)) {
@@ -329,6 +341,14 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
 void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 {
+    if (id.isEmpty()) {
+        qDebug() << "Document Id to load is empty!";
+    }
+
+    const QString xmlFile = xmlDocFileNameFromId(id);
+
+
+
     if( !id.isEmpty() ) {
         QSqlQuery q;
         q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, "

@@ -40,6 +40,9 @@ public:
     virtual void load( const QString& , KraftDoc * ) override;
 
     void setBasePath(const QString& path);
+    QString xmlDocFileName(KraftDoc *doc);
+    QString xmlDocFileNameFromId(const QString& id);
+
 
 protected:
     virtual void loadPositions( const QString&, KraftDoc* );
