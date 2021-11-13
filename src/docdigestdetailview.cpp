@@ -68,6 +68,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   _leftDetails->setTextFormat(Qt::RichText);
   _leftDetails->setMinimumWidth(detailMinWidth);
   _leftDetails->setFrameStyle(0);
+  _leftDetails->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
   // --- The middle HTML based view
   hbox->setMargin(0);
@@ -107,6 +108,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   _rightDetails->setStyleSheet(styleR);
   _rightDetails->setMinimumWidth(detailMinWidth);
   _rightDetails->setWordWrap(true);
+  _rightDetails->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
   hbox->addWidget(_rightDetails);
 }
