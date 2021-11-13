@@ -37,8 +37,8 @@ be provided:
 - google ctemplate, A simple but powerful template language for C++,
   packages from the openSUSE Buildservice or from the website
   https://github.com/OlafvdSpek/ctemplate
+- grantlee, an C++ text template framework
 - optional: akonadi contact for Akonadi based addressbook access
-- optional: grantlee, an C++ text template framework
 
 Required packages for building with openSUSE:
 
@@ -46,15 +46,18 @@ Required packages for building with openSUSE:
 - extra-cmake-modules
 - gcc-c++
 - kcontacts-devel
-- akonadi-contact-devel
 - gettext
 - libctemplate-devel
-- ki18n-devel
-- kxmlgui-devel
 - libQt5Core-devel
 - libQt5Gui-devel
 - libQt5Sql-devel
 - libQt5Widgets-devel
+- libQt5Xml-devel
+- grantlee5-devel
+
+These are optional to build with Akonadi Support:
+- akonadi-contact-devel
+- akonadi-devel
 
 -----------------------------------------------------
 Build Kraft
