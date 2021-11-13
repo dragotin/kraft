@@ -281,7 +281,8 @@ void KraftView::slotLinkClicked(const QString& link)
 {
     QUrl u(link);
     if( u.scheme() == "doc" && u.host() == "show" ) {
-        const QString ident = u.queryItemValue("id");
+        QUrlQuery uq(link);
+        const QString ident = uq.queryItemValue("id");
         qDebug() << "Link clicked to open document " << ident;
         emit openROView( ident );
     }

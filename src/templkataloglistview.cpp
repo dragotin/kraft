@@ -49,7 +49,7 @@ TemplKatalogListView::TemplKatalogListView(QWidget *w)
 
   setHeaderLabels(labels);
 
-  QByteArray headerState = QByteArray::fromBase64( KraftSettings::self()->templateCatViewHeader().toAscii() );
+  QByteArray headerState = QByteArray::fromBase64( KraftSettings::self()->templateCatViewHeader().toLatin1() );
   header()->restoreState(headerState);
 
   contextMenu()->setTitle( i18n("Template Catalog"));

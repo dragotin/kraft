@@ -173,6 +173,7 @@ if(KF5Akonadi_FOUND)
 endif()
 
 add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
+target_compile_options(kraftlib PRIVATE -Wall -Wno-suggest-override)
 
 add_executable(kraft main.cpp)
 

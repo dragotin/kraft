@@ -28,7 +28,7 @@ AddressSelectorDialog::AddressSelectorDialog( QWidget *parent )
     :QDialog(parent)
 {
     setModal( true );
-    const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->addressSelectDialogSize().toAscii() );
+    const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->addressSelectDialogSize().toLatin1() );
     restoreGeometry(geo);
 
     _addressSelectorWidget = new AddressSelectorWidget(this, false);

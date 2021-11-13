@@ -84,9 +84,9 @@ FlosTemplDialog::FlosTemplDialog( QWidget *parent, bool modal )
   m_gbPriceSrc->addButton(m_rbManual, 0);
   m_gbPriceSrc->addButton(m_rbCalculation, 1);
 
-  m_timeParts->header()->setResizeMode(QHeaderView::ResizeToContents);
-  m_fixParts->header()->setResizeMode(QHeaderView::ResizeToContents);
-  m_matParts->header()->setResizeMode(QHeaderView::ResizeToContents);
+  m_timeParts->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+  m_fixParts->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+  m_matParts->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
   // disable for now, not used
   cbMwst->setVisible(false);

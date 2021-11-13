@@ -211,7 +211,7 @@ void MaterialKatalogView::saveWindowState( const QByteArray& arr )
 
 QByteArray MaterialKatalogView::windowState()
 {
-    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->materialCatViewState().toAscii() );
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->materialCatViewState().toLatin1() );
     return re;
 }
 
@@ -223,6 +223,6 @@ void MaterialKatalogView::saveWindowGeo( const QByteArray& arr )
 
 QByteArray MaterialKatalogView::windowGeo()
 {
-    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->materialCatViewGeo().toAscii() );
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->materialCatViewGeo().toLatin1() );
     return re;
 }

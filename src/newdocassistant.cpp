@@ -157,7 +157,7 @@ KraftWizard::KraftWizard(QWidget *parent, const char* name, bool modal )
   setObjectName( name );
   setModal( modal );
 
-  const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->newDocWizardGeometry().toAscii() );
+  const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->newDocWizardGeometry().toLatin1() );
   restoreGeometry(geo);
 }
 

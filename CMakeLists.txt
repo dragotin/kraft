@@ -18,9 +18,6 @@ include(FeatureSummary)
 # Uncomment to enable some tweaks for AppImage build
 # add_definitions(-DBUILD_APPIMAGE=1)
 
-# TODO: Build without deprecated QUrl methods
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0)
-
 remove_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
@@ -73,10 +70,7 @@ find_package(Ctemplate REQUIRED)
 find_package(Asciidoctor)
 # Sets the variable ASCIIDOCTOR_FOUND
 
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
-# disable the warning about null-pointer zero. FIXME.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
-#option(QTINDICATE_DISABLE "Disable support for notifications via indicator")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 # disable the warning about null-pointer zero. FIXME.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
 

@@ -86,9 +86,9 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
 
   mAddressProvider = new AddressProvider( this );
 
-  const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->portalState().toAscii() );
+  const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->portalState().toLatin1() );
   restoreState(state);
-  const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->portalGeometry().toAscii() );
+  const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->portalGeometry().toLatin1() );
   restoreGeometry(geo);
 
   // setAutoSaveSettings();
@@ -874,7 +874,7 @@ void Portal::createView( DocGuardedPtr doc )
 
   if( !mViewMap.contains(doc) ){
       KraftView *view = new KraftView( this );
-      const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->docEditGeometry().toAscii() );
+      const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->docEditGeometry().toLatin1() );
       view->restoreGeometry(geo);
       view->setup( doc );
       view->redrawDocument();
@@ -901,7 +901,7 @@ void Portal::createROView( DocGuardedPtr doc )
         KraftViewRO *view = new KraftViewRO( this );
         view->setup( doc );
         // view->redrawDocument();
-        const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->docViewROGeometry().toAscii() );
+        const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->docViewROGeometry().toLatin1() );
         view->restoreGeometry(geo);
         view->show();
         mViewMap[doc] = view;

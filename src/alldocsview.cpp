@@ -177,8 +177,8 @@ void AllDocsView::setView( ViewType type )
 
 void AllDocsView::slotBuildView()
 {
-    const QByteArray headerStateTable = QByteArray::fromBase64( KraftSettings::self()->digestListColumnsAll().toAscii() );
-    const QByteArray headerStateDate =  QByteArray::fromBase64( KraftSettings::self()->digestListColumnsTime().toAscii() );
+    const QByteArray headerStateTable = QByteArray::fromBase64( KraftSettings::self()->digestListColumnsAll().toLatin1() );
+    const QByteArray headerStateDate =  QByteArray::fromBase64( KraftSettings::self()->digestListColumnsTime().toLatin1() );
 
     mDateModel = new DocumentFilterModel(-1, this);
     mDateModel->setEnableTreeview(true);
@@ -191,7 +191,7 @@ void AllDocsView::slotBuildView()
     _tableView->sortByColumn(DocumentModel::Document_CreationDateRaw, Qt::DescendingOrder);
     _tableView->verticalHeader()->hide();
     _tableView->setSortingEnabled(true);
-    _tableView->horizontalHeader()->setMovable( true );
+    _tableView->horizontalHeader()->setSectionsMovable( true );
     _tableView->horizontalHeader()->setSortIndicatorShown( true );
     _tableView->horizontalHeader()->restoreState( headerStateTable );
     _tableView->setSelectionBehavior( QAbstractItemView::SelectRows );

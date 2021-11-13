@@ -256,19 +256,19 @@ void TemplKatalogView::saveWindowState( const QByteArray& arr )
 
 QByteArray TemplKatalogView::windowState()
 {
-    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->templateCatViewState().toAscii() );
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->templateCatViewState().toLatin1() );
 
     return re;
 }
 
 void TemplKatalogView::saveWindowGeo( const QByteArray& arr )
 {
-    KraftSettings::self()->setTemplateCatViewGeo( QString::fromAscii(arr) );
+    KraftSettings::self()->setTemplateCatViewGeo( QString::fromLatin1(arr) );
 }
 
 QByteArray TemplKatalogView::windowGeo()
 {
-    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->templateCatViewGeo().toAscii() );
+    const QByteArray re = QByteArray::fromBase64( KraftSettings::self()->templateCatViewGeo().toLatin1() );
 
     return re;
 }

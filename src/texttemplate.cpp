@@ -43,7 +43,7 @@ bool TextTemplate::createSubDictionary( const QString& parent, const QString& na
   bool re = false;
 
   if ( mDictionaries.contains( parent ) ) {
-    ttd.mDict = mDictionaries[parent]->AddSectionDictionary( name.toAscii().data() );
+    ttd.mDict = mDictionaries[parent]->AddSectionDictionary( name.toLatin1().data() );
     ttd.mParent = parent;
     ttd.mName = name;
     mDictionaries[name] = ttd.mDict;
@@ -55,8 +55,8 @@ bool TextTemplate::createSubDictionary( const QString& parent, const QString& na
 void TextTemplate::createDictionary( const QString& dictName )
 {
   if ( mStandardDict ) {
-    mDictionaries[dictName] = mStandardDict->AddSectionDictionary( dictName.toAscii().data() );
-    mStandardDict->ShowSection( dictName.toAscii().data() );
+    mDictionaries[dictName] = mStandardDict->AddSectionDictionary( dictName.toLatin1().data() );
+    mStandardDict->ShowSection( dictName.toLatin1().data() );
   }
 }
 
@@ -68,27 +68,27 @@ void TextTemplate::setValue( const QString& dictName, const QString& key, const 
     dict = mDictionaries[dictName];
   } else {
     if( mStandardDict ) {
-      dict = mStandardDict->AddSectionDictionary( dictName.toAscii().data() );
+      dict = mStandardDict->AddSectionDictionary( dictName.toLatin1().data() );
       mDictionaries[dictName] = dict;
-      mStandardDict->ShowSection( dictName.toAscii().data() );
+      mStandardDict->ShowSection( dictName.toLatin1().data() );
     }
   }
 
   if ( dict )
-    dict->SetValue( key.toAscii().data(), val.toStdString() ); // std::string( val.toUtf8() ) );
+    dict->SetValue( key.toLatin1().data(), val.toStdString() ); // std::string( val.toUtf8() ) );
 }
 
 void TextTemplate::setValue( const QString& key, const QString& val )
 {
   if ( mStandardDict ) {
-    mStandardDict->SetValue( key.toAscii().data(), val.toStdString() );
+    mStandardDict->SetValue( key.toLatin1().data(), val.toStdString() );
   }
 }
 
 void TextTemplate::setValue( Dictionary ttd, const QString& key, const QString& val )
 {
   if ( ttd.mDict ) {
-    ( ttd.mDict )->SetValue( key.toAscii().data(), val.toStdString() );
+    ( ttd.mDict )->SetValue( key.toLatin1().data(), val.toStdString() );
   }
 }
 

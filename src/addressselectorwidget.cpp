@@ -361,7 +361,7 @@ void AddressSelectorWidget::restoreState()
     const QList<int> sizes = KraftSettings::self()->addressPickerSplitterSize();
     setSizes(sizes);
 
-    const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->addressPickerTreeviewState().toAscii() );
+    const QByteArray state = QByteArray::fromBase64( KraftSettings::self()->addressPickerTreeviewState().toLatin1() );
     _addressTreeView->header()->restoreState(state);
 
 }

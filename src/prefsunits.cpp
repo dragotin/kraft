@@ -63,7 +63,7 @@ PrefsUnits::PrefsUnits(QWidget* parent)
   vboxLay->addWidget( mUnitsTreeView );
   mUnitsTreeView->setModel(mProxyModel);
   mUnitsTreeView->hideColumn(0);
-  mUnitsTreeView->header()->setResizeMode(QHeaderView::ResizeToContents);
+  mUnitsTreeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
   mUnitsTreeView->setEditTriggers(ImpTreeView::NoEditTriggers);
 

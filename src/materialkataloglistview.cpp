@@ -45,7 +45,7 @@ MaterialKatalogListView::MaterialKatalogListView(QWidget *parent )
 
   setHeaderLabels( headers );
 
-  QByteArray headerState = QByteArray::fromBase64( KraftSettings::self()->materialCatViewHeader().toAscii() );
+  QByteArray headerState = QByteArray::fromBase64( KraftSettings::self()->materialCatViewHeader().toLatin1() );
   header()->restoreState(headerState);
   contextMenu()->setTitle(i18n("Material Catalog"));
 }
@@ -89,7 +89,6 @@ QTreeWidgetItem* MaterialKatalogListView::addMaterialToView( QTreeWidgetItem *pa
   if ( !parent ) parent = m_root;
 
   QTreeWidgetItem *recItem = new QTreeWidgetItem( parent );
-  Qt::ItemFlags flags;
   if ( mCheckboxes ) {
     recItem->setCheckState(0, Qt::Unchecked);
   }
@@ -102,8 +101,9 @@ QTreeWidgetItem* MaterialKatalogListView::addMaterialToView( QTreeWidgetItem *pa
   return recItem;
 }
 
-void MaterialKatalogListView::slFreshupItem( QTreeWidgetItem *item, void* templ, QLocale *loc )
+void MaterialKatalogListView::slFreshupItem(QTreeWidgetItem *item, void* templ, QLocale *loc)
 {
+    Q_UNUSED(loc)
   StockMaterial *mat = static_cast<StockMaterial*>( templ );
 
   if ( item && mat ) {
