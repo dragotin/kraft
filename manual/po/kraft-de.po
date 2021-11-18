@@ -3,21 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: 2021-06-12 15:30+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2021-10-13 22:21+0200\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Language: de_DE\n"
 "X-Source-Language: en\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.3\n"
 
 #. type: Title =
 #: kraft.adoc:1
@@ -102,24 +102,23 @@ msgstr ""
 msgid ""
 "Kraft is designed to use the data entries from the KDE address book which is "
 "a module of the https://community.kde.org/KDE_PIM[KDE PIM], an information "
-"management application.  All addresses are collected in the "
-"https://userbase.kde.org/KAddressBook[KAdressBook]."
+"management application.  All addresses are collected in the https://userbase."
+"kde.org/KAddressBook[KAdressBook]."
 msgstr ""
 "Kraft arbeitet mit den Adressdaten aus dem KDE Adressbuch, das ein Modul von "
-"https://community.kde.org/KDE_PIM[KDE PIM], einer "
-"Informations-Management-Anwendung ist. Alle Adressen werden in der Anwendung "
-"https://userbase.kde.org/KAddressBook[KAdressBook] gesammelt."
+"https://community.kde.org/KDE_PIM[KDE PIM], einer Informations-Management-"
+"Anwendung ist. Alle Adressen werden in der Anwendung https://userbase.kde."
+"org/KAddressBook[KAdressBook] gesammelt."
 
 #. type: Plain text
 #: kraft.adoc:34
 msgid ""
-"The code of Kraft is open source and is released under the "
-"https://en.wikipedia.org/wiki/GNU_General_Public_License[GNU General Public "
-"License]."
+"The code of Kraft is open source and is released under the https://en."
+"wikipedia.org/wiki/GNU_General_Public_License[GNU General Public License]."
 msgstr ""
-"Der Quelltext zu Kraft ist open source and wird unter der Lizenz "
-"https://en.wikipedia.org/wiki/GNU_General_Public_License[GNU General Public "
-"License] veröffentlicht."
+"Der Quelltext zu Kraft ist open source and wird unter der Lizenz https://en."
+"wikipedia.org/wiki/GNU_General_Public_License[GNU General Public License] "
+"veröffentlicht."
 
 #. type: Plain text
 #: kraft.adoc:39
@@ -269,9 +268,10 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:82
 msgid ""
-"Different document types can use the same number cycle to generate ids from. "
-" Number cycles are identified by their name.  User can create new number "
-"cycles and edit them clicking on the button btn:[Edit Number Cycles...]"
+"Different document types can use the same number cycle to generate ids "
+"from.  Number cycles are identified by their name.  User can create new "
+"number cycles and edit them clicking on the button btn:[Edit Number "
+"Cycles...]"
 msgstr ""
 "Verschiedene Dokumenttypen können die selben Nummernkreise verwenden um Ids "
 "aus ihnen zu generieren. Nummernkreise werden durch ihren Namen "
@@ -293,7 +293,7 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:87
 msgid "See the following table for available variables which can be used:"
-msgstr ""
+msgstr "Folgende Variablen stehen zur Verfügung:"
 
 #. type: Table
 #: kraft.adoc:103
@@ -313,6 +313,19 @@ msgid ""
 "| `%uid`          | the contact id of the client.\n"
 "\n"
 msgstr ""
+"| `%y` or `%yyyy` | das Jahr im Datum des Dokuments.\n"
+"| `%yy`           | das Jahr im Datum des Dokuments (zwei Stellen).\n"
+"| `%w`            | die Wochennummer im Datum des Dokuments.\n"
+"| `%ww`           | die Wochennummer im Datum des Dokuments mit führender Null .\n"
+"| `%d`            | der Tag im Datum des Dokuments.\n"
+"| `%dd`           | der Tag im Datum des Dokuments mit führender Null.\n"
+"| `%m` or `%M`    | der Monat als Nummer im Datum des Dokuments.\n"
+"| `%MM`           | der Monat als Nummer im Datum des Dokuments mit führender Null.\n"
+"| `%c`            | die Kund*innen-ID aus kaddressbook\n"
+"| `%i`            | the unique counter *(mandatory)*\n"
+"| `%type`         | der Dokumententyp (Angebot, Rechnung usw.)\n"
+"| `%uid`          | Die Kontakt-ID der Kundin / des Kunden.\n"
+"\n"
 
 #. type: Title ===
 #: kraft.adoc:105
@@ -330,7 +343,7 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:111
 msgid "A high level and a low level."
-msgstr ""
+msgstr "Ein hoher und ein niedriger Steuersatz."
 
 #. type: Plain text
 #: kraft.adoc:114
@@ -499,8 +512,8 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:181
 msgid ""
-"Select with the mouse the column-name `material`, select now in the "
-"context-menu [Add a sub chapter]"
+"Select with the mouse the column-name `material`, select now in the context-"
+"menu [Add a sub chapter]"
 msgstr ""
 
 #. type: Plain text
@@ -642,13 +655,13 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:234
 msgid "Fix costs"
-msgstr ""
+msgstr "Fixkosten"
 
 #. type: Title =====
 #: kraft.adoc:235 kraft.adoc:285
 #, no-wrap
 msgid "Material"
-msgstr ""
+msgstr "Material"
 
 #. type: Plain text
 #: kraft.adoc:237
@@ -1043,8 +1056,8 @@ msgstr ""
 #: kraft.adoc:420
 msgid ""
 "Beside this, we have seen that there is a lifeless three, which we will "
-"offer to remove as extra work.  "
-"image:create_new_doc.png[Numbercycles,float=\"right\"]"
+"offer to remove as extra work.  image:create_new_doc.png[Numbercycles,float="
+"\"right\"]"
 msgstr ""
 
 #. type: Plain text
@@ -1340,18 +1353,17 @@ msgstr ""
 #: kraft.adoc:567
 msgid ""
 "From version 0.95 on Kraft ships with an example document in the Grantlee- "
-"and WeasyPrint format. It can be found at "
-"`/usr/share/kraft/reports/invoice.gtmpl` or "
-"https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl[online "
-"on Github]."
+"and WeasyPrint format. It can be found at `/usr/share/kraft/reports/invoice."
+"gtmpl` or https://github.com/dragotin/kraft/blob/master/reports/invoice."
+"gtmpl[online on Github]."
 msgstr ""
 
 #. type: Plain text
 #: kraft.adoc:569
 msgid ""
-"To effectively change the look of the document `kraft.css` "
-"(https://github.com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) "
-"needs to be considered. It defines most of the look."
+"To effectively change the look of the document `kraft.css` (https://github."
+"com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) needs to be "
+"considered. It defines most of the look."
 msgstr ""
 
 #. type: Title ====
@@ -1768,8 +1780,8 @@ msgid ""
 "That is located in each users home directory, in the path `.config/kraftrc`. "
 "It has to contain the following config value:"
 msgstr ""
-"Es ist in jedem Benutzer Homeverzeichnis unter dem releativen Pfad "
-"`.config/kraftrc`. Es muss den folgenden Konfigurations-Wert enthalten:"
+"Es ist in jedem Benutzer Homeverzeichnis unter dem releativen Pfad `.config/"
+"kraftrc`. Es muss den folgenden Konfigurations-Wert enthalten:"
 
 #. type: Plain text
 #: kraft.adoc:716 kraft.adoc:720
@@ -1837,7 +1849,6 @@ msgstr "Software und Dokumentation Copyright 2004-2021 Klaas Freitag"
 msgid "Documentation copyright 2020 Ronald Stroethoff"
 msgstr "Dokumentation Copyright 2020 Ronald Stroethoff"
 
-#, no-wrap
 #~ msgid "Features"
 #~ msgstr "Funktionen"
 
