@@ -128,10 +128,12 @@ void Portal::initActions()
     _actNewDocument->setShortcuts(QKeySequence::New);
     connect(_actNewDocument, &QAction::triggered, this, &Portal::slotNewDocument);
 
+    newIcon = QIcon::fromTheme( "document-new-from-template");
     _actCopyDocument = new QAction(newIcon, i18n("&Copy Document"), this);
     // _actCopyDocument->setShortcuts();
     connect(_actCopyDocument, &QAction::triggered, this, &Portal::slotCopyCurrentDocument);
 
+    newIcon = QIcon::fromTheme( "document-export");
     _actFollowDocument = new QAction(newIcon, i18n("Create &Followup Document"), this);
     _actFollowDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ));
     connect(_actFollowDocument, &QAction::triggered, this, &Portal::slotFollowUpDocument);
@@ -141,7 +143,7 @@ void Portal::initActions()
     _actPrintDocument->setShortcut( QKeySequence::Print);
     connect(_actPrintDocument, &QAction::triggered, this, &Portal::slotPrintCurrentDocument);
 
-    newIcon = QIcon::fromTheme( "document-view");
+    newIcon = QIcon::fromTheme( "document-preview");
     _actViewDocument = new QAction(newIcon, i18n("Show Document"), this);
     _actViewDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
     connect(_actViewDocument, &QAction::triggered, this, &Portal::slotViewCurrentDocument);
@@ -151,7 +153,7 @@ void Portal::initActions()
     _actOpenDocument->setShortcut( QKeySequence::Open );
     connect(_actOpenDocument, &QAction::triggered, this, &Portal::slotOpenCurrentDocument);
     
-    newIcon = QIcon::fromTheme( "document-edit");
+    newIcon = QIcon::fromTheme( "file-library-symbolic");
     _actOpenArchivedDocument = new QAction(newIcon, i18n("Open Archived Document"), this);
     _actOpenArchivedDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_A ));
     connect(_actOpenArchivedDocument, &QAction::triggered, this, &Portal::slotArchivedDocExecuted);
