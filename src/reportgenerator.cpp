@@ -300,6 +300,9 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
     case PDFConverter::ConvError::NoReportLabMod:
         errMsg = i18n("The ReportLab python module is not installed.");
         break;
+    case PDFConverter::ConvError::NoPyPDFMod:
+        errMsg = i18n("The PyPDF2 python module is not installed.");
+        break;
     case PDFConverter::ConvError::SourceFileFail:
         errMsg = i18n("The source file can not be read.");
         break;

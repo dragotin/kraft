@@ -37,6 +37,7 @@ public:
                            TrmlToolFail,
                            TargetFileError,
                            NoReportLabMod,
+                           NoPyPDFMod,
                            TargetFileMissing,
                            UnknownError,
                            WeasyPrintNotFound,

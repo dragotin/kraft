@@ -138,6 +138,8 @@ void ReportLabPDFConverter::trml2pdfFinished( int exitCode, QProcess::ExitStatus
     } else {
         if( mErrors.contains(QLatin1String("No module named Reportlab"))) {
             emit converterError(ConvError::NoReportLabMod);
+        } else if (mErrors.contains("No module named 'PyPDF2")){
+            emit converterError(ConvError::NoPyPDFMod);
         } else {
             qDebug() << "Trml2Pdf Error:" << mErrors;
             emit converterError(ConvError::UnknownError);
