@@ -308,7 +308,8 @@ int UpgradeDbPage::nextId() const
 // ---------------------------------------------------------------------------
 
 OwnAddressPage::OwnAddressPage(QWidget *parent)
-  :QWizardPage(parent)
+  :QWizardPage(parent),
+    mAddresses(nullptr)
 {
     setTitle(i18n("Your Company Address"));
     QVBoxLayout *vbox = new QVBoxLayout;
@@ -319,8 +320,10 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
     vbox->addWidget( l );
 
     vbox->addWidget(tabWidget);
+    setLayout(vbox);
 
     // == The AddressSelector page
+#ifdef HAVE_AKONADI
     QWidget *w = new QWidget;
     tabWidget->addTab(w, i18n("Select from Addressbook"));
 
@@ -329,11 +332,10 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
     mAddresses = new AddressSelectorWidget(this);
     vbox1->addWidget( mAddresses );
     w->setLayout( vbox1 );
-    setLayout(vbox);
 
     connect( mAddresses, SIGNAL( addressSelected(KContacts::Addressee)),
              SLOT( gotMyAddress( KContacts::Addressee ) ) );
-
+#endif
     // == The manual page
     QWidget *w1 = new QWidget;
     ui.setupUi(w1);
@@ -349,14 +351,14 @@ OwnAddressPage::OwnAddressPage(QWidget *parent)
     ui.emailLabel->setText(KContacts::Addressee::emailLabel());
     ui.websiteLabel->setText(KContacts::Addressee::urlLabel());
 
-    if( !mAddresses->backendUp() ) {
+    if( mAddresses && !mAddresses->backendUp() ) {
         tabWidget->setCurrentIndex(id);
     }
 }
 
 OwnAddressPage::~OwnAddressPage()
 {
-    delete mAddresses;
+
 }
 
 void OwnAddressPage::gotMyAddress(const KContacts::Addressee& addressee)

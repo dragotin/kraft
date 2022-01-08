@@ -341,9 +341,9 @@ QString PortalView::systemView( const QString& htmlMsg ) const
 
   // external tools
   tmpl.setValue( "EXTERNAL_TOOLS_LABEL", i18n( "External Tools" ) );
-  tmpl.setValue( "RML2PDF_TOOL_LABEL", i18n( "RML to PDF conversion tool" ) );
-  QStringList trml2pdf = DefaultProvider::self()->findTrml2Pdf();
 
+  tmpl.setValue( "RML2PDF_TOOL_LABEL", i18n( "RML to PDF conversion tool" ) );
+  const QStringList trml2pdf = DefaultProvider::self()->findTrml2Pdf();
   QString trml2pdfValue = (trml2pdf.count() ? trml2pdf.join(" ") : i18n("not found!") );
   tmpl.setValue( "RML2PDF_TOOL", trml2pdfValue );
 
