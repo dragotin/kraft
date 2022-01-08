@@ -193,36 +193,48 @@ QString DefaultProvider::getStyleSheet( const QString& styleName ) const
   return style;
 }
 
-// this method uses QStandardPath::locate from the AppDataLocation to find
-// files, but if KRAFT_HOME is set, that one is preffered.
+// this method first checks if KRAFT_HOME is set. If it is it tries to read the files from there.
+// If KRAFT_HOME is not set, it uses QStandardPath::locate from the AppDataLocation to find
+// files.
+//
+// For AppImage, this method should actually look relative to the application directory.
+//
 QString DefaultProvider::locateFile(const QString& findFile) const
 {
     QString re;
-    const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
+    const QString kraftHome = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
 
-    if( prjPath.isEmpty()) {
-        re = QStandardPaths::locate( QStandardPaths::AppDataLocation, findFile );
+    auto dirs = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+
+    if (kraftHome.isEmpty()) {
+        // prepend the kraft path segment and look in the system resources
+        QString fifi {findFile};
+        re = QStandardPaths::locate( QStandardPaths::AppDataLocation, fifi);
     } else {
-        re = prjPath;
-        if( !re.endsWith(QChar('/')) ) {
-            re.append( QChar('/'));
-        }
+        // KRAFT_HOME is set
+        QString fifi {kraftHome};
+        if (!fifi.endsWith('/') && !findFile.startsWith('/'))
+            fifi.append('/');
+        fifi.append(findFile);
 
-        re.append(findFile);
-        QFileInfo fi(re);
-        if( !fi.exists() ) {
-            if( findFile.startsWith("pics")) {
-                // special handling: formerly the pics in KRAFT_HOME were in src.
-                re = prjPath;
-                if( !re.endsWith(QChar('/')) ) {
-                    re.append( QChar('/'));
-                }
-                re.append("src/");
-                re.append(findFile);
-            } else {
-                qDebug() << "WARN: locateFile could not find file " << findFile;
-            }
+        if (QFile::exists(fifi)) {
+            re = fifi;
         }
+    }
+
+    if (re.isEmpty()) {
+        // it was not found in the system location or in KRAFT_HOME
+        // If so, check relative to the binary for AppImage.
+        QString fifi = QString("%1/../share/kraft/%2").arg(QCoreApplication::applicationDirPath()).arg(findFile);
+
+        if (QFile::exists(fifi)) {
+            QFileInfo fi(fifi);
+            re = fi.absoluteFilePath();
+        }
+    }
+
+    if (re.isEmpty()) {
+        qDebug() << "locateFile could not find file " << findFile;
     }
 
     return re;
@@ -232,8 +244,11 @@ QString DefaultProvider::locateKraftTool(const QString& toolName) const
 {
     QString fullPath;
 
+    // first use the standard locateFile to consider KRAFT_HOME and relative...
+
     fullPath = locateFile("tools/" + toolName);
 
+    // if that is empty, go for the system executables
     if (fullPath.isEmpty()) {
         fullPath = QStandardPaths::findExecutable(toolName);
     }

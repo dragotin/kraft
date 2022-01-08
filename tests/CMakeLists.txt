@@ -37,10 +37,14 @@ target_link_libraries(t_metaparser ${test_libs})
 
 # ============================================================ 
 
-set(doctype_src
-)
+add_executable(t_defaultprovider t_defaultprovider.cpp)
+add_test(t_defaultprovider t_defaultprovider)
 
-add_executable(t_doctype t_doctype.cpp ${doctype_src})
+target_link_libraries(t_defaultprovider ${test_libs})
+
+# ============================================================ 
+
+add_executable(t_doctype t_doctype.cpp)
 add_test(t_doctype t_doctype)
 
 target_link_libraries(t_doctype ${test_libs})
