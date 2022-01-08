@@ -29,6 +29,7 @@
 #include "htmlview.h"
 #include "texttemplate.h"
 #include "archdoc.h"
+#include "format.h"
 
 DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
   : HtmlView( parent )
@@ -436,7 +437,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LABEL"), i18n( "Last printed" ) );
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_TITLE"), i18n( "Opens last created PDF document" ) );
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), digest.printDate().toString() );
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), Format::toDateTimeString(digest.printDate(), Format::DateFormatLong));
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
             if( archDocs.size() == 1 ) {
                 tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("One older print"));
