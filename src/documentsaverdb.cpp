@@ -85,8 +85,11 @@ bool fillDocumentBuffer(QSqlRecord &buf, KraftDoc *doc)
         checkAndSet(changes, buf, "date", doc->date());
         checkAndSet(changes, buf, "pretext", KraftDB::self()->mysqlEuroEncode( doc->preText()));
         checkAndSet(changes, buf, "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText()));
-        checkAndSet(changes, buf, "country", DefaultProvider::self()->locale()->bcp47Name());
-        checkAndSet(changes, buf, "language", "");
+
+        // The locale can be reconstructed from the name of the locale.
+        checkAndSet(changes, buf, "country", DefaultProvider::self()->locale()->name());
+        // ...while the language setting is not really needed, but for beauty written to db.
+        checkAndSet(changes, buf, "language", QLocale::languageToString(DefaultProvider::self()->locale()->language()));
         checkAndSet(changes, buf, "projectLabel", doc->projectLabel());
         checkAndSet(changes, buf, "predecessor", doc->predecessor());
 
@@ -339,6 +342,7 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
             }
 
             // Removed, as with Kraft 0.80 there is no locale management on doc level any more
+            // Later, the locale can be read from here again.
             // doc->setCountryLanguage( q.value( 8 ).toString(),
             //                         q.value( 9 ).toString());
 
