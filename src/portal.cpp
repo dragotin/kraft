@@ -454,8 +454,6 @@ void Portal::slotStartupChecks()
                  this, &Portal::slotDocConverted);
         connect( &_reportGenerator, &ReportGenerator::failure,
                  this, &Portal::slotDocConvertionFail);
-
-        slotStatusMsg();
     }
 }
 
