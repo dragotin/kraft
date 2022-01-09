@@ -114,14 +114,18 @@ void KatalogView::createCentralWidget(QBoxLayout *box, QWidget* )
   box->addLayout( hb );
   mTemplateStats = new QLabel( );
   mProgress = new QProgressBar;
+  mProgress->setVisible(false);
   hb->addWidget( mTemplateStats );
   hb->addStretch();
   hb->addWidget( mProgress );
 
-  connect( getListView(), SIGNAL( sequenceUpdateMaximum( int )),
-           mProgress, SLOT( setMaximum(int) ) );
-  connect( getListView(), SIGNAL( sequenceUpdateProgress( int ) ),
-           this, SLOT( setProgressValue(int) ) );
+  connect( getListView(), &KatalogListView::sequenceUpdateMaximum,
+           [=](int max) {
+      this->mProgress->setVisible(max > 0);
+      this->mProgress->setMaximum(max);
+  });
+  connect( getListView(), &KatalogListView::sequenceUpdateProgress,
+           this, &KatalogView::setProgressValue );
 
   const QByteArray state = windowState();
   restoreState(state);
@@ -131,11 +135,14 @@ void KatalogView::createCentralWidget(QBoxLayout *box, QWidget* )
 
 void KatalogView::setProgressValue( int val )
 {
-  if( ! mProgress ) return;
-  mProgress->setValue( val );
   if( val == mProgress->maximum() ) {
-    QTimer::singleShot( 3000, mProgress, SLOT(reset()));
+    QTimer::singleShot(3000, this, [this] () {
+        this->mProgress->reset();
+        this->mProgress->setVisible(false);
+    });
   }
+  if( ! mProgress || mProgress->maximum() < 10) return;
+  mProgress->setValue( val );
 }
 
 KatalogView::~KatalogView()

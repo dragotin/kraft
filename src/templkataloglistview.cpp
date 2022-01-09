@@ -282,6 +282,7 @@ void TemplKatalogListView::slotUpdateSequence()
       }
     }
   }
+  emit sequenceUpdateProgress(childCount-1); // make sure to disable the progress bar.
   KatalogListView::slotUpdateSequence();
 }
 
