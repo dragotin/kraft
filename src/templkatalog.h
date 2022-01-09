@@ -41,7 +41,7 @@ public:
     void reload( dbID ) override;
 
     /** No descriptions */
-    FloskelTemplateList getFlosTemplates( const CatalogChapter& chapter );
+    FloskelTemplateList getFlosTemplates( int );
 
     KatalogType type() override { return TemplateCatalog; }
 

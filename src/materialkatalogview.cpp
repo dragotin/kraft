@@ -35,9 +35,9 @@ const QString MaterialKatalogView::MaterialCatalogName( "Material" );
 
 
 MaterialKatalogView::MaterialKatalogView()
- : KatalogView(),
-   m_materialListView(nullptr),
-   m_details(nullptr)
+    : KatalogView(),
+      m_materialListView(nullptr),
+      m_details(nullptr)
 {
 
 }
@@ -69,137 +69,144 @@ Katalog* MaterialKatalogView::getKatalog( const QString& name )
 
 void MaterialKatalogView::slEditTemplate()
 {
-  MaterialKatalogListView *listview = static_cast<MaterialKatalogListView*>(getListView());
-  if( listview )
-  {
-    QTreeWidgetItem *item = listview->currentItem();
-    if( listview->isChapter(item) ) {
-      // check if the chapter is empty. If so, switch to slNewTempalte()
-      // if there others, open the chapter.
-      if( !listview->isRoot( item ) && item->childCount() == 0 ) {
-        slNewTemplate();
-      } else {
-        // do nothing.
-      }
-    } else {
-      // qDebug () << "Editing the material" << endl;
+    MaterialKatalogListView *listview = static_cast<MaterialKatalogListView*>(getListView());
+    if( listview )
+    {
+        QTreeWidgetItem *item = listview->currentItem();
+        if( listview->isChapter(item) ) {
+            // check if the chapter is empty. If so, switch to slNewTempalte()
+            // if there others, open the chapter.
+            if( !listview->isRoot( item ) && item->childCount() == 0 ) {
+                slNewTemplate();
+            } else {
+                // do nothing.
+            }
+        } else {
+            // qDebug () << "Editing the material" << endl;
 
-      if( listview )
-      {
-        StockMaterial *currTempl = static_cast<StockMaterial*> ( listview->currentItemData() );
-        if( currTempl ) {
-          QTreeWidgetItem *item = static_cast<QTreeWidgetItem*>(listview->currentItem());
-          openDialog( item, currTempl, false );
+            if( listview )
+            {
+                StockMaterial *currTempl = static_cast<StockMaterial*> ( listview->currentItemData() );
+                if( currTempl ) {
+                    QTreeWidgetItem *item = static_cast<QTreeWidgetItem*>(listview->currentItem());
+                    openDialog( item, currTempl, false );
+                }
+            }
         }
-      }
     }
-  }
 }
 
 void MaterialKatalogView::slNewTemplate()
 {
-  KatalogListView *listview = getListView();
-  if( !listview ) return;
-  MaterialKatalogListView *matListView = static_cast<MaterialKatalogListView*>(listview);
+    KatalogListView *listview = getListView();
+    if( !listview ) return;
+    MaterialKatalogListView *matListView = static_cast<MaterialKatalogListView*>(listview);
 
-  StockMaterial *newMat = new StockMaterial();
-  newMat->setText( i18n( "<new material>" ) );
-  QTreeWidgetItem *parentItem = static_cast<QTreeWidgetItem*>( listview->currentItem() );
-  if ( parentItem ) {
-    if ( ! ( matListView->isRoot( parentItem ) || matListView->isChapter( parentItem ) ) ) {
-      parentItem = static_cast<QTreeWidgetItem*>(parentItem->parent());
+    StockMaterial *newMat = new StockMaterial();
+    newMat->setText( i18n( "<new material>" ) );
+    QTreeWidgetItem *parentItem = static_cast<QTreeWidgetItem*>( listview->currentItem() );
+    if ( parentItem ) {
+        if ( ! ( matListView->isRoot( parentItem ) || matListView->isChapter( parentItem ) ) ) {
+            parentItem = static_cast<QTreeWidgetItem*>(parentItem->parent());
+        }
     }
-  }
 
-  if( parentItem && listview->isChapter( parentItem )) {
-    // try to find out which catalog is open/current
-    CatalogChapter *chap = static_cast<CatalogChapter*>(listview->itemData( parentItem ));
-    newMat->setChapter( chap->id().toInt() );
-  }
+    if( parentItem && listview->isChapter( parentItem )) {
+        // try to find out which catalog is open/current
+        CatalogChapter *chap = static_cast<CatalogChapter*>(listview->itemData( parentItem ));
+        newMat->setChapter( chap->id().toInt() );
+    }
 
-  mNewItem = matListView->addMaterialToView( parentItem, newMat );
-  openDialog( mNewItem, newMat, true );
+    mNewItem = matListView->addMaterialToView( parentItem, newMat );
+    openDialog( mNewItem, newMat, true );
 
 }
 
 void MaterialKatalogView::slDeleteTemplate()
 {
-  // qDebug () << "delete template hit";
-  MaterialKatalogListView* listview = static_cast<MaterialKatalogListView*>(getListView());
-  if( listview )
-  {
-    StockMaterial *currTempl = static_cast<StockMaterial*> (listview->currentItemData());
-    if( currTempl ) {
-      int id = currTempl->getID();
+    // qDebug () << "delete template hit";
+    MaterialKatalogListView* listview = static_cast<MaterialKatalogListView*>(getListView());
+    if( listview )
+    {
+        StockMaterial *currTempl = static_cast<StockMaterial*> (listview->currentItemData());
+        if( currTempl ) {
+            int id = currTempl->getID();
 
-      QMessageBox msgBox;
-      msgBox.setText(i18n( "Do you really want to delete the template from the catalog?"));
+            QMessageBox msgBox;
+            msgBox.setText(i18n( "Do you really want to delete the template from the catalog?"));
 
-      msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
-      msgBox.setDefaultButton(QMessageBox::Yes);
-      int ret = msgBox.exec();
+            msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
 
-      if ( ret == QMessageBox::Yes) {
-        // qDebug () << "Delete item with id " << id;
-        MatKatalog *k = static_cast<MatKatalog*>( getKatalog( m_katalogName ) );
+            if ( ret == QMessageBox::Yes) {
+                // qDebug () << "Delete item with id " << id;
+                MatKatalog *k = static_cast<MatKatalog*>( getKatalog( m_katalogName ) );
 
-        if( k ) {
-          k->deleteMaterial( id );
-          listview->removeTemplateItem( listview->currentItem());
+                if( k ) {
+                    k->deleteMaterial( id );
+                    listview->removeTemplateItem( listview->currentItem());
+                }
+            }
         }
-      }
     }
-  }
 }
 
 void MaterialKatalogView::openDialog( QTreeWidgetItem *listitem, StockMaterial *tmpl, bool isNew )
 {
-  mDialog = new MaterialTemplDialog( this );
-  mNewItem = listitem;
+    mDialog = new MaterialTemplDialog( this );
+    mNewItem = listitem;
 
-  listitem->setSelected( true );
-  // listitem->ensureItemVisible( true );
+    KatalogListView *listview = getListView();
+    if( !listview ) return;
 
-  connect( mDialog, SIGNAL( editAccepted( StockMaterial* ) ),
-           this, SLOT( slotEditOk( StockMaterial* ) ) );
-  connect( mDialog, SIGNAL( editRejected( ) ),
-           this, SLOT( slotEditRejected() ) );
+    if (listview->currentItem())
+        listview->currentItem()->setSelected(false);
 
-  mDialog->setMaterial( tmpl, MaterialCatalogName, isNew );
-  mDialog->show();
+    listitem->setSelected( true );
+    // listitem->ensureItemVisible( true );
+
+    connect( mDialog, SIGNAL( editAccepted( StockMaterial* ) ),
+             this, SLOT( slotEditOk( StockMaterial* ) ) );
+    connect( mDialog, SIGNAL( editRejected( ) ),
+             this, SLOT( slotEditRejected() ) );
+
+    mDialog->setMaterial( tmpl, MaterialCatalogName, isNew );
+    mDialog->show();
 }
 
 void MaterialKatalogView::slotEditRejected()
 {
-  if ( mNewItem ) {
-    delete mNewItem;
-    mNewItem = nullptr;
-  }
+    if ( mNewItem ) {
+        delete mNewItem;
+        mNewItem = nullptr;
+    }
 }
 
 void MaterialKatalogView::slotEditOk( StockMaterial *mat )
 {
-  KatalogListView *listview = getListView();
-  if( !listview ) return;
-  MaterialKatalogListView *templListView = static_cast<MaterialKatalogListView*>(listview);
-  // qDebug () << "****** slotEditOk for Material" << endl;
+    KatalogListView *listview = getListView();
+    if( !listview ) return;
+    MaterialKatalogListView *templListView = static_cast<MaterialKatalogListView*>(listview);
+    // qDebug () << "****** slotEditOk for Material" << endl;
 
-  if( mDialog ) {
-    MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );
-    if ( mDialog->templateIsNew() ) {
-      QLocale *locale = nullptr;
-      if ( k ) {
-        k->addNewMaterial( mat );
-        locale = k->locale();
-      }
-      if( mNewItem ) {
-        mNewItem->setSelected( true );
-        templListView->slFreshupItem( mNewItem, mat, locale );
-        // templListView->ensureItemVisible( mNewItem );
-      }
+    if( mDialog ) {
+        MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );
+        if ( mDialog->templateIsNew() ) {
+            QLocale *locale = nullptr;
+            if ( k ) {
+                k->addNewMaterial( mat );
+                locale = k->locale();
+            }
+            if( mNewItem ) {
+                mNewItem->setSelected( true );
+                templListView->slFreshupItem( mNewItem, mat, locale );
+                // templListView->ensureItemVisible( mNewItem );
+            }
+            listview->updateChapterSort(mat->chapter());
+        }
     }
-  }
-  mNewItem = nullptr;
+    mNewItem = nullptr;
 }
 
 

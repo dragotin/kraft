@@ -92,6 +92,7 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 
 void MaterialSaverDB::fillMaterialBuffer( QSqlRecord &rec, StockMaterial *mat, bool isNew )
 {
+    Q_ASSERT(mat->chapter() != 0);
   if( ! ( mat ) ) return;
   rec.setValue( "chapterID", mat->chapter() );
   rec.setValue( "material", mat->getText() );

@@ -45,6 +45,11 @@ public:
 public slots:
   void slFreshupItem( QTreeWidgetItem *, void*, QLocale* = 0  );
 
+protected:
+  void startUpdateItemSequence();
+
+  void updateItemSequence(QTreeWidgetItem *item, int seqNo);
+
 };
 
 #endif

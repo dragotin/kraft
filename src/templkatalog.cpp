@@ -93,15 +93,13 @@ int TemplKatalog::load()
   Katalog::load();
   int cnt = 0;
 
-  QString chapIdList;
-  bool firstOne = true;
-  foreach( CatalogChapter chap, mChapters ) {
-    if( !firstOne ) {
-      chapIdList += ",";
-    } else {
-      firstOne = false;
-    }
-    chapIdList += chap.id().toString();
+  if (mChapters.isEmpty())
+      getKatalogChapters(true);
+
+  QString chapIdList {"0"};
+  for( const CatalogChapter& chap : mChapters ) {
+      chapIdList.append(",");
+      chapIdList.append(chap.id().toString());
   }
 
   // qDebug () << "The chapterIdList: " << chapIdList;
@@ -331,10 +329,9 @@ int TemplKatalog::loadFixCalcParts( FloskelTemplate *flos )
 }
 
 
-FloskelTemplateList TemplKatalog::getFlosTemplates( const CatalogChapter& chapter )
+FloskelTemplateList TemplKatalog::getFlosTemplates(int chapId)
 {
   FloskelTemplateList resultList;
-  int chap = chapter.id().toInt();
 
   if( m_flosList.count() == 0 )
   {
@@ -352,7 +349,7 @@ FloskelTemplateList TemplKatalog::getFlosTemplates( const CatalogChapter& chapte
     int haveChap = tmpl->chapterId().toInt();
 
     // qDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
-    if( haveChap == chap )
+    if( haveChap == chapId )
     {
       resultList.append( tmpl );
     }
@@ -425,7 +422,7 @@ QDomDocument TemplKatalog::toXML()
     chapElem.appendChild(chapName);
     root.appendChild(chapElem);
 
-    FloskelTemplateList templs = getFlosTemplates(theChapter);
+    FloskelTemplateList templs = getFlosTemplates(theChapter.id().toInt());
     FloskelTemplateListIterator it(templs);
 
     // FIXME: XML export!

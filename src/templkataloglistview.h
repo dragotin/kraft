@@ -18,6 +18,8 @@
 #ifndef TEMPLKATALOGLISTVIEW_H
 #define TEMPLKATALOGLISTVIEW_H
 
+#include <QSqlQuery>
+
 #include <kataloglistview.h>
 
 #include "floskeltemplate.h"
@@ -52,8 +54,9 @@ public:
   void slFreshupItem( QTreeWidgetItem*, FloskelTemplate*, bool remChildren = false );
   void saveState();
 
-protected slots:
-  void slotUpdateSequence();
+protected:
+  virtual void startUpdateItemSequence();
+  virtual void updateItemSequence(QTreeWidgetItem *item, int seqNo);
 
 private:
   bool mShowCalcParts;

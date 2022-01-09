@@ -48,7 +48,7 @@ int MatKatalog::load()
   int cnt = 0;
 
   QSqlQuery q(QLatin1String("SELECT matID, chapterID, material, unitID, perPack, priceIn, "
-              "priceOut, modifyDate, enterDate FROM stockMaterial"));
+              "priceOut, modifyDate, enterDate FROM stockMaterial ORDER BY chapterID, sortKey"));
   q.exec();
   while ( q.next() ) {
     cnt++;
@@ -104,22 +104,16 @@ void MatKatalog::deleteMaterial( int id )
 
 }
 
-StockMaterialList MatKatalog::getRecordList( const CatalogChapter& chapter )
+StockMaterialList MatKatalog::getRecordList( int chapterId )
 {
   StockMaterialList list;
 
-  int chapID = chapter.id().toInt();
-  StockMaterialListIterator it( mAllMaterial );
-  
-  while( it.hasNext() ) {
-    StockMaterial *mat = it.next();
-
-    if ( mat->chapter() == chapID ) {
+  for (StockMaterial *mat: mAllMaterial) {
+    if ( mat->chapter() == chapterId ) {
       list.append( mat );
     }
   }
   return list;
-
 }
 
 StockMaterial* MatKatalog::materialFromId( long id )

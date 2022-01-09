@@ -67,20 +67,24 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
   // qDebug () << "setting up meterial chapters --------*********************************+++!" << endl;
   setupChapters();
 
-  const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
-  foreach( CatalogChapter theChapter, chapters ) {
-    if( mChapterDict.contains( theChapter.id().toInt() ) ) {
-      QTreeWidgetItem *katItem = mChapterDict[theChapter.id().toInt()];
-
-      // hole alle Brunsrecords per Chapter und mach weiter....
-      StockMaterialList records = catalog->getRecordList( theChapter );
-      StockMaterialListIterator it( records );
-      while( it.hasNext() ) {
-        StockMaterial *mat = it.next();
-        addMaterialToView( katItem,  mat );
+  // lambda expression to be DRY
+  auto insertRecords = [&]( int chapterId) {
+      StockMaterialList records = catalog->getRecordList(chapterId);
+      QTreeWidgetItem *chapterItem = m_root;
+      if (mChapterDict.contains(chapterId))
+          chapterItem = mChapterDict[chapterId];
+      for( StockMaterial *mat: records) {
+          addMaterialToView( chapterItem, mat );
       }
-    }
+  };
+
+  for( int chapterId : mChapterDict.keys()) {
+      insertRecords(chapterId);
   }
+
+  // append the stray cats
+  insertRecords(0);
+
 }
 
 QTreeWidgetItem* MaterialKatalogListView::addMaterialToView( QTreeWidgetItem *parent, StockMaterial *mat )
@@ -145,5 +149,22 @@ void MaterialKatalogListView::saveState()
     QByteArray state = this->header()->saveState();
 
     KraftSettings::self()->setMaterialCatViewHeader(state.toBase64());
+}
+
+void MaterialKatalogListView::startUpdateItemSequence()
+{
+    _query = new QSqlQuery;
+    _query->prepare("UPDATE stockMaterial SET sortKey = :sk WHERE matID=:id");
+}
+
+void MaterialKatalogListView::updateItemSequence(QTreeWidgetItem *item, int seqNo)
+{
+    StockMaterial *mat = static_cast<StockMaterial*>( m_dataDict[item] );
+    if ( mat ) {
+        int id = mat->getID();
+        _query->bindValue(":id", id);
+        _query->bindValue(":sk", seqNo);
+        _query->exec();
+    }
 }
 

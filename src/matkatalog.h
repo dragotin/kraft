@@ -43,7 +43,7 @@ public:
   StockMaterial *materialFromId(long id);
 
   KatalogType type() override { return MaterialCatalog; }
-  StockMaterialList getRecordList( const CatalogChapter& );
+  StockMaterialList getRecordList(int chapterId);
   void addNewMaterial( StockMaterial* );
   void recordUsage(int) override;
 private:

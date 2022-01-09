@@ -22,6 +22,7 @@
 #include <QTreeWidgetItem>
 #include <QTreeWidget>
 #include <QMenu>
+#include <QSqlQuery>
 
 #include "kraftcat_export.h"
 #include "catalogtemplate.h"
@@ -60,6 +61,7 @@ public:
 
   // Save the header state of the tree view
   virtual void saveState() = 0;
+  void updateChapterSort(int catChapterId);
 
 signals:
   void templateHoovered( CatalogTemplate* );
@@ -83,10 +85,16 @@ public slots:
   virtual void removeTemplateItem( QTreeWidgetItem* );
 
 protected slots:
-  virtual void slotUpdateSequence();
   virtual void slotItemEntered( QTreeWidgetItem*, int);
 
+  // run an update of the sort key in a chapter.
+  void updateSort(QTreeWidgetItem *chapter);
+
 protected:
+  virtual void startUpdateItemSequence() = 0;
+  virtual void updateItemSequence(QTreeWidgetItem *item, int seqNo) = 0;
+  virtual void endUpdateItemSequence();
+
   virtual Katalog* catalog();
   void dropEvent( QDropEvent* );
 
@@ -98,9 +106,9 @@ protected:
   QHash<int, QTreeWidgetItem*> mChapterDict;
   QString m_catalogName;
   QStringList mOpenChapters;
-  QTreeWidgetItem *mSortChapterItem;
   QMenu *mMenu;
   QFont mChapterFont;
+  QSqlQuery *_query;
 };
 
 #endif
