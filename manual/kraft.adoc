@@ -14,26 +14,23 @@ include::{path}/locale/attributes.adoc[]
 
 == Introduction
 
-Kraft is a Qt and KDE application to organize office documents like quotes and invoices in a small business. It eases the creation of these of documents and helps with repeating tasks.
+Kraft is a Qt and KDE application to organize office documents like quotes and invoices in a small business. It eases the creation of documents and helps with repeating tasks.
 
-With Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks and archived automatically. Kraft generates high quality PDF output for printing, mailing and archiving.
+Using Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks, edited, generated and archived automatically. Kraft generates high quality PDF output for printing, mailing and archiving.
 
 Feature Overview::
 
-* Customer management, deeply integrated in the KDE infrastructure using KAddressbook.
-* Automated creation of offers, invoices and similar documents.
+* Simple creation of offers, invoices and similar documents.
+* Customer management, deeply integrated with the mature KDE KAddressbook.
+* Maintenance of document relations, ie. Partial invoices vs. invoices.
 * Templates for document header- and footertexts and for document items.
-* Calculation of items.
+* Pre calculation of item prices.
 * Material management.
 * Configurable document creation in PDF format for print and email.
 
-Kraft is designed to use the data entries from the KDE address book
-which is a module of the https://community.kde.org/KDE_PIM[KDE PIM], an information management application.
-All addresses are collected in the https://userbase.kde.org/KAddressBook[KAdressBook].
-
 The code of Kraft is open source and is released under the https://en.wikipedia.org/wiki/GNU_General_Public_License[GNU General Public License].
 
-NOTE: Kraft is driven by community of users, coders and others. +
+NOTE: Kraft is driven by community of users, coders, artists and others by voluntary work. +
 Also this manual needs contributions! +
  +
  Learn more on https://github.com/dragotin/kraft/blob/master/manual/Readme.md[how to contribute]!
@@ -41,14 +38,16 @@ Also this manual needs contributions! +
 
 == First Use and Basic Configuration
 
-During the initial setup you are asked to select a database to use and give the address of your company.
+When Kraft is started for the first time, it automatically enters the initial setup process.
 
-You can fill in your company address (that appears on the printed documents) on two ways: use in the setup procedure the first tab Select from Addressbook for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab Manual entry for to fill in the information of the address from your company by hand. This step is necessary for the correct generation of your documents.
+During the initial setup you are asked to select a database to use and give the name and address of your company.
+
+You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab *Select from Addressbook* for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab *Manual entry* for to fill in the information of the address from your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.
 
 After the initial setup, select menu:Preferences[Settings].
-That allows to prepare Kraft correctly so it can be used in a useful way.
+That allows to prepare Kraft correctly so it can be used in a proper way.
 
-In the Preferences window we have the tabs:
+In the Preferences dialog we have the tabs:
 
  *Document Defaults
  *Taxes
@@ -57,7 +56,7 @@ In the Preferences window we have the tabs:
  *Units
  *Own identity
 
-Each of the tabs allows to enter useful values for our use case.
+Each of the tabs allows to enter useful values for the specific use case.
 
 === Document Types
 
@@ -153,9 +152,15 @@ the main window.Here we see three tabs:
 
 We go first to catalogs.
 
-=== Catalog
+== Catalogs
 
-In the tab catalog are two different catalogs:
+Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accellerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document. 
+
+Since templates are organized in chapters entire documents can be prepared in different chapters to be used as template documents. 
+
+Of course the items in the documents can be edited after they got picked from a catalog.
+
+By default Kraft comes with two different catalogs:
 
 `Material`
 
@@ -169,20 +174,20 @@ A catalog of standard recipes of work like planting trees.
 Both catalogs can have chapters and sub-chapters for to organize your
 templates. First we are going to fill in the
 
-==== Material-catalog
+=== Material Catalog
 
 A catalog of material that are sold, with their purchase prices, the
 profit and the sell-price. First we are going to add new chapters and
 subchapters.
 
-===== New chapters
+==== New chapters
 
 Select with the mouse the column-name `material`, select now in the
 context-menu [Add a sub chapter]
 
 and add an extra chapter like `Trees`
 
-===== New sub chapters
+==== New sub chapters
 
 We are going to ad sub chapters in the map `Trees`. Select with the mouse
 the name of the chapter where you like to add a subchapter, select now
@@ -191,7 +196,7 @@ and ad an extra subchapters like `Loaf trees` and `needle trees`.
 After adding the extra chapters and subchapters for dividing the
 material, we are going to add the material themself.
 
-===== New template
+==== New template
 
 Select with the mouse the name of the sub-chapter or chapter where you
 like to add a material.
@@ -208,7 +213,7 @@ And fill in how much is in a packet.
 
 Now we are going to:
 
-==== Standard Templates
+=== Standard Templates
 
 This is a catalog of standard recipes of work like:
 
@@ -236,7 +241,7 @@ After we made the new template, a window opens with 4 tabs:
 
 First we go to the tab:
 
-===== Template
+==== Template
 
 We give here the name of the new standard template like `Plant tree`
 
@@ -248,7 +253,7 @@ ____
 we select that this is per piece and that the margin is 8% and that the
 full VAT is applicable.
 
-===== Time calculation
+==== Time calculation
 
 We fill here in a number of work with the time:
 
@@ -271,7 +276,7 @@ ____
 
 Now we go to the tab
 
-===== Fixed costs
+==== Fixed costs
 
 and fill in:
 
@@ -283,7 +288,7 @@ and fill in:
 
 After this we go to the tab:
 
-===== Material
+==== Material
 
 Here we fill in:
 
