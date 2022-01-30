@@ -59,23 +59,23 @@ int MatKatalog::load()
     double pPack = q.value( 4 ).toDouble();
     double priceIn = q.value( 5 ).toDouble();
     double priceOut = q.value(6 ).toDouble();
-    QDate lastMod = q.value( 7 ).toDate();
-    QDate entered = q.value( 8 ).toDate();
+    QDateTime lastMod = q.value( 7 ).toDateTime();
+    QDateTime entered = q.value( 8 ).toDateTime();
 
     StockMaterial *mat = new StockMaterial( id, chapterID, material, unitID,
                                             pPack, Geld( priceIn ), Geld( priceOut ) );
-    mat->setEnterDate( entered );
-    mat->setLastModified( lastMod );
+    mat->setEnterDate(entered);
+    mat->setModifyDate(lastMod);
+
+    auto usage = usageCount(id);
+    mat->setLastUsedDate(usage.second);
+    mat->setUseCounter(usage.first);
+
     mAllMaterial.append( mat );
 
   }
 
   return cnt;
-}
-
-void MatKatalog::recordUsage(int id)
-{
-    Q_UNUSED(id); // FIXME: Implement this!
 }
 
 void MatKatalog::deleteMaterial( int id )
@@ -100,6 +100,8 @@ void MatKatalog::deleteMaterial( int id )
   q.prepare( QLatin1String("DELETE FROM stockMaterial WHERE matID=:Id"));
   q.bindValue( ":Id", id );
   q.exec();
+
+  deleteUsageRecord(id);
   // qDebug () << "SQL Delete Success: " << q.lastError().text();
 
 }

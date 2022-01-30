@@ -35,6 +35,7 @@
 #include "defaultprovider.h"
 #include "reportgenerator.h"
 #include "texttemplate.h"
+#include "format.h"
 
 PortalView::PortalView(QWidget *parent, const char*)
     : QWidget( parent ),
@@ -202,24 +203,12 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
     if( details.countEntries == 0 ) {
         html += QString("<td colspan=\"2\"><span style=\"font-size:75%;\">%1</span></td>").arg(i18n("No templates yet."));
     } else {
-        QLocale *locale = DefaultProvider::self()->locale();
-        QString dateStr = locale->toString(details.maxModDate);
+        const QString dateStr = Format::toDateString(details.maxModDate.date(), Format::DateFormatGerman);
         html += QString("<td class=\"sub\" colspan=\"2\">") +
                 i18n("%1 templates in %2 chapters<br/>last modified at %3",
                 details.countEntries, details.countChapters, dateStr)
                 + QLatin1String("</td>");
     }
-#if 0
-    html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
-            name+"&action=xml\">";
-    html += i18n("XML Export");
-    html += "</td>";
-
-    html += "<td align=\"center\"><a href=\"http://localhost/katalog.cgi?kat="+
-            name+"&action=delete\">";
-    html += i18n("Remove");
-    html += "</td>";
-#endif
     html += "</tr>\n";
     return html;
 }

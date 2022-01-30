@@ -104,7 +104,7 @@ int TemplKatalog::load()
 
   // qDebug () << "The chapterIdList: " << chapIdList;
   QSqlQuery q("SELECT unitID, TemplID, chapterID, Preisart, EPreis, modifyDatum, enterDatum, "
-              "Floskel, Gewinn, zeitbeitrag, lastUsed, useCounter FROM Catalog WHERE chapterID IN( " + chapIdList + ") "
+              "Floskel, Gewinn, zeitbeitrag FROM Catalog WHERE chapterID IN( " + chapIdList + ") "
               "ORDER BY chapterID, sortKey" );
   q.exec();
 
@@ -142,39 +142,15 @@ int TemplKatalog::load()
     bool tslice = q.value(9).toInt() > 0;
     flos->setHasTimeslice( tslice );
 
-    flos->setLastUsedDate( q.value(10).toDateTime() );
-    flos->setUseCounter( q.value(11).toInt() );
+    auto usage = usageCount(templID);
+    flos->setLastUsedDate(usage.second);
+    flos->setUseCounter(usage.first);
 
     loadCalcParts( flos );
 
     m_flosList.append(flos);
   }
   return cnt;
-}
-
-void TemplKatalog::recordUsage(int id)
-{
-    QSqlTableModel model;
-    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model.setTable("Catalog");
-    model.setFilter(QString("TemplID=%1").arg(id));
-    model.select();
-
-    if( model.rowCount() > 0) {
-        // qDebug () << "Updating template " << tmpl->getTemplID() << endl;
-        bool ok;
-        QSqlRecord buffer = model.record(0);
-        int currCnt = buffer.value("useCounter").toInt(&ok);
-        int newCnt = 0;
-        if (ok) {
-            newCnt = currCnt+1;
-        }
-        // mach update
-        buffer.setValue( "useCounter", newCnt);
-        buffer.setValue( "lastUsed", KraftDB::self()->currentTimeStamp() );
-        model.setRecord(0, buffer);
-        model.submitAll();
-    }
 }
 
 int TemplKatalog::addNewTemplate( FloskelTemplate *tmpl )
@@ -217,6 +193,8 @@ void TemplKatalog::deleteTemplate( int id )
     q.exec();
     // qDebug () << "SQL Delete Success: " << q.lastError().text();
   }
+  deleteUsageRecord(id);
+
 }
 
 int TemplKatalog::loadCalcParts( FloskelTemplate *flos )

@@ -194,6 +194,60 @@ int Katalog::chapterSortKey( const QString& chap )
   return key;
 }
 
+QPair<int, QDateTime> Katalog::usageCount(int id)
+{
+    QSqlQuery q;
+    q.prepare("SELECT usageCount, lastUsed FROM catItemUsage WHERE catId=:catId AND itemId=:itemId");
+    q.bindValue(":catId", this->id().toInt());
+    q.bindValue(":itemId", id);
+    q.exec();
+
+    int cnt {0};
+    QDateTime lu;
+    if (q.next()) {
+        cnt = q.value(0).toInt();
+        lu = q.value(1).toDateTime();
+    }
+    return QPair<int, QDateTime> (cnt, lu) ;
+}
+
+QPair<int, QDateTime> Katalog::recordUsage(int id)
+{
+    QSqlQuery q;
+    const QDateTime dt { QDateTime::currentDateTime() };
+    const QString ts { dt.toString("yyyy-MM-ddThh:mm:ss") };
+    int catId = this->id().toInt();
+
+    int usage = usageCount(id).first;
+
+    if (usage == 0) {
+        q.prepare("INSERT INTO catItemUsage SET catId=:catId, itemId=:itemId, usageCount=:usage, lastUsed=:timeStamp");
+    } else {
+        q.prepare("UPDATE catItemUsage SET usageCount=:usage, lastUsed=:timeStamp WHERE catId=:catId AND itemId=:itemId");
+    }
+    usage += 1;
+    q.bindValue(":usage", usage);
+    q.bindValue(":catId", catId);
+    q.bindValue(":itemId", id);
+    q.bindValue(":timeStamp", ts);
+
+    if (!q.exec())
+        qDebug() << q.executedQuery() << q.lastError();
+
+    return QPair<int, QDateTime>(usage, dt);
+}
+
+void Katalog::deleteUsageRecord(int id)
+{
+    QSqlQuery q;
+    q.prepare("DELETE FROM catItemUsage WHERE catId=:catId AND itemId=:itemId");
+    q.bindValue(":catId", this->id().toInt());
+    q.bindValue(":itemId", id);
+    q.exec();
+    if (!q.exec())
+        qDebug() << q.executedQuery() << q.lastError();
+}
+
 QDomDocument Katalog::toXML()
 {
     return QDomDocument();

@@ -141,26 +141,6 @@ void StockMaterial::setSalesPrice( Geld g )
     m_vPrice = g;
 }
 
-void StockMaterial::setLastModified( QDate dt )
-{
-  mLastModified = dt;
-}
-
-void StockMaterial::setEnterDate( QDate dt )
-{
-  mEnteredDate = dt;
-}
-
-QString StockMaterial::lastModified()
-{
-  return Format::toDateString( mLastModified, KraftSettings::self()->dateFormat());
-}
-
-QString StockMaterial::entered()
-{
-  return Format::toDateString( mEnteredDate, KraftSettings::self()->dateFormat() );
-}
-
 void StockMaterial::saveChapterId()
 {
   MaterialSaverBase *saver = getSaver();

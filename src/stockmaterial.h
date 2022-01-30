@@ -66,12 +66,6 @@ public:
   void setPurchPrice( Geld );
   void setSalesPrice( Geld );
 
-  void setLastModified( QDate );
-  void setEnterDate( QDate );
-  QString lastModified();
-  QString entered();
-
-
   bool save();
 
 protected:

@@ -129,8 +129,8 @@ QString InsertTemplDialog::prepareText( const QString& input )
     in.replace(QL1("{{TIME}}"), timeStr, Qt::CaseInsensitive);
 
     if( in.contains(QL1("{{USERNAME}}"))) {
-        register struct passwd *pw;
-        register uid_t uid;
+        struct passwd *pw;
+        uid_t uid;
         uid = geteuid ();
         pw = getpwuid (uid);
         if (pw) {

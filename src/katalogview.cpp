@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
                           katalogview.cpp
                              -------------------
     begin                : 2005
@@ -358,26 +358,24 @@ void KatalogView::slotShowTemplateDetails( CatalogTemplate *tmpl )
 
   int useCount = tmpl->useCounter();
 
-  t = "<table border=\"0\">";
-  t += i18n("<tr><td>Created at:</td><td>%1</td>")
-          .arg( Format::toDateTimeString(tmpl->enterDate(), KraftSettings::self()-> dateFormat()) );
-  if (useCount > 0) {
-      t += i18n("<td>&nbsp;&nbsp;Last used:</td><td>%1</td>" )
-          .arg( Format::toDateTimeString(tmpl->lastUsedDate(), KraftSettings::self()-> dateFormat()));
-  }
-  t += QStringLiteral("</tr>");
-
+  QDateTime ed = tmpl->enterDate();
+  const QString enterDateStr = Format::toDateString(ed.date(), KraftSettings::self()-> dateFormat());
+  t = QStringLiteral("<p>") + i18n("Created at %1 ", enterDateStr);
   const QDateTime dt = tmpl->modifyDate();
-  if (dt.isValid()) {
-      t += i18n("<tr><td>Modified at:</td><td>%1</td>")
-              .arg( Format::toDateTimeString( dt, KraftSettings::self()-> dateFormat()) );
-      if (useCount > 0) {
-          t += i18n("<td>&nbsp;&nbsp;Use Count:</td><td>%1</td>" )
-              .arg(useCount);
-      }
-      t += QStringLiteral("</tr>");
+  if (dt.isValid() && ed != dt) {
+      const QString modDateStr = Format::toDateTimeString( dt, KraftSettings::self()-> dateFormat());
+      t += i18n(", last modified at %1", modDateStr);
   }
-  t += "</table>";
+  t += QStringLiteral("<br/>");
+
+  if (useCount > 0) {
+      const QString useCntStr = Format::toDateTimeString(tmpl->lastUsedDate(), KraftSettings::self()-> dateFormat());
+      t += i18n("%1 times used, last at %2", useCount, useCntStr );
+  } else {
+      // Not used yet, do not print anything.
+  }
+  t += QStringLiteral("</p>");
+
   // qDebug() << "Hoover-String: " << t;
   mTemplateStats->setText( t );
 }

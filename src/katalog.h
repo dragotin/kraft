@@ -87,12 +87,17 @@ public:
     virtual QDomDocument toXML();
     virtual void writeXMLFile();
 
-    virtual void recordUsage(int id) = 0;
+    virtual QPair<int, QDateTime> usageCount(int id);
+
+    virtual QPair<int, QDateTime> recordUsage(int id);
 
     dbID id();
 
     QLocale *locale() { return mLocale; }
+
 protected:
+    void deleteUsageRecord(int id);
+
     QList<CatalogChapter> mChapters;
     QString     m_name;
     QString     m_description;

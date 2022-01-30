@@ -45,7 +45,6 @@ public:
   KatalogType type() override { return MaterialCatalog; }
   StockMaterialList getRecordList(int chapterId);
   void addNewMaterial( StockMaterial* );
-  void recordUsage(int) override;
 private:
   StockMaterialList mAllMaterial;
 };

@@ -86,7 +86,6 @@ public slots:
 
 protected slots:
   virtual void slotItemEntered( QTreeWidgetItem*, int);
-
   // run an update of the sort key in a chapter.
   void updateSort(QTreeWidgetItem *chapter);
 

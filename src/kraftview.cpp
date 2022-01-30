@@ -1023,14 +1023,13 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
                     defaultKat->load();
                     KatalogMan::self()->notifyKatalogChange( defaultKat , dbID() );
                 }
+            } else if (!newTemplate && tmpl){
+                tmplId = static_cast<FloskelTemplate*>(tmpl)->getTemplID();
             }
-        }
-        if (!newTemplate){
-            tmplId = static_cast<FloskelTemplate*>(tmpl)->getTemplID();
-        }
-    } else if ( kat->type() == MaterialCatalog ) {
-        if ( newTemplate ) {
-            // FIXME
+        } else if ( kat->type() == MaterialCatalog ) {
+            if ( !newTemplate ) {
+                tmplId = static_cast<StockMaterial*>(tmpl)->getID();
+            }
         }
     }
 
@@ -1039,8 +1038,10 @@ void KraftView::slotAddItem( Katalog *kat, CatalogTemplate *tmpl, const QString&
 
         mRememberAmount = dp->amount();
 
-        if (tmplId > 0) {
-            kat->recordUsage(tmplId);
+        if (tmplId > 0 && tmpl) {
+            QPair<int, QDateTime> newUsage = kat->recordUsage(tmplId);
+            tmpl->setUseCounter(newUsage.first);
+            tmpl->setLastUsedDate(newUsage.second);
         }
 
         PositionViewWidget *widget = createPositionViewWidget( dp, newpos );

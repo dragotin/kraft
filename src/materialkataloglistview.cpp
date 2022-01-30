@@ -29,6 +29,7 @@
 #include "docposition.h"
 #include "kataloglistview.h"
 #include "kraftsettings.h"
+#include "format.h"
 
 MaterialKatalogListView::MaterialKatalogListView(QWidget *parent )
   : KatalogListView( parent )
@@ -118,7 +119,7 @@ void MaterialKatalogListView::slFreshupItem(QTreeWidgetItem *item, void* templ, 
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
     item->setText( 3, mat->purchPrice().toString() );
     item->setText( 4, mat->salesPrice().toString() );
-    item->setText( 5, mat->lastModified() );
+    item->setText( 5, Format::toDateTimeString( mat->modifyDate(), KraftSettings::self()->dateFormat()));
   } else {
     // qDebug () << "Unable to freshup item - data invalid" << endl;
   }

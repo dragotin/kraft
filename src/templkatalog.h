@@ -52,8 +52,6 @@ public:
 
     int addNewTemplate( FloskelTemplate *tmpl );
 
-    void recordUsage(int id) override;
-
 public slots:
     void writeXMLFile() override;
     void deleteTemplate( int );
