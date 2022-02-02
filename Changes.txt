@@ -1,3 +1,14 @@
+Changes since version 0.97: #########################################
+
+- Fix: Record usage of catalog items properly. Store usage amount and
+       last usage time. Display that properly in the catalog editor.
+- Fix: Drag and drop sorting of items now working properly.
+- Fix: Adopt to new Akonadi v. 5.19
+- Fix: Add predecessor variable to weasyprint template.
+- Fix: Cleaned up icon usage
+- Fix: Format of date and time corrected.
+- Fix: Store useful value for the locale in db. For later.
+
 
 Changes since version 0.96: #########################################
 
