@@ -31,6 +31,7 @@
 
 #include <QDialog>
 #include <QDebug>
+#include <QFileDialog>
 
 #include "prefsdialog.h"
 #include "kraftsettings.h"
@@ -71,6 +72,35 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   mPbAdd->setIcon( QIcon::fromTheme( "list-add" ) );
   mPbEdit->setIcon( QIcon::fromTheme( "document-edit" ) );
   mPbRemove->setIcon( QIcon::fromTheme( "list-remove" ) );
+
+  const QIcon& icon = QIcon::fromTheme("quickopen-file");
+  if (!icon.isNull() ) {
+      tmplFileSelectButton->setIcon(icon);
+      tmplFileSelectButton->setText("");
+      watermarkSelectButton->setIcon(icon);
+      watermarkSelectButton->setText("");
+  }
+  tmplFileSelectButton->setToolTip(i18n("Select template file from harddisk"));
+  watermarkSelectButton->setToolTip(i18n("Select watermark file from harddisk"));
+
+  connect(tmplFileSelectButton, &QPushButton::clicked, this, [this]() {
+      QString file = QFileDialog::getOpenFileName(this,
+                                                  i18n("Find Template File"), QDir::homePath(),
+                                                  i18n("Kraft Templates (*.trml *.gtmpl)"));
+
+      if (!file.isEmpty()) {
+          mTemplateUrl->setText(file);
+      }
+  });
+  connect(watermarkSelectButton, &QPushButton::clicked, this, [this]() {
+      QString file = QFileDialog::getOpenFileName(this,
+                                                  i18n("Find Watermark File"), QDir::homePath(),
+                                                  i18n("PDF file (*.pdf)"));
+
+      if (!file.isEmpty()) {
+          mWatermarkUrl->setText(file);
+      }
+  });
 
   connect( mPbAdd, SIGNAL( clicked() ),
            SLOT( slotAddDocType() ) );
