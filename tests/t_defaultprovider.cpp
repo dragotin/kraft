@@ -145,8 +145,7 @@ private slots:
             const QString noExistFile2 = DefaultProvider::self()->locateFile("nomydir/kraftfile");
             QVERIFY(noExistFile2.isEmpty());
 
-            QVERIFY(fi.dir().removeRecursively());
-
+            QVERIFY(td.removeRecursively());
         } else {
             qDebug() << "Skipped relative path test, directory share exists.";
         }
