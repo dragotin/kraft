@@ -674,7 +674,6 @@ void Portal::slotMailDocument()
 
     dbID archID = KraftDB::self()->archiveDocument( docPtr );
 
-    _clientId = docPtr->addressUid();
     busyCursor( true );
 
     _reportGenerator.createDocument(ReportFormat::PDFMail, ident, archID );
@@ -710,7 +709,7 @@ void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& c
     if( KraftSettings::self()->mailUA().startsWith("xdg") ) {
         args.append( "--utf8");
         args.append( "--attach");
-        args.append(_pdfFileName );
+        args.append(fileName);
         if( !mailReceiver.isEmpty() ) {
             args.append( mailReceiver);
         }
@@ -732,7 +731,6 @@ void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& c
     if (!QProcess::startDetached(prog, args)) {
         qDebug () << "Failed to start thunderbird composer!";
     }
-    _pdfFileName.clear();
 }
 
 /*

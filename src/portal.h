@@ -176,8 +176,6 @@ class Portal : public QMainWindow
     QMap<QString, KatalogView*> mKatalogViews;
     QMap<KraftDoc*, KraftViewBase*> mViewMap;
 
-    QString _clientId;
-    QString _pdfFileName;
     AddressProvider *mAddressProvider;
     KContacts::Addressee myContact;
     PrefsDialog *_prefsDialog;
