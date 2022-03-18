@@ -1,6 +1,7 @@
 = The Kraft Handbook
 Ronald Stroethoff, Klaas Freitag
-:toc:
+:toc: left
+:doctype: article
 
 :author: Ronald Stroethoff
 :email: <stroet43@zonnet.nl>
@@ -10,7 +11,7 @@ Ronald Stroethoff, Klaas Freitag
 :imagesdir: images/
 
 
-include::{path}/locale/attributes.adoc[]
+include::locale/attributes.adoc[]
 
 == Introduction
 
@@ -149,172 +150,6 @@ the main window.Here we see three tabs:
 * Documents
 * Timeline
 * Catalogs
-
-We go first to catalogs.
-
-== Catalogs
-
-Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accellerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document. 
-
-Since templates are organized in chapters entire documents can be prepared in different chapters to be used as template documents. 
-
-Of course the items in the documents can be edited after they got picked from a catalog.
-
-By default Kraft comes with two different catalogs:
-
-`Material`
-
-A catalog of material that are sold, with their purchase prices, the
-profit and the sell-price.
-
-and `Standard Templates`
-
-A catalog of standard recipes of work like planting trees.
-
-Both catalogs can have chapters and sub-chapters for to organize your
-templates. First we are going to fill in the
-
-=== Material Catalog
-
-A catalog of material that are sold, with their purchase prices, the
-profit and the sell-price. First we are going to add new chapters and
-subchapters.
-
-==== New chapters
-
-Select with the mouse the column-name `material`, select now in the
-context-menu [Add a sub chapter]
-
-and add an extra chapter like `Trees`
-
-==== New sub chapters
-
-We are going to ad sub chapters in the map `Trees`. Select with the mouse
-the name of the chapter where you like to add a subchapter, select now
-in the context-menu [Add a sub chapter]
-and ad an extra subchapters like `Loaf trees` and `needle trees`.
-After adding the extra chapters and subchapters for dividing the
-material, we are going to add the material themself.
-
-==== New template
-
-Select with the mouse the name of the sub-chapter or chapter where you
-like to add a material.
-Select the sub map Loaf trees and select now in the context-menu
-[Add a template]
-
-Add the extra materials `coconut tree`, `apple tree` and `pine-apple tree`.
-
-Fill in the price that we have paid.
-
-Fill in the profit that we want to have on the material
-
-And fill in how much is in a packet.
-
-Now we are going to:
-
-=== Standard Templates
-
-This is a catalog of standard recipes of work like:
-
-* planting trees
-* cutting grass
-* transport costs
-* planting grass
-* sowing grass-seed
-
-We add here the standard work of planting a tree.
-
-Select with the mouse the name of the chapter [Work] where you
-like to add the new template,
-
-select now the context-menu [New template]
-
-and the extra templates `Plant tree` and `cut grass`.
-
-After we made the new template, a window opens with 4 tabs:
-
-* Template
-* Time calculation
-* Fix costs
-* Material
-
-First we go to the tab:
-
-==== Template
-
-We give here the name of the new standard template like `Plant tree`
-
-____
-WARNING:
-be careful, this name is later used in the invoice
-____
-
-we select that this is per piece and that the margin is 8% and that the
-full VAT is applicable.
-
-==== Time calculation
-
-We fill here in a number of work with the time:
-
-.Spent time
-[cols=",,",]
-|===
-|Dig hole |32 min. |worker
-|Place tree |12 min. |worker
-|Fill hole |17 min. |worker
-|give water |5 min. |worker
-|===
-
-The cost for worker which we have earlier filled in is now used.
-
-____
-NOTE:
-in the invoice we see later only Plant tree, we will not see the parts
-dig hole,place tree,fill hole,give water
-____
-
-Now we go to the tab
-
-==== Fixed costs
-
-and fill in:
-
-.Fixed item
-[cols=",,",]
-|===
-|Transportcost |35 euro |1 pcs.
-|===
-
-After this we go to the tab:
-
-==== Material
-
-Here we fill in:
-
-.Used materials
-[cols=",,",]
-|===
-|1 |support pole |3,5 euro
-|===
-
-We go now back to the first tab template
-
-On the first tab [template], we can now see the overall cost per
-one unit
-
-Click on [OK] for saving the result or on [cancel] for discarding the
-result.
-
-We make a second template `cut grass`
-
-we fill in `cut grass`, as unit we choose sm (square meter), on the second
-tab we fill in that we need 3 min per square meter.
-
-Click on [OK] for saving the result or on [Cancel] for discarding the
-result.
-
-We are now ready for the first invoice.
 
 [[Invoice]]
 == Creating Documents
@@ -545,6 +380,170 @@ the client.
 After your first invoice is now your first offer now also ready for
 sending.
 
+== Catalogs
+
+Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accellerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document.
+
+Since templates are organized in chapters entire documents can be prepared in different chapters to be used as template documents.
+
+Of course the items in the documents can be edited after they got picked from a catalog.
+
+By default Kraft comes with two different catalogs:
+
+`Material`
+
+A catalog of material that are sold, with their purchase prices, the
+profit and the sell-price.
+
+and `Standard Templates`
+
+A catalog of standard recipes of work like planting trees.
+
+Both catalogs can have chapters and sub-chapters for to organize your
+templates. First we are going to fill in the
+
+=== Material Catalog
+
+A catalog of material that are sold, with their purchase prices, the
+profit and the sell-price. First we are going to add new chapters and
+subchapters.
+
+==== New chapters
+
+Select with the mouse the column-name `material`, select now in the
+context-menu [Add a sub chapter]
+
+and add an extra chapter like `Trees`
+
+==== New sub chapters
+
+We are going to ad sub chapters in the map `Trees`. Select with the mouse
+the name of the chapter where you like to add a subchapter, select now
+in the context-menu [Add a sub chapter]
+and ad an extra subchapters like `Loaf trees` and `needle trees`.
+After adding the extra chapters and subchapters for dividing the
+material, we are going to add the material themself.
+
+==== New template
+
+Select with the mouse the name of the sub-chapter or chapter where you
+like to add a material.
+Select the sub map Loaf trees and select now in the context-menu
+[Add a template]
+
+Add the extra materials `coconut tree`, `apple tree` and `pine-apple tree`.
+
+Fill in the price that we have paid.
+
+Fill in the profit that we want to have on the material
+
+And fill in how much is in a packet.
+
+Now we are going to:
+
+=== Standard Templates
+
+This is a catalog of standard recipes of work like:
+
+* planting trees
+* cutting grass
+* transport costs
+* planting grass
+* sowing grass-seed
+
+We add here the standard work of planting a tree.
+
+Select with the mouse the name of the chapter [Work] where you
+like to add the new template,
+
+select now the context-menu [New template]
+
+and the extra templates `Plant tree` and `cut grass`.
+
+After we made the new template, a window opens with 4 tabs:
+
+* Template
+* Time calculation
+* Fix costs
+* Material
+
+First we go to the tab:
+
+==== Template
+
+We give here the name of the new standard template like `Plant tree`
+
+____
+WARNING:
+be careful, this name is later used in the invoice
+____
+
+we select that this is per piece and that the margin is 8% and that the
+full VAT is applicable.
+
+==== Time calculation
+
+We fill here in a number of work with the time:
+
+.Spent time
+[cols=",,",]
+|===
+|Dig hole |32 min. |worker
+|Place tree |12 min. |worker
+|Fill hole |17 min. |worker
+|give water |5 min. |worker
+|===
+
+The cost for worker which we have earlier filled in is now used.
+
+____
+NOTE:
+in the invoice we see later only Plant tree, we will not see the parts
+dig hole,place tree,fill hole,give water
+____
+
+Now we go to the tab
+
+==== Fixed costs
+
+and fill in:
+
+.Fixed item
+[cols=",,",]
+|===
+|Transportcost |35 euro |1 pcs.
+|===
+
+After this we go to the tab:
+
+==== Material
+
+Here we fill in:
+
+.Used materials
+[cols=",,",]
+|===
+|1 |support pole |3,5 euro
+|===
+
+We go now back to the first tab template
+
+On the first tab [template], we can now see the overall cost per
+one unit
+
+Click on [OK] for saving the result or on [cancel] for discarding the
+result.
+
+We make a second template `cut grass`
+
+we fill in `cut grass`, as unit we choose sm (square meter), on the second
+tab we fill in that we need 3 min per square meter.
+
+Click on [OK] for saving the result or on [Cancel] for discarding the
+result.
+
+We are now ready for the first invoice.
+
 [[Customization]]
 == Customization
 
@@ -683,7 +682,7 @@ The syntax is based on the Django syntax for templates described in the https://
 
 This chapter describes advanced topics around Kraft. Some Linux knowledge is required, and setups should be done by experienced Linux administrators and should be tested carefully.
 
-=== Using Kraft Collaborative
+=== Using Kraft Collaboratively
 
 Kraft can be used collaborative in a distributed environment. That means that multiple users work on their desktops with their own Kraft instance on the same data.
 
@@ -735,6 +734,6 @@ To start Kraft in read-only mode, start the binary with the `-r` command line sw
 [[Credits]]
 == Credits and License
 
-Program and documentation copyright 2004–2021 Klaas Freitag
+Program and documentation copyright 2004–2022 Klaas Freitag
 
 Documentation copyright 2020 Ronald Stroethoff

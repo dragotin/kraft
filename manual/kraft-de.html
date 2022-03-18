@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.15">
+<meta name="generator" content="Asciidoctor 2.0.17">
 <meta name="author" content="Ronald Stroethoff, Klaas Freitag">
 <title>Das Kraft Handbuch</title>
 <style>
@@ -641,13 +641,13 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 
 </style>
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
 <h1>Das Kraft Handbuch</h1>
 <div class="details">
 <span id="author" class="author">Ronald Stroethoff, Klaas Freitag</span><br>
 </div>
-<div id="toc" class="toc">
+<div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_einführung">Einführung</a></li>
@@ -658,13 +658,18 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_wages">Wages</a></li>
 <li><a href="#_units_of_measurement">Units of measurement</a></li>
 <li><a href="#_own_identity">Own identity</a></li>
-<li><a href="#_catalog">Catalog</a></li>
 </ul>
 </li>
 <li><a href="#Invoice">Creating Documents</a>
 <ul class="sectlevel2">
 <li><a href="#_the_first_invoice">The first Invoice</a></li>
 <li><a href="#Offer">Creating an Offer</a></li>
+</ul>
+</li>
+<li><a href="#_catalogs">Catalogs</a>
+<ul class="sectlevel2">
+<li><a href="#_material_catalog">Material Catalog</a></li>
+<li><a href="#_standard_templates">Standard Templates</a></li>
 </ul>
 </li>
 <li><a href="#Customization">Customization</a>
@@ -680,7 +685,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </li>
 <li><a href="#AdvancedTopics">Fortgeschrittene Themen</a>
 <ul class="sectlevel2">
-<li><a href="#_kraft_kollaborativ_verwenden">Kraft kollaborativ verwenden</a></li>
+<li><a href="#_using_kraft_collaboratively">Using Kraft Collaboratively</a></li>
 </ul>
 </li>
 <li><a href="#Credits">Credits und Lizenz</a></li>
@@ -692,10 +697,10 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <h2 id="_einführung">Einführung</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kraft ist ein Qt- und KDE-Programm zum Organisieren von Bürodokumenten wie Angeboten und Rechnungen in kleinen Unternehmen. Es erleichtert die Erstellung der Dokument und vereinfacht wiederkehrende Aufgaben.</p>
+<p>Kraft is a Qt and KDE application to organize office documents like quotes and invoices in a small business. It eases the creation of documents and helps with repeating tasks.</p>
 </div>
 <div class="paragraph">
-<p>Mit Kraft wird kein Textbearbeitungsprogramm mehr benötigt. Rechnungs- und Angebotsdokumente werden mit ein paar Klicks erstellt und automatisch abgelegt. Kraft generiert hochqualitative PDF Dokumente für Druck, EMail und Archivierung.</p>
+<p>Using Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks, edited, generated and archived automatically. Kraft generates high quality PDF output for printing, mailing and archiving.</p>
 </div>
 <div class="dlist">
 <dl>
@@ -704,16 +709,19 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div class="ulist">
 <ul>
 <li>
-<p>Kundenverwaltung, durch die Verwendung von KAdressbuch tief in die KDE Infrastruktur integriert.</p>
+<p>Simple creation of offers, invoices and similar documents.</p>
 </li>
 <li>
-<p>Unterstütztes Erstellen von Angeboten, Rechnungen und ähnlichen Dokumenten.</p>
+<p>Customer management, deeply integrated with the mature KDE KAddressbook.</p>
+</li>
+<li>
+<p>Maintenance of document relations, ie. Partial invoices vs. invoices.</p>
 </li>
 <li>
 <p>Vorlagen für Dokument-Kopf- und Fusstexte sowie Dokumentposten.</p>
 </li>
 <li>
-<p>Kalkulation von einzelnen Posten.</p>
+<p>Pre calculation of item prices.</p>
 </li>
 <li>
 <p>Materialverwaltung.</p>
@@ -727,9 +735,6 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </dl>
 </div>
 <div class="paragraph">
-<p>Kraft arbeitet mit den Adressdaten aus dem KDE Adressbuch, das ein Modul von <a href="https://community.kde.org/KDE_PIM">KDE PIM</a>, einer Informations-Management-Anwendung ist. Alle Adressen werden in der Anwendung <a href="https://userbase.kde.org/KAddressBook">KAdressBook</a> gesammelt.</p>
-</div>
-<div class="paragraph">
 <p>Der Quelltext zu Kraft ist open source and wird unter der Lizenz <a href="https://en.wikipedia.org/wiki/GNU_General_Public_License">GNU General Public License</a> veröffentlicht.</p>
 </div>
 <div class="admonitionblock note">
@@ -739,10 +744,10 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div class="title">Note</div>
 </td>
 <td class="content">
-Kraft wird durch eine Gemeinschaft von Benutzern, Entwicklern und anderen vorangetrieben.<br>
-Dieses Benutzerhandbuch benötigt Ihre Hilfe zur Verbesserung.<br>
+Kraft is driven by community of users, coders, artists and others by voluntary work.<br>
+Also this manual needs contributions!<br>
 <br>
-Lernen Sie mehr auf <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.md">how to contribute</a>!
+ Learn more on <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.md">how to contribute</a>!
 </td>
 </tr>
 </table>
@@ -753,16 +758,19 @@ Lernen Sie mehr auf <a href="https://github.com/dragotin/kraft/blob/master/manua
 <h2 id="_erster_start_und_grundkonfiguration">Erster Start und Grundkonfiguration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Während des initialen Setup wird der Datenbank-Typ und die Adresse der Firma abgefragt.</p>
+<p>When Kraft is started for the first time, it automatically enters the initial setup process.</p>
 </div>
 <div class="paragraph">
-<p>Die Adresse der eigenen Firma, die automatisch auf dem Ausgabedokument erscheint, kann auf zwei Arten eingegeben werden: In der Prozedur nach dem ersten Start im entsprechenden Tab, oder später über den Einstellungsdialog. Die Adresse kann entweder aus dem Adressbuch gewählt werden oder per Hand eingegeben werden. Dieser Schritt ist für die fehlerfreie Erstellung der Dokumente nötig.</p>
+<p>During the initial setup you are asked to select a database to use and give the name and address of your company.</p>
 </div>
 <div class="paragraph">
-<p>Nach dem initialen Setup kann Kraft über das Menü Preferences[Settings] konfiguriert werden. Das erlaubt, Kraft für die eigenen Bedürfnisse anzupassen.</p>
+<p>You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab <strong>Select from Addressbook</strong> for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab <strong>Manual entry</strong> for to fill in the information of the address from your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.</p>
 </div>
 <div class="paragraph">
-<p>Im Einstellungsfenster befinden sich die Tabs:</p>
+<p>After the initial setup, select <span class="menuseq"><b class="menu">Preferences</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Settings</b></span>. That allows to prepare Kraft correctly so it can be used in a proper way.</p>
+</div>
+<div class="paragraph">
+<p>In the Preferences dialog we have the tabs:</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -775,7 +783,7 @@ Lernen Sie mehr auf <a href="https://github.com/dragotin/kraft/blob/master/manua
 </div>
 </div>
 <div class="paragraph">
-<p>Jeder der Tabs erlaub es, sinnvolle Werte für die spezielle Anforderung einzugeben.</p>
+<p>Each of the tabs allows to enter useful values for the specific use case.</p>
 </div>
 <div class="sect2">
 <h3 id="_dokumenttypen">Dokumenttypen</h3>
@@ -942,280 +950,6 @@ If you made the choice to use the information from KaddressBook then is the info
 <p>Catalogs</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>We go first to catalogs.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_catalog">Catalog</h3>
-<div class="paragraph">
-<p>In the tab catalog are two different catalogs:</p>
-</div>
-<div class="paragraph">
-<p><code>Material</code></p>
-</div>
-<div class="paragraph">
-<p>A catalog of material that are sold, with their purchase prices, the profit and the sell-price.</p>
-</div>
-<div class="paragraph">
-<p>and <code>Standard Templates</code></p>
-</div>
-<div class="paragraph">
-<p>A catalog of standard recipes of work like planting trees.</p>
-</div>
-<div class="paragraph">
-<p>Both catalogs can have chapters and sub-chapters for to organize your templates. First we are going to fill in the</p>
-</div>
-<div class="sect3">
-<h4 id="_material_catalog">Material-catalog</h4>
-<div class="paragraph">
-<p>A catalog of material that are sold, with their purchase prices, the profit and the sell-price. First we are going to add new chapters and subchapters.</p>
-</div>
-<div class="sect4">
-<h5 id="_new_chapters">New chapters</h5>
-<div class="paragraph">
-<p>Select with the mouse the column-name <code>material</code>, select now in the context-menu [Add a sub chapter]</p>
-</div>
-<div class="paragraph">
-<p>and add an extra chapter like <code>Trees</code></p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_new_sub_chapters">New sub chapters</h5>
-<div class="paragraph">
-<p>We are going to ad sub chapters in the map <code>Trees</code>. Select with the mouse the name of the chapter where you like to add a subchapter, select now in the context-menu [Add a sub chapter] and ad an extra subchapters like <code>Loaf trees</code> and <code>needle trees</code>. After adding the extra chapters and subchapters for dividing the material, we are going to add the material themself.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_new_template">New template</h5>
-<div class="paragraph">
-<p>Select with the mouse the name of the sub-chapter or chapter where you like to add a material. Select the sub map Loaf trees and select now in the context-menu</p>
-</div>
-<div class="paragraph">
-<p>Add the extra materials <code>coconut tree</code>, <code>apple tree</code> and <code>pine-apple tree</code>.</p>
-</div>
-<div class="paragraph">
-<p>Fill in the price that we have paid.</p>
-</div>
-<div class="paragraph">
-<p>Fill in the profit that we want to have on the material</p>
-</div>
-<div class="paragraph">
-<p>And fill in how much is in a packet.</p>
-</div>
-<div class="paragraph">
-<p>Now we are going to:</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_standard_templates">Standard Templates</h4>
-<div class="paragraph">
-<p>This is a catalog of standard recipes of work like:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>planting trees</p>
-</li>
-<li>
-<p>cutting grass</p>
-</li>
-<li>
-<p>transport costs</p>
-</li>
-<li>
-<p>planting grass</p>
-</li>
-<li>
-<p>sowing grass-seed</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>We add here the standard work of planting a tree.</p>
-</div>
-<div class="paragraph">
-<p>Select with the mouse the name of the chapter [Work] where you like to add the new template,</p>
-</div>
-<div class="paragraph">
-<p>select now the context-menu [New template]</p>
-</div>
-<div class="paragraph">
-<p>and the extra templates <code>Plant tree</code> and <code>cut grass</code>.</p>
-</div>
-<div class="paragraph">
-<p>After we made the new template, a window opens with 4 tabs:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Template</p>
-</li>
-<li>
-<p>Time calculation</p>
-</li>
-<li>
-<p>Fixkosten</p>
-</li>
-<li>
-<p>Material</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>First we go to the tab:</p>
-</div>
-<div class="sect4">
-<h5 id="_template">Template</h5>
-<div class="paragraph">
-<p>We give here the name of the new standard template like <code>Plant tree</code></p>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Warning</div>
-</td>
-<td class="content">
-be careful, this name is later used in the invoice
-</td>
-</tr>
-</table>
-</div>
-</blockquote>
-</div>
-<div class="paragraph">
-<p>we select that this is per piece and that the margin is 8% and that the full VAT is applicable.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_time_calculation">Time calculation</h5>
-<div class="paragraph">
-<p>We fill here in a number of work with the time:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Spent time</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dig hole</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">32 min.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Place tree</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">12 min.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fill hole</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">17 min.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">give water</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5 min.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The cost for worker which we have earlier filled in is now used.</p>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-in the invoice we see later only Plant tree, we will not see the parts dig hole,place tree,fill hole,give water
-</td>
-</tr>
-</table>
-</div>
-</blockquote>
-</div>
-<div class="paragraph">
-<p>Now we go to the tab</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_fixed_costs">Fixed costs</h5>
-<div class="paragraph">
-<p>and fill in:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Fixed item</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Transportcost</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">35 euro</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1 pcs.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>After this we go to the tab:</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_material">Material</h5>
-<div class="paragraph">
-<p>Here we fill in:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Used materials</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">support pole</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3,5 euro</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>We go now back to the first tab template</p>
-</div>
-<div class="paragraph">
-<p>On the first tab [template], we can now see the overall cost per one unit</p>
-</div>
-<div class="paragraph">
-<p>Click on [OK] for saving the result or on [cancel] for discarding the result.</p>
-</div>
-<div class="paragraph">
-<p>We make a second template <code>cut grass</code></p>
-</div>
-<div class="paragraph">
-<p>we fill in <code>cut grass</code>, as unit we choose sm (square meter), on the second tab we fill in that we need 3 min per square meter.</p>
-</div>
-<div class="paragraph">
-<p>Click on [OK] for saving the result or on [Cancel] for discarding the result.</p>
-</div>
-<div class="paragraph">
-<p>We are now ready for the first invoice.</p>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -1515,6 +1249,288 @@ Remind that in the catalog we can add a profit on the price of the material, in 
 </div>
 </div>
 <div class="sect1">
+<h2 id="_catalogs">Catalogs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accellerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document.</p>
+</div>
+<div class="paragraph">
+<p>Since templates are organized in chapters entire documents can be prepared in different chapters to be used as template documents.</p>
+</div>
+<div class="paragraph">
+<p>Of course the items in the documents can be edited after they got picked from a catalog.</p>
+</div>
+<div class="paragraph">
+<p>By default Kraft comes with two different catalogs:</p>
+</div>
+<div class="paragraph">
+<p><code>Material</code></p>
+</div>
+<div class="paragraph">
+<p>A catalog of material that are sold, with their purchase prices, the profit and the sell-price.</p>
+</div>
+<div class="paragraph">
+<p>and <code>Standard Templates</code></p>
+</div>
+<div class="paragraph">
+<p>A catalog of standard recipes of work like planting trees.</p>
+</div>
+<div class="paragraph">
+<p>Both catalogs can have chapters and sub-chapters for to organize your templates. First we are going to fill in the</p>
+</div>
+<div class="sect2">
+<h3 id="_material_catalog">Material Catalog</h3>
+<div class="paragraph">
+<p>A catalog of material that are sold, with their purchase prices, the profit and the sell-price. First we are going to add new chapters and subchapters.</p>
+</div>
+<div class="sect3">
+<h4 id="_new_chapters">New chapters</h4>
+<div class="paragraph">
+<p>Select with the mouse the column-name <code>material</code>, select now in the context-menu [Add a sub chapter]</p>
+</div>
+<div class="paragraph">
+<p>and add an extra chapter like <code>Trees</code></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_new_sub_chapters">New sub chapters</h4>
+<div class="paragraph">
+<p>We are going to ad sub chapters in the map <code>Trees</code>. Select with the mouse the name of the chapter where you like to add a subchapter, select now in the context-menu [Add a sub chapter] and ad an extra subchapters like <code>Loaf trees</code> and <code>needle trees</code>. After adding the extra chapters and subchapters for dividing the material, we are going to add the material themself.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_new_template">New template</h4>
+<div class="paragraph">
+<p>Select with the mouse the name of the sub-chapter or chapter where you like to add a material. Select the sub map Loaf trees and select now in the context-menu</p>
+</div>
+<div class="paragraph">
+<p>Add the extra materials <code>coconut tree</code>, <code>apple tree</code> and <code>pine-apple tree</code>.</p>
+</div>
+<div class="paragraph">
+<p>Fill in the price that we have paid.</p>
+</div>
+<div class="paragraph">
+<p>Fill in the profit that we want to have on the material</p>
+</div>
+<div class="paragraph">
+<p>And fill in how much is in a packet.</p>
+</div>
+<div class="paragraph">
+<p>Now we are going to:</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_standard_templates">Standard Templates</h3>
+<div class="paragraph">
+<p>This is a catalog of standard recipes of work like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>planting trees</p>
+</li>
+<li>
+<p>cutting grass</p>
+</li>
+<li>
+<p>transport costs</p>
+</li>
+<li>
+<p>planting grass</p>
+</li>
+<li>
+<p>sowing grass-seed</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We add here the standard work of planting a tree.</p>
+</div>
+<div class="paragraph">
+<p>Select with the mouse the name of the chapter [Work] where you like to add the new template,</p>
+</div>
+<div class="paragraph">
+<p>select now the context-menu [New template]</p>
+</div>
+<div class="paragraph">
+<p>and the extra templates <code>Plant tree</code> and <code>cut grass</code>.</p>
+</div>
+<div class="paragraph">
+<p>After we made the new template, a window opens with 4 tabs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Template</p>
+</li>
+<li>
+<p>Time calculation</p>
+</li>
+<li>
+<p>Fixkosten</p>
+</li>
+<li>
+<p>Material</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>First we go to the tab:</p>
+</div>
+<div class="sect3">
+<h4 id="_template">Template</h4>
+<div class="paragraph">
+<p>We give here the name of the new standard template like <code>Plant tree</code></p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+be careful, this name is later used in the invoice
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>we select that this is per piece and that the margin is 8% and that the full VAT is applicable.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_time_calculation">Time calculation</h4>
+<div class="paragraph">
+<p>We fill here in a number of work with the time:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Spent time</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dig hole</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32 min.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Place tree</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12 min.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fill hole</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17 min.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">give water</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5 min.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The cost for worker which we have earlier filled in is now used.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+in the invoice we see later only Plant tree, we will not see the parts dig hole,place tree,fill hole,give water
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Now we go to the tab</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_fixed_costs">Fixed costs</h4>
+<div class="paragraph">
+<p>and fill in:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Fixed item</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Transportcost</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">35 euro</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 pcs.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>After this we go to the tab:</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_material">Material</h4>
+<div class="paragraph">
+<p>Here we fill in:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Used materials</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">support pole</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3,5 euro</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>We go now back to the first tab template</p>
+</div>
+<div class="paragraph">
+<p>On the first tab [template], we can now see the overall cost per one unit</p>
+</div>
+<div class="paragraph">
+<p>Click on [OK] for saving the result or on [cancel] for discarding the result.</p>
+</div>
+<div class="paragraph">
+<p>We make a second template <code>cut grass</code></p>
+</div>
+<div class="paragraph">
+<p>we fill in <code>cut grass</code>, as unit we choose sm (square meter), on the second tab we fill in that we need 3 min per square meter.</p>
+</div>
+<div class="paragraph">
+<p>Click on [OK] for saving the result or on [Cancel] for discarding the result.</p>
+</div>
+<div class="paragraph">
+<p>We are now ready for the first invoice.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="Customization">Customization</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -1729,7 +1745,7 @@ Removes this item from document.</pre>
 <p>Dieses Kapitel beschreibt fortgeschrittene Themen um Kraft. Dabei wird etwas Linux-Kenntnis vorausgesetzt, und das Aufsetzen sollte von erfahreneren Linux Administratoren durchgeführt und gut testet werden.</p>
 </div>
 <div class="sect2">
-<h3 id="_kraft_kollaborativ_verwenden">Kraft kollaborativ verwenden</h3>
+<h3 id="_using_kraft_collaboratively">Using Kraft Collaboratively</h3>
 <div class="paragraph">
 <p>Kraft kann kollaborativ in einer verteilten Umgebung verwendet werden. Das heisst, dass mehrere Benutzer an ihren jeweiligen Arbeitsplatzrechnern mit ihrer eigenen Kraft Instanz arbeiten können und dabei die selben Daten verwenden.</p>
 </div>
@@ -1811,7 +1827,7 @@ PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
 <h2 id="Credits">Credits und Lizenz</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Software und Dokumentation Copyright 2004-2021 Klaas Freitag</p>
+<p>Program and documentation copyright 2004–2022 Klaas Freitag</p>
 </div>
 <div class="paragraph">
 <p>Dokumentation Copyright 2020 Ronald Stroethoff</p>
@@ -1821,7 +1837,7 @@ PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-10-13 22:41:59 +0200
+Last updated 2022-03-18 20:45:05 +0100
 </div>
 </div>
 </body>
