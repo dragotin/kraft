@@ -35,40 +35,39 @@ class ArchDocDigest
 {
 public:
 
-  /** Constructor for the fileclass of the application */
-  ArchDocDigest();
-  ArchDocDigest( QDateTime, int, const QString&, dbID );
-  /** Destructor for the fileclass of the application */
-  ~ArchDocDigest();
+    /** Constructor for the fileclass of the application */
+    ArchDocDigest();
+    ArchDocDigest( QDateTime, int, const QString&, dbID );
+    /** Destructor for the fileclass of the application */
+    virtual ~ArchDocDigest();
 
-  QDateTime printDate() const {
-    return mPrintDate;
-  }
+    QDateTime printDate() const {
+        return mPrintDate;
+    }
 
-  int archDocState() const {
-    return mState;
-  }
+    int archDocState() const {
+        return mState;
+    }
 
-  dbID archDocId() const {
-    return mArchDocId;
-  }
+    dbID archDocId() const {
+        return mArchDocId;
+    }
 
-  QString archDocIdent() const {
-    return mIdent;
-  }
+    QString archDocIdent() const {
+        return mIdent;
+    }
 
-  QString pdfArchiveFileName() const;
+    QString pdfArchiveFileName() const;
 
-private:
-  QDateTime mPrintDate;
-  int       mState;
-  dbID      mArchDocId;
-  QString   mIdent;
+protected:
+    QDateTime mPrintDate;
+    int       mState;
+    dbID      mArchDocId;
+    QString   mIdent;
 };
 
 
-
-class ArchDoc : public QObject
+class ArchDoc: public QObject, public ArchDocDigest
 {
     Q_OBJECT
 
@@ -84,123 +83,155 @@ class ArchDoc : public QObject
     Q_PROPERTY(QString postTextHtml READ postTextHtml)
     Q_PROPERTY(QString projectLabel READ projectLabel)
     Q_PROPERTY(QString predecessor READ predecessor)
-    Q_PROPERTY(QString docIDStr READ docIdStr)
+    Q_PROPERTY(QString docIDStr READ archDocIdStr)
     Q_PROPERTY(QString docIdentifier READ docIdentifier)
     Q_PROPERTY(QString dateStr READ dateStr)
+    Q_PROPERTY(QString dateStrISO READ dateStrISO)
 
     Q_PROPERTY(QString nettoSumStr READ nettoSumStr)
+    Q_PROPERTY(QString nettoSumNum READ nettoSumNum)
     Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr)
+    Q_PROPERTY(QString bruttoSumNum READ bruttoSumNum)
     Q_PROPERTY(QString taxSumStr READ taxSumStr)
+    Q_PROPERTY(QString taxSumNum READ taxSumNum)
     Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
+    Q_PROPERTY(QString fullTaxSumNum READ fullTaxSumNum)
     Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
+    Q_PROPERTY(QString reducedTaxSumNum READ reducedTaxSumNum)
 
-    Q_PROPERTY(QString reducedTaxPercentStr READ reducedTaxPercentStr)
+    Q_PROPERTY(QString dueDateStrISO READ dueDate)
+    Q_PROPERTY(QString buyerReference READ buyerRef)
+
+    Q_PROPERTY(QString fullTaxPercentNum READ fullTaxPercentNum)
     Q_PROPERTY(QString fullTaxPercentStr READ fullTaxPercentStr)
+    Q_PROPERTY(QString reducedTaxPercentNum READ reducedTaxPercentNum)
+    Q_PROPERTY(QString reducedTaxPercentStr READ reducedTaxPercentStr)
     Q_PROPERTY(QString taxPercentStr READ taxPercentStr)
+    Q_PROPERTY(QString taxPercentNum READ taxPercentNum)
 
     Q_PROPERTY(QString taxMarkerFull READ taxMarkerFull)
     Q_PROPERTY(QString taxMarkerReduced READ taxMarkerReduced)
 
     Q_PROPERTY(QList<ArchDocPosition> items READ itemslist)
     Q_PROPERTY(bool hasIndividualTaxation READ hasIndividualTaxation)
+
 public:
 
     const QString SentOutDateC {"SentOutDate"};
 
-  /** Constructor for the fileclass of the application */
-  ArchDoc();
-  ArchDoc( const dbID& );
-  /** Destructor for the fileclass of the application */
-  ~ArchDoc();
+    /** Constructor for the fileclass of the application */
+    ArchDoc();
+    ArchDoc( const dbID& );
+    /** Destructor for the fileclass of the application */
+    virtual ~ArchDoc() {};
 
-  ArchDocPositionList positions() const { return mPositions; }
-  QList<ArchDocPosition> itemslist() const;
+    ArchDocPositionList positions() const { return mPositions; }
+    QList<ArchDocPosition> itemslist() const;
 
-  QDate date() const      { return mDate; }
-  QString dateStr() const;
+    QDate date() const      { return mDate; }
+    QString dateStr() const;
+    QString dateStrISO() const;
 
-  QString docType() const { return mDocType; }
+    QString docType() const { return mDocType; }
 
-  QString address() const { return mAddress; }
+    QString address() const { return mAddress; }
 
-  QString clientUid() const { return mClientUid; }
+    QString clientUid() const { return mClientUid; }
 
-  QString ident() const { return mIdent;    }
+    QString ident() const { return mIdent;    }
 
-  QString salut() const { return mSalut;    }
+    QString salut() const { return mSalut;    }
 
-  QString goodbye() const { return mGoodbye;    }
+    QString goodbye() const { return mGoodbye;    }
 
-  QString preText() const;
-  QString preTextHtml() const;
+    QString preText() const;
+    QString preTextHtml() const;
 
-  QString postText() const;
-  QString postTextHtml() const;
+    QString postText() const;
+    QString postTextHtml() const;
 
-  QString projectLabel() const { return mProjectLabel; }
-  QString predecessor() const { return mPredecessor; }
+    QString projectLabel() const { return mProjectLabel; }
+    QString predecessor() const { return mPredecessor; }
 
-  dbID docID() const { return mDocID; }
-  QString docIdStr() const { return docID().toString(); }
+    QString archDocIdStr() const { return archDocId().toString(); }
 
-  QString docIdentifier() const;
+    QString docIdentifier() const;
 
-  Geld nettoSum() const;
-  QString nettoSumStr() const { return nettoSum().toString(); }
-  Geld bruttoSum() const;
-  QString bruttoSumStr() const { return bruttoSum().toString(); }
-  Geld taxSum() const;
-  QString taxSumStr() const { return taxSum().toString(); }
-  Geld fullTaxSum() const;
-  QString fullTaxSumStr() const { return fullTaxSum().toString(); }
-  Geld reducedTaxSum() const;
-  QString reducedTaxSumStr() const { return reducedTaxSum().toString(); }
+    Geld nettoSum() const;
+    QString nettoSumStr() const { return nettoSum().toLocaleString(); }
+    QString nettoSumNum() const { return nettoSum().toNumberString(); }
 
-  QString fullTaxPercentStr() const;
-  QString reducedTaxPercentStr() const;
-  QString taxPercentStr() const;
+    Geld bruttoSum() const;
+    QString bruttoSumStr() const { return bruttoSum().toLocaleString(); }
+    QString bruttoSumNum() const { return bruttoSum().toNumberString(); }
 
-  static QString taxMarkerNoTax()   { return QStringLiteral("1"); }
-  static QString taxMarkerReduced() { return QStringLiteral("2"); }
-  static QString taxMarkerFull()    { return QStringLiteral("");  }
+    Geld taxSum() const;
+    QString taxSumStr() const { return taxSum().toLocaleString(); }
+    QString taxSumNum() const { return taxSum().toNumberString(); }
+    Geld fullTaxSum() const;
+    QString fullTaxSumStr() const { return fullTaxSum().toLocaleString(); }
+    QString fullTaxSumNum() const { return fullTaxSum().toNumberString(); }
+    Geld reducedTaxSum() const;
+    QString reducedTaxSumStr() const { return reducedTaxSum().toLocaleString(); }
+    QString reducedTaxSumNum() const { return reducedTaxSum().toNumberString(); }
 
-  bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
+    QString fullTaxPercentNum() const;
+    QString fullTaxPercentStr() const;
+    QString reducedTaxPercentNum() const;
+    QString reducedTaxPercentStr() const;
+    QString taxPercentStr() const;
+    QString taxPercentNum() const;
 
-  double tax() const;
-  double reducedTax() const;
+    QString dueDate() const { return _dueDate.toString("yyyy-MM-dd"); }
+    QString buyerRef() const { return _buyerRef; }
 
-  ArchDocDigest toDigest() const;
+    void setDueDate(const QDate& d) { _dueDate = d; }
+    void setBuyerRef(const QString& br) { _buyerRef = br; }
 
-  // when the document was sent to the customer.
-  QDateTime sentOutDate();
-  void setSentOutDate( const QDateTime& dt );
+    static QString taxMarkerNoTax()   { return QStringLiteral("1"); }
+    static QString taxMarkerReduced() { return QStringLiteral("2"); }
+    static QString taxMarkerFull()    { return QStringLiteral("");  }
 
-  void loadFromDb( dbID );
+    bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
 
-private:
-  void loadItems( const QString& );
+    double tax() const;
+    double reducedTax() const;
 
-  dbID mArchDocID;
-  QString mAddress;
-  QString mClientUid;
-  QString mPreText;
-  QString mPostText;
-  QString mDocType;
-  QString mSalut;
-  QString mGoodbye;
-  QString mIdent;
-  QString mProjectLabel;
-  QString mPredecessor;
-  double  mTax;
-  double  mReducedTax;
+    ArchDocDigest toDigest() const;
 
-  QDate     mDate;
-  QDateTime mPrintDate;
+    // when the document was sent to the customer.
+    QDateTime sentOutDate();
+    void setSentOutDate( const QDateTime& dt );
 
-  ArchDocPositionList mPositions;
-  dbID    mDocID;
-  int     mState;
-  AttributeMap mAttributes;
+    void loadFromDb( dbID );
+
+protected:
+    void loadItems( const QString& );
+
+    dbID mArchDocID;
+    QString mAddress;
+    QString mClientUid;
+    QString mPreText;
+    QString mPostText;
+    QString mDocType;
+    QString mSalut;
+    QString mGoodbye;
+    QString mIdent;
+    QString mProjectLabel;
+    QString mPredecessor;
+
+    QString _buyerRef;
+    QDate _dueDate;
+
+    double  mTax;
+    double  mReducedTax;
+
+    QDate     mDate;
+
+    ArchDocPositionList mPositions;
+    AttributeMap mAttributes;
 };
+
+
 
 #endif // ARCHDOC_H

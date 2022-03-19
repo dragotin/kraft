@@ -117,8 +117,8 @@ void MaterialKatalogListView::slFreshupItem(QTreeWidgetItem *item, void* templ, 
     item->setText( 0, mat->getText() );
     item->setText( 1, QString::number( mat->getAmountPerPack() ) );
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
-    item->setText( 3, mat->purchPrice().toString() );
-    item->setText( 4, mat->salesPrice().toString() );
+    item->setText( 3, mat->purchPrice().toLocaleString() );
+    item->setText( 4, mat->salesPrice().toLocaleString() );
     item->setText( 5, Format::toDateTimeString( mat->modifyDate(), KraftSettings::self()->dateFormat()));
   } else {
     // qDebug () << "Unable to freshup item - data invalid" << endl;

@@ -66,6 +66,7 @@ signals:
   void copyDocument( const QString& );
   void viewDocument( const QString& );
   void openArchivedDocument( const ArchDocDigest& );
+  void exportXRechnungArchivedDocument( const ArchDocDigest&);
   void documentSelected( const QString& );
   void archivedDocSelected( const ArchDocDigest& );
 

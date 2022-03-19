@@ -387,6 +387,8 @@ QWidget* PortalView::documentDigests()
            SIGNAL( copyDocument( const QString& ) ) );
   connect( _allDocsView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
            SIGNAL( openArchivedDocument( const ArchDocDigest& ) ) );
+  connect( _allDocsView, &AllDocsView::exportXRechnungArchivedDocument,
+           this, &PortalView::exportXRechnungArchivedDocument);
   connect( _allDocsView, SIGNAL( docSelected( const QString& ) ),
            SIGNAL( documentSelected( const QString& ) ) );
   connect( _allDocsView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),

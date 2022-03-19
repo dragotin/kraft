@@ -58,11 +58,6 @@ ArchDoc::ArchDoc( const dbID& id )
     loadFromDb( id );
 }
 
-ArchDoc::~ArchDoc()
-{
-}
-
-
 QString ArchDoc::docIdentifier() const
 {
   QString re = docType();
@@ -75,6 +70,10 @@ QString ArchDoc::dateStr() const
     return Format::toDateString(mDate, KraftSettings::self()->dateFormat());
 }
 
+QString ArchDoc::dateStrISO() const
+{
+    return mDate.toString("yyyy-MM-dd");
+}
 
 QString ArchDoc::preText() const
 {
@@ -143,9 +142,33 @@ QString ArchDoc::taxPercentStr() const
      if (tt == DocPositionBase::TaxType::TaxFull) {
          return fullTaxPercentStr();
      } else if (tt == DocPositionBase::TaxType::TaxReduced) {
-         return reducedTaxSumStr();
+         return reducedTaxPercentStr();
      }
      return QString();
+}
+
+QString ArchDoc::taxPercentNum() const
+{
+    DocPositionBase::TaxType tt = mPositions.listTaxation();
+    if (tt == DocPositionBase::TaxType::TaxFull) {
+        return fullTaxPercentNum();
+    } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+        return reducedTaxPercentNum();
+    }
+    return QString();
+
+}
+
+QString ArchDoc::fullTaxPercentNum() const
+{
+    double t = tax();
+    return QString::number(t, 'f', 2);
+}
+
+QString ArchDoc::reducedTaxPercentNum() const
+{
+    double t = reducedTax();
+    return QString::number(t, 'f', 2);
 }
 
 double ArchDoc::tax() const

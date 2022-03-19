@@ -233,8 +233,8 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
 
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_AMOUNT"), h );
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNIT"), escapeTrml2pdfXML( pos.unit() ) );
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNITPRICE"), pos.unitPrice().toString() );
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_TOTAL"), pos.nettoPrice().toString() );
+        tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNITPRICE"), pos.unitPrice().toLocaleString() );
+        tmpl.setValue( DICT("POSITIONS"), TAG("POS_TOTAL"), pos.nettoPrice().toLocaleString() );
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_KIND"), pos.kind().toLower() );
 
         QString taxType;
@@ -310,15 +310,15 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
     tmpl.setValue( TAG( "GOODBYE" ), escapeTrml2pdfXML( archDoc->goodbye() ) );
     tmpl.setValue( TAG( "PRETEXT" ),   rmlString( archDoc->preText() ) );
     tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( archDoc->postText() ) );
-    tmpl.setValue( TAG( "BRUTTOSUM" ), archDoc->bruttoSum().toString() );
-    tmpl.setValue( TAG( "NETTOSUM" ),  archDoc->nettoSum().toString() );
+    tmpl.setValue( TAG( "BRUTTOSUM" ), archDoc->bruttoSum().toLocaleString() );
+    tmpl.setValue( TAG( "NETTOSUM" ),  archDoc->nettoSum().toLocaleString() );
 
     h = DefaultProvider::self()->locale()->toString( archDoc->tax() );
     // qDebug () << "Tax in archive document: " << h;
     if ( archDoc->reducedTaxSum().toLong() != 0 ) {
         tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
         tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_SUM" ),
-                       archDoc->reducedTaxSum().toString() );
+                       archDoc->reducedTaxSum().toLocaleString() );
         h = DefaultProvider::self()->locale()->toString( archDoc->reducedTax() );
         tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX" ), h );
         tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
@@ -326,7 +326,7 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
     if ( archDoc->fullTaxSum().toLong() != 0 ) {
         tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
         tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_SUM" ),
-                       archDoc->fullTaxSum().toString() );
+                       archDoc->fullTaxSum().toLocaleString() );
         h = DefaultProvider::self()->locale()->toString( archDoc->tax() );
         tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX" ), h );
         tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
@@ -335,7 +335,7 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
     h = DefaultProvider::self()->locale()->toString( archDoc->tax() );
     tmpl.setValue( TAG( "VAT" ), h );
 
-    tmpl.setValue( TAG( "VATSUM" ), archDoc->taxSum().toString() );
+    tmpl.setValue( TAG( "VATSUM" ), archDoc->taxSum().toLocaleString() );
 
     addLabelsToTemplate(tmpl);
 
@@ -371,6 +371,7 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
     if (_errorStr.isEmpty()) {
 
         GrantleeFileTemplate gtmpl(_tmplFile);
+
         gtmpl.addToObjMapping("doc", archDoc);
 
         gtmpl.addToMapping(QStringLiteral("me"), contactToVariantHash(myContact));

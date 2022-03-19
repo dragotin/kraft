@@ -35,6 +35,7 @@ public:
 
 signals:
     void showLastPrint( const dbID& );
+    void exportXRechnung(const dbID&);
 
 protected slots:
     void slotLinkClicked(const QUrl& url);
@@ -48,7 +49,8 @@ public:
   explicit DocDigestDetailView(QWidget *parent = 0);
 
 signals:
-  void showLastPrint( const dbID& );
+  void showLastPrint(const dbID&);
+  void exportXRechnung(const dbID&);
 
 public slots:
   void slotShowDocDetails( DocDigest );

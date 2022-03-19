@@ -66,7 +66,8 @@
 #include "setupassistant.h"
 #include "addressprovider.h"
 #include "alldocsview.h"
-
+#include "exportxrechnung.h"
+#include "ui_xrechnung.h"
 
 Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
 : QMainWindow( parent ),
@@ -320,6 +321,8 @@ void Portal::initView()
              this, SLOT( slotViewDocument( const QString& ) ) );
     connect( m_portalView.data(), SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
              this, SLOT( slotOpenArchivedDoc( const ArchDocDigest& ) ) );
+    connect( m_portalView.data(), &PortalView::exportXRechnungArchivedDocument,
+             this, &Portal::slotExportXRechnungArchivedDoc);
     connect( m_portalView.data(),  SIGNAL( documentSelected( const QString& ) ),
              this,  SLOT( slotDocumentSelected( const QString& ) ) );
     connect( m_portalView.data(),  SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
@@ -622,6 +625,33 @@ void Portal::slotViewDocument( const QString& id )
   }
 
   slotStatusMsg();
+
+}
+
+void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
+{
+    ExporterXRechnung *exporter = new ExporterXRechnung;
+    auto dia = new QDialog(this);
+    Ui::XRechnungDialog ui;
+    ui.setupUi(dia);
+
+    QDate today = QDate::currentDate();
+    ui._dueDateEdit->setDate(today.addDays(21));
+    ui._buyerRefEdit->setText("unknown");
+
+    if (dia->exec() == QDialog::Accepted) {
+        exporter->setDueDate(ui._dueDateEdit->date());
+        exporter->setBuyerRef(ui._buyerRefEdit->text());
+
+        connect(exporter, &ExporterXRechnung::xRechnungTmpFile, this, [=](const QString& fName) {
+            qDebug() << "This is the xrechnung file name." << fName;
+            const QString proposeName = QString("%1/xrechnung_%2.xml").arg(QDir::homePath()).arg(d.archDocIdent());
+            const QString f = QFileDialog::getSaveFileName(this, i18n("Save XRechnung"), proposeName);
+            QFile::copy(fName, f);
+            exporter->deleteLater();
+        });
+        exporter->exportDocument(d);
+    }
 
 }
 

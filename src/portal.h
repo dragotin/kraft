@@ -79,6 +79,7 @@ class Portal : public QMainWindow
   protected slots:
     void slotStartupChecks();
     void slotOpenArchivedDoc( const ArchDocDigest& );
+    void slotExportXRechnungArchivedDoc(const ArchDocDigest&);
 
     void slotPrefsDialogFinished( int );
     void slotDocConverted(ReportFormat format, const QString& file,

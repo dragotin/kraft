@@ -25,6 +25,7 @@
 #include "geld.h"
 #include "archdocposition.h"
 #include "archdoc.h"
+#include "unitmanager.h"
 
 /**
 @author Klaas Freitag
@@ -105,6 +106,12 @@ QString ArchDocPosition::htmlText(const QString& paraStyle) const
     return re;
 }
 
+QString ArchDocPosition::unitEC20() const
+{
+    const QString ece20 = UnitManager::self()->getECE20(mUnit);
+
+    return ece20;
+}
 // ==================================================================
 
 ArchDocPositionList::ArchDocPositionList()

@@ -143,8 +143,11 @@ QWidget* AllDocsView::initializeTreeWidget()
   vb1->addWidget( _stack );
 
   mAllViewDetails = new DocDigestDetailView;
-  connect( mAllViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
-           this, SLOT( slotOpenLastPrinted() ) );
+  connect( mAllViewDetails, &DocDigestDetailView::showLastPrint,
+           this, &AllDocsView::slotOpenLastPrinted);
+
+  connect( mAllViewDetails, &DocDigestDetailView::exportXRechnung ,
+           this, &AllDocsView::slotExportXRechnung);
 
   vb1->addWidget( mAllViewDetails );
   QWidget *w = new QWidget;
@@ -274,6 +277,12 @@ void AllDocsView::slotUpdateView()
 void AllDocsView::contextMenuEvent( QContextMenuEvent * event )
 {
     mAllMenu->popup( event->globalPos() );
+}
+
+void AllDocsView::slotExportXRechnung()
+{
+  // qDebug () << "slotOpenLastPrinted hit! ";
+  emit exportXRechnungArchivedDocument( mLatestArchivedDigest );
 }
 
 void AllDocsView::slotOpenLastPrinted( )

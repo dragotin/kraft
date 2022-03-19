@@ -68,6 +68,7 @@ protected slots:
     void slotDocOpenRequest( QModelIndex );
     void slotCurrentChanged( QModelIndex, QModelIndex );
     void slotOpenLastPrinted();
+    void slotExportXRechnung();
     void slotSearchTextChanged(const QString& newStr );
     void slotAmountFilterChanged(int entryNo);
 
@@ -78,6 +79,7 @@ signals:
     void copyDocument( const QString& );
     void docSelected( const QString& );
     void openArchivedDocument( const ArchDocDigest& );
+    void exportXRechnungArchivedDocument(const ArchDocDigest&);
 
 private:
 
