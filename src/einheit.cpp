@@ -22,14 +22,16 @@ Einheit::Einheit()
 {
 }
 
-Einheit::Einheit( int id, const QString& einh, const QString& einhLong,
-                  const QString& einhPlu, const QString& einhPluLong  )
+Einheit::Einheit(int id, const QString& einh, const QString& einhLong,
+                  const QString& einhPlu, const QString& einhPluLong,
+                 const QString &ec20)
     : m_dbId(id)
 {
    m_einheitSingular = einh;
    m_einheitPlural = einhPlu;
    m_einheitSingularLong = einhLong;
    m_einheitPluralLong = einhPluLong;
+   m_ec20 = ec20;
 }
 
 Einheit::Einheit( int id )
@@ -50,14 +52,14 @@ Einheit::Einheit( const QString& einhText )
 Einheit::~Einheit(){
 }
 
-QString Einheit::einheit( int anz ) {
+QString Einheit::einheit( int anz ) const {
     if( anz == 1 )
         return einheitSingular();
     else
         return einheitPlural();
 }
 
-QString Einheit::einheit( double anz ) {
+QString Einheit::einheit( double anz ) const {
     if( anz == 1.0 )
         return einheitSingular();
     else

@@ -38,7 +38,7 @@ UnitManager::UnitManager( )
 
 void UnitManager::load()
 {
-  QSqlQuery q( "SELECT unitID, unitShort, unitLong, unitPluShort, unitPluLong FROM units");
+  QSqlQuery q( "SELECT unitID, unitShort, unitLong, unitPluShort, unitPluLong, ec20 FROM units");
 
   while( q.next())
   {
@@ -47,7 +47,8 @@ void UnitManager::load()
                q.value(1).toString(),
                q.value(2).toString(),
                q.value(3).toString(),
-               q.value(4).toString() );
+               q.value(4).toString(),
+               q.value(5).toString());
     mUnits.append(e);
   }
 }
@@ -111,6 +112,20 @@ int UnitManager::getUnitIDSingular( const QString& einheitStr )
     }
   }
   return -1;
+}
+
+QString UnitManager::getECE20(const QString& einheitStr)
+{
+    if( mUnits.size() == 0 ) load();
+
+    for( Einheit tmp: mUnits ) {
+      if( tmp.einheitSingular() == einheitStr ||
+          tmp.einheitPlural()   == einheitStr ) {
+        // qDebug() << "Thats it, returning " << tmp.id() << endl;
+        return tmp.ec20();
+      }
+    }
+    return QString();
 }
 
 UnitManager::~UnitManager( )

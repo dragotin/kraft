@@ -55,6 +55,7 @@ PrefsUnits::PrefsUnits(QWidget* parent)
   mUnitsModel->setHeaderData(2, Qt::Horizontal, i18n("Long"));
   mUnitsModel->setHeaderData(3, Qt::Horizontal, i18n("Short plural"));
   mUnitsModel->setHeaderData(4, Qt::Horizontal, i18n("Long plural"));
+  mUnitsModel->setHeaderData(5, Qt::Horizontal, i18n("ECE20"));
 
   mProxyModel = new QSortFilterProxyModel(this);
   mProxyModel->setSourceModel(mUnitsModel);
@@ -179,6 +180,7 @@ UnitsEditDialog::UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *p
   mapper->addMapping(mBaseWidget->mUnitLong, 2);
   mapper->addMapping(mBaseWidget->mUnitPluShort, 3);
   mapper->addMapping(mBaseWidget->mUnitPluLong, 4);
+  mapper->addMapping(mBaseWidget->mUnitECE20, 5);
 
   if(row == -1)
   {

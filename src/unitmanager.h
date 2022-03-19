@@ -39,6 +39,7 @@ class UnitManager
     Einheit getPauschUnit();
     QStringList allUnits();
     int getUnitIDSingular( const QString& einheit );
+    QString getECE20(const QString& einheitStr);
 
     // Workaround: since the unit table does not have an auto update id coloum,
     // this function calculates the next free unit id to save a new one.
