@@ -23,6 +23,14 @@ void init_test_db()
     sqls = KraftDB::self()->parseCommandFile("fill_schema_de.sql");
     KraftDB::self()->processSqlCommands(sqls);
 
+    // This adds a migration from file 24_dbmigrate.sql to the units table. Unfortunately the
+    // migration file can not be used directly here, because it is only found in a setup where
+    // KRAFT_HOME is defined or the 24_dbmigrate.sql is installed in the system.
+    // For simplification we do that manually here.
+    sqls.clear();
+    sqls.append(SqlCommand("ALTER TABLE  units ADD COLUMN ec20 VARCHAR(10);", "", false));
+    sqls.append(SqlCommand("UPDATE units set ec20 = \"MTR\" WHERE unitShort = \"m\";", "", false));
+    KraftDB::self()->processSqlCommands(sqls);
 }
 
 class T_UnitMan : public QObject {
@@ -45,8 +53,14 @@ private slots:
     {
         Einheit e = UnitManager::self()->getPauschUnit();
         QCOMPARE(e.einheitSingular(), QStringLiteral("pausch."));
-
     }
+
+    void checkECE20()
+    {
+        auto u = UnitManager::self()->getECE20("m");
+        QCOMPARE(u, "MTR");
+    }
+
 };
 
 QTEST_MAIN(T_UnitMan)
