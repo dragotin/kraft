@@ -35,6 +35,7 @@
 #include "defaultprovider.h"
 #include "archiveman.h"
 #include "documentsaverdb.h"
+#include "databasesettings.h"
 
 Q_GLOBAL_STATIC(KraftDB, mSelf)
 
@@ -162,7 +163,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
     if ( mSuccess ) {
         int re = 0;
         if(mDatabaseDriver == "QMYSQL") {
-            int port = -1; // use the default port so far
+            int port = DatabaseSettings::self()->dbServerPort(); // use the default port so far
             // FIXME: get port from user interface
             // qDebug () << "Try to open MySQL database " << name << endl;
             re = checkConnect( dbHost, dbName , dbUser, dbPasswd, port);
