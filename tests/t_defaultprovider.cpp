@@ -20,7 +20,7 @@ void createTestFile( const QString& testFile, const QString& content = QString()
     QVERIFY (file.open(QIODevice::WriteOnly));
     {
         QTextStream stream(&file);
-        stream << c << Qt::endl;
+        stream << c << endl;
     }
 }
 
