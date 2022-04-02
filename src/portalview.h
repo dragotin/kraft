@@ -33,6 +33,7 @@ class AllDocsView;
 class dbID;
 class PortalHtmlView;
 class ArchDocDigest;
+class DocDigest;
 
 class PortalView : public QWidget
 {
@@ -67,7 +68,7 @@ signals:
   void viewDocument( const QString& );
   void openArchivedDocument( const ArchDocDigest& );
   void exportXRechnungArchivedDocument( const ArchDocDigest&);
-  void documentSelected( const QString& );
+  void documentSelected( const DocDigest& );
   void archivedDocSelected( const ArchDocDigest& );
 
 private:

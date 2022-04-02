@@ -67,7 +67,7 @@ public:
   void setProjectLabel( const QString& prjLabel ) { mProjectLabel = prjLabel; }
   QString projectLabel() const { return mProjectLabel; }
 
-  ArchDocDigestList archDocDigestList();
+  ArchDocDigestList archDocDigestList() const;
 
 protected:
 
@@ -83,8 +83,6 @@ protected:
   QDate       mDate;
   QLocale     mLocale;
 
-  ArchDocDigestList mArchDocs;
-  bool        _archDocLazyLoaded;
 private:
   KContacts::Addressee mContact;
 };

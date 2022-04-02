@@ -298,7 +298,7 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
 
     /* now replace stuff in the whole document */
     tmpl.setValue( TAG( "DATE" ), Format::toDateString(archDoc->date(), KraftSettings::self()->dateFormat()));
-    tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( archDoc->docType() ) );
+    tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( archDoc->docTypeStr() ) );
     tmpl.setValue( TAG( "ADDRESS" ), escapeTrml2pdfXML( archDoc->address() ) );
 
     contactToTemplate( tmpl, "CLIENT", customerContact );

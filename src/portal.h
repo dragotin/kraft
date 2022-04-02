@@ -80,6 +80,7 @@ class Portal : public QMainWindow
     void slotStartupChecks();
     void slotOpenArchivedDoc( const ArchDocDigest& );
     void slotExportXRechnungArchivedDoc(const ArchDocDigest&);
+    void slotXRechnungCurrentDocument();
 
     void slotPrefsDialogFinished( int );
     void slotDocConverted(ReportFormat format, const QString& file,
@@ -123,7 +124,7 @@ class Portal : public QMainWindow
     void slotViewDocument( const QString& );
 
     void slotFollowUpDocument();
-    void slotDocumentSelected( const QString& );
+    void slotDocumentSelected( const DocDigest& );
     void slotArchivedDocExecuted();
     void slotArchivedDocSelected( const ArchDocDigest& );
     void slotPrintCurrentDocument();
@@ -166,6 +167,7 @@ class Portal : public QMainWindow
     QAction* _actFollowDocument;
     QAction* _actPrintDocument;
     QAction* _actMailDocument;
+    QAction* _actXRechnung;
     QAction* _actEditTemplates;
 
     QAction* _actOpenArchivedDocument;

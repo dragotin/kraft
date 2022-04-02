@@ -7,8 +7,10 @@
   {{#PRINTED}}
     <p>{{LAST_PRINT_LABEL}}: {{LAST_PRINT_DATE}}&nbsp;<a href="http://localhost/show_last_print?id={{LAST_PRINTED_ID}}" title="{{LAST_PRINT_TITLE}}">[{{LAST_PRINT_LINK_TEXT}}]</a></p>
     <p>{{ARCHIVED_COUNT}}</p>
-    <p>Export: <a href="http://localhost/export_xrechnung?id={{LAST_PRINTED_ID}}" title="{{EXPORT_XRECHNUNG_TITLE}}">[{{EXPORT_XRECHNUNG_LABEL}}]</a></p>
   {{/PRINTED}}
+  {{#EXPORT_XRECHNUNG}}
+      <p>Export <a href="http://localhost/export_xrechnung?id={{LAST_PRINTED_ID}}" title="{{EXPORT_XRECHNUNG_TITLE}}">{{EXPORT_XRECHNUNG_LABEL}}</a></p>
+  {{/EXPORT_XRECHNUNG}}
   {{#NEVER_PRINTED}}
     <p>{{NEVER_PRINTED_LABEL}}</p>
   {{/NEVER_PRINTED}}

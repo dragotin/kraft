@@ -60,7 +60,7 @@ ArchDoc::ArchDoc( const dbID& id )
 
 QString ArchDoc::docIdentifier() const
 {
-  QString re = docType();
+  QString re = docTypeStr();
 
   return i18n("%1 for %2 (Id %3)", re, ident() );
 }
@@ -200,7 +200,7 @@ void ArchDoc::loadFromDb( dbID id )
     QString lang;
     docID         = q.value( 0 ).toString();
     mIdent        = q.value( 1 ).toString();
-    mDocType      = q.value( 2 ).toString();
+    mDocTypeStr   = q.value( 2 ).toString();
     mAddress      = q.value( 3 ).toString();
     mClientUid    = q.value( 4 ).toString();
     mSalut        = q.value( 5 ).toString();
@@ -298,7 +298,7 @@ void ArchDoc::setSentOutDate( const QDateTime& dt )
 
 ArchDocDigest ArchDoc::toDigest() const
 {
-    return ArchDocDigest(mPrintDate, mState, mIdent, mArchDocID);
+    return ArchDocDigest(mPrintDate, mState, mIdent, mDocTypeStr, mArchDocID);
 }
 
 /* ###################################################################### */
@@ -308,11 +308,12 @@ ArchDocDigest::ArchDocDigest()
 
 }
 
-ArchDocDigest::ArchDocDigest( QDateTime dt,  int s, const QString& ident, dbID id )
+ArchDocDigest::ArchDocDigest(QDateTime dt,  int s, const QString& ident, const QString & docType, dbID id )
   : mPrintDate( dt ),
     mState( s ),
     mArchDocId( id ),
-    mIdent( ident )
+    mIdent( ident ),
+    mDocTypeStr(docType)
 {
 
 }
@@ -330,6 +331,11 @@ QString ArchDocDigest::pdfArchiveFileName() const
     const QString file = QString( "%1/%2" ).arg( outputDir ).arg( filename );
 
     return file;
+}
+
+bool ArchDocDigest::hasXRechnungExport() const
+{
+    return (mDocTypeStr == QStringLiteral("Rechnung"));
 }
 
 /* ###################################################################### */

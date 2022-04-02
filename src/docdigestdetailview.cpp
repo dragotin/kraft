@@ -213,7 +213,7 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
        dbID archDocId(q.value(0).toInt());
 
        const ArchDoc doc(archDocId);
-       const QString docType = doc.docType();
+       const QString docType = doc.docTypeStr();
        Geld g;
        int n = 0;
        if( docMatrix.contains(docType)) {
@@ -443,8 +443,6 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), Format::toDateTimeString(digest.printDate(), Format::DateFormatLong));
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("EXPORT_XRECHNUNG_TITLE"), i18n("Export the invoice in XRechnung format"));
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("EXPORT_XRECHNUNG_LABEL"), i18n("XRechnung"));
 
             if( archDocs.size() == 1 ) {
                 tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("One older print"));
@@ -454,6 +452,11 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
         } else {
             tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
             tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("Archived documents can not be found. Check PDF Output dir."));
+        }
+        if (digest.hasXRechnungExport()) {
+            tmpl.createDictionary( DOCDIGEST_TAG( "EXPORT_XRECHNUNG" ));
+            tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_TITLE"), i18n("Export the invoice in XRechnung file format"));
+            tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_LABEL"), i18n("XRechnung"));
         }
     }
 

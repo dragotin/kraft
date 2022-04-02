@@ -37,7 +37,7 @@ public:
 
     /** Constructor for the fileclass of the application */
     ArchDocDigest();
-    ArchDocDigest( QDateTime, int, const QString&, dbID );
+    ArchDocDigest( QDateTime, int, const QString&, const QString&, dbID );
     /** Destructor for the fileclass of the application */
     virtual ~ArchDocDigest();
 
@@ -57,13 +57,22 @@ public:
         return mIdent;
     }
 
+    QString docTypeStr() const {
+        return mDocTypeStr;
+    }
+
     QString pdfArchiveFileName() const;
+
+    // FIXME: This is a workaround for the XRechnung - so far only the german
+    // doctype "Rechnung" enables the XRechnung support.
+    bool hasXRechnungExport() const;
 
 protected:
     QDateTime mPrintDate;
     int       mState;
     dbID      mArchDocId;
     QString   mIdent;
+    QString   mDocTypeStr;
 };
 
 
@@ -71,7 +80,7 @@ class ArchDoc: public QObject, public ArchDocDigest
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString docType READ docType)
+    Q_PROPERTY(QString docType READ docTypeStr)
     Q_PROPERTY(QString address READ address)
     Q_PROPERTY(QString clientUid READ clientUid)
     Q_PROPERTY(QString ident READ ident)
@@ -131,8 +140,6 @@ public:
     QDate date() const      { return mDate; }
     QString dateStr() const;
     QString dateStrISO() const;
-
-    QString docType() const { return mDocType; }
 
     QString address() const { return mAddress; }
 
@@ -213,7 +220,6 @@ protected:
     QString mClientUid;
     QString mPreText;
     QString mPostText;
-    QString mDocType;
     QString mSalut;
     QString mGoodbye;
     QString mIdent;
