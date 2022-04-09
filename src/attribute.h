@@ -48,7 +48,7 @@ class KRAFTCAT_EXPORT Attribute
     void     setPersistant( bool );
     bool     useRelationTable();
     void     setValueRelation( const QString&, const QString&, const QString& );
-    QString  toString();
+    QString  toString() const;
 private:
     void     setRawValue( const QVariant& var ); // sets the value without checking for relations
     QString  mName;
@@ -71,7 +71,7 @@ public:
   AttributeMap();
   AttributeMap( const QString& );
 
-  bool hasAttribute( const QString& );
+  bool hasAttribute( const QString& ) const;
 
   void setHost( const QString& );
 

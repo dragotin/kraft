@@ -143,8 +143,11 @@ QWidget* AllDocsView::initializeTreeWidget()
   vb1->addWidget( _stack );
 
   mAllViewDetails = new DocDigestDetailView;
-  connect( mAllViewDetails, SIGNAL( showLastPrint( const dbID& ) ),
-           this, SLOT( slotOpenLastPrinted() ) );
+  connect( mAllViewDetails, &DocDigestDetailView::showLastPrint,
+           this, &AllDocsView::slotOpenLastPrinted);
+
+  connect( mAllViewDetails, &DocDigestDetailView::exportXRechnung ,
+           this, &AllDocsView::slotExportXRechnung);
 
   vb1->addWidget( mAllViewDetails );
   QWidget *w = new QWidget;
@@ -276,6 +279,12 @@ void AllDocsView::contextMenuEvent( QContextMenuEvent * event )
     mAllMenu->popup( event->globalPos() );
 }
 
+void AllDocsView::slotExportXRechnung()
+{
+  // qDebug () << "slotOpenLastPrinted hit! ";
+  emit exportXRechnungArchivedDocument( mLatestArchivedDigest );
+}
+
 void AllDocsView::slotOpenLastPrinted( )
 {
   // qDebug () << "slotOpenLastPrinted hit! ";
@@ -351,8 +360,8 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
 
             const QString id = idIndx.data( Qt::DisplayRole ).toString();
 
-            emit docSelected( id );
             digest = model->digest( mCurrentlySelected );
+            emit docSelected(digest);
             mAllViewDetails->slotShowDocDetails( digest );
             if( digest.archDocDigestList().size() > 0 ) {
                 mLatestArchivedDigest = digest.archDocDigestList()[0];
@@ -385,7 +394,7 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         }
     } else {
         // qDebug () << "Got invalid index, clearing digest view.";
-        emit docSelected( QString() );
+        emit docSelected( DocDigest() );
         mAllViewDetails->slotClearView();
     }
     //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);

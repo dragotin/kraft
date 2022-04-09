@@ -265,7 +265,7 @@ void WagesItemDelegate::paint ( QPainter * painter, const QStyleOptionViewItem &
   if(index.column() == 2)
   {
     Geld wage = index.data(Qt::DisplayRole).toDouble();
-    QString string = wage.toString();
+    QString string = wage.toLocaleString();
     drawDisplay(painter, option, option.rect, string);
   }
   else

@@ -155,7 +155,7 @@ void Attribute::setValueRelation( const QString& table, const QString& idColumn,
   mStringCol = stringColumn;
 }
 
-QString Attribute::toString()
+QString Attribute::toString() const
 {
   QString re;
   re =  "+ Attribute name: " + mName + '\n';
@@ -194,9 +194,9 @@ void AttributeMap::setHost( const QString& host )
   mHost = host;
 }
 
-bool AttributeMap::hasAttribute( const QString& name )
+bool AttributeMap::hasAttribute( const QString& name ) const
 {
-  Iterator it = find( name );
+  ConstIterator it = find( name );
   if ( it != end() ) {
     // it is there, check the delete flag.
     if (  ! ( *it ).mDelete ) return true;

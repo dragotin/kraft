@@ -45,7 +45,8 @@ public:
 
     Geld percent( double );
 
-    QString toString() const;
+    QString toLocaleString() const;
+    QString toNumberString() const;
     QString toHtmlString() const;
     double toDouble();
     // toLong returns the amount in cents!

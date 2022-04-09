@@ -29,6 +29,15 @@
 @author Klaas Freitag
 */
 
+namespace {
+    const QString XRechnungTmplStr   {"XRechnungTmpl"};
+    const QString WatermarkFileStr   {"watermarkFile"};
+    const QString DocTemplateFileStr {"docTemplateFile"};
+    const QString IdentNumberCycleStr{"identNumberCycle"};
+    const QString DocMergeIdentStr   {"docMergeIdent"};
+}
+
+
 idMap DocType::mNameMap = idMap();
 
 DocType::DocType()
@@ -233,8 +242,8 @@ void DocType::readFollowerList()
 QString DocType::numberCycleName()
 {
   QString re = NumberCycle::defaultName();
-  if ( mAttributes.hasAttribute( "identNumberCycle" ) ) {
-    re = mAttributes["identNumberCycle"].value().toString();
+  if ( mAttributes.hasAttribute(IdentNumberCycleStr) ) {
+    re = mAttributes[IdentNumberCycleStr].value().toString();
   }
   return re;
 }
@@ -244,13 +253,13 @@ void DocType::setNumberCycleName( const QString& name )
   if ( name.isEmpty() ) return;
 
   if ( name != NumberCycle::defaultName() ) {
-    Attribute att( "identNumberCycle" );
+    Attribute att(IdentNumberCycleStr);
     att.setPersistant( true );
     att.setValue( name );
-    mAttributes["identNumberCycle"] = att;
+    mAttributes[IdentNumberCycleStr] = att;
   } else {
     // remove default value from map
-    mAttributes.markDelete( "identNumberCycle" );
+    mAttributes.markDelete(IdentNumberCycleStr);
     // qDebug () << "Removing identNumberCycle Attribute";
   }
   mDirty = true;
@@ -264,8 +273,8 @@ QString DocType::templateFile( )
   QString reportFileName = QString( "%1.trml").arg( name().toLower() );
   reportFileName.replace(QChar(' '), QChar('_'));
 
-  if ( mAttributes.hasAttribute( "docTemplateFile" ) ) {
-    tmplFile = mAttributes["docTemplateFile"].value().toString();
+  if ( mAttributes.hasAttribute(DocTemplateFileStr) ) {
+    tmplFile = mAttributes[DocTemplateFileStr].value().toString();
     if( !tmplFile.isEmpty() ) {
         QFileInfo fi(tmplFile);
         if( fi.isAbsolute() ) {
@@ -340,13 +349,13 @@ void DocType::setTemplateFile( const QString& name )
 {
   if ( name.isEmpty() || name == defaultTemplateFile() ) { // the default is returned anyway.
     // remove default value from map
-    mAttributes.markDelete( "docTemplateFile" );
+    mAttributes.markDelete(DocTemplateFileStr);
     // qDebug () << "Removing docTemplateFile Attribute";
   } else {
-    Attribute att( "docTemplateFile" );
+    Attribute att(DocTemplateFileStr);
     att.setPersistant( true );
     att.setValue( name );
-    mAttributes["docTemplateFile"] = att;
+    mAttributes[DocTemplateFileStr] = att;
   }
   mDirty = true;
 }
@@ -354,8 +363,8 @@ void DocType::setTemplateFile( const QString& name )
 QString DocType::mergeIdent()
 {
   QString re = "0";
-  if ( mAttributes.hasAttribute( "docMergeIdent" ) ) {
-    re = mAttributes["docMergeIdent"].value().toString();
+  if ( mAttributes.hasAttribute(DocMergeIdentStr) ) {
+    re = mAttributes[DocMergeIdentStr].value().toString();
   }
 
   return re;
@@ -364,17 +373,40 @@ QString DocType::mergeIdent()
 void DocType::setMergeIdent( const QString& ident )
 {
   if ( !ident.isEmpty() ) {
-    Attribute att( "docMergeIdent" );
+    Attribute att(DocMergeIdentStr);
     att.setPersistant( true );
     att.setValue( ident );
-    mAttributes["docMergeIdent"] = att;
+    mAttributes[DocMergeIdentStr] = att;
   } else {
     // remove default value from map
-    mAttributes.markDelete( "docMergeIdent" );
+    mAttributes.markDelete(DocMergeIdentStr);
     // qDebug () << "Removing docMergeIdent Attribute";
   }
   mDirty = true;
 
+}
+
+
+QString DocType::xRechnungTemplate()
+{
+    return attributeValueString(XRechnungTmplStr);
+}
+
+void DocType::setXRechnungTemplate(const QString& tmpl)
+{
+    setAttribute(XRechnungTmplStr, tmpl);
+}
+
+QString DocType::attributeValueString(const QString& attribName)
+{
+    QString re;
+    if (attribName.isEmpty()) {
+        return re;
+    }
+    if (mAttributes.hasAttribute(attribName)) {
+        re = mAttributes[attribName].value().toString();
+    }
+    return re;
 }
 
 void DocType::setAttribute( const QString& attribute, const QString& val)
@@ -386,13 +418,18 @@ void DocType::setAttribute( const QString& attribute, const QString& val)
       mAttributes[attribute] = att;
       mDirty = true;
     }
+    // remove empty attribute
+    if (!attribute.isEmpty() && val.isEmpty()) {
+        mAttributes.markDelete(attribute);
+        mDirty = true;
+    }
 }
 
 QString DocType::watermarkFile()
 {
   QString re;
-  if ( mAttributes.hasAttribute( "watermarkFile" ) ) {
-    re = mAttributes["watermarkFile"].value().toString();
+  if ( mAttributes.hasAttribute( WatermarkFileStr ) ) {
+    re = mAttributes[WatermarkFileStr].value().toString();
   }
 
   return re;
@@ -402,13 +439,13 @@ QString DocType::watermarkFile()
 void DocType::setWatermarkFile( const QString& file )
 {
   if ( !file.isEmpty() ) {
-    Attribute att( "watermarkFile" );
+    Attribute att( WatermarkFileStr );
     att.setPersistant( true );
     att.setValue( file );
-    mAttributes["watermarkFile"] = att;
+    mAttributes[WatermarkFileStr] = att;
   } else {
     // remove default value from map
-    mAttributes.markDelete( "watermarkFile" );
+    mAttributes.markDelete( WatermarkFileStr );
     // qDebug () << "Removing docMergeFile Attribute";
   }
   mDirty = true;

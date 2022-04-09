@@ -377,20 +377,20 @@ QWidget* PortalView::documentDigests()
   _allDocsView = new AllDocsView( w );
   b->addWidget( _allDocsView );
 
-  connect( _allDocsView, SIGNAL( createDocument() ),
-           this, SLOT( slotCreateDocument() ) );
-  connect( _allDocsView, SIGNAL( openDocument( const QString& ) ),
-           SIGNAL( openDocument( const QString& ) ) );
-  connect( _allDocsView, SIGNAL( viewDocument( const QString& ) ),
-           SIGNAL( viewDocument( const QString& ) ) );
-  connect( _allDocsView, SIGNAL( copyDocument( const QString& ) ),
-           SIGNAL( copyDocument( const QString& ) ) );
-  connect( _allDocsView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
-           SIGNAL( openArchivedDocument( const ArchDocDigest& ) ) );
-  connect( _allDocsView, SIGNAL( docSelected( const QString& ) ),
-           SIGNAL( documentSelected( const QString& ) ) );
-  connect( _allDocsView, SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
-           SIGNAL( archivedDocSelected( const ArchDocDigest& ) ) );
+  connect( _allDocsView, &AllDocsView::createDocument, this, &PortalView::slotCreateDocument);
+
+  connect( _allDocsView, &AllDocsView::openDocument, this, &PortalView::openDocument);
+  connect( _allDocsView, &AllDocsView::viewDocument, this, &PortalView::viewDocument);
+  connect( _allDocsView, &AllDocsView::copyDocument, this, &PortalView::copyDocument);
+
+  connect( _allDocsView, &AllDocsView::openArchivedDocument,
+           this, &PortalView::openArchivedDocument);
+  connect( _allDocsView, &AllDocsView::exportXRechnungArchivedDocument,
+           this, &PortalView::exportXRechnungArchivedDocument);
+  connect( _allDocsView, &AllDocsView::docSelected , this, &PortalView::documentSelected );
+  connect( _allDocsView, &AllDocsView::openArchivedDocument,
+           this, &PortalView::archivedDocSelected );
+
 
   return w;
  }

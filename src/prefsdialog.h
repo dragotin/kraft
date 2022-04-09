@@ -39,7 +39,6 @@ class QPainter;
 class QStyleOptionViewItem;
 class QStackedWidget;
 class QModelIndex;
-class KUrlRequester;
 class ImpTreeView;
 class PrefsWages;
 class PrefsUnits;
@@ -92,7 +91,7 @@ private:
   QLineEdit *m_leUser;
   QLineEdit *m_leName;
   QLineEdit *m_lePasswd;
-  KUrlRequester *m_leFile;
+  QLineEdit *_lineEditXRechnung;
   QLabel    *m_statusLabel;
 
   QWidget         *m_mysqlpart;

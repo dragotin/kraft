@@ -51,6 +51,7 @@ public:
     QString htmlText(const QString &paraStyle = QString()) const;
 
     QString unit() const { return mUnit; }
+    QString unitEC20() const;
 
     Geld unitPrice() const { return mUnitPrice; }
     Geld nettoPrice() const;
@@ -113,13 +114,21 @@ else if ( property == "kind" )
     return object.kind();
 else if ( property == "unit" )
     return object.unit();
+else if ( property == "unitCode" )
+    return object.unitEC20();
 else if ( property == "unitPrice" ) {
-    return object.unitPrice().toString();
+    return object.unitPrice().toLocaleString();
+} else if ( property == "unitPriceNum") {
+    return QString::number(object.unitPrice().toDouble(), 'f', 2);
 } else if ( property == "nettoPrice" ) {
-    return object.nettoPrice().toString();
+    return object.nettoPrice().toLocaleString();
+} else if ( property == "nettoPriceNum" ) {
+    return QString::number(object.nettoPrice().toDouble(), 'f', 2);
 } else if ( property == "amount" ) {
     QLocale *loc = DefaultProvider::self()->locale();
     return loc->toString(object.amount());
+} else if ( property == "amountNum") {
+    return QString::number(object.amount(), 'f', 2) ;
 } else if ( property == "taxType" ) {
     if (object.taxType() == DocPositionBase::TaxType::TaxFull) {
         return QStringLiteral("fullTax");
@@ -142,15 +151,15 @@ GRANTLEE_END_LOOKUP
 
 GRANTLEE_BEGIN_LOOKUP(ArchDocPositionList)
 if (property == "sumPrice")
-    return object.sumPrice().toString();
+    return object.sumPrice().toLocaleString();
 else if (property == "taxSum")
-    return object.taxSum().toString();
+    return object.taxSum().toLocaleString();
 else if (property == "fullTaxSum")
-    return object.fullTaxSum().toString();
+    return object.fullTaxSum().toLocaleString();
 else if (property == "reducedTaxSum")
-    return object.reducedTaxSum().toString();
+    return object.reducedTaxSum().toLocaleString();
 else if (property == "reducedTaxSum")
-    return object.reducedTaxSum().toString();
+    return object.reducedTaxSum().toLocaleString();
 else if (property == "hasIndividualTaxes")
     return object.hasIndividualTaxes();
 else

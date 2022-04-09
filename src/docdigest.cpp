@@ -27,14 +27,13 @@
 #include "kraftsettings.h"
 
 DocDigest::DocDigest( dbID id, const QString& type, const QString& clientID )
-  :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" ),
-    _archDocLazyLoaded(false)
+  :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" )
 {
 
 }
 
 DocDigest::DocDigest()
-  :mLocale( "kraft" ), _archDocLazyLoaded(false)
+  :mLocale( "kraft" )
 {
 }
 
@@ -55,28 +54,28 @@ QString DocDigest::lastModified() const
     return re;
 }
 
-ArchDocDigestList DocDigest::archDocDigestList()
+ArchDocDigestList DocDigest::archDocDigestList() const
 {
-    if( !_archDocLazyLoaded ) {
-        const QString id(ident());
+    const QString id(ident());
 
-        qDebug() << "Querying archdocs for document ident " << id;
-        QSqlQuery query;
-        query.prepare("SELECT archDocID, ident, printDate, state FROM archdoc WHERE"
-                      " ident=:id ORDER BY printDate DESC" );
-        query.bindValue(":id", id);
-        query.exec();
+    qDebug() << "Querying archdocs for document ident " << id;
+    QSqlQuery query;
+    query.prepare("SELECT archDocID, ident, docType, printDate, state FROM archdoc WHERE"
+                  " ident=:id ORDER BY printDate DESC" );
+    query.bindValue(":id", id);
+    query.exec();
 
-        while(query.next()) {
-            int archDocID = query.value(0).toInt();
-            const QString dbIdent = query.value(1).toString();
-            QDateTime printDateTime = query.value(2).toDateTime();
-            int state = query.value(3).toInt();
-            mArchDocs.append( ArchDocDigest( printDateTime, state, dbIdent, dbID(archDocID) ) );
-        }
-        _archDocLazyLoaded = true;
+    ArchDocDigestList archDocs;
+    while(query.next()) {
+        int archDocID = query.value(0).toInt();
+        const QString dbIdent = query.value(1).toString();
+        const QString docType = query.value(2).toString();
+        QDateTime printDateTime = query.value(3).toDateTime();
+        int state = query.value(4).toInt();
+        archDocs.append( ArchDocDigest( printDateTime, state, dbIdent, docType, dbID(archDocID) ) );
     }
-    return mArchDocs;
+
+    return archDocs;
 }
 
 KContacts::Addressee DocDigest::addressee() const

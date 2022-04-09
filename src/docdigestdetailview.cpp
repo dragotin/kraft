@@ -45,9 +45,11 @@ void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
     const QString idStr = q.queryItemValue(QLatin1String("id"));
 
     const QString path = url.path();
+    bool ok;
     if( path.endsWith("show_last_print")) {
-        bool ok;
-        emit( showLastPrint( dbID(idStr.toInt(&ok)) ) );
+        emit( showLastPrint( dbID(idStr.toInt(&ok))));
+    } else if (path.endsWith("export_xrechnung")) {
+        emit( exportXRechnung(dbID(idStr.toInt(&ok))));
     }
 }
 
@@ -80,6 +82,8 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
 
   connect( mHtmlCanvas, SIGNAL(showLastPrint( const dbID& )),
            this, SIGNAL( showLastPrint( const dbID& ) ) );
+  connect( mHtmlCanvas, SIGNAL(exportXRechnung( const dbID& )),
+           this, SIGNAL( exportXRechnung( const dbID& ) ) );
 
   hbox->addWidget( mHtmlCanvas);
 
@@ -209,7 +213,7 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
        dbID archDocId(q.value(0).toInt());
 
        const ArchDoc doc(archDocId);
-       const QString docType = doc.docType();
+       const QString docType = doc.docTypeStr();
        Geld g;
        int n = 0;
        if( docMatrix.contains(docType)) {
@@ -237,7 +241,7 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
         tmpl->setValue("DOCUMENTS", "DOCTYPE", dtype);
         const QString am = QString::number(docMatrix[dtype].first);
         tmpl->setValue("DOCUMENTS", "AMOUNT", am);
-        const QString sm = docMatrix[dtype].second.toString();
+        const QString sm = docMatrix[dtype].second.toLocaleString();
         tmpl->setValue("DOCUMENTS", "SUM", sm);
     }
 }
@@ -439,6 +443,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), Format::toDateTimeString(digest.printDate(), Format::DateFormatLong));
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
+
             if( archDocs.size() == 1 ) {
                 tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("One older print"));
             } else {
@@ -447,6 +452,11 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
         } else {
             tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
             tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("Archived documents can not be found. Check PDF Output dir."));
+        }
+        if (digest.hasXRechnungExport()) {
+            tmpl.createDictionary( DOCDIGEST_TAG( "EXPORT_XRECHNUNG" ));
+            tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_TITLE"), i18n("Export the invoice in XRechnung file format"));
+            tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_LABEL"), i18n("XRechnung"));
         }
     }
 

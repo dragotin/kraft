@@ -52,6 +52,7 @@ set(kraft_SRCS
     positionviewwidget.cpp
     documentsaverbase.cpp
     documentsaverdb.cpp
+    exportxrechnung.cpp
     documentman.cpp
     docdigest.cpp
     alldocsview.cpp
@@ -147,6 +148,7 @@ ki18n_wrap_ui(kraft_SRCS
     unitseditbase.ui
     importtodocbase.ui
     numbercycleseditbase.ui
+    xrechnung.ui
 )
 
 set(KRAFT_LINK_LIBS

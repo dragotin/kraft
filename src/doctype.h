@@ -76,7 +76,11 @@ class KRAFTCAT_EXPORT DocType
   QString     mergeIdent();
   void        setMergeIdent( const QString& );
 
+  QString     xRechnungTemplate();
+  void        setXRechnungTemplate(const QString&);
+
   void        setAttribute( const QString& attribute, const QString& val);
+  QString     attributeValueString(const QString& attribName);
 
   static void  clearMap();
 

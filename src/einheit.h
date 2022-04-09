@@ -33,16 +33,18 @@ public:
   Einheit();
   Einheit( int id );
   Einheit( const QString& ); // Einheit with arbitrary text.
-  Einheit( int id, const QString&, const QString&, const QString&, const QString& );
+  Einheit( int id, const QString&, const QString&, const QString&, const QString&, const QString& );
   ~Einheit();
 
-  QString einheitSingular() { return m_einheitSingular; }
-  QString einheitSingularLong() { return m_einheitSingularLong; }
-  QString einheitPlural() { return m_einheitPlural; }
-  QString einheitPluralLong() { return m_einheitPluralLong; }
+  QString einheitSingular() const { return m_einheitSingular; }
+  QString einheitSingularLong() const { return m_einheitSingularLong; }
+  QString einheitPlural() const { return m_einheitPlural; }
+  QString einheitPluralLong() const { return m_einheitPluralLong; }
+  QString ec20() const { return m_ec20; }
 
-  QString einheit( int anz );
-  QString einheit( double anz );
+  QString einheit( int anz ) const;
+  QString einheit( double anz ) const;
+
 
   int     id() { return m_dbId; }
 
@@ -52,6 +54,7 @@ private:
   QString m_einheitPlural;
   QString m_einheitSingularLong;
   QString m_einheitPluralLong;
+  QString m_ec20;
 };
 
 #endif

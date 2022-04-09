@@ -143,16 +143,16 @@ public:
     DBIdList removePositionList() { return mRemovePositions; }
 
     Geld nettoSum() const;
-    QString nettoSumStr() const { return nettoSum().toString(); }
+    QString nettoSumStr() const { return nettoSum().toLocaleString(); }
     Geld bruttoSum() const;
-    QString bruttoSumStr() const { return bruttoSum().toString(); }
+    QString bruttoSumStr() const { return bruttoSum().toLocaleString(); }
     Geld fullTaxSum() const;
-    QString fullTaxSumStr() const { return fullTaxSum().toString(); }
+    QString fullTaxSumStr() const { return fullTaxSum().toLocaleString(); }
     Geld reducedTaxSum() const;
-    QString reducedTaxSumStr() const { return reducedTaxSum().toString(); }
+    QString reducedTaxSumStr() const { return reducedTaxSum().toLocaleString(); }
 
     Geld vatSum() const;
-    QString vatSumStr() const { return vatSum().toString(); }
+    QString vatSumStr() const { return vatSum().toLocaleString(); }
 
     QString country() const;
     QString language() const;

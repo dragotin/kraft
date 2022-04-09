@@ -66,7 +66,8 @@
 #include "setupassistant.h"
 #include "addressprovider.h"
 #include "alldocsview.h"
-
+#include "exportxrechnung.h"
+#include "ui_xrechnung.h"
 
 Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
 : QMainWindow( parent ),
@@ -163,6 +164,11 @@ void Portal::initActions()
     _actMailDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
     connect(_actMailDocument, &QAction::triggered, this, &Portal::slotMailDocument);
 
+    newIcon = QIcon::fromTheme( "mail-forward");
+    _actXRechnung = new QAction(newIcon, i18n("Export XRechnung"), this);
+    _actXRechnung->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
+    connect(_actXRechnung, &QAction::triggered, this, &Portal::slotXRechnungCurrentDocument);
+
     newIcon = QIcon::fromTheme( "settings-configure");
     _actEditTemplates= new QAction(newIcon, i18n("Edit Tag Templates"), this);
     _actEditTemplates->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_E ));
@@ -199,6 +205,7 @@ void Portal::initActions()
     _actOpenDocument->setStatusTip( i18n( "Opens the document for editing" ) );
     _actViewDocument->setStatusTip( i18n( "Opens a read only view on the document." ) );
     _actMailDocument->setStatusTip( i18n( "Send document per mail" ) );
+    _actXRechnung->setStatusTip( i18n("Export invoice in XRechnung XML format."));
     _actEditTemplates->setStatusTip( i18n("Edit the available tag templates which can be assigned to document items.") );
     _actReconfDb->setStatusTip( i18n( "Configure the Database Kraft is working on." ) );
     _actOpenArchivedDocument->setStatusTip( i18n( "Open a viewer on an archived document" ) );
@@ -211,6 +218,7 @@ void Portal::initActions()
     _actMailDocument->setEnabled( false );
 
     _actOpenArchivedDocument->setEnabled( false );
+    _actXRechnung->setEnabled( false );
     // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
     QString prjPath = QString::fromUtf8(qgetenv("KRAFT_HOME"));
 
@@ -227,6 +235,7 @@ void Portal::initActions()
     docMenu->addAction(_actViewDocument);
     if (!_readOnlyMode) docMenu->addAction(_actOpenDocument);
     docMenu->addAction(_actOpenArchivedDocument);
+    docMenu->addAction(_actXRechnung);
     if (!_readOnlyMode) {
         docMenu->addSeparator();
         docMenu->addAction(_actNewDocument);
@@ -266,6 +275,7 @@ void Portal::initActions()
         toolBar->addAction(_actMailDocument);
     } else {
         toolBar->addAction(_actOpenArchivedDocument);
+        toolBar->addAction(_actXRechnung);
         toolBar->addAction(_actViewDocument);
     }
 
@@ -293,6 +303,7 @@ void Portal::initView()
       menu->addAction( _actViewDocument );
       if (!_readOnlyMode) menu->addAction( _actOpenDocument );
       menu->addAction( _actOpenArchivedDocument );
+      menu->addAction( _actXRechnung);
       if (!_readOnlyMode) {
           menu->addSeparator();
           menu->addAction( _actNewDocument );
@@ -320,8 +331,9 @@ void Portal::initView()
              this, SLOT( slotViewDocument( const QString& ) ) );
     connect( m_portalView.data(), SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
              this, SLOT( slotOpenArchivedDoc( const ArchDocDigest& ) ) );
-    connect( m_portalView.data(),  SIGNAL( documentSelected( const QString& ) ),
-             this,  SLOT( slotDocumentSelected( const QString& ) ) );
+    connect( m_portalView.data(), &PortalView::exportXRechnungArchivedDocument,
+             this, &Portal::slotExportXRechnungArchivedDoc);
+    connect( m_portalView.data(), &PortalView::documentSelected, this, &Portal::slotDocumentSelected);
     connect( m_portalView.data(),  SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
              this,  SLOT( slotArchivedDocSelected( const ArchDocDigest& ) ) );
     setCentralWidget(m_portalView.data());
@@ -379,6 +391,7 @@ void Portal::slotStartupChecks()
         _actViewDocument->setEnabled( false );
         _actPrintDocument->setEnabled( false );
         _actOpenArchivedDocument->setEnabled( false );
+        _actXRechnung->setEnabled(false);
         _actMailDocument->setEnabled( false );
 
         slotStatusMsg( i18n( "Database Problem." ) );
@@ -625,6 +638,60 @@ void Portal::slotViewDocument( const QString& id )
 
 }
 
+void Portal::slotXRechnungCurrentDocument()
+{
+  // qDebug () << "printing document " << locId << endl;
+  ArchDocDigest dig = m_portalView->docDigestView()->currentLatestArchivedDoc();
+
+  slotExportXRechnungArchivedDoc(dig);
+}
+
+void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
+{
+    ExporterXRechnung *exporter = new ExporterXRechnung;
+    const QString tmplFile = exporter->templateFile();
+    QString err;
+
+    if (tmplFile.isEmpty()) {
+        err = i18n("XRechnung Template file not set. Please check the application settings!");
+    } else {
+        QFileInfo fi(tmplFile);
+        if (!fi.isFile()) {
+            err = i18n("The XRechnung template file can not be read!");
+        }
+    }
+
+    if (!err.isEmpty()) {
+        QMessageBox::warning(this, i18n("XRechnung Export"), err);
+        delete exporter;
+        return;
+    }
+
+    auto dia = new QDialog(this);
+    Ui::XRechnungDialog ui;
+    ui.setupUi(dia);
+
+    QDate today = QDate::currentDate();
+    ui._dueDateEdit->setDate(today.addDays(21));
+    ui._buyerRefEdit->setText("unknown");
+
+    if (dia->exec() == QDialog::Accepted) {
+        exporter->setDueDate(ui._dueDateEdit->date());
+        exporter->setBuyerRef(ui._buyerRefEdit->text());
+
+        connect(exporter, &ExporterXRechnung::xRechnungTmpFile, this, [=](const QString& fName) {
+            qDebug() << "This is the xrechnung file name." << fName;
+            const QString proposeName = QString("%1/xrechnung_%2.xml").arg(QDir::homePath()).arg(d.archDocIdent());
+            const QString f = QFileDialog::getSaveFileName(this, i18n("Save XRechnung"), proposeName);
+            QFile::copy(fName, f);
+            this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
+            exporter->deleteLater();
+        });
+        exporter->exportDocument(d);
+    }
+
+}
+
 void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
 {
   busyCursor( true );
@@ -803,10 +870,10 @@ void Portal::slotOpenDocument( const QString& id )
     slotStatusMsg();
 }
 
-void Portal::slotDocumentSelected( const QString& doc )
+void Portal::slotDocumentSelected( const DocDigest& doc )
 {
     // qDebug() << "a doc was selected: " << doc << endl;
-    bool enable = !doc.isEmpty();
+    bool enable = !doc.id().isEmpty();
     _actViewDocument->setEnabled( enable );
     _actOpenDocument->setEnabled( (!_readOnlyMode) && enable );
     _actPrintDocument->setEnabled( (!_readOnlyMode) && enable );
@@ -814,8 +881,15 @@ void Portal::slotDocumentSelected( const QString& doc )
     _actMailDocument->setEnabled( (!_readOnlyMode) && enable );
     _actFollowDocument->setEnabled( (!_readOnlyMode) && enable );
 
-    _actOpenArchivedDocument->setEnabled( enable );
-
+    auto archDocs = doc.archDocDigestList();
+    if (archDocs.isEmpty()) {
+        _actOpenArchivedDocument->setEnabled(false);
+        _actXRechnung->setEnabled(false);
+    } else {
+        _actOpenArchivedDocument->setEnabled( enable );
+        ArchDocDigest archDoc = archDocs.at(0);
+        _actXRechnung->setEnabled(archDoc.hasXRechnungExport() && enable);
+    }
 }
 
 void Portal::slotArchivedDocExecuted()
@@ -828,6 +902,7 @@ void Portal::slotArchivedDocSelected( const ArchDocDigest& )
 {
   // slotDocumentSelected( QString() );
   _actOpenArchivedDocument->setEnabled( true );
+  _actXRechnung->setEnabled(true);
   _actViewDocument->setEnabled( false );
   _actOpenDocument->setEnabled( false );
   _actPrintDocument->setEnabled( false );

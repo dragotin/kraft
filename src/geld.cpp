@@ -88,14 +88,20 @@ bool Geld::operator!=(Geld g)
     return g.m_cent != m_cent;
 }
 
-QString Geld::toString() const
+QString Geld::toNumberString() const
+{
+    double g = m_cent/100.0;
+    return QString::number(g, 'f', 2);
+}
+
+QString Geld::toLocaleString() const
 {
     return DefaultProvider::self()->locale()->toCurrencyString(m_cent/100.0);
 }
 
 QString Geld::toHtmlString() const
 {
-  QString re = toString();
+  QString re = toLocaleString();
   re.replace( " ",  "&nbsp;" );
   if ( m_cent < 0 ) {
     re = QString( "<span class=\"negative\">%1</span>" ).arg( re );

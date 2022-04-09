@@ -531,7 +531,7 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
   // if ( mPositionPtr->type() == DocPosition::ExtraDiscount ) {
   //   m_sumLabel->setText( "--" );
   // } else {
-    m_sumLabel->setText( g.toString() );
+    m_sumLabel->setText( g.toLocaleString() );
     // }
 }
 
