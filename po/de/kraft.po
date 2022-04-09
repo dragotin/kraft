@@ -4,17 +4,17 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Klaas Freitag <kraft@freisturz.de>, 2021
+# Klaas Freitag <kraft@freisturz.de>, 2022
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-14 21:37+0200\n"
+"POT-Creation-Date: 2022-04-09 21:54+0200\n"
 "PO-Revision-Date: 2018-10-31 21:56+0000\n"
-"Last-Translator: Klaas Freitag <kraft@freisturz.de>, 2021\n"
-"Language-Team: German (https://www.transifex.com/not-applicable-6/teams/93132/de/)\n"
+"Last-Translator: Klaas Freitag <kraft@freisturz.de>, 2022\n"
+"Language-Team: German (https://www.transifex.com/kraftproject/teams/93132/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -76,15 +76,11 @@ msgstr "&Anzeigen"
 msgid "&Search: "
 msgstr "&Suchen: "
 
-#: alldocsview.cpp:134 rc.cpp:634 rc.cpp:1328 portal.cpp:289 portal.cpp:290
+#: alldocsview.cpp:134 portal.cpp:301 portal.cpp:302 rc.cpp:634 rc.cpp:1328
+#: rc.cpp:2196
 #, kde-format
 msgid "Document Actions"
 msgstr "Dokument-Aktionen"
-
-#: archdoc.cpp:70
-#, kde-format
-msgid "%1 for %2 (Id %3)"
-msgstr "%1 bis %2 (Nummer %3)"
 
 #: catalogselection.cpp:50
 #, kde-format
@@ -115,6 +111,11 @@ msgstr "Automatische Kalkulation"
 #, kde-format
 msgid "Err: Unknown type %d"
 msgstr "Fehler: Unbekannter Typ %d"
+
+#: defaultprovider.cpp:55 doctext.cpp:80 positionviewwidget.cpp:413
+#, kde-format
+msgid "Unknown"
+msgstr "Unbekannt"
 
 #: docassistant.cpp:52
 #, kde-format
@@ -156,57 +157,58 @@ msgstr ""
 "Möchten Sie die ausgewählte Vorlage wirklich löschen? Dieser Vorgang kann "
 "nicht rückgängig gemacht werden."
 
-#: docdigestdetailview.cpp:224 rc.cpp:78 rc.cpp:120 rc.cpp:988 rc.cpp:1030
+#: docdigestdetailview.cpp:231 rc.cpp:78 rc.cpp:120 rc.cpp:988 rc.cpp:1030
+#: rc.cpp:1826 rc.cpp:1868
 #, kde-format
 msgid "Amount"
 msgstr "Menge"
 
-#: docdigestdetailview.cpp:225
+#: docdigestdetailview.cpp:232
 #, kde-format
 msgid "Type"
 msgstr "Art"
 
-#: docdigestdetailview.cpp:226
+#: docdigestdetailview.cpp:233
 #, kde-format
 msgid "Sum"
 msgstr "Summe"
 
-#: docdigestdetailview.cpp:255
+#: docdigestdetailview.cpp:262
 #, kde-format
 msgid "Results in %1 %2"
 msgstr "Resultate in %1 %2"
 
-#: docdigestdetailview.cpp:256 docdigestdetailview.cpp:289
+#: docdigestdetailview.cpp:263 docdigestdetailview.cpp:296
 #, kde-format
 msgid "Year"
 msgstr "Jahr"
 
-#: docdigestdetailview.cpp:258
+#: docdigestdetailview.cpp:265
 #, kde-format
 msgid "Month"
 msgstr "Monat"
 
-#: docdigestdetailview.cpp:291
+#: docdigestdetailview.cpp:298
 #, kde-format
 msgid "Results in Year %1"
 msgstr "Resultate im Jahr %1"
 
-#: docdigestdetailview.cpp:310 docdigestdetailview.cpp:319
+#: docdigestdetailview.cpp:317 docdigestdetailview.cpp:326
 #, kde-format
 msgid "Customer"
 msgstr "Kunde:"
 
-#: docdigestdetailview.cpp:314
+#: docdigestdetailview.cpp:321
 #, kde-format
 msgid "not set"
 msgstr "nicht ausgewählt"
 
-#: docdigestdetailview.cpp:330
+#: docdigestdetailview.cpp:337
 #, kde-format
 msgid "The address is not listed in an address book."
 msgstr "Die Adresse ist in keinem Adressbuch enthalten."
 
-#: docdigestdetailview.cpp:332
+#: docdigestdetailview.cpp:339
 #, kde-format
 msgid ""
 "The client has the address book id %1 but can not found in our address "
@@ -215,97 +217,112 @@ msgstr ""
 "Der Kunde hat die Adressbuch-Kennung %1, wurde aber nicht in unseren "
 "Adressbüchern gefunden."
 
-#: docdigestdetailview.cpp:335
+#: docdigestdetailview.cpp:342
 #, kde-format
 msgid "The client can be found in our address books."
 msgstr "Der Kunde wurde in unseren Adressbüchern gefunden."
 
-#: docdigestdetailview.cpp:346 prefsdialog.cpp:636
+#: docdigestdetailview.cpp:353 prefsdialog.cpp:681
 #, kde-format
 msgid "preferred address"
 msgstr "Bevorzugte Adresse"
 
-#: docdigestdetailview.cpp:350 prefsdialog.cpp:640
+#: docdigestdetailview.cpp:357 prefsdialog.cpp:685
 #, kde-format
 msgid "home address"
 msgstr "Privatanschrift"
 
-#: docdigestdetailview.cpp:354 prefsdialog.cpp:644
+#: docdigestdetailview.cpp:361 prefsdialog.cpp:689
 #, kde-format
 msgid "work address"
 msgstr "Arbeitsplatzadresse"
 
-#: docdigestdetailview.cpp:358 prefsdialog.cpp:648
+#: docdigestdetailview.cpp:365 prefsdialog.cpp:693
 #, kde-format
 msgid "postal address"
 msgstr "Postanschrift"
 
-#: docdigestdetailview.cpp:362 prefsdialog.cpp:652
+#: docdigestdetailview.cpp:369 prefsdialog.cpp:697
 #, kde-format
 msgid "international address"
 msgstr "Internationale Adresse"
 
-#: docdigestdetailview.cpp:366 prefsdialog.cpp:656
+#: docdigestdetailview.cpp:373 prefsdialog.cpp:701
 #, kde-format
 msgid "domestic address"
 msgstr "Privatanschrift"
 
-#: docdigestdetailview.cpp:370 prefsdialog.cpp:660
+#: docdigestdetailview.cpp:377 prefsdialog.cpp:705
 #, kde-format
 msgid "unknown"
 msgstr "Unbekannt"
 
-#: docdigestdetailview.cpp:407 models/docbasemodel.cpp:32
+#: docdigestdetailview.cpp:414 models/docbasemodel.cpp:32
 #, kde-format
 msgid "Date"
 msgstr "Datum"
 
-#: docdigestdetailview.cpp:412 models/docbasemodel.cpp:35
+#: docdigestdetailview.cpp:419 models/docbasemodel.cpp:35
 #, kde-format
 msgid "Whiteboard"
 msgstr "Notizen"
 
-#: docdigestdetailview.cpp:417 models/docbasemodel.cpp:39
+#: docdigestdetailview.cpp:424 models/docbasemodel.cpp:39
 #, kde-format
 msgid "Project"
 msgstr "Projekt"
 
-#: docdigestdetailview.cpp:427
+#: docdigestdetailview.cpp:434
 #, kde-format
 msgid "This document was never printed."
 msgstr "Das Dokuments wurde nie gedruckt."
 
-#: docdigestdetailview.cpp:434
+#: docdigestdetailview.cpp:441
 #, kde-format
 msgid "Last printed"
 msgstr "Zuletzt gedruckt"
 
-#: docdigestdetailview.cpp:435
+#: docdigestdetailview.cpp:442
 #, kde-format
 msgid "Opens last created PDF document"
 msgstr "Öffnet das letzte erstellte PDF Dokument"
 
-#: docdigestdetailview.cpp:436
+#: docdigestdetailview.cpp:443
 #, kde-format
 msgid "open"
 msgstr "offen"
 
-#: docdigestdetailview.cpp:440
+#: docdigestdetailview.cpp:448
 #, kde-format
 msgid "One older print"
 msgstr "Ein älterer Ausdruck"
 
-#: docdigestdetailview.cpp:442
+#: docdigestdetailview.cpp:450
 #, kde-format
 msgid "%1 older prints"
 msgstr "%1 alte Ausdrucke"
 
-#: docdigestdetailview.cpp:446
+#: docdigestdetailview.cpp:454
 #, kde-format
 msgid "Archived documents can not be found. Check PDF Output dir."
 msgstr ""
 "Archivierte Dokumente können nicht gefunden werden. Überprüfen Sie das PDF "
 "Ausgabe Verzeichnis."
+
+#: docdigestdetailview.cpp:458
+#, kde-format
+msgid "Export the invoice in XRechnung file format"
+msgstr "Rechnung in XRechnung Format exportieren"
+
+#: docdigestdetailview.cpp:459
+#, kde-format
+msgid "XRechnung"
+msgstr "XRechnung"
+
+#: calcpart.cpp:98
+#, kde-format
+msgid "Base"
+msgstr "Basis"
 
 #: docpostcard.cpp:34
 #, kde-format
@@ -362,32 +379,57 @@ msgstr "Fußtext"
 msgid "Items"
 msgstr "Posten"
 
-#: doctext.cpp:80 defaultprovider.cpp:55 positionviewwidget.cpp:413
-#, kde-format
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#: doctypeedit.cpp:48
+#: doctypeedit.cpp:49
 #, kde-format
 msgid "<document type>"
 msgstr "<Dokumenttyp>"
 
-#: doctypeedit.cpp:49
+#: doctypeedit.cpp:50
 #, kde-format
 msgid "<address Id>"
 msgstr "<Adress-Id>"
 
-#: doctypeedit.cpp:132 doctypeedit.cpp:158
+#: doctypeedit.cpp:83
+#, kde-format
+msgid "Select template file from harddisk"
+msgstr "Dokument-Template auf der Festplatte auswählen"
+
+#: doctypeedit.cpp:84
+#, kde-format
+msgid "Select watermark file from harddisk"
+msgstr "Wasserzeichen-Datei auf der Festplatte auswählen"
+
+#: doctypeedit.cpp:88 prefsdialog.cpp:375
+#, kde-format
+msgid "Find Template File"
+msgstr "Dokument Vorlage finden"
+
+#: doctypeedit.cpp:89
+#, kde-format
+msgid "Kraft Templates (*.trml *.gtmpl)"
+msgstr "Kraft Dokument Vorlagen (*.trml *.gtmpl)"
+
+#: doctypeedit.cpp:97
+#, kde-format
+msgid "Find Watermark File"
+msgstr "Wasserzeichen Datei finden"
+
+#: doctypeedit.cpp:98
+#, kde-format
+msgid "PDF file (*.pdf)"
+msgstr "PDF Datei (*.pdf)"
+
+#: doctypeedit.cpp:162 doctypeedit.cpp:188
 #, kde-format
 msgid "Add Document Type"
 msgstr "Dokumentenart hinzufügen"
 
-#: doctypeedit.cpp:133
+#: doctypeedit.cpp:163
 #, kde-format
 msgid "Enter the name of a new document type"
 msgstr "Bitte geben Sie den Namen der neuen Dokumentenart ein."
 
-#: doctypeedit.cpp:159
+#: doctypeedit.cpp:189
 #, kde-format
 msgid "Edit the name of a document type"
 msgstr "Den Namen einer Dokumentenart ändern."
@@ -401,172 +443,24 @@ msgctxt ""
 msgid "Substract sum from %1 %2"
 msgstr "Subtrahiere Summe von %1 %2"
 
-#: documenttemplate.cpp:112
+#: archdoc.cpp:65
 #, kde-format
-msgctxt "Sequence number printed on the document"
-msgid "No."
-msgstr "Nr."
+msgid "%1 for %2 (Id %3)"
+msgstr "%1 bis %2 (Nummer %3)"
 
-#: documenttemplate.cpp:113
+#: kataloglistview.cpp:355
 #, kde-format
-msgctxt "Document item printed on the document"
-msgid "Item"
-msgstr "Posten"
-
-#: documenttemplate.cpp:114
-#, kde-format
-msgctxt "Abbrev. of Quantity printed on the document"
-msgid "Qty."
-msgstr "Menge"
-
-#: documenttemplate.cpp:115
-#, kde-format
-msgctxt "Unit printed on the document"
-msgid "Unit"
-msgstr "Einh."
-
-#: documenttemplate.cpp:116
-#, kde-format
-msgctxt "Price of an item printed on the document"
-msgid "Price"
-msgstr "Preis"
-
-#: documenttemplate.cpp:117
-#, kde-format
-msgctxt "Printed on the document"
-msgid "Sum"
-msgstr "Summe"
-
-#: documenttemplate.cpp:118
-#, kde-format
-msgctxt "printed on the document"
-msgid "Net"
-msgstr "Netto"
-
-#: documenttemplate.cpp:119
-#, kde-format
-msgctxt "Printed on the document"
-msgid "VAT"
-msgstr "MwSt."
-
-#: documenttemplate.cpp:121
-#, kde-format
-msgctxt "Printed on the document"
-msgid "Phone"
-msgstr "Telefon"
-
-#: documenttemplate.cpp:122
-#, kde-format
-msgctxt "Printed on the document"
-msgid "FAX"
-msgstr "Fax"
-
-#: documenttemplate.cpp:123
-#, kde-format
-msgctxt "Printed on the document"
-msgid "Mobile"
-msgstr "Mobil"
-
-#: documenttemplate.cpp:124
-#, kde-format
-msgctxt "Printed on the document"
-msgid "Email"
-msgstr "Email"
-
-#: documenttemplate.cpp:125
-#, kde-format
-msgctxt "Printed on the document"
-msgid "Website"
-msgstr "Webseite"
-
-#: documenttemplate.cpp:127
-#, kde-format
-msgctxt "Printed on the document"
-msgid "Page"
-msgstr "Seite"
-
-#: documenttemplate.cpp:128
-#, kde-format
-msgctxt "the 'of' in page X of Y"
-msgid "of"
-msgstr "von"
-
-#: documenttemplate.cpp:129
-#, kde-format
-msgctxt "Document number on document"
-msgid "Document No."
-msgstr "Dokument Nr."
-
-#: documenttemplate.cpp:130
-#, kde-format
-msgctxt "Date on document"
-msgid "Date"
-msgstr "Datum"
-
-#: documenttemplate.cpp:131
-#, kde-format
-msgctxt "Project label"
-msgid "Project"
-msgstr "Projekt"
-
-#: documenttemplate.cpp:132
-#, kde-format
-msgctxt "Customer ID on document"
-msgid "Customer Id"
-msgstr "Kundennr."
-
-#: documenttemplate.cpp:267
-#, kde-format
-msgid ""
-"Please note: This offer contains %1 alternative or demand positions, printed"
-" in italic font. These do not add to the overall sum."
+msgid "A catalog chapter can not be deleted as long it has children."
 msgstr ""
-"Bitte beachten: Dieses Angebot enthält %1 Alternativ- oder "
-"Bedarfspositionen, die kursiv gedruckt sind. Diese addieren sich nicht zur "
-"Endsumme."
+"Ein Kapitel im Katalog kann nicht gelöscht werden, wenn es noch Unterkapitel"
+" gibt."
 
-#: documenttemplate.cpp:278
+#: kataloglistview.cpp:356
 #, kde-format
-msgid "tax free items (%1 pcs.)"
-msgstr "Steuerfreie Posten (%1 Stck.)"
+msgid "Chapter can not be deleted"
+msgstr "Das Kapitel kann nicht gelöscht werden"
 
-#: documenttemplate.cpp:284
-#, kde-format
-msgid "items with reduced tax of %1% (%2 pcs.)"
-msgstr "Posten mit reduzierter Steuer %1% (%2 Stck.)"
-
-#: documenttemplate.cpp:293
-#, kde-format
-msgid "No label: items with full tax of %1% (%2 pcs.)"
-msgstr "Nicht gekennzeichnet: Posten mit vollem Steuersatz von %1% (%2 Stck.)"
-
-#: documenttemplate.cpp:323 kraftview_ro.cpp:240
-#, kde-format
-msgid "reduced VAT"
-msgstr "Reduzierte Umsatzsteuer"
-
-#: documenttemplate.cpp:331 kraftview_ro.cpp:212 kraftview_ro.cpp:249
-#: rc.cpp:21 rc.cpp:931
-#, kde-format
-msgid "VAT"
-msgstr "Umsatzsteuer"
-
-#: documenttemplate.cpp:363
-#, kde-format
-msgid "Template to convert is not existing!"
-msgstr "Vorlage existiert nicht!"
-
-#: documenttemplate.cpp:366
-#, kde-format
-msgid "Can not read template file!"
-msgstr "Vorlangendatei kann nicht gelesen werden!"
-
-#: calcpart.cpp:98
-#, kde-format
-msgid "Base"
-msgstr "Basis"
-
-#: filterheader.cpp:40 addressselectorwidget.cpp:294
+#: filterheader.cpp:40 addressselectorwidget.cpp:300
 #, kde-format
 msgid "&Search:"
 msgstr "&Suchen: "
@@ -575,6 +469,396 @@ msgstr "&Suchen: "
 #, kde-format
 msgid "Calculation Fix Item"
 msgstr "Zeitkostenanteil"
+
+#: portal.cpp:103
+#, kde-format
+msgid "&Quit"
+msgstr "&Beenden"
+
+#: portal.cpp:108
+#, kde-format
+msgid "&Cut"
+msgstr "&Ausschneiden"
+
+#: portal.cpp:113
+#, kde-format
+msgid "C&opy"
+msgstr "K&opieren"
+
+#: portal.cpp:118
+#, kde-format
+msgid "&Paste"
+msgstr "&Einfügen"
+
+#: portal.cpp:123
+#, kde-format
+msgid "&Settings"
+msgstr "&Einstellungen"
+
+#: portal.cpp:128
+#, kde-format
+msgid "&Create Document"
+msgstr "Dokument &anlegen"
+
+#: portal.cpp:133
+#, kde-format
+msgid "&Copy Document"
+msgstr "Dokument &kopieren"
+
+#: portal.cpp:138
+#, kde-format
+msgid "Create &Followup Document"
+msgstr "&Nachfolgedokument erzeugen"
+
+#: portal.cpp:143
+#, kde-format
+msgid "Print Document"
+msgstr "Dokument drucken"
+
+#: portal.cpp:148
+#, kde-format
+msgid "Show Document"
+msgstr "Dokument anzeigen"
+
+#: portal.cpp:153
+#, kde-format
+msgid "Edit Document"
+msgstr "Dokument bearbeiten"
+
+#: portal.cpp:158
+#, kde-format
+msgid "Open Archived Document"
+msgstr "Archiviertes Dokument öffnen"
+
+#: portal.cpp:163
+#, kde-format
+msgid "Mail Document"
+msgstr "Dokument mailen"
+
+#: portal.cpp:168
+#, kde-format
+msgid "Export XRechnung"
+msgstr "XRechnung Export"
+
+#: portal.cpp:173 tagtemplatesdialog.cpp:135 tagtemplatesdialog.cpp:140
+#, kde-format
+msgid "Edit Tag Templates"
+msgstr "Stichwort-Vorlagen bearbeiten"
+
+#: portal.cpp:178
+#, kde-format
+msgid "Redo Initial Setup..."
+msgstr "Wiederhole initiales Setup..."
+
+#: portal.cpp:183
+#, kde-format
+msgid "Kraft Handbook..."
+msgstr "Kraft Handbuch..."
+
+#: portal.cpp:187
+#, kde-format
+msgid "About Qt..."
+msgstr "Über Qt..."
+
+#: portal.cpp:191
+#, kde-format
+msgid "About Kraft..."
+msgstr "Über Kraft...."
+
+#: portal.cpp:195
+#, kde-format
+msgid "Quits the application"
+msgstr "Anwendung beenden"
+
+#: portal.cpp:197
+#, kde-format
+msgid "Cuts the selected section and puts it to the clipboard"
+msgstr ""
+"Schneidet den ausgewählten Abschnitt aus und kopiert ihn in die "
+"Zwischenablage."
+
+#: portal.cpp:198
+#, kde-format
+msgid "Copies the selected section to the clipboard"
+msgstr "Kopiert den ausgewählten Abschnitt in die Zwischenablage."
+
+#: portal.cpp:199
+#, kde-format
+msgid "Pastes the clipboard contents to current position"
+msgstr "Fügt den Inhalt der Zwischenablage an der aktuellen Position ein."
+
+#: portal.cpp:201
+#, kde-format
+msgid "Creates a new Document"
+msgstr "Erstellt ein neues Dokument."
+
+#: portal.cpp:202
+#, kde-format
+msgid "Print and archive this Document"
+msgstr "Das Dokument drucken und archivieren"
+
+#: portal.cpp:203
+#, kde-format
+msgid "Creates a new document which is a copy of the selected document"
+msgstr "Erstellt ein neues Dokument, das eine Kopie des ausgewählten ist."
+
+#: portal.cpp:204
+#, kde-format
+msgid "Create a followup document for the current document"
+msgstr "Ein Folgedokument für das aktuell ausgewählte erstellen"
+
+#: portal.cpp:205
+#, kde-format
+msgid "Opens the document for editing"
+msgstr "Öffnet das Dokument zum Bearbeiten."
+
+#: portal.cpp:206
+#, kde-format
+msgid "Opens a read only view on the document."
+msgstr "Öffnet das Dokument schreibgeschützt."
+
+#: portal.cpp:207
+#, kde-format
+msgid "Send document per mail"
+msgstr "Das Dokument per E-Mail versenden"
+
+#: portal.cpp:208
+#, kde-format
+msgid "Export invoice in XRechnung XML format."
+msgstr "Exportiere Rechnung in XRechnung XML Format."
+
+#: portal.cpp:209
+#, kde-format
+msgid ""
+"Edit the available tag templates which can be assigned to document items."
+msgstr ""
+"Markierungs-Vorlagen hinzufügen, ändern oder entfernen, die den Posten der "
+"Dokumente zugeordnet werden können."
+
+#: portal.cpp:210
+#, kde-format
+msgid "Configure the Database Kraft is working on."
+msgstr "Die Datenbank einrichten, mit der Kraft arbeitet."
+
+#: portal.cpp:211
+#, kde-format
+msgid "Open a viewer on an archived document"
+msgstr "Das archivierte Dokument zur Ansicht öffnen"
+
+#: portal.cpp:225 rc.cpp:484 rc.cpp:1355 rc.cpp:2244
+#, kde-format
+msgid "&File"
+msgstr "&Datei"
+
+#: portal.cpp:229
+#, kde-format
+msgid "&Edit"
+msgstr "&Bearbeiten"
+
+#: portal.cpp:234 rc.cpp:628 rc.cpp:1322 rc.cpp:2190
+#, kde-format
+msgid "&Document"
+msgstr "&Dokument"
+
+#: portal.cpp:249
+#, kde-format
+msgid "Kraft"
+msgstr "Kraft"
+
+#: portal.cpp:252
+#, kde-format
+msgid "&Preferences"
+msgstr "&Einstellungen"
+
+#: portal.cpp:256
+#, kde-format
+msgid "Toolbars"
+msgstr "Werkzeugleisten"
+
+#: portal.cpp:262
+#, kde-format
+msgid "&Help"
+msgstr "&Hilfe"
+
+#: portal.cpp:350
+#, kde-format
+msgid "Database not running"
+msgstr "Datenbank nicht erreichbar"
+
+#: portal.cpp:351
+#, kde-format
+msgid ""
+"Kraft was started in readonly mode, but the configured database can not be connected.\n"
+"\n"
+"Kraft will abort."
+msgstr ""
+"Kraft wurde im Nur-Lesen Modus gestartet, aber die konfigurierte Datenbank kann nicht erreicht werden.\n"
+"\n"
+"Kraft wird beendet."
+
+#: portal.cpp:367
+#, kde-format
+msgid ""
+"Kraft can not connect to the specified MySQL server. Please check the Kraft "
+"database settings, check if the server is running and verify if a database "
+"with the name %1 exits!"
+msgstr ""
+"Kraft kann keine Verbindung zum angegebenen MySQL-Server herstellen. Bitte "
+"überprüfen Sie die Datenbank-Einstellungen von Kraft, ob der Datenbank-"
+"Server läuft und ob eine Datenbank namens %1 vorhanden ist."
+
+#: portal.cpp:371
+#, kde-format
+msgid ""
+"The database with the name %1 does not exist on the database server. Please "
+"make sure the database exists and is accessible by the user running Kraft."
+msgstr ""
+"Die Datenbank namens %1 ist auf dem Datenbank-Server nicht verfügbar. Bitte "
+"stellen Sie sicher, dass die Datenbank vorhanden ist und vom Benutzer, unter"
+" welchem Kraft läuft, darauf zugegriffen werden kann."
+
+#: portal.cpp:375
+#, kde-format
+msgid ""
+"The Qt database driver could not be loaded. That probably means, that they "
+"are not installed. Please make sure the Qt database packages are installed "
+"and try again."
+msgstr ""
+"Der Qt-Datenbank-Treiber lässt sich nicht laden. Das bedeutet eventuell, "
+"dass er nicht installiert ist. Bitte stellen Sie sicher, dass die Qt-"
+"Datenbank-Pakete installiert sind und versuchen es dann erneut."
+
+#: portal.cpp:379
+#, kde-format
+msgid "There is a database problem: %1"
+msgstr "Es ist ein Problem mit der Datenbank aufgetreten: %1"
+
+#: portal.cpp:397
+#, kde-format
+msgid "Database Problem."
+msgstr "Datenbank-Problem"
+
+#: portal.cpp:404
+#, kde-format
+msgid "Check commandline actions"
+msgstr "Befehlszeilenaktionen prüfen"
+
+#: portal.cpp:494
+#, kde-format
+msgid "Welcome to Kraft, %1"
+msgstr "Willkommen zu Kraft, %1"
+
+#: portal.cpp:523
+#, kde-format
+msgid "Creating new document..."
+msgstr "Neues Dokument erstellen ..."
+
+#: portal.cpp:549
+#, kde-format
+msgctxt ""
+"Dialog title of the followup doc dialog, followed by the id of the  source "
+"doc"
+msgid "Create follow up document for %1"
+msgstr "Folgedokument für %1 anlegen"
+
+#: portal.cpp:594
+#, kde-format
+msgctxt "Title of the new doc dialog, %1 is the source doc id"
+msgid "Create new Document as Copy of %1"
+msgstr "Neues Dokument als Kopie von %1 erzeugen"
+
+#: portal.cpp:629
+#, kde-format
+msgid "Opening document to view..."
+msgstr "Dokument zur Ansicht öffnen ..."
+
+#: portal.cpp:656
+#, kde-format
+msgid ""
+"XRechnung Template file not set. Please check the application settings!"
+msgstr ""
+"Das XRechnung Template ist nicht gesetzt. Bitte die Einstellungen "
+"überprüfen!"
+
+#: portal.cpp:660
+#, kde-format
+msgid "The XRechnung template file can not be read!"
+msgstr "Das XRechnung Template kann nicht gelesen werden."
+
+#: portal.cpp:665
+#, kde-format
+msgid "XRechnung Export"
+msgstr "XRechnung Export"
+
+#: portal.cpp:685
+#, kde-format
+msgid "Save XRechnung"
+msgstr "Speichere XRechnung"
+
+#: portal.cpp:687
+#, kde-format
+msgid "Saved XRechnung to %1"
+msgstr "XRechnung Datei in %1 gespeichert"
+
+#: portal.cpp:713
+#, kde-format
+msgid "Generating PDF..."
+msgstr "PDF wird erstellt ..."
+
+#: portal.cpp:726 portal.cpp:749 portal.cpp:1075 katalogview.cpp:236
+#: katalogview.cpp:302 katalogview.cpp:316 katalogview.cpp:325
+#: katalogview.cpp:334
+#, kde-format
+msgid "Ready."
+msgstr "Fertig."
+
+#: portal.cpp:735
+#, kde-format
+msgid "Generating PDF for EMail"
+msgstr "Generiere PDF für EMail"
+
+#: portal.cpp:754
+#, kde-format
+msgid "Doc Generation Error"
+msgstr "Dokument Generierungs-Fehler"
+
+#: portal.cpp:810
+#, kde-format
+msgid "Printing archived document..."
+msgstr "Archiviertes Dokument drucken ..."
+
+#: portal.cpp:862
+#, kde-format
+msgid "Opening document %1"
+msgstr "Dokument %1 öffnen"
+
+#: portal.cpp:1019 katalogview.cpp:241
+#, kde-format
+msgid "Exiting..."
+msgstr "Beenden ..."
+
+#: portal.cpp:1046
+#, kde-format
+msgid "Cutting selection..."
+msgstr "Auswahl ausschneiden ..."
+
+#: portal.cpp:1053
+#, kde-format
+msgid "Copying selection to clipboard..."
+msgstr "Auswahl in die Zwischenablage kopieren ..."
+
+#: portal.cpp:1060
+#, kde-format
+msgid "Inserting clipboard contents..."
+msgstr "Inhalt der Zwischenablage einfügen ..."
+
+#: portal.cpp:1073
+#, kde-format
+msgid ""
+"Ready. Kraft is running in read only mode. Document editing is prohibited."
+msgstr ""
+"Bereit. Kraft läuft im Nur-Lesen Modus. Dokumente können nicht editiert "
+"werden."
 
 #: flostempldialog.cpp:71
 #, kde-format
@@ -657,11 +941,6 @@ msgstr "Kapitelveränderung"
 msgid "Calculated material"
 msgstr "Kalkuliertes Material"
 
-#: katalog.cpp:137
-#, kde-format
-msgid "not found"
-msgstr "nicht gefunden"
-
 #: main.cpp:53
 #, kde-format
 msgid "Open document with arch doc number <number>"
@@ -703,6 +982,11 @@ msgstr "Die temporäre Datei kann nicht geöffnet werden "
 msgid "Could not open the import source file!"
 msgstr "Die zu importierende Datei kann nicht geöffnet werden."
 
+#: katalog.cpp:137
+#, kde-format
+msgid "not found"
+msgstr "nicht gefunden"
+
 #: importitemdialog.cpp:47
 #, kde-format
 msgid "Import Items From File"
@@ -717,170 +1001,6 @@ msgstr "Der Kopfbereich des Dokuments."
 #, kde-format
 msgid "..."
 msgstr "..."
-
-#: inserttempldialog.cpp:105
-#, kde-format
-msgid "Create a new Item"
-msgstr "Neuen Posten anlegen"
-
-#: inserttempldialog.cpp:107
-#, kde-format
-msgid "Create a new Item from Template"
-msgstr "Posten aus Vorlage erstellen"
-
-#: kataloglistview.cpp:350
-#, kde-format
-msgid "A catalog chapter can not be deleted as long it has children."
-msgstr ""
-"Ein Kapitel im Katalog kann nicht gelöscht werden, wenn es noch Unterkapitel"
-" gibt."
-
-#: kataloglistview.cpp:351
-#, kde-format
-msgid "Chapter can not be deleted"
-msgstr "Das Kapitel kann nicht gelöscht werden"
-
-#: katalogview.cpp:157
-#, kde-format
-msgid "Edit Sub chapter"
-msgstr "Unterkapitel bearbeiten"
-
-#: katalogview.cpp:159
-#, kde-format
-msgid "Edit a catalog sub chapter"
-msgstr "Katalog-Unterkapitel bearbeiten"
-
-#: katalogview.cpp:163
-#, kde-format
-msgid "Add a sub chapter"
-msgstr "Unterkapitel hinzufügen"
-
-#: katalogview.cpp:165
-#, kde-format
-msgid "Add a sub chapter below the selected one"
-msgstr "Ein Unterkapitel unter dem ausgewählten hinzufügen"
-
-#: katalogview.cpp:169 katalogview.cpp:171
-#, kde-format
-msgid "Remove a sub chapter"
-msgstr "Unterkapitel entfernen"
-
-#: katalogview.cpp:175 rc.cpp:3 rc.cpp:913
-#, kde-format
-msgid "Edit Template"
-msgstr "Vorlage bearbeiten"
-
-#: katalogview.cpp:177
-#, kde-format
-msgid "Opens the editor window for templates to edit the selected one"
-msgstr "Öffnet das Fenster zum Ändern der ausgewählten Vorlage."
-
-#: katalogview.cpp:182
-#, kde-format
-msgid "New template"
-msgstr "Neue Vorlage"
-
-#: katalogview.cpp:184
-#, kde-format
-msgid "Opens the editor window for templates to enter a new template"
-msgstr "Öffnet das Fenster zum Anlegen einer neuen Vorlage."
-
-#: katalogview.cpp:189
-#, kde-format
-msgid "Delete template"
-msgstr "Vorlage löschen"
-
-#: katalogview.cpp:191
-#, kde-format
-msgid "Deletes the template"
-msgstr "Löscht die Vorlage"
-
-#: katalogview.cpp:196
-#, kde-format
-msgid "Export catalog"
-msgstr "Katalog exportieren"
-
-#: katalogview.cpp:198
-#, kde-format
-msgid "Export the whole catalog as XML encoded file"
-msgstr "Den gesamten Katalog als XML-Datei exportieren."
-
-#: katalogview.cpp:203
-#, kde-format
-msgid "Import catalog"
-msgstr "Katalog importieren"
-
-#: katalogview.cpp:205
-#, kde-format
-msgid "Import a catalog from a XML file"
-msgstr "Katalog aus einer XML Datei einlesen "
-
-#: katalogview.cpp:209 rc.cpp:487 rc.cpp:1358
-#, kde-format
-msgid "&Catalog"
-msgstr "&Katalog"
-
-#: katalogview.cpp:227
-#, kde-format
-msgid "Opening file..."
-msgstr "Datei wird geöffnet ..."
-
-#: katalogview.cpp:229 katalogview.cpp:295 katalogview.cpp:309
-#: katalogview.cpp:318 katalogview.cpp:327 portal.cpp:659 portal.cpp:683
-#: portal.cpp:1002
-#, kde-format
-msgid "Ready."
-msgstr "Fertig."
-
-#: katalogview.cpp:234 portal.cpp:946
-#, kde-format
-msgid "Exiting..."
-msgstr "Beenden ..."
-
-#: katalogview.cpp:291
-#, kde-format
-msgid "Exporting file..."
-msgstr "Datei wird exportiert ..."
-
-#: katalogview.cpp:300
-#, kde-format
-msgid "Importfile... (not yet implemented)"
-msgstr "Datei importieren (noch nicht implementiert)"
-
-#: katalogview.cpp:305
-#, kde-format
-msgid "Creating a new sub chapter..."
-msgstr "Neues Unterkapitel wird erstellt ..."
-
-#: katalogview.cpp:314
-#, kde-format
-msgid "Editing a sub chapter..."
-msgstr "Unterkapitel wird bearbeitet ..."
-
-#: katalogview.cpp:323
-#, kde-format
-msgid "Removing a sub chapter..."
-msgstr "Unterkapitel wird entfernt ..."
-
-#: katalogview.cpp:355
-#, kde-format
-msgid "<tr><td>Created at:</td><td>%1</td>"
-msgstr "<tr><td>Erstellt am:</td><td>%1</td></tr>"
-
-#: katalogview.cpp:358
-#, kde-format
-msgid "<td>&nbsp;&nbsp;Last used:</td><td>%1</td>"
-msgstr "&nbsp;&nbsp;Zuletzt genutzt: %1"
-
-#: katalogview.cpp:365
-#, kde-format
-msgid "<tr><td>Modified at:</td><td>%1</td>"
-msgstr "<tr><td>Geändert am:</td><td>%1</td></tr>"
-
-#: katalogview.cpp:368
-#, kde-format
-msgid "<td>&nbsp;&nbsp;Use Count:</td><td>%1</td>"
-msgstr "&nbsp;&nbsp;%1 mal verwendet."
 
 #: kraftdoc.cpp:159
 #, kde-format
@@ -911,6 +1031,141 @@ msgstr "Posten"
 msgid "Unknown document part"
 msgstr "Unbekannter Dokumententeil"
 
+#: inserttempldialog.cpp:105
+#, kde-format
+msgid "Create a new Item"
+msgstr "Neuen Posten anlegen"
+
+#: inserttempldialog.cpp:107
+#, kde-format
+msgid "Create a new Item from Template"
+msgstr "Posten aus Vorlage erstellen"
+
+#: katalogview.cpp:164
+#, kde-format
+msgid "Edit Sub chapter"
+msgstr "Unterkapitel bearbeiten"
+
+#: katalogview.cpp:166
+#, kde-format
+msgid "Edit a catalog sub chapter"
+msgstr "Katalog-Unterkapitel bearbeiten"
+
+#: katalogview.cpp:170
+#, kde-format
+msgid "Add a sub chapter"
+msgstr "Unterkapitel hinzufügen"
+
+#: katalogview.cpp:172
+#, kde-format
+msgid "Add a sub chapter below the selected one"
+msgstr "Ein Unterkapitel unter dem ausgewählten hinzufügen"
+
+#: katalogview.cpp:176 katalogview.cpp:178
+#, kde-format
+msgid "Remove a sub chapter"
+msgstr "Unterkapitel entfernen"
+
+#: katalogview.cpp:182 rc.cpp:3 rc.cpp:913 rc.cpp:1751
+#, kde-format
+msgid "Edit Template"
+msgstr "Vorlage bearbeiten"
+
+#: katalogview.cpp:184
+#, kde-format
+msgid "Opens the editor window for templates to edit the selected one"
+msgstr "Öffnet das Fenster zum Ändern der ausgewählten Vorlage."
+
+#: katalogview.cpp:189
+#, kde-format
+msgid "New template"
+msgstr "Neue Vorlage"
+
+#: katalogview.cpp:191
+#, kde-format
+msgid "Opens the editor window for templates to enter a new template"
+msgstr "Öffnet das Fenster zum Anlegen einer neuen Vorlage."
+
+#: katalogview.cpp:196
+#, kde-format
+msgid "Delete template"
+msgstr "Vorlage löschen"
+
+#: katalogview.cpp:198
+#, kde-format
+msgid "Deletes the template"
+msgstr "Löscht die Vorlage"
+
+#: katalogview.cpp:203
+#, kde-format
+msgid "Export catalog"
+msgstr "Katalog exportieren"
+
+#: katalogview.cpp:205
+#, kde-format
+msgid "Export the whole catalog as XML encoded file"
+msgstr "Den gesamten Katalog als XML-Datei exportieren."
+
+#: katalogview.cpp:210
+#, kde-format
+msgid "Import catalog"
+msgstr "Katalog importieren"
+
+#: katalogview.cpp:212
+#, kde-format
+msgid "Import a catalog from a XML file"
+msgstr "Katalog aus einer XML Datei einlesen "
+
+#: katalogview.cpp:216 rc.cpp:487 rc.cpp:1358 rc.cpp:2247
+#, kde-format
+msgid "&Catalog"
+msgstr "&Katalog"
+
+#: katalogview.cpp:234
+#, kde-format
+msgid "Opening file..."
+msgstr "Datei wird geöffnet ..."
+
+#: katalogview.cpp:298
+#, kde-format
+msgid "Exporting file..."
+msgstr "Datei wird exportiert ..."
+
+#: katalogview.cpp:307
+#, kde-format
+msgid "Importfile... (not yet implemented)"
+msgstr "Datei importieren (noch nicht implementiert)"
+
+#: katalogview.cpp:312
+#, kde-format
+msgid "Creating a new sub chapter..."
+msgstr "Neues Unterkapitel wird erstellt ..."
+
+#: katalogview.cpp:321
+#, kde-format
+msgid "Editing a sub chapter..."
+msgstr "Unterkapitel wird bearbeitet ..."
+
+#: katalogview.cpp:330
+#, kde-format
+msgid "Removing a sub chapter..."
+msgstr "Unterkapitel wird entfernt ..."
+
+#: katalogview.cpp:363
+#, kde-format
+msgid "Created at %1 "
+msgstr "Angelegt am %1"
+
+#: katalogview.cpp:367
+#, kde-format
+msgid ", last modified at %1"
+msgstr ", zuletzt angepasst am %1"
+
+#: katalogview.cpp:373
+#, kde-format
+msgid "%1 times used, last at %2"
+msgstr "%1 mal verwendet, zuletzt am %2"
+
 #: positionviewwidget.cpp:92
 #, kde-format
 msgid "Item Actions"
@@ -936,7 +1191,7 @@ msgstr "Alternative"
 msgid "On Demand"
 msgstr "Bei Bedarf"
 
-#: positionviewwidget.cpp:105 rc.cpp:265 rc.cpp:874
+#: positionviewwidget.cpp:105 rc.cpp:265 rc.cpp:874 rc.cpp:1745
 #, kde-format
 msgid "Tax"
 msgstr "Steuer"
@@ -1105,98 +1360,365 @@ msgstr ""
 msgid "Document Items"
 msgstr "Dokumentposten"
 
-#: kraftview.cpp:87 kraftview_ro.cpp:75
+#: prefswages.cpp:51 prefsunits.cpp:53 prefsdialog.cpp:163
 #, kde-format
-msgid "Document"
-msgstr "Dokument"
+msgid "ID"
+msgstr "ID"
 
-#: kraftview.cpp:261
+#: prefswages.cpp:52
 #, kde-format
-msgid "Successor of %1"
-msgstr "Nachfolger von %1"
+msgid "Code"
+msgstr "Code"
 
-#: kraftview.cpp:398 kraftview.cpp:843
+#: prefswages.cpp:53 rc.cpp:126 rc.cpp:1036 rc.cpp:1874
+#: templkataloglistview.cpp:46
+#, kde-format
+msgid "Price"
+msgstr "Preis"
+
+#: prefswages.cpp:54
+#, kde-format
+msgid "Sortkey"
+msgstr "Sortierschlüssel"
+
+#: prefswages.cpp:80
+#, kde-format
+msgid "Up"
+msgstr "Nach oben"
+
+#: prefswages.cpp:85
+#, kde-format
+msgid "Down"
+msgstr "Nach unten"
+
+#: prefswages.cpp:90 prefsunits.cpp:80 prefsdialog.cpp:185 rc.cpp:307
+#: rc.cpp:1160 rc.cpp:2064
+#, kde-format
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: prefswages.cpp:94 prefsunits.cpp:84 rc.cpp:313 rc.cpp:1166 rc.cpp:2070
+#, kde-format
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: prefswages.cpp:99 prefsunits.cpp:89 prefsdialog.cpp:189 rc.cpp:319
+#: rc.cpp:1172 rc.cpp:2076
+#, kde-format
+msgid "Remove"
+msgstr "Entfernen"
+
+#: prefswages.cpp:201
+#, kde-format
+msgid "Edit a wage group"
+msgstr "Lohngruppe bearbeiten"
+
+#: prefswages.cpp:241
+#, kde-format
+msgid "<h1>Edit wage group</h1>"
+msgstr "<h1>Lohngruppe bearbeiten</h1>"
+
+#: prefsunits.cpp:54
+#, kde-format
+msgid "Short"
+msgstr "Kurz"
+
+#: prefsunits.cpp:55
+#, kde-format
+msgid "Long"
+msgstr "Lang"
+
+#: prefsunits.cpp:56
+#, kde-format
+msgid "Short plural"
+msgstr "Mehrzahl kurz"
+
+#: prefsunits.cpp:57
+#, kde-format
+msgid "Long plural"
+msgstr "Mehrzahl lang"
+
+#: prefsunits.cpp:58
+#, kde-format
+msgid "ECE20"
+msgstr "ECE20"
+
+#: prefsunits.cpp:153
+#, kde-format
+msgid "Edit a unit"
+msgstr "Eine Maßeinheit bearbeiten"
+
+#: prefsunits.cpp:197
+#, kde-format
+msgid "<h1>Edit unit</h1>"
+msgstr "<h1>Maßeinheit bearbeiten</h1>"
+
+#: prefsdialog.cpp:67
+#, kde-format
+msgid "Configure Kraft"
+msgstr "Kraft einrichten"
+
+#: prefsdialog.cpp:101
+#, kde-format
+msgid "Document Defaults"
+msgstr "Dokumentenstandards"
+
+#: prefsdialog.cpp:102
+#, kde-format
+msgid "Taxes"
+msgstr "Steuersätze"
+
+#: prefsdialog.cpp:103
+#, kde-format
+msgid "Document Types"
+msgstr "Dokumentenart"
+
+#: prefsdialog.cpp:105
+#, kde-format
+msgid "Wages"
+msgstr "Löhne"
+
+#: prefsdialog.cpp:107
+#, kde-format
+msgid "Units"
+msgstr "Maßeinheiten"
+
+#: prefsdialog.cpp:108
+#, kde-format
+msgid "Own Identity"
+msgstr "Eigene Identität"
+
+#: prefsdialog.cpp:155
+#, kde-format
+msgid "Tax rates beginning at date:"
+msgstr "Steuersätze nach Datum:"
+
+#: prefsdialog.cpp:164
+#, kde-format
+msgid "Full Tax [%]"
+msgstr "Allgemeiner Steuersatz"
+
+#: prefsdialog.cpp:165
+#, kde-format
+msgid "Reduced Tax [%]"
+msgstr "Reduzierter Steuersatz"
+
+#: prefsdialog.cpp:166
+#, kde-format
+msgid "Start Date"
+msgstr "Anfangsdatum:"
+
+#: prefsdialog.cpp:206
 #, kde-format
 msgid ""
-"The address label is not empty and different from the selected one.<br/>Do "
-"you really want to replace it with the text shown below?<pre>%1</pre>"
+"Select the identity of the sending entity of documents. That's <b>your "
+"companies</b> address."
 msgstr ""
-"Die Adress-Beschriftung ist nicht leer und unterscheidet sich von der "
-"ausgewählten Adresse<br/>Möchten Sie sie wirklich mit diesem angezeigten "
-"Text ersetzen?<pre>%1</pre>"
+"Wählen Sie die Identität für den Versand von Dokumenten. Das ist <b>Ihre "
+"Firmenadresse</b>."
 
-#: kraftview.cpp:445
+#: prefsdialog.cpp:222
 #, kde-format
-msgid ""
-"<qt><h2>The Document Items List is still empty, but Items can be added "
-"now.</h2>To add items to the document either <ul><li>Press the 'Add item' "
-"button above.</li><li>Open the template catalog by clicking on the 'show "
-"Template' button on the right and pick one of the available "
-"templates.</li></ul></qt>"
-msgstr ""
-"<qt><h2>Die Postenliste ist noch leer, aber jetzt können Posten hinzugefügt werden.</h2>\n"
-"Um Posten hinzuzufügen\n"
-"<ul>\n"
-"<li>Drücken Sie den 'Posten hinzufügen' Knopf</li><li>Öffnen Sie den Vorlagenkatalog durch einen Klick auf den 'Vorlagen anzeigen' Knopf rechts und übertragen Sie eine der vorhandenen Vorlagen.</li>\n"
-"</ul></qt>\n"
-" "
+msgid "Select Identity..."
+msgstr "Identität auswählen ..."
 
-#: kraftview.cpp:630 prefsdialog.cpp:319
+#: prefsdialog.cpp:228
+#, kde-format
+msgid "From AddressBook"
+msgstr "aus dem Adressbuch"
+
+#: prefsdialog.cpp:233 setupassistant.cpp:342
+#, kde-format
+msgid "Manual Entry"
+msgstr "Manueller Eintrag"
+
+#: prefsdialog.cpp:245
+#, kde-format
+msgid "Manual Address"
+msgstr "Manuelle Adresse"
+
+#: prefsdialog.cpp:300
+#, kde-format
+msgid "&Default document type on creation:"
+msgstr "&Standard-Dokumenttyp bei Erstellung:"
+
+#: prefsdialog.cpp:305
+#, kde-format
+msgid "New documents default to the selected type."
+msgstr "Neue Dokumente sind standardmäßig von diesem Typ."
+
+#: prefsdialog.cpp:314
+#, kde-format
+msgid "Default &Tax for Documents:"
+msgstr "Standardmäßiger &Steuersatz:"
+
+#: prefsdialog.cpp:319
+#, kde-format
+msgid "The default tax setting for all documents."
+msgstr ""
+"Die standardmäßigen Einstellungen des Steuersatzes für alle Dokumente."
+
+#: prefsdialog.cpp:320 kraftview.cpp:631
 #, kde-format
 msgid "Display no tax at all"
 msgstr "Keine Steuer auswerfen"
 
-#: kraftview.cpp:631 prefsdialog.cpp:320
+#: prefsdialog.cpp:321 kraftview.cpp:632
 #, kde-format
 msgid "Calculate reduced tax for all items"
 msgstr "Reduzierte Steuer für alle Posten"
 
-#: kraftview.cpp:632 prefsdialog.cpp:321
+#: prefsdialog.cpp:322 kraftview.cpp:633
 #, kde-format
 msgid "Calculate full tax for all items"
 msgstr "Allgemeine Steuer für alle Posten"
 
-#: kraftview.cpp:633
+#: prefsdialog.cpp:331
 #, kde-format
-msgid "Calculate individual tax for each item"
-msgstr "Einzelne Steuern für jeden Posten berechnen"
+msgid "Document Date Format:"
+msgstr "Datumsformat im Dokument:"
 
-#: kraftview.cpp:690
+#: prefsdialog.cpp:337
 #, kde-format
-msgid "Tax Settings Overwrite"
-msgstr "Steuer-Einstellungen überschreiben"
+msgid "The default date format for documents."
+msgstr "Das voreingestellte Datumsformat für Dokumente."
 
-#: kraftview.cpp:691
+#: prefsdialog.cpp:339
 #, kde-format
-msgid "Really overwrite all individual tax settings of the items?"
+msgid "ISO-Format: %1"
+msgstr "ISO-Format: %1"
+
+#: prefsdialog.cpp:341
+#, kde-format
+msgid "Short-Date: %1"
+msgstr "Datum in Kurzform: %1"
+
+#: prefsdialog.cpp:343
+#, kde-format
+msgid "Long-Date: %1"
+msgstr "Datum in Langform: %1"
+
+#: prefsdialog.cpp:345
+#, kde-format
+msgid "RFC 2822-Format: %1"
+msgstr "RFC 2822-Format: %1"
+
+#: prefsdialog.cpp:347
+#, kde-format
+msgid "\"German Format\": %1"
+msgstr "\"Deutsches Format\": %1"
+
+#: prefsdialog.cpp:348
+#, kde-format
+msgid "Custom Setting in Settingsfile"
+msgstr "Benutzerdefiniert aus dem Settingsfile"
+
+#: prefsdialog.cpp:357
+#, kde-format
+msgid "XRechnung Template File:"
+msgstr "XRechnung Template Datei:"
+
+#: prefsdialog.cpp:363
+#, kde-format
+msgid "Select..."
+msgstr "Auswählen..."
+
+#: prefsdialog.cpp:371
+#, kde-format
+msgid "Select template file for XRechnung"
+msgstr "Template Datei für XRechnung auswählen"
+
+#: prefsdialog.cpp:376
+#, kde-format
+msgid "XRechnung Templates (*.xrtmpl)"
+msgstr "XRechnung Templates (*.xrtmpl)"
+
+#: prefsdialog.cpp:416
+#, kde-format
+msgid ""
+"The old default doc type for new documents was just deleted.Please check the"
+" setting in the Document Defaults in the Kraft preferences Dialog."
 msgstr ""
-"Möchten Sie wirklich alle individuellen Steuer-Einstellungen für diesen "
-"Eintrag überschreiben?"
+"Der alte Standard-Dokumenttyp für neue Dokumente wurde gelöscht. Bitte "
+"überprüfen Sie die Einstellung der Dokumentenstandards im Dialog "
+"Einstellungen von Kraft."
 
-#: kraftview.cpp:842
+#: prefsdialog.cpp:419
 #, kde-format
-msgid "Address Overwrite"
-msgstr "Adresse überschreiben"
+msgid "Document Default Change"
+msgstr "Änderung des Standard-Dokumenttyps"
 
-#: kraftview.cpp:1099
+#: prefsdialog.cpp:638
 #, kde-format
-msgid "Discount"
-msgstr "Rabatt"
+msgid "The identity can not be found."
+msgstr "Die Identität ist in keinem Adressbuch enthalten."
 
-#: kraftview.cpp:1419
+#: prefsdialog.cpp:640
 #, kde-format
-msgid "The document has been modified."
-msgstr "Das Dokuments wurde verändert."
+msgid ""
+"<p><b>Kraft Addressbook Integration down.</b></p><p>The address book backend"
+" is not up and running.</p><p>Please check your addressbook integration "
+"setup.</p>"
+msgstr ""
+"<p><b>Die Kraft Adressbuch-Integration funktioniert nicht</b></p><p>Das "
+"Adressbuch-Backend läuft nicht.</p><p>Bitte Adressbuch-Setup überprüfen</p>"
 
-#: kraftview.cpp:1420
+#: prefsdialog.cpp:646
 #, kde-format
-msgid "Do you want to save your changes?"
-msgstr "Sollen die Änderungen gesichert werden?"
+msgid "The identity is not listed in an address book."
+msgstr "Die Identität ist in keinem Adressbuch enthalten."
 
-#: kraftview_ro.cpp:213
+#: prefsdialog.cpp:648
 #, kde-format
-msgid "Reduced TAX"
-msgstr "Reduzierte Steuer"
+msgid ""
+"<p><b>Kraft does not know your identity.</b></p><p>Please pick one from the "
+"address books by clicking on the Button below.</p><p>Not having an identity "
+"selected can make your documents look incomplete.</p>"
+msgstr ""
+"<p><b>Ihre Identität ist nicht eingestellt.</b></p><p>Bitte wählen Sie eine "
+"Identität aus dem Adressbuch, indem Sie auf den Knopf unten "
+"klicken..</p><p>Haben Sie keine Identität ausgewählt, dann werden Ihre "
+"Dokumente unvollständig aussehen.</p>"
+
+#: prefsdialog.cpp:665
+#, kde-format
+msgid "Your identity can be found in the address books."
+msgstr "Ihre Identität wurde in den Adressbüchern gefunden."
+
+#: prefsdialog.cpp:676
+#, kde-format
+msgid "Work Phone"
+msgstr "Telefon (Arbeit)"
+
+#: prefsdialog.cpp:677
+#, kde-format
+msgid "Fax"
+msgstr "Fax"
+
+#: prefsdialog.cpp:678
+#, kde-format
+msgid "Cell Phone"
+msgstr "Mobiltelefon"
+
+#: materialkatalogview.cpp:106
+#, kde-format
+msgid "<new material>"
+msgstr "<neues Material>"
+
+#: materialkatalogview.cpp:136 templkatalogview.cpp:139
+#, kde-format
+msgid "Do you really want to delete the template from the catalog?"
+msgstr "Möchten Sie die ausgewählte Vorlage wirklich aus dem Katalog löschen?"
+
+#: materialselectdialog.cpp:39
+#, kde-format
+msgid "Add Material to Calculation"
+msgstr "Material zur Kalkulation hinzufügen"
+
+#: materialselectdialog.cpp:44
+#, kde-format
+msgid "<h1>Add Material to Calculation</h1>"
+msgstr "<h1>Material zur Kalkulation hinzufügen</h1>"
 
 #: newdocassistant.cpp:52 newdocassistant.cpp:96
 #, kde-format
@@ -1258,378 +1780,372 @@ msgstr "Erzeuge ein neues Kraft-Dokument"
 msgid "Followup Document for %1"
 msgstr "Folgedokument für %1"
 
-#: materialkataloglistview.cpp:39 rc.cpp:108 rc.cpp:643 rc.cpp:1018
-#: rc.cpp:1675
+#: addressselectorwidget.cpp:235
 #, kde-format
-msgid "Material"
-msgstr "Material"
+msgid "Name"
+msgstr "Name"
 
-#: materialkataloglistview.cpp:40
+#: addressselectorwidget.cpp:237
 #, kde-format
-msgid "Pack"
-msgstr "Gebinde"
+msgid "Address"
+msgstr "Kundenadresse"
 
-#: materialkataloglistview.cpp:41 rc.cpp:123 rc.cpp:1033
+#: addressselectorwidget.cpp:337
 #, kde-format
-msgid "Unit"
-msgstr "Einheit"
+msgid "Edit Contact..."
+msgstr "Kontakt bearbeiten ..."
 
-#: materialkataloglistview.cpp:42
+#: addressselectorwidget.cpp:338
 #, kde-format
-msgid "Purchase"
-msgstr "Einkauf"
+msgid "Edit the currently selected contact"
+msgstr "Bearbeitet den aktuell ausgewählten Kontakt"
 
-#: materialkataloglistview.cpp:43
+#: addressselectorwidget.cpp:341
 #, kde-format
-msgid "Sale"
-msgstr "Verkauf"
+msgid "New Contact..."
+msgstr "Neuer Kontakt ..."
 
-#: materialkataloglistview.cpp:44
+#: addressselectorwidget.cpp:342
 #, kde-format
-msgid "Last Modified"
-msgstr "Zuletzt geändert"
+msgid "Create a new Contact"
+msgstr "Neuen Kontakt erstellen"
 
-#: materialkataloglistview.cpp:50
-#, kde-format
-msgid "Material Catalog"
-msgstr "Material-Katalog"
-
-#: materialkatalogview.cpp:106
-#, kde-format
-msgid "<new material>"
-msgstr "<neues Material>"
-
-#: materialkatalogview.cpp:136 templkatalogview.cpp:139
-#, kde-format
-msgid "Do you really want to delete the template from the catalog?"
-msgstr "Möchten Sie die ausgewählte Vorlage wirklich aus dem Katalog löschen?"
-
-#: materialselectdialog.cpp:39
-#, kde-format
-msgid "Add Material to Calculation"
-msgstr "Material zur Kalkulation hinzufügen"
-
-#: materialselectdialog.cpp:44
-#, kde-format
-msgid "<h1>Add Material to Calculation</h1>"
-msgstr "<h1>Material zur Kalkulation hinzufügen</h1>"
-
-#: rc.cpp:6 rc.cpp:916 templkataloglistview.cpp:46 texteditdialog.cpp:76
+#: rc.cpp:6 rc.cpp:916 rc.cpp:1754 templkataloglistview.cpp:45
+#: texteditdialog.cpp:76
 #, kde-format
 msgid "Template"
 msgstr "Vorlage"
 
-#: rc.cpp:9 rc.cpp:919
+#: rc.cpp:9 rc.cpp:919 rc.cpp:1757
 #, kde-format
 msgid "Text:"
 msgstr "Text:"
 
-#: rc.cpp:12 rc.cpp:922
+#: rc.cpp:12 rc.cpp:922 rc.cpp:1760
 #, kde-format
 msgid "&Store in Chapter"
 msgstr "In Kategorie s&peichern"
 
-#: rc.cpp:15 rc.cpp:925
+#: rc.cpp:15 rc.cpp:925 rc.cpp:1763
 #, kde-format
 msgid "&Unit"
 msgstr "&Einheit"
 
-#: rc.cpp:18 rc.cpp:928
+#: rc.cpp:18 rc.cpp:928 rc.cpp:1766
 #, kde-format
 msgid "&Count Time for Overalltime"
 msgstr "Zeiten für &Gesamtzeit zusammenzählen"
 
-#: rc.cpp:24 rc.cpp:934
+#: rc.cpp:21 rc.cpp:931 rc.cpp:1769 kraftview_ro.cpp:212 kraftview_ro.cpp:249
+#: documenttemplate.cpp:332
+#, kde-format
+msgid "VAT"
+msgstr "Umsatzsteuer"
+
+#: rc.cpp:24 rc.cpp:934 rc.cpp:1772
 #, kde-format
 msgid "full"
 msgstr "Allgemein"
 
-#: rc.cpp:27 rc.cpp:937
+#: rc.cpp:27 rc.cpp:937 rc.cpp:1775
 #, kde-format
 msgid "half"
 msgstr "Reduziert"
 
-#: rc.cpp:30 rc.cpp:940
+#: rc.cpp:30 rc.cpp:940 rc.cpp:1778
 #, kde-format
 msgid "Time Calculation"
 msgstr "Arbeitszeit"
 
 #: rc.cpp:33 rc.cpp:72 rc.cpp:111 rc.cpp:943 rc.cpp:982 rc.cpp:1021
+#: rc.cpp:1781 rc.cpp:1820 rc.cpp:1859
 #, kde-format
 msgid "text"
 msgstr "text"
 
-#: rc.cpp:36 rc.cpp:946
+#: rc.cpp:36 rc.cpp:946 rc.cpp:1784
 #, kde-format
 msgid "Time measureable effort for this template:"
 msgstr "In Geldeinheiten umgerechneter Zeitaufwand für diese Vorlage:"
 
 #: rc.cpp:39 rc.cpp:81 rc.cpp:117 rc.cpp:949 rc.cpp:991 rc.cpp:1027
+#: rc.cpp:1787 rc.cpp:1829 rc.cpp:1865
 #, kde-format
 msgid "Label"
 msgstr "Bezeichnung"
 
-#: rc.cpp:42 rc.cpp:952
+#: rc.cpp:42 rc.cpp:952 rc.cpp:1790
 #, kde-format
 msgid "Duration"
 msgstr "Dauer"
 
-#: rc.cpp:45 rc.cpp:955
+#: rc.cpp:45 rc.cpp:955 rc.cpp:1793
 #, kde-format
 msgid "Hourly Rate"
 msgstr "Stundensatz"
 
-#: rc.cpp:48 rc.cpp:958
+#: rc.cpp:48 rc.cpp:958 rc.cpp:1796
 #, kde-format
 msgid "Glob. Rate"
 msgstr "Glob. Tarif"
 
-#: rc.cpp:51 rc.cpp:961
+#: rc.cpp:51 rc.cpp:961 rc.cpp:1799
 #, kde-format
 msgid "Adds a new time calculation part to the template"
 msgstr "Fügt eine neue Komponente zur Zeitberechnung zur Vorlage hinzu"
 
 #: rc.cpp:54 rc.cpp:93 rc.cpp:132 rc.cpp:964 rc.cpp:1003 rc.cpp:1042
+#: rc.cpp:1802 rc.cpp:1841 rc.cpp:1880
 #, kde-format
 msgid "new..."
 msgstr "Neu ..."
 
-#: rc.cpp:57 rc.cpp:967
+#: rc.cpp:57 rc.cpp:967 rc.cpp:1805
 #, kde-format
 msgid "Edits the current time calculation part"
 msgstr "Ändert die aktuelle Komponente zur Zeitberechnung"
 
 #: rc.cpp:60 rc.cpp:99 rc.cpp:138 rc.cpp:970 rc.cpp:1009 rc.cpp:1048
+#: rc.cpp:1808 rc.cpp:1847 rc.cpp:1886
 #, kde-format
 msgid "edit..."
 msgstr "Bearbeiten ..."
 
-#: rc.cpp:63 rc.cpp:973
+#: rc.cpp:63 rc.cpp:973 rc.cpp:1811
 #, kde-format
 msgid "Deletes the current time calculation part"
 msgstr "Löscht die aktuelle Komponente zur Zeitberechnung"
 
 #: rc.cpp:66 rc.cpp:105 rc.cpp:144 rc.cpp:976 rc.cpp:1015 rc.cpp:1054
+#: rc.cpp:1814 rc.cpp:1853 rc.cpp:1892
 #, kde-format
 msgid "delete"
 msgstr "Entfernen"
 
-#: rc.cpp:69 rc.cpp:979
+#: rc.cpp:69 rc.cpp:979 rc.cpp:1817
 #, kde-format
 msgid "Fix Costs"
 msgstr "Fixkosten"
 
-#: rc.cpp:75 rc.cpp:985
+#: rc.cpp:75 rc.cpp:985 rc.cpp:1823
 #, kde-format
 msgid "Fix costs for this template per one unit:"
 msgstr "Fixkosten für diese Vorlage für eine Einheit:"
 
-#: rc.cpp:84 rc.cpp:994
+#: rc.cpp:84 rc.cpp:994 rc.cpp:1832
 #, kde-format
 msgid "Single Price"
 msgstr "Einzelpreis"
 
-#: rc.cpp:87 rc.cpp:997
+#: rc.cpp:87 rc.cpp:997 rc.cpp:1835
 #, kde-format
 msgid "Overall Price"
 msgstr "Gesamtpreis"
 
-#: rc.cpp:90 rc.cpp:1000
+#: rc.cpp:90 rc.cpp:1000 rc.cpp:1838
 #, kde-format
 msgid "adds a new fix calculation part"
 msgstr "Fügt eine neue Festpreis-Kalkulationskomponente hinzu"
 
-#: rc.cpp:96 rc.cpp:1006
+#: rc.cpp:96 rc.cpp:1006 rc.cpp:1844
 #, kde-format
 msgid "edits the current fix calculation part"
 msgstr "Festpreis-Kalkulationskomponente bearbeiten"
 
-#: rc.cpp:102 rc.cpp:1012
+#: rc.cpp:102 rc.cpp:1012 rc.cpp:1850
 #, kde-format
 msgid "deletes the current fix calculation part"
 msgstr "Festpreis-Kalkulationskomponente entfernen"
 
-#: rc.cpp:114 rc.cpp:1024
+#: rc.cpp:108 rc.cpp:643 rc.cpp:1018 rc.cpp:1675 rc.cpp:1856 rc.cpp:2567
+#: materialkataloglistview.cpp:40
+#, kde-format
+msgid "Material"
+msgstr "Material"
+
+#: rc.cpp:114 rc.cpp:1024 rc.cpp:1862
 #, kde-format
 msgid "Needed materials for one unit of this template:"
 msgstr "Benötigte Materialien für eine Einheit dieser Vorlage:"
 
-#: rc.cpp:126 rc.cpp:1036 prefswages.cpp:53 templkataloglistview.cpp:47
+#: rc.cpp:123 rc.cpp:1033 rc.cpp:1871 materialkataloglistview.cpp:42
 #, kde-format
-msgid "Price"
-msgstr "Preis"
+msgid "Unit"
+msgstr "Einheit"
 
-#: rc.cpp:129 rc.cpp:1039
+#: rc.cpp:129 rc.cpp:1039 rc.cpp:1877
 #, kde-format
 msgid "adds a new material calculation part"
 msgstr "Fügt eine neue Material-Kalkulationskomponente hinzu"
 
-#: rc.cpp:135 rc.cpp:1045
+#: rc.cpp:135 rc.cpp:1045 rc.cpp:1883
 #, kde-format
 msgid "edits the current material part"
 msgstr "Material-Kalkulationskomponente bearbeiten"
 
-#: rc.cpp:141 rc.cpp:1051
+#: rc.cpp:141 rc.cpp:1051 rc.cpp:1889
 #, kde-format
 msgid "deletes the current material calculation part"
 msgstr "Material-Kalkulationskomponente entfernen"
 
-#: rc.cpp:147 rc.cpp:1057
+#: rc.cpp:147 rc.cpp:1057 rc.cpp:1895
 #, kde-format
 msgid "Overall Price per Unit"
 msgstr "Gesamtpreis pro Einheit"
 
-#: rc.cpp:150 rc.cpp:1060
+#: rc.cpp:150 rc.cpp:1060 rc.cpp:1898
 #, kde-format
 msgid "&Manual Price"
 msgstr "&Manueller Preis"
 
-#: rc.cpp:153 rc.cpp:1063
+#: rc.cpp:153 rc.cpp:1063 rc.cpp:1901
 #, kde-format
 msgid "Calculated Price"
 msgstr "Kalkulierter Preis"
 
-#: rc.cpp:156 rc.cpp:1066
+#: rc.cpp:156 rc.cpp:1066 rc.cpp:1904
 #, kde-format
 msgid "Fix Costs Part:"
 msgstr "Fixkostenanteil:"
 
-#: rc.cpp:159 rc.cpp:1069
+#: rc.cpp:159 rc.cpp:1069 rc.cpp:1907
 #, kde-format
 msgid "Material Part:"
 msgstr "Material-Anteil:"
 
-#: rc.cpp:162 rc.cpp:1072
+#: rc.cpp:162 rc.cpp:1072 rc.cpp:1910
 #, kde-format
 msgid "Profit:"
 msgstr "Gewinn:"
 
-#: rc.cpp:166 rc.cpp:1076
+#: rc.cpp:166 rc.cpp:1076 rc.cpp:1914
 #, no-c-format, kde-format
 msgid " %"
 msgstr " %"
 
-#: rc.cpp:169 rc.cpp:1079
+#: rc.cpp:169 rc.cpp:1079 rc.cpp:1917
 #, kde-format
 msgid "Time Calculation Part:"
 msgstr "Arbeitszeit:"
 
-#: rc.cpp:172 rc.cpp:1082
+#: rc.cpp:172 rc.cpp:1082 rc.cpp:1920
 #, kde-format
 msgid "Calculated Price:"
 msgstr "Kalkulierter Preis:"
 
-#: rc.cpp:175 rc.cpp:1085
+#: rc.cpp:175 rc.cpp:1085 rc.cpp:1923
 #, kde-format
 msgid "88.888,88 €"
 msgstr "88.888,88 €"
 
-#: rc.cpp:178 rc.cpp:1088
+#: rc.cpp:178 rc.cpp:1088 rc.cpp:1959
 #, kde-format
 msgid "Database creation and initial schema setup:"
 msgstr "Einrichtung der Datenbank und Setup des Anfangsschemas:"
 
 #: rc.cpp:181 rc.cpp:190 rc.cpp:844 rc.cpp:1091 rc.cpp:1100 rc.cpp:1706
+#: rc.cpp:1962 rc.cpp:1971 rc.cpp:2598
 #, kde-format
 msgid "0 / 129"
 msgstr "0 / 129"
 
 #: rc.cpp:184 rc.cpp:193 rc.cpp:847 rc.cpp:1094 rc.cpp:1103 rc.cpp:1709
+#: rc.cpp:1965 rc.cpp:1974 rc.cpp:2601
 #, kde-format
 msgid "X"
 msgstr "X"
 
-#: rc.cpp:187 rc.cpp:1097
+#: rc.cpp:187 rc.cpp:1097 rc.cpp:1968
 #, kde-format
 msgid "Filling the database with initial values:"
 msgstr "Füllen der Datenbank mit Anfangswerten:"
 
-#: rc.cpp:196 rc.cpp:850 rc.cpp:1106 rc.cpp:1712
+#: rc.cpp:196 rc.cpp:850 rc.cpp:1106 rc.cpp:1712 rc.cpp:1977 rc.cpp:2604
 #, kde-format
 msgid "Status: "
 msgstr "Status: "
 
-#: rc.cpp:199 rc.cpp:1109
+#: rc.cpp:199 rc.cpp:1109 rc.cpp:1980
 #, kde-format
 msgid "Database setup status..."
 msgstr "Status der Datenbank-Einrichtung ..."
 
-#: rc.cpp:202 rc.cpp:1112
+#: rc.cpp:202 rc.cpp:1112 rc.cpp:1926
 #, kde-format
 msgid "Bruns Data File:"
 msgstr "Bruns-Datendatei:"
 
-#: rc.cpp:205 rc.cpp:1115
+#: rc.cpp:205 rc.cpp:1115 rc.cpp:1929
 #, kde-format
 msgid "Bruns Key File:"
 msgstr "Bruns-Schlüsseldatei:"
 
-#: rc.cpp:208 rc.cpp:1118
+#: rc.cpp:208 rc.cpp:1118 rc.cpp:1932
 #, kde-format
 msgid "Qt Database Driver:"
 msgstr "Qt-Datenbank-Treiber:"
 
-#: rc.cpp:211 rc.cpp:1121
+#: rc.cpp:211 rc.cpp:1121 rc.cpp:1935
 #, kde-format
 msgid "Database Server:"
 msgstr "Datenbank-Server:"
 
-#: rc.cpp:214 rc.cpp:1124
+#: rc.cpp:214 rc.cpp:1124 rc.cpp:1938
 #, kde-format
 msgid "Server Port:"
 msgstr "Server Port:"
 
-#: rc.cpp:217 rc.cpp:1127
+#: rc.cpp:217 rc.cpp:1127 rc.cpp:1941
 #, kde-format
 msgid "Database Name"
 msgstr "Datenbankname"
 
-#: rc.cpp:220 rc.cpp:700 rc.cpp:1130 rc.cpp:1555
+#: rc.cpp:220 rc.cpp:700 rc.cpp:1130 rc.cpp:1555 rc.cpp:1944 rc.cpp:2399
 #, kde-format
 msgid "Database User:"
 msgstr "Datenbank-Benutzer:"
 
-#: rc.cpp:223 rc.cpp:1133
+#: rc.cpp:223 rc.cpp:1133 rc.cpp:1947
 #, kde-format
 msgid "Database Password:"
 msgstr "Datenbank-Passwort:"
 
-#: rc.cpp:226 rc.cpp:1136
+#: rc.cpp:226 rc.cpp:1136 rc.cpp:1950
 #, kde-format
 msgid "The default database name when creating new databases"
 msgstr "Standard-Datenbankname bei neu erstellter Datenbank"
 
-#: rc.cpp:229 rc.cpp:1139
+#: rc.cpp:229 rc.cpp:1139 rc.cpp:1953
 #, kde-format
 msgid "File Name"
 msgstr "Dateiname"
 
-#: rc.cpp:232 rc.cpp:1142
+#: rc.cpp:232 rc.cpp:1142 rc.cpp:1956
 #, kde-format
 msgid "The path where database file are stored. Leave empty!"
 msgstr "Pfad zu den Datenbankdateien. Leer lassen!"
 
-#: rc.cpp:235 rc.cpp:1145
+#: rc.cpp:235 rc.cpp:1145 rc.cpp:2016
 #, kde-format
 msgid "Database Update:"
 msgstr "Datenbank-Aktualisierung:"
 
-#: rc.cpp:238 rc.cpp:1148
+#: rc.cpp:238 rc.cpp:1148 rc.cpp:2019
 #, kde-format
 msgid "Overall Progress:"
 msgstr "Gesamtfortschritt:"
 
-#: rc.cpp:241 rc.cpp:1151
+#: rc.cpp:241 rc.cpp:1151 rc.cpp:2022
 #, kde-format
 msgid "Detail Progress:"
 msgstr "Fortschrittsanzeige:"
 
-#: rc.cpp:244 rc.cpp:1154
+#: rc.cpp:244 rc.cpp:1154 rc.cpp:2025
 #, kde-format
 msgid "Status:"
 msgstr "Status:"
 
-#: rc.cpp:247 rc.cpp:1289
+#: rc.cpp:247 rc.cpp:1289 rc.cpp:1727
 #, kde-format
 msgid ""
 "<html><head/><body><p>Kraft uses a database backend to store values. By "
@@ -1642,52 +2158,52 @@ msgstr ""
 "</p><p><br/></p></body></html>Bitte wählen Sie das Datenbank-Backend, das "
 "Sie verwenden möchten:"
 
-#: rc.cpp:250 rc.cpp:1292
+#: rc.cpp:250 rc.cpp:1292 rc.cpp:1730
 #, kde-format
 msgid "SQLite 3 - file based database (default)"
 msgstr "SQLite 3 – Datei-basierte Datenbank (Voreinstellung)"
 
-#: rc.cpp:253 rc.cpp:1295
+#: rc.cpp:253 rc.cpp:1295 rc.cpp:1733
 #, kde-format
 msgid "MySQL Serverbased Database for advanced Setups"
 msgstr "MySQL – Server-basierte Datenbank für fortgeschrittene Einrichtungen"
 
-#: rc.cpp:256 rc.cpp:865
+#: rc.cpp:256 rc.cpp:865 rc.cpp:1736
 #, kde-format
 msgid "Footer Texts"
 msgstr "Fußzeilentexte"
 
-#: rc.cpp:259 rc.cpp:868
+#: rc.cpp:259 rc.cpp:868 rc.cpp:1739
 #, kde-format
 msgid "&Summary Text on Last Page:"
 msgstr "&Zusammenfassung auf letzter Seite:"
 
-#: rc.cpp:262 rc.cpp:871
+#: rc.cpp:262 rc.cpp:871 rc.cpp:1742
 #, kde-format
 msgid "&Greeting:"
 msgstr "&Anrede:"
 
-#: rc.cpp:268 rc.cpp:877
+#: rc.cpp:268 rc.cpp:877 rc.cpp:1748
 #, kde-format
 msgid "Document &Tax:"
 msgstr "&Steuersatz:"
 
-#: rc.cpp:271 rc.cpp:880
+#: rc.cpp:271 rc.cpp:880 rc.cpp:2028
 #, kde-format
 msgid "TextLabel"
 msgstr "Textlabel"
 
-#: rc.cpp:274 rc.cpp:883
+#: rc.cpp:274 rc.cpp:883 rc.cpp:2031
 #, kde-format
 msgid "&Project:"
 msgstr "&Projekt:"
 
-#: rc.cpp:277 rc.cpp:886
+#: rc.cpp:277 rc.cpp:886 rc.cpp:2034
 #, kde-format
 msgid "&Whiteboard:"
 msgstr "&Notizen:"
 
-#: rc.cpp:280 rc.cpp:889
+#: rc.cpp:280 rc.cpp:889 rc.cpp:2037
 #, kde-format
 msgid ""
 "Enter a label that describes the project. This may appear on the customer "
@@ -1696,111 +2212,94 @@ msgstr ""
 "Geben Sie eine Beschriftung an, die das Projekt beschreibt. Diese kann auf "
 "dem Kundendokument erscheinen."
 
-#: rc.cpp:283 rc.cpp:892
+#: rc.cpp:283 rc.cpp:892 rc.cpp:2040
 #, kde-format
 msgid "Postal &Address:"
 msgstr "&Anschrift:"
 
-#: rc.cpp:286 rc.cpp:895
+#: rc.cpp:286 rc.cpp:895 rc.cpp:2043
 #, kde-format
 msgid "not selected"
 msgstr "nicht ausgewählt"
 
-#: rc.cpp:289 rc.cpp:898
+#: rc.cpp:289 rc.cpp:898 rc.cpp:2046
 #, kde-format
 msgid "Select an addressee from the address books."
 msgstr "Wählt eine Adresse aus den Adressbüchern."
 
-#: rc.cpp:292 rc.cpp:901
+#: rc.cpp:292 rc.cpp:901 rc.cpp:2049
 #, kde-format
 msgid "select..."
 msgstr "Auswählen ..."
 
-#: rc.cpp:295 rc.cpp:904
+#: rc.cpp:295 rc.cpp:904 rc.cpp:2052
 #, kde-format
 msgid "&Salutatory Address:"
 msgstr "&Grußformel:"
 
-#: rc.cpp:298 rc.cpp:907
+#: rc.cpp:298 rc.cpp:907 rc.cpp:2055
 #, kde-format
 msgid "Customer:"
 msgstr "Kunde:"
 
-#: rc.cpp:301 rc.cpp:910
+#: rc.cpp:301 rc.cpp:910 rc.cpp:2058
 #, kde-format
 msgid "&Entry Text on First Page:"
 msgstr "&Einleitender Text auf der ersten Seite:"
 
-#: rc.cpp:304 rc.cpp:733 rc.cpp:1157 rc.cpp:1588
+#: rc.cpp:304 rc.cpp:733 rc.cpp:1157 rc.cpp:1588 rc.cpp:2061 rc.cpp:2432
 #, kde-format
 msgid "Click to add a new document type to the list."
 msgstr "Klicken Sie, um der Liste einen neuen Dokumenttyp hinzuzufügen."
 
-#: rc.cpp:307 rc.cpp:1160 prefsdialog.cpp:184 prefsunits.cpp:79
-#: prefswages.cpp:90
-#, kde-format
-msgid "Add"
-msgstr "Hinzufügen"
-
-#: rc.cpp:310 rc.cpp:1163
+#: rc.cpp:310 rc.cpp:1163 rc.cpp:2067
 #, kde-format
 msgid "click to edit the selected document type name"
 msgstr ""
 "Klicken Sie hier, um den Namen des ausgewählten Dokumenttyps zu bearbeiten."
 
-#: rc.cpp:313 rc.cpp:1166 prefsunits.cpp:83 prefswages.cpp:94
-#, kde-format
-msgid "Edit"
-msgstr "Bearbeiten"
-
-#: rc.cpp:316 rc.cpp:739 rc.cpp:1169 rc.cpp:1594
+#: rc.cpp:316 rc.cpp:739 rc.cpp:1169 rc.cpp:1594 rc.cpp:2073 rc.cpp:2438
 #, kde-format
 msgid "click to remove the current document type"
 msgstr "Klicken Sie hier, um den aktuellen Dokumenttyp zu entfernen."
 
-#: rc.cpp:319 rc.cpp:1172 portalview.cpp:220 prefsdialog.cpp:188
-#: prefsunits.cpp:88 prefswages.cpp:99
-#, kde-format
-msgid "Remove"
-msgstr "Entfernen"
-
-#: rc.cpp:322 rc.cpp:1175
+#: rc.cpp:322 rc.cpp:1175 rc.cpp:2079
 #, kde-format
 msgid "Unique Document Number"
 msgstr "Eindeutige Dokumentennummer"
 
-#: rc.cpp:325 rc.cpp:1178
+#: rc.cpp:325 rc.cpp:1178 rc.cpp:2082
 #, kde-format
 msgid "Number &Cycle:"
 msgstr "Nummern&bestimmung:"
 
 #: rc.cpp:328 rc.cpp:337 rc.cpp:340 rc.cpp:724 rc.cpp:1181 rc.cpp:1190
-#: rc.cpp:1193 rc.cpp:1579
+#: rc.cpp:1193 rc.cpp:1579 rc.cpp:2085 rc.cpp:2094 rc.cpp:2097 rc.cpp:2423
 #, kde-format
 msgid "example"
 msgstr "Beispiel"
 
-#: rc.cpp:331 rc.cpp:1184
+#: rc.cpp:331 rc.cpp:1184 rc.cpp:2088
 #, kde-format
 msgid "ident Template:"
 msgstr "Nummernvorlage:"
 
-#: rc.cpp:334 rc.cpp:718 rc.cpp:1187 rc.cpp:1573
+#: rc.cpp:334 rc.cpp:718 rc.cpp:1187 rc.cpp:1573 rc.cpp:2091 rc.cpp:2417
 #, kde-format
 msgid "Example Id:"
 msgstr "Beispielnummer:"
 
-#: rc.cpp:343 rc.cpp:1196
+#: rc.cpp:343 rc.cpp:1196 rc.cpp:2100
 #, kde-format
 msgid "Counter:"
 msgstr "Anfangswert:"
 
-#: rc.cpp:346 rc.cpp:1199
+#: rc.cpp:346 rc.cpp:1199 rc.cpp:2103
 #, kde-format
 msgid "&Edit Number Cycles..."
 msgstr "Nummernkreise &bearbeiten ..."
 
-#: rc.cpp:349 rc.cpp:1202
+#: rc.cpp:349 rc.cpp:1202 rc.cpp:2106
 #, kde-format
 msgid "Template for PDF Creation"
 msgstr "Vorlage für PDF-Erstellung"
@@ -1810,22 +2309,22 @@ msgstr "Vorlage für PDF-Erstellung"
 msgid "&Template File"
 msgstr "&Vorlagendatei"
 
-#: rc.cpp:355 rc.cpp:1208
+#: rc.cpp:355 rc.cpp:1208 rc.cpp:2115
 #, kde-format
 msgid "W&atermark:"
 msgstr "W&asserzeichen:"
 
-#: rc.cpp:358 rc.cpp:1211
+#: rc.cpp:358 rc.cpp:1211 rc.cpp:2121
 #, kde-format
 msgid "no watermark"
 msgstr "Kein Wasserzeichen"
 
-#: rc.cpp:361 rc.cpp:1214
+#: rc.cpp:361 rc.cpp:1214 rc.cpp:2124
 #, kde-format
 msgid "on first page"
 msgstr "Auf erster Seite"
 
-#: rc.cpp:364 rc.cpp:1217
+#: rc.cpp:364 rc.cpp:1217 rc.cpp:2127
 #, kde-format
 msgid "on all pages"
 msgstr "Auf allen Seiten"
@@ -1835,207 +2334,202 @@ msgstr "Auf allen Seiten"
 msgid "&Watermark File"
 msgstr "&Wasserzeichendatei"
 
-#: rc.cpp:370 rc.cpp:1223
+#: rc.cpp:370 rc.cpp:1223 rc.cpp:1983
 #, kde-format
 msgid "Calculation Parts Fix"
 msgstr "Fixkostenanteil der Kalkulation"
 
-#: rc.cpp:373 rc.cpp:1226
+#: rc.cpp:373 rc.cpp:1226 rc.cpp:1986
 #, kde-format
 msgid "<h1>Fix Cost Parts</h1>"
 msgstr "<h1>Fixkostenanteil</h1>"
 
-#: rc.cpp:376 rc.cpp:1229
+#: rc.cpp:376 rc.cpp:1229 rc.cpp:1989
 #, kde-format
 msgid "Add a fix cost for one unit of the template:"
 msgstr "Fixkosten für eine Einheit der Vorlage hinzufügen"
 
-#: rc.cpp:379 rc.cpp:808 rc.cpp:1232 rc.cpp:1529
+#: rc.cpp:379 rc.cpp:808 rc.cpp:1232 rc.cpp:1529 rc.cpp:1992 rc.cpp:2528
 #, kde-format
 msgid "&Label:"
 msgstr "&Bezeichnung"
 
-#: rc.cpp:382 rc.cpp:1235
+#: rc.cpp:382 rc.cpp:1235 rc.cpp:1995
 #, kde-format
 msgid "describing text"
 msgstr "Beschreibungstext"
 
-#: rc.cpp:385 rc.cpp:1238
+#: rc.cpp:385 rc.cpp:1238 rc.cpp:1998
 #, kde-format
 msgid "amortisation"
 msgstr "Amortisation"
 
-#: rc.cpp:388 rc.cpp:680 rc.cpp:1241 rc.cpp:1511
+#: rc.cpp:388 rc.cpp:680 rc.cpp:1241 rc.cpp:1511 rc.cpp:2001 rc.cpp:2211
 #, kde-format
 msgid "&Amount:"
 msgstr "&Menge:"
 
-#: rc.cpp:391 rc.cpp:1244
+#: rc.cpp:391 rc.cpp:1244 rc.cpp:2004
 #, kde-format
 msgid "amount multiplier"
 msgstr "Betrags-Multiplikator"
 
-#: rc.cpp:394 rc.cpp:1247
+#: rc.cpp:394 rc.cpp:1247 rc.cpp:2007
 #, kde-format
 msgid "at &Price:"
 msgstr "zum &Preis von:"
 
-#: rc.cpp:397 rc.cpp:683 rc.cpp:1250 rc.cpp:1514
+#: rc.cpp:397 rc.cpp:683 rc.cpp:1250 rc.cpp:1514 rc.cpp:2010 rc.cpp:2214
 #, kde-format
 msgid "Price for one piece"
 msgstr "Stückpreis"
 
-#: rc.cpp:400 rc.cpp:1253
+#: rc.cpp:400 rc.cpp:1253 rc.cpp:2013
 #, kde-format
 msgid "€"
 msgstr "€"
 
-#: rc.cpp:403 rc.cpp:1256
+#: rc.cpp:403 rc.cpp:1256 rc.cpp:2133
 #, kde-format
 msgid "Form"
 msgstr "Formular"
 
-#: rc.cpp:406 rc.cpp:1259 tagtemplatesdialog.cpp:58
+#: rc.cpp:406 rc.cpp:1259 rc.cpp:2136 tagtemplatesdialog.cpp:58
 #, kde-format
 msgid "Name:"
 msgstr "Name:"
 
-#: rc.cpp:409 rc.cpp:1262
+#: rc.cpp:409 rc.cpp:1262 rc.cpp:2139
 #, kde-format
 msgid "Organization:"
 msgstr "Organisation:"
 
-#: rc.cpp:412 rc.cpp:1265
+#: rc.cpp:412 rc.cpp:1265 rc.cpp:2142
 #, kde-format
 msgid "Street:"
 msgstr "Straße"
 
-#: rc.cpp:415 rc.cpp:1268
+#: rc.cpp:415 rc.cpp:1268 rc.cpp:2145
 #, kde-format
 msgid "Post Code:"
 msgstr "Postleitzahl:"
 
-#: rc.cpp:418 rc.cpp:1271
+#: rc.cpp:418 rc.cpp:1271 rc.cpp:2148
 #, kde-format
 msgid "City:"
 msgstr "Ort:"
 
-#: rc.cpp:421 rc.cpp:1274
+#: rc.cpp:421 rc.cpp:1274 rc.cpp:2151
 #, kde-format
 msgid "Phone:"
 msgstr "Telefon (Arbeit)"
 
-#: rc.cpp:424 rc.cpp:1277
+#: rc.cpp:424 rc.cpp:1277 rc.cpp:2154
 #, kde-format
 msgid "Fax:"
 msgstr "Fax:"
 
-#: rc.cpp:427 rc.cpp:1280
+#: rc.cpp:427 rc.cpp:1280 rc.cpp:2157
 #, kde-format
 msgid "Mobile Phone:"
 msgstr "Mobil:"
 
-#: rc.cpp:430 rc.cpp:1283
+#: rc.cpp:430 rc.cpp:1283 rc.cpp:2160
 #, kde-format
 msgid "EMail:"
 msgstr "EMail:"
 
-#: rc.cpp:433 rc.cpp:1286
+#: rc.cpp:433 rc.cpp:1286 rc.cpp:2163
 #, kde-format
 msgid "Website:"
 msgstr "Webseite:"
 
-#: rc.cpp:436 rc.cpp:1298
+#: rc.cpp:436 rc.cpp:1298 rc.cpp:2166
 #, kde-format
 msgid "Import Document Items"
 msgstr "Dokumentposten importieren"
 
-#: rc.cpp:439 rc.cpp:1301
+#: rc.cpp:439 rc.cpp:1301 rc.cpp:2169
 #, kde-format
 msgid "Import information"
 msgstr "Informationen importieren"
 
-#: rc.cpp:442 rc.cpp:1304
+#: rc.cpp:442 rc.cpp:1304 rc.cpp:2172
 #, kde-format
 msgid "Select a &File to import from:"
 msgstr "Bitte wählen Sie die zu importierende &Datei:"
 
-#: rc.cpp:445 rc.cpp:1307
+#: rc.cpp:445 rc.cpp:1307 rc.cpp:2175
 #, kde-format
 msgid "FixMe!"
 msgstr "FixMe!"
 
-#: rc.cpp:448 rc.cpp:1310
+#: rc.cpp:448 rc.cpp:1310 rc.cpp:2178
 #, kde-format
 msgid "Import &Schema:"
 msgstr "&Schema importieren:"
 
-#: rc.cpp:451 rc.cpp:1313
+#: rc.cpp:451 rc.cpp:1313 rc.cpp:2181
 #, kde-format
 msgid "this is interesting information about the selected schema"
 msgstr "Dies sind nützliche Informationen über das ausgewählte Schema."
 
-#: rc.cpp:454 rc.cpp:1316
+#: rc.cpp:454 rc.cpp:1316 rc.cpp:2184
 #, kde-format
 msgid "Insert all Items &after"
 msgstr "Alle Posten einfügen &nach"
 
-#: rc.cpp:457 rc.cpp:481 rc.cpp:1319 rc.cpp:1352
+#: rc.cpp:457 rc.cpp:481 rc.cpp:1319 rc.cpp:1352 rc.cpp:2187 rc.cpp:2241
 #, kde-format
 msgid "Tags"
 msgstr "Stichwörter"
 
-#: rc.cpp:460 rc.cpp:1331 templtopositiondialogbase.cpp:35
+#: rc.cpp:460 rc.cpp:1331 rc.cpp:2220 templtopositiondialogbase.cpp:35
 #, kde-format
 msgid "Create Item from Template"
 msgstr "Posten aus Vorlage erstellen"
 
-#: rc.cpp:463 rc.cpp:1334
+#: rc.cpp:463 rc.cpp:1334 rc.cpp:2223
 #, kde-format
 msgid "New Item Text"
 msgstr "Neuer Posten"
 
-#: rc.cpp:466 rc.cpp:1337
+#: rc.cpp:466 rc.cpp:1337 rc.cpp:2226
 #, kde-format
 msgid "&insert"
 msgstr "Einfügen"
 
-#: rc.cpp:469 rc.cpp:1340
+#: rc.cpp:469 rc.cpp:1340 rc.cpp:2229
 #, kde-format
 msgid "à"
 msgstr "à"
 
-#: rc.cpp:472 rc.cpp:1343
+#: rc.cpp:472 rc.cpp:1343 rc.cpp:2232
 #, kde-format
 msgid "&after item"
 msgstr "&nach"
 
-#: rc.cpp:475 rc.cpp:1346
+#: rc.cpp:475 rc.cpp:1346 rc.cpp:2235
 #, kde-format
 msgid "Keep this item as template for future documents"
 msgstr "Diesen Posten als Vorlage für zukünftige Dokumente speichern"
 
-#: rc.cpp:478 rc.cpp:1349
+#: rc.cpp:478 rc.cpp:1349 rc.cpp:2238
 #, kde-format
 msgid "save in &chapter"
 msgstr "in &Kapitel"
 
-#: rc.cpp:484 rc.cpp:1355 portal.cpp:215
-#, kde-format
-msgid "&File"
-msgstr "&Datei"
-
-#: rc.cpp:490 rc.cpp:1361
+#: rc.cpp:490 rc.cpp:1361 rc.cpp:2250
 #, kde-format
 msgid "Do Database Initialisation"
 msgstr "Datenbank initialisieren"
 
-#: rc.cpp:493 rc.cpp:1364
+#: rc.cpp:493 rc.cpp:1364 rc.cpp:2253
 #, kde-format
 msgid "Do XML archiving of documents they're printed?"
 msgstr "XML-Dokumente archivieren, sobald sie gedruckt sind?"
 
-#: rc.cpp:496 rc.cpp:1367
+#: rc.cpp:496 rc.cpp:1367 rc.cpp:2256
 #, kde-format
 msgid ""
 "Where Kraft stores the XML archive documents. If empty, KDEHOME/share/apps "
@@ -2044,125 +2538,125 @@ msgstr ""
 "Speicherort für die XML-Archiv-Dokumente. Falls leer, wird "
 "$KDEHOME/share/apps verwendet."
 
-#: rc.cpp:499 rc.cpp:1370
+#: rc.cpp:499 rc.cpp:1370 rc.cpp:2259
 #, kde-format
 msgid "The local xml document storage path"
 msgstr "Der lokale Speicherpfad für XML-Dokumente"
 
-#: rc.cpp:502 rc.cpp:1373
+#: rc.cpp:502 rc.cpp:1373 rc.cpp:2262
 #, kde-format
 msgid "Default mail user agent. Set xdg for xdg-email"
 msgstr "Standard Email-Versende-Tool. Setze xdg für xdg-email"
 
-#: rc.cpp:505 rc.cpp:508 rc.cpp:1376 rc.cpp:1379
+#: rc.cpp:505 rc.cpp:508 rc.cpp:1376 rc.cpp:1379 rc.cpp:2265 rc.cpp:2268
 #, kde-format
 msgid "The default geometry of the document view dialog"
 msgstr "Standardgröße der Dokumentansicht"
 
-#: rc.cpp:511 rc.cpp:1382
+#: rc.cpp:511 rc.cpp:1382 rc.cpp:2271
 #, kde-format
 msgid "The current state of the portal"
 msgstr "Der momentane Status des Portals"
 
-#: rc.cpp:514 rc.cpp:1385
+#: rc.cpp:514 rc.cpp:1385 rc.cpp:2274
 #, kde-format
 msgid "The current geometry of the portal"
 msgstr "Die aktuelle Geometry des Portals"
 
-#: rc.cpp:517 rc.cpp:1388
+#: rc.cpp:517 rc.cpp:1388 rc.cpp:2277
 #, kde-format
 msgid "The current geometry of the new doc assistant"
 msgstr "Aktuelle Geometry des Dokument-Neu Assistenten"
 
-#: rc.cpp:520 rc.cpp:1391
+#: rc.cpp:520 rc.cpp:1391 rc.cpp:2280
 #, kde-format
 msgid "The splitter position of the document view dialog"
 msgstr "Teilungsstelle des Dokumentansicht-Dialogs"
 
-#: rc.cpp:523 rc.cpp:1394
+#: rc.cpp:523 rc.cpp:1394 rc.cpp:2283
 #, kde-format
 msgid "The default size of the material catalog view"
 msgstr "Standardgröße der Material-Katalogs-Ansicht"
 
-#: rc.cpp:526 rc.cpp:1397
+#: rc.cpp:526 rc.cpp:1397 rc.cpp:2286
 #, kde-format
 msgid "The splitter setting for the doc assistant"
 msgstr "Splitter-Einstellung für den Dokument-Assistenten"
 
-#: rc.cpp:529 rc.cpp:1400
+#: rc.cpp:529 rc.cpp:1400 rc.cpp:2289
 #, kde-format
 msgid "The window size of the template to document dialog for plants"
 msgstr "Die Fenstergröße des Dialogs „Vorlage zu Dokument für Pflanzen“."
 
-#: rc.cpp:532 rc.cpp:1403
+#: rc.cpp:532 rc.cpp:1403 rc.cpp:2292
 #, kde-format
 msgid "The window size of the template to document dialog"
 msgstr "Die Fenstergröße des Dialogs „Vorlage zu Dokument“"
 
-#: rc.cpp:535 rc.cpp:1406
+#: rc.cpp:535 rc.cpp:1406 rc.cpp:2295
 #, kde-format
 msgid "The digest list column arrangement for the Latest-list"
 msgstr ""
 "Die Anordnung der Übersicht der Listenspalte für die Liste der letzten "
 "Einträge"
 
-#: rc.cpp:538 rc.cpp:1409
+#: rc.cpp:538 rc.cpp:1409 rc.cpp:2298
 #, kde-format
 msgid "The digest list column arrangement for the all-list"
 msgstr ""
 "Die Anordnung der Übersicht der Listenspalte für die Liste aller Einträge"
 
-#: rc.cpp:541 rc.cpp:1412
+#: rc.cpp:541 rc.cpp:1412 rc.cpp:2301
 #, kde-format
 msgid "The digest list column arrangement for timeline"
 msgstr "Die Anordnung der Übersicht der Listenspalte für die Zeitleiste"
 
-#: rc.cpp:544 rc.cpp:1415
+#: rc.cpp:544 rc.cpp:1415 rc.cpp:2304
 #, kde-format
 msgid "The sizes of the slider in the address picker Widget"
 msgstr "Die Größe der Schieberegler im Adress-Auswahlfenster"
 
-#: rc.cpp:547 rc.cpp:1418
+#: rc.cpp:547 rc.cpp:1418 rc.cpp:2307
 #, kde-format
 msgid "The state of the treeview inside the address selector widget"
 msgstr "Der Status der Baumansicht im Address-Auswahlwidget"
 
-#: rc.cpp:550 rc.cpp:1421
+#: rc.cpp:550 rc.cpp:1421 rc.cpp:2310
 #, kde-format
 msgid "Size of the address select dialog"
 msgstr "Größe des Adressauswahldialoges"
 
-#: rc.cpp:553 rc.cpp:1424
+#: rc.cpp:553 rc.cpp:1424 rc.cpp:2313
 #, kde-format
 msgid "State of the window of the material catalog"
 msgstr "Status des Materialkatalogfensters"
 
-#: rc.cpp:556 rc.cpp:1427
+#: rc.cpp:556 rc.cpp:1427 rc.cpp:2316
 #, kde-format
 msgid "Geometry of the material catalog"
 msgstr "Geometrie des Materialkatalogfensters"
 
-#: rc.cpp:559 rc.cpp:1430
+#: rc.cpp:559 rc.cpp:1430 rc.cpp:2319
 #, kde-format
 msgid "State of the header of the material catalog"
 msgstr "Standardgröße der Material-Katalogs-Ansicht"
 
-#: rc.cpp:562 rc.cpp:1433
+#: rc.cpp:562 rc.cpp:1433 rc.cpp:2322
 #, kde-format
 msgid "State of the window of the template catalog"
 msgstr "Status des Katalog-Fensters"
 
-#: rc.cpp:565 rc.cpp:1436
+#: rc.cpp:565 rc.cpp:1436 rc.cpp:2325
 #, kde-format
 msgid "Geometry the template catalog"
 msgstr "Geometrie des Katalog-Fensters"
 
-#: rc.cpp:568 rc.cpp:1439
+#: rc.cpp:568 rc.cpp:1439 rc.cpp:2328
 #, kde-format
 msgid "State of the header of the template catalog"
 msgstr "Status der Kopfzeile des Vorlagenkatalogs"
 
-#: rc.cpp:571 rc.cpp:1442
+#: rc.cpp:571 rc.cpp:1442 rc.cpp:2331
 #, kde-format
 msgid ""
 "Default percentage the sale price for a material should be higher than its "
@@ -2171,42 +2665,42 @@ msgstr ""
 "Der prozentuale Aufschlag für den VK-Preis eines Materials sollte höher als "
 "sein EK-Preis sein."
 
-#: rc.cpp:574 rc.cpp:1445
+#: rc.cpp:574 rc.cpp:1445 rc.cpp:2334
 #, kde-format
 msgid "The name of the last selected chapter in the catalog"
 msgstr "Der Name der zuletzt ausgewählten Kategorie im Katalog."
 
-#: rc.cpp:577 rc.cpp:1448
+#: rc.cpp:577 rc.cpp:1448 rc.cpp:2337
 #, kde-format
 msgid "The complete filename of the trml2pdf binary"
 msgstr "Vollständiger Pfad zu trml2pdf"
 
-#: rc.cpp:580 rc.cpp:1451
+#: rc.cpp:580 rc.cpp:1451 rc.cpp:2340
 #, kde-format
 msgid "The path to the output directory for document pdfs"
 msgstr "Pfad zum Ausgabe-Ordner für die Dokument-PDFs"
 
-#: rc.cpp:583 rc.cpp:1454
+#: rc.cpp:583 rc.cpp:1454 rc.cpp:2343
 #, kde-format
 msgid "The last created doc type."
 msgstr "Typ des zuletzt erstellten Dokuments"
 
-#: rc.cpp:586 rc.cpp:1457
+#: rc.cpp:586 rc.cpp:1457 rc.cpp:2346
 #, kde-format
 msgid "The date format for print."
 msgstr "Datumsformat für den Ausdruck."
 
-#: rc.cpp:589 rc.cpp:1460
+#: rc.cpp:589 rc.cpp:1460 rc.cpp:2349
 #, kde-format
 msgid "The greeting below on the document footer."
 msgstr "Der Abschlussgruß im Dokumentfuß."
 
-#: rc.cpp:592 rc.cpp:1463
+#: rc.cpp:592 rc.cpp:1463 rc.cpp:2352
 #, kde-format
 msgid "The salut message on the document header."
 msgstr "Die Anrede im Kopfbereich des Dokuments."
 
-#: rc.cpp:595 rc.cpp:1466
+#: rc.cpp:595 rc.cpp:1466 rc.cpp:2355
 #, kde-format
 msgid ""
 "The name of the catalog chapter where to store new templates in by default"
@@ -2214,17 +2708,17 @@ msgstr ""
 "Der Name des Katalogkapitels, in dem neue Vorlagen standardmäßig gespeichert"
 " werden"
 
-#: rc.cpp:598 rc.cpp:1469
+#: rc.cpp:598 rc.cpp:1469 rc.cpp:2358
 #, kde-format
 msgid "The name of the last used import schema for items."
 msgstr "Der Name des letzten Eingabeschemas für Posten."
 
-#: rc.cpp:601 rc.cpp:1472
+#: rc.cpp:601 rc.cpp:1472 rc.cpp:2361
 #, kde-format
 msgid "The name of the last used input file for items."
 msgstr "Der Name der letzten Eingabedatei für Posten."
 
-#: rc.cpp:604 rc.cpp:1475
+#: rc.cpp:604 rc.cpp:1475 rc.cpp:2364
 #, kde-format
 msgid ""
 "User name as reference to the KAddressbook to identify 'my' address "
@@ -2233,7 +2727,7 @@ msgstr ""
 "Benutzername als Verknüpfung zu KAddressbook, um „Meine Adresse“ festzulegen"
 " (veraltet)."
 
-#: rc.cpp:607 rc.cpp:1478
+#: rc.cpp:607 rc.cpp:1478 rc.cpp:2367
 #, kde-format
 msgid ""
 "UID of the user as reference to the KAddressbook to identify 'my' address."
@@ -2241,112 +2735,107 @@ msgstr ""
 "Kennung des Benutzers als Verknüpfung zu KAddressbook, um „Meine Adresse“ "
 "festzulegen."
 
-#: rc.cpp:610 rc.cpp:1481
+#: rc.cpp:610 rc.cpp:1481 rc.cpp:2370
 #, kde-format
 msgid "The doc id template"
 msgstr "Dokumentennummer-Vorlage"
 
-#: rc.cpp:613 rc.cpp:1484
+#: rc.cpp:613 rc.cpp:1484 rc.cpp:2373
 #, kde-format
 msgid "Localization on document level"
 msgstr "Lokalisierung auf Dokumentebene"
 
-#: rc.cpp:616 rc.cpp:1487
+#: rc.cpp:616 rc.cpp:1487 rc.cpp:2376
 #, kde-format
 msgid "The tax default for new documents."
 msgstr "Der standardmäßige Steuersatz für neue Dokumente."
 
-#: rc.cpp:619 rc.cpp:1490
+#: rc.cpp:619 rc.cpp:1490 rc.cpp:2379
 #, kde-format
 msgid "The label for alternative positions"
 msgstr "Bezeichnung für Alternativposten"
 
-#: rc.cpp:622 rc.cpp:625 rc.cpp:1493 rc.cpp:1496
+#: rc.cpp:622 rc.cpp:625 rc.cpp:1493 rc.cpp:1496 rc.cpp:2382 rc.cpp:2385
 #, kde-format
 msgid "The label for demand positions"
 msgstr "Bezeichnung für Bedarfsposten"
 
-#: rc.cpp:628 rc.cpp:1322 portal.cpp:224
-#, kde-format
-msgid "&Document"
-msgstr "&Dokument"
-
-#: rc.cpp:631 rc.cpp:1325
+#: rc.cpp:631 rc.cpp:1325 rc.cpp:2193
 #, kde-format
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: rc.cpp:637 rc.cpp:1669
+#: rc.cpp:637 rc.cpp:1669 rc.cpp:2561
 #, kde-format
 msgid "Edit Material"
 msgstr "Material bearbeiten"
 
-#: rc.cpp:640 rc.cpp:1672
+#: rc.cpp:640 rc.cpp:1672 rc.cpp:2564
 #, kde-format
 msgid "Store in C&hapter"
 msgstr "In &Kategorie speichern"
 
-#: rc.cpp:646 rc.cpp:1678
+#: rc.cpp:646 rc.cpp:1678 rc.cpp:2570
 #, kde-format
 msgid "Pac&kaged:"
 msgstr "Ge&binde:"
 
-#: rc.cpp:649 rc.cpp:1681
+#: rc.cpp:649 rc.cpp:1681 rc.cpp:2573
 #, kde-format
 msgid "per P&ackage"
 msgstr "pro Ge&binde"
 
-#: rc.cpp:652 rc.cpp:1684
+#: rc.cpp:652 rc.cpp:1684 rc.cpp:2576
 #, kde-format
 msgid "Prices"
 msgstr "Preise"
 
-#: rc.cpp:655 rc.cpp:1687
+#: rc.cpp:655 rc.cpp:1687 rc.cpp:2579
 #, kde-format
 msgid "= Price of &Sale:"
 msgstr "= &Verkaufspreis:"
 
-#: rc.cpp:658 rc.cpp:1690
+#: rc.cpp:658 rc.cpp:1690 rc.cpp:2582
 #, kde-format
 msgid "pl&us"
 msgstr "&zzgl."
 
-#: rc.cpp:662 rc.cpp:755 rc.cpp:1610 rc.cpp:1694
+#: rc.cpp:662 rc.cpp:755 rc.cpp:1610 rc.cpp:1694 rc.cpp:2454 rc.cpp:2586
 #, no-c-format, kde-format
 msgid "%"
 msgstr " %"
 
-#: rc.cpp:665 rc.cpp:1697
+#: rc.cpp:665 rc.cpp:1697 rc.cpp:2589
 #, kde-format
 msgid "&Purchase Price:"
 msgstr "&Einkaufspreis:"
 
-#: rc.cpp:668 rc.cpp:1499
+#: rc.cpp:668 rc.cpp:1499 rc.cpp:2199
 #, kde-format
 msgid "Calculation Item Material"
 msgstr "Materialkostenanteil"
 
-#: rc.cpp:671 rc.cpp:1502
+#: rc.cpp:671 rc.cpp:1502 rc.cpp:2202
 #, kde-format
 msgid "<h1>Calculation Part  'Material'</h1>"
 msgstr "<h1>Kalkulationsanteil „Material“</h1>"
 
-#: rc.cpp:674 rc.cpp:1505
+#: rc.cpp:674 rc.cpp:1505 rc.cpp:2205
 #, kde-format
 msgid "Add Material to the template calculation."
 msgstr "Material zur Kalkulation der Vorlage hinzufügen"
 
-#: rc.cpp:677 rc.cpp:1508
+#: rc.cpp:677 rc.cpp:1508 rc.cpp:2208
 #, kde-format
 msgid "material"
 msgstr "Material"
 
-#: rc.cpp:686 rc.cpp:1517
+#: rc.cpp:686 rc.cpp:1517 rc.cpp:2217
 #, kde-format
 msgid "unit"
 msgstr "Einheit"
 
-#: rc.cpp:689 rc.cpp:1544
+#: rc.cpp:689 rc.cpp:1544 rc.cpp:2388
 #, kde-format
 msgid ""
 "Please enter the MySQL Database server settings. \n"
@@ -2357,84 +2846,84 @@ msgstr ""
 "\n"
 "Für ausführliche Setup Anweisungen, um MySQL mit Kraft zu nutzen besuchen Sie bitte die Kraft Homepage. "
 
-#: rc.cpp:694 rc.cpp:1549
+#: rc.cpp:694 rc.cpp:1549 rc.cpp:2393
 #, kde-format
 msgid "Database Host:"
 msgstr "Datenbank-Rechner:"
 
-#: rc.cpp:697 rc.cpp:1552
+#: rc.cpp:697 rc.cpp:1552 rc.cpp:2396
 #, kde-format
 msgid "Database Name:"
 msgstr "Datenbankname:"
 
-#: rc.cpp:703 rc.cpp:1558
+#: rc.cpp:703 rc.cpp:1558 rc.cpp:2402
 #, kde-format
 msgid "Password:"
 msgstr "Passwort:"
 
-#: rc.cpp:706 rc.cpp:1561
+#: rc.cpp:706 rc.cpp:1561 rc.cpp:2405
 #, kde-format
 msgid "<h3>Edit Number Cycles</h3>"
 msgstr "<h3>Nummernbestimmung bearbeiten</h3>"
 
-#: rc.cpp:709 rc.cpp:1564
+#: rc.cpp:709 rc.cpp:1564 rc.cpp:2408
 #, kde-format
 msgid "Number Cycle Details"
 msgstr "Nummernbestimmung"
 
-#: rc.cpp:712 rc.cpp:1567
+#: rc.cpp:712 rc.cpp:1567 rc.cpp:2411
 #, kde-format
 msgid "&Number Cycle:"
 msgstr "&Nummernbestimmung"
 
-#: rc.cpp:715 rc.cpp:1570
+#: rc.cpp:715 rc.cpp:1570 rc.cpp:2414
 #, kde-format
 msgid "&Counter:"
 msgstr "&Anfangswert:"
 
-#: rc.cpp:721 rc.cpp:1576
+#: rc.cpp:721 rc.cpp:1576 rc.cpp:2420
 #, kde-format
 msgid "ident &Template:"
 msgstr "Identifizierungs&vorlage:"
 
-#: rc.cpp:727 rc.cpp:1582
+#: rc.cpp:727 rc.cpp:1582 rc.cpp:2426
 #, kde-format
 msgid "&Select a number cycle and edit the details on the right:"
 msgstr ""
 "&Wählen Sie eine Nummernbestimmung aus der Liste und bearbeiten Sie diese "
 "auf der rechten Seite:"
 
-#: rc.cpp:730 rc.cpp:1585
+#: rc.cpp:730 rc.cpp:1585 rc.cpp:2429
 #, kde-format
 msgid "New Item"
 msgstr "Neuer Posten"
 
-#: rc.cpp:736 rc.cpp:1591
+#: rc.cpp:736 rc.cpp:1591 rc.cpp:2435
 #, kde-format
 msgid "add"
 msgstr "Hinzufügen"
 
-#: rc.cpp:742 rc.cpp:1597
+#: rc.cpp:742 rc.cpp:1597 rc.cpp:2441
 #, kde-format
 msgid "remove"
 msgstr "Entfernen"
 
-#: rc.cpp:745 rc.cpp:1600
+#: rc.cpp:745 rc.cpp:1600 rc.cpp:2444
 #, kde-format
 msgid "1."
 msgstr "1."
 
-#: rc.cpp:748 rc.cpp:751 rc.cpp:1603 rc.cpp:1606
+#: rc.cpp:748 rc.cpp:751 rc.cpp:1603 rc.cpp:1606 rc.cpp:2447 rc.cpp:2450
 #, kde-format
 msgid "D"
 msgstr "D"
 
-#: rc.cpp:758 rc.cpp:1613
+#: rc.cpp:758 rc.cpp:1613 rc.cpp:2457
 #, kde-format
 msgid "of the sum of"
 msgstr "der Summe von"
 
-#: rc.cpp:761 rc.cpp:1616
+#: rc.cpp:761 rc.cpp:1616 rc.cpp:2460
 #, kde-format
 msgid ""
 "Please enter the SQLite Database Settings.\n"
@@ -2445,72 +2934,72 @@ msgstr ""
 "\n"
 "Wählen Sie einen Dateinamen, um die SQLite-Datenbank-Datei zu benennen, oder übernehmen Sie die Voreinstellung. "
 
-#: rc.cpp:766 rc.cpp:1621
+#: rc.cpp:766 rc.cpp:1621 rc.cpp:2465
 #, kde-format
 msgid "store the database file at default place."
 msgstr "Speichern der Datenbank-Datei am voreingestellten Ort."
 
-#: rc.cpp:769 rc.cpp:1624
+#: rc.cpp:769 rc.cpp:1624 rc.cpp:2468
 #, kde-format
 msgid "select a file name:"
 msgstr "Dateinamen auswählen:"
 
-#: rc.cpp:772 rc.cpp:1627
+#: rc.cpp:772 rc.cpp:1627 rc.cpp:2480
 #, kde-format
 msgid "<h2>Add a Tax Rate</h2>"
 msgstr "<h2>Steuersatz hinzufügen</h2>"
 
-#: rc.cpp:775 rc.cpp:1630
+#: rc.cpp:775 rc.cpp:1630 rc.cpp:2483
 #, kde-format
 msgid "Start-Date:"
 msgstr "Anfangsdatum:"
 
-#: rc.cpp:778 rc.cpp:1633
+#: rc.cpp:778 rc.cpp:1633 rc.cpp:2486
 #, kde-format
 msgid "&Reduced Tax Rate:"
 msgstr "&Reduzierter Steuersatz:"
 
-#: rc.cpp:781 rc.cpp:1636
+#: rc.cpp:781 rc.cpp:1636 rc.cpp:2489
 #, kde-format
 msgid "&Full Tax Rate:"
 msgstr "&Allgemeiner Steuersatz:"
 
-#: rc.cpp:784 rc.cpp:1639
+#: rc.cpp:784 rc.cpp:1639 rc.cpp:2492
 #, kde-format
 msgid "Edit Document Text Template"
 msgstr "Dokumenten-Textvorlage bearbeiten"
 
-#: rc.cpp:787 rc.cpp:1642
+#: rc.cpp:787 rc.cpp:1642 rc.cpp:2495
 #, kde-format
 msgid "&Name:"
 msgstr "&Name:"
 
-#: rc.cpp:790 rc.cpp:1645
+#: rc.cpp:790 rc.cpp:1645 rc.cpp:2498
 #, kde-format
 msgid "displayed as"
 msgstr "angezeigt als"
 
-#: rc.cpp:793 rc.cpp:1648
+#: rc.cpp:793 rc.cpp:1648 rc.cpp:2501
 #, kde-format
 msgid "in doc type"
 msgstr "im Dokumenttyp"
 
-#: rc.cpp:796 rc.cpp:1651
+#: rc.cpp:796 rc.cpp:1651 rc.cpp:2504
 #, kde-format
 msgid "&Text:"
 msgstr "&Text:"
 
-#: rc.cpp:799 rc.cpp:1520
+#: rc.cpp:799 rc.cpp:1520 rc.cpp:2519
 #, kde-format
 msgid "Calculation Item Time"
 msgstr "Zeitkostenanteil"
 
-#: rc.cpp:802 rc.cpp:1523
+#: rc.cpp:802 rc.cpp:1523 rc.cpp:2522
 #, kde-format
 msgid "<h1>Calculation Part 'Time'</h1>"
 msgstr "<h1>Arbeitszeitverrechnung</h1>"
 
-#: rc.cpp:805 rc.cpp:1526
+#: rc.cpp:805 rc.cpp:1526 rc.cpp:2525
 #, kde-format
 msgid ""
 "Calculate time efforts here for one unit of the template. <br/>Note that the"
@@ -2520,52 +3009,52 @@ msgstr ""
 "<br/>Beachten Sie dabei, dass die Kosten auf einem globalen Stundensatz "
 "beruhen können."
 
-#: rc.cpp:811 rc.cpp:1532
+#: rc.cpp:811 rc.cpp:1532 rc.cpp:2531
 #, kde-format
 msgid "Work"
 msgstr "Arbeitsaufwand"
 
-#: rc.cpp:814 rc.cpp:1535
+#: rc.cpp:814 rc.cpp:1535 rc.cpp:2534
 #, kde-format
 msgid "&Time Effort:"
 msgstr "&Zeitaufwand:"
 
-#: rc.cpp:817 rc.cpp:1538
+#: rc.cpp:817 rc.cpp:1538 rc.cpp:2537
 #, kde-format
 msgid "&Hourly Rate:"
 msgstr "&Stundensatz:"
 
-#: rc.cpp:820 rc.cpp:1541
+#: rc.cpp:820 rc.cpp:1541 rc.cpp:2540
 #, kde-format
 msgid "Apply the &global hourly rate"
 msgstr "Globalen Stundensatz anwenden"
 
-#: rc.cpp:823 rc.cpp:1654
+#: rc.cpp:823 rc.cpp:1654 rc.cpp:2543
 #, kde-format
 msgid "<h1>Add a unit</h1>"
 msgstr "<h2>Einheit hinzufügen</h2>"
 
-#: rc.cpp:826 rc.cpp:1657
+#: rc.cpp:826 rc.cpp:1657 rc.cpp:2546
 #, kde-format
 msgid "Unit short"
 msgstr "Einheit (kurz)"
 
-#: rc.cpp:829 rc.cpp:1660
+#: rc.cpp:829 rc.cpp:1660 rc.cpp:2549
 #, kde-format
 msgid "Unit long"
 msgstr "Einheit (ausführlich)"
 
-#: rc.cpp:832 rc.cpp:1663
+#: rc.cpp:832 rc.cpp:1663 rc.cpp:2552
 #, kde-format
 msgid "Unit plural short"
 msgstr "Einheiten-Mehrzahl (kurz)"
 
-#: rc.cpp:835 rc.cpp:1666
+#: rc.cpp:835 rc.cpp:1666 rc.cpp:2555
 #, kde-format
 msgid "Unit plural long"
 msgstr "Einheiten-Mehrzahl (ausführlich)"
 
-#: rc.cpp:838 rc.cpp:1700
+#: rc.cpp:838 rc.cpp:1700 rc.cpp:2592
 #, kde-format
 msgid ""
 "This step checks if the database schema version is sufficient for this version of Kraft. \n"
@@ -2576,25 +3065,69 @@ msgstr ""
 "\n"
 "Wenn sie nicht ausreicht, wird das Schema automatisch aktualisiert.\n"
 
-#: rc.cpp:853 rc.cpp:1715
+#: rc.cpp:853 rc.cpp:1715 rc.cpp:2607
 #, kde-format
 msgid "Upgrade not yet started"
 msgstr "Die Aktualisierung wurde noch nicht eingeleitet."
 
-#: rc.cpp:856 rc.cpp:1718
+#: rc.cpp:856 rc.cpp:1718 rc.cpp:2471
 #, kde-format
 msgid "<h1>Add a Wage group</h1>"
 msgstr "<h2>Lohngruppe hinzufügen</h2>"
 
-#: rc.cpp:859 rc.cpp:1721
+#: rc.cpp:859 rc.cpp:1721 rc.cpp:2474
 #, kde-format
 msgid "Group name"
 msgstr "Gruppenname"
 
-#: rc.cpp:862 rc.cpp:1724
+#: rc.cpp:862 rc.cpp:1724 rc.cpp:2477
 #, kde-format
 msgid "Wage"
 msgstr "Arbeitslohn"
+
+#: rc.cpp:2109 rc.cpp:2118
+#, kde-format
+msgid "select"
+msgstr "auswählen"
+
+#: rc.cpp:2112
+#, kde-format
+msgid "&Watermark File:"
+msgstr "&Wasserzeichen Datei:"
+
+#: rc.cpp:2130
+#, kde-format
+msgid "&Template File:"
+msgstr "Vorlagen Da&tei:"
+
+#: rc.cpp:2507
+#, kde-format
+msgid "Dialog"
+msgstr "Dialog"
+
+#: rc.cpp:2510
+#, kde-format
+msgid ""
+"<html><head/><body><p><span style=\" font-size:14pt; font-"
+"weight:600;\">XRechnung Additional Data</span></p></body></html>"
+msgstr ""
+"<html><head/><body><p><span style=\" font-size:14pt; font-"
+"weight:600;\">XRechnung: Zusätzliche Daten</p></body></html>"
+
+#: rc.cpp:2513
+#, kde-format
+msgid "Due Date:"
+msgstr "Zahlungsziel-Datum:"
+
+#: rc.cpp:2516
+#, kde-format
+msgid "Buyer Reference:"
+msgstr "Käufer-Referenz:"
+
+#: rc.cpp:2558
+#, kde-format
+msgid "Unit ECE20"
+msgstr "Einheit ECE20"
 
 #: models/docbasemodel.cpp:33
 #, kde-format
@@ -2640,36 +3173,6 @@ msgstr "Adresse wird gesucht"
 #, kde-format
 msgid "Lookup started"
 msgstr "Suche gestartet"
-
-#: itemtagdialog.cpp:82
-#, kde-format
-msgid "Edit Item Tags"
-msgstr "Posten-Markierungen bearbeiten"
-
-#: itemtagdialog.cpp:89
-#, kde-format
-msgid "Item Tags"
-msgstr "Posten-Markierungen"
-
-#: itemtagdialog.cpp:90
-#, kde-format
-msgid "Select all tags for the item should be tagged with."
-msgstr "Wählen Sie alle Markierungen für den Posten aus."
-
-#: itemtagdialog.cpp:105 tagtemplatesdialog.cpp:150
-#, kde-format
-msgid "Tag"
-msgstr "Markierung"
-
-#: itemtagdialog.cpp:106 tagtemplatesdialog.cpp:151
-#, kde-format
-msgid "Color"
-msgstr "Farbe"
-
-#: itemtagdialog.cpp:107 tagtemplatesdialog.cpp:152
-#, kde-format
-msgid "Description"
-msgstr "Beschreibung"
 
 #: numbercycledialog.cpp:52
 #, kde-format
@@ -2750,535 +3253,6 @@ msgstr ""
 "Möglichkeit, dass Dokumentennummern doppelt vergeben werden. Möchten Sie den"
 " neuen Anfangswert wirklich übernehmen?"
 
-#: portalview.cpp:65
-#, kde-format
-msgid "About Kraft"
-msgstr "Über Kraft"
-
-#: portalview.cpp:83
-#, kde-format
-msgid "Documents"
-msgstr "Dokumente"
-
-#: portalview.cpp:89
-#, kde-format
-msgid "Timeline"
-msgstr "Zeitverlauf"
-
-#: portalview.cpp:96
-#, kde-format
-msgid "Catalogs"
-msgstr "Kataloge"
-
-#: portalview.cpp:134
-#, kde-format
-msgid "Kraft Document Overview"
-msgstr "Kraft-Dokument-Übersicht"
-
-#: portalview.cpp:141 portalview.cpp:160
-#, kde-format
-msgid "Available Catalogs"
-msgstr "Verfügbare Kataloge"
-
-#: portalview.cpp:143
-#, kde-format
-msgid "No catalogs available."
-msgstr "Keine Kataloge installiert"
-
-#: portalview.cpp:192
-#, kde-format
-msgid "Open"
-msgstr "Öffnen"
-
-#: portalview.cpp:203
-#, kde-format
-msgid "No templates yet."
-msgstr "Noch keine Vorlage angelegt."
-
-#: portalview.cpp:208
-#, kde-format
-msgid "%1 templates in %2 chapters<br/>last modified at %3"
-msgstr "%1 Vorlagen in %2 Kapiteln<br/>Zuletzt angepasst am %3"
-
-#: portalview.cpp:215
-#, kde-format
-msgid "XML Export"
-msgstr "XML-Export"
-
-#: portalview.cpp:270
-#, kde-format
-msgid "Kraft Website"
-msgstr "Kraft Webseite"
-
-#: portalview.cpp:273
-#, kde-format
-msgctxt "The string is followed by a link to the GPL2 text"
-msgid "Kraft is free software licensed under the"
-msgstr "Kraft ist freie Software lizensiert unter"
-
-#: portalview.cpp:274
-#, kde-format
-msgctxt "The string is followed by the link to github"
-msgid "Kraft is maintained on "
-msgstr "Kraft wird entwickelt auf "
-
-#: portalview.cpp:275
-#, kde-format
-msgid "Authors"
-msgstr "Autoren"
-
-#: portalview.cpp:276
-#, kde-format
-msgid "Developer and Maintainer"
-msgstr "Entwickler und Maintainer"
-
-#: portalview.cpp:277
-#, kde-format
-msgid "Developer"
-msgstr "Entwickler"
-
-#: portalview.cpp:278
-#, kde-format
-msgctxt "The person who provided the logo graphics"
-msgid "Logo design"
-msgstr "Logo Entwurf"
-
-#: portalview.cpp:279
-#, kde-format
-msgctxt "The person who provided the user manual"
-msgid "User Manual"
-msgstr "Bentzerhandbuch"
-
-#: portalview.cpp:281
-#, kde-format
-msgid ""
-"Kraft helps you to handle documents like quotes and invoices in your small "
-"business."
-msgstr ""
-"Kraft ist freie Software zur schnellen, flexiblen und professionellen "
-"Angebots- und Rechnungsbearbeitung."
-
-#: portalview.cpp:282
-#, kde-format
-msgid "Welcome to Kraft"
-msgstr "Willkommen zu Kraft"
-
-#: portalview.cpp:283
-#, kde-format
-msgid "Kraft Version"
-msgstr "Kraft-Version"
-
-#: portalview.cpp:285
-#, kde-format
-msgid "Codename"
-msgstr "Codename"
-
-#: portalview.cpp:288
-#, kde-format
-msgid "Country Setting"
-msgstr "Ländereinstellung"
-
-#: portalview.cpp:291
-#, kde-format
-msgid "Language Setting"
-msgstr "Spracheinstellung"
-
-#: portalview.cpp:295
-#, kde-format
-msgid "Kraft Initialisation Problem"
-msgstr "Kraft Initialisierungsproblem"
-
-#: portalview.cpp:296
-#, kde-format
-msgid ""
-"There is a initialisation error on your system. Kraft will not work that "
-"way."
-msgstr ""
-"Bei der Initialisierung ist ein Fehler aufgetreten. Kraft wird so nicht "
-"funktionieren."
-
-#: portalview.cpp:303
-#, kde-format
-msgid "Database Information"
-msgstr "Datenbank-Informationen"
-
-#: portalview.cpp:304
-#, kde-format
-msgid "Kraft database name"
-msgstr "Kraft-Datenbankname"
-
-#: portalview.cpp:309
-#, kde-format
-msgid "Required Version"
-msgstr "Nötige Version"
-
-#: portalview.cpp:312
-#, kde-format
-msgid "Database schema version"
-msgstr "Datenbankschema-Version"
-
-#: portalview.cpp:314
-#, kde-format
-msgid "Qt database driver"
-msgstr "Qt-Datenbank-Treiber"
-
-#: portalview.cpp:318
-#, kde-format
-msgid "established"
-msgstr "Verbunden"
-
-#: portalview.cpp:318
-#, kde-format
-msgid "NOT AVAILABLE!"
-msgstr "NICHT VERFÜGBAR"
-
-#: portalview.cpp:319
-#, kde-format
-msgid "Database connection"
-msgstr "Datenbankverbindung"
-
-#: portalview.cpp:328
-#, kde-format
-msgid "Database Version"
-msgstr "Datenbankversion"
-
-#: portalview.cpp:336
-#, kde-format
-msgid "Addressbook Backend"
-msgstr "Adressbuch-Backend"
-
-#: portalview.cpp:337
-#, kde-format
-msgid "Backend type"
-msgstr "Backendtyp"
-
-#: portalview.cpp:339
-#, kde-format
-msgid "running"
-msgstr "läuft"
-
-#: portalview.cpp:339
-#, kde-format
-msgid "not running"
-msgstr "nicht funktionsfähig"
-
-#: portalview.cpp:343
-#, kde-format
-msgid "External Tools"
-msgstr "Externe Werkzeuge"
-
-#: portalview.cpp:344
-#, kde-format
-msgid "RML to PDF conversion tool"
-msgstr "Umwandlungsprogramm (RML zu PDF):"
-
-#: portalview.cpp:347
-#, kde-format
-msgid "not found!"
-msgstr "nicht gefunden."
-
-#: portalview.cpp:350
-#, kde-format
-msgid "iconv tool for text import"
-msgstr "„iconv“-Werkzeug zum Textimport"
-
-#: portalview.cpp:353
-#, kde-format
-msgid "<a href=\"https://weasyprint.org/\">weasyprint</a> for PDF generation"
-msgstr "weasyprint zur PDF Generierung"
-
-#: portalview.cpp:357
-#, kde-format
-msgid "not available"
-msgstr "nicht gefunden"
-
-#: portalview.cpp:362
-#, kde-format
-msgid "Some Icons are made by"
-msgstr "Einige Icons sind erstellt von"
-
-#: portalview.cpp:363
-#, kde-format
-msgid "Acknowledgements"
-msgstr "Danksagung"
-
-#: prefsdialog.cpp:66
-#, kde-format
-msgid "Configure Kraft"
-msgstr "Kraft einrichten"
-
-#: prefsdialog.cpp:100
-#, kde-format
-msgid "Document Defaults"
-msgstr "Dokumentenstandards"
-
-#: prefsdialog.cpp:101
-#, kde-format
-msgid "Taxes"
-msgstr "Steuersätze"
-
-#: prefsdialog.cpp:102
-#, kde-format
-msgid "Document Types"
-msgstr "Dokumentenart"
-
-#: prefsdialog.cpp:104
-#, kde-format
-msgid "Wages"
-msgstr "Löhne"
-
-#: prefsdialog.cpp:106
-#, kde-format
-msgid "Units"
-msgstr "Maßeinheiten"
-
-#: prefsdialog.cpp:107
-#, kde-format
-msgid "Own Identity"
-msgstr "Eigene Identität"
-
-#: prefsdialog.cpp:154
-#, kde-format
-msgid "Tax rates beginning at date:"
-msgstr "Steuersätze nach Datum:"
-
-#: prefsdialog.cpp:162 prefsunits.cpp:53 prefswages.cpp:51
-#, kde-format
-msgid "ID"
-msgstr "ID"
-
-#: prefsdialog.cpp:163
-#, kde-format
-msgid "Full Tax [%]"
-msgstr "Allgemeiner Steuersatz"
-
-#: prefsdialog.cpp:164
-#, kde-format
-msgid "Reduced Tax [%]"
-msgstr "Reduzierter Steuersatz"
-
-#: prefsdialog.cpp:165
-#, kde-format
-msgid "Start Date"
-msgstr "Anfangsdatum:"
-
-#: prefsdialog.cpp:205
-#, kde-format
-msgid ""
-"Select the identity of the sending entity of documents. That's <b>your "
-"companies</b> address."
-msgstr ""
-"Wählen Sie die Identität für den Versand von Dokumenten. Das ist <b>Ihre "
-"Firmenadresse</b>."
-
-#: prefsdialog.cpp:221
-#, kde-format
-msgid "Select Identity..."
-msgstr "Identität auswählen ..."
-
-#: prefsdialog.cpp:227
-#, kde-format
-msgid "From AddressBook"
-msgstr "aus dem Adressbuch"
-
-#: prefsdialog.cpp:232 setupassistant.cpp:340
-#, kde-format
-msgid "Manual Entry"
-msgstr "Manueller Eintrag"
-
-#: prefsdialog.cpp:244
-#, kde-format
-msgid "Manual Address"
-msgstr "Manuelle Adresse"
-
-#: prefsdialog.cpp:299
-#, kde-format
-msgid "&Default document type on creation:"
-msgstr "&Standard-Dokumenttyp bei Erstellung:"
-
-#: prefsdialog.cpp:304
-#, kde-format
-msgid "New documents default to the selected type."
-msgstr "Neue Dokumente sind standardmäßig von diesem Typ."
-
-#: prefsdialog.cpp:313
-#, kde-format
-msgid "Default &Tax for Documents:"
-msgstr "Standardmäßiger &Steuersatz:"
-
-#: prefsdialog.cpp:318
-#, kde-format
-msgid "The default tax setting for all documents."
-msgstr ""
-"Die standardmäßigen Einstellungen des Steuersatzes für alle Dokumente."
-
-#: prefsdialog.cpp:330
-#, kde-format
-msgid "Document Date Format:"
-msgstr "Datumsformat im Dokument:"
-
-#: prefsdialog.cpp:336
-#, kde-format
-msgid "The default date format for documents."
-msgstr "Das voreingestellte Datumsformat für Dokumente."
-
-#: prefsdialog.cpp:338
-#, kde-format
-msgid "ISO-Format: %1"
-msgstr "ISO-Format: %1"
-
-#: prefsdialog.cpp:340
-#, kde-format
-msgid "Short-Date: %1"
-msgstr "Datum in Kurzform: %1"
-
-#: prefsdialog.cpp:342
-#, kde-format
-msgid "Long-Date: %1"
-msgstr "Datum in Langform: %1"
-
-#: prefsdialog.cpp:344
-#, kde-format
-msgid "RFC 2822-Format: %1"
-msgstr "RFC 2822-Format: %1"
-
-#: prefsdialog.cpp:346
-#, kde-format
-msgid "\"German Format\": %1"
-msgstr "\"Deutsches Format\": %1"
-
-#: prefsdialog.cpp:347
-#, kde-format
-msgid "Custom Setting in Settingsfile"
-msgstr "Benutzerdefiniert aus dem Settingsfile"
-
-#: prefsdialog.cpp:382
-#, kde-format
-msgid ""
-"The old default doc type for new documents was just deleted.Please check the"
-" setting in the Document Defaults in the Kraft preferences Dialog."
-msgstr ""
-"Der alte Standard-Dokumenttyp für neue Dokumente wurde gelöscht. Bitte "
-"überprüfen Sie die Einstellung der Dokumentenstandards im Dialog "
-"Einstellungen von Kraft."
-
-#: prefsdialog.cpp:385
-#, kde-format
-msgid "Document Default Change"
-msgstr "Änderung des Standard-Dokumenttyps"
-
-#: prefsdialog.cpp:593
-#, kde-format
-msgid "The identity can not be found."
-msgstr "Die Identität ist in keinem Adressbuch enthalten."
-
-#: prefsdialog.cpp:595
-#, kde-format
-msgid ""
-"<p><b>Kraft Addressbook Integration down.</b></p><p>The address book backend"
-" is not up and running.</p><p>Please check your addressbook integration "
-"setup.</p>"
-msgstr ""
-"<p><b>Die Kraft Adressbuch-Integration funktioniert nicht</b></p><p>Das "
-"Adressbuch-Backend läuft nicht.</p><p>Bitte Adressbuch-Setup überprüfen</p>"
-
-#: prefsdialog.cpp:601
-#, kde-format
-msgid "The identity is not listed in an address book."
-msgstr "Die Identität ist in keinem Adressbuch enthalten."
-
-#: prefsdialog.cpp:603
-#, kde-format
-msgid ""
-"<p><b>Kraft does not know your identity.</b></p><p>Please pick one from the "
-"address books by clicking on the Button below.</p><p>Not having an identity "
-"selected can make your documents look incomplete.</p>"
-msgstr ""
-"<p><b>Ihre Identität ist nicht eingestellt.</b></p><p>Bitte wählen Sie eine "
-"Identität aus dem Adressbuch, indem Sie auf den Knopf unten "
-"klicken..</p><p>Haben Sie keine Identität ausgewählt, dann werden Ihre "
-"Dokumente unvollständig aussehen.</p>"
-
-#: prefsdialog.cpp:620
-#, kde-format
-msgid "Your identity can be found in the address books."
-msgstr "Ihre Identität wurde in den Adressbüchern gefunden."
-
-#: prefsdialog.cpp:631
-#, kde-format
-msgid "Work Phone"
-msgstr "Telefon (Arbeit)"
-
-#: prefsdialog.cpp:632
-#, kde-format
-msgid "Fax"
-msgstr "Fax"
-
-#: prefsdialog.cpp:633
-#, kde-format
-msgid "Cell Phone"
-msgstr "Mobiltelefon"
-
-#: prefsunits.cpp:54
-#, kde-format
-msgid "Short"
-msgstr "Kurz"
-
-#: prefsunits.cpp:55
-#, kde-format
-msgid "Long"
-msgstr "Lang"
-
-#: prefsunits.cpp:56
-#, kde-format
-msgid "Short plural"
-msgstr "Mehrzahl kurz"
-
-#: prefsunits.cpp:57
-#, kde-format
-msgid "Long plural"
-msgstr "Mehrzahl lang"
-
-#: prefsunits.cpp:152
-#, kde-format
-msgid "Edit a unit"
-msgstr "Eine Maßeinheit bearbeiten"
-
-#: prefsunits.cpp:195
-#, kde-format
-msgid "<h1>Edit unit</h1>"
-msgstr "<h1>Maßeinheit bearbeiten</h1>"
-
-#: prefswages.cpp:52
-#, kde-format
-msgid "Code"
-msgstr "Code"
-
-#: prefswages.cpp:54
-#, kde-format
-msgid "Sortkey"
-msgstr "Sortierschlüssel"
-
-#: prefswages.cpp:80
-#, kde-format
-msgid "Up"
-msgstr "Nach oben"
-
-#: prefswages.cpp:85
-#, kde-format
-msgid "Down"
-msgstr "Nach unten"
-
-#: prefswages.cpp:201
-#, kde-format
-msgid "Edit a wage group"
-msgstr "Lohngruppe bearbeiten"
-
-#: prefswages.cpp:241
-#, kde-format
-msgid "<h1>Edit wage group</h1>"
-msgstr "<h1>Lohngruppe bearbeiten</h1>"
-
 #: reportgenerator.cpp:113
 #, kde-format
 msgid "Document generation process is still running."
@@ -3321,43 +3295,295 @@ msgstr "Das Reportlab Python-Modul ist nicht installiert."
 
 #: reportgenerator.cpp:304
 #, kde-format
+msgid "The PyPDF2 python module is not installed."
+msgstr "Das PyPDF2 Python Modul ist nicht installiert."
+
+#: reportgenerator.cpp:307
+#, kde-format
 msgid "The source file can not be read."
 msgstr "Die Quelldatei kann nicht gelesen werden."
 
-#: reportgenerator.cpp:307
+#: reportgenerator.cpp:310
 #, kde-format
 msgid "The target can not be opened to write."
 msgstr "Das Ziel kann nicht zum Schreiben geöffnet werden."
 
-#: reportgenerator.cpp:310
+#: reportgenerator.cpp:313
 #, kde-format
 msgid "The target file does not exist."
 msgstr "Die Zieldatei existiert nicht."
 
-#: reportgenerator.cpp:313
+#: reportgenerator.cpp:316
 #, kde-format
 msgid "The WeasyPrint tool is not installed."
 msgstr "Das Tool Weasyprint ist nicht installiert."
 
-#: reportgenerator.cpp:316
+#: reportgenerator.cpp:319
 #, kde-format
 msgid "The PDF merger utility failed."
 msgstr "Das Programm zum Verbinden von PDFs ist fehlgeschlagen."
 
-#: reportgenerator.cpp:335
+#: reportgenerator.cpp:338
 #, kde-format
 msgid "There is not template defined for %1."
 msgstr "Für %1 ist keine Vorlage angegeben."
 
-#: reportgenerator.cpp:340
+#: reportgenerator.cpp:343
 #, kde-format
 msgid "The template file %1 for document type %2 does not exist."
 msgstr "Die Vorlage %1 für Dokument Typ %2 existiert nicht."
 
-#: reportgenerator.cpp:344
+#: reportgenerator.cpp:347
 #, kde-format
 msgid "The template file %1 for document type %2 can not be read."
 msgstr "Die Vorlage %1 für Dokument Typ %2 kann nicht gelesen werden."
+
+#: portalview.cpp:66
+#, kde-format
+msgid "About Kraft"
+msgstr "Über Kraft"
+
+#: portalview.cpp:84
+#, kde-format
+msgid "Documents"
+msgstr "Dokumente"
+
+#: portalview.cpp:90
+#, kde-format
+msgid "Timeline"
+msgstr "Zeitverlauf"
+
+#: portalview.cpp:97
+#, kde-format
+msgid "Catalogs"
+msgstr "Kataloge"
+
+#: portalview.cpp:135
+#, kde-format
+msgid "Kraft Document Overview"
+msgstr "Kraft-Dokument-Übersicht"
+
+#: portalview.cpp:142 portalview.cpp:161
+#, kde-format
+msgid "Available Catalogs"
+msgstr "Verfügbare Kataloge"
+
+#: portalview.cpp:144
+#, kde-format
+msgid "No catalogs available."
+msgstr "Keine Kataloge installiert"
+
+#: portalview.cpp:193
+#, kde-format
+msgid "Open"
+msgstr "Öffnen"
+
+#: portalview.cpp:204
+#, kde-format
+msgid "No templates yet."
+msgstr "Noch keine Vorlage angelegt."
+
+#: portalview.cpp:208
+#, kde-format
+msgid "%1 templates in %2 chapters<br/>last modified at %3"
+msgstr "%1 Vorlagen in %2 Kapiteln<br/>Zuletzt angepasst am %3"
+
+#: portalview.cpp:259
+#, kde-format
+msgid "Kraft Website"
+msgstr "Kraft Webseite"
+
+#: portalview.cpp:262
+#, kde-format
+msgctxt "The string is followed by a link to the GPL2 text"
+msgid "Kraft is free software licensed under the"
+msgstr "Kraft ist freie Software lizensiert unter"
+
+#: portalview.cpp:263
+#, kde-format
+msgctxt "The string is followed by the link to github"
+msgid "Kraft is maintained on "
+msgstr "Kraft wird entwickelt auf "
+
+#: portalview.cpp:264
+#, kde-format
+msgid "Authors"
+msgstr "Autoren"
+
+#: portalview.cpp:265
+#, kde-format
+msgid "Developer and Maintainer"
+msgstr "Entwickler und Maintainer"
+
+#: portalview.cpp:266
+#, kde-format
+msgid "Developer"
+msgstr "Entwickler"
+
+#: portalview.cpp:267
+#, kde-format
+msgctxt "The person who provided the logo graphics"
+msgid "Logo design"
+msgstr "Logo Entwurf"
+
+#: portalview.cpp:268
+#, kde-format
+msgctxt "The person who provided the user manual"
+msgid "User Manual"
+msgstr "Bentzerhandbuch"
+
+#: portalview.cpp:270
+#, kde-format
+msgid ""
+"Kraft helps you to handle documents like quotes and invoices in your small "
+"business."
+msgstr ""
+"Kraft ist freie Software zur schnellen, flexiblen und professionellen "
+"Angebots- und Rechnungsbearbeitung."
+
+#: portalview.cpp:271
+#, kde-format
+msgid "Welcome to Kraft"
+msgstr "Willkommen zu Kraft"
+
+#: portalview.cpp:272
+#, kde-format
+msgid "Kraft Version"
+msgstr "Kraft-Version"
+
+#: portalview.cpp:274
+#, kde-format
+msgid "Codename"
+msgstr "Codename"
+
+#: portalview.cpp:277
+#, kde-format
+msgid "Country Setting"
+msgstr "Ländereinstellung"
+
+#: portalview.cpp:280
+#, kde-format
+msgid "Language Setting"
+msgstr "Spracheinstellung"
+
+#: portalview.cpp:284
+#, kde-format
+msgid "Kraft Initialisation Problem"
+msgstr "Kraft Initialisierungsproblem"
+
+#: portalview.cpp:285
+#, kde-format
+msgid ""
+"There is a initialisation error on your system. Kraft will not work that "
+"way."
+msgstr ""
+"Bei der Initialisierung ist ein Fehler aufgetreten. Kraft wird so nicht "
+"funktionieren."
+
+#: portalview.cpp:292
+#, kde-format
+msgid "Database Information"
+msgstr "Datenbank-Informationen"
+
+#: portalview.cpp:293
+#, kde-format
+msgid "Kraft database name"
+msgstr "Kraft-Datenbankname"
+
+#: portalview.cpp:298
+#, kde-format
+msgid "Required Version"
+msgstr "Nötige Version"
+
+#: portalview.cpp:301
+#, kde-format
+msgid "Database schema version"
+msgstr "Datenbankschema-Version"
+
+#: portalview.cpp:303
+#, kde-format
+msgid "Qt database driver"
+msgstr "Qt-Datenbank-Treiber"
+
+#: portalview.cpp:307
+#, kde-format
+msgid "established"
+msgstr "Verbunden"
+
+#: portalview.cpp:307
+#, kde-format
+msgid "NOT AVAILABLE!"
+msgstr "NICHT VERFÜGBAR"
+
+#: portalview.cpp:308
+#, kde-format
+msgid "Database connection"
+msgstr "Datenbankverbindung"
+
+#: portalview.cpp:317
+#, kde-format
+msgid "Database Version"
+msgstr "Datenbankversion"
+
+#: portalview.cpp:325
+#, kde-format
+msgid "Addressbook Backend"
+msgstr "Adressbuch-Backend"
+
+#: portalview.cpp:326
+#, kde-format
+msgid "Backend type"
+msgstr "Backendtyp"
+
+#: portalview.cpp:328
+#, kde-format
+msgid "running"
+msgstr "läuft"
+
+#: portalview.cpp:328
+#, kde-format
+msgid "not running"
+msgstr "nicht funktionsfähig"
+
+#: portalview.cpp:332
+#, kde-format
+msgid "External Tools"
+msgstr "Externe Werkzeuge"
+
+#: portalview.cpp:334
+#, kde-format
+msgid "RML to PDF conversion tool"
+msgstr "Umwandlungsprogramm (RML zu PDF):"
+
+#: portalview.cpp:336
+#, kde-format
+msgid "not found!"
+msgstr "nicht gefunden."
+
+#: portalview.cpp:339
+#, kde-format
+msgid "iconv tool for text import"
+msgstr "„iconv“-Werkzeug zum Textimport"
+
+#: portalview.cpp:342
+#, kde-format
+msgid "<a href=\"https://weasyprint.org/\">weasyprint</a> for PDF generation"
+msgstr "weasyprint zur PDF Generierung"
+
+#: portalview.cpp:346
+#, kde-format
+msgid "not available"
+msgstr "nicht gefunden"
+
+#: portalview.cpp:351
+#, kde-format
+msgid "Some Icons are made by"
+msgstr "Einige Icons sind erstellt von"
+
+#: portalview.cpp:352
+#, kde-format
+msgid "Acknowledgements"
+msgstr "Danksagung"
 
 #: setupassistant.cpp:36
 #, kde-format
@@ -3399,12 +3625,12 @@ msgstr "%1 / %2"
 msgid "Upgrade the Database"
 msgstr "Datenbankschema aktualisieren"
 
-#: setupassistant.cpp:313
+#: setupassistant.cpp:314
 #, kde-format
 msgid "Your Company Address"
 msgstr "Adresse der Firma"
 
-#: setupassistant.cpp:318
+#: setupassistant.cpp:319
 #, kde-format
 msgid ""
 "Select your companies address either from the address book or enter it "
@@ -3413,17 +3639,17 @@ msgstr ""
 "Wählen Sie die Adresse Ihrer Firma aus dem Adressbuch oder tragen Sie sie "
 "manuell ein. Sie wird als Absender der Dokumente verwendet."
 
-#: setupassistant.cpp:325
+#: setupassistant.cpp:328
 #, kde-format
 msgid "Select from Addressbook"
 msgstr "Aus dem Adressbuch"
 
-#: setupassistant.cpp:416
+#: setupassistant.cpp:418
 #, kde-format
 msgid "Final Status"
 msgstr "Endergebnis"
 
-#: setupassistant.cpp:510
+#: setupassistant.cpp:512
 #, kde-format
 msgid ""
 "<p>Can't connect to your database. Are you sure your credentials are correct"
@@ -3433,14 +3659,14 @@ msgstr ""
 " Sie sicher, dass die Einstellungen richtig sind und die Datenbank vorhanden"
 " ist.</p>"
 
-#: setupassistant.cpp:521
+#: setupassistant.cpp:523
 #, kde-format
 msgid "<p>Can't open your database file, check the permissions and such."
 msgstr ""
 "<p>Die Datenbank-Datei kann nicht geöffnet werden. Bitte überprüfen Sie die "
 "Berechtigungen.</p>"
 
-#: setupassistant.cpp:530
+#: setupassistant.cpp:532
 #, kde-format
 msgid ""
 "<p>The database is already existing, no action needs to be taken "
@@ -3450,36 +3676,36 @@ msgstr ""
 "durchzuführen sind.</p><p>Bitte drücken Sie auf <b>Weiter</b>, um "
 "fortzufahren.</p>"
 
-#: setupassistant.cpp:579
+#: setupassistant.cpp:581
 #, kde-format
 msgid "<p>The database setup was successfully completed.</p>"
 msgstr "<p>Die Datenbankeinrichtung ist erfolgreich abgeschlossen.</p>"
 
-#: setupassistant.cpp:580
+#: setupassistant.cpp:582
 #, kde-format
 msgid "<p>You can start to work with Kraft now. Please do not forget to</p>"
 msgstr ""
 "<p>Sie können nun Ihre Arbeit mit Kraft beginnen. Bitte vergessen Sie "
 "nicht:</p>"
 
-#: setupassistant.cpp:582
+#: setupassistant.cpp:584
 #, kde-format
 msgid "<li>adjust various settings in the Kraft Preferences dialog.</li>"
 msgstr ""
 "<li>Verschiedene Einstellungen im Einstellungen-Fenster von Kraft "
 "anzupassen.</li>"
 
-#: setupassistant.cpp:583
+#: setupassistant.cpp:585
 #, kde-format
 msgid "<li>Check the Catalog chapter list.</li>"
 msgstr "<li>Überprüfen Sie die Kapitelliste des Katalogs.</li>"
 
-#: setupassistant.cpp:584
+#: setupassistant.cpp:586
 #, kde-format
 msgid "<li>Make your business and have fun.</li>"
 msgstr "<li>Führen Sie Ihre Geschäfte und haben Sie Spaß.</li>"
 
-#: setupassistant.cpp:586
+#: setupassistant.cpp:588
 #, kde-format
 msgid ""
 "<p>If you press <i>Finish</i> now, the new database configuration is stored "
@@ -3488,7 +3714,7 @@ msgstr ""
 "<p>Falls Sie nun auf <i>Fertigstellen</i> klicken, wird die neue Datenbank-"
 "Einrichtung in der Kraft-Konfiguration gespeichert.</p>"
 
-#: setupassistant.cpp:602
+#: setupassistant.cpp:604
 #, kde-format
 msgid ""
 "The Database can not be connected. Please check the database credentials."
@@ -3496,37 +3722,37 @@ msgstr ""
 "Die Verbindung zur Datenbank kann nicht hergestellt werden. Bitte stellen "
 "Sie sicher, dass die Einstellungen richtig sind."
 
-#: setupassistant.cpp:608
+#: setupassistant.cpp:610
 #, kde-format
 msgid "The database core tables do not exist. Please check initial setup."
 msgstr ""
 "Die grundlegenden Tabellen der Datenbank sind nicht vorhanden. Bitte "
 "überprüfen Sie die einleitende Einrichtung."
 
-#: setupassistant.cpp:615
+#: setupassistant.cpp:617
 #, kde-format
 msgid "Database is up to date. No upgrade is required."
 msgstr ""
 "Die Datenbank ist auf dem aktuellen Stand, sodass keine Aktualisierung "
 "notwendig ist."
 
-#: setupassistant.cpp:620
+#: setupassistant.cpp:622
 #, kde-format
 msgid "Parse Update Commands..."
 msgstr "Update-Anweisungen analysieren ..."
 
-#: setupassistant.cpp:663
+#: setupassistant.cpp:665
 #, kde-format
 msgid "The Upgrade failed!"
 msgstr "Die Aktualisierung ist fehlgeschlagen."
 
-#: setupassistant.cpp:665
+#: setupassistant.cpp:667
 #, kde-format
 msgid "The Upgrade succeeded, the current schema version is %1!"
 msgstr ""
 "Die Aktualisierung war erfolgreich. Die aktuelle Version des Schemas ist %1."
 
-#: setupassistant.cpp:678
+#: setupassistant.cpp:680
 #, kde-format
 msgid ""
 "The Database can not be connected. Please check the database credentials!"
@@ -3534,37 +3760,37 @@ msgstr ""
 "Die Verbindung zur Datenbank kann nicht hergestellt werden. Bitte stellen "
 "Sie sicher, dass die Einstellungen richtig sind."
 
-#: setupassistant.cpp:684
+#: setupassistant.cpp:686
 #, kde-format
 msgid "Parse Create Commands..."
 msgstr "Create-Anweisungen analysieren ..."
 
-#: setupassistant.cpp:692
+#: setupassistant.cpp:694
 #, kde-format
 msgid "Parse database fillup commands..."
 msgstr "Datenbank-Füllbefehle analysieren ..."
 
-#: setupassistant.cpp:705
+#: setupassistant.cpp:707
 #, kde-format
 msgid "Processing database creation commands..."
 msgstr "Datenbank-Erzeugungsbefehle bearbeiten ..."
 
-#: setupassistant.cpp:722
+#: setupassistant.cpp:724
 #, kde-format
 msgid "Process database fillup commands..."
 msgstr "Datenbank-Füllbefehle bearbeiten ..."
 
-#: setupassistant.cpp:732
+#: setupassistant.cpp:734
 #, kde-format
 msgid "Successfully finished commands."
 msgstr "Die Befehle wurden erfolgreich ausgeführt."
 
-#: setupassistant.cpp:734
+#: setupassistant.cpp:736
 #, kde-format
 msgid "Failed to perform all commands."
 msgstr "Es kann kein Befehl erfolgreich ausgeführt werden."
 
-#: setupassistant.cpp:778
+#: setupassistant.cpp:780
 #, kde-format
 msgid ""
 "This assistant guides you through the basic settings of your Kraft "
@@ -3573,29 +3799,29 @@ msgstr ""
 "Dieser Assistent führt Sie durch die Grundeinstellungen Ihrer Kraft-"
 "Installation"
 
-#: setupassistant.cpp:788
+#: setupassistant.cpp:790
 #, kde-format
 msgid "There was no database configuration found."
 msgstr "Es kann keine Datenbank-Einrichtung gefunden werden."
 
-#: setupassistant.cpp:790
+#: setupassistant.cpp:792
 #, kde-format
 msgid "A valid current database configuration file was found."
 msgstr "Eine gültige aktuelle Datenbank-Einrichtung ist gefunden worden."
 
-#: setupassistant.cpp:812
+#: setupassistant.cpp:814
 #, kde-format
 msgid "The database schema version is too low. It will be updated."
 msgstr ""
 "Die Version des Datenbank-Schemas ist zu niedrig. Es wird aktualisiert."
 
-#: setupassistant.cpp:815
+#: setupassistant.cpp:817
 #, kde-format
 msgid "The current database schema version is too high. Leaving untouched! "
 msgstr ""
 "Die Version des Datenbankschema ist zu hoch. Es wird nichts verändert."
 
-#: setupassistant.cpp:822
+#: setupassistant.cpp:824
 #, kde-format
 msgid ""
 "<p>The database can be opened, but does not contain valid content.</p><p>A "
@@ -3605,12 +3831,12 @@ msgstr ""
 "Inhalte.</p> <p>Eine neue Datenbank kann automatisch von Grund auf erzeugt "
 "werden.</p>"
 
-#: setupassistant.cpp:829
+#: setupassistant.cpp:831
 #, kde-format
 msgid "<p>Kraft failed to connect to the configured database.</p>"
 msgstr "<p>Kraft konnte nicht mit der konfigurierten Datenbank verbinden</p>"
 
-#: setupassistant.cpp:831
+#: setupassistant.cpp:833
 #, kde-format
 msgid ""
 "<p>Please check the database server setup and restart Kraft to connect."
@@ -3618,21 +3844,94 @@ msgstr ""
 "<p>Bitte überprüfen Sie die Einstellungen des Datenbank-Servers und starten "
 "Sie Kraft neu, um eine Verbindung herzustellen."
 
-#: setupassistant.cpp:833
+#: setupassistant.cpp:835
 #, kde-format
 msgid "<p>Please check the database file."
 msgstr "<p>Bitte überprüfen Sie die Datenbank-Datei."
 
-#: setupassistant.cpp:835
+#: setupassistant.cpp:837
 #, kde-format
 msgid "or create a new database by hitting <b>next</b>.</p>"
 msgstr ""
 "Oder erstellen Sie eine neue Datenbank, indem Sie <b>Weiter</b> drücken.</p>"
 
-#: setupassistant.cpp:843
+#: setupassistant.cpp:845
 #, kde-format
 msgid "<p>Please hit next and follow the instructions.</p>"
 msgstr "<p>Drücken Sie Weiter und folgen Sie den Angaben.</p>"
+
+#: kraftview.cpp:87 kraftview_ro.cpp:75
+#, kde-format
+msgid "Document"
+msgstr "Dokument"
+
+#: kraftview.cpp:261
+#, kde-format
+msgid "Successor of %1"
+msgstr "Nachfolger von %1"
+
+#: kraftview.cpp:399 kraftview.cpp:844
+#, kde-format
+msgid ""
+"The address label is not empty and different from the selected one.<br/>Do "
+"you really want to replace it with the text shown below?<pre>%1</pre>"
+msgstr ""
+"Die Adress-Beschriftung ist nicht leer und unterscheidet sich von der "
+"ausgewählten Adresse<br/>Möchten Sie sie wirklich mit diesem angezeigten "
+"Text ersetzen?<pre>%1</pre>"
+
+#: kraftview.cpp:446
+#, kde-format
+msgid ""
+"<qt><h2>The Document Items List is still empty, but Items can be added "
+"now.</h2>To add items to the document either <ul><li>Press the 'Add item' "
+"button above.</li><li>Open the template catalog by clicking on the 'show "
+"Template' button on the right and pick one of the available "
+"templates.</li></ul></qt>"
+msgstr ""
+"<qt><h2>Die Postenliste ist noch leer, aber jetzt können Posten hinzugefügt werden.</h2>\n"
+"Um Posten hinzuzufügen\n"
+"<ul>\n"
+"<li>Drücken Sie den 'Posten hinzufügen' Knopf</li><li>Öffnen Sie den Vorlagenkatalog durch einen Klick auf den 'Vorlagen anzeigen' Knopf rechts und übertragen Sie eine der vorhandenen Vorlagen.</li>\n"
+"</ul></qt>\n"
+" "
+
+#: kraftview.cpp:634
+#, kde-format
+msgid "Calculate individual tax for each item"
+msgstr "Einzelne Steuern für jeden Posten berechnen"
+
+#: kraftview.cpp:691
+#, kde-format
+msgid "Tax Settings Overwrite"
+msgstr "Steuer-Einstellungen überschreiben"
+
+#: kraftview.cpp:692
+#, kde-format
+msgid "Really overwrite all individual tax settings of the items?"
+msgstr ""
+"Möchten Sie wirklich alle individuellen Steuer-Einstellungen für diesen "
+"Eintrag überschreiben?"
+
+#: kraftview.cpp:843
+#, kde-format
+msgid "Address Overwrite"
+msgstr "Adresse überschreiben"
+
+#: kraftview.cpp:1101
+#, kde-format
+msgid "Discount"
+msgstr "Rabatt"
+
+#: kraftview.cpp:1421
+#, kde-format
+msgid "The document has been modified."
+msgstr "Das Dokuments wurde verändert."
+
+#: kraftview.cpp:1422
+#, kde-format
+msgid "Do you want to save your changes?"
+msgstr "Sollen die Änderungen gesichert werden?"
 
 #: tagtemplatesdialog.cpp:47
 #, kde-format
@@ -3659,17 +3958,27 @@ msgstr "Beschreibung:"
 msgid "Associated Color:"
 msgstr "Zugehörige Farbe:"
 
-#: tagtemplatesdialog.cpp:135 tagtemplatesdialog.cpp:140 portal.cpp:165
-#, kde-format
-msgid "Edit Tag Templates"
-msgstr "Stichwort-Vorlagen bearbeiten"
-
 #: tagtemplatesdialog.cpp:141
 #, kde-format
 msgid "Add, edit and remove tag templates for use in the documents."
 msgstr ""
 "Stichwort-Vorlagen hinzufügen, ändern oder entfernen, die in diesen "
 "Dokumenten verwendet werden."
+
+#: tagtemplatesdialog.cpp:150 itemtagdialog.cpp:105
+#, kde-format
+msgid "Tag"
+msgstr "Markierung"
+
+#: tagtemplatesdialog.cpp:151 itemtagdialog.cpp:106
+#, kde-format
+msgid "Color"
+msgstr "Farbe"
+
+#: tagtemplatesdialog.cpp:152 itemtagdialog.cpp:107
+#, kde-format
+msgid "Description"
+msgstr "Beschreibung"
 
 #: tagtemplatesdialog.cpp:165
 #, kde-format
@@ -3696,20 +4005,30 @@ msgstr "Möchten Sie die ausgewählte Vorlage wirklich löschen?"
 msgid "Edit Tax Rates"
 msgstr "Steuersätze bearbeiten"
 
-#: templkataloglistview.cpp:48
-#, kde-format
-msgid "Calc. Type"
-msgstr "Kalkulationsart"
-
-#: templkataloglistview.cpp:55
-#, kde-format
-msgid "Template Catalog"
-msgstr "Vorlagenkatalog"
-
 #: templkatalogview.cpp:101
 #, kde-format
 msgid "<new template>"
 msgstr "<neue Vorlage>"
+
+#: templkataloglistview.cpp:47
+#, kde-format
+msgid "Calc. Type"
+msgstr "Kalkulationsart"
+
+#: templkataloglistview.cpp:54
+#, kde-format
+msgid "Template Catalog"
+msgstr "Vorlagenkatalog"
+
+#: kraftview_ro.cpp:213
+#, kde-format
+msgid "Reduced TAX"
+msgstr "Reduzierte Steuer"
+
+#: kraftview_ro.cpp:240 documenttemplate.cpp:324
+#, kde-format
+msgid "reduced VAT"
+msgstr "Reduzierte Umsatzsteuer"
 
 #: templtopositiondialogbase.cpp:51
 #, kde-format
@@ -3765,361 +4084,6 @@ msgstr "Im Dokument &verwenden"
 msgid "Failed to open template source"
 msgstr "Die Vorlagendatei kann nicht geöffnet werden."
 
-#: portal.cpp:102
-#, kde-format
-msgid "&Quit"
-msgstr "&Beenden"
-
-#: portal.cpp:107
-#, kde-format
-msgid "&Cut"
-msgstr "&Ausschneiden"
-
-#: portal.cpp:112
-#, kde-format
-msgid "C&opy"
-msgstr "K&opieren"
-
-#: portal.cpp:117
-#, kde-format
-msgid "&Paste"
-msgstr "&Einfügen"
-
-#: portal.cpp:122
-#, kde-format
-msgid "&Settings"
-msgstr "&Einstellungen"
-
-#: portal.cpp:127
-#, kde-format
-msgid "&Create Document"
-msgstr "Dokument &anlegen"
-
-#: portal.cpp:131
-#, kde-format
-msgid "&Copy Document"
-msgstr "Dokument &kopieren"
-
-#: portal.cpp:135
-#, kde-format
-msgid "Create &Followup Document"
-msgstr "&Nachfolgedokument erzeugen"
-
-#: portal.cpp:140
-#, kde-format
-msgid "Print Document"
-msgstr "Dokument drucken"
-
-#: portal.cpp:145
-#, kde-format
-msgid "Show Document"
-msgstr "Dokument anzeigen"
-
-#: portal.cpp:150
-#, kde-format
-msgid "Edit Document"
-msgstr "Dokument bearbeiten"
-
-#: portal.cpp:155
-#, kde-format
-msgid "Open Archived Document"
-msgstr "Archiviertes Dokument öffnen"
-
-#: portal.cpp:160
-#, kde-format
-msgid "Mail Document"
-msgstr "Dokument mailen"
-
-#: portal.cpp:170
-#, kde-format
-msgid "Redo Initial Setup..."
-msgstr "Wiederhole initiales Setup..."
-
-#: portal.cpp:175
-#, kde-format
-msgid "Kraft Handbook..."
-msgstr "Kraft Handbuch..."
-
-#: portal.cpp:179
-#, kde-format
-msgid "About Qt..."
-msgstr "Über Qt..."
-
-#: portal.cpp:183
-#, kde-format
-msgid "About Kraft..."
-msgstr "Über Kraft...."
-
-#: portal.cpp:187
-#, kde-format
-msgid "Quits the application"
-msgstr "Anwendung beenden"
-
-#: portal.cpp:189
-#, kde-format
-msgid "Cuts the selected section and puts it to the clipboard"
-msgstr ""
-"Schneidet den ausgewählten Abschnitt aus und kopiert ihn in die "
-"Zwischenablage."
-
-#: portal.cpp:190
-#, kde-format
-msgid "Copies the selected section to the clipboard"
-msgstr "Kopiert den ausgewählten Abschnitt in die Zwischenablage."
-
-#: portal.cpp:191
-#, kde-format
-msgid "Pastes the clipboard contents to current position"
-msgstr "Fügt den Inhalt der Zwischenablage an der aktuellen Position ein."
-
-#: portal.cpp:193
-#, kde-format
-msgid "Creates a new Document"
-msgstr "Erstellt ein neues Dokument."
-
-#: portal.cpp:194
-#, kde-format
-msgid "Print and archive this Document"
-msgstr "Das Dokument drucken und archivieren"
-
-#: portal.cpp:195
-#, kde-format
-msgid "Creates a new document which is a copy of the selected document"
-msgstr "Erstellt ein neues Dokument, das eine Kopie des ausgewählten ist."
-
-#: portal.cpp:196
-#, kde-format
-msgid "Create a followup document for the current document"
-msgstr "Ein Folgedokument für das aktuell ausgewählte erstellen"
-
-#: portal.cpp:197
-#, kde-format
-msgid "Opens the document for editing"
-msgstr "Öffnet das Dokument zum Bearbeiten."
-
-#: portal.cpp:198
-#, kde-format
-msgid "Opens a read only view on the document."
-msgstr "Öffnet das Dokument schreibgeschützt."
-
-#: portal.cpp:199
-#, kde-format
-msgid "Send document per mail"
-msgstr "Das Dokument per E-Mail versenden"
-
-#: portal.cpp:200
-#, kde-format
-msgid ""
-"Edit the available tag templates which can be assigned to document items."
-msgstr ""
-"Markierungs-Vorlagen hinzufügen, ändern oder entfernen, die den Posten der "
-"Dokumente zugeordnet werden können."
-
-#: portal.cpp:201
-#, kde-format
-msgid "Configure the Database Kraft is working on."
-msgstr "Die Datenbank einrichten, mit der Kraft arbeitet."
-
-#: portal.cpp:202
-#, kde-format
-msgid "Open a viewer on an archived document"
-msgstr "Das archivierte Dokument zur Ansicht öffnen"
-
-#: portal.cpp:219
-#, kde-format
-msgid "&Edit"
-msgstr "&Bearbeiten"
-
-#: portal.cpp:238
-#, kde-format
-msgid "Kraft"
-msgstr "Kraft"
-
-#: portal.cpp:241
-#, kde-format
-msgid "&Preferences"
-msgstr "&Einstellungen"
-
-#: portal.cpp:245
-#, kde-format
-msgid "Toolbars"
-msgstr "Werkzeugleisten"
-
-#: portal.cpp:251
-#, kde-format
-msgid "&Help"
-msgstr "&Hilfe"
-
-#: portal.cpp:336
-#, kde-format
-msgid "Database not running"
-msgstr "Datenbank nicht erreichbar"
-
-#: portal.cpp:337
-#, kde-format
-msgid ""
-"Kraft was started in readonly mode, but the configured database can not be connected.\n"
-"\n"
-"Kraft will abort."
-msgstr ""
-"Kraft wurde im Nur-Lesen Modus gestartet, aber die konfigurierte Datenbank kann nicht erreicht werden.\n"
-"\n"
-"Kraft wird beendet."
-
-#: portal.cpp:353
-#, kde-format
-msgid ""
-"Kraft can not connect to the specified MySQL server. Please check the Kraft "
-"database settings, check if the server is running and verify if a database "
-"with the name %1 exits!"
-msgstr ""
-"Kraft kann keine Verbindung zum angegebenen MySQL-Server herstellen. Bitte "
-"überprüfen Sie die Datenbank-Einstellungen von Kraft, ob der Datenbank-"
-"Server läuft und ob eine Datenbank namens %1 vorhanden ist."
-
-#: portal.cpp:357
-#, kde-format
-msgid ""
-"The database with the name %1 does not exist on the database server. Please "
-"make sure the database exists and is accessible by the user running Kraft."
-msgstr ""
-"Die Datenbank namens %1 ist auf dem Datenbank-Server nicht verfügbar. Bitte "
-"stellen Sie sicher, dass die Datenbank vorhanden ist und vom Benutzer, unter"
-" welchem Kraft läuft, darauf zugegriffen werden kann."
-
-#: portal.cpp:361
-#, kde-format
-msgid ""
-"The Qt database driver could not be loaded. That probably means, that they "
-"are not installed. Please make sure the Qt database packages are installed "
-"and try again."
-msgstr ""
-"Der Qt-Datenbank-Treiber lässt sich nicht laden. Das bedeutet eventuell, "
-"dass er nicht installiert ist. Bitte stellen Sie sicher, dass die Qt-"
-"Datenbank-Pakete installiert sind und versuchen es dann erneut."
-
-#: portal.cpp:365
-#, kde-format
-msgid "There is a database problem: %1"
-msgstr "Es ist ein Problem mit der Datenbank aufgetreten: %1"
-
-#: portal.cpp:382
-#, kde-format
-msgid "Database Problem."
-msgstr "Datenbank-Problem"
-
-#: portal.cpp:389
-#, kde-format
-msgid "Check commandline actions"
-msgstr "Befehlszeilenaktionen prüfen"
-
-#: portal.cpp:481
-#, kde-format
-msgid "Welcome to Kraft, %1"
-msgstr "Willkommen zu Kraft, %1"
-
-#: portal.cpp:510
-#, kde-format
-msgid "Creating new document..."
-msgstr "Neues Dokument erstellen ..."
-
-#: portal.cpp:536
-#, kde-format
-msgctxt ""
-"Dialog title of the followup doc dialog, followed by the id of the  source "
-"doc"
-msgid "Create follow up document for %1"
-msgstr "Folgedokument für %1 anlegen"
-
-#: portal.cpp:581
-#, kde-format
-msgctxt "Title of the new doc dialog, %1 is the source doc id"
-msgid "Create new Document as Copy of %1"
-msgstr "Neues Dokument als Kopie von %1 erzeugen"
-
-#: portal.cpp:616
-#, kde-format
-msgid "Opening document to view..."
-msgstr "Dokument zur Ansicht öffnen ..."
-
-#: portal.cpp:646
-#, kde-format
-msgid "Generating PDF..."
-msgstr "PDF wird erstellt ..."
-
-#: portal.cpp:668
-#, kde-format
-msgid "Generating PDF for EMail"
-msgstr "Generiere PDF für EMail"
-
-#: portal.cpp:688
-#, kde-format
-msgid "Doc Generation Error"
-msgstr "Dokument Generierungs-Fehler"
-
-#: portal.cpp:745
-#, kde-format
-msgid "Printing archived document..."
-msgstr "Archiviertes Dokument drucken ..."
-
-#: portal.cpp:797
-#, kde-format
-msgid "Opening document %1"
-msgstr "Dokument %1 öffnen"
-
-#: portal.cpp:973
-#, kde-format
-msgid "Cutting selection..."
-msgstr "Auswahl ausschneiden ..."
-
-#: portal.cpp:980
-#, kde-format
-msgid "Copying selection to clipboard..."
-msgstr "Auswahl in die Zwischenablage kopieren ..."
-
-#: portal.cpp:987
-#, kde-format
-msgid "Inserting clipboard contents..."
-msgstr "Inhalt der Zwischenablage einfügen ..."
-
-#: portal.cpp:1000
-#, kde-format
-msgid ""
-"Ready. Kraft is running in read only mode. Document editing is prohibited."
-msgstr ""
-"Bereit. Kraft läuft im Nur-Lesen Modus. Dokumente können nicht editiert "
-"werden."
-
-#: addressselectorwidget.cpp:229
-#, kde-format
-msgid "Name"
-msgstr "Name"
-
-#: addressselectorwidget.cpp:231
-#, kde-format
-msgid "Address"
-msgstr "Kundenadresse"
-
-#: addressselectorwidget.cpp:331
-#, kde-format
-msgid "Edit Contact..."
-msgstr "Kontakt bearbeiten ..."
-
-#: addressselectorwidget.cpp:332
-#, kde-format
-msgid "Edit the currently selected contact"
-msgstr "Bearbeitet den aktuell ausgewählten Kontakt"
-
-#: addressselectorwidget.cpp:335
-#, kde-format
-msgid "New Contact..."
-msgstr "Neuer Kontakt ..."
-
-#: addressselectorwidget.cpp:336
-#, kde-format
-msgid "Create a new Contact"
-msgstr "Neuen Kontakt erstellen"
-
 #: timecalcpart.cpp:82
 #, kde-format
 msgid "Minutes"
@@ -4134,6 +4098,201 @@ msgstr "Stunden"
 #, kde-format
 msgid "Seconds"
 msgstr "Sekunden"
+
+#: documenttemplate.cpp:112
+#, kde-format
+msgctxt "Sequence number printed on the document"
+msgid "No."
+msgstr "Nr."
+
+#: documenttemplate.cpp:113
+#, kde-format
+msgctxt "Document item printed on the document"
+msgid "Item"
+msgstr "Posten"
+
+#: documenttemplate.cpp:114
+#, kde-format
+msgctxt "Abbrev. of Quantity printed on the document"
+msgid "Qty."
+msgstr "Menge"
+
+#: documenttemplate.cpp:115
+#, kde-format
+msgctxt "Unit printed on the document"
+msgid "Unit"
+msgstr "Einh."
+
+#: documenttemplate.cpp:116
+#, kde-format
+msgctxt "Price of an item printed on the document"
+msgid "Price"
+msgstr "Preis"
+
+#: documenttemplate.cpp:117
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Sum"
+msgstr "Summe"
+
+#: documenttemplate.cpp:118
+#, kde-format
+msgctxt "printed on the document"
+msgid "Net"
+msgstr "Netto"
+
+#: documenttemplate.cpp:119
+#, kde-format
+msgctxt "Printed on the document"
+msgid "VAT"
+msgstr "MwSt."
+
+#: documenttemplate.cpp:121
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Phone"
+msgstr "Telefon"
+
+#: documenttemplate.cpp:122
+#, kde-format
+msgctxt "Printed on the document"
+msgid "FAX"
+msgstr "Fax"
+
+#: documenttemplate.cpp:123
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Mobile"
+msgstr "Mobil"
+
+#: documenttemplate.cpp:124
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Email"
+msgstr "Email"
+
+#: documenttemplate.cpp:125
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Website"
+msgstr "Webseite"
+
+#: documenttemplate.cpp:127
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Page"
+msgstr "Seite"
+
+#: documenttemplate.cpp:128
+#, kde-format
+msgctxt "Label of Predecessor document number"
+msgid "Predecessor-Doc"
+msgstr "Vorgänger-Dokument"
+
+#: documenttemplate.cpp:129
+#, kde-format
+msgctxt "the 'of' in page X of Y"
+msgid "of"
+msgstr "von"
+
+#: documenttemplate.cpp:130
+#, kde-format
+msgctxt "Document number on document"
+msgid "Document No."
+msgstr "Dokument Nr."
+
+#: documenttemplate.cpp:131
+#, kde-format
+msgctxt "Date on document"
+msgid "Date"
+msgstr "Datum"
+
+#: documenttemplate.cpp:132
+#, kde-format
+msgctxt "Project label"
+msgid "Project"
+msgstr "Projekt"
+
+#: documenttemplate.cpp:133
+#, kde-format
+msgctxt "Customer ID on document"
+msgid "Customer Id"
+msgstr "Kundennr."
+
+#: documenttemplate.cpp:268
+#, kde-format
+msgid ""
+"Please note: This offer contains %1 alternative or demand positions, printed"
+" in italic font. These do not add to the overall sum."
+msgstr ""
+"Bitte beachten: Dieses Angebot enthält %1 Alternativ- oder "
+"Bedarfspositionen, die kursiv gedruckt sind. Diese addieren sich nicht zur "
+"Endsumme."
+
+#: documenttemplate.cpp:279
+#, kde-format
+msgid "tax free items (%1 pcs.)"
+msgstr "Steuerfreie Posten (%1 Stck.)"
+
+#: documenttemplate.cpp:285
+#, kde-format
+msgid "items with reduced tax of %1% (%2 pcs.)"
+msgstr "Posten mit reduzierter Steuer %1% (%2 Stck.)"
+
+#: documenttemplate.cpp:294
+#, kde-format
+msgid "No label: items with full tax of %1% (%2 pcs.)"
+msgstr "Nicht gekennzeichnet: Posten mit vollem Steuersatz von %1% (%2 Stck.)"
+
+#: documenttemplate.cpp:364
+#, kde-format
+msgid "Template to convert is not existing!"
+msgstr "Vorlage existiert nicht!"
+
+#: documenttemplate.cpp:367
+#, kde-format
+msgid "Can not read template file!"
+msgstr "Vorlangendatei kann nicht gelesen werden!"
+
+#: materialkataloglistview.cpp:41
+#, kde-format
+msgid "Pack"
+msgstr "Gebinde"
+
+#: materialkataloglistview.cpp:43
+#, kde-format
+msgid "Purchase"
+msgstr "Einkauf"
+
+#: materialkataloglistview.cpp:44
+#, kde-format
+msgid "Sale"
+msgstr "Verkauf"
+
+#: materialkataloglistview.cpp:45
+#, kde-format
+msgid "Last Modified"
+msgstr "Zuletzt geändert"
+
+#: materialkataloglistview.cpp:51
+#, kde-format
+msgid "Material Catalog"
+msgstr "Material-Katalog"
+
+#: itemtagdialog.cpp:82
+#, kde-format
+msgid "Edit Item Tags"
+msgstr "Posten-Markierungen bearbeiten"
+
+#: itemtagdialog.cpp:89
+#, kde-format
+msgid "Item Tags"
+msgstr "Posten-Markierungen"
+
+#: itemtagdialog.cpp:90
+#, kde-format
+msgid "Select all tags for the item should be tagged with."
+msgstr "Wählen Sie alle Markierungen für den Posten aus."
 
 #: texttemplateinterface.cpp:53
 #, kde-format
