@@ -44,7 +44,7 @@ asciidoctor ${asciidocargs} -o ${outfile} ${srcfile}
 echo "built ${outfile}"
 
 # build the internationalized versions
-languages="de"
+languages="de nl"
 
 for lang in ${languages}
 do

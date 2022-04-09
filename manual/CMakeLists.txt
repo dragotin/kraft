@@ -17,7 +17,7 @@ if (ASCIIDOCTOR_FOUND)
     DEPENDS "${out_file}"
   )
 
-  INSTALL(FILES ${CMAKE_BINARY_DIR}/manual/kraft-en.html ${CMAKE_BINARY_DIR}/manual/kraft-de.html
+  INSTALL(FILES ${CMAKE_BINARY_DIR}/manual/kraft-en.html ${CMAKE_BINARY_DIR}/manual/kraft-de.html ${CMAKE_BINARY_DIR}/manual/kraft-nl.html
           DESTINATION ${DATA_INSTALL_DIR}/kraft/manual)
 
 else(ASCIIDOCTOR_FOUND)

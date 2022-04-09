@@ -1,5 +1,6 @@
 Changes since version 0.97: #########################################
 
+Add dutch translation of the manual, Kudos to Ronald Stroethoff
 - Fix: Record usage of catalog items properly. Store usage amount and
        last usage time. Display that properly in the catalog editor.
 - Fix: Drag and drop sorting of items now working properly.
@@ -8,7 +9,6 @@ Changes since version 0.97: #########################################
 - Fix: Cleaned up icon usage
 - Fix: Format of date and time corrected.
 - Fix: Store useful value for the locale in db. For later.
-
 
 Changes since version 0.96: #########################################
 
