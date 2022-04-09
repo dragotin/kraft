@@ -40,6 +40,15 @@
 
 namespace {
 
+QString xRechnungTemplate()
+{
+    DocType dt("Rechnung"); // FIXME hardcoded
+
+    const QString re = dt.xRechnungTemplate();
+
+    return re;
+}
+
 }
 
 ExporterXRechnung::ExporterXRechnung(QObject *parent)
@@ -49,6 +58,7 @@ ExporterXRechnung::ExporterXRechnung(QObject *parent)
     mAddressProvider = new AddressProvider(this);
     connect(mAddressProvider, &AddressProvider::lookupResult,
             this, &ExporterXRechnung::slotAddresseeFound);
+
 }
 
 void ExporterXRechnung::setDueDate(const QDate& d)
@@ -61,19 +71,20 @@ void ExporterXRechnung::setBuyerRef(const QString& br)
     _buyerRef = br;
 }
 
+QString ExporterXRechnung::templateFile() const
+{
+    return xRechnungTemplate();
+}
+
 bool ExporterXRechnung::exportDocument(const ArchDocDigest& digest)
 {
     _archDoc.loadFromDb(digest.archDocId());
     _archDoc.setDueDate(_dueDate);
     _archDoc.setBuyerRef(_buyerRef);
 
-    const QString tmplFile = DefaultProvider::self()->locateFile("reports/xrechnung.gtmpl");
-
-    if ( tmplFile.isEmpty() ) {
+    if (xRechnungTemplate().isEmpty()) {
         qDebug () << "tmplFile is empty, exit reportgenerator!";
         return false;
-    } else {
-        qDebug () << "Using this template: " << tmplFile;
     }
 
     lookupCustomerAddress();
@@ -119,7 +130,12 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     QString output;
     QScopedPointer<DocumentTemplate> templateEngine;
 
-    const QString tmplFile = DefaultProvider::self()->locateFile("reports/xrechnung.gtmpl");
+    const QString tmplFile = xRechnungTemplate();
+    if (tmplFile.isEmpty()) {
+        qDebug() << "Empty template file -> exit!";
+    } else {
+        qDebug() << "Using this XRechnung Template:" << tmplFile;
+    }
     templateEngine.reset(new GrantleeDocumentTemplate(tmplFile));
 
     // expand the template...

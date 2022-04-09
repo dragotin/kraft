@@ -34,6 +34,7 @@
 
 #include <QDebug>
 #include <QDialogButtonBox>
+#include <QFileDialog>
 #include <QVBoxLayout>
 
 #include "prefsdialog.h"
@@ -347,6 +348,39 @@ QWidget* PrefsDialog::docTab()
   mCbDateFormats->insertItem( 5, i18n("Custom Setting in Settingsfile"));
   vboxLay->addLayout( butLay );
 
+  // ---- XRechnung Template
+  f = new QLabel(this);
+  f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+  vboxLay->addWidget( f );
+
+  butLay = new QHBoxLayout;
+  l = new QLabel(i18n("XRechnung Template File:"), this );
+  butLay->addWidget(l);
+
+  _lineEditXRechnung = new QLineEdit(this);
+
+  butLay->addWidget(_lineEditXRechnung);
+  QPushButton *pbXRechTmpl = new QPushButton(i18n("Select..."), this);
+  butLay->addWidget(pbXRechTmpl);
+
+  const QIcon& icon = QIcon::fromTheme("quickopen-file");
+  if (!icon.isNull() ) {
+      pbXRechTmpl->setIcon(icon);
+      pbXRechTmpl->setText("");
+  }
+  pbXRechTmpl->setToolTip(i18n("Select template file for XRechnung"));
+
+  connect(pbXRechTmpl, &QPushButton::clicked, this, [this]() {
+      const QString file = QFileDialog::getOpenFileName(this,
+                                                  i18n("Find Template File"), QDir::homePath(),
+                                                  i18n("XRechnung Templates (*.xrtmpl)"));
+
+      if (!file.isEmpty()) {
+          _lineEditXRechnung->setText(file);
+      }
+  });
+  vboxLay->addLayout( butLay );
+
   // space eater
   QWidget *spaceEater = new QWidget;
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
@@ -405,6 +439,10 @@ void PrefsDialog::readConfig()
     mCbDocTypes->setCurrentIndex( mCbDocTypes->findText( t ));
 
     mCbDefaultTaxType->setCurrentIndex( KraftSettings::self()->defaultTaxType()-1 );
+
+    DocType dt(QStringLiteral("Rechnung")); // FIXME
+    const auto tmpl = dt.xRechnungTemplate();
+    _lineEditXRechnung->setText(tmpl);
 
     int index {5};
     const QString dFormat = KraftSettings::self()->dateFormat();
@@ -494,6 +532,13 @@ void PrefsDialog::writeConfig()
 {
     KraftSettings::self()->setDoctype( mCbDocTypes->currentText() );
     KraftSettings::self()->setDefaultTaxType( 1+mCbDefaultTaxType->currentIndex() );
+
+    DocType dt(QStringLiteral("Rechnung")); // FIXME
+    const auto newTmpl = _lineEditXRechnung->text();
+    if (newTmpl != dt.xRechnungTemplate()) {
+        dt.setXRechnungTemplate(newTmpl);
+        dt.save();
+    }
 
     int dateFormat = mCbDateFormats->currentIndex();
 

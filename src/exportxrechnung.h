@@ -47,6 +47,7 @@ public:
     virtual ~ExporterXRechnung();
 
     virtual bool exportDocument(const ArchDocDigest& digest);
+    QString templateFile() const;
 
     void setDueDate(const QDate&);
     void setBuyerRef(const QString&);

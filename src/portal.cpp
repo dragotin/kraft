@@ -649,6 +649,24 @@ void Portal::slotXRechnungCurrentDocument()
 void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
 {
     ExporterXRechnung *exporter = new ExporterXRechnung;
+    const QString tmplFile = exporter->templateFile();
+    QString err;
+
+    if (tmplFile.isEmpty()) {
+        err = i18n("XRechnung Template file not set. Please check the application settings!");
+    } else {
+        QFileInfo fi(tmplFile);
+        if (!fi.isFile()) {
+            err = i18n("The XRechnung template file can not be read!");
+        }
+    }
+
+    if (!err.isEmpty()) {
+        QMessageBox::warning(this, i18n("XRechnung Export"), err);
+        delete exporter;
+        return;
+    }
+
     auto dia = new QDialog(this);
     Ui::XRechnungDialog ui;
     ui.setupUi(dia);
@@ -666,6 +684,7 @@ void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
             const QString proposeName = QString("%1/xrechnung_%2.xml").arg(QDir::homePath()).arg(d.archDocIdent());
             const QString f = QFileDialog::getSaveFileName(this, i18n("Save XRechnung"), proposeName);
             QFile::copy(fName, f);
+            this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
             exporter->deleteLater();
         });
         exporter->exportDocument(d);

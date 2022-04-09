@@ -377,6 +377,29 @@ void DocType::setMergeIdent( const QString& ident )
 
 }
 
+
+QString DocType::xRechnungTemplate()
+{
+    return attributeValueString("XRechnungTmpl");
+}
+
+void DocType::setXRechnungTemplate(const QString& tmpl)
+{
+    setAttribute("XRechnungTmpl", tmpl);
+}
+
+QString DocType::attributeValueString(const QString& attribName)
+{
+    QString re;
+    if (attribName.isEmpty()) {
+        return re;
+    }
+    if (mAttributes.hasAttribute(attribName)) {
+        re = mAttributes[attribName].value().toString();
+    }
+    return re;
+}
+
 void DocType::setAttribute( const QString& attribute, const QString& val)
 {
     if ( !(attribute.isEmpty() || val.isEmpty()) ) {
@@ -385,6 +408,11 @@ void DocType::setAttribute( const QString& attribute, const QString& val)
       att.setValue( val);
       mAttributes[attribute] = att;
       mDirty = true;
+    }
+    // remove empty attribute
+    if (!attribute.isEmpty() && val.isEmpty()) {
+        mAttributes.markDelete(attribute);
+        mDirty = true;
     }
 }
 
