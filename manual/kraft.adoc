@@ -731,6 +731,28 @@ A recommended setup is a NFS share with autofs which is set up on the main machi
 
 To start Kraft in read-only mode, start the binary with the `-r` command line switch.
 
+=== XRechnung Support
+
+Kraft supports the XRechnung standard. That is a digital format for electronic invoicing, and it passed as law in Germany and follows a EU directive. The XRechnung is a XML file format designed for that purpose.
+
+To use the XRechnung Export productivly, a little manual work is still needed in Kraft. Kraft creates the XML file based on a template, very similar to the normal PDF documents. That means that it loads a template that contains static elements (ie. the company address) that do not change between different invoices. The dynamic elements (customer data, items etc.) are filled into the template during the generation step.
+
+In order to generate correct XRechnung files for the specific company, the user has to adopt the template file manually to the companies needs. Note that this has only to be done once and should be easy for a person with a bit computer experience (Basic knowledge about XML appreciated!).
+
+To adapt the file to the needs of the company, it is best to start with the https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung.xrtmpl[example XRechnung file]. It has to be downloaded and saved into a location that the user can edit. Open it in a normal text editor, such as https://kate-editor.org/[Kate].
+
+Read carefully through the file without being scared off by the XML format. All user strings (ie. company name, address and such) are user specific and should be replaced accordingly. Find https://www.xoev.de/xrechnung-16828[details about the format] here to better understand the meaning of the fields.
+
+Make sure to not disturb the proper XML format and do not change places where the template format `{{ template_name }}` is used.
+
+Once the file is adopted to the needs, open the Settings dialog of Kraft and insert the filename into the entry field for the XRechnung Template File on the Document Defaults page.
+
+After that step, the btn:[Export XRechung] menu item will open a dialog to pick a filename where to save the XRechnung invoice to.
+
+This file can now be transfered to the receiver of the invoice.
+
+NOTE: There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the  format of the Kraft exported XRechnung.
+
 [[Credits]]
 == Credits and License
 

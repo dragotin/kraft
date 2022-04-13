@@ -686,6 +686,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#AdvancedTopics">Fortgeschrittene Themen</a>
 <ul class="sectlevel2">
 <li><a href="#_using_kraft_collaboratively">Using Kraft Collaboratively</a></li>
+<li><a href="#_xrechnung_support">XRechnung Support</a></li>
 </ul>
 </li>
 <li><a href="#Credits">Credits und Lizenz</a></li>
@@ -1821,6 +1822,48 @@ PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_xrechnung_support">XRechnung Support</h3>
+<div class="paragraph">
+<p>Kraft supports the XRechnung standard. That is a digital format for electronic invoicing, and it passed as law in Germany and follows a EU directive. The XRechnung is a XML file format designed for that purpose.</p>
+</div>
+<div class="paragraph">
+<p>To use the XRechnung Export productivly, a little manual work is still needed in Kraft. Kraft creates the XML file based on a template, very similar to the normal PDF documents. That means that it loads a template that contains static elements (ie. the company address) that do not change between different invoices. The dynamic elements (customer data, items etc.) are filled into the template during the generation step.</p>
+</div>
+<div class="paragraph">
+<p>In order to generate correct XRechnung files for the specific company, the user has to adopt the template file manually to the companies needs. Note that this has only to be done once and should be easy for a person with a bit computer experience (Basic knowledge about XML appreciated!).</p>
+</div>
+<div class="paragraph">
+<p>To adapt the file to the needs of the company, it is best to start with the <a href="https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung.xrtmpl">example XRechnung file</a>. It has to be downloaded and saved into a location that the user can edit. Open it in a normal text editor, such as <a href="https://kate-editor.org/">Kate</a>.</p>
+</div>
+<div class="paragraph">
+<p>Read carefully through the file without being scared off by the XML format. All user strings (ie. company name, address and such) are user specific and should be replaced accordingly. Find <a href="https://www.xoev.de/xrechnung-16828">details about the format</a> here to better understand the meaning of the fields.</p>
+</div>
+<div class="paragraph">
+<p>Make sure to not disturb the proper XML format and do not change places where the template format <code>{{ template_name }}</code> is used.</p>
+</div>
+<div class="paragraph">
+<p>Once the file is adopted to the needs, open the Settings dialog of Kraft and insert the filename into the entry field for the XRechnung Template File on the Document Defaults page.</p>
+</div>
+<div class="paragraph">
+<p>After that step, the <b class="button">Export XRechung</b> menu item will open a dialog to pick a filename where to save the XRechnung invoice to.</p>
+</div>
+<div class="paragraph">
+<p>This file can now be transfered to the receiver of the invoice.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the format of the Kraft exported XRechnung.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1837,7 +1880,7 @@ PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-04-09 21:48:36 +0200
+Last updated 2022-04-13 22:05:40 +0200
 </div>
 </div>
 </body>
