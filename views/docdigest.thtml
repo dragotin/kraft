@@ -1,9 +1,10 @@
 <div id="inhalt">
   <h2>{{HEADLINE}}</h2>
-  <p>{{DATE_LABEL}}: {{DATE}}</p>
+  <p>{{DATE_LABEL}}: {{DATE}}
   {{#PROJECT_INFO}}
-    <p>{{PROJECT_LABEL}}: {{PROJECT}}</p>
+&#8210;&nbsp;{{PROJECT_LABEL}}: {{PROJECT}}
   {{/PROJECT_INFO}}
+  </p>
   {{#PRINTED}}
     <p>{{LAST_PRINT_LABEL}}: {{LAST_PRINT_DATE}}&nbsp;<a href="http://localhost/show_last_print?id={{LAST_PRINTED_ID}}" title="{{LAST_PRINT_TITLE}}">[{{LAST_PRINT_LINK_TEXT}}]</a></p>
     <p>{{ARCHIVED_COUNT}}</p>
