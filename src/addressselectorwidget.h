@@ -23,9 +23,14 @@
 #include <QSplitter>
 
 #ifdef HAVE_AKONADI
+#include <AkonadiContact/akonadi-contact_version.h>
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
+#include <AkonadiContact/Akonadi/ContactViewer>
+#include <AkonadiContact/Akonadi/ContactEditorDialog>
+#else
 #include <Akonadi/Contact/ContactViewer>
 #include <Akonadi/Contact/ContactEditorDialog>
-
+#endif
 #endif
 
 #include <kcontacts/addressee.h>

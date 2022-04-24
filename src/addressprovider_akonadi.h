@@ -25,7 +25,12 @@
 
 #ifdef HAVE_AKONADI
 #include <kjob.h>
+#include <AkonadiContact/akonadi-contact_version.h>
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
+#include <AkonadiContact/akonadi/contactstreemodel.h>
+#else
 #include <akonadi/contact/contactstreemodel.h>
+#endif
 #include <akonadi_version.h>
 #if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
 #include <Akonadi/Session>
