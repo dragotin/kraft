@@ -56,22 +56,6 @@ AddressSortProxyModel::AddressSortProxyModel(AddressProvider *provider, QObject 
     setFilterKeyColumn(0);
 }
 
-#if 0
-bool AddressSortProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
-{
-    QVariant leftData = sourceModel()->data(left);
-    QVariant rightData = sourceModel()->data(right);
-
-    if (leftData.type() == QVariant::DateTime) {
-        return leftData.toDateTime() < rightData.toDateTime();
-    } else {
-        qDebug() << "OOOOO " << endl;
-    }
-    return true;
-}
-#endif
-
-
 static bool addressMatchesFilter(const KContacts::Address &address, const QString &filterString)
 {
     if (address.street().contains(filterString, Qt::CaseInsensitive)) {
