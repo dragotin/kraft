@@ -22,9 +22,9 @@
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
+#ifdef HAVE_AKONADI
 #include <akonadi_version.h>
 
-#ifdef HAVE_AKONADI
 #if AKONADI_VERSION >= QT_VERSION_CHECK(5,20,0)
 #include <AkonadiContact/akonadi-contact_version.h>
 #else
