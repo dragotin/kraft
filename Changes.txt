@@ -1,6 +1,7 @@
 Changes since version 0.97: #########################################
 
 Add dutch translation of the manual, Kudos to Ronald Stroethoff
+Add support for XRechnung export of invoices
 - Fix: Record usage of catalog items properly. Store usage amount and
        last usage time. Display that properly in the catalog editor.
 - Fix: Drag and drop sorting of items now working properly.
@@ -9,6 +10,9 @@ Add dutch translation of the manual, Kudos to Ronald Stroethoff
 - Fix: Cleaned up icon usage
 - Fix: Format of date and time corrected.
 - Fix: Store useful value for the locale in db. For later.
+- Adopt to latest Akonadi versions
+
+=> release v. 0.98 (May x, 2022)
 
 Changes since version 0.96: #########################################
 
