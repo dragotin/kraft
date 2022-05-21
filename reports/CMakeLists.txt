@@ -7,5 +7,6 @@ install(FILES
         invoice.trml
 	kraft.css
 	invoice.gtmpl
+	xrechnung.xrtmpl
 	DESTINATION ${DATA_INSTALL_DIR}/kraft/reports)
 
