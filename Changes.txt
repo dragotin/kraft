@@ -1,16 +1,27 @@
 Changes since version 0.97: #########################################
 
-Add dutch translation of the manual, Kudos to Ronald Stroethoff
-Add support for XRechnung export of invoices
+- Add dutch translation of the manual, Kudos to Ronald Stroethoff
+- Add support for XRechnung export of invoices
+- User manual improvements
+- Translations updates (German)
+- Add TOC to the manual
+- Add predecessor template variable to weasyprint documents
+- Adopt to latest Akonadi versions
+- Add ECE20 units for XRechnung
 - Fix: Record usage of catalog items properly. Store usage amount and
        last usage time. Display that properly in the catalog editor.
 - Fix: Drag and drop sorting of items now working properly.
 - Fix: Adopt to new Akonadi v. 5.19
 - Fix: Add predecessor variable to weasyprint template.
-- Fix: Cleaned up icon usage
+- Fix: Use correct icons everywhere. 
 - Fix: Format of date and time corrected.
 - Fix: Store useful value for the locale in db. For later.
-- Adopt to latest Akonadi versions
+- Fix: Textselection behaviour consitent
+- Fix: Write useful locale settings into the database.
+- Fix: Sorting in material catalogue now working.
+- Fix: Better error messages if python modules are missing.
+- Fix: Read mysql port from config file
+- Fix: Rearrange docdetails view a bit if there is a project set.
 
 => release v. 0.98 (May x, 2022)
 
