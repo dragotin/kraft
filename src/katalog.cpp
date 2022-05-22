@@ -221,7 +221,8 @@ QPair<int, QDateTime> Katalog::recordUsage(int id)
     int usage = usageCount(id).first;
 
     if (usage == 0) {
-        q.prepare("INSERT INTO catItemUsage SET catId=:catId, itemId=:itemId, usageCount=:usage, lastUsed=:timeStamp");
+        q.prepare("INSERT INTO catItemUsage (catId, itemId, usageCount, lastUsed) VALUES (:catId, :itemId, :usage, :timeStamp)");
+
     } else {
         q.prepare("UPDATE catItemUsage SET usageCount=:usage, lastUsed=:timeStamp WHERE catId=:catId AND itemId=:itemId");
     }
