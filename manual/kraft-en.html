@@ -660,16 +660,16 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_own_identity">Own identity</a></li>
 </ul>
 </li>
-<li><a href="#Invoice">Creating Documents</a>
-<ul class="sectlevel2">
-<li><a href="#_the_first_invoice">The first Invoice</a></li>
-<li><a href="#Offer">Creating an Offer</a></li>
-</ul>
-</li>
 <li><a href="#_catalogs">Catalogs</a>
 <ul class="sectlevel2">
 <li><a href="#_material_catalog">Material Catalog</a></li>
 <li><a href="#_standard_templates">Standard Templates</a></li>
+</ul>
+</li>
+<li><a href="#Invoice">Creating Documents</a>
+<ul class="sectlevel2">
+<li><a href="#_the_first_invoice">The first Invoice</a></li>
+<li><a href="#Offer">Creating an Offer</a></li>
 </ul>
 </li>
 <li><a href="#Customization">Customization</a>
@@ -829,6 +829,9 @@ User can create new number cycles and edit them clicking on the button <b class=
 In addition to the counter, more information can be added to form an useful number, such as constant text or parts of the date.</p>
 </div>
 <div class="paragraph">
+<p>The default numbercycle which is delivered with Kraft contains the year, the month and a serialnumber, this makes it that you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
+</div>
+<div class="paragraph">
 <p>See the following table for available variables which can be used:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -961,6 +964,295 @@ the main window.Here we see three tabs:</p>
 <p>Catalogs</p>
 </li>
 </ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_catalogs">Catalogs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accellerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document.</p>
+</div>
+<div class="paragraph">
+<p>Since templates are organized in chapters entire documents can be prepared in different chapters to be used as template documents.</p>
+</div>
+<div class="paragraph">
+<p>Of course the items in the documents can be edited after they got picked from a catalog.</p>
+</div>
+<div class="paragraph">
+<p>By default Kraft comes with two different catalogs:</p>
+</div>
+<div class="paragraph">
+<p><code>Material</code></p>
+</div>
+<div class="paragraph">
+<p>A catalog of material that are sold, with their purchase prices, the
+profit and the sell-price.</p>
+</div>
+<div class="paragraph">
+<p>and <code>Standard Templates</code></p>
+</div>
+<div class="paragraph">
+<p>A catalog of standard recipes of work like planting trees.</p>
+</div>
+<div class="paragraph">
+<p>Both catalogs can have chapters and sub-chapters for to organize your
+templates. First we are going to fill in the</p>
+</div>
+<div class="sect2">
+<h3 id="_material_catalog">Material Catalog</h3>
+<div class="paragraph">
+<p>A catalog of material that are sold, with their purchase prices, the
+profit and the sell-price. First we are going to add new chapters and
+subchapters.</p>
+</div>
+<div class="sect3">
+<h4 id="_new_chapters">New chapters</h4>
+<div class="paragraph">
+<p>Select with the mouse the column-name <code>material</code>, select now in the
+context-menu [Add a sub chapter]</p>
+</div>
+<div class="paragraph">
+<p>and add an extra chapter like <code>Trees</code></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_new_sub_chapters">New sub chapters</h4>
+<div class="paragraph">
+<p>We are going to ad sub chapters in the map <code>Trees</code>. Select with the mouse
+the name of the chapter where you like to add a subchapter, select now
+in the context-menu [Add a sub chapter]
+and ad an extra subchapters like <code>Loaf trees</code> and <code>needle trees</code>.
+After adding the extra chapters and subchapters for dividing the
+material, we are going to add the material themself.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_new_template">New template</h4>
+<div class="paragraph">
+<p>Select with the mouse the name of the sub-chapter or chapter where you
+like to add a material.
+Select the sub map Loaf trees and select now in the context-menu</p>
+</div>
+<div class="paragraph">
+<p>Add the extra materials <code>coconut tree</code>, <code>apple tree</code> and <code>pine-apple tree</code>.</p>
+</div>
+<div class="paragraph">
+<p>Fill in the price that we have paid.</p>
+</div>
+<div class="paragraph">
+<p>Fill in the profit that we want to have on the material</p>
+</div>
+<div class="paragraph">
+<p>And fill in how much is in a packet.</p>
+</div>
+<div class="paragraph">
+<p>After this we add also in the map 'Wood' a item for a 'support pole' for later use with its price.</p>
+</div>
+<div class="paragraph">
+<p>Now we are going to:</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_standard_templates">Standard Templates</h3>
+<div class="paragraph">
+<p>This is a catalog of standard recipes of work like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>planting trees</p>
+</li>
+<li>
+<p>cutting grass</p>
+</li>
+<li>
+<p>transport costs</p>
+</li>
+<li>
+<p>planting grass</p>
+</li>
+<li>
+<p>sowing grass-seed</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We add here the standard work of planting a tree.</p>
+</div>
+<div class="paragraph">
+<p>Select with the mouse the name of the chapter [Work] where you
+like to add the new template,</p>
+</div>
+<div class="paragraph">
+<p>select now the context-menu [New template]</p>
+</div>
+<div class="paragraph">
+<p>and the extra templates <code>Plant tree</code> and <code>cut grass</code>.</p>
+</div>
+<div class="paragraph">
+<p>After we made the new template, a window opens with 4 tabs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Template</p>
+</li>
+<li>
+<p>Time calculation</p>
+</li>
+<li>
+<p>Fix costs</p>
+</li>
+<li>
+<p>Material</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>First we go to the tab:</p>
+</div>
+<div class="sect3">
+<h4 id="_template">Template</h4>
+<div class="paragraph">
+<p>We give here the name of the new standard template like <code>Plant tree</code></p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>WARNING:
+be careful, this name is later used in the invoice</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>we select that this is per piece and that the margin is 8% and that the
+full VAT is applicable.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_time_calculation">Time calculation</h4>
+<div class="paragraph">
+<p>We fill here in a number of work with the time:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Spent time</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dig hole</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32 min.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Place tree</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12 min.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fill hole</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17 min.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">give water</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5 min.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The cost for worker which we have earlier filled in is now used.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>NOTE:
+in the invoice we see later only Plant tree, we will not see the parts
+dig hole,place tree,fill hole,give water</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Now we go to the tab</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_fixed_costs">Fixed costs</h4>
+<div class="paragraph">
+<p>and fill in:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Fixed item</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Transportcost</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">35 euro</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 pcs.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>After this we go to the tab:</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_material">Material</h4>
+<div class="paragraph">
+<p>Here we select <b class="button">next</b>, after which the window [Add Material to Calculation] opens for a selection of material.
+We navigate to the map 'wood' where we select the 'support pole'.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Used materials</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">support pole</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3,5 euro</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>We go now back to the first tab template</p>
+</div>
+<div class="paragraph">
+<p>On the first tab [template], we can now see the overall cost per
+one unit</p>
+</div>
+<div class="paragraph">
+<p>Click on [OK] for saving the result or on [cancel] for discarding the
+result.</p>
+</div>
+<div class="paragraph">
+<p>We make a second template <code>cut grass</code></p>
+</div>
+<div class="paragraph">
+<p>we fill in <code>cut grass</code>, as unit we choose sm (square meter), on the second
+tab we fill in that we need 3 min per square meter.</p>
+</div>
+<div class="paragraph">
+<p>Click on [OK] for saving the result or on [Cancel] for discarding the
+result.</p>
+</div>
+<div class="paragraph">
+<p>We are now ready for the first invoice.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1293,291 +1585,6 @@ the client.</p>
 <div class="paragraph">
 <p>After your first invoice is now your first offer now also ready for
 sending.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_catalogs">Catalogs</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accellerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document.</p>
-</div>
-<div class="paragraph">
-<p>Since templates are organized in chapters entire documents can be prepared in different chapters to be used as template documents.</p>
-</div>
-<div class="paragraph">
-<p>Of course the items in the documents can be edited after they got picked from a catalog.</p>
-</div>
-<div class="paragraph">
-<p>By default Kraft comes with two different catalogs:</p>
-</div>
-<div class="paragraph">
-<p><code>Material</code></p>
-</div>
-<div class="paragraph">
-<p>A catalog of material that are sold, with their purchase prices, the
-profit and the sell-price.</p>
-</div>
-<div class="paragraph">
-<p>and <code>Standard Templates</code></p>
-</div>
-<div class="paragraph">
-<p>A catalog of standard recipes of work like planting trees.</p>
-</div>
-<div class="paragraph">
-<p>Both catalogs can have chapters and sub-chapters for to organize your
-templates. First we are going to fill in the</p>
-</div>
-<div class="sect2">
-<h3 id="_material_catalog">Material Catalog</h3>
-<div class="paragraph">
-<p>A catalog of material that are sold, with their purchase prices, the
-profit and the sell-price. First we are going to add new chapters and
-subchapters.</p>
-</div>
-<div class="sect3">
-<h4 id="_new_chapters">New chapters</h4>
-<div class="paragraph">
-<p>Select with the mouse the column-name <code>material</code>, select now in the
-context-menu [Add a sub chapter]</p>
-</div>
-<div class="paragraph">
-<p>and add an extra chapter like <code>Trees</code></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_new_sub_chapters">New sub chapters</h4>
-<div class="paragraph">
-<p>We are going to ad sub chapters in the map <code>Trees</code>. Select with the mouse
-the name of the chapter where you like to add a subchapter, select now
-in the context-menu [Add a sub chapter]
-and ad an extra subchapters like <code>Loaf trees</code> and <code>needle trees</code>.
-After adding the extra chapters and subchapters for dividing the
-material, we are going to add the material themself.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_new_template">New template</h4>
-<div class="paragraph">
-<p>Select with the mouse the name of the sub-chapter or chapter where you
-like to add a material.
-Select the sub map Loaf trees and select now in the context-menu</p>
-</div>
-<div class="paragraph">
-<p>Add the extra materials <code>coconut tree</code>, <code>apple tree</code> and <code>pine-apple tree</code>.</p>
-</div>
-<div class="paragraph">
-<p>Fill in the price that we have paid.</p>
-</div>
-<div class="paragraph">
-<p>Fill in the profit that we want to have on the material</p>
-</div>
-<div class="paragraph">
-<p>And fill in how much is in a packet.</p>
-</div>
-<div class="paragraph">
-<p>Now we are going to:</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_standard_templates">Standard Templates</h3>
-<div class="paragraph">
-<p>This is a catalog of standard recipes of work like:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>planting trees</p>
-</li>
-<li>
-<p>cutting grass</p>
-</li>
-<li>
-<p>transport costs</p>
-</li>
-<li>
-<p>planting grass</p>
-</li>
-<li>
-<p>sowing grass-seed</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>We add here the standard work of planting a tree.</p>
-</div>
-<div class="paragraph">
-<p>Select with the mouse the name of the chapter [Work] where you
-like to add the new template,</p>
-</div>
-<div class="paragraph">
-<p>select now the context-menu [New template]</p>
-</div>
-<div class="paragraph">
-<p>and the extra templates <code>Plant tree</code> and <code>cut grass</code>.</p>
-</div>
-<div class="paragraph">
-<p>After we made the new template, a window opens with 4 tabs:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Template</p>
-</li>
-<li>
-<p>Time calculation</p>
-</li>
-<li>
-<p>Fix costs</p>
-</li>
-<li>
-<p>Material</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>First we go to the tab:</p>
-</div>
-<div class="sect3">
-<h4 id="_template">Template</h4>
-<div class="paragraph">
-<p>We give here the name of the new standard template like <code>Plant tree</code></p>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>WARNING:
-be careful, this name is later used in the invoice</p>
-</div>
-</blockquote>
-</div>
-<div class="paragraph">
-<p>we select that this is per piece and that the margin is 8% and that the
-full VAT is applicable.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_time_calculation">Time calculation</h4>
-<div class="paragraph">
-<p>We fill here in a number of work with the time:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Spent time</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dig hole</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">32 min.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Place tree</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">12 min.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fill hole</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">17 min.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">give water</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5 min.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">worker</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The cost for worker which we have earlier filled in is now used.</p>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>NOTE:
-in the invoice we see later only Plant tree, we will not see the parts
-dig hole,place tree,fill hole,give water</p>
-</div>
-</blockquote>
-</div>
-<div class="paragraph">
-<p>Now we go to the tab</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_fixed_costs">Fixed costs</h4>
-<div class="paragraph">
-<p>and fill in:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Fixed item</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Transportcost</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">35 euro</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1 pcs.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>After this we go to the tab:</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_material">Material</h4>
-<div class="paragraph">
-<p>Here we fill in:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Used materials</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">support pole</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3,5 euro</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>We go now back to the first tab template</p>
-</div>
-<div class="paragraph">
-<p>On the first tab [template], we can now see the overall cost per
-one unit</p>
-</div>
-<div class="paragraph">
-<p>Click on [OK] for saving the result or on [cancel] for discarding the
-result.</p>
-</div>
-<div class="paragraph">
-<p>We make a second template <code>cut grass</code></p>
-</div>
-<div class="paragraph">
-<p>we fill in <code>cut grass</code>, as unit we choose sm (square meter), on the second
-tab we fill in that we need 3 min per square meter.</p>
-</div>
-<div class="paragraph">
-<p>Click on [OK] for saving the result or on [Cancel] for discarding the
-result.</p>
-</div>
-<div class="paragraph">
-<p>We are now ready for the first invoice.</p>
-</div>
 </div>
 </div>
 </div>
@@ -1933,7 +1940,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-04-13 22:05:24 +0200
+Last updated 2022-06-19 16:33:41 +0200
 </div>
 </div>
 </body>
