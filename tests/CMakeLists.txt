@@ -83,3 +83,6 @@ add_test(t_xmlsaver t_xmlsaver)
 
 target_link_libraries(t_xmlsaver ${test_libs})
 
+set(TESTS_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+configure_file ("testconfig.h.in" "testconfig.h")
+
