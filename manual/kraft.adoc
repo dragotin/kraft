@@ -81,7 +81,9 @@ Different document types can use the same number cycle to generate ids from.
 Number cycles are identified by their name.
 User can create new number cycles and edit them clicking on the button btn:[Edit Number Cycles...]
 
-Kraft supports a counter that is incremented for every new document of a certain type.
+The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.
+
+Kraft supports two types of counter: One (variable `%i`) is incremented globally for every new document of a certain type. The other (variable `%n`) is reset every day and starts with 1 again on every new day.
 In addition to the counter, more information can be added to form an useful number, such as constant text or parts of the date.
 
 The default numbercycle which is delivered with Kraft contains the year, the month and a serialnumber, this makes it that you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.
@@ -99,11 +101,21 @@ See the following table for available variables which can be used:
 | `%m` or `%M`    | the month number of the document date.
 | `%MM`           | the month number with leading zero.
 | `%c`            | the customer id from kaddressbook
-| `%i`            | the unique counter *(mandatory)*
 | `%type`         | the localised doc type (offer, invoice etc.)
 | `%uid`          | the contact id of the client.
+| `%i`            | the unique counter
+| `%n`            | the unique day counter (combine with date)
 
 |===
+
+A number cycle template needs to contain either `%i` or `%n`, if not, `%i` is appended automatically.
+
+Both `%i` and `%n` are numeric values. They can also be padded with with leading zeros. The length is defined by the number of i's or n's put into the template. For example, if a daily counter with length of three and leading zeros is desired, `%nnn` has to be put into the template. This works up to a length of six characters.
+____
+NOTE:
+The "design" of the numbercycles and document numbers is very important. With the flexible system of templating Kraft can not prevent invalid number cycles. It is in the responsibility of the user.
+____
+
 
 === Taxes
 

@@ -819,7 +819,10 @@ Also this manual needs contributions!<br>
 <p>Verschillende documenttypes kunnen hetzelfde volgnummersysteem gebruiken om ID&#8217;s te generen. Volgnummersystemen zijn door hun naam te herkennen . Gebruikers kunnen nieuwe volgnummersystemen creëren en ze aanpassen door te klikken op de knop <b class="button">Volgnummersysteem instellen&#8230;&#8203;</b> .</p>
 </div>
 <div class="paragraph">
-<p>Kraft gebruikt een teller die automatisch bij een nieuw document van een bepaald type verhoogt word. Behalve de teller kan extra informatie toegevoegd worden om een bruikbaar documentnummer te krijgen, zoals een constante tekst of gedeeltes van de datum.</p>
+<p>The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.</p>
+</div>
+<div class="paragraph">
+<p>Kraft supports two types of counter: One (variable <code>%i</code>) is incremented globally for every new document of a certain type. The other (variable <code>%n</code>) is reset every day and starts with 1 again on every new day. In addition to the counter, more information can be added to form an useful number, such as constant text or parts of the date.</p>
 </div>
 <div class="paragraph">
 <p>The default numbercycle which is delivered with Kraft contains the year, the month and a serialnumber, this makes it that you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
@@ -834,55 +837,81 @@ Also this manual needs contributions!<br>
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%y</code> of <code>%yyyy</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">het jaar van de documentdatum.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%y</code> or <code>%yyyy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the year of the document date.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%yy</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">het jaar van de documentdatum (twee cijfers).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the year of the document (two digits).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%w</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">het weeknummer van de documentdatum.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the week number of the document date.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%ww</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">het weeknummer van het documentdatum met een nul (twee cijfers).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the week number of the document date with leading zero.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">de dag van de week als getal van de documentdatum.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the day number of the document date.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%dd</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">de dag van de week als getal van het documentdatum met een nul (wee cijfers).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the day number of the document date with leading zero.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%m</code> or <code>%M</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">de maand van het documentdatum als getal.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the month number of the document date.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%MM</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">de maand van het documentdatum als getal met een nul (twee cijfers).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the month number with leading zero.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%c</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">de ID van de klant in het kaddressbook</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%i</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">de unieke teller <strong>(verplicht)</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the customer id from kaddressbook</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">het vertaalde doc type (offerte, rekening enz.)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the localised doc type (offer, invoice etc.)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%uid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">het contact id van de klant.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the contact id of the client.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%i</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the unique counter</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%n</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the unique day counter (combine with date)</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>A number cycle template needs to contain either <code>%i</code> or <code>%n</code>, if not, <code>%i</code> is appended automatically.</p>
+</div>
+<div class="paragraph">
+<p>Both <code>%i</code> and <code>%n</code> are numeric values. They can also be padded with with leading zeros. The length is defined by the number of i&#8217;s or n&#8217;s put into the template. For example, if a daily counter with length of three and leading zeros is desired, <code>%nnn</code> has to be put into the template. This works up to a length of six characters.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The "design" of the numbercycles and document numbers is very important. With the flexible system of templating Kraft can not prevent invalid number cycles. It is in the responsibility of the user.
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1850,7 +1879,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-06-24 12:17:25 +0200
+Last updated 2022-06-26 19:20:11 +0200
 </div>
 </div>
 </body>
