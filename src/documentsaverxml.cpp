@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QStandardPaths>
 #include <QDebug>
 #include <QSqlQuery>
 #include <QDir>
 #include <QXmlSchemaValidator>
 #include <QXmlSchema>
+#include <QDomDocument>
+#include <QFileDevice>
 
 
 #include "documentsaverxml.h"
@@ -35,9 +36,25 @@
 #include "doctype.h"
 #include "defaultprovider.h"
 #include "format.h"
+#include "attribute.h"
 
 
 namespace {
+
+QString childElemText(const QDomElement& elem, const QString& childName)
+{
+    const QDomElement e = elem.firstChildElement(childName);
+    const QString t = e.text();
+    return t;
+}
+
+QDate childElemDate(const QDomElement& elem, const QString& childName)
+{
+    const QDomElement e = elem.firstChildElement(childName);
+    const QString t = e.text();
+    return QDate::fromString(t, "yyyy-MM-dd");
+
+}
 
 QString xmlBasePath()
 {
@@ -79,19 +96,19 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
 
         itemGroupElem.appendChild(itemType);
         QString tStr {QStringLiteral("Normal")};
-        auto t = pos->type();
+        auto t = item->type();
         if (t == DocPosition::ExtraDiscount) {
             tStr = QStringLiteral("Discount");
             // Only add the type item if the type is not "Normal", which is the default.
             itemType.appendChild(xmlTextElement(xmldoc, "type", tStr));
         }
-        itemType.appendChild(xmlTextElement(xmldoc, "text", pos->text().toHtmlEscaped()));
+        itemType.appendChild(xmlTextElement(xmldoc, "text", item->text().toHtmlEscaped()));
 
         itemType.appendChild(xmlTextElement(xmldoc, "amount", QString::number(pos->amount(), 'f', 2)));
         itemType.appendChild(xmlTextElement(xmldoc, "unit", pos->unit().einheitSingular().toHtmlEscaped()));
 
         QString ttStr;
-        DocPositionBase::TaxType tt = pos->taxType();
+        DocPositionBase::TaxType tt = item->taxType();
         // The Full Taxtype is default.
         if (tt != DocPositionBase::TaxType::TaxFull) {
             if (tt == DocPositionBase::TaxType::TaxReduced)
@@ -105,7 +122,7 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
         itemType.appendChild(xmlTextElement(xmldoc, "unitprice", QString::number(pos->unitPrice().toDouble(), 'f', 2)));
         itemType.appendChild(xmlTextElement(xmldoc, "itemtotal", QString::number(pos->overallPrice().toDouble(), 'f', 2)));
 
-        AttributeMap attribs = pos->attributes();
+        AttributeMap attribs = item->attributes();
         for(const auto &k : attribs.keys()) {
             QDomElement attribElem = xmldoc.createElement("itemAttrib");
             itemType.appendChild(attribElem);
@@ -119,7 +136,7 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
     return cnt;
 }
 
-QDomDocument xmlDocument( KraftDoc *doc)
+QDomDocument xmlDocument(KraftDoc *doc)
 {
     QDomDocument xmldoc( "kraftdocument" );
     QDomProcessingInstruction instr = xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
@@ -223,6 +240,72 @@ QDomDocument xmlDocument( KraftDoc *doc)
     return xmldoc;
 }
 
+bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
+{
+    bool res {true};
+
+    QDomElement kraftdocElem = domDoc.firstChildElement("kraftdocument");
+    QDomElement metaElem = kraftdocElem.firstChildElement("meta");
+
+    Q_ASSERT(!metaElem.isNull());
+    QString t = childElemText(metaElem, "docType");
+    doc->setDocType(t);
+
+    t = childElemText(metaElem, "docDesc");
+    doc->setWhiteboard(t);
+
+    t = childElemText(metaElem, "currency");
+
+    t = childElemText(metaElem, "country");
+
+    t = childElemText(metaElem, "locale");
+
+    t = childElemText(metaElem, "ident");
+    doc->setIdent(t);
+
+    QDate d = childElemDate(metaElem, "date");
+    doc->setDate(d);
+
+    const QDomElement tosElem = metaElem.firstChildElement("timeOfSupply");
+    d = childElemDate(tosElem, "start");
+    d = childElemDate(tosElem, "end");
+
+    // Tax: Unused so far, as tax is taken from documentman,  which loads it according to the date of the doc.
+    QDomElement taxElem = metaElem.firstChildElement("tax");
+    while (!taxElem.isNull()) {
+        t = childElemText(taxElem, "type");
+        t = childElemText(taxElem, "value");
+        taxElem = taxElem.nextSiblingElement("tax");
+    }
+
+    // owner
+    t = childElemText(metaElem, "owner");
+
+    // last modified
+    t = childElemText(metaElem, "lastModified");
+    QDateTime dt = QDateTime::fromString(t, Qt::ISODate);
+    doc->setLastModified(dt);
+
+    t = childElemText(metaElem, "predecessor");
+    doc->setPredecessor(t);
+
+    // doc attribs
+    QDomElement attrElem = metaElem.firstChildElement("docAttrib");
+    while (!attrElem.isNull()) {
+        t = childElemText(attrElem, "name");
+        t = childElemText(attrElem, "value");
+        t = childElemText(attrElem, "type");
+        attrElem = attrElem.nextSiblingElement("docAttrib");
+    }
+
+    // Tags for future fun
+    QDomElement tagElem = metaElem.firstChildElement("tag");
+    while (!tagElem.isNull()) {
+        t = tagElem.text();
+        tagElem = tagElem.nextSiblingElement("tag");
+    }
+    return res;
+}
 
 }
 
@@ -256,9 +339,9 @@ QString DocumentSaverXML::xmlDocFileNameFromId(const QString& id)
 
     const QString file {id + ".xml"};
 
-    QDirIterator it("/sys", {file}, QDir::NoFilter, QDirIterator::Subdirectories);
+    QDirIterator it(path, {file}, QDir::NoFilter, QDirIterator::Subdirectories);
     if (it.hasNext()) {
-        return it.filePath();
+        return it.next();
     }
     return QString();
 }
@@ -297,8 +380,8 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
     QFile file( xmlFile );
     if ( file.open( QIODevice::WriteOnly ) ) {
-        QTextStream stream( &file );
-        stream << xml << "\n";
+        QTextStream s( &file );
+        s << xml << "\n";
         file.close();
     } else {
         // qDebug () << "Saving failed" << endl;
@@ -347,10 +430,44 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 
     const QString xmlFile = xmlDocFileNameFromId(id);
 
+    QFileInfo fi {xmlFile};
+    if (!fi.exists()) {
+        qDebug() << "File to load does not exist" << xmlFile;
+    }
 
+    if (!fi.isReadable()) {
+        qDebug() << "File to load not readable" << xmlFile;
+    }
 
-    if( !id.isEmpty() ) {
-        QSqlQuery q;
+    QFile file(xmlFile);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "Unable to open xml document file";
+        return;
+    }
+    const QByteArray arr = file.readAll();
+    if (!_domDoc.setContent(arr)) {
+        qDebug() << "Unable to set file content as xml";
+        file.close();
+        return;
+    }
+    file.close();
+
+    bool ok;
+
+    ok = loadMetaBlock(_domDoc, doc);
+
+    loadPositions(QString(), doc);
+}
+
+void DocumentSaverXML::loadPositions(const QString&, KraftDoc *doc)
+{
+
+}
+
+#if 0
+    ----
+
+       QSqlQuery q;
         q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, "
                   "pretext, posttext, docDescription, projectlabel, predecessor FROM document WHERE docID=:docID");
         q.bindValue(":docID", id);
@@ -459,7 +576,7 @@ void DocumentSaverXML::loadPositions( const QString& id, KraftDoc *doc )
 
         dp->loadAttributes();
     }
-}
+#endif
 
 DocumentSaverXML::~DocumentSaverXML( )
 {
