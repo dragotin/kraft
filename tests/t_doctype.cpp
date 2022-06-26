@@ -3,7 +3,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-
+#include "testconfig.h"
 #include "doctype.h"
 #include "kraftdb.h"
 #include "sql_states.h"
