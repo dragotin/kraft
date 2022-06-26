@@ -12,6 +12,11 @@ void init_test_db()
 {
     const QString dbName("__test.db");
 
+    QDir sourceDir(TESTS_PATH);
+    sourceDir.cdUp();
+    const QByteArray ba {sourceDir.absolutePath().toLatin1()};
+    qputenv("KRAFT_HOME", ba);
+
     QFile::remove(dbName);
 
     KraftDB::self()->dbConnect("QSQLITE", dbName, QString(), QString(), QString());
@@ -159,6 +164,37 @@ private slots:
         QVERIFY(re.startsWith("FOO-2")); // the id can change
         re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
         QVERIFY(re.startsWith("FOO-3")); // the id can change}
+
+        // Test the padding functionality
+        dt.setIdentTemplate("FOO-%nn");
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QVERIFY(re.startsWith("FOO-04")); // the id can change
+
+        dt.setIdentTemplate("FOO-%nnn");
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QVERIFY(re.startsWith("FOO-005")); // the id can change
+
+        dt.setIdentTemplate("FOO-%nnnn");
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QVERIFY(re.startsWith("FOO-0006")); // the id can change
+
+        // Test resetting of the counter with new date.
+        dt.setIdentTemplate("FOO-%nn");
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122, true);
+        QVERIFY(re.startsWith("FOO-01")); // the id can change
+
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122, true);
+        QVERIFY(re.startsWith("FOO-02")); // the id can change
+
+        re = dt.generateDocumentIdent(QDate(2020, 01,24), "TestDoc", "addressUID", 122, true);
+        QVERIFY(re.startsWith("FOO-01")); // the id can change
+
+        re = dt.generateDocumentIdent(QDate(2020, 01,25), "TestDoc", "addressUID", 122, true);
+        QVERIFY(re.startsWith("FOO-01")); // the id can change
+
+        re = dt.generateDocumentIdent(QDate(2020, 01,25), "TestDoc", "addressUID", 122, true);
+        QVERIFY(re.startsWith("FOO-02")); // the id can change
+
     }
 private:
     QString _docTypeName;
