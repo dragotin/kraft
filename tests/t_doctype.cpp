@@ -17,6 +17,7 @@ void init_test_db()
     KraftDB::self()->dbConnect("QSQLITE", dbName, QString(), QString(), QString());
 
     SqlCommandList sqls = KraftDB::self()->parseCommandFile("5_dbmigrate.sql");
+    QVERIFY(sqls.size() > 0);
     KraftDB::self()->processSqlCommands(sqls);
 
     // modify the initial attributes tables
@@ -146,6 +147,19 @@ private slots:
 
     }
 
+    void checkDateCounter()
+    {
+        DocType dt("Test");
+
+        // Attention: This test assumes that all verifies run on the same day.
+        dt.setIdentTemplate("FOO-%n");
+        QString re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QVERIFY(re.startsWith("FOO-1")); // the id can change
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QVERIFY(re.startsWith("FOO-2")); // the id can change
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        QVERIFY(re.startsWith("FOO-3")); // the id can change}
+    }
 private:
     QString _docTypeName;
 

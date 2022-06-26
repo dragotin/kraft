@@ -30,117 +30,120 @@
 */
 
 namespace {
-    const QString XRechnungTmplStr   {"XRechnungTmpl"};
-    const QString WatermarkFileStr   {"watermarkFile"};
-    const QString DocTemplateFileStr {"docTemplateFile"};
-    const QString IdentNumberCycleStr{"identNumberCycle"};
-    const QString DocMergeIdentStr   {"docMergeIdent"};
+const QString XRechnungTmplStr   {"XRechnungTmpl"};
+const QString WatermarkFileStr   {"watermarkFile"};
+const QString DocTemplateFileStr {"docTemplateFile"};
+const QString IdentNumberCycleStr{"identNumberCycle"};
+const QString DocMergeIdentStr   {"docMergeIdent"};
+const QString DayCounterDateStr  {"dayCounterDate"};
+const QString DayCounterStr  {"dayCounter"};
+
 }
 
 
 idMap DocType::mNameMap = idMap();
 
 DocType::DocType()
-  : mAttributes( QStringLiteral( "DocType" ) ),
-    mDirty( false )
+    : mAttributes( QStringLiteral( "DocType" ) ),
+      mDirty( false )
 {
-  init();
+    init();
 }
 
 DocType::DocType( const QString& name, bool dirty )
-  : mAttributes( QStringLiteral( "DocType" ) ),
-    mName( name ),
-    mDirty( dirty )
+    : mAttributes( QStringLiteral( "DocType" ) ),
+      mName( name ),
+      mDirty( dirty )
 {
-  init();
-  if ( mNameMap.contains( name ) ) {
-    dbID id = mNameMap[ name ];
+    init();
+    if ( mNameMap.contains( name ) ) {
+        dbID id = mNameMap[ name ];
 
-    mAttributes.load( id );
-  }
+        mAttributes.load( id );
+    }
 
-  readFollowerList();
-  readIdentTemplate();
+    readFollowerList();
+    readIdentTemplate();
 }
 
 void DocType::init()
 {
-  // === Start to fill static content
-  if ( ! mNameMap.empty() ) return;
+    // === Start to fill static content
+    if ( ! mNameMap.empty() ) return;
 
-  QSqlQuery q;
-  q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
-  q.exec();
+    QSqlQuery q;
+    q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
+    q.exec();
 
-  while ( q.next() ) {
-    dbID id( q.value(0).toInt() );
-    QString name = q.value(1).toString();
+    while ( q.next() ) {
+        dbID id( q.value(0).toInt() );
+        QString name = q.value(1).toString();
 
-    mNameMap[ name ] = id;
-    // QString h = DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
-  }
+        mNameMap[ name ] = id;
+        // QString h = DefaultProvider::self()->locale()->translate( cur.value( "name" ).toString() );
+    }
 }
 
 void DocType::clearMap()
 {
-  mNameMap.clear();
+    mNameMap.clear();
 }
 
 QStringList DocType::all()
 {
-  init();
+    init();
 
-  QStringList re;
+    QStringList re;
 
-  QSqlQuery q;
-  q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
-  q.exec();
+    QSqlQuery q;
+    q.prepare( "SELECT docTypeID, name FROM DocTypes ORDER BY name" );
+    q.exec();
 
-  while ( q.next() ) {
-    re << q.value(1).toString();
-  }
+    while ( q.next() ) {
+        re << q.value(1).toString();
+    }
 
-  return re;
+    return re;
 }
 
 QStringList DocType::allLocalised()
 {
-  return all();
+    return all();
 }
 
 // static function to retrieve id of a certain doctype
 dbID DocType::docTypeId( const QString& docType )
 {
-  dbID id;
-  init();
-  if ( mNameMap.contains( docType ) ) {
-    id = mNameMap[ docType ];
+    dbID id;
+    init();
+    if ( mNameMap.contains( docType ) ) {
+        id = mNameMap[ docType ];
 
+        return id;
+    } else {
+        qCritical()<< "Can not find id for doctype named " << docType;
+    }
     return id;
-  } else {
-    qCritical()<< "Can not find id for doctype named " << docType;
-  }
-  return id;
 }
 
 bool DocType::allowDemand()
 {
-  bool re = false;
+    bool re = false;
 
-  if ( mAttributes.contains( "AllowDemand" ) ) {
-    re = true;
-  }
-  return re;
+    if ( mAttributes.contains( "AllowDemand" ) ) {
+        re = true;
+    }
+    return re;
 }
 
 bool DocType::allowAlternative()
 {
-  bool re = false;
+    bool re = false;
 
-  if ( mAttributes.contains( "AllowAlternative" ) ) {
-    re = true;
-  }
-  return re;
+    if ( mAttributes.contains( "AllowAlternative" ) ) {
+        re = true;
+    }
+    return re;
 }
 
 bool DocType::pricesVisible()
@@ -217,116 +220,116 @@ int DocType::setAllFollowers( const QStringList& followers)
 
 QStringList DocType::follower()
 {
-  return mFollowerList;
+    return mFollowerList;
 }
 
 void DocType::readFollowerList()
 {
-  QSqlQuery q;
-  q.prepare( "SELECT typeId, followerId, sequence FROM DocTypeRelations WHERE typeId=:type ORDER BY sequence");
-  q.bindValue( ":type", mNameMap[mName].toInt() );
-  q.exec();
+    QSqlQuery q;
+    q.prepare( "SELECT typeId, followerId, sequence FROM DocTypeRelations WHERE typeId=:type ORDER BY sequence");
+    q.bindValue( ":type", mNameMap[mName].toInt() );
+    q.exec();
 
-  while ( q.next() ) {
-    dbID followerId( q.value(1).toInt() );
+    while ( q.next() ) {
+        dbID followerId( q.value(1).toInt() );
 
-    idMap::Iterator it;
-    for ( it = mNameMap.begin(); it != mNameMap.end(); ++it ) {
-      if ( it.value() == followerId ) {
-        mFollowerList << it.key();
-      }
+        idMap::Iterator it;
+        for ( it = mNameMap.begin(); it != mNameMap.end(); ++it ) {
+            if ( it.value() == followerId ) {
+                mFollowerList << it.key();
+            }
+        }
     }
-  }
 }
 
 QString DocType::numberCycleName()
 {
-  QString re = NumberCycle::defaultName();
-  if ( mAttributes.hasAttribute(IdentNumberCycleStr) ) {
-    re = mAttributes[IdentNumberCycleStr].value().toString();
-  }
-  return re;
+    QString re = NumberCycle::defaultName();
+    if ( mAttributes.hasAttribute(IdentNumberCycleStr) ) {
+        re = mAttributes[IdentNumberCycleStr].value().toString();
+    }
+    return re;
 }
 
 void DocType::setNumberCycleName( const QString& name )
 {
-  if ( name.isEmpty() ) return;
+    if ( name.isEmpty() ) return;
 
-  if ( name != NumberCycle::defaultName() ) {
-    Attribute att(IdentNumberCycleStr);
-    att.setPersistant( true );
-    att.setValue( name );
-    mAttributes[IdentNumberCycleStr] = att;
-  } else {
-    // remove default value from map
-    mAttributes.markDelete(IdentNumberCycleStr);
-    // qDebug () << "Removing identNumberCycle Attribute";
-  }
-  mDirty = true;
-  readIdentTemplate();
+    if ( name != NumberCycle::defaultName() ) {
+        Attribute att(IdentNumberCycleStr);
+        att.setPersistant( true );
+        att.setValue( name );
+        mAttributes[IdentNumberCycleStr] = att;
+    } else {
+        // remove default value from map
+        mAttributes.markDelete(IdentNumberCycleStr);
+        // qDebug () << "Removing identNumberCycle Attribute";
+    }
+    mDirty = true;
+    readIdentTemplate();
 }
 
 QString DocType::templateFile( )
 {
-  QString tmplFile;
+    QString tmplFile;
 
-  QString reportFileName = QString( "%1.trml").arg( name().toLower() );
-  reportFileName.replace(QChar(' '), QChar('_'));
+    QString reportFileName = QString( "%1.trml").arg( name().toLower() );
+    reportFileName.replace(QChar(' '), QChar('_'));
 
-  if ( mAttributes.hasAttribute(DocTemplateFileStr) ) {
-    tmplFile = mAttributes[DocTemplateFileStr].value().toString();
-    if( !tmplFile.isEmpty() ) {
-        QFileInfo fi(tmplFile);
-        if( fi.isAbsolute() ) {
-            return tmplFile;
-        } else {
-            // it is not an absolute file name, try to find it
-            reportFileName = tmplFile;
+    if ( mAttributes.hasAttribute(DocTemplateFileStr) ) {
+        tmplFile = mAttributes[DocTemplateFileStr].value().toString();
+        if( !tmplFile.isEmpty() ) {
+            QFileInfo fi(tmplFile);
+            if( fi.isAbsolute() ) {
+                return tmplFile;
+            } else {
+                // it is not an absolute file name, try to find it
+                reportFileName = tmplFile;
+            }
+            tmplFile.clear();
         }
-        tmplFile.clear();
     }
-  }
 
-  // Try to find it from the installation
-  QStringList searchList;
-  searchList << QString("kraft/reports/%1").arg(reportFileName);
-  searchList << QLatin1String("kraft/reports/invoice.trml");
+    // Try to find it from the installation
+    QStringList searchList;
+    searchList << QString("kraft/reports/%1").arg(reportFileName);
+    searchList << QLatin1String("kraft/reports/invoice.trml");
 
-  const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
+    const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
 
-  if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
-      foreach( QString searchPath, searchList ) {
-          if( searchPath.startsWith(QLatin1String("kraft"))) {
-              // remove the kraft-String here.
-              searchPath.remove(0, 5); // remove "kraft"
-          }
-          const QString tFile = prjPath + searchPath;
-          if( !tFile.isEmpty() && QFile::exists(tFile) ) {
-              // qDebug () << "Found template file " << tFile;
-              tmplFile = tFile;
-              break;
-          }
-      }
-  }
+    if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
+        foreach( QString searchPath, searchList ) {
+            if( searchPath.startsWith(QLatin1String("kraft"))) {
+                // remove the kraft-String here.
+                searchPath.remove(0, 5); // remove "kraft"
+            }
+            const QString tFile = prjPath + searchPath;
+            if( !tFile.isEmpty() && QFile::exists(tFile) ) {
+                // qDebug () << "Found template file " << tFile;
+                tmplFile = tFile;
+                break;
+            }
+        }
+    }
 
-  if( tmplFile.isEmpty() ) {
-      foreach( QString searchPath, searchList ) {
-          const QString tFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, searchPath);
+    if( tmplFile.isEmpty() ) {
+        foreach( QString searchPath, searchList ) {
+            const QString tFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, searchPath);
 
-          if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
-              tmplFile = tFile;
-              // qDebug () << "Found template file " << tmplFile;
-              break;
-          }
-      }
-  }
+            if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
+                tmplFile = tFile;
+                // qDebug () << "Found template file " << tmplFile;
+                break;
+            }
+        }
+    }
 
-  if( tmplFile.isEmpty() ) {
-      qDebug () << "unable to find a template file for " << name();
-  } else {
-      qDebug () << "Found template file " << tmplFile;
-  }
-  return tmplFile;
+    if( tmplFile.isEmpty() ) {
+        qDebug () << "unable to find a template file for " << name();
+    } else {
+        qDebug () << "Found template file " << tmplFile;
+    }
+    return tmplFile;
 }
 
 QString DocType::defaultTemplateFile() const
@@ -347,42 +350,42 @@ QString DocType::defaultTemplateFile() const
 
 void DocType::setTemplateFile( const QString& name )
 {
-  if ( name.isEmpty() || name == defaultTemplateFile() ) { // the default is returned anyway.
-    // remove default value from map
-    mAttributes.markDelete(DocTemplateFileStr);
-    // qDebug () << "Removing docTemplateFile Attribute";
-  } else {
-    Attribute att(DocTemplateFileStr);
-    att.setPersistant( true );
-    att.setValue( name );
-    mAttributes[DocTemplateFileStr] = att;
-  }
-  mDirty = true;
+    if ( name.isEmpty() || name == defaultTemplateFile() ) { // the default is returned anyway.
+        // remove default value from map
+        mAttributes.markDelete(DocTemplateFileStr);
+        // qDebug () << "Removing docTemplateFile Attribute";
+    } else {
+        Attribute att(DocTemplateFileStr);
+        att.setPersistant( true );
+        att.setValue( name );
+        mAttributes[DocTemplateFileStr] = att;
+    }
+    mDirty = true;
 }
 
 QString DocType::mergeIdent()
 {
-  QString re = "0";
-  if ( mAttributes.hasAttribute(DocMergeIdentStr) ) {
-    re = mAttributes[DocMergeIdentStr].value().toString();
-  }
+    QString re = "0";
+    if ( mAttributes.hasAttribute(DocMergeIdentStr) ) {
+        re = mAttributes[DocMergeIdentStr].value().toString();
+    }
 
-  return re;
+    return re;
 }
 
 void DocType::setMergeIdent( const QString& ident )
 {
-  if ( !ident.isEmpty() ) {
-    Attribute att(DocMergeIdentStr);
-    att.setPersistant( true );
-    att.setValue( ident );
-    mAttributes[DocMergeIdentStr] = att;
-  } else {
-    // remove default value from map
-    mAttributes.markDelete(DocMergeIdentStr);
-    // qDebug () << "Removing docMergeIdent Attribute";
-  }
-  mDirty = true;
+    if ( !ident.isEmpty() ) {
+        Attribute att(DocMergeIdentStr);
+        att.setPersistant( true );
+        att.setValue( ident );
+        mAttributes[DocMergeIdentStr] = att;
+    } else {
+        // remove default value from map
+        mAttributes.markDelete(DocMergeIdentStr);
+        // qDebug () << "Removing docMergeIdent Attribute";
+    }
+    mDirty = true;
 
 }
 
@@ -412,11 +415,11 @@ QString DocType::attributeValueString(const QString& attribName)
 void DocType::setAttribute( const QString& attribute, const QString& val)
 {
     if ( !(attribute.isEmpty() || val.isEmpty()) ) {
-      Attribute att( attribute );
-      att.setPersistant( true );
-      att.setValue( val);
-      mAttributes[attribute] = att;
-      mDirty = true;
+        Attribute att( attribute );
+        att.setPersistant( true );
+        att.setValue( val);
+        mAttributes[attribute] = att;
+        mDirty = true;
     }
     // remove empty attribute
     if (!attribute.isEmpty() && val.isEmpty()) {
@@ -427,34 +430,44 @@ void DocType::setAttribute( const QString& attribute, const QString& val)
 
 QString DocType::watermarkFile()
 {
-  QString re;
-  if ( mAttributes.hasAttribute( WatermarkFileStr ) ) {
-    re = mAttributes[WatermarkFileStr].value().toString();
-  }
+    QString re;
+    if ( mAttributes.hasAttribute( WatermarkFileStr ) ) {
+        re = mAttributes[WatermarkFileStr].value().toString();
+    }
 
-  return re;
+    return re;
 }
 
 
 void DocType::setWatermarkFile( const QString& file )
 {
-  if ( !file.isEmpty() ) {
-    Attribute att( WatermarkFileStr );
-    att.setPersistant( true );
-    att.setValue( file );
-    mAttributes[WatermarkFileStr] = att;
-  } else {
-    // remove default value from map
-    mAttributes.markDelete( WatermarkFileStr );
-    // qDebug () << "Removing docMergeFile Attribute";
-  }
-  mDirty = true;
+    if ( !file.isEmpty() ) {
+        Attribute att( WatermarkFileStr );
+        att.setPersistant( true );
+        att.setValue( file );
+        mAttributes[WatermarkFileStr] = att;
+    } else {
+        // remove default value from map
+        mAttributes.markDelete( WatermarkFileStr );
+        // qDebug () << "Removing docMergeFile Attribute";
+    }
+    mDirty = true;
 }
 
-QString DocType::generateDocumentIdent( const QDate& docDate, const QString& docType,
-                                        const QString& addressUid, int id )
+/**
+ * @brief DocType::generateDocumentIdent
+ * @param docDate
+ * @param docType
+ * @param addressUid
+ * @param id
+ * @param useDateParam - set to true to use the param docDate for the day counter. Defaults to false, which uses current Date
+ * @return
+ */
+QString DocType::generateDocumentIdent(const QDate& docDate, const QString& docType,
+                                        const QString& addressUid, int id, bool useDateParamForDateCounter )
 {
-  /*
+
+    /*
    * The pattern may contain the following tags:
    * %y - the year of the documents date.
    * %w - the week number of the documents date
@@ -462,169 +475,206 @@ QString DocType::generateDocumentIdent( const QDate& docDate, const QString& doc
    * %m - the month number of the documents date
    * %c - the customer id from kaddressbook
    * %i - the uniq identifier from db.
+   * %n - the uniq identifier that resets every day and starts from 1
    * %type - the localised doc type (offer, invoice etc.)
    * %uid  - the customer uid
    */
 
-  QString pattern = identTemplate();
-  if ( pattern.indexOf( "%i" ) == -1 ) {
-    qWarning() << "No %i found in identTemplate, appending it to meet law needs!";
-    pattern += "-%i";
-  }
+    // Load the template and check if there is a uniq id included.
+    QString pattern = identTemplate();
+    if ( pattern.indexOf( "%i" ) == -1 && pattern.indexOf("%n") == -1) {
+        qWarning() << "No %i found in identTemplate, appending it to meet law needs!";
+        pattern += "-%i";
+    }
 
-  KraftDB::StringMap m;
+    int dayCnt {0};
+    if (pattern.indexOf("%n") > -1) {
+        QDate currDate = QDate::currentDate();
+        if (useDateParamForDateCounter) { // only in test environment
+            currDate = docDate;
+        }
+        // Check the attribute for the day counter.
+        QDate storedDate = mAttributes[DayCounterDateStr].value().toDate();
+        // increment the day counter by one
+        dayCnt = 1+mAttributes[DayCounterStr].value().toInt();
 
-  m[ "%yyyy" ] = docDate.toString( "yyyy" );
-  m[ "%yy" ] = docDate.toString( "yy" );
-  m[ "%y" ] = docDate.toString( "yyyy" );
+        if (storedDate != currDate) {
+            // the daycounter is outdated. Reset the counter and update the date.
+            setAttribute(DayCounterDateStr, currDate.toString(Qt::ISODate));
+            dayCnt = 1;
+        }
+        setAttribute(DayCounterStr, QString::number(dayCnt));
+    }
+    KraftDB::StringMap m;
 
-  QString h;
-  h = QString("%1").arg( docDate.weekNumber(), 2, 10, QChar('0') );
-  m[ "%ww" ] = h;
-  m[ "%w" ] = QString::number( docDate.weekNumber( ) );
+    m[ "%yyyy" ] = docDate.toString( "yyyy" );
+    m[ "%yy" ] = docDate.toString( "yy" );
+    m[ "%y" ] = docDate.toString( "yyyy" );
 
-  m[ "%dd" ] = docDate.toString( "dd" );
-  m[ "%d" ] = docDate.toString( "d" );
+    QString h;
+    h = QString("%1").arg( docDate.weekNumber(), 2, 10, QChar('0') );
+    m[ "%ww" ] = h;
+    m[ "%w" ] = QString::number( docDate.weekNumber( ) );
 
-  m[ "%m" ] = QString::number( docDate.month() );
+    m[ "%dd" ] = docDate.toString( "dd" );
+    m[ "%d" ] = docDate.toString( "d" );
 
-  m[ "%MM" ] = docDate.toString( "MM" );
-  m[ "%M" ] = docDate.toString( "M" );
+    m[ "%m" ] = QString::number( docDate.month() );
 
-  int i = id;
-  if ( id == -1 ) { // hot mode: The database id is incremented by nextIdentId()
-    i = nextIdentId();
-  }
+    m[ "%MM" ] = docDate.toString( "MM" );
+    m[ "%M" ] = docDate.toString( "M" );
 
-  h = QString("%1").arg(i, 6, 10, QChar('0') );
-  m[ "%iiiiii" ] = h;
+    int i = id;
+    if ( id == -1 ) { // hot mode: The database id is incremented by nextIdentId()
+        i = nextIdentId();
+    }
 
-  h = QString("%1").arg(i, 5, 10, QChar('0') );
-  m[ "%iiiii" ] = h;
+    h = QString("%1").arg(i, 6, 10, QChar('0') );
+    m[ "%iiiiii" ] = h;
 
-  h = QString("%1").arg(i, 4, 10, QChar('0') );
-  m[ "%iiii" ] = h;
+    h = QString("%1").arg(i, 5, 10, QChar('0') );
+    m[ "%iiiii" ] = h;
 
-  h = QString("%1").arg(i, 3, 10, QChar('0') );
-  m[ "%iii" ] = h;
+    h = QString("%1").arg(i, 4, 10, QChar('0') );
+    m[ "%iiii" ] = h;
 
-  h = QString("%1").arg(i, 2, 10, QChar('0') );
-  m[ "%ii" ] = h;
+    h = QString("%1").arg(i, 3, 10, QChar('0') );
+    m[ "%iii" ] = h;
 
-  m[ "%i" ] = QString::number( i );
+    h = QString("%1").arg(i, 2, 10, QChar('0') );
+    m[ "%ii" ] = h;
 
-  m[ "%c" ] = addressUid;
-  m[ "%type" ] = docType;
-  m[ "%uid" ] = addressUid;
+    m[ "%i" ] = QString::number( i );
 
-  QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
-  // qDebug () << "Generated document ident: " << re;
+    h = QString("%1").arg(dayCnt, 6, 10, QChar('0') );
+    m[ "%nnnnnn" ] = h;
 
-  return re;
+    h = QString("%1").arg(dayCnt, 5, 10, QChar('0') );
+    m[ "%nnnnn" ] = h;
+
+    h = QString("%1").arg(dayCnt, 4, 10, QChar('0') );
+    m[ "%nnnn" ] = h;
+
+    h = QString("%1").arg(dayCnt, 3, 10, QChar('0') );
+    m[ "%nnn" ] = h;
+
+    h = QString("%1").arg(dayCnt, 2, 10, QChar('0') );
+    m[ "%nn" ] = h;
+
+    m[ "%n" ] = QString::number(dayCnt);
+
+    m[ "%c" ] = addressUid;
+    m[ "%type" ] = docType;
+    m[ "%uid" ] = addressUid;
+
+    QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
+    // qDebug () << "Generated document ident: " << re;
+
+    return re;
 }
 
 // if hot, the id is updated in the database, otherwise not.
 int DocType::nextIdentId( bool hot )
 {
-  QString numberCycle = numberCycleName();
+    QString numberCycle = numberCycleName();
 
-  if ( numberCycle.isEmpty() ) {
-    qCritical() << "NumberCycle name is empty";
-    return -1;
-  }
-
-  QSqlQuery qLock;
-  if ( hot ) {
-    qLock.exec( "LOCK TABLES numberCycles WRITE" );
-  }
-
-  QSqlQuery q;
-  q.prepare( "SELECT lastIdentNumber FROM numberCycles WHERE name=:name" );
-
-  int num = -1;
-  q.bindValue( ":name", numberCycle );
-  q.exec();
-  if ( q.next() ) {
-    num = 1+( q.value( 0 ).toInt() );
-    // qDebug () << "Got current number: " << num;
-
-    if ( hot ) {
-      QSqlQuery setQuery;
-      setQuery.prepare( "UPDATE numberCycles SET lastIdentNumber=:newNumber WHERE name=:name" );
-      setQuery.bindValue( ":name", numberCycle );
-      setQuery.bindValue( ":newNumber", num );
-      setQuery.exec();
-      if ( setQuery.isActive() ) {
-        // qDebug () << "Successfully created new id number for numbercycle " << numberCycle << ": " << num << endl;
-      }
+    if ( numberCycle.isEmpty() ) {
+        qCritical() << "NumberCycle name is empty";
+        return -1;
     }
-  }
-  if ( hot ) {
-    qLock.exec( "UNLOCK TABLES" );
-  }
 
-  return num;
+    QSqlQuery qLock;
+    if ( hot ) {
+        qLock.exec( "LOCK TABLES numberCycles WRITE" );
+    }
+
+    QSqlQuery q;
+    q.prepare( "SELECT lastIdentNumber FROM numberCycles WHERE name=:name" );
+
+    int num = -1;
+    q.bindValue( ":name", numberCycle );
+    q.exec();
+    if ( q.next() ) {
+        num = 1+( q.value( 0 ).toInt() );
+        // qDebug () << "Got current number: " << num;
+
+        if ( hot ) {
+            QSqlQuery setQuery;
+            setQuery.prepare( "UPDATE numberCycles SET lastIdentNumber=:newNumber WHERE name=:name" );
+            setQuery.bindValue( ":name", numberCycle );
+            setQuery.bindValue( ":newNumber", num );
+            setQuery.exec();
+            if ( setQuery.isActive() ) {
+                // qDebug () << "Successfully created new id number for numbercycle " << numberCycle << ": " << num << endl;
+            }
+        }
+    }
+    if ( hot ) {
+        qLock.exec( "UNLOCK TABLES" );
+    }
+
+    return num;
 }
 
 QString DocType::identTemplate()
 {
-  return mIdentTemplate;
+    return mIdentTemplate;
 }
 
 void DocType::setIdentTemplate( const QString& t )
 {
-  mIdentTemplate = t;
+    mIdentTemplate = t;
 }
 
 void DocType::readIdentTemplate()
 {
-  QSqlQuery q;
-  QString tmpl;
+    QSqlQuery q;
+    QString tmpl;
 
-  const QString defaultTempl = QString::fromLatin1( "%y%ww-%i" );
+    const QString defaultTempl = QString::fromLatin1( "%y%ww-%i" );
 
-  QString numberCycle = numberCycleName();
-  if ( numberCycle.isEmpty() ) {
-    qCritical() << "Numbercycle for doctype is empty, returning default";
-    mIdentTemplate = defaultTempl;
-  }
-  // qDebug () << "Picking ident Template for numberCycle " << numberCycle;
+    QString numberCycle = numberCycleName();
+    if ( numberCycle.isEmpty() ) {
+        qCritical() << "Numbercycle for doctype is empty, returning default";
+        mIdentTemplate = defaultTempl;
+    }
+    // qDebug () << "Picking ident Template for numberCycle " << numberCycle;
 
-  q.prepare( "SELECT identTemplate FROM numberCycles WHERE name=:name" );
+    q.prepare( "SELECT identTemplate FROM numberCycles WHERE name=:name" );
 
-  q.bindValue( ":name", numberCycle );
-  q.exec();
-  if ( q.next() ) {
-    tmpl = q.value( 0 ).toString();
-    // qDebug () << "Read ident template from database: " << tmpl;
-  }
+    q.bindValue( ":name", numberCycle );
+    q.exec();
+    if ( q.next() ) {
+        tmpl = q.value( 0 ).toString();
+        // qDebug () << "Read ident template from database: " << tmpl;
+    }
 
-  // FIXME: Check again.
-  if ( tmpl.isEmpty() ) {
-    // qDebug () << "Writing ident template to database: " << pattern;
-    QSqlQuery insQuery;
-    insQuery.prepare( "UPDATE numberCycles SET identTemplate=:pattern WHERE name=:name" );
-    insQuery.bindValue( ":name", numberCycle );
-    insQuery.bindValue( ":pattern", defaultTempl);
-    insQuery.exec();
-    tmpl = defaultTempl;
-  }
-  mIdentTemplate = tmpl;
+    // FIXME: Check again.
+    if ( tmpl.isEmpty() ) {
+        // qDebug () << "Writing ident template to database: " << pattern;
+        QSqlQuery insQuery;
+        insQuery.prepare( "UPDATE numberCycles SET identTemplate=:pattern WHERE name=:name" );
+        insQuery.bindValue( ":name", numberCycle );
+        insQuery.bindValue( ":pattern", defaultTempl);
+        insQuery.exec();
+        tmpl = defaultTempl;
+    }
+    mIdentTemplate = tmpl;
 }
 
 QString DocType::name() const
 {
-  return mName;
+    return mName;
 }
 
 void DocType::setName( const QString& name )
 {
-  QString oldName = mName;
-  dbID id = mNameMap[ oldName ]; // The old id.
-  mNameMap[ name ] = id;
-  mNameMap.remove( oldName );
-  mName = name;
-  mDirty = true;
+    QString oldName = mName;
+    dbID id = mNameMap[ oldName ]; // The old id.
+    mNameMap[ name ] = id;
+    mNameMap.remove( oldName );
+    mName = name;
+    mDirty = true;
 }
 
 
@@ -633,34 +683,34 @@ void DocType::setName( const QString& name )
  */
 void DocType::save()
 {
-  if ( !mDirty ) {
-    // qDebug () << "Saving: not DIRTY!";
-    return;
-  }
+    if ( !mDirty ) {
+        // qDebug () << "Saving: not DIRTY!";
+        return;
+    }
 
-  if ( !mNameMap.contains( mName ) ) {
-    qCritical() << "nameMap does not contain id for " << mName;
-    return;
-  }
-  dbID id = mNameMap[ mName ];
+    if ( !mNameMap.contains( mName ) ) {
+        qCritical() << "nameMap does not contain id for " << mName;
+        return;
+    }
+    dbID id = mNameMap[ mName ];
 
-  QSqlQuery q;
+    QSqlQuery q;
 
-  bool doInsert = false;
-  if ( id.isOk() ) {
-    q.prepare( "UPDATE DocTypes SET name=:name WHERE docTypeId=:id" );
-    q.bindValue( ":id", id.toInt() );
-  } else {
-    q.prepare( "INSERT INTO DocTypes (name) VALUES (:name)" );
-    doInsert = true;
-  }
+    bool doInsert = false;
+    if ( id.isOk() ) {
+        q.prepare( "UPDATE DocTypes SET name=:name WHERE docTypeId=:id" );
+        q.bindValue( ":id", id.toInt() );
+    } else {
+        q.prepare( "INSERT INTO DocTypes (name) VALUES (:name)" );
+        doInsert = true;
+    }
 
-  q.bindValue( ":name", mName );
-  q.exec();
+    q.bindValue( ":name", mName );
+    q.exec();
 
-  if ( doInsert ) {
-    mNameMap[mName] = KraftDB::self()->getLastInsertID();
-  }
+    if ( doInsert ) {
+        mNameMap[mName] = KraftDB::self()->getLastInsertID();
+    }
 
-  mAttributes.save( mNameMap[mName] );
+    mAttributes.save( mNameMap[mName] );
 }
