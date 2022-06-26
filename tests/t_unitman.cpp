@@ -3,7 +3,7 @@
 #include <QSql>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-
+#include "testconfig.h"
 #include "kraftdb.h"
 #include "sql_states.h"
 #include "unitmanager.h"
@@ -16,6 +16,11 @@ void init_test_db()
     QFile::remove(dbName);
 
     KraftDB::self()->dbConnect("QSQLITE", dbName, QString(), QString(), QString());
+
+    QDir sourceDir(TESTS_PATH);
+    sourceDir.cdUp();
+    const QByteArray ba {sourceDir.absolutePath().toLatin1()};
+    qputenv("KRAFT_HOME", ba);
 
     SqlCommandList sqls = KraftDB::self()->parseCommandFile("create_schema.sql");
     KraftDB::self()->processSqlCommands(sqls);
