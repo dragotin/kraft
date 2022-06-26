@@ -1,33 +1,58 @@
 #include <QTest>
 
 #include <QTemporaryDir>
+#include <QFile>
 
-
+#include "testconfig.h"
+#include "kraftdoc.h"
 #include "documentsaverxml.h"
 
 class T_XmlSaver: public QObject {
     Q_OBJECT
 private slots:
+
+    // copies the example xml document to a temporary path that simulates the
+    // storage tree of kraft.
     void initTestCase()
     {
-        if (_dir.isValid()) {
-            // dir.path() returns the unique directory path
-            QDir d {_dir.path()};
-            Q_ASSERT(d.mkpath(d.path()+"/2020/1"));
-        }
+        Q_ASSERT(_dir.isValid());
+
+        // dir.path() returns the unique directory path
+        QDir d {_dir.path()};
+        const QString docDir {d.path()+_subdir};
+        Q_ASSERT(d.mkpath(docDir));
+        const QString docPath = QString("%1/%2.xml").arg(docDir).arg(_docIdent);
+        qDebug() << "Example document path: " << docPath;
+
+        const QString kraftHome{TESTS_PATH};
+        QVERIFY(!kraftHome.isEmpty());
+        const QString src{kraftHome+"/../xml/kraftdoc.xml"};
+        QFile::copy(src, docPath);
+
+        QFileInfo fi(docPath);
+        Q_ASSERT(fi.exists());
     }
 
-    void tmpPath()
+    void load1()
     {
-        qDebug() << "Path: " << _dir.path();
+        DocumentSaverXML xmlSaver;
+        KraftDoc doc;
+        xmlSaver.setBasePath(_dir.path());
+        xmlSaver.load(_docIdent, &doc);
+
+        Q_ASSERT(!doc.isNew());
+
     }
+
 private:
     QString _docTypeName;
-
+    // needs to be defined according the example document in KRAFT_HOME/xml
+    const QString _subdir {"/2011/01"};
+    const QString _docIdent {"20110127"};
     QTemporaryDir _dir;
 
 };
 
 QTEST_MAIN(T_XmlSaver)
-#include "t_xmlsaver.moc"
 
+#include "t_xmlsaver.moc"

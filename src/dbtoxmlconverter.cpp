@@ -11,7 +11,6 @@ namespace {
 
 }
 
-
 DbToXMLConverter::DbToXMLConverter(QObject *parent) : QObject(parent)
 {
 

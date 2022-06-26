@@ -8,7 +8,7 @@
         <country>de</country>
         <locale>en_US</locale>
 
-        <ident>id</ident>
+        <ident>20110127</ident>
         <date>2011-01-27</date>
         <timeOfSupply>
             <start>2019-11-21</start>
@@ -125,7 +125,7 @@
             <type>Reduced</type>
             <value>12.22</value>
         </taxSum>
-        <taxsum>
+        <taxSum>
             <type>Full</type>
             <value>12.24</value>
         </taxSum>
