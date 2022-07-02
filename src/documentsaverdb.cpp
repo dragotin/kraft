@@ -108,8 +108,7 @@ DocumentSaverDB::DocumentSaverDB( ) : DocumentSaverBase(),
 
 bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 {
-    bool result = false;
-    if( ! doc ) return result;
+    if( ! doc ) return false;
 
     QSqlTableModel model;
     model.setTable("document");
@@ -127,7 +126,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
         record = model.record(0);
       } else {
         qCritical() << "Could not select document record" << endl;
-        return result;
+        return false;
       }
        // The document was already saved.
     }
@@ -181,7 +180,7 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
     // qDebug () << "Saved document no " << doc->docID().toString() << endl;
 
-    return result;
+    return true;
 }
 
 void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
