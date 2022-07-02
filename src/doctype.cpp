@@ -484,7 +484,9 @@ QString DocType::generateDocumentIdent(const QDate& docDate, const QString& docT
     QString pattern = identTemplate();
     if ( pattern.indexOf( "%i" ) == -1 && pattern.indexOf("%n") == -1) {
         qWarning() << "No %i found in identTemplate, appending it to meet law needs!";
-        pattern += "-%i";
+        if (!pattern.endsWith('-'))
+            pattern += QStringLiteral("-");
+        pattern += QStringLiteral("%i");
     }
 
     int dayCnt {0};
@@ -504,6 +506,7 @@ QString DocType::generateDocumentIdent(const QDate& docDate, const QString& docT
             dayCnt = 1;
         }
         setAttribute(DayCounterStr, QString::number(dayCnt));
+        save();
     }
     KraftDB::StringMap m;
 

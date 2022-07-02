@@ -79,9 +79,12 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
 
                             "<li>%c - the customer id from kaddressbook</li>"
                             "<li>%i - the unique counter</li>"
+                            "<li>%ii .. %iiiiii - the counter padded with leading 0, ie. 012</li>"
+                            "<li>%n - a day based counter, resets every day. Combined with date, it makes the number unique.</li>"
+                            "<li>%nn .. %nnnnnn - the day based counter padded with leading 0.</li>"
                             "<li>%type - the localised doc type (offer, invoice etc.)</li>"
                             "<li>%uid - the contact id of the client.</li>"
-                            "</ul>%i needs to be part of the template." );
+                            "</ul>%i or %n need to be part of the template." );
   mBaseWidget->mIdTemplEdit->setToolTip( tip );
 
   connect( mBaseWidget->mPbAdd, SIGNAL( clicked() ),
@@ -137,11 +140,20 @@ void NumberCycleDialog::slotUpdateExample()
   DocType dt;
   dt.setName( i18n( "Doc-Type" ) );
   int id = mBaseWidget->mCounterEdit->value();
-  dt.setIdentTemplate( mBaseWidget->mIdTemplEdit->text() );
+
+  const QString tmpl = mBaseWidget->mIdTemplEdit->text();
+  dt.setIdentTemplate( tmpl );
 
   QString idText = dt.generateDocumentIdent( QDate::currentDate(),
                                              QLatin1String("<doc type"),
                                              QLatin1String("<addressUid>"), id );
+
+  // generateDocumentIdent automatically adds a %i to the pattern, if it has neither
+  // %i nor %n. A note is added here to the dialog text
+  if ( !(tmpl.contains("%i") || tmpl.contains("%n"))) {
+      idText.append(" ");
+      idText.append(i18nc("do not translate %i, it is a template variable.", "(%i added)"));
+  }
   mBaseWidget->mExampleId->setText( idText );
 }
 
@@ -149,7 +161,8 @@ void NumberCycleDialog::slotTemplTextChanged( const QString& str )
 {
   bool state = false;
 
-  if ( !str.isEmpty() && str.contains( "%i" ) ) {
+  if ( !str.isEmpty() &&
+       (str.contains( "%i" ) || str.contains("%n") )) {
     state = true;
   }
 
