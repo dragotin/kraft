@@ -77,34 +77,34 @@ image:numbercycles.png[Numbercycles,float="right"]
 Numbercycles are used to define the *document number* which is printed on every document.
 The document number is an important unique identifier of the document and often must follow regulations.
 
-Different document types can use the same number cycle to generate ids from.
+Kraft has a concept of so called number cycles. All document identifiers are taken out of one number cycle, and each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from.
 Number cycles are identified by their name.
 User can create new number cycles and edit them clicking on the button btn:[Edit Number Cycles...]
 
 The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.
 
-Kraft supports two types of counter: One (variable `%i`) is incremented globally for every new document of a certain type. The other (variable `%n`) is reset every day and starts with 1 again on every new day.
-In addition to the counter, more information can be added to form an useful number, such as constant text or parts of the date.
+Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable `%i`) is incremented globally for every new document. The other (variable `%n`) is reset every day and starts with 1 again on every new day.
+In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.
 
-The default numbercycle which is delivered with Kraft contains the year, the month and a serialnumber, this makes it that you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.
+The default numbercycle delivered with Kraft contains the year, the month and a serialnumber. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.
 
 See the following table for available variables which can be used:
 
 |===
 
-| `%y` or `%yyyy` | the year of the document date.
-| `%yy`           | the year of the document (two digits).
-| `%w`            | the week number of the document date.
-| `%ww`           | the week number of the document date with leading zero.
-| `%d`            | the day number of the document date.
-| `%dd`           | the day number of the document date with leading zero.
-| `%m` or `%M`    | the month number of the document date.
-| `%MM`           | the month number with leading zero.
-| `%c`            | the customer id from kaddressbook
-| `%type`         | the localised doc type (offer, invoice etc.)
-| `%uid`          | the contact id of the client.
-| `%i`            | the unique counter
-| `%n`            | the unique day counter (combine with date)
+| `%y` or `%yyyy`  | the year of the document date.
+| `%yy`            | the year of the document (two digits).
+| `%w`             | the week number of the document date.
+| `%ww`            | the week number of the document date with leading zero.
+| `%d`             | the day number of the document date.
+| `%dd`            | the day number of the document date with leading zero.
+| `%m` or `%M`     | the month number of the document date.
+| `%MM`            | the month number with leading zero.
+| `%c`             | the customer id from kaddressbook
+| `%type`          | the localised doc type (offer, invoice etc.)
+| `%uid`           | the contact id of the client.
+| `%i` .. `%iiiiii`| the unique counter
+| `%n` .. `%nnnnnn`| the unique day counter (combine with date)
 
 |===
 
