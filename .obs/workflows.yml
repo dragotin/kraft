@@ -1,7 +1,7 @@
 workflow:
   steps:
     - trigger_services:
-      project: home:kfreitag:KraftAppI
-      package: kraft-master
+        project: home:kfreitag:KraftAppI
+        package: kraft-master
   filters:
     event: push
