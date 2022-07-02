@@ -670,6 +670,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <ul class="sectlevel2">
 <li><a href="#_de_eerste_rekening">De eerste rekening</a></li>
 <li><a href="#Offer">Een offerte creëren</a></li>
+<li><a href="#Acceptance_of_order">Creating an Acceptance of Order</a></li>
 </ul>
 </li>
 <li><a href="#Customization">Kraft naar wens aanpassen</a>
@@ -816,16 +817,16 @@ Also this manual needs contributions!<br>
 <p><span class="image right"><img src="images/numbercycles.png" alt="Numbercycles"></span> Numbercycles are used to define the <strong>document number</strong> which is printed on every document. The document number is an important unique identifier of the document and often must follow regulations.</p>
 </div>
 <div class="paragraph">
-<p>Verschillende documenttypes kunnen hetzelfde volgnummersysteem gebruiken om ID&#8217;s te generen. Volgnummersystemen zijn door hun naam te herkennen . Gebruikers kunnen nieuwe volgnummersystemen creëren en ze aanpassen door te klikken op de knop <b class="button">Volgnummersysteem instellen&#8230;&#8203;</b> .</p>
+<p>Kraft has a concept of so called number cycles. All document identifiers are taken out of one number cycle, and each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from. Number cycles are identified by their name. User can create new number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
 </div>
 <div class="paragraph">
 <p>The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.</p>
 </div>
 <div class="paragraph">
-<p>Kraft supports two types of counter: One (variable <code>%i</code>) is incremented globally for every new document of a certain type. The other (variable <code>%n</code>) is reset every day and starts with 1 again on every new day. In addition to the counter, more information can be added to form an useful number, such as constant text or parts of the date.</p>
+<p>Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts with 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
 </div>
 <div class="paragraph">
-<p>The default numbercycle which is delivered with Kraft contains the year, the month and a serialnumber, this makes it that you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
+<p>The default numbercycle delivered with Kraft contains the year, the month and a serialnumber. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
 </div>
 <div class="paragraph">
 <p>Zie de volgende tabel voor de beschikbare variabelen die gebruikt kunnen worden:</p>
@@ -881,11 +882,11 @@ Also this manual needs contributions!<br>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the contact id of the client.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%i</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%i</code> .. <code>%iiiiii</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the unique counter</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%n</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%n</code> .. <code>%nnnnnn</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the unique day counter (combine with date)</p></td>
 </tr>
 </tbody>
@@ -1528,6 +1529,42 @@ The "design" of the numbercycles and document numbers is very important. With th
 <p>Na uw eerste rekening is nu ook uw eerste offerte klaar voor verzending.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="Acceptance_of_order">Creating an Acceptance of Order</h3>
+<div class="paragraph">
+<p>The document type "Acceptance of Order" is sent subsequently to an offer.</p>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/acceptance_o_o_context.png" alt="Numbercycles"></span></p>
+</div>
+<div class="paragraph">
+<p>When a client has made a request, we will send an offer in wich we describe which items we will deliver. Hopefully the client will give an order for the work.</p>
+</div>
+<div class="paragraph">
+<p>It is a good practice to respond on the order with an "Acceptance of order" in which we describe all the items we will deliver. We can make the "Acceptance of order" on the same way as we made the invoice or the offer by selecting each item and correcting the number of delivery. This takes time and we can make errors by forgetting items or filling an incorrect number.</p>
+</div>
+<div class="paragraph">
+<p>It can be done quicker by selecting the offer in the list and selecting <b class="button">Create Followup Document</b> from either the context menu or the main menu.</p>
+</div>
+<div class="paragraph">
+<p>We have now in documenttype the choice from:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>[Acceptance of order]
+[Invoice]
+[Partial Invoice]
+[final Invoice]
+[Progress Payment Invoice]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We select here "Acceptance of order". We have now a copy from the offer as an Acceptance of order (do not forget to adapt Alternative Delivery items and on demand items.)</p>
+</div>
+<div class="paragraph">
+<p>You can do this also for the creation of the invoice as a followup for Acceptance of order. Each document type has a specific list of follow up documents. It is a good practice to describe on the invoice precisely what was delivered.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1879,7 +1916,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-06-26 19:20:11 +0200
+Last updated 2022-07-02 12:20:25 +0200
 </div>
 </div>
 </body>

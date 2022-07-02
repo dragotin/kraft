@@ -562,6 +562,38 @@ the client.
 After your first invoice is now your first offer now also ready for
 sending.
 
+[[Acceptance_of_order]]
+=== Creating an Acceptance of Order
+
+The document type "Acceptance of Order" is sent subsequently to an offer.
+
+image:acceptance_o_o_context.png[Numbercycles,float="right"]
+
+When a client has made a request, we will send an offer in wich we describe which items we will deliver.
+Hopefully the client will give an order for the work.
+
+It is a good practice to respond on the order with an "Acceptance of order" in which we describe all the items we will deliver.
+We can make the "Acceptance of order" on the same way as we made the invoice or the offer by selecting each item and correcting the number of delivery.
+This takes time and we can make errors by forgetting items or filling an incorrect number.
+
+It can be done  quicker by selecting the offer in the list and selecting btn:[Create Followup Document] from either the context menu or the main menu.
+
+We have now in documenttype the choice from:
+
+ [Acceptance of order]
+ [Invoice]
+ [Partial Invoice]
+ [final Invoice]
+ [Progress Payment Invoice]
+
+We select here "Acceptance of order".
+We have now a copy from the offer as an Acceptance of order
+(do not forget to adapt Alternative Delivery items and on demand items.)
+
+You can do this also for the creation of the invoice as a followup for Acceptance of order.
+Each document type has a specific list of follow up documents.
+It is a good practice to describe on the invoice precisely what was delivered.
+
 [[Customization]]
 == Customization
 
