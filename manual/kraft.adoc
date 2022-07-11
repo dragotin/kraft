@@ -74,16 +74,18 @@ You can also add new ones and remove document types you wont use.
 ==== Numbercycles
 
 image:numbercycles.png[Numbercycles,float="right"]
-Numbercycles are used to define the *document number* which is printed on every document.
-The document number is an important unique identifier of the document and often must follow regulations.
+Each document has to have an unique identifier that identifies the document. There must not be two documents in Kraft with the same identifier.
 
-Kraft has a concept of so called number cycles. All document identifiers are taken out of one number cycle, and each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from.
+The format of the identifier is configuratable in Kraft. For that, Kraft has a concept of so called number cycles.
+Number cycles are used to define the form of the *document number* which is printed on every document.
+
+All documents of a certain type have identifiers taken out of one number cycle. Each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from. That way, for example the document types Invoice and Final Invoice can use numbers from the same number cycle, even thought they are different document types in Kraft.
 Number cycles are identified by their name.
 User can create new number cycles and edit them clicking on the button btn:[Edit Number Cycles...]
 
 The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.
 
-Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable `%i`) is incremented globally for every new document. The other (variable `%n`) is reset every day and starts with 1 again on every new day.
+Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable `%i`) is incremented globally for every new document. The other (variable `%n`) is reset every day and starts at 1 again on every new day.
 In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.
 
 The default numbercycle delivered with Kraft contains the year, the month and a serialnumber. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.
