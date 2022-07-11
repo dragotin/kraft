@@ -704,6 +704,14 @@ void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
   busyCursor( false );
 }
 
+QDebug operator<<(QDebug debug, const dbID &id)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace().noquote()
+        << id.toString();
+    return debug;
+}
+
 void Portal::slotPrintCurrentDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
@@ -719,6 +727,7 @@ void Portal::slotPrintCurrentDocument()
       ident = _currentDoc->ident();
 
       dbID archID = KraftDB::self()->archiveDocument(_currentDoc);
+      Q_ASSERT(archID.isOk());
       slotPrintDocument( ident, archID );
       // m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
   }

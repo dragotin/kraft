@@ -145,8 +145,7 @@ void NumberCycleDialog::slotUpdateExample()
   dt.setIdentTemplate( tmpl );
 
   QString idText = dt.generateDocumentIdent( QDate::currentDate(),
-                                             QLatin1String("<doc type"),
-                                             QLatin1String("<addressUid>"), id );
+                                             QLatin1String("<addressUid>"), id, 2 );
 
   // generateDocumentIdent automatically adds a %i to the pattern, if it has neither
   // %i nor %n. A note is added here to the dialog text

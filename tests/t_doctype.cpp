@@ -127,29 +127,52 @@ private slots:
         DocType dt("Test");
 
         dt.setIdentTemplate("FOO-%y-%w-%d-%i");
-        QString re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QVERIFY(re.startsWith("FOO-2020-4-23-")); // the id can change
+        QString re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
+        QCOMPARE(re, QStringLiteral("FOO-2020-4-23-122"));
 
         dt.setIdentTemplate("FOO-%y-%ww-%d-%i");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QVERIFY(re.startsWith("FOO-2020-04-23-")); // the id can change
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
+        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-122")); // the id can change
 
         dt.setIdentTemplate("FOO-%y-%ww-%d-%iiiii");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
         QCOMPARE(re, QStringLiteral("FOO-2020-04-23-00122")); // the id can change
 
         dt.setIdentTemplate("FOO-%y-%ww-%d-%iiii");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
         QCOMPARE(re, QStringLiteral("FOO-2020-04-23-0122")); // the id can change
 
         dt.setIdentTemplate("FOO-%y-%ww-%d-%iii");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
         QCOMPARE(re, QStringLiteral("FOO-2020-04-23-122")); // the id can change
 
         dt.setIdentTemplate("FOO-%y-%ww-%d-%ii");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
         QCOMPARE(re, QStringLiteral("FOO-2020-04-23-122")); // the id can change
 
+    }
+
+    void checkDayCntIncrement()
+    {
+        DocType dt("Test");
+        const QDate d1(2022, 01, 23);
+        const QDate d2(2022, 01, 25);
+        int cnt = dt.nextDayCounter(d1);
+        QCOMPARE(cnt, 1);
+        cnt = dt.nextDayCounter(d1);
+        QCOMPARE(cnt, 2);
+        cnt = dt.nextDayCounter(d1);
+        QCOMPARE(cnt, 3);
+
+        // - switch to next date
+        cnt = dt.nextDayCounter(d2);
+        QCOMPARE(cnt, 1);
+        cnt = dt.nextDayCounter(d2);
+        QCOMPARE(cnt, 2);
+
+        // - back to d1
+        cnt = dt.nextDayCounter(d1);
+        QCOMPARE(cnt, 1);
     }
 
     void checkDateCounter()
@@ -158,42 +181,21 @@ private slots:
 
         // Attention: This test assumes that all verifies run on the same day.
         dt.setIdentTemplate("FOO-%n");
-        QString re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QVERIFY(re.startsWith("FOO-1")); // the id can change
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QVERIFY(re.startsWith("FOO-2")); // the id can change
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QVERIFY(re.startsWith("FOO-3")); // the id can change}
+        QString re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 2);
+        QCOMPARE(re, "FOO-2");
 
         // Test the padding functionality
         dt.setIdentTemplate("FOO-%nn");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QVERIFY(re.startsWith("FOO-04")); // the id can change
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 3);
+        QCOMPARE(re, "FOO-03");
 
         dt.setIdentTemplate("FOO-%nnn");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QVERIFY(re.startsWith("FOO-005")); // the id can change
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 3);
+        QCOMPARE(re, "FOO-003");
 
         dt.setIdentTemplate("FOO-%nnnn");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122);
-        QVERIFY(re.startsWith("FOO-0006")); // the id can change
-
-        // Test resetting of the counter with new date.
-        dt.setIdentTemplate("FOO-%nn");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122, true);
-        QVERIFY(re.startsWith("FOO-01")); // the id can change
-
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "TestDoc", "addressUID", 122, true);
-        QVERIFY(re.startsWith("FOO-02")); // the id can change
-
-        re = dt.generateDocumentIdent(QDate(2020, 01,24), "TestDoc", "addressUID", 122, true);
-        QVERIFY(re.startsWith("FOO-01")); // the id can change
-
-        re = dt.generateDocumentIdent(QDate(2020, 01,25), "TestDoc", "addressUID", 122, true);
-        QVERIFY(re.startsWith("FOO-01")); // the id can change
-
-        re = dt.generateDocumentIdent(QDate(2020, 01,25), "TestDoc", "addressUID", 122, true);
-        QVERIFY(re.startsWith("FOO-02")); // the id can change
+        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 6);
+        QCOMPARE(re, "FOO-0006");
 
     }
 private:

@@ -287,9 +287,8 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
   // mHeader->setText( i18n( "Details for %1:", dt.name() ) );
   mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(),
-                                                 mExampleDocType,
                                                  mExampleAddressUid,
-                                                 nextNum ) );
+                                                 nextNum, 2 /* phantasie date counter */) );
 
   mTemplateUrl->setText( dt.templateFile() );
 
@@ -318,8 +317,8 @@ void DocTypeEdit::slotEditNumberCycles()
     mIdent->setText( dt.identTemplate() );
     int nextNum = dt.nextIdentId( false )-1;
     mCounter->setText( QString::number( nextNum ) );
-    mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(), mExampleDocType,
-                                                   mExampleAddressUid, nextNum ) );
+    mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(),
+                                                   mExampleAddressUid, nextNum, 2 ) );
   }
 }
 
@@ -396,8 +395,7 @@ void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
   int nextNum = dt.nextIdentId( false )-1;
   mCounter->setText( QString::number( nextNum ) );
   mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(),
-                                                 mExampleDocType,
-                                                 mExampleAddressUid, nextNum ) );
+                                                 mExampleAddressUid, nextNum, 2 ) );
 }
 
 QStringList DocTypeEdit::allNumberCycles()

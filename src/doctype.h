@@ -58,8 +58,9 @@ class KRAFTCAT_EXPORT DocType
   QStringList follower();
   int setAllFollowers( const QStringList& followers);
 
-  QString     generateDocumentIdent( const QDate& docDate, const QString& docType,
-                                     const QString& addressUid, int id = -1, bool useDateParamForDateCounter = false );
+  QString     generateDocumentIdent(const QDate& docDate,
+                                    const QString& addressUid,
+                                    int id, int dayCnt);
   QString     identTemplate();
   void        setIdentTemplate( const QString& );
 
@@ -85,6 +86,8 @@ class KRAFTCAT_EXPORT DocType
   static void  clearMap();
 
   int         nextIdentId( bool hot = true );
+  int         nextDayCounter(const QDate& docDate);
+
   void        save();
 
   void        readIdentTemplate();

@@ -278,6 +278,8 @@ QString DocType::templateFile( )
 
     if ( mAttributes.hasAttribute(DocTemplateFileStr) ) {
         tmplFile = mAttributes[DocTemplateFileStr].value().toString();
+
+        qDebug() << "Template File:" << tmplFile;
         if( !tmplFile.isEmpty() ) {
             QFileInfo fi(tmplFile);
             if( fi.isAbsolute() ) {
@@ -457,14 +459,14 @@ void DocType::setWatermarkFile( const QString& file )
 /**
  * @brief DocType::generateDocumentIdent
  * @param docDate
- * @param docType
  * @param addressUid
- * @param id
- * @param useDateParam - set to true to use the param docDate for the day counter. Defaults to false, which uses current Date
+ * @param id: Current Id to be used.
+ * @param dayCnt: Current day counter to be used.
  * @return
  */
-QString DocType::generateDocumentIdent(const QDate& docDate, const QString& docType,
-                                        const QString& addressUid, int id, bool useDateParamForDateCounter )
+QString DocType::generateDocumentIdent(const QDate& docDate,
+                                       const QString& addressUid,
+                                       int id, int dayCnt)
 {
 
     /*
@@ -473,6 +475,7 @@ QString DocType::generateDocumentIdent(const QDate& docDate, const QString& docT
    * %w - the week number of the documents date
    * %d - the day number of the documents date
    * %m - the month number of the documents date
+   * %M - the month number of the documents date
    * %c - the customer id from kaddressbook
    * %i - the uniq identifier from db.
    * %n - the uniq identifier that resets every day and starts from 1
@@ -489,25 +492,6 @@ QString DocType::generateDocumentIdent(const QDate& docDate, const QString& docT
         pattern += QStringLiteral("%i");
     }
 
-    int dayCnt {0};
-    if (pattern.indexOf("%n") > -1) {
-        QDate currDate = QDate::currentDate();
-        if (useDateParamForDateCounter) { // only in test environment
-            currDate = docDate;
-        }
-        // Check the attribute for the day counter.
-        QDate storedDate = mAttributes[DayCounterDateStr].value().toDate();
-        // increment the day counter by one
-        dayCnt = 1+mAttributes[DayCounterStr].value().toInt();
-
-        if (storedDate != currDate) {
-            // the daycounter is outdated. Reset the counter and update the date.
-            setAttribute(DayCounterDateStr, currDate.toString(Qt::ISODate));
-            dayCnt = 1;
-        }
-        setAttribute(DayCounterStr, QString::number(dayCnt));
-        save();
-    }
     KraftDB::StringMap m;
 
     m[ "%yyyy" ] = docDate.toString( "yyyy" );
@@ -527,27 +511,22 @@ QString DocType::generateDocumentIdent(const QDate& docDate, const QString& docT
     m[ "%MM" ] = docDate.toString( "MM" );
     m[ "%M" ] = docDate.toString( "M" );
 
-    int i = id;
-    if ( id == -1 ) { // hot mode: The database id is incremented by nextIdentId()
-        i = nextIdentId();
-    }
-
-    h = QString("%1").arg(i, 6, 10, QChar('0') );
+    h = QString("%1").arg(id, 6, 10, QChar('0') );
     m[ "%iiiiii" ] = h;
 
-    h = QString("%1").arg(i, 5, 10, QChar('0') );
+    h = QString("%1").arg(id, 5, 10, QChar('0') );
     m[ "%iiiii" ] = h;
 
-    h = QString("%1").arg(i, 4, 10, QChar('0') );
+    h = QString("%1").arg(id, 4, 10, QChar('0') );
     m[ "%iiii" ] = h;
 
-    h = QString("%1").arg(i, 3, 10, QChar('0') );
+    h = QString("%1").arg(id, 3, 10, QChar('0') );
     m[ "%iii" ] = h;
 
-    h = QString("%1").arg(i, 2, 10, QChar('0') );
+    h = QString("%1").arg(id, 2, 10, QChar('0') );
     m[ "%ii" ] = h;
 
-    m[ "%i" ] = QString::number( i );
+    m[ "%i" ] = QString::number( id );
 
     h = QString("%1").arg(dayCnt, 6, 10, QChar('0') );
     m[ "%nnnnnn" ] = h;
@@ -567,7 +546,7 @@ QString DocType::generateDocumentIdent(const QDate& docDate, const QString& docT
     m[ "%n" ] = QString::number(dayCnt);
 
     m[ "%c" ] = addressUid;
-    m[ "%type" ] = docType;
+    m[ "%type" ] = name();
     m[ "%uid" ] = addressUid;
 
     QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
@@ -617,6 +596,26 @@ int DocType::nextIdentId( bool hot )
     }
 
     return num;
+}
+
+int DocType::nextDayCounter(const QDate& docDate)
+{
+    int dayCnt {0};
+
+    // Check the attribute for the day counter.
+    QDate storedDate = mAttributes[DayCounterDateStr].value().toDate();
+    // increment the day counter by one
+    dayCnt = 1+mAttributes[DayCounterStr].value().toInt();
+
+    if (storedDate != docDate) {
+        // the daycounter is outdated. Reset the counter and update the date.
+        setAttribute(DayCounterDateStr, docDate.toString(Qt::ISODate));
+        dayCnt = 1;
+    }
+    setAttribute(DayCounterStr, QString::number(dayCnt));
+    save();
+
+    return dayCnt;
 }
 
 QString DocType::identTemplate()

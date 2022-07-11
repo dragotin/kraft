@@ -119,7 +119,8 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& docID,
     _archDoc.loadFromDb(archId);
 
     // the next call also sets the watermark options
-    _tmplFile = findTemplateFile( _archDoc.docTypeStr() );
+    const QString dt = _archDoc.docTypeStr();
+    _tmplFile = findTemplateFile( dt );
 
     if ( _tmplFile.isEmpty() ) {
         qDebug () << "tmplFile is empty, exit reportgenerator!";

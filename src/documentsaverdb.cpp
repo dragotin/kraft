@@ -125,17 +125,18 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
       if ( model.rowCount() > 0 ) {
         record = model.record(0);
       } else {
-        qCritical() << "Could not select document record" << endl;
+        qCritical() << "Could not select document record";
         return false;
       }
        // The document was already saved.
     }
-
-    if( !doc->isNew() && doc->docTypeChanged() ) {
+    QString ident;
+    if( doc->isNew() || doc->docTypeChanged() ) {
         // an existing doc has a new document type. Fix the doc number cycle and pick a new ident
         DocType dt( doc->docType() );
-        QString ident = dt.generateDocumentIdent( doc->date(), doc->docType(),
-                                                  doc->addressUid() );
+        int id = dt.nextIdentId(true);
+        int dayCnt = dt.nextDayCounter(QDate::currentDate());
+        ident = dt.generateDocumentIdent(doc->date(), doc->addressUid(), id, dayCnt);
         doc->setIdent( ident );
     }
 
@@ -151,11 +152,6 @@ bool DocumentSaverDB::saveDocument(KraftDoc *doc )
 
         dbID id = KraftDB::self()->getLastInsertID();
         doc->setDocID( id );
-
-        // get the uniq id and write it into the db
-        DocType dt( doc->docType() );
-        QString ident = dt.generateDocumentIdent( doc->date(), doc->docType(), doc->addressUid() );
-        doc->setIdent( ident );
         model.setFilter("docID=" + id.toString());
         model.select();
         if ( model.rowCount() > 0 ) {
