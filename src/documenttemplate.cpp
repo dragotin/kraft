@@ -117,6 +117,7 @@ QVariantHash labelVariantHash()
     hash.insert( TAG( "SUM"), i18nc("Printed on the document", "Sum") );
     hash.insert( TAG( "NET"), i18nc("printed on the document", "Net") );
     hash.insert( TAG( "VAT"), i18nc("Printed on the document", "VAT") );
+    hash.insert( TAG( "TYPE"), i18nc("Document type, printed on the document", "Type") );
 
     hash.insert( TAG( "PHONE"), i18nc("Printed on the document", "Phone"));
     hash.insert( TAG( "FAX"), i18nc("Printed on the document", "FAX"));

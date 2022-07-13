@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
     <meta charset="utf-8"/>
-    <meta name="description" content="Kraft Invoice document"/>
-    <meta name="author" content="Klaas Freitag"/>
+    <meta name="description" content="Kraft {{ doc.docType }} document"/>
+    <meta name="author" content="{{ me.NAME }}"/>
     <style>
     @charset "UTF-8";
 
@@ -35,18 +35,20 @@
     /* Do not display the page number on first page, but the website. */
     @page :first {
         margin-top: 46mm;
+	{% if me.URL %}
         @bottom-right {
             font-family: Oxygen;
             font-size: 9pt;
             content: '{{ label.WEBSITE }}: {{ me.URL }}';
         }
+	{% endif %}
     }
     </style>
 
     <!-- Include the stylesheet file. It will have to reside in the same dir as the template file -->
     <link href="kraft.css" media="print" rel="stylesheet"/>
 
-    <title>Kraft Document</title>
+    <title>{{ doc.docType }} {{ doc.ident }}</title>
   </head>
   {% autoescape off %}
   <body>
@@ -56,6 +58,7 @@
     <address id="to">{{ doc.address }}</address>
 
     <dl id="information">
+      <dt>{{ label.TYPE }}</dt>   <dd>{{ doc.docType }}</dd>
       <dt>{{ label.DOC_NO }}</dt> <dd>{{ doc.ident }}</dd>
       <dt>{{ label.DATE }}</dt>   <dd>{{ doc.dateStr }}</dd>
       {% if doc.projectLabel %}
@@ -66,7 +69,6 @@
       <dt>{{ label.PREDECESSOR }}</dt>
       <dd>{{ doc.predecessor }}</dd>
       {% endif %}
-
     </dl>
 
     <h1>{{ doc.docType }} {{ doc.ident }}</h1>
