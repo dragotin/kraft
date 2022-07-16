@@ -1,3 +1,10 @@
+Changes since version 0.98: #########################################
+
+=> release v. 0.99 (Aug x, 2022)
+
+- Have two new merge modes for the watermark tool
+- PDF watermark tool can also append PDF files now
+
 Changes since version 0.97: #########################################
 
 - Add dutch translation of the manual, Kudos to Ronald Stroethoff
@@ -23,7 +30,7 @@ Changes since version 0.97: #########################################
 - Fix: Read mysql port from config file
 - Fix: Rearrange docdetails view a bit if there is a project set.
 
-=> release v. 0.98 (May x, 2022)
+=> release v. 0.98 (May 22, 2022)
 
 Changes since version 0.96: #########################################
 
