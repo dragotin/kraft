@@ -205,7 +205,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
 
     QString fullOutputPath = targetFileName();
 
-    if (mMergeIdent == "1" || mMergeIdent == "2") {
+    if (mMergeIdent >= 0 && mMergeIdent < 5 ) {
         // check if the watermark file exists
         QFileInfo fi(mWatermarkFile);
         if (!mWatermarkFile.isEmpty() && fi.isReadable()) {
@@ -216,7 +216,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
             // PDF merge is required. Write to temp file
             fullOutputPath = tmpFile.fileName() + QStringLiteral(".pdf");
         } else {
-            mMergeIdent = "0";
+            mMergeIdent = 0;
             qDebug() << "Can not read watermark file, generating without" << mWatermarkFile;
         }
     }
@@ -237,7 +237,7 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
 
     s->deleteLater();
     // check for the watermark requirements
-    if (mMergeIdent == "1" || mMergeIdent == "2") {
+    if (mMergeIdent >= 0 && mMergeIdent < 5) {
         // check if the watermark file exists
         mergePdfWatermark(file);
     } else {
@@ -256,11 +256,15 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
         mProcess->setProgram( QStringLiteral("python3") );
         QStringList args;
         args << prg;
-        args << QStringLiteral("-m") << mMergeIdent;
+        args << QStringLiteral("-m") << QString::number(mMergeIdent);
         args << QStringLiteral("-o") << targetFileName();
+        if (!mPdfAppendFile.isEmpty()) {
+            args << QStringLiteral("-a") << mPdfAppendFile;
+        }
         args << mWatermarkFile;
         args << file;
 
+        qDebug() << "Merge PDF Watermark args:" << args;
         mProcess->setArguments(args);
 
         mProcess->start( );
@@ -269,6 +273,10 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
 
 void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+    mWatermarkFile.clear();
+    mPdfAppendFile.clear();
+    mMergeIdent = 0;
+
     if (exitStatus == QProcess::ExitStatus::NormalExit && exitCode == 0) {
         const QString fileName = targetFileName();
 
@@ -350,8 +358,9 @@ QString ReportGenerator::findTemplateFile( const QString& type )
         }
     }
 
-    mMergeIdent = dType.mergeIdent();
+    mMergeIdent = dType.mergeIdent().toInt();
     mWatermarkFile = dType.watermarkFile();
+    mPdfAppendFile = dType.appendPDF();
 
     return tmplFile;
 }

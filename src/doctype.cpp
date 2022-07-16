@@ -37,6 +37,7 @@ const QString IdentNumberCycleStr{"identNumberCycle"};
 const QString DocMergeIdentStr   {"docMergeIdent"};
 const QString DayCounterDateStr  {"dayCounterDate"};
 const QString DayCounterStr  {"dayCounter"};
+const QString AppendPDFStr   {"AppendPDFFile"};
 
 }
 
@@ -402,14 +403,15 @@ void DocType::setXRechnungTemplate(const QString& tmpl)
     setAttribute(XRechnungTmplStr, tmpl);
 }
 
-QString DocType::attributeValueString(const QString& attribName)
+QString DocType::attributeValueString(const QString& attribName) const
 {
     QString re;
     if (attribName.isEmpty()) {
         return re;
     }
     if (mAttributes.hasAttribute(attribName)) {
-        re = mAttributes[attribName].value().toString();
+        const auto att = mAttributes.value(attribName);
+        re = att.value().toString();
     }
     return re;
 }
@@ -440,7 +442,6 @@ QString DocType::watermarkFile()
     return re;
 }
 
-
 void DocType::setWatermarkFile( const QString& file )
 {
     if ( !file.isEmpty() ) {
@@ -454,6 +455,16 @@ void DocType::setWatermarkFile( const QString& file )
         // qDebug () << "Removing docMergeFile Attribute";
     }
     mDirty = true;
+}
+
+QString DocType::appendPDF() const
+{
+    return attributeValueString(AppendPDFStr);
+}
+
+void DocType::setAppendPDFFile(const QString& file)
+{
+    setAttribute(AppendPDFStr, file);
 }
 
 /**

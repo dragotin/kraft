@@ -80,8 +80,11 @@ class KRAFTCAT_EXPORT DocType
   QString     xRechnungTemplate();
   void        setXRechnungTemplate(const QString&);
 
+  QString     appendPDF() const;
+  void        setAppendPDFFile(const QString& file);
+
   void        setAttribute( const QString& attribute, const QString& val);
-  QString     attributeValueString(const QString& attribName);
+  QString     attributeValueString(const QString& attribName) const;
 
   static void  clearMap();
 

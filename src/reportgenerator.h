@@ -88,9 +88,10 @@ private:
     bool _useGrantlee;
 
     QString   mErrors;
-    QString   mMergeIdent;
+    int       mMergeIdent;
     bool      mHavePdfMerge;
     QString   mWatermarkFile;
+    QString   mPdfAppendFile;
     QString   mDocId;
     dbID      mArchId;
     long      mOutputSize;

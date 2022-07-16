@@ -85,12 +85,12 @@ void Attribute::setValue( const QVariant& var )
   }
 }
 
-bool Attribute::useRelationTable()
+bool Attribute::useRelationTable() const
 {
   return !( mTable.isEmpty() || mIdCol.isEmpty() || mStringCol.isEmpty() );
 }
 
-QVariant Attribute::value()
+QVariant Attribute::value() const
 {
   if ( useRelationTable() ) {
     // get the value from the relation table
@@ -143,7 +143,7 @@ void Attribute::setListValue( bool p )
   mListValue = p;
 }
 
-bool Attribute::listValue()
+bool Attribute::listValue() const
 {
   return mListValue;
 }

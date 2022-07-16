@@ -79,9 +79,12 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
       tmplFileSelectButton->setText("");
       watermarkSelectButton->setIcon(icon);
       watermarkSelectButton->setText("");
+      appendSelectButton->setIcon(icon);
+      appendSelectButton->setText("");
   }
   tmplFileSelectButton->setToolTip(i18n("Select template file from harddisk"));
   watermarkSelectButton->setToolTip(i18n("Select watermark file from harddisk"));
+  appendSelectButton->setToolTip(i18n("Select PDF file to append to documents from harddisk"));
 
   connect(tmplFileSelectButton, &QPushButton::clicked, this, [this]() {
       QString file = QFileDialog::getOpenFileName(this,
@@ -99,6 +102,16 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
 
       if (!file.isEmpty()) {
           mWatermarkUrl->setText(file);
+      }
+  });
+
+  connect(appendSelectButton, &QPushButton::clicked, this, [this]() {
+      QString file = QFileDialog::getOpenFileName(this,
+                                                  i18n("Find Append PDF File"), QDir::homePath(),
+                                                  i18n("PDF file (*.pdf)"));
+
+      if (!file.isEmpty()) {
+          mAppendUrl->setText(file);
       }
   });
 
@@ -124,16 +137,12 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   connect( mTemplateUrl, SIGNAL( textChanged( const QString& ) ),
            SLOT( slotTemplateUrlChanged( const QString& ) ) );
 
+  connect( mAppendUrl, &QLineEdit::textChanged, this, &DocTypeEdit::slotAppendPDFUrlChanged );
+
   fillNumberCycleCombo();
   DocType dt( dtype );
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
-#if 0
-  mTemplateUrl->setFilter( "*.trml" );
-  mWatermarkUrl->setFilter( "*.pdf" );
 
-  mTemplateUrl->setUrl( dt.templateFile() );
-  mWatermarkUrl->setUrl( dt.watermarkFile() );
-#endif
   int newMode = dt.mergeIdent().toInt();
   mWatermarkCombo->setCurrentIndex( newMode );
   bool state = true;
@@ -276,6 +285,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   prevType.setNumberCycleName( mNumberCycleCombo->currentText() );
   prevType.setTemplateFile( mTemplateUrl->text() );
   prevType.setWatermarkFile( mWatermarkUrl->text() );
+  prevType.setAppendPDFFile(mAppendUrl->text());
   prevType.setMergeIdent( QString::number( mWatermarkCombo->currentIndex() ) );
   mChangedDocTypes[mPreviousType] = prevType;
 
@@ -296,6 +306,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   int mergeIdent = dt.mergeIdent().toInt();
   mWatermarkCombo->setCurrentIndex( mergeIdent );
   mWatermarkUrl->setEnabled( mergeIdent > 0 );
+  mAppendUrl->setText(dt.appendPDF());
 
   mPreviousType = newValue;
 
@@ -348,6 +359,24 @@ void DocTypeEdit::slotWatermarkModeChanged( int newMode )
   if ( newMode == 0 )
     state = false;
   mWatermarkUrl->setEnabled( state );
+}
+
+void DocTypeEdit::slotAppendPDFUrlChanged(const QString& newUrl)
+{
+    QString docType;
+    if(mTypeListBox->currentRow() != -1)
+      docType = mTypeListBox->currentItem()->text();
+
+    if( docType.isEmpty() || ! mOrigDocTypes.contains(docType) ) return;
+    DocType dt = mOrigDocTypes[docType];
+    if ( mChangedDocTypes.contains( docType ) ) {
+      dt = mChangedDocTypes[docType];
+    }
+
+    if ( newUrl != dt.appendPDF() ) {
+      dt.setAppendPDFFile(newUrl);
+      mChangedDocTypes[docType] = dt;
+    }
 }
 
 void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )

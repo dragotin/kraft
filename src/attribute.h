@@ -40,13 +40,13 @@ class KRAFTCAT_EXPORT Attribute
     Attribute( const QString& name );
 
     void     setValue( const QVariant& var );
-    QVariant value();
+    QVariant value() const;
     QString  name() const;
     bool     persistant();
-    bool     listValue();
+    bool     listValue() const;
     void     setListValue( bool );
     void     setPersistant( bool );
-    bool     useRelationTable();
+    bool     useRelationTable() const;
     void     setValueRelation( const QString&, const QString&, const QString& );
     QString  toString() const;
 private:
