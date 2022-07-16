@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Klaas Freitag <kraft@freisturz.de>
+# Copyright 2020-2022 Klaas Freitag <kraft@freisturz.de>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this
 # software and associated documentation files (the "Software"), to deal in the Software
@@ -34,7 +34,7 @@ except ImportError:
     from io import StringIO
 
 from six import text_type
-from PyPDF2 import PdfFileWriter, PdfFileReader
+from PyPDF2 import PdfFileMerger, PdfFileWriter, PdfFileReader
 
 # use utf8 for default
 encoding = 'UTF-8'
@@ -44,7 +44,8 @@ class Mark:
     NOTHING    = "0"
     FIRST_PAGE = "1"
     ALL_PAGES  = "2"
-
+    ALTERNATING = "3"
+    LASTPAGE_DIFFERENT = "4"
 
 class PdfWatermark:
     "Class to put a watermark from a PDF file on a PDF file"
@@ -59,24 +60,55 @@ class PdfWatermark:
 
         # flag for the first page of the source file
         firstPage = True
+        page_count = 1
+        watermark_length = watermark.getNumPages ()
+        input_length = inputPdf.getNumPages()
 
-        # Loop over source document pages and merge with the first page of the watermark
-        # file.
+        if ((spec == Mark.ALTERNATING or spec == Mark.LASTPAGE_DIFFERENT) and watermark_length < 3):
+            print("Watermark PDF has not enough pages. It needs three.")
+            exit(1)
+
+        # Loop over source document pages and merge with the watermark file.
         for page in range(inputPdf.getNumPages()):
             pdf_page = inputPdf.getPage(page)
 
-            # need to take a full copy as the pyPDF lib seems to return the same object again
-            bg_page = copy.copy(watermark.getPage(0))
-            if (spec == Mark.FIRST_PAGE and firstPage) or spec == Mark.ALL_PAGES:
-                bg_page.mergePage(pdf_page)
-                outputPdf.addPage( bg_page )
+            if ( firstPage or spec == Mark.ALL_PAGES):
+                bg_page = copy.copy(watermark.getPage(0))
+                bg_page.mergePage (pdf_page)
+                outputPdf.addPage (bg_page)
                 firstPage = False
+            elif (spec == Mark.ALTERNATING):
+                # add page 1 of watermark to first page. Page 2 and 3 alternate 
+                bg_page = copy.copy(watermark.getPage(2 - page % 2))
+                bg_page.mergePage (pdf_page)
+                outputPdf.addPage (bg_page)
+            elif (spec == Mark.LASTPAGE_DIFFERENT):
+                # add page 1 of watermark to first page. Last page gets the last page of the watermark
+                # pages in between get the middle page
+                if (page == input_length-1):
+                    # The last page of the input. Take the last page of the watermark
+                    bg_page = copy.copy(watermark.getPage(watermark_length-1))
+                else:
+                    # pages in between 1..n-1
+                    bg_page = copy.copy(watermark.getPage(1))
+                bg_page.mergePage (pdf_page)
+                outputPdf.addPage (bg_page)
             else:
+                print ("Adding plain pdf page")
                 outputPdf.addPage(pdf_page)
 
         bytesIO = io.BytesIO();
         outputPdf.write(bytesIO)
-        return bytesIO.getvalue()
+        return bytesIO
+
+    def append(self, pdf, appendFile):
+        merger = PdfFileMerger()
+        merger.append(pdf)
+        merger.append(appendFile)
+
+        bytesIO = io.BytesIO();
+        merger.write(bytesIO)
+        return bytesIO
 
 def file_exists(infile, perm):
     if os.path.exists(infile):
@@ -88,23 +120,27 @@ def file_exists(infile, perm):
 def watermarkpdf_help():
     print( 'Usage: watermarkpdf [options] watermark.pdf file.pdf')
     print( '')
-    print( 'Tool to put a watermark to a PDF file from another PDF.')
-    print( 'It can either put the watermark only on first page or')
-    print( 'on all pages, depending on parameter -m.')
+    print( 'Tool to put a watermark to a PDF file. The watermark is read from another PDF.')
+    print( 'How the watermark is applied depends on parameter -m, see description below.')
+    print( '')
     print( 'If no output is specified, the result is printed to stdout.')
     print( '')
     print( 'Options:')
     print( '-o, --output <file>           output file, instead of standard out')
     print( '-m, --watermark-mode <mode>   set the watermark mode with ')
-    print( '                              1 = watermark on first page (default)')
-    print( '                              2 = watermark on all pages')
+    print( '    1 = watermark on first page (default)')
+    print( '    2 = watermark on all pages. Only the first page of the watermarkfile is used.')
+    print( '    3 = page 2 and 3 of the matermark file alternate on subsequent pages.')
+    print( '    4 = page 1 of watermark goes to first page, 2 to all in between, 3 to the last page')
+    print( '    For mode 3 and 4, the watermark pdf has to have three pages.')
+    print( '-a, --append-file <file>      append this PDF to the resulting PDF')
     print( '')
     sys.exit(0)
 
 if __name__=="__main__":
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "ho:m:", ["help", "output=", "watermark-mode="])
+        opts, args = getopt.getopt(sys.argv[1:], "ho:m:a:", ["help", "output=", "watermark-mode=", "append-file="])
     except(getopt.GetoptError, err):
         # print help information and exit:
         print( str(err)) # will print something like "option -a not recognized"
@@ -113,15 +149,18 @@ if __name__=="__main__":
     output = None
     watermarkFile = None
     watermarkMode = Mark.FIRST_PAGE
+    appendFile = ""
 
     for o, a in opts:
         if o in ("-h", "--help"):
-            erml2pdf_help()
+            watermarkpdf_help()
             sys.exit()
         elif o in ("-o", "--output"):
             output = a
         elif o in ("-m", "--watermark-mode"):
             watermarkMode = a
+        elif o in ("-a", "--append-file"):
+            appendFile = a
         else:
             assert False, "unhandled option"
     #
@@ -136,25 +175,30 @@ if __name__=="__main__":
         if not (infile and file_exists(infile, os.R_OK)):
             print( "Input file does not exist!");
             exit(1);
-        if not (watermarkFile and file_exists(watermarkFile, os.R_OK)):
+        print("WATERMARK FILE" + watermarkFile)
+        if (watermarkFile and not file_exists(watermarkFile, os.R_OK)):
             print( "Watermark file does not exist!");
             exit(1);
 
         # print "############ Watermark-Mode: " + watermarkMode
+        pdfEngine = PdfWatermark()
         if watermarkMode != Mark.NOTHING:
-            wm = PdfWatermark()
-            pdf = wm.watermark( infile, watermarkFile, watermarkMode )
+            pdf = pdfEngine.watermark( infile, watermarkFile, watermarkMode )
         else:
-            inf = open(infile, 'rb')
-            pdf = inf.read()
+            with open(infile, "rb") as fh:
+                pdf = io.BytesIO(fh.read())
+
+        # append a file if needed
+        if appendFile:
+            pdf = pdfEngine.append(pdf, appendFile)
 
         # handle output option, either file or stdout
         if output:
             outfile = open(output, 'wb')
-            outfile.write( pdf )
+            outfile.write( pdf.getvalue() )
             outfile.close()
         else:
             if sys.version_info[0] < 3:
-                sys.stdout.write(pdf)
+                sys.stdout.write(pdf.getvalue())
             else:
-                sys.stdout.buffer.write(pdf)
+                sys.stdout.buffer.write(pdf.getvalue())
