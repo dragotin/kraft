@@ -152,7 +152,8 @@ QString AddressProvider::formattedAddress( const KContacts::Addressee& contact )
   if( address.isEmpty() ) {
     re = contact.realName();
   } else {
-    re = address.formattedAddress( contact.realName(), contact.organization() );
+    re = address.formatted( KContacts::AddressFormatStyle::MultiLineDomestic,
+                            contact.realName(), contact.organization() );
   }
   return re;
 }
