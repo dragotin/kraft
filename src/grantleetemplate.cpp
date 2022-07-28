@@ -38,6 +38,18 @@ void GrantleeFileTemplate::addToMapping(const QString& key, const QVariant& vari
     _mapping.insert(key, variant);
 }
 
+void GrantleeFileTemplate::addToMappingHash( const QString& prefix, const QVariantHash& hash)
+{
+    QHash<QString, QVariant>::const_iterator i = hash.constBegin();
+    while (i != hash.constEnd()) {
+        const auto key = i.key();
+        const auto val = i.value();
+        addToMapping(QString("%1.%2").arg(prefix).arg(key), val);
+        i++;
+    }
+
+}
+
 void GrantleeFileTemplate::addToObjMapping(const QString& key, QObject *obj)
 {
     _objs.insert(key, obj);

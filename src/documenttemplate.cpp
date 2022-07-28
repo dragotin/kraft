@@ -375,10 +375,15 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
 
         gtmpl.addToObjMapping("doc", archDoc);
 
-        gtmpl.addToMapping(QStringLiteral("me"), contactToVariantHash(myContact));
-        gtmpl.addToMapping(QStringLiteral("customer"), contactToVariantHash(customerContact));
+        const auto mtt = contactToVariantHash(myContact);
+        gtmpl.addToMappingHash(QStringLiteral("me"), mtt);
+
+        const auto cct = contactToVariantHash(customerContact);
+        gtmpl.addToMappingHash(QStringLiteral("customer"), cct);
+
         const QVariantHash labelHash = labelVariantHash();
-        gtmpl.addToMapping(QStringLiteral("label"), labelHash);
+        gtmpl.addToMappingHash(QStringLiteral("label"), labelHash);
+
         bool ok;
         rendered = gtmpl.render(ok);
         if (!ok) {

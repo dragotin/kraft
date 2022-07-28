@@ -32,8 +32,9 @@ public:
 
     void addToMapping(const QString& key, const QVariant& variant);
     void addToObjMapping(const QString& key, QObject *obj);
+    void addToMappingHash( const QString& prefix, const QVariantHash& hash);
 
-    QString render(bool& ok) const;
+    QString render(bool &ok) const;
 
 private:
     QVariantHash _mapping;
