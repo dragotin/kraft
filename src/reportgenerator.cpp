@@ -237,7 +237,7 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
 
     s->deleteLater();
     // check for the watermark requirements
-    if (mMergeIdent >= 0 && mMergeIdent < 5) {
+    if (mMergeIdent > 0 && mMergeIdent < 5) {
         // check if the watermark file exists
         mergePdfWatermark(file);
     } else {
@@ -251,23 +251,37 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
     connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, &ReportGenerator::pdfMergeFinished);
 
-    const QString prg = DefaultProvider::self()->locateKraftTool(QStringLiteral("watermarkpdf.py"));
-    if (!prg.isEmpty()) {
-        mProcess->setProgram( QStringLiteral("python3") );
-        QStringList args;
-        args << prg;
-        args << QStringLiteral("-m") << QString::number(mMergeIdent);
-        args << QStringLiteral("-o") << targetFileName();
-        if (!mPdfAppendFile.isEmpty()) {
-            args << QStringLiteral("-a") << mPdfAppendFile;
+    QStringList args;
+    if (mMergeIdent > 0) {
+        const QString prg = DefaultProvider::self()->locateKraftTool(QStringLiteral("watermarkpdf.py"));
+        if (!prg.isEmpty() && !mWatermarkFile.isEmpty()) {
+            mProcess->setProgram( QStringLiteral("python3") );
+            args << prg;
+            args << QStringLiteral("-m") << QString::number(mMergeIdent);
+            args << QStringLiteral("-o") << targetFileName();
+            if (!mPdfAppendFile.isEmpty()) {
+                args << QStringLiteral("-a") << mPdfAppendFile;
+            }
+            args << mWatermarkFile;
+            args << file;
+
+            qDebug() << "Merge PDF Watermark args:" << args;
+            mProcess->setArguments(args);
+
+            mProcess->start( );
+        } else {
+            qDebug() << "Watermark err:" << (prg.isEmpty() ? "Program" : "watermark file") << "is empty";
         }
-        args << mWatermarkFile;
+    } else {
+        // no watermark is wanted, copy the converted file over.
         args << file;
-
-        qDebug() << "Merge PDF Watermark args:" << args;
         mProcess->setArguments(args);
-
-        mProcess->start( );
+        const QString target = targetFileName();
+        if (QFile::copy(file, target)) {
+            pdfMergeFinished(0, QProcess::ExitStatus::NormalExit);
+        } else {
+            qDebug() << "ERR: Failed to copy temporary file";
+        }
     }
 }
 
@@ -280,8 +294,12 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
     if (exitStatus == QProcess::ExitStatus::NormalExit && exitCode == 0) {
         const QString fileName = targetFileName();
 
-        const QString tmpFile = mProcess->arguments().last();
-        QFile::remove(tmpFile);
+        // remove the temp file which comes as arg in any case, even if the watermark
+        // tool was not called.
+        if (mProcess->arguments().size() > 0) {
+            const QString tmpFile = mProcess->arguments().last();
+            QFile::remove(tmpFile);
+        }
         mProcess->deleteLater();
         mProcess = nullptr;
         emit docAvailable(_requestedFormat, fileName, mCustomerContact);
