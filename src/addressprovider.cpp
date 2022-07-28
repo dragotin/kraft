@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <kcontacts_version.h>
 #include "addressprovider.h"
 #include <QDebug>
 
@@ -152,8 +152,12 @@ QString AddressProvider::formattedAddress( const KContacts::Addressee& contact )
   if( address.isEmpty() ) {
     re = contact.realName();
   } else {
-    re = address.formatted( KContacts::AddressFormatStyle::MultiLineDomestic,
-                            contact.realName(), contact.organization() );
+#if KContacts_VERSION >= QT_VERSION_CHECK(5, 92, 0)
+      re = address.formatted( KContacts::AddressFormatStyle::MultiLineDomestic,
+                              contact.realName(), contact.organization() );
+#else
+      re = address.formattedAddress( contact.realName(), contact.organization() );
+#endif
   }
   return re;
 }
