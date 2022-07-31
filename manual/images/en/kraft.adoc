@@ -8,7 +8,7 @@ Ronald Stroethoff, Klaas Freitag
 :description: Kraft is a Qt program for organizing documents like quotes and invoices in a small business.
 :keywords: Qt;office;bookkeeping
 :experimental:
-:imagesdir: images/{lang}/
+:imagesdir: images/
 
 
 include::locale/attributes.adoc[]
@@ -45,7 +45,7 @@ During the initial setup you are asked to select a database to use and give the 
 
 You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab *Select from Addressbook* for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab *Manual entry* for to fill in the information of the address from your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.
 
-image:company_adress1.png[Company adress,float="right"]
+image:company_adress1_EN.png[Company adress,float="right"]
 
 After the initial setup, select menu:Preferences[Settings].
 That allows to prepare Kraft correctly so it can be used in a proper way.
@@ -70,14 +70,14 @@ At the first use you find a list of different document types, such as:
 * Invoice
 * Offer
 
-image:documentype.png[Document type,float="right"]
+image:documentype_EN.png[Document type,float="right"]
 
 Translate this types to your own language.
 You can also add new ones and remove document types you wont use.
 
 ==== Numbercycles
 
-image:numbercycles.png[Numbercycles,float="right"]
+image:numbercycles_EN.png[Numbercycles,float="right"]
 Each document has to have an unique identifier that identifies the document. There must not be two documents in Kraft with the same identifier.
 
 The format of the identifier is configuratable in Kraft. For that, Kraft has a concept of so called number cycles.
@@ -125,7 +125,7 @@ ____
 
 === Taxes
 
-image:taxes.png[Taxes,float="right"]
+image:taxes_EN.png[Taxes,float="right"]
 In many countries there are two kinds of VAT-taxes for sold products.
 
 A high level and
@@ -136,7 +136,7 @@ If the tax-level is changing, then you add here the start date with the new tax-
 
 === Wages
 
-image:wages.png[Wages,float="right"]
+image:wages_EN.png[Wages,float="right"]
 A list of wage costs is maintained in Kraft. The items are used in
 templates and during calculation.
 
@@ -149,7 +149,7 @@ fill in the correct prices.
 
 === Units of measurement
 
-image:unity.png[Units of measurement,float="right"]
+image:unity_EN.png[Units of measurement,float="right"]
 A list of units of measurement is maintained in Kraft. In Kraft Configuration Dialog reachable through the Settings menu can you edit and customize items already in the
 list, and also can you add new items to the list.
 
@@ -234,7 +234,7 @@ Fill in the profit that we want to have on the material
 
 And fill in how much is in a packet.
 
-image:catalog_material.png[Material catalog,float="right"]
+image:catalog_material_EN.png[Material catalog,float="right"]
 After this we add also in the map 'Wood' a item for a 'support pole' for later use with its price.
 
 Now we are going to:
@@ -270,7 +270,7 @@ First we go to the tab:
 ==== Template
 
 We give here the name of the new standard template like `Plant tree`
-image:catalog_standard.png[Standard catalog,float="right"]
+image:catalog_standard_EN.png[Standard catalog,float="right"]
 ____
 WARNING:
 be careful, this name is later used in the invoice
@@ -293,7 +293,7 @@ We fill here in a number of work with the time:
 |===
 
 The cost for worker which we have earlier filled in is now used.
-image:catalog_standard_work.png[Time calculation,float="right"]
+image:catalog_standard_work_EN.png[Time calculation,float="right"]
 ____
 NOTE:
 in the invoice we see later only Plant tree, we will not see the parts
@@ -312,7 +312,7 @@ and fill in:
 |Transportcost |35 euro |1 pcs.
 |===
 
-image:catalog_standard_fixed_cost.png[Fixed cost,float="right"]
+image:catalog_standard_fixed_cost_EN.png[Fixed cost,float="right"]
 
 After this we go to the tab:
 
@@ -327,7 +327,7 @@ We navigate to the map 'wood' where we select the 'support pole'.
 |1 |support pole |3,5 euro
 |===
 
-image:catalog_standard_material.png[Material,float="right"]
+image:catalog_standard_material_EN.png[Material,float="right"]
 
 We go now back to the first tab template
 
@@ -545,7 +545,7 @@ a button with a flag and a button with what looks like a page.
 We select the upper button with the page after which opens a
 context-menu with the items:
 
-image:context1.png[Context menu,float="right"]
+image:context1_EN.png[Context menu,float="right"]
 
  [Item kind]->[Normal]
  [Item kind]>[Alternative]
@@ -563,7 +563,7 @@ We choose here [Item kind] and change for `pear tree` from [normal] to
 We do this also for [liguster] and for [remove tree] we change this from
 [normal] to [on demand].
 
-image:context2.png[Context menu,float="right"]
+image:context2_EN.png[Context menu,float="right"]
 
 Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the
 result.
@@ -604,13 +604,13 @@ We have now in documenttype the choice from:
  [final Invoice]
  [Progress Payment Invoice]
 
- image:followup_1.png[Folloup document,float="right"]
-
+ image:followup_1_EN.png[Folloup document,float="right"]
+ 
 We select here "Acceptance of order".
 We have now a copy from the offer as an Acceptance of order
 (do not forget to adapt Alternative Delivery items and on demand items.)
 
- image:followup_2.png[Folloup document,float="right"]
+ image:followup_2_EN.png[Folloup document,float="right"]
 
 You can do this also for the creation of the invoice as a followup for Acceptance of order.
 Each document type has a specific list of follow up documents.

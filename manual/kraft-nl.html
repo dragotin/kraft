@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -743,7 +743,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Noot</div>
 </td>
 <td class="content">
 Kraft is driven by community of users, coders, artists and others by voluntary work.<br>
@@ -767,6 +767,9 @@ Also this manual needs contributions!<br>
 </div>
 <div class="paragraph">
 <p>You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab <strong>Select from Addressbook</strong> for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab <strong>Manual entry</strong> for to fill in the information of the address from your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.</p>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/nl/company_adress1.png" alt="Company adress"></span></p>
 </div>
 <div class="paragraph">
 <p>After the initial setup, select <span class="menuseq"><b class="menu">Preferences</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Settings</b></span>. That allows to prepare Kraft correctly so it can be used in a proper way.</p>
@@ -809,21 +812,27 @@ Also this manual needs contributions!<br>
 </ul>
 </div>
 <div class="paragraph">
+<p><span class="image right"><img src="images/nl/documentype.png" alt="Document type"></span></p>
+</div>
+<div class="paragraph">
 <p>Vertaal deze typen naar uw eigen taal. U kan ook nieuwe documenten toevoegen en documenten verwijderen waarvan u denkt dat u die niet zal gebruiken.</p>
 </div>
 <div class="sect3">
 <h4 id="_uniek_documentnummer">Uniek documentnummer</h4>
 <div class="paragraph">
-<p><span class="image right"><img src="images/numbercycles.png" alt="Numbercycles"></span> Numbercycles are used to define the <strong>document number</strong> which is printed on every document. The document number is an important unique identifier of the document and often must follow regulations.</p>
+<p><span class="image right"><img src="images/nl/numbercycles.png" alt="Numbercycles"></span> Each document has to have an unique identifier that identifies the document. There must not be two documents in Kraft with the same identifier.</p>
 </div>
 <div class="paragraph">
-<p>Kraft has a concept of so called number cycles. All document identifiers are taken out of one number cycle, and each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from. Number cycles are identified by their name. User can create new number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
+<p>The format of the identifier is configuratable in Kraft. For that, Kraft has a concept of so called number cycles. Number cycles are used to define the form of the <strong>document number</strong> which is printed on every document.</p>
+</div>
+<div class="paragraph">
+<p>All documents of a certain type have identifiers taken out of one number cycle. Each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from. That way, for example the document types Invoice and Final Invoice can use numbers from the same number cycle, even thought they are different document types in Kraft. Number cycles are identified by their name. User can create new number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
 </div>
 <div class="paragraph">
 <p>The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.</p>
 </div>
 <div class="paragraph">
-<p>Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts with 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
+<p>Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts at 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
 </div>
 <div class="paragraph">
 <p>The default numbercycle delivered with Kraft contains the year, the month and a serialnumber. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
@@ -903,7 +912,7 @@ Also this manual needs contributions!<br>
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Noot</div>
 </td>
 <td class="content">
 The "design" of the numbercycles and document numbers is very important. With the flexible system of templating Kraft can not prevent invalid number cycles. It is in the responsibility of the user.
@@ -918,7 +927,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <div class="sect2">
 <h3 id="_belastingen">Belastingen</h3>
 <div class="paragraph">
-<p>In veel landen zijn er twee BTW-tarieven voor verkochte producten.</p>
+<p><span class="image right"><img src="images/nl/taxes.png" alt="Taxes"></span> In many countries there are two kinds of VAT-taxes for sold products.</p>
 </div>
 <div class="paragraph">
 <p>Een hoog tarief en een laag tarief.</p>
@@ -930,7 +939,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <div class="sect2">
 <h3 id="_salarissen">Salarissen</h3>
 <div class="paragraph">
-<p>In Kraft is een lijst met salariskosten aanwezig. De items daarin worden in de sjablonen en in de berekeningen gebruikt.</p>
+<p><span class="image right"><img src="images/nl/wages.png" alt="Wages"></span> A list of wage costs is maintained in Kraft. The items are used in templates and during calculation.</p>
 </div>
 <div class="paragraph">
 <p>Alle data kan bewerkt en aangepast worden en in configuratiedialoog dat u kunt bereiken via het menu-item 'voorkeuren' kunt u nieuwe items toevoegen .</p>
@@ -942,7 +951,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <div class="sect2">
 <h3 id="_eenheden">Eenheden</h3>
 <div class="paragraph">
-<p>In Kraft is een verzameling eenheden aanwezig. In het configuratiedialoog die u kunt bereiken via het menu-item 'Voorkeuren' kunt u de items die al aanwezig zijn bewerken, maar u kunt ook nieuwe items toevoegen.</p>
+<p><span class="image right"><img src="images/nl/unity.png" alt="Units of measurement"></span> A list of units of measurement is maintained in Kraft. In Kraft Configuration Dialog reachable through the Settings menu can you edit and customize items already in the list, and also can you add new items to the list.</p>
 </div>
 <div class="paragraph">
 <p>Vergeet niet dat deze eenheden later worden gebruikt in de documenten, het is daarom belangrijk dat u ze vertaalt naar uw eigen taal.</p>
@@ -1047,7 +1056,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <p>En vul in per hoeveel ze verpakt zijn.</p>
 </div>
 <div class="paragraph">
-<p>After this we add also in the map 'Wood' a item for a 'support pole' for later use with its price.</p>
+<p><span class="image right"><img src="images/nl/catalog_material.png" alt="Material catalog"></span> After this we add also in the map 'Wood' a item for a 'support pole' for later use with its price.</p>
 </div>
 <div class="paragraph">
 <p>Nu gaan we naar:</p>
@@ -1115,7 +1124,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <div class="sect3">
 <h4 id="_sjabloon">Sjabloon</h4>
 <div class="paragraph">
-<p>We geven hier de naam op van de nieuwe standaard sjabloon zoals <code>Boom planten</code></p>
+<p>We give here the name of the new standard template like <code>Plant tree</code> <span class="image right"><img src="images/nl/catalog_standard.png" alt="Standard catalog"></span></p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -1134,7 +1143,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <p>We vullen hier een aantal werkzaamheden met hun tijd in:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Gebruikte tijd</caption>
+<caption class="title">Tabel 1. Gebruikte tijd</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1164,7 +1173,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 </tbody>
 </table>
 <div class="paragraph">
-<p>De kosten voor een werknemer die we eerder hebben ingevuld worden nu gebruikt.</p>
+<p>The cost for worker which we have earlier filled in is now used. <span class="image right"><img src="images/nl/catalog_standard_work.png" alt="Time calculation"></span></p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -1183,7 +1192,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <p>en we vullen in:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Vast item</caption>
+<caption class="title">Tabel 2. Vast item</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1198,6 +1207,9 @@ The "design" of the numbercycles and document numbers is very important. With th
 </tbody>
 </table>
 <div class="paragraph">
+<p><span class="image right"><img src="images/nl/catalog_standard_fixed_cost.png" alt="Fixed cost"></span></p>
+</div>
+<div class="paragraph">
 <p>Hierna gaan we naar de tab:</p>
 </div>
 </div>
@@ -1207,7 +1219,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <p>Here we select <b class="button">next</b>, after which the window [Add Material to Calculation] opens for a selection of material. We navigate to the map 'wood' where we select the 'support pole'.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Gebruikte materialen</caption>
+<caption class="title">Tabel 3. Gebruikte materialen</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1221,6 +1233,9 @@ The "design" of the numbercycles and document numbers is very important. With th
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p><span class="image right"><img src="images/nl/catalog_standard_material.png" alt="Material"></span></p>
+</div>
 <div class="paragraph">
 <p>We gaan nu terug naar de eerste tab 'Sjabloon'</p>
 </div>
@@ -1374,7 +1389,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <p>De klant heeft gevraagd of we een boom kunnen planten, we bieden 3 verschillende bomen aan die we kunnen planten.</p>
 </div>
 <div class="paragraph">
-<p>Beside this, we have seen that there is a lifeless three, which we will offer to remove as extra work. <span class="image right"><img src="images/create_new_doc.png" alt="Numbercycles"></span></p>
+<p>Beside this, we have seen that there is a lifeless three, which we will offer to remove as extra work. <span class="image right"><img src="images/nl/create_new_doc.png" alt="Numbercycles"></span></p>
 </div>
 <div class="paragraph">
 <p>De totale prijs willen we exclusief de prijs voor de verwijdering van de dode boom en alleen de prijs van een boom en niet van drie bomen.</p>
@@ -1497,6 +1512,9 @@ The "design" of the numbercycles and document numbers is very important. With th
 <div class="paragraph">
 <p>We selecteren de bovenste knop met de pagina waarna een contextmenu opent met de items:</p>
 </div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/nl/context1.png" alt="Context menu"></span></p>
+</div>
 <div class="literalblock">
 <div class="content">
 <pre>[ Soort item]-&gt;[Normaal]
@@ -1517,6 +1535,9 @@ The "design" of the numbercycles and document numbers is very important. With th
 <p>We doen dit ook voor [liguster] en voor [Boom verwijderen] veranderen we dit van [normaal] naar [Op verzoek].</p>
 </div>
 <div class="paragraph">
+<p><span class="image right"><img src="images/nl/context2.png" alt="Context menu"></span></p>
+</div>
+<div class="paragraph">
 <p>Klik op <b class="button">OK</b> om het resultaat op te slaan of op <b class="button">Annuleren</b> om het resultaat te verwijderen.</p>
 </div>
 <div class="paragraph">
@@ -1535,7 +1556,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <p>The document type "Acceptance of Order" is sent subsequently to an offer.</p>
 </div>
 <div class="paragraph">
-<p><span class="image right"><img src="images/acceptance_o_o_context.png" alt="Numbercycles"></span></p>
+<p><span class="image right"><img src="images/nl/acceptance_o_o_context.png" alt="Numbercycles"></span></p>
 </div>
 <div class="paragraph">
 <p>When a client has made a request, we will send an offer in wich we describe which items we will deliver. Hopefully the client will give an order for the work.</p>
@@ -1558,8 +1579,18 @@ The "design" of the numbercycles and document numbers is very important. With th
 [Progress Payment Invoice]</pre>
 </div>
 </div>
+<div class="literalblock">
+<div class="content">
+<pre>image:followup_1.png[Folloup document,float="right"]</pre>
+</div>
+</div>
 <div class="paragraph">
 <p>We select here "Acceptance of order". We have now a copy from the offer as an Acceptance of order (do not forget to adapt Alternative Delivery items and on demand items.)</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>image:followup_2.png[Folloup document,float="right"]</pre>
+</div>
 </div>
 <div class="paragraph">
 <p>You can do this also for the creation of the invoice as a followup for Acceptance of order. Each document type has a specific list of follow up documents. It is a good practice to describe on the invoice precisely what was delivered.</p>
@@ -1891,7 +1922,7 @@ PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Noot</div>
 </td>
 <td class="content">
 There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the format of the Kraft exported XRechnung.
@@ -1916,7 +1947,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-02 12:20:25 +0200
+Laatste aanpassing 2022-07-31 15:39:55 +0200
 </div>
 </div>
 </body>

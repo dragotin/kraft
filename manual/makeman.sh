@@ -37,10 +37,10 @@ outdir=`pwd`
 pushd "${srcdir}"
 
 lang=en
-asciidocargs="-D ${outdir} -a path=${srcdir} -a VERSION=${version} -a lang=${lang} -a stylesheet=kraftmanual.css"
+asciidocargs="-D ${outdir} -a path=${srcdir} -a VERSION=${version} -a stylesheet=kraftmanual.css"
 
 # english master doc
-asciidoctor ${asciidocargs} -o ${outfile} ${srcfile}
+asciidoctor ${asciidocargs} -a lang=${lang} -o ${outfile} ${srcfile}
 echo "built ${outfile}"
 
 # build the internationalized versions
@@ -52,7 +52,7 @@ do
     if [ -f "${transsrc}" ]; then
         po4a-translate -f asciidoc -M utf-8 -m ${srcfile} -p ${transsrc} -k 0 -l kraft-${lang}.adoc
         outfile="kraft-${lang}.html"
-        asciidoctor ${asciidocargs} -o ${outfile} kraft-${lang}.adoc
+        asciidoctor ${asciidocargs} -a lang=${lang} -o ${outfile} kraft-${lang}.adoc
 	rm kraft-${lang}.adoc
         echo "built ${transsrc} to ${outfile}"
     else

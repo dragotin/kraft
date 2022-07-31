@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -743,7 +743,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Anmerkung</div>
 </td>
 <td class="content">
 Kraft is driven by community of users, coders, artists and others by voluntary work.<br>
@@ -767,6 +767,9 @@ Also this manual needs contributions!<br>
 </div>
 <div class="paragraph">
 <p>You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab <strong>Select from Addressbook</strong> for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab <strong>Manual entry</strong> for to fill in the information of the address from your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.</p>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/de/company_adress1.png" alt="Company adress"></span></p>
 </div>
 <div class="paragraph">
 <p>After the initial setup, select <span class="menuseq"><b class="menu">Preferences</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Settings</b></span>. That allows to prepare Kraft correctly so it can be used in a proper way.</p>
@@ -809,21 +812,27 @@ Also this manual needs contributions!<br>
 </ul>
 </div>
 <div class="paragraph">
+<p><span class="image right"><img src="images/de/documentype.png" alt="Document type"></span></p>
+</div>
+<div class="paragraph">
 <p>Übersetze diese Typen in die eigene Sprache. Du kannst ebenso neue hinzufügen und Einträge entfernen, die Du nicht benutzen wirst.</p>
 </div>
 <div class="sect3">
 <h4 id="_nummernkreise">Nummernkreise</h4>
 <div class="paragraph">
-<p><span class="image right"><img src="images/numbercycles.png" alt="Numbercycles"></span> Nummernkreise werden zur Definition der <strong>Dokumentnummern</strong> benötigt, die auf jedem Dokument gedruckt wird. Die Dokumentnummer ist eine wichtige und eindeutige Kennzahl des Dokuments und muss Regularien gehorchen.</p>
+<p><span class="image right"><img src="images/de/numbercycles.png" alt="Numbercycles"></span> Each document has to have an unique identifier that identifies the document. There must not be two documents in Kraft with the same identifier.</p>
 </div>
 <div class="paragraph">
-<p>Kraft has a concept of so called number cycles. All document identifiers are taken out of one number cycle, and each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from. Number cycles are identified by their name. User can create new number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
+<p>The format of the identifier is configuratable in Kraft. For that, Kraft has a concept of so called number cycles. Number cycles are used to define the form of the <strong>document number</strong> which is printed on every document.</p>
+</div>
+<div class="paragraph">
+<p>All documents of a certain type have identifiers taken out of one number cycle. Each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from. That way, for example the document types Invoice and Final Invoice can use numbers from the same number cycle, even thought they are different document types in Kraft. Number cycles are identified by their name. User can create new number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
 </div>
 <div class="paragraph">
 <p>The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.</p>
 </div>
 <div class="paragraph">
-<p>Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts with 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
+<p>Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts at 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
 </div>
 <div class="paragraph">
 <p>The default numbercycle delivered with Kraft contains the year, the month and a serialnumber. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
@@ -903,7 +912,7 @@ Also this manual needs contributions!<br>
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Anmerkung</div>
 </td>
 <td class="content">
 The "design" of the numbercycles and document numbers is very important. With the flexible system of templating Kraft can not prevent invalid number cycles. It is in the responsibility of the user.
@@ -918,7 +927,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <div class="sect2">
 <h3 id="_steuern">Steuern</h3>
 <div class="paragraph">
-<p>In vielen Ländern gibt es zwei Arten von Mehrwertsteuer für veräusserte Produkte.</p>
+<p><span class="image right"><img src="images/de/taxes.png" alt="Taxes"></span> In many countries there are two kinds of VAT-taxes for sold products.</p>
 </div>
 <div class="paragraph">
 <p>Ein hoher und ein niedriger Steuersatz.</p>
@@ -930,7 +939,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <div class="sect2">
 <h3 id="_wages">Wages</h3>
 <div class="paragraph">
-<p>A list of wage costs is maintained in Kraft. The items are used in templates and during calculation.</p>
+<p><span class="image right"><img src="images/de/wages.png" alt="Wages"></span> A list of wage costs is maintained in Kraft. The items are used in templates and during calculation.</p>
 </div>
 <div class="paragraph">
 <p>All data can be edited, customized and new items can be added in the Kraft Configuration Dialog reachable through the Settings menu.</p>
@@ -942,7 +951,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <div class="sect2">
 <h3 id="_units_of_measurement">Units of measurement</h3>
 <div class="paragraph">
-<p>A list of units of measurement is maintained in Kraft. In Kraft Configuration Dialog reachable through the Settings menu can you edit and customize items already in the list, and also can you add new items to the list.</p>
+<p><span class="image right"><img src="images/de/unity.png" alt="Units of measurement"></span> A list of units of measurement is maintained in Kraft. In Kraft Configuration Dialog reachable through the Settings menu can you edit and customize items already in the list, and also can you add new items to the list.</p>
 </div>
 <div class="paragraph">
 <p>Remember that these units are later used in the documents, it is therefor important that you translate them to your own language.</p>
@@ -959,7 +968,7 @@ The "design" of the numbercycles and document numbers is very important. With th
 <table>
 <tr>
 <td class="icon">
-<div class="title">Warning</div>
+<div class="title">Warnung</div>
 </td>
 <td class="content">
 If you made the choice to use the information from KaddressBook then is the information from a later manual entry ignored.
@@ -1056,7 +1065,7 @@ If you made the choice to use the information from KaddressBook then is the info
 <p>And fill in how much is in a packet.</p>
 </div>
 <div class="paragraph">
-<p>After this we add also in the map 'Wood' a item for a 'support pole' for later use with its price.</p>
+<p><span class="image right"><img src="images/de/catalog_material.png" alt="Material catalog"></span> After this we add also in the map 'Wood' a item for a 'support pole' for later use with its price.</p>
 </div>
 <div class="paragraph">
 <p>Now we are going to:</p>
@@ -1124,7 +1133,7 @@ If you made the choice to use the information from KaddressBook then is the info
 <div class="sect3">
 <h4 id="_template">Template</h4>
 <div class="paragraph">
-<p>We give here the name of the new standard template like <code>Plant tree</code></p>
+<p>We give here the name of the new standard template like <code>Plant tree</code> <span class="image right"><img src="images/de/catalog_standard.png" alt="Standard catalog"></span></p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -1132,7 +1141,7 @@ If you made the choice to use the information from KaddressBook then is the info
 <table>
 <tr>
 <td class="icon">
-<div class="title">Warning</div>
+<div class="title">Warnung</div>
 </td>
 <td class="content">
 be careful, this name is later used in the invoice
@@ -1152,7 +1161,7 @@ be careful, this name is later used in the invoice
 <p>We fill here in a number of work with the time:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Spent time</caption>
+<caption class="title">Tabelle 1. Spent time</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1182,7 +1191,7 @@ be careful, this name is later used in the invoice
 </tbody>
 </table>
 <div class="paragraph">
-<p>The cost for worker which we have earlier filled in is now used.</p>
+<p>The cost for worker which we have earlier filled in is now used. <span class="image right"><img src="images/de/catalog_standard_work.png" alt="Time calculation"></span></p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -1190,7 +1199,7 @@ be careful, this name is later used in the invoice
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Anmerkung</div>
 </td>
 <td class="content">
 in the invoice we see later only Plant tree, we will not see the parts dig hole,place tree,fill hole,give water
@@ -1210,7 +1219,7 @@ in the invoice we see later only Plant tree, we will not see the parts dig hole,
 <p>and fill in:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Fixed item</caption>
+<caption class="title">Tabelle 2. Fixed item</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1225,6 +1234,9 @@ in the invoice we see later only Plant tree, we will not see the parts dig hole,
 </tbody>
 </table>
 <div class="paragraph">
+<p><span class="image right"><img src="images/de/catalog_standard_fixed_cost.png" alt="Fixed cost"></span></p>
+</div>
+<div class="paragraph">
 <p>After this we go to the tab:</p>
 </div>
 </div>
@@ -1234,7 +1246,7 @@ in the invoice we see later only Plant tree, we will not see the parts dig hole,
 <p>Here we select <b class="button">next</b>, after which the window [Add Material to Calculation] opens for a selection of material. We navigate to the map 'wood' where we select the 'support pole'.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Used materials</caption>
+<caption class="title">Tabelle 3. Used materials</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1248,6 +1260,9 @@ in the invoice we see later only Plant tree, we will not see the parts dig hole,
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p><span class="image right"><img src="images/de/catalog_standard_material.png" alt="Material"></span></p>
+</div>
 <div class="paragraph">
 <p>We go now back to the first tab template</p>
 </div>
@@ -1369,7 +1384,7 @@ in the invoice we see later only Plant tree, we will not see the parts dig hole,
 <table>
 <tr>
 <td class="icon">
-<div class="title">Warning</div>
+<div class="title">Warnung</div>
 </td>
 <td class="content">
 Remind that in the catalog we can add a profit on the price of the material, in the invoice and in the offer we can not add a profit on the price of the material.
@@ -1410,7 +1425,7 @@ Remind that in the catalog we can add a profit on the price of the material, in 
 <p>The client has asked to plant a tree, we will offer 3 different trees which we can plant.</p>
 </div>
 <div class="paragraph">
-<p>Beside this, we have seen that there is a lifeless three, which we will offer to remove as extra work. <span class="image right"><img src="images/create_new_doc.png" alt="Numbercycles"></span></p>
+<p>Beside this, we have seen that there is a lifeless three, which we will offer to remove as extra work. <span class="image right"><img src="images/de/create_new_doc.png" alt="Numbercycles"></span></p>
 </div>
 <div class="paragraph">
 <p>For the total price we do not want to show the price of the removal of the lifeless tree and we want for the total price only to show the price of one tree and not three.</p>
@@ -1533,6 +1548,9 @@ Remind that in the catalog we can add a profit on the price of the material, in 
 <div class="paragraph">
 <p>We select the upper button with the page after which opens a context-menu with the items:</p>
 </div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/de/context1.png" alt="Context menu"></span></p>
+</div>
 <div class="literalblock">
 <div class="content">
 <pre>[Item kind]-&gt;[Normal]
@@ -1553,6 +1571,9 @@ Remind that in the catalog we can add a profit on the price of the material, in 
 <p>We do this also for [liguster] and for [remove tree] we change this from [normal] to [on demand].</p>
 </div>
 <div class="paragraph">
+<p><span class="image right"><img src="images/de/context2.png" alt="Context menu"></span></p>
+</div>
+<div class="paragraph">
 <p>Click on <b class="button">OK</b> for saving the result or on <b class="button">Cancel</b> for discarding the result.</p>
 </div>
 <div class="paragraph">
@@ -1571,7 +1592,7 @@ Remind that in the catalog we can add a profit on the price of the material, in 
 <p>The document type "Acceptance of Order" is sent subsequently to an offer.</p>
 </div>
 <div class="paragraph">
-<p><span class="image right"><img src="images/acceptance_o_o_context.png" alt="Numbercycles"></span></p>
+<p><span class="image right"><img src="images/de/acceptance_o_o_context.png" alt="Numbercycles"></span></p>
 </div>
 <div class="paragraph">
 <p>When a client has made a request, we will send an offer in wich we describe which items we will deliver. Hopefully the client will give an order for the work.</p>
@@ -1594,8 +1615,18 @@ Remind that in the catalog we can add a profit on the price of the material, in 
 [Progress Payment Invoice]</pre>
 </div>
 </div>
+<div class="literalblock">
+<div class="content">
+<pre>image:followup_1.png[Folloup document,float="right"]</pre>
+</div>
+</div>
 <div class="paragraph">
 <p>We select here "Acceptance of order". We have now a copy from the offer as an Acceptance of order (do not forget to adapt Alternative Delivery items and on demand items.)</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>image:followup_2.png[Folloup document,float="right"]</pre>
+</div>
 </div>
 <div class="paragraph">
 <p>You can do this also for the creation of the invoice as a followup for Acceptance of order. Each document type has a specific list of follow up documents. It is a good practice to describe on the invoice precisely what was delivered.</p>
@@ -1927,7 +1958,7 @@ PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
 <table>
 <tr>
 <td class="icon">
-<div class="title">Note</div>
+<div class="title">Anmerkung</div>
 </td>
 <td class="content">
 There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the format of the Kraft exported XRechnung.
@@ -1952,7 +1983,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-07-02 12:20:25 +0200
+Zuletzt aktualisiert 2022-07-31 15:39:55 +0200
 </div>
 </div>
 </body>
