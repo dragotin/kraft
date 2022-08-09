@@ -61,9 +61,9 @@ public:
 
     static QString techKindString(Kind kind);
     static Kind techStringToKind( const QString& kindStr );
+    static QString kindLabel( Kind );
 
     QString stateString( const State& state ) const;
-    QString kindLabel( Kind ) const;
     QString cleanKindString(const QString &src);
     Geld currentPrice();
     bool priceValid();

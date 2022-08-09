@@ -55,6 +55,7 @@
 #include "addressselectordialog.h"
 #include "addressprovider.h"
 #include "format.h"
+#include "positionviewwidget.h"
 
 #include "kcontacts/vcardconverter.h"
 
@@ -348,6 +349,31 @@ QWidget* PrefsDialog::docTab()
   mCbDateFormats->insertItem( 5, i18n("Custom Setting in Settingsfile"));
   vboxLay->addLayout( butLay );
 
+  // ---- Alternative- and Demand Text
+  f = new QLabel(this);
+  f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
+  vboxLay->addWidget( f );
+
+  auto gridLay = new QGridLayout;
+  l = new QLabel(i18n("Prefix text for Demand items:"), this );
+  gridLay->addWidget(l, 0, 0);
+
+  _lineEditDemandText = new QLineEdit(this);
+  _lineEditDemandText->setText(PositionViewWidget::kindLabel(PositionViewWidget::Demand));
+  _lineEditDemandText->setToolTip(i18n("This text is automatically prepended to new 'on demand' items."));
+
+  gridLay->addWidget(_lineEditDemandText, 0, 1);
+
+  l = new QLabel(i18n("Prefix text for Alternative items:"), this );
+  gridLay->addWidget(l, 1, 0);
+
+  _lineEditAlternativeText = new QLineEdit(this);
+  _lineEditAlternativeText->setText(PositionViewWidget::kindLabel(PositionViewWidget::Alternative));
+  _lineEditAlternativeText->setToolTip(i18n("This text is automatically prepended to new 'alternative' items."));
+
+  gridLay->addWidget(_lineEditAlternativeText, 1, 1);
+  vboxLay->addLayout( gridLay );
+
   // ---- XRechnung Template
   f = new QLabel(this);
   f->setFrameStyle( QFrame::HLine | QFrame::Sunken );
@@ -372,8 +398,8 @@ QWidget* PrefsDialog::docTab()
 
   connect(pbXRechTmpl, &QPushButton::clicked, this, [this]() {
       const QString file = QFileDialog::getOpenFileName(this,
-                                                  i18n("Find Template File"), QDir::homePath(),
-                                                  i18n("XRechnung Templates (*.xrtmpl)"));
+                                                        i18n("Find Template File"), QDir::homePath(),
+                                                        i18n("XRechnung Templates (*.xrtmpl)"));
 
       if (!file.isEmpty()) {
           _lineEditXRechnung->setText(file);
@@ -386,7 +412,7 @@ QWidget* PrefsDialog::docTab()
   spaceEater->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
   vboxLay->addWidget( spaceEater );
 
-    return topWidget;
+  return topWidget;
 }
 
 QWidget* PrefsDialog::doctypeTab()
@@ -539,6 +565,11 @@ void PrefsDialog::writeConfig()
         dt.setXRechnungTemplate(newTmpl);
         dt.save();
     }
+
+    const QString demandText = _lineEditDemandText->text();
+    KraftSettings::self()->setDemandLabel(demandText);
+    const QString alterText = _lineEditAlternativeText->text();
+    KraftSettings::self()->setAlternativeLabel(alterText);
 
     int dateFormat = mCbDateFormats->currentIndex();
 

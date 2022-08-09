@@ -677,11 +677,9 @@ PositionViewWidget::Kind PositionViewWidget::techStringToKind( const QString& ki
 }
 
 // The label that is prepended to a positions text
-QString PositionViewWidget::kindLabel( Kind k ) const
+QString PositionViewWidget::kindLabel( Kind k )
 {
   Kind kind = k;
-
-  if ( kind == Invalid ) kind = mKind;
 
   QString re;
   if ( kind == Normal ) {

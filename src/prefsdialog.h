@@ -92,6 +92,8 @@ private:
   QLineEdit *m_leName;
   QLineEdit *m_lePasswd;
   QLineEdit *_lineEditXRechnung;
+  QLineEdit *_lineEditDemandText;
+  QLineEdit *_lineEditAlternativeText;
   QLabel    *m_statusLabel;
 
   QWidget         *m_mysqlpart;
