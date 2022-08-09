@@ -1217,7 +1217,8 @@ DocPositionList KraftView::currentPositionList()
 
           if ( calculatable ) {
             // copy information from the widget
-            newDp->setToDelete( widget->deleted() );
+              bool deleted = widget->deleted();
+            newDp->setToDelete(deleted);
 
             QString t = widget->m_teFloskel->toPlainText();
             if ( !replaceMap.empty() ) {
@@ -1235,7 +1236,7 @@ DocPositionList KraftView::currentPositionList()
             if ( k != PositionViewWidget::Normal ) {
               Attribute a( DocPosition::Kind );
               a.setPersistant( true );
-              a.setValue( widget->kindString() );
+              a.setValue( PositionViewWidget::techKindString(k) );
               newDp->setAttribute( a );
             } else {
               newDp->removeAttribute( DocPosition::Kind );

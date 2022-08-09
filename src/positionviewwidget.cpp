@@ -136,17 +136,27 @@ PositionViewWidget::PositionViewWidget()
   mDeleteId = mExecPopup->addAction(  QIcon::fromTheme("edit-delete"),
                            i18n("Delete Item"), this, SIGNAL( deletePosition() ) );
 
+  connect(this, &PositionViewWidget::positionStateNormal, this, [this]() {
+      slotSetPositionKind(Normal, true);
+      slotRefreshPrice();
+      emit positionModified();
+  } );
+  connect(this, &PositionViewWidget::positionStateAlternative, this, [this]() {
+      slotSetPositionKind(Alternative, true);
+      slotRefreshPrice();
+      emit positionModified();
+  } );
+  connect(this, &PositionViewWidget::positionStateDemand, this, [this]() {
+      slotSetPositionKind(Demand, true);
+      slotRefreshPrice();
+      emit positionModified();
+  } );
 
-  connect( this, SIGNAL( positionStateNormal() ), this, SLOT( slotSetPositionNormal() ) );
-  connect( this, SIGNAL( positionStateAlternative() ), this, SLOT( slotSetPositionAlternative() ) );
-  connect( this, SIGNAL( positionStateDemand() ), this, SLOT( slotSetPositionDemand() ) );
+  connect(this, &PositionViewWidget::lockPosition, this, &PositionViewWidget::slotLockPosition);
+  connect(this, &PositionViewWidget::unlockPosition, this, &PositionViewWidget::slotUnlockPosition);
 
-
-  connect( this, SIGNAL( lockPosition() ),   this, SLOT( slotLockPosition() ) );
-  connect( this, SIGNAL( unlockPosition() ), this, SLOT( slotUnlockPosition() ) );
-
-  connect( mExecPopup, SIGNAL( aboutToShow() ), this, SLOT( slotMenuAboutToShow() ) );
-  connect( mExecPopup, SIGNAL( aboutToHide() ), this, SLOT( slotMenuAboutToHide() ) );
+  connect( mExecPopup, &QMenu::aboutToShow, this, &PositionViewWidget::slotMenuAboutToShow);
+  connect( mExecPopup, &QMenu::aboutToHide, this, &PositionViewWidget::slotMenuAboutToHide);
 
   mUnlockId->setEnabled(false);
   lStatus->setPixmap( QPixmap() );
@@ -191,18 +201,13 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
     m_sbUnitPrice->blockSignals( false );
 
-    if ( amap.contains( DocPosition::Kind ) ) {
-      Attribute kind = amap[DocPosition::Kind];
-      const QString kindStr = kind.value().toString();
-      if ( kindStr == kindString( Normal ) ) {
-          slotSetPositionNormal();
-      } else if ( kindStr == kindString( Alternative ) ) {
-        slotSetPositionAlternative();
-      } else if ( kindStr == kindString( Demand ) ) {
-        slotSetPositionDemand();
-      } else {
-        // qDebug () << "Unknown position kind!" << endl;
-      }
+    if ( amap.containsUndeleted( DocPosition::Kind ) ) {
+      Attribute kindAttr = amap[DocPosition::Kind];
+      const QString kindStr = kindAttr.value().toString();
+      Kind kind = techStringToKind(kindStr);
+      slotSetPositionKind(kind, false);
+    } else {
+        slotSetPositionKind(Kind::Normal, false);
     }
     // qDebug () << "Setting position ptr. in viewwidget: " << pos << endl;
   } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
@@ -583,79 +588,92 @@ Geld PositionViewWidgetList::nettoPrice()
   return res;
 }
 
-void PositionViewWidget::slotSetPositionNormal()
+QString PositionViewWidget::cleanKindString(const QString& src)
 {
-  lKind->hide();
-  lKind->setPixmap( QPixmap() );
-  mKind = Normal;
-
-  cleanKindString();
-  slotRefreshPrice();
-  emit positionModified();
+    QString current {src};
+    if ( current.startsWith( kindLabel( Alternative ) ) ) {
+        current.remove( 0, kindLabel(Alternative).length() );
+    } else if ( current.startsWith( kindLabel( Demand ) ) ) {
+        current.remove( 0, kindLabel(Demand).length());
+    }
+    return current;
 }
 
-void PositionViewWidget::cleanKindString()
+void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
 {
-  QString current = m_teFloskel->toPlainText();
-  bool touched = false;
+    QString tt;
+    QIcon icon;
+    bool showLabel {false};
+    Kind oldKind = mKind;
 
-  if ( current.startsWith( kindLabel( Alternative ) ) ) {
-    current.remove( 0, QString( kindLabel( Alternative ) ).length() );
-    touched = true;
-  } else if ( current.startsWith( kindLabel( Demand ) ) ) {
-    current.remove( 0, QString( kindLabel( Demand ) ).length() );
-    touched = true;
-  }
+    mKind = kind;
+    if (kind == Kind::Normal) {
 
-  if ( touched ) {
-    m_teFloskel->setText( current );
-  }
-}
+    } else if (kind == Kind::Demand) {
+        tt = i18n( "This item is either completely optional or its "
+                   "amount varies depending on the needs.<br/><br/>"
+                   "Use the item toolbox to change the item type." );
+        showLabel = true;
+        icon = QIcon::fromTheme("kraft_demand");
+    } else if (kind == Kind::Alternative) {
+        tt = i18n( "This is an alternative item.<br/><br/>"
+                   " Use the position toolbox to change the item type." );
+        showLabel = true;
+        icon = QIcon::fromTheme("kraft_alternative");
+    }
+    showLabel ? lKind->show() : lKind->hide();
+    lKind->setToolTip(tt);
+    lKind->setPixmap(icon.pixmap(QSize(20,20)));
 
-void PositionViewWidget::slotSetPositionAlternative()
-{
-  lKind->show();
-  lKind->setToolTip( i18n( "This is an alternative item.<br/><br/>"
-                           " Use the position toolbox to change the item type." ) );
-  lKind->setPixmap( QIcon::fromTheme( "kraft_alternative" ).pixmap(QSize(20,20)));
-  mKind = Alternative;
-  slotRefreshPrice();
-
-  cleanKindString();
-
-  m_teFloskel->setText( kindLabel( Alternative ) + m_teFloskel->toPlainText() );
-
-  emit positionModified();
-}
-
-void PositionViewWidget::slotSetPositionDemand()
-{
-  lKind->show();
-  lKind->setToolTip( i18n( "This item is either completely optional or its "
-                           "amount varies depending on the needs.<br/><br/>"
-                           "Use the item toolbox to change the item type." ) );
-  lKind->setPixmap( QIcon::fromTheme("kraft_demand").pixmap(QSize(20,20)));
-  mKind = Demand;
-  slotRefreshPrice();
-
-  cleanKindString();
-  m_teFloskel->setText( kindLabel( Demand ) + m_teFloskel->toPlainText() );
-
-  emit positionModified();
+    if (alterText) {
+        QString text =  m_teFloskel->toPlainText();
+        if (oldKind == Kind::Normal) {
+            QString pre;
+            if (kind == Kind::Alternative) {
+                pre = kindLabel(Kind::Alternative);
+            } else if (kind == Kind::Demand) {
+                pre = kindLabel(Kind::Demand);
+            }
+            if (!pre.isEmpty()) {
+                m_teFloskel->setText(pre + text);
+            }
+        } else {
+              // from demand to normal or alternative for example
+            if (kind == Kind::Normal) {
+                text = cleanKindString(text);
+            } else {
+                text = kindLabel(kind) + cleanKindString(text);
+            }
+            m_teFloskel->setText(text);
+        }
+    }
 }
 
 // The technical label
-QString PositionViewWidget::kindString( Kind k ) const
+// Do not
+QString PositionViewWidget::techKindString( Kind kind)
 {
-  Kind kind = k;
 
-  if ( kind == Invalid ) kind = mKind;
+  if ( kind == Invalid ) {
+      qDebug() << "Invalid Kind set";
+  }
+  if ( kind == Normal )      return QStringLiteral( "Normal" );
+  if ( kind == Demand )      return QStringLiteral( "Demand" );
+  if ( kind == Alternative ) return QStringLiteral( "Alternative" );
 
-  if ( kind == Normal )      return QString::fromLatin1( "Normal" );
-  if ( kind == Demand )      return QString::fromLatin1( "Demand" );
-  if ( kind == Alternative ) return QString::fromLatin1( "Alternative" );
+  return QStringLiteral( "Invalid" );
+}
 
-  return QString::fromLatin1( "unknown" );
+PositionViewWidget::Kind PositionViewWidget::techStringToKind( const QString& kindStr )
+{
+    if (kindStr == techKindString(Normal)) {
+        return Kind::Normal;
+    } else if (kindStr == techKindString(Demand)) {
+        return Kind::Demand;
+    } else if (kindStr == techKindString(Alternative)) {
+        return Kind::Alternative;
+    }
+    return Kind::Invalid;
 }
 
 // The label that is prepended to a positions text
@@ -680,7 +698,7 @@ QString PositionViewWidget::kindLabel( Kind k ) const
   }
 
   if ( ! re.endsWith( ": " ) ) {
-    re += QString::fromLatin1( ": " );
+    re += QStringLiteral( ": " );
   }
   return re;
 }

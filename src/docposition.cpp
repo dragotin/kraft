@@ -233,11 +233,15 @@ Geld DocPosition::overallPrice()
 {
     Geld g;
     AttributeMap atts = attributes();
-    // all kinds beside from no kind mean  that the position is not
-    // counted for the overall price. That's a FIXME
-    if ( ! atts.contains( DocPosition::Kind ) ) {
-      g = unitPrice() * amount();
+
+    // all kinds beside from no kind (which means Normal) mean that the position is not
+    // counted for the overall price.
+    // Once there are kinds different from Normal which need a counted price, this needs
+    // to be fixed here.
+    if (!atts.containsUndeleted(DocPosition::Kind) ) {
+        g = unitPrice() * amount();
     }
+
     return g;
 }
 
@@ -262,7 +266,9 @@ Geld DocPositionList::nettoPrice()
 
   DocPositionListIterator it( *this );
   while( it.hasNext() ) {
-    g += static_cast<DocPosition*>(it.next())->overallPrice();
+      DocPosition *dp = static_cast<DocPosition*>(it.next());
+      if (!dp->toDelete())
+          g += dp->overallPrice();
   }
   return g;
 }
@@ -278,7 +284,7 @@ Geld DocPositionList::fullTaxSum( double fullTax )
   while( it.hasNext() ) {
     DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
-    if( dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
+    if( !dp->toDelete() && dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
         sum += dp->overallPrice();
     }
   }
@@ -302,7 +308,7 @@ Geld DocPositionList::reducedTaxSum( double reducedTax )
   while( it.hasNext() ) {
     DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
-    if( dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
+    if( !dp->toDelete() && dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
         sum += dp->overallPrice();
     }
   }
@@ -333,6 +339,7 @@ QString DocPositionList::posNumber( DocPositionBase* pos )
   return QString::number( 1+indexOf( pos ) );
 }
 
+#if 0
 QDomElement DocPositionList::domElement( QDomDocument& doc )
 {
   QDomElement topElem = doc.createElement( "positions" );
@@ -369,6 +376,7 @@ QDomElement DocPositionList::domElement( QDomDocument& doc )
   }
   return topElem;
 }
+#endif
 
 int DocPositionList::compareItems ( DocPosition *dp1, DocPosition *dp2 )
 {

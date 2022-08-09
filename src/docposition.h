@@ -103,7 +103,7 @@ class DocPosition : public DocPositionBase
   public:
     DocPosition();
     DocPosition( const PositionType& );
-    ~DocPosition(){};
+    ~DocPosition(){}
 
 
     void setUnit( const Einheit& unit ) { m_unit = unit; }
@@ -139,7 +139,7 @@ class DocPositionList : public QList<DocPositionBase*>
   public:
     DocPositionList();
 
-    QDomElement domElement( QDomDocument& );
+    // QDomElement domElement( QDomDocument& );
     DocPositionBase *positionFromId( int id );
     QString posNumber( DocPositionBase* );
 

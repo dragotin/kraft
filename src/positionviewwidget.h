@@ -58,10 +58,13 @@ public:
     DocPositionGuardedPtr position(){ return mPositionPtr; }
     State state() { return mState; }
     Kind  kind()  { return mKind; }
-    QString kindString( Kind = Invalid ) const;
+
+    static QString techKindString(Kind kind);
+    static Kind techStringToKind( const QString& kindStr );
+
     QString stateString( const State& state ) const;
     QString kindLabel( Kind ) const;
-    void cleanKindString();
+    QString cleanKindString(const QString &src);
     Geld currentPrice();
     bool priceValid();
     void setCurrentPrice( Geld );
@@ -88,9 +91,7 @@ public slots:
 protected slots:
     void slotLockPosition();
     void slotUnlockPosition();
-    void slotSetPositionNormal();
-    void slotSetPositionAlternative();
-    void slotSetPositionDemand();
+    void slotSetPositionKind(Kind kind, bool alterText);
     void slotUpdateTagToolTip();
     void paintEvent ( QPaintEvent* );
 

@@ -365,6 +365,20 @@ void AttributeMap::save( dbID id )
   }
 }
 
+bool AttributeMap::containsUndeleted(const QString &name) const
+{
+    if ( name.isEmpty() || ! contains( name ) )
+        return false;
+
+    ConstIterator it = find( name );
+    if ( it != end() ) {
+      if (!(*it).mDelete)
+          return true;
+      // qDebug () << "Marking attrib " << name << " to delete!";
+    }
+    return false;
+}
+
 void AttributeMap::markDelete( const QString& name )
 {
   if ( name.isEmpty() || ! contains( name ) )return;

@@ -80,6 +80,7 @@ public:
 
   void markDelete( const QString& );
   void dbDeleteAll( dbID );
+  bool containsUndeleted(const QString &name) const;
 protected:
   void dbDeleteAttribute( const QString& );
   void dbDeleteValue( const QString&, const QString& = QString() );
