@@ -9,6 +9,8 @@ CREATE TABLE catItemUsage (
   PRIMARY KEY(catId, itemId)
 );
 
-
-ALTER TABLE Catalog DROP COLUMN lastUsed;
-ALTER TABLE Catalog DROP COLUMN useCounter;
+-- These statements are only supported starting from 3.35
+-- https://sqlite.org/changes.html#version_3_35_0
+-- rather disabled for now for robustness
+-- ALTER TABLE Catalog DROP COLUMN lastUsed;
+-- ALTER TABLE Catalog DROP COLUMN useCounter;
