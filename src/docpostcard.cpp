@@ -67,41 +67,45 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
       DocPosition *dp = static_cast<DocPosition*>(dpb);
       mPositions += "<tr><td valign=\"top\" width=\"20\" class=\"itemnums\">";
 
-      if ( dp->toDelete() ) mPositions += "<strike>";
+      if ( dp->toDelete() ) mPositions += "<s>";
       mPositions += posList.posNumber( dpb ) + ". ";
-      if ( dp->toDelete() ) mPositions += "</strike>";
+      if ( dp->toDelete() ) mPositions += "</s>";
       mPositions += "</td>";
       mPositions += "<td class=\"itemtexts\">";
-      if ( dp->toDelete() ) mPositions += "<strike>";
+      if ( dp->toDelete() ) mPositions += "<s>";
 
-      if ( dp->attributes().contains( DocPosition::Kind ) ) {
-          mPositions += "<i>" + dp->text() + "</i>";
-      } else {
-          mPositions += htmlify(dp->text());
-      }
+      // set to italic if the item kind is not Normal
+      bool italic = dp->attributes().containsUndeleted(DocPosition::Kind);
+      if (italic) mPositions += "<i>";
+      mPositions += htmlify(dp->text());
+      if (italic) mPositions += "</i>";
 
-      if ( dp->toDelete() ) mPositions += "</strike>";
+      if ( dp->toDelete() ) mPositions += "</s>";
       mPositions += "</td>";
 
       if( mShowPrices ) {
           mPositions += "<td align=\"right\" valign=\"bottom\" class=\"prices\">";
-          if ( dp->toDelete() ) mPositions += "<strike>";
+          if (italic) mPositions += "<i>";
+          if ( dp->toDelete() )
+              mPositions += "<s>";
           mPositions += dp->overallPrice().toHtmlString();
-          if ( dp->toDelete() ) mPositions += "</strike>";
+          if ( dp->toDelete() )
+              mPositions += "</s>";
           mPositions += "</td>";
 
           mPositions += "<td align=\"right\" valign=\"bottom\" width=\"12\">";
           if( taxType == DocPositionBase::TaxIndividual && (dp->taxType() == DocPositionBase::TaxReduced) ) {
-              if ( dp->toDelete() ) mPositions += "<strike>";
+              if ( dp->toDelete() ) mPositions += "<s>";
               mPositions += QString(REDUCED_TAX_MARK);
-              if ( dp->toDelete() ) mPositions += "</strike>";
+              if ( dp->toDelete() ) mPositions += "</s>";
           }
 
           if( taxType == DocPositionBase::TaxIndividual && (dp->taxType() == DocPositionBase::TaxNone) ) {
-              if ( dp->toDelete() ) mPositions += "<strike>";
+              if ( dp->toDelete() ) mPositions += "<s>";
               mPositions += QString(NO_TAX_MARK);
-              if ( dp->toDelete() ) mPositions += "</strike>";
+              if ( dp->toDelete() ) mPositions += "</s>";
           }
+          if (italic) mPositions += "</i>";
           mPositions += "</td>";
       }
       mPositions += "</tr>";
