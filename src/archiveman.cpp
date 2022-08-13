@@ -31,6 +31,7 @@
 #include "documentman.h"
 #include "defaultprovider.h"
 #include "format.h"
+#include "version.h"
 
 Q_GLOBAL_STATIC(ArchiveMan, mSelf)
 
@@ -127,7 +128,8 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
 {
     QDomDocument xmldoc( "kraftdocument" );
     QDomElement root = xmldoc.createElement( "kraftdocument" );
-    // Fixme:
+    root.setAttribute(QStringLiteral("kraft_version"), QStringLiteral(KRAFT_VERSION));
+
     xmldoc.appendChild( root );
     QDomElement cust = xmldoc.createElement( "client" );
     root.appendChild( cust );
