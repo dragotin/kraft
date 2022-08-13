@@ -17,6 +17,7 @@
 #ifndef GRANTLEETEMPLATE_H
 #define GRANTLEETEMPLATE_H
 
+#include <qobject.h>
 #include <qmap.h>
 #include <qstring.h>
 
@@ -25,19 +26,18 @@
 #include <grantlee/engine.h>
 #include <grantlee/template.h>
 
-class GrantleeFileTemplate
+class GrantleeFileTemplate : public QObject
 {
+    Q_OBJECT
 public:
     GrantleeFileTemplate( const QString& file);
 
-    void addToMapping(const QString& key, const QVariant& variant);
     void addToObjMapping(const QString& key, QObject *obj);
     void addToMappingHash( const QString& prefix, const QVariantHash& hash);
 
     QString render(bool &ok) const;
 
 private:
-    QVariantHash _mapping;
     const QString& _tmplFileName;
     QHash<QString, QObject*> _objs;
 };

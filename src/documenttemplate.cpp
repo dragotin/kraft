@@ -20,6 +20,7 @@
 #include "grantleetemplate.h"
 #include "format.h"
 #include "kraftsettings.h"
+#include "version.h"
 
 #include <klocalizedstring.h>
 
@@ -101,7 +102,6 @@ QVariantHash contactToVariantHash(const KContacts::Addressee& contact )
                  escapeTrml2pdfXML( address.region() ) );
     hash.insert( QStringLiteral("LABEL" ),
                  escapeTrml2pdfXML( address.label() ) );
-
     return hash;
 }
 
@@ -134,6 +134,29 @@ QVariantHash labelVariantHash()
     hash.insert( TAG( "CUST_ID"), i18nc("Customer ID on document", "Customer Id"));
     hash.insert( TAG( "CURRENCY_SIGN"), DefaultProvider::self()->currencySymbol());
 
+    return hash;
+}
+
+QVariantHash kraftVariantHash()
+{
+    QVariantHash hash;
+    QString h = QString("Kraft %1 %2").arg(KRAFT_VERSION).
+            arg(KRAFT_CODENAME);
+    hash.insert(TAG("VERSION"), h);
+
+    h = QString("DB-Scheme %1").arg(KRAFT_REQUIRED_SCHEMA_VERSION);
+    hash.insert(TAG("DB_SCHEME"), h);
+
+    h = qgetenv("USER");
+    if (h.isEmpty())
+        h = qgetenv("USERNAME");
+    hash.insert(TAG("SYS_USER"), h);
+
+    h = qgetenv("HOSTNAME");
+    if (h.isEmpty())
+        h = qgetenv("HOST");
+    if (!h.isEmpty())
+        hash.insert(TAG("HOSTNAME"), h);
 
     return hash;
 }
@@ -383,6 +406,9 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
 
         const QVariantHash labelHash = labelVariantHash();
         gtmpl.addToMappingHash(QStringLiteral("label"), labelHash);
+
+        const QVariantHash kraftHash = kraftVariantHash();
+        gtmpl.addToMappingHash(QStringLiteral("kraft"), kraftHash);
 
         bool ok;
         rendered = gtmpl.render(ok);

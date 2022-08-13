@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "grantleetemplate.h"
-#include "klocalizedstring.h"
+#include <klocalizedstring.h>
 
 #include <QDebug>
 
@@ -28,26 +28,38 @@
 #include <grantlee/template.h>
 #include <grantlee/templateloader.h>
 
+// make this class a QObject to parent the created QObjects in addToMappingHash()
+// to it. That way, the allocated objects are automatically freed by the Qt mechanism
 GrantleeFileTemplate::GrantleeFileTemplate( const QString& file)
-    :_tmplFileName(file)
+    : QObject(),
+      _tmplFileName(file)
 {
-}
 
-void GrantleeFileTemplate::addToMapping(const QString& key, const QVariant& variant)
-{
-    _mapping.insert(key, variant);
 }
 
 void GrantleeFileTemplate::addToMappingHash( const QString& prefix, const QVariantHash& hash)
 {
+    QObject *obj;
+
+    if (prefix.isNull()) {
+        return;
+    }
+
+    if (_objs.contains(prefix)) {
+        obj = _objs[prefix];
+    } else {
+        // make the created objects a child of the _p QObject
+        obj = new QObject(this);
+        _objs[prefix] = obj;
+    }
+
     QHash<QString, QVariant>::const_iterator i = hash.constBegin();
     while (i != hash.constEnd()) {
         const auto key = i.key();
         const auto val = i.value();
-        addToMapping(QString("%1.%2").arg(prefix).arg(key), val);
+        obj->setProperty(key.toLocal8Bit().data(), val);
         i++;
     }
-
 }
 
 void GrantleeFileTemplate::addToObjMapping(const QString& key, QObject *obj)
@@ -75,7 +87,7 @@ QString GrantleeFileTemplate::render(bool &ok) const
     }
 
     if (ok) {
-        Grantlee::Context c(_mapping);
+        Grantlee::Context c;
 
         QHash<QString, QObject*>::const_iterator i = _objs.constBegin();
         while (i != _objs.constEnd()) {
