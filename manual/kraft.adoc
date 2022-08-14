@@ -604,13 +604,13 @@ We have now in documenttype the choice from:
  [final Invoice]
  [Progress Payment Invoice]
 
- image:followup_1.png[Folloup document,float="right"]
+image:followup_1.png[Folloup document,float="right"]
 
 We select here "Acceptance of order".
 We have now a copy from the offer as an Acceptance of order
 (do not forget to adapt Alternative Delivery items and on demand items.)
 
- image:followup_2.png[Folloup document,float="right"]
+image:followup_2.png[Folloup document,float="right"]
 
 You can do this also for the creation of the invoice as a followup for Acceptance of order.
 Each document type has a specific list of follow up documents.
