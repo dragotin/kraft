@@ -122,6 +122,10 @@ private:
   QTabWidget     *_tabWidget;
   Ui::manualOwnIdentity ui;
 
+  QLineEdit *_bacName;
+  QLineEdit *_bacIBAN;
+  QLineEdit *_bacBIC;
+
     int _maxNavBarTextWidth;
 };
 

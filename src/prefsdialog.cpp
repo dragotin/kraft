@@ -40,15 +40,11 @@
 #include "prefsdialog.h"
 #include "prefswages.h"
 #include "prefsunits.h"
-#include "databasesettings.h"
 #include "kraftsettings.h"
-#include "kraftdb.h"
-#include "kraftdoc.h"
 #include "defaultprovider.h"
 #include "doctype.h"
 #include "doctypeedit.h"
 #include "taxeditdialog.h"
-#include "documentman.h"
 #include "impviewwidgets.h"
 #include "texttemplate.h"
 #include "htmlview.h"
@@ -244,6 +240,18 @@ QWidget* PrefsDialog::whoIsMeTab()
   ui.websiteLabel->setText(KContacts::Addressee::urlLabel());
 
   _tabWidget->insertTab(1, w1, i18n("Manual Address"));
+
+  // == Bank Account information
+  QGroupBox *gbox = new QGroupBox(i18n("Bank Account Information"), this);
+  QFormLayout *formLayout = new QFormLayout;
+  _bacName = new QLineEdit(this);
+  formLayout->addRow(tr("&Bank Account Holder:"), _bacName);
+  _bacIBAN = new QLineEdit(this);
+  formLayout->addRow(tr("&IBAN:"), _bacIBAN);
+  _bacBIC = new QLineEdit(this);
+  formLayout->addRow(tr("&BIC:"), _bacBIC);
+  gbox->setLayout(formLayout);
+  vboxLay->addWidget(gbox);
 
   topWidget->setLayout( vboxLay );
 
@@ -470,6 +478,7 @@ void PrefsDialog::readConfig()
     const auto tmpl = dt.xRechnungTemplate();
     _lineEditXRechnung->setText(tmpl);
 
+    // == Date format
     int index {5};
     const QString dFormat = KraftSettings::self()->dateFormat();
     if (dFormat == Format::DateFormatIso) {
@@ -500,6 +509,16 @@ void PrefsDialog::readConfig()
     }
 
     mCbDateFormats->setCurrentIndex(index);
+
+    // == Bank Account Information
+    QString h = KraftSettings::self()->bankAccountName();
+    _bacName->setText(h);
+    h = KraftSettings::self()->bankAccountBIC();
+    _bacBIC->setText(h);
+    h = KraftSettings::self()->bankAccountIBAN();
+    _bacIBAN->setText(h);
+
+
 }
 
 void PrefsDialog::writeIdentity()
@@ -595,6 +614,19 @@ void PrefsDialog::writeConfig()
         // do not touch!
     } else {
         KraftSettings::self()->setDateFormat(dateFormatString);
+    }
+
+    QString h = _bacName->text();
+    if (h != KraftSettings::self()->bankAccountName()) {
+        KraftSettings::self()->setBankAccountName(h);
+    }
+    h = _bacBIC->text();
+    if (h != KraftSettings::self()->bankAccountBIC()) {
+        KraftSettings::self()->setBankAccountBIC(h);
+    }
+    h = _bacIBAN->text();
+    if (h != KraftSettings::self()->bankAccountIBAN()) {
+        KraftSettings::self()->setBankAccountIBAN(h);
     }
 
     KraftSettings::self()->save();
