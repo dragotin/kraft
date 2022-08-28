@@ -18,6 +18,7 @@ include(FeatureSummary)
 # Uncomment to enable some tweaks for AppImage build
 # add_definitions(-DBUILD_APPIMAGE=1)
 
+kde_enable_exceptions()
 remove_definitions(-DQT_NO_SIGNALS_SLOTS_KEYWORDS)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
@@ -74,6 +75,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 # disable the warning about null-pointer zero. FIXME.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
 
+set(QT_DEFINITIONS "${Qt5Core_DEFINITIONS} ${Qt5Gui_DEFINITIONS} ${Qt5Widgets_DEFINITIONS}")
 add_definitions(${QT_DEFINITIONS} )
 
 include_directories(${QT_INCLUDES} src)

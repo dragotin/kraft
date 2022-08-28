@@ -459,7 +459,6 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
         const QVariantHash labelHash = labelVariantHash();
         gtmpl.addToMappingHash(QStringLiteral("label"), labelHash);
 
-
         const QString bacName = KraftSettings::self()->bankAccountName();
         const QString bacIBAN = KraftSettings::self()->bankAccountIBAN();
         const QString bacBIC  = KraftSettings::self()->bankAccountBIC();
