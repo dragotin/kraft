@@ -122,7 +122,6 @@ html table#items {
   html table td {
       vertical-align: top;
       padding-top: 6mm;
-      // to debug: border: 1px solid black;
   }
 
   .col-center {
@@ -135,7 +134,6 @@ html table#items {
     text-align: left;
   }
 
-  // The columns of the items table
   .col-No {
     width: 5%;
   }
