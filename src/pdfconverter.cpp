@@ -17,7 +17,6 @@
 
 #include "pdfconverter.h"
 #include "defaultprovider.h"
-#include "archiveman.h"
 
 #include <QObject>
 #include <QTemporaryFile>
@@ -27,14 +26,7 @@
 #include <QApplication>
 #include <QProcess>
 
-PDFConverter::PDFConverter()
-    : QObject()
-{
-
-}
-
 // ====================================================================
-
 
 ReportLabPDFConverter::ReportLabPDFConverter()
     :PDFConverter()
@@ -42,7 +34,7 @@ ReportLabPDFConverter::ReportLabPDFConverter()
 
 }
 
-void ReportLabPDFConverter::convert(const QString& sourceFile, const QString &outputPath)
+void ReportLabPDFConverter::convert(const QString& sourceFile, const QString &outputFile)
 {
     // qDebug() << "Report BASE:\n" << templ;
 
@@ -80,7 +72,7 @@ void ReportLabPDFConverter::convert(const QString& sourceFile, const QString &ou
     if( haveErml ) {
         args << sourceFile;
 
-        mFile.setFileName(outputPath);
+        mFile.setFileName(outputFile);
         mOutputSize = 0;
         if ( mFile.open( QIODevice::WriteOnly ) ) {
             qDebug() << "Converting " << mFile.fileName() << "using" << prg << args.join(QChar(' '));
@@ -160,7 +152,7 @@ WeasyPrintPDFConverter::WeasyPrintPDFConverter()
 
 }
 
-void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& outputPath)
+void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& outputFile)
 {
     mErrors.clear();
 
@@ -172,7 +164,7 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
         emit converterError(ConvError::WeasyPrintNotFound);
     }
 
-    mFile.setFileName(outputPath);
+    mFile.setFileName(outputFile);
 
     QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
 
@@ -188,6 +180,7 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
 
     args << sourceFile;
     args << mFile.fileName();
+    args << "-p";
     args << "-u";
     args << styleSheetDir;
     if (!_templatePath.isEmpty() && _templatePath != styleSheetDir) {
@@ -231,7 +224,7 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
         QFileInfo fi(mFile.fileName());
         if( fi.exists() ) {
             emit docAvailable( mFile.fileName() );
-            if( mProcess) {
+            if(mProcess) {
                 const QString htmlFile = mProcess->arguments().first(); // the file name of the temp rmlfile
                 QFile::remove(htmlFile); // remove the rmlFile
             }

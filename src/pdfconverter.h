@@ -24,13 +24,11 @@
 #include <QDataStream>
 #include <QFile>
 
-#include "dbids.h"
-
 class PDFConverter : public QObject
 {
     Q_OBJECT
 public:
-    PDFConverter();
+    PDFConverter() {};
 
     enum class ConvError { NoError,
                            SourceFileFail,
@@ -44,7 +42,7 @@ public:
                            PDFMergerError
                          };
 
-    virtual void convert(const QString& sourceFile, const QString& outputPath) = 0;
+    virtual void convert(const QString& sourceFile, const QString& outputFile) = 0;
 
     QString getErrors() { return mErrors; }
 
@@ -58,12 +56,11 @@ signals:
     void docAvailable(const QString& fileName);
     void converterError( ConvError );
 
-protected:
-    QString mErrors;
+protected:    
+    QString   mErrors;
     QProcess *mProcess;
-    QFile mFile;
-    QString _templatePath;
-
+    QFile     mFile;
+    QString   _templatePath;
 };
 
 // ====================================================================
@@ -73,7 +70,7 @@ class ReportLabPDFConverter: public PDFConverter
 public:
     ReportLabPDFConverter();
 
-    void convert(const QString& sourceFile, const QString& outputPath) override;
+    void convert(const QString& sourceFile, const QString& outputFile) override;
 
 private slots:
     void trml2pdfFinished( int exitCode, QProcess::ExitStatus stat);
@@ -94,7 +91,7 @@ class WeasyPrintPDFConverter : public PDFConverter
 public:
     WeasyPrintPDFConverter();
 
-    void convert(const QString& sourceFile, const QString& outputPath) override;
+    void convert(const QString& sourceFile, const QString& outputFile) override;
 
 private slots:
     void slotReceivedStdout();
