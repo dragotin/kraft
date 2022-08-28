@@ -68,6 +68,7 @@ private:
     QString _tmplFile;
     ArchDoc _archDoc;
 protected:
+    QStringList _cleanupFiles;
 
 protected slots:
     void slotAddresseeFound( const QString&, const KContacts::Addressee& );

@@ -188,6 +188,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
 
     // expand the template...
     const QString expanded = templateEngine->expand(&_archDoc, myContact, mCustomerContact);
+    _cleanupFiles = templateEngine->tempFilesCreated();
 
     if (expanded.isEmpty()) {
         emit failure(i18n("The template conversion failed."));
@@ -203,7 +204,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
         return;
     }
 
-    QString fullOutputPath = targetFileName();
+    QString fullOutputFilePath = targetFileName();
 
     if (mMergeIdent >= 0 && mMergeIdent < 5 ) {
         // check if the watermark file exists
@@ -214,7 +215,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
             tmpFile.close();
 
             // PDF merge is required. Write to temp file
-            fullOutputPath = tmpFile.fileName() + QStringLiteral(".pdf");
+            fullOutputFilePath = tmpFile.fileName() + QStringLiteral(".pdf");
         } else {
             mMergeIdent = 0;
             qDebug() << "Can not read watermark file, generating without" << mWatermarkFile;
@@ -226,7 +227,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
              this, &ReportGenerator::slotPdfDocAvailable);
     connect( converter, &PDFConverter::converterError,
              this, &ReportGenerator::slotConverterError);
-    converter->convert(tempFile, fullOutputPath);
+    converter->convert(tempFile, fullOutputFilePath);
 
 }
 
@@ -236,6 +237,14 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
     qDebug() << "The document is finished!:" << file;
 
     s->deleteLater();
+
+    // Remove tmp files that might have been created during the template expansion,
+    // ie. the EPC QR Code SVG file.
+    for (const auto &file : _cleanupFiles) {
+        QFile::remove(file);
+    }
+    _cleanupFiles.clear();
+
     // check for the watermark requirements
     if (mMergeIdent > 0 && mMergeIdent < 5) {
         // check if the watermark file exists
