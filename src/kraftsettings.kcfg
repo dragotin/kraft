@@ -146,6 +146,15 @@
     <entry name="UserUid" type="String">
       <label>UID of the user as reference to the KAddressbook to identify 'my' address.</label>
     </entry>
+    <entry name="BankAccountName" type="String">
+      <label>Bank account name.</label>
+    </entry>
+    <entry name="BankAccountBIC" type="String">
+      <label>Business Identifier Code" (BIC) of the bank.</label>
+    </entry>
+    <entry name="BankAccountIBAN" type="String">
+      <label>IBAN of the bank account.</label>
+    </entry>
   </group>
 
   <group name="document">
