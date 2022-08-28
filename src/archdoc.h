@@ -65,7 +65,7 @@ public:
 
     // FIXME: This is a workaround for the XRechnung - so far only the german
     // doctype "Rechnung" enables the XRechnung support.
-    bool hasXRechnungExport() const;
+    bool isInvoice() const;
 
 protected:
     QDateTime mPrintDate;
@@ -123,6 +123,7 @@ class ArchDoc: public QObject, public ArchDocDigest
 
     Q_PROPERTY(QList<ArchDocPosition> items READ itemslist)
     Q_PROPERTY(bool hasIndividualTaxation READ hasIndividualTaxation)
+    Q_PROPERTY(bool isInvoice READ isInvoice)
 
 public:
 

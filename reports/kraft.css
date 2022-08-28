@@ -82,6 +82,22 @@ html p.bottomtext {
 html p.goodbye {
 }
 
+html p.epcqrcode {
+    margin-top: 2cm;
+    border-top: 0.5px solid #888;
+    padding-top: 1em;
+    vertical-align: top;
+    font-size: 8pt;
+}
+
+html img.epc {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 120px;
+    float: right;
+}
+
 /*
  * Item-Table
  * formats the item list. Each item is a line.

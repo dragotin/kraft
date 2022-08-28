@@ -897,7 +897,7 @@ void Portal::slotDocumentSelected( const DocDigest& doc )
     } else {
         _actOpenArchivedDocument->setEnabled( enable );
         ArchDocDigest archDoc = archDocs.at(0);
-        _actXRechnung->setEnabled(archDoc.hasXRechnungExport() && enable);
+        _actXRechnung->setEnabled(archDoc.isInvoice() && enable);
     }
 }
 

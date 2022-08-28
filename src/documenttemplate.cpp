@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "documenttemplate.h"
+#include "epcqrcode.h"
 #include "texttemplate.h"
 #include "grantleetemplate.h"
 #include "format.h"
@@ -29,7 +30,7 @@
 
 // ==================================================================================
 
-namespace  {
+namespace {
 
 QString escapeTrml2pdfXML( const QString& str )
 {
@@ -186,6 +187,35 @@ void addLabelsToTemplate(TextTemplate& tmpl)
     variantHashToTemplate(tmpl, QStringLiteral("LAB"), hash);
 }
 
+QString generateEPCQRCodeFile(ArchDoc *archDoc)
+{
+    QString tempFile;
+    if (!archDoc) return tempFile;
+
+    const QString bacName = KraftSettings::self()->bankAccountName();
+    const QString bacIBAN = KraftSettings::self()->bankAccountIBAN();
+    const QString bacBIC  = KraftSettings::self()->bankAccountBIC();
+    EPCQRCode qrCode;
+    const QString reason = i18nc("Credit Transfer reason string, 1=DocType, 2=DocIdent, 3=Date, ie. Invoice 2022-183 dated 2022-03-22",
+                                 "%1 %2 dated %3",archDoc->docTypeStr(), archDoc->ident(), archDoc->dateStr());
+    const QString svgText = qrCode.asSvg(archDoc->bruttoSum(), bacName, bacBIC, bacIBAN, reason);
+
+    // -- save the EPC QR Code to a temp file
+    QVariantHash epcHash;
+    if (svgText.isEmpty()) {
+        qWarning() << "Failed to generate SVG text";
+    } else {
+        QTemporaryFile tFile(QString("%1/XXXXXX.svg").arg(QDir::tempPath()));
+        tFile.setAutoRemove(false);
+        if (tFile.open()) {
+            tempFile = tFile.fileName();
+            QTextStream stream(&tFile);
+            stream << svgText;
+            tFile.close();
+        }
+    }
+    return tempFile;
+}
 }
 
 // ==================================================================================
@@ -363,8 +393,30 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
 
     addLabelsToTemplate(tmpl);
 
+#if 0
+    /* this is still disabled as reportlab can not read SVG files
+     * When it can or the EPC QR Code can be generated as PNG, this needs to be added
+     * to the template:
+     *
+     *   {{#EPC_QR_CODE}}
+     *    <hr/>
+     *    <illustration width="120" height="120">
+     *      <image x="5" y="5" width="110" height="110" file="{{SVG_FILE_NAME}}" />
+     *    </illustration>
+     *    {{/EPC_QR_CODE}}
+     */
+
+    QString qrcodefile;
+    if (archDoc->isInvoice()) {
+        qrcodefile = generateEPCQRCodeFile(archDoc);
+        _tmpFiles.append(qrcodefile);
+        tmpl.createDictionary( DICT( "EPC_QR_CODE" ) );
+        tmpl.setValue( DICT("EPC_QR_CODE"), TAG( "SVG_FILE_NAME" ), qrcodefile);
+    }
+#endif
     // finalize the template
     const QString output = tmpl.expand();
+
     return output;
 }
 
@@ -406,6 +458,22 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
 
         const QVariantHash labelHash = labelVariantHash();
         gtmpl.addToMappingHash(QStringLiteral("label"), labelHash);
+
+
+        const QString bacName = KraftSettings::self()->bankAccountName();
+        const QString bacIBAN = KraftSettings::self()->bankAccountIBAN();
+        const QString bacBIC  = KraftSettings::self()->bankAccountBIC();
+        EPCQRCode qrCode;
+        const QString reason = i18nc("Credit Transfer reason string, 1=DocType, 2=DocIdent, 3=Date, ie. Invoice 2022-183 dated 2022-03-22",
+                                     "%1 %2 dated %3",archDoc->docTypeStr(), archDoc->ident(), archDoc->dateStr());
+        const QString svgText = qrCode.asSvg(archDoc->bruttoSum(), bacName, bacBIC, bacIBAN, reason);
+
+        // -- save the EPC QR Code which is written into a temp file
+        QVariantHash epcHash;
+        auto qrcodefile = generateEPCQRCodeFile(archDoc);
+        _tmpFiles.append(qrcodefile); // remember file to delete later.
+        epcHash.insert("svgfilename", QVariant(qrcodefile));
+        gtmpl.addToMappingHash(QStringLiteral("epcqrcode"), epcHash);
 
         const QVariantHash kraftHash = kraftVariantHash();
         gtmpl.addToMappingHash(QStringLiteral("kraft"), kraftHash);

@@ -10,8 +10,8 @@
 
     /* Use google web fonts */
     @import url("https://fonts.googleapis.com/css?family=Pacifico|Open+Sans+Pro:400,700");
-    @import url("https://fonts.googleapis.com/css?family=Roboto");
-    @import url("https://fonts.googleapis.com/css?family=Oxygen");
+    /* @import url("https://fonts.googleapis.com/css?family=Roboto"); */
+    /* @import url("https://fonts.googleapis.com/css?family=Oxygen"); */
 
     /* The CSS for printing */
     @page {
@@ -157,6 +157,13 @@
     <p class="goodbye">
     {{ doc.goodbye }}
     </p>
-  </body>
+    {%if doc.isInvoice %}
+    <p class="epcqrcode">
+      <img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" />
+      Dieser QR Code ermöglicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:
+      Diesen Code mit dem Smartphone scannen und Überweisung per Banking App aufgeben.
+    </p>
+    {% endif %}
+    </body>
 {% endautoescape %}
 </html>

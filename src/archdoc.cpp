@@ -333,8 +333,10 @@ QString ArchDocDigest::pdfArchiveFileName() const
     return file;
 }
 
-bool ArchDocDigest::hasXRechnungExport() const
+bool ArchDocDigest::isInvoice() const
 {
+    // This is just a work around and should be fixed with an attribute for the doctype
+    // at some point.
     return (mDocTypeStr == QStringLiteral("Rechnung"));
 }
 

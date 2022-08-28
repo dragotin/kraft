@@ -38,7 +38,6 @@ const QString DocMergeIdentStr   {"docMergeIdent"};
 const QString DayCounterDateStr  {"dayCounterDate"};
 const QString DayCounterStr  {"dayCounter"};
 const QString AppendPDFStr   {"AppendPDFFile"};
-
 }
 
 
@@ -391,7 +390,6 @@ void DocType::setMergeIdent( const QString& ident )
     mDirty = true;
 
 }
-
 
 QString DocType::xRechnungTemplate()
 {

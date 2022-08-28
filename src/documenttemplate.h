@@ -33,10 +33,15 @@ public:
                                  const KContacts::Addressee &customerContact) = 0;
 
     QString error() const { return _errorStr; }
+    // The collection of temp files this process created, to be able to delete
+    // them later when the PDF was created.
+    // Example: The EPC QR Code SVG image.
+    QStringList tempFilesCreated() { return _tmpFiles; }
 
 protected:
     QString _tmplFile;
     QString _errorStr;
+    QStringList _tmpFiles;
 };
 
 // ==================================================================================

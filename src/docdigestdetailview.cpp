@@ -453,7 +453,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
             tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
             tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("Archived documents can not be found. Check PDF Output dir."));
         }
-        if (digest.hasXRechnungExport()) {
+        if (digest.isInvoice()) {
             tmpl.createDictionary( DOCDIGEST_TAG( "EXPORT_XRECHNUNG" ));
             tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_TITLE"), i18n("Export the invoice in XRechnung file format"));
             tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_LABEL"), i18n("XRechnung"));
