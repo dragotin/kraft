@@ -109,7 +109,7 @@ QString Geld::toHtmlString() const
   return re;
 }
 
-double Geld::toDouble()
+double Geld::toDouble() const
 {
     return m_cent/100.0;
 }
