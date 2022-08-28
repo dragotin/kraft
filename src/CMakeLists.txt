@@ -115,6 +115,9 @@ set(kraft_SRCS
     documenttemplate.cpp
     pdfconverter.cpp
     format.cpp
+    epcqrcode.cpp
+
+    3rdparty/qrcodegen.cpp
 )
 
 kconfig_add_kcfg_files(kraft_SRCS
@@ -156,7 +159,7 @@ set(KRAFT_LINK_LIBS
     Qt5::Widgets
     Qt5::Sql
     Qt5::Xml
-    
+
     KF5::I18n
     KF5::Contacts
     KF5::ConfigCore
@@ -168,8 +171,8 @@ if(KF5Akonadi_FOUND)
   list(APPEND KRAFT_LINK_LIBS
     KF5::AkonadiCore
     KF5::AkonadiContact
-    KF5::AkonadiAgentBase 
-    KF5::AkonadiWidgets 
+    KF5::AkonadiAgentBase
+    KF5::AkonadiWidgets
     KF5::AkonadiXml
   )
 endif()
