@@ -110,7 +110,7 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& docID,
 
     if( mProcess && mProcess->state() != QProcess::NotRunning ) {
         qDebug() << "===> WRN: Process still running, try again later.";
-        emit failure(i18n("Document generation process is still running."));
+        emit failure(i18n("Document generation process is still running."), "");
         return;
     }
 
@@ -165,12 +165,11 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
 
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {
-        emit failure(i18n("Template file is not accessible."));
+        emit failure(i18n("Template file is not accessible."), "");
         return;
     }
     const QString ext = fi.completeSuffix();
 
-    QString output;
     QScopedPointer<DocumentTemplate> templateEngine;
     QPointer<PDFConverter> converter;
 
@@ -191,7 +190,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     _cleanupFiles = templateEngine->tempFilesCreated();
 
     if (expanded.isEmpty()) {
-        emit failure(i18n("The template conversion failed."));
+        emit failure(i18n("The template conversion failed."), templateEngine->error());
         delete converter;
         return;
     }
@@ -199,7 +198,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     const QString tempFile = saveToTempFile(expanded);
 
     if (tempFile.isEmpty()) {
-        emit failure(i18n("Saving to temporar file failed."));
+        emit failure(i18n("Saving to temporar file failed."), "");
         delete converter;
         return;
     }
@@ -320,7 +319,9 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
 
 void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
 {
-    QObject *s = sender();
+    auto *converter = qobject_cast<PDFConverter*>(sender());
+
+    const QString errors = converter->getErrors();
 
     QString errMsg;
     switch(err) {
@@ -355,8 +356,8 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
         errMsg = i18n("The PDF merger utility failed.");
         break;
     }
-    emit failure(errMsg);
-    s->deleteLater();
+    emit failure(errMsg, errors);
+    converter->deleteLater();
 }
 
 QString ReportGenerator::targetFileName() const
@@ -371,16 +372,16 @@ QString ReportGenerator::findTemplateFile( const QString& type )
     const QString tmplFile = dType.templateFile();
 
     if ( tmplFile.isEmpty() ) {
-        emit failure(i18n("There is not template defined for %1.").arg(dType.name()));
+        emit failure(i18n("There is not template defined for %1.").arg(dType.name()), "");
     } else {
         // check if file exists
         QFileInfo fi(tmplFile);
         if (!fi.isFile()) {
-            emit failure(i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile).arg(dType.name()));
+            emit failure(i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile).arg(dType.name()), "");
             return QString();
         }
         if (!fi.isReadable()) {
-            emit failure(i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile).arg(dType.name()));
+            emit failure(i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile).arg(dType.name()), "");
             return QString();
         }
     }

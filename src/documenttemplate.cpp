@@ -201,7 +201,6 @@ QString generateEPCQRCodeFile(ArchDoc *archDoc)
     const QString svgText = qrCode.asSvg(archDoc->bruttoSum(), bacName, bacBIC, bacIBAN, reason);
 
     // -- save the EPC QR Code to a temp file
-    QVariantHash epcHash;
     if (svgText.isEmpty()) {
         qWarning() << "Failed to generate SVG text";
     } else {

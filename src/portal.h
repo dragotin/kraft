@@ -85,7 +85,7 @@ class Portal : public QMainWindow
     void slotPrefsDialogFinished( int );
     void slotDocConverted(ReportFormat format, const QString& file,
                           const KContacts::Addressee& customerContact);
-    void slotDocConvertionFail(const QString& failString);
+    void slotDocConvertionFail(const QString& failString, const QString &details);
     void openInMailer(const QString& fileName, const KContacts::Addressee& contact);
 
   public slots:

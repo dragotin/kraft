@@ -26,6 +26,14 @@
 #include <QApplication>
 #include <QProcess>
 
+
+
+void PDFConverter::slotReceivedStderr( )
+{
+    QByteArray arr  = mProcess->readAllStandardError();
+    mErrors.append( arr );
+}
+
 // ====================================================================
 
 ReportLabPDFConverter::ReportLabPDFConverter()
@@ -33,6 +41,8 @@ ReportLabPDFConverter::ReportLabPDFConverter()
 {
 
 }
+
+
 
 void ReportLabPDFConverter::convert(const QString& sourceFile, const QString &outputFile)
 {
@@ -100,11 +110,6 @@ void ReportLabPDFConverter::slotReceivedStdout( )
     mTargetStream.writeRawData( arr.data(), arr.size());
 }
 
-void ReportLabPDFConverter::slotReceivedStderr( )
-{
-    QByteArray arr  = mProcess->readAllStandardError();
-    mErrors.append( arr );
-}
 
 void ReportLabPDFConverter::trml2pdfFinished( int exitCode, QProcess::ExitStatus stat)
 {
@@ -204,12 +209,6 @@ void WeasyPrintPDFConverter::slotReceivedStdout( )
     mOutput.append(arr);
 }
 
-void WeasyPrintPDFConverter::slotReceivedStderr( )
-{
-    QByteArray arr  = mProcess->readAllStandardError();
-    mErrors.append( arr );
-}
-
 void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitStatus stat)
 {
     if( mFile.isOpen() ) {
@@ -232,12 +231,8 @@ void WeasyPrintPDFConverter::weasyPrintFinished( int exitCode, QProcess::ExitSta
             emit  converterError(ConvError::TargetFileMissing);
         }
     } else {
-        if( mErrors.contains(QLatin1String("No module named Reportlab"))) {
-            emit converterError( ConvError::NoReportLabMod);
-        } else {
-            qDebug() << "Failed: " << mProcess->arguments();
-            emit converterError( ConvError::UnknownError);
-        }
+        qDebug() << "Weasyprint failed: " << mProcess->arguments();
+        emit converterError(ConvError::UnknownError);
     }
     mProcess->deleteLater();
     mProcess = nullptr;

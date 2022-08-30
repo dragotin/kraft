@@ -758,9 +758,9 @@ void Portal::slotMailDocument()
   slotStatusMsg( i18n( "Ready." ) );
 }
 
-void Portal::slotDocConvertionFail(const QString& failString)
+void Portal::slotDocConvertionFail(const QString& failString, const QString& details)
 {
-    QMessageBox::warning(this, i18n("Doc Generation Error"),failString);
+    QMessageBox::warning(this, i18n("Doc Generation Error"), failString + "\n\n"+details);
 }
 
 void Portal::slotDocConverted(ReportFormat format, const QString& file, const KContacts::Addressee& customerContact)

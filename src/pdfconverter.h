@@ -28,7 +28,7 @@ class PDFConverter : public QObject
 {
     Q_OBJECT
 public:
-    PDFConverter() {};
+    PDFConverter() {}
 
     enum class ConvError { NoError,
                            SourceFileFail,
@@ -56,6 +56,9 @@ signals:
     void docAvailable(const QString& fileName);
     void converterError( ConvError );
 
+protected slots:
+    void slotReceivedStderr();
+
 protected:    
     QString   mErrors;
     QProcess *mProcess;
@@ -75,7 +78,6 @@ public:
 private slots:
     void trml2pdfFinished( int exitCode, QProcess::ExitStatus stat);
     void slotReceivedStdout();
-    void slotReceivedStderr();
 
 private:
     QFile mFile;
@@ -95,7 +97,6 @@ public:
 
 private slots:
     void slotReceivedStdout();
-    void slotReceivedStderr();
     void weasyPrintFinished(int exitCode, QProcess::ExitStatus stat);
 
 private:
