@@ -1,0 +1,15 @@
+version: 1
+
+project:
+  name: de.volle_kraft_voraus.kraft.desktop
+  version_command: git describe --tags
+
+build:
+  cmake:
+
+appimage:
+  linuxdeploy:
+    plugins:
+      - qt
+    environment:
+      UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
