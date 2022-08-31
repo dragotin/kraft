@@ -1,0 +1,73 @@
+name: CI
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  appimage-build:
+    runs-on: ubuntu-latest
+    container: opensuse/leap:15.2
+    steps:
+      # need to install Git >= 2.18 before checkout according to GitHub actions
+      # we can just install all the dependencies beforehand, though
+      - name: Install dependencies
+        run: |
+          zypper install -y \
+            gcc \
+            gcc-c++ \
+            cmake \
+            make \
+            wget \
+            git \
+            extra-cmake-modules \
+            libctemplate-devel pkgconf \
+            "cmake(Grantlee5)" \
+            "cmake(KF5Codecs)" \
+            "cmake(KF5Config)" \
+            "cmake(KF5Contacts)" \
+            "cmake(KF5I18n)" \
+            "cmake(Qt5Core)" \
+            "cmake(Qt5Gui)" \
+            "cmake(Qt5Sql)" \
+            "cmake(Qt5Test)" \
+            "cmake(Qt5Widgets)" \
+            "cmake(Qt5Xml)" \
+            libQt5Sql5-sqlite \
+            libqt5-qtdeclarative-tools
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Build AppImage
+        run: |
+          export APPIMAGE_EXTRACT_AND_RUN=1
+          wget https://github.com/TheAssassin/appimagecraft/releases/download/continuous/appimagecraft-x86_64.AppImage
+          chmod +x appimagecraft-x86_64.AppImage
+          ./appimagecraft-x86_64.AppImage
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          if-no-files-found: error
+          name: AppImage
+          path: |
+            Kraft*.AppImage*
+
+  upload:
+    name: Create release and upload artifacts
+    needs:
+      - appimage-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+      - name: Inspect directory after downloading artifacts
+        run: ls -alFR
+      - name: Create release and upload artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+            wget -q https://github.com/TheAssassin/pyuploadtool/releases/download/continuous/pyuploadtool-x86_64.AppImage
+            chmod +x pyuploadtool-x86_64.AppImage
+            ./pyuploadtool-x86_64.AppImage **/Kraft*.AppImage*
