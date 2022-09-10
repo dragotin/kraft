@@ -212,13 +212,7 @@ QString DefaultProvider::locateFile(const QString& findFile) const
     QString re;
     const QString kraftHome = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
 
-    auto dirs = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
-
-    if (kraftHome.isEmpty()) {
-        // prepend the kraft path segment and look in the system resources
-        QString fifi {findFile};
-        re = QStandardPaths::locate( QStandardPaths::AppDataLocation, fifi);
-    } else {
+    if (!kraftHome.isEmpty()){
         // KRAFT_HOME is set
         QString fifi {kraftHome};
         if (!fifi.endsWith('/') && !findFile.startsWith('/'))
@@ -239,6 +233,13 @@ QString DefaultProvider::locateFile(const QString& findFile) const
             QFileInfo fi(fifi);
             re = fi.absoluteFilePath();
         }
+    }
+
+    // check the system paths
+    if (re.isEmpty()) {
+        // prepend the kraft path segment and look in the system resources
+        QString fifi {findFile};
+        re = QStandardPaths::locate( QStandardPaths::AppDataLocation, fifi);
     }
 
     if (re.isEmpty()) {
