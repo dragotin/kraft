@@ -24,6 +24,7 @@
 #include "kraftdb.h"
 #include "numbercycle.h"
 #include "attribute.h"
+#include "defaultprovider.h"
 
 /**
 @author Klaas Freitag
@@ -38,6 +39,7 @@ const QString DocMergeIdentStr   {"docMergeIdent"};
 const QString DayCounterDateStr  {"dayCounterDate"};
 const QString DayCounterStr  {"dayCounter"};
 const QString AppendPDFStr   {"AppendPDFFile"};
+const QString DefaultTmplFileName {"invoice.trml"};
 }
 
 
@@ -269,9 +271,24 @@ void DocType::setNumberCycleName( const QString& name )
     readIdentTemplate();
 }
 
-QString DocType::templateFile( )
+/* This method looks for the template file for the doctype. The rule is:
+ * 1. Set the filename to look for to the name of the doc type, lowercase
+ *    and with spaces replaced
+ * 2. Check for an attribute for this doc type.
+ *    - if that is an absolute path, return it.
+ *    - if not absolute, set the filename to look for to that value
+ * 3. Look for the name in KRAFT_HOME
+ * 4. Look for the name in rel. system Path
+ * 5. Look for the name in QStandardPaths
+ * 6. If still empty, fall back to default invoice.trml - which also
+ *    sets ReportLab as default
+ */
+
+QString DocType::templateFile()
 {
     QString tmplFile;
+    const auto dfp = DefaultProvider::self();
+    QString searchStr;
 
     QString reportFileName = QString( "%1.trml").arg( name().toLower() );
     reportFileName.replace(QChar(' '), QChar('_'));
@@ -290,40 +307,24 @@ QString DocType::templateFile( )
             }
             tmplFile.clear();
         }
+    }    
+
+    // check for reportlab template
+    if (tmplFile.isEmpty())  {
+        searchStr = QString("reports/%1.trml").arg(reportFileName);
+        tmplFile = dfp->locateFile(searchStr);
     }
 
-    // Try to find it from the installation
-    QStringList searchList;
-    searchList << QString("kraft/reports/%1").arg(reportFileName);
-    searchList << QLatin1String("kraft/reports/invoice.trml");
-
-    const QString prjPath = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
-
-    if( tmplFile.isEmpty() && !prjPath.isEmpty() ) {
-        foreach( QString searchPath, searchList ) {
-            if( searchPath.startsWith(QLatin1String("kraft"))) {
-                // remove the kraft-String here.
-                searchPath.remove(0, 5); // remove "kraft"
-            }
-            const QString tFile = prjPath + searchPath;
-            if( !tFile.isEmpty() && QFile::exists(tFile) ) {
-                // qDebug () << "Found template file " << tFile;
-                tmplFile = tFile;
-                break;
-            }
-        }
+    // check for weasyprint template
+    if (tmplFile.isEmpty())  {
+        searchStr = QString("reports/%1.gtmpl").arg(reportFileName);
+        tmplFile = dfp->locateFile(searchStr);
     }
 
-    if( tmplFile.isEmpty() ) {
-        foreach( QString searchPath, searchList ) {
-            const QString tFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, searchPath);
-
-            if( !tFile.isEmpty() && tFile != searchPath && QFile::exists( tFile )) {
-                tmplFile = tFile;
-                // qDebug () << "Found template file " << tmplFile;
-                break;
-            }
-        }
+    // not found - check invoice.trml
+    if (tmplFile.isEmpty())  {
+        searchStr = QString("reports/%1").arg(DefaultTmplFileName);
+        tmplFile = dfp->locateFile(searchStr);
     }
 
     if( tmplFile.isEmpty() ) {
@@ -334,25 +335,9 @@ QString DocType::templateFile( )
     return tmplFile;
 }
 
-QString DocType::defaultTemplateFile() const
-{
-    // first check for a country specific file
-    QLocale locale;
-    const QString country = locale.bcp47Name();
-    QString findFile = QString("kraft/reports/%1/invoice.trml").arg(country);
-    QString re = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
-
-    if( re.isEmpty() ) {
-        // No lang specific one.
-        findFile = "kraft/reports/invoice.trml";
-        re = QStandardPaths::locate(QStandardPaths::GenericDataLocation, findFile);
-    }
-    return re;
-}
-
 void DocType::setTemplateFile( const QString& name )
 {
-    if ( name.isEmpty() || name == defaultTemplateFile() ) { // the default is returned anyway.
+    if ( name.isEmpty() || name == DefaultTmplFileName) { // the default is returned anyway.
         // remove default value from map
         mAttributes.markDelete(DocTemplateFileStr);
         // qDebug () << "Removing docTemplateFile Attribute";
