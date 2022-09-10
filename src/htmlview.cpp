@@ -17,7 +17,6 @@
 
 #include <QFileInfo>
 #include <QAction>
-#include <QStandardPaths>
 #include <QDebug>
 #include <QFile>
 

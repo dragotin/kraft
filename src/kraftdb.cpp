@@ -420,31 +420,31 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
 
 QList<MetaDocTypeAdd> KraftDB::parseMetaFile( int currentVersion )
 {
-    const QString fileName = QString("%1_meta.xml").arg(currentVersion);
+    QString lookup= QString( "meta/%1_meta.xml").arg(currentVersion);
 
-    QString env = QString::fromUtf8( qgetenv( "KRAFT_HOME" ) );
-    if( !env.isEmpty() && env.right(1) != QDir::separator () ) {
-        env += QDir::separator ();
+    // if KRAFT_HOME is set, the lookup path must be prepended with database
+    const QByteArray env = qgetenv("KRAFT_HOME");
+    if( !env.isEmpty()) {
+        lookup.prepend("database/");
     }
-    QString xmlFile;
-    if( !env.isEmpty() ) {
-        xmlFile = env + QLatin1String("database/meta/") + fileName;
-    } else {
-        const QString fragment = QString("kraft/meta/") + fileName;
-        xmlFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, fragment );
+    const QString xmlFile = DefaultProvider::self()->locateFile(lookup);
+
+    if (xmlFile.isEmpty()) {
+        // it is fine to not find the XML file
+        return QList<MetaDocTypeAdd>();
     }
     QFile f( xmlFile );
     MetaXMLParser parser;
     if( f.exists() ) {
         if ( !f.open( QIODevice::ReadOnly ) ) {
-            qDebug () << "FATAL: Could not open " << xmlFile << endl;
+            qWarning() << "FATAL: Could not open " << xmlFile << endl;
         } else {
             QTextStream ts( &f );
             ts.setCodec("UTF-8");
             parser.parse( &f );
         }
     } else {
-        qDebug() << "XML Metafile" << xmlFile << "does not exist!";
+        qWarning() << "XML Metafile" << xmlFile << "does not exist!";
     }
 
     return parser.metaDocTypeAddList();
