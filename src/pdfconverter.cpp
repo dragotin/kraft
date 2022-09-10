@@ -154,6 +154,9 @@ void ReportLabPDFConverter::trml2pdfFinished( int exitCode, QProcess::ExitStatus
 WeasyPrintPDFConverter::WeasyPrintPDFConverter()
     :PDFConverter()
 {
+  // Version string of version 55: WeasyPrint version 55.0
+  //                               WeasyPrint version 56.1
+
 
 }
 
@@ -183,8 +186,6 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
     QFileInfo styleFI(styleSheet);
     const QString styleSheetDir = styleFI.canonicalPath();
 
-    args << sourceFile;
-    args << mFile.fileName();
     args << "-p";
     args << "-u";
     args << styleSheetDir;
@@ -192,6 +193,8 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
         args << "-u";
         args << _templatePath;
     }
+    args << sourceFile;
+    args << mFile.fileName();
 
     qDebug() << "Arguments for weasyprint:" << args;
     mProcess->setProgram( prg );
@@ -199,8 +202,6 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
     mOutput.clear();
 
     mProcess->start( );
-
-
 }
 
 void WeasyPrintPDFConverter::slotReceivedStdout( )
