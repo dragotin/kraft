@@ -87,16 +87,16 @@ PrefsWages::PrefsWages(QWidget* parent)
   butLay->addWidget( mDown );
   mDown->setEnabled(false);
 
-  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( QIcon::fromTheme("plus"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddWage() ) );
   butLay->addWidget( but );
 
-  mEditWage = new QPushButton( QIcon::fromTheme("document-edit"), i18n( "Edit" ));
+  mEditWage = new QPushButton( QIcon::fromTheme("pencil"), i18n( "Edit" ));
   connect( mEditWage, SIGNAL( clicked() ), SLOT( slotEditWage() ) );
   butLay->addWidget( mEditWage );
   mEditWage->setEnabled(false);
 
-  mDelWage = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
+  mDelWage = new QPushButton( QIcon::fromTheme("minus"), i18n( "Remove" ) );
   connect( mDelWage, SIGNAL( clicked() ), SLOT( slotDeleteWage() ) );
   butLay->addWidget( mDelWage );
   mDelWage->setEnabled( false );

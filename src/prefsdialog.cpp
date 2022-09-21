@@ -95,14 +95,14 @@ PrefsDialog::PrefsDialog( QWidget *parent)
 
   _maxNavBarTextWidth = 0;
 
-  addDialogPage( docTab(), QIcon::fromTheme( "edit-copy"), i18n( "Document Defaults" ));
-  addDialogPage( taxTab(), QIcon::fromTheme( "accessories-text-editor" ), i18n("Taxes"));
-  addDialogPage( doctypeTab(), QIcon::fromTheme( "folder-documents"), i18n( "Document Types" ));
+  addDialogPage( docTab(), QIcon::fromTheme( "copy"), i18n( "Document Defaults" ));
+  addDialogPage( taxTab(), QIcon::fromTheme( "receipt-tax" ), i18n("Taxes"));
+  addDialogPage( doctypeTab(), QIcon::fromTheme( "files"), i18n( "Document Types" ));
   mPrefsWages = new PrefsWages(this);
-  addDialogPage(mPrefsWages, QIcon::fromTheme( "help-donate" ), i18n( "Wages" ));
+  addDialogPage(mPrefsWages, QIcon::fromTheme( "cash-banknote" ), i18n( "Wages" ));
   mPrefsUnits = new PrefsUnits(this);
-  addDialogPage(mPrefsUnits, QIcon::fromTheme( "chronometer" ), i18n("Units"));
-  addDialogPage( whoIsMeTab(), QIcon::fromTheme( "user-identity" ), i18n( "Own Identity" ));
+  addDialogPage(mPrefsUnits, QIcon::fromTheme( "atom" ), i18n("Units"));
+  addDialogPage( whoIsMeTab(), QIcon::fromTheme( "id-badge-2" ), i18n( "Own Identity" ));
 
   readConfig();
 
@@ -179,11 +179,11 @@ QWidget* PrefsDialog::taxTab()
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( QIcon::fromTheme("plus"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddTax() ) );
   butLay->addWidget( but );
 
-  mDelTax = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
+  mDelTax = new QPushButton( QIcon::fromTheme("minus"), i18n( "Remove" ) );
   connect( mDelTax, SIGNAL( clicked() ), SLOT( slotDeleteTax() ) );
   butLay->addWidget( mDelTax );
   mDelTax->setEnabled( false );
@@ -397,7 +397,7 @@ QWidget* PrefsDialog::docTab()
   QPushButton *pbXRechTmpl = new QPushButton(i18n("Select..."), this);
   butLay->addWidget(pbXRechTmpl);
 
-  const QIcon& icon = QIcon::fromTheme("quickopen-file");
+  const QIcon& icon = QIcon::fromTheme("device-floppy");
   if (!icon.isNull() ) {
       pbXRechTmpl->setIcon(icon);
       pbXRechTmpl->setText("");
