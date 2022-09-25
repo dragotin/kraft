@@ -30,4 +30,4 @@ appimage:
     environment:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
       PIP_REQUIREMENTS: "weasyprint"
-    extra_args: --plugin linuxdeply-plugin-grantlee5.sh
+    extra_args: --plugin linuxdeploy-plugin-grantlee5.sh
