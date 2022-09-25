@@ -26,6 +26,7 @@ appimage:
     plugins:
       - qt
       - conda
+      - grantlee5
     environment:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
       PIP_REQUIREMENTS: "weasyprint"
