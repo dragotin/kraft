@@ -9,6 +9,7 @@ build:
 
 scripts:
   post_build:
+    - wget https://raw.githubusercontent.com/linuxdeploy/misc-plugins/master/grantlee5/linuxdeploy-plugin-grantlee5.sh
     # make sure weasyprint can be launched from a path next to the kraft binary
     # this simplifies the lookup greatly
     # also, if we create the file now (i.e., before linuxdeploy runs), it won't be overwritten by the python plugin
@@ -26,7 +27,7 @@ appimage:
     plugins:
       - qt
       - conda
-      - grantlee5
     environment:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
       PIP_REQUIREMENTS: "weasyprint"
+    extra_args: --plugin linuxdeply-plugin-grantlee5.sh
