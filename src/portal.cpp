@@ -103,62 +103,62 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
 void Portal::initActions()
 {
     QIcon newIcon;
-    newIcon = QIcon::fromTheme( "logout");
+    newIcon = DefaultProvider::self()->icon( "logout");
     _actFileQuit = new QAction(newIcon, i18n("&Quit"), this);
     _actFileQuit->setShortcuts(QKeySequence::Quit);
     connect(_actFileQuit, &QAction::triggered, this, &QWidget::close);
 
-    newIcon = QIcon::fromTheme( "cut");
+    newIcon = DefaultProvider::self()->icon( "cut");
     _actEditCut = new QAction(newIcon, i18n("&Cut"), this);
     _actEditCut->setShortcuts(QKeySequence::Cut);
     connect(_actEditCut, &QAction::triggered, this, &Portal::slotEditCut);
 
-    newIcon = QIcon::fromTheme( "copy");
+    newIcon = DefaultProvider::self()->icon( "copy");
     _actEditCopy = new QAction(newIcon, i18n("C&opy"), this);
     _actEditCopy->setShortcuts(QKeySequence::Copy);
     connect(_actFileQuit, &QAction::triggered, this, &Portal::slotEditCopy);
 
-    newIcon = QIcon::fromTheme( "transfer-in");
+    newIcon = DefaultProvider::self()->icon( "transfer-in");
     _actEditPaste = new QAction(newIcon, i18n("&Paste"), this);
     _actEditPaste->setShortcuts(QKeySequence::Paste);
     connect(_actEditPaste, &QAction::triggered, this, &Portal::slotEditPaste);
 
-    newIcon = QIcon::fromTheme( "settings");
+    newIcon = DefaultProvider::self()->icon( "settings");
     _actPreferences = new QAction(newIcon, i18n("&Settings"), this);
     _actPreferences->setShortcuts(QKeySequence::Preferences);
     connect(_actPreferences, &QAction::triggered, this, &Portal::preferences);
 
-    newIcon = QIcon::fromTheme( "file-plus");
+    newIcon = DefaultProvider::self()->icon( "file-plus");
     _actNewDocument = new QAction(newIcon, i18n("&Create Document"), this);
     _actNewDocument->setShortcuts(QKeySequence::New);
     connect(_actNewDocument, &QAction::triggered, this, &Portal::slotNewDocument);
 
-    newIcon = QIcon::fromTheme( "template");
+    newIcon = DefaultProvider::self()->icon( "template");
     _actCopyDocument = new QAction(newIcon, i18n("&Copy Document"), this);
     // _actCopyDocument->setShortcuts();
     connect(_actCopyDocument, &QAction::triggered, this, &Portal::slotCopyCurrentDocument);
 
-    newIcon = QIcon::fromTheme( "file-export");
+    newIcon = DefaultProvider::self()->icon( "file-export");
     _actFollowDocument = new QAction(newIcon, i18n("Create &Followup Document"), this);
     _actFollowDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ));
     connect(_actFollowDocument, &QAction::triggered, this, &Portal::slotFollowUpDocument);
 
-    newIcon = QIcon::fromTheme( "printer");
+    newIcon = DefaultProvider::self()->icon( "printer");
     _actPrintDocument = new QAction(newIcon, i18n("Print Document"), this);
     _actPrintDocument->setShortcut( QKeySequence::Print);
     connect(_actPrintDocument, &QAction::triggered, this, &Portal::slotPrintCurrentDocument);
 
-    newIcon = QIcon::fromTheme( "eye");
+    newIcon = DefaultProvider::self()->icon( "eye");
     _actViewDocument = new QAction(newIcon, i18n("Show Document"), this);
     _actViewDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
     connect(_actViewDocument, &QAction::triggered, this, &Portal::slotViewCurrentDocument);
 
-    newIcon = QIcon::fromTheme( "edit");
+    newIcon = DefaultProvider::self()->icon( "edit");
     _actOpenDocument = new QAction(newIcon, i18n("Edit Document"), this);
     _actOpenDocument->setShortcut( QKeySequence::Open );
     connect(_actOpenDocument, &QAction::triggered, this, &Portal::slotOpenCurrentDocument);
     
-    newIcon = QIcon::fromTheme( "archive");
+    newIcon = DefaultProvider::self()->icon( "archive");
     _actOpenArchivedDocument = new QAction(newIcon, i18n("Open Archived Document"), this);
     _actOpenArchivedDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_A ));
     connect(_actOpenArchivedDocument, &QAction::triggered, this, &Portal::slotArchivedDocExecuted);
@@ -168,27 +168,27 @@ void Portal::initActions()
     _actMailDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
     connect(_actMailDocument, &QAction::triggered, this, &Portal::slotMailDocument);
 
-    newIcon = QIcon::fromTheme( "mail-forward");
+    newIcon = DefaultProvider::self()->icon( "mail-forward");
     _actXRechnung = new QAction(newIcon, i18n("Export XRechnung"), this);
     _actXRechnung->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
     connect(_actXRechnung, &QAction::triggered, this, &Portal::slotXRechnungCurrentDocument);
 
-    newIcon = QIcon::fromTheme( "settings");
+    newIcon = DefaultProvider::self()->icon( "settings");
     _actEditTemplates= new QAction(newIcon, i18n("Edit Tag Templates"), this);
     _actEditTemplates->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_E ));
     connect(_actEditTemplates, &QAction::triggered, this, &Portal::slotEditTagTemplates);
     
-    newIcon = QIcon::fromTheme( "settings");
+    newIcon = DefaultProvider::self()->icon( "settings");
     _actReconfDb = new QAction(newIcon, i18n("Redo Initial Setup..."), this);
     _actReconfDb->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
     connect(_actReconfDb, &QAction::triggered, this, &Portal::slotReconfigureDatabase);
 
-    newIcon = QIcon::fromTheme( "book");
+    newIcon = DefaultProvider::self()->icon( "book");
     _actHandbook = new QAction(newIcon, i18n("Kraft Handbook..."), this);
     _actHandbook->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_H ));
     connect(_actHandbook, &QAction::triggered, this, &Portal::slotHandbook);
 
-    newIcon = QIcon::fromTheme( "help");
+    newIcon = DefaultProvider::self()->icon( "help");
     _actAboutQt = new QAction(newIcon, i18n("About Qt..."), this);
     _actAboutQt->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Q ));
     connect(_actAboutQt, &QAction::triggered, this, &Portal::slotAboutQt);

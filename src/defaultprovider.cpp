@@ -21,6 +21,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QIcon>
 
 #include "defaultprovider.h"
 #include "kraftdb.h"
@@ -42,6 +43,13 @@ DefaultProvider *DefaultProvider::self()
 DefaultProvider::DefaultProvider()
 {
 
+}
+
+QIcon DefaultProvider::icon(const QString& name)
+{
+    const QString fullIconName = QString(":kraft/custom-icons/%1.svg").arg(name);
+    const QIcon icon { fullIconName };
+    return icon;
 }
 
 QString DefaultProvider::docType()
@@ -283,7 +291,7 @@ QStringList DefaultProvider::findTrml2Pdf( ) const
     // mHavePdfMerge = false;
 
     if ( rmlbin != rmlbinDefault ) {
-        retList = rmlbin.split(' ', QString::SkipEmptyParts);
+        retList = rmlbin.split(QChar(' '), QString::SkipEmptyParts);
     } else {
         // The value in the config is not, as it is still the same as the default
         // read from either KRAFT_HOME or search in the system.

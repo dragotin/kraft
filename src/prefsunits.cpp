@@ -77,16 +77,16 @@ PrefsUnits::PrefsUnits(QWidget* parent)
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  QPushButton *but = new QPushButton( QIcon::fromTheme("plus"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( DefaultProvider::self()->icon("plus"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddUnit() ) );
   butLay->addWidget( but );
 
-  mEditUnit = new QPushButton( QIcon::fromTheme("pencil"), i18n( "Edit" ));
+  mEditUnit = new QPushButton( DefaultProvider::self()->icon("pencil"), i18n( "Edit" ));
   connect( mEditUnit, SIGNAL( clicked() ), SLOT( slotEditUnit() ) );
   butLay->addWidget( mEditUnit );
   mEditUnit->setEnabled(false);
 
-  mDelUnit = new QPushButton( QIcon::fromTheme("minus"), i18n( "Remove" ) );
+  mDelUnit = new QPushButton( DefaultProvider::self()->icon("minus"), i18n( "Remove" ) );
   connect( mDelUnit, SIGNAL( clicked() ), SLOT( slotDeleteUnit() ) );
   butLay->addWidget( mDelUnit );
   mDelUnit->setEnabled( false );

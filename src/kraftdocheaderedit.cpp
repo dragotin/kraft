@@ -24,6 +24,7 @@
 #include <QComboBox>
 
 #include "addressprovider.h"
+#include "defaultprovider.h"
 
 KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   : KraftDocEdit( parent )
@@ -35,7 +36,7 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   mDocHeaderEdit->setupUi( w );
   topLayout->addWidget( w );
 
-  mDocHeaderEdit->mButtLang->setIcon(QIcon::fromTheme("preferences-desktop-locale"));
+  mDocHeaderEdit->mButtLang->setIcon(DefaultProvider::self()->icon("preferences-desktop-locale"));
 
   connect( mDocHeaderEdit->m_cbType, SIGNAL( currentIndexChanged(int)),
            SLOT( slotModified() ) );

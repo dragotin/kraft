@@ -39,6 +39,8 @@ public:
 
   static DefaultProvider *self();
 
+  QIcon icon(const QString& name);
+
   QString defaultText( const QString&, KraftDoc::Part, DocGuardedPtr = 0 );
   dbID saveDocumentText( const DocText& );
   void deleteDocumentText( const DocText& );

@@ -65,9 +65,9 @@ PositionViewWidget::PositionViewWidget()
   mDiscountPercent->setDecimals( 2 );
 
   pbExec->setCheckable( false );
-  pbExec->setIcon( QIcon::fromTheme( "settings") );
+  pbExec->setIcon( DefaultProvider::self()->icon( "settings") );
   pbTagging->setCheckable( false );
-  pbTagging->setIcon( QIcon::fromTheme( "flag" ) );
+  pbTagging->setIcon( DefaultProvider::self()->icon( "flag" ) );
 
   connect( m_sbAmount, SIGNAL( valueChanged( double )),
              this, SLOT( slotRefreshPrice( ) ) );
@@ -94,9 +94,9 @@ PositionViewWidget::PositionViewWidget()
   // state submenu:
   mStateSubmenu = mExecPopup->addMenu(i18n( "Item Kind" ));
   mStateSubmenu->addAction( i18n( "Normal" ), this, SIGNAL( positionStateNormal() ) );
-  mStateSubmenu->addAction( QIcon::fromTheme( "arrow-ramp-right" ),
+  mStateSubmenu->addAction( DefaultProvider::self()->icon( "arrow-ramp-right" ),
                             i18n( "Alternative" ), this, SIGNAL( positionStateAlternative() ) );
-  mStateSubmenu->addAction( QIcon::fromTheme( "arrow-move-right" ),
+  mStateSubmenu->addAction( DefaultProvider::self()->icon( "arrow-move-right" ),
                             i18n( "On Demand" ), this, SIGNAL( positionStateDemand() ) );
 
   // mExecPopup->addSeparator();
@@ -105,19 +105,19 @@ PositionViewWidget::PositionViewWidget()
   mTaxSubmenu = mExecPopup->addMenu(i18n( "Tax" ));
   QActionGroup *agroup = new QActionGroup( this );
   agroup->setExclusive ( true );
-  mNilTaxAction = new QAction( QIcon::fromTheme("circle-0"),  i18n("Taxfree Item"), this );
+  mNilTaxAction = new QAction( DefaultProvider::self()->icon("circle-0"),  i18n("Taxfree Item"), this );
   connect( mNilTaxAction, SIGNAL(triggered()), this, SLOT(slotSetNilTax()) );
   mNilTaxAction->setCheckable( true );
   agroup->addAction( mNilTaxAction );
   mTaxSubmenu->addAction( mNilTaxAction );
 
-  mRedTaxAction = new QAction( QIcon::fromTheme("circle-half-2"), i18n("Reduced Tax"),  this );
+  mRedTaxAction = new QAction( DefaultProvider::self()->icon("circle-half-2"), i18n("Reduced Tax"),  this );
   connect( mRedTaxAction, SIGNAL(triggered()), this, SLOT(slotSetReducedTax()));
   mRedTaxAction->setCheckable( true );
   agroup->addAction( mRedTaxAction );
   mTaxSubmenu->addAction( mRedTaxAction );
 
-  mFullTaxAction = new QAction( QIcon::fromTheme("coin"), i18n("Full Tax"),  this );
+  mFullTaxAction = new QAction( DefaultProvider::self()->icon("coin"), i18n("Full Tax"),  this );
   connect( mFullTaxAction, SIGNAL(triggered()), this, SLOT(slotSetFullTax()));
   mFullTaxAction->setCheckable( true );
   agroup->addAction( mFullTaxAction );
@@ -125,15 +125,15 @@ PositionViewWidget::PositionViewWidget()
 
   mExecPopup->addSeparator();
 
-  mExecPopup->addAction(  QIcon::fromTheme("arrow-up"),
+  mExecPopup->addAction(  DefaultProvider::self()->icon("arrow-up"),
                            i18n("Move Up"),         this, SIGNAL( moveUp() ) );
-  mExecPopup->addAction(  QIcon::fromTheme("arrow-down"),
+  mExecPopup->addAction(  DefaultProvider::self()->icon("arrow-down"),
                            i18n("Move Down"),       this, SIGNAL( moveDown() ) );
-  mLockId = mExecPopup->addAction(  QIcon::fromTheme("lock"),
+  mLockId = mExecPopup->addAction(  DefaultProvider::self()->icon("lock"),
                            i18n("Lock Item"),   this, SIGNAL( lockPosition() ) );
-  mUnlockId = mExecPopup->addAction(  QIcon::fromTheme("lock-open"),
+  mUnlockId = mExecPopup->addAction(  DefaultProvider::self()->icon("lock-open"),
                            i18n("Unlock Item"), this, SIGNAL( unlockPosition() ) );
-  mDeleteId = mExecPopup->addAction(  QIcon::fromTheme("minus"),
+  mDeleteId = mExecPopup->addAction(  DefaultProvider::self()->icon("minus"),
                            i18n("Delete Item"), this, SIGNAL( deletePosition() ) );
 
   connect(this, &PositionViewWidget::positionStateNormal, this, [this]() {
@@ -346,7 +346,7 @@ void PositionViewWidget::slotSetTax( DocPosition::TaxType tt )
     mNilTaxAction->setChecked( true );
   }
 
-  mTaxSubmenu->setIcon( QIcon::fromTheme( icon ));
+  mTaxSubmenu->setIcon( DefaultProvider::self()->icon( icon ));
   emit positionModified();
 }
 
@@ -433,10 +433,10 @@ void PositionViewWidget::slotSetState( State state )
     mToDelete = false;
     slotSetEnabled( true );
   } else if( state == New ) {
-    lStatus->setPixmap( QIcon::fromTheme("file-plus").pixmap(QSize(20,20)));
+    lStatus->setPixmap( DefaultProvider::self()->icon("file-plus").pixmap(QSize(20,20)));
     lStatus->show();
   } else if( state == Deleted ) {
-    lStatus->setPixmap( QIcon::fromTheme( "minus" ).pixmap(QSize(20,20)) );
+    lStatus->setPixmap( DefaultProvider::self()->icon( "minus" ).pixmap(QSize(20,20)) );
     lStatus->show();
     mToDelete = true;
     slotSetEnabled( false );
@@ -444,7 +444,7 @@ void PositionViewWidget::slotSetState( State state )
     mLockId->setEnabled( false );
     mUnlockId->setEnabled( true );
     slotSetEnabled( false );
-    lStatus->setPixmap( QIcon::fromTheme( "lock" ).pixmap(QSize(20,20)));
+    lStatus->setPixmap( DefaultProvider::self()->icon( "lock" ).pixmap(QSize(20,20)));
     lStatus->show();
   }
 }
@@ -614,12 +614,12 @@ void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
                    "amount varies depending on the needs.<br/><br/>"
                    "Use the item toolbox to change the item type." );
         showLabel = true;
-        icon = QIcon::fromTheme("arrow-move-right");
+        icon = DefaultProvider::self()->icon("arrow-move-right");
     } else if (kind == Kind::Alternative) {
         tt = i18n( "This is an alternative item.<br/><br/>"
                    " Use the position toolbox to change the item type." );
         showLabel = true;
-        icon = QIcon::fromTheme("arrow-ramp-right");
+        icon = DefaultProvider::self()->icon("arrow-ramp-right");
     }
     showLabel ? lKind->show() : lKind->hide();
     lKind->setToolTip(tt);
