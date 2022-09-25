@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-09-07 21:32+0200\n"
+"POT-Creation-Date: 2022-09-25 21:50+0200\n"
 "PO-Revision-Date: 2021-10-13 22:21+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -39,10 +39,6 @@ msgstr "Einführung"
 #. type: Plain text
 #: kraft.adoc:19
 #, fuzzy
-#| msgid ""
-#| "Kraft is a Qt and KDE application to organize office documents like "
-#| "quotes and invoices in a small business. It eases the creation of these "
-#| "of documents and helps with repeating tasks."
 msgid ""
 "Kraft is a Qt and KDE application to organize office documents like quotes "
 "and invoices in a small business. It eases the creation of documents and "
@@ -55,10 +51,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:21
 #, fuzzy
-#| msgid ""
-#| "With Kraft, there is no need for fiddling with a text processor any more. "
-#| "Documents are created by a few clicks and archived automatically. Kraft "
-#| "generates high quality PDF output for printing, mailing and archiving."
 msgid ""
 "Using Kraft, there is no need for fiddling with a text processor any more. "
 "Documents are created by a few clicks, edited, generated and archived "
@@ -79,7 +71,6 @@ msgstr "Funktionen"
 #. type: Plain text
 #: kraft.adoc:25
 #, fuzzy
-#| msgid "Automated creation of offers, invoices and similar documents."
 msgid "Simple creation of offers, invoices and similar documents."
 msgstr ""
 "Unterstütztes Erstellen von Angeboten, Rechnungen und ähnlichen Dokumenten."
@@ -87,9 +78,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:26
 #, fuzzy
-#| msgid ""
-#| "Customer management, deeply integrated in the KDE infrastructure using "
-#| "KAddressbook."
 msgid ""
 "Customer management, deeply integrated with the mature KDE KAddressbook."
 msgstr ""
@@ -109,7 +97,6 @@ msgstr "Vorlagen für Dokument-Kopf- und Fusstexte sowie Dokumentposten."
 #. type: Plain text
 #: kraft.adoc:29
 #, fuzzy
-#| msgid "Calculation of items."
 msgid "Pre calculation of item prices."
 msgstr "Kalkulation von einzelnen Posten."
 
@@ -138,11 +125,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:38
 #, fuzzy, no-wrap
-#| msgid ""
-#| "Kraft is driven by community of users, coders and others. +\n"
-#| "Also this manual needs contributions! +\n"
-#| " +\n"
-#| " Learn more on https://github.com/dragotin/kraft/blob/master/manual/Readme.md[how to contribute]!\n"
 msgid ""
 "Kraft is driven by community of users, coders, artists and others by voluntary work. +\n"
 "Also this manual needs contributions! +\n"
@@ -170,9 +152,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:45
 #, fuzzy
-#| msgid ""
-#| "During the initial setup you are asked to select a database to use and "
-#| "give the address of your company."
 msgid ""
 "During the initial setup you are asked to select a database to use and give "
 "the name and address of your company."
@@ -183,14 +162,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:47
 #, fuzzy
-#| msgid ""
-#| "You can fill in your company address (that appears on the printed "
-#| "documents) on two ways: use in the setup procedure the first tab Select "
-#| "from Addressbook for to select your on address in KAddressBook (if you "
-#| "have filled your own address in KaddressBook) or use the second tab "
-#| "Manual entry for to fill in the information of the address from your "
-#| "company by hand. This step is necessary for the correct generation of "
-#| "your documents."
 msgid ""
 "You can fill in your company address (that appears on the printed documents) "
 "in two ways: in the setup procedure use the first tab *Select from "
@@ -216,9 +187,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:52
 #, fuzzy
-#| msgid ""
-#| "After the initial setup, select menu:Preferences[Settings].  That allows "
-#| "to prepare Kraft correctly so it can be used in a useful way."
 msgid ""
 "After the initial setup, select menu:Preferences[Settings].  That allows to "
 "prepare Kraft correctly so it can be used in a proper way."
@@ -230,7 +198,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:54
 #, fuzzy
-#| msgid "In the Preferences window we have the tabs:"
 msgid "In the Preferences dialog we have the tabs:"
 msgstr "Im Einstellungsfenster befinden sich die Tabs:"
 
@@ -255,7 +222,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:63
 #, fuzzy
-#| msgid "Each of the tabs allows to enter useful values for our use case."
 msgid ""
 "Each of the tabs allows to enter useful values for the specific use case."
 msgstr ""
@@ -353,10 +319,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:94
 #, fuzzy
-#| msgid ""
-#| "Kraft supports a counter that is incremented for every new document of a "
-#| "certain type.  In addition to the counter, more information can be added "
-#| "to form an useful number, such as constant text or parts of the date."
 msgid ""
 "Each identifier needs to be unique, and thus has to contain a counter. Kraft "
 "supports two types of counter: One (variable `%i`) is incremented globally "
@@ -387,20 +349,6 @@ msgstr "Folgende Variablen stehen zur Verfügung:"
 #. type: Table
 #: kraft.adoc:115
 #, fuzzy, no-wrap
-#| msgid ""
-#| "| `%y` or `%yyyy` | the year of the document date.\n"
-#| "| `%yy`           | the year of the document (two digits).\n"
-#| "| `%w`            | the week number of the document date.\n"
-#| "| `%ww`           | the week number of the document date with leading zero.\n"
-#| "| `%d`            | the day number of the document date.\n"
-#| "| `%dd`           | the day number of the document date with leading zero.\n"
-#| "| `%m` or `%M`    | the month number of the document date.\n"
-#| "| `%MM`           | the month number with leading zero.\n"
-#| "| `%c`            | the customer id from kaddressbook\n"
-#| "| `%i`            | the unique counter *(mandatory)*\n"
-#| "| `%type`         | the localised doc type (offer, invoice etc.)\n"
-#| "| `%uid`          | the contact id of the client.\n"
-#| "\n"
 msgid ""
 "| `%y` or `%yyyy`  | the year of the document date.\n"
 "| `%yy`            | the year of the document (two digits).\n"
@@ -465,8 +413,6 @@ msgstr "Steuern"
 #. type: Plain text
 #: kraft.adoc:130
 #, fuzzy
-#| msgid ""
-#| "In many countries there are two kinds of VAT-taxes for sold products."
 msgid ""
 "image:taxes.png[Taxes,float=\"right\"] In many countries there are two kinds "
 "of VAT-taxes for sold products."
@@ -574,10 +520,15 @@ msgstr ""
 msgid "Timeline"
 msgstr ""
 
-#. type: Title ==
-#: kraft.adoc:176 kraft.adoc:178
-#, no-wrap
+#. type: Plain text
+#: kraft.adoc:176
 msgid "Catalogs"
+msgstr ""
+
+#. type: Title ==
+#: kraft.adoc:178
+#, no-wrap
+msgid "Catalogs "
 msgstr ""
 
 #. type: Plain text
@@ -640,7 +591,6 @@ msgstr ""
 #. type: Title ===
 #: kraft.adoc:200
 #, fuzzy, no-wrap
-#| msgid "Material management."
 msgid "Material Catalog"
 msgstr "Materialverwaltung."
 
@@ -796,15 +746,13 @@ msgstr ""
 msgid "After we made the new template, a window opens with 4 tabs:"
 msgstr ""
 
-#. type: Title ====
-#: kraft.adoc:264 kraft.adoc:270
-#, no-wrap
+#. type: Plain text
+#: kraft.adoc:264
 msgid "Template"
 msgstr ""
 
-#. type: Title ====
-#: kraft.adoc:265 kraft.adoc:282
-#, no-wrap
+#. type: Plain text
+#: kraft.adoc:265
 msgid "Time calculation"
 msgstr ""
 
@@ -813,9 +761,8 @@ msgstr ""
 msgid "Fix costs"
 msgstr "Fixkosten"
 
-#. type: Title ====
-#: kraft.adoc:267 kraft.adoc:319
-#, no-wrap
+#. type: Plain text
+#: kraft.adoc:267
 msgid "Material"
 msgstr "Material"
 
@@ -823,6 +770,12 @@ msgstr "Material"
 #: kraft.adoc:269
 msgid "First we go to the tab:"
 msgstr ""
+
+#. type: Title ====
+#: kraft.adoc:270
+#, fuzzy, no-wrap
+msgid "Template "
+msgstr "Textvorlagen"
 
 #. type: Plain text
 #: kraft.adoc:274
@@ -841,6 +794,12 @@ msgstr ""
 msgid ""
 "we select that this is per piece and that the margin is 8% and that the full "
 "VAT is applicable."
+msgstr ""
+
+#. type: Title ====
+#: kraft.adoc:282
+#, no-wrap
+msgid "Time calculation "
 msgstr ""
 
 #. type: Plain text
@@ -915,6 +874,12 @@ msgstr ""
 #: kraft.adoc:318
 msgid "After this we go to the tab:"
 msgstr ""
+
+#. type: Title ====
+#: kraft.adoc:319
+#, fuzzy, no-wrap
+msgid "Material "
+msgstr "Material"
 
 #. type: Plain text
 #: kraft.adoc:323
@@ -999,7 +964,7 @@ msgid "Open the tab btn:[documents]"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:358 kraft.adoc:463
+#: kraft.adoc:358
 msgid "Click on btn:[create document]"
 msgstr ""
 
@@ -1021,24 +986,24 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:367 kraft.adoc:472
+#: kraft.adoc:367
 msgid "Click on btn:[next]"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:369 kraft.adoc:474
+#: kraft.adoc:369
 msgid "Select on the new window the name and address from the client."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:372 kraft.adoc:477
+#: kraft.adoc:372
 msgid ""
 "(if the name and address is not there, click then on btn:[new contact] or on "
 "btn:[edit contact] if you want to edit the contact)"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:374 kraft.adoc:479
+#: kraft.adoc:374
 msgid "Click on btn:[OK]."
 msgstr ""
 
@@ -1053,17 +1018,17 @@ msgid "this window has 2 tabs and the 3 buttons on the top:"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:380 kraft.adoc:485
+#: kraft.adoc:380
 msgid "btn:[Add item...],"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:381 kraft.adoc:486
+#: kraft.adoc:381
 msgid "btn:[Add discount item],"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:382 kraft.adoc:487
+#: kraft.adoc:382
 msgid "btn:[Show templates]."
 msgstr ""
 
@@ -1090,7 +1055,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:395 kraft.adoc:489
+#: kraft.adoc:395
 msgid "Click on the button btn:[Show templates]."
 msgstr ""
 
@@ -1103,7 +1068,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:401 kraft.adoc:495
+#: kraft.adoc:401
 msgid "A new window [Create Item from Template] opens."
 msgstr ""
 
@@ -1122,7 +1087,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:409 kraft.adoc:503 kraft.adoc:514
+#: kraft.adoc:409
 msgid "The window close and we go back to the main window."
 msgstr ""
 
@@ -1135,7 +1100,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:416 kraft.adoc:501 kraft.adoc:534 kraft.adoc:570
+#: kraft.adoc:416
 msgid ""
 "Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
 "the result."
@@ -1247,6 +1212,11 @@ msgid "Open again the tab btn:[documents]."
 msgstr ""
 
 #. type: Plain text
+#: kraft.adoc:463
+msgid "Click on btn:[create document] "
+msgstr ""
+
+#. type: Plain text
 #: kraft.adoc:465
 msgid "The window _Document Creation Wizard_ opens."
 msgstr ""
@@ -1264,6 +1234,28 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
+#: kraft.adoc:472
+msgid "Click on btn:[next] "
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:474
+msgid "Select on the new window the name and address from the client. "
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:477
+msgid ""
+"(if the name and address is not there, click then on btn:[new contact] or on "
+"btn:[edit contact] if you want to edit the contact) "
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:479
+msgid "Click on btn:[OK]. "
+msgstr ""
+
+#. type: Plain text
 #: kraft.adoc:481
 msgid "Now the window [edit document] opens."
 msgstr ""
@@ -1271,6 +1263,27 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:483
 msgid "This window has 2 tabs and the 3 buttons on the top:"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:485
+msgid "btn:[Add item...], "
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:486
+msgid "btn:[Add discount item], "
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:487
+#, fuzzy
+msgid "btn:[Show templates]. "
+msgstr "Textvorlagen"
+
+#. type: Plain text
+#: kraft.adoc:489
+msgid "Click on the button btn:[Show templates]. "
 msgstr ""
 
 #. type: Plain text
@@ -1282,10 +1295,27 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
+#: kraft.adoc:495
+msgid "A new window [Create Item from Template] opens. "
+msgstr ""
+
+#. type: Plain text
 #: kraft.adoc:498
 msgid ""
 "Because we want to plant 1 tree, we go to the field [insert] and keep this "
 "on 1 pcs."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:501
+msgid ""
+"Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
+"the result. "
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:503
+msgid "The window close and we go back to the main window. "
 msgstr ""
 
 #. type: Plain text
@@ -1308,6 +1338,11 @@ msgstr ""
 msgid ""
 "Click on we btn:[OK] for saving the result or on btn:[cancel] for discarding "
 "the result."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:514
+msgid "The window close and we go back to the main window.  "
 msgstr ""
 
 #. type: Plain text
@@ -1353,6 +1388,13 @@ msgid ""
 "We want add this to the material catalog for future use, therefor we select "
 "also [select this item as template for future documents] and we select in "
 "[save in chapter]`trees`."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:534
+msgid ""
+"Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
+"the result.  "
 msgstr ""
 
 #. type: Plain text
@@ -1428,6 +1470,13 @@ msgid "image:context2.png[Context menu,float=\"right\"]"
 msgstr ""
 
 #. type: Plain text
+#: kraft.adoc:570
+msgid ""
+"Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
+"the result.   "
+msgstr ""
+
+#. type: Plain text
 #: kraft.adoc:573
 msgid ""
 "We want to see the result and therefor we click on the button [show "
@@ -1453,7 +1502,6 @@ msgstr ""
 #. type: Title ===
 #: kraft.adoc:584
 #, fuzzy, no-wrap
-#| msgid "Acceptance of order"
 msgid "Creating an Acceptance of Order"
 msgstr "Auftragsbestätigung"
 
@@ -1910,7 +1958,6 @@ msgstr ""
 #. type: Title ===
 #: kraft.adoc:757
 #, fuzzy, no-wrap
-#| msgid "Using Kraft Collaborative"
 msgid "Using Kraft Collaboratively"
 msgstr "Kraft kollaborativ verwenden"
 
@@ -2055,7 +2102,7 @@ msgstr ""
 "kraftrc`. Es muss den folgenden Konfigurations-Wert enthalten:"
 
 #. type: Plain text
-#: kraft.adoc:793 kraft.adoc:797
+#: kraft.adoc:793
 msgid "```"
 msgstr "```"
 
@@ -2063,6 +2110,11 @@ msgstr "```"
 #: kraft.adoc:795
 msgid "PdfOutputDir=/data/space/kraftdoc/pdf"
 msgstr "PdfOutputDir=/data/space/kraftdoc/pdf"
+
+#. type: Plain text
+#: kraft.adoc:797
+msgid "``` "
+msgstr ""
 
 #. type: Plain text
 #: kraft.adoc:799
@@ -2201,7 +2253,6 @@ msgstr "Credits und Lizenz"
 #. type: Plain text
 #: kraft.adoc:832
 #, fuzzy
-#| msgid "Program and documentation copyright 2004–2021 Klaas Freitag"
 msgid "Program and documentation copyright 2004–2022 Klaas Freitag"
 msgstr "Software und Dokumentation Copyright 2004-2021 Klaas Freitag"
 
@@ -2245,6 +2296,3 @@ msgstr "Dokumentation Copyright 2020 Ronald Stroethoff"
 
 #~ msgid "Features"
 #~ msgstr "Funktionen"
-
-#~ msgid "Text templates"
-#~ msgstr "Textvorlagen"
