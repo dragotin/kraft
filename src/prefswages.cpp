@@ -77,26 +77,26 @@ PrefsWages::PrefsWages(QWidget* parent)
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  mUp = new QPushButton( QIcon::fromTheme("arrow-up"), i18n( "Up" ));
+  mUp = new QPushButton( DefaultProvider::self()->icon("arrow-up"), i18n( "Up" ));
   connect( mUp, SIGNAL( clicked() ), SLOT( slotUp() ) );
   butLay->addWidget( mUp );
   mUp->setEnabled(false);
 
-  mDown = new QPushButton( QIcon::fromTheme("arrow-down"), i18n( "Down" ));
+  mDown = new QPushButton( DefaultProvider::self()->icon("arrow-down"), i18n( "Down" ));
   connect( mDown, SIGNAL( clicked() ), SLOT( slotDown() ) );
   butLay->addWidget( mDown );
   mDown->setEnabled(false);
 
-  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( DefaultProvider::self()->icon("plus"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddWage() ) );
   butLay->addWidget( but );
 
-  mEditWage = new QPushButton( QIcon::fromTheme("document-edit"), i18n( "Edit" ));
+  mEditWage = new QPushButton( DefaultProvider::self()->icon("pencil"), i18n( "Edit" ));
   connect( mEditWage, SIGNAL( clicked() ), SLOT( slotEditWage() ) );
   butLay->addWidget( mEditWage );
   mEditWage->setEnabled(false);
 
-  mDelWage = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
+  mDelWage = new QPushButton( DefaultProvider::self()->icon("minus"), i18n( "Remove" ) );
   connect( mDelWage, SIGNAL( clicked() ), SLOT( slotDeleteWage() ) );
   butLay->addWidget( mDelWage );
   mDelWage->setEnabled( false );

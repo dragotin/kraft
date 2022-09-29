@@ -110,11 +110,11 @@ QTreeWidgetItem* TemplKatalogListView::addFlosTemplate( QTreeWidgetItem *parentI
 
     if( tmpl->calcKind() == CatalogTemplate::ManualPrice )
     {
-        listItem->setIcon(0, QIcon::fromTheme( "kraftdice" ) );
+        listItem->setIcon(0, DefaultProvider::self()->icon( "dice" ) );
     }
     else
     {
-        listItem->setIcon(0, QIcon::fromTheme("accessories-calculator"));
+        listItem->setIcon(0, DefaultProvider::self()->icon("calculator"));
     }
 
     if ( mCheckboxes ) {

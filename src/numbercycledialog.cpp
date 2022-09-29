@@ -59,8 +59,8 @@ NumberCycleDialog::NumberCycleDialog( QWidget *parent, const QString& initType )
   mBaseWidget = new Ui::NumberCycleEditBase( );
   mBaseWidget->setupUi( w );
 
-  mBaseWidget->mPbAdd->setIcon( QIcon::fromTheme( "list-add" ) );
-  mBaseWidget->mPbRemove->setIcon( QIcon::fromTheme( "list-remove" ) );
+  mBaseWidget->mPbAdd->setIcon( DefaultProvider::self()->icon( "list-add" ) );
+  mBaseWidget->mPbRemove->setIcon( DefaultProvider::self()->icon( "list-remove" ) );
   mBaseWidget->mCounterEdit->setMaximum( 1000000 );
   mBaseWidget->mCounterEdit->setSingleStep( 1 );
 

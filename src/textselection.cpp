@@ -198,7 +198,7 @@ TextSelection::~TextSelection()
 
 void TextSelection::initActions()
 {
-  mAcMoveToDoc = new QAction(QIcon::fromTheme( "go-previous" ), i18n("&Use in Document"), this);
+  mAcMoveToDoc = new QAction(DefaultProvider::self()->icon( "arrow-narrow-left" ), i18n("&Use in Document"), this);
   connect(mAcMoveToDoc, SIGNAL(triggered()), this, SIGNAL(actionCurrentTextToDoc()));
 
   mMenu->addAction( mAcMoveToDoc );

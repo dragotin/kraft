@@ -126,17 +126,17 @@ void FlosTemplDialog::setupConnections()
 
 void FlosTemplDialog::setButtonIcons()
 {
-  m_butAddTime->setIcon(QIcon::fromTheme("list-add"));
-  m_butEditTime->setIcon(QIcon::fromTheme("document-edit"));
-  m_butRemoveTime->setIcon(QIcon::fromTheme("list-remove"));
+  m_butAddTime->setIcon(DefaultProvider::self()->icon("plus"));
+  m_butEditTime->setIcon(DefaultProvider::self()->icon("edit"));
+  m_butRemoveTime->setIcon(DefaultProvider::self()->icon("minus"));
 
-  m_butAddFix->setIcon(QIcon::fromTheme("list-add"));
-  m_butEditFix->setIcon(QIcon::fromTheme("document-edit"));
-  m_butRemoveFix->setIcon(QIcon::fromTheme("list-remove"));
+  m_butAddFix->setIcon(DefaultProvider::self()->icon("plus"));
+  m_butEditFix->setIcon(DefaultProvider::self()->icon("edit"));
+  m_butRemoveFix->setIcon(DefaultProvider::self()->icon("minus"));
 
-  m_butAddMat->setIcon(QIcon::fromTheme("list-add"));
-  m_butEditMat->setIcon(QIcon::fromTheme("document-edit"));
-  m_butRemoveMat->setIcon(QIcon::fromTheme("list-remove"));
+  m_butAddMat->setIcon(DefaultProvider::self()->icon("plus"));
+  m_butEditMat->setIcon(DefaultProvider::self()->icon("edit"));
+  m_butRemoveMat->setIcon(DefaultProvider::self()->icon("minus"));
 }
 
 void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalogname, bool newTempl )

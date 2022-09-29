@@ -628,9 +628,9 @@ void KraftView::setupFooter()
 
   // ATTENTION: If you change the following inserts, make sure to check the code
   //            in method currentPositionList!
-  m_footerEdit->ui()->mTaxCombo->insertItem( NO_TAX,   QIcon::fromTheme("kraft_notax"), i18n( "Display no tax at all" ));
-  m_footerEdit->ui()->mTaxCombo->insertItem( RED_TAX,  QIcon::fromTheme("kraft_redtax"), i18n( "Calculate reduced tax for all items" ));
-  m_footerEdit->ui()->mTaxCombo->insertItem( FULL_TAX, QIcon::fromTheme("kraft_fulltax"), i18n( "Calculate full tax for all items" ));
+  m_footerEdit->ui()->mTaxCombo->insertItem( NO_TAX,   DefaultProvider::self()->icon("circle-0"), i18n( "Display no tax at all" ));
+  m_footerEdit->ui()->mTaxCombo->insertItem( RED_TAX,  DefaultProvider::self()->icon("circle-half-2"), i18n( "Calculate reduced tax for all items" ));
+  m_footerEdit->ui()->mTaxCombo->insertItem( FULL_TAX, DefaultProvider::self()->icon("coin"), i18n( "Calculate full tax for all items" ));
   m_footerEdit->ui()->mTaxCombo->insertItem( INDI_TAX, i18n( "Calculate individual tax for each item"));
 
   // set the tax type combo correctly: If all items have the same tax type, take it.

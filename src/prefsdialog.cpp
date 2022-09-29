@@ -95,14 +95,14 @@ PrefsDialog::PrefsDialog( QWidget *parent)
 
   _maxNavBarTextWidth = 0;
 
-  addDialogPage( docTab(), QIcon::fromTheme( "edit-copy"), i18n( "Document Defaults" ));
-  addDialogPage( taxTab(), QIcon::fromTheme( "accessories-text-editor" ), i18n("Taxes"));
-  addDialogPage( doctypeTab(), QIcon::fromTheme( "folder-documents"), i18n( "Document Types" ));
+  addDialogPage( docTab(), DefaultProvider::self()->icon( "copy"), i18n( "Document Defaults" ));
+  addDialogPage( taxTab(), DefaultProvider::self()->icon( "receipt-tax" ), i18n("Taxes"));
+  addDialogPage( doctypeTab(), DefaultProvider::self()->icon( "files"), i18n( "Document Types" ));
   mPrefsWages = new PrefsWages(this);
-  addDialogPage(mPrefsWages, QIcon::fromTheme( "help-donate" ), i18n( "Wages" ));
+  addDialogPage(mPrefsWages, DefaultProvider::self()->icon( "cash-banknote" ), i18n( "Wages" ));
   mPrefsUnits = new PrefsUnits(this);
-  addDialogPage(mPrefsUnits, QIcon::fromTheme( "chronometer" ), i18n("Units"));
-  addDialogPage( whoIsMeTab(), QIcon::fromTheme( "user-identity" ), i18n( "Own Identity" ));
+  addDialogPage(mPrefsUnits, DefaultProvider::self()->icon( "atom" ), i18n("Units"));
+  addDialogPage( whoIsMeTab(), DefaultProvider::self()->icon( "id-badge-2" ), i18n( "Own Identity" ));
 
   readConfig();
 
@@ -179,11 +179,11 @@ QWidget* PrefsDialog::taxTab()
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
 
-  QPushButton *but = new QPushButton( QIcon::fromTheme("list-add"), i18n( "Add" ));
+  QPushButton *but = new QPushButton( DefaultProvider::self()->icon("plus"), i18n( "Add" ));
   connect( but, SIGNAL( clicked() ), SLOT( slotAddTax() ) );
   butLay->addWidget( but );
 
-  mDelTax = new QPushButton( QIcon::fromTheme("list-remove"), i18n( "Remove" ) );
+  mDelTax = new QPushButton( DefaultProvider::self()->icon("minus"), i18n( "Remove" ) );
   connect( mDelTax, SIGNAL( clicked() ), SLOT( slotDeleteTax() ) );
   butLay->addWidget( mDelTax );
   mDelTax->setEnabled( false );
@@ -397,7 +397,7 @@ QWidget* PrefsDialog::docTab()
   QPushButton *pbXRechTmpl = new QPushButton(i18n("Select..."), this);
   butLay->addWidget(pbXRechTmpl);
 
-  const QIcon& icon = QIcon::fromTheme("quickopen-file");
+  const QIcon& icon = DefaultProvider::self()->icon("device-floppy");
   if (!icon.isNull() ) {
       pbXRechTmpl->setIcon(icon);
       pbXRechTmpl->setText("");
@@ -716,11 +716,11 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool bac
       if( origin.isEmpty() || origin == "manual") {
           // it is an manually added address.
           fillManualIdentityForm(addressee);
-          _tabWidget->setTabIcon(1, QIcon::fromTheme("checkmark"));
+          _tabWidget->setTabIcon(1, DefaultProvider::self()->icon("check"));
           _tabWidget->setTabIcon(0, QIcon());
           _tabWidget->setCurrentIndex(1);
       } else {
-          _tabWidget->setTabIcon(0, QIcon::fromTheme("checkmark"));
+          _tabWidget->setTabIcon(0, DefaultProvider::self()->icon("check"));
           _tabWidget->setTabIcon(1, QIcon());
           _tabWidget->setCurrentIndex(0);
 

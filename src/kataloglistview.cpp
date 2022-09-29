@@ -125,7 +125,7 @@ void KatalogListView::setupChapters()
     flags = flags & ~Qt::ItemIsDragEnabled;
     m_root->setFlags(flags);
 
-    m_root->setIcon( 0, QIcon("kraft"));
+    m_root->setIcon( 0, DefaultProvider::self()->icon("kraft-simple"));
     m_root->setExpanded(true);
     m_root->setFont( 0, mChapterFont );
     m_root->setToolTip( 0, QString() );

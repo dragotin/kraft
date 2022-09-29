@@ -160,53 +160,53 @@ Katalog* KatalogView::getKatalog( const QString& name )
 
 void KatalogView::initActions()
 {  
-    QIcon newIcon = QIcon::fromTheme( "folder-documents");
+    QIcon newIcon = DefaultProvider::self()->icon( "edit");
      m_acEditChapter = new QAction(newIcon, i18n("Edit Sub chapter"), this);
      m_acEditChapter->setShortcut( Qt::CTRL + Qt::Key_S);
      m_acEditChapter->setStatusTip(i18n("Edit a catalog sub chapter"));
      connect(m_acEditChapter, &QAction::triggered, this, &KatalogView::slEditSubChapter);
 
-     newIcon = QIcon::fromTheme( "document-edit");
+     newIcon = DefaultProvider::self()->icon( "edit");
       m_acAddChapter = new QAction(newIcon, i18n("Add a sub chapter"), this);
       m_acAddChapter->setShortcut( Qt::CTRL + Qt::Key_A);
       m_acAddChapter->setStatusTip(i18n("Add a sub chapter below the selected one"));
       connect(m_acAddChapter, &QAction::triggered, this, &KatalogView::slAddSubChapter);
 
-      newIcon = QIcon::fromTheme( "document-edit");
+      newIcon = DefaultProvider::self()->icon( "minus");
        m_acRemChapter = new QAction(newIcon, i18n("Remove a sub chapter"), this);
        m_acRemChapter->setShortcut( Qt::CTRL + Qt::Key_R);
        m_acRemChapter->setStatusTip(i18n("Remove a sub chapter"));
        connect(m_acRemChapter, &QAction::triggered, this, &KatalogView::slRemoveSubChapter);
 
-       newIcon = QIcon::fromTheme( "document-edit");
+       newIcon = DefaultProvider::self()->icon( "edit");
         m_acEditItem = new QAction(newIcon, i18n("Edit Template"), this);
         m_acEditItem->setShortcut( Qt::CTRL + Qt::Key_T);
         m_acEditItem->setStatusTip(i18n("Opens the editor window for templates to edit the selected one"));
         m_acEditItem->setEnabled(false);
         connect(m_acEditItem, &QAction::triggered, this, &KatalogView::slEditTemplate);
 
-        newIcon = QIcon::fromTheme( "document-new");
+        newIcon = DefaultProvider::self()->icon( "file-plus");
         m_acNewItem = new QAction(newIcon, i18n("New template"), this);
         m_acNewItem->setShortcut( Qt::CTRL + Qt::Key_N);
         m_acNewItem->setStatusTip(i18n("Opens the editor window for templates to enter a new template"));
         connect(m_acNewItem, &QAction::triggered, this, &KatalogView::slNewTemplate);
         m_acNewItem->setEnabled(true);
 
-        newIcon = QIcon::fromTheme( "document-delete");
+        newIcon = DefaultProvider::self()->icon( "file-export");
         m_acDeleteItem = new QAction(newIcon, i18n("Delete template"), this);
         m_acDeleteItem->setShortcut( QKeySequence::Delete);
         m_acDeleteItem->setStatusTip(i18n("Deletes the template"));
         connect(m_acDeleteItem, &QAction::triggered, this, &KatalogView::slDeleteTemplate);
         m_acDeleteItem->setEnabled(true);
 
-        newIcon = QIcon(); // QIcon::fromTheme( "document-delete");
+        newIcon = DefaultProvider::self()->icon( "file-export");
         m_acExport = new QAction(newIcon, i18n("Export catalog"), this);
         m_acExport->setShortcut( Qt::Key_E);
         m_acExport->setStatusTip(i18n("Export the whole catalog as XML encoded file"));
         connect(m_acExport, &QAction::triggered, this, &KatalogView::slExport);
         m_acExport->setEnabled(false);
 
-        newIcon = QIcon(); // QIcon::fromTheme( "document-delete");
+        newIcon = DefaultProvider::self()->icon( "transfer-in");
         m_acImport = new QAction(newIcon, i18n("Import catalog"), this);
         m_acExport->setShortcut( Qt::Key_I);
         m_acExport->setStatusTip(i18n("Import a catalog from a XML file"));

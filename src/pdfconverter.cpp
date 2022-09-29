@@ -62,43 +62,35 @@ void ReportLabPDFConverter::convert(const QString& sourceFile, const QString &ou
 
     QApplication::setOverrideCursor( QCursor( Qt::BusyCursor ) );
 
-
-    // qDebug () << "Writing output to " << mFile.fileName();
-
-    // check if we have etrml2pdf
-    bool haveErml = false;
     QStringList args;
 
+    QString prg = rmlbin.at(0);
+
     if( rmlbin.size() > 1 ) {
-        QString ermlbin = rmlbin[1];
-        if( ermlbin.endsWith( "erml2pdf.py") ) {
-            haveErml = true;
-        }
+        // something like "python3 erml2pdf.py
         args.append(rmlbin.at(1));
     }
 
-    const QString prg = rmlbin.at(0);
+    args.append(sourceFile);
 
-    if( haveErml ) {
-        args << sourceFile;
+    mFile.setFileName(outputFile);
+    mOutputSize = 0;
+    if ( mFile.open( QIODevice::WriteOnly ) ) {
+        qDebug() << "Converting " << mFile.fileName() << "using" << prg << args.join(QChar(' '));
+        mProcess = new QProcess();
+        connect(mProcess, &QProcess::readyReadStandardOutput, this, &ReportLabPDFConverter::slotReceivedStdout);
+        connect(mProcess, &QProcess::readyReadStandardError,  this, &ReportLabPDFConverter::slotReceivedStderr);
+        connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                this, &ReportLabPDFConverter::trml2pdfFinished);
 
-        mFile.setFileName(outputFile);
-        mOutputSize = 0;
-        if ( mFile.open( QIODevice::WriteOnly ) ) {
-            qDebug() << "Converting " << mFile.fileName() << "using" << prg << args.join(QChar(' '));
-            mProcess = new QProcess();
-            connect(mProcess, &QProcess::readyReadStandardOutput, this, &ReportLabPDFConverter::slotReceivedStdout);
-            connect(mProcess, &QProcess::readyReadStandardError,  this, &ReportLabPDFConverter::slotReceivedStderr);
-            connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                    this, &ReportLabPDFConverter::trml2pdfFinished);
+        mProcess->setProgram( prg );
+        mProcess->setArguments(args);
+        mTargetStream.setDevice( &mFile );
 
-            mProcess->setProgram( prg );
-            mProcess->setArguments(args);
-            mTargetStream.setDevice( &mFile );
+        mProcess->start( );
 
-            mProcess->start( );
-        } else {
-            emit converterError(ConvError::TargetFileError);
+        if (!mProcess->waitForStarted(1000)) {
+            emit converterError(ConvError::TrmlToolFail);
         }
     }
 }

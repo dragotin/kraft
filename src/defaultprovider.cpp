@@ -21,6 +21,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QIcon>
 
 #include "defaultprovider.h"
 #include "kraftdb.h"
@@ -42,6 +43,13 @@ DefaultProvider *DefaultProvider::self()
 DefaultProvider::DefaultProvider()
 {
 
+}
+
+QIcon DefaultProvider::icon(const QString& name)
+{
+    const QString fullIconName = QString(":kraft/custom-icons/%1.svg").arg(name);
+    const QIcon icon { fullIconName };
+    return icon;
 }
 
 QString DefaultProvider::docType()
@@ -257,15 +265,24 @@ QString DefaultProvider::locateKraftTool(const QString& toolName) const
     if (!fi.exists()) {
         fullPath.clear();
     }
+    qDebug() << "Returning tool path" << fullPath << "for" << toolName;
     return fullPath;
 }
 
 QString DefaultProvider::locateBinary(const QString& name) const
 {
-    QString bin;
-    if (!name.isEmpty()) {
-        bin = QStandardPaths::findExecutable( name );
+    // check the current app path and check if the binary is in there. (AppImage)
+    QString path = QCoreApplication::applicationDirPath();
+    QFileInfo fi{path};
+    fi.setFile(name);
+
+    if (fi.exists() && fi.isExecutable()) {
+        qDebug() << "Returning tool path" << fi.absoluteFilePath() << "for" << name;
+        return fi.absoluteFilePath();
     }
+
+    const QString bin = QStandardPaths::findExecutable( name );
+
     return bin;
 }
 
@@ -283,45 +300,12 @@ QStringList DefaultProvider::findTrml2Pdf( ) const
     // mHavePdfMerge = false;
 
     if ( rmlbin != rmlbinDefault ) {
-        retList = rmlbin.split(' ', QString::SkipEmptyParts);
+        retList = rmlbin.split(QChar(' '), QString::SkipEmptyParts);
     } else {
-        // The value in the config is not, as it is still the same as the default
-        // read from either KRAFT_HOME or search in the system.
-        QString p = QString::fromUtf8(qgetenv("KRAFT_HOME"));
-        if( !p.isEmpty() ) {
-            p += QLatin1String("/tools/erml2pdf.py");
-            // qDebug () << "Found erml2pdf from KRAFT_HOME: " << p;
-            if( QFile::exists( p ) ) {
-                retList << "python3";
-                retList << p;
-                // mHavePdfMerge = true;
-            }
-        } else {
-            const QString ermlpy = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "kraft/tools/erml2pdf.py" );
-            // qDebug () << "Ermlpy: " << ermlpy;
-            if( ! ermlpy.isEmpty() ) {
-                // need the python3 interpreter, check for it
-                QString python = QStandardPaths::findExecutable(QLatin1String("python3"));
-                if( python.isEmpty() ) {
-                    qCritical() << "ERR: Unable to find python3, thats a problem";
-                } else {
-                    // qDebug () << "Using python: " << python;
-                    retList << python;
-                    retList << ermlpy;
-                    // mHavePdfMerge = true;
-                }
-            }
-        }
-        if (retList.isEmpty() ){
-            // tool erml2pdf.py not found. Try trml2pdf_kraft.sh for legacy reasons
-            QString trml2pdf = QStandardPaths::findExecutable(QLatin1String("trml2pdf_kraft.sh"));
-            if( trml2pdf.isEmpty() ) {
-                // qDebug () << "Could not find trml2pdf_kraft.sh";
-            } else {
-                // qDebug () << "Found trml2pdf: " << trml2pdf;
-                retList << trml2pdf;
-                // mHavePdfMerge = true;
-            }
+        const QString ermlpy = locateKraftTool("erml2pdf.py");
+        if (!ermlpy.isEmpty()) {
+            retList.append("python3");
+            retList.append(ermlpy);
         }
     }
     if ( retList.isEmpty() ) {

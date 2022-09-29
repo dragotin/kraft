@@ -69,11 +69,11 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   if(mTypeListBox->currentRow() != -1)
     dtype = mTypeListBox->currentItem()->text();
 
-  mPbAdd->setIcon( QIcon::fromTheme( "list-add" ) );
-  mPbEdit->setIcon( QIcon::fromTheme( "document-edit" ) );
-  mPbRemove->setIcon( QIcon::fromTheme( "list-remove" ) );
+  mPbAdd->setIcon( DefaultProvider::self()->icon( "plus" ) );
+  mPbEdit->setIcon( DefaultProvider::self()->icon( "pencil" ) );
+  mPbRemove->setIcon( DefaultProvider::self()->icon( "minus" ) );
 
-  const QIcon& icon = QIcon::fromTheme("quickopen-file");
+  const QIcon& icon = DefaultProvider::self()->icon("device-floppy");
   if (!icon.isNull() ) {
       tmplFileSelectButton->setIcon(icon);
       tmplFileSelectButton->setText("");
