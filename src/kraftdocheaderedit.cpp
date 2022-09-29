@@ -36,7 +36,7 @@ KraftDocHeaderEdit::KraftDocHeaderEdit( QWidget *parent )
   mDocHeaderEdit->setupUi( w );
   topLayout->addWidget( w );
 
-  mDocHeaderEdit->mButtLang->setIcon(DefaultProvider::self()->icon("preferences-desktop-locale"));
+  mDocHeaderEdit->mButtLang->setIcon(DefaultProvider::self()->icon("language"));
 
   connect( mDocHeaderEdit->m_cbType, SIGNAL( currentIndexChanged(int)),
            SLOT( slotModified() ) );

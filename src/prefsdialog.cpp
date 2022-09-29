@@ -716,11 +716,11 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool bac
       if( origin.isEmpty() || origin == "manual") {
           // it is an manually added address.
           fillManualIdentityForm(addressee);
-          _tabWidget->setTabIcon(1, DefaultProvider::self()->icon("checkmark"));
+          _tabWidget->setTabIcon(1, DefaultProvider::self()->icon("check"));
           _tabWidget->setTabIcon(0, QIcon());
           _tabWidget->setCurrentIndex(1);
       } else {
-          _tabWidget->setTabIcon(0, DefaultProvider::self()->icon("checkmark"));
+          _tabWidget->setTabIcon(0, DefaultProvider::self()->icon("check"));
           _tabWidget->setTabIcon(1, QIcon());
           _tabWidget->setCurrentIndex(0);
 

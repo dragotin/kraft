@@ -78,7 +78,6 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
   _readOnlyMode = mCmdLineArgs->isSet("r");
 
   const QStringList iconPaths {":kraft/custom-icons"};
-  // QIcon::setFallbackSearchPaths(QIcon::fallbackSearchPaths() << ":kraft/custom-icons");
   QIcon::setFallbackSearchPaths(iconPaths);
 
   ///////////////////////////////////////////////////////////////////
@@ -163,7 +162,7 @@ void Portal::initActions()
     _actOpenArchivedDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_A ));
     connect(_actOpenArchivedDocument, &QAction::triggered, this, &Portal::slotArchivedDocExecuted);
 
-    newIcon = QIcon( ":/kraft/custom-icons/mail-forward.svg");
+    newIcon = DefaultProvider::self()->icon("mail-forward");
     _actMailDocument = new QAction(newIcon, i18n("Mail Document"), this);
     _actMailDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
     connect(_actMailDocument, &QAction::triggered, this, &Portal::slotMailDocument);
@@ -193,6 +192,7 @@ void Portal::initActions()
     _actAboutQt->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Q ));
     connect(_actAboutQt, &QAction::triggered, this, &Portal::slotAboutQt);
 
+    newIcon = DefaultProvider::self()->icon( "kraft-simple");
     _actAboutKraft = new QAction(newIcon, i18n("About Kraft..."), this);
     _actAboutKraft->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_K ));
     connect(_actAboutKraft, &QAction::triggered, this, &Portal::slotAboutKraft);
@@ -785,7 +785,7 @@ void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& c
     }
 
     QStringList args;
-    QString prog;
+    QString prog; // Use from system, we will not deliver them in an AppImage
 
     if( KraftSettings::self()->mailUA().startsWith("xdg") ) {
         args.append( "--utf8");

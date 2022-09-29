@@ -65,7 +65,7 @@ PositionViewWidget::PositionViewWidget()
   mDiscountPercent->setDecimals( 2 );
 
   pbExec->setCheckable( false );
-  pbExec->setIcon( DefaultProvider::self()->icon( "settings") );
+  pbExec->setIcon( DefaultProvider::self()->icon( "tool") );
   pbTagging->setCheckable( false );
   pbTagging->setIcon( DefaultProvider::self()->icon( "flag" ) );
 

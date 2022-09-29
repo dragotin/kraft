@@ -64,7 +64,7 @@ PortalView::PortalView(QWidget *parent, const char*)
     vbox->addWidget(_contentsWidget);
 
     QPushButton *pb = new QPushButton(i18n("About Kraft"));
-    pb->setIcon(DefaultProvider::self()->icon("kraft")); // FIXME QIcon(":/kraft/global/kraft_small_arm.png"));
+    pb->setIcon(DefaultProvider::self()->icon("kraft-simple"));
     vbox->addWidget(pb);
 
     connect(pb, &QPushButton::clicked, this, &PortalView::displaySystemsTab);
@@ -80,20 +80,20 @@ PortalView::~PortalView( )
 void PortalView::createIcons()
 {
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
-    documentsButton->setIcon(QIcon(":/kraft/document.svg"));
+    documentsButton->setIcon(DefaultProvider::self()->icon("file-description"));
     documentsButton->setText(i18n("Documents"));
     documentsButton->setTextAlignment(Qt::AlignHCenter);
     documentsButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *timeLineButton = new QListWidgetItem(_contentsWidget);
-    timeLineButton->setIcon(QIcon(":/kraft/document-clock.svg"));
+    timeLineButton->setIcon(DefaultProvider::self()->icon("file-chart"));
     timeLineButton->setText(i18n("Timeline"));
     timeLineButton->setTextAlignment(Qt::AlignHCenter);
     timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
 
-    catButton->setIcon(QIcon(":/kraft/book-open.svg"));
+    catButton->setIcon(DefaultProvider::self()->icon("book"));
     catButton->setText(i18n("Catalogs"));
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);

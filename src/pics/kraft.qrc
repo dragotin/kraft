@@ -1,68 +1,61 @@
+<?xml version="1.0"?>
 <RCC>
   <qresource prefix="/kraft">
     <file>Calendar_page.png</file>
     <file>postit.png</file>
     <file>kraft_customer.png</file>
-    
-    <file>book-open.svg</file>
-    <file>cloud.svg</file>
-    <file>cloud-up.svg</file>
-    <file>document-clock.svg</file>
-    <file>document-search.svg</file>
-    <file>document.svg</file>
-    <file>folders.svg</file>
-    <file>puzzlepart.svg</file>
-    
-    <file>global/32-apps-kraft.png</file>
-    <file>global/kraft_small_arm.png</file>
 
-<file>custom-icons/plus.svg</file>
-<file>custom-icons/arrow-down.svg</file>
-<file>custom-icons/pencil.svg</file>
-<file>custom-icons/x.svg</file>
-<file>custom-icons/receipt-tax.svg</file>
-<file>custom-icons/atom.svg</file>
-<file>custom-icons/arrow-up.svg</file>
-<file>custom-icons/cash-banknote.svg</file>
-<file>custom-icons/calculator.svg</file>
-<file>custom-icons/logout.svg</file>
-<file>custom-icons/arrow-down.svg</file>
-<file>custom-icons/arrow-up.svg</file>
-<file>custom-icons/check.svg</file>
-<file>custom-icons/arrows-up-down.svg</file>
-<file>custom-icons/file-x.svg</file>
-<file>custom-icons/edit.svg</file>
-<file>custom-icons/file-export.svg</file>
-<file>custom-icons/file-plus.svg</file>
-<file>custom-icons/template.svg</file>
-<file>custom-icons/eye.svg</file>
-<file>custom-icons/printer.svg</file>
-<file>custom-icons/edit.svg</file>
-<file>custom-icons/copy.svg</file>
-<file>custom-icons/cut.svg</file>
-<file>custom-icons/minus.svg</file>
-<file>custom-icons/transfer-in.svg</file>
-<file>custom-icons/archive.svg</file>
-<file>custom-icons/file-plus.svg</file>
-<file>custom-icons/flag.svg</file>
-<file>custom-icons/edit.svg</file>
-<file>custom-icons/arrow-narrow-left.svg</file>
-<file>custom-icons/help.svg</file>
-<file>custom-icons/arrow-ramp-right.svg</file>
-<file>custom-icons/arrow-move-right.svg</file>
-<file>custom-icons/coin.svg</file>
-<file>custom-icons/circle-0.svg</file>
-<file>custom-icons/circle-half-2.svg</file>
-<file>custom-icons/dice.svg</file>
-<file>custom-icons/mail-forward.svg</file>
-<file>custom-icons/lock.svg</file>
-<file>custom-icons/lock-open.svg</file>
-<file>custom-icons/language.svg</file>
-<file>custom-icons/device-floppy.svg</file>
-<file>custom-icons/minus.svg</file>
-<file>custom-icons/settings.svg</file>
-<file>custom-icons/id-badge-2.svg</file>
-<file>custom-icons/book.svg</file>
-<file>custom-icons/files.svg</file>
+    <file>custom-icons/plus.svg</file>
+    <file>custom-icons/arrow-down.svg</file>
+    <file>custom-icons/pencil.svg</file>
+    <file>custom-icons/x.svg</file>
+    <file>custom-icons/receipt-tax.svg</file>
+    <file>custom-icons/atom.svg</file>
+    <file>custom-icons/arrow-up.svg</file>
+    <file>custom-icons/cash-banknote.svg</file>
+    <file>custom-icons/calculator.svg</file>
+    <file>custom-icons/logout.svg</file>
+    <file>custom-icons/arrow-down.svg</file>
+    <file>custom-icons/arrow-up.svg</file>
+    <file>custom-icons/check.svg</file>
+    <file>custom-icons/arrows-up-down.svg</file>
+    <file>custom-icons/file-x.svg</file>
+    <file>custom-icons/edit.svg</file>
+    <file>custom-icons/file-export.svg</file>
+    <file>custom-icons/file-plus.svg</file>
+    <file>custom-icons/template.svg</file>
+    <file>custom-icons/eye.svg</file>
+    <file>custom-icons/printer.svg</file>
+    <file>custom-icons/edit.svg</file>
+    <file>custom-icons/copy.svg</file>
+    <file>custom-icons/cut.svg</file>
+    <file>custom-icons/minus.svg</file>
+    <file>custom-icons/transfer-in.svg</file>
+    <file>custom-icons/archive.svg</file>
+    <file>custom-icons/file-plus.svg</file>
+    <file>custom-icons/flag.svg</file>
+    <file>custom-icons/edit.svg</file>
+    <file>custom-icons/arrow-narrow-left.svg</file>
+    <file>custom-icons/help.svg</file>
+    <file>custom-icons/arrow-ramp-right.svg</file>
+    <file>custom-icons/arrow-move-right.svg</file>
+    <file>custom-icons/coin.svg</file>
+    <file>custom-icons/circle-0.svg</file>
+    <file>custom-icons/circle-half-2.svg</file>
+    <file>custom-icons/dice.svg</file>
+    <file>custom-icons/mail-forward.svg</file>
+    <file>custom-icons/lock.svg</file>
+    <file>custom-icons/lock-open.svg</file>
+    <file>custom-icons/language.svg</file>
+    <file>custom-icons/device-floppy.svg</file>
+    <file>custom-icons/minus.svg</file>
+    <file>custom-icons/settings.svg</file>
+    <file>custom-icons/id-badge-2.svg</file>
+    <file>custom-icons/book.svg</file>
+    <file>custom-icons/files.svg</file>
+    <file>custom-icons/kraft-simple.svg</file>
+    <file>custom-icons/file-description.svg</file>
+    <file>custom-icons/file-chart.svg</file>
+    <file>custom-icons/tool.svg</file>
   </qresource>
 </RCC>
