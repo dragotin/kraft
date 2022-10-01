@@ -335,10 +335,10 @@ void KraftView::redrawDocument( )
       m_headerEdit->m_letterHead->setCurrentIndex(m_headerEdit->m_letterHead->findText( doc->salut() ));
     }
     /* pre- and post text */
-    m_headerEdit->m_teEntry->setText( doc->preText() );
-    m_headerEdit->m_whiteboardEdit->setText( doc->whiteboard() );
+    m_headerEdit->m_teEntry->setPlainText( doc->preText() );
+    m_headerEdit->m_whiteboardEdit->setPlainText( doc->whiteboard() );
     m_headerEdit->mProjectLabelEdit->setText( doc->projectLabel() );
-    m_footerEdit->ui()->m_teSummary->setText( doc->postText() );
+    m_footerEdit->ui()->m_teSummary->setPlainText( doc->postText() );
     const QString goodbye = doc->goodbye();
     m_footerEdit->slotSetGreeting(goodbye);
 

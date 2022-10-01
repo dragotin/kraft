@@ -180,7 +180,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
 
   m_skipModifiedSignal = true;
 
-  m_teFloskel->setText( pos->text() );
+  m_teFloskel->setPlainText( pos->text() );
 
   lStatus->hide();
   lKind->hide();
@@ -635,7 +635,7 @@ void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
                 pre = kindLabel(Kind::Demand);
             }
             if (!pre.isEmpty()) {
-                m_teFloskel->setText(pre + text);
+                m_teFloskel->setPlainText(pre + text);
             }
         } else {
               // from demand to normal or alternative for example
@@ -644,7 +644,7 @@ void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
             } else {
                 text = kindLabel(kind) + cleanKindString(text);
             }
-            m_teFloskel->setText(text);
+            m_teFloskel->setPlainText(text);
         }
     }
 }
