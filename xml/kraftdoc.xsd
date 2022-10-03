@@ -76,7 +76,7 @@
 
  <xs:complexType name="item_type">
    <xs:sequence>
-     <xs:element name="type"    type="itemtype_type" minOccurs="0" maxOccurs="unbounded"/>
+     <xs:element name="type"    type="itemtype_type" minOccurs="0" maxOccurs="1"/>
      <xs:element name="text"    type="xs:string" minOccurs="1" maxOccurs="1"/>
      <xs:element name="amount"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
      <xs:element name="unit"    type="xs:string" minOccurs="1" maxOccurs="1"/>

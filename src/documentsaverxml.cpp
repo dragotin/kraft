@@ -95,7 +95,7 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
         QDomElement itemType = xmldoc.createElement("item");
 
         itemGroupElem.appendChild(itemType);
-        QString tStr {QStringLiteral("Normal")};
+        QString tStr {"Normal"};
         auto t = item->type();
         if (t == DocPosition::ExtraDiscount) {
             tStr = QStringLiteral("Discount");
@@ -221,7 +221,7 @@ QDomDocument xmlDocument(KraftDoc *doc)
     t = doc->fullTaxSum().toDouble();
     taxFull.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
 
-    // **** Next toplevel: itemGroup
+    // **** Next toplevel: itemGroup, for now only one
     QDomElement itemGroupElem = xmldoc.createElement( "itemGroup" );
     root.appendChild( itemGroupElem );
     itemGroupElem.appendChild( xmlTextElement(xmldoc, "name", QStringLiteral("General")));
@@ -248,10 +248,8 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
     QDomElement metaElem = kraftdocElem.firstChildElement("meta");
 
     Q_ASSERT(!metaElem.isNull());
-    QString t = childElemText(metaElem, "docType");
-    doc->setDocType(t);
 
-    t = childElemText(metaElem, "docDesc");
+    QString t = childElemText(metaElem, "docDesc");
     doc->setWhiteboard(t);
 
     t = childElemText(metaElem, "currency");
@@ -289,7 +287,7 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
     t = childElemText(metaElem, "predecessor");
     doc->setPredecessor(t);
 
-    // doc attribs
+    // doc attribs - FIXME: Unite with the header/customValues
     QDomElement attrElem = metaElem.firstChildElement("docAttrib");
     while (!attrElem.isNull()) {
         t = childElemText(attrElem, "name");
@@ -307,8 +305,80 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
     return res;
 }
 
+bool loadHeaderBlock(const QDomDocument& domDoc, KraftDoc *doc)
+{
+    bool res {true};
+
+    QDomElement kraftdocElem = domDoc.firstChildElement("kraftdocument");
+    QDomElement headerElem = kraftdocElem.firstChildElement("header");
+
+    Q_ASSERT(!headerElem.isNull());
+    QString t = childElemText(headerElem, "docType");
+    doc->setDocType(t);
+
+    QDomElement prjElem = headerElem.firstChildElement("project");
+    t = childElemText(prjElem, "name");
+    // TODO: There can also be a project ID
+
+    QDate d = childElemDate(headerElem, "date");
+    doc->setDate(d);
+
+    t = childElemText(headerElem, "ident");
+    doc->setIdent(t);
+
+    t = childElemText(headerElem, "salut");
+    doc->setSalut(t);
+
+    t = childElemText(headerElem, "preText");
+    doc->setPreText(t);
+
+    // FIXME: Same as the docAttribs above in meta?
+    QDomElement customElem = headerElem.firstChildElement("customValue");
+    while (!customElem.isNull()) {
+        t = childElemText(customElem, "name");
+        t = childElemText(customElem, "value");
+        t = childElemText(customElem, "type");
+        customElem = customElem.nextSiblingElement("customValue");
+    }
+
+    return res;
 }
 
+bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
+{
+    bool res {true};
+
+    QDomElement kraftdocElem = domDoc.firstChildElement("kraftdocument");
+
+    // TODO: There should be more than one item Groups at one day
+    QDomElement groupElem = kraftdocElem.firstChildElement("itemGroup");
+
+    QDomElement itemElem = groupElem.firstChildElement("customValue");
+    while (!itemElem.isNull()) {
+        QString t = childElemText(itemElem, "type");
+        DocPositionBase::PositionType itemType {DocPositionBase::Position};
+        if (t == "ExtraDiscout") {
+            itemType = DocPositionBase::ExtraDiscount;
+        }
+
+        DocPosition *item = doc->createPosition(itemType);
+
+        t = childElemText(itemElem, "amount");
+        double a = t.toDouble();
+        item->setAmount(a);
+        t = childElemText(itemElem, "unit");
+        item->setUnit(UnitManager::self()->getUnit(t));
+        t = childElemText(itemElem, "unitPrice");
+        item->setUnitPrice(Geld(t.toDouble()));
+        t = childElemText(itemElem, "itemTotal");
+        Q_ASSERT(!(item->overallPrice() != Geld(t.toDouble())));
+
+        itemElem = itemElem.nextSiblingElement("customValue");
+    }
+
+    return res;
+}
+} // namespace end
 
 QString DocumentSaverXML::basePath()
 {
@@ -444,6 +514,8 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
         qDebug() << "Unable to open xml document file";
         return;
     }
+    QDomDocument _domDoc;
+
     const QByteArray arr = file.readAll();
     if (!_domDoc.setContent(arr)) {
         qDebug() << "Unable to set file content as xml";
@@ -456,12 +528,11 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 
     ok = loadMetaBlock(_domDoc, doc);
 
-    loadPositions(QString(), doc);
-}
+    if (ok) {
+        ok = loadHeaderBlock(_domDoc, doc);
+    }
 
-void DocumentSaverXML::loadPositions(const QString&, KraftDoc *doc)
-{
-
+    loadItems(_domDoc, doc);
 }
 
 #if 0

@@ -46,8 +46,6 @@ public:
 
 
 protected:
-    virtual void loadPositions( const QString&, KraftDoc* );
-
     QString basePath();
 
 private:
@@ -55,7 +53,6 @@ private:
     QDir _basePath;
     bool _validateWithSchema;
     QXmlSchema _schema;
-    QDomDocument _domDoc;
 };
 
 #endif
