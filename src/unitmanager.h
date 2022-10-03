@@ -38,6 +38,7 @@ class UnitManager
     Einheit getUnit( int id );
     Einheit getPauschUnit();
     QStringList allUnits();
+    Einheit getUnit(const QString& singularUnit);
     int getUnitIDSingular( const QString& einheit );
     QString getECE20(const QString& einheitStr);
 
