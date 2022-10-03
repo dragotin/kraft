@@ -92,11 +92,23 @@ Einheit UnitManager::getUnit( int id )
 {
   if( mUnits.size() == 0 ) load();
 
-  // qDebug() << "Searching unit ID " << id;
-  foreach( Einheit e, mUnits ) {
+  // qDebug() << "Searching unit ID " << id << endl;
+  for( Einheit e: mUnits ) {
     if( e.id() == id ) return e;
   }
   return Einheit();
+}
+
+Einheit UnitManager::getUnit(const QString& singularUnit)
+{
+    if( mUnits.size() == 0 ) load();
+
+    // qDebug() << "Searching unit ID " << id << endl;
+    for( Einheit e: mUnits ) {
+      if( e.einheitSingular() == singularUnit)
+          return e;
+    }
+    return Einheit();
 }
 
 int UnitManager::getUnitIDSingular( const QString& einheitStr )
