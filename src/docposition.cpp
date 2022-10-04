@@ -28,6 +28,7 @@
 #include "ui_positionwidget.h"
 #include "positionviewwidget.h"
 #include "defaultprovider.h"
+#include "tagman.h"
 
 /**
 @author Klaas Freitag
@@ -122,61 +123,69 @@ QString DocPositionBase::attribute( const QString& attName ) const
   return att.value().toString();
 }
 
+// The attribs tag contains a list of TagIDs separated by commas
 void DocPositionBase::setTag( const QString& tag )
 {
-  if ( tag.isEmpty() ) return;
+    if ( tag.isEmpty() ) return;
 
-  if ( mAttribs.contains( DocPosition::Tags ) ) {
-    if ( hasTag( tag ) ) return;
-    Attribute att = mAttribs[DocPosition::Tags];
-    QStringList li =  att.value().toStringList();
+    Attribute att;
+    att.setPersistant(true);
 
-    li.append( tag );
-    att.setValue( QVariant( li ) );
+    if ( mAttribs.contains( DocPosition::Tags ) ) {
+        if ( hasTag( tag ) ) return;
+
+        att = mAttribs[DocPosition::Tags];
+    } else {
+        att = Attribute(DocPosition::Tags);
+    }
+
+    // here: the attribute does not have the new tag.
+    QStringList li = att.value().toStringList();
+    li.append(TagTemplateMan::self()->getTagTemplate(tag).dbId().toString());
+    att.setValue( QVariant(li) );
     setAttribute( att );
-  } else {
-    QStringList li;
-    li.append( tag );
-    Attribute a( DocPosition::Tags );
-    a.setValueRelation( "tagTemplates", "tagTmplID", "name" );
-    a.setListValue( true );
-    a.setPersistant( true );
-    a.setValue( QVariant( li ) );
-    setAttribute( a );
-  }
 }
 
 void DocPositionBase::removeTag( const QString& tag )
 {
-  if ( hasTag( tag ) ) {
+    if ( !hasTag( tag ) ) {
+        return;
+    }
+
+    const QString tagId = TagTemplateMan::self()->getTagTemplate(tag).dbId().toString();
+
     Attribute att = mAttribs[DocPosition::Tags];
     QStringList li =  att.value().toStringList();
 
-    li.removeAll( tag );
+    li.removeAll( tagId );
     att.setValue( QVariant( li ) );
     setAttribute( att );
-  }
 }
 
 bool DocPositionBase::hasTag( const QString& tag )
 {
-  if ( ! mAttribs.contains( DocPosition::Tags ) ) {
+    const QString tagId = TagTemplateMan::self()->getTagTemplate(tag).dbId().toString();
+
+    if ( ! mAttribs.contains( DocPosition::Tags ) ) {
+        return false;
+    }
+    Attribute att = mAttribs[DocPosition::Tags];
+    QStringList li =  att.value().toStringList();
+    if( li.contains( tagId, Qt::CaseInsensitive ) ) { // ignore case
+        return true;
+    }
     return false;
-  }
-  Attribute att = mAttribs[DocPosition::Tags];
-  QStringList li =  att.value().toStringList();
-  if( li.contains( tag, Qt::CaseInsensitive ) ) { // ignore case
-    return true;
-  }
-  return false;
 }
 
 QStringList DocPositionBase::tags()
 {
-  QStringList tags;
+  QStringList tags, tagIDs;
   if ( mAttribs.contains( DocPosition::Tags ) ) {
     // qDebug () << mAttribs[DocPosition::Tags].toString() << endl;
-    tags = mAttribs[DocPosition::Tags].value().toStringList();
+    tagIDs = mAttribs[DocPosition::Tags].value().toStringList();
+  }
+  for( const auto tagId : tagIDs) {
+      tags.append(TagTemplateMan::self()->getTagTemplateFromId(tagId).name());
   }
   return tags;
 }
