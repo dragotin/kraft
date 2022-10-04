@@ -28,6 +28,7 @@ find_package(Qt5 CONFIG REQUIRED
     Sql
     Widgets
     Xml
+    Svg
 )
 
 # XmlGui for the ConfigSkeleton
