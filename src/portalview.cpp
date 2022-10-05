@@ -45,10 +45,10 @@ PortalView::PortalView(QWidget *parent, const char*)
 {
     _contentsWidget = new QListWidget(this);
     _contentsWidget->setViewMode(QListView::IconMode);
-    _contentsWidget->setIconSize(QSize(96, 84));
+    _contentsWidget->setIconSize(QSize(64, 64));
     _contentsWidget->setMovement(QListView::Static);
-    _contentsWidget->setMaximumWidth(128);
-    _contentsWidget->setSpacing(12);
+    _contentsWidget->setMaximumWidth(132);
+    _contentsWidget->setSpacing(0);
 
     _pagesWidget = new QStackedWidget(this);
     _pagesWidget->addWidget(documentDigests());
@@ -79,17 +79,21 @@ PortalView::~PortalView( )
 
 void PortalView::createIcons()
 {
+    QSize sHint{128, 100};
+
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
     documentsButton->setIcon(DefaultProvider::self()->icon("file-description"));
     documentsButton->setText(i18n("Documents"));
     documentsButton->setTextAlignment(Qt::AlignHCenter);
     documentsButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    documentsButton->setSizeHint(sHint);
 
     QListWidgetItem *timeLineButton = new QListWidgetItem(_contentsWidget);
     timeLineButton->setIcon(DefaultProvider::self()->icon("file-chart"));
     timeLineButton->setText(i18n("Timeline"));
     timeLineButton->setTextAlignment(Qt::AlignHCenter);
     timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    timeLineButton->setSizeHint(sHint);
 
     QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
 
@@ -97,6 +101,7 @@ void PortalView::createIcons()
     catButton->setText(i18n("Catalogs"));
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    catButton->setSizeHint(sHint);
 
     connect( _contentsWidget, &QListWidget::itemClicked,
              this, &PortalView::changePage);
