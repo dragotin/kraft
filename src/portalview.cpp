@@ -81,15 +81,23 @@ void PortalView::createIcons()
 {
     QSize sHint{128, 100};
 
+    // Scale the icon via a pixmap, as in AppImages, for some reasons the icons are small
+    // stackoverflow reports that svg icons can not be scaled up.
+    auto icon = [](const QIcon& i) {
+        const QSize iSize{96,96};
+        const QPixmap pix = i.pixmap(iSize);
+        return QIcon(pix);
+    };
+
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
-    documentsButton->setIcon(DefaultProvider::self()->icon("file-description"));
+    documentsButton->setIcon(icon(DefaultProvider::self()->icon("file-description")));
     documentsButton->setText(i18n("Documents"));
     documentsButton->setTextAlignment(Qt::AlignHCenter);
     documentsButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     documentsButton->setSizeHint(sHint);
 
     QListWidgetItem *timeLineButton = new QListWidgetItem(_contentsWidget);
-    timeLineButton->setIcon(DefaultProvider::self()->icon("file-chart"));
+    timeLineButton->setIcon(icon(DefaultProvider::self()->icon("file-chart")));
     timeLineButton->setText(i18n("Timeline"));
     timeLineButton->setTextAlignment(Qt::AlignHCenter);
     timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -97,7 +105,7 @@ void PortalView::createIcons()
 
     QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
 
-    catButton->setIcon(DefaultProvider::self()->icon("book"));
+    catButton->setIcon(icon(DefaultProvider::self()->icon("book")));
     catButton->setText(i18n("Catalogs"));
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
