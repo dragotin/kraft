@@ -51,75 +51,11 @@ void Attribute::setRawValue( const QVariant& var )
 
 void Attribute::setValue( const QVariant& var )
 {
-  if ( useRelationTable() ) {
-    QSqlQuery q;
-    QString query = "SELECT " + mIdCol +" FROM " + mTable + " WHERE " + mStringCol + "=:string";
-
-    q.prepare( query  );
-
-    // qDebug() << "Column: " << mIdCol << " | table " << mTable << " | string: " << mStringCol << ": " << query;
-
-    if ( listValue() ) {
-      QStringList idList;
-      QStringList list = var.toStringList();
-      for ( QStringList::Iterator valIt = list.begin(); valIt != list.end(); ++valIt ) {
-        QString curValue = *valIt;
-        // qDebug() << "Searching for " << curValue << " in relation table";
-        q.bindValue( ":string", curValue );
-        q.exec();
-        if ( q.next() ) {
-          idList << q.value( 0 ).toString();
-        }
-      }
-      mValue = QVariant( idList );
-    } else {
-      q.bindValue( ":string", var.toString() );
-      q.exec();
-      // qDebug() << "ERROR" << q.lastError().text();
-      if ( q.next() ) {
-        mValue = q.value( 0 );
-      }
-    }
-  } else {
     mValue = var;
-  }
-}
-
-bool Attribute::useRelationTable() const
-{
-  return !( mTable.isEmpty() || mIdCol.isEmpty() || mStringCol.isEmpty() );
 }
 
 QVariant Attribute::value() const
 {
-  if ( useRelationTable() ) {
-    // get the value from the relation table
-    QSqlQuery q;
-    QString query = "SELECT " + mStringCol +" FROM " + mTable + " WHERE " + mIdCol + "=:id";
-    q.prepare( query  );
-
-    if ( listValue() ) {
-      QStringList idList = mValue.toStringList();
-      QStringList::Iterator it = idList.begin();
-      QStringList list;
-      while( it != idList.end() ) {
-        q.bindValue( ":id", *it );
-        q.exec();
-        while ( q.next() ) {
-          QString str = q.value( 0 ).toString();
-          list.append( str );
-        }
-        ++it;
-      }
-      return QVariant( list );
-    } else {
-      q.bindValue( ":id", mValue.toString() );
-      q.exec();
-      if ( q.next() ) {
-        return QVariant( q.value( 0 ) );
-      }
-    }
-  }
   return mValue;
 }
 
@@ -148,13 +84,6 @@ bool Attribute::listValue() const
   return mListValue;
 }
 
-void Attribute::setValueRelation( const QString& table, const QString& idColumn,  const QString& stringColumn )
-{
-  mTable = table;
-  mIdCol = idColumn;
-  mStringCol = stringColumn;
-}
-
 QString Attribute::toString() const
 {
   QString re;
@@ -164,9 +93,6 @@ QString Attribute::toString() const
   } else {
     re += "+ Attribute Value (String): " + mValue.toString() + '\n';
   }
-  re += "+ Relation Table: " + mTable + '\n';
-  re += "+ Relation ID-Column: " + mIdCol + '\n';
-  re += "+ Relation StringCol: " + mStringCol + '\n';
   re += "+ List: " + ( mListValue ? QString( "yes" ) : QString( "no" ) ) + '\n';
 
   return re;
@@ -248,18 +174,12 @@ void AttributeMap::save( dbID id )
       } else {
         // qDebug () << "oo- writing of attribute name " << att.name();
         QSqlQuery insQuery;
-        insQuery.prepare( "INSERT INTO attributes (hostObject, hostId, name, valueIsList, relationTable, "
-                          "relationIDColumn, relationStringColumn) "
-                          "VALUES (:host, :hostId, :name, :valueIsList, :relTable, :relIDCol, :relStringCol )" );
+        insQuery.prepare( "INSERT INTO attributes (hostObject, hostId, name, valueIsList) "
+                          "VALUES (:host, :hostId, :name, :valueIsList)" );
         insQuery.bindValue( ":host", mHost );
         insQuery.bindValue( ":hostId", id.toString() );
         insQuery.bindValue( ":name", att.name() );
         insQuery.bindValue( ":valueIsList", att.listValue() );
-
-        // Write the relation table info. These remain empty for non related attributes.
-        insQuery.bindValue( ":relTable", att.mTable );
-        insQuery.bindValue( ":relIDCol", att.mIdCol );
-        insQuery.bindValue( ":relStringCol", att.mStringCol );
 
         insQuery.exec();
         dbID attId = KraftDB::self()->getLastInsertID();
@@ -443,7 +363,7 @@ void AttributeMap::dbDeleteValue( const QString& attribId, const QString& id )
 void AttributeMap::load( dbID id )
 {
   QSqlQuery q1;
-  q1.prepare("SELECT id, name, valueIsList, relationTable, relationIDColumn, relationStringColumn FROM attributes WHERE hostObject=:hostObject AND hostId=:hostId");
+  q1.prepare("SELECT id, name, valueIsList FROM attributes WHERE hostObject=:hostObject AND hostId=:hostId");
   q1.bindValue(":hostObject", mHost);
   q1.bindValue(":hostId", id.toInt());
   q1.exec();
@@ -453,13 +373,9 @@ void AttributeMap::load( dbID id )
   while ( q1.next() ) {
     QString h = q1.value( 1 ).toString();
     bool isList = q1.value( 2 ).toBool();
-    QString relTable = q1.value( 3 ).toString();
-    QString relIDCol = q1.value( 4 ).toString();
-    QString relStrCol = q1.value( 5 ).toString();
 
     Attribute attr( h );
     attr.setListValue( isList );
-    attr.setValueRelation( relTable, relIDCol,  relStrCol );
 
     QSqlQuery q2;
     q2.prepare("SELECT value FROM attributeValues WHERE attributeId=:id");

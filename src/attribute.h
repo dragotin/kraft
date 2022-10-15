@@ -46,8 +46,6 @@ class KRAFTCAT_EXPORT Attribute
     bool     listValue() const;
     void     setListValue( bool );
     void     setPersistant( bool );
-    bool     useRelationTable() const;
-    void     setValueRelation( const QString&, const QString&, const QString& );
     QString  toString() const;
     bool     isMarkedDeleted() const { return mDelete; }
 
@@ -58,10 +56,6 @@ private:
     bool     mPersist;
     bool     mListValue;
     bool     mDelete;  // Delete the attribute on save. Written and read by the attributemap
-
-    QString mTable;
-    QString mIdCol;
-    QString mStringCol;
 };
 
 /*
