@@ -66,9 +66,11 @@ class DocPositionBase : public QObject
     void setText( const QString& string ) { m_text = string; }
     QString text() const { return m_text; }
 
+    void replaceTags(const QStringList& newTags);
     void setTag( const QString& );
     void removeTag( const QString& );
     bool hasTag( const QString& );
+
     QStringList tags();
     
     int taxTypeNumeric();

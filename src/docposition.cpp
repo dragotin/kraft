@@ -132,16 +132,40 @@ void DocPositionBase::setTag( const QString& tag )
     att.setPersistant(true);
 
     if ( mAttribs.contains( DocPosition::Tags ) ) {
-        if ( hasTag( tag ) ) return;
+        if ( hasTag( tag ) ) {
+            return;
+        }
 
         att = mAttribs[DocPosition::Tags];
     } else {
         att = Attribute(DocPosition::Tags);
     }
+    att.setListValue(true);
 
     // here: the attribute does not have the new tag.
     QStringList li = att.value().toStringList();
     li.append(TagTemplateMan::self()->getTagTemplate(tag).dbId().toString());
+    att.setValue( QVariant(li) );
+    setAttribute( att );
+}
+
+void DocPositionBase::replaceTags(const QStringList& newTags)
+{
+    if (newTags.isEmpty()) {
+        if (mAttribs.contains(DocPosition::Tags)) {
+            removeAttribute(DocPosition::Tags);
+        }
+        return;
+    }
+
+    Attribute att = Attribute(DocPosition::Tags);
+    att.setPersistant(true);
+    att.setListValue(true);
+
+    QStringList li;
+    for( const QString& tag : newTags ) {
+        li.append(TagTemplateMan::self()->getTagTemplate(tag).dbId().toString());
+    }
     att.setValue( QVariant(li) );
     setAttribute( att );
 }
@@ -171,7 +195,8 @@ bool DocPositionBase::hasTag( const QString& tag )
     }
     Attribute att = mAttribs[DocPosition::Tags];
     QStringList li =  att.value().toStringList();
-    if( li.contains( tagId, Qt::CaseInsensitive ) ) { // ignore case
+    if( li.contains( tagId, Qt::CaseInsensitive ) && // ignore case
+            !att.isMarkedDeleted() ) {
         return true;
     }
     return false;

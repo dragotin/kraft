@@ -1155,12 +1155,15 @@ DocPositionList KraftView::currentPositionList()
                     Attribute a( DocPosition::Discount );
                     a.setPersistant( true );
                     a.setValue( discount );
-                    newDp->setAttribute( a );
+                    newDp->setAttribute(a);
 
-                    QString tagRequired = widget->extraDiscountTagRestriction();
+                    const QString tagRequired = widget->extraDiscountTagRestriction();
 
                     if ( !tagRequired.isEmpty() ) {
-                        dpb->setTag(tagRequired);
+                        Attribute tr(DocPosition::ExtraDiscountTagRequired);
+                        tr.setPersistant( true );
+                        tr.setValue( QVariant( tagRequired ) );
+                        newDp->setAttribute( tr );
                     }
 
                     /* Calculate the current sum over all widgets */
@@ -1239,15 +1242,9 @@ DocPositionList KraftView::currentPositionList()
                     }
 
                     /* set Attribute with the tags */
-                    QStringList tagStrings = widget->tagList();
-                    if ( !tagStrings.isEmpty() ) {
-                        for (const auto tag : tagStrings) {
-                            dpb->setTag(tag);
-                        }
-                        // qDebug() << "============ " << tags.toString() << endl;
-                    } else {
-                        newDp->removeAttribute( DocPosition::Tags );
-                    }
+                    const QStringList tagStrings = widget->tagList();
+                    newDp->replaceTags(tagStrings);
+                    // qDebug() << "============ " << tags.toString() << endl;
 
                     // tax settings
                     if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {

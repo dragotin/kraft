@@ -176,6 +176,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
 
   DocPosition *pos = static_cast<DocPosition*>(dp);
 
+  // FIXME: Do not keep this pointer ...
   mPositionPtr = pos;
 
   m_skipModifiedSignal = true;

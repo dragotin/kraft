@@ -49,6 +49,8 @@ class KRAFTCAT_EXPORT Attribute
     bool     useRelationTable() const;
     void     setValueRelation( const QString&, const QString&, const QString& );
     QString  toString() const;
+    bool     isMarkedDeleted() const { return mDelete; }
+
 private:
     void     setRawValue( const QVariant& var ); // sets the value without checking for relations
     QString  mName;

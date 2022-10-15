@@ -214,6 +214,8 @@ void AttributeMap::save( dbID id )
 {
   checkHost();
 
+  if (size() == 0) return;
+
   QSqlQuery attribQuery;
   attribQuery.prepare( "SELECT id, valueIsList FROM attributes WHERE hostObject=:host AND hostId=:hostId AND name=:name" );
 
