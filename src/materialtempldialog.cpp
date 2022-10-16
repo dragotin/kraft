@@ -169,7 +169,7 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   mCbUnit->setCurrentIndex(mCbUnit->findText( e.einheitSingular() ));
 
   // text
-  mEditMaterial->setText( t->getText() );
+  mEditMaterial->setPlainText( t->getText() );
 
   double priceIn = t->purchPrice().toDouble();
   double priceOut = t->salesPrice().toDouble();

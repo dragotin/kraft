@@ -95,7 +95,7 @@ void InsertTemplDialog::setDocPosition(DocPosition *dp, bool isNew , bool showPr
   if ( dp ) {
     mParkPosition = *dp;
 
-    mBaseWidget->dmTextEdit->setText( prepareText(mParkPosition.text()) );
+    mBaseWidget->dmTextEdit->setPlainText( prepareText(mParkPosition.text()) );
 
     mBaseWidget->dmAmount->setValue( mParkPosition.amount() );
     mBaseWidget->dmUnitCombo->setCurrentIndex(mBaseWidget->dmUnitCombo->findText( mParkPosition.unit().einheit( 1.0 )));
