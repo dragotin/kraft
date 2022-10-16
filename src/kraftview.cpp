@@ -47,6 +47,7 @@
 #include "kraftsettings.h"
 #include "kraftview.h"
 #include "kraftdoc.h"
+#include "tagman.h"
 #include "ui_docheader.h"
 #include "documentman.h"
 #include "docassistant.h"
@@ -1157,12 +1158,17 @@ DocPositionList KraftView::currentPositionList()
                     a.setValue( discount );
                     newDp->setAttribute(a);
 
-                    const QString tagRequired = widget->extraDiscountTagRestriction();
+                    // get the required tag as String.
+                    const QString tagRequiredStr = widget->extraDiscountTagRestriction();
 
-                    if ( !tagRequired.isEmpty() ) {
+                    if ( !tagRequiredStr.isEmpty() ) {
                         Attribute tr(DocPosition::ExtraDiscountTagRequired);
                         tr.setPersistant( true );
-                        tr.setValue( QVariant( tagRequired ) );
+
+                        // Convert the string to int and save to database
+                        const TagTemplate ttRequired = TagTemplateMan::self()->getTagTemplate(tagRequiredStr);
+                        int trId = TagTemplateMan::self()->getTagTemplate(tagRequiredStr).dbId().toInt();
+                        tr.setValue( QVariant( trId ) );
                         newDp->setAttribute( tr );
                     }
 
@@ -1175,8 +1181,8 @@ DocPositionList KraftView::currentPositionList()
                         w1 = it.next();
 
                         if ( widget != w1 ) { // ATTENTION Porting: do not take the own value into account
-                            if ( tagRequired.isEmpty()  // means that all positions are to calculate
-                                 || w1->tagList().contains( tagRequired ) ) {
+                            if ( tagRequiredStr.isEmpty()  // means that all positions are to calculate
+                                 || w1->tagList().contains( tagRequiredStr ) ) { // tagList() returns strings, not Ids.
                                 if ( w1->priceValid() ) {
                                     sum += w1->currentPrice();
                                     // qDebug () << "Summing up pos with text " << w1->ordNumber() << " and price "

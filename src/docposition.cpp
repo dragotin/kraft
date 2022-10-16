@@ -209,7 +209,7 @@ QStringList DocPositionBase::tags()
     // qDebug () << mAttribs[DocPosition::Tags].toString() << endl;
     tagIDs = mAttribs[DocPosition::Tags].value().toStringList();
   }
-  for( const auto tagId : tagIDs) {
+  for( const auto &tagId : tagIDs) {
       tags.append(TagTemplateMan::self()->getTagTemplateFromId(tagId).name());
   }
   return tags;
