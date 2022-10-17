@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="description" content="Kraft {{ doc.docType }} document"/>
+    <meta name="author" content="{{ me.NAME }}"/>
+    <style>
+    @charset "UTF-8";
+
+    /* Use google web fonts */
+    @import url("https://fonts.googleapis.com/css?family=Pacifico|Open+Sans+Pro:400,700");
+    @import url("https://fonts.googleapis.com/css?family=Roboto");
+    @import url("https://fonts.googleapis.com/css?family=Oxygen");
+
+    /* The CSS for printing */
+    @page {
+        margin-left: 1cm;
+        margin-top: 1cm;
+        margin-right: 1cm;
+        margin-bottom: 1cm;
+    }
+    </style>
+
+    <!-- Include the stylesheet file. It will have to reside in the same dir as the template file -->
+    <link href="debug.css" media="print" rel="stylesheet"/>
+
+    <title>Document Information Sheet</title>
+  </head>
+
+  {% autoescape off %}
+  <body>
+    <H1>Document Information Sheet</H1>
+
+    <div>
+      <p>
+      <H2>About Kraft ("kraft.*")</H2>
+      <table>
+        <tr>
+          <th>kraft.</th>
+          <th>Content</th>
+        </tr>
+        <tr><td>VERSION</td> <td>{{ kraft.VERSION }}</td></tr>
+        <tr><td>DB_SCHEME</td> <td>{{ kraft.DBSCHEME }}</td></tr>
+        <tr><td>SYS_USER</td> <td>{{ kraft.SYS_USER }}</td></tr>
+        <tr><td>HOSTNAME</td> <td>{{ kraft.HOSTNAME }}</td></tr>
+     </table>
+    </div>
+
+
+    <DIV class="address-field">
+      <H2>Django % debug %</H2>
+      {% debug %}
+    </CDIV >
+
+
+    <p id="destination">
+      <H2>Recipient's address</H2>
+      <DIV class="address-field">
+        {{ doc.address }}
+      </DIV>
+    </p>
+
+
+    <DIV>
+      <H2>About "me."</H2>
+
+      <table>
+        <tr>
+          <th>Field</th>
+          <th>"label."</th>
+          <th>"me."</th>
+        </tr>
+
+        <tr><td>ORGANIZATION</td> <td>{{ label.ORGANISATION }}</td> <td>{{ me.ORGANISATION }}</td></tr>
+        <tr><td>STREET</td><td></td><td>{{ me.STREET }}</td></tr>
+        <tr><td>POSTCODE</td><td></td><td>{{ me.POSTCODE }}</td></tr>
+        <tr><td>POSTBOX</td><td></td><td>{{ me.POSTBOX }}</td></tr>
+        <tr><td>EXTENDED</td><td></td><td>{{ me.EXTENDED }}</td></tr>
+        <tr><td>LOCALITY</td><td></td><td>{{ me.LOCALITY }}</td></tr>
+        <tr><td>REGION</td><td></td><td>{{ me.REGION }}</td></tr>
+        <tr><td>COUNTRY</td><td></td><td>{{ me.COUNTRY }}</td></tr>
+        <tr><td>LABEL</td><td></td><td>{{ me.LABEL }}</td></tr>
+        <tr><td>URL</td><td>{{ label.WEBSITE }}</td><td>{{ me.URL }}</td></tr>
+        <tr><td>EMAIL</td><td></td><td>{{ me.URL }}</td></tr>
+        <tr><td>PHONE</td><td></td><td>{{ me.PHONE }}</td></tr>
+        <tr><td>FAX</td><td></td><td>{{ me.FAX }}</td></tr>
+        <tr><td>CELL</td><td></td><td>{{ me.CELL }}</td></tr>
+     </table>
+    </DIV>
+
+
+    <DIV>
+      <H2>"customer.*"</H2>
+      <table>
+        <tr>
+          <th>customer.*</th>
+          <th>"label."</th>
+          <th>Content</th>
+        </tr>
+
+        <tr><td>ORGANIZATION</td> <td>{{ label.ORGANISATION }}</td> <td>{{ customer.ORGANISATION }}</td></tr>
+        <tr><td>STREET</td><td></td><td>{{ customer.STREET }}</td></tr>
+        <tr><td>POSTCODE</td><td></td><td>{{ customer.POSTCODE }}</td></tr>
+        <tr><td>POSTBOX</td><td></td><td>{{ customer.POSTBOX }}</td></tr>
+        <tr><td>EXTENDED</td><td></td><td>{{ customer.EXTENDED }}</td></tr>
+        <tr><td>LOCALITY</td><td></td><td>{{ customer.LOCALITY }}</td></tr>
+        <tr><td>REGION</td><td></td><td>{{ customer.REGION }}</td></tr>
+        <tr><td>COUNTRY</td><td></td><td>{{ customer.COUNTRY }}</td></tr>
+        <tr><td>LABEL</td><td></td><td>{{ customer.LABEL }}</td></tr>
+        <tr><td>URL</td><td>{{ label.WEBSITE }}</td><td>{{ customer.URL }}</td></tr>
+        <tr><td>EMAIL</td><td></td><td>{{ customer.URL }}</td></tr>
+        <tr><td>PHONE</td><td></td><td>{{ customer.PHONE }}</td></tr>
+        <tr><td>FAX</td><td></td><td>{{ customer.FAX }}</td></tr>
+        <tr><td>CELL</td><td></td><td>{{ customer.CELL }}</td></tr>
+      </table>
+    </DIV>
+
+
+    <DIV>
+      <H2>Labels ("label.*")</H2>
+      <table>
+        <tr>
+          <th>"label."</th>
+          <th>Content</th>
+        </tr>
+        <tr><td>NO_SHORT</td><td>{{ label.NO_SHORT }}</td></tr>
+        <tr><td>ITEM</td><td>{{ label.ITEM }}</td></tr>
+        <tr><td>QUANTITY_SHORT</td><td>{{ label.QUANTITY_SHORT }}</td></tr>
+        <tr><td>UNIT</td><td>{{ label.UNIT }}</td></tr>
+        <tr><td>PRICE</td><td>{{ label.PRICE }}</td></tr>
+        <tr><td>SUM</td><td>{{ label.SUM }}</td></tr>
+        <tr><td>NET</td><td>{{ label.NET }}</td></tr>
+        <tr><td>VAT</td><td>{{ label.VAT }}</td></tr>
+        <tr><td>TYPE</td><td>{{ label.TYPE }}</td></tr>
+        <tr><td>PHONE</td><td>{{ label.PHONE }}</td></tr>
+        <tr><td>FAX</td><td>{{ label.FAX }}</td></tr>
+        <tr><td>MOBILE</td><td>{{ label.MOBILE }}</td></tr>
+        <tr><td>EMAIL</td><td>{{ label.EMAIL }}</td></tr>
+        <tr><td>WEBSITE</td><td>{{ label.WEBSITE }}</td></tr>
+        <tr><td>PREDECESSOR</td><td>{{ label.PREDECESSOR }}</td></tr>
+        <tr><td>PAGE</td><td>{{ label.PAGE }}</td></tr>
+        <tr><td>PAGE_OF</td><td>{{ label.PAGE_OF }}</td></tr>
+        <tr><td>DOC_NO</td><td>{{ label.DOC_NO }}</td></tr>
+        <tr><td>DATE</td><td>{{ label.DATE }}</td></tr>
+        <tr><td>PROJECT</td><td>{{ label.PROJECT }}</td></tr>
+        <tr><td>CUST_ID</td><td>{{ label.CUST_ID }}</td></tr>
+        <tr><td>CURRENCY_SIGN</td><td>{{ label.CURRENCY_SIGN }}</td></tr>
+        <tr><td>NO_SHORT</td><td>{{ label.NO_SHORT }}</td></tr>
+        <tr><td>ITEM</td><td>{{ label.ITEM }}</td></tr>
+        <tr><td>QUANTITY_SHORT</td><td>{{ label.QUANTITY_SHORT }}</td></tr>
+        <tr><td>UNIT</td><td>{{ label.UNIT }}</td></tr>
+        <tr><td>PRICE</td><td>{{ label.PRICE }}</td></tr>
+        <tr><td>SUM</td><td>{{ label.SUM }}</td></tr>
+      </table>
+    </DIV>
+
+
+    <DIV>
+      <H2>Document ("doc.")</H2>
+      <table>
+        <tr>
+          <th>Field</th>
+          <th>"label."</th>
+          <th>"doc."</th>
+        </tr>
+        <tr><td>dateStr</td><td></td><td>{{ doc.dateStr }}</td></tr>
+        <tr><td>dateStrISO</td><td></td><td>{{ doc.dateStrISO }}</td></tr>
+        <tr><td>docType (TYPE)</td><td>{{ label.TYPE }}</td><td>{{ doc.docType }}</td></tr>
+        <tr><td>clientUid</td><td></td><td>{{ doc.clientUid }}</td></tr>
+        <tr><td>goodbye</td><td></td><td>{{ doc.goodbye }}</td></tr>
+        <tr><td>docIDStr</td><td></td><td>{{ doc.docIDStr }}</td></tr>
+        <tr><td>docIdentifier</td><td></td><td>{{ doc.docIdentifier }}</td></tr>
+        <tr><td>ident (DOC_NO)</td><td>{{ label.DOC_NO }}</td><td>{{ doc.ident|safe }}</td></tr>
+        <tr><td>buyerReference</td><td></td><td>{{ doc.buyerReference }}</td></tr>
+        <tr><td>dateStr (DATE)</td><td>{{ label.DATE }}</td><td>{{ doc.dateStr }}</td></tr>
+        <tr><td>dueDateStrISO</td><td></td><td>{{ doc.dueDateStrISO }}</td></tr>
+        <tr><td>projectLabel (PROJECT)</td><td>{{ label.PROJECT }}</td><td>{{ doc.projectLabel }}</td></tr>
+        <tr><td>predecessor (PREDECESSOR)</td><td>{{ label.PREDECESSOR }}</td><td>{{ doc.predecessor }}</td></tr>
+        <tr><td>salut</td><td></td><td>{{ doc.salut }}</td></tr>
+        <tr><td>preText</td><td></td><td>{{ doc.preText }}</td></tr>
+        <tr><td>preTextHtml</td><td></td><td>{{ doc.preTextHtml|safe }}</td></tr>
+        <tr><td>postText</td><td></td><td>{{ doc.postText }}</td></tr>
+        <tr><td>postTextHtml</td><td></td><td>{{ doc.postTextHtml|safe }}</td></tr>
+      </table>
+    </DIV>
+
+
+    <DIV>
+      <H3>Items ("doc.items.*")</H3>
+      <table id="items">
+        <thead>
+          <th class="col-No col-left">{{ label.NO_SHORT }}</th>
+          <th class="col-Text col-left">{{ label.ITEM }}</th>
+          <th class="col-Amount col-center">{{ label.QUANTITY_SHORT }}</th>
+          <th class="col-Unit col-center">{{ label.UNIT }}</th>
+          <th class="col-SPrice col-center">{{ label.PRICE }}</th>
+          <th class="col-Sum col-center">{{ label.SUM }}</th>
+        </thead>
+
+        <tbody>
+          {% for item in doc.items %}
+            <tr>
+              <td class="col-No col-right">{{ item.itemNumber }}.</td>
+              <td class="col-Text col-left">
+                {% if item.kind == 'Alternative' %}
+                  item.kind == 'Alternative'
+                {% elif item.kind == 'Comment' %}
+                  item.kind == 'Comment'
+                {% elif item.kind == 'Demand' %}
+                  item.kind == 'Demand'
+                {% else %}
+                  item.kind == 'Standard'
+                {% endif %}
+              </td>
+              {% if doc.hasIndividualTaxation %}
+                <td>
+                  taxMarker: {{ item.taxMarker }}
+                </td>
+              {% endif %}
+              </td>
+            </tr>
+
+            <tr>
+              <td></td>
+              <td class="col-Text col-left">
+                {{ item.text }}
+              </td>
+            </tr>
+
+            <tr>
+              <td></td>
+              <td></td>
+              <td class="col-Amount col-right">{{ label.QUANTITY_SHORT }}</td>
+              <td class="col-Unit col-left">{{ label.UNIT }}</td>
+              <td class="col-SPrice col-right">{{ label.PRICE }}</td>
+              <td class="col-Sum col-right">{{ label.SUM }}</td>
+            </tr>
+
+            <tr>
+              <td></td>
+              <td></td>
+              <td class="col-Amount col-right">{{ item.amount }}</td>
+              <td class="col-Unit col-left">{{ item.unit }}</td>
+              <td class="col-SPrice col-right">{{ item.unitPrice }}</td>
+              <td class="col-Sum col-right">{{ item.nettoPrice }} </td>
+            </tr>
+
+            <tr>
+              <td><BR><BR></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </DIV>
+
+
+   <div class="pagebreak"><BR> </div>
+
+
+    <DIV>
+      <H2>Footer data ("doc.*")</H2>
+      <table>
+        <tr>
+          <th>"doc.*"</th>
+          <th>Content</th>
+        </tr>
+
+        <tr><td>nettoSumStr</td><td>{{ doc.nettoSumStr }}</td></tr>
+        <tr><td>nettoSumNum</td><td>{{ doc.nettoSumNum }}</td></tr>
+        <tr><td>bruttoSumStr</td><td>{{ doc.bruttoSumStr }}</td></tr>
+        <tr><td>bruttoSumNum</td><td>{{ doc.bruttoSumNum }}</td></tr>
+        <tr><td>taxSumStr</td><td>{{ doc.taxSumStr }}</td></tr>
+        <tr><td>taxSumNum</td><td>{{ doc.taxSumNum }}</td></tr>
+        <tr><td>fullTaxSumStr</td><td>{{ doc.fullTaxSumStr }}</td></tr>
+        <tr><td>fullTaxSumNum</td><td>{{ doc.fullTaxSumNum }}</td></tr>
+        <tr><td>reducedTaxSumStr</td><td>{{ doc.reducedTaxSumStr }}</td></tr>
+        <tr><td>reducedTaxSumNum</td><td>{{ doc.reducedTaxSumNum }}</td></tr>
+        <tr><td>dueDate</td><td>{{ doc.dueDate }}</td></tr>
+        <tr><td>dueDateStrISO</td><td>{{ doc.dueDateStrISO }}</td></tr>
+        <tr><td>buyerReference</td><td>{{ doc.buyerReference }}</td></tr>
+        <tr><td>fullTaxPercentNum</td><td>{{ doc.fullTaxPercentNum }}</td></tr>
+        <tr><td>fullTaxPercentStr</td><td>{{ doc.fullTaxPercentStr }}</td></tr>
+        <tr><td>reducedTaxPercentNum</td><td>{{ doc.reducedTaxPercentNum }}</td></tr>
+        <tr><td>reducedTaxPercentStr</td><td>{{ doc.reducedTaxPercentStr }}</td></tr>
+        <tr><td>taxPercentStr</td><td>{{ doc.taxPercentStr }}</td></tr>
+        <tr><td>taxPercentNum</td><td>{{ doc.taxPercentNum }}</td></tr>
+        <tr><td>taxMarkerFull</td><td>{{ doc.taxMarkerFull }}</td></tr>
+        <tr><td>taxMarkerReduced</td><td>{{ doc.taxMarkerReduced }}</td></tr>
+      </table>
+    </DIV>
+  </body>
+{% endautoescape %}
+</html>
