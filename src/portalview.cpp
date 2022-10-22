@@ -43,7 +43,7 @@ PortalView::PortalView(QWidget *parent, const char*)
       mCatalogBrowser(nullptr),
       mSystemBrowser(nullptr)
 {
-    const QSize iSize{96,96};
+    const QSize iSize{64,64};
 
     _contentsWidget = new QListWidget(this);
     _contentsWidget->setViewMode(QListView::IconMode);
