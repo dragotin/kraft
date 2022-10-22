@@ -102,11 +102,6 @@ QString Attribute::toString() const
  * Attribute Map ============================================================
  */
 
-AttributeMap::AttributeMap()
-  :QMap<QString, Attribute>()
-{
-
-}
 
 AttributeMap::AttributeMap( const QString& host)
   :QMap<QString, Attribute>(),

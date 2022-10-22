@@ -64,7 +64,6 @@ private:
 class KRAFTCAT_EXPORT AttributeMap: public QMap<QString, Attribute>
 {
 public:
-  AttributeMap();
   AttributeMap( const QString& );
 
   bool hasAttribute( const QString& ) const;
