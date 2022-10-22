@@ -115,6 +115,8 @@ KraftDB::KraftDB()
     // Attention: Before setup assistant rewrite, dbConnect() was called here.
     // Keep that in mind, maybe the auto connect to the DB now misses somewhere.
     // dbConnect();
+    connect( &_timer, &QTimer::timeout, this, &KraftDB::slotCheckDocDatabaseChanged);
+
 }
 
 bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
@@ -180,15 +182,16 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
             mSuccess = false;
         }
     }
-
-    bool detectChanges {true};
-
-    connect( &_timer, &QTimer::timeout, this, &KraftDB::slotCheckDocDatabaseChanged);
-
-    if (mSuccess && detectChanges) {
-        _timer.start(10*1000);
-    }
     return mSuccess;
+}
+
+void KraftDB::enableTimerRefresh(bool runTimer)
+{
+    if (mSuccess && runTimer) {
+        _timer.start(10*1000);
+    } else {
+        _timer.stop();
+    }
 }
 
 KraftDB *KraftDB::self()

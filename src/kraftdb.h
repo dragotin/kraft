@@ -143,6 +143,7 @@ public:
   void loadDocument(const QString& id, KraftDoc *docPtr);
   bool saveDocument(KraftDoc *docPtr);
 
+  void enableTimerRefresh(bool runTimer);
 
 private slots:
   void slotCheckDocDatabaseChanged();

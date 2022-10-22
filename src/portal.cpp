@@ -49,7 +49,6 @@
 #include "katalog.h"
 #include "katalogman.h"
 #include "kraftdoc.h"
-#include "floskeltemplate.h"
 #include "templkatalogview.h"
 #include "materialkatalogview.h"
 #include "prefsdialog.h"
@@ -401,6 +400,11 @@ void Portal::slotStartupChecks()
 
         slotStatusMsg( i18n( "Database Problem." ) );
     } else {
+        // if readonly, enable the change polling on the db
+        if (_readOnlyMode) {
+            KraftDB::self()->enableTimerRefresh(true);
+        }
+
         // Database interaction is ok after this point.
         m_portalView->slotBuildView();
         m_portalView->fillCatalogDetails();
