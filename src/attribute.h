@@ -45,7 +45,7 @@ class KRAFTCAT_EXPORT Attribute
     bool     persistant();
     bool     listValue() const;
     void     setListValue( bool );
-    void     setPersistant( bool );
+    void     setPersistant( bool ); // TODO: Remove this unneeded method
     bool     useRelationTable() const;
     void     setValueRelation( const QString&, const QString&, const QString& );
     QString  toString() const;
