@@ -43,9 +43,11 @@ PortalView::PortalView(QWidget *parent, const char*)
       mCatalogBrowser(nullptr),
       mSystemBrowser(nullptr)
 {
+    const QSize iSize{96,96};
+
     _contentsWidget = new QListWidget(this);
     _contentsWidget->setViewMode(QListView::IconMode);
-    _contentsWidget->setIconSize(QSize(64, 64));
+    _contentsWidget->setIconSize(iSize);
     _contentsWidget->setMovement(QListView::Static);
     _contentsWidget->setMaximumWidth(132);
     _contentsWidget->setSpacing(0);
@@ -56,7 +58,7 @@ PortalView::PortalView(QWidget *parent, const char*)
     _pagesWidget->addWidget(katalogDetails()); // catalogs
     _sysPageIndx = _pagesWidget->addWidget(systemDetails()); // system
 
-    createIcons();
+    createIcons(iSize);
     _contentsWidget->setCurrentRow(0);
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout;
@@ -77,15 +79,14 @@ PortalView::~PortalView( )
 {
 }
 
-void PortalView::createIcons()
+void PortalView::createIcons(const QSize& iconSize)
 {
     QSize sHint{128, 100};
 
     // Scale the icon via a pixmap, as in AppImages, for some reasons the icons are small
     // stackoverflow reports that svg icons can not be scaled up.
-    auto icon = [](const QIcon& i) {
-        const QSize iSize{96,96};
-        const QPixmap pix = i.pixmap(iSize);
+    auto icon = [iconSize](const QIcon& i) {
+        const QPixmap pix = i.pixmap(iconSize);
         QIcon icon(pix);
         QList<QSize> sizes = icon.availableSizes();
         qDebug() << "III" << sizes;

@@ -73,7 +73,7 @@ signals:
 
 private:
   QString printKatLine( const QString&, int ) const;
-  void createIcons();
+  void createIcons(const QSize &iconSize);
   QWidget *katalogDetails();
   QWidget *systemDetails();
   QWidget *documentDigests();
