@@ -86,7 +86,10 @@ void PortalView::createIcons()
     auto icon = [](const QIcon& i) {
         const QSize iSize{96,96};
         const QPixmap pix = i.pixmap(iSize);
-        return QIcon(pix);
+        QIcon icon(pix);
+        QList<QSize> sizes = icon.availableSizes();
+        qDebug() << "III" << sizes;
+        return icon;
     };
 
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
