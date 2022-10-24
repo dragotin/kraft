@@ -188,7 +188,7 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
     args << sourceFile;
     args << mFile.fileName();
 
-    qDebug() << "Arguments for weasyprint:" << args;
+    qDebug() << "Calling converter:" << prg << args;
     mProcess->setProgram( prg );
     mProcess->setArguments(args);
     mOutput.clear();
