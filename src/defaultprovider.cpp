@@ -275,7 +275,9 @@ QString DefaultProvider::locateBinary(const QString& name) const
     // check the current app path and check if the binary is in there. (AppImage)
     QString path = QCoreApplication::applicationDirPath();
     QFileInfo fi{path};
-    fi.setFile(name);
+    const QString localPrg = QString("%1/%2").arg(fi.path()).arg(name);
+    fi.setFile(localPrg);
+    fi.refresh();
 
     if (fi.exists() && fi.isExecutable()) {
         qDebug() << "Returning tool path" << fi.absoluteFilePath() << "for" << name;
