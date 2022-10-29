@@ -273,11 +273,9 @@ QString DefaultProvider::locateKraftTool(const QString& toolName) const
 QString DefaultProvider::locateBinary(const QString& name) const
 {
     // check the current app path and check if the binary is in there. (AppImage)
-    QString path = QCoreApplication::applicationDirPath();
-    QFileInfo fi{path};
-    const QString localPrg = QString("%1/%2").arg(fi.path()).arg(name);
-    fi.setFile(localPrg);
-    fi.refresh();
+    const QString path = QCoreApplication::applicationDirPath();
+    const QString localPrg = QString("%1/%2").arg(path).arg(name);
+    QFileInfo fi{localPrg};
 
     if (fi.exists() && fi.isExecutable()) {
         qDebug() << "Returning tool path" << fi.absoluteFilePath() << "for" << name;
