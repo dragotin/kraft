@@ -29,6 +29,6 @@ appimage:
       - https://github.com/linuxdeploy/misc-plugins/raw/master/grantlee5/linuxdeploy-plugin-grantlee5.sh 
     environment:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
-      PIP_REQUIREMENTS: "weasyprint"
+      PIP_REQUIREMENTS: "weasyprint reportlab pypdf2"
       GRANTLEE5_PLUGINS_DIR: "/usr/lib64/grantlee/5.2/"
 
