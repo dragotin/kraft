@@ -249,7 +249,7 @@ QString DefaultProvider::locateFile(const QString& findFile) const
     return re;
 }
 
-QString DefaultProvider::locateKraftTool(const QString& toolName) const
+QStringList DefaultProvider::locatePythonTool(const QString& toolName) const
 {
     QString fullPath;
 
@@ -266,8 +266,22 @@ QString DefaultProvider::locateKraftTool(const QString& toolName) const
     if (!fi.exists()) {
         fullPath.clear();
     }
-    qDebug() << "Returning tool path" << fullPath << "for" << toolName;
-    return fullPath;
+
+    // -- check for python.
+    // Default is python3
+    // If Kraft is running from an AppImage, we rather use the python from conda which is
+    // installed in a relative path.
+    QString python {"python3"};
+    const QString pypath = QCoreApplication::applicationDirPath() + QStringLiteral("/../conda/bin/python");
+    QFileInfo fip(pypath);
+    if (fip.exists() && fip.isExecutable()) {
+        python = fip.canonicalFilePath();
+    }
+
+    QStringList rep {python, fullPath};
+    qDebug() << "Returning tool path" << rep;
+
+    return rep;
 }
 
 QString DefaultProvider::locateBinary(const QString& name) const
@@ -285,35 +299,6 @@ QString DefaultProvider::locateBinary(const QString& name) const
     const QString bin = QStandardPaths::findExecutable( name );
 
     return bin;
-}
-
-
-QStringList DefaultProvider::findTrml2Pdf( ) const
-{
-    // define the default value to compare against, to see if there is a custom
-    // value in the settings file.
-    const QString rmlbinDefault = QStringLiteral( "trml2pdf" ); // FIXME: how to get the default value?
-    const QString rmlbin = KraftSettings::self()->trml2PdfBinary();
-
-    // qDebug () << "### Start searching rml2pdf bin: " << rmlbin;
-
-    QStringList retList;
-    // mHavePdfMerge = false;
-
-    if ( rmlbin != rmlbinDefault ) {
-        retList = rmlbin.split(QChar(' '), QString::SkipEmptyParts);
-    } else {
-        const QString ermlpy = locateKraftTool("erml2pdf.py");
-        if (!ermlpy.isEmpty()) {
-            retList.append("python3");
-            retList.append(ermlpy);
-        }
-    }
-    if ( retList.isEmpty() ) {
-        qDebug () << "ReportLab based PDF conversion script not found!";
-    }
-
-    return retList;
 }
 
 bool DefaultProvider::writeXmlArchive()

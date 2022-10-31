@@ -261,10 +261,10 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
 
     QStringList args;
     if (mMergeIdent > 0) {
-        const QString prg = DefaultProvider::self()->locateKraftTool(QStringLiteral("watermarkpdf.py"));
+        const QStringList prg = DefaultProvider::self()->locatePythonTool(QStringLiteral("watermarkpdf.py"));
         if (!prg.isEmpty() && !mWatermarkFile.isEmpty()) {
-            mProcess->setProgram( QStringLiteral("python3") );
-            args << prg;
+            mProcess->setProgram(prg.at(0));
+            args << prg.at(1);
             args << QStringLiteral("-m") << QString::number(mMergeIdent);
             args << QStringLiteral("-o") << targetFileName();
             if (!mPdfAppendFile.isEmpty()) {
