@@ -47,6 +47,7 @@
 #include "kraftsettings.h"
 #include "kraftview.h"
 #include "kraftdoc.h"
+#include "tagman.h"
 #include "ui_docheader.h"
 #include "documentman.h"
 #include "docassistant.h"
@@ -335,10 +336,10 @@ void KraftView::redrawDocument( )
       m_headerEdit->m_letterHead->setCurrentIndex(m_headerEdit->m_letterHead->findText( doc->salut() ));
     }
     /* pre- and post text */
-    m_headerEdit->m_teEntry->setText( doc->preText() );
-    m_headerEdit->m_whiteboardEdit->setText( doc->whiteboard() );
+    m_headerEdit->m_teEntry->setPlainText( doc->preText() );
+    m_headerEdit->m_whiteboardEdit->setPlainText( doc->whiteboard() );
     m_headerEdit->mProjectLabelEdit->setText( doc->projectLabel() );
-    m_footerEdit->ui()->m_teSummary->setText( doc->postText() );
+    m_footerEdit->ui()->m_teSummary->setPlainText( doc->postText() );
     const QString goodbye = doc->goodbye();
     m_footerEdit->slotSetGreeting(goodbye);
 
@@ -1128,152 +1129,147 @@ DocPositionList KraftView::currentPositionList()
     bool progress = true;
 
     while ( progress && ( list.count() != mPositionWidgetList.count() ) ) {
-      // the loop runs until all positions have a valid price.
+        // the loop runs until all positions have a valid price.
 
-      int preListCnt = list.count();
-      // qDebug() << "# Pre List Count: " << preListCnt << endl;
+        int preListCnt = list.count();
+        // qDebug() << "# Pre List Count: " << preListCnt << endl;
 
-      while ( outerIt.hasNext() ) {
-        widget = outerIt.next();
-        DocPositionBase *dpb = widget->position();
+        while ( outerIt.hasNext() ) {
+            widget = outerIt.next();
+            DocPositionBase *dpb = widget->position();
 
-        KraftDB::StringMap replaceMap;
+            KraftDB::StringMap replaceMap;
 
-        if ( dpb ) {
-          DocPosition *newDp = new DocPosition( dpb->type() );
-          newDp->setPositionNumber( cnt++ );
-          newDp->setAttributeMap( dpb->attributes() );
-          newDp->setDbId( dpb->dbId().toInt() );
-          newDp->setAssociatedWidget( widget );
+            if ( dpb ) {
+                DocPosition *newDp = new DocPosition( dpb->type() );
+                newDp->setPositionNumber( cnt++ );
+                newDp->setAttributeMap( dpb->attributes() );
+                newDp->setDbId( dpb->dbId().toInt() );
+                newDp->setAssociatedWidget( widget );
 
-          bool calculatable = true;
+                bool calculatable = true;
 
-          if ( dpb->type() == DocPosition::ExtraDiscount ) {
-            double discount = widget->mDiscountPercent->value();
+                if ( dpb->type() == DocPosition::ExtraDiscount ) {
+                    double discount = widget->mDiscountPercent->value();
 
-            /* set Attributes with the discount percentage */
-            Attribute a( DocPosition::Discount );
-            a.setPersistant( true );
-            a.setValue( discount );
-            newDp->setAttribute( a );
+                    /* set Attributes with the discount percentage */
+                    Attribute a( DocPosition::Discount );
+                    a.setPersistant( true );
+                    a.setValue( discount );
+                    newDp->setAttribute(a);
 
-            QString tagRequired = widget->extraDiscountTagRestriction();
+                    // get the required tag as String.
+                    const QString tagRequiredStr = widget->extraDiscountTagRestriction();
 
-            if ( !tagRequired.isEmpty() ) {
-              Attribute tr(  DocPosition::ExtraDiscountTagRequired );
-              tr.setValueRelation( "tagTemplates", "tagTmplID", "name" );
-              tr.setPersistant( true );
-              tr.setValue( QVariant( tagRequired ) );
-              newDp->setAttribute( tr );
-            }
+                    if ( !tagRequiredStr.isEmpty() ) {
+                        Attribute tr(DocPosition::ExtraDiscountTagRequired);
+                        tr.setPersistant( true );
 
-            /* Calculate the current sum over all widgets */
-            PositionViewWidgetListIterator it( mPositionWidgetList );
-            PositionViewWidget *w1;
-            Geld sum;
-            // qDebug () << "Starting to loop over the items " << endl;
-            while (  calculatable && it.hasNext() ) {
-              w1 = it.next();
+                        // Convert the string to int and save to database
+                        const TagTemplate ttRequired = TagTemplateMan::self()->getTagTemplate(tagRequiredStr);
+                        int trId = TagTemplateMan::self()->getTagTemplate(tagRequiredStr).dbId().toInt();
+                        tr.setValue( QVariant( trId ) );
+                        newDp->setAttribute( tr );
+                    }
 
-              if ( widget != w1 ) { // ATTENTION Porting: do not take the own value into account
-                if ( tagRequired.isEmpty()  // means that all positions are to calculate
-                     || w1->tagList().contains( tagRequired ) ) {
-                  if ( w1->priceValid() ) {
-                    sum += w1->currentPrice();
-                    // qDebug () << "Summing up pos with text " << w1->ordNumber() << " and price "
-                             // << w1->currentPrice().toLong() << endl;
-                  } else {
-                    calculatable = false; // give up, we continue in outerIt
-                    // qDebug () << "We skip pos " << w1->ordNumber() << endl;
-                  }
+                    /* Calculate the current sum over all widgets */
+                    PositionViewWidgetListIterator it( mPositionWidgetList );
+                    PositionViewWidget *w1;
+                    Geld sum;
+                    // qDebug () << "Starting to loop over the items " << endl;
+                    while (  calculatable && it.hasNext() ) {
+                        w1 = it.next();
+
+                        if ( widget != w1 ) { // ATTENTION Porting: do not take the own value into account
+                            if ( tagRequiredStr.isEmpty()  // means that all positions are to calculate
+                                 || w1->tagList().contains( tagRequiredStr ) ) { // tagList() returns strings, not Ids.
+                                if ( w1->priceValid() ) {
+                                    sum += w1->currentPrice();
+                                    // qDebug () << "Summing up pos with text " << w1->ordNumber() << " and price "
+                                    // << w1->currentPrice().toLong() << endl;
+                                } else {
+                                    calculatable = false; // give up, we continue in outerIt
+                                    // qDebug () << "We skip pos " << w1->ordNumber() << endl;
+                                }
+                            }
+                        } else {
+                            // we can not calculate ourselves.
+                            // qDebug () << "Skipping pos " << w1->ordNumber() << " in summing up, thats me!" << endl;
+                        }
+                    }
+                    // qDebug () << "Finished loop over items with calculatable=" << calculatable << endl;
+
+                    if ( calculatable ) {
+                        sum = sum.percent( discount );
+                        newDp->setUnitPrice( sum );
+                        newDp->setAmount( 1.0 );
+                        widget->setCurrentPrice( sum );
+                    }
+
+                    // replace some tags in the text
+
+                    replaceMap["%DISCOUNT"]     = DefaultProvider().self()->locale()->toString( discount );
+                    replaceMap["%ABS_DISCOUNT"] = DefaultProvider().self()->locale()->toString( qAbs( discount ) );
+
+                } else {
+                    /* Type is ordinary position */
+                    newDp->setUnitPrice( widget->unitPrice() );
+
+                    double v = widget->m_sbAmount->value();
+                    newDp->setAmount( v );
+                    widget->setCurrentPrice( newDp->overallPrice() );
                 }
-              } else {
-                // we can not calculate ourselves.
-                // qDebug () << "Skipping pos " << w1->ordNumber() << " in summing up, thats me!" << endl;
-              }
-            }
-            // qDebug () << "Finished loop over items with calculatable=" << calculatable << endl;
 
-            if ( calculatable ) {
-              sum = sum.percent( discount );
-              newDp->setUnitPrice( sum );
-              newDp->setAmount( 1.0 );
-              widget->setCurrentPrice( sum );
-            }
+                if ( calculatable ) {
+                    // copy information from the widget
+                    bool deleted = widget->deleted();
+                    newDp->setToDelete(deleted);
 
-            // replace some tags in the text
+                    QString t = widget->m_teFloskel->toPlainText();
+                    if ( !replaceMap.empty() ) {
+                        t = KraftDB::self()->replaceTagsInWord( t, replaceMap );
+                    }
+                    newDp->setText( t );
 
-            replaceMap["%DISCOUNT"]     = DefaultProvider().self()->locale()->toString( discount );
-            replaceMap["%ABS_DISCOUNT"] = DefaultProvider().self()->locale()->toString( qAbs( discount ) );
+                    QString h = widget->m_cbUnit->currentText();
+                    int eId   = UnitManager::self()->getUnitIDSingular( h );
+                    Einheit e = UnitManager::self()->getUnit( eId );
+                    newDp->setUnit( e );
 
-          } else {
-            /* Type is ordinary position */
-            newDp->setUnitPrice( widget->unitPrice() );
+                    PositionViewWidget::Kind k = widget->kind();
 
-            double v = widget->m_sbAmount->value();
-            newDp->setAmount( v );
-            widget->setCurrentPrice( newDp->overallPrice() );
-          }
+                    if ( k != PositionViewWidget::Normal ) {
+                        Attribute a( DocPosition::Kind );
+                        a.setPersistant( true );
+                        a.setValue( PositionViewWidget::techKindString(k) );
+                        newDp->setAttribute( a );
+                    } else {
+                        newDp->removeAttribute( DocPosition::Kind );
+                    }
 
-          if ( calculatable ) {
-            // copy information from the widget
-              bool deleted = widget->deleted();
-            newDp->setToDelete(deleted);
+                    /* set Attribute with the tags */
+                    const QStringList tagStrings = widget->tagList();
+                    newDp->replaceTags(tagStrings);
+                    // qDebug() << "============ " << tags.toString() << endl;
 
-            QString t = widget->m_teFloskel->toPlainText();
-            if ( !replaceMap.empty() ) {
-              t = KraftDB::self()->replaceTagsInWord( t, replaceMap );
-            }
-            newDp->setText( t );
-
-            QString h = widget->m_cbUnit->currentText();
-            int eId   = UnitManager::self()->getUnitIDSingular( h );
-            Einheit e = UnitManager::self()->getUnit( eId );
-            newDp->setUnit( e );
-
-            PositionViewWidget::Kind k = widget->kind();
-
-            if ( k != PositionViewWidget::Normal ) {
-              Attribute a( DocPosition::Kind );
-              a.setPersistant( true );
-              a.setValue( PositionViewWidget::techKindString(k) );
-              newDp->setAttribute( a );
+                    // tax settings
+                    if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
+                        newDp->setTaxType( widget->taxType() );
+                    } else {
+                        newDp->setTaxType( currentTaxSetting() );
+                    }
+                    list.append( newDp );
+                }
             } else {
-              newDp->removeAttribute( DocPosition::Kind );
+                qCritical() << "Fatal: Widget without position found!" << endl;
             }
-
-            /* set Attribute with the tags */
-            QStringList tagStrings = widget->tagList();
-            if ( !tagStrings.isEmpty() ) {
-              Attribute tags( DocPosition::Tags );
-              tags.setValueRelation( "tagTemplates", "tagTmplID", "name" );
-              tags.setPersistant( true );
-              tags.setListValue( true );
-              tags.setValue( QVariant( tagStrings ) );
-              newDp->setAttribute( tags );
-              // qDebug() << "============ " << tags.toString() << endl;
-            } else {
-              newDp->removeAttribute( DocPosition::Tags );
-            }
-
-            // tax settings
-            if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
-              newDp->setTaxType( widget->taxType() );
-            } else {
-              newDp->setTaxType( currentTaxSetting() );
-            }
-            list.append( newDp );
-          }
-        } else {
-          qCritical() << "Fatal: Widget without position found!" << endl;
         }
-      }
-      // qDebug() << " Post List Count: " << list.count() << endl;
+        // qDebug() << " Post List Count: " << list.count() << endl;
 
-      if ( preListCnt == list.count() ) {
-        qCritical() << "No progress in widget list processing - abort!" << endl;
-        progress = false;
-      }
+        if ( preListCnt == list.count() ) {
+            qCritical() << "No progress in widget list processing - abort!" << endl;
+            progress = false;
+        }
     }
     return list;
 }

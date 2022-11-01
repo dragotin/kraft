@@ -19,8 +19,6 @@
       <meta name="project" content="{{ doc.projectLabel }}"/>
     {% endif %}
 
-
-
     <style>
     @charset "UTF-8";
 
@@ -64,6 +62,10 @@
     <!-- Include the stylesheet file. It will have to reside in the same dir as the template file -->
     <link href="kraft.css" media="print" rel="stylesheet"/>
 
+    {% comment "Set to 1 to enable html in the texts - experimental! %}    
+    {% endcomment %}
+    {% with 0 as enableHtmlInTexts %}
+
     <title>{{ doc.docType }} {{ doc.ident }}</title>
   </head>
   {% autoescape off %}
@@ -90,8 +92,11 @@
     <h1>{{ doc.docType }} {{ doc.ident }}</h1>
 
     <p class="salut">{{ doc.salut }}</p>
-    <p class="entrytext">Foofoo<br/>
-    {{ doc.preTextHtml|safe }}
+    {% if enableHtmlInTexts %}
+      {{ doc.preText|safe|linebreaks }}
+    {% else %}    
+      {{ doc.preTextHtml|safe }}
+    {% endif %}
     </p>
 
     <table id="items">
@@ -111,7 +116,11 @@
           {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
             <i>
           {% endif %}
-          {{ item.htmlText }}
+          {% if enableHtmlInTexts %}
+            {{ item.text|linebreaks }}
+          {% else %}
+            {{ item.htmlText|safe }}
+          {% endif %}
           {% if item.kind == 'Alternative' or item.kind == 'Demand' %}
             </i>
           {% endif %}
@@ -168,7 +177,11 @@
       </tbody>
     </table>
     <p class="bottomtext">
-    {{ doc.postTextHtml|safe }}
+    {% if enableHtmlInTexts %}
+      {{ doc.postText|linebreaks }}
+    {% else %}
+      {{ doc.postTextHtml|safe }}
+    {% endif %}
     </p>
     <p class="goodbye">
     {{ doc.goodbye }}
@@ -182,4 +195,5 @@
     {% endif %}
     </body>
 {% endautoescape %}
+{% endwith %}
 </html>

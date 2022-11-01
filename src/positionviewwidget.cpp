@@ -25,11 +25,9 @@
 #include <qdrawutil.h>
 
 #include "positionviewwidget.h"
-#include "unitmanager.h"
 #include "geld.h"
 #include "kraftsettings.h"
 #include "defaultprovider.h"
-#include "kraftdb.h"
 #include "itemtagdialog.h"
 #include "tagman.h"
 
@@ -170,17 +168,18 @@ PositionViewWidget::PositionViewWidget()
 void PositionViewWidget::setDocPosition( DocPositionBase *dp)
 {
   if( ! dp ) {
-    qCritical() << "setDocPosition got empty position!" << endl;
+    qCritical() << "setDocPosition got empty position!";
     return;
   }
 
   DocPosition *pos = static_cast<DocPosition*>(dp);
 
+  // FIXME: Do not keep this pointer ...
   mPositionPtr = pos;
 
   m_skipModifiedSignal = true;
 
-  m_teFloskel->setText( pos->text() );
+  m_teFloskel->setPlainText( pos->text() );
 
   lStatus->hide();
   lKind->hide();
@@ -209,17 +208,18 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
     } else {
         slotSetPositionKind(Kind::Normal, false);
     }
-    // qDebug () << "Setting position ptr. in viewwidget: " << pos << endl;
+    // qDebug () << "Setting position ptr. in viewwidget: " << pos;
   } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
     positionDetailStack->setCurrentWidget( discountPage );
-    // qDebug() << " " << dp->type()<< endl;
+    // qDebug() << " " << dp->type();
     Attribute discount = amap[DocPosition::Discount];
     mDiscountPercent->setValue( discount.value().toDouble() );
 
     QString selTag;
     if ( amap.contains( DocPosition::ExtraDiscountTagRequired ) ) {
       Attribute tagSelector = amap[DocPosition::ExtraDiscountTagRequired];
-      selTag = tagSelector.value().toString();
+      const TagTemplate tt = TagTemplateMan::self()->getTagTemplateFromId(tagSelector.value().toString());
+      selTag = tt.name();
     }
 
     /* Fill and set the extra discount selection combo */
@@ -241,7 +241,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
     }
     mDiscountTag->setCurrentIndex(mDiscountTag->findText( currentEntry ));
   } else {
-    // qDebug () << "unknown doc position type " << dp->type()<< endl;
+    // qDebug () << "unknown doc position type " << dp->type();
   }
   slotSetOverallPrice( currentPrice() );
 
@@ -301,7 +301,7 @@ QString PositionViewWidget::extraDiscountTagRestriction()
 
 void PositionViewWidget::slotTaggingButtonPressed()
 {
-  // qDebug () << "opening tagging dialog" << endl;
+  // qDebug () << "opening tagging dialog";
 
   ItemTagDialog dia( 0 );
 
@@ -311,7 +311,7 @@ void PositionViewWidget::slotTaggingButtonPressed()
     slotUpdateTagToolTip();
     slotModified();
     update();
-    // qDebug () << "Selected tags: " << mTags.join( ", " ) << endl;
+    // qDebug () << "Selected tags: " << mTags.join( ", " );
   }
 }
 
@@ -365,7 +365,7 @@ DocPositionBase::TaxType PositionViewWidget::taxType() const
 
 void PositionViewWidget::slotExecButtonPressed()
 {
-  // qDebug () << "Opening Context Menu over exec button" << endl;
+  // qDebug () << "Opening Context Menu over exec button";
 
   // set bg-color
   mExecPopup->popup( QWidget::mapToGlobal( pbExec->pos() ) );
@@ -381,7 +381,7 @@ void PositionViewWidget::slotMenuAboutToShow()
 
 void PositionViewWidget::slotMenuAboutToHide()
 {
-  // qDebug () << "Set normal again" << endl;
+  // qDebug () << "Set normal again";
   QPalette palette;
   setPalette( palette );
   pbExec->setChecked(false);
@@ -423,7 +423,7 @@ QString PositionViewWidget::stateString( const State& state ) const
 void PositionViewWidget::slotSetState( State state )
 {
   mState = state;
-  // qDebug () << "Setting new widget state " << stateString( state ) << endl;
+  // qDebug () << "Setting new widget state " << stateString( state );
   if( state == Active ) {
     mLockId->setEnabled( true );
     mUnlockId->setEnabled( false );
@@ -507,7 +507,7 @@ Geld PositionViewWidget::currentPrice()
     if ( position()->type() == DocPosition::ExtraDiscount ) {
       sum = mPositionPrice;
       if ( ! mPositionPriceValid ) {
-        qWarning() << "Asking for price of Discount item, but invalid!" << endl;
+        qWarning() << "Asking for price of Discount item, but invalid!";
       }
     } else {
       double amount = m_sbAmount->value();
@@ -544,7 +544,7 @@ void PositionViewWidget::slotModified( bool emitSignal )
 {
     Q_UNUSED(emitSignal)
   if(m_skipModifiedSignal) return;
-  // qDebug () << "Modified Position!" << endl;
+  // qDebug () << "Modified Position!";
 
   mModified = true;
 
@@ -635,7 +635,7 @@ void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
                 pre = kindLabel(Kind::Demand);
             }
             if (!pre.isEmpty()) {
-                m_teFloskel->setText(pre + text);
+                m_teFloskel->setPlainText(pre + text);
             }
         } else {
               // from demand to normal or alternative for example
@@ -644,7 +644,7 @@ void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
             } else {
                 text = kindLabel(kind) + cleanKindString(text);
             }
-            m_teFloskel->setText(text);
+            m_teFloskel->setPlainText(text);
         }
     }
 }
@@ -716,7 +716,7 @@ void PositionViewWidget::paintEvent ( QPaintEvent*)
       TagTemplate tagTemplate = TagTemplateMan::self()->getTagTemplate( tag );
 
       const QColor c = tagTemplate.color();
-      // qDebug() << "color: " << c.red() << ", " << c.green() << ", " << c.blue() << endl;
+      // qDebug() << "color: " << c.red() << ", " << c.green() << ", " << c.blue();
       painter->setBrush( c );
 
       int starty = 6+cnt*share;

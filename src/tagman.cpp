@@ -89,6 +89,7 @@ TagTemplate TagTemplateMan::getTagTemplate( const QString& name )
     TagTemplateValueVector::iterator it;
     for( it = mTagTmpl.begin(); it != mTagTmpl.end(); ++it )
     {
+        // FIXME: Case insensitive here !!!
         if( (*it).name() == name ) return (*it);
     }
     return TagTemplate();

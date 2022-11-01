@@ -1,0 +1,580 @@
+/* Zeichensatz: */
+
+@charset "UTF-8";
+
+
+/* Fonts: */
+/* as this document will always be rendered on the same small set of
+ * machines using web fonts off the web may be overkill and create
+ * unnecessary traffic and extended rendering times. It is far better to
+ * download the woff-files from their source and store them besides this
+ * file (or use a specified path for them). You can yúse OTF and TTF 
+ * files just as well.
+ */
+
+/*
+@import url("https://fonts.googleapis.com/css?family=Calibri|Oxygen|Pacifico|Open+Sans+Pro:400,700,400italic,700italic,400bold");
+@import url("https://fonts.googleapis.com/css?family=Consolas|Inconsolata:400,700,400italic,700italic");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+@import url("https://fonts.googleapis.com/css?family=Raleway");
+@import url("https://fonts.googleapis.com/css?family=Calibri:400");
+@import url("https://fonts.googleapis.com/css?family=Calibri:700");
+@import url("https://fonts.googleapis.com/css?family=Calibri:400italic");
+@import url("https://fonts.googleapis.com/css?family=Calibri:700italic");
+@import url("https://fonts.googleapis.com/css?family=Calibri:400bold");
+*/
+/*
+@import url("https://fonts.googleapis.com/css?family=Consolas:400");
+@import url("https://fonts.googleapis.com/css?family=Consolas:700");
+@import url("https://fonts.googleapis.com/css?family=Consolas:400italic");
+@import url("https://fonts.googleapis.com/css?family=Consolas:700italic");
+*/
+
+@font-face {
+  font-family: "Arial Narrow";
+  src: url("../Fonts/Arial Narrow.ttf") format(truetype);
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Barmeno";
+  src: url("../Fonts/Barmeno-Regular.otf") format(opentype);
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("../Fonts/Calibri.ttf") format(truetype), url("../Fonts/Calibri.woff2") format(woff2);
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("../Fonts/Calibri-Bold.ttf") format(truetype), url("../Fonts/Calibri-Bold.woff2") format(woff2);
+  font-style: normal;
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("../Fonts/Calibri-Italic.ttf") format(truetype), url("../Fonts/Calibri-Italic.woff2") format(woff2);
+  font-style: italic;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Calibri";
+  src: url("../Fonts/Calibri-BoldItalic.ttf") format(truetype), url("../Fonts/Calibri-BoldItalic.woff2") format(woff2);
+  font-style: italic;
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Consolas";
+  src: url("../Fonts/consola.ttf") format(truetype);
+  font-style: normal;
+  font-weight: normal;
+}
+
+
+/* General page settings for printouts */
+
+@page {
+  size: A4 portrait;
+  margin-left: 0;
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
+/* if you set page margins the position: absolute; items will not be absolute anymore... */
+@page :first {
+  margin-left: 25mm;
+  margin-top: 0;
+  margin-right: 20mm;
+  margin-bottom: 40mm;
+}
+
+@page :left {
+  margin-left: 20mm;
+  margin-top: 20mm;
+  margin-right: 25mm;
+  margin-bottom: 15mm;
+}
+
+@page :right {
+  margin-left: 25mm;
+  margin-top: 20mm;
+  margin-right: 20mm;
+  margin-bottom: 15mm;
+}
+
+@page :blank {
+}
+
+
+/* Everything in here should only be relevant for printing BUT if you want
+ * to test your design in a browser it might be a good idea to remove the
+ * @media print {} block
+ */
+
+/* @media print { */
+
+/* Watermark: Nike. DON'T DO IT. */
+
+/* takes long, opacity is not working as expected in 2022
+  body :before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0; 
+    background: url(BNC-watermark.png);
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    z-index: -1;
+    opacity: 0.05;
+  }
+*/
+
+/* Page Breaks */
+
+/* The following settings are possible:
+    page-break-after  : auto | always | avoid | left | right
+    page-break-before : auto | always | avoid | left | right
+    page-break-inside : auto | avoid
+*/
+
+  h1 {
+    page-break-before: always;
+  }
+
+  h1, h2, h3, h4, h5, h6, h7 {
+    page-break-after: avoid;
+  }
+
+  table, tr, figure {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+/* page break class; use as <div class="pagebreak"> </div> to insert */
+
+  .pagebreak { page-break-before: always; }
+
+
+/* DIN 5008 address field */
+/* height 45mm. Address starts 17.7mm from top, 6 linex max. Additional
+ * remarks go upwards into the upper 17.7mm, 5 lines max.
+ * see https://www.workingoffice.de/din-5008/adresse-nach-din-5008/
+*/
+  .ISO-address-window {
+    font-family: Calibri;
+    font-size: 8pt;
+    font-style: normal;
+    line-height: 1.1;
+    position: absolute;
+    display: block;
+    white-space: pre-line;
+    top: 45mm;
+/*  top: 62.7mm; */
+    left: 20mm;
+    width: 90mm;
+    height: 45mm; 
+  }
+
+  .address-field {
+    position: absolute;
+    display: block;
+    white-space: pre-line;
+    font-size: 10pt;
+    font-style: normal;
+    line-height: 1.2;
+    top: 55mm;
+    left: 0mm;
+    width: 80mm;
+    height: 36.3mm;
+  }
+  
+  .buyer-reference {
+    position: absolute;
+    font-family: Calibri;
+    font-size: 10pt;
+    line-height: 1.25;
+    top: 93mm;
+    left: 98mm;
+    width: 400mm;
+    height: 20pt;
+  }
+
+  .date {
+    position: absolute;
+    font-family: Calibri;
+    font-size: 12pt;
+    font-weight: bold;
+    line-height: 1;
+    top: 93mm;
+    left: 144mm;
+    width: 30mm;
+    height: 12pt;
+  }
+  
+  .document-type-and-number {
+    position: absolute;
+    font-family: Barmeno;
+    font-size: 12pt;
+    font-weight: bold;
+    line-height: 1.2;
+    top: 110mm;
+    left: 0mm;
+    width: 165mm;
+    height: 36pt;
+  }
+
+  .header-block-1 {
+    position: absolute;
+    font-family: Barmeno;
+    font-size: 10pt;
+    line-height: 1.25;
+    top: 45mm;
+    left: 98mm;
+    width: 40mm;
+    height: 40mm;
+  }
+  
+  .header-block-2 {
+    position: absolute;
+    font-family: Barmeno;
+    font-size: 10pt;
+    line-height: 1.25;
+    top: 45mm;
+    left: 144mm;
+    width: 40mm;
+    height: 40mm;
+  }
+  
+  .project {
+    position: absolute;
+    font-family: Calibri;
+    font-size: 10pt;
+    font-weight: bold;
+    line-height: 1;
+    top: 125mm;
+    left: 0mm;
+    width: 165mm;
+  }
+
+/* report area; item styling */
+
+  .doc-items {
+    border-collapse: collapse;
+    width: 165mm;
+    table-layout: fixed;
+    page-break-inside:avoid;
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+
+  .doc-items-header { /* meaning all th (table header) cells in a table of class doc-item */
+    vertical-align: top;
+    line-height: 1.1;
+    box-sizing: border-box;
+    border-collapse:
+    padding-top: 2mm;
+    padding-left: 2mm;
+    padding-right: 2mm;
+    border: solid;
+    border-spacing: 1px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  table.doc-items td { /* meaning all td cells in a table of class doc-item -- remember, every item might be  in its own table */
+    vertical-align: top;
+    line-height: 1.1;
+    box-sizing: border-box;
+    padding-top: 2mm;
+    padding-left: 2mm;
+    padding-right: 2mm;
+  }
+
+  .doc-item-style-individualTaxation {
+    vertical-align: super;
+    font-size: 60%;
+  }
+
+  .col-item-no {
+    vertical-align: top;
+    width: 6%;
+  }
+
+  .col-item-text {
+    width: 75%;
+  }
+
+  .col-item-alternative {
+    width: 75%;
+  }
+
+  .col-item-comment {
+    width: 75%;
+  }
+
+  .col-item-ondemand {
+    width: 75%;
+  }
+
+  .col-item-standard {
+    width: 75%;
+  }
+
+  .col-item-amount {
+    width: 52%;
+  }
+
+  .col-item-unit {
+    width: 12%;
+  }
+
+  .col-item-unitprice {
+    width: 15%;
+  }
+
+  .col-item-total {
+    width: 15%;
+    color: #000000;
+    font-weight: bold;
+  }
+
+
+/* totals, taxes and bottom text */
+
+  .totals {
+    width: 165mm;
+/*  table-layout: fixed; /* this somehow adds 2mm horizontal spacing and messes everyting up */
+    vertical-align: top;
+    line-height: 1.25;
+    box-sizing: border-box;
+    text-align: right;
+    bottom: 0;
+    /* The following margins pull the whole box to the right */
+    margin-right: 0;
+    margin-left: 0;
+    margin-top: 8mm; /*separation between items and sums */
+    margin-bottom: 12mm; /* separation between sums and footer text */
+  }
+
+  table.totals td { 
+    box-sizing: border-box;
+    padding-top: 2mm;
+    padding-left: 2mm;
+    padding-right: 2mm;
+  }
+
+  .totals-col-spacer {
+    padding-top: 1mm;
+    width: 60%;
+  }
+
+  .totals-col-label {
+    padding-top: 1mm;
+    width: 20%;
+  }
+
+  .totals-col-value {
+    padding-top: 1mm;
+    width: 20%;
+  }
+
+  .totals-first-line {
+      border-top: solid black 1px;
+  }
+
+  .totals-final-line {
+      border-top: solid black 1px;
+      border-bottom: solid black 2px;
+  }
+
+  .entrytext {
+  }
+
+  .entrytext-unprocessed {
+    white-space: pre-line;
+  }
+
+  .bottomtext {
+  }
+
+  .bottomtext-unprocessed {
+    white-space: pre-line;
+  }
+
+  .goodbye {
+  }
+
+
+/* This will be the style for the first element of the "report area" of the printout.
+ * Due to absolute positioning of blocks above it it is impossible to adjust the
+ * start of that zone using a top margin. It will be used on an otherwise
+ * empty div.
+ */
+  .generate-first-page-margin {
+    font-family: Calibri;
+    font-size: 10pt;
+    line-height: 1.2;
+    left: 0mm;
+    width: 165mm;
+    padding-top: 135mm;
+  }
+
+
+/* Tables with units konsiting of multiple rows might be getting a page break 
+ * inserted where it hurts. This will avoid them.
+ */
+ .no-page-break-inside {
+   page-break-inside: auto;
+ }
+
+/* these classes can be used for debugging whenever you don't understand
+ * what is happening to your positioning just add one of these classes 
+ * to your HTML <DIV>s 
+ */
+
+  .DEBUG-box-black {
+    border: 0.1mm solid black;
+  }
+
+  .DEBUG-box-red {
+    border: 0.1mm solid red;
+  }
+
+  .DEBUG-box-green {
+    border: 0.1mm solid green;
+  }
+
+  .DEBUG-box-blue {
+    border: 0.1mm solid blue;
+  }
+
+/* bad style to do things not based on semantic grouping, but... */
+
+/* text alignment within an element */
+
+  .align-center {
+    text-align: center;
+  }
+  
+  .align-left {
+      text-align: left;
+  }
+
+  .align-right {
+    text-align: right;
+  }
+
+  .align-justify {
+    text-align: right;
+  }
+
+  .superscript {
+    vertical-align: super;
+    font-size: 60%;
+  }
+
+  .subscript {
+    vertical-align: sub;
+    font-size: 60%;
+  }
+
+  .weight-bold {
+    font-weight: bold;
+  }
+
+  .weight-normal  {
+    font-weight: normal;
+  }
+
+
+/* explicit font settings */
+
+  .main-font-regular-6 {
+    font-family: 'Calibri';
+    font-size: 6pt;
+  }
+
+  .main-font-regular-8 {
+    font-family: 'Calibri';
+    font-size: 8pt;
+  }
+
+  .main-font-regular-10 {
+    font-family: 'Calibri';
+    font-size: 10pt;
+  }
+
+  .main-font-regular-12 {
+    font-family: 'Calibri';
+    font-size: 12pt;
+  }
+
+
+/* classless settings for the entire document */
+
+  html {
+    font-family: 'Calibri';
+    font-size: 10pt;
+    line-height: 1.2;
+    margin: 0px;
+  }
+
+/* A perverse invention by Google: There is a browser built-in CSS style
+ * sheet defining certain settings "to make the web look like it should".
+ * The worst part are implicit margin settigs that affect any element
+ * without "position: absolute;". While this might be a good idea for a web
+ * browser it makes print layout an educated guess.
+ */
+  body{
+    margin: 0px;
+  }
+
+  table {
+    border-collapse: collapse;
+    vertical-align: top;
+    box-sizing: border-box;
+  }
+
+  th {
+    border-bottom: .2mm solid #555;
+    color: #555;
+    font-size: 10pt;
+    font-weight: 400;
+/*  padding-bottom: .25cm; */
+  }
+
+  td {
+    vertical-align: top;
+  }
+
+/* } /* @media print} */
+
+/* The following style definitions are intended to be used in multi-line
+ * text entries as poor man's easy-to-use HTML building blocks. Use them
+ * inside <SPAN>s for text effects.
+ */
+ 
+.font-barmeno {
+  font-family: Bameno;
+}
+
+.font-consolas {
+  font-family: Consolas;
+}
+

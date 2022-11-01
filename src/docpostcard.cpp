@@ -48,8 +48,8 @@ void DocPostCard::setHeaderData( const QString& type,  const QString& date,
 
 QString DocPostCard::htmlify( const QString& str ) const
 {
-  QStringList li = str.toHtmlEscaped().split( "\n" );
-  return QL1("<p>") + li.join( "</p><p>" ) + QL1("</p>");
+    QStringList li = str.toHtmlEscaped().split( "\n" );
+    return QL1("<p>") + li.join( "</p><p>" ) + QL1("</p>");
 }
 
 #define REDUCED_TAX_MARK "&#xB2;"

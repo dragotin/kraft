@@ -31,39 +31,24 @@
 #include <QDialog>
 
 // application specific includes
-#include "kraftdb.h"
 #include "kraftsettings.h"
 #include "kraftview_ro.h"
 #include "kraftdoc.h"
-#include "portal.h"
 #include "ui_docheader.h"
-#include "docassistant.h"
 #include "positionviewwidget.h"
 #include "ui_docfooter.h"
 #include "docposition.h"
-#include "unitmanager.h"
-#include "docpostcard.h"
-#include "kataloglistview.h"
-#include "katalogman.h"
-#include "templkatalog.h"
-#include "templkataloglistview.h"
-#include "catalogselection.h"
-#include "kraftdocheaderedit.h"
-#include "kraftdocpositionsedit.h"
-#include "kraftdocfooteredit.h"
-#include "inserttempldialog.h"
 #include "defaultprovider.h"
-#include "stockmaterial.h"
-#include "templtopositiondialogbase.h"
 #include "doctype.h"
-#include "catalogtemplate.h"
 #include "format.h"
+#include "htmlview.h"
+#include "texttemplate.h"
+#include "documentman.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "texttemplate.h"
-#include "documentman.h"
+
 
 // #########################################################
 
@@ -99,7 +84,7 @@ KraftViewRO::~KraftViewRO()
 
 QString KraftViewRO::htmlify( const QString& str ) const
 {
-  QStringList li = str.toHtmlEscaped().split( "\n" );
+  const QStringList li = str.toHtmlEscaped().split( "\n" );
   return QL1("<p>") + li.join( "</p><p>" ) + QL1("</p>");
 }
 
@@ -255,7 +240,8 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     setWindowTitle( m_doc->docIdentifier() );
 
     mHtmlView->setTitle( doc->docIdentifier() );
-    mHtmlView->displayContent(tmpl.expand());
+    const QString html = tmpl.expand();
+    mHtmlView->displayContent(html);
 }
 
 void KraftViewRO::slotLinkClicked(const QString& link)

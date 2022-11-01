@@ -51,6 +51,13 @@ target_link_libraries(t_doctype ${test_libs})
 
 # ============================================================
 
+add_executable(t_attributes t_attributes.cpp)
+add_test(t_attributes t_attributes)
+
+target_link_libraries(t_attributes ${test_libs})
+
+# ============================================================
+
 set(TESTS_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 configure_file ("testconfig.h.in" "testconfig.h")
 

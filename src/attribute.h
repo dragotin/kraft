@@ -46,9 +46,9 @@ class KRAFTCAT_EXPORT Attribute
     bool     listValue() const;
     void     setListValue( bool );
     void     setPersistant( bool ); // TODO: Remove this unneeded method
-    bool     useRelationTable() const;
-    void     setValueRelation( const QString&, const QString&, const QString& );
     QString  toString() const;
+    bool     isMarkedDeleted() const { return mDelete; }
+
 private:
     void     setRawValue( const QVariant& var ); // sets the value without checking for relations
     QString  mName;
@@ -56,10 +56,6 @@ private:
     bool     mPersist;
     bool     mListValue;
     bool     mDelete;  // Delete the attribute on save. Written and read by the attributemap
-
-    QString mTable;
-    QString mIdCol;
-    QString mStringCol;
 };
 
 /*
@@ -68,7 +64,6 @@ private:
 class KRAFTCAT_EXPORT AttributeMap: public QMap<QString, Attribute>
 {
 public:
-  AttributeMap();
   AttributeMap( const QString& );
 
   bool hasAttribute( const QString& ) const;
