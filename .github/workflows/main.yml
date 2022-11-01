@@ -31,7 +31,9 @@ jobs:
             "cmake(Qt5Test)" \
             "cmake(Qt5Widgets)" \
             "cmake(Qt5Xml)" \
+            "cmake(Qt5Svg)" \
             libQt5Sql5-sqlite \
+            libQt5Sql5-mysql \
             libqt5-qtdeclarative-tools
 
       - uses: actions/checkout@v3

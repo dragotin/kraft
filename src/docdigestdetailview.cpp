@@ -18,7 +18,6 @@
 #include <QtGui>
 #include <QDebug>
 #include <QHBoxLayout>
-#include <QStandardPaths>
 #include <QSqlQuery>
 
 #include <klocalizedstring.h>

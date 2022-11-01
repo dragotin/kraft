@@ -391,7 +391,7 @@ void DocTypeEdit::slotTemplateUrlChanged( const QString& newUrl )
     dt = mChangedDocTypes[docType];
   }
 
-  if ( newUrl != dt.defaultTemplateFile() ) {
+  if ( newUrl != dt.templateFile() ) {
     dt.setTemplateFile( newUrl );
     mChangedDocTypes[docType] = dt;
   }

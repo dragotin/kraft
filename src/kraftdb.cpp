@@ -309,38 +309,32 @@ SqlCommandList KraftDB::parseCommandFile( int currentVersion )
 SqlCommandList KraftDB::parseCommandFile( const QString& file )
 {
     QString sqlFile;
-    QString env = QString::fromUtf8( qgetenv( "KRAFT_HOME" ) );
-    if( !env.isEmpty() && env.right(1) != QDir::separator () ) {
-        env += QDir::separator ();
-    }
 
-    QString driverPrefix = "mysql"; // Default on mysql
+    QString driverPrefix{"mysql"}; // Default on mysql
     if( mDatabaseDriver.toLower() == "qsqlite") {
         driverPrefix = "sqlite3";
     }
 
     // qDebug() << "XXXXXXXXXX: " << stdDirs.resourceDirs("data");
+    // Package or AppImage
+    const QString fragment = QString("dbmigrate/%1/%2").arg(driverPrefix).arg(file );
+    sqlFile = DefaultProvider::self()->locateFile(fragment);
 
-    if( env.isEmpty() ) {
-        // Environment-Variable is empty, search in KDE paths
-        QString fragment = QString("kraft/dbmigrate/%1/%2").arg(driverPrefix).arg(file );
-        sqlFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, fragment );
-        // qDebug () << "Searching for this fragment: " << fragment;
-        // search in dbcreate as well.
-        if ( sqlFile.isEmpty() ) {
-            fragment = QString("kraft/dbinit/%1/%2").arg(driverPrefix).arg(file );
-            // qDebug () << "Also searching in " << fragment;
-            sqlFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, fragment );
-        }
-    } else {
-        // read from environment variable path
-        QString envPath = QString( "%1/database/%2/%3").arg(env).arg(driverPrefix).arg(file);
-        // qDebug () << "Environment variable KRAFT_HOME set, searching for DB setup files in " << envPath;
-        if( QFile::exists( envPath ) ) {
-            sqlFile = envPath;
-        } else if( QFile::exists( QString( "%1/database/%2/migration/%3").arg(env).arg(driverPrefix).arg(file ) ) ){
-            sqlFile = QString( "%1/database/%2/migration/%3").arg(env).arg(driverPrefix).arg(file );
-        }
+    // dbinit files:
+    if (sqlFile.isEmpty()) {
+        const QString envPath = QString( "dbinit/%1/%2").arg(driverPrefix).arg(file);
+        sqlFile = DefaultProvider::self()->locateFile(envPath);
+    }
+
+    // KRAFT_HOME files:
+    if (sqlFile.isEmpty()) {
+        const QString envPath = QString( "database/%1/%2").arg(driverPrefix).arg(file);
+        sqlFile = DefaultProvider::self()->locateFile(envPath);
+    }
+    // still KRAFT_HOME files:
+    if (sqlFile.isEmpty()) {
+        const QString envPath = QString( "database/%1/migration/%2").arg(driverPrefix).arg(file);
+        sqlFile = DefaultProvider::self()->locateFile(envPath);
     }
 
     SqlCommandList retList;
@@ -429,31 +423,31 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
 
 QList<MetaDocTypeAdd> KraftDB::parseMetaFile( int currentVersion )
 {
-    const QString fileName = QString("%1_meta.xml").arg(currentVersion);
+    QString lookup= QString( "meta/%1_meta.xml").arg(currentVersion);
 
-    QString env = QString::fromUtf8( qgetenv( "KRAFT_HOME" ) );
-    if( !env.isEmpty() && env.right(1) != QDir::separator () ) {
-        env += QDir::separator ();
+    // if KRAFT_HOME is set, the lookup path must be prepended with database
+    const QByteArray env = qgetenv("KRAFT_HOME");
+    if( !env.isEmpty()) {
+        lookup.prepend("database/");
     }
-    QString xmlFile;
-    if( !env.isEmpty() ) {
-        xmlFile = env + QLatin1String("database/meta/") + fileName;
-    } else {
-        const QString fragment = QString("kraft/meta/") + fileName;
-        xmlFile = QStandardPaths::locate(QStandardPaths::GenericDataLocation, fragment );
+    const QString xmlFile = DefaultProvider::self()->locateFile(lookup);
+
+    if (xmlFile.isEmpty()) {
+        // it is fine to not find the XML file
+        return QList<MetaDocTypeAdd>();
     }
     QFile f( xmlFile );
     MetaXMLParser parser;
     if( f.exists() ) {
         if ( !f.open( QIODevice::ReadOnly ) ) {
-            qDebug () << "FATAL: Could not open " << xmlFile << endl;
+            qWarning() << "FATAL: Could not open " << xmlFile << endl;
         } else {
             QTextStream ts( &f );
             ts.setCodec("UTF-8");
             parser.parse( &f );
         }
     } else {
-        qDebug() << "XML Metafile" << xmlFile << "does not exist!";
+        qWarning() << "XML Metafile" << xmlFile << "does not exist!";
     }
 
     return parser.metaDocTypeAddList();

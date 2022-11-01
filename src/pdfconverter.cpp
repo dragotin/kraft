@@ -54,7 +54,7 @@ void ReportLabPDFConverter::convert(const QString& sourceFile, const QString &ou
 
     // findTrml2Pdf returns a list of command line parts for the converter, such as
     // /usr/bin/pyhton3 /usr/local/share/erml2pdf.py
-    QStringList rmlbin = DefaultProvider::self()->findTrml2Pdf();
+    QStringList rmlbin = DefaultProvider::self()->locatePythonTool("erml2pdf.py");
 
     if ( ! rmlbin.size() ) {
       emit converterError(ConvError::TrmlToolFail);
@@ -188,7 +188,7 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
     args << sourceFile;
     args << mFile.fileName();
 
-    qDebug() << "Arguments for weasyprint:" << args;
+    qDebug() << "Calling converter:" << prg << args;
     mProcess->setProgram( prg );
     mProcess->setArguments(args);
     mOutput.clear();

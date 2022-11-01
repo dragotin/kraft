@@ -67,7 +67,6 @@ class KRAFTCAT_EXPORT DocType
   QString     numberCycleName();
   void        setNumberCycleName( const QString& );
 
-  QString     defaultTemplateFile() const;
   QString     templateFile();
   void        setTemplateFile( const QString& );
 
@@ -108,7 +107,6 @@ private:
   QString      mIdentTemplate;
   bool         mDirty;
   QString      mMergeIdent;
-
   static idMap mNameMap;
 };
 

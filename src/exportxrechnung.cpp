@@ -16,9 +16,7 @@
  ***************************************************************************/
 
 // include files for Qt
-#include <QStandardPaths>
 #include <QDebug>
-#include <QSqlQuery>
 #include <QDir>
 
 #include "exportxrechnung.h"

@@ -43,12 +43,14 @@ PortalView::PortalView(QWidget *parent, const char*)
       mCatalogBrowser(nullptr),
       mSystemBrowser(nullptr)
 {
+    const QSize iSize{64,64};
+
     _contentsWidget = new QListWidget(this);
     _contentsWidget->setViewMode(QListView::IconMode);
-    _contentsWidget->setIconSize(QSize(96, 84));
+    _contentsWidget->setIconSize(iSize);
     _contentsWidget->setMovement(QListView::Static);
-    _contentsWidget->setMaximumWidth(128);
-    _contentsWidget->setSpacing(12);
+    _contentsWidget->setMaximumWidth(132);
+    _contentsWidget->setSpacing(0);
 
     _pagesWidget = new QStackedWidget(this);
     _pagesWidget->addWidget(documentDigests());
@@ -56,7 +58,7 @@ PortalView::PortalView(QWidget *parent, const char*)
     _pagesWidget->addWidget(katalogDetails()); // catalogs
     _sysPageIndx = _pagesWidget->addWidget(systemDetails()); // system
 
-    createIcons();
+    createIcons(iSize);
     _contentsWidget->setCurrentRow(0);
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout;
@@ -77,26 +79,41 @@ PortalView::~PortalView( )
 {
 }
 
-void PortalView::createIcons()
+void PortalView::createIcons(const QSize& iconSize)
 {
+    QSize sHint{128, 100};
+
+    // Scale the icon via a pixmap, as in AppImages, for some reasons the icons are small
+    // stackoverflow reports that svg icons can not be scaled up.
+    auto icon = [iconSize](const QIcon& i) {
+        const QPixmap pix = i.pixmap(iconSize);
+        QIcon icon(pix);
+        QList<QSize> sizes = icon.availableSizes();
+        qDebug() << "III" << sizes;
+        return icon;
+    };
+
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
-    documentsButton->setIcon(DefaultProvider::self()->icon("file-description"));
+    documentsButton->setIcon(icon(DefaultProvider::self()->icon("file-description")));
     documentsButton->setText(i18n("Documents"));
     documentsButton->setTextAlignment(Qt::AlignHCenter);
     documentsButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    documentsButton->setSizeHint(sHint);
 
     QListWidgetItem *timeLineButton = new QListWidgetItem(_contentsWidget);
-    timeLineButton->setIcon(DefaultProvider::self()->icon("file-chart"));
+    timeLineButton->setIcon(icon(DefaultProvider::self()->icon("file-chart")));
     timeLineButton->setText(i18n("Timeline"));
     timeLineButton->setTextAlignment(Qt::AlignHCenter);
     timeLineButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    timeLineButton->setSizeHint(sHint);
 
     QListWidgetItem *catButton = new QListWidgetItem(_contentsWidget);
 
-    catButton->setIcon(DefaultProvider::self()->icon("book"));
+    catButton->setIcon(icon(DefaultProvider::self()->icon("book")));
     catButton->setText(i18n("Catalogs"));
     catButton->setTextAlignment(Qt::AlignHCenter);
     catButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    catButton->setSizeHint(sHint);
 
     connect( _contentsWidget, &QListWidget::itemClicked,
              this, &PortalView::changePage);
@@ -332,7 +349,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   tmpl.setValue( "EXTERNAL_TOOLS_LABEL", i18n( "External Tools" ) );
 
   tmpl.setValue( "RML2PDF_TOOL_LABEL", i18n( "RML to PDF conversion tool" ) );
-  const QStringList trml2pdf = DefaultProvider::self()->findTrml2Pdf();
+  const QStringList trml2pdf = DefaultProvider::self()->locatePythonTool("erml2pdf.py");
   QString trml2pdfValue = (trml2pdf.count() ? trml2pdf.join(" ") : i18n("not found!") );
   tmpl.setValue( "RML2PDF_TOOL", trml2pdfValue );
 

@@ -212,13 +212,7 @@ QString DefaultProvider::locateFile(const QString& findFile) const
     QString re;
     const QString kraftHome = QString::fromUtf8(qgetenv( "KRAFT_HOME" ));
 
-    auto dirs = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
-
-    if (kraftHome.isEmpty()) {
-        // prepend the kraft path segment and look in the system resources
-        QString fifi {findFile};
-        re = QStandardPaths::locate( QStandardPaths::AppDataLocation, fifi);
-    } else {
+    if (!kraftHome.isEmpty()){
         // KRAFT_HOME is set
         QString fifi {kraftHome};
         if (!fifi.endsWith('/') && !findFile.startsWith('/'))
@@ -241,6 +235,13 @@ QString DefaultProvider::locateFile(const QString& findFile) const
         }
     }
 
+    // check the system paths
+    if (re.isEmpty()) {
+        // prepend the kraft path segment and look in the system resources
+        QString fifi {findFile};
+        re = QStandardPaths::locate( QStandardPaths::AppDataLocation, fifi);
+    }
+
     if (re.isEmpty()) {
         qDebug() << "locateFile could not find file " << findFile;
     }
@@ -248,7 +249,7 @@ QString DefaultProvider::locateFile(const QString& findFile) const
     return re;
 }
 
-QString DefaultProvider::locateKraftTool(const QString& toolName) const
+QStringList DefaultProvider::locatePythonTool(const QString& toolName) const
 {
     QString fullPath;
 
@@ -265,16 +266,30 @@ QString DefaultProvider::locateKraftTool(const QString& toolName) const
     if (!fi.exists()) {
         fullPath.clear();
     }
-    qDebug() << "Returning tool path" << fullPath << "for" << toolName;
-    return fullPath;
+
+    // -- check for python.
+    // Default is python3
+    // If Kraft is running from an AppImage, we rather use the python from conda which is
+    // installed in a relative path.
+    QString python {"python3"};
+    const QString pypath = QCoreApplication::applicationDirPath() + QStringLiteral("/../conda/bin/python");
+    QFileInfo fip(pypath);
+    if (fip.exists() && fip.isExecutable()) {
+        python = fip.canonicalFilePath();
+    }
+
+    QStringList rep {python, fullPath};
+    qDebug() << "Returning tool path" << rep;
+
+    return rep;
 }
 
 QString DefaultProvider::locateBinary(const QString& name) const
 {
     // check the current app path and check if the binary is in there. (AppImage)
-    QString path = QCoreApplication::applicationDirPath();
-    QFileInfo fi{path};
-    fi.setFile(name);
+    const QString path = QCoreApplication::applicationDirPath();
+    const QString localPrg = QString("%1/%2").arg(path).arg(name);
+    QFileInfo fi{localPrg};
 
     if (fi.exists() && fi.isExecutable()) {
         qDebug() << "Returning tool path" << fi.absoluteFilePath() << "for" << name;
@@ -284,35 +299,6 @@ QString DefaultProvider::locateBinary(const QString& name) const
     const QString bin = QStandardPaths::findExecutable( name );
 
     return bin;
-}
-
-
-QStringList DefaultProvider::findTrml2Pdf( ) const
-{
-    // define the default value to compare against, to see if there is a custom
-    // value in the settings file.
-    const QString rmlbinDefault = QStringLiteral( "trml2pdf" ); // FIXME: how to get the default value?
-    const QString rmlbin = KraftSettings::self()->trml2PdfBinary();
-
-    // qDebug () << "### Start searching rml2pdf bin: " << rmlbin;
-
-    QStringList retList;
-    // mHavePdfMerge = false;
-
-    if ( rmlbin != rmlbinDefault ) {
-        retList = rmlbin.split(QChar(' '), QString::SkipEmptyParts);
-    } else {
-        const QString ermlpy = locateKraftTool("erml2pdf.py");
-        if (!ermlpy.isEmpty()) {
-            retList.append("python3");
-            retList.append(ermlpy);
-        }
-    }
-    if ( retList.isEmpty() ) {
-        qDebug () << "ReportLab based PDF conversion script not found!";
-    }
-
-    return retList;
 }
 
 bool DefaultProvider::writeXmlArchive()

@@ -36,8 +36,8 @@
 
 int main(int argc, char *argv[])
 {
-    KLocalizedString::setApplicationDomain("kraft");
     Q_INIT_RESOURCE(kraft);
+    const QByteArray domain {"kraft"};
 
     qRegisterMetaType<ArchDocPositionList>("ArchDocPositionList");
 
@@ -46,6 +46,11 @@ int main(int argc, char *argv[])
     app.setApplicationName("kraft");
     app.setApplicationDisplayName("Kraft");
     app.setApplicationVersion(QString("version %1").arg(KRAFT_VERSION));
+
+    const QString path = QCoreApplication::applicationDirPath()+ QStringLiteral("/../share/locale");
+    qDebug() << "Setting additional Locale path:" << path;
+    KLocalizedString::setApplicationDomain(domain.data());
+    KLocalizedString::addDomainLocaleDir(domain, path);
 
     QCommandLineParser parser;
     parser.addVersionOption();

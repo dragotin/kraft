@@ -45,7 +45,7 @@ class KRAFTCAT_EXPORT Attribute
     bool     persistant();
     bool     listValue() const;
     void     setListValue( bool );
-    void     setPersistant( bool );
+    void     setPersistant( bool ); // TODO: Remove this unneeded method
     QString  toString() const;
     bool     isMarkedDeleted() const { return mDelete; }
 

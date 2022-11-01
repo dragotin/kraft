@@ -21,7 +21,6 @@
 #include <KLocalizedString>
 #include <QLocale>
 #include <QUrl>
-#include <QStandardPaths>
 #include <QDebug>
 #include <QTextDocument>
 

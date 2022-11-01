@@ -17,7 +17,7 @@ scripts:
       #! /bin/bash
       set -eo pipefail
       own_path="$(dirname "$(readlink -f "$0")")"
-      exec "$own_path"/../conda/bin/python -m weasyprint
+      exec "$own_path"/../conda/bin/python -m weasyprint "$@"
       EOF
       chmod +x "$BUILD_DIR"/AppDir/usr/bin/weasyprint
 
@@ -26,6 +26,9 @@ appimage:
     plugins:
       - qt
       - conda
+      - https://github.com/linuxdeploy/misc-plugins/raw/master/grantlee5/linuxdeploy-plugin-grantlee5.sh 
     environment:
       UPD_INFO: "gh-releases-zsync|dragotin|kraft|latest|Kraft-*x86_64.AppImage.zsync"
-      PIP_REQUIREMENTS: "weasyprint"
+      PIP_REQUIREMENTS: "weasyprint reportlab pypdf2"
+      GRANTLEE5_PLUGINS_DIR: "/usr/lib64/grantlee/5.2/"
+
