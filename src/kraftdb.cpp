@@ -230,6 +230,7 @@ int KraftDB::checkConnect( const QString& host, const QString& dbName,
     }
     int re = 0;
 
+    m_db.setConnectOptions("MYSQL_OPT_RECONNECT=1");
     m_db.open();
     if ( m_db.isOpenError() ) {
          qDebug () << "ERR opening the db: " << m_db.lastError().text() <<
