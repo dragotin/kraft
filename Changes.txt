@@ -1,9 +1,30 @@
 Changes since version 0.98: #########################################
 
-=> release v. 0.99 (Aug x, 2022)
-
 - Have two new merge modes for the watermark tool
 - PDF watermark tool can also append PDF files now
+- Add numbercycle day counter variable (#138)
+- Test improvements and new tests added
+- User manual improvements 
+- Localized screenshots in the user manual (Thx Ronald)
+- Demand and Alternative: Do not overwrite custom prefix
+- Default Demand and Alternative text configurable in prefix dialog
+- Add more variables to weasyprint (#166)
+- Ability to add EPC QR code to invoices (Giro Code)
+- Maintain users bank account to be included in documents
+- Add some metadata to the html representation (weasyprint)
+- Use custom icons for all icons in Krafti (#175)
+- Experimental: html tags in pre- and post tags and items & catalogs
+- Add more contrib documents from Achim (BNC)
+- Database refresh only in readonly mode
+- Huge improvements to the AppImage build (#191)
+
+- Fix: Numbercycle dialog with day counter (#138)
+- Fix: Strikeout for deleted items working again
+- Fix: Delete column in sqlite migrations (#162)
+- Fix: Add -p switch to call of weasyprint (html presentational hints)
+- Fix: Set reconnect option for MySQL (#183)
+
+=> release v. 0.99 (Nov. x, 2022)
 
 Changes since version 0.97: #########################################
 
