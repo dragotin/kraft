@@ -162,6 +162,7 @@ void WeasyPrintPDFConverter::convert(const QString& sourceFile, const QString& o
     QFileInfo prgInfo(prg);
     if ( ! prgInfo.exists() || ! prgInfo.isExecutable() ) {
         emit converterError(ConvError::WeasyPrintNotFound);
+        return;
     }
 
     mFile.setFileName(outputFile);
