@@ -133,7 +133,6 @@
          <sup><small>{{ item.taxMarker }}</small></sup>&nbsp;
          {% endif %}
          </td>
-         </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -186,7 +185,7 @@
     <p class="goodbye">
     {{ doc.goodbye }}
     </p>
-    {%if doc.isInvoice %}
+    {%if doc.isInvoice and epcqrcode.valid %}
     <p class="epcqrcode">
       <img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" />
       Dieser QR Code ermöglicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:

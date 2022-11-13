@@ -107,10 +107,13 @@ QByteArray EPCQRCode::asText(const Geld& g,
 QString EPCQRCode::asSvg(const Geld& g, const QString &bacName, const QString &bacBIC, const QString &bacIBAN, const QString &reason)
 {
     int border = 2;
-
+    QString svg;
     QByteArray arr = asText(g, bacName, bacBIC, bacIBAN, reason);
-    QrCode qr0 = QrCode::encodeText(arr.data(), QrCode::Ecc::MEDIUM);
+    if (!arr.isEmpty()) {
+        QrCode qr0 = QrCode::encodeText(arr.data(), QrCode::Ecc::MEDIUM);
 
-    const QString svg = QString::fromStdString(toSvgString(qr0, border));
+        svg = QString::fromStdString(toSvgString(qr0, border));
+    }
+
     return svg;
 }

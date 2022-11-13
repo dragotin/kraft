@@ -464,15 +464,21 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
         EPCQRCode qrCode;
         const QString reason = i18nc("Credit Transfer reason string, 1=DocType, 2=DocIdent, 3=Date, ie. Invoice 2022-183 dated 2022-03-22",
                                      "%1 %2 dated %3",archDoc->docTypeStr(), archDoc->ident(), archDoc->dateStr());
-        const QString svgText = qrCode.asSvg(archDoc->bruttoSum(), bacName, bacBIC, bacIBAN, reason);
 
         // -- save the EPC QR Code which is written into a temp file
         QVariantHash epcHash;
         auto qrcodefile = generateEPCQRCodeFile(archDoc);
-        _tmpFiles.append(qrcodefile); // remember file to delete later.
-        epcHash.insert("svgfilename", QVariant(qrcodefile));
-        gtmpl.addToMappingHash(QStringLiteral("epcqrcode"), epcHash);
+        epcHash.insert("valid", false);
+        if (qrcodefile.isEmpty()) {
+            qDebug() << "No Giro Code file available.";
+        } else {
+            _tmpFiles.append(qrcodefile); // remember file to delete later.
+            qDebug() << "Generated Giro Code file" << qrcodefile;
 
+            epcHash.insert("svgfilename", QVariant(qrcodefile));
+            epcHash["valid"] = true;
+            gtmpl.addToMappingHash(QStringLiteral("epcqrcode"), epcHash);
+        }
         const QVariantHash kraftHash = kraftVariantHash();
         gtmpl.addToMappingHash(QStringLiteral("kraft"), kraftHash);
 
