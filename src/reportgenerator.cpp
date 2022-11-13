@@ -202,6 +202,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
         delete converter;
         return;
     }
+    _cleanupFiles.append(tempFile);
 
     QString fullOutputFilePath = targetFileName();
 
@@ -239,9 +240,11 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
 
     // Remove tmp files that might have been created during the template expansion,
     // ie. the EPC QR Code SVG file.
+#ifndef QT_DEBUG
     for (const auto &file : _cleanupFiles) {
         QFile::remove(file);
     }
+#endif
     _cleanupFiles.clear();
 
     // check for the watermark requirements
