@@ -632,24 +632,43 @@ Each document type in Kraft can have it's own template that is used to create a 
 
 ==== WeasyPrint Documents
 
-With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful HTML and CSS based generator that makes it very easy to create highly customized documents which fit the users expectations. The general idea is that Weasyprint loads html output that is processed to PDF. Usually it is considering a Cascading Stylesheet file which has a huge impact on how the PDF document looks in the end.
+NOTE: Kraft still ships with the old ReportLab based converter, but that will be deprecated the future. The WeasyPrint based system is the future. It is a recommended to port existing templates.
 
-To use a WeasyPrint based template for a document simply create a template file and save it with the extension *.gtmpl*. With that file extension Kraft automatically uses WeasyPrint and also the Grantlee templating for rendering.
+With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful generator that makes it very easy to create highly customized documents with great quality.
 
-An example for a WeasyPrint document can be found in the Kraft package in the reports directory and is called invoice.gtmpl.
+WeasyPrint converts a html file to PDF. It is integrating a cascading stylesheet (CSS) file which has a huge impact on the PDF document's look.
 
-To use a WeasyPrint template with one of the Kraft document types just select the template file name (with the right extension `*.gtml`) in the Kraft Settings Dialog.
+The html- and CSS input file for WeasyPrint is built from the Kraft template file.
 
-From version 0.95 on Kraft ships with an example document in the Grantlee- and WeasyPrint format. It can be found at `/usr/share/kraft/reports/invoice.gtmpl` or https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl[online on Github].
+To enable the use of WeasyPrint for a document type in Kraft, simply create a weasyprint compatible template file and save it with the extension *.gtmpl*. Based on the file extension Kraft automatically uses WeasyPrint and the Grantlee templating engine for rendering.
 
-To effectively change the look of the document `kraft.css` (https://github.com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) needs to be considered. It defines most of the look.
+From version 0.95 on Kraft ships with an example template in the Grantlee- and WeasyPrint format. It can be found at `/usr/share/kraft/reports/invoice.gtmpl` or https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl[online on Github]. An example CSS file `kraft.css` (https://github.com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) is shipped as a good starting point for adoption.
 
 ==== Template Variables
 
-To generate the PDF, Kraft has to transfer data from the document you have been working on in Kraft to the input document that is processed to an PDF utilising WeasyPrint. For that, Kraft uses a text template. In that, Kraft replaces variables with the actual values.
+To generate the PDF, Kraft has to transfer data from the document you have been working on to the input file that is processed to a PDF. For that, Kraft uses a text template in which Kraft replaces variables with the actual values.
+
+For example, the tag `{{ doc.doctype }}` is replaced with the current document type during the generating process.
 
 The syntax is based on the Django syntax for templates described in the https://docs.djangoproject.com/en/3.1/topics/templates/[the docs].
 
+==== EPC QR Code
+
+Kraft supports the https://en.wikipedia.org/wiki/EPC_QR_code[EPC QR Code], also known as _Giro Code_ with Weasyprint based PDF generation.
+
+To use the giro code, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type `Rechnung`.
+
+To include the generated EPC QR Code into the PDF document, the weasyprint template needs to contain a snippet like this:
+
+```
+    {%if doc.isInvoice and epcqrcode.valid %}
+    <p class="epcqrcode">
+      <img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" />
+      Dieser QR Code ermöglicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:
+      Diesen Code mit dem Smartphone scannen und Überweisung per Banking App aufgeben.
+    </p>
+    {% endif %}
+```
 
 
 [[Menu]]

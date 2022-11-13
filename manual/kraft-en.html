@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <meta name="author" content="Ronald Stroethoff, Klaas Freitag">
 <title>The Kraft Handbook</title>
 <style>
@@ -1707,32 +1707,67 @@ in the output it generates.</p>
 </div>
 <div class="sect3">
 <h4 id="_weasyprint_documents">WeasyPrint Documents</h4>
-<div class="paragraph">
-<p>With <a href="https://weasyprint.org">WeasyPrint</a> Kraft uses a very powerful HTML and CSS based generator that makes it very easy to create highly customized documents which fit the users expectations. The general idea is that Weasyprint loads html output that is processed to PDF. Usually it is considering a Cascading Stylesheet file which has a huge impact on how the PDF document looks in the end.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Kraft still ships with the old ReportLab based converter, but that will be deprecated the future. The WeasyPrint based system is the future. It is a recommended to port existing templates.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>To use a WeasyPrint based template for a document simply create a template file and save it with the extension <strong>.gtmpl</strong>. With that file extension Kraft automatically uses WeasyPrint and also the Grantlee templating for rendering.</p>
+<p>With <a href="https://weasyprint.org">WeasyPrint</a> Kraft uses a very powerful generator that makes it very easy to create highly customized documents with great quality.</p>
 </div>
 <div class="paragraph">
-<p>An example for a WeasyPrint document can be found in the Kraft package in the reports directory and is called invoice.gtmpl.</p>
+<p>WeasyPrint converts a html file to PDF. It is integrating a cascading stylesheet (CSS) file which has a huge impact on the PDF document&#8217;s look.</p>
 </div>
 <div class="paragraph">
-<p>To use a WeasyPrint template with one of the Kraft document types just select the template file name (with the right extension <code>*.gtml</code>) in the Kraft Settings Dialog.</p>
+<p>The html- and CSS input file for WeasyPrint is built from the Kraft template file.</p>
 </div>
 <div class="paragraph">
-<p>From version 0.95 on Kraft ships with an example document in the Grantlee- and WeasyPrint format. It can be found at <code>/usr/share/kraft/reports/invoice.gtmpl</code> or <a href="https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl">online on Github</a>.</p>
+<p>To enable the use of WeasyPrint for a document type in Kraft, simply create a weasyprint compatible template file and save it with the extension <strong>.gtmpl</strong>. Based on the file extension Kraft automatically uses WeasyPrint and the Grantlee templating engine for rendering.</p>
 </div>
 <div class="paragraph">
-<p>To effectively change the look of the document <code>kraft.css</code> (<a href="https://github.com/dragotin/kraft/blob/master/reports/kraft.css">on Github</a>) needs to be considered. It defines most of the look.</p>
+<p>From version 0.95 on Kraft ships with an example template in the Grantlee- and WeasyPrint format. It can be found at <code>/usr/share/kraft/reports/invoice.gtmpl</code> or <a href="https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl">online on Github</a>. An example CSS file <code>kraft.css</code> (<a href="https://github.com/dragotin/kraft/blob/master/reports/kraft.css">on Github</a>) is shipped as a good starting point for adoption.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_template_variables">Template Variables</h4>
 <div class="paragraph">
-<p>To generate the PDF, Kraft has to transfer data from the document you have been working on in Kraft to the input document that is processed to an PDF utilising WeasyPrint. For that, Kraft uses a text template. In that, Kraft replaces variables with the actual values.</p>
+<p>To generate the PDF, Kraft has to transfer data from the document you have been working on to the input file that is processed to a PDF. For that, Kraft uses a text template in which Kraft replaces variables with the actual values.</p>
+</div>
+<div class="paragraph">
+<p>For example, the tag <code>{{ doc.doctype }}</code> is replaced with the current document type during the generating process.</p>
 </div>
 <div class="paragraph">
 <p>The syntax is based on the Django syntax for templates described in the <a href="https://docs.djangoproject.com/en/3.1/topics/templates/">the docs</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_epc_qr_code">EPC QR Code</h4>
+<div class="paragraph">
+<p>Kraft supports the <a href="https://en.wikipedia.org/wiki/EPC_QR_code">EPC QR Code</a>, also known as <em>Giro Code</em> with Weasyprint based PDF generation.</p>
+</div>
+<div class="paragraph">
+<p>To use the giro code, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type <code>Rechnung</code>.</p>
+</div>
+<div class="paragraph">
+<p>To include the generated EPC QR Code into the PDF document, the weasyprint template needs to contain a snippet like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>    {%if doc.isInvoice and epcqrcode.valid %}
+    &lt;p class="epcqrcode"&gt;
+      &lt;img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" /&gt;
+      Dieser QR Code ermöglicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:
+      Diesen Code mit dem Smartphone scannen und Überweisung per Banking App aufgeben.
+    &lt;/p&gt;
+    {% endif %}</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -2038,7 +2073,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-08-14 15:37:47 +0200
+Last updated 2022-11-13 16:44:16 +0100
 </div>
 </div>
 </body>

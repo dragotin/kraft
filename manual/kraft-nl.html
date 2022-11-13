@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <meta name="author" content="Ronald Stroethoff, Klaas Freitag">
 <title>Het handboek van Kraft</title>
 <style>
@@ -1613,32 +1613,67 @@ The "design" of the numbercycles and document numbers is very important. With th
 </div>
 <div class="sect3">
 <h4 id="_weasyprint_documenten">WeasyPrint Documenten</h4>
-<div class="paragraph">
-<p>Door <a href="https://weasyprint.org">WeasyPrint</a> te gebruiken heeft Kraft een zeer krachtige op HTML en CSS gebaseerde generator die het zeer eenvoudig maakt om aangepaste documenten te creëren die voldoen aan de verwachtingen van gebruikers. Het algemene idee is dat Weasyprint de gecreëerde html laad om die te verwerken naar een PDF. Normaal gesproken gebruikt het een bestand met een Cascading Stylesheet om te bepalen hoe het PDF document er aan het eind eruit komt te zien.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Noot</div>
+</td>
+<td class="content">
+Kraft still ships with the old ReportLab based converter, but that will be deprecated the future. The WeasyPrint based system is the future. It is a recommended to port existing templates.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>Om voor een document een op WeasyPrint gebaseerde sjabloon te gebruiken, creëert u eenvoudig een sjabloonbestand en slaat deze op met de extensie <strong>.gtmpl</strong>. Met deze bestands-extensie gebruikt Kraft automatisch WeasyPrint met daarbij Grantlee sjablonen voor de rendering.</p>
+<p>With <a href="https://weasyprint.org">WeasyPrint</a> Kraft uses a very powerful generator that makes it very easy to create highly customized documents with great quality.</p>
 </div>
 <div class="paragraph">
-<p>Een voorbeeld van een WeasyPrint document kunt u vinden in het Kraft pakket in de map reports en draagt de naam invoice.gtmpl.</p>
+<p>WeasyPrint converts a html file to PDF. It is integrating a cascading stylesheet (CSS) file which has a huge impact on the PDF document&#8217;s look.</p>
 </div>
 <div class="paragraph">
-<p>Om bij een van de Kraft-documenten een Weasyprint-sjabloon te gebruiken, selecteert u gewoon het bestandsnaam (met de juiste extensie: *.gtml) in het instellingsvenster van Kraft.</p>
+<p>The html- and CSS input file for WeasyPrint is built from the Kraft template file.</p>
 </div>
 <div class="paragraph">
-<p>Vanaf versie 0.95 van Kraft vindt u een voorbeeld document in het Grantlee- en WeasyPrint formaat. U kunt het vinden in <code>/usr/share/kraft/reports/invoice.gtmpl</code> of <a href="https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl">online op Github</a>.</p>
+<p>To enable the use of WeasyPrint for a document type in Kraft, simply create a weasyprint compatible template file and save it with the extension <strong>.gtmpl</strong>. Based on the file extension Kraft automatically uses WeasyPrint and the Grantlee templating engine for rendering.</p>
 </div>
 <div class="paragraph">
-<p>Om daadwerkelijk het uiterlijk van de documenten te veranderen is <code>kraft.css</code> (<a href="https://github.com/dragotin/kraft/blob/master/reports/kraft.css">op Github</a>) heel belangrijk. Deze definieert het meeste van het uiterlijk.</p>
+<p>From version 0.95 on Kraft ships with an example template in the Grantlee- and WeasyPrint format. It can be found at <code>/usr/share/kraft/reports/invoice.gtmpl</code> or <a href="https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl">online on Github</a>. An example CSS file <code>kraft.css</code> (<a href="https://github.com/dragotin/kraft/blob/master/reports/kraft.css">on Github</a>) is shipped as a good starting point for adoption.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_sjabloon_variabelen">Sjabloon variabelen</h4>
 <div class="paragraph">
-<p>Om de PDF te genereren, moet Kraft de data van het document waaraan u heeft gewerkt overbrengen naar het input-document dat wordt met de hulp van Weasyprint verwerkt tot een PDF. Daarvoor gebruikt Kraft een tekstsjabloon. Daarin vervangt Kraft variabelen door de daadwerkelijke waarden.</p>
+<p>To generate the PDF, Kraft has to transfer data from the document you have been working on to the input file that is processed to a PDF. For that, Kraft uses a text template in which Kraft replaces variables with the actual values.</p>
+</div>
+<div class="paragraph">
+<p>For example, the tag <code>{{ doc.doctype }}</code> is replaced with the current document type during the generating process.</p>
 </div>
 <div class="paragraph">
 <p>De syntax is gebaseerd op de Django syntax voor sjablonen zoals het beschreven wordt in <a href="https://docs.djangoproject.com/en/3.1/topics/templates/">de documentatie</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_epc_qr_code">EPC QR Code</h4>
+<div class="paragraph">
+<p>Kraft supports the <a href="https://en.wikipedia.org/wiki/EPC_QR_code">EPC QR Code</a>, also known as <em>Giro Code</em> with Weasyprint based PDF generation.</p>
+</div>
+<div class="paragraph">
+<p>To use the giro code, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type <code>Rechnung</code>.</p>
+</div>
+<div class="paragraph">
+<p>To include the generated EPC QR Code into the PDF document, the weasyprint template needs to contain a snippet like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>    {%if doc.isInvoice and epcqrcode.valid %}
+    &lt;p class="epcqrcode"&gt;
+      &lt;img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" /&gt;
+      Dieser QR Code ermöglicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:
+      Diesen Code mit dem Smartphone scannen und Überweisung per Banking App aufgeben.
+    &lt;/p&gt;
+    {% endif %}</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1943,7 +1978,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Laatste aanpassing 2022-08-14 15:38:00 +0200
+Laatste aanpassing 2022-11-13 16:44:27 +0100
 </div>
 </div>
 </body>
