@@ -106,6 +106,10 @@ html table#items {
     border-collapse: collapse;
     width: 100%;
     table-layout: fixed;
+
+      /* The following margins pull the whole box to the right */
+    margin-right: 0px;
+    margin-left: auto;
   }
   /*
    * Table header. It is repeated on every page.
@@ -138,7 +142,7 @@ html table#items {
     width: 5%;
   }
   .col-Text {
-    width: 50%;
+    width: 45%;
   }
   .col-Amount {
     width: 8%;
@@ -155,6 +159,9 @@ html table#items {
     color: #2f590a;
     font-weight: bold;
   }
+  .col-Taxmarker {
+    width: 1%;
+  }
 
   /*
    * The table to display the document sum
@@ -168,7 +175,7 @@ html table#items {
     font-size: 10pt;
 
     /* The following margins pull the whole box to the right */
-    margin-right: 0px;
+    margin-right: 22px;
     margin-left: auto;
     margin-bottom: 12mm;
 

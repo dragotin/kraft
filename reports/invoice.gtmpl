@@ -46,7 +46,7 @@
             font-size: 9pt;
         }
     }
-    /* Do not display the page number on first page, but the website. */
+    {#  Do not display the page number on first page, but the website. #}
     @page :first {
         margin-top: 46mm;
 	{% if me.URL %}
@@ -59,11 +59,10 @@
     }
     </style>
 
-    <!-- Include the stylesheet file. It will have to reside in the same dir as the template file -->
+    {# Include the stylesheet file. It will have to reside in the same dir as the template file #}
     <link href="kraft.css" media="print" rel="stylesheet"/>
 
-    {% comment "Set to 1 to enable html in the texts - experimental! %}    
-    {% endcomment %}
+    {# "Set to 1 to enable html in the texts - experimental! #}
     {% with 0 as enableHtmlInTexts %}
 
     <title>{{ doc.docType }} {{ doc.ident }}</title>
@@ -94,7 +93,7 @@
     <p class="salut">{{ doc.salut }}</p>
     {% if enableHtmlInTexts %}
       {{ doc.preText|safe|linebreaks }}
-    {% else %}    
+    {% else %}
       {{ doc.preTextHtml|safe }}
     {% endif %}
     </p>
@@ -107,6 +106,7 @@
         <th class="col-Unit col-center">{{ label.UNIT }}</th>
         <th class="col-SPrice col-center">{{ label.PRICE }}</th>
         <th class="col-Sum col-center">{{ label.SUM }}</th>
+        <th></th>
       </thead>
       <tbody>
         {% for item in doc.items %}
@@ -128,11 +128,8 @@
           <td class="col-Amount col-right">{{ item.amount }}</td>
           <td class="col-Unit col-left">{{ item.unit }}</td>
           <td class="col-SPrice col-right">{{ item.unitPrice }}</td>
-          <td class="col-Sum col-right">{{ item.nettoPrice }}
-          {% if doc.hasIndividualTaxation %}
-         <sup><small>{{ item.taxMarker }}</small></sup>&nbsp;
-         {% endif %}
-         </td>
+          <td class="col-Sum col-right">{{ item.nettoPrice }}</td>
+          <td class="col-Taxmarker col-right"><sup><small>{{ item.taxMarker }}</small></sup></td>
         </tr>
         {% endfor %}
       </tbody>
@@ -148,7 +145,7 @@
         </tr>
         <tr>
         {% if doc.hasIndividualTaxation %}
-        <!-- This section is shown for documents with individual tax rates -->
+         {# This section is shown for documents with individual tax rates #}
         <tr>
           <td><sup><small>{{ doc.taxMarkerReduced }}</small></sup>&nbsp;
           +{{ doc.reducedTaxPercentStr }}% {{ label.VAT }}</td>
@@ -161,10 +158,10 @@
         </tr>
         {% else %}
         <tr>
-        <!-- This section is shown for documents with one consistent tax rate -->
+        {# This section is shown for documents with one consistent tax rate #}
 
-        <!-- Note: taxPercentStr can either be reduced or full, depending on
-                   the tax settings of the document -->
+        {# Note: taxPercentStr can either be reduced or full, depending on #}
+        {# the tax settings of the document #}
           <td>+{{ doc.taxPercentStr }}% {{ label.VAT }}</td>
           <td>{{ doc.taxSumStr }}</td>
         </tr>
