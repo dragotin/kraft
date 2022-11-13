@@ -199,8 +199,8 @@ DocPositionBase::TaxType ArchDocPositionList::listTaxation() const
 
 bool ArchDocPositionList::hasIndividualTaxes() const
 {
-    qDebug() << "Has INDIVIDUAL taxes.";
-    return (listTaxation() == DocPositionBase::TaxType::TaxIndividual);
+    bool re = listTaxation() == DocPositionBase::TaxType::TaxIndividual;
+    return re;
 }
 
 void ArchDocPositionList::setTaxes(double fullTax, double reducedTax)
