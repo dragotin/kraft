@@ -171,7 +171,6 @@ private:
   void setupMappers();
   void saveChanges();
   void discardChanges();
-  bool documentModifiedMessageBox();
 
   PositionViewWidget *createPositionViewWidget( DocPositionBase*, int );
 

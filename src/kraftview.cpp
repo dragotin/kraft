@@ -1333,20 +1333,27 @@ QStringList KraftView::generateLetterHead( const QString& familyName, const QStr
 
 void KraftView::done( int r )
 {
-    bool okToContinue = true;
-
     //Closed using the cancel button .. Check if we can close
-    if(r == 0) {
-        if( mModified ) {
-            okToContinue = documentModifiedMessageBox();
-            if(!okToContinue) {
+    bool doSave = false;
+    if (mModified) {
+        doSave = true;
+        if(r == 0) {
+            QMessageBox msgBox;
+            msgBox.setText(i18n("The document has been modified."));
+            msgBox.setInformativeText(i18n("Do you want to save your changes?"));
+            msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Save);
+            msgBox.exec();
+            auto res = msgBox.result();
+
+            if (res == QMessageBox::Cancel)
                 return;
-            }
+            if (res == QMessageBox::Discard)
+                doSave = false;
         }
-    }
-    //Closed using the OK button .. it can be closed, but data needs saved
-    if( mModified && r > 0 ) {
-        saveChanges();
+        //Closed using the OK button .. it can be closed, but data needs saved
+        if( doSave)
+            saveChanges();
         emit viewClosed( r == 1, m_doc );
     }
     // remember the sizes of the docassistant splitter if visible.
@@ -1409,24 +1416,6 @@ void KraftView::slotFocusItem( PositionViewWidget *posWidget, int pos )
       posWidget->m_sbAmount->setFocus();
     }
   }
-}
-
-bool KraftView::documentModifiedMessageBox()
-{
-  if ( mModified ) {
-      QMessageBox msgBox;
-      msgBox.setText(i18n("The document has been modified."));
-      msgBox.setInformativeText(i18n("Do you want to save your changes?"));
-      msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-      msgBox.setDefaultButton(QMessageBox::Save);
-      int ret = msgBox.exec();
-
-      if( ret == QMessageBox::Cancel  ) {
-          return false;
-      }
-  }
-  return true;
-
 }
 
 void KraftView::discardChanges()
