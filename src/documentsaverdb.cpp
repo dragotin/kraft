@@ -205,18 +205,26 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         DocPositionBase *dpb = it.next();
 
         DocPosition *dp = static_cast<DocPosition*>(dpb);
+        int posDbID = dp->dbId().toInt();
+
+        if( dp->toDelete() ) {
+            qDebug () << "Delete doc item id" << posDbID<< endl;
+            // delete all existing attributes
+            dp->attributes().dbDeleteAll( dp->dbId() );
+            deleteIds.append(posDbID);
+            continue;
+        }
+
         QSqlRecord record ;
         bool doInsert = true;
 
-        int posDbID = dp->dbId().toInt();
         if( posDbID > -1 ) {
             const QString selStr = QString("docID=%1 AND positionID=%2").arg( doc->docID().toInt() ).arg( posDbID );
             // qDebug() << "Selecting with " << selStr << endl;
-            model.setFilter( selStr );
+            model.setFilter(selStr);
             model.select();
             if ( model.rowCount() > 0 ) {
-                if( ! dp->toDelete() )
-                    record = model.record(0);
+                record = model.record(0);
                 doInsert = false;
             } else {
                 qCritical() << "ERR: Could not select document position record" << endl;
@@ -227,78 +235,60 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
             record = model.record();
         }
 
-        if( dp->toDelete() ) {
-            // qDebug () << "This one is to delete, do it!" << endl;
+        // qDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
+        QString typeStr = PosTypePosition;
+        double price = dp->unitPrice().toDouble();
 
-            if( doInsert ) {
-                qWarning() << "Attempt to delete a toInsert-Item, obscure" << endl;
-            }
-            // delete all existing attributes
-            dp->attributes().dbDeleteAll( dp->dbId() );
+        if ( dp->type() == DocPositionBase::ExtraDiscount ) {
+            typeStr = PosTypeExtraDiscount;
+        }
 
-            model.removeRow(0);
+        record.setValue( "docID",     QVariant(doc->docID().toInt()));
+        record.setValue( "ordNumber", QVariant(ordNumber));
+        record.setValue( "text",      QVariant(dp->text()));
+        record.setValue( "postype",   QVariant(typeStr));
+        record.setValue( "amount",    QVariant(dp->amount()));
+        int unitId = dp->unit().id();
+        record.setValue( "unit",      QVariant(unitId));
+        record.setValue( "price",     QVariant(price));
+        record.setValue( "taxType",   QVariant(dp->taxType()));
+
+        ordNumber++; // FIXME
+
+        if( doInsert ) {
+            // qDebug () << "Inserting!" << endl;
+            model.insertRecord(-1, record);
             model.submitAll();
-
-            continue;
-        }
-
-        if( record.count() > 0 ) {
-            // qDebug() << "Updating position " << dp->position() << " is " << dp->text() << endl;
-            QString typeStr = PosTypePosition;
-            double price = dp->unitPrice().toDouble();
-
-            if ( dp->type() == DocPositionBase::ExtraDiscount ) {
-                typeStr = PosTypeExtraDiscount;
-            }
-
-            record.setValue( "docID",     QVariant(doc->docID().toInt()));
-            record.setValue( "ordNumber", QVariant(ordNumber));
-            record.setValue( "text",      QVariant(dp->text()));
-            record.setValue( "postype",   QVariant(typeStr));
-            record.setValue( "amount",    QVariant(dp->amount()));
-            int unitId = dp->unit().id();
-            record.setValue( "unit",      QVariant(unitId));
-            record.setValue( "price",     QVariant(price));
-            record.setValue( "taxType",   QVariant(dp->taxType()));
-
-            ordNumber++; // FIXME
-
-            if( doInsert ) {
-                // qDebug () << "Inserting!" << endl;
-                model.insertRecord(-1, record);
-                model.submitAll();
-                dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
-            } else {
-                // qDebug () << "Updating!" << endl;
-                model.setRecord(0, record);
-                model.submitAll();
-            }
+            dp->setDbId( KraftDB::self()->getLastInsertID().toInt() );
         } else {
-            // qDebug () << "ERR: No record object found!" << endl;
+            // qDebug () << "Updating!" << endl;
+            model.setRecord(0, record);
+            model.submitAll();
         }
-
-        dp->attributes().save( dp->dbId() );
 
         QSqlError err = model.lastError();
         if( err.type() != QSqlError::NoError ) {
-            // qDebug () << "SQL-ERR: " << err.text() << " in " << model.tableName() << endl;
+            qDebug () << "SQL-ERR: " << err.text() << " in " << model.tableName();
         }
 
+        dp->attributes().save( dp->dbId() );
     }
+
     model.submitAll();
 
     /*  remove the docpositions that were marked to be deleted */
     if( deleteIds.count() ) {
         QSqlQuery delQuery;
-        delQuery.prepare( "DELETE FROM docposition WHERE positionID=:id" );
-        foreach( int id, deleteIds ) {
+        delQuery.prepare( "DELETE FROM docposition WHERE positionID=:id and docID=:docId" );
+        int docId = doc->docID().toInt();
+
+        for( int id : deleteIds ) {
             // kDebug() << "Deleting attribute id " << id;
-            delQuery.bindValue( ":id", id );
+            delQuery.bindValue(":id", id );
+            delQuery.bindValue(":docId", docId);
             delQuery.exec();
         }
     }
-
-
 }
 
 void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
