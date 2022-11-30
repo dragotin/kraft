@@ -844,6 +844,27 @@ This file can now be transfered to the receiver of the invoice.
 
 NOTE: There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the  format of the Kraft exported XRechnung.
 
+=== Changing the Locale
+
+If it is needed that Kraft runs under a different locale than the actual desktop environment, this can be achieved by setting the desired locale in the start file of Kraft.
+
+On the linux desktop, apps are usually started through a so called https://specifications.freedesktop.org/desktop-entry-spec/latest/[desktop file]. It contains the information how the Kraft binary is started if user clicks on the icon on the desktop or in the start menu.
+
+The desktop file can usually be found in `/usr/share/applications/de.volle-kraft-voraus.kraft.desktop`.
+
+It contains the line
+```
+Exec=kraft %u
+```
+which starts the application with the default locale.
+
+Changing it to
+```
+Exec=env LANG=de_DE.UTF-8 kraft %u
+```
+would change that to run in the German locale for example, independent from the desktop environment location.
+
+
 [[Credits]]
 == Credits and License
 
