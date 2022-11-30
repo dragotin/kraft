@@ -688,6 +688,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <ul class="sectlevel2">
 <li><a href="#_using_kraft_collaboratively">Using Kraft Collaboratively</a></li>
 <li><a href="#_xrechnung_support">XRechnung Support</a></li>
+<li><a href="#_changing_the_locale">Changing the Locale</a></li>
 </ul>
 </li>
 <li><a href="#Credits">Credits und Lizenz</a></li>
@@ -1998,6 +1999,24 @@ There are validators for invoices in XRechnung format out there in the internet.
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_changing_the_locale">Changing the Locale</h3>
+<div class="paragraph">
+<p>If it is needed that Kraft runs under a different locale than the actual desktop environment, this can be achieved by setting the desired locale in the start file of Kraft.</p>
+</div>
+<div class="paragraph">
+<p>On the linux desktop, apps are usually started through a so called <a href="https://specifications.freedesktop.org/desktop-entry-spec/latest/">desktop file</a>. It contains the information how the Kraft binary is started if user clicks on the icon on the desktop or in the start menu.</p>
+</div>
+<div class="paragraph">
+<p>The desktop file can usually be found in <code>/usr/share/applications/de.volle-kraft-voraus.kraft.desktop</code>.</p>
+</div>
+<div class="paragraph">
+<p>It contains the line <code>` Exec=kraft %u </code>` which starts the application with the default locale.</p>
+</div>
+<div class="paragraph">
+<p>Changing it to <code>` Exec=env LANG=de_DE.UTF-8 kraft %u </code>` would change that to run in the German locale for example, independent from the desktop environment location.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2014,7 +2033,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Zuletzt aktualisiert 2022-11-13 16:44:27 +0100
+Zuletzt aktualisiert 2022-11-30 21:30:03 +0100
 </div>
 </div>
 </body>
