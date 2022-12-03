@@ -20,12 +20,10 @@
 #include <QWidget>
 
 #include <QDebug>
+#include <klocalizedstring.h>
 
 // application specific includes
-#include "kraftsettings.h"
 #include "kraftdoc.h"
-#include "portal.h"
-#include "kraftview.h"
 #include "docposition.h"
 #include "documentsaverdb.h"
 #include "defaultprovider.h"
@@ -107,9 +105,11 @@ void KraftDoc::setPredecessor( const QString& w )
     mPredecessor = w;
 }
 
-bool KraftDoc::openDocument(const QString& id )
+bool KraftDoc::openDocument(const QString& id)
 {
-    KraftDB::self()->loadDocument(id, this);
+    DocumentSaverDB opener;
+
+    opener.load(id, this);
     mDocTypeChanged = false;
     _modified=false;
     mIsNew = false;
@@ -128,7 +128,9 @@ bool KraftDoc::saveDocument( )
 {
     bool result = false;
 
-    result = KraftDB::self()->saveDocument(this);
+    DocumentSaverDB saver;
+    result = saver.saveDocument(this);
+
     if(result) {
         if ( isNew() ) {
             setLastModified( QDateTime::currentDateTime() );
@@ -147,6 +149,12 @@ bool KraftDoc::saveDocument( )
         }
         _modified = false;
     }
+    // FIXME - add this check
+    // if (res) {
+    //    _emitDBChangeSignal = false; // block sending of the signal
+    //    slotCheckDocDatabaseChanged();
+    //    _emitDBChangeSignal = true;
+    // }
     return result;
 }
 
