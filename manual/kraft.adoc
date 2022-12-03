@@ -122,6 +122,33 @@ NOTE:
 The "design" of the numbercycles and document numbers is very important. With the flexible system of templating Kraft can not prevent invalid number cycles. It is in the responsibility of the user.
 ____
 
+==== PDF Template
+
+In the entry field Template File: the user can select a custom template for this specific document type. 
+
+If the file extension of the template file is `.trml`, the ReportLab based document converter is used. If the file extension is `.gtmpl`, Kraft automatically uses the Weasyprint based converter.
+____
+NOTE:
+The ReportLab system for PDF creation is deprecated in Kraft. Please, for new templates, always use Grantlee- and Weasyprint based templates.
+____
+
+==== PDF Postprocessing
+
+After Kraft has created the PDF document it is possible to merge the created PDF with static, customized PDFs created by the user. With that, it is easy to add a custom stationery with a logo to the resulting PDF ("Watermark").
+
+The static PDFs should have the same page size as the generated documents. Keep in mind to use  optimized images for logos etc. to not blow up the size of the result document.
+
+image:pdfpostproc.png[PDF Postprocessing,float?"right"]
+
+The watermark options are:
+
+1. *No Watermark*: No watermark is created
+2. *On first page*: The first page of the watermark.pdf is merged with the first page of the result document
+3. *Watermark on all pages*: Merges the first page of the watermark PDF to all pages of the result document
+4. *alternating*: For this, the watermark PDF needs to have three pages. The first page is merged to the first page of the result document, the second and third page are alternated merge to subsequent pages.
+5. *different first and last page*: the PDF needs to have three pages. The first page is merged to the first page of the result document, the third page to the last, and the second to all page between first and last page.
+
+If there is another static PDF document put into the entry field "Append PDF:", it is appended to the generated PDF. With that, Kraft will automatically add for example terms and conditions documents to the final document.
 
 === Taxes
 
