@@ -1,4 +1,4 @@
-#define KRAFT_VERSION "0.98+git"
+#define KRAFT_VERSION "1.0+rc1"
 
 #define KRAFT_CODENAME "Lyonel"
 
