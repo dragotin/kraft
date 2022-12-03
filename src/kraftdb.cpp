@@ -34,7 +34,6 @@
 #include "dbids.h"
 #include "defaultprovider.h"
 #include "archiveman.h"
-#include "documentsaverdb.h"
 #include "databasesettings.h"
 #include "stringutil.h"
 
@@ -674,27 +673,4 @@ dbID KraftDB::archiveDocument( KraftDoc *docPtr )
     return archID;
 }
 
-void KraftDB::loadDocument(const QString& id, KraftDoc *docPtr)
-{
-    DocumentSaverDB loader;
-
-    loader.load(id, docPtr);
-}
-
-bool KraftDB::saveDocument(KraftDoc *docPtr)
-{
-    bool res {false};
-    DocumentSaverDB saver;
-
-    if (docPtr) {
-        res  = saver.saveDocument(docPtr);
-        if (res) {
-            _emitDBChangeSignal = false; // block sending of the signal
-            slotCheckDocDatabaseChanged();
-            _emitDBChangeSignal = true;
-        }
-    }
-
-    return res;
-}
 

@@ -149,7 +149,7 @@ QDomDocument xmlDocument(KraftDoc *doc)
     QDomElement meta = xmldoc.createElement( "meta" );
     root.appendChild(meta);
     meta.appendChild(xmlTextElement(xmldoc, "docDesc", doc->whiteboard().toHtmlEscaped()));
-    meta.appendChild(xmlTextElement(xmldoc, "currency", DefaultProvider::self()->locale()->currencySymbol().toHtmlEscaped()));
+    meta.appendChild(xmlTextElement(xmldoc, "currency", DefaultProvider::self()->locale()->currencySymbol(QLocale::CurrencyIsoCode).toHtmlEscaped()));
     meta.appendChild(xmlTextElement(xmldoc, "country", DefaultProvider::self()->locale()->countryToString(DefaultProvider::self()->locale()->country()).toHtmlEscaped()));
     meta.appendChild(xmlTextElement(xmldoc, "locale", DefaultProvider::self()->locale()->languageToString(DefaultProvider::self()->locale()->language()).toHtmlEscaped()));
 
@@ -517,8 +517,9 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
     QDomDocument _domDoc;
 
     const QByteArray arr = file.readAll();
-    if (!_domDoc.setContent(arr)) {
-        qDebug() << "Unable to set file content as xml";
+    QString errMsg;
+    if (!_domDoc.setContent(arr, &errMsg)) {
+        qDebug() << "Unable to set file content as xml:" << errMsg;
         file.close();
         return;
     }
@@ -532,7 +533,8 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
         ok = loadHeaderBlock(_domDoc, doc);
     }
 
-    loadItems(_domDoc, doc);
+    ok = loadItems(_domDoc, doc);
+
 }
 
 #if 0
