@@ -924,6 +924,68 @@ The "design" of the numbercycles and document numbers is very important. With th
 </blockquote>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_pdf_template">PDF Template</h4>
+<div class="paragraph">
+<p>In the entry field Template File: the user can select a custom template for this specific document type.</p>
+</div>
+<div class="paragraph">
+<p>If the file extension of the template file is <code>.trml</code>, the ReportLab based document converter is used. If the file extension is <code>.gtmpl</code>, Kraft automatically uses the Weasyprint based converter.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Noot</div>
+</td>
+<td class="content">
+The ReportLab system for PDF creation is deprecated in Kraft. Please, for new templates, always use Grantlee- and Weasyprint based templates.
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pdf_postprocessing">PDF Postprocessing</h4>
+<div class="paragraph">
+<p>After Kraft has created the PDF document it is possible to merge the created PDF with static, customized PDFs created by the user. With that, it is easy to add a custom stationery with a logo to the resulting PDF ("Watermark").</p>
+</div>
+<div class="paragraph">
+<p>The static PDFs should have the same page size as the generated documents. Keep in mind to use optimized images for logos etc. to not blow up the size of the result document.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/nl/pdfpostproc.png" alt="PDF Postprocessing" width="float?"right""></span></p>
+</div>
+<div class="paragraph">
+<p>The watermark options are:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>No Watermark</strong>: No watermark is created</p>
+</li>
+<li>
+<p><strong>On first page</strong>: The first page of the watermark.pdf is merged with the first page of the result document</p>
+</li>
+<li>
+<p><strong>Watermark on all pages</strong>: Merges the first page of the watermark PDF to all pages of the result document</p>
+</li>
+<li>
+<p><strong>alternating</strong>: For this, the watermark PDF needs to have three pages. The first page is merged to the first page of the result document, the second and third page are alternated merge to subsequent pages.</p>
+</li>
+<li>
+<p><strong>different first and last page</strong>: the PDF needs to have three pages. The first page is merged to the first page of the result document, the third page to the last, and the second to all page between first and last page.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If there is another static PDF document put into the entry field "Append PDF:", it is appended to the generated PDF. With that, Kraft will automatically add for example terms and conditions documents to the final document.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_belastingen">Belastingen</h3>
@@ -1997,7 +2059,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Laatste aanpassing 2022-11-30 21:30:03 +0100
+Laatste aanpassing 2022-12-03 14:23:34 +0100
 </div>
 </div>
 </body>
