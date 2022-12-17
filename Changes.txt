@@ -24,7 +24,7 @@ Changes since version 0.98: #########################################
 - Fix: Add -p switch to call of weasyprint (html presentational hints)
 - Fix: Set reconnect option for MySQL (#183)
 
-=> release v. 0.99 (Nov. x, 2022)
+=> release v. 1.0 (Dec 17, 2022)
 
 Changes since version 0.97: #########################################
 
