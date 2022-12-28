@@ -662,7 +662,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </li>
 <li><a href="#_catalogi">Catalogi</a>
 <ul class="sectlevel2">
-<li><a href="#_material_catalog">Material Catalog</a></li>
+<li><a href="#_materiaalcatalogus">Materiaalcatalogus</a></li>
 <li><a href="#_standard_templates">Standard Templates</a></li>
 </ul>
 </li>
@@ -670,7 +670,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <ul class="sectlevel2">
 <li><a href="#_de_eerste_rekening">De eerste rekening</a></li>
 <li><a href="#Offer">Een offerte creëren</a></li>
-<li><a href="#Acceptance_of_order">Creating an Acceptance of Order</a></li>
+<li><a href="#Acceptance_of_order">Een Acceptance of order (opdrachtbevestiging) aanmaken</a></li>
 </ul>
 </li>
 <li><a href="#Customization">Kraft naar wens aanpassen</a>
@@ -686,8 +686,8 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </li>
 <li><a href="#AdvancedTopics">Geavanceerde onderwerpen</a>
 <ul class="sectlevel2">
-<li><a href="#_using_kraft_collaboratively">Using Kraft Collaboratively</a></li>
-<li><a href="#_xrechnung_support">XRechnung Support</a></li>
+<li><a href="#_kraft_gemeenschappelijk_gebruiken">Kraft gemeenschappelijk gebruiken.</a></li>
+<li><a href="#_gebruik_van_xrechnung">Gebruik van XRechnung</a></li>
 <li><a href="#_changing_the_locale">Changing the Locale</a></li>
 </ul>
 </li>
@@ -700,37 +700,37 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <h2 id="_inleiding">Inleiding</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kraft is a Qt and KDE application to organize office documents like quotes and invoices in a small business. It eases the creation of documents and helps with repeating tasks.</p>
+<p>Kraft is een Qt- en KDE-Programma voor het organiseren van kantoor documenten zoals offertes en rekeningen in een klein bedrijf. Het vergemakkelijkt de creatie van documenten en helpt bij vaak voorkomende taken.</p>
 </div>
 <div class="paragraph">
-<p>Using Kraft, there is no need for fiddling with a text processor any more. Documents are created by a few clicks, edited, generated and archived automatically. Kraft generates high quality PDF output for printing, mailing and archiving.</p>
+<p>Met gebruik van Kraft is geen tekstverwerker meer nodig. Rekeningen en offertes stelt u met slechts een paar muisklikken samen en worden automatisch gearchiveerd. Kraft genereert kwalitatief goede PDF-documenten geschikt om uit te printen, voor email en voor archivering.</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">Overzicht van mogelijkheden</dt>
+<dt class="hdlist1">Overzicht van de mogelijkheden</dt>
 <dd>
 <div class="ulist">
 <ul>
 <li>
-<p>Simple creation of offers, invoices and similar documents.</p>
+<p>De eenvoudige creatie van offertes, rekeningen en vergelijkbare documenten.</p>
 </li>
 <li>
-<p>Customer management, deeply integrated with the mature KDE KAddressbook.</p>
+<p>Beheer van klanten, door het gebruik van KAddressbook in de KDE-infrastructuur geïntegreerd.</p>
 </li>
 <li>
-<p>Maintenance of document relations, ie. Partial invoices vs. invoices.</p>
+<p>Beheer van relaties tussen documenten, bv. Partial invoices (Gedeeltelijke factuur) ten opzichte van invoices (rekening).</p>
 </li>
 <li>
 <p>Sjablonen voor kop- en voetteksten maar ook voor document-items.</p>
 </li>
 <li>
-<p>Pre calculation of item prices.</p>
+<p>De voorcalculatie van prijzen.</p>
 </li>
 <li>
 <p>Materiaalgebruik</p>
 </li>
 <li>
-<p>Instelbare aanmaak van documenten in PDF Formaat voor uitprinten en verzendenper Email.</p>
+<p>Instelbare aanmaak van documenten in PDF Formaat voor uitprinten en verzenden per Email.</p>
 </li>
 </ul>
 </div>
@@ -747,10 +747,10 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div class="title">Noot</div>
 </td>
 <td class="content">
-Kraft is driven by community of users, coders, artists and others by voluntary work.<br>
-Also this manual needs contributions!<br>
+Kraft wordt door een gemeenschap van gebruikers, programmeurs artiesten en anderen vrijwilligers gedragen.<br>
+Ook dit gebruikershandboek heeft uw hulp nodig om verbeterd te worden.<br>
 <br>
- Learn more on <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.md">how to contribute</a>!
+Lees hier <a href="https://github.com/dragotin/kraft/blob/master/manual/Readme.md">hier</a>over hoe u kan bijdragen
 </td>
 </tr>
 </table>
@@ -761,22 +761,22 @@ Also this manual needs contributions!<br>
 <h2 id="_eerste_gebruik_en_basisconfiguratie">Eerste gebruik en basisconfiguratie</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>When Kraft is started for the first time, it automatically enters the initial setup process.</p>
+<p>Als Kraft voor de eerste keer wordt opgestart, dan komt het automatisch in een initiële proces voor het maken van instellingen terecht.</p>
 </div>
 <div class="paragraph">
-<p>During the initial setup you are asked to select a database to use and give the name and address of your company.</p>
+<p>Tijdens de basisconfiguratie wordt u gevraagd om een database-type te selecteren en wordt naar de naam en adres van uw firma gevraagd.</p>
 </div>
 <div class="paragraph">
-<p>You can fill in your company address (that appears on the printed documents) in two ways: in the setup procedure use the first tab <strong>Select from Addressbook</strong> for to select your on address in KAddressBook (if you have filled your own address in KaddressBook) or use the second tab <strong>Manual entry</strong> for to fill in the information of the address from your company manually. This step is necessary for the correct generation of your documents as the address is automatically used in the document generation step.</p>
+<p>Het adres van uw eigen bedrijf, die automatisch op het uitgeprinte document verschijnt, kan op twee manieren opgegeven worden: Bij het eerste gebruik: gebruik in de basisconfiguratie de eerste tab 'Uit adresboek' om in KAdressbook uw eigen adres te selecteren (als u in KAdressbook uw eigen adres heeft ingevuld) of u gebruikt de tweede tab 'Handmatige adres' om handmatig de informatie van uw bedrijf in te vullen. Deze stap is noodzakelijk voor de correcte aanmaak van uw documenten, omdat het automatisch wordt gebruikt in het proces voor de generatie van het document.</p>
 </div>
 <div class="paragraph">
 <p><span class="image right"><img src="images/nl/company_adress1.png" alt="Company adress"></span></p>
 </div>
 <div class="paragraph">
-<p>After the initial setup, select <span class="menuseq"><b class="menu">Preferences</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Settings</b></span>. That allows to prepare Kraft correctly so it can be used in a proper way.</p>
+<p>Na de basisconfiguratie, selecteert u <span class="menuseq"><b class="menu">Voorkeuren</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">Instellingen</b></span>. Hier kunt u Kraft correct voorbereiden zodat het op de juiste manier gebruikt kan worden.</p>
 </div>
 <div class="paragraph">
-<p>In the Preferences dialog we have the tabs:</p>
+<p>In het dialoogvenster voor de instellingen hebben we de tabs:</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -789,7 +789,7 @@ Also this manual needs contributions!<br>
 </div>
 </div>
 <div class="paragraph">
-<p>Each of the tabs allows to enter useful values for the specific use case.</p>
+<p>In elke tab is het mogelijk om voor uw specifieke geval realistische waarden in te voeren.</p>
 </div>
 <div class="sect2">
 <h3 id="_document_typen">Document typen</h3>
@@ -821,22 +821,22 @@ Also this manual needs contributions!<br>
 <div class="sect3">
 <h4 id="_uniek_documentnummer">Uniek documentnummer</h4>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/numbercycles.png" alt="Numbercycles"></span> Each document has to have an unique identifier that identifies the document. There must not be two documents in Kraft with the same identifier.</p>
+<p><span class="image right"><img src="images/nl/numbercycles.png" alt="Numbercycles"></span> Elk document moet een uniek identificatie hebben die het document identificeert. Er mogen in Kraft geen twee documenten aanwezig zijn met dezelfde identificatie.</p>
 </div>
 <div class="paragraph">
-<p>The format of the identifier is configuratable in Kraft. For that, Kraft has a concept of so called number cycles. Number cycles are used to define the form of the <strong>document number</strong> which is printed on every document.</p>
+<p>De opbouw van het identificatie is in Kraft instelbaar. Hiervoor heeft Kraft het concept van zogeheten volgnummers. Volgnummers worden gebruikt om de opbouw van het <strong>documentnummer</strong> te definiëren dat op elk document wordt geprint.</p>
 </div>
 <div class="paragraph">
-<p>All documents of a certain type have identifiers taken out of one number cycle. Each document type has a number cycle assigned. Different document types can use the same number cycle to generate ids from. That way, for example the document types Invoice and Final Invoice can use numbers from the same number cycle, even thought they are different document types in Kraft. Number cycles are identified by their name. User can create new number cycles and edit them clicking on the button <b class="button">Edit Number Cycles&#8230;&#8203;</b></p>
+<p>Alle documenten van een bepaald type hebben een identificatie die uit een één volgnummersysteem komen. Aan elk documenttype is een volgnummersysteem gekoppeld. Verschillende documenttypes kunnen hetzelfde volgnummersysteem gebruiken om hun identificatie uit te generen. Op die manier kunnen bijvoorbeeld de documenttypes Invoice (rekening) en Final Invoice (eindafrekening) nummers uit dezelfde volgnummersysteem gebruiken, terwijl ze in Kraft verschillende documenttypes zijn. Volgnummersystemen worden geïdentificeerd door hun naam. Gebruikers kunnen nieuwe volgnummersystemen creëren en deze bewerken door op de knop <b class="button">Volgnummersysteem bewerken&#8230;&#8203;</b> te klikken</p>
 </div>
 <div class="paragraph">
-<p>The format of the document numbers are defined by a template that can contain normal, fixed characters and also some variables that are replaced by the respective values when the document is created.</p>
+<p>De opbouw van de documentnummers worden gedefinieerd in een sjabloon waarin normale, vaste karakters maar ook enkele variabelen aanwezig kunnen zijn die worden vervangen door hun respectievelijke waarden bij de creatie van het document.</p>
 </div>
 <div class="paragraph">
-<p>Each identifier needs to be unique, and thus has to contain a counter. Kraft supports two types of counter: One (variable <code>%i</code>) is incremented globally for every new document. The other (variable <code>%n</code>) is reset every day and starts at 1 again on every new day. In addition to the counter, more information can be added to the template form an useful number. Examples are a constant text or parts of the date.</p>
+<p>Elk documentnummer moet uniek zijn, en moet dus een teller hebben. Kraft kan twee soorten tellers gebruiken: Een type (variabele <code>%i</code>) wordt bij elk nieuw document verhoogt. De andere (variabele <code>%n</code>) wordt elke dag teruggezet en begint dus weer bij 1 op elke nieuwe dag. Behalve de teller kan extra informatie toegevoegd worden om een bruikbaar documentnummer te krijgen, zoals een constante tekst of gedeeltes van de datum.</p>
 </div>
 <div class="paragraph">
-<p>The default numbercycle delivered with Kraft contains the year, the month and a serialnumber. That way you can compare offers or orders from last year with this year or the month April of last year with the month April of this year and get on this way an impression from the results of your business.</p>
+<p>Het standaard volgnummersysteem dat met Kraft wordt geleverd bevat het jaar, de maand en een serienummer. Op deze manier kunt u offertes of opdrachten van het vorige jaar vergelijken met die van dit jaar of van de maand April van het vorige jaar met de maand April van dit jaar en op die manier een indruk krijgen van de resultaten van uw bedrijf.</p>
 </div>
 <div class="paragraph">
 <p>Zie de volgende tabel voor de beschikbare variabelen die gebruikt kunnen worden:</p>
@@ -848,78 +848,69 @@ Also this manual needs contributions!<br>
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%y</code> or <code>%yyyy</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the year of the document date.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%y</code> of <code>%yyyy</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">het jaar van de documentdatum.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%yy</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the year of the document (two digits).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">het jaar van de documentdatum (twee cijfers).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%w</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the week number of the document date.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">het weeknummer van de documentdatum.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%ww</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the week number of the document date with leading zero.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">het weeknummer van het documentdatum met een nul (twee cijfers).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%d</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the day number of the document date.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">de dag van de week als getal van de documentdatum.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%dd</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the day number of the document date with leading zero.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">de dag van de week als getal van het documentdatum met een nul (wee cijfers).</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%m</code> or <code>%M</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the month number of the document date.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>%m</code> of <code>%M</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">de maand van het documentdatum als getal.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%MM</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the month number with leading zero.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">de maand van het documentdatum als getal met een nul (twee cijfers).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%c</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the customer id from kaddressbook</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">de ID van de klant in het kaddressbook</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the localised doc type (offer, invoice etc.)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">het vertaalde doc type (offerte, rekening enz.)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%uid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the contact id of the client.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">het contact id van de klant.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%i</code> .. <code>%iiiiii</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the unique counter</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">de unieke teller <strong>(verplicht)</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>%n</code> .. <code>%nnnnnn</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the unique day counter (combine with date)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">de unieke dagteller (te combineren met de datum)</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>A number cycle template needs to contain either <code>%i</code> or <code>%n</code>, if not, <code>%i</code> is appended automatically.</p>
+<p>In een volgnummersysteem-sjabloon moet naar keuze <code>%i</code> of <code>%n</code> aanwezig zijn, als dat niet het geval is dan wordt automatisch <code>%i</code> eraan toegevoegd.</p>
 </div>
 <div class="paragraph">
-<p>Both <code>%i</code> and <code>%n</code> are numeric values. They can also be padded with with leading zeros. The length is defined by the number of i&#8217;s or n&#8217;s put into the template. For example, if a daily counter with length of three and leading zeros is desired, <code>%nnn</code> has to be put into the template. This works up to a length of six characters.</p>
+<p>Zowel <code>%i</code> als <code>%n</code> hebben numerieke waarden. Ze kunnen ook worden voorafgegaan door extra nullen. De length is afhankelijk van het aantal i&#8217;s of n&#8217;s die in het sjabloon voorkomen. Bijvoorbeeld, als u een dagelijkse teller met een lengte van drie cijfers en voorloop nullen wenst, dan moet u <code>%nnn</code> in de sjabloon plaatsen. Dit werkt tot een lengte van zes karakters.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Noot</div>
-</td>
-<td class="content">
-The "design" of the numbercycles and document numbers is very important. With the flexible system of templating Kraft can not prevent invalid number cycles. It is in the responsibility of the user.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>Opmerking: het "ontwerp" van het volgnummersysteem en documentnummers is erg belangrijk. Door het flexibele systeem van sjablonen in Kraft kan niet ongeldige volgnummersystemen voorkomen. Dit is de verantwoordelijkheid van de gebruiker.</p>
 </div>
 </blockquote>
 </div>
@@ -990,7 +981,7 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <div class="sect2">
 <h3 id="_belastingen">Belastingen</h3>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/taxes.png" alt="Taxes"></span> In many countries there are two kinds of VAT-taxes for sold products.</p>
+<p><span class="image right"><img src="images/nl/taxes.png" alt="Taxes"></span> In veel landen zijn er twee BTW-tarieven voor verkochte producten.</p>
 </div>
 <div class="paragraph">
 <p>Een hoog tarief en een laag tarief.</p>
@@ -1002,7 +993,7 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <div class="sect2">
 <h3 id="_salarissen">Salarissen</h3>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/wages.png" alt="Wages"></span> A list of wage costs is maintained in Kraft. The items are used in templates and during calculation.</p>
+<p><span class="image right"><img src="images/nl/wages.png" alt="Wages"></span> In Kraft is een lijst met salariskosten aanwezig. De items daarin worden in de sjablonen en in de berekeningen gebruikt.</p>
 </div>
 <div class="paragraph">
 <p>Alle data kan bewerkt en aangepast worden in een configuratiedialoog dat u kunt bereiken via het menu-item 'voorkeuren', waar u ook nieuwe items kunt toevoegen .</p>
@@ -1014,7 +1005,7 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <div class="sect2">
 <h3 id="_eenheden">Eenheden</h3>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/unity.png" alt="Units of measurement"></span> A list of units of measurement is maintained in Kraft. In Kraft Configuration Dialog reachable through the Settings menu can you edit and customize items already in the list, and also can you add new items to the list.</p>
+<p><span class="image right"><img src="images/nl/unity.png" alt="Units of measurement"></span> In Kraft is een verzameling eenheden aanwezig. In het configuratiedialoog die u kunt bereiken via het menu-item 'Voorkeuren' kunt u de items die al aanwezig zijn bewerken, maar u kunt ook nieuwe items toevoegen.</p>
 </div>
 <div class="paragraph">
 <p>Vergeet niet dat deze eenheden later worden gebruikt in de documenten, het is daarom belangrijk dat u ze vertaalt naar uw eigen taal.</p>
@@ -1055,16 +1046,16 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <h2 id="_catalogi">Catalogi</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Kraft supports so called Catalogs in which templates for document items are kept. With the catalogs creating documents can be significantly accellerated in the day to day business. When creating new documents, the items templates from the catalogs can easily selected and moved over to the document.</p>
+<p>Kraft gebruikt zogeheten Catalogi waarin sjablonen voor document items worden bewaard. Door de catalogi te gebruiken kan in het dagelijks gebruik het creëren van documenten significant worden versneld. Tijdens de creatie van nieuwe documenten, kunt u in de catalogi de items-sjablonen eenvoudig selecteren en naar het document verplaatsen.</p>
 </div>
 <div class="paragraph">
-<p>Since templates are organized in chapters entire documents can be prepared in different chapters to be used as template documents.</p>
+<p>Omdat sjablonen worden georganiseerd in mappen, kunnen hele documenten worden voorbereid en opgeborgen in verschillende mappen om later als documentsjabloon te worden gebruikt.</p>
 </div>
 <div class="paragraph">
-<p>Of course the items in the documents can be edited after they got picked from a catalog.</p>
+<p>Uiteraard kunnen de items in de documenten worden bewerkt nadat ze in een catalogus zijn geselecteerd.</p>
 </div>
 <div class="paragraph">
-<p>By default Kraft comes with two different catalogs:</p>
+<p>Kraft komt standaard met twee verschillende catalogi:</p>
 </div>
 <div class="paragraph">
 <p><code>Material</code></p>
@@ -1079,10 +1070,10 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <p>Een catalogus met standaard recepten voor werkzaamheden zoals het planten van bomen.</p>
 </div>
 <div class="paragraph">
-<p>Beide catalogussen kunnen mappen en submappen hebben om uw sjablonen onder te verdelen . Eerst gaan we gegevens toevoegen aan de</p>
+<p>Beide catalogussen kunnen mappen en submappen hebben om daar uw sjablonen in op te bergen . Eerst gaan we gegevens toevoegen aan de</p>
 </div>
 <div class="sect2">
-<h3 id="_material_catalog">Material Catalog</h3>
+<h3 id="_materiaalcatalogus">Materiaalcatalogus</h3>
 <div class="paragraph">
 <p>Een catalogus met materialen die worden verkocht, met hun inkoopprijs, de winst en hun verkoopprijs. Eerst gaan we nieuwe mappen en submappen toevoegen.</p>
 </div>
@@ -1119,7 +1110,7 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <p>En vul in per hoeveel ze verpakt zijn.</p>
 </div>
 <div class="paragraph">
-<p><span class="image right"><img src="images/nl/catalog_material.png" alt="Material catalog"></span> After this we add also in the map 'Wood' a item for a 'support pole' for later use with its price.</p>
+<p><span class="image right"><img src="images/nl/catalog_material.png" alt="Material catalog"></span> Hierna voegen we ook in de map 'Wood' een item toe voor 'boompaal' met zijn prijs voor later gebruik.</p>
 </div>
 <div class="paragraph">
 <p>Nu gaan we naar:</p>
@@ -1187,7 +1178,7 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <div class="sect3">
 <h4 id="_sjabloon">Sjabloon</h4>
 <div class="paragraph">
-<p>We give here the name of the new standard template like <code>Plant tree</code> <span class="image right"><img src="images/nl/catalog_standard.png" alt="Standard catalog"></span></p>
+<p>We geven hier de naam op van de nieuwe standaard sjabloon zoals <code>Boom planten</code> <span class="image right"><img src="images/nl/catalog_standard.png" alt="Standard catalog"></span></p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -1236,7 +1227,7 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 </tbody>
 </table>
 <div class="paragraph">
-<p>The cost for worker which we have earlier filled in is now used. <span class="image right"><img src="images/nl/catalog_standard_work.png" alt="Time calculation"></span></p>
+<p>De kosten voor een werknemer die we eerder hebben ingevuld worden nu gebruikt.<span class="image right"><img src="images/nl/catalog_standard_work.png" alt="Time calculation"></span></p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -1279,7 +1270,7 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <div class="sect3">
 <h4 id="_materiaal">Materiaal</h4>
 <div class="paragraph">
-<p>Here we select <b class="button">next</b>, after which the window [Add Material to Calculation] opens for a selection of material. We navigate to the map 'wood' where we select the 'support pole'.</p>
+<p>Hier kiezen we <b class="button">volgende</b>, waarna het venster [Materiaal toevoegen aan Berekening] opent voor de selectie van materiaal. We gaan dan naar de map 'wood' waar we de 'boompaal' selecteren.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabel 3. Gebruikte materialen</caption>
@@ -1614,24 +1605,24 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 </div>
 </div>
 <div class="sect2">
-<h3 id="Acceptance_of_order">Creating an Acceptance of Order</h3>
+<h3 id="Acceptance_of_order">Een Acceptance of order (opdrachtbevestiging) aanmaken</h3>
 <div class="paragraph">
-<p>The document type "Acceptance of Order" is sent subsequently to an offer.</p>
+<p>Het documenttype "Acceptance of Order" (opdrachtbevestiging) wordt verstuurd als vervolg op een offerte.</p>
 </div>
 <div class="paragraph">
 <p><span class="image right"><img src="images/nl/acceptance_o_o_context.png" alt="Numbercycles"></span></p>
 </div>
 <div class="paragraph">
-<p>When a client has made a request, we will send an offer in wich we describe which items we will deliver. Hopefully the client will give an order for the work.</p>
+<p>Als een klant een verzoek heeft gemaakt, dan zullen we een offer (offerte) sturen waarin we beschrijven welke items we zullen gaan leveren. Hopelijk zal de klant een order geven voor het werk.</p>
 </div>
 <div class="paragraph">
-<p>It is a good practice to respond on the order with an "Acceptance of order" in which we describe all the items we will deliver. We can make the "Acceptance of order" on the same way as we made the invoice or the offer by selecting each item and correcting the number of delivery. This takes time and we can make errors by forgetting items or filling an incorrect number.</p>
+<p>Het is een goede gewoonte om op de order te reageren met een "Acceptance of order" (opdrachtbevestiging) waarin we alle items beschrijven die we zullen gaan leveren. We kunnen de "Acceptance of order" op dezelfde manier maken als waarmee we de invoice (rekening) of de offer (offerte)hebben gemaakt door elk item te selecteren en het aantal te leveren aan te passen. Dit kost tijd en we kunnen fouten maken door items te vergeten of een incorrect aantal in te vullen.</p>
 </div>
 <div class="paragraph">
-<p>It can be done quicker by selecting the offer in the list and selecting <b class="button">Create Followup Document</b> from either the context menu or the main menu.</p>
+<p>U kunt dit sneller doen door de offer (offerte) in de lijst te selecteren en vervolgens <b class="button">Creëer opvolg document</b> in het context menu of in het hoofdmenu te selecteren.</p>
 </div>
 <div class="paragraph">
-<p>We have now in documenttype the choice from:</p>
+<p>We hebben nu als documenttype de keuze uit:</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -1646,13 +1637,13 @@ The ReportLab system for PDF creation is deprecated in Kraft. Please, for new te
 <p><span class="image right"><img src="images/nl/followup_1.png" alt="Folloup document"></span></p>
 </div>
 <div class="paragraph">
-<p>We select here "Acceptance of order". We have now a copy from the offer as an Acceptance of order (do not forget to adapt Alternative Delivery items and on demand items.)</p>
+<p>We selecteren nu "Acceptance of order". We hebben nu een kopie van de offerte als een Acceptance of order (vergeet niet om de alternatief items en de op verzoek items aan te passen.)</p>
 </div>
 <div class="paragraph">
 <p><span class="image right"><img src="images/nl/followup_2.png" alt="Folloup document"></span></p>
 </div>
 <div class="paragraph">
-<p>You can do this also for the creation of the invoice as a followup for Acceptance of order. Each document type has a specific list of follow up documents. It is a good practice to describe on the invoice precisely what was delivered.</p>
+<p>U kunt dit ook doen voor de creatie van de invoice (rekening) als opvolging van de opdrachtbevestiging. Elk documenttype heeft een specifieke lijst met opvolg-documenten. Het is een goede gewoonte om op de rekening precies te omschrijven wat is geleverd.</p>
 </div>
 </div>
 </div>
@@ -1802,7 +1793,7 @@ Kopieert de inhoud van een offerte naar een order-acceptatie of een rekening.</p
 <div id="Print_document" class="literalblock">
 <div class="content">
 <pre>[Document]&gt;[Document afdrukken]
-Creert een PDF van het geselecteerde client-document zodat u deze kan emaillen of
+Creëert een PDF van het geselecteerde client-document zodat u deze kan emaillen of
 uitprinten.</pre>
 </div>
 </div>
@@ -1907,7 +1898,7 @@ Verwijdert dit item uit het document.</pre>
 <p>Dit hoofdstuk beschrijft geavanceerde onderwerpen rond het gebruik van Kraft. Daarbij wordt enige kennis van Linux veronderstelt, en het is verstandig om de instellingen door ervaren Linux-beheerders uit te laten voeren en deze vervolgens zorgvuldig en uitgebreid te testen.</p>
 </div>
 <div class="sect2">
-<h3 id="_using_kraft_collaboratively">Using Kraft Collaboratively</h3>
+<h3 id="_kraft_gemeenschappelijk_gebruiken">Kraft gemeenschappelijk gebruiken.</h3>
 <div class="paragraph">
 <p>Kraft kan gemeenschappelijk in een gedistribueerde omgeving gebruikt worden. Dat houd in dat meerdere gebruikers op hun eigen desktop met hun eigen Kraft instance met dezelfde data kunnen werken.</p>
 </div>
@@ -1915,7 +1906,7 @@ Verwijdert dit item uit het document.</pre>
 <p>De hele situatie is aan verandering onderhevig, omdat Kraft in de nabije toekomst ownCloud als privé Cloud voor de opslag van de data zal gebruiken.</p>
 </div>
 <div class="sect3">
-<h4 id="_database_en_dokument_pool_gezamenlijk_gebruiken">Database en Dokument-pool gezamenlijk gebruiken</h4>
+<h4 id="_database_en_document_pool_gezamenlijk_gebruiken">Database en Document-pool gezamenlijk gebruiken</h4>
 <div class="paragraph">
 <p>De eenvoudigste situatie is als twee of meer Kraft-gebruikers de database gemeenschappelijk gebruiken en toegang tot dezelfde pool van PDF-documenten op de harde schijf hebben. Om het eenvoudig te houden, worden hier de situatie met twee gebruikers beschreven.</p>
 </div>
@@ -1984,33 +1975,33 @@ PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_xrechnung_support">XRechnung Support</h3>
+<h3 id="_gebruik_van_xrechnung">Gebruik van XRechnung</h3>
 <div class="paragraph">
-<p>Kraft supports the XRechnung standard. That is a digital format for electronic invoicing, and it passed as law in Germany and follows a EU directive. The XRechnung is a XML file format designed for that purpose.</p>
+<p>Kraft ondersteund het gebruik van de XRechnung standaard. Dat is een digitaal formaat voor electronische rekeningen, en als wet ingevoerd in Duitsland wat een EU richtlijn volgt. De XRechnung is een XML-bestandsformaat ontworpen voor dat doel.</p>
 </div>
 <div class="paragraph">
-<p>To use the XRechnung Export productivly, a little manual work is still needed in Kraft. Kraft creates the XML file based on a template, very similar to the normal PDF documents. That means that it loads a template that contains static elements (ie. the company address) that do not change between different invoices. The dynamic elements (customer data, items etc.) are filled into the template during the generation step.</p>
+<p>Om de XRechnung Export productief te gebruiken, is nog een beetje handwerk in Kraft nodig. Kraft creëert het XML-bestand aan de hand van een sjabloon, vergelijkbaar met de normale PDF documenten. Dit houdt in dat het een sjabloon laadt wat statische elementen bevat (b.v. het adres van het bedrijf) die niet veranderen tussen de verschillende rekeningen. De dynamische elementen (data over de klant, items enz.) worden in het sjabloon geplaatst tijdens de stap van het generen.</p>
 </div>
 <div class="paragraph">
-<p>In order to generate correct XRechnung files for the specific company, the user has to adopt the template file manually to the companies needs. Note that this has only to be done once and should be easy for a person with a bit computer experience (Basic knowledge about XML appreciated!).</p>
+<p>Om correcte XRechnung-bestanden te generen voor het desbetreffende bedrijf, moet de gebruiker het sjabloonbestand handmatig aanpassen aan de eisen van het bedrijf. Merk op dat u dat maar eenmalig hoeft te doen en dat het niet moeilijk is voor iemand met een beetje computerervaring (Basiskennis van XML is gewenst).</p>
 </div>
 <div class="paragraph">
-<p>To adapt the file to the needs of the company, it is best to start with the <a href="https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung.xrtmpl">example XRechnung file</a>. It has to be downloaded and saved into a location that the user can edit. Open it in a normal text editor, such as <a href="https://kate-editor.org/">Kate</a>.</p>
+<p>Om het bestand aan te passen aan de eisen van het bedrijf, kunt u het beste beginnen met het <a href="https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung.xrtmpl">voorbeeld XRechnung-bestand</a>. U moet het downloaden en vervolgens opslaan op een plek waar u het kan bewerken. Open het in een normale tekstverwerker, zoals <a href="https://kate-editor.org/">Kate</a>.</p>
 </div>
 <div class="paragraph">
-<p>Read carefully through the file without being scared off by the XML format. All user strings (ie. company name, address and such) are user specific and should be replaced accordingly. Find <a href="https://www.xoev.de/xrechnung-16828">details about the format</a> here to better understand the meaning of the fields.</p>
+<p>Bestudeer nauwkeurig het bestand zonder dat u afgeschrikt wordt door het XML-opmaak. Alle user strings (d.w.z. bedrijfsnaam, adres en dergelijke) zijn specifiek voor de gebruiker en moeten daarom overeenkomstig vervangen worden. Zoek <a href="https://www.xoev.de/xrechnung-16828">de details over de opmaak</a> hier op voor een beter begrip van de betekenis van de velden.</p>
 </div>
 <div class="paragraph">
-<p>Make sure to not disturb the proper XML format and do not change places where the template format <code>{{ template_name }}</code> is used.</p>
+<p>Zorg ervoor dat u de correcte XML-opmaak niet verstoort en wijzig niet de locatie van waar <code>{{ template_name }}</code> is gebruikt.</p>
 </div>
 <div class="paragraph">
-<p>Once the file is adopted to the needs, open the Settings dialog of Kraft and insert the filename into the entry field for the XRechnung Template File on the Document Defaults page.</p>
+<p>Nadat het bestand is aangepast aan de wensen, opent u het dialoogvenster voor de instellingen van Kraft en voer de bestandsnaam in het invoerveld voor het XRechnung Sjabloonbestand in de pagina voor document-standaarden.</p>
 </div>
 <div class="paragraph">
-<p>After that step, the <b class="button">Export XRechung</b> menu item will open a dialog to pick a filename where to save the XRechnung invoice to.</p>
+<p>Na deze stap zal het menu item <b class="button">Export XRechung</b> een dialoogvenster openen voor het ingeven van het bestandsnaam waarmee de XRechnung rekening wordt opgeslagen.</p>
 </div>
 <div class="paragraph">
-<p>This file can now be transfered to the receiver of the invoice.</p>
+<p>Dit bestand kan nu verzonden worden naar de ontvanger van de rekening.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2019,7 +2010,7 @@ PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
 <div class="title">Noot</div>
 </td>
 <td class="content">
-There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the format of the Kraft exported XRechnung.
+Er zijn validators voor rekeningen in het XRechnung formaat op het internet te vinden. Het is verstandig om het bestandsformaat van de XRechnung dat uit Kraft is geëxporteerd te laten valideren.
 </td>
 </tr>
 </table>
@@ -2049,7 +2040,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 <h2 id="Credits">Dankbetuigingen en licentie</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Program and documentation copyright 2004–2022 Klaas Freitag</p>
+<p>Auteursrecht software en documentatie 2004-2022 Klaas Freitag</p>
 </div>
 <div class="paragraph">
 <p>Documentatie auteursrecht 2020 Ronald Stroethoff</p>
@@ -2059,7 +2050,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Laatste aanpassing 2022-12-03 14:23:34 +0100
+Laatste aanpassing 2022-12-28 22:28:01 +0100
 </div>
 </div>
 </body>
