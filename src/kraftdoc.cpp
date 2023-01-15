@@ -159,6 +159,12 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
     return result;
 }
 
+void KraftDoc::setTimeOfSupply(QDateTime start, QDateTime end)
+{
+    _toSStart = start;
+    _toSEnd = end;
+}
+
 QString KraftDoc::docIdentifier() const
 {
   const QString id = ident();

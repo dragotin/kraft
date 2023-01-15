@@ -35,7 +35,7 @@
 
 namespace {
 
-QString childElemText(const QDomElement& elem, const QString& childName)
+QString childElemText(const QDomElement& elem, const QByteArray& childName)
 {
     const QDomElement e = elem.firstChildElement(childName);
     const QString t = e.text();
@@ -243,24 +243,34 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
 
     Q_ASSERT(!metaElem.isNull());
 
-    QString t = childElemText(metaElem, "docDesc");
+    QString t = childElemText(metaElem, "docType");
+    doc->setDocType(t);
+
+    t = childElemText(metaElem, "docDesc");
     doc->setWhiteboard(t);
 
+    // Currently the locale of the docs is hardcoded to the locale Kraft is
+    // running under. It can not be set into the document.
     t = childElemText(metaElem, "currency");
-
     t = childElemText(metaElem, "country");
-
     t = childElemText(metaElem, "locale");
 
     t = childElemText(metaElem, "ident");
     doc->setIdent(t);
 
+    t = childElemText(metaElem, "uuid");
+    doc->setUuid(t);
+
     QDate d = childElemDate(metaElem, "date");
     doc->setDate(d);
 
+    t = childElemText(metaElem, "state");
+
     const QDomElement tosElem = metaElem.firstChildElement("timeOfSupply");
     d = childElemDate(tosElem, "start");
-    d = childElemDate(tosElem, "end");
+    QDate dEnd = childElemDate(tosElem, "end");
+    doc->setTimeOfSupply(QDateTime(d, QTime(0, 0)),
+                         QDateTime(dEnd, QTime(23, 59, 59)));
 
     // Tax: Unused so far, as tax is taken from documentman,  which loads it according to the date of the doc.
     QDomElement taxElem = metaElem.firstChildElement("tax");
