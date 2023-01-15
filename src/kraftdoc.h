@@ -22,6 +22,7 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qdatetime.h>
+#include <QUuid>
 
 #include "docposition.h"
 #include "dbids.h"
@@ -40,6 +41,7 @@ class KraftDoc : public QObject
     Q_PROPERTY(QString address READ address)
     Q_PROPERTY(QString clientUid READ addressUid)
     Q_PROPERTY(QString ident READ ident)
+    Q_PROPERTY(QString uuid  READ uuid)
     Q_PROPERTY(QString salut READ salut)
     Q_PROPERTY(QString goodbye READ goodbye)
     Q_PROPERTY(QString preText READ preText)
@@ -53,6 +55,7 @@ class KraftDoc : public QObject
     Q_PROPERTY(QString taxSumStr READ vatSumStr)
     Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
     Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
+
 public:
     enum class Part { Header,  Positions, Footer, Unknown };
     enum class State { New, Draft, Sent };
@@ -98,6 +101,9 @@ public:
     QString ident() const   { return mIdent;    }
     void setIdent( const QString& str ) { mIdent = str; }
 
+    QString uuid() const   { return _uuid.toString();    }
+    void setUuid( const QString& str ) { _uuid = QUuid(str); }
+
     QString salut() const   { return mSalut;    }
     void setSalut( const QString& str ) { mSalut = str; }
 
@@ -129,6 +135,10 @@ public:
     void setPredecessor( const QString& w );
     QString predecessorDbId() const { return mPredecessorDbId; }
     void setPredecessorDbId( const QString& pId ) { mPredecessorDbId = pId; }
+
+    void setTimeOfSupply(QDateTime start, QDateTime end = QDateTime());
+    QDateTime timeOfSupplyStart() { return _toSStart; }
+    QDateTime timeOfSupplyEnd() { return _toSEnd; }
 
     void setDocID( dbID id ) { mDocID = id; }
     dbID docID() const { return mDocID; }
@@ -207,7 +217,13 @@ private:
     QString mCountry;
     QString mLanguage;
 
+    QUuid   _uuid;
     QDate   mDate;
+
+    // Time of supply
+    QDateTime _toSStart;
+    QDateTime _toSEnd;
+
     QDateTime   mLastModified;
     DocPositionList mPositions;
     DBIdList mRemovePositions;
