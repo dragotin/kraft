@@ -553,9 +553,9 @@ void Portal::slotNewDocument()
 
 void Portal::slotFollowUpDocument()
 {
-    const QString locId = m_portalView->docDigestView()->currentDocumentId();
+    const QString locId = m_portalView->docDigestView()->currentDocumentIdent();
 
-    DocGuardedPtr sourceDoc = DocumentMan::self()->openDocument( locId );
+    DocGuardedPtr sourceDoc = DocumentMan::self()->openDocumentByIdent( locId );
 
     DocType dt( sourceDoc->docType() );
 
@@ -576,9 +576,9 @@ void Portal::slotFollowUpDocument()
     delete sourceDoc;
 
     if ( wiz.exec() ) {
-        QString selectedId = wiz.copyItemsFromPredecessor();
-        if(!selectedId.isEmpty()) {
-            DocGuardedPtr copyDoc = DocumentMan::self()->openDocument( selectedId );
+        const QString selectedIdent = wiz.copyItemsFromPredecessor();
+        if(!selectedIdent.isEmpty()) {
+            DocGuardedPtr copyDoc = DocumentMan::self()->openDocumentByIdent( selectedIdent );
             posToCopy = copyDoc->positions();
             delete copyDoc;
         }
@@ -592,17 +592,17 @@ void Portal::slotFollowUpDocument()
 
 void Portal::slotCopyCurrentDocument()
 {
-  const QString locId = m_portalView->docDigestView()->currentDocumentId();
+  const QString locId = m_portalView->docDigestView()->currentDocumentIdent();
   slotCopyDocument( locId );
 }
 
-void Portal::slotCopyDocument( const QString& id )
+void Portal::slotCopyDocument( const QString& ident )
 {
-  if ( id.isEmpty() ) {
+  if ( ident.isEmpty() ) {
     return;
   }
   QString oldDocIdent;
-  DocGuardedPtr oldDoc = DocumentMan::self()->openDocument( id );
+  DocGuardedPtr oldDoc = DocumentMan::self()->openDocumentByIdent(ident);
   if(oldDoc) {
       const DocType dt = oldDoc->docType();
       oldDocIdent = i18nc("Title of the new doc dialog, %1 is the source doc id",
@@ -613,7 +613,7 @@ void Portal::slotCopyDocument( const QString& id )
   KraftWizard wiz;
   wiz.init(true, oldDocIdent);
   if ( wiz.exec() ) {
-    DocGuardedPtr doc = DocumentMan::self()->copyDocument(id);
+    DocGuardedPtr doc = DocumentMan::self()->copyDocument(ident);
     doc->setDate( wiz.date() );
     doc->setDocType( wiz.docType() );
     doc->setWhiteboard( wiz.whiteboard() );
@@ -621,7 +621,12 @@ void Portal::slotCopyDocument( const QString& id )
         doc->setAddress(QString());
     }
     doc->setAddressUid( wiz.addressUid() );
-    doc->saveDocument();
+
+    bool ok = DocumentMan::self()->saveDocument(doc);
+    if (!ok) {
+        qDebug() << "FAILED to save document" << doc->docIdentifier();
+    }
+
     m_portalView->docDigestView()->slotUpdateView();
     // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString();
   }
@@ -629,23 +634,23 @@ void Portal::slotCopyDocument( const QString& id )
 
 void Portal::slotOpenCurrentDocument()
 {
-  QString locId = m_portalView->docDigestView()->currentDocumentId();
+  QString locId = m_portalView->docDigestView()->currentDocumentIdent();
   slotOpenDocument( locId );
 }
 
 void Portal::slotViewCurrentDocument()
 {
-  QString locId = m_portalView->docDigestView()->currentDocumentId();
+  QString locId = m_portalView->docDigestView()->currentDocumentIdent();
   slotViewDocument( locId );
 }
 
-void Portal::slotViewDocument( const QString& id )
+void Portal::slotViewDocument( const QString& ident )
 {
   slotStatusMsg(i18n("Opening document to view..."));
 
-  if( !id.isEmpty() ) {
+  if( !ident.isEmpty() ) {
     DocumentMan *docman = DocumentMan::self();
-    DocGuardedPtr doc = docman->openDocument( id );
+    DocGuardedPtr doc = docman->openDocumentByIdent( ident );
     createROView( doc );
   }
 
@@ -737,21 +742,19 @@ QDebug operator<<(QDebug debug, const dbID &id)
 
 void Portal::slotPrintCurrentDocument()
 {
-  QString locId = m_portalView->docDigestView()->currentDocumentId();
-  // qDebug () << "printing document " << locId;
+  const QString locId = m_portalView->docDigestView()->currentDocumentIdent();
+  // qDebug () << "printing document " << locId << endl;
 
   busyCursor( true );
   slotStatusMsg( i18n( "Generating PDF..." ) );
   DocumentMan *docman = DocumentMan::self();
-  _currentDoc = docman->openDocument( locId );
-  QString ident;
+  _currentDoc = docman->openDocumentByIdent( locId );
 
   if ( _currentDoc ) {
-      ident = _currentDoc->ident();
 
       dbID archID = KraftDB::self()->archiveDocument(_currentDoc);
       Q_ASSERT(archID.isOk());
-      slotPrintDocument( ident, archID );
+      slotPrintDocument( locId, archID );
       // m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
   }
   busyCursor( false );
@@ -761,16 +764,14 @@ void Portal::slotPrintCurrentDocument()
 
 void Portal::slotMailDocument()
 {
-  const QString locId = m_portalView->docDigestView()->currentDocumentId();
-  // qDebug () << "Mailing document " << locId;
+  const QString ident = m_portalView->docDigestView()->currentDocumentIdent();
+  // qDebug () << "Mailing document " << locId << endl;
 
   slotStatusMsg( i18n( "Generating PDF for EMail" ) );
   DocumentMan *docman = DocumentMan::self();
-  DocGuardedPtr docPtr = docman->openDocument( locId );
-  QString ident;
-  if ( docPtr ) {
-    ident = docPtr->ident();
+  DocGuardedPtr docPtr = docman->openDocumentByIdent( ident );
 
+  if ( docPtr ) {
     dbID archID = KraftDB::self()->archiveDocument( docPtr );
 
     busyCursor( true );
@@ -885,21 +886,25 @@ void Portal::savePdfInCustomerStructure(const QString& fileName)
     }
 }
 
-void Portal::slotOpenDocument( const QString& id )
+void Portal::slotOpenDocument( const QString& ident )
 {
     if (_readOnlyMode) {
-        slotViewDocument(id);
+        slotViewDocument(ident);
         return;
     }
-    slotStatusMsg( i18n("Opening document %1", id ) );
+    slotStatusMsg( i18n("Opening document %1", ident ) );
     // qDebug () << "Opening document " << id;
-    if( !id.isEmpty() ) {
+    QString status;
+    if( !ident.isEmpty() ) {
         DocumentMan *docman = DocumentMan::self();
-        DocGuardedPtr doc = docman->openDocument( id );
-        createView( doc );
+        if (DocGuardedPtr doc = docman->openDocumentByIdent(ident)) {
+            createView( doc );
+        } else {
+            status = i18n("Error: Unable to load document %1. Please check the setup.").arg(ident);
+        }
     }
 
-    slotStatusMsg();
+    slotStatusMsg(status);
 }
 
 void Portal::slotDocumentSelected( const DocDigest& doc )
@@ -964,7 +969,9 @@ void Portal::slotReconfigureDatabase()
 void Portal::slotConvertToXML()
 {
     DbToXMLConverter converter;
-    converter.convertDocs(2022);
+    QMap<int, int> q = converter.yearMap();
+
+    converter.convertDocsOfYear(2022);
 }
 
 
@@ -990,7 +997,7 @@ void Portal::createView( DocGuardedPtr doc )
       view->restoreGeometry(geo);
       view->setup( doc );
       view->redrawDocument();
-      view->slotSwitchToPage( KraftDoc::Positions );
+      view->slotSwitchToPage( KraftDoc::Part::Positions );
       view->show();
 
       connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),

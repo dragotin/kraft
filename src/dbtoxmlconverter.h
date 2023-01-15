@@ -28,8 +28,8 @@ public:
 
     QMap <int, int> yearMap();
 
-    int convertDocs(int year);
-    int amountOfDocs(int year);
+    int convertDocsOfYear(int year);
+    int amountOfDocsOfYear(int year);
 
 signals:
 

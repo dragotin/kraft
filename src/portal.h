@@ -118,8 +118,8 @@ class Portal : public QMainWindow
     void preferences();
     void slotNewDocument();
     void slotCopyCurrentDocument();
-    void slotCopyDocument( const QString& );
-    void slotOpenDocument( const QString& );
+    void slotCopyDocument(const QString& ident);
+    void slotOpenDocument(const QString& ident);
     void slotOpenCurrentDocument();
 
     void slotViewCurrentDocument();

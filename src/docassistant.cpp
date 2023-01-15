@@ -37,7 +37,7 @@
 
 DocAssistant::DocAssistant( QWidget *parent ):
   QSplitter( parent ), mFullPreview( true ),
-  mActivePage( KraftDoc::Header )
+  mActivePage( KraftDoc::Part::Header )
 {
   setOrientation( Qt::Vertical );
 
@@ -59,7 +59,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   buttonLayout->addStretch();
   topVBox->addLayout(buttonLayout);
   mPostCard = new DocPostCard;
-  mPostCard->slotSetMode( DocPostCard::Full, KraftDoc::Header );
+  mPostCard->slotSetMode( DocPostCard::Full, KraftDoc::Part::Header );
   // setResizeMode( vb /* mPostCard->view() */, KeepSize );
 
   topVBox->addWidget(mPostCard);
@@ -89,7 +89,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mCatalogSelection, SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ),
            this,  SLOT( slotCatalogSelectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ) );
 
-  mHeaderSelector = new TextSelection( 0, KraftDoc::Header );
+  mHeaderSelector = new TextSelection( 0, KraftDoc::Part::Header );
   mWidgetStack->addWidget( mHeaderSelector );
 
   connect( mHeaderSelector, SIGNAL(validTemplateSelected() ),
@@ -97,7 +97,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   connect( mHeaderSelector, SIGNAL(editCurrentTemplate()),
            this, SLOT(slotEditTemplate()));
 
-  mFooterSelection = new TextSelection( 0, KraftDoc::Footer );
+  mFooterSelection = new TextSelection( 0, KraftDoc::Part::Footer );
   mWidgetStack->addWidget( mFooterSelection );
 
   connect( mFooterSelection, SIGNAL(validTemplateSelected()),
@@ -228,7 +228,7 @@ void DocAssistant::slotTemplateSelectionChanged( )
         return;
     }
 
-  if( mActivePage == KraftDoc::Positions ) { // no editing on the catalogs
+  if( mActivePage == KraftDoc::Part::Positions ) { // no editing on the catalogs
       bool enableNew {false};
 
       auto kat = static_cast<CatalogTemplateProvider*>(mCurrTemplateProvider)->currentCatalog();
@@ -241,9 +241,9 @@ void DocAssistant::slotTemplateSelectionChanged( )
     mPbInsert->setEnabled(false);
   } else {
     bool mv {false};
-    if( mActivePage == KraftDoc::Header ) {
+    if( mActivePage == KraftDoc::Part::Header ) {
       mv = mHeaderSelector->validSelection();
-    } else if( mActivePage == KraftDoc::Footer ) {
+    } else if( mActivePage == KraftDoc::Part::Footer ) {
       mv = mFooterSelection->validSelection();
     }
     mPbAdd->setEnabled( mv );
@@ -349,11 +349,11 @@ void DocAssistant::slotToggleShowTemplates( bool on )
   if ( on ) {
     // setFullPreview is set in the subslots called from here, that
     // makes mFullPreview truly reflecting the state of the toggle button
-    if ( mActivePage == KraftDoc::Header ) {
+    if ( mActivePage == KraftDoc::Part::Header ) {
       slotShowHeaderTemplates();
-    } else if ( mActivePage == KraftDoc::Positions ) {
+    } else if ( mActivePage == KraftDoc::Part::Positions ) {
       slotShowCatalog();
-    } else if ( mActivePage == KraftDoc::Footer ) {
+    } else if ( mActivePage == KraftDoc::Part::Footer ) {
       slotShowFooterTemplates();
     }
   } else {
@@ -374,14 +374,14 @@ CatalogSelection* DocAssistant::catalogSelection()
 }
 
 /* sets the Part of the doc, eg. Header, Footer */
-void DocAssistant::slotSelectDocPart( int p )
+void DocAssistant::slotSelectDocPart( KraftDoc::Part p )
 {
   mActivePage = p;
-  if( mActivePage == KraftDoc::Header ) {
+  if( mActivePage == KraftDoc::Part::Header ) {
     mCurrTemplateProvider = mHeaderTemplateProvider;
-  } else if( mActivePage == KraftDoc::Positions ) {
+  } else if( mActivePage == KraftDoc::Part::Positions ) {
     mCurrTemplateProvider = mCatalogTemplateProvider;
-  } else if( mActivePage == KraftDoc::Footer ) {
+  } else if( mActivePage == KraftDoc::Part::Footer ) {
     mCurrTemplateProvider = mFooterTemplateProvider;
   } else {
     // qDebug () << "Alert: Unknown document part id: " << p;
@@ -401,34 +401,34 @@ void DocAssistant::slotSetDocType( const QString& type )
 
 void DocAssistant::slotShowCatalog( )
 {
-  setFullPreview( false, KraftDoc::Positions );
+  setFullPreview( false, KraftDoc::Part::Positions );
   mWidgetStack->setCurrentWidget( mCatalogSelection );
 }
 
 void DocAssistant::slotShowHeaderTemplates()
 {
-  setFullPreview( false, KraftDoc::Header );
+  setFullPreview( false, KraftDoc::Part::Header );
   mWidgetStack->setCurrentWidget( mHeaderSelector );
 }
 
 void DocAssistant::slotShowFooterTemplates()
 {
-  setFullPreview( false, KraftDoc::Footer );
+  setFullPreview( false, KraftDoc::Part::Footer );
   mWidgetStack->setCurrentWidget( mFooterSelection );
 }
 
-void DocAssistant::setFullPreview( bool setFull, int id )
+void DocAssistant::setFullPreview( bool setFull, KraftDoc::Part p )
 {
     if ( setFull ) {
         /* remember the sizes used before */
         saveSplitterSizes();
 
         mTemplatePane->hide();
-        mPostCard->slotSetMode( DocPostCard::Full, id );
+        mPostCard->slotSetMode(DocPostCard::Full, p);
         mFullPreview = true;
     } else {
         mTemplatePane->show();
-        mPostCard->slotSetMode( DocPostCard::Mini, id );
+        mPostCard->slotSetMode(DocPostCard::Mini, p);
 
         if ( KraftSettings::self()->assistantSplitterSetting().size() == 2 ) {
             QList<int> sizes = KraftSettings::self()->assistantSplitterSetting();

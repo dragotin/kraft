@@ -49,17 +49,15 @@
 #include "kraftdoc.h"
 #include "tagman.h"
 #include "ui_docheader.h"
-#include "documentman.h"
+#include "unitmanager.h"
 #include "docassistant.h"
 #include "positionviewwidget.h"
 #include "ui_docfooter.h"
 #include "docposition.h"
 #include "unitmanager.h"
+#include "documentman.h"
 #include "docpostcard.h"
-#include "kataloglistview.h"
 #include "katalogman.h"
-#include "templkatalog.h"
-#include "templkataloglistview.h"
 #include "catalogselection.h"
 #include "kraftdocheaderedit.h"
 #include "kraftdocpositionsedit.h"
@@ -137,7 +135,7 @@ KraftView::KraftView(QWidget *parent) :
 
   connect(mAssistant, &DocAssistant::selectPage, this, &KraftView::slotSwitchToPage);
 
-  mAssistant->slotSelectDocPart( KraftDoc::Header );
+  mAssistant->slotSelectDocPart( KraftDoc::Part::Header );
 
   setupMappers();
 
@@ -200,7 +198,7 @@ void KraftView::setup( DocGuardedPtr doc )
   setupItems();
   setupFooter();
   setWindowTitle( m_doc->docIdentifier() );
-  slotSwitchToPage( KraftDoc::Header );
+  slotSwitchToPage( KraftDoc::Part::Header );
 
   if( doc->isNew() ) {
       mModified = true;
@@ -208,26 +206,29 @@ void KraftView::setup( DocGuardedPtr doc )
 }
 
 
-void KraftView::slotSwitchToPage( int id )
+void KraftView::slotSwitchToPage(KraftDoc::Part p)
 {
-  // check if the wanted part is already visible
-  if ( mViewStack->currentWidget() == mViewStack->widget( id ) ) return;
+    // check if the wanted part is already visible
+    int id{0}; // Header
+    if (p == KraftDoc::Part::Positions) id = 1;
+    if (p == KraftDoc::Part::Footer) id = 2;
 
+    if ( mViewStack->currentWidget() == mViewStack->widget( id ) ) return;
 
-  mViewStack->setCurrentIndex( id );
+    mViewStack->setCurrentIndex( id );
 
-  KraftDocEdit *edit =
-    static_cast<KraftDocEdit *>( mViewStack->currentWidget() );
+    KraftDocEdit *edit =
+            static_cast<KraftDocEdit *>( mViewStack->currentWidget() );
 
-  mDetailHeader->setText( edit->title() );
-  
-  QPalette palette;
-  palette.setColor(mDetailHeader->backgroundRole(), edit->color());
-  // FIXME: color
-  palette.setColor(mDetailHeader->foregroundRole(), QColor( "#00008b" ));
-  mDetailHeader->setPalette( palette );
+    mDetailHeader->setText( edit->title() );
 
-  mAssistant->slotSelectDocPart( mViewStack->currentIndex() );
+    QPalette palette;
+    palette.setColor(mDetailHeader->backgroundRole(), edit->color());
+    // FIXME: color
+    palette.setColor(mDetailHeader->foregroundRole(), QColor( "#00008b" ));
+    mDetailHeader->setPalette( palette );
+
+    mAssistant->slotSelectDocPart(p);
 }
 
 void KraftView::slotShowTemplates( bool )
@@ -250,7 +251,7 @@ void KraftView::setupDocHeaderView()
     const QString predecessorDbId = m_doc->predecessorDbId();
     bool predecIsVisible = false;
     if( !predecessorDbId.isEmpty() ) {
-        DocGuardedPtr predecDoc = DocumentMan::self()->openDocument(predecessorDbId);
+        DocGuardedPtr predecDoc = DocumentMan::self()->openDocumentByIdent(predecessorDbId);
         if( predecDoc ) {
             const QString id = predecDoc->docIdentifier();
             const QString link = QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorDbId).arg(id);
@@ -597,13 +598,17 @@ void KraftView::refreshPostCard()
 
 
     mAssistant->postCard()->setPositions( positions,  currentTaxSetting(),
-                                          DocumentMan::self()->tax( d ),
-                                          DocumentMan::self()->reducedTax( d ) );
+                                          UnitManager::self()->tax( d ),
+                                          UnitManager::self()->reducedTax( d ) );
 
     mAssistant->postCard()->setFooterData( postText,
                                            m_footerEdit->greeting() );
 
-    mAssistant->postCard()->renderDoc( mViewStack->currentIndex() ); // id( mViewStack->visibleWidget() ) );
+    KraftDoc::Part p {KraftDoc::Part::Header};
+    if (mViewStack->currentIndex() == 1) p = KraftDoc::Part::Positions;
+    if (mViewStack->currentIndex() == 2) p = KraftDoc::Part::Footer;
+
+    mAssistant->postCard()->renderDoc(p);
   }
 
 
@@ -1217,8 +1222,8 @@ DocPositionList KraftView::currentPositionList()
 
                     // replace some tags in the text
 
-                    replaceMap["%DISCOUNT"]     = DefaultProvider().self()->locale()->toString( discount );
-                    replaceMap["%ABS_DISCOUNT"] = DefaultProvider().self()->locale()->toString( qAbs( discount ) );
+                    replaceMap["%DISCOUNT"]     = Format::localeDoubleToString(discount);
+                    replaceMap["%ABS_DISCOUNT"] = Format::localeDoubleToString(qAbs(discount));
 
                 } else {
                     /* Type is ordinary position */
@@ -1288,7 +1293,7 @@ void KraftView::slotShowCatalog( bool on )
   if ( on ) {
     mAssistant->slotShowCatalog();
   } else {
-    mAssistant->setFullPreview( true, KraftDoc::Positions );
+    mAssistant->setFullPreview( true, KraftDoc::Part::Positions );
   }
 }
 
@@ -1399,7 +1404,10 @@ void KraftView::saveChanges()
     DocPositionList list = currentPositionList();
     doc->setPositionList( list );
 
-    doc->saveDocument( );
+    bool ok = DocumentMan::self()->saveDocument(doc);
+    if (!ok) {
+        qDebug() << "document saving failed";
+    }
 
     if ( doc->isNew() ) {
       // For new documents the user had to select a greeting and we make this
@@ -1432,8 +1440,11 @@ void KraftView::discardChanges()
   // We need to reread the document
   KraftDoc *doc = getDocument();
   if( doc && doc->isModified() ) {
-    // qDebug () << "Document refetch from database";
-    doc->reloadDocument();
+      bool ok = DocumentMan::self()->reloadDocument(doc);
+      if (!ok) {
+          qDebug() << "Failed to reload doc" << doc->docIdStr();
+      }
+    // qDebug () << "Document refetch from database" << endl;
   }
 }
 

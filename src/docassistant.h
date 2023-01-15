@@ -60,8 +60,8 @@ public slots:
   void slotShowCatalog();
   void slotShowHeaderTemplates();
   void slotShowFooterTemplates();
-  void setFullPreview( bool, int );
-  void slotSelectDocPart( int );
+  void setFullPreview( bool, KraftDoc::Part);
+  void slotSelectDocPart(KraftDoc::Part);
   void slotToggleShowTemplates( bool );
   void slotAddToDocument();
   void slotInsertIntoDocument();
@@ -82,7 +82,7 @@ protected slots:
   void slotUpdateFooterDocText( const DocText& );
 
 signals:
-  void selectPage( int );
+  void selectPage( KraftDoc::Part );
   void templatesToDocument( Katalog*, CatalogTemplateList, const QString&);
   void toggleShowTemplates( bool );
 
@@ -98,7 +98,7 @@ private:
   TextSelection    *mHeaderSelector;
 
   bool mFullPreview;
-  int            mActivePage;
+  KraftDoc::Part  mActivePage;
   QPushButton    *mPbAdd;
   QPushButton    *mPbInsert;
   QPushButton    *mPbNew;

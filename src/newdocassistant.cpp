@@ -245,7 +245,7 @@ void KraftWizard::setDocToFollow( DocGuardedPtr sourceDoc)
 
         // remember the current dptr to be able to delete it soon
         DocGuardedPtr oldDptr = dPtr;
-        dPtr =  DocumentMan::self()->openDocumentbyIdent( dPtr->predecessor() );
+        dPtr =  DocumentMan::self()->openDocumentByIdent( dPtr->predecessor() );
         if( dPtr ) {
             id = dPtr->docID().toString();
         }
@@ -272,7 +272,7 @@ QString KraftWizard::copyItemsFromPredecessor()
 {
     QString re;
     if( mDetailsPage->mKeepItemsCB->checkState() == Qt::Checked ) {
-        re = mDetailsPage->mSourceDocIdentsCombo->currentData().toString();
+        re = mDetailsPage->mSourceDocIdentsCombo->currentText(); // use the ident
     }
     return re;
 }

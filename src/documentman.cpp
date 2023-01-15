@@ -23,8 +23,6 @@
 
 #include "documentman.h"
 #include "defaultprovider.h"
-#include "docdigest.h"
-#include "kraftdb.h"
 #include "doctype.h"
 #include "kraftsettings.h"
 
@@ -36,18 +34,16 @@ DocumentMan *DocumentMan::self()
 }
 
 DocumentMan::DocumentMan()
-  : mFullTax( -1 ),
-    mReducedTax( -1 )
 {
 
 }
 
-DocGuardedPtr DocumentMan::copyDocument( const QString& copyFromId )
+DocGuardedPtr DocumentMan::copyDocument(const QString& copyFromIdent)
 {
     DocGuardedPtr doc = new KraftDoc( );
-    if ( ! copyFromId.isEmpty() ) {
+    if ( ! copyFromIdent.isEmpty() ) {
         // copy the content from the source document to the new doc.
-        DocGuardedPtr sourceDoc = openDocument( copyFromId );
+        DocGuardedPtr sourceDoc = openDocumentByIdent(copyFromIdent);
         if ( sourceDoc ) {
             *doc = *sourceDoc; // copies all data from the previous doc
             doc->setPredecessor(QString()); // clear the predecessor
@@ -57,14 +53,14 @@ DocGuardedPtr DocumentMan::copyDocument( const QString& copyFromId )
     return doc;
 }
 
-DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromId, const DocPositionList& listToCopy)
+DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromIdent, const DocPositionList& listToCopy)
 {
     DocGuardedPtr doc = new KraftDoc();
     // qDebug () << "new document ID: " << doc->docID().toString();
 
-    if ( ! copyFromId.isEmpty() ) {
+    if ( ! copyFromIdent.isEmpty() ) {
         // copy the content from the source document to the new doc.
-        DocGuardedPtr sourceDoc = openDocument( copyFromId );
+        DocGuardedPtr sourceDoc = openDocumentByIdent(copyFromIdent);
         if ( sourceDoc ) {
             *doc = *sourceDoc; // copies all data from the previous doc
             doc->setIdent(QString());
@@ -99,13 +95,13 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
             doc->setPredecessor(sourceDoc->ident());
 
             // Take the default pre- and posttext for the new docType, or, if that is empty, the texts of the old doc
-            QString newText = DefaultProvider::self()->defaultText( docType, KraftDoc::Header );
+            QString newText = DefaultProvider::self()->defaultText( docType, KraftDoc::Part::Header );
             if (newText.isEmpty() ) {
                 newText = sourceDoc->preTextRaw();
             }
             doc->setPreTextRaw(newText);
 
-            newText = DefaultProvider::self()->defaultText( docType, KraftDoc::Footer );
+            newText = DefaultProvider::self()->defaultText( docType, KraftDoc::Part::Footer );
             if (newText.isEmpty() ) {
                 newText = sourceDoc->postTextRaw();
             }
@@ -116,8 +112,8 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
     } else {
         // Absolute new document
         doc->setDocType(docType);
-        doc->setPreTextRaw(DefaultProvider::self()->defaultText(docType, KraftDoc::Header));
-        doc->setPostTextRaw(DefaultProvider::self()->defaultText(docType, KraftDoc::Footer));
+        doc->setPreTextRaw(DefaultProvider::self()->defaultText(docType, KraftDoc::Part::Header));
+        doc->setPostTextRaw(DefaultProvider::self()->defaultText(docType, KraftDoc::Part::Footer));
         doc->setGoodbye( KraftSettings::greeting() );
     }
 
@@ -127,67 +123,40 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
     return doc;
 }
 
-DocGuardedPtr DocumentMan::openDocumentbyIdent( const QString& ident )
+DocGuardedPtr DocumentMan::openDocumentByIdent( const QString& ident )
 {
-    QSqlQuery q;
-    q.prepare("SELECT docID FROM document WHERE ident=:ident");
-    q.bindValue(":ident", ident);
-    q.exec();
-    if( q.next() ) {
-        const QString id = q.value(0).toString();
-        return openDocument(id);
+    // qDebug () << "Opening Document with id " << id << endl;
+    DocGuardedPtr doc = new KraftDoc();
+    if (!doc->openDocument(DefaultProvider::self()->documentPersister(), ident)) {
+        delete doc;
+        return nullptr;
     }
-    return nullptr;
+    return doc;
 }
 
-DocGuardedPtr DocumentMan::openDocument( const QString& id )
+bool DocumentMan::saveDocument(KraftDoc* doc)
 {
-  // qDebug () << "Opening Document with id " << id;
-  DocGuardedPtr doc = new KraftDoc();
-  doc->openDocument( id );
-  return doc;
+    if (!doc) {
+        return false;
+    }
+    return doc->saveDocument(DefaultProvider::self()->documentPersister());
 }
 
-void DocumentMan::clearTaxCache()
+bool DocumentMan::reloadDocument(KraftDoc* doc)
 {
-  mFullTax = -1;
-  mReducedTax = -1;
+    if (!doc) {
+        return false;
+    }
+    return doc->reloadDocument(DefaultProvider::self()->documentPersister());
+
 }
 
-double DocumentMan::tax( const QDate& date )
+bool DocumentMan::convertDbToXml(const QString& docID)
 {
-  if ( mFullTax < 0 || date != mTaxDate )
-    readTaxes( date );
-  return mFullTax;
-}
+    bool ok{true};
 
-double DocumentMan::reducedTax( const QDate& date )
-{
-  if ( mReducedTax < 0 || date != mTaxDate )
-    readTaxes( date );
-  return mReducedTax;
-}
+    return ok;
 
-bool DocumentMan::readTaxes( const QDate& date )
-{
-  QString sql;
-  QSqlQuery q;
-  sql = "SELECT fullTax, reducedTax, startDate FROM taxes ";
-  sql += "WHERE startDate <= :date ORDER BY startDate DESC LIMIT 1";
-
-  q.prepare( sql );
-  QString dateStr = date.toString( "yyyy-MM-dd" );
-  // qDebug () << "** Datestring: " << dateStr;
-  q.bindValue( ":date", dateStr );
-  q.exec();
-
-  if ( q.next() ) {
-    mFullTax    = q.value( 0 ).toDouble();
-    mReducedTax = q.value( 1 ).toDouble();
-    mTaxDate = date;
-    // qDebug () << "* Taxes: " << mFullTax << "/" << mReducedTax << " from " << q.value( 2 ).toDate();
-  }
-  return ( mFullTax > 0 && mReducedTax > 0 );
 }
 
 DocumentMan::~DocumentMan()
