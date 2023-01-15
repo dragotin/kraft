@@ -33,20 +33,36 @@ private slots:
         Q_ASSERT(fi.exists());
     }
 
+    void xmlVerify()
+    {
+        DocumentSaverXML xmlSaver;
+        xmlSaver.setBasePath(_dir.path());
+
+        const QString kraftHome{TESTS_PATH};
+        QVERIFY(!kraftHome.isEmpty());
+        const QString src{kraftHome+"/../xml/kraftdoc.xml"};
+
+        const QString schema{kraftHome+"/../xml/kraftdoc.xsd"};
+        const QUrl schemaFile = QUrl::fromLocalFile(schema);
+        QVERIFY(xmlSaver.verifyXmlFile(schemaFile, src));
+
+    }
+
     void load1()
     {
         DocumentSaverXML xmlSaver;
-        KraftDoc doc;
         xmlSaver.setBasePath(_dir.path());
-        xmlSaver.load(_docIdent, &doc);
 
-        Q_ASSERT(!doc.isNew());
+        KraftDoc doc;
+        QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
+
+        QVERIFY(!doc.isNew());
 
     }
 
 private:
     QString _docTypeName;
-    // needs to be defined according the example document in KRAFT_HOME/xml
+    // needs to be defined according the example document in $KRAFT_HOME/xml
     const QString _subdir {"/2011/01"};
     const QString _docIdent {"20110127"};
     QTemporaryDir _dir;

@@ -45,6 +45,12 @@ DefaultProvider::DefaultProvider()
 
 }
 
+DocumentSaverBase& DefaultProvider::documentPersister()
+{
+    return self()->_persister;
+}
+
+
 QIcon DefaultProvider::icon(const QString& name)
 {
     const QString fullIconName = QString(":kraft/custom-icons/%1.svg").arg(name);

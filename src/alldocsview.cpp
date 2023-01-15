@@ -299,9 +299,9 @@ ArchDocDigest AllDocsView::currentLatestArchivedDoc() const
 void AllDocsView::slotDocOpenRequest( QModelIndex index )
 {
     Q_UNUSED(index)
-    const QString id = currentDocumentId();
+    const QString ident = currentDocumentIdent();
 
-    emit openDocument( id );
+    emit openDocument(ident);
 }
 
 int AllDocsView::currentDocumentRow() const
@@ -309,7 +309,7 @@ int AllDocsView::currentDocumentRow() const
   return mCurrentlySelected.row();
 }
 
-QString AllDocsView::currentDocumentId( ) const
+QString AllDocsView::currentDocumentIdent( ) const
 {
     bool isDoc = true;
     DocBaseModel *model;
@@ -324,7 +324,7 @@ QString AllDocsView::currentDocumentId( ) const
     QString id;
     if( isDoc ) {
         QModelIndex idIndx = model->index(mCurrentlySelected.row(),
-                                          DocumentModel::Document_Id_Raw, mCurrentlySelected.parent());
+                                          DocumentModel::Document_Ident, mCurrentlySelected.parent());
 
         id = idIndx.data( Qt::DisplayRole ).toString();
     }

@@ -32,9 +32,62 @@ UnitManager* UnitManager::self()
 }
 
 UnitManager::UnitManager( )
+    : mFullTax( -1 ),
+      mReducedTax( -1 )
 {
 
 }
+
+#if 0
+void UnitManager::clearTaxCache()
+{
+  mFullTax = -1;
+  mReducedTax = -1;
+}
+#endif
+
+
+/* These tax related functions are just dropped here for the moment because they
+ * are pretty similar to the units in terms of reading from DB etc. Clear FIXME.
+ */
+
+double UnitManager::tax( const QDate& date )
+{
+  if ( mFullTax < 0 || date != mTaxDate )
+    readTaxes( date );
+  return mFullTax;
+}
+
+double UnitManager::reducedTax( const QDate& date )
+{
+  if ( mReducedTax < 0 || date != mTaxDate )
+    readTaxes( date );
+  return mReducedTax;
+}
+
+bool UnitManager::readTaxes( const QDate& date )
+{
+  QString sql;
+  QSqlQuery q;
+  sql = "SELECT fullTax, reducedTax, startDate FROM taxes ";
+  sql += "WHERE startDate <= :date ORDER BY startDate DESC LIMIT 1";
+
+  q.prepare( sql );
+  QString dateStr = date.toString( "yyyy-MM-dd" );
+  // qDebug () << "** Datestring: " << dateStr;
+  q.bindValue( ":date", dateStr );
+  q.exec();
+
+  if ( q.next() ) {
+    mFullTax    = q.value( 0 ).toDouble();
+    mReducedTax = q.value( 1 ).toDouble();
+    mTaxDate = date;
+    // qDebug () << "* Taxes: " << mFullTax << "/" << mReducedTax << " from " << q.value( 2 ).toDate();
+  }
+  return ( mFullTax > 0 && mReducedTax > 0 );
+}
+
+/* ============================================================================================= */
 
 void UnitManager::load()
 {

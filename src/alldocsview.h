@@ -48,7 +48,7 @@ public:
 
     int currentDocumentRow() const;
 
-    QString currentDocumentId( ) const;
+    QString currentDocumentIdent( ) const;
     ArchDocDigest currentLatestArchivedDoc() const;
 
     QVector<QMenu*> contextMenus();

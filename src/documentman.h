@@ -18,9 +18,11 @@
 #ifndef DOCUMENTMAN_H
 #define DOCUMENTMAN_H
 
-#include "kraftdoc.h"
+#include <QDate>
 
-class DocPosition;
+#include "docguardedptr.h"
+#include "docposition.h"
+
 class QSqlQuery;
 
 typedef QMap<QString, DocGuardedPtr> DocumentMap;
@@ -32,26 +34,19 @@ class DocumentMan
 
     static DocumentMan *self();
 
-    DocGuardedPtr createDocument(const QString& docType, const QString& copyFromId = QString(),
-                                 const DocPositionList &listToCopy = DocPositionList() );
-    DocGuardedPtr copyDocument( const QString& copyFromId );
-    DocGuardedPtr openDocument( const QString& );
-    DocGuardedPtr openDocumentbyIdent( const QString& ident );
+    // persisting the docs
+    DocGuardedPtr openDocumentByIdent( const QString& ident );
+    bool saveDocument(KraftDoc* doc);
+    bool reloadDocument(KraftDoc* doc);
+    void closeDocument(const QString& ident);
 
-    double tax( const QDate& );
-    double reducedTax( const QDate& );
-    void clearTaxCache();
+    DocGuardedPtr createDocument(const QString& docType, const QString& copyFromIdent = QString(),
+                                 const DocPositionList &listToCopy = DocPositionList() );
+    DocGuardedPtr copyDocument( const QString& copyFromIdent );
+
+    bool convertDbToXml(const QString& docID);
 
     DocumentMan();
-
-  private:
-    bool readTaxes( const QDate& );
-
-    double mFullTax;
-    double mReducedTax;
-    QDate  mTaxDate;
-
-
 };
 
 #endif

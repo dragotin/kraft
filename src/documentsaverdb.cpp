@@ -291,24 +291,26 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
     }
 }
 
-void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
+bool DocumentSaverDB::loadByIdent( const QString& ident, KraftDoc *doc )
 {
-    if( !id.isEmpty() ) {
+    int id{-1}; // the database id
+
+    if( !ident.isEmpty() ) {
         QSqlQuery q;
-        q.prepare("SELECT ident, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, "
-                  "pretext, posttext, docDescription, projectlabel, predecessor FROM document WHERE docID=:docID");
-        q.bindValue(":docID", id);
+        q.prepare("SELECT docID, docType, clientID, clientAddress, salut, goodbye, date, lastModified, language, country, "
+                  "pretext, posttext, docDescription, projectlabel, predecessor FROM document WHERE ident=:ident");
+        q.bindValue(":ident", ident);
         q.exec();
         // qDebug () << "Loading document id " << id;
 
         if( q.next())
         {
-            // qDebug () << "loading document with id " << id;
-            dbID dbid;
-            dbid = id;
+            // qDebug () << "loading document with id " << id << endl;
+            id = q.value( 0 ).toInt();
+            dbID dbid(id);
             doc->setDocID(dbid);
 
-            doc->setIdent(      q.value( 0 ).toString() );
+            doc->setIdent(ident);
             doc->setDocType(    q.value( 1 ).toString() );
             doc->setAddressUid( q.value( 2 ).toString() );
             doc->setAddress(    q.value( 3 ).toString() );
@@ -342,17 +344,20 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
     const QString pIdent = doc->predecessor();
     if( ! pIdent.isEmpty() ) {
         QSqlQuery q1;
-        q1.prepare("SELECT docID FROM document WHERE ident=:docID");
+        q1.prepare("SELECT ident FROM document WHERE ident=:docID");
         q1.bindValue(":docID", pIdent);
         q1.exec();
         if( q1.next() ) {
-            const QString pDbId = q1.value(0).toString();
-            doc->setPredecessorDbId(pDbId);
+            const QString pIdent = q1.value(0).toString();
+            doc->setPredecessorDbId(pIdent);
         }
     }
 
     // finally load the item data.
-    loadPositions( id, doc );
+    if (id > -1) {
+        loadPositions( QString::number(id), doc );
+    }
+    return true;
 }
 /* docposition:
   +------------+--------------+------+-----+---------+----------------+

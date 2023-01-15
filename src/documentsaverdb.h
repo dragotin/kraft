@@ -33,8 +33,8 @@ public:
     DocumentSaverDB();
     virtual ~DocumentSaverDB();
 
-    virtual bool saveDocument( KraftDoc* );
-    virtual void load( const QString& , KraftDoc * );
+    virtual bool saveDocument( KraftDoc* ) override;
+    virtual bool loadByIdent( const QString& , KraftDoc * ) override;
 protected:
     virtual void loadPositions( const QString&, KraftDoc* );
     virtual void saveDocumentPositions( KraftDoc* );

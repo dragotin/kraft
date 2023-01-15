@@ -224,8 +224,8 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     QLocale *loc = DefaultProvider::self()->locale();
     record.setValue( "country",  loc->name() );
     record.setValue( "language", QLocale::languageToString(DefaultProvider::self()->locale()->language()));
-    record.setValue( "tax", DocumentMan::self()->tax( doc->date() ) );
-    record.setValue( "reducedTax", DocumentMan::self()->reducedTax( doc->date() ) );
+    record.setValue( "tax", UnitManager::self()->tax( doc->date() ) );
+    record.setValue( "reducedTax", UnitManager::self()->reducedTax( doc->date() ) );
     if(!model.insertRecord(-1, record)) {
       // qDebug () << model.lastError();
 	}
