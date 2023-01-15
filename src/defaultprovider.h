@@ -23,6 +23,8 @@
 
 #include "kraftdoc.h"
 #include "doctext.h"
+#include "docguardedptr.h"
+#include "documentsaverxml.h"
 
 class QSqlRecord;
 class QStringList;
@@ -65,10 +67,13 @@ public:
   QString pdfOutputDir();
   QString xmlArchivePath();
 
+  DocumentSaverBase &documentPersister();
+
 private:
 
- //  static DefaultProvider *mSelf;
   QLocale _locale;
+  DocumentSaverXML _persister;
+
   const QString EuroTag;
 
 };

@@ -25,21 +25,22 @@
 // application specific includes
 #include "kraftdoc.h"
 #include "docposition.h"
-#include "documentsaverdb.h"
 #include "defaultprovider.h"
 #include "documentman.h"
 #include "doctype.h"
 #include "documentman.h"
 #include "kraftdb.h"
 #include "format.h"
+#include "unitmanager.h"
+#include "kraftsettings.h"
 
 // FIXME: Make KraftDoc inheriting DocDigest!
 
 KraftDoc::KraftDoc(QWidget *parent)
   : QObject(parent),
     _modified(false),
-    mIsNew(true),
-    mDocTypeChanged(false)
+    mDocTypeChanged(false),
+    _state(State::New)
 {
 }
 
@@ -64,7 +65,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   }
 
   _modified = origDoc._modified;
-  mIsNew = true;
+  _state = State::New;
 
   mAddressUid = origDoc.mAddressUid;
   mProjectLabel = origDoc.mProjectLabel;
@@ -105,30 +106,30 @@ void KraftDoc::setPredecessor( const QString& w )
     mPredecessor = w;
 }
 
-bool KraftDoc::openDocument(const QString& id)
+bool KraftDoc::openDocument(DocumentSaverBase &loader, const QString& ident)
 {
-    DocumentSaverDB opener;
-
-    opener.load(id, this);
-    mDocTypeChanged = false;
-    _modified=false;
-    mIsNew = false;
-    return true;
+    if (loader.loadByIdent(ident, this)) {
+        mDocTypeChanged = false;
+        _modified=false;
+        _state = State::Draft;
+        return true;
+    }
+    return false;
 }
 
-bool KraftDoc::reloadDocument()
+bool KraftDoc::reloadDocument(DocumentSaverBase &loader)
 {
-  mPositions.clear();
-  mRemovePositions.clear();
+    const QString ident = mIdent;
+    mPositions.clear();
+    mRemovePositions.clear();
 
-  return openDocument( mDocID.toString() );
+    return openDocument(loader, ident);
 }
 
-bool KraftDoc::saveDocument( )
+bool KraftDoc::saveDocument(DocumentSaverBase& saver)
 {
     bool result = false;
 
-    DocumentSaverDB saver;
     result = saver.saveDocument(this);
 
     if(result) {
@@ -282,20 +283,19 @@ Geld KraftDoc::bruttoSum() const
 
 Geld KraftDoc::fullTaxSum() const
 {
-    return positions().fullTaxSum(DocumentMan::self()->tax(date()));
+    return positions().fullTaxSum(UnitManager::self()->tax(date()));
 }
 
 Geld KraftDoc::reducedTaxSum() const
 {
-    return positions().reducedTaxSum(DocumentMan::self()->reducedTax(date()));
+    return positions().reducedTaxSum(UnitManager::self()->reducedTax(date()));
 }
 
 Geld KraftDoc::vatSum() const
 {
-  return positions().taxSum( DocumentMan::self()->tax( date() ),
-                             DocumentMan::self()->reducedTax( date() ) );
+  return positions().taxSum( UnitManager::self()->tax( date() ),
+                             UnitManager::self()->reducedTax( date() ) );
 
-  // return Geld( nettoSum() * DocumentMan::self()->vat()/100.0 );
 }
 
 QString KraftDoc::country() const
@@ -312,11 +312,11 @@ QString KraftDoc::language() const
 
  QString KraftDoc::partToString( Part p )
 {
-  if ( p == Header )
+  if ( p == Part::Header )
     return i18nc( "Document part header", "Header" );
-  else if ( p == Footer )
+  else if ( p == Part::Footer )
     return i18nc( "Document part footer", "Footer" );
-  else if ( p == Positions )
+  else if ( p == Part::Positions )
     return i18nc( "Document part containing the items", "Items" );
 
   return i18n( "Unknown document part" );

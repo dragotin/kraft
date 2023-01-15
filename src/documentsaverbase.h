@@ -36,7 +36,7 @@ public:
   virtual ~DocumentSaverBase();
 
   virtual bool saveDocument( KraftDoc* ) = 0;
-  virtual void load( const QString&, KraftDoc * ) = 0;
+  virtual bool loadByIdent( const QString&, KraftDoc * ) = 0;
 };
 
 #endif

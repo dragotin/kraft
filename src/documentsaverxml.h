@@ -38,11 +38,14 @@ public:
     virtual ~DocumentSaverXML();
 
     virtual bool saveDocument(KraftDoc*) override;
-    virtual void load( const QString& , KraftDoc * ) override;
+    virtual bool loadByIdent( const QString& , KraftDoc * ) override;
 
     void setBasePath(const QString& path);
     QString xmlDocFileName(KraftDoc *doc);
-    QString xmlDocFileNameFromId(const QString& id);
+    QString xmlDocFileNameFromIdent(const QString& id);
+
+    bool verifyXmlFile(const QUrl& schemaFile, const QString& xmlFile);
+
 
 
 protected:
@@ -51,8 +54,7 @@ protected:
 private:
 
     QDir _basePath;
-    bool _validateWithSchema;
-    QXmlSchema _schema;
+
 };
 
 #endif

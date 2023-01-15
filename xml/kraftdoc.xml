@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE kraftdocument>
-<kraftdocument schemaversion="1">
+<kraftdocument schemaVersion="1">
     <meta>
         <docType>Rechnung</docType>
         <docDesc>whiteboard content</docDesc>
@@ -9,7 +9,9 @@
         <locale>en_US</locale>
 
         <ident>20110127</ident>
+        <uuid version="4">f4deb784-6131-4e49-bd6d-92bd1355ea4d</uuid>
         <date>2011-01-27</date>
+        <state>Sent</state>
         <timeOfSupply>
             <start>2019-11-21</start>
             <end>2019-11-23</end>
@@ -56,11 +58,6 @@
         <customValue>
                 <name>valid until</name>
                 <value>2012-01-21</value>
-                <type>date</type>
-        </customValue>
-        <customValue>
-                <name>date of supply</name>
-                <value>2011-12-21</value>
                 <type>date</type>
         </customValue>
     </header>
@@ -119,7 +116,7 @@
         <goodbye>mit den besten Gr&#xFC;ssen,</goodbye>
     </footer>
 
-    <sums>
+    <totals>
         <netto>146.65</netto>
         <taxSum>
             <type>Reduced</type>
@@ -130,5 +127,5 @@
             <value>12.24</value>
         </taxSum>
         <brutto>174.51</brutto>
-    </sums>
+    </totals>
 </kraftdocument>

@@ -25,7 +25,6 @@
 
 #include "docposition.h"
 #include "dbids.h"
-#include "docguardedptr.h"
 
 // forward declaration of the Kraft classes
 
@@ -55,7 +54,8 @@ class KraftDoc : public QObject
     Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
     Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
 public:
-    enum Part { Header,  Positions, Footer, Unknown };
+    enum class Part { Header,  Positions, Footer, Unknown };
+    enum class State { New, Draft, Sent };
 
     static QString partToString( Part );
 
@@ -72,17 +72,6 @@ public:
     /** returns if the document is modified or not. Use this to determine
    *  if your document needs saving by the user on closing.*/
     bool isModified(){ return _modified; }
-    /** deletes the document's contents */
-    void deleteItems();
-
-    /** closes the current document */
-    void closeDocument();
-    /** loads the document by filename and format and emits the updateViews() signal */
-    bool openDocument(const QString& );
-    /** fetch the document from database back */
-    bool reloadDocument();
-    /** saves the document under filename and format.*/
-    bool saveDocument( );
 
     DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
     DocPositionList positions() const { return mPositions; }
@@ -104,7 +93,7 @@ public:
     QString address() const { return mAddress; }
     void setAddress( const QString& adr ) { mAddress = adr; }
 
-    bool isNew() const { return mIsNew; }
+    bool isNew() const { return _state == State::New; }
 
     QString ident() const   { return mIdent;    }
     void setIdent( const QString& str ) { mIdent = str; }
@@ -163,6 +152,8 @@ public:
     QString country() const;
     QString language() const;
 
+    KraftDoc::State state() const;
+    void setState(KraftDoc::State s) { _state = s; }
 
 public slots:
     /** calls redrawDocument() on all views connected to the document object and is
@@ -175,10 +166,27 @@ public slots:
     void slotRemovePosition( int );
     void slotMoveUpPosition( int );
     void slotMoveDownPosition( int );
+
+protected:
+    /** closes the current document FIXME: remove and put to destructor */
+    void closeDocument();
+
+    /** loads the document by filename and format and emits the updateViews() signal */
+    bool openDocument(DocumentSaverBase &loader, const QString& ident);
+
+    /** fetch the document from database back FIXME needs a loader */
+    bool reloadDocument(DocumentSaverBase &loader);
+
+    /** saves the document under filename and format.*/
+    bool saveDocument(DocumentSaverBase &saver);
+
 private:
+    /** deletes the document's contents */
+    void deleteItems();
+
+
     /** the modified flag of the current document */
     bool _modified;
-    bool mIsNew;
 
     QString mAddressUid;
     QString mProjectLabel;
@@ -204,6 +212,9 @@ private:
     DocPositionList mPositions;
     DBIdList mRemovePositions;
     dbID    mDocID;
+    State   _state;
+
+    friend class DocumentMan;
 };
 
 #endif // KraftDoc_H

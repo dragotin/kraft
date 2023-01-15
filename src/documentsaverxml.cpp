@@ -26,16 +26,10 @@
 
 
 #include "documentsaverxml.h"
-#include "documentman.h"
 #include "docposition.h"
 #include "kraftdoc.h"
-#include "kraftdb.h"
 #include "unitmanager.h"
-#include "dbids.h"
-#include "kraftsettings.h"
-#include "doctype.h"
 #include "defaultprovider.h"
-#include "format.h"
 #include "attribute.h"
 
 
@@ -208,7 +202,7 @@ QDomDocument xmlDocument(KraftDoc *doc)
     QDomElement taxReduced = xmldoc.createElement("tax");
     itemGroupTotals.appendChild(taxReduced);
     taxReduced.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
-    double t = DocumentMan::self()->reducedTax(doc->date());
+    double t = UnitManager::self()->reducedTax(doc->date());
     taxReduced.appendChild(xmlTextElement(xmldoc, "percent", QString::number(t, 'f', 2)));
     t = doc->reducedTaxSum().toDouble();
     taxReduced.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
@@ -216,7 +210,7 @@ QDomDocument xmlDocument(KraftDoc *doc)
     QDomElement taxFull = xmldoc.createElement("tax");
     itemGroupTotals.appendChild(taxFull);
     taxFull.appendChild(xmlTextElement(xmldoc, "type", "Full"));
-    t = DocumentMan::self()->tax(doc->date());
+    t = UnitManager::self()->tax(doc->date());
     taxFull.appendChild(xmlTextElement(xmldoc, "percent", QString::number(t, 'f', 2)));
     t = doc->fullTaxSum().toDouble();
     taxFull.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
@@ -330,7 +324,7 @@ bool loadHeaderBlock(const QDomDocument& domDoc, KraftDoc *doc)
     doc->setSalut(t);
 
     t = childElemText(headerElem, "preText");
-    doc->setPreText(t);
+    doc->setPreTextRaw(t);
 
     // FIXME: Same as the docAttribs above in meta?
     QDomElement customElem = headerElem.firstChildElement("customValue");
@@ -403,7 +397,7 @@ QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
     return path;
 }
 
-QString DocumentSaverXML::xmlDocFileNameFromId(const QString& id)
+QString DocumentSaverXML::xmlDocFileNameFromIdent(const QString& id)
 {
     QString path {basePath()};
 
@@ -417,16 +411,31 @@ QString DocumentSaverXML::xmlDocFileNameFromId(const QString& id)
 }
 
 DocumentSaverXML::DocumentSaverXML()
-    : DocumentSaverBase(),
-    _validateWithSchema {false}
+    : DocumentSaverBase()
 {
-    const QUrl schemaFile = QUrl::fromLocalFile(DefaultProvider::self()->locateFile("xml/kraftdoc.xsd"));
 
-    if (_schema.load(schemaFile)) {
-        _validateWithSchema = true;
-    } else {
+}
+
+bool DocumentSaverXML::verifyXmlFile(const QUrl& schemaFile, const QString& xmlFile)
+{
+    QFile file( xmlFile );
+    bool re{false};
+
+    QXmlSchema schema;
+    if (!schema.load(schemaFile)) {
         qDebug() << "Failed to load schema" << schemaFile.toLocalFile();
+    } else {
+        if (schema.isValid() && file.open(QIODevice::ReadOnly)) {
+            QXmlSchemaValidator validator(schema);
+            if (validator.validate(&file, QUrl::fromLocalFile(xmlFile))) {
+                re = true;
+                qDebug() << "instance document is valid";
+            } else {
+                qDebug() << "instance document is invalid";
+            }
+        }
     }
+    return re;
 }
 
 bool DocumentSaverXML::saveDocument(KraftDoc *doc)
@@ -434,6 +443,11 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
     bool result = false;
     if( ! doc ) return result;
+
+    if (_basePath.exists()) { // not set at all?
+        qDebug() << "The base path is not yet set!";
+        return false;
+    }
 
     QDomDocument xmldoc = xmlDocument(doc);
 
@@ -446,7 +460,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     const QString xml = xmldoc.toString();
     const QString xmlFile = xmlDocFileName(doc);
 
-    qDebug () << "Storing XML to " << xmlFile << endl;
+    qDebug () << "Storing XML to " << xmlFile;
 
     QFile file( xmlFile );
     if ( file.open( QIODevice::WriteOnly ) ) {
@@ -458,14 +472,8 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         return false;
     }
 
-    if (_validateWithSchema && _schema.isValid() && file.open(QIODevice::ReadOnly)) {
-
-        QXmlSchemaValidator validator(_schema);
-        if (validator.validate(&file, QUrl::fromLocalFile(xmlFile)))
-            qDebug() << "instance document is valid";
-        else
-            qDebug() << "instance document is invalid";
-    }
+    const QUrl schemaFile = QUrl::fromLocalFile(DefaultProvider::self()->locateFile("xml/kraftdoc.xsd"));
+    result = verifyXmlFile(schemaFile, xmlFile);
 
 #if 0
     if( !doc->isNew() && doc->docTypeChanged() ) {
@@ -492,13 +500,13 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     return result;
 }
 
-void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
+bool DocumentSaverXML::loadByIdent(const QString& id, KraftDoc *doc)
 {
     if (id.isEmpty()) {
         qDebug() << "Document Id to load is empty!";
     }
 
-    const QString xmlFile = xmlDocFileNameFromId(id);
+    const QString xmlFile = xmlDocFileNameFromIdent(id);
 
     QFileInfo fi {xmlFile};
     if (!fi.exists()) {
@@ -512,8 +520,9 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
     QFile file(xmlFile);
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "Unable to open xml document file";
-        return;
+        return false;
     }
+
     QDomDocument _domDoc;
 
     const QByteArray arr = file.readAll();
@@ -521,7 +530,7 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
     if (!_domDoc.setContent(arr, &errMsg)) {
         qDebug() << "Unable to set file content as xml:" << errMsg;
         file.close();
-        return;
+        return false;
     }
     file.close();
 
@@ -535,6 +544,10 @@ void DocumentSaverXML::load( const QString& id, KraftDoc *doc )
 
     ok = loadItems(_domDoc, doc);
 
+    if (ok) {
+       doc->setState(KraftDoc::State::Draft);
+    }
+    return ok;
 }
 
 #if 0

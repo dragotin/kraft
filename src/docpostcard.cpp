@@ -164,15 +164,15 @@ void DocPostCard::setFooterData( const QString& postText,  const QString& goodby
   mGoodbye = goodbye;
 }
 
-void DocPostCard::renderDoc( int id )
+void DocPostCard::renderDoc( KraftDoc::Part p )
 {
   QString t;
   // qDebug() << "rendering postcard for active id " << id <<
     //( mMode == Full ? " (full) " : " (mini) " );
   if ( mMode == Full ) {
-    t = renderDocFull( id );
+    t = renderDocFull( p );
   } else if ( mMode == Mini ) {
-    t = renderDocMini( id );
+    t = renderDocMini( p );
   } else {
     // qDebug () << "Unknown postcard mode";
   }
@@ -181,9 +181,9 @@ void DocPostCard::renderDoc( int id )
   displayContent( t );
 }
 
-#define SEL_STRING(X) ( id == X ? QL1("_selected"): QL1(""))
+#define SEL_STRING(X) ( p == X ? QL1("_selected"): QL1(""))
 
-QString DocPostCard::renderDocFull( int id )
+QString DocPostCard::renderDocFull( KraftDoc::Part p )
 {
   QString rethtml;
   QString t;
@@ -191,9 +191,9 @@ QString DocPostCard::renderDocFull( int id )
   rethtml = QL1( "<body>" );
 
   t += QL1("<a href=\"kraftdoc://header\">");
-  t += QString( "<div class=\"head%1\">\n" ).arg( SEL_STRING(KraftDoc::Header) );
+  t += QString( "<div class=\"head%1\">\n" ).arg( SEL_STRING(KraftDoc::Part::Header) );
 
-  t += header( id == KraftDoc::Header, "headerlink", KraftDoc::partToString(KraftDoc::Header), "kraftdoc://header" );
+  t += header( p == KraftDoc::Part::Header, "headerlink", KraftDoc::partToString(KraftDoc::Part::Header), "kraftdoc://header" );
 
   QString h = mAddress;
   h.replace( '\n', "<br/>" );
@@ -210,16 +210,16 @@ QString DocPostCard::renderDocFull( int id )
 
   // the Body section showing the positions
   t = QL1("<a href=\"kraftdoc://positions\">");
-  t += QString( "<div class=\"body%1\">\n" ).arg( SEL_STRING(KraftDoc::Positions ) );
-  t += header( id == KraftDoc::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Positions), "kraftdoc://positions" );
+  t += QString( "<div class=\"body%1\">\n" ).arg( SEL_STRING(KraftDoc::Part::Positions ) );
+  t += header( p == KraftDoc::Part::Positions, "bodylink", KraftDoc::partToString(KraftDoc::Part::Positions), "kraftdoc://positions" );
 
   t += mPositions;
   t += "\n</div></a>\n";
   rethtml += t;
 
   t = QL1("<a href=\"kraftdoc://footer\">");
-  t += QString( "<div class=\"foot%1\">\n" ).arg( SEL_STRING(KraftDoc::Footer) );
-  t += header( id == KraftDoc::Footer, "footerlink", KraftDoc::partToString(KraftDoc::Footer), "kraftdoc://footer" );
+  t += QString( "<div class=\"foot%1\">\n" ).arg( SEL_STRING(KraftDoc::Part::Footer) );
+  t += header( p == KraftDoc::Part::Footer, "footerlink", KraftDoc::partToString(KraftDoc::Part::Footer), "kraftdoc://footer" );
 
   t += "<p class=\"longtext\">" + mPostText + "</p>\n";
   if ( ! mGoodbye.isEmpty() )
@@ -231,30 +231,30 @@ QString DocPostCard::renderDocFull( int id )
   return rethtml;
 }
 
-QString DocPostCard::renderDocMini( int id ) const
+QString DocPostCard::renderDocMini(KraftDoc::Part p ) const
 {
   QString t;
   QString rethtml = QL1( "<body>" );
 
-  t = QString( "<div class=\"head%1\">\n" ).arg( SEL_STRING(KraftDoc::Header) );
-  t += header( id == KraftDoc::Header, "headerlink", KraftDoc::partToString(KraftDoc::Header), "kraftdoc://header",
+  t = QString( "<div class=\"head%1\">\n" ).arg( SEL_STRING(KraftDoc::Part::Header) );
+  t += header( p == KraftDoc::Part::Header, "headerlink", KraftDoc::partToString(KraftDoc::Part::Header), "kraftdoc://header",
                QString( "<b>%1</b>, %2" ).arg( mType ).arg( mDate ) );
   t += QL1("</div>");
   rethtml += t;
 
-  t = QString( "<div class=\"body%1\">\n" ).arg( SEL_STRING(KraftDoc::Positions));
+  t = QString( "<div class=\"body%1\">\n" ).arg( SEL_STRING(KraftDoc::Part::Positions));
   QString d = i18n("%1 Items", mPositionCount);
   if( mShowPrices )
       d = i18n("%1 Items, netto %2", mPositionCount, mTotal);
 
   // do not add another "Items" string to the header to not bloat
-  t += header( id == KraftDoc::Positions, "bodylink", QString(), "kraftdoc://positions",
+  t += header( p == KraftDoc::Part::Positions, "bodylink", QString(), "kraftdoc://positions",
                d );
   t += QL1("</div>");
   rethtml += t;
 
-  t = QString( "<div class=\"foot%1\">\n" ).arg(SEL_STRING(KraftDoc::Footer));
-  t += header( id == KraftDoc::Footer, "footerlink", KraftDoc::partToString(KraftDoc::Footer), "kraftdoc://footer" );
+  t = QString( "<div class=\"foot%1\">\n" ).arg(SEL_STRING(KraftDoc::Part::Footer));
+  t += header( p == KraftDoc::Part::Footer, "footerlink", KraftDoc::partToString(KraftDoc::Part::Footer), "kraftdoc://footer" );
   t += QL1("</div>");
   rethtml += t;
   rethtml += QL1("</body>");
@@ -283,26 +283,26 @@ QString DocPostCard::header( bool selected,
 
 void DocPostCard::slotUrlSelected( const QUrl& kurl)
 {
-    KraftDoc::Part id = KraftDoc::Header;
+    KraftDoc::Part id = KraftDoc::Part::Header;
 
     if ( kurl.scheme() == "kraftdoc" ) {
         if ( kurl.host() == "header" ) {
-            // qDebug () << "Header selected!";
-            id = KraftDoc::Header;
+            // qDebug () << "Header selected!" << endl;
+            id = KraftDoc::Part::Header;
         } else if ( kurl.host() == "positions" ) {
-            // qDebug () << "Positions selected!";
-            id = KraftDoc::Positions;
+            // qDebug () << "Positions selected!" << endl;
+            id = KraftDoc::Part::Positions;
         } else if ( kurl.host() == "footer" ) {
-            // qDebug () << "Footer selected!";
-            id = KraftDoc::Footer;
+            // qDebug () << "Footer selected!" << endl;
+            id = KraftDoc::Part::Footer;
         }
         emit selectPage( id );
     }
 }
 
-void DocPostCard::slotSetMode( DisplayMode mode, int id ) {
+void DocPostCard::slotSetMode( DisplayMode mode, KraftDoc::Part p) {
   mMode = mode;
-  renderDoc( id );
+  renderDoc( p );
 }
 
 void DocPostCard::slotShowPrices( bool showIt )
