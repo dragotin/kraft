@@ -54,7 +54,21 @@ private slots:
         xmlSaver.setBasePath(_dir.path());
 
         KraftDoc doc;
+        QCOMPARE(doc.state(), KraftDoc::State::New);
+
         QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
+
+        QCOMPARE(doc.ident(), "20110127");
+        QCOMPARE(doc.docType(), "Rechnung");
+        QCOMPARE(doc.whiteboard(), "whiteboard content");
+        QCOMPARE(doc.uuid(), "f4deb784-6131-4e49-bd6d-92bd1355ea4d");
+        QCOMPARE(doc.state(), KraftDoc::State::Sent);
+        QCOMPARE(doc.date(), QDate(2011, 1, 27));
+        QCOMPARE(doc.timeOfSupplyStart(), QDateTime(QDate(2019, 11, 21), QTime(0,0)));
+        QCOMPARE(doc.timeOfSupplyEnd(), QDateTime(QDate(2019, 11, 23), QTime(23,59, 59)));
+        QCOMPARE(doc.owner(), "kf");
+        QCOMPARE(doc.lastModified(), QDateTime::fromString("2018-12-15T18:22:20", Qt::ISODate));
+        QCOMPARE(doc.predecessor(), "id");
 
         QVERIFY(!doc.isNew());
 

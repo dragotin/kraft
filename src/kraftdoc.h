@@ -55,10 +55,18 @@ class KraftDoc : public QObject
     Q_PROPERTY(QString taxSumStr READ vatSumStr)
     Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
     Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
+    Q_PROPERTY(QString owner READ owner)
 
 public:
     enum class Part { Header,  Positions, Footer, Unknown };
-    enum class State { New, Draft, Sent };
+    enum class State {
+        Undefined,  // Not defined at all.
+        New,        // New document, not yet saved
+        Draft,      // Draft. Saved on disk
+        Sent,       // Sent to customer
+        Retracted,  // Sent to customer, but retracted
+        Invalid     // Invalidated. Never sent out
+    };
 
     static QString partToString( Part );
 
@@ -101,7 +109,7 @@ public:
     QString ident() const   { return mIdent;    }
     void setIdent( const QString& str ) { mIdent = str; }
 
-    QString uuid() const   { return _uuid.toString();    }
+    QString uuid() const   { return _uuid.toString(QUuid::WithoutBraces); }
     void setUuid( const QString& str ) { _uuid = QUuid(str); }
 
     QString salut() const   { return mSalut;    }
@@ -140,6 +148,8 @@ public:
     QDateTime timeOfSupplyStart() { return _toSStart; }
     QDateTime timeOfSupplyEnd() { return _toSEnd; }
 
+    QString owner() { return _owner; }
+    void setOwner(const QString& owner) { _owner = owner; }
     void setDocID( dbID id ) { mDocID = id; }
     dbID docID() const { return mDocID; }
     QString docIdStr() const { return docID().toString(); }
@@ -162,8 +172,9 @@ public:
     QString country() const;
     QString language() const;
 
-    KraftDoc::State state() const;
-    void setState(KraftDoc::State s) { _state = s; }
+    KraftDoc::State state() const { return _state; }
+    void setState( State s) { _state = s; }
+    void setStateFromString(const QString& s);
 
 public slots:
     /** calls redrawDocument() on all views connected to the document object and is
@@ -223,6 +234,7 @@ private:
     // Time of supply
     QDateTime _toSStart;
     QDateTime _toSEnd;
+    QString   _owner;
 
     QDateTime   mLastModified;
     DocPositionList mPositions;
