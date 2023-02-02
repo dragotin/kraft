@@ -265,6 +265,7 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
     doc->setDate(d);
 
     t = childElemText(metaElem, "state");
+    doc->setStateFromString(t);
 
     const QDomElement tosElem = metaElem.firstChildElement("timeOfSupply");
     d = childElemDate(tosElem, "start");
@@ -282,6 +283,7 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
 
     // owner
     t = childElemText(metaElem, "owner");
+    doc->setOwner(t);
 
     // last modified
     t = childElemText(metaElem, "lastModified");
@@ -314,21 +316,11 @@ bool loadHeaderBlock(const QDomDocument& domDoc, KraftDoc *doc)
     bool res {true};
 
     QDomElement kraftdocElem = domDoc.firstChildElement("kraftdocument");
-    QDomElement headerElem = kraftdocElem.firstChildElement("header");
-
-    Q_ASSERT(!headerElem.isNull());
-    QString t = childElemText(headerElem, "docType");
-    doc->setDocType(t);
+    QDomElement headerElem = kraftdocElem.firstChildElement("header");;
 
     QDomElement prjElem = headerElem.firstChildElement("project");
-    t = childElemText(prjElem, "name");
+    QString t = childElemText(prjElem, "name");
     // TODO: There can also be a project ID
-
-    QDate d = childElemDate(headerElem, "date");
-    doc->setDate(d);
-
-    t = childElemText(headerElem, "ident");
-    doc->setIdent(t);
 
     t = childElemText(headerElem, "salut");
     doc->setSalut(t);
@@ -554,9 +546,6 @@ bool DocumentSaverXML::loadByIdent(const QString& id, KraftDoc *doc)
 
     ok = loadItems(_domDoc, doc);
 
-    if (ok) {
-       doc->setState(KraftDoc::State::Draft);
-    }
     return ok;
 }
 

@@ -26,6 +26,7 @@
 <xs:simpleType name="state_type" final="restriction" >
     <xs:restriction base="xs:string">
         <xs:enumeration value="Undefined"/>
+	<xs:enumeration value="New"/>
         <xs:enumeration value="Draft"/>
         <xs:enumeration value="Sent"/>
         <xs:enumeration value="Retracted"/>

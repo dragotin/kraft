@@ -304,6 +304,24 @@ Geld KraftDoc::vatSum() const
 
 }
 
+void KraftDoc::setStateFromString(const QString& s)
+{
+    _state = State::Undefined;
+    if (s.isEmpty()) return;
+
+    if (s == "Draft") {
+        _state = State::Draft;
+    } else if ( s == "Sent") {
+        _state = State::Sent;
+    } else if ( s == "Retracted") {
+        _state = State::Retracted;
+    } else if ( s == "Invalid") {
+         _state = State::Invalid;
+    } else {
+        _state = State::Invalid;
+    }
+}
+
 QString KraftDoc::country() const
 {
     QLocale *loc = DefaultProvider::self()->locale();
