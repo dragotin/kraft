@@ -35,11 +35,16 @@
 
         <predecessor>id</predecessor>
 
-        <docAttrib>
+        <attrib>
             <name>valid until</name>
             <value>2012-01-21</value>
             <type>date</type>
-        </docAttrib>
+        </attrib>
+        <attrib>
+            <name>counter</name>
+            <value>21</value>
+            <type>integer</type>
+        <attrib>
 
         <!-- Generic sort criteria -->
         <tag>foo</tag>
@@ -55,11 +60,11 @@
         </project>
         <salut>lieber goofy,</salut>
         <preText>Wir freuen uns, mit Dir Gesch&#xE4;fte machen zu k&#xF6;nnen.</preText>
-        <customValue>
+        <attrib>
                 <name>valid until</name>
                 <value>2012-01-21</value>
                 <type>date</type>
-        </customValue>
+        </attrib>
     </header>
     <itemGroup>
         <name>General</name>

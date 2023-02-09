@@ -50,7 +50,7 @@
     <xs:element name="owner" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
     <xs:element name="lastModified" type="xs:dateTime"/>
     <xs:element name="predecessor" type="xs:string"/>
-    <xs:element name="docAttrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="attrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
     <xs:element name="tag" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
   </xs:sequence>
 </xs:complexType>
@@ -120,7 +120,7 @@
      <xs:element name="taxType" type="xs:string" minOccurs="0" maxOccurs="1"/>
      <xs:element name="unitprice"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
      <xs:element name="itemprice"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
-     <xs:element name="itemAttrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+     <xs:element name="attrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
      <xs:element name="tag"        type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
 
    </xs:sequence>
