@@ -82,7 +82,7 @@
     <xs:element name="project" type="project_type" minOccurs="0" maxOccurs="1"/>
     <xs:element name="salut" type="xs:string"/>
     <xs:element name="preText" type="xs:string"/>
-    <xs:element name="customValue" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="attrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
   </xs:sequence>
 </xs:complexType>
 

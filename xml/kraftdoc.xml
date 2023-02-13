@@ -44,7 +44,7 @@
             <name>counter</name>
             <value>21</value>
             <type>integer</type>
-        <attrib>
+        </attrib>
 
         <!-- Generic sort criteria -->
         <tag>foo</tag>

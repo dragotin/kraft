@@ -31,6 +31,7 @@
 #include "unitmanager.h"
 #include "defaultprovider.h"
 #include "attribute.h"
+#include "kraftattrib.h"
 
 
 namespace {
@@ -116,13 +117,13 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
         itemType.appendChild(xmlTextElement(xmldoc, "unitprice", QString::number(pos->unitPrice().toDouble(), 'f', 2)));
         itemType.appendChild(xmlTextElement(xmldoc, "itemtotal", QString::number(pos->overallPrice().toDouble(), 'f', 2)));
 
-        AttributeMap attribs = item->attributes();
+        const QMap<QString, KraftAttrib> attribs = item->attributes();
         for(const auto &k : attribs.keys()) {
-            QDomElement attribElem = xmldoc.createElement("itemAttrib");
+            QDomElement attribElem = xmldoc.createElement("attrib");
             itemType.appendChild(attribElem);
             attribElem.appendChild(xmlTextElement(xmldoc, "name", k.toHtmlEscaped()));
             attribElem.appendChild(xmlTextElement(xmldoc, "value", attribs[k].value().toString().toHtmlEscaped()));
-            attribElem.appendChild(xmlTextElement(xmldoc, "type", "string"));
+            attribElem.appendChild(xmlTextElement(xmldoc, "type", attribs[k].typeString()));
         }
 
         cnt++;
@@ -293,19 +294,17 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
     t = childElemText(metaElem, "predecessor");
     doc->setPredecessor(t);
 
-    // doc attribs - FIXME: Unite with the header/customValues
-    QDomElement attrElem = metaElem.firstChildElement("docAttrib");
+    QDomElement attrElem = metaElem.firstChildElement("attrib");
     while (!attrElem.isNull()) {
-        t = childElemText(attrElem, "name");
-        t = childElemText(attrElem, "value");
-        t = childElemText(attrElem, "type");
-        attrElem = attrElem.nextSiblingElement("docAttrib");
+        doc->setAttribute(KraftAttrib(attrElem));
+        attrElem = attrElem.nextSiblingElement("attrib");
     }
 
     // Tags for future fun
     QDomElement tagElem = metaElem.firstChildElement("tag");
     while (!tagElem.isNull()) {
         t = tagElem.text();
+        doc->addTag(t);
         tagElem = tagElem.nextSiblingElement("tag");
     }
     return res;
@@ -328,13 +327,12 @@ bool loadHeaderBlock(const QDomDocument& domDoc, KraftDoc *doc)
     t = childElemText(headerElem, "preText");
     doc->setPreTextRaw(t);
 
-    // FIXME: Same as the docAttribs above in meta?
-    QDomElement customElem = headerElem.firstChildElement("customValue");
+    QDomElement customElem = headerElem.firstChildElement("attrib");
     while (!customElem.isNull()) {
         t = childElemText(customElem, "name");
         t = childElemText(customElem, "value");
         t = childElemText(customElem, "type");
-        customElem = customElem.nextSiblingElement("customValue");
+        customElem = customElem.nextSiblingElement("attrib");
     }
 
     return res;
@@ -348,8 +346,9 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
 
     // TODO: There should be more than one item Groups at one day
     QDomElement groupElem = kraftdocElem.firstChildElement("itemGroup");
+    // TODO: itemGroup name and attribs.
 
-    QDomElement itemElem = groupElem.firstChildElement("customValue");
+    QDomElement itemElem = groupElem.firstChildElement("item");
     while (!itemElem.isNull()) {
         QString t = childElemText(itemElem, "type");
         DocPositionBase::PositionType itemType {DocPositionBase::Position};
@@ -358,18 +357,26 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
         }
 
         DocPosition *item = doc->createPosition(itemType);
+        t = childElemText(itemElem, "text");
+        item->setText(t);
 
         t = childElemText(itemElem, "amount");
         double a = t.toDouble();
         item->setAmount(a);
         t = childElemText(itemElem, "unit");
         item->setUnit(UnitManager::self()->getUnit(t));
-        t = childElemText(itemElem, "unitPrice");
+        t = childElemText(itemElem, "unitprice");
         item->setUnitPrice(Geld(t.toDouble()));
-        t = childElemText(itemElem, "itemTotal");
+        t = childElemText(itemElem, "itemprice");
         Q_ASSERT(!(item->overallPrice() != Geld(t.toDouble())));
 
-        itemElem = itemElem.nextSiblingElement("customValue");
+        QDomElement attrElem = itemElem.nextSiblingElement("attrib");
+        while (!attrElem.isNull()) {
+            const KraftAttrib attr(attrElem);
+            item->setAttribute(attr);
+            attrElem = attrElem.nextSiblingElement("attrib");
+        }
+        itemElem = itemElem.nextSiblingElement("item");
     }
 
     return res;

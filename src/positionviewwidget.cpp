@@ -184,8 +184,6 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
   lStatus->hide();
   lKind->hide();
 
-  AttributeMap amap = dp->attributes();
-
   QString unit = pos->unit().einheitSingular();
   m_cbUnit->setCurrentIndex(m_cbUnit->findText( unit ));
 
@@ -200,26 +198,22 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
     m_sbUnitPrice->blockSignals( false );
 
-    if ( amap.containsUndeleted( DocPosition::Kind ) ) {
-      Attribute kindAttr = amap[DocPosition::Kind];
-      const QString kindStr = kindAttr.value().toString();
-      Kind kind = techStringToKind(kindStr);
-      slotSetPositionKind(kind, false);
-    } else {
-        slotSetPositionKind(Kind::Normal, false);
-    }
+    const QString kindStr = dp->typeStr();
+    Kind kind = techStringToKind(kindStr);
+    slotSetPositionKind(kind, false);
+
     // qDebug () << "Setting position ptr. in viewwidget: " << pos;
   } else if ( dp->type() == DocPositionBase::ExtraDiscount ) {
     positionDetailStack->setCurrentWidget( discountPage );
     // qDebug() << " " << dp->type();
-    Attribute discount = amap[DocPosition::Discount];
+    KraftAttrib discount = dp->attribute(DocPosition::Discount);
     mDiscountPercent->setValue( discount.value().toDouble() );
 
     QString selTag;
-    if ( amap.contains( DocPosition::ExtraDiscountTagRequired ) ) {
-      Attribute tagSelector = amap[DocPosition::ExtraDiscountTagRequired];
-      const TagTemplate tt = TagTemplateMan::self()->getTagTemplateFromId(tagSelector.value().toString());
-      selTag = tt.name();
+    if ( dp->hasAttribute( DocPosition::ExtraDiscountTagRequired ) ) {
+        const QString tagName = dp->attribute(DocPosition::ExtraDiscountTagRequired).value().toString();
+        const TagTemplate tt = TagTemplateMan::self()->getTagTemplateFromId(tagName);
+        selTag = tt.name();
     }
 
     /* Fill and set the extra discount selection combo */
@@ -246,7 +240,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
   slotSetOverallPrice( currentPrice() );
 
   // set tags marked
-  mTags = dp->tags();
+  mTags = dp->allTags();
   slotUpdateTagToolTip();
   slotSetTax( dp->taxType() );
 
@@ -653,15 +647,20 @@ void PositionViewWidget::slotSetPositionKind(Kind kind, bool alterText)
 // Do not
 QString PositionViewWidget::techKindString( Kind kind)
 {
-
-  if ( kind == Invalid ) {
-      qDebug() << "Invalid Kind set";
-  }
-  if ( kind == Normal )      return QStringLiteral( "Normal" );
-  if ( kind == Demand )      return QStringLiteral( "Demand" );
-  if ( kind == Alternative ) return QStringLiteral( "Alternative" );
-
-  return QStringLiteral( "Invalid" );
+    switch(kind) {
+    case Normal:
+        return QStringLiteral("Normal");
+        break;
+    case Demand:
+        return QStringLiteral("Demand");
+        break;
+    case Alternative:
+        return QStringLiteral("Alternative");
+        break;
+    default:
+        qDebug() << "Invalid Kind set";
+        return QStringLiteral("Invalid");
+    }
 }
 
 PositionViewWidget::Kind PositionViewWidget::techStringToKind( const QString& kindStr )

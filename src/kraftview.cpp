@@ -1155,9 +1155,23 @@ DocPositionList KraftView::currentPositionList()
             QMap<QString, QString> replaceMap;
 
             if ( dpb ) {
-                DocPosition *newDp = new DocPosition( dpb->type() );
+                // FIXME what about discount?
+                // FIXME get rid of PostionViewWidget::Kind
+                const PositionViewWidget::Kind k = widget->kind();
+                DocPositionBase::PositionType t {DocPositionBase::PositionType::Position};
+                if (k == PositionViewWidget::Kind::Demand) {
+                    t = DocPositionBase::PositionType::Demand;
+                } else if (k == PositionViewWidget::Kind::Alternative) {
+                    t = DocPositionBase::PositionType::Alternative;
+                } else if (k == PositionViewWidget::Kind::Demand) {
+                    t = DocPositionBase::PositionType::Demand;
+                }
+                DocPosition *newDp = new DocPosition(t);
+
                 newDp->setPositionNumber( cnt++ );
-                newDp->setAttributeMap( dpb->attributes() );
+                for (const auto& a: dpb->attributes()) {
+                    newDp->setAttribute(a);
+                }
                 newDp->setDbId( dpb->dbId().toInt() );
                 newDp->setAssociatedWidget( widget );
 
@@ -1167,23 +1181,20 @@ DocPositionList KraftView::currentPositionList()
                     double discount = widget->mDiscountPercent->value();
 
                     /* set Attributes with the discount percentage */
-                    Attribute a( DocPosition::Discount );
-                    a.setPersistant( true );
-                    a.setValue( discount );
-                    newDp->setAttribute(a);
+                    if (discount > 0.0) {
+                        KraftAttrib a( DocPosition::Discount, discount, KraftAttrib::Type::Float);
+                        newDp->setAttribute(a);
+                    }
 
                     // get the required tag as String.
                     const QString tagRequiredStr = widget->extraDiscountTagRestriction();
 
                     if ( !tagRequiredStr.isEmpty() ) {
-                        Attribute tr(DocPosition::ExtraDiscountTagRequired);
-                        tr.setPersistant( true );
-
-                        // Convert the string to int and save to database
+                        // save the required tag as KraftAttrib
                         const TagTemplate ttRequired = TagTemplateMan::self()->getTagTemplate(tagRequiredStr);
                         int trId = TagTemplateMan::self()->getTagTemplate(tagRequiredStr).dbId().toInt();
-                        tr.setValue( QVariant( trId ) );
-                        newDp->setAttribute( tr );
+                        const KraftAttrib a(DocPosition::ExtraDiscountTagRequired, trId, KraftAttrib::Type::Integer);
+                        newDp->setAttribute(a);
                     }
 
                     /* Calculate the current sum over all widgets */
@@ -1250,21 +1261,10 @@ DocPositionList KraftView::currentPositionList()
                     Einheit e = UnitManager::self()->getUnit( eId );
                     newDp->setUnit( e );
 
-                    PositionViewWidget::Kind k = widget->kind();
-
-                    if ( k != PositionViewWidget::Normal ) {
-                        Attribute a( DocPosition::Kind );
-                        a.setPersistant( true );
-                        a.setValue( PositionViewWidget::techKindString(k) );
-                        newDp->setAttribute( a );
-                    } else {
-                        newDp->removeAttribute( DocPosition::Kind );
-                    }
-
-                    /* set Attribute with the tags */
+                    /* set the tags */
                     const QStringList tagStrings = widget->tagList();
-                    newDp->replaceTags(tagStrings);
-                    // qDebug() << "============ " << tags.toString();
+                    newDp->setTags(tagStrings);
+                    // qDebug() << "============ " << tags.toString() << endl;
 
                     // tax settings
                     if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
@@ -1439,7 +1439,7 @@ void KraftView::discardChanges()
 {
   // We need to reread the document
   KraftDoc *doc = getDocument();
-  if( doc && doc->isModified() ) {
+  if( doc && doc->modified() ) {
       bool ok = DocumentMan::self()->reloadDocument(doc);
       if (!ok) {
           qDebug() << "Failed to reload doc" << doc->docIdStr();

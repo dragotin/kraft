@@ -28,6 +28,7 @@
 #include "calcpart.h"
 #include "attribute.h"
 #include "einheit.h"
+#include "kraftobj.h"
 
 /**
 @author Klaas Freitag
@@ -40,10 +41,10 @@ class dbID;
 class QLocale;
 class PositionViewWidget;
 
-class DocPositionBase : public QObject
+class DocPositionBase : public KraftObj
 {
   public:
-  enum PositionType { Position, ExtraDiscount, Text };
+  enum PositionType { Position, ExtraDiscount, Text, Demand, Alternative };
   enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3, TaxIndividual = 4 };
 
     DocPositionBase();
@@ -55,23 +56,8 @@ class DocPositionBase : public QObject
     void setDbId( int id ) { m_dbId = id; }
     dbID dbId() { return dbID( m_dbId ); }
 
-    void setAttribute( const Attribute& );
-    void removeAttribute( const QString& );
-    void loadAttributes();
-    QString attribute(const QString& ) const;
-
-    AttributeMap attributes();
-    void setAttributeMap( AttributeMap );
-
     void setText( const QString& string ) { m_text = string; }
     QString text() const { return m_text; }
-
-    void replaceTags(const QStringList& newTags);
-    void setTag( const QString& );
-    void removeTag( const QString& );
-    bool hasTag( const QString& );
-
-    QStringList tags();
     
     int taxTypeNumeric();
     TaxType taxType();
@@ -86,6 +72,7 @@ class DocPositionBase : public QObject
     void setToDelete( bool doit ) { mToDelete = doit; }
     bool toDelete() { return mToDelete; }
     PositionType type() { return mType; }
+    QString typeStr();
 
     DocPositionBase& operator=( const DocPositionBase& );
 
@@ -96,7 +83,6 @@ class DocPositionBase : public QObject
     bool    mToDelete;
     TaxType mTaxType;
     PositionType mType;
-    AttributeMap mAttribs;
 };
 
 
