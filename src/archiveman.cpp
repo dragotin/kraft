@@ -269,7 +269,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
 
       record.setValue( "archDocID", archDocId );
       record.setValue( "ordNumber", 1+cnt /* dp->position() */ );
-      record.setValue( "kind", dp->attribute( DocPosition::Kind ) );
+      record.setValue( "kind", dp->typeStr());
       record.setValue( "text", dp->text() ); // expandItemText( dp ) );
       record.setValue( "amount", dp->amount() );
       record.setValue( "unit", dp->unit().einheit( dp->amount() ) );
@@ -280,15 +280,14 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
       if(!model.insertRecord(-1, record)) {
         // qDebug () << model.lastError();
 	  }
-      dbID id = KraftDB::self()->getLastInsertID();
-      // qDebug() << "Inserted for id " << id.toString();
       cnt++;
 
       // save the attributes of the positions in the attributes
       // table but with a new host type which reflects the arch state
-      AttributeMap attribs = dp->attributes();
-      attribs.setHost( "ArchPosition" );
-      attribs.save( id );
+
+      // AttributeMap attribs = dp->attributes();
+      // attribs.setHost( "ArchPosition" );
+      // attribs.save( id );
     }
     return cnt;
 }

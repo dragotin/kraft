@@ -210,7 +210,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
         if( dp->toDelete() ) {
             qDebug () << "Delete doc item id" << posDbID;
             // delete all existing attributes
-            dp->attributes().dbDeleteAll( dp->dbId() );
+            // dp->attributes().dbDeleteAll( dp->dbId() );
             deleteIds.append(posDbID);
             continue;
         }
@@ -271,7 +271,7 @@ void DocumentSaverDB::saveDocumentPositions( KraftDoc *doc )
             qDebug () << "SQL-ERR: " << err.text() << " in " << model.tableName();
         }
 
-        dp->attributes().save( dp->dbId() );
+        // dp->attributes().save( dp->dbId() );
     }
 
     model.submitAll();
@@ -407,7 +407,7 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
         dp->setUnitPrice( q.value(5).toDouble() );
         dp->setTaxType( q.value(6).toInt() );
 
-        dp->loadAttributes();
+        // dp->loadAttributes();
     }
 }
 

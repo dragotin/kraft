@@ -37,8 +37,7 @@
 // FIXME: Make KraftDoc inheriting DocDigest!
 
 KraftDoc::KraftDoc(QWidget *parent)
-  : QObject(parent),
-    _modified(false),
+  : KraftObj(parent),
     mDocTypeChanged(false),
     _state(State::New)
 {
@@ -63,8 +62,10 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
     mPositions.append( newPos );
     // qDebug () << "Appending position " << dp->dbId().toString();
   }
+  if (origDoc.modified()) {
+      setModified();
+  }
 
-  _modified = origDoc._modified;
   _state = State::New;
 
   mAddressUid = origDoc.mAddressUid;
@@ -86,7 +87,8 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   mLanguage   = origDoc.mLanguage;
 
   mDate = origDoc.mDate;
-  mLastModified = origDoc.mLastModified;
+
+  _lastModified = origDoc._lastModified;
 
   // setPositionList( origDoc.mPositions );
   mRemovePositions = origDoc.mRemovePositions;
@@ -441,7 +443,7 @@ QString KraftDoc::language() const
      for (DocPositionBase *pb : dposList) {
          DocPosition *p = static_cast<DocPosition*>(pb);
          if (!p->toDelete()) {
-             const auto tags = p->tags();
+             const auto tags = p->allTags();
              for (const QString& lookupTag : tags) {
                  if (seenTags.contains(lookupTag)) {
                      seenTags[lookupTag] = 1+seenTags[lookupTag];

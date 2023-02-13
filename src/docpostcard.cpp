@@ -74,7 +74,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
       if ( dp->toDelete() ) mPositions += "<s>";
 
       // set to italic if the item kind is not Normal
-      bool italic = dp->attributes().containsUndeleted(DocPosition::Kind);
+      bool italic = (dp->type() != DocPositionBase::PositionType::Position);
       if (italic) mPositions += "<i>";
       mPositions += htmlify(dp->text());
       if (italic) mPositions += "</i>";

@@ -183,7 +183,7 @@ DocPositionList ImportItemDialog::positionList()
       while( posIt.hasNext() ) {
         DocPositionBase *dp = posIt.next();
         for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-          dp->setTag( *it );
+          dp->addTag( *it );
         }
       }
     }
