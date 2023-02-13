@@ -120,6 +120,8 @@ set(kraft_SRCS
     format.cpp
     stringutil.cpp
     epcqrcode.cpp
+    kraftattrib.cpp
+    kraftobj.cpp
 
     3rdparty/qrcodegen.cpp
 )

@@ -156,7 +156,7 @@ DocPosition InsertTemplDialog::docPosition()
   while (i.hasNext()) {
     i.next();
     if( i.key()->isChecked() ) {
-      mParkPosition.setTag( i.value() );
+      mParkPosition.addTag( i.value() );
     }
   }
 

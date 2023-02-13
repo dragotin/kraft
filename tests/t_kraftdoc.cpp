@@ -50,7 +50,7 @@ DocPositionList buildPosList() {
     dp1->setAmount(2.0);
     dp1->setUnitPrice(Geld(6.50));
     dp1->setText("Position1");
-    dp1->setTag("Work");
+    dp1->setTags(QStringList{"Work"});
 
     positions.append(dp1);
 
@@ -58,7 +58,7 @@ DocPositionList buildPosList() {
     dp2->setAmount(4.0);
     dp2->setUnitPrice(Geld(12.50));
     dp2->setText("Position2");
-    dp2->setTag("Work");
+    dp2->setTags(QStringList{"Work"});
 
     positions.append(dp2);
 
@@ -66,7 +66,7 @@ DocPositionList buildPosList() {
     dp3->setAmount(4.0);
     dp3->setUnitPrice(Geld(1.50));
     dp3->setText("Position3");
-    dp3->setTag("Material");
+    dp3->setTags(QStringList{"Material"});
 
     positions.append(dp3);
 

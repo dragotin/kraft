@@ -26,6 +26,7 @@
 
 #include "docposition.h"
 #include "dbids.h"
+#include "kraftobj.h"
 
 // forward declaration of the Kraft classes
 
@@ -34,14 +35,13 @@ class Geld;
 
 class KraftView;
 
-class KraftDoc : public QObject
+class KraftDoc : public KraftObj
 {
     Q_OBJECT
     Q_PROPERTY(QString docType READ docType)
     Q_PROPERTY(QString address READ address)
     Q_PROPERTY(QString clientUid READ addressUid)
     Q_PROPERTY(QString ident READ ident)
-    Q_PROPERTY(QString uuid  READ uuid)
     Q_PROPERTY(QString salut READ salut)
     Q_PROPERTY(QString goodbye READ goodbye)
     Q_PROPERTY(QString preText READ preText)
@@ -77,22 +77,12 @@ public:
 
     KraftDoc& operator=( KraftDoc& );
 
-    /** sets the modified flag for the document after a modifying action
-   *  on the view connected to the document.*/
-    void setModified(bool _m=true){ _modified=_m; }
-    /** returns if the document is modified or not. Use this to determine
-   *  if your document needs saving by the user on closing.*/
-    bool isModified(){ return _modified; }
-
     DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
     DocPositionList positions() const { return mPositions; }
     void setPositionList(DocPositionList , bool isNew = false);
 
     QDate date() const { return mDate; }
     void setDate( QDate d ) { mDate = d; }
-
-    QDateTime lastModified() const { return mLastModified; }
-    void setLastModified( QDateTime d ) { mLastModified = d; }
 
     QString docType() const { return mDocType; }
     void setDocType( const QString& s );
@@ -108,9 +98,6 @@ public:
 
     QString ident() const   { return mIdent;    }
     void setIdent( const QString& str ) { mIdent = str; }
-
-    QString uuid() const   { return _uuid.toString(QUuid::WithoutBraces); }
-    void setUuid( const QString& str ) { _uuid = QUuid(str); }
 
     QString salut() const   { return mSalut;    }
     void setSalut( const QString& str ) { mSalut = str; }
@@ -205,10 +192,6 @@ private:
     /** deletes the document's contents */
     void deleteItems();
 
-
-    /** the modified flag of the current document */
-    bool _modified;
-
     QString mAddressUid;
     QString mProjectLabel;
     QString mAddress;
@@ -228,7 +211,6 @@ private:
     QString mCountry;
     QString mLanguage;
 
-    QUuid   _uuid;
     QDate   mDate;
 
     // Time of supply
@@ -236,7 +218,6 @@ private:
     QDateTime _toSEnd;
     QString   _owner;
 
-    QDateTime   mLastModified;
     DocPositionList mPositions;
     DBIdList mRemovePositions;
     dbID    mDocID;

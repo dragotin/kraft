@@ -70,6 +70,19 @@ private slots:
         QCOMPARE(doc.lastModified(), QDateTime::fromString("2018-12-15T18:22:20", Qt::ISODate));
         QCOMPARE(doc.predecessor(), "id");
 
+        KraftAttrib attrib = doc.attribute("valid until");
+        QCOMPARE(attrib.name(), "valid until");
+        QCOMPARE(attrib.type(), KraftAttrib::Type::Date);
+        QCOMPARE(attrib.value().toDate(), QDate(2012, 1, 21));
+
+        attrib = doc.attribute("counter");
+        QCOMPARE(attrib.name(), "counter");
+        QCOMPARE(attrib.type(), KraftAttrib::Type::Integer);
+        QCOMPARE(attrib.value().toInt(), 21);
+
+        const QStringList tags = doc.allTags();
+        QVERIFY(tags.contains("foo"));
+        QVERIFY(tags.contains("bar"));
         QVERIFY(!doc.isNew());
 
     }
