@@ -30,7 +30,6 @@
 #include "kraftdb.h"
 #include "unitmanager.h"
 #include "dbids.h"
-#include "kraftsettings.h"
 #include "doctype.h"
 #include "defaultprovider.h"
 
@@ -357,6 +356,10 @@ bool DocumentSaverDB::loadByIdent( const QString& ident, KraftDoc *doc )
     if (id > -1) {
         loadPositions( QString::number(id), doc );
     }
+    // All docs from the DB are in state Draft. In old Kraft's there were no
+    // way to indicate that a document was sent out to the customer really.
+    doc->setState(KraftDoc::State::Draft); // FIXME: Check if this is correct.
+
     return true;
 }
 /* docposition:

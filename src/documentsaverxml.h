@@ -46,7 +46,7 @@ public:
 
     bool verifyXmlFile(const QUrl& schemaFile, const QString& xmlFile);
 
-
+    QString lastSavedFileName() const;
 
 protected:
     QString basePath();
@@ -54,6 +54,7 @@ protected:
 private:
 
     QDir _basePath;
+    QString _lastSaveFile;
 
 };
 

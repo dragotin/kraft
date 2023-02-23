@@ -969,9 +969,9 @@ void Portal::slotReconfigureDatabase()
 void Portal::slotConvertToXML()
 {
     DbToXMLConverter converter;
-    QMap<int, int> q = converter.yearMap();
 
-    converter.convertDocsOfYear(2022);
+    // FIXME: Connect some progress info signals
+    converter.convert();
 }
 
 

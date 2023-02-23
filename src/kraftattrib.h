@@ -22,6 +22,7 @@
 #include <QHash>
 
 class QDomElement;
+class QDomDocument;
 
 class KraftAttrib;
 
@@ -59,6 +60,7 @@ public:
     static KraftAttrib::Type stringToType(const QString& type);
     QString typeString() const;
 
+    QDomElement toXml(QDomDocument &xmldoc) const;
 private:
     QString  _name;
     QVariant _value;

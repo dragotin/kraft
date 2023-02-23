@@ -26,6 +26,11 @@
 #include "doctype.h"
 #include "kraftsettings.h"
 
+#include <utime.h>
+
+#include "documentsaverdb.h"
+#include "documentsaverxml.h"
+
 Q_GLOBAL_STATIC(DocumentMan, mSelf)
 
 DocumentMan *DocumentMan::self()
@@ -151,9 +156,49 @@ bool DocumentMan::reloadDocument(KraftDoc* doc)
 
 }
 
-bool DocumentMan::convertDbToXml(const QString& docID)
+bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
 {
     bool ok{true};
+
+    DocumentSaverDB docLoad;
+    KraftDoc doc;
+
+    if (docLoad.loadByIdent(docID, &doc)) {
+
+        DocumentSaverXML docSave;
+        docSave.setBasePath(basePath);
+        if (!docSave.saveDocument(&doc)) {
+            qDebug() << "failed to save document as XML" << docID;
+            ok = false;
+        } else {
+            // File was written successfully. Tweak the modification time to the
+            // last modified date of the document.
+            const QDateTime& lastModified = doc.lastModified();
+            const QString& fileName = docSave.lastSavedFileName();
+            /*
+             *        The utimbuf structure is:
+             *
+             *        struct utimbuf {
+             *          time_t actime;       // access time
+             *          time_t modtime;      // modification time
+             *        };
+             */
+            struct tm time;
+            time.tm_sec = lastModified.time().second();
+            time.tm_min = lastModified.time().minute();
+            time.tm_hour = lastModified.time().hour();
+            time.tm_mday = lastModified.date().day();
+            time.tm_mon = lastModified.date().month()-1;
+            time.tm_year = lastModified.date().year()-1900;
+            struct utimbuf utime_par;
+            utime_par.modtime = mktime(&time);
+            // utime_par.actime  = mktime()
+            utime(fileName.toUtf8().constData(), &utime_par);
+        }
+    } else {
+        qDebug() << "Failed to load from db" << docID;
+        ok = false;
+    }
 
     return ok;
 
