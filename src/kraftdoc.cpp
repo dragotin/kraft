@@ -311,17 +311,46 @@ void KraftDoc::setStateFromString(const QString& s)
     _state = State::Undefined;
     if (s.isEmpty()) return;
 
-    if (s == "Draft") {
+    if (s == StateUndefinedStr) {
+        _state = State::Undefined;
+    } else if ( s == StateNewStr) {
+        _state = State::New;
+    } else if ( s == StateDraftStr) {
         _state = State::Draft;
-    } else if ( s == "Sent") {
+    } else if ( s == StateSentStr) {
         _state = State::Sent;
-    } else if ( s == "Retracted") {
+    } else if ( s == StateRetractedStr) {
         _state = State::Retracted;
-    } else if ( s == "Invalid") {
+    } else if ( s == StateInvalidStr) {
          _state = State::Invalid;
     } else {
         _state = State::Invalid;
     }
+}
+
+QString KraftDoc::stateString() const
+{
+    switch(_state) {
+    case State::New:
+        return StateNewStr;
+        break;
+    case State::Draft:
+        return StateSentStr;
+        break;
+    case State::Sent:
+        return StateSentStr;
+        break;
+    case State::Retracted:
+        return StateRetractedStr;
+        break;
+    case State::Invalid:
+        return StateInvalidStr;
+        break;
+    case State::Undefined:
+        return StateUndefinedStr;
+        break;
+    }
+    return StateUndefinedStr;
 }
 
 QString KraftDoc::country() const

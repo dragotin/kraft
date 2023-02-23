@@ -44,7 +44,7 @@ class DocumentMan
                                  const DocPositionList &listToCopy = DocPositionList() );
     DocGuardedPtr copyDocument( const QString& copyFromIdent );
 
-    bool convertDbToXml(const QString& docID);
+    bool convertDbToXml(const QString& docID, const QString &basePath);
 
     DocumentMan();
 };

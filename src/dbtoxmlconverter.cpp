@@ -15,6 +15,25 @@ DbToXMLConverter::DbToXMLConverter(QObject *parent) : QObject(parent)
 
 }
 
+void DbToXMLConverter::convert()
+{
+    QMap<int, int> q = yearMap();
+
+    QTemporaryDir tempDir;
+    tempDir.setAutoRemove(false);
+    const QString tempPath {tempDir.path()};
+
+    qDebug() << "converting XML Documents to" << tempPath;
+
+    QList<int> keys = q.keys();
+    std::sort(keys.begin(), keys.end());
+    int cnt {0};
+    for (int year : keys) {
+        cnt += convertDocsOfYear(year, tempPath);
+    }
+     qDebug() << "Done, saved"<< cnt << "docs to"<< tempPath;
+}
+
 QMap <int, int> DbToXMLConverter::yearMap()
 {
     QMap<int, int> reMap;
@@ -29,7 +48,7 @@ QMap <int, int> DbToXMLConverter::yearMap()
     q.prepare(sql);
     if (q.exec()) {
         while( q.next()) {
-            reMap.insert(q.value(0).toInt(), q.value(1).toInt());
+            reMap.insert(q.value(1).toInt(), q.value(0).toInt());
         }
     }
 
@@ -53,7 +72,7 @@ int DbToXMLConverter::amountOfDocsOfYear(int year)
     return amount;
 }
 
-int DbToXMLConverter::convertDocsOfYear(int year)
+int DbToXMLConverter::convertDocsOfYear(int year, const QString& basePath)
 {
     const QString sql {"SELECT ident FROM document where DATE(date) BETWEEN :year AND :nextyear order by docID"};
     QSqlQuery q;
@@ -66,7 +85,9 @@ int DbToXMLConverter::convertDocsOfYear(int year)
 
     while( q.next()) {
         const QString ident = q.value(0).toString();
-        DocumentMan::self()->convertDbToXml(ident);
+        if (DocumentMan::self()->convertDbToXml(ident, basePath)) {
+
+        }
         cnt++;
     }
     return cnt;

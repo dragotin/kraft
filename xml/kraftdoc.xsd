@@ -16,10 +16,17 @@
   </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="tax_type">
+<xs:complexType name="tax_def_type">
   <xs:sequence>
-    <xs:element name="type" type="xs:string"/> <!-- Fixme, could be enum -->
-    <xs:element name="value" type="xs:decimal"/>
+    <xs:element name="type"    type="xs:string" minOccurs="1" maxOccurs="1"/>
+    <xs:element name="percent" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="tax_sum_type">
+  <xs:sequence>
+    <xs:element name="type"  type="xs:string"/> <!-- Fixme, could be enum -->
+    <xs:element name="total" type="xs:decimal"/>
   </xs:sequence>
 </xs:complexType>
 
@@ -70,13 +77,6 @@
   </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="tax_def_type">
-  <xs:sequence>
-    <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1"/>
-    <xs:element name="value"   type="xs:decimal" minOccurs="0" maxOccurs="1"/>
-  </xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="header_type">
   <xs:sequence>
     <xs:element name="project" type="project_type" minOccurs="0" maxOccurs="1"/>
@@ -117,7 +117,7 @@
      <xs:element name="text"    type="xs:string" minOccurs="1" maxOccurs="1"/>
      <xs:element name="amount"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
      <xs:element name="unit"    type="xs:string" minOccurs="1" maxOccurs="1"/>
-     <xs:element name="taxType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="taxtype" type="xs:string" minOccurs="0" maxOccurs="1"/>
      <xs:element name="unitprice"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
      <xs:element name="itemprice"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
      <xs:element name="attrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
@@ -137,7 +137,7 @@
  <xs:complexType name="totals_type">
     <xs:sequence>
       <xs:element name="netto"    type="xs:decimal" minOccurs="1" maxOccurs="1"/>
-      <xs:element name="taxSum"   type="tax_type" minOccurs="0" maxOccurs="3"/>
+      <xs:element name="taxSum"   type="tax_sum_type" minOccurs="0" maxOccurs="3"/>
       <xs:element name="brutto"   type="xs:decimal" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
  </xs:complexType>
