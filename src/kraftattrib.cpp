@@ -21,6 +21,8 @@
 #include <QDate>
 #include <QDebug>
 #include <QHash>
+#include <QDomElement>
+#include <QDomDocument>
 
 KraftAttrib::KraftAttrib()
 {
@@ -122,4 +124,25 @@ KraftAttrib::KraftAttrib(const QDomElement& elem)
         _value = QVariant(vStr);
     }
 
+}
+
+QDomElement KraftAttrib::toXml(QDomDocument& xmldoc) const
+{
+    QDomElement attr = xmldoc.createElement("attrib");
+    {
+        QDomElement name = xmldoc.createElement("name");
+        name.setNodeValue(_name);
+        attr.appendChild(name);
+    }
+    {
+        QDomElement value = xmldoc.createElement("value");
+        value.setNodeValue(_value.toString());
+        attr.appendChild(value);
+    }
+    {
+        QDomElement type = xmldoc.createElement("type");
+        type.setNodeValue(typeString());
+        attr.appendChild(type);
+    }
+    return attr;
 }

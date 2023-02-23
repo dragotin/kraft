@@ -99,7 +99,7 @@
             <text>Alternative: first item </text>
             <amount>8.40</amount>
             <unit>qm</unit>
-            <taxType>FullTax</taxType>
+            <taxType>Full</taxType>
             <unitprice>22.21</unitprice>
             <itemprice>186.56</itemprice>
             <tag>Work</tag>
@@ -109,7 +109,7 @@
             <text>second item </text>
             <amount>4.40</amount>
             <unit>cbm</unit>
-            <taxType>reduced</taxType>
+            <taxType>Reduced</taxType>
             <unitprice>33.33</unitprice>
             <itemprice>146.65</itemprice>
             <tag>Pflanzen</tag>

@@ -105,17 +105,19 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
         QString ttStr;
         DocPositionBase::TaxType tt = item->taxType();
         // The Full Taxtype is default.
-        if (tt != DocPositionBase::TaxType::TaxFull) {
-            if (tt == DocPositionBase::TaxType::TaxReduced)
-                ttStr = QStringLiteral("Reduced");
-            else if (tt == DocPositionBase::TaxType::TaxNone)
-                ttStr = QStringLiteral("None");
-            else ttStr = QStringLiteral("Invalid");
+        if (tt == DocPositionBase::TaxType::TaxFull)
+            ttStr = QStringLiteral("Full");
+        else if (tt == DocPositionBase::TaxType::TaxReduced)
+            ttStr = QStringLiteral("Reduced");
+        else if (tt == DocPositionBase::TaxType::TaxNone)
+            ttStr = QStringLiteral("None");
+        else
+            ttStr = QStringLiteral("Invalid");
 
-            itemType.appendChild(xmlTextElement(xmldoc, "taxtype", ttStr));
-        }
+        itemType.appendChild(xmlTextElement(xmldoc, "taxtype", ttStr));
+
         itemType.appendChild(xmlTextElement(xmldoc, "unitprice", QString::number(pos->unitPrice().toDouble(), 'f', 2)));
-        itemType.appendChild(xmlTextElement(xmldoc, "itemtotal", QString::number(pos->overallPrice().toDouble(), 'f', 2)));
+        itemType.appendChild(xmlTextElement(xmldoc, "itemprice", QString::number(pos->overallPrice().toDouble(), 'f', 2)));
 
         const QMap<QString, KraftAttrib> attribs = item->attributes();
         for(const auto &k : attribs.keys()) {
@@ -143,11 +145,40 @@ QDomDocument xmlDocument(KraftDoc *doc)
 
     QDomElement meta = xmldoc.createElement( "meta" );
     root.appendChild(meta);
+    meta.appendChild(xmlTextElement(xmldoc, "docType", doc->docType()));
     meta.appendChild(xmlTextElement(xmldoc, "docDesc", doc->whiteboard().toHtmlEscaped()));
     meta.appendChild(xmlTextElement(xmldoc, "currency", DefaultProvider::self()->locale()->currencySymbol(QLocale::CurrencyIsoCode).toHtmlEscaped()));
     meta.appendChild(xmlTextElement(xmldoc, "country", DefaultProvider::self()->locale()->countryToString(DefaultProvider::self()->locale()->country()).toHtmlEscaped()));
     meta.appendChild(xmlTextElement(xmldoc, "locale", DefaultProvider::self()->locale()->languageToString(DefaultProvider::self()->locale()->language()).toHtmlEscaped()));
+    meta.appendChild(xmlTextElement(xmldoc, "ident", doc->ident() ) );
+    meta.appendChild(xmlTextElement(xmldoc, "uuid", doc->uuid()));
+    const QDate d = doc->date();
+    meta.appendChild(xmlTextElement(xmldoc, "date", d.toString(Qt::ISODate)));
+    meta.appendChild(xmlTextElement(xmldoc, "state", doc->stateString()));
 
+    // -------- time of supply
+    QDomElement tos = xmldoc.createElement("timeOfSupply");
+    meta.appendChild(tos);
+    QDate tosStart = doc->timeOfSupplyStart().date();
+    QDate tosEnd   = doc->timeOfSupplyEnd().date();
+    tos.appendChild(xmlTextElement(xmldoc, "start", tosStart.toString(Qt::ISODate)));
+    tos.appendChild(xmlTextElement(xmldoc, "end", tosEnd.toString(Qt::ISODate)));
+
+    // -------- taxes
+    QDomElement taxReduced = xmldoc.createElement("tax");
+    meta.appendChild(taxReduced);
+    taxReduced.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
+    double t = UnitManager::self()->reducedTax(doc->date());
+    taxReduced.appendChild(xmlTextElement(xmldoc, "percent", QString::number(t, 'f', 2)));
+
+    QDomElement taxFull = xmldoc.createElement("tax");
+    meta.appendChild(taxFull);
+    taxFull.appendChild(xmlTextElement(xmldoc, "type", "Full"));
+    t = UnitManager::self()->tax(doc->date());
+    taxFull.appendChild(xmlTextElement(xmldoc, "percent", QString::number(t, 'f', 2)));
+
+
+    // -------- owner etc.
     QString owner = QString::fromLocal8Bit(qgetenv("USER"));
     if (owner.isEmpty())
         owner = QString::fromLocal8Bit(qgetenv("USERNAME"));
@@ -158,11 +189,18 @@ QDomDocument xmlDocument(KraftDoc *doc)
     QDateTime dt = doc->lastModified();
     meta.appendChild(xmlTextElement(xmldoc, "lastModified", dt.toString(Qt::ISODate)));
 
-    // predecessor
+    // -------- predecessor
     QString pred = doc->predecessor();
     meta.appendChild(xmlTextElement(xmldoc, "predecessor", pred));
 
-    // doc attributes and tags future extensions
+    // -------- doc attributes and tags future extensions
+    const QMap<QString,KraftAttrib> attrs = doc->attributes();
+    for (const auto &attr : attrs.values()) {
+        meta.appendChild(attr.toXml(xmldoc));
+    }
+    for (const QString& tag : doc->allTags()) {
+        meta.appendChild(xmlTextElement(xmldoc, "tag", tag));
+    }
 
     // **** Next toplevel: client
     QDomElement cust = xmldoc.createElement( "client" );
@@ -174,47 +212,16 @@ QDomDocument xmlDocument(KraftDoc *doc)
     QDomElement headerElem = xmldoc.createElement( "header" );
     root.appendChild( headerElem );
 
-    headerElem.appendChild(xmlTextElement(xmldoc, "docType", doc->docType()));
     const QString prjLabel = doc->projectLabel();
     if (!prjLabel.isEmpty()) {
         QDomElement projectElem = xmldoc.createElement( "project" );
         headerElem.appendChild( projectElem );
         projectElem.appendChild( xmlTextElement(xmldoc, "name", prjLabel));
     }
-    QDate d = doc->date();
-    headerElem.appendChild(xmlTextElement(xmldoc, "date", d.toString(Qt::ISODate)));
 
-    headerElem.appendChild( xmlTextElement( xmldoc, "ident", doc->ident() ) );
     headerElem.appendChild( xmlTextElement( xmldoc, "salut", doc->salut() ) );
     headerElem.appendChild( xmlTextElement( xmldoc, "preText", doc->preText() ) );
-    // custom Values to be added.
-    // **** Next toplevel: sums
-    QDomElement itemGroupTotals = xmldoc.createElement("totals");
-    root.appendChild(itemGroupTotals);
-    itemGroupTotals.appendChild( xmlTextElement(xmldoc, "netto", QString::number(doc->nettoSum().toDouble(), 'f', 2)));
-    itemGroupTotals.appendChild( xmlTextElement(xmldoc, "brutto", QString::number(doc->bruttoSum().toDouble(), 'f', 2)));
-
-    QDomElement taxNone = xmldoc.createElement("tax");
-    itemGroupTotals.appendChild(taxNone);
-    taxNone.appendChild(xmlTextElement(xmldoc, "type", "None"));
-    taxNone.appendChild(xmlTextElement(xmldoc, "percent", QStringLiteral("0")));
-    taxNone.appendChild(xmlTextElement(xmldoc, "total", QStringLiteral("0")));
-
-    QDomElement taxReduced = xmldoc.createElement("tax");
-    itemGroupTotals.appendChild(taxReduced);
-    taxReduced.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
-    double t = UnitManager::self()->reducedTax(doc->date());
-    taxReduced.appendChild(xmlTextElement(xmldoc, "percent", QString::number(t, 'f', 2)));
-    t = doc->reducedTaxSum().toDouble();
-    taxReduced.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
-
-    QDomElement taxFull = xmldoc.createElement("tax");
-    itemGroupTotals.appendChild(taxFull);
-    taxFull.appendChild(xmlTextElement(xmldoc, "type", "Full"));
-    t = UnitManager::self()->tax(doc->date());
-    taxFull.appendChild(xmlTextElement(xmldoc, "percent", QString::number(t, 'f', 2)));
-    t = doc->fullTaxSum().toDouble();
-    taxFull.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
+    // FIXME: add Header attributs
 
     // **** Next toplevel: itemGroup, for now only one
     QDomElement itemGroupElem = xmldoc.createElement( "itemGroup" );
@@ -225,12 +232,30 @@ QDomDocument xmlDocument(KraftDoc *doc)
     auto cnt = xmlAppendItemsToGroup(xmldoc, itemGroupElem, doc);
     qDebug() << "Amount of items went to XML" << cnt;
 
-
     // **** Next toplevel: footer
     QDomElement itemGroupFooter = xmldoc.createElement("footer");
     root.appendChild(itemGroupFooter);
     itemGroupFooter.appendChild( xmlTextElement( xmldoc, "postText", doc->postText() ) );
     itemGroupFooter.appendChild( xmlTextElement( xmldoc, "goodbye", doc->goodbye() ) );
+
+    // **** Next toplevel: totals
+    QDomElement itemGroupTotals = xmldoc.createElement("totals");
+    root.appendChild(itemGroupTotals);
+    itemGroupTotals.appendChild( xmlTextElement(xmldoc, "netto", QString::number(doc->nettoSum().toDouble(), 'f', 2)));
+
+    QDomElement taxSumReduced = xmldoc.createElement("taxSum");
+    itemGroupTotals.appendChild(taxSumReduced);
+    taxSumReduced.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
+    t = doc->reducedTaxSum().toDouble();
+    taxSumReduced.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
+
+    QDomElement taxSumFull = xmldoc.createElement("taxSum");
+    itemGroupTotals.appendChild(taxSumFull);
+    taxSumFull.appendChild(xmlTextElement(xmldoc, "type", "Full"));
+    t = doc->fullTaxSum().toDouble();
+    taxSumFull.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
+
+    itemGroupTotals.appendChild( xmlTextElement(xmldoc, "brutto", QString::number(doc->bruttoSum().toDouble(), 'f', 2)));
 
     return xmldoc;
 }
@@ -396,11 +421,12 @@ void DocumentSaverXML::setBasePath(const QString& path)
 QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
 {
     QString path {basePath()};
-    QDate d = doc->date();
+    const QDate d = doc->date();
+    const QString uuid = doc->uuid();
     path.append(QString("/%1/%2/").arg(d.year()).arg(d.month()));
 
     _basePath.mkpath(path);
-    path.append(doc->ident());
+    path.append(uuid);
     path.append(".xml");
 
     return path;
@@ -447,14 +473,19 @@ bool DocumentSaverXML::verifyXmlFile(const QUrl& schemaFile, const QString& xmlF
     return re;
 }
 
+QString DocumentSaverXML::lastSavedFileName() const
+{
+    return _lastSaveFile;
+}
+
 bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 {
 
     bool result = false;
     if( ! doc ) return result;
 
-    if (_basePath.exists()) { // not set at all?
-        qDebug() << "The base path is not yet set!";
+    if (!_basePath.exists()) { // not set at all?
+        qDebug() << "The base path is not yet set or does not exist!";
         return false;
     }
 
@@ -477,9 +508,11 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         s << xml << "\n";
         file.close();
     } else {
-        // qDebug () << "Saving failed" << endl;
+        qDebug () << "Saving failed";
         return false;
     }
+
+    _lastSaveFile = xmlFile;
 
     const QUrl schemaFile = QUrl::fromLocalFile(DefaultProvider::self()->locateFile("xml/kraftdoc.xsd"));
     result = verifyXmlFile(schemaFile, xmlFile);

@@ -68,6 +68,13 @@ public:
         Invalid     // Invalidated. Never sent out
     };
 
+    const QString StateSentStr{"Sent"};
+    const QString StateUndefinedStr{"Undefined"};
+    const QString StateNewStr{"New"};
+    const QString StateDraftStr{"Draft"};
+    const QString StateRetractedStr{"Retracted"};
+    const QString StateInvalidStr{"Invalid"};
+
     static QString partToString( Part );
 
     /** Constructor for the fileclass of the application */
@@ -160,6 +167,7 @@ public:
     QString language() const;
 
     KraftDoc::State state() const { return _state; }
+    QString stateString() const;
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
 
