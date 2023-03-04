@@ -157,12 +157,16 @@ QDomDocument xmlDocument(KraftDoc *doc)
     meta.appendChild(xmlTextElement(xmldoc, "state", doc->stateString()));
 
     // -------- time of supply
-    QDomElement tos = xmldoc.createElement("timeOfSupply");
-    meta.appendChild(tos);
-    QDate tosStart = doc->timeOfSupplyStart().date();
-    QDate tosEnd   = doc->timeOfSupplyEnd().date();
-    tos.appendChild(xmlTextElement(xmldoc, "start", tosStart.toString(Qt::ISODate)));
-    tos.appendChild(xmlTextElement(xmldoc, "end", tosEnd.toString(Qt::ISODate)));
+    const QDate tosStart = doc->timeOfSupplyStart().date();
+    if (tosStart.isValid()) {
+        QDate tosEnd   = doc->timeOfSupplyEnd().date();
+        QDomElement tos = xmldoc.createElement("timeOfSupply");
+        meta.appendChild(tos);
+        tos.appendChild(xmlTextElement(xmldoc, "start", tosStart.toString(Qt::ISODate)));
+        if (!tosEnd.isValid())
+            tosEnd = tosStart;
+        tos.appendChild(xmlTextElement(xmldoc, "end", tosEnd.toString(Qt::ISODate)));
+    }
 
     // -------- taxes
     QDomElement taxReduced = xmldoc.createElement("tax");
@@ -187,11 +191,15 @@ QDomDocument xmlDocument(KraftDoc *doc)
     }
 
     QDateTime dt = doc->lastModified();
+    if (!dt.isValid())
+        dt = QDateTime::currentDateTime();
     meta.appendChild(xmlTextElement(xmldoc, "lastModified", dt.toString(Qt::ISODate)));
 
     // -------- predecessor
-    QString pred = doc->predecessor();
-    meta.appendChild(xmlTextElement(xmldoc, "predecessor", pred));
+    const QString pred = doc->predecessor();
+    if (!pred.isEmpty()) {
+        meta.appendChild(xmlTextElement(xmldoc, "predecessor", pred));
+    }
 
     // -------- doc attributes and tags future extensions
     const QMap<QString,KraftAttrib> attrs = doc->attributes();
@@ -550,6 +558,11 @@ bool DocumentSaverXML::loadByIdent(const QString& id, KraftDoc *doc)
 
     const QString xmlFile = xmlDocFileNameFromIdent(id);
 
+    return loadFromFile(xmlFile, doc);
+}
+
+bool DocumentSaverXML::loadFromFile(const QString& xmlFile, KraftDoc *doc, bool onlyMeta)
+{
     QFileInfo fi {xmlFile};
     if (!fi.exists()) {
         qDebug() << "File to load does not exist" << xmlFile;
@@ -579,13 +592,14 @@ bool DocumentSaverXML::loadByIdent(const QString& id, KraftDoc *doc)
     bool ok;
 
     ok = loadMetaBlock(_domDoc, doc);
+    if (!onlyMeta) {
 
-    if (ok) {
-        ok = loadHeaderBlock(_domDoc, doc);
+        if (ok) {
+            ok = loadHeaderBlock(_domDoc, doc);
+        }
+
+        ok = loadItems(_domDoc, doc);
     }
-
-    ok = loadItems(_domDoc, doc);
-
     return ok;
 }
 

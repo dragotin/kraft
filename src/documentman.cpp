@@ -139,6 +139,17 @@ DocGuardedPtr DocumentMan::openDocumentByIdent( const QString& ident )
     return doc;
 }
 
+DocGuardedPtr DocumentMan::loadMetaFromFilename(const QString& xmlFile)
+{
+    DocumentSaverXML docLoad;
+    DocGuardedPtr doc = new KraftDoc();
+    if (!docLoad.loadFromFile(xmlFile, doc, true)) {
+        delete doc;
+        return nullptr;
+    }
+    return doc;
+}
+
 bool DocumentMan::saveDocument(KraftDoc* doc)
 {
     if (!doc) {
@@ -173,8 +184,10 @@ bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
         } else {
             // File was written successfully. Tweak the modification time to the
             // last modified date of the document.
-            const QDateTime& lastModified = doc.lastModified();
             const QString& fileName = docSave.lastSavedFileName();
+            const QDateTime& lastModified = doc.lastModified();
+
+            if (lastModified.isValid()) {
             /*
              *        The utimbuf structure is:
              *
@@ -194,6 +207,9 @@ bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
             utime_par.modtime = mktime(&time);
             // utime_par.actime  = mktime()
             utime(fileName.toUtf8().constData(), &utime_par);
+            } else {
+                qDebug() << "Invalid time stamp for last modified for" << fileName;
+            }
         }
     } else {
         qDebug() << "Failed to load from db" << docID;
