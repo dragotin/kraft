@@ -22,6 +22,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QIcon>
+#include <QStandardPaths>
 
 #include "defaultprovider.h"
 #include "kraftdb.h"
@@ -42,7 +43,24 @@ DefaultProvider *DefaultProvider::self()
 
 DefaultProvider::DefaultProvider()
 {
+   QString basePath = KraftSettings::self()->xmlDocumentsBasePath();
 
+   if (basePath.isEmpty()) {
+       basePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+       basePath.append("/xmldoc/v1"); // FIXME: version should not be hardcoded!
+
+       QDir d(basePath);
+       if (!d.exists()) {
+           d.mkpath(basePath);
+       }
+   }
+   if (basePath.isEmpty()) {
+       qDebug() << "Unable to find a root dir for the XML storage";
+       return;
+   }
+
+   KraftSettings::setXmlDocumentsBasePath(basePath);
+   _persister.setBasePath(basePath);
 }
 
 DocumentSaverBase& DefaultProvider::documentPersister()

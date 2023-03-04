@@ -39,6 +39,7 @@ public:
 
     virtual bool saveDocument(KraftDoc*) override;
     virtual bool loadByIdent( const QString& , KraftDoc * ) override;
+    bool loadFromFile(const QString& xmlFile, KraftDoc *doc, bool onlyMeta = false);
 
     void setBasePath(const QString& path);
     QString xmlDocFileName(KraftDoc *doc);
