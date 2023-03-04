@@ -46,6 +46,8 @@ class DocumentMan
 
     bool convertDbToXml(const QString& docID, const QString &basePath);
 
+    DocGuardedPtr loadMetaFromFilename(const QString&);
+
     DocumentMan();
 };
 

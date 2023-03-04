@@ -122,6 +122,7 @@ set(kraft_SRCS
     epcqrcode.cpp
     kraftattrib.cpp
     kraftobj.cpp
+    xmldocindex.cpp
 
     3rdparty/qrcodegen.cpp
 )

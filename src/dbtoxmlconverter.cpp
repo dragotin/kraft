@@ -1,6 +1,8 @@
 #include "dbtoxmlconverter.h"
 #include "documentman.h"
 #include "kraftdb.h"
+#include "xmldocindex.h"
+#include "kraftsettings.h"
 
 #include <QSqlQuery>
 #include <QStandardPaths>
@@ -19,22 +21,41 @@ void DbToXMLConverter::convert()
 {
     QMap<int, int> q = yearMap();
 
-    QTemporaryDir tempDir;
-    tempDir.setAutoRemove(false);
-    const QString tempPath {tempDir.path()};
+    QString basePath = KraftSettings::self()->xmlDocumentsBasePath();
 
-    qDebug() << "converting XML Documents to" << tempPath;
+    bool ok {false};
+    do {
+        QUuid uuid = QUuid::createUuid();
+        QFileInfo fi( QString("%1/%2").arg(basePath).arg(uuid.toString(QUuid::StringFormat::WithoutBraces).left(5)));
+
+        if (!fi.exists()) {
+            basePath = fi.filePath();
+            QDir d(basePath);
+            d.mkpath(basePath);
+            ok = true;
+        }
+    } while(!ok);
+
+    qDebug() << "converting XML Documents to" << basePath;
 
     QList<int> keys = q.keys();
     std::sort(keys.begin(), keys.end());
     int cnt {0};
     for (int year : keys) {
-        cnt += convertDocsOfYear(year, tempPath);
+        cnt += convertDocsOfYear(year, basePath);
+        // FIXME Check for errors
     }
-     qDebug() << "Done, saved"<< cnt << "docs to"<< tempPath;
+    qDebug() << "Done, saved"<< cnt << "docs to"<< basePath;
+
+    if (ok) {
+        QElapsedTimer et;
+        et.start();
+        XmlDocIndex indx(basePath);
+        qDebug() << "Indexing took" << et.elapsed() <<"msec";
+    }
 }
 
-QMap <int, int> DbToXMLConverter::yearMap()
+QMap<int, int> DbToXMLConverter::yearMap()
 {
     QMap<int, int> reMap;
 

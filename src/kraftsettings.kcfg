@@ -18,6 +18,9 @@
     <entry name="XmlDocPath" type="String">
       <label>The local xml document storage path</label>
     </entry>
+    <entry name="XmlDocumentsBasePath" type="String">
+      <label>The root path of the XML document storage</label>
+    </entry>
     <entry name="mailUA" type="String">
       <label>Default mail user agent. Set xdg for xdg-email</label>
       <default>thunderbird</default>
