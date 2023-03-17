@@ -45,13 +45,21 @@ DefaultProvider::DefaultProvider()
 {
    QString basePath = KraftSettings::self()->xmlDocumentsBasePath();
 
+   QFileInfo fi(basePath);
+   if (! (fi.exists() && fi.isDir()) ) {
+       qDebug() << "Document base path does NOT EXIST - clear config file";
+       basePath.clear();
+   }
+
    if (basePath.isEmpty()) {
        basePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-       basePath.append("/xmldoc/v1"); // FIXME: version should not be hardcoded!
 
-       QDir d(basePath);
-       if (!d.exists()) {
-           d.mkpath(basePath);
+       if (!basePath.isEmpty()) {
+           basePath.append("/xmldoc/");
+           QDir d(basePath);
+           if (!d.exists()) {
+               d.mkpath(basePath);
+           }
        }
    }
    if (basePath.isEmpty()) {
@@ -60,7 +68,7 @@ DefaultProvider::DefaultProvider()
    }
 
    KraftSettings::setXmlDocumentsBasePath(basePath);
-   _persister.setBasePath(basePath);
+   _persister.setBasePath(basePath+"/current/");
 }
 
 DocumentSaverBase& DefaultProvider::documentPersister()
