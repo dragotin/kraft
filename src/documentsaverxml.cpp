@@ -51,17 +51,6 @@ QDate childElemDate(const QDomElement& elem, const QString& childName)
 
 }
 
-QString xmlBasePath()
-{
-    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-
-    QByteArray ba = qgetenv("KRAFT_XML_STOREPATH");
-    if (!ba.isEmpty()) {
-        path = QString::fromUtf8(ba);
-    }
-    return path;
-}
-
 QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
 {
   QDomElement elem = doc.createElement( name );

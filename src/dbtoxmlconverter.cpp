@@ -21,36 +21,58 @@ void DbToXMLConverter::convert()
 {
     QMap<int, int> q = yearMap();
 
-    QString basePath = KraftSettings::self()->xmlDocumentsBasePath();
+    QString dBase = KraftSettings::self()->xmlDocumentsBasePath(); // something like $HOME/.local/kraft/xmldoc
 
+    if (dBase.isEmpty()) {
+        qDebug() << "No xml Documents base path found";
+
+        return;
+    }
+
+    // Append a uniq part
     bool ok {false};
-    do {
+    QString link; // used further down to create the link
+    QDir baseDir;
+    do { // Loop until we find a not yet taken
         QUuid uuid = QUuid::createUuid();
-        QFileInfo fi( QString("%1/%2").arg(basePath).arg(uuid.toString(QUuid::StringFormat::WithoutBraces).left(5)));
+        const QString fragment{uuid.toString(QUuid::StringFormat::WithoutBraces).left(5)};
 
+        QFileInfo fi( QString("%1/%2").arg(dBase).arg(fragment));
         if (!fi.exists()) {
-            basePath = fi.filePath();
-            QDir d(basePath);
-            d.mkpath(basePath);
+            baseDir.setPath(fi.absoluteFilePath());
+            baseDir.mkpath(baseDir.absolutePath());
+            link = fragment;
+            qDebug() << "converting XML Documents to" << baseDir.absolutePath() ;
             ok = true;
         }
     } while(!ok);
 
-    qDebug() << "converting XML Documents to" << basePath;
-
     QList<int> keys = q.keys();
     std::sort(keys.begin(), keys.end());
     int cnt {0};
+    const QString bp {baseDir.path()};
     for (int year : keys) {
-        cnt += convertDocsOfYear(year, basePath);
+        cnt += convertDocsOfYear(year, baseDir.path());
         // FIXME Check for errors
     }
-    qDebug() << "Done, saved"<< cnt << "docs to"<< basePath;
+    qDebug() << "Done, saved"<< cnt << "docs to"<< baseDir.absolutePath();
+
+    if (ok) {
+        QDir d(baseDir);
+        d.cdUp();
+        const QString linkFile{d.absoluteFilePath("current")};
+
+        QFile f(linkFile);
+        if (f.exists()) {
+            f.remove();
+        }
+        ok = QFile::link(link, linkFile);
+    }
 
     if (ok) {
         QElapsedTimer et;
         et.start();
-        XmlDocIndex indx(basePath);
+        XmlDocIndex indx(baseDir.absolutePath());
         qDebug() << "Indexing took" << et.elapsed() <<"msec";
     }
 }
