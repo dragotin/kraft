@@ -164,7 +164,8 @@ Geld DocPosition::overallPrice()
 {
     Geld g;
 
-    if (type() == DocPositionBase::PositionType::Position) {
+    if (type() == DocPositionBase::PositionType::Position ||
+            type() == DocPositionBase::PositionType::ExtraDiscount) {
         g = unitPrice() * amount();
     }
 
