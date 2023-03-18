@@ -30,8 +30,8 @@
 #include "kraftdoc.h"
 #include "unitmanager.h"
 #include "defaultprovider.h"
-#include "attribute.h"
 #include "kraftattrib.h"
+#include "xmldocindex.h"
 
 
 namespace {
@@ -390,7 +390,10 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
         t = childElemText(itemElem, "unitprice");
         item->setUnitPrice(Geld(t.toDouble()));
         t = childElemText(itemElem, "itemprice");
-        Q_ASSERT(!(item->overallPrice() != Geld(t.toDouble())));
+
+        Geld g(item->overallPrice());
+        // qDebug() << "Geld" << g.toLocaleString() << t.toDouble();
+        Q_ASSERT(!(g != Geld(t.toDouble())));
 
         QDomElement attrElem = itemElem.nextSiblingElement("attrib");
         while (!attrElem.isNull()) {
@@ -434,12 +437,11 @@ QString DocumentSaverXML::xmlDocFileNameFromIdent(const QString& id)
     QString path {basePath()};
 
     const QString file {id + ".xml"};
+    XmlDocIndex indx(basePath());
 
-    QDirIterator it(path, {file}, QDir::NoFilter, QDirIterator::Subdirectories);
-    if (it.hasNext()) {
-        return it.next();
-    }
-    return QString();
+    const QString p = indx.pathByIdent(id);
+
+    return  p;
 }
 
 DocumentSaverXML::DocumentSaverXML()
