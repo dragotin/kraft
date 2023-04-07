@@ -47,7 +47,6 @@ class KraftDoc : public KraftObj
     Q_PROPERTY(QString preText READ preText)
     Q_PROPERTY(QString postText READ postText)
     Q_PROPERTY(QString projectLabel READ projectLabel)
-    Q_PROPERTY(QString docIDStr READ docIdStr)
     Q_PROPERTY(QString docIdentifier READ docIdentifier)
 
     Q_PROPERTY(QString nettoSumStr READ nettoSumStr)
@@ -144,9 +143,6 @@ public:
 
     QString owner() { return _owner; }
     void setOwner(const QString& owner) { _owner = owner; }
-    void setDocID( dbID id ) { mDocID = id; }
-    dbID docID() const { return mDocID; }
-    QString docIdStr() const { return docID().toString(); }
 
     QString docIdentifier() const;
     DBIdList removePositionList() { return mRemovePositions; }
@@ -230,7 +226,6 @@ private:
 
     DocPositionList mPositions;
     DBIdList mRemovePositions;
-    dbID    mDocID;
     State   _state;
 
     friend class DocumentMan;
