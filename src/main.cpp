@@ -31,7 +31,6 @@
 
 #include "version.h"
 #include "portal.h"
-#include "defaultprovider.h"
 #include "archdocposition.h"
 
 int main(int argc, char *argv[])

@@ -68,7 +68,8 @@ DefaultProvider::DefaultProvider()
    }
 
    KraftSettings::setXmlDocumentsBasePath(basePath);
-   _persister.setBasePath(basePath+"/current/");
+   basePath.append("current/");
+   _persister.setBasePath(basePath);
 }
 
 DocumentSaverBase& DefaultProvider::documentPersister()

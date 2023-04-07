@@ -86,29 +86,28 @@ DocAssistant::DocAssistant( QWidget *parent ):
    */
   mCatalogSelection = new CatalogSelection;
   mWidgetStack->addWidget( mCatalogSelection );
-  connect( mCatalogSelection, SIGNAL( selectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ),
-           this,  SLOT( slotCatalogSelectionChanged(QTreeWidgetItem*,QTreeWidgetItem*) ) );
+  connect( mCatalogSelection, &CatalogSelection::selectionChanged,
+           this,  &DocAssistant::slotCatalogSelectionChanged);
 
   mHeaderSelector = new TextSelection( 0, KraftDoc::Part::Header );
   mWidgetStack->addWidget( mHeaderSelector );
 
-  connect( mHeaderSelector, SIGNAL(validTemplateSelected() ),
-           this, SLOT( slotTemplateSelectionChanged() ) );
-  connect( mHeaderSelector, SIGNAL(editCurrentTemplate()),
-           this, SLOT(slotEditTemplate()));
+  connect( mHeaderSelector, &TextSelection::validTemplateSelected,
+           this, &DocAssistant::slotTemplateSelectionChanged );
+  connect( mHeaderSelector, &TextSelection::editCurrentTemplate,
+           this, &DocAssistant::slotEditTemplate);
 
   mFooterSelection = new TextSelection( 0, KraftDoc::Part::Footer );
   mWidgetStack->addWidget( mFooterSelection );
 
-  connect( mFooterSelection, SIGNAL(validTemplateSelected()),
-           this, SLOT(slotTemplateSelectionChanged()));
-  connect( mFooterSelection, SIGNAL(editCurrentTemplate()),
-           this, SLOT(slotEditTemplate()));
-  connect( mFooterSelection, SIGNAL( actionCurrentTextToDoc() ),
-           this,  SLOT( slotAddToDocument() ) );
+  connect( mFooterSelection, &TextSelection::validTemplateSelected,
+           this, &DocAssistant::slotTemplateSelectionChanged);
+  connect( mFooterSelection, &TextSelection::editCurrentTemplate,
+           this, &DocAssistant::slotEditTemplate);
+  connect( mFooterSelection, &TextSelection::actionCurrentTextToDoc,
+           this,  &DocAssistant::slotAddToDocument );
 
-  connect( mPostCard, SIGNAL( selectPage( int ) ),
-           this,  SLOT( slotSelectDocPart( int ) ) );
+  connect( mPostCard, &DocPostCard::selectPage, this, &DocAssistant::slotSelectDocPart);
 
   QHBoxLayout *butHBox2 = new QHBoxLayout;
   bottomVBox->addLayout( butHBox2 );
