@@ -171,6 +171,8 @@ public:
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
 
+    void clear();
+
 public slots:
     /** calls redrawDocument() on all views connected to the document object and is
    *  called by the view by which the document has been changed.
