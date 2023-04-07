@@ -47,6 +47,38 @@ KraftDoc::~KraftDoc()
 {
 }
 
+void KraftDoc::clear()
+{
+    mAddressUid.clear();
+    mProjectLabel.clear();
+    mAddress.clear();
+    mPreText.clear();
+    mPostText.clear();
+    mDocType.clear();
+    mDocTypeChanged = false;
+    mSalut.clear();
+    mGoodbye.clear();
+    mIdent.clear();
+    mWhiteboard.clear();
+    mPredecessor.clear();
+    mPredecessorDbId.clear();
+
+    // Two qualifiers for the locale settings.
+    mCountry.clear();
+    mLanguage.clear();
+
+    mDate = QDate();
+
+    // Time of supply
+    _toSStart = QDateTime();
+    _toSEnd = QDateTime();
+    _owner.clear();
+
+    mPositions.clear();
+    mRemovePositions.clear();
+    _state = KraftDoc::State::Undefined;
+}
+
 KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 {
   if ( this == &origDoc ) return *this;
