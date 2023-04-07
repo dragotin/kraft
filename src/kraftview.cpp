@@ -1443,7 +1443,7 @@ void KraftView::discardChanges()
   if( doc && doc->modified() ) {
       bool ok = DocumentMan::self()->reloadDocument(doc);
       if (!ok) {
-          qDebug() << "Failed to reload doc" << doc->docIdStr();
+          qDebug() << "Failed to reload doc" << doc->docIdentifier();
       }
     // qDebug () << "Document refetch from database" << endl;
   }
