@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "models/docbasemodel.h"
 
 #include <QStringList>
 #include <QColor>
@@ -145,7 +146,7 @@ void DocBaseModel::resetData()
 {
     beginResetModel();
     removeAllData();
-    loadFromTable();
+    loadDigests();
     endResetModel();
 
 }
@@ -158,58 +159,7 @@ void DocBaseModel::slotAddresseeFound( const QString& uid, const KContacts::Addr
     Q_UNUSED(contact);
 }
 
-int DocBaseModel::loadFromTable()
+int DocBaseModel::loadDigests()
 {
-    int cnt = 0;
-
-    QSqlQuery query;
-
-    query.prepare("SELECT docID, ident, docType, docDescription, clientID, lastModified,"
-                  "date, projectLabel, clientAddress "
-                  "FROM document ORDER BY date DESC");
-    query.exec();
-
-/*    enum Columns {
-      Document_Id = 0,
-      Document_Ident = 1,
-      Document_Type = 2,
-      Document_Whiteboard = 3,
-      Document_ClientId = 4,
-      Document_LastModified = 5,
-      Document_CreationDate = 6,
-      Document_ProjectLabel = 7,
-      Document_ClientAddress = 8,
-      Document_ClientName = 9,
-
-    };
-   */
-    while (query.next()) {
-        DocDigest digest(query.value(Document_Id).toInt(),
-                         query.value(Document_Type).toString(),
-                         query.value(Document_ClientId).toString());
-
-        digest.setDate( query.value( Document_CreationDate ).toDate() );
-        QDateTime dt = query.value(Document_LastModified).toDateTime();
-        if (KraftDB::self()->isSqlite()) {
-            // The timestamps in Sqlite are in UTC
-            dt.setTimeSpec(Qt::UTC);
-            digest.setLastModified(dt.toLocalTime());
-        } else {
-            digest.setLastModified(dt);
-        }
-
-        const QString clientAdr = query.value(Document_ClientAddress).toString();
-        digest.setClientAddress( clientAdr );
-
-        QString ident = query.value(Document_Ident).toString();
-        digest.setIdent( ident );
-        digest.setWhiteboard( query.value(Document_Whiteboard).toString() );
-        digest.setProjectLabel( query.value(Document_ProjectLabel).toString() );
-
-        const QString clientId = query.value(Document_ClientId).toString();
-        digest.setClientId( clientId );
-
-        this->addData( digest );
-    }
-    return cnt;
+    return DefaultProvider::self()->documentPersister().addDigestsToModel(this);
 }

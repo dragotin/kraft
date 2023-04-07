@@ -39,6 +39,10 @@ const QString XmlDocIndex::pathByIdent(const QString &ident)
     return re;
 }
 
+const QMap<QDate, QString> &XmlDocIndex::dateMap()
+{
+    return _dateMap;
+}
 
 void XmlDocIndex::buildIndex()
 {
@@ -58,6 +62,7 @@ void XmlDocIndex::buildIndex()
         KraftDoc *doc = DocumentMan::self()->loadMetaFromFilename(xmlFile);
         if (doc) {
             _identMap.insert(doc->ident(), xmlFile);
+            _dateMap.insert(doc->date(), xmlFile);
             delete doc;
         }
     }

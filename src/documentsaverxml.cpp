@@ -24,9 +24,11 @@
 #include <QDomDocument>
 #include <QFileDevice>
 
+#include "models/docbasemodel.h"
 
 #include "documentsaverxml.h"
 #include "docposition.h"
+#include "docdigest.h"
 #include "kraftdoc.h"
 #include "unitmanager.h"
 #include "defaultprovider.h"
@@ -594,6 +596,41 @@ bool DocumentSaverXML::loadFromFile(const QString& xmlFile, KraftDoc *doc, bool 
     return ok;
 }
 
+int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
+{
+    int cnt{0};
+    XmlDocIndex indx(basePath());
+
+    const QMap<QDate, QString> dateMap = indx.dateMap();
+    QList<QDate> dates = dateMap.keys();
+
+    std::sort(dates.begin(), dates.end(), [](QDate const& l, QDate const& r) {
+        return l < r;
+    });
+
+    for( const QDate d : dates) {
+        const QString file = dateMap[d];
+        KraftDoc doc;
+        if (loadFromFile(file, &doc, true)) {
+            dbID id; // FIXME remove from digest
+            DocDigest digest(id, doc.docType(),
+                             doc.addressUid());
+
+            digest.setDate(doc.date());
+            digest.setLastModified(doc.lastModified());
+
+            digest.setClientAddress(doc.address());
+            digest.setIdent(doc.ident());
+            digest.setWhiteboard(doc.whiteboard());
+            digest.setProjectLabel(doc.projectLabel());
+            model->addData(digest);
+            cnt++;
+        }
+
+    }
+
+    return cnt;
+}
 #if 0
     ----
 

@@ -27,6 +27,7 @@ public:
     XmlDocIndex(const QString& basePath);
 
     const QString pathByIdent(const QString& ident);
+    static QMap<QDate, QString> const &dateMap();
 
 private:
     void buildIndex();
@@ -34,6 +35,7 @@ private:
     QString _basePath;
 
     static QMap<QString, QString> _identMap;
+    static QMap<QDate, QString> _dateMap;
 };
 
 #endif // XMLDOCINDEX_H
