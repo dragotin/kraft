@@ -59,13 +59,13 @@ void DocumentFilterModel::setEnableTreeview( bool treeview )
     if(_enableTreeView) {
         if( _treeModel.isNull() ) {
             _treeModel.reset(new DateModel);
-            _treeModel->loadFromTable();
+            _treeModel->loadDigests();
         }
         model = _treeModel.data();
     } else {
         if( _tableModel.isNull()) {
             _tableModel.reset(new DocumentModel);
-            _tableModel->loadFromTable();
+            _tableModel->loadDigests();
         }
         model = _tableModel.data();
     }

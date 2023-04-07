@@ -35,9 +35,6 @@ class DocBaseModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    DocBaseModel(QObject *parent = 0);
-    virtual ~DocBaseModel() {}
-
     enum Columns {
         Document_Id = 0,
         Document_Ident = 1,
@@ -57,6 +54,11 @@ public:
         Max_Column_Marker = 15   // leave this as last enum
     };
 
+    DocBaseModel(QObject *parent = 0);
+    virtual ~DocBaseModel() {}
+
+
+
     int columnCount(const QModelIndex &parent) const;
     virtual QVariant data(const QModelIndex &index, int role) const = 0;
     Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -68,7 +70,7 @@ public:
     virtual DocDigest digest(const QModelIndex& indx) const = 0;
     virtual bool isDocument(const QModelIndex& indx) const = 0;
 
-    int loadFromTable();
+    int loadDigests();
 
     void resetData();
 

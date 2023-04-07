@@ -24,6 +24,7 @@ class KraftDoc;
 class QSqlRecord;
 class dbID;
 class QString;
+class DocBaseModel;
 
 class DocumentSaverDB : public DocumentSaverBase
 {
@@ -35,6 +36,8 @@ public:
 
     virtual bool saveDocument( KraftDoc* ) override;
     virtual bool loadByIdent( const QString& , KraftDoc * ) override;
+    int addDigestsToModel(DocBaseModel* model) override;
+
 protected:
     virtual void loadPositions( const QString&, KraftDoc* );
     virtual void saveDocumentPositions( KraftDoc* );

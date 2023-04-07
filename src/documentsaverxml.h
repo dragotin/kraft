@@ -28,6 +28,7 @@ class KraftDoc;
 class QSqlRecord;
 class dbID;
 class QString;
+class DocBaseModel;
 
 class DocumentSaverXML : public DocumentSaverBase
 {
@@ -39,6 +40,8 @@ public:
 
     virtual bool saveDocument(KraftDoc*) override;
     virtual bool loadByIdent( const QString& , KraftDoc * ) override;
+    int addDigestsToModel(DocBaseModel *model) override;
+
     bool loadFromFile(const QString& xmlFile, KraftDoc *doc, bool onlyMeta = false);
 
     void setBasePath(const QString& path);
