@@ -34,6 +34,7 @@
 #include <QStandardPaths>
 #include <QToolBar>
 #include <QDesktopServices>
+#include <QtConcurrent/QtConcurrentRun>
 
 
 // include files for KDE
@@ -94,9 +95,14 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
   restoreState(state);
   const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->portalGeometry().toLatin1() );
   restoreGeometry(geo);
+}
 
-  // setAutoSaveSettings();
-  QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
+void Portal::show()
+{
+    QMainWindow::show();
+    qApp->processEvents();
+    qDebug() << "Processed...";
+    slotStartupChecks();
 }
 
 void Portal::initActions()
@@ -359,7 +365,7 @@ void Portal::slotStartupChecks()
             // Update not under our control here.
             QMessageBox::warning(this, i18n("Database not running"),
                                  i18n("Kraft was started in readonly mode, but the configured "
-    "database can not be connected.\n\nKraft will abort."));
+                                      "database can not be connected.\n\nKraft will abort."));
             QTimer::singleShot(500, this, [this] { close(); });
             return;
         } else {
@@ -405,84 +411,89 @@ void Portal::slotStartupChecks()
         _actMailDocument->setEnabled( false );
 
         slotStatusMsg( i18n( "Database Problem." ) );
-    } else {
-        // if readonly, enable the change polling on the db
-        if (_readOnlyMode) {
-            KraftDB::self()->enableTimerRefresh(true);
+        return;
+
+    }
+
+    // Database is up and runing!
+
+    // TODO: Check the document storage and see if the docs are converted already.
+
+    m_portalView->slotBuildView();
+    m_portalView->fillCatalogDetails();
+    m_portalView->fillSystemDetails();
+
+    slotStatusMsg( i18n( "Check commandline actions" ) );
+
+    if ( mCmdLineArgs ) {
+        const QString docId = mCmdLineArgs->value("d");
+        if ( ! docId.isEmpty() ) {
+            // qDebug () << "open a archived document: " << docId << endl;
+            slotPrintDocument( QString(), dbID( docId.toInt() ) );
         }
+    }
 
-        // Database interaction is ok after this point.
-        m_portalView->slotBuildView();
-        m_portalView->fillCatalogDetails();
-        m_portalView->fillSystemDetails();
+    // Fetch my address
+    const QString myUid = KraftSettings::self()->userUid();
+    bool useManual = false;
 
-        slotStatusMsg( i18n( "Check commandline actions" ) );
+    if( ! myUid.isEmpty() ) {
+        KContacts::Addressee contact;
+        // qDebug () << "Got My UID: " << myUid;
+        connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
+                 this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
 
-        if ( mCmdLineArgs ) {
-            const QString docId = mCmdLineArgs->value("d");
-            if ( ! docId.isEmpty() ) {
-                // qDebug () << "open a archived document: " << docId;
-                slotPrintDocument( QString(), dbID( docId.toInt() ) );
-            }
-        }
-
-        // Fetch my address
-        const QString myUid = KraftSettings::self()->userUid();
-        bool useManual = false;
-
-        if( ! myUid.isEmpty() ) {
-            KContacts::Addressee contact;
-            // qDebug () << "Got My UID: " << myUid;
-            connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
-                    this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
-
-            AddressProvider::LookupState state = mAddressProvider->lookupAddressee( myUid );
-            switch( state ) {
-            case AddressProvider::LookupFromCache:
-                contact = mAddressProvider->getAddresseeFromCache(myUid);
-                slotReceivedMyAddress(myUid, contact);
-                break;
-            case AddressProvider::LookupNotFound:
-            case AddressProvider::ItemError:
-            case AddressProvider::BackendError:
-                // Try to read from stored vcard.
-                useManual = true;
-                break;
-            case AddressProvider::LookupOngoing:
-            case AddressProvider::LookupStarted:
-                // Not much to do, just wait
-                break;
-            }
-        } else {
-            // in case there is no uid in the settings file, try to use the manual address.
+        AddressProvider::LookupState state = mAddressProvider->lookupAddressee( myUid );
+        switch( state ) {
+        case AddressProvider::LookupFromCache:
+            contact = mAddressProvider->getAddresseeFromCache(myUid);
+            slotReceivedMyAddress(myUid, contact);
+            break;
+        case AddressProvider::LookupNotFound:
+        case AddressProvider::ItemError:
+        case AddressProvider::BackendError:
+            // Try to read from stored vcard.
             useManual = true;
+            break;
+        case AddressProvider::LookupOngoing:
+        case AddressProvider::LookupStarted:
+            // Not much to do, just wait
+            break;
         }
+    } else {
+        // in case there is no uid in the settings file, try to use the manual address.
+        useManual = true;
+    }
 
-        if( useManual ) {
-            // check if the vcard can be read
-            QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
-            file += "/myidentity.vcd";
-            QFile f(file);
-            if( f.exists() ) {
-                if( f.open( QIODevice::ReadOnly )) {
-                    const QByteArray data = f.readAll();
-                    VCardConverter converter;
-                    Addressee::List list = converter.parseVCards( data );
+    if( useManual ) {
+        // check if the vcard can be read
+        QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+        file += "/myidentity.vcd";
+        QFile f(file);
+        if( f.exists() ) {
+            if( f.open( QIODevice::ReadOnly )) {
+                const QByteArray data = f.readAll();
+                VCardConverter converter;
+                Addressee::List list = converter.parseVCards( data );
 
-                    if( list.count() > 0 ) {
-                        KContacts::Addressee c = list.at(0);
-                        c.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
-                        slotReceivedMyAddress(QString(), c);
-                    }
+                if( list.count() > 0 ) {
+                    KContacts::Addressee c = list.at(0);
+                    c.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
+                    slotReceivedMyAddress(QString(), c);
                 }
             }
         }
-
-        connect( &_reportGenerator, &ReportGenerator::docAvailable,
-                 this, &Portal::slotDocConverted);
-        connect( &_reportGenerator, &ReportGenerator::failure,
-                 this, &Portal::slotDocConvertionFail);
     }
+
+    connect( &_reportGenerator, &ReportGenerator::docAvailable,
+             this, &Portal::slotDocConverted);
+    connect( &_reportGenerator, &ReportGenerator::failure,
+             this, &Portal::slotDocConvertionFail);
+    // if readonly, enable the change polling on the db
+    if (_readOnlyMode) {
+        KraftDB::self()->enableTimerRefresh(true);
+    }
+
 }
 
 void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Addressee& contact )
