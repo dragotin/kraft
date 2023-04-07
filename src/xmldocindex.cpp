@@ -62,15 +62,15 @@ void XmlDocIndex::buildIndex()
 
     int cnt{0};
     QDirIterator dirIt(_basePath, {"*.xml"}, QDir::Files, QDirIterator::Subdirectories);
+    KraftDoc doc;
     while( dirIt.hasNext() ) {
         const QString xmlFile = dirIt.next();
         // qDebug() << "Indexing" << xmlFile;
         cnt++;
-        KraftDoc *doc = DocumentMan::self()->loadMetaFromFilename(xmlFile);
-        if (doc) {
-            _identMap.insert(doc->ident(), xmlFile);
-            _dateMap.insert(doc->date(), xmlFile);
-            delete doc;
+        if (DocumentMan::self()->loadMetaFromFilename(xmlFile, &doc)) {
+            _identMap.insert(doc.ident(), xmlFile);
+            _dateMap.insert(doc.date(), xmlFile);
+            doc.clear();
         }
     }
     qDebug() << "Indexed"<< cnt << "files";
