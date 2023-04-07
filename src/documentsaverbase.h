@@ -26,17 +26,20 @@
  */
 class KraftDoc;
 class dbID;
+class QAbstractItemModel;
+class DocBaseModel;
 
 class DocumentSaverBase : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  DocumentSaverBase();
-  virtual ~DocumentSaverBase();
 
-  virtual bool saveDocument( KraftDoc* ) = 0;
-  virtual bool loadByIdent( const QString&, KraftDoc * ) = 0;
+    DocumentSaverBase();
+    virtual ~DocumentSaverBase();
+
+    virtual bool saveDocument( KraftDoc* ) = 0;
+    virtual bool loadByIdent( const QString&, KraftDoc * ) = 0;
 };
 
 #endif
