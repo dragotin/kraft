@@ -14,12 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "docbasemodel.h"
-#include "kraftdb.h"
 
 #include <QStringList>
 #include <QColor>
-#include <QSqlQuery>
 
 #include <klocalizedstring.h>
 
@@ -139,7 +136,7 @@ QVariant DocBaseModel::headerData(int section, Qt::Orientation orientation, int 
 Qt::ItemFlags DocBaseModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return {};
+        return Qt::ItemFlags();
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
