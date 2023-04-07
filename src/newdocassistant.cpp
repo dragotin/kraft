@@ -229,29 +229,31 @@ QString KraftWizard::whiteboard() const
   return mDetailsPage->mWhiteboardEdit->toPlainText();
 }
 
-void KraftWizard::setDocToFollow( DocGuardedPtr sourceDoc)
+void KraftWizard::setDocToFollow(DocGuardedPtr sourceDoc)
 {
     if( !sourceDoc ) {
         return;
     }
     DocGuardedPtr dPtr = sourceDoc;
 
-    QString id = sourceDoc->docID().toString();
-    while( ! id.isEmpty() ) {
+    QString sourceId = sourceDoc->ident();
+    while( ! sourceId.isEmpty() ) {
         // store the id of the follower and clear id
         const QString idT = dPtr->docIdentifier();
-        mDetailsPage->mSourceDocIdentsCombo->addItem(idT, id);
-        id = QString();
+        mDetailsPage->mSourceDocIdentsCombo->addItem(idT, sourceId);
 
         // remember the current dptr to be able to delete it soon
         DocGuardedPtr oldDptr = dPtr;
         dPtr =  DocumentMan::self()->openDocumentByIdent( dPtr->predecessor() );
         if( dPtr ) {
-            id = dPtr->docID().toString();
+            sourceId = dPtr->ident();
+            sourceId.clear();
         }
         if( oldDptr != sourceDoc ) {
             delete oldDptr;
         }
+
+        delete dPtr;
     }
     if( mDetailsPage->mSourceDocIdentsCombo->count() > 0  ) {
         mDetailsPage->mKeepItemsCB->setVisible(true);
