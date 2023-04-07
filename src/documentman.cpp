@@ -139,15 +139,13 @@ DocGuardedPtr DocumentMan::openDocumentByIdent( const QString& ident )
     return doc;
 }
 
-DocGuardedPtr DocumentMan::loadMetaFromFilename(const QString& xmlFile)
+bool DocumentMan::loadMetaFromFilename(const QString& xmlFile, KraftDoc *doc)
 {
     DocumentSaverXML docLoad;
-    DocGuardedPtr doc = new KraftDoc();
-    if (!docLoad.loadFromFile(xmlFile, doc, true)) {
-        delete doc;
-        return nullptr;
+    if (doc && docLoad.loadFromFile(xmlFile, doc, true)) {
+        return true;
     }
-    return doc;
+    return false;
 }
 
 bool DocumentMan::saveDocument(KraftDoc* doc)
