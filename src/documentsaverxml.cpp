@@ -334,6 +334,23 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
     return res;
 }
 
+bool loadClientBlock(const QDomDocument& domDoc, KraftDoc *doc)
+{
+    bool res {true};
+
+    QDomElement kraftdocElem = domDoc.firstChildElement("kraftdocument");
+    QDomElement clientElem = kraftdocElem.firstChildElement("client");
+
+    Q_ASSERT(!clientElem.isNull());
+
+    const QString t = childElemText(clientElem, "address");
+    doc->setAddress(t);
+    const QString id = childElemText(clientElem, "clientId");
+    doc->setAddressUid(id);
+
+    return res;
+}
+
 bool loadHeaderBlock(const QDomDocument& domDoc, KraftDoc *doc)
 {
     bool res {true};
@@ -436,8 +453,6 @@ QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
 
 QString DocumentSaverXML::xmlDocFileNameFromIdent(const QString& id)
 {
-    QString path {basePath()};
-
     const QString file {id + ".xml"};
     XmlDocIndex indx(basePath());
 
@@ -585,6 +600,8 @@ bool DocumentSaverXML::loadFromFile(const QString& xmlFile, KraftDoc *doc, bool 
     bool ok;
 
     ok = loadMetaBlock(_domDoc, doc);
+    ok = ok && loadClientBlock(_domDoc, doc);
+
     if (!onlyMeta) {
 
         if (ok) {
