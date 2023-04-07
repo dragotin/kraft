@@ -70,10 +70,7 @@ void DbToXMLConverter::convert()
     }
 
     if (ok) {
-        QElapsedTimer et;
-        et.start();
         XmlDocIndex indx(baseDir.absolutePath());
-        qDebug() << "Indexing took" << et.elapsed() <<"msec";
     }
 }
 
