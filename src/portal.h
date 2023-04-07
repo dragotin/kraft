@@ -54,6 +54,9 @@ class Portal : public QMainWindow
     static QString textWrap(const QString& t, int width=40, int maxLines = -1 );
 
     QWidget* mainWidget();
+
+    void slotStartupChecks();
+
   protected:
     /** initializes the QActions of the application */
     void initActions();
@@ -75,9 +78,7 @@ class Portal : public QMainWindow
      */
     virtual bool queryExit();
 
-
   protected slots:
-    void slotStartupChecks();
     void slotOpenArchivedDoc( const ArchDocDigest& );
     void slotExportXRechnungArchivedDoc(const ArchDocDigest&);
     void slotXRechnungCurrentDocument();
@@ -91,6 +92,8 @@ class Portal : public QMainWindow
     void slotConvertToXML();
 
   public slots:
+
+    void show();
 
     /** closes all open windows, then quits the application.
      */
