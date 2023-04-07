@@ -32,6 +32,9 @@
 #include "dbids.h"
 #include "doctype.h"
 #include "defaultprovider.h"
+#include "docdigest.h"
+#include "models/docbasemodel.h"
+
 
 /* Table document:
  * +----------------+--------------+------+-----+-------------------+----------------+
@@ -412,6 +415,52 @@ void DocumentSaverDB::loadPositions( const QString& id, KraftDoc *doc )
 
         // dp->loadAttributes();
     }
+}
+
+int DocumentSaverDB::addDigestsToModel(DocBaseModel* model)
+{
+    if (model == nullptr) {
+        return -1;
+    }
+
+    int cnt = 0;
+
+    QSqlQuery query;
+
+    query.prepare("SELECT docID, ident, docType, docDescription, clientID, lastModified,"
+                  "date, projectLabel, clientAddress "
+                  "FROM document ORDER BY date DESC");
+    query.exec();
+
+    while (query.next()) {
+        DocDigest digest(query.value(DocBaseModel::Columns::Document_Id).toInt(),
+                         query.value(DocBaseModel::Columns::Document_Type).toString(),
+                         query.value(DocBaseModel::Columns::Document_ClientId).toString());
+
+        digest.setDate( query.value(DocBaseModel::Columns::Document_CreationDate ).toDate() );
+        QDateTime dt = query.value(DocBaseModel::Columns::Document_LastModified).toDateTime();
+        if (KraftDB::self()->isSqlite()) {
+            // The timestamps in Sqlite are in UTC
+            dt.setTimeSpec(Qt::UTC);
+            digest.setLastModified(dt.toLocalTime());
+        } else {
+            digest.setLastModified(dt);
+        }
+
+        const QString clientAdr = query.value(DocBaseModel::Columns::Document_ClientAddress).toString();
+        digest.setClientAddress( clientAdr );
+
+        QString ident = query.value(DocBaseModel::Columns::Document_Ident).toString();
+        digest.setIdent( ident );
+        digest.setWhiteboard( query.value(DocBaseModel::Columns::Document_Whiteboard).toString() );
+        digest.setProjectLabel( query.value(DocBaseModel::Columns::Document_ProjectLabel).toString() );
+
+        const QString clientId = query.value(DocBaseModel::Columns::Document_ClientId).toString();
+        digest.setClientId( clientId );
+
+        model->addData( digest );
+    }
+    return cnt;
 }
 
 DocumentSaverDB::~DocumentSaverDB( )
