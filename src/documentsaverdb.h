@@ -40,7 +40,6 @@ public:
 
 protected:
     virtual void loadPositions( const QString&, KraftDoc* );
-    virtual void saveDocumentPositions( KraftDoc* );
 private:
     const QString PosTypePosition;
     const QString PosTypeExtraDiscount;
