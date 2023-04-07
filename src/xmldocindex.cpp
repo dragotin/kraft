@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include <QDirIterator>
 #include <QtConcurrent/QtConcurrentRun>
+#include <QElapsedTimer>
 
 #include "xmldocindex.h"
 #include "kraftdoc.h"
@@ -28,12 +29,15 @@ XmlDocIndex::XmlDocIndex( const QString& basePath)
     : _basePath(basePath)
 {
     if (_identMap.count() == 0) {
+        QElapsedTimer timer;
+        timer.start();
         QFuture<void> t1 = QtConcurrent::run([=]() {
             // Code in this block will run in another thread
             buildIndex();
         });
 
         t1.waitForFinished();
+        qDebug() << "Indexing took" << timer.elapsed() << "msec";
     }
 }
 
