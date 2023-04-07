@@ -15,18 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 #include <QDirIterator>
+#include <QtConcurrent/QtConcurrentRun>
 
 #include "xmldocindex.h"
 #include "kraftdoc.h"
 #include "documentman.h"
 
 QMap<QString, QString> XmlDocIndex::_identMap = QMap<QString, QString>();
+QMap<QDate, QString> XmlDocIndex::_dateMap = QMap<QDate, QString>();
 
 XmlDocIndex::XmlDocIndex( const QString& basePath)
     : _basePath(basePath)
 {
     if (_identMap.count() == 0) {
-        buildIndex();
+        QFuture<void> t1 = QtConcurrent::run([=]() {
+            // Code in this block will run in another thread
+            buildIndex();
+        });
+
+        t1.waitForFinished();
     }
 }
 
