@@ -3,9 +3,38 @@
 #include <QTemporaryDir>
 #include <QFile>
 
+#include "qtestcase.h"
 #include "testconfig.h"
 #include "kraftdoc.h"
 #include "documentsaverxml.h"
+#include "kraftdb.h"
+#include "sql_states.h"
+
+void init_test_db()
+{
+    const QString dbName("__test.db");
+
+    QDir sourceDir(TESTS_PATH);
+    sourceDir.cdUp();
+    const QByteArray ba {sourceDir.absolutePath().toLatin1()};
+    qputenv("KRAFT_HOME", ba);
+
+    QFile::remove(dbName);
+
+    KraftDB::self()->dbConnect("QSQLITE", dbName, QString(), QString(), QString());
+
+    SqlCommandList sqls = KraftDB::self()->parseCommandFile("create_schema.sql");
+    QVERIFY(sqls.size() > 0);
+    KraftDB::self()->processSqlCommands(sqls);
+
+    sqls = KraftDB::self()->parseCommandFile("fill_schema_en.sql");
+    QVERIFY(sqls.size() > 0);
+    KraftDB::self()->processSqlCommands(sqls);
+
+    sqls = KraftDB::self()->parseCommandFile("24_dbmigrate.sql");
+    QVERIFY(sqls.size() > 0);
+    KraftDB::self()->processSqlCommands(sqls);
+}
 
 class T_XmlSaver: public QObject {
     Q_OBJECT
@@ -31,6 +60,8 @@ private slots:
 
         QFileInfo fi(docPath);
         Q_ASSERT(fi.exists());
+
+        init_test_db();
     }
 
     void xmlVerify()
@@ -48,7 +79,7 @@ private slots:
 
     }
 
-    void load1()
+    void loadMetaAndHeader()
     {
         DocumentSaverXML xmlSaver;
         xmlSaver.setBasePath(_dir.path());
@@ -85,6 +116,49 @@ private slots:
         QVERIFY(tags.contains("bar"));
         QVERIFY(!doc.isNew());
 
+        QCOMPARE(doc.addressUid(), "BMhh9EhLwr");;
+        QCOMPARE(doc.address(), "Goofy Stambulchicz");
+
+        QCOMPARE(doc.projectLabel(), "hausgarten");
+        QCOMPARE(doc.salut(), "lieber goofy,");
+        QCOMPARE(doc.preText(), "Wir freuen uns, mit Dir Geschäfte machen zu können.");
+    }
+
+    void loadItems()
+    {
+        DocumentSaverXML xmlSaver;
+        xmlSaver.setBasePath(_dir.path());
+
+        KraftDoc doc;
+        QCOMPARE(doc.state(), KraftDoc::State::New);
+
+        QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
+
+        DocPositionList list = doc.positions();
+        QCOMPARE(list.count(), 2);
+
+        DocPosition *dp = static_cast<DocPosition*>(list[0]);
+        QCOMPARE(dp->type(), DocPositionBase::PositionType::Position);
+        QCOMPARE(dp->text(), QStringLiteral("first item"));
+        QCOMPARE(dp->amount(), 8.4);
+        QCOMPARE(dp->unit().einheitSingular(), QStringLiteral("sm"));
+        QCOMPARE(dp->taxType(), DocPositionBase::TaxType::TaxFull);
+        QCOMPARE(dp->unitPrice().toDouble(), 22.21);
+        QCOMPARE(dp->overallPrice().toDouble(), 186.56);
+
+        QVERIFY(dp->hasTag("Work"));
+
+        dp = static_cast<DocPosition*>(list[1]);
+        QCOMPARE(dp->type(), DocPositionBase::PositionType::Position);
+        QCOMPARE(dp->text(), QStringLiteral("second item"));
+        QCOMPARE(dp->amount(), 4.4);
+        QCOMPARE(dp->unit().einheitSingular(), QStringLiteral("cbm"));
+        QCOMPARE(dp->taxType(), DocPositionBase::TaxType::TaxReduced);
+        QCOMPARE(dp->unitPrice().toDouble(), 33.33);
+        QCOMPARE(dp->overallPrice().toDouble(), 146.65);
+
+        QVERIFY(dp->hasTag("Work"));
+        QVERIFY(dp->hasTag("Plants"));
     }
 
 private:

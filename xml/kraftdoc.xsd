@@ -52,7 +52,6 @@
     <xs:element name="uuid"  type="uuid_type"/>
     <xs:element name="date"  type="xs:string"/>
     <xs:element name="state" type="state_type" minOccurs="0" maxOccurs="1"/>
-    <xs:element name="timeOfSupply" type="time_of_suply_type" minOccurs="0" maxOccurs="1"/>
     <xs:element name="tax" type="tax_def_type" minOccurs="0" maxOccurs="3"/>
     <xs:element name="owner" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
     <xs:element name="lastModified" type="xs:dateTime"/>
@@ -80,6 +79,7 @@
 <xs:complexType name="header_type">
   <xs:sequence>
     <xs:element name="project" type="project_type" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="timeOfSupply" type="time_of_suply_type" minOccurs="0" maxOccurs="1"/>
     <xs:element name="salut" type="xs:string"/>
     <xs:element name="preText" type="xs:string"/>
     <xs:element name="attrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
