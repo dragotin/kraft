@@ -147,18 +147,6 @@ QDomDocument xmlDocument(KraftDoc *doc)
     meta.appendChild(xmlTextElement(xmldoc, "date", d.toString(Qt::ISODate)));
     meta.appendChild(xmlTextElement(xmldoc, "state", doc->stateString()));
 
-    // -------- time of supply
-    const QDate tosStart = doc->timeOfSupplyStart().date();
-    if (tosStart.isValid()) {
-        QDate tosEnd   = doc->timeOfSupplyEnd().date();
-        QDomElement tos = xmldoc.createElement("timeOfSupply");
-        meta.appendChild(tos);
-        tos.appendChild(xmlTextElement(xmldoc, "start", tosStart.toString(Qt::ISODate)));
-        if (!tosEnd.isValid())
-            tosEnd = tosStart;
-        tos.appendChild(xmlTextElement(xmldoc, "end", tosEnd.toString(Qt::ISODate)));
-    }
-
     // -------- taxes
     QDomElement taxReduced = xmldoc.createElement("tax");
     meta.appendChild(taxReduced);
@@ -216,6 +204,18 @@ QDomDocument xmlDocument(KraftDoc *doc)
         QDomElement projectElem = xmldoc.createElement( "project" );
         headerElem.appendChild( projectElem );
         projectElem.appendChild( xmlTextElement(xmldoc, "name", prjLabel));
+    }
+
+    // -------- time of supply
+    const QDate tosStart = doc->timeOfSupplyStart().date();
+    if (tosStart.isValid()) {
+        QDate tosEnd   = doc->timeOfSupplyEnd().date();
+        QDomElement tos = xmldoc.createElement("timeOfSupply");
+        meta.appendChild(tos);
+        tos.appendChild(xmlTextElement(xmldoc, "start", tosStart.toString(Qt::ISODate)));
+        if (!tosEnd.isValid())
+            tosEnd = tosStart;
+        tos.appendChild(xmlTextElement(xmldoc, "end", tosEnd.toString(Qt::ISODate)));
     }
 
     headerElem.appendChild( xmlTextElement( xmldoc, "salut", doc->salut() ) );
@@ -292,12 +292,6 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
     t = childElemText(metaElem, "state");
     doc->setStateFromString(t);
 
-    const QDomElement tosElem = metaElem.firstChildElement("timeOfSupply");
-    d = childElemDate(tosElem, "start");
-    QDate dEnd = childElemDate(tosElem, "end");
-    doc->setTimeOfSupply(QDateTime(d, QTime(0, 0)),
-                         QDateTime(dEnd, QTime(23, 59, 59)));
-
     // Tax: Unused so far, as tax is taken from documentman,  which loads it according to the date of the doc.
     QDomElement taxElem = metaElem.firstChildElement("tax");
     while (!taxElem.isNull()) {
@@ -360,7 +354,16 @@ bool loadHeaderBlock(const QDomDocument& domDoc, KraftDoc *doc)
 
     QDomElement prjElem = headerElem.firstChildElement("project");
     QString t = childElemText(prjElem, "name");
+    doc->setProjectLabel(t);
     // TODO: There can also be a project ID
+
+    const QDomElement tosElem = headerElem.firstChildElement("timeOfSupply");
+    if (!tosElem.isNull()) {
+        const QDate d = childElemDate(tosElem, "start");
+        const QDate dEnd = childElemDate(tosElem, "end");
+        doc->setTimeOfSupply(QDateTime(d, QTime(0, 0)),
+                             QDateTime(dEnd, QTime(23, 59, 59)));
+    }
 
     t = childElemText(headerElem, "salut");
     doc->setSalut(t);
@@ -385,7 +388,7 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
 
     QDomElement kraftdocElem = domDoc.firstChildElement("kraftdocument");
 
-    // TODO: There should be more than one item Groups at one day
+    // TODO: There should be more than one item Groups
     QDomElement groupElem = kraftdocElem.firstChildElement("itemGroup");
     // TODO: itemGroup name and attribs.
 
@@ -406,6 +409,10 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
         item->setAmount(a);
         t = childElemText(itemElem, "unit");
         item->setUnit(UnitManager::self()->getUnit(t));
+
+        t = childElemText(itemElem, "taxType");
+        item->setTaxType(t);
+
         t = childElemText(itemElem, "unitprice");
         item->setUnitPrice(Geld(t.toDouble()));
         t = childElemText(itemElem, "itemprice");
@@ -414,12 +421,24 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
         // qDebug() << "Geld" << g.toLocaleString() << t.toDouble();
         Q_ASSERT(!(g != Geld(t.toDouble())));
 
-        QDomElement attrElem = itemElem.nextSiblingElement("attrib");
+        QDomElement attrElem = itemElem.firstChildElement("attrib");
         while (!attrElem.isNull()) {
             const KraftAttrib attr(attrElem);
             item->setAttribute(attr);
             attrElem = attrElem.nextSiblingElement("attrib");
         }
+
+        QDomElement tagElem = itemElem.firstChildElement("tag");
+        QStringList tags;
+        while (!tagElem.isNull()) {
+            tags.append(tagElem.text());
+            tagElem = tagElem.nextSiblingElement("tag");
+        }
+        if (tags.size() > 0) {
+            item->setTags(tags);
+        }
+
+        // Go to next item
         itemElem = itemElem.nextSiblingElement("item");
     }
 
