@@ -63,6 +63,7 @@ class DocPositionBase : public KraftObj
     TaxType taxType();
     void setTaxType( DocPositionBase::TaxType );
     void setTaxType( int );
+    void setTaxType(const QString&);
 
   /**
    * Position means the number in the document
