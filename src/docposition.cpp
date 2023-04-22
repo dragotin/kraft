@@ -103,6 +103,17 @@ void DocPositionBase::setTaxType( int tt )
   mTaxType = (TaxType) tt;
 }
 
+void DocPositionBase::setTaxType(const QString& taxStr)
+{
+    mTaxType = TaxType::TaxInvalid;
+    if (taxStr == QStringLiteral("Full") )
+        mTaxType = TaxFull;
+    else if (taxStr == QStringLiteral("Reduced"))
+        mTaxType = TaxReduced;
+    else if (taxStr == QStringLiteral("None"))
+        mTaxType = TaxNone;
+}
+
 int DocPositionBase::taxTypeNumeric()
 {
   if ( mTaxType == TaxNone )
