@@ -12,10 +12,6 @@
         <uuid version="4">f4deb784-6131-4e49-bd6d-92bd1355ea4d</uuid>
         <date>2011-01-27</date>
         <state>Sent</state>
-        <timeOfSupply>
-            <start>2019-11-21</start>
-            <end>2019-11-23</end>
-        </timeOfSupply>
 
         <tax>
             <type>None</type>
@@ -58,36 +54,35 @@
         <project>
             <name>hausgarten</name>
         </project>
+        <timeOfSupply>
+            <start>2019-11-21</start>
+            <end>2019-11-23</end>
+        </timeOfSupply>
         <salut>lieber goofy,</salut>
         <preText>Wir freuen uns, mit Dir Gesch&#xE4;fte machen zu k&#xF6;nnen.</preText>
-        <attrib>
-                <name>valid until</name>
-                <value>2012-01-21</value>
-                <type>date</type>
-        </attrib>
     </header>
     <itemGroup>
         <name>General</name>
         <collapsed>false</collapsed>
         <item>
             <type>Normal</type>
-            <text>Alternative: first item </text>
+            <text>first item</text>
             <amount>8.40</amount>
-            <unit>qm</unit>
-            <taxType>FullTax</taxType>
+            <unit>sm</unit>
+            <taxType>Full</taxType>
             <unitprice>22.21</unitprice>
             <itemprice>186.56</itemprice>
             <tag>Work</tag>
         </item>
         <item>
             <type>Normal</type>
-            <text>second item </text>
+            <text>second item</text>
             <amount>4.40</amount>
             <unit>cbm</unit>
-            <taxType>reduced</taxType>
+            <taxType>Reduced</taxType>
             <unitprice>33.33</unitprice>
             <itemprice>146.65</itemprice>
-            <tag>Pflanzen</tag>
+            <tag>Plants</tag>
             <tag>Work</tag>
         </item>
     </itemGroup>
