@@ -444,6 +444,50 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
 
     return res;
 }
+
+bool loadFooter(const QDomDocument& domDoc, KraftDoc *doc)
+{
+    bool res {true};
+
+    QDomElement kraftdocElem = domDoc.firstChildElement("kraftdocument");
+    QDomElement footerElem = kraftdocElem.firstChildElement("footer");
+
+    QString t = childElemText(footerElem, "postText");
+    doc->setPostTextRaw(t);
+    t = childElemText(footerElem, "goodbye");
+    doc->setGoodbye(t);
+
+    return res;
+}
+
+bool loadTotals(const QDomDocument& domDoc, Totals& totals)
+{
+    bool res {true};
+
+    QDomElement kraftdocElem = domDoc.firstChildElement("kraftdocument");
+    QDomElement totalsElem = kraftdocElem.firstChildElement("totals");
+
+    QString t = childElemText(totalsElem, "netto");
+    totals._netto = Geld(t.toDouble());
+    t = childElemText(totalsElem, "brutto");
+    totals._brutto = Geld(t.toDouble());
+
+    QDomElement taxSumElem = totalsElem.firstChildElement("taxSum");
+    for( int i = 0; i < 2; i++) {
+        t = childElemText(taxSumElem, "type");
+        QString sum = childElemText(taxSumElem, "value");
+        Geld g(sum.toDouble());
+        if (t == "Reduced") {
+            totals._redTax = g;
+        }
+        if (t == "Full") {
+            totals._fullTax = g;
+        }
+        taxSumElem = taxSumElem.nextSiblingElement("taxSum");
+    }
+    return res;
+}
+
 } // namespace end
 
 QString DocumentSaverXML::basePath()
@@ -619,15 +663,24 @@ bool DocumentSaverXML::loadFromFile(const QString& xmlFile, KraftDoc *doc, bool 
     bool ok;
 
     ok = loadMetaBlock(_domDoc, doc);
-    ok = ok && loadClientBlock(_domDoc, doc);
+    if (ok) {
+        ok = loadClientBlock(_domDoc, doc);
+    }
 
+    Totals totals;
     if (!onlyMeta) {
-
         if (ok) {
             ok = loadHeaderBlock(_domDoc, doc);
         }
-
-        ok = loadItems(_domDoc, doc);
+        if (ok) {
+            ok = loadItems(_domDoc, doc);
+        }
+        if (ok) {
+            ok = loadFooter(_domDoc, doc);
+        }
+        if (ok) {
+            ok = loadTotals(_domDoc, totals);
+        }
     }
     return ok;
 }

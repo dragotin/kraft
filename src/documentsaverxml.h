@@ -19,6 +19,7 @@
 #define _DocumentSaverXML_H
 
 #include "documentsaverbase.h"
+#include "geld.h"
 
 #include <QDir>
 #include <QXmlSchema>
@@ -29,6 +30,14 @@ class QSqlRecord;
 class dbID;
 class QString;
 class DocBaseModel;
+
+
+struct Totals {
+    Geld _netto;
+    Geld _brutto;
+    Geld _redTax;
+    Geld _fullTax;
+};
 
 class DocumentSaverXML : public DocumentSaverBase
 {
