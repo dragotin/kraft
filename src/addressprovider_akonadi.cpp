@@ -23,12 +23,16 @@
 #ifdef HAVE_AKONADI
 #include <akonadi_version.h>
 
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5,20,0)
+#if AKONADI_VERSION >= QT_VERSION_CHECK(5,23,0)
+#include <KPim5/AkonadiContact/akonadi-contact_version.h>
+#elif AKONADI_VERSION >= QT_VERSION_CHECK(5,20,0)
 #include <AkonadiContact/akonadi-contact_version.h>
 #else
 #define AKONADICONTACT_VERSION AKONADI_VERSION
 #endif
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 23, 0)
+#include <KPim5/AkonadiContact/akonadi/contactsearchjob.h>
+#elif AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
 #include <AkonadiContact/akonadi/contactsearchjob.h>
 #else
 #include <akonadi/contact/contactsearchjob.h>
