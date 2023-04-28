@@ -8,7 +8,6 @@
 #include "kraftdoc.h"
 #include "documentsaverxml.h"
 #include "kraftdb.h"
-#include "sql_states.h"
 
 void init_test_db()
 {
@@ -160,6 +159,8 @@ private slots:
         QVERIFY(dp->hasTag("Work"));
         QVERIFY(dp->hasTag("Plants"));
     }
+
+
 
 private:
     QString _docTypeName;

@@ -1,4 +1,3 @@
-
 include_directories(${QT_INCLUDES} src)
 add_subdirectory(pics)
 
