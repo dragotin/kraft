@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-12-28 22:23+0100\n"
+"POT-Creation-Date: 2023-04-29 11:17+0200\n"
 "PO-Revision-Date: 2021-10-13 22:21+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -619,15 +619,10 @@ msgstr ""
 msgid "Timeline"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:203
-msgid "Catalogs"
-msgstr ""
-
 #. type: Title ==
-#: kraft.adoc:205
+#: kraft.adoc:203 kraft.adoc:205
 #, no-wrap
-msgid "Catalogs "
+msgid "Catalogs"
 msgstr ""
 
 #. type: Plain text
@@ -845,13 +840,15 @@ msgstr ""
 msgid "After we made the new template, a window opens with 4 tabs:"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:291
+#. type: Title ====
+#: kraft.adoc:291 kraft.adoc:297
+#, no-wrap
 msgid "Template"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:292
+#. type: Title ====
+#: kraft.adoc:292 kraft.adoc:309
+#, no-wrap
 msgid "Time calculation"
 msgstr ""
 
@@ -860,8 +857,9 @@ msgstr ""
 msgid "Fix costs"
 msgstr "Fixkosten"
 
-#. type: Plain text
-#: kraft.adoc:294
+#. type: Title ====
+#: kraft.adoc:294 kraft.adoc:346
+#, no-wrap
 msgid "Material"
 msgstr "Material"
 
@@ -869,12 +867,6 @@ msgstr "Material"
 #: kraft.adoc:296
 msgid "First we go to the tab:"
 msgstr ""
-
-#. type: Title ====
-#: kraft.adoc:297
-#, fuzzy, no-wrap
-msgid "Template "
-msgstr "Textvorlagen"
 
 #. type: Plain text
 #: kraft.adoc:301
@@ -893,12 +885,6 @@ msgstr ""
 msgid ""
 "we select that this is per piece and that the margin is 8% and that the full "
 "VAT is applicable."
-msgstr ""
-
-#. type: Title ====
-#: kraft.adoc:309
-#, no-wrap
-msgid "Time calculation "
 msgstr ""
 
 #. type: Plain text
@@ -973,12 +959,6 @@ msgstr ""
 #: kraft.adoc:345
 msgid "After this we go to the tab:"
 msgstr ""
-
-#. type: Title ====
-#: kraft.adoc:346
-#, fuzzy, no-wrap
-msgid "Material "
-msgstr "Material"
 
 #. type: Plain text
 #: kraft.adoc:350
@@ -1063,7 +1043,7 @@ msgid "Open the tab btn:[documents]"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:385
+#: kraft.adoc:385 kraft.adoc:490
 msgid "Click on btn:[create document]"
 msgstr ""
 
@@ -1085,24 +1065,24 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:394
+#: kraft.adoc:394 kraft.adoc:499
 msgid "Click on btn:[next]"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:396
+#: kraft.adoc:396 kraft.adoc:501
 msgid "Select on the new window the name and address from the client."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:399
+#: kraft.adoc:399 kraft.adoc:504
 msgid ""
 "(if the name and address is not there, click then on btn:[new contact] or on "
 "btn:[edit contact] if you want to edit the contact)"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:401
+#: kraft.adoc:401 kraft.adoc:506
 msgid "Click on btn:[OK]."
 msgstr ""
 
@@ -1117,17 +1097,17 @@ msgid "this window has 2 tabs and the 3 buttons on the top:"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:407
+#: kraft.adoc:407 kraft.adoc:512
 msgid "btn:[Add item...],"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:408
+#: kraft.adoc:408 kraft.adoc:513
 msgid "btn:[Add discount item],"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:409
+#: kraft.adoc:409 kraft.adoc:514
 msgid "btn:[Show templates]."
 msgstr ""
 
@@ -1154,7 +1134,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:422
+#: kraft.adoc:422 kraft.adoc:516
 msgid "Click on the button btn:[Show templates]."
 msgstr ""
 
@@ -1167,7 +1147,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:428
+#: kraft.adoc:428 kraft.adoc:522
 msgid "A new window [Create Item from Template] opens."
 msgstr ""
 
@@ -1186,7 +1166,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:436
+#: kraft.adoc:436 kraft.adoc:530 kraft.adoc:541
 msgid "The window close and we go back to the main window."
 msgstr ""
 
@@ -1199,7 +1179,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:443
+#: kraft.adoc:443 kraft.adoc:528 kraft.adoc:561 kraft.adoc:597
 msgid ""
 "Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
 "the result."
@@ -1311,11 +1291,6 @@ msgid "Open again the tab btn:[documents]."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:490
-msgid "Click on btn:[create document] "
-msgstr ""
-
-#. type: Plain text
 #: kraft.adoc:492
 msgid "The window _Document Creation Wizard_ opens."
 msgstr ""
@@ -1333,28 +1308,6 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:499
-msgid "Click on btn:[next] "
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:501
-msgid "Select on the new window the name and address from the client. "
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:504
-msgid ""
-"(if the name and address is not there, click then on btn:[new contact] or on "
-"btn:[edit contact] if you want to edit the contact) "
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:506
-msgid "Click on btn:[OK]. "
-msgstr ""
-
-#. type: Plain text
 #: kraft.adoc:508
 msgid "Now the window [edit document] opens."
 msgstr ""
@@ -1362,27 +1315,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:510
 msgid "This window has 2 tabs and the 3 buttons on the top:"
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:512
-msgid "btn:[Add item...], "
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:513
-msgid "btn:[Add discount item], "
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:514
-#, fuzzy
-msgid "btn:[Show templates]. "
-msgstr "Textvorlagen"
-
-#. type: Plain text
-#: kraft.adoc:516
-msgid "Click on the button btn:[Show templates]. "
 msgstr ""
 
 #. type: Plain text
@@ -1394,27 +1326,10 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:522
-msgid "A new window [Create Item from Template] opens. "
-msgstr ""
-
-#. type: Plain text
 #: kraft.adoc:525
 msgid ""
 "Because we want to plant 1 tree, we go to the field [insert] and keep this "
 "on 1 pcs."
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:528
-msgid ""
-"Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
-"the result. "
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:530
-msgid "The window close and we go back to the main window. "
 msgstr ""
 
 #. type: Plain text
@@ -1437,11 +1352,6 @@ msgstr ""
 msgid ""
 "Click on we btn:[OK] for saving the result or on btn:[cancel] for discarding "
 "the result."
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:541
-msgid "The window close and we go back to the main window.  "
 msgstr ""
 
 #. type: Plain text
@@ -1487,13 +1397,6 @@ msgid ""
 "We want add this to the material catalog for future use, therefor we select "
 "also [select this item as template for future documents] and we select in "
 "[save in chapter]`trees`."
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:561
-msgid ""
-"Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
-"the result.  "
 msgstr ""
 
 #. type: Plain text
@@ -1566,13 +1469,6 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:594
 msgid "image:context2.png[Context menu,float=\"right\"]"
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:597
-msgid ""
-"Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
-"the result.   "
 msgstr ""
 
 #. type: Plain text
@@ -1820,27 +1716,51 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:685
 msgid ""
-"Kraft supports the https://en.wikipedia.org/wiki/EPC_QR_code[EPC QR Code], "
-"also known as _Giro Code_ with Weasyprint based PDF generation."
+"With Weasyprint based PDF generation Kraft supports the https://en.wikipedia."
+"org/wiki/EPC_QR_code[EPC QR Code] which implements a European standard for "
+"payments by computer and mobile devices."
 msgstr ""
 
 #. type: Plain text
 #: kraft.adoc:687
 msgid ""
-"To use the giro code, the bank account information has to be added to own "
-"identity settings dialog in Kraft. The giro code is current only generated "
-"for documents with the document type `Rechnung`."
+"In Germany it is also known as _Giro Code_, in Belgium as _Bancontact QR_, "
+"in the Netherlands as _iDEAL QR-code_ and in Spain it is also known as "
+"_Bizum QR-code_."
 msgstr ""
 
 #. type: Plain text
 #: kraft.adoc:689
 msgid ""
-"To include the generated EPC QR Code into the PDF document, the weasyprint "
+"In Germany it is accepted by the _Giro Code_ and in Holland it is accepted "
+"by the official https://www.ideal.nl/consumenten/ideal-app/[_iDEAL QR-code_] "
+"app."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:691
+msgid ""
+"In Belgium and Holland it is accepted by the apps of many banks, and in "
+"Austria and Finland it is accepted by the apps of all banks."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:693
+msgid ""
+"To use the EPC QR code on the invoice printout, the bank account information "
+"has to be added to own identity settings dialog in Kraft. The giro code is "
+"current only generated for documents with the document type `Rechnung`."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:695
+msgid ""
+"To include the generated EPC QR Code into the PDF document, the Weasyprint "
 "template needs to contain a snippet like this:"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:699
+#: kraft.adoc:705
 #, no-wrap
 msgid ""
 "```\n"
@@ -1855,25 +1775,25 @@ msgid ""
 msgstr ""
 
 #. type: Title ==
-#: kraft.adoc:702
+#: kraft.adoc:708
 #, no-wrap
 msgid "Menus and Shortcuts"
 msgstr ""
 
 #. type: Title ===
-#: kraft.adoc:704
+#: kraft.adoc:710
 #, no-wrap
 msgid "Main Application Menu"
 msgstr ""
 
 #. type: Title ====
-#: kraft.adoc:707
+#: kraft.adoc:713
 #, no-wrap
 msgid "The File Menu"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:712
+#: kraft.adoc:718
 #, no-wrap
 msgid ""
 " [File]>[Quit]\n"
@@ -1882,13 +1802,13 @@ msgid ""
 msgstr ""
 
 #. type: Title ====
-#: kraft.adoc:714
+#: kraft.adoc:720
 #, no-wrap
 msgid "The Document Menu"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:720
+#: kraft.adoc:726
 #, no-wrap
 msgid ""
 " [Document]>[Show Document]\n"
@@ -1897,7 +1817,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:724
+#: kraft.adoc:730
 #, no-wrap
 msgid ""
 " [Document]>[Edit Document]\n"
@@ -1906,7 +1826,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:728
+#: kraft.adoc:734
 #, no-wrap
 msgid ""
 " [Document]>[Open Archived document]\n"
@@ -1915,7 +1835,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:731
+#: kraft.adoc:737
 #, no-wrap
 msgid ""
 " [Document]>[Create Document]\n"
@@ -1923,7 +1843,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:735
+#: kraft.adoc:741
 #, no-wrap
 msgid ""
 " [Document]>[Copy Document]\n"
@@ -1932,7 +1852,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:738
+#: kraft.adoc:744
 #, no-wrap
 msgid ""
 " [Document]>[Follow Document]\n"
@@ -1940,7 +1860,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:742
+#: kraft.adoc:748
 #, no-wrap
 msgid ""
 " [Document]>[Print document]\n"
@@ -1949,7 +1869,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:746
+#: kraft.adoc:752
 #, no-wrap
 msgid ""
 " [Document]>[Mail document]\n"
@@ -1958,13 +1878,13 @@ msgid ""
 msgstr ""
 
 #. type: Title ====
-#: kraft.adoc:749
+#: kraft.adoc:755
 #, no-wrap
 msgid "The Settings menu"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:755
+#: kraft.adoc:761
 #, no-wrap
 msgid ""
 " [Settings]>[Edit Tag Templates]\n"
@@ -1974,7 +1894,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:759
+#: kraft.adoc:765
 #, no-wrap
 msgid ""
 " [Settings]>[Redo initial setup]\n"
@@ -1983,7 +1903,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:763
+#: kraft.adoc:769
 #, no-wrap
 msgid ""
 " [Settings]>[Showed toolbars]\n"
@@ -1992,7 +1912,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:767
+#: kraft.adoc:773
 #, no-wrap
 msgid ""
 " [Settings]>[Configure Kraft]\n"
@@ -2001,19 +1921,19 @@ msgid ""
 msgstr ""
 
 #. type: Title ===
-#: kraft.adoc:768
+#: kraft.adoc:774
 #, no-wrap
 msgid "Document Edit Window"
 msgstr ""
 
 #. type: Title ====
-#: kraft.adoc:771
+#: kraft.adoc:777
 #, no-wrap
 msgid "The context Menu"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:775
+#: kraft.adoc:781
 #, no-wrap
 msgid ""
 " [Context]>[Item kind]\n"
@@ -2021,25 +1941,25 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:776
+#: kraft.adoc:782
 #, no-wrap
 msgid "Normal\n"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:777
+#: kraft.adoc:783
 #, no-wrap
 msgid "Alternative\n"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:778
+#: kraft.adoc:784
 #, no-wrap
 msgid "On demand\n"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:781
+#: kraft.adoc:787
 #, no-wrap
 msgid ""
 " [Context]>[Tax]\n"
@@ -2047,7 +1967,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:784
+#: kraft.adoc:790
 #, no-wrap
 msgid ""
 " [Context]>[Move up]\n"
@@ -2055,7 +1975,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:787
+#: kraft.adoc:793
 #, no-wrap
 msgid ""
 " [Context]>[Move down]\n"
@@ -2063,7 +1983,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:790
+#: kraft.adoc:796
 #, no-wrap
 msgid ""
 " [Context]>[Lock item]\n"
@@ -2071,7 +1991,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:793
+#: kraft.adoc:799
 #, no-wrap
 msgid ""
 " [Context]>[Unlock item]\n"
@@ -2079,7 +1999,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:796
+#: kraft.adoc:802
 #, no-wrap
 msgid ""
 " [Context]>[Delete item]\n"
@@ -2087,13 +2007,13 @@ msgid ""
 msgstr ""
 
 #. type: Title ==
-#: kraft.adoc:799
+#: kraft.adoc:805
 #, no-wrap
 msgid "Advanced Topics"
 msgstr "Fortgeschrittene Themen"
 
 #. type: Plain text
-#: kraft.adoc:802
+#: kraft.adoc:808
 msgid ""
 "This chapter describes advanced topics around Kraft. Some Linux knowledge is "
 "required, and setups should be done by experienced Linux administrators and "
@@ -2104,13 +2024,13 @@ msgstr ""
 "Linux Administratoren durchgeführt und gut testet werden."
 
 #. type: Title ===
-#: kraft.adoc:803
+#: kraft.adoc:809
 #, fuzzy, no-wrap
 msgid "Using Kraft Collaboratively"
 msgstr "Kraft kollaborativ verwenden"
 
 #. type: Plain text
-#: kraft.adoc:806
+#: kraft.adoc:812
 msgid ""
 "Kraft can be used collaborative in a distributed environment. That means "
 "that multiple users work on their desktops with their own Kraft instance on "
@@ -2122,7 +2042,7 @@ msgstr ""
 "verwenden."
 
 #. type: Plain text
-#: kraft.adoc:808
+#: kraft.adoc:814
 msgid ""
 "This whole topic is a subject to change, as Kraft will evolve to use "
 "ownCloud as a private cloud solution to store the data."
@@ -2131,13 +2051,13 @@ msgstr ""
 "ownCloud als private Cloud Lösung zur Datenspeicherung verwenden wird."
 
 #. type: Title ====
-#: kraft.adoc:809
+#: kraft.adoc:815
 #, no-wrap
 msgid "Sharing Database and Document Pool"
 msgstr "Datenbank und Dokumentpool teilen"
 
 #. type: Plain text
-#: kraft.adoc:812
+#: kraft.adoc:818
 msgid ""
 "The simplest case is that two or more Kraft instances use a database "
 "together and access the same pool of PDF documents on the harddisk. For "
@@ -2148,7 +2068,7 @@ msgstr ""
 "verwenden. Um es einfach zu halten werden hier zwei Instanzen beschrieben."
 
 #. type: Plain text
-#: kraft.adoc:814
+#: kraft.adoc:820
 msgid ""
 "A typical use case would be: Two different Linux users want to use Kraft. "
 "They both have their own computer but only work in the same network. For "
@@ -2164,19 +2084,19 @@ msgstr ""
 "und ähnliches."
 
 #. type: Plain text
-#: kraft.adoc:816
+#: kraft.adoc:822
 msgid "For that, the following prerequisites have to be met:"
 msgstr "Dafür müssen die folgenden Voraussetzungen erfüllt sein:"
 
 #. type: Plain text
-#: kraft.adoc:818
+#: kraft.adoc:824
 msgid "MySQL or MariaDB is used as database backend. Sqlite is not supported."
 msgstr ""
 "Als Datenbank-Backend wird MySQL oder MariaDB verwendet. Sqlite wird nicht "
 "unterstützt."
 
 #. type: Plain text
-#: kraft.adoc:819
+#: kraft.adoc:825
 msgid ""
 "The database is accessible with a mysql user and from each machine for both "
 "users."
@@ -2184,12 +2104,12 @@ msgstr ""
 "Die Datenbank ist mit dem MySQL Benutzer von beiden Rechnern aus erreichbar."
 
 #. type: Plain text
-#: kraft.adoc:820
+#: kraft.adoc:826
 msgid "The document store directory has to be shared."
 msgstr "Das Dokument-Speicher-Verzeichnis muss geteilt werden."
 
 #. type: delimited block _
-#: kraft.adoc:824
+#: kraft.adoc:830
 msgid ""
 "WARNING: There is no protection against having both users editing the same "
 "document. Because that is dangerous and can lead to unpredictable results, "
@@ -2203,13 +2123,13 @@ msgstr ""
 "wird mit Krafts Kommandozeilenschalter -r eingeschaltet."
 
 #. type: Plain text
-#: kraft.adoc:827
+#: kraft.adoc:833
 #, no-wrap
 msgid "**Sharing the Database**\n"
 msgstr "**Die Datenbank teilen**\n"
 
 #. type: Plain text
-#: kraft.adoc:829
+#: kraft.adoc:835
 msgid ""
 "The database server should be installed on the main machine or a dedicated "
 "device like a NAS. Networking speed influences the comfort to use obviously."
@@ -2219,18 +2139,18 @@ msgstr ""
 "Geschwindigkeit beeinflusst die Benutzbarkeit natürlich erheblich."
 
 #. type: Plain text
-#: kraft.adoc:831
+#: kraft.adoc:837
 msgid "Find howtos on the internet how to setup MySQL accordingly."
 msgstr "Howtos um MySQL aufzusetzen sind im Internet zu finden."
 
 #. type: Plain text
-#: kraft.adoc:833
+#: kraft.adoc:839
 #, no-wrap
 msgid "**Sharing the Document Pool Directory**\n"
 msgstr "**Den Dokument Pool teilen**\n"
 
 #. type: Plain text
-#: kraft.adoc:835
+#: kraft.adoc:841
 msgid ""
 "Kraft writes generated PDF documents into a local directory. Where that is "
 "can be configured in the Kraft Config file. The config file has to be "
@@ -2241,7 +2161,7 @@ msgstr ""
 "Konfigfile muss auf allen Instanzen angepasst werden."
 
 #. type: Plain text
-#: kraft.adoc:837
+#: kraft.adoc:843
 msgid ""
 "That is located in each users home directory, in the path `.config/kraftrc`. "
 "It has to contain the following config value:"
@@ -2250,22 +2170,17 @@ msgstr ""
 "kraftrc`. Es muss den folgenden Konfigurations-Wert enthalten:"
 
 #. type: Plain text
-#: kraft.adoc:839
+#: kraft.adoc:845 kraft.adoc:849
 msgid "```"
 msgstr "```"
 
 #. type: Plain text
-#: kraft.adoc:841
+#: kraft.adoc:847
 msgid "PdfOutputDir=/data/space/kraftdoc/pdf"
 msgstr "PdfOutputDir=/data/space/kraftdoc/pdf"
 
 #. type: Plain text
-#: kraft.adoc:843
-msgid "``` "
-msgstr ""
-
-#. type: Plain text
-#: kraft.adoc:845
+#: kraft.adoc:851
 msgid ""
 "There are different ways how share that directory, ie. NFS or SMB storages. "
 "It is important that both users from both machines can list and access the "
@@ -2279,7 +2194,7 @@ msgstr ""
 "nur Lesezugriff auf die Dateien."
 
 #. type: Plain text
-#: kraft.adoc:847
+#: kraft.adoc:853
 msgid ""
 "A recommended setup is a NFS share with autofs which is set up on the main "
 "machine. To manage file access a certain group should be set up on the "
@@ -2290,13 +2205,13 @@ msgstr ""
 "eine Gruppe aufgesetzt werden."
 
 #. type: Plain text
-#: kraft.adoc:849
+#: kraft.adoc:855
 #, no-wrap
 msgid "**Starting Kraft in read-only mode**\n"
 msgstr "**Kraft im Nur-Lesen Modus**\n"
 
 #. type: Plain text
-#: kraft.adoc:851
+#: kraft.adoc:857
 msgid ""
 "To start Kraft in read-only mode, start the binary with the `-r` command "
 "line switch."
@@ -2305,13 +2220,13 @@ msgstr ""
 "Kommandozeilenschalter `-r` gestartet werden."
 
 #. type: Title ===
-#: kraft.adoc:852
+#: kraft.adoc:858
 #, no-wrap
 msgid "XRechnung Support"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:855
+#: kraft.adoc:861
 msgid ""
 "Kraft supports the XRechnung standard. That is a digital format for "
 "electronic invoicing, and it passed as law in Germany and follows a EU "
@@ -2319,7 +2234,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:857
+#: kraft.adoc:863
 msgid ""
 "To use the XRechnung Export productivly, a little manual work is still "
 "needed in Kraft. Kraft creates the XML file based on a template, very "
@@ -2330,7 +2245,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:859
+#: kraft.adoc:865
 msgid ""
 "In order to generate correct XRechnung files for the specific company, the "
 "user has to adopt the template file manually to the companies needs. Note "
@@ -2339,7 +2254,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:861
+#: kraft.adoc:867
 msgid ""
 "To adapt the file to the needs of the company, it is best to start with the "
 "https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung."
@@ -2349,7 +2264,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:863
+#: kraft.adoc:869
 msgid ""
 "Read carefully through the file without being scared off by the XML format. "
 "All user strings (ie. company name, address and such) are user specific and "
@@ -2359,14 +2274,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:865
+#: kraft.adoc:871
 msgid ""
 "Make sure to not disturb the proper XML format and do not change places "
 "where the template format `{{ template_name }}` is used."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:867
+#: kraft.adoc:873
 msgid ""
 "Once the file is adopted to the needs, open the Settings dialog of Kraft and "
 "insert the filename into the entry field for the XRechnung Template File on "
@@ -2374,32 +2289,32 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:869
+#: kraft.adoc:875
 msgid ""
 "After that step, the btn:[Export XRechung] menu item will open a dialog to "
 "pick a filename where to save the XRechnung invoice to."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:871
+#: kraft.adoc:877
 msgid "This file can now be transfered to the receiver of the invoice."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:873
+#: kraft.adoc:879
 msgid ""
 "There are validators for invoices in XRechnung format out there in the "
 "internet. It is useful to verify the format of the Kraft exported XRechnung."
 msgstr ""
 
 #. type: Title ===
-#: kraft.adoc:874
+#: kraft.adoc:880
 #, no-wrap
 msgid "Changing the Locale"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:877
+#: kraft.adoc:883
 msgid ""
 "If it is needed that Kraft runs under a different locale than the actual "
 "desktop environment, this can be achieved by setting the desired locale in "
@@ -2407,7 +2322,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:879
+#: kraft.adoc:885
 msgid ""
 "On the linux desktop, apps are usually started through a so called https://"
 "specifications.freedesktop.org/desktop-entry-spec/latest/[desktop file]. It "
@@ -2416,21 +2331,21 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:881
+#: kraft.adoc:887
 msgid ""
 "The desktop file can usually be found in `/usr/share/applications/de.volle-"
 "kraft-voraus.kraft.desktop`."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:887
+#: kraft.adoc:893
 msgid ""
 "It contains the line ``` Exec=kraft %u ``` which starts the application with "
 "the default locale."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:893
+#: kraft.adoc:899
 msgid ""
 "Changing it to ``` Exec=env LANG=de_DE.UTF-8 kraft %u ``` would change that "
 "to run in the German locale for example, independent from the desktop "
@@ -2438,21 +2353,33 @@ msgid ""
 msgstr ""
 
 #. type: Title ==
-#: kraft.adoc:896
+#: kraft.adoc:902
 #, no-wrap
 msgid "Credits and License"
 msgstr "Credits und Lizenz"
 
 #. type: Plain text
-#: kraft.adoc:899
+#: kraft.adoc:905
 #, fuzzy
 msgid "Program and documentation copyright 2004–2022 Klaas Freitag"
 msgstr "Software und Dokumentation Copyright 2004-2021 Klaas Freitag"
 
 #. type: Plain text
-#: kraft.adoc:900
+#: kraft.adoc:906
 msgid "Documentation copyright 2020 Ronald Stroethoff"
 msgstr "Dokumentation Copyright 2020 Ronald Stroethoff"
+
+#, fuzzy, no-wrap
+#~ msgid "Template "
+#~ msgstr "Textvorlagen"
+
+#, fuzzy, no-wrap
+#~ msgid "Material "
+#~ msgstr "Material"
+
+#, fuzzy
+#~ msgid "btn:[Show templates]. "
+#~ msgstr "Textvorlagen"
 
 #~ msgid ""
 #~ "image:numbercycles.png[Numbercycles,float=\"right\"] Numbercycles are "
