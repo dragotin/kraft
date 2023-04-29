@@ -8,6 +8,9 @@ find_package(ECM REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 set(CMAKE_AUTOMOC TRUE)
 
+# Akonadi Prefix: Set this to KF5 for builds with Akonadi Libs before 5.23
+option(AKO_PREFIX "Akonadi Prefix, either KF5 or KPim5, can be set by -DAKO_PREFIX=KF5" "KPim5")
+
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(ECMInstallIcons)
@@ -47,23 +50,23 @@ set_package_properties(Grantlee5 PROPERTIES
     TYPE OPTIONAL
 )
 
-find_package(KF5Akonadi)
-set_package_properties(KF5Akonadi PROPERTIES
+find_package(${AKO_PREFIX}Akonadi)
+set_package_properties(${AKO_PREFIX}Akonadi PROPERTIES
     DESCRIPTION "Library for general Access to Akonadi"
     URL "https://www.kde.org/"
     PURPOSE "Optionally used for addressbook integration"
     TYPE OPTIONAL
 )
 
-find_package(KF5AkonadiContact)
-set_package_properties(KF5AkonadiContact PROPERTIES
+find_package(${AKO_PREFIX}AkonadiContact)
+set_package_properties(${AKO_PREFIX}AkonadiContact PROPERTIES
     DESCRIPTION "Library for Accessing Contacts stored in Akonadi"
     URL "https://www.kde.org/"
     PURPOSE "Optionally used for addressbook integration"
     TYPE OPTIONAL
 )
 
-if(KF5Akonadi_FOUND AND KF5AkonadiContact_FOUND)
+if(${AKO_PREFIX}Akonadi_FOUND AND ${AKO_PREFIX}AkonadiContact_FOUND)
    add_definitions(-DHAVE_AKONADI)
 endif()
 
@@ -80,7 +83,8 @@ set(QT_DEFINITIONS "${Qt5Core_DEFINITIONS} ${Qt5Gui_DEFINITIONS} ${Qt5Widgets_DE
 add_definitions(${QT_DEFINITIONS} )
 
 include_directories(${QT_INCLUDES} src)
-include_directories( /usr/include/KF5/AkonadiCore )
+include_directories( /usr/include/${AKO_PREFIX}/AkonadiCore )
+include_directories(/usr/include/${AKO_PREFIX}/)
 
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
         ki18n_install(po)
