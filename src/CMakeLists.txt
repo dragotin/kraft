@@ -1,4 +1,3 @@
-# include_directories(${KDE4_INCLUDES} ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDEPIMLIBS_INCLUDE_DIRS} external)
 
 include_directories(${QT_INCLUDES} src)
 add_subdirectory(pics)
@@ -167,13 +166,13 @@ set(KRAFT_LINK_LIBS
     ${CTEMPLATE_LIBRARIES} pthread
     Grantlee5::Templates
 )
-if(KF5Akonadi_FOUND)
+if(${AKO_PREFIX}Akonadi_FOUND)
   list(APPEND KRAFT_LINK_LIBS
-    KF5::AkonadiCore
-    KF5::AkonadiContact
-    KF5::AkonadiAgentBase
-    KF5::AkonadiWidgets
-    KF5::AkonadiXml
+    ${AKO_PREFIX}::AkonadiCore
+    ${AKO_PREFIX}::AkonadiContact
+    ${AKO_PREFIX}::AkonadiAgentBase
+    ${AKO_PREFIX}::AkonadiWidgets
+    ${AKO_PREFIX}::AkonadiXml
   )
 endif()
 

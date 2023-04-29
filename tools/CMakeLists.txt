@@ -8,15 +8,15 @@ set(AUTOMOC ON)
 # For now there is only the Akonadi based address backend, and thus
 # the findcontact tool is only built if akonadi is there.
 # If there are other backends, this must be FIXED.
-if(KF5Akonadi_FOUND)
+if(${AKO_PREFIX}Akonadi_FOUND)
     add_executable(${findcontact_NAME} ${FINDCONTACT_SRC})
 
     target_link_libraries( ${findcontact_NAME}
         Qt5::Core
         Qt5::Widgets
         KF5::Contacts
-        KF5::AkonadiCore
-        KF5::AkonadiContact
+        ${AKO_PREFIX}::AkonadiCore
+        ${AKO_PREFIX}::AkonadiContact
     )
 
     ########### install files ###############
