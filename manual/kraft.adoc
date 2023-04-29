@@ -124,7 +124,7 @@ ____
 
 ==== PDF Template
 
-In the entry field Template File: the user can select a custom template for this specific document type. 
+In the entry field Template File: the user can select a custom template for this specific document type.
 
 If the file extension of the template file is `.trml`, the ReportLab based document converter is used. If the file extension is `.gtmpl`, Kraft automatically uses the Weasyprint based converter.
 ____
@@ -681,11 +681,17 @@ The syntax is based on the Django syntax for templates described in the https://
 
 ==== EPC QR Code
 
-Kraft supports the https://en.wikipedia.org/wiki/EPC_QR_code[EPC QR Code], also known as _Giro Code_ with Weasyprint based PDF generation.
+With Weasyprint based PDF generation Kraft supports the https://en.wikipedia.org/wiki/EPC_QR_code[EPC QR Code] which implements a European standard for payments by computer and mobile devices.
 
-To use the giro code, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type `Rechnung`.
+In Germany it is also known as _Giro Code_, in Belgium as _Bancontact QR_, in the Netherlands as _iDEAL QR-code_ and in Spain it is also known as _Bizum QR-code_.
 
-To include the generated EPC QR Code into the PDF document, the weasyprint template needs to contain a snippet like this:
+In Germany it is accepted by the _Giro Code_ and in Holland it is accepted by the official https://www.ideal.nl/consumenten/ideal-app/[_iDEAL QR-code_] app.
+
+In Belgium and Holland it is accepted by the apps of many banks, and in Austria and Finland it is accepted by the apps of all banks.
+
+To use the EPC QR code on the invoice printout, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type `Rechnung`.
+
+To include the generated EPC QR Code into the PDF document, the Weasyprint template needs to contain a snippet like this:
 
 ```
     {%if doc.isInvoice and epcqrcode.valid %}

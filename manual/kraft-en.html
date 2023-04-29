@@ -1805,13 +1805,22 @@ Kraft still ships with the old ReportLab based converter, but that will be depre
 <div class="sect3">
 <h4 id="_epc_qr_code">EPC QR Code</h4>
 <div class="paragraph">
-<p>Kraft supports the <a href="https://en.wikipedia.org/wiki/EPC_QR_code">EPC QR Code</a>, also known as <em>Giro Code</em> with Weasyprint based PDF generation.</p>
+<p>With Weasyprint based PDF generation Kraft supports the <a href="https://en.wikipedia.org/wiki/EPC_QR_code">EPC QR Code</a> which implements a European standard for payments by computer and mobile devices.</p>
 </div>
 <div class="paragraph">
-<p>To use the giro code, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type <code>Rechnung</code>.</p>
+<p>In Germany it is also known as <em>Giro Code</em>, in Belgium as <em>Bancontact QR</em>, in the Netherlands as <em>iDEAL QR-code</em> and in Spain it is also known as <em>Bizum QR-code</em>.</p>
 </div>
 <div class="paragraph">
-<p>To include the generated EPC QR Code into the PDF document, the weasyprint template needs to contain a snippet like this:</p>
+<p>In Germany it is accepted by the <em>Giro Code</em> and in Holland it is accepted by the official <a href="https://www.ideal.nl/consumenten/ideal-app/"><em>iDEAL QR-code</em></a> app.</p>
+</div>
+<div class="paragraph">
+<p>In Belgium and Holland it is accepted by the apps of many banks, and in Austria and Finland it is accepted by the apps of all banks.</p>
+</div>
+<div class="paragraph">
+<p>To use the EPC QR code on the invoice printout, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type <code>Rechnung</code>.</p>
+</div>
+<div class="paragraph">
+<p>To include the generated EPC QR Code into the PDF document, the Weasyprint template needs to contain a snippet like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2162,7 +2171,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-12-24 13:45:19 +0100
+Last updated 2023-04-29 11:03:12 +0200
 </div>
 </div>
 </body>
