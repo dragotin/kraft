@@ -9,7 +9,7 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modul
 set(CMAKE_AUTOMOC TRUE)
 
 # Akonadi Prefix: Set this to KF5 for builds with Akonadi Libs before 5.23
-set(AKO_PREFIX "KPim5")
+option(AKO_PREFIX "Akonadi Prefix, either KF5 or KPim5, can be set by -DAKO_PREFIX=KF5" "KPim5")
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
