@@ -8,8 +8,14 @@ find_package(ECM REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 set(CMAKE_AUTOMOC TRUE)
 
+option(AKONADI_LEGACY_BUILD "Build with older versions of Akonadi (KF5 Prefix)" OFF)
 # Akonadi Prefix: Set this to KF5 for builds with Akonadi Libs before 5.23
-option(AKO_PREFIX "Akonadi Prefix, either KF5 or KPim5, can be set by -DAKO_PREFIX=KF5" "KPim5")
+set(AKO_PREFIX "KPim5")
+
+if (AKONADI_LEGACY_BUILD)
+  set(AKO_PREFIX "KF5")
+endif()
+message("Akonadi Prefix is ${AKO_PREFIX}")
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)

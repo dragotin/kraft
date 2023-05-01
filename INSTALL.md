@@ -59,6 +59,9 @@ These are optional to build with Akonadi Support:
 - akonadi-contact-devel
 - akonadi-devel
 
+To build with Akonadi versions before 23.04, cmake has to run wtih the
+build option `-DAKONADI_LEGACY_BUILD=ON` to use the old prefix KF5.
+
 ### Build Kraft
 
 cmake is designed so that the build process can be done in a separate
