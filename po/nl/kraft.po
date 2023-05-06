@@ -1,2670 +1,4283 @@
-# Copyright (C) 2022 Free Software Foundation, Inc.
-# This file is distributed under the same license as the KRAFT package.
-#
-# Ronald Stroethoff <stroet43@zonnet.nl>, 2022.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Ronald Stroethoff <stroet43@zonnet.nl>, 2022
+# 
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"POT-Creation-Date: 2022-09-07 21:31+0200\n"
-"PO-Revision-Date: 2022-09-17 08:44+0200\n"
-"Last-Translator: Ronald Stroethoff <stroet43@zonnet.nl>\n"
-"Language-Team: Dutch <kde-i18n-nl@kde.org>\n"
-"Language: nl\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-09 21:54+0200\n"
+"PO-Revision-Date: 2018-10-31 21:56+0000\n"
+"Last-Translator: Ronald Stroethoff <stroet43@zonnet.nl>, 2022\n"
+"Language-Team: Dutch (Netherlands) (https://www.transifex.com/kraftproject/teams/93132/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: nl_NL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 21.12.3\n"
 
-#. type: Title =
-#: kraft.adoc:1
-#, no-wrap
-msgid "The Kraft Handbook"
-msgstr "Het handboek van Kraft"
+#: addeditchapterdialog.cpp:35
+#, kde-format
+msgid "Add/Edit Catalog Chapter"
+msgstr "Map in catalogus toevoegen/bewerken"
 
-#. type: Plain text
-#: kraft.adoc:3
-msgid "Ronald Stroethoff, Klaas Freitag"
-msgstr "Ronald Stroethoff, Klaas Freitag"
+#: addeditchapterdialog.cpp:41
+#, kde-format
+msgid "Create a new Catalog Chapter"
+msgstr "Nieuwe map in de catalogus aanmaken"
 
-#. type: Title ==
-#: kraft.adoc:16
-#, no-wrap
-msgid "Introduction"
-msgstr "Inleiding"
+#: addeditchapterdialog.cpp:45
+#, kde-format
+msgid "Chapter Name:"
+msgstr "Map-naam:"
 
-#. type: Plain text
-#: kraft.adoc:19
-#| msgid ""
-#| "Kraft is a Qt and KDE application to organize office documents like "
-#| "quotes and invoices in a small business. It eases the creation of these "
-#| "of documents and helps with repeating tasks."
+#: addeditchapterdialog.cpp:49
+#, kde-format
+msgid "Chapter Description:"
+msgstr "Omschrijving van map:"
+
+#: addeditchapterdialog.cpp:76
+#, kde-format
+msgid "Create new Catalog Chapter below chapter %1"
+msgstr "Een nieuwe catalogus-map in map %1 aanmaken"
+
+#: addeditchapterdialog.cpp:83
+#, kde-format
+msgid "Edit name and description of chapter %1"
+msgstr "Naam en beschrijving van map %1 bewerken"
+
+#: alldocsview.cpp:64
+#, kde-format
+msgid "All documents"
+msgstr "Alle documenten"
+
+#: alldocsview.cpp:65
+#, kde-format
+msgid "Documents of last week"
+msgstr "Documenten van laatste week"
+
+#: alldocsview.cpp:66
+#, kde-format
+msgid "Documents of last month"
+msgstr "Documenten van laatste maand"
+
+#: alldocsview.cpp:72
+#, kde-format
+msgid "&Show: "
+msgstr "&Tonen"
+
+#: alldocsview.cpp:79
+#, kde-format
+msgid "&Search: "
+msgstr "&Zoeken"
+
+#: alldocsview.cpp:134 portal.cpp:301 portal.cpp:302 rc.cpp:634 rc.cpp:1328
+#: rc.cpp:2196
+#, kde-format
+msgid "Document Actions"
+msgstr "Document acties"
+
+#: catalogselection.cpp:50
+#, kde-format
+msgid "Selected &Catalog: "
+msgstr "Geselecteerde &Catalogus: "
+
+#: catalogselection.cpp:159
+#, kde-format
+msgid "Append to Document"
+msgstr "Achter document voegen"
+
+#: catalogtemplate.cpp:52
+#, kde-format
+msgid "Manual Price"
+msgstr "Handmatige prijs"
+
+#: catalogtemplate.cpp:54
+#, kde-format
+msgid "Calculated"
+msgstr "Berekend"
+
+#: catalogtemplate.cpp:56
+#, kde-format
+msgid "AutoCalc"
+msgstr "AutoCalc"
+
+#: catalogtemplate.cpp:57
+#, kde-format
+msgid "Err: Unknown type %d"
+msgstr "Fout: onbekend type %d"
+
+#: defaultprovider.cpp:55 doctext.cpp:80 positionviewwidget.cpp:413
+#, kde-format
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: docassistant.cpp:52
+#, kde-format
+msgid "Show &Templates"
+msgstr "Document tonen"
+
+#: docassistant.cpp:57
+#, kde-format
+msgid "Show mask to create or select templates to be used in the document"
+msgstr ""
+"Filter tonen voor het creëren of selecteren van in dit document gebruikte \n"
+"sjablonen"
+
+#: docassistant.cpp:121
+#, kde-format
+msgid "Add a template to the document"
+msgstr "Voeg een sjabloon toe aan het document"
+
+#: docassistant.cpp:127
+#, kde-format
+msgid "Create a new template"
+msgstr "Nieuw sjabloon aanmaken"
+
+#: docassistant.cpp:134
+#, kde-format
+msgid "Edit the current template"
+msgstr "Dit sjabloon bewerken"
+
+#: docassistant.cpp:141
+#, kde-format
+msgid "Delete the current template"
+msgstr "Dit sjabloon verwijderen"
+
+#: docassistant.cpp:305
+#, kde-format
 msgid ""
-"Kraft is a Qt and KDE application to organize office documents like quotes "
-"and invoices in a small business. It eases the creation of documents and "
-"helps with repeating tasks."
+"Do you really want to delete the template permanently?\n"
+"It can not be recovered."
 msgstr ""
-"Kraft is een Qt- en KDE-Programma voor het organiseren van kantoor "
-"documenten zoals offertes en rekeningen in een klein bedrijf. Het "
-"vergemakkelijkt de creatie van documenten en helpt bij vaak voorkomende "
-"taken."
+"Wilt u het sjabloon permanent verwijderen? Er is geen methode om het "
+"sjabloon terug te halen!"
 
-#. type: Plain text
-#: kraft.adoc:21
-#| msgid ""
-#| "With Kraft, there is no need for fiddling with a text processor any more. "
-#| "Documents are created by a few clicks and archived automatically. Kraft "
-#| "generates high quality PDF output for printing, mailing and archiving."
+#: docdigestdetailview.cpp:231 rc.cpp:78 rc.cpp:120 rc.cpp:988 rc.cpp:1030
+#: rc.cpp:1826 rc.cpp:1868
+#, kde-format
+msgid "Amount"
+msgstr "Aantal"
+
+#: docdigestdetailview.cpp:232
+#, kde-format
+msgid "Type"
+msgstr "Type"
+
+#: docdigestdetailview.cpp:233
+#, kde-format
+msgid "Sum"
+msgstr "Totaal"
+
+#: docdigestdetailview.cpp:262
+#, kde-format
+msgid "Results in %1 %2"
+msgstr "Resultaten in %1 %2"
+
+#: docdigestdetailview.cpp:263 docdigestdetailview.cpp:296
+#, kde-format
+msgid "Year"
+msgstr "Jaar"
+
+#: docdigestdetailview.cpp:265
+#, kde-format
+msgid "Month"
+msgstr "Maand"
+
+#: docdigestdetailview.cpp:298
+#, kde-format
+msgid "Results in Year %1"
+msgstr "Resultaten in jaar %1"
+
+#: docdigestdetailview.cpp:317 docdigestdetailview.cpp:326
+#, kde-format
+msgid "Customer"
+msgstr "Klant"
+
+#: docdigestdetailview.cpp:321
+#, kde-format
+msgid "not set"
+msgstr "niet ingesteld"
+
+#: docdigestdetailview.cpp:337
+#, kde-format
+msgid "The address is not listed in an address book."
+msgstr "Het adres komt niet voor in de adresboeken."
+
+#: docdigestdetailview.cpp:339
+#, kde-format
 msgid ""
-"Using Kraft, there is no need for fiddling with a text processor any more. "
-"Documents are created by a few clicks, edited, generated and archived "
-"automatically. Kraft generates high quality PDF output for printing, mailing "
-"and archiving."
+"The client has the address book id %1 but can not found in our address "
+"books."
 msgstr ""
-"Met gebruik van Kraft is geen tekstverwerker meer nodig. Rekeningen en "
-"offertes stelt u met slechts een paar muisklikken samen en worden "
-"automatisch gearchiveerd. Kraft genereert kwalitatief goede PDF-documenten "
-"geschikt om uit te printen, voor email en voor archivering."
+"De klant heeft het adresboek-ID %1 maar kan niet gevonden worden in onze "
+"adresboeken."
 
-#. type: Labeled list
-#: kraft.adoc:22
-#, no-wrap
-msgid "Feature Overview"
-msgstr "Overzicht van de mogelijkheden"
+#: docdigestdetailview.cpp:342
+#, kde-format
+msgid "The client can be found in our address books."
+msgstr "De klant is gevonden in onze adresboeken."
 
-#. type: Plain text
-#: kraft.adoc:25
-#| msgid "Automated creation of offers, invoices and similar documents."
-msgid "Simple creation of offers, invoices and similar documents."
+#: docdigestdetailview.cpp:353 prefsdialog.cpp:681
+#, kde-format
+msgid "preferred address"
+msgstr "voorkeur-adres"
+
+#: docdigestdetailview.cpp:357 prefsdialog.cpp:685
+#, kde-format
+msgid "home address"
+msgstr "Privé-adres"
+
+#: docdigestdetailview.cpp:361 prefsdialog.cpp:689
+#, kde-format
+msgid "work address"
+msgstr "Werk-adres"
+
+#: docdigestdetailview.cpp:365 prefsdialog.cpp:693
+#, kde-format
+msgid "postal address"
+msgstr "Post-adres"
+
+#: docdigestdetailview.cpp:369 prefsdialog.cpp:697
+#, kde-format
+msgid "international address"
+msgstr "internationaal adres"
+
+#: docdigestdetailview.cpp:373 prefsdialog.cpp:701
+#, kde-format
+msgid "domestic address"
+msgstr "adres in eigen land"
+
+#: docdigestdetailview.cpp:377 prefsdialog.cpp:705
+#, kde-format
+msgid "unknown"
+msgstr "onbekend"
+
+#: docdigestdetailview.cpp:414 models/docbasemodel.cpp:32
+#, kde-format
+msgid "Date"
+msgstr "Datum"
+
+#: docdigestdetailview.cpp:419 models/docbasemodel.cpp:35
+#, kde-format
+msgid "Whiteboard"
+msgstr "Whiteboard"
+
+#: docdigestdetailview.cpp:424 models/docbasemodel.cpp:39
+#, kde-format
+msgid "Project"
+msgstr "Project"
+
+#: docdigestdetailview.cpp:434
+#, kde-format
+msgid "This document was never printed."
+msgstr "Dit document is nog nooit afgedrukt."
+
+#: docdigestdetailview.cpp:441
+#, kde-format
+msgid "Last printed"
+msgstr "Laatst afgedrukt"
+
+#: docdigestdetailview.cpp:442
+#, kde-format
+msgid "Opens last created PDF document"
+msgstr "Opent het laatst gemaakte PDF document"
+
+#: docdigestdetailview.cpp:443
+#, kde-format
+msgid "open"
+msgstr "Openen"
+
+#: docdigestdetailview.cpp:448
+#, kde-format
+msgid "One older print"
+msgstr "Een oudere afdruk"
+
+#: docdigestdetailview.cpp:450
+#, kde-format
+msgid "%1 older prints"
+msgstr "%1 oudere afdrukken"
+
+#: docdigestdetailview.cpp:454
+#, kde-format
+msgid "Archived documents can not be found. Check PDF Output dir."
 msgstr ""
-"De eenvoudige creatie van offertes, rekeningen en vergelijkbare documenten."
+"De documenten zijn niet in het archief te vinden. Controleer de PDF uitvoer "
+"map."
 
-#. type: Plain text
-#: kraft.adoc:26
-#| msgid ""
-#| "Customer management, deeply integrated in the KDE infrastructure using "
-#| "KAddressbook."
+#: docdigestdetailview.cpp:458
+#, kde-format
+msgid "Export the invoice in XRechnung file format"
+msgstr "Exporteert de rekening in het XRechnung bestandsformaat"
+
+#: docdigestdetailview.cpp:459
+#, kde-format
+msgid "XRechnung"
+msgstr "XRechnung"
+
+#: calcpart.cpp:98
+#, kde-format
+msgid "Base"
+msgstr "Stam"
+
+#: docpostcard.cpp:34
+#, kde-format
+msgid "Document Overview"
+msgstr "Overzicht documenten"
+
+#: docpostcard.cpp:122
+#, kde-format
+msgid "Netto:"
+msgstr "Netto:"
+
+#: docpostcard.cpp:133 docpostcard.cpp:140
+#, kde-format
+msgid "+ %1% Tax:"
+msgstr "+ %1% BTW:"
+
+#: docpostcard.cpp:146
+#, kde-format
+msgid "Sum Tax:"
+msgstr "Totaal belasting:"
+
+#: docpostcard.cpp:151
+#, kde-format
+msgid "Total:"
+msgstr "Totaal:"
+
+#: docpostcard.cpp:243
+#, kde-format
+msgid "%1 Items"
+msgstr "%1 Items"
+
+#: docpostcard.cpp:245
+#, kde-format
+msgid "%1 Items, netto %2"
+msgstr "%1 Items, netto %2"
+
+#: doctext.cpp:61
+#, kde-format
+msgid "Standard"
+msgstr "Standaard"
+
+#: doctext.cpp:76
+#, kde-format
+msgid "Header Text"
+msgstr "Tekst in briefhoofd"
+
+#: doctext.cpp:77
+#, kde-format
+msgid "Footer Text"
+msgstr "Voettekst"
+
+#: doctext.cpp:78
+#, kde-format
+msgid "Items"
+msgstr "Items"
+
+#: doctypeedit.cpp:49
+#, kde-format
+msgid "<document type>"
+msgstr "<document type>"
+
+#: doctypeedit.cpp:50
+#, kde-format
+msgid "<address Id>"
+msgstr "<address Id>"
+
+#: doctypeedit.cpp:83
+#, kde-format
+msgid "Select template file from harddisk"
+msgstr "Selecteer het  sjabloonbestand op harde schijf"
+
+#: doctypeedit.cpp:84
+#, kde-format
+msgid "Select watermark file from harddisk"
+msgstr "Selecteer het watermerk-bestand op harde schijf"
+
+#: doctypeedit.cpp:88 prefsdialog.cpp:375
+#, kde-format
+msgid "Find Template File"
+msgstr "Zoek sjabloonbestand"
+
+#: doctypeedit.cpp:89
+#, kde-format
+msgid "Kraft Templates (*.trml *.gtmpl)"
+msgstr "Kraft sjablonen (*.trml *.gtmpl)"
+
+#: doctypeedit.cpp:97
+#, kde-format
+msgid "Find Watermark File"
+msgstr "Zoek watermerk-bestand"
+
+#: doctypeedit.cpp:98
+#, kde-format
+msgid "PDF file (*.pdf)"
+msgstr "PDF bestand (*.pdf)"
+
+#: doctypeedit.cpp:162 doctypeedit.cpp:188
+#, kde-format
+msgid "Add Document Type"
+msgstr "Documenttype toevoegen"
+
+#: doctypeedit.cpp:163
+#, kde-format
+msgid "Enter the name of a new document type"
+msgstr "Voer de naam in van een nieuw documenttype"
+
+#: doctypeedit.cpp:189
+#, kde-format
+msgid "Edit the name of a document type"
+msgstr "Bewerk de naam van een documenttype"
+
+#: documentman.cpp:93
+#, kde-format
+msgctxt ""
+"Text to be inserted into a doc, if the sum of another doc needs to be "
+"substracted ie. in a final invoice if there was a partial invoice before%1 "
+"is substited by the doc type, %2 by the id of the predecessor doc."
+msgid "Substract sum from %1 %2"
+msgstr "Bedrag te verminderen op %1 %2"
+
+#: archdoc.cpp:65
+#, kde-format
+msgid "%1 for %2 (Id %3)"
+msgstr "%1 voor %2 (ID %3)"
+
+#: kataloglistview.cpp:355
+#, kde-format
+msgid "A catalog chapter can not be deleted as long it has children."
+msgstr "Kan map niet uit catalogus verwijderen zolang het niet leeg is."
+
+#: kataloglistview.cpp:356
+#, kde-format
+msgid "Chapter can not be deleted"
+msgstr "Kan map niet verwijderen"
+
+#: filterheader.cpp:40 addressselectorwidget.cpp:300
+#, kde-format
+msgid "&Search:"
+msgstr "&Zoeken:"
+
+#: fixcalcdialog.cpp:36
+#, kde-format
+msgid "Calculation Fix Item"
+msgstr "Vaste kosten berekenen"
+
+#: portal.cpp:103
+#, kde-format
+msgid "&Quit"
+msgstr "&Afsluiten"
+
+#: portal.cpp:108
+#, kde-format
+msgid "&Cut"
+msgstr "K&nippen"
+
+#: portal.cpp:113
+#, kde-format
+msgid "C&opy"
+msgstr "&Kopiëeren"
+
+#: portal.cpp:118
+#, kde-format
+msgid "&Paste"
+msgstr "&Plakken"
+
+#: portal.cpp:123
+#, kde-format
+msgid "&Settings"
+msgstr "&Instellingen"
+
+#: portal.cpp:128
+#, kde-format
+msgid "&Create Document"
+msgstr "&Nieuw document"
+
+#: portal.cpp:133
+#, kde-format
+msgid "&Copy Document"
+msgstr "&Kopieer document"
+
+#: portal.cpp:138
+#, kde-format
+msgid "Create &Followup Document"
+msgstr "Creëer &opvolg document"
+
+#: portal.cpp:143
+#, kde-format
+msgid "Print Document"
+msgstr "Document afdrukken"
+
+#: portal.cpp:148
+#, kde-format
+msgid "Show Document"
+msgstr "Document tonen"
+
+#: portal.cpp:153
+#, kde-format
+msgid "Edit Document"
+msgstr "Document bewerken"
+
+#: portal.cpp:158
+#, kde-format
+msgid "Open Archived Document"
+msgstr "Open gearchiveerd document"
+
+#: portal.cpp:163
+#, kde-format
+msgid "Mail Document"
+msgstr "Verzend document"
+
+#: portal.cpp:168
+#, kde-format
+msgid "Export XRechnung"
+msgstr "XRechnung exporteren"
+
+#: portal.cpp:173 tagtemplatesdialog.cpp:135 tagtemplatesdialog.cpp:140
+#, kde-format
+msgid "Edit Tag Templates"
+msgstr "Tag sjabloon bewerken"
+
+#: portal.cpp:178
+#, kde-format
+msgid "Redo Initial Setup..."
+msgstr "De initiële aanmaak opnieuw uitvoeren..."
+
+#: portal.cpp:183
+#, kde-format
+msgid "Kraft Handbook..."
+msgstr "Kraft Handboek.."
+
+#: portal.cpp:187
+#, kde-format
+msgid "About Qt..."
+msgstr "Over Qt..."
+
+#: portal.cpp:191
+#, kde-format
+msgid "About Kraft..."
+msgstr "Over Kraft..."
+
+#: portal.cpp:195
+#, kde-format
+msgid "Quits the application"
+msgstr "Sluit het programma af"
+
+#: portal.cpp:197
+#, kde-format
+msgid "Cuts the selected section and puts it to the clipboard"
+msgstr "Knipt de geselecteerde sectie uit en plaatst deze op het klembord"
+
+#: portal.cpp:198
+#, kde-format
+msgid "Copies the selected section to the clipboard"
+msgstr "Kopieert de geselecteerde sectie naar het klembord"
+
+#: portal.cpp:199
+#, kde-format
+msgid "Pastes the clipboard contents to current position"
+msgstr "Plakt de inhoud van het klembord op de huidige positie"
+
+#: portal.cpp:201
+#, kde-format
+msgid "Creates a new Document"
+msgstr "Maakt een nieuw document aan"
+
+#: portal.cpp:202
+#, kde-format
+msgid "Print and archive this Document"
+msgstr "Dit document afdrukken en archiveren"
+
+#: portal.cpp:203
+#, kde-format
+msgid "Creates a new document which is a copy of the selected document"
+msgstr "Een nieuw document creëren als kopie van het geselecteerde document "
+
+#: portal.cpp:204
+#, kde-format
+msgid "Create a followup document for the current document"
+msgstr "Creëert een opvolg document voor het huidige document"
+
+#: portal.cpp:205
+#, kde-format
+msgid "Opens the document for editing"
+msgstr "Opent het document voor bewerken"
+
+#: portal.cpp:206
+#, kde-format
+msgid "Opens a read only view on the document."
+msgstr "Opent het document alleen-lezen."
+
+#: portal.cpp:207
+#, kde-format
+msgid "Send document per mail"
+msgstr "Document per email verzenden"
+
+#: portal.cpp:208
+#, kde-format
+msgid "Export invoice in XRechnung XML format."
+msgstr "Exporteert rekening in XRechnung XML formaat."
+
+#: portal.cpp:209
+#, kde-format
 msgid ""
-"Customer management, deeply integrated with the mature KDE KAddressbook."
-msgstr ""
-"Beheer van klanten, door het gebruik van KAddressbook in de KDE-"
-"infrastructuur geïntegreerd."
+"Edit the available tag templates which can be assigned to document items."
+msgstr "De aan de documenten te koppelen beschikbare tags bewerken."
 
-#. type: Plain text
-#: kraft.adoc:27
-msgid "Maintenance of document relations, ie. Partial invoices vs. invoices."
-msgstr ""
-"Beheer van relaties tussen documenten, bv. Partial invoices (Gedeeltelijke"
-" factuur) ten opzichte van invoices (rekening)."
+#: portal.cpp:210
+#, kde-format
+msgid "Configure the Database Kraft is working on."
+msgstr "Stel de database in waarmee Kraft werkt."
 
-#. type: Plain text
-#: kraft.adoc:28
-msgid "Templates for document header- and footertexts and for document items."
-msgstr "Sjablonen voor kop- en voetteksten maar ook voor document-items."
+#: portal.cpp:211
+#, kde-format
+msgid "Open a viewer on an archived document"
+msgstr "Gearchiveerd document weergeven"
 
-#. type: Plain text
-#: kraft.adoc:29
-#| msgid "Calculation of items."
-msgid "Pre calculation of item prices."
-msgstr "De voorcalculatie van prijzen."
+#: portal.cpp:225 rc.cpp:484 rc.cpp:1355 rc.cpp:2244
+#, kde-format
+msgid "&File"
+msgstr "Bestand"
 
-#. type: Plain text
-#: kraft.adoc:30
-msgid "Material management."
-msgstr "Materiaalgebruik"
+#: portal.cpp:229
+#, kde-format
+msgid "&Edit"
+msgstr "Be&werken"
 
-#. type: Plain text
-#: kraft.adoc:31
-msgid "Configurable document creation in PDF format for print and email."
-msgstr ""
-"Instelbare aanmaak van documenten in PDF Formaat voor uitprinten en "
-"verzenden per Email."
+#: portal.cpp:234 rc.cpp:628 rc.cpp:1322 rc.cpp:2190
+#, kde-format
+msgid "&Document"
+msgstr "&Document"
 
-#. type: Plain text
-#: kraft.adoc:33
+#: portal.cpp:249
+#, kde-format
+msgid "Kraft"
+msgstr "Kraft"
+
+#: portal.cpp:252
+#, kde-format
+msgid "&Preferences"
+msgstr "&Voorkeuren"
+
+#: portal.cpp:256
+#, kde-format
+msgid "Toolbars"
+msgstr "Werkbalken"
+
+#: portal.cpp:262
+#, kde-format
+msgid "&Help"
+msgstr "&Help"
+
+#: portal.cpp:350
+#, kde-format
+msgid "Database not running"
+msgstr "Database is niet gestart."
+
+#: portal.cpp:351
+#, kde-format
 msgid ""
-"The code of Kraft is open source and is released under the https://en."
-"wikipedia.org/wiki/GNU_General_Public_License[GNU General Public License]."
-msgstr ""
-"De broncode van Kraft is open source en wordt onder de licentie https://en."
-"wikipedia.org/wiki/GNU_General_Public_License[GNU General Public License] "
-"vrij gegeven."
-
-#. type: Plain text
-#: kraft.adoc:38
-#, no-wrap
-#| msgid ""
-#| "Kraft is driven by community of users, coders and others. +\n"
-#| "Also this manual needs contributions! +\n"
-#| " +\n"
-#| " Learn more on https://github.com/dragotin/kraft/blob/master/manual/Readme.md[how to contribute]!\n"
-msgid ""
-"Kraft is driven by community of users, coders, artists and others by"
-" voluntary work. +\n"
-"Also this manual needs contributions! +\n"
-" +\n"
-" Learn more on https://github.com/dragotin/kraft/blob/master/manual/Readme.md["
-"how to contribute]!\n"
-msgstr ""
-"Kraft wordt door een gemeenschap van gebruikers, programmeurs artiesten en"
-" anderen vrijwilligers gedragen. +\n"
-"Ook dit gebruikershandboek heeft uw hulp nodig om verbeterd te worden. +\n"
-" +\n"
-"Lees hier https://github.com/dragotin/kraft/blob/master/manual/Readme.md[hier]"
-"over hoe u kan bijdragen\n"
-
-#. type: Title ==
-#: kraft.adoc:40
-#, no-wrap
-msgid "First Use and Basic Configuration"
-msgstr "Eerste gebruik en basisconfiguratie"
-
-#. type: Plain text
-#: kraft.adoc:43
-msgid ""
-"When Kraft is started for the first time, it automatically enters the "
-"initial setup process."
-msgstr ""
-"Als Kraft voor de eerste keer wordt opgestart, dan komt het automatisch in"
-" een initiële proces voor het maken van instellingen terecht."
-
-#. type: Plain text
-#: kraft.adoc:45
-#| msgid ""
-#| "During the initial setup you are asked to select a database to use and "
-#| "give the address of your company."
-msgid ""
-"During the initial setup you are asked to select a database to use and give "
-"the name and address of your company."
-msgstr ""
-"Tijdens de basisconfiguratie wordt u gevraagd om een database-type te "
-"selecteren en wordt naar de naam en adres van uw firma gevraagd."
-
-#. type: Plain text
-#: kraft.adoc:47
-#| msgid ""
-#| "You can fill in your company address (that appears on the printed "
-#| "documents) on two ways: use in the setup procedure the first tab Select "
-#| "from Addressbook for to select your on address in KAddressBook (if you "
-#| "have filled your own address in KaddressBook) or use the second tab "
-#| "Manual entry for to fill in the information of the address from your "
-#| "company by hand. This step is necessary for the correct generation of "
-#| "your documents."
-msgid ""
-"You can fill in your company address (that appears on the printed documents) "
-"in two ways: in the setup procedure use the first tab *Select from "
-"Addressbook* for to select your on address in KAddressBook (if you have "
-"filled your own address in KaddressBook) or use the second tab *Manual "
-"entry* for to fill in the information of the address from your company "
-"manually. This step is necessary for the correct generation of your "
-"documents as the address is automatically used in the document generation "
-"step."
-msgstr ""
-"Het adres van uw eigen bedrijf, die automatisch op het uitgeprinte document "
-"verschijnt, kan op twee manieren opgegeven worden: Bij het eerste gebruik: "
-"gebruik in de basisconfiguratie de eerste tab 'Uit adresboek' om in "
-"KAdressbook uw eigen adres te selecteren (als u in KAdressbook uw eigen "
-"adres heeft ingevuld) of u gebruikt de tweede tab 'Handmatige adres' om "
-"handmatig de informatie van uw bedrijf in te vullen. Deze stap is "
-"noodzakelijk voor de correcte aanmaak van uw documenten, omdat het"
-" automatisch wordt gebruikt in het proces voor de generatie van het document."
-
-#. type: Plain text
-#: kraft.adoc:49
-msgid "image:company_adress1.png[Company adress,float=\"right\"]"
-msgstr "image:company_adress1.png[Company adress,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:52
-#| msgid ""
-#| "After the initial setup, select menu:Preferences[Settings].  That allows "
-#| "to prepare Kraft correctly so it can be used in a useful way."
-msgid ""
-"After the initial setup, select menu:Preferences[Settings].  That allows to "
-"prepare Kraft correctly so it can be used in a proper way."
-msgstr ""
-"Na de basisconfiguratie, selecteert u menu:Voorkeuren[Instellingen]. Hier "
-"kunt u Kraft correct voorbereiden zodat het op de juiste manier gebruikt "
-"kan worden."
-
-#. type: Plain text
-#: kraft.adoc:54
-#| msgid "In the Preferences window we have the tabs:"
-msgid "In the Preferences dialog we have the tabs:"
-msgstr "In het dialoogvenster voor de instellingen hebben we de tabs:"
-
-#. type: Plain text
-#: kraft.adoc:61
-#, no-wrap
-msgid ""
-" *Document Defaults\n"
-" *Taxes\n"
-" *Documunt Types\n"
-" *Wages\n"
-" *Units\n"
-" *Own identity\n"
-msgstr ""
-" *Standaarddocument\n"
-" *Belastingen\n"
-" *Dokumenttypes\n"
-" *Salarissen\n"
-" *Eenheden\n"
-" *Uw eigen identiteit\n"
-
-#. type: Plain text
-#: kraft.adoc:63
-#| msgid "Each of the tabs allows to enter useful values for our use case."
-msgid ""
-"Each of the tabs allows to enter useful values for the specific use case."
-msgstr ""
-"In elke tab is het mogelijk om voor uw specifieke geval realistische waarden"
-" in"
-" te voeren."
-
-#. type: Title ===
-#: kraft.adoc:64
-#, no-wrap
-msgid "Document Types"
-msgstr "Document typen"
-
-#. type: Plain text
-#: kraft.adoc:67
-msgid "At the first use you find a list of different document types, such as:"
-msgstr ""
-"Bij het eerste gebruik vindt u een lijst met verschillende documenttypes, "
-"zoals:"
-
-#. type: Plain text
-#: kraft.adoc:69
-msgid "Acceptance of order"
-msgstr "Acceptance of order (opdrachtbevestiging)"
-
-#. type: Plain text
-#: kraft.adoc:70
-msgid "Delivery receipt"
-msgstr "Delivery receipt (afleverbon)"
-
-#. type: Plain text
-#: kraft.adoc:71
-msgid "Invoice"
-msgstr "Invoice (rekening)"
-
-#. type: Plain text
-#: kraft.adoc:72
-msgid "Offer"
-msgstr "Offer (offerte)"
-
-#. type: Plain text
-#: kraft.adoc:74
-msgid "image:documentype.png[Document type,float=\"right\"]"
-msgstr "image:documentype.png[Document type,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:77
-msgid ""
-"Translate this types to your own language.  You can also add new ones and "
-"remove document types you wont use."
-msgstr ""
-"Vertaal deze typen naar uw eigen taal. U kan ook nieuwe documenten toevoegen "
-"en documenten verwijderen waarvan u denkt dat u die niet zal gebruiken."
-
-#. type: Title ====
-#: kraft.adoc:78
-#, no-wrap
-msgid "Numbercycles"
-msgstr "Uniek documentnummer"
-
-#. type: Plain text
-#: kraft.adoc:82
-msgid ""
-"image:numbercycles.png[Numbercycles,float=\"right\"] Each document has to "
-"have an unique identifier that identifies the document. There must not be "
-"two documents in Kraft with the same identifier."
-msgstr ""
-"image:numbercycles.png[Numbercycles,float=\"right\"] Elk document moet een"
-" uniek identificatie hebben die het document identificeert. Er mogen in Kraft"
-" geen twee documenten aanwezig zijn met dezelfde identificatie."
-
-#. type: Plain text
-#: kraft.adoc:85
-msgid ""
-"The format of the identifier is configuratable in Kraft. For that, Kraft has "
-"a concept of so called number cycles.  Number cycles are used to define the "
-"form of the *document number* which is printed on every document."
-msgstr ""
-"De opbouw van het identificatie is in Kraft instelbaar. Hiervoor heeft Kraft"
-" het concept van zogeheten volgnummers. Volgnummers worden gebruikt om de"
-" opbouw van het *documentnummer* te definiëren dat op elk document wordt"
-" geprint."
-
-#. type: Plain text
-#: kraft.adoc:89
-msgid ""
-"All documents of a certain type have identifiers taken out of one number "
-"cycle. Each document type has a number cycle assigned. Different document "
-"types can use the same number cycle to generate ids from. That way, for "
-"example the document types Invoice and Final Invoice can use numbers from "
-"the same number cycle, even thought they are different document types in "
-"Kraft.  Number cycles are identified by their name.  User can create new "
-"number cycles and edit them clicking on the button btn:[Edit Number "
-"Cycles...]"
-msgstr ""
-"Alle documenten van een bepaald type hebben een identificatie die uit een één"
-" volgnummersysteem komen. Aan elk documenttype is een volgnummersysteem"
-" gekoppeld. Verschillende documenttypes kunnen hetzelfde volgnummersysteem"
-" gebruiken om hun identificatie uit te generen. Op die manier kunnen"
-" bijvoorbeeld de documenttypes Invoice (rekening) en Final Invoice"
-" (eindafrekening) nummers uit dezelfde volgnummersysteem gebruiken, terwijl"
-" ze in Kraft verschillende documenttypes zijn. Volgnummersystemen worden"
-" geïdentificeerd door hun naam. Gebruikers kunnen nieuwe volgnummersystemen"
-" creëren en deze bewerken door op de knop btn:[Volgnummersysteem bewerken...]"
-" te klikken"
-
-#. type: Plain text
-#: kraft.adoc:91
-msgid ""
-"The format of the document numbers are defined by a template that can "
-"contain normal, fixed characters and also some variables that are replaced "
-"by the respective values when the document is created."
-msgstr ""
-"De opbouw van de documentnummers worden gedefinieerd in een sjabloon waarin"
-" normale, vaste karakters maar ook enkele variabelen aanwezig kunnen zijn"
-" die worden vervangen door hun respectievelijke waarden bij de creatie van"
-" het document."
-
-#. type: Plain text
-#: kraft.adoc:94
-#| msgid ""
-#| "Kraft supports a counter that is incremented for every new document of a "
-#| "certain type.  In addition to the counter, more information can be added "
-#| "to form an useful number, such as constant text or parts of the date."
-msgid ""
-"Each identifier needs to be unique, and thus has to contain a counter. Kraft "
-"supports two types of counter: One (variable `%i`) is incremented globally "
-"for every new document. The other (variable `%n`) is reset every day and "
-"starts at 1 again on every new day.  In addition to the counter, more "
-"information can be added to the template form an useful number. Examples are "
-"a constant text or parts of the date."
-msgstr ""
-"Elk documentnummer moet uniek zijn, en moet dus een teller hebben. "
-"Kraft kan twee soorten tellers gebruiken: Een type (variabele `%i`) wordt"
-" bij elk nieuw document verhoogt. De andere (variabele `%n`) wordt elke dag"
-" teruggezet en begint dus weer bij 1 op elke nieuwe dag. Behalve de teller"
-" kan extra informatie toegevoegd worden om een bruikbaar documentnummer te"
-" krijgen, zoals een constante tekst of gedeeltes van de datum."
-
-#. type: Plain text
-#: kraft.adoc:96
-msgid ""
-"The default numbercycle delivered with Kraft contains the year, the month "
-"and a serialnumber. That way you can compare offers or orders from last year "
-"with this year or the month April of last year with the month April of this "
-"year and get on this way an impression from the results of your business."
-msgstr ""
-"Het standaard volgnummersysteem dat met Kraft wordt geleverd bevat het jaar,"
-" de maand en een serienummer. Op deze manier kunt u offertes of opdrachten"
-" van het vorige jaar vergelijken met die van dit jaar of van de maand April"
-" van het vorige jaar met de maand April van dit jaar en op die manier een"
-" indruk krijgen van de resultaten van uw bedrijf."
-
-#. type: Plain text
-#: kraft.adoc:98
-msgid "See the following table for available variables which can be used:"
-msgstr ""
-"Zie de volgende tabel voor de beschikbare variabelen die gebruikt kunnen "
-"worden:"
-
-#. type: Table
-#: kraft.adoc:115
-#, no-wrap
-#| msgid ""
-#| "| `%y` or `%yyyy` | the year of the document date.\n"
-#| "| `%yy`           | the year of the document (two digits).\n"
-#| "| `%w`            | the week number of the document date.\n"
-#| "| `%ww`           | the week number of the document date with leading zero.\n"
-#| "| `%d`            | the day number of the document date.\n"
-#| "| `%dd`           | the day number of the document date with leading zero.\n"
-#| "| `%m` or `%M`    | the month number of the document date.\n"
-#| "| `%MM`           | the month number with leading zero.\n"
-#| "| `%c`            | the customer id from kaddressbook\n"
-#| "| `%i`            | the unique counter *(mandatory)*\n"
-#| "| `%type`         | the localised doc type (offer, invoice etc.)\n"
-#| "| `%uid`          | the contact id of the client.\n"
-#| "\n"
-msgid ""
-"| `%y` or `%yyyy`  | the year of the document date.\n"
-"| `%yy`            | the year of the document (two digits).\n"
-"| `%w`             | the week number of the document date.\n"
-"| `%ww`            | the week number of the document date with leading zero.\n"
-"| `%d`             | the day number of the document date.\n"
-"| `%dd`            | the day number of the document date with leading zero.\n"
-"| `%m` or `%M`     | the month number of the document date.\n"
-"| `%MM`            | the month number with leading zero.\n"
-"| `%c`             | the customer id from kaddressbook\n"
-"| `%type`          | the localised doc type (offer, invoice etc.)\n"
-"| `%uid`           | the contact id of the client.\n"
-"| `%i` .. `%iiiiii`| the unique counter\n"
-"| `%n` .. `%nnnnnn`| the unique day counter (combine with date)\n"
+"Kraft was started in readonly mode, but the configured database can not be connected.\n"
 "\n"
+"Kraft will abort."
 msgstr ""
-"| `%y` of `%yyyy`   | het jaar van de documentdatum.\n"
-"| `%yy`             | het jaar van de documentdatum (twee cijfers).\n"
-"| `%w`             | het weeknummer van de documentdatum.\n"
-"| `%ww`            | het weeknummer van het documentdatum met een nul (twee"
-" cijfers).\n"
-"| `%d`             | de dag van de week als getal van de documentdatum.\n"
-"| `%dd`            | de dag van de week als getal van het documentdatum met"
-" een nul (wee cijfers).\n"
-"| `%m` of `%M`     | de maand van het documentdatum als getal.\n"
-"| `%MM`            | de maand van het documentdatum als getal met een nul"
-" (twee cijfers).\n"
-"| `%c`             | de ID van de klant in het kaddressbook\n"
-"| `%type`         | het vertaalde doc type (offerte, rekening enz.)\n"
-"| `%uid`           | het contact id van de klant.\n"
-" |`%i` .. `%iiiiii`| de unieke teller *(verplicht)*\n"
-"| `%n` .. `%nnnnnn`| de unieke dagteller (te combineren met de datum)\n"
+"Kraft is gestart in alleen lezen modus, maar een verbinding met de gekozen database is niet mogelijk.\n"
 "\n"
+"Kraft zal stoppen."
 
-#. type: Plain text
-#: kraft.adoc:118
+#: portal.cpp:367
+#, kde-format
 msgid ""
-"A number cycle template needs to contain either `%i` or `%n`, if not, `%i` "
-"is appended automatically."
+"Kraft can not connect to the specified MySQL server. Please check the Kraft "
+"database settings, check if the server is running and verify if a database "
+"with the name %1 exits!"
 msgstr ""
-"In een volgnummersysteem-sjabloon moet naar keuze `%i` of `%n` aanwezig zijn,"
-" als dat niet het geval is dan wordt automatisch `%i` eraan toegevoegd."
+"Kraft kon geen verbinding met de opgegeven MySQL-server maken. Controleer de"
+" database-instellingen van Kraft, controleer of de server is gestart en of "
+"een database met de naam %1 bestaat!"
 
-#. type: Plain text
-#: kraft.adoc:120
+#: portal.cpp:371
+#, kde-format
 msgid ""
-"Both `%i` and `%n` are numeric values. They can also be padded with with "
-"leading zeros. The length is defined by the number of i's or n's put into "
-"the template. For example, if a daily counter with length of three and "
-"leading zeros is desired, `%nnn` has to be put into the template. This works "
-"up to a length of six characters."
+"The database with the name %1 does not exist on the database server. Please "
+"make sure the database exists and is accessible by the user running Kraft."
 msgstr ""
-"Zowel `%i` als `%n` hebben numerieke waarden. Ze kunnen ook worden"
-" voorafgegaan door extra nullen. De length is afhankelijk van het aantal i's"
-" of n's die in het sjabloon voorkomen. Bijvoorbeeld, als u een dagelijkse"
-" teller met een lengte van drie cijfers en voorloop nullen wenst, dan moet u "
-" `%nnn` in de sjabloon plaatsen. Dit werkt tot een lengte van zes karakters."
+"De database met de naam %1 is bij deze database server niet te vinden.\n"
+"Controleer of deze database bestaat en door de gebruiker die Kraft gebruikt, geopend kan worden."
 
-#. type: delimited block _
-#: kraft.adoc:123
+#: portal.cpp:375
+#, kde-format
 msgid ""
-"NOTE: The \"design\" of the numbercycles and document numbers is very "
-"important. With the flexible system of templating Kraft can not prevent "
-"invalid number cycles. It is in the responsibility of the user."
+"The Qt database driver could not be loaded. That probably means, that they "
+"are not installed. Please make sure the Qt database packages are installed "
+"and try again."
 msgstr ""
-"Opmerking: het \"ontwerp\" van het volgnummersysteem en documentnummers is"
-" erg belangrijk. Door het flexibele systeem van sjablonen in Kraft kan niet"
-" ongeldige volgnummersystemen voorkomen. Dit is de verantwoordelijkheid van"
-" de gebruiker."
+"De Qt database driver kon niet worden geladen. Dit houd waarschijnlijk in dat het niet is geïnstalleerd. Controleer of de Qt database pakketten zijn \n"
+"geïnstalleerd en probeer het daarna opnieuw."
 
-#. type: Title ===
-#: kraft.adoc:126
-#, no-wrap
-msgid "Taxes"
-msgstr "Belastingen"
+#: portal.cpp:379
+#, kde-format
+msgid "There is a database problem: %1"
+msgstr "Er is een probleem met de database: %1"
 
-#. type: Plain text
-#: kraft.adoc:130
-#| msgid ""
-#| "In many countries there are two kinds of VAT-taxes for sold products."
+#: portal.cpp:397
+#, kde-format
+msgid "Database Problem."
+msgstr "Probleem met de database."
+
+#: portal.cpp:404
+#, kde-format
+msgid "Check commandline actions"
+msgstr "Opdrachten op de commando controleren"
+
+#: portal.cpp:494
+#, kde-format
+msgid "Welcome to Kraft, %1"
+msgstr "Welkom bij Kraft, %1"
+
+#: portal.cpp:523
+#, kde-format
+msgid "Creating new document..."
+msgstr "Bezig met het aanmaken van een nieuw document..."
+
+#: portal.cpp:549
+#, kde-format
+msgctxt ""
+"Dialog title of the followup doc dialog, followed by the id of the  source "
+"doc"
+msgid "Create follow up document for %1"
+msgstr "Creëer &opvolg document voor %1"
+
+#: portal.cpp:594
+#, kde-format
+msgctxt "Title of the new doc dialog, %1 is the source doc id"
+msgid "Create new Document as Copy of %1"
+msgstr "Kopie van %1 als nieuw document creëren"
+
+#: portal.cpp:629
+#, kde-format
+msgid "Opening document to view..."
+msgstr "Bezig met het openen van document om deze weer te geven..."
+
+#: portal.cpp:656
+#, kde-format
 msgid ""
-"image:taxes.png[Taxes,float=\"right\"] In many countries there are two kinds "
-"of VAT-taxes for sold products."
+"XRechnung Template file not set. Please check the application settings!"
 msgstr ""
-"image:taxes.png[Taxes,float=\"right\"] In veel landen zijn er twee"
-" BTW-tarieven voor verkochte producten."
+"XRechnung sjabloonbestand niet ingesteld. Controleer de instellingen van het"
+" programma!"
 
-#. type: Plain text
-#: kraft.adoc:133
-msgid "A high level and a low level."
-msgstr "Een hoog tarief en een laag tarief."
+#: portal.cpp:660
+#, kde-format
+msgid "The XRechnung template file can not be read!"
+msgstr "Kan het XRechnung sjabloonbestand niet openen!"
 
-#. type: Plain text
-#: kraft.adoc:136
+#: portal.cpp:665
+#, kde-format
+msgid "XRechnung Export"
+msgstr "XRechnung exporteren"
+
+#: portal.cpp:685
+#, kde-format
+msgid "Save XRechnung"
+msgstr "XRechnung opslaan"
+
+#: portal.cpp:687
+#, kde-format
+msgid "Saved XRechnung to %1"
+msgstr "Xrechnung opgeslagen naar %1"
+
+#: portal.cpp:713
+#, kde-format
+msgid "Generating PDF..."
+msgstr "Bezig met generen van PDF..."
+
+#: portal.cpp:726 portal.cpp:749 portal.cpp:1075 katalogview.cpp:236
+#: katalogview.cpp:302 katalogview.cpp:316 katalogview.cpp:325
+#: katalogview.cpp:334
+#, kde-format
+msgid "Ready."
+msgstr "Gereed."
+
+#: portal.cpp:735
+#, kde-format
+msgid "Generating PDF for EMail"
+msgstr "Bezig met generen van PDF voor de email"
+
+#: portal.cpp:754
+#, kde-format
+msgid "Doc Generation Error"
+msgstr "Fout bij generen van document"
+
+#: portal.cpp:810
+#, kde-format
+msgid "Printing archived document..."
+msgstr "Bezig met afdrukken gearchiveerd document..."
+
+#: portal.cpp:862
+#, kde-format
+msgid "Opening document %1"
+msgstr "Bezig met het openen van document %1"
+
+#: portal.cpp:1019 katalogview.cpp:241
+#, kde-format
+msgid "Exiting..."
+msgstr "Bezig met afsluiten..."
+
+#: portal.cpp:1046
+#, kde-format
+msgid "Cutting selection..."
+msgstr "Bezig met het knippen van de selectie..."
+
+#: portal.cpp:1053
+#, kde-format
+msgid "Copying selection to clipboard..."
+msgstr "Bezig met het kopiëren van de selectie naar het klembord..."
+
+#: portal.cpp:1060
+#, kde-format
+msgid "Inserting clipboard contents..."
+msgstr "Bezig met plakken van de inhoud van het klembord..."
+
+#: portal.cpp:1073
+#, kde-format
 msgid ""
-"Fill here the appropriate amounts in for the high level and the low level.  "
-"If the tax-level is changing, then you add here the start date with the new "
-"tax-levels."
+"Ready. Kraft is running in read only mode. Document editing is prohibited."
 msgstr ""
-"Geef hier de toepasselijke waarden op voor het hoge tarief en voor het lage "
-"tarief. Als het belastingtarief wijzigt, dan kunt u hier de startdatum met "
-"de nieuwe belastingtarieven toevoegen."
+"Gereed, Kraft is in alleen lezen modus - document wijzigen is niet "
+"toegestaan."
 
-#. type: Title ===
-#: kraft.adoc:137
-#, no-wrap
-msgid "Wages"
-msgstr "Salarissen"
+#: flostempldialog.cpp:71
+#, kde-format
+msgid "Create or Edit Template Items"
+msgstr "Wijzig of maak sjablonen aan"
 
-#. type: Plain text
-#: kraft.adoc:142
-#| msgid ""
-#| "A list of wage costs is maintained in Kraft. The items are used in "
-#| "templates and during calculation."
+#: flostempldialog.cpp:213 flostempldialog.cpp:604
+#, kde-format
+msgid "No"
+msgstr "Nee"
+
+#: flostempldialog.cpp:214 flostempldialog.cpp:604
+#, kde-format
+msgid "Yes"
+msgstr "Ja"
+
+#: flostempldialog.cpp:251
+#, kde-format
+msgid "Calculated Price: "
+msgstr "Berekende prijs: "
+
+#: flostempldialog.cpp:255
+#, kde-format
+msgid "Manual Price: "
+msgstr "Handmatige prijs:"
+
+#: flostempldialog.cpp:260
+#, kde-format
+msgid "(+%1%)"
+msgstr "(+%1%)"
+
+#: flostempldialog.cpp:264
+#, kde-format
+msgid "%1%"
+msgstr "%1%"
+
+#: flostempldialog.cpp:266
+#, kde-format
+msgid ": "
+msgstr ": "
+
+#: flostempldialog.cpp:388
+#, kde-format
+msgid "Template Error"
+msgstr "Fout in sjabloon"
+
+#: flostempldialog.cpp:388
+#, kde-format
+msgid "Saving of this template failed, sorry"
+msgstr "Opslaan van dit sjabloon is mislukt."
+
+#: flostempldialog.cpp:416
+#, kde-format
+msgid "The template has been modified."
+msgstr "Sjabloon is gewijzigd"
+
+#: flostempldialog.cpp:417
+#, kde-format
+msgid "Do you want to discard your changes?"
+msgstr "Wilt u echt uw wijzigingen annuleren?"
+
+#: flostempldialog.cpp:446
+#, kde-format
 msgid ""
-"image:wages.png[Wages,float=\"right\"] A list of wage costs is maintained in "
-"Kraft. The items are used in templates and during calculation."
+"The catalog chapter was changed for this template.\n"
+"Do you really want to move the template to the new chapter?"
 msgstr ""
-"image:wages.png[Wages,float=\"right\"] In Kraft is een lijst met"
-" salariskosten aanwezig. De items daarin worden in "
-"de sjablonen en in de berekeningen gebruikt."
+"Voor deze sjabloon is de map in de catalogus gewijzigd.\n"
+"Wilt u de sjabloon naar de nieuwe map verplaatsen?"
 
-#. type: Plain text
-#: kraft.adoc:145
-msgid ""
-"All data can be edited, customized and new items can be added in the Kraft "
-"Configuration Dialog reachable through the Settings menu."
+#: flostempldialog.cpp:448
+#, kde-format
+msgid "Chapter Change"
+msgstr "Gewijzigde map"
+
+#: flostempldialog.h:104
+#, kde-format
+msgid "Calculated material"
+msgstr "Berekende materialen"
+
+#: main.cpp:53
+#, kde-format
+msgid "Open document with arch doc number <number>"
+msgstr "Open document met arch doc nummer <number>"
+
+#: main.cpp:54
+#, kde-format
+msgid "Open Kraft in read only mode - document changes prohibited"
 msgstr ""
-"Alle data kan bewerkt en aangepast worden in een configuratiedialoog dat u "
-"kunt bereiken via het menu-item 'voorkeuren', waar u ook nieuwe items kunt "
-"toevoegen ."
+"Open Kraft in alleen lezen modus - document wijzigen is niet toegestaan."
 
-#. type: Plain text
-#: kraft.adoc:149
-msgid ""
-"Remember that these units are later used in the documents, it is therefor "
-"important that you translate them to your own language and to fill in the "
-"correct prices."
-msgstr ""
-"Vergeet niet dat deze items later worden gebruikt in de documenten, het is "
-"daarom belangrijk dat u ze vertaalt naar uw eigen taal en dat u de correcte "
-"bedragen invult."
+#: importfilter.cpp:50
+#, kde-format
+msgid "Unable to find filter called %1"
+msgstr "Kon filter genaamd %1 niet vinden"
 
-#. type: Title ===
-#: kraft.adoc:150
-#, no-wrap
-msgid "Units of measurement"
-msgstr "Eenheden"
+#: importfilter.cpp:58
+#, kde-format
+msgid "Could not open the definition file!"
+msgstr "Kon het definitiebestand niet openen!"
 
-#. type: Plain text
-#: kraft.adoc:155
-#| msgid ""
-#| "A list of units of measurement is maintained in Kraft. In Kraft "
-#| "Configuration Dialog reachable through the Settings menu can you edit and "
-#| "customize items already in the list, and also can you add new items to "
-#| "the list."
-msgid ""
-"image:unity.png[Units of measurement,float=\"right\"] A list of units of "
-"measurement is maintained in Kraft. In Kraft Configuration Dialog reachable "
-"through the Settings menu can you edit and customize items already in the "
-"list, and also can you add new items to the list."
-msgstr ""
-"image:unity.png[Units of measurement,float=\"right\"] In Kraft is een"
-" verzameling eenheden aanwezig. In het configuratiedialoog "
-"die u kunt bereiken via het menu-item 'Voorkeuren' kunt u de items die al "
-"aanwezig zijn bewerken, maar u kunt ook nieuwe items toevoegen."
+#: importfilter.cpp:143
+#, kde-format
+msgid "Unknown tags: "
+msgstr "Onbekende tags: "
 
-#. type: Plain text
-#: kraft.adoc:158
-msgid ""
-"Remember that these units are later used in the documents, it is therefor "
-"important that you translate them to your own language."
-msgstr ""
-"Vergeet niet dat deze eenheden later worden gebruikt in de documenten, het "
-"is daarom belangrijk dat u ze vertaalt naar uw eigen taal."
+#: importfilter.cpp:184
+#, kde-format
+msgid "Could not recode input file!"
+msgstr "Kon invoerbestand niet opnieuw indelen!"
 
-#. type: Title ===
-#: kraft.adoc:159
-#, no-wrap
-msgid "Own identity"
-msgstr "Uw eigen identiteit"
+#: importfilter.cpp:192
+#, kde-format
+msgid "Unable to open temp file "
+msgstr "Kon tijdelijk bestand niet openen "
 
-#. type: Plain text
-#: kraft.adoc:163
-msgid ""
-"Check here if the information that you have given during the initial setup "
-"is correct for the use in the documents."
-msgstr ""
-"Controleer hier of de informatie die u heeft opgegeven tijdens de "
-"basisconfiguratie correct is voor het gebruik in de documenten."
+#: importfilter.cpp:198
+#, kde-format
+msgid "Could not open the import source file!"
+msgstr "Kon het importbestand niet openen!"
 
-#. type: delimited block _
-#: kraft.adoc:168
-msgid ""
-"WARNING: If you made the choice to use the information from KaddressBook "
-"then is the information from a later manual entry ignored."
-msgstr ""
-"Pas op: Als u de keuze heeft gemaakt om de informatie in Kaddressbook te "
-"gebruiken dan wordt de informatie die u handmatig toevoegt genegeerd."
+#: katalog.cpp:137
+#, kde-format
+msgid "not found"
+msgstr "Niet gevonden"
 
-#. type: Plain text
-#: kraft.adoc:172
-msgid ""
-"After we have made some corrections to the configuration, we go back to the "
-"main window.Here we see three tabs:"
-msgstr ""
-"Nadat we indien nodig de gewenste correcties in de configuratie hebben "
-"aangebracht, gaan we terug naar het hoofdvenster. Hier zien we drie tabs:"
+#: importitemdialog.cpp:47
+#, kde-format
+msgid "Import Items From File"
+msgstr "Items vanuit bestand importeren"
 
-#. type: Plain text
-#: kraft.adoc:174
-msgid "Documents"
-msgstr "Documenten"
+#: importitemdialog.cpp:116
+#, kde-format
+msgid "the Header of the Document"
+msgstr "het briefhoofd van het document"
 
-#. type: Plain text
-#: kraft.adoc:175
-msgid "Timeline"
-msgstr "Tijdlijn"
+#: importitemdialog.cpp:125 templtopositiondialogbase.cpp:58
+#, kde-format
+msgid "..."
+msgstr "..."
 
-#. type: Title ==
-#: kraft.adoc:176 kraft.adoc:178
-#, no-wrap
-msgid "Catalogs"
-msgstr "Catalogi"
+#: kraftdoc.cpp:159
+#, kde-format
+msgctxt "First argument is the doctype, like Invoice, followed by the ID"
+msgid "%1 (Id %2)"
+msgstr "%1 (Id %2)"
 
-#. type: Plain text
-#: kraft.adoc:181
-msgid ""
-"Kraft supports so called Catalogs in which templates for document items are "
-"kept. With the catalogs creating documents can be significantly accellerated "
-"in the day to day business. When creating new documents, the items templates "
-"from the catalogs can easily selected and moved over to the document."
-msgstr ""
-"Kraft gebruikt zogeheten Catalogi waarin sjablonen voor document items worden"
-" bewaard. Door de catalogi te gebruiken kan in het dagelijks gebruik het"
-" creëren van documenten significant worden versneld. Tijdens de creatie van"
-" nieuwe documenten, kunt u in de catalogi de items-sjablonen eenvoudig"
-" selecteren en naar het document verplaatsen."
+#: kraftdoc.cpp:307
+#, kde-format
+msgctxt "Document part header"
+msgid "Header"
+msgstr "Briefhoofd"
 
-#. type: Plain text
-#: kraft.adoc:183
-msgid ""
-"Since templates are organized in chapters entire documents can be prepared "
-"in different chapters to be used as template documents."
-msgstr ""
-"Omdat sjablonen worden georganiseerd in mappen, kunnen hele documenten worden"
-" voorbereid en opgeborgen in verschillende mappen om later als"
-" documentsjabloon te worden gebruikt."
+#: kraftdoc.cpp:309
+#, kde-format
+msgctxt "Document part footer"
+msgid "Footer"
+msgstr "Voettekst"
 
-#. type: Plain text
-#: kraft.adoc:185
-msgid ""
-"Of course the items in the documents can be edited after they got picked "
-"from a catalog."
-msgstr ""
-"Uiteraard kunnen de items in de documenten worden bewerkt nadat ze in een"
-" catalogus zijn geselecteerd."
+#: kraftdoc.cpp:311
+#, kde-format
+msgctxt "Document part containing the items"
+msgid "Items"
+msgstr "Items"
 
-#. type: Plain text
-#: kraft.adoc:187
-#| msgid "In the tab catalog are two different catalogs:"
-msgid "By default Kraft comes with two different catalogs:"
-msgstr "Kraft komt standaard met twee verschillende catalogi:"
+#: kraftdoc.cpp:313
+#, kde-format
+msgid "Unknown document part"
+msgstr "Onbekend documentgedeelte"
 
-#. type: Plain text
-#: kraft.adoc:189
-msgid "`Material`"
-msgstr "`Material`"
+#: inserttempldialog.cpp:105
+#, kde-format
+msgid "Create a new Item"
+msgstr "Nieuw item aanmaken"
 
-#. type: Plain text
-#: kraft.adoc:192
-msgid ""
-"A catalog of material that are sold, with their purchase prices, the profit "
-"and the sell-price."
-msgstr ""
-"Een catalogus met materialen die worden verkocht, met hun inkoopprijs, de "
-"winst en hun verkoopprijs."
+#: inserttempldialog.cpp:107
+#, kde-format
+msgid "Create a new Item from Template"
+msgstr "Van sjabloon nieuw item aanmaken"
 
-#. type: Plain text
-#: kraft.adoc:194
-msgid "and `Standard Templates`"
-msgstr "en `Standard Templates`"
+#: katalogview.cpp:164
+#, kde-format
+msgid "Edit Sub chapter"
+msgstr "Submap wijzigen"
 
-#. type: Plain text
-#: kraft.adoc:196
-msgid "A catalog of standard recipes of work like planting trees."
-msgstr ""
-"Een catalogus met standaard recepten voor werkzaamheden zoals het planten "
-"van bomen."
+#: katalogview.cpp:166
+#, kde-format
+msgid "Edit a catalog sub chapter"
+msgstr "Submap in catalogus wijzigen"
 
-#. type: Plain text
-#: kraft.adoc:199
-msgid ""
-"Both catalogs can have chapters and sub-chapters for to organize your "
-"templates. First we are going to fill in the"
-msgstr ""
-"Beide catalogussen kunnen mappen en submappen hebben om daar uw sjablonen in"
-" op te bergen . Eerst gaan we gegevens toevoegen aan de "
+#: katalogview.cpp:170
+#, kde-format
+msgid "Add a sub chapter"
+msgstr "Submap toevoegen"
 
-#. type: Title ===
-#: kraft.adoc:200
-#, no-wrap
-#| msgid "Material-catalog"
-msgid "Material Catalog"
-msgstr "Materiaalcatalogus"
+#: katalogview.cpp:172
+#, kde-format
+msgid "Add a sub chapter below the selected one"
+msgstr "In deze map een submap toevoegen"
 
-#. type: Plain text
-#: kraft.adoc:205
-msgid ""
-"A catalog of material that are sold, with their purchase prices, the profit "
-"and the sell-price. First we are going to add new chapters and subchapters."
-msgstr ""
-"Een catalogus met materialen die worden verkocht, met hun inkoopprijs, de "
-"winst en hun verkoopprijs. Eerst gaan we nieuwe mappen en submappen "
-"toevoegen."
+#: katalogview.cpp:176 katalogview.cpp:178
+#, kde-format
+msgid "Remove a sub chapter"
+msgstr "Submap verwijderen"
 
-#. type: Title ====
-#: kraft.adoc:206
-#, no-wrap
-msgid "New chapters"
-msgstr "Nieuwe mappen"
+#: katalogview.cpp:182 rc.cpp:3 rc.cpp:913 rc.cpp:1751
+#, kde-format
+msgid "Edit Template"
+msgstr "Sjabloon bewerken"
 
-#. type: Plain text
-#: kraft.adoc:210
-msgid ""
-"Select with the mouse the column-name `material`, select now in the context-"
-"menu [Add a sub chapter]"
-msgstr ""
-"Selecteer met de muis de kolomnaam `material`, selecteer vervolgens in het "
-"contextmenu [Submap toevoegen]"
+#: katalogview.cpp:184
+#, kde-format
+msgid "Opens the editor window for templates to edit the selected one"
+msgstr "Opent het bewerkingsvenster om het geselecteerde sjabloon te bewerken"
 
-#. type: Plain text
-#: kraft.adoc:212
-msgid "and add an extra chapter like `Trees`"
-msgstr "en voeg een extra map zoals `Bomen` toe"
-
-#. type: Title ====
-#: kraft.adoc:213
-#, no-wrap
-msgid "New sub chapters"
-msgstr "Nieuwe submappen"
-
-#. type: Plain text
-#: kraft.adoc:221
-msgid ""
-"We are going to ad sub chapters in the map `Trees`. Select with the mouse "
-"the name of the chapter where you like to add a subchapter, select now in "
-"the context-menu [Add a sub chapter] and ad an extra subchapters like `Loaf "
-"trees` and `needle trees`.  After adding the extra chapters and subchapters "
-"for dividing the material, we are going to add the material themself."
-msgstr ""
-"We gaan nu submappen toevoegen aan de map `Bomen`. Selecteer met de muis de "
-"naam van de map waaraan u een submap wilt toevoegen, selecteer nu in het "
-"contextmenu [Submap toevoegen] en voeg extra submappen zoals `Bladbomen` en "
-"`Naaldbomen` toe. Nadat we extra mappen en submappen hebben toegevoegd om "
-"het materiaal onder te verdelen, gaan we het materiaal zelf toevoegen."
-
-#. type: Title ====
-#: kraft.adoc:222
-#, no-wrap
+#: katalogview.cpp:189
+#, kde-format
 msgid "New template"
 msgstr "Nieuw sjabloon"
 
-#. type: Plain text
-#: kraft.adoc:227
+#: katalogview.cpp:191
+#, kde-format
+msgid "Opens the editor window for templates to enter a new template"
+msgstr ""
+"Opent het bewerkingsvenster voor sjablonen om een nieuw sjabloon in te "
+"voeren"
+
+#: katalogview.cpp:196
+#, kde-format
+msgid "Delete template"
+msgstr "Sjabloon verwijderen"
+
+#: katalogview.cpp:198
+#, kde-format
+msgid "Deletes the template"
+msgstr "Verwijdert het sjabloon "
+
+#: katalogview.cpp:203
+#, kde-format
+msgid "Export catalog"
+msgstr "Catalogus exporteren"
+
+#: katalogview.cpp:205
+#, kde-format
+msgid "Export the whole catalog as XML encoded file"
+msgstr "De hele catalogus als XML-gecodeerd bestand exporteren"
+
+#: katalogview.cpp:210
+#, kde-format
+msgid "Import catalog"
+msgstr "Catalogus importeren"
+
+#: katalogview.cpp:212
+#, kde-format
+msgid "Import a catalog from a XML file"
+msgstr "Catalogus uit een XML-bestand importeren"
+
+#: katalogview.cpp:216 rc.cpp:487 rc.cpp:1358 rc.cpp:2247
+#, kde-format
+msgid "&Catalog"
+msgstr "&Catalogus"
+
+#: katalogview.cpp:234
+#, kde-format
+msgid "Opening file..."
+msgstr "Bestand wordt geopend..."
+
+#: katalogview.cpp:298
+#, kde-format
+msgid "Exporting file..."
+msgstr "Exporteren van bestand..."
+
+#: katalogview.cpp:307
+#, kde-format
+msgid "Importfile... (not yet implemented)"
+msgstr "Importbestand...(nog niet geïmplementeerd)"
+
+#: katalogview.cpp:312
+#, kde-format
+msgid "Creating a new sub chapter..."
+msgstr "Bezig met het aanmaken van een submap..."
+
+#: katalogview.cpp:321
+#, kde-format
+msgid "Editing a sub chapter..."
+msgstr "Bezig met het bewerken van een submap..."
+
+#: katalogview.cpp:330
+#, kde-format
+msgid "Removing a sub chapter..."
+msgstr "Bezig met het verwijderen van een submap..."
+
+#: katalogview.cpp:363
+#, kde-format
+msgid "Created at %1 "
+msgstr "Aangemaakt op %1 "
+
+#: katalogview.cpp:367
+#, kde-format
+msgid ", last modified at %1"
+msgstr ", laatste keer gewijzigd op %1"
+
+#: katalogview.cpp:373
+#, kde-format
+msgid "%1 times used, last at %2"
+msgstr "%1 keer gebruikt, laatste keer op %2"
+
+#: positionviewwidget.cpp:92
+#, kde-format
+msgid "Item Actions"
+msgstr "Item Acties"
+
+#: positionviewwidget.cpp:95
+#, kde-format
+msgid "Item Kind"
+msgstr "Soort item:"
+
+#: positionviewwidget.cpp:96 positionviewwidget.cpp:671
+#, kde-format
+msgid "Normal"
+msgstr "Normaal"
+
+#: positionviewwidget.cpp:98 positionviewwidget.cpp:679
+#, kde-format
+msgid "Alternative"
+msgstr "Alternatief"
+
+#: positionviewwidget.cpp:100
+#, kde-format
+msgid "On Demand"
+msgstr "Op verzoek"
+
+#: positionviewwidget.cpp:105 rc.cpp:265 rc.cpp:874 rc.cpp:1745
+#, kde-format
+msgid "Tax"
+msgstr "Belasting"
+
+#: positionviewwidget.cpp:108
+#, kde-format
+msgid "Taxfree Item"
+msgstr "Belastingvrije item"
+
+#: positionviewwidget.cpp:114
+#, kde-format
+msgid "Reduced Tax"
+msgstr "Laag tarief BTW"
+
+#: positionviewwidget.cpp:120
+#, kde-format
+msgid "Full Tax"
+msgstr "Hoog tarief BTW"
+
+#: positionviewwidget.cpp:129
+#, kde-format
+msgid "Move Up"
+msgstr "Omhoog verplaatsen"
+
+#: positionviewwidget.cpp:131
+#, kde-format
+msgid "Move Down"
+msgstr "Omlaag verplaatsen"
+
+#: positionviewwidget.cpp:133
+#, kde-format
+msgid "Lock Item"
+msgstr "Item vastzetten"
+
+#: positionviewwidget.cpp:135
+#, kde-format
+msgid "Unlock Item"
+msgstr "Item ontgrendelen"
+
+#: positionviewwidget.cpp:137
+#, kde-format
+msgid "Delete Item"
+msgstr "Verwijder item"
+
+#: positionviewwidget.cpp:221
+#, kde-format
+msgid "All items"
+msgstr "Alle items"
+
+#: positionviewwidget.cpp:231
+#, kde-format
+msgid "%1-tagged items"
+msgstr "%1-gemarkeerde items"
+
+#: positionviewwidget.cpp:263
+#, kde-format
+msgid "Tag: %1"
+msgstr "Tag: %1"
+
+#: positionviewwidget.cpp:265
+#, kde-format
+msgid "Tags:<ul>"
+msgstr "Tags:<ul>"
+
+#: positionviewwidget.cpp:276
+#, kde-format
+msgid "No tags assigned yet."
+msgstr "Nog geen tags toegewezen."
+
+#: positionviewwidget.cpp:405
+#, kde-format
+msgid "Active"
+msgstr "Actief"
+
+#: positionviewwidget.cpp:407
+#, kde-format
+msgid "New"
+msgstr "Nieuw"
+
+#: positionviewwidget.cpp:409
+#, kde-format
+msgid "Deleted"
+msgstr "Verwijdert"
+
+#: positionviewwidget.cpp:411
+#, kde-format
+msgid "Locked"
+msgstr "Vastgezet"
+
+#: positionviewwidget.cpp:618
+#, kde-format
 msgid ""
-"Select with the mouse the name of the sub-chapter or chapter where you like "
-"to add a material.  Select the sub map Loaf trees and select now in the "
-"context-menu"
+"This is an alternative item.<br/><br/> Use the position toolbox to change "
+"the item type."
 msgstr ""
-"Selecteer met de muis de naam van de submap of map waarin u materiaal wilt "
-"toevoegen. Selecteer de submap bladbomen en selecteer nu in het contextmenu "
-"nieuw sjabloon."
+"Dit item is een alternatief.<br/><br/> Bij de knoppen voor positie is een \n"
+"knop waar u het item-type kunt wijzigen."
 
-#. type: Plain text
-#: kraft.adoc:230
+#: positionviewwidget.cpp:634
+#, kde-format
 msgid ""
-"Add the extra materials `coconut tree`, `apple tree` and `pine-apple tree`."
+"This item is either completely optional or its amount varies depending on "
+"the needs.<br/><br/>Use the item toolbox to change the item type."
 msgstr ""
-"Voeg de nieuwe bomen `kokosnoot-boom`, `appelboom` en `ananasboom` toe."
+"Dit item is compleet optioneel of het aantal is afhankelijk van het \n"
+"gebruik.<br/><br/>Bij de knoppen voor positie is een knop waar u het type \n"
+"item kunt wijzigen."
 
-#. type: Plain text
-#: kraft.adoc:232
-msgid "Fill in the price that we have paid."
-msgstr "Vul de prijs in die we hebben betaald."
+#: positionviewwidget.cpp:675
+#, kde-format
+msgid "Demand"
+msgstr "Op verzoek"
 
-#. type: Plain text
-#: kraft.adoc:234
-msgid "Fill in the profit that we want to have on the material"
-msgstr "Vul de winst in die we willen hebben op het materiaal."
+#: kraftdocfooteredit.cpp:52
+#, kde-format
+msgid "Document Footer"
+msgstr "Voettekst van document"
 
-#. type: Plain text
-#: kraft.adoc:236
-msgid "And fill in how much is in a packet."
-msgstr "En vul in per hoeveel ze verpakt zijn."
+#: kraftdocheaderedit.cpp:56
+#, kde-format
+msgid "Document Header"
+msgstr "Briefhoofd van document"
 
-#. type: Plain text
-#: kraft.adoc:239
+#: kraftdocheaderedit.cpp:64
+#, kde-format
+msgid "Manually set in address field."
+msgstr "Handmatig het adresveld instellen."
+
+#: kraftdocpositionsedit.cpp:94
+#, kde-format
+msgid "Add Item..."
+msgstr "Item toevoegen..."
+
+#: kraftdocpositionsedit.cpp:96
+#, kde-format
+msgid "Add a normal item to the document manually."
+msgstr "Een normaal item handmatig aan het document toevoegen."
+
+#: kraftdocpositionsedit.cpp:100
+#, kde-format
+msgid "Add Discount Item"
+msgstr "Korting geven"
+
+#: kraftdocpositionsedit.cpp:103
+#, kde-format
 msgid ""
-"image:catalog_material.png[Material catalog,float=\"right\"] After this we "
-"add also in the map 'Wood' a item for a 'support pole' for later use with "
-"its price."
+"Adds an item to the document that allows discounts on other items in the "
+"document"
 msgstr ""
-"image:catalog_material.png[Material catalog,float=\"right\"] Hierna voegen we"
-" ook in de map 'Wood' een item toe voor 'boompaal' met zijn prijs voor later"
-" gebruik."
+"Voegt een item aan het document toe dat kortingen op andere items in het "
+"document toestaat"
 
-#. type: Plain text
-#: kraft.adoc:241
-msgid "Now we are going to:"
-msgstr "Nu gaan we naar:"
+#: kraftdocpositionsedit.cpp:106
+#, kde-format
+msgid "Import Items..."
+msgstr "Items importeren..."
 
-#. type: Title ===
-#: kraft.adoc:242
-#, no-wrap
-msgid "Standard Templates"
-msgstr "Standard Templates"
-
-#. type: Plain text
-#: kraft.adoc:245
-msgid "This is a catalog of standard recipes of work like:"
-msgstr "Dit is een catalogus met standaard recepten voor werkzaamheden zoals:"
-
-#. type: Plain text
-#: kraft.adoc:247
-msgid "planting trees"
-msgstr "Bomen planten"
-
-#. type: Plain text
-#: kraft.adoc:248
-msgid "cutting grass"
-msgstr "Gras maaien"
-
-#. type: Plain text
-#: kraft.adoc:249
-msgid "transport costs"
-msgstr "Transportkosten"
-
-#. type: Plain text
-#: kraft.adoc:250
-msgid "planting grass"
-msgstr "Graszoden leggen"
-
-#. type: Plain text
-#: kraft.adoc:251
-msgid "sowing grass-seed"
-msgstr "Graszaad zaaien"
-
-#. type: Plain text
-#: kraft.adoc:253
-msgid "We add here the standard work of planting a tree."
+#: kraftdocpositionsedit.cpp:109
+#, kde-format
+msgid "Opens a dialog where multiple items can be imported from a text file."
 msgstr ""
-"We gaan hier de standaard werkzaamheden voor het planten van een boom "
-"toevoegen."
+"Opent een dialoog waar meerdere items geïmporteerd kunnen worden uit een "
+"tekstbestand."
 
-#. type: Plain text
-#: kraft.adoc:256
+#: kraftdocpositionsedit.cpp:118
+#, kde-format
+msgid "Document Items"
+msgstr "Document-items"
+
+#: prefswages.cpp:51 prefsunits.cpp:53 prefsdialog.cpp:163
+#, kde-format
+msgid "ID"
+msgstr "ID"
+
+#: prefswages.cpp:52
+#, kde-format
+msgid "Code"
+msgstr "Code"
+
+#: prefswages.cpp:53 rc.cpp:126 rc.cpp:1036 rc.cpp:1874
+#: templkataloglistview.cpp:46
+#, kde-format
+msgid "Price"
+msgstr "Prijs"
+
+#: prefswages.cpp:54
+#, kde-format
+msgid "Sortkey"
+msgstr "Sneltoets"
+
+#: prefswages.cpp:80
+#, kde-format
+msgid "Up"
+msgstr "Omhoog"
+
+#: prefswages.cpp:85
+#, kde-format
+msgid "Down"
+msgstr "Omlaag"
+
+#: prefswages.cpp:90 prefsunits.cpp:80 prefsdialog.cpp:185 rc.cpp:307
+#: rc.cpp:1160 rc.cpp:2064
+#, kde-format
+msgid "Add"
+msgstr "Toevoegen"
+
+#: prefswages.cpp:94 prefsunits.cpp:84 rc.cpp:313 rc.cpp:1166 rc.cpp:2070
+#, kde-format
+msgid "Edit"
+msgstr "Bewerken"
+
+#: prefswages.cpp:99 prefsunits.cpp:89 prefsdialog.cpp:189 rc.cpp:319
+#: rc.cpp:1172 rc.cpp:2076
+#, kde-format
+msgid "Remove"
+msgstr "Verwijderen"
+
+#: prefswages.cpp:201
+#, kde-format
+msgid "Edit a wage group"
+msgstr "Salarisgroep bewerken"
+
+#: prefswages.cpp:241
+#, kde-format
+msgid "<h1>Edit wage group</h1>"
+msgstr "<h1>Salarisgroep bewerken</h1>"
+
+#: prefsunits.cpp:54
+#, kde-format
+msgid "Short"
+msgstr "Afgekort"
+
+#: prefsunits.cpp:55
+#, kde-format
+msgid "Long"
+msgstr "Compleet"
+
+#: prefsunits.cpp:56
+#, kde-format
+msgid "Short plural"
+msgstr "Kort meervoud"
+
+#: prefsunits.cpp:57
+#, kde-format
+msgid "Long plural"
+msgstr "Compleet meervoud"
+
+#: prefsunits.cpp:58
+#, kde-format
+msgid "ECE20"
+msgstr "ECE20"
+
+#: prefsunits.cpp:153
+#, kde-format
+msgid "Edit a unit"
+msgstr "Bewerk eenheid"
+
+#: prefsunits.cpp:197
+#, kde-format
+msgid "<h1>Edit unit</h1>"
+msgstr "<h1>Bewerk eenheid</h1>"
+
+#: prefsdialog.cpp:67
+#, kde-format
+msgid "Configure Kraft"
+msgstr "Kraft instellen"
+
+#: prefsdialog.cpp:101
+#, kde-format
+msgid "Document Defaults"
+msgstr "Standaarddocument"
+
+#: prefsdialog.cpp:102
+#, kde-format
+msgid "Taxes"
+msgstr "Belastingen"
+
+#: prefsdialog.cpp:103
+#, kde-format
+msgid "Document Types"
+msgstr "Documenttypes"
+
+#: prefsdialog.cpp:105
+#, kde-format
+msgid "Wages"
+msgstr "Salarissen"
+
+#: prefsdialog.cpp:107
+#, kde-format
+msgid "Units"
+msgstr "Eenheden"
+
+#: prefsdialog.cpp:108
+#, kde-format
+msgid "Own Identity"
+msgstr "Uw eigen identiteit"
+
+#: prefsdialog.cpp:155
+#, kde-format
+msgid "Tax rates beginning at date:"
+msgstr "Belastingtarieven beginnend op de datum:"
+
+#: prefsdialog.cpp:164
+#, kde-format
+msgid "Full Tax [%]"
+msgstr "Hoog BTW [%]"
+
+#: prefsdialog.cpp:165
+#, kde-format
+msgid "Reduced Tax [%]"
+msgstr "Laag BTW [%]"
+
+#: prefsdialog.cpp:166
+#, kde-format
+msgid "Start Date"
+msgstr "Startdatum"
+
+#: prefsdialog.cpp:206
+#, kde-format
 msgid ""
-"Select with the mouse the name of the chapter [Work] where you like to add "
-"the new template,"
+"Select the identity of the sending entity of documents. That's <b>your "
+"companies</b> address."
 msgstr ""
-"Selecteer met de muis de naam van de map [Work] waar u de nieuwe sjabloon "
-"aan wilt toevoegen,"
+"Selecteer de identiteit van de document-verzender. Dat is het adres van "
+"<b>uw bedrijf</b>."
 
-#. type: Plain text
-#: kraft.adoc:258
-msgid "select now the context-menu [New template]"
-msgstr "selecteer nu in het contextmenu btn:[Nieuw sjabloon]"
+#: prefsdialog.cpp:222
+#, kde-format
+msgid "Select Identity..."
+msgstr "Identiteit selecteren..."
 
-#. type: Plain text
-#: kraft.adoc:260
-msgid "and the extra templates `Plant tree` and `cut grass`."
-msgstr "en voeg de extra sjablonen `Boom planten` en `Gras maaien` toe."
+#: prefsdialog.cpp:228
+#, kde-format
+msgid "From AddressBook"
+msgstr "Uit adresboek"
 
-#. type: Plain text
-#: kraft.adoc:262
-msgid "After we made the new template, a window opens with 4 tabs:"
+#: prefsdialog.cpp:233 setupassistant.cpp:342
+#, kde-format
+msgid "Manual Entry"
+msgstr "Handmatig toevoegen"
+
+#: prefsdialog.cpp:245
+#, kde-format
+msgid "Manual Address"
+msgstr "Handmatige adres"
+
+#: prefsdialog.cpp:300
+#, kde-format
+msgid "&Default document type on creation:"
+msgstr "Stan&daard documenttype bij aanmaken:"
+
+#: prefsdialog.cpp:305
+#, kde-format
+msgid "New documents default to the selected type."
+msgstr "Nieuwe documenten hebben standaard het geselecteerde type."
+
+#: prefsdialog.cpp:314
+#, kde-format
+msgid "Default &Tax for Documents:"
+msgstr "Standaard &belastingtarief voor documenten:"
+
+#: prefsdialog.cpp:319
+#, kde-format
+msgid "The default tax setting for all documents."
 msgstr ""
-"Nadat we de nieuwe sjabloon hebben aangemaakt, opent een venster met 4 tabs:"
+"De standaard instelling voor het belastingtarief te gebruiken in alle "
+"documenten."
 
-#. type: Title ====
-#: kraft.adoc:264 kraft.adoc:270
-#, no-wrap
+#: prefsdialog.cpp:320 kraftview.cpp:631
+#, kde-format
+msgid "Display no tax at all"
+msgstr "Helemaal geen belasting tonen"
+
+#: prefsdialog.cpp:321 kraftview.cpp:632
+#, kde-format
+msgid "Calculate reduced tax for all items"
+msgstr "Bereken lage BTW voor alle items"
+
+#: prefsdialog.cpp:322 kraftview.cpp:633
+#, kde-format
+msgid "Calculate full tax for all items"
+msgstr "Bereken hoge BTW voor alle items"
+
+#: prefsdialog.cpp:331
+#, kde-format
+msgid "Document Date Format:"
+msgstr "Datum instelling van document:"
+
+#: prefsdialog.cpp:337
+#, kde-format
+msgid "The default date format for documents."
+msgstr "De standaard datum-instelling voor documenten."
+
+#: prefsdialog.cpp:339
+#, kde-format
+msgid "ISO-Format: %1"
+msgstr "ISO-opmaak: %1"
+
+#: prefsdialog.cpp:341
+#, kde-format
+msgid "Short-Date: %1"
+msgstr "Korte-datum: %1"
+
+#: prefsdialog.cpp:343
+#, kde-format
+msgid "Long-Date: %1"
+msgstr "Lange-datum: %1"
+
+#: prefsdialog.cpp:345
+#, kde-format
+msgid "RFC 2822-Format: %1"
+msgstr "RFC 2822-Opmaak: %1"
+
+#: prefsdialog.cpp:347
+#, kde-format
+msgid "\"German Format\": %1"
+msgstr "\"Duitse Opmaak\": %1"
+
+#: prefsdialog.cpp:348
+#, kde-format
+msgid "Custom Setting in Settingsfile"
+msgstr "Aangepaste instelling in het instellingenbestand"
+
+#: prefsdialog.cpp:357
+#, kde-format
+msgid "XRechnung Template File:"
+msgstr "XRechnung sjabloonbestand:"
+
+#: prefsdialog.cpp:363
+#, kde-format
+msgid "Select..."
+msgstr "Selecteren..."
+
+#: prefsdialog.cpp:371
+#, kde-format
+msgid "Select template file for XRechnung"
+msgstr "Selecteer sjabloonbestand voor XRechnung"
+
+#: prefsdialog.cpp:376
+#, kde-format
+msgid "XRechnung Templates (*.xrtmpl)"
+msgstr "XRechnung Sjablonen (*.xrtmpl)"
+
+#: prefsdialog.cpp:416
+#, kde-format
+msgid ""
+"The old default doc type for new documents was just deleted.Please check the"
+" setting in the Document Defaults in the Kraft preferences Dialog."
+msgstr ""
+"Het oude standaarddocument type voor nieuwe documenten is zojuist verwijderd. Controleer de instellingen voor document types in het \n"
+"configuratiedialoog van Kraft."
+
+#: prefsdialog.cpp:419
+#, kde-format
+msgid "Document Default Change"
+msgstr "Wijzigen standaarddocument"
+
+#: prefsdialog.cpp:638
+#, kde-format
+msgid "The identity can not be found."
+msgstr "De identiteit is niet te vinden."
+
+#: prefsdialog.cpp:640
+#, kde-format
+msgid ""
+"<p><b>Kraft Addressbook Integration down.</b></p><p>The address book backend"
+" is not up and running.</p><p>Please check your addressbook integration "
+"setup.</p>"
+msgstr ""
+"<p><b>Kraft adresboek Integratie werkt niet.</b></p><p>De backend van het "
+"adresboek is niet opgestart.</p><p>Controleer de instellingen de integratie "
+"van uw adresboek.</p>"
+
+#: prefsdialog.cpp:646
+#, kde-format
+msgid "The identity is not listed in an address book."
+msgstr "Deze identiteit komt niet in een adresboek voor."
+
+#: prefsdialog.cpp:648
+#, kde-format
+msgid ""
+"<p><b>Kraft does not know your identity.</b></p><p>Please pick one from the "
+"address books by clicking on the Button below.</p><p>Not having an identity "
+"selected can make your documents look incomplete.</p>"
+msgstr ""
+"<p><b>Kraft weet uw identiteit niet.</b></p><p>Selecteer een uit het adres "
+"boek door te klikken op de knop eronder.</p><p>Uw documenten kunnen "
+"incompleet er uit zien als u geen identiteit heeft geselecteerd.</p>"
+
+#: prefsdialog.cpp:665
+#, kde-format
+msgid "Your identity can be found in the address books."
+msgstr "Uw identiteit is te vinden in de adresboeken."
+
+#: prefsdialog.cpp:676
+#, kde-format
+msgid "Work Phone"
+msgstr "Telefoon werk"
+
+#: prefsdialog.cpp:677
+#, kde-format
+msgid "Fax"
+msgstr "Fax"
+
+#: prefsdialog.cpp:678
+#, kde-format
+msgid "Cell Phone"
+msgstr "Mobiele telefoon"
+
+#: materialkatalogview.cpp:106
+#, kde-format
+msgid "<new material>"
+msgstr "<new material>"
+
+#: materialkatalogview.cpp:136 templkatalogview.cpp:139
+#, kde-format
+msgid "Do you really want to delete the template from the catalog?"
+msgstr "Wilt u het sjabloon uit de catalogus verwijderen?"
+
+#: materialselectdialog.cpp:39
+#, kde-format
+msgid "Add Material to Calculation"
+msgstr "Materiaal toevoegen aan de berekening"
+
+#: materialselectdialog.cpp:44
+#, kde-format
+msgid "<h1>Add Material to Calculation</h1>"
+msgstr "<h1>Materiaal toevoegen aan de berekening</h1>"
+
+#: newdocassistant.cpp:52 newdocassistant.cpp:96
+#, kde-format
+msgid "New Document Settings"
+msgstr "Instellingen voor nieuwe documenten"
+
+#: newdocassistant.cpp:55
+#, kde-format
+msgid ""
+"Please select a customer as addressee for the document. If there is no entry"
+" for the customer in the addressbook yet, it can be opened by clicking on "
+"the button below."
+msgstr ""
+"Selecteer een klant als geadresseerde voor het document. Als er voor de "
+"klant nog geen item in het adresboek is, dan kunt u deze openen door op de "
+"knop eronder te klikken."
+
+#: newdocassistant.cpp:100
+#, kde-format
+msgid ""
+"Select a document type and a date. A comment on the whiteboard helps to "
+"classify the document."
+msgstr ""
+"Selecteer een documenttype en een datum. Een omschrijving op het whiteboard "
+"helpt bij het classificeren van het document."
+
+#: newdocassistant.cpp:107
+#, kde-format
+msgid "Customer: Not yet selected!"
+msgstr "Klant: niet geselecteerd!"
+
+#: newdocassistant.cpp:116
+#, kde-format
+msgid "Document &Type:"
+msgstr "Document &type:"
+
+#: newdocassistant.cpp:120
+#, kde-format
+msgid "Document Date: "
+msgstr "Datum document:"
+
+#: newdocassistant.cpp:123
+#, kde-format
+msgid "Whiteboard Content:"
+msgstr "Inhoud Whiteboard:"
+
+#: newdocassistant.cpp:127
+#, kde-format
+msgid "Copy document items from predecessor document"
+msgstr "Kopieer items uit voorgaande document"
+
+#: newdocassistant.cpp:175
+#, kde-format
+msgid "Create a new Kraft Document"
+msgstr "Nieuw Kraft document aanmaken"
+
+#: newdocassistant.cpp:265
+#, kde-format
+msgid "Followup Document for %1"
+msgstr "Opvolg document voor %1"
+
+#: addressselectorwidget.cpp:235
+#, kde-format
+msgid "Name"
+msgstr "Naam"
+
+#: addressselectorwidget.cpp:237
+#, kde-format
+msgid "Address"
+msgstr "Adres"
+
+#: addressselectorwidget.cpp:337
+#, kde-format
+msgid "Edit Contact..."
+msgstr "Contactpersoon bewerken..."
+
+#: addressselectorwidget.cpp:338
+#, kde-format
+msgid "Edit the currently selected contact"
+msgstr "Deze contactpersoon bewerken"
+
+#: addressselectorwidget.cpp:341
+#, kde-format
+msgid "New Contact..."
+msgstr "Nieuw contactpersoon..."
+
+#: addressselectorwidget.cpp:342
+#, kde-format
+msgid "Create a new Contact"
+msgstr "Nieuw contactpersoon aanmaken"
+
+#: rc.cpp:6 rc.cpp:916 rc.cpp:1754 templkataloglistview.cpp:45
+#: texteditdialog.cpp:76
+#, kde-format
 msgid "Template"
 msgstr "Sjabloon"
 
-#. type: Title ====
-#: kraft.adoc:265 kraft.adoc:282
-#, no-wrap
-msgid "Time calculation"
+#: rc.cpp:9 rc.cpp:919 rc.cpp:1757
+#, kde-format
+msgid "Text:"
+msgstr "Tekst:"
+
+#: rc.cpp:12 rc.cpp:922 rc.cpp:1760
+#, kde-format
+msgid "&Store in Chapter"
+msgstr "Opge&slagen in map"
+
+#: rc.cpp:15 rc.cpp:925 rc.cpp:1763
+#, kde-format
+msgid "&Unit"
+msgstr "&Eenheid"
+
+#: rc.cpp:18 rc.cpp:928 rc.cpp:1766
+#, kde-format
+msgid "&Count Time for Overalltime"
+msgstr "Meetellen voor totaaltijd"
+
+#: rc.cpp:21 rc.cpp:931 rc.cpp:1769 kraftview_ro.cpp:212 kraftview_ro.cpp:249
+#: documenttemplate.cpp:332
+#, kde-format
+msgid "VAT"
+msgstr "BTW"
+
+#: rc.cpp:24 rc.cpp:934 rc.cpp:1772
+#, kde-format
+msgid "full"
+msgstr "Hoog"
+
+#: rc.cpp:27 rc.cpp:937 rc.cpp:1775
+#, kde-format
+msgid "half"
+msgstr "Laag"
+
+#: rc.cpp:30 rc.cpp:940 rc.cpp:1778
+#, kde-format
+msgid "Time Calculation"
 msgstr "Post arbeid"
 
-#. type: Plain text
-#: kraft.adoc:266
-msgid "Fix costs"
+#: rc.cpp:33 rc.cpp:72 rc.cpp:111 rc.cpp:943 rc.cpp:982 rc.cpp:1021
+#: rc.cpp:1781 rc.cpp:1820 rc.cpp:1859
+#, kde-format
+msgid "text"
+msgstr "tekst"
+
+#: rc.cpp:36 rc.cpp:946 rc.cpp:1784
+#, kde-format
+msgid "Time measureable effort for this template:"
+msgstr "De voor dit sjabloon nodige tijd:"
+
+#: rc.cpp:39 rc.cpp:81 rc.cpp:117 rc.cpp:949 rc.cpp:991 rc.cpp:1027
+#: rc.cpp:1787 rc.cpp:1829 rc.cpp:1865
+#, kde-format
+msgid "Label"
+msgstr "Label"
+
+#: rc.cpp:42 rc.cpp:952 rc.cpp:1790
+#, kde-format
+msgid "Duration"
+msgstr "Tijdsduur"
+
+#: rc.cpp:45 rc.cpp:955 rc.cpp:1793
+#, kde-format
+msgid "Hourly Rate"
+msgstr "Uurtarief"
+
+#: rc.cpp:48 rc.cpp:958 rc.cpp:1796
+#, kde-format
+msgid "Glob. Rate"
+msgstr "Project-tarief"
+
+#: rc.cpp:51 rc.cpp:961 rc.cpp:1799
+#, kde-format
+msgid "Adds a new time calculation part to the template"
+msgstr "Voeg nieuwe post tijd aan het sjabloon toe"
+
+#: rc.cpp:54 rc.cpp:93 rc.cpp:132 rc.cpp:964 rc.cpp:1003 rc.cpp:1042
+#: rc.cpp:1802 rc.cpp:1841 rc.cpp:1880
+#, kde-format
+msgid "new..."
+msgstr "Nieuw..."
+
+#: rc.cpp:57 rc.cpp:967 rc.cpp:1805
+#, kde-format
+msgid "Edits the current time calculation part"
+msgstr "Bewerk de geselecteerde post tijd"
+
+#: rc.cpp:60 rc.cpp:99 rc.cpp:138 rc.cpp:970 rc.cpp:1009 rc.cpp:1048
+#: rc.cpp:1808 rc.cpp:1847 rc.cpp:1886
+#, kde-format
+msgid "edit..."
+msgstr "bewerken..."
+
+#: rc.cpp:63 rc.cpp:973 rc.cpp:1811
+#, kde-format
+msgid "Deletes the current time calculation part"
+msgstr "Verwijder de geselecteerde post tijd"
+
+#: rc.cpp:66 rc.cpp:105 rc.cpp:144 rc.cpp:976 rc.cpp:1015 rc.cpp:1054
+#: rc.cpp:1814 rc.cpp:1853 rc.cpp:1892
+#, kde-format
+msgid "delete"
+msgstr "verwijderen"
+
+#: rc.cpp:69 rc.cpp:979 rc.cpp:1817
+#, kde-format
+msgid "Fix Costs"
 msgstr "Vaste kosten"
 
-#. type: Title ====
-#: kraft.adoc:267 kraft.adoc:319
-#, no-wrap
+#: rc.cpp:75 rc.cpp:985 rc.cpp:1823
+#, kde-format
+msgid "Fix costs for this template per one unit:"
+msgstr "Vaste kosten in dit sjabloon per eenheid:"
+
+#: rc.cpp:84 rc.cpp:994 rc.cpp:1832
+#, kde-format
+msgid "Single Price"
+msgstr "Stuksprijs"
+
+#: rc.cpp:87 rc.cpp:997 rc.cpp:1835
+#, kde-format
+msgid "Overall Price"
+msgstr "Totale prijs"
+
+#: rc.cpp:90 rc.cpp:1000 rc.cpp:1838
+#, kde-format
+msgid "adds a new fix calculation part"
+msgstr "Voeg nieuwe post vaste kosten toe"
+
+#: rc.cpp:96 rc.cpp:1006 rc.cpp:1844
+#, kde-format
+msgid "edits the current fix calculation part"
+msgstr "Bewerk de geselecteerde post vaste kosten"
+
+#: rc.cpp:102 rc.cpp:1012 rc.cpp:1850
+#, kde-format
+msgid "deletes the current fix calculation part"
+msgstr "Verwijder de geselecteerde post vaste kosten"
+
+#: rc.cpp:108 rc.cpp:643 rc.cpp:1018 rc.cpp:1675 rc.cpp:1856 rc.cpp:2567
+#: materialkataloglistview.cpp:40
+#, kde-format
 msgid "Material"
 msgstr "Materiaal"
 
-#. type: Plain text
-#: kraft.adoc:269
-msgid "First we go to the tab:"
-msgstr "Eerst gaan we naar de tab:"
-
-#. type: Plain text
-#: kraft.adoc:274
-#| msgid "We give here the name of the new standard template like `Plant tree`"
-msgid ""
-"We give here the name of the new standard template like `Plant tree` image:"
-"catalog_standard.png[Standard catalog,float=\"right\"]"
-msgstr ""
-"We geven hier de naam op van de nieuwe standaard sjabloon zoals `Boom "
-"planten` image:catalog_standard.png[Standard catalog,float=\"right\"]"
-
-#. type: delimited block _
-#: kraft.adoc:277
-msgid "WARNING: be careful, this name is later used in the invoice"
-msgstr ""
-"Pas op: wees voorzichtig, dit is de naam die later op de rekening komt."
-
-#. type: Plain text
-#: kraft.adoc:281
-msgid ""
-"we select that this is per piece and that the margin is 8% and that the full "
-"VAT is applicable."
-msgstr ""
-"we stellen hier in dat het per stuk is en dat de winst 8% is en dat het hoge "
-"BTW-tarief van toepassing is."
-
-#. type: Plain text
-#: kraft.adoc:285
-msgid "We fill here in a number of work with the time:"
-msgstr "We vullen hier een aantal werkzaamheden met hun tijd in:"
-
-#. type: Block title
-#: kraft.adoc:286
-#, no-wrap
-msgid "Spent time"
-msgstr "Gebruikte tijd"
-
-#. type: Table
-#: kraft.adoc:293
-#, no-wrap
-msgid ""
-"|Dig hole |32 min. |worker\n"
-"|Place tree |12 min. |worker\n"
-"|Fill hole |17 min. |worker\n"
-"|give water |5 min. |worker\n"
-msgstr ""
-"|Gat graven |32 min. |worker\n"
-"|Boom plaatsen |12 min. |worker\n"
-"|Gat opvullen |17 min. |worker\n"
-"|Water geven |5 min. |worker\n"
-
-#. type: Plain text
-#: kraft.adoc:297
-#| msgid "The cost for worker which we have earlier filled in is now used."
-msgid ""
-"The cost for worker which we have earlier filled in is now used.  image:"
-"catalog_standard_work.png[Time calculation,float=\"right\"]"
-msgstr ""
-"De kosten voor een werknemer die we eerder hebben ingevuld worden nu "
-"gebruikt.image:catalog_standard_work.png[Time calculation,float=\"right\"]"
-
-#. type: delimited block _
-#: kraft.adoc:301
-msgid ""
-"NOTE: in the invoice we see later only Plant tree, we will not see the parts "
-"dig hole,place tree,fill hole,give water"
-msgstr ""
-"Opmerking: op de rekening zien we later alleen Boom planten, we zullen dan "
-"niet de onderdelen Gat graven, boom plaatsen, Gat opvullen, Water geven zien."
-
-#. type: Plain text
-#: kraft.adoc:304
-msgid "Now we go to the tab"
-msgstr "We gaan nu naar de tab:"
-
-#. type: Title ====
-#: kraft.adoc:305
-#, no-wrap
-msgid "Fixed costs"
-msgstr "Vaste kosten"
-
-#. type: Plain text
-#: kraft.adoc:308
-msgid "and fill in:"
-msgstr "en we vullen in:"
-
-#. type: Block title
-#: kraft.adoc:309
-#, no-wrap
-msgid "Fixed item"
-msgstr "Vast item"
-
-#. type: Table
-#: kraft.adoc:313
-#, no-wrap
-msgid "|Transportcost |35 euro |1 pcs.\n"
-msgstr "|Transportkosten |35 euro |1 pcs.\n"
-
-#. type: Plain text
-#: kraft.adoc:316
-msgid "image:catalog_standard_fixed_cost.png[Fixed cost,float=\"right\"]"
-msgstr "image:catalog_standard_fixed_cost.png[Fixed cost,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:318
-msgid "After this we go to the tab:"
-msgstr "Hierna gaan we naar de tab:"
-
-#. type: Plain text
-#: kraft.adoc:323
-msgid ""
-"Here we select btn:[next], after which the window [Add Material to "
-"Calculation] opens for a selection of material.  We navigate to the map "
-"'wood' where we select the 'support pole'."
-msgstr ""
-"Hier kiezen we btn:[volgende], waarna het venster [Materiaal toevoegen aan"
-" Berekening] opent voor de selectie van materiaal. We gaan dan naar de map "
-"'wood' waar we de 'boompaal' selecteren."
-
-#. type: Block title
-#: kraft.adoc:324
-#, no-wrap
-msgid "Used materials"
-msgstr "Gebruikte materialen"
-
-#. type: Table
-#: kraft.adoc:328
-#, no-wrap
-msgid "|1 |support pole |3,5 euro\n"
-msgstr "|1 |boompaal |3,5 euro\n"
-
-#. type: Plain text
-#: kraft.adoc:331
-msgid "image:catalog_standard_material.png[Material,float=\"right\"]"
-msgstr "image:catalog_standard_material.png[Material,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:333
-msgid "We go now back to the first tab template"
-msgstr "We gaan nu terug naar de eerste tab 'Sjabloon'"
-
-#. type: Plain text
-#: kraft.adoc:336
-msgid ""
-"On the first tab [template], we can now see the overall cost per one unit"
-msgstr ""
-"In de eerste tab [Sjabloon], kunnen we nu de totale kosten per eenheid zien."
-
-#. type: Plain text
-#: kraft.adoc:339
-msgid ""
-"Click on [OK] for saving the result or on [cancel] for discarding the result."
-msgstr ""
-"Klik op btn:[OK] om het resultaat op te slaan of op btn:[Annuleren] om het "
-"resultaat te verwijderen."
-
-#. type: Plain text
-#: kraft.adoc:341
-msgid "We make a second template `cut grass`"
-msgstr "We maken een tweede sjabloon 'Gras maaien'."
-
-#. type: Plain text
-#: kraft.adoc:344
-msgid ""
-"we fill in `cut grass`, as unit we choose sm (square meter), on the second "
-"tab we fill in that we need 3 min per square meter."
-msgstr ""
-"we vullen in `Gras maaien`, als eenheid kiezen we sm (square meter in het "
-"Engels) of m² (in het Nederlands), in de tweede tab vullen we in dat 3 min "
-"nodig hebben per vierkante meter."
-
-#. type: Plain text
-#: kraft.adoc:347
-msgid ""
-"Click on [OK] for saving the result or on [Cancel] for discarding the result."
-msgstr ""
-"Klik op btn:[OK] om het resultaat op te slaan of op btn:[Annuleren] om het "
-"resultaat te verwijderen."
-
-#. type: Plain text
-#: kraft.adoc:349
-msgid "We are now ready for the first invoice."
-msgstr "We zijn nu klaar voor de eerste rekening."
-
-#. type: Title ==
-#: kraft.adoc:351
-#, no-wrap
-msgid "Creating Documents"
-msgstr "De creatie van documenten"
-
-#. type: Title ===
-#: kraft.adoc:353
-#, no-wrap
-msgid "The first Invoice"
-msgstr "De eerste rekening"
-
-#. type: Plain text
-#: kraft.adoc:356
-msgid "Open the tab btn:[documents]"
-msgstr "Open de tab btn:[Documenten]"
-
-#. type: Plain text
-#: kraft.adoc:358 kraft.adoc:463
-msgid "Click on btn:[create document]"
-msgstr "Klik op btn:[Nieuw document]"
-
-#. type: Plain text
-#: kraft.adoc:360
-msgid "The window document [creation wizard opens]."
-msgstr "Het document-venster [creation wizard] opent."
-
-#. type: Plain text
-#: kraft.adoc:362
-msgid "Select in document type `invoice`."
-msgstr "Selecteer in document type `invoice` (rekening)."
-
-#. type: Plain text
-#: kraft.adoc:365
-msgid ""
-"Fill in on the whiteboard content a short text about what the invoice is, "
-"like: `cut grass and planted tree for mister Jonson`"
-msgstr ""
-"Vul op het whiteboard een korte tekst over wat de rekening is, zoals: `gras "
-"maaien en boom planten voor de heer Jansen` ."
-
-#. type: Plain text
-#: kraft.adoc:367 kraft.adoc:472
-msgid "Click on btn:[next]"
-msgstr "Klik op btn:[Volgende]"
-
-#. type: Plain text
-#: kraft.adoc:369 kraft.adoc:474
-msgid "Select on the new window the name and address from the client."
-msgstr "Selecteer in het volgende venster de naam en adres van de klant."
-
-#. type: Plain text
-#: kraft.adoc:372 kraft.adoc:477
-msgid ""
-"(if the name and address is not there, click then on btn:[new contact] or on "
-"btn:[edit contact] if you want to edit the contact)"
-msgstr ""
-"(Als de naam en adres niet aanwezig zijn, klik dan op btn:[nieuw "
-"contactpersoon] of op btn:[contactpersoon bewerken] als u het contact wilt "
-"bewerken)"
-
-#. type: Plain text
-#: kraft.adoc:374 kraft.adoc:479
-msgid "Click on btn:[OK]."
-msgstr "Klik op btn:[OK]."
-
-#. type: Plain text
-#: kraft.adoc:376
-msgid "Now opens the window document [items]."
-msgstr "Nu opent het venster document-items."
-
-#. type: Plain text
-#: kraft.adoc:378
-msgid "this window has 2 tabs and the 3 buttons on the top:"
-msgstr "Dit venster heeft bovenaan 2 tabs en 3 knoppen:"
-
-#. type: Plain text
-#: kraft.adoc:380 kraft.adoc:485
-msgid "btn:[Add item...],"
-msgstr "btn:[Item toevoegen...],"
-
-#. type: Plain text
-#: kraft.adoc:381 kraft.adoc:486
-msgid "btn:[Add discount item],"
-msgstr "btn:[Korting geven],"
-
-#. type: Plain text
-#: kraft.adoc:382 kraft.adoc:487
-msgid "btn:[Show templates]."
-msgstr "btn:[Document tonen]."
-
-#. type: Plain text
-#: kraft.adoc:386
-msgid ""
-"In the left tab you can see all the items that we want to place on the "
-"invoice, on the right tab we see the text from the header, the total price "
-"and the footer."
-msgstr ""
-"Aan de linkerkant kunt u alle items zien die we op de rekening willen "
-"plaatsen, aan de rechterkant zien we de tekst van de koptekst, de totale "
-"prijs en de voettekst."
-
-#. type: Plain text
-#: kraft.adoc:390
-msgid ""
-"If you click on the text of the header or the footer on the right side then "
-"the window changes in such a way that you can edit the header or the footer."
-msgstr ""
-"Als u op de tekst van de koptekst of van de voettekst aan de rechterkant "
-"klikt dan verandert het venster zodanig dat u de koptekst of de voettekst "
-"kan bewerken."
-
-#. type: Plain text
-#: kraft.adoc:393
-msgid ""
-"Adapt the header and the footer to your situation, on the footer you can "
-"place a text: `We make your garden-dream come to reality.`."
-msgstr ""
-"Pas de koptekst en de voettekst aan naar uw situatie, in de voettekst kan u "
-"bijvoorbeeld een tekst plaatsen als: Wij maken uw tuindroom werkelijkheid."
-
-#. type: Plain text
-#: kraft.adoc:395 kraft.adoc:489
-msgid "Click on the button btn:[Show templates]."
-msgstr "Klik op de knop btn:[Document tonen]."
-
-#. type: Plain text
-#: kraft.adoc:399
-msgid ""
-"The right tab changes and show now the earlier made templates, we select in "
-"the group Work, the subgroup Plant tree and click then on the button with "
-"the to the left pointing arrow on the bottom side."
-msgstr ""
-"De rechter tab verandert en toont nu de eerder gemaakte sjablonen, we "
-"selecteren in de map 'Work', de submap 'Boom planten' en klikken op de knop "
-"met de naar links wijzende pijl aan de onderkant."
-
-#. type: Plain text
-#: kraft.adoc:401 kraft.adoc:495
-msgid "A new window [Create Item from Template] opens."
-msgstr "Een nieuw venster [Item van sjabloon creëren] opent."
-
-#. type: Plain text
-#: kraft.adoc:404
-msgid ""
-"Because we have planted 2 trees, we go to the field [insert] and change this "
-"to 2 pcs."
-msgstr ""
-"Omdat we 2 bomen hebben geplant, gaan we naar het veld [invoegen] en "
-"veranderen dit naar 2 pcs (in het Nederlands stk)."
-
-#. type: Plain text
-#: kraft.adoc:407
-msgid ""
-"Click on btn:[OK] for saving the result or on btn:[cancel] for discarding "
-"the result."
-msgstr ""
-"Klik op btn:[OK] om het resultaat op te slaan of op btn:[Annuleren] om het "
-"resultaat te verwijderen."
-
-#. type: Plain text
-#: kraft.adoc:409 kraft.adoc:503 kraft.adoc:514
-msgid "The window close and we go back to the main window."
-msgstr "Het venster sluit en we gaan terug naar het hoofdvenster."
-
-#. type: Plain text
-#: kraft.adoc:413
-msgid ""
-"We click again on btn:[Show templates] and select this time `cut grass`, we "
-"click again on the button with the arrow, in the opened window we select "
-"that the grass-field was 24 square meter."
-msgstr ""
-"We klikken opnieuw op btn:[Document tonen] en selecteren deze keer `gras "
-"maaien`, we klikken opnieuw op de knop met de pijl, in het geopende venster "
-"stellen we in dat het grasveld 24 vierkante meter was."
-
-#. type: Plain text
-#: kraft.adoc:416 kraft.adoc:501 kraft.adoc:534 kraft.adoc:570
-msgid ""
-"Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
-"the result."
-msgstr ""
-"Klik op btn:[OK] om het resultaat op te slaan of op btn:[Annuleren] om het "
-"resultaat te verwijderen."
-
-#. type: Plain text
-#: kraft.adoc:418
-msgid ""
-"We add now manually an item by clicking on the button btn:[Add item…] and "
-"the window [create new item] opens."
-msgstr ""
-"We voegen nu handmatig een item toe door te klikken op de knop btn:[Item "
-"toevoegen…] waarna het venster [Item creëren] opent."
-
-#. type: Plain text
-#: kraft.adoc:422
-msgid ""
-"Because we have delivered a special tree, we fill here in the name of the "
-"special tree `liguster`, at the field insert we fill in the number of the "
-"special trees that we have delivered and the price of them."
-msgstr ""
-"Omdat we een speciale boom hebben geleverd, vullen we hier de naam van de "
-"speciale boom `liguster` in, in het veld invoegen vullen we het aantal van "
-"de speciale boom die we geleverd hebben in en de prijs daarvan."
-
-#. type: delimited block _
-#: kraft.adoc:428
-msgid ""
-"WARNING: Remind that in the catalog we can add a profit on the price of the "
-"material, in the invoice and in the offer we can not add a profit on the "
-"price of the material."
-msgstr ""
-"Pas op: verlies niet uit het oog dat we in de catalogus een winst op de "
-"prijs van het materiaal kunnen toevoegen, in de rekening en in de offerte "
-"kunnen we geen winst aan de prijs van het materiaal toevoegen."
-
-#. type: Plain text
-#: kraft.adoc:431
-msgid "We have now an invoice with 3 items."
-msgstr "We hebben nu een rekening met 3 items."
-
-#. type: Plain text
-#: kraft.adoc:434
-msgid ""
-"Click on btn:[OK] for saving the invoice or on btn:[Cancel] for discarding "
-"the invoice."
-msgstr ""
-"Klik op btn:[OK] om de rekening op te slaan of op btn:[Annuleren] om de "
-"rekening te verwijderen."
-
-#. type: Plain text
-#: kraft.adoc:436
-msgid "We click on btn:[OK] and save the result."
-msgstr "We klikken op btn:[OK] en slaan het resultaat op."
-
-#. type: Plain text
-#: kraft.adoc:438
-msgid "Your first invoice is now ready for sending."
-msgstr "Uw eerste rekening is nu klaar voor verzending."
-
-#. type: Plain text
-#: kraft.adoc:441
-msgid ""
-"In the window documents we see our first invoice, notice that this document "
-"has a document number which we can see on the left side."
-msgstr ""
-"In het venster met documenten zien we onze eerste rekening, merk op dat dit "
-"document een documentnummer heeft die we aan de linkerkant zien."
-
-#. type: Plain text
-#: kraft.adoc:444
-msgid ""
-"On top of the window with all the invoices we see the button [Print "
-"Document], on which we click."
-msgstr ""
-"Bovenaan het venster met alle rekeningen zien we de knop btn: [Print "
-"Document], waar we op klikken."
-
-#. type: Plain text
-#: kraft.adoc:447
-msgid ""
-"From the invoice will now a PDF be made which we can print on paper or send "
-"by email to the client."
-msgstr ""
-"Van de rekening zal nu een PDF worden gemaakt die we op papier kunnen "
-"uitprinten of per email naar de klant kunnen versturen."
-
-#. type: Plain text
-#: kraft.adoc:449
-msgid "After this we are going to create a offer for some work in a garden."
-msgstr "Hierna gaan we een offerte maken voor wat werk in een tuin."
-
-#. type: Title ===
-#: kraft.adoc:451
-#, no-wrap
-msgid "Creating an Offer"
-msgstr "Een offerte creëren"
-
-#. type: Plain text
-#: kraft.adoc:454
-msgid ""
-"The client has asked to plant a tree, we will offer 3 different trees which "
-"we can plant."
-msgstr ""
-"De klant heeft gevraagd of we een boom kunnen planten, we bieden 3 "
-"verschillende bomen aan die we kunnen planten."
-
-#. type: Plain text
-#: kraft.adoc:457
-msgid ""
-"Beside this, we have seen that there is a lifeless three, which we will "
-"offer to remove as extra work.  image:create_new_doc.png[Numbercycles,float="
-"\"right\"]"
-msgstr ""
-"Daarnaast hebben we gezien dat er een dode boom is, waarvoor we een aanbod "
-"doen om deze als extra werk te verwijderen. image:create_new_doc."
-"png[Numbercycles,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:459
-msgid ""
-"For the total price we do not want to show the price of the removal of the "
-"lifeless tree and we want for the total price only to show the price of one "
-"tree and not three."
-msgstr ""
-"De totale prijs willen we exclusief de prijs voor de verwijdering van de "
-"dode boom en alleen de prijs van een boom en niet van drie bomen."
-
-#. type: Plain text
-#: kraft.adoc:461
-msgid "Open again the tab btn:[documents]."
-msgstr "Open opnieuw de tab btn:[Documenten]."
-
-#. type: Plain text
-#: kraft.adoc:465
-msgid "The window _Document Creation Wizard_ opens."
-msgstr "Het document-venster [creation wizard] opent."
-
-#. type: Plain text
-#: kraft.adoc:467
-msgid "select in btn:[document type] > btn:[Offer]."
-msgstr "Selecteer in btn: [document type]>btn:[offer]."
-
-#. type: Plain text
-#: kraft.adoc:470
-msgid ""
-"Fill in on the whiteboard content a short text about what the offer is, "
-"like: `plant one tree and removal of lifeless tree`"
-msgstr ""
-"Vul op het whiteboard een korte tekst over waarover de offerte gaat, zoals: "
-"`een boom planten en verwijding van dode boom` ."
-
-#. type: Plain text
-#: kraft.adoc:481
-msgid "Now the window [edit document] opens."
-msgstr "Nu opent het venster [Document bewerken]."
-
-#. type: Plain text
-#: kraft.adoc:483
-msgid "This window has 2 tabs and the 3 buttons on the top:"
-msgstr "Dit venster heeft bovenaan 2 tabs en 3 knoppen:"
-
-#. type: Plain text
-#: kraft.adoc:493
-msgid ""
-"The right tab changes and show now the earlier made templates, we select in "
-"the group `Work`, the subgroup `Plant tree` and click then on the button "
-"with the to the left pointing arrow on the bottom side."
-msgstr ""
-"De rechter tab verandert en toont nu de eerder gemaakte sjablonen, we "
-"selecteren in de map 'Work', de submap 'Boom planten' en klikken op de knop "
-"met de naar links wijzende pijl aan de onderkant."
-
-#. type: Plain text
-#: kraft.adoc:498
-msgid ""
-"Because we want to plant 1 tree, we go to the field [insert] and keep this "
-"on 1 pcs."
-msgstr ""
-"Omdat we 1 boom willen planten, gaan we naar het veld [invoegen] en houden "
-"dit op 1 pcs (in het Nederlands stk)."
-
-#. type: Plain text
-#: kraft.adoc:506
-msgid ""
-"We click on the button btn:[Show templates] and this time we select in "
-"catalog Material"
-msgstr ""
-"We klikken op de knop btn:[Document tonen] en selecteren deze keer de "
-"catalogus Material."
-
-#. type: Plain text
-#: kraft.adoc:510
-msgid ""
-"The material-catalog opens, and we can select in the chapter `trees` the "
-"subchapter `loaf trees` in which we select the `apple tree` which we made "
-"earlier."
-msgstr ""
-"De material-catalogus opent, en we kunnen in de map `Bomen` de submap "
-"`Bladbomen` selecteren waar we de `appelboom` selecteren die we eerder "
-"hebben gemaakt."
-
-#. type: Plain text
-#: kraft.adoc:512
-msgid ""
-"Click on we btn:[OK] for saving the result or on btn:[cancel] for discarding "
-"the result."
-msgstr ""
-"Klik op btn:[OK] om het resultaat op te slaan of op btn:[Annuleren] om het "
-"resultaat te verwijderen."
-
-#. type: Plain text
-#: kraft.adoc:516
-msgid "We add now manually an item by clicking on the button `Add item…`."
-msgstr ""
-"We voegen nu handmatig een item toe door te klikken op de knop `Item "
-"toevoegen...'."
-
-#. type: Plain text
-#: kraft.adoc:518
-msgid "the window [create new item] opens."
-msgstr "Het venster [Nieuw item aanmaken] opent."
-
-#. type: Plain text
-#: kraft.adoc:520
-msgid ""
-"We want that the client can make a choice from an apple, a pear tree and the "
-"liguster."
-msgstr ""
-"We willen dat de klant een keuze kan maken tussen een appelboom, een "
-"perenboom en de liguster."
-
-#. type: Plain text
-#: kraft.adoc:522
-msgid "Therefor we are going to add also a pear tree manually."
-msgstr "Daarom gaan we een perenboom handmatig toevoegen."
-
-#. type: Plain text
-#: kraft.adoc:524
-msgid ""
-"We click on the button btn:[Add item…] and the window [create new item] "
-"opens."
-msgstr ""
-"We klikken op de knop btn:[Item toevoegen…] waarna het venster [Item "
-"creëren] opent."
-
-#. type: Plain text
-#: kraft.adoc:528
-msgid ""
-"We fill here in the name of the tree `Pear tree`, at the field insert we "
-"fill in the number of the special trees that we have delivered and the price "
-"of them."
-msgstr ""
-"We vullen hier de naam van de boom `Perenboom` in, en in veld invoegen "
-"vullen we het aantal van de speciale bomen in die we kunnen leveren en de "
-"prijs daarvan."
-
-#. type: Plain text
-#: kraft.adoc:531
-msgid ""
-"We want add this to the material catalog for future use, therefor we select "
-"also [select this item as template for future documents] and we select in "
-"[save in chapter]`trees`."
-msgstr ""
-"We willen dit aan de materiaalcatalogus toevoegen voor toekomstig gebruik, "
-"daarom selecteren we ook [Dit item als sjabloon bewaren voor latere "
-"documenten] en selecteren we in btn:[opslaan in map] 'bomen'."
-
-#. type: Plain text
-#: kraft.adoc:536
-msgid "We does this again but then for the liguster."
-msgstr "We doen dit ook voor de liguster."
-
-#. type: Plain text
-#: kraft.adoc:538
-msgid "We have now 3 items with trees in the offer."
-msgstr "We hebben nu 3 items met bomen in de offerte."
-
-#. type: Plain text
-#: kraft.adoc:540
-msgid ""
-"As last item we add an item with `remove tree` with 0,5 hour for 32 euro."
-msgstr ""
-"En tenslotte voegen we een item toe met 'boom verwijderen' met 0,5 uur voor "
-"32 euro."
-
-#. type: Plain text
-#: kraft.adoc:542
-msgid "On the left side of an item we can see 2 buttons:"
-msgstr "Links van het item zien we 2 knoppen:"
-
-#. type: Plain text
-#: kraft.adoc:544
-msgid "a button with a flag and a button with what looks like a page."
-msgstr "Een knop met een vlag en een knop met wat lijkt op een pagina."
-
-#. type: Plain text
-#: kraft.adoc:547
-msgid ""
-"We select the upper button with the page after which opens a context-menu "
-"with the items:"
-msgstr ""
-"We selecteren de bovenste knop met de pagina waarna een contextmenu opent "
-"met de items:"
-
-#. type: Plain text
-#: kraft.adoc:549
-msgid "image:context1.png[Context menu,float=\"right\"]"
-msgstr "image:context1.png[Context menu,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:559
-#, no-wrap
-msgid ""
-" [Item kind]->[Normal]\n"
-" [Item kind]>[Alternative]\n"
-" [Item kind]>[On demand]\n"
-" [Tax]\n"
-" [Move up]\n"
-" [Move down]\n"
-" [Lock item]\n"
-" [Unlock item]\n"
-" [Delete item]\n"
-msgstr ""
-" [ Soort item]->[Normaal]\n"
-" [Soort item]>[Alternatief]\n"
-" [Soort item]>[Op verzoek]\n"
-" [Belasting]\n"
-" [Omhoog verplaatsen]\n"
-" [Omlaag verplaatsen]\n"
-" [Item vastzetten]\n"
-" [Item ontgrendelen]\n"
-" [Verwijder item]\n"
-
-#. type: Plain text
-#: kraft.adoc:562
-msgid ""
-"We choose here [Item kind] and change for `pear tree` from [normal] to "
-"[alternative]."
-msgstr ""
-"We selecteren hier [Soort item] en veranderen dit voor `perenboom` van "
-"[normaal] naar [alternatief]."
-
-#. type: Plain text
-#: kraft.adoc:565
-msgid ""
-"We do this also for [liguster] and for [remove tree] we change this from "
-"[normal] to [on demand]."
-msgstr ""
-"We doen dit ook voor [liguster] en voor [Boom verwijderen] veranderen we dit "
-"van [normaal] naar [Op verzoek]."
-
-#. type: Plain text
-#: kraft.adoc:567
-msgid "image:context2.png[Context menu,float=\"right\"]"
-msgstr "image:context2.png[Context menu,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:573
-msgid ""
-"We want to see the result and therefor we click on the button [show "
-"document]."
-msgstr ""
-"We willen het resultaat bekijken en daarom klikken we op de knop btn:"
-"[Document tonen]."
-
-#. type: Plain text
-#: kraft.adoc:579
-msgid ""
-"We see now that the prize of the pear tree, the liguster and the removal of "
-"the tree is not used for the total prize. When we are happy with the result, "
-"we can click on the button btn:[close] after which we click on the button "
-"btn:[Print Document] for making a PDF what we can print out or send to the "
-"client."
-msgstr ""
-"We zien nu dat de prijs voor de perenboom, de liguster en het verwijderen "
-"van de boom niet is gebruikt voor de totale prijs. Als we tevreden zijn met "
-"het resultaat, dan klikken we op de knop btn:[OK] waarna we klikken op de "
-"knop btn:[Document afdrukken] voor het maken van een PDF die we kunnen "
-"uitprinten of naar de klant kunnen sturen."
-
-#. type: Plain text
-#: kraft.adoc:582
-msgid ""
-"After your first invoice is now your first offer now also ready for sending."
-msgstr ""
-"Na uw eerste rekening is nu ook uw eerste offerte klaar voor verzending."
-
-#. type: Title ===
-#: kraft.adoc:584
-#, no-wrap
-#| msgid "Acceptance of order"
-msgid "Creating an Acceptance of Order"
-msgstr "Een Acceptance of order (opdrachtbevestiging) aanmaken"
-
-#. type: Plain text
-#: kraft.adoc:587
-msgid ""
-"The document type \"Acceptance of Order\" is sent subsequently to an offer."
-msgstr ""
-"Het documenttype \"Acceptance of Order\" (opdrachtbevestiging) wordt"
-" verstuurd als vervolg op een offerte."
-
-#. type: Plain text
-#: kraft.adoc:589
-msgid "image:acceptance_o_o_context.png[Numbercycles,float=\"right\"]"
-msgstr "image:acceptance_o_o_context.png[Numbercycles,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:592
-msgid ""
-"When a client has made a request, we will send an offer in wich we describe "
-"which items we will deliver.  Hopefully the client will give an order for "
-"the work."
-msgstr ""
-"Als een klant een verzoek heeft gemaakt, dan zullen we een offer (offerte)"
-" sturen waarin we beschrijven welke items we zullen gaan leveren. Hopelijk"
-" zal de klant een order geven voor het werk."
-
-#. type: Plain text
-#: kraft.adoc:596
-msgid ""
-"It is a good practice to respond on the order with an \"Acceptance of order"
-"\" in which we describe all the items we will deliver.  We can make the "
-"\"Acceptance of order\" on the same way as we made the invoice or the offer "
-"by selecting each item and correcting the number of delivery.  This takes "
-"time and we can make errors by forgetting items or filling an incorrect "
-"number."
-msgstr ""
-"Het is een goede gewoonte om op de order te reageren met een \"Acceptance of"
-" order\" (opdrachtbevestiging) waarin we alle items beschrijven die we zullen"
-" gaan"
-" leveren. We kunnen de \"Acceptance of order\" op dezelfde manier maken als"
-" waarmee we de invoice"
-" (rekening) of de offer (offerte)hebben gemaakt door elk item te selecteren"
-" en het aantal te leveren aan te"
-" passen. Dit kost tijd en we kunnen fouten maken door items te vergeten of"
-" een incorrect aantal in te vullen."
-
-#. type: Plain text
-#: kraft.adoc:598
-msgid ""
-"It can be done quicker by selecting the offer in the list and selecting btn:"
-"[Create Followup Document] from either the context menu or the main menu."
-msgstr ""
-"U kunt dit sneller doen door de offer (offerte) in de lijst te selecteren en"
-" vervolgens btn:[Creëer opvolg document] in het context menu of in het"
-" hoofdmenu te selecteren."
-
-#. type: Plain text
-#: kraft.adoc:600
-#| msgid "We have now an invoice with 3 items."
-msgid "We have now in documenttype the choice from:"
-msgstr "We hebben nu als documenttype de keuze uit:"
-
-#. type: Plain text
-#: kraft.adoc:606
-#, no-wrap
-msgid ""
-" [Acceptance of order]\n"
-" [Invoice]\n"
-" [Partial Invoice]\n"
-" [final Invoice]\n"
-" [Progress Payment Invoice]\n"
-msgstr ""
-" [Acceptance of order]\n"
-" [Invoice]\n"
-" [Partial Invoice]\n"
-" [final Invoice]\n"
-" [Progress Payment Invoice]\n"
-
-#. type: Plain text
-#: kraft.adoc:608
-msgid "image:followup_1.png[Folloup document,float=\"right\"]"
-msgstr "image:followup_1.png[Folloup document,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:612
-msgid ""
-"We select here \"Acceptance of order\".  We have now a copy from the offer "
-"as an Acceptance of order (do not forget to adapt Alternative Delivery items "
-"and on demand items.)"
-msgstr ""
-"We selecteren nu \"Acceptance of order\". We hebben nu een kopie van de"
-" offerte als een Acceptance of order (vergeet niet om de alternatief items "
-"en de op verzoek items aan te passen.)"
-
-#. type: Plain text
-#: kraft.adoc:614
-msgid "image:followup_2.png[Folloup document,float=\"right\"]"
-msgstr "image:followup_2.png[Folloup document,float=\"right\"]"
-
-#. type: Plain text
-#: kraft.adoc:618
-msgid ""
-"You can do this also for the creation of the invoice as a followup for "
-"Acceptance of order.  Each document type has a specific list of follow up "
-"documents.  It is a good practice to describe on the invoice precisely what "
-"was delivered."
-msgstr ""
-"U kunt dit ook doen voor de creatie van de invoice (rekening) als opvolging"
-" van de opdrachtbevestiging. Elk documenttype heeft een specifieke lijst met"
-" opvolg-documenten. Het is een goede gewoonte om op de rekening precies te"
-" omschrijven wat is geleverd."
-
-#. type: Title ==
-#: kraft.adoc:620
-#, no-wrap
-msgid "Customization"
-msgstr "Kraft naar wens aanpassen"
-
-#. type: Plain text
-#: kraft.adoc:624
-msgid ""
-"Kraft can be customized in most of the graphical user interface and in "
-"particular in the output it generates."
-msgstr ""
-"Een groot gedeelte van de grafische interface van Kraft kan aangepast "
-"worden, met name de uitvoer die het genereert."
-
-#. type: Title ===
-#: kraft.adoc:625
-#, no-wrap
-msgid "Output Document Customization"
-msgstr "Documentuitvoer aanpassen"
-
-#. type: Plain text
-#: kraft.adoc:628
-msgid ""
-"To create PDF output documents, the document data that was edited in the "
-"Kraft app is filled into a template. The template defines how the output "
-"document looks like, ie. by font settings, placing of elements and such."
-msgstr ""
-"Om PDF's te creëren, moet een sjabloon worden gevuld met de document data "
-"die in Kraft is gecreëerd. De sjabloon definieert hoe de het resulterende "
-"document eruit komt te zien, d.w.z de ingestelde lettertypes, de plaats van "
-"de elementen en dergelijke."
-
-#. type: Plain text
-#: kraft.adoc:630
-msgid ""
-"The file that is assembled from data and the template is converted to PDF "
-"using a special document creation script. All that is started automatically "
-"by Kraft if a document should be printed."
-msgstr ""
-"Het bestand dat is samengesteld uit een combinatie van de data en de "
-"sjabloon wordt geconverteerd naar een PDF met een speciaal document creation "
-"script. Dit alles wordt automatisch door Kraft gestart als een document "
-"uitgeprint moet worden."
-
-#. type: Plain text
-#: kraft.adoc:632
-msgid ""
-"Each document type in Kraft can have it's own template that is used to "
-"create a PDF. Which one can be set in the Settings dialog for document types."
-msgstr ""
-"In Kraft kan elk documenttype zijn eigen sjabloon hebben voor de creatie van "
-"een PDF. Welk wordt gebruikt kan u instellen in het instellingsvenster voor "
-"documenttypes."
-
-#. type: Title ====
-#: kraft.adoc:633
-#, no-wrap
-msgid "WeasyPrint Documents"
-msgstr "WeasyPrint Documenten"
-
-#. type: Plain text
-#: kraft.adoc:636
-msgid ""
-"With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful HTML and "
-"CSS based generator that makes it very easy to create highly customized "
-"documents which fit the users expectations. The general idea is that "
-"Weasyprint loads html output that is processed to PDF. Usually it is "
-"considering a Cascading Stylesheet file which has a huge impact on how the "
-"PDF document looks in the end."
-msgstr ""
-"Door https://weasyprint.org[WeasyPrint] te gebruiken heeft Kraft een zeer "
-"krachtige op HTML en CSS gebaseerde generator die het zeer eenvoudig maakt "
-"om aangepaste documenten te creëren die voldoen aan de verwachtingen van "
-"gebruikers. Het algemene idee is dat Weasyprint de gecreëerde html laad om "
-"die te verwerken naar een PDF. Normaal gesproken gebruikt het een bestand "
-"met een Cascading Stylesheet om te bepalen hoe het PDF document er aan het "
-"eind eruit komt te zien."
-
-#. type: Plain text
-#: kraft.adoc:638
-msgid ""
-"To use a WeasyPrint based template for a document simply create a template "
-"file and save it with the extension *.gtmpl*. With that file extension Kraft "
-"automatically uses WeasyPrint and also the Grantlee templating for rendering."
-msgstr ""
-"Om voor een document een op WeasyPrint gebaseerde sjabloon te gebruiken, "
-"creëert u eenvoudig een sjabloonbestand en slaat deze op met de extensie *."
-"gtmpl*. Met deze bestand-extensie gebruikt Kraft automatisch WeasyPrint met "
-"daarbij Grantlee sjablonen voor de rendering."
-
-#. type: Plain text
-#: kraft.adoc:640
-msgid ""
-"An example for a WeasyPrint document can be found in the Kraft package in "
-"the reports directory and is called invoice.gtmpl."
-msgstr ""
-"Een voorbeeld van een WeasyPrint document kunt u vinden in het Kraft pakket "
-"in de map reports en draagt de naam invoice.gtmpl."
-
-#. type: Plain text
-#: kraft.adoc:642
-msgid ""
-"To use a WeasyPrint template with one of the Kraft document types just "
-"select the template file name (with the right extension `*.gtml`) in the "
-"Kraft Settings Dialog."
-msgstr ""
-"Om bij een van de Kraft-documenten een Weasyprint-sjabloon te gebruiken, "
-"selecteert u gewoon het bestandsnaam (met de juiste extensie: *.gtml) in het "
-"instellingsvenster van Kraft."
-
-#. type: Plain text
-#: kraft.adoc:644
-msgid ""
-"From version 0.95 on Kraft ships with an example document in the Grantlee- "
-"and WeasyPrint format. It can be found at `/usr/share/kraft/reports/invoice."
-"gtmpl` or https://github.com/dragotin/kraft/blob/master/reports/invoice."
-"gtmpl[online on Github]."
-msgstr ""
-"Vanaf versie 0.95 van Kraft vindt u een voorbeeld document in het Grantlee- "
-"en WeasyPrint formaat. U kunt het vinden in `/usr/share/kraft/reports/"
-"invoice.gtmpl` of https://github.com/dragotin/kraft/blob/master/reports/"
-"invoice.gtmpl[online op Github]."
-
-#. type: Plain text
-#: kraft.adoc:646
-msgid ""
-"To effectively change the look of the document `kraft.css` (https://github."
-"com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) needs to be "
-"considered. It defines most of the look."
-msgstr ""
-"Om daadwerkelijk het uiterlijk van de documenten te veranderen is `kraft."
-"css` (https://github.com/dragotin/kraft/blob/master/reports/kraft.css[op "
-"Github]) heel belangrijk. Deze definieert het meeste van het uiterlijk."
-
-#. type: Title ====
-#: kraft.adoc:647
-#, no-wrap
-msgid "Template Variables"
-msgstr "Sjabloon variabelen"
-
-#. type: Plain text
-#: kraft.adoc:650
-msgid ""
-"To generate the PDF, Kraft has to transfer data from the document you have "
-"been working on in Kraft to the input document that is processed to an PDF "
-"utilising WeasyPrint. For that, Kraft uses a text template. In that, Kraft "
-"replaces variables with the actual values."
-msgstr ""
-"Om de PDF te genereren, moet Kraft de data van het document waaraan u heeft "
-"gewerkt overbrengen naar het input-document dat wordt met de hulp van "
-"Weasyprint verwerkt tot een PDF. Daarvoor gebruikt Kraft een tekstsjabloon. "
-"Daarin vervangt Kraft variabelen door de daadwerkelijke waarden."
-
-#. type: Plain text
-#: kraft.adoc:652
-msgid ""
-"The syntax is based on the Django syntax for templates described in the "
-"https://docs.djangoproject.com/en/3.1/topics/templates/[the docs]."
-msgstr ""
-"De syntax is gebaseerd op de Django syntax voor sjablonen zoals het "
-"beschreven wordt in https://docs.djangoproject.com/en/3.1/topics/templates/"
-"[de documentatie]."
-
-#. type: Title ==
-#: kraft.adoc:656
-#, no-wrap
-msgid "Menus and Shortcuts"
-msgstr "Menu's en sneltoetsen"
-
-#. type: Title ===
-#: kraft.adoc:658
-#, no-wrap
-msgid "Main Application Menu"
-msgstr "Hoofdvenster van het programma"
-
-#. type: Title ====
-#: kraft.adoc:661
-#, no-wrap
-msgid "The File Menu"
-msgstr "Het menu Bestand"
-
-#. type: Plain text
-#: kraft.adoc:666
-#, no-wrap
-msgid ""
-" [File]>[Quit]\n"
-" [Ctrl]+[Q]\n"
-" Quits the application.\n"
-msgstr ""
-" [Bestand]>[Afsluiten]\n"
-" [Ctrl]+[Q]\n"
-" Sluit het programma af.\n"
-
-#. type: Title ====
-#: kraft.adoc:668
-#, no-wrap
-msgid "The Document Menu"
-msgstr "Het document-menu"
-
-#. type: Plain text
-#: kraft.adoc:674
-#, no-wrap
-msgid ""
-" [Document]>[Show Document]\n"
-" [Ctrl]+[R]\n"
-" Opens a window with the selected document for showing it.\n"
-msgstr ""
-" [Document]>[Document tonen]\n"
-" [Ctrl]+[R]\n"
-" Opent een venster met het geselecteerde document om deze te tonen.\n"
-
-#. type: Plain text
-#: kraft.adoc:678
-#, no-wrap
-msgid ""
-" [Document]>[Edit Document]\n"
-" [Ctrl+O]\n"
-" Opens a window with the selected document for editing it.\n"
-msgstr ""
-" [Document]>[Document bewerken]\n"
-" [Ctrl+O]\n"
-" Opent een venster met het geselecteerde document voor bewerking.\n"
-
-#. type: Plain text
-#: kraft.adoc:682
-#, no-wrap
-msgid ""
-" [Document]>[Open Archived document]\n"
-" [Ctrl]+[A]\n"
-" Opens an archived document.\n"
-msgstr ""
-" [Document]>[Open gearchiveerd document]\n"
-" [Ctrl]+[A]\n"
-" Opent een gearchiveerd document.\n"
-
-#. type: Plain text
-#: kraft.adoc:685
-#, no-wrap
-msgid ""
-" [Document]>[Create Document]\n"
-" Opens a window with a wizard for creating a new client-document.\n"
-msgstr ""
-" [Document]>[Nieuw document]\n"
-" Opent een venster met een wizard voor de creatie van een nieuw"
-" client-document.\n"
-
-#. type: Plain text
-#: kraft.adoc:689
-#, no-wrap
-msgid ""
-" [Document]>[Copy Document]\n"
-" Makes a copy of the selected client-document to a new client-document\n"
-" which can belong to an other client or an other documenttype.\n"
-msgstr ""
-" [Document]>[Kopieer Document]\n"
-" Maakt een kopie van het geselecteerde client-document naar een nieuw"
-" client-document\n"
-" Deze kan bij een andere klant horen of zelfs een ander documenttype zijn.\n"
-
-#. type: Plain text
-#: kraft.adoc:692
-#, no-wrap
-msgid ""
-" [Document]>[Follow Document]\n"
-" Opens the selected client-document for editing.\n"
-msgstr ""
-" [Document]>[Creëer een opvolg Document]\n"
-" Kopieert de inhoud van een offerte naar een order-acceptatie of een"
-" rekening.\n"
-
-#. type: Plain text
-#: kraft.adoc:696
-#, no-wrap
-msgid ""
-" [Document]>[Print document]\n"
-" Makes a PDf from the selected client-document for to be mailed or\n"
-" printed.\n"
-msgstr ""
-" [Document]>[Document afdrukken]\n"
-" Creëert een PDF van het geselecteerde client-document zodat u deze kan"
-" emaillen of\n"
-" uitprinten.\n"
-
-#. type: Plain text
-#: kraft.adoc:700
-#, no-wrap
-msgid ""
-" [Document]>[Mail document]\n"
-" [Ctrl]+[M]\n"
-" Mails a document.\n"
-msgstr ""
-" [Document]>[Verzend document]\n"
-" [Ctrl]+[M]\n"
-" Verzend een document per email.\n"
-
-#. type: Title ====
-#: kraft.adoc:703
-#, no-wrap
-msgid "The Settings menu"
-msgstr "Het instellingen-menu"
-
-#. type: Plain text
-#: kraft.adoc:709
-#, no-wrap
-msgid ""
-" [Settings]>[Edit Tag Templates]\n"
-" [Ctrl]+[E]\n"
-" Opens a window where you add, edit or translate the tags (like work,\n"
-" material, plants or discounts).\n"
-msgstr ""
-" [Voorkeuren]>[Tag sjabloon bewerken]\n"
-" [Ctrl]+[E]\n"
-" Opent een venster waarin u tags (zoals work,material, plants of discounts)\n"
-" kunt toevoegen, bewerken of vertalen.\n"
-
-#. type: Plain text
-#: kraft.adoc:713
-#, no-wrap
-msgid ""
-" [Settings]>[Redo initial setup]\n"
-" [Ctrl+R]\n"
-" Redoes the initial setup. After this, a restart of Kraft is required.\n"
-msgstr ""
-" [Voorkeuren]>[De initiële aanmaak opnieuw uitvoeren]\n"
-" [Ctrl+R]\n"
-" Voert de basisconfiguratie opnieuw uit. Hierna is een herstart van Kraft"
-" nodig.\n"
-
-#. type: Plain text
-#: kraft.adoc:717
-#, no-wrap
-msgid ""
-" [Settings]>[Showed toolbars]\n"
-" Here you can decide if the `main toolbar` and the toolbar `Document"
-" Actions`\n"
-" are shown.\n"
-msgstr ""
-" [Voorkeuren]>[Werkbalken]\n"
-" Hier kunt u beslissen of de `hoofdwerkbalk` en de werkbalk `Document"
-" acties`\n"
-" worden getoond.\n"
-
-#. type: Plain text
-#: kraft.adoc:721
-#, no-wrap
-msgid ""
-" [Settings]>[Configure Kraft]\n"
-" [Ctrl]+[Shft]+[,]\n"
-" Here you can configure Kraft.\n"
-msgstr ""
-" [Voorkeuren]>[Instellingen]\n"
-" [Ctrl]+[Shft]+[,]\n"
-" Hier kunt u Kraft instellen.\n"
-
-#. type: Title ===
-#: kraft.adoc:722
-#, no-wrap
-msgid "Document Edit Window"
-msgstr "Het document-bewerkingsvenster."
-
-#. type: Title ====
-#: kraft.adoc:725
-#, no-wrap
-msgid "The context Menu"
-msgstr "Het contextmenu"
-
-#. type: Plain text
-#: kraft.adoc:729
-#, no-wrap
-msgid ""
-" [Context]>[Item kind]\n"
-" change the status from this item between\n"
-msgstr ""
-" [Context]>[Soort item]\n"
-" wijzigt de status van dit item tussen\n"
-
-#. type: Plain text
-#: kraft.adoc:730
-#, no-wrap
-msgid "Normal\n"
-msgstr "Normaal\n"
-
-#. type: Plain text
-#: kraft.adoc:731
-#, no-wrap
-msgid "Alternative\n"
-msgstr "Alternatief\n"
-
-#. type: Plain text
-#: kraft.adoc:732
-#, no-wrap
-msgid "On demand\n"
-msgstr "Op verzoek\n"
-
-#. type: Plain text
-#: kraft.adoc:735
-#, no-wrap
-msgid ""
-" [Context]>[Tax]\n"
-" Seems not working.\n"
-msgstr ""
-" [Context]>[Belasting]\n"
-"Lijkt niet te werken.\n"
-
-#. type: Plain text
-#: kraft.adoc:738
-#, no-wrap
-msgid ""
-" [Context]>[Move up]\n"
-" Moves this item a place up in document.\n"
-msgstr ""
-" [Context]>[Omhoog verplaatsen]\n"
-" Verplaatst dit item een plaats omhoog in het document.\n"
-
-#. type: Plain text
-#: kraft.adoc:741
-#, no-wrap
-msgid ""
-" [Context]>[Move down]\n"
-" Moves this item a place down in document.\n"
-msgstr ""
-" [Context]>[Omlaag verplaatsen]\n"
-" Verplaatst dit item een plaats omlaag in het document.\n"
-
-#. type: Plain text
-#: kraft.adoc:744
-#, no-wrap
-msgid ""
-" [Context]>[Lock item]\n"
-" It is not clear what is does.\n"
-msgstr ""
-" [Context]>[Item vastzetten]\n"
-" Het is niet duidelijk wat het doet.\n"
-
-#. type: Plain text
-#: kraft.adoc:747
-#, no-wrap
-msgid ""
-" [Context]>[Unlock item]\n"
-" It is not clear what is does.\n"
-msgstr ""
-" [Context]>[Item ontgrendelen]\n"
-" Het is niet duidelijk wat het doet.\n"
-
-#. type: Plain text
-#: kraft.adoc:750
-#, no-wrap
-msgid ""
-" [Context]>[Delete item]\n"
-" Removes this item from document.\n"
-msgstr ""
-" [Context]>[Verwijder item]\n"
-" Verwijdert dit item uit het document.\n"
-
-#. type: Title ==
-#: kraft.adoc:753
-#, no-wrap
-msgid "Advanced Topics"
-msgstr "Geavanceerde onderwerpen"
-
-#. type: Plain text
-#: kraft.adoc:756
-msgid ""
-"This chapter describes advanced topics around Kraft. Some Linux knowledge is "
-"required, and setups should be done by experienced Linux administrators and "
-"should be tested carefully."
-msgstr ""
-"Dit hoofdstuk beschrijft geavanceerde onderwerpen rond het gebruik van "
-"Kraft. Daarbij wordt enige kennis van Linux veronderstelt, en het is "
-"verstandig om de instellingen door ervaren Linux-beheerders uit te laten "
-"voeren en deze vervolgens zorgvuldig en uitgebreid te testen."
-
-#. type: Title ===
-#: kraft.adoc:757
-#, no-wrap
-#| msgid "Using Kraft Collaborative"
-msgid "Using Kraft Collaboratively"
-msgstr "Kraft gemeenschappelijk gebruiken."
-
-#. type: Plain text
-#: kraft.adoc:760
-msgid ""
-"Kraft can be used collaborative in a distributed environment. That means "
-"that multiple users work on their desktops with their own Kraft instance on "
-"the same data."
-msgstr ""
-"Kraft kan gemeenschappelijk in een gedistribueerde omgeving gebruikt worden. "
-"Dat houd in dat meerdere gebruikers op hun eigen desktop met hun eigen Kraft "
-"instance met dezelfde data kunnen werken."
-
-#. type: Plain text
-#: kraft.adoc:762
-msgid ""
-"This whole topic is a subject to change, as Kraft will evolve to use "
-"ownCloud as a private cloud solution to store the data."
-msgstr ""
-"De hele situatie is aan verandering onderhevig, omdat Kraft in de nabije "
-"toekomst ownCloud als privé Cloud voor de opslag van de data zal gebruiken."
-
-#. type: Title ====
-#: kraft.adoc:763
-#, no-wrap
-msgid "Sharing Database and Document Pool"
-msgstr "Database en Document-pool gezamenlijk gebruiken"
-
-#. type: Plain text
-#: kraft.adoc:766
-msgid ""
-"The simplest case is that two or more Kraft instances use a database "
-"together and access the same pool of PDF documents on the harddisk. For "
-"simplicity this describes only two Kraft instances."
-msgstr ""
-"De eenvoudigste situatie is als twee of meer Kraft-gebruikers de database "
-"gemeenschappelijk gebruiken en toegang tot dezelfde pool van PDF-documenten "
-"op de harde schijf hebben. Om het eenvoudig te houden, worden hier de "
-"situatie met twee gebruikers beschreven."
-
-#. type: Plain text
-#: kraft.adoc:768
-msgid ""
-"A typical use case would be: Two different Linux users want to use Kraft. "
-"They both have their own computer but only work in the same network. For "
-"example this would describe a situation with one main office machine that "
-"runs Kraft in normal mode, plus a notebook with Kraft in read only mode to "
-"view documents, check catalogs and such."
-msgstr ""
-"Een veelvoorkomende situatie kan als volgt zijn: twee verschillende Linux "
-"gebruikers willen Kraft gebruiken. Ze hebben beide hun eigen computer en "
-"werken in hetzelfde netwerk. Dit voorbeeld beschrijft een situatie met een "
-"hoofdkantoor die Kraft in de normale modus gebruiken, en een Notebook met "
-"Kraft, die in de read-only modus is om de documenten te bekijken, de "
-"catalogus te raadplegen en dergelijke."
-
-#. type: Plain text
-#: kraft.adoc:770
-msgid "For that, the following prerequisites have to be met:"
-msgstr "Daarvoor is het volgende vereist:"
-
-#. type: Plain text
-#: kraft.adoc:772
-msgid "MySQL or MariaDB is used as database backend. Sqlite is not supported."
-msgstr ""
-"Als Database-Backend wordt MySQL of MariaDB gebruikt. Sqlite is niet "
-"mogelijk."
-
-#. type: Plain text
-#: kraft.adoc:773
-msgid ""
-"The database is accessible with a mysql user and from each machine for both "
-"users."
-msgstr ""
-"De Database is met de gebruiker MySQL vanuit beide computers bereikbaar."
-
-#. type: Plain text
-#: kraft.adoc:774
-msgid "The document store directory has to be shared."
-msgstr ""
-"De map waarin de documenten worden opgeslagen, wordt voor beide computers "
-"bereikbaar zijn (shared)."
-
-#. type: delimited block _
-#: kraft.adoc:778
-msgid ""
-"WARNING: There is no protection against having both users editing the same "
-"document. Because that is dangerous and can lead to unpredictable results, "
-"it is recommended to run all instances of Kraft except the main one in read "
-"only mode. This is done by starting Kraft with the `-r` command line switch."
-msgstr ""
-"Pas op: Er is geen beveiliging tegen het feit dat beide gebruikers tegelijk "
-"hetzelfde document kunnen bewerken. Om dat dit gevaarlijk is en tot "
-"onvoorziene resultaten kan leiden, raden wij aan om Kraft buiten het kantoor "
-"alleen in de readonly-modus te gebruiken. Deze readonly-modus wordt met de "
-"parameter -r ingeschakeld."
-
-#. type: Plain text
-#: kraft.adoc:781
-#, no-wrap
-msgid "**Sharing the Database**\n"
-msgstr "**De database gezamenlijk gebruiken**\n"
-
-#. type: Plain text
-#: kraft.adoc:783
-msgid ""
-"The database server should be installed on the main machine or a dedicated "
-"device like a NAS. Networking speed influences the comfort to use obviously."
-msgstr ""
-"De Database-server moet op de hoofdmachine geïnstalleerd zijn, of het moet "
-"op een gespecialiseerd apparaat zoals een NAS geïnstalleerd zijn. De "
-"snelheid van het netwerk beïnvloed de bruikbaarheid natuurlijk enorm."
-
-#. type: Plain text
-#: kraft.adoc:785
-msgid "Find howtos on the internet how to setup MySQL accordingly."
-msgstr "Howtos voor het gebruik van MySQL zijn op het internet te vinden."
-
-#. type: Plain text
-#: kraft.adoc:787
-#, no-wrap
-msgid "**Sharing the Document Pool Directory**\n"
-msgstr "**De map met de document Pool delen (sharen)**\n"
-
-#. type: Plain text
-#: kraft.adoc:789
-msgid ""
-"Kraft writes generated PDF documents into a local directory. Where that is "
-"can be configured in the Kraft Config file. The config file has to be "
-"adopted on all instances."
-msgstr ""
-"Kraft schrijft de gegenereerde PDF's in een lokale map. Welke dat is, kunt u "
-"instellen in het config-bestand van Kraft. Het config-bestand moet voor alle "
-"exemplaren van Kraft correct ingesteld zijn."
-
-#. type: Plain text
-#: kraft.adoc:791
-msgid ""
-"That is located in each users home directory, in the path `.config/kraftrc`. "
-"It has to contain the following config value:"
-msgstr ""
-"U kunt deze vinden in de thuismap van de gebruiker met de relatieve pad `."
-"config/kraftrc`. Daarin moet de volgende tekst voorkomen:"
-
-#. type: Plain text
-#: kraft.adoc:793 kraft.adoc:797
-msgid "```"
-msgstr "```"
-
-#. type: Plain text
-#: kraft.adoc:795
-msgid "PdfOutputDir=/data/space/kraftdoc/pdf"
-msgstr "PdfOutputDir=/data/space/kraftdoc/pdf"
-
-#. type: Plain text
-#: kraft.adoc:799
-msgid ""
-"There are different ways how share that directory, ie. NFS or SMB storages. "
-"It is important that both users from both machines can list and access the "
-"files. The main user needs read and write access, read only users only need "
-"read access to the files."
-msgstr ""
-"Er zijn verschillende manieren om de map te delen (sharen), bijvoorbeeld een "
-"NFS of een SMB Server. Het is belangrijk dat gebruikers van beide machines "
-"toegang hebben tot deze bestanden. De hoofdgebruiker heeft lees- en "
-"schrijfrechten nodig, de read-only gebruiker heeft voor de bestanden alleen "
-"lees-rechten nodig."
-
-#. type: Plain text
-#: kraft.adoc:801
-msgid ""
-"A recommended setup is a NFS share with autofs which is set up on the main "
-"machine. To manage file access a certain group should be set up on the "
-"machines with which access can be managed."
-msgstr ""
-"Een aanbevolen opstelling is een NFS Share met autofs, die op de "
-"hoofdmachine is ingesteld. Om de toegang tot de bestanden te beheren, raden "
-"wij aan om een gebruikersgroep te creëren waarin u de toegangsrechten kan "
-"beheren."
-
-#. type: Plain text
-#: kraft.adoc:803
-#, no-wrap
-msgid "**Starting Kraft in read-only mode**\n"
-msgstr "**Kraft in read-only modus**\n"
-
-#. type: Plain text
-#: kraft.adoc:805
-msgid ""
-"To start Kraft in read-only mode, start the binary with the `-r` command "
-"line switch."
-msgstr ""
-"Om Kraft in de read-only modus te starten, moet het programma met de "
-"volgende parameter `-r` gestart worden."
-
-#. type: Title ===
-#: kraft.adoc:806
-#, no-wrap
-msgid "XRechnung Support"
-msgstr "Gebruik van XRechnung"
-
-#. type: Plain text
-#: kraft.adoc:809
-msgid ""
-"Kraft supports the XRechnung standard. That is a digital format for "
-"electronic invoicing, and it passed as law in Germany and follows a EU "
-"directive. The XRechnung is a XML file format designed for that purpose."
-msgstr ""
-"Kraft ondersteund het gebruik van de XRechnung standaard. Dat is een digitaal"
-" formaat voor electronische rekeningen, en als wet ingevoerd in Duitsland wat"
-" een EU richtlijn volgt. De XRechnung is een XML-bestandsformaat ontworpen"
-" voor dat"
-" doel."
-
-#. type: Plain text
-#: kraft.adoc:811
-msgid ""
-"To use the XRechnung Export productivly, a little manual work is still "
-"needed in Kraft. Kraft creates the XML file based on a template, very "
-"similar to the normal PDF documents. That means that it loads a template "
-"that contains static elements (ie. the company address) that do not change "
-"between different invoices. The dynamic elements (customer data, items etc.) "
-"are filled into the template during the generation step."
-msgstr ""
-"Om de XRechnung Export productief te gebruiken, is nog een beetje handwerk in"
-" Kraft nodig. Kraft creëert het XML-bestand aan de hand van een sjabloon,"
-" vergelijkbaar met de normale PDF documenten. Dit houdt in dat het een"
-" sjabloon laadt wat statische elementen bevat (b.v. het adres van het"
-" bedrijf) die niet veranderen tussen de verschillende rekeningen. De"
-" dynamische elementen (data over de klant, items enz.) "
-"worden in het sjabloon geplaatst tijdens de stap van het generen."
-
-#. type: Plain text
-#: kraft.adoc:813
-msgid ""
-"In order to generate correct XRechnung files for the specific company, the "
-"user has to adopt the template file manually to the companies needs. Note "
-"that this has only to be done once and should be easy for a person with a "
-"bit computer experience (Basic knowledge about XML appreciated!)."
-msgstr ""
-"Om correcte XRechnung-bestanden te generen voor het desbetreffende bedrijf,"
-" moet de gebruiker het sjabloonbestand handmatig aanpassen aan de eisen van"
-" het bedrijf. Merk op dat u dat maar eenmalig hoeft te doen en dat het niet"
-" moeilijk is voor iemand met een beetje computerervaring (Basiskennis van XML"
-" is gewenst)."
-
-#. type: Plain text
-#: kraft.adoc:815
-msgid ""
-"To adapt the file to the needs of the company, it is best to start with the "
-"https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung."
-"xrtmpl[example XRechnung file]. It has to be downloaded and saved into a "
-"location that the user can edit. Open it in a normal text editor, such as "
-"https://kate-editor.org/[Kate]."
-msgstr ""
-"Om het bestand aan te passen aan de eisen van het bedrijf, kunt u het beste"
-" beginnen met het "
-"https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung."
-"xrtmpl[voorbeeld XRechnung-bestand]. U moet het downloaden en vervolgens"
-" opslaan op een plek waar u het kan bewerken. Open het in een normale"
-" tekstverwerker, zoals https://kate-editor.org/[Kate]."
-
-#. type: Plain text
-#: kraft.adoc:817
-msgid ""
-"Read carefully through the file without being scared off by the XML format. "
-"All user strings (ie. company name, address and such) are user specific and "
-"should be replaced accordingly. Find https://www.xoev.de/"
-"xrechnung-16828[details about the format] here to better understand the "
-"meaning of the fields."
-msgstr ""
-"Bestudeer nauwkeurig het bestand zonder dat u afgeschrikt wordt door het"
-" XML-opmaak. "
-"Alle user strings (d.w.z. bedrijfsnaam, adres en dergelijke) zijn specifiek"
-" voor de gebruiker en moeten daarom overeenkomstig vervangen worden. "
-"Zoek https://www.xoev.de/xrechnung-16828[de details over de opmaak] hier op"
-" voor een beter begrip van"
-" de betekenis van de velden."
-
-#. type: Plain text
-#: kraft.adoc:819
-msgid ""
-"Make sure to not disturb the proper XML format and do not change places "
-"where the template format `{{ template_name }}` is used."
-msgstr ""
-"Zorg ervoor dat u de correcte XML-opmaak niet verstoort en wijzig niet de"
-" locatie van waar `{{ template_name }}` is gebruikt."
-
-#. type: Plain text
-#: kraft.adoc:821
-msgid ""
-"Once the file is adopted to the needs, open the Settings dialog of Kraft and "
-"insert the filename into the entry field for the XRechnung Template File on "
-"the Document Defaults page."
-msgstr ""
-"Nadat het bestand is aangepast aan de wensen, opent u het dialoogvenster voor"
-" de instellingen van Kraft en voer de bestandsnaam in het invoerveld voor het"
-" XRechnung Sjabloonbestand in de pagina voor document-standaarden."
-
-#. type: Plain text
-#: kraft.adoc:823
-msgid ""
-"After that step, the btn:[Export XRechung] menu item will open a dialog to "
-"pick a filename where to save the XRechnung invoice to."
-msgstr ""
-"Na deze stap zal het menu item btn:[Export XRechung] een dialoogvenster"
-" openen voor het ingeven van het bestandsnaam waarmee de XRechnung rekening"
-" wordt opgeslagen."
-
-#. type: Plain text
-#: kraft.adoc:825
-msgid "This file can now be transfered to the receiver of the invoice."
-msgstr "Dit bestand kan nu verzonden worden naar de ontvanger van de rekening."
-
-#. type: Plain text
-#: kraft.adoc:827
-msgid ""
-"There are validators for invoices in XRechnung format out there in the "
-"internet. It is useful to verify the format of the Kraft exported XRechnung."
-msgstr ""
-"Er zijn validators voor rekeningen in het XRechnung formaat op het internet"
-" te vinden. Het is verstandig om het bestandsformaat van de XRechnung dat uit"
-" Kraft is geëxporteerd te laten valideren."
-
-#. type: Title ==
-#: kraft.adoc:829
-#, no-wrap
-msgid "Credits and License"
-msgstr "Dankbetuigingen en licentie"
-
-#. type: Plain text
-#: kraft.adoc:832
-#| msgid "Program and documentation copyright 2004–2021 Klaas Freitag"
-msgid "Program and documentation copyright 2004–2022 Klaas Freitag"
-msgstr "Auteursrecht software en documentatie 2004-2022 Klaas Freitag"
-
-#. type: Plain text
-#: kraft.adoc:833
-msgid "Documentation copyright 2020 Ronald Stroethoff"
-msgstr "Documentatie auteursrecht 2020 Ronald Stroethoff"
-
-#~ msgid ""
-#~ "Kraft is designed to use the data entries from the KDE address book which "
-#~ "is a module of the https://community.kde.org/KDE_PIM[KDE PIM], an "
-#~ "information management application.  All addresses are collected in the "
-#~ "https://userbase.kde.org/KAddressBook[KAdressBook]."
-#~ msgstr ""
-#~ "Kraft werkt met de adresgegevens uit het KDE adresboek, wat een onderdeel "
-#~ "is van https://community.kde.org/KDE_PIM[KDE PIM], wat een informatie-"
-#~ "beheers-programma is. Alle adressen worden in het programma https://"
-#~ "userbase.kde.org/KAddressBook[KAdressBook] verzameld."
-
-#~ msgid ""
-#~ "image:numbercycles.png[Numbercycles,float=\"right\"] Numbercycles are "
-#~ "used to define the *document number* which is printed on every document.  "
-#~ "The document number is an important unique identifier of the document and "
-#~ "often must follow regulations."
-#~ msgstr ""
-#~ "image:numbercycles.png[Numbercycles,float=\"right\"] Volgnummersystemen "
-#~ "worden gebruikt voor de definitie van het *Documentnummer*, die op elk "
-#~ "document wordt afgedrukt. Het documentnummer is een belangrijk uniek "
-#~ "identificatie van het document die vaak aan bepaalde regels moet voldoen."
-
-#~ msgid ""
-#~ "Different document types can use the same number cycle to generate ids "
-#~ "from.  Number cycles are identified by their name.  User can create new "
-#~ "number cycles and edit them clicking on the button btn:[Edit Number "
-#~ "Cycles...]"
-#~ msgstr ""
-#~ "Verschillende documenttypes kunnen hetzelfde volgnummersysteem gebruiken "
-#~ "om ID's te generen. Volgnummersystemen zijn door hun naam te herkennen . "
-#~ "Gebruikers kunnen nieuwe volgnummersystemen creëren en ze aanpassen door "
-#~ "te klikken op de knop btn:[Volgnummersysteem instellen...] ."
-
-#~ msgid "We go first to catalogs."
-#~ msgstr "We gaan eerst naar de catalogi."
-
-#, no-wrap
-#~ msgid "Catalog"
-#~ msgstr "Catalogus"
-
-#~ msgid "Here we fill in:"
-#~ msgstr "Hier vullen we in:"
+#: rc.cpp:114 rc.cpp:1024 rc.cpp:1862
+#, kde-format
+msgid "Needed materials for one unit of this template:"
+msgstr "Benodigde materiaal voor een exemplaar van dit sjabloon:"
+
+#: rc.cpp:123 rc.cpp:1033 rc.cpp:1871 materialkataloglistview.cpp:42
+#, kde-format
+msgid "Unit"
+msgstr "Eenheid"
+
+#: rc.cpp:129 rc.cpp:1039 rc.cpp:1877
+#, kde-format
+msgid "adds a new material calculation part"
+msgstr "Voeg nieuwe post materiaal toe"
+
+#: rc.cpp:135 rc.cpp:1045 rc.cpp:1883
+#, kde-format
+msgid "edits the current material part"
+msgstr "Bewerk de geselecteerde post materiaal"
+
+#: rc.cpp:141 rc.cpp:1051 rc.cpp:1889
+#, kde-format
+msgid "deletes the current material calculation part"
+msgstr "Verwijdert de geselecteerde post materiaal"
+
+#: rc.cpp:147 rc.cpp:1057 rc.cpp:1895
+#, kde-format
+msgid "Overall Price per Unit"
+msgstr "Totale prijs per eenheid"
+
+#: rc.cpp:150 rc.cpp:1060 rc.cpp:1898
+#, kde-format
+msgid "&Manual Price"
+msgstr "Hand&matige prijs"
+
+#: rc.cpp:153 rc.cpp:1063 rc.cpp:1901
+#, kde-format
+msgid "Calculated Price"
+msgstr "Berekende prijs"
+
+#: rc.cpp:156 rc.cpp:1066 rc.cpp:1904
+#, kde-format
+msgid "Fix Costs Part:"
+msgstr "Post vaste kosten:"
+
+#: rc.cpp:159 rc.cpp:1069 rc.cpp:1907
+#, kde-format
+msgid "Material Part:"
+msgstr "Post materiaal:"
+
+#: rc.cpp:162 rc.cpp:1072 rc.cpp:1910
+#, kde-format
+msgid "Profit:"
+msgstr "Winst:"
+
+#: rc.cpp:166 rc.cpp:1076 rc.cpp:1914
+#, no-c-format, kde-format
+msgid " %"
+msgstr " %"
+
+#: rc.cpp:169 rc.cpp:1079 rc.cpp:1917
+#, kde-format
+msgid "Time Calculation Part:"
+msgstr "Post arbeid:"
+
+#: rc.cpp:172 rc.cpp:1082 rc.cpp:1920
+#, kde-format
+msgid "Calculated Price:"
+msgstr "Berekende prijs: "
+
+#: rc.cpp:175 rc.cpp:1085 rc.cpp:1923
+#, kde-format
+msgid "88.888,88 €"
+msgstr "88.888,88 €"
+
+#: rc.cpp:178 rc.cpp:1088 rc.cpp:1959
+#, kde-format
+msgid "Database creation and initial schema setup:"
+msgstr "Database aanmaken en de initiële aanmaak opnieuw uitvoeren."
+
+#: rc.cpp:181 rc.cpp:190 rc.cpp:844 rc.cpp:1091 rc.cpp:1100 rc.cpp:1706
+#: rc.cpp:1962 rc.cpp:1971 rc.cpp:2598
+#, kde-format
+msgid "0 / 129"
+msgstr "0 / 129"
+
+#: rc.cpp:184 rc.cpp:193 rc.cpp:847 rc.cpp:1094 rc.cpp:1103 rc.cpp:1709
+#: rc.cpp:1965 rc.cpp:1974 rc.cpp:2601
+#, kde-format
+msgid "X"
+msgstr "X"
+
+#: rc.cpp:187 rc.cpp:1097 rc.cpp:1968
+#, kde-format
+msgid "Filling the database with initial values:"
+msgstr "Bezig met het vullen van de database met beginwaarden:"
+
+#: rc.cpp:196 rc.cpp:850 rc.cpp:1106 rc.cpp:1712 rc.cpp:1977 rc.cpp:2604
+#, kde-format
+msgid "Status: "
+msgstr "Status: "
+
+#: rc.cpp:199 rc.cpp:1109 rc.cpp:1980
+#, kde-format
+msgid "Database setup status..."
+msgstr "Status van het instellen van de database..."
+
+#: rc.cpp:202 rc.cpp:1112 rc.cpp:1926
+#, kde-format
+msgid "Bruns Data File:"
+msgstr "Bruns gegevensbestand:"
+
+#: rc.cpp:205 rc.cpp:1115 rc.cpp:1929
+#, kde-format
+msgid "Bruns Key File:"
+msgstr "Bruns indexbestand:"
+
+#: rc.cpp:208 rc.cpp:1118 rc.cpp:1932
+#, kde-format
+msgid "Qt Database Driver:"
+msgstr "Qt Database Driver:"
+
+#: rc.cpp:211 rc.cpp:1121 rc.cpp:1935
+#, kde-format
+msgid "Database Server:"
+msgstr "Database Server:"
+
+#: rc.cpp:214 rc.cpp:1124 rc.cpp:1938
+#, kde-format
+msgid "Server Port:"
+msgstr "Server Port:"
+
+#: rc.cpp:217 rc.cpp:1127 rc.cpp:1941
+#, kde-format
+msgid "Database Name"
+msgstr "Database naam"
+
+#: rc.cpp:220 rc.cpp:700 rc.cpp:1130 rc.cpp:1555 rc.cpp:1944 rc.cpp:2399
+#, kde-format
+msgid "Database User:"
+msgstr "Database gebruiker:"
+
+#: rc.cpp:223 rc.cpp:1133 rc.cpp:1947
+#, kde-format
+msgid "Database Password:"
+msgstr "Database wachtwoord:"
+
+#: rc.cpp:226 rc.cpp:1136 rc.cpp:1950
+#, kde-format
+msgid "The default database name when creating new databases"
+msgstr "De standaard database-naam bij de aanmaak van een nieuwe database"
+
+#: rc.cpp:229 rc.cpp:1139 rc.cpp:1953
+#, kde-format
+msgid "File Name"
+msgstr "Bestandsnaam"
+
+#: rc.cpp:232 rc.cpp:1142 rc.cpp:1956
+#, kde-format
+msgid "The path where database file are stored. Leave empty!"
+msgstr "De locatie waar database-bestanden zijn opgeslagen. Laat dit leeg!"
+
+#: rc.cpp:235 rc.cpp:1145 rc.cpp:2016
+#, kde-format
+msgid "Database Update:"
+msgstr "Bijwerken database:"
+
+#: rc.cpp:238 rc.cpp:1148 rc.cpp:2019
+#, kde-format
+msgid "Overall Progress:"
+msgstr "Totale voortgang:"
+
+#: rc.cpp:241 rc.cpp:1151 rc.cpp:2022
+#, kde-format
+msgid "Detail Progress:"
+msgstr "Detail voortgang:"
+
+#: rc.cpp:244 rc.cpp:1154 rc.cpp:2025
+#, kde-format
+msgid "Status:"
+msgstr "Status: "
+
+#: rc.cpp:247 rc.cpp:1289 rc.cpp:1727
+#, kde-format
+msgid ""
+"<html><head/><body><p>Kraft uses a database backend to store values. By "
+"default it uses a file based database with easy setup targeted to single "
+"user mode.</p><p><br/></p></body></html>"
+msgstr ""
+"<html><head/><body><p>Kraft gebruikt als backend een database om waarden in "
+"op te slaan. Standaard gebruikt het een makkelijk op te zetten database "
+"bedoeld voor gebruik door een enkele "
+"gebruiker.</p><p><br/></p></body></html>"
+
+#: rc.cpp:250 rc.cpp:1292 rc.cpp:1730
+#, kde-format
+msgid "SQLite 3 - file based database (default)"
+msgstr "SQLite 3 - bestand gebaseerde database (standaard)"
+
+#: rc.cpp:253 rc.cpp:1295 rc.cpp:1733
+#, kde-format
+msgid "MySQL Serverbased Database for advanced Setups"
+msgstr "MySQL Servergebaseerde Database voor een geavanceerde opzet"
+
+#: rc.cpp:256 rc.cpp:865 rc.cpp:1736
+#, kde-format
+msgid "Footer Texts"
+msgstr "Voettekst"
+
+#: rc.cpp:259 rc.cpp:868 rc.cpp:1739
+#, kde-format
+msgid "&Summary Text on Last Page:"
+msgstr "Samenvatting op laatste pagina:"
+
+#: rc.cpp:262 rc.cpp:871 rc.cpp:1742
+#, kde-format
+msgid "&Greeting:"
+msgstr "Aanhef"
+
+#: rc.cpp:268 rc.cpp:877 rc.cpp:1748
+#, kde-format
+msgid "Document &Tax:"
+msgstr "Belas&ting per document:"
+
+#: rc.cpp:271 rc.cpp:880 rc.cpp:2028
+#, kde-format
+msgid "TextLabel"
+msgstr "Tekstlabel"
+
+#: rc.cpp:274 rc.cpp:883 rc.cpp:2031
+#, kde-format
+msgid "&Project:"
+msgstr "&Project:"
+
+#: rc.cpp:277 rc.cpp:886 rc.cpp:2034
+#, kde-format
+msgid "&Whiteboard:"
+msgstr "&Whiteboard:"
+
+#: rc.cpp:280 rc.cpp:889 rc.cpp:2037
+#, kde-format
+msgid ""
+"Enter a label that describes the project. This may appear on the customer "
+"document."
+msgstr ""
+"Geef een label op dat het project beschrijft. Dit kan ook op het document "
+"voor de klant verschijnen."
+
+#: rc.cpp:283 rc.cpp:892 rc.cpp:2040
+#, kde-format
+msgid "Postal &Address:"
+msgstr "Post &Adres:"
+
+#: rc.cpp:286 rc.cpp:895 rc.cpp:2043
+#, kde-format
+msgid "not selected"
+msgstr "niet ingesteld"
+
+#: rc.cpp:289 rc.cpp:898 rc.cpp:2046
+#, kde-format
+msgid "Select an addressee from the address books."
+msgstr "Selecteer een adres in het adresboek."
+
+#: rc.cpp:292 rc.cpp:901 rc.cpp:2049
+#, kde-format
+msgid "select..."
+msgstr "Selecteren..."
+
+#: rc.cpp:295 rc.cpp:904 rc.cpp:2052
+#, kde-format
+msgid "&Salutatory Address:"
+msgstr "Aanhef:"
+
+#: rc.cpp:298 rc.cpp:907 rc.cpp:2055
+#, kde-format
+msgid "Customer:"
+msgstr "Klant:"
+
+#: rc.cpp:301 rc.cpp:910 rc.cpp:2058
+#, kde-format
+msgid "&Entry Text on First Page:"
+msgstr "Geeft tekst op voor eerste pagina:"
+
+#: rc.cpp:304 rc.cpp:733 rc.cpp:1157 rc.cpp:1588 rc.cpp:2061 rc.cpp:2432
+#, kde-format
+msgid "Click to add a new document type to the list."
+msgstr "Klik om een nieuw documenttype aan de lijst toe te voegen."
+
+#: rc.cpp:310 rc.cpp:1163 rc.cpp:2067
+#, kde-format
+msgid "click to edit the selected document type name"
+msgstr "Klik om de naam van het geselecteerde documenttype te bewerken."
+
+#: rc.cpp:316 rc.cpp:739 rc.cpp:1169 rc.cpp:1594 rc.cpp:2073 rc.cpp:2438
+#, kde-format
+msgid "click to remove the current document type"
+msgstr "Klik om het geselecteerde documenttype te verwijderen."
+
+#: rc.cpp:322 rc.cpp:1175 rc.cpp:2079
+#, kde-format
+msgid "Unique Document Number"
+msgstr "Uniek documentnummer"
+
+#: rc.cpp:325 rc.cpp:1178 rc.cpp:2082
+#, kde-format
+msgid "Number &Cycle:"
+msgstr "Volg&nummer:"
+
+#: rc.cpp:328 rc.cpp:337 rc.cpp:340 rc.cpp:724 rc.cpp:1181 rc.cpp:1190
+#: rc.cpp:1193 rc.cpp:1579 rc.cpp:2085 rc.cpp:2094 rc.cpp:2097 rc.cpp:2423
+#, kde-format
+msgid "example"
+msgstr "voorbeeld"
+
+#: rc.cpp:331 rc.cpp:1184 rc.cpp:2088
+#, kde-format
+msgid "ident Template:"
+msgstr "ident Template:"
+
+#: rc.cpp:334 rc.cpp:718 rc.cpp:1187 rc.cpp:1573 rc.cpp:2091 rc.cpp:2417
+#, kde-format
+msgid "Example Id:"
+msgstr "Voorbeeld volgnummer:"
+
+#: rc.cpp:343 rc.cpp:1196 rc.cpp:2100
+#, kde-format
+msgid "Counter:"
+msgstr "Teller:"
+
+#: rc.cpp:346 rc.cpp:1199 rc.cpp:2103
+#, kde-format
+msgid "&Edit Number Cycles..."
+msgstr "Volgnummersysteem inst&ellen..."
+
+#: rc.cpp:349 rc.cpp:1202 rc.cpp:2106
+#, kde-format
+msgid "Template for PDF Creation"
+msgstr "Sjabloon voor aanmaak PDF"
+
+#: rc.cpp:352 rc.cpp:1205
+#, kde-format
+msgid "&Template File"
+msgstr "Sjabloon-bes&tand"
+
+#: rc.cpp:355 rc.cpp:1208 rc.cpp:2115
+#, kde-format
+msgid "W&atermark:"
+msgstr "W&atermerk:"
+
+#: rc.cpp:358 rc.cpp:1211 rc.cpp:2121
+#, kde-format
+msgid "no watermark"
+msgstr "geen watermerk"
+
+#: rc.cpp:361 rc.cpp:1214 rc.cpp:2124
+#, kde-format
+msgid "on first page"
+msgstr "op eerste pagina"
+
+#: rc.cpp:364 rc.cpp:1217 rc.cpp:2127
+#, kde-format
+msgid "on all pages"
+msgstr "op alle pagina´s"
+
+#: rc.cpp:367 rc.cpp:1220
+#, kde-format
+msgid "&Watermark File"
+msgstr "&Watermerk bestand"
+
+#: rc.cpp:370 rc.cpp:1223 rc.cpp:1983
+#, kde-format
+msgid "Calculation Parts Fix"
+msgstr "Post vaste kosten"
+
+#: rc.cpp:373 rc.cpp:1226 rc.cpp:1986
+#, kde-format
+msgid "<h1>Fix Cost Parts</h1>"
+msgstr "<h1>Post vaste kosten</h1>"
+
+#: rc.cpp:376 rc.cpp:1229 rc.cpp:1989
+#, kde-format
+msgid "Add a fix cost for one unit of the template:"
+msgstr "Voert een post vaste kosten toe aan dit sjabloon:"
+
+#: rc.cpp:379 rc.cpp:808 rc.cpp:1232 rc.cpp:1529 rc.cpp:1992 rc.cpp:2528
+#, kde-format
+msgid "&Label:"
+msgstr "&Label:"
+
+#: rc.cpp:382 rc.cpp:1235 rc.cpp:1995
+#, kde-format
+msgid "describing text"
+msgstr "Omschrijving"
+
+#: rc.cpp:385 rc.cpp:1238 rc.cpp:1998
+#, kde-format
+msgid "amortisation"
+msgstr "korting"
+
+#: rc.cpp:388 rc.cpp:680 rc.cpp:1241 rc.cpp:1511 rc.cpp:2001 rc.cpp:2211
+#, kde-format
+msgid "&Amount:"
+msgstr "&Aantal:"
+
+#: rc.cpp:391 rc.cpp:1244 rc.cpp:2004
+#, kde-format
+msgid "amount multiplier"
+msgstr "amount multiplier"
+
+#: rc.cpp:394 rc.cpp:1247 rc.cpp:2007
+#, kde-format
+msgid "at &Price:"
+msgstr "voor de prijs van:"
+
+#: rc.cpp:397 rc.cpp:683 rc.cpp:1250 rc.cpp:1514 rc.cpp:2010 rc.cpp:2214
+#, kde-format
+msgid "Price for one piece"
+msgstr "Prijs per stuk"
+
+#: rc.cpp:400 rc.cpp:1253 rc.cpp:2013
+#, kde-format
+msgid "€"
+msgstr "€"
+
+#: rc.cpp:403 rc.cpp:1256 rc.cpp:2133
+#, kde-format
+msgid "Form"
+msgstr "Formulier"
+
+#: rc.cpp:406 rc.cpp:1259 rc.cpp:2136 tagtemplatesdialog.cpp:58
+#, kde-format
+msgid "Name:"
+msgstr "Naam:"
+
+#: rc.cpp:409 rc.cpp:1262 rc.cpp:2139
+#, kde-format
+msgid "Organization:"
+msgstr "Organisatie:"
+
+#: rc.cpp:412 rc.cpp:1265 rc.cpp:2142
+#, kde-format
+msgid "Street:"
+msgstr "Straat:"
+
+#: rc.cpp:415 rc.cpp:1268 rc.cpp:2145
+#, kde-format
+msgid "Post Code:"
+msgstr "Postcode:"
+
+#: rc.cpp:418 rc.cpp:1271 rc.cpp:2148
+#, kde-format
+msgid "City:"
+msgstr "Stad:"
+
+#: rc.cpp:421 rc.cpp:1274 rc.cpp:2151
+#, kde-format
+msgid "Phone:"
+msgstr "Telefoon:"
+
+#: rc.cpp:424 rc.cpp:1277 rc.cpp:2154
+#, kde-format
+msgid "Fax:"
+msgstr "Fax:"
+
+#: rc.cpp:427 rc.cpp:1280 rc.cpp:2157
+#, kde-format
+msgid "Mobile Phone:"
+msgstr "Mobiele telefoon:"
+
+#: rc.cpp:430 rc.cpp:1283 rc.cpp:2160
+#, kde-format
+msgid "EMail:"
+msgstr "EMail:"
+
+#: rc.cpp:433 rc.cpp:1286 rc.cpp:2163
+#, kde-format
+msgid "Website:"
+msgstr "Website:"
+
+#: rc.cpp:436 rc.cpp:1298 rc.cpp:2166
+#, kde-format
+msgid "Import Document Items"
+msgstr "Document-items importeren"
+
+#: rc.cpp:439 rc.cpp:1301 rc.cpp:2169
+#, kde-format
+msgid "Import information"
+msgstr "Informatie importeren"
+
+#: rc.cpp:442 rc.cpp:1304 rc.cpp:2172
+#, kde-format
+msgid "Select a &File to import from:"
+msgstr "Selecteer het bestand wat u wilt importeren:"
+
+#: rc.cpp:445 rc.cpp:1307 rc.cpp:2175
+#, kde-format
+msgid "FixMe!"
+msgstr "FixMe!"
+
+#: rc.cpp:448 rc.cpp:1310 rc.cpp:2178
+#, kde-format
+msgid "Import &Schema:"
+msgstr "&Schema importeren"
+
+#: rc.cpp:451 rc.cpp:1313 rc.cpp:2181
+#, kde-format
+msgid "this is interesting information about the selected schema"
+msgstr "Dit is interessante informatie over het gekozen schema"
+
+#: rc.cpp:454 rc.cpp:1316 rc.cpp:2184
+#, kde-format
+msgid "Insert all Items &after"
+msgstr "Alle items invoegen n&a"
+
+#: rc.cpp:457 rc.cpp:481 rc.cpp:1319 rc.cpp:1352 rc.cpp:2187 rc.cpp:2241
+#, kde-format
+msgid "Tags"
+msgstr "Tags"
+
+#: rc.cpp:460 rc.cpp:1331 rc.cpp:2220 templtopositiondialogbase.cpp:35
+#, kde-format
+msgid "Create Item from Template"
+msgstr "Item van sjabloon creëren"
+
+#: rc.cpp:463 rc.cpp:1334 rc.cpp:2223
+#, kde-format
+msgid "New Item Text"
+msgstr "Nieuw item-tekst"
+
+#: rc.cpp:466 rc.cpp:1337 rc.cpp:2226
+#, kde-format
+msgid "&insert"
+msgstr "&Invoegen"
+
+#: rc.cpp:469 rc.cpp:1340 rc.cpp:2229
+#, kde-format
+msgid "à"
+msgstr "a"
+
+#: rc.cpp:472 rc.cpp:1343 rc.cpp:2232
+#, kde-format
+msgid "&after item"
+msgstr "N&a item"
+
+#: rc.cpp:475 rc.cpp:1346 rc.cpp:2235
+#, kde-format
+msgid "Keep this item as template for future documents"
+msgstr "Dit item als sjabloon bewaren voor latere documenten"
+
+#: rc.cpp:478 rc.cpp:1349 rc.cpp:2238
+#, kde-format
+msgid "save in &chapter"
+msgstr "Ops&laan in map"
+
+#: rc.cpp:490 rc.cpp:1361 rc.cpp:2250
+#, kde-format
+msgid "Do Database Initialisation"
+msgstr "Database opnieuw opstarten"
+
+#: rc.cpp:493 rc.cpp:1364 rc.cpp:2253
+#, kde-format
+msgid "Do XML archiving of documents they're printed?"
+msgstr "Documenten bij het afdrukken als XML archiveren?"
+
+#: rc.cpp:496 rc.cpp:1367 rc.cpp:2256
+#, kde-format
+msgid ""
+"Where Kraft stores the XML archive documents. If empty, KDEHOME/share/apps "
+"is used."
+msgstr ""
+"Waar Kraft de XML archieven opslaat. Als dit leeg is, dan wordt \n"
+"KDEHOME/share/apps gebruikt."
+
+#: rc.cpp:499 rc.cpp:1370 rc.cpp:2259
+#, kde-format
+msgid "The local xml document storage path"
+msgstr "De locatie voor de lokaal opgeslagen XML documenten"
+
+#: rc.cpp:502 rc.cpp:1373 rc.cpp:2262
+#, kde-format
+msgid "Default mail user agent. Set xdg for xdg-email"
+msgstr ""
+"Standaard email programma. Stel in op xdg voor het programma xdg-email."
+
+#: rc.cpp:505 rc.cpp:508 rc.cpp:1376 rc.cpp:1379 rc.cpp:2265 rc.cpp:2268
+#, kde-format
+msgid "The default geometry of the document view dialog"
+msgstr ""
+"De standaard grootte van het dialoogvenster voor het weergeven van het "
+"document."
+
+#: rc.cpp:511 rc.cpp:1382 rc.cpp:2271
+#, kde-format
+msgid "The current state of the portal"
+msgstr "De huidige status van de portal"
+
+#: rc.cpp:514 rc.cpp:1385 rc.cpp:2274
+#, kde-format
+msgid "The current geometry of the portal"
+msgstr "De huidige grootte van de portal"
+
+#: rc.cpp:517 rc.cpp:1388 rc.cpp:2277
+#, kde-format
+msgid "The current geometry of the new doc assistant"
+msgstr "De huidige grootte van de nieuwe document assistent"
+
+#: rc.cpp:520 rc.cpp:1391 rc.cpp:2280
+#, kde-format
+msgid "The splitter position of the document view dialog"
+msgstr "De schuifpijl-positie van de document weergave"
+
+#: rc.cpp:523 rc.cpp:1394 rc.cpp:2283
+#, kde-format
+msgid "The default size of the material catalog view"
+msgstr ""
+"De standaard grootte van het dialoogvenster voor de weergave van de \n"
+"materiaalcatalogus."
+
+#: rc.cpp:526 rc.cpp:1397 rc.cpp:2286
+#, kde-format
+msgid "The splitter setting for the doc assistant"
+msgstr "De schuifpijl-instelling voor de document assistent"
+
+#: rc.cpp:529 rc.cpp:1400 rc.cpp:2289
+#, kde-format
+msgid "The window size of the template to document dialog for plants"
+msgstr ""
+"De venstergrootte van het sjabloon voor het documentendialoog van de planten"
+
+#: rc.cpp:532 rc.cpp:1403 rc.cpp:2292
+#, kde-format
+msgid "The window size of the template to document dialog"
+msgstr "De venstergrootte van het sjabloon voor het documentendialoog"
+
+#: rc.cpp:535 rc.cpp:1406 rc.cpp:2295
+#, kde-format
+msgid "The digest list column arrangement for the Latest-list"
+msgstr "The digest list column arrangement for the Latest-list"
+
+#: rc.cpp:538 rc.cpp:1409 rc.cpp:2298
+#, kde-format
+msgid "The digest list column arrangement for the all-list"
+msgstr "The digest list column arrangement for the all-list"
+
+#: rc.cpp:541 rc.cpp:1412 rc.cpp:2301
+#, kde-format
+msgid "The digest list column arrangement for timeline"
+msgstr "The digest list column arrangement for timeline"
+
+#: rc.cpp:544 rc.cpp:1415 rc.cpp:2304
+#, kde-format
+msgid "The sizes of the slider in the address picker Widget"
+msgstr "The sizes of the slider in the address picker Widget"
+
+#: rc.cpp:547 rc.cpp:1418 rc.cpp:2307
+#, kde-format
+msgid "The state of the treeview inside the address selector widget"
+msgstr "The state of the treeview inside the address selector widget"
+
+#: rc.cpp:550 rc.cpp:1421 rc.cpp:2310
+#, kde-format
+msgid "Size of the address select dialog"
+msgstr "Grootte van adres zoekvenster"
+
+#: rc.cpp:553 rc.cpp:1424 rc.cpp:2313
+#, kde-format
+msgid "State of the window of the material catalog"
+msgstr "State of the window of the material catalog"
+
+#: rc.cpp:556 rc.cpp:1427 rc.cpp:2316
+#, kde-format
+msgid "Geometry of the material catalog"
+msgstr "Opbouw van de materiaal catalogus"
+
+#: rc.cpp:559 rc.cpp:1430 rc.cpp:2319
+#, kde-format
+msgid "State of the header of the material catalog"
+msgstr "State of the header of the material catalog"
+
+#: rc.cpp:562 rc.cpp:1433 rc.cpp:2322
+#, kde-format
+msgid "State of the window of the template catalog"
+msgstr "State of the window of the template catalog"
+
+#: rc.cpp:565 rc.cpp:1436 rc.cpp:2325
+#, kde-format
+msgid "Geometry the template catalog"
+msgstr "Geometry the template catalog"
+
+#: rc.cpp:568 rc.cpp:1439 rc.cpp:2328
+#, kde-format
+msgid "State of the header of the template catalog"
+msgstr "State of the header of the template catalog"
+
+#: rc.cpp:571 rc.cpp:1442 rc.cpp:2331
+#, kde-format
+msgid ""
+"Default percentage the sale price for a material should be higher than its "
+"purchase price"
+msgstr ""
+"Standaard zou voor materiaal de verkoopprijs hoger moeten zijn dan de "
+"inkoopprijs"
+
+#: rc.cpp:574 rc.cpp:1445 rc.cpp:2334
+#, kde-format
+msgid "The name of the last selected chapter in the catalog"
+msgstr "The name of the last selected chapter in the catalog"
+
+#: rc.cpp:577 rc.cpp:1448 rc.cpp:2337
+#, kde-format
+msgid "The complete filename of the trml2pdf binary"
+msgstr "Het complete bestandsnaam van het trml2pdf-programma"
+
+#: rc.cpp:580 rc.cpp:1451 rc.cpp:2340
+#, kde-format
+msgid "The path to the output directory for document pdfs"
+msgstr "De locatie voor de document-pdfs"
+
+#: rc.cpp:583 rc.cpp:1454 rc.cpp:2343
+#, kde-format
+msgid "The last created doc type."
+msgstr "Laatst aangemaakte documenttype."
+
+#: rc.cpp:586 rc.cpp:1457 rc.cpp:2346
+#, kde-format
+msgid "The date format for print."
+msgstr "De datum-instelling voor uitgeprinte documenten."
+
+#: rc.cpp:589 rc.cpp:1460 rc.cpp:2349
+#, kde-format
+msgid "The greeting below on the document footer."
+msgstr "The greeting below on the document footer."
+
+#: rc.cpp:592 rc.cpp:1463 rc.cpp:2352
+#, kde-format
+msgid "The salut message on the document header."
+msgstr "De aanhef in het briefhoofd."
+
+#: rc.cpp:595 rc.cpp:1466 rc.cpp:2355
+#, kde-format
+msgid ""
+"The name of the catalog chapter where to store new templates in by default"
+msgstr ""
+"De naam van de catalogusmap waar standaard nieuwe sjablonen worden "
+"opgeslagen"
+
+#: rc.cpp:598 rc.cpp:1469 rc.cpp:2358
+#, kde-format
+msgid "The name of the last used import schema for items."
+msgstr "De naam van de laatst gebruikte schema voor het importeren van items."
+
+#: rc.cpp:601 rc.cpp:1472 rc.cpp:2361
+#, kde-format
+msgid "The name of the last used input file for items."
+msgstr "The name of the last used input file for items."
+
+#: rc.cpp:604 rc.cpp:1475 rc.cpp:2364
+#, kde-format
+msgid ""
+"User name as reference to the KAddressbook to identify 'my' address "
+"(DEPRECATED)."
+msgstr ""
+"Gebruikersnaam als referentie naar het KAddressbook om \"mijn\" adres te \n"
+"identificeren (Verouderd)."
+
+#: rc.cpp:607 rc.cpp:1478 rc.cpp:2367
+#, kde-format
+msgid ""
+"UID of the user as reference to the KAddressbook to identify 'my' address."
+msgstr ""
+"UID of the user as reference to the KAddressbook to identify 'my' address."
+
+#: rc.cpp:610 rc.cpp:1481 rc.cpp:2370
+#, kde-format
+msgid "The doc id template"
+msgstr "The doc id template"
+
+#: rc.cpp:613 rc.cpp:1484 rc.cpp:2373
+#, kde-format
+msgid "Localization on document level"
+msgstr "Per document taal instellen"
+
+#: rc.cpp:616 rc.cpp:1487 rc.cpp:2376
+#, kde-format
+msgid "The tax default for new documents."
+msgstr "De standaard belastingtarief voor nieuwe documenten."
+
+#: rc.cpp:619 rc.cpp:1490 rc.cpp:2379
+#, kde-format
+msgid "The label for alternative positions"
+msgstr "Het label voor alternatieve voorstellen"
+
+#: rc.cpp:622 rc.cpp:625 rc.cpp:1493 rc.cpp:1496 rc.cpp:2382 rc.cpp:2385
+#, kde-format
+msgid "The label for demand positions"
+msgstr "Het label voor meerwerk-posten"
+
+#: rc.cpp:631 rc.cpp:1325 rc.cpp:2193
+#, kde-format
+msgid "Settings"
+msgstr "Instellingen"
+
+#: rc.cpp:637 rc.cpp:1669 rc.cpp:2561
+#, kde-format
+msgid "Edit Material"
+msgstr "Materiaal bewerken"
+
+#: rc.cpp:640 rc.cpp:1672 rc.cpp:2564
+#, kde-format
+msgid "Store in C&hapter"
+msgstr "Op&slaan in map"
+
+#: rc.cpp:646 rc.cpp:1678 rc.cpp:2570
+#, kde-format
+msgid "Pac&kaged:"
+msgstr "Verpa&kt:"
+
+#: rc.cpp:649 rc.cpp:1681 rc.cpp:2573
+#, kde-format
+msgid "per P&ackage"
+msgstr "per pak"
+
+#: rc.cpp:652 rc.cpp:1684 rc.cpp:2576
+#, kde-format
+msgid "Prices"
+msgstr "Prijzen"
+
+#: rc.cpp:655 rc.cpp:1687 rc.cpp:2579
+#, kde-format
+msgid "= Price of &Sale:"
+msgstr "=Verkoopprij&s:"
+
+#: rc.cpp:658 rc.cpp:1690 rc.cpp:2582
+#, kde-format
+msgid "pl&us"
+msgstr "pl&us"
+
+#: rc.cpp:662 rc.cpp:755 rc.cpp:1610 rc.cpp:1694 rc.cpp:2454 rc.cpp:2586
+#, no-c-format, kde-format
+msgid "%"
+msgstr "%"
+
+#: rc.cpp:665 rc.cpp:1697 rc.cpp:2589
+#, kde-format
+msgid "&Purchase Price:"
+msgstr "Inkoop&prijs:"
+
+#: rc.cpp:668 rc.cpp:1499 rc.cpp:2199
+#, kde-format
+msgid "Calculation Item Material"
+msgstr "Materiaal toevoegen aan de berekening"
+
+#: rc.cpp:671 rc.cpp:1502 rc.cpp:2202
+#, kde-format
+msgid "<h1>Calculation Part  'Material'</h1>"
+msgstr "<h1>Post materiaal</h1>"
+
+#: rc.cpp:674 rc.cpp:1505 rc.cpp:2205
+#, kde-format
+msgid "Add Material to the template calculation."
+msgstr "Materiaal toevoegen aan de berekening in het sjabloon."
+
+#: rc.cpp:677 rc.cpp:1508 rc.cpp:2208
+#, kde-format
+msgid "material"
+msgstr "materiaal"
+
+#: rc.cpp:686 rc.cpp:1517 rc.cpp:2217
+#, kde-format
+msgid "unit"
+msgstr "Eenheid"
+
+#: rc.cpp:689 rc.cpp:1544 rc.cpp:2388
+#, kde-format
+msgid ""
+"Please enter the MySQL Database server settings. \n"
+"\n"
+"For detailed setup instructions for the MySQL to use with Kraft please check the Kraft website."
+msgstr ""
+"Geef de instellingen op voor de MySQL Database server\n"
+"\n"
+"Ga voor gedetailleerde instructies voor hoe MySQL samen met Kraft te \n"
+"gebruiken naar de website van Kraft."
+
+#: rc.cpp:694 rc.cpp:1549 rc.cpp:2393
+#, kde-format
+msgid "Database Host:"
+msgstr "Database Host:"
+
+#: rc.cpp:697 rc.cpp:1552 rc.cpp:2396
+#, kde-format
+msgid "Database Name:"
+msgstr "Databasenaam:"
+
+#: rc.cpp:703 rc.cpp:1558 rc.cpp:2402
+#, kde-format
+msgid "Password:"
+msgstr "Wachtwoord"
+
+#: rc.cpp:706 rc.cpp:1561 rc.cpp:2405
+#, kde-format
+msgid "<h3>Edit Number Cycles</h3>"
+msgstr "<h3>Volgnummersysteem bewerken</h3>"
+
+#: rc.cpp:709 rc.cpp:1564 rc.cpp:2408
+#, kde-format
+msgid "Number Cycle Details"
+msgstr "Details volgnummers"
+
+#: rc.cpp:712 rc.cpp:1567 rc.cpp:2411
+#, kde-format
+msgid "&Number Cycle:"
+msgstr "Volg&nummers:"
+
+#: rc.cpp:715 rc.cpp:1570 rc.cpp:2414
+#, kde-format
+msgid "&Counter:"
+msgstr "Teller:"
+
+#: rc.cpp:721 rc.cpp:1576 rc.cpp:2420
+#, kde-format
+msgid "ident &Template:"
+msgstr "Volgnummer-sjabloon:"
+
+#: rc.cpp:727 rc.cpp:1582 rc.cpp:2426
+#, kde-format
+msgid "&Select a number cycle and edit the details on the right:"
+msgstr "Kies een volgnummersysteem en stel de details rechts in:"
+
+#: rc.cpp:730 rc.cpp:1585 rc.cpp:2429
+#, kde-format
+msgid "New Item"
+msgstr "Nieuw item"
+
+#: rc.cpp:736 rc.cpp:1591 rc.cpp:2435
+#, kde-format
+msgid "add"
+msgstr "Toevoegen"
+
+#: rc.cpp:742 rc.cpp:1597 rc.cpp:2441
+#, kde-format
+msgid "remove"
+msgstr "Verwijderen"
+
+#: rc.cpp:745 rc.cpp:1600 rc.cpp:2444
+#, kde-format
+msgid "1."
+msgstr "1."
+
+#: rc.cpp:748 rc.cpp:751 rc.cpp:1603 rc.cpp:1606 rc.cpp:2447 rc.cpp:2450
+#, kde-format
+msgid "D"
+msgstr "D"
+
+#: rc.cpp:758 rc.cpp:1613 rc.cpp:2457
+#, kde-format
+msgid "of the sum of"
+msgstr "voor de som van"
+
+#: rc.cpp:761 rc.cpp:1616 rc.cpp:2460
+#, kde-format
+msgid ""
+"Please enter the SQLite Database Settings.\n"
+"\n"
+"Pick a filename to name the SQLite database file or leave the default setting."
+msgstr ""
+"Voer de instellingen in voor de SQLite Database.\\n\n"
+"\\n\n"
+"Geef een bestandsnaam op voor het SQLite databasebestand of gebruik de \n"
+"standaardwaarde."
+
+#: rc.cpp:766 rc.cpp:1621 rc.cpp:2465
+#, kde-format
+msgid "store the database file at default place."
+msgstr "Sla het databasebestand op de standaard locatie op."
+
+#: rc.cpp:769 rc.cpp:1624 rc.cpp:2468
+#, kde-format
+msgid "select a file name:"
+msgstr "Bestandsnaam selecteren:"
+
+#: rc.cpp:772 rc.cpp:1627 rc.cpp:2480
+#, kde-format
+msgid "<h2>Add a Tax Rate</h2>"
+msgstr "<h2>BTW-tarief toevoegen"
+
+#: rc.cpp:775 rc.cpp:1630 rc.cpp:2483
+#, kde-format
+msgid "Start-Date:"
+msgstr "Startdatum:"
+
+#: rc.cpp:778 rc.cpp:1633 rc.cpp:2486
+#, kde-format
+msgid "&Reduced Tax Rate:"
+msgstr "Laag BTW-tarief:"
+
+#: rc.cpp:781 rc.cpp:1636 rc.cpp:2489
+#, kde-format
+msgid "&Full Tax Rate:"
+msgstr "Hoog BTW-tarief:"
+
+#: rc.cpp:784 rc.cpp:1639 rc.cpp:2492
+#, kde-format
+msgid "Edit Document Text Template"
+msgstr "Edit Document Text Template"
+
+#: rc.cpp:787 rc.cpp:1642 rc.cpp:2495
+#, kde-format
+msgid "&Name:"
+msgstr "&Naam:"
+
+#: rc.cpp:790 rc.cpp:1645 rc.cpp:2498
+#, kde-format
+msgid "displayed as"
+msgstr "getoond als"
+
+#: rc.cpp:793 rc.cpp:1648 rc.cpp:2501
+#, kde-format
+msgid "in doc type"
+msgstr "In documenttype"
+
+#: rc.cpp:796 rc.cpp:1651 rc.cpp:2504
+#, kde-format
+msgid "&Text:"
+msgstr "&Tekst:"
+
+#: rc.cpp:799 rc.cpp:1520 rc.cpp:2519
+#, kde-format
+msgid "Calculation Item Time"
+msgstr "Arbeid berekenen"
+
+#: rc.cpp:802 rc.cpp:1523 rc.cpp:2522
+#, kde-format
+msgid "<h1>Calculation Part 'Time'</h1>"
+msgstr "<h1>Post arbeid</h1>"
+
+#: rc.cpp:805 rc.cpp:1526 rc.cpp:2525
+#, kde-format
+msgid ""
+"Calculate time efforts here for one unit of the template. <br/>Note that the"
+" costs may depend on a global hourly rate."
+msgstr ""
+"Voer hier de benodigde tijd in voor een exemplaar van het sjabloon. "
+"<br/>Vergeet niet dat het project-tarief invloed kan hebben op de kosten."
+
+#: rc.cpp:811 rc.cpp:1532 rc.cpp:2531
+#, kde-format
+msgid "Work"
+msgstr "Werk"
+
+#: rc.cpp:814 rc.cpp:1535 rc.cpp:2534
+#, kde-format
+msgid "&Time Effort:"
+msgstr "Nodigde &tijd:"
+
+#: rc.cpp:817 rc.cpp:1538 rc.cpp:2537
+#, kde-format
+msgid "&Hourly Rate:"
+msgstr "Uurtarief:"
+
+#: rc.cpp:820 rc.cpp:1541 rc.cpp:2540
+#, kde-format
+msgid "Apply the &global hourly rate"
+msgstr "Project-tarief toepassen"
+
+#: rc.cpp:823 rc.cpp:1654 rc.cpp:2543
+#, kde-format
+msgid "<h1>Add a unit</h1>"
+msgstr "<h1>Eenheid toevoegen</h1>"
+
+#: rc.cpp:826 rc.cpp:1657 rc.cpp:2546
+#, kde-format
+msgid "Unit short"
+msgstr "Eenheid afgekort"
+
+#: rc.cpp:829 rc.cpp:1660 rc.cpp:2549
+#, kde-format
+msgid "Unit long"
+msgstr "Eenheid voluit"
+
+#: rc.cpp:832 rc.cpp:1663 rc.cpp:2552
+#, kde-format
+msgid "Unit plural short"
+msgstr "Eenheid meervoud afgekort"
+
+#: rc.cpp:835 rc.cpp:1666 rc.cpp:2555
+#, kde-format
+msgid "Unit plural long"
+msgstr "Eenheid meervoud voluit"
+
+#: rc.cpp:838 rc.cpp:1700 rc.cpp:2592
+#, kde-format
+msgid ""
+"This step checks if the database schema version is sufficient for this version of Kraft. \n"
+"\n"
+"In case it is not, the schema is updated automatically.\n"
+msgstr ""
+"Deze stap controleert of de versie van het databaseschema modern genoeg is voor deze versie van Kraft. \n"
+"\n"
+"Zo niet, dan wordt het schema automatisch bijgewerkt.\n"
+
+#: rc.cpp:853 rc.cpp:1715 rc.cpp:2607
+#, kde-format
+msgid "Upgrade not yet started"
+msgstr "Opwaarderen nog niet gestart"
+
+#: rc.cpp:856 rc.cpp:1718 rc.cpp:2471
+#, kde-format
+msgid "<h1>Add a Wage group</h1>"
+msgstr "<h1>Functiegroep toevoegen</h1>"
+
+#: rc.cpp:859 rc.cpp:1721 rc.cpp:2474
+#, kde-format
+msgid "Group name"
+msgstr "Functienaam"
+
+#: rc.cpp:862 rc.cpp:1724 rc.cpp:2477
+#, kde-format
+msgid "Wage"
+msgstr "Salaris"
+
+#: rc.cpp:2109 rc.cpp:2118
+#, kde-format
+msgid "select"
+msgstr "Selecteren"
+
+#: rc.cpp:2112
+#, kde-format
+msgid "&Watermark File:"
+msgstr "&Watermerk bestand:"
+
+#: rc.cpp:2130
+#, kde-format
+msgid "&Template File:"
+msgstr "&Sjabloon bestand:"
+
+#: rc.cpp:2507
+#, kde-format
+msgid "Dialog"
+msgstr "Dialoogvenster"
+
+#: rc.cpp:2510
+#, kde-format
+msgid ""
+"<html><head/><body><p><span style=\" font-size:14pt; font-"
+"weight:600;\">XRechnung Additional Data</span></p></body></html>"
+msgstr ""
+"<html><head/><body><p><span style=\" font-size:14pt; font-"
+"weight:600;\">Extra informatie voor XRechnung </p></body></html>"
+
+#: rc.cpp:2513
+#, kde-format
+msgid "Due Date:"
+msgstr "Verval datum:"
+
+#: rc.cpp:2516
+#, kde-format
+msgid "Buyer Reference:"
+msgstr "Inkoop referentie"
+
+#: rc.cpp:2558
+#, kde-format
+msgid "Unit ECE20"
+msgstr "Eenheid ECE20"
+
+#: models/docbasemodel.cpp:33
+#, kde-format
+msgid "Doc. Number"
+msgstr "Doc.nummer"
+
+#: models/docbasemodel.cpp:34
+#, kde-format
+msgid "Doc. Type"
+msgstr "Doc.type"
+
+#: models/docbasemodel.cpp:36
+#, kde-format
+msgid "Client Id"
+msgstr "Klant ID"
+
+#: models/docbasemodel.cpp:37
+#, kde-format
+msgid "Last modified"
+msgstr "Laatst wijziging"
+
+#: models/docbasemodel.cpp:38
+#, kde-format
+msgid "Creation date"
+msgstr "Aanmaakdatum"
+
+#: models/docbasemodel.cpp:40
+#, kde-format
+msgid "Client Address"
+msgstr "Adres klant"
+
+#: models/docbasemodel.cpp:41
+#, kde-format
+msgid "Client"
+msgstr "Klant"
+
+#: models/docbasemodel.cpp:109
+#, kde-format
+msgid "Looking up address"
+msgstr "Bezig met het opzoeken van het adres"
+
+#: models/docbasemodel.cpp:111
+#, kde-format
+msgid "Lookup started"
+msgstr "bezig met opzoeken"
+
+#: numbercycledialog.cpp:52
+#, kde-format
+msgid "Edit Number Cycles"
+msgstr "Volgnummersysteem bewerken"
+
+#: numbercycledialog.cpp:67
+#, kde-format
+msgid ""
+"The template may contain the following tags:<ul><li>%y or %yyyy - the year "
+"of the documents date.</li><li>%yy - the year of the document (two "
+"digits).</li><li>%w - the week number of the documents date.</li><li>%ww - "
+"the week number of the documents date with leading zero.</li><li>%d - the "
+"day number of the documents date.</li><li>%dd - the day number of the "
+"documents date with leading zero.</li><li>%m or %M - the month number of the"
+" documents date.</li><li>%MM - the month number with leading "
+"zero.</li><li>%c - the customer id from kaddressbook</li><li>%i - the unique"
+" counter</li><li>%type - the localised doc type (offer, invoice "
+"etc.)</li><li>%uid - the contact id of the client.</li></ul>%i needs to be "
+"part of the template."
+msgstr ""
+"In het sjabloon mogen de volgende tags voorkomen:<ul><li>%y of %yyyy - het "
+"jaar van het document datum.</li><li>%yy - thet jaar van het document (twee "
+"cijfers).</li><li>%w - het weeknummer van het document datum.</li><li>%ww - "
+"het week nummer van het document datum (twee cijfers).</li><li>%d - het "
+"dagnummer van het document.</li><li>%dd - het dagnummer van het document "
+"(twee cijfers).</li><li>%m of %M - de maand als nummer van het "
+"document.</li><li>%MM - de maand als nummer met twee cijfers.</li><li>%c - "
+"de klanten ID van kaddressbook</li><li>%i - het volgnummer</li><li>%type - "
+"het gelokaliseerde doc type (offerte, rekening enz.)</li><li>%uid - het "
+"contact ID van de klant.</li></ul>%i moet onderdeel zijn van het sjabloon."
+
+#: numbercycledialog.cpp:138
+#, kde-format
+msgid "Doc-Type"
+msgstr "Doc-type"
+
+#: numbercycledialog.cpp:215
+#, kde-format
+msgid "Add Number Cycle"
+msgstr "Volgnummersysteem toevoegen"
+
+#: numbercycledialog.cpp:216
+#, kde-format
+msgid "Enter the name of a new number cycle."
+msgstr "Voer de naam in van een nieuw volgnummersysteem."
+
+#: numbercycledialog.cpp:274
+#, kde-format
+msgid "The numbercycle %1 is still assigned to a document type."
+msgstr "Het Volgnummersysteem %1 wordt nog in een documenttype gebruikt."
+
+#: numbercycledialog.cpp:275
+#, kde-format
+msgid ""
+"The number cycle can not be deleted as long as it is assigned to a document "
+"type."
+msgstr ""
+"Het volgnummersysteem kan niet worden verwijdert zolang het nog in een\n"
+"documenttype wordt gebruikt."
+
+#: numbercycledialog.cpp:334
+#, kde-format
+msgid "Dangerous Counter Change"
+msgstr "Gevaarlijke wijziging stappen"
+
+#: numbercycledialog.cpp:335
+#, kde-format
+msgid "The new counter is lower than the old one. "
+msgstr "De nieuwe stappen zijn kleiner dan de oude."
+
+#: numbercycledialog.cpp:336
+#, kde-format
+msgid ""
+"That has potential to create duplicate document numbers. Do you really want "
+"to decrease it?"
+msgstr ""
+"Hierdoor kunnen documentnummers meerdere keren voorkomen. Wilt u het echt "
+"verkleinen?"
+
+#: reportgenerator.cpp:113
+#, kde-format
+msgid "Document generation process is still running."
+msgstr "Ben nog bezig met het generen van documenten."
+
+#: reportgenerator.cpp:167
+#, kde-format
+msgid "Template file is not accessible."
+msgstr "Kan sjabloon niet vinden."
+
+#: reportgenerator.cpp:192
+#, kde-format
+msgid "The template conversion failed."
+msgstr "De conversie van het sjabloon is mislukt."
+
+#: reportgenerator.cpp:200
+#, kde-format
+msgid "Saving to temporar file failed."
+msgstr "Opslaan naar tijdelijk bestand is mislukt."
+
+#: reportgenerator.cpp:292
+#, kde-format
+msgid "No converter error."
+msgstr "Geen problemen bij de conversie."
+
+#: reportgenerator.cpp:295
+#, kde-format
+msgid "The ReportLab based converter script can not be executed."
+msgstr ""
+"Het op ReportLab gebaseerde conversie script kon niet worden uitgevoerd."
+
+#: reportgenerator.cpp:298
+#, kde-format
+msgid "An unknown error happened."
+msgstr "Een onbekend probleem trad op."
+
+#: reportgenerator.cpp:301
+#, kde-format
+msgid "The ReportLab python module is not installed."
+msgstr "De ReportLab python module is niet geïnstalleerd."
+
+#: reportgenerator.cpp:304
+#, kde-format
+msgid "The PyPDF2 python module is not installed."
+msgstr "De PyPDF2 python module is niet geïnstalleerd."
+
+#: reportgenerator.cpp:307
+#, kde-format
+msgid "The source file can not be read."
+msgstr "Kan het bronbestand niet openen."
+
+#: reportgenerator.cpp:310
+#, kde-format
+msgid "The target can not be opened to write."
+msgstr "Het doelbestand kon niet worden geopend."
+
+#: reportgenerator.cpp:313
+#, kde-format
+msgid "The target file does not exist."
+msgstr "Het doelbestand is niet te vinden."
+
+#: reportgenerator.cpp:316
+#, kde-format
+msgid "The WeasyPrint tool is not installed."
+msgstr "Het WeasyPrint onderdeel is niet geïnstalleerd."
+
+#: reportgenerator.cpp:319
+#, kde-format
+msgid "The PDF merger utility failed."
+msgstr "Het samenvoegen van PDF mislukte."
+
+#: reportgenerator.cpp:338
+#, kde-format
+msgid "There is not template defined for %1."
+msgstr "Er is geen sjabloon gedefinieerd voor %1."
+
+#: reportgenerator.cpp:343
+#, kde-format
+msgid "The template file %1 for document type %2 does not exist."
+msgstr "Het sjabloonbestand %1 voor documenttype %2 bestaat niet."
+
+#: reportgenerator.cpp:347
+#, kde-format
+msgid "The template file %1 for document type %2 can not be read."
+msgstr "Kan het sjabloonbestand %1 voor documenttype %2 niet openen."
+
+#: portalview.cpp:66
+#, kde-format
+msgid "About Kraft"
+msgstr "Info of Kraft"
+
+#: portalview.cpp:84
+#, kde-format
+msgid "Documents"
+msgstr "Documenten"
+
+#: portalview.cpp:90
+#, kde-format
+msgid "Timeline"
+msgstr "Tijdlijn"
+
+#: portalview.cpp:97
+#, kde-format
+msgid "Catalogs"
+msgstr "Catalogi"
+
+#: portalview.cpp:135
+#, kde-format
+msgid "Kraft Document Overview"
+msgstr "Overzicht documenten in Kraft"
+
+#: portalview.cpp:142 portalview.cpp:161
+#, kde-format
+msgid "Available Catalogs"
+msgstr "Beschikbare catalogi"
+
+#: portalview.cpp:144
+#, kde-format
+msgid "No catalogs available."
+msgstr "Geen catalogi beschikbaar."
+
+#: portalview.cpp:193
+#, kde-format
+msgid "Open"
+msgstr "Openen"
+
+#: portalview.cpp:204
+#, kde-format
+msgid "No templates yet."
+msgstr "Nog geen sjablonen."
+
+#: portalview.cpp:208
+#, kde-format
+msgid "%1 templates in %2 chapters<br/>last modified at %3"
+msgstr "%1 sjablonen in %2 mappen<br/>gewijzigd op %3"
+
+#: portalview.cpp:259
+#, kde-format
+msgid "Kraft Website"
+msgstr "Kraft Website"
+
+#: portalview.cpp:262
+#, kde-format
+msgctxt "The string is followed by a link to the GPL2 text"
+msgid "Kraft is free software licensed under the"
+msgstr "Kraft is vrije software met een licentie onder de"
+
+#: portalview.cpp:263
+#, kde-format
+msgctxt "The string is followed by the link to github"
+msgid "Kraft is maintained on "
+msgstr "Kraft wordt onderhouden op"
+
+#: portalview.cpp:264
+#, kde-format
+msgid "Authors"
+msgstr "Auteurs"
+
+#: portalview.cpp:265
+#, kde-format
+msgid "Developer and Maintainer"
+msgstr "Ontwikkelaar en onderhouder"
+
+#: portalview.cpp:266
+#, kde-format
+msgid "Developer"
+msgstr "Ontwikkelaar"
+
+#: portalview.cpp:267
+#, kde-format
+msgctxt "The person who provided the logo graphics"
+msgid "Logo design"
+msgstr "Logo ontwerp"
+
+#: portalview.cpp:268
+#, kde-format
+msgctxt "The person who provided the user manual"
+msgid "User Manual"
+msgstr "Gebruikershandleiding"
+
+#: portalview.cpp:270
+#, kde-format
+msgid ""
+"Kraft helps you to handle documents like quotes and invoices in your small "
+"business."
+msgstr ""
+"Kraft is bedoelt voor kleine bedrijven voor hulp bij het beheer van "
+"documenten zoals offertes en rekeningen."
+
+#: portalview.cpp:271
+#, kde-format
+msgid "Welcome to Kraft"
+msgstr "Welkom bij Kraft"
+
+#: portalview.cpp:272
+#, kde-format
+msgid "Kraft Version"
+msgstr "Kraft versie"
+
+#: portalview.cpp:274
+#, kde-format
+msgid "Codename"
+msgstr "Codenaam"
+
+#: portalview.cpp:277
+#, kde-format
+msgid "Country Setting"
+msgstr "Ingesteld land:"
+
+#: portalview.cpp:280
+#, kde-format
+msgid "Language Setting"
+msgstr "Ingestelde taal:"
+
+#: portalview.cpp:284
+#, kde-format
+msgid "Kraft Initialisation Problem"
+msgstr "Kraft Initialisatie probleem"
+
+#: portalview.cpp:285
+#, kde-format
+msgid ""
+"There is a initialisation error on your system. Kraft will not work that "
+"way."
+msgstr ""
+"Er is een initialisatie fout op uw systeem. Kraft zal op die manier niet "
+"werken."
+
+#: portalview.cpp:292
+#, kde-format
+msgid "Database Information"
+msgstr "Database-informatie"
+
+#: portalview.cpp:293
+#, kde-format
+msgid "Kraft database name"
+msgstr "Kraft database naam:"
+
+#: portalview.cpp:298
+#, kde-format
+msgid "Required Version"
+msgstr "Vereiste versie"
+
+#: portalview.cpp:301
+#, kde-format
+msgid "Database schema version"
+msgstr "Database-schemaversie:"
+
+#: portalview.cpp:303
+#, kde-format
+msgid "Qt database driver"
+msgstr "Databasestuurprogramma voor Qt:"
+
+#: portalview.cpp:307
+#, kde-format
+msgid "established"
+msgstr "tot stand gebracht"
+
+#: portalview.cpp:307
+#, kde-format
+msgid "NOT AVAILABLE!"
+msgstr "NIET BESCHIKBAAR!"
+
+#: portalview.cpp:308
+#, kde-format
+msgid "Database connection"
+msgstr "Databaseverbinding"
+
+#: portalview.cpp:317
+#, kde-format
+msgid "Database Version"
+msgstr "Databaseversie"
+
+#: portalview.cpp:325
+#, kde-format
+msgid "Addressbook Backend"
+msgstr "Addressbook Backend"
+
+#: portalview.cpp:326
+#, kde-format
+msgid "Backend type"
+msgstr "Backend type"
+
+#: portalview.cpp:328
+#, kde-format
+msgid "running"
+msgstr "Gestart"
+
+#: portalview.cpp:328
+#, kde-format
+msgid "not running"
+msgstr "Niet gestart"
+
+#: portalview.cpp:332
+#, kde-format
+msgid "External Tools"
+msgstr "Externe hulpprogramma's"
+
+#: portalview.cpp:334
+#, kde-format
+msgid "RML to PDF conversion tool"
+msgstr "Hulpprogramma voor conversie van RML naar PDF:"
+
+#: portalview.cpp:336
+#, kde-format
+msgid "not found!"
+msgstr "niet gevonden!"
+
+#: portalview.cpp:339
+#, kde-format
+msgid "iconv tool for text import"
+msgstr "iconv hulpmiddel voor importeren van tekst"
+
+#: portalview.cpp:342
+#, kde-format
+msgid "<a href=\"https://weasyprint.org/\">weasyprint</a> for PDF generation"
+msgstr "<a href=\"https://weasyprint.org/\">weasyprint</a> voor creatie van PDF"
+
+#: portalview.cpp:346
+#, kde-format
+msgid "not available"
+msgstr "niet beschikbaar"
+
+#: portalview.cpp:351
+#, kde-format
+msgid "Some Icons are made by"
+msgstr "Enkele pictogrammen zijn gemaakt door"
+
+#: portalview.cpp:352
+#, kde-format
+msgid "Acknowledgements"
+msgstr "Met dank aan"
+
+#: setupassistant.cpp:36
+#, kde-format
+msgid "Welcome to the Kraft Setup Assistant"
+msgstr "Welkom bij de Kraft setup assistent"
+
+#: setupassistant.cpp:55
+#, kde-format
+msgid "Select the Database Backend"
+msgstr "Selecteer de Database Backend"
+
+#: setupassistant.cpp:92
+#, kde-format
+msgid "Sqlite File Name"
+msgstr "SQLite bestandsnaam"
+
+#: setupassistant.cpp:146
+#, kde-format
+msgid "MySql Detail Information"
+msgstr "Gedetailleerde MySql-informatie"
+
+#: setupassistant.cpp:188
+#, kde-format
+msgid "Create Database"
+msgstr "Database creëren"
+
+#: setupassistant.cpp:210 setupassistant.cpp:223
+#, kde-format
+msgid "0/%1"
+msgstr "0/%1"
+
+#: setupassistant.cpp:242 setupassistant.cpp:252 setupassistant.cpp:290
+#, kde-format
+msgid "%1/%2"
+msgstr "%1/%2"
+
+#: setupassistant.cpp:265
+#, kde-format
+msgid "Upgrade the Database"
+msgstr "Database opwaarderen"
+
+#: setupassistant.cpp:314
+#, kde-format
+msgid "Your Company Address"
+msgstr "Uw bedrijfsadres"
+
+#: setupassistant.cpp:319
+#, kde-format
+msgid ""
+"Select your companies address either from the address book or enter it "
+"manually. It is set as a consigner on the documents."
+msgstr ""
+"Selecteer in het adresboek uw eigen adres of voer het handmatig in. Deze "
+"wordt gebruikt als afzender in de documenten."
+
+#: setupassistant.cpp:328
+#, kde-format
+msgid "Select from Addressbook"
+msgstr "Selecteer in adresboek"
+
+#: setupassistant.cpp:418
+#, kde-format
+msgid "Final Status"
+msgstr "Final Status"
+
+#: setupassistant.cpp:512
+#, kde-format
+msgid ""
+"<p>Can't connect to your database. Are you sure your credentials are correct"
+" and the database exists?</p>"
+msgstr ""
+"<p>Kan geen verbinding maken met de database. Weet u zeker dat uw \n"
+"instellingen correct zijn en dat de database bestaat?</p>"
+
+#: setupassistant.cpp:523
+#, kde-format
+msgid "<p>Can't open your database file, check the permissions and such."
+msgstr ""
+"Kan het databasebestand niet openen, controleer de permissies en "
+"dergelijke.<p>"
+
+#: setupassistant.cpp:532
+#, kde-format
+msgid ""
+"<p>The database is already existing, no action needs to be taken "
+"here.</p><p>Please hit <b>next</b> to proceed.</p>"
+msgstr ""
+"<p>De database bestaat al, verdere acties zijn niet nodig.</p><p>Druk op "
+"<b>volgende</b> om verder te gaan.</p>"
+
+#: setupassistant.cpp:581
+#, kde-format
+msgid "<p>The database setup was successfully completed.</p>"
+msgstr "<p>De database is succesvol gecreëerd.</p>"
+
+#: setupassistant.cpp:582
+#, kde-format
+msgid "<p>You can start to work with Kraft now. Please do not forget to</p>"
+msgstr "<p>U kunt nu met Kraft gaan werken. Vergeet niet om</p>"
+
+#: setupassistant.cpp:584
+#, kde-format
+msgid "<li>adjust various settings in the Kraft Preferences dialog.</li>"
+msgstr ""
+"<li>in het dialoogvenster van Kraft voor de voorkeursinstellingen diverse \n"
+"instellingen aan te passen.</li>"
+
+#: setupassistant.cpp:585
+#, kde-format
+msgid "<li>Check the Catalog chapter list.</li>"
+msgstr "<li>Bekijk de lijst met catalogus-mappen.</li>"
+
+#: setupassistant.cpp:586
+#, kde-format
+msgid "<li>Make your business and have fun.</li>"
+msgstr "<li>Zet uw eigen bedrijf op en heb veel plezier ermee.</li>"
+
+#: setupassistant.cpp:588
+#, kde-format
+msgid ""
+"<p>If you press <i>Finish</i> now, the new database configuration is stored "
+"in Krafts configuration.</p>"
+msgstr ""
+"<p>Als u nu op <i>Voltooien</i> drukt, dan wordt de nieuwe database \n"
+"configuratie in de configuratie van Kraft opgeslagen.</p>"
+
+#: setupassistant.cpp:604
+#, kde-format
+msgid ""
+"The Database can not be connected. Please check the database credentials."
+msgstr ""
+"Verbinding met de database is niet mogelijk. Controleer de gegevens van \n"
+"database."
+
+#: setupassistant.cpp:610
+#, kde-format
+msgid "The database core tables do not exist. Please check initial setup."
+msgstr ""
+"De basistabellen in de database zijn onvindbaar. Voer de initiële aanmaak \n"
+"opnieuw uit."
+
+#: setupassistant.cpp:617
+#, kde-format
+msgid "Database is up to date. No upgrade is required."
+msgstr "De database is up-to-date. bijwerken is niet nodig."
+
+#: setupassistant.cpp:622
+#, kde-format
+msgid "Parse Update Commands..."
+msgstr "Bezig met het bijwerken..."
+
+#: setupassistant.cpp:665
+#, kde-format
+msgid "The Upgrade failed!"
+msgstr "Het bijwerken is mislukt!"
+
+#: setupassistant.cpp:667
+#, kde-format
+msgid "The Upgrade succeeded, the current schema version is %1!"
+msgstr "Het bijwerken is gelukt, de versie van het huidige schema is %1!"
+
+#: setupassistant.cpp:680
+#, kde-format
+msgid ""
+"The Database can not be connected. Please check the database credentials!"
+msgstr ""
+"Verbinding met de database is niet mogelijk. Controleer de gegevens van \n"
+"database."
+
+#: setupassistant.cpp:686
+#, kde-format
+msgid "Parse Create Commands..."
+msgstr "Bezig met het aanmaken..."
+
+#: setupassistant.cpp:694
+#, kde-format
+msgid "Parse database fillup commands..."
+msgstr "Bezig met het vullen van de database..."
+
+#: setupassistant.cpp:707
+#, kde-format
+msgid "Processing database creation commands..."
+msgstr "Bezig met het aanmaken van de database..."
+
+#: setupassistant.cpp:724
+#, kde-format
+msgid "Process database fillup commands..."
+msgstr "Bezig met het vullen van de database..."
+
+#: setupassistant.cpp:734
+#, kde-format
+msgid "Successfully finished commands."
+msgstr "De commando's zijn succesvol voltooid."
+
+#: setupassistant.cpp:736
+#, kde-format
+msgid "Failed to perform all commands."
+msgstr "Het uitvoeren van alle commando's is mislukt."
+
+#: setupassistant.cpp:780
+#, kde-format
+msgid ""
+"This assistant guides you through the basic settings of your Kraft "
+"installation."
+msgstr ""
+"Deze assistent leidt u door de basisinstellingen van uw Kraft installatie."
+
+#: setupassistant.cpp:790
+#, kde-format
+msgid "There was no database configuration found."
+msgstr "Er is geen database configuratie gevonden."
+
+#: setupassistant.cpp:792
+#, kde-format
+msgid "A valid current database configuration file was found."
+msgstr "Er is een geldige database configuratie gevonden."
+
+#: setupassistant.cpp:814
+#, kde-format
+msgid "The database schema version is too low. It will be updated."
+msgstr "De database-indeling is te oud, Het zal worden bijgewerkt."
+
+#: setupassistant.cpp:817
+#, kde-format
+msgid "The current database schema version is too high. Leaving untouched! "
+msgstr "Het huidige database-schemaversie is te hoog. Laat het ongewijzigd!"
+
+#: setupassistant.cpp:824
+#, kde-format
+msgid ""
+"<p>The database can be opened, but does not contain valid content.</p><p>A "
+"new database can be created automatically from scratch.</p>"
+msgstr ""
+"<p>De database kan worden geopend, maar heeft geen geldige inhoud.</p>><p>U "
+"kunt een nieuwe database vanaf nul aanmaken.</p>"
+
+#: setupassistant.cpp:831
+#, kde-format
+msgid "<p>Kraft failed to connect to the configured database.</p>"
+msgstr "<p>Kraft kon geen verbinding maken met de ingestelde database.</p>"
+
+#: setupassistant.cpp:833
+#, kde-format
+msgid ""
+"<p>Please check the database server setup and restart Kraft to connect."
+msgstr ""
+"<p>Controleer de instellingen van de database server en herstart Kraft om "
+"verbinding te maken."
+
+#: setupassistant.cpp:835
+#, kde-format
+msgid "<p>Please check the database file."
+msgstr "<p>Controleer het databasebestand."
+
+#: setupassistant.cpp:837
+#, kde-format
+msgid "or create a new database by hitting <b>next</b>.</p>"
+msgstr ""
+"of maak een nieuwe database aan door te klikken op <b>volgende</b>.</p>"
+
+#: setupassistant.cpp:845
+#, kde-format
+msgid "<p>Please hit next and follow the instructions.</p>"
+msgstr "<p>Klik op volgende en volg de instructies.</p>"
+
+#: kraftview.cpp:87 kraftview_ro.cpp:75
+#, kde-format
+msgid "Document"
+msgstr "Document"
+
+#: kraftview.cpp:261
+#, kde-format
+msgid "Successor of %1"
+msgstr "Vervolg van %1"
+
+#: kraftview.cpp:399 kraftview.cpp:844
+#, kde-format
+msgid ""
+"The address label is not empty and different from the selected one.<br/>Do "
+"you really want to replace it with the text shown below?<pre>%1</pre>"
+msgstr ""
+"Het adreslabel is niet leeg en verschilt van de geselecteerde.<br/>Wilt u \n"
+"het vervangen door de onderstaande tekst?<pre>%1</pre>"
+
+#: kraftview.cpp:446
+#, kde-format
+msgid ""
+"<qt><h2>The Document Items List is still empty, but Items can be added "
+"now.</h2>To add items to the document either <ul><li>Press the 'Add item' "
+"button above.</li><li>Open the template catalog by clicking on the 'show "
+"Template' button on the right and pick one of the available "
+"templates.</li></ul></qt>"
+msgstr ""
+"<qt><h2>De lijst met items in het documenten is nog leeg, maar u kunt vanaf nu items toevoegen.</h2>om items aan het document toe te voegen, kunt u naar keuze <ul><li>op de \n"
+"knop \"toevoegen\" erboven drukken.</li><li>het dialoog met de catalogus met \n"
+"sjablonen openen door op de 'Sjabloon weergeven' knop rechts te klikken en een van de \n"
+"beschikbare sjablonen te selecteren.</li></ul></qt>"
+
+#: kraftview.cpp:634
+#, kde-format
+msgid "Calculate individual tax for each item"
+msgstr "Bereken voor elk item de belasting apart"
+
+#: kraftview.cpp:691
+#, kde-format
+msgid "Tax Settings Overwrite"
+msgstr "belastinginstellingen overschrijven"
+
+#: kraftview.cpp:692
+#, kde-format
+msgid "Really overwrite all individual tax settings of the items?"
+msgstr ""
+"Wilt u alle individuele belastinginstellingen van de items overschrijven? "
+
+#: kraftview.cpp:843
+#, kde-format
+msgid "Address Overwrite"
+msgstr "Overschrijven van adres"
+
+#: kraftview.cpp:1101
+#, kde-format
+msgid "Discount"
+msgstr "Korting"
+
+#: kraftview.cpp:1421
+#, kde-format
+msgid "The document has been modified."
+msgstr "Het document is gewijzigd."
+
+#: kraftview.cpp:1422
+#, kde-format
+msgid "Do you want to save your changes?"
+msgstr "Wilt u alle wijzigingen verwerpen?"
+
+#: tagtemplatesdialog.cpp:47
+#, kde-format
+msgid "Edit Tag Template"
+msgstr "Bewerk tag sjabloon"
+
+#: tagtemplatesdialog.cpp:54
+#, kde-format
+msgid "Edit a Tag Template"
+msgstr "Tag sjabloon bewerken"
+
+#: tagtemplatesdialog.cpp:55
+#, kde-format
+msgid "Adjust settings for name, color and description."
+msgstr "Instellingen wijzigen voor naam, kleur en beschrijving."
+
+#: tagtemplatesdialog.cpp:63
+#, kde-format
+msgid "Description:"
+msgstr "Beschrijving:"
+
+#: tagtemplatesdialog.cpp:69
+#, kde-format
+msgid "Associated Color:"
+msgstr "Gekozen kleur"
+
+#: tagtemplatesdialog.cpp:141
+#, kde-format
+msgid "Add, edit and remove tag templates for use in the documents."
+msgstr ""
+"Het toevoegen, bewerken en verwijderen van tag sjablonen te gebruiken in "
+"documenten."
+
+#: tagtemplatesdialog.cpp:150 itemtagdialog.cpp:105
+#, kde-format
+msgid "Tag"
+msgstr "Tag"
+
+#: tagtemplatesdialog.cpp:151 itemtagdialog.cpp:106
+#, kde-format
+msgid "Color"
+msgstr "Kleur"
+
+#: tagtemplatesdialog.cpp:152 itemtagdialog.cpp:107
+#, kde-format
+msgid "Description"
+msgstr "Beschrijving"
+
+#: tagtemplatesdialog.cpp:165
+#, kde-format
+msgid "Add..."
+msgstr "Toevoegen..."
+
+#: tagtemplatesdialog.cpp:167
+#, kde-format
+msgid "Edit..."
+msgstr "Bewerken..."
+
+#: tagtemplatesdialog.cpp:170
+#, kde-format
+msgid "Delete..."
+msgstr "Verwijderen..."
+
+#: tagtemplatesdialog.cpp:223
+#, kde-format
+msgid "Do you really want to delete the template?"
+msgstr "Wilt u het sjabloon verwijderen? "
+
+#: taxeditdialog.cpp:36
+#, kde-format
+msgid "Edit Tax Rates"
+msgstr "Belastingtarieven bewerken"
+
+#: templkatalogview.cpp:101
+#, kde-format
+msgid "<new template>"
+msgstr "<new template>"
+
+#: templkataloglistview.cpp:47
+#, kde-format
+msgid "Calc. Type"
+msgstr "Berekeningsmethode"
+
+#: templkataloglistview.cpp:54
+#, kde-format
+msgid "Template Catalog"
+msgstr "Sjabloon catalogus"
+
+#: kraftview_ro.cpp:213
+#, kde-format
+msgid "Reduced TAX"
+msgstr "Lage BTW"
+
+#: kraftview_ro.cpp:240 documenttemplate.cpp:324
+#, kde-format
+msgid "reduced VAT"
+msgstr "Hoge BTW"
+
+#: templtopositiondialogbase.cpp:51
+#, kde-format
+msgid "the Header of the Document as first item"
+msgstr "Het briefhoofd van het document als eerste item"
+
+#: texteditdialog.cpp:42
+#, kde-format
+msgid "Edit Text Templates"
+msgstr "Tekst sjablonen bewerken"
+
+#: texteditdialog.cpp:62
+#, kde-format
+msgid "Edit %1 Template"
+msgstr "Bewerk %1 Sjabloon"
+
+#: textselection.cpp:42
+#, kde-format
+msgid "Template Collection"
+msgstr "Verzameling sjablonen"
+
+#: textselection.cpp:100
+#, kde-format
+msgid "Template Actions"
+msgstr "Sjabloon acties"
+
+#: textselection.cpp:129
+#, kde-format
+msgid "This is the standard text used in new documents."
+msgstr "Dit is de standaard tekst voor nieuwe documenten."
+
+#: textselection.cpp:138
+#, kde-format
+msgid "%1 Templates for %2"
+msgstr "%1 sjablonen voor %2"
+
+#: textselection.cpp:146
+#, kde-format
+msgid ""
+"There is no %1 template text available for document type %2.<br/>Click the "
+"add-button below to create one."
+msgstr ""
+"Er is geen %1 tekstsjabloon beschikbaar voor document type %2.<br/>Klik op "
+"de knop voor toevoegen hieronder om een te creëren."
+
+#: textselection.cpp:201
+#, kde-format
+msgid "&Use in Document"
+msgstr "Gebr&uikt in document"
+
+#: texttemplate.cpp:103
+#, kde-format
+msgid "Failed to open template source"
+msgstr "Openen van sjablonen is mislukt"
+
+#: timecalcpart.cpp:82
+#, kde-format
+msgid "Minutes"
+msgstr "Minuten"
+
+#: timecalcpart.cpp:84
+#, kde-format
+msgid "Hours"
+msgstr "Uren"
+
+#: timecalcpart.cpp:86
+#, kde-format
+msgid "Seconds"
+msgstr "Seconden"
+
+#: documenttemplate.cpp:112
+#, kde-format
+msgctxt "Sequence number printed on the document"
+msgid "No."
+msgstr "Nee"
+
+#: documenttemplate.cpp:113
+#, kde-format
+msgctxt "Document item printed on the document"
+msgid "Item"
+msgstr "Item"
+
+#: documenttemplate.cpp:114
+#, kde-format
+msgctxt "Abbrev. of Quantity printed on the document"
+msgid "Qty."
+msgstr "Aantal"
+
+#: documenttemplate.cpp:115
+#, kde-format
+msgctxt "Unit printed on the document"
+msgid "Unit"
+msgstr "Eenheid"
+
+#: documenttemplate.cpp:116
+#, kde-format
+msgctxt "Price of an item printed on the document"
+msgid "Price"
+msgstr "Prijs"
+
+#: documenttemplate.cpp:117
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Sum"
+msgstr "Totaal"
+
+#: documenttemplate.cpp:118
+#, kde-format
+msgctxt "printed on the document"
+msgid "Net"
+msgstr "Netto"
+
+#: documenttemplate.cpp:119
+#, kde-format
+msgctxt "Printed on the document"
+msgid "VAT"
+msgstr "BTW"
+
+#: documenttemplate.cpp:121
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Phone"
+msgstr "Tel."
+
+#: documenttemplate.cpp:122
+#, kde-format
+msgctxt "Printed on the document"
+msgid "FAX"
+msgstr "FAX"
+
+#: documenttemplate.cpp:123
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Mobile"
+msgstr "GSM"
+
+#: documenttemplate.cpp:124
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Email"
+msgstr "Email"
+
+#: documenttemplate.cpp:125
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Website"
+msgstr "Website"
+
+#: documenttemplate.cpp:127
+#, kde-format
+msgctxt "Printed on the document"
+msgid "Page"
+msgstr "Pagina"
+
+#: documenttemplate.cpp:128
+#, kde-format
+msgctxt "Label of Predecessor document number"
+msgid "Predecessor-Doc"
+msgstr "Predecessor-Doc"
+
+#: documenttemplate.cpp:129
+#, kde-format
+msgctxt "the 'of' in page X of Y"
+msgid "of"
+msgstr "van"
+
+#: documenttemplate.cpp:130
+#, kde-format
+msgctxt "Document number on document"
+msgid "Document No."
+msgstr "Document Nr."
+
+#: documenttemplate.cpp:131
+#, kde-format
+msgctxt "Date on document"
+msgid "Date"
+msgstr "Datum"
+
+#: documenttemplate.cpp:132
+#, kde-format
+msgctxt "Project label"
+msgid "Project"
+msgstr "Project"
+
+#: documenttemplate.cpp:133
+#, kde-format
+msgctxt "Customer ID on document"
+msgid "Customer Id"
+msgstr "Klant nummer"
+
+#: documenttemplate.cpp:268
+#, kde-format
+msgid ""
+"Please note: This offer contains %1 alternative or demand positions, printed"
+" in italic font. These do not add to the overall sum."
+msgstr ""
+"Opmerking: in deze offerte komen %1 alternatieven of meerwerk-posten voor, "
+"deze zijn cursief gedrukt. Deze zijn niet bij het totaal bedrag opgeteld."
+
+#: documenttemplate.cpp:279
+#, kde-format
+msgid "tax free items (%1 pcs.)"
+msgstr "belastingvrije items (%1 stuks.)"
+
+#: documenttemplate.cpp:285
+#, kde-format
+msgid "items with reduced tax of %1% (%2 pcs.)"
+msgstr "items met het lage BTW van %1% (%2 stuks.)"
+
+#: documenttemplate.cpp:294
+#, kde-format
+msgid "No label: items with full tax of %1% (%2 pcs.)"
+msgstr "Geen label: items zonder het hoge BTW van %1% (%2 stuks.)"
+
+#: documenttemplate.cpp:364
+#, kde-format
+msgid "Template to convert is not existing!"
+msgstr "Het te converteren sjabloon bestaat niet!"
+
+#: documenttemplate.cpp:367
+#, kde-format
+msgid "Can not read template file!"
+msgstr "Kan het sjabloon niet openen!"
+
+#: materialkataloglistview.cpp:41
+#, kde-format
+msgid "Pack"
+msgstr "Verpakt per"
+
+#: materialkataloglistview.cpp:43
+#, kde-format
+msgid "Purchase"
+msgstr "Inkoop"
+
+#: materialkataloglistview.cpp:44
+#, kde-format
+msgid "Sale"
+msgstr "Verkoop"
+
+#: materialkataloglistview.cpp:45
+#, kde-format
+msgid "Last Modified"
+msgstr "Laatst gewijzigd"
+
+#: materialkataloglistview.cpp:51
+#, kde-format
+msgid "Material Catalog"
+msgstr "Materiaalcatalogus"
+
+#: itemtagdialog.cpp:82
+#, kde-format
+msgid "Edit Item Tags"
+msgstr "Item Tags bewerken"
+
+#: itemtagdialog.cpp:89
+#, kde-format
+msgid "Item Tags"
+msgstr "Item Tags"
+
+#: itemtagdialog.cpp:90
+#, kde-format
+msgid "Select all tags for the item should be tagged with."
+msgstr "Selecteer alle tags waarmee u het item wilt markeren."
+
+#: texttemplateinterface.cpp:53
+#, kde-format
+msgid "No file name given for template"
+msgstr "Geen naam opgegeven voor sjabloon"
+
+#: texttemplateinterface.cpp:61
+#, kde-format
+msgid "Could not find template file %1"
+msgstr "Kan sjabloonbestand %1 niet vinden"
