@@ -34,7 +34,11 @@ except ImportError:
     from io import StringIO
 
 from six import text_type
-from PyPDF2 import PdfFileMerger, PdfFileWriter, PdfFileReader
+try:
+    from pypdf import PdfMerger, PdfWriter, PdfReader
+except ImportError:
+    # use the PyPDF2 package if the pypdf package is not present
+    from PyPDF2 import PdfMerger, PdfWriter, PdfReader
 
 # use utf8 for default
 encoding = 'UTF-8'
@@ -52,46 +56,46 @@ class PdfWatermark:
 
     def watermark( self, pdfFile, watermarkFile, spec ):
         # Read the watermark- and document pdf file
-        watermark = PdfFileReader(open(watermarkFile, "rb"))
-        watermark_page = watermark.getPage(0)
+        watermark = PdfReader(open(watermarkFile, "rb"))
+        watermark_page = watermark.pages[0]
 
-        inputPdf = PdfFileReader( open(pdfFile, "rb"))
-        outputPdf = PdfFileWriter()
+        inputPdf = PdfReader( open(pdfFile, "rb"))
+        outputPdf = PdfWriter()
 
         # flag for the first page of the source file
         firstPage = True
         page_count = 1
-        watermark_length = watermark.getNumPages ()
-        input_length = inputPdf.getNumPages()
+        watermark_length = len(watermark.pages)
+        input_length = len(inputPdf.pages)
 
         if ((spec == Mark.ALTERNATING or spec == Mark.LASTPAGE_DIFFERENT) and watermark_length < 3):
             print("Watermark PDF has not enough pages. It needs three.")
             exit(1)
 
         # Loop over source document pages and merge with the watermark file.
-        for page in range(inputPdf.getNumPages()):
-            pdf_page = inputPdf.getPage(page)
+        for page in range(len(inputPdf.pages)):
+            pdf_page = inputPdf.pages[page]
 
             if ( firstPage or spec == Mark.ALL_PAGES):
-                bg_page = copy.copy(watermark.getPage(0))
-                bg_page.mergePage (pdf_page)
+                bg_page = copy.copy(watermark.pages[0])
+                bg_page.merge_page (pdf_page)
                 outputPdf.addPage (bg_page)
                 firstPage = False
             elif (spec == Mark.ALTERNATING):
-                # add page 1 of watermark to first page. Page 2 and 3 alternate 
-                bg_page = copy.copy(watermark.getPage(2 - page % 2))
-                bg_page.mergePage (pdf_page)
+                # add page 1 of watermark to first page. Page 2 and 3 alternate
+                bg_page = copy.copy(watermark.pages[2 - page % 2])
+                bg_page.merge_page (pdf_page)
                 outputPdf.addPage (bg_page)
             elif (spec == Mark.LASTPAGE_DIFFERENT):
                 # add page 1 of watermark to first page. Last page gets the last page of the watermark
                 # pages in between get the middle page
                 if (page == input_length-1):
                     # The last page of the input. Take the last page of the watermark
-                    bg_page = copy.copy(watermark.getPage(watermark_length-1))
+                    bg_page = copy.copy(watermark.pages[watermark_length-1])
                 else:
                     # pages in between 1..n-1
-                    bg_page = copy.copy(watermark.getPage(1))
-                bg_page.mergePage (pdf_page)
+                    bg_page = copy.copy(watermark.pages[1])
+                bg_page.merge_page (pdf_page)
                 outputPdf.addPage (bg_page)
             else:
                 print ("Adding plain pdf page")
@@ -102,7 +106,7 @@ class PdfWatermark:
         return bytesIO
 
     def append(self, pdf, appendFile):
-        merger = PdfFileMerger()
+        merger = PdfMerger()
         merger.append(pdf)
         merger.append(appendFile)
 

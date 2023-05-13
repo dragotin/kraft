@@ -92,6 +92,9 @@ void ReportLabPDFConverter::convert(const QString& sourceFile, const QString &ou
         if (!mProcess->waitForStarted(1000)) {
             emit converterError(ConvError::TrmlToolFail);
         }
+    } else {
+        QApplication::restoreOverrideCursor();
+        emit converterError(ConvError::TargetFileError);
     }
 }
 

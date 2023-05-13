@@ -46,7 +46,11 @@ from reportlab.lib import colors
 from reportlab.platypus.flowables import KeepTogether
 
 from six import text_type
-from PyPDF2 import PdfFileWriter, PdfFileReader
+try:
+    from pypdf import PdfFileWriter, PdfFileReader
+except ImportError:
+    # use the PyPDF2 package if the pypdf package is not present
+    from PyPDF2 import PdfFileWriter, PdfFileReader
 
 #
 # Change this to UTF-8 if you plan tu use Reportlab's UTF-8 support
