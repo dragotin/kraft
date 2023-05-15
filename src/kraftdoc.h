@@ -167,7 +167,10 @@ public:
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
 
+    void setTaxValues(double fullTax, double redTax);
+
     void clear();
+
 
 public slots:
     /** calls redrawDocument() on all views connected to the document object and is
@@ -228,6 +231,7 @@ private:
     DBIdList mRemovePositions;
     State   _state;
 
+    double _fullTax, _redTax;
     friend class DocumentMan;
 };
 
