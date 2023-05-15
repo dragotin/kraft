@@ -121,6 +121,9 @@ private slots:
         QCOMPARE(doc.projectLabel(), "hausgarten");
         QCOMPARE(doc.salut(), "lieber goofy,");
         QCOMPARE(doc.preText(), "Wir freuen uns, mit Dir Geschäfte machen zu können.");
+
+        QCOMPARE(doc.postText(), "Danke für dein Interesse,");
+        QCOMPARE(doc.goodbye(), "mit den besten Grüssen,");
     }
 
     void loadItems()
@@ -134,7 +137,7 @@ private slots:
         QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
 
         DocPositionList list = doc.positions();
-        QCOMPARE(list.count(), 2);
+        QCOMPARE(list.count(), 4);
 
         DocPosition *dp = static_cast<DocPosition*>(list[0]);
         QCOMPARE(dp->type(), DocPositionBase::PositionType::Position);
@@ -160,6 +163,19 @@ private slots:
         QVERIFY(dp->hasTag("Plants"));
     }
 
+    void checkTotals()
+    {
+        DocumentSaverXML xmlSaver;
+        xmlSaver.setBasePath(_dir.path());
+
+        KraftDoc doc;
+        doc.setTaxValues(19.0, 7.0);
+        QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
+
+        XML::Totals t = xmlSaver.getLastTotals();
+        QCOMPARE(t._brutto.toLong(), doc.bruttoSum().toLong());
+        QCOMPARE(t._netto.toLong(), doc.nettoSum().toLong());
+    }
 
 
 private:

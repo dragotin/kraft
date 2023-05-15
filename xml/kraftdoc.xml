@@ -117,15 +117,15 @@
     </footer>
 
     <totals>
-        <netto>146.65</netto>
+        <netto>666.42</netto>
         <taxSum>
             <type>Reduced</type>
-            <value>12.22</value>
+            <value>20.53</value>
         </taxSum>
         <taxSum>
             <type>Full</type>
-            <value>12.24</value>
+            <value>70.89</value>
         </taxSum>
-        <brutto>174.51</brutto>
+        <brutto>757.84</brutto>
     </totals>
 </kraftdocument>
