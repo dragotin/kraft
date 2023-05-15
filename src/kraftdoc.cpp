@@ -39,7 +39,9 @@
 KraftDoc::KraftDoc(QWidget *parent)
   : KraftObj(parent),
     mDocTypeChanged(false),
-    _state(State::New)
+    _state(State::New),
+    _fullTax(-1.0),
+    _redTax(-1.0)
 {
 }
 
@@ -77,6 +79,8 @@ void KraftDoc::clear()
     mPositions.clear();
     mRemovePositions.clear();
     _state = KraftDoc::State::Undefined;
+    _fullTax = -1.0;
+    _redTax = -1.0;
 }
 
 KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
@@ -309,6 +313,12 @@ int KraftDoc::slotAppendPosition( const DocPosition& pos )
   return mPositions.count();
 }
 
+void KraftDoc::setTaxValues(double fullTax, double redTax)
+{
+    _fullTax = fullTax;
+    _redTax  = redTax;
+}
+
 Geld KraftDoc::nettoSum() const
 {
   return positions().nettoPrice();
@@ -323,19 +333,33 @@ Geld KraftDoc::bruttoSum() const
 
 Geld KraftDoc::fullTaxSum() const
 {
-    return positions().fullTaxSum(UnitManager::self()->tax(date()));
+    Geld g;
+
+    if (_fullTax < 0) {
+        g = positions().fullTaxSum(UnitManager::self()->tax(date()));
+    } else {
+        g = positions().fullTaxSum(_fullTax);
+    }
+    return g;
 }
 
 Geld KraftDoc::reducedTaxSum() const
 {
-    return positions().reducedTaxSum(UnitManager::self()->reducedTax(date()));
+    if (_redTax < 0) {
+        return positions().reducedTaxSum(UnitManager::self()->reducedTax(date()));
+    } else {
+        return positions().reducedTaxSum(_redTax);
+    }
 }
 
 Geld KraftDoc::vatSum() const
 {
-  return positions().taxSum( UnitManager::self()->tax( date() ),
-                             UnitManager::self()->reducedTax( date() ) );
-
+    if (_fullTax < 0) {
+        return positions().taxSum( UnitManager::self()->tax( date() ),
+                                   UnitManager::self()->reducedTax( date() ) );
+    } else {
+        return positions().taxSum(_fullTax, _redTax);
+    }
 }
 
 void KraftDoc::setStateFromString(const QString& s)
