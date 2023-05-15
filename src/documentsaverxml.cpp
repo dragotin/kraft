@@ -391,55 +391,57 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
     // TODO: There should be more than one item Groups
     QDomElement groupElem = kraftdocElem.firstChildElement("itemGroup");
     // TODO: itemGroup name and attribs.
+    while( !groupElem.isNull()) {
+        QDomElement itemElem = groupElem.firstChildElement("item");
+        while (!itemElem.isNull()) {
+            QString t = childElemText(itemElem, "type");
+            DocPositionBase::PositionType itemType {DocPositionBase::Position};
+            if (t == "ExtraDiscout") {
+                itemType = DocPositionBase::ExtraDiscount;
+            }
 
-    QDomElement itemElem = groupElem.firstChildElement("item");
-    while (!itemElem.isNull()) {
-        QString t = childElemText(itemElem, "type");
-        DocPositionBase::PositionType itemType {DocPositionBase::Position};
-        if (t == "ExtraDiscout") {
-            itemType = DocPositionBase::ExtraDiscount;
+            DocPosition *item = doc->createPosition(itemType);
+            t = childElemText(itemElem, "text");
+            item->setText(t);
+
+            t = childElemText(itemElem, "amount");
+            double a = t.toDouble();
+            item->setAmount(a);
+            t = childElemText(itemElem, "unit");
+            item->setUnit(UnitManager::self()->getUnit(t));
+
+            t = childElemText(itemElem, "taxType");
+            item->setTaxType(t);
+
+            t = childElemText(itemElem, "unitprice");
+            item->setUnitPrice(Geld(t.toDouble()));
+            t = childElemText(itemElem, "itemprice");
+
+            Geld g(item->overallPrice());
+            // qDebug() << "Geld" << g.toLocaleString() << t.toDouble();
+            Q_ASSERT(!(g != Geld(t.toDouble())));
+
+            QDomElement attrElem = itemElem.firstChildElement("attrib");
+            while (!attrElem.isNull()) {
+                const KraftAttrib attr(attrElem);
+                item->setAttribute(attr);
+                attrElem = attrElem.nextSiblingElement("attrib");
+            }
+
+            QDomElement tagElem = itemElem.firstChildElement("tag");
+            QStringList tags;
+            while (!tagElem.isNull()) {
+                tags.append(tagElem.text());
+                tagElem = tagElem.nextSiblingElement("tag");
+            }
+            if (tags.size() > 0) {
+                item->setTags(tags);
+            }
+
+            // Go to next item
+            itemElem = itemElem.nextSiblingElement("item");
         }
-
-        DocPosition *item = doc->createPosition(itemType);
-        t = childElemText(itemElem, "text");
-        item->setText(t);
-
-        t = childElemText(itemElem, "amount");
-        double a = t.toDouble();
-        item->setAmount(a);
-        t = childElemText(itemElem, "unit");
-        item->setUnit(UnitManager::self()->getUnit(t));
-
-        t = childElemText(itemElem, "taxType");
-        item->setTaxType(t);
-
-        t = childElemText(itemElem, "unitprice");
-        item->setUnitPrice(Geld(t.toDouble()));
-        t = childElemText(itemElem, "itemprice");
-
-        Geld g(item->overallPrice());
-        // qDebug() << "Geld" << g.toLocaleString() << t.toDouble();
-        Q_ASSERT(!(g != Geld(t.toDouble())));
-
-        QDomElement attrElem = itemElem.firstChildElement("attrib");
-        while (!attrElem.isNull()) {
-            const KraftAttrib attr(attrElem);
-            item->setAttribute(attr);
-            attrElem = attrElem.nextSiblingElement("attrib");
-        }
-
-        QDomElement tagElem = itemElem.firstChildElement("tag");
-        QStringList tags;
-        while (!tagElem.isNull()) {
-            tags.append(tagElem.text());
-            tagElem = tagElem.nextSiblingElement("tag");
-        }
-        if (tags.size() > 0) {
-            item->setTags(tags);
-        }
-
-        // Go to next item
-        itemElem = itemElem.nextSiblingElement("item");
+        groupElem = groupElem.nextSiblingElement("itemGroup");
     }
 
     return res;
@@ -460,7 +462,7 @@ bool loadFooter(const QDomDocument& domDoc, KraftDoc *doc)
     return res;
 }
 
-bool loadTotals(const QDomDocument& domDoc, Totals& totals)
+bool loadTotals(const QDomDocument& domDoc, XML::Totals& totals)
 {
     bool res {true};
 
@@ -555,6 +557,11 @@ bool DocumentSaverXML::verifyXmlFile(const QUrl& schemaFile, const QString& xmlF
 QString DocumentSaverXML::lastSavedFileName() const
 {
     return _lastSaveFile;
+}
+
+XML::Totals DocumentSaverXML::getLastTotals() const
+{
+    return _totals;
 }
 
 bool DocumentSaverXML::saveDocument(KraftDoc *doc)
@@ -667,7 +674,6 @@ bool DocumentSaverXML::loadFromFile(const QString& xmlFile, KraftDoc *doc, bool 
         ok = loadClientBlock(_domDoc, doc);
     }
 
-    Totals totals;
     if (!onlyMeta) {
         if (ok) {
             ok = loadHeaderBlock(_domDoc, doc);
@@ -679,7 +685,7 @@ bool DocumentSaverXML::loadFromFile(const QString& xmlFile, KraftDoc *doc, bool 
             ok = loadFooter(_domDoc, doc);
         }
         if (ok) {
-            ok = loadTotals(_domDoc, totals);
+            ok = loadTotals(_domDoc, _totals);
         }
     }
     return ok;

@@ -31,19 +31,22 @@ class dbID;
 class QString;
 class DocBaseModel;
 
-
+namespace XML {
 struct Totals {
     Geld _netto;
     Geld _brutto;
     Geld _redTax;
     Geld _fullTax;
 };
+}
 
 class DocumentSaverXML : public DocumentSaverBase
 {
     Q_OBJECT
 
 public:
+
+
     DocumentSaverXML();
     virtual ~DocumentSaverXML();
 
@@ -61,6 +64,8 @@ public:
 
     QString lastSavedFileName() const;
 
+    XML::Totals getLastTotals() const;
+
 protected:
     QString basePath();
 
@@ -68,6 +73,7 @@ private:
 
     QDir _basePath;
     QString _lastSaveFile;
+    XML::Totals _totals;
 
 };
 
