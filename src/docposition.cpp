@@ -222,7 +222,8 @@ Geld DocPositionList::fullTaxSum( double fullTax )
   while( it.hasNext() ) {
     DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
-    if( !dp->toDelete() && dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
+    auto tt = dp->taxType();
+    if( !dp->toDelete() && tt == DocPositionBase::TaxFull ) {
         sum += dp->overallPrice();
     }
   }
@@ -246,7 +247,7 @@ Geld DocPositionList::reducedTaxSum( double reducedTax )
   while( it.hasNext() ) {
     DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
-    if( !dp->toDelete() && dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
+    if( !dp->toDelete() && dp->taxType() == DocPositionBase::TaxReduced ) {
         sum += dp->overallPrice();
     }
   }
