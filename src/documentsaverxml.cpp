@@ -410,7 +410,7 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
             t = childElemText(itemElem, "unit");
             item->setUnit(UnitManager::self()->getUnit(t));
 
-            t = childElemText(itemElem, "taxType");
+            t = childElemText(itemElem, "taxtype");
             item->setTaxType(t);
 
             t = childElemText(itemElem, "unitprice");
