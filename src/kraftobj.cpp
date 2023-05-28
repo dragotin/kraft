@@ -17,17 +17,16 @@
 
 #include "kraftobj.h"
 
-KraftObj::KraftObj(QObject *parent)
-    : QObject{parent},
-      _modified{false}
+KraftObj::KraftObj()
+     :_modified{false}
 {
 
 }
 
-QString KraftObj::uuid()
+QString KraftObj::uuid() const
 {
     if (_uuid.isNull()) {
-        _uuid = QUuid::createUuid();
+        return QString();
     }
     return _uuid.toString(QUuid::WithoutBraces);
 }

@@ -588,6 +588,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
     QElapsedTimer ti;
     ti.start();
+    // TODO: Write to temp file first, and move only if it validates.
     qDebug () << "Storing XML to " << xmlFile;
 
     QFile file( xmlFile );
@@ -710,10 +711,9 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
         const QString file = dateMap[d];
         KraftDoc doc;
         if (loadFromFile(file, &doc, true)) {
-            dbID id; // FIXME remove from digest
-            DocDigest digest(id, doc.docType(),
+            DocDigest digest(doc.docType(),
                              doc.addressUid());
-
+            digest.setUuid(doc.uuid());
             digest.setDate(doc.date());
             digest.setLastModified(doc.lastModified());
 

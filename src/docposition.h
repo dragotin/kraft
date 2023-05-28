@@ -43,9 +43,10 @@ class PositionViewWidget;
 
 class DocPositionBase : public KraftObj
 {
-  public:
-  enum PositionType { Position, ExtraDiscount, Text, Demand, Alternative };
-  enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3, TaxIndividual = 4 };
+
+public:
+    enum PositionType { Position, ExtraDiscount, Text, Demand, Alternative };
+    enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3, TaxIndividual = 4 };
 
     DocPositionBase();
     DocPositionBase( const PositionType& );
@@ -65,7 +66,7 @@ class DocPositionBase : public KraftObj
     void setTaxType( int );
     void setTaxType(const QString&);
 
-  /**
+    /**
    * Position means the number in the document
    */
     int positionNumber() { return m_position; }
@@ -77,7 +78,7 @@ class DocPositionBase : public KraftObj
 
     DocPositionBase& operator=( const DocPositionBase& );
 
-  protected:
+protected:
     int     m_dbId;
     int     m_position;
     QString m_text;
@@ -89,7 +90,7 @@ class DocPositionBase : public KraftObj
 
 class DocPosition : public DocPositionBase
 {
-  public:
+public:
     DocPosition();
     DocPosition( const PositionType& );
 
@@ -111,7 +112,7 @@ class DocPosition : public DocPositionBase
     static const QString Tags;
     static const QString ExtraDiscountTagRequired;
 
-  private:
+private:
     Einheit m_unit;
     Geld    m_unitPrice;
     double  m_amount;
@@ -123,7 +124,7 @@ class DocPosition : public DocPositionBase
 
 class DocPositionList : public QList<DocPositionBase*>
 {
-  public:
+public:
     DocPositionList();
 
     // QDomElement domElement( QDomDocument& );
@@ -136,14 +137,14 @@ class DocPositionList : public QList<DocPositionBase*>
     Geld fullTaxSum( double fullTax );
     Geld reducedTaxSum( double reducedTax );
 
-  protected:
+protected:
     int compareItems ( DocPosition *dp1, DocPosition *dp2 );
 
-  private:
+private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
 };
 
 typedef QListIterator<DocPositionBase*> DocPositionListIterator;
 
-typedef QPointer<DocPositionBase> DocPositionGuardedPtr;
+typedef DocPositionBase* DocPositionGuardedPtr;
 #endif

@@ -936,8 +936,8 @@ void Portal::slotOpenDocument( const QString& ident )
 
 void Portal::slotDocumentSelected( const DocDigest& doc )
 {
-    // qDebug() << "a doc was selected: " << doc;
-    bool enable = !doc.id().isEmpty();
+    // qDebug() << "a doc was selected: " << doc << endl;
+    bool enable = !doc.uuid().isEmpty();
     _actViewDocument->setEnabled( enable );
     _actOpenDocument->setEnabled( (!_readOnlyMode) && enable );
     _actPrintDocument->setEnabled( (!_readOnlyMode) && enable );

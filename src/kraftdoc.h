@@ -35,7 +35,7 @@ class Geld;
 
 class KraftView;
 
-class KraftDoc : public KraftObj
+class KraftDoc : public QObject, public KraftObj
 {
     Q_OBJECT
     Q_PROPERTY(QString docType READ docType)

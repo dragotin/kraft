@@ -91,18 +91,19 @@ public:
     void setYearSumColumn( int column );
     void setYearCountColumn( int column );
 
-    QVariant data(const QModelIndex &index, int role) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    QModelIndex index(int row, int column, const QModelIndex &parent) const;
-    QModelIndex parent(const QModelIndex &index) const;
-    DocDigest digest(const QModelIndex& indx) const;
+    QVariant data(const QModelIndex &index, int role) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    QModelIndex index(int row, int column, const QModelIndex &parent) const override;
+    QModelIndex parent(const QModelIndex &index) const override;
+    DocDigest digest(const QModelIndex& indx) const override;
 
-    int rowCount(const QModelIndex &parent) const;
+    int rowCount(const QModelIndex &parent) const override;
 
-    void removeAllData();
-    void addData(const DocDigest& digest);
+    void removeAllData() override;
+    void addData(const DocDigest& digest) override;
+    void updateData(const DocDigest& digest) override;
 
-    bool isDocument(const QModelIndex& indx) const;
+    bool isDocument(const QModelIndex& indx) const override;
 
 private:
     TreeItem          *rootItem;
