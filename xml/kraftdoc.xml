@@ -15,15 +15,15 @@
 
         <tax>
             <type>None</type>
-            <value>0.0</value>
+            <percent>0.0</percent>
         </tax>
         <tax>
             <type>Reduced</type>
-            <value>7.0</value>
+            <percent>7.0</percent>
         </tax>
         <tax>
             <type>Full</type>
-            <value>19.0</value>
+            <percent>19.0</percent>
         </tax>
 
         <owner>kf</owner>
