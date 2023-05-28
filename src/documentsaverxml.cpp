@@ -242,13 +242,13 @@ QDomDocument xmlDocument(KraftDoc *doc)
     root.appendChild(itemGroupTotals);
     itemGroupTotals.appendChild( xmlTextElement(xmldoc, "netto", QString::number(doc->nettoSum().toDouble(), 'f', 2)));
 
-    QDomElement taxSumReduced = xmldoc.createElement("taxSum");
+    QDomElement taxSumReduced = xmldoc.createElement("taxsum");
     itemGroupTotals.appendChild(taxSumReduced);
     taxSumReduced.appendChild(xmlTextElement(xmldoc, "type", "Reduced"));
     t = doc->reducedTaxSum().toDouble();
     taxSumReduced.appendChild(xmlTextElement(xmldoc, "total", QString::number(t, 'f', 2)));
 
-    QDomElement taxSumFull = xmldoc.createElement("taxSum");
+    QDomElement taxSumFull = xmldoc.createElement("taxsum");
     itemGroupTotals.appendChild(taxSumFull);
     taxSumFull.appendChild(xmlTextElement(xmldoc, "type", "Full"));
     t = doc->fullTaxSum().toDouble();
@@ -586,6 +586,8 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     const QString xml = xmldoc.toString();
     const QString xmlFile = xmlDocFileName(doc);
 
+    QElapsedTimer ti;
+    ti.start();
     qDebug () << "Storing XML to " << xmlFile;
 
     QFile file( xmlFile );
@@ -602,6 +604,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
     const QUrl schemaFile = QUrl::fromLocalFile(DefaultProvider::self()->locateFile("xml/kraftdoc.xsd"));
     result = verifyXmlFile(schemaFile, xmlFile);
+    qDebug() << "Saving done in" << ti.elapsed() << "msec";
 
 #if 0
     if( !doc->isNew() && doc->docTypeChanged() ) {
