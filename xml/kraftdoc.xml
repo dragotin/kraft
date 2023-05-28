@@ -69,7 +69,7 @@
             <text>first item</text>
             <amount>8.40</amount>
             <unit>sm</unit>
-            <taxType>Full</taxType>
+            <taxtype>Full</taxtype>
             <unitprice>22.21</unitprice>
             <itemprice>186.56</itemprice>
             <tag>Work</tag>
@@ -79,7 +79,7 @@
             <text>second item</text>
             <amount>4.40</amount>
             <unit>cbm</unit>
-            <taxType>Reduced</taxType>
+            <taxtype>Reduced</taxtype>
             <unitprice>33.33</unitprice>
             <itemprice>146.65</itemprice>
             <tag>Plants</tag>
@@ -94,7 +94,7 @@
             <text>Alternative: first item </text>
             <amount>8.40</amount>
             <unit>qm</unit>
-            <taxType>Full</taxType>
+            <taxtype>Full</taxtype>
             <unitprice>22.21</unitprice>
             <itemprice>186.56</itemprice>
             <tag>Work</tag>
@@ -104,7 +104,7 @@
             <text>second item </text>
             <amount>4.40</amount>
             <unit>cbm</unit>
-            <taxType>Reduced</taxType>
+            <taxtype>Reduced</taxtype>
             <unitprice>33.33</unitprice>
             <itemprice>146.65</itemprice>
             <tag>Pflanzen</tag>
@@ -118,14 +118,14 @@
 
     <totals>
         <netto>666.42</netto>
-        <taxSum>
+        <taxsum>
             <type>Reduced</type>
-            <value>20.53</value>
-        </taxSum>
-        <taxSum>
+            <total>20.53</total>
+        </taxsum>
+        <taxsum>
             <type>Full</type>
-            <value>70.89</value>
-        </taxSum>
+            <total>70.89</total>
+        </taxsum>
         <brutto>757.84</brutto>
     </totals>
 </kraftdocument>
