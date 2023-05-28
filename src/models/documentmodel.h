@@ -46,6 +46,7 @@ public:
 
   void removeAllData();
   void addData( const DocDigest& );
+  void updateData(const DocDigest& digest);
 
   bool isDocument(const QModelIndex& indx) const;
 

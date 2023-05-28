@@ -449,3 +449,7 @@ void DateModel::addData( const DocDigest& digest ) // DocumentIndx doc )
 
 }
 
+void DateModel::updateData(const DocDigest& digest)
+{
+
+}

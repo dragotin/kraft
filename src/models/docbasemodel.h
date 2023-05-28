@@ -66,6 +66,7 @@ public:
     virtual int rowCount(const QModelIndex &parent) const = 0;
     virtual void removeAllData() = 0;
     virtual void addData(const DocDigest& digest) = 0;
+    virtual void updateData(const DocDigest& digest) = 0;
 
     virtual DocDigest digest(const QModelIndex& indx) const = 0;
     virtual bool isDocument(const QModelIndex& indx) const = 0;

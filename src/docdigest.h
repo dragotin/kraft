@@ -21,19 +21,19 @@
 #include <QLocale>
 #include <QList>
 
-#include "dbids.h"
 #include "archdoc.h"
+#include "kraftobj.h"
 
 class QString;
 class QDate;
 
 typedef QList<ArchDocDigest> ArchDocDigestList;
 
-class DocDigest
+class DocDigest : public KraftObj
 {
 
 public:
-  DocDigest( dbID id, const QString& type, const QString& clientID );
+  DocDigest(const QString& type, const QString& clientID);
   DocDigest();
 
   QString clientId() const { return mClientId; }
@@ -52,12 +52,6 @@ public:
   void setDate( const QDate& date ) { mDate = date; }
   QDate rawDate() const;
 
-  QString lastModified() const;
-  void setLastModified( const QDateTime& date ) { mLastModified = date; }
-
-  QString id() const  { return mID.toString(); }
-  void setId( dbID id ) { mID = id; }
-
   QString ident() const   { return mIdent; }
   void setIdent( const QString& ident ) { mIdent = ident; }
 
@@ -71,7 +65,6 @@ public:
 
 protected:
 
-  dbID mID;
   QString mType;
   QString mClientId;
   QString mIdent;
@@ -79,7 +72,6 @@ protected:
   QString mProjectLabel;
   QString mClientAddress ;
 
-  QDateTime   mLastModified;
   QDate       mDate;
   QLocale     mLocale;
 
@@ -88,8 +80,6 @@ private:
 };
 
 typedef QList<DocDigest> DocDigestList;
-typedef QList<DocDigestList> DocDigestListIterator;
-
 
 class DocDigestsTimeline
 {

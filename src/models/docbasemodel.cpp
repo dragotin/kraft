@@ -64,7 +64,7 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
     switch(col) {
     case Document_Id:
     case Document_Id_Raw:
-        var = digest.id();
+        var = digest.uuid();
         break;
     case Document_Ident:
         var = digest.ident();

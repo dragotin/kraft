@@ -22,18 +22,17 @@
 #include <kcontacts/addressee.h>
 
 #include "docdigest.h"
-#include "defaultprovider.h"
 #include "format.h"
 #include "kraftsettings.h"
 
-DocDigest::DocDigest( dbID id, const QString& type, const QString& clientID )
-  :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" )
+DocDigest::DocDigest(const QString& type, const QString& clientID)
+  :KraftObj(), mType( type ), mClientId( clientID ), mLocale( "kraft" )
 {
 
 }
 
 DocDigest::DocDigest()
-  :mLocale( "kraft" )
+  :KraftObj(), mLocale( "kraft" )
 {
 }
 
@@ -45,13 +44,6 @@ QString DocDigest::date() const
 QDate DocDigest::rawDate() const
 {
     return mDate;
-}
-
-QString DocDigest::lastModified() const
-{
-    const QString re = QString( "%1 %2").arg( Format::toDateString(mLastModified.date(), KraftSettings::self()->dateFormat()))
-            .arg(mLastModified.time().toString("hh:mm"));
-    return re;
 }
 
 ArchDocDigestList DocDigest::archDocDigestList() const

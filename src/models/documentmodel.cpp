@@ -30,7 +30,6 @@
 #include "documentmodel.h"
 #include "docdigest.h"
 #include "docbasemodel.h"
-#include "defaultprovider.h"
 
 DocumentModel::DocumentModel(QObject *parent)
        : DocBaseModel(parent)
@@ -55,6 +54,12 @@ void DocumentModel::removeAllData()
 void DocumentModel::addData( const DocDigest& digest )
 {
     _digests.append(digest);
+}
+
+void DocumentModel::updateData(const DocDigest& digest)
+{
+
+   // for (const DocDigest& d)
 }
 
 QModelIndex DocumentModel::index(int row, int column, const QModelIndex &parent) const
