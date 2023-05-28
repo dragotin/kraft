@@ -103,7 +103,7 @@ AddressProvider::LookupState AddressProvider::lookupAddressee( const QString& ui
     if( !_d->backendUp() ) {
         return BackendError;
     }
-    if( _notFoundUids.contains(uid)) {
+    if( uid.isEmpty() || _notFoundUids.contains(uid)) {
         // qDebug() << uid << "was not found before";
         return LookupNotFound;
     }

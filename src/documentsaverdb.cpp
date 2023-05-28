@@ -213,8 +213,7 @@ int DocumentSaverDB::addDigestsToModel(DocBaseModel* model)
     query.exec();
 
     while (query.next()) {
-        DocDigest digest(query.value(DocBaseModel::Columns::Document_Id).toInt(),
-                         query.value(DocBaseModel::Columns::Document_Type).toString(),
+        DocDigest digest(query.value(DocBaseModel::Columns::Document_Type).toString(),
                          query.value(DocBaseModel::Columns::Document_ClientId).toString());
 
         digest.setDate( query.value(DocBaseModel::Columns::Document_CreationDate ).toDate() );
@@ -227,6 +226,8 @@ int DocumentSaverDB::addDigestsToModel(DocBaseModel* model)
             digest.setLastModified(dt);
         }
 
+        const QString id = query.value(DocBaseModel::Columns::Document_Id).toString();
+        digest.setUuid(id);
         const QString clientAdr = query.value(DocBaseModel::Columns::Document_ClientAddress).toString();
         digest.setClientAddress( clientAdr );
 

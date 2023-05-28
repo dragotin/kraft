@@ -5,7 +5,7 @@
 
 class KraftDoc;
 
-typedef QPointer<KraftDoc> DocGuardedPtr;
+typedef KraftDoc* DocGuardedPtr;
 
 #endif
 

@@ -37,7 +37,7 @@
 // FIXME: Make KraftDoc inheriting DocDigest!
 
 KraftDoc::KraftDoc(QWidget *parent)
-  : KraftObj(parent),
+  : QObject(parent), KraftObj(),
     mDocTypeChanged(false),
     _state(State::New),
     _fullTax(-1.0),

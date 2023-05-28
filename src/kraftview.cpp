@@ -466,7 +466,7 @@ void KraftView::redrawDocPositions( )
   DocPositionListIterator it( list );
   while( it.hasNext() ) {
     DocPositionBase *dp = it.next();
-    PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
+    PositionViewWidget *w = mPositionWidgetList.widgetFromPosition(dp);
     if( !w ) {
       w = createPositionViewWidget( dp, cnt);
       w->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );

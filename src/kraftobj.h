@@ -31,16 +31,13 @@
  *
  * It comes with certain properties that all the object share.
  */
-class KraftObj : public QObject
+class KraftObj
 {
-    Q_OBJECT
-    Q_PROPERTY(QString uuid  READ uuid)
-    Q_PROPERTY(QDateTime lastModified READ lastModified)
 
 public:
-    explicit KraftObj(QObject *parent = nullptr);
+    explicit KraftObj();
 
-    QString uuid();
+    QString uuid() const;
     void setUuid( const QString& str ) { _uuid = QUuid(str); }
 
     QDateTime lastModified() const { return _lastModified; }
