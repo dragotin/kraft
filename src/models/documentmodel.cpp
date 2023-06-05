@@ -58,6 +58,19 @@ void DocumentModel::addData( const DocDigest& digest )
 
 void DocumentModel::updateData(const DocDigest& digest)
 {
+    int r = -1;
+    for (int indx = 0; r == -1 && indx < _digests.count(); indx++) {
+        if (_digests.at(indx).uuid() == digest.uuid()) {
+            r = indx;
+        }
+    }
+
+    if (r > -1) {
+        _digests[r] = digest;
+        QModelIndex indx1 = index(r, 0, QModelIndex());
+        QModelIndex indx2 = index(r+1, 0, QModelIndex());
+        emit dataChanged(indx1, indx2);
+    }
 
    // for (const DocDigest& d)
 }

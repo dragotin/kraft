@@ -451,5 +451,35 @@ void DateModel::addData( const DocDigest& digest ) // DocumentIndx doc )
 
 void DateModel::updateData(const DocDigest& digest)
 {
+    int month = digest.rawDate().month();
+    int year = digest.rawDate().year();
+
+    TreeItem *monthItem = NULL;
+
+    // ====
+    monthItem = findMonthItem( year, month );
+
+    if (monthItem) {
+        int r = -1;
+        for (TreeItem *item : monthItem->children()) {
+            AbstractIndx *abstractindx = item->payload();
+
+            const DocDigest& d = abstractindx->digest();
+
+            if (d.uuid() == digest.uuid()) {
+                abstractindx->setDigest(digest);
+                r = item->row();
+                break;
+            }
+        }
+        if (r > -1) {
+            QModelIndex yearIdx = index(year, DocBaseModel::Treestruct_Year, QModelIndex());
+            QModelIndex monthIdx = index(month, DocBaseModel::Treestruct_Month, yearIdx);
+
+            QModelIndex rIdx = index(r, 0, monthIdx);
+            emit dataChanged(rIdx, rIdx);
+        }
+    }
+
 
 }

@@ -32,6 +32,7 @@
 
 class DocumentSaverBase;
 class Geld;
+class DocDigest;
 
 class KraftView;
 
@@ -86,6 +87,8 @@ public:
     DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
     DocPositionList positions() const { return mPositions; }
     void setPositionList(DocPositionList , bool isNew = false);
+
+    DocDigest toDigest();
 
     QDate date() const { return mDate; }
     void setDate( QDate d ) { mDate = d; }

@@ -261,15 +261,14 @@ void AllDocsView::slotBuildView()
             _dateView->setExpanded(rIdx, true);
         }
     }
-
-    connect(KraftDB::self(), &KraftDB::docDatabaseChanged, this, &AllDocsView::slotUpdateView);
 }
 
-void AllDocsView::slotUpdateView()
+void AllDocsView::slotUpdateView(DocGuardedPtr doc)
 {
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-    static_cast<DocBaseModel*>(mDateModel->sourceModel())->resetData();
-    static_cast<DocBaseModel*>(mTableModel->sourceModel())->resetData();
+    const DocDigest& digest = doc->toDigest();
+    static_cast<DocBaseModel*>(mDateModel->sourceModel())->updateData(digest);
+    static_cast<DocBaseModel*>(mTableModel->sourceModel())->updateData(digest);
     mCurrentlySelected = QModelIndex();
     QApplication::restoreOverrideCursor();
 }

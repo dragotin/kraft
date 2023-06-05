@@ -176,6 +176,8 @@ bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
 
         DocumentSaverXML docSave;
         docSave.setBasePath(basePath);
+        docSave.setArchiveMode(true); // do not set new lastModified etc.
+
         if (!docSave.saveDocument(&doc)) {
             qDebug() << "failed to save document as XML" << docID;
             ok = false;

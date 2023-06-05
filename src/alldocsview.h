@@ -56,7 +56,7 @@ public:
 public slots:
 
     void slotBuildView();
-    void slotUpdateView();
+    void slotUpdateView(DocGuardedPtr doc);
 
     void setView(ViewType type);
 

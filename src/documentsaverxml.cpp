@@ -124,7 +124,7 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
     return cnt;
 }
 
-QDomDocument xmlDocument(KraftDoc *doc)
+QDomDocument xmlDocument(KraftDoc *doc, bool archiveMode)
 {
     QDomDocument xmldoc( "kraftdocument" );
     QDomProcessingInstruction instr = xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
@@ -502,6 +502,11 @@ void DocumentSaverXML::setBasePath(const QString& path)
     _basePath.setPath(path);
 }
 
+void DocumentSaverXML::setArchiveMode(bool am)
+{
+    _archiveMode = am;
+}
+
 QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
 {
     QString path {basePath()};
@@ -527,7 +532,8 @@ QString DocumentSaverXML::xmlDocFileNameFromIdent(const QString& id)
 }
 
 DocumentSaverXML::DocumentSaverXML()
-    : DocumentSaverBase()
+    : DocumentSaverBase(),
+      _archiveMode(false)
 {
 
 }
@@ -575,7 +581,12 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         return false;
     }
 
-    QDomDocument xmldoc = xmlDocument(doc);
+    QDateTime saveLastModified = doc->lastModified();
+    if (!_archiveMode) {
+        doc->setLastModified(QDateTime::currentDateTime());
+    }
+
+    QDomDocument xmldoc = xmlDocument(doc, _archiveMode);
 
     if (doc->isNew()) {
         // generate a document ident first.
@@ -598,6 +609,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         file.close();
     } else {
         qDebug () << "Saving failed";
+        doc->setLastModified(saveLastModified);
         return false;
     }
 
@@ -711,17 +723,7 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
         const QString file = dateMap[d];
         KraftDoc doc;
         if (loadFromFile(file, &doc, true)) {
-            DocDigest digest(doc.docType(),
-                             doc.addressUid());
-            digest.setUuid(doc.uuid());
-            digest.setDate(doc.date());
-            digest.setLastModified(doc.lastModified());
-
-            digest.setClientAddress(doc.address());
-            digest.setIdent(doc.ident());
-            digest.setWhiteboard(doc.whiteboard());
-            digest.setProjectLabel(doc.projectLabel());
-            model->addData(digest);
+            model->addData(doc.toDigest());
             cnt++;
         }
 
