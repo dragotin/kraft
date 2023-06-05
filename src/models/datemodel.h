@@ -50,6 +50,7 @@ public:
     virtual IndxType type();
 
     DocDigest digest() const;
+    void setDigest(const DocDigest& d) { _docDigest = d; }
 
     int year();
     int month();

@@ -489,10 +489,6 @@ void Portal::slotStartupChecks()
              this, &Portal::slotDocConverted);
     connect( &_reportGenerator, &ReportGenerator::failure,
              this, &Portal::slotDocConvertionFail);
-    // if readonly, enable the change polling on the db
-    if (_readOnlyMode) {
-        KraftDB::self()->enableTimerRefresh(true);
-    }
 
 }
 
@@ -638,8 +634,8 @@ void Portal::slotCopyDocument( const QString& ident )
         qDebug() << "FAILED to save document" << doc->docIdentifier();
     }
 
-    m_portalView->docDigestView()->slotUpdateView();
-    // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString();
+    m_portalView->docDigestView()->slotUpdateView(doc);
+    // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
   }
 }
 
@@ -1053,7 +1049,7 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
         if( success ) {
             if( view->type() == KraftViewBase::ReadWrite ) {
                 AllDocsView *dv = m_portalView->docDigestView();
-                dv->slotUpdateView();
+                dv->slotUpdateView(doc);
                 KraftSettings::self()->setDocEditGeometry(geo);
             } else {
                 KraftSettings::self()->setDocViewROGeometry(geo);

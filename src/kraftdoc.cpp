@@ -33,6 +33,7 @@
 #include "format.h"
 #include "unitmanager.h"
 #include "kraftsettings.h"
+#include "docdigest.h"
 
 // FIXME: Make KraftDoc inheriting DocDigest!
 
@@ -195,6 +196,26 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
     //    _emitDBChangeSignal = true;
     // }
     return result;
+}
+
+DocDigest KraftDoc::toDigest()
+{
+    DocDigest digest(docType(), addressUid());
+    digest.setUuid(uuid());
+    digest.setDate(date());
+    digest.setLastModified(lastModified());
+
+    digest.setClientAddress(address());
+    digest.setIdent(ident());
+    digest.setWhiteboard(whiteboard());
+    digest.setProjectLabel(projectLabel());
+
+    for( const auto attrib : attributes()) {
+        digest.setAttribute(attrib);
+    }
+    digest.setTags(allTags());
+
+    return digest;
 }
 
 void KraftDoc::setTimeOfSupply(QDateTime start, QDateTime end)
