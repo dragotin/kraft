@@ -139,15 +139,9 @@ public:
 
   dbID archiveDocument( KraftDoc *docPtr );
 
-  void enableTimerRefresh(bool runTimer);
-
-private slots:
-  void slotCheckDocDatabaseChanged();
-
 signals:
   void statusMessage( const QString& );
   void processedSqlCommand( bool );
-  void docDatabaseChanged();
 
 private: // Private attributes
   void close();
@@ -165,14 +159,6 @@ private: // Private attributes
   QString mDatabaseName;
   DbInitDialog *mInitDialog;
   SetupAssistant *mSetupAssistant;
-  QTimer _timer;
-
-  int _amountOfDocs, _amountOfArchs;
-
-  // if this is set to false, the slotCheckDatabaseChanged() can be called
-  // to update the members that hold the amount of docs, but the update signal
-  // is not sent out.
-  bool _emitDBChangeSignal;
 };
 
 #endif

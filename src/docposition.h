@@ -50,7 +50,6 @@ public:
 
     DocPositionBase();
     DocPositionBase( const PositionType& );
-    ~DocPositionBase() {}
 
     DocPositionBase(const DocPositionBase&);
 
