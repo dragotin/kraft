@@ -37,21 +37,22 @@ class DocBaseModel : public QAbstractItemModel
 public:
     enum Columns {
         Document_Id = 0,
-        Document_Ident = 1,
-        Document_Type = 2,
-        Document_Whiteboard = 3,
-        Document_ClientId = 4,
-        Document_LastModified = 5,
-        Document_CreationDate = 6,
-        Document_ProjectLabel = 7,
-        Document_ClientAddress = 8,
-        Document_ClientName = 9,
-        Document_Id_Raw = 10,
-        Document_CreationDateRaw = 11,
-        Treestruct_Year = 12,
-        Treestruct_Month = 13,
-        Treestruct_Type  = 14,
-        Max_Column_Marker = 15   // leave this as last enum
+        Document_Ident,
+        Document_Type,
+        Document_Whiteboard,
+        Document_ClientId,
+        Document_LastModified,
+        Document_CreationDate,
+        Document_ProjectLabel,
+        Document_ClientAddress,
+        Document_ClientName,
+        Document_Id_Raw,
+        Document_StateStr,
+        Document_CreationDateRaw,
+        Treestruct_Year,
+        Treestruct_Month,
+        Treestruct_Type,
+        Max_Column_Marker   // leave this as last enum
     };
 
     DocBaseModel(QObject *parent = 0);

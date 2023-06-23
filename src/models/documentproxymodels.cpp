@@ -102,8 +102,12 @@ bool DocumentFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sou
         const QModelIndex index4 = sourceModel()->index(sourceRow, DocumentModel::Document_ProjectLabel, sourceParent);
         const QString projectStr = sourceModel()->data(index4).toString();
 
+        const QModelIndex index5 = sourceModel()->index(sourceRow, DocumentModel::Document_StateStr, sourceParent);
+        const QString stateStr = sourceModel()->data(index5).toString();
+
+
         if( idStr.contains(filter) || typeStr.contains(filter) || clientNameStr.contains(filter)
-                || whiteboardStr.contains(filter) || projectStr.contains(filter)) {
+                || whiteboardStr.contains(filter) || projectStr.contains(filter) || stateStr.contains(filter)) {
             accepted = true;
         }
     }

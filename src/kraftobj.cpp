@@ -26,9 +26,17 @@ KraftObj::KraftObj()
 QString KraftObj::uuid() const
 {
     if (_uuid.isNull()) {
-        return QString();
+            return QString();
     }
     return _uuid.toString(QUuid::WithoutBraces);
+}
+
+QString KraftObj::createUuid()
+{
+    if (_uuid.isNull()) {
+        _uuid = QUuid::createUuid();
+    }
+    return uuid();
 }
 
 bool KraftObj::hasAttribute(const QString& name)

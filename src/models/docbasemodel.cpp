@@ -25,8 +25,7 @@
 DocBaseModel::DocBaseModel(QObject *parent)
     :QAbstractItemModel(parent)
 {
-    _headers.resize(12);
-
+    _headers.resize(Max_Column_Marker);
     _headers[ Document_Id ]            = i18n("Date"); // this is only displayed by the date model
     _headers[ Document_Ident ]         = i18n("Doc. Number");
     _headers[ Document_Type ]          = i18n( "Doc. Type");
@@ -37,6 +36,7 @@ DocBaseModel::DocBaseModel(QObject *parent)
     _headers[ Document_ProjectLabel]   = i18n( "Project" );
     _headers[ Document_ClientAddress ] = i18n( "Client Address" );
     _headers[ Document_ClientName ]    = i18n( "Client" );
+    _headers[ Document_StateStr ]      = i18n( "State" );
 
     mAddressProvider = new AddressProvider( this );
     connect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
@@ -63,6 +63,7 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
 
     switch(col) {
     case Document_Id:
+        [[fallthrough]];
     case Document_Id_Raw:
         var = digest.uuid();
         break;
@@ -93,7 +94,11 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
         var = digest.projectLabel();
         break;
     case Document_ClientAddress: {
-        help = firstLineOf( digest.clientAddress());
+        var = firstLineOf( digest.clientAddress());
+        break;
+    }
+    case Document_StateStr: {
+        var = digest.stateStr();
         break;
     }
     case Document_ClientName: {

@@ -204,6 +204,7 @@ void AllDocsView::slotBuildView()
     _tableView->hideColumn( DocumentModel::Document_ClientAddress );
     _tableView->showColumn( DocumentModel::Document_ClientName );
     _tableView->showColumn( DocumentModel::Document_CreationDateRaw);
+    _tableView->showColumn( DocumentModel::Document_StateStr);
     _tableView->hideColumn( DocumentModel::Document_CreationDate);
     _tableView->hideColumn( DocumentModel::Document_Id_Raw);
     _tableView->hideColumn( DocumentModel::Treestruct_Type);
@@ -217,6 +218,8 @@ void AllDocsView::slotBuildView()
     _dateView->showColumn( DocumentModel::Document_ClientName );
     _dateView->showColumn( DocumentModel::Document_CreationDateRaw);
     _dateView->hideColumn( DocumentModel::Document_CreationDate);
+    _dateView->showColumn( DocumentModel::Document_StateStr);
+
 
     _dateView->hideColumn( DocumentModel::Document_Id_Raw);
     _dateView->hideColumn( DocumentModel::Treestruct_Type);
