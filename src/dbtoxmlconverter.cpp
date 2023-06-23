@@ -19,7 +19,7 @@ DbToXMLConverter::DbToXMLConverter(QObject *parent) : QObject(parent)
 
 void DbToXMLConverter::convert()
 {
-    QMap<int, int> q = yearMap();
+    QMap<int, int> years = yearMap();
 
     QString dBase = KraftSettings::self()->xmlDocumentsBasePath(); // something like $HOME/.local/kraft/xmldoc
 
@@ -47,7 +47,7 @@ void DbToXMLConverter::convert()
         }
     } while(!ok);
 
-    QList<int> keys = q.keys();
+    QList<int> keys = years.keys();
     std::sort(keys.begin(), keys.end());
     int cnt {0};
     const QString bp {baseDir.path()};

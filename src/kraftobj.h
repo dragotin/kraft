@@ -38,6 +38,7 @@ public:
     explicit KraftObj();
 
     QString uuid() const;
+    QString createUuid();
     void setUuid( const QString& str ) { _uuid = QUuid(str); }
 
     QDateTime lastModified() const { return _lastModified; }

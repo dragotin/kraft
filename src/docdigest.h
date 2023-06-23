@@ -56,6 +56,9 @@ public:
   QString ident() const   { return mIdent; }
   void setIdent( const QString& ident ) { mIdent = ident; }
 
+  QString stateStr() const { return _state; }
+  void setStateStr(const QString& s) { _state = s; }
+
   QString whiteboard() const  { return mWhiteboard; }
   void setWhiteboard( const QString& white ) { mWhiteboard = white; }
 
@@ -72,6 +75,7 @@ protected:
   QString mWhiteboard;
   QString mProjectLabel;
   QString mClientAddress ;
+  QString _state;
 
   QDate       mDate;
   QLocale     mLocale;

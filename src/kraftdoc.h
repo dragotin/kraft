@@ -22,7 +22,6 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qdatetime.h>
-#include <QUuid>
 
 #include "docposition.h"
 #include "dbids.h"
@@ -65,6 +64,7 @@ public:
         Draft,      // Draft. Saved on disk
         Sent,       // Sent to customer
         Retracted,  // Sent to customer, but retracted
+        Converted,  // Converted from a previous Kraft version that did not have proper states
         Invalid     // Invalidated. Never sent out
     };
 
@@ -74,6 +74,7 @@ public:
     const QString StateDraftStr{"Draft"};
     const QString StateRetractedStr{"Retracted"};
     const QString StateInvalidStr{"Invalid"};
+    const QString StateConvertedStr{"Converted"};
 
     static QString partToString( Part );
 
