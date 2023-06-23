@@ -142,6 +142,8 @@ QDomDocument xmlDocument(KraftDoc *doc, bool archiveMode)
     meta.appendChild(xmlTextElement(xmldoc, "country", DefaultProvider::self()->locale()->countryToString(DefaultProvider::self()->locale()->country()).toHtmlEscaped()));
     meta.appendChild(xmlTextElement(xmldoc, "locale", DefaultProvider::self()->locale()->languageToString(DefaultProvider::self()->locale()->language()).toHtmlEscaped()));
     meta.appendChild(xmlTextElement(xmldoc, "ident", doc->ident() ) );
+    if (doc->uuid().isEmpty())
+        doc->createUuid();
     meta.appendChild(xmlTextElement(xmldoc, "uuid", doc->uuid()));
     const QDate d = doc->date();
     meta.appendChild(xmlTextElement(xmldoc, "date", d.toString(Qt::ISODate)));
@@ -512,6 +514,7 @@ QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
     QString path {basePath()};
     const QDate d = doc->date();
     const QString uuid = doc->uuid();
+    Q_ASSERT(!uuid.isEmpty());
     path.append(QString("/%1/%2/").arg(d.year()).arg(d.month()));
 
     _basePath.mkpath(path);
@@ -590,11 +593,14 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
     if (doc->isNew()) {
         // generate a document ident first.
-        qDebug() << "Not yet implemented!";
-        return false;
+        qDebug() << "Saving a new document!";
+        // document state is set to draft now
+
+        doc->setState(KraftDoc::State::Draft);
     }
 
     const QString xml = xmldoc.toString();
+    doc->createUuid(); // create a UUID just in case...
     const QString xmlFile = xmlDocFileName(doc);
 
     QElapsedTimer ti;

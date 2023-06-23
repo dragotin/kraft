@@ -37,6 +37,7 @@
         <xs:enumeration value="Draft"/>
         <xs:enumeration value="Sent"/>
         <xs:enumeration value="Retracted"/>
+        <xs:enumeration value="Converted"/>
         <xs:enumeration value="Invalid"/>
     </xs:restriction>
 </xs:simpleType>

@@ -209,8 +209,9 @@ DocDigest KraftDoc::toDigest()
     digest.setIdent(ident());
     digest.setWhiteboard(whiteboard());
     digest.setProjectLabel(projectLabel());
+    digest.setStateStr(stateString());
 
-    for( const auto attrib : attributes()) {
+    for( const auto &attrib : attributes()) {
         digest.setAttribute(attrib);
     }
     digest.setTags(allTags());
@@ -400,6 +401,8 @@ void KraftDoc::setStateFromString(const QString& s)
         _state = State::Retracted;
     } else if ( s == StateInvalidStr) {
          _state = State::Invalid;
+    } else if ( s == StateConvertedStr) {
+         _state = State::Converted;
     } else {
         _state = State::Invalid;
     }
@@ -412,7 +415,7 @@ QString KraftDoc::stateString() const
         return StateNewStr;
         break;
     case State::Draft:
-        return StateSentStr;
+        return StateDraftStr;
         break;
     case State::Sent:
         return StateSentStr;
@@ -426,6 +429,8 @@ QString KraftDoc::stateString() const
     case State::Undefined:
         return StateUndefinedStr;
         break;
+    case State::Converted:
+        return StateConvertedStr;
     }
     return StateUndefinedStr;
 }

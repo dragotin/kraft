@@ -145,6 +145,7 @@ bool DocumentMan::loadMetaFromFilename(const QString& xmlFile, KraftDoc *doc)
     if (doc && docLoad.loadFromFile(xmlFile, doc, true)) {
         return true;
     }
+    qDebug() << "Failed to load file" << xmlFile;
     return false;
 }
 
