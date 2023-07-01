@@ -21,13 +21,19 @@
 #include <QObject>
 #include <QMap>
 
+class KraftDoc;
+
 class XmlDocIndex
 {
 public:
     XmlDocIndex(const QString& basePath);
 
     const QString pathByIdent(const QString& ident);
-    static QMap<QDate, QString> const &dateMap();
+    const QString pathByUuid(const QString& uuid);
+    static QMultiMap<QDate, QString> const &dateMap();
+
+    // Adds an entry to the index, used with newly created documents
+    void addEntry(KraftDoc *doc, const QString &xmlFile);
 
 private:
     void buildIndex();
@@ -35,7 +41,8 @@ private:
     QString _basePath;
 
     static QMap<QString, QString> _identMap;
-    static QMap<QDate, QString> _dateMap;
+    static QMultiMap<QDate, QString> _dateMap;
+    static QMap<QString, QString> _uuidMap;
 };
 
 #endif // XMLDOCINDEX_H

@@ -51,6 +51,14 @@ void DocumentModel::removeAllData()
     _digests.clear();
 }
 
+void DocumentModel::appendNewDoc(const DocDigest& digest)
+{
+    int r = rowCount(QModelIndex())-1;
+    beginInsertRows(QModelIndex(), r, r);
+    addData(digest);
+    endInsertRows();
+}
+
 void DocumentModel::addData( const DocDigest& digest )
 {
     _digests.append(digest);
@@ -59,6 +67,8 @@ void DocumentModel::addData( const DocDigest& digest )
 void DocumentModel::updateData(const DocDigest& digest)
 {
     int r = -1;
+
+    // FIXME: this loop is not efficient
     for (int indx = 0; r == -1 && indx < _digests.count(); indx++) {
         if (_digests.at(indx).uuid() == digest.uuid()) {
             r = indx;
@@ -117,8 +127,6 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
     }
     return QVariant();
 }
-
-
 
 DocDigest DocumentModel::digest( const QModelIndex& index ) const
 {

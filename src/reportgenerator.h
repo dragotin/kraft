@@ -50,7 +50,7 @@ signals:
     void failure(const QString&, const QString&);
 
 public slots:
-    void createDocument(ReportFormat, const QString&, dbID );
+    void createDocument(ReportFormat, const QString&docID, dbID );
 
     void setMyContact( const KContacts::Addressee& );
 

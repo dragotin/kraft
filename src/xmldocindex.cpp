@@ -23,7 +23,8 @@
 #include "documentman.h"
 
 QMap<QString, QString> XmlDocIndex::_identMap = QMap<QString, QString>();
-QMap<QDate, QString> XmlDocIndex::_dateMap = QMap<QDate, QString>();
+QMap<QString, QString> XmlDocIndex::_uuidMap = QMap<QString, QString>();
+QMultiMap<QDate, QString> XmlDocIndex::_dateMap = QMap<QDate, QString>();
 
 XmlDocIndex::XmlDocIndex( const QString& basePath)
     : _basePath(basePath)
@@ -50,7 +51,16 @@ const QString XmlDocIndex::pathByIdent(const QString &ident)
     return re;
 }
 
-const QMap<QDate, QString> &XmlDocIndex::dateMap()
+const QString XmlDocIndex::pathByUuid(const QString& uuid)
+{
+    QString re;
+    if (!uuid.isEmpty() && _uuidMap.contains(uuid)) {
+        re = _uuidMap[uuid];
+    }
+    return re;
+}
+
+const QMultiMap<QDate, QString> &XmlDocIndex::dateMap()
 {
     return _dateMap;
 }
@@ -72,10 +82,27 @@ void XmlDocIndex::buildIndex()
         // qDebug() << "Indexing" << xmlFile;
         cnt++;
         if (DocumentMan::self()->loadMetaFromFilename(xmlFile, &doc)) {
-            _identMap.insert(doc.ident(), xmlFile);
-            _dateMap.insert(doc.date(), xmlFile);
+            if (!doc.ident().isEmpty())
+                _identMap.insert(doc.ident(), xmlFile);
+            if (doc.date().isValid())
+                _dateMap.insert(doc.date(), xmlFile);
+            Q_ASSERT(!doc.uuid().isEmpty());
+            _uuidMap.insert(doc.uuid(), xmlFile);
             doc.clear();
         }
     }
     qDebug() << "Indexed"<< cnt << "files";
+}
+
+void XmlDocIndex::addEntry(KraftDoc *doc, const QString& xmlFile)
+{
+    if (!doc) return;
+
+    if (!doc->ident().isEmpty())
+        _identMap.insert(doc->ident(), xmlFile);
+    if (doc->date().isValid())
+        _dateMap.insert(doc->date(), xmlFile);
+    Q_ASSERT(!doc->uuid().isEmpty());
+    _uuidMap.insert(doc->uuid(), xmlFile);
+
 }

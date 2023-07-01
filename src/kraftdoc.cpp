@@ -104,6 +104,8 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   }
 
   _state = State::New;
+  KraftObj::operator=(origDoc);
+  _uuid = QString(); // clear the Uuid
 
   mAddressUid = origDoc.mAddressUid;
   mProjectLabel = origDoc.mProjectLabel;
@@ -145,24 +147,25 @@ void KraftDoc::setPredecessor( const QString& w )
     mPredecessor = w;
 }
 
-bool KraftDoc::openDocument(DocumentSaverBase &loader, const QString& ident)
+bool KraftDoc::openDocument(DocumentSaverBase &loader, const QString& uuid)
 {
-    if (loader.loadByIdent(ident, this)) {
+    if (loader.loadByUuid(uuid, this)) {
         mDocTypeChanged = false;
         _modified=false;
-        _state = State::Draft;
         return true;
+    } else {
+        qDebug() << "Failed to load doc by Uuid";
     }
     return false;
 }
 
 bool KraftDoc::reloadDocument(DocumentSaverBase &loader)
 {
-    const QString ident = mIdent;
+    const QString uuid = this->uuid();
     mPositions.clear();
     mRemovePositions.clear();
 
-    return openDocument(loader, ident);
+    return openDocument(loader, uuid);
 }
 
 bool KraftDoc::saveDocument(DocumentSaverBase& saver)
