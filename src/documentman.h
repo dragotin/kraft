@@ -36,13 +36,15 @@ class DocumentMan
 
     // persisting the docs
     DocGuardedPtr openDocumentByIdent( const QString& ident );
+    DocGuardedPtr openDocumentByUuid(const QString& uuid);
+
     bool saveDocument(KraftDoc* doc);
     bool reloadDocument(KraftDoc* doc);
     void closeDocument(const QString& ident);
 
-    DocGuardedPtr createDocument(const QString& docType, const QString& copyFromIdent = QString(),
+    DocGuardedPtr createDocument(const QString& docType, const QString& copyFromUuid = QString(),
                                  const DocPositionList &listToCopy = DocPositionList() );
-    DocGuardedPtr copyDocument( const QString& copyFromIdent );
+    DocGuardedPtr copyDocument(const QString& copyFromUuid );
 
     bool convertDbToXml(const QString& docID, const QString &basePath);
 

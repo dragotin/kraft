@@ -43,12 +43,12 @@ DocumentMan::DocumentMan()
 
 }
 
-DocGuardedPtr DocumentMan::copyDocument(const QString& copyFromIdent)
+DocGuardedPtr DocumentMan::copyDocument(const QString& copyFromUuid)
 {
     DocGuardedPtr doc = new KraftDoc( );
-    if ( ! copyFromIdent.isEmpty() ) {
+    if ( ! copyFromUuid.isEmpty() ) {
         // copy the content from the source document to the new doc.
-        DocGuardedPtr sourceDoc = openDocumentByIdent(copyFromIdent);
+        DocGuardedPtr sourceDoc = openDocumentByUuid(copyFromUuid);
         if ( sourceDoc ) {
             *doc = *sourceDoc; // copies all data from the previous doc
             doc->setPredecessor(QString()); // clear the predecessor
@@ -58,14 +58,14 @@ DocGuardedPtr DocumentMan::copyDocument(const QString& copyFromIdent)
     return doc;
 }
 
-DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromIdent, const DocPositionList& listToCopy)
+DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromUuid, const DocPositionList& listToCopy)
 {
     DocGuardedPtr doc = new KraftDoc();
     // qDebug () << "new document ID: " << doc->docID().toString();
 
-    if ( ! copyFromIdent.isEmpty() ) {
+    if ( ! copyFromUuid.isEmpty() ) {
         // copy the content from the source document to the new doc.
-        DocGuardedPtr sourceDoc = openDocumentByIdent(copyFromIdent);
+        DocGuardedPtr sourceDoc = openDocumentByUuid(copyFromUuid);
         if ( sourceDoc ) {
             *doc = *sourceDoc; // copies all data from the previous doc
             doc->setIdent(QString());
@@ -139,6 +139,17 @@ DocGuardedPtr DocumentMan::openDocumentByIdent( const QString& ident )
     return doc;
 }
 
+DocGuardedPtr DocumentMan::openDocumentByUuid(const QString& uuid)
+{
+    // qDebug () << "Opening Document with uuid" << uuid << endl;
+    DocGuardedPtr doc = new KraftDoc();
+    if (!doc->openDocument(DefaultProvider::self()->documentPersister(), uuid)) {
+        delete doc;
+        return nullptr;
+    }
+    return doc;
+}
+
 bool DocumentMan::loadMetaFromFilename(const QString& xmlFile, KraftDoc *doc)
 {
     DocumentSaverXML docLoad;
@@ -173,6 +184,7 @@ bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
     DocumentSaverDB docLoad;
     KraftDoc doc;
 
+    // load from database by ident
     if (docLoad.loadByIdent(docID, &doc)) {
 
         DocumentSaverXML docSave;

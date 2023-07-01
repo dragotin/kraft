@@ -37,6 +37,7 @@ class DocBaseModel : public QAbstractItemModel
 public:
     enum Columns {
         Document_Id = 0,
+        Document_Uuid,
         Document_Ident,
         Document_Type,
         Document_Whiteboard,
@@ -67,6 +68,8 @@ public:
     virtual int rowCount(const QModelIndex &parent) const = 0;
     virtual void removeAllData() = 0;
     virtual void addData(const DocDigest& digest) = 0;
+    virtual void appendNewDoc(const DocDigest& digest) = 0;
+
     virtual void updateData(const DocDigest& digest) = 0;
 
     virtual DocDigest digest(const QModelIndex& indx) const = 0;

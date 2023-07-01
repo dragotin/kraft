@@ -36,6 +36,8 @@ public:
 
     virtual bool saveDocument( KraftDoc* ) override;
     virtual bool loadByIdent( const QString& , KraftDoc * ) override;
+    virtual bool loadByUuid(const QString&, KraftDoc*) override;
+
     int addDigestsToModel(DocBaseModel* model) override;
 
 protected:

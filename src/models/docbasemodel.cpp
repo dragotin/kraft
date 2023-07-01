@@ -64,6 +64,8 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
     switch(col) {
     case Document_Id:
         [[fallthrough]];
+    case Document_Uuid:
+        [[fallthrough]];
     case Document_Id_Raw:
         var = digest.uuid();
         break;
@@ -133,7 +135,7 @@ int DocBaseModel::columnCount(const QModelIndex &parent) const
 
 QVariant DocBaseModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if( role == Qt::DisplayRole && orientation == Qt::Horizontal && section < _headers.count() ) {
+    if( section >= 0 && role == Qt::DisplayRole && orientation == Qt::Horizontal && section < _headers.count() ) {
         return _headers.at(section);
     }
     return QVariant();

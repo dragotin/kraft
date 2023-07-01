@@ -56,9 +56,7 @@ TreeItem::TreeItem(AbstractIndx *indx, TreeItem *parent)
 
 TreeItem::~TreeItem()
 {
-    foreach( TreeItem *i, childItems ) {
-        delete i;
-    }
+    qDeleteAll(childItems);
 }
 
 TreeItem* TreeItem::child(int row)
@@ -258,7 +256,7 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
             return date.day();
         } else {
             return columnValueFromDigest( digest, index.column() );
-        }
+      }
     }
     return QVariant();
 }
@@ -308,8 +306,8 @@ QModelIndex DateModel::parent(const QModelIndex &index) const
 int DateModel::rowCount(const QModelIndex &parent) const
 {
     TreeItem *parentItem;
-     if (parent.column() > 0)
-         return 0;
+//     if (parent.column() > 0)
+//         return 0;
 
      if (!parent.isValid())
          parentItem = rootItem;
@@ -419,7 +417,7 @@ void DateModel::removeAllData()
     rootItem = new TreeItem(0);
 }
 
-void DateModel::addData( const DocDigest& digest ) // DocumentIndx doc )
+void DateModel::appendNewDoc(const DocDigest& digest)
 {
     int month = digest.rawDate().month();
     int year = digest.rawDate().year();
@@ -442,11 +440,49 @@ void DateModel::addData( const DocDigest& digest ) // DocumentIndx doc )
         monthItem = new TreeItem( newIndx, yearItem);
     }
 
+    QModelIndex yearIdx = index(yearItem->row(), 0 /* DocBaseModel::Treestruct_Year */, QModelIndex());
+    QModelIndex monthIdx = index(monthItem->row(), 0 /* DocBaseModel::Treestruct_Month */, yearIdx);
+
+    int r = rowCount(monthIdx);
+    beginInsertRows(monthIdx, r, r+1);
+
+    DocumentIndx *itemIndx = new DocumentIndx(digest);
+    TreeItem *newItem = new TreeItem( itemIndx, monthItem );
+    Q_UNUSED(newItem);
+    endInsertRows();
+}
+
+void DateModel::addData( const DocDigest& digest ) // DocumentIndx doc )
+{
+    int month = digest.rawDate().month();
+    int year = digest.rawDate().year();
+
+    TreeItem *yearItem = NULL;
+    TreeItem *monthItem = NULL;
+
+    yearItem = findYearItem( year );
+
+    if( !yearItem ) {
+        AbstractIndx *newIndx = new YearIndx(year);
+        yearItem = new TreeItem( newIndx, rootItem );
+    }
+
+    // ====
+    monthItem = findMonthItem( year, month );
+
+    if (month == 7 && year == 2023) {
+        qDebug() << "here we go";
+    }
+
+    if( !monthItem ) {
+        AbstractIndx *newIndx = new MonthIndx(year, month);
+        monthItem = new TreeItem( newIndx, yearItem);
+    }
+
     DocumentIndx *itemIndx = new DocumentIndx(digest);
     TreeItem *newItem = new TreeItem( itemIndx, monthItem );
 
     Q_UNUSED(newItem);
-
 }
 
 void DateModel::updateData(const DocDigest& digest)
@@ -473,8 +509,8 @@ void DateModel::updateData(const DocDigest& digest)
             }
         }
         if (r > -1) {
-            QModelIndex yearIdx = index(year, DocBaseModel::Treestruct_Year, QModelIndex());
-            QModelIndex monthIdx = index(month, DocBaseModel::Treestruct_Month, yearIdx);
+            QModelIndex yearIdx = index(year, 0, QModelIndex());
+            QModelIndex monthIdx = index(month, 0, yearIdx);
 
             QModelIndex rIdx = index(r, 0, monthIdx);
             emit dataChanged(rIdx, rIdx);

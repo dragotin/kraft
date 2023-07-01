@@ -74,6 +74,11 @@ bool DocumentSaverDB::saveDocument( KraftDoc* )
     return false;
 }
 
+bool DocumentSaverDB::loadByUuid(const QString& ident, KraftDoc *doc)
+{
+    return false;
+}
+
 bool DocumentSaverDB::loadByIdent( const QString& ident, KraftDoc *doc )
 {
     int id{-1}; // the database id
