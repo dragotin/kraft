@@ -39,7 +39,8 @@ public:
     virtual ~DocumentSaverBase();
 
     virtual bool saveDocument( KraftDoc* ) = 0;
-    virtual bool loadByIdent( const QString&, KraftDoc * ) = 0;
+    virtual bool loadByIdent(const QString&, KraftDoc*) = 0;
+    virtual bool loadByUuid(const QString&, KraftDoc*) = 0;
 
     // methods needed by the document view models
     virtual int addDigestsToModel(DocBaseModel* model) = 0;

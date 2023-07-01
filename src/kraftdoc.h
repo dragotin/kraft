@@ -193,7 +193,7 @@ protected:
     void closeDocument();
 
     /** loads the document by filename and format and emits the updateViews() signal */
-    bool openDocument(DocumentSaverBase &loader, const QString& ident);
+    bool openDocument(DocumentSaverBase &loader, const QString& uuid);
 
     /** fetch the document from database back FIXME needs a loader */
     bool reloadDocument(DocumentSaverBase &loader);

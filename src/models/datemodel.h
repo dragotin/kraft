@@ -102,6 +102,7 @@ public:
 
     void removeAllData() override;
     void addData(const DocDigest& digest) override;
+    void appendNewDoc(const DocDigest& digest) override;
     void updateData(const DocDigest& digest) override;
 
     bool isDocument(const QModelIndex& indx) const override;

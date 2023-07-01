@@ -77,6 +77,8 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
     int cnt {0};
 
     for (DocPositionBase *item : doc->positions()) {
+        if (item->toDelete())
+            continue;
         DocPosition *pos = static_cast<DocPosition*>(item);
         QDomElement itemType = xmldoc.createElement("item");
 
@@ -124,7 +126,7 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
     return cnt;
 }
 
-QDomDocument xmlDocument(KraftDoc *doc, bool archiveMode)
+QDomDocument xmlDocument(KraftDoc *doc)
 {
     QDomDocument xmldoc( "kraftdocument" );
     QDomProcessingInstruction instr = xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
@@ -526,7 +528,6 @@ QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
 
 QString DocumentSaverXML::xmlDocFileNameFromIdent(const QString& id)
 {
-    const QString file {id + ".xml"};
     XmlDocIndex indx(basePath());
 
     const QString p = indx.pathByIdent(id);
@@ -589,19 +590,23 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         doc->setLastModified(QDateTime::currentDateTime());
     }
 
-    QDomDocument xmldoc = xmlDocument(doc, _archiveMode);
-
+    bool newState{false};
     if (doc->isNew()) {
-        // generate a document ident first.
         qDebug() << "Saving a new document!";
-        // document state is set to draft now
-
+        newState = true; //
+        // set document state to draft now for creating the save doc
         doc->setState(KraftDoc::State::Draft);
     }
-
-    const QString xml = xmldoc.toString();
     doc->createUuid(); // create a UUID just in case...
+
+    QDomDocument xmldoc = xmlDocument(doc);
+    const QString xml = xmldoc.toString();
     const QString xmlFile = xmlDocFileName(doc);
+
+    if (newState) {
+        // retore the new state in the doc for subsequent funcs
+        doc->setState(KraftDoc::State::New);
+    }
 
     QElapsedTimer ti;
     ti.start();
@@ -624,6 +629,11 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     const QUrl schemaFile = QUrl::fromLocalFile(DefaultProvider::self()->locateFile("xml/kraftdoc.xsd"));
     result = verifyXmlFile(schemaFile, xmlFile);
     qDebug() << "Saving done in" << ti.elapsed() << "msec";
+
+    if (newState) {
+        XmlDocIndex indx(basePath());
+        indx.addEntry(doc, xmlFile);
+    }
 
 #if 0
     if( !doc->isNew() && doc->docTypeChanged() ) {
@@ -650,10 +660,24 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     return result;
 }
 
+bool DocumentSaverXML::loadByUuid(const QString& uuid, KraftDoc *doc)
+{
+    if (uuid.isEmpty()) {
+        qDebug() << "LoadByUuid: UUID to load is empty!";
+        return false;
+    }
+
+    XmlDocIndex indx(basePath());
+    const QString xmlFile = indx.pathByUuid(uuid);
+
+    return loadFromFile(xmlFile, doc);
+}
+
 bool DocumentSaverXML::loadByIdent(const QString& id, KraftDoc *doc)
 {
     if (id.isEmpty()) {
         qDebug() << "Document Id to load is empty!";
+        return false;
     }
 
     const QString xmlFile = xmlDocFileNameFromIdent(id);
@@ -718,19 +742,23 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
     int cnt{0};
     XmlDocIndex indx(basePath());
 
-    const QMap<QDate, QString> dateMap = indx.dateMap();
-    QList<QDate> dates = dateMap.keys();
+    const QMultiMap<QDate, QString> dateMap = indx.dateMap();
+    QList<QDate> dates = dateMap.uniqueKeys();
 
     std::sort(dates.begin(), dates.end(), [](QDate const& l, QDate const& r) {
         return l < r;
     });
 
-    for( const QDate d : dates) {
-        const QString file = dateMap[d];
+    qDebug() << "Adding digests!";
+    for( const QDate& d : dates) {
+        const QList<QString> files = dateMap.values(d);
         KraftDoc doc;
-        if (loadFromFile(file, &doc, true)) {
-            model->addData(doc.toDigest());
-            cnt++;
+        for( const QString& file : files) {
+            if (loadFromFile(file, &doc, true)) {
+                model->addData(doc.toDigest());
+                cnt++;
+                doc.clear();
+            }
         }
 
     }
