@@ -70,7 +70,7 @@ void DbToXMLConverter::convert()
     }
 
     if (ok) {
-        XmlDocIndex indx(baseDir.absolutePath());
+        XmlDocIndex indx;
     }
 }
 
