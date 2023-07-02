@@ -165,7 +165,13 @@ bool DocumentMan::saveDocument(KraftDoc* doc)
     if (!doc) {
         return false;
     }
-    return doc->saveDocument(DefaultProvider::self()->documentPersister());
+    bool ok = doc->saveDocument(DefaultProvider::self()->documentPersister());
+
+    if(ok) {
+        // start PDF generation in background
+
+    }
+    return ok;
 }
 
 bool DocumentMan::reloadDocument(KraftDoc* doc)

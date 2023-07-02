@@ -428,7 +428,7 @@ void Portal::slotStartupChecks()
         const QString docId = mCmdLineArgs->value("d");
         if ( ! docId.isEmpty() ) {
             // qDebug () << "open a archived document: " << docId << endl;
-            slotPrintDocument( QString(), dbID( docId.toInt() ) );
+            slotPrintDocument(docId); // FIXME: This must be a uuid
         }
     }
 
@@ -740,7 +740,7 @@ void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
             this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
             exporter->deleteLater();
         });
-        exporter->exportDocument(d);
+        // FIXME: exporter->exportDocument(d);
     }
 
 }
@@ -776,10 +776,7 @@ void Portal::slotPrintCurrentDocument()
   _currentDoc = docman->openDocumentByUuid(uuid);
 
   if ( _currentDoc ) {
-
-      dbID archID = KraftDB::self()->archiveDocument(_currentDoc);
-      Q_ASSERT(archID.isOk());
-      slotPrintDocument( uuid, archID );
+      slotPrintDocument(uuid);
       // m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
   }
   busyCursor( false );
@@ -800,7 +797,7 @@ void Portal::slotMailDocument()
 
     busyCursor( true );
 
-    _reportGenerator.createDocument(ReportFormat::PDFMail, uuid, archID );
+    _reportGenerator.createDocument(ReportFormat::PDFMail, uuid);
     busyCursor( false );
   }
   slotStatusMsg( i18n( "Ready." ) );
@@ -861,13 +858,11 @@ void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& c
  * id    : document ID
  * archID: database ID of archived document
  */
-void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
+void Portal::slotPrintDocument(const QString& uuid)
 {
-  if ( archID.isOk() ) {
-    slotStatusMsg(i18n("Printing archived document…") );
+    slotStatusMsg(i18n("Printing document...") );
 
-    _reportGenerator.createDocument(ReportFormat::PDF, id, archID ); // work on document identifier.
-  }
+    _reportGenerator.createDocument(ReportFormat::PDF, uuid); // work on document identifier.
 }
 
 void Portal::slotOpenPdf( const QString& fileName )

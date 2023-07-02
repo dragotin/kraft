@@ -133,7 +133,7 @@ class Portal : public QMainWindow
     void slotArchivedDocExecuted();
     void slotArchivedDocSelected( const ArchDocDigest& );
     void slotPrintCurrentDocument();
-    void slotPrintDocument( const QString&, const dbID& );
+    void slotPrintDocument(const QString&uuid);
     void slotViewClosed( bool, DocGuardedPtr );
     void slotEditTagTemplates();
     void slotReconfigureDatabase();

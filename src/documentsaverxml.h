@@ -72,7 +72,6 @@ protected:
     QString basePath();
 
 private:
-
     QDir _basePath;
     QString _lastSaveFile;
     XML::Totals _totals;

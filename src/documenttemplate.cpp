@@ -22,6 +22,7 @@
 #include "format.h"
 #include "kraftsettings.h"
 #include "version.h"
+#include "documentman.h"
 
 #include <klocalizedstring.h>
 
@@ -232,20 +233,22 @@ CTemplateDocumentTemplate::CTemplateDocumentTemplate(const QString& tmplFile)
 
 }
 
-const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContacts::Addressee& myContact,
+const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KContacts::Addressee& myContact,
                                                 const KContacts::Addressee& customerContact)
 {
-    if (archDoc == nullptr) {
+    if (uuid.isEmpty()) {
         return QString();
     }
     // create a text template
     TextTemplate tmpl;
     tmpl.setTemplateFileName(_tmplFile);
 
+    KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
+
     /* replace the placeholders */
     /* A placeholder has the format <!-- %VALUE --> */
 
-    const ArchDocPositionList posList = archDoc->positions();
+    const DocPositionList posList = doc->positions();
     QString h;
 
     ArchDocPositionList::const_iterator it;
@@ -259,8 +262,8 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
  * we have individual Tax setting and show the tax marker etc.
  */
     DocPositionBase::TaxType ttype = DocPositionBase::TaxInvalid;
-    for ( it = posList.begin(); it != posList.end(); ++it ) {
-        ArchDocPosition pos (*it);
+    for ( DocPositionBase *p : posList) {
+        DocPositionBase pos = *p;
         if( ttype == DocPositionBase::TaxInvalid  ) {
             ttype = pos.taxType();
         } else {
@@ -272,16 +275,17 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
     }
 
     /* now loop over the items to fill the template structures */
-    for ( it = posList.begin(); it != posList.end(); ++it ) {
-        ArchDocPosition pos (*it);
+#if 0
+    for (DocPositionBase *p : posList) {
+        DocPositionBase pos (*p);
         tmpl.createDictionary( "POSITIONS" );
         tmpl.setValue( DICT("POSITIONS"), TAG( "POS_NUMBER" )
-                       , pos.posNumber() );
+                       , pos.positionNumber() );
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_TEXT"),
                        rmlString( pos.text(), QString( "%1text" ).arg( pos.kind().toLower() ) ) );
 
         // format the amount value of the item, do not show the precision if there is no fraction
-        double amount = pos.amount();
+        double amount = pos.();
         h = Format::localeDoubleToString(amount, *DefaultProvider::self()->locale());
 
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_AMOUNT"), h );
@@ -415,8 +419,8 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
 #endif
     // finalize the template
     const QString output = tmpl.expand();
-
-    return output;
+#endif
+    return QString();
 }
 
 // ==================================================================================
@@ -427,7 +431,7 @@ GrantleeDocumentTemplate::GrantleeDocumentTemplate(const QString& tmplFile)
 
 }
 
-const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
+const QString GrantleeDocumentTemplate::expand( const QString& uuid,
                                                const KContacts::Addressee &myContact,
                                                const KContacts::Addressee &customerContact)
 {
@@ -447,7 +451,7 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
 
         GrantleeFileTemplate gtmpl(_tmplFile);
 
-        gtmpl.addToObjMapping("doc", archDoc);
+       //FIXME gtmpl.addToObjMapping("doc", doc);
 
         const auto mtt = contactToVariantHash(myContact);
         gtmpl.addToMappingHash(QStringLiteral("me"), mtt);
@@ -460,6 +464,7 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
 
         // -- save the EPC QR Code which is written into a temp file
         QVariantHash epcHash;
+#if 0
         auto qrcodefile = generateEPCQRCodeFile(archDoc);
         epcHash.insert("valid", false);
         epcHash.insert("show", false);
@@ -493,6 +498,7 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
             _errorStr = rendered;
             rendered.clear();
         }
+#endif
     }
     return rendered;
 }
