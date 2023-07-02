@@ -26,7 +26,9 @@ class KraftDoc;
 class XmlDocIndex
 {
 public:
-    XmlDocIndex(const QString& basePath);
+    XmlDocIndex();
+
+    void setBasePath(const QString& basePath);
 
     const QString pathByIdent(const QString& ident);
     const QString pathByUuid(const QString& uuid);
@@ -38,7 +40,7 @@ public:
 private:
     void buildIndex();
 
-    QString _basePath;
+    static QString _basePath;
 
     static QMap<QString, QString> _identMap;
     static QMultiMap<QDate, QString> _dateMap;

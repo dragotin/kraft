@@ -528,7 +528,7 @@ QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
 
 QString DocumentSaverXML::xmlDocFileNameFromIdent(const QString& id)
 {
-    XmlDocIndex indx(basePath());
+    XmlDocIndex indx;
 
     const QString p = indx.pathByIdent(id);
 
@@ -631,7 +631,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     qDebug() << "Saving done in" << ti.elapsed() << "msec";
 
     if (newState) {
-        XmlDocIndex indx(basePath());
+        XmlDocIndex indx;
         indx.addEntry(doc, xmlFile);
     }
 
@@ -667,7 +667,7 @@ bool DocumentSaverXML::loadByUuid(const QString& uuid, KraftDoc *doc)
         return false;
     }
 
-    XmlDocIndex indx(basePath());
+    XmlDocIndex indx;
     const QString xmlFile = indx.pathByUuid(uuid);
 
     return loadFromFile(xmlFile, doc);
@@ -740,7 +740,7 @@ bool DocumentSaverXML::loadFromFile(const QString& xmlFile, KraftDoc *doc, bool 
 int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
 {
     int cnt{0};
-    XmlDocIndex indx(basePath());
+    XmlDocIndex indx;
 
     const QMultiMap<QDate, QString> dateMap = indx.dateMap();
     QList<QDate> dates = dateMap.uniqueKeys();

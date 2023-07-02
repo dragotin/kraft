@@ -50,7 +50,7 @@ signals:
     void failure(const QString&, const QString&);
 
 public slots:
-    void createDocument(ReportFormat, const QString&docID, dbID );
+    void createDocument(ReportFormat, const QString&uuid);
 
     void setMyContact( const KContacts::Addressee& );
 
@@ -66,7 +66,6 @@ private:
     void lookupCustomerAddress();
 
     QString _tmplFile;
-    ArchDoc _archDoc;
 protected:
     QStringList _cleanupFiles;
 
@@ -93,7 +92,7 @@ private:
     bool      mHavePdfMerge;
     QString   mWatermarkFile;
     QString   mPdfAppendFile;
-    QString   mDocId;
+    QString   _uuid;
     dbID      mArchId;
     long      mOutputSize;
 

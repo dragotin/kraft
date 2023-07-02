@@ -25,9 +25,9 @@
 QMap<QString, QString> XmlDocIndex::_identMap = QMap<QString, QString>();
 QMap<QString, QString> XmlDocIndex::_uuidMap = QMap<QString, QString>();
 QMultiMap<QDate, QString> XmlDocIndex::_dateMap = QMap<QDate, QString>();
+QString XmlDocIndex::_basePath = QString();
 
-XmlDocIndex::XmlDocIndex( const QString& basePath)
-    : _basePath(basePath)
+XmlDocIndex::XmlDocIndex()
 {
     if (_identMap.count() == 0) {
         QElapsedTimer timer;
@@ -40,6 +40,11 @@ XmlDocIndex::XmlDocIndex( const QString& basePath)
         t1.waitForFinished();
         qDebug() << "Indexing took" << timer.elapsed() << "msec";
     }
+}
+
+void XmlDocIndex::setBasePath(const QString& basePath)
+{
+    _basePath = basePath;
 }
 
 const QString XmlDocIndex::pathByIdent(const QString &ident)
@@ -68,6 +73,8 @@ const QMultiMap<QDate, QString> &XmlDocIndex::dateMap()
 void XmlDocIndex::buildIndex()
 {
     qDebug() << "Building index for" << _basePath;
+    Q_ASSERT(!_basePath.isEmpty());
+
     QFileInfo fi(_basePath);
     if (!(fi.exists() && fi.isDir())) {
         qDebug() << "Base path is not valid:" << _basePath;

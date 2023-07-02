@@ -49,6 +49,7 @@
 #include "grantleetemplate.h"
 #include "documenttemplate.h"
 #include "pdfconverter.h"
+#include "xmldocindex.h"
 
 namespace {
 QString saveToTempFile( const QString& doc )
@@ -104,10 +105,9 @@ ReportGenerator::~ReportGenerator()
  */
 
 // FIXME: This should work by UUID instead of docID
-void ReportGenerator::createDocument( ReportFormat format, const QString& docID, dbID archId )
+void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
 {
-    mDocId = docID;
-    mArchId = archId;
+    _uuid = uuid;
     _requestedFormat = format;
 
     if( mProcess && mProcess->state() != QProcess::NotRunning ) {
@@ -116,12 +116,10 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& docID,
         return;
     }
 
-    // now the addressee search through the address provider is finished.
-    // Rendering can be started.
-    _archDoc.loadFromDb(archId);
+    KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
 
     // the next call also sets the watermark options
-    const QString dt = _archDoc.docTypeStr();
+    const QString dt = doc->docType();
     _tmplFile = findTemplateFile( dt );
 
     if ( _tmplFile.isEmpty() ) {
@@ -131,12 +129,8 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& docID,
         qDebug () << "Using this template: " << _tmplFile;
     }
 
-    lookupCustomerAddress();
-}
-
-void ReportGenerator::lookupCustomerAddress()
-{
-    const QString clientUid = _archDoc.clientUid();
+    // ==== Look up the customer contact
+    const QString clientUid = doc->addressUid();
     KContacts::Addressee contact;
 
     if( ! clientUid.isEmpty() ) {
@@ -188,7 +182,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     converter->setTemplatePath(fi.path());
 
     // expand the template...
-    const QString expanded = templateEngine->expand(&_archDoc, myContact, mCustomerContact);
+    const QString expanded = templateEngine->expand(_uuid, myContact, mCustomerContact);
     _cleanupFiles = templateEngine->tempFilesCreated();
 
     if (expanded.isEmpty()) {
@@ -367,8 +361,10 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
 
 QString ReportGenerator::targetFileName() const
 {
-    ArchDocDigest dig = _archDoc.toDigest();
-    return dig.pdfArchiveFileName();
+    XmlDocIndex indx;
+    const QString fileName = indx.pathByUuid(_uuid);
+
+    return fileName.left(fileName.length()-3)+QStringLiteral("pdf");
 }
 
 QString ReportGenerator::findTemplateFile( const QString& type )

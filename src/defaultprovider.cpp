@@ -31,6 +31,7 @@
 #include "doctype.h"
 #include "kraftdoc.h"
 #include "dbids.h"
+#include "xmldocindex.h"
 
 #include <klocalizedstring.h>
 
@@ -69,7 +70,8 @@ DefaultProvider::DefaultProvider()
 
    KraftSettings::setXmlDocumentsBasePath(basePath);
    basePath.append("current/");
-   _persister.setBasePath(basePath);
+   XmlDocIndex indx;
+   indx.setBasePath(basePath);
 }
 
 DocumentSaverBase& DefaultProvider::documentPersister()

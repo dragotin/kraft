@@ -28,7 +28,7 @@ public:
     DocumentTemplate( const QString& tmplFile );
     virtual ~DocumentTemplate(){ };
 
-    virtual const QString expand(ArchDoc *archDoc,
+    virtual const QString expand(const QString& uuid,
                                  const KContacts::Addressee &myContact,
                                  const KContacts::Addressee &customerContact) = 0;
 
@@ -51,7 +51,7 @@ class CTemplateDocumentTemplate : public DocumentTemplate
 public:
     CTemplateDocumentTemplate(const QString& tmplFile);
 
-    const QString expand(ArchDoc *archDoc,
+    const QString expand(const QString& uuid,
                          const KContacts::Addressee &myContact,
                          const KContacts::Addressee &customerContact) override;
 };
@@ -63,7 +63,7 @@ class GrantleeDocumentTemplate : public DocumentTemplate
 public:
     GrantleeDocumentTemplate(const QString& tmplFile);
 
-    const QString expand(ArchDoc *archDoc,
+    const QString expand(const QString& uuid,
                          const KContacts::Addressee &myContact,
                          const KContacts::Addressee &customerContact) override;
 };
