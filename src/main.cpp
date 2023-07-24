@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/kraft/custom-icons/kraft-simple.svg"));
     app.setApplicationName("kraft");
     app.setApplicationDisplayName("Kraft");
-    app.setApplicationVersion(QString("version %1").arg(KRAFT_VERSION));
+    app.setApplicationVersion(QString("version %1").arg(Kraft::Version::number()));
 
     const QString path = QCoreApplication::applicationDirPath()+ QStringLiteral("/../share/locale");
     qDebug() << "Setting additional Locale path:" << path;

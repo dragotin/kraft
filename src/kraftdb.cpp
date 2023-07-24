@@ -512,7 +512,7 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
 
 int KraftDB::requiredSchemaVersion()
 {
-    return KRAFT_REQUIRED_SCHEMA_VERSION;
+    return Kraft::Version::dbSchemaVersion();
 }
 
 int KraftDB::currentSchemaVersion()

@@ -141,11 +141,11 @@ QVariantHash labelVariantHash()
 QVariantHash kraftVariantHash()
 {
     QVariantHash hash;
-    QString h = QString("Kraft %1 %2").arg(KRAFT_VERSION).
-            arg(KRAFT_CODENAME);
+    QString h = QString("Kraft %1 %2").arg(Kraft::Version::number()).
+            arg(Kraft::Version::codeName());
     hash.insert(TAG("VERSION"), h);
 
-    h = QString("DB-Scheme %1").arg(KRAFT_REQUIRED_SCHEMA_VERSION);
+    h = QString("DB-Scheme %1").arg(Kraft::Version::dbSchemaVersion());
     hash.insert(TAG("DB_SCHEME"), h);
 
     h = qgetenv("USER");

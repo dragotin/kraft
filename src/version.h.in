@@ -1,0 +1,21 @@
+#pragma once
+
+namespace Kraft::Version {
+
+	// Static content. Maintain values here.
+	inline QString number() { return QStringLiteral("1.1"); }
+
+        inline QString codeName() { return QStringLiteral("Lynoel"); }
+        inline int dbSchemaVersion() { return 24; }
+
+	// dynamic content. These values get defined at build time in the top CMakeLists.txt
+        inline QString gitSha() { return QStringLiteral("@GIT_SHA1@"); }
+
+        inline QString gitBranch() { return QStringLiteral("@GIT_BRANCH@"); }
+
+        inline QString buildHost() { return QStringLiteral("@BUILD_HOST_NAME@"); }
+
+        inline QString buildHostDistro() { return QStringLiteral("@BUILD_HOST_DISTRI@"); }
+
+}
+

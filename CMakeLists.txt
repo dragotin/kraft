@@ -1,6 +1,6 @@
 project(kraft)
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.16.0)
 cmake_policy(SET CMP0063 NEW)
 
 find_package(ECM REQUIRED NO_MODULE)
@@ -16,6 +16,39 @@ if (AKONADI_LEGACY_BUILD)
   set(AKO_PREFIX "KF5")
 endif()
 message("Akonadi Prefix is ${AKO_PREFIX}")
+
+include(GetGitRevisionDescription)
+
+# set git revision info
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+# if we cannot get it from git, directly try .tag (packages)
+# this will work if the tar balls have been properly created
+# via git-archive.
+if ("${GIT_SHA1}" STREQUAL "GITDIR-NOTFOUND")
+    file(READ ${CMAKE_SOURCE_DIR}/.tag sha1_candidate)
+    string(REPLACE "\n" "" sha1_candidate ${sha1_candidate})
+    if (NOT ${sha1_candidate} STREQUAL "$Format:%H$")
+        message("${sha1_candidate}")
+        set (GIT_SHA1 "${sha1_candidate}")
+    endif()
+endif()
+
+message(STATUS "Git dynamic information")
+message("GIT_SHA1: ${GIT_SHA1}")
+
+execute_process(
+  COMMAND git rev-parse --abbrev-ref HEAD
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  OUTPUT_VARIABLE GIT_BRANCH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+message("GIT_BRANCH: ${GIT_BRANCH}")
+
+cmake_host_system_information(RESULT BUILD_HOST_NAME QUERY HOSTNAME)
+cmake_host_system_information(RESULT BUILD_HOST_DISTRI QUERY DISTRIB_PRETTY_NAME)
+message("Build host name: ${BUILD_HOST_NAME}")
+message("Build host distribution: ${BUILD_HOST_DISTRI}")
+
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)

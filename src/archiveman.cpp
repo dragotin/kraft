@@ -128,7 +128,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
 {
     QDomDocument xmldoc( "kraftdocument" );
     QDomElement root = xmldoc.createElement( "kraftdocument" );
-    root.setAttribute(QStringLiteral("kraft_version"), QStringLiteral(KRAFT_VERSION));
+    root.setAttribute(QStringLiteral("kraft_version"), Kraft::Version::number());
 
     xmldoc.appendChild( root );
     QDomElement cust = xmldoc.createElement( "client" );

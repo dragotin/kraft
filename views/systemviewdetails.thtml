@@ -38,6 +38,12 @@
   </tr>
 
   <tr>
+    <td class="label">{{GIT_BUILD_LABEL}}:</td>
+    <td class="value">{{GIT_BUILD_STRING}}</i></td>
+    <td></td>
+  </tr>
+  
+  <tr>
     <td class="label">{{COUNTRY_SETTING_LABEL}}:</td>
     <td class="value"><i>{{COUNTRY_SETTING}}</i></td>
     <td></td>
