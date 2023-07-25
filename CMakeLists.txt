@@ -45,7 +45,11 @@ execute_process(
 message("GIT_BRANCH: ${GIT_BRANCH}")
 
 cmake_host_system_information(RESULT BUILD_HOST_NAME QUERY HOSTNAME)
-cmake_host_system_information(RESULT BUILD_HOST_DISTRI QUERY DISTRIB_PRETTY_NAME)
+if(${CMAKE_VERSION} VERSION_GREATER "3.22.0")
+    cmake_host_system_information(RESULT BUILD_HOST_DISTRI QUERY DISTRIB_PRETTY_NAME)
+else ()
+    set(BUILD_HOST_DISTRI "unknown distribution")
+endif()
 message("Build host name: ${BUILD_HOST_NAME}")
 message("Build host distribution: ${BUILD_HOST_DISTRI}")
 
