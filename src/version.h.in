@@ -1,6 +1,7 @@
 #pragma once
 
-namespace Kraft::Version {
+namespace Kraft {
+namespace Version {
 
 	// Static content. Maintain values here.
 	inline QString number() { return QStringLiteral("1.1"); }
@@ -18,4 +19,4 @@ namespace Kraft::Version {
         inline QString buildHostDistro() { return QStringLiteral("@BUILD_HOST_DISTRI@"); }
 
 }
-
+}
