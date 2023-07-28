@@ -33,7 +33,7 @@ AddressTemplateProvider::AddressTemplateProvider( QWidget *parent )
 
 void AddressTemplateProvider::slotNewTemplate()
 {
-  // qDebug () << "SlotNewTemplate for addresses called!" << endl;
+  // qDebug () << "SlotNewTemplate for addresses called!";
 
   KRun::runCommand( QString::fromLatin1( "kaddressbook --new-contact" ),
                     QString::fromLatin1("kaddressbook" ), "address", mParent, "" );
@@ -41,7 +41,7 @@ void AddressTemplateProvider::slotNewTemplate()
 
 void AddressTemplateProvider::slotEditTemplate()
 {
-  // qDebug () << "SlotEditTemplate called!" << endl;
+  // qDebug () << "SlotEditTemplate called!";
 
   KRun::runCommand( QString::fromLatin1( "kaddressbook --uid %1" ).arg(
                     mCurrentAddress.uid() ),
@@ -67,7 +67,7 @@ void AddressTemplateProvider::slotTemplateToDocument()
     return;
   }
 
-  // qDebug () << "Moving address of " << mCurrentAddress.realName() << " to document" << endl;
+  // qDebug () << "Moving address of " << mCurrentAddress.realName() << " to document";
   emit addressToDocument( mCurrentAddress );
 }
 

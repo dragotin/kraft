@@ -51,7 +51,7 @@ void CatalogTemplateProvider::setCatalogSelection( CatalogSelection *cs )
 
 void CatalogTemplateProvider::slotNewTemplate()
 {
-    qDebug () << "SlotNewTemplate for Catalog called!" << endl;
+    qDebug () << "SlotNewTemplate for Catalog called!";
     if ( mCatalogSelection ) {
       Katalog *catalog = mCatalogSelection->currentSelectedKat();
 
@@ -63,7 +63,7 @@ void CatalogTemplateProvider::slotNewTemplate()
 
 void CatalogTemplateProvider::slotEditTemplate()
 {
-  // qDebug () << "SlotEditTemplate for Catalog called!" << endl;
+  // qDebug () << "SlotEditTemplate for Catalog called!";
     // mCatalogSelection->currentSelectedPositions
 }
 
@@ -73,7 +73,7 @@ void CatalogTemplateProvider::slotDeleteTemplate()
 
 void CatalogTemplateProvider::slotTemplateToDocument()
 {
-  // qDebug () << "Moving catalog entry to document" << endl;
+  // qDebug () << "Moving catalog entry to document";
 
   if ( mCatalogSelection ) {
     Katalog *catalog = mCatalogSelection->currentSelectedKat();

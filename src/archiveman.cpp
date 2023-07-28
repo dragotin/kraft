@@ -154,14 +154,14 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
     root.appendChild( positionsDomElement(&dpList, xmldoc) );
 
     QString xml = xmldoc.toString();
-    // qDebug() << "Resulting XML: " << xml << endl;
+    // qDebug() << "Resulting XML: " << xml;
 
     const QString outputDir = xmlBaseDir();
     const QString filename = archiveFileName( doc->ident(), archId, "xml" );
 
     const QString xmlFile = QString( "%1/%2" ).arg( outputDir ).arg( filename );
 
-    // qDebug () << "Storing XML to " << xmlFile << endl;
+    // qDebug () << "Storing XML to " << xmlFile;
 
     QFile file( xmlFile );
     if ( file.open( QIODevice::WriteOnly ) ) {
@@ -169,7 +169,7 @@ QDomDocument ArchiveMan::archiveDocumentXml( KraftDoc *doc, const QString& archI
         stream << xml << "\n";
         file.close();
     } else {
-        // qDebug () << "Saving failed" << endl;
+        // qDebug () << "Saving failed";
     }
 
     return xmldoc ;
@@ -206,7 +206,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     QSqlRecord record = model.record();
 
     if( doc->isNew() ) {
-      // qDebug () << "Strange: Document in archiving is new!" << endl;
+      // qDebug () << "Strange: Document in archiving is new!";
     }
     record.setValue( "ident", doc->ident() );
     record.setValue( "docType", doc->docType() );
@@ -263,7 +263,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
     DocPositionList posList = doc->positions();
     DocPositionListIterator it( posList );
 
-    // qDebug () << "Archiving pos for " << archDocId << endl;
+    // qDebug () << "Archiving pos for " << archDocId;
     while ( it.hasNext() ) {
       DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
@@ -281,7 +281,7 @@ int ArchiveMan::archivePos( int archDocId, KraftDoc *doc )
         // qDebug () << model.lastError();
 	  }
       dbID id = KraftDB::self()->getLastInsertID();
-      // qDebug() << "Inserted for id " << id.toString() << endl;
+      // qDebug() << "Inserted for id " << id.toString();
       cnt++;
 
       // save the attributes of the positions in the attributes

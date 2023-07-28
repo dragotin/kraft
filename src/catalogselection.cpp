@@ -98,7 +98,7 @@ Katalog* CatalogSelection::currentSelectedKat()
   Katalog *kat = KatalogMan::self()->getKatalog( currentCat );
 
   if ( ! kat ) {
-    qCritical() << "Could not find catalog " << currentCat << endl;
+    qCritical() << "Could not find catalog " << currentCat;
   }
   return kat;
 }
@@ -123,7 +123,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
     if ( !kat ) {
         const QString type = KatalogMan::self()->catalogTypeString( katName );
 
-        // qDebug () << "Catalog type for cat " << katName << " is " << type << endl;
+        // qDebug () << "Catalog type for cat " << katName << " is " << type;
         if ( type == QStringLiteral("TemplCatalog") ) {
             kat = new TemplKatalog( katName );
         } else if ( type == QStringLiteral("MaterialCatalog") ) {
@@ -133,7 +133,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         if ( kat ) {
             KatalogMan::self()->registerKatalog( kat );
         } else {
-            qCritical() << "Could not find a valid catalog type for catalog named " << katName << endl;
+            qCritical() << "Could not find a valid catalog type for catalog named " << katName;
         }
     }
 
@@ -146,7 +146,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
                 katListView = tmpllistview;
                 tmpllistview->setShowCalcParts( false );
 
-                // qDebug () << "Creating a selection list for catalog " << katName << endl;
+                // qDebug () << "Creating a selection list for catalog " << katName;
             } else if ( kat->type() == MaterialCatalog ) {
                 MaterialKatalogListView *matListView = new MaterialKatalogListView( this );
                 katListView = matListView;

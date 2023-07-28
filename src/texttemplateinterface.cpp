@@ -62,7 +62,7 @@ bool TextTemplateInterface::setTemplateFileName( const QString& name )
     return false;
   }
 
-  qDebug () << "Loading template source file: " << _fileName << endl;
+  qDebug () << "Loading template source file: " << _fileName;
   return initialize();
 }
 

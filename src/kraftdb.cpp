@@ -138,11 +138,11 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
 
     QStringList list = QSqlDatabase::drivers();
     if( list.size() == 0 ) {
-        // qDebug () << "Database Drivers could not be loaded." << endl;
+        // qDebug () << "Database Drivers could not be loaded.";
         mSuccess = false ;
     } else {
         if( list.indexOf( mDatabaseDriver ) == -1 ) {
-            // qDebug () << "Database Driver " << mDatabaseDriver << " could not be loaded!" << endl;
+            // qDebug () << "Database Driver " << mDatabaseDriver << " could not be loaded!";
             mSuccess = false;
         }
     }
@@ -157,7 +157,7 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
         if ( ! m_db.isValid() || m_db.isOpenError() )
         {
             qDebug() <<  "Failed to connect to the database driver: "
-                      << m_db.lastError().text() << endl;
+                      << m_db.lastError().text();
             mSuccess = false;
         }
     }
@@ -167,18 +167,18 @@ bool KraftDB::dbConnect( const QString& driver, const QString& dbName,
         if(mDatabaseDriver == "QMYSQL") {
             int port = DatabaseSettings::self()->dbServerPort(); // use the default port so far
             // FIXME: get port from user interface
-            // qDebug () << "Try to open MySQL database " << name << endl;
+            // qDebug () << "Try to open MySQL database " << name;
             re = checkConnect( dbHost, dbName , dbUser, dbPasswd, port);
         } else if(mDatabaseDriver == "QSQLITE") {
             // SqlLite only requires a valid file name which comes in as Database Name
-            // qDebug () << "Try to open SqLite database " << name << endl;
+            // qDebug () << "Try to open SqLite database " << name;
             re = checkConnect( QString(), dbName, QString(), QString(), -1);
         }
         if ( re == 0 ) {
             // Database successfully opened; we can now issue SQL commands.
-            // qDebug () << "** Database opened successfully" << endl;
+            // qDebug () << "** Database opened successfully";
         } else {
-            // qDebug () << "## Could not open database" << endl;
+            // qDebug () << "## Could not open database";
             mSuccess = false;
         }
     }
@@ -234,7 +234,7 @@ int KraftDB::checkConnect( const QString& host, const QString& dbName,
     m_db.open();
     if ( m_db.isOpenError() ) {
          qDebug () << "ERR opening the db: " << m_db.lastError().text() <<
-                    ", type is " << m_db.lastError().type() << endl;
+                    ", type is " << m_db.lastError().type();
         re = m_db.lastError().type();
     }
     return re;
@@ -341,14 +341,14 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
     SqlCommandList retList;
 
     if ( ! sqlFile.isEmpty() ) {
-        // qDebug () << "Opening migration file " << sqlFile << endl;
+        // qDebug () << "Opening migration file " << sqlFile;
 
         QFile f( sqlFile );
         if ( !f.exists() ) {
             qDebug() << "FATAL: File" << sqlFile << "does not exist!";
         }
         if ( !f.open( QIODevice::ReadOnly ) ) {
-            qDebug () << "FATAL: Could not open " << sqlFile << endl;
+            qDebug () << "FATAL: Could not open " << sqlFile;
         } else {
             QTextStream ts( &f );
             ts.setCodec("UTF-8");
@@ -370,7 +370,7 @@ SqlCommandList KraftDB::parseCommandFile( const QString& file )
                 int pos = reg.indexIn( sqlFragment.toLower(),  0 );
                 if ( pos > -1 ) {
                     msg = reg.cap( 2 );
-                    // qDebug() << "SQL-Commands-Parser: Msg: >" << msg << "<" << endl;
+                    // qDebug() << "SQL-Commands-Parser: Msg: >" << msg << "<";
                 }
 
                 bool mayfail = false;
@@ -441,7 +441,7 @@ QList<MetaDocTypeAdd> KraftDB::parseMetaFile( int currentVersion )
     MetaXMLParser parser;
     if( f.exists() ) {
         if ( !f.open( QIODevice::ReadOnly ) ) {
-            qWarning() << "FATAL: Could not open " << xmlFile << endl;
+            qWarning() << "FATAL: Could not open " << xmlFile;
         } else {
             QTextStream ts( &f );
             ts.setCodec("UTF-8");
@@ -495,12 +495,12 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
             res = q.exec(cmd.command()) || cmd.mayfail();
 
             if ( res ) {
-                // qDebug () << "Successful SQL Command: " << cmd.command() << endl;
+                // qDebug () << "Successful SQL Command: " << cmd.command();
                 cnt ++;
             } else {
                 QSqlError err = q.lastError();
                 res = false;
-                qDebug () << "###### Failed SQL Command " << cmd.command() << ": " << err.text() << endl;
+                qDebug () << "###### Failed SQL Command " << cmd.command() << ": " << err.text();
             }
             q.clear();
             emit processedSqlCommand( res );
@@ -601,7 +601,7 @@ QString KraftDB::replaceTagsInWord( const QString& w, StringMap replaceMap ) con
 
 void KraftDB::writeWordList( const QString& listName, const QStringList& list )
 {
-    // qDebug () << "Saving " << list[0] << " into list " << listName << endl;
+    // qDebug () << "Saving " << list[0] << " into list " << listName;
     QSqlQuery  qd;
     qd.prepare( "DELETE FROM wordLists WHERE category=:catName" );
     qd.bindValue( ":catName", listName );

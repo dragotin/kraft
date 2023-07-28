@@ -192,7 +192,7 @@ void ArchDoc::loadFromDb( dbID id )
   q.bindValue(":id", id.toInt());
   q.exec();
 
-  // qDebug () << "Loading document id " << id.toString() << endl;
+  // qDebug () << "Loading document id " << id.toString();
 
   if( q.next()) {
     QString docID;
@@ -222,7 +222,7 @@ void ArchDoc::loadFromDb( dbID id )
 
     mAttributes.load(id);
   } else {
-    // qDebug () << "ERR: Could not load archived doc with id " << id.toString() << endl;
+    // qDebug () << "ERR: Could not load archived doc with id " << id.toString();
   }
 }
 
@@ -231,7 +231,7 @@ void ArchDoc::loadItems( const QString& archDocId )
   mPositions.clear();
 
   if ( archDocId.isEmpty() /* || ! archDocId.isNum() */ ) {
-    // qDebug () << "ArchDocId is not crappy: " << archDocId << endl;
+    // qDebug () << "ArchDocId is not crappy: " << archDocId;
     return;
   }
 

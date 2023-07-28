@@ -58,7 +58,7 @@ void MaterialKatalogView::createCentralWidget( QBoxLayout *box, QWidget *w )
 
 Katalog* MaterialKatalogView::getKatalog( const QString& name )
 {
-    // qDebug () << "GetKatalog of material!" << endl;
+    // qDebug () << "GetKatalog of material!";
     Katalog *k = KatalogMan::self()->getKatalog( name );
     if( ! k ) {
         k = new MatKatalog( name );
@@ -82,7 +82,7 @@ void MaterialKatalogView::slEditTemplate()
                 // do nothing.
             }
         } else {
-            // qDebug () << "Editing the material" << endl;
+            // qDebug () << "Editing the material";
 
             if( listview )
             {
@@ -188,7 +188,7 @@ void MaterialKatalogView::slotEditOk( StockMaterial *mat )
     KatalogListView *listview = getListView();
     if( !listview ) return;
     MaterialKatalogListView *templListView = static_cast<MaterialKatalogListView*>(listview);
-    // qDebug () << "****** slotEditOk for Material" << endl;
+    // qDebug () << "****** slotEditOk for Material";
 
     if( mDialog ) {
         MatKatalog *k = static_cast<MatKatalog*>( getKatalog( MaterialCatalogName ) );

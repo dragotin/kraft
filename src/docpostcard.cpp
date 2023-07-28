@@ -155,7 +155,7 @@ void DocPostCard::setPositions( DocPositionList posList, DocPositionBase::TaxTyp
               QString( "</b></td><td align=\"right\"><b>%1</b></td><td width=\"12\" align=\"right\"></td></tr>" ).arg( brutto );
   } // showPrices
   mPositions += "</table></div>";
-  // qDebug() << "Positions-HTML: " << mPositions << endl;
+  // qDebug() << "Positions-HTML: " << mPositions;
 }
 
 void DocPostCard::setFooterData( const QString& postText,  const QString& goodbye )
@@ -168,16 +168,16 @@ void DocPostCard::renderDoc( int id )
 {
   QString t;
   // qDebug() << "rendering postcard for active id " << id <<
-    //( mMode == Full ? " (full) " : " (mini) " ) << endl;
+    //( mMode == Full ? " (full) " : " (mini) " );
   if ( mMode == Full ) {
     t = renderDocFull( id );
   } else if ( mMode == Mini ) {
     t = renderDocMini( id );
   } else {
-    // qDebug () << "Unknown postcard mode" << endl;
+    // qDebug () << "Unknown postcard mode";
   }
 
-  // qDebug() << t << endl;
+  // qDebug() << t;
   displayContent( t );
 }
 
@@ -287,13 +287,13 @@ void DocPostCard::slotUrlSelected( const QUrl& kurl)
 
     if ( kurl.scheme() == "kraftdoc" ) {
         if ( kurl.host() == "header" ) {
-            // qDebug () << "Header selected!" << endl;
+            // qDebug () << "Header selected!";
             id = KraftDoc::Header;
         } else if ( kurl.host() == "positions" ) {
-            // qDebug () << "Positions selected!" << endl;
+            // qDebug () << "Positions selected!";
             id = KraftDoc::Positions;
         } else if ( kurl.host() == "footer" ) {
-            // qDebug () << "Footer selected!" << endl;
+            // qDebug () << "Footer selected!";
             id = KraftDoc::Footer;
         }
         emit selectPage( id );

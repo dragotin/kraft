@@ -43,7 +43,7 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
     int cpId = cp->getDbID().toInt();
     model.setFilter("FCalcID=" + QString::number( cpId ));
     model.select();
-    // qDebug () << "CalcFix calcpart-ID is " << cpId << endl;
+    // qDebug () << "CalcFix calcpart-ID is " << cpId;
     if( cpId < 0 ) { // no db entry yet => INSERT
         if( !cp->isToDelete() ) {
             QSqlRecord buffer = model.record();
@@ -53,20 +53,20 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
             model.submitAll();
 
             dbID id = KraftDB::self()->getLastInsertID();
-            // qDebug () << "Setting db-ID " << id.toString() << endl;
+            // qDebug () << "Setting db-ID " << id.toString();
             cp->setDbID(id);
         } else {
-            // qDebug () << "new element, but set to delete" << endl;
+            // qDebug () << "new element, but set to delete";
         }
     } else {
         if( cp->isToDelete() ) {
-            // qDebug () << "deleting fix calc part " << cpId << endl;
+            // qDebug () << "deleting fix calc part " << cpId;
             // delete this calcpart.
             if ( model.rowCount() > 0 ) {
                 int cnt = model.rowCount();
                 model.removeRows(0, cnt);
                 model.submitAll();
-                // qDebug () << "Amount of deleted entries: " << cnt << endl;
+                // qDebug () << "Amount of deleted entries: " << cnt;
             }
         } else {
             // der Datensatz ist bereits in der Datenbank => UPDATE
@@ -77,7 +77,7 @@ bool CalculationsSaverDB::saveFixCalcPart( FixCalcPart *cp, dbID parentID )
                 model.setRecord(0, buffer);
                 model.submitAll();
             } else {
-                qCritical() << "Can not select FCalcID, corrupt data!" << endl;
+                qCritical() << "Can not select FCalcID, corrupt data!";
             }
         }
     }
@@ -109,7 +109,7 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
   int cpId = cp->getDbID().toInt();
   model.setFilter("MCalcID=" + QString::number( cpId ));
   model.select();
-  // qDebug () << "Saving material calcpart id=" << cpId << endl;
+  // qDebug () << "Saving material calcpart id=" << cpId;
 
   if( cpId < 0 ) { // no entry in database yet, need to insert
     QSqlRecord buffer = model.record();
@@ -137,7 +137,7 @@ bool CalculationsSaverDB::saveMaterialCalcPart( MaterialCalcPart *cp, dbID paren
         model.setRecord(0, buffer);
         model.submitAll();
       } else {
-        qCritical() << "Can not select MCalcID, corrupt data!" << endl;
+        qCritical() << "Can not select MCalcID, corrupt data!";
       }
     }
   }
@@ -201,7 +201,7 @@ bool CalculationsSaverDB::saveCalculations( CalcPartList parts, dbID parentID )
         res = saveMaterialCalcPart( static_cast<MaterialCalcPart*>(cp), parentID );
         Q_ASSERT( res );
       } else {
-        // qDebug () << "ERROR: Unbekannter Kalkulations-Anteil-Typ!" << endl;
+        // qDebug () << "ERROR: Unbekannter Kalkulations-Anteil-Typ!";
       }
     }
   }
@@ -234,7 +234,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( TimeCalcPart *cp, dbID parentId )
             dbID id = KraftDB::self()->getLastInsertID();
             cp->setDbID(id);
         } else {
-            // qDebug () << "delete flag is set -> skip saving." << endl;
+            // qDebug () << "delete flag is set -> skip saving.";
         }
     }
 
@@ -256,7 +256,7 @@ bool CalculationsSaverDB::saveTimeCalcPart( TimeCalcPart *cp, dbID parentId )
                 model.setRecord(0, buffer);
                 model.submitAll();
             } else {
-                qCritical() << "Unable to select TCalcID, corrupt data!" << endl;
+                qCritical() << "Unable to select TCalcID, corrupt data!";
             }
         }
     }
@@ -309,7 +309,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
     QSqlRecord buffer;
     if( model.rowCount() > 0)
     {
-        // qDebug () << "Updating template " << tmpl->getTemplID() << endl;
+        // qDebug () << "Updating template " << tmpl->getTemplID();
 
         // mach update
         buffer = model.record(0);
@@ -321,7 +321,7 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
     else
     {
         // insert
-        // qDebug () << "Creating new database entry" << endl;
+        // qDebug () << "Creating new database entry";
 
         buffer = model.record();
         fillTemplateBuffer( &buffer, tmpl, true );
@@ -330,13 +330,13 @@ bool TemplateSaverDB::saveTemplate( FloskelTemplate *tmpl )
 
         /* Jetzt die neue Template-ID selecten */
         dbID id = KraftDB::self()->getLastInsertID();
-        // qDebug () << "New Database ID=" << id.toInt() << endl;
+        // qDebug () << "New Database ID=" << id.toInt();
 
         if( id.isOk() ) {
             tmpl->setTemplID(id.toInt() );
             templID = id.toString();
         } else {
-            // qDebug () << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
+            // qDebug () << "ERROR: Kann AUTOINC nicht ermitteln";
             res = false;
         }
     }

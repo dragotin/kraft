@@ -120,7 +120,7 @@ void FloskelTemplate::deepCopyCalcParts( FloskelTemplate& templ )
     } else if( cp->getType() == KALKPART_MATERIAL ) {
       ncp = new MaterialCalcPart( *( static_cast<MaterialCalcPart*>(cp) ) );
     } else {
-      // qDebug () << "ERROR: Unknown Calculation-Type!" << endl;
+      // qDebug () << "ERROR: Unknown Calculation-Type!";
     }
     m_calcParts.append( ncp );
   }
@@ -236,11 +236,11 @@ TemplateSaverBase* FloskelTemplate::getSaver()
 bool FloskelTemplate::save()
 {
     TemplateSaverBase *saver = getSaver();
-    // qDebug () << "Saver is " << saver << endl;
+    // qDebug () << "Saver is " << saver;
     if( saver ) {
         return saver->saveTemplate( this );
     } else {
-        // qDebug () << "ERR: No saver available!" << endl;
+        // qDebug () << "ERR: No saver available!";
         return false;
     }
 }

@@ -92,7 +92,7 @@ Einheit UnitManager::getUnit( int id )
 {
   if( mUnits.size() == 0 ) load();
 
-  // qDebug() << "Searching unit ID " << id << endl;
+  // qDebug() << "Searching unit ID " << id;
   foreach( Einheit e, mUnits ) {
     if( e.id() == id ) return e;
   }
@@ -107,7 +107,7 @@ int UnitManager::getUnitIDSingular( const QString& einheitStr )
 
     if( tmp.einheitSingular() == einheitStr ||
         tmp.einheitPlural()   == einheitStr ) {
-      // qDebug() << "Thats it, returning " << tmp.id() << endl;
+      // qDebug() << "Thats it, returning " << tmp.id();
       return tmp.id();
     }
   }
@@ -121,7 +121,7 @@ QString UnitManager::getECE20(const QString& einheitStr)
     for( Einheit tmp: mUnits ) {
       if( tmp.einheitSingular() == einheitStr ||
           tmp.einheitPlural()   == einheitStr ) {
-        // qDebug() << "Thats it, returning " << tmp.id() << endl;
+        // qDebug() << "Thats it, returning " << tmp.id();
         return tmp.ec20();
       }
     }

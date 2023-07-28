@@ -191,7 +191,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
 void DocAssistant::slotAddToDocument()
 {
-  // qDebug () << "SlotAddToDocument called!" << endl;
+  // qDebug () << "SlotAddToDocument called!";
   if ( mCurrTemplateProvider ) {
     mCurrTemplateProvider->slotTemplateToDocument();
   }
@@ -233,7 +233,7 @@ void DocAssistant::slotTemplateSelectionChanged( )
 void DocAssistant::slotCatalogSelectionChanged(QTreeWidgetItem *current ,QTreeWidgetItem *)
 {
     // enable the move-to-document button.
-    // qDebug () << "catalog position selection changed!" << endl;
+    // qDebug () << "catalog position selection changed!";
     if ( current ) {
         mPbAdd->setEnabled( true );
     } else {
@@ -290,7 +290,7 @@ void DocAssistant::slotFooterTextToDocument( const DocText& dt )
 /* Slot that initiates an edit */
 void DocAssistant::slotEditTemplate()
 {
-  // qDebug () << "Editing a template using the currentTemplProvider" << endl;
+  // qDebug () << "Editing a template using the currentTemplProvider";
   if ( mCurrTemplateProvider ) {
     mCurrTemplateProvider->slotSetDocType( mDocType );
     mCurrTemplateProvider->slotEditTemplate();

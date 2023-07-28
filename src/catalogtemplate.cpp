@@ -154,7 +154,7 @@ int CatalogTemplateList::compareItems( CatalogTemplate *ct1,  CatalogTemplate *c
   // CatalogTemplate* ct1 = static_cast<CatalogTemplate*>( i1 );
   // CatalogTemplate* ct2 = static_cast<CatalogTemplate*>( i2 );
 
-  // qDebug () << "********************************* In Sort!" << endl;
+  // qDebug () << "********************************* In Sort!";
 
   if ( !( ct1 && ct2 ) ) return 0;
 

@@ -58,7 +58,7 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 
     if( model.rowCount() > 0)
     {
-        // qDebug () << "Updating material " << mat->getID() << endl;
+        // qDebug () << "Updating material " << mat->getID();
 
         // mach update
         buffer = model.record(0);
@@ -69,7 +69,7 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
     else
     {
         // insert
-        // qDebug () << "Creating new material database entry" << endl;
+        // qDebug () << "Creating new material database entry";
 
         fillMaterialBuffer( buffer, mat, true );
         model.insertRecord(-1, buffer);
@@ -77,13 +77,13 @@ bool MaterialSaverDB::saveTemplate( StockMaterial *mat )
 
         /* Jetzt die neue Template-ID selecten */
         dbID id = KraftDB::self()->getLastInsertID();
-        // qDebug () << "New Database ID=" << id.toInt() << endl;
+        // qDebug () << "New Database ID=" << id.toInt();
 
         if( id.isOk() ) {
             mat->setID( id.toInt() );
             templID = id.toString();
         } else {
-            // qDebug () << "ERROR: Kann AUTOINC nicht ermitteln" << endl;
+            // qDebug () << "ERROR: Kann AUTOINC nicht ermitteln";
             res = false;
         }
     }
@@ -128,7 +128,7 @@ void MaterialSaverDB::saveTemplateChapter( StockMaterial* tmpl )
 
     if( model.rowCount() > 0)
     {
-        // qDebug () << "Updating material chapter " << templID << endl;
+        // qDebug () << "Updating material chapter " << templID;
         buffer = model.record(0);
         buffer.setValue( "chapterID", chapId.toString() );
         model.setRecord(0, buffer);

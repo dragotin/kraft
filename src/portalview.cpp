@@ -195,7 +195,7 @@ QString PortalView::printKatLine( const QString& name, int cnt ) const
 {
     QString urlName = name.toHtmlEscaped();
 
-    // qDebug () << "Converted Katalog name: " << urlName << endl;
+    // qDebug () << "Converted Katalog name: " << urlName;
     QString html;
 
     html += "<tr";

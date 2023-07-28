@@ -141,7 +141,7 @@ void HtmlView::displayContent( const QString& content )
 
         QTextStream outStream(&tempFile);
         outStream << s;
-        outStream << "##############" << endl;
+        outStream << "##############";
         outStream << out;
         tempFile.close();
     }

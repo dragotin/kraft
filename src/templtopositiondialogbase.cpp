@@ -44,7 +44,7 @@ TemplToPositionDialogBase::~TemplToPositionDialogBase()
 void TemplToPositionDialogBase::setPositionList( DocPositionList list, int intendedPos )
 {
   if ( ! getPositionCombo() ) {
-    qCritical() << "Can not get a ptr to the position combo" << endl;
+    qCritical() << "Can not get a ptr to the position combo";
     return;
   }
   QStringList strList;
@@ -67,7 +67,7 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
 int TemplToPositionDialogBase::insertAfterPosition()
 {
   int itemPos = getPositionCombo()->currentIndex();
-  // qDebug () << "Current item selected: " << itemPos << endl;
+  // qDebug () << "Current item selected: " << itemPos;
 
   return itemPos;
 }

@@ -101,7 +101,7 @@ void CatalogChapter::setSortKey( int key )
 
 void CatalogChapter::save()
 {
-  // qDebug () << "Inserting new chapter " << name() << mCatalogSetId.toString() << endl;
+  // qDebug () << "Inserting new chapter " << name() << mCatalogSetId.toString();
   QSqlQuery q;
   q.prepare("INSERT INTO CatalogChapters (catalogSetID, chapter, description, sortKey, parentChapter)"
             "VALUES(:catalogSetID, :chapter, :desc, :sortKey, :parentChapter)");

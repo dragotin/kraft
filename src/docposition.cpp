@@ -104,7 +104,7 @@ void DocPositionBase::setAttributeMap( AttributeMap attmap )
 void DocPositionBase::loadAttributes()
 {
   if ( m_dbId == -1 ) {
-    // qDebug () << "Can not load attributes, no valid database id!" << endl;
+    // qDebug () << "Can not load attributes, no valid database id!";
     return;
   }
   mAttribs.load( m_dbId );
@@ -206,7 +206,7 @@ QStringList DocPositionBase::tags()
 {
   QStringList tags, tagIDs;
   if ( mAttribs.contains( DocPosition::Tags ) ) {
-    // qDebug () << mAttribs[DocPosition::Tags].toString() << endl;
+    // qDebug () << mAttribs[DocPosition::Tags].toString();
     tagIDs = mAttribs[DocPosition::Tags].value().toStringList();
   }
   for( const auto &tagId : tagIDs) {
@@ -424,7 +424,7 @@ int DocPositionList::compareItems ( DocPosition *dp1, DocPosition *dp2 )
   if( sortkey1 > sortkey2 ) res = 1;
   if( sortkey2 < sortkey1 ) res = -1;
 
-  // qDebug()<< "In sort: comparing " << p1 << " with " << p2 << " = " << res << endl;
+  // qDebug()<< "In sort: comparing " << p1 << " with " << p2 << " = " << res;
   return res;
 }
 

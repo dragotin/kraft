@@ -581,7 +581,7 @@ int DocType::nextIdentId( bool hot )
             setQuery.bindValue( ":newNumber", num );
             setQuery.exec();
             if ( setQuery.isActive() ) {
-                // qDebug () << "Successfully created new id number for numbercycle " << numberCycle << ": " << num << endl;
+                // qDebug () << "Successfully created new id number for numbercycle " << numberCycle << ": " << num;
             }
         }
     }

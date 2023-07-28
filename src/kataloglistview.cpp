@@ -117,7 +117,7 @@ void KatalogListView::setupChapters()
         mChapterDict.clear();
     }
 
-    // qDebug () << "Creating root item!" <<  endl;
+    // qDebug () << "Creating root item!";
     QStringList list;
     list << cat->getName();
     m_root = new QTreeWidgetItem( this, list );
@@ -132,7 +132,7 @@ void KatalogListView::setupChapters()
 
     repaint();
     const QList<CatalogChapter> chapters = cat->getKatalogChapters( true );
-    // qDebug () << "Have count of chapters: " << chapters.size() << endl;
+    // qDebug () << "Have count of chapters: " << chapters.size();
 
     QList<CatalogChapter> strayCats;
 
@@ -141,7 +141,7 @@ void KatalogListView::setupChapters()
         if( ! item ) {
             strayCats.append( chapter );
         } else {
-            // qDebug () << "Creating katalog chapter item for " << chapter.name() << endl;
+            // qDebug () << "Creating katalog chapter item for " << chapter.name();
         }
     }
 
@@ -320,7 +320,7 @@ void KatalogListView::slotEditCurrentChapter()
 {
     QTreeWidgetItem *item = currentItem();
     if( ! isChapter( item )) {
-        // qDebug () << "Can only edit chapters!" << endl;
+        // qDebug () << "Can only edit chapters!";
         return;
     }
     CatalogChapter *chap = static_cast<CatalogChapter*>( itemData( item ) );
@@ -347,7 +347,7 @@ void KatalogListView::slotRemoveCurrentChapter()
 {
     QTreeWidgetItem *item = currentItem();
     if( ! isChapter( item )) {
-        // qDebug () << "Can only remove chapters here!" << endl;
+        // qDebug () << "Can only remove chapters here!";
     }
 
     if( item->childCount() > 0 ) {
@@ -618,7 +618,7 @@ void KatalogListView::slotRedraw()
     while( it.hasNext() ) {
         it.next();
         if ( it.value()->isExpanded() ) {
-            // qDebug () << "Adding open Chapter " << it.value()->text( 0 ) << endl;
+            // qDebug () << "Adding open Chapter " << it.value()->text( 0 );
             mOpenChapters << it.value()->text( 0 );
         }
     }

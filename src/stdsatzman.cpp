@@ -133,7 +133,7 @@ void StdSatzMan::load()
     q.next();
     max = q.value(0).toInt();
   }
-  // qDebug () << "Groesse fuer Stundensatzliste: " << max << endl;
+  // qDebug () << "Groesse fuer Stundensatzliste: " << max;
 
   mStdSaetze.resize( max );
 
@@ -144,7 +144,7 @@ void StdSatzMan::load()
   while( q.next() )
   {
     int satzID = q.value(0).toInt();
-    // qDebug () << "Neue StdSatz ID " << satzID << endl;
+    // qDebug () << "Neue StdSatz ID " << satzID;
     // resize if index is to big.
     StdSatz ss( satzID, q.value(1).toString(),
                 Geld( q.value(2).toDouble()));

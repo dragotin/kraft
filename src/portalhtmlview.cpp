@@ -30,7 +30,7 @@ void PortalHtmlView::slotLinkClicked(const QUrl& url)
     const QString katName = q.queryItemValue(QLatin1String("kat"));
     const QString action  = q.queryItemValue(QLatin1String("action"));
     if ( action == QLatin1String("open") ) {
-      // qDebug () << "open catalog " << katName << endl;
+      // qDebug () << "open catalog " << katName;
       emit( openCatalog( katName ) );
     } else {
         if( url.isValid() ) {

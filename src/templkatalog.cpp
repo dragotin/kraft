@@ -74,7 +74,7 @@ void TemplKatalog::reload( dbID id)
     if(q.next())
     {
       //templ->setEinheitId(q.value(0).toInt());
-      // qDebug() << "Reloading template number " << q.value(1) << endl;
+      // qDebug() << "Reloading template number " << q.value(1);
       templ->setChapterId(dbID( q.value(2).toInt()), false );
       //templ->setCalculationType(q.value(3).toInt());
       templ->setManualPrice(q.value(4).toDouble());
@@ -114,7 +114,7 @@ int TemplKatalog::load()
     cnt++;
     int einheit = q.value(0).toInt();
     int templID = q.value(1).toInt();
-    // qDebug () << "Loading template number " << templID << endl;
+    // qDebug () << "Loading template number " << templID;
     int chapID = q.value(2).toInt();
     // int sortID = cur.value( "sortKey" ).toInt();
     int calcKind = q.value(3).toInt();
@@ -123,13 +123,13 @@ int TemplKatalog::load()
     Geld preis(g);
     /* Only for debugging: */
     if( templID == 272 ) {
-      // qDebug () << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g << endl;
+      // qDebug () << "Geld ist " << preis.toString( *( &mLocale ) ) << " from g-value " << g;
     }
 
     QDateTime modDt = q.value(5).toDateTime();
     QDateTime enterDt = q.value(6).toDateTime();
 
-    // qDebug() << "Chapter ID is " << chapID << endl;
+    // qDebug() << "Chapter ID is " << chapID;
 
     FloskelTemplate *flos = new FloskelTemplate( templID,
                                                  q.value(7).toString(),
@@ -313,7 +313,7 @@ FloskelTemplateList TemplKatalog::getFlosTemplates(int chapId)
 
   if( m_flosList.count() == 0 )
   {
-    // qDebug () << "Empty katalog list - loading!" << endl;
+    // qDebug () << "Empty katalog list - loading!";
     load();
   }
 
@@ -326,7 +326,7 @@ FloskelTemplateList TemplKatalog::getFlosTemplates(int chapId)
 
     int haveChap = tmpl->chapterId().toInt();
 
-    // qDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap << endl;
+    // qDebug() << "Searching for chapter " << chapter << " with ID " << chap << " and have " << haveChap;
     if( haveChap == chapId )
     {
       resultList.append( tmpl );

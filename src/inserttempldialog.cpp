@@ -165,7 +165,7 @@ DocPosition InsertTemplDialog::docPosition()
     }
   }
 
-  // qDebug () << "in the dialog: " << mParkPosition.tags() << endl;
+  // qDebug () << "in the dialog: " << mParkPosition.tags();
   return mParkPosition;
 }
 

@@ -77,7 +77,7 @@ DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Pa
                          "DocTypes types WHERE texts.docTypeId=types.docTypeID AND "
                          "types.name=\'%1\' AND textType = \'%2\'").arg( docType ).arg( typeStr );
 
-  // qDebug() << "Reading texts from DB with: " << sql << endl;
+  // qDebug() << "Reading texts from DB with: " << sql;
 
   QSqlQuery query( sql );
   if ( query.isActive() ) {

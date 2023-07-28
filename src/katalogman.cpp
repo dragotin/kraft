@@ -76,11 +76,11 @@ void KatalogMan::registerKatalog( Katalog *k )
     Katalog* kat = m_katalogDict[k->getName()];
 
     if( kat ) {
-        qWarning() << "Katalog with same name already here -> deleting!" << endl;
+        qWarning() << "Katalog with same name already here -> deleting!";
         delete kat;
     } else {
         // not found, try to open it
-        // qDebug () << "Katalog " << k->getName() << " registered and loading..." << endl;
+        // qDebug () << "Katalog " << k->getName() << " registered and loading...";
         m_katalogDict.insert( k->getName(), k );
         k->load ();
     }
@@ -91,9 +91,9 @@ Katalog *KatalogMan::getKatalog(const QString& name)
     Katalog* kat = m_katalogDict[name];
 
     if( !kat ) {
-        // qDebug () << "No katalog " << name << " found" << endl;
+        // qDebug () << "No katalog " << name << " found";
     } else {
-        // qDebug() << "Returning existing katalog " << name << endl;
+        // qDebug() << "Returning existing katalog " << name;
     }
     return kat;
 }
@@ -141,7 +141,7 @@ Katalog* KatalogMan::defaultTemplateCatalog()
     it.next();
     Katalog *k = it.value();
     if ( k->type() == TemplateCatalog ) {
-      // qDebug () << "Found default template catalog: " << k->getName() << endl;
+      // qDebug () << "Found default template catalog: " << k->getName();
       return k;
     }
   }

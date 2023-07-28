@@ -148,7 +148,7 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
   m_katalog = KatalogMan::self()->getKatalog(katalogname);
 
   if( m_katalog == 0 ) {
-    // qDebug () << "ERR: Floskel Dialog called without valid Katalog!" << endl;
+    // qDebug () << "ERR: Floskel Dialog called without valid Katalog!";
     return;
   }
 
@@ -199,11 +199,11 @@ MaterialTemplDialog::~MaterialTemplDialog( )
 
 void MaterialTemplDialog::accept()
 {
-  // qDebug () << "*** Saving finished " << endl;
+  // qDebug () << "*** Saving finished ";
   const QString newMat = mEditMaterial->toPlainText();
 
   if ( newMat.isEmpty() ) {
-    // qDebug () << "We do not want to store empty materials" << endl;
+    // qDebug () << "We do not want to store empty materials";
   } else {
     mSaveMaterial->setText( mEditMaterial->toPlainText() );
     mSaveMaterial->setAmountPerPack( mDiPerPack->value() );
@@ -211,7 +211,7 @@ void MaterialTemplDialog::accept()
     const QString str = mCbUnit->currentText();
 
     int u = UnitManager::self()->getUnitIDSingular( str );
-    // qDebug () << "Setting unit id "  << u << endl;
+    // qDebug () << "Setting unit id "  << u;
     mSaveMaterial->setUnitId( u );
 
     // chapId = 0; // FIXME: get a chapter catalog Id of hirarchical

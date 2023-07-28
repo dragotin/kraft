@@ -222,7 +222,7 @@ void TemplKatalogView::slEditOk(FloskelTemplate* templ)
     }
 
     if( templListView && m_editListViewItem ) {
-      // qDebug () << "Edit was ok, refreshing item in list " << m_editListViewItem << endl;
+      // qDebug () << "Edit was ok, refreshing item in list " << m_editListViewItem;
       templListView->setCurrentItem( m_editListViewItem );
       templListView->slFreshupItem( m_editListViewItem, templ, true );
       templListView->scrollToItem( m_editListViewItem );
@@ -242,7 +242,7 @@ void TemplKatalogView::slEditRejected()
 
 void TemplKatalogView::createCentralWidget(QBoxLayout*box, QWidget *w)
 {
-    // qDebug () << "Creating new Listview" << endl;
+    // qDebug () << "Creating new Listview";
     m_listview = new TemplKatalogListView( w );
     box->addWidget(m_listview);
 

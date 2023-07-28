@@ -53,7 +53,7 @@ StdSatz& TimeCalcPart::getStundensatz()
 /** Write property of Geld m_stundensatz. */
 void TimeCalcPart::setStundensatz( const StdSatz& _newVal)
 {
-    // qDebug() << "stundensatz gesetzt: " << _newVal.toString() << endl;
+    // qDebug() << "stundensatz gesetzt: " << _newVal.toString();
     m_stundensatz = _newVal;
     setDirty(true);
 }

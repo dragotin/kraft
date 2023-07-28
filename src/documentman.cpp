@@ -60,7 +60,7 @@ DocGuardedPtr DocumentMan::copyDocument( const QString& copyFromId )
 DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString& copyFromId, const DocPositionList& listToCopy)
 {
     DocGuardedPtr doc = new KraftDoc();
-    // qDebug () << "new document ID: " << doc->docID().toString() << endl;
+    // qDebug () << "new document ID: " << doc->docID().toString();
 
     if ( ! copyFromId.isEmpty() ) {
         // copy the content from the source document to the new doc.
@@ -142,7 +142,7 @@ DocGuardedPtr DocumentMan::openDocumentbyIdent( const QString& ident )
 
 DocGuardedPtr DocumentMan::openDocument( const QString& id )
 {
-  // qDebug () << "Opening Document with id " << id << endl;
+  // qDebug () << "Opening Document with id " << id;
   DocGuardedPtr doc = new KraftDoc();
   doc->openDocument( id );
   return doc;

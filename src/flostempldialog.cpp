@@ -148,7 +148,7 @@ void FlosTemplDialog::setTemplate( FloskelTemplate *t, const QString& katalognam
   m_katalog = KatalogMan::self()->getKatalog(katalogname);
 
   if( m_katalog == 0 ) {
-    // qDebug () << "ERR: Floskel Dialog called without valid Katalog!" << endl;
+    // qDebug () << "ERR: Floskel Dialog called without valid Katalog!";
     return;
   }
 
@@ -268,7 +268,7 @@ void FlosTemplDialog::refreshPrices()
   }
   else
   {
-    // qDebug () << "ERR: unknown calculation type!" << endl;
+    // qDebug () << "ERR: unknown calculation type!";
   }
   m_resPreisName->setText(t);
   m_resPreisName->setTextFormat(Qt::RichText);
@@ -329,19 +329,19 @@ bool FlosTemplDialog::templModified()
 void FlosTemplDialog::accept()
 {
     if( m_template ) {
-        // qDebug () << "Saving template ID " << m_template->getTemplID() << endl;
+        // qDebug () << "Saving template ID " << m_template->getTemplID();
 
         QString h;
         h = m_text->toPlainText();
 
         if( h != m_template->getText() ) {
-            // qDebug () << "Template Text dirty -> update" << endl;
+            // qDebug () << "Template Text dirty -> update";
             m_template->setText( h );
         }
 
         h = m_unit->currentText();
         if( h != m_template->unit().einheitSingular()) {
-            // qDebug () << "Template Einheit dirty -> update to " << h << endl;
+            // qDebug () << "Template Einheit dirty -> update to " << h;
             m_template->setUnitId( UnitManager::self()->getUnitIDSingular(h));
         }
 
@@ -357,7 +357,7 @@ void FlosTemplDialog::accept()
         int new_val = h.toInt(&b);
         if( b && new_val != qRound(m_template->getBenefit())) {
             m_template->setBenefit(new_val);
-            // qDebug () << "benefit dirty ->update to " << g << endl;
+            // qDebug () << "benefit dirty ->update to " << g;
         }
 
         // Calculationtype
@@ -368,7 +368,7 @@ void FlosTemplDialog::accept()
         } else if( selId == 1 ) {
             calcType = CatalogTemplate::Calculation;
         } else {
-            // qDebug () << "ERROR: Calculation type not selected, id is " << selId << endl;
+            // qDebug () << "ERROR: Calculation type not selected, id is " << selId;
         }
         m_template->setCalculationType( calcType );
 
@@ -377,7 +377,7 @@ void FlosTemplDialog::accept()
         m_template->setManualPrice( Geld( dd ) );
 
         h = cbChapter->currentText();
-        // qDebug () << "catalog chapter is " << h << endl;
+        // qDebug () << "catalog chapter is " << h;
 
         _calcPartsModified = false;
 
@@ -389,7 +389,7 @@ void FlosTemplDialog::accept()
 
         }
     }
-    // qDebug () << "*** Saving finished " << endl;
+    // qDebug () << "*** Saving finished ";
     QDialog::accept();
 }
 
@@ -455,9 +455,9 @@ bool FlosTemplDialog::askChapterChange( FloskelTemplate*, int )
 
 void FlosTemplDialog::slManualPriceChanged(double dd)
 {
-    qDebug () << "Changing manual price:" << dd << endl;
+    qDebug () << "Changing manual price:" << dd;
   if( ! m_template ) return;
-  // qDebug () << "Updating manual price!" << endl;
+  // qDebug () << "Updating manual price!";
   m_template->setManualPrice( Geld( dd ));
   refreshPrices();
 }
@@ -533,7 +533,7 @@ void FlosTemplDialog::slEditFixPart()
 {
   if( ! m_template || !m_fixParts ) return;
 
-  // qDebug () << "Edit fix part!" << endl;
+  // qDebug () << "Edit fix part!";
 
   QTreeWidgetItem *item = m_fixParts->currentItem();
 
@@ -650,7 +650,7 @@ void FlosTemplDialog::slEditTimePart()
 {
   if( ! m_template || !m_timeParts ) return;
 
-  // qDebug () << "Edit time part!" << endl;
+  // qDebug () << "Edit time part!";
 
   QTreeWidgetItem *item = m_timeParts->currentItem();
 
@@ -663,7 +663,7 @@ void FlosTemplDialog::slEditTimePart()
                this, SLOT(slTimeCalcPartChanged(TimeCalcPart*)) );
       m_timePartDialog->show();
     } else {
-      // qDebug () << "No time calc part found for this item" << endl;
+      // qDebug () << "No time calc part found for this item";
     }
   } else {
     // qDebug () << "No current Item!";
@@ -693,7 +693,7 @@ void FlosTemplDialog::slAddMatPart()
  */
 void FlosTemplDialog::slNewMaterial( int matID, double amount )
 {
-    // qDebug () << "Material ID: " << matID << endl;
+    // qDebug () << "Material ID: " << matID;
 
     // TODO: Checken, ob der richtige Tab aktiv ist.
     // TODO: Check if the material is already in the calcpart (is this really needed??)
@@ -722,7 +722,7 @@ void FlosTemplDialog::slEditMatPart()
 {
   if( ! m_template || !m_matParts ) return;
 
-  // qDebug () << "Edit Material part!" << endl;
+  // qDebug () << "Edit Material part!";
 
   QTreeWidgetItem *item = m_matParts->currentItem();
 

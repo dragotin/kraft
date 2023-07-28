@@ -363,7 +363,7 @@ void Portal::slotStartupChecks()
 
     if( ! KraftDB::self()->isOk() ) {
         QSqlError err = KraftDB::self()->lastError();
-        // qDebug () << "The last sql error id: " << err.type() << endl;
+        // qDebug () << "The last sql error id: " << err.type();
 
         QString text;
 
@@ -415,7 +415,7 @@ void Portal::slotStartupChecks()
         if ( mCmdLineArgs ) {
             const QString docId = mCmdLineArgs->value("d");
             if ( ! docId.isEmpty() ) {
-                // qDebug () << "open a archived document: " << docId << endl;
+                // qDebug () << "open a archived document: " << docId;
                 slotPrintDocument( QString(), dbID( docId.toInt() ) );
             }
         }
@@ -564,7 +564,7 @@ void Portal::slotFollowUpDocument()
         wiz.setAvailDocTypes( dt.follower() );
     }
 
-    // qDebug () << "doc identifier: "<< doc->docIdentifier() << endl;
+    // qDebug () << "doc identifier: "<< doc->docIdentifier();
     wiz.setDocToFollow( sourceDoc );
     DocPositionList posToCopy;
     delete sourceDoc;
@@ -617,7 +617,7 @@ void Portal::slotCopyDocument( const QString& id )
     doc->setAddressUid( wiz.addressUid() );
     doc->saveDocument();
     m_portalView->docDigestView()->slotUpdateView();
-    // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
+    // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString();
   }
 }
 
@@ -649,7 +649,7 @@ void Portal::slotViewDocument( const QString& id )
 
 void Portal::slotXRechnungCurrentDocument()
 {
-  // qDebug () << "printing document " << locId << endl;
+  // qDebug () << "printing document " << locId;
   ArchDocDigest dig = m_portalView->docDigestView()->currentLatestArchivedDoc();
 
   slotExportXRechnungArchivedDoc(dig);
@@ -707,7 +707,7 @@ void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
   ArchDocDigest digest( d );
 
   const QString file = d.pdfArchiveFileName();
-  // qDebug () << "archived doc selected: " << file << endl;
+  // qDebug () << "archived doc selected: " << file;
   slotOpenPdf( file );
 
   busyCursor( false );
@@ -724,7 +724,7 @@ QDebug operator<<(QDebug debug, const dbID &id)
 void Portal::slotPrintCurrentDocument()
 {
   QString locId = m_portalView->docDigestView()->currentDocumentId();
-  // qDebug () << "printing document " << locId << endl;
+  // qDebug () << "printing document " << locId;
 
   busyCursor( true );
   slotStatusMsg( i18n( "Generating PDF..." ) );
@@ -748,7 +748,7 @@ void Portal::slotPrintCurrentDocument()
 void Portal::slotMailDocument()
 {
   const QString locId = m_portalView->docDigestView()->currentDocumentId();
-  // qDebug () << "Mailing document " << locId << endl;
+  // qDebug () << "Mailing document " << locId;
 
   slotStatusMsg( i18n( "Generating PDF for EMail" ) );
   DocumentMan *docman = DocumentMan::self();
@@ -890,7 +890,7 @@ void Portal::slotOpenDocument( const QString& id )
 
 void Portal::slotDocumentSelected( const DocDigest& doc )
 {
-    // qDebug() << "a doc was selected: " << doc << endl;
+    // qDebug() << "a doc was selected: " << doc;
     bool enable = !doc.id().isEmpty();
     _actViewDocument->setEnabled( enable );
     _actOpenDocument->setEnabled( (!_readOnlyMode) && enable );
@@ -932,7 +932,7 @@ void Portal::slotEditTagTemplates()
   TagTemplatesDialog dia( this );
 
   if ( dia.exec() ) {
-    // qDebug () << "Editing of tag templates succeeded!" << endl;
+    // qDebug () << "Editing of tag templates succeeded!";
 
   }
 }
@@ -980,7 +980,7 @@ void Portal::createView( DocGuardedPtr doc )
   } else {
       mViewMap[doc]->raise();
       // pop first view to front
-      // qDebug () << "There is already a view for this doc!" << endl;
+      // qDebug () << "There is already a view for this doc!";
   }
 }
 
@@ -1025,10 +1025,10 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
             view->deleteLater();
         }
 
-        // qDebug () << "A view was closed saving and doc is new: " << doc->isNew() << endl;
+        // qDebug () << "A view was closed saving and doc is new: " << doc->isNew();
         delete doc;
     } else {
-        // qDebug () << "A view was closed canceled" << endl;
+        // qDebug () << "A view was closed canceled";
     }
 }
 
@@ -1102,11 +1102,11 @@ void Portal::slotShowTemplates(){
 
 void Portal::slotOpenKatalog(const QString& kat)
 {
-    // qDebug () << "opening Katalog " << kat << endl;
+    // qDebug () << "opening Katalog " << kat;
 
     if ( mKatalogViews.contains( kat ) ) {
       // bring up the katalog view window.
-      // qDebug () << "Katalog " << kat << " already open in a view" << endl;
+      // qDebug () << "Katalog " << kat << " already open in a view";
 
       mKatalogViews.value(kat)->show();
       mKatalogViews.value(kat)->raise();
@@ -1136,14 +1136,14 @@ void Portal::slotOpenKatalog(const QString& kat)
 
 void Portal::slotOpenKatalog()
 {
-    // qDebug () << "opening katalog!" << endl;
+    // qDebug () << "opening katalog!";
     KatalogView *katView = new TemplKatalogView(); //this);
     katView->show();
 }
 
 void Portal::slotKatalogToXML(const QString& katName)
 {
-    // qDebug () << "Generating XML for catalog " << katName << endl;
+    // qDebug () << "Generating XML for catalog " << katName;
 
     Katalog *kat = KatalogMan::self()->getKatalog(katName);
 

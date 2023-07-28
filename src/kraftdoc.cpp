@@ -61,7 +61,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
     *newPos = *dp;
     newPos->setDbId( -1 );
     mPositions.append( newPos );
-    // qDebug () << "Appending position " << dp->dbId().toString() << endl;
+    // qDebug () << "Appending position " << dp->dbId().toString();
   }
 
   _modified = origDoc._modified;
@@ -140,7 +140,7 @@ bool KraftDoc::saveDocument( )
         while( it.hasNext() ) {
             DocPositionBase *dp = it.next();
             if( dp->toDelete() ) {
-                // qDebug () << "Removing pos " << dp->dbId().toString() << " from document object" << endl;
+                // qDebug () << "Removing pos " << dp->dbId().toString() << " from document object";
                 mPositions.removeAll( dp );
             }
         }
@@ -198,15 +198,15 @@ DocPosition* KraftDoc::createPosition( DocPositionBase::PositionType t )
 
 void KraftDoc::slotRemovePosition( int pos )
 {
-  // qDebug () << "Removing position " << pos << endl;
+  // qDebug () << "Removing position " << pos;
 
   foreach( DocPositionBase *dp, mPositions ) {
-    // qDebug () << "Comparing " << pos << " with " << dp->dbId().toString() << endl;
+    // qDebug () << "Comparing " << pos << " with " << dp->dbId().toString();
     if( dp->dbId() == pos ) {
       if( ! mPositions.removeAll( dp ) ) {
-        // qDebug () << "Could not remove!" << endl;
+        // qDebug () << "Could not remove!";
       } else {
-        // qDebug () << "Successfully removed the position " << dp << endl;
+        // qDebug () << "Successfully removed the position " << dp;
         mRemovePositions.append( dp->dbId() ); // remember to delete
       }
     }
@@ -215,7 +215,7 @@ void KraftDoc::slotRemovePosition( int pos )
 
 void KraftDoc::slotMoveUpPosition( int dbid )
 {
-  // qDebug () << "Moving position " << dbid << " up" << endl;
+  // qDebug () << "Moving position " << dbid << " up";
   if( mPositions.count() < 1 ) return;
   int curPos = -1;
 
@@ -226,7 +226,7 @@ void KraftDoc::slotMoveUpPosition( int dbid )
     }
   }
 
-  // qDebug () << "Found: "<< curPos << ", count: " << mPositions.count() << endl;
+  // qDebug () << "Found: "<< curPos << ", count: " << mPositions.count();
   if( curPos < mPositions.size()-1 ) {
     mPositions.swap( curPos, curPos+1 );
   }
@@ -234,7 +234,7 @@ void KraftDoc::slotMoveUpPosition( int dbid )
 
 void KraftDoc::slotMoveDownPosition( int dbid )
 {
-  // qDebug () << "Moving position " << dbid << " down" << endl;
+  // qDebug () << "Moving position " << dbid << " down";
   if( mPositions.count() < 1 ) return;
   int curPos = -1;
 

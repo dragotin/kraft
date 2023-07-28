@@ -62,10 +62,10 @@ void MaterialKatalogListView::addCatalogDisplay( const QString& katName )
   Katalog *k = KatalogMan::self()->getKatalog( katName );
   MatKatalog *catalog = static_cast<MatKatalog*>( k );
   if( ! catalog ) {
-    // qDebug () << "No catalog in listview available!" << endl;
+    // qDebug () << "No catalog in listview available!";
     return;
   }
-  // qDebug () << "setting up meterial chapters --------*********************************+++!" << endl;
+  // qDebug () << "setting up meterial chapters --------*********************************+++!";
   setupChapters();
 
   // lambda expression to be DRY
@@ -113,7 +113,7 @@ void MaterialKatalogListView::slFreshupItem(QTreeWidgetItem *item, void* templ, 
 
   if ( item && mat ) {
     Einheit e = mat->unit();
-    // qDebug () << "Setting material name " << e.einheitSingular() << endl;
+    // qDebug () << "Setting material name " << e.einheitSingular();
     item->setText( 0, mat->getText() );
     item->setText( 1, QString::number( mat->getAmountPerPack() ) );
     item->setText( 2, e.einheit( mat->getAmountPerPack() ) );
@@ -121,7 +121,7 @@ void MaterialKatalogListView::slFreshupItem(QTreeWidgetItem *item, void* templ, 
     item->setText( 4, mat->salesPrice().toLocaleString() );
     item->setText( 5, Format::toDateTimeString( mat->modifyDate(), KraftSettings::self()->dateFormat()));
   } else {
-    // qDebug () << "Unable to freshup item - data invalid" << endl;
+    // qDebug () << "Unable to freshup item - data invalid";
   }
 }
 

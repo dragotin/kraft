@@ -71,7 +71,7 @@ void KatalogView::init(const QString& katName )
   KatalogListView *listview = getListView();
 
   if( ! listview ) {
-      // qDebug () << "ERROR: No listview created !!!" << endl;
+      // qDebug () << "ERROR: No listview created !!!";
   } else {
       QHBoxLayout *horizLay = new QHBoxLayout;
       m_filterHead = new FilterHeader(w, listview);
@@ -100,7 +100,7 @@ void KatalogView::init(const QString& katName )
 
   setCentralWidget(w);
   m_editListViewItem = nullptr;
-  // qDebug () << "Getting katalog!" << katName << endl;
+  // qDebug () << "Getting katalog!" << katName;
 
   // setAutoSaveSettings( QString::fromLatin1( "CatalogWindow" ),  true );
 }
