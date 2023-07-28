@@ -48,7 +48,6 @@ class KraftDoc : public QObject
     Q_PROPERTY(QString projectLabel READ projectLabel)
     Q_PROPERTY(QString docIDStr READ docIdStr)
     Q_PROPERTY(QString docIdentifier READ docIdentifier)
-    Q_PROPERTY(QString postText READ postText)
 
     Q_PROPERTY(QString nettoSumStr READ nettoSumStr)
     Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr)

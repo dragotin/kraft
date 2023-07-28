@@ -81,10 +81,10 @@ class DocPositionBase : public QObject
   /**
    * Position means the number in the document
    */
-    virtual int positionNumber() { return m_position; }
-    virtual void setPositionNumber( const int& pos ) { m_position = pos; }
-    virtual void setToDelete( bool doit ) { mToDelete = doit; }
-    virtual bool toDelete() { return mToDelete; }
+    int positionNumber() { return m_position; }
+    void setPositionNumber( const int& pos ) { m_position = pos; }
+    void setToDelete( bool doit ) { mToDelete = doit; }
+    bool toDelete() { return mToDelete; }
     PositionType type() { return mType; }
 
     DocPositionBase& operator=( const DocPositionBase& );
@@ -105,8 +105,6 @@ class DocPosition : public DocPositionBase
   public:
     DocPosition();
     DocPosition( const PositionType& );
-    ~DocPosition(){}
-
 
     void setUnit( const Einheit& unit ) { m_unit = unit; }
     Einheit unit() const { return m_unit; }
