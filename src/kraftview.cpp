@@ -74,6 +74,7 @@
 #include "addressprovider.h"
 #include "addressselectordialog.h"
 #include "format.h"
+#include "stringutil.h"
 
 #define NO_TAX   0
 #define RED_TAX  1
@@ -1138,7 +1139,7 @@ DocPositionList KraftView::currentPositionList()
             widget = outerIt.next();
             DocPositionBase *dpb = widget->position();
 
-            KraftDB::StringMap replaceMap;
+            QMap<QString, QString> replaceMap;
 
             if ( dpb ) {
                 DocPosition *newDp = new DocPosition( dpb->type() );
@@ -1227,7 +1228,7 @@ DocPositionList KraftView::currentPositionList()
 
                     QString t = widget->m_teFloskel->toPlainText();
                     if ( !replaceMap.empty() ) {
-                        t = KraftDB::self()->replaceTagsInWord( t, replaceMap );
+                        t = StringUtil::replaceTagsInString(t, replaceMap);
                     }
                     newDp->setText( t );
 
@@ -1324,7 +1325,7 @@ QStringList KraftView::generateLetterHead( const QString& familyName, const QStr
 {
     QStringList s;
 
-    KraftDB::StringMap m;
+    QMap<QString, QString> m;
     m[ "%NAME"]       = familyName;
     m[ "%GIVEN_NAME"] = givenName;
 

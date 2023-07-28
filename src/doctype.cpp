@@ -25,6 +25,7 @@
 #include "numbercycle.h"
 #include "attribute.h"
 #include "defaultprovider.h"
+#include "stringutil.h"
 
 /**
 @author Klaas Freitag
@@ -486,7 +487,7 @@ QString DocType::generateDocumentIdent(const QDate& docDate,
         pattern += QStringLiteral("%i");
     }
 
-    KraftDB::StringMap m;
+    QMap<QString, QString> m;
 
     m[ "%yyyy" ] = docDate.toString( "yyyy" );
     m[ "%yy" ] = docDate.toString( "yy" );
@@ -543,7 +544,7 @@ QString DocType::generateDocumentIdent(const QDate& docDate,
     m[ "%type" ] = name();
     m[ "%uid" ] = addressUid;
 
-    QString re = KraftDB::self()->replaceTagsInWord( pattern, m );
+    QString re = StringUtil::replaceTagsInString( pattern, m );
     // qDebug () << "Generated document ident: " << re;
 
     return re;

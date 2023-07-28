@@ -58,6 +58,14 @@ target_link_libraries(t_attributes ${test_libs})
 
 # ============================================================
 
+add_executable(t_stringutil t_stringutil.cpp)
+add_test(t_stringutil t_stringutil)
+
+target_link_libraries(t_stringutil ${test_libs})
+
+# ============================================================
+
+
 set(TESTS_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 configure_file ("testconfig.h.in" "testconfig.h")
 

@@ -116,6 +116,7 @@ set(kraft_SRCS
     documenttemplate.cpp
     pdfconverter.cpp
     format.cpp
+    stringutil.cpp
     epcqrcode.cpp
 
     3rdparty/qrcodegen.cpp

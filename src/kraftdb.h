@@ -80,8 +80,7 @@ public:
   QSqlDatabase *getDB(){ return &m_db; }
   QString qtDriver();
 
-  typedef QMap<QString, QString> StringMap;
-  QStringList wordList( const QString&, StringMap replaceMap = StringMap() );
+  QStringList wordList( const QString&, QMap<QString, QString> replaceMap = QMap<QString, QString>() );
   void writeWordList( const QString&, const QStringList& );
 
   QString databaseName() const;
@@ -123,7 +122,7 @@ public:
   QString mysqlEuroDecode( const QString& ) const;
 
 
-  QString replaceTagsInWord( const QString& w, StringMap replaceMap ) const;
+  QString replaceTagsInWord( const QString& w, QMap<QString, QString> replaceMap ) const;
 
   // void checkDatabaseSetup( QWidget* );
 

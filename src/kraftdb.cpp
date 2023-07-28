@@ -36,6 +36,7 @@
 #include "archiveman.h"
 #include "documentsaverdb.h"
 #include "databasesettings.h"
+#include "stringutil.h"
 
 Q_GLOBAL_STATIC(KraftDB, mSelf)
 
@@ -558,7 +559,7 @@ QString KraftDB::mysqlEuroDecode( const QString& str ) const
     return restr.replace( EuroTag, euro );
 }
 
-QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
+QStringList KraftDB::wordList(const QString& selector, QMap<QString, QString> replaceMap )
 {
     QStringList re;
     QSqlQuery query;
@@ -567,35 +568,9 @@ QStringList KraftDB::wordList( const QString& selector, StringMap replaceMap )
     query.bindValue(":cat", selector);
     query.exec();
     while ( query.next() ) {
-        re << replaceTagsInWord( query.value(1).toString(), replaceMap );
+        re << StringUtil::replaceTagsInString(query.value(1).toString(), replaceMap);
     }
     re.sort();
-    return re;
-}
-
-QString KraftDB::replaceTagsInWord( const QString& w, StringMap replaceMap ) const
-{
-    QString re( w );
-
-    QMap<int, QStringList> reMap;
-    StringMap::Iterator it;
-    for ( it = replaceMap.begin(); it != replaceMap.end(); ++it ) {
-        reMap[it.key().length()] << it.key();
-    }
-
-    QMap<int, QStringList>::Iterator reIt;
-    for ( reIt = reMap.end(); reIt != reMap.begin(); ) {
-        --reIt;
-        QStringList keys = reIt.value();
-        // qDebug () << "PP: " << keys;
-        for ( QStringList::Iterator dtIt = keys.begin(); dtIt != keys.end(); ++dtIt ) {
-            QString repKey = *dtIt;
-            re.replace( repKey, replaceMap[repKey] );
-        }
-    }
-
-    // qDebug () << "Adding to wordlist <" << re << ">";
-
     return re;
 }
 
