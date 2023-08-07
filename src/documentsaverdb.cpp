@@ -83,8 +83,8 @@ bool fillDocumentBuffer(QSqlRecord &buf, KraftDoc *doc)
         checkAndSet(changes, buf, "salut", doc->salut());
         checkAndSet(changes, buf, "goodbye", doc->goodbye());
         checkAndSet(changes, buf, "date", doc->date());
-        checkAndSet(changes, buf, "pretext", KraftDB::self()->mysqlEuroEncode( doc->preText()));
-        checkAndSet(changes, buf, "posttext", KraftDB::self()->mysqlEuroEncode( doc->postText()));
+        checkAndSet(changes, buf, "pretext", KraftDB::self()->mysqlEuroEncode( doc->preTextRaw()));
+        checkAndSet(changes, buf, "posttext", KraftDB::self()->mysqlEuroEncode( doc->postTextRaw()));
 
         // The locale can be reconstructed from the name of the locale.
         checkAndSet(changes, buf, "country", DefaultProvider::self()->locale()->name());
@@ -331,8 +331,8 @@ void DocumentSaverDB::load( const QString& id, KraftDoc *doc )
             // doc->setCountryLanguage( q.value( 8 ).toString(),
             //                         q.value( 9 ).toString());
 
-            doc->setPreText(    KraftDB::self()->mysqlEuroDecode( q.value( 10  ).toString() ) );
-            doc->setPostText(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );
+            doc->setPreTextRaw( KraftDB::self()->mysqlEuroDecode( q.value( 10  ).toString() ) );
+            doc->setPostTextRaw(   KraftDB::self()->mysqlEuroDecode( q.value( 11 ).toString() ) );
             doc->setWhiteboard( KraftDB::self()->mysqlEuroDecode( q.value( 12 ).toString() ) );
             doc->setProjectLabel( q.value(13).toString() );
             doc->setPredecessor(  q.value(14).toString() );

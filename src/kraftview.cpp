@@ -337,10 +337,10 @@ void KraftView::redrawDocument( )
       m_headerEdit->m_letterHead->setCurrentIndex(m_headerEdit->m_letterHead->findText( doc->salut() ));
     }
     /* pre- and post text */
-    m_headerEdit->m_teEntry->setPlainText( doc->preText() );
+    m_headerEdit->m_teEntry->setPlainText( doc->preTextRaw() );
     m_headerEdit->m_whiteboardEdit->setPlainText( doc->whiteboard() );
     m_headerEdit->mProjectLabelEdit->setText( doc->projectLabel() );
-    m_footerEdit->ui()->m_teSummary->setPlainText( doc->postText() );
+    m_footerEdit->ui()->m_teSummary->setPlainText( doc->postTextRaw() );
     const QString goodbye = doc->goodbye();
     m_footerEdit->slotSetGreeting(goodbye);
 
@@ -583,23 +583,28 @@ void KraftView::refreshPostCard()
 {
   DocPositionList positions = currentPositionList();
 
-  if( !getDocument() ) return;
+  KraftDoc *kraftDoc = getDocument();
+  if( !kraftDoc) return;
 
   if ( mAssistant->postCard() ) {
     QDate d = m_headerEdit->m_dateEdit->date();
     const QString dStr = Format::toDateString( d, KraftSettings::self()->dateFormat() );
 
+    const QString preText = kraftDoc->resolveMacros(m_headerEdit->m_teEntry->toPlainText(),
+                                                    positions, kraftDoc->date());
+    const QString postText = kraftDoc->resolveMacros(m_footerEdit->ui()->m_teSummary->toPlainText(),
+                                                     positions, kraftDoc->date());
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->toPlainText(),
                                            getDocument()->ident(),
-                                           m_headerEdit->m_teEntry->toPlainText() );
+                                           preText );
 
 
     mAssistant->postCard()->setPositions( positions,  currentTaxSetting(),
                                           DocumentMan::self()->tax( d ),
                                           DocumentMan::self()->reducedTax( d ) );
 
-    mAssistant->postCard()->setFooterData( m_footerEdit->ui()->m_teSummary->toPlainText(),
+    mAssistant->postCard()->setFooterData( postText,
                                            m_footerEdit->greeting() );
 
     mAssistant->postCard()->renderDoc( mViewStack->currentIndex() ); // id( mViewStack->visibleWidget() ) );
@@ -1381,11 +1386,11 @@ void KraftView::saveChanges()
     doc->setAddressUid( mContactUid );
     doc->setAddress(  m_headerEdit->m_postAddressEdit->toPlainText() );
     doc->setDocType(  m_headerEdit->m_cbType->currentText() );
-    doc->setPreText(  m_headerEdit->m_teEntry->toPlainText() );
+    doc->setPreTextRaw(  m_headerEdit->m_teEntry->toPlainText() );
     doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->toPlainText() );
     doc->setProjectLabel( m_headerEdit->mProjectLabelEdit->text() );
     doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
-    doc->setPostText( m_footerEdit->ui()->m_teSummary->toPlainText() );
+    doc->setPostTextRaw( m_footerEdit->ui()->m_teSummary->toPlainText() );
     doc->setGoodbye(  m_footerEdit->greeting() );
 
     DocPositionList list = currentPositionList();

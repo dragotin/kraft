@@ -33,6 +33,7 @@
 #include "doctype.h"
 #include "documentman.h"
 #include "kraftdb.h"
+#include "format.h"
 
 // FIXME: Make KraftDoc inheriting DocDigest!
 
@@ -312,3 +313,114 @@ QString KraftDoc::language() const
 
   return i18n( "Unknown document part" );
 }
+
+ QString KraftDoc::preTextRaw() const
+ {
+     return mPreText;
+ }
+
+ QString KraftDoc::postTextRaw() const
+ {
+     return mPostText;
+ }
+
+ /**
+  * @brief KraftDoc::resolveMacros
+  * @param txtWithMacros - the string that might contain any macros
+  * @param dposList - the list of document items
+  * @return - the text with resolved macros
+  *
+  * The following macros are supported:
+  * 1. SUM_PER_TAG(tag): The netto sum of all items that are tagged with the named tag
+  * 2. IF_ANY_HAS_TAG(tag) .. END_HAS_TAG: The text between the macros only appears if
+  *    at least one of all items is tagged with the named tag
+  * 3. ITEM_COUNT_WITH_TAG(tag): This macro is replaced with the amount of items that
+  *    are tagged with this tag
+  *
+  * 4. DATE_ADD_DAYS(days): Adds the amount of days to the date delivered in the call parameters
+  */
+ QString KraftDoc::resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate& date) const
+ {
+     QString myStr{txtWithMacros};
+     QMap<QString, int> seenTags;
+
+     QRegExp rxIf("\\s{1}IF_ANY_HAS_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegExp rxEndif("\\s{1}END_HAS_TAG");
+     QRegExp rxAmount("ITEM_COUNT_WITH_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegExp rxAddDate("DATE_ADD_DAYS\\(\\s*(\\-{0,1}\\d+)\\s*\\)");
+     // look for tag SUM_PER_TAG( HNDL )
+     QRegExp rx("SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+
+     int pos{0};
+     while ((pos = rx.indexIn(myStr, pos)) != -1) {
+         Geld g;
+         const QString lookupTag = rx.cap(1);
+
+         for (DocPositionBase *pb : dposList) {
+             DocPosition *p = static_cast<DocPosition*>(pb);
+             if (!p->toDelete() && p->hasTag(lookupTag)) {
+                 g += p->overallPrice();
+             }
+         }
+
+         myStr.replace(pos, rx.matchedLength(), g.toLocaleString());
+     }
+
+     // generate a list of all tags in any position
+     for (DocPositionBase *pb : dposList) {
+         DocPosition *p = static_cast<DocPosition*>(pb);
+         if (!p->toDelete()) {
+             const auto tags = p->tags();
+             for (const QString& lookupTag : tags) {
+                 if (seenTags.contains(lookupTag)) {
+                     seenTags[lookupTag] = 1+seenTags[lookupTag];
+                 } else {
+                     seenTags[lookupTag] = 1;
+                 }
+             }
+         }
+     }
+
+     pos = 0;
+     while ((pos = rxAmount.indexIn(myStr, pos)) != -1) {
+         const QString lookupTag = rxAmount.cap(1);
+         int amount{0};
+         if (seenTags.contains(lookupTag)) {
+             amount = seenTags[lookupTag];
+         }
+         myStr.replace(pos, rxAmount.matchedLength(), QString::number(amount));
+     }
+
+     pos = 0;
+     while ((pos = rxAddDate.indexIn(myStr, pos)) != -1) {
+         const QString addDaysStr = rxAddDate.cap(1);
+         qint64 addDays = addDaysStr.toInt();
+         QDate newDate = date.addDays(addDays);
+         const QString newDateStr = Format::toDateString(newDate, KraftSettings::self()->dateFormat());
+         myStr.replace(pos, rxAddDate.matchedLength(), newDateStr);
+     }
+
+     // IF_ANY_HAS_TAG(tag) ..... END_HAS_TAG
+     // check the IF_HAS_TAG(tag) ... END_HAS_TAG macro
+     pos = 0;
+     while ((pos = rxIf.indexIn(myStr, pos)) != -1) {
+         const QString lookupTag = rxIf.cap(1);
+         int endpos = myStr.lastIndexOf(rxEndif);
+         if (endpos == -1) endpos = myStr.length();
+         if (seenTags.contains(lookupTag)) {
+             myStr.remove(endpos, 12 /* length of END_HAS_TAG */);
+             myStr.remove(pos, rxIf.matchedLength());
+         } else {
+             // the tag was not seen, so this needs to be deleted.
+             int len = endpos-pos+12;
+             myStr.remove(pos, len);
+         }
+     }
+     return myStr;
+ }
+
+ QString KraftDoc::preText() const
+ {
+     const QString myStr = resolveMacros(mPreText, positions(), date());
+     return myStr;
+ }

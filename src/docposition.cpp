@@ -205,7 +205,7 @@ bool DocPositionBase::hasTag( const QString& tag )
 QStringList DocPositionBase::tags()
 {
   QStringList tags, tagIDs;
-  if ( mAttribs.contains( DocPosition::Tags ) ) {
+  if ( mAttribs.hasAttribute(DocPosition::Tags) ) {
     // qDebug () << mAttribs[DocPosition::Tags].toString();
     tagIDs = mAttribs[DocPosition::Tags].value().toStringList();
   }

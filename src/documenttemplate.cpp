@@ -458,17 +458,11 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
         const QVariantHash labelHash = labelVariantHash();
         gtmpl.addToMappingHash(QStringLiteral("label"), labelHash);
 
-        const QString bacName = KraftSettings::self()->bankAccountName();
-        const QString bacIBAN = KraftSettings::self()->bankAccountIBAN();
-        const QString bacBIC  = KraftSettings::self()->bankAccountBIC();
-        EPCQRCode qrCode;
-        const QString reason = i18nc("Credit Transfer reason string, 1=DocType, 2=DocIdent, 3=Date, ie. Invoice 2022-183 dated 2022-03-22",
-                                     "%1 %2 dated %3",archDoc->docTypeStr(), archDoc->ident(), archDoc->dateStr());
-
         // -- save the EPC QR Code which is written into a temp file
         QVariantHash epcHash;
         auto qrcodefile = generateEPCQRCodeFile(archDoc);
         epcHash.insert("valid", false);
+        epcHash.insert("show", false);
         if (qrcodefile.isEmpty()) {
             qDebug() << "No Giro Code file available.";
         } else {
@@ -477,8 +471,19 @@ const QString GrantleeDocumentTemplate::expand( ArchDoc *archDoc,
 
             epcHash.insert("svgfilename", QVariant(qrcodefile));
             epcHash["valid"] = true;
+            epcHash["show"] = true;
+
+            // there is a setting value of the maximum sum the EPC Code should
+            // be printed on the document. The idea is that for very big sums,
+            // the QR code should not be displayed.
+            double maxEPCSum = KraftSettings::self()->displayEPCCodeMaxSum();
+
+            if (archDoc->bruttoSum().toDouble() > maxEPCSum) {
+                epcHash["show"] = false;
+            }
             gtmpl.addToMappingHash(QStringLiteral("epcqrcode"), epcHash);
         }
+
         const QVariantHash kraftHash = kraftVariantHash();
         gtmpl.addToMappingHash(QStringLiteral("kraft"), kraftHash);
 

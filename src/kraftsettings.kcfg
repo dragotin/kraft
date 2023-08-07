@@ -181,6 +181,12 @@
      <entry name="NormalLabel" type="String">
         <label>The label for demand positions</label>
      </entry>
+     <entry name="DisplayEPCCodeMaxSum" type="Double">
+        <label>Display the EPC Code as long as the doc sum is below this value.</label>
+        <default>0</default>
+     </entry>
+
+
   </group>
 </kcfg>
 

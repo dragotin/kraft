@@ -101,23 +101,23 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
             // Take the default pre- and posttext for the new docType, or, if that is empty, the texts of the old doc
             QString newText = DefaultProvider::self()->defaultText( docType, KraftDoc::Header );
             if (newText.isEmpty() ) {
-                newText = sourceDoc->preText();
+                newText = sourceDoc->preTextRaw();
             }
-            doc->setPreText(newText);
+            doc->setPreTextRaw(newText);
 
             newText = DefaultProvider::self()->defaultText( docType, KraftDoc::Footer );
             if (newText.isEmpty() ) {
-                newText = sourceDoc->postText();
+                newText = sourceDoc->postTextRaw();
             }
-            doc->setPostText(newText);
+            doc->setPostTextRaw(newText);
 
             delete sourceDoc;
         }
     } else {
         // Absolute new document
         doc->setDocType(docType);
-        doc->setPreText(DefaultProvider::self()->defaultText(docType, KraftDoc::Header));
-        doc->setPostText(DefaultProvider::self()->defaultText(docType, KraftDoc::Footer));
+        doc->setPreTextRaw(DefaultProvider::self()->defaultText(docType, KraftDoc::Header));
+        doc->setPostTextRaw(DefaultProvider::self()->defaultText(docType, KraftDoc::Footer));
         doc->setGoodbye( KraftSettings::greeting() );
     }
 

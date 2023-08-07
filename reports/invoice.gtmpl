@@ -182,7 +182,7 @@
     <p class="goodbye">
     {{ doc.goodbye }}
     </p>
-    {%if doc.isInvoice and epcqrcode.valid %}
+    {%if doc.isInvoice and epcqrcode.valid and epcqrcode.show %}
     <p class="epcqrcode">
       <img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" />
       Dieser QR Code ermöglicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:

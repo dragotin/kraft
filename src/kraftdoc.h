@@ -117,11 +117,20 @@ public:
     QString goodbye() const   { return mGoodbye;    }
     void setGoodbye( const QString& str ) { mGoodbye = str; }
 
-    QString preText() const   { return mPreText;  }
-    void setPreText( const QString& str ) { mPreText = str; }
+    // take a string with macros and generate the text replacements for the macros
+    // with the help of the position list
+    QString resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate &date) const;
+
+    // preText is the variant with expanded macros
+    QString preText() const;
+    // preTextRaw is the variant with macros not expanded
+    QString preTextRaw() const;
+    void setPreTextRaw( const QString& str ) { mPreText = str; }
 
     QString postText() const { return mPostText; }
-    void setPostText( const QString& str ) { mPostText = str; }
+    // postTextRaw is the variant with macros not expanded
+    QString postTextRaw() const;
+    void setPostTextRaw( const QString& str ) { mPostText = str; }
 
     QString whiteboard() const { return mWhiteboard; }
     void setWhiteboard( const QString& w ) { mWhiteboard = w; }
@@ -176,6 +185,7 @@ private:
     QString mAddressUid;
     QString mProjectLabel;
     QString mAddress;
+    // mPreText and postText always have the raw variant without expanded macros
     QString mPreText;
     QString mPostText;
     QString mDocType;
