@@ -127,7 +127,7 @@ public:
     QString preTextRaw() const;
     void setPreTextRaw( const QString& str ) { mPreText = str; }
 
-    QString postText() const { return mPostText; }
+    QString postText() const;
     // postTextRaw is the variant with macros not expanded
     QString postTextRaw() const;
     void setPostTextRaw( const QString& str ) { mPostText = str; }

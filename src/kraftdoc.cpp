@@ -424,3 +424,9 @@ QString KraftDoc::language() const
      const QString myStr = resolveMacros(mPreText, positions(), date());
      return myStr;
  }
+
+ QString KraftDoc::postText() const
+ {
+     const QString myStr = resolveMacros(mPostText, positions(), date());
+     return myStr;
+ }
