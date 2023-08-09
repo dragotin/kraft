@@ -83,4 +83,7 @@ void CatalogTemplateProvider::slotTemplateToDocument()
   }
 }
 
+void CatalogTemplateProvider::slotInsertTemplateToDocument()
+{
 
+}

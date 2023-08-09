@@ -45,6 +45,7 @@
 
 class PositionViewWidget;
 class DocPosition;
+class DocText;
 class QLabel;
 class QWidget;
 class QResizeEvent;
@@ -132,8 +133,8 @@ class KraftView : public KraftViewBase
   void slotAddExtraPosition();
   void slotImportItems();
   void slotFocusItem( PositionViewWidget*,  int );
-  void slotNewHeaderText( const QString& );
-  void slotNewFooterText( const QString&  );
+  void slotNewHeaderText(const DocText& dt , bool replace);
+  void slotNewFooterText(const DocText& dt , bool replace);
   void slotSwitchToPage( int );
   
   protected slots:

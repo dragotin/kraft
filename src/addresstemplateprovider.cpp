@@ -71,4 +71,7 @@ void AddressTemplateProvider::slotTemplateToDocument()
   emit addressToDocument( mCurrentAddress );
 }
 
-
+void AddressTemplateProvider::slotInsertTemplateToDocument()
+{
+    // It does not really make sense to insert an address text while not replacing it completely.
+}

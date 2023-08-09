@@ -30,16 +30,17 @@ public:
   HeaderTemplateProvider( QWidget* );
 
 public slots:
-  void slotNewTemplate();
-  void slotEditTemplate();
-  void slotDeleteTemplate();
+  void slotNewTemplate() override;
+  void slotEditTemplate() override;
+  void slotDeleteTemplate() override;
 
-  void slotTemplateToDocument();
+  void slotTemplateToDocument() override;
+  void slotInsertTemplateToDocument() override;
 
 signals:
   void newHeaderText( const DocText& );
   void updateHeaderText( const DocText& );
-  void headerTextToDocument( const DocText& );
+  void headerTextToDocument(const DocText&, bool replace);
   void deleteHeaderText( const DocText& );
 
 private:

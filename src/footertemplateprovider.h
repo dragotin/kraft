@@ -25,23 +25,24 @@ class DocText;
 
 class FooterTemplateProvider : public TemplateProvider
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  FooterTemplateProvider( QWidget* );
+    FooterTemplateProvider( QWidget* );
 
 public slots:
-  void slotNewTemplate();
-  void slotEditTemplate();
-  void slotDeleteTemplate();
+    void slotNewTemplate() override;
+    void slotEditTemplate() override;
+    void slotDeleteTemplate() override;
 
-  void slotTemplateToDocument();
+    void slotTemplateToDocument() override;
+    void slotInsertTemplateToDocument() override;
 
 signals:
-  void newFooterText( const DocText& );
-  void updateFooterText( const DocText& );
-  void footerTextToDocument( const DocText& );
-  void deleteFooterText( const DocText& );
+    void newFooterText( const DocText& );
+    void updateFooterText( const DocText& );
+    void footerTextToDocument(const DocText&, bool replace);
+    void deleteFooterText( const DocText& );
 };
 
 

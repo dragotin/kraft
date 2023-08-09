@@ -120,6 +120,15 @@ DocAssistant::DocAssistant( QWidget *parent ):
   butHBox2->addWidget( mPbAdd );
   mPbAdd->setToolTip( i18n( "Add a template to the document" ) );
 
+  icons = DefaultProvider::self()->icon( "arrow-bar-to-left" );
+  mPbInsert  = new QPushButton( icons, QString() );
+  mPbInsert->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+  connect( mPbInsert, SIGNAL( clicked() ), this, SLOT( slotInsertIntoDocument() ) );
+  butHBox2->addWidget( mPbInsert);
+  mPbInsert->setToolTip( i18n( "Insert the template to the document" ) );
+
+  butHBox2->insertSpacing(2, 40);
+
   icons = DefaultProvider::self()->icon( "plus" );
   mPbNew  = new QPushButton( icons, QString() ); // KDE 4 icon name: document-new
   mPbNew->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
@@ -147,6 +156,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mPbNew->setEnabled( false );
   mPbEdit->setEnabled( false );
   mPbDel->setEnabled( false );
+  mPbInsert->setEnabled(false);
 
   /* Template Provider initialisations */
   mHeaderTemplateProvider = new HeaderTemplateProvider( parent );
@@ -156,6 +166,9 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotNewHeaderDocText( const DocText& ) ) );
   connect( mHeaderTemplateProvider, SIGNAL( updateHeaderText( const DocText& ) ),
            this,  SLOT( slotUpdateHeaderDocText( const DocText& ) ) );
+  connect( mHeaderTemplateProvider, &HeaderTemplateProvider::headerTextToDocument,
+           this, &DocAssistant::headerTextTemplate);
+
   connect( mHeaderTemplateProvider, SIGNAL( headerTextToDocument( const DocText& ) ),
            this,  SLOT( slotHeaderTextToDocument( const DocText& ) ) );
   connect( mHeaderTemplateProvider, SIGNAL( deleteHeaderText( const DocText& ) ),
@@ -169,8 +182,8 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotNewFooterDocText( const DocText& ) ) );
   connect( mFooterTemplateProvider, SIGNAL( updateFooterText( const DocText& ) ),
            this,  SLOT( slotUpdateFooterDocText( const DocText& ) ) );
-  connect( mFooterTemplateProvider, SIGNAL( footerTextToDocument( const DocText& ) ),
-           this,  SLOT( slotFooterTextToDocument( const DocText& ) ) );
+  connect( mFooterTemplateProvider, &FooterTemplateProvider::footerTextToDocument,
+           this, &DocAssistant::footerTextTemplate);
   connect( mFooterTemplateProvider, SIGNAL( deleteFooterText( const DocText& ) ),
            this,  SLOT( slotFooterTextDeleted( const DocText& ) ) );
   mFooterTemplateProvider->setSelection( mFooterSelection );
@@ -189,6 +202,14 @@ DocAssistant::DocAssistant( QWidget *parent ):
   mTemplatePane->hide();
 }
 
+void DocAssistant::slotInsertIntoDocument()
+{
+  // qDebug () << "SlotInsertIntoDocument called!";
+  if ( mCurrTemplateProvider ) {
+    mCurrTemplateProvider->slotInsertTemplateToDocument();
+  }
+}
+
 void DocAssistant::slotAddToDocument()
 {
   // qDebug () << "SlotAddToDocument called!";
@@ -203,6 +224,7 @@ void DocAssistant::slotTemplateSelectionChanged( )
         mPbNew->setEnabled(false);
         mPbEdit->setEnabled(false);
         mPbDel->setEnabled(false);
+        mPbInsert->setEnabled(false);
         return;
     }
 
@@ -216,6 +238,7 @@ void DocAssistant::slotTemplateSelectionChanged( )
     mPbNew->setEnabled(enableNew);
     mPbEdit->setEnabled( false );
     mPbDel->setEnabled( false );
+    mPbInsert->setEnabled(false);
   } else {
     bool mv {false};
     if( mActivePage == KraftDoc::Header ) {
@@ -227,6 +250,7 @@ void DocAssistant::slotTemplateSelectionChanged( )
     mPbNew->setEnabled( true );
     mPbEdit->setEnabled( mv );
     mPbDel->setEnabled( mv );
+    mPbInsert->setEnabled(mv);
   }
 }
 
@@ -239,6 +263,8 @@ void DocAssistant::slotCatalogSelectionChanged(QTreeWidgetItem *current ,QTreeWi
     } else {
         mPbAdd->setEnabled( false );
     }
+    mPbInsert->setEnabled(false);
+
     slotTemplateSelectionChanged();
 }
 
@@ -262,12 +288,6 @@ void DocAssistant::slotUpdateHeaderDocText( const DocText& dt )
   mHeaderSelector->updateDocText( dt );
 }
 
-/* the user hit "add to document" to use a header text template */
-void DocAssistant::slotHeaderTextToDocument( const DocText& dt )
-{
-  emit headerTextTemplate( dt.text() );
-}
-
 /* a new header doc text was created and should go to the document */
 void DocAssistant::slotNewFooterDocText( const DocText& dt )
 {
@@ -279,12 +299,6 @@ void DocAssistant::slotNewFooterDocText( const DocText& dt )
 void DocAssistant::slotUpdateFooterDocText( const DocText& dt )
 {
   mFooterSelection->updateDocText( dt );
-}
-
-/* the user hit "add to document" to use a header text template */
-void DocAssistant::slotFooterTextToDocument( const DocText& dt )
-{
-  emit footerTextTemplate( dt.text() );
 }
 
 /* Slot that initiates an edit */

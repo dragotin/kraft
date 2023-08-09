@@ -91,7 +91,10 @@ void HeaderTemplateProvider::slotTemplateToDocument()
 {
   // qDebug () << "Moving template to document";
 
-
-  emit headerTextToDocument( currentText() );
+  emit headerTextToDocument(currentText(), true);
 }
 
+void HeaderTemplateProvider::slotInsertTemplateToDocument()
+{
+    emit headerTextToDocument(currentText(), false);
+}

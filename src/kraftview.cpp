@@ -126,22 +126,16 @@ KraftView::KraftView(QWidget *parent) :
   mCSplit->addWidget( mAssistant );
 
   /* catalog template selection signal */
-  connect(mAssistant, &DocAssistant::templatesToDocument,
-          this, &KraftView::slotAddItems);
+  connect(mAssistant, &DocAssistant::templatesToDocument, this, &KraftView::slotAddItems);
 
   /* signal to toggle the visibility of the template section in the assistant */
-  connect(  mAssistant, SIGNAL( toggleShowTemplates( bool ) ),
-            this,  SLOT( slotShowTemplates( bool ) ) );
+  connect(mAssistant, &DocAssistant::toggleShowTemplates, this, &KraftView::slotShowTemplates);
 
   /* signal that brings a new address to the document */
-  connect( mAssistant, SIGNAL( headerTextTemplate( const QString& ) ),
-           this, SLOT( slotNewHeaderText( const QString& ) ) );
+  connect(mAssistant, &DocAssistant::headerTextTemplate, this, &KraftView::slotNewHeaderText);
+  connect(mAssistant, &DocAssistant::footerTextTemplate, this, &KraftView::slotNewFooterText);
 
-  connect( mAssistant, SIGNAL( footerTextTemplate( const QString& ) ),
-           this, SLOT( slotNewFooterText( const QString& ) ) );
-
-  connect( mAssistant, SIGNAL( selectPage( int ) ),
-           this,  SLOT( slotSwitchToPage( int ) ) );
+  connect(mAssistant, &DocAssistant::selectPage, this, &KraftView::slotSwitchToPage);
 
   mAssistant->slotSelectDocPart( KraftDoc::Header );
 
@@ -911,15 +905,23 @@ void KraftView::slotLanguageSettings()
   // FIXME 
 }
 
-void KraftView::slotNewHeaderText( const QString& str )
+void KraftView::slotNewHeaderText( const DocText& dt, bool replace )
 {
-  m_headerEdit->m_teEntry->setText( str );
-  slotModifiedHeader();
+    if (replace) {
+        m_headerEdit->m_teEntry->setPlainText( dt.text());
+    } else {
+        m_headerEdit->m_teEntry->insertPlainText(dt.text());
+    }
+    slotModifiedHeader();
 }
 
-void KraftView::slotNewFooterText( const QString& str )
+void KraftView::slotNewFooterText( const DocText& dt, bool replace )
 {
-  m_footerEdit->ui()->m_teSummary->setText( str );
+  if (replace) {
+      m_footerEdit->ui()->m_teSummary->setPlainText(dt.text());
+  } else {
+      m_footerEdit->ui()->m_teSummary->insertPlainText(dt.text());
+  }
   slotModifiedFooter();
 }
 
@@ -934,7 +936,6 @@ void KraftView::slotAddNewItem()
 
 void KraftView::slotAddItems( Katalog *kat, CatalogTemplateList templates, const QString& selectedChapter)
 {
-
     if(templates.count() == 0) {
         slotAddItem(kat, nullptr, selectedChapter);
     } else {

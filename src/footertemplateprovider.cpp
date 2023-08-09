@@ -78,7 +78,6 @@ void FooterTemplateProvider::slotEditTemplate()
     // this ends up in the footerselection, slot updateDocText
     emit updateFooterText( dt );
   }
-
 }
 
 void FooterTemplateProvider::slotDeleteTemplate()
@@ -91,6 +90,10 @@ void FooterTemplateProvider::slotDeleteTemplate()
 void FooterTemplateProvider::slotTemplateToDocument()
 {
   // qDebug () << "Moving template to document";
-  emit footerTextToDocument( currentText() );
+  emit footerTextToDocument(currentText(), true);
 }
 
+void FooterTemplateProvider::slotInsertTemplateToDocument()
+{
+    emit footerTextToDocument(currentText(), false);
+}

@@ -36,11 +36,12 @@ signals:
   void addressToDocument( const Addressee& );
 
 public slots:
-  void slotNewTemplate();
-  void slotEditTemplate();
-  void slotDeleteTemplate();
+  void slotNewTemplate() override;
+  void slotEditTemplate() override;
+  void slotDeleteTemplate() override;
 
-  void slotTemplateToDocument();
+  void slotTemplateToDocument() override;
+  void slotInsertTemplateToDocument() override;
 
   void slotSetCurrentAddress( const Addressee& );
 

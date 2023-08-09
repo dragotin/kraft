@@ -38,6 +38,7 @@ public slots:
   virtual void slotDeleteTemplate() = 0;
 
   virtual void slotTemplateToDocument() = 0;
+  virtual void slotInsertTemplateToDocument() = 0;
 
   void slotSetDocType( const QString& );
 protected:

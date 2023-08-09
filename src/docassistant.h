@@ -64,6 +64,7 @@ public slots:
   void slotSelectDocPart( int );
   void slotToggleShowTemplates( bool );
   void slotAddToDocument();
+  void slotInsertIntoDocument();
   void slotNewTemplate();
   void slotEditTemplate();
   void slotDeleteTemplate();
@@ -72,7 +73,6 @@ public slots:
 
 protected slots:
   void slotTemplateSelectionChanged();
-  void slotHeaderTextToDocument( const DocText& );
   void slotFooterTextDeleted( const DocText& );
   void slotHeaderTextDeleted( const DocText& );
   void slotNewHeaderDocText( const DocText& );
@@ -80,7 +80,6 @@ protected slots:
   void slotCatalogSelectionChanged( QTreeWidgetItem*,QTreeWidgetItem* );
   void slotNewFooterDocText( const DocText& );
   void slotUpdateFooterDocText( const DocText& );
-  void slotFooterTextToDocument( const DocText& );
 
 signals:
   void selectPage( int );
@@ -88,8 +87,8 @@ signals:
   void toggleShowTemplates( bool );
 
   void addressTemplate( const Addressee& );
-  void headerTextTemplate( const QString& );
-  void footerTextTemplate( const QString& );
+  void headerTextTemplate( const DocText&, bool replace );
+  void footerTextTemplate( const DocText&, bool replace );
 
 private:
   DocPostCard      *mPostCard;
@@ -101,6 +100,7 @@ private:
   bool mFullPreview;
   int            mActivePage;
   QPushButton    *mPbAdd;
+  QPushButton    *mPbInsert;
   QPushButton    *mPbNew;
   QPushButton    *mPbEdit;
   QPushButton    *mPbDel;
