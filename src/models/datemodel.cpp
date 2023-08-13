@@ -156,6 +156,7 @@ public:
 DateModel::DateModel(QObject *parent)
     :DocBaseModel(parent)
 {
+    setObjectName("Datemodel");
     rootItem = new TreeItem(0);
 }
 

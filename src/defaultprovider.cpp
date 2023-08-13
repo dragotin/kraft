@@ -44,34 +44,6 @@ DefaultProvider *DefaultProvider::self()
 
 DefaultProvider::DefaultProvider()
 {
-   QString basePath = KraftSettings::self()->xmlDocumentsBasePath();
-
-   QFileInfo fi(basePath);
-   if (! (fi.exists() && fi.isDir()) ) {
-       qDebug() << "Document base path does NOT EXIST - clear config file";
-       basePath.clear();
-   }
-
-   if (basePath.isEmpty()) {
-       basePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-
-       if (!basePath.isEmpty()) {
-           basePath.append("/xmldoc/");
-           QDir d(basePath);
-           if (!d.exists()) {
-               d.mkpath(basePath);
-           }
-       }
-   }
-   if (basePath.isEmpty()) {
-       qDebug() << "Unable to find a root dir for the XML storage";
-       return;
-   }
-
-   KraftSettings::setXmlDocumentsBasePath(basePath);
-   basePath.append("current/");
-   XmlDocIndex indx;
-   indx.setBasePath(basePath);
 }
 
 DocumentSaverBase& DefaultProvider::documentPersister()
