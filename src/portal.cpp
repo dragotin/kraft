@@ -69,6 +69,44 @@
 #include "exportxrechnung.h"
 #include "ui_xrechnung.h"
 #include "dbtoxmlconverter.h"
+#include "xmldocindex.h"
+
+namespace {
+
+QString initXmlBasePath() {
+   QString basePath = KraftSettings::self()->xmlDocumentsBasePath();
+
+   QFileInfo fi(basePath);
+   if (! (fi.exists() && fi.isDir()) ) {
+       qDebug() << "Document base path does NOT EXIST - clear config file";
+       basePath.clear();
+   }
+
+   if (basePath.isEmpty()) {
+       basePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+
+       if (!basePath.isEmpty()) {
+           basePath.append("/xmldoc/");
+           QDir d(basePath);
+           if (!d.exists()) {
+               d.mkpath(basePath);
+           }
+       }
+   }
+   if (basePath.isEmpty()) {
+       qDebug() << "Unable to find a root dir for the XML storage";
+       return QString();
+   }
+
+   KraftSettings::setXmlDocumentsBasePath(basePath);
+   basePath.append("current/");
+   XmlDocIndex indx;
+   indx.setBasePath(basePath);
+
+   return basePath;
+}
+
+}
 
 Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
 : QMainWindow( parent ),
@@ -417,6 +455,9 @@ void Portal::slotStartupChecks()
 
     // Database is up and runing!
     // TODO: Check the document storage and see if the docs are converted already.
+
+    // Initialize DocIndex
+    initXmlBasePath();
 
     m_portalView->slotBuildView();
     m_portalView->fillCatalogDetails();
