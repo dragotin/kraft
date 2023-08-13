@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QFuture>
 
 class KraftDoc;
 
@@ -45,6 +46,7 @@ private:
     static QMap<QString, QString> _identMap;
     static QMultiMap<QDate, QString> _dateMap;
     static QMap<QString, QString> _uuidMap;
+    static QFuture<void> _future;
 };
 
 #endif // XMLDOCINDEX_H

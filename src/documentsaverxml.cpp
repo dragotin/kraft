@@ -749,7 +749,7 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
         return l < r;
     });
 
-    qDebug() << "Adding digests!";
+    qDebug() << "Adding digests to" << model->objectName();
     for( const QDate& d : dates) {
         const QList<QString> files = dateMap.values(d);
         KraftDoc doc;

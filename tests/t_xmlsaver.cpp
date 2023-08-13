@@ -2,6 +2,7 @@
 
 #include <QTemporaryDir>
 #include <QFile>
+#include <xmldocindex.h>
 
 #include "qtestcase.h"
 #include "testconfig.h"
@@ -56,6 +57,10 @@ private slots:
         QVERIFY(!kraftHome.isEmpty());
         const QString src{kraftHome+"/../xml/kraftdoc.xml"};
         QFile::copy(src, docPath);
+
+        // generate the index
+        XmlDocIndex indx;
+        indx.setBasePath(_dir.path());
 
         QFileInfo fi(docPath);
         Q_ASSERT(fi.exists());

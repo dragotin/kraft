@@ -34,6 +34,7 @@
 DocumentModel::DocumentModel(QObject *parent)
        : DocBaseModel(parent)
 {
+    setObjectName("DocumentModel");
 }
 
 DocumentModel::~DocumentModel()
