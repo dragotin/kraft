@@ -20,8 +20,6 @@
 
 #include <kcontacts/addressee.h>
 
-#include "archdoc.h"
-
 class DocumentTemplate
 {
 public:

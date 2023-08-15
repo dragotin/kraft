@@ -98,8 +98,7 @@ private:
     double _reducedTax;
 };
 
-Q_DECLARE_METATYPE(ArchDocPosition)
-Q_DECLARE_METATYPE(ArchDocPositionList)
+
 
 
 // Read-only introspection of Person object.

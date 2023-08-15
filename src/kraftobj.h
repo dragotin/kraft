@@ -71,4 +71,6 @@ protected:
     QSet<QString> _tags;
 };
 
+Q_DECLARE_METATYPE(KraftObj)
+
 #endif // KRAFTOBJ_H

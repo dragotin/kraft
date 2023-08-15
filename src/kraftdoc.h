@@ -45,16 +45,51 @@ class KraftDoc : public QObject, public KraftObj
     Q_PROPERTY(QString salut READ salut)
     Q_PROPERTY(QString goodbye READ goodbye)
     Q_PROPERTY(QString preText READ preText)
+    Q_PROPERTY(QString preTextHtml READ preTextHtml)
     Q_PROPERTY(QString postText READ postText)
+    Q_PROPERTY(QString postTextHtml READ postTextHtml)
+
     Q_PROPERTY(QString projectLabel READ projectLabel)
+    Q_PROPERTY(QString predecessor READ predecessor)
+    Q_PROPERTY(QString docIDStr READ uuid)
+
     Q_PROPERTY(QString docIdentifier READ docIdentifier)
+    Q_PROPERTY(QString dateStr READ dateStr)
+    Q_PROPERTY(QString dateStrISO READ dateStrISO)
 
     Q_PROPERTY(QString nettoSumStr READ nettoSumStr)
+    Q_PROPERTY(QString nettoSumNum READ nettoSumNum)
+
     Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr)
+    Q_PROPERTY(QString bruttoSumNum READ bruttoSumNum)
+
     Q_PROPERTY(QString taxSumStr READ vatSumStr)
+    Q_PROPERTY(QString taxSumNum READ vatSumNum)
+
     Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
+    Q_PROPERTY(QString fullTaxSumNum READ fullTaxSumNum)
+
     Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
+    Q_PROPERTY(QString reducedTaxSumNum READ reducedTaxSumNum)
+
     Q_PROPERTY(QString owner READ owner)
+
+    Q_PROPERTY(QString dueDateStrISO READ dueDate)
+    Q_PROPERTY(QString buyerReference READ buyerRef)
+
+    Q_PROPERTY(QString fullTaxPercentNum READ fullTaxPercentNum)
+    Q_PROPERTY(QString fullTaxPercentStr READ fullTaxPercentStr)
+    Q_PROPERTY(QString reducedTaxPercentNum READ reducedTaxPercentNum)
+    Q_PROPERTY(QString reducedTaxPercentStr READ reducedTaxPercentStr)
+    Q_PROPERTY(QString taxPercentStr READ taxPercentStr)
+    Q_PROPERTY(QString taxPercentNum READ taxPercentNum)
+
+    Q_PROPERTY(QString taxMarkerFull READ taxMarkerFull)
+    Q_PROPERTY(QString taxMarkerReduced READ taxMarkerReduced)
+
+    Q_PROPERTY(DocPositionList items READ positions)
+    Q_PROPERTY(bool hasIndividualTaxation READ hasIndividualTaxation)
+    Q_PROPERTY(bool isInvoice READ isInvoice)
 
 public:
     enum class Part { Header,  Positions, Footer, Unknown };
@@ -93,6 +128,8 @@ public:
 
     QDate date() const { return mDate; }
     void setDate( QDate d ) { mDate = d; }
+    QString dateStr() const;
+    QString dateStrISO() const;
 
     QString docType() const { return mDocType; }
     void setDocType( const QString& s );
@@ -106,7 +143,7 @@ public:
 
     bool isNew() const { return _state == State::New; }
 
-    QString ident() const   { return mIdent;    }
+    QString ident() const   { return mIdent; }
     void setIdent( const QString& str ) { mIdent = str; }
 
     QString salut() const   { return mSalut;    }
@@ -121,11 +158,13 @@ public:
 
     // preText is the variant with expanded macros
     QString preText() const;
+    QString preTextHtml() const;
     // preTextRaw is the variant with macros not expanded
     QString preTextRaw() const;
     void setPreTextRaw( const QString& str ) { mPreText = str; }
 
     QString postText() const;
+    QString postTextHtml() const;
     // postTextRaw is the variant with macros not expanded
     QString postTextRaw() const;
     void setPostTextRaw( const QString& str ) { mPostText = str; }
@@ -151,25 +190,53 @@ public:
     QString docIdentifier() const;
     DBIdList removePositionList() { return mRemovePositions; }
 
+    QString taxPercentStr() const;
+    QString taxPercentNum() const;
+    QString reducedTaxPercentStr() const;
+    QString reducedTaxPercentNum() const;
+    QString fullTaxPercentStr() const;
+    QString fullTaxPercentNum() const;
+
     Geld nettoSum() const;
     QString nettoSumStr() const { return nettoSum().toLocaleString(); }
+    QString nettoSumNum() const { return nettoSum().toNumberString(); }
+
     Geld bruttoSum() const;
     QString bruttoSumStr() const { return bruttoSum().toLocaleString(); }
+    QString bruttoSumNum() const { return bruttoSum().toNumberString(); }
+
     Geld fullTaxSum() const;
     QString fullTaxSumStr() const { return fullTaxSum().toLocaleString(); }
+    QString fullTaxSumNum() const { return fullTaxSum().toNumberString(); }
+
     Geld reducedTaxSum() const;
     QString reducedTaxSumStr() const { return reducedTaxSum().toLocaleString(); }
+    QString reducedTaxSumNum() const { return reducedTaxSum().toNumberString(); }
 
     Geld vatSum() const;
     QString vatSumStr() const { return vatSum().toLocaleString(); }
+    QString vatSumNum() const { return vatSum().toNumberString(); }
 
     QString country() const;
     QString language() const;
+
+    QString dueDate() const { return _dueDate.toString("yyyy-MM-dd"); }
+    QString buyerRef() const { return _buyerRef; }
+    void setDueDate(const QDate& d) { _dueDate = d; }
+    void setBuyerRef(const QString& br) { _buyerRef = br; }
+
+    static QString taxMarkerNoTax()   { return QStringLiteral("1"); }
+    static QString taxMarkerReduced() { return QStringLiteral("2"); }
+    static QString taxMarkerFull()    { return QStringLiteral("");  }
+
+    bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
 
     KraftDoc::State state() const { return _state; }
     QString stateString() const;
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
+
+    bool isInvoice() const;
 
     void setTaxValues(double fullTax, double redTax);
 
@@ -225,6 +292,9 @@ private:
     QString mLanguage;
 
     QDate   mDate;
+
+    QString _buyerRef;
+    QDate _dueDate;
 
     // Time of supply
     QDateTime _toSStart;

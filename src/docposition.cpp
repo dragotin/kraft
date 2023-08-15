@@ -333,6 +333,44 @@ int DocPositionList::compareItems ( DocPosition *dp1, DocPosition *dp2 )
   return res;
 }
 
+DocPositionBase::TaxType DocPositionList::listTaxation() const
+{
+    int fullTax = 0;
+    int noTax = 0;
+    int redTax = 0;
+
+    DocPositionBase::TaxType ret = DocPositionBase::TaxType::TaxNone;
+
+    const_iterator it;
+    for ( it = begin(); it != end(); ++it ) {
+        if( (*it)->taxType() == DocPositionBase::TaxFull) {
+            fullTax++;
+        } else if( (*it)->taxType() == DocPositionBase::TaxReduced ) {
+            redTax++;
+        } else if( (*it)->taxType() == DocPositionBase::TaxNone ) {
+            noTax++;
+        }
+    }
+
+    int cnt = count();
+    if (noTax == cnt) {
+        ret = DocPositionBase::TaxType::TaxNone;
+    } else if (redTax == cnt) {
+        ret = DocPositionBase::TaxType::TaxReduced;
+    } else if (fullTax == cnt) {
+        ret = DocPositionBase::TaxType::TaxFull;
+    } else
+        ret = DocPositionBase::TaxType::TaxIndividual;
+
+    return ret;
+}
+
+bool DocPositionList::hasIndividualTaxes() const
+{
+    bool re = listTaxation() == DocPositionBase::TaxType::TaxIndividual;
+    return re;
+}
+
 
 QDomElement DocPositionList::xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
 {
