@@ -136,6 +136,9 @@ public:
     Geld fullTaxSum( double fullTax );
     Geld reducedTaxSum( double reducedTax );
 
+    DocPositionBase::TaxType listTaxation() const;
+    bool hasIndividualTaxes() const;
+
 protected:
     int compareItems ( DocPosition *dp1, DocPosition *dp2 );
 
@@ -146,4 +149,9 @@ private:
 typedef QListIterator<DocPositionBase*> DocPositionListIterator;
 
 typedef DocPositionBase* DocPositionGuardedPtr;
+
+Q_DECLARE_METATYPE(DocPositionBase)
+Q_DECLARE_METATYPE(DocPosition)
+Q_DECLARE_METATYPE(DocPositionList)
+
 #endif

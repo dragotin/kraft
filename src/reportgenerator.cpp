@@ -40,7 +40,6 @@
 #include "docposition.h"
 #include "einheit.h"
 #include "archiveman.h"
-#include "archdoc.h"
 #include "documentman.h"
 #include "texttemplate.h"
 #include "defaultprovider.h"
