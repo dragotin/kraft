@@ -395,6 +395,7 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
     // TODO: There should be more than one item Groups
     QDomElement groupElem = kraftdocElem.firstChildElement("itemGroup");
     // TODO: itemGroup name and attribs.
+    int itemCnt = 0;
     while( !groupElem.isNull()) {
         QDomElement itemElem = groupElem.firstChildElement("item");
         while (!itemElem.isNull()) {
@@ -405,6 +406,7 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
             }
 
             DocPosition *item = doc->createPosition(itemType);
+            item->setPositionNumber(++itemCnt);
             t = childElemText(itemElem, "text");
             item->setText(t);
 
