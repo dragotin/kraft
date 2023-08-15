@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "documenttemplate.h"
+#include "defaultprovider.h"
 #include "epcqrcode.h"
 #include "texttemplate.h"
 #include "grantleetemplate.h"
@@ -23,6 +24,8 @@
 #include "kraftsettings.h"
 #include "version.h"
 #include "documentman.h"
+#include "kraftdoc.h"
+#include "docposition.h"
 
 #include <klocalizedstring.h>
 
@@ -188,18 +191,18 @@ void addLabelsToTemplate(TextTemplate& tmpl)
     variantHashToTemplate(tmpl, QStringLiteral("LAB"), hash);
 }
 
-QString generateEPCQRCodeFile(ArchDoc *archDoc)
+QString generateEPCQRCodeFile(KraftDoc *doc)
 {
     QString tempFile;
-    if (!archDoc) return tempFile;
+    if (!doc) return tempFile;
 
     const QString bacName = KraftSettings::self()->bankAccountName();
     const QString bacIBAN = KraftSettings::self()->bankAccountIBAN();
     const QString bacBIC  = KraftSettings::self()->bankAccountBIC();
     EPCQRCode qrCode;
     const QString reason = i18nc("Credit Transfer reason string, 1=DocType, 2=DocIdent, 3=Date, ie. Invoice 2022-183 dated 2022-03-22",
-                                 "%1 %2 dated %3",archDoc->docTypeStr(), archDoc->ident(), archDoc->dateStr());
-    const QString svgText = qrCode.asSvg(archDoc->bruttoSum(), bacName, bacBIC, bacIBAN, reason);
+                                 "%1 %2 dated %3",doc->docType(), doc->ident(), doc->dateStr());
+    const QString svgText = qrCode.asSvg(doc->bruttoSum(), bacName, bacBIC, bacIBAN, reason);
 
     // -- save the EPC QR Code to a temp file
     if (svgText.isEmpty()) {
@@ -249,19 +252,13 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
     /* A placeholder has the format <!-- %VALUE --> */
 
     const DocPositionList posList = doc->positions();
-    QString h;
 
-    ArchDocPositionList::const_iterator it;
-    int specialPosCnt = 0;
-    int taxFreeCnt    = 0;
-    int reducedTaxCnt = 0;
-    int fullTaxCnt    = 0;
-
-    bool individualTax = false;
+    bool individualTax = posList.hasIndividualTaxes();
     /* Check for the tax settings: If the taxType is not the same for all items,
  * we have individual Tax setting and show the tax marker etc.
  */
-    DocPositionBase::TaxType ttype = DocPositionBase::TaxInvalid;
+#if 0
+    DocPositionBase::TaxType ttype = posList.listTaxation();
     for ( DocPositionBase *p : posList) {
         DocPositionBase pos = *p;
         if( ttype == DocPositionBase::TaxInvalid  ) {
@@ -273,26 +270,31 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
             }
         }
     }
-
+#endif
     /* now loop over the items to fill the template structures */
-#if 0
+    int specialPosCnt{0};
+    int taxFreeCnt{0}, reducedTaxCnt{0}, fullTaxCnt{0};
+    QString h;
+
     for (DocPositionBase *p : posList) {
-        DocPositionBase pos (*p);
+        DocPosition *posPtr = static_cast<DocPosition*>(p);
+        DocPosition pos = *posPtr;
         tmpl.createDictionary( "POSITIONS" );
-        tmpl.setValue( DICT("POSITIONS"), TAG( "POS_NUMBER" )
-                       , pos.positionNumber() );
+        tmpl.setValue( DICT("POSITIONS"), TAG( "POS_NUMBER" ), QString::number(pos.positionNumber()));
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_TEXT"),
-                       rmlString( pos.text(), QString( "%1text" ).arg( pos.kind().toLower() ) ) );
+                       rmlString(pos.text(), QString( "text" )));
 
         // format the amount value of the item, do not show the precision if there is no fraction
-        double amount = pos.();
+        double amount = pos.amount();
         h = Format::localeDoubleToString(amount, *DefaultProvider::self()->locale());
 
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_AMOUNT"), h );
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNIT"), escapeTrml2pdfXML( pos.unit() ) );
+        h = pos.unit().einheitSingular();
+        if (pos.amount() > 1.0) h = pos.unit().einheitPlural();
+        tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNIT"), escapeTrml2pdfXML(h) );
         tmpl.setValue( DICT("POSITIONS"), TAG("POS_UNITPRICE"), pos.unitPrice().toLocaleString() );
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_TOTAL"), pos.nettoPrice().toLocaleString() );
-        tmpl.setValue( DICT("POSITIONS"), TAG("POS_KIND"), pos.kind().toLower() );
+        tmpl.setValue( DICT("POSITIONS"), TAG("POS_TOTAL"), pos.overallPrice().toLocaleString() );
+        tmpl.setValue( DICT("POSITIONS"), TAG("POS_KIND"), QString() );
 
         QString taxType;
 
@@ -314,7 +316,7 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
 
         /* item kind: Normal, alternative or demand item. For normal items, the kind is empty.
    */
-        if ( !pos.kind().isEmpty() ) {
+        if (pos.type() == DocPositionBase::Demand || pos.type() == DocPositionBase::Alternative) {
             specialPosCnt++;
         }
     }
@@ -337,62 +339,57 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
 
         tmpl.createDictionary( "REDUCED_TAX_ITEMS" );
         tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("COUNT"), QString::number( reducedTaxCnt ));
-        tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("TAX"), DefaultProvider::self()->locale()->toString( archDoc->reducedTax()) );
+        tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("TAX"), doc->reducedTaxPercentStr());
         tmpl.setValue( DICT("REDUCED_TAX_ITEMS"), TAG("LAB_TAX_REDUCED_ITEMS"),
                        i18n("items with reduced tax of %1% (%2 pcs.)",
-                            DefaultProvider::self()->locale()->toString( archDoc->reducedTax()),
-                            QString::number( reducedTaxCnt )) );
+                            doc->reducedTaxPercentStr(),
+                            QString::number(reducedTaxCnt)) );
 
 
         tmpl.createDictionary( "FULL_TAX_ITEMS" );
         tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("COUNT"), QString::number( fullTaxCnt ));
-        tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("TAX"), DefaultProvider::self()->locale()->toString( archDoc->tax()) );
+        tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("TAX"), doc->fullTaxPercentStr() );
         tmpl.setValue( DICT("FULL_TAX_ITEMS"), TAG("LAB_TAX_FULL_ITEMS"),
                        i18n("No label: items with full tax of %1% (%2 pcs.)",
-                            DefaultProvider::self()->locale()->toString( archDoc->tax()),
-                            QString::number( fullTaxCnt )) );
+                            doc->fullTaxPercentStr(), QString::number( fullTaxCnt )));
     }
 
     /* now replace stuff in the whole document */
-    tmpl.setValue( TAG( "DATE" ), Format::toDateString(archDoc->date(), KraftSettings::self()->dateFormat()));
-    tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( archDoc->docTypeStr() ) );
-    tmpl.setValue( TAG( "ADDRESS" ), escapeTrml2pdfXML( archDoc->address() ) );
+    tmpl.setValue( TAG( "DATE" ), Format::toDateString(doc->date(), KraftSettings::self()->dateFormat()));
+    tmpl.setValue( TAG( "DOCTYPE" ), escapeTrml2pdfXML( doc->docType() ) );
+    tmpl.setValue( TAG( "ADDRESS" ), escapeTrml2pdfXML( doc->address() ) );
 
     contactToTemplate( tmpl, "CLIENT", customerContact );
     contactToTemplate( tmpl, "MY", myContact );
 
-    tmpl.setValue( TAG( "DOCID" ),   escapeTrml2pdfXML( archDoc->ident() ) );
-    tmpl.setValue( TAG( "PROJECTLABEL" ),   escapeTrml2pdfXML( archDoc->projectLabel() ) );
-    tmpl.setValue( TAG( "SALUT" ),   escapeTrml2pdfXML( archDoc->salut() ) );
-    tmpl.setValue( TAG( "GOODBYE" ), escapeTrml2pdfXML( archDoc->goodbye() ) );
-    tmpl.setValue( TAG( "PRETEXT" ),   rmlString( archDoc->preText() ) );
-    tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( archDoc->postText() ) );
-    tmpl.setValue( TAG( "BRUTTOSUM" ), archDoc->bruttoSum().toLocaleString() );
-    tmpl.setValue( TAG( "NETTOSUM" ),  archDoc->nettoSum().toLocaleString() );
+    tmpl.setValue( TAG( "DOCID" ),   escapeTrml2pdfXML( doc->ident() ) );
+    tmpl.setValue( TAG( "PROJECTLABEL" ),   escapeTrml2pdfXML( doc->projectLabel() ) );
+    tmpl.setValue( TAG( "SALUT" ),   escapeTrml2pdfXML( doc->salut() ) );
+    tmpl.setValue( TAG( "GOODBYE" ), escapeTrml2pdfXML( doc->goodbye() ) );
+    tmpl.setValue( TAG( "PRETEXT" ),   rmlString( doc->preText() ) );
+    tmpl.setValue( TAG( "POSTTEXT" ),  rmlString( doc->postText() ) );
+    tmpl.setValue( TAG( "BRUTTOSUM" ), doc->bruttoSumStr());
+    tmpl.setValue( TAG( "NETTOSUM" ),  doc->nettoSumStr());
 
-    h = DefaultProvider::self()->locale()->toString( archDoc->tax() );
     // qDebug () << "Tax in archive document: " << h;
-    if ( archDoc->reducedTaxSum().toLong() != 0 ) {
+    if ( doc->reducedTaxSum().toLong() != 0 ) {
         tmpl.createDictionary( DICT( "SECTION_REDUCED_TAX" ) );
         tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_SUM" ),
-                       archDoc->reducedTaxSum().toLocaleString() );
-        h = DefaultProvider::self()->locale()->toString( archDoc->reducedTax() );
-        tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX" ), h );
-        tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG( "REDUCED_TAX_LABEL" ), i18n( "reduced VAT" ) );
+                       doc->reducedTaxSumStr());
+        tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG("REDUCED_TAX"), doc->reducedTaxPercentStr());
+        tmpl.setValue( DICT("SECTION_REDUCED_TAX"), TAG("REDUCED_TAX_LABEL"), i18n("reduced VAT"));
     }
-    if ( archDoc->fullTaxSum().toLong() != 0 ) {
+    if ( doc->fullTaxSum().toLong() != 0 ) {
         tmpl.createDictionary( DICT( "SECTION_FULL_TAX" ) );
         tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_SUM" ),
-                       archDoc->fullTaxSum().toLocaleString() );
-        h = DefaultProvider::self()->locale()->toString( archDoc->tax() );
-        tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX" ), h );
+                       doc->fullTaxSumStr());
+        tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX" ), doc->fullTaxPercentStr() );
         tmpl.setValue( DICT("SECTION_FULL_TAX"), TAG( "FULL_TAX_LABEL" ), i18n( "VAT" ) );
     }
 
-    h = DefaultProvider::self()->locale()->toString( archDoc->tax() );
-    tmpl.setValue( TAG( "VAT" ), h );
-
-    tmpl.setValue( TAG( "VATSUM" ), archDoc->taxSum().toLocaleString() );
+    // legacy values, not used in the official doc
+    tmpl.setValue( TAG( "VAT" ), doc->fullTaxPercentStr());
+    tmpl.setValue( TAG( "VATSUM" ), doc->fullTaxSumStr());
 
     addLabelsToTemplate(tmpl);
 
@@ -419,8 +416,8 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
 #endif
     // finalize the template
     const QString output = tmpl.expand();
-#endif
-    return QString();
+
+    return output;
 }
 
 // ==================================================================================
@@ -435,8 +432,13 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
                                                const KContacts::Addressee &myContact,
                                                const KContacts::Addressee &customerContact)
 {
-    Grantlee::registerMetaType<ArchDocPosition>();
-    Grantlee::registerMetaType<ArchDocPositionList>();
+#if 0
+    // that was needed before with ArchDocPosition, which used GRANTLEE_BEGIN_LOOKUP
+    Grantlee::registerMetaType<KraftObj>();
+    Grantlee::registerMetaType<DocPositionBase>();
+    Grantlee::registerMetaType<DocPosition>();
+    Grantlee::registerMetaType<DocPositionList>();
+#endif
 
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {
@@ -446,12 +448,18 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
         _errorStr = i18n("Can not read template file!");
     }
 
+    KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
+
+    if (doc == nullptr) {
+        _errorStr = i18n("Could not open document %1", uuid);
+    }
+
     QString rendered;
     if (_errorStr.isEmpty()) {
 
         GrantleeFileTemplate gtmpl(_tmplFile);
 
-       //FIXME gtmpl.addToObjMapping("doc", doc);
+        gtmpl.addToObjMapping("doc", doc);
 
         const auto mtt = contactToVariantHash(myContact);
         gtmpl.addToMappingHash(QStringLiteral("me"), mtt);
@@ -464,8 +472,8 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
 
         // -- save the EPC QR Code which is written into a temp file
         QVariantHash epcHash;
-#if 0
-        auto qrcodefile = generateEPCQRCodeFile(archDoc);
+
+        auto qrcodefile = generateEPCQRCodeFile(doc);
         epcHash.insert("valid", false);
         epcHash.insert("show", false);
         if (qrcodefile.isEmpty()) {
@@ -483,7 +491,7 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
             // the QR code should not be displayed.
             double maxEPCSum = KraftSettings::self()->displayEPCCodeMaxSum();
 
-            if (archDoc->bruttoSum().toDouble() > maxEPCSum) {
+            if (doc->bruttoSum().toDouble() > maxEPCSum) {
                 epcHash["show"] = false;
             }
             gtmpl.addToMappingHash(QStringLiteral("epcqrcode"), epcHash);
@@ -498,7 +506,6 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
             _errorStr = rendered;
             rendered.clear();
         }
-#endif
     }
     return rendered;
 }

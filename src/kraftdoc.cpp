@@ -36,6 +36,17 @@
 #include "docdigest.h"
 
 // FIXME: Make KraftDoc inheriting DocDigest!
+namespace {
+
+QString multilineHtml( const QString& str )
+{
+    QString re {str.toHtmlEscaped()};
+
+    re.replace( '\n', "<br/>");
+    return re;
+}
+
+} // end namespace
 
 KraftDoc::KraftDoc(QWidget *parent)
   : QObject(parent), KraftObj(),
@@ -387,6 +398,51 @@ Geld KraftDoc::vatSum() const
     }
 }
 
+QString KraftDoc::taxPercentStr() const
+{
+     DocPositionBase::TaxType tt = mPositions.listTaxation();
+     if (tt == DocPositionBase::TaxType::TaxFull) {
+         return fullTaxPercentStr();
+     } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+         return reducedTaxPercentStr();
+     }
+     return QString();
+}
+
+QString KraftDoc::taxPercentNum() const
+{
+    DocPositionBase::TaxType tt = mPositions.listTaxation();
+    if (tt == DocPositionBase::TaxType::TaxFull) {
+        return fullTaxPercentNum();
+    } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+        return reducedTaxPercentNum();
+    }
+    return QString();
+
+}
+
+QString KraftDoc::fullTaxPercentNum() const
+{
+    double t = _fullTax;
+    return QString::number(t, 'f', 2);
+}
+
+QString KraftDoc::reducedTaxPercentNum() const
+{
+    double t = _redTax;
+    return QString::number(t, 'f', 2);
+}
+
+QString KraftDoc::fullTaxPercentStr() const
+{
+   return Format::localeDoubleToString(_fullTax, *DefaultProvider::self()->locale());
+}
+
+QString KraftDoc::reducedTaxPercentStr() const
+{
+   return Format::localeDoubleToString(_redTax, *DefaultProvider::self()->locale());
+}
+
 void KraftDoc::setStateFromString(const QString& s)
 {
     _state = State::Undefined;
@@ -470,6 +526,14 @@ QString KraftDoc::language() const
  QString KraftDoc::postTextRaw() const
  {
      return mPostText;
+ }
+
+
+ bool KraftDoc::isInvoice() const
+ {
+     // This is just a work around and should be fixed with an attribute for the doctype
+     // at some point.
+     return (docType() == QStringLiteral("Rechnung"));
  }
 
  /**
@@ -606,6 +670,16 @@ QString KraftDoc::language() const
      return myStr;
  }
 
+ QString KraftDoc::dateStr() const
+ {
+     return Format::toDateString(mDate, KraftSettings::self()->dateFormat());
+ }
+
+ QString KraftDoc::dateStrISO() const
+ {
+     return mDate.toString("yyyy-MM-dd");
+ }
+
  QString KraftDoc::preText() const
  {
      double fullTax = DocumentMan::self()->tax(date());
@@ -620,4 +694,14 @@ QString KraftDoc::language() const
      double redTax = DocumentMan::self()->reducedTax(date());
      const QString myStr = resolveMacros(mPostText, positions(), date(), fullTax, redTax);
      return myStr;
+ }
+
+ QString KraftDoc::preTextHtml() const
+ {
+     return multilineHtml(mPreText);
+ }
+
+ QString KraftDoc::postTextHtml() const
+ {
+     return multilineHtml(mPostText);
  }
