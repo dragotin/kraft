@@ -26,6 +26,8 @@
 #include "documentman.h"
 #include "kraftdoc.h"
 #include "docposition.h"
+#include "reportitem.h"
+#include "reportitemlist.h"
 
 #include <klocalizedstring.h>
 
@@ -432,13 +434,10 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
                                                const KContacts::Addressee &myContact,
                                                const KContacts::Addressee &customerContact)
 {
-#if 0
-    // that was needed before with ArchDocPosition, which used GRANTLEE_BEGIN_LOOKUP
-    Grantlee::registerMetaType<KraftObj>();
-    Grantlee::registerMetaType<DocPositionBase>();
-    Grantlee::registerMetaType<DocPosition>();
-    Grantlee::registerMetaType<DocPositionList>();
-#endif
+
+    // that was needed before with ArchDocPosition, which used GRANTLEE_BEGIN_LOOKUP;
+    // Grantlee::registerMetaType<ReportItemList>();
+    // Grantlee::registerMetaType<ReportItem>();
 
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {

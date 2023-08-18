@@ -26,6 +26,7 @@
 #include "docposition.h"
 #include "dbids.h"
 #include "kraftobj.h"
+#include "reportitemlist.h"
 
 // forward declaration of the Kraft classes
 
@@ -87,7 +88,7 @@ class KraftDoc : public QObject, public KraftObj
     Q_PROPERTY(QString taxMarkerFull READ taxMarkerFull)
     Q_PROPERTY(QString taxMarkerReduced READ taxMarkerReduced)
 
-    Q_PROPERTY(DocPositionList items READ positions)
+    Q_PROPERTY(QList<ReportItem*> reportItems READ reportItemList)
     Q_PROPERTY(bool hasIndividualTaxation READ hasIndividualTaxation)
     Q_PROPERTY(bool isInvoice READ isInvoice)
 
@@ -123,6 +124,7 @@ public:
     DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
     DocPositionList positions() const { return mPositions; }
     void setPositionList(DocPositionList , bool isNew = false);
+    QList<ReportItem*> reportItemList() const;
 
     DocDigest toDigest();
 
