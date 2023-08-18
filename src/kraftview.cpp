@@ -1373,8 +1373,7 @@ void KraftView::done( int r )
     // remember the sizes of the docassistant splitter if visible.
     mAssistant->saveSplitterSizes();
     KraftSettings::self()->setDocViewSplitter(mCSplit->sizes());
-    const QByteArray geo = saveGeometry().toBase64();
-    KraftSettings::self()->setDocEditGeometry(geo);
+    // the size of the doc edit is saved in Portal::slotViewClosed
 
     QDialog::done( r );
 }
