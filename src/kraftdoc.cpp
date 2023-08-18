@@ -536,6 +536,19 @@ QString KraftDoc::language() const
      return (docType() == QStringLiteral("Rechnung"));
  }
 
+QList<ReportItem*> KraftDoc::reportItemList() const
+{
+    // ReportItemList reList(positions());
+    QList<ReportItem*> list;
+
+    for( auto &pos : positions()) {
+        ReportItem *ri = new ReportItem(pos);
+        list.append(ri);
+    }
+
+    return list;
+}
+
  /**
   * @brief KraftDoc::resolveMacros
   * @param txtWithMacros - the string that might contain any macros
