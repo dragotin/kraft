@@ -22,17 +22,16 @@
     <style>
     @charset "UTF-8";
 
-    /* Use google web fonts */
-    @import url("https://fonts.googleapis.com/css?family=Pacifico|Open+Sans+Pro:400,700");
-    /* @import url("https://fonts.googleapis.com/css?family=Roboto"); */
-    /* @import url("https://fonts.googleapis.com/css?family=Oxygen"); */
+    /* Consider to install the font Oxygen on your system. If you want to use google */
+    /* web fonts, use the following line:    */
+    /* @ import url("https://fonts.googleapis.com/css?family=Oxygen"); */
 
     /* The CSS for printing */
     @page {
 	size: A4;
-        margin-left: 2.4cm;
+        margin-left: 1.8cm;
         margin-top:27mm;
-        margin-right: 1.6cm;
+        margin-right: 1.0cm;
         margin-bottom: 2cm;
         color: #2f590a;
 
@@ -110,7 +109,7 @@
         <th></th>
       </thead>
       <tbody>
-        {% for item in doc.items %}
+        {% for item in doc.reportItems %}
         <tr>
           <td class="col-No col-left">{{ item.itemNumber }}.</td>
           <td class="col-Text col-left">
@@ -130,7 +129,9 @@
           <td class="col-Unit col-left">{{ item.unit }}</td>
           <td class="col-SPrice col-right">{{ item.unitPrice }}</td>
           <td class="col-Sum col-right">{{ item.nettoPrice }}</td>
+          {% if doc.hasIndividualTaxation %}
           <td class="col-Taxmarker col-right"><sup><small>{{ item.taxMarker }}</small></sup></td>
+          {% endif %}
         </tr>
         {% endfor %}
       </tbody>
