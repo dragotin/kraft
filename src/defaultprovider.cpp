@@ -48,7 +48,9 @@ DefaultProvider::DefaultProvider()
 
 DocumentSaverBase& DefaultProvider::documentPersister()
 {
-    return self()->_persister;
+    const QString p = KraftSettings::self()->xmlDocumentsBasePath();
+    _persister.setBasePath(p);
+    return _persister;
 }
 
 
