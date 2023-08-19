@@ -28,6 +28,7 @@
 
 #include <utime.h>
 
+#include "defaultprovider.h"
 #include "documentsaverdb.h"
 #include "documentsaverxml.h"
 
@@ -153,6 +154,9 @@ DocGuardedPtr DocumentMan::openDocumentByUuid(const QString& uuid)
 bool DocumentMan::loadMetaFromFilename(const QString& xmlFile, KraftDoc *doc)
 {
     DocumentSaverXML docLoad;
+    const QString p = KraftSettings::self()->xmlDocumentsBasePath();
+    docLoad.setBasePath(p);
+
     if (doc && docLoad.loadFromFile(xmlFile, doc, true)) {
         return true;
     }

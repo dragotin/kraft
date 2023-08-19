@@ -61,7 +61,7 @@ QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QStrin
   return elem;
 }
 
-int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, KraftDoc *doc)
+int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, KraftDoc *doc)
 {
 /*
     <type>Normal</type>
@@ -82,14 +82,7 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
         DocPosition *pos = static_cast<DocPosition*>(item);
         QDomElement itemType = xmldoc.createElement("item");
 
-        itemGroupElem.appendChild(itemType);
-        QString tStr {"Normal"};
-        auto t = item->type();
-        if (t == DocPosition::ExtraDiscount) {
-            tStr = QStringLiteral("Discount");
-            // Only add the type item if the type is not "Normal", which is the default.
-            itemType.appendChild(xmlTextElement(xmldoc, "type", tStr));
-        }
+        itemType.appendChild(xmlTextElement(xmldoc, "type", item->typeStr()));
         itemType.appendChild(xmlTextElement(xmldoc, "text", item->text().toHtmlEscaped()));
 
         itemType.appendChild(xmlTextElement(xmldoc, "amount", QString::number(pos->amount(), 'f', 2)));
@@ -121,6 +114,7 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement& itemGroupElem, Kra
             attribElem.appendChild(xmlTextElement(xmldoc, "type", attribs[k].typeString()));
         }
 
+        itemGroupElem.appendChild(itemType);
         cnt++;
     }
     return cnt;
@@ -500,12 +494,19 @@ bool loadTotals(const QDomDocument& domDoc, XML::Totals& totals)
 
 QString DocumentSaverXML::basePath()
 {
+    Q_ASSERT(!_basePath.isEmpty());
     return _basePath.path();
 }
 
 void DocumentSaverXML::setBasePath(const QString& path)
 {
     _basePath.setPath(path);
+    if (!path.endsWith("/current")) {
+        if (!_basePath.cd("current/")) {
+            qDebug() << "WRN: XML Saver base dir does not exist:" << _basePath.absolutePath();
+        }
+    }
+    qDebug() << "XML Saver set base path" << _basePath.absolutePath();
 }
 
 void DocumentSaverXML::setArchiveMode(bool am)
@@ -520,8 +521,8 @@ QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
     const QString uuid = doc->uuid();
     Q_ASSERT(!uuid.isEmpty());
     path.append(QString("/%1/%2/").arg(d.year()).arg(d.month()));
-
     _basePath.mkpath(path);
+
     path.append(uuid);
     path.append(".xml");
 
@@ -582,7 +583,9 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     bool result = false;
     if( ! doc ) return result;
 
-    if (!_basePath.exists()) { // not set at all?
+    QFileInfo fi{basePath()};
+
+    if (!(fi.exists() && fi.isDir())) { // not set at all?
         qDebug() << "The base path is not yet set or does not exist!";
         return false;
     }
