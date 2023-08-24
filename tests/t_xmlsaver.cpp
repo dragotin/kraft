@@ -97,7 +97,7 @@ private slots:
         QCOMPARE(doc.docType(), "Rechnung");
         QCOMPARE(doc.whiteboard(), "whiteboard content");
         QCOMPARE(doc.uuid(), "f4deb784-6131-4e49-bd6d-92bd1355ea4d");
-        QCOMPARE(doc.state(), KraftDoc::State::Sent);
+        QCOMPARE(doc.state(), KraftDoc::State::Final);
         QCOMPARE(doc.date(), QDate(2011, 1, 27));
         QCOMPARE(doc.timeOfSupplyStart(), QDateTime(QDate(2019, 11, 21), QTime(0,0)));
         QCOMPARE(doc.timeOfSupplyEnd(), QDateTime(QDate(2019, 11, 23), QTime(23,59, 59)));
