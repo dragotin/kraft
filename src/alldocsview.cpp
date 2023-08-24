@@ -143,11 +143,14 @@ QWidget* AllDocsView::initializeTreeWidget()
   vb1->addWidget( _stack );
 
   mAllViewDetails = new DocDigestDetailView;
-  connect( mAllViewDetails, &DocDigestDetailView::showLastPrint,
-           this, &AllDocsView::slotOpenLastPrinted);
-
+  connect( mAllViewDetails, &DocDigestDetailView::openPDF,
+           this, &AllDocsView::openPDF);
+  connect( mAllViewDetails, &DocDigestDetailView::printPDF,
+           this, &AllDocsView::printPDF);
+  connect( mAllViewDetails, &DocDigestDetailView::docStatusChange,
+           this, &AllDocsView::docStatusChange);
   connect( mAllViewDetails, &DocDigestDetailView::exportXRechnung ,
-           this, &AllDocsView::slotExportXRechnung);
+           this, &AllDocsView::exportXRechnung);
 
   vb1->addWidget( mAllViewDetails );
   QWidget *w = new QWidget;
@@ -262,10 +265,8 @@ void AllDocsView::slotBuildView()
     connect( _dateView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
              this, SLOT(slotCurrentChanged(QModelIndex,QModelIndex)));
 
-    connect( _tableView, SIGNAL( doubleClicked(QModelIndex) ),
-             this, SLOT( slotDocOpenRequest(QModelIndex) ) );
-    connect( _dateView, SIGNAL( doubleClicked(QModelIndex) ),
-             this, SLOT( slotDocOpenRequest(QModelIndex) ) );
+    connect( _tableView, &QTableView::doubleClicked, this, &AllDocsView::openDocument);
+    connect( _dateView, &QTreeView::doubleClicked, this, &AllDocsView::openDocument);
 
     _tableView->setAlternatingRowColors( true );
     _dateView->setAlternatingRowColors(false);
@@ -312,31 +313,6 @@ void AllDocsView::slotUpdateView(DocGuardedPtr doc)
 void AllDocsView::contextMenuEvent( QContextMenuEvent * event )
 {
     mAllMenu->popup( event->globalPos() );
-}
-
-void AllDocsView::slotExportXRechnung()
-{
-  // qDebug () << "slotOpenLastPrinted hit! ";
-  emit exportXRechnungArchivedDocument( mLatestArchivedDigest );
-}
-
-void AllDocsView::slotOpenLastPrinted( )
-{
-  // qDebug () << "slotOpenLastPrinted hit! ";
-  emit openArchivedDocument( mLatestArchivedDigest );
-}
-
-ArchDocDigest AllDocsView::currentLatestArchivedDoc() const
-{
-    return mLatestArchivedDigest;
-}
-
-void AllDocsView::slotDocOpenRequest( QModelIndex index )
-{
-    Q_UNUSED(index)
-    const QString uuid = currentDocumentUuid();
-
-    emit openDocument(uuid);
 }
 
 int AllDocsView::currentDocumentRow() const

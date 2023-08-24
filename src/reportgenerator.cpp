@@ -247,7 +247,7 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
         // check if the watermark file exists
         mergePdfWatermark(file);
     } else {
-        emit docAvailable(_requestedFormat, file, mCustomerContact);
+        emit docAvailable(_requestedFormat, _uuid, mCustomerContact);
     }
 }
 
@@ -298,8 +298,6 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
     mMergeIdent = 0;
 
     if (exitStatus == QProcess::ExitStatus::NormalExit && exitCode == 0) {
-        const QString fileName = targetFileName();
-
         // remove the temp file which comes as arg in any case, even if the watermark
         // tool was not called.
         if (mProcess->arguments().size() > 0) {
@@ -308,7 +306,7 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
         }
         mProcess->deleteLater();
         mProcess = nullptr;
-        emit docAvailable(_requestedFormat, fileName, mCustomerContact);
+        emit docAvailable(_requestedFormat, _uuid, mCustomerContact);
     } else {
         slotConverterError(PDFConverter::ConvError::PDFMergerError);
     }
@@ -361,9 +359,9 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
 QString ReportGenerator::targetFileName() const
 {
     XmlDocIndex indx;
-    const QString fileName = indx.pathByUuid(_uuid);
+    const QString fileName = indx.pdfPathByUuid(_uuid);
 
-    return fileName.left(fileName.length()-3)+QStringLiteral("pdf");
+    return fileName;
 }
 
 QString ReportGenerator::findTemplateFile( const QString& type )

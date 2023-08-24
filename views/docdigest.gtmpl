@@ -1,0 +1,8 @@
+<div id="inhalt">
+  <h2>{{ doc.headline }} {{ doc.ident }} ({{ doc.state }})</h2>
+  <p>{{ label.date }}: {{ doc.date }}</p>
+  {% if doc.project %}
+      <p>{{ label.project }}: {{ doc.project }}</p>
+  {% endif %}
+ 
+</div>
