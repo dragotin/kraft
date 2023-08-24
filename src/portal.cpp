@@ -71,6 +71,32 @@
 #include "dbtoxmlconverter.h"
 #include "xmldocindex.h"
 
+// Litte class diagram to describe the main view of Kraft:
+//
+//            +-----------------+
+//            | Portal          |       Provides the main window
+//            +-----------------+
+//                     |
+//                     |
+//                     v
+//            +-----------------+
+//  +---------| PortalView      |        Widget to organize the underlying stuff
+//  |         +-----------------+
+//  |           |            |
+//  |           |            |
+//  |           v            v
+//  |    +-----------+  +--------------------+
+//  |    |  Catalog  |  | AllDocsView        |
+//  |    |  Browser  |  |                    |    Holds the plain- und treelist of the docs
+//  |    +-----------+  +--------------------+
+//  v                        |          |
+//+-----------+         +----|---+  +---|----+
+//|  System   |         | Table  |  | Tree   |
+//|  Browser  |         | View   |  | View   |
+//+-----------+         +--------+  +--------+
+//
+
+
 namespace {
 
 QString initXmlBasePath() {
