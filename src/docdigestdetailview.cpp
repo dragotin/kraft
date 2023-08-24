@@ -29,6 +29,9 @@
 #include "texttemplate.h"
 #include "archdoc.h"
 #include "format.h"
+#include "grantleetemplate.h"
+
+#include "xmldocindex.h"
 
 DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
   : HtmlView( parent )
@@ -38,6 +41,10 @@ DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
 
 void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
 {
+    // This method is not longer required as there are no
+    // links any more in the description. But its left here
+    // as an example
+
     const QUrlQuery q(url);
     // Url is like "http://localhost/show_last_print?id=5"
 
@@ -46,9 +53,9 @@ void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
     const QString path = url.path();
     bool ok;
     if( path.endsWith("show_last_print")) {
-        emit( showLastPrint( dbID(idStr.toInt(&ok))));
+        // emit( .. );
     } else if (path.endsWith("export_xrechnung")) {
-        emit( exportXRechnung(dbID(idStr.toInt(&ok))));
+        // emit( .. );
     }
 }
 
@@ -65,12 +72,30 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   const int detailMinWidth = 260;
   setFixedHeight(200);
   // --- The left details box
-  _leftDetails = new QLabel;
+  _leftDetails = new QLabel(this);
   hbox->addWidget(_leftDetails);
   _leftDetails->setTextFormat(Qt::RichText);
   _leftDetails->setMinimumWidth(detailMinWidth);
   _leftDetails->setFrameStyle(0);
   _leftDetails->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
+  _leftDetails->setWordWrap(true);
+
+
+  // --- The Actions Box
+  QWidget *w = new QWidget;
+  _docActionsWidget = new Ui::docActionsWidget;
+  _docActionsWidget->setupUi(w);
+  connect(_docActionsWidget->pbOpenPDF, &QPushButton::clicked,
+          this, &DocDigestDetailView::openPDF);
+  connect(_docActionsWidget->pbPrintDoc, &QPushButton::clicked,
+          this, &DocDigestDetailView::printPDF);
+  connect(_docActionsWidget->pbFinDoc, &QPushButton::clicked,
+          this, &DocDigestDetailView::docStatusChange);
+  connect(_docActionsWidget->pbXRechnung, &QPushButton::clicked,
+          this, &DocDigestDetailView::exportXRechnung);
+
+  hbox->addWidget(w);
 
   // --- The middle HTML based view
   hbox->setMargin(0);
@@ -95,7 +120,6 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
                                 "}").arg(bgColor);
 
   _leftDetails->setStyleSheet(style);
-  _leftDetails->setWordWrap(true);
 
   // --- The right details Box
   const QString styleR = QString("QLabel { "
@@ -107,7 +131,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
                                  "}").arg(bgColor);
 
 
-  _rightDetails = new QLabel;
+  _rightDetails = new QLabel(this);
   _rightDetails->setTextFormat(Qt::RichText);
   _rightDetails->setStyleSheet(styleR);
   _rightDetails->setMinimumWidth(detailMinWidth);
@@ -393,73 +417,56 @@ void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, co
 #endif
 }
 
-void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
+void DocDigestDetailView::slotEnablePDFActions(const DocDigest& digest)
+{
+    XmlDocIndex indx;
+    const QString p = indx.pdfPathByUuid(digest.uuid());
+
+    QFileInfo fi{p};
+
+    bool pdfAvail = fi.exists();
+
+    _docActionsWidget->pbOpenPDF->setEnabled(pdfAvail);
+    _docActionsWidget->pbPrintDoc->setEnabled(pdfAvail);
+
+}
+
+void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
 {
     // qDebug () << "Showing details about this doc: " << digest.id();
 
+    QObject obj;
+    QObject labels;
+
     if( _docTemplFileName.isEmpty() ) {
-        // QString templFileName = QString( "kraftdoc_%1_ro.trml" ).arg( doc->docType() );
-        _docTemplFileName = DefaultProvider::self()->locateFile( "views/docdigest.thtml" );
+        // QString templFileName = QString( "kraftdoc_%1_ro.gtmpl" ).arg( doc->docType() );
+        _docTemplFileName = DefaultProvider::self()->locateFile( "views/docdigest.gtmpl" );
     }
 
-    TextTemplate tmpl; // template file with name docdigest.trml
-    tmpl.setTemplateFileName(_docTemplFileName);
-    if( !tmpl.isOk() ) {
-        return;
-    }
-    tmpl.setValue( DOCDIGEST_TAG( "HEADLINE" ), digest.type() + " " + digest.ident() );
+    GrantleeFileTemplate gtmpl(_docTemplFileName);
 
-    tmpl.setValue( DOCDIGEST_TAG( "DATE" ), digest.date() );
-    tmpl.setValue( DOCDIGEST_TAG( "DATE_LABEL" ), i18n("Date") );
+    obj.setProperty("headline", digest.type());
+    obj.setProperty("date", digest.date());
+    obj.setProperty("isInvoice", true /* FIXME */);
+    obj.setProperty("whiteboard", digest.whiteboard());
+    if (!digest.projectLabel().isEmpty())
+        obj.setProperty("project", digest.projectLabel());
+    obj.setProperty("state", digest.stateStr());
+    obj.setProperty("ident", digest.ident());
 
+    labels.setProperty("date", i18n("Date"));
+    labels.setProperty("exportXRechnungTitle", i18n("Export the invoice in XRechnung file format"));
+    labels.setProperty("exportXRechnung", i18n("XRechnung"));
+    labels.setProperty("whiteboard", i18n("Whiteboard"));
+    labels.setProperty("project", i18n("Project"));
+    labels.setProperty("state", i18n("State"));
+    labels.setProperty("ident", i18n("Document Nr."));
 
+    gtmpl.addToObjMapping("doc", &obj);
+    gtmpl.addToObjMapping("label", &labels);
 
-    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD"), digest.whiteboard() );
-    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD_LABEL"), i18n("Whiteboard"));
-
-    if( !digest.projectLabel().isEmpty() ) {
-        tmpl.createDictionary( "PROJECT_INFO" );
-        tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT"), digest.projectLabel() );
-        tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT_LABEL"), i18n("Project"));
-    }
-
-    showAddress( digest.addressee(), digest.clientAddress() );
-
-    // Information about archived documents.
-    ArchDocDigestList archDocs = digest.archDocDigestList();
-    if( archDocs.isEmpty() ) {
-        // qDebug () << "No archived docs for this document!";
-        tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
-        tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("This document was never printed."));
-    } else {
-        ArchDocDigest digest = archDocs[0];
-
-        QFileInfo fi(digest.pdfArchiveFileName());
-        if (fi.exists()) {
-            tmpl.createDictionary( DOCDIGEST_TAG( "PRINTED" ));
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LABEL"), i18n( "Last printed" ) );
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_TITLE"), i18n( "Opens last created PDF document" ) );
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), Format::toDateTimeString(digest.printDate(), Format::DateFormatLong));
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
-
-            if( archDocs.size() == 1 ) {
-                tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("One older print"));
-            } else {
-                tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("%1 older prints", archDocs.count()));
-            }
-        } else {
-            tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
-            tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("Archived documents can not be found. Check PDF Output dir."));
-        }
-        if (digest.isInvoice()) {
-            tmpl.createDictionary( DOCDIGEST_TAG( "EXPORT_XRECHNUNG" ));
-            tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_TITLE"), i18n("Export the invoice in XRechnung file format"));
-            tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_LABEL"), i18n("XRechnung"));
-        }
-    }
-
-    const QString details = tmpl.expand();
+    bool ok;
+    const QString details = gtmpl.render(ok);
     mHtmlCanvas->displayContent( details );
 
     _rightDetails->setText(digest.whiteboard());
@@ -468,4 +475,6 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
 
     _rightDetails->setStyleSheet(widgetStylesheet(Right, Document));
     // qDebug () << "BASE-URL of htmlview is " << mHtmlCanvas->baseURL();
+
+    slotEnablePDFActions(digest);
 }
