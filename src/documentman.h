@@ -22,6 +22,7 @@
 
 #include "docguardedptr.h"
 #include "docposition.h"
+#include "kraftdoc.h"
 
 class QSqlQuery;
 
