@@ -11,7 +11,7 @@
         <ident>20110127</ident>
         <uuid version="4">f4deb784-6131-4e49-bd6d-92bd1355ea4d</uuid>
         <date>2011-01-27</date>
-        <state>Sent</state>
+        <state>Final</state>
 
         <tax>
             <type>None</type>
@@ -41,7 +41,11 @@
             <value>21</value>
             <type>integer</type>
         </attrib>
-
+	<attrib>
+            <name>SentDate</name>
+	    <value>2023-08-23</value>
+	    <type>date</type>
+	</attrib>
         <!-- Generic sort criteria -->
         <tag>foo</tag>
         <tag>bar</tag>

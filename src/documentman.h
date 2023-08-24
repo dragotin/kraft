@@ -51,6 +51,9 @@ class DocumentMan
 
     bool loadMetaFromFilename(const QString&, KraftDoc *doc);
 
+    QList<KraftDoc::State> validFollowStates(KraftDoc::State nowState);
+
+
     DocumentMan();
 };
 

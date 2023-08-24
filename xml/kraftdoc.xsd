@@ -35,7 +35,7 @@
         <xs:enumeration value="Undefined"/>
 	<xs:enumeration value="New"/>
         <xs:enumeration value="Draft"/>
-        <xs:enumeration value="Sent"/>
+        <xs:enumeration value="Final"/>
         <xs:enumeration value="Retracted"/>
         <xs:enumeration value="Converted"/>
         <xs:enumeration value="Invalid"/>

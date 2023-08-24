@@ -98,16 +98,16 @@ public:
         Undefined,  // Not defined at all.
         New,        // New document, not yet saved
         Draft,      // Draft. Saved on disk
-        Sent,       // Sent to customer
+        Final,      // Final. Saved and with an official doc number
         Retracted,  // Sent to customer, but retracted
         Converted,  // Converted from a previous Kraft version that did not have proper states
         Invalid     // Invalidated. Never sent out
     };
 
-    const QString StateSentStr{"Sent"};
     const QString StateUndefinedStr{"Undefined"};
     const QString StateNewStr{"New"};
     const QString StateDraftStr{"Draft"};
+    const QString StateFinalStr{"Final"};
     const QString StateRetractedStr{"Retracted"};
     const QString StateInvalidStr{"Invalid"};
     const QString StateConvertedStr{"Converted"};

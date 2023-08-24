@@ -201,7 +201,6 @@ QList<KraftDoc::State> DocumentMan::validFollowStates(KraftDoc::State nowState)
         re.append(KraftDoc::State::Final);
         break;
     case KraftDoc::State::Final:
-        re.append(KraftDoc::State::Sent);
         re.append(KraftDoc::State::Retracted);
         break;
     case KraftDoc::State::New:

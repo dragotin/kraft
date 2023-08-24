@@ -454,8 +454,8 @@ void KraftDoc::setStateFromString(const QString& s)
         _state = State::New;
     } else if ( s == StateDraftStr) {
         _state = State::Draft;
-    } else if ( s == StateSentStr) {
-        _state = State::Sent;
+    } else if ( s == StateFinalStr) {
+        _state = State::Final;
     } else if ( s == StateRetractedStr) {
         _state = State::Retracted;
     } else if ( s == StateInvalidStr) {
@@ -476,8 +476,8 @@ QString KraftDoc::stateString() const
     case State::Draft:
         return StateDraftStr;
         break;
-    case State::Sent:
-        return StateSentStr;
+    case State::Final:
+        return StateFinalStr;
         break;
     case State::Retracted:
         return StateRetractedStr;
