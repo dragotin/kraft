@@ -22,8 +22,8 @@
 
 #include "docdigest.h"
 #include "htmlview.h"
+#include "ui_documentactions.h"
 
-class dbID;
 class TextTemplate;
 
 class DocDigestHtmlView : public HtmlView
@@ -33,13 +33,8 @@ class DocDigestHtmlView : public HtmlView
 public:
     DocDigestHtmlView( QWidget *parent );
 
-signals:
-    void showLastPrint( const dbID& );
-    void exportXRechnung(const dbID&);
-
 protected slots:
     void slotLinkClicked(const QUrl& url);
-
 };
 
 class DocDigestDetailView : public QFrame
@@ -49,11 +44,14 @@ public:
   explicit DocDigestDetailView(QWidget *parent = 0);
 
 signals:
-  void showLastPrint(const dbID&);
-  void exportXRechnung(const dbID&);
+  void exportXRechnung();
+  void printPDF();
+  void openPDF();
+  void docStatusChange();
 
 public slots:
-  void slotShowDocDetails( DocDigest );
+  void slotShowDocDetails(const DocDigest &);
+  void slotEnablePDFActions(const DocDigest& digest);
   void slotClearView();
 
   void slotShowMonthDetails( int year, int month );
@@ -74,6 +72,7 @@ private:
   QString   _docTemplFileName;
   QString   _monthTemplFileName;
   QString   _yearTemplFileName;
+  Ui::docActionsWidget *_docActionsWidget;
 };
 
 #endif // DOCDIGESTDETAILVIEW_H

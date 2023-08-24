@@ -533,7 +533,7 @@ QString DocumentSaverXML::xmlDocFileNameFromIdent(const QString& id)
 {
     XmlDocIndex indx;
 
-    const QString p = indx.pathByIdent(id);
+    const QString p = indx.xmlPathByIdent(id);
 
     return  p;
 }
@@ -673,7 +673,7 @@ bool DocumentSaverXML::loadByUuid(const QString& uuid, KraftDoc *doc)
     }
 
     XmlDocIndex indx;
-    const QString xmlFile = indx.pathByUuid(uuid);
+    const QString xmlFile = indx.xmlPathByUuid(uuid);
 
     return loadFromFile(xmlFile, doc);
 }

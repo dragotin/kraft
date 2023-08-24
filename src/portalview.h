@@ -37,57 +37,56 @@ class DocDigest;
 
 class PortalView : public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  PortalView (QWidget *parent=0, const char *name=0 );
-  ~PortalView();
+    PortalView (QWidget *parent=0, const char *name=0 );
+    ~PortalView();
 
-  AllDocsView* docDigestView() { return _allDocsView; }
-  void systemInitError( const QString& );
-  QString ptag( const QString&,  const QString& c = QString() ) const;
+    AllDocsView* docDigestView() { return _allDocsView; }
+    void systemInitError( const QString& );
+    QString ptag( const QString&,  const QString& c = QString() ) const;
 
 public slots:
-  void slotBuildView();
-  void fillCatalogDetails();
-  void fillSystemDetails();
-  void displaySystemsTab();
-
-protected slots:
-  void slotCreateDocument();
+    void slotBuildView();
+    void fillCatalogDetails();
+    void fillSystemDetails();
+    void displaySystemsTab();
 
 private slots:
-  void changePage(QListWidgetItem *current);
+    void changePage(QListWidgetItem *current);
 
 signals:
-  void openKatalog( const QString& );
-  void katalogToXML( const QString& );
-  void createDocument();
-  void openDocument( const QString& );
-  void copyDocument( const QString& );
-  void viewDocument( const QString& );
-  void openArchivedDocument( const ArchDocDigest& );
-  void exportXRechnungArchivedDocument( const ArchDocDigest&);
-  void documentSelected( const DocDigest& );
-  void archivedDocSelected( const ArchDocDigest& );
+    void openKatalog( const QString& );
+    void katalogToXML( const QString& );
+    void createDocument();
+    void openDocument();
+    void copyDocument();
+    void viewDocument();
+    void docStatusChange();
+    void openPDF();
+    void printPDF();
+
+    void exportXRechnung();
+    void documentSelected(const DocDigest&);
 
 private:
-  QString printKatLine( const QString&, int ) const;
-  void createIcons(const QSize &iconSize);
-  QWidget *katalogDetails();
-  QWidget *systemDetails();
-  QWidget *documentDigests();
+    QString printKatLine( const QString&, int ) const;
+    void createIcons(const QSize &iconSize);
+    QWidget *katalogDetails();
+    QWidget *systemDetails();
+    QWidget *documentDigests();
 
-  QString systemView( const QString& ) const;
+    QString systemView( const QString& ) const;
 
-  AllDocsView   *_allDocsView;
-  PortalHtmlView  *mCatalogBrowser;
-  PortalHtmlView  *mSystemBrowser;
+    AllDocsView   *_allDocsView;
+    PortalHtmlView  *mCatalogBrowser;
+    PortalHtmlView  *mSystemBrowser;
 
-  QListWidget     *_contentsWidget;
-  QStackedWidget  *_pagesWidget;
+    QListWidget     *_contentsWidget;
+    QStackedWidget  *_pagesWidget;
 
-  int _sysPageIndx;
+    int _sysPageIndx;
 };
 
 #endif

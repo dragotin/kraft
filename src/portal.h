@@ -34,7 +34,6 @@
 #include "reportgenerator.h"
 
 class KraftViewBase;
-class ArchDocDigest;
 class AddressProvider;
 class PrefsDialog;
 
@@ -79,8 +78,6 @@ class Portal : public QMainWindow
     virtual bool queryExit();
 
   protected slots:
-    void slotOpenArchivedDoc( const ArchDocDigest& );
-    void slotExportXRechnungArchivedDoc(const ArchDocDigest&);
     void slotXRechnungCurrentDocument();
 
     void slotPrefsDialogFinished( int );
@@ -116,24 +113,25 @@ class Portal : public QMainWindow
     void slotShowTemplates();
 
     void slotOpenKatalog(const QString& );
-    void slotOpenKatalog();
     void slotKatalogToXML(const QString&);
     void preferences();
     void slotNewDocument();
     void slotCopyCurrentDocument();
     void slotCopyDocument(const QString& uuid);
-    void slotOpenDocument(const QString& ident);
     void slotOpenCurrentDocument();
+    void slotOpenDocument(const QString& ident);
 
     void slotViewCurrentDocument();
     void slotViewDocument( const QString& );
+    void slotChangeDocStatus();
+    void slotOpenCurrentPDF();
 
     void slotFollowUpDocument();
     void slotDocumentSelected( const DocDigest& );
-    void slotArchivedDocExecuted();
-    void slotArchivedDocSelected( const ArchDocDigest& );
-    void slotPrintCurrentDocument();
-    void slotPrintDocument(const QString&uuid);
+    void slotPrintCurrentPDF();
+    void slotPrintPDF(const QString &uuid);
+    void slotGeneratePDF(const QString& uuid);
+
     void slotViewClosed( bool, DocGuardedPtr );
     void slotEditTagTemplates();
     void slotReconfigureDatabase();
@@ -143,7 +141,7 @@ class Portal : public QMainWindow
 
     void busyCursor( bool );
     void slotMailDocument();
-    void slotOpenPdf( const QString& );
+    void slotOpenPDF(const QString& uuid);
 
     void slotReceivedMyAddress( const QString&, const KContacts::Addressee& );
 
@@ -175,9 +173,8 @@ class Portal : public QMainWindow
     QAction* _actMailDocument;
     QAction* _actXRechnung;
     QAction* _actEditTemplates;
-
-    QAction* _actOpenArchivedDocument;
-
+    QAction* _actChangeDocStatus;
+    QAction* _actOpenDocumentPDF;
     QAction* _actViewFlosTemplates;
 
     QCommandLineParser *mCmdLineArgs;

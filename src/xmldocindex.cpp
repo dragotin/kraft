@@ -52,7 +52,7 @@ void XmlDocIndex::setBasePath(const QString& basePath)
     }
 }
 
-const QString XmlDocIndex::pathByIdent(const QString &ident)
+const QString XmlDocIndex::xmlPathByIdent(const QString &ident)
 {
     QString re;
     if (!ident.isEmpty() && _identMap.contains(ident)) {
@@ -61,7 +61,7 @@ const QString XmlDocIndex::pathByIdent(const QString &ident)
     return re;
 }
 
-const QString XmlDocIndex::pathByUuid(const QString& uuid)
+const QString XmlDocIndex::xmlPathByUuid(const QString& uuid)
 {
     QString re;
     if (!uuid.isEmpty() && _uuidMap.contains(uuid)) {
@@ -69,6 +69,15 @@ const QString XmlDocIndex::pathByUuid(const QString& uuid)
     }
     return re;
 }
+
+// so far, for the pdf path, only the extension is changed from xml to pdf.
+const QString XmlDocIndex::pdfPathByUuid(const QString& uuid)
+{
+    QString fileName{xmlPathByUuid(uuid)};
+
+    return fileName.left(fileName.length()-3)+QStringLiteral("pdf");
+}
+
 
 const QMultiMap<QDate, QString> &XmlDocIndex::dateMap()
 {
