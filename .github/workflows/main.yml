@@ -26,6 +26,7 @@ jobs:
             "cmake(KF5Contacts)" \
             "cmake(KF5I18n)" \
             "cmake(Qt5Core)" \
+            "cmake(Qt5Concurrent)" \
             "cmake(Qt5Gui)" \
             "cmake(Qt5Sql)" \
             "cmake(Qt5Test)" \
