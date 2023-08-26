@@ -23,6 +23,7 @@
 #include <QXmlSchema>
 #include <QDomDocument>
 #include <QFileDevice>
+#include <QSaveFile>
 
 #include "models/docbasemodel.h"
 
@@ -615,15 +616,20 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
     QElapsedTimer ti;
     ti.start();
+
     // TODO: Write to temp file first, and move only if it validates.
     qDebug () << "Storing XML to " << xmlFile;
 
-    QFile file( xmlFile );
-    if ( file.open( QIODevice::WriteOnly ) ) {
-        QTextStream s( &file );
-        s << xml << "\n";
-        file.close();
-    } else {
+    bool re;
+    QSaveFile file( xmlFile );
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
+        re = file.write(xml.toUtf8());
+
+        if (re) {
+            re = file.commit();
+        }
+    }
+    if (!re) {
         qDebug () << "Saving failed";
         doc->setLastModified(saveLastModified);
         return false;
