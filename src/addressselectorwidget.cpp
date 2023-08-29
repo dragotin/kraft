@@ -410,7 +410,11 @@ void AddressSelectorWidget::slotEditContact()
     if ( index.isValid() ) {
       const Akonadi::Item item = index.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
       if ( item.isValid() && item.hasPayload<KContacts::Addressee>() ) {
-        _addressEditor = new Akonadi::ContactEditorDialog(Akonadi::ContactEditorDialog::EditMode, this);
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
+        _addressEditor = new ContactEditor::ContactEditorDialog(ContactEditor::ContactEditorDialog::EditMode, this );
+#else
+        _addressEditor = new Akonadi::ContactEditorDialog(Akonadi::ContactEditorDialog::CreateMode, this );
+#endif
         _addressEditor->setContact( item );
         _addressEditor->show();
       }
