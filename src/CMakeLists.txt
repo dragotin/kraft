@@ -173,6 +173,7 @@ if(${AKO_PREFIX}Akonadi_FOUND)
   list(APPEND KRAFT_LINK_LIBS
     ${AKO_PREFIX}::AkonadiCore
     ${AKO_PREFIX}::AkonadiContact
+    ${AKO_PREFIX}::ContactEditor
     ${AKO_PREFIX}::AkonadiAgentBase
     ${AKO_PREFIX}::AkonadiWidgets
     ${AKO_PREFIX}::AkonadiXml
