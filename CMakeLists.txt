@@ -109,7 +109,15 @@ set_package_properties(${AKO_PREFIX}AkonadiContact PROPERTIES
     TYPE OPTIONAL
 )
 
-if(${AKO_PREFIX}Akonadi_FOUND AND ${AKO_PREFIX}AkonadiContact_FOUND)
+find_package(${AKO_PREFIX}ContactEditor)
+set_package_properties(${AKO_PREFIX}ContactEditor PROPERTIES
+    DESCRIPTION "Library for editing contacts stored in Akonadi"
+    URL "https://www.kde.org/"
+    PURPOSE "Optionally used for addressbook integration"
+    TYPE OPTIONAL
+)
+
+if(${AKO_PREFIX}Akonadi_FOUND AND ${AKO_PREFIX}AkonadiContact_FOUND AND ${AKO_PREFIX}ContactEditor_FOUND)
    add_definitions(-DHAVE_AKONADI)
 endif()
 

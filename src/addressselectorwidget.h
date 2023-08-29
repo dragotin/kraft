@@ -30,7 +30,10 @@
 #else
 #define AKONADICONTACT_VERSION AKONADI_VERSION
 #endif
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
+#include <AkonadiContactEditor/Akonadi/ContactViewer>
+#include <AkonadiContactEditor/Akonadi/ContactEditorDialog>
+#elif AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
 #include <AkonadiContact/Akonadi/ContactViewer>
 #include <AkonadiContact/Akonadi/ContactEditorDialog>
 #else
@@ -66,7 +69,11 @@ class KraftContactViewer : public QWidget
 
 private:
 #ifdef HAVE_AKONADI
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
+    ContactEditor::ContactViewer *_contactViewer;
+#else
     Akonadi::ContactViewer *_contactViewer;
+#endif
 #endif
 };
 
@@ -124,7 +131,11 @@ private:
   QTreeView *_addressTreeView;
   KraftContactViewer *_contactViewer;
 #ifdef HAVE_AKONADI
-  QScopedPointer<Akonadi::ContactEditorDialog> _addressEditor;
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
+    ContactEditor::ContactEditorDialog *_addressEditor;
+#else
+    Akonadi::ContactEditorDialog *_addressEditor;
+#endif
 #endif
 };
 

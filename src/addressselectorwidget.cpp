@@ -235,7 +235,11 @@ KraftContactViewer::KraftContactViewer(QWidget *parent)
     lay->setMargin(0);
     setLayout(lay);
 #ifdef HAVE_AKONADI
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
+    _contactViewer = new ContactEditor::ContactViewer;
+#else
     _contactViewer = new Akonadi::ContactViewer;
+#endif
     _contactViewer->setShowQRCode(false);
 
     lay->addWidget(_contactViewer);
@@ -372,9 +376,12 @@ bool AddressSelectorWidget::backendUp() const
 void AddressSelectorWidget::slotCreateNewContact()
 {
 #ifdef HAVE_AKONADI
-    // FIXME
-_addressEditor.reset(new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::CreateMode, this ));
-_addressEditor->show();
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
+    _addressEditor = new ContactEditor::ContactEditorDialog(ContactEditor::ContactEditorDialog::EditMode, this );
+#else
+    _addressEditor = new Akonadi::ContactEditorDialog(Akonadi::ContactEditorDialog::CreateMode, this );
+#endif
+    _addressEditor->show();
 #endif
 }
 
@@ -398,13 +405,16 @@ void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
 void AddressSelectorWidget::slotEditContact()
 {
 #ifdef HAVE_AKONADI
-
   if( _addressTreeView->selectionModel()->hasSelection() ) {
       QModelIndex index = _addressTreeView->selectionModel()->currentIndex();
     if ( index.isValid() ) {
       const Akonadi::Item item = index.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
       if ( item.isValid() && item.hasPayload<KContacts::Addressee>() ) {
-        _addressEditor.reset(new Akonadi::ContactEditorDialog( Akonadi::ContactEditorDialog::EditMode, this ));
+#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
+        _addressEditor = new ContactEditor::ContactEditorDialog(ContactEditor::ContactEditorDialog::EditMode, this );
+#else
+        _addressEditor = new Akonadi::ContactEditorDialog(Akonadi::ContactEditorDialog::CreateMode, this );
+#endif
         _addressEditor->setContact( item );
         _addressEditor->show();
       }
