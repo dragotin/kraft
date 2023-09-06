@@ -48,7 +48,7 @@ DefaultProvider::DefaultProvider()
 
 DocumentSaverBase& DefaultProvider::documentPersister()
 {
-    const QString p = KraftSettings::self()->xmlDocumentsBasePath();
+    const QString p = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs);
     _persister.setBasePath(p);
     return _persister;
 }
@@ -308,6 +308,144 @@ QString DefaultProvider::locateBinary(const QString& name) const
     const QString bin = QStandardPaths::findExecutable( name );
 
     return bin;
+}
+
+// Creates a new "sub dir" in the kraft v2 dir and creates or links
+// the current symlink to it.
+QString DefaultProvider::createV2BaseDir(const QString& base)
+{
+    QString v2base{base};
+    bool ok {true};
+    QDir currV2Dir{base};
+
+    // get the base dir
+    if (v2base.isEmpty()) {
+        v2base = KraftSettings::self()->kraftV2BaseDir();
+        // should end with v2
+        currV2Dir.setPath(v2base);
+    }
+
+    if (v2base.isEmpty()) {
+        v2base = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+        v2base.append("/v2");
+
+        currV2Dir.setPath(v2base);
+    }
+
+    if (!currV2Dir.exists()) {
+        const auto v2 = currV2Dir.absolutePath();
+        ok = currV2Dir.mkpath(v2);
+    }
+
+    // at this point the path should exist
+
+    if (!ok) {
+        qDebug() << "Can not create the base dir v2 component in" << currV2Dir.path();
+        return QString();
+    }
+
+    // Append a UUID particle
+    ok = false;
+    int cnt{0};
+
+    do {
+        QUuid uuid = QUuid::createUuid();
+        const QString fragment{uuid.toString(QUuid::StringFormat::WithoutBraces).left(5)};
+        ok = currV2Dir.mkdir(fragment);
+        if (ok) {
+            currV2Dir.cd(fragment);
+            currV2Dir.mkdir("numbercycles");
+            currV2Dir.mkdir("xmldoc");
+        }
+        cnt++;
+    } while(!(ok && cnt < 5));
+
+    if (!ok) {
+        return QString();
+    }
+
+    return currV2Dir.absolutePath();
+}
+
+bool DefaultProvider::switchToV2BaseDir(const QString& dirStr)
+{
+    bool ok{false};
+
+    // snip off the md5 fragment
+    const QString fragment = dirStr.split("/", Qt::SkipEmptyParts).last();
+
+    QDir dir(dirStr);
+    if (dir.cdUp()) {
+        const QString linkFile = dir.absoluteFilePath("current");
+        QFile f(linkFile);
+        if (f.exists()) {
+            f.remove();
+        }
+        ok = QFile::link(fragment, linkFile);
+    } else {
+        // the fragment dir could not be created, try again, but only to a limit amount
+        qDebug() << fragment << "could not be created in" << dir.absolutePath();
+        ok = false;
+    }
+
+    if (ok) {
+        KraftSettings::self()->setKraftV2BaseDir(dir.absolutePath());
+    }
+    return ok;
+}
+
+QString DefaultProvider::kraftV2BaseDir(const QString& baseDir)
+{
+    QString v2base{baseDir};
+
+    if (v2base.isEmpty()) {
+        v2base = KraftSettings::self()->kraftV2BaseDir();
+    }
+
+    if (v2base.isEmpty()) {
+        v2base = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+        v2base.append("/v2");
+    }
+
+    v2base.append("/current/");
+
+    QFileInfo fi{v2base};
+    if (! (fi.exists() && fi.isDir()) ) {
+        qWarning() << "KraftV2 base dir does not exist";
+        v2base.clear(); // clear it for error handling
+    }
+    return v2base;
+}
+
+QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
+{
+    QString subdir;
+    switch (dir) {
+    case KraftV2Dir::Root:
+        subdir = "";
+        break;
+    case KraftV2Dir::NumberCycles:
+        subdir = "numbercycles";
+        break;
+    case KraftV2Dir::XmlDocs:
+        subdir = "xmldoc";
+        break;
+    }
+    return subdir;
+}
+
+// Usually baseDir is empty, but not for test cases.
+QString DefaultProvider::kraftV2Dir(KraftV2Dir dir, const QString& baseDir)
+{
+    const QString subdir = kraftV2Subdir(dir);
+
+    // if kraftV2BaseDir returns an empty string, the path does not exist.
+    QString bDir = kraftV2BaseDir(baseDir);
+    if (!bDir.isEmpty()) {
+        QDir d(bDir);
+        bDir = d.absoluteFilePath(subdir);
+    }
+    return bDir;
 }
 
 bool DefaultProvider::writeXmlArchive()

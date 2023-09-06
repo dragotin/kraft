@@ -154,7 +154,7 @@ DocGuardedPtr DocumentMan::openDocumentByUuid(const QString& uuid)
 bool DocumentMan::loadMetaFromFilename(const QString& xmlFile, KraftDoc *doc)
 {
     DocumentSaverXML docLoad;
-    const QString p = KraftSettings::self()->xmlDocumentsBasePath();
+    const QString p = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs);
     docLoad.setBasePath(p);
 
     if (doc && docLoad.loadFromFile(xmlFile, doc, true)) {

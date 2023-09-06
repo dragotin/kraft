@@ -18,8 +18,8 @@
     <entry name="XmlDocPath" type="String">
       <label>The local xml document storage path</label>
     </entry>
-    <entry name="XmlDocumentsBasePath" type="String">
-      <label>The root path of the XML document storage</label>
+    <entry name="KraftV2BaseDir" type="String">
+      <label>The root path of Kraft V2.0</label>
     </entry>
     <entry name="mailUA" type="String">
       <label>Default mail user agent. Set xdg for xdg-email</label>
