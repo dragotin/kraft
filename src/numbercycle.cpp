@@ -22,11 +22,6 @@ NumberCycle::NumberCycle()
 
 }
 
-NumberCycle::NumberCycle( dbID _id )
-  :id( _id )
-{
-}
-
 void NumberCycle::setName( const QString& n )
 {
   mName = n;

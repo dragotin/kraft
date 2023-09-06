@@ -493,20 +493,16 @@ bool loadTotals(const QDomDocument& domDoc, XML::Totals& totals)
 
 } // namespace end
 
+// contains the xmldoc part at the end
 QString DocumentSaverXML::basePath()
 {
-    Q_ASSERT(!_basePath.isEmpty());
+    Q_ASSERT(!_basePath.path().isEmpty());
     return _basePath.path();
 }
 
 void DocumentSaverXML::setBasePath(const QString& path)
 {
     _basePath.setPath(path);
-    if (!path.endsWith("/current")) {
-        if (!_basePath.cd("current/")) {
-            qDebug() << "WRN: XML Saver base dir does not exist:" << _basePath.absolutePath();
-        }
-    }
     qDebug() << "XML Saver set base path" << _basePath.absolutePath();
 }
 
@@ -517,10 +513,11 @@ void DocumentSaverXML::setArchiveMode(bool am)
 
 QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
 {
-    QString path {basePath()};
     const QDate d = doc->date();
     const QString uuid = doc->uuid();
     Q_ASSERT(!uuid.isEmpty());
+
+    QString path {basePath()};
     path.append(QString("/%1/%2/").arg(d.year()).arg(d.month()));
     _basePath.mkpath(path);
 
@@ -646,26 +643,6 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         indx.addEntry(doc, xmlFile);
     }
 
-#if 0
-    if( !doc->isNew() && doc->docTypeChanged() ) {
-        // an existing doc has a new document type. Fix the doc number cycle and pick a new ident
-        DocType dt( doc->docType() );
-        QString ident = dt.generateDocumentIdent( doc->date(), doc->docType(),
-                                                  doc->addressUid() );
-        doc->setIdent( ident );
-    }
-
-    if( doc->isNew() ) {
-        dbID id = KraftDB::self()->getLastInsertID();
-        doc->setDocID( id );
-
-        // get the uniq id and write it into the db
-        DocType dt( doc->docType() );
-        QString ident = dt.generateDocumentIdent( doc->date(), doc->docType(), doc->addressUid() );
-        doc->setIdent( ident );
-
-    saveDocumentPositions( doc );
-#endif
     // qDebug () << "Saved document no " << doc->docID().toString() << endl;
 
     return result;
