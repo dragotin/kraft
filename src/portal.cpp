@@ -96,44 +96,6 @@
 //+-----------+         +--------+  +--------+
 //
 
-
-namespace {
-
-QString initXmlBasePath() {
-   QString basePath = KraftSettings::self()->xmlDocumentsBasePath();
-
-   QFileInfo fi(basePath);
-   if (! (fi.exists() && fi.isDir()) ) {
-       qDebug() << "Document base path does NOT EXIST - clear config file";
-       basePath.clear();
-   }
-
-   if (basePath.isEmpty()) {
-       basePath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-
-       if (!basePath.isEmpty()) {
-           basePath.append("/xmldoc/");
-           QDir d(basePath);
-           if (!d.exists()) {
-               d.mkpath(basePath);
-           }
-       }
-   }
-   if (basePath.isEmpty()) {
-       qDebug() << "Unable to find a root dir for the XML storage";
-       return QString();
-   }
-
-   KraftSettings::setXmlDocumentsBasePath(basePath);
-   basePath.append("current/");
-   XmlDocIndex indx;
-   indx.setBasePath(basePath);
-
-   return basePath;
-}
-
-}
-
 Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
 : QMainWindow( parent ),
   mCmdLineArgs( commandLineParser ),
@@ -479,8 +441,11 @@ void Portal::slotStartupChecks()
     // TODO: Check the document storage and see if the docs are converted already.
 
     // Initialize DocIndex
-    initXmlBasePath();
-
+    const QString basePath = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs);
+    if (!basePath.isEmpty()) {
+        XmlDocIndex indx;
+        indx.setBasePath(basePath);
+    }
     m_portalView->slotBuildView();
     m_portalView->fillCatalogDetails();
     m_portalView->fillSystemDetails();

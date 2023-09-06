@@ -2,13 +2,21 @@
 #include "documentman.h"
 #include "kraftdb.h"
 #include "xmldocindex.h"
-#include "kraftsettings.h"
+#include "defaultprovider.h"
 
 #include <QSqlQuery>
 #include <QStandardPaths>
 #include <QVariant>
 
 namespace {
+
+QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
+{
+  QDomElement elem = doc.createElement( name );
+  QDomText t = doc.createTextNode( value.toHtmlEscaped() );
+  elem.appendChild( t );
+  return elem;
+}
 
 }
 
@@ -20,57 +28,44 @@ DbToXMLConverter::DbToXMLConverter(QObject *parent) : QObject(parent)
 void DbToXMLConverter::convert()
 {
     QMap<int, int> years = yearMap();
+    bool ok {true};
 
-    QString dBase = KraftSettings::self()->xmlDocumentsBasePath(); // something like $HOME/.local/kraft/xmldoc
+    // defaults to $HOME/.local/kraft/v2/current
+    QString dBase = DefaultProvider::self()->createV2BaseDir();
 
     if (dBase.isEmpty()) {
-        qDebug() << "No xml Documents base path found";
+        qDebug() << "A new v2 base path can not be created";
 
         return;
     }
 
-    // Append a uniq part
-    bool ok {false};
-    QString link; // used further down to create the link
-    QDir baseDir;
-    do { // Loop until we find a not yet taken
-        QUuid uuid = QUuid::createUuid();
-        const QString fragment{uuid.toString(QUuid::StringFormat::WithoutBraces).left(5)};
-
-        QFileInfo fi( QString("%1/%2").arg(dBase).arg(fragment));
-        if (!fi.exists()) {
-            baseDir.setPath(fi.absoluteFilePath());
-            baseDir.mkpath(baseDir.absolutePath());
-            link = fragment;
-            qDebug() << "converting XML Documents to" << baseDir.absolutePath() ;
-            ok = true;
-        }
-    } while(!ok);
-
     QList<int> keys = years.keys();
     std::sort(keys.begin(), keys.end());
     int cnt {0};
-    const QString bp {baseDir.path()};
+
+    const QString xmlBase{dBase + "/xmldoc"};
     for (int year : keys) {
-        cnt += convertDocsOfYear(year, baseDir.path());
-        // FIXME Check for errors
+        cnt += convertDocsOfYear(year, xmlBase);
+        // FIXME Check for errors and set ok flag
     }
-    qDebug() << "Done, saved"<< cnt << "docs to"<< baseDir.absolutePath();
+    qDebug() << "Done, saved"<< cnt << "docs to"<< xmlBase;
 
+    // -- Convert the numbercycles
+    int nc_cnt = convertNumbercycles(dBase);
+    qDebug() << "Converted"<< nc_cnt << "numbercycles in"<< dBase;
+
+    if (nc_cnt == 0) {
+        qDebug() << "Could not convert any numbercycles. Smell!";
+        ok = false;
+    }
+
+    // if all was good it is switched to the new base dir
     if (ok) {
-        QDir d(baseDir);
-        d.cdUp();
-        const QString linkFile{d.absoluteFilePath("current")};
+        if (DefaultProvider::self()->switchToV2BaseDir(dBase)) {
 
-        QFile f(linkFile);
-        if (f.exists()) {
-            f.remove();
+            XmlDocIndex indx;
+            Q_UNUSED(indx)
         }
-        ok = QFile::link(link, linkFile);
-    }
-
-    if (ok) {
-        XmlDocIndex indx;
     }
 }
 
@@ -129,6 +124,51 @@ int DbToXMLConverter::convertDocsOfYear(int year, const QString& basePath)
 
         }
         cnt++;
+    }
+    return cnt;
+}
+
+
+int DbToXMLConverter::convertNumbercycles(const QString& baseDir)
+{
+    const QString kncStr{"kraftNumberCycles"};
+    const QString sql {"SELECT id, name, lastIdentNumber, identTemplate FROM numberCycles order by id"};
+    QSqlQuery q;
+    q.prepare(sql);
+
+    q.exec();
+    int cnt{0};
+
+    QDomDocument xmldoc(kncStr);
+    QDomProcessingInstruction instr = xmldoc.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"utf-8\"");
+    xmldoc.appendChild(instr);
+
+    QDomElement root = xmldoc.createElement(kncStr);
+    root.setAttribute("schemaVersion", "1");
+    xmldoc.appendChild( root );
+
+    while( q.next()) {
+        QDomElement cycle = xmldoc.createElement( "cycle" );
+        root.appendChild(cycle);
+        cycle.appendChild(xmlTextElement(xmldoc, "name", q.value(1).toString()));
+        cycle.appendChild(xmlTextElement(xmldoc, "lastNumber", q.value(2).toString()));
+        cycle.appendChild(xmlTextElement(xmldoc, "template", q.value(3).toString()));
+        cycle.appendChild(xmlTextElement(xmldoc, "dbId", q.value(0).toString()));
+        cnt++;
+    }
+
+    const QString xml = xmldoc.toString();
+    QDir dir(baseDir);
+    dir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::NumberCycles));
+
+    bool re;
+    QSaveFile file(dir.absoluteFilePath("numbercycles.xml"));
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
+        re = file.write(xml.toUtf8());
+
+        if (re) {
+            re = file.commit();
+        }
     }
     return cnt;
 }

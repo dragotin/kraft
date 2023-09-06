@@ -27,7 +27,6 @@ class KRAFTCAT_EXPORT NumberCycle
 {
 public:
   NumberCycle();
-  NumberCycle( dbID );
 
   void setName( const QString& );
   QString name();
@@ -41,7 +40,6 @@ public:
   static QString defaultName();
 
 private:
-  dbID id;
   QString mName;
   QString mTemplate;
   int     mCounter;

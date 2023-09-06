@@ -33,6 +33,7 @@ private:
 
     int convertDocsOfYear(int year, const QString& basePath);
     int amountOfDocsOfYear(int year);
+    int convertNumbercycles(const QString &baseDir);
 
 signals:
 

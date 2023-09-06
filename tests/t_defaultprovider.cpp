@@ -150,6 +150,48 @@ private slots:
             qDebug() << "Skipped relative path test, directory share exists.";
         }
     }
+
+    void testKraftV2Dirs()
+    {
+        QTemporaryDir _dir;
+        _dir.setAutoRemove(true);
+
+        const QString p = _dir.path() + "/v2";
+        QString pRoot = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root, p);
+        QCOMPARE(pRoot, QString()); // error case, it does not yet exist, empty is ok
+
+        QDir d(p);
+        QVERIFY(d.mkpath("current/numbercycles"));
+        QVERIFY(d.mkpath("current/mxldoc"));
+
+        pRoot = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root, p);
+        const QString pNumC = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles, p);
+        const QString pXmlD = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs, p);
+        QCOMPARE(p + "/current", pRoot);
+        QCOMPARE(p + "/current/numbercycles", pNumC);
+        QCOMPARE(p + "/current/xmldoc", pXmlD);
+    }
+
+    void createNewBaseDir()
+    {
+        QTemporaryDir _dir;
+        _dir.setAutoRemove(true);
+
+        const QString p{ _dir.path() + "/v2"};
+        QDir d{p};
+        QVERIFY(d.mkpath(p));
+
+        const QString newDir = DefaultProvider::self()->createV2BaseDir(p);
+        QVERIFY(newDir.startsWith(p));
+
+        bool ok = DefaultProvider::self()->switchToV2BaseDir(newDir);
+        QVERIFY(ok);
+
+        QFileInfo fi{p + "/current"};
+        QVERIFY(fi.exists());
+        QVERIFY(fi.isDir());
+
+    }
 };
 
 QTEST_MAIN(T_Defaultprovider)

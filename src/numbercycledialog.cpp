@@ -125,7 +125,7 @@ void NumberCycleDialog::loadCycles()
 
   while ( q.next() ) {
     dbID id( q.value( 0 ).toInt() );
-    NumberCycle nc( id );
+    NumberCycle nc;
     nc.setName( q.value( 1 ).toString() );
     nc.setCounter( q.value( 2 ).toInt() );
     nc.setTemplate( q.value( 3 ).toString() );
