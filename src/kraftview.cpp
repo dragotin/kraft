@@ -584,10 +584,12 @@ void KraftView::refreshPostCard()
     QDate d = m_headerEdit->m_dateEdit->date();
     const QString dStr = Format::toDateString( d, KraftSettings::self()->dateFormat() );
 
+    double fullTax = DocumentMan::self()->tax(d);
+    double redTax = DocumentMan::self()->reducedTax(d);
     const QString preText = kraftDoc->resolveMacros(m_headerEdit->m_teEntry->toPlainText(),
-                                                    positions, kraftDoc->date());
+                                                    positions, d, fullTax, redTax);
     const QString postText = kraftDoc->resolveMacros(m_footerEdit->ui()->m_teSummary->toPlainText(),
-                                                     positions, kraftDoc->date());
+                                                     positions, d, fullTax, redTax);
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->toPlainText(),
                                            getDocument()->ident(),

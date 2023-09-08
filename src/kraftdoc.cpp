@@ -339,7 +339,7 @@ QString KraftDoc::language() const
   *
   * 4. DATE_ADD_DAYS(days): Adds the amount of days to the date delivered in the call parameters
   */
- QString KraftDoc::resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate& date) const
+ QString KraftDoc::resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate& date, double fullTax, double redTax) const
  {
      QString myStr{txtWithMacros};
      QMap<QString, int> seenTags;
@@ -349,21 +349,60 @@ QString KraftDoc::language() const
      QRegExp rxAmount("ITEM_COUNT_WITH_TAG\\(\\s*(\\w+)\\s*\\)");
      QRegExp rxAddDate("DATE_ADD_DAYS\\(\\s*(\\-{0,1}\\d+)\\s*\\)");
      // look for tag SUM_PER_TAG( HNDL )
-     QRegExp rx("SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegExp rx("NETTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegExp rxBrutto("BRUTTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegExp rxVat("VAT_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
 
      int pos{0};
+     QMap<QString, Geld> bruttoSums;
+     QMap<QString, Geld> vatSums;
+     Geld nettoSum;
+
      while ((pos = rx.indexIn(myStr, pos)) != -1) {
-         Geld g;
+
          const QString lookupTag = rx.cap(1);
+         bruttoSums[lookupTag] = Geld();
+         vatSums[lookupTag] = Geld();
 
          for (DocPositionBase *pb : dposList) {
              DocPosition *p = static_cast<DocPosition*>(pb);
              if (!p->toDelete() && p->hasTag(lookupTag)) {
-                 g += p->overallPrice();
+                 Geld netto = p->overallPrice();
+
+                 Geld tax;
+                 if (p->taxType() == DocPositionBase::TaxType::TaxFull)
+                     tax = netto.percent(fullTax);
+                 else if (p->taxType() == DocPositionBase::TaxType::TaxReduced)
+                     tax = netto.percent(redTax);
+
+                 bruttoSums[lookupTag] += netto;
+                 bruttoSums[lookupTag] += tax;
+                 vatSums[lookupTag] += tax;
+                 nettoSum += netto;
              }
          }
 
-         myStr.replace(pos, rx.matchedLength(), g.toLocaleString());
+         myStr.replace(pos, rx.matchedLength(), nettoSum.toLocaleString());
+     }
+
+     // replace the Brutto- and vat tags if exist
+     pos = 0;
+     while ((pos = rxBrutto.indexIn(myStr, pos)) != -1) {
+         const QString lookupTag = rxBrutto.cap(1);
+         if (bruttoSums.contains(lookupTag)) {
+             myStr.replace(pos, rxBrutto.matchedLength(), bruttoSums[lookupTag].toLocaleString());
+         } else {
+             qDebug() << "No Brutto sums computed for" << lookupTag;
+         }
+     }
+
+     // vat tags
+     pos = 0;
+     while ((pos = rxVat.indexIn(myStr, pos)) != -1) {
+         const QString lookupTag = rxVat.cap(1);
+         if (vatSums.contains(lookupTag)) {
+             myStr.replace(pos, rxVat.matchedLength(), vatSums[lookupTag].toLocaleString());
+         }
      }
 
      // generate a list of all tags in any position
@@ -421,12 +460,16 @@ QString KraftDoc::language() const
 
  QString KraftDoc::preText() const
  {
-     const QString myStr = resolveMacros(mPreText, positions(), date());
+     double fullTax = DocumentMan::self()->tax(date());
+     double redTax = DocumentMan::self()->reducedTax(date());
+     const QString myStr = resolveMacros(mPreText, positions(), date(), fullTax, redTax);
      return myStr;
  }
 
  QString KraftDoc::postText() const
  {
-     const QString myStr = resolveMacros(mPostText, positions(), date());
+     double fullTax = DocumentMan::self()->tax(date());
+     double redTax = DocumentMan::self()->reducedTax(date());
+     const QString myStr = resolveMacros(mPostText, positions(), date(), fullTax, redTax);
      return myStr;
  }

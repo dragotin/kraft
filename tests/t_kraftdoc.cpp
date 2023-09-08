@@ -97,15 +97,57 @@ private slots:
         KraftDoc *kraftdoc = &kDoc;
 
         DocPositionList positions = buildPosList();
+        double fullTax = 19.0;
+        double redTax = 7.0;
 
-        const QString tmpl{"This is a template test with SUM_PER_TAG(Work)"};
+        const QString tmpl{"This is a template test with NETTO_SUM_PER_TAG(Work)"};
 
-        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date);
+        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date, fullTax, redTax);
 
         qDebug() << "Expanded text is" << expanded;
         QString shouldBe{tmpl};
         // 0xA0 is a non splitable space, no idea how to hardcode it.
-        shouldBe.replace("SUM_PER_TAG(Work)", "63,00" + QChar(0xA0) + "€");
+        shouldBe.replace("NETTO_SUM_PER_TAG(Work)", "63,00" + QChar(0xA0) + "€");
+        QCOMPARE(expanded, shouldBe);
+    }
+
+    void sumPerTagBrutto() {
+        KraftDoc *kraftdoc = &kDoc;
+
+        DocPositionList positions = buildPosList();
+        double fullTax = 19.0;
+        double redTax = 7.0;
+
+        const QString tmpl{"This is a template test with NETTO_SUM_PER_TAG(Work) and BRUTTO_SUM_PER_TAG(Work) and VAT_SUM_PER_TAG(Work)"};
+
+        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date, fullTax, redTax);
+
+        qDebug() << "Expanded text is" << expanded;
+        QString shouldBe{tmpl};
+        // 0xA0 is a non splitable space, no idea how to hardcode it.
+        shouldBe.replace("NETTO_SUM_PER_TAG(Work)", "63,00" + QChar(0xA0) + "€");
+        shouldBe.replace("BRUTTO_SUM_PER_TAG(Work)", "74,97" + QChar(0xA0) + "€");
+        shouldBe.replace("VAT_SUM_PER_TAG(Work)", "11,97" + QChar(0xA0) + "€");
+        QCOMPARE(expanded, shouldBe);
+    }
+
+    void sumPerTagBruttoNull() {
+        KraftDoc *kraftdoc = &kDoc;
+
+        DocPositionList positions = buildPosList();
+        double fullTax = 19.0;
+        double redTax = 7.0;
+
+        const QString tmpl{"This is a template test with NETTO_SUM_PER_TAG(NoWork) and BRUTTO_SUM_PER_TAG(NoWork) and VAT_SUM_PER_TAG(NoWork)"};
+
+        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date, fullTax, redTax);
+
+        qDebug() << "Expanded text is" << expanded;
+        QString shouldBe{tmpl};
+        // 0xA0 is a non splitable space, no idea how to hardcode it.
+        shouldBe.replace("NETTO_SUM_PER_TAG(NoWork)", "0,00" + QChar(0xA0) + "€");
+        shouldBe.replace("BRUTTO_SUM_PER_TAG(NoWork)", "0,00" + QChar(0xA0) + "€");
+        shouldBe.replace("VAT_SUM_PER_TAG(NoWork)", "0,00" + QChar(0xA0) + "€");
         QCOMPARE(expanded, shouldBe);
     }
 
@@ -114,13 +156,15 @@ private slots:
         KraftDoc *kraftdoc = &kDoc;
 
         DocPositionList positions = buildPosList();
+        double fullTax = 19.0;
+        double redTax = 7.0;
 
-        const QString tmpl{"This is a template test with SUM_PER_TAG(Plants)"};
-        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date);
+        const QString tmpl{"This is a template test with NETTO_SUM_PER_TAG(Plants)"};
+        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date, fullTax, redTax);
 
         QString shouldBe{tmpl};
         // 0xA0 is a non splitable space, no idea how to hardcode it.
-        shouldBe.replace("SUM_PER_TAG(Plants)", "0,00" + QChar(0xA0) + "€");
+        shouldBe.replace("NETTO_SUM_PER_TAG(Plants)", "0,00" + QChar(0xA0) + "€");
         QCOMPARE(expanded, shouldBe);
     }
 
@@ -128,9 +172,11 @@ private slots:
         KraftDoc *kraftdoc = &kDoc;
 
         DocPositionList positions = buildPosList();
+        double fullTax = 19.0;
+        double redTax = 7.0;
 
         const QString tmpl{"This template IF_ANY_HAS_TAG(Work) has the tag Work END_HAS_TAG"};
-        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date);
+        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date, fullTax, redTax);
 
         QString shouldBe{"This template has the tag Work"};
         // 0xA0 is a non splitable space, no idea how to hardcode it.
@@ -141,9 +187,11 @@ private slots:
         KraftDoc *kraftdoc = &kDoc;
 
         DocPositionList positions = buildPosList();
+        double fullTax = 19.0;
+        double redTax = 7.0;
 
         const QString tmpl{"This template IF_ANY_HAS_TAG(Work) has the tag Work without an end"};
-        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date);
+        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date, fullTax, redTax);
 
         QString shouldBe{"This template has the tag Work without an end"};
         // 0xA0 is a non splitable space, no idea how to hardcode it.
@@ -154,9 +202,11 @@ private slots:
         KraftDoc *kraftdoc = &kDoc;
 
         DocPositionList positions = buildPosList();
+        double fullTax = 19.0;
+        double redTax = 7.0;
 
         const QString tmpl{"This template IF_ANY_HAS_TAG(Plants) has the tag Work END_HAS_TAG"};
-        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date);
+        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date, fullTax, redTax);
 
         QString shouldBe{"This template"};
         // 0xA0 is a non splitable space, no idea how to hardcode it.
@@ -167,9 +217,11 @@ private slots:
         KraftDoc *kraftdoc = &kDoc;
 
         DocPositionList positions = buildPosList();
+        double fullTax = 19.0;
+        double redTax = 7.0;
 
         const QString tmpl{"This template has ITEM_COUNT_WITH_TAG(Work) work items"};
-        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date);
+        const QString expanded = kraftdoc->resolveMacros(tmpl, positions, _date, fullTax, redTax);
 
         QString shouldBe{"This template has 2 work items"};
         // 0xA0 is a non splitable space, no idea how to hardcode it.
@@ -181,20 +233,22 @@ private slots:
 
         DocPositionList positions = buildPosList();
         QDate d{2020, 1, 24};
+        double fullTax = 19.0;
+        double redTax = 7.0;
 
         QString tmpl{"This is 12 days later than 24.01.2020: DATE_ADD_DAYS(12)"};
-        QString expanded = kraftdoc->resolveMacros(tmpl, positions, d);
+        QString expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax);
 
         QString shouldBe{"This is 12 days later than 24.01.2020: 05.02.2020"};
         QCOMPARE(expanded, shouldBe);
 
         tmpl = "This is 0 days later than 24.01.2020: DATE_ADD_DAYS(0)";
-        expanded = kraftdoc->resolveMacros(tmpl, positions, d);
+        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax);
         shouldBe = "This is 0 days later than 24.01.2020: 24.01.2020";
         QCOMPARE(expanded, shouldBe);
 
         tmpl = "This is -5 days later than 24.01.2020: DATE_ADD_DAYS(-5)";
-        expanded = kraftdoc->resolveMacros(tmpl, positions, d);
+        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax);
         shouldBe = "This is -5 days later than 24.01.2020: 19.01.2020";
         QCOMPARE(expanded, shouldBe);
     }

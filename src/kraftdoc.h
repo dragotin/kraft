@@ -119,7 +119,7 @@ public:
 
     // take a string with macros and generate the text replacements for the macros
     // with the help of the position list
-    QString resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate &date) const;
+    QString resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate &date, double fullTax, double redTax) const;
 
     // preText is the variant with expanded macros
     QString preText() const;
