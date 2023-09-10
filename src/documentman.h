@@ -37,6 +37,7 @@ class DocumentMan
     DocGuardedPtr copyDocument( const QString& copyFromId );
     DocGuardedPtr openDocument( const QString& );
     DocGuardedPtr openDocumentbyIdent( const QString& ident );
+    void closeDocument(DocGuardedPtr doc);
 
     double tax( const QDate& );
     double reducedTax( const QDate& );
@@ -50,6 +51,8 @@ class DocumentMan
     double mFullTax;
     double mReducedTax;
     QDate  mTaxDate;
+
+    QMap<QString, DocGuardedPtr> _openDocs;
 
 
 };

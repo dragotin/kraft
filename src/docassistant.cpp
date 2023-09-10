@@ -168,9 +168,6 @@ DocAssistant::DocAssistant( QWidget *parent ):
            this,  SLOT( slotUpdateHeaderDocText( const DocText& ) ) );
   connect( mHeaderTemplateProvider, &HeaderTemplateProvider::headerTextToDocument,
            this, &DocAssistant::headerTextTemplate);
-
-  connect( mHeaderTemplateProvider, SIGNAL( headerTextToDocument( const DocText& ) ),
-           this,  SLOT( slotHeaderTextToDocument( const DocText& ) ) );
   connect( mHeaderTemplateProvider, SIGNAL( deleteHeaderText( const DocText& ) ),
            this,  SLOT( slotHeaderTextDeleted( const DocText& ) ) );
   mHeaderTemplateProvider->setSelection( mHeaderSelector );

@@ -549,7 +549,8 @@ void Portal::slotFollowUpDocument()
 {
     const QString locId = m_portalView->docDigestView()->currentDocumentId();
 
-    DocGuardedPtr sourceDoc = DocumentMan::self()->openDocument( locId );
+    DocGuardedPtr sourceDoc = new KraftDoc;
+    sourceDoc->openDocument(locId);
 
     DocType dt( sourceDoc->docType() );
 
@@ -572,7 +573,8 @@ void Portal::slotFollowUpDocument()
     if ( wiz.exec() ) {
         QString selectedId = wiz.copyItemsFromPredecessor();
         if(!selectedId.isEmpty()) {
-            DocGuardedPtr copyDoc = DocumentMan::self()->openDocument( selectedId );
+            DocGuardedPtr copyDoc = new KraftDoc;
+            copyDoc->openDocument(selectedId);
             posToCopy = copyDoc->positions();
             delete copyDoc;
         }
@@ -596,11 +598,12 @@ void Portal::slotCopyDocument( const QString& id )
     return;
   }
   QString oldDocIdent;
-  DocGuardedPtr oldDoc = DocumentMan::self()->openDocument( id );
+  DocGuardedPtr oldDoc = new KraftDoc;
+  oldDoc->openDocument(id);
   if(oldDoc) {
       const DocType dt = oldDoc->docType();
       oldDocIdent = i18nc("Title of the new doc dialog, %1 is the source doc id",
-                          "Create new Document as Copy of %1", oldDoc->ident());
+                          "Create new Document as Copy of %1 (%2)", dt.name(), oldDoc->ident());
       delete oldDoc;
   }
 
@@ -1024,6 +1027,7 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
             mViewMap.remove(doc);
             view->deleteLater();
         }
+        DocumentMan::self()->closeDocument(doc);
 
         // qDebug () << "A view was closed saving and doc is new: " << doc->isNew();
         delete doc;

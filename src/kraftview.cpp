@@ -258,7 +258,6 @@ void KraftView::setupDocHeaderView()
             predecIsVisible = true;
             connect( m_headerEdit->_labFollowup, SIGNAL(linkActivated(QString)),
                      this, SLOT(slotLinkClicked(QString)));
-            delete predecDoc;
         }
     }
     m_headerEdit->_labFollowup->setVisible(predecIsVisible);
