@@ -372,6 +372,49 @@ tab we fill in that we need 3 min per square meter.
 Click on [OK] for saving the result or on [Cancel] for discarding the
 result.
 
+'''
+
+=== Header- and Footer Text Templates
+
+Kraft supports text templates also for the header- and footer-text of documents. Each document type has it's own set of text templates. To access them, open a document of a certain document type in edit mode and use the btn:[show templates] to make the templates visible. In both the header- and footer-section the stored templates become visible.
+
+Directly under the navigation pane on the right side of the window is a list of the names of the available templates. Clicking on one of the names in the list displays the text in the pane below.
+
+Underneath there are buttons located with the following functions from left to right:
+
+. Add the template to the document: This button replaces the text of the document with the selected template.
+. Insert the template to the document: The selected template is inserted to the current place of the cursor in the document.
+. Create a new template: Opens a dialog to enter a complete new template for the current doc type.
+. Edit the current template: Opens the dialog to edit the currently selected template.
+. Delete the current template: Removes the template permanently from the list of available templates.
+
+NOTE: Templates with the name _Standard_ are the default templates for the document type. They are inserted automatically if a document of this type is created.
+
+
+==== Macros
+
+Both the header- and footer-templates can contain so called macros which are replaced with calculated values once the document is rendered to the final output format.
+
+The following list of macros are supported:
+
+- `DATE_ADD_DAYS(<amount_days>)`: Returns the date of the of document plus the number of days specified as parameter to the macro.
+- `ITEM_COUNT_WITH_TAG(<tag>)`: Returns the amount of items tagged with the tag.
+- `NETTO_SUM_PER_TAG(<tag>)`: Returns the netto sum of all items that are tagged with the named tag.
+- `BRUTTO_SUM_PER_TAG(<tag>)`: Returns the brutto sum of all items that are tagged with the named tag.
+- `VAT_SUM_PER_TAG(<tag>)`: Returns the pure tax of all items that are tagged with the named tag.
+- `IF_ANY_HAS_TAG(<tag>)` and `END_HAS_TAG`: Includes the text between the two macros only if there is at least one item that is tagged with the tag.
+
+As an example, this footer text template can be used to automatically generate useful texts:
+
+```
+Please pay this invoice until three weeks after the date of the document, which is the DATE_ADD_DAYS(21).
+
+IF_ANY_HAS_TAG(Material)
+This invoice lists material in ITEM_COUNT_WITH_TAG(Material) items. The net value is NETTO_SUM_PER_TAG(Material),
+plus VAT_SUM_PER_TAG(Material) = BRUTTO_SUM_PER_TAG(Material).
+END_HAS_TAG
+```
+
 We are now ready for the first invoice.
 
 [[Invoice]]

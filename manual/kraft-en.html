@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <meta name="author" content="Ronald Stroethoff, Klaas Freitag">
 <title>The Kraft Handbook</title>
 <style>
@@ -664,6 +664,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <ul class="sectlevel2">
 <li><a href="#_material_catalog">Material Catalog</a></li>
 <li><a href="#_standard_templates">Standard Templates</a></li>
+<li><a href="#_header_and_footer_text_templates">Header- and Footer Text Templates</a></li>
 </ul>
 </li>
 <li><a href="#Invoice">Creating Documents</a>
@@ -1347,6 +1348,94 @@ tab we fill in that we need 3 min per square meter.</p>
 <div class="paragraph">
 <p>Click on [OK] for saving the result or on [Cancel] for discarding the
 result.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_header_and_footer_text_templates">Header- and Footer Text Templates</h3>
+<div class="paragraph">
+<p>Kraft supports text templates also for the header- and footer-text of documents. Each document type has it&#8217;s own set of text templates. To access them, open a document of a certain document type in edit mode and use the <b class="button">show templates</b> to make the templates visible. In both the header- and footer-section the stored templates become visible.</p>
+</div>
+<div class="paragraph">
+<p>Directly under the navigation pane on the right side of the window is a list of the names of the available templates. Clicking on one of the names in the list displays the text in the pane below.</p>
+</div>
+<div class="paragraph">
+<p>Underneath there are buttons located with the following functions from left to right:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the template to the document: This button replaces the text of the document with the selected template.</p>
+</li>
+<li>
+<p>Insert the template to the document: The selected template is inserted to the current place of the cursor in the document.</p>
+</li>
+<li>
+<p>Create a new template: Opens a dialog to enter a complete new template for the current doc type.</p>
+</li>
+<li>
+<p>Edit the current template: Opens the dialog to edit the currently selected template.</p>
+</li>
+<li>
+<p>Delete the current template: Removes the template permanently from the list of available templates.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Templates with the name <em>Standard</em> are the default templates for the document type. They are inserted automatically if a document of this type is created.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_macros">Macros</h4>
+<div class="paragraph">
+<p>Both the header- and footer-templates can contain so called macros which are replaced with calculated values once the document is rendered to the final output format.</p>
+</div>
+<div class="paragraph">
+<p>The following list of macros are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>DATE_ADD_DAYS(&lt;amount_days&gt;)</code>: Returns the date of the of document plus the number of days specified as parameter to the macro.</p>
+</li>
+<li>
+<p><code>ITEM_COUNT_WITH_TAG(&lt;tag&gt;)</code>: Returns the amount of items tagged with the tag.</p>
+</li>
+<li>
+<p><code>NETTO_SUM_PER_TAG(&lt;tag&gt;)</code>: Returns the netto sum of all items that are tagged with the named tag.</p>
+</li>
+<li>
+<p><code>BRUTTO_SUM_PER_TAG(&lt;tag&gt;)</code>: Returns the brutto sum of all items that are tagged with the named tag.</p>
+</li>
+<li>
+<p><code>VAT_SUM_PER_TAG(&lt;tag&gt;)</code>: Returns the pure tax of all items that are tagged with the named tag.</p>
+</li>
+<li>
+<p><code>IF_ANY_HAS_TAG(&lt;tag&gt;)</code> and <code>END_HAS_TAG</code>: Includes the text between the two macros only if there is at least one item that is tagged with the tag.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As an example, this footer text template can be used to automatically generate useful texts:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Please pay this invoice until three weeks after the date of the document, which is the DATE_ADD_DAYS(21).
+
+IF_ANY_HAS_TAG(Material)
+This invoice lists material in ITEM_COUNT_WITH_TAG(Material) items. The net value is NETTO_SUM_PER_TAG(Material),
+plus VAT_SUM_PER_TAG(Material) = BRUTTO_SUM_PER_TAG(Material).
+END_HAS_TAG</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>We are now ready for the first invoice.</p>
@@ -2171,7 +2260,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-04-29 11:03:12 +0200
+Last updated 2023-09-10 18:32:16 +0200
 </div>
 </div>
 </body>
