@@ -1,10 +1,27 @@
+Changes since version 1.0: #########################################
+
+- updated nl translations of the manual
+- update the app translations
+- Fix the application icon
+- Fix the changed Akonadi Prefix, added build switch AKONADI_LEGACY_BUILD
+- More Akonadi related ifdefs
+- Few fixes and improvements to cmake files (eg. #205)
+- cleanup of code and remove endl which removes lots of warnings
+- Allow Macros in pre- and post text, to support date calculations and
+  sum calculation (incl. tax) based on tags
+- more tests
+- Add Button to Allow to insert template pre- and post texts rather than
+  replace the entire text #167
+
+=> release v. 1.1 (2023)
+
 Changes since version 0.98: #########################################
 
 - Have two new merge modes for the watermark tool
 - PDF watermark tool can also append PDF files now
 - Add numbercycle day counter variable (#138)
 - Test improvements and new tests added
-- User manual improvements 
+- User manual improvements
 - Localized screenshots in the user manual (Thx Ronald)
 - Demand and Alternative: Do not overwrite custom prefix
 - Default Demand and Alternative text configurable in prefix dialog
@@ -41,7 +58,7 @@ Changes since version 0.97: #########################################
 - Fix: Drag and drop sorting of items now working properly.
 - Fix: Adopt to new Akonadi v. 5.19
 - Fix: Add predecessor variable to weasyprint template.
-- Fix: Use correct icons everywhere. 
+- Fix: Use correct icons everywhere.
 - Fix: Format of date and time corrected.
 - Fix: Store useful value for the locale in db. For later.
 - Fix: Textselection behaviour consitent
@@ -56,7 +73,7 @@ Changes since version 0.97: #########################################
 Changes since version 0.96: #########################################
 
 Add read only mode to kraft. Documents can not be edited, but viewed
-and printed. Needs to be configured to share database and the PDF 
+and printed. Needs to be configured to share database and the PDF
 store directory.
 
 - Fix: Bring back the checkbox for items, this fixes #103
@@ -73,12 +90,12 @@ store directory.
 Changes since version 0.95: #########################################
 
 - Found new MIT licensed icons to avoid uncertainess with CC license.
-- Allow to use the "add new" button in the doc editor to add new 
+- Allow to use the "add new" button in the doc editor to add new
   catalog templates. It presets the correct chapter.
 
 - Fix: Use the xmlArchivePath correctly (#80)
 - Fix: Handling of Cancel button in template to doc dialog.
-- Fix: Convert newlines in the items to <br> for the weasyprint doc 
+- Fix: Convert newlines in the items to <br> for the weasyprint doc
        generation.
 - Fix: In Followup document: If the standard text for pre and post
        text of the target document type is empty, the one from the
