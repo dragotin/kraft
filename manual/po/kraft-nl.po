@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-09-07 21:31+0200\n"
+"POT-Creation-Date: 2023-09-12 12:28+0200\n"
 "PO-Revision-Date: 2022-09-17 08:44+0200\n"
 "Last-Translator: Ronald Stroethoff <stroet43@zonnet.nl>\n"
 "Language-Team: Dutch <kde-i18n-nl@kde.org>\n"
@@ -35,10 +35,6 @@ msgstr "Inleiding"
 
 #. type: Plain text
 #: kraft.adoc:19
-#| msgid ""
-#| "Kraft is a Qt and KDE application to organize office documents like "
-#| "quotes and invoices in a small business. It eases the creation of these "
-#| "of documents and helps with repeating tasks."
 msgid ""
 "Kraft is a Qt and KDE application to organize office documents like quotes "
 "and invoices in a small business. It eases the creation of documents and "
@@ -51,10 +47,6 @@ msgstr ""
 
 #. type: Plain text
 #: kraft.adoc:21
-#| msgid ""
-#| "With Kraft, there is no need for fiddling with a text processor any more. "
-#| "Documents are created by a few clicks and archived automatically. Kraft "
-#| "generates high quality PDF output for printing, mailing and archiving."
 msgid ""
 "Using Kraft, there is no need for fiddling with a text processor any more. "
 "Documents are created by a few clicks, edited, generated and archived "
@@ -74,16 +66,12 @@ msgstr "Overzicht van de mogelijkheden"
 
 #. type: Plain text
 #: kraft.adoc:25
-#| msgid "Automated creation of offers, invoices and similar documents."
 msgid "Simple creation of offers, invoices and similar documents."
 msgstr ""
 "De eenvoudige creatie van offertes, rekeningen en vergelijkbare documenten."
 
 #. type: Plain text
 #: kraft.adoc:26
-#| msgid ""
-#| "Customer management, deeply integrated in the KDE infrastructure using "
-#| "KAddressbook."
 msgid ""
 "Customer management, deeply integrated with the mature KDE KAddressbook."
 msgstr ""
@@ -94,8 +82,8 @@ msgstr ""
 #: kraft.adoc:27
 msgid "Maintenance of document relations, ie. Partial invoices vs. invoices."
 msgstr ""
-"Beheer van relaties tussen documenten, bv. Partial invoices (Gedeeltelijke"
-" factuur) ten opzichte van invoices (rekening)."
+"Beheer van relaties tussen documenten, bv. Partial invoices (Gedeeltelijke "
+"factuur) ten opzichte van invoices (rekening)."
 
 #. type: Plain text
 #: kraft.adoc:28
@@ -104,7 +92,6 @@ msgstr "Sjablonen voor kop- en voetteksten maar ook voor document-items."
 
 #. type: Plain text
 #: kraft.adoc:29
-#| msgid "Calculation of items."
 msgid "Pre calculation of item prices."
 msgstr "De voorcalculatie van prijzen."
 
@@ -133,25 +120,16 @@ msgstr ""
 #. type: Plain text
 #: kraft.adoc:38
 #, no-wrap
-#| msgid ""
-#| "Kraft is driven by community of users, coders and others. +\n"
-#| "Also this manual needs contributions! +\n"
-#| " +\n"
-#| " Learn more on https://github.com/dragotin/kraft/blob/master/manual/Readme.md[how to contribute]!\n"
 msgid ""
-"Kraft is driven by community of users, coders, artists and others by"
-" voluntary work. +\n"
+"Kraft is driven by community of users, coders, artists and others by voluntary work. +\n"
 "Also this manual needs contributions! +\n"
 " +\n"
-" Learn more on https://github.com/dragotin/kraft/blob/master/manual/Readme.md["
-"how to contribute]!\n"
+" Learn more on https://github.com/dragotin/kraft/blob/master/manual/Readme.md[how to contribute]!\n"
 msgstr ""
-"Kraft wordt door een gemeenschap van gebruikers, programmeurs artiesten en"
-" anderen vrijwilligers gedragen. +\n"
+"Kraft wordt door een gemeenschap van gebruikers, programmeurs artiesten en anderen vrijwilligers gedragen. +\n"
 "Ook dit gebruikershandboek heeft uw hulp nodig om verbeterd te worden. +\n"
 " +\n"
-"Lees hier https://github.com/dragotin/kraft/blob/master/manual/Readme.md[hier]"
-"over hoe u kan bijdragen\n"
+"Lees hier https://github.com/dragotin/kraft/blob/master/manual/Readme.md[hier]over hoe u kan bijdragen\n"
 
 #. type: Title ==
 #: kraft.adoc:40
@@ -165,14 +143,11 @@ msgid ""
 "When Kraft is started for the first time, it automatically enters the "
 "initial setup process."
 msgstr ""
-"Als Kraft voor de eerste keer wordt opgestart, dan komt het automatisch in"
-" een initiële proces voor het maken van instellingen terecht."
+"Als Kraft voor de eerste keer wordt opgestart, dan komt het automatisch in "
+"een initiële proces voor het maken van instellingen terecht."
 
 #. type: Plain text
 #: kraft.adoc:45
-#| msgid ""
-#| "During the initial setup you are asked to select a database to use and "
-#| "give the address of your company."
 msgid ""
 "During the initial setup you are asked to select a database to use and give "
 "the name and address of your company."
@@ -182,14 +157,6 @@ msgstr ""
 
 #. type: Plain text
 #: kraft.adoc:47
-#| msgid ""
-#| "You can fill in your company address (that appears on the printed "
-#| "documents) on two ways: use in the setup procedure the first tab Select "
-#| "from Addressbook for to select your on address in KAddressBook (if you "
-#| "have filled your own address in KaddressBook) or use the second tab "
-#| "Manual entry for to fill in the information of the address from your "
-#| "company by hand. This step is necessary for the correct generation of "
-#| "your documents."
 msgid ""
 "You can fill in your company address (that appears on the printed documents) "
 "in two ways: in the setup procedure use the first tab *Select from "
@@ -206,8 +173,8 @@ msgstr ""
 "KAdressbook uw eigen adres te selecteren (als u in KAdressbook uw eigen "
 "adres heeft ingevuld) of u gebruikt de tweede tab 'Handmatige adres' om "
 "handmatig de informatie van uw bedrijf in te vullen. Deze stap is "
-"noodzakelijk voor de correcte aanmaak van uw documenten, omdat het"
-" automatisch wordt gebruikt in het proces voor de generatie van het document."
+"noodzakelijk voor de correcte aanmaak van uw documenten, omdat het "
+"automatisch wordt gebruikt in het proces voor de generatie van het document."
 
 #. type: Plain text
 #: kraft.adoc:49
@@ -216,20 +183,16 @@ msgstr "image:company_adress1.png[Company adress,float=\"right\"]"
 
 #. type: Plain text
 #: kraft.adoc:52
-#| msgid ""
-#| "After the initial setup, select menu:Preferences[Settings].  That allows "
-#| "to prepare Kraft correctly so it can be used in a useful way."
 msgid ""
 "After the initial setup, select menu:Preferences[Settings].  That allows to "
 "prepare Kraft correctly so it can be used in a proper way."
 msgstr ""
 "Na de basisconfiguratie, selecteert u menu:Voorkeuren[Instellingen]. Hier "
-"kunt u Kraft correct voorbereiden zodat het op de juiste manier gebruikt "
-"kan worden."
+"kunt u Kraft correct voorbereiden zodat het op de juiste manier gebruikt kan "
+"worden."
 
 #. type: Plain text
 #: kraft.adoc:54
-#| msgid "In the Preferences window we have the tabs:"
 msgid "In the Preferences dialog we have the tabs:"
 msgstr "In het dialoogvenster voor de instellingen hebben we de tabs:"
 
@@ -253,13 +216,11 @@ msgstr ""
 
 #. type: Plain text
 #: kraft.adoc:63
-#| msgid "Each of the tabs allows to enter useful values for our use case."
 msgid ""
 "Each of the tabs allows to enter useful values for the specific use case."
 msgstr ""
-"In elke tab is het mogelijk om voor uw specifieke geval realistische waarden"
-" in"
-" te voeren."
+"In elke tab is het mogelijk om voor uw specifieke geval realistische waarden "
+"in te voeren."
 
 #. type: Title ===
 #: kraft.adoc:64
@@ -321,9 +282,9 @@ msgid ""
 "have an unique identifier that identifies the document. There must not be "
 "two documents in Kraft with the same identifier."
 msgstr ""
-"image:numbercycles.png[Numbercycles,float=\"right\"] Elk document moet een"
-" uniek identificatie hebben die het document identificeert. Er mogen in Kraft"
-" geen twee documenten aanwezig zijn met dezelfde identificatie."
+"image:numbercycles.png[Numbercycles,float=\"right\"] Elk document moet een "
+"uniek identificatie hebben die het document identificeert. Er mogen in Kraft "
+"geen twee documenten aanwezig zijn met dezelfde identificatie."
 
 #. type: Plain text
 #: kraft.adoc:85
@@ -332,10 +293,10 @@ msgid ""
 "a concept of so called number cycles.  Number cycles are used to define the "
 "form of the *document number* which is printed on every document."
 msgstr ""
-"De opbouw van het identificatie is in Kraft instelbaar. Hiervoor heeft Kraft"
-" het concept van zogeheten volgnummers. Volgnummers worden gebruikt om de"
-" opbouw van het *documentnummer* te definiëren dat op elk document wordt"
-" geprint."
+"De opbouw van het identificatie is in Kraft instelbaar. Hiervoor heeft Kraft "
+"het concept van zogeheten volgnummers. Volgnummers worden gebruikt om de "
+"opbouw van het *documentnummer* te definiëren dat op elk document wordt "
+"geprint."
 
 #. type: Plain text
 #: kraft.adoc:89
@@ -349,16 +310,16 @@ msgid ""
 "number cycles and edit them clicking on the button btn:[Edit Number "
 "Cycles...]"
 msgstr ""
-"Alle documenten van een bepaald type hebben een identificatie die uit een één"
-" volgnummersysteem komen. Aan elk documenttype is een volgnummersysteem"
-" gekoppeld. Verschillende documenttypes kunnen hetzelfde volgnummersysteem"
-" gebruiken om hun identificatie uit te generen. Op die manier kunnen"
-" bijvoorbeeld de documenttypes Invoice (rekening) en Final Invoice"
-" (eindafrekening) nummers uit dezelfde volgnummersysteem gebruiken, terwijl"
-" ze in Kraft verschillende documenttypes zijn. Volgnummersystemen worden"
-" geïdentificeerd door hun naam. Gebruikers kunnen nieuwe volgnummersystemen"
-" creëren en deze bewerken door op de knop btn:[Volgnummersysteem bewerken...]"
-" te klikken"
+"Alle documenten van een bepaald type hebben een identificatie die uit een "
+"één volgnummersysteem komen. Aan elk documenttype is een volgnummersysteem "
+"gekoppeld. Verschillende documenttypes kunnen hetzelfde volgnummersysteem "
+"gebruiken om hun identificatie uit te generen. Op die manier kunnen "
+"bijvoorbeeld de documenttypes Invoice (rekening) en Final Invoice "
+"(eindafrekening) nummers uit dezelfde volgnummersysteem gebruiken, terwijl "
+"ze in Kraft verschillende documenttypes zijn. Volgnummersystemen worden "
+"geïdentificeerd door hun naam. Gebruikers kunnen nieuwe volgnummersystemen "
+"creëren en deze bewerken door op de knop btn:[Volgnummersysteem bewerken...] "
+"te klikken"
 
 #. type: Plain text
 #: kraft.adoc:91
@@ -367,17 +328,13 @@ msgid ""
 "contain normal, fixed characters and also some variables that are replaced "
 "by the respective values when the document is created."
 msgstr ""
-"De opbouw van de documentnummers worden gedefinieerd in een sjabloon waarin"
-" normale, vaste karakters maar ook enkele variabelen aanwezig kunnen zijn"
-" die worden vervangen door hun respectievelijke waarden bij de creatie van"
-" het document."
+"De opbouw van de documentnummers worden gedefinieerd in een sjabloon waarin "
+"normale, vaste karakters maar ook enkele variabelen aanwezig kunnen zijn die "
+"worden vervangen door hun respectievelijke waarden bij de creatie van het "
+"document."
 
 #. type: Plain text
 #: kraft.adoc:94
-#| msgid ""
-#| "Kraft supports a counter that is incremented for every new document of a "
-#| "certain type.  In addition to the counter, more information can be added "
-#| "to form an useful number, such as constant text or parts of the date."
 msgid ""
 "Each identifier needs to be unique, and thus has to contain a counter. Kraft "
 "supports two types of counter: One (variable `%i`) is incremented globally "
@@ -386,12 +343,12 @@ msgid ""
 "information can be added to the template form an useful number. Examples are "
 "a constant text or parts of the date."
 msgstr ""
-"Elk documentnummer moet uniek zijn, en moet dus een teller hebben. "
-"Kraft kan twee soorten tellers gebruiken: Een type (variabele `%i`) wordt"
-" bij elk nieuw document verhoogt. De andere (variabele `%n`) wordt elke dag"
-" teruggezet en begint dus weer bij 1 op elke nieuwe dag. Behalve de teller"
-" kan extra informatie toegevoegd worden om een bruikbaar documentnummer te"
-" krijgen, zoals een constante tekst of gedeeltes van de datum."
+"Elk documentnummer moet uniek zijn, en moet dus een teller hebben. Kraft kan "
+"twee soorten tellers gebruiken: Een type (variabele `%i`) wordt bij elk "
+"nieuw document verhoogt. De andere (variabele `%n`) wordt elke dag "
+"teruggezet en begint dus weer bij 1 op elke nieuwe dag. Behalve de teller "
+"kan extra informatie toegevoegd worden om een bruikbaar documentnummer te "
+"krijgen, zoals een constante tekst of gedeeltes van de datum."
 
 #. type: Plain text
 #: kraft.adoc:96
@@ -401,11 +358,11 @@ msgid ""
 "with this year or the month April of last year with the month April of this "
 "year and get on this way an impression from the results of your business."
 msgstr ""
-"Het standaard volgnummersysteem dat met Kraft wordt geleverd bevat het jaar,"
-" de maand en een serienummer. Op deze manier kunt u offertes of opdrachten"
-" van het vorige jaar vergelijken met die van dit jaar of van de maand April"
-" van het vorige jaar met de maand April van dit jaar en op die manier een"
-" indruk krijgen van de resultaten van uw bedrijf."
+"Het standaard volgnummersysteem dat met Kraft wordt geleverd bevat het jaar, "
+"de maand en een serienummer. Op deze manier kunt u offertes of opdrachten "
+"van het vorige jaar vergelijken met die van dit jaar of van de maand April "
+"van het vorige jaar met de maand April van dit jaar en op die manier een "
+"indruk krijgen van de resultaten van uw bedrijf."
 
 #. type: Plain text
 #: kraft.adoc:98
@@ -417,20 +374,6 @@ msgstr ""
 #. type: Table
 #: kraft.adoc:115
 #, no-wrap
-#| msgid ""
-#| "| `%y` or `%yyyy` | the year of the document date.\n"
-#| "| `%yy`           | the year of the document (two digits).\n"
-#| "| `%w`            | the week number of the document date.\n"
-#| "| `%ww`           | the week number of the document date with leading zero.\n"
-#| "| `%d`            | the day number of the document date.\n"
-#| "| `%dd`           | the day number of the document date with leading zero.\n"
-#| "| `%m` or `%M`    | the month number of the document date.\n"
-#| "| `%MM`           | the month number with leading zero.\n"
-#| "| `%c`            | the customer id from kaddressbook\n"
-#| "| `%i`            | the unique counter *(mandatory)*\n"
-#| "| `%type`         | the localised doc type (offer, invoice etc.)\n"
-#| "| `%uid`          | the contact id of the client.\n"
-#| "\n"
 msgid ""
 "| `%y` or `%yyyy`  | the year of the document date.\n"
 "| `%yy`            | the year of the document (two digits).\n"
@@ -450,14 +393,11 @@ msgstr ""
 "| `%y` of `%yyyy`   | het jaar van de documentdatum.\n"
 "| `%yy`             | het jaar van de documentdatum (twee cijfers).\n"
 "| `%w`             | het weeknummer van de documentdatum.\n"
-"| `%ww`            | het weeknummer van het documentdatum met een nul (twee"
-" cijfers).\n"
+"| `%ww`            | het weeknummer van het documentdatum met een nul (twee cijfers).\n"
 "| `%d`             | de dag van de week als getal van de documentdatum.\n"
-"| `%dd`            | de dag van de week als getal van het documentdatum met"
-" een nul (wee cijfers).\n"
+"| `%dd`            | de dag van de week als getal van het documentdatum met een nul (wee cijfers).\n"
 "| `%m` of `%M`     | de maand van het documentdatum als getal.\n"
-"| `%MM`            | de maand van het documentdatum als getal met een nul"
-" (twee cijfers).\n"
+"| `%MM`            | de maand van het documentdatum als getal met een nul (twee cijfers).\n"
 "| `%c`             | de ID van de klant in het kaddressbook\n"
 "| `%type`         | het vertaalde doc type (offerte, rekening enz.)\n"
 "| `%uid`           | het contact id van de klant.\n"
@@ -471,8 +411,8 @@ msgid ""
 "A number cycle template needs to contain either `%i` or `%n`, if not, `%i` "
 "is appended automatically."
 msgstr ""
-"In een volgnummersysteem-sjabloon moet naar keuze `%i` of `%n` aanwezig zijn,"
-" als dat niet het geval is dan wordt automatisch `%i` eraan toegevoegd."
+"In een volgnummersysteem-sjabloon moet naar keuze `%i` of `%n` aanwezig "
+"zijn, als dat niet het geval is dan wordt automatisch `%i` eraan toegevoegd."
 
 #. type: Plain text
 #: kraft.adoc:120
@@ -483,11 +423,11 @@ msgid ""
 "leading zeros is desired, `%nnn` has to be put into the template. This works "
 "up to a length of six characters."
 msgstr ""
-"Zowel `%i` als `%n` hebben numerieke waarden. Ze kunnen ook worden"
-" voorafgegaan door extra nullen. De length is afhankelijk van het aantal i's"
-" of n's die in het sjabloon voorkomen. Bijvoorbeeld, als u een dagelijkse"
-" teller met een lengte van drie cijfers en voorloop nullen wenst, dan moet u "
-" `%nnn` in de sjabloon plaatsen. Dit werkt tot een lengte van zes karakters."
+"Zowel `%i` als `%n` hebben numerieke waarden. Ze kunnen ook worden "
+"voorafgegaan door extra nullen. De length is afhankelijk van het aantal i's "
+"of n's die in het sjabloon voorkomen. Bijvoorbeeld, als u een dagelijkse "
+"teller met een lengte van drie cijfers en voorloop nullen wenst, dan moet u  "
+"`%nnn` in de sjabloon plaatsen. Dit werkt tot een lengte van zes karakters."
 
 #. type: delimited block _
 #: kraft.adoc:123
@@ -496,35 +436,135 @@ msgid ""
 "important. With the flexible system of templating Kraft can not prevent "
 "invalid number cycles. It is in the responsibility of the user."
 msgstr ""
-"Opmerking: het \"ontwerp\" van het volgnummersysteem en documentnummers is"
-" erg belangrijk. Door het flexibele systeem van sjablonen in Kraft kan niet"
-" ongeldige volgnummersystemen voorkomen. Dit is de verantwoordelijkheid van"
-" de gebruiker."
+"Opmerking: het \"ontwerp\" van het volgnummersysteem en documentnummers is "
+"erg belangrijk. Door het flexibele systeem van sjablonen in Kraft kan niet "
+"ongeldige volgnummersystemen voorkomen. Dit is de verantwoordelijkheid van "
+"de gebruiker."
+
+#. type: Title ====
+#: kraft.adoc:125
+#, fuzzy, no-wrap
+#| msgid "Template"
+msgid "PDF Template"
+msgstr "Sjabloon"
+
+#. type: Plain text
+#: kraft.adoc:128
+msgid ""
+"In the entry field Template File: the user can select a custom template for "
+"this specific document type."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:130
+msgid ""
+"If the file extension of the template file is `.trml`, the ReportLab based "
+"document converter is used. If the file extension is `.gtmpl`, Kraft "
+"automatically uses the Weasyprint based converter."
+msgstr ""
+
+#. type: delimited block _
+#: kraft.adoc:133
+msgid ""
+"NOTE: The ReportLab system for PDF creation is deprecated in Kraft. Please, "
+"for new templates, always use Grantlee- and Weasyprint based templates."
+msgstr ""
+
+#. type: Title ====
+#: kraft.adoc:135
+#, no-wrap
+msgid "PDF Postprocessing"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:138
+msgid ""
+"After Kraft has created the PDF document it is possible to merge the created "
+"PDF with static, customized PDFs created by the user. With that, it is easy "
+"to add a custom stationery with a logo to the resulting PDF (\"Watermark\")."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:140
+msgid ""
+"The static PDFs should have the same page size as the generated documents. "
+"Keep in mind to use optimized images for logos etc. to not blow up the size "
+"of the result document."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:142
+#, fuzzy
+#| msgid "image:followup_1.png[Folloup document,float=\"right\"]"
+msgid "image:pdfpostproc.png[PDF Postprocessing,float?\"right\"]"
+msgstr "image:followup_1.png[Folloup document,float=\"right\"]"
+
+#. type: Plain text
+#: kraft.adoc:144
+msgid "The watermark options are:"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:146
+#, no-wrap
+msgid "*No Watermark*: No watermark is created\n"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:147
+#, no-wrap
+msgid "*On first page*: The first page of the watermark.pdf is merged with the first page of the result document\n"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:148
+#, no-wrap
+msgid "*Watermark on all pages*: Merges the first page of the watermark PDF to all pages of the result document\n"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:149
+#, no-wrap
+msgid "*alternating*: For this, the watermark PDF needs to have three pages. The first page is merged to the first page of the result document, the second and third page are alternated merge to subsequent pages.\n"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:150
+#, no-wrap
+msgid "*different first and last page*: the PDF needs to have three pages. The first page is merged to the first page of the result document, the third page to the last, and the second to all page between first and last page.\n"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:152
+msgid ""
+"If there is another static PDF document put into the entry field \"Append "
+"PDF:\", it is appended to the generated PDF. With that, Kraft will "
+"automatically add for example terms and conditions documents to the final "
+"document."
+msgstr ""
 
 #. type: Title ===
-#: kraft.adoc:126
+#: kraft.adoc:153
 #, no-wrap
 msgid "Taxes"
 msgstr "Belastingen"
 
 #. type: Plain text
-#: kraft.adoc:130
-#| msgid ""
-#| "In many countries there are two kinds of VAT-taxes for sold products."
+#: kraft.adoc:157
 msgid ""
 "image:taxes.png[Taxes,float=\"right\"] In many countries there are two kinds "
 "of VAT-taxes for sold products."
 msgstr ""
-"image:taxes.png[Taxes,float=\"right\"] In veel landen zijn er twee"
-" BTW-tarieven voor verkochte producten."
+"image:taxes.png[Taxes,float=\"right\"] In veel landen zijn er twee BTW-"
+"tarieven voor verkochte producten."
 
 #. type: Plain text
-#: kraft.adoc:133
+#: kraft.adoc:160
 msgid "A high level and a low level."
 msgstr "Een hoog tarief en een laag tarief."
 
 #. type: Plain text
-#: kraft.adoc:136
+#: kraft.adoc:163
 msgid ""
 "Fill here the appropriate amounts in for the high level and the low level.  "
 "If the tax-level is changing, then you add here the start date with the new "
@@ -535,26 +575,23 @@ msgstr ""
 "de nieuwe belastingtarieven toevoegen."
 
 #. type: Title ===
-#: kraft.adoc:137
+#: kraft.adoc:164
 #, no-wrap
 msgid "Wages"
 msgstr "Salarissen"
 
 #. type: Plain text
-#: kraft.adoc:142
-#| msgid ""
-#| "A list of wage costs is maintained in Kraft. The items are used in "
-#| "templates and during calculation."
+#: kraft.adoc:169
 msgid ""
 "image:wages.png[Wages,float=\"right\"] A list of wage costs is maintained in "
 "Kraft. The items are used in templates and during calculation."
 msgstr ""
-"image:wages.png[Wages,float=\"right\"] In Kraft is een lijst met"
-" salariskosten aanwezig. De items daarin worden in "
-"de sjablonen en in de berekeningen gebruikt."
+"image:wages.png[Wages,float=\"right\"] In Kraft is een lijst met "
+"salariskosten aanwezig. De items daarin worden in de sjablonen en in de "
+"berekeningen gebruikt."
 
 #. type: Plain text
-#: kraft.adoc:145
+#: kraft.adoc:172
 msgid ""
 "All data can be edited, customized and new items can be added in the Kraft "
 "Configuration Dialog reachable through the Settings menu."
@@ -564,7 +601,7 @@ msgstr ""
 "toevoegen ."
 
 #. type: Plain text
-#: kraft.adoc:149
+#: kraft.adoc:176
 msgid ""
 "Remember that these units are later used in the documents, it is therefor "
 "important that you translate them to your own language and to fill in the "
@@ -575,31 +612,26 @@ msgstr ""
 "bedragen invult."
 
 #. type: Title ===
-#: kraft.adoc:150
+#: kraft.adoc:177
 #, no-wrap
 msgid "Units of measurement"
 msgstr "Eenheden"
 
 #. type: Plain text
-#: kraft.adoc:155
-#| msgid ""
-#| "A list of units of measurement is maintained in Kraft. In Kraft "
-#| "Configuration Dialog reachable through the Settings menu can you edit and "
-#| "customize items already in the list, and also can you add new items to "
-#| "the list."
+#: kraft.adoc:182
 msgid ""
 "image:unity.png[Units of measurement,float=\"right\"] A list of units of "
 "measurement is maintained in Kraft. In Kraft Configuration Dialog reachable "
 "through the Settings menu can you edit and customize items already in the "
 "list, and also can you add new items to the list."
 msgstr ""
-"image:unity.png[Units of measurement,float=\"right\"] In Kraft is een"
-" verzameling eenheden aanwezig. In het configuratiedialoog "
-"die u kunt bereiken via het menu-item 'Voorkeuren' kunt u de items die al "
-"aanwezig zijn bewerken, maar u kunt ook nieuwe items toevoegen."
+"image:unity.png[Units of measurement,float=\"right\"] In Kraft is een "
+"verzameling eenheden aanwezig. In het configuratiedialoog die u kunt "
+"bereiken via het menu-item 'Voorkeuren' kunt u de items die al aanwezig zijn "
+"bewerken, maar u kunt ook nieuwe items toevoegen."
 
 #. type: Plain text
-#: kraft.adoc:158
+#: kraft.adoc:185
 msgid ""
 "Remember that these units are later used in the documents, it is therefor "
 "important that you translate them to your own language."
@@ -608,13 +640,13 @@ msgstr ""
 "is daarom belangrijk dat u ze vertaalt naar uw eigen taal."
 
 #. type: Title ===
-#: kraft.adoc:159
+#: kraft.adoc:186
 #, no-wrap
 msgid "Own identity"
 msgstr "Uw eigen identiteit"
 
 #. type: Plain text
-#: kraft.adoc:163
+#: kraft.adoc:190
 msgid ""
 "Check here if the information that you have given during the initial setup "
 "is correct for the use in the documents."
@@ -623,7 +655,7 @@ msgstr ""
 "basisconfiguratie correct is voor het gebruik in de documenten."
 
 #. type: delimited block _
-#: kraft.adoc:168
+#: kraft.adoc:195
 msgid ""
 "WARNING: If you made the choice to use the information from KaddressBook "
 "then is the information from a later manual entry ignored."
@@ -632,7 +664,7 @@ msgstr ""
 "gebruiken dan wordt de informatie die u handmatig toevoegt genegeerd."
 
 #. type: Plain text
-#: kraft.adoc:172
+#: kraft.adoc:199
 msgid ""
 "After we have made some corrections to the configuration, we go back to the "
 "main window.Here we see three tabs:"
@@ -641,67 +673,66 @@ msgstr ""
 "aangebracht, gaan we terug naar het hoofdvenster. Hier zien we drie tabs:"
 
 #. type: Plain text
-#: kraft.adoc:174
+#: kraft.adoc:201
 msgid "Documents"
 msgstr "Documenten"
 
 #. type: Plain text
-#: kraft.adoc:175
+#: kraft.adoc:202
 msgid "Timeline"
 msgstr "Tijdlijn"
 
 #. type: Title ==
-#: kraft.adoc:176 kraft.adoc:178
+#: kraft.adoc:203 kraft.adoc:205
 #, no-wrap
 msgid "Catalogs"
 msgstr "Catalogi"
 
 #. type: Plain text
-#: kraft.adoc:181
+#: kraft.adoc:208
 msgid ""
 "Kraft supports so called Catalogs in which templates for document items are "
 "kept. With the catalogs creating documents can be significantly accellerated "
 "in the day to day business. When creating new documents, the items templates "
 "from the catalogs can easily selected and moved over to the document."
 msgstr ""
-"Kraft gebruikt zogeheten Catalogi waarin sjablonen voor document items worden"
-" bewaard. Door de catalogi te gebruiken kan in het dagelijks gebruik het"
-" creëren van documenten significant worden versneld. Tijdens de creatie van"
-" nieuwe documenten, kunt u in de catalogi de items-sjablonen eenvoudig"
-" selecteren en naar het document verplaatsen."
+"Kraft gebruikt zogeheten Catalogi waarin sjablonen voor document items "
+"worden bewaard. Door de catalogi te gebruiken kan in het dagelijks gebruik "
+"het creëren van documenten significant worden versneld. Tijdens de creatie "
+"van nieuwe documenten, kunt u in de catalogi de items-sjablonen eenvoudig "
+"selecteren en naar het document verplaatsen."
 
 #. type: Plain text
-#: kraft.adoc:183
+#: kraft.adoc:210
 msgid ""
 "Since templates are organized in chapters entire documents can be prepared "
 "in different chapters to be used as template documents."
 msgstr ""
-"Omdat sjablonen worden georganiseerd in mappen, kunnen hele documenten worden"
-" voorbereid en opgeborgen in verschillende mappen om later als"
-" documentsjabloon te worden gebruikt."
+"Omdat sjablonen worden georganiseerd in mappen, kunnen hele documenten "
+"worden voorbereid en opgeborgen in verschillende mappen om later als "
+"documentsjabloon te worden gebruikt."
 
 #. type: Plain text
-#: kraft.adoc:185
+#: kraft.adoc:212
 msgid ""
 "Of course the items in the documents can be edited after they got picked "
 "from a catalog."
 msgstr ""
-"Uiteraard kunnen de items in de documenten worden bewerkt nadat ze in een"
-" catalogus zijn geselecteerd."
+"Uiteraard kunnen de items in de documenten worden bewerkt nadat ze in een "
+"catalogus zijn geselecteerd."
 
 #. type: Plain text
-#: kraft.adoc:187
-#| msgid "In the tab catalog are two different catalogs:"
+#: kraft.adoc:214
 msgid "By default Kraft comes with two different catalogs:"
 msgstr "Kraft komt standaard met twee verschillende catalogi:"
 
 #. type: Plain text
-#: kraft.adoc:189
+#: kraft.adoc:216
 msgid "`Material`"
 msgstr "`Material`"
 
 #. type: Plain text
-#: kraft.adoc:192
+#: kraft.adoc:219
 msgid ""
 "A catalog of material that are sold, with their purchase prices, the profit "
 "and the sell-price."
@@ -710,35 +741,34 @@ msgstr ""
 "winst en hun verkoopprijs."
 
 #. type: Plain text
-#: kraft.adoc:194
+#: kraft.adoc:221
 msgid "and `Standard Templates`"
 msgstr "en `Standard Templates`"
 
 #. type: Plain text
-#: kraft.adoc:196
+#: kraft.adoc:223
 msgid "A catalog of standard recipes of work like planting trees."
 msgstr ""
 "Een catalogus met standaard recepten voor werkzaamheden zoals het planten "
 "van bomen."
 
 #. type: Plain text
-#: kraft.adoc:199
+#: kraft.adoc:226
 msgid ""
 "Both catalogs can have chapters and sub-chapters for to organize your "
 "templates. First we are going to fill in the"
 msgstr ""
-"Beide catalogussen kunnen mappen en submappen hebben om daar uw sjablonen in"
-" op te bergen . Eerst gaan we gegevens toevoegen aan de "
+"Beide catalogussen kunnen mappen en submappen hebben om daar uw sjablonen in "
+"op te bergen . Eerst gaan we gegevens toevoegen aan de "
 
 #. type: Title ===
-#: kraft.adoc:200
+#: kraft.adoc:227
 #, no-wrap
-#| msgid "Material-catalog"
 msgid "Material Catalog"
 msgstr "Materiaalcatalogus"
 
 #. type: Plain text
-#: kraft.adoc:205
+#: kraft.adoc:232
 msgid ""
 "A catalog of material that are sold, with their purchase prices, the profit "
 "and the sell-price. First we are going to add new chapters and subchapters."
@@ -748,13 +778,13 @@ msgstr ""
 "toevoegen."
 
 #. type: Title ====
-#: kraft.adoc:206
+#: kraft.adoc:233
 #, no-wrap
 msgid "New chapters"
 msgstr "Nieuwe mappen"
 
 #. type: Plain text
-#: kraft.adoc:210
+#: kraft.adoc:237
 msgid ""
 "Select with the mouse the column-name `material`, select now in the context-"
 "menu [Add a sub chapter]"
@@ -763,18 +793,18 @@ msgstr ""
 "contextmenu [Submap toevoegen]"
 
 #. type: Plain text
-#: kraft.adoc:212
+#: kraft.adoc:239
 msgid "and add an extra chapter like `Trees`"
 msgstr "en voeg een extra map zoals `Bomen` toe"
 
 #. type: Title ====
-#: kraft.adoc:213
+#: kraft.adoc:240
 #, no-wrap
 msgid "New sub chapters"
 msgstr "Nieuwe submappen"
 
 #. type: Plain text
-#: kraft.adoc:221
+#: kraft.adoc:248
 msgid ""
 "We are going to ad sub chapters in the map `Trees`. Select with the mouse "
 "the name of the chapter where you like to add a subchapter, select now in "
@@ -789,13 +819,13 @@ msgstr ""
 "het materiaal onder te verdelen, gaan we het materiaal zelf toevoegen."
 
 #. type: Title ====
-#: kraft.adoc:222
+#: kraft.adoc:249
 #, no-wrap
 msgid "New template"
 msgstr "Nieuw sjabloon"
 
 #. type: Plain text
-#: kraft.adoc:227
+#: kraft.adoc:254
 msgid ""
 "Select with the mouse the name of the sub-chapter or chapter where you like "
 "to add a material.  Select the sub map Loaf trees and select now in the "
@@ -806,88 +836,88 @@ msgstr ""
 "nieuw sjabloon."
 
 #. type: Plain text
-#: kraft.adoc:230
+#: kraft.adoc:257
 msgid ""
 "Add the extra materials `coconut tree`, `apple tree` and `pine-apple tree`."
 msgstr ""
 "Voeg de nieuwe bomen `kokosnoot-boom`, `appelboom` en `ananasboom` toe."
 
 #. type: Plain text
-#: kraft.adoc:232
+#: kraft.adoc:259
 msgid "Fill in the price that we have paid."
 msgstr "Vul de prijs in die we hebben betaald."
 
 #. type: Plain text
-#: kraft.adoc:234
+#: kraft.adoc:261
 msgid "Fill in the profit that we want to have on the material"
 msgstr "Vul de winst in die we willen hebben op het materiaal."
 
 #. type: Plain text
-#: kraft.adoc:236
+#: kraft.adoc:263
 msgid "And fill in how much is in a packet."
 msgstr "En vul in per hoeveel ze verpakt zijn."
 
 #. type: Plain text
-#: kraft.adoc:239
+#: kraft.adoc:266
 msgid ""
 "image:catalog_material.png[Material catalog,float=\"right\"] After this we "
 "add also in the map 'Wood' a item for a 'support pole' for later use with "
 "its price."
 msgstr ""
-"image:catalog_material.png[Material catalog,float=\"right\"] Hierna voegen we"
-" ook in de map 'Wood' een item toe voor 'boompaal' met zijn prijs voor later"
-" gebruik."
+"image:catalog_material.png[Material catalog,float=\"right\"] Hierna voegen "
+"we ook in de map 'Wood' een item toe voor 'boompaal' met zijn prijs voor "
+"later gebruik."
 
 #. type: Plain text
-#: kraft.adoc:241
+#: kraft.adoc:268
 msgid "Now we are going to:"
 msgstr "Nu gaan we naar:"
 
 #. type: Title ===
-#: kraft.adoc:242
+#: kraft.adoc:269
 #, no-wrap
 msgid "Standard Templates"
 msgstr "Standard Templates"
 
 #. type: Plain text
-#: kraft.adoc:245
+#: kraft.adoc:272
 msgid "This is a catalog of standard recipes of work like:"
 msgstr "Dit is een catalogus met standaard recepten voor werkzaamheden zoals:"
 
 #. type: Plain text
-#: kraft.adoc:247
+#: kraft.adoc:274
 msgid "planting trees"
 msgstr "Bomen planten"
 
 #. type: Plain text
-#: kraft.adoc:248
+#: kraft.adoc:275
 msgid "cutting grass"
 msgstr "Gras maaien"
 
 #. type: Plain text
-#: kraft.adoc:249
+#: kraft.adoc:276
 msgid "transport costs"
 msgstr "Transportkosten"
 
 #. type: Plain text
-#: kraft.adoc:250
+#: kraft.adoc:277
 msgid "planting grass"
 msgstr "Graszoden leggen"
 
 #. type: Plain text
-#: kraft.adoc:251
+#: kraft.adoc:278
 msgid "sowing grass-seed"
 msgstr "Graszaad zaaien"
 
 #. type: Plain text
-#: kraft.adoc:253
+#: kraft.adoc:280
 msgid "We add here the standard work of planting a tree."
 msgstr ""
 "We gaan hier de standaard werkzaamheden voor het planten van een boom "
 "toevoegen."
 
 #. type: Plain text
-#: kraft.adoc:256
+#: kraft.adoc:283
 msgid ""
 "Select with the mouse the name of the chapter [Work] where you like to add "
 "the new template,"
@@ -896,52 +926,51 @@ msgstr ""
 "aan wilt toevoegen,"
 
 #. type: Plain text
-#: kraft.adoc:258
+#: kraft.adoc:285
 msgid "select now the context-menu [New template]"
 msgstr "selecteer nu in het contextmenu btn:[Nieuw sjabloon]"
 
 #. type: Plain text
-#: kraft.adoc:260
+#: kraft.adoc:287
 msgid "and the extra templates `Plant tree` and `cut grass`."
 msgstr "en voeg de extra sjablonen `Boom planten` en `Gras maaien` toe."
 
 #. type: Plain text
-#: kraft.adoc:262
+#: kraft.adoc:289
 msgid "After we made the new template, a window opens with 4 tabs:"
 msgstr ""
 "Nadat we de nieuwe sjabloon hebben aangemaakt, opent een venster met 4 tabs:"
 
 #. type: Title ====
-#: kraft.adoc:264 kraft.adoc:270
+#: kraft.adoc:291 kraft.adoc:297
 #, no-wrap
 msgid "Template"
 msgstr "Sjabloon"
 
 #. type: Title ====
-#: kraft.adoc:265 kraft.adoc:282
+#: kraft.adoc:292 kraft.adoc:309
 #, no-wrap
 msgid "Time calculation"
 msgstr "Post arbeid"
 
 #. type: Plain text
-#: kraft.adoc:266
+#: kraft.adoc:293
 msgid "Fix costs"
 msgstr "Vaste kosten"
 
 #. type: Title ====
-#: kraft.adoc:267 kraft.adoc:319
+#: kraft.adoc:294 kraft.adoc:346
 #, no-wrap
 msgid "Material"
 msgstr "Materiaal"
 
 #. type: Plain text
-#: kraft.adoc:269
+#: kraft.adoc:296
 msgid "First we go to the tab:"
 msgstr "Eerst gaan we naar de tab:"
 
 #. type: Plain text
-#: kraft.adoc:274
-#| msgid "We give here the name of the new standard template like `Plant tree`"
+#: kraft.adoc:301
 msgid ""
 "We give here the name of the new standard template like `Plant tree` image:"
 "catalog_standard.png[Standard catalog,float=\"right\"]"
@@ -950,13 +979,13 @@ msgstr ""
 "planten` image:catalog_standard.png[Standard catalog,float=\"right\"]"
 
 #. type: delimited block _
-#: kraft.adoc:277
+#: kraft.adoc:304
 msgid "WARNING: be careful, this name is later used in the invoice"
 msgstr ""
 "Pas op: wees voorzichtig, dit is de naam die later op de rekening komt."
 
 #. type: Plain text
-#: kraft.adoc:281
+#: kraft.adoc:308
 msgid ""
 "we select that this is per piece and that the margin is 8% and that the full "
 "VAT is applicable."
@@ -965,18 +994,18 @@ msgstr ""
 "BTW-tarief van toepassing is."
 
 #. type: Plain text
-#: kraft.adoc:285
+#: kraft.adoc:312
 msgid "We fill here in a number of work with the time:"
 msgstr "We vullen hier een aantal werkzaamheden met hun tijd in:"
 
 #. type: Block title
-#: kraft.adoc:286
+#: kraft.adoc:313
 #, no-wrap
 msgid "Spent time"
 msgstr "Gebruikte tijd"
 
 #. type: Table
-#: kraft.adoc:293
+#: kraft.adoc:320
 #, no-wrap
 msgid ""
 "|Dig hole |32 min. |worker\n"
@@ -990,8 +1019,7 @@ msgstr ""
 "|Water geven |5 min. |worker\n"
 
 #. type: Plain text
-#: kraft.adoc:297
-#| msgid "The cost for worker which we have earlier filled in is now used."
+#: kraft.adoc:324
 msgid ""
 "The cost for worker which we have earlier filled in is now used.  image:"
 "catalog_standard_work.png[Time calculation,float=\"right\"]"
@@ -1000,7 +1028,7 @@ msgstr ""
 "gebruikt.image:catalog_standard_work.png[Time calculation,float=\"right\"]"
 
 #. type: delimited block _
-#: kraft.adoc:301
+#: kraft.adoc:328
 msgid ""
 "NOTE: in the invoice we see later only Plant tree, we will not see the parts "
 "dig hole,place tree,fill hole,give water"
@@ -1009,85 +1037,85 @@ msgstr ""
 "niet de onderdelen Gat graven, boom plaatsen, Gat opvullen, Water geven zien."
 
 #. type: Plain text
-#: kraft.adoc:304
+#: kraft.adoc:331
 msgid "Now we go to the tab"
 msgstr "We gaan nu naar de tab:"
 
 #. type: Title ====
-#: kraft.adoc:305
+#: kraft.adoc:332
 #, no-wrap
 msgid "Fixed costs"
 msgstr "Vaste kosten"
 
 #. type: Plain text
-#: kraft.adoc:308
+#: kraft.adoc:335
 msgid "and fill in:"
 msgstr "en we vullen in:"
 
 #. type: Block title
-#: kraft.adoc:309
+#: kraft.adoc:336
 #, no-wrap
 msgid "Fixed item"
 msgstr "Vast item"
 
 #. type: Table
-#: kraft.adoc:313
+#: kraft.adoc:340
 #, no-wrap
 msgid "|Transportcost |35 euro |1 pcs.\n"
 msgstr "|Transportkosten |35 euro |1 pcs.\n"
 
 #. type: Plain text
-#: kraft.adoc:316
+#: kraft.adoc:343
 msgid "image:catalog_standard_fixed_cost.png[Fixed cost,float=\"right\"]"
 msgstr "image:catalog_standard_fixed_cost.png[Fixed cost,float=\"right\"]"
 
 #. type: Plain text
-#: kraft.adoc:318
+#: kraft.adoc:345
 msgid "After this we go to the tab:"
 msgstr "Hierna gaan we naar de tab:"
 
 #. type: Plain text
-#: kraft.adoc:323
+#: kraft.adoc:350
 msgid ""
 "Here we select btn:[next], after which the window [Add Material to "
 "Calculation] opens for a selection of material.  We navigate to the map "
 "'wood' where we select the 'support pole'."
 msgstr ""
-"Hier kiezen we btn:[volgende], waarna het venster [Materiaal toevoegen aan"
-" Berekening] opent voor de selectie van materiaal. We gaan dan naar de map "
+"Hier kiezen we btn:[volgende], waarna het venster [Materiaal toevoegen aan "
+"Berekening] opent voor de selectie van materiaal. We gaan dan naar de map "
 "'wood' waar we de 'boompaal' selecteren."
 
 #. type: Block title
-#: kraft.adoc:324
+#: kraft.adoc:351
 #, no-wrap
 msgid "Used materials"
 msgstr "Gebruikte materialen"
 
 #. type: Table
-#: kraft.adoc:328
+#: kraft.adoc:355
 #, no-wrap
 msgid "|1 |support pole |3,5 euro\n"
 msgstr "|1 |boompaal |3,5 euro\n"
 
 #. type: Plain text
-#: kraft.adoc:331
+#: kraft.adoc:358
 msgid "image:catalog_standard_material.png[Material,float=\"right\"]"
 msgstr "image:catalog_standard_material.png[Material,float=\"right\"]"
 
 #. type: Plain text
-#: kraft.adoc:333
+#: kraft.adoc:360
 msgid "We go now back to the first tab template"
 msgstr "We gaan nu terug naar de eerste tab 'Sjabloon'"
 
 #. type: Plain text
-#: kraft.adoc:336
+#: kraft.adoc:363
 msgid ""
 "On the first tab [template], we can now see the overall cost per one unit"
 msgstr ""
 "In de eerste tab [Sjabloon], kunnen we nu de totale kosten per eenheid zien."
 
 #. type: Plain text
-#: kraft.adoc:339
+#: kraft.adoc:366
 msgid ""
 "Click on [OK] for saving the result or on [cancel] for discarding the result."
 msgstr ""
@@ -1095,12 +1123,12 @@ msgstr ""
 "resultaat te verwijderen."
 
 #. type: Plain text
-#: kraft.adoc:341
+#: kraft.adoc:368
 msgid "We make a second template `cut grass`"
 msgstr "We maken een tweede sjabloon 'Gras maaien'."
 
 #. type: Plain text
-#: kraft.adoc:344
+#: kraft.adoc:371
 msgid ""
 "we fill in `cut grass`, as unit we choose sm (square meter), on the second "
 "tab we fill in that we need 3 min per square meter."
@@ -1110,7 +1138,7 @@ msgstr ""
 "nodig hebben per vierkante meter."
 
 #. type: Plain text
-#: kraft.adoc:347
+#: kraft.adoc:374
 msgid ""
 "Click on [OK] for saving the result or on [Cancel] for discarding the result."
 msgstr ""
@@ -1118,44 +1146,207 @@ msgstr ""
 "resultaat te verwijderen."
 
 #. type: Plain text
-#: kraft.adoc:349
+#: kraft.adoc:376
+msgid "'''"
+msgstr ""
+
+#. type: Title ===
+#: kraft.adoc:377
+#, no-wrap
+msgid "Header- and Footer Text Templates"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:380
+msgid ""
+"Kraft supports text templates also for the header- and footer-text of "
+"documents. Each document type has it's own set of text templates. To access "
+"them, open a document of a certain document type in edit mode and use the "
+"btn:[show templates] to make the templates visible. In both the header- and "
+"footer-section the stored templates become visible."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:382
+msgid ""
+"Directly under the navigation pane on the right side of the window is a list "
+"of the names of the available templates. Clicking on one of the names in the "
+"list displays the text in the pane below."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:384
+msgid ""
+"Underneath there are buttons located with the following functions from left "
+"to right:"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:386
+msgid ""
+"Add the template to the document: This button replaces the text of the "
+"document with the selected template."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:387
+msgid ""
+"Insert the template to the document: The selected template is inserted to "
+"the current place of the cursor in the document."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:388
+msgid ""
+"Create a new template: Opens a dialog to enter a complete new template for "
+"the current doc type."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:389
+msgid ""
+"Edit the current template: Opens the dialog to edit the currently selected "
+"template."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:390
+msgid ""
+"Delete the current template: Removes the template permanently from the list "
+"of available templates."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:392
+msgid ""
+"Templates with the name _Standard_ are the default templates for the "
+"document type. They are inserted automatically if a document of this type is "
+"created."
+msgstr ""
+
+#. type: Title ====
+#: kraft.adoc:394
+#, no-wrap
+msgid "Macros"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:397
+msgid ""
+"Both the header- and footer-templates can contain so called macros which are "
+"replaced with calculated values once the document is rendered to the final "
+"output format."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:399
+msgid "The following list of macros are supported:"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:401
+msgid ""
+"`DATE_ADD_DAYS(<amount_days>)`: Returns the date of the of document plus the "
+"number of days specified as parameter to the macro."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:402
+msgid ""
+"`ITEM_COUNT_WITH_TAG(<tag>)`: Returns the amount of items tagged with the "
+"tag."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:403
+msgid ""
+"`NETTO_SUM_PER_TAG(<tag>)`: Returns the netto sum of all items that are "
+"tagged with the named tag."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:404
+msgid ""
+"`BRUTTO_SUM_PER_TAG(<tag>)`: Returns the brutto sum of all items that are "
+"tagged with the named tag."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:405
+msgid ""
+"`VAT_SUM_PER_TAG(<tag>)`: Returns the pure tax of all items that are tagged "
+"with the named tag."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:406
+msgid ""
+"`IF_ANY_HAS_TAG(<tag>)` and `END_HAS_TAG`: Includes the text between the two "
+"macros only if there is at least one item that is tagged with the tag."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:408
+msgid ""
+"As an example, this footer text template can be used to automatically "
+"generate useful texts:"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:411
+msgid ""
+"``` Please pay this invoice until three weeks after the date of the "
+"document, which is the DATE_ADD_DAYS(21)."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:417
+msgid ""
+"IF_ANY_HAS_TAG(Material)  This invoice lists material in "
+"ITEM_COUNT_WITH_TAG(Material) items. The net value is "
+"NETTO_SUM_PER_TAG(Material), plus VAT_SUM_PER_TAG(Material) = "
+"BRUTTO_SUM_PER_TAG(Material).  END_HAS_TAG ```"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:419
 msgid "We are now ready for the first invoice."
 msgstr "We zijn nu klaar voor de eerste rekening."
 
 #. type: Title ==
-#: kraft.adoc:351
+#: kraft.adoc:421
 #, no-wrap
 msgid "Creating Documents"
 msgstr "De creatie van documenten"
 
 #. type: Title ===
-#: kraft.adoc:353
+#: kraft.adoc:423
 #, no-wrap
 msgid "The first Invoice"
 msgstr "De eerste rekening"
 
 #. type: Plain text
-#: kraft.adoc:356
+#: kraft.adoc:426
 msgid "Open the tab btn:[documents]"
 msgstr "Open de tab btn:[Documenten]"
 
 #. type: Plain text
-#: kraft.adoc:358 kraft.adoc:463
+#: kraft.adoc:428 kraft.adoc:533
 msgid "Click on btn:[create document]"
 msgstr "Klik op btn:[Nieuw document]"
 
 #. type: Plain text
-#: kraft.adoc:360
+#: kraft.adoc:430
 msgid "The window document [creation wizard opens]."
 msgstr "Het document-venster [creation wizard] opent."
 
 #. type: Plain text
-#: kraft.adoc:362
+#: kraft.adoc:432
 msgid "Select in document type `invoice`."
 msgstr "Selecteer in document type `invoice` (rekening)."
 
 #. type: Plain text
-#: kraft.adoc:365
+#: kraft.adoc:435
 msgid ""
 "Fill in on the whiteboard content a short text about what the invoice is, "
 "like: `cut grass and planted tree for mister Jonson`"
@@ -1164,17 +1355,17 @@ msgstr ""
 "maaien en boom planten voor de heer Jansen` ."
 
 #. type: Plain text
-#: kraft.adoc:367 kraft.adoc:472
+#: kraft.adoc:437 kraft.adoc:542
 msgid "Click on btn:[next]"
 msgstr "Klik op btn:[Volgende]"
 
 #. type: Plain text
-#: kraft.adoc:369 kraft.adoc:474
+#: kraft.adoc:439 kraft.adoc:544
 msgid "Select on the new window the name and address from the client."
 msgstr "Selecteer in het volgende venster de naam en adres van de klant."
 
 #. type: Plain text
-#: kraft.adoc:372 kraft.adoc:477
+#: kraft.adoc:442 kraft.adoc:547
 msgid ""
 "(if the name and address is not there, click then on btn:[new contact] or on "
 "btn:[edit contact] if you want to edit the contact)"
@@ -1184,37 +1375,37 @@ msgstr ""
 "bewerken)"
 
 #. type: Plain text
-#: kraft.adoc:374 kraft.adoc:479
+#: kraft.adoc:444 kraft.adoc:549
 msgid "Click on btn:[OK]."
 msgstr "Klik op btn:[OK]."
 
 #. type: Plain text
-#: kraft.adoc:376
+#: kraft.adoc:446
 msgid "Now opens the window document [items]."
 msgstr "Nu opent het venster document-items."
 
 #. type: Plain text
-#: kraft.adoc:378
+#: kraft.adoc:448
 msgid "this window has 2 tabs and the 3 buttons on the top:"
 msgstr "Dit venster heeft bovenaan 2 tabs en 3 knoppen:"
 
 #. type: Plain text
-#: kraft.adoc:380 kraft.adoc:485
+#: kraft.adoc:450 kraft.adoc:555
 msgid "btn:[Add item...],"
 msgstr "btn:[Item toevoegen...],"
 
 #. type: Plain text
-#: kraft.adoc:381 kraft.adoc:486
+#: kraft.adoc:451 kraft.adoc:556
 msgid "btn:[Add discount item],"
 msgstr "btn:[Korting geven],"
 
 #. type: Plain text
-#: kraft.adoc:382 kraft.adoc:487
+#: kraft.adoc:452 kraft.adoc:557
 msgid "btn:[Show templates]."
 msgstr "btn:[Document tonen]."
 
 #. type: Plain text
-#: kraft.adoc:386
+#: kraft.adoc:456
 msgid ""
 "In the left tab you can see all the items that we want to place on the "
 "invoice, on the right tab we see the text from the header, the total price "
@@ -1225,7 +1416,7 @@ msgstr ""
 "prijs en de voettekst."
 
 #. type: Plain text
-#: kraft.adoc:390
+#: kraft.adoc:460
 msgid ""
 "If you click on the text of the header or the footer on the right side then "
 "the window changes in such a way that you can edit the header or the footer."
@@ -1235,7 +1426,7 @@ msgstr ""
 "kan bewerken."
 
 #. type: Plain text
-#: kraft.adoc:393
+#: kraft.adoc:463
 msgid ""
 "Adapt the header and the footer to your situation, on the footer you can "
 "place a text: `We make your garden-dream come to reality.`."
@@ -1244,12 +1435,12 @@ msgstr ""
 "bijvoorbeeld een tekst plaatsen als: Wij maken uw tuindroom werkelijkheid."
 
 #. type: Plain text
-#: kraft.adoc:395 kraft.adoc:489
+#: kraft.adoc:465 kraft.adoc:559
 msgid "Click on the button btn:[Show templates]."
 msgstr "Klik op de knop btn:[Document tonen]."
 
 #. type: Plain text
-#: kraft.adoc:399
+#: kraft.adoc:469
 msgid ""
 "The right tab changes and show now the earlier made templates, we select in "
 "the group Work, the subgroup Plant tree and click then on the button with "
@@ -1260,12 +1451,12 @@ msgstr ""
 "met de naar links wijzende pijl aan de onderkant."
 
 #. type: Plain text
-#: kraft.adoc:401 kraft.adoc:495
+#: kraft.adoc:471 kraft.adoc:565
 msgid "A new window [Create Item from Template] opens."
 msgstr "Een nieuw venster [Item van sjabloon creëren] opent."
 
 #. type: Plain text
-#: kraft.adoc:404
+#: kraft.adoc:474
 msgid ""
 "Because we have planted 2 trees, we go to the field [insert] and change this "
 "to 2 pcs."
@@ -1274,7 +1465,7 @@ msgstr ""
 "veranderen dit naar 2 pcs (in het Nederlands stk)."
 
 #. type: Plain text
-#: kraft.adoc:407
+#: kraft.adoc:477
 msgid ""
 "Click on btn:[OK] for saving the result or on btn:[cancel] for discarding "
 "the result."
@@ -1283,12 +1474,12 @@ msgstr ""
 "resultaat te verwijderen."
 
 #. type: Plain text
-#: kraft.adoc:409 kraft.adoc:503 kraft.adoc:514
+#: kraft.adoc:479 kraft.adoc:573 kraft.adoc:584
 msgid "The window close and we go back to the main window."
 msgstr "Het venster sluit en we gaan terug naar het hoofdvenster."
 
 #. type: Plain text
-#: kraft.adoc:413
+#: kraft.adoc:483
 msgid ""
 "We click again on btn:[Show templates] and select this time `cut grass`, we "
 "click again on the button with the arrow, in the opened window we select "
@@ -1299,7 +1490,7 @@ msgstr ""
 "stellen we in dat het grasveld 24 vierkante meter was."
 
 #. type: Plain text
-#: kraft.adoc:416 kraft.adoc:501 kraft.adoc:534 kraft.adoc:570
+#: kraft.adoc:486 kraft.adoc:571 kraft.adoc:604 kraft.adoc:640
 msgid ""
 "Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding "
 "the result."
@@ -1308,16 +1499,20 @@ msgstr ""
 "resultaat te verwijderen."
 
 #. type: Plain text
-#: kraft.adoc:418
+#: kraft.adoc:488
+#, fuzzy
+#| msgid ""
+#| "We add now manually an item by clicking on the button btn:[Add item…] and "
+#| "the window [create new item] opens."
 msgid ""
-"We add now manually an item by clicking on the button btn:[Add item…] and "
+"We add now manually an item by clicking on the button btn:[Add itemâ¦] and "
 "the window [create new item] opens."
 msgstr ""
 "We voegen nu handmatig een item toe door te klikken op de knop btn:[Item "
 "toevoegen…] waarna het venster [Item creëren] opent."
 
 #. type: Plain text
-#: kraft.adoc:422
+#: kraft.adoc:492
 msgid ""
 "Because we have delivered a special tree, we fill here in the name of the "
 "special tree `liguster`, at the field insert we fill in the number of the "
@@ -1328,7 +1523,7 @@ msgstr ""
 "de speciale boom die we geleverd hebben in en de prijs daarvan."
 
 #. type: delimited block _
-#: kraft.adoc:428
+#: kraft.adoc:498
 msgid ""
 "WARNING: Remind that in the catalog we can add a profit on the price of the "
 "material, in the invoice and in the offer we can not add a profit on the "
@@ -1339,12 +1534,12 @@ msgstr ""
 "kunnen we geen winst aan de prijs van het materiaal toevoegen."
 
 #. type: Plain text
-#: kraft.adoc:431
+#: kraft.adoc:501
 msgid "We have now an invoice with 3 items."
 msgstr "We hebben nu een rekening met 3 items."
 
 #. type: Plain text
-#: kraft.adoc:434
+#: kraft.adoc:504
 msgid ""
 "Click on btn:[OK] for saving the invoice or on btn:[Cancel] for discarding "
 "the invoice."
@@ -1353,17 +1548,17 @@ msgstr ""
 "rekening te verwijderen."
 
 #. type: Plain text
-#: kraft.adoc:436
+#: kraft.adoc:506
 msgid "We click on btn:[OK] and save the result."
 msgstr "We klikken op btn:[OK] en slaan het resultaat op."
 
 #. type: Plain text
-#: kraft.adoc:438
+#: kraft.adoc:508
 msgid "Your first invoice is now ready for sending."
 msgstr "Uw eerste rekening is nu klaar voor verzending."
 
 #. type: Plain text
-#: kraft.adoc:441
+#: kraft.adoc:511
 msgid ""
 "In the window documents we see our first invoice, notice that this document "
 "has a document number which we can see on the left side."
@@ -1372,7 +1567,7 @@ msgstr ""
 "document een documentnummer heeft die we aan de linkerkant zien."
 
 #. type: Plain text
-#: kraft.adoc:444
+#: kraft.adoc:514
 msgid ""
 "On top of the window with all the invoices we see the button [Print "
 "Document], on which we click."
@@ -1381,7 +1576,7 @@ msgstr ""
 "Document], waar we op klikken."
 
 #. type: Plain text
-#: kraft.adoc:447
+#: kraft.adoc:517
 msgid ""
 "From the invoice will now a PDF be made which we can print on paper or send "
 "by email to the client."
@@ -1390,18 +1585,18 @@ msgstr ""
 "uitprinten of per email naar de klant kunnen versturen."
 
 #. type: Plain text
-#: kraft.adoc:449
+#: kraft.adoc:519
 msgid "After this we are going to create a offer for some work in a garden."
 msgstr "Hierna gaan we een offerte maken voor wat werk in een tuin."
 
 #. type: Title ===
-#: kraft.adoc:451
+#: kraft.adoc:521
 #, no-wrap
 msgid "Creating an Offer"
 msgstr "Een offerte creëren"
 
 #. type: Plain text
-#: kraft.adoc:454
+#: kraft.adoc:524
 msgid ""
 "The client has asked to plant a tree, we will offer 3 different trees which "
 "we can plant."
@@ -1410,18 +1605,18 @@ msgstr ""
 "verschillende bomen aan die we kunnen planten."
 
 #. type: Plain text
-#: kraft.adoc:457
+#: kraft.adoc:527
 msgid ""
 "Beside this, we have seen that there is a lifeless three, which we will "
-"offer to remove as extra work.  image:create_new_doc.png[Numbercycles,float="
-"\"right\"]"
+"offer to remove as extra work.  image:create_new_doc.png[Numbercycles,"
+"float=\"right\"]"
 msgstr ""
 "Daarnaast hebben we gezien dat er een dode boom is, waarvoor we een aanbod "
 "doen om deze als extra werk te verwijderen. image:create_new_doc."
 "png[Numbercycles,float=\"right\"]"
 
 #. type: Plain text
-#: kraft.adoc:459
+#: kraft.adoc:529
 msgid ""
 "For the total price we do not want to show the price of the removal of the "
 "lifeless tree and we want for the total price only to show the price of one "
@@ -1431,22 +1626,22 @@ msgstr ""
 "dode boom en alleen de prijs van een boom en niet van drie bomen."
 
 #. type: Plain text
-#: kraft.adoc:461
+#: kraft.adoc:531
 msgid "Open again the tab btn:[documents]."
 msgstr "Open opnieuw de tab btn:[Documenten]."
 
 #. type: Plain text
-#: kraft.adoc:465
+#: kraft.adoc:535
 msgid "The window _Document Creation Wizard_ opens."
 msgstr "Het document-venster [creation wizard] opent."
 
 #. type: Plain text
-#: kraft.adoc:467
+#: kraft.adoc:537
 msgid "select in btn:[document type] > btn:[Offer]."
 msgstr "Selecteer in btn: [document type]>btn:[offer]."
 
 #. type: Plain text
-#: kraft.adoc:470
+#: kraft.adoc:540
 msgid ""
 "Fill in on the whiteboard content a short text about what the offer is, "
 "like: `plant one tree and removal of lifeless tree`"
@@ -1455,17 +1650,17 @@ msgstr ""
 "`een boom planten en verwijding van dode boom` ."
 
 #. type: Plain text
-#: kraft.adoc:481
+#: kraft.adoc:551
 msgid "Now the window [edit document] opens."
 msgstr "Nu opent het venster [Document bewerken]."
 
 #. type: Plain text
-#: kraft.adoc:483
+#: kraft.adoc:553
 msgid "This window has 2 tabs and the 3 buttons on the top:"
 msgstr "Dit venster heeft bovenaan 2 tabs en 3 knoppen:"
 
 #. type: Plain text
-#: kraft.adoc:493
+#: kraft.adoc:563
 msgid ""
 "The right tab changes and show now the earlier made templates, we select in "
 "the group `Work`, the subgroup `Plant tree` and click then on the button "
@@ -1476,7 +1671,7 @@ msgstr ""
 "met de naar links wijzende pijl aan de onderkant."
 
 #. type: Plain text
-#: kraft.adoc:498
+#: kraft.adoc:568
 msgid ""
 "Because we want to plant 1 tree, we go to the field [insert] and keep this "
 "on 1 pcs."
@@ -1485,7 +1680,7 @@ msgstr ""
 "dit op 1 pcs (in het Nederlands stk)."
 
 #. type: Plain text
-#: kraft.adoc:506
+#: kraft.adoc:576
 msgid ""
 "We click on the button btn:[Show templates] and this time we select in "
 "catalog Material"
@@ -1494,7 +1689,7 @@ msgstr ""
 "catalogus Material."
 
 #. type: Plain text
-#: kraft.adoc:510
+#: kraft.adoc:580
 msgid ""
 "The material-catalog opens, and we can select in the chapter `trees` the "
 "subchapter `loaf trees` in which we select the `apple tree` which we made "
@@ -1505,7 +1700,7 @@ msgstr ""
 "hebben gemaakt."
 
 #. type: Plain text
-#: kraft.adoc:512
+#: kraft.adoc:582
 msgid ""
 "Click on we btn:[OK] for saving the result or on btn:[cancel] for discarding "
 "the result."
@@ -1514,19 +1709,21 @@ msgstr ""
 "resultaat te verwijderen."
 
 #. type: Plain text
-#: kraft.adoc:516
-msgid "We add now manually an item by clicking on the button `Add item…`."
+#: kraft.adoc:586
+#, fuzzy
+#| msgid "We add now manually an item by clicking on the button `Add item…`."
+msgid "We add now manually an item by clicking on the button `Add itemâ¦`."
 msgstr ""
 "We voegen nu handmatig een item toe door te klikken op de knop `Item "
 "toevoegen...'."
 
 #. type: Plain text
-#: kraft.adoc:518
+#: kraft.adoc:588
 msgid "the window [create new item] opens."
 msgstr "Het venster [Nieuw item aanmaken] opent."
 
 #. type: Plain text
-#: kraft.adoc:520
+#: kraft.adoc:590
 msgid ""
 "We want that the client can make a choice from an apple, a pear tree and the "
 "liguster."
@@ -1535,21 +1732,25 @@ msgstr ""
 "perenboom en de liguster."
 
 #. type: Plain text
-#: kraft.adoc:522
+#: kraft.adoc:592
 msgid "Therefor we are going to add also a pear tree manually."
 msgstr "Daarom gaan we een perenboom handmatig toevoegen."
 
 #. type: Plain text
-#: kraft.adoc:524
+#: kraft.adoc:594
+#, fuzzy
+#| msgid ""
+#| "We click on the button btn:[Add item…] and the window [create new item] "
+#| "opens."
 msgid ""
-"We click on the button btn:[Add item…] and the window [create new item] "
+"We click on the button btn:[Add itemâ¦] and the window [create new item] "
 "opens."
 msgstr ""
 "We klikken op de knop btn:[Item toevoegen…] waarna het venster [Item "
 "creëren] opent."
 
 #. type: Plain text
-#: kraft.adoc:528
+#: kraft.adoc:598
 msgid ""
 "We fill here in the name of the tree `Pear tree`, at the field insert we "
 "fill in the number of the special trees that we have delivered and the price "
@@ -1560,7 +1761,7 @@ msgstr ""
 "prijs daarvan."
 
 #. type: Plain text
-#: kraft.adoc:531
+#: kraft.adoc:601
 msgid ""
 "We want add this to the material catalog for future use, therefor we select "
 "also [select this item as template for future documents] and we select in "
@@ -1571,17 +1772,17 @@ msgstr ""
 "documenten] en selecteren we in btn:[opslaan in map] 'bomen'."
 
 #. type: Plain text
-#: kraft.adoc:536
+#: kraft.adoc:606
 msgid "We does this again but then for the liguster."
 msgstr "We doen dit ook voor de liguster."
 
 #. type: Plain text
-#: kraft.adoc:538
+#: kraft.adoc:608
 msgid "We have now 3 items with trees in the offer."
 msgstr "We hebben nu 3 items met bomen in de offerte."
 
 #. type: Plain text
-#: kraft.adoc:540
+#: kraft.adoc:610
 msgid ""
 "As last item we add an item with `remove tree` with 0,5 hour for 32 euro."
 msgstr ""
@@ -1589,17 +1790,17 @@ msgstr ""
 "32 euro."
 
 #. type: Plain text
-#: kraft.adoc:542
+#: kraft.adoc:612
 msgid "On the left side of an item we can see 2 buttons:"
 msgstr "Links van het item zien we 2 knoppen:"
 
 #. type: Plain text
-#: kraft.adoc:544
+#: kraft.adoc:614
 msgid "a button with a flag and a button with what looks like a page."
 msgstr "Een knop met een vlag en een knop met wat lijkt op een pagina."
 
 #. type: Plain text
-#: kraft.adoc:547
+#: kraft.adoc:617
 msgid ""
 "We select the upper button with the page after which opens a context-menu "
 "with the items:"
@@ -1608,12 +1809,12 @@ msgstr ""
 "met de items:"
 
 #. type: Plain text
-#: kraft.adoc:549
+#: kraft.adoc:619
 msgid "image:context1.png[Context menu,float=\"right\"]"
 msgstr "image:context1.png[Context menu,float=\"right\"]"
 
 #. type: Plain text
-#: kraft.adoc:559
+#: kraft.adoc:629
 #, no-wrap
 msgid ""
 " [Item kind]->[Normal]\n"
@@ -1637,7 +1838,7 @@ msgstr ""
 " [Verwijder item]\n"
 
 #. type: Plain text
-#: kraft.adoc:562
+#: kraft.adoc:632
 msgid ""
 "We choose here [Item kind] and change for `pear tree` from [normal] to "
 "[alternative]."
@@ -1646,7 +1847,7 @@ msgstr ""
 "[normaal] naar [alternatief]."
 
 #. type: Plain text
-#: kraft.adoc:565
+#: kraft.adoc:635
 msgid ""
 "We do this also for [liguster] and for [remove tree] we change this from "
 "[normal] to [on demand]."
@@ -1655,12 +1856,12 @@ msgstr ""
 "van [normaal] naar [Op verzoek]."
 
 #. type: Plain text
-#: kraft.adoc:567
+#: kraft.adoc:637
 msgid "image:context2.png[Context menu,float=\"right\"]"
 msgstr "image:context2.png[Context menu,float=\"right\"]"
 
 #. type: Plain text
-#: kraft.adoc:573
+#: kraft.adoc:643
 msgid ""
 "We want to see the result and therefor we click on the button [show "
 "document]."
@@ -1669,7 +1870,7 @@ msgstr ""
 "[Document tonen]."
 
 #. type: Plain text
-#: kraft.adoc:579
+#: kraft.adoc:649
 msgid ""
 "We see now that the prize of the pear tree, the liguster and the removal of "
 "the tree is not used for the total prize. When we are happy with the result, "
@@ -1684,81 +1885,77 @@ msgstr ""
 "uitprinten of naar de klant kunnen sturen."
 
 #. type: Plain text
-#: kraft.adoc:582
+#: kraft.adoc:652
 msgid ""
 "After your first invoice is now your first offer now also ready for sending."
 msgstr ""
 "Na uw eerste rekening is nu ook uw eerste offerte klaar voor verzending."
 
 #. type: Title ===
-#: kraft.adoc:584
+#: kraft.adoc:654
 #, no-wrap
-#| msgid "Acceptance of order"
 msgid "Creating an Acceptance of Order"
 msgstr "Een Acceptance of order (opdrachtbevestiging) aanmaken"
 
 #. type: Plain text
-#: kraft.adoc:587
+#: kraft.adoc:657
 msgid ""
 "The document type \"Acceptance of Order\" is sent subsequently to an offer."
 msgstr ""
-"Het documenttype \"Acceptance of Order\" (opdrachtbevestiging) wordt"
-" verstuurd als vervolg op een offerte."
+"Het documenttype \"Acceptance of Order\" (opdrachtbevestiging) wordt "
+"verstuurd als vervolg op een offerte."
 
 #. type: Plain text
-#: kraft.adoc:589
+#: kraft.adoc:659
 msgid "image:acceptance_o_o_context.png[Numbercycles,float=\"right\"]"
 msgstr "image:acceptance_o_o_context.png[Numbercycles,float=\"right\"]"
 
 #. type: Plain text
-#: kraft.adoc:592
+#: kraft.adoc:662
 msgid ""
 "When a client has made a request, we will send an offer in wich we describe "
 "which items we will deliver.  Hopefully the client will give an order for "
 "the work."
 msgstr ""
-"Als een klant een verzoek heeft gemaakt, dan zullen we een offer (offerte)"
-" sturen waarin we beschrijven welke items we zullen gaan leveren. Hopelijk"
-" zal de klant een order geven voor het werk."
+"Als een klant een verzoek heeft gemaakt, dan zullen we een offer (offerte) "
+"sturen waarin we beschrijven welke items we zullen gaan leveren. Hopelijk "
+"zal de klant een order geven voor het werk."
 
 #. type: Plain text
-#: kraft.adoc:596
+#: kraft.adoc:666
 msgid ""
-"It is a good practice to respond on the order with an \"Acceptance of order"
-"\" in which we describe all the items we will deliver.  We can make the "
+"It is a good practice to respond on the order with an \"Acceptance of "
+"order\" in which we describe all the items we will deliver.  We can make the "
 "\"Acceptance of order\" on the same way as we made the invoice or the offer "
 "by selecting each item and correcting the number of delivery.  This takes "
 "time and we can make errors by forgetting items or filling an incorrect "
 "number."
 msgstr ""
-"Het is een goede gewoonte om op de order te reageren met een \"Acceptance of"
-" order\" (opdrachtbevestiging) waarin we alle items beschrijven die we zullen"
-" gaan"
-" leveren. We kunnen de \"Acceptance of order\" op dezelfde manier maken als"
-" waarmee we de invoice"
-" (rekening) of de offer (offerte)hebben gemaakt door elk item te selecteren"
-" en het aantal te leveren aan te"
-" passen. Dit kost tijd en we kunnen fouten maken door items te vergeten of"
-" een incorrect aantal in te vullen."
+"Het is een goede gewoonte om op de order te reageren met een \"Acceptance of "
+"order\" (opdrachtbevestiging) waarin we alle items beschrijven die we zullen "
+"gaan leveren. We kunnen de \"Acceptance of order\" op dezelfde manier maken "
+"als waarmee we de invoice (rekening) of de offer (offerte)hebben gemaakt "
+"door elk item te selecteren en het aantal te leveren aan te passen. Dit kost "
+"tijd en we kunnen fouten maken door items te vergeten of een incorrect "
+"aantal in te vullen."
 
 #. type: Plain text
-#: kraft.adoc:598
+#: kraft.adoc:668
 msgid ""
 "It can be done quicker by selecting the offer in the list and selecting btn:"
 "[Create Followup Document] from either the context menu or the main menu."
 msgstr ""
-"U kunt dit sneller doen door de offer (offerte) in de lijst te selecteren en"
-" vervolgens btn:[Creëer opvolg document] in het context menu of in het"
-" hoofdmenu te selecteren."
+"U kunt dit sneller doen door de offer (offerte) in de lijst te selecteren en "
+"vervolgens btn:[Creëer opvolg document] in het context menu of in het "
+"hoofdmenu te selecteren."
 
 #. type: Plain text
-#: kraft.adoc:600
-#| msgid "We have now an invoice with 3 items."
+#: kraft.adoc:670
 msgid "We have now in documenttype the choice from:"
 msgstr "We hebben nu als documenttype de keuze uit:"
 
 #. type: Plain text
-#: kraft.adoc:606
+#: kraft.adoc:676
 #, no-wrap
 msgid ""
 " [Acceptance of order]\n"
@@ -1774,47 +1971,47 @@ msgstr ""
 " [Progress Payment Invoice]\n"
 
 #. type: Plain text
-#: kraft.adoc:608
+#: kraft.adoc:678
 msgid "image:followup_1.png[Folloup document,float=\"right\"]"
 msgstr "image:followup_1.png[Folloup document,float=\"right\"]"
 
 #. type: Plain text
-#: kraft.adoc:612
+#: kraft.adoc:682
 msgid ""
 "We select here \"Acceptance of order\".  We have now a copy from the offer "
 "as an Acceptance of order (do not forget to adapt Alternative Delivery items "
 "and on demand items.)"
 msgstr ""
-"We selecteren nu \"Acceptance of order\". We hebben nu een kopie van de"
-" offerte als een Acceptance of order (vergeet niet om de alternatief items "
-"en de op verzoek items aan te passen.)"
+"We selecteren nu \"Acceptance of order\". We hebben nu een kopie van de "
+"offerte als een Acceptance of order (vergeet niet om de alternatief items en "
+"de op verzoek items aan te passen.)"
 
 #. type: Plain text
-#: kraft.adoc:614
+#: kraft.adoc:684
 msgid "image:followup_2.png[Folloup document,float=\"right\"]"
 msgstr "image:followup_2.png[Folloup document,float=\"right\"]"
 
 #. type: Plain text
-#: kraft.adoc:618
+#: kraft.adoc:688
 msgid ""
 "You can do this also for the creation of the invoice as a followup for "
 "Acceptance of order.  Each document type has a specific list of follow up "
 "documents.  It is a good practice to describe on the invoice precisely what "
 "was delivered."
 msgstr ""
-"U kunt dit ook doen voor de creatie van de invoice (rekening) als opvolging"
-" van de opdrachtbevestiging. Elk documenttype heeft een specifieke lijst met"
-" opvolg-documenten. Het is een goede gewoonte om op de rekening precies te"
-" omschrijven wat is geleverd."
+"U kunt dit ook doen voor de creatie van de invoice (rekening) als opvolging "
+"van de opdrachtbevestiging. Elk documenttype heeft een specifieke lijst met "
+"opvolg-documenten. Het is een goede gewoonte om op de rekening precies te "
+"omschrijven wat is geleverd."
 
 #. type: Title ==
-#: kraft.adoc:620
+#: kraft.adoc:690
 #, no-wrap
 msgid "Customization"
 msgstr "Kraft naar wens aanpassen"
 
 #. type: Plain text
-#: kraft.adoc:624
+#: kraft.adoc:694
 msgid ""
 "Kraft can be customized in most of the graphical user interface and in "
 "particular in the output it generates."
@@ -1823,13 +2020,13 @@ msgstr ""
 "worden, met name de uitvoer die het genereert."
 
 #. type: Title ===
-#: kraft.adoc:625
+#: kraft.adoc:695
 #, no-wrap
 msgid "Output Document Customization"
 msgstr "Documentuitvoer aanpassen"
 
 #. type: Plain text
-#: kraft.adoc:628
+#: kraft.adoc:698
 msgid ""
 "To create PDF output documents, the document data that was edited in the "
 "Kraft app is filled into a template. The template defines how the output "
@@ -1841,7 +2038,7 @@ msgstr ""
 "de elementen en dergelijke."
 
 #. type: Plain text
-#: kraft.adoc:630
+#: kraft.adoc:700
 msgid ""
 "The file that is assembled from data and the template is converted to PDF "
 "using a special document creation script. All that is started automatically "
@@ -1853,7 +2050,7 @@ msgstr ""
 "uitgeprint moet worden."
 
 #. type: Plain text
-#: kraft.adoc:632
+#: kraft.adoc:702
 msgid ""
 "Each document type in Kraft can have it's own template that is used to "
 "create a PDF. Which one can be set in the Settings dialog for document types."
@@ -1863,35 +2060,54 @@ msgstr ""
 "documenttypes."
 
 #. type: Title ====
-#: kraft.adoc:633
+#: kraft.adoc:703
 #, no-wrap
 msgid "WeasyPrint Documents"
 msgstr "WeasyPrint Documenten"
 
 #. type: Plain text
-#: kraft.adoc:636
+#: kraft.adoc:706
 msgid ""
-"With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful HTML and "
-"CSS based generator that makes it very easy to create highly customized "
-"documents which fit the users expectations. The general idea is that "
-"Weasyprint loads html output that is processed to PDF. Usually it is "
-"considering a Cascading Stylesheet file which has a huge impact on how the "
-"PDF document looks in the end."
+"Kraft still ships with the old ReportLab based converter, but that will be "
+"deprecated the future. The WeasyPrint based system is the future. It is a "
+"recommended to port existing templates."
 msgstr ""
-"Door https://weasyprint.org[WeasyPrint] te gebruiken heeft Kraft een zeer "
-"krachtige op HTML en CSS gebaseerde generator die het zeer eenvoudig maakt "
-"om aangepaste documenten te creëren die voldoen aan de verwachtingen van "
-"gebruikers. Het algemene idee is dat Weasyprint de gecreëerde html laad om "
-"die te verwerken naar een PDF. Normaal gesproken gebruikt het een bestand "
-"met een Cascading Stylesheet om te bepalen hoe het PDF document er aan het "
-"eind eruit komt te zien."
 
 #. type: Plain text
-#: kraft.adoc:638
+#: kraft.adoc:708
 msgid ""
-"To use a WeasyPrint based template for a document simply create a template "
-"file and save it with the extension *.gtmpl*. With that file extension Kraft "
-"automatically uses WeasyPrint and also the Grantlee templating for rendering."
+"With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful generator "
+"that makes it very easy to create highly customized documents with great "
+"quality."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:710
+msgid ""
+"WeasyPrint converts a html file to PDF. It is integrating a cascading "
+"stylesheet (CSS) file which has a huge impact on the PDF document's look."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:712
+msgid ""
+"The html- and CSS input file for WeasyPrint is built from the Kraft template "
+"file."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:714
+#, fuzzy
+#| msgid ""
+#| "To use a WeasyPrint based template for a document simply create a "
+#| "template file and save it with the extension *.gtmpl*. With that file "
+#| "extension Kraft automatically uses WeasyPrint and also the Grantlee "
+#| "templating for rendering."
+msgid ""
+"To enable the use of WeasyPrint for a document type in Kraft, simply create "
+"a weasyprint compatible template file and save it with the extension *."
+"gtmpl*. Based on the file extension Kraft automatically uses WeasyPrint and "
+"the Grantlee templating engine for rendering."
 msgstr ""
 "Om voor een document een op WeasyPrint gebaseerde sjabloon te gebruiken, "
 "creëert u eenvoudig een sjabloonbestand en slaat deze op met de extensie *."
@@ -1899,62 +2115,45 @@ msgstr ""
 "daarbij Grantlee sjablonen voor de rendering."
 
 #. type: Plain text
-#: kraft.adoc:640
+#: kraft.adoc:716
+#, fuzzy
+#| msgid ""
+#| "From version 0.95 on Kraft ships with an example document in the "
+#| "Grantlee- and WeasyPrint format. It can be found at `/usr/share/kraft/"
+#| "reports/invoice.gtmpl` or https://github.com/dragotin/kraft/blob/master/"
+#| "reports/invoice.gtmpl[online on Github]."
 msgid ""
-"An example for a WeasyPrint document can be found in the Kraft package in "
-"the reports directory and is called invoice.gtmpl."
-msgstr ""
-"Een voorbeeld van een WeasyPrint document kunt u vinden in het Kraft pakket "
-"in de map reports en draagt de naam invoice.gtmpl."
-
-#. type: Plain text
-#: kraft.adoc:642
-msgid ""
-"To use a WeasyPrint template with one of the Kraft document types just "
-"select the template file name (with the right extension `*.gtml`) in the "
-"Kraft Settings Dialog."
-msgstr ""
-"Om bij een van de Kraft-documenten een Weasyprint-sjabloon te gebruiken, "
-"selecteert u gewoon het bestandsnaam (met de juiste extensie: *.gtml) in het "
-"instellingsvenster van Kraft."
-
-#. type: Plain text
-#: kraft.adoc:644
-msgid ""
-"From version 0.95 on Kraft ships with an example document in the Grantlee- "
+"From version 0.95 on Kraft ships with an example template in the Grantlee- "
 "and WeasyPrint format. It can be found at `/usr/share/kraft/reports/invoice."
 "gtmpl` or https://github.com/dragotin/kraft/blob/master/reports/invoice."
-"gtmpl[online on Github]."
+"gtmpl[online on Github]. An example CSS file `kraft.css` (https://github.com/"
+"dragotin/kraft/blob/master/reports/kraft.css[on Github]) is shipped as a "
+"good starting point for adoption."
 msgstr ""
 "Vanaf versie 0.95 van Kraft vindt u een voorbeeld document in het Grantlee- "
 "en WeasyPrint formaat. U kunt het vinden in `/usr/share/kraft/reports/"
 "invoice.gtmpl` of https://github.com/dragotin/kraft/blob/master/reports/"
 "invoice.gtmpl[online op Github]."
 
-#. type: Plain text
-#: kraft.adoc:646
-msgid ""
-"To effectively change the look of the document `kraft.css` (https://github."
-"com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) needs to be "
-"considered. It defines most of the look."
-msgstr ""
-"Om daadwerkelijk het uiterlijk van de documenten te veranderen is `kraft."
-"css` (https://github.com/dragotin/kraft/blob/master/reports/kraft.css[op "
-"Github]) heel belangrijk. Deze definieert het meeste van het uiterlijk."
-
 #. type: Title ====
-#: kraft.adoc:647
+#: kraft.adoc:717
 #, no-wrap
 msgid "Template Variables"
 msgstr "Sjabloon variabelen"
 
 #. type: Plain text
-#: kraft.adoc:650
+#: kraft.adoc:720
+#, fuzzy
+#| msgid ""
+#| "To generate the PDF, Kraft has to transfer data from the document you "
+#| "have been working on in Kraft to the input document that is processed to "
+#| "an PDF utilising WeasyPrint. For that, Kraft uses a text template. In "
+#| "that, Kraft replaces variables with the actual values."
 msgid ""
 "To generate the PDF, Kraft has to transfer data from the document you have "
-"been working on in Kraft to the input document that is processed to an PDF "
-"utilising WeasyPrint. For that, Kraft uses a text template. In that, Kraft "
-"replaces variables with the actual values."
+"been working on to the input file that is processed to a PDF. For that, "
+"Kraft uses a text template in which Kraft replaces variables with the actual "
+"values."
 msgstr ""
 "Om de PDF te genereren, moet Kraft de data van het document waaraan u heeft "
 "gewerkt overbrengen naar het input-document dat wordt met de hulp van "
@@ -1962,7 +2161,14 @@ msgstr ""
 "Daarin vervangt Kraft variabelen door de daadwerkelijke waarden."
 
 #. type: Plain text
-#: kraft.adoc:652
+#: kraft.adoc:722
+msgid ""
+"For example, the tag `{{ doc.doctype }}` is replaced with the current "
+"document type during the generating process."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:724
 msgid ""
 "The syntax is based on the Django syntax for templates described in the "
 "https://docs.djangoproject.com/en/3.1/topics/templates/[the docs]."
@@ -1971,26 +2177,93 @@ msgstr ""
 "beschreven wordt in https://docs.djangoproject.com/en/3.1/topics/templates/"
 "[de documentatie]."
 
+#. type: Title ====
+#: kraft.adoc:725
+#, no-wrap
+msgid "EPC QR Code"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:728
+msgid ""
+"With Weasyprint based PDF generation Kraft supports the https://en.wikipedia."
+"org/wiki/EPC_QR_code[EPC QR Code] which implements a European standard for "
+"payments by computer and mobile devices."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:730
+msgid ""
+"In Germany it is also known as _Giro Code_, in Belgium as _Bancontact QR_, "
+"in the Netherlands as _iDEAL QR-code_ and in Spain it is also known as "
+"_Bizum QR-code_."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:732
+msgid ""
+"In Germany it is accepted by the _Giro Code_ and in Holland it is accepted "
+"by the official https://www.ideal.nl/consumenten/ideal-app/[_iDEAL QR-code_] "
+"app."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:734
+msgid ""
+"In Belgium and Holland it is accepted by the apps of many banks, and in "
+"Austria and Finland it is accepted by the apps of all banks."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:736
+msgid ""
+"To use the EPC QR code on the invoice printout, the bank account information "
+"has to be added to own identity settings dialog in Kraft. The giro code is "
+"current only generated for documents with the document type `Rechnung`."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:738
+msgid ""
+"To include the generated EPC QR Code into the PDF document, the Weasyprint "
+"template needs to contain a snippet like this:"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:748
+#, no-wrap
+msgid ""
+"```\n"
+"    {%if doc.isInvoice and epcqrcode.valid %}\n"
+"    <p class=\"epcqrcode\">\n"
+"      <img class=\"epc\" src=\"file://{{ epcqrcode.svgfilename }}\" alt=\"EPC QR Code\" />\n"
+"      Dieser QR Code ermÃ¶glicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:\n"
+"      Diesen Code mit dem Smartphone scannen und Ãberweisung per Banking App aufgeben.\n"
+"    </p>\n"
+"    {% endif %}\n"
+"```\n"
+msgstr ""
+
 #. type: Title ==
-#: kraft.adoc:656
+#: kraft.adoc:751
 #, no-wrap
 msgid "Menus and Shortcuts"
 msgstr "Menu's en sneltoetsen"
 
 #. type: Title ===
-#: kraft.adoc:658
+#: kraft.adoc:753
 #, no-wrap
 msgid "Main Application Menu"
 msgstr "Hoofdvenster van het programma"
 
 #. type: Title ====
-#: kraft.adoc:661
+#: kraft.adoc:756
 #, no-wrap
 msgid "The File Menu"
 msgstr "Het menu Bestand"
 
 #. type: Plain text
-#: kraft.adoc:666
+#: kraft.adoc:761
 #, no-wrap
 msgid ""
 " [File]>[Quit]\n"
@@ -2002,13 +2275,13 @@ msgstr ""
 " Sluit het programma af.\n"
 
 #. type: Title ====
-#: kraft.adoc:668
+#: kraft.adoc:763
 #, no-wrap
 msgid "The Document Menu"
 msgstr "Het document-menu"
 
 #. type: Plain text
-#: kraft.adoc:674
+#: kraft.adoc:769
 #, no-wrap
 msgid ""
 " [Document]>[Show Document]\n"
@@ -2020,7 +2293,7 @@ msgstr ""
 " Opent een venster met het geselecteerde document om deze te tonen.\n"
 
 #. type: Plain text
-#: kraft.adoc:678
+#: kraft.adoc:773
 #, no-wrap
 msgid ""
 " [Document]>[Edit Document]\n"
@@ -2032,7 +2305,7 @@ msgstr ""
 " Opent een venster met het geselecteerde document voor bewerking.\n"
 
 #. type: Plain text
-#: kraft.adoc:682
+#: kraft.adoc:777
 #, no-wrap
 msgid ""
 " [Document]>[Open Archived document]\n"
@@ -2044,18 +2317,17 @@ msgstr ""
 " Opent een gearchiveerd document.\n"
 
 #. type: Plain text
-#: kraft.adoc:685
+#: kraft.adoc:780
 #, no-wrap
 msgid ""
 " [Document]>[Create Document]\n"
 " Opens a window with a wizard for creating a new client-document.\n"
 msgstr ""
 " [Document]>[Nieuw document]\n"
-" Opent een venster met een wizard voor de creatie van een nieuw"
-" client-document.\n"
+" Opent een venster met een wizard voor de creatie van een nieuw client-document.\n"
 
 #. type: Plain text
-#: kraft.adoc:689
+#: kraft.adoc:784
 #, no-wrap
 msgid ""
 " [Document]>[Copy Document]\n"
@@ -2063,23 +2335,21 @@ msgid ""
 " which can belong to an other client or an other documenttype.\n"
 msgstr ""
 " [Document]>[Kopieer Document]\n"
-" Maakt een kopie van het geselecteerde client-document naar een nieuw"
-" client-document\n"
+" Maakt een kopie van het geselecteerde client-document naar een nieuw client-document\n"
 " Deze kan bij een andere klant horen of zelfs een ander documenttype zijn.\n"
 
 #. type: Plain text
-#: kraft.adoc:692
+#: kraft.adoc:787
 #, no-wrap
 msgid ""
 " [Document]>[Follow Document]\n"
 " Opens the selected client-document for editing.\n"
 msgstr ""
 " [Document]>[Creëer een opvolg Document]\n"
-" Kopieert de inhoud van een offerte naar een order-acceptatie of een"
-" rekening.\n"
+" Kopieert de inhoud van een offerte naar een order-acceptatie of een rekening.\n"
 
 #. type: Plain text
-#: kraft.adoc:696
+#: kraft.adoc:791
 #, no-wrap
 msgid ""
 " [Document]>[Print document]\n"
@@ -2087,12 +2357,11 @@ msgid ""
 " printed.\n"
 msgstr ""
 " [Document]>[Document afdrukken]\n"
-" Creëert een PDF van het geselecteerde client-document zodat u deze kan"
-" emaillen of\n"
+" Creëert een PDF van het geselecteerde client-document zodat u deze kan emaillen of\n"
 " uitprinten.\n"
 
 #. type: Plain text
-#: kraft.adoc:700
+#: kraft.adoc:795
 #, no-wrap
 msgid ""
 " [Document]>[Mail document]\n"
@@ -2104,13 +2373,13 @@ msgstr ""
 " Verzend een document per email.\n"
 
 #. type: Title ====
-#: kraft.adoc:703
+#: kraft.adoc:798
 #, no-wrap
 msgid "The Settings menu"
 msgstr "Het instellingen-menu"
 
 #. type: Plain text
-#: kraft.adoc:709
+#: kraft.adoc:804
 #, no-wrap
 msgid ""
 " [Settings]>[Edit Tag Templates]\n"
@@ -2124,7 +2393,7 @@ msgstr ""
 " kunt toevoegen, bewerken of vertalen.\n"
 
 #. type: Plain text
-#: kraft.adoc:713
+#: kraft.adoc:808
 #, no-wrap
 msgid ""
 " [Settings]>[Redo initial setup]\n"
@@ -2133,25 +2402,22 @@ msgid ""
 msgstr ""
 " [Voorkeuren]>[De initiële aanmaak opnieuw uitvoeren]\n"
 " [Ctrl+R]\n"
-" Voert de basisconfiguratie opnieuw uit. Hierna is een herstart van Kraft"
-" nodig.\n"
+" Voert de basisconfiguratie opnieuw uit. Hierna is een herstart van Kraft nodig.\n"
 
 #. type: Plain text
-#: kraft.adoc:717
+#: kraft.adoc:812
 #, no-wrap
 msgid ""
 " [Settings]>[Showed toolbars]\n"
-" Here you can decide if the `main toolbar` and the toolbar `Document"
-" Actions`\n"
+" Here you can decide if the `main toolbar` and the toolbar `Document Actions`\n"
 " are shown.\n"
 msgstr ""
 " [Voorkeuren]>[Werkbalken]\n"
-" Hier kunt u beslissen of de `hoofdwerkbalk` en de werkbalk `Document"
-" acties`\n"
+" Hier kunt u beslissen of de `hoofdwerkbalk` en de werkbalk `Document acties`\n"
 " worden getoond.\n"
 
 #. type: Plain text
-#: kraft.adoc:721
+#: kraft.adoc:816
 #, no-wrap
 msgid ""
 " [Settings]>[Configure Kraft]\n"
@@ -2163,19 +2429,19 @@ msgstr ""
 " Hier kunt u Kraft instellen.\n"
 
 #. type: Title ===
-#: kraft.adoc:722
+#: kraft.adoc:817
 #, no-wrap
 msgid "Document Edit Window"
 msgstr "Het document-bewerkingsvenster."
 
 #. type: Title ====
-#: kraft.adoc:725
+#: kraft.adoc:820
 #, no-wrap
 msgid "The context Menu"
 msgstr "Het contextmenu"
 
 #. type: Plain text
-#: kraft.adoc:729
+#: kraft.adoc:824
 #, no-wrap
 msgid ""
 " [Context]>[Item kind]\n"
@@ -2185,25 +2451,25 @@ msgstr ""
 " wijzigt de status van dit item tussen\n"
 
 #. type: Plain text
-#: kraft.adoc:730
+#: kraft.adoc:825
 #, no-wrap
 msgid "Normal\n"
 msgstr "Normaal\n"
 
 #. type: Plain text
-#: kraft.adoc:731
+#: kraft.adoc:826
 #, no-wrap
 msgid "Alternative\n"
 msgstr "Alternatief\n"
 
 #. type: Plain text
-#: kraft.adoc:732
+#: kraft.adoc:827
 #, no-wrap
 msgid "On demand\n"
 msgstr "Op verzoek\n"
 
 #. type: Plain text
-#: kraft.adoc:735
+#: kraft.adoc:830
 #, no-wrap
 msgid ""
 " [Context]>[Tax]\n"
@@ -2213,7 +2479,7 @@ msgstr ""
 "Lijkt niet te werken.\n"
 
 #. type: Plain text
-#: kraft.adoc:738
+#: kraft.adoc:833
 #, no-wrap
 msgid ""
 " [Context]>[Move up]\n"
@@ -2223,7 +2489,7 @@ msgstr ""
 " Verplaatst dit item een plaats omhoog in het document.\n"
 
 #. type: Plain text
-#: kraft.adoc:741
+#: kraft.adoc:836
 #, no-wrap
 msgid ""
 " [Context]>[Move down]\n"
@@ -2233,7 +2499,7 @@ msgstr ""
 " Verplaatst dit item een plaats omlaag in het document.\n"
 
 #. type: Plain text
-#: kraft.adoc:744
+#: kraft.adoc:839
 #, no-wrap
 msgid ""
 " [Context]>[Lock item]\n"
@@ -2243,7 +2509,7 @@ msgstr ""
 " Het is niet duidelijk wat het doet.\n"
 
 #. type: Plain text
-#: kraft.adoc:747
+#: kraft.adoc:842
 #, no-wrap
 msgid ""
 " [Context]>[Unlock item]\n"
@@ -2253,7 +2519,7 @@ msgstr ""
 " Het is niet duidelijk wat het doet.\n"
 
 #. type: Plain text
-#: kraft.adoc:750
+#: kraft.adoc:845
 #, no-wrap
 msgid ""
 " [Context]>[Delete item]\n"
@@ -2263,13 +2529,13 @@ msgstr ""
 " Verwijdert dit item uit het document.\n"
 
 #. type: Title ==
-#: kraft.adoc:753
+#: kraft.adoc:848
 #, no-wrap
 msgid "Advanced Topics"
 msgstr "Geavanceerde onderwerpen"
 
 #. type: Plain text
-#: kraft.adoc:756
+#: kraft.adoc:851
 msgid ""
 "This chapter describes advanced topics around Kraft. Some Linux knowledge is "
 "required, and setups should be done by experienced Linux administrators and "
@@ -2281,14 +2547,13 @@ msgstr ""
 "voeren en deze vervolgens zorgvuldig en uitgebreid te testen."
 
 #. type: Title ===
-#: kraft.adoc:757
+#: kraft.adoc:852
 #, no-wrap
-#| msgid "Using Kraft Collaborative"
 msgid "Using Kraft Collaboratively"
 msgstr "Kraft gemeenschappelijk gebruiken."
 
 #. type: Plain text
-#: kraft.adoc:760
+#: kraft.adoc:855
 msgid ""
 "Kraft can be used collaborative in a distributed environment. That means "
 "that multiple users work on their desktops with their own Kraft instance on "
@@ -2299,7 +2564,7 @@ msgstr ""
 "instance met dezelfde data kunnen werken."
 
 #. type: Plain text
-#: kraft.adoc:762
+#: kraft.adoc:857
 msgid ""
 "This whole topic is a subject to change, as Kraft will evolve to use "
 "ownCloud as a private cloud solution to store the data."
@@ -2308,13 +2573,13 @@ msgstr ""
 "toekomst ownCloud als privé Cloud voor de opslag van de data zal gebruiken."
 
 #. type: Title ====
-#: kraft.adoc:763
+#: kraft.adoc:858
 #, no-wrap
 msgid "Sharing Database and Document Pool"
 msgstr "Database en Document-pool gezamenlijk gebruiken"
 
 #. type: Plain text
-#: kraft.adoc:766
+#: kraft.adoc:861
 msgid ""
 "The simplest case is that two or more Kraft instances use a database "
 "together and access the same pool of PDF documents on the harddisk. For "
@@ -2326,7 +2591,7 @@ msgstr ""
 "situatie met twee gebruikers beschreven."
 
 #. type: Plain text
-#: kraft.adoc:768
+#: kraft.adoc:863
 msgid ""
 "A typical use case would be: Two different Linux users want to use Kraft. "
 "They both have their own computer but only work in the same network. For "
@@ -2342,19 +2607,19 @@ msgstr ""
 "catalogus te raadplegen en dergelijke."
 
 #. type: Plain text
-#: kraft.adoc:770
+#: kraft.adoc:865
 msgid "For that, the following prerequisites have to be met:"
 msgstr "Daarvoor is het volgende vereist:"
 
 #. type: Plain text
-#: kraft.adoc:772
+#: kraft.adoc:867
 msgid "MySQL or MariaDB is used as database backend. Sqlite is not supported."
 msgstr ""
 "Als Database-Backend wordt MySQL of MariaDB gebruikt. Sqlite is niet "
 "mogelijk."
 
 #. type: Plain text
-#: kraft.adoc:773
+#: kraft.adoc:868
 msgid ""
 "The database is accessible with a mysql user and from each machine for both "
 "users."
@@ -2362,14 +2627,14 @@ msgstr ""
 "De Database is met de gebruiker MySQL vanuit beide computers bereikbaar."
 
 #. type: Plain text
-#: kraft.adoc:774
+#: kraft.adoc:869
 msgid "The document store directory has to be shared."
 msgstr ""
 "De map waarin de documenten worden opgeslagen, wordt voor beide computers "
 "bereikbaar zijn (shared)."
 
 #. type: delimited block _
-#: kraft.adoc:778
+#: kraft.adoc:873
 msgid ""
 "WARNING: There is no protection against having both users editing the same "
 "document. Because that is dangerous and can lead to unpredictable results, "
@@ -2383,13 +2648,13 @@ msgstr ""
 "parameter -r ingeschakeld."
 
 #. type: Plain text
-#: kraft.adoc:781
+#: kraft.adoc:876
 #, no-wrap
 msgid "**Sharing the Database**\n"
 msgstr "**De database gezamenlijk gebruiken**\n"
 
 #. type: Plain text
-#: kraft.adoc:783
+#: kraft.adoc:878
 msgid ""
 "The database server should be installed on the main machine or a dedicated "
 "device like a NAS. Networking speed influences the comfort to use obviously."
@@ -2399,18 +2664,18 @@ msgstr ""
 "snelheid van het netwerk beïnvloed de bruikbaarheid natuurlijk enorm."
 
 #. type: Plain text
-#: kraft.adoc:785
+#: kraft.adoc:880
 msgid "Find howtos on the internet how to setup MySQL accordingly."
 msgstr "Howtos voor het gebruik van MySQL zijn op het internet te vinden."
 
 #. type: Plain text
-#: kraft.adoc:787
+#: kraft.adoc:882
 #, no-wrap
 msgid "**Sharing the Document Pool Directory**\n"
 msgstr "**De map met de document Pool delen (sharen)**\n"
 
 #. type: Plain text
-#: kraft.adoc:789
+#: kraft.adoc:884
 msgid ""
 "Kraft writes generated PDF documents into a local directory. Where that is "
 "can be configured in the Kraft Config file. The config file has to be "
@@ -2421,7 +2686,7 @@ msgstr ""
 "exemplaren van Kraft correct ingesteld zijn."
 
 #. type: Plain text
-#: kraft.adoc:791
+#: kraft.adoc:886
 msgid ""
 "That is located in each users home directory, in the path `.config/kraftrc`. "
 "It has to contain the following config value:"
@@ -2430,17 +2695,17 @@ msgstr ""
 "config/kraftrc`. Daarin moet de volgende tekst voorkomen:"
 
 #. type: Plain text
-#: kraft.adoc:793 kraft.adoc:797
+#: kraft.adoc:888 kraft.adoc:892
 msgid "```"
 msgstr "```"
 
 #. type: Plain text
-#: kraft.adoc:795
+#: kraft.adoc:890
 msgid "PdfOutputDir=/data/space/kraftdoc/pdf"
 msgstr "PdfOutputDir=/data/space/kraftdoc/pdf"
 
 #. type: Plain text
-#: kraft.adoc:799
+#: kraft.adoc:894
 msgid ""
 "There are different ways how share that directory, ie. NFS or SMB storages. "
 "It is important that both users from both machines can list and access the "
@@ -2454,7 +2719,7 @@ msgstr ""
 "lees-rechten nodig."
 
 #. type: Plain text
-#: kraft.adoc:801
+#: kraft.adoc:896
 msgid ""
 "A recommended setup is a NFS share with autofs which is set up on the main "
 "machine. To manage file access a certain group should be set up on the "
@@ -2466,13 +2731,13 @@ msgstr ""
 "beheren."
 
 #. type: Plain text
-#: kraft.adoc:803
+#: kraft.adoc:898
 #, no-wrap
 msgid "**Starting Kraft in read-only mode**\n"
 msgstr "**Kraft in read-only modus**\n"
 
 #. type: Plain text
-#: kraft.adoc:805
+#: kraft.adoc:900
 msgid ""
 "To start Kraft in read-only mode, start the binary with the `-r` command "
 "line switch."
@@ -2481,26 +2746,25 @@ msgstr ""
 "volgende parameter `-r` gestart worden."
 
 #. type: Title ===
-#: kraft.adoc:806
+#: kraft.adoc:901
 #, no-wrap
 msgid "XRechnung Support"
 msgstr "Gebruik van XRechnung"
 
 #. type: Plain text
-#: kraft.adoc:809
+#: kraft.adoc:904
 msgid ""
 "Kraft supports the XRechnung standard. That is a digital format for "
 "electronic invoicing, and it passed as law in Germany and follows a EU "
 "directive. The XRechnung is a XML file format designed for that purpose."
 msgstr ""
-"Kraft ondersteund het gebruik van de XRechnung standaard. Dat is een digitaal"
-" formaat voor electronische rekeningen, en als wet ingevoerd in Duitsland wat"
-" een EU richtlijn volgt. De XRechnung is een XML-bestandsformaat ontworpen"
-" voor dat"
-" doel."
+"Kraft ondersteund het gebruik van de XRechnung standaard. Dat is een "
+"digitaal formaat voor electronische rekeningen, en als wet ingevoerd in "
+"Duitsland wat een EU richtlijn volgt. De XRechnung is een XML-"
+"bestandsformaat ontworpen voor dat doel."
 
 #. type: Plain text
-#: kraft.adoc:811
+#: kraft.adoc:906
 msgid ""
 "To use the XRechnung Export productivly, a little manual work is still "
 "needed in Kraft. Kraft creates the XML file based on a template, very "
@@ -2509,30 +2773,30 @@ msgid ""
 "between different invoices. The dynamic elements (customer data, items etc.) "
 "are filled into the template during the generation step."
 msgstr ""
-"Om de XRechnung Export productief te gebruiken, is nog een beetje handwerk in"
-" Kraft nodig. Kraft creëert het XML-bestand aan de hand van een sjabloon,"
-" vergelijkbaar met de normale PDF documenten. Dit houdt in dat het een"
-" sjabloon laadt wat statische elementen bevat (b.v. het adres van het"
-" bedrijf) die niet veranderen tussen de verschillende rekeningen. De"
-" dynamische elementen (data over de klant, items enz.) "
-"worden in het sjabloon geplaatst tijdens de stap van het generen."
+"Om de XRechnung Export productief te gebruiken, is nog een beetje handwerk "
+"in Kraft nodig. Kraft creëert het XML-bestand aan de hand van een sjabloon, "
+"vergelijkbaar met de normale PDF documenten. Dit houdt in dat het een "
+"sjabloon laadt wat statische elementen bevat (b.v. het adres van het "
+"bedrijf) die niet veranderen tussen de verschillende rekeningen. De "
+"dynamische elementen (data over de klant, items enz.) worden in het sjabloon "
+"geplaatst tijdens de stap van het generen."
 
 #. type: Plain text
-#: kraft.adoc:813
+#: kraft.adoc:908
 msgid ""
 "In order to generate correct XRechnung files for the specific company, the "
 "user has to adopt the template file manually to the companies needs. Note "
 "that this has only to be done once and should be easy for a person with a "
 "bit computer experience (Basic knowledge about XML appreciated!)."
 msgstr ""
-"Om correcte XRechnung-bestanden te generen voor het desbetreffende bedrijf,"
-" moet de gebruiker het sjabloonbestand handmatig aanpassen aan de eisen van"
-" het bedrijf. Merk op dat u dat maar eenmalig hoeft te doen en dat het niet"
-" moeilijk is voor iemand met een beetje computerervaring (Basiskennis van XML"
-" is gewenst)."
+"Om correcte XRechnung-bestanden te generen voor het desbetreffende bedrijf, "
+"moet de gebruiker het sjabloonbestand handmatig aanpassen aan de eisen van "
+"het bedrijf. Merk op dat u dat maar eenmalig hoeft te doen en dat het niet "
+"moeilijk is voor iemand met een beetje computerervaring (Basiskennis van XML "
+"is gewenst)."
 
 #. type: Plain text
-#: kraft.adoc:815
+#: kraft.adoc:910
 msgid ""
 "To adapt the file to the needs of the company, it is best to start with the "
 "https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung."
@@ -2540,15 +2804,14 @@ msgid ""
 "location that the user can edit. Open it in a normal text editor, such as "
 "https://kate-editor.org/[Kate]."
 msgstr ""
-"Om het bestand aan te passen aan de eisen van het bedrijf, kunt u het beste"
-" beginnen met het "
-"https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung."
-"xrtmpl[voorbeeld XRechnung-bestand]. U moet het downloaden en vervolgens"
-" opslaan op een plek waar u het kan bewerken. Open het in een normale"
-" tekstverwerker, zoals https://kate-editor.org/[Kate]."
+"Om het bestand aan te passen aan de eisen van het bedrijf, kunt u het beste "
+"beginnen met het https://raw.githubusercontent.com/dragotin/kraft/master/"
+"reports/xrechnung.xrtmpl[voorbeeld XRechnung-bestand]. U moet het downloaden "
+"en vervolgens opslaan op een plek waar u het kan bewerken. Open het in een "
+"normale tekstverwerker, zoals https://kate-editor.org/[Kate]."
 
 #. type: Plain text
-#: kraft.adoc:817
+#: kraft.adoc:912
 msgid ""
 "Read carefully through the file without being scared off by the XML format. "
 "All user strings (ie. company name, address and such) are user specific and "
@@ -2556,75 +2819,162 @@ msgid ""
 "xrechnung-16828[details about the format] here to better understand the "
 "meaning of the fields."
 msgstr ""
-"Bestudeer nauwkeurig het bestand zonder dat u afgeschrikt wordt door het"
-" XML-opmaak. "
-"Alle user strings (d.w.z. bedrijfsnaam, adres en dergelijke) zijn specifiek"
-" voor de gebruiker en moeten daarom overeenkomstig vervangen worden. "
-"Zoek https://www.xoev.de/xrechnung-16828[de details over de opmaak] hier op"
-" voor een beter begrip van"
-" de betekenis van de velden."
+"Bestudeer nauwkeurig het bestand zonder dat u afgeschrikt wordt door het XML-"
+"opmaak. Alle user strings (d.w.z. bedrijfsnaam, adres en dergelijke) zijn "
+"specifiek voor de gebruiker en moeten daarom overeenkomstig vervangen "
+"worden. Zoek https://www.xoev.de/xrechnung-16828[de details over de opmaak] "
+"hier op voor een beter begrip van de betekenis van de velden."
 
 #. type: Plain text
-#: kraft.adoc:819
+#: kraft.adoc:914
 msgid ""
 "Make sure to not disturb the proper XML format and do not change places "
 "where the template format `{{ template_name }}` is used."
 msgstr ""
-"Zorg ervoor dat u de correcte XML-opmaak niet verstoort en wijzig niet de"
-" locatie van waar `{{ template_name }}` is gebruikt."
+"Zorg ervoor dat u de correcte XML-opmaak niet verstoort en wijzig niet de "
+"locatie van waar `{{ template_name }}` is gebruikt."
 
 #. type: Plain text
-#: kraft.adoc:821
+#: kraft.adoc:916
 msgid ""
 "Once the file is adopted to the needs, open the Settings dialog of Kraft and "
 "insert the filename into the entry field for the XRechnung Template File on "
 "the Document Defaults page."
 msgstr ""
-"Nadat het bestand is aangepast aan de wensen, opent u het dialoogvenster voor"
-" de instellingen van Kraft en voer de bestandsnaam in het invoerveld voor het"
-" XRechnung Sjabloonbestand in de pagina voor document-standaarden."
+"Nadat het bestand is aangepast aan de wensen, opent u het dialoogvenster "
+"voor de instellingen van Kraft en voer de bestandsnaam in het invoerveld "
+"voor het XRechnung Sjabloonbestand in de pagina voor document-standaarden."
 
 #. type: Plain text
-#: kraft.adoc:823
+#: kraft.adoc:918
 msgid ""
 "After that step, the btn:[Export XRechung] menu item will open a dialog to "
 "pick a filename where to save the XRechnung invoice to."
 msgstr ""
-"Na deze stap zal het menu item btn:[Export XRechung] een dialoogvenster"
-" openen voor het ingeven van het bestandsnaam waarmee de XRechnung rekening"
-" wordt opgeslagen."
+"Na deze stap zal het menu item btn:[Export XRechung] een dialoogvenster "
+"openen voor het ingeven van het bestandsnaam waarmee de XRechnung rekening "
+"wordt opgeslagen."
 
 #. type: Plain text
-#: kraft.adoc:825
+#: kraft.adoc:920
 msgid "This file can now be transfered to the receiver of the invoice."
 msgstr "Dit bestand kan nu verzonden worden naar de ontvanger van de rekening."
 
 #. type: Plain text
-#: kraft.adoc:827
+#: kraft.adoc:922
 msgid ""
 "There are validators for invoices in XRechnung format out there in the "
 "internet. It is useful to verify the format of the Kraft exported XRechnung."
 msgstr ""
-"Er zijn validators voor rekeningen in het XRechnung formaat op het internet"
-" te vinden. Het is verstandig om het bestandsformaat van de XRechnung dat uit"
-" Kraft is geëxporteerd te laten valideren."
+"Er zijn validators voor rekeningen in het XRechnung formaat op het internet "
+"te vinden. Het is verstandig om het bestandsformaat van de XRechnung dat uit "
+"Kraft is geëxporteerd te laten valideren."
+
+#. type: Title ===
+#: kraft.adoc:923
+#, no-wrap
+msgid "Changing the Locale"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:926
+msgid ""
+"If it is needed that Kraft runs under a different locale than the actual "
+"desktop environment, this can be achieved by setting the desired locale in "
+"the start file of Kraft."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:928
+msgid ""
+"On the linux desktop, apps are usually started through a so called https://"
+"specifications.freedesktop.org/desktop-entry-spec/latest/[desktop file]. It "
+"contains the information how the Kraft binary is started if user clicks on "
+"the icon on the desktop or in the start menu."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:930
+msgid ""
+"The desktop file can usually be found in `/usr/share/applications/de.volle-"
+"kraft-voraus.kraft.desktop`."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:936
+msgid ""
+"It contains the line ``` Exec=kraft %u ``` which starts the application with "
+"the default locale."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:942
+msgid ""
+"Changing it to ``` Exec=env LANG=de_DE.UTF-8 kraft %u ``` would change that "
+"to run in the German locale for example, independent from the desktop "
+"environment location."
+msgstr ""
 
 #. type: Title ==
-#: kraft.adoc:829
+#: kraft.adoc:945
 #, no-wrap
 msgid "Credits and License"
 msgstr "Dankbetuigingen en licentie"
 
 #. type: Plain text
-#: kraft.adoc:832
-#| msgid "Program and documentation copyright 2004–2021 Klaas Freitag"
-msgid "Program and documentation copyright 2004–2022 Klaas Freitag"
+#: kraft.adoc:948
+#, fuzzy
+#| msgid "Program and documentation copyright 2004–2022 Klaas Freitag"
+msgid "Program and documentation copyright 2004â2023 Klaas Freitag"
 msgstr "Auteursrecht software en documentatie 2004-2022 Klaas Freitag"
 
 #. type: Plain text
-#: kraft.adoc:833
-msgid "Documentation copyright 2020 Ronald Stroethoff"
+#: kraft.adoc:949
+#, fuzzy
+#| msgid "Documentation copyright 2020 Ronald Stroethoff"
+msgid "Documentation copyright 2020-2023 Ronald Stroethoff"
 msgstr "Documentatie auteursrecht 2020 Ronald Stroethoff"
+
+#~ msgid ""
+#~ "With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful HTML "
+#~ "and CSS based generator that makes it very easy to create highly "
+#~ "customized documents which fit the users expectations. The general idea "
+#~ "is that Weasyprint loads html output that is processed to PDF. Usually it "
+#~ "is considering a Cascading Stylesheet file which has a huge impact on how "
+#~ "the PDF document looks in the end."
+#~ msgstr ""
+#~ "Door https://weasyprint.org[WeasyPrint] te gebruiken heeft Kraft een zeer "
+#~ "krachtige op HTML en CSS gebaseerde generator die het zeer eenvoudig "
+#~ "maakt om aangepaste documenten te creëren die voldoen aan de "
+#~ "verwachtingen van gebruikers. Het algemene idee is dat Weasyprint de "
+#~ "gecreëerde html laad om die te verwerken naar een PDF. Normaal gesproken "
+#~ "gebruikt het een bestand met een Cascading Stylesheet om te bepalen hoe "
+#~ "het PDF document er aan het eind eruit komt te zien."
+
+#~ msgid ""
+#~ "An example for a WeasyPrint document can be found in the Kraft package in "
+#~ "the reports directory and is called invoice.gtmpl."
+#~ msgstr ""
+#~ "Een voorbeeld van een WeasyPrint document kunt u vinden in het Kraft "
+#~ "pakket in de map reports en draagt de naam invoice.gtmpl."
+
+#~ msgid ""
+#~ "To use a WeasyPrint template with one of the Kraft document types just "
+#~ "select the template file name (with the right extension `*.gtml`) in the "
+#~ "Kraft Settings Dialog."
+#~ msgstr ""
+#~ "Om bij een van de Kraft-documenten een Weasyprint-sjabloon te gebruiken, "
+#~ "selecteert u gewoon het bestandsnaam (met de juiste extensie: *.gtml) in "
+#~ "het instellingsvenster van Kraft."
+
+#~ msgid ""
+#~ "To effectively change the look of the document `kraft.css` (https://"
+#~ "github.com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) needs "
+#~ "to be considered. It defines most of the look."
+#~ msgstr ""
+#~ "Om daadwerkelijk het uiterlijk van de documenten te veranderen is `kraft."
+#~ "css` (https://github.com/dragotin/kraft/blob/master/reports/kraft.css[op "
+#~ "Github]) heel belangrijk. Deze definieert het meeste van het uiterlijk."
 
 #~ msgid ""
 #~ "Kraft is designed to use the data entries from the KDE address book which "
