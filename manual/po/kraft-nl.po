@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-09-12 12:28+0200\n"
+"POT-Creation-Date: 2023-09-12 14:32+0200\n"
 "PO-Revision-Date: 2022-09-17 08:44+0200\n"
 "Last-Translator: Ronald Stroethoff <stroet43@zonnet.nl>\n"
 "Language-Team: Dutch <kde-i18n-nl@kde.org>\n"
@@ -1292,20 +1292,20 @@ msgid ""
 "generate useful texts:"
 msgstr ""
 
-#. type: Plain text
+#. type: delimited block -
 #: kraft.adoc:411
-msgid ""
-"``` Please pay this invoice until three weeks after the date of the "
-"document, which is the DATE_ADD_DAYS(21)."
+#, no-wrap
+msgid "Please pay this invoice until three weeks after the date of the document, which is the DATE_ADD_DAYS(21).\n"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:417
+#. type: delimited block -
+#: kraft.adoc:416
+#, no-wrap
 msgid ""
-"IF_ANY_HAS_TAG(Material)  This invoice lists material in "
-"ITEM_COUNT_WITH_TAG(Material) items. The net value is "
-"NETTO_SUM_PER_TAG(Material), plus VAT_SUM_PER_TAG(Material) = "
-"BRUTTO_SUM_PER_TAG(Material).  END_HAS_TAG ```"
+"IF_ANY_HAS_TAG(Material)\n"
+"This invoice lists material in ITEM_COUNT_WITH_TAG(Material) items. The net value is NETTO_SUM_PER_TAG(Material),\n"
+"plus VAT_SUM_PER_TAG(Material) = BRUTTO_SUM_PER_TAG(Material).\n"
+"END_HAS_TAG\n"
 msgstr ""
 
 #. type: Plain text
@@ -2229,11 +2229,10 @@ msgid ""
 "template needs to contain a snippet like this:"
 msgstr ""
 
-#. type: Plain text
-#: kraft.adoc:748
+#. type: delimited block -
+#: kraft.adoc:747
 #, no-wrap
 msgid ""
-"```\n"
 "    {%if doc.isInvoice and epcqrcode.valid %}\n"
 "    <p class=\"epcqrcode\">\n"
 "      <img class=\"epc\" src=\"file://{{ epcqrcode.svgfilename }}\" alt=\"EPC QR Code\" />\n"
@@ -2241,7 +2240,6 @@ msgid ""
 "      Diesen Code mit dem Smartphone scannen und Ãberweisung per Banking App aufgeben.\n"
 "    </p>\n"
 "    {% endif %}\n"
-"```\n"
 msgstr ""
 
 #. type: Title ==
@@ -2694,18 +2692,17 @@ msgstr ""
 "U kunt deze vinden in de thuismap van de gebruiker met de relatieve pad `."
 "config/kraftrc`. Daarin moet de volgende tekst voorkomen:"
 
-#. type: Plain text
-#: kraft.adoc:888 kraft.adoc:892
-msgid "```"
-msgstr "```"
-
-#. type: Plain text
+#. type: delimited block -
 #: kraft.adoc:890
-msgid "PdfOutputDir=/data/space/kraftdoc/pdf"
+#, fuzzy, no-wrap
+#| msgid "PdfOutputDir=/data/space/kraftdoc/pdf"
+msgid ""
+"[reporting]\n"
+"PdfOutputDir=/data/space/kraftdoc/pdf\n"
 msgstr "PdfOutputDir=/data/space/kraftdoc/pdf"
 
 #. type: Plain text
-#: kraft.adoc:894
+#: kraft.adoc:893
 msgid ""
 "There are different ways how share that directory, ie. NFS or SMB storages. "
 "It is important that both users from both machines can list and access the "
@@ -2719,7 +2716,7 @@ msgstr ""
 "lees-rechten nodig."
 
 #. type: Plain text
-#: kraft.adoc:896
+#: kraft.adoc:895
 msgid ""
 "A recommended setup is a NFS share with autofs which is set up on the main "
 "machine. To manage file access a certain group should be set up on the "
@@ -2731,13 +2728,13 @@ msgstr ""
 "beheren."
 
 #. type: Plain text
-#: kraft.adoc:898
+#: kraft.adoc:897
 #, no-wrap
 msgid "**Starting Kraft in read-only mode**\n"
 msgstr "**Kraft in read-only modus**\n"
 
 #. type: Plain text
-#: kraft.adoc:900
+#: kraft.adoc:899
 msgid ""
 "To start Kraft in read-only mode, start the binary with the `-r` command "
 "line switch."
@@ -2746,13 +2743,13 @@ msgstr ""
 "volgende parameter `-r` gestart worden."
 
 #. type: Title ===
-#: kraft.adoc:901
+#: kraft.adoc:900
 #, no-wrap
 msgid "XRechnung Support"
 msgstr "Gebruik van XRechnung"
 
 #. type: Plain text
-#: kraft.adoc:904
+#: kraft.adoc:903
 msgid ""
 "Kraft supports the XRechnung standard. That is a digital format for "
 "electronic invoicing, and it passed as law in Germany and follows a EU "
@@ -2764,7 +2761,7 @@ msgstr ""
 "bestandsformaat ontworpen voor dat doel."
 
 #. type: Plain text
-#: kraft.adoc:906
+#: kraft.adoc:905
 msgid ""
 "To use the XRechnung Export productivly, a little manual work is still "
 "needed in Kraft. Kraft creates the XML file based on a template, very "
@@ -2782,7 +2779,7 @@ msgstr ""
 "geplaatst tijdens de stap van het generen."
 
 #. type: Plain text
-#: kraft.adoc:908
+#: kraft.adoc:907
 msgid ""
 "In order to generate correct XRechnung files for the specific company, the "
 "user has to adopt the template file manually to the companies needs. Note "
@@ -2796,7 +2793,7 @@ msgstr ""
 "is gewenst)."
 
 #. type: Plain text
-#: kraft.adoc:910
+#: kraft.adoc:909
 msgid ""
 "To adapt the file to the needs of the company, it is best to start with the "
 "https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung."
@@ -2811,7 +2808,7 @@ msgstr ""
 "normale tekstverwerker, zoals https://kate-editor.org/[Kate]."
 
 #. type: Plain text
-#: kraft.adoc:912
+#: kraft.adoc:911
 msgid ""
 "Read carefully through the file without being scared off by the XML format. "
 "All user strings (ie. company name, address and such) are user specific and "
@@ -2826,7 +2823,7 @@ msgstr ""
 "hier op voor een beter begrip van de betekenis van de velden."
 
 #. type: Plain text
-#: kraft.adoc:914
+#: kraft.adoc:913
 msgid ""
 "Make sure to not disturb the proper XML format and do not change places "
 "where the template format `{{ template_name }}` is used."
@@ -2835,7 +2832,7 @@ msgstr ""
 "locatie van waar `{{ template_name }}` is gebruikt."
 
 #. type: Plain text
-#: kraft.adoc:916
+#: kraft.adoc:915
 msgid ""
 "Once the file is adopted to the needs, open the Settings dialog of Kraft and "
 "insert the filename into the entry field for the XRechnung Template File on "
@@ -2846,7 +2843,7 @@ msgstr ""
 "voor het XRechnung Sjabloonbestand in de pagina voor document-standaarden."
 
 #. type: Plain text
-#: kraft.adoc:918
+#: kraft.adoc:917
 msgid ""
 "After that step, the btn:[Export XRechung] menu item will open a dialog to "
 "pick a filename where to save the XRechnung invoice to."
@@ -2856,12 +2853,12 @@ msgstr ""
 "wordt opgeslagen."
 
 #. type: Plain text
-#: kraft.adoc:920
+#: kraft.adoc:919
 msgid "This file can now be transfered to the receiver of the invoice."
 msgstr "Dit bestand kan nu verzonden worden naar de ontvanger van de rekening."
 
 #. type: Plain text
-#: kraft.adoc:922
+#: kraft.adoc:921
 msgid ""
 "There are validators for invoices in XRechnung format out there in the "
 "internet. It is useful to verify the format of the Kraft exported XRechnung."
@@ -2871,13 +2868,13 @@ msgstr ""
 "Kraft is geëxporteerd te laten valideren."
 
 #. type: Title ===
-#: kraft.adoc:923
+#: kraft.adoc:922
 #, no-wrap
 msgid "Changing the Locale"
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:926
+#: kraft.adoc:925
 msgid ""
 "If it is needed that Kraft runs under a different locale than the actual "
 "desktop environment, this can be achieved by setting the desired locale in "
@@ -2885,7 +2882,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:928
+#: kraft.adoc:927
 msgid ""
 "On the linux desktop, apps are usually started through a so called https://"
 "specifications.freedesktop.org/desktop-entry-spec/latest/[desktop file]. It "
@@ -2894,46 +2891,68 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:930
+#: kraft.adoc:929
 msgid ""
 "The desktop file can usually be found in `/usr/share/applications/de.volle-"
 "kraft-voraus.kraft.desktop`."
 msgstr ""
 
 #. type: Plain text
-#: kraft.adoc:936
-msgid ""
-"It contains the line ``` Exec=kraft %u ``` which starts the application with "
-"the default locale."
+#: kraft.adoc:931
+msgid "It contains the line"
+msgstr ""
+
+#. type: delimited block -
+#: kraft.adoc:934
+#, no-wrap
+msgid "Exec=kraft %u\n"
 msgstr ""
 
 #. type: Plain text
+#: kraft.adoc:937
+msgid "which starts the application with the default locale."
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:939
+msgid "Changing it to"
+msgstr ""
+
+#. type: delimited block -
 #: kraft.adoc:942
+#, no-wrap
+msgid "Exec=env LANG=de_DE.UTF-8 kraft %u\n"
+msgstr ""
+
+#. type: Plain text
+#: kraft.adoc:945
 msgid ""
-"Changing it to ``` Exec=env LANG=de_DE.UTF-8 kraft %u ``` would change that "
-"to run in the German locale for example, independent from the desktop "
-"environment location."
+"would change that to run in the German locale for example, independent from "
+"the desktop environment location."
 msgstr ""
 
 #. type: Title ==
-#: kraft.adoc:945
+#: kraft.adoc:948
 #, no-wrap
 msgid "Credits and License"
 msgstr "Dankbetuigingen en licentie"
 
 #. type: Plain text
-#: kraft.adoc:948
+#: kraft.adoc:951
 #, fuzzy
 #| msgid "Program and documentation copyright 2004–2022 Klaas Freitag"
 msgid "Program and documentation copyright 2004â2023 Klaas Freitag"
 msgstr "Auteursrecht software en documentatie 2004-2022 Klaas Freitag"
 
 #. type: Plain text
-#: kraft.adoc:949
+#: kraft.adoc:952
 #, fuzzy
 #| msgid "Documentation copyright 2020 Ronald Stroethoff"
 msgid "Documentation copyright 2020-2023 Ronald Stroethoff"
 msgstr "Documentatie auteursrecht 2020 Ronald Stroethoff"
+
+#~ msgid "```"
+#~ msgstr "```"
 
 #~ msgid ""
 #~ "With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful HTML "

@@ -406,14 +406,14 @@ The following list of macros are supported:
 
 As an example, this footer text template can be used to automatically generate useful texts:
 
-```
+----
 Please pay this invoice until three weeks after the date of the document, which is the DATE_ADD_DAYS(21).
 
 IF_ANY_HAS_TAG(Material)
 This invoice lists material in ITEM_COUNT_WITH_TAG(Material) items. The net value is NETTO_SUM_PER_TAG(Material),
 plus VAT_SUM_PER_TAG(Material) = BRUTTO_SUM_PER_TAG(Material).
 END_HAS_TAG
-```
+----
 
 We are now ready for the first invoice.
 
@@ -736,7 +736,7 @@ To use the EPC QR code on the invoice printout, the bank account information has
 
 To include the generated EPC QR Code into the PDF document, the Weasyprint template needs to contain a snippet like this:
 
-```
+----
     {%if doc.isInvoice and epcqrcode.valid %}
     <p class="epcqrcode">
       <img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" />
@@ -744,7 +744,7 @@ To include the generated EPC QR Code into the PDF document, the Weasyprint templ
       Diesen Code mit dem Smartphone scannen und Überweisung per Banking App aufgeben.
     </p>
     {% endif %}
-```
+----
 
 
 [[Menu]]
@@ -884,11 +884,10 @@ Kraft writes generated PDF documents into a local directory. Where that is can b
 
 That is located in each users home directory, in the path `.config/kraftrc`. It has to contain the following config value:
 
-```
+----
 [reporting]
 PdfOutputDir=/data/space/kraftdoc/pdf
-
-```
+----
 
 There are different ways how share that directory, ie. NFS or SMB storages. It is important that both users from both machines can list and access the files. The main user needs read and write access, read only users only need read access to the files.
 
@@ -929,15 +928,19 @@ On the linux desktop, apps are usually started through a so called https://speci
 The desktop file can usually be found in `/usr/share/applications/de.volle-kraft-voraus.kraft.desktop`.
 
 It contains the line
-```
+
+----
 Exec=kraft %u
-```
+----
+
 which starts the application with the default locale.
 
 Changing it to
-```
+
+----
 Exec=env LANG=de_DE.UTF-8 kraft %u
-```
+----
+
 would change that to run in the German locale for example, independent from the desktop environment location.
 
 
