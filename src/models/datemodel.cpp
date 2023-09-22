@@ -266,7 +266,7 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags DateModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return {};
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }

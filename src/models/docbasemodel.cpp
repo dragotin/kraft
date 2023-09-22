@@ -139,7 +139,7 @@ QVariant DocBaseModel::headerData(int section, Qt::Orientation orientation, int 
 Qt::ItemFlags DocBaseModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return {};
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }

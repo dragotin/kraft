@@ -40,7 +40,7 @@
 #define ID_STATUS_MSG 1
 
 KatalogView::KatalogView( QWidget* parent, const char* ) :
-    QMainWindow(parent, nullptr),
+    QMainWindow(parent),
     m_acEditChapter(nullptr),
     m_acEditItem(nullptr),
     m_acNewItem(nullptr),
