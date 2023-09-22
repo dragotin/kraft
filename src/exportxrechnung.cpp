@@ -125,7 +125,6 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     KContacts::Addressee myContact; // leave empty for now
     // now the three pillars archDoc, myContact and mCustomerContact are defined.
 
-    QString output;
     QScopedPointer<DocumentTemplate> templateEngine;
 
     const QString tmplFile = xRechnungTemplate();

@@ -423,7 +423,6 @@ void KatalogListView::dropEvent( QDropEvent *event )
             event->ignore();
             return;
         }
-        const QString dropRowText = droppedOnItem->text(0);
         row = dropIndx.row();
         col = dropIndx.column();
         dropParentIndex = dropIndx.parent();

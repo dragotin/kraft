@@ -202,7 +202,7 @@ KraftDB *KraftDB::self()
 
 void KraftDB::close()
 {
-    QString name = m_db.connectionName();
+    // QString name = m_db.connectionName();
     // qDebug () << "Database connection name to close: " << name;
 
     m_db.close();

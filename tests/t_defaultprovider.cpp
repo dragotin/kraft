@@ -121,7 +121,6 @@ private slots:
     // test relative to the app dir
     void testLocateRelative()
     {
-        const QString appDir = QCoreApplication::applicationDirPath();
         QDir::setCurrent(QCoreApplication::applicationDirPath());
 
         // Is it possible to create a kraft-dir ?

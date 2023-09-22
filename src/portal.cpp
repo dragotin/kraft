@@ -223,8 +223,6 @@ void Portal::initActions()
 
     _actOpenArchivedDocument->setEnabled( false );
     _actXRechnung->setEnabled( false );
-    // use the absolute path to your kraftui.rc file for testing purpose in createGUI();
-    QString prjPath = QString::fromUtf8(qgetenv("KRAFT_HOME"));
 
     QMenu *fileMenu = menuBar()->addMenu(i18n("&File"));
     fileMenu->addAction(_actFileQuit);
