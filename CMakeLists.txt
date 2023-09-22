@@ -1,6 +1,5 @@
-project(kraft)
-
 cmake_minimum_required(VERSION 3.16.0)
+project(kraft)
 cmake_policy(SET CMP0063 NEW)
 
 find_package(ECM REQUIRED NO_MODULE)
