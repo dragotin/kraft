@@ -71,7 +71,7 @@ private slots:
         DocType dt(_docTypeName);
 
         QVERIFY( dt.name() == _docTypeName);
-        QVERIFY( dt.name() == QLatin1Literal("Angebot"));
+        QVERIFY( dt.name() == QLatin1String("Angebot"));
         QVERIFY( dt.allowAlternative());
         QVERIFY( dt.allowDemand());
     }
