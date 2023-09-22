@@ -179,12 +179,12 @@ void KraftWizard::init( bool haveAddressSelect, const QString& followUpDoc )
 
     mDetailsPage = new DocDetailsPage();
     addPage(mDetailsPage);
-    // w1, QLatin1Literal("<h2>") +  + QLatin1Literal("</h2>") );
+    // w1, QLatin1String("<h2>") +  + QLatin1String("</h2>") );
 
     // only pick an addressee if the document is really new
     if( addressProvider->backendUp() && haveAddressSelect ) {
         mCustomerPage = new CustomerSelectPage( );
-        addPage( mCustomerPage); // w, QLatin1Literal("<h2>") + i18n( "Select an Addressee" ) + QLatin1Literal("</h2>") );
+        addPage( mCustomerPage); // w, QLatin1String("<h2>") + i18n( "Select an Addressee" ) + QLatin1String("</h2>") );
 
         mCustomerPage->setupAddresses();
         connect( mCustomerPage, SIGNAL( addresseeSelected(KContacts::Addressee)),
