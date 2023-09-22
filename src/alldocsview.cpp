@@ -358,8 +358,6 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
                                               DocumentModel::Document_Ident,
                                               mCurrentlySelected.parent());
 
-            const QString id = idIndx.data( Qt::DisplayRole ).toString();
-
             digest = model->digest( mCurrentlySelected );
             emit docSelected(digest);
             mAllViewDetails->slotShowDocDetails( digest );

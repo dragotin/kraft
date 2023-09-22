@@ -74,7 +74,7 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
   int cnt = 0;
   for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
     QCheckBox *cb = new QCheckBox( *it );
-    QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
+    // QString desc = TagTemplateMan::self()->getTagTemplate( *it ).description();
     // QToolTip::add( cb, desc );
     groupLay->insertWidget( cnt++, cb );
     mTagMap[cb] = *it;

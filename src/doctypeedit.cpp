@@ -461,7 +461,7 @@ void DocTypeEdit::saveDocTypes()
     QString name = *it;
     if ( mOrigDocTypes.contains( name ) ) { // just to check
       DocType dt = mChangedDocTypes[name];
-      QString numCycleName = dt.numberCycleName();
+      // QString numCycleName = dt.numberCycleName();
       // qDebug () << "Number cycle name for to add doctype " << name << ": " << numCycleName;
       dt.save();
     }
