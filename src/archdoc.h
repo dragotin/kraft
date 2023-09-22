@@ -198,7 +198,7 @@ public:
 
     static QString taxMarkerNoTax()   { return QStringLiteral("1"); }
     static QString taxMarkerReduced() { return QStringLiteral("2"); }
-    static QString taxMarkerFull()    { return QStringLiteral("");  }
+    static QString taxMarkerFull()    { return QString();  }
 
     bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
 
