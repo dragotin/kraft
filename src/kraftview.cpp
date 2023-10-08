@@ -585,8 +585,8 @@ void KraftView::refreshPostCard()
     QDate d = m_headerEdit->m_dateEdit->date();
     const QString dStr = Format::toDateString( d, KraftSettings::self()->dateFormat() );
 
-    double fullTax = DocumentMan::self()->tax(d);
-    double redTax = DocumentMan::self()->reducedTax(d);
+    double fullTax = UnitManager::self()->tax(d);
+    double redTax = UnitManager::self()->reducedTax(d);
     const QString preText = kraftDoc->resolveMacros(m_headerEdit->m_teEntry->toPlainText(),
                                                     positions, d, fullTax, redTax);
     const QString postText = kraftDoc->resolveMacros(m_footerEdit->ui()->m_teSummary->toPlainText(),
