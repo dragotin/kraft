@@ -363,7 +363,7 @@ void Portal::initView()
     connect(m_portalView.data(), &PortalView::createDocument, _actNewDocument, &QAction::trigger);
     connect(m_portalView.data(), &PortalView::copyDocument, _actCopyDocument, &QAction::trigger);
     connect(m_portalView.data(), &PortalView::printPDF, _actPrintDocument, &QAction::trigger);
-    connect(m_portalView.data(), &PortalView::openDocument, _actViewDocument, &QAction::trigger);
+    connect(m_portalView.data(), &PortalView::viewDocument, _actViewDocument, &QAction::trigger);
     connect(m_portalView.data(), &PortalView::docStatusChange, _actChangeDocStatus, &QAction::trigger);
     connect(m_portalView.data(), &PortalView::openDocument, _actOpenDocument, &QAction::trigger);
     connect(m_portalView.data(), &PortalView::openPDF, _actOpenDocumentPDF, &QAction::trigger);
@@ -1074,9 +1074,14 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
         const QByteArray geo = view->saveGeometry().toBase64();
         if( success ) {
             if( view->type() == KraftViewBase::ReadWrite ) {
-                AllDocsView *dv = m_portalView->docDigestView();
-                dv->slotUpdateView(doc);
-                KraftSettings::self()->setDocEditGeometry(geo);
+                if (doc->modified()) {
+                    AllDocsView *dv = m_portalView->docDigestView();
+                    dv->slotUpdateView(doc);
+                    KraftSettings::self()->setDocEditGeometry(geo);
+
+                    const QString uuid = doc->uuid();
+                    slotGeneratePDF(uuid);
+                }
             } else {
                 KraftSettings::self()->setDocViewROGeometry(geo);
             }
@@ -1085,8 +1090,7 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
             mViewMap.remove(doc);
             view->deleteLater();
         }
-        const QString uuid = doc->uuid();
-        slotGeneratePDF(uuid);
+
         // qDebug () << "A view was closed saving and doc is new: " << doc->isNew();
         delete doc;
     } else {
