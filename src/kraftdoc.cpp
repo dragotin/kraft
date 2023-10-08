@@ -695,16 +695,16 @@ QList<ReportItem*> KraftDoc::reportItemList() const
 
  QString KraftDoc::preText() const
  {
-     double fullTax = DocumentMan::self()->tax(date());
-     double redTax = DocumentMan::self()->reducedTax(date());
+     double fullTax = UnitManager::self()->tax(date());
+     double redTax = UnitManager::self()->reducedTax(date());
      const QString myStr = resolveMacros(mPreText, positions(), date(), fullTax, redTax);
      return myStr;
  }
 
  QString KraftDoc::postText() const
  {
-     double fullTax = DocumentMan::self()->tax(date());
-     double redTax = DocumentMan::self()->reducedTax(date());
+     double fullTax = UnitManager::self()->tax(date());
+     double redTax = UnitManager::self()->reducedTax(date());
      const QString myStr = resolveMacros(mPostText, positions(), date(), fullTax, redTax);
      return myStr;
  }
