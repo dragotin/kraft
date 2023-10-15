@@ -102,11 +102,7 @@ PrefsUnits::~PrefsUnits()
 
 void PrefsUnits::save()
 {
-  bool ok = mUnitsModel->submitAll();
-  if( ! ok ) {
-      // QString err = mUnitsModel->lastError().text();
-      // qDebug () << "SQL Error: " << err;
-  }
+  mUnitsModel->submitAll();
 }
 
 void PrefsUnits::slotAddUnit()

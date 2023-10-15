@@ -461,8 +461,6 @@ void DocTypeEdit::saveDocTypes()
     QString name = *it;
     if ( mOrigDocTypes.contains( name ) ) { // just to check
       DocType dt = mChangedDocTypes[name];
-      // QString numCycleName = dt.numberCycleName();
-      // qDebug () << "Number cycle name for to add doctype " << name << ": " << numCycleName;
       dt.save();
     }
   }
@@ -473,7 +471,6 @@ void DocTypeEdit::saveDocTypes()
     QString oldName( it.key() );
     if ( mOrigDocTypes.contains( oldName ) ) {
       QString newName = it.value();
-      // qDebug () << "Renaming " << oldName << " to " << newName;
       DocType dt = mOrigDocTypes[oldName];
       if ( mChangedDocTypes.contains( newName ) ) {
         dt = mChangedDocTypes[newName];
