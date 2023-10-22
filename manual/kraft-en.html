@@ -1429,12 +1429,12 @@ Templates with the name <em>Standard</em> are the default templates for the docu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>Please pay this invoice until three weeks after the date of the document, which is the DATE_ADD_DAYS(21).
+<pre>Please pay this invoice until three weeks after the date of the document, which is the DATE_ADD_DAYS(21).
 
 IF_ANY_HAS_TAG(Material)
 This invoice lists material in ITEM_COUNT_WITH_TAG(Material) items. The net value is NETTO_SUM_PER_TAG(Material),
 plus VAT_SUM_PER_TAG(Material) = BRUTTO_SUM_PER_TAG(Material).
-END_HAS_TAG</code></pre>
+END_HAS_TAG</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1913,13 +1913,13 @@ Kraft still ships with the old ReportLab based converter, but that will be depre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>    {%if doc.isInvoice and epcqrcode.valid %}
+<pre>    {%if doc.isInvoice and epcqrcode.valid %}
     &lt;p class="epcqrcode"&gt;
       &lt;img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" /&gt;
       Dieser QR Code ermöglicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:
       Diesen Code mit dem Smartphone scannen und Überweisung per Banking App aufgeben.
     &lt;/p&gt;
-    {% endif %}</code></pre>
+    {% endif %}</pre>
 </div>
 </div>
 </div>
@@ -2150,8 +2150,8 @@ There is no protection against having both users editing the same document. Beca
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[reporting]
-PdfOutputDir=/data/space/kraftdoc/pdf</code></pre>
+<pre>[reporting]
+PdfOutputDir=/data/space/kraftdoc/pdf</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2226,7 +2226,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>Exec=kraft %u</code></pre>
+<pre>Exec=kraft %u</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2237,7 +2237,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>Exec=env LANG=de_DE.UTF-8 kraft %u</code></pre>
+<pre>Exec=env LANG=de_DE.UTF-8 kraft %u</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2260,7 +2260,7 @@ There are validators for invoices in XRechnung format out there in the internet.
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-12 11:58:36 +0200
+Last updated 2023-10-22 21:08:01 +0200
 </div>
 </div>
 </body>

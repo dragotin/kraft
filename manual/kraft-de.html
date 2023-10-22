@@ -667,6 +667,32 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_header_and_footer_text_templates">Header- and Footer Text Templates</a></li>
 </ul>
 </li>
+<li><a href="#Invoice">Creating Documents</a>
+<ul class="sectlevel2">
+<li><a href="#_the_first_invoice">The first Invoice</a></li>
+<li><a href="#Offer">Creating an Offer</a></li>
+<li><a href="#Acceptance_of_order">Creating an Acceptance of Order</a></li>
+</ul>
+</li>
+<li><a href="#Customization">Customization</a>
+<ul class="sectlevel2">
+<li><a href="#_output_document_customization">Output Document Customization</a></li>
+</ul>
+</li>
+<li><a href="#Menu">Menus and Shortcuts</a>
+<ul class="sectlevel2">
+<li><a href="#_main_application_menu">Main Application Menu</a></li>
+<li><a href="#_document_edit_window">Document Edit Window</a></li>
+</ul>
+</li>
+<li><a href="#AdvancedTopics">Fortgeschrittene Themen</a>
+<ul class="sectlevel2">
+<li><a href="#_using_kraft_collaboratively">Using Kraft Collaboratively</a></li>
+<li><a href="#_xrechnung_support">XRechnung Support</a></li>
+<li><a href="#_changing_the_locale">Changing the Locale</a></li>
+</ul>
+</li>
+<li><a href="#Credits">Credits und Lizenz</a></li>
 </ul>
 </div>
 </div>
@@ -1399,489 +1425,791 @@ Templates with the name <em>Standard</em> are the default templates for the docu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-Please pay this invoice until three weeks after the date of the document" data-lang="Please pay this invoice until three weeks after the date of the document">IF_ANY_HAS_TAG(Material) This invoice lists material in ITEM_COUNT_WITH_TAG(Material) items. The net value is NETTO_SUM_PER_TAG(Material), plus VAT_SUM_PER_TAG(Material) = BRUTTO_SUM_PER_TAG(Material). END_HAS_TAG ```
-
-We are now ready for the first invoice.
-
-[[Invoice]]
-== Creating Documents
-
-=== The first Invoice
-
-Open the tab btn:[documents]
-
-Click on btn:[create document]
-
-The window document [creation wizard opens].
-
-Select in document type `invoice`.
-
-Fill in on the whiteboard content a short text about what the invoice is, like: `cut grass and planted tree for mister Jonson`
-
-Click on btn:[next]
-
-Select on the new window the name and address from the client.
-
-(if the name and address is not there, click then on btn:[new contact] or on btn:[edit contact] if you want to edit the contact)
-
-Click on btn:[OK].
-
-Now opens the window document [items].
-
-this window has 2 tabs and the 3 buttons on the top:
-
-* btn:[Add item...],
-* btn:[Add discount item],
-* btn:[Show templates].
-
-In the left tab you can see all the items that we want to place on the invoice, on the right tab we see the text from the header, the total price and the footer.
-
-If you click on the text of the header or the footer on the right side then the window changes in such a way that you can edit the header or the footer.
-
-Adapt the header and the footer to your situation, on the footer you can place a text: `We make your garden-dream come to reality.`.
-
-Click on the button btn:[Show templates].
-
-The right tab changes and show now the earlier made templates, we select in the group Work, the subgroup Plant tree and click then on the button with the to the left pointing arrow on the bottom side.
-
-A new window [Create Item from Template] opens.
-
-Because we have planted 2 trees, we go to the field [insert] and change this to 2 pcs.
-
-Click on btn:[OK] for saving the result or on btn:[cancel] for discarding the result.
-
-The window close and we go back to the main window.
-
-We click again on btn:[Show templates] and select this time `cut grass`, we click again on the button with the arrow, in the opened window we select that the grass-field was 24 square meter.
-
-Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the result.
-
-We add now manually an item by clicking on the button btn:[Add item…] and the window [create new item] opens.
-
-Because we have delivered a special tree, we fill here in the name of the special tree `liguster`, at the field insert we fill in the number of the special trees that we have delivered and the price of them.
-
-____
-WARNING: Remind that in the catalog we can add a profit on the price of the material, in the invoice and in the offer we can not add a profit on the price of the material.
-____
-
-We have now an invoice with 3 items.
-
-Click on btn:[OK] for saving the invoice or on btn:[Cancel] for discarding the invoice.
-
-We click on btn:[OK] and save the result.
-
-Your first invoice is now ready for sending.
-
-In the window documents we see our first invoice, notice that this document has a document number which we can see on the left side.
-
-On top of the window with all the invoices we see the button [Print Document], on which we click.
-
-From the invoice will now a PDF be made which we can print on paper or send by email to the client.
-
-After this we are going to create a offer for some work in a garden.
-
-[[Offer]]
-=== Creating an Offer
-
-The client has asked to plant a tree, we will offer 3 different trees which we can plant.
-
-Beside this, we have seen that there is a lifeless three, which we will offer to remove as extra work. image:create_new_doc.png[Numbercycles,float="right"]
-
-For the total price we do not want to show the price of the removal of the lifeless tree and we want for the total price only to show the price of one tree and not three.
-
-Open again the tab btn:[documents].
-
-Click on btn:[create document]
-
-The window _Document Creation Wizard_ opens.
-
-select in btn:[document type] &gt; btn:[Offer].
-
-Fill in on the whiteboard content a short text about what the offer is, like: `plant one tree and removal of lifeless tree`
-
-Click on btn:[next]
-
-Select on the new window the name and address from the client.
-
-(if the name and address is not there, click then on btn:[new contact] or on btn:[edit contact] if you want to edit the contact)
-
-Click on btn:[OK].
-
-Now the window [edit document] opens.
-
-This window has 2 tabs and the 3 buttons on the top:
-
-* btn:[Add item...],
-* btn:[Add discount item],
-* btn:[Show templates].
-
-Click on the button btn:[Show templates].
-
-The right tab changes and show now the earlier made templates, we select in the group `Work`, the subgroup `Plant tree` and click then on the button with the to the left pointing arrow on the bottom side.
-
-A new window [Create Item from Template] opens.
-
-Because we want to plant 1 tree, we go to the field [insert] and keep this on 1 pcs.
-
-Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the result.
-
-The window close and we go back to the main window.
-
-We click on the button btn:[Show templates] and this time we select in catalog Material
-
-The material-catalog opens, and we can select in the chapter `trees` the subchapter `loaf trees` in which we select the `apple tree` which we made earlier.
-
-Click on we btn:[OK] for saving the result or on btn:[cancel] for discarding the result.
-
-The window close and we go back to the main window.
-
-We add now manually an item by clicking on the button `Add item…`.
-
-the window [create new item] opens.
-
-We want that the client can make a choice from an apple, a pear tree and the liguster.
-
-Therefor we are going to add also a pear tree manually.
-
-We click on the button btn:[Add item…] and the window [create new item] opens.
-
-We fill here in the name of the tree `Pear tree`, at the field insert we fill in the number of the special trees that we have delivered and the price of them.
-
-We want add this to the material catalog for future use, therefor we select also [select this item as template for future documents] and we select in [save in chapter]`trees`.
-
-Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the result.
-
-We does this again but then for the liguster.
-
-We have now 3 items with trees in the offer.
-
-As last item we add an item with `remove tree` with 0,5 hour for 32 euro.
-
-On the left side of an item we can see 2 buttons:
-
-a button with a flag and a button with what looks like a page.
-
-We select the upper button with the page after which opens a context-menu with the items:
-
-image:context1.png[Context menu,float="right"]
-
- [Item kind]-&gt;[Normal]
- [Item kind]&gt;[Alternative]
- [Item kind]&gt;[On demand]
- [Tax]
- [Move up]
- [Move down]
- [Lock item]
- [Unlock item]
- [Delete item]
-
-We choose here [Item kind] and change for `pear tree` from [normal] to [alternative].
-
-We do this also for [liguster] and for [remove tree] we change this from [normal] to [on demand].
-
-image:context2.png[Context menu,float="right"]
-
-Click on btn:[OK] for saving the result or on btn:[Cancel] for discarding the result.
-
-We want to see the result and therefor we click on the button [show document].
-
-We see now that the prize of the pear tree, the liguster and the removal of the tree is not used for the total prize. When we are happy with the result, we can click on the button btn:[close] after which we click on the button btn:[Print Document] for making a PDF what we can print out or send to the client.
-
-After your first invoice is now your first offer now also ready for sending.
-
-[[Acceptance_of_order]]
-=== Creating an Acceptance of Order
-
-The document type "Acceptance of Order" is sent subsequently to an offer.
-
-image:acceptance_o_o_context.png[Numbercycles,float="right"]
-
-When a client has made a request, we will send an offer in wich we describe which items we will deliver. Hopefully the client will give an order for the work.
-
-It is a good practice to respond on the order with an "Acceptance of order" in which we describe all the items we will deliver. We can make the "Acceptance of order" on the same way as we made the invoice or the offer by selecting each item and correcting the number of delivery. This takes time and we can make errors by forgetting items or filling an incorrect number.
-
-It can be done quicker by selecting the offer in the list and selecting btn:[Create Followup Document] from either the context menu or the main menu.
-
-We have now in documenttype the choice from:
-
- [Acceptance of order]
- [Invoice]
- [Partial Invoice]
- [final Invoice]
- [Progress Payment Invoice]
-
-image:followup_1.png[Folloup document,float="right"]
-
-We select here "Acceptance of order". We have now a copy from the offer as an Acceptance of order (do not forget to adapt Alternative Delivery items and on demand items.)
-
-image:followup_2.png[Folloup document,float="right"]
-
-You can do this also for the creation of the invoice as a followup for Acceptance of order. Each document type has a specific list of follow up documents. It is a good practice to describe on the invoice precisely what was delivered.
-
-[[Customization]]
-== Customization
-
-Kraft can be customized in most of the graphical user interface and in particular in the output it generates.
-
-=== Output Document Customization
-
-To create PDF output documents, the document data that was edited in the Kraft app is filled into a template. The template defines how the output document looks like, ie. by font settings, placing of elements and such.
-
-The file that is assembled from data and the template is converted to PDF using a special document creation script. All that is started automatically by Kraft if a document should be printed.
-
-Each document type in Kraft can have it's own template that is used to create a PDF. Which one can be set in the Settings dialog for document types.
-
-==== WeasyPrint Documents
-
-NOTE: Kraft still ships with the old ReportLab based converter, but that will be deprecated the future. The WeasyPrint based system is the future. It is a recommended to port existing templates.
-
-With https://weasyprint.org[WeasyPrint] Kraft uses a very powerful generator that makes it very easy to create highly customized documents with great quality.
-
-WeasyPrint converts a html file to PDF. It is integrating a cascading stylesheet (CSS) file which has a huge impact on the PDF document's look.
-
-The html- and CSS input file for WeasyPrint is built from the Kraft template file.
-
-To enable the use of WeasyPrint for a document type in Kraft, simply create a weasyprint compatible template file and save it with the extension *.gtmpl*. Based on the file extension Kraft automatically uses WeasyPrint and the Grantlee templating engine for rendering.
-
-From version 0.95 on Kraft ships with an example template in the Grantlee- and WeasyPrint format. It can be found at `/usr/share/kraft/reports/invoice.gtmpl` or https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl[online on Github]. An example CSS file `kraft.css` (https://github.com/dragotin/kraft/blob/master/reports/kraft.css[on Github]) is shipped as a good starting point for adoption.
-
-==== Template Variables
-
-To generate the PDF, Kraft has to transfer data from the document you have been working on to the input file that is processed to a PDF. For that, Kraft uses a text template in which Kraft replaces variables with the actual values.
-
-For example, the tag `{{ doc.doctype }}` is replaced with the current document type during the generating process.
-
-The syntax is based on the Django syntax for templates described in the https://docs.djangoproject.com/en/3.1/topics/templates/[the docs].
-
-==== EPC QR Code
-
-With Weasyprint based PDF generation Kraft supports the https://en.wikipedia.org/wiki/EPC_QR_code[EPC QR Code] which implements a European standard for payments by computer and mobile devices.
-
-In Germany it is also known as _Giro Code_, in Belgium as _Bancontact QR_, in the Netherlands as _iDEAL QR-code_ and in Spain it is also known as _Bizum QR-code_.
-
-In Germany it is accepted by the _Giro Code_ and in Holland it is accepted by the official https://www.ideal.nl/consumenten/ideal-app/[_iDEAL QR-code_] app.
-
-In Belgium and Holland it is accepted by the apps of many banks, and in Austria and Finland it is accepted by the apps of all banks.
-
-To use the EPC QR code on the invoice printout, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type `Rechnung`.
-
-To include the generated EPC QR Code into the PDF document, the Weasyprint template needs to contain a snippet like this:</code></pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>{%if doc.isInvoice and epcqrcode.valid %}
-&lt;p class="epcqrcode"&gt;
-  &lt;img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" /&gt;
-  Dieser QR Code ermöglicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:
-  Diesen Code mit dem Smartphone scannen und Überweisung per Banking App aufgeben.
-&lt;/p&gt;
-{% endif %}</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>[[Menu]]
-== Menus and Shortcuts
-
-=== Main Application Menu
-
-[[File]]
-==== The File Menu
-
- [File]&gt;[Quit]
- [Ctrl]+[Q]
- Quits the application.
-
-[[Document]]
-==== The Document Menu
-
-[[Show_document]]
- [Document]&gt;[Show Document]
- [Ctrl]+[R]
- Opens a window with the selected document for showing it.
-[[Edit_document]]
- [Document]&gt;[Edit Document]
- [Ctrl+O]
- Opens a window with the selected document for editing it.
-[[Open_document]]
- [Document]&gt;[Open Archived document]
- [Ctrl]+[A]
- Opens an archived document.
-[[Create_document]]
- [Document]&gt;[Create Document]
- Opens a window with a wizard for creating a new client-document.
-[[Copy_document]]
- [Document]&gt;[Copy Document]
- Makes a copy of the selected client-document to a new client-document
- which can belong to an other client or an other documenttype.
-[[Follow_document]]
- [Document]&gt;[Follow Document]
- Opens the selected client-document for editing.
-[[Print_document]]
- [Document]&gt;[Print document]
- Makes a PDf from the selected client-document for to be mailed or
- printed.
-[[Mail_document]]
- [Document]&gt;[Mail document]
- [Ctrl]+[M]
- Mails a document.
-
-
-[[settings]]
-==== The Settings menu
-[[edit_template]]
- [Settings]&gt;[Edit Tag Templates]
- [Ctrl]+[E]
- Opens a window where you add, edit or translate the tags (like work,
- material, plants or discounts).
-[[redo]]
- [Settings]&gt;[Redo initial setup]
- [Ctrl+R]
- Redoes the initial setup. After this, a restart of Kraft is required.
-[[toolbars]]
- [Settings]&gt;[Showed toolbars]
- Here you can decide if the `main toolbar` and the toolbar `Document Actions`
- are shown.
-[[configure]]
- [Settings]&gt;[Configure Kraft]
- [Ctrl]+[Shft]+[,]
- Here you can configure Kraft.
-
-=== Document Edit Window
-
-[[context]]
-==== The context Menu
-
- [Context]&gt;[Item kind]
- change the status from this item between
-* Normal
-* Alternative
-* On demand
-[[Tax]]
- [Context]&gt;[Tax]
- Seems not working.
-[[Move_up]]
- [Context]&gt;[Move up]
- Moves this item a place up in document.
-[[Move_down]]
- [Context]&gt;[Move down]
- Moves this item a place down in document.
-[[Lock_item]]
- [Context]&gt;[Lock item]
- It is not clear what is does.
-[[Unlock_item]]
- [Context]&gt;[Unlock item]
- It is not clear what is does.
-[[Delete_item]]
- [Context]&gt;[Delete item]
- Removes this item from document.
-
-
-[[AdvancedTopics]]
-== Fortgeschrittene Themen
-
-Dieses Kapitel beschreibt fortgeschrittene Themen um Kraft. Dabei wird etwas Linux-Kenntnis vorausgesetzt, und das Aufsetzen sollte von erfahreneren Linux Administratoren durchgeführt und gut testet werden.
-
-=== Using Kraft Collaboratively
-
-Kraft kann kollaborativ in einer verteilten Umgebung verwendet werden. Das heisst, dass mehrere Benutzer an ihren jeweiligen Arbeitsplatzrechnern mit ihrer eigenen Kraft Instanz arbeiten können und dabei die selben Daten verwenden.
-
-Das ganze Thema ist Veränderung unterworfen, da Kraft in naher Zukunft ownCloud als private Cloud Lösung zur Datenspeicherung verwenden wird.
-
-==== Datenbank und Dokumentpool teilen
-
-Der einfachste Fall ist das zwei oder wenige mehr Kraft Instanzen die Datenbank gemeinsam benutzen und den Pool von PDF Dokumenten gemeinsam verwenden. Um es einfach zu halten werden hier zwei Instanzen beschrieben.
-
-Ein typischer Anwendungsfall könnte sein: Zwei verschiedene Linux user möchten Kraft verwenden. Sie haben beide ihren eigenen Computer und arbeiten im selben Netzwerk. Dieses Beispiel beschreibt eine Situation mit einem Hauptbüro das Kraft im normalen Modus betreibt, und einem Notebook mit Kraft, das im NurLesen Modus um Dokumente anzusehen, Kataloge zu überprüfen und ähnliches.
-
-Dafür müssen die folgenden Voraussetzungen erfüllt sein:
-
-1. Als Datenbank-Backend wird MySQL oder MariaDB verwendet. Sqlite wird nicht unterstützt.
-2. Die Datenbank ist mit dem MySQL Benutzer von beiden Rechnern aus erreichbar.
-3. Das Dokument-Speicher-Verzeichnis muss geteilt werden.
-
-____
-Achtung: Es gibt keinen Schutz dagegen, dass beide Benutzer das gleiche Dokument zur gleichen Zeit bearbeiten. Weil das gefährlich ist und zu unvorhersehbaren Resultaten führen kann, ist es empfohlen, Kraft in allen ausser der Haupt-Instanz im Nur-Lese Modus zu betreiben. Der Nur-Lese Modus wird mit Krafts Kommandozeilenschalter -r eingeschaltet.
-____
-
-**Die Datenbank teilen**
-
-Der Datenbankserver sollte auf der Haupt-Maschine installiert sein, oder es sollte ein spezialisiertes Gerät wie ein NAS verwendet werden. Die Netzwerk Geschwindigkeit beeinflusst die Benutzbarkeit natürlich erheblich.
-
-Howtos um MySQL aufzusetzen sind im Internet zu finden.
-
-**Den Dokument Pool teilen**
-
-Kraft schreibt generierte PDFs in ein lokales Verzeichnis. Welches Verzeichnis das ist kann im Kraft Konfigfile eingerichtet werden. Das Konfigfile muss auf allen Instanzen angepasst werden.
-
-Es ist in jedem Benutzer Homeverzeichnis unter dem releativen Pfad `.config/kraftrc`. Es muss den folgenden Konfigurations-Wert enthalten:</code></pre>
+<pre>Please pay this invoice until three weeks after the date of the document, which is the DATE_ADD_DAYS(21).
+
+IF_ANY_HAS_TAG(Material)
+This invoice lists material in ITEM_COUNT_WITH_TAG(Material) items. The net value is NETTO_SUM_PER_TAG(Material),
+plus VAT_SUM_PER_TAG(Material) = BRUTTO_SUM_PER_TAG(Material).
+END_HAS_TAG</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>PdfOutputDir=/data/space/kraftdoc/pdf</p>
+<p>We are now ready for the first invoice.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Invoice">Creating Documents</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_the_first_invoice">The first Invoice</h3>
+<div class="paragraph">
+<p>Open the tab <b class="button">documents</b></p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">create document</b></p>
+</div>
+<div class="paragraph">
+<p>The window document [creation wizard opens].</p>
+</div>
+<div class="paragraph">
+<p>Select in document type <code>invoice</code>.</p>
+</div>
+<div class="paragraph">
+<p>Fill in on the whiteboard content a short text about what the invoice is, like: <code>cut grass and planted tree for mister Jonson</code></p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">next</b></p>
+</div>
+<div class="paragraph">
+<p>Select on the new window the name and address from the client.</p>
+</div>
+<div class="paragraph">
+<p>(if the name and address is not there, click then on <b class="button">new contact</b> or on <b class="button">edit contact</b> if you want to edit the contact)</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b>.</p>
+</div>
+<div class="paragraph">
+<p>Now opens the window document [items].</p>
+</div>
+<div class="paragraph">
+<p>this window has 2 tabs and the 3 buttons on the top:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><b class="button">Add item&#8230;&#8203;</b>,</p>
+</li>
+<li>
+<p><b class="button">Add discount item</b>,</p>
+</li>
+<li>
+<p><b class="button">Show templates</b>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the left tab you can see all the items that we want to place on the invoice, on the right tab we see the text from the header, the total price and the footer.</p>
+</div>
+<div class="paragraph">
+<p>If you click on the text of the header or the footer on the right side then the window changes in such a way that you can edit the header or the footer.</p>
+</div>
+<div class="paragraph">
+<p>Adapt the header and the footer to your situation, on the footer you can place a text: <code>We make your garden-dream come to reality.</code>.</p>
+</div>
+<div class="paragraph">
+<p>Click on the button <b class="button">Show templates</b>.</p>
+</div>
+<div class="paragraph">
+<p>The right tab changes and show now the earlier made templates, we select in the group Work, the subgroup Plant tree and click then on the button with the to the left pointing arrow on the bottom side.</p>
+</div>
+<div class="paragraph">
+<p>A new window [Create Item from Template] opens.</p>
+</div>
+<div class="paragraph">
+<p>Because we have planted 2 trees, we go to the field [insert] and change this to 2 pcs.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">cancel</b> for discarding the result.</p>
+</div>
+<div class="paragraph">
+<p>The window close and we go back to the main window.</p>
+</div>
+<div class="paragraph">
+<p>We click again on <b class="button">Show templates</b> and select this time <code>cut grass</code>, we click again on the button with the arrow, in the opened window we select that the grass-field was 24 square meter.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">Cancel</b> for discarding the result.</p>
+</div>
+<div class="paragraph">
+<p>We add now manually an item by clicking on the button <b class="button">Add item…</b> and the window [create new item] opens.</p>
+</div>
+<div class="paragraph">
+<p>Because we have delivered a special tree, we fill here in the name of the special tree <code>liguster</code>, at the field insert we fill in the number of the special trees that we have delivered and the price of them.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warnung</div>
+</td>
+<td class="content">
+Remind that in the catalog we can add a profit on the price of the material, in the invoice and in the offer we can not add a profit on the price of the material.
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>We have now an invoice with 3 items.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the invoice or on <b class="button">Cancel</b> for discarding the invoice.</p>
+</div>
+<div class="paragraph">
+<p>We click on <b class="button">OK</b> and save the result.</p>
+</div>
+<div class="paragraph">
+<p>Your first invoice is now ready for sending.</p>
+</div>
+<div class="paragraph">
+<p>In the window documents we see our first invoice, notice that this document has a document number which we can see on the left side.</p>
+</div>
+<div class="paragraph">
+<p>On top of the window with all the invoices we see the button [Print Document], on which we click.</p>
+</div>
+<div class="paragraph">
+<p>From the invoice will now a PDF be made which we can print on paper or send by email to the client.</p>
+</div>
+<div class="paragraph">
+<p>After this we are going to create a offer for some work in a garden.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Offer">Creating an Offer</h3>
+<div class="paragraph">
+<p>The client has asked to plant a tree, we will offer 3 different trees which we can plant.</p>
+</div>
+<div class="paragraph">
+<p>Beside this, we have seen that there is a lifeless three, which we will offer to remove as extra work. <span class="image right"><img src="images/de/create_new_doc.png" alt="Numbercycles"></span></p>
+</div>
+<div class="paragraph">
+<p>For the total price we do not want to show the price of the removal of the lifeless tree and we want for the total price only to show the price of one tree and not three.</p>
+</div>
+<div class="paragraph">
+<p>Open again the tab <b class="button">documents</b>.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">create document</b></p>
+</div>
+<div class="paragraph">
+<p>The window <em>Document Creation Wizard</em> opens.</p>
+</div>
+<div class="paragraph">
+<p>select in <b class="button">document type</b> &gt; <b class="button">Offer</b>.</p>
+</div>
+<div class="paragraph">
+<p>Fill in on the whiteboard content a short text about what the offer is, like: <code>plant one tree and removal of lifeless tree</code></p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">next</b></p>
+</div>
+<div class="paragraph">
+<p>Select on the new window the name and address from the client.</p>
+</div>
+<div class="paragraph">
+<p>(if the name and address is not there, click then on <b class="button">new contact</b> or on <b class="button">edit contact</b> if you want to edit the contact)</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b>.</p>
+</div>
+<div class="paragraph">
+<p>Now the window [edit document] opens.</p>
+</div>
+<div class="paragraph">
+<p>This window has 2 tabs and the 3 buttons on the top:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><b class="button">Add item&#8230;&#8203;</b>,</p>
+</li>
+<li>
+<p><b class="button">Add discount item</b>,</p>
+</li>
+<li>
+<p><b class="button">Show templates</b>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Click on the button <b class="button">Show templates</b>.</p>
+</div>
+<div class="paragraph">
+<p>The right tab changes and show now the earlier made templates, we select in the group <code>Work</code>, the subgroup <code>Plant tree</code> and click then on the button with the to the left pointing arrow on the bottom side.</p>
+</div>
+<div class="paragraph">
+<p>A new window [Create Item from Template] opens.</p>
+</div>
+<div class="paragraph">
+<p>Because we want to plant 1 tree, we go to the field [insert] and keep this on 1 pcs.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">Cancel</b> for discarding the result.</p>
+</div>
+<div class="paragraph">
+<p>The window close and we go back to the main window.</p>
+</div>
+<div class="paragraph">
+<p>We click on the button <b class="button">Show templates</b> and this time we select in catalog Material</p>
+</div>
+<div class="paragraph">
+<p>The material-catalog opens, and we can select in the chapter <code>trees</code> the subchapter <code>loaf trees</code> in which we select the <code>apple tree</code> which we made earlier.</p>
+</div>
+<div class="paragraph">
+<p>Click on we <b class="button">OK</b> for saving the result or on <b class="button">cancel</b> for discarding the result.</p>
+</div>
+<div class="paragraph">
+<p>The window close and we go back to the main window.</p>
+</div>
+<div class="paragraph">
+<p>We add now manually an item by clicking on the button <code>Add item…</code>.</p>
+</div>
+<div class="paragraph">
+<p>the window [create new item] opens.</p>
+</div>
+<div class="paragraph">
+<p>We want that the client can make a choice from an apple, a pear tree and the liguster.</p>
+</div>
+<div class="paragraph">
+<p>Therefor we are going to add also a pear tree manually.</p>
+</div>
+<div class="paragraph">
+<p>We click on the button <b class="button">Add item…</b> and the window [create new item] opens.</p>
+</div>
+<div class="paragraph">
+<p>We fill here in the name of the tree <code>Pear tree</code>, at the field insert we fill in the number of the special trees that we have delivered and the price of them.</p>
+</div>
+<div class="paragraph">
+<p>We want add this to the material catalog for future use, therefor we select also [select this item as template for future documents] and we select in <code class="save in chapter">trees</code>.</p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">Cancel</b> for discarding the result.</p>
+</div>
+<div class="paragraph">
+<p>We does this again but then for the liguster.</p>
+</div>
+<div class="paragraph">
+<p>We have now 3 items with trees in the offer.</p>
+</div>
+<div class="paragraph">
+<p>As last item we add an item with <code>remove tree</code> with 0,5 hour for 32 euro.</p>
+</div>
+<div class="paragraph">
+<p>On the left side of an item we can see 2 buttons:</p>
+</div>
+<div class="paragraph">
+<p>a button with a flag and a button with what looks like a page.</p>
+</div>
+<div class="paragraph">
+<p>We select the upper button with the page after which opens a context-menu with the items:</p>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/de/context1.png" alt="Context menu"></span></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>[Item kind]-&gt;[Normal]
+[Item kind]&gt;[Alternative]
+[Item kind]&gt;[On demand]
+[Tax]
+[Move up]
+[Move down]
+[Lock item]
+[Unlock item]
+[Delete item]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We choose here [Item kind] and change for <code>pear tree</code> from [normal] to [alternative].</p>
+</div>
+<div class="paragraph">
+<p>We do this also for [liguster] and for [remove tree] we change this from [normal] to [on demand].</p>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/de/context2.png" alt="Context menu"></span></p>
+</div>
+<div class="paragraph">
+<p>Click on <b class="button">OK</b> for saving the result or on <b class="button">Cancel</b> for discarding the result.</p>
+</div>
+<div class="paragraph">
+<p>We want to see the result and therefor we click on the button [show document].</p>
+</div>
+<div class="paragraph">
+<p>We see now that the prize of the pear tree, the liguster and the removal of the tree is not used for the total prize. When we are happy with the result, we can click on the button <b class="button">close</b> after which we click on the button <b class="button">Print Document</b> for making a PDF what we can print out or send to the client.</p>
+</div>
+<div class="paragraph">
+<p>After your first invoice is now your first offer now also ready for sending.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="Acceptance_of_order">Creating an Acceptance of Order</h3>
+<div class="paragraph">
+<p>The document type "Acceptance of Order" is sent subsequently to an offer.</p>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/de/acceptance_o_o_context.png" alt="Numbercycles"></span></p>
+</div>
+<div class="paragraph">
+<p>When a client has made a request, we will send an offer in wich we describe which items we will deliver. Hopefully the client will give an order for the work.</p>
+</div>
+<div class="paragraph">
+<p>It is a good practice to respond on the order with an "Acceptance of order" in which we describe all the items we will deliver. We can make the "Acceptance of order" on the same way as we made the invoice or the offer by selecting each item and correcting the number of delivery. This takes time and we can make errors by forgetting items or filling an incorrect number.</p>
+</div>
+<div class="paragraph">
+<p>It can be done quicker by selecting the offer in the list and selecting <b class="button">Create Followup Document</b> from either the context menu or the main menu.</p>
+</div>
+<div class="paragraph">
+<p>We have now in documenttype the choice from:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>[Acceptance of order]
+[Invoice]
+[Partial Invoice]
+[final Invoice]
+[Progress Payment Invoice]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/de/followup_1.png" alt="Folloup document"></span></p>
+</div>
+<div class="paragraph">
+<p>We select here "Acceptance of order". We have now a copy from the offer as an Acceptance of order (do not forget to adapt Alternative Delivery items and on demand items.)</p>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="images/de/followup_2.png" alt="Folloup document"></span></p>
+</div>
+<div class="paragraph">
+<p>You can do this also for the creation of the invoice as a followup for Acceptance of order. Each document type has a specific list of follow up documents. It is a good practice to describe on the invoice precisely what was delivered.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Customization">Customization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Kraft can be customized in most of the graphical user interface and in particular in the output it generates.</p>
+</div>
+<div class="sect2">
+<h3 id="_output_document_customization">Output Document Customization</h3>
+<div class="paragraph">
+<p>To create PDF output documents, the document data that was edited in the Kraft app is filled into a template. The template defines how the output document looks like, ie. by font settings, placing of elements and such.</p>
+</div>
+<div class="paragraph">
+<p>The file that is assembled from data and the template is converted to PDF using a special document creation script. All that is started automatically by Kraft if a document should be printed.</p>
+</div>
+<div class="paragraph">
+<p>Each document type in Kraft can have it&#8217;s own template that is used to create a PDF. Which one can be set in the Settings dialog for document types.</p>
+</div>
+<div class="sect3">
+<h4 id="_weasyprint_documents">WeasyPrint Documents</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Anmerkung</div>
+</td>
+<td class="content">
+Kraft still ships with the old ReportLab based converter, but that will be deprecated the future. The WeasyPrint based system is the future. It is a recommended to port existing templates.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With <a href="https://weasyprint.org">WeasyPrint</a> Kraft uses a very powerful generator that makes it very easy to create highly customized documents with great quality.</p>
+</div>
+<div class="paragraph">
+<p>WeasyPrint converts a html file to PDF. It is integrating a cascading stylesheet (CSS) file which has a huge impact on the PDF document&#8217;s look.</p>
+</div>
+<div class="paragraph">
+<p>The html- and CSS input file for WeasyPrint is built from the Kraft template file.</p>
+</div>
+<div class="paragraph">
+<p>To enable the use of WeasyPrint for a document type in Kraft, simply create a weasyprint compatible template file and save it with the extension <strong>.gtmpl</strong>. Based on the file extension Kraft automatically uses WeasyPrint and the Grantlee templating engine for rendering.</p>
+</div>
+<div class="paragraph">
+<p>From version 0.95 on Kraft ships with an example template in the Grantlee- and WeasyPrint format. It can be found at <code>/usr/share/kraft/reports/invoice.gtmpl</code> or <a href="https://github.com/dragotin/kraft/blob/master/reports/invoice.gtmpl">online on Github</a>. An example CSS file <code>kraft.css</code> (<a href="https://github.com/dragotin/kraft/blob/master/reports/kraft.css">on Github</a>) is shipped as a good starting point for adoption.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_template_variables">Template Variables</h4>
+<div class="paragraph">
+<p>To generate the PDF, Kraft has to transfer data from the document you have been working on to the input file that is processed to a PDF. For that, Kraft uses a text template in which Kraft replaces variables with the actual values.</p>
+</div>
+<div class="paragraph">
+<p>For example, the tag <code>{{ doc.doctype }}</code> is replaced with the current document type during the generating process.</p>
+</div>
+<div class="paragraph">
+<p>The syntax is based on the Django syntax for templates described in the <a href="https://docs.djangoproject.com/en/3.1/topics/templates/">the docs</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_epc_qr_code">EPC QR Code</h4>
+<div class="paragraph">
+<p>With Weasyprint based PDF generation Kraft supports the <a href="https://en.wikipedia.org/wiki/EPC_QR_code">EPC QR Code</a> which implements a European standard for payments by computer and mobile devices.</p>
+</div>
+<div class="paragraph">
+<p>In Germany it is also known as <em>Giro Code</em>, in Belgium as <em>Bancontact QR</em>, in the Netherlands as <em>iDEAL QR-code</em> and in Spain it is also known as <em>Bizum QR-code</em>.</p>
+</div>
+<div class="paragraph">
+<p>In Germany it is accepted by the <em>Giro Code</em> and in Holland it is accepted by the official <a href="https://www.ideal.nl/consumenten/ideal-app/"><em>iDEAL QR-code</em></a> app.</p>
+</div>
+<div class="paragraph">
+<p>In Belgium and Holland it is accepted by the apps of many banks, and in Austria and Finland it is accepted by the apps of all banks.</p>
+</div>
+<div class="paragraph">
+<p>To use the EPC QR code on the invoice printout, the bank account information has to be added to own identity settings dialog in Kraft. The giro code is current only generated for documents with the document type <code>Rechnung</code>.</p>
+</div>
+<div class="paragraph">
+<p>To include the generated EPC QR Code into the PDF document, the Weasyprint template needs to contain a snippet like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>Es gibt verschiedene Wege wie das Verzeichnis geteilt werden kann, zum Beispiel NFS und SMB Server. Es ist entscheidend, dass beide Benutzer von beiden Maschinen die Dateien auflisten und zugreifen können. Der Hauptbenutzer braucht Schreib- und Leserecht., Nur-Lese Bentuzer brauchen nur Lesezugriff auf die Dateien.
-
-Ein empfohlenes Setup benutzt ein NFS Share über autofs, das auf der Hauptmaschine aufgesetzt werden muss. Um Dateizugriff zu verwalten, sollte eine Gruppe aufgesetzt werden.
-
-**Kraft im Nur-Lesen Modus**
-
-Um Kraft im Nur-Lese Modus zu starten, muss das Programm mit dem Kommandozeilenschalter `-r` gestartet werden.
-
-=== XRechnung Support
-
-Kraft supports the XRechnung standard. That is a digital format for electronic invoicing, and it passed as law in Germany and follows a EU directive. The XRechnung is a XML file format designed for that purpose.
-
-To use the XRechnung Export productivly, a little manual work is still needed in Kraft. Kraft creates the XML file based on a template, very similar to the normal PDF documents. That means that it loads a template that contains static elements (ie. the company address) that do not change between different invoices. The dynamic elements (customer data, items etc.) are filled into the template during the generation step.
-
-In order to generate correct XRechnung files for the specific company, the user has to adopt the template file manually to the companies needs. Note that this has only to be done once and should be easy for a person with a bit computer experience (Basic knowledge about XML appreciated!).
-
-To adapt the file to the needs of the company, it is best to start with the https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung.xrtmpl[example XRechnung file]. It has to be downloaded and saved into a location that the user can edit. Open it in a normal text editor, such as https://kate-editor.org/[Kate].
-
-Read carefully through the file without being scared off by the XML format. All user strings (ie. company name, address and such) are user specific and should be replaced accordingly. Find https://www.xoev.de/xrechnung-16828[details about the format] here to better understand the meaning of the fields.
-
-Make sure to not disturb the proper XML format and do not change places where the template format `{{ template_name }}` is used.
-
-Once the file is adopted to the needs, open the Settings dialog of Kraft and insert the filename into the entry field for the XRechnung Template File on the Document Defaults page.
-
-After that step, the btn:[Export XRechung] menu item will open a dialog to pick a filename where to save the XRechnung invoice to.
-
-This file can now be transfered to the receiver of the invoice.
-
-NOTE: There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the format of the Kraft exported XRechnung.
-
-=== Changing the Locale
-
-If it is needed that Kraft runs under a different locale than the actual desktop environment, this can be achieved by setting the desired locale in the start file of Kraft.
-
-On the linux desktop, apps are usually started through a so called https://specifications.freedesktop.org/desktop-entry-spec/latest/[desktop file]. It contains the information how the Kraft binary is started if user clicks on the icon on the desktop or in the start menu.
-
-The desktop file can usually be found in `/usr/share/applications/de.volle-kraft-voraus.kraft.desktop`.
-
-It contains the line ``` Exec=kraft %u ``` which starts the application with the default locale.
-
-Changing it to ``` Exec=env LANG=de_DE.UTF-8 kraft %u ``` would change that to run in the German locale for example, independent from the desktop environment location.
-
-
-[[Credits]]
-== Credits und Lizenz
-
-Program and documentation copyright 2004–2023 Klaas Freitag
-
-Documentation copyright 2020-2023 Ronald Stroethoff</code></pre>
+<pre>    {%if doc.isInvoice and epcqrcode.valid %}
+    &lt;p class="epcqrcode"&gt;
+      &lt;img class="epc" src="file://{{ epcqrcode.svgfilename }}" alt="EPC QR Code" /&gt;
+      Dieser QR Code ermöglicht einfaches, sicheres und schnelles Begleichen dieser Rechnung via GiroPay:
+      Diesen Code mit dem Smartphone scannen und Überweisung per Banking App aufgeben.
+    &lt;/p&gt;
+    {% endif %}</pre>
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Menu">Menus and Shortcuts</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_main_application_menu">Main Application Menu</h3>
+<div class="sect3">
+<h4 id="File">The File Menu</h4>
+<div class="literalblock">
+<div class="content">
+<pre>[File]&gt;[Quit]
+[Ctrl]+[Q]
+Quits the application.</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="Document">The Document Menu</h4>
+<div id="Show_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Show Document]
+[Ctrl]+[R]
+Opens a window with the selected document for showing it.</pre>
+</div>
+</div>
+<div id="Edit_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Edit Document]
+[Ctrl+O]
+Opens a window with the selected document for editing it.</pre>
+</div>
+</div>
+<div id="Open_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Open Archived document]
+[Ctrl]+[A]
+Opens an archived document.</pre>
+</div>
+</div>
+<div id="Create_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Create Document]
+Opens a window with a wizard for creating a new client-document.</pre>
+</div>
+</div>
+<div id="Copy_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Copy Document]
+Makes a copy of the selected client-document to a new client-document
+which can belong to an other client or an other documenttype.</pre>
+</div>
+</div>
+<div id="Follow_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Follow Document]
+Opens the selected client-document for editing.</pre>
+</div>
+</div>
+<div id="Print_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Print document]
+Makes a PDf from the selected client-document for to be mailed or
+printed.</pre>
+</div>
+</div>
+<div id="Mail_document" class="literalblock">
+<div class="content">
+<pre>[Document]&gt;[Mail document]
+[Ctrl]+[M]
+Mails a document.</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="settings">The Settings menu</h4>
+<div id="edit_template" class="literalblock">
+<div class="content">
+<pre>[Settings]&gt;[Edit Tag Templates]
+[Ctrl]+[E]
+Opens a window where you add, edit or translate the tags (like work,
+material, plants or discounts).</pre>
+</div>
+</div>
+<div id="redo" class="literalblock">
+<div class="content">
+<pre>[Settings]&gt;[Redo initial setup]
+[Ctrl+R]
+Redoes the initial setup. After this, a restart of Kraft is required.</pre>
+</div>
+</div>
+<div id="toolbars" class="literalblock">
+<div class="content">
+<pre>[Settings]&gt;[Showed toolbars]
+Here you can decide if the `main toolbar` and the toolbar `Document Actions`
+are shown.</pre>
+</div>
+</div>
+<div id="configure" class="literalblock">
+<div class="content">
+<pre>[Settings]&gt;[Configure Kraft]
+[Ctrl]+[Shft]+[,]
+Here you can configure Kraft.</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_document_edit_window">Document Edit Window</h3>
+<div class="sect3">
+<h4 id="context">The context Menu</h4>
+<div class="literalblock">
+<div class="content">
+<pre> [Context]&gt;[Item kind]
+ change the status from this item between
+* Normal
+* Alternative
+* On demand</pre>
+</div>
+</div>
+<div id="Tax" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Tax]
+Seems not working.</pre>
+</div>
+</div>
+<div id="Move_up" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Move up]
+Moves this item a place up in document.</pre>
+</div>
+</div>
+<div id="Move_down" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Move down]
+Moves this item a place down in document.</pre>
+</div>
+</div>
+<div id="Lock_item" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Lock item]
+It is not clear what is does.</pre>
+</div>
+</div>
+<div id="Unlock_item" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Unlock item]
+It is not clear what is does.</pre>
+</div>
+</div>
+<div id="Delete_item" class="literalblock">
+<div class="content">
+<pre>[Context]&gt;[Delete item]
+Removes this item from document.</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="AdvancedTopics">Fortgeschrittene Themen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Dieses Kapitel beschreibt fortgeschrittene Themen um Kraft. Dabei wird etwas Linux-Kenntnis vorausgesetzt, und das Aufsetzen sollte von erfahreneren Linux Administratoren durchgeführt und gut testet werden.</p>
+</div>
+<div class="sect2">
+<h3 id="_using_kraft_collaboratively">Using Kraft Collaboratively</h3>
+<div class="paragraph">
+<p>Kraft kann kollaborativ in einer verteilten Umgebung verwendet werden. Das heisst, dass mehrere Benutzer an ihren jeweiligen Arbeitsplatzrechnern mit ihrer eigenen Kraft Instanz arbeiten können und dabei die selben Daten verwenden.</p>
+</div>
+<div class="paragraph">
+<p>Das ganze Thema ist Veränderung unterworfen, da Kraft in naher Zukunft ownCloud als private Cloud Lösung zur Datenspeicherung verwenden wird.</p>
+</div>
+<div class="sect3">
+<h4 id="_datenbank_und_dokumentpool_teilen">Datenbank und Dokumentpool teilen</h4>
+<div class="paragraph">
+<p>Der einfachste Fall ist das zwei oder wenige mehr Kraft Instanzen die Datenbank gemeinsam benutzen und den Pool von PDF Dokumenten gemeinsam verwenden. Um es einfach zu halten werden hier zwei Instanzen beschrieben.</p>
+</div>
+<div class="paragraph">
+<p>Ein typischer Anwendungsfall könnte sein: Zwei verschiedene Linux user möchten Kraft verwenden. Sie haben beide ihren eigenen Computer und arbeiten im selben Netzwerk. Dieses Beispiel beschreibt eine Situation mit einem Hauptbüro das Kraft im normalen Modus betreibt, und einem Notebook mit Kraft, das im NurLesen Modus um Dokumente anzusehen, Kataloge zu überprüfen und ähnliches.</p>
+</div>
+<div class="paragraph">
+<p>Dafür müssen die folgenden Voraussetzungen erfüllt sein:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Als Datenbank-Backend wird MySQL oder MariaDB verwendet. Sqlite wird nicht unterstützt.</p>
+</li>
+<li>
+<p>Die Datenbank ist mit dem MySQL Benutzer von beiden Rechnern aus erreichbar.</p>
+</li>
+<li>
+<p>Das Dokument-Speicher-Verzeichnis muss geteilt werden.</p>
+</li>
+</ol>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Achtung: Es gibt keinen Schutz dagegen, dass beide Benutzer das gleiche Dokument zur gleichen Zeit bearbeiten. Weil das gefährlich ist und zu unvorhersehbaren Resultaten führen kann, ist es empfohlen, Kraft in allen ausser der Haupt-Instanz im Nur-Lese Modus zu betreiben. Der Nur-Lese Modus wird mit Krafts Kommandozeilenschalter -r eingeschaltet.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p><strong>Die Datenbank teilen</strong></p>
+</div>
+<div class="paragraph">
+<p>Der Datenbankserver sollte auf der Haupt-Maschine installiert sein, oder es sollte ein spezialisiertes Gerät wie ein NAS verwendet werden. Die Netzwerk Geschwindigkeit beeinflusst die Benutzbarkeit natürlich erheblich.</p>
+</div>
+<div class="paragraph">
+<p>Howtos um MySQL aufzusetzen sind im Internet zu finden.</p>
+</div>
+<div class="paragraph">
+<p><strong>Den Dokument Pool teilen</strong></p>
+</div>
+<div class="paragraph">
+<p>Kraft schreibt generierte PDFs in ein lokales Verzeichnis. Welches Verzeichnis das ist kann im Kraft Konfigfile eingerichtet werden. Das Konfigfile muss auf allen Instanzen angepasst werden.</p>
+</div>
+<div class="paragraph">
+<p>Es ist in jedem Benutzer Homeverzeichnis unter dem releativen Pfad <code>.config/kraftrc</code>. Es muss den folgenden Konfigurations-Wert enthalten:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[reporting]
+PdfOutputDir=/data/space/kraftdoc/pdf</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Es gibt verschiedene Wege wie das Verzeichnis geteilt werden kann, zum Beispiel NFS und SMB Server. Es ist entscheidend, dass beide Benutzer von beiden Maschinen die Dateien auflisten und zugreifen können. Der Hauptbenutzer braucht Schreib- und Leserecht., Nur-Lese Bentuzer brauchen nur Lesezugriff auf die Dateien.</p>
+</div>
+<div class="paragraph">
+<p>Ein empfohlenes Setup benutzt ein NFS Share über autofs, das auf der Hauptmaschine aufgesetzt werden muss. Um Dateizugriff zu verwalten, sollte eine Gruppe aufgesetzt werden.</p>
+</div>
+<div class="paragraph">
+<p><strong>Kraft im Nur-Lesen Modus</strong></p>
+</div>
+<div class="paragraph">
+<p>Um Kraft im Nur-Lese Modus zu starten, muss das Programm mit dem Kommandozeilenschalter <code>-r</code> gestartet werden.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_xrechnung_support">XRechnung Support</h3>
+<div class="paragraph">
+<p>Kraft supports the XRechnung standard. That is a digital format for electronic invoicing, and it passed as law in Germany and follows a EU directive. The XRechnung is a XML file format designed for that purpose.</p>
+</div>
+<div class="paragraph">
+<p>To use the XRechnung Export productivly, a little manual work is still needed in Kraft. Kraft creates the XML file based on a template, very similar to the normal PDF documents. That means that it loads a template that contains static elements (ie. the company address) that do not change between different invoices. The dynamic elements (customer data, items etc.) are filled into the template during the generation step.</p>
+</div>
+<div class="paragraph">
+<p>In order to generate correct XRechnung files for the specific company, the user has to adopt the template file manually to the companies needs. Note that this has only to be done once and should be easy for a person with a bit computer experience (Basic knowledge about XML appreciated!).</p>
+</div>
+<div class="paragraph">
+<p>To adapt the file to the needs of the company, it is best to start with the <a href="https://raw.githubusercontent.com/dragotin/kraft/master/reports/xrechnung.xrtmpl">example XRechnung file</a>. It has to be downloaded and saved into a location that the user can edit. Open it in a normal text editor, such as <a href="https://kate-editor.org/">Kate</a>.</p>
+</div>
+<div class="paragraph">
+<p>Read carefully through the file without being scared off by the XML format. All user strings (ie. company name, address and such) are user specific and should be replaced accordingly. Find <a href="https://www.xoev.de/xrechnung-16828">details about the format</a> here to better understand the meaning of the fields.</p>
+</div>
+<div class="paragraph">
+<p>Make sure to not disturb the proper XML format and do not change places where the template format <code>{{ template_name }}</code> is used.</p>
+</div>
+<div class="paragraph">
+<p>Once the file is adopted to the needs, open the Settings dialog of Kraft and insert the filename into the entry field for the XRechnung Template File on the Document Defaults page.</p>
+</div>
+<div class="paragraph">
+<p>After that step, the <b class="button">Export XRechung</b> menu item will open a dialog to pick a filename where to save the XRechnung invoice to.</p>
+</div>
+<div class="paragraph">
+<p>This file can now be transfered to the receiver of the invoice.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Anmerkung</div>
+</td>
+<td class="content">
+There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the format of the Kraft exported XRechnung.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_changing_the_locale">Changing the Locale</h3>
+<div class="paragraph">
+<p>If it is needed that Kraft runs under a different locale than the actual desktop environment, this can be achieved by setting the desired locale in the start file of Kraft.</p>
+</div>
+<div class="paragraph">
+<p>On the linux desktop, apps are usually started through a so called <a href="https://specifications.freedesktop.org/desktop-entry-spec/latest/">desktop file</a>. It contains the information how the Kraft binary is started if user clicks on the icon on the desktop or in the start menu.</p>
+</div>
+<div class="paragraph">
+<p>The desktop file can usually be found in <code>/usr/share/applications/de.volle-kraft-voraus.kraft.desktop</code>.</p>
+</div>
+<div class="paragraph">
+<p>It contains the line</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Exec=kraft %u</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which starts the application with the default locale.</p>
+</div>
+<div class="paragraph">
+<p>Changing it to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Exec=env LANG=de_DE.UTF-8 kraft %u</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>would change that to run in the German locale for example, independent from the desktop environment location.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Credits">Credits und Lizenz</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Program and documentation copyright 2004–2023 Klaas Freitag</p>
+</div>
+<div class="paragraph">
+<p>Documentation copyright 2020-2023 Ronald Stroethoff</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Zuletzt aktualisiert 2023-09-12 11:59:09 +0200
+Zuletzt aktualisiert 2023-10-22 21:08:09 +0200
 </div>
 </div>
 </body>
