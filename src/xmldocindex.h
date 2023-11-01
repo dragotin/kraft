@@ -19,6 +19,7 @@
 #define XMLDOCINDEX_H
 
 #include <QObject>
+#include <QFileInfo>
 #include <QMap>
 #include <QFuture>
 
@@ -31,11 +32,13 @@ public:
 
     void setBasePath(const QString& basePath);
 
-    const QString xmlPathByIdent(const QString& ident);
-    const QString xmlPathByUuid(const QString& uuid);
+    const QFileInfo xmlPathByIdent(const QString& ident);
+    const QFileInfo xmlPathByUuid(const QString& uuid);
     static QMultiMap<QDate, QString> const &dateMap();
 
-    const QString pdfPathByUuid(const QString& uuid);
+    const QFileInfo pdfPathByUuid(const QString& uuid);
+
+    const QFileInfo pathByUuid(const QString& uuid, const QString& extension = QString());
 
     // Adds an entry to the index, used with newly created documents
     void addEntry(KraftDoc *doc, const QString &xmlFile);

@@ -52,32 +52,41 @@ void XmlDocIndex::setBasePath(const QString& basePath)
     }
 }
 
-const QString XmlDocIndex::xmlPathByIdent(const QString &ident)
+const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
 {
-    QString re;
+    QFileInfo re;
     if (!ident.isEmpty() && _identMap.contains(ident)) {
-        re = _identMap[ident];
+        re = QFileInfo{_identMap[ident] + ".xml"};
     }
     return re;
 }
 
-const QString XmlDocIndex::xmlPathByUuid(const QString& uuid)
+
+const QFileInfo XmlDocIndex::pathByUuid(const QString& uuid, const QString& extension)
 {
     QString re;
     if (!uuid.isEmpty() && _uuidMap.contains(uuid)) {
         re = _uuidMap[uuid];
+        if (!extension.isEmpty()) {
+            if (extension.startsWith('.'))
+                re += extension;
+            else
+                re = re + '.' + extension;
+        }
     }
-    return re;
+    return QFileInfo{re};
+}
+
+const QFileInfo XmlDocIndex::xmlPathByUuid(const QString& uuid)
+{
+    return pathByUuid(uuid, ".xml");
 }
 
 // so far, for the pdf path, only the extension is changed from xml to pdf.
-const QString XmlDocIndex::pdfPathByUuid(const QString& uuid)
+const QFileInfo XmlDocIndex::pdfPathByUuid(const QString& uuid)
 {
-    QString fileName{xmlPathByUuid(uuid)};
-
-    return fileName.left(fileName.length()-3)+QStringLiteral("pdf");
+    return pathByUuid(uuid, ".pdf");
 }
-
 
 const QMultiMap<QDate, QString> &XmlDocIndex::dateMap()
 {
@@ -103,12 +112,13 @@ void XmlDocIndex::buildIndex()
         // qDebug() << "Indexing" << xmlFile;
         cnt++;
         if (DocumentMan::self()->loadMetaFromFilename(xmlFile, &doc)) {
+            const QString mapFragment = xmlFile.left(xmlFile.length()-4);
             if (!doc.ident().isEmpty())
-                _identMap.insert(doc.ident(), xmlFile);
+                _identMap.insert(doc.ident(), mapFragment);
             if (doc.date().isValid())
-                _dateMap.insert(doc.date(), xmlFile);
+                _dateMap.insert(doc.date(), mapFragment);
             Q_ASSERT(!doc.uuid().isEmpty());
-            _uuidMap.insert(doc.uuid(), xmlFile);
+            _uuidMap.insert(doc.uuid(), mapFragment);
             doc.clear();
         }
     }
@@ -118,12 +128,12 @@ void XmlDocIndex::buildIndex()
 void XmlDocIndex::addEntry(KraftDoc *doc, const QString& xmlFile)
 {
     if (!doc) return;
+    const QString mapFragment = xmlFile.left(xmlFile.length()-4);
 
     if (!doc->ident().isEmpty())
-        _identMap.insert(doc->ident(), xmlFile);
+        _identMap.insert(doc->ident(), mapFragment);
     if (doc->date().isValid())
-        _dateMap.insert(doc->date(), xmlFile);
+        _dateMap.insert(doc->date(), mapFragment);
     Q_ASSERT(!doc->uuid().isEmpty());
-    _uuidMap.insert(doc->uuid(), xmlFile);
-
+    _uuidMap.insert(doc->uuid(), mapFragment);
 }
