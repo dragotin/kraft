@@ -531,9 +531,9 @@ QString DocumentSaverXML::xmlDocFileNameFromIdent(const QString& id)
 {
     XmlDocIndex indx;
 
-    const QString p = indx.xmlPathByIdent(id);
+    const QFileInfo p = indx.xmlPathByIdent(id);
 
-    return  p;
+    return  p.filePath();
 }
 
 DocumentSaverXML::DocumentSaverXML()
@@ -656,7 +656,7 @@ bool DocumentSaverXML::loadByUuid(const QString& uuid, KraftDoc *doc)
     }
 
     XmlDocIndex indx;
-    const QString xmlFile = indx.xmlPathByUuid(uuid);
+    const QFileInfo xmlFile = indx.xmlPathByUuid(uuid);
 
     return loadFromFile(xmlFile, doc);
 }
@@ -668,23 +668,22 @@ bool DocumentSaverXML::loadByIdent(const QString& id, KraftDoc *doc)
         return false;
     }
 
-    const QString xmlFile = xmlDocFileNameFromIdent(id);
+    const QFileInfo xmlFile = xmlDocFileNameFromIdent(id);
 
     return loadFromFile(xmlFile, doc);
 }
 
-bool DocumentSaverXML::loadFromFile(const QString& xmlFile, KraftDoc *doc, bool onlyMeta)
+bool DocumentSaverXML::loadFromFile(const QFileInfo& xmlFile, KraftDoc *doc, bool onlyMeta)
 {
-    QFileInfo fi {xmlFile};
-    if (!fi.exists()) {
+    if (!xmlFile.exists()) {
         qDebug() << "File to load does not exist" << xmlFile;
     }
 
-    if (!fi.isReadable()) {
+    if (!xmlFile.isReadable()) {
         qDebug() << "File to load not readable" << xmlFile;
     }
 
-    QFile file(xmlFile);
+    QFile file(xmlFile.filePath());
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "Unable to open xml document file";
         return false;
@@ -741,8 +740,9 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
     for( const QDate& d : dates) {
         const QList<QString> files = dateMap.values(d);
         KraftDoc doc;
-        for( const QString& file : files) {
-            if (loadFromFile(file, &doc, true)) {
+        for( const QString& fragm : files) {
+            const QFileInfo fi{fragm +".xml" };
+            if (loadFromFile(fi, &doc, true)) {
                 model->addData(doc.toDigest());
                 cnt++;
                 doc.clear();

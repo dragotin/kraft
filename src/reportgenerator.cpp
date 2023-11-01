@@ -359,7 +359,7 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
 QString ReportGenerator::targetFileName() const
 {
     XmlDocIndex indx;
-    const QString fileName = indx.pdfPathByUuid(_uuid);
+    const QString fileName = indx.pdfPathByUuid(_uuid).filePath();
 
     return fileName;
 }
