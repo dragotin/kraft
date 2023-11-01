@@ -420,10 +420,7 @@ void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, co
 void DocDigestDetailView::slotEnablePDFActions(const DocDigest& digest)
 {
     XmlDocIndex indx;
-    const QString p = indx.pdfPathByUuid(digest.uuid());
-
-    QFileInfo fi{p};
-
+    const QFileInfo fi = indx.pdfPathByUuid(digest.uuid());
     bool pdfAvail = fi.exists();
 
     _docActionsWidget->pbOpenPDF->setEnabled(pdfAvail);

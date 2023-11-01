@@ -55,7 +55,7 @@ public:
 
     int addDigestsToModel(DocBaseModel *model) override;
 
-    bool loadFromFile(const QString& xmlFile, KraftDoc *doc, bool onlyMeta = false);
+    bool loadFromFile(const QFileInfo& xmlFile, KraftDoc *doc, bool onlyMeta = false);
 
     void setBasePath(const QString& path);
     void setArchiveMode(bool am);

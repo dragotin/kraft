@@ -861,7 +861,7 @@ void Portal::slotPrintCurrentPDF()
 void Portal::slotPrintPDF(const QString& uuid)
 {
     XmlDocIndex indx;
-    const QString fileName = indx.pdfPathByUuid(uuid);
+    const QString fileName = indx.pdfPathByUuid(uuid).filePath();
 
     // Use lp on Linux to print the file
     // FIXME: make that more sophisticated
@@ -880,8 +880,8 @@ void Portal::slotOpenPDF(const QString& uuid)
 {
     XmlDocIndex indx;
 
-    const QString fileName = indx.pdfPathByUuid(uuid);
-    QUrl url( fileName );
+    const QString fileName = indx.pdfPathByUuid(uuid).filePath();
+    QUrl url(fileName);
     QDesktopServices::openUrl(url);
 }
 
