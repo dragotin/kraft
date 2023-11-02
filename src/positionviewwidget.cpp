@@ -35,7 +35,6 @@
 PositionViewWidget::PositionViewWidget()
     :QWidget(), Ui_positionWidget(),
    mModified( false ),
-   m_skipModifiedSignal( false ),
    mToDelete(false),
    mOrdNumber(0),
    mPositionPtr( 0 ),
@@ -177,10 +176,9 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
   // FIXME: Do not keep this pointer ...
   mPositionPtr = pos;
 
-  m_skipModifiedSignal = true;
+  this->blockSignals(true);
 
   m_teFloskel->setPlainText( pos->text() );
-
   lStatus->hide();
   lKind->hide();
 
@@ -190,13 +188,9 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
   if( dp->type() == DocPositionBase::Position ) {
     positionDetailStack->setCurrentWidget( positionPage );
 
-    m_sbAmount->blockSignals( true );
     m_sbAmount->setValue( pos->amount() );
-    m_sbAmount->blockSignals( false );
 
-    m_sbUnitPrice->blockSignals( true );
     m_sbUnitPrice->setValue( pos->unitPrice().toDouble() );
-    m_sbUnitPrice->blockSignals( false );
 
     const QString kindStr = dp->typeStr();
     Kind kind = techStringToKind(kindStr);
@@ -244,7 +238,7 @@ void PositionViewWidget::setDocPosition( DocPositionBase *dp)
   slotUpdateTagToolTip();
   slotSetTax( dp->taxType() );
 
-  m_skipModifiedSignal = false;
+  this->blockSignals(false);
 }
 
 void PositionViewWidget::slotShowPrice( bool show )
@@ -534,17 +528,16 @@ void PositionViewWidget::slotSetOverallPrice( Geld g )
     // }
 }
 
-void PositionViewWidget::slotModified( bool emitSignal )
+void PositionViewWidget::slotModified()
 {
-    Q_UNUSED(emitSignal)
-  if(m_skipModifiedSignal) return;
-  // qDebug () << "Modified Position!";
+    if(this->signalsBlocked()) return;
+    // qDebug () << "Modified Position!";
 
-  mModified = true;
+    mModified = true;
 
-  m_labelPosition->setStyleSheet("font-weight: bold; color: red");
+    m_labelPosition->setStyleSheet("font-weight: bold; color: red");
 
-  emit positionModified();
+    emit positionModified();
 }
 
 PositionViewWidget::~PositionViewWidget()
