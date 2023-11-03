@@ -387,7 +387,7 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         /* get the corresponding document id */
         if( isDoc ) {
             const DocDigest& digest = model->digest( mCurrentlySelected );
-            emit docSelected(digest);
+            emit docSelected(digest.uuid());
             mAllViewDetails->slotShowDocDetails( digest );
             if( digest.archDocDigestList().size() > 0 ) {
                 mLatestArchivedDigest = digest.archDocDigestList()[0];
@@ -420,7 +420,7 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         }
     } else {
         // qDebug () << "Got invalid index, clearing digest view.";
-        emit docSelected( DocDigest() );
+        emit docSelected( QString() );
         mAllViewDetails->slotClearView();
     }
     //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);

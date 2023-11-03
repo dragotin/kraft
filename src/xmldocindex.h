@@ -43,6 +43,8 @@ public:
     // Adds an entry to the index, used with newly created documents
     void addEntry(KraftDoc *doc, const QString &xmlFile);
 
+    bool pdfOutdated(const QString& uuid);
+
 private:
     void buildIndex();
 

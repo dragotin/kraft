@@ -47,7 +47,7 @@ public:
 signals:
     void docAvailable( ReportFormat, const QString& file,
                        const KContacts::Addressee& customerContact);
-    void failure(const QString&, const QString&);
+    void failure(const QString&, const QString&, const QString&);
 
 public slots:
     void createDocument(ReportFormat, const QString&uuid);
