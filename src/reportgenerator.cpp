@@ -106,12 +106,17 @@ ReportGenerator::~ReportGenerator()
 // FIXME: This should work by UUID instead of docID
 void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
 {
+    if (_uuid == uuid) {
+        qDebug() << "PDF Creation for doc" << uuid << "is running already, returning";
+        return;
+    }
     _uuid = uuid;
     _requestedFormat = format;
 
     if( mProcess && mProcess->state() != QProcess::NotRunning ) {
         qDebug() << "===> WRN: Process still running, try again later.";
-        emit failure(i18n("Document generation process is still running."), "");
+        emit failure(uuid, i18n("Document generation process is still running."), "");
+        _uuid.clear();
         return;
     }
 
@@ -123,6 +128,7 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
 
     if ( _tmplFile.isEmpty() ) {
         qDebug () << "tmplFile is empty, exit reportgenerator!";
+        _uuid.clear();
         return;
     } else {
         qDebug () << "Using this template: " << _tmplFile;
@@ -160,7 +166,8 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
 
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {
-        emit failure(i18n("Template file is not accessible."), "");
+        emit failure(_uuid, i18n("Template file is not accessible."), "");
+        _uuid.clear();
         return;
     }
     const QString ext = fi.completeSuffix();
@@ -185,16 +192,18 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     _cleanupFiles = templateEngine->tempFilesCreated();
 
     if (expanded.isEmpty()) {
-        emit failure(i18n("The template conversion failed."), templateEngine->error());
+        emit failure(_uuid, i18n("The template conversion failed."), templateEngine->error());
         delete converter;
+        _uuid.clear();
         return;
     }
     // ... and save to a tempoarary file
     const QString tempFile = saveToTempFile(expanded);
 
     if (tempFile.isEmpty()) {
-        emit failure(i18n("Saving to temporar file failed."), "");
+        emit failure(_uuid, i18n("Saving to temporar file failed."), "");
         delete converter;
+        _uuid.clear();
         return;
     }
     _cleanupFiles.append(tempFile);
@@ -249,6 +258,7 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
     } else {
         emit docAvailable(_requestedFormat, _uuid, mCustomerContact);
     }
+    _uuid.clear();
 }
 
 void ReportGenerator::mergePdfWatermark(const QString& file)
@@ -352,7 +362,8 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
         errMsg = i18n("The PDF merger utility failed.");
         break;
     }
-    emit failure(errMsg, errors);
+    emit failure(_uuid, errMsg, errors);
+    _uuid.clear();
     converter->deleteLater();
 }
 
@@ -370,16 +381,16 @@ QString ReportGenerator::findTemplateFile( const QString& type )
     const QString tmplFile = dType.templateFile();
 
     if ( tmplFile.isEmpty() ) {
-        emit failure(i18n("There is not template defined for %1.").arg(dType.name()), "");
+        emit failure(_uuid, i18n("There is not template defined for %1.").arg(dType.name()), "");
     } else {
         // check if file exists
         QFileInfo fi(tmplFile);
         if (!fi.isFile()) {
-            emit failure(i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile).arg(dType.name()), "");
+            emit failure(_uuid, i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile).arg(dType.name()), "");
             return QString();
         }
         if (!fi.isReadable()) {
-            emit failure(i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile).arg(dType.name()), "");
+            emit failure(_uuid, i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile).arg(dType.name()), "");
             return QString();
         }
     }

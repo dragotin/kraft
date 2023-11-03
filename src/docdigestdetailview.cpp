@@ -29,6 +29,7 @@
 #include "texttemplate.h"
 #include "archdoc.h"
 #include "format.h"
+#include "kraftsettings.h"
 #include "grantleetemplate.h"
 
 #include "xmldocindex.h"
@@ -450,6 +451,18 @@ void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
         obj.setProperty("project", digest.projectLabel());
     obj.setProperty("state", digest.stateStr());
     obj.setProperty("ident", digest.ident());
+    const QString lmd = Format::toDateTimeString(digest.lastModified(), KraftSettings::self()-> dateFormat());
+    obj.setProperty("modifiedDateDoc", lmd);
+
+    // PDF file info
+    XmlDocIndex indx;
+    const QFileInfo fi = indx.pdfPathByUuid(digest.uuid());
+    bool pdfAvail = fi.exists();
+    obj.setProperty("pdfAvailable", pdfAvail);
+    if (pdfAvail) {
+        const QString lmd = Format::toDateTimeString(fi.lastModified(), KraftSettings::self()-> dateFormat());
+        obj.setProperty("modifiedDatePdf", lmd);
+    }
 
     labels.setProperty("date", i18n("Date"));
     labels.setProperty("exportXRechnungTitle", i18n("Export the invoice in XRechnung file format"));
@@ -458,6 +471,9 @@ void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
     labels.setProperty("project", i18n("Project"));
     labels.setProperty("state", i18n("State"));
     labels.setProperty("ident", i18n("Document Nr."));
+    labels.setProperty("doclastmodified", i18n("Document last modified"));
+    labels.setProperty("pdflastmodified", i18n("PDF generated"));
+    labels.setProperty("pdfnotavailable", i18n("PDF not yet generated"));
 
     gtmpl.addToObjMapping("doc", &obj);
     gtmpl.addToObjMapping("label", &labels);

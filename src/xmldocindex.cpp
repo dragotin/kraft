@@ -88,6 +88,16 @@ const QFileInfo XmlDocIndex::pdfPathByUuid(const QString& uuid)
     return pathByUuid(uuid, ".pdf");
 }
 
+bool XmlDocIndex::pdfOutdated(const QString& uuid)
+{
+    if (uuid.isEmpty()) return false;
+
+    QFileInfo fiPdf = pdfPathByUuid(uuid);
+    QFileInfo fiXml = xmlPathByUuid(uuid);
+
+    return fiPdf.lastModified() < fiXml.lastModified();
+}
+
 const QMultiMap<QDate, QString> &XmlDocIndex::dateMap()
 {
     return _dateMap;

@@ -1368,7 +1368,7 @@ void KraftView::done( int r )
         //Closed using the OK button .. it can be closed, but data needs saved
         if( doSave)
             saveChanges();
-        emit viewClosed( r == 1, m_doc );
+        emit viewClosed( r == 1, m_doc, mModified );
     }
     // remember the sizes of the docassistant splitter if visible.
     mAssistant->saveSplitterSizes();
@@ -1381,34 +1381,31 @@ void KraftView::done( int r )
 void KraftView::saveChanges()
 {
     // qDebug () << "Saving changes!";
-
-    KraftDoc *doc = getDocument();
-
-    if( !doc ) {
+    if( !m_doc ) {
       // qDebug () << "ERR: No document available in view, return!";
       return;
     }
     // transfer all values to the document
-    doc->setDate( m_headerEdit->m_dateEdit->date() );
-    doc->setAddressUid( mContactUid );
-    doc->setAddress(  m_headerEdit->m_postAddressEdit->toPlainText() );
-    doc->setDocType(  m_headerEdit->m_cbType->currentText() );
-    doc->setPreTextRaw(  m_headerEdit->m_teEntry->toPlainText() );
-    doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->toPlainText() );
-    doc->setProjectLabel( m_headerEdit->mProjectLabelEdit->text() );
-    doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
-    doc->setPostTextRaw( m_footerEdit->ui()->m_teSummary->toPlainText() );
-    doc->setGoodbye(  m_footerEdit->greeting() );
+    m_doc->setDate( m_headerEdit->m_dateEdit->date() );
+    m_doc->setAddressUid( mContactUid );
+    m_doc->setAddress(  m_headerEdit->m_postAddressEdit->toPlainText() );
+    m_doc->setDocType(  m_headerEdit->m_cbType->currentText() );
+    m_doc->setPreTextRaw(  m_headerEdit->m_teEntry->toPlainText() );
+    m_doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->toPlainText() );
+    m_doc->setProjectLabel( m_headerEdit->mProjectLabelEdit->text() );
+    m_doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
+    m_doc->setPostTextRaw( m_footerEdit->ui()->m_teSummary->toPlainText() );
+    m_doc->setGoodbye(  m_footerEdit->greeting() );
 
     DocPositionList list = currentPositionList();
-    doc->setPositionList( list );
+    m_doc->setPositionList( list );
 
-    bool ok = DocumentMan::self()->saveDocument(doc);
+    bool ok = DocumentMan::self()->saveDocument(m_doc);
     if (!ok) {
         qDebug() << "document saving failed";
     }
 
-    if ( doc->isNew() ) {
+    if ( m_doc->isNew() ) {
       // For new documents the user had to select a greeting and we make this
       // default for the future
       KraftSettings::self()->setGreeting( m_footerEdit->greeting() );

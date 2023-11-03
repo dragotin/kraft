@@ -79,7 +79,7 @@ signals:
     void openDocument();
     void viewDocument();
     void copyDocument();
-    void docSelected(const DocDigest&);
+    void docSelected(const QString&);
 
 private:
 

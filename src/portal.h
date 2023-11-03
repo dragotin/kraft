@@ -29,7 +29,6 @@
 
 #include "docguardedptr.h"
 #include "katalogview.h"
-#include "dbids.h"
 #include "portalview.h"
 #include "reportgenerator.h"
 
@@ -83,7 +82,7 @@ class Portal : public QMainWindow
     void slotPrefsDialogFinished( int );
     void slotDocConverted(ReportFormat format, const QString& file,
                           const KContacts::Addressee& customerContact);
-    void slotDocConvertionFail(const QString& failString, const QString &details);
+    void slotDocConvertionFail(const QString &uuid, const QString& failString, const QString &details);
     void openInMailer(const QString& fileName, const KContacts::Addressee& contact);
 
     void slotConvertToXML();
@@ -127,12 +126,12 @@ class Portal : public QMainWindow
     void slotOpenCurrentPDF();
 
     void slotFollowUpDocument();
-    void slotDocumentSelected( const DocDigest& );
+    void slotDocumentSelected( const QString& );
     void slotPrintCurrentPDF();
     void slotPrintPDF(const QString &uuid);
     void slotGeneratePDF(const QString& uuid);
 
-    void slotViewClosed( bool, DocGuardedPtr );
+    void slotViewClosed(bool, DocGuardedPtr , bool modified);
     void slotEditTagTemplates();
     void slotReconfigureDatabase();
     void slotAboutQt();
@@ -148,9 +147,10 @@ class Portal : public QMainWindow
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
-    void savePdfInCustomerStructure(const QString& fileName);
 
     QScopedPointer<PortalView> m_portalView;
+
+    QString _currentSelectedUuid;
 
     // QAction pointers to enable/disable actions
     QAction* _actFileQuit;
@@ -185,7 +185,6 @@ class Portal : public QMainWindow
     AddressProvider *mAddressProvider;
     KContacts::Addressee myContact;
     PrefsDialog *_prefsDialog;
-    DocGuardedPtr _currentDoc;
 
     ReportGenerator _reportGenerator;
 

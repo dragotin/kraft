@@ -4,5 +4,13 @@
   {% if doc.project %}
       <p>{{ label.project }}: {{ doc.project }}</p>
   {% endif %}
- 
+  <p>{{ label.doclastmodified }}: {{ doc.modifiedDateDoc }}</p>
+
+  <p>
+  {% if doc.pdfAvailable %}
+  {{ label.pdflastmodified }}: {{ doc.modifiedDatePdf }}
+  {% else %}
+  {{ label.pdfnotavailable }}
+  {% endif %}
+  </p>
 </div>

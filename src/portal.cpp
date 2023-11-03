@@ -784,8 +784,12 @@ void Portal::slotMailDocument()
   slotStatusMsg( i18n( "Ready." ) );
 }
 
-void Portal::slotDocConvertionFail(const QString& failString, const QString& details)
+void Portal::slotDocConvertionFail(const QString& uuid, const QString& failString, const QString& details)
 {
+    Q_UNUSED(uuid);
+    if (_currentSelectedUuid == uuid)
+        _actOpenDocumentPDF->setEnabled(false);
+
     QMessageBox::warning(this, i18n("Doc Generation Error"), failString + "\n\n"+details);
 }
 
@@ -794,6 +798,10 @@ void Portal::slotDocConverted(ReportFormat format, const QString& uuid, const KC
     Q_UNUSED(format)
     Q_UNUSED(customerContact)
     slotStatusMsg(i18n("Document generated successfully."));
+
+    if (_currentSelectedUuid == uuid)
+        _actOpenDocumentPDF->setEnabled(true);
+
 #if 0
     if (format == ReportFormat::PDF) {
         slotOpenPdf(file);
@@ -844,6 +852,9 @@ void Portal::slotGeneratePDF(const QString& uuid)
 {
     slotStatusMsg(i18n("Generating document...") );
 
+    if (_currentSelectedUuid == uuid)
+        _actOpenDocumentPDF->setEnabled(false);
+
     _reportGenerator.createDocument(ReportFormat::PDF, uuid); // work on document identifier.
 }
 
@@ -885,40 +896,6 @@ void Portal::slotOpenPDF(const QString& uuid)
     QDesktopServices::openUrl(url);
 }
 
-/*
- * A special document tree is built up here.
- */
-void Portal::savePdfInCustomerStructure(const QString& fileName)
-{
-    // save pdf into a <customer>/<dockind> structure
-    if( _currentDoc ) {
-        QString uid = _currentDoc->addressUid();
-        QString docType = _currentDoc->docType();
-
-        if( !uid.isEmpty() ) {
-            QString outputDir = KraftSettings::self()->pdfOutputDir();
-            if ( outputDir.isEmpty() ) {
-                outputDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-            }
-
-            if ( ! outputDir.endsWith( "/" ) ) outputDir += QLatin1String("/");
-            QDir customerDir(outputDir + QString("%1/%2").arg(uid).arg(docType));
-            if( !customerDir.exists() ) {
-                customerDir.mkpath( customerDir.absolutePath());
-            }
-            if( customerDir.exists() ) {
-                QFileInfo fi(fileName);
-                QString target = customerDir.canonicalPath() + QLatin1Char('/') + fi.fileName();
-                QFileInfo tfi(target);
-                if( tfi.exists() ) {
-                    QFile::remove(target);
-                }
-                QFile::copy( fileName, target );
-            }
-        }
-    }
-}
-
 void Portal::slotOpenDocument(const QString& uuid)
 {
     if (_readOnlyMode) {
@@ -940,10 +917,11 @@ void Portal::slotOpenDocument(const QString& uuid)
     slotStatusMsg(status);
 }
 
-void Portal::slotDocumentSelected( const DocDigest& doc )
+void Portal::slotDocumentSelected( const QString& uuid)
 {
     // qDebug() << "a doc was selected: " << doc << endl;
-    bool enable = !doc.uuid().isEmpty();
+    _currentSelectedUuid = uuid;
+    bool enable = !uuid.isEmpty();
     _actViewDocument->setEnabled( enable );
     _actOpenDocument->setEnabled( (!_readOnlyMode) && enable );
     _actPrintDocument->setEnabled( (!_readOnlyMode) && enable );
@@ -951,14 +929,24 @@ void Portal::slotDocumentSelected( const DocDigest& doc )
     _actMailDocument->setEnabled( (!_readOnlyMode) && enable );
     _actFollowDocument->setEnabled( (!_readOnlyMode) && enable );
 
-    auto archDocs = doc.archDocDigestList();
-    if (archDocs.isEmpty()) {
+    XmlDocIndex indx;
+    const QFileInfo fi = indx.pdfPathByUuid(uuid);
+
+    _actXRechnung->setEnabled(false);
+    _actOpenDocumentPDF->setEnabled(fi.exists());
+    if (!fi.exists() || indx.pdfOutdated(uuid)) {
+        // the PDF should exist. if not, try to create.
+        slotGeneratePDF(uuid);
+        return;
+    }
+
+    if (enable) {
+        DocumentMan *docman = DocumentMan::self();
+        DocGuardedPtr docPtr = docman->openDocumentByUuid(uuid);
+        _actXRechnung->setEnabled(docPtr->isInvoice());
+    } else {
         _actOpenDocumentPDF->setEnabled(false);
         _actXRechnung->setEnabled(false);
-    } else {
-        _actOpenDocumentPDF->setEnabled( enable );
-        ArchDocDigest archDoc = archDocs.at(0);
-        _actXRechnung->setEnabled(archDoc.isInvoice() && enable);
     }
 }
 
@@ -1048,15 +1036,19 @@ void Portal::createROView( DocGuardedPtr doc )
 
 }
 
-void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
+// Note: The modified flag has to come extra here from the the signal emitter
+// even though the Doc object contains a modified flag. However, that is always
+// false, because the doc was saved before in the emitting function.
+// Still, it needs to be known here if the document was modfied before.
+void Portal::slotViewClosed( bool success, DocGuardedPtr doc, bool modified )
 {
     // doc is only valid on success!
     if ( doc )  {
         KraftViewBase *view = mViewMap[doc];
-        const QByteArray geo = view->saveGeometry().toBase64();
         if( success ) {
+            const QByteArray geo = view->saveGeometry().toBase64();
             if( view->type() == KraftViewBase::ReadWrite ) {
-                if (doc->modified()) {
+                if (modified) {
                     AllDocsView *dv = m_portalView->docDigestView();
                     dv->slotUpdateView(doc);
                     KraftSettings::self()->setDocEditGeometry(geo);

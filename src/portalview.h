@@ -68,7 +68,7 @@ signals:
     void printPDF();
 
     void exportXRechnung();
-    void documentSelected(const DocDigest&);
+    void documentSelected(const QString&);
 
 private:
     QString printKatLine( const QString&, int ) const;
