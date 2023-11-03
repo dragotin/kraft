@@ -262,7 +262,7 @@ void KraftViewRO::done( int r )
     return;
   }
 
-  emit viewClosed( true, m_doc );
+  emit viewClosed( true, m_doc, false);
 
   KraftViewBase::done(r);
 }
