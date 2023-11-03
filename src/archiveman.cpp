@@ -205,7 +205,7 @@ dbID ArchiveMan::archiveDocumentDb( KraftDoc *doc )
     model.setTable("archdoc");
     QSqlRecord record = model.record();
 
-    if( doc->isNew() ) {
+    if( doc->state().isNew() ) {
       // qDebug () << "Strange: Document in archiving is new!";
     }
     record.setValue( "ident", doc->ident() );

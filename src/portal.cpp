@@ -780,6 +780,10 @@ QDebug operator<<(QDebug debug, const dbID &id)
 void Portal::slotChangeDocStatus()
 {
     qDebug() << "Change doc status";
+    const QString uuid = m_portalView->docDigestView()->currentDocumentUuid();
+
+    if (uuid.isEmpty()) return;
+
 }
 
 void Portal::slotMailDocument()

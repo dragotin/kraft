@@ -146,7 +146,7 @@ bool DocumentSaverDB::loadByIdent( const QString& ident, KraftDoc *doc )
     }
     // All docs from the DB are in unknown state. In old Kraft's there were no
     // way to indicate that a document was sent out to the customer really.
-    doc->setState(KraftDoc::State::Converted);
+    doc->state().setState(KraftDocState::State::Converted);
 
     return true;
 }

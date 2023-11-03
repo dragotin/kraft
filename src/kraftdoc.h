@@ -36,6 +36,38 @@ class DocDigest;
 
 class KraftView;
 
+class KraftDocState
+{
+public:
+    enum class State {
+        Undefined,  // Not defined at all.
+        New,        // New document, not yet saved
+        Draft,      // Draft. Saved on disk
+        Final,      // Final. Saved and with an official doc number
+        Retracted,  // Sent to customer, but retracted
+        Converted,  // Converted from a previous Kraft version that did not have proper states
+        Invalid     // Invalidated. Never sent out
+    };
+
+    const QString StateUndefinedStr{"Undefined"};
+    const QString StateNewStr{"New"};
+    const QString StateDraftStr{"Draft"};
+    const QString StateFinalStr{"Final"};
+    const QString StateRetractedStr{"Retracted"};
+    const QString StateInvalidStr{"Invalid"};
+    const QString StateConvertedStr{"Converted"};
+
+    KraftDocState::State state() const { return _state; }
+    QString stateString() const;
+    void setState( State s) { _state = s; }
+    void setStateFromString(const QString& s);
+    bool isNew() const { return _state == State::New; }
+    QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
+
+private:
+    State _state;
+};
+
 class KraftDoc : public QObject, public KraftObj
 {
     Q_OBJECT
@@ -94,24 +126,6 @@ class KraftDoc : public QObject, public KraftObj
 
 public:
     enum class Part { Header,  Positions, Footer, Unknown };
-    enum class State {
-        Undefined,  // Not defined at all.
-        New,        // New document, not yet saved
-        Draft,      // Draft. Saved on disk
-        Final,      // Final. Saved and with an official doc number
-        Retracted,  // Sent to customer, but retracted
-        Converted,  // Converted from a previous Kraft version that did not have proper states
-        Invalid     // Invalidated. Never sent out
-    };
-
-    const QString StateUndefinedStr{"Undefined"};
-    const QString StateNewStr{"New"};
-    const QString StateDraftStr{"Draft"};
-    const QString StateFinalStr{"Final"};
-    const QString StateRetractedStr{"Retracted"};
-    const QString StateInvalidStr{"Invalid"};
-    const QString StateConvertedStr{"Converted"};
-
     static QString partToString( Part );
 
     /** Constructor for the fileclass of the application */
@@ -142,8 +156,6 @@ public:
 
     QString address() const { return mAddress; }
     void setAddress( const QString& adr ) { mAddress = adr; }
-
-    bool isNew() const { return _state == State::New; }
 
     QString ident() const   { return mIdent; }
     void setIdent( const QString& str ) { mIdent = str; }
@@ -233,17 +245,13 @@ public:
 
     bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
 
-    KraftDoc::State state() const { return _state; }
-    QString stateString() const;
-    void setState( State s) { _state = s; }
-    void setStateFromString(const QString& s);
-
     bool isInvoice() const;
 
     void setTaxValues(double fullTax, double redTax);
 
     void clear();
 
+    KraftDocState& state() { return _state; }
 
 public slots:
     /** calls redrawDocument() on all views connected to the document object and is
@@ -305,7 +313,7 @@ private:
 
     DocPositionList mPositions;
     DBIdList mRemovePositions;
-    State   _state;
+    KraftDocState   _state;
 
     double _fullTax, _redTax;
     friend class DocumentMan;
