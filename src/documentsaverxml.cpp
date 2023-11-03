@@ -144,7 +144,7 @@ QDomDocument xmlDocument(KraftDoc *doc)
     meta.appendChild(xmlTextElement(xmldoc, "uuid", doc->uuid()));
     const QDate d = doc->date();
     meta.appendChild(xmlTextElement(xmldoc, "date", d.toString(Qt::ISODate)));
-    meta.appendChild(xmlTextElement(xmldoc, "state", doc->stateString()));
+    meta.appendChild(xmlTextElement(xmldoc, "state", doc->state().stateString()));
 
     // -------- taxes
     QDomElement taxReduced = xmldoc.createElement("tax");
@@ -289,7 +289,7 @@ bool loadMetaBlock(const QDomDocument& domDoc, KraftDoc *doc)
     doc->setDate(d);
 
     t = childElemText(metaElem, "state");
-    doc->setStateFromString(t);
+    doc->state().setStateFromString(t);
 
     // Tax: Unused so far, as tax is taken from documentman,  which loads it according to the date of the doc.
     QDomElement taxElem = metaElem.firstChildElement("tax");
@@ -594,11 +594,11 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     }
 
     bool newState{false};
-    if (doc->isNew()) {
+    if (doc->state().isNew()) {
         qDebug() << "Saving a new document!";
         newState = true; //
         // set document state to draft now for creating the save doc
-        doc->setState(KraftDoc::State::Draft);
+        doc->state().setState(KraftDocState::State::Draft);
     }
     doc->createUuid(); // create a UUID just in case...
 
@@ -608,7 +608,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 
     if (newState) {
         // retore the new state in the doc for subsequent funcs
-        doc->setState(KraftDoc::State::New);
+        doc->state().setState(KraftDocState::State::New);
     }
 
     QElapsedTimer ti;

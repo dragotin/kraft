@@ -48,13 +48,92 @@ QString multilineHtml( const QString& str )
 
 } // end namespace
 
+// =====================================================================================
+void KraftDocState::setStateFromString(const QString& s)
+{
+    _state = State::Undefined;
+    if (s.isEmpty()) return;
+
+    if (s == StateUndefinedStr) {
+        _state = State::Undefined;
+    } else if ( s == StateNewStr) {
+        _state = State::New;
+    } else if ( s == StateDraftStr) {
+        _state = State::Draft;
+    } else if ( s == StateFinalStr) {
+        _state = State::Final;
+    } else if ( s == StateRetractedStr) {
+        _state = State::Retracted;
+    } else if ( s == StateInvalidStr) {
+         _state = State::Invalid;
+    } else if ( s == StateConvertedStr) {
+         _state = State::Converted;
+    } else {
+        _state = State::Invalid;
+    }
+}
+
+QString KraftDocState::stateString() const
+{
+    switch(_state) {
+    case State::New:
+        return StateNewStr;
+        break;
+    case State::Draft:
+        return StateDraftStr;
+        break;
+    case State::Final:
+        return StateFinalStr;
+        break;
+    case State::Retracted:
+        return StateRetractedStr;
+        break;
+    case State::Invalid:
+        return StateInvalidStr;
+        break;
+    case State::Undefined:
+        return StateUndefinedStr;
+        break;
+    case State::Converted:
+        return StateConvertedStr;
+    }
+    return StateUndefinedStr;
+}
+
+QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::State nowState)
+{
+    QList<State> re;
+
+    switch(nowState) {
+    case State::Converted:
+    case State::Invalid:
+    case State::Retracted:
+        qDebug() << "No follow up state for converted.";
+        break;
+    case State::Draft:
+        re.append(State::Final);
+        break;
+    case State::Final:
+        re.append(State::Retracted);
+        break;
+    case State::New:
+        re.append(State::Draft);
+        break;
+
+    }
+    return re;
+}
+
+// =====================================================================================
+
+
 KraftDoc::KraftDoc(QWidget *parent)
   : QObject(parent), KraftObj(),
     mDocTypeChanged(false),
-    _state(State::New),
     _fullTax(-1.0),
     _redTax(-1.0)
 {
+    _state.setState(KraftDocState::State::New);
 }
 
 KraftDoc::~KraftDoc()
@@ -90,7 +169,6 @@ void KraftDoc::clear()
 
     mPositions.clear();
     mRemovePositions.clear();
-    _state = KraftDoc::State::Undefined;
     _fullTax = -1.0;
     _redTax = -1.0;
 }
@@ -114,7 +192,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
       setModified();
   }
 
-  _state = State::New;
+  _state.setState(KraftDocState::State::New);
   KraftObj::operator=(origDoc);
   _uuid = QString(); // clear the Uuid
 
@@ -186,7 +264,7 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
     result = saver.saveDocument(this);
 
     if(result) {
-        if ( isNew() ) {
+        if ( state().isNew() ) {
             setLastModified( QDateTime::currentDateTime() );
         }
 
@@ -223,7 +301,7 @@ DocDigest KraftDoc::toDigest()
     digest.setIdent(ident());
     digest.setWhiteboard(whiteboard());
     digest.setProjectLabel(projectLabel());
-    digest.setStateStr(stateString());
+    digest.setStateStr(_state.stateString());
 
     for( const auto &attrib : attributes()) {
         digest.setAttribute(attrib);
@@ -443,56 +521,6 @@ QString KraftDoc::reducedTaxPercentStr() const
    return Format::localeDoubleToString(_redTax, *DefaultProvider::self()->locale());
 }
 
-void KraftDoc::setStateFromString(const QString& s)
-{
-    _state = State::Undefined;
-    if (s.isEmpty()) return;
-
-    if (s == StateUndefinedStr) {
-        _state = State::Undefined;
-    } else if ( s == StateNewStr) {
-        _state = State::New;
-    } else if ( s == StateDraftStr) {
-        _state = State::Draft;
-    } else if ( s == StateFinalStr) {
-        _state = State::Final;
-    } else if ( s == StateRetractedStr) {
-        _state = State::Retracted;
-    } else if ( s == StateInvalidStr) {
-         _state = State::Invalid;
-    } else if ( s == StateConvertedStr) {
-         _state = State::Converted;
-    } else {
-        _state = State::Invalid;
-    }
-}
-
-QString KraftDoc::stateString() const
-{
-    switch(_state) {
-    case State::New:
-        return StateNewStr;
-        break;
-    case State::Draft:
-        return StateDraftStr;
-        break;
-    case State::Final:
-        return StateFinalStr;
-        break;
-    case State::Retracted:
-        return StateRetractedStr;
-        break;
-    case State::Invalid:
-        return StateInvalidStr;
-        break;
-    case State::Undefined:
-        return StateUndefinedStr;
-        break;
-    case State::Converted:
-        return StateConvertedStr;
-    }
-    return StateUndefinedStr;
-}
 
 QString KraftDoc::country() const
 {

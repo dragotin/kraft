@@ -299,7 +299,7 @@ void AllDocsView::slotUpdateView(DocGuardedPtr doc)
 {
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
     const DocDigest& digest = doc->toDigest();
-    if (doc->state() == KraftDoc::State::New) {
+    if (doc->state().isNew()) {
         // FIXME add signal emitting
         static_cast<DocBaseModel*>(mDateModel->sourceModel())->appendNewDoc(digest);
         static_cast<DocBaseModel*>(mTableModel->sourceModel())->appendNewDoc(digest);

@@ -200,7 +200,7 @@ void KraftView::setup( DocGuardedPtr doc )
   setWindowTitle( m_doc->docIdentifier() );
   slotSwitchToPage( KraftDoc::Part::Header );
 
-  if( doc->isNew() ) {
+  if( doc->state().isNew() ) {
       mModified = true;
   }
 }
@@ -872,7 +872,7 @@ void KraftView::slotAddressFound(const QString& uid, const KContacts::Addressee&
 
         m_headerEdit->m_letterHead->insertItems(-1, li );
         KraftDoc *doc = getDocument();
-        if( doc->isNew() ) {
+        if( doc->state().isNew() ) {
             m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
         } else {
             if(!doc->salut().isEmpty()) {
@@ -1405,7 +1405,7 @@ void KraftView::saveChanges()
         qDebug() << "document saving failed";
     }
 
-    if ( m_doc->isNew() ) {
+    if ( m_doc->state().isNew() ) {
       // For new documents the user had to select a greeting and we make this
       // default for the future
       KraftSettings::self()->setGreeting( m_footerEdit->greeting() );
