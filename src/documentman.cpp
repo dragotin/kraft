@@ -187,30 +187,6 @@ bool DocumentMan::reloadDocument(KraftDoc* doc)
 
 }
 
-QList<KraftDoc::State> DocumentMan::validFollowStates(KraftDoc::State nowState)
-{
-    QList<KraftDoc::State> re;
-
-    switch(nowState) {
-    case KraftDoc::State::Converted:
-    case KraftDoc::State::Invalid:
-    case KraftDoc::State::Retracted:
-        qDebug() << "No follow up state for converted.";
-        break;
-    case KraftDoc::State::Draft:
-        re.append(KraftDoc::State::Final);
-        break;
-    case KraftDoc::State::Final:
-        re.append(KraftDoc::State::Retracted);
-        break;
-    case KraftDoc::State::New:
-        re.append(KraftDoc::State::Draft);
-        break;
-
-    }
-    return re;
-}
-
 bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
 {
     bool ok{true};

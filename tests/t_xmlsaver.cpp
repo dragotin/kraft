@@ -89,15 +89,14 @@ private slots:
         xmlSaver.setBasePath(_dir.path());
 
         KraftDoc doc;
-        QCOMPARE(doc.state(), KraftDoc::State::New);
-
+        QVERIFY(doc.state().isNew());
         QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
 
         QCOMPARE(doc.ident(), "20110127");
         QCOMPARE(doc.docType(), "Rechnung");
         QCOMPARE(doc.whiteboard(), "whiteboard content");
         QCOMPARE(doc.uuid(), "f4deb784-6131-4e49-bd6d-92bd1355ea4d");
-        QCOMPARE(doc.state(), KraftDoc::State::Final);
+        QCOMPARE(doc.state().state(), KraftDocState::State::Final);
         QCOMPARE(doc.date(), QDate(2011, 1, 27));
         QCOMPARE(doc.timeOfSupplyStart(), QDateTime(QDate(2019, 11, 21), QTime(0,0)));
         QCOMPARE(doc.timeOfSupplyEnd(), QDateTime(QDate(2019, 11, 23), QTime(23,59, 59)));
@@ -118,7 +117,7 @@ private slots:
         const QStringList tags = doc.allTags();
         QVERIFY(tags.contains("foo"));
         QVERIFY(tags.contains("bar"));
-        QVERIFY(!doc.isNew());
+        QVERIFY(!doc.state().isNew());
 
         QCOMPARE(doc.addressUid(), "BMhh9EhLwr");;
         QCOMPARE(doc.address(), "Goofy Stambulchicz");
@@ -137,7 +136,7 @@ private slots:
         xmlSaver.setBasePath(_dir.path());
 
         KraftDoc doc;
-        QCOMPARE(doc.state(), KraftDoc::State::New);
+        QVERIFY(doc.state().isNew());
 
         QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
 
