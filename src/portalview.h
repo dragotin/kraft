@@ -43,7 +43,7 @@ public:
     PortalView (QWidget *parent=0, const char *name=0 );
     ~PortalView();
 
-    AllDocsView* docDigestView() { return _allDocsView; }
+    AllDocsView* allDocsView() { return _allDocsView; }
     void systemInitError( const QString& );
     QString ptag( const QString&,  const QString& c = QString() ) const;
 
@@ -57,17 +57,9 @@ private slots:
     void changePage(QListWidgetItem *current);
 
 signals:
+    void openDocument();
     void openKatalog( const QString& );
     void katalogToXML( const QString& );
-    void createDocument();
-    void openDocument();
-    void copyDocument();
-    void viewDocument();
-    void docStatusChange();
-    void openPDF();
-    void printPDF();
-
-    void exportXRechnung();
     void documentSelected(const QString&);
 
 private:

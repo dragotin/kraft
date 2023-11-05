@@ -43,19 +43,14 @@ class DocDigestDetailView : public QFrame
 public:
   explicit DocDigestDetailView(QWidget *parent = 0);
 
-signals:
-  void exportXRechnung();
-  void printPDF();
-  void openPDF();
-  void docStatusChange();
-
 public slots:
   void slotShowDocDetails(const DocDigest &);
-  void slotEnablePDFActions(const DocDigest& digest);
   void slotClearView();
 
   void slotShowMonthDetails( int year, int month );
   void slotShowYearDetails( int year);
+
+  void initViewActions(const std::array<QAction *, 4> actions);
 
 private:
   void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );

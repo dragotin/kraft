@@ -53,6 +53,7 @@ DocGuardedPtr DocumentMan::copyDocument(const QString& copyFromUuid)
         if ( sourceDoc ) {
             *doc = *sourceDoc; // copies all data from the previous doc
             doc->setPredecessor(QString()); // clear the predecessor
+            delete sourceDoc;
         }
         doc->setLastModified( QDateTime::currentDateTime());
     }

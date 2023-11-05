@@ -53,6 +53,7 @@ public:
 
     QVector<QMenu*> contextMenus();
 
+    void initDetailViewActions(const std::array<QAction*, 4> actions);
 public slots:
 
     void slotBuildView();
@@ -70,15 +71,7 @@ protected slots:
     void slotAmountFilterChanged(int entryNo);
 
 signals:
-    void createDocument();
-    void openPDF();
-    void printPDF();
-    void exportXRechnung();
-    void docStatusChange();
-
     void openDocument();
-    void viewDocument();
-    void copyDocument();
     void docSelected(const QString&);
 
 private:
