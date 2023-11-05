@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QSqlQuery>
+#include <QToolButton>
 
 #include <klocalizedstring.h>
 
@@ -69,7 +70,6 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   QHBoxLayout *hbox = new QHBoxLayout;
   hbox->setSpacing(0);
 
-
   const int detailMinWidth = 260;
   setFixedHeight(200);
   // --- The left details box
@@ -82,19 +82,10 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
 
   _leftDetails->setWordWrap(true);
 
-
   // --- The Actions Box
   QWidget *w = new QWidget;
   _docActionsWidget = new Ui::docActionsWidget;
   _docActionsWidget->setupUi(w);
-  connect(_docActionsWidget->pbOpenPDF, &QPushButton::clicked,
-          this, &DocDigestDetailView::openPDF);
-  connect(_docActionsWidget->pbPrintDoc, &QPushButton::clicked,
-          this, &DocDigestDetailView::printPDF);
-  connect(_docActionsWidget->pbFinDoc, &QPushButton::clicked,
-          this, &DocDigestDetailView::docStatusChange);
-  connect(_docActionsWidget->pbXRechnung, &QPushButton::clicked,
-          this, &DocDigestDetailView::exportXRechnung);
 
   hbox->addWidget(w);
 
@@ -140,6 +131,17 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   _rightDetails->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
   hbox->addWidget(_rightDetails);
+}
+
+void DocDigestDetailView::initViewActions(const std::array<QAction*, 4> actions)
+{
+    qDebug() << "Sizeof actions" << actions.size();
+    Q_ASSERT(_docActionsWidget != nullptr);
+
+    _docActionsWidget->_tbEdit->setDefaultAction(actions[0]);
+    _docActionsWidget->_tbFinalize->setDefaultAction(actions[1]);
+    _docActionsWidget->_tbOpenPDF->setDefaultAction(actions[2]);
+    _docActionsWidget->_tbPrintPDF->setDefaultAction(actions[3]);
 }
 
 void DocDigestDetailView::slotClearView()
@@ -418,17 +420,6 @@ void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, co
 #endif
 }
 
-void DocDigestDetailView::slotEnablePDFActions(const DocDigest& digest)
-{
-    XmlDocIndex indx;
-    const QFileInfo fi = indx.pdfPathByUuid(digest.uuid());
-    bool pdfAvail = fi.exists();
-
-    _docActionsWidget->pbOpenPDF->setEnabled(pdfAvail);
-    _docActionsWidget->pbPrintDoc->setEnabled(pdfAvail);
-
-}
-
 void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
 {
     // qDebug () << "Showing details about this doc: " << digest.id();
@@ -488,6 +479,4 @@ void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
 
     _rightDetails->setStyleSheet(widgetStylesheet(Right, Document));
     // qDebug () << "BASE-URL of htmlview is " << mHtmlCanvas->baseURL();
-
-    slotEnablePDFActions(digest);
 }

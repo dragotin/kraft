@@ -68,6 +68,7 @@
 #include "alldocsview.h"
 #include "exportxrechnung.h"
 #include "ui_xrechnung.h"
+#include "ui_finalizedoc.h"
 #include "dbtoxmlconverter.h"
 #include "xmldocindex.h"
 
@@ -175,9 +176,9 @@ void Portal::initActions()
     connect(_actFollowDocument, &QAction::triggered, this, &Portal::slotFollowUpDocument);
 
     newIcon = DefaultProvider::self()->icon( "printer");
-    _actPrintDocument = new QAction(newIcon, i18n("Print Document"), this);
-    _actPrintDocument->setShortcut( QKeySequence::Print);
-    connect(_actPrintDocument, &QAction::triggered, this, &Portal::slotPrintCurrentPDF);
+    _actPrintPDF= new QAction(newIcon, i18n("Print PDF"), this);
+    _actPrintPDF->setShortcut( QKeySequence::Print);
+    connect(_actPrintPDF, &QAction::triggered, this, &Portal::slotPrintCurrentPDF);
 
     newIcon = DefaultProvider::self()->icon( "eye");
     _actViewDocument = new QAction(newIcon, i18n("Show Document"), this);
@@ -189,10 +190,15 @@ void Portal::initActions()
     _actChangeDocStatus->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_S ));
     connect(_actChangeDocStatus, &QAction::triggered, this, &Portal::slotChangeDocStatus);
 
+    newIcon = DefaultProvider::self()->icon( "check");
+    _actFinalizeDocument= new QAction(newIcon, i18n("Finalize Document..."), this);
+    _actFinalizeDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_D ));
+    connect(_actFinalizeDocument, &QAction::triggered, this, &Portal::slotFinalizeDoc);
+
     newIcon = DefaultProvider::self()->icon( "edit");
-    _actOpenDocument = new QAction(newIcon, i18n("Edit Document"), this);
-    _actOpenDocument->setShortcut( QKeySequence::Open );
-    connect(_actOpenDocument, &QAction::triggered, this, &Portal::slotOpenCurrentDocument);
+    _actEditDocument = new QAction(newIcon, i18n("Edit Document"), this);
+    _actEditDocument->setShortcut( QKeySequence::Open );
+    connect(_actEditDocument, &QAction::triggered, this, &Portal::slotOpenCurrentDocument);
 
     newIcon = DefaultProvider::self()->icon( "archive");
     _actOpenDocumentPDF = new QAction(newIcon, i18n("Open PDF Document"), this);
@@ -200,9 +206,9 @@ void Portal::initActions()
     connect(_actOpenDocumentPDF, &QAction::triggered, this, &Portal::slotOpenCurrentPDF);
 
     newIcon = DefaultProvider::self()->icon("mail-forward");
-    _actMailDocument = new QAction(newIcon, i18n("Mail Document"), this);
-    _actMailDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
-    connect(_actMailDocument, &QAction::triggered, this, &Portal::slotMailDocument);
+    _actMailPDF = new QAction(newIcon, i18n("Mail PDF"), this);
+    _actMailPDF->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
+    connect(_actMailPDF, &QAction::triggered, this, &Portal::slotMailDocument);
 
     newIcon = DefaultProvider::self()->icon( "mail-forward");
     _actXRechnung = new QAction(newIcon, i18n("Export XRechnung"), this);
@@ -247,26 +253,28 @@ void Portal::initActions()
     _actEditPaste->setStatusTip(i18n("Pastes the clipboard contents to current position"));
 
     _actNewDocument->setStatusTip( i18n( "Creates a new Document" ) );
-    _actPrintDocument->setStatusTip( i18n( "Print and archive this Document" ) );
+    _actPrintPDF->setStatusTip( i18n( "Print and archive this Document" ) );
     _actCopyDocument->setStatusTip( i18n( "Creates a new document which is a copy of the selected document" ) );
     _actFollowDocument->setStatusTip( i18n( "Create a followup document for the current document" ) );
-    _actOpenDocument->setStatusTip( i18n( "Opens the document for editing" ) );
+    _actEditDocument->setStatusTip( i18n( "Opens the document for editing" ) );
     _actViewDocument->setStatusTip( i18n( "Opens a read only view on the document." ) );
-    _actMailDocument->setStatusTip( i18n( "Send document per mail" ) );
+    _actMailPDF->setStatusTip( i18n( "Send document per mail" ) );
     _actXRechnung->setStatusTip( i18n("Export invoice in XRechnung XML format."));
     _actEditTemplates->setStatusTip( i18n("Edit the available tag templates which can be assigned to document items.") );
     _actReconfDb->setStatusTip( i18n( "Configure the Database Kraft is working on." ) );
     _actOpenDocumentPDF->setStatusTip( i18n( "Open a viewer on an archived document" ) );
+    _actFinalizeDocument->setStatusTip( i18n("Finalize the document to send it to the customer"));
 
-    _actOpenDocument->setEnabled( false );
+    _actEditDocument->setEnabled( false );
     _actViewDocument->setEnabled( false );
-    _actPrintDocument->setEnabled( false );
+    _actPrintPDF->setEnabled( false );
     _actCopyDocument->setEnabled( false );
     _actFollowDocument->setEnabled( false );
-    _actMailDocument->setEnabled( false );
-
+    _actMailPDF->setEnabled( false );
     _actOpenDocumentPDF->setEnabled( false );
     _actXRechnung->setEnabled( false );
+    _actChangeDocStatus->setEnabled( false );
+    _actFinalizeDocument->setEnabled( false );
 
     QMenu *fileMenu = menuBar()->addMenu(i18n("&File"));
     fileMenu->addAction(_actFileQuit);
@@ -279,17 +287,20 @@ void Portal::initActions()
 #endif
     QMenu *docMenu = menuBar()->addMenu(i18n("&Document"));
     docMenu->addAction(_actViewDocument);
-    if (!_readOnlyMode) docMenu->addAction(_actOpenDocument);
-    docMenu->addAction(_actOpenDocumentPDF);
-    docMenu->addAction(_actXRechnung);
+    if (!_readOnlyMode) docMenu->addAction(_actEditDocument);
     if (!_readOnlyMode) {
         docMenu->addSeparator();
         docMenu->addAction(_actNewDocument);
         docMenu->addAction(_actCopyDocument);
         docMenu->addAction(_actFollowDocument);
         docMenu->addSeparator();
-        docMenu->addAction(_actPrintDocument);
-        docMenu->addAction(_actMailDocument);
+        docMenu->addAction(_actOpenDocumentPDF);
+        docMenu->addAction(_actPrintPDF);
+        docMenu->addAction(_actMailPDF);
+        docMenu->addAction(_actXRechnung);
+        docMenu->addSeparator();
+        docMenu->addAction(_actChangeDocStatus);
+        docMenu->addAction(_actFinalizeDocument);
     }
 
     QToolBar *toolBar = addToolBar(i18n("Kraft"));
@@ -318,8 +329,9 @@ void Portal::initActions()
         toolBar->addAction(_actNewDocument);
         toolBar->addAction(_actCopyDocument);
         toolBar->addAction(_actFollowDocument);
-        toolBar->addAction(_actPrintDocument);
-        toolBar->addAction(_actMailDocument);
+        toolBar->addAction(_actFinalizeDocument);
+        toolBar->addAction(_actPrintPDF);
+        toolBar->addAction(_actMailPDF);
     } else {
         toolBar->addAction(_actOpenDocumentPDF);
         toolBar->addAction(_actXRechnung);
@@ -342,37 +354,36 @@ void Portal::initView()
     // create the main widget here that is managed by KTMainWindow's view-region and
     // connect the widget to your document to display document contents.
     m_portalView.reset(new PortalView( this, "PortalMainView" ));
-    QVector<QMenu*> menus = m_portalView->docDigestView()->contextMenus();
+    QVector<QMenu*> menus = m_portalView->allDocsView()->contextMenus();
     foreach( QMenu *menu, menus ) {
       menu->setTitle( i18n("Document Actions"));
       menu->addSection(i18n("Document Actions"));
       menu->addAction( _actViewDocument );
-      if (!_readOnlyMode) menu->addAction( _actOpenDocument );
-      menu->addAction(_actOpenDocumentPDF);
-      menu->addAction( _actXRechnung);
       if (!_readOnlyMode) {
-          menu->addSeparator();
+          menu->addAction( _actEditDocument );
+          menu->addAction( _actFinalizeDocument );
+          menu->addSection(i18n("Create New Documents"));
           menu->addAction( _actNewDocument );
           menu->addAction( _actCopyDocument );
           menu->addAction( _actFollowDocument );
-          menu->addSeparator();
-          menu->addAction( _actPrintDocument );
-          menu->addAction( _actMailDocument );
       }
+      menu->addSection(i18n("Document Output"));
+      menu->addAction(_actOpenDocumentPDF);
+      menu->addAction( _actPrintPDF );
+      menu->addAction( _actMailPDF );
+      menu->addAction( _actXRechnung);
     }
-    connect(m_portalView.data(), &PortalView::createDocument, _actNewDocument, &QAction::trigger);
-    connect(m_portalView.data(), &PortalView::copyDocument, _actCopyDocument, &QAction::trigger);
-    connect(m_portalView.data(), &PortalView::printPDF, _actPrintDocument, &QAction::trigger);
-    connect(m_portalView.data(), &PortalView::viewDocument, _actViewDocument, &QAction::trigger);
-    connect(m_portalView.data(), &PortalView::docStatusChange, _actChangeDocStatus, &QAction::trigger);
-    connect(m_portalView.data(), &PortalView::openDocument, _actOpenDocument, &QAction::trigger);
-    connect(m_portalView.data(), &PortalView::openPDF, _actOpenDocumentPDF, &QAction::trigger);
 
     connect(m_portalView.data(), &PortalView::openKatalog, this, &Portal::slotOpenKatalog);
     connect(m_portalView.data(), &PortalView::katalogToXML, this, &Portal::slotKatalogToXML);
 
+    // Set the actions for the detail View action buttons
+    const std::array<QAction*, 4> actions = {_actEditDocument, _actFinalizeDocument, _actOpenDocumentPDF, _actPrintPDF};
+    m_portalView->allDocsView()->initDetailViewActions(actions);
+
     // document related connections
-    connect( m_portalView.data(), &PortalView::documentSelected, this, &Portal::slotDocumentSelected);
+    connect(m_portalView.data(), &PortalView::documentSelected, this, &Portal::slotDocumentSelected);
+    connect(m_portalView.data(), &PortalView::openDocument, _actEditDocument, &QAction::trigger);
 
     setCentralWidget(m_portalView.data());
 }
@@ -424,13 +435,13 @@ void Portal::slotStartupChecks()
             _actNewDocument->setEnabled( false );
             _actCopyDocument->setEnabled( false );
             _actFollowDocument->setEnabled(false);
-            _actOpenDocument->setEnabled( false );
+            _actEditDocument->setEnabled( false );
         }
         _actViewDocument->setEnabled( false );
-        _actPrintDocument->setEnabled( false );
+        _actPrintPDF->setEnabled( false );
         _actOpenDocumentPDF->setEnabled( false );
         _actXRechnung->setEnabled(false);
-        _actMailDocument->setEnabled( false );
+        _actMailPDF->setEnabled( false );
 
         slotStatusMsg( i18n( "Database Problem." ) );
         return;
@@ -588,7 +599,7 @@ void Portal::slotNewDocument()
 
 void Portal::slotFollowUpDocument()
 {
-    const QString uuid = m_portalView->docDigestView()->currentDocumentUuid();
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
 
     DocGuardedPtr sourceDoc = DocumentMan::self()->openDocumentByUuid(uuid);
 
@@ -631,7 +642,7 @@ void Portal::slotFollowUpDocument()
 
 void Portal::slotCopyCurrentDocument()
 {
-  const QString locId = m_portalView->docDigestView()->currentDocumentIdent();
+  const QString locId = m_portalView->allDocsView()->currentDocumentIdent();
   slotCopyDocument( locId );
 }
 
@@ -666,20 +677,20 @@ void Portal::slotCopyDocument(const QString& uuid)
         qDebug() << "FAILED to save document" << doc->docIdentifier();
     }
 
-    m_portalView->docDigestView()->slotUpdateView(doc);
+    m_portalView->allDocsView()->slotUpdateView(doc);
     // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
   }
 }
 
 void Portal::slotOpenCurrentDocument()
 {
-    const QString uuid = m_portalView->docDigestView()->currentDocumentUuid();
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
     slotOpenDocument(uuid);
 }
 
 void Portal::slotViewCurrentDocument()
 {
-    const QString uuid = m_portalView->docDigestView()->currentDocumentUuid();
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
     slotViewDocument( uuid );
 }
 
@@ -699,7 +710,7 @@ void Portal::slotViewDocument( const QString& uuid )
 void Portal::slotXRechnungCurrentDocument()
 {
   // qDebug () << "printing document " << locId;
-    const QString uuid = m_portalView->docDigestView()->currentDocumentUuid();
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
 
     ExporterXRechnung *exporter = new ExporterXRechnung;
     const QString tmplFile = exporter->templateFile();
@@ -721,6 +732,7 @@ void Portal::slotXRechnungCurrentDocument()
     }
 
     auto dia = new QDialog(this);
+    dia->setAttribute(Qt::WA_DeleteOnClose);
     Ui::XRechnungDialog ui;
     ui.setupUi(dia);
 
@@ -763,29 +775,44 @@ QDebug operator<<(QDebug debug, const dbID &id)
 
 void Portal::slotChangeDocStatus()
 {
+    // FIXME
+}
+
+void Portal::slotFinalizeDoc()
+{
     qDebug() << "Change doc status";
-    const QString uuid = m_portalView->docDigestView()->currentDocumentUuid();
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
 
     if (uuid.isEmpty()) return;
 
+    // some useful describing text to be displayed in the dialog
+    DocumentMan *docman = DocumentMan::self();
+    DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
+
+    // FIXME: Add more useful info such as customer name
+    QString info = QString("<b>%1, date %2</b>").arg(doc->docType()).arg(doc->dateStr());
+    delete doc;
+
+    auto dia = new QDialog(this);
+    dia->setAttribute(Qt::WA_DeleteOnClose);
+    Ui::FinalizeDocDialog ui;
+    ui.setupUi(dia);
+    ui._docLabelIntro->setText(info);
+
+    if (dia->exec() == QDialog::Accepted) {
+        qDebug() << "Finalize doc" << uuid << "confirmed";
+    }
 }
 
 void Portal::slotMailDocument()
 {
-  const QString uuid = m_portalView->docDigestView()->currentDocumentUuid();
+  const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
   // qDebug () << "Mailing document " << locId << endl;
 
   slotStatusMsg( i18n( "Generating PDF for EMail" ) );
-  DocumentMan *docman = DocumentMan::self();
-  DocGuardedPtr docPtr = docman->openDocumentByUuid(uuid);
-
-  if ( docPtr ) {
-    busyCursor( true );
-
-    _reportGenerator.createDocument(ReportFormat::PDFMail, uuid);
-    busyCursor( false );
-  }
-  slotStatusMsg( i18n( "Ready." ) );
+  busyCursor( true );
+    // FIXME: really mail the document
+  busyCursor( false );
 }
 
 void Portal::slotDocConvertionFail(const QString& uuid, const QString& failString, const QString& details)
@@ -868,7 +895,7 @@ void Portal::slotGeneratePDF(const QString& uuid)
  */
 void Portal::slotPrintCurrentPDF()
 {
-    const QString uuid = m_portalView->docDigestView()->currentDocumentUuid();
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
 
     slotPrintPDF(uuid);
 }
@@ -887,7 +914,7 @@ void Portal::slotPrintPDF(const QString& uuid)
 
 void Portal::slotOpenCurrentPDF()
 {
-    const QString uuid = m_portalView->docDigestView()->currentDocumentUuid();
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
     slotOpenPDF(uuid);
 }
 
@@ -926,31 +953,46 @@ void Portal::slotDocumentSelected( const QString& uuid)
     // qDebug() << "a doc was selected: " << doc << endl;
     _currentSelectedUuid = uuid;
     bool enable = !uuid.isEmpty();
+
+    // flags for certain groups of actions to not handle all separately
+    bool pdfEnabled {false};
+    bool docWriteEnabled {false};
+
+    if (enable && !_readOnlyMode) {
+        docWriteEnabled = true;
+    }
+
     _actViewDocument->setEnabled( enable );
-    _actOpenDocument->setEnabled( (!_readOnlyMode) && enable );
-    _actPrintDocument->setEnabled( (!_readOnlyMode) && enable );
-    _actCopyDocument->setEnabled( (!_readOnlyMode) && enable );
-    _actMailDocument->setEnabled( (!_readOnlyMode) && enable );
-    _actFollowDocument->setEnabled( (!_readOnlyMode) && enable );
+    _actXRechnung->setEnabled(enable);
+
+    _actEditDocument->setEnabled(docWriteEnabled);
+    _actCopyDocument->setEnabled(docWriteEnabled);
+    _actFollowDocument->setEnabled(docWriteEnabled);
+    _actFinalizeDocument->setEnabled(docWriteEnabled);
+    _actChangeDocStatus->setEnabled(docWriteEnabled);
 
     XmlDocIndex indx;
     const QFileInfo fi = indx.pdfPathByUuid(uuid);
 
-    _actXRechnung->setEnabled(false);
-    _actOpenDocumentPDF->setEnabled(fi.exists());
     if (!fi.exists() || indx.pdfOutdated(uuid)) {
         // the PDF should exist. if not, try to create.
         slotGeneratePDF(uuid);
-        return;
+    } else {
+        pdfEnabled = true;
     }
+
+    _actXRechnung->setEnabled(pdfEnabled);
+    _actOpenDocumentPDF->setEnabled(pdfEnabled);
+    _actPrintPDF->setEnabled(pdfEnabled);
+    _actMailPDF->setEnabled(pdfEnabled);
 
     if (enable) {
         DocumentMan *docman = DocumentMan::self();
         DocGuardedPtr docPtr = docman->openDocumentByUuid(uuid);
-        _actXRechnung->setEnabled(docPtr->isInvoice());
-    } else {
-        _actOpenDocumentPDF->setEnabled(false);
-        _actXRechnung->setEnabled(false);
+        _actXRechnung->setEnabled(docWriteEnabled && docPtr->isInvoice());
+        if (docWriteEnabled)
+            _actFinalizeDocument->setEnabled(docPtr->state().canBeFinalized());
+        delete docPtr;
     }
 }
 
@@ -1053,7 +1095,7 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc, bool modified )
             const QByteArray geo = view->saveGeometry().toBase64();
             if( view->type() == KraftViewBase::ReadWrite ) {
                 if (modified) {
-                    AllDocsView *dv = m_portalView->docDigestView();
+                    AllDocsView *dv = m_portalView->allDocsView();
                     dv->slotUpdateView(doc);
                     KraftSettings::self()->setDocEditGeometry(geo);
 

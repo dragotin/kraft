@@ -408,17 +408,8 @@ QWidget* PortalView::documentDigests()
     _allDocsView = new AllDocsView( w );
     b->addWidget( _allDocsView );
 
-    connect( _allDocsView, &AllDocsView::createDocument, this, &PortalView::createDocument);
-
-    connect( _allDocsView, &AllDocsView::openDocument, this, &PortalView::openDocument);
-    connect( _allDocsView, &AllDocsView::viewDocument, this, &PortalView::viewDocument);
-    connect( _allDocsView, &AllDocsView::copyDocument, this, &PortalView::copyDocument);
-    connect( _allDocsView, &AllDocsView::docStatusChange, this, &PortalView::docStatusChange);
-    connect( _allDocsView, &AllDocsView::openPDF, this, &PortalView::openPDF);
-
-    connect( _allDocsView, &AllDocsView::printPDF, this, &PortalView::printPDF);
-    connect( _allDocsView, &AllDocsView::exportXRechnung, this, &PortalView::exportXRechnung);
-    connect( _allDocsView, &AllDocsView::docSelected , this, &PortalView::documentSelected );
+    connect(_allDocsView, &AllDocsView::openDocument, this, &PortalView::openDocument);
+    connect(_allDocsView, &AllDocsView::docSelected , this, &PortalView::documentSelected);
 
     return w;
 }

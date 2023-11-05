@@ -87,6 +87,7 @@ bool ExporterXRechnung::exportDocument(const QString& uuid)
     }
 
     const QString clientUid = doc->addressUid();
+    delete doc;
     _customerContact = KContacts::Addressee();
 
     if( ! clientUid.isEmpty() ) {

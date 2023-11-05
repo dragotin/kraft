@@ -61,8 +61,10 @@ public:
     QString stateString() const;
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
+
     bool isNew() const { return _state == State::New; }
-    QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
+    bool canBeFinalized() const;
+    QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState) const;
 
 private:
     State _state;

@@ -395,6 +395,7 @@ const QString CTemplateDocumentTemplate::expand(const QString& uuid, const KCont
 
     addLabelsToTemplate(tmpl);
 
+    delete doc;
 #if 0
     /* this is still disabled as reportlab can not read SVG files
      * When it can or the EPC QR Code can be generated as PNG, this needs to be added
@@ -506,5 +507,6 @@ const QString GrantleeDocumentTemplate::expand( const QString& uuid,
             rendered.clear();
         }
     }
+    delete doc;
     return rendered;
 }

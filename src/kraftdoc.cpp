@@ -100,7 +100,7 @@ QString KraftDocState::stateString() const
     return StateUndefinedStr;
 }
 
-QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::State nowState)
+QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::State nowState) const
 {
     QList<State> re;
 
@@ -124,6 +124,16 @@ QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::Stat
     return re;
 }
 
+bool KraftDocState::canBeFinalized() const
+{
+    bool re {false};
+    const auto validStates = validFollowStates(_state);
+    if (validStates.indexOf(State::Final) > -1) {
+        // can be finalized
+        re = true;
+    }
+    return re;
+}
 // =====================================================================================
 
 

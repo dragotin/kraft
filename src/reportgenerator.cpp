@@ -129,6 +129,7 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
     if ( _tmplFile.isEmpty() ) {
         qDebug () << "tmplFile is empty, exit reportgenerator!";
         _uuid.clear();
+        delete doc;
         return;
     } else {
         qDebug () << "Using this template: " << _tmplFile;
@@ -156,6 +157,7 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
             return;
         }
     }
+    delete doc;
     slotAddresseeFound(clientUid, contact);
 }
 
