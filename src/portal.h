@@ -123,6 +123,7 @@ class Portal : public QMainWindow
     void slotViewCurrentDocument();
     void slotViewDocument( const QString& );
     void slotChangeDocStatus();
+    void slotFinalizeDoc();
     void slotOpenCurrentPDF();
 
     void slotFollowUpDocument();
@@ -166,16 +167,17 @@ class Portal : public QMainWindow
 
     QAction* _actNewDocument;
     QAction* _actCopyDocument;
-    QAction* _actOpenDocument;
+    QAction* _actEditDocument;
     QAction* _actViewDocument;
     QAction* _actFollowDocument;
-    QAction* _actPrintDocument;
-    QAction* _actMailDocument;
     QAction* _actXRechnung;
     QAction* _actEditTemplates;
+
+    QAction* _actFinalizeDocument;
     QAction* _actChangeDocStatus;
     QAction* _actOpenDocumentPDF;
-    QAction* _actViewFlosTemplates;
+    QAction* _actPrintPDF;
+    QAction* _actMailPDF;
 
     QCommandLineParser *mCmdLineArgs;
 

@@ -160,6 +160,7 @@ ki18n_wrap_ui(kraft_SRCS
     numbercycleseditbase.ui
     xrechnung.ui
     documentactions.ui
+    finalizedoc.ui
 )
 
 set(KRAFT_LINK_LIBS

@@ -122,6 +122,12 @@ void AllDocsView::slotSearchTextChanged(const QString& newStr )
     mDateModel->setFilterRegExp(newStr);
 }
 
+void AllDocsView::initDetailViewActions(const std::array<QAction *, 4> actions)
+{
+    Q_ASSERT(mAllViewDetails != nullptr);
+    mAllViewDetails->initViewActions(actions);
+}
+
 QWidget* AllDocsView::initializeTreeWidget()
 {
   //Note: Currently building the views is done in slotBuildView() that is called from the portal
@@ -140,17 +146,9 @@ QWidget* AllDocsView::initializeTreeWidget()
   _stack->addWidget(_tableView);
   _stack->addWidget(_dateView);
 
-  vb1->addWidget( _stack );
+  vb1->addWidget( _stack );  
 
   mAllViewDetails = new DocDigestDetailView;
-  connect( mAllViewDetails, &DocDigestDetailView::openPDF,
-           this, &AllDocsView::openPDF);
-  connect( mAllViewDetails, &DocDigestDetailView::printPDF,
-           this, &AllDocsView::printPDF);
-  connect( mAllViewDetails, &DocDigestDetailView::docStatusChange,
-           this, &AllDocsView::docStatusChange);
-  connect( mAllViewDetails, &DocDigestDetailView::exportXRechnung ,
-           this, &AllDocsView::exportXRechnung);
 
   vb1->addWidget( mAllViewDetails );
   QWidget *w = new QWidget;
@@ -250,7 +248,6 @@ void AllDocsView::slotBuildView()
     _dateView->showColumn( DocumentModel::Document_CreationDateRaw);
     _dateView->hideColumn( DocumentModel::Document_CreationDate);
     _dateView->showColumn( DocumentModel::Document_StateStr);
-
 
     _dateView->hideColumn( DocumentModel::Document_Id_Raw);
     _dateView->hideColumn( DocumentModel::Treestruct_Type);
