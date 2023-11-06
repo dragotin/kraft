@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <array>
 
 #include <QtGui>
 #include <QDebug>
@@ -53,7 +54,7 @@ void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
     const QString idStr = q.queryItemValue(QLatin1String("id"));
 
     const QString path = url.path();
-    bool ok;
+
     if( path.endsWith("show_last_print")) {
         // emit( .. );
     } else if (path.endsWith("export_xrechnung")) {
