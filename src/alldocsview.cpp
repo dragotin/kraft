@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <array>
+
 #include <QtGui>
 #include <QtCore>
 #include <QItemSelectionModel>
@@ -36,14 +38,11 @@
 #include "models/documentproxymodels.h"
 #include "filterheader.h"
 #include "alldocsview.h"
-#include "documentman.h"
 #include "docguardedptr.h"
 #include "kraftdoc.h"
 #include "kraftdb.h"
-#include "defaultprovider.h"
 #include "docdigestdetailview.h"
 #include "kraftsettings.h"
-
 AllDocsView::AllDocsView( QWidget *parent )
 : QWidget( parent ),
   mTableModel(0),
