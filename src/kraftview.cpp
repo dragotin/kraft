@@ -1396,7 +1396,7 @@ void KraftView::saveChanges()
     m_doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
     m_doc->setPostTextRaw( m_footerEdit->ui()->m_teSummary->toPlainText() );
     m_doc->setGoodbye(  m_footerEdit->greeting() );
-    if (mModified) doc->setModified();
+    if (mModified) m_doc->setModified();
 
     DocPositionList list = currentPositionList();
     m_doc->setPositionList( list );

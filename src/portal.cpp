@@ -15,9 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <array>
+
 // include files for QT
 #include <QDir>
 #include <QPainter>
+#include <QAction>
 #include <QApplication>
 #include <QCursor>
 #include <QTimer>
