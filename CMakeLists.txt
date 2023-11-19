@@ -47,7 +47,11 @@ execute_process(
 )
 message("GIT_BRANCH: ${GIT_BRANCH}")
 
-cmake_host_system_information(RESULT BUILD_HOST_NAME QUERY HOSTNAME)
+if($ENV{SOURCE_DATE_EPOCH})
+    set(BUILD_HOST_NAME "reproduciblebuild")
+else ()
+    cmake_host_system_information(RESULT BUILD_HOST_NAME QUERY HOSTNAME)
+endif()
 if(${CMAKE_VERSION} VERSION_GREATER "3.22.0")
     cmake_host_system_information(RESULT BUILD_HOST_DISTRI QUERY DISTRIB_PRETTY_NAME)
 else ()
