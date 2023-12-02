@@ -566,13 +566,20 @@ QString KraftDoc::language() const
      return mPostText;
  }
 
+bool KraftDoc::readOnlyByState()
+{
+    const auto& s = state().state();
 
- bool KraftDoc::isInvoice() const
- {
-     // This is just a work around and should be fixed with an attribute for the doctype
-     // at some point.
-     return (docType() == QStringLiteral("Rechnung"));
- }
+    return s == KraftDocState::State::Final;
+}
+
+bool KraftDoc::isInvoice() const
+{
+    // This is just a work around and should be fixed with an attribute for the doctype
+    // at some point.
+    // FIXME - this is not cool.
+    return (docType() == QStringLiteral("Rechnung"));
+}
 
 QList<ReportItem*> KraftDoc::reportItemList() const
 {

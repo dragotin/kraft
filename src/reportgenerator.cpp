@@ -247,21 +247,15 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
     // Remove tmp files that might have been created during the template expansion,
     // ie. the EPC QR Code SVG file.
 #ifndef QT_DEBUG
-    for (const auto &file : _cleanupFiles) {
-        QFile::remove(file);
+    for (const auto &subfile : _cleanupFiles) {
+        QFile::remove(subfile);
     }
 #endif
     _cleanupFiles.clear();
 
     // check for the watermark requirements
-    if (mMergeIdent > 0 && mMergeIdent < 5) {
-        // check if the watermark file exists
-        mergePdfWatermark(file);
-    } else {
-        emit docAvailable(_requestedFormat, _uuid, mCustomerContact);
-    }
-    _uuid.clear();
-}
+    mergePdfWatermark(file);
+ }
 
 void ReportGenerator::mergePdfWatermark(const QString& file)
 {
@@ -269,7 +263,7 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
     connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, &ReportGenerator::pdfMergeFinished);
 
-    QStringList args;
+     QStringList args;
     if (mMergeIdent > 0) {
         const QStringList prg = DefaultProvider::self()->locatePythonTool(QStringLiteral("watermarkpdf.py"));
         if (!prg.isEmpty() && !mWatermarkFile.isEmpty()) {
@@ -288,17 +282,23 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
 
             mProcess->start( );
         } else {
+
             qDebug() << "Watermark err:" << (prg.isEmpty() ? "Program" : "watermark file") << "is empty";
         }
     } else {
         // no watermark is wanted, copy the converted file over.
+
+        // add the tmp file to the args of process, used in pdfMergeFinished
         args << file;
         mProcess->setArguments(args);
         const QString target = targetFileName();
+
+        QFile::remove(target);
         if (QFile::copy(file, target)) {
+            qDebug() << "Generated file" << file << "copied to" << target;
             pdfMergeFinished(0, QProcess::ExitStatus::NormalExit);
         } else {
-            qDebug() << "ERR: Failed to copy temporary file";
+            qDebug() << "ERR: Failed to copy temporary file" << file << "to" << target;
         }
     }
 }
@@ -322,6 +322,8 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
     } else {
         slotConverterError(PDFConverter::ConvError::PDFMergerError);
     }
+    _uuid.clear();
+
 }
 
 

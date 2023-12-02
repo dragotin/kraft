@@ -119,6 +119,7 @@ class Portal : public QMainWindow
     void slotCopyDocument(const QString& uuid);
     void slotOpenCurrentDocument();
     void slotOpenDocument(const QString& ident);
+    void slotDoubleClicked();
 
     void slotViewCurrentDocument();
     void slotViewDocument( const QString& );
@@ -151,7 +152,7 @@ class Portal : public QMainWindow
 
     QScopedPointer<PortalView> m_portalView;
 
-    QString _currentSelectedUuid;
+    QString _currentSelectedUuid, _toMailFile;
 
     // QAction pointers to enable/disable actions
     QAction* _actFileQuit;
