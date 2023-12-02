@@ -599,6 +599,11 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         newState = true; //
         // set document state to draft now for creating the save doc
         doc->state().setState(KraftDocState::State::Draft);
+    } else if (doc->state().is(KraftDocState::State::Converted)) {
+        // set a converted doc that was changed to Draft
+        doc->state().setState(KraftDocState::State::Draft);
+        // delete the current ident
+        doc->setIdent(QString());
     }
     doc->createUuid(); // create a UUID just in case...
 

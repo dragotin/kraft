@@ -386,7 +386,7 @@ void Portal::initView()
 
     // document related connections
     connect(m_portalView.data(), &PortalView::documentSelected, this, &Portal::slotDocumentSelected);
-    connect(m_portalView.data(), &PortalView::openDocument, _actEditDocument, &QAction::trigger);
+    connect(m_portalView.data(), &PortalView::openDocument, this, &Portal::slotDoubleClicked);
 
     setCentralWidget(m_portalView.data());
 }
@@ -776,6 +776,31 @@ QDebug operator<<(QDebug debug, const dbID &id)
     return debug;
 }
 
+void Portal::slotDoubleClicked()
+{
+    qDebug() << "document double clicked";
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+
+    if (uuid.isEmpty()) return;
+
+    // some useful describing text to be displayed in the dialog
+    DocumentMan *docman = DocumentMan::self();
+    DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
+
+    if (doc->readOnlyByState()) {
+        XmlDocIndex indx;
+        if (indx.pdfOutdated(uuid)) { // either not existing or outdated -> not valid
+            _actViewDocument->trigger();
+        } else {
+            _actOpenDocumentPDF->trigger();
+        }
+    } else {
+        _actEditDocument->trigger();
+    }
+
+    delete doc;
+}
+
 void Portal::slotChangeDocStatus()
 {
     // FIXME
@@ -810,12 +835,86 @@ void Portal::slotFinalizeDoc()
 void Portal::slotMailDocument()
 {
   const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
-  // qDebug () << "Mailing document " << locId << endl;
+  XmlDocIndex indx;
+  QFileInfo fi = indx.pdfPathByUuid(uuid);
 
-  slotStatusMsg( i18n( "Generating PDF for EMail" ) );
-  busyCursor( true );
-    // FIXME: really mail the document
-  busyCursor( false );
+  if (!fi.exists())
+      return;
+  // remember the PDF file to send.
+  _toMailFile = fi.filePath();
+
+  DocumentMan *docman = DocumentMan::self();
+  DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
+
+  const QString& addrUid = doc->addressUid();
+
+  connect( mAddressProvider, &AddressProvider::lookupResult,
+           this, &Portal::openInMailer);
+
+  KContacts::Addressee contact;
+
+  AddressProvider::LookupState state = mAddressProvider->lookupAddressee(addrUid);
+  switch( state ) {
+  case AddressProvider::LookupFromCache:
+      contact = mAddressProvider->getAddresseeFromCache(addrUid);
+      break;
+  case AddressProvider::LookupNotFound:
+  case AddressProvider::ItemError:
+  case AddressProvider::BackendError:
+      break;
+  case AddressProvider::LookupOngoing:
+  case AddressProvider::LookupStarted:
+      // the signal to openInMailer will come later.
+      return;
+      break;
+      // Not much to do, just wait
+  }
+  openInMailer(addrUid, contact);
+
+  // qDebug () << "Mailing document " << locId << endl;
+}
+
+void Portal::openInMailer(const QString& addrUuid, const KContacts::Addressee& contact)
+{
+   QString mailReceiver;
+   Q_UNUSED(addrUuid);
+
+   disconnect(mAddressProvider, &AddressProvider::lookupResult,
+              this, &Portal::openInMailer);
+
+    if( !contact.isEmpty() ) {
+        mailReceiver = contact.fullEmail(); // the prefered email
+    }
+
+    QStringList args;
+    QString prog; // Use from system, we will not deliver them in an AppImage
+
+    if( KraftSettings::self()->mailUA().startsWith("xdg") ) {
+        args.append( "--utf8");
+        args.append( "--attach");
+        args.append(_toMailFile);
+        if( !mailReceiver.isEmpty() ) {
+            args.append( mailReceiver);
+        }
+        prog = QLatin1String("/usr/bin/xdg-email");
+    } else {
+        // Fallback to thunderbird
+        prog = QLatin1String("/usr/bin/thunderbird");
+
+        args.append("-compose");
+        QString tmp;
+        if( !mailReceiver.isEmpty() ) {
+            tmp = QString("to=%1,").arg(mailReceiver);
+        }
+        tmp += QString("attachment='file://%1'").arg(_toMailFile);
+        args.append(tmp);
+    }
+    qDebug () << "Starting mailer: " << prog << args;
+    _toMailFile.clear();
+
+    if (!QProcess::startDetached(prog, args)) {
+        qDebug () << "Failed to start thunderbird composer!";
+    }
 }
 
 void Portal::slotDocConvertionFail(const QString& uuid, const QString& failString, const QString& details)
@@ -833,52 +932,10 @@ void Portal::slotDocConverted(ReportFormat format, const QString& uuid, const KC
     Q_UNUSED(customerContact)
     slotStatusMsg(i18n("Document generated successfully."));
 
-    if (_currentSelectedUuid == uuid)
+    if (_currentSelectedUuid == uuid) {
         _actOpenDocumentPDF->setEnabled(true);
-
-#if 0
-    if (format == ReportFormat::PDF) {
-        slotOpenPdf(file);
-    } else if (format == ReportFormat::PDFMail) {
-        openInMailer(file, customerContact);
-    }
-#endif
-}
-
-void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& contact)
-{
-   QString mailReceiver;
-    if( !contact.isEmpty() ) {
-        mailReceiver = contact.fullEmail(); // the prefered email
-    }
-
-    QStringList args;
-    QString prog; // Use from system, we will not deliver them in an AppImage
-
-    if( KraftSettings::self()->mailUA().startsWith("xdg") ) {
-        args.append( "--utf8");
-        args.append( "--attach");
-        args.append(fileName);
-        if( !mailReceiver.isEmpty() ) {
-            args.append( mailReceiver);
-        }
-        prog = QLatin1String("/usr/bin/xdg-email");
-    } else {
-        // Fallback to thunderbird
-        prog = QLatin1String("/usr/bin/thunderbird");
-
-        args.append("-compose");
-        QString tmp;
-        if( !mailReceiver.isEmpty() ) {
-            tmp = QString("to=%1,").arg(mailReceiver);
-        }
-        tmp += QString("attachment='file://%1'").arg(fileName);
-        args.append(tmp);
-    }
-    qDebug () << "Starting mailer: " << prog << args;
-
-    if (!QProcess::startDetached(prog, args)) {
-        qDebug () << "Failed to start thunderbird composer!";
+        _actPrintPDF->setEnabled(true);
+        _actMailPDF->setEnabled(true);
     }
 }
 
@@ -961,7 +1018,9 @@ void Portal::slotDocumentSelected( const QString& uuid)
     bool pdfEnabled {false};
     bool docWriteEnabled {false};
 
-    if (enable && !_readOnlyMode) {
+    DocGuardedPtr docPtr = DocumentMan::self()->openDocumentByUuid(uuid);
+
+    if (enable && !(_readOnlyMode || docPtr->readOnlyByState())) {
         docWriteEnabled = true;
     }
 
@@ -969,17 +1028,19 @@ void Portal::slotDocumentSelected( const QString& uuid)
     _actXRechnung->setEnabled(enable);
 
     _actEditDocument->setEnabled(docWriteEnabled);
-    _actCopyDocument->setEnabled(docWriteEnabled);
-    _actFollowDocument->setEnabled(docWriteEnabled);
-    _actFinalizeDocument->setEnabled(docWriteEnabled);
-    _actChangeDocStatus->setEnabled(docWriteEnabled);
+    _actCopyDocument->setEnabled(enable);
+    _actFollowDocument->setEnabled(enable);
+    _actFinalizeDocument->setEnabled(enable);
+    _actChangeDocStatus->setEnabled(enable);
 
     XmlDocIndex indx;
     const QFileInfo fi = indx.pdfPathByUuid(uuid);
 
-    if (!fi.exists() || indx.pdfOutdated(uuid)) {
-        // the PDF should exist. if not, try to create.
-        slotGeneratePDF(uuid);
+    if (indx.pdfOutdated(uuid)) {
+        // the PDF should exist. if not, try to create if that is feasible
+        if (!docPtr->readOnlyByState()) {
+            slotGeneratePDF(uuid);
+        }
     } else {
         pdfEnabled = true;
     }
@@ -990,13 +1051,11 @@ void Portal::slotDocumentSelected( const QString& uuid)
     _actMailPDF->setEnabled(pdfEnabled);
 
     if (enable) {
-        DocumentMan *docman = DocumentMan::self();
-        DocGuardedPtr docPtr = docman->openDocumentByUuid(uuid);
         _actXRechnung->setEnabled(docWriteEnabled && docPtr->isInvoice());
         if (docWriteEnabled)
             _actFinalizeDocument->setEnabled(docPtr->state().canBeFinalized());
-        delete docPtr;
     }
+    delete docPtr;
 }
 
 void Portal::slotEditTagTemplates()
