@@ -92,8 +92,11 @@ bool XmlDocIndex::pdfOutdated(const QString& uuid)
 {
     if (uuid.isEmpty()) return false;
 
-    QFileInfo fiPdf = pdfPathByUuid(uuid);
-    QFileInfo fiXml = xmlPathByUuid(uuid);
+    const QFileInfo fiPdf = pdfPathByUuid(uuid);
+    const QFileInfo fiXml = xmlPathByUuid(uuid);
+
+    if (!fiPdf.exists())
+        return true;
 
     return fiPdf.lastModified() < fiXml.lastModified();
 }

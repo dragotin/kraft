@@ -62,7 +62,8 @@ public:
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
 
-    bool isNew() const { return _state == State::New; }
+    bool is(State s) const { return _state == s; }
+    bool isNew() const { return is(State::New); }
     bool canBeFinalized() const;
     QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState) const;
 
@@ -252,6 +253,9 @@ public:
     void setTaxValues(double fullTax, double redTax);
 
     void clear();
+
+    // returns true if the state of the doc forbids changing of the doc.
+    bool readOnlyByState();
 
     KraftDocState& state() { return _state; }
 
