@@ -722,6 +722,63 @@ For example, the tag `{{ doc.doctype }}` is replaced with the current document t
 
 The syntax is based on the Django syntax for templates described in the https://docs.djangoproject.com/en/3.1/topics/templates/[the docs].
 
+==== Adding a Logo
+
+On the PDF output it is nice to have a logo image included, if the documents should not be printed on a prepared stationary that comes with a printed logo already.
+
+This chapter describes a few methods to achieve that with the weasyprint based template.
+
+====== PDF Watermark Funktionality
+
+The first, and easiest way to add a logo and other details on the print out is to use the so called PDF Watermark option.
+
+That means that the generated document, which does not contain a logo at all, is merged with another PDF into one doc. The so called watermark feature requires an otherwise empty PDF page of the same size as your generated document, that has the logo printed at the right position. It can be created with a text processor that can export PDF.
+
+In the Kraft doc type settings dialog, the watermark options for a specific doc type can be selected. The watermark PDF file can be selected and either be applied to the first page only, or to every page of the generated document.
+
+Once set up, Kraft automatically merges the generated document with the watermark PDF. The result document contains the content of both documents merged together. This is not only useful for logos, but also other details in the document footer.
+
+====== CSS Directives for Pages
+
+The second option is to use the CSS directive for page content on printed HTML pages. This only works with the new weasyprint based doc generation.
+
+It uses Cascading Style Sheet (CSS) directives for paged media. CSS uses the `@page` keyword to define attributes of the page on which the content is printed. Weasyprint makes heavy use of that, for example to define the page size.
+
+In the Kraft default template for weasyprint called `invoice.gtmpl` this page section can be found:
+
+[source,css]
+@page {
+    size: A4;
+    margin-left: 2.4cm;
+    margin-top:27mm;
+    margin-right: 1.6cm;
+    margin-bottom: 2cm;
+    color: #2f590a;
+}
+
+which defines the page size to be A4, with the given margins and a default text color.
+
+To add a logo on in the top left corner of the first page of the result doc, the following snippet could be added:
+
+[source,css]
+----
+@page :first {
+  margin-top: 20mm;
+  margin-bottom: 3cm;
+
+  @top-left {
+    content: url(/home/miller/miller_logo_s1.png);
+    width:3cm;
+    height: 1cm;
+  }
+}
+----
+
+This displays the top left content only on the first page, and also assigns a different top- and bottom margin to the first page. Note that the content url in the example is a local path, but any valid URL can be used.
+
+====== Show in absolutely placed divs
+
+
 ==== EPC QR Code
 
 With Weasyprint based PDF generation Kraft supports the https://en.wikipedia.org/wiki/EPC_QR_code[EPC QR Code] which implements a European standard for payments by computer and mobile devices.
