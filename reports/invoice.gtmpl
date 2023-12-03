@@ -29,6 +29,7 @@
 
     /* The CSS for printing */
     @page {
+	size: A4;
         margin-left: 2.4cm;
         margin-top:27mm;
         margin-right: 1.6cm;
