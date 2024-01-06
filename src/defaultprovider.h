@@ -69,6 +69,12 @@ public:
 
     // -- Functions for the new file based Kraft version 2 --
 
+    /**
+     *  Important:
+     * The KraftV2BaseDir is always the dir, which contains the versions and the
+     * current link to the current data dir.
+     */
+
     // Two methods used for converting document data from db into a directory
     QString createV2BaseDir(const QString &base = QString());
     // after successful conversion this method switches to the new root dir

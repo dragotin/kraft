@@ -310,8 +310,11 @@ QString DefaultProvider::locateBinary(const QString& name) const
     return bin;
 }
 
-// Creates a new "sub dir" in the kraft v2 dir and creates or links
-// the current symlink to it.
+// Reads the v2basedir from the config file, or creates a new one if
+// none is in there in the writeable location. If the base parameter
+// is set, it just uses that one.
+// It finally creates the needed subdirs.
+// It does not WRITE the config file
 QString DefaultProvider::createV2BaseDir(const QString& base)
 {
     QString v2base{base};
@@ -422,8 +425,7 @@ QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
     QString subdir;
     switch (dir) {
     case KraftV2Dir::Root:
-        subdir = "";
-        break;
+        break; // return the empty string
     case KraftV2Dir::NumberCycles:
         subdir = "numbercycles";
         break;
