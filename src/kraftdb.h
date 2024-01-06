@@ -137,8 +137,6 @@ public:
 
   KraftDB();
 
-  dbID archiveDocument( KraftDoc *docPtr );
-
 signals:
   void statusMessage( const QString& );
   void processedSqlCommand( bool );

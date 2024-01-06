@@ -20,12 +20,11 @@
 #include <QFile>
 #include <QObject>
 #include <QProcess>
+#include <QPointer>
 #include <QDataStream>
 
 #include <kcontacts/addressee.h>
 
-#include "kraftdoc.h"
-#include "archdoc.h"
 #include "pdfconverter.h"
 
 class dbID;
@@ -74,7 +73,6 @@ protected slots:
 
 private:
     void convertTemplate( const QString& );
-    void fillupTemplateFromArchive( const dbID& );
     void contactToTemplate( TextTemplate*, const QString&, const KContacts::Addressee& );
     QString registerDictionary( const QString&, const QString& ) const;
     QString registerTag( const QString&, const QString& ) const;
@@ -93,7 +91,6 @@ private:
     QString   mWatermarkFile;
     QString   mPdfAppendFile;
     QString   _uuid;
-    dbID      mArchId;
     long      mOutputSize;
 
     KContacts::Addressee mCustomerContact;

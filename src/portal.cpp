@@ -60,7 +60,6 @@
 #include "reportgenerator.h"
 #include "kraftsettings.h"
 #include "defaultprovider.h"
-#include "archdoc.h"
 #include "newdocassistant.h"
 #include "doctype.h"
 #include "tagtemplatesdialog.h"
