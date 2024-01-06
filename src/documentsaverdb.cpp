@@ -30,7 +30,6 @@
 #include "kraftdb.h"
 #include "unitmanager.h"
 #include "dbids.h"
-#include "doctype.h"
 #include "defaultprovider.h"
 #include "docdigest.h"
 #include "models/docbasemodel.h"
@@ -76,6 +75,8 @@ bool DocumentSaverDB::saveDocument( KraftDoc* )
 
 bool DocumentSaverDB::loadByUuid(const QString& ident, KraftDoc *doc)
 {
+    Q_UNUSED(ident);
+    Q_UNUSED(doc);
     return false;
 }
 

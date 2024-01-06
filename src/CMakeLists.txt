@@ -124,6 +124,7 @@ set(kraft_SRCS
     xmldocindex.cpp
     reportitemlist.cpp
     reportitem.cpp
+    docidentgenerator.cpp
     3rdparty/qrcodegen.cpp
 )
 

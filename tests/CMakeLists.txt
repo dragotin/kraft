@@ -51,6 +51,13 @@ target_link_libraries(t_doctype ${test_libs})
 
 # ============================================================
 
+add_executable(t_numbercycle t_numbercycle.cpp)
+add_test(t_numbercycle t_numbercycle)
+
+target_link_libraries(t_numbercycle ${test_libs})
+
+# ============================================================
+
 add_executable(t_attributes t_attributes.cpp)
 add_test(t_attributes t_attributes)
 

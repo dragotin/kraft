@@ -385,11 +385,6 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
             const DocDigest& digest = model->digest( mCurrentlySelected );
             emit docSelected(digest.uuid());
             mAllViewDetails->slotShowDocDetails( digest );
-            if( digest.archDocDigestList().size() > 0 ) {
-                mLatestArchivedDigest = digest.archDocDigestList()[0];
-            } else {
-                mLatestArchivedDigest = ArchDocDigest();
-            }
         } else {
             const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
                                                     DocumentModel::Treestruct_Type,

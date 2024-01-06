@@ -61,11 +61,12 @@ public:
     QString stateString() const;
     void setState( State s) { _state = s; }
     void setStateFromString(const QString& s);
+    bool forcesReadOnly();
 
     bool is(State s) const { return _state == s; }
     bool isNew() const { return is(State::New); }
     bool canBeFinalized() const;
-    QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState) const;
+    static QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
 
 private:
     State _state;
@@ -254,9 +255,6 @@ public:
 
     void clear();
 
-    // returns true if the state of the doc forbids changing of the doc.
-    bool readOnlyByState();
-
     KraftDocState& state() { return _state; }
 
 public slots:
@@ -270,6 +268,13 @@ public slots:
     void slotRemovePosition( int );
     void slotMoveUpPosition( int );
     void slotMoveDownPosition( int );
+
+    // queries a document ident number from the numbercycle and sets the status to final.
+    void finalize();
+    void slotNewIdent(const QString&);
+
+signals:
+    void saved(bool);
 
 protected:
     /** closes the current document FIXME: remove and put to destructor */

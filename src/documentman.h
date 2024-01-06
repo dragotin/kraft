@@ -39,9 +39,13 @@ class DocumentMan
     DocGuardedPtr openDocumentByIdent( const QString& ident );
     DocGuardedPtr openDocumentByUuid(const QString& uuid);
 
+    void setDocProcessingError(const QString& errStr);
+
     bool saveDocument(KraftDoc* doc);
     bool reloadDocument(KraftDoc* doc);
     void closeDocument(const QString& ident);
+
+
 
     DocGuardedPtr createDocument(const QString& docType, const QString& copyFromUuid = QString(),
                                  const DocPositionList &listToCopy = DocPositionList() );
