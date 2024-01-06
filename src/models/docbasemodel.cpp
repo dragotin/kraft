@@ -21,6 +21,8 @@
 
 #include <klocalizedstring.h>
 
+#include "defaultprovider.h"
+
 
 DocBaseModel::DocBaseModel(QObject *parent)
     :QAbstractItemModel(parent)

@@ -62,7 +62,6 @@ set(kraft_SRCS
     doctext.cpp
     portal.cpp
     portalview.cpp
-    archiveman.cpp
     reportgenerator.cpp
     htmlview.cpp
     docpostcard.cpp
@@ -71,8 +70,6 @@ set(kraft_SRCS
     kraftdocheaderedit.cpp
     kraftdocfooteredit.cpp
     inserttempldialog.cpp
-    archdocposition.cpp
-    archdoc.cpp
     materialkataloglistview.cpp
     materialkatalogview.cpp
     materialselectdialog.cpp

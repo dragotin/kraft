@@ -29,7 +29,6 @@
 #include "defaultprovider.h"
 #include "htmlview.h"
 #include "texttemplate.h"
-#include "archdoc.h"
 #include "format.h"
 #include "kraftsettings.h"
 #include "grantleetemplate.h"
@@ -226,32 +225,9 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
         maxDate = QString::number(year)+"-12-31";
     }
 
-    // read data in the given timeframe from database
-    QSqlQuery q;
-    const QString query = QString("SELECT archDocID, ident, MAX(printDate) FROM archdoc WHERE "
-                                  "date BETWEEN date('%1') AND date('%2') "
-                                  "GROUP BY ident").arg(minDate, maxDate);
-
-    // qDebug() << "***" << query;
-    QMap<QString, QPair<int, Geld> > docMatrix;
-    q.prepare(query);
-    q.exec();
-    while( q.next() ) {
-       dbID archDocId(q.value(0).toInt());
-
-       const ArchDoc doc(archDocId);
-       const QString docType = doc.docTypeStr();
-       Geld g;
-       int n = 0;
-       if( docMatrix.contains(docType)) {
-           g = docMatrix[docType].second;
-           n = docMatrix[docType].first;
-       }
-       Geld g1 = doc.nettoSum();
-       g += g1;
-       docMatrix[docType].first = n+1;
-       docMatrix[docType].second = g;
-     }
+    // FIXME: overview of the sum of finalized docs
+    // Generate a list of documents between min- and max date, grouped by doc type
+    // The following template vars need to be set with the overall sums
 
     // now create the template
 
@@ -259,16 +235,17 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
     tmpl->setValue("I18N_TYPE",   i18n("Type"));
     tmpl->setValue("I18N_SUM",    i18n("Sum"));
 
-    QStringList doctypes = docMatrix.keys();
-    doctypes.sort();
+    QStringList doctypes;
+    // QStringList doctypes = docMatrix.keys();
+    // doctypes.sort();
 
-    foreach( const QString dtype, doctypes ) {
+    for( const QString& dtype: doctypes ) {
         qDebug() << "creating doc list for "<<dtype;
         tmpl->createDictionary( "DOCUMENTS" );
         tmpl->setValue("DOCUMENTS", "DOCTYPE", dtype);
-        const QString am = QString::number(docMatrix[dtype].first);
+        const QString am = QString::number(0);
         tmpl->setValue("DOCUMENTS", "AMOUNT", am);
-        const QString sm = docMatrix[dtype].second.toLocaleString();
+        const QString sm = Format::localeDoubleToString(0.0);
         tmpl->setValue("DOCUMENTS", "SUM", sm);
     }
 }

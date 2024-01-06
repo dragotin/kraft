@@ -20,19 +20,13 @@
 #include <QDir>
 
 #include "exportxrechnung.h"
-#include "archdoc.h"
 #include "documentman.h"
 #include "docposition.h"
 #include "kraftdoc.h"
 #include "kraftdb.h"
-#include "unitmanager.h"
-#include "dbids.h"
-#include "kraftsettings.h"
 #include "doctype.h"
-#include "defaultprovider.h"
 #include "format.h"
 #include "addressprovider.h"
-#include "grantleetemplate.h"
 #include "documenttemplate.h"
 
 
