@@ -27,8 +27,6 @@
 class QString;
 class QDate;
 
-typedef QList<ArchDocDigest> ArchDocDigestList;
-
 class DocDigest : public KraftObj
 {
 
@@ -63,8 +61,6 @@ public:
 
   void setProjectLabel( const QString& prjLabel ) { mProjectLabel = prjLabel; }
   QString projectLabel() const { return mProjectLabel; }
-
-  ArchDocDigestList archDocDigestList() const;
 
 protected:
 

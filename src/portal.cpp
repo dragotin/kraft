@@ -787,7 +787,7 @@ void Portal::slotDoubleClicked()
     DocumentMan *docman = DocumentMan::self();
     DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
 
-    if (doc->readOnlyByState()) {
+    if (doc->state().forcesReadOnly()) {
         XmlDocIndex indx;
         if (indx.pdfOutdated(uuid)) { // either not existing or outdated -> not valid
             _actViewDocument->trigger();
@@ -819,7 +819,6 @@ void Portal::slotFinalizeDoc()
 
     // FIXME: Add more useful info such as customer name
     QString info = QString("<b>%1, date %2</b>").arg(doc->docType()).arg(doc->dateStr());
-    delete doc;
 
     auto dia = new QDialog(this);
     dia->setAttribute(Qt::WA_DeleteOnClose);
@@ -829,7 +828,17 @@ void Portal::slotFinalizeDoc()
 
     if (dia->exec() == QDialog::Accepted) {
         qDebug() << "Finalize doc" << uuid << "confirmed";
+        connect(doc, &KraftDoc::saved, this, [this, doc](bool ok) {
+            Q_UNUSED(ok)
+            AllDocsView *dv = m_portalView->allDocsView();
+            dv->slotUpdateView(doc);
+            const QString uuid = doc->uuid();
+            slotGeneratePDF(uuid);
+            delete doc;
+        });
+        doc->finalize();
     }
+    // doc is only deleted in the slot
 }
 
 void Portal::slotMailDocument()
@@ -1010,7 +1019,7 @@ void Portal::slotOpenDocument(const QString& uuid)
 
 void Portal::slotDocumentSelected( const QString& uuid)
 {
-    // qDebug() << "a doc was selected: " << doc << endl;
+    qDebug() << "The doc was selected" << uuid;
     _currentSelectedUuid = uuid;
     bool enable = !uuid.isEmpty();
 
@@ -1020,7 +1029,7 @@ void Portal::slotDocumentSelected( const QString& uuid)
 
     DocGuardedPtr docPtr = DocumentMan::self()->openDocumentByUuid(uuid);
 
-    if (enable && !(_readOnlyMode || docPtr->readOnlyByState())) {
+    if (enable && !(_readOnlyMode || docPtr->state().forcesReadOnly())) {
         docWriteEnabled = true;
     }
 
@@ -1030,15 +1039,15 @@ void Portal::slotDocumentSelected( const QString& uuid)
     _actEditDocument->setEnabled(docWriteEnabled);
     _actCopyDocument->setEnabled(enable);
     _actFollowDocument->setEnabled(enable);
-    _actFinalizeDocument->setEnabled(enable);
-    _actChangeDocStatus->setEnabled(enable);
+    _actFinalizeDocument->setEnabled(enable && docWriteEnabled);
+    _actChangeDocStatus->setEnabled(enable && docWriteEnabled);
 
     XmlDocIndex indx;
     const QFileInfo fi = indx.pdfPathByUuid(uuid);
 
     if (indx.pdfOutdated(uuid)) {
         // the PDF should exist. if not, try to create if that is feasible
-        if (!docPtr->readOnlyByState()) {
+        if (!docPtr->state().forcesReadOnly()) {
             slotGeneratePDF(uuid);
         }
     } else {

@@ -23,7 +23,6 @@
 #include <QListWidget>
 
 // include files
-#include "docguardedptr.h"
 
 /**
  *
@@ -32,7 +31,6 @@ class QWidget;
 class AllDocsView;
 class dbID;
 class PortalHtmlView;
-class ArchDocDigest;
 class DocDigest;
 
 class PortalView : public QWidget

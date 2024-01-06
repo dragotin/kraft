@@ -1252,7 +1252,7 @@ DocPositionList KraftView::currentPositionList()
 
                     QString t = widget->m_teFloskel->toPlainText();
                     if ( !replaceMap.empty() ) {
-                        t = StringUtil::replaceTagsInString(t, replaceMap);
+                        t = KraftString::replaceTags(t, replaceMap);
                     }
                     newDp->setText( t );
 

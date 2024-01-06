@@ -6,7 +6,6 @@
 #include "testconfig.h"
 #include "doctype.h"
 #include "kraftdb.h"
-#include "sql_states.h"
 
 void init_test_db()
 {
@@ -123,81 +122,6 @@ private slots:
         QVERIFY( li.contains("Offer"));
     }
 
-    void checkVariableReplacement() {
-        DocType dt("Test");
-
-        dt.setIdentTemplate("FOO-%y-%w-%d-%i");
-        QString re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
-        QCOMPARE(re, QStringLiteral("FOO-2020-4-23-122"));
-
-        dt.setIdentTemplate("FOO-%y-%ww-%d-%i");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
-        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-122")); // the id can change
-
-        dt.setIdentTemplate("FOO-%y-%ww-%d-%iiiii");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
-        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-00122")); // the id can change
-
-        dt.setIdentTemplate("FOO-%y-%ww-%d-%iiii");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
-        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-0122")); // the id can change
-
-        dt.setIdentTemplate("FOO-%y-%ww-%d-%iii");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
-        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-122")); // the id can change
-
-        dt.setIdentTemplate("FOO-%y-%ww-%d-%ii");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 0);
-        QCOMPARE(re, QStringLiteral("FOO-2020-04-23-122")); // the id can change
-
-    }
-
-    void checkDayCntIncrement()
-    {
-        DocType dt("Test");
-        const QDate d1(2022, 01, 23);
-        const QDate d2(2022, 01, 25);
-        int cnt = dt.nextDayCounter(d1);
-        QCOMPARE(cnt, 1);
-        cnt = dt.nextDayCounter(d1);
-        QCOMPARE(cnt, 2);
-        cnt = dt.nextDayCounter(d1);
-        QCOMPARE(cnt, 3);
-
-        // - switch to next date
-        cnt = dt.nextDayCounter(d2);
-        QCOMPARE(cnt, 1);
-        cnt = dt.nextDayCounter(d2);
-        QCOMPARE(cnt, 2);
-
-        // - back to d1
-        cnt = dt.nextDayCounter(d1);
-        QCOMPARE(cnt, 1);
-    }
-
-    void checkDateCounter()
-    {
-        DocType dt("Test");
-
-        // Attention: This test assumes that all verifies run on the same day.
-        dt.setIdentTemplate("FOO-%n");
-        QString re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 2);
-        QCOMPARE(re, "FOO-2");
-
-        // Test the padding functionality
-        dt.setIdentTemplate("FOO-%nn");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 3);
-        QCOMPARE(re, "FOO-03");
-
-        dt.setIdentTemplate("FOO-%nnn");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 3);
-        QCOMPARE(re, "FOO-003");
-
-        dt.setIdentTemplate("FOO-%nnnn");
-        re = dt.generateDocumentIdent(QDate(2020, 01,23), "addressUID", 122, 6);
-        QCOMPARE(re, "FOO-0006");
-
-    }
 private:
     QString _docTypeName;
 

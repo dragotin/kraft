@@ -282,23 +282,29 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
     prevType = mChangedDocTypes[mPreviousType];
     // qDebug () << "previous docType taken from ChangedDocTypes: ";
   }
-  prevType.setNumberCycleName( mNumberCycleCombo->currentText() );
+  const QString oldNcName = prevType.numberCycleName();
+  const NumberCycle oldNc = NumberCycles::get(oldNcName);
+
+  prevType.setNumberCycleName(oldNcName);
   prevType.setTemplateFile( mTemplateUrl->text() );
   prevType.setWatermarkFile( mWatermarkUrl->text() );
   prevType.setAppendPDFFile(mAppendUrl->text());
   prevType.setMergeIdent( QString::number( mWatermarkCombo->currentIndex() ) );
   mChangedDocTypes[mPreviousType] = prevType;
 
-  // dt.setNumberCycleName( dt.numberCycleName() );
-  // qDebug () << "Selected doc type " << newValue;
-  mIdent->setText( dt.identTemplate() );
-  int nextNum = dt.nextIdentId( false )-1;
-  mCounter->setText( QString::number( nextNum ) );
+  qDebug () << "Selected doc type " << newValue;
+  const QString& ncn = dt.numberCycleName();
+  NumberCycle nc = NumberCycles::get(ncn);
+
+  mIdent->setText(nc.getTemplate());
+  const QString nextNum = nc.exampleIdent(dt.name(), QDate::currentDate(), QStringLiteral("<addressId>"));
+  mCounter->setText(nextNum);
   mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( dt.numberCycleName() ));
   // mHeader->setText( i18n( "Details for %1:", dt.name() ) );
-  mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(),
-                                                 mExampleAddressUid,
-                                                 nextNum, 2 /* phantasie date counter */) );
+
+  mExampleId->setText( nc.exampleIdent(newValue,
+                                       QDate::currentDate(),
+                                       mExampleAddressUid) );
 
   mTemplateUrl->setText( dt.templateFile() );
 
@@ -321,15 +327,16 @@ void DocTypeEdit::slotEditNumberCycles()
   if ( dia.exec() == QDialog::Accepted ) {
     fillNumberCycleCombo();
     mNumberCycleCombo->setCurrentIndex(mNumberCycleCombo->findText( currNumbercycle ));
+    NumberCycle nc = NumberCycles::get(currNumbercycle);
 
-    DocType dt = currentDocType();
-    dt.readIdentTemplate();
     // only the numbercycle has changed - refresh the display
-    mIdent->setText( dt.identTemplate() );
-    int nextNum = dt.nextIdentId( false )-1;
+    mIdent->setText(nc.getTemplate());
+    int nextNum = nc.counter();
     mCounter->setText( QString::number( nextNum ) );
-    mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(),
-                                                   mExampleAddressUid, nextNum, 2 ) );
+    const QString docType = mTypeListBox->currentItem()->text();
+    mExampleId->setText( nc.exampleIdent( docType,
+                                          QDate::currentDate(),
+                                          mExampleAddressUid) );
   }
 }
 
@@ -414,17 +421,20 @@ void DocTypeEdit::slotWatermarkUrlChanged( const QString& newUrl )
 
 void DocTypeEdit::slotNumberCycleChanged( const QString& newCycle )
 {
-  QString docTypeName = mTypeListBox->currentItem()->text();
+  const QString docTypeName = mTypeListBox->currentItem()->text();
   DocType dt = currentDocType();
   dt.setNumberCycleName( newCycle );
   mChangedDocTypes[docTypeName] = dt;
+
+  NumberCycle nc = NumberCycles::get(newCycle);
   // qDebug () << "Changing the cycle name of " << docTypeName << " to " << newCycle;
 
-  mIdent->setText( dt.identTemplate() );
-  int nextNum = dt.nextIdentId( false )-1;
+  mIdent->setText( nc.getTemplate() );
+  int nextNum = nc.counter();
   mCounter->setText( QString::number( nextNum ) );
-  mExampleId->setText( dt.generateDocumentIdent( QDate::currentDate(),
-                                                 mExampleAddressUid, nextNum, 2 ) );
+  mExampleId->setText( nc.exampleIdent(docTypeName,
+                                       QDate::currentDate(),
+                                       mExampleAddressUid) );
 }
 
 QStringList DocTypeEdit::allNumberCycles()

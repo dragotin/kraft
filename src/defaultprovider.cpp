@@ -411,7 +411,7 @@ QString DefaultProvider::kraftV2BaseDir(const QString& baseDir)
 
     QFileInfo fi{v2base};
     if (! (fi.exists() && fi.isDir()) ) {
-        qWarning() << "KraftV2 base dir does not exist";
+        qWarning() << "KraftV2 base dir does not exist:" << v2base;
         v2base.clear(); // clear it for error handling
     }
     return v2base;

@@ -548,7 +548,7 @@ QStringList KraftDB::wordList(const QString& selector, QMap<QString, QString> re
     query.bindValue(":cat", selector);
     query.exec();
     while ( query.next() ) {
-        re << StringUtil::replaceTagsInString(query.value(1).toString(), replaceMap);
+        re << KraftString::replaceTags(query.value(1).toString(), replaceMap);
     }
     re.sort();
     return re;
