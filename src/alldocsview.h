@@ -31,7 +31,6 @@
 
 class QPushButton;
 class dbID;
-class ArchDocDigest;
 class QContextMenuEvent;
 class QToolBox;
 class DocDigestDetailView;
@@ -90,7 +89,6 @@ private:
     QMenu *mAllMenu;
 
     QPushButton            *mNewDocButton;
-    ArchDocDigest          mLatestArchivedDigest;
     QLineEdit              *_searchLine;
 };
 

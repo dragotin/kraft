@@ -47,30 +47,6 @@ QDate DocDigest::rawDate() const
     return mDate;
 }
 
-ArchDocDigestList DocDigest::archDocDigestList() const
-{
-    const QString id(ident());
-
-    qDebug() << "Querying archdocs for document ident " << id;
-    QSqlQuery query;
-    query.prepare("SELECT archDocID, ident, docType, printDate, state FROM archdoc WHERE"
-                  " ident=:id ORDER BY printDate DESC" );
-    query.bindValue(":id", id);
-    query.exec();
-
-    ArchDocDigestList archDocs;
-    while(query.next()) {
-        int archDocID = query.value(0).toInt();
-        const QString dbIdent = query.value(1).toString();
-        const QString docType = query.value(2).toString();
-        QDateTime printDateTime = query.value(3).toDateTime();
-        int state = query.value(4).toInt();
-        archDocs.append( ArchDocDigest( printDateTime, state, dbIdent, docType, dbID(archDocID) ) );
-    }
-
-    return archDocs;
-}
-
 KContacts::Addressee DocDigest::addressee() const
 {
   return mContact;

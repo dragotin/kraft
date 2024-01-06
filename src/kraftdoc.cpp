@@ -27,13 +27,13 @@
 #include "docposition.h"
 #include "defaultprovider.h"
 #include "documentman.h"
-#include "doctype.h"
 #include "documentman.h"
 #include "kraftdb.h"
 #include "format.h"
 #include "unitmanager.h"
 #include "kraftsettings.h"
 #include "docdigest.h"
+#include "docidentgenerator.h"
 
 // FIXME: Make KraftDoc inheriting DocDigest!
 namespace {
@@ -100,7 +100,7 @@ QString KraftDocState::stateString() const
     return StateUndefinedStr;
 }
 
-QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::State nowState) const
+QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::State nowState)
 {
     QList<State> re;
 
@@ -119,7 +119,11 @@ QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::Stat
     case State::New:
         re.append(State::Draft);
         break;
-
+    case State::Undefined:
+        re.append(State::Draft);
+        re.append(State::Converted);
+        re.append(State::Final);
+        break;
     }
     return re;
 }
@@ -134,6 +138,17 @@ bool KraftDocState::canBeFinalized() const
     }
     return re;
 }
+
+bool KraftDocState::forcesReadOnly()
+{
+    bool re{false};
+
+    if (_state == State::Final) {
+        re = true;
+    }
+    return re;
+}
+
 // =====================================================================================
 
 
@@ -291,6 +306,9 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
         }
         _modified = false;
     }
+
+    emit saved(result);
+
     // FIXME - add this check
     // if (res) {
     //    _emitDBChangeSignal = false; // block sending of the signal
@@ -566,13 +584,6 @@ QString KraftDoc::language() const
      return mPostText;
  }
 
-bool KraftDoc::readOnlyByState()
-{
-    const auto& s = state().state();
-
-    return s == KraftDocState::State::Final;
-}
-
 bool KraftDoc::isInvoice() const
 {
     // This is just a work around and should be fixed with an attribute for the doctype
@@ -593,6 +604,49 @@ QList<ReportItem*> KraftDoc::reportItemList() const
 
     return list;
 }
+
+void KraftDoc::finalize()
+{
+    auto nowState = state().state();
+
+    if (nowState == KraftDocState::State::Final) {
+        qDebug() << "Document is already in final state";
+        return;
+    }
+
+    QList<KraftDocState::State> allowed = KraftDocState::validFollowStates(nowState);
+    if (!allowed.contains(KraftDocState::State::Final)) {
+        qDebug() << "Document is in wrong state to be finalized" << state().stateString();
+        return;
+    }
+
+    DocIdentGenerator *gen = new DocIdentGenerator;
+    connect(gen, &DocIdentGenerator::newIdent, this, &KraftDoc::slotNewIdent);
+    gen->generate(this);
+
+}
+
+void KraftDoc::slotNewIdent(const QString& ident)
+{
+    DocumentMan *man = DocumentMan::self();
+
+    if (ident.isEmpty()) {
+        auto generator = qobject_cast<DocIdentGenerator*>(sender());
+        const QString errStr = generator->errorStr();
+        delete generator;
+
+        // Error state - FIXME: Somehow display the error
+        man->setDocProcessingError(errStr);
+        return;
+    }
+
+    // a new ident is here. Lets set it and save the doc.
+    setIdent(ident);
+    state().setState(KraftDocState::State::Final);
+
+    man->saveDocument(this);
+}
+
 
  /**
   * @brief KraftDoc::resolveMacros

@@ -18,16 +18,33 @@
 #define STRINGUTIL_H
 
 class QString;
+class QDomElement;
+class QDomDocument;
+class QByteArray;
+class QDate;
 
-namespace StringUtil {
-    /**
+namespace KraftXml {
+
+/**
+ * @brief create a XML Dom element with given name and value
+ */
+QDomElement textElement(QDomDocument& doc, const QString& name, const QString& value );
+
+QString childElemText(const QDomElement& elem, const QByteArray& childName);
+
+QDate childElemDate(const QDomElement& elem, const QString& childName);
+
+}
+
+namespace KraftString {
+/**
      * @brief replaceTagsInString.
      * @param w - the string that includes the %-prepended tags
      * @param replaceMap - a map containing key/values that replace the tags.
      * @return the string with tags replaced
      *
      */
-    QString replaceTagsInString( const QString& w, QMap<QString, QString>& replaceMap );
+QString replaceTags( const QString& w, QMap<QString, QString>& replaceMap );
 }
 
 

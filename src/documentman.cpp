@@ -165,6 +165,11 @@ bool DocumentMan::loadMetaFromFilename(const QString& xmlFile, KraftDoc *doc)
     return false;
 }
 
+void DocumentMan::setDocProcessingError(const QString& errStr)
+{
+    Q_UNUSED(errStr);
+}
+
 bool DocumentMan::saveDocument(KraftDoc* doc)
 {
     if (!doc) {
@@ -172,10 +177,6 @@ bool DocumentMan::saveDocument(KraftDoc* doc)
     }
     bool ok = doc->saveDocument(DefaultProvider::self()->documentPersister());
 
-    if(ok) {
-        // start PDF generation in background
-
-    }
     return ok;
 }
 

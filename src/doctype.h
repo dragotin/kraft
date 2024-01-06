@@ -35,82 +35,68 @@ typedef QMap<QString, dbID> idMap;
 
 class KRAFTCAT_EXPORT DocType
 {
-  public:
-  DocType();
-  /** 
-   * create a doctype from its localised or tech name 
+public:
+    DocType();
+    /**
+   * create a doctype from its localised or tech name
    */
-  DocType( const QString&, bool dirty = false );
+    DocType( const QString&, bool dirty = false );
 
-  static QStringList all();
-  static QStringList allLocalised();
-  static dbID docTypeId( const QString& );
-  
-  QString name() const;
-  void setName( const QString& );
+    static QStringList all();
+    static QStringList allLocalised();
+    static dbID docTypeId( const QString& );
 
-  bool allowDemand();
-  bool allowAlternative();
-  bool pricesVisible();
-  bool partialInvoice();
-  bool substractPartialInvoice();
+    QString name() const;
+    void setName( const QString& );
 
-  QStringList follower();
-  int setAllFollowers( const QStringList& followers);
+    bool allowDemand();
+    bool allowAlternative();
+    bool pricesVisible();
+    bool partialInvoice();
+    bool substractPartialInvoice();
 
-  QString     generateDocumentIdent(const QDate& docDate,
-                                    const QString& addressUid,
-                                    int id, int dayCnt);
-  QString     identTemplate();
-  void        setIdentTemplate( const QString& );
+    QStringList follower();
+    int setAllFollowers( const QStringList& followers);
 
-  QString     numberCycleName();
-  void        setNumberCycleName( const QString& );
 
-  QString     templateFile();
-  void        setTemplateFile( const QString& );
+    QString     numberCycleName();
+    void        setNumberCycleName( const QString& );
 
-  QString     watermarkFile();
-  void        setWatermarkFile( const QString& );
+    QString     templateFile();
+    void        setTemplateFile( const QString& );
 
-  QString     mergeIdent();
-  void        setMergeIdent( const QString& );
+    QString     watermarkFile();
+    void        setWatermarkFile( const QString& );
 
-  QString     xRechnungTemplate();
-  void        setXRechnungTemplate(const QString&);
+    QString     mergeIdent();
+    void        setMergeIdent( const QString& );
 
-  QString     appendPDF() const;
-  void        setAppendPDFFile(const QString& file);
+    QString     xRechnungTemplate();
+    void        setXRechnungTemplate(const QString&);
 
-  void        setAttribute( const QString& attribute, const QString& val);
-  QString     attributeValueString(const QString& attribName) const;
+    QString     appendPDF() const;
+    void        setAppendPDFFile(const QString& file);
 
-  static void  clearMap();
+    void        setAttribute( const QString& attribute, const QString& val);
+    QString     attributeValueString(const QString& attribName) const;
 
-  int         nextIdentId( bool hot = true );
-  int         nextDayCounter(const QDate& docDate);
+    static void  clearMap();
 
-  void        save();
+    void        save();
 
-  void        readIdentTemplate();
-
-  bool        isXRechnungEnabled() const;
-  void        setXRechnungEnabled(bool);
-  protected:
-  void        readFollowerList();
-
-  private:
-  static void init();
-
+protected:
+    void        readFollowerList();
 
 private:
-  AttributeMap mAttributes;
-  QStringList  mFollowerList;
-  QString      mName;
-  QString      mIdentTemplate;
-  bool         mDirty;
-  QString      mMergeIdent;
-  static idMap mNameMap;
+    static void init();
+
+private:
+    AttributeMap mAttributes;
+    QStringList  mFollowerList;
+    QString      mName;
+    bool         mDirty;
+    QString      mMergeIdent;
+    static idMap mNameMap;
 };
 
 #endif
