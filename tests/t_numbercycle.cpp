@@ -5,6 +5,7 @@
 
 #include "testconfig.h"
 #include "numbercycle.h"
+#include "defaultprovider.h"
 
 namespace {
 
@@ -49,6 +50,10 @@ private slots:
     void initTestCase()
     {
         const QString& d = _dir.path();
+
+        // FIXME: Get rid of the basedir stuff here, and hold the base dir in the
+        // DefaultProvider
+        // Use this method to create a temp base dir: DefaultProvider::self()->switchToV2BaseDir(d);
         qDebug() << "Test Basedir:" << d;
         // in the base path there needs to be a directory called 'current'
         QDir dir{d};
