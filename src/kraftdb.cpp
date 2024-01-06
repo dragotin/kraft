@@ -33,7 +33,6 @@
 #include "doctype.h"
 #include "dbids.h"
 #include "defaultprovider.h"
-#include "archiveman.h"
 #include "databasesettings.h"
 #include "stringutil.h"
 
@@ -596,11 +595,5 @@ KraftDB::~KraftDB()
 {
 }
 
-dbID KraftDB::archiveDocument( KraftDoc *docPtr )
-{
-    dbID archID = ArchiveMan::self()->archiveDocument( docPtr );
-
-    return archID;
-}
 
 

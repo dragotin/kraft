@@ -21,7 +21,6 @@
 #include <QLocale>
 #include <QList>
 
-#include "archdoc.h"
 #include "kraftobj.h"
 
 class QString;
