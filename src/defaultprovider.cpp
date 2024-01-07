@@ -359,6 +359,7 @@ QString DefaultProvider::createV2BaseDir(const QString& base)
             currV2Dir.cd(fragment);
             currV2Dir.mkdir("numbercycles");
             currV2Dir.mkdir("xmldoc");
+            currV2Dir.mkdir("pdf");
         }
         cnt++;
     } while(!(ok && cnt < 5));
@@ -431,6 +432,9 @@ QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
         break;
     case KraftV2Dir::XmlDocs:
         subdir = "xmldoc";
+        break;
+    case KraftV2Dir::PdfDocs:
+        subdir = "pdf";
         break;
     }
     return subdir;
