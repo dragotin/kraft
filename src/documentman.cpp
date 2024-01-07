@@ -189,7 +189,7 @@ bool DocumentMan::reloadDocument(KraftDoc* doc)
 
 }
 
-bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
+QString DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
 {
     bool ok{true};
 
@@ -213,7 +213,7 @@ bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
             const QDateTime& lastModified = doc.lastModified();
 
             if (lastModified.isValid()) {
-            /*
+                /*
              *        The utimbuf structure is:
              *
              *        struct utimbuf {
@@ -221,17 +221,17 @@ bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
              *          time_t modtime;      // modification time
              *        };
              */
-            struct tm time;
-            time.tm_sec = lastModified.time().second();
-            time.tm_min = lastModified.time().minute();
-            time.tm_hour = lastModified.time().hour();
-            time.tm_mday = lastModified.date().day();
-            time.tm_mon = lastModified.date().month()-1;
-            time.tm_year = lastModified.date().year()-1900;
-            struct utimbuf utime_par;
-            utime_par.modtime = mktime(&time);
-            // utime_par.actime  = mktime()
-            utime(fileName.toUtf8().constData(), &utime_par);
+                struct tm time;
+                time.tm_sec = lastModified.time().second();
+                time.tm_min = lastModified.time().minute();
+                time.tm_hour = lastModified.time().hour();
+                time.tm_mday = lastModified.date().day();
+                time.tm_mon = lastModified.date().month()-1;
+                time.tm_year = lastModified.date().year()-1900;
+                struct utimbuf utime_par;
+                utime_par.modtime = mktime(&time);
+                // utime_par.actime  = mktime()
+                utime(fileName.toUtf8().constData(), &utime_par);
             } else {
                 qDebug() << "Invalid time stamp for last modified for" << fileName;
             }
@@ -241,7 +241,8 @@ bool DocumentMan::convertDbToXml(const QString& docID, const QString& basePath)
         ok = false;
     }
 
-    return ok;
+    const QString uuid = doc.uuid();
+    return uuid;
 
 }
 
