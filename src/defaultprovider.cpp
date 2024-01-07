@@ -376,8 +376,11 @@ bool DefaultProvider::switchToV2BaseDir(const QString& dirStr)
     bool ok{false};
 
     // snip off the md5 fragment
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QString fragment = dirStr.split("/", QString::SkipEmptyParts).last();
+#else
     const QString fragment = dirStr.split("/", Qt::SkipEmptyParts).last();
-
+#endif
     QDir dir(dirStr);
     if (dir.cdUp()) {
         const QString linkFile = dir.absoluteFilePath("current");
