@@ -21,6 +21,7 @@
 #include "xmldocindex.h"
 #include "kraftdoc.h"
 #include "documentman.h"
+#include "defaultprovider.h"
 
 QMap<QString, QString> XmlDocIndex::_identMap = QMap<QString, QString>();
 QMap<QString, QString> XmlDocIndex::_uuidMap = QMap<QString, QString>();
@@ -61,7 +62,6 @@ const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
     return re;
 }
 
-
 const QFileInfo XmlDocIndex::pathByUuid(const QString& uuid, const QString& extension)
 {
     QString re;
@@ -85,7 +85,12 @@ const QFileInfo XmlDocIndex::xmlPathByUuid(const QString& uuid)
 // so far, for the pdf path, only the extension is changed from xml to pdf.
 const QFileInfo XmlDocIndex::pdfPathByUuid(const QString& uuid)
 {
-    return pathByUuid(uuid, ".pdf");
+    if (uuid.isEmpty()) {
+        return QFileInfo();
+    }
+    const QString dir{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::PdfDocs)};
+
+    return QFileInfo(dir, uuid+".pdf");
 }
 
 bool XmlDocIndex::pdfOutdated(const QString& uuid)

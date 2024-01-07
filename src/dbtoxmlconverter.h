@@ -19,6 +19,7 @@
 #define DBTOXMLCONVERTER_H
 
 #include <QObject>
+#include <QPair>
 
 class DbToXMLConverter : public QObject
 {
@@ -31,7 +32,8 @@ public:
 private:
     QMap <int, int> yearMap();
 
-    int convertDocsOfYear(int year, const QString& basePath);
+    QPair<int, int> convertDocsOfYear(int year, const QString& basePath);
+    bool convertLatestPdf(const QString &basePath, const QString& ident, const QString& uuid);
     int amountOfDocsOfYear(int year);
     int convertNumbercycles(const QString &baseDir);
 

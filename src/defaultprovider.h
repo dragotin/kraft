@@ -40,6 +40,7 @@ public:
     enum class KraftV2Dir {
         Root,
         XmlDocs,
+        PdfDocs,
         NumberCycles
     };
 
