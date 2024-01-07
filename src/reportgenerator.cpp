@@ -79,14 +79,14 @@ ReportGenerator::ReportGenerator()
     : _useGrantlee(true),
       mProcess(nullptr)
 {
-  mAddressProvider = new AddressProvider(this);
-  connect(mAddressProvider, &AddressProvider::lookupResult,
-          this, &ReportGenerator::slotAddresseeFound);
+    mAddressProvider = new AddressProvider(this);
+    connect(mAddressProvider, &AddressProvider::lookupResult,
+            this, &ReportGenerator::slotAddresseeFound);
 }
 
 ReportGenerator::~ReportGenerator()
 {
-  // qDebug () << "ReportGen is destroyed!";
+    // qDebug () << "ReportGen is destroyed!";
 }
 
 /*
@@ -203,37 +203,28 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     }
     _cleanupFiles.append(tempFile);
 
-    QString fullOutputFilePath = targetFileName();
-
-    if (mMergeIdent >= 0 && mMergeIdent < 5 ) {
-        // check if the watermark file exists
-        QFileInfo fi(mWatermarkFile);
-        if (!mWatermarkFile.isEmpty() && fi.isReadable()) {
-            QTemporaryFile tmpFile;
-            tmpFile.open();
-            tmpFile.close();
-
-            // PDF merge is required. Write to temp file
-            fullOutputFilePath = tmpFile.fileName() + QStringLiteral(".pdf");
-        } else {
-            mMergeIdent = 0;
-            qDebug() << "Can not read watermark file, generating without" << mWatermarkFile;
-        }
-    }
-
     // Now there is the completed, expanded document source.
     connect( converter, &PDFConverter::docAvailable,
              this, &ReportGenerator::slotPdfDocAvailable);
     connect( converter, &PDFConverter::converterError,
              this, &ReportGenerator::slotConverterError);
-    converter->convert(tempFile, fullOutputFilePath);
+
+    // Always write the finished document to a tmp file. Let it copy over by the
+    // mergePdfWatermark func
+    QTemporaryFile tmpFile;
+    if (tmpFile.open()) {
+        tmpFile.close();
+        converter->convert(tempFile, QString("%1.pdf").arg(tmpFile.fileName()));
+    } else {
+        qWarning() << "Can not write to the temporary file" << tmpFile.fileName();
+    }
 
 }
 
 void ReportGenerator::slotPdfDocAvailable(const QString& file)
 {
     QObject *s = sender();
-    qDebug() << "The document is finished!:" << file;
+    qDebug() << "The document is finished:" << file;
 
     s->deleteLater();
 
@@ -248,7 +239,7 @@ void ReportGenerator::slotPdfDocAvailable(const QString& file)
 
     // check for the watermark requirements
     mergePdfWatermark(file);
- }
+}
 
 void ReportGenerator::mergePdfWatermark(const QString& file)
 {
@@ -256,42 +247,53 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
     connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, &ReportGenerator::pdfMergeFinished);
 
-     QStringList args;
+    const QString target = targetFileName();
+    const QStringList prg = DefaultProvider::self()->locatePythonTool(QStringLiteral("watermarkpdf.py"));
+
+    QStringList args;
     if (mMergeIdent > 0) {
-        const QStringList prg = DefaultProvider::self()->locatePythonTool(QStringLiteral("watermarkpdf.py"));
-        if (!prg.isEmpty() && !mWatermarkFile.isEmpty()) {
-            mProcess->setProgram(prg.at(0));
-            args << prg.at(1);
-            args << QStringLiteral("-m") << QString::number(mMergeIdent);
-            args << QStringLiteral("-o") << targetFileName();
-            if (!mPdfAppendFile.isEmpty()) {
-                args << QStringLiteral("-a") << mPdfAppendFile;
-            }
-            args << mWatermarkFile;
-            args << file;
-
-            qDebug() << "Merge PDF Watermark args:" << args;
-            mProcess->setArguments(args);
-
-            mProcess->start( );
-        } else {
-
-            qDebug() << "Watermark err:" << (prg.isEmpty() ? "Program" : "watermark file") << "is empty";
+        // check if the watermark file is present. If not, just do not try to merge
+        if (prg.isEmpty()) {
+            qDebug() << "Can not find the tool watermarkpdf.py";
+            mMergeIdent = 0;
         }
+        if (mWatermarkFile.isEmpty()) {
+            qDebug() << "A watermark file is not set.";
+            mMergeIdent = 0;
+        } else {
+            QFileInfo fi{mWatermarkFile};
+            if (!(fi.exists() && fi.isReadable())) {
+                qDebug() << "The watermark file" << mWatermarkFile << "does not exist or can not be read.";
+                mMergeIdent = 0;
+            }
+        }
+    }
+
+    if (mMergeIdent > 0) {
+        // If merging, the result file is directly written to the target file name
+        // no copying over is needed from the tmp file.
+        mProcess->setProgram(prg.at(0));
+        args << prg.at(1);
+        args << QStringLiteral("-m") << QString::number(mMergeIdent);
+        args << QStringLiteral("-o") << target;
+        if (!mPdfAppendFile.isEmpty()) {
+            args << QStringLiteral("-a") << mPdfAppendFile;
+        }
+        args << mWatermarkFile;
+        args << file;
+
+        qDebug() << "Merge PDF Watermark args:" << args;
+        mProcess->setArguments(args);
+
+        mProcess->start( );
     } else {
         // no watermark is wanted, copy the converted file over.
-
-        // add the tmp file to the args of process, used in pdfMergeFinished
-        args << file;
-        mProcess->setArguments(args);
-        const QString target = targetFileName();
-
-        QFile::remove(target);
         if (QFile::copy(file, target)) {
             qDebug() << "Generated file" << file << "copied to" << target;
             pdfMergeFinished(0, QProcess::ExitStatus::NormalExit);
         } else {
             qDebug() << "ERR: Failed to copy temporary file" << file << "to" << target;
+            pdfMergeFinished(1, QProcess::ExitStatus::NormalExit);
         }
     }
 }
@@ -329,7 +331,7 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
     QString errMsg;
     switch(err) {
     case PDFConverter::ConvError::NoError:
-         errMsg = i18n("No converter error.");
+        errMsg = i18n("No converter error.");
         break;
     case PDFConverter::ConvError::TrmlToolFail:
         errMsg = i18n("The ReportLab based converter script can not be executed.");
