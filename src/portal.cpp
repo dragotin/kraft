@@ -690,6 +690,14 @@ void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
             qDebug() << "This is the xrechnung file name." << fName;
             const QString proposeName = QString("%1/xrechnung_%2.xml").arg(QDir::homePath()).arg(d.archDocIdent());
             const QString f = QFileDialog::getSaveFileName(this, i18n("Save XRechnung"), proposeName);
+
+            if( f.isEmpty()) {
+                qDebug() << "XRechnung Save file name is empty!";
+                return;
+            }
+            if (QFile::exists(f))  // copy does not overwrite the target file
+                QFile::remove(f);
+
             QFile::copy(fName, f);
             this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
             exporter->deleteLater();
