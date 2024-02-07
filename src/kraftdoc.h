@@ -145,6 +145,7 @@ public:
     QList<ReportItem*> reportItemList() const;
 
     DocDigest toDigest();
+    void toJsonObj(QJsonObject& obj) const;
 
     QDate date() const { return mDate; }
     void setDate( QDate d ) { mDate = d; }
