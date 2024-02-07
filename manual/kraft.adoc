@@ -776,9 +776,6 @@ To add a logo on in the top left corner of the first page of the result doc, the
 
 This displays the top left content only on the first page, and also assigns a different top- and bottom margin to the first page. Note that the content url in the example is a local path, but any valid URL can be used.
 
-====== Show in absolutely placed divs
-
-
 ==== EPC QR Code
 
 With Weasyprint based PDF generation Kraft supports the https://en.wikipedia.org/wiki/EPC_QR_code[EPC QR Code] which implements a European standard for payments by computer and mobile devices.

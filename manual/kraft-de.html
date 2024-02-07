@@ -1842,6 +1842,81 @@ Kraft still ships with the old ReportLab based converter, but that will be depre
 </div>
 </div>
 <div class="sect3">
+<h4 id="_adding_a_logo">Adding a Logo</h4>
+<div class="paragraph">
+<p>On the PDF output it is nice to have a logo image included, if the documents should not be printed on a prepared stationary that comes with a printed logo already.</p>
+</div>
+<div class="paragraph">
+<p>This chapter describes a few methods to achieve that with the weasyprint based template.</p>
+</div>
+<div class="sect5">
+<h6 id="_pdf_watermark_funktionality">PDF Watermark Funktionality</h6>
+<div class="paragraph">
+<p>The first, and easiest way to add a logo and other details on the print out is to use the so called PDF Watermark option.</p>
+</div>
+<div class="paragraph">
+<p>That means that the generated document, which does not contain a logo at all, is merged with another PDF into one doc. The so called watermark feature requires an otherwise empty PDF page of the same size as your generated document, that has the logo printed at the right position. It can be created with a text processor that can export PDF.</p>
+</div>
+<div class="paragraph">
+<p>In the Kraft doc type settings dialog, the watermark options for a specific doc type can be selected. The watermark PDF file can be selected and either be applied to the first page only, or to every page of the generated document.</p>
+</div>
+<div class="paragraph">
+<p>Once set up, Kraft automatically merges the generated document with the watermark PDF. The result document contains the content of both documents merged together. This is not only useful for logos, but also other details in the document footer.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_css_directives_for_pages">CSS Directives for Pages</h6>
+<div class="paragraph">
+<p>The second option is to use the CSS directive for page content on printed HTML pages. This only works with the new weasyprint based doc generation.</p>
+</div>
+<div class="paragraph">
+<p>It uses Cascading Style Sheet (CSS) directives for paged media. CSS uses the <code>@page</code> keyword to define attributes of the page on which the content is printed. Weasyprint makes heavy use of that, for example to define the page size.</p>
+</div>
+<div class="paragraph">
+<p>In the Kraft default template for weasyprint called <code>invoice.gtmpl</code> this page section can be found:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">@page {
+    size: A4;
+    margin-left: 2.4cm;
+    margin-top:27mm;
+    margin-right: 1.6cm;
+    margin-bottom: 2cm;
+    color: #2f590a;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which defines the page size to be A4, with the given margins and a default text color.</p>
+</div>
+<div class="paragraph">
+<p>To add a logo on in the top left corner of the first page of the result doc, the following snippet could be added:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">@page :first {
+  margin-top: 20mm;
+  margin-bottom: 3cm;
+
+  @top-left {
+    content: url(/home/miller/miller_logo_s1.png);
+    width:3cm;
+    height: 1cm;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This displays the top left content only on the first page, and also assigns a different top- and bottom margin to the first page. Note that the content url in the example is a local path, but any valid URL can be used.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_show_in_absolutely_placed_divs">Show in absolutely placed divs</h6>
+
+</div>
+</div>
+<div class="sect3">
 <h4 id="_epc_qr_code">EPC QR Code</h4>
 <div class="paragraph">
 <p>With Weasyprint based PDF generation Kraft supports the <a href="https://en.wikipedia.org/wiki/EPC_QR_code">EPC QR Code</a> which implements a European standard for payments by computer and mobile devices.</p>
@@ -2199,17 +2274,17 @@ There are validators for invoices in XRechnung format out there in the internet.
 <h2 id="Credits">Credits und Lizenz</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Program and documentation copyright 2004–2023 Klaas Freitag</p>
+<p>Program and documentation copyright 2004–2024 Klaas Freitag</p>
 </div>
 <div class="paragraph">
-<p>Documentation copyright 2020-2023 Ronald Stroethoff</p>
+<p>Documentation copyright 2020-2024 Ronald Stroethoff</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Zuletzt aktualisiert 2023-12-02 17:05:21 +0100
+Zuletzt aktualisiert 2024-02-07 20:55:54 +0100
 </div>
 </div>
 </body>
