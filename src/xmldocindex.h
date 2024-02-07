@@ -47,6 +47,7 @@ public:
 
 private:
     void buildIndex();
+    bool buildIndexFromFile();
 
     static QString _basePath;
 
