@@ -1004,6 +1004,6 @@ would change that to run in the German locale for example, independent from the 
 [[Credits]]
 == Credits and License
 
-Program and documentation copyright 2004–2023 Klaas Freitag
+Program and documentation copyright 2004–2024 Klaas Freitag
 
-Documentation copyright 2020-2023 Ronald Stroethoff
+Documentation copyright 2020-2024 Ronald Stroethoff
