@@ -3,6 +3,9 @@
 #include "kraftdb.h"
 #include "xmldocindex.h"
 #include "defaultprovider.h"
+#include "documentsaverdb.h"
+
+#include <utime.h>
 
 #include <QSqlQuery>
 #include <QStandardPaths>
@@ -10,12 +13,31 @@
 
 namespace {
 
+const char *okStr{"ok"};
+const char *pdfFailsStr{"pdfFails"};
+const char *failsStr{"fails"};
+
 QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QString& value )
 {
   QDomElement elem = doc.createElement( name );
   QDomText t = doc.createTextNode( value.toHtmlEscaped() );
   elem.appendChild( t );
   return elem;
+}
+
+bool writeJsonIndex(const QString& path, QJsonObject &json)
+{
+    QFileInfo fi(path, "kraftindx.json");
+
+    QFile saveFile(fi.absoluteFilePath());
+
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open save file.");
+        return false;
+    }
+
+    saveFile.write(QJsonDocument(json).toJson());
+    return true;
 }
 
 }
@@ -41,18 +63,27 @@ void DbToXMLConverter::convert()
 
     QList<int> keys = years.keys();
     std::sort(keys.begin(), keys.end());
-    int cnt {0};
-    int fails{0};
 
+    QJsonObject jsonDoc; // digest of all docs.
+    QJsonObject yearsMap;
+
+    QMap<QByteArray, int> results;
+
+    QJsonArray yearsArr;
     for (int year : keys) {
-        QPair<int, int> pCnt;
-        pCnt = convertDocsOfYear(year, dBase);
-        cnt += pCnt.first;
-        fails += pCnt.second;
+        QJsonArray arr;
+        convertDocsOfYear(year, dBase, arr, results);
+        yearsMap[QString::number(year)] = arr;
 
         // FIXME Check for errors and set ok flag
     }
-    qDebug() << "Done, saved"<< cnt << "docs with" << fails << "fails to"<< dBase;
+    qDebug() << "Conversion to" << dBase;
+    for( const auto& k : results.keys()) {
+        qDebug() << "Conversion result" << k << ":" << results[k];
+    }
+
+    jsonDoc["yearsData"] = yearsMap;
+    writeJsonIndex(dBase, jsonDoc);
 
     // -- Convert the numbercycles
     int nc_cnt = convertNumbercycles(dBase);
@@ -111,7 +142,7 @@ int DbToXMLConverter::amountOfDocsOfYear(int year)
     return amount;
 }
 
-QPair<int, int> DbToXMLConverter::convertDocsOfYear(int year, const QString& basePath)
+void DbToXMLConverter::convertDocsOfYear(int year, const QString& basePath, QJsonArray &yearArr, QMap<QByteArray, int>& results)
 {
     const QString sql {"SELECT ident FROM document where DATE(date) BETWEEN :year AND :nextyear order by docID"};
     QSqlQuery q;
@@ -122,23 +153,89 @@ QPair<int, int> DbToXMLConverter::convertDocsOfYear(int year, const QString& bas
     q.exec();
     int cnt{0};
     int fails{0};
+    int pdffails{0};
 
     QDir newDir(basePath);
     newDir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::XmlDocs));
 
     while( q.next()) {
         const QString ident = q.value(0).toString();
-        const QString uuid = DocumentMan::self()->convertDbToXml(ident, newDir.absolutePath());
-        if (ident.isEmpty() || uuid.isEmpty() || !convertLatestPdf(basePath, ident, uuid)) {
-            qDebug() << "Failed to convert document";
+        const QString uuid = convertDbToXml(ident, newDir.absolutePath(), yearArr);
+        if (ident.isEmpty() || uuid.isEmpty()) {
+            qDebug() << "Failed to convert document" << ident;
             fails++;
         } else {
+            if (!convertLatestPdf(basePath, ident, uuid)) {
+                pdffails++;
+            }
             cnt++;
         }
-
-
     }
-    return QPair<int, int>(cnt, fails);
+
+    // report the results
+    results[okStr] += cnt;
+    results[failsStr] += fails;
+    results[pdfFailsStr] += pdffails;
+
+}
+
+QString DbToXMLConverter::convertDbToXml(const QString& docID, const QString& basePath, QJsonArray& jsonArr)
+{
+    DocumentSaverDB docLoad;
+    KraftDoc doc;
+
+    // load from database by ident
+    if (docLoad.loadByIdent(docID, &doc)) {
+
+        DocumentSaverXML docSave;
+        docSave.setBasePath(basePath);
+        docSave.setArchiveMode(true); // do not set new lastModified etc.
+
+        if (!docSave.saveDocument(&doc)) {
+            qDebug() << "failed to save document as XML" << docID;
+        } else {
+            // File was written successfully. Tweak the modification time to the
+            // last modified date of the document.
+            const QString& fileName = docSave.lastSavedFileName();
+
+            // push the JSON representation of the doc digest to an array
+            QJsonObject obj;
+            doc.toJsonObj(obj);
+            jsonArr.append(obj);
+
+            const QDateTime& lastModified = doc.lastModified();
+
+            if (lastModified.isValid()) {
+                /*
+             *        The utimbuf structure is:
+             *
+             *        struct utimbuf {
+             *          time_t actime;       // access time
+             *          time_t modtime;      // modification time
+             *        };
+             */
+                struct tm time;
+                time.tm_sec = lastModified.time().second();
+                time.tm_min = lastModified.time().minute();
+                time.tm_hour = lastModified.time().hour();
+                time.tm_mday = lastModified.date().day();
+                time.tm_mon = lastModified.date().month()-1;
+                time.tm_year = lastModified.date().year()-1900;
+                struct utimbuf utime_par;
+                utime_par.modtime = mktime(&time);
+                // utime_par.actime  = mktime()
+                utime(fileName.toUtf8().constData(), &utime_par);
+            } else {
+                qDebug() << "Invalid time stamp for last modified for" << fileName;
+            }
+        }
+    } else {
+        qDebug() << "Failed to load from db" << docID;
+    }
+
+    const QString uuid = doc.uuid();
+    return uuid;
+
 }
 
 bool DbToXMLConverter::convertLatestPdf(const QString& basePath, const QString& ident, const QString& uuid)

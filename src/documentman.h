@@ -51,9 +51,6 @@ class DocumentMan
                                  const DocPositionList &listToCopy = DocPositionList() );
     DocGuardedPtr copyDocument(const QString& copyFromUuid );
 
-    // returns the UUID. If that is empty, an error occured
-    QString convertDbToXml(const QString& docID, const QString &basePath);
-
     bool loadMetaFromFilename(const QString&, KraftDoc *doc);
 
     DocumentMan();

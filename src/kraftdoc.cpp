@@ -339,6 +339,17 @@ DocDigest KraftDoc::toDigest()
     return digest;
 }
 
+void KraftDoc::toJsonObj(QJsonObject& obj) const
+{
+    obj["uuid"] = uuid();
+    obj["date"] = Format::toDateString(date(), Format::DateFormatIso);
+    obj["lastModified"] = Format::toDateTimeString(lastModified(), Format::DateFormatIso);
+    obj["clientAddress"] = address();
+    obj["ident"] = ident();
+    obj["prjtLabel"] = projectLabel();
+    obj["state"] = _state.stateString();
+}
+
 void KraftDoc::setTimeOfSupply(QDateTime start, QDateTime end)
 {
     _toSStart = start;

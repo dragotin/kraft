@@ -32,8 +32,10 @@ public:
 private:
     QMap <int, int> yearMap();
 
-    QPair<int, int> convertDocsOfYear(int year, const QString& basePath);
+    void convertDocsOfYear(int year, const QString& basePath, QJsonArray &yearArr, QMap<QByteArray, int> &);
     bool convertLatestPdf(const QString &basePath, const QString& ident, const QString& uuid);
+    QString convertDbToXml(const QString& docID, const QString& basePath, QJsonArray& jsonArr);
+
     int amountOfDocsOfYear(int year);
     int convertNumbercycles(const QString &baseDir);
 

@@ -579,7 +579,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         newState = true; //
         // set document state to draft now for creating the save doc
         doc->state().setState(KraftDocState::State::Draft);
-    } else if (doc->state().is(KraftDocState::State::Converted)) {
+    } else if (!_archiveMode && doc->state().is(KraftDocState::State::Converted)) {
         // set a converted doc that was changed to Draft
         doc->state().setState(KraftDocState::State::Draft);
         // delete the current ident
@@ -662,10 +662,12 @@ bool DocumentSaverXML::loadFromFile(const QFileInfo& xmlFile, KraftDoc *doc, boo
 {
     if (!xmlFile.exists()) {
         qDebug() << "File to load does not exist" << xmlFile;
+        return false;
     }
 
     if (!xmlFile.isReadable()) {
         qDebug() << "File to load not readable" << xmlFile;
+        return false;
     }
 
     QFile file(xmlFile.filePath());
@@ -722,11 +724,13 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
     });
 
     qDebug() << "Adding digests to" << model->objectName();
+    const QDir baseDir {DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
     for( const QDate& d : dates) {
         const QList<QString> files = dateMap.values(d);
         KraftDoc doc;
+        QFileInfo fi;
         for( const QString& fragm : files) {
-            const QFileInfo fi{fragm +".xml" };
+            fi.setFile(baseDir, fragm +".xml");
             if (loadFromFile(fi, &doc, true)) {
                 model->addData(doc.toDigest());
                 cnt++;

@@ -41,6 +41,10 @@ void XmlDocIndex::setBasePath(const QString& basePath)
 {
     _basePath = basePath;
 
+    if (buildIndexFromFile()) {
+        return;
+    }
+
     if (_identMap.count() == 0) {
         QElapsedTimer timer;
         timer.start();
@@ -48,8 +52,6 @@ void XmlDocIndex::setBasePath(const QString& basePath)
             // Code in this block will run in another thread
             buildIndex();
         });
-
-        // qDebug() << "Indexing took" << timer.elapsed() << "msec";
     }
 }
 
@@ -57,7 +59,7 @@ const QFileInfo XmlDocIndex::xmlPathByIdent(const QString &ident)
 {
     QFileInfo re;
     if (!ident.isEmpty() && _identMap.contains(ident)) {
-        re = QFileInfo{_identMap[ident] + ".xml"};
+        re.setFile(QDir(_basePath), _identMap[ident] + ".xml");
     }
     return re;
 }
@@ -74,7 +76,10 @@ const QFileInfo XmlDocIndex::pathByUuid(const QString& uuid, const QString& exte
                 re = re + '.' + extension;
         }
     }
-    return QFileInfo{re};
+    QFileInfo fi;
+    if (!re.isEmpty())
+        fi.setFile(QDir(_basePath), re);
+    return fi;
 }
 
 const QFileInfo XmlDocIndex::xmlPathByUuid(const QString& uuid)
@@ -109,6 +114,84 @@ bool XmlDocIndex::pdfOutdated(const QString& uuid)
 const QMultiMap<QDate, QString> &XmlDocIndex::dateMap()
 {
     return _dateMap;
+}
+
+bool XmlDocIndex::buildIndexFromFile()
+{
+    const QFileInfo base{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root)};
+    qDebug() << "Building internal index for path" << base.absolutePath();
+    Q_ASSERT(base.exists());
+
+    if (!(base.exists() && base.isDir())) {
+        qDebug() << "Base path is not valid";
+        return false;
+    }
+    const QDir dir(base.filePath());
+
+    QFile loadFile(dir.absoluteFilePath("kraftindx.json"));
+
+    if (!loadFile.open(QIODevice::ReadOnly)) {
+            qWarning("Couldn't open file to read.");
+            return false;
+        }
+
+    QByteArray saveData = loadFile.readAll();
+
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
+
+    const QJsonObject obj = loadDoc.object();
+    const QJsonObject jsonYears = obj["yearsData"].toObject();
+    const QStringList years = jsonYears.keys();
+
+    int overall{0};
+    QElapsedTimer timer;
+    timer.start();
+    for(const QString& year : years) {
+        QJsonArray jsonDocs = obj["yearsData"][year].toArray();
+
+        for (int docIndx = 0; docIndx < jsonDocs.size(); ++docIndx) {
+            const QJsonObject docObject = jsonDocs[docIndx].toObject();
+            QString path{year};
+            path.append("/");
+            QString ident, dateStr;
+
+            int components{0};
+            if (docObject.contains("ident") && docObject["ident"].isString()) {
+                ident = docObject["ident"].toString();
+                components++;
+            }
+
+            if (docObject.contains("date") && docObject["date"].isString()) {
+                dateStr = docObject["date"].toString();
+                // Remove zeros in case there are any
+                QString m = dateStr.mid(5,2);
+                if (m.startsWith("0")) m.remove(QChar('0'));
+                path.append(m);
+                path.append("/");
+                components++;
+            }
+
+            if (docObject.contains("uuid") && docObject["uuid"].isString()) {
+                const QString uuid = docObject["uuid"].toString();
+                path.append(uuid);
+                components++;
+
+                if (components == 3) {
+                    // all components were found
+                    // qDebug() << "INSERT path:" << path;
+                    _identMap.insert(ident, path);
+                    _dateMap.insert(QDate::fromString(dateStr), path);
+                    _uuidMap.insert(uuid, path);
+                }
+            }
+            overall++;
+        }
+
+    }
+    qDebug() << "Indexed"<< overall << "documents from indx file in" << timer.elapsed() << "msec";
+
+    // read(loadDoc.object());
+    return true;
 }
 
 void XmlDocIndex::buildIndex()
