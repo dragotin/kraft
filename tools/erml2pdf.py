@@ -488,6 +488,7 @@ class _rml_canvas(object):
                 args['width'] = sx * args['height'] / sy
             else:
                 args['height'] = sy * args['width'] / sx
+        args['mask'] = 'auto'
         self.canvas.drawImage(img, **args)
 
     def _barcode(self, node):
