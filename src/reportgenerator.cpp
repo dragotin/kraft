@@ -380,11 +380,13 @@ QString ReportGenerator::findTemplateFile( const QString& type )
         // check if file exists
         QFileInfo fi(tmplFile);
         if (!fi.isFile()) {
-            emit failure(i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile).arg(dType.name()), "");
+            emit failure(i18nc("The template file %1 for document type %2 does not exist.", tmplFile.toLatin1().constData(),
+                dType.name().toLatin1().constData()), "");
             return QString();
         }
         if (!fi.isReadable()) {
-            emit failure(i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile).arg(dType.name()), "");
+            emit failure(i18nc("The template file %1 for document type %2 can not be read.", tmplFile.toLatin1().constData(),
+                dType.name().toLatin1().constData()), "");
             return QString();
         }
     }
