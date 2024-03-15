@@ -8,6 +8,7 @@
 #include "testconfig.h"
 #include "kraftdoc.h"
 #include "documentsaverxml.h"
+#include "defaultprovider.h"
 #include "kraftdb.h"
 
 void init_test_db()
@@ -47,23 +48,26 @@ private slots:
         Q_ASSERT(_dir.isValid());
 
         // dir.path() returns the unique directory path
-        QDir d {_dir.path()};
-        const QString docDir {d.path()+_subdir};
-        Q_ASSERT(d.mkpath(docDir));
-        const QString docPath = QString("%1/%2.xml").arg(docDir).arg(_docIdent);
+        const QString baseDir = DefaultProvider::self()->createV2BaseDir(_dir.path());
+
+        const QString docPath = QString("%1/%2/").arg(baseDir).arg(_subdir);
+        QDir d(docPath);
+        d.mkpath(docPath);
+        const QString filePath = d.filePath(_docUuid+".xml");
         qDebug() << "Example document path: " << docPath;
 
         const QString kraftHome{TESTS_PATH};
         QVERIFY(!kraftHome.isEmpty());
         const QString src{kraftHome+"/../xml/kraftdoc.xml"};
-        QFile::copy(src, docPath);
+        QVERIFY(QFile::copy(src, filePath));
+        qDebug() << "Copyied from" << src << "to filepath" << filePath;
 
         // generate the index
         XmlDocIndex indx;
-        indx.setBasePath(_dir.path());
+        indx.setBasePath(baseDir); // FIXME needs to go away
 
         QFileInfo fi(docPath);
-        Q_ASSERT(fi.exists());
+        QVERIFY(fi.exists());
 
         init_test_db();
     }
@@ -71,7 +75,6 @@ private slots:
     void xmlVerify()
     {
         DocumentSaverXML xmlSaver;
-        xmlSaver.setBasePath(_dir.path());
 
         const QString kraftHome{TESTS_PATH};
         QVERIFY(!kraftHome.isEmpty());
@@ -86,7 +89,6 @@ private slots:
     void loadMetaAndHeader()
     {
         DocumentSaverXML xmlSaver;
-        xmlSaver.setBasePath(_dir.path());
 
         KraftDoc doc;
         QVERIFY(doc.state().isNew());
@@ -133,7 +135,6 @@ private slots:
     void loadItems()
     {
         DocumentSaverXML xmlSaver;
-        xmlSaver.setBasePath(_dir.path());
 
         KraftDoc doc;
         QVERIFY(doc.state().isNew());
@@ -170,7 +171,6 @@ private slots:
     void checkTotals()
     {
         DocumentSaverXML xmlSaver;
-        xmlSaver.setBasePath(_dir.path());
 
         KraftDoc doc;
         doc.setTaxValues(19.0, 7.0);
@@ -185,8 +185,9 @@ private slots:
 private:
     QString _docTypeName;
     // needs to be defined according the example document in $KRAFT_HOME/xml
-    const QString _subdir {"/2011/01"};
+    const QString _subdir {"/xmldoc/2011/1"};
     const QString _docIdent {"20110127"};
+    const QString _docUuid{"f4deb784-6131-4e49-bd6d-92bd1355ea4d"};
     QTemporaryDir _dir;
 
 };
