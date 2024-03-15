@@ -473,19 +473,6 @@ bool loadTotals(const QDomDocument& domDoc, XML::Totals& totals)
 
 } // namespace end
 
-// contains the xmldoc part at the end
-QString DocumentSaverXML::basePath()
-{
-    Q_ASSERT(!_basePath.path().isEmpty());
-    return _basePath.path();
-}
-
-void DocumentSaverXML::setBasePath(const QString& path)
-{
-    _basePath.setPath(path);
-    qDebug() << "XML Saver set base path" << _basePath.absolutePath();
-}
-
 void DocumentSaverXML::setArchiveMode(bool am)
 {
     _archiveMode = am;
@@ -494,17 +481,18 @@ void DocumentSaverXML::setArchiveMode(bool am)
 QString DocumentSaverXML::xmlDocFileName(KraftDoc *doc)
 {
     const QDate d = doc->date();
-    const QString uuid = doc->uuid();
-    Q_ASSERT(!uuid.isEmpty());
 
-    QString path {basePath()};
+    QString path{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
+
     path.append(QString("/%1/%2/").arg(d.year()).arg(d.month()));
-    _basePath.mkpath(path);
+    QDir dir(path);
+    if (!dir.exists()) {
+        dir.mkpath(path);
+    }
 
-    path.append(uuid);
-    path.append(".xml");
+    const QString file = QString("%1.xml").arg(doc->uuid());
 
-    return path;
+    return dir.filePath(file);
 }
 
 QString DocumentSaverXML::xmlDocFileNameFromIdent(const QString& id)
@@ -561,13 +549,6 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     bool result = false;
     if( ! doc ) return result;
 
-    QFileInfo fi{basePath()};
-
-    if (!(fi.exists() && fi.isDir())) { // not set at all?
-        qDebug() << "The base path is not yet set or does not exist!";
-        return false;
-    }
-
     QDateTime saveLastModified = doc->lastModified();
     if (!_archiveMode) {
         doc->setLastModified(QDateTime::currentDateTime());
@@ -623,9 +604,11 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     result = verifyXmlFile(schemaFile, xmlFile);
     qDebug() << "Saving done in" << ti.elapsed() << "msec";
 
+    XmlDocIndex indx;
     if (newState) {
-        XmlDocIndex indx;
-        indx.addEntry(doc, xmlFile);
+        indx.addEntry(doc);
+    } else {
+        indx.updateEntry(doc);
     }
 
     // qDebug () << "Saved document no " << doc->docID().toString() << endl;
@@ -661,12 +644,12 @@ bool DocumentSaverXML::loadByIdent(const QString& id, KraftDoc *doc)
 bool DocumentSaverXML::loadFromFile(const QFileInfo& xmlFile, KraftDoc *doc, bool onlyMeta)
 {
     if (!xmlFile.exists()) {
-        qDebug() << "File to load does not exist" << xmlFile;
+        qDebug() << "File to load does not exist" << xmlFile.filePath();
         return false;
     }
 
     if (!xmlFile.isReadable()) {
-        qDebug() << "File to load not readable" << xmlFile;
+        qDebug() << "File to load not readable" << xmlFile.filePath();
         return false;
     }
 
@@ -708,6 +691,10 @@ bool DocumentSaverXML::loadFromFile(const QFileInfo& xmlFile, KraftDoc *doc, boo
             ok = loadTotals(_domDoc, _totals);
         }
     }
+
+    if (ok) {
+        qDebug() << "*** Kraft document" << xmlFile << "successfully loaded";
+    }
     return ok;
 }
 
@@ -723,22 +710,18 @@ int DocumentSaverXML::addDigestsToModel(DocBaseModel *model)
         return l < r;
     });
 
-    qDebug() << "Adding digests to" << model->objectName();
-    const QDir baseDir {DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs)};
     for( const QDate& d : dates) {
         const QList<QString> files = dateMap.values(d);
-        KraftDoc doc;
-        QFileInfo fi;
-        for( const QString& fragm : files) {
-            fi.setFile(baseDir, fragm +".xml");
-            if (loadFromFile(fi, &doc, true)) {
-                model->addData(doc.toDigest());
-                cnt++;
-                doc.clear();
-            }
-        }
+        QString yearStr = QString::number(d.year());
 
+        for( const QString& fragm : files) {
+            // we have the year and the uuid to find the entry from the index
+            DocDigest dd = indx.findDigest(yearStr, fragm);
+            model->addData(dd);
+            cnt++;
+        }
     }
+    qDebug() << "Added"<< cnt << "digests to" << model->objectName();
 
     return cnt;
 }

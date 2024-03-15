@@ -25,21 +25,6 @@ QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QStrin
   return elem;
 }
 
-bool writeJsonIndex(const QString& path, QJsonObject &json)
-{
-    QFileInfo fi(path, "kraftindx.json");
-
-    QFile saveFile(fi.absoluteFilePath());
-
-    if (!saveFile.open(QIODevice::WriteOnly)) {
-        qWarning("Couldn't open save file.");
-        return false;
-    }
-
-    saveFile.write(QJsonDocument(json).toJson());
-    return true;
-}
-
 }
 
 DbToXMLConverter::DbToXMLConverter(QObject *parent) : QObject(parent)
@@ -64,16 +49,10 @@ void DbToXMLConverter::convert()
     QList<int> keys = years.keys();
     std::sort(keys.begin(), keys.end());
 
-    QJsonObject jsonDoc; // digest of all docs.
-    QJsonObject yearsMap;
-
     QMap<QByteArray, int> results;
 
-    QJsonArray yearsArr;
     for (int year : keys) {
-        QJsonArray arr;
-        convertDocsOfYear(year, dBase, arr, results);
-        yearsMap[QString::number(year)] = arr;
+        convertDocsOfYear(year, dBase, results);
 
         // FIXME Check for errors and set ok flag
     }
@@ -81,9 +60,6 @@ void DbToXMLConverter::convert()
     for( const auto& k : results.keys()) {
         qDebug() << "Conversion result" << k << ":" << results[k];
     }
-
-    jsonDoc["yearsData"] = yearsMap;
-    writeJsonIndex(dBase, jsonDoc);
 
     // -- Convert the numbercycles
     int nc_cnt = convertNumbercycles(dBase);
@@ -142,7 +118,7 @@ int DbToXMLConverter::amountOfDocsOfYear(int year)
     return amount;
 }
 
-void DbToXMLConverter::convertDocsOfYear(int year, const QString& basePath, QJsonArray &yearArr, QMap<QByteArray, int>& results)
+void DbToXMLConverter::convertDocsOfYear(int year, const QString& basePath, QMap<QByteArray, int>& results)
 {
     const QString sql {"SELECT ident FROM document where DATE(date) BETWEEN :year AND :nextyear order by docID"};
     QSqlQuery q;
@@ -155,12 +131,9 @@ void DbToXMLConverter::convertDocsOfYear(int year, const QString& basePath, QJso
     int fails{0};
     int pdffails{0};
 
-    QDir newDir(basePath);
-    newDir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::XmlDocs));
-
     while( q.next()) {
         const QString ident = q.value(0).toString();
-        const QString uuid = convertDbToXml(ident, newDir.absolutePath(), yearArr);
+        const QString uuid = convertDbToXml(ident);
         if (ident.isEmpty() || uuid.isEmpty()) {
             qDebug() << "Failed to convert document" << ident;
             fails++;
@@ -179,7 +152,7 @@ void DbToXMLConverter::convertDocsOfYear(int year, const QString& basePath, QJso
 
 }
 
-QString DbToXMLConverter::convertDbToXml(const QString& docID, const QString& basePath, QJsonArray& jsonArr)
+QString DbToXMLConverter::convertDbToXml(const QString& docID)
 {
     DocumentSaverDB docLoad;
     KraftDoc doc;
@@ -188,7 +161,6 @@ QString DbToXMLConverter::convertDbToXml(const QString& docID, const QString& ba
     if (docLoad.loadByIdent(docID, &doc)) {
 
         DocumentSaverXML docSave;
-        docSave.setBasePath(basePath);
         docSave.setArchiveMode(true); // do not set new lastModified etc.
 
         if (!docSave.saveDocument(&doc)) {
@@ -197,11 +169,6 @@ QString DbToXMLConverter::convertDbToXml(const QString& docID, const QString& ba
             // File was written successfully. Tweak the modification time to the
             // last modified date of the document.
             const QString& fileName = docSave.lastSavedFileName();
-
-            // push the JSON representation of the doc digest to an array
-            QJsonObject obj;
-            doc.toJsonObj(obj);
-            jsonArr.append(obj);
 
             const QDateTime& lastModified = doc.lastModified();
 

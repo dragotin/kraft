@@ -24,6 +24,7 @@
 #include <QFuture>
 
 class KraftDoc;
+class DocDigest;
 
 class XmlDocIndex
 {
@@ -41,15 +42,16 @@ public:
     const QFileInfo pathByUuid(const QString& uuid, const QString& extension = QString());
 
     // Adds an entry to the index, used with newly created documents
-    void addEntry(KraftDoc *doc, const QString &xmlFile);
+    void addEntry(KraftDoc *doc);
+    void updateEntry(KraftDoc *doc);
 
     bool pdfOutdated(const QString& uuid);
 
-private:
-    void buildIndex();
-    bool buildIndexFromFile();
+    DocDigest findDigest(const QString& year, const QString& uuid);
 
-    static QString _basePath;
+private:
+    bool buildIndexFromFile();
+    void buildIndexFile();
 
     static QMap<QString, QString> _identMap;
     static QMultiMap<QDate, QString> _dateMap;

@@ -97,6 +97,13 @@ add_test(t_kraftattrib t_kraftattrib)
 
 target_link_libraries(t_kraftattrib ${test_libs})
 
+# ============================================================
+
+add_executable(t_jsonindexfile t_jsonindexfile.cpp)
+add_test(t_jsonindexfile t_jsonindexfile)
+
+target_link_libraries(t_jsonindexfile ${test_libs})
+
 
 set(TESTS_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 configure_file ("testconfig.h.in" "testconfig.h")

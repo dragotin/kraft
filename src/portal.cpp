@@ -454,7 +454,7 @@ void Portal::slotStartupChecks()
     // TODO: Check the document storage and see if the docs are converted already.
 
     // Initialize DocIndex
-    const QString basePath = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs);
+    const QString basePath = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root);
     if (!basePath.isEmpty()) {
         XmlDocIndex indx;
         indx.setBasePath(basePath);
@@ -1043,6 +1043,11 @@ void Portal::slotDocumentSelected( const QString& uuid)
     bool docWriteEnabled {false};
 
     DocGuardedPtr docPtr = DocumentMan::self()->openDocumentByUuid(uuid);
+
+    if (docPtr == nullptr) {
+        qDebug() << "Unable to open document with uuid" << uuid;
+        return;
+    }
 
     if (enable && !(_readOnlyMode || docPtr->state().forcesReadOnly())) {
         docWriteEnabled = true;

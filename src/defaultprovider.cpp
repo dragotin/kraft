@@ -36,10 +36,42 @@
 #include <klocalizedstring.h>
 
 Q_GLOBAL_STATIC(DefaultProvider, mSelf)
+QString DefaultProvider::_v2BaseDir{};
+
+namespace {
+
+// get the v2BaseDir from the settings file and check if the current
+// link is pointing to a valid directory
+QString polishedBaseDir()
+{
+    QString re;
+     QDir dir(KraftSettings::self()->kraftV2BaseDir());
+     qDebug() << "Found Base Path in config file" << dir.path();
+     if (dir.cd("current")) {
+         qDebug() << "Found Base Path in config file (with current)" << dir.path();
+
+         QFileInfo fi(dir.path());
+
+         if (fi.isSymLink()) {
+             re = fi.symLinkTarget();
+         } else {
+             qDebug() << "ERROR: No proper current link in v2 base dir";
+         }
+     } else {
+         qDebug() << "No current link in v2 base dir";
+     }
+     return re;
+}
+
+}
+
 
 DefaultProvider *DefaultProvider::self()
 {
-  return mSelf;
+    if( _v2BaseDir.isEmpty()) {
+       _v2BaseDir = polishedBaseDir();
+    }
+    return mSelf;
 }
 
 DefaultProvider::DefaultProvider()
@@ -48,8 +80,6 @@ DefaultProvider::DefaultProvider()
 
 DocumentSaverBase& DefaultProvider::documentPersister()
 {
-    const QString p = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs);
-    _persister.setBasePath(p);
     return _persister;
 }
 
@@ -321,7 +351,7 @@ QString DefaultProvider::createV2BaseDir(const QString& base)
     bool ok {true};
     QDir currV2Dir{base};
 
-    // get the base dir
+    // get the base dir from the config
     if (v2base.isEmpty()) {
         v2base = KraftSettings::self()->kraftV2BaseDir();
         // should end with v2
@@ -368,7 +398,9 @@ QString DefaultProvider::createV2BaseDir(const QString& base)
         return QString();
     }
 
-    return currV2Dir.absolutePath();
+    _v2BaseDir = currV2Dir.absolutePath();
+
+    return _v2BaseDir;
 }
 
 bool DefaultProvider::switchToV2BaseDir(const QString& dirStr)
@@ -397,31 +429,9 @@ bool DefaultProvider::switchToV2BaseDir(const QString& dirStr)
 
     if (ok) {
         KraftSettings::self()->setKraftV2BaseDir(dir.absolutePath());
+        _v2BaseDir = polishedBaseDir();
     }
     return ok;
-}
-
-QString DefaultProvider::kraftV2BaseDir(const QString& baseDir)
-{
-    QString v2base{baseDir};
-
-    if (v2base.isEmpty()) {
-        v2base = KraftSettings::self()->kraftV2BaseDir();
-    }
-
-    if (v2base.isEmpty()) {
-        v2base = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-        v2base.append("/v2");
-    }
-
-    v2base.append("/current/");
-
-    QFileInfo fi{v2base};
-    if (! (fi.exists() && fi.isDir()) ) {
-        qWarning() << "KraftV2 base dir does not exist:" << v2base;
-        v2base.clear(); // clear it for error handling
-    }
-    return v2base;
 }
 
 QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
@@ -444,12 +454,12 @@ QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
 }
 
 // Usually baseDir is empty, but not for test cases.
-QString DefaultProvider::kraftV2Dir(KraftV2Dir dir, const QString& baseDir)
+QString DefaultProvider::kraftV2Dir(KraftV2Dir dir)
 {
     const QString subdir = kraftV2Subdir(dir);
 
     // if kraftV2BaseDir returns an empty string, the path does not exist.
-    QString bDir = kraftV2BaseDir(baseDir);
+    QString bDir{_v2BaseDir};
     if (!bDir.isEmpty()) {
         QDir d(bDir);
         bDir = d.absoluteFilePath(subdir);
