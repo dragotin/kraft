@@ -119,6 +119,7 @@ set(kraft_SRCS
     kraftattrib.cpp
     kraftobj.cpp
     xmldocindex.cpp
+    jsonindexfile.cpp
     reportitemlist.cpp
     reportitem.cpp
     docidentgenerator.cpp

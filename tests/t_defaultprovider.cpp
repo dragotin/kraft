@@ -153,23 +153,20 @@ private slots:
 
     void testKraftV2Dirs()
     {
-        QTemporaryDir _dir;
-        _dir.setAutoRemove(true);
+        QTemporaryDir dir;
+        dir.setAutoRemove(true);
 
-        const QString p = _dir.path() + "/v2";
-        QString pRoot = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root, p);
-        QCOMPARE(pRoot, QString()); // error case, it does not yet exist, empty is ok
+        const QString p = dir.path();
+        const QString base = DefaultProvider::self()->createV2BaseDir(p);
+        QVERIFY(base.startsWith(p));
+        QVERIFY(base.length() == p.length()+6); // it has the a uuid partikel appended
 
-        QDir d(p);
-        QVERIFY(d.mkpath("current/numbercycles"));
-        QVERIFY(d.mkpath("current/mxldoc"));
-
-        pRoot = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root, p);
-        const QString pNumC = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles, p);
-        const QString pXmlD = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs, p);
-        QCOMPARE(p + "/current", pRoot);
-        QCOMPARE(p + "/current/numbercycles", pNumC);
-        QCOMPARE(p + "/current/xmldoc", pXmlD);
+        QString pRoot = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root);
+        const QString pNumC = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles);
+        const QString pXmlD = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs);
+        QCOMPARE(base, pRoot);
+        QCOMPARE(base + "/numbercycles", pNumC);
+        QCOMPARE(base + "/xmldoc", pXmlD);
     }
 
     void createNewBaseDir()

@@ -178,17 +178,9 @@ QString NumberCycle::defaultName()
 
 // ====================================================================================
 
-QString NumberCycles::_baseDir = QString();
-
-
 NumberCycles::NumberCycles()
 {
 
-}
-
-void NumberCycles::setBasePath(const QString& base)
-{
-    _baseDir = base;
 }
 
 NumberCycle NumberCycles::get(const QString& name)
@@ -305,7 +297,7 @@ QMap<QString, NumberCycle> NumberCycles::load()
 {
     QMap<QString, NumberCycle> map;
 
-    const QString bDir = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles, _baseDir);
+    const QString bDir = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles);
     Q_ASSERT(!bDir.isEmpty());
     const QDir dir(bDir);
     const QString xmlFileName {dir.absoluteFilePath("numbercycles.xml")};
@@ -374,7 +366,7 @@ NumberCycles::SaveResult NumberCycles::save(const QMap<QString, NumberCycle>& nc
     }
 
     const QString& xml = xmldoc.toString();
-    const QString dirStr{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles, _baseDir)};
+    const QString dirStr{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles)};
     Q_ASSERT(!dirStr.isEmpty());
     QDir dir(dirStr);
 

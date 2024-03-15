@@ -76,7 +76,6 @@ public:
     NumberCycles();
 
     static SaveResult addUpdate(const NumberCycle& nc);
-    static void setBasePath(const QString& base);
 
     static NumberCycle get(const QString& name);
 
@@ -90,9 +89,6 @@ private:
     static int increaseCounter(const QString& nc);
     static bool tryLock();
     static void unlock();
-
-    static QString _baseDir;
-
 };
 
 

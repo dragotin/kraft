@@ -49,17 +49,13 @@ class T_NumberCycle: public QObject {
 private slots:
     void initTestCase()
     {
-        const QString& d = _dir.path();
+        _baseDir = DefaultProvider::self()->createV2BaseDir(_dir.path());
 
         // FIXME: Get rid of the basedir stuff here, and hold the base dir in the
         // DefaultProvider
         // Use this method to create a temp base dir: DefaultProvider::self()->switchToV2BaseDir(d);
-        qDebug() << "Test Basedir:" << d;
+        qDebug() << "Test Basedir:" << _baseDir;
         // in the base path there needs to be a directory called 'current'
-        QDir dir{d};
-        dir.mkdir("current");
-        dir.mkdir("current/numbercycles");
-        _ncs.setBasePath(d);
     }
 
     void saveTest()
@@ -121,7 +117,7 @@ private slots:
         QCOMPARE(i, "TEST1-2023-4-23-122");
 
         // clash the nc file
-        QVERIFY(directFileChange(_dir.filePath("current/numbercycles/numbercycles.xml"), 122, 158));
+        QVERIFY(directFileChange(_baseDir + "/numbercycles/numbercycles.xml", 122, 158));
 
         i = _ncs.generateIdent("TestCycle1", "Rechnung", QDate(2023, 1, 24), "addressUid");
         QCOMPARE(i, "TEST1-2023-4-24-159");
@@ -159,6 +155,7 @@ private slots:
 
 private:
     NumberCycles _ncs;
+    QString _baseDir;
     QTemporaryDir _dir;
 
 };

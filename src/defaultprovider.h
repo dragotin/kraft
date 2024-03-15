@@ -79,11 +79,12 @@ public:
     // Two methods used for converting document data from db into a directory
     QString createV2BaseDir(const QString &base = QString());
     // after successful conversion this method switches to the new root dir
+    // it writes to the config file and permanently changes the v2 dir
     bool switchToV2BaseDir(const QString& dirStr);
 
     // main function: Always use this method to get the path to a subdir
     // for data. The baseDir is only set in test cases
-    QString kraftV2Dir(KraftV2Dir dir, const QString &baseDir = QString());
+    QString kraftV2Dir(KraftV2Dir dir = KraftV2Dir::Root);
 
     // utility - returns the name of the subdir for a given enum type
     QString kraftV2Subdir(KraftV2Dir dir);
@@ -98,10 +99,10 @@ public:
     DocumentSaverBase &documentPersister();
 
 private:
-    QString kraftV2BaseDir(const QString &baseDir = QString());
 
     QLocale _locale;
     DocumentSaverXML _persister;
+    static QString _v2BaseDir;
 
     const QString EuroTag;
 

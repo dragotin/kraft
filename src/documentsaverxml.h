@@ -45,7 +45,6 @@ class DocumentSaverXML : public DocumentSaverBase
     Q_OBJECT
 
 public:
-
     DocumentSaverXML();
     virtual ~DocumentSaverXML();
 
@@ -57,7 +56,6 @@ public:
 
     bool loadFromFile(const QFileInfo& xmlFile, KraftDoc *doc, bool onlyMeta = false);
 
-    void setBasePath(const QString& path);
     void setArchiveMode(bool am);
     QString xmlDocFileName(KraftDoc *doc);
     QString xmlDocFileNameFromIdent(const QString& id);
@@ -69,7 +67,6 @@ public:
     XML::Totals getLastTotals() const;
 
 protected:
-    QString basePath();
 
 private:
     QDir _basePath;
