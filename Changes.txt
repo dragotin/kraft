@@ -72,7 +72,7 @@ Changes since version 0.97: #########################################
 
 Changes since version 0.96: #########################################
 
-Add read only mode to kraft. Documents can not be edited, but viewed
+Add read only mode to kraft. Documents cannot be edited, but viewed
 and printed. Needs to be configured to share database and the PDF
 store directory.
 
@@ -221,7 +221,7 @@ Changes since version 0.55: #########################################
  - Fix removing of alternative- and on-demand state of items
  - Wording fixes
  - Fix Ok/Cancel for doc editor
- - Better error messages if template can not be read
+ - Better error messages if template cannot be read
  - A couple of crash fixes and memory management cleanups
 
     => release v. 0.56 (oct 30, 2014)

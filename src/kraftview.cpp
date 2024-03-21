@@ -1202,7 +1202,7 @@ DocPositionList KraftView::currentPositionList()
                                 }
                             }
                         } else {
-                            // we can not calculate ourselves.
+                            // we cannot calculate ourselves.
                             // qDebug () << "Skipping pos " << w1->ordNumber() << " in summing up, thats me!";
                         }
                     }

@@ -352,8 +352,8 @@ void KatalogListView::slotRemoveCurrentChapter()
 
     if( item->childCount() > 0 ) {
         QMessageBox msgBox;
-        msgBox.setText(i18n( "A catalog chapter can not be deleted as long it has children." ));
-        msgBox.setInformativeText(i18n("Chapter can not be deleted"));
+        msgBox.setText(i18n( "A catalog chapter cannot be deleted as long it has children." ));
+        msgBox.setInformativeText(i18n("Chapter cannot be deleted"));
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();

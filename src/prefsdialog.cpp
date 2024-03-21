@@ -216,13 +216,13 @@ QWidget* PrefsDialog::whoIsMeTab()
   t1Lay->addWidget(mIdentityView);
   QHBoxLayout *butLay = new QHBoxLayout;
   butLay->addStretch( 1 );
-  _pbChangeIdentity = new QPushButton(i18n("Select Identity..."));
+  _pbChangeIdentity = new QPushButton(i18n("Select Identity…"));
   connect( _pbChangeIdentity, SIGNAL(clicked()), SLOT(slotChangeIdentity()) );
   butLay->addWidget(_pbChangeIdentity);
   t1Lay->addLayout( butLay );
 
   w->setLayout(t1Lay);
-  _tabWidget->insertTab(0, w, i18n("From AddressBook"));
+  _tabWidget->insertTab(0, w, i18n("From Address Book"));
 
   // == Tab that displays the manual widget
   QWidget *w1 = new QWidget;
@@ -388,13 +388,13 @@ QWidget* PrefsDialog::docTab()
   vboxLay->addWidget( f );
 
   butLay = new QHBoxLayout;
-  l = new QLabel(i18n("XRechnung Template File:"), this );
+  l = new QLabel(i18n("XRechnung template file:"), this );
   butLay->addWidget(l);
 
   _lineEditXRechnung = new QLineEdit(this);
 
   butLay->addWidget(_lineEditXRechnung);
-  QPushButton *pbXRechTmpl = new QPushButton(i18n("Select..."), this);
+  QPushButton *pbXRechTmpl = new QPushButton(i18n("Select…"), this);
   butLay->addWidget(pbXRechTmpl);
 
   const QIcon& icon = DefaultProvider::self()->icon("device-floppy");
@@ -698,7 +698,7 @@ void PrefsDialog::setMyIdentity( const KContacts::Addressee& addressee, bool bac
   tmpl.setValue(IDENTITY_TAG("CSS_IDENTITY_IMAGE_BACKGROUND"), "#ea4e1d"); // c.name());
 
   if( !backendUp ) {
-      addressBookInfo = i18n("The identity can not be found.");
+      addressBookInfo = i18n("The identity cannot be found.");
       tmpl.createDictionary(QL1("NO_IDENTITY"));
       tmpl.setValue(QL1("NO_IDENTITY_WRN"), i18n("<p><b>Kraft Addressbook Integration down.</b></p>"
                                              "<p>The address book backend is not up and running.</p>"

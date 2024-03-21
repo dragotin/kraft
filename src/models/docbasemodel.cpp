@@ -33,9 +33,9 @@ DocBaseModel::DocBaseModel(QObject *parent)
     _headers[ Document_Ident ]         = i18n("Doc. Number");
     _headers[ Document_Type ]          = i18n( "Doc. Type");
     _headers[ Document_Whiteboard ]    = i18n( "Whiteboard" );
-    _headers[ Document_ClientId ]      = i18n( "Client Id" );
-    _headers[ Document_LastModified]   = i18n( "Last modified" );
-    _headers[ Document_CreationDateRaw]   = i18n( "Creation date" );
+    _headers[ Document_ClientId ]      = i18n( "Client ID" );
+    _headers[ Document_LastModified]   = i18n( "Last Modified" );
+    _headers[ Document_CreationDateRaw]   = i18n( "Creation Date" );
     _headers[ Document_ProjectLabel]   = i18n( "Project" );
     _headers[ Document_ClientAddress ] = i18n( "Client Address" );
     _headers[ Document_ClientName ]    = i18n( "Client" );
@@ -106,9 +106,9 @@ QVariant DocBaseModel::columnValueFromDigest( const DocDigest& digest, int col )
             var = addressee.assembledName();
             // qDebug() << "Address from Cache: " << var.toString();
         } else if( state == AddressProvider::LookupOngoing ) {
-            var = i18n("Looking up address");
+            var = i18n("Looking up address…");
         } else if( state == AddressProvider::LookupStarted ) {
-            var = i18n("Lookup started");
+            var = i18n("Lookup started…");
         } else if( state == AddressProvider::LookupNotFound ||
                    state == AddressProvider::BackendError   ||
                    state == AddressProvider::ItemError ) {

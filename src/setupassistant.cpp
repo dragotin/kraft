@@ -601,25 +601,25 @@ void SetupAssistant::startDatabaseUpdate()
     UpgradeDbPage *mUpgradeDbPage = qobject_cast<UpgradeDbPage*>(page(upgradeDbPageNo));
 
     if( ! KraftDB::self()->isOk() ) {
-        mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials."));
+        mCreateDbPage->setStatusText( i18n("Database cannot be connected. Please check the database credentials."));
         button(NextButton)->setEnabled(false);
         return;
     }
 
     if( !KraftDB::self()->databaseExists() ) {
-        mCreateDbPage->setStatusText( i18n("The database core tables do not exist. Please check initial setup."));
+        mCreateDbPage->setStatusText( i18n("Database core tables do not exist. Please check the initial setup."));
         button(NextButton)->setEnabled(false);
         return;
     }
     button(NextButton)->setEnabled(true);
 
     if( KraftDB::self()->currentSchemaVersion() == KraftDB::self()->requiredSchemaVersion() ) {
-        mUpgradeDbPage->slotSetStatusText( i18n("Database is up to date. No upgrade is required."));
+        mUpgradeDbPage->slotSetStatusText( i18n("Database is up-to-date. No upgrade is required."));
         return;
     }
 
     // Database really needs update
-    mUpgradeDbPage->slotSetStatusText( i18n("Parse Update Commands..."));
+    mUpgradeDbPage->slotSetStatusText( i18n("Parsing update commands…"));
 
     int overallCmdCount = 0;
     QList<SqlCommandList> commandLists;
@@ -662,9 +662,9 @@ void SetupAssistant::startDatabaseUpdate()
     }
 
     if( errors ) {
-        mUpgradeDbPage->slotSetStatusText( i18n("The Upgrade failed!") );;
+        mUpgradeDbPage->slotSetStatusText( i18n("Upgrade failed!") );;
     } else {
-        mUpgradeDbPage->slotSetStatusText( i18n("The Upgrade succeeded, the current schema version is %1!",
+        mUpgradeDbPage->slotSetStatusText( i18n("Upgrade succeeded, the current schema version is %1!",
                                            KraftDB::self()->requiredSchemaVersion() ) );;
     }
 
@@ -677,13 +677,13 @@ void SetupAssistant::startDatabaseCreation()
     CreateDbPage *mCreateDbPage = qobject_cast<CreateDbPage*>(page(createDbPageNo));
 
     if( ! KraftDB::self()->isOk() ) {
-        mCreateDbPage->setStatusText( i18n("The Database can not be connected. Please check the database credentials!"));
+        mCreateDbPage->setStatusText( i18n("Cannot connect to the database. Please check the database credentials!"));
         button(NextButton)->setEnabled(false);
         return;
     }
     button(NextButton)->setEnabled(true);
 
-    mCreateDbPage->setStatusText( i18n("Parse Create Commands...") );
+    mCreateDbPage->setStatusText( i18n("Parsing creation commands…") );
     SqlCommandList createCommands = KraftDB::self()->parseCommandFile( "create_schema.sql");
 
     QString dbFill( "fill_schema_en.sql" );
@@ -691,7 +691,7 @@ void SetupAssistant::startDatabaseCreation()
     if ( DefaultProvider::self()->locale()->country() == QLocale::Germany	) {
         dbFill = "fill_schema_de.sql";
     }
-    mCreateDbPage->setStatusText( i18n( "Parse database fillup commands..." ) );
+    mCreateDbPage->setStatusText( i18n( "Parsing database fill-up commands…" ) );
 
     SqlCommandList fillCommands = KraftDB::self()->parseCommandFile( dbFill );
     mCreateDbPage->setCreateCmdsCount( createCommands.count() );
@@ -704,7 +704,7 @@ void SetupAssistant::startDatabaseCreation()
     connect( KraftDB::self(), SIGNAL( processedSqlCommand( bool ) ),
              mCreateDbPage, SLOT( slotCountCreateProgress( bool ) ) );
 
-    mCreateDbPage->setStatusText( i18n( "Processing database creation commands...") );
+    mCreateDbPage->setStatusText( i18n( "Processing database creation commands…") );
 
     int creates = KraftDB::self()->processSqlCommands( createCommands );
 
@@ -721,7 +721,7 @@ void SetupAssistant::startDatabaseCreation()
         connect( KraftDB::self(), SIGNAL( processedSqlCommand( bool ) ),
                  mCreateDbPage, SLOT( slotCountFillProgress( bool ) ) );
 
-        mCreateDbPage->setStatusText( i18n( "Process database fillup commands..." ) );
+        mCreateDbPage->setStatusText( i18n( "Process database fill-up commands…" ) );
         creates = KraftDB::self()->processSqlCommands( fillCommands );
 
         if( creates != fillCommands.count() ) {
@@ -731,7 +731,7 @@ void SetupAssistant::startDatabaseCreation()
     }
 
     if( res ) {
-        mCreateDbPage->setStatusText( i18n( "Successfully finished commands." ) );
+        mCreateDbPage->setStatusText( i18n( "Commands finished successfully." ) );
     } else {
         mCreateDbPage->setStatusText( i18n( "Failed to perform all commands." ) );
         // FIXME: Disable next button
@@ -787,7 +787,7 @@ bool SetupAssistant::init( Mode mode )
     } else if( mode == Update ) {
         if( QStandardPaths::locate(QStandardPaths::GenericConfigLocation, "kraftdatabaserc" ).isEmpty() ) {
             // migration failed and we do not have a config file. All from scratch
-            configOrigin = i18n("There was no database configuration found.");
+            configOrigin = i18n("No database configuration found.");
         } else {
             configOrigin = i18n("A valid current database configuration file was found.");
             // qDebug () << "A standard KDE Platform 4.x database config file is there.";
@@ -811,10 +811,10 @@ bool SetupAssistant::init( Mode mode )
                 if( KraftDB::self()->currentSchemaVersion() < KraftDB::self()->requiredSchemaVersion() ) {
                     // qDebug () << "Need a database schema update.";
                     startDialog = true;
-                    configOrigin += QLatin1String(" ") + i18n("The database schema version is too low. "
+                    configOrigin += QLatin1String(" ") + i18n("The database schema version is too old. "
                                                               "It will be updated.");
                 } else if( KraftDB::self()->currentSchemaVersion() > KraftDB::self()->requiredSchemaVersion() ) {
-                    configOrigin += QLatin1Char(' ') + i18n("The current database schema version is too high. Leaving untouched! ");
+                    configOrigin += QLatin1Char(' ') + i18n("The current database schema version is too new. Leaving untouched! ");
                     // qDebug () << "Database Schema is OK. Nothing to do for StartupAssistant";
                 }
             } else {
@@ -834,7 +834,7 @@ bool SetupAssistant::init( Mode mode )
             } else {
                 text += i18n("<p>Please check the database file.");
             }
-            text += " " + i18n( "or create a new database by hitting <b>next</b>.</p>" );
+            text += " " + i18n( "Or create a new database by pressing <b>Next</b>.</p>" );
         }
     }
 
@@ -842,7 +842,7 @@ bool SetupAssistant::init( Mode mode )
         WelcomePage *welcomePage = qobject_cast<WelcomePage*>(page(welcomePageNo));
 
         if( hitNextClosing )
-            text += i18n("<p>Please hit next and follow the instructions.</p>");
+            text += i18n("<p>Please hit Next, and follow the instructions.</p>");
         welcomePage->setWelcomeText( configOrigin + text );
     }
     return startDialog ;

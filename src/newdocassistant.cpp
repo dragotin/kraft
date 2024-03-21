@@ -113,14 +113,14 @@ DocDetailsPage::DocDetailsPage( QWidget *parent )
   mTypeCombo = new QComboBox;
   mTypeCombo->insertItems( 0, DocType::allLocalised() );
   mTypeCombo->setCurrentIndex( mTypeCombo->findText( DefaultProvider::self()->docType() ));
-  grid->addRow( i18n("Document &Type:"), mTypeCombo );
+  grid->addRow( i18n("Document &type:"), mTypeCombo );
 
   mDateEdit = new QDateEdit;
   mDateEdit->setDate( QDate::currentDate() );
-  grid->addRow( i18n( "Document Date: " ), mDateEdit );
+  grid->addRow( i18n( "Document date: " ), mDateEdit );
 
   mWhiteboardEdit = new QTextEdit;
-  grid->addRow( i18n( "Whiteboard Content:" ), mWhiteboardEdit );
+  grid->addRow( i18n( "Whiteboard content:" ), mWhiteboardEdit );
 
   QHBoxLayout *hbox = new QHBoxLayout;
   vbox->addLayout(hbox);

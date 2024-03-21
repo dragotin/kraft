@@ -84,7 +84,7 @@ void PortalView::createIcons(const QSize& iconSize)
     QSize sHint{128, 100};
 
     // Scale the icon via a pixmap, as in AppImages, for some reasons the icons are small
-    // stackoverflow reports that svg icons can not be scaled up.
+    // stackoverflow reports that svg icons cannot be scaled up.
     auto icon = [iconSize](const QIcon& i) {
         const QPixmap pix = i.pixmap(iconSize);
         QIcon icon(pix);
@@ -286,7 +286,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   // kraft infos
   tmpl.setValue("KRAFT_INTRO_DESC", i18n("Kraft helps you to handle documents like quotes and invoices in your small business."));
   tmpl.setValue( "KRAFT_WELCOME_LABEL", i18n( "Welcome to Kraft" ) );
-  tmpl.setValue( "KRAFT_VERSION_LABEL", i18n( "Kraft Version" ) );
+  tmpl.setValue( "KRAFT_VERSION_LABEL", i18n( "Kraft version" ) );
   tmpl.setValue( "KRAFT_VERSION", Kraft::Version::number());
   tmpl.setValue( "KRAFT_CODENAME_LABEL", i18n( "Codename" ) );
   tmpl.setValue( "KRAFT_CODENAME", Kraft::Version::codeName() );
@@ -297,7 +297,7 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   tmpl.setValue( "GIT_SHA1", Kraft::Version::gitSha());
   tmpl.setValue( "BUILD_HOST", Kraft::Version::buildHost());
   tmpl.setValue( "BUILD_HOST_DISTRO", Kraft::Version::buildHostDistro());
-  tmpl.setValue( "GIT_BUILD_LABEL", i18n("Git Information"));
+  tmpl.setValue( "GIT_BUILD_LABEL", i18n("Git information"));
   tmpl.setValue( "GIT_BUILD_STRING", QString("git sha %1 on branch %2 built on %3 (%4)")
                  .arg(Kraft::Version::gitSha())
                  .arg(Kraft::Version::gitBranch())
@@ -305,10 +305,10 @@ QString PortalView::systemView( const QString& htmlMsg ) const
                  .arg(Kraft::Version::buildHostDistro()));
 
   const QString countryName = DefaultProvider::self()->locale()->nativeCountryName();
-  tmpl.setValue( "COUNTRY_SETTING_LABEL", i18n( "Country Setting" ) );
+  tmpl.setValue( "COUNTRY_SETTING_LABEL", i18n( "Country setting" ) );
   tmpl.setValue( "COUNTRY_SETTING", QString( "%1 (%2)" ).arg( countryName ).arg( DefaultProvider::self()->locale()->country() ));
   const QString languageName = DefaultProvider::self()->locale()->nativeLanguageName();
-  tmpl.setValue( "LANGUAGE_SETTING_LABEL", i18n( "Language Setting" ) );
+  tmpl.setValue( "LANGUAGE_SETTING_LABEL", i18n( "Language setting" ) );
   tmpl.setValue( "LANGUAGE_SETTING", QString( "%1 (%2)" ).arg( languageName ).arg( DefaultProvider::self()->locale()->language() ));
 
   if ( !htmlMsg.isNull() ) {

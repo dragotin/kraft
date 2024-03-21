@@ -317,7 +317,7 @@ void DocAssistant::slotDeleteTemplate()
 
     QMessageBox msgBox;
     msgBox.setText(i18n( "Do you really want to delete the template permanently?\n"
-                         "It can not be recovered."));
+                         "It cannot be recovered."));
     msgBox.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::Yes);
     int ret = msgBox.exec();
