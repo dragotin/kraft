@@ -29,7 +29,7 @@ void init_test_db()
     KraftDB::self()->processSqlCommands(sqls);
 
     // This adds a migration from file 24_dbmigrate.sql to the units table. Unfortunately the
-    // migration file can not be used directly here, because it is only found in a setup where
+    // migration file cannot be used directly here, because it is only found in a setup where
     // KRAFT_HOME is defined or the 24_dbmigrate.sql is installed in the system.
     // For simplification we do that manually here.
     sqls.clear();

@@ -177,22 +177,22 @@ void Portal::initActions()
     connect(_actEditTemplates, &QAction::triggered, this, &Portal::slotEditTagTemplates);
     
     newIcon = DefaultProvider::self()->icon( "settings");
-    _actReconfDb = new QAction(newIcon, i18n("Redo Initial Setup..."), this);
+    _actReconfDb = new QAction(newIcon, i18n("Redo Initial Setup…"), this);
     _actReconfDb->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
     connect(_actReconfDb, &QAction::triggered, this, &Portal::slotReconfigureDatabase);
 
     newIcon = DefaultProvider::self()->icon( "book");
-    _actHandbook = new QAction(newIcon, i18n("Kraft Handbook..."), this);
+    _actHandbook = new QAction(newIcon, i18n("Kraft Handbook…"), this);
     _actHandbook->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_H ));
     connect(_actHandbook, &QAction::triggered, this, &Portal::slotHandbook);
 
     newIcon = DefaultProvider::self()->icon( "help");
-    _actAboutQt = new QAction(newIcon, i18n("About Qt..."), this);
+    _actAboutQt = new QAction(newIcon, i18n("About Qt…"), this);
     _actAboutQt->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Q ));
     connect(_actAboutQt, &QAction::triggered, this, &Portal::slotAboutQt);
 
     newIcon = DefaultProvider::self()->icon( "kraft-simple");
-    _actAboutKraft = new QAction(newIcon, i18n("About Kraft..."), this);
+    _actAboutKraft = new QAction(newIcon, i18n("About Kraft…"), this);
     _actAboutKraft->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_K ));
     connect(_actAboutKraft, &QAction::triggered, this, &Portal::slotAboutKraft);
 
@@ -291,7 +291,7 @@ void Portal::initActions()
 void Portal::initView()
 {
   /*
-    Since we do the database version check in the slotStartupChecks, we can not
+    Since we do the database version check in the slotStartupChecks, we cannot
     do database interaction here in initView.
   */
     ////////////////////////////////////////////////////////////////////
@@ -351,7 +351,7 @@ void Portal::slotStartupChecks()
             // Update not under our control here.
             QMessageBox::warning(this, i18n("Database not running"),
                                  i18n("Kraft was started in readonly mode, but the configured "
-    "database can not be connected.\n\nKraft will abort."));
+    "database cannot be connected.\n\nKraft will abort."));
             QTimer::singleShot(500, this, [this] { close(); });
             return;
         } else {
@@ -366,7 +366,7 @@ void Portal::slotStartupChecks()
         QString text;
 
         if ( err.text().contains( "Can't connect to local MySQL server through socket" ) ) {
-            text = i18n( "Kraft can not connect to the specified MySQL server. "
+            text = i18n( "Kraft cannot connect to the specified MySQL server. "
                          "Please check the Kraft database settings, check if the server is "
                          "running and verify if a database with the name %1 exits!" , dbName );
         } else if ( err.text().contains( "Unknown database '" + dbName + "' QMYSQL3: Unable to connect" ) ) {
@@ -527,7 +527,7 @@ void Portal::busyCursor( bool on )
 
 void Portal::slotNewDocument()
 {
-  slotStatusMsg(i18n("Creating new document..."));
+  slotStatusMsg(i18n("Creating new document…"));
 
   KraftWizard wiz;
   wiz.init(true);
@@ -633,7 +633,7 @@ void Portal::slotViewCurrentDocument()
 
 void Portal::slotViewDocument( const QString& id )
 {
-  slotStatusMsg(i18n("Opening document to view..."));
+  slotStatusMsg(i18n("Opening document to view…"));
 
   if( !id.isEmpty() ) {
     DocumentMan *docman = DocumentMan::self();
@@ -664,7 +664,7 @@ void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
     } else {
         QFileInfo fi(tmplFile);
         if (!fi.isFile()) {
-            err = i18n("The XRechnung template file can not be read!");
+            err = i18n("The XRechnung template file cannot be read!");
         }
     }
 
@@ -733,7 +733,7 @@ void Portal::slotPrintCurrentDocument()
   // qDebug () << "printing document " << locId;
 
   busyCursor( true );
-  slotStatusMsg( i18n( "Generating PDF..." ) );
+  slotStatusMsg( i18n( "Generating PDF…" ) );
   DocumentMan *docman = DocumentMan::self();
   _currentDoc = docman->openDocument( locId );
   QString ident;
@@ -756,7 +756,7 @@ void Portal::slotMailDocument()
   const QString locId = m_portalView->docDigestView()->currentDocumentId();
   // qDebug () << "Mailing document " << locId;
 
-  slotStatusMsg( i18n( "Generating PDF for EMail" ) );
+  slotStatusMsg( i18n( "Generating PDF to email" ) );
   DocumentMan *docman = DocumentMan::self();
   DocGuardedPtr docPtr = docman->openDocument( locId );
   QString ident;
@@ -831,7 +831,7 @@ void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& c
 void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
 {
   if ( archID.isOk() ) {
-    slotStatusMsg(i18n("Printing archived document...") );
+    slotStatusMsg(i18n("Printing archived document…") );
 
     _reportGenerator.createDocument(ReportFormat::PDF, id, archID ); // work on document identifier.
   }
@@ -1040,7 +1040,7 @@ void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
 
 void Portal::closeEvent( QCloseEvent *event )
 {
-    slotStatusMsg(i18n("Exiting..."));
+    slotStatusMsg(i18n("Exiting…"));
     // close the first window, the list makes the next one the first again.
     // This ensures that queryClose() is called on each window to ask for closing
 
@@ -1067,21 +1067,21 @@ void Portal::closeEvent( QCloseEvent *event )
 
 void Portal::slotEditCut()
 {
-  slotStatusMsg(i18n("Cutting selection..."));
+  slotStatusMsg(i18n("Cutting selection…"));
 
   slotStatusMsg();
 }
 
 void Portal::slotEditCopy()
 {
-  slotStatusMsg(i18n("Copying selection to clipboard..."));
+  slotStatusMsg(i18n("Copying selection to clipboard…"));
 
   slotStatusMsg();
 }
 
 void Portal::slotEditPaste()
 {
-  slotStatusMsg(i18n("Inserting clipboard contents..."));
+  slotStatusMsg(i18n("Inserting clipboard contents…"));
 
   slotStatusMsg();
 }
@@ -1190,7 +1190,7 @@ QString Portal::textWrap( const QString& t, int width, int maxLines )
             lines++;
         }
         if( lines == maxLines && pos != t.length() ) {
-            re += QStringLiteral("...");
+            re += QStringLiteral("…");
         }
     }
 

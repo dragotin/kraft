@@ -55,7 +55,7 @@ void TemplToPositionDialogBase::setPositionList( DocPositionList list, int inten
     QString h = QString( "%1. %2" ).arg( list.posNumber( dp ) ).arg( dp->text() );
     if ( h.length() > 50 ) {
       h = h.left( 50 );
-      h += i18n( "..." );
+      h += i18n( "…" );
     }
     strList.append( h );
   }

@@ -6,7 +6,7 @@
     <meta name="description" content="Kraft Invoice document"/>
     <meta name="author" content="Klaas Freitag"/>
 
-    <!-- This style can not be moved to the css file because it contains template
+    <!-- This style cannot be moved to the css file because it contains template
          variables that need to be replaced. That is only happening in the gtmpl
          files, not in the style files.
      -->

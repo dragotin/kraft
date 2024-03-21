@@ -166,7 +166,7 @@
         <item row="1" column="1">
          <widget class="QLabel" name="textLabel4_2">
           <property name="text">
-           <string>= Price of &amp;Sale:</string>
+           <string>= Price of &amp;sale:</string>
           </property>
           <property name="wordWrap">
            <bool>false</bool>
@@ -238,7 +238,7 @@
         <item row="0" column="1">
          <widget class="QLabel" name="textLabel4">
           <property name="text">
-           <string>&amp;Purchase Price:</string>
+           <string>&amp;Purchase price:</string>
           </property>
           <property name="wordWrap">
            <bool>false</bool>

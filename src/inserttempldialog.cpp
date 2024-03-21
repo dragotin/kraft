@@ -100,9 +100,9 @@ void InsertTemplDialog::setDocPosition(DocPosition *dp, bool isNew , bool showPr
     mBaseWidget->mPriceVal->setValue( mParkPosition.unitPrice().toDouble() );
 
     if ( mParkPosition.text().isEmpty() ) {
-      mBaseWidget->dmHeaderText->setText( i18n( "Create a new Item" ) );
+      mBaseWidget->dmHeaderText->setText( i18n( "Create a New Item" ) );
     } else {
-      mBaseWidget->dmHeaderText->setText( i18n( "Create a new Item from Template" ) );
+      mBaseWidget->dmHeaderText->setText( i18n( "Create a New Item from Template" ) );
     }
     if ( isNew ) {
       mBaseWidget->dmTextEdit->setFocus();

@@ -335,7 +335,7 @@ void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, co
         if( digest.clientId().isEmpty() ) {
             addressBookInfo = i18n("The address is not listed in an address book.");
         } else {
-            addressBookInfo = i18n("The client has the address book id %1 but can not found in our address books.", digest.clientId());
+            addressBookInfo = i18n("The client has the address book id %1 but cannot found in our address books.", digest.clientId());
         }
     } else {
         addressBookInfo  = i18n("The client can be found in our address books.");
@@ -450,7 +450,7 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
             }
         } else {
             tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
-            tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("Archived documents can not be found. Check PDF Output dir."));
+            tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("Archived documents cannot be found. Check PDF Output dir."));
         }
         if (digest.isInvoice()) {
             tmpl.createDictionary( DOCDIGEST_TAG( "EXPORT_XRECHNUNG" ));

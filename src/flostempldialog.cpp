@@ -248,11 +248,11 @@ void FlosTemplDialog::refreshPrices()
 
   /* assemble the pricing label */
   QString t;
-  t = i18n("Calculated Price: ");
+  t = i18n("Calculated price: ");
 
   if( m_template->calcKind() == CatalogTemplate::ManualPrice )
   {
-    t = i18n("Manual Price: ");
+    t = i18n("Manual price: ");
   }
   else if( m_template->calcKind() == CatalogTemplate::Calculation )
   {

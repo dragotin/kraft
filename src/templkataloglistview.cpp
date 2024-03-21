@@ -136,7 +136,7 @@ void TemplKatalogListView::slFreshupItem( QTreeWidgetItem *item, FloskelTemplate
     const QString t  = Portal::textWrap(tmpl->getText(), 72, 4);
 
     item->setText( 0, t );
-    if( t.endsWith(QStringLiteral("..."))) {
+    if( t.endsWith(QStringLiteral("…"))) {
         item->setToolTip(0, Portal::textWrap(tmpl->getText(), 72, 22));
     }
     QString h;

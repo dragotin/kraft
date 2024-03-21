@@ -16,7 +16,7 @@
      <item>
       <widget class="QLabel" name="mInfoText">
        <property name="text">
-        <string>Database Update:</string>
+        <string>Database update:</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -31,7 +31,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>Overall Progress:</string>
+          <string>Overall progress:</string>
          </property>
         </widget>
        </item>
@@ -52,7 +52,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>Detail Progress:</string>
+          <string>Detailed progress:</string>
          </property>
         </widget>
        </item>

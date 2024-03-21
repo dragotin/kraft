@@ -65,7 +65,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="textLabel3_2">
        <property name="text">
-        <string>&amp;Time Effort:</string>
+        <string>&amp;Time effort:</string>
        </property>
        <property name="wordWrap">
         <bool>false</bool>
@@ -98,7 +98,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="textLabel3_2_2">
        <property name="text">
-        <string>&amp;Hourly Rate:</string>
+        <string>&amp;Hourly rate:</string>
        </property>
        <property name="wordWrap">
         <bool>false</bool>
