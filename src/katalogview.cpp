@@ -23,6 +23,8 @@
 #include <QStatusBar>
 #include <QMenuBar>
 
+#include <klocalizedstring.h>
+
 // application specific includes
 #include "katalogview.h"
 #include "katalog.h"
@@ -114,6 +116,7 @@ void KatalogView::createCentralWidget(QBoxLayout *box, QWidget* )
   box->addLayout( hb );
   mTemplateStats = new QLabel( );
   mProgress = new QProgressBar;
+  mProgress->setFormat(i18n("%p%"));
   mProgress->setVisible(false);
   hb->addWidget( mTemplateStats );
   hb->addStretch();
