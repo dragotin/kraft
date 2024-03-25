@@ -101,12 +101,7 @@ const QFileInfo XmlDocIndex::xmlPathByUuid(const QString& uuid)
 // so far, for the pdf path, only the extension is changed from xml to pdf.
 const QFileInfo XmlDocIndex::pdfPathByUuid(const QString& uuid)
 {
-    if (uuid.isEmpty()) {
-        return QFileInfo();
-    }
-    const QString dir{DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::PdfDocs)};
-
-    return QFileInfo(dir, uuid+".pdf");
+    return pathByUuid(uuid, ".pdf");
 }
 
 bool XmlDocIndex::pdfOutdated(const QString& uuid)
