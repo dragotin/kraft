@@ -1047,7 +1047,6 @@ void Portal::slotDocumentSelected( const QString& uuid)
     _actChangeDocStatus->setEnabled(enable && docWriteEnabled);
 
     XmlDocIndex indx;
-    const QFileInfo fi = indx.pdfPathByUuid(uuid);
 
     if (indx.pdfOutdated(uuid)) {
         // the PDF should exist. if not, try to create if that is feasible
