@@ -447,7 +447,7 @@ QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
         subdir = "xmldoc";
         break;
     case KraftV2Dir::PdfDocs:
-        subdir = "pdf";
+        subdir = "xmldoc";
         break;
     }
     return subdir;

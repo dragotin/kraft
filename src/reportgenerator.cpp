@@ -338,7 +338,10 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
 {
     auto *converter = qobject_cast<PDFConverter*>(sender());
 
-    const QString errors = converter->getErrors();
+    QString errors;
+    if (converter) {
+        errors = converter->getErrors();
+    }
 
     QString errMsg;
     switch(err) {
