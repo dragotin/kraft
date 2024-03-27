@@ -357,7 +357,7 @@ void Portal::initView()
     // connect the widget to your document to display document contents.
     m_portalView.reset(new PortalView( this, "PortalMainView" ));
     QVector<QMenu*> menus = m_portalView->allDocsView()->contextMenus();
-    foreach( QMenu *menu, menus ) {
+    for(QMenu *menu: menus) {
       menu->setTitle( i18n("Document Actions"));
       menu->addSection(i18n("Document Actions"));
       menu->addAction( _actViewDocument );
