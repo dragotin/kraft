@@ -40,7 +40,7 @@ private:
     int convertNumbercycles(const QString &baseDir);
 
 signals:
-
+    void conversionOut(const QString&);
 };
 
 #endif // DBTOXMLCONVERTER_H

@@ -5,6 +5,7 @@
 #include "defaultprovider.h"
 #include "documentsaverdb.h"
 
+#include <klocalizedstring.h>
 #include <utime.h>
 
 #include <QSqlQuery>
@@ -52,7 +53,9 @@ void DbToXMLConverter::convert()
     QMap<QByteArray, int> results;
 
     for (int year : keys) {
+        emit conversionOut(i18n("Starting conversion for year %1...").arg(year));
         convertDocsOfYear(year, dBase, results);
+        emit conversionOut(i18n("... result: %1 ok, %2 fails").arg(results[okStr]).arg(results[failsStr]));
 
         // FIXME Check for errors and set ok flag
     }
