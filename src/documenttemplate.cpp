@@ -121,7 +121,7 @@ QVariantHash labelVariantHash()
     hash.insert( TAG( "TYPE"), i18nc("Document type, printed on the document", "Type") );
 
     hash.insert( TAG( "PHONE"), i18nc("Printed on the document", "Phone"));
-    hash.insert( TAG( "FAX"), i18nc("Printed on the document", "FAX"));
+    hash.insert( TAG( "FAX"), i18nc("Printed on the document", "Fax"));
     hash.insert( TAG( "MOBILE"), i18nc("Printed on the document", "Mobile"));
     hash.insert( TAG( "EMAIL"), i18nc("Printed on the document", "Email"));
     hash.insert( TAG( "WEBSITE"), i18nc("Printed on the document", "Website"));
@@ -132,7 +132,7 @@ QVariantHash labelVariantHash()
     hash.insert( TAG( "DOC_NO"), i18nc("Document number on document", "Document No."));
     hash.insert( TAG( "DATE"), i18nc("Date on document", "Date"));
     hash.insert( TAG( "PROJECT"), i18nc("Project label", "Project"));
-    hash.insert( TAG( "CUST_ID"), i18nc("Customer ID on document", "Customer Id"));
+    hash.insert( TAG( "CUST_ID"), i18nc("Customer ID on document", "Customer ID"));
     hash.insert( TAG( "CURRENCY_SIGN"), DefaultProvider::self()->currencySymbol());
 
     return hash;
@@ -393,7 +393,7 @@ const QString CTemplateDocumentTemplate::expand(ArchDoc *archDoc, const KContact
     addLabelsToTemplate(tmpl);
 
 #if 0
-    /* this is still disabled as reportlab can not read SVG files
+    /* this is still disabled as reportlab cannot read SVG files
      * When it can or the EPC QR Code can be generated as PNG, this needs to be added
      * to the template:
      *

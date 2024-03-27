@@ -27,13 +27,6 @@ import copy
 
 import getopt
 
-# StringIO is not longer separate in python3, but in io
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
-
-from six import text_type
 from PyPDF2 import PdfFileMerger, PdfFileWriter, PdfFileReader
 
 # use utf8 for default
@@ -141,7 +134,7 @@ if __name__=="__main__":
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "ho:m:a:", ["help", "output=", "watermark-mode=", "append-file="])
-    except(getopt.GetoptError, err):
+    except getopt.GetoptError as err:
         # print help information and exit:
         print( str(err)) # will print something like "option -a not recognized"
         watermarkpdf_help()

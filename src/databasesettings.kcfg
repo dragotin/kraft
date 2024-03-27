@@ -4,35 +4,35 @@
   <kcfgfile name="kraftdatabaserc"/>
   <group name="bruns">
     <entry name="BrunsDataFile" type="String">
-      <label>Bruns Data File:</label>
+      <label>Bruns data file:</label>
     </entry> 
     <entry name="BrunsKeyFile" type="String">
-      <label>Bruns Key File:</label>
+      <label>Bruns key file:</label>
     </entry>  
   </group>
   <group name="database selection"> 
    <entry name="DbDriver" type="String">
-     <label>Qt Database Driver:</label>
+     <label>Qt database driver:</label>
    </entry>
   </group>
   <group name="mysql settings">
     <entry name="DbServerName" type="String">
-      <label>Database Server:</label>  
+      <label>Database server:</label>
       <default>localhost</default>
     </entry> 
     <entry name="DbServerPort" type="Int">
-      <label>Server Port:</label>
+      <label>Server port:</label>
       <default>-1</default>
     </entry>
     <entry name="DbDatabaseName" type="String">
       <label>Database Name</label> 
     </entry>
     <entry name="DbUser" type="String">
-      <label>Database User:</label>
+      <label>Database user:</label>
       <default>root</default>
     </entry>    
     <entry name="DbPassword" type="Password">
-      <label>Database Password:</label>
+      <label>Database password:</label>
     </entry>
     <entry name="DefaultDbName" type="String">
       <label>The default database name when creating new databases</label>

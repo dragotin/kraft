@@ -62,7 +62,7 @@ QString ArchDoc::docIdentifier() const
 {
   QString re = docTypeStr();
 
-  return i18n("%1 for %2 (Id %3)", re, ident() );
+  return i18n("%1 for %2 (ID %3)", re, ident() );
 }
 
 QString ArchDoc::dateStr() const

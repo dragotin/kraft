@@ -23,6 +23,8 @@
 #include <QStatusBar>
 #include <QMenuBar>
 
+#include <klocalizedstring.h>
+
 // application specific includes
 #include "katalogview.h"
 #include "katalog.h"
@@ -114,6 +116,7 @@ void KatalogView::createCentralWidget(QBoxLayout *box, QWidget* )
   box->addLayout( hb );
   mTemplateStats = new QLabel( );
   mProgress = new QProgressBar;
+  mProgress->setFormat(i18n("%p%"));
   mProgress->setVisible(false);
   hb->addWidget( mTemplateStats );
   hb->addStretch();
@@ -231,14 +234,14 @@ void KatalogView::initActions()
 
 void KatalogView::openDocumentFile(const QUrl& )
 {
-  slotStatusMsg(i18n("Opening file..."));
+  slotStatusMsg(i18n("Opening file…"));
 
   slotStatusMsg(i18n("Ready."));
 }
 
 void KatalogView::closeEvent( QCloseEvent *event )
 {
-    slotStatusMsg(i18n("Exiting..."));
+    slotStatusMsg(i18n("Exiting…"));
 
     if( event )
         event->accept();
@@ -295,7 +298,7 @@ void KatalogView::slTreeviewItemChanged( QTreeWidgetItem *newItem, QTreeWidgetIt
 
 void KatalogView::slExport()
 {
-    slotStatusMsg(i18n("Exporting file..."));
+    slotStatusMsg(i18n("Exporting file…"));
     Katalog *k = getKatalog(m_katalogName);
     if(k)
         k->writeXMLFile();
@@ -304,12 +307,12 @@ void KatalogView::slExport()
 
 void KatalogView::slImport()
 {
-    slotStatusMsg(i18n("Importfile... (not yet implemented)"));
+    slotStatusMsg(i18n("Importing file… (not yet implemented)"));
 }
 
 void KatalogView::slAddSubChapter()
 {
-  slotStatusMsg( i18n("Creating a new sub chapter..."));
+  slotStatusMsg( i18n("Creating a new sub chapter…"));
   KatalogListView *listview = getListView();
   if( listview )
     listview->slotCreateNewChapter();
@@ -318,7 +321,7 @@ void KatalogView::slAddSubChapter()
 
 void KatalogView::slEditSubChapter()
 {
-  slotStatusMsg( i18n("Editing a sub chapter..."));
+  slotStatusMsg( i18n("Editing a sub chapter…"));
   KatalogListView *listview = getListView();
   if( listview )
     listview->slotEditCurrentChapter();
@@ -327,7 +330,7 @@ void KatalogView::slEditSubChapter()
 
 void KatalogView::slRemoveSubChapter()
 {
-  slotStatusMsg( i18n("Removing a sub chapter..."));
+  slotStatusMsg( i18n("Removing a sub chapter…"));
   KatalogListView *listview = getListView();
   if( listview )
     listview->slotRemoveCurrentChapter();

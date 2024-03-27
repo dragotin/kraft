@@ -42,11 +42,11 @@ AddEditChapterDialog::AddEditChapterDialog( QWidget *parent )
   vbox->addWidget( mTopLabel );
 
 
-  vbox->addWidget( new QLabel( i18n("Chapter Name:")));
+  vbox->addWidget( new QLabel( i18n("Chapter name:")));
   mNameEdit = new QLineEdit;
   vbox->addWidget( mNameEdit );
 
-  vbox->addWidget( new QLabel( i18n("Chapter Description:")));
+  vbox->addWidget( new QLabel( i18n("Chapter description:")));
   mDescEdit = new QLineEdit;
   vbox->addWidget( mDescEdit );
 

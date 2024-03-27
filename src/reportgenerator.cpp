@@ -198,7 +198,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     const QString tempFile = saveToTempFile(expanded);
 
     if (tempFile.isEmpty()) {
-        emit failure(i18n("Saving to temporar file failed."), QString());
+        emit failure(i18n("Saving to temporary file failed."), QString());
         delete converter;
         return;
     }
@@ -332,7 +332,7 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
          errMsg = i18n("No converter error.");
         break;
     case PDFConverter::ConvError::TrmlToolFail:
-        errMsg = i18n("The ReportLab based converter script can not be executed.");
+        errMsg = i18n("The ReportLab based converter script cannot be executed.");
         break;
     case PDFConverter::ConvError::UnknownError:
         errMsg = i18n("An unknown error happened.");
@@ -344,10 +344,10 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
         errMsg = i18n("The PyPDF2 python module is not installed.");
         break;
     case PDFConverter::ConvError::SourceFileFail:
-        errMsg = i18n("The source file can not be read.");
+        errMsg = i18n("The source file cannot be read.");
         break;
     case PDFConverter::ConvError::TargetFileError:
-        errMsg = i18n("The target can not be opened to write.");
+        errMsg = i18n("The target cannot be opened to write.");
         break;
     case PDFConverter::ConvError::TargetFileMissing:
         errMsg = i18n("The target file does not exist.");

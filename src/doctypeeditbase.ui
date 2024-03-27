@@ -91,7 +91,7 @@
         <item>
          <widget class="QLabel" name="textLabel1_2">
           <property name="text">
-           <string>Number &amp;Cycle:</string>
+           <string>Number &amp;cycle:</string>
           </property>
           <property name="wordWrap">
            <bool>false</bool>
@@ -124,7 +124,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="textLabel1_2_2">
           <property name="text">
-           <string>ident Template:</string>
+           <string>Ident template:</string>
           </property>
           <property name="wordWrap">
            <bool>false</bool>
@@ -134,7 +134,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="textLabel1_2_3_2">
           <property name="text">
-           <string>Example Id:</string>
+           <string>Example ID:</string>
           </property>
           <property name="wordWrap">
            <bool>false</bool>
@@ -200,7 +200,7 @@
         <item>
          <widget class="QPushButton" name="mPbEditCycles">
           <property name="text">
-           <string>&amp;Edit Number Cycles...</string>
+           <string>&amp;Edit Number Cycles…</string>
           </property>
          </widget>
         </item>
@@ -234,7 +234,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="textLabel1">
         <property name="text">
-         <string>&amp;Template File:</string>
+         <string>&amp;Template file:</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>
@@ -305,7 +305,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="textLabel1_3">
         <property name="text">
-         <string>&amp;Watermark File:</string>
+         <string>&amp;Watermark file:</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>

@@ -28,6 +28,9 @@
        <property name="value">
         <number>0</number>
        </property>
+       <property name="format">
+        <string>%p%</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -71,6 +74,9 @@
       <widget class="QProgressBar" name="mFillProgress">
        <property name="value">
         <number>0</number>
+       </property>
+       <property name="format">
+        <string>%p%</string>
        </property>
       </widget>
      </item>
@@ -120,7 +126,7 @@
         <enum>QFrame::NoFrame</enum>
        </property>
        <property name="text">
-        <string>Database setup status...</string>
+        <string>Database setup status…</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>

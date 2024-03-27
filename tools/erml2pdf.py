@@ -26,18 +26,8 @@ import io
 import sys
 import xml.dom.minidom
 
-import subprocess
-import shlex
-import tempfile
 import getopt
 import re
-
-# StringIO is not longer separate in python3, but in io
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
-
 
 import reportlab
 from reportlab.pdfgen import canvas
@@ -45,7 +35,6 @@ from reportlab import platypus
 from reportlab.lib import colors
 from reportlab.platypus.flowables import KeepTogether
 
-from six import text_type
 from PyPDF2 import PdfFileWriter, PdfFileReader
 
 #
@@ -460,7 +449,7 @@ class _rml_canvas(object):
             self.canvas.setDash(node.getAttribute('dash').split(','))
 
     def _image(self, node):
-        from six.moves import urllib
+        import urllib.request
 
         from reportlab.lib.utils import ImageReader
         u = urllib.request.urlopen("file:" + str(node.getAttribute('file')))
@@ -611,7 +600,7 @@ class _rml_flowable(object):
                 rc += n.data
             elif (n.nodeType == node.TEXT_NODE):
                 rc += n.toxml()
-        return text_type(rc)
+        return str(rc)
 
     def _list(self, node):
         if node.hasAttribute('style'):
@@ -901,7 +890,7 @@ if __name__=="__main__":
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "ho:w:m:", ["help", "output=", "watermark-file=", "watermark-mode="])
-    except(getopt.GetoptError, err):
+    except getopt.GetoptError as err:
         # print help information and exit:
         print( str(err)) # will print something like "option -a not recognized"
         erml2pdf_help()
