@@ -451,7 +451,17 @@ void Portal::slotStartupChecks()
     }
 
     // Database is up and runing!
-    // TODO: Check the document storage and see if the docs are converted already.
+    // Check the document storage and see if the docs are converted already.
+    const QString v2BaseDir = KraftSettings::self()->kraftV2BaseDir();
+    if (v2BaseDir.isEmpty()) {
+        // not yet converted!
+    } else {
+        QFileInfo fi(QDir(v2BaseDir), "current");
+        if (fi.isSymLink())
+            qDebug() << "Kraft Version 2 document dir:" << fi.symLinkTarget();
+        else
+            qDebug() << "V2 path malformed";
+    }
 
     // Initialize DocIndex
     const QString basePath = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root);
@@ -1109,7 +1119,9 @@ void Portal::slotReconfigureDatabase()
 void Portal::slotConvertToXML()
 {
     DbToXMLConverter converter;
-
+    connect(&converter, &DbToXMLConverter::conversionOut, this, [=](const QString& msg) {
+       qDebug() << "##########" << msg;
+    });
     // FIXME: Connect some progress info signals
     converter.convert();
 }
