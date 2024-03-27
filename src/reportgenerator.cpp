@@ -110,7 +110,7 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& docID,
 
     if( mProcess && mProcess->state() != QProcess::NotRunning ) {
         qDebug() << "===> WRN: Process still running, try again later.";
-        emit failure(i18n("Document generation process is still running."), "");
+        emit failure(i18n("The document generation process is still running."), QString());
         return;
     }
 
@@ -165,7 +165,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
 
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {
-        emit failure(i18n("Template file is not accessible."), "");
+        emit failure(i18n("The temporary file %1 is not accessible.", _tmplFile), QString());
         return;
     }
     const QString ext = fi.completeSuffix();
@@ -198,7 +198,7 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     const QString tempFile = saveToTempFile(expanded);
 
     if (tempFile.isEmpty()) {
-        emit failure(i18n("Saving to temporary file failed."), "");
+        emit failure(i18n("Saving to temporary file failed."), QString());
         delete converter;
         return;
     }
@@ -375,17 +375,19 @@ QString ReportGenerator::findTemplateFile( const QString& type )
     const QString tmplFile = dType.templateFile();
 
     if ( tmplFile.isEmpty() ) {
-        emit failure(i18n("There is not template defined for %1.").arg(dType.name()), "");
+        emit failure(i18n("There is not template defined for %1.", dType.name()),
+                     i18n("Make sure to define a template file in the settings dialog."));
     } else {
-        // check if file exists
+        // a few file checks
         QFileInfo fi(tmplFile);
         if (!fi.isFile()) {
-            emit failure(i18nc("The template file %1 for document type %2 does not exist.", tmplFile.toLatin1().constData(),
-                dType.name().toLatin1().constData()), "");
+            emit failure(i18n("The template file %1 for document type %2 is not a file.", tmplFile, dType.name()),
+                         i18n("Make sure to pick a readable template file in the settings dialog"));
             return QString();
         }
         if (!fi.isReadable()) {
-            emit failure(i18n("The template file %1 for document type %2 cannot be read.").arg(tmplFile).arg(dType.name()), "");
+            emit failure(i18n("The template file %1 for document type %2 can not be read.", tmplFile, dType.name()),
+                         i18n("Make sure the template file has proper file permissions."));
             return QString();
         }
     }
