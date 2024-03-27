@@ -60,6 +60,7 @@ QString toDateString( const QDate& date, const QString& format )
 
 QString toDateTimeString(const QDateTime& dt, const QString &format)
 {
+    // FIXME
     const QString dateStr = QString("%1, %2:%3").arg(toDateString(dt.date(), format))
             .arg(dt.time().hour(), 2, 10, QLatin1Char('0'))
             .arg(dt.time().minute(), 2, 10, QLatin1Char('0'));

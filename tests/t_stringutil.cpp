@@ -3,14 +3,14 @@
 #include "testconfig.h"
 #include "stringutil.h"
 
-class T_Stringutil : public QObject {
+class T_KraftString : public QObject {
     Q_OBJECT
 private slots:
     void simple1() {
         QString tmpl{"Foo %nn baz"};
         QMap<QString, QString> rep;
         rep.insert("%nn", "bar");
-        QString re = StringUtil::replaceTagsInString(tmpl, rep);
+        QString re = KraftString::replaceTags(tmpl, rep);
 
         QCOMPARE(re, QStringLiteral("Foo bar baz"));
     }
@@ -20,7 +20,7 @@ private slots:
         QMap<QString, QString> rep;
         rep.insert("%nn", "bar");
         rep.insert("%nnn", "bar2");
-        QString re = StringUtil::replaceTagsInString(tmpl, rep);
+        QString re = KraftString::replaceTags(tmpl, rep);
 
         QCOMPARE(re, QStringLiteral("Foo bar bar2 baz"));
     }
@@ -30,7 +30,7 @@ private slots:
         QMap<QString, QString> rep;
         rep.insert("%nn", "bar");
         rep.insert("%nnn", "bar2");
-        QString re = StringUtil::replaceTagsInString(tmpl, rep);
+        QString re = KraftString::replaceTags(tmpl, rep);
 
         QCOMPARE(re, QStringLiteral("Foo bar bar2 bar baz"));
     }
@@ -41,7 +41,7 @@ private slots:
         rep.insert("%nn", "bar");
         rep.insert("%nnn", "bar2");
         rep.insert("%dd", "numbers");
-        QString re = StringUtil::replaceTagsInString(tmpl, rep);
+        QString re = KraftString::replaceTags(tmpl, rep);
 
         QCOMPARE(re, QStringLiteral("Foo bar bar2 bar numbers baz"));
     }
@@ -51,13 +51,13 @@ private slots:
         QMap<QString, QString> rep;
         rep.insert("%nn", "bar %");
         rep.insert("%nnn", "bar2");
-        QString re = StringUtil::replaceTagsInString(tmpl, rep);
+        QString re = KraftString::replaceTags(tmpl, rep);
 
         QCOMPARE(re, QStringLiteral("Foo bar % bar2"));
     }
 
 };
 
-QTEST_MAIN(T_Stringutil)
+QTEST_MAIN(T_KraftString)
 #include "t_stringutil.moc"
 

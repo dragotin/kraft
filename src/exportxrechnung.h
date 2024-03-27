@@ -23,12 +23,10 @@
 #include <QScopedPointer>
 
 #include "addressprovider.h"
-#include "archdoc.h"
 
 class QSqlRecord;
 class dbID;
 class QString;
-class ArchDoc;
 
 class ExporterXRechnung : public QObject
 {
@@ -46,7 +44,7 @@ public:
     ExporterXRechnung(QObject *parent = nullptr);
     virtual ~ExporterXRechnung();
 
-    virtual bool exportDocument(const ArchDocDigest& digest);
+    virtual bool exportDocument(const QString &uuid);
     QString templateFile() const;
 
     void setDueDate(const QDate&);
@@ -60,7 +58,6 @@ protected slots:
     void slotSkipLookup();
 
 private:
-    ArchDoc _archDoc;
     bool _validateWithSchema;
     AddressProvider *mAddressProvider;
     KContacts::Addressee _customerContact;

@@ -76,7 +76,7 @@ public:
 public slots:
     void slotSetOverallPrice( Geld );
     void slotRefreshPrice();
-    void slotModified( bool emitSignal = true );
+    void slotModified();
     void slotExecButtonPressed();
     void slotTaggingButtonPressed();
     void slotMenuAboutToHide();
@@ -113,7 +113,6 @@ signals:
 
 private:
     bool mModified;
-    bool m_skipModifiedSignal;
     bool mToDelete;
     int  mOrdNumber;
 

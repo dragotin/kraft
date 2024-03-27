@@ -58,5 +58,6 @@
     <file>custom-icons/file-description.svg</file>
     <file>custom-icons/file-chart.svg</file>
     <file>custom-icons/tool.svg</file>
+    <file>custom-icons/checklist.svg</file>
   </qresource>
 </RCC>

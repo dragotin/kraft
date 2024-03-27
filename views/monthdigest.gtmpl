@@ -1,0 +1,12 @@
+<h2>{{HEADLINE}}</h2>
+
+<table border="0" width="98%">
+<tr><td><b>{{I18N_AMOUNT}}</b></td><td><b>{{I18N_TYPE}}</b></td><td><b>{{I18N_SUM}}</b></td></tr>
+{% for doc in DocList.docs %}
+<tr>
+<td>{{amount}}</td>
+<td>{{type}}</td>
+<td>{{sum}}</td>
+</tr>
+{% endfor %}
+</table>

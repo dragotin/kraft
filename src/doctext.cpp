@@ -25,7 +25,7 @@
 
 
 DocText::DocText()
-  : mTextType( KraftDoc::Unknown ),
+  : mTextType( KraftDoc::Part::Unknown ),
     mCurrentItem( 0 )
 {
 
@@ -63,19 +63,19 @@ bool DocText::isStandardText() const
 
 KraftDoc::Part DocText::stringToTextType( const QString& str )
 {
-  KraftDoc::Part tt = KraftDoc::Unknown;
+  KraftDoc::Part tt = KraftDoc::Part::Unknown;
 
-  if ( str == textTypeToString( KraftDoc::Header ) ) tt = KraftDoc::Header;
-  if ( str == textTypeToString( KraftDoc::Footer ) ) tt = KraftDoc::Footer;
-  if ( str == textTypeToString( KraftDoc::Positions ) ) tt = KraftDoc::Positions;
+  if ( str == textTypeToString( KraftDoc::Part::Header ) ) tt = KraftDoc::Part::Header;
+  if ( str == textTypeToString( KraftDoc::Part::Footer ) ) tt = KraftDoc::Part::Footer;
+  if ( str == textTypeToString( KraftDoc::Part::Positions ) ) tt = KraftDoc::Part::Positions;
   return tt;
 }
 
 QString DocText::textTypeToString( KraftDoc::Part tt )
 {
-  if ( tt == KraftDoc::Header ) return i18n( "Header Text" );
-  if ( tt == KraftDoc::Footer ) return i18n( "Footer Text" );
-  if ( tt == KraftDoc::Positions ) return i18n( "Items" );
+  if ( tt == KraftDoc::Part::Header ) return i18n( "Header Text" );
+  if ( tt == KraftDoc::Part::Footer ) return i18n( "Footer Text" );
+  if ( tt == KraftDoc::Part::Positions ) return i18n( "Items" );
 
   return i18n( "Unknown" );
 }

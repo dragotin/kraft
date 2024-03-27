@@ -273,7 +273,7 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
 
    for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
      QString t = ( *it ).trimmed();
-     pos.setTag( t );
+     pos.addTag( t );
    }
  }
 

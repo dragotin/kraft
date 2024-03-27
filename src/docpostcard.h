@@ -19,8 +19,11 @@
 #define DOCPOSTCARD_H
 
 #include <qstring.h>
-#include "htmlview.h"
+
+#include "docposition.h"
 #include "kraftdoc.h"
+#include "htmlview.h"
+#include "docguardedptr.h"
 
 class QUrl;
 
@@ -33,19 +36,19 @@ public:
   DocPostCard( QWidget *parent = 0 );
 
 signals:
-  void selectPage( int );
+  void selectPage( KraftDoc::Part );
 
 public slots:
   void setHeaderData( const QString&, const QString&, const QString&, const QString&, const QString& );
   void setPositions( DocPositionList, DocPositionBase::TaxType, double, double );
   void setFooterData( const QString&,  const QString& );
-  void renderDoc( int id = -1 );
-  void slotSetMode( DisplayMode, int id = -1 );
+  void renderDoc( KraftDoc::Part p );
+  void slotSetMode( DisplayMode, KraftDoc::Part p);
   void slotShowPrices( bool showIt );
 
 protected:
-  QString renderDocMini( int ) const;
-  QString renderDocFull( int );
+  QString renderDocMini(KraftDoc::Part p) const;
+  QString renderDocFull( KraftDoc::Part p);
   QString header(bool, const QString&, const QString&, const QString& protocol,
                   const QString& = QString() ) const;
 

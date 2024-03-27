@@ -13,7 +13,7 @@ Changes since version 1.0: #########################################
 - Add Button to Allow to insert template pre- and post texts rather than
   replace the entire text #167
 
-=> release v. 1.1 (2023)
+=> release v. 1.1 (Sept 16, 2023)
 
 Changes since version 0.98: #########################################
 

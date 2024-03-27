@@ -45,7 +45,10 @@ public:
   void setQueryAgain();
 
   void removeAllData();
+  void appendNewDoc(const DocDigest& digest);
+
   void addData( const DocDigest& );
+  void updateData(const DocDigest& digest);
 
   bool isDocument(const QModelIndex& indx) const;
 

@@ -1,4 +1,3 @@
-
 include_directories(${QT_INCLUDES} src)
 add_subdirectory(pics)
 
@@ -54,6 +53,8 @@ set(kraft_SRCS
     documentsaverbase.cpp
     documentsaverdb.cpp
     exportxrechnung.cpp
+    documentsaverxml.cpp
+    dbtoxmlconverter.cpp
     documentman.cpp
     docdigest.cpp
     alldocsview.cpp
@@ -61,7 +62,6 @@ set(kraft_SRCS
     doctext.cpp
     portal.cpp
     portalview.cpp
-    archiveman.cpp
     reportgenerator.cpp
     htmlview.cpp
     docpostcard.cpp
@@ -70,8 +70,6 @@ set(kraft_SRCS
     kraftdocheaderedit.cpp
     kraftdocfooteredit.cpp
     inserttempldialog.cpp
-    archdocposition.cpp
-    archdoc.cpp
     materialkataloglistview.cpp
     materialkatalogview.cpp
     materialselectdialog.cpp
@@ -118,7 +116,13 @@ set(kraft_SRCS
     format.cpp
     stringutil.cpp
     epcqrcode.cpp
-
+    kraftattrib.cpp
+    kraftobj.cpp
+    xmldocindex.cpp
+    jsonindexfile.cpp
+    reportitemlist.cpp
+    reportitem.cpp
+    docidentgenerator.cpp
     3rdparty/qrcodegen.cpp
 )
 
@@ -154,6 +158,8 @@ ki18n_wrap_ui(kraft_SRCS
     importtodocbase.ui
     numbercycleseditbase.ui
     xrechnung.ui
+    documentactions.ui
+    finalizedoc.ui
 )
 
 set(KRAFT_LINK_LIBS
@@ -161,7 +167,8 @@ set(KRAFT_LINK_LIBS
     Qt5::Widgets
     Qt5::Sql
     Qt5::Xml
-
+    Qt5::XmlPatterns
+    
     KF5::I18n
     KF5::Contacts
     KF5::ConfigCore
