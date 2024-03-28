@@ -284,7 +284,7 @@ bool NumberCycleDialog::dropOfNumberCycleOk( const QString& name )
         if ( cnt > 0 ) {
             QMessageBox msgBox;
             msgBox.setText(i18n( "The numbercycle %1 is still assigned to a document type."));
-                    msgBox.setInformativeText(i18n("The number cycle can not be deleted as long as it "
+                    msgBox.setInformativeText(i18n("The number cycle cannot be deleted as long as it "
                                                    "is assigned to a document type." ).arg( name ));
             msgBox.setStandardButtons(QMessageBox::Ok);
         }
@@ -331,7 +331,7 @@ void NumberCycleDialog::accept()
     NumberCycle cycle = it.value();
 
     q.bindValue( ":name", cycleName );
-    // name changes can not happen by design
+    // name changes cannot happen by design
     q.exec();
     if ( q.next() ) {
         // qDebug () << "Checking existing number cycle " << cycleName << " for update";

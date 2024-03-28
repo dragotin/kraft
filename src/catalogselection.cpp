@@ -47,7 +47,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
     layout->setMargin(0);
     QHBoxLayout *hb = new QHBoxLayout;
     layout->addLayout(hb);
-    QLabel *l = new QLabel( i18n( "Selected &Catalog: " ) );
+    QLabel *l = new QLabel( i18n( "Selected &catalog: " ) );
     hb->addWidget(l);
     mCatalogSelector = new QComboBox;
     hb->addWidget(mCatalogSelector);

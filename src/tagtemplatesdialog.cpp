@@ -66,7 +66,7 @@ TagTemplateEditor::TagTemplateEditor( QWidget *parent )
 
   QHBoxLayout *h2 = new QHBoxLayout;
   h2->addStretch(1);
-  h2->addWidget(new QLabel( i18n( "Associated Color:" )));
+  h2->addWidget(new QLabel( i18n( "Associated color:" )));
   mColorButton = new QPushButton;
   h2->addWidget(mColorButton);
   connect( mColorButton, SIGNAL(clicked(bool)), SLOT(slotColorSelect(bool)));
@@ -162,12 +162,12 @@ TagTemplatesDialog::TagTemplatesDialog( QWidget *parent )
   setTags();
 
   QHBoxLayout *buttBox = new QHBoxLayout;
-  mAddButton = new QPushButton( i18n( "Add..." ));
+  mAddButton = new QPushButton( i18n( "Add…" ));
   buttBox->addWidget(mAddButton);
-  mEditButton = new QPushButton( i18n( "Edit..." ));
+  mEditButton = new QPushButton( i18n( "Edit…" ));
   buttBox->addWidget(mEditButton);
   mEditButton->setEnabled( false );
-  mDeleteButton = new QPushButton( i18n( "Delete..." ));
+  mDeleteButton = new QPushButton( i18n( "Delete…" ));
   buttBox->addWidget(mDeleteButton);
   mDeleteButton->setEnabled( false );
   mainLayout->addLayout(buttBox);

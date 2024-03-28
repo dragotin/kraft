@@ -141,7 +141,7 @@ public:
         AddressProvider::LookupState state = _addressProvider->lookupAddressee(uid);
         if( state == AddressProvider::LookupFromCache ) {
             const KContacts::Addressee addressee = _addressProvider->getAddresseeFromCache(uid);
-            // this cant actually happen because the cache can not be prefilled.
+            // this cant actually happen because the cache cannot be prefilled.
             slotAddresseeFound( QString(), addressee );
         } else if( state == AddressProvider::LookupOngoing ) {
         } else if( state == AddressProvider::LookupStarted ) {

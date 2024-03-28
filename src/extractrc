@@ -19,7 +19,7 @@ i18n() calls so that xgettext can parse them.
 --tag-group=group : Use a group of tags - uses 'default' if omitted.
                     Valid groups are: @{[TAG_GROUPS()]}
 
---context=name    : Give i18n calls a context name: i18nc("name", ...)
+--context=name    : Give i18n calls a context name: i18nc("name", …)
 --lines           : Include source line numbers in comments (deprecated, it is switched on by default now)
 --cstart=chars    : Start of to-EOL style comments in output, defaults to //
 --language=lang   : Create i18n calls appropriate for KDE bindings

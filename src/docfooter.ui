@@ -39,7 +39,7 @@
       <item>
        <widget class="QLabel" name="textLabel8_2">
         <property name="text">
-         <string>&amp;Summary Text on Last Page:</string>
+         <string>&amp;Summary text on last page:</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>
@@ -97,7 +97,7 @@
       <item>
        <widget class="QLabel" name="textLabel1_2">
         <property name="text">
-         <string>Document &amp;Tax:</string>
+         <string>Document &amp;tax:</string>
         </property>
         <property name="wordWrap">
          <bool>false</bool>

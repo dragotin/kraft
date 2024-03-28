@@ -16,7 +16,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Please enter the SQLite Database Settings.
+        <string>Please enter the settings for the SQLite database.
 
 Pick a filename to name the SQLite database file or leave the default setting.</string>
        </property>

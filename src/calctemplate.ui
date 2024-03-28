@@ -249,7 +249,7 @@
                 <string>Adds a new time calculation part to the template</string>
                </property>
                <property name="text">
-                <string>new...</string>
+                <string>New…</string>
                </property>
               </widget>
              </item>
@@ -259,7 +259,7 @@
                 <string>Edits the current time calculation part</string>
                </property>
                <property name="text">
-                <string>edit...</string>
+                <string>Edit…</string>
                </property>
               </widget>
              </item>
@@ -370,7 +370,7 @@
                 <string>adds a new fix calculation part</string>
                </property>
                <property name="text">
-                <string>new...</string>
+                <string>New…</string>
                </property>
               </widget>
              </item>
@@ -380,7 +380,7 @@
                 <string>edits the current fix calculation part</string>
                </property>
                <property name="text">
-                <string>edit...</string>
+                <string>Edit…</string>
                </property>
               </widget>
              </item>
@@ -491,7 +491,7 @@
                 <string>adds a new material calculation part</string>
                </property>
                <property name="text">
-                <string>new...</string>
+                <string>New…</string>
                </property>
               </widget>
              </item>
@@ -501,7 +501,7 @@
                 <string>edits the current material part</string>
                </property>
                <property name="text">
-                <string>edit...</string>
+                <string>Edit…</string>
                </property>
               </widget>
              </item>
@@ -613,7 +613,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="m_tLabelFix">
             <property name="text">
-             <string>Fix Costs Part:</string>
+             <string>Fixed costs part:</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -636,7 +636,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="m_tLabelMat">
             <property name="text">
-             <string>Material Part:</string>
+             <string>Material part:</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -703,7 +703,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="m_tLabelTime">
             <property name="text">
-             <string>Time Calculation Part:</string>
+             <string>Time calculation part:</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -744,7 +744,7 @@
            </font>
           </property>
           <property name="text">
-           <string>Calculated Price:</string>
+           <string>Calculated price:</string>
           </property>
           <property name="textFormat">
            <enum>Qt::PlainText</enum>

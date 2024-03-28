@@ -157,7 +157,7 @@ QString KraftDoc::docIdentifier() const
       return docType();
   }
   return i18nc("First argument is the doctype, like Invoice, followed by the ID",
-               "%1 (Id %2)", docType(), id );
+               "%1 (ID %2)", docType(), id );
 }
 
 void KraftDoc::deleteItems()

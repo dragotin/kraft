@@ -322,11 +322,11 @@ void AddressSelectorWidget::setupUi()
     QHBoxLayout *hboxBot = new QHBoxLayout;
     hboxBot->addStretch(4);
     rightLay->addLayout( hboxBot );
-    mButEditContact = new QPushButton(i18n("Edit Contact..."));
+    mButEditContact = new QPushButton(i18n("Edit Contact…"));
     mButEditContact->setToolTip( i18n("Edit the currently selected contact" ));
     mButEditContact->setEnabled( false );
     hboxBot->addWidget( mButEditContact );
-    QPushButton *butCreateContact = new QPushButton(i18n("New Contact..."));
+    QPushButton *butCreateContact = new QPushButton(i18n("New Contact…"));
     butCreateContact->setToolTip( i18n("Create a new Contact" ) );
     hboxBot->addWidget( butCreateContact );
 
