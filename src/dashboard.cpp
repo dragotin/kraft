@@ -1,8 +1,8 @@
 /***************************************************************************
-             DbToXMLConverter  - Convert the DB to XML
+                Dashboard - Home Dashboard of Kraft
                              -------------------
-    begin                : Feb. 2021
-    copyright            : (C) 2021 by Klaas Freitag
+    begin                : Mar. 2024
+    copyright            : (C) 2024 by Klaas Freitag
     email                : kraft@freisturz.de
  ***************************************************************************/
 
@@ -15,32 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef DBTOXMLCONVERTER_H
-#define DBTOXMLCONVERTER_H
+#include <QVBoxLayout>
 
-#include <QObject>
-#include <QPair>
+#include <klocalizedstring.h>
 
-class DbToXMLConverter : public QObject
+#include "version.h"
+#include "htmlview.h"
+#include "dashboard.h"
+
+DashBoard::DashBoard(QWidget *parent)
+    : QWidget{parent}
 {
-    Q_OBJECT
-public:
-    explicit DbToXMLConverter(QObject *parent = nullptr);
+    QVBoxLayout *layout = new QVBoxLayout;
 
-    void convert();
-    QMap <int, int> yearMap();
+    _htmlView = new HtmlView(this);
+    const QString h = i18n("<h1>Welcome to Kraft!</h1><small>Kraft version %1</small>", Kraft::Version::number());
+    _htmlView->displayContent(h);
+    layout->addWidget(_htmlView);
+    setLayout(layout);
+}
 
-private:
+void DashBoard::appendHtml(const QString& t)
+{
+    QString current = _htmlView->toHtml();
 
-    void convertDocsOfYear(int year, const QString& basePath, QMap<QByteArray, int> &);
-    bool convertLatestPdf(const QString &basePath, const QString& ident, const QString& uuid);
-    QString convertDbToXml(const QString& docID);
-
-    int amountOfDocsOfYear(int year);
-    int convertNumbercycles(const QString &baseDir);
-
-signals:
-
-};
-
-#endif // DBTOXMLCONVERTER_H
+    _htmlView->setHtml(current + t);
+}

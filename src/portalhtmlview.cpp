@@ -39,6 +39,3 @@ void PortalHtmlView::slotLinkClicked(const QUrl& url)
     }
 }
 
-
-
-

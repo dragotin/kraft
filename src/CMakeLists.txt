@@ -123,6 +123,7 @@ set(kraft_SRCS
     reportitemlist.cpp
     reportitem.cpp
     docidentgenerator.cpp
+    dashboard.cpp
     3rdparty/qrcodegen.cpp
 )
 
@@ -160,6 +161,7 @@ ki18n_wrap_ui(kraft_SRCS
     xrechnung.ui
     documentactions.ui
     finalizedoc.ui
+    v2conversion.ui
 )
 
 set(KRAFT_LINK_LIBS

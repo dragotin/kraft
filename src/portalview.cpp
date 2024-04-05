@@ -36,6 +36,7 @@
 #include "reportgenerator.h"
 #include "texttemplate.h"
 #include "format.h"
+#include "dashboard.h"
 
 PortalView::PortalView(QWidget *parent, const char*)
     : QWidget( parent ),
@@ -53,6 +54,8 @@ PortalView::PortalView(QWidget *parent, const char*)
     _contentsWidget->setSpacing(0);
 
     _pagesWidget = new QStackedWidget(this);
+    _dashBoard = new DashBoard;
+    _pagesWidget->addWidget(_dashBoard);
     _pagesWidget->addWidget(documentDigests());
     _pagesWidget->addWidget(new QWidget());  // doc timeline
     _pagesWidget->addWidget(katalogDetails()); // catalogs
@@ -93,6 +96,13 @@ void PortalView::createIcons(const QSize& iconSize)
         return icon;
     };
 
+    QListWidgetItem *dashboardButton = new QListWidgetItem(_contentsWidget);
+    dashboardButton->setIcon(icon(DefaultProvider::self()->icon("home")));
+    dashboardButton->setText(i18n("Home"));
+    dashboardButton->setTextAlignment(Qt::AlignHCenter);
+    dashboardButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    dashboardButton->setSizeHint(sHint);
+
     QListWidgetItem *documentsButton = new QListWidgetItem(_contentsWidget);
     documentsButton->setIcon(icon(DefaultProvider::self()->icon("file-description")));
     documentsButton->setText(i18n("Documents"));
@@ -125,13 +135,13 @@ void PortalView::changePage(QListWidgetItem *current)
         return;
 
     int indx = _contentsWidget->row(current);
-    if( indx == 0 ) {
+    if( indx == 1 ) {
         // the flat documents list
         _allDocsView->setView( AllDocsView::FlatList );
-    } else if( indx == 1 ) {
+    } else if( indx == 2 ) {
         // the timeline
         _allDocsView->setView( AllDocsView::TreeView );
-        indx = 0;
+        indx = 1;
     }
 
     _pagesWidget->setCurrentIndex(indx);
@@ -162,8 +172,7 @@ QWidget* PortalView::katalogDetails()
     html += "</div>";
     mCatalogBrowser->displayContent( html );
 
-    connect( mCatalogBrowser, SIGNAL( openCatalog( const QString& ) ),
-             SIGNAL( openKatalog( const QString& ) ) );
+    connect(mCatalogBrowser, &PortalHtmlView::openCatalog, this, &PortalView::openKatalog);
 
     return w;
 }

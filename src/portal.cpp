@@ -71,6 +71,8 @@
 #include "exportxrechnung.h"
 #include "ui_xrechnung.h"
 #include "ui_finalizedoc.h"
+#include "ui_v2conversion.h"
+
 #include "dbtoxmlconverter.h"
 #include "xmldocindex.h"
 
@@ -1104,8 +1106,24 @@ void Portal::slotConvertToXML()
 {
     DbToXMLConverter converter;
 
-    // FIXME: Connect some progress info signals
-    converter.convert();
+    auto ym = converter.yearMap();
+
+    // overall docs count
+    int overall{0};
+    for (int y : ym.keys()) {
+        overall += ym[y];
+    }
+
+    auto dia = new QDialog(this);
+    dia->setAttribute(Qt::WA_DeleteOnClose);
+    Ui::v2ConversionDialog ui;
+    ui.setupUi(dia);
+    ui.progressBar->setMaximum(overall);
+    ui.progressBar->setValue(0);
+    dia->open();
+
+    // FIXME: Connect sossisme progress info signals
+    // converter.convert();
 }
 
 

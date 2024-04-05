@@ -1,8 +1,8 @@
 /***************************************************************************
-             DbToXMLConverter  - Convert the DB to XML
+                Dashboard - Home Dashboard of Kraft
                              -------------------
-    begin                : Feb. 2021
-    copyright            : (C) 2021 by Klaas Freitag
+    begin                : Mar. 2024
+    copyright            : (C) 2024 by Klaas Freitag
     email                : kraft@freisturz.de
  ***************************************************************************/
 
@@ -15,32 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef DBTOXMLCONVERTER_H
-#define DBTOXMLCONVERTER_H
+#ifndef DASHBOARD_H
+#define DASHBOARD_H
 
-#include <QObject>
-#include <QPair>
+#include <QWidget>
 
-class DbToXMLConverter : public QObject
+class HtmlView;
+
+class DashBoard : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DbToXMLConverter(QObject *parent = nullptr);
+    explicit DashBoard(QWidget *parent = nullptr);
 
-    void convert();
-    QMap <int, int> yearMap();
-
-private:
-
-    void convertDocsOfYear(int year, const QString& basePath, QMap<QByteArray, int> &);
-    bool convertLatestPdf(const QString &basePath, const QString& ident, const QString& uuid);
-    QString convertDbToXml(const QString& docID);
-
-    int amountOfDocsOfYear(int year);
-    int convertNumbercycles(const QString &baseDir);
+    void appendHtml(const QString& t);
 
 signals:
 
+private:
+    HtmlView *_htmlView;
+
 };
 
-#endif // DBTOXMLCONVERTER_H
+#endif // DASHBOARD_H

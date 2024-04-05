@@ -32,6 +32,7 @@ class AllDocsView;
 class dbID;
 class PortalHtmlView;
 class DocDigest;
+class DashBoard;
 
 class PortalView : public QWidget
 {
@@ -69,6 +70,7 @@ private:
 
     QString systemView( const QString& ) const;
 
+    DashBoard     *_dashBoard;
     AllDocsView   *_allDocsView;
     PortalHtmlView  *mCatalogBrowser;
     PortalHtmlView  *mSystemBrowser;
