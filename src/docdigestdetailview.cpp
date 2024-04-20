@@ -96,11 +96,6 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   mHtmlCanvas->setFrameStyle(0);
   mHtmlCanvas->setStylesheetFile("docdigestview.css");
 
-  connect( mHtmlCanvas, SIGNAL(showLastPrint( const dbID& )),
-           this, SIGNAL( showLastPrint( const dbID& ) ) );
-  connect( mHtmlCanvas, SIGNAL(exportXRechnung( const dbID& )),
-           this, SIGNAL( exportXRechnung( const dbID& ) ) );
-
   hbox->addWidget( mHtmlCanvas);
 
   const QString bgColor = mHtmlCanvas->palette().base().color().name();

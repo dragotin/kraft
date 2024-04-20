@@ -95,8 +95,6 @@ ReportGenerator::~ReportGenerator()
  *
  * This is the starting point of a report creation.
  */
-
-// FIXME: This should work by UUID instead of docID
 void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
 {
     if (_uuid == uuid) {
