@@ -87,18 +87,17 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   hbox->addWidget( mHtmlCanvas);
 
   const QString bgColor = mHtmlCanvas->palette().base().color().name();
-  const QString style = QString("QLabel { "
+  const QString style = QStringLiteral("QLabel { "
                                 "background-color: %1; "
                                 "background-image: url(:/kraft/kraft_customer.png); background-repeat: repeat-none;"
                                 "background-position: top left; "
-                                "padding: 10px; "
                                 "}").arg(bgColor);
 
   _leftDetails->setStyleSheet(style);
   _leftDetails->setWordWrap(true);
 
   // --- The right details Box
-  const QString styleR = QString("QLabel { "
+  const QString styleR = QStringLiteral("QLabel { "
                                  "background-color: %1;"
                                  "background-image: url(:/kraft/postit.png); background-repeat: repeat-none;"
                                  "background-position: top center;"
@@ -432,16 +431,16 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
         tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
         tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("This document was never printed."));
     } else {
-        ArchDocDigest digest = archDocs[0];
+        ArchDocDigest archdigest = archDocs[0];
 
-        QFileInfo fi(digest.pdfArchiveFileName());
+        QFileInfo fi(archdigest.pdfArchiveFileName());
         if (fi.exists()) {
             tmpl.createDictionary( DOCDIGEST_TAG( "PRINTED" ));
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LABEL"), i18n( "Last printed" ) );
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_TITLE"), i18n( "Opens last created PDF document" ) );
             tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), Format::toDateTimeString(digest.printDate(), Format::DateFormatLong));
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), digest.archDocId().toString() );
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), Format::toDateTimeString(archdigest.printDate(), Format::DateFormatLong));
+            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), archdigest.archDocId().toString() );
 
             if( archDocs.size() == 1 ) {
                 tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("One older print"));
@@ -452,11 +451,11 @@ void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
             tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
             tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("Archived documents cannot be found. Check PDF Output dir."));
         }
-        if (digest.isInvoice()) {
-            tmpl.createDictionary( DOCDIGEST_TAG( "EXPORT_XRECHNUNG" ));
-            tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_TITLE"), i18n("Export the invoice in XRechnung file format"));
-            tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_LABEL"), i18n("XRechnung"));
-        }
+    }
+    if (digest.isXRechnungEnabled()) {
+        tmpl.createDictionary( DOCDIGEST_TAG( "EXPORT_XRECHNUNG" ));
+        tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_TITLE"), i18n("Export the invoice in XRechnung file format"));
+        tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_LABEL"), i18n("XRechnung"));
     }
 
     const QString details = tmpl.expand();

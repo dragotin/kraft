@@ -51,8 +51,8 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
 {
   setupUi( this );
 
-  connect( mTypeListBox, SIGNAL( currentTextChanged( const QString& ) ),
-           this,  SLOT( slotDocTypeSelected( const QString& ) ) );
+  connect(mTypeListBox, &QListWidget::currentTextChanged,
+           this,  &DocTypeEdit::slotDocTypeSelected);
 
   QStringList types = DocType::allLocalised();
   mTypeListBox->clear();
@@ -115,6 +115,8 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
       }
   });
 
+  connect( mCbXRechnung, &QCheckBox::toggled, this, &DocTypeEdit::slotXRechnungToggled);
+
   connect( mPbAdd, SIGNAL( clicked() ),
            SLOT( slotAddDocType() ) );
   connect( mPbEdit, SIGNAL( clicked() ),
@@ -149,6 +151,9 @@ DocTypeEdit::DocTypeEdit( QWidget *parent )
   if ( newMode == 0 )
     state = false;
   mWatermarkUrl->setEnabled( state );
+
+    bool xrechnungEnabled = dt.isXRechnungEnabled();
+    mCbXRechnung->setCheckState(xrechnungEnabled ? Qt::Checked : Qt::Unchecked);
 }
 
 void DocTypeEdit::fillNumberCycleCombo()
@@ -183,6 +188,18 @@ void DocTypeEdit::slotAddDocType()
     mChangedDocTypes[newName] = newDt; // Check again!
     mAddedTypes.append( newName );
   }
+}
+
+void DocTypeEdit::slotXRechnungToggled(bool newState)
+{
+    qDebug() << "set XREchnung state:" << newState;
+
+    DocType dt = currentDocType();
+
+    if ( newState != dt.isXRechnungEnabled() ) {
+        dt.setXRechnungEnabled(newState);
+        mChangedDocTypes[dt.name()] = dt;
+    }
 }
 
 void DocTypeEdit::slotEditDocType()
@@ -287,6 +304,7 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   prevType.setWatermarkFile( mWatermarkUrl->text() );
   prevType.setAppendPDFFile(mAppendUrl->text());
   prevType.setMergeIdent( QString::number( mWatermarkCombo->currentIndex() ) );
+  prevType.setXRechnungEnabled(mCbXRechnung->checkState() == Qt::Checked);
   mChangedDocTypes[mPreviousType] = prevType;
 
   // dt.setNumberCycleName( dt.numberCycleName() );
@@ -307,6 +325,8 @@ void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
   mWatermarkCombo->setCurrentIndex( mergeIdent );
   mWatermarkUrl->setEnabled( mergeIdent > 0 );
   mAppendUrl->setText(dt.appendPDF());
+  bool xrechnungEnabled = dt.isXRechnungEnabled();
+  mCbXRechnung->setCheckState(xrechnungEnabled ? Qt::Checked : Qt::Unchecked);
 
   mPreviousType = newValue;
 

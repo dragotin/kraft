@@ -62,12 +62,8 @@ public:
     }
 
     QString pdfArchiveFileName() const;
-
-    // FIXME: This is a workaround for the XRechnung - so far only the german
-    // doctype "Rechnung" enables the XRechnung support.
-    bool isInvoice() const;
-
 protected:
+
     QDateTime mPrintDate;
     int       mState;
     dbID      mArchDocId;
@@ -126,8 +122,6 @@ class ArchDoc: public QObject, public ArchDocDigest
     Q_PROPERTY(bool isInvoice READ isInvoice)
 
 public:
-
-    const QString SentOutDateC {"SentOutDate"};
 
     /** Constructor for the fileclass of the application */
     ArchDoc();
@@ -213,6 +207,9 @@ public:
 
     void loadFromDb( dbID );
 
+    bool isInvoice();
+    const QString SentOutDateC {"SentOutDate"};
+
 protected:
     void loadItems( const QString& );
 
@@ -227,6 +224,8 @@ protected:
     QString mProjectLabel;
     QString mPredecessor;
 
+    AttributeMap mAttributes;
+
     QString _buyerRef;
     QDate _dueDate;
 
@@ -236,7 +235,6 @@ protected:
     QDate     mDate;
 
     ArchDocPositionList mPositions;
-    AttributeMap mAttributes;
 };
 
 

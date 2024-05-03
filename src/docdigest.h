@@ -46,6 +46,7 @@ public:
   void setAddressee( const KContacts::Addressee& );
 
   QString type() const { return mType; }
+  bool isXRechnungEnabled() const;
   void setType( const QString& t ) { mType = t; }
 
   QString date() const;

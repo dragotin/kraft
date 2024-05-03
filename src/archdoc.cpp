@@ -301,6 +301,14 @@ ArchDocDigest ArchDoc::toDigest() const
     return ArchDocDigest(mPrintDate, mState, mIdent, mDocTypeStr, mArchDocID);
 }
 
+bool ArchDoc::isInvoice()
+{
+    bool re{false};
+
+    re = true;
+    return re;
+}
+
 /* ###################################################################### */
 
 ArchDocDigest::ArchDocDigest()
@@ -331,13 +339,6 @@ QString ArchDocDigest::pdfArchiveFileName() const
     const QString file = QString( "%1/%2" ).arg( outputDir ).arg( filename );
 
     return file;
-}
-
-bool ArchDocDigest::isInvoice() const
-{
-    // This is just a work around and should be fixed with an attribute for the doctype
-    // at some point.
-    return (mDocTypeStr == QStringLiteral("Rechnung"));
 }
 
 /* ###################################################################### */

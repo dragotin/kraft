@@ -908,12 +908,11 @@ void Portal::slotDocumentSelected( const DocDigest& doc )
     auto archDocs = doc.archDocDigestList();
     if (archDocs.isEmpty()) {
         _actOpenArchivedDocument->setEnabled(false);
-        _actXRechnung->setEnabled(false);
     } else {
         _actOpenArchivedDocument->setEnabled( enable );
-        ArchDocDigest archDoc = archDocs.at(0);
-        _actXRechnung->setEnabled(archDoc.isInvoice() && enable);
     }
+    bool en = doc.isXRechnungEnabled() && enable;
+    _actXRechnung->setEnabled(en);
 }
 
 void Portal::slotArchivedDocExecuted()

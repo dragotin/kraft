@@ -94,11 +94,14 @@ class KRAFTCAT_EXPORT DocType
 
   void        readIdentTemplate();
 
+  bool        isXRechnungEnabled() const;
+  void        setXRechnungEnabled(bool);
   protected:
   void        readFollowerList();
 
   private:
   static void init();
+
 
 private:
   AttributeMap mAttributes;

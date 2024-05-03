@@ -41,6 +41,7 @@ const QString DayCounterDateStr  {"dayCounterDate"};
 const QString DayCounterStr  {"dayCounter"};
 const QString AppendPDFStr   {"AppendPDFFile"};
 const QString DefaultTmplFileName {"invoice.trml"};
+const QString XRechnungEnabled {"XRechnungEnabled"};
 }
 
 
@@ -674,6 +675,28 @@ void DocType::setName( const QString& name )
     mDirty = true;
 }
 
+void DocType::setXRechnungEnabled(bool state)
+{
+    if (state == isXRechnungEnabled())
+        return;
+
+    if (state)
+        setAttribute(XRechnungEnabled, QStringLiteral("Yes"));
+    else
+        mAttributes.markDelete(XRechnungEnabled);
+    mDirty = true;
+}
+
+bool DocType::isXRechnungEnabled() const
+{
+    bool re{false};
+
+    if (mAttributes.contains(XRechnungEnabled)) {
+        auto xre = mAttributes[XRechnungEnabled].value().toString();
+        re = (xre == QStringLiteral("Yes"));
+    }
+    return re;
+}
 
 /*
  * Saves the name and the attriutes (numbercycle, demand, etc.)

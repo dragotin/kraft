@@ -62,6 +62,7 @@ protected slots:
   void slotWatermarkUrlChanged( const QString& );
   void slotTemplateUrlChanged( const QString& );
   void slotAppendPDFUrlChanged( const QString& );
+    void slotXRechnungToggled(bool);
 
 signals:
   /**

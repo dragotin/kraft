@@ -25,6 +25,7 @@
 #include "defaultprovider.h"
 #include "format.h"
 #include "kraftsettings.h"
+#include "doctype.h"
 
 DocDigest::DocDigest( dbID id, const QString& type, const QString& clientID )
   :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" )
@@ -87,6 +88,11 @@ void DocDigest::setAddressee( const KContacts::Addressee& contact )
   mContact = contact;
 }
 
+bool DocDigest::isXRechnungEnabled() const
+{
+    const DocType dt(mType);
+    return dt.isXRechnungEnabled();
+}
 
 /* *************************************************************************** */
 
