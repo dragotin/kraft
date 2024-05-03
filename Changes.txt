@@ -1,3 +1,19 @@
+Changes since version 1.1: #########################################
+
+- Manual: Updated text and dutch translations
+- Manual: Updated screenshots for all languages
+- Fix #211: Be more robust if no .git file is there
+- Fix cmake warnings
+- Substancial code cleanups
+- Fix reproducable builds
+- Fix saving of XRechnung files
+- Added a template for XRechnung version 3.0.1
+- Fix #218: Add a image mask for reportlab
+- Fix tests
+- Add checkbox to mark document types to get XRechnung support
+
+=> release v. 1.2 (, 2024)
+
 Changes since version 1.0: #########################################
 
 - updated nl translations of the manual
@@ -13,7 +29,7 @@ Changes since version 1.0: #########################################
 - Add Button to Allow to insert template pre- and post texts rather than
   replace the entire text #167
 
-=> release v. 1.1 (2023)
+=> release v. 1.1 (Sept 16, 2023)
 
 Changes since version 0.98: #########################################
 
