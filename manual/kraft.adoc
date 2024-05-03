@@ -967,11 +967,13 @@ Make sure to not disturb the proper XML format and do not change places where th
 
 Once the file is adopted to the needs, open the Settings dialog of Kraft and insert the filename into the entry field for the XRechnung Template File on the Document Defaults page.
 
-After that step, the btn:[Export XRechung] menu item will open a dialog to pick a filename where to save the XRechnung invoice to.
+Next is to specify for which document types the XRechnung export should be made available. For that, open the Kraft Settings dialog, and proceed to the Document Type tab on the left. For each document type listed there, you can mark the checkbox btn:[Enable XRechnung Support]. 
 
-This file can now be transfered to the receiver of the invoice.
+After that steps, the btn:[Export XRechung] menu item will let you open a dialog to add a few additional parameters for the XRechnung that Kraft does not have by default, and lets you pick a filename where to save the XRechnung invoice file to.
 
-NOTE: There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the  format of the Kraft exported XRechnung.
+This file can now be transferred to the receiver of the invoice via email, a private file share or the like.
+
+NOTE: There are validators for invoices in XRechnung format out there in the internet. It is useful to verify the format of the Kraft exported XRechnung.
 
 === Changing the Locale
 
