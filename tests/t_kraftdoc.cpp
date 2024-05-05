@@ -9,6 +9,8 @@
 #include "attribute.h"
 #include "docposition.h"
 #include "dbids.h"
+#include "format.h"
+#include "kraftsettings.h"
 
 void init_test_db()
 {
@@ -77,6 +79,8 @@ class T_KraftDoc: public QObject {
 private slots:
     void initTestCase()
     {
+        QLocale::setDefault(QLocale::German);
+        KraftSettings::self()->setDateFormat(Format::DateFormatGerman);
         init_test_db();
     }
 
