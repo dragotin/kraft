@@ -34,6 +34,6 @@ Kraft utilizes a bunch of very useful tools of the free softare world:
 For questions and comments, please speak up. Check the [web site](http://volle-kraft-voraus.de/Main/Contribution)
 for contact details.
 
-Jun 2005-2023, Klaas Freitag <kraft@freisturz.de>
+Jun 2005-2024, Klaas Freitag <kraft@freisturz.de>
 
 
