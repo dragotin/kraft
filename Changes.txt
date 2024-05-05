@@ -1,3 +1,11 @@
+Changes since version 1.2: #########################################
+
+- Fixed a stupid release bug and name the release properly
+- Fixed the defaultprovider test
+  Thanks t-8ch for contribution <3
+
+=> release v. 1.2.1 (May 5, 2024)
+
 Changes since version 1.1: #########################################
 
 - Manual: Updated text and dutch translations
@@ -13,7 +21,7 @@ Changes since version 1.1: #########################################
 - Add checkbox to mark document types to get XRechnung support
 - Add a feedback link to the system overview page
 
-=> release v. 1.2 (, 2024)
+=> release v. 1.2 (May 5, 2024)
 
 Changes since version 1.0: #########################################
 
