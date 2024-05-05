@@ -11,6 +11,7 @@ Changes since version 1.1: #########################################
 - Fix #218: Add a image mask for reportlab
 - Fix tests
 - Add checkbox to mark document types to get XRechnung support
+- Add a feedback link to the system overview page
 
 => release v. 1.2 (, 2024)
 
