@@ -290,6 +290,13 @@ QString PortalView::systemView( const QString& htmlMsg ) const
   tmpl.setValue( "KRAFT_VERSION", Kraft::Version::number());
   tmpl.setValue( "KRAFT_CODENAME_LABEL", i18n( "Codename" ) );
   tmpl.setValue( "KRAFT_CODENAME", Kraft::Version::codeName() );
+  const QString feedbackTmpl{i18n("# How do you like Kraft overall?\n\n"
+                       "# What kind of business do you run?\n\n"
+                       "# In which country are you working?\n\n"
+                       "# Are you planning to continue with Kraft?\n\n"
+                       "# What else do you want to tell us?\n\n")};
+  tmpl.setValue( "KRAFT_FEEDBACK_TEMPLATE", feedbackTmpl);
+  tmpl.setValue( "KRAFT_FEEDBACK", i18n("Send Feedback to the Kraft Authors") );
 
   // string like
   // git sha <sha> on branch <branch> built on <host> (<distro>)

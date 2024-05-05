@@ -7,7 +7,15 @@
       <p>{{KRAFT_INTRO_DESC}}</p>
       <p>Copyright © 2004-{{KRAFT_COPYRIGHT_YEAR}} Klaas Freitag &lt;kraft@freisturz.de&gt;</p>
       <p>{{KRAFT_LICENSE_TEXT}} <a href="/license">GNU Public License 2.0</a></p>
-      <p>{{KRAFT_AUTHORS}}:
+    </td>
+    <td width="15%" align="center" style="vertical-align: top; padding-right: 20px; margin: 0px;">
+      <a href="http://www.volle-kraft-voraus.de"><img src="{{KRAFT_LOGO_FILE}}" />
+      <br/>{{KRAFT_WEBSITE}}</a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+        <p>{{KRAFT_AUTHORS}}:
         <ul>
           <li>{{KRAFT_MAINTAINER}}: Klaas Freitag &lt;kraft@freisturz.de&gt;</li>
           <li>{{KRAFT_DEVELOPER}}: Thomas Richard</li>
@@ -17,9 +25,9 @@
       </p>
       <p>{{KRAFT_GITHUB}} <a href="https://www.github.com/dragotin/kraft">Github</a></p>
     </td>
-    <td width="15%" align="center" style="vertical-align: top; padding-right: 20px; margin: 0px;">
-      <a href="http://www.volle-kraft-voraus.de"><img src="{{KRAFT_LOGO_FILE}}" />
-      <br/>{{KRAFT_WEBSITE}}</a>
+    <td width="15%" align="center" style="vertical-align: middle; padding-right: 20px; margin: 0px;">
+      <a href="mailto:opensource@freisturz.de
+         ?body={{KRAFT_FEEDBACK_TEMPLATE}}">{{KRAFT_FEEDBACK}}</a>
     </td>
   </tr>
 </table>
@@ -42,7 +50,7 @@
     <td class="value">{{GIT_BUILD_STRING}}</i></td>
     <td></td>
   </tr>
-  
+
   <tr>
     <td class="label">{{COUNTRY_SETTING_LABEL}}:</td>
     <td class="value"><i>{{COUNTRY_SETTING}}</i></td>
