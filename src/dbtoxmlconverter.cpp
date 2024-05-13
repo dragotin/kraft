@@ -53,9 +53,10 @@ void DbToXMLConverter::convert()
     QMap<QByteArray, int> results;
 
     for (int year : keys) {
-        emit conversionOut(i18n("Starting conversion for year %1...").arg(year));
+        int amount = years.value(year);
+        emit conversionOut(i18n("Converting %1 documents for year %2...").arg(amount).arg(year));
         convertDocsOfYear(year, dBase, results);
-        emit conversionOut(i18n("... result: %1 ok, %2 fails").arg(results[okStr]).arg(results[failsStr]));
+        emit conversionOut(i18n("     result: %1 ok, %2 fails, %3 PDF fails").arg(results[okStr]).arg(results[failsStr]).arg(results[pdfFailsStr]));
 
         // FIXME Check for errors and set ok flag
     }
