@@ -71,6 +71,7 @@
 #include "exportxrechnung.h"
 #include "ui_xrechnung.h"
 #include "ui_finalizedoc.h"
+#include "ui_dbtoxml.h"
 #include "dbtoxmlconverter.h"
 #include "xmldocindex.h"
 
@@ -457,15 +458,19 @@ void Portal::slotStartupChecks()
         // not yet converted!
     } else {
         QFileInfo fi(QDir(v2BaseDir), "current");
-        if (fi.isSymLink())
+        if (fi.isSymLink()) {
             qDebug() << "Kraft Version 2 document dir:" << fi.symLinkTarget();
-        else
+        } else {
             qDebug() << "V2 path malformed";
+        }
     }
 
     // Initialize DocIndex
-    const QString basePath = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root);
-    if (!basePath.isEmpty()) {
+    const QString basePath = DefaultProvider::self()->kraftV2Dir();
+    if (basePath.isEmpty()) {
+        // conversion has not yet happened
+        slotConvertToXML();
+    } else {
         XmlDocIndex indx;
         indx.setBasePath(basePath);
     }
@@ -473,9 +478,8 @@ void Portal::slotStartupChecks()
     m_portalView->fillCatalogDetails();
     m_portalView->fillSystemDetails();
 
-    slotStatusMsg( i18n( "Check commandline actions" ) );
-
     if ( mCmdLineArgs ) {
+        slotStatusMsg( i18n( "Check commandline actions" ) );
         const QString docId = mCmdLineArgs->value("d");
         if ( ! docId.isEmpty() ) {
             QString uuid;
@@ -1119,11 +1123,25 @@ void Portal::slotReconfigureDatabase()
 void Portal::slotConvertToXML()
 {
     DbToXMLConverter converter;
+
+    const QString info{ tr("Conversion started")};
+
+    auto dia = new QDialog(this);
+    dia->setAttribute(Qt::WA_DeleteOnClose);
+    Ui::dbToXMLDialog ui;
+    ui.setupUi(dia);
+    ui.textBrowser->setText(info);
+    ui.buttonBox->button(QDialogButtonBox::StandardButton::Close)->setEnabled(false);
+    dia->show();
+    QApplication::processEvents();
+
     connect(&converter, &DbToXMLConverter::conversionOut, this, [=](const QString& msg) {
        qDebug() << "##########" << msg;
+       ui.textBrowser->append(msg);
+       QApplication::processEvents();
     });
-    // FIXME: Connect some progress info signals
     converter.convert();
+    ui.buttonBox->button(QDialogButtonBox::StandardButton::Close)->setEnabled(true);
 }
 
 

@@ -160,6 +160,7 @@ ki18n_wrap_ui(kraft_SRCS
     xrechnung.ui
     documentactions.ui
     finalizedoc.ui
+    dbtoxml.ui
 )
 
 set(KRAFT_LINK_LIBS
