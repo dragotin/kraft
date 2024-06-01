@@ -44,6 +44,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/Control>
+#include <Akonadi/ServerManager>
 #else
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
@@ -54,6 +55,7 @@
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/entitydisplayattribute.h>
 #include <AkonadiCore/control.h>
+#include <AkonadiCore/servermanager.h>
 #endif
 
 using namespace Akonadi;
@@ -73,7 +75,11 @@ bool AddressProviderPrivate::init()
 {
     _akonadiUp = false;
 #ifdef HAVE_AKONADI
-    if ( !Akonadi::Control::start( ) ) {
+    if ( Akonadi::ServerManager::state() == Akonadi::ServerManager::Broken ) {
+        // should be handled in Akonadi::Control::start().
+        // See https://invent.kde.org/pim/akonadi/-/merge_requests/189
+        qDebug() << "Akonadi broken: " << Akonadi::ServerManager::brokenReason();
+    } else if ( !Akonadi::Control::start( ) ) {
         qDebug() << "Failed to start Akonadi!";
     } else {
         mSession = new Akonadi::Session( "KraftSession" );
