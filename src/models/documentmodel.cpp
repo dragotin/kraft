@@ -54,7 +54,7 @@ void DocumentModel::removeAllData()
 
 void DocumentModel::appendNewDoc(const DocDigest& digest)
 {
-    int r = rowCount(QModelIndex())-1;
+    int r = rowCount(QModelIndex());
     beginInsertRows(QModelIndex(), r, r);
     addData(digest);
     endInsertRows();
