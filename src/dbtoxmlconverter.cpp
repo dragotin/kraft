@@ -26,6 +26,19 @@ QDomElement xmlTextElement( QDomDocument& doc, const QString& name, const QStrin
   return elem;
 }
 
+bool setFileMTime(const QString& fileName, const QDateTime& dt)
+{
+    bool ok{false};
+
+    QFile file{fileName};
+    // set the mtime of the file, important: Use Append open to not wipe the file
+    if (file.open(QIODevice::WriteOnly|QFile::Append)) {
+        ok = file.setFileTime(dt, QFileDevice::FileModificationTime);
+        file.close();
+    }
+    return ok;
+}
+
 }
 
 DbToXMLConverter::DbToXMLConverter(QObject *parent) : QObject(parent)
@@ -33,18 +46,17 @@ DbToXMLConverter::DbToXMLConverter(QObject *parent) : QObject(parent)
 
 }
 
-void DbToXMLConverter::convert()
+QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
 {
     QMap<int, int> years = yearMap();
-    bool ok {true};
 
     // defaults to $HOME/.local/kraft/v2/current
-    QString dBase = DefaultProvider::self()->createV2BaseDir();
+    // QString dBase = DefaultProvider::self()->createV2BaseDir();
 
     if (dBase.isEmpty()) {
         qDebug() << "A new v2 base path can not be created";
 
-        return;
+        return {};
     }
 
     QList<int> keys = years.keys();
@@ -177,25 +189,7 @@ QString DbToXMLConverter::convertDbToXml(const QString& docID)
             const QDateTime& lastModified = doc.lastModified();
 
             if (lastModified.isValid()) {
-                /*
-             *        The utimbuf structure is:
-             *
-             *        struct utimbuf {
-             *          time_t actime;       // access time
-             *          time_t modtime;      // modification time
-             *        };
-             */
-                struct tm time;
-                time.tm_sec = lastModified.time().second();
-                time.tm_min = lastModified.time().minute();
-                time.tm_hour = lastModified.time().hour();
-                time.tm_mday = lastModified.date().day();
-                time.tm_mon = lastModified.date().month()-1;
-                time.tm_year = lastModified.date().year()-1900;
-                struct utimbuf utime_par;
-                utime_par.modtime = mktime(&time);
-                // utime_par.actime  = mktime()
-                utime(fileName.toUtf8().constData(), &utime_par);
+                setFileMTime(fileName, lastModified);
             } else {
                 qDebug() << "Invalid time stamp for last modified for" << fileName;
             }
@@ -240,12 +234,9 @@ bool DbToXMLConverter::convertLatestPdf(const QString& basePath, const QString& 
         }
 
         if (QFile::copy(oldPdfFile, newPdfFile)) {
-            QFile file{newPdfFile};
-            // set the mtime of the file
-            if (file.open(QIODevice::WriteOnly)) {
-                ok = file.setFileTime(printDate, QFileDevice::FileModificationTime);
-                file.close();
-            }
+            setFileMTime(newPdfFile, printDate);
+        } else {
+            qDebug() << "Unable to copy" << oldPdfFile << "to" << newPdfFile;
         }
     }
     return ok;
