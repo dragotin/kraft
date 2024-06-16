@@ -198,7 +198,7 @@ bool DbToXMLConverter::convertLatestPdf(const QString& basePath, const QString& 
     bool ok{false};
 
     // query the most recent PDF from the db.
-    const QString sql{"select ident, archDocID, printDate from archdoc where ident=:ident order by printDate desc limit 1;"};
+    const QString sql{"select ident, archDocID, date, printDate from archdoc where ident=:ident order by printDate desc limit 1;"};
     QSqlQuery q;
     q.prepare(sql);
     q.bindValue(":ident", ident);
@@ -208,13 +208,18 @@ bool DbToXMLConverter::convertLatestPdf(const QString& basePath, const QString& 
     if (q.next()) {
         const QString dbIdent = q.value(0).toString();
         const QString archId = q.value(1).toString();
-        const QDateTime printDate = q.value(2).toDateTime();
+        const QDateTime docDate = q.value(2).toDateTime();
+        const QDateTime printDate = q.value(3).toDateTime();
 
         const QString copyPdfName = QString("%1_%2.pdf").arg(dbIdent).arg(archId);
         const QString newPdfName = QString("%1.pdf").arg(uuid);
         QDir oldPdfDir{DefaultProvider::self()->pdfOutputDir()};
         QDir newPdfDir(basePath);
         newPdfDir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::PdfDocs));
+        newPdfDir.cd(QString("%1/%2/").arg(docDate.date().year()).arg(docDate.date().month()));
+        if (!newPdfDir.exists()) {
+            newPdfDir.mkpath(newPdfDir.absolutePath());
+        }
 
         const QString oldPdfFile{oldPdfDir.absoluteFilePath(copyPdfName)};
         const QString newPdfFile{newPdfDir.absoluteFilePath(newPdfName)};
