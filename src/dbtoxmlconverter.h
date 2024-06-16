@@ -27,10 +27,10 @@ class DbToXMLConverter : public QObject
 public:
     explicit DbToXMLConverter(QObject *parent = nullptr);
 
-    void convert();
+    QMap<QByteArray, int> convert(const QString &dBase);
+    QMap <int, int> yearMap();
 
 private:
-    QMap <int, int> yearMap();
 
     void convertDocsOfYear(int year, const QString& basePath, QMap<QByteArray, int> &);
     bool convertLatestPdf(const QString &basePath, const QString& ident, const QString& uuid);
