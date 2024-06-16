@@ -51,7 +51,6 @@ QString polishedBaseDir()
         return QString();
     }
     QDir dir(base);
-    qDebug() << "Found Base Path in config file" << dir.path();
     if (dir.cd("current")) {
         qDebug() << "Found Base Path in config file (with current)" << dir.path();
 
@@ -394,7 +393,6 @@ QString DefaultProvider::createV2BaseDir(const QString& base)
             currV2Dir.cd(fragment);
             currV2Dir.mkdir("numbercycles");
             currV2Dir.mkdir("xmldoc");
-            currV2Dir.mkdir("pdf");
         }
         cnt++;
     } while(!(ok && cnt < 5));
