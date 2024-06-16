@@ -1120,28 +1120,44 @@ void Portal::slotReconfigureDatabase()
   }
 }
 
-void Portal::slotConvertToXML()
+QString Portal::slotConvertToXML()
 {
     DbToXMLConverter converter;
 
-    const QString info{ tr("Conversion started")};
+    const QString dBase = DefaultProvider::self()->createV2BaseDir();
+    const QString info{ tr("Conversion started to %1").arg(dBase)};
 
-    auto dia = new QDialog(this);
-    dia->setAttribute(Qt::WA_DeleteOnClose);
-    Ui::dbToXMLDialog ui;
-    ui.setupUi(dia);
-    ui.textBrowser->setText(info);
-    ui.buttonBox->button(QDialogButtonBox::StandardButton::Close)->setEnabled(false);
-    dia->show();
-    QApplication::processEvents();
+    auto yearMap = converter.yearMap();
 
-    connect(&converter, &DbToXMLConverter::conversionOut, this, [=](const QString& msg) {
-       qDebug() << "##########" << msg;
-       ui.textBrowser->append(msg);
-       QApplication::processEvents();
-    });
-    converter.convert();
-    ui.buttonBox->button(QDialogButtonBox::StandardButton::Close)->setEnabled(true);
+    if (yearMap.size() == 0) {
+        qDebug() << "Nothing to convert, fresh installation!";
+    } else {
+        auto dia = new QDialog(this);
+        dia->setAttribute(Qt::WA_DeleteOnClose);
+        Ui::dbToXMLDialog ui;
+        ui.setupUi(dia);
+        ui.textBrowser->setText(info);
+        ui.buttonBox->button(QDialogButtonBox::StandardButton::Close)->setEnabled(false);
+        dia->show();
+        QApplication::processEvents();
+
+        connect(&converter, &DbToXMLConverter::conversionOut, this, [=](const QString& msg) {
+            qDebug() << "##########" << msg;
+            ui.textBrowser->append(msg);
+            QApplication::processEvents();
+        });
+        QMap<QByteArray, int> results = converter.convert(dBase);
+        Q_UNUSED(results)
+        ui.buttonBox->button(QDialogButtonBox::StandardButton::Close)->setEnabled(true);
+    }
+    // switch to the new base dir
+
+    if (DefaultProvider::self()->switchToV2BaseDir(dBase)) {
+
+        XmlDocIndex indx;
+        Q_UNUSED(indx)
+    }
+    return dBase;
 }
 
 

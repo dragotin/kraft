@@ -85,7 +85,7 @@ class Portal : public QMainWindow
     void slotDocConvertionFail(const QString &uuid, const QString& failString, const QString &details);
     void openInMailer(const QString& fileName, const KContacts::Addressee& contact);
 
-    void slotConvertToXML();
+    QString slotConvertToXML();
 
   public slots:
 

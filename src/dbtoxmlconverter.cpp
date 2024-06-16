@@ -72,28 +72,18 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
 
         // FIXME Check for errors and set ok flag
     }
-    qDebug() << "Conversion to" << dBase;
+
+    // -- Convert the numbercycles
+    int nc_cnt = convertNumbercycles(dBase);
+    results["numberCyclesOk"] = nc_cnt;
     for( const auto& k : results.keys()) {
         qDebug() << "Conversion result" << k << ":" << results[k];
     }
 
-    // -- Convert the numbercycles
-    int nc_cnt = convertNumbercycles(dBase);
-    qDebug() << "Converted"<< nc_cnt << "numbercycles in"<< dBase;
-
     if (nc_cnt == 0) {
         qDebug() << "Could not convert any numbercycles. Smell!";
-        ok = false;
     }
-
-    // if all was good it is switched to the new base dir
-    if (ok) {
-        if (DefaultProvider::self()->switchToV2BaseDir(dBase)) {
-
-            XmlDocIndex indx;
-            Q_UNUSED(indx)
-        }
-    }
+    return results;
 }
 
 QMap<int, int> DbToXMLConverter::yearMap()
