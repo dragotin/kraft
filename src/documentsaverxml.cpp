@@ -545,7 +545,6 @@ XML::Totals DocumentSaverXML::getLastTotals() const
 
 bool DocumentSaverXML::saveDocument(KraftDoc *doc)
 {
-
     bool result = false;
     if( ! doc ) return result;
 
@@ -553,6 +552,9 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     if (!_archiveMode) {
         doc->setLastModified(QDateTime::currentDateTime());
     }
+
+    QElapsedTimer ti;
+    ti.start();
 
     bool newState{false};
     if (doc->state().isNew()) {
@@ -577,9 +579,6 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         doc->state().setState(KraftDocState::State::New);
     }
 
-    QElapsedTimer ti;
-    ti.start();
-
     // TODO: Write to temp file first, and move only if it validates.
     qDebug () << "Storing XML to " << xmlFile;
 
@@ -597,6 +596,7 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
         doc->setLastModified(saveLastModified);
         return false;
     }
+
 
     _lastSaveFile = xmlFile;
 

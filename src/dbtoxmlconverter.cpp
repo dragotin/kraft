@@ -62,28 +62,40 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
     QList<int> keys = years.keys();
     std::sort(keys.begin(), keys.end());
 
-    QMap<QByteArray, int> results;
+    QMap<QByteArray, int> overallResults;
 
     for (int year : keys) {
         int amount = years.value(year);
         emit conversionOut(i18n("Converting %1 documents for year %2...").arg(amount).arg(year));
+
+        QMap<QByteArray, int> results;
         convertDocsOfYear(year, dBase, results);
         emit conversionOut(i18n("     result: %1 ok, %2 fails, %3 PDF fails").arg(results[okStr]).arg(results[failsStr]).arg(results[pdfFailsStr]));
+
+        overallResults[okStr] += results[okStr];
+        overallResults[failsStr] += results[failsStr];
+        overallResults[pdfFailsStr] += results[pdfFailsStr];
 
         // FIXME Check for errors and set ok flag
     }
 
+    emit conversionOut(i18n("<br/><b>Overall document conversion result:</b>"));
+    emit conversionOut(i18n("    Successfully converted documents: %1").arg(overallResults[okStr]));
+    emit conversionOut(i18n("    Failed converted documents: %1").arg(overallResults[failsStr]));
+    emit conversionOut(i18n("    PDF conversion fails: %1").arg(overallResults[pdfFailsStr]));
+
     // -- Convert the numbercycles
     int nc_cnt = convertNumbercycles(dBase);
-    results["numberCyclesOk"] = nc_cnt;
-    for( const auto& k : results.keys()) {
-        qDebug() << "Conversion result" << k << ":" << results[k];
+    overallResults["numberCyclesOk"] = nc_cnt;
+    emit conversionOut(i18n("<br/>Converted %1 numbercycle(s) successfully.").arg(nc_cnt));
+    for( const auto& k : overallResults.keys()) {
+        qDebug() << "Conversion result" << k << ":" << overallResults[k];
     }
 
     if (nc_cnt == 0) {
         qDebug() << "Could not convert any numbercycles. Smell!";
     }
-    return results;
+    return overallResults;
 }
 
 QMap<int, int> DbToXMLConverter::yearMap()
@@ -230,6 +242,7 @@ bool DbToXMLConverter::convertLatestPdf(const QString& basePath, const QString& 
 
         if (QFile::copy(oldPdfFile, newPdfFile)) {
             setFileMTime(newPdfFile, printDate);
+            ok = true;
         } else {
             qDebug() << "Unable to copy" << oldPdfFile << "to" << newPdfFile;
         }
