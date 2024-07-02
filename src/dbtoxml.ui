@@ -6,25 +6,38 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>533</width>
-    <height>279</height>
+    <width>754</width>
+    <height>620</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::NoContextMenu</enum>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Welcome to Kraft</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Conversion of the documents from DB to XML</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;h2 style=&quot; margin-top:18px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:xx-large; font-weight:600;&quot;&gt;Transforming Data for Kraft Version 2&lt;/span&gt;&lt;/h2&gt;&lt;p&gt;This step transforms documents and other data from the database that was used in previous versions to XML documents. This is needed to enable new functionalities of Kraft Version 2.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note&lt;/span&gt;: The database of Kraft V. 1 is not altered at all. That means that your data is not changed at all, it is just copied to another place on your computer. This happens only on first start.&lt;/p&gt;&lt;p&gt; To revert the transmission, you can just return to Kraft Version 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QTextBrowser" name="textBrowser"/>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Transformation progress:</string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
+    <widget class="QTextBrowser" name="textBrowser"/>
+   </item>
+   <item row="3" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="enabled">
       <bool>true</bool>

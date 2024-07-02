@@ -66,7 +66,7 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
 
     for (int year : keys) {
         int amount = years.value(year);
-        emit conversionOut(i18n("Converting %1 documents for year %2...").arg(amount).arg(year));
+        emit conversionOut(i18n("Transforming %1 documents for year %2...").arg(amount).arg(year));
 
         QMap<QByteArray, int> results;
         convertDocsOfYear(year, dBase, results);
@@ -80,20 +80,20 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
     }
 
     emit conversionOut(i18n("<br/><b>Overall document conversion result:</b>"));
-    emit conversionOut(i18n("    Successfully converted documents: %1").arg(overallResults[okStr]));
-    emit conversionOut(i18n("    Failed converted documents: %1").arg(overallResults[failsStr]));
-    emit conversionOut(i18n("    PDF conversion fails: %1").arg(overallResults[pdfFailsStr]));
+    emit conversionOut(i18n("    Successfully transformed documents: %1").arg(overallResults[okStr]));
+    emit conversionOut(i18n("    Failed transformed documents: %1").arg(overallResults[failsStr]));
+    emit conversionOut(i18n("    PDF transformed fails: %1").arg(overallResults[pdfFailsStr]));
 
     // -- Convert the numbercycles
     int nc_cnt = convertNumbercycles(dBase);
     overallResults["numberCyclesOk"] = nc_cnt;
-    emit conversionOut(i18n("<br/>Converted %1 numbercycle(s) successfully.").arg(nc_cnt));
+    emit conversionOut(i18n("<br/>transformed %1 numbercycle(s) successfully.").arg(nc_cnt));
     for( const auto& k : overallResults.keys()) {
-        qDebug() << "Conversion result" << k << ":" << overallResults[k];
+        qDebug() << "Tranformation result" << k << ":" << overallResults[k];
     }
 
     if (nc_cnt == 0) {
-        qDebug() << "Could not convert any numbercycles. Smell!";
+        qDebug() << "Could not transform any numbercycles. Smell!";
     }
     return overallResults;
 }
