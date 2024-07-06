@@ -3,7 +3,9 @@
   <qresource prefix="/kraft">
     <file>Calendar_page.png</file>
     <file>postit.png</file>
+    <file>users.png</file>
     <file>kraft_customer.png</file>
+    <file>kraft-simple.png</file>
 
     <file>custom-icons/plus.svg</file>
     <file>custom-icons/arrow-down.svg</file>
@@ -59,5 +61,6 @@
     <file>custom-icons/file-chart.svg</file>
     <file>custom-icons/tool.svg</file>
     <file>custom-icons/checklist.svg</file>
+    <file>custom-icons/users.svg</file>
   </qresource>
 </RCC>

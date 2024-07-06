@@ -348,6 +348,7 @@ void KraftDoc::toJsonObj(QJsonObject& obj) const
     obj["ident"] = ident();
     obj["prjtLabel"] = projectLabel();
     obj["state"] = _state.stateString();
+    obj["whiteboard"] = whiteboard();
     obj["docType"] = docType();
 }
 
