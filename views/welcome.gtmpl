@@ -1,0 +1,5 @@
+<div id="inhalt">
+  <h2>{{ label.header }}</h2>
+  <br/><small>{{ label.version }}: {{ kraft.version }}</small>
+  <p>{{ label.text1 }}</p>
+</div>
