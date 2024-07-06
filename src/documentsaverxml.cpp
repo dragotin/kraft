@@ -574,11 +574,6 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     const QString xml = xmldoc.toString();
     const QString xmlFile = xmlDocFileName(doc);
 
-    if (newState) {
-        // retore the new state in the doc for subsequent funcs
-        doc->state().setState(KraftDocState::State::New);
-    }
-
     // TODO: Write to temp file first, and move only if it validates.
     qDebug () << "Storing XML to " << xmlFile;
 
@@ -612,6 +607,10 @@ bool DocumentSaverXML::saveDocument(KraftDoc *doc)
     }
 
     // qDebug () << "Saved document no " << doc->docID().toString() << endl;
+    if (newState) {
+        // retore the new state in the doc for subsequent funcs - no idea which ones...
+        doc->state().setState(KraftDocState::State::New);
+    }
 
     return result;
 }

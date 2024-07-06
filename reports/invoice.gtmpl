@@ -49,6 +49,16 @@
     {#  Do not display the page number on first page, but the website. #}
     @page :first {
         margin-top: 46mm;
+    {% if doc.isDraftState %}
+	    @top-center {
+	        font-family: Oxygen;
+	        font-size:40pt;
+	        content: 'DRAFT';
+            font-variant: small-caps;
+            font-weight: bold;
+
+        }
+	{% endif %}        
 	{% if me.URL %}
         @bottom-right {
             font-family: Oxygen;

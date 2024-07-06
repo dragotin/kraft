@@ -343,7 +343,7 @@ void KraftDoc::toJsonObj(QJsonObject& obj) const
 {
     obj["uuid"] = uuid();
     obj["date"] = Format::toDateString(date(), Format::DateFormatIso);
-    obj["lastModified"] = Format::toDateTimeString(lastModified(), Format::DateFormatIso);
+    obj["lastModified"] = lastModified().toString(Qt::ISODate);
     obj["clientAddress"] = address();
     obj["ident"] = ident();
     obj["prjtLabel"] = projectLabel();
@@ -604,6 +604,11 @@ bool KraftDoc::isInvoice() const
     return (docType() == QStringLiteral("Rechnung"));
 }
 
+bool KraftDoc::isDraftState() const
+{
+    return (_state.state() == KraftDocState::State::Draft);
+}
+
 QList<ReportItem*> KraftDoc::reportItemList() const
 {
     // ReportItemList reList(positions());
@@ -641,22 +646,21 @@ void KraftDoc::finalize()
 void KraftDoc::slotNewIdent(const QString& ident)
 {
     DocumentMan *man = DocumentMan::self();
+    auto generator = qobject_cast<DocIdentGenerator*>(sender());
 
     if (ident.isEmpty()) {
-        auto generator = qobject_cast<DocIdentGenerator*>(sender());
         const QString errStr = generator->errorStr();
-        delete generator;
 
         // Error state - FIXME: Somehow display the error
         man->setDocProcessingError(errStr);
-        return;
+    } else {
+        // a new ident is here. Lets set it and save the doc.
+        setIdent(ident);
+        state().setState(KraftDocState::State::Final);
+
+        man->saveDocument(this);
     }
-
-    // a new ident is here. Lets set it and save the doc.
-    setIdent(ident);
-    state().setState(KraftDocState::State::Final);
-
-    man->saveDocument(this);
+    delete generator;
 }
 
 

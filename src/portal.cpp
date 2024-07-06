@@ -839,13 +839,13 @@ void Portal::slotFinalizeDoc()
     DocumentMan *docman = DocumentMan::self();
     DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
 
-    // FIXME: Add more useful info such as customer name
-    QString info = QString("<b>%1, date %2</b>").arg(doc->docType()).arg(doc->dateStr());
-
     auto dia = new QDialog(this);
     dia->setAttribute(Qt::WA_DeleteOnClose);
     Ui::FinalizeDocDialog ui;
     ui.setupUi(dia);
+    QString info = QStringLiteral("<b>") + i18n("%1, date %2").arg(doc->docType()).arg(doc->dateStr())+QStringLiteral("</b>");
+    ui._docTypeLabel->setText(info);
+    info = QStringLiteral("<pre>") + doc->address() + QStringLiteral("</pre>");
     ui._docLabelIntro->setText(info);
 
     if (dia->exec() == QDialog::Accepted) {
