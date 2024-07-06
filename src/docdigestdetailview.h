@@ -45,6 +45,7 @@ public:
     void initViewActions(const std::array<QAction *, 4> actions);
 
 public slots:
+    void slotShowStart();
     void slotShowDocDetails(const DocDigest &);
     void slotClearView();
 
@@ -57,7 +58,7 @@ private:
     void documentListing( TextTemplate *tmpl, int year, int month );
 
     enum Location { Left, Middle, Right };
-    enum Detail { Month, Year, Document };
+    enum Detail { Start, Month, Year, Document };
 
     QString widgetStylesheet( Location loc, Detail det );
 

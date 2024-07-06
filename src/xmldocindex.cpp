@@ -143,7 +143,7 @@ DocDigest XmlDocIndex::findDigest(const QString& year, const QString& uuid)
         dd.setUuid(obj["uuid"].toString());
         dd.setProjectLabel(obj["prjtLabel"].toString());
         dd.setLastModified(QDateTime::fromString(obj["lastModified"].toString(), Qt::ISODate));
-        dd.setWhiteboard(QString()); // FIXME
+        dd.setWhiteboard(obj["whiteboard"].toString());
     }
     return dd;
 }

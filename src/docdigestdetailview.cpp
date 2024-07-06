@@ -23,6 +23,7 @@
 #include <QToolButton>
 
 #include <klocalizedstring.h>
+#include <kcontacts/phonenumber.h>
 
 #include "docdigest.h"
 #include "docdigestdetailview.h"
@@ -34,6 +35,7 @@
 #include "grantleetemplate.h"
 
 #include "xmldocindex.h"
+
 
 DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
   : HtmlView( parent )
@@ -50,7 +52,7 @@ void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
     const QUrlQuery q(url);
     // Url is like "http://localhost/show_last_print?id=5"
 
-    const QString idStr = q.queryItemValue(QLatin1String("id"));
+    const QString idStr = q.queryItemValue(QStringLiteral("id"));
 
     const QString path = url.path();
 
@@ -82,13 +84,6 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
 
   _leftDetails->setWordWrap(true);
 
-  // --- The Actions Box
-  QWidget *w = new QWidget;
-  _docActionsWidget = new Ui::docActionsWidget;
-  _docActionsWidget->setupUi(w);
-
-  hbox->addWidget(w);
-
   // --- The middle HTML based view
   hbox->setMargin(0);
   setLayout( hbox );
@@ -96,35 +91,34 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   mHtmlCanvas->setFrameStyle(0);
   mHtmlCanvas->setStylesheetFile("docdigestview.css");
 
-  hbox->addWidget( mHtmlCanvas);
+  hbox->addWidget(mHtmlCanvas);
 
   const QString bgColor = mHtmlCanvas->palette().base().color().name();
-  const QString style = QStringLiteral("QLabel { "
-                                "background-color: %1; "
-                                "background-image: url(:/kraft/kraft_customer.png); background-repeat: repeat-none;"
-                                "background-position: top left; "
-                                "}").arg(bgColor);
+  const QString style = widgetStylesheet(Location::Left, Detail::Start);
 
   _leftDetails->setStyleSheet(style);
 
   // --- The right details Box
-  const QString styleR = QStringLiteral("QLabel { "
-                                 "background-color: %1;"
-                                 "background-image: url(:/kraft/postit.png); background-repeat: repeat-none;"
-                                 "background-position: top center;"
-                                 "padding: 0px; "
-                                 "padding-left: 10px; "
-                                 "}").arg(bgColor);
-
+  const QString styleR = widgetStylesheet(Location::Right, Detail::Start);
 
   _rightDetails = new QLabel(this);
   _rightDetails->setTextFormat(Qt::RichText);
+  _rightDetails->setAlignment(Qt::AlignTop | Qt::AlignLeft);
   _rightDetails->setStyleSheet(styleR);
   _rightDetails->setMinimumWidth(detailMinWidth);
   _rightDetails->setWordWrap(true);
   _rightDetails->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
   hbox->addWidget(_rightDetails);
+
+  slotShowStart();
+
+  // --- The Actions Box
+  QWidget *w = new QWidget;
+  _docActionsWidget = new Ui::docActionsWidget;
+  _docActionsWidget->setupUi(w);
+
+  hbox->addWidget(w);
 }
 
 void DocDigestDetailView::initViewActions(const std::array<QAction*, 4> actions)
@@ -155,21 +149,28 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
         if( det == Year ) {
             image = "Calendar_page.png";
             bgPos = "center top";
-            style += QLatin1String("padding-top: 95px; ");
+            style += QStringLiteral("padding-top: 95px; ");
         } else if( det == Month ) {
             image = "Calendar_page.png";
             bgPos = "center top";
-            style += QLatin1String("padding-top: 75px; ");
-        } else {
+            style += QStringLiteral("padding-top: 75px; ");
+        } else if (det == Document){
             // Document
-            image = "kraft_customer.png";
+            image = QStringLiteral("users.png");
             bgPos = "top left";
-            style += QLatin1String( "padding-top: 50px; padding-left:15px;");
+            style += QStringLiteral( "padding-top: 65px; padding-left:15px; padding-right:8px;");
+        } else if (det == Start) {
+            image = QStringLiteral("kraft-simple.png");
+            bgPos = "center";
+        } else {
+
         }
     } else if(loc == Middle ) {
         if( det == Year ) {
 
         } else if( det == Month ) {
+
+        } else if( det == Start) {
 
         } else {
             // Document
@@ -182,9 +183,9 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
 
         } else {
             // Document
-            image = "postit.png";
-            bgPos = "top center";
-            style += QLatin1String("padding: 0px; padding-left: 30px; ");
+            image = QStringLiteral("postit.png");
+            bgPos = QStringLiteral("top center");
+            style += QStringLiteral("padding: 0px; padding-top: 30px; padding-left: 10px; ");
         }
 
     } else {
@@ -195,7 +196,7 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
         style += QString("background-image: url(:/kraft/%1); background-repeat: repeat-none;"
                          "background-position: %2;").arg(image).arg(bgPos);
     }
-    style += QLatin1String("}");
+    style += QStringLiteral("}");
     return style;
 }
 
@@ -242,6 +243,11 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
         const QString sm = Format::localeDoubleToString(0.0);
         tmpl->setValue("DOCUMENTS", "SUM", sm);
     }
+}
+
+void DocDigestDetailView::slotShowStart()
+{
+    mHtmlCanvas->displayContent(QStringLiteral("<h1>") + i18n("Welcome to Kraft!") + QStringLiteral("</h1>"));
 }
 
 void DocDigestDetailView::slotShowMonthDetails( int year, int month )
@@ -312,13 +318,42 @@ void DocDigestDetailView::slotShowYearDetails( int year )
 void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, const QString& manAddress )
 {
     Q_UNUSED(addressee)
-    QString content = "<h3>" + i18n("Customer") +"</h3>";
+    QString content;
+
     if( !manAddress.isEmpty() ) {
-        content += "<pre>" + manAddress +"</pre>";
+        content += QStringLiteral("<pre>") + manAddress + QStringLiteral("</pre>");
     } else {
-        content += QLatin1String("<p>")+i18n("not set")+QLatin1String("</p>");
+        content += QStringLiteral("<p>")+i18n("not set")+QStringLiteral("</p>");
     }
+
+    QString addressContent;
+    if (addressee.isEmpty()) {
+        addressContent += i18n("manual address");
+    } else {
+        const QString email = addressee.preferredEmail();
+        if (!email.isEmpty()) {
+            addressContent += i18n("Email:%1").arg(email.toHtmlEscaped());
+        }
+        const auto phone = addressee.phoneNumber(KContacts::PhoneNumber::Home);
+        if (!phone.isEmpty()) {
+            addressContent += i18n("Number (Home):%1").arg(phone.number());
+        }
+        const auto phoneW = addressee.phoneNumber(KContacts::PhoneNumber::Work);
+        if (!phoneW.isEmpty()) {
+            addressContent += i18n("Number (Work):%1").arg(phoneW.number());
+        }
+    }
+
+    if (!addressContent.isEmpty()) {
+        content += QStringLiteral("<hr/>");
+        content += QStringLiteral("<span style=\" font-size:8pt;\">");
+        content.append(addressContent);
+        content += QStringLiteral("</span>");
+    }
+
     _leftDetails->setText( content );
+
+
 #if 0
     // tmpl.setValue( "URL", mHtmlCanvas->baseURL().prettyUrl());
     tmpl.setValue( DOCDIGEST_TAG( "CUSTOMER_LABEL" ), i18n("Customer"));
@@ -398,6 +433,8 @@ void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
 
     QObject obj;
     QObject labels;
+
+    showAddress(digest.addressee(), digest.clientAddress());
 
     if( _docTemplFileName.isEmpty() ) {
         // QString templFileName = QString( "kraftdoc_%1_ro.gtmpl" ).arg( doc->docType() );
