@@ -35,6 +35,7 @@
 #include "grantleetemplate.h"
 
 #include "xmldocindex.h"
+#include "version.h"
 
 
 DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
@@ -247,7 +248,29 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
 
 void DocDigestDetailView::slotShowStart()
 {
-    mHtmlCanvas->displayContent(QStringLiteral("<h1>") + i18n("Welcome to Kraft!") + QStringLiteral("</h1>"));
+    const QString templateFile = DefaultProvider::self()->locateFile( "views/welcome.gtmpl" );
+
+    GrantleeFileTemplate tmpl(templateFile);
+
+    QString name = qgetenv("USER");
+    if (name.isEmpty())
+        name = qgetenv("USERNAME");
+
+    QObject obj;
+    obj.setProperty("version", Kraft::Version::number());
+    obj.setProperty("codename", Kraft::Version::codeName());
+    obj.setProperty("username", name);
+
+    QObject labels;
+    labels.setProperty("header", i18n("Welcome to Kraft"));
+    labels.setProperty("version", i18n("Version"));
+    labels.setProperty("text1", i18n("Kraft helps you to handle documents like quotes and invoices in your small business."));
+
+    tmpl.addToObjMapping("kraft", &obj);
+    tmpl.addToObjMapping("label", &labels);
+    bool ok;
+    const QString welcome = tmpl.render(ok);
+    mHtmlCanvas->displayContent(welcome);
 }
 
 void DocDigestDetailView::slotShowMonthDetails( int year, int month )
@@ -437,7 +460,6 @@ void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
     showAddress(digest.addressee(), digest.clientAddress());
 
     if( _docTemplFileName.isEmpty() ) {
-        // QString templFileName = QString( "kraftdoc_%1_ro.gtmpl" ).arg( doc->docType() );
         _docTemplFileName = DefaultProvider::self()->locateFile( "views/docdigest.gtmpl" );
     }
 
