@@ -76,6 +76,8 @@ class KraftDoc : public QObject, public KraftObj
 {
     Q_OBJECT
     Q_PROPERTY(QString docType READ docType)
+    Q_PROPERTY(QString state READ (_state.stateString))
+    Q_PROPERTY(bool isDraftState READ isDraftState)
     Q_PROPERTY(QString address READ address)
     Q_PROPERTY(QString clientUid READ addressUid)
     Q_PROPERTY(QString ident READ ident)
@@ -251,6 +253,7 @@ public:
     bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
 
     bool isInvoice() const;
+    bool isDraftState() const;
 
     void setTaxValues(double fullTax, double redTax);
 
