@@ -36,7 +36,7 @@ jobs:
             libQt5Sql5-mysql \
             libqt5-qtdeclarative-tools
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
