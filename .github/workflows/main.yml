@@ -49,7 +49,7 @@ jobs:
           ./appimagecraft-x86_64.AppImage
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: AppImage
