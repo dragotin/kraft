@@ -64,10 +64,10 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
         QDomElement itemType = xmldoc.createElement("item");
 
         itemType.appendChild(textElement(xmldoc, "type", item->typeStr()));
-        itemType.appendChild(textElement(xmldoc, "text", item->text().toHtmlEscaped()));
+        itemType.appendChild(textElement(xmldoc, "text", item->text()));
 
         itemType.appendChild(textElement(xmldoc, "amount", QString::number(pos->amount(), 'f', 2)));
-        itemType.appendChild(textElement(xmldoc, "unit", pos->unit().einheitSingular().toHtmlEscaped()));
+        itemType.appendChild(textElement(xmldoc, "unit", pos->unit().einheitSingular()));
 
         QString ttStr;
         DocPositionBase::TaxType tt = item->taxType();
@@ -90,8 +90,8 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
         for(const auto &k : attribs.keys()) {
             QDomElement attribElem = xmldoc.createElement("attrib");
             itemType.appendChild(attribElem);
-            attribElem.appendChild(textElement(xmldoc, "name", k.toHtmlEscaped()));
-            attribElem.appendChild(textElement(xmldoc, "value", attribs[k].value().toString().toHtmlEscaped()));
+            attribElem.appendChild(textElement(xmldoc, "name", k));
+            attribElem.appendChild(textElement(xmldoc, "value", attribs[k].value().toString()));
             attribElem.appendChild(textElement(xmldoc, "type", attribs[k].typeString()));
         }
 
@@ -114,10 +114,10 @@ QDomDocument xmlDocument(KraftDoc *doc)
     QDomElement meta = xmldoc.createElement( "meta" );
     root.appendChild(meta);
     meta.appendChild(textElement(xmldoc, "docType", doc->docType()));
-    meta.appendChild(textElement(xmldoc, "docDesc", doc->whiteboard().toHtmlEscaped()));
-    meta.appendChild(textElement(xmldoc, "currency", DefaultProvider::self()->locale()->currencySymbol(QLocale::CurrencyIsoCode).toHtmlEscaped()));
-    meta.appendChild(textElement(xmldoc, "country", DefaultProvider::self()->locale()->countryToString(DefaultProvider::self()->locale()->country()).toHtmlEscaped()));
-    meta.appendChild(textElement(xmldoc, "locale", DefaultProvider::self()->locale()->languageToString(DefaultProvider::self()->locale()->language()).toHtmlEscaped()));
+    meta.appendChild(textElement(xmldoc, "docDesc", doc->whiteboard()));
+    meta.appendChild(textElement(xmldoc, "currency", DefaultProvider::self()->locale()->currencySymbol(QLocale::CurrencyIsoCode)));
+    meta.appendChild(textElement(xmldoc, "country", DefaultProvider::self()->locale()->countryToString(DefaultProvider::self()->locale()->country())));
+    meta.appendChild(textElement(xmldoc, "locale", DefaultProvider::self()->locale()->languageToString(DefaultProvider::self()->locale()->language())));
     meta.appendChild(textElement(xmldoc, "ident", doc->ident() ) );
     if (doc->uuid().isEmpty())
         doc->createUuid();
@@ -197,8 +197,8 @@ QDomDocument xmlDocument(KraftDoc *doc)
         tos.appendChild(textElement(xmldoc, "end", tosEnd.toString(Qt::ISODate)));
     }
 
-    headerElem.appendChild( textElement( xmldoc, "salut", doc->salut() ) );
-    headerElem.appendChild( textElement( xmldoc, "preText", doc->preText() ) );
+    headerElem.appendChild( textElement( xmldoc, "salut", doc->salut()));
+    headerElem.appendChild( textElement( xmldoc, "preText", doc->preText()));
     // FIXME: add Header attributs
 
     // **** Next toplevel: itemGroup, for now only one
@@ -213,8 +213,8 @@ QDomDocument xmlDocument(KraftDoc *doc)
     // **** Next toplevel: footer
     QDomElement itemGroupFooter = xmldoc.createElement("footer");
     root.appendChild(itemGroupFooter);
-    itemGroupFooter.appendChild( textElement( xmldoc, "postText", doc->postText() ) );
-    itemGroupFooter.appendChild( textElement( xmldoc, "goodbye", doc->goodbye() ) );
+    itemGroupFooter.appendChild( textElement( xmldoc, "postText", doc->postText()));
+    itemGroupFooter.appendChild( textElement( xmldoc, "goodbye", doc->goodbye()));
 
     // **** Next toplevel: totals
     QDomElement itemGroupTotals = xmldoc.createElement("totals");

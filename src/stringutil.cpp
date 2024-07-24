@@ -20,6 +20,7 @@
 #include <QDate>
 #include <QDomElement>
 #include <QDomDocument>
+#include <QTextDocumentFragment>
 
 #include "format.h"
 
@@ -28,7 +29,7 @@ namespace KraftXml {
 QDomElement textElement(QDomDocument& doc, const QString& name, const QString& value )
 {
     QDomElement elem = doc.createElement( name );
-    QDomText t = doc.createTextNode( value.toHtmlEscaped() );
+    QDomText t = doc.createTextNode(value);
     elem.appendChild( t );
     return elem;
 }
@@ -36,7 +37,7 @@ QDomElement textElement(QDomDocument& doc, const QString& name, const QString& v
 QString childElemText(const QDomElement& elem, const QByteArray& childName)
 {
     const QDomElement e = elem.firstChildElement(childName);
-    const QString t = e.text();
+    const QString t = QTextDocumentFragment::fromHtml(e.text()).toPlainText();
     return t;
 }
 
