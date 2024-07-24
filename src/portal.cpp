@@ -486,6 +486,7 @@ void Portal::slotStartupChecks()
     bool useManual = false;
 
     if( ! myUid.isEmpty() ) {
+        slotStatusMsg( i18n( "Fetching user address data" ) );
         KContacts::Addressee contact;
         // qDebug () << "Got My UID: " << myUid;
         connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
@@ -537,7 +538,7 @@ void Portal::slotStartupChecks()
              this, &Portal::slotDocConverted);
     connect( &_reportGenerator, &ReportGenerator::failure,
              this, &Portal::slotDocConvertionFail);
-
+    slotStatusMsg();
 }
 
 void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Addressee& contact )
