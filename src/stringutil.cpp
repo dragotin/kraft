@@ -37,7 +37,7 @@ QDomElement textElement(QDomDocument& doc, const QString& name, const QString& v
 QString childElemText(const QDomElement& elem, const QByteArray& childName)
 {
     const QDomElement e = elem.firstChildElement(childName);
-    const QString t = QTextDocumentFragment::fromHtml(e.text()).toPlainText();
+    const QString t = e.text();
     return t;
 }
 
