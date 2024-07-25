@@ -101,6 +101,10 @@ void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
         qDebug() << "PDF Creation for doc" << uuid << "is running already, returning";
         return;
     }
+    if (!_uuid.isEmpty()) {
+        qDebug() << "Generation process ongoing, return";
+        return;
+    }
     _uuid = uuid;
     _requestedFormat = format;
 
