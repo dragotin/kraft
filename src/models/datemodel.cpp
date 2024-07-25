@@ -226,7 +226,8 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
     if( indx->type() == AbstractIndx::MonthType ) {
         // there might be a special column type
         if( col == 0 ) {
-            return QDate::shortMonthName(item->payload()->month());
+            QLocale l;
+            return l.monthName(item->payload()->month());
         } else if(col == Treestruct_Month) {
             return item->payload()->month();
         } else if(col == Treestruct_Year) {
@@ -248,7 +249,6 @@ QVariant DateModel::data(const QModelIndex &index, int role) const
         }
 #endif
     }
-
     if( indx->type() == AbstractIndx::DocumentType ) {
         DocDigest digest = item->payload()->digest();
         if( index.column() == Document_Id ) {
