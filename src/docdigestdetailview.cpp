@@ -186,7 +186,7 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
             // Document
             image = QStringLiteral("postit.png");
             bgPos = QStringLiteral("top center");
-            style += QStringLiteral("padding: 0px; padding-top: 30px; padding-left: 10px; ");
+            style += QStringLiteral("padding: 0px; padding-top: 30px; padding-left: 5px; padding-right: 12px; ");
         }
 
     } else {
