@@ -1204,8 +1204,7 @@ void Portal::createROView( DocGuardedPtr doc )
         view->show();
         mViewMap[doc] = view;
 
-        connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
-                 this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
+        connect( view, &KraftViewRO::viewClosed, this, &Portal::slotViewClosed);
     } else {
         mViewMap[doc]->raise();
     }
