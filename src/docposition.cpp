@@ -130,7 +130,27 @@ int DocPositionBase::taxTypeNumeric()
 QString DocPositionBase::typeStr()
 {
     // { Position, ExtraDiscount, Text, Demand, Alternative }
-    switch (type()) {
+    return typeToString(type());
+}
+
+DocPositionBase::PositionType DocPositionBase::typeStrToType(const QString& t)
+{
+    if (t == typeToString(PositionType::ExtraDiscount))
+        return PositionType::ExtraDiscount;
+    else if (t == typeToString(PositionType::Alternative))
+        return PositionType::Alternative;
+    else if (t == typeToString(PositionType::Demand))
+        return PositionType::Demand;
+    else if (t == typeToString(PositionType::Text))
+        return PositionType::Text;
+
+    return PositionType::Position;
+
+}
+
+QString DocPositionBase::typeToString(DocPositionBase::PositionType t)
+{
+    switch (t) {
     case DocPositionBase::PositionType::ExtraDiscount:
         return QStringLiteral("ExtraDiscount");
         break;
