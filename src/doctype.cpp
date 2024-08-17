@@ -40,8 +40,7 @@ const QString DocMergeIdentStr   {"docMergeIdent"};
 const QString DayCounterDateStr  {"dayCounterDate"};
 const QString DayCounterStr  {"dayCounter"};
 const QString AppendPDFStr   {"AppendPDFFile"};
-const QString DefaultTmplFileName {"invoice.trml"};
-const QString XRechnungEnabled {"XRechnungEnabled"};
+const QString DefaultTmplFileName {"invoice.gtmpl"};
 }
 
 
@@ -290,7 +289,7 @@ QString DocType::templateFile()
     const auto dfp = DefaultProvider::self();
     QString searchStr;
 
-    QString reportFileName = QString( "%1.trml").arg( name().toLower() );
+    QString reportFileName{name().toLower()};
     reportFileName.replace(QChar(' '), QChar('_'));
 
     if ( mAttributes.hasAttribute(DocTemplateFileStr) ) {
