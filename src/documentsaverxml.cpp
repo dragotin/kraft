@@ -375,10 +375,7 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
         QDomElement itemElem = groupElem.firstChildElement("item");
         while (!itemElem.isNull()) {
             QString t = childElemText(itemElem, "type");
-            DocPositionBase::PositionType itemType {DocPositionBase::Position};
-            if (t == "ExtraDiscout") {
-                itemType = DocPositionBase::ExtraDiscount;
-            }
+            DocPositionBase::PositionType itemType = DocPositionBase::typeStrToType(t);
 
             DocPosition *item = doc->createPosition(itemType);
             item->setPositionNumber(++itemCnt);
@@ -400,7 +397,8 @@ bool loadItems(const QDomDocument& domDoc, KraftDoc *doc)
 
             Geld g(item->overallPrice());
             // qDebug() << "Geld" << g.toLocaleString() << t.toDouble();
-            Q_ASSERT(!(g != Geld(t.toDouble())));
+            if (itemType == DocPositionBase::PositionType::Position)
+                Q_ASSERT(!(g != Geld(t.toDouble())));
 
             QDomElement attrElem = itemElem.firstChildElement("attrib");
             while (!attrElem.isNull()) {

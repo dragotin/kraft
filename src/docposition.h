@@ -74,6 +74,8 @@ public:
     bool toDelete() { return mToDelete; }
     PositionType type() { return mType; }
     QString typeStr();
+    static QString typeToString(DocPositionBase::PositionType t);
+    static DocPositionBase::PositionType typeStrToType(const QString& t);
 
     DocPositionBase& operator=( const DocPositionBase& );
 
