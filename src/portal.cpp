@@ -668,7 +668,7 @@ void Portal::slotFollowUpDocument()
 
 void Portal::slotCopyCurrentDocument()
 {
-  const QString locId = m_portalView->allDocsView()->currentDocumentIdent();
+  const QString locId = m_portalView->allDocsView()->currentDocumentUuid();
   slotCopyDocument( locId );
 }
 
