@@ -4,8 +4,6 @@ add_subdirectory(pics)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)
 
 ########### next target ###############
-qt5_add_resources(KRAFT_RC_SRC pics/kraft.qrc)
-
 set(kraft_SRCS
     attribute.cpp
     einheit.cpp
@@ -119,6 +117,8 @@ set(kraft_SRCS
     epcqrcode.cpp
 
     3rdparty/qrcodegen.cpp
+
+    pics/kraft.qrc
 )
 
 kconfig_add_kcfg_files(kraft_SRCS
@@ -179,7 +179,7 @@ if(${AKO_PREFIX}Akonadi_FOUND)
   )
 endif()
 
-add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
+add_library(kraftlib STATIC ${kraft_SRCS})
 target_compile_options(kraftlib PRIVATE -Wall -Wno-suggest-override)
 
 add_executable(kraft main.cpp)
