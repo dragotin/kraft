@@ -157,10 +157,10 @@ ki18n_wrap_ui(kraft_SRCS
 )
 
 set(KRAFT_LINK_LIBS
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Sql
-    Qt5::Xml
+    Qt${QT_MAJOR_VERSION}::Core
+    Qt${QT_MAJOR_VERSION}::Widgets
+    Qt${QT_MAJOR_VERSION}::Sql
+    Qt${QT_MAJOR_VERSION}::Xml
 
     KF5::I18n
     KF5::Contacts
