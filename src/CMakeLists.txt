@@ -1,5 +1,4 @@
 
-include_directories(src)
 add_subdirectory(pics)
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)

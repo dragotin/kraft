@@ -137,8 +137,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 # disable the warning about null-pointer zero. FIXME.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
 
-include_directories(src)
-
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
         ki18n_install(po)
 endif()
