@@ -201,5 +201,5 @@ install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
+install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR})
 install(FILES  kraftui.rc katalogview.rc DESTINATION ${KXMLGUI_INSTALL_DIR}/kraft)
