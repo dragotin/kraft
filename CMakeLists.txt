@@ -138,8 +138,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
 
 include_directories(src)
-include_directories( /usr/include/${AKO_PREFIX}/AkonadiCore )
-include_directories(/usr/include/${AKO_PREFIX}/)
 
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
         ki18n_install(po)
