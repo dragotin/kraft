@@ -34,19 +34,18 @@ class DocumentMan
     ~DocumentMan();
 
     static DocumentMan *self();
-
-    // persisting the docs
-    DocGuardedPtr openDocumentByIdent( const QString& ident );
     DocGuardedPtr openDocumentByUuid(const QString& uuid);
 
+    // FIXME: Use this to display an error in the main screen if
+    // something fails
     void setDocProcessingError(const QString& errStr);
 
+    // persisting the docs
     bool saveDocument(KraftDoc* doc);
     bool reloadDocument(KraftDoc* doc);
     void closeDocument(const QString& ident);
 
-
-
+    // create new docs
     DocGuardedPtr createDocument(const QString& docType, const QString& copyFromUuid = QString(),
                                  const DocPositionList &listToCopy = DocPositionList() );
     DocGuardedPtr copyDocument(const QString& copyFromUuid );

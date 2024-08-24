@@ -42,7 +42,6 @@
 #include "addressselectorwidget.h"
 #include "documentman.h"
 
-
 CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   :QWizardPage ( parent )
 {
@@ -237,34 +236,27 @@ void KraftWizard::setDocToFollow(DocGuardedPtr sourceDoc)
     Q_ASSERT(sourceDoc);
     DocGuardedPtr dPtr{sourceDoc};
 
-    QString sourceId = sourceDoc->ident();
+    QString sourceIdent = sourceDoc->docIdentifier();
     QString uuid = sourceDoc->uuid();
 
-    if (sourceId.isEmpty()) {
-        sourceId = i18n("%1 from %2 (draft)").arg(sourceDoc->docType()).arg(sourceDoc->dateStr());
-    }
-
-    while( ! sourceId.isEmpty() ) {
+    while( ! sourceIdent.isEmpty() ) {
         // store the id of the follower and clear id
         const QString idT = dPtr->docIdentifier();
-        mDetailsPage->mSourceDocIdentsCombo->addItem(sourceId, uuid);
+        mDetailsPage->mSourceDocIdentsCombo->addItem(sourceIdent, uuid);
 
         // remember the current dptr to be able to delete it soon
         DocGuardedPtr oldDptr = dPtr;
         dPtr =  DocumentMan::self()->openDocumentByUuid(dPtr->predecessor());
         if( dPtr ) {
-            sourceId = dPtr->ident();
-            if (sourceId.isEmpty())
-                sourceId = i18n("%1 from %2 (draft)").arg(sourceDoc->docType()).arg(sourceDoc->dateStr());
+            sourceIdent = dPtr->docIdentifier();
             uuid = dPtr->uuid();
         } else {
-            sourceId.clear();
+            sourceIdent.clear();
             uuid.clear();
         }
         if( oldDptr != sourceDoc ) {
             delete oldDptr;
         }
-
         delete dPtr;
     }
 

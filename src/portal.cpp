@@ -617,7 +617,7 @@ void Portal::slotFollowUpDocument()
 
     KraftWizard wiz;
     wiz.init( false, i18nc("Dialog title of the followup doc dialog, followed by the id of the  source doc",
-                           "Create follow up document for %1", sourceDoc->ident()));
+                           "Create follow up document for %1", sourceDoc->docIdentifier()));
 
     QStringList followers = dt.follower();
     if ( followers.count() > 0 ) {
@@ -636,7 +636,7 @@ void Portal::slotFollowUpDocument()
         // follow up documents from released docs that have an ident already.
         const QString selectedUuid = wiz.copyItemsFromPredecessor();
         if(!selectedUuid.isEmpty()) {
-            DocGuardedPtr copyDoc = DocumentMan::self()->openDocumentByIdent(selectedUuid);
+            DocGuardedPtr copyDoc = DocumentMan::self()->openDocumentByUuid(selectedUuid);
             posToCopy = copyDoc->positions();
             delete copyDoc;
         }
