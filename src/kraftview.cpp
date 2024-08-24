@@ -598,7 +598,7 @@ void KraftView::refreshPostCard()
                                                      positions, d, fullTax, redTax);
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->toPlainText(),
-                                           getDocument()->ident(),
+                                           getDocument()->docIdentifier(),
                                            preText );
 
 

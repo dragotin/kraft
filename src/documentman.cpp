@@ -91,7 +91,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
 					   "ie. in a final invoice if there was a partial invoice before"
 					   "%1 is substited by the doc type, %2 by the id of the predecessor doc.",
 					   "Substract sum from %1 %2",
-                                          sourceDocType.name(), sourceDoc->ident()));
+                                          sourceDocType.name(), sourceDoc->docIdentifier()));
                     }
                 }
             }
@@ -124,17 +124,6 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
     // set the proper texts and other data
     doc->setLastModified( QDateTime::currentDateTime());
 
-    return doc;
-}
-
-DocGuardedPtr DocumentMan::openDocumentByIdent( const QString& ident )
-{
-    // qDebug () << "Opening Document with id " << id << endl;
-    DocGuardedPtr doc = new KraftDoc();
-    if (!doc->openDocument(DefaultProvider::self()->documentPersister(), ident)) {
-        delete doc;
-        return nullptr;
-    }
     return doc;
 }
 

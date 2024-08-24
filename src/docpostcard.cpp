@@ -42,7 +42,7 @@ void DocPostCard::setHeaderData( const QString& type,  const QString& date,
   mType = type;
   mDate = date;
   mAddress = address;
-  mPreText = htmlify( pretext );
+  mPreText = htmlify(pretext);
   mId = id;
 }
 
