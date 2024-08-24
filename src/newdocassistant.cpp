@@ -216,7 +216,10 @@ QDate KraftWizard::date() const
 
 QString KraftWizard::addressUid() const
 {
-  return mAddressee.uid();
+    QString uuid;
+    if (!mAddressee.isEmpty())
+        uuid = mAddressee.uid();
+    return uuid;
 }
 
 QString KraftWizard::docType() const
