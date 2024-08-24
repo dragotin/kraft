@@ -195,9 +195,12 @@ Geld DocPosition::overallPrice()
 {
     Geld g;
 
+    // only calculate the sum for normal items and discount items
     if (type() == DocPositionBase::PositionType::Position ||
             type() == DocPositionBase::PositionType::ExtraDiscount) {
         g = unitPrice() * amount();
+    } else {
+       // qDebug() << "Skipping price in overallPrice because of item type";
     }
 
     return g;

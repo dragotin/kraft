@@ -177,6 +177,9 @@ private slots:
         QVERIFY(xmlSaver.loadByIdent(_docIdent, &doc));
 
         XML::Totals t = xmlSaver.getLastTotals();
+        long brutto = doc.bruttoSum().toLong();
+        long netto = doc.nettoSum().toLong();
+        qDebug() << "document netto" << netto << "and brutto" << brutto;
         QCOMPARE(t._brutto.toLong(), doc.bruttoSum().toLong());
         QCOMPARE(t._netto.toLong(), doc.nettoSum().toLong());
     }
