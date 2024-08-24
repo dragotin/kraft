@@ -137,7 +137,7 @@ bool DocumentSaverDB::loadByIdent( const QString& ident, KraftDoc *doc )
         q1.exec();
         if( q1.next() ) {
             const QString pIdent = q1.value(0).toString();
-            doc->setPredecessorDbId(pIdent);
+            doc->setPredecessor(pIdent);
         }
     }
 

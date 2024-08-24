@@ -360,12 +360,15 @@ void KraftDoc::setTimeOfSupply(QDateTime start, QDateTime end)
 
 QString KraftDoc::docIdentifier() const
 {
-  const QString id = ident();
-  if( id.isEmpty() ) {
-      return docType();
-  }
-  return i18nc("First argument is the doctype, like Invoice, followed by the ID",
-               "%1 (ID %2)", docType(), id );
+    QString re;
+    if (isDraftState()) {
+        re = i18nc("First document type, second date", "%1 from %2 (Draft)", docType(), dateStr());
+    } else {
+        // both components are already translated.
+        re = QString("%1 %2").arg(docType()).arg(ident());
+        // re = i18nc("First argument is the doctype, like Invoice, followed by the ID", "%1 %2", docType(), ident());
+    }
+    return re;
 }
 
 void KraftDoc::deleteItems()

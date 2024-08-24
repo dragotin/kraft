@@ -96,7 +96,7 @@ DocGuardedPtr DocumentMan::createDocument( const QString& docType, const QString
                 }
             }
 
-            doc->setPredecessor(sourceDoc->ident());
+            doc->setPredecessor(sourceDoc->uuid());
 
             // Take the default pre- and posttext for the new docType, or, if that is empty, the texts of the old doc
             QString newText = DefaultProvider::self()->defaultText( docType, KraftDoc::Part::Header );

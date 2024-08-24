@@ -631,15 +631,13 @@ void Portal::slotFollowUpDocument()
     DocPositionList posToCopy;
     delete sourceDoc;
 
-    QString uuidToCopyFrom;
     if ( wiz.exec() ) {
         // it is ok to open by ident because the user selects from ident, and there are only
         // follow up documents from released docs that have an ident already.
-        const QString selectedIdent = wiz.copyItemsFromPredecessor();
-        if(!selectedIdent.isEmpty()) {
-            DocGuardedPtr copyDoc = DocumentMan::self()->openDocumentByIdent( selectedIdent );
+        const QString selectedUuid = wiz.copyItemsFromPredecessor();
+        if(!selectedUuid.isEmpty()) {
+            DocGuardedPtr copyDoc = DocumentMan::self()->openDocumentByIdent(selectedUuid);
             posToCopy = copyDoc->positions();
-            uuidToCopyFrom = copyDoc->uuid();
             delete copyDoc;
         }
 
@@ -659,7 +657,7 @@ void Portal::slotFollowUpDocument()
             }
         }
 
-        DocGuardedPtr doc = DocumentMan::self()->createDocument(wiz.docType(), uuidToCopyFrom, posToCopy);
+        DocGuardedPtr doc = DocumentMan::self()->createDocument(wiz.docType(), selectedUuid, posToCopy);
         doc->setDate( wiz.date() );
         doc->setWhiteboard( wiz.whiteboard() );
         createView( doc );

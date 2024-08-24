@@ -248,17 +248,16 @@ void KraftView::setupDocHeaderView()
     m_headerEdit->m_cbType->insertItems(-1, DocType::allLocalised() );
     m_headerEdit->mButtLang->hide();
 
-    const QString predecessorDbId = m_doc->predecessorDbId();
+    const QString predecessorUuid = m_doc->predecessor();
     bool predecIsVisible = false;
-    if( !predecessorDbId.isEmpty() ) {
-        DocGuardedPtr predecDoc = DocumentMan::self()->openDocumentByIdent(predecessorDbId);
+    if( !predecessorUuid.isEmpty() ) {
+        DocGuardedPtr predecDoc = DocumentMan::self()->openDocumentByUuid(predecessorUuid);
         if( predecDoc ) {
-            const QString id = predecDoc->docIdentifier();
-            const QString link = QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorDbId).arg(id);
-            m_headerEdit->_labFollowup->setText( i18n("Successor of %1", link));
+            QString id{predecDoc->docIdentifier()};
+            const QString link{QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorUuid).arg(id)};
+            m_headerEdit->_labFollowup->setText(i18nc("this is a document successor for followup documents", "Successor of %1", link));
             predecIsVisible = true;
-            connect( m_headerEdit->_labFollowup, SIGNAL(linkActivated(QString)),
-                     this, SLOT(slotLinkClicked(QString)));
+            connect( m_headerEdit->_labFollowup, &QLabel::linkActivated, this, &KraftView::slotLinkClicked);
             delete predecDoc;
         }
     }
@@ -277,11 +276,16 @@ void KraftView::setupDocHeaderView()
 void KraftView::slotLinkClicked(const QString& link)
 {
     QUrl u(link);
-    if( u.scheme() == "doc" && u.host() == "show" ) {
-        QUrlQuery uq(link);
-        const QString ident = uq.queryItemValue("id");
-        qDebug() << "Link clicked to open document " << ident;
-        emit openROView( ident );
+    if( u.scheme() == QStringLiteral("doc") && u.host() == QStringLiteral("show")) {
+        const QString query = u.query();
+        QString uuid;
+        if (query.length() > 0 && query.startsWith("id=")) {
+            uuid = query.mid(3);
+        }
+        qDebug() << "Link clicked to open document " << uuid;
+        if (!uuid.isEmpty()) {
+            emit openROView(uuid);
+        }
     }
 }
 
@@ -303,6 +307,7 @@ void KraftView::redrawDocument( )
     KraftDoc *doc = getDocument();
     if( !doc ) {
       // qDebug () << "ERR: No document available in view, return!";
+        return;
     } else {
       // qDebug () << "** Starting redraw of document " << doc;
     }

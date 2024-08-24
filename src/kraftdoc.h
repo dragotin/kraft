@@ -198,8 +198,6 @@ public:
 
     QString predecessor() const { return mPredecessor; }
     void setPredecessor( const QString& w );
-    QString predecessorDbId() const { return mPredecessorDbId; }
-    void setPredecessorDbId( const QString& pId ) { mPredecessorDbId = pId; }
 
     void setTimeOfSupply(QDateTime start, QDateTime end = QDateTime());
     QDateTime timeOfSupplyStart() { return _toSStart; }
