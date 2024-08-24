@@ -680,7 +680,7 @@ void Portal::slotCopyDocument(const QString& uuid)
   if(oldDoc) {
       const DocType dt = oldDoc->docType();
       oldDocUuid = i18nc("Title of the new doc dialog, %1 is the source doc id",
-                          "Create new Document as Copy of %1", oldDoc->ident());
+                          "Create new Document as Copy of %1", oldDoc->docIdentifier());
       delete oldDoc;
   }
 
