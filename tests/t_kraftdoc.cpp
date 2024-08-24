@@ -11,6 +11,7 @@
 #include "dbids.h"
 #include "format.h"
 #include "kraftsettings.h"
+#include "format.h"
 
 void init_test_db()
 {
@@ -241,18 +242,18 @@ private slots:
         double redTax = 7.0;
 
         QString tmpl{"This is 12 days later than 24.01.2020: DATE_ADD_DAYS(12)"};
-        QString expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax);
+        QString expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax, Format::DateFormatGerman);
 
         QString shouldBe{"This is 12 days later than 24.01.2020: 05.02.2020"};
         QCOMPARE(expanded, shouldBe);
 
         tmpl = "This is 0 days later than 24.01.2020: DATE_ADD_DAYS(0)";
-        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax);
+        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax, Format::DateFormatGerman);
         shouldBe = "This is 0 days later than 24.01.2020: 24.01.2020";
         QCOMPARE(expanded, shouldBe);
 
         tmpl = "This is -5 days later than 24.01.2020: DATE_ADD_DAYS(-5)";
-        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax);
+        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax, Format::DateFormatGerman);
         shouldBe = "This is -5 days later than 24.01.2020: 19.01.2020";
         QCOMPARE(expanded, shouldBe);
     }

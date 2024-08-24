@@ -683,7 +683,7 @@ void KraftDoc::slotNewIdent(const QString& ident)
   *
   * 4. DATE_ADD_DAYS(days): Adds the amount of days to the date delivered in the call parameters
   */
- QString KraftDoc::resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate& date, double fullTax, double redTax) const
+ QString KraftDoc::resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate& date, double fullTax, double redTax, const QString& dateFormat) const
  {
      QString myStr{txtWithMacros};
      QMap<QString, int> seenTags;
@@ -779,7 +779,7 @@ void KraftDoc::slotNewIdent(const QString& ident)
          const QString addDaysStr = rxAddDate.cap(1);
          qint64 addDays = addDaysStr.toInt();
          QDate newDate = date.addDays(addDays);
-         const QString newDateStr = Format::toDateString(newDate, KraftSettings::self()->dateFormat());
+         const QString newDateStr = Format::toDateString(newDate, dateFormat.isEmpty() ? KraftSettings::self()->dateFormat() : dateFormat);
          myStr.replace(pos, rxAddDate.matchedLength(), newDateStr);
      }
 
