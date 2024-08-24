@@ -89,7 +89,7 @@ protected slots:
     virtual void slotLinkClicked(const QString& link) = 0;
 signals:
     void viewClosed(bool, DocGuardedPtr, bool);
-    void openROView(const QString& docId);
+    void openROView(const QString& uuid);
 
 private:
 

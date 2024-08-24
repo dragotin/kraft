@@ -231,23 +231,32 @@ QString KraftWizard::whiteboard() const
 
 void KraftWizard::setDocToFollow(DocGuardedPtr sourceDoc)
 {
-    if( !sourceDoc ) {
-        return;
-    }
-    DocGuardedPtr dPtr = sourceDoc;
+    Q_ASSERT(sourceDoc);
+    DocGuardedPtr dPtr{sourceDoc};
 
     QString sourceId = sourceDoc->ident();
+    QString uuid = sourceDoc->uuid();
+
+    if (sourceId.isEmpty()) {
+        sourceId = i18n("%1 from %2 (draft)").arg(sourceDoc->docType()).arg(sourceDoc->dateStr());
+    }
+
     while( ! sourceId.isEmpty() ) {
         // store the id of the follower and clear id
         const QString idT = dPtr->docIdentifier();
-        mDetailsPage->mSourceDocIdentsCombo->addItem(idT, sourceId);
+        mDetailsPage->mSourceDocIdentsCombo->addItem(sourceId, uuid);
 
         // remember the current dptr to be able to delete it soon
         DocGuardedPtr oldDptr = dPtr;
-        dPtr =  DocumentMan::self()->openDocumentByIdent( dPtr->predecessor() );
+        dPtr =  DocumentMan::self()->openDocumentByUuid(dPtr->predecessor());
         if( dPtr ) {
             sourceId = dPtr->ident();
+            if (sourceId.isEmpty())
+                sourceId = i18n("%1 from %2 (draft)").arg(sourceDoc->docType()).arg(sourceDoc->dateStr());
+            uuid = dPtr->uuid();
+        } else {
             sourceId.clear();
+            uuid.clear();
         }
         if( oldDptr != sourceDoc ) {
             delete oldDptr;
@@ -255,6 +264,7 @@ void KraftWizard::setDocToFollow(DocGuardedPtr sourceDoc)
 
         delete dPtr;
     }
+
     if( mDetailsPage->mSourceDocIdentsCombo->count() > 0  ) {
         mDetailsPage->mKeepItemsCB->setVisible(true);
         mDetailsPage->mSourceDocIdentsCombo->setVisible(true);
@@ -274,7 +284,7 @@ QString KraftWizard::copyItemsFromPredecessor()
 {
     QString re;
     if( mDetailsPage->mKeepItemsCB->checkState() == Qt::Checked ) {
-        re = mDetailsPage->mSourceDocIdentsCombo->currentText(); // use the ident
+        re = mDetailsPage->mSourceDocIdentsCombo->currentData().toString(); // use the ident
     }
     return re;
 }
