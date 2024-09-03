@@ -22,7 +22,6 @@
      <property name="font">
       <font>
        <pointsize>18</pointsize>
-       <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
@@ -30,7 +29,7 @@
       <string>Create Item from Template</string>
      </property>
      <property name="textFormat">
-      <enum>Qt::PlainText</enum>
+      <enum>Qt::TextFormat::PlainText</enum>
      </property>
      <property name="wordWrap">
       <bool>false</bool>
@@ -85,6 +84,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="mPriceVal">
+            <property name="minimum">
+             <double>-999999.989999999990687</double>
+            </property>
             <property name="maximum">
              <double>999999.989999999990687</double>
             </property>
@@ -93,10 +95,10 @@
           <item>
            <spacer name="spacer2">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
+             <enum>QSizePolicy::Policy::Expanding</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -129,10 +131,10 @@
           <item>
            <spacer name="spacer1">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
+             <enum>QSizePolicy::Policy::Preferred</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -150,7 +152,7 @@
      <item>
       <widget class="QGroupBox" name="mKeepGroup">
        <property name="title">
-        <string>Keep this item as template for future documents</string>
+        <string>Keep &amp;this item as template for future documents</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -186,10 +188,10 @@
           <item>
            <spacer name="spacer3">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
+             <enum>QSizePolicy::Policy::Preferred</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -216,7 +218,7 @@
    <item row="2" column="1" colspan="2">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>

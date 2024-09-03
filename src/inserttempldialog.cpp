@@ -53,9 +53,6 @@ InsertTemplDialog::InsertTemplDialog( QWidget *parent )
 
   mBaseWidget->mPriceVal->setSuffix( DefaultProvider::self()->currencySymbol() );
 
-  mBaseWidget->mPriceVal->setMinimum( 0 );
-  mBaseWidget->mPriceVal->setMaximum( 100000 );
-  mBaseWidget->mPriceVal->setDecimals( 2 );
   mBaseWidget->dmAmount->setDecimals( 2 );
   mBaseWidget->dmAmount->setRange( 0, 100000 );
   mBaseWidget->dmAmount->setSingleStep( 1 );

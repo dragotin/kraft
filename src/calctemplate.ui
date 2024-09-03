@@ -39,10 +39,10 @@
          <item>
           <spacer name="spacer4">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeType">
-            <enum>QSizePolicy::Expanding</enum>
+            <enum>QSizePolicy::Policy::Expanding</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -108,7 +108,7 @@
          <item row="0" column="2">
           <spacer name="horizontalSpacer">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -128,7 +128,7 @@
          <item row="1" column="2">
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -276,10 +276,10 @@
              <item>
               <spacer name="spacer5_2">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Expanding</enum>
+                <enum>QSizePolicy::Policy::Expanding</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -397,10 +397,10 @@
              <item>
               <spacer name="spacer6">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Expanding</enum>
+                <enum>QSizePolicy::Policy::Expanding</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -518,10 +518,10 @@
              <item>
               <spacer name="spacer5_2_2">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Expanding</enum>
+                <enum>QSizePolicy::Policy::Expanding</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -552,14 +552,14 @@
         <item row="0" column="0">
          <widget class="QRadioButton" name="m_rbManual">
           <property name="text">
-           <string>&amp;Manual Price</string>
+           <string>Manua&amp;l Price</string>
           </property>
          </widget>
         </item>
         <item row="0" column="3">
          <widget class="QRadioButton" name="m_rbCalculation">
           <property name="text">
-           <string>Calculated Price</string>
+           <string>&amp;Calculated Price</string>
           </property>
           <property name="shortcut">
            <string/>
@@ -568,6 +568,9 @@
         </item>
         <item row="1" column="0" colspan="2">
          <widget class="QDoubleSpinBox" name="m_manualPriceVal">
+          <property name="minimum">
+           <double>-99999.000000000000000</double>
+          </property>
           <property name="maximum">
            <double>99999.000000000000000</double>
           </property>
@@ -585,7 +588,7 @@
         <item row="1" column="2">
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -603,7 +606,7 @@
              <string comment="KDE::DoNotExtract">textLabel2</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -626,7 +629,7 @@
              <string comment="KDE::DoNotExtract">textLabel2</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -649,7 +652,7 @@
              <string comment="KDE::DoNotExtract">textLabel2</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -668,7 +671,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>Profit:</string>
+             <string>&amp;Profit:</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -681,7 +684,7 @@
           <item row="3" column="1">
            <widget class="QSpinBox" name="spBenefit">
             <property name="buttonSymbols">
-             <enum>QAbstractSpinBox::UpDownArrows</enum>
+             <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
             </property>
             <property name="specialValueText">
              <string/>
@@ -715,7 +718,7 @@
         <item row="2" column="1">
          <spacer name="verticalSpacer">
           <property name="orientation">
-           <enum>Qt::Vertical</enum>
+           <enum>Qt::Orientation::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -728,10 +731,10 @@
         <item row="3" column="1" colspan="3">
          <widget class="QFrame" name="frame">
           <property name="frameShape">
-           <enum>QFrame::HLine</enum>
+           <enum>QFrame::Shape::HLine</enum>
           </property>
           <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
+           <enum>QFrame::Shadow::Raised</enum>
           </property>
          </widget>
         </item>
@@ -739,7 +742,6 @@
          <widget class="QLabel" name="m_resPreisName">
           <property name="font">
            <font>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -747,7 +749,7 @@
            <string>Calculated price:</string>
           </property>
           <property name="textFormat">
-           <enum>Qt::PlainText</enum>
+           <enum>Qt::TextFormat::PlainText</enum>
           </property>
           <property name="wordWrap">
            <bool>false</bool>
@@ -758,7 +760,6 @@
          <widget class="QLabel" name="m_resultPrice">
           <property name="font">
            <font>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -769,10 +770,10 @@
            <string>88.888,88 €</string>
           </property>
           <property name="textFormat">
-           <enum>Qt::PlainText</enum>
+           <enum>Qt::TextFormat::PlainText</enum>
           </property>
           <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
           </property>
          </widget>
         </item>
