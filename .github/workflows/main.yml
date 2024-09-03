@@ -5,7 +5,7 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   appimage-build:
     runs-on: ubuntu-latest
-    container: opensuse/leap:15.2
+    container: opensuse/leap:15.3
     steps:
       # need to install Git >= 2.18 before checkout according to GitHub actions
       # we can just install all the dependencies beforehand, though
