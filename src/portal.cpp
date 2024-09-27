@@ -575,7 +575,23 @@ void Portal::slotFollowUpDocument()
             delete copyDoc;
         }
 
-        DocGuardedPtr doc = DocumentMan::self()->createDocument(wiz.docType(), locId, posToCopy);
+        // Check if the new document type allows demand- or alternative items. If not, remove the
+        // attributes of the items, otherwise it can not be edited any more
+        // see https://github.com/dragotin/kraft/issues/242
+        DocType newDocType = wiz.docType();
+        bool allowKind = newDocType.allowAlternative() || newDocType.allowDemand();
+        if (!allowKind) {
+            for(DocPositionBase *dp:posToCopy) {
+                AttributeMap attribs = dp->attributes();
+
+                if (attribs.hasAttribute("kind")) {
+                    attribs.remove("kind");
+                    dp->setAttributeMap(attribs);
+                }
+            }
+        }
+
+        DocGuardedPtr doc = DocumentMan::self()->createDocument(newDocType.name(), locId, posToCopy);
         doc->setDate( wiz.date() );
         doc->setWhiteboard( wiz.whiteboard() );
         createView( doc );

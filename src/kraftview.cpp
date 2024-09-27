@@ -885,9 +885,10 @@ void KraftView::slotDocTypeChanged( const QString& newType )
   DocType docType( newType );
 
   PositionViewWidgetListIterator it( mPositionWidgetList );
+  bool allow = docType.allowAlternative() || docType.allowDemand();
   while( it.hasNext() ) {
     PositionViewWidget *w = it.next();
-    w->slotEnableKindMenu( docType.allowAlternative() );
+    w->slotEnableKindMenu(allow);
     w->slotShowPrice(docType.pricesVisible());
   }
 
