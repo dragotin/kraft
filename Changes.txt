@@ -1,3 +1,9 @@
+Changes since version 1.2.1: #######################################
+
+- Fix: Make Akonadi start more robust (KF5)
+- Fix #241: Allow negative price values for items, also in catalogs
+- Fix #242: Remove the item type in follow up documents
+
 Changes since version 1.2: #########################################
 
 - Fixed a stupid release bug and name the release properly
