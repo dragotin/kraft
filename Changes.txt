@@ -1,3 +1,11 @@
+
+Changes since version 1.2.1: #######################################
+- Fix #242: Do not push item types (Demand) to followup docs
+- Fix #241: Allow negative item sums
+- Changes to fix CI
+
+=> release v. 1.2.2 (Oct 1, 2024)
+
 Changes since version 1.2: #########################################
 
 - Fixed a stupid release bug and name the release properly
