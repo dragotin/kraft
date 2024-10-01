@@ -12,8 +12,8 @@ if(${AKO_PREFIX}Akonadi_FOUND)
     add_executable(${findcontact_NAME} ${FINDCONTACT_SRC})
 
     target_link_libraries( ${findcontact_NAME}
-        Qt5::Core
-        Qt5::Widgets
+        Qt${QT_MAJOR_VERSION}::Core
+        Qt${QT_MAJOR_VERSION}::Widgets
         KF5::Contacts
         ${AKO_PREFIX}::AkonadiCore
         ${AKO_PREFIX}::AkonadiContact

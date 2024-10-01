@@ -60,7 +60,6 @@ endif()
 message("Build host name: ${BUILD_HOST_NAME}")
 message("Build host distribution: ${BUILD_HOST_DISTRI}")
 
-
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(ECMInstallIcons)

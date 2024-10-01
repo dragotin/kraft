@@ -14,9 +14,9 @@ enable_testing()
 
 # include_directories( "${CMAKE_CURRENT_BINARY_DIR}/../src" )
 
-find_package(Qt5Test REQUIRED)
+find_package(Qt${QT_MAJOR_VERSION}Test REQUIRED)
 
-set(test_libs Qt5::Test kraftlib)
+set(test_libs Qt${QT_MAJOR_VERSION}::Test kraftlib)
 
 add_executable(t_unitman t_unitman.cpp)
 target_link_libraries(t_unitman ${test_libs})
