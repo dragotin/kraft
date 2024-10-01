@@ -1,12 +1,9 @@
 
-include_directories(${QT_INCLUDES} src)
 add_subdirectory(pics)
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)
 
 ########### next target ###############
-qt5_add_resources(KRAFT_RC_SRC pics/kraft.qrc)
-
 set(kraft_SRCS
     attribute.cpp
     einheit.cpp
@@ -120,6 +117,8 @@ set(kraft_SRCS
     epcqrcode.cpp
 
     3rdparty/qrcodegen.cpp
+
+    pics/kraft.qrc
 )
 
 kconfig_add_kcfg_files(kraft_SRCS
@@ -180,7 +179,7 @@ if(${AKO_PREFIX}Akonadi_FOUND)
   )
 endif()
 
-add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
+add_library(kraftlib STATIC ${kraft_SRCS})
 target_compile_options(kraftlib PRIVATE -Wall -Wno-suggest-override)
 
 add_executable(kraft main.cpp)
@@ -201,5 +200,5 @@ install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
+install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR})
 install(FILES  kraftui.rc katalogview.rc DESTINATION ${KXMLGUI_INSTALL_DIR}/kraft)

@@ -26,13 +26,13 @@
 #include <akonadi_version.h>
 
 #if AKONADI_VERSION >= QT_VERSION_CHECK(5,20,0)
-#include <AkonadiContact/akonadi-contact_version.h>
+#include <akonadi-contact_version.h>
 #else
 #define AKONADICONTACT_VERSION AKONADI_VERSION
 #endif
 #if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-#include <AkonadiContactEditor/Akonadi/ContactViewer>
-#include <AkonadiContactEditor/Akonadi/ContactEditorDialog>
+#include <Akonadi/ContactViewer>
+#include <Akonadi/ContactEditorDialog>
 #elif AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
 #include <AkonadiContact/Akonadi/ContactViewer>
 #include <AkonadiContact/Akonadi/ContactEditorDialog>
