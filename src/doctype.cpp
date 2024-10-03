@@ -41,6 +41,7 @@ const QString DayCounterDateStr  {"dayCounterDate"};
 const QString DayCounterStr  {"dayCounter"};
 const QString AppendPDFStr   {"AppendPDFFile"};
 const QString DefaultTmplFileName {"invoice.gtmpl"};
+const QString XRechnungEnabled {"XRechnungEnabled"};
 }
 
 

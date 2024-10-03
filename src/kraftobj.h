@@ -48,6 +48,8 @@ public:
 
     bool hasAttribute(const QString& name);
     void setAttribute(const KraftAttrib& attrib);
+    void removeAttribute(const QString& name);
+
     KraftAttrib attribute(const QString& name);
     QMap<QString,KraftAttrib> attributes() const { return _attribs; }
 
