@@ -51,6 +51,13 @@ void KraftObj::setAttribute(const KraftAttrib& attrib)
     _attribs.insert(attrib.name(), attrib);
 }
 
+void KraftObj::removeAttribute(const QString& name)
+{
+    if (!name.isEmpty() && _attribs.contains(name)) {
+        _attribs.remove(name);
+    }
+}
+
 KraftAttrib KraftObj::attribute(const QString& name)
 {
     if (_attribs.contains(name))

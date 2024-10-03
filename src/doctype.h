@@ -84,6 +84,11 @@ public:
 
     void        save();
 
+    void        readIdentTemplate();
+
+    bool        isXRechnungEnabled() const;
+    void        setXRechnungEnabled(bool);
+
 protected:
     void        readFollowerList();
 

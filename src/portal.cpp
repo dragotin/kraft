@@ -648,12 +648,8 @@ void Portal::slotFollowUpDocument()
         bool allowKind = newDocType.allowAlternative() || newDocType.allowDemand();
         if (!allowKind) {
             for(DocPositionBase *dp:posToCopy) {
-                AttributeMap attribs = dp->attributes();
-
-                if (attribs.hasAttribute("kind")) {
-                    attribs.remove("kind");
-                    dp->setAttributeMap(attribs);
-                }
+                // if there is a kind attribute, that is going to be removed.
+                dp->removeAttribute("kind");
             }
         }
 
