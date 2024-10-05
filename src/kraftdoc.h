@@ -25,38 +25,113 @@
 
 #include "docposition.h"
 #include "dbids.h"
-#include "docguardedptr.h"
+#include "kraftobj.h"
+#include "reportitemlist.h"
 
 // forward declaration of the Kraft classes
 
 class DocumentSaverBase;
 class Geld;
+class DocDigest;
 
 class KraftView;
 
-class KraftDoc : public QObject
+class KraftDocState
+{
+public:
+    enum class State {
+        Undefined,  // Not defined at all.
+        New,        // New document, not yet saved
+        Draft,      // Draft. Saved on disk
+        Final,      // Final. Saved and with an official doc number
+        Retracted,  // Sent to customer, but retracted
+        Converted,  // Converted from a previous Kraft version that did not have proper states
+        Invalid     // Invalidated. Never sent out
+    };
+
+    const QString StateUndefinedStr{"Undefined"};
+    const QString StateNewStr{"New"};
+    const QString StateDraftStr{"Draft"};
+    const QString StateFinalStr{"Final"};
+    const QString StateRetractedStr{"Retracted"};
+    const QString StateInvalidStr{"Invalid"};
+    const QString StateConvertedStr{"Converted"};
+
+    KraftDocState::State state() const { return _state; }
+    QString stateString() const;
+    void setState( State s) { _state = s; }
+    void setStateFromString(const QString& s);
+    bool forcesReadOnly();
+
+    bool is(State s) const { return _state == s; }
+    bool isNew() const { return is(State::New); }
+    bool canBeFinalized() const;
+    static QList<KraftDocState::State> validFollowStates(KraftDocState::State nowState);
+
+private:
+    State _state;
+};
+
+class KraftDoc : public QObject, public KraftObj
 {
     Q_OBJECT
     Q_PROPERTY(QString docType READ docType)
+    Q_PROPERTY(QString state READ (_state.stateString))
+    Q_PROPERTY(bool isDraftState READ isDraftState)
     Q_PROPERTY(QString address READ address)
     Q_PROPERTY(QString clientUid READ addressUid)
     Q_PROPERTY(QString ident READ ident)
     Q_PROPERTY(QString salut READ salut)
     Q_PROPERTY(QString goodbye READ goodbye)
     Q_PROPERTY(QString preText READ preText)
+    Q_PROPERTY(QString preTextHtml READ preTextHtml)
     Q_PROPERTY(QString postText READ postText)
+    Q_PROPERTY(QString postTextHtml READ postTextHtml)
+
     Q_PROPERTY(QString projectLabel READ projectLabel)
-    Q_PROPERTY(QString docIDStr READ docIdStr)
+    Q_PROPERTY(QString predecessor READ predecessor)
+    Q_PROPERTY(QString docIDStr READ uuid)
+
     Q_PROPERTY(QString docIdentifier READ docIdentifier)
+    Q_PROPERTY(QString dateStr READ dateStr)
+    Q_PROPERTY(QString dateStrISO READ dateStrISO)
 
     Q_PROPERTY(QString nettoSumStr READ nettoSumStr)
-    Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr)
-    Q_PROPERTY(QString taxSumStr READ vatSumStr)
-    Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
-    Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
-public:
-    enum Part { Header,  Positions, Footer, Unknown };
+    Q_PROPERTY(QString nettoSumNum READ nettoSumNum)
 
+    Q_PROPERTY(QString bruttoSumStr READ bruttoSumStr)
+    Q_PROPERTY(QString bruttoSumNum READ bruttoSumNum)
+
+    Q_PROPERTY(QString taxSumStr READ vatSumStr)
+    Q_PROPERTY(QString taxSumNum READ vatSumNum)
+
+    Q_PROPERTY(QString fullTaxSumStr READ fullTaxSumStr)
+    Q_PROPERTY(QString fullTaxSumNum READ fullTaxSumNum)
+
+    Q_PROPERTY(QString reducedTaxSumStr READ reducedTaxSumStr)
+    Q_PROPERTY(QString reducedTaxSumNum READ reducedTaxSumNum)
+
+    Q_PROPERTY(QString owner READ owner)
+
+    Q_PROPERTY(QString dueDateStrISO READ dueDate)
+    Q_PROPERTY(QString buyerReference READ buyerRef)
+
+    Q_PROPERTY(QString fullTaxPercentNum READ fullTaxPercentNum)
+    Q_PROPERTY(QString fullTaxPercentStr READ fullTaxPercentStr)
+    Q_PROPERTY(QString reducedTaxPercentNum READ reducedTaxPercentNum)
+    Q_PROPERTY(QString reducedTaxPercentStr READ reducedTaxPercentStr)
+    Q_PROPERTY(QString taxPercentStr READ taxPercentStr)
+    Q_PROPERTY(QString taxPercentNum READ taxPercentNum)
+
+    Q_PROPERTY(QString taxMarkerFull READ taxMarkerFull)
+    Q_PROPERTY(QString taxMarkerReduced READ taxMarkerReduced)
+
+    Q_PROPERTY(QList<ReportItem*> reportItems READ reportItemList)
+    Q_PROPERTY(bool hasIndividualTaxation READ hasIndividualTaxation)
+    Q_PROPERTY(bool isInvoice READ isInvoice)
+
+public:
+    enum class Part { Header,  Positions, Footer, Unknown };
     static QString partToString( Part );
 
     /** Constructor for the fileclass of the application */
@@ -66,35 +141,18 @@ public:
 
     KraftDoc& operator=( KraftDoc& );
 
-    /** sets the modified flag for the document after a modifying action
-   *  on the view connected to the document.*/
-    void setModified(bool _m=true){ _modified=_m; }
-    /** returns if the document is modified or not. Use this to determine
-   *  if your document needs saving by the user on closing.*/
-    bool isModified(){ return _modified; }
-    /** deletes the document's contents */
-    void deleteItems();
-
-    /** closes the current document */
-    void closeDocument();
-    /** loads the document by filename and format and emits the updateViews() signal */
-    bool openDocument(const QString& );
-    /** fetch the document from database back */
-    bool reloadDocument();
-    /** saves the document under filename and format.*/
-    bool saveDocument( );
-
-    QLocale* locale();
-
     DocPosition* createPosition( DocPositionBase::PositionType t = DocPositionBase::Position );
     DocPositionList positions() const { return mPositions; }
     void setPositionList(DocPositionList , bool isNew = false);
+    QList<ReportItem*> reportItemList() const;
+
+    DocDigest toDigest();
+    void toJsonObj(QJsonObject& obj) const;
 
     QDate date() const { return mDate; }
     void setDate( QDate d ) { mDate = d; }
-
-    QDateTime lastModified() const { return mLastModified; }
-    void setLastModified( QDateTime d ) { mLastModified = d; }
+    QString dateStr() const;
+    QString dateStrISO() const;
 
     QString docType() const { return mDocType; }
     void setDocType( const QString& s );
@@ -106,9 +164,7 @@ public:
     QString address() const { return mAddress; }
     void setAddress( const QString& adr ) { mAddress = adr; }
 
-    bool isNew() const { return mIsNew; }
-
-    QString ident() const   { return mIdent;    }
+    QString ident() const   { return mIdent; }
     void setIdent( const QString& str ) { mIdent = str; }
 
     QString salut() const   { return mSalut;    }
@@ -119,15 +175,18 @@ public:
 
     // take a string with macros and generate the text replacements for the macros
     // with the help of the position list
-    QString resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate &date, double fullTax, double redTax) const;
+    QString resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate &date,
+                          double fullTax, double redTax, const QString& dateFormat = QString()) const;
 
     // preText is the variant with expanded macros
     QString preText() const;
+    QString preTextHtml() const;
     // preTextRaw is the variant with macros not expanded
     QString preTextRaw() const;
     void setPreTextRaw( const QString& str ) { mPreText = str; }
 
     QString postText() const;
+    QString postTextHtml() const;
     // postTextRaw is the variant with macros not expanded
     QString postTextRaw() const;
     void setPostTextRaw( const QString& str ) { mPostText = str; }
@@ -140,31 +199,66 @@ public:
 
     QString predecessor() const { return mPredecessor; }
     void setPredecessor( const QString& w );
-    QString predecessorDbId() const { return mPredecessorDbId; }
-    void setPredecessorDbId( const QString& pId ) { mPredecessorDbId = pId; }
 
-    void setDocID( dbID id ) { mDocID = id; }
-    dbID docID() const { return mDocID; }
-    QString docIdStr() const { return docID().toString(); }
+    void setTimeOfSupply(QDateTime start, QDateTime end = QDateTime());
+    QDateTime timeOfSupplyStart() { return _toSStart; }
+    QDateTime timeOfSupplyEnd() { return _toSEnd; }
+
+    QString owner() { return _owner; }
+    void setOwner(const QString& owner) { _owner = owner; }
 
     QString docIdentifier() const;
     DBIdList removePositionList() { return mRemovePositions; }
 
+    QString taxPercentStr() const;
+    QString taxPercentNum() const;
+    QString reducedTaxPercentStr() const;
+    QString reducedTaxPercentNum() const;
+    QString fullTaxPercentStr() const;
+    QString fullTaxPercentNum() const;
+
     Geld nettoSum() const;
     QString nettoSumStr() const { return nettoSum().toLocaleString(); }
+    QString nettoSumNum() const { return nettoSum().toNumberString(); }
+
     Geld bruttoSum() const;
     QString bruttoSumStr() const { return bruttoSum().toLocaleString(); }
+    QString bruttoSumNum() const { return bruttoSum().toNumberString(); }
+
     Geld fullTaxSum() const;
     QString fullTaxSumStr() const { return fullTaxSum().toLocaleString(); }
+    QString fullTaxSumNum() const { return fullTaxSum().toNumberString(); }
+
     Geld reducedTaxSum() const;
     QString reducedTaxSumStr() const { return reducedTaxSum().toLocaleString(); }
+    QString reducedTaxSumNum() const { return reducedTaxSum().toNumberString(); }
 
     Geld vatSum() const;
     QString vatSumStr() const { return vatSum().toLocaleString(); }
+    QString vatSumNum() const { return vatSum().toNumberString(); }
 
     QString country() const;
     QString language() const;
 
+    QString dueDate() const { return _dueDate.toString("yyyy-MM-dd"); }
+    QString buyerRef() const { return _buyerRef; }
+    void setDueDate(const QDate& d) { _dueDate = d; }
+    void setBuyerRef(const QString& br) { _buyerRef = br; }
+
+    static QString taxMarkerNoTax()   { return QStringLiteral("1"); }
+    static QString taxMarkerReduced() { return QStringLiteral("2"); }
+    static QString taxMarkerFull()    { return QStringLiteral("");  }
+
+    bool hasIndividualTaxation() const { return mPositions.hasIndividualTaxes(); }
+
+    bool isInvoice() const;
+    bool isDraftState() const;
+
+    void setTaxValues(double fullTax, double redTax);
+
+    void clear();
+
+    KraftDocState& state() { return _state; }
 
 public slots:
     /** calls redrawDocument() on all views connected to the document object and is
@@ -177,10 +271,30 @@ public slots:
     void slotRemovePosition( int );
     void slotMoveUpPosition( int );
     void slotMoveDownPosition( int );
+
+    // queries a document ident number from the numbercycle and sets the status to final.
+    void finalize();
+    void slotNewIdent(const QString&);
+
+signals:
+    void saved(bool);
+
+protected:
+    /** closes the current document FIXME: remove and put to destructor */
+    void closeDocument();
+
+    /** loads the document by filename and format and emits the updateViews() signal */
+    bool openDocument(DocumentSaverBase &loader, const QString& uuid);
+
+    /** fetch the document from database back FIXME needs a loader */
+    bool reloadDocument(DocumentSaverBase &loader);
+
+    /** saves the document under filename and format.*/
+    bool saveDocument(DocumentSaverBase &saver);
+
 private:
-    /** the modified flag of the current document */
-    bool _modified;
-    bool mIsNew;
+    /** deletes the document's contents */
+    void deleteItems();
 
     QString mAddressUid;
     QString mProjectLabel;
@@ -202,10 +316,21 @@ private:
     QString mLanguage;
 
     QDate   mDate;
-    QDateTime   mLastModified;
+
+    QString _buyerRef;
+    QDate _dueDate;
+
+    // Time of supply
+    QDateTime _toSStart;
+    QDateTime _toSEnd;
+    QString   _owner;
+
     DocPositionList mPositions;
     DBIdList mRemovePositions;
-    dbID    mDocID;
+    KraftDocState   _state;
+
+    double _fullTax, _redTax;
+    friend class DocumentMan;
 };
 
 #endif // KraftDoc_H

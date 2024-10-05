@@ -14,21 +14,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <array>
 
 #include <QtGui>
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QSqlQuery>
+#include <QToolButton>
 
 #include <klocalizedstring.h>
+#include <kcontacts/phonenumber.h>
 
 #include "docdigest.h"
 #include "docdigestdetailview.h"
 #include "defaultprovider.h"
 #include "htmlview.h"
 #include "texttemplate.h"
-#include "archdoc.h"
 #include "format.h"
+#include "kraftsettings.h"
+#include "grantleetemplate.h"
+
+#include "xmldocindex.h"
+#include "version.h"
+
 
 DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
   : HtmlView( parent )
@@ -38,17 +46,21 @@ DocDigestHtmlView::DocDigestHtmlView( QWidget *parent )
 
 void DocDigestHtmlView::slotLinkClicked(const QUrl& url)
 {
+    // This method is not longer required as there are no
+    // links any more in the description. But its left here
+    // as an example
+
     const QUrlQuery q(url);
     // Url is like "http://localhost/show_last_print?id=5"
 
-    const QString idStr = q.queryItemValue(QLatin1String("id"));
+    const QString idStr = q.queryItemValue(QStringLiteral("id"));
 
     const QString path = url.path();
-    bool ok;
+
     if( path.endsWith("show_last_print")) {
-        emit( showLastPrint( dbID(idStr.toInt(&ok))));
+        // emit( .. );
     } else if (path.endsWith("export_xrechnung")) {
-        emit( exportXRechnung(dbID(idStr.toInt(&ok))));
+        // emit( .. );
     }
 }
 
@@ -61,16 +73,17 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   QHBoxLayout *hbox = new QHBoxLayout;
   hbox->setSpacing(0);
 
-
   const int detailMinWidth = 260;
   setFixedHeight(200);
   // --- The left details box
-  _leftDetails = new QLabel;
+  _leftDetails = new QLabel(this);
   hbox->addWidget(_leftDetails);
   _leftDetails->setTextFormat(Qt::RichText);
   _leftDetails->setMinimumWidth(detailMinWidth);
   _leftDetails->setFrameStyle(0);
   _leftDetails->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
+  _leftDetails->setWordWrap(true);
 
   // --- The middle HTML based view
   hbox->setMargin(0);
@@ -79,41 +92,45 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   mHtmlCanvas->setFrameStyle(0);
   mHtmlCanvas->setStylesheetFile("docdigestview.css");
 
-  connect( mHtmlCanvas, SIGNAL(showLastPrint( const dbID& )),
-           this, SIGNAL( showLastPrint( const dbID& ) ) );
-  connect( mHtmlCanvas, SIGNAL(exportXRechnung( const dbID& )),
-           this, SIGNAL( exportXRechnung( const dbID& ) ) );
-
-  hbox->addWidget( mHtmlCanvas);
+  hbox->addWidget(mHtmlCanvas);
 
   const QString bgColor = mHtmlCanvas->palette().base().color().name();
-  const QString style = QStringLiteral("QLabel { "
-                                "background-color: %1; "
-                                "background-image: url(:/kraft/kraft_customer.png); background-repeat: repeat-none;"
-                                "background-position: top left; "
-                                "}").arg(bgColor);
+  const QString style = widgetStylesheet(Location::Left, Detail::Start);
 
   _leftDetails->setStyleSheet(style);
-  _leftDetails->setWordWrap(true);
 
   // --- The right details Box
-  const QString styleR = QStringLiteral("QLabel { "
-                                 "background-color: %1;"
-                                 "background-image: url(:/kraft/postit.png); background-repeat: repeat-none;"
-                                 "background-position: top center;"
-                                 "padding: 0px; "
-                                 "padding-left: 10px; "
-                                 "}").arg(bgColor);
+  const QString styleR = widgetStylesheet(Location::Right, Detail::Start);
 
-
-  _rightDetails = new QLabel;
+  _rightDetails = new QLabel(this);
   _rightDetails->setTextFormat(Qt::RichText);
+  _rightDetails->setAlignment(Qt::AlignTop | Qt::AlignLeft);
   _rightDetails->setStyleSheet(styleR);
   _rightDetails->setMinimumWidth(detailMinWidth);
   _rightDetails->setWordWrap(true);
   _rightDetails->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
   hbox->addWidget(_rightDetails);
+
+  slotShowStart();
+
+  // --- The Actions Box
+  QWidget *w = new QWidget;
+  _docActionsWidget = new Ui::docActionsWidget;
+  _docActionsWidget->setupUi(w);
+
+  hbox->addWidget(w);
+}
+
+void DocDigestDetailView::initViewActions(const std::array<QAction*, 4> actions)
+{
+    qDebug() << "Sizeof actions" << actions.size();
+    Q_ASSERT(_docActionsWidget != nullptr);
+
+    _docActionsWidget->_tbEdit->setDefaultAction(actions[0]);
+    _docActionsWidget->_tbFinalize->setDefaultAction(actions[1]);
+    _docActionsWidget->_tbOpenPDF->setDefaultAction(actions[2]);
+    _docActionsWidget->_tbPrintPDF->setDefaultAction(actions[3]);
 }
 
 void DocDigestDetailView::slotClearView()
@@ -133,21 +150,28 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
         if( det == Year ) {
             image = "Calendar_page.png";
             bgPos = "center top";
-            style += QLatin1String("padding-top: 95px; ");
+            style += QStringLiteral("padding-top: 95px; ");
         } else if( det == Month ) {
             image = "Calendar_page.png";
             bgPos = "center top";
-            style += QLatin1String("padding-top: 75px; ");
-        } else {
+            style += QStringLiteral("padding-top: 75px; ");
+        } else if (det == Document){
             // Document
-            image = "kraft_customer.png";
+            image = QStringLiteral("users.png");
             bgPos = "top left";
-            style += QLatin1String( "padding-top: 50px; padding-left:15px;");
+            style += QStringLiteral( "padding-top: 65px; padding-left:15px; padding-right:8px;");
+        } else if (det == Start) {
+            image = QStringLiteral("kraft-simple.png");
+            bgPos = "center";
+        } else {
+
         }
     } else if(loc == Middle ) {
         if( det == Year ) {
 
         } else if( det == Month ) {
+
+        } else if( det == Start) {
 
         } else {
             // Document
@@ -160,9 +184,9 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
 
         } else {
             // Document
-            image = "postit.png";
-            bgPos = "top center";
-            style += QLatin1String("padding: 0px; padding-left: 30px; ");
+            image = QStringLiteral("postit.png");
+            bgPos = QStringLiteral("top center");
+            style += QStringLiteral("padding: 0px; padding-top: 30px; padding-left: 5px; padding-right: 12px; ");
         }
 
     } else {
@@ -173,7 +197,7 @@ QString DocDigestDetailView::widgetStylesheet( Location loc, Detail det )
         style += QString("background-image: url(:/kraft/%1); background-repeat: repeat-none;"
                          "background-position: %2;").arg(image).arg(bgPos);
     }
-    style += QLatin1String("}");
+    style += QStringLiteral("}");
     return style;
 }
 
@@ -197,32 +221,9 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
         maxDate = QString::number(year)+"-12-31";
     }
 
-    // read data in the given timeframe from database
-    QSqlQuery q;
-    const QString query = QString("SELECT archDocID, ident, MAX(printDate) FROM archdoc WHERE "
-                                  "date BETWEEN date('%1') AND date('%2') "
-                                  "GROUP BY ident").arg(minDate, maxDate);
-
-    // qDebug() << "***" << query;
-    QMap<QString, QPair<int, Geld> > docMatrix;
-    q.prepare(query);
-    q.exec();
-    while( q.next() ) {
-       dbID archDocId(q.value(0).toInt());
-
-       const ArchDoc doc(archDocId);
-       const QString docType = doc.docTypeStr();
-       Geld g;
-       int n = 0;
-       if( docMatrix.contains(docType)) {
-           g = docMatrix[docType].second;
-           n = docMatrix[docType].first;
-       }
-       Geld g1 = doc.nettoSum();
-       g += g1;
-       docMatrix[docType].first = n+1;
-       docMatrix[docType].second = g;
-     }
+    // FIXME: overview of the sum of finalized docs
+    // Generate a list of documents between min- and max date, grouped by doc type
+    // The following template vars need to be set with the overall sums
 
     // now create the template
 
@@ -230,18 +231,46 @@ void DocDigestDetailView::documentListing( TextTemplate *tmpl, int year, int mon
     tmpl->setValue("I18N_TYPE",   i18n("Type"));
     tmpl->setValue("I18N_SUM",    i18n("Sum"));
 
-    QStringList doctypes = docMatrix.keys();
-    doctypes.sort();
+    QStringList doctypes;
+    // QStringList doctypes = docMatrix.keys();
+    // doctypes.sort();
 
-    foreach( const QString dtype, doctypes ) {
+    for( const QString& dtype: doctypes ) {
         qDebug() << "creating doc list for "<<dtype;
         tmpl->createDictionary( "DOCUMENTS" );
         tmpl->setValue("DOCUMENTS", "DOCTYPE", dtype);
-        const QString am = QString::number(docMatrix[dtype].first);
+        const QString am = QString::number(0);
         tmpl->setValue("DOCUMENTS", "AMOUNT", am);
-        const QString sm = docMatrix[dtype].second.toLocaleString();
+        const QString sm = Format::localeDoubleToString(0.0);
         tmpl->setValue("DOCUMENTS", "SUM", sm);
     }
+}
+
+void DocDigestDetailView::slotShowStart()
+{
+    const QString templateFile = DefaultProvider::self()->locateFile( "views/welcome.gtmpl" );
+
+    GrantleeFileTemplate tmpl(templateFile);
+
+    QString name = qgetenv("USER");
+    if (name.isEmpty())
+        name = qgetenv("USERNAME");
+
+    QObject obj;
+    obj.setProperty("version", Kraft::Version::number());
+    obj.setProperty("codename", Kraft::Version::codeName());
+    obj.setProperty("username", name);
+
+    QObject labels;
+    labels.setProperty("header", i18n("Welcome to Kraft"));
+    labels.setProperty("version", i18n("Version"));
+    labels.setProperty("text1", i18n("Kraft helps you to handle documents like quotes and invoices in your small business."));
+
+    tmpl.addToObjMapping("kraft", &obj);
+    tmpl.addToObjMapping("label", &labels);
+    bool ok;
+    const QString welcome = tmpl.render(ok);
+    mHtmlCanvas->displayContent(welcome);
 }
 
 void DocDigestDetailView::slotShowMonthDetails( int year, int month )
@@ -312,13 +341,42 @@ void DocDigestDetailView::slotShowYearDetails( int year )
 void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, const QString& manAddress )
 {
     Q_UNUSED(addressee)
-    QString content = "<h3>" + i18n("Customer") +"</h3>";
+    QString content;
+
     if( !manAddress.isEmpty() ) {
-        content += "<pre>" + manAddress +"</pre>";
+        content += QStringLiteral("<pre>") + manAddress + QStringLiteral("</pre>");
     } else {
-        content += QLatin1String("<p>")+i18n("not set")+QLatin1String("</p>");
+        content += QStringLiteral("<p>")+i18n("not set")+QStringLiteral("</p>");
     }
+
+    QString addressContent;
+    if (addressee.isEmpty()) {
+        addressContent += i18n("manual address");
+    } else {
+        const QString email = addressee.preferredEmail();
+        if (!email.isEmpty()) {
+            addressContent += i18n("Email:%1").arg(email.toHtmlEscaped());
+        }
+        const auto phone = addressee.phoneNumber(KContacts::PhoneNumber::Home);
+        if (!phone.isEmpty()) {
+            addressContent += i18n("Number (Home):%1").arg(phone.number());
+        }
+        const auto phoneW = addressee.phoneNumber(KContacts::PhoneNumber::Work);
+        if (!phoneW.isEmpty()) {
+            addressContent += i18n("Number (Work):%1").arg(phoneW.number());
+        }
+    }
+
+    if (!addressContent.isEmpty()) {
+        content += QStringLiteral("<hr/>");
+        content += QStringLiteral("<span style=\" font-size:8pt;\">");
+        content.append(addressContent);
+        content += QStringLiteral("</span>");
+    }
+
     _leftDetails->setText( content );
+
+
 #if 0
     // tmpl.setValue( "URL", mHtmlCanvas->baseURL().prettyUrl());
     tmpl.setValue( DOCDIGEST_TAG( "CUSTOMER_LABEL" ), i18n("Customer"));
@@ -392,73 +450,58 @@ void DocDigestDetailView::showAddress( const KContacts::Addressee& addressee, co
 #endif
 }
 
-void DocDigestDetailView::slotShowDocDetails( DocDigest digest )
+void DocDigestDetailView::slotShowDocDetails( const DocDigest& digest )
 {
     // qDebug () << "Showing details about this doc: " << digest.id();
 
+    QObject obj;
+    QObject labels;
+
+    showAddress(digest.addressee(), digest.clientAddress());
+
     if( _docTemplFileName.isEmpty() ) {
-        // QString templFileName = QString( "kraftdoc_%1_ro.trml" ).arg( doc->docType() );
-        _docTemplFileName = DefaultProvider::self()->locateFile( "views/docdigest.thtml" );
+        _docTemplFileName = DefaultProvider::self()->locateFile( "views/docdigest.gtmpl" );
     }
 
-    TextTemplate tmpl; // template file with name docdigest.trml
-    tmpl.setTemplateFileName(_docTemplFileName);
-    if( !tmpl.isOk() ) {
-        return;
-    }
-    tmpl.setValue( DOCDIGEST_TAG( "HEADLINE" ), digest.type() + " " + digest.ident() );
+    GrantleeFileTemplate gtmpl(_docTemplFileName);
 
-    tmpl.setValue( DOCDIGEST_TAG( "DATE" ), digest.date() );
-    tmpl.setValue( DOCDIGEST_TAG( "DATE_LABEL" ), i18n("Date") );
+    obj.setProperty("headline", digest.type());
+    obj.setProperty("date", digest.date());
+    obj.setProperty("isInvoice", true /* FIXME */);
+    obj.setProperty("whiteboard", digest.whiteboard());
+    if (!digest.projectLabel().isEmpty())
+        obj.setProperty("project", digest.projectLabel());
+    obj.setProperty("state", digest.stateStr());
+    obj.setProperty("ident", digest.ident());
+    const QString lmd = Format::toDateTimeString(digest.lastModified(), KraftSettings::self()-> dateFormat());
+    obj.setProperty("modifiedDateDoc", lmd);
 
-
-
-    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD"), digest.whiteboard() );
-    tmpl.setValue( DOCDIGEST_TAG( "WHITEBOARD_LABEL"), i18n("Whiteboard"));
-
-    if( !digest.projectLabel().isEmpty() ) {
-        tmpl.createDictionary( "PROJECT_INFO" );
-        tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT"), digest.projectLabel() );
-        tmpl.setValue( "PROJECT_INFO", DOCDIGEST_TAG( "PROJECT_LABEL"), i18n("Project"));
-    }
-
-    showAddress( digest.addressee(), digest.clientAddress() );
-
-    // Information about archived documents.
-    ArchDocDigestList archDocs = digest.archDocDigestList();
-    if( archDocs.isEmpty() ) {
-        // qDebug () << "No archived docs for this document!";
-        tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
-        tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("This document was never printed."));
-    } else {
-        ArchDocDigest archdigest = archDocs[0];
-
-        QFileInfo fi(archdigest.pdfArchiveFileName());
-        if (fi.exists()) {
-            tmpl.createDictionary( DOCDIGEST_TAG( "PRINTED" ));
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LABEL"), i18n( "Last printed" ) );
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_TITLE"), i18n( "Opens last created PDF document" ) );
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_LINK_TEXT"), i18n( "open" ) );
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINT_DATE"), Format::toDateTimeString(archdigest.printDate(), Format::DateFormatLong));
-            tmpl.setValue( "PRINTED", DOCDIGEST_TAG("LAST_PRINTED_ID"), archdigest.archDocId().toString() );
-
-            if( archDocs.size() == 1 ) {
-                tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("One older print"));
-            } else {
-                tmpl.setValue( "PRINTED", DOCDIGEST_TAG("ARCHIVED_COUNT"), i18n("%1 older prints", archDocs.count()));
-            }
-        } else {
-            tmpl.createDictionary( DOCDIGEST_TAG( "NEVER_PRINTED" ));
-            tmpl.setValue( "NEVER_PRINTED", DOCDIGEST_TAG("NEVER_PRINTED_LABEL"), i18n("Archived documents cannot be found. Check PDF Output dir."));
-        }
-    }
-    if (digest.isXRechnungEnabled()) {
-        tmpl.createDictionary( DOCDIGEST_TAG( "EXPORT_XRECHNUNG" ));
-        tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_TITLE"), i18n("Export the invoice in XRechnung file format"));
-        tmpl.setValue( "EXPORT_XRECHNUNG", DOCDIGEST_TAG("EXPORT_XRECHNUNG_LABEL"), i18n("XRechnung"));
+    // PDF file info
+    XmlDocIndex indx;
+    const QFileInfo fi = indx.pdfPathByUuid(digest.uuid());
+    bool pdfAvail = fi.exists();
+    obj.setProperty("pdfAvailable", pdfAvail);
+    if (pdfAvail) {
+        const QString lmd = Format::toDateTimeString(fi.lastModified(), KraftSettings::self()-> dateFormat());
+        obj.setProperty("modifiedDatePdf", lmd);
     }
 
-    const QString details = tmpl.expand();
+    labels.setProperty("date", i18n("Date"));
+    labels.setProperty("exportXRechnungTitle", i18n("Export the invoice in XRechnung file format"));
+    labels.setProperty("exportXRechnung", i18n("XRechnung"));
+    labels.setProperty("whiteboard", i18n("Whiteboard"));
+    labels.setProperty("project", i18n("Project"));
+    labels.setProperty("state", i18n("State"));
+    labels.setProperty("ident", i18n("Document Nr."));
+    labels.setProperty("doclastmodified", i18n("Document last modified"));
+    labels.setProperty("pdflastmodified", i18n("PDF generated"));
+    labels.setProperty("pdfnotavailable", i18n("PDF not yet generated"));
+
+    gtmpl.addToObjMapping("doc", &obj);
+    gtmpl.addToObjMapping("label", &labels);
+
+    bool ok;
+    const QString details = gtmpl.render(ok);
     mHtmlCanvas->displayContent( details );
 
     _rightDetails->setText(digest.whiteboard());

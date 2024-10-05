@@ -21,8 +21,6 @@
 #include <qmap.h>
 #include <qstring.h>
 
-#include "texttemplateinterface.h"
-
 #include <grantlee/engine.h>
 #include <grantlee/template.h>
 

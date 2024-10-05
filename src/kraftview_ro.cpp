@@ -43,7 +43,7 @@
 #include "format.h"
 #include "htmlview.h"
 #include "texttemplate.h"
-#include "documentman.h"
+#include "unitmanager.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
@@ -114,7 +114,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     if( !tmpl.isOk() ) {
         return;
     }
-    tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), doc->docType() + " " + doc->ident() );
+    tmpl.setValue( DOC_RO_TAG( "HEADLINE" ), doc->docIdentifier());
     tmpl.setValue( DOC_RO_TAG( "DATE" ), Format::toDateString(doc->date(), KraftSettings::self()->dateFormat()));
     tmpl.setValue( DOC_RO_TAG( "DOC_TYPE" ),  doc->docType() );
     QString address = doc->address();
@@ -206,15 +206,15 @@ void KraftViewRO::setup( DocGuardedPtr doc )
             tmpl.createSubDictionary( "DISPLAY_SUM_BLOCK", "REDUCED_TAX_ITEMS" );
             tmpl.setValue( "REDUCED_TAX_ITEMS", "COUNT", QString::number( reducedTaxCnt ));
             tmpl.setValue( "REDUCED_TAX_ITEMS", "TAX",
-                           locale->toString( DocumentMan::self()->reducedTax( doc->date() )));
+                           locale->toString( UnitManager::self()->reducedTax( doc->date() )));
             tmpl.createSubDictionary( "DISPLAY_SUM_BLOCK", "FULL_TAX_ITEMS" );
             tmpl.setValue( "FULL_TAX_ITEMS", "COUNT", QString::number( fullTaxCnt ));
             tmpl.setValue( "FULL_TAX_ITEMS", "TAX",
-                           locale->toString( DocumentMan::self()->tax( doc->date() )) );
+                           locale->toString( UnitManager::self()->tax( doc->date() )) );
         }
 
-        double redTax = DocumentMan::self()->reducedTax( doc->date() );
-        double fullTax = DocumentMan::self()->tax( doc->date() );
+        double redTax = UnitManager::self()->reducedTax( doc->date() );
+        double fullTax = UnitManager::self()->tax( doc->date() );
         QString h;
         if ( positions.reducedTaxSum( redTax ).toLong() > 0 ) {
             tmpl.createSubDictionary( "DISPLAY_SUM_BLOCK", "SECTION_REDUCED_TAX"  );
@@ -262,7 +262,7 @@ void KraftViewRO::done( int r )
     return;
   }
 
-  emit viewClosed( true, m_doc );
+  emit viewClosed( true, m_doc, false);
 
   KraftViewBase::done(r);
 }

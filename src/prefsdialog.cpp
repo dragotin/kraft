@@ -258,6 +258,8 @@ QWidget* PrefsDialog::whoIsMeTab()
   return topWidget;
 }
 
+
+
 void PrefsDialog::slotChangeIdentity()
 {
   AddressSelectorDialog dialog(this);

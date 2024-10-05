@@ -33,10 +33,10 @@ void HeaderTemplateProvider::slotNewTemplate()
 {
   // qDebug () << "SlotNewTemplate called!";
 
-  TextEditDialog dia( mParent, KraftDoc::Header );
+  TextEditDialog dia( mParent, KraftDoc::Part::Header );
 
   DocText dt;
-  dt.setTextType( KraftDoc::Header );
+  dt.setTextType( KraftDoc::Part::Header );
   dt.setDocType( mDocType );
 
   dia.setDocText( dt );
@@ -56,12 +56,12 @@ void HeaderTemplateProvider::slotEditTemplate()
 {
   // qDebug () << "SlotEditTemplate called!";
 
-  TextEditDialog dia( mParent, KraftDoc::Header );
+  TextEditDialog dia( mParent, KraftDoc::Part::Header );
 
   /* mCurrentText is set through the slot slotSetCurrentDocText */
   DocText dt = currentText();
-  if ( dt.type() == KraftDoc::Unknown ) {
-    dt.setTextType( KraftDoc::Header );
+  if ( dt.type() == KraftDoc::Part::Unknown ) {
+    dt.setTextType( KraftDoc::Part::Header );
     dt.setDocType( mDocType );
   }
 

@@ -40,7 +40,7 @@ const QString DocMergeIdentStr   {"docMergeIdent"};
 const QString DayCounterDateStr  {"dayCounterDate"};
 const QString DayCounterStr  {"dayCounter"};
 const QString AppendPDFStr   {"AppendPDFFile"};
-const QString DefaultTmplFileName {"invoice.trml"};
+const QString DefaultTmplFileName {"invoice.gtmpl"};
 const QString XRechnungEnabled {"XRechnungEnabled"};
 }
 
@@ -67,7 +67,6 @@ DocType::DocType( const QString& name, bool dirty )
     }
 
     readFollowerList();
-    readIdentTemplate();
 }
 
 void DocType::init()
@@ -270,7 +269,6 @@ void DocType::setNumberCycleName( const QString& name )
         // qDebug () << "Removing identNumberCycle Attribute";
     }
     mDirty = true;
-    readIdentTemplate();
 }
 
 /* This method looks for the template file for the doctype. The rule is:
@@ -292,7 +290,7 @@ QString DocType::templateFile()
     const auto dfp = DefaultProvider::self();
     QString searchStr;
 
-    QString reportFileName = QString( "%1.trml").arg( name().toLower() );
+    QString reportFileName{name().toLower()};
     reportFileName.replace(QChar(' '), QChar('_'));
 
     if ( mAttributes.hasAttribute(DocTemplateFileStr) ) {
@@ -452,213 +450,7 @@ void DocType::setAppendPDFFile(const QString& file)
     setAttribute(AppendPDFStr, file);
 }
 
-/**
- * @brief DocType::generateDocumentIdent
- * @param docDate
- * @param addressUid
- * @param id: Current Id to be used.
- * @param dayCnt: Current day counter to be used.
- * @return
- */
-QString DocType::generateDocumentIdent(const QDate& docDate,
-                                       const QString& addressUid,
-                                       int id, int dayCnt)
-{
-
-    /*
-   * The pattern may contain the following tags:
-   * %y - the year of the documents date.
-   * %w - the week number of the documents date
-   * %d - the day number of the documents date
-   * %m - the month number of the documents date
-   * %M - the month number of the documents date
-   * %c - the customer id from kaddressbook
-   * %i - the uniq identifier from db.
-   * %n - the uniq identifier that resets every day and starts from 1
-   * %type - the localised doc type (offer, invoice etc.)
-   * %uid  - the customer uid
-   */
-
-    // Load the template and check if there is a uniq id included.
-    QString pattern = identTemplate();
-    if ( pattern.indexOf( "%i" ) == -1 && pattern.indexOf("%n") == -1) {
-        qWarning() << "No %i found in identTemplate, appending it to meet law needs!";
-        if (!pattern.endsWith('-'))
-            pattern += QStringLiteral("-");
-        pattern += QStringLiteral("%i");
-    }
-
-    QMap<QString, QString> m;
-
-    m[ "%yyyy" ] = docDate.toString( "yyyy" );
-    m[ "%yy" ] = docDate.toString( "yy" );
-    m[ "%y" ] = docDate.toString( "yyyy" );
-
-    QString h;
-    h = QString("%1").arg( docDate.weekNumber(), 2, 10, QChar('0') );
-    m[ "%ww" ] = h;
-    m[ "%w" ] = QString::number( docDate.weekNumber( ) );
-
-    m[ "%dd" ] = docDate.toString( "dd" );
-    m[ "%d" ] = docDate.toString( "d" );
-
-    m[ "%m" ] = QString::number( docDate.month() );
-
-    m[ "%MM" ] = docDate.toString( "MM" );
-    m[ "%M" ] = docDate.toString( "M" );
-
-    h = QString("%1").arg(id, 6, 10, QChar('0') );
-    m[ "%iiiiii" ] = h;
-
-    h = QString("%1").arg(id, 5, 10, QChar('0') );
-    m[ "%iiiii" ] = h;
-
-    h = QString("%1").arg(id, 4, 10, QChar('0') );
-    m[ "%iiii" ] = h;
-
-    h = QString("%1").arg(id, 3, 10, QChar('0') );
-    m[ "%iii" ] = h;
-
-    h = QString("%1").arg(id, 2, 10, QChar('0') );
-    m[ "%ii" ] = h;
-
-    m[ "%i" ] = QString::number( id );
-
-    h = QString("%1").arg(dayCnt, 6, 10, QChar('0') );
-    m[ "%nnnnnn" ] = h;
-
-    h = QString("%1").arg(dayCnt, 5, 10, QChar('0') );
-    m[ "%nnnnn" ] = h;
-
-    h = QString("%1").arg(dayCnt, 4, 10, QChar('0') );
-    m[ "%nnnn" ] = h;
-
-    h = QString("%1").arg(dayCnt, 3, 10, QChar('0') );
-    m[ "%nnn" ] = h;
-
-    h = QString("%1").arg(dayCnt, 2, 10, QChar('0') );
-    m[ "%nn" ] = h;
-
-    m[ "%n" ] = QString::number(dayCnt);
-
-    m[ "%c" ] = addressUid;
-    m[ "%type" ] = name();
-    m[ "%uid" ] = addressUid;
-
-    QString re = StringUtil::replaceTagsInString( pattern, m );
-    // qDebug () << "Generated document ident: " << re;
-
-    return re;
-}
-
 // if hot, the id is updated in the database, otherwise not.
-int DocType::nextIdentId( bool hot )
-{
-    QString numberCycle = numberCycleName();
-
-    if ( numberCycle.isEmpty() ) {
-        qCritical() << "NumberCycle name is empty";
-        return -1;
-    }
-
-    QSqlQuery qLock;
-    if ( hot ) {
-        qLock.exec( "LOCK TABLES numberCycles WRITE" );
-    }
-
-    QSqlQuery q;
-    q.prepare( "SELECT lastIdentNumber FROM numberCycles WHERE name=:name" );
-
-    int num = -1;
-    q.bindValue( ":name", numberCycle );
-    q.exec();
-    if ( q.next() ) {
-        num = 1+( q.value( 0 ).toInt() );
-        // qDebug () << "Got current number: " << num;
-
-        if ( hot ) {
-            QSqlQuery setQuery;
-            setQuery.prepare( "UPDATE numberCycles SET lastIdentNumber=:newNumber WHERE name=:name" );
-            setQuery.bindValue( ":name", numberCycle );
-            setQuery.bindValue( ":newNumber", num );
-            setQuery.exec();
-            if ( setQuery.isActive() ) {
-                // qDebug () << "Successfully created new id number for numbercycle " << numberCycle << ": " << num;
-            }
-        }
-    }
-    if ( hot ) {
-        qLock.exec( "UNLOCK TABLES" );
-    }
-
-    return num;
-}
-
-int DocType::nextDayCounter(const QDate& docDate)
-{
-    int dayCnt {0};
-
-    // Check the attribute for the day counter.
-    QDate storedDate = mAttributes[DayCounterDateStr].value().toDate();
-    // increment the day counter by one
-    dayCnt = 1+mAttributes[DayCounterStr].value().toInt();
-
-    if (storedDate != docDate) {
-        // the daycounter is outdated. Reset the counter and update the date.
-        setAttribute(DayCounterDateStr, docDate.toString(Qt::ISODate));
-        dayCnt = 1;
-    }
-    setAttribute(DayCounterStr, QString::number(dayCnt));
-    save();
-
-    return dayCnt;
-}
-
-QString DocType::identTemplate()
-{
-    return mIdentTemplate;
-}
-
-void DocType::setIdentTemplate( const QString& t )
-{
-    mIdentTemplate = t;
-}
-
-void DocType::readIdentTemplate()
-{
-    QSqlQuery q;
-    QString tmpl;
-
-    const QString defaultTempl = QString::fromLatin1( "%y%ww-%i" );
-
-    QString numberCycle = numberCycleName();
-    if ( numberCycle.isEmpty() ) {
-        qCritical() << "Numbercycle for doctype is empty, returning default";
-        mIdentTemplate = defaultTempl;
-    }
-    // qDebug () << "Picking ident Template for numberCycle " << numberCycle;
-
-    q.prepare( "SELECT identTemplate FROM numberCycles WHERE name=:name" );
-
-    q.bindValue( ":name", numberCycle );
-    q.exec();
-    if ( q.next() ) {
-        tmpl = q.value( 0 ).toString();
-        // qDebug () << "Read ident template from database: " << tmpl;
-    }
-
-    // FIXME: Check again.
-    if ( tmpl.isEmpty() ) {
-        // qDebug () << "Writing ident template to database: " << pattern;
-        QSqlQuery insQuery;
-        insQuery.prepare( "UPDATE numberCycles SET identTemplate=:pattern WHERE name=:name" );
-        insQuery.bindValue( ":name", numberCycle );
-        insQuery.bindValue( ":pattern", defaultTempl);
-        insQuery.exec();
-        tmpl = defaultTempl;
-    }
-    mIdentTemplate = tmpl;
-}
 
 QString DocType::name() const
 {

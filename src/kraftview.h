@@ -40,6 +40,7 @@
 #include "kraftdoc.h"
 #include "positionviewwidget.h"
 #include "catalogtemplate.h"
+#include "docguardedptr.h"
 #include "ui_docheader.h"
 #include "ui_docfooter.h"
 
@@ -87,8 +88,8 @@ protected:
 protected slots:
     virtual void slotLinkClicked(const QString& link) = 0;
 signals:
-    void viewClosed( bool, DocGuardedPtr );
-    void openROView( QString docId );
+    void viewClosed(bool, DocGuardedPtr, bool);
+    void openROView(const QString& uuid);
 
 private:
 
@@ -135,7 +136,7 @@ class KraftView : public KraftViewBase
   void slotFocusItem( PositionViewWidget*,  int );
   void slotNewHeaderText(const DocText& dt , bool replace);
   void slotNewFooterText(const DocText& dt , bool replace);
-  void slotSwitchToPage( int );
+  void slotSwitchToPage(KraftDoc::Part p);
   
   protected slots:
   // void closeEvent(QCloseEvent *event);

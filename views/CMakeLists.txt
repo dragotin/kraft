@@ -8,4 +8,7 @@ install(FILES
 	systemviewdetails.thtml
 	systemviewerror.thtml
 	yeardigest.thtml
+
+	welcome.gtmpl
+	docdigest.gtmpl
 	DESTINATION ${DATA_INSTALL_DIR}/kraft/views)

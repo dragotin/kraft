@@ -20,33 +20,182 @@
 #include <QWidget>
 
 #include <QDebug>
+#include <klocalizedstring.h>
 
 // application specific includes
-#include "kraftsettings.h"
 #include "kraftdoc.h"
-#include "portal.h"
-#include "kraftview.h"
 #include "docposition.h"
-#include "documentsaverdb.h"
 #include "defaultprovider.h"
 #include "documentman.h"
-#include "doctype.h"
 #include "documentman.h"
 #include "kraftdb.h"
 #include "format.h"
+#include "unitmanager.h"
+#include "kraftsettings.h"
+#include "docdigest.h"
+#include "docidentgenerator.h"
 
 // FIXME: Make KraftDoc inheriting DocDigest!
+namespace {
+
+QString multilineHtml( const QString& str )
+{
+    QString re {str.toHtmlEscaped()};
+
+    re.replace( '\n', "<br/>");
+    return re;
+}
+
+} // end namespace
+
+// =====================================================================================
+void KraftDocState::setStateFromString(const QString& s)
+{
+    _state = State::Undefined;
+    if (s.isEmpty()) return;
+
+    if (s == StateUndefinedStr) {
+        _state = State::Undefined;
+    } else if ( s == StateNewStr) {
+        _state = State::New;
+    } else if ( s == StateDraftStr) {
+        _state = State::Draft;
+    } else if ( s == StateFinalStr) {
+        _state = State::Final;
+    } else if ( s == StateRetractedStr) {
+        _state = State::Retracted;
+    } else if ( s == StateInvalidStr) {
+         _state = State::Invalid;
+    } else if ( s == StateConvertedStr) {
+         _state = State::Converted;
+    } else {
+        _state = State::Invalid;
+    }
+}
+
+QString KraftDocState::stateString() const
+{
+    switch(_state) {
+    case State::New:
+        return StateNewStr;
+        break;
+    case State::Draft:
+        return StateDraftStr;
+        break;
+    case State::Final:
+        return StateFinalStr;
+        break;
+    case State::Retracted:
+        return StateRetractedStr;
+        break;
+    case State::Invalid:
+        return StateInvalidStr;
+        break;
+    case State::Undefined:
+        return StateUndefinedStr;
+        break;
+    case State::Converted:
+        return StateConvertedStr;
+    }
+    return StateUndefinedStr;
+}
+
+QList<KraftDocState::State> KraftDocState::validFollowStates(KraftDocState::State nowState)
+{
+    QList<State> re;
+
+    switch(nowState) {
+    case State::Converted:
+    case State::Invalid:
+    case State::Retracted:
+        qDebug() << "No follow up state for converted.";
+        break;
+    case State::Draft:
+        re.append(State::Final);
+        break;
+    case State::Final:
+        re.append(State::Retracted);
+        break;
+    case State::New:
+        re.append(State::Draft);
+        break;
+    case State::Undefined:
+        re.append(State::Draft);
+        re.append(State::Converted);
+        re.append(State::Final);
+        break;
+    }
+    return re;
+}
+
+bool KraftDocState::canBeFinalized() const
+{
+    bool re {false};
+    const auto validStates = validFollowStates(_state);
+    if (validStates.indexOf(State::Final) > -1) {
+        // can be finalized
+        re = true;
+    }
+    return re;
+}
+
+bool KraftDocState::forcesReadOnly()
+{
+    bool re{false};
+
+    if (_state == State::Final) {
+        re = true;
+    }
+    return re;
+}
+
+// =====================================================================================
+
 
 KraftDoc::KraftDoc(QWidget *parent)
-  : QObject(parent),
-    _modified(false),
-    mIsNew(true),
-    mDocTypeChanged(false)
+  : QObject(parent), KraftObj(),
+    mDocTypeChanged(false),
+    _fullTax(-1.0),
+    _redTax(-1.0)
 {
+    _state.setState(KraftDocState::State::New);
 }
 
 KraftDoc::~KraftDoc()
 {
+}
+
+void KraftDoc::clear()
+{
+    mAddressUid.clear();
+    mProjectLabel.clear();
+    mAddress.clear();
+    mPreText.clear();
+    mPostText.clear();
+    mDocType.clear();
+    mDocTypeChanged = false;
+    mSalut.clear();
+    mGoodbye.clear();
+    mIdent.clear();
+    mWhiteboard.clear();
+    mPredecessor.clear();
+    mPredecessorDbId.clear();
+
+    // Two qualifiers for the locale settings.
+    mCountry.clear();
+    mLanguage.clear();
+
+    mDate = QDate();
+
+    // Time of supply
+    _toSStart = QDateTime();
+    _toSEnd = QDateTime();
+    _owner.clear();
+
+    mPositions.clear();
+    mRemovePositions.clear();
+    _fullTax = -1.0;
+    _redTax = -1.0;
 }
 
 KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
@@ -64,9 +213,13 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
     mPositions.append( newPos );
     // qDebug () << "Appending position " << dp->dbId().toString();
   }
+  if (origDoc.modified()) {
+      setModified();
+  }
 
-  _modified = origDoc._modified;
-  mIsNew = true;
+  _state.setState(KraftDocState::State::New);
+  KraftObj::operator=(origDoc);
+  _uuid = QString(); // clear the Uuid
 
   mAddressUid = origDoc.mAddressUid;
   mProjectLabel = origDoc.mProjectLabel;
@@ -87,7 +240,8 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
   mLanguage   = origDoc.mLanguage;
 
   mDate = origDoc.mDate;
-  mLastModified = origDoc.mLastModified;
+
+  _lastModified = origDoc._lastModified;
 
   // setPositionList( origDoc.mPositions );
   mRemovePositions = origDoc.mRemovePositions;
@@ -107,30 +261,35 @@ void KraftDoc::setPredecessor( const QString& w )
     mPredecessor = w;
 }
 
-bool KraftDoc::openDocument(const QString& id )
+bool KraftDoc::openDocument(DocumentSaverBase &loader, const QString& uuid)
 {
-    KraftDB::self()->loadDocument(id, this);
-    mDocTypeChanged = false;
-    _modified=false;
-    mIsNew = false;
-    return true;
+    if (loader.loadByUuid(uuid, this)) {
+        mDocTypeChanged = false;
+        _modified=false;
+        return true;
+    } else {
+        qDebug() << "Failed to load doc by Uuid";
+    }
+    return false;
 }
 
-bool KraftDoc::reloadDocument()
+bool KraftDoc::reloadDocument(DocumentSaverBase &loader)
 {
-  mPositions.clear();
-  mRemovePositions.clear();
+    const QString uuid = this->uuid();
+    mPositions.clear();
+    mRemovePositions.clear();
 
-  return openDocument( mDocID.toString() );
+    return openDocument(loader, uuid);
 }
 
-bool KraftDoc::saveDocument( )
+bool KraftDoc::saveDocument(DocumentSaverBase& saver)
 {
     bool result = false;
 
-    result = KraftDB::self()->saveDocument(this);
+    result = saver.saveDocument(this);
+
     if(result) {
-        if ( isNew() ) {
+        if ( state().isNew() ) {
             setLastModified( QDateTime::currentDateTime() );
         }
 
@@ -147,17 +306,69 @@ bool KraftDoc::saveDocument( )
         }
         _modified = false;
     }
+
+    emit saved(result);
+
+    // FIXME - add this check
+    // if (res) {
+    //    _emitDBChangeSignal = false; // block sending of the signal
+    //    slotCheckDocDatabaseChanged();
+    //    _emitDBChangeSignal = true;
+    // }
     return result;
+}
+
+DocDigest KraftDoc::toDigest()
+{
+    DocDigest digest(docType(), addressUid());
+    digest.setUuid(uuid());
+    digest.setDate(date());
+    digest.setLastModified(lastModified());
+
+    digest.setClientAddress(address());
+    digest.setIdent(ident());
+    digest.setWhiteboard(whiteboard());
+    digest.setProjectLabel(projectLabel());
+    digest.setStateStr(_state.stateString());
+
+    for( const auto &attrib : attributes()) {
+        digest.setAttribute(attrib);
+    }
+    digest.setTags(allTags());
+
+    return digest;
+}
+
+void KraftDoc::toJsonObj(QJsonObject& obj) const
+{
+    obj["uuid"] = uuid();
+    obj["date"] = Format::toDateString(date(), Format::DateFormatIso);
+    obj["lastModified"] = lastModified().toString(Qt::ISODate);
+    obj["clientAddress"] = address();
+    obj["ident"] = ident();
+    obj["prjtLabel"] = projectLabel();
+    obj["state"] = _state.stateString();
+    obj["whiteboard"] = whiteboard();
+    obj["docType"] = docType();
+}
+
+void KraftDoc::setTimeOfSupply(QDateTime start, QDateTime end)
+{
+    _toSStart = start;
+    _toSEnd = end;
 }
 
 QString KraftDoc::docIdentifier() const
 {
-  const QString id = ident();
-  if( id.isEmpty() ) {
-      return docType();
-  }
-  return i18nc("First argument is the doctype, like Invoice, followed by the ID",
-               "%1 (ID %2)", docType(), id );
+    QString re;
+    if (isDraftState()) {
+        re = i18nc("First document type, second date", "%1 from %2 (Draft)", docType(), dateStr());
+    } else {
+        // both components are already translated.
+        re = QString("%1 %2").arg(docType()).arg(ident());
+        // re = i18nc("First argument is the doctype, like Invoice, followed by the ID", "%1 %2", docType(), ident());
+    }
+    return re;
 }
 
 void KraftDoc::deleteItems()
@@ -260,6 +471,12 @@ int KraftDoc::slotAppendPosition( const DocPosition& pos )
   return mPositions.count();
 }
 
+void KraftDoc::setTaxValues(double fullTax, double redTax)
+{
+    _fullTax = fullTax;
+    _redTax  = redTax;
+}
+
 Geld KraftDoc::nettoSum() const
 {
   return positions().nettoPrice();
@@ -274,21 +491,80 @@ Geld KraftDoc::bruttoSum() const
 
 Geld KraftDoc::fullTaxSum() const
 {
-    return positions().fullTaxSum(DocumentMan::self()->tax(date()));
+    Geld g;
+
+    if (_fullTax < 0) {
+        g = positions().fullTaxSum(UnitManager::self()->tax(date()));
+    } else {
+        g = positions().fullTaxSum(_fullTax);
+    }
+    return g;
 }
 
 Geld KraftDoc::reducedTaxSum() const
 {
-    return positions().reducedTaxSum(DocumentMan::self()->reducedTax(date()));
+    if (_redTax < 0) {
+        return positions().reducedTaxSum(UnitManager::self()->reducedTax(date()));
+    } else {
+        return positions().reducedTaxSum(_redTax);
+    }
 }
 
 Geld KraftDoc::vatSum() const
 {
-  return positions().taxSum( DocumentMan::self()->tax( date() ),
-                             DocumentMan::self()->reducedTax( date() ) );
-
-  // return Geld( nettoSum() * DocumentMan::self()->vat()/100.0 );
+    if (_fullTax < 0) {
+        return positions().taxSum( UnitManager::self()->tax( date() ),
+                                   UnitManager::self()->reducedTax( date() ) );
+    } else {
+        return positions().taxSum(_fullTax, _redTax);
+    }
 }
+
+QString KraftDoc::taxPercentStr() const
+{
+     DocPositionBase::TaxType tt = mPositions.listTaxation();
+     if (tt == DocPositionBase::TaxType::TaxFull) {
+         return fullTaxPercentStr();
+     } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+         return reducedTaxPercentStr();
+     }
+     return QString();
+}
+
+QString KraftDoc::taxPercentNum() const
+{
+    DocPositionBase::TaxType tt = mPositions.listTaxation();
+    if (tt == DocPositionBase::TaxType::TaxFull) {
+        return fullTaxPercentNum();
+    } else if (tt == DocPositionBase::TaxType::TaxReduced) {
+        return reducedTaxPercentNum();
+    }
+    return QString();
+
+}
+
+QString KraftDoc::fullTaxPercentNum() const
+{
+    double t = _fullTax;
+    return QString::number(t, 'f', 2);
+}
+
+QString KraftDoc::reducedTaxPercentNum() const
+{
+    double t = _redTax;
+    return QString::number(t, 'f', 2);
+}
+
+QString KraftDoc::fullTaxPercentStr() const
+{
+   return Format::localeDoubleToString(_fullTax, *DefaultProvider::self()->locale());
+}
+
+QString KraftDoc::reducedTaxPercentStr() const
+{
+   return Format::localeDoubleToString(_redTax, *DefaultProvider::self()->locale());
+}
+
 
 QString KraftDoc::country() const
 {
@@ -304,11 +580,11 @@ QString KraftDoc::language() const
 
  QString KraftDoc::partToString( Part p )
 {
-  if ( p == Header )
+  if ( p == Part::Header )
     return i18nc( "Document part header", "Header" );
-  else if ( p == Footer )
+  else if ( p == Part::Footer )
     return i18nc( "Document part footer", "Footer" );
-  else if ( p == Positions )
+  else if ( p == Part::Positions )
     return i18nc( "Document part containing the items", "Items" );
 
   return i18n( "Unknown document part" );
@@ -323,6 +599,74 @@ QString KraftDoc::language() const
  {
      return mPostText;
  }
+
+bool KraftDoc::isInvoice() const
+{
+    // This is just a work around and should be fixed with an attribute for the doctype
+    // at some point.
+    // FIXME - this is not cool.
+    return (docType() == QStringLiteral("Rechnung"));
+}
+
+bool KraftDoc::isDraftState() const
+{
+    return (_state.state() == KraftDocState::State::Draft);
+}
+
+QList<ReportItem*> KraftDoc::reportItemList() const
+{
+    // ReportItemList reList(positions());
+    QList<ReportItem*> list;
+
+    for( auto &pos : positions()) {
+        ReportItem *ri = new ReportItem(pos);
+        list.append(ri);
+    }
+
+    return list;
+}
+
+void KraftDoc::finalize()
+{
+    auto nowState = state().state();
+
+    if (nowState == KraftDocState::State::Final) {
+        qDebug() << "Document is already in final state";
+        return;
+    }
+
+    QList<KraftDocState::State> allowed = KraftDocState::validFollowStates(nowState);
+    if (!allowed.contains(KraftDocState::State::Final)) {
+        qDebug() << "Document is in wrong state to be finalized" << state().stateString();
+        return;
+    }
+
+    DocIdentGenerator *gen = new DocIdentGenerator;
+    connect(gen, &DocIdentGenerator::newIdent, this, &KraftDoc::slotNewIdent);
+    gen->generate(this);
+
+}
+
+void KraftDoc::slotNewIdent(const QString& ident)
+{
+    DocumentMan *man = DocumentMan::self();
+    auto generator = qobject_cast<DocIdentGenerator*>(sender());
+
+    if (ident.isEmpty()) {
+        const QString errStr = generator->errorStr();
+
+        // Error state - FIXME: Somehow display the error
+        man->setDocProcessingError(errStr);
+    } else {
+        // a new ident is here. Lets set it and save the doc.
+        setIdent(ident);
+        state().setState(KraftDocState::State::Final);
+
+        man->saveDocument(this);
+    }
+    delete generator;
+}
+
 
  /**
   * @brief KraftDoc::resolveMacros
@@ -339,7 +683,7 @@ QString KraftDoc::language() const
   *
   * 4. DATE_ADD_DAYS(days): Adds the amount of days to the date delivered in the call parameters
   */
- QString KraftDoc::resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate& date, double fullTax, double redTax) const
+ QString KraftDoc::resolveMacros(const QString& txtWithMacros, const DocPositionList dposList, const QDate& date, double fullTax, double redTax, const QString& dateFormat) const
  {
      QString myStr{txtWithMacros};
      QMap<QString, int> seenTags;
@@ -409,7 +753,7 @@ QString KraftDoc::language() const
      for (DocPositionBase *pb : dposList) {
          DocPosition *p = static_cast<DocPosition*>(pb);
          if (!p->toDelete()) {
-             const auto tags = p->tags();
+             const auto tags = p->allTags();
              for (const QString& lookupTag : tags) {
                  if (seenTags.contains(lookupTag)) {
                      seenTags[lookupTag] = 1+seenTags[lookupTag];
@@ -435,7 +779,7 @@ QString KraftDoc::language() const
          const QString addDaysStr = rxAddDate.cap(1);
          qint64 addDays = addDaysStr.toInt();
          QDate newDate = date.addDays(addDays);
-         const QString newDateStr = Format::toDateString(newDate, KraftSettings::self()->dateFormat());
+         const QString newDateStr = Format::toDateString(newDate, dateFormat.isEmpty() ? KraftSettings::self()->dateFormat() : dateFormat);
          myStr.replace(pos, rxAddDate.matchedLength(), newDateStr);
      }
 
@@ -458,18 +802,38 @@ QString KraftDoc::language() const
      return myStr;
  }
 
+ QString KraftDoc::dateStr() const
+ {
+     return Format::toDateString(mDate, KraftSettings::self()->dateFormat());
+ }
+
+ QString KraftDoc::dateStrISO() const
+ {
+     return mDate.toString("yyyy-MM-dd");
+ }
+
  QString KraftDoc::preText() const
  {
-     double fullTax = DocumentMan::self()->tax(date());
-     double redTax = DocumentMan::self()->reducedTax(date());
+     double fullTax = UnitManager::self()->tax(date());
+     double redTax = UnitManager::self()->reducedTax(date());
      const QString myStr = resolveMacros(mPreText, positions(), date(), fullTax, redTax);
      return myStr;
  }
 
  QString KraftDoc::postText() const
  {
-     double fullTax = DocumentMan::self()->tax(date());
-     double redTax = DocumentMan::self()->reducedTax(date());
+     double fullTax = UnitManager::self()->tax(date());
+     double redTax = UnitManager::self()->reducedTax(date());
      const QString myStr = resolveMacros(mPostText, positions(), date(), fullTax, redTax);
      return myStr;
+ }
+
+ QString KraftDoc::preTextHtml() const
+ {
+     return multilineHtml(mPreText);
+ }
+
+ QString KraftDoc::postTextHtml() const
+ {
+     return multilineHtml(mPostText);
  }

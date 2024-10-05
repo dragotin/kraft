@@ -39,7 +39,7 @@ be provided:
 - grantlee, an C++ text template framework
 - optional: akonadi contact for Akonadi based addressbook access
 
-Required packages for building with openSUSE:
+Required packages (names not accurate) for building with openSUSE:
 
 - cmake
 - extra-cmake-modules
@@ -53,11 +53,17 @@ Required packages for building with openSUSE:
 - libQt5Widgets-devel
 - libQt5Xml-devel
 - libQt5Svg-devel
+- libQt5XmlPatterns
+- grantlee5-devel
+- kf5-i18n
+- kf5-Config
+- kf5-Contacts
 - grantlee5-devel
 
 These are optional to build with Akonadi Support:
 - akonadi-contact-devel
 - akonadi-devel
+- kf5-ContactEditor
 
 To build with Akonadi versions before 23.04, cmake has to run wtih the
 build option `-DAKONADI_LEGACY_BUILD=ON` to use the old prefix KF5.
@@ -144,8 +150,7 @@ Kraft will create the database tables and fill it automatically.
 Kraft generates PDF documents. For that it uses either a python tool named
 erml2pdf or the python project weasyprint. erml2pdf can be found in Kraft's tools directory in this source package. Weasyprint should be installed separately on the machine that is running Kraft.
 
-To compute PDF watermarks, Kraft uses python-pypdf2 for pdf processing. The python modules are not part of Kraft and should be installed separately
-on the system.
+To compute PDF watermarks, Kraft uses python-pypdf2 for pdf processing. The python modules are not part of Kraft and should be installed separately on the system.
 
 
 

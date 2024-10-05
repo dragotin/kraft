@@ -49,17 +49,15 @@
 #include "kraftdoc.h"
 #include "tagman.h"
 #include "ui_docheader.h"
-#include "documentman.h"
+#include "unitmanager.h"
 #include "docassistant.h"
 #include "positionviewwidget.h"
 #include "ui_docfooter.h"
 #include "docposition.h"
 #include "unitmanager.h"
+#include "documentman.h"
 #include "docpostcard.h"
-#include "kataloglistview.h"
 #include "katalogman.h"
-#include "templkatalog.h"
-#include "templkataloglistview.h"
 #include "catalogselection.h"
 #include "kraftdocheaderedit.h"
 #include "kraftdocpositionsedit.h"
@@ -137,7 +135,7 @@ KraftView::KraftView(QWidget *parent) :
 
   connect(mAssistant, &DocAssistant::selectPage, this, &KraftView::slotSwitchToPage);
 
-  mAssistant->slotSelectDocPart( KraftDoc::Header );
+  mAssistant->slotSelectDocPart( KraftDoc::Part::Header );
 
   setupMappers();
 
@@ -200,34 +198,37 @@ void KraftView::setup( DocGuardedPtr doc )
   setupItems();
   setupFooter();
   setWindowTitle( m_doc->docIdentifier() );
-  slotSwitchToPage( KraftDoc::Header );
+  slotSwitchToPage( KraftDoc::Part::Header );
 
-  if( doc->isNew() ) {
+  if( doc->state().isNew() ) {
       mModified = true;
   }
 }
 
 
-void KraftView::slotSwitchToPage( int id )
+void KraftView::slotSwitchToPage(KraftDoc::Part p)
 {
-  // check if the wanted part is already visible
-  if ( mViewStack->currentWidget() == mViewStack->widget( id ) ) return;
+    // check if the wanted part is already visible
+    int id{0}; // Header
+    if (p == KraftDoc::Part::Positions) id = 1;
+    if (p == KraftDoc::Part::Footer) id = 2;
 
+    if ( mViewStack->currentWidget() == mViewStack->widget( id ) ) return;
 
-  mViewStack->setCurrentIndex( id );
+    mViewStack->setCurrentIndex( id );
 
-  KraftDocEdit *edit =
-    static_cast<KraftDocEdit *>( mViewStack->currentWidget() );
+    KraftDocEdit *edit =
+            static_cast<KraftDocEdit *>( mViewStack->currentWidget() );
 
-  mDetailHeader->setText( edit->title() );
-  
-  QPalette palette;
-  palette.setColor(mDetailHeader->backgroundRole(), edit->color());
-  // FIXME: color
-  palette.setColor(mDetailHeader->foregroundRole(), QColor( "#00008b" ));
-  mDetailHeader->setPalette( palette );
+    mDetailHeader->setText( edit->title() );
 
-  mAssistant->slotSelectDocPart( mViewStack->currentIndex() );
+    QPalette palette;
+    palette.setColor(mDetailHeader->backgroundRole(), edit->color());
+    // FIXME: color
+    palette.setColor(mDetailHeader->foregroundRole(), QColor( "#00008b" ));
+    mDetailHeader->setPalette( palette );
+
+    mAssistant->slotSelectDocPart(p);
 }
 
 void KraftView::slotShowTemplates( bool )
@@ -247,17 +248,16 @@ void KraftView::setupDocHeaderView()
     m_headerEdit->m_cbType->insertItems(-1, DocType::allLocalised() );
     m_headerEdit->mButtLang->hide();
 
-    const QString predecessorDbId = m_doc->predecessorDbId();
+    const QString predecessorUuid = m_doc->predecessor();
     bool predecIsVisible = false;
-    if( !predecessorDbId.isEmpty() ) {
-        DocGuardedPtr predecDoc = DocumentMan::self()->openDocument(predecessorDbId);
+    if( !predecessorUuid.isEmpty() ) {
+        DocGuardedPtr predecDoc = DocumentMan::self()->openDocumentByUuid(predecessorUuid);
         if( predecDoc ) {
-            const QString id = predecDoc->docIdentifier();
-            const QString link = QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorDbId).arg(id);
-            m_headerEdit->_labFollowup->setText( i18n("Successor of %1", link));
+            QString id{predecDoc->docIdentifier()};
+            const QString link{QString("<a href=\"doc://show?id=%1\">%2</a>").arg(predecessorUuid).arg(id)};
+            m_headerEdit->_labFollowup->setText(i18nc("this is a document successor for followup documents", "Successor of %1", link));
             predecIsVisible = true;
-            connect( m_headerEdit->_labFollowup, SIGNAL(linkActivated(QString)),
-                     this, SLOT(slotLinkClicked(QString)));
+            connect( m_headerEdit->_labFollowup, &QLabel::linkActivated, this, &KraftView::slotLinkClicked);
             delete predecDoc;
         }
     }
@@ -276,11 +276,16 @@ void KraftView::setupDocHeaderView()
 void KraftView::slotLinkClicked(const QString& link)
 {
     QUrl u(link);
-    if( u.scheme() == "doc" && u.host() == "show" ) {
-        QUrlQuery uq(link);
-        const QString ident = uq.queryItemValue("id");
-        qDebug() << "Link clicked to open document " << ident;
-        emit openROView( ident );
+    if( u.scheme() == QStringLiteral("doc") && u.host() == QStringLiteral("show")) {
+        const QString query = u.query();
+        QString uuid;
+        if (query.length() > 0 && query.startsWith("id=")) {
+            uuid = query.mid(3);
+        }
+        qDebug() << "Link clicked to open document " << uuid;
+        if (!uuid.isEmpty()) {
+            emit openROView(uuid);
+        }
     }
 }
 
@@ -302,6 +307,7 @@ void KraftView::redrawDocument( )
     KraftDoc *doc = getDocument();
     if( !doc ) {
       // qDebug () << "ERR: No document available in view, return!";
+        return;
     } else {
       // qDebug () << "** Starting redraw of document " << doc;
     }
@@ -465,7 +471,7 @@ void KraftView::redrawDocPositions( )
   DocPositionListIterator it( list );
   while( it.hasNext() ) {
     DocPositionBase *dp = it.next();
-    PositionViewWidget *w = mPositionWidgetList.widgetFromPosition( dp );
+    PositionViewWidget *w = mPositionWidgetList.widgetFromPosition(dp);
     if( !w ) {
       w = createPositionViewWidget( dp, cnt);
       w->slotAllowIndividualTax( currentTaxSetting() == DocPositionBase::TaxIndividual );
@@ -584,26 +590,30 @@ void KraftView::refreshPostCard()
     QDate d = m_headerEdit->m_dateEdit->date();
     const QString dStr = Format::toDateString( d, KraftSettings::self()->dateFormat() );
 
-    double fullTax = DocumentMan::self()->tax(d);
-    double redTax = DocumentMan::self()->reducedTax(d);
+    double fullTax = UnitManager::self()->tax(d);
+    double redTax = UnitManager::self()->reducedTax(d);
     const QString preText = kraftDoc->resolveMacros(m_headerEdit->m_teEntry->toPlainText(),
                                                     positions, d, fullTax, redTax);
     const QString postText = kraftDoc->resolveMacros(m_footerEdit->ui()->m_teSummary->toPlainText(),
                                                      positions, d, fullTax, redTax);
     mAssistant->postCard()->setHeaderData( m_headerEdit->m_cbType->currentText(),
                                            dStr, m_headerEdit->m_postAddressEdit->toPlainText(),
-                                           getDocument()->ident(),
+                                           getDocument()->docIdentifier(),
                                            preText );
 
 
     mAssistant->postCard()->setPositions( positions,  currentTaxSetting(),
-                                          DocumentMan::self()->tax( d ),
-                                          DocumentMan::self()->reducedTax( d ) );
+                                          UnitManager::self()->tax( d ),
+                                          UnitManager::self()->reducedTax( d ) );
 
     mAssistant->postCard()->setFooterData( postText,
                                            m_footerEdit->greeting() );
 
-    mAssistant->postCard()->renderDoc( mViewStack->currentIndex() ); // id( mViewStack->visibleWidget() ) );
+    KraftDoc::Part p {KraftDoc::Part::Header};
+    if (mViewStack->currentIndex() == 1) p = KraftDoc::Part::Positions;
+    if (mViewStack->currentIndex() == 2) p = KraftDoc::Part::Footer;
+
+    mAssistant->postCard()->renderDoc(p);
   }
 
 
@@ -867,7 +877,7 @@ void KraftView::slotAddressFound(const QString& uid, const KContacts::Addressee&
 
         m_headerEdit->m_letterHead->insertItems(-1, li );
         KraftDoc *doc = getDocument();
-        if( doc->isNew() ) {
+        if( doc->state().isNew() ) {
             m_headerEdit->m_letterHead->setCurrentIndex( KraftSettings::self()->salut() );
         } else {
             if(!doc->salut().isEmpty()) {
@@ -1151,9 +1161,23 @@ DocPositionList KraftView::currentPositionList()
             QMap<QString, QString> replaceMap;
 
             if ( dpb ) {
-                DocPosition *newDp = new DocPosition( dpb->type() );
+                // FIXME what about discount?
+                // FIXME get rid of PostionViewWidget::Kind
+                const PositionViewWidget::Kind k = widget->kind();
+                DocPositionBase::PositionType t {DocPositionBase::PositionType::Position};
+                if (k == PositionViewWidget::Kind::Demand) {
+                    t = DocPositionBase::PositionType::Demand;
+                } else if (k == PositionViewWidget::Kind::Alternative) {
+                    t = DocPositionBase::PositionType::Alternative;
+                } else if (k == PositionViewWidget::Kind::Demand) {
+                    t = DocPositionBase::PositionType::Demand;
+                }
+                DocPosition *newDp = new DocPosition(t);
+
                 newDp->setPositionNumber( cnt++ );
-                newDp->setAttributeMap( dpb->attributes() );
+                for (const auto& a: dpb->attributes()) {
+                    newDp->setAttribute(a);
+                }
                 newDp->setDbId( dpb->dbId().toInt() );
                 newDp->setAssociatedWidget( widget );
 
@@ -1163,23 +1187,20 @@ DocPositionList KraftView::currentPositionList()
                     double discount = widget->mDiscountPercent->value();
 
                     /* set Attributes with the discount percentage */
-                    Attribute a( DocPosition::Discount );
-                    a.setPersistant( true );
-                    a.setValue( discount );
-                    newDp->setAttribute(a);
+                    if (discount > 0.0) {
+                        KraftAttrib a( DocPosition::Discount, discount, KraftAttrib::Type::Float);
+                        newDp->setAttribute(a);
+                    }
 
                     // get the required tag as String.
                     const QString tagRequiredStr = widget->extraDiscountTagRestriction();
 
                     if ( !tagRequiredStr.isEmpty() ) {
-                        Attribute tr(DocPosition::ExtraDiscountTagRequired);
-                        tr.setPersistant( true );
-
-                        // Convert the string to int and save to database
+                        // save the required tag as KraftAttrib
                         const TagTemplate ttRequired = TagTemplateMan::self()->getTagTemplate(tagRequiredStr);
                         int trId = TagTemplateMan::self()->getTagTemplate(tagRequiredStr).dbId().toInt();
-                        tr.setValue( QVariant( trId ) );
-                        newDp->setAttribute( tr );
+                        const KraftAttrib a(DocPosition::ExtraDiscountTagRequired, trId, KraftAttrib::Type::Integer);
+                        newDp->setAttribute(a);
                     }
 
                     /* Calculate the current sum over all widgets */
@@ -1218,8 +1239,8 @@ DocPositionList KraftView::currentPositionList()
 
                     // replace some tags in the text
 
-                    replaceMap["%DISCOUNT"]     = DefaultProvider().self()->locale()->toString( discount );
-                    replaceMap["%ABS_DISCOUNT"] = DefaultProvider().self()->locale()->toString( qAbs( discount ) );
+                    replaceMap["%DISCOUNT"]     = Format::localeDoubleToString(discount);
+                    replaceMap["%ABS_DISCOUNT"] = Format::localeDoubleToString(qAbs(discount));
 
                 } else {
                     /* Type is ordinary position */
@@ -1237,7 +1258,7 @@ DocPositionList KraftView::currentPositionList()
 
                     QString t = widget->m_teFloskel->toPlainText();
                     if ( !replaceMap.empty() ) {
-                        t = StringUtil::replaceTagsInString(t, replaceMap);
+                        t = KraftString::replaceTags(t, replaceMap);
                     }
                     newDp->setText( t );
 
@@ -1246,21 +1267,10 @@ DocPositionList KraftView::currentPositionList()
                     Einheit e = UnitManager::self()->getUnit( eId );
                     newDp->setUnit( e );
 
-                    PositionViewWidget::Kind k = widget->kind();
-
-                    if ( k != PositionViewWidget::Normal ) {
-                        Attribute a( DocPosition::Kind );
-                        a.setPersistant( true );
-                        a.setValue( PositionViewWidget::techKindString(k) );
-                        newDp->setAttribute( a );
-                    } else {
-                        newDp->removeAttribute( DocPosition::Kind );
-                    }
-
-                    /* set Attribute with the tags */
+                    /* set the tags */
                     const QStringList tagStrings = widget->tagList();
-                    newDp->replaceTags(tagStrings);
-                    // qDebug() << "============ " << tags.toString();
+                    newDp->setTags(tagStrings);
+                    // qDebug() << "============ " << tags.toString() << endl;
 
                     // tax settings
                     if( currentTaxSetting() == DocPositionBase::TaxIndividual ) {
@@ -1289,7 +1299,7 @@ void KraftView::slotShowCatalog( bool on )
   if ( on ) {
     mAssistant->slotShowCatalog();
   } else {
-    mAssistant->setFullPreview( true, KraftDoc::Positions );
+    mAssistant->setFullPreview( true, KraftDoc::Part::Positions );
   }
 }
 
@@ -1364,13 +1374,12 @@ void KraftView::done( int r )
         //Closed using the OK button .. it can be closed, but data needs saved
         if( doSave)
             saveChanges();
-        emit viewClosed( r == 1, m_doc );
+        emit viewClosed( r == 1, m_doc, mModified );
     }
     // remember the sizes of the docassistant splitter if visible.
     mAssistant->saveSplitterSizes();
     KraftSettings::self()->setDocViewSplitter(mCSplit->sizes());
-    const QByteArray geo = saveGeometry().toBase64();
-    KraftSettings::self()->setDocEditGeometry(geo);
+    // the size of the doc edit is saved in Portal::slotViewClosed
 
     QDialog::done( r );
 }
@@ -1378,31 +1387,32 @@ void KraftView::done( int r )
 void KraftView::saveChanges()
 {
     // qDebug () << "Saving changes!";
-
-    KraftDoc *doc = getDocument();
-
-    if( !doc ) {
+    if( !m_doc ) {
       // qDebug () << "ERR: No document available in view, return!";
       return;
     }
     // transfer all values to the document
-    doc->setDate( m_headerEdit->m_dateEdit->date() );
-    doc->setAddressUid( mContactUid );
-    doc->setAddress(  m_headerEdit->m_postAddressEdit->toPlainText() );
-    doc->setDocType(  m_headerEdit->m_cbType->currentText() );
-    doc->setPreTextRaw(  m_headerEdit->m_teEntry->toPlainText() );
-    doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->toPlainText() );
-    doc->setProjectLabel( m_headerEdit->mProjectLabelEdit->text() );
-    doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
-    doc->setPostTextRaw( m_footerEdit->ui()->m_teSummary->toPlainText() );
-    doc->setGoodbye(  m_footerEdit->greeting() );
+    m_doc->setDate( m_headerEdit->m_dateEdit->date() );
+    m_doc->setAddressUid( mContactUid );
+    m_doc->setAddress(  m_headerEdit->m_postAddressEdit->toPlainText() );
+    m_doc->setDocType(  m_headerEdit->m_cbType->currentText() );
+    m_doc->setPreTextRaw(  m_headerEdit->m_teEntry->toPlainText() );
+    m_doc->setWhiteboard( m_headerEdit->m_whiteboardEdit->toPlainText() );
+    m_doc->setProjectLabel( m_headerEdit->mProjectLabelEdit->text() );
+    m_doc->setSalut(    m_headerEdit->m_letterHead->currentText() );
+    m_doc->setPostTextRaw( m_footerEdit->ui()->m_teSummary->toPlainText() );
+    m_doc->setGoodbye(  m_footerEdit->greeting() );
+    if (mModified) m_doc->setModified();
 
     DocPositionList list = currentPositionList();
-    doc->setPositionList( list );
+    m_doc->setPositionList( list );
 
-    doc->saveDocument( );
+    bool ok = DocumentMan::self()->saveDocument(m_doc);
+    if (!ok) {
+        qDebug() << "document saving failed";
+    }
 
-    if ( doc->isNew() ) {
+    if ( m_doc->state().isNew() ) {
       // For new documents the user had to select a greeting and we make this
       // default for the future
       KraftSettings::self()->setGreeting( m_footerEdit->greeting() );
@@ -1432,9 +1442,12 @@ void KraftView::discardChanges()
 {
   // We need to reread the document
   KraftDoc *doc = getDocument();
-  if( doc && doc->isModified() ) {
-    // qDebug () << "Document refetch from database";
-    doc->reloadDocument();
+  if( doc && doc->modified() ) {
+      bool ok = DocumentMan::self()->reloadDocument(doc);
+      if (!ok) {
+          qDebug() << "Failed to reload doc" << doc->docIdentifier();
+      }
+    // qDebug () << "Document refetch from database" << endl;
   }
 }
 

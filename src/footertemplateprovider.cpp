@@ -33,10 +33,10 @@ void FooterTemplateProvider::slotNewTemplate()
 {
   // qDebug () << "SlotNewTemplate called!";
 
-  TextEditDialog dia( mParent, KraftDoc::Footer );
+  TextEditDialog dia( mParent, KraftDoc::Part::Footer );
 
   DocText dt;
-  dt.setTextType( KraftDoc::Footer );
+  dt.setTextType( KraftDoc::Part::Footer );
   dt.setDocType( mDocType );
 
   dia.setDocText( dt );
@@ -56,12 +56,12 @@ void FooterTemplateProvider::slotEditTemplate()
 {
   // qDebug () << "SlotEditTemplate called!";
 
-  TextEditDialog dia( mParent, KraftDoc::Footer );
+  TextEditDialog dia( mParent, KraftDoc::Part::Footer );
 
   /* mCurrentText is set through the slot slotSetCurrentDocText */
   DocText dt = currentText();
-  if ( dt.type() == KraftDoc::Unknown ) {
-    dt.setTextType( KraftDoc::Footer );
+  if ( dt.type() == KraftDoc::Part::Unknown ) {
+    dt.setTextType( KraftDoc::Part::Footer );
     dt.setDocType( mDocType );
   }
 

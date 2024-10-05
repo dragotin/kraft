@@ -18,6 +18,7 @@
 #ifndef _UNITMANAGER_H
 #define _UNITMANAGER_H
 
+#include <QDate>
 #include "einheit.h"
 
 /**
@@ -38,6 +39,7 @@ class UnitManager
     Einheit getUnit( int id );
     Einheit getPauschUnit();
     QStringList allUnits();
+    Einheit getUnit(const QString& singularUnit);
     int getUnitIDSingular( const QString& einheit );
     QString getECE20(const QString& einheitStr);
 
@@ -45,10 +47,19 @@ class UnitManager
     // this function calculates the next free unit id to save a new one.
     int nextFreeId();
 
+    /* parked tax related functions for the moment */
+    bool readTaxes( const QDate& );
+    double tax( const QDate& date );
+    double reducedTax( const QDate& date );
+
   private:
     Einheit::List mUnits;
 
     void load();
+
+    double mFullTax;
+    double mReducedTax;
+    QDate  mTaxDate;
 
 
 };

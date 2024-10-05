@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:complexType name="client_type">
+  <xs:sequence>
+    <xs:element name="address" type="xs:string"/>
+    <xs:element name="clientId" type="xs:string"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="value_type">
+  <xs:sequence>
+    <xs:element name="name" type="xs:string"/>
+    <xs:element name="value" type="xs:string"/>
+    <xs:element name="type" type="xs:string"/> <!-- Fixme, could be enum -->
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="tax_def_type">
+  <xs:sequence>
+    <xs:element name="type"  type="xs:string" minOccurs="1" maxOccurs="1"/>
+    <xs:element name="percent" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="tax_sum_type">
+  <xs:sequence>
+    <xs:element name="type"  type="xs:string"/> <!-- Fixme, could be enum -->
+    <xs:element name="total" type="xs:decimal"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="state_type" final="restriction" >
+    <xs:restriction base="xs:string">
+        <xs:enumeration value="Undefined"/>
+	<xs:enumeration value="New"/>
+        <xs:enumeration value="Draft"/>
+        <xs:enumeration value="Final"/>
+        <xs:enumeration value="Retracted"/>
+        <xs:enumeration value="Converted"/>
+        <xs:enumeration value="Invalid"/>
+    </xs:restriction>
+</xs:simpleType>
+
+<xs:complexType name="meta_type">
+  <xs:sequence>
+    <xs:element name="docType" type="xs:string"/>
+    <xs:element name="docDesc" type="xs:string"/>
+    <xs:element name="currency" type="xs:string"/>
+    <xs:element name="country" type="xs:string"/>
+    <xs:element name="locale" type="xs:string"/>
+    <xs:element name="ident" type="xs:string"/>
+    <xs:element name="uuid"  type="uuid_type"/>
+    <xs:element name="date"  type="xs:string"/>
+    <xs:element name="state" type="state_type" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="tax" type="tax_def_type" minOccurs="0" maxOccurs="3"/>
+    <xs:element name="owner" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="lastModified" type="xs:dateTime"/>
+    <xs:element name="predecessor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="attrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="tag" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="uuid_type">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="version" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+</xs:complexType>
+
+<xs:complexType name="time_of_suply_type">
+  <xs:sequence>
+    <xs:element name="start" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="end"   type="xs:string" minOccurs="0" maxOccurs="1"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="header_type">
+  <xs:sequence>
+    <xs:element name="project" type="project_type" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="timeOfSupply" type="time_of_suply_type" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="salut" type="xs:string"/>
+    <xs:element name="preText" type="xs:string"/>
+    <xs:element name="attrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="project_type">
+  <xs:sequence>
+    <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="id" type="xs:integer" minOccurs="0" maxOccurs="1" />
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="itemGroup_type">
+    <xs:sequence>
+        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="collapsed" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="item" type="item_type" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="itemtype_type" final="restriction" >
+    <xs:restriction base="xs:string">
+        <xs:enumeration value="Normal"/>
+        <xs:enumeration value="Discount"/>
+        <xs:enumeration value="Alternative"/>
+        <xs:enumeration value="Demand"/>
+        <xs:enumeration value="Text"/>
+    </xs:restriction>
+</xs:simpleType>
+
+ <xs:complexType name="item_type">
+   <xs:sequence>
+     <xs:element name="type"    type="itemtype_type" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="text"    type="xs:string" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="amount"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="unit"    type="xs:string" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="taxtype" type="xs:string" minOccurs="0" maxOccurs="1"/>
+     <xs:element name="unitprice"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="itemprice"  type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="attrib" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+     <xs:element name="tag"        type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+
+   </xs:sequence>
+</xs:complexType>
+
+ <xs:complexType name="footer_type">
+   <xs:sequence>
+     <xs:element name="postText"    type="xs:string" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="goodbye"    type="xs:string" minOccurs="1" maxOccurs="1"/>
+     <xs:element name="customValue" type="value_type" minOccurs="0" maxOccurs="unbounded"/>
+   </xs:sequence>
+</xs:complexType>
+
+ <xs:complexType name="totals_type">
+    <xs:sequence>
+      <xs:element name="netto"    type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="taxsum"   type="tax_sum_type" minOccurs="0" maxOccurs="3"/>
+      <xs:element name="brutto"   type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+ </xs:complexType>
+
+    <xs:element name="kraftdocument">
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element name="meta"   type="meta_type" maxOccurs="1"/>
+            <xs:element name="client" type="client_type" maxOccurs="1"/>
+            <xs:element name="header" type="header_type" maxOccurs="1"/>
+            <xs:element name="itemGroup" type="itemGroup_type" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="footer" type="footer_type" maxOccurs="1"/>
+            <xs:element name="totals" type="totals_type" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="schemaVersion" type="xs:integer"/>
+    </xs:complexType>
+    </xs:element>
+
+</xs:schema>
+

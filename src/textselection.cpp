@@ -125,7 +125,7 @@ void TextSelection::slotTemplateNameSelected( const QModelIndex& current, const 
 
 void TextSelection::showDocText( DocText dt )
 {
-  if( dt.type() != KraftDoc::Unknown && dt.isStandardText() ) {
+  if( dt.type() != KraftDoc::Part::Unknown && dt.isStandardText() ) {
     showHelp(i18n("This is the standard text used in new documents."));
   }
 

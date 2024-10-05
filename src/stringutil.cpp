@@ -18,12 +18,41 @@
 #include <QString>
 #include <QLocale>
 #include <QDate>
+#include <QDomElement>
+#include <QDomDocument>
+#include <QTextDocumentFragment>
 
 #include "format.h"
 
-namespace StringUtil {
+namespace KraftXml {
 
-QString replaceTagsInString( const QString& w, QMap<QString, QString>& replaceMap )
+QDomElement textElement(QDomDocument& doc, const QString& name, const QString& value )
+{
+    QDomElement elem = doc.createElement( name );
+    QDomText t = doc.createTextNode(value);
+    elem.appendChild( t );
+    return elem;
+}
+
+QString childElemText(const QDomElement& elem, const QByteArray& childName)
+{
+    const QDomElement e = elem.firstChildElement(childName);
+    const QString t = e.text();
+    return t;
+}
+
+QDate childElemDate(const QDomElement& elem, const QString& childName)
+{
+    const QDomElement e = elem.firstChildElement(childName);
+    const QString t = e.text();
+    return QDate::fromString(t, "yyyy-MM-dd");
+}
+
+};
+
+namespace KraftString {
+
+QString replaceTags( const QString& w, QMap<QString, QString>& replaceMap )
 {
     QString re{ w };
 

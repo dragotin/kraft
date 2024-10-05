@@ -20,12 +20,11 @@
 #include <QFile>
 #include <QObject>
 #include <QProcess>
+#include <QPointer>
 #include <QDataStream>
 
 #include <kcontacts/addressee.h>
 
-#include "kraftdoc.h"
-#include "archdoc.h"
 #include "pdfconverter.h"
 
 class dbID;
@@ -47,10 +46,10 @@ public:
 signals:
     void docAvailable( ReportFormat, const QString& file,
                        const KContacts::Addressee& customerContact);
-    void failure(const QString&, const QString&);
+    void failure(const QString&, const QString&, const QString&);
 
 public slots:
-    void createDocument(ReportFormat, const QString&, dbID );
+    void createDocument(ReportFormat, const QString&uuid);
 
     void setMyContact( const KContacts::Addressee& );
 
@@ -66,7 +65,6 @@ private:
     void lookupCustomerAddress();
 
     QString _tmplFile;
-    ArchDoc _archDoc;
 protected:
     QStringList _cleanupFiles;
 
@@ -75,7 +73,6 @@ protected slots:
 
 private:
     void convertTemplate( const QString& );
-    void fillupTemplateFromArchive( const dbID& );
     void contactToTemplate( TextTemplate*, const QString&, const KContacts::Addressee& );
     QString registerDictionary( const QString&, const QString& ) const;
     QString registerTag( const QString&, const QString& ) const;
@@ -93,8 +90,7 @@ private:
     bool      mHavePdfMerge;
     QString   mWatermarkFile;
     QString   mPdfAppendFile;
-    QString   mDocId;
-    dbID      mArchId;
+    QString   _uuid;
     long      mOutputSize;
 
     KContacts::Addressee mCustomerContact;

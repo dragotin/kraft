@@ -31,7 +31,6 @@
 
 class QPushButton;
 class dbID;
-class ArchDocDigest;
 class QContextMenuEvent;
 class QToolBox;
 class DocDigestDetailView;
@@ -48,15 +47,16 @@ public:
 
     int currentDocumentRow() const;
 
-    QString currentDocumentId( ) const;
-    ArchDocDigest currentLatestArchivedDoc() const;
+    QString currentDocumentIdent( ) const;
+    QString currentDocumentUuid( ) const;
 
     QVector<QMenu*> contextMenus();
 
+    void initDetailViewActions(const std::array<QAction*, 4> actions);
 public slots:
 
     void slotBuildView();
-    void slotUpdateView();
+    void slotUpdateView(DocGuardedPtr doc);
 
     void setView(ViewType type);
 
@@ -65,21 +65,13 @@ protected:
     QWidget *initializeTreeWidget();
 
 protected slots:
-    void slotDocOpenRequest( QModelIndex );
     void slotCurrentChanged( QModelIndex, QModelIndex );
-    void slotOpenLastPrinted();
-    void slotExportXRechnung();
     void slotSearchTextChanged(const QString& newStr );
     void slotAmountFilterChanged(int entryNo);
 
 signals:
-    void createDocument();
-    void openDocument( const QString& );
-    void viewDocument( const QString& );
-    void copyDocument( const QString& );
-    void docSelected( const DocDigest& );
-    void openArchivedDocument( const ArchDocDigest& );
-    void exportXRechnungArchivedDocument(const ArchDocDigest&);
+    void openDocument();
+    void docSelected(const QString&);
 
 private:
 
@@ -97,7 +89,6 @@ private:
     QMenu *mAllMenu;
 
     QPushButton            *mNewDocButton;
-    ArchDocDigest          mLatestArchivedDigest;
     QLineEdit              *_searchLine;
 };
 
