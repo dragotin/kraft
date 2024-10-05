@@ -292,21 +292,25 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
         // no watermark is wanted, copy the converted file over.
 
         QString restoreFile;  // The name of the file in the trash
-        if (QFile::exists(target)) {
-            QFile targetFile(target);
-            if (targetFile.moveToTrash()) {
-                restoreFile = targetFile.fileName();
-            }
+
+        // keep the existing file in a temp file to be able to restore
+        QFile tf{target};
+        const QString tf_bak = QString("%1.bak").arg(target);
+
+        QFile::remove(tf_bak);
+        if (tf.exists()) {
+            tf.rename(tf_bak);
         }
 
         if (QFile::copy(file, target)) {
+            QFile::remove(tf_bak);
             qDebug() << "Generated file" << file << "copied to" << target;
             // restore file could be deleted from trash if needed..
             pdfMergeFinished(0, QProcess::ExitStatus::NormalExit);
         } else {
             qDebug() << "ERR: Failed to copy temporary file" << file << "to" << target;
             // Try to bring back the old file from the trashbin
-            QFile::copy(restoreFile, target);
+            QFile::rename(tf_bak, target);
             pdfMergeFinished(1, QProcess::ExitStatus::NormalExit);
         }
     }
