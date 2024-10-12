@@ -64,6 +64,15 @@
   </tr>
 
   <tr>
+    <td colspan="3" class="header">{{KRAFT_V2_LABEL}}</td>
+  </tr>
+  <tr>
+    <td class="label">{{KRAFT_V2_ROOT_DIR_LABEL}}:</td>
+    <td class="value">{{KRAFTV2_ROOT_DIR}}</td>
+    <td></td>
+  </tr>
+
+  <tr>
     <td colspan="3" class="header">{{DATABASE_TITLE_LABEL}}</td>
   </tr>
 
