@@ -38,6 +38,7 @@ private:
 
     int amountOfDocsOfYear(int year);
     int convertNumbercycles(const QString &baseDir);
+    bool convertOwnIdentity(const QString& baseDir);
 
 signals:
     void conversionOut(const QString&);

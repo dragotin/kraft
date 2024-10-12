@@ -87,9 +87,14 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
     // -- Convert the numbercycles
     int nc_cnt = convertNumbercycles(dBase);
     overallResults["numberCyclesOk"] = nc_cnt;
-    emit conversionOut(i18n("<br/>transformed %1 numbercycle(s) successfully.").arg(nc_cnt));
+    emit conversionOut(i18n("<br/>Transformed %1 numbercycle(s) successfully.").arg(nc_cnt));
     for( const auto& k : overallResults.keys()) {
         qDebug() << "Tranformation result" << k << ":" << overallResults[k];
+    }
+
+    if (convertOwnIdentity(dBase)) {
+        qDebug() << "manual own Identity converted";
+        emit conversionOut(i18n("<br/>Converted manual created identity successfully"));
     }
 
     if (nc_cnt == 0) {
@@ -282,7 +287,7 @@ int DbToXMLConverter::convertNumbercycles(const QString& baseDir)
     QDir dir(baseDir);
     dir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::NumberCycles));
 
-    bool re;
+    bool re{false};
     QSaveFile file(dir.absoluteFilePath("numbercycles.xml"));
     if ( file.open( QIODevice::WriteOnly | QIODevice::Text) ) {
         re = file.write(xml.toUtf8());
@@ -291,5 +296,25 @@ int DbToXMLConverter::convertNumbercycles(const QString& baseDir)
             re = file.commit();
         }
     }
+    if (!re) cnt = 0;
     return cnt;
+}
+
+// copy a manually created own identity over to the new location
+bool DbToXMLConverter::convertOwnIdentity(const QString& baseDir)
+{
+    // The Kraft 1.x file position is this:
+    QString v1file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+    v1file += "/myidentity.vcd";
+
+    QDir dir(baseDir);
+    dir.cd(DefaultProvider::self()->kraftV2Subdir(DefaultProvider::KraftV2Dir::OwnIdentity));
+    QString v2File = dir.absoluteFilePath("myidentity.vcd");
+
+    QFile fi(v1file);
+    bool re{false};
+    if (fi.exists()) {
+        re = fi.copy(v2File);
+    }
+    return re;
 }

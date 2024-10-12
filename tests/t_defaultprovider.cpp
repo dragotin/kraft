@@ -164,6 +164,8 @@ private slots:
         QString pRoot = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root);
         const QString pNumC = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles);
         const QString pXmlD = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs);
+        const QString pOwnI = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::OwnIdentity);
+        QCOMPARE(base, pOwnI);
         QCOMPARE(base, pRoot);
         QCOMPARE(base + "/numbercycles", pNumC);
         QCOMPARE(base + "/xmldoc", pXmlD);
