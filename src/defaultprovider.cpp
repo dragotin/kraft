@@ -442,6 +442,7 @@ QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
     QString subdir;
     switch (dir) {
     case KraftV2Dir::Root:
+    case KraftV2Dir::OwnIdentity:
         break; // return the empty string
     case KraftV2Dir::NumberCycles:
         subdir = "numbercycles";

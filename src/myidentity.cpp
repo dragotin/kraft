@@ -18,6 +18,7 @@
 #include "myidentity.h"
 #include "kraftsettings.h"
 #include "addressprovider.h"
+#include "defaultprovider.h"
 
 #include <KLocalizedString>
 #include <QFile>
@@ -65,7 +66,7 @@ KContacts::Addressee MyIdentity::UIToAddressee(Ui::manualOwnIdentity ui)
 
 QString MyIdentity::identityFile()
 {
-    QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
+    QString file = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::OwnIdentity);
     file += "/myidentity.vcd";
 
     return file;

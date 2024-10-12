@@ -41,7 +41,8 @@ public:
         Root,
         XmlDocs,
         PdfDocs,
-        NumberCycles
+        NumberCycles,
+        OwnIdentity
     };
 
     ~DefaultProvider();
