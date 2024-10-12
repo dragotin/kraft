@@ -123,6 +123,7 @@ set(kraft_SRCS
     reportitemlist.cpp
     reportitem.cpp
     docidentgenerator.cpp
+    myidentity.cpp
     3rdparty/qrcodegen.cpp
 )
 

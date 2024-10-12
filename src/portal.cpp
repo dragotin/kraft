@@ -74,6 +74,7 @@
 #include "ui_dbtoxml.h"
 #include "dbtoxmlconverter.h"
 #include "xmldocindex.h"
+#include "myidentity.h"
 
 // Litte class diagram to describe the main view of Kraft:
 //
@@ -482,57 +483,8 @@ void Portal::slotStartupChecks()
     }
 
     // Fetch my address
-    const QString myUid = KraftSettings::self()->userUid();
-    bool useManual = false;
-
-    if( ! myUid.isEmpty() ) {
-        slotStatusMsg( i18n( "Fetching user address data" ) );
-        KContacts::Addressee contact;
-        // qDebug () << "Got My UID: " << myUid;
-        connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
-                 this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
-
-        AddressProvider::LookupState state = mAddressProvider->lookupAddressee( myUid );
-        switch( state ) {
-        case AddressProvider::LookupFromCache:
-            contact = mAddressProvider->getAddresseeFromCache(myUid);
-            slotReceivedMyAddress(myUid, contact);
-            break;
-        case AddressProvider::LookupNotFound:
-        case AddressProvider::ItemError:
-        case AddressProvider::BackendError:
-            // Try to read from stored vcard.
-            useManual = true;
-            break;
-        case AddressProvider::LookupOngoing:
-        case AddressProvider::LookupStarted:
-            // Not much to do, just wait
-            break;
-        }
-    } else {
-        // in case there is no uid in the settings file, try to use the manual address.
-        useManual = true;
-    }
-
-    if( useManual ) {
-        // check if the vcard can be read
-        QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
-        file += "/myidentity.vcd";
-        QFile f(file);
-        if( f.exists() ) {
-            if( f.open( QIODevice::ReadOnly )) {
-                const QByteArray data = f.readAll();
-                VCardConverter converter;
-                Addressee::List list = converter.parseVCards( data );
-
-                if( list.count() > 0 ) {
-                    KContacts::Addressee c = list.at(0);
-                    c.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
-                    slotReceivedMyAddress(QString(), c);
-                }
-            }
-        }
-    }
+    connect(&_myIdentity, &MyIdentity::myIdentityLoaded, this, &Portal::slotReceivedMyAddress);
+    _myIdentity.load();
 
     connect( &_reportGenerator, &ReportGenerator::docAvailable,
              this, &Portal::slotDocConverted);
@@ -543,9 +495,6 @@ void Portal::slotStartupChecks()
 
 void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Addressee& contact )
 {
-    disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
-                this, SLOT(slotReceivedMyAddress(QString, KContacts::Addressee)));
-
     if( contact.isEmpty() ) {
         if( !uid.isEmpty() ) {
             // FIXME: Read the stored Address and compare the uid
@@ -555,12 +504,7 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
         return;
     }
 
-    myContact = contact;
-
-    // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
-    _reportGenerator.setMyContact( myContact );
-
-    QString name = myContact.formattedName();
+    QString name = contact.formattedName();
     if( !name.isEmpty() ) {
         name = i18n("Welcome to Kraft, %1", name);
         statusBar()->showMessage(name, 30*1000);
@@ -1396,20 +1340,10 @@ QString Portal::textWrap( const QString& t, int width, int maxLines )
 void Portal::preferences()
 {
   _prefsDialog = new PrefsDialog(this);
-  connect( _prefsDialog, SIGNAL(finished(int)), SLOT(slotPrefsDialogFinished(int)) );
-  connect( _prefsDialog, SIGNAL(newOwnIdentity(const QString&, KContacts::Addressee)),
-           SLOT(slotReceivedMyAddress(QString,KContacts::Addressee)));
-  _prefsDialog->setMyIdentity( myContact, mAddressProvider->backendUp() );
+
+  _prefsDialog->setMyIdentity(&_myIdentity);
 
   _prefsDialog->open();
-}
-
-void Portal::slotPrefsDialogFinished( int result )
-{
-  if( result == QDialog::Accepted) {
-
-  }
-  _prefsDialog->deleteLater();
 }
 
 void Portal::slotHandbook()

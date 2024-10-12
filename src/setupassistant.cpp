@@ -28,6 +28,7 @@
 #include "kraftdb.h"
 #include "addressselectorwidget.h"
 #include "kraftsettings.h"
+#include "myidentity.h"
 
 
 WelcomePage::WelcomePage(QWidget *parent)
@@ -368,43 +369,17 @@ void OwnAddressPage::gotMyAddress(const KContacts::Addressee& addressee)
 
 void OwnAddressPage::saveOwnName()
 {
+    KContacts::Addressee add;
+    QString uid;
+
     if( ! mMe.isEmpty() ) {
-        KraftSettings::self()->setUserName( mMe.name() );
-        KraftSettings::self()->setUserUid( mMe.uid() );
-        KraftSettings::self()->save();
+        uid = mMe.uid();
     } else {
         // check for the manual.
-        KContacts::Addressee add;
-        add.setFormattedName(ui.leName->text());
-        add.setOrganization(ui.leOrganization->text());
-        KContacts::Address workAddress;
-
-        workAddress.setStreet(ui.leStreet->text());
-        workAddress.setPostalCode(ui.lePostcode->text());
-        workAddress.setLocality(ui.leCity->text());
-        workAddress.setType(KContacts::Address::Work);
-        add.insertAddress(workAddress);
-
-        add.insertPhoneNumber(PhoneNumber(ui.lePhone->text(), KContacts::PhoneNumber::Work));
-        add.insertPhoneNumber(PhoneNumber(ui.leFax->text(), KContacts::PhoneNumber::Fax));
-        add.insertPhoneNumber(PhoneNumber(ui.leMobile->text(), KContacts::PhoneNumber::Cell));
-        ResourceLocatorUrl resUrl;
-        resUrl.setUrl(QUrl(ui.leWebsite->text()));
-        add.setUrl(resUrl);
-        add.insertEmail(ui.leEmail->text(), true /* prefered */ );
-
-        VCardConverter vcc;
-        QByteArray vcard = vcc.createVCard(add);
-
-        QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
-        file += "/myidentity.vcd";
-        QFile f ( file );
-        if (f.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            f.write(vcard);
-            f.close();
-            qDebug() << "Saved own identity to " << file;
-        }
+        add = MyIdentity::UIToAddressee(ui);
     }
+    MyIdentity identity;
+    identity.save(uid, add);
 }
 
 int OwnAddressPage::nextId() const
@@ -418,8 +393,6 @@ FinalStatusPage::FinalStatusPage(QWidget *parent)
     setTitle(i18n("Final Status"));
     QVBoxLayout *vbox = new QVBoxLayout;
     setLayout( vbox );
-    //TODO PORT QT5   vbox->setSpacing( QDialog::spacingHint() );
-    //TODO PORT QT5   vbox->setMargin( QDialog::marginHint() );
 
     QWidget *w = new QWidget;
     vbox->addWidget( w );
