@@ -25,12 +25,11 @@
 #include <QMainWindow>
 #include <QUrl>
 
-#include <kcontacts/addressee.h>
-
 #include "docguardedptr.h"
 #include "katalogview.h"
 #include "portalview.h"
 #include "reportgenerator.h"
+#include "myidentity.h"
 
 class KraftViewBase;
 class AddressProvider;
@@ -79,7 +78,6 @@ class Portal : public QMainWindow
   protected slots:
     void slotXRechnungCurrentDocument();
 
-    void slotPrefsDialogFinished( int );
     void slotDocConverted(ReportFormat format, const QString& file,
                           const KContacts::Addressee& customerContact);
     void slotDocConvertionFail(const QString &uuid, const QString& failString, const QString &details);
@@ -186,11 +184,10 @@ class Portal : public QMainWindow
     QMap<KraftDoc*, KraftViewBase*> mViewMap;
 
     AddressProvider *mAddressProvider;
-    KContacts::Addressee myContact;
     PrefsDialog *_prefsDialog;
 
     ReportGenerator _reportGenerator;
-
+    MyIdentity _myIdentity;
     bool _readOnlyMode;
 };
 

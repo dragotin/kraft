@@ -51,8 +51,6 @@ signals:
 public slots:
     void createDocument(ReportFormat, const QString&uuid);
 
-    void setMyContact( const KContacts::Addressee& );
-
 private slots:
     void slotPdfDocAvailable(const QString& file);
     void slotConverterError(PDFConverter::ConvError err);
@@ -94,7 +92,6 @@ private:
     long      mOutputSize;
 
     KContacts::Addressee mCustomerContact;
-    KContacts::Addressee myContact;
 
     QPointer<QProcess> mProcess;
 

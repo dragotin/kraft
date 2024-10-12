@@ -42,6 +42,7 @@
 #include "documenttemplate.h"
 #include "pdfconverter.h"
 #include "xmldocindex.h"
+#include "myidentity.h"
 
 namespace {
 QString saveToTempFile( const QString& doc )
@@ -185,7 +186,8 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     converter->setTemplatePath(fi.path());
 
     // expand the template...
-    const QString expanded = templateEngine->expand(_uuid, myContact, mCustomerContact);
+    MyIdentity identity;
+    const QString expanded = templateEngine->expand(_uuid, identity.contact(), mCustomerContact);
     _cleanupFiles = templateEngine->tempFilesCreated();
 
     if (expanded.isEmpty()) {
@@ -290,8 +292,6 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
         mProcess->start( );
     } else {
         // no watermark is wanted, copy the converted file over.
-
-        QString restoreFile;  // The name of the file in the trash
 
         // keep the existing file in a temp file to be able to restore
         QFile tf{target};
@@ -422,9 +422,5 @@ QString ReportGenerator::findTemplateFile( const QString& type )
     return tmplFile;
 }
 
-void ReportGenerator::setMyContact( const KContacts::Addressee& contact )
-{
-    myContact = contact;
-}
 
 
