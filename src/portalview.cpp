@@ -382,6 +382,11 @@ QString PortalView::systemView( const QString& htmlMsg ) const
     tmpl.setValue( "ICON_ACKNOWLEDGEMENT_LABEL", i18n("Some Icons are made by") );
     tmpl.setValue( "ACKNOWLEGEMENT_LABEL", i18n( "Acknowledgements" ) );
 
+    tmpl.setValue( "KRAFT_V2_LABEL", i18n("Kraft Version 2"));
+    tmpl.setValue( "KRAFT_V2_ROOT_DIR_LABEL", i18n("Kraft Version 2 Data Directory"));
+    const QString v2dir = DefaultProvider::self()->kraftV2Dir();
+    tmpl.setValue( "KRAFTV2_ROOT_DIR", v2dir);
+
     return tmpl.expand();
 }
 
