@@ -141,8 +141,7 @@ set(QT_DEFINITIONS "${Qt5Core_DEFINITIONS} ${Qt5Gui_DEFINITIONS} ${Qt5Widgets_DE
 add_definitions(${QT_DEFINITIONS} )
 
 include_directories(${QT_INCLUDES} src)
-include_directories( /usr/include/${AKO_PREFIX}/AkonadiCore )
-include_directories(/usr/include/${AKO_PREFIX}/)
+include_directories(${AKONADI_INCLUDE_DIR})
 
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
         ki18n_install(po)
