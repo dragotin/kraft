@@ -23,6 +23,7 @@
 #include <KLocalizedString>
 #include <QFile>
 
+#include <kcontacts_version.h>
 #include <kcontacts/resourcelocatorurl.h>
 #include <kcontacts/vcardconverter.h>
 
@@ -55,12 +56,15 @@ KContacts::Addressee MyIdentity::UIToAddressee(Ui::manualOwnIdentity ui)
     resUrl.setUrl(QUrl(ui.leWebsite->text()));
     add.setUrl(resUrl);
 
+#if KContacts_VERSION >= QT_VERSION_CHECK(5, 88, 0)
     KContacts::Email email;
     email.setEmail(ui.leEmail->text());
     email.setPreferred(true);
     email.setType(KContacts::Email::TypeFlag::Work);
     add.addEmail(email);
-
+#else
+    add.insertEmail(ui.leEmail->text(), true /* prefered */ );
+#endif
     return add;
 }
 
