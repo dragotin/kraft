@@ -18,33 +18,78 @@
 #ifndef NUMBERCYCLE_H
 #define NUMBERCYCLE_H
 
-#include <qstring.h>
+#include <QString>
+#include <QList>
+#include <QDate>
 
-#include "dbids.h"
 #include "kraftcat_export.h"
+
+class KraftDoc;
+class QDateTime;
 
 class KRAFTCAT_EXPORT NumberCycle
 {
+    friend class NumberCycles;
 public:
-  NumberCycle();
-  NumberCycle( dbID );
+    NumberCycle();
 
-  void setName( const QString& );
-  QString name();
+    void setName( const QString& );
+    QString name() const;
 
-  void setTemplate( const QString& );
-  QString getTemplate();
+    void setTemplate( const QString& );
+    QString getTemplate() const;
 
-  void setCounter( int );
-  int  counter();
+    void setCounter( int );
+    int  counter() const;
 
-  static QString defaultName();
+    static QString defaultName();
+
+    bool isEmpty() { return _name.isEmpty(); }
+
+    QString exampleIdent(const QString& docType,
+                         const QDate& date,
+                         const QString& addressUid);
+
+protected:
+    QString dbId() const {return QString::number(_dbId);}
+    void setDbId(int id) {_dbId = id;}
 
 private:
-  dbID id;
-  QString mName;
-  QString mTemplate;
-  int     mCounter;
+    QString _name;
+    QString _template;
+    int     _counter;
+    int     _dbId;
 };
+
+
+// FIXME: This could be a namespace rather than a "static object"
+
+class KRAFTCAT_EXPORT NumberCycles
+{    
+public:
+    enum class SaveResult {
+        SaveOk,
+        OpenFail,
+        Locked
+    };
+
+    NumberCycles();
+
+    static SaveResult addUpdate(const NumberCycle& nc);
+
+    static NumberCycle get(const QString& name);
+
+    static QString generateIdent(const QString& name, const QString &docType, const QDate &date, const QString &addressUid);
+
+    static QMap<QString, NumberCycle> load();
+
+private:
+    static SaveResult save(const QMap<QString, NumberCycle>& ncs);
+
+    static int increaseCounter(const QString& nc);
+    static bool tryLock();
+    static void unlock();
+};
+
 
 #endif

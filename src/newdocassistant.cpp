@@ -42,7 +42,6 @@
 #include "addressselectorwidget.h"
 #include "documentman.h"
 
-
 CustomerSelectPage::CustomerSelectPage( QWidget *parent )
   :QWizardPage ( parent )
 {
@@ -216,7 +215,10 @@ QDate KraftWizard::date() const
 
 QString KraftWizard::addressUid() const
 {
-  return mAddressee.uid();
+    QString uuid;
+    if (!mAddressee.isEmpty())
+        uuid = mAddressee.uid();
+    return uuid;
 }
 
 QString KraftWizard::docType() const
@@ -229,30 +231,35 @@ QString KraftWizard::whiteboard() const
   return mDetailsPage->mWhiteboardEdit->toPlainText();
 }
 
-void KraftWizard::setDocToFollow( DocGuardedPtr sourceDoc)
+void KraftWizard::setDocToFollow(DocGuardedPtr sourceDoc)
 {
-    if( !sourceDoc ) {
-        return;
-    }
-    DocGuardedPtr dPtr = sourceDoc;
+    Q_ASSERT(sourceDoc);
+    DocGuardedPtr dPtr{sourceDoc};
 
-    QString id = sourceDoc->docID().toString();
-    while( ! id.isEmpty() ) {
+    QString sourceIdent = sourceDoc->docIdentifier();
+    QString uuid = sourceDoc->uuid();
+
+    while( ! sourceIdent.isEmpty() ) {
         // store the id of the follower and clear id
         const QString idT = dPtr->docIdentifier();
-        mDetailsPage->mSourceDocIdentsCombo->addItem(idT, id);
-        id = QString();
+        mDetailsPage->mSourceDocIdentsCombo->addItem(sourceIdent, uuid);
 
         // remember the current dptr to be able to delete it soon
         DocGuardedPtr oldDptr = dPtr;
-        dPtr =  DocumentMan::self()->openDocumentbyIdent( dPtr->predecessor() );
+        dPtr =  DocumentMan::self()->openDocumentByUuid(dPtr->predecessor());
         if( dPtr ) {
-            id = dPtr->docID().toString();
+            sourceIdent = dPtr->docIdentifier();
+            uuid = dPtr->uuid();
+        } else {
+            sourceIdent.clear();
+            uuid.clear();
         }
         if( oldDptr != sourceDoc ) {
             delete oldDptr;
         }
+        delete dPtr;
     }
+
     if( mDetailsPage->mSourceDocIdentsCombo->count() > 0  ) {
         mDetailsPage->mKeepItemsCB->setVisible(true);
         mDetailsPage->mSourceDocIdentsCombo->setVisible(true);
@@ -272,7 +279,7 @@ QString KraftWizard::copyItemsFromPredecessor()
 {
     QString re;
     if( mDetailsPage->mKeepItemsCB->checkState() == Qt::Checked ) {
-        re = mDetailsPage->mSourceDocIdentsCombo->currentData().toString();
+        re = mDetailsPage->mSourceDocIdentsCombo->currentData().toString(); // use the ident
     }
     return re;
 }

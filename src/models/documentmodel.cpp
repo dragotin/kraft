@@ -30,11 +30,11 @@
 #include "documentmodel.h"
 #include "docdigest.h"
 #include "docbasemodel.h"
-#include "defaultprovider.h"
 
 DocumentModel::DocumentModel(QObject *parent)
        : DocBaseModel(parent)
 {
+    setObjectName("DocumentModel");
 }
 
 DocumentModel::~DocumentModel()
@@ -52,9 +52,38 @@ void DocumentModel::removeAllData()
     _digests.clear();
 }
 
+void DocumentModel::appendNewDoc(const DocDigest& digest)
+{
+    int r = rowCount(QModelIndex());
+    beginInsertRows(QModelIndex(), r, r);
+    addData(digest);
+    endInsertRows();
+}
+
 void DocumentModel::addData( const DocDigest& digest )
 {
     _digests.append(digest);
+}
+
+void DocumentModel::updateData(const DocDigest& digest)
+{
+    int r = -1;
+
+    // FIXME: this loop is not efficient
+    for (int indx = 0; r == -1 && indx < _digests.count(); indx++) {
+        if (_digests.at(indx).uuid() == digest.uuid()) {
+            r = indx;
+        }
+    }
+
+    if (r > -1) {
+        _digests[r] = digest;
+        QModelIndex indx1 = index(r, 0, QModelIndex());
+        QModelIndex indx2 = index(r+1, 0, QModelIndex());
+        emit dataChanged(indx1, indx2);
+    }
+
+   // for (const DocDigest& d)
 }
 
 QModelIndex DocumentModel::index(int row, int column, const QModelIndex &parent) const
@@ -99,8 +128,6 @@ QVariant DocumentModel::data(const QModelIndex &idx, int role) const
     }
     return QVariant();
 }
-
-
 
 DocDigest DocumentModel::digest( const QModelIndex& index ) const
 {

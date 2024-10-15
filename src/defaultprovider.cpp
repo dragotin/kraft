@@ -22,6 +22,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QIcon>
+#include <QStandardPaths>
 
 #include "defaultprovider.h"
 #include "kraftdb.h"
@@ -30,20 +31,62 @@
 #include "doctype.h"
 #include "kraftdoc.h"
 #include "dbids.h"
+#include "xmldocindex.h"
 
 #include <klocalizedstring.h>
 
 Q_GLOBAL_STATIC(DefaultProvider, mSelf)
+QString DefaultProvider::_v2BaseDir{};
+
+namespace {
+
+// get the v2BaseDir from the settings file and check if the current
+// link is pointing to a valid directory
+QString polishedBaseDir()
+{
+    QString re;
+    const QString base = KraftSettings::self()->kraftV2BaseDir();
+    if (base.isEmpty()) {
+        qDebug() << "No v2 base dir in config file";
+        return QString();
+    }
+    QDir dir(base);
+    if (dir.cd("current")) {
+        qDebug() << "Found Base Path in config file (with current)" << dir.path();
+
+        QFileInfo fi(dir.path());
+
+        if (fi.isSymLink()) {
+            re = fi.symLinkTarget();
+        } else {
+            qDebug() << "ERROR: No proper current link in v2 base dir";
+        }
+    } else {
+        qDebug() << "No current link in v2 base dir";
+    }
+    return re;
+}
+
+}
+
 
 DefaultProvider *DefaultProvider::self()
 {
-  return mSelf;
+    if( _v2BaseDir.isEmpty()) {
+        _v2BaseDir = polishedBaseDir();
+    }
+    return mSelf;
 }
 
 DefaultProvider::DefaultProvider()
 {
-
 }
+
+DocumentSaverBase& DefaultProvider::documentPersister()
+{
+    return _persister;
+}
+
 
 QIcon DefaultProvider::icon(const QString& name)
 {
@@ -54,151 +97,151 @@ QIcon DefaultProvider::icon(const QString& name)
 
 QString DefaultProvider::docType()
 {
-  QString type = KraftSettings::self()->doctype();
-  if ( type.isEmpty() ) {
-    QStringList allTypes = DocType::allLocalised();
-    if( ! allTypes.isEmpty() ) {
-      type = DocType::allLocalised()[0];
-    } else {
-      type = i18n( "Unknown" );
+    QString type = KraftSettings::self()->doctype();
+    if ( type.isEmpty() ) {
+        QStringList allTypes = DocType::allLocalised();
+        if( ! allTypes.isEmpty() ) {
+            type = DocType::allLocalised()[0];
+        } else {
+            type = i18n( "Unknown" );
+        }
     }
-  }
-  return type;
+    return type;
 }
 
 DocTextList DefaultProvider::documentTexts( const QString& docType, KraftDoc::Part tt )
 {
-  DocTextList re;
+    DocTextList re;
 
-  QString typeStr = DocText::textTypeToString( tt );
+    QString typeStr = DocText::textTypeToString( tt );
 
-  QString sql = QString( "SELECT texts.docTextID, texts.name, texts.text, texts.description, "
-                         "texts.textType, types.name as docTypeName FROM DocTexts texts, "
-                         "DocTypes types WHERE texts.docTypeId=types.docTypeID AND "
-                         "types.name=\'%1\' AND textType = \'%2\'").arg( docType ).arg( typeStr );
+    QString sql = QString( "SELECT texts.docTextID, texts.name, texts.text, texts.description, "
+                           "texts.textType, types.name as docTypeName FROM DocTexts texts, "
+                           "DocTypes types WHERE texts.docTypeId=types.docTypeID AND "
+                           "types.name=\'%1\' AND textType = \'%2\'").arg( docType ).arg( typeStr );
 
-  // qDebug() << "Reading texts from DB with: " << sql;
+    // qDebug() << "Reading texts from DB with: " << sql;
 
-  QSqlQuery query( sql );
-  if ( query.isActive() ) {
-    while ( query.next() ) {
-      DocText dt;
-      dt.setDbId( query.value( 0 ) /* docTextID */ .toInt() );
-      dt.setName( query.value( 1 ) /* name */ .toString() );
-      dt.setText( KraftDB::self()->mysqlEuroDecode( query.value( 2 ) /* text */ .toString() ) );
-      dt.setDescription( query.value( 3 ) /* description */ .toString() );
-      dt.setTextType( DocText::stringToTextType( query.value( 4 ) /* textType */ .toString() ) );
-      dt.setDocType( query.value( 5 ) /* docType */ .toString() );
+    QSqlQuery query( sql );
+    if ( query.isActive() ) {
+        while ( query.next() ) {
+            DocText dt;
+            dt.setDbId( query.value( 0 ) /* docTextID */ .toInt() );
+            dt.setName( query.value( 1 ) /* name */ .toString() );
+            dt.setText( KraftDB::self()->mysqlEuroDecode( query.value( 2 ) /* text */ .toString() ) );
+            dt.setDescription( query.value( 3 ) /* description */ .toString() );
+            dt.setTextType( DocText::stringToTextType( query.value( 4 ) /* textType */ .toString() ) );
+            dt.setDocType( query.value( 5 ) /* docType */ .toString() );
 
-      re.append( dt );
+            re.append( dt );
+        }
     }
-  }
-  return re;
+    return re;
 }
 
 QString DefaultProvider::defaultText( const QString& docType, KraftDoc::Part p, DocGuardedPtr )
 {
-  QString re;
+    QString re;
 
-  DocTextList list = documentTexts( docType, p );
-  DocTextList::iterator it;
+    DocTextList list = documentTexts( docType, p );
+    DocTextList::iterator it;
 
-  for ( it = list.begin(); it != list.end(); ++it ) {
-    if( (*it).isStandardText() ) {
-      re = ( *it ).text();
-      break;
+    for ( it = list.begin(); it != list.end(); ++it ) {
+        if( (*it).isStandardText() ) {
+            re = ( *it ).text();
+            break;
+        }
     }
-  }
-  return re;
+    return re;
 }
 
 dbID DefaultProvider::saveDocumentText( const DocText& t )
 {
-  dbID retVal;
+    dbID retVal;
 
-  QSqlTableModel model;
-  model.setTable( "DocTexts" );
+    QSqlTableModel model;
+    model.setTable( "DocTexts" );
 
-  if ( t.dbId().isOk() ) {
-    // qDebug () << "Doing update!";
-    model.setFilter( "docTextID=" + t.dbId().toString() );
-    model.select();
+    if ( t.dbId().isOk() ) {
+        // qDebug () << "Doing update!";
+        model.setFilter( "docTextID=" + t.dbId().toString() );
+        model.select();
 
-    if( model.rowCount() > 0 ) {
-      QSqlRecord record = model.record(0);
-      record.setValue( "docTextID", t.dbId().toString() );
-      record.setValue( "name", t.name() );
-      record.setValue( "description", t.description() );
-      record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
-      record.setValue( "docType", t.docType() );
-      record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
-      record.setValue( "textType",  t.textTypeString() );
-      model.setRecord(0, record);
-      model.submitAll();
+        if( model.rowCount() > 0 ) {
+            QSqlRecord record = model.record(0);
+            record.setValue( "docTextID", t.dbId().toString() );
+            record.setValue( "name", t.name() );
+            record.setValue( "description", t.description() );
+            record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
+            record.setValue( "docType", t.docType() );
+            record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
+            record.setValue( "textType",  t.textTypeString() );
+            model.setRecord(0, record);
+            model.submitAll();
+        }
+    } else {
+        // qDebug () << "Doing insert!";
+        QSqlRecord record = model.record();
+        record.setValue( "name", t.name() );
+        record.setValue( "description", t.description() );
+        record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
+        record.setValue( "docType", t.docType() );
+        record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
+        record.setValue( "textType",  t.textTypeString() );
+
+        model.insertRecord(-1, record);
+        model.submitAll();
     }
-  } else {
-    // qDebug () << "Doing insert!";
-    QSqlRecord record = model.record();
-    record.setValue( "name", t.name() );
-    record.setValue( "description", t.description() );
-    record.setValue( "text", KraftDB::self()->mysqlEuroEncode( t.text() ) );
-    record.setValue( "docType", t.docType() );
-    record.setValue( "docTypeId", DocType::docTypeId( t.docType() ).toString() );
-    record.setValue( "textType",  t.textTypeString() );
-
-    model.insertRecord(-1, record);
-    model.submitAll();
-  }
 
 
-  retVal = KraftDB::self()->getLastInsertID();
+    retVal = KraftDB::self()->getLastInsertID();
 
-  return retVal;
+    return retVal;
 }
 
 
 QLocale* DefaultProvider::locale()
 {
-  return &_locale;
+    return &_locale;
 }
 
 void DefaultProvider::deleteDocumentText( const DocText& dt )
 {
-  if ( dt.dbId().isOk() ) {
-    QSqlQuery q;
-    q.prepare("DELETE FROM DocTexts WHERE docTextID=" + dt.dbId().toString() ) ;
-    q.exec();
-  } else {
-    // qDebug () << "Delete document text not ok: " << dt.text();
-  }
+    if ( dt.dbId().isOk() ) {
+        QSqlQuery q;
+        q.prepare("DELETE FROM DocTexts WHERE docTextID=" + dt.dbId().toString() ) ;
+        q.exec();
+    } else {
+        // qDebug () << "Delete document text not ok: " << dt.text();
+    }
 }
 
 QString DefaultProvider::currencySymbol() const
 {
-  return self()->locale()->currencySymbol();
+    return self()->locale()->currencySymbol();
 }
 
 QString DefaultProvider::iconvTool() const
 {
-  return locateBinary( "iconv" );
+    return locateBinary( "iconv" );
 }
 
 QString DefaultProvider::getStyleSheet( const QString& styleName ) const
 {
-  QString style;
-  if( styleName.isEmpty() ) return style;
+    QString style;
+    if( styleName.isEmpty() ) return style;
 
-  const QString findFile = QString("styles/%1.style").arg(styleName);
+    const QString findFile = QString("styles/%1.style").arg(styleName);
 
-  const QString tmplFile = locateFile(findFile);
+    const QString tmplFile = locateFile(findFile);
 
-  QFile data( tmplFile );
-  if (data.open( QFile::ReadOnly )) {
-    QTextStream readIn( &data );
-    style = readIn.readAll();
-    data.close();
-  }
-  return style;
+    QFile data( tmplFile );
+    if (data.open( QFile::ReadOnly )) {
+        QTextStream readIn( &data );
+        style = readIn.readAll();
+        data.close();
+    }
+    return style;
 }
 
 // this method first checks if KRAFT_HOME is set. If it is it tries to read the files from there.
@@ -299,6 +342,133 @@ QString DefaultProvider::locateBinary(const QString& name) const
     const QString bin = QStandardPaths::findExecutable( name );
 
     return bin;
+}
+
+// Reads the v2basedir from the config file, or creates a new one if
+// none is in there in the writeable location. If the base parameter
+// is set, it just uses that one.
+// It finally creates the needed subdirs.
+// It does not WRITE the config file
+QString DefaultProvider::createV2BaseDir(const QString& base)
+{
+    QString v2base{base};
+    bool ok {true};
+    QDir currV2Dir{base};
+
+    // get the base dir from the config
+    if (v2base.isEmpty()) {
+        v2base = KraftSettings::self()->kraftV2BaseDir();
+        // should end with v2
+        currV2Dir.setPath(v2base);
+    }
+
+    if (v2base.isEmpty()) {
+        v2base = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+        v2base.append("/v2");
+
+        currV2Dir.setPath(v2base);
+    }
+
+    if (!currV2Dir.exists()) {
+        const auto v2 = currV2Dir.absolutePath();
+        ok = currV2Dir.mkpath(v2);
+    }
+
+    // at this point the path should exist
+
+    if (!ok) {
+        qDebug() << "Can not create the base dir v2 component in" << currV2Dir.path();
+        return QString();
+    }
+
+    // Append a UUID particle
+    ok = false;
+    int cnt{0};
+
+    do {
+        QUuid uuid = QUuid::createUuid();
+        const QString fragment{uuid.toString(QUuid::StringFormat::WithoutBraces).left(5)};
+        ok = currV2Dir.mkdir(fragment);
+        if (ok) {
+            currV2Dir.cd(fragment);
+            currV2Dir.mkdir("numbercycles");
+            currV2Dir.mkdir("xmldoc");
+        }
+        cnt++;
+    } while(!(ok && cnt < 5));
+
+    if (!ok) {
+        return QString();
+    }
+
+    _v2BaseDir = currV2Dir.absolutePath();
+
+    return _v2BaseDir;
+}
+
+bool DefaultProvider::switchToV2BaseDir(const QString& dirStr)
+{
+    bool ok{false};
+
+    // snip off the md5 fragment
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QString fragment = dirStr.split("/", QString::SkipEmptyParts).last();
+#else
+    const QString fragment = dirStr.split("/", Qt::SkipEmptyParts).last();
+#endif
+    QDir dir(dirStr);
+    if (dir.cdUp()) {
+        const QString linkFile = dir.absoluteFilePath("current");
+        QFile f(linkFile);
+        if (f.exists()) {
+            f.remove();
+        }
+        ok = QFile::link(fragment, linkFile);
+    } else {
+        // the fragment dir could not be created, try again, but only to a limit amount
+        qDebug() << fragment << "could not be created in" << dir.absolutePath();
+        ok = false;
+    }
+
+    if (ok) {
+        KraftSettings::self()->setKraftV2BaseDir(dir.absolutePath());
+        _v2BaseDir = polishedBaseDir();
+    }
+    return ok;
+}
+
+QString DefaultProvider::kraftV2Subdir(KraftV2Dir dir)
+{
+    QString subdir;
+    switch (dir) {
+    case KraftV2Dir::Root:
+    case KraftV2Dir::OwnIdentity:
+        break; // return the empty string
+    case KraftV2Dir::NumberCycles:
+        subdir = "numbercycles";
+        break;
+    case KraftV2Dir::XmlDocs:
+        subdir = "xmldoc";
+        break;
+    case KraftV2Dir::PdfDocs:
+        subdir = "xmldoc";
+        break;
+    }
+    return subdir;
+}
+
+// Usually baseDir is empty, but not for test cases.
+QString DefaultProvider::kraftV2Dir(KraftV2Dir dir)
+{
+    const QString subdir = kraftV2Subdir(dir);
+
+    // if kraftV2BaseDir returns an empty string, the path does not exist.
+    QString bDir{_v2BaseDir};
+    if (!bDir.isEmpty()) {
+        QDir d(bDir);
+        bDir = d.absoluteFilePath(subdir);
+    }
+    return bDir;
 }
 
 bool DefaultProvider::writeXmlArchive()

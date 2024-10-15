@@ -4,9 +4,9 @@ namespace Kraft {
 namespace Version {
 
 	// Static content. Maintain values here.
-	inline QString number() { return QStringLiteral("1.2.1"); }
+	inline QString number() { return QStringLiteral("2.0-pre"); }
 
-        inline QString codeName() { return QStringLiteral("Lynoel"); }
+        inline QString codeName() { return QStringLiteral("Cumulus"); }
         inline int dbSchemaVersion() { return 24; }
 
 	// dynamic content. These values get defined at build time in the top CMakeLists.txt

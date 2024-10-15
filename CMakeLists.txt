@@ -60,7 +60,6 @@ endif()
 message("Build host name: ${BUILD_HOST_NAME}")
 message("Build host distribution: ${BUILD_HOST_DISTRI}")
 
-
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(ECMInstallIcons)
@@ -82,6 +81,7 @@ find_package(Qt5 CONFIG REQUIRED
     Widgets
     Xml
     Svg
+    XmlPatterns
 )
 
 # XmlGui for the ConfigSkeleton
@@ -136,6 +136,7 @@ find_package(Asciidoctor)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 # disable the warning about null-pointer zero. FIXME.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
         ki18n_install(po)

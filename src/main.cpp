@@ -31,15 +31,11 @@
 
 #include "version.h"
 #include "portal.h"
-#include "defaultprovider.h"
-#include "archdocposition.h"
 
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(kraft);
     const QByteArray domain {"kraft"};
-
-    qRegisterMetaType<ArchDocPositionList>("ArchDocPositionList");
 
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/kraft/custom-icons/kraft-simple.svg"));

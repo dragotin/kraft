@@ -34,21 +34,15 @@
 #include "reportgenerator.h"
 #include "kraftdoc.h"
 #include "kraftdb.h"
-#include "unitmanager.h"
-#include "dbids.h"
-#include "kraftsettings.h"
 #include "docposition.h"
-#include "einheit.h"
-#include "archiveman.h"
-#include "archdoc.h"
 #include "documentman.h"
-#include "texttemplate.h"
 #include "defaultprovider.h"
 #include "doctype.h"
 #include "addressprovider.h"
-#include "grantleetemplate.h"
 #include "documenttemplate.h"
 #include "pdfconverter.h"
+#include "xmldocindex.h"
+#include "myidentity.h"
 
 namespace {
 QString saveToTempFile( const QString& doc )
@@ -86,14 +80,14 @@ ReportGenerator::ReportGenerator()
     : _useGrantlee(true),
       mProcess(nullptr)
 {
-  mAddressProvider = new AddressProvider(this);
-  connect(mAddressProvider, &AddressProvider::lookupResult,
-          this, &ReportGenerator::slotAddresseeFound);
+    mAddressProvider = new AddressProvider(this);
+    connect(mAddressProvider, &AddressProvider::lookupResult,
+            this, &ReportGenerator::slotAddresseeFound);
 }
 
 ReportGenerator::~ReportGenerator()
 {
-  // qDebug () << "ReportGen is destroyed!";
+    // qDebug () << "ReportGen is destroyed!";
 }
 
 /*
@@ -102,39 +96,43 @@ ReportGenerator::~ReportGenerator()
  *
  * This is the starting point of a report creation.
  */
-void ReportGenerator::createDocument( ReportFormat format, const QString& docID, dbID archId )
+void ReportGenerator::createDocument( ReportFormat format, const QString& uuid)
 {
-    mDocId = docID;
-    mArchId = archId;
+    if (_uuid == uuid) {
+        qDebug() << "PDF Creation for doc" << uuid << "is running already, returning";
+        return;
+    }
+    if (!_uuid.isEmpty()) {
+        qDebug() << "Generation process ongoing, return";
+        return;
+    }
+    _uuid = uuid;
     _requestedFormat = format;
 
     if( mProcess && mProcess->state() != QProcess::NotRunning ) {
         qDebug() << "===> WRN: Process still running, try again later.";
-        emit failure(i18n("The document generation process is still running."), QString());
+        emit failure(uuid, i18n("Document generation process is still running."), "");
+        _uuid.clear();
         return;
     }
 
-    // now the addressee search through the address provider is finished.
-    // Rendering can be started.
-    _archDoc.loadFromDb(archId);
+    KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
 
     // the next call also sets the watermark options
-    const QString dt = _archDoc.docTypeStr();
+    const QString dt = doc->docType();
     _tmplFile = findTemplateFile( dt );
 
     if ( _tmplFile.isEmpty() ) {
         qDebug () << "tmplFile is empty, exit reportgenerator!";
+        _uuid.clear();
+        delete doc;
         return;
     } else {
         qDebug () << "Using this template: " << _tmplFile;
     }
 
-    lookupCustomerAddress();
-}
-
-void ReportGenerator::lookupCustomerAddress()
-{
-    const QString clientUid = _archDoc.clientUid();
+    // ==== Look up the customer contact
+    const QString clientUid = doc->addressUid();
     KContacts::Addressee contact;
 
     if( ! clientUid.isEmpty() ) {
@@ -155,6 +153,7 @@ void ReportGenerator::lookupCustomerAddress()
             return;
         }
     }
+    delete doc;
     slotAddresseeFound(clientUid, contact);
 }
 
@@ -165,7 +164,8 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
 
     QFileInfo fi(_tmplFile);
     if (!fi.exists()) {
-        emit failure(i18n("The temporary file %1 is not accessible.", _tmplFile), QString());
+        emit failure(_uuid, i18n("Template file is not accessible."), "");
+        _uuid.clear();
         return;
     }
     const QString ext = fi.completeSuffix();
@@ -186,74 +186,63 @@ void ReportGenerator::slotAddresseeFound( const QString&, const KContacts::Addre
     converter->setTemplatePath(fi.path());
 
     // expand the template...
-    const QString expanded = templateEngine->expand(&_archDoc, myContact, mCustomerContact);
+    MyIdentity identity;
+    const QString expanded = templateEngine->expand(_uuid, identity.contact(), mCustomerContact);
     _cleanupFiles = templateEngine->tempFilesCreated();
 
     if (expanded.isEmpty()) {
-        emit failure(i18n("The template conversion failed."), templateEngine->error());
+        emit failure(_uuid, i18n("The template conversion failed."), templateEngine->error());
         delete converter;
+        _uuid.clear();
         return;
     }
     // ... and save to a tempoarary file
     const QString tempFile = saveToTempFile(expanded);
 
     if (tempFile.isEmpty()) {
-        emit failure(i18n("Saving to temporary file failed."), QString());
+        emit failure(_uuid, i18n("Saving to temporar file failed."), "");
         delete converter;
+        _uuid.clear();
         return;
     }
     _cleanupFiles.append(tempFile);
-
-    QString fullOutputFilePath = targetFileName();
-
-    if (mMergeIdent >= 0 && mMergeIdent < 5 ) {
-        // check if the watermark file exists
-        QFileInfo fi(mWatermarkFile);
-        if (!mWatermarkFile.isEmpty() && fi.isReadable()) {
-            QTemporaryFile tmpFile;
-            tmpFile.open();
-            tmpFile.close();
-
-            // PDF merge is required. Write to temp file
-            fullOutputFilePath = tmpFile.fileName() + QStringLiteral(".pdf");
-        } else {
-            mMergeIdent = 0;
-            qDebug() << "Can not read watermark file, generating without" << mWatermarkFile;
-        }
-    }
 
     // Now there is the completed, expanded document source.
     connect( converter, &PDFConverter::docAvailable,
              this, &ReportGenerator::slotPdfDocAvailable);
     connect( converter, &PDFConverter::converterError,
              this, &ReportGenerator::slotConverterError);
-    converter->convert(tempFile, fullOutputFilePath);
+
+    // Always write the finished document to a tmp file. Let it copy over by the
+    // mergePdfWatermark func
+    QTemporaryFile tmpFile;
+    if (tmpFile.open()) {
+        tmpFile.close();
+        converter->convert(tempFile, QString("%1.pdf").arg(tmpFile.fileName()));
+    } else {
+        qWarning() << "Can not write to the temporary file" << tmpFile.fileName();
+    }
 
 }
 
 void ReportGenerator::slotPdfDocAvailable(const QString& file)
 {
     QObject *s = sender();
-    qDebug() << "The document is finished!:" << file;
+    qDebug() << "The document is finished:" << file;
 
     s->deleteLater();
 
     // Remove tmp files that might have been created during the template expansion,
     // ie. the EPC QR Code SVG file.
 #ifndef QT_DEBUG
-    for (const auto &file : _cleanupFiles) {
-        QFile::remove(file);
+    for (const auto &subfile : _cleanupFiles) {
+        QFile::remove(subfile);
     }
 #endif
     _cleanupFiles.clear();
 
     // check for the watermark requirements
-    if (mMergeIdent > 0 && mMergeIdent < 5) {
-        // check if the watermark file exists
-        mergePdfWatermark(file);
-    } else {
-        emit docAvailable(_requestedFormat, file, mCustomerContact);
-    }
+    mergePdfWatermark(file);
 }
 
 void ReportGenerator::mergePdfWatermark(const QString& file)
@@ -262,36 +251,67 @@ void ReportGenerator::mergePdfWatermark(const QString& file)
     connect(mProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, &ReportGenerator::pdfMergeFinished);
 
+    const QString target = targetFileName();
+    const QStringList prg = DefaultProvider::self()->locatePythonTool(QStringLiteral("watermarkpdf.py"));
+
     QStringList args;
     if (mMergeIdent > 0) {
-        const QStringList prg = DefaultProvider::self()->locatePythonTool(QStringLiteral("watermarkpdf.py"));
-        if (!prg.isEmpty() && !mWatermarkFile.isEmpty()) {
-            mProcess->setProgram(prg.at(0));
-            args << prg.at(1);
-            args << QStringLiteral("-m") << QString::number(mMergeIdent);
-            args << QStringLiteral("-o") << targetFileName();
-            if (!mPdfAppendFile.isEmpty()) {
-                args << QStringLiteral("-a") << mPdfAppendFile;
-            }
-            args << mWatermarkFile;
-            args << file;
-
-            qDebug() << "Merge PDF Watermark args:" << args;
-            mProcess->setArguments(args);
-
-            mProcess->start( );
-        } else {
-            qDebug() << "Watermark err:" << (prg.isEmpty() ? "Program" : "watermark file") << "is empty";
+        // check if the watermark file is present. If not, just do not try to merge
+        if (prg.isEmpty()) {
+            qDebug() << "Can not find the tool watermarkpdf.py";
+            mMergeIdent = 0;
         }
+        if (mWatermarkFile.isEmpty()) {
+            qDebug() << "A watermark file is not set.";
+            mMergeIdent = 0;
+        } else {
+            QFileInfo fi{mWatermarkFile};
+            if (!(fi.exists() && fi.isReadable())) {
+                qDebug() << "The watermark file" << mWatermarkFile << "does not exist or can not be read.";
+                mMergeIdent = 0;
+            }
+        }
+    }
+
+    if (mMergeIdent > 0) {
+        // If merging, the result file is directly written to the target file name
+        // no copying over is needed from the tmp file.
+        mProcess->setProgram(prg.at(0));
+        args << prg.at(1);
+        args << QStringLiteral("-m") << QString::number(mMergeIdent);
+        args << QStringLiteral("-o") << target;
+        if (!mPdfAppendFile.isEmpty()) {
+            args << QStringLiteral("-a") << mPdfAppendFile;
+        }
+        args << mWatermarkFile;
+        args << file;
+
+        qDebug() << "Merge PDF Watermark args:" << args;
+        mProcess->setArguments(args);
+
+        mProcess->start( );
     } else {
         // no watermark is wanted, copy the converted file over.
-        args << file;
-        mProcess->setArguments(args);
-        const QString target = targetFileName();
+
+        // keep the existing file in a temp file to be able to restore
+        QFile tf{target};
+        const QString tf_bak = QString("%1.bak").arg(target);
+
+        QFile::remove(tf_bak);
+        if (tf.exists()) {
+            tf.rename(tf_bak);
+        }
+
         if (QFile::copy(file, target)) {
+            QFile::remove(tf_bak);
+            qDebug() << "Generated file" << file << "copied to" << target;
+            // restore file could be deleted from trash if needed..
             pdfMergeFinished(0, QProcess::ExitStatus::NormalExit);
         } else {
-            qDebug() << "ERR: Failed to copy temporary file";
+            qDebug() << "ERR: Failed to copy temporary file" << file << "to" << target;
+            // Try to bring back the old file from the trashbin
+            QFile::rename(tf_bak, target);
+            pdfMergeFinished(1, QProcess::ExitStatus::NormalExit);
         }
     }
 }
@@ -303,8 +323,6 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
     mMergeIdent = 0;
 
     if (exitStatus == QProcess::ExitStatus::NormalExit && exitCode == 0) {
-        const QString fileName = targetFileName();
-
         // remove the temp file which comes as arg in any case, even if the watermark
         // tool was not called.
         if (mProcess->arguments().size() > 0) {
@@ -313,10 +331,12 @@ void ReportGenerator::pdfMergeFinished(int exitCode, QProcess::ExitStatus exitSt
         }
         mProcess->deleteLater();
         mProcess = nullptr;
-        emit docAvailable(_requestedFormat, fileName, mCustomerContact);
+        emit docAvailable(_requestedFormat, _uuid, mCustomerContact);
     } else {
         slotConverterError(PDFConverter::ConvError::PDFMergerError);
     }
+    _uuid.clear();
+
 }
 
 
@@ -324,12 +344,15 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
 {
     auto *converter = qobject_cast<PDFConverter*>(sender());
 
-    const QString errors = converter->getErrors();
+    QString errors;
+    if (converter) {
+        errors = converter->getErrors();
+    }
 
     QString errMsg;
     switch(err) {
     case PDFConverter::ConvError::NoError:
-         errMsg = i18n("No converter error.");
+        errMsg = i18n("No converter error.");
         break;
     case PDFConverter::ConvError::TrmlToolFail:
         errMsg = i18n("The ReportLab based converter script cannot be executed.");
@@ -359,14 +382,17 @@ void ReportGenerator::slotConverterError(PDFConverter::ConvError err)
         errMsg = i18n("The PDF merger utility failed.");
         break;
     }
-    emit failure(errMsg, errors);
+    emit failure(_uuid, errMsg, errors);
+    _uuid.clear();
     converter->deleteLater();
 }
 
 QString ReportGenerator::targetFileName() const
 {
-    ArchDocDigest dig = _archDoc.toDigest();
-    return dig.pdfArchiveFileName();
+    XmlDocIndex indx;
+    const QString fileName = indx.pdfPathByUuid(_uuid).filePath();
+
+    return fileName;
 }
 
 QString ReportGenerator::findTemplateFile( const QString& type )
@@ -375,19 +401,16 @@ QString ReportGenerator::findTemplateFile( const QString& type )
     const QString tmplFile = dType.templateFile();
 
     if ( tmplFile.isEmpty() ) {
-        emit failure(i18n("There is not template defined for %1.", dType.name()),
-                     i18n("Make sure to define a template file in the settings dialog."));
+        emit failure(_uuid, i18n("There is not template defined for %1.").arg(dType.name()), "");
     } else {
         // a few file checks
         QFileInfo fi(tmplFile);
         if (!fi.isFile()) {
-            emit failure(i18n("The template file %1 for document type %2 is not a file.", tmplFile, dType.name()),
-                         i18n("Make sure to pick a readable template file in the settings dialog"));
+            emit failure(_uuid, i18n("The template file %1 for document type %2 does not exist.").arg(tmplFile).arg(dType.name()), "");
             return QString();
         }
         if (!fi.isReadable()) {
-            emit failure(i18n("The template file %1 for document type %2 can not be read.", tmplFile, dType.name()),
-                         i18n("Make sure the template file has proper file permissions."));
+            emit failure(_uuid, i18n("The template file %1 for document type %2 can not be read.").arg(tmplFile).arg(dType.name()), "");
             return QString();
         }
     }
@@ -399,9 +422,5 @@ QString ReportGenerator::findTemplateFile( const QString& type )
     return tmplFile;
 }
 
-void ReportGenerator::setMyContact( const KContacts::Addressee& contact )
-{
-    myContact = contact;
-}
 
 

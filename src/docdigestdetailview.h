@@ -22,8 +22,8 @@
 
 #include "docdigest.h"
 #include "htmlview.h"
+#include "ui_documentactions.h"
 
-class dbID;
 class TextTemplate;
 
 class DocDigestHtmlView : public HtmlView
@@ -33,47 +33,42 @@ class DocDigestHtmlView : public HtmlView
 public:
     DocDigestHtmlView( QWidget *parent );
 
-signals:
-    void showLastPrint( const dbID& );
-    void exportXRechnung(const dbID&);
-
 protected slots:
     void slotLinkClicked(const QUrl& url);
-
 };
 
 class DocDigestDetailView : public QFrame
 {
-  Q_OBJECT
+    Q_OBJECT
 public:
-  explicit DocDigestDetailView(QWidget *parent = 0);
-
-signals:
-  void showLastPrint(const dbID&);
-  void exportXRechnung(const dbID&);
+    explicit DocDigestDetailView(QWidget *parent = 0);
+    void initViewActions(const std::array<QAction *, 4> actions);
 
 public slots:
-  void slotShowDocDetails( DocDigest );
-  void slotClearView();
+    void slotShowStart();
+    void slotShowDocDetails(const DocDigest &);
+    void slotClearView();
 
-  void slotShowMonthDetails( int year, int month );
-  void slotShowYearDetails( int year);
+    void slotShowMonthDetails( int year, int month );
+    void slotShowYearDetails( int year);
+
 
 private:
-  void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
+    void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
     void documentListing( TextTemplate *tmpl, int year, int month );
 
-  enum Location { Left, Middle, Right };
-  enum Detail { Month, Year, Document };
+    enum Location { Left, Middle, Right };
+    enum Detail { Start, Month, Year, Document };
 
-  QString widgetStylesheet( Location loc, Detail det );
+    QString widgetStylesheet( Location loc, Detail det );
 
-  DocDigestHtmlView *mHtmlCanvas;
-  QLabel    *_leftDetails;
-  QLabel    *_rightDetails;
-  QString   _docTemplFileName;
-  QString   _monthTemplFileName;
-  QString   _yearTemplFileName;
+    DocDigestHtmlView *mHtmlCanvas;
+    QLabel    *_leftDetails;
+    QLabel    *_rightDetails;
+    QString   _docTemplFileName;
+    QString   _monthTemplFileName;
+    QString   _yearTemplFileName;
+    Ui::docActionsWidget *_docActionsWidget;
 };
 
 #endif // DOCDIGESTDETAILVIEW_H

@@ -35,27 +35,31 @@ class DocBaseModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
+    enum Columns {
+        Document_Id = 0,
+        Document_Uuid,
+        Document_Ident,
+        Document_Type,
+        Document_Whiteboard,
+        Document_ClientId,
+        Document_LastModified,
+        Document_CreationDate,
+        Document_ProjectLabel,
+        Document_ClientAddress,
+        Document_ClientName,
+        Document_Id_Raw,
+        Document_StateStr,
+        Document_CreationDateRaw,
+        Treestruct_Year,
+        Treestruct_Month,
+        Treestruct_Type,
+        Max_Column_Marker   // leave this as last enum
+    };
+
     DocBaseModel(QObject *parent = 0);
     virtual ~DocBaseModel() {}
 
-    enum Columns {
-        Document_Id = 0,
-        Document_Ident = 1,
-        Document_Type = 2,
-        Document_Whiteboard = 3,
-        Document_ClientId = 4,
-        Document_LastModified = 5,
-        Document_CreationDate = 6,
-        Document_ProjectLabel = 7,
-        Document_ClientAddress = 8,
-        Document_ClientName = 9,
-        Document_Id_Raw = 10,
-        Document_CreationDateRaw = 11,
-        Treestruct_Year = 12,
-        Treestruct_Month = 13,
-        Treestruct_Type  = 14,
-        Max_Column_Marker = 15   // leave this as last enum
-    };
+
 
     int columnCount(const QModelIndex &parent) const;
     virtual QVariant data(const QModelIndex &index, int role) const = 0;
@@ -64,11 +68,14 @@ public:
     virtual int rowCount(const QModelIndex &parent) const = 0;
     virtual void removeAllData() = 0;
     virtual void addData(const DocDigest& digest) = 0;
+    virtual void appendNewDoc(const DocDigest& digest) = 0;
+
+    virtual void updateData(const DocDigest& digest) = 0;
 
     virtual DocDigest digest(const QModelIndex& indx) const = 0;
     virtual bool isDocument(const QModelIndex& indx) const = 0;
 
-    int loadFromTable();
+    int loadDigests();
 
     void resetData();
 

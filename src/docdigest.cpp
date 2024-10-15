@@ -22,19 +22,18 @@
 #include <kcontacts/addressee.h>
 
 #include "docdigest.h"
-#include "defaultprovider.h"
 #include "format.h"
 #include "kraftsettings.h"
 #include "doctype.h"
 
-DocDigest::DocDigest( dbID id, const QString& type, const QString& clientID )
-  :mID(id), mType( type ), mClientId( clientID ), mLocale( "kraft" )
+DocDigest::DocDigest(const QString& type, const QString& clientID)
+  :KraftObj(), mType( type ), mClientId( clientID ), mLocale( "kraft" )
 {
 
 }
 
 DocDigest::DocDigest()
-  :mLocale( "kraft" )
+  :KraftObj(), mLocale( "kraft" )
 {
 }
 
@@ -46,37 +45,6 @@ QString DocDigest::date() const
 QDate DocDigest::rawDate() const
 {
     return mDate;
-}
-
-QString DocDigest::lastModified() const
-{
-    const QString re = QString( "%1 %2").arg( Format::toDateString(mLastModified.date(), KraftSettings::self()->dateFormat()))
-            .arg(mLastModified.time().toString("hh:mm"));
-    return re;
-}
-
-ArchDocDigestList DocDigest::archDocDigestList() const
-{
-    const QString id(ident());
-
-    qDebug() << "Querying archdocs for document ident " << id;
-    QSqlQuery query;
-    query.prepare("SELECT archDocID, ident, docType, printDate, state FROM archdoc WHERE"
-                  " ident=:id ORDER BY printDate DESC" );
-    query.bindValue(":id", id);
-    query.exec();
-
-    ArchDocDigestList archDocs;
-    while(query.next()) {
-        int archDocID = query.value(0).toInt();
-        const QString dbIdent = query.value(1).toString();
-        const QString docType = query.value(2).toString();
-        QDateTime printDateTime = query.value(3).toDateTime();
-        int state = query.value(4).toInt();
-        archDocs.append( ArchDocDigest( printDateTime, state, dbIdent, docType, dbID(archDocID) ) );
-    }
-
-    return archDocs;
 }
 
 KContacts::Addressee DocDigest::addressee() const

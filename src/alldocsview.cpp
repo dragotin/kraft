@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <array>
+
 #include <QtGui>
 #include <QtCore>
 #include <QItemSelectionModel>
@@ -36,14 +38,11 @@
 #include "models/documentproxymodels.h"
 #include "filterheader.h"
 #include "alldocsview.h"
-#include "documentman.h"
 #include "docguardedptr.h"
 #include "kraftdoc.h"
 #include "kraftdb.h"
-#include "defaultprovider.h"
 #include "docdigestdetailview.h"
 #include "kraftsettings.h"
-
 AllDocsView::AllDocsView( QWidget *parent )
 : QWidget( parent ),
   mTableModel(0),
@@ -122,6 +121,12 @@ void AllDocsView::slotSearchTextChanged(const QString& newStr )
     mDateModel->setFilterRegExp(newStr);
 }
 
+void AllDocsView::initDetailViewActions(const std::array<QAction *, 4> actions)
+{
+    Q_ASSERT(mAllViewDetails != nullptr);
+    mAllViewDetails->initViewActions(actions);
+}
+
 QWidget* AllDocsView::initializeTreeWidget()
 {
   //Note: Currently building the views is done in slotBuildView() that is called from the portal
@@ -140,14 +145,9 @@ QWidget* AllDocsView::initializeTreeWidget()
   _stack->addWidget(_tableView);
   _stack->addWidget(_dateView);
 
-  vb1->addWidget( _stack );
+  vb1->addWidget( _stack );  
 
   mAllViewDetails = new DocDigestDetailView;
-  connect( mAllViewDetails, &DocDigestDetailView::showLastPrint,
-           this, &AllDocsView::slotOpenLastPrinted);
-
-  connect( mAllViewDetails, &DocDigestDetailView::exportXRechnung ,
-           this, &AllDocsView::slotExportXRechnung);
 
   vb1->addWidget( mAllViewDetails );
   QWidget *w = new QWidget;
@@ -199,11 +199,39 @@ void AllDocsView::slotBuildView()
     _tableView->horizontalHeader()->restoreState( headerStateTable );
     _tableView->setSelectionBehavior( QAbstractItemView::SelectRows );
     _tableView->setShowGrid( false );
+
+    /*
+     *         Document_Id = 0,
+        Document_Uuid,
+        Document_Ident,
+        Document_Type,
+        Document_Whiteboard,
+        Document_ClientId,
+        Document_LastModified,
+        Document_CreationDate,
+        Document_ProjectLabel,
+        Document_ClientAddress,
+        Document_ClientName,
+        Document_Id_Raw,
+        Document_StateStr,
+        Document_CreationDateRaw,
+        Treestruct_Year,
+        Treestruct_Month,
+        Treestruct_Type,
+*/
+
     _tableView->hideColumn( DocumentModel::Document_Id );
+    _tableView->hideColumn( DocumentModel::Document_Uuid );
+    _tableView->showColumn( DocumentModel::Document_Ident );
+    _tableView->showColumn( DocumentModel::Document_Type);
+    _tableView->showColumn( DocumentModel::Document_ProjectLabel);
+    _tableView->showColumn( DocumentModel::Document_Whiteboard);
     _tableView->hideColumn( DocumentModel::Document_ClientId );
     _tableView->hideColumn( DocumentModel::Document_ClientAddress );
     _tableView->showColumn( DocumentModel::Document_ClientName );
     _tableView->showColumn( DocumentModel::Document_CreationDateRaw);
+    _tableView->showColumn( DocumentModel::Document_LastModified);
+    _tableView->showColumn( DocumentModel::Document_StateStr);
     _tableView->hideColumn( DocumentModel::Document_CreationDate);
     _tableView->hideColumn( DocumentModel::Document_Id_Raw);
     _tableView->hideColumn( DocumentModel::Treestruct_Type);
@@ -212,11 +240,13 @@ void AllDocsView::slotBuildView()
 
     _dateView->header()->restoreState( headerStateDate );
 
+    _dateView->hideColumn( DocumentModel::Document_Uuid );
     _dateView->hideColumn( DocumentModel::Document_ClientId );
     _dateView->hideColumn( DocumentModel::Document_ClientAddress );
     _dateView->showColumn( DocumentModel::Document_ClientName );
     _dateView->showColumn( DocumentModel::Document_CreationDateRaw);
     _dateView->hideColumn( DocumentModel::Document_CreationDate);
+    _dateView->showColumn( DocumentModel::Document_StateStr);
 
     _dateView->hideColumn( DocumentModel::Document_Id_Raw);
     _dateView->hideColumn( DocumentModel::Treestruct_Type);
@@ -231,10 +261,8 @@ void AllDocsView::slotBuildView()
     connect( _dateView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
              this, SLOT(slotCurrentChanged(QModelIndex,QModelIndex)));
 
-    connect( _tableView, SIGNAL( doubleClicked(QModelIndex) ),
-             this, SLOT( slotDocOpenRequest(QModelIndex) ) );
-    connect( _dateView, SIGNAL( doubleClicked(QModelIndex) ),
-             this, SLOT( slotDocOpenRequest(QModelIndex) ) );
+    connect( _tableView, &QTableView::doubleClicked, this, &AllDocsView::openDocument);
+    connect( _dateView, &QTreeView::doubleClicked, this, &AllDocsView::openDocument);
 
     _tableView->setAlternatingRowColors( true );
     _dateView->setAlternatingRowColors(false);
@@ -261,16 +289,20 @@ void AllDocsView::slotBuildView()
             _dateView->setExpanded(rIdx, true);
         }
     }
-
-    connect(KraftDB::self(), &KraftDB::docDatabaseChanged, this, &AllDocsView::slotUpdateView);
 }
 
-void AllDocsView::slotUpdateView()
+void AllDocsView::slotUpdateView(DocGuardedPtr doc)
 {
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-    static_cast<DocBaseModel*>(mDateModel->sourceModel())->resetData();
-    static_cast<DocBaseModel*>(mTableModel->sourceModel())->resetData();
-    mCurrentlySelected = QModelIndex();
+    const DocDigest& digest = doc->toDigest();
+    if (doc->state().isNew()) {
+        // FIXME add signal emitting
+        static_cast<DocBaseModel*>(mDateModel->sourceModel())->appendNewDoc(digest);
+        static_cast<DocBaseModel*>(mTableModel->sourceModel())->appendNewDoc(digest);
+    } else {
+        static_cast<DocBaseModel*>(mDateModel->sourceModel())->updateData(digest);
+        static_cast<DocBaseModel*>(mTableModel->sourceModel())->updateData(digest);
+    }
     QApplication::restoreOverrideCursor();
 }
 
@@ -279,37 +311,12 @@ void AllDocsView::contextMenuEvent( QContextMenuEvent * event )
     mAllMenu->popup( event->globalPos() );
 }
 
-void AllDocsView::slotExportXRechnung()
-{
-  // qDebug () << "slotOpenLastPrinted hit! ";
-  emit exportXRechnungArchivedDocument( mLatestArchivedDigest );
-}
-
-void AllDocsView::slotOpenLastPrinted( )
-{
-  // qDebug () << "slotOpenLastPrinted hit! ";
-  emit openArchivedDocument( mLatestArchivedDigest );
-}
-
-ArchDocDigest AllDocsView::currentLatestArchivedDoc() const
-{
-    return mLatestArchivedDigest;
-}
-
-void AllDocsView::slotDocOpenRequest( QModelIndex index )
-{
-    Q_UNUSED(index)
-    const QString id = currentDocumentId();
-
-    emit openDocument( id );
-}
-
 int AllDocsView::currentDocumentRow() const
 {
   return mCurrentlySelected.row();
 }
 
-QString AllDocsView::currentDocumentId( ) const
+QString AllDocsView::currentDocumentUuid( ) const
 {
     bool isDoc = true;
     DocBaseModel *model;
@@ -323,8 +330,30 @@ QString AllDocsView::currentDocumentId( ) const
 
     QString id;
     if( isDoc ) {
-        QModelIndex idIndx = model->index(mCurrentlySelected.row(),
-                                          DocumentModel::Document_Id_Raw, mCurrentlySelected.parent());
+        const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
+                                          DocumentModel::Document_Uuid, mCurrentlySelected.parent());
+
+        id = idIndx.data( Qt::DisplayRole ).toString();
+    }
+    return id;
+}
+
+QString AllDocsView::currentDocumentIdent( ) const
+{
+    bool isDoc = true;
+    DocBaseModel *model;
+
+    if( _stack->currentIndex() == 0 ) {
+        model = static_cast<DocumentModel*>( mTableModel->sourceModel() );
+    } else {
+        model = static_cast<DateModel*>( mDateModel->sourceModel() );
+        isDoc = model->isDocument(mCurrentlySelected);
+    }
+
+    QString id;
+    if( isDoc ) {
+        const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
+                                                DocumentModel::Document_Ident, mCurrentlySelected.parent());
 
         id = idIndx.data( Qt::DisplayRole ).toString();
     }
@@ -353,19 +382,9 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
 
         /* get the corresponding document id */
         if( isDoc ) {
-            DocDigest digest;
-            QModelIndex idIndx = model->index(mCurrentlySelected.row(),
-                                              DocumentModel::Document_Ident,
-                                              mCurrentlySelected.parent());
-
-            digest = model->digest( mCurrentlySelected );
-            emit docSelected(digest);
+            const DocDigest& digest = model->digest( mCurrentlySelected );
+            emit docSelected(digest.uuid());
             mAllViewDetails->slotShowDocDetails( digest );
-            if( digest.archDocDigestList().size() > 0 ) {
-                mLatestArchivedDigest = digest.archDocDigestList()[0];
-            } else {
-                mLatestArchivedDigest = ArchDocDigest();
-            }
         } else {
             const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
                                                     DocumentModel::Treestruct_Type,
@@ -392,7 +411,7 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         }
     } else {
         // qDebug () << "Got invalid index, clearing digest view.";
-        emit docSelected( DocDigest() );
+        emit docSelected( QString() );
         mAllViewDetails->slotClearView();
     }
     //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);

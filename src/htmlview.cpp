@@ -130,6 +130,7 @@ void HtmlView::displayContent( const QString& content )
     const QString out = topFrame() + content + bottomFrame();
     const QString s = mStyles;
 
+#if 0
 #ifdef QT_DEBUG
     // this file gets written and removed immediately, so if it should be kept,
     // set the autoDelete to false
@@ -146,7 +147,7 @@ void HtmlView::displayContent( const QString& content )
         tempFile.close();
     }
 #endif
-
+#endif
     this->document()->setDefaultStyleSheet(s);
     setHtml(out);
 }

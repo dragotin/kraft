@@ -23,6 +23,8 @@
 
 #include "kraftdoc.h"
 #include "doctext.h"
+#include "docguardedptr.h"
+#include "documentsaverxml.h"
 
 class QSqlRecord;
 class QStringList;
@@ -35,41 +37,75 @@ class dbID;
 class KRAFTCAT_EXPORT DefaultProvider
 {
 public:
-  ~DefaultProvider();
+    enum class KraftV2Dir {
+        Root,
+        XmlDocs,
+        PdfDocs,
+        NumberCycles,
+        OwnIdentity
+    };
 
-  static DefaultProvider *self();
+    ~DefaultProvider();
 
-  QIcon icon(const QString& name);
+    static DefaultProvider *self();
 
-  QString defaultText( const QString&, KraftDoc::Part, DocGuardedPtr = 0 );
-  dbID saveDocumentText( const DocText& );
-  void deleteDocumentText( const DocText& );
+    QIcon icon(const QString& name);
 
-  QString docType(); // the default document type for new docs
-  DocTextList documentTexts( const QString&, KraftDoc::Part );
+    QString defaultText( const QString&, KraftDoc::Part, DocGuardedPtr = 0 );
+    dbID saveDocumentText( const DocText& );
+    void deleteDocumentText( const DocText& );
 
-  QString currencySymbol() const;
+    QString docType(); // the default document type for new docs
+    DocTextList documentTexts( const QString&, KraftDoc::Part );
 
-  QLocale* locale();
+    QString currencySymbol() const;
 
-  QString iconvTool() const;
-  QStringList locatePythonTool(const QString& toolName) const;
-  QString locateBinary(const QString& name) const;
-  QString locateFile(const QString& findFile) const;
+    QLocale* locale();
 
-  QString getStyleSheet( const QString& ) const;
+    QString iconvTool() const;
+    QStringList locatePythonTool(const QString& toolName) const;
+    QString locateBinary(const QString& name) const;
+    QString locateFile(const QString& findFile) const;
 
-  DefaultProvider();
+    QString getStyleSheet( const QString& ) const;
 
-  bool writeXmlArchive();
-  QString pdfOutputDir();
-  QString xmlArchivePath();
+    // -- Functions for the new file based Kraft version 2 --
+
+    /**
+     *  Important:
+     * The KraftV2BaseDir is always the dir, which contains the versions and the
+     * current link to the current data dir.
+     */
+
+    // Two methods used for converting document data from db into a directory
+    QString createV2BaseDir(const QString &base = QString());
+    // after successful conversion this method switches to the new root dir
+    // it writes to the config file and permanently changes the v2 dir
+    bool switchToV2BaseDir(const QString& dirStr);
+
+    // main function: Always use this method to get the path to a subdir
+    // for data. The baseDir is only set in test cases
+    QString kraftV2Dir(KraftV2Dir dir = KraftV2Dir::Root);
+
+    // utility - returns the name of the subdir for a given enum type
+    QString kraftV2Subdir(KraftV2Dir dir);
+
+    DefaultProvider();
+
+    // these are v1 methods
+    bool writeXmlArchive();
+    QString pdfOutputDir();
+    QString xmlArchivePath();
+
+    DocumentSaverBase &documentPersister();
 
 private:
 
- //  static DefaultProvider *mSelf;
-  QLocale _locale;
-  const QString EuroTag;
+    QLocale _locale;
+    DocumentSaverXML _persister;
+    static QString _v2BaseDir;
+
+    const QString EuroTag;
 
 };
 

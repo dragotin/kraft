@@ -15,9 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <array>
+
 // include files for QT
 #include <QDir>
 #include <QPainter>
+#include <QAction>
 #include <QApplication>
 #include <QCursor>
 #include <QTimer>
@@ -34,6 +37,7 @@
 #include <QStandardPaths>
 #include <QToolBar>
 #include <QDesktopServices>
+#include <QtConcurrent/QtConcurrentRun>
 
 
 // include files for KDE
@@ -56,7 +60,6 @@
 #include "reportgenerator.h"
 #include "kraftsettings.h"
 #include "defaultprovider.h"
-#include "archdoc.h"
 #include "newdocassistant.h"
 #include "doctype.h"
 #include "tagtemplatesdialog.h"
@@ -67,6 +70,36 @@
 #include "alldocsview.h"
 #include "exportxrechnung.h"
 #include "ui_xrechnung.h"
+#include "ui_finalizedoc.h"
+#include "ui_dbtoxml.h"
+#include "dbtoxmlconverter.h"
+#include "xmldocindex.h"
+#include "myidentity.h"
+
+// Litte class diagram to describe the main view of Kraft:
+//
+//            +-----------------+
+//            | Portal          |       Provides the main window
+//            +-----------------+
+//                     |
+//                     |
+//                     v
+//            +-----------------+
+//  +---------| PortalView      |        Widget to organize the underlying stuff
+//  |         +-----------------+
+//  |           |            |
+//  |           |            |
+//  |           v            v
+//  |    +-----------+  +--------------------+
+//  |    |  Catalog  |  | AllDocsView        |
+//  |    |  Browser  |  |                    |    Holds the plain- und treelist of the docs
+//  |    +-----------+  +--------------------+
+//  v                        |          |
+//+-----------+         +----|---+  +---|----+
+//|  System   |         | Table  |  | Tree   |
+//|  Browser  |         | View   |  | View   |
+//+-----------+         +--------+  +--------+
+//
 
 Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const char* name)
 : QMainWindow( parent ),
@@ -93,9 +126,14 @@ Portal::Portal(QWidget *parent, QCommandLineParser *commandLineParser, const cha
   restoreState(state);
   const QByteArray geo = QByteArray::fromBase64( KraftSettings::self()->portalGeometry().toLatin1() );
   restoreGeometry(geo);
+}
 
-  // setAutoSaveSettings();
-  QTimer::singleShot( 0, this, SLOT( slotStartupChecks() ) );
+void Portal::show()
+{
+    QMainWindow::show();
+    qApp->processEvents();
+    qDebug() << "Processed...";
+    slotStartupChecks();
 }
 
 void Portal::initActions()
@@ -142,29 +180,39 @@ void Portal::initActions()
     connect(_actFollowDocument, &QAction::triggered, this, &Portal::slotFollowUpDocument);
 
     newIcon = DefaultProvider::self()->icon( "printer");
-    _actPrintDocument = new QAction(newIcon, i18n("Print Document"), this);
-    _actPrintDocument->setShortcut( QKeySequence::Print);
-    connect(_actPrintDocument, &QAction::triggered, this, &Portal::slotPrintCurrentDocument);
+    _actPrintPDF= new QAction(newIcon, i18n("Print PDF"), this);
+    _actPrintPDF->setShortcut( QKeySequence::Print);
+    connect(_actPrintPDF, &QAction::triggered, this, &Portal::slotPrintCurrentPDF);
 
     newIcon = DefaultProvider::self()->icon( "eye");
     _actViewDocument = new QAction(newIcon, i18n("Show Document"), this);
     _actViewDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
     connect(_actViewDocument, &QAction::triggered, this, &Portal::slotViewCurrentDocument);
 
+    newIcon = DefaultProvider::self()->icon( "check");
+    _actChangeDocStatus = new QAction(newIcon, i18n("Document Status..."), this);
+    _actChangeDocStatus->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_S ));
+    connect(_actChangeDocStatus, &QAction::triggered, this, &Portal::slotChangeDocStatus);
+
+    newIcon = DefaultProvider::self()->icon( "check");
+    _actFinalizeDocument= new QAction(newIcon, i18n("Finalize Document..."), this);
+    _actFinalizeDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_D ));
+    connect(_actFinalizeDocument, &QAction::triggered, this, &Portal::slotFinalizeDoc);
+
     newIcon = DefaultProvider::self()->icon( "edit");
-    _actOpenDocument = new QAction(newIcon, i18n("Edit Document"), this);
-    _actOpenDocument->setShortcut( QKeySequence::Open );
-    connect(_actOpenDocument, &QAction::triggered, this, &Portal::slotOpenCurrentDocument);
-    
+    _actEditDocument = new QAction(newIcon, i18n("Edit Document"), this);
+    _actEditDocument->setShortcut( QKeySequence::Open );
+    connect(_actEditDocument, &QAction::triggered, this, &Portal::slotOpenCurrentDocument);
+
     newIcon = DefaultProvider::self()->icon( "archive");
-    _actOpenArchivedDocument = new QAction(newIcon, i18n("Open Archived Document"), this);
-    _actOpenArchivedDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_A ));
-    connect(_actOpenArchivedDocument, &QAction::triggered, this, &Portal::slotArchivedDocExecuted);
+    _actOpenDocumentPDF = new QAction(newIcon, i18n("Open PDF Document"), this);
+    _actOpenDocumentPDF->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_A ));
+    connect(_actOpenDocumentPDF, &QAction::triggered, this, &Portal::slotOpenCurrentPDF);
 
     newIcon = DefaultProvider::self()->icon("mail-forward");
-    _actMailDocument = new QAction(newIcon, i18n("Mail Document"), this);
-    _actMailDocument->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
-    connect(_actMailDocument, &QAction::triggered, this, &Portal::slotMailDocument);
+    _actMailPDF = new QAction(newIcon, i18n("Mail PDF"), this);
+    _actMailPDF->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
+    connect(_actMailPDF, &QAction::triggered, this, &Portal::slotMailDocument);
 
     newIcon = DefaultProvider::self()->icon( "mail-forward");
     _actXRechnung = new QAction(newIcon, i18n("Export XRechnung"), this);
@@ -181,8 +229,14 @@ void Portal::initActions()
     _actReconfDb->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ));
     connect(_actReconfDb, &QAction::triggered, this, &Portal::slotReconfigureDatabase);
 
-    newIcon = DefaultProvider::self()->icon( "book");
-    _actHandbook = new QAction(newIcon, i18n("Kraft Handbook…"), this);
+    newIcon = DefaultProvider::self()->icon( "settings");
+    _actXmlConvert = new QAction(newIcon, i18n("Convert documents to XML"), this);
+    _actXmlConvert->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_M ));
+    connect(_actXmlConvert, &QAction::triggered, this, &Portal::slotConvertToXML);
+
+
+    newIcon = DefaultProvider::self()->icon("kraft-simple");
+    _actHandbook = new QAction(newIcon, i18n("Kraft Handbook..."), this);
     _actHandbook->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_H ));
     connect(_actHandbook, &QAction::triggered, this, &Portal::slotHandbook);
 
@@ -203,26 +257,28 @@ void Portal::initActions()
     _actEditPaste->setStatusTip(i18n("Pastes the clipboard contents to current position"));
 
     _actNewDocument->setStatusTip( i18n( "Creates a new Document" ) );
-    _actPrintDocument->setStatusTip( i18n( "Print and archive this Document" ) );
+    _actPrintPDF->setStatusTip( i18n( "Print and archive this Document" ) );
     _actCopyDocument->setStatusTip( i18n( "Creates a new document which is a copy of the selected document" ) );
     _actFollowDocument->setStatusTip( i18n( "Create a followup document for the current document" ) );
-    _actOpenDocument->setStatusTip( i18n( "Opens the document for editing" ) );
+    _actEditDocument->setStatusTip( i18n( "Opens the document for editing" ) );
     _actViewDocument->setStatusTip( i18n( "Opens a read only view on the document." ) );
-    _actMailDocument->setStatusTip( i18n( "Send document per mail" ) );
+    _actMailPDF->setStatusTip( i18n( "Send document per mail" ) );
     _actXRechnung->setStatusTip( i18n("Export invoice in XRechnung XML format."));
     _actEditTemplates->setStatusTip( i18n("Edit the available tag templates which can be assigned to document items.") );
     _actReconfDb->setStatusTip( i18n( "Configure the Database Kraft is working on." ) );
-    _actOpenArchivedDocument->setStatusTip( i18n( "Open a viewer on an archived document" ) );
+    _actOpenDocumentPDF->setStatusTip( i18n( "Open a viewer on an archived document" ) );
+    _actFinalizeDocument->setStatusTip( i18n("Finalize the document to send it to the customer"));
 
-    _actOpenDocument->setEnabled( false );
+    _actEditDocument->setEnabled( false );
     _actViewDocument->setEnabled( false );
-    _actPrintDocument->setEnabled( false );
+    _actPrintPDF->setEnabled( false );
     _actCopyDocument->setEnabled( false );
     _actFollowDocument->setEnabled( false );
-    _actMailDocument->setEnabled( false );
-
-    _actOpenArchivedDocument->setEnabled( false );
+    _actMailPDF->setEnabled( false );
+    _actOpenDocumentPDF->setEnabled( false );
     _actXRechnung->setEnabled( false );
+    _actChangeDocStatus->setEnabled( false );
+    _actFinalizeDocument->setEnabled( false );
 
     QMenu *fileMenu = menuBar()->addMenu(i18n("&File"));
     fileMenu->addAction(_actFileQuit);
@@ -235,17 +291,20 @@ void Portal::initActions()
 #endif
     QMenu *docMenu = menuBar()->addMenu(i18n("&Document"));
     docMenu->addAction(_actViewDocument);
-    if (!_readOnlyMode) docMenu->addAction(_actOpenDocument);
-    docMenu->addAction(_actOpenArchivedDocument);
-    docMenu->addAction(_actXRechnung);
+    if (!_readOnlyMode) docMenu->addAction(_actEditDocument);
     if (!_readOnlyMode) {
         docMenu->addSeparator();
         docMenu->addAction(_actNewDocument);
         docMenu->addAction(_actCopyDocument);
         docMenu->addAction(_actFollowDocument);
         docMenu->addSeparator();
-        docMenu->addAction(_actPrintDocument);
-        docMenu->addAction(_actMailDocument);
+        docMenu->addAction(_actOpenDocumentPDF);
+        docMenu->addAction(_actPrintPDF);
+        docMenu->addAction(_actMailPDF);
+        docMenu->addAction(_actXRechnung);
+        docMenu->addSeparator();
+        docMenu->addAction(_actChangeDocStatus);
+        docMenu->addAction(_actFinalizeDocument);
     }
 
     QToolBar *toolBar = addToolBar(i18n("Kraft"));
@@ -254,6 +313,7 @@ void Portal::initActions()
         QMenu *prefsMenu = menuBar()->addMenu(i18n("&Preferences"));
         prefsMenu->addAction(_actEditTemplates);
         prefsMenu->addAction(_actReconfDb);
+        prefsMenu->addAction(_actXmlConvert);
         prefsMenu->addSeparator();
         QMenu *submen = prefsMenu->addMenu(i18n("Toolbars"));
         submen->addAction(toolBar->toggleViewAction());
@@ -273,14 +333,14 @@ void Portal::initActions()
         toolBar->addAction(_actNewDocument);
         toolBar->addAction(_actCopyDocument);
         toolBar->addAction(_actFollowDocument);
-        toolBar->addAction(_actPrintDocument);
-        toolBar->addAction(_actMailDocument);
+        toolBar->addAction(_actFinalizeDocument);
+        toolBar->addAction(_actPrintPDF);
+        toolBar->addAction(_actMailPDF);
     } else {
-        toolBar->addAction(_actOpenArchivedDocument);
+        toolBar->addAction(_actOpenDocumentPDF);
         toolBar->addAction(_actXRechnung);
         toolBar->addAction(_actViewDocument);
     }
-
 
     // initial enablements
     _actEditCut->setEnabled(false);
@@ -298,46 +358,37 @@ void Portal::initView()
     // create the main widget here that is managed by KTMainWindow's view-region and
     // connect the widget to your document to display document contents.
     m_portalView.reset(new PortalView( this, "PortalMainView" ));
-    QVector<QMenu*> menus = m_portalView->docDigestView()->contextMenus();
-    foreach( QMenu *menu, menus ) {
+    QVector<QMenu*> menus = m_portalView->allDocsView()->contextMenus();
+    for(QMenu *menu: menus) {
       menu->setTitle( i18n("Document Actions"));
       menu->addSection(i18n("Document Actions"));
       menu->addAction( _actViewDocument );
-      if (!_readOnlyMode) menu->addAction( _actOpenDocument );
-      menu->addAction( _actOpenArchivedDocument );
-      menu->addAction( _actXRechnung);
       if (!_readOnlyMode) {
-          menu->addSeparator();
+          menu->addAction( _actEditDocument );
+          menu->addAction( _actFinalizeDocument );
+          menu->addSection(i18n("Create New Documents"));
           menu->addAction( _actNewDocument );
           menu->addAction( _actCopyDocument );
           menu->addAction( _actFollowDocument );
-          menu->addSeparator();
-          menu->addAction( _actPrintDocument );
-          menu->addAction( _actMailDocument );
       }
+      menu->addSection(i18n("Document Output"));
+      menu->addAction(_actOpenDocumentPDF);
+      menu->addAction( _actPrintPDF );
+      menu->addAction( _actMailPDF );
+      menu->addAction( _actXRechnung);
     }
 
-    connect( m_portalView.data(), SIGNAL(openKatalog( const QString&)),
-             this, SLOT(slotOpenKatalog(const QString&)));
-    connect( m_portalView.data(), SIGNAL(katalogToXML(const QString& )),
-             this, SLOT(slotKatalogToXML(const QString&)));
+    connect(m_portalView.data(), &PortalView::openKatalog, this, &Portal::slotOpenKatalog);
+    connect(m_portalView.data(), &PortalView::katalogToXML, this, &Portal::slotKatalogToXML);
+
+    // Set the actions for the detail View action buttons
+    const std::array<QAction*, 4> actions = {_actEditDocument, _actFinalizeDocument, _actOpenDocumentPDF, _actPrintPDF};
+    m_portalView->allDocsView()->initDetailViewActions(actions);
 
     // document related connections
-    connect( m_portalView.data(), SIGNAL( createDocument() ),
-             this, SLOT( slotNewDocument() ) );
-    connect( m_portalView.data(), SIGNAL( copyDocument( const QString& ) ),
-             this, SLOT( slotCopyDocument( const QString& ) ) );
-    connect( m_portalView.data(), SIGNAL( openDocument( const QString& ) ),
-             this, SLOT( slotOpenDocument( const QString& ) ) );
-    connect( m_portalView.data(), SIGNAL( viewDocument( const QString& ) ),
-             this, SLOT( slotViewDocument( const QString& ) ) );
-    connect( m_portalView.data(), SIGNAL( openArchivedDocument( const ArchDocDigest& ) ),
-             this, SLOT( slotOpenArchivedDoc( const ArchDocDigest& ) ) );
-    connect( m_portalView.data(), &PortalView::exportXRechnungArchivedDocument,
-             this, &Portal::slotExportXRechnungArchivedDoc);
-    connect( m_portalView.data(), &PortalView::documentSelected, this, &Portal::slotDocumentSelected);
-    connect( m_portalView.data(),  SIGNAL( archivedDocSelected( const ArchDocDigest& ) ),
-             this,  SLOT( slotArchivedDocSelected( const ArchDocDigest& ) ) );
+    connect(m_portalView.data(), &PortalView::documentSelected, this, &Portal::slotDocumentSelected);
+    connect(m_portalView.data(), &PortalView::openDocument, this, &Portal::slotDoubleClicked);
+
     setCentralWidget(m_portalView.data());
 }
 
@@ -351,7 +402,7 @@ void Portal::slotStartupChecks()
             // Update not under our control here.
             QMessageBox::warning(this, i18n("Database not running"),
                                  i18n("Kraft was started in readonly mode, but the configured "
-    "database cannot be connected.\n\nKraft will abort."));
+                                      "database can not be connected.\n\nKraft will abort."));
             QTimer::singleShot(500, this, [this] { close(); });
             return;
         } else {
@@ -388,100 +439,62 @@ void Portal::slotStartupChecks()
             _actNewDocument->setEnabled( false );
             _actCopyDocument->setEnabled( false );
             _actFollowDocument->setEnabled(false);
-            _actOpenDocument->setEnabled( false );
+            _actEditDocument->setEnabled( false );
         }
         _actViewDocument->setEnabled( false );
-        _actPrintDocument->setEnabled( false );
-        _actOpenArchivedDocument->setEnabled( false );
+        _actPrintPDF->setEnabled( false );
+        _actOpenDocumentPDF->setEnabled( false );
         _actXRechnung->setEnabled(false);
-        _actMailDocument->setEnabled( false );
+        _actMailPDF->setEnabled( false );
 
         slotStatusMsg( i18n( "Database Problem." ) );
-    } else {
-        // if readonly, enable the change polling on the db
-        if (_readOnlyMode) {
-            KraftDB::self()->enableTimerRefresh(true);
-        }
+        return;
 
-        // Database interaction is ok after this point.
-        m_portalView->slotBuildView();
-        m_portalView->fillCatalogDetails();
-        m_portalView->fillSystemDetails();
-
-        slotStatusMsg( i18n( "Check commandline actions" ) );
-
-        if ( mCmdLineArgs ) {
-            const QString docId = mCmdLineArgs->value("d");
-            if ( ! docId.isEmpty() ) {
-                // qDebug () << "open a archived document: " << docId;
-                slotPrintDocument( QString(), dbID( docId.toInt() ) );
-            }
-        }
-
-        // Fetch my address
-        const QString myUid = KraftSettings::self()->userUid();
-        bool useManual = false;
-
-        if( ! myUid.isEmpty() ) {
-            KContacts::Addressee contact;
-            // qDebug () << "Got My UID: " << myUid;
-            connect( mAddressProvider, SIGNAL( lookupResult(QString,KContacts::Addressee)),
-                    this, SLOT( slotReceivedMyAddress(QString, KContacts::Addressee)) );
-
-            AddressProvider::LookupState state = mAddressProvider->lookupAddressee( myUid );
-            switch( state ) {
-            case AddressProvider::LookupFromCache:
-                contact = mAddressProvider->getAddresseeFromCache(myUid);
-                slotReceivedMyAddress(myUid, contact);
-                break;
-            case AddressProvider::LookupNotFound:
-            case AddressProvider::ItemError:
-            case AddressProvider::BackendError:
-                // Try to read from stored vcard.
-                useManual = true;
-                break;
-            case AddressProvider::LookupOngoing:
-            case AddressProvider::LookupStarted:
-                // Not much to do, just wait
-                break;
-            }
-        } else {
-            // in case there is no uid in the settings file, try to use the manual address.
-            useManual = true;
-        }
-
-        if( useManual ) {
-            // check if the vcard can be read
-            QString file = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
-            file += "/myidentity.vcd";
-            QFile f(file);
-            if( f.exists() ) {
-                if( f.open( QIODevice::ReadOnly )) {
-                    const QByteArray data = f.readAll();
-                    VCardConverter converter;
-                    Addressee::List list = converter.parseVCards( data );
-
-                    if( list.count() > 0 ) {
-                        KContacts::Addressee c = list.at(0);
-                        c.insertCustom(CUSTOM_ADDRESS_MARKER, "manual");
-                        slotReceivedMyAddress(QString(), c);
-                    }
-                }
-            }
-        }
-
-        connect( &_reportGenerator, &ReportGenerator::docAvailable,
-                 this, &Portal::slotDocConverted);
-        connect( &_reportGenerator, &ReportGenerator::failure,
-                 this, &Portal::slotDocConvertionFail);
     }
+
+    // Database is up and runing!
+    // Check the document storage and see if the docs are converted already.
+    QString basePath = DefaultProvider::self()->kraftV2Dir();
+    if (basePath.isEmpty()) {
+        // conversion has not yet happened
+        basePath = slotConvertToXML();
+    }
+
+    if (basePath.isEmpty()) {
+        qCritical() << "BasePath is still empty after conversion - XML conversion failed.";
+        return; // FIXME Error handling.
+    } else {
+        XmlDocIndex indx;
+        indx.setBasePath(basePath);
+    }
+
+    m_portalView->slotBuildView();
+    m_portalView->fillCatalogDetails();
+    m_portalView->fillSystemDetails();
+
+    if ( mCmdLineArgs ) {
+        slotStatusMsg( i18n( "Check commandline actions" ) );
+        const QString docId = mCmdLineArgs->value("d");
+        if ( ! docId.isEmpty() ) {
+            QString uuid;
+            // FIXME: find uuid by ident
+            slotPrintPDF(uuid); // FIXME: This must be a uuid
+        }
+    }
+
+    // Fetch my address
+    connect(&_myIdentity, &MyIdentity::myIdentityLoaded, this, &Portal::slotReceivedMyAddress);
+    _myIdentity.load();
+
+    connect( &_reportGenerator, &ReportGenerator::docAvailable,
+             this, &Portal::slotDocConverted);
+    connect( &_reportGenerator, &ReportGenerator::failure,
+             this, &Portal::slotDocConvertionFail);
+    slotStatusMsg();
 }
 
 void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Addressee& contact )
 {
-    disconnect( mAddressProvider, SIGNAL(lookupResult(QString,KContacts::Addressee)),
-                this, SLOT(slotReceivedMyAddress(QString, KContacts::Addressee)));
-
     if( contact.isEmpty() ) {
         if( !uid.isEmpty() ) {
             // FIXME: Read the stored Address and compare the uid
@@ -491,12 +504,7 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
         return;
     }
 
-    myContact = contact;
-
-    // qDebug () << "Received my address: " << contact.realName() << "(" << uid << ")";
-    _reportGenerator.setMyContact( myContact );
-
-    QString name = myContact.formattedName();
+    QString name = contact.formattedName();
     if( !name.isEmpty() ) {
         name = i18n("Welcome to Kraft, %1", name);
         statusBar()->showMessage(name, 30*1000);
@@ -545,15 +553,15 @@ void Portal::slotNewDocument()
 
 void Portal::slotFollowUpDocument()
 {
-    const QString locId = m_portalView->docDigestView()->currentDocumentId();
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
 
-    DocGuardedPtr sourceDoc = DocumentMan::self()->openDocument( locId );
+    DocGuardedPtr sourceDoc = DocumentMan::self()->openDocumentByUuid(uuid);
 
     DocType dt( sourceDoc->docType() );
 
     KraftWizard wiz;
     wiz.init( false, i18nc("Dialog title of the followup doc dialog, followed by the id of the  source doc",
-                           "Create follow up document for %1", sourceDoc->ident()));
+                           "Create follow up document for %1", sourceDoc->docIdentifier()));
 
     QStringList followers = dt.follower();
     if ( followers.count() > 0 ) {
@@ -568,9 +576,11 @@ void Portal::slotFollowUpDocument()
     delete sourceDoc;
 
     if ( wiz.exec() ) {
-        QString selectedId = wiz.copyItemsFromPredecessor();
-        if(!selectedId.isEmpty()) {
-            DocGuardedPtr copyDoc = DocumentMan::self()->openDocument( selectedId );
+        // it is ok to open by ident because the user selects from ident, and there are only
+        // follow up documents from released docs that have an ident already.
+        const QString selectedUuid = wiz.copyItemsFromPredecessor();
+        if(!selectedUuid.isEmpty()) {
+            DocGuardedPtr copyDoc = DocumentMan::self()->openDocumentByUuid(selectedUuid);
             posToCopy = copyDoc->positions();
             delete copyDoc;
         }
@@ -582,16 +592,12 @@ void Portal::slotFollowUpDocument()
         bool allowKind = newDocType.allowAlternative() || newDocType.allowDemand();
         if (!allowKind) {
             for(DocPositionBase *dp:posToCopy) {
-                AttributeMap attribs = dp->attributes();
-
-                if (attribs.hasAttribute("kind")) {
-                    attribs.remove("kind");
-                    dp->setAttributeMap(attribs);
-                }
+                // if there is a kind attribute, that is going to be removed.
+                dp->removeAttribute("kind");
             }
         }
 
-        DocGuardedPtr doc = DocumentMan::self()->createDocument(newDocType.name(), locId, posToCopy);
+        DocGuardedPtr doc = DocumentMan::self()->createDocument(wiz.docType(), selectedUuid, posToCopy);
         doc->setDate( wiz.date() );
         doc->setWhiteboard( wiz.whiteboard() );
         createView( doc );
@@ -600,28 +606,28 @@ void Portal::slotFollowUpDocument()
 
 void Portal::slotCopyCurrentDocument()
 {
-  const QString locId = m_portalView->docDigestView()->currentDocumentId();
+  const QString locId = m_portalView->allDocsView()->currentDocumentUuid();
   slotCopyDocument( locId );
 }
 
-void Portal::slotCopyDocument( const QString& id )
+void Portal::slotCopyDocument(const QString& uuid)
 {
-  if ( id.isEmpty() ) {
-    return;
+  if ( uuid.isEmpty() ) {
+      return;
   }
-  QString oldDocIdent;
-  DocGuardedPtr oldDoc = DocumentMan::self()->openDocument( id );
+  QString oldDocUuid;
+  DocGuardedPtr oldDoc = DocumentMan::self()->openDocumentByUuid(uuid);
   if(oldDoc) {
       const DocType dt = oldDoc->docType();
-      oldDocIdent = i18nc("Title of the new doc dialog, %1 is the source doc id",
-                          "Create new Document as Copy of %1", oldDoc->ident());
+      oldDocUuid = i18nc("Title of the new doc dialog, %1 is the source doc id",
+                          "Create new Document as Copy of %1", oldDoc->docIdentifier());
       delete oldDoc;
   }
 
   KraftWizard wiz;
-  wiz.init(true, oldDocIdent);
+  wiz.init(true, oldDocUuid);
   if ( wiz.exec() ) {
-    DocGuardedPtr doc = DocumentMan::self()->copyDocument(id);
+    DocGuardedPtr doc = DocumentMan::self()->copyDocument(uuid);
     doc->setDate( wiz.date() );
     doc->setDocType( wiz.docType() );
     doc->setWhiteboard( wiz.whiteboard() );
@@ -629,48 +635,47 @@ void Portal::slotCopyDocument( const QString& id )
         doc->setAddress(QString());
     }
     doc->setAddressUid( wiz.addressUid() );
-    doc->saveDocument();
-    m_portalView->docDigestView()->slotUpdateView();
-    // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString();
+
+    bool ok = DocumentMan::self()->saveDocument(doc);
+    if (!ok) {
+        qDebug() << "FAILED to save document" << doc->docIdentifier();
+    }
+
+    m_portalView->allDocsView()->slotUpdateView(doc);
+    // qDebug () << "Document created from id " << id << ", saved with id " << doc->docID().toString() << endl;
   }
 }
 
 void Portal::slotOpenCurrentDocument()
 {
-  QString locId = m_portalView->docDigestView()->currentDocumentId();
-  slotOpenDocument( locId );
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    slotOpenDocument(uuid);
 }
 
 void Portal::slotViewCurrentDocument()
 {
-  QString locId = m_portalView->docDigestView()->currentDocumentId();
-  slotViewDocument( locId );
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    slotViewDocument( uuid );
 }
 
-void Portal::slotViewDocument( const QString& id )
+void Portal::slotViewDocument( const QString& uuid )
 {
   slotStatusMsg(i18n("Opening document to view…"));
 
-  if( !id.isEmpty() ) {
+  if( !uuid.isEmpty() ) {
     DocumentMan *docman = DocumentMan::self();
-    DocGuardedPtr doc = docman->openDocument( id );
+    DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
     createROView( doc );
   }
 
   slotStatusMsg();
-
 }
 
 void Portal::slotXRechnungCurrentDocument()
 {
   // qDebug () << "printing document " << locId;
-  ArchDocDigest dig = m_portalView->docDigestView()->currentLatestArchivedDoc();
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
 
-  slotExportXRechnungArchivedDoc(dig);
-}
-
-void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
-{
     ExporterXRechnung *exporter = new ExporterXRechnung;
     const QString tmplFile = exporter->templateFile();
     QString err;
@@ -691,6 +696,7 @@ void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
     }
 
     auto dia = new QDialog(this);
+    dia->setAttribute(Qt::WA_DeleteOnClose);
     Ui::XRechnungDialog ui;
     ui.setupUi(dia);
 
@@ -704,7 +710,7 @@ void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
 
         connect(exporter, &ExporterXRechnung::xRechnungTmpFile, this, [=](const QString& fName) {
             qDebug() << "This is the xrechnung file name." << fName;
-            const QString proposeName = QString("%1/xrechnung_%2.xml").arg(QDir::homePath()).arg(d.archDocIdent());
+            const QString proposeName = QString("FIXME"); // QString("%1/xrechnung_%2.xml").arg(QDir::homePath()).arg(d.archDocIdent());
             const QString f = QFileDialog::getSaveFileName(this, i18n("Save XRechnung"), proposeName);
 
             if( f.isEmpty()) {
@@ -718,21 +724,9 @@ void Portal::slotExportXRechnungArchivedDoc(const ArchDocDigest& d)
             this->slotStatusMsg(i18n("Saved XRechnung to %1").arg(f));
             exporter->deleteLater();
         });
-        exporter->exportDocument(d);
+        // FIXME: exporter->exportDocument(d);
     }
 
-}
-
-void Portal::slotOpenArchivedDoc( const ArchDocDigest& d )
-{
-  busyCursor( true );
-  ArchDocDigest digest( d );
-
-  const QString file = d.pdfArchiveFileName();
-  // qDebug () << "archived doc selected: " << file;
-  slotOpenPdf( file );
-
-  busyCursor( false );
 }
 
 QDebug operator<<(QDebug debug, const dbID &id)
@@ -743,69 +737,121 @@ QDebug operator<<(QDebug debug, const dbID &id)
     return debug;
 }
 
-void Portal::slotPrintCurrentDocument()
+void Portal::slotDoubleClicked()
 {
-  QString locId = m_portalView->docDigestView()->currentDocumentId();
-  // qDebug () << "printing document " << locId;
+    qDebug() << "document double clicked";
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
 
-  busyCursor( true );
-  slotStatusMsg( i18n( "Generating PDF…" ) );
-  DocumentMan *docman = DocumentMan::self();
-  _currentDoc = docman->openDocument( locId );
-  QString ident;
+    if (uuid.isEmpty()) return;
 
-  if ( _currentDoc ) {
-      ident = _currentDoc->ident();
+    // some useful describing text to be displayed in the dialog
+    DocumentMan *docman = DocumentMan::self();
+    DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
 
-      dbID archID = KraftDB::self()->archiveDocument(_currentDoc);
-      Q_ASSERT(archID.isOk());
-      slotPrintDocument( ident, archID );
-      // m_portalView->docDigestView()->addArchivedItem(docPtr->docID(), archID);
-  }
-  busyCursor( false );
-  slotStatusMsg( i18n( "Ready." ) );
+    if (doc->state().forcesReadOnly()) {
+        XmlDocIndex indx;
+        if (indx.pdfOutdated(uuid)) { // either not existing or outdated -> not valid
+            _actViewDocument->trigger();
+        } else {
+            _actOpenDocumentPDF->trigger();
+        }
+    } else {
+        _actEditDocument->trigger();
+    }
 
+    delete doc;
+}
+
+void Portal::slotChangeDocStatus()
+{
+    // FIXME
+}
+
+void Portal::slotFinalizeDoc()
+{
+    qDebug() << "Change doc status";
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+
+    if (uuid.isEmpty()) return;
+
+    // some useful describing text to be displayed in the dialog
+    DocumentMan *docman = DocumentMan::self();
+    DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
+
+    auto dia = new QDialog(this);
+    dia->setAttribute(Qt::WA_DeleteOnClose);
+    Ui::FinalizeDocDialog ui;
+    ui.setupUi(dia);
+    QString info = QStringLiteral("<b>") + i18n("%1, date %2").arg(doc->docType()).arg(doc->dateStr())+QStringLiteral("</b>");
+    ui._docTypeLabel->setText(info);
+    info = QStringLiteral("<pre>") + doc->address() + QStringLiteral("</pre>");
+    ui._docLabelIntro->setText(info);
+
+    if (dia->exec() == QDialog::Accepted) {
+        qDebug() << "Finalize doc" << uuid << "confirmed";
+        connect(doc, &KraftDoc::saved, this, [this, doc](bool ok) {
+            Q_UNUSED(ok)
+            AllDocsView *dv = m_portalView->allDocsView();
+            dv->slotUpdateView(doc);
+            const QString uuid = doc->uuid();
+            slotGeneratePDF(uuid);
+            delete doc;
+        });
+        doc->finalize();
+    }
+    // doc is only deleted in the slot
 }
 
 void Portal::slotMailDocument()
 {
-  const QString locId = m_portalView->docDigestView()->currentDocumentId();
-  // qDebug () << "Mailing document " << locId;
+  const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+  XmlDocIndex indx;
+  QFileInfo fi = indx.pdfPathByUuid(uuid);
 
-  slotStatusMsg( i18n( "Generating PDF to email" ) );
+  if (!fi.exists())
+      return;
+  // remember the PDF file to send.
+  _toMailFile = fi.filePath();
+
   DocumentMan *docman = DocumentMan::self();
-  DocGuardedPtr docPtr = docman->openDocument( locId );
-  QString ident;
-  if ( docPtr ) {
-    ident = docPtr->ident();
+  DocGuardedPtr doc = docman->openDocumentByUuid(uuid);
 
-    dbID archID = KraftDB::self()->archiveDocument( docPtr );
+  const QString& addrUid = doc->addressUid();
 
-    busyCursor( true );
+  connect( mAddressProvider, &AddressProvider::lookupResult,
+           this, &Portal::openInMailer);
 
-    _reportGenerator.createDocument(ReportFormat::PDFMail, ident, archID );
-    busyCursor( false );
+  KContacts::Addressee contact;
+
+  AddressProvider::LookupState state = mAddressProvider->lookupAddressee(addrUid);
+  switch( state ) {
+  case AddressProvider::LookupFromCache:
+      contact = mAddressProvider->getAddresseeFromCache(addrUid);
+      break;
+  case AddressProvider::LookupNotFound:
+  case AddressProvider::ItemError:
+  case AddressProvider::BackendError:
+      break;
+  case AddressProvider::LookupOngoing:
+  case AddressProvider::LookupStarted:
+      // the signal to openInMailer will come later.
+      return;
+      break;
+      // Not much to do, just wait
   }
-  slotStatusMsg( i18n( "Ready." ) );
+  openInMailer(addrUid, contact);
+
+  // qDebug () << "Mailing document " << locId << endl;
 }
 
-void Portal::slotDocConvertionFail(const QString& failString, const QString& details)
-{
-    QMessageBox::warning(this, i18n("Doc Generation Error"), failString + "\n\n"+details);
-}
-
-void Portal::slotDocConverted(ReportFormat format, const QString& file, const KContacts::Addressee& customerContact)
-{
-    if (format == ReportFormat::PDF) {
-        slotOpenPdf(file);
-    } else if (format == ReportFormat::PDFMail) {
-        openInMailer(file, customerContact);
-    }
-}
-
-void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& contact)
+void Portal::openInMailer(const QString& addrUuid, const KContacts::Addressee& contact)
 {
    QString mailReceiver;
+   Q_UNUSED(addrUuid);
+
+   disconnect(mAddressProvider, &AddressProvider::lookupResult,
+              this, &Portal::openInMailer);
+
     if( !contact.isEmpty() ) {
         mailReceiver = contact.fullEmail(); // the prefered email
     }
@@ -816,7 +862,7 @@ void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& c
     if( KraftSettings::self()->mailUA().startsWith("xdg") ) {
         args.append( "--utf8");
         args.append( "--attach");
-        args.append(fileName);
+        args.append(_toMailFile);
         if( !mailReceiver.isEmpty() ) {
             args.append( mailReceiver);
         }
@@ -830,122 +876,160 @@ void Portal::openInMailer(const QString& fileName, const KContacts::Addressee& c
         if( !mailReceiver.isEmpty() ) {
             tmp = QString("to=%1,").arg(mailReceiver);
         }
-        tmp += QString("attachment='file://%1'").arg(fileName);
+        tmp += QString("attachment='file://%1'").arg(_toMailFile);
         args.append(tmp);
     }
     qDebug () << "Starting mailer: " << prog << args;
+    _toMailFile.clear();
 
     if (!QProcess::startDetached(prog, args)) {
         qDebug () << "Failed to start thunderbird composer!";
     }
 }
 
+void Portal::slotDocConvertionFail(const QString& uuid, const QString& failString, const QString& details)
+{
+    Q_UNUSED(uuid);
+    if (_currentSelectedUuid == uuid)
+        _actOpenDocumentPDF->setEnabled(false);
+
+    QMessageBox::warning(this, i18n("Doc Generation Error"), failString + "\n\n"+details);
+}
+
+void Portal::slotDocConverted(ReportFormat format, const QString& uuid, const KContacts::Addressee& customerContact)
+{
+    Q_UNUSED(format)
+    Q_UNUSED(customerContact)
+    slotStatusMsg(i18n("Document generated successfully."));
+
+    if (_currentSelectedUuid == uuid) {
+        _actOpenDocumentPDF->setEnabled(true);
+        _actPrintPDF->setEnabled(true);
+        _actMailPDF->setEnabled(true);
+    }
+}
+
+void Portal::slotGeneratePDF(const QString& uuid)
+{
+    slotStatusMsg(i18n("Generating document...") );
+
+    if (_currentSelectedUuid == uuid)
+        _actOpenDocumentPDF->setEnabled(false);
+
+    _reportGenerator.createDocument(ReportFormat::PDF, uuid); // work on document identifier.
+}
+
 /*
  * id    : document ID
  * archID: database ID of archived document
  */
-void Portal::slotPrintDocument( const QString& id,  const dbID& archID )
+void Portal::slotPrintCurrentPDF()
 {
-  if ( archID.isOk() ) {
-    slotStatusMsg(i18n("Printing archived document…") );
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
 
-    _reportGenerator.createDocument(ReportFormat::PDF, id, archID ); // work on document identifier.
-  }
+    slotPrintPDF(uuid);
 }
 
-void Portal::slotOpenPdf( const QString& fileName )
+void Portal::slotPrintPDF(const QString& uuid)
 {
-    QUrl url( fileName );
+    XmlDocIndex indx;
+    const QString fileName = indx.pdfPathByUuid(uuid).filePath();
+
+    // Use lp on Linux to print the file
+    // FIXME: make that more sophisticated
+    QProcess::execute("lp", QStringList{fileName});
+
+    slotStatusMsg(i18n("Printing document...") );
+}
+
+void Portal::slotOpenCurrentPDF()
+{
+    const QString uuid = m_portalView->allDocsView()->currentDocumentUuid();
+    slotOpenPDF(uuid);
+}
+
+void Portal::slotOpenPDF(const QString& uuid)
+{
+    XmlDocIndex indx;
+
+    const QString fileName = indx.pdfPathByUuid(uuid).filePath();
+    QUrl url(fileName);
     QDesktopServices::openUrl(url);
 }
 
-/*
- * A special document tree is built up here.
- */
-void Portal::savePdfInCustomerStructure(const QString& fileName)
-{
-    // save pdf into a <customer>/<dockind> structure
-    if( _currentDoc ) {
-        QString uid = _currentDoc->addressUid();
-        QString docType = _currentDoc->docType();
-
-        if( !uid.isEmpty() ) {
-            QString outputDir = KraftSettings::self()->pdfOutputDir();
-            if ( outputDir.isEmpty() ) {
-                outputDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-            }
-
-            if ( ! outputDir.endsWith( "/" ) ) outputDir += QLatin1String("/");
-            QDir customerDir(outputDir + QString("%1/%2").arg(uid).arg(docType));
-            if( !customerDir.exists() ) {
-                customerDir.mkpath( customerDir.absolutePath());
-            }
-            if( customerDir.exists() ) {
-                QFileInfo fi(fileName);
-                QString target = customerDir.canonicalPath() + QLatin1Char('/') + fi.fileName();
-                QFileInfo tfi(target);
-                if( tfi.exists() ) {
-                    QFile::remove(target);
-                }
-                QFile::copy( fileName, target );
-            }
-        }
-    }
-}
-
-void Portal::slotOpenDocument( const QString& id )
+void Portal::slotOpenDocument(const QString& uuid)
 {
     if (_readOnlyMode) {
-        slotViewDocument(id);
+        slotViewDocument(uuid);
         return;
     }
-    slotStatusMsg( i18n("Opening document %1", id ) );
+    slotStatusMsg( i18n("Opening document %1", uuid) );
     // qDebug () << "Opening document " << id;
-    if( !id.isEmpty() ) {
+    QString status;
+    if( !uuid.isEmpty() ) {
         DocumentMan *docman = DocumentMan::self();
-        DocGuardedPtr doc = docman->openDocument( id );
-        createView( doc );
+        if (DocGuardedPtr doc = docman->openDocumentByUuid(uuid)) {
+            createView(doc);
+        } else {
+            status = i18n("Error: Unable to load document %1. Please check the setup.").arg(uuid);
+        }
     }
 
-    slotStatusMsg();
+    slotStatusMsg(status);
 }
 
-void Portal::slotDocumentSelected( const DocDigest& doc )
+void Portal::slotDocumentSelected( const QString& uuid)
 {
-    // qDebug() << "a doc was selected: " << doc;
-    bool enable = !doc.id().isEmpty();
+    qDebug() << "The doc was selected" << uuid;
+    _currentSelectedUuid = uuid;
+    bool enable = !uuid.isEmpty();
+
+    // flags for certain groups of actions to not handle all separately
+    bool pdfEnabled {false};
+    bool docWriteEnabled {false};
+
+    DocGuardedPtr docPtr = DocumentMan::self()->openDocumentByUuid(uuid);
+
+    if (docPtr == nullptr) {
+        qDebug() << "Unable to open document with uuid" << uuid;
+        return;
+    }
+
+    if (enable && !(_readOnlyMode || docPtr->state().forcesReadOnly())) {
+        docWriteEnabled = true;
+    }
+
     _actViewDocument->setEnabled( enable );
-    _actOpenDocument->setEnabled( (!_readOnlyMode) && enable );
-    _actPrintDocument->setEnabled( (!_readOnlyMode) && enable );
-    _actCopyDocument->setEnabled( (!_readOnlyMode) && enable );
-    _actMailDocument->setEnabled( (!_readOnlyMode) && enable );
-    _actFollowDocument->setEnabled( (!_readOnlyMode) && enable );
+    _actXRechnung->setEnabled(enable);
 
-    auto archDocs = doc.archDocDigestList();
-    if (archDocs.isEmpty()) {
-        _actOpenArchivedDocument->setEnabled(false);
+    _actEditDocument->setEnabled(docWriteEnabled);
+    _actCopyDocument->setEnabled(enable);
+    _actFollowDocument->setEnabled(enable);
+    _actFinalizeDocument->setEnabled(enable && docWriteEnabled);
+    _actChangeDocStatus->setEnabled(enable && docWriteEnabled);
+
+    XmlDocIndex indx;
+
+    if (indx.pdfOutdated(uuid)) {
+        // the PDF should exist. if not, try to create if that is feasible
+        if (!docPtr->state().forcesReadOnly()) {
+            slotGeneratePDF(uuid);
+        }
     } else {
-        _actOpenArchivedDocument->setEnabled( enable );
+        pdfEnabled = true;
     }
-    bool en = doc.isXRechnungEnabled() && enable;
-    _actXRechnung->setEnabled(en);
-}
 
-void Portal::slotArchivedDocExecuted()
-{
-  ArchDocDigest dig = m_portalView->docDigestView()->currentLatestArchivedDoc();
-  slotOpenArchivedDoc( dig );
-}
+    _actXRechnung->setEnabled(pdfEnabled);
+    _actOpenDocumentPDF->setEnabled(pdfEnabled);
+    _actPrintPDF->setEnabled(pdfEnabled);
+    _actMailPDF->setEnabled(pdfEnabled);
 
-void Portal::slotArchivedDocSelected( const ArchDocDigest& )
-{
-  // slotDocumentSelected( QString() );
-  _actOpenArchivedDocument->setEnabled( true );
-  _actXRechnung->setEnabled(true);
-  _actViewDocument->setEnabled( false );
-  _actOpenDocument->setEnabled( false );
-  _actPrintDocument->setEnabled( false );
-  _actMailDocument->setEnabled( false );
+    if (enable) {
+        _actXRechnung->setEnabled(docWriteEnabled && docPtr->isInvoice());
+        if (docWriteEnabled)
+            _actFinalizeDocument->setEnabled(docPtr->state().canBeFinalized());
+    }
+    delete docPtr;
 }
 
 void Portal::slotEditTagTemplates()
@@ -967,6 +1051,47 @@ void Portal::slotReconfigureDatabase()
     assi.exec();
   }
 }
+
+QString Portal::slotConvertToXML()
+{
+    DbToXMLConverter converter;
+
+    const QString dBase = DefaultProvider::self()->createV2BaseDir();
+    const QString info{ tr("Conversion started to %1").arg(dBase)};
+
+    auto yearMap = converter.yearMap();
+
+    if (yearMap.size() == 0) {
+        qDebug() << "Nothing to convert, fresh installation!";
+    } else {
+        auto dia = new QDialog(this);
+        dia->setAttribute(Qt::WA_DeleteOnClose);
+        Ui::dbToXMLDialog ui;
+        ui.setupUi(dia);
+        ui.textBrowser->setText(info);
+        ui.buttonBox->button(QDialogButtonBox::StandardButton::Close)->setEnabled(false);
+        dia->show();
+        QApplication::processEvents();
+
+        connect(&converter, &DbToXMLConverter::conversionOut, this, [=](const QString& msg) {
+            qDebug() << "##########" << msg;
+            ui.textBrowser->append(msg);
+            QApplication::processEvents();
+        });
+        QMap<QByteArray, int> results = converter.convert(dBase);
+        Q_UNUSED(results)
+        ui.buttonBox->button(QDialogButtonBox::StandardButton::Close)->setEnabled(true);
+    }
+    // switch to the new base dir
+
+    if (DefaultProvider::self()->switchToV2BaseDir(dBase)) {
+
+        XmlDocIndex indx;
+        Q_UNUSED(indx)
+    }
+    return dBase;
+}
+
 
 void Portal::createView( DocGuardedPtr doc )
 {
@@ -990,11 +1115,10 @@ void Portal::createView( DocGuardedPtr doc )
       view->restoreGeometry(geo);
       view->setup( doc );
       view->redrawDocument();
-      view->slotSwitchToPage( KraftDoc::Positions );
+      view->slotSwitchToPage( KraftDoc::Part::Positions );
       view->show();
 
-      connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
-               this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
+      connect( view, &KraftViewBase::viewClosed, this, &Portal::slotViewClosed);
       connect( view, &KraftViewBase::openROView, this, &Portal::slotViewDocument );
 
       mViewMap[doc] = view;
@@ -1018,25 +1142,33 @@ void Portal::createROView( DocGuardedPtr doc )
         view->show();
         mViewMap[doc] = view;
 
-        connect( view, SIGNAL( viewClosed( bool, DocGuardedPtr ) ),
-                 this, SLOT( slotViewClosed( bool, DocGuardedPtr ) ) );
+        connect( view, &KraftViewRO::viewClosed, this, &Portal::slotViewClosed);
     } else {
         mViewMap[doc]->raise();
     }
 
 }
 
-void Portal::slotViewClosed( bool success, DocGuardedPtr doc )
+// Note: The modified flag has to come extra here from the the signal emitter
+// even though the Doc object contains a modified flag. However, that is always
+// false, because the doc was saved before in the emitting function.
+// Still, it needs to be known here if the document was modfied before.
+void Portal::slotViewClosed( bool success, DocGuardedPtr doc, bool modified )
 {
     // doc is only valid on success!
     if ( doc )  {
         KraftViewBase *view = mViewMap[doc];
-        const QByteArray geo = view->saveGeometry().toBase64();
         if( success ) {
+            const QByteArray geo = view->saveGeometry().toBase64();
             if( view->type() == KraftViewBase::ReadWrite ) {
-                AllDocsView *dv = m_portalView->docDigestView();
-                dv->slotUpdateView();
-                KraftSettings::self()->setDocEditGeometry(geo);
+                if (modified) {
+                    AllDocsView *dv = m_portalView->allDocsView();
+                    dv->slotUpdateView(doc);
+                    KraftSettings::self()->setDocEditGeometry(geo);
+
+                    const QString uuid = doc->uuid();
+                    slotGeneratePDF(uuid);
+                }
             } else {
                 KraftSettings::self()->setDocViewROGeometry(geo);
             }
@@ -1155,13 +1287,6 @@ void Portal::slotOpenKatalog(const QString& kat)
     }
 }
 
-void Portal::slotOpenKatalog()
-{
-    // qDebug () << "opening katalog!";
-    KatalogView *katView = new TemplKatalogView(); //this);
-    katView->show();
-}
-
 void Portal::slotKatalogToXML(const QString& katName)
 {
     // qDebug () << "Generating XML for catalog " << katName;
@@ -1215,20 +1340,10 @@ QString Portal::textWrap( const QString& t, int width, int maxLines )
 void Portal::preferences()
 {
   _prefsDialog = new PrefsDialog(this);
-  connect( _prefsDialog, SIGNAL(finished(int)), SLOT(slotPrefsDialogFinished(int)) );
-  connect( _prefsDialog, SIGNAL(newOwnIdentity(const QString&, KContacts::Addressee)),
-           SLOT(slotReceivedMyAddress(QString,KContacts::Addressee)));
-  _prefsDialog->setMyIdentity( myContact, mAddressProvider->backendUp() );
+
+  _prefsDialog->setMyIdentity(&_myIdentity);
 
   _prefsDialog->open();
-}
-
-void Portal::slotPrefsDialogFinished( int result )
-{
-  if( result == QDialog::Accepted) {
-
-  }
-  _prefsDialog->deleteLater();
 }
 
 void Portal::slotHandbook()

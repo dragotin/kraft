@@ -145,11 +145,51 @@ private slots:
             const QString noExistFile2 = DefaultProvider::self()->locateFile("nomydir/kraftfile");
             QVERIFY(noExistFile2.isEmpty());
 
-            QVERIFY(fi.dir().removeRecursively());
-
+            QVERIFY(td.removeRecursively());
         } else {
             qDebug() << "Skipped relative path test, directory share exists.";
         }
+    }
+
+    void testKraftV2Dirs()
+    {
+        QTemporaryDir dir;
+        dir.setAutoRemove(true);
+
+        const QString p = dir.path();
+        const QString base = DefaultProvider::self()->createV2BaseDir(p);
+        QVERIFY(base.startsWith(p));
+        QVERIFY(base.length() == p.length()+6); // it has the a uuid partikel appended
+
+        QString pRoot = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::Root);
+        const QString pNumC = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::NumberCycles);
+        const QString pXmlD = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::XmlDocs);
+        const QString pOwnI = DefaultProvider::self()->kraftV2Dir(DefaultProvider::KraftV2Dir::OwnIdentity);
+        QCOMPARE(base, pOwnI);
+        QCOMPARE(base, pRoot);
+        QCOMPARE(base + "/numbercycles", pNumC);
+        QCOMPARE(base + "/xmldoc", pXmlD);
+    }
+
+    void createNewBaseDir()
+    {
+        QTemporaryDir _dir;
+        _dir.setAutoRemove(true);
+
+        const QString p{ _dir.path() + "/v2"};
+        QDir d{p};
+        QVERIFY(d.mkpath(p));
+
+        const QString newDir = DefaultProvider::self()->createV2BaseDir(p);
+        QVERIFY(newDir.startsWith(p));
+
+        bool ok = DefaultProvider::self()->switchToV2BaseDir(newDir);
+        QVERIFY(ok);
+
+        QFileInfo fi{p + "/current"};
+        QVERIFY(fi.exists());
+        QVERIFY(fi.isDir());
+
     }
 };
 

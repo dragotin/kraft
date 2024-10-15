@@ -34,39 +34,39 @@
 @author Klaas Freitag
 */
 
-DocPositionBase::DocPositionBase() : QObject(),
+DocPositionBase::DocPositionBase() : KraftObj(),
                                      m_dbId( -1 ),
                                      mToDelete( false ),
                                      mTaxType( TaxFull ),
-                                     mType( Position ),
-                                     mAttribs( QString::fromLatin1( "Position" ) )
+                                     mType( Position )
 
 {
 
 }
 
 DocPositionBase::DocPositionBase( const PositionType& t )
-  : QObject(),
+  : KraftObj(),
     m_dbId( -1 ),
     mToDelete( false ),
     mTaxType( TaxFull ),
-    mType( t ),
-    mAttribs( QString::fromLatin1( "Position" ) )
+    mType( t )
 {
 
 }
 
 DocPositionBase::DocPositionBase(const DocPositionBase& b )
-  : QObject(),
+  : KraftObj(),
     m_dbId( b.m_dbId ),
     m_position( b.m_position ),
     m_text( b.m_text ),
     mToDelete( b.mToDelete ),
     mTaxType( TaxFull ),
-    mType( b.mType ),
-    mAttribs( b.mAttribs )
+    mType( b.mType )
 {
-
+    const QMap<QString, KraftAttrib> attrib = b.attributes();
+    for (const auto& m:attrib) {
+        setAttribute(m);
+    }
 }
 
 DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
@@ -78,141 +78,14 @@ DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
   m_text = dp.m_text;
   mToDelete = dp.mToDelete;
   mType = dp.mType;
-  mAttribs = dp.mAttribs;
+
+  const QMap<QString, KraftAttrib> attrib = dp.attributes();
+  for (const auto& m:attrib) {
+      setAttribute(m);
+  }
   mTaxType = dp.mTaxType;
 
   return *this;
-}
-
-void DocPositionBase::setAttribute( const Attribute& attrib )
-{
-  if( ! attrib.name().isEmpty() ) {
-      mAttribs[ attrib.name() ] = attrib;
-  }
-}
-
-AttributeMap DocPositionBase::attributes()
-{
-  return mAttribs;
-}
-
-void DocPositionBase::setAttributeMap( AttributeMap attmap )
-{
-  mAttribs = attmap;
-}
-
-void DocPositionBase::loadAttributes()
-{
-  if ( m_dbId == -1 ) {
-    // qDebug () << "Can not load attributes, no valid database id!";
-    return;
-  }
-  mAttribs.load( m_dbId );
-}
-
-void DocPositionBase::removeAttribute( const QString& name )
-{
-  if ( !name.isEmpty() )
-    mAttribs.markDelete( name );
-}
-
-QString DocPositionBase::attribute( const QString& attName ) const
-{
-  Attribute att = mAttribs[ attName ];
-
-  return att.value().toString();
-}
-
-// The attribs tag contains a list of TagIDs separated by commas
-void DocPositionBase::setTag( const QString& tag )
-{
-    if ( tag.isEmpty() ) return;
-
-    Attribute att;
-    att.setPersistant(true);
-
-    if ( mAttribs.contains( DocPosition::Tags ) ) {
-        if ( hasTag( tag ) ) {
-            return;
-        }
-
-        att = mAttribs[DocPosition::Tags];
-    } else {
-        att = Attribute(DocPosition::Tags);
-    }
-    att.setListValue(true);
-
-    // here: the attribute does not have the new tag.
-    QStringList li = att.value().toStringList();
-    li.append(TagTemplateMan::self()->getTagTemplate(tag).dbId().toString());
-    att.setValue( QVariant(li) );
-    setAttribute( att );
-}
-
-void DocPositionBase::replaceTags(const QStringList& newTags)
-{
-    if (newTags.isEmpty()) {
-        if (mAttribs.contains(DocPosition::Tags)) {
-            removeAttribute(DocPosition::Tags);
-        }
-        return;
-    }
-
-    Attribute att = Attribute(DocPosition::Tags);
-    att.setPersistant(true);
-    att.setListValue(true);
-
-    QStringList li;
-    for( const QString& tag : newTags ) {
-        li.append(TagTemplateMan::self()->getTagTemplate(tag).dbId().toString());
-    }
-    att.setValue( QVariant(li) );
-    setAttribute( att );
-}
-
-void DocPositionBase::removeTag( const QString& tag )
-{
-    if ( !hasTag( tag ) ) {
-        return;
-    }
-
-    const QString tagId = TagTemplateMan::self()->getTagTemplate(tag).dbId().toString();
-
-    Attribute att = mAttribs[DocPosition::Tags];
-    QStringList li =  att.value().toStringList();
-
-    li.removeAll( tagId );
-    att.setValue( QVariant( li ) );
-    setAttribute( att );
-}
-
-bool DocPositionBase::hasTag( const QString& tag )
-{
-    const QString tagId = TagTemplateMan::self()->getTagTemplate(tag).dbId().toString();
-
-    if ( ! mAttribs.contains( DocPosition::Tags ) ) {
-        return false;
-    }
-    Attribute att = mAttribs[DocPosition::Tags];
-    QStringList li =  att.value().toStringList();
-    if( li.contains( tagId, Qt::CaseInsensitive ) && // ignore case
-            !att.isMarkedDeleted() ) {
-        return true;
-    }
-    return false;
-}
-
-QStringList DocPositionBase::tags()
-{
-  QStringList tags, tagIDs;
-  if ( mAttribs.hasAttribute(DocPosition::Tags) ) {
-    // qDebug () << mAttribs[DocPosition::Tags].toString();
-    tagIDs = mAttribs[DocPosition::Tags].value().toStringList();
-  }
-  for( const auto &tagId : tagIDs) {
-      tags.append(TagTemplateMan::self()->getTagTemplateFromId(tagId).name());
-  }
-  return tags;
 }
 
 DocPositionBase::TaxType DocPositionBase::taxType()
@@ -230,6 +103,17 @@ void DocPositionBase::setTaxType( int tt )
   mTaxType = (TaxType) tt;
 }
 
+void DocPositionBase::setTaxType(const QString& taxStr)
+{
+    mTaxType = TaxType::TaxInvalid;
+    if (taxStr == QStringLiteral("Full") )
+        mTaxType = TaxFull;
+    else if (taxStr == QStringLiteral("Reduced"))
+        mTaxType = TaxReduced;
+    else if (taxStr == QStringLiteral("None"))
+        mTaxType = TaxNone;
+}
+
 int DocPositionBase::taxTypeNumeric()
 {
   if ( mTaxType == TaxNone )
@@ -243,12 +127,56 @@ int DocPositionBase::taxTypeNumeric()
   return 0; // Invalid
 }
 
+QString DocPositionBase::typeStr()
+{
+    // { Position, ExtraDiscount, Text, Demand, Alternative }
+    return typeToString(type());
+}
+
+DocPositionBase::PositionType DocPositionBase::typeStrToType(const QString& t)
+{
+    if (t == typeToString(PositionType::ExtraDiscount))
+        return PositionType::ExtraDiscount;
+    else if (t == typeToString(PositionType::Alternative))
+        return PositionType::Alternative;
+    else if (t == typeToString(PositionType::Demand))
+        return PositionType::Demand;
+    else if (t == typeToString(PositionType::Text))
+        return PositionType::Text;
+
+    return PositionType::Position;
+
+}
+
+QString DocPositionBase::typeToString(DocPositionBase::PositionType t)
+{
+    switch (t) {
+    case DocPositionBase::PositionType::ExtraDiscount:
+        return QStringLiteral("ExtraDiscount");
+        break;
+    case DocPositionBase::PositionType::Alternative:
+        return QStringLiteral("Alternative");
+        break;
+    case DocPositionBase::PositionType::Demand:
+        return QStringLiteral("Demand");
+        break;
+    case DocPositionBase::PositionType::Position:
+        return QStringLiteral("Normal");
+        break;
+    case DocPositionBase::PositionType::Text:
+        return QStringLiteral("Text");
+    default:
+        return QString();
+        break;
+    }
+}
+
 // ##############################################################
 
-const QString DocPosition::Kind( QString::fromLatin1( "kind" ) );
-const QString DocPosition::Discount( QString::fromLatin1( "discount" ) );
-const QString DocPosition::Tags( QString::fromLatin1( "tags" ) );
-const QString DocPosition::ExtraDiscountTagRequired( QString::fromLatin1( "discountTagRequired" ) );
+const QString DocPosition::Kind{"kind"};
+const QString DocPosition::Discount{"discount"};
+const QString DocPosition::Tags{"tags"};
+const QString DocPosition::ExtraDiscountTagRequired{"discountTagRequired"};
 
 DocPosition::DocPosition(): DocPositionBase()
   ,m_amount( 1.0 ), mWidget( 0 )
@@ -266,14 +194,13 @@ DocPosition::DocPosition( const PositionType& t )
 Geld DocPosition::overallPrice()
 {
     Geld g;
-    AttributeMap atts = attributes();
 
-    // all kinds beside from no kind (which means Normal) mean that the position is not
-    // counted for the overall price.
-    // Once there are kinds different from Normal which need a counted price, this needs
-    // to be fixed here.
-    if (!atts.containsUndeleted(DocPosition::Kind) ) {
+    // only calculate the sum for normal items and discount items
+    if (type() == DocPositionBase::PositionType::Position ||
+            type() == DocPositionBase::PositionType::ExtraDiscount) {
         g = unitPrice() * amount();
+    } else {
+       // qDebug() << "Skipping price in overallPrice because of item type";
     }
 
     return g;
@@ -318,7 +245,8 @@ Geld DocPositionList::fullTaxSum( double fullTax )
   while( it.hasNext() ) {
     DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
-    if( !dp->toDelete() && dp->taxTypeNumeric() == DocPositionBase::TaxFull ) {
+    auto tt = dp->taxType();
+    if( !dp->toDelete() && tt == DocPositionBase::TaxFull ) {
         sum += dp->overallPrice();
     }
   }
@@ -342,7 +270,7 @@ Geld DocPositionList::reducedTaxSum( double reducedTax )
   while( it.hasNext() ) {
     DocPosition *dp = static_cast<DocPosition*>( it.next() );
 
-    if( !dp->toDelete() && dp->taxTypeNumeric() == DocPositionBase::TaxReduced ) {
+    if( !dp->toDelete() && dp->taxType() == DocPositionBase::TaxReduced ) {
         sum += dp->overallPrice();
     }
   }
@@ -426,6 +354,44 @@ int DocPositionList::compareItems ( DocPosition *dp1, DocPosition *dp2 )
 
   // qDebug()<< "In sort: comparing " << p1 << " with " << p2 << " = " << res;
   return res;
+}
+
+DocPositionBase::TaxType DocPositionList::listTaxation() const
+{
+    int fullTax = 0;
+    int noTax = 0;
+    int redTax = 0;
+
+    DocPositionBase::TaxType ret = DocPositionBase::TaxType::TaxNone;
+
+    const_iterator it;
+    for ( it = begin(); it != end(); ++it ) {
+        if( (*it)->taxType() == DocPositionBase::TaxFull) {
+            fullTax++;
+        } else if( (*it)->taxType() == DocPositionBase::TaxReduced ) {
+            redTax++;
+        } else if( (*it)->taxType() == DocPositionBase::TaxNone ) {
+            noTax++;
+        }
+    }
+
+    int cnt = count();
+    if (noTax == cnt) {
+        ret = DocPositionBase::TaxType::TaxNone;
+    } else if (redTax == cnt) {
+        ret = DocPositionBase::TaxType::TaxReduced;
+    } else if (fullTax == cnt) {
+        ret = DocPositionBase::TaxType::TaxFull;
+    } else
+        ret = DocPositionBase::TaxType::TaxIndividual;
+
+    return ret;
+}
+
+bool DocPositionList::hasIndividualTaxes() const
+{
+    bool re = listTaxation() == DocPositionBase::TaxType::TaxIndividual;
+    return re;
 }
 
 

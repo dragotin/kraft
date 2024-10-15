@@ -25,16 +25,13 @@
 #include <QMainWindow>
 #include <QUrl>
 
-#include <kcontacts/addressee.h>
-
 #include "docguardedptr.h"
 #include "katalogview.h"
-#include "dbids.h"
 #include "portalview.h"
 #include "reportgenerator.h"
+#include "myidentity.h"
 
 class KraftViewBase;
-class ArchDocDigest;
 class AddressProvider;
 class PrefsDialog;
 
@@ -54,6 +51,9 @@ class Portal : public QMainWindow
     static QString textWrap(const QString& t, int width=40, int maxLines = -1 );
 
     QWidget* mainWidget();
+
+    void slotStartupChecks();
+
   protected:
     /** initializes the QActions of the application */
     void initActions();
@@ -75,20 +75,19 @@ class Portal : public QMainWindow
      */
     virtual bool queryExit();
 
-
   protected slots:
-    void slotStartupChecks();
-    void slotOpenArchivedDoc( const ArchDocDigest& );
-    void slotExportXRechnungArchivedDoc(const ArchDocDigest&);
     void slotXRechnungCurrentDocument();
 
-    void slotPrefsDialogFinished( int );
     void slotDocConverted(ReportFormat format, const QString& file,
                           const KContacts::Addressee& customerContact);
-    void slotDocConvertionFail(const QString& failString, const QString &details);
+    void slotDocConvertionFail(const QString &uuid, const QString& failString, const QString &details);
     void openInMailer(const QString& fileName, const KContacts::Addressee& contact);
 
+    QString slotConvertToXML();
+
   public slots:
+
+    void show();
 
     /** closes all open windows, then quits the application.
      */
@@ -111,25 +110,28 @@ class Portal : public QMainWindow
     void slotShowTemplates();
 
     void slotOpenKatalog(const QString& );
-    void slotOpenKatalog();
     void slotKatalogToXML(const QString&);
     void preferences();
     void slotNewDocument();
     void slotCopyCurrentDocument();
-    void slotCopyDocument( const QString& );
-    void slotOpenDocument( const QString& );
+    void slotCopyDocument(const QString& uuid);
     void slotOpenCurrentDocument();
+    void slotOpenDocument(const QString& ident);
+    void slotDoubleClicked();
 
     void slotViewCurrentDocument();
     void slotViewDocument( const QString& );
+    void slotChangeDocStatus();
+    void slotFinalizeDoc();
+    void slotOpenCurrentPDF();
 
     void slotFollowUpDocument();
-    void slotDocumentSelected( const DocDigest& );
-    void slotArchivedDocExecuted();
-    void slotArchivedDocSelected( const ArchDocDigest& );
-    void slotPrintCurrentDocument();
-    void slotPrintDocument( const QString&, const dbID& );
-    void slotViewClosed( bool, DocGuardedPtr );
+    void slotDocumentSelected( const QString& );
+    void slotPrintCurrentPDF();
+    void slotPrintPDF(const QString &uuid);
+    void slotGeneratePDF(const QString& uuid);
+
+    void slotViewClosed(bool, DocGuardedPtr , bool modified);
     void slotEditTagTemplates();
     void slotReconfigureDatabase();
     void slotAboutQt();
@@ -138,16 +140,17 @@ class Portal : public QMainWindow
 
     void busyCursor( bool );
     void slotMailDocument();
-    void slotOpenPdf( const QString& );
+    void slotOpenPDF(const QString& uuid);
 
     void slotReceivedMyAddress( const QString&, const KContacts::Addressee& );
 
   private:
     void createView( DocGuardedPtr );
     void createROView( DocGuardedPtr );
-    void savePdfInCustomerStructure(const QString& fileName);
 
     QScopedPointer<PortalView> m_portalView;
+
+    QString _currentSelectedUuid, _toMailFile;
 
     // QAction pointers to enable/disable actions
     QAction* _actFileQuit;
@@ -159,20 +162,21 @@ class Portal : public QMainWindow
     QAction* _actHandbook;
     QAction* _actPreferences;
     QAction* _actReconfDb;
+    QAction* _actXmlConvert;
 
     QAction* _actNewDocument;
     QAction* _actCopyDocument;
-    QAction* _actOpenDocument;
+    QAction* _actEditDocument;
     QAction* _actViewDocument;
     QAction* _actFollowDocument;
-    QAction* _actPrintDocument;
-    QAction* _actMailDocument;
     QAction* _actXRechnung;
     QAction* _actEditTemplates;
 
-    QAction* _actOpenArchivedDocument;
-
-    QAction* _actViewFlosTemplates;
+    QAction* _actFinalizeDocument;
+    QAction* _actChangeDocStatus;
+    QAction* _actOpenDocumentPDF;
+    QAction* _actPrintPDF;
+    QAction* _actMailPDF;
 
     QCommandLineParser *mCmdLineArgs;
 
@@ -180,12 +184,10 @@ class Portal : public QMainWindow
     QMap<KraftDoc*, KraftViewBase*> mViewMap;
 
     AddressProvider *mAddressProvider;
-    KContacts::Addressee myContact;
     PrefsDialog *_prefsDialog;
-    DocGuardedPtr _currentDoc;
 
     ReportGenerator _reportGenerator;
-
+    MyIdentity _myIdentity;
     bool _readOnlyMode;
 };
 

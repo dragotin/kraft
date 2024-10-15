@@ -11,6 +11,7 @@
 #include "dbids.h"
 #include "format.h"
 #include "kraftsettings.h"
+#include "format.h"
 
 void init_test_db()
 {
@@ -50,7 +51,7 @@ DocPositionList buildPosList() {
     dp1->setAmount(2.0);
     dp1->setUnitPrice(Geld(6.50));
     dp1->setText("Position1");
-    dp1->setTag("Work");
+    dp1->setTags(QStringList{"Work"});
 
     positions.append(dp1);
 
@@ -58,7 +59,7 @@ DocPositionList buildPosList() {
     dp2->setAmount(4.0);
     dp2->setUnitPrice(Geld(12.50));
     dp2->setText("Position2");
-    dp2->setTag("Work");
+    dp2->setTags(QStringList{"Work"});
 
     positions.append(dp2);
 
@@ -66,7 +67,7 @@ DocPositionList buildPosList() {
     dp3->setAmount(4.0);
     dp3->setUnitPrice(Geld(1.50));
     dp3->setText("Position3");
-    dp3->setTag("Material");
+    dp3->setTags(QStringList{"Material"});
 
     positions.append(dp3);
 
@@ -241,18 +242,18 @@ private slots:
         double redTax = 7.0;
 
         QString tmpl{"This is 12 days later than 24.01.2020: DATE_ADD_DAYS(12)"};
-        QString expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax);
+        QString expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax, Format::DateFormatGerman);
 
         QString shouldBe{"This is 12 days later than 24.01.2020: 05.02.2020"};
         QCOMPARE(expanded, shouldBe);
 
         tmpl = "This is 0 days later than 24.01.2020: DATE_ADD_DAYS(0)";
-        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax);
+        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax, Format::DateFormatGerman);
         shouldBe = "This is 0 days later than 24.01.2020: 24.01.2020";
         QCOMPARE(expanded, shouldBe);
 
         tmpl = "This is -5 days later than 24.01.2020: DATE_ADD_DAYS(-5)";
-        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax);
+        expanded = kraftdoc->resolveMacros(tmpl, positions, d, fullTax, redTax, Format::DateFormatGerman);
         shouldBe = "This is -5 days later than 24.01.2020: 19.01.2020";
         QCOMPARE(expanded, shouldBe);
     }

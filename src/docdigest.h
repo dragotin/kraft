@@ -21,19 +21,16 @@
 #include <QLocale>
 #include <QList>
 
-#include "dbids.h"
-#include "archdoc.h"
+#include "kraftobj.h"
 
 class QString;
 class QDate;
 
-typedef QList<ArchDocDigest> ArchDocDigestList;
-
-class DocDigest
+class DocDigest : public KraftObj
 {
 
 public:
-  DocDigest( dbID id, const QString& type, const QString& clientID );
+  DocDigest(const QString& type, const QString& clientID);
   DocDigest();
 
   QString clientId() const { return mClientId; }
@@ -53,14 +50,11 @@ public:
   void setDate( const QDate& date ) { mDate = date; }
   QDate rawDate() const;
 
-  QString lastModified() const;
-  void setLastModified( const QDateTime& date ) { mLastModified = date; }
-
-  QString id() const  { return mID.toString(); }
-  void setId( dbID id ) { mID = id; }
-
   QString ident() const   { return mIdent; }
   void setIdent( const QString& ident ) { mIdent = ident; }
+
+  QString stateStr() const { return _state; }
+  void setStateStr(const QString& s) { _state = s; }
 
   QString whiteboard() const  { return mWhiteboard; }
   void setWhiteboard( const QString& white ) { mWhiteboard = white; }
@@ -68,19 +62,16 @@ public:
   void setProjectLabel( const QString& prjLabel ) { mProjectLabel = prjLabel; }
   QString projectLabel() const { return mProjectLabel; }
 
-  ArchDocDigestList archDocDigestList() const;
-
 protected:
 
-  dbID mID;
   QString mType;
   QString mClientId;
   QString mIdent;
   QString mWhiteboard;
   QString mProjectLabel;
   QString mClientAddress ;
+  QString _state;
 
-  QDateTime   mLastModified;
   QDate       mDate;
   QLocale     mLocale;
 
@@ -89,8 +80,6 @@ private:
 };
 
 typedef QList<DocDigest> DocDigestList;
-typedef QList<DocDigestList> DocDigestListIterator;
-
 
 class DocDigestsTimeline
 {

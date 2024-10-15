@@ -1,0 +1,16 @@
+<div id="inhalt">
+  <h2>{{ doc.headline }} {{ doc.ident }} ({{ doc.state }})</h2>
+  <p>{{ label.date }}: {{ doc.date }}</p>
+  {% if doc.project %}
+      <p>{{ label.project }}: {{ doc.project }}</p>
+  {% endif %}
+  <p>{{ label.doclastmodified }}: {{ doc.modifiedDateDoc }}</p>
+
+  <p>
+  {% if doc.pdfAvailable %}
+  {{ label.pdflastmodified }}: {{ doc.modifiedDatePdf }}
+  {% else %}
+  {{ label.pdfnotavailable }}
+  {% endif %}
+  </p>
+</div>

@@ -20,19 +20,13 @@
 #include <QDir>
 
 #include "exportxrechnung.h"
-#include "archdoc.h"
 #include "documentman.h"
 #include "docposition.h"
 #include "kraftdoc.h"
 #include "kraftdb.h"
-#include "unitmanager.h"
-#include "dbids.h"
-#include "kraftsettings.h"
 #include "doctype.h"
-#include "defaultprovider.h"
 #include "format.h"
 #include "addressprovider.h"
-#include "grantleetemplate.h"
 #include "documenttemplate.h"
 
 
@@ -74,24 +68,20 @@ QString ExporterXRechnung::templateFile() const
     return xRechnungTemplate();
 }
 
-bool ExporterXRechnung::exportDocument(const ArchDocDigest& digest)
+bool ExporterXRechnung::exportDocument(const QString& uuid)
 {
-    _archDoc.loadFromDb(digest.archDocId());
-    _archDoc.setDueDate(_dueDate);
-    _archDoc.setBuyerRef(_buyerRef);
+    // FIXME: load the doc and set DueDate und BuyerRef
+    KraftDoc *doc = DocumentMan::self()->openDocumentByUuid(uuid);
+    // _archDoc.setDueDate(_dueDate);
+    // _archDoc.setBuyerRef(_buyerRef);
 
     if (xRechnungTemplate().isEmpty()) {
         qDebug () << "tmplFile is empty, exit reportgenerator!";
         return false;
     }
 
-    lookupCustomerAddress();
-    return true;
-}
-
-void ExporterXRechnung::lookupCustomerAddress()
-{
-    const QString clientUid = _archDoc.clientUid();
+    const QString clientUid = doc->addressUid();
+    delete doc;
     _customerContact = KContacts::Addressee();
 
     if( ! clientUid.isEmpty() ) {
@@ -109,10 +99,11 @@ void ExporterXRechnung::lookupCustomerAddress()
         case AddressProvider::LookupStarted:
             // Not much to do, just wait and let the addressprovider
             // hit the slotAddresseFound
-            return;
+            return true;
         }
     }
     QTimer::singleShot(0, this, &ExporterXRechnung::slotSkipLookup);
+    return true;
 }
 
 void ExporterXRechnung::slotSkipLookup()
@@ -135,8 +126,9 @@ void ExporterXRechnung::slotAddresseeFound(const QString& uid, const KContacts::
     }
     templateEngine.reset(new GrantleeDocumentTemplate(tmplFile));
 
+    const QString uuid; // FIXME
     // expand the template...
-    const QString expanded = templateEngine->expand(&_archDoc, myContact, contact);
+    const QString expanded = templateEngine->expand(uuid, myContact, contact);
 
     if (expanded.isEmpty()) {
         // emit failure(i18n("The template expansion failed."));

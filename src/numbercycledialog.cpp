@@ -125,7 +125,7 @@ void NumberCycleDialog::loadCycles()
 
   while ( q.next() ) {
     dbID id( q.value( 0 ).toInt() );
-    NumberCycle nc( id );
+    NumberCycle nc;
     nc.setName( q.value( 1 ).toString() );
     nc.setCounter( q.value( 2 ).toInt() );
     nc.setTemplate( q.value( 3 ).toString() );
@@ -137,15 +137,18 @@ void NumberCycleDialog::loadCycles()
 
 void NumberCycleDialog::slotUpdateExample()
 {
-  DocType dt;
-  dt.setName( i18n( "Doc-Type" ) );
-  int id = mBaseWidget->mCounterEdit->value();
+    NumberCycle nc;
 
-  const QString tmpl = mBaseWidget->mIdTemplEdit->text();
-  dt.setIdentTemplate( tmpl );
+    nc.setName(mBaseWidget->mNameEdit->text());
+    int id = mBaseWidget->mCounterEdit->value();
+    nc.setCounter(id);
 
-  QString idText = dt.generateDocumentIdent( QDate::currentDate(),
-                                             QLatin1String("<addressUid>"), id, 2 );
+    const QString tmpl = mBaseWidget->mIdTemplEdit->text();
+    nc.setTemplate(tmpl);
+
+  QString idText = nc.exampleIdent( QStringLiteral("Doc-Type"),
+                                    QDate::currentDate(),
+                                    QLatin1String("<addressUid>"));
 
   // generateDocumentIdent automatically adds a %i to the pattern, if it has neither
   // %i nor %n. A note is added here to the dialog text

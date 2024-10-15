@@ -24,6 +24,12 @@
     </entry>
   </group>
 
+  <group name="KraftV2">
+    <entry name="KraftV2BaseDir" type="String">
+      <label>The root path of Kraft V2.0</label>
+    </entry>
+  </group>
+
   <group name="WindowSizes">
     <entry name="docEditGeometry" type="String">
       <label>The default geometry of the document view dialog</label>

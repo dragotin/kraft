@@ -28,6 +28,7 @@
 #include "calcpart.h"
 #include "attribute.h"
 #include "einheit.h"
+#include "kraftobj.h"
 
 /**
 @author Klaas Freitag
@@ -40,45 +41,31 @@ class dbID;
 class QLocale;
 class PositionViewWidget;
 
-class DocPositionBase : public QObject
+class DocPositionBase : public KraftObj
 {
-  public:
-  enum PositionType { Position, ExtraDiscount };
-  enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3, TaxIndividual = 4 };
+
+public:
+    enum PositionType { Position, ExtraDiscount, Text, Demand, Alternative };
+    enum TaxType { TaxInvalid = 0, TaxNone = 1, TaxReduced = 2, TaxFull = 3, TaxIndividual = 4 };
 
     DocPositionBase();
     DocPositionBase( const PositionType& );
-    ~DocPositionBase() {}
 
     DocPositionBase(const DocPositionBase&);
 
     void setDbId( int id ) { m_dbId = id; }
     dbID dbId() { return dbID( m_dbId ); }
 
-    void setAttribute( const Attribute& );
-    void removeAttribute( const QString& );
-    void loadAttributes();
-    QString attribute(const QString& ) const;
-
-    AttributeMap attributes();
-    void setAttributeMap( AttributeMap );
-
     void setText( const QString& string ) { m_text = string; }
     QString text() const { return m_text; }
-
-    void replaceTags(const QStringList& newTags);
-    void setTag( const QString& );
-    void removeTag( const QString& );
-    bool hasTag( const QString& );
-
-    QStringList tags();
     
     int taxTypeNumeric();
     TaxType taxType();
     void setTaxType( DocPositionBase::TaxType );
     void setTaxType( int );
+    void setTaxType(const QString&);
 
-  /**
+    /**
    * Position means the number in the document
    */
     int positionNumber() { return m_position; }
@@ -86,23 +73,25 @@ class DocPositionBase : public QObject
     void setToDelete( bool doit ) { mToDelete = doit; }
     bool toDelete() { return mToDelete; }
     PositionType type() { return mType; }
+    QString typeStr();
+    static QString typeToString(DocPositionBase::PositionType t);
+    static DocPositionBase::PositionType typeStrToType(const QString& t);
 
     DocPositionBase& operator=( const DocPositionBase& );
 
-  protected:
+protected:
     int     m_dbId;
     int     m_position;
     QString m_text;
     bool    mToDelete;
     TaxType mTaxType;
     PositionType mType;
-    AttributeMap mAttribs;
 };
 
 
 class DocPosition : public DocPositionBase
 {
-  public:
+public:
     DocPosition();
     DocPosition( const PositionType& );
 
@@ -124,7 +113,7 @@ class DocPosition : public DocPositionBase
     static const QString Tags;
     static const QString ExtraDiscountTagRequired;
 
-  private:
+private:
     Einheit m_unit;
     Geld    m_unitPrice;
     double  m_amount;
@@ -136,7 +125,7 @@ class DocPosition : public DocPositionBase
 
 class DocPositionList : public QList<DocPositionBase*>
 {
-  public:
+public:
     DocPositionList();
 
     // QDomElement domElement( QDomDocument& );
@@ -149,14 +138,22 @@ class DocPositionList : public QList<DocPositionBase*>
     Geld fullTaxSum( double fullTax );
     Geld reducedTaxSum( double reducedTax );
 
-  protected:
+    DocPositionBase::TaxType listTaxation() const;
+    bool hasIndividualTaxes() const;
+
+protected:
     int compareItems ( DocPosition *dp1, DocPosition *dp2 );
 
-  private:
+private:
     QDomElement xmlTextElement( QDomDocument&, const QString& , const QString& );
 };
 
 typedef QListIterator<DocPositionBase*> DocPositionListIterator;
 
-typedef QPointer<DocPositionBase> DocPositionGuardedPtr;
+typedef DocPositionBase* DocPositionGuardedPtr;
+
+Q_DECLARE_METATYPE(DocPositionBase)
+Q_DECLARE_METATYPE(DocPosition)
+Q_DECLARE_METATYPE(DocPositionList)
+
 #endif
