@@ -11,6 +11,7 @@ set(AUTOMOC ON)
 if(${AKO_PREFIX}Akonadi_FOUND)
     add_executable(${findcontact_NAME} ${FINDCONTACT_SRC})
 
+    target_include_directories(${findcontact_NAME} PRIVATE ../src)
     target_link_libraries( ${findcontact_NAME}
         Qt5::Core
         Qt5::Widgets
