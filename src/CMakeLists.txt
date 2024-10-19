@@ -4,7 +4,7 @@ add_subdirectory(pics)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)
 
 ########### next target ###############
-qt5_add_resources(KRAFT_RC_SRC pics/kraft.qrc)
+qt6_add_resources(KRAFT_RC_SRC pics/kraft.qrc)
 
 set(kraft_SRCS
     attribute.cpp
@@ -165,27 +165,22 @@ ki18n_wrap_ui(kraft_SRCS
 )
 
 set(KRAFT_LINK_LIBS
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Sql
-    Qt5::Xml
-    Qt5::XmlPatterns
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::Sql
+    Qt6::Xml
     
-    KF5::I18n
-    KF5::Contacts
-    KF5::ConfigCore
-    KF5::ConfigGui
+    KF6::I18n
+    KF6::Contacts
+    KF6::ConfigCore
+    KF6::ConfigGui
     ${CTEMPLATE_LIBRARIES} pthread
-    Grantlee5::Templates
+    KF6::TextTemplate
 )
 if(${AKO_PREFIX}Akonadi_FOUND)
   list(APPEND KRAFT_LINK_LIBS
-    ${AKO_PREFIX}::AkonadiCore
-    ${AKO_PREFIX}::AkonadiContact
-    ${AKO_PREFIX}::ContactEditor
-    ${AKO_PREFIX}::AkonadiAgentBase
-    ${AKO_PREFIX}::AkonadiWidgets
-    ${AKO_PREFIX}::AkonadiXml
+    ${AKO_PREFIX}::AkonadiContactCore
+    ${AKO_PREFIX}::AkonadiContactWidgets
   )
 endif()
 
@@ -210,5 +205,4 @@ install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES  kraftsettings.kcfg databasesettings.kcfg DESTINATION ${KCFG_INSTALL_DIR})
 install(FILES  kraftui.rc katalogview.rc DESTINATION ${KXMLGUI_INSTALL_DIR}/kraft)

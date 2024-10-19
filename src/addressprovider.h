@@ -90,15 +90,15 @@ public:
    */
   QString errorMsg( const QString& uid );
 
-public slots:
+public Q_SLOTS:
   void slotResetNotFoundCache();
 
-protected slots:
+protected Q_SLOTS:
   void slotErrorMsg(const QString& uid, const QString& msg);
   void slotAddresseeFound( const QString& uid, const KContacts::Addressee contact);
   void slotAddresseeNotFound( const QString& uid );
 
-signals:
+Q_SIGNALS:
   /**
    * @brief lookupResult - deliver lookup result
    * @param uid - the uid of the lookup, and the contact

@@ -17,7 +17,8 @@
 #ifndef REPORTITEMLIST_H
 #define REPORTITEMLIST_H
 
-#include <grantlee/metatype.h>
+#include <KTextTemplate/Template>
+#include <KTextTemplate/MetaType>
 
 #include "reportitem.h"
 #include "docposition.h"
@@ -42,13 +43,12 @@ public:
 };
 
 // Read-only introspection of ReportItemList object.
-
-GRANTLEE_BEGIN_LOOKUP(ReportItemList)
+KTEXTTEMPLATE_BEGIN_LOOKUP(ReportItemList)
 if ( property == "count" ) {
     return object.count();
 } else {
     return QStringLiteral("undefined");
 }
-GRANTLEE_END_LOOKUP
+KTEXTTEMPLATE_END_LOOKUP
 
 #endif

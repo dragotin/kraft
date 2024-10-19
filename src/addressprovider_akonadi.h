@@ -76,7 +76,7 @@ public:
 public slots:
     void searchResult( KJob* );
 #endif
-signals:
+Q_SIGNALS:
     //
     void addresseeFound( const QString&, const KContacts::Addressee& );
     void addresseeNotFound( const QString& );

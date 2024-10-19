@@ -26,8 +26,6 @@
 #include "docguardedptr.h"
 #include "documentsaverxml.h"
 
-class QSqlRecord;
-class QStringList;
 class dbID;
 
 /**

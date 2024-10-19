@@ -21,9 +21,6 @@
 #include <qmap.h>
 #include <qstring.h>
 
-#include <grantlee/engine.h>
-#include <grantlee/template.h>
-
 class GrantleeFileTemplate : public QObject
 {
     Q_OBJECT

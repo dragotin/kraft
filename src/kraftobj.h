@@ -33,6 +33,13 @@
  */
 class KraftObj
 {
+protected:
+    QUuid     _uuid;
+    QDateTime _lastModified;
+    bool      _modified;
+
+    QMap<QString, KraftAttrib> _attribs;
+    QSet<QString> _tags;
 
 public:
     explicit KraftObj();
@@ -59,18 +66,8 @@ public:
     bool hasTag(const QString& tag) const;
     QStringList allTags() const;
 
-public slots:
     void setModified() {_modified = true;}
 
-signals:
-
-protected:
-    QUuid     _uuid;
-    QDateTime _lastModified;
-    bool      _modified;
-
-    QMap<QString, KraftAttrib> _attribs;
-    QSet<QString> _tags;
 };
 
 Q_DECLARE_METATYPE(KraftObj)
