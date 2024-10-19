@@ -57,7 +57,7 @@ void CatalogTemplateProvider::slotNewTemplate()
 
       CatalogTemplateList list;
       const QString currKat = mCatalogSelection->currentSelectedKatChapter();
-      emit templatesToDocument(catalog, list, currKat);
+      Q_EMIT templatesToDocument(catalog, list, currKat);
     }
 }
 
@@ -78,7 +78,7 @@ void CatalogTemplateProvider::slotTemplateToDocument()
   if ( mCatalogSelection ) {
     Katalog *catalog = mCatalogSelection->currentSelectedKat();
 
-    emit templatesToDocument(catalog, mCatalogSelection->currentSelectedPositions(),
+    Q_EMIT templatesToDocument(catalog, mCatalogSelection->currentSelectedPositions(),
                              QString());
   }
 }

@@ -53,10 +53,10 @@ public:
   ~CustomerSelectPage();
   void setupAddresses();
 
-public slots:
+public Q_SLOTS:
   void saveState();
 
-signals:
+Q_SIGNALS:
   void addresseeSelected( const KContacts::Addressee& );
 
 private:
@@ -109,7 +109,7 @@ public:
   void done(int r);
   QString copyItemsFromPredecessor();
 
-protected slots:
+protected Q_SLOTS:
   void slotAddressee( const KContacts::Addressee& );
 
 private:

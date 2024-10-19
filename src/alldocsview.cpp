@@ -117,8 +117,8 @@ void AllDocsView::slotAmountFilterChanged(int entryNo)
 
 void AllDocsView::slotSearchTextChanged(const QString& newStr )
 {
-    mTableModel->setFilterRegExp(newStr);
-    mDateModel->setFilterRegExp(newStr);
+    mTableModel->setFilterRegularExpression(newStr);
+    mDateModel->setFilterRegularExpression(newStr);
 }
 
 void AllDocsView::initDetailViewActions(const std::array<QAction *, 4> actions)
@@ -383,7 +383,7 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         /* get the corresponding document id */
         if( isDoc ) {
             const DocDigest& digest = model->digest( mCurrentlySelected );
-            emit docSelected(digest.uuid());
+            Q_EMIT docSelected(digest.uuid());
             mAllViewDetails->slotShowDocDetails( digest );
         } else {
             const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
@@ -411,7 +411,7 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         }
     } else {
         // qDebug () << "Got invalid index, clearing digest view.";
-        emit docSelected( QString() );
+        Q_EMIT docSelected( QString() );
         mAllViewDetails->slotClearView();
     }
     //// qDebug () << "Supposed row: " << sourceIndex.row() << " Supposed ID: " << DocumentModel::self()->data(sourceIndex, Qt::DisplayRole);

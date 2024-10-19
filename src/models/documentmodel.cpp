@@ -80,7 +80,7 @@ void DocumentModel::updateData(const DocDigest& digest)
         _digests[r] = digest;
         QModelIndex indx1 = index(r, 0, QModelIndex());
         QModelIndex indx2 = index(r+1, 0, QModelIndex());
-        emit dataChanged(indx1, indx2);
+        Q_EMIT dataChanged(indx1, indx2);
     }
 
    // for (const DocDigest& d)

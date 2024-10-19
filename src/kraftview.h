@@ -85,9 +85,9 @@ protected:
     DocGuardedPtr m_doc;
     Type          m_type;
 
-protected slots:
+protected Q_SLOTS:
     virtual void slotLinkClicked(const QString& link) = 0;
-signals:
+Q_SIGNALS:
     void viewClosed(bool, DocGuardedPtr, bool);
     void openROView(const QString& uuid);
 
@@ -119,7 +119,7 @@ class KraftView : public KraftViewBase
 
   void setup( DocGuardedPtr doc );
 
-  public slots:
+  public Q_SLOTS:
   void slotAddressFound(const QString& uid, const KContacts::Addressee &contact);
   void slotAddresseeFound( const QString& uid, const KContacts::Addressee& contact);
   void redrawDocument( );
@@ -138,7 +138,7 @@ class KraftView : public KraftViewBase
   void slotNewFooterText(const DocText& dt , bool replace);
   void slotSwitchToPage(KraftDoc::Part p);
   
-  protected slots:
+  protected Q_SLOTS:
   // void closeEvent(QCloseEvent *event);
   void redrawDocPositions( );
   void done( int );
@@ -161,7 +161,7 @@ class KraftView : public KraftViewBase
   void slotLinkClicked(const QString& link);
 
 
-signals:
+Q_SIGNALS:
   void selectPage( int );
   void positionSelected( Katalog*, void* );
 private:

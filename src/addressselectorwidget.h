@@ -106,19 +106,19 @@ public:
 
     bool backendUp() const;
 
-signals:
+Q_SIGNALS:
   void addressSelected(KContacts::Addressee);
 
-public slots:
+public Q_SLOTS:
   void saveState();
 
-protected slots:
+protected Q_SLOTS:
   void slotCreateNewContact();
   void slotEditContact();
   void restoreState();
   void slotFilterTextChanged( const QString& filter);
 
-private slots:
+private Q_SLOTS:
   void slotAddresseeSelected(QModelIndex index);
 
 private:

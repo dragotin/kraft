@@ -19,8 +19,6 @@
 #include <QDebug>
 #include <QSqlQuery>
 #include <QDir>
-#include <QXmlSchemaValidator>
-#include <QXmlSchema>
 #include <QDomDocument>
 #include <QFileDevice>
 #include <QSaveFile>
@@ -116,7 +114,7 @@ QDomDocument xmlDocument(KraftDoc *doc)
     meta.appendChild(textElement(xmldoc, "docType", doc->docType()));
     meta.appendChild(textElement(xmldoc, "docDesc", doc->whiteboard()));
     meta.appendChild(textElement(xmldoc, "currency", DefaultProvider::self()->locale()->currencySymbol(QLocale::CurrencyIsoCode)));
-    meta.appendChild(textElement(xmldoc, "country", DefaultProvider::self()->locale()->countryToString(DefaultProvider::self()->locale()->country())));
+    meta.appendChild(textElement(xmldoc, "country", DefaultProvider::self()->locale()->territoryToString(DefaultProvider::self()->locale()->territory())));
     meta.appendChild(textElement(xmldoc, "locale", DefaultProvider::self()->locale()->languageToString(DefaultProvider::self()->locale()->language())));
     meta.appendChild(textElement(xmldoc, "ident", doc->ident() ) );
     if (doc->uuid().isEmpty())
@@ -509,10 +507,40 @@ DocumentSaverXML::DocumentSaverXML()
 
 }
 
+
 bool DocumentSaverXML::verifyXmlFile(const QUrl& schemaFile, const QString& xmlFile)
 {
-    QFile file( xmlFile );
     bool re{false};
+    // FIXME use alternative implementation
+
+#if 0
+#include <xercesc/parsers/DOMParser.hpp>
+#include <xercesc/util/XMLString.hpp>
+
+int main() {
+    // Create a DOM parser instance
+    XercesDOMParser parser;
+
+    // Set the schema location and namespace
+    parser.setSchemaLocation("http://example.com/schema.xsd");
+    parser.setNamespace("http://example.com/namespace");
+
+    // Parse and validate an XML document
+    XMLCh* xmlDoc = parser.parse("example.xml");
+
+    // Check if the validation was successful
+    if (parser.getValidationFailed()) {
+        // Handle validation errors
+    } else {
+        // XML document is valid according to the schema
+    }
+
+    return 0;
+}
+
+===========================================================
+
+    QFile file( xmlFile );
 
     QXmlSchema schema;
     if (!schema.load(schemaFile)) {
@@ -528,6 +556,12 @@ bool DocumentSaverXML::verifyXmlFile(const QUrl& schemaFile, const QString& xmlF
             }
         }
     }
+#else
+    Q_UNUSED(xmlFile)
+    Q_UNUSED(schemaFile)
+    re = true;
+#endif
+
     return re;
 }
 
@@ -633,7 +667,7 @@ bool DocumentSaverXML::loadByIdent(const QString& id, KraftDoc *doc)
         return false;
     }
 
-    const QFileInfo xmlFile = xmlDocFileNameFromIdent(id);
+    const QFileInfo xmlFile{xmlDocFileNameFromIdent(id)};
 
     return loadFromFile(xmlFile, doc);
 }
@@ -660,8 +694,9 @@ bool DocumentSaverXML::loadFromFile(const QFileInfo& xmlFile, KraftDoc *doc, boo
 
     const QByteArray arr = file.readAll();
     QString errMsg;
-    if (!_domDoc.setContent(arr, &errMsg)) {
-        qDebug() << "Unable to set file content as xml:" << errMsg;
+    QDomDocument::ParseResult pe = _domDoc.setContent(arr);
+    if (!pe) {
+        qDebug() << "Unable to set file content as xml:" << pe.errorMessage << "in line"<<pe.errorLine;
         file.close();
         return false;
     }

@@ -112,7 +112,7 @@ int UnitManager::nextFreeId()
     if( mUnits.size() == 0 ) {
         load();
     }
-    foreach( Einheit u, mUnits ) {
+    for( Einheit u: mUnits ) {
         if( u.id() > id ) {
             id = u.id();
         }
@@ -125,7 +125,7 @@ QStringList UnitManager::allUnits()
   QStringList list;
 
   if(mUnits.size() == 0 ) load();
-  foreach( Einheit e, mUnits ) {
+  for( Einheit e: mUnits ) {
     QString uSing = e.einheitSingular();
     if( !uSing.isEmpty())
       list << uSing;
@@ -168,7 +168,7 @@ int UnitManager::getUnitIDSingular( const QString& einheitStr )
 {
   if( mUnits.size() == 0 ) load();
 
-  foreach( Einheit tmp, mUnits ) {
+  for( Einheit tmp: mUnits ) {
 
     if( tmp.einheitSingular() == einheitStr ||
         tmp.einheitPlural()   == einheitStr ) {

@@ -47,9 +47,9 @@ class NumberCycleDialog: public QDialog
 public:
   NumberCycleDialog( QWidget *parent, const QString& initType = QString() );
 
-public slots:
+public Q_SLOTS:
 
-protected slots:
+protected Q_SLOTS:
 
   void slotAddCycle();
   void slotRemoveCycle();

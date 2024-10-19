@@ -50,7 +50,7 @@ public:
   bool showCalcParts();
   DocPosition itemToDocPosition( QTreeWidgetItem* it = 0 );
   CalcPartList itemsCalcParts( QTreeWidgetItem* it = 0 );
-  public slots:
+  public Q_SLOTS:
   void slFreshupItem( QTreeWidgetItem*, FloskelTemplate*, bool remChildren = false );
   void saveState();
 

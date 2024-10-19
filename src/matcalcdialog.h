@@ -39,10 +39,10 @@ public:
     MatCalcDialog(MaterialCalcPart *mc, QWidget *parent=0);
     virtual ~MatCalcDialog();
 
-protected slots:
+protected Q_SLOTS:
     void accept();
     
-  signals:
+  Q_SIGNALS:
     void matCalcPartChanged(MaterialCalcPart *mc);
 private:
     void init(double);

@@ -52,11 +52,11 @@ public:
      */
     void setTemplatePath(const QString& path) { _templatePath = path; }
 
-signals:
+Q_SIGNALS:
     void docAvailable(const QString& fileName);
     void converterError( ConvError );
 
-protected slots:
+protected Q_SLOTS:
     void slotReceivedStderr();
 
 protected:    
@@ -75,7 +75,7 @@ public:
 
     void convert(const QString& sourceFile, const QString& outputFile) override;
 
-private slots:
+private Q_SLOTS:
     void trml2pdfFinished( int exitCode, QProcess::ExitStatus stat);
     void slotReceivedStdout();
 
@@ -95,7 +95,7 @@ public:
 
     void convert(const QString& sourceFile, const QString& outputFile) override;
 
-private slots:
+private Q_SLOTS:
     void slotReceivedStdout();
     void weasyPrintFinished(int exitCode, QProcess::ExitStatus stat);
 

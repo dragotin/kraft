@@ -154,7 +154,7 @@ void MaterialTemplDialog::setMaterial( StockMaterial *t, const QString& katalogn
 
   // chapter settings
   QStringList chapterNames;
-  foreach( CatalogChapter chap, m_katalog->getKatalogChapters() ) {
+  for( const CatalogChapter& chap: m_katalog->getKatalogChapters() ) {
     chapterNames.append( chap.name() );
   }
   mCbChapter->insertItems(-1, chapterNames );
@@ -225,7 +225,7 @@ void MaterialTemplDialog::accept()
 
     mSaveMaterial->save();
 
-    emit editAccepted( mSaveMaterial );
+    Q_EMIT editAccepted( mSaveMaterial );
     KatalogMan::self()->notifyKatalogChange( m_katalog, mSaveMaterial->getID() );
   }
 
@@ -236,7 +236,7 @@ void MaterialTemplDialog::reject()
 {
   if ( m_templateIsNew ) {
     // remove the listview item if it was created newly
-    emit editRejected();
+    Q_EMIT editRejected();
   }
   QDialog::reject();
 }

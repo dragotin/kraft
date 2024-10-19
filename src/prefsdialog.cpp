@@ -346,10 +346,11 @@ QWidget* PrefsDialog::docTab()
   const QDate d = QDate::currentDate();
   mCbDateFormats->setToolTip( i18n( "The default date format for documents." ) );
   QString formattedDate = d.toString(Qt::ISODate);
+  QLocale locale;
   mCbDateFormats->insertItem( 0, i18n("ISO-Format: %1", formattedDate));
-  formattedDate = d.toString(Qt::DefaultLocaleShortDate);
+  formattedDate = d.toString(locale.dateFormat(QLocale::ShortFormat));
   mCbDateFormats->insertItem( 1, i18n("Short-Date: %1", formattedDate));
-  formattedDate = d.toString(Qt::DefaultLocaleLongDate);
+  formattedDate = d.toString(locale.dateFormat(QLocale::LongFormat));
   mCbDateFormats->insertItem( 2, i18n("Long-Date: %1", formattedDate));
   formattedDate = d.toString(Qt::RFC2822Date);
   mCbDateFormats->insertItem( 3, i18n("RFC 2822-Format: %1", formattedDate));

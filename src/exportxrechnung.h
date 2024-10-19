@@ -32,7 +32,7 @@ class ExporterXRechnung : public QObject
 {
     Q_OBJECT
 
-signals:
+Q_SIGNALS:
     /**
      * @brief xRechnungTmpFile
      * emits the file name of a temporary file that is the XRechnung result file.
@@ -53,7 +53,7 @@ public:
 protected:
     void lookupCustomerAddress();
 
-protected slots:
+protected Q_SLOTS:
     void slotAddresseeFound(const QString &uid = QString(), const KContacts::Addressee &contact = KContacts::Addressee());
     void slotSkipLookup();
 

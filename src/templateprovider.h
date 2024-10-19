@@ -32,7 +32,7 @@ public:
   virtual void setSelection( TextSelection* );
   virtual DocText currentText();
 
-public slots:
+public Q_SLOTS:
   virtual void slotNewTemplate() = 0;
   virtual void slotEditTemplate() = 0;
   virtual void slotDeleteTemplate() = 0;

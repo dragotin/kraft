@@ -73,7 +73,7 @@ public:
     QString extraDiscountTagRestriction();
     DocPositionBase::TaxType taxType() const;
 
-public slots:
+public Q_SLOTS:
     void slotSetOverallPrice( Geld );
     void slotRefreshPrice();
     void slotModified();
@@ -88,7 +88,7 @@ public slots:
     void slotSetTax( DocPosition::TaxType );
     void slotShowPrice( bool show );  // hide the price entries for certain doc types.
 
-protected slots:
+protected Q_SLOTS:
     void slotLockPosition();
     void slotUnlockPosition();
     void slotSetPositionKind(Kind kind, bool alterText);
@@ -99,7 +99,7 @@ protected slots:
     void slotSetReducedTax();
     void slotSetFullTax();
 
-signals:
+Q_SIGNALS:
     void positionModified();
     void deletePosition();
     void moveUp();

@@ -52,7 +52,7 @@ public:
 
     int addNewTemplate( FloskelTemplate *tmpl );
 
-public slots:
+public Q_SLOTS:
     void writeXMLFile() override;
     void deleteTemplate( int );
 private:

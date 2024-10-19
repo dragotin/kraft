@@ -40,14 +40,14 @@ public:
     bool templateIsNew() {
       return m_templateIsNew;
     };
-signals:
+Q_SIGNALS:
     void editAccepted( StockMaterial* );
     void editRejected();
     void chapterChanged(int);
 
-public slots:
+public Q_SLOTS:
 
-protected slots:
+protected Q_SLOTS:
   virtual void accept();
   virtual void reject();
 

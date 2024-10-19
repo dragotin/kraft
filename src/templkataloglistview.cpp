@@ -73,7 +73,7 @@ void TemplKatalogListView::addCatalogDisplay( const QString& katName )
     setupChapters();
 
     const QList<CatalogChapter> chapters = catalog->getKatalogChapters();
-    foreach( CatalogChapter chap, chapters ) {
+    for( const CatalogChapter& chap: chapters ) {
         if( mChapterDict.contains( chap.id().toInt() ) ) {
             int chapId = chap.id().toInt();
             QTreeWidgetItem *katItem = mChapterDict[chapId];

@@ -567,7 +567,7 @@ void KatalogListView::updateSort(QTreeWidgetItem *chapter)
 
     int childrenCnt = chapter->childCount();
 
-    emit sequenceUpdateMaximum(childrenCnt);
+    Q_EMIT sequenceUpdateMaximum(childrenCnt);
 
     QSqlQuery chapQuery;
     chapQuery.prepare("UPDATE CatalogChapters SET sortKey = :sk WHERE chapterID = :id");
@@ -577,7 +577,7 @@ void KatalogListView::updateSort(QTreeWidgetItem *chapter)
     for (int indx = 0; indx < childrenCnt; indx++) {
         QTreeWidgetItem *item = chapter->child(indx);
 
-        emit sequenceUpdateProgress(indx);
+        Q_EMIT sequenceUpdateProgress(indx);
 
         if (isChapter(item)) {
             CatalogChapter *chapter = static_cast<CatalogChapter*>(itemData(item));
@@ -591,7 +591,7 @@ void KatalogListView::updateSort(QTreeWidgetItem *chapter)
         }
     }
     endUpdateItemSequence();
-    emit sequenceUpdateProgress(childrenCnt);
+    Q_EMIT sequenceUpdateProgress(childrenCnt);
 }
 
 void KatalogListView::slotItemEntered( QTreeWidgetItem *item, int )
@@ -605,7 +605,7 @@ void KatalogListView::slotItemEntered( QTreeWidgetItem *item, int )
     } else {
         CatalogTemplate *tmpl = static_cast<FloskelTemplate*>(itemData(item));
         // qDebug () << "hoovering this template: " << tmpl;
-        emit templateHoovered( tmpl );
+        Q_EMIT templateHoovered( tmpl );
     }
 }
 

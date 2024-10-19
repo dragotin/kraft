@@ -83,7 +83,7 @@ protected:
     QVariant columnValueFromDigest( const DocDigest& digest, int col ) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-protected slots:
+protected Q_SLOTS:
     void slotAddresseeFound(const QString &uid, const KContacts::Addressee &contact);
 
 private:

@@ -47,13 +47,13 @@ public:
   DocTypeEdit( QWidget *parent  = 0 );
   void saveDocTypes();
 
-public slots:
+public Q_SLOTS:
   void slotDocTypeSelected( const QString& = QString() );
   void slotAddDocType();
   void slotEditDocType();
   void slotRemoveDocType();
 
-protected slots:
+protected Q_SLOTS:
   void fillNumberCycleCombo();
   void slotNumberCycleChanged( const QString& );
   void slotEditNumberCycles();
@@ -64,7 +64,7 @@ protected slots:
   void slotAppendPDFUrlChanged( const QString& );
     void slotXRechnungToggled(bool);
 
-signals:
+Q_SIGNALS:
   /**
    * emitted for every doctype which is deleted 
    */

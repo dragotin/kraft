@@ -40,7 +40,7 @@ private:
     int convertNumbercycles(const QString &baseDir);
     bool convertOwnIdentity(const QString& baseDir);
 
-signals:
+Q_SIGNALS:
     void conversionOut(const QString&);
 };
 

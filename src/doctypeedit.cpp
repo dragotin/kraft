@@ -280,7 +280,7 @@ void DocTypeEdit::slotRemoveDocType()
 
   delete currItem;
   // qDebug () << "removed type: " << mRemovedTypes;
-  emit removedType( currName );
+  Q_EMIT removedType( currName );
 }
 
 void DocTypeEdit::slotDocTypeSelected( const QString& newValue )
@@ -482,7 +482,7 @@ void DocTypeEdit::saveDocTypes()
       removeTypeFromDb( *it );
       mOrigDocTypes.remove( *it );
       mChangedDocTypes.remove( *it );
-      emit removedType( *it );
+      Q_EMIT removedType( *it );
     }
   }
 

@@ -129,7 +129,7 @@ void ItemTagDialog::setPositionTags( const QStringList& checkedTags )
 {
   QStringList allTags = TagTemplateMan::self()->allTagTemplates();
 
-  foreach( QString string, allTags ) {
+  for( const QString& string: allTags ) {
       TagTemplate templ = TagTemplateMan::self()->getTagTemplate( string );
 
       QStringList contents;

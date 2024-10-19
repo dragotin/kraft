@@ -53,7 +53,7 @@ public:
     QVector<QMenu*> contextMenus();
 
     void initDetailViewActions(const std::array<QAction*, 4> actions);
-public slots:
+public Q_SLOTS:
 
     void slotBuildView();
     void slotUpdateView(DocGuardedPtr doc);
@@ -64,12 +64,12 @@ protected:
     void contextMenuEvent( QContextMenuEvent* );
     QWidget *initializeTreeWidget();
 
-protected slots:
+protected Q_SLOTS:
     void slotCurrentChanged( QModelIndex, QModelIndex );
     void slotSearchTextChanged(const QString& newStr );
     void slotAmountFilterChanged(int entryNo);
 
-signals:
+Q_SIGNALS:
     void openDocument();
     void docSelected(const QString&);
 

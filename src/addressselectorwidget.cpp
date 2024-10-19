@@ -340,8 +340,7 @@ void AddressSelectorWidget::setupUi()
 void AddressSelectorWidget::slotFilterTextChanged( const QString& filter)
 {
     // qDebug() << "Filter: " << filter;
-    mProxyModel->setFilterRegExp(QRegExp(filter, Qt::CaseInsensitive, QRegExp::RegExp));
-    // mProxyModel.setFilterFixedString(filter);
+    mProxyModel->setFilterRegularExpression(filter);
 }
 
 void AddressSelectorWidget::restoreState()
@@ -393,7 +392,7 @@ void AddressSelectorWidget::slotAddresseeSelected(QModelIndex index)
         qDebug() << "----------- " << contact.formattedName() << contact.uid();
         _contactViewer->setContact(contact);
 
-        emit addressSelected(contact);
+        Q_EMIT addressSelected(contact);
 
         mButEditContact->setEnabled( true );
     } else {

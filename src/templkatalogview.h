@@ -65,7 +65,7 @@ protected:
   void saveWindowGeo( const QByteArray& arr );
   QByteArray windowGeo();
 
-public slots:
+public Q_SLOTS:
   /* Editing of templates -> open edit dialog */
   void slEditTemplate();
   void slNewTemplate();

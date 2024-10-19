@@ -21,6 +21,7 @@
 #include <QTextEdit>
 #include <QMenu>
 #include <QIcon>
+#include <QActionGroup>
 #include <QDebug>
 #include <qdrawutil.h>
 
@@ -136,17 +137,17 @@ PositionViewWidget::PositionViewWidget()
   connect(this, &PositionViewWidget::positionStateNormal, this, [this]() {
       slotSetPositionKind(Normal, true);
       slotRefreshPrice();
-      emit positionModified();
+      Q_EMIT positionModified();
   } );
   connect(this, &PositionViewWidget::positionStateAlternative, this, [this]() {
       slotSetPositionKind(Alternative, true);
       slotRefreshPrice();
-      emit positionModified();
+      Q_EMIT positionModified();
   } );
   connect(this, &PositionViewWidget::positionStateDemand, this, [this]() {
       slotSetPositionKind(Demand, true);
       slotRefreshPrice();
-      emit positionModified();
+      Q_EMIT positionModified();
   } );
 
   connect(this, &PositionViewWidget::lockPosition, this, &PositionViewWidget::slotLockPosition);
@@ -335,7 +336,7 @@ void PositionViewWidget::slotSetTax( DocPosition::TaxType tt )
   }
 
   mTaxSubmenu->setIcon( DefaultProvider::self()->icon( icon ));
-  emit positionModified();
+  Q_EMIT positionModified();
 }
 
 void PositionViewWidget::slotAllowIndividualTax( bool allow )
@@ -516,7 +517,7 @@ void PositionViewWidget::slotRefreshPrice()
 {
   const Geld sum = currentPrice();
   slotSetOverallPrice( sum );
-  emit priceChanged( sum );
+  Q_EMIT priceChanged( sum );
 }
 
 void PositionViewWidget::slotSetOverallPrice( Geld g )
@@ -537,7 +538,7 @@ void PositionViewWidget::slotModified()
 
     m_labelPosition->setStyleSheet("font-weight: bold; color: red");
 
-    emit positionModified();
+    Q_EMIT positionModified();
 }
 
 PositionViewWidget::~PositionViewWidget()

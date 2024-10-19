@@ -43,7 +43,7 @@ public:
 
     void save();
 
-public slots:
+public Q_SLOTS:
     void slotAddUnit();
     void slotEditUnit(QModelIndex index = QModelIndex());
     void slotDeleteUnit();
@@ -64,7 +64,7 @@ class UnitsEditDialog: public QDialog, protected Ui::UnitsEditBase
 public:
   UnitsEditDialog( QAbstractItemModel *model, int row, QWidget *parent );
 
-public slots:
+public Q_SLOTS:
   void accept();
   void reject();
 

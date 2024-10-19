@@ -132,7 +132,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     // check the tax settings: If all items have the same settings, its not individual.
     bool individualTax = false;
     int ttype = -1;
-    foreach( DocPositionBase *dp, positions  ) {
+    for(DocPositionBase *dp: positions) {
         if( ttype == -1 ) {
             ttype = dp->taxType();
         } else {
@@ -151,7 +151,7 @@ void KraftViewRO::setup( DocGuardedPtr doc )
     QString docType = doc->docType();
     DocType dt(docType);
 
-    foreach( DocPositionBase *dpb, positions ) {
+    for(DocPositionBase *dpb: positions) {
         DocPosition *dp = static_cast<DocPosition*>(dpb);
         tmpl.createDictionary( "ITEMS" );
 
@@ -262,7 +262,7 @@ void KraftViewRO::done( int r )
     return;
   }
 
-  emit viewClosed( true, m_doc, false);
+  Q_EMIT viewClosed( true, m_doc, false);
 
   KraftViewBase::done(r);
 }

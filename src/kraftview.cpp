@@ -284,7 +284,7 @@ void KraftView::slotLinkClicked(const QString& link)
         }
         qDebug() << "Link clicked to open document " << uuid;
         if (!uuid.isEmpty()) {
-            emit openROView(uuid);
+            Q_EMIT openROView(uuid);
         }
     }
 }
@@ -1374,7 +1374,7 @@ void KraftView::done( int r )
         //Closed using the OK button .. it can be closed, but data needs saved
         if( doSave)
             saveChanges();
-        emit viewClosed( r == 1, m_doc, mModified );
+        Q_EMIT viewClosed( r == 1, m_doc, mModified );
     }
     // remember the sizes of the docassistant splitter if visible.
     mAssistant->saveSplitterSizes();

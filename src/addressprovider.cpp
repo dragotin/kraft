@@ -54,14 +54,14 @@ void AddressProvider::slotAddresseeFound( const QString& uid, const KContacts::A
     }
     _addressCache[uid] = contact;
     _addressCache[uid].insertCustom(CUSTOM_ADDRESS_MARKER, "addressbook");
-    emit lookupResult(uid, _addressCache[uid]);
+    Q_EMIT lookupResult(uid, _addressCache[uid]);
 }
 
 void AddressProvider::slotAddresseeNotFound( const QString& uid )
 {
     KContacts::Addressee contact; // Empty for not found.
     _notFoundUids.insert(uid);
-    emit lookupResult(uid, contact);
+    Q_EMIT lookupResult(uid, contact);
 }
 
 void AddressProvider::slotResetNotFoundCache()
@@ -152,12 +152,8 @@ QString AddressProvider::formattedAddress( const KContacts::Addressee& contact )
   if( address.isEmpty() ) {
     re = contact.realName();
   } else {
-#if KContacts_VERSION >= QT_VERSION_CHECK(5, 92, 0)
       re = address.formatted( KContacts::AddressFormatStyle::MultiLineDomestic,
                               contact.realName(), contact.organization() );
-#else
-      re = address.formattedAddress( contact.realName(), contact.organization() );
-#endif
   }
   return re;
 }

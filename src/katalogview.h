@@ -66,7 +66,7 @@ class KRAFTCAT_EXPORT KatalogView : public QMainWindow
   protected:
     virtual Katalog* getKatalog( const QString& );
 
-  public slots:
+  public Q_SLOTS:
     /** clears the document in the current view to reuse it as the new document */
     void openDocumentFile(const QUrl &url);
 
@@ -92,7 +92,7 @@ class KRAFTCAT_EXPORT KatalogView : public QMainWindow
 
     void closeEvent( QCloseEvent *event );
 
-protected slots:
+protected Q_SLOTS:
     void slotSaveState();
 
   protected:

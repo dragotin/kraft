@@ -32,7 +32,7 @@ public:
 
     // returns an error string if the return string of newIdent is empty
     QString errorStr() const;
-signals:
+Q_SIGNALS:
     void newIdent(const QString&);
 
 private:

@@ -73,10 +73,10 @@ public:
 
     bool isSearchOngoing(const QString& uid);
 #ifdef HAVE_AKONADI
-public slots:
+public Q_SLOTS:
     void searchResult( KJob* );
 #endif
-signals:
+Q_SIGNALS:
     //
     void addresseeFound( const QString&, const KContacts::Addressee& );
     void addresseeNotFound( const QString& );

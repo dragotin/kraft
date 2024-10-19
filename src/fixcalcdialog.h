@@ -42,10 +42,10 @@ public:
     double  getPreis();
     void setCalcPart( FixCalcPart* );
 
-signals:
+Q_SIGNALS:
     void fixCalcPartChanged(FixCalcPart*);
 
-protected slots:
+protected Q_SLOTS:
     void accept();
 private:
 

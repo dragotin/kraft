@@ -48,7 +48,7 @@ void FooterTemplateProvider::slotNewTemplate()
     dbID newId = DefaultProvider::self()->saveDocumentText( dt );
     dt.setDbId( newId );
 
-    emit newFooterText( dt );
+    Q_EMIT newFooterText( dt );
   }
 }
 
@@ -76,24 +76,24 @@ void FooterTemplateProvider::slotEditTemplate()
     /* save to database */
     DefaultProvider::self()->saveDocumentText( dt );
     // this ends up in the footerselection, slot updateDocText
-    emit updateFooterText( dt );
+    Q_EMIT updateFooterText( dt );
   }
 }
 
 void FooterTemplateProvider::slotDeleteTemplate()
 {
   DocText dt = currentText();
-  emit deleteFooterText( dt );
+  Q_EMIT deleteFooterText( dt );
   DefaultProvider::self()->deleteDocumentText( dt );
 }
 
 void FooterTemplateProvider::slotTemplateToDocument()
 {
   // qDebug () << "Moving template to document";
-  emit footerTextToDocument(currentText(), true);
+  Q_EMIT footerTextToDocument(currentText(), true);
 }
 
 void FooterTemplateProvider::slotInsertTemplateToDocument()
 {
-    emit footerTextToDocument(currentText(), false);
+    Q_EMIT footerTextToDocument(currentText(), false);
 }

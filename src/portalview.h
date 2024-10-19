@@ -45,16 +45,16 @@ public:
     void systemInitError( const QString& );
     QString ptag( const QString&,  const QString& c = QString() ) const;
 
-public slots:
+public Q_SLOTS:
     void slotBuildView();
     void fillCatalogDetails();
     void fillSystemDetails();
     void displaySystemsTab();
 
-private slots:
+private Q_SLOTS:
     void changePage(QListWidgetItem *current);
 
-signals:
+Q_SIGNALS:
     void openDocument();
     void openKatalog( const QString& );
     void katalogToXML( const QString& );

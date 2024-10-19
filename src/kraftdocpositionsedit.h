@@ -58,7 +58,7 @@ public:
 
   void setDiscountButtonVisible( bool visible );
 
-signals:
+Q_SIGNALS:
   void addPositionClicked();
   void addExtraClicked();
   void importItemsClicked();

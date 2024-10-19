@@ -75,7 +75,7 @@ class Portal : public QMainWindow
      */
     virtual bool queryExit();
 
-  protected slots:
+  protected Q_SLOTS:
     void slotXRechnungCurrentDocument();
 
     void slotDocConverted(ReportFormat format, const QString& file,
@@ -85,7 +85,7 @@ class Portal : public QMainWindow
 
     QString slotConvertToXML();
 
-  public slots:
+  public Q_SLOTS:
 
     void show();
 

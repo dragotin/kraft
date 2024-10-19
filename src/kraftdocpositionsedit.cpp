@@ -83,7 +83,7 @@ KraftDocPositionsEdit::KraftDocPositionsEdit( QWidget *parent )
   : KraftDocEdit( parent )
 {
   QBoxLayout *topLayout = new QVBoxLayout();
-  topLayout->setMargin( 0 );
+  topLayout->setContentsMargins(0, 0, 0, 0);
 //TODO PORT QT5   topLayout->setSpacing( 0 ); // QDialog::spacingHint() );
 
   QHBoxLayout *upperHBoxLayout = new QHBoxLayout;

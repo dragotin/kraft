@@ -391,8 +391,8 @@ QDomDocument TemplKatalog::toXML()
   }
 
   QList<CatalogChapter> chaps = getKatalogChapters();
-  foreach( CatalogChapter theChapter, chaps ) {
-    QString chapter = theChapter.name();
+  for(const CatalogChapter& theChapter: chaps ) {
+    const QString chapter = theChapter.name();
     QDomElement chapElem = doc.createElement("chapter");
     QDomElement chapName = doc.createElement("chaptername");
     text = doc.createTextNode(chapter);

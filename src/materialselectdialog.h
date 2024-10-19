@@ -34,11 +34,11 @@ public:
   MaterialSelectDialog(QWidget * parent = 0);
   ~MaterialSelectDialog();
 
-public slots:
+public Q_SLOTS:
 
-protected slots:
+protected Q_SLOTS:
   void accept();
-signals:
+Q_SIGNALS:
   void materialSelected( int, double );
 private:
   MaterialKatalogListView *mKatalogListView;

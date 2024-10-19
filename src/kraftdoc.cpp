@@ -219,7 +219,7 @@ KraftDoc& KraftDoc::operator=( KraftDoc& origDoc )
 
   _state.setState(KraftDocState::State::New);
   KraftObj::operator=(origDoc);
-  _uuid = QString(); // clear the Uuid
+  _uuid = QUuid(); // clear the Uuid
 
   mAddressUid = origDoc.mAddressUid;
   mProjectLabel = origDoc.mProjectLabel;
@@ -307,7 +307,7 @@ bool KraftDoc::saveDocument(DocumentSaverBase& saver)
         _modified = false;
     }
 
-    emit saved(result);
+    Q_EMIT saved(result);
 
     // FIXME - add this check
     // if (res) {
@@ -412,7 +412,7 @@ void KraftDoc::slotRemovePosition( int pos )
 {
   // qDebug () << "Removing position " << pos;
 
-  foreach( DocPositionBase *dp, mPositions ) {
+  for( DocPositionBase *dp: mPositions ) {
     // qDebug () << "Comparing " << pos << " with " << dp->dbId().toString();
     if( dp->dbId() == pos ) {
       if( ! mPositions.removeAll( dp ) ) {
@@ -440,7 +440,7 @@ void KraftDoc::slotMoveUpPosition( int dbid )
 
   // qDebug () << "Found: "<< curPos << ", count: " << mPositions.count();
   if( curPos < mPositions.size()-1 ) {
-    mPositions.swap( curPos, curPos+1 );
+    mPositions.swapItemsAt( curPos, curPos+1 );
   }
 }
 
@@ -459,7 +459,7 @@ void KraftDoc::slotMoveDownPosition( int dbid )
 
   // qDebug () << "Found: "<< curPos << ", count: " << mPositions.count();
   if( curPos > 0 ) {
-    mPositions.swap( curPos, curPos-1 );
+    mPositions.swapItemsAt( curPos, curPos-1 );
   }
 }
 
@@ -569,7 +569,7 @@ QString KraftDoc::reducedTaxPercentStr() const
 QString KraftDoc::country() const
 {
     QLocale *loc = DefaultProvider::self()->locale();
-    return loc->countryToString(loc->country());
+    return loc->territoryToString(loc->territory());
 }
 
 QString KraftDoc::language() const
@@ -667,7 +667,6 @@ void KraftDoc::slotNewIdent(const QString& ident)
     delete generator;
 }
 
-
  /**
   * @brief KraftDoc::resolveMacros
   * @param txtWithMacros - the string that might contain any macros
@@ -688,58 +687,59 @@ void KraftDoc::slotNewIdent(const QString& ident)
      QString myStr{txtWithMacros};
      QMap<QString, int> seenTags;
 
-     QRegExp rxIf("\\s{1}IF_ANY_HAS_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegExp rxEndif("\\s{1}END_HAS_TAG");
-     QRegExp rxAmount("ITEM_COUNT_WITH_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegExp rxAddDate("DATE_ADD_DAYS\\(\\s*(\\-{0,1}\\d+)\\s*\\)");
+     QRegularExpression rxIf("\\s{1}IF_ANY_HAS_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rxEndif("\\s{1}END_HAS_TAG");
+     QRegularExpression rxAmount("ITEM_COUNT_WITH_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rxAddDate("DATE_ADD_DAYS\\(\\s*(\\-{0,1}\\d+)\\s*\\)");
      // look for tag SUM_PER_TAG( HNDL )
-     QRegExp rx("NETTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegExp rxBrutto("BRUTTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
-     QRegExp rxVat("VAT_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rx("NETTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rxBrutto("BRUTTO_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
+     QRegularExpression rxVat("VAT_SUM_PER_TAG\\(\\s*(\\w+)\\s*\\)");
 
      int pos{0};
      QMap<QString, Geld> bruttoSums;
      QMap<QString, Geld> vatSums;
      Geld nettoSum;
+     QRegularExpressionMatch match;
 
-     while ((pos = rx.indexIn(myStr, pos)) != -1) {
+    while((pos = myStr.indexOf(rx, pos, &match)) > -1) {
+        const QString lookupTag = match.captured(1);
+        bruttoSums[lookupTag] = Geld();
+        vatSums[lookupTag] = Geld();
 
-         const QString lookupTag = rx.cap(1);
-         bruttoSums[lookupTag] = Geld();
-         vatSums[lookupTag] = Geld();
+        for (DocPositionBase *pb : dposList) {
+            DocPosition *p = static_cast<DocPosition*>(pb);
+            if (!p->toDelete() && p->hasTag(lookupTag)) {
+                Geld netto = p->overallPrice();
 
-         for (DocPositionBase *pb : dposList) {
-             DocPosition *p = static_cast<DocPosition*>(pb);
-             if (!p->toDelete() && p->hasTag(lookupTag)) {
-                 Geld netto = p->overallPrice();
+                Geld tax;
+                if (p->taxType() == DocPositionBase::TaxType::TaxFull)
+                    tax = netto.percent(fullTax);
+                else if (p->taxType() == DocPositionBase::TaxType::TaxReduced)
+                    tax = netto.percent(redTax);
 
-                 Geld tax;
-                 if (p->taxType() == DocPositionBase::TaxType::TaxFull)
-                     tax = netto.percent(fullTax);
-                 else if (p->taxType() == DocPositionBase::TaxType::TaxReduced)
-                     tax = netto.percent(redTax);
+                bruttoSums[lookupTag] += netto;
+                bruttoSums[lookupTag] += tax;
+                vatSums[lookupTag] += tax;
+                nettoSum += netto;
+            }
+        }
 
-                 bruttoSums[lookupTag] += netto;
-                 bruttoSums[lookupTag] += tax;
-                 vatSums[lookupTag] += tax;
-                 nettoSum += netto;
-             }
-         }
+        myStr.replace(pos, match.captured().length(), nettoSum.toLocaleString());
+    }
 
-         myStr.replace(pos, rx.matchedLength(), nettoSum.toLocaleString());
-     }
-
-     // replace the Brutto- and vat tags if exist
+    // replace the Brutto- and vat tags if exist
      pos = 0;
-     while ((pos = rxBrutto.indexIn(myStr, pos)) != -1) {
-         const QString lookupTag = rxBrutto.cap(1);
+     while ((pos = myStr.indexOf(rxBrutto, pos, &match)) > -1) {
+         const QString lookupTag = match.captured(1);
          if (bruttoSums.contains(lookupTag)) {
-             myStr.replace(pos, rxBrutto.matchedLength(), bruttoSums[lookupTag].toLocaleString());
+             myStr.replace(pos, match.captured().length(), bruttoSums[lookupTag].toLocaleString());
          } else {
              qDebug() << "No Brutto sums computed for" << lookupTag;
          }
      }
 
+#if 0
      // vat tags
      pos = 0;
      while ((pos = rxVat.indexIn(myStr, pos)) != -1) {
@@ -799,6 +799,7 @@ void KraftDoc::slotNewIdent(const QString& ident)
              myStr.remove(pos, len);
          }
      }
+#endif
      return myStr;
  }
 

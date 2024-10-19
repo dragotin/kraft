@@ -31,11 +31,11 @@ class AddressTemplateProvider : public TemplateProvider
 public:
   AddressTemplateProvider( QWidget* );
 
-signals:
+Q_SIGNALS:
   void newAddress( Addressee );
   void addressToDocument( const Addressee& );
 
-public slots:
+public Q_SLOTS:
   void slotNewTemplate() override;
   void slotEditTemplate() override;
   void slotDeleteTemplate() override;

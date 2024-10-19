@@ -48,7 +48,7 @@ void HeaderTemplateProvider::slotNewTemplate()
     dbID newId = DefaultProvider::self()->saveDocumentText( dt );
     dt.setDbId( newId );
 
-    emit newHeaderText( dt );
+    Q_EMIT newHeaderText( dt );
   }
 }
 
@@ -76,7 +76,7 @@ void HeaderTemplateProvider::slotEditTemplate()
     /* save to database */
     DefaultProvider::self()->saveDocumentText( dt );
 
-    emit updateHeaderText( dt );
+    Q_EMIT updateHeaderText( dt );
   }
 
 }
@@ -84,17 +84,17 @@ void HeaderTemplateProvider::slotEditTemplate()
 void HeaderTemplateProvider::slotDeleteTemplate()
 {
   DefaultProvider::self()->deleteDocumentText( currentText() );
-  emit deleteHeaderText( currentText() );
+  Q_EMIT deleteHeaderText( currentText() );
 }
 
 void HeaderTemplateProvider::slotTemplateToDocument()
 {
   // qDebug () << "Moving template to document";
 
-  emit headerTextToDocument(currentText(), true);
+  Q_EMIT headerTextToDocument(currentText(), true);
 }
 
 void HeaderTemplateProvider::slotInsertTemplateToDocument()
 {
-    emit headerTextToDocument(currentText(), false);
+    Q_EMIT headerTextToDocument(currentText(), false);
 }

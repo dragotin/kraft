@@ -83,7 +83,7 @@ bool DocumentFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sou
     bool accepted = false;
 
     // filter works on the document ID, the client name and the document type.
-    const QRegExp filter = filterRegExp();
+    const QRegularExpression filter = filterRegularExpression();
     if( filter.pattern().isEmpty() ) {
         accepted = true;
     } else {

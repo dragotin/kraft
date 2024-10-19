@@ -33,7 +33,7 @@ class DocDigestHtmlView : public HtmlView
 public:
     DocDigestHtmlView( QWidget *parent );
 
-protected slots:
+protected Q_SLOTS:
     void slotLinkClicked(const QUrl& url);
 };
 
@@ -44,7 +44,7 @@ public:
     explicit DocDigestDetailView(QWidget *parent = 0);
     void initViewActions(const std::array<QAction *, 4> actions);
 
-public slots:
+public Q_SLOTS:
     void slotShowStart();
     void slotShowDocDetails(const DocDigest &);
     void slotClearView();

@@ -296,7 +296,7 @@ void DocPostCard::slotUrlSelected( const QUrl& kurl)
             // qDebug () << "Footer selected!" << endl;
             id = KraftDoc::Part::Footer;
         }
-        emit selectPage( id );
+        Q_EMIT selectPage( id );
     }
 }
 

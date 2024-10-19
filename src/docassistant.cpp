@@ -359,7 +359,7 @@ void DocAssistant::slotToggleShowTemplates( bool on )
     // hide the details
     setFullPreview( true, mActivePage );
   }
-  emit toggleShowTemplates( on );
+  Q_EMIT toggleShowTemplates( on );
 }
 
 DocPostCard *DocAssistant::postCard()
@@ -385,7 +385,7 @@ void DocAssistant::slotSelectDocPart( KraftDoc::Part p )
   } else {
     // qDebug () << "Alert: Unknown document part id: " << p;
   }
-  emit selectPage( p );
+  Q_EMIT selectPage( p );
   slotToggleShowTemplates( !mFullPreview );
   slotTemplateSelectionChanged( ); // hide the add, edit- and del buttons
 }

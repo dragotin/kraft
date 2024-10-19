@@ -75,6 +75,7 @@ private:
 class KraftDoc : public QObject, public KraftObj
 {
     Q_OBJECT
+
     Q_PROPERTY(QString docType READ docType)
     Q_PROPERTY(QString state READ (_state.stateString))
     Q_PROPERTY(bool isDraftState READ isDraftState)
@@ -260,7 +261,7 @@ public:
 
     KraftDocState& state() { return _state; }
 
-public slots:
+ public Q_SLOTS:
     /** calls redrawDocument() on all views connected to the document object and is
    *  called by the view by which the document has been changed.
    *  As this view normally repaints itself, it is excluded from the paintEvent.
@@ -276,7 +277,7 @@ public slots:
     void finalize();
     void slotNewIdent(const QString&);
 
-signals:
+Q_SIGNALS:
     void saved(bool);
 
 protected:
@@ -332,5 +333,6 @@ private:
     double _fullTax, _redTax;
     friend class DocumentMan;
 };
+
 
 #endif // KraftDoc_H

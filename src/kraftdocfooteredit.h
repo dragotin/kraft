@@ -31,7 +31,7 @@ public:
 
   QString greeting();
 
-public slots:
+public Q_SLOTS:
   void slotGreeterIndexChanged(int newIndex);
   void slotGreeterEditTextChanged(const QString& newText);
   void slotSetGreeting( const QString& newText );

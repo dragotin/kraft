@@ -56,7 +56,7 @@ public:
 
   void saveSplitterSizes();
 
-public slots:
+public Q_SLOTS:
   void slotShowCatalog();
   void slotShowHeaderTemplates();
   void slotShowFooterTemplates();
@@ -71,7 +71,7 @@ public slots:
 
   void slotSetDocType( const QString& );
 
-protected slots:
+protected Q_SLOTS:
   void slotTemplateSelectionChanged();
   void slotFooterTextDeleted( const DocText& );
   void slotHeaderTextDeleted( const DocText& );
@@ -81,7 +81,7 @@ protected slots:
   void slotNewFooterDocText( const DocText& );
   void slotUpdateFooterDocText( const DocText& );
 
-signals:
+Q_SIGNALS:
   void selectPage( KraftDoc::Part );
   void templatesToDocument( Katalog*, CatalogTemplateList, const QString&);
   void toggleShowTemplates( bool );

@@ -23,6 +23,7 @@
 #include <QSqlDatabase>
 #include <QMap>
 #include <QDateTime>
+#include <QObject>
 
 #include "metaxmlparser.h"
 
@@ -35,36 +36,7 @@ class KraftDoc;
   *@author Klaas Freitag
   */
 
-class SqlCommand
-{
-public:
-  SqlCommand();
-  SqlCommand( const QString&, const QString&, bool );
-
-  QString message();
-  QString command();
-  bool    mayfail();
-
-private:
-  QString mSql;
-  QString mMessage;
-  bool    mMayFail;
-};
-
-class SqlCommandList: public QList<SqlCommand>
-{
-public:
-  SqlCommandList();
-
-  QList<MetaDocTypeAdd> metaAddDocTypeList() const;
-  void setMetaAddDocTypeList( QList<MetaDocTypeAdd> list );
-  void setNumber(int no);
-  int number();
-private:
-  QList<MetaDocTypeAdd> _docTypeMetaList;
-  int _number;
-};
-
+class SqlCommandList;
 
 class KraftDB : public QObject
 {
@@ -137,7 +109,7 @@ public:
 
   KraftDB();
 
-signals:
+Q_SIGNALS:
   void statusMessage( const QString& );
   void processedSqlCommand( bool );
 
@@ -157,6 +129,37 @@ private: // Private attributes
   QString mDatabaseName;
   DbInitDialog *mInitDialog;
   SetupAssistant *mSetupAssistant;
+};
+
+
+class SqlCommand
+{
+public:
+  SqlCommand();
+  SqlCommand( const QString&, const QString&, bool );
+
+  QString message();
+  QString command();
+  bool    mayfail();
+
+private:
+  QString mSql;
+  QString mMessage;
+  bool    mMayFail;
+};
+
+class SqlCommandList: public QList<SqlCommand>
+{
+public:
+  SqlCommandList();
+
+  QList<MetaDocTypeAdd> metaAddDocTypeList() const;
+  void setMetaAddDocTypeList( QList<MetaDocTypeAdd> list );
+  void setNumber(int no);
+  int number();
+private:
+  QList<MetaDocTypeAdd> _docTypeMetaList;
+  int _number;
 };
 
 #endif

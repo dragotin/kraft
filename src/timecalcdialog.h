@@ -43,9 +43,9 @@ public:
     int     getDauer();
     bool    allowGlobal();
     QString unitStr() const;
-signals:
+Q_SIGNALS:
     void timeCalcPartChanged(TimeCalcPart*);
-protected slots:
+protected Q_SLOTS:
     void accept();
 
 private:

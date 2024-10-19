@@ -42,7 +42,7 @@ public:
 
   void saveState();
 
-public slots:
+public Q_SLOTS:
   void slFreshupItem( QTreeWidgetItem *, void*, QLocale* = 0  );
 
 protected:

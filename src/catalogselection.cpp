@@ -44,7 +44,7 @@ CatalogSelection::CatalogSelection( QWidget *parent )
       mWidgets(nullptr)
 {
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->setMargin(0);
+    // layout->setMargin(0); Qt6 port FIXME
     QHBoxLayout *hb = new QHBoxLayout;
     layout->addLayout(hb);
     QLabel *l = new QLabel( i18n( "Selected &catalog: " ) );
@@ -76,7 +76,7 @@ void CatalogSelection::setupCatalogList()
 
 void CatalogSelection::slotCatalogDoubleClicked( QModelIndex )
 {
-  emit actionAppendPosition();
+  Q_EMIT actionAppendPosition();
 }
 
 CatalogTemplateList CatalogSelection::currentSelectedPositions()
@@ -174,7 +174,7 @@ void CatalogSelection::slotSelectCatalog( const QString& katName )
         if ( katListView ) {
             mWidgets->setCurrentWidget(katListView);
             mListSearchLine->setListView(katListView);
-            emit selectionChanged(katListView->currentItem(), nullptr);
+            Q_EMIT selectionChanged(katListView->currentItem(), nullptr);
         }
     }
 }

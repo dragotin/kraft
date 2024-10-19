@@ -30,7 +30,7 @@ class HtmlView : public QTextBrowser
 
     QString title() const { return mTitle; }
 
-  public slots:
+  public Q_SLOTS:
     void setTitle( const QString & );
     void setStylesheetFile( const QString & );
     void displayContent( const QString& );
@@ -42,7 +42,7 @@ class HtmlView : public QTextBrowser
 
     void updateZoomActions();
 
-  signals:
+  Q_SIGNALS:
     void openUrl( const QUrl& );
 
   private:

@@ -33,7 +33,7 @@ public:
   void setModel ( QAbstractItemModel * model );
   void unhideRows();
 
-private slots:
+private Q_SLOTS:
   void headerDataChanged(Qt::Orientation orientation, int first, int last);
 };
 

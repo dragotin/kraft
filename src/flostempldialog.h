@@ -49,13 +49,13 @@ public:
     bool templateIsNew() {
       return m_templateIsNew;
     };
-signals:
+Q_SIGNALS:
     void takeMaterialAnswer(const QString&);
     void editAccepted( FloskelTemplate* );
     void editRejected();
     void chapterChanged(int);
 
-public slots:
+public Q_SLOTS:
     virtual void slAddFixPart();
     virtual void slEditFixPart();
     virtual void slRemoveFixPart();

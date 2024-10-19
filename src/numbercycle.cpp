@@ -309,11 +309,11 @@ QMap<QString, NumberCycle> NumberCycles::load()
     }
 
     QDomDocument domDoc;
-
     const QByteArray arr = file.readAll();
-    QString errMsg;
-    if (!domDoc.setContent(arr, &errMsg)) {
-        qDebug() << "Unable to set file content as xml:" << errMsg;
+    QDomDocument::ParseResult pr = domDoc.setContent(arr);
+
+    if (!pr) {
+        qDebug() << "Unable to set file content as xml:" << pr.errorMessage << "at line" <<pr.errorLine;
         file.close();
         return map;
     }

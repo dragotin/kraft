@@ -63,7 +63,7 @@ protected:
     void readConfig();
     void writeConfig();
 
-protected slots:
+protected Q_SLOTS:
     void accept();
 
     void slotAddTax();

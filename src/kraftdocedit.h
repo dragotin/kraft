@@ -15,10 +15,10 @@ public:
   void setColor( const QColor & );
   QColor color() const;
 
-signals:
+Q_SIGNALS:
   void modified(); 
 
-public slots:
+public Q_SLOTS:
   void slotModified();
 
 private:

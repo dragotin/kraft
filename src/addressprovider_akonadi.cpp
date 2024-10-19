@@ -151,7 +151,7 @@ void AddressProviderPrivate::searchResult( KJob* job )
     if( job->error() ) {
         // both uid and err message can be empty
         const QString errMsg = job->errorString();
-        emit lookupError(uid, errMsg );
+        Q_EMIT lookupError(uid, errMsg );
         // qDebug () << "Address Search job failed: " << job->errorString();
     } else {
 	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
@@ -163,10 +163,10 @@ void AddressProviderPrivate::searchResult( KJob* job )
         if( contacts.size() > 0 ) {
             contact = contacts[0];
             // qDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
-            emit addresseeFound(uid, contact);
+            Q_EMIT addresseeFound(uid, contact);
         } else {
             // qDebug() << "No search result for UID" << uid;
-            emit addresseeNotFound(uid);
+            Q_EMIT addresseeNotFound(uid);
         }
     }
 
@@ -260,7 +260,8 @@ QString AddressProviderPrivate::formattedAddress( const KContacts::Addressee& co
   if( address.isEmpty() ) {
     re = contact.realName();
   } else {
-    re = address.formattedAddress( contact.realName(), contact.organization() );
+    re = address.formatted(  KContacts::AddressFormatStyle::MultiLineDomestic,
+                             contact.realName(), contact.organization() );
   }
   return re;
 }

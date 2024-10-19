@@ -22,17 +22,10 @@
 
 #include <qmap.h>
 
-#include <QDialog>
+#include <QtCore>
 
 #include "tagman.h"
 
-class QWidget;
-class QTreeWidget;
-class QTreeWidgetItem;
-class QStringList;
-class QPushButton;
-class QLineEdit;
-class QTextEdit;
 
 class TagTemplateEditor: public QDialog
 {
@@ -45,7 +38,7 @@ class TagTemplateEditor: public QDialog
   void setTemplate( const TagTemplate& );
   TagTemplate currentTemplate();
    
-private slots:
+private Q_SLOTS:
   void slotColorSelect(bool);
   void setColorButton();
 
@@ -69,7 +62,7 @@ public:
 
   TagTemplate currentTemplate();
 
-protected slots:
+protected Q_SLOTS:
   void slotSelectionChanged();
   void slotAddTemplate();
   void slotEditTemplate();

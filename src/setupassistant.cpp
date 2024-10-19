@@ -560,7 +560,7 @@ void SetupAssistant::finalizePage()
     txt += "</ul>";
     txt += i18n("<p>If you press <i>Finish</i> now, the new database configuration is stored in Krafts configuration.</p>");
   } else {
-    foreach( QString err, mErrors ) {
+    for(const QString& err: mErrors ) {
       txt += "<p>" + err + "</p>";
     }
   }
@@ -616,7 +616,6 @@ void SetupAssistant::startDatabaseUpdate()
     connect( KraftDB::self(), SIGNAL( processedSqlCommand( bool ) ),
              mUpgradeDbPage, SLOT( slotCountFillProgress( bool ) ) );
 
-    int doneOverallCmds =  0;
     bool errors = false;
 
     currentVer = KraftDB::self()->currentSchemaVersion();

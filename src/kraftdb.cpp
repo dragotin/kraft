@@ -19,7 +19,7 @@
 #include <QFile>
 #include <QSqlQuery>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QSqlError>
 #include <QDir>
@@ -465,7 +465,7 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
 
     foreach( SqlCommand cmd, commands ) {
         if( !cmd.message().isEmpty() ) {
-            emit statusMessage( cmd.message() );
+            Q_EMIT statusMessage( cmd.message() );
         }
 
         if( !cmd.command().isEmpty() ) {
@@ -483,7 +483,7 @@ int KraftDB::processSqlCommands( const SqlCommandList& commands )
                 qDebug () << "###### Failed SQL Command " << cmd.command() << ": " << err.text();
             }
             q.clear();
-            emit processedSqlCommand( res );
+            Q_EMIT processedSqlCommand( res );
 
         }
     }

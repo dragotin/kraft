@@ -351,7 +351,7 @@ TreeItem *DateModel::findYearItem(int year)
     TreeItem *yearItem = NULL;
 
     QList<TreeItem*> yearitems = rootItem->children();
-    foreach( TreeItem *item, yearitems ) {
+    for( TreeItem *item: yearitems ) {
         AbstractIndx *indx = item->payload();
         if( indx->year() == year ) {
             yearItem = item;
@@ -368,7 +368,7 @@ TreeItem *DateModel::findMonthItem(int year, int month)
 
     if( yearItem ) {
         QList<TreeItem*> monthItems = yearItem->children();
-        foreach( TreeItem *item, monthItems ) {
+        for( TreeItem *item: monthItems ) {
             AbstractIndx *indx = static_cast<AbstractIndx*>(item->payload());
             if( indx->month() == month ) {
                 monthItem = item;
@@ -514,7 +514,7 @@ void DateModel::updateData(const DocDigest& digest)
             QModelIndex monthIdx = index(month, 0, yearIdx);
 
             QModelIndex rIdx = index(r, 0, monthIdx);
-            emit dataChanged(rIdx, rIdx);
+            Q_EMIT dataChanged(rIdx, rIdx);
         }
     }
 

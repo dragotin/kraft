@@ -42,7 +42,7 @@ bool DocIdentGenerator::generate(KraftDoc *doc)
 
     const QString ident = NumberCycles::generateIdent(ncName, dt.name(), doc->date(), doc->addressUid());
 
-    emit newIdent(ident);
+    Q_EMIT newIdent(ident);
     return true;
 }
 

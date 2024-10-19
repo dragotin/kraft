@@ -129,7 +129,7 @@ void MyIdentity::load()
 void MyIdentity::slotAddresseeFound(const QString& uid, const KContacts::Addressee& contact)
 {
     _myContact = contact;
-    emit myIdentityLoaded(uid, contact);
+    Q_EMIT myIdentityLoaded(uid, contact);
 }
 
 KContacts::Addressee MyIdentity::contact() const
@@ -166,7 +166,7 @@ void MyIdentity::save(const QString& uuid, const KContacts::Addressee& contact)
         QFile::remove(file); // remove a maybe existing file
     }
 
-    // emit the signal for consumers of the address
+    // Q_EMIT the signal for consumers of the address
     slotAddresseeFound(uuid, contact);
 
     // update the settings - clear the user name as it is deprecated anyway

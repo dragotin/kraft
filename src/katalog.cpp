@@ -129,7 +129,7 @@ QList<CatalogChapter> Katalog::getKatalogChapters( bool freshup )
 
 QString Katalog::chapterName(const dbID& id)
 {
-  foreach( CatalogChapter chapter, mChapters ) {
+  for(const CatalogChapter& chapter: mChapters) {
     if( chapter.id() == id ) {
       return chapter.name();
     }
@@ -139,7 +139,7 @@ QString Katalog::chapterName(const dbID& id)
 
 dbID Katalog::chapterID( const QString& name )
 {
-    foreach( CatalogChapter chapter, mChapters ) {
+    for(const CatalogChapter& chapter: mChapters) {
       if( chapter.name() == name ) {
         return chapter.id();
       }

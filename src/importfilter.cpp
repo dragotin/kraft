@@ -17,7 +17,7 @@
 
 // include files for QT
 #include <QFile>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QStandardPaths>
 #include <QLocale>
@@ -60,7 +60,6 @@ bool ImportFilter::readDefinition( const QString& name )
   }
 
   QTextStream t( &f );
-  t.setCodec("UTF-8");
 
   while ( !t.atEnd() ) {
     mDefinition << t.readLine();
@@ -201,9 +200,7 @@ DocPositionList DocPositionImportFilter::import( const QUrl &inFile )
   }
   if ( ok ) {
     QTextStream t( &f );
-    t.setCodec("UTF-8");
 
-    int cnt = 0;
     while ( !t.atEnd() ) {
       cnt++;
       QString l = t.readLine().trimmed();
@@ -226,7 +223,7 @@ DocPositionList DocPositionImportFilter::import( const QUrl &inFile )
 // creates a DocPosition from one line of the imported file
 DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& ok )
 {
-  QStringList parts = l.split( mSeparator, QString::KeepEmptyParts );
+  QStringList parts = l.split( mSeparator, Qt::KeepEmptyParts );
   // qDebug () << "Importing raw line " << l;
 
   QString h;
@@ -269,11 +266,10 @@ DocPosition DocPositionImportFilter::importDocPosition( const QString& l, bool& 
  }
 
  if ( !mTags.isEmpty() ) {
-   QStringList tags =  mTags.split(QRegExp( "\\s*,\\s*" ));
+   QStringList tags =  mTags.split(QRegularExpression( "\\s*,\\s*" ));
 
-   for ( QStringList::Iterator it = tags.begin(); it != tags.end(); ++it ) {
-     QString t = ( *it ).trimmed();
-     pos.addTag( t );
+   for (const QString& t : tags) {
+     pos.addTag(t);
    }
  }
 
