@@ -617,7 +617,7 @@ void SetupAssistant::startDatabaseUpdate()
              mUpgradeDbPage, SLOT( slotCountFillProgress( bool ) ) );
 
     bool errors = false;
-
+    int doneOverallCmds{0};
     currentVer = KraftDB::self()->currentSchemaVersion();
     for( SqlCommandList cmdList : commandLists ) {
         currentVer++;

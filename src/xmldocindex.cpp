@@ -27,7 +27,7 @@
 
 QMap<QString, QString> XmlDocIndex::_identMap = QMap<QString, QString>();
 QMap<QString, QString> XmlDocIndex::_uuidMap = QMap<QString, QString>();
-QMultiMap<QDate, QString> XmlDocIndex::_dateMap = QMap<QDate, QString>();
+QMultiMap<QDate, QString> XmlDocIndex::_dateMap = QMultiMap<QDate, QString>();
 QFuture<void> XmlDocIndex::_future;
 
 XmlDocIndex::XmlDocIndex()

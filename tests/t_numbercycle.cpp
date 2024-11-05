@@ -46,7 +46,7 @@ bool directFileChange(const QString& thefile, int from, int to) {
 
 class T_NumberCycle: public QObject {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void initTestCase()
     {
         _baseDir = DefaultProvider::self()->createV2BaseDir(_dir.path());

@@ -746,7 +746,7 @@ void KraftView::slotMovePositionUp( int pos )
     return;
   }
 
-  mPositionWidgetList.swap( pos, pos-1 );
+  mPositionWidgetList.swapItemsAt( pos, pos-1 );
   w1 = mPositionWidgetList.at( pos-1 );
   w2 = mPositionWidgetList.at( pos ); // Porting ATTENTION: check assignment of w1, w1
 
@@ -783,7 +783,7 @@ void KraftView::slotMovePositionDown( int pos )
     return;
   }
 
-  mPositionWidgetList.swap( pos, pos+1);
+  mPositionWidgetList.swapItemsAt( pos, pos+1);
   w1 = mPositionWidgetList.at( pos+1 );
   w2 = mPositionWidgetList.at( pos );  // Porting ATTENTION: check assignment of w1, w1
 

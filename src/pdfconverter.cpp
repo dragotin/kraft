@@ -20,7 +20,6 @@
 
 #include <QObject>
 #include <QTemporaryFile>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QDebug>
 #include <QApplication>

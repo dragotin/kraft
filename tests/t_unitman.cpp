@@ -41,7 +41,7 @@ void init_test_db()
 class T_UnitMan : public QObject {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void initTestCase()
     {
         init_test_db();

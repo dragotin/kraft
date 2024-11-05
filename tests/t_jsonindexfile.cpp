@@ -44,7 +44,7 @@ namespace {
 
 class T_JsonIndexFile: public QObject {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void initTestCase()
     {
         QVERIFY(_dir.isValid());

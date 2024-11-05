@@ -47,7 +47,7 @@ TextSelection::TextSelection( QWidget *parent, KraftDoc::Part part )
 
   /* a view for the entry text repository */
   QVBoxLayout *vbox = new QVBoxLayout;
-  vbox->setMargin(0);
+  vbox->setContentsMargins(0, 0, 0, 0);
 
   mTextNameView = new QListView;
   vbox->addWidget(mTextNameView);

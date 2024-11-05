@@ -363,7 +363,7 @@ QString DefaultProvider::createV2BaseDir(const QString& base)
     }
 
     if (v2base.isEmpty()) {
-        v2base = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+        v2base = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
         v2base.append("/v2");
 
         currV2Dir.setPath(v2base);

@@ -829,7 +829,7 @@ void FlosTemplDialog::slSetNewText()
                 longest = p;
         }
         QFontMetrics fm(m_textDispFix->font());
-        int w = 10+fm.width(longest);
+        int w = 10+fm.boundingRect(longest).width();
 
         if( m_textDispTime) {
             m_textDispTime->setText(t);

@@ -86,7 +86,7 @@ DocDigestDetailView::DocDigestDetailView(QWidget *parent) :
   _leftDetails->setWordWrap(true);
 
   // --- The middle HTML based view
-  hbox->setMargin(0);
+  hbox->setContentsMargins(0,0,0,0);
   setLayout( hbox );
   mHtmlCanvas = new DocDigestHtmlView( this );
   mHtmlCanvas->setFrameStyle(0);

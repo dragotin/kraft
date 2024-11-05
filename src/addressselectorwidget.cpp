@@ -204,7 +204,7 @@ bool AddressSortProxyModel::filterAcceptsRow(int row, const QModelIndex &parent)
     if( contact.isEmpty() ) {
         return true;
     } else {
-        const QString p = filterRegExp().pattern();
+        const QString p = filterRegularExpression().pattern();
         return contactMatchesFilter(contact, p );
     }
 
@@ -232,7 +232,7 @@ KraftContactViewer::KraftContactViewer(QWidget *parent)
 #endif
 {
     QVBoxLayout *lay = new QVBoxLayout;
-    lay->setMargin(0);
+    lay->setContentsMargins(0,0,0,0);
     setLayout(lay);
 #ifdef HAVE_AKONADI
 #if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)

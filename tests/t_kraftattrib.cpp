@@ -9,7 +9,7 @@
 
 class T_KraftAttrib: public QObject {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
 
     // copies the example xml document to a temporary path that simulates the
     // storage tree of kraft.

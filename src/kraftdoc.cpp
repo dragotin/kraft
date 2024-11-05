@@ -739,15 +739,15 @@ void KraftDoc::slotNewIdent(const QString& ident)
          }
      }
 
-#if 0
-     // vat tags
      pos = 0;
-     while ((pos = rxVat.indexIn(myStr, pos)) != -1) {
-         const QString lookupTag = rxVat.cap(1);
+     while ((pos = myStr.indexOf(rxVat, pos, &match))> -1) {
+         const QString lookupTag = match.captured(1);
          if (vatSums.contains(lookupTag)) {
-             myStr.replace(pos, rxVat.matchedLength(), vatSums[lookupTag].toLocaleString());
+             myStr.replace(pos, match.captured().length(), vatSums[lookupTag].toLocaleString());
          }
+
      }
+
 
      // generate a list of all tags in any position
      for (DocPositionBase *pb : dposList) {
@@ -765,41 +765,40 @@ void KraftDoc::slotNewIdent(const QString& ident)
      }
 
      pos = 0;
-     while ((pos = rxAmount.indexIn(myStr, pos)) != -1) {
-         const QString lookupTag = rxAmount.cap(1);
+     while ((pos = myStr.indexOf(rxAmount, pos, &match))> -1) {
+         const QString lookupTag = match.captured(1);
          int amount{0};
          if (seenTags.contains(lookupTag)) {
              amount = seenTags[lookupTag];
          }
-         myStr.replace(pos, rxAmount.matchedLength(), QString::number(amount));
+         myStr.replace(pos, match.captured().length(), QString::number(amount));
      }
 
      pos = 0;
-     while ((pos = rxAddDate.indexIn(myStr, pos)) != -1) {
-         const QString addDaysStr = rxAddDate.cap(1);
+     while ((pos = myStr.indexOf(rxAddDate, pos, &match))> -1) {
+         const QString addDaysStr = match.captured(1);
          qint64 addDays = addDaysStr.toInt();
          QDate newDate = date.addDays(addDays);
          const QString newDateStr = Format::toDateString(newDate, dateFormat.isEmpty() ? KraftSettings::self()->dateFormat() : dateFormat);
-         myStr.replace(pos, rxAddDate.matchedLength(), newDateStr);
+         myStr.replace(pos, match.captured().length(), newDateStr);
      }
 
      // IF_ANY_HAS_TAG(tag) ..... END_HAS_TAG
      // check the IF_HAS_TAG(tag) ... END_HAS_TAG macro
      pos = 0;
-     while ((pos = rxIf.indexIn(myStr, pos)) != -1) {
-         const QString lookupTag = rxIf.cap(1);
+     while ((pos = myStr.indexOf(rxIf, pos, &match))> -1) {
+         const QString lookupTag = match.captured(1);
          int endpos = myStr.lastIndexOf(rxEndif);
          if (endpos == -1) endpos = myStr.length();
          if (seenTags.contains(lookupTag)) {
              myStr.remove(endpos, 12 /* length of END_HAS_TAG */);
-             myStr.remove(pos, rxIf.matchedLength());
+             myStr.remove(pos, match.captured().length());
          } else {
              // the tag was not seen, so this needs to be deleted.
              int len = endpos-pos+12;
              myStr.remove(pos, len);
          }
      }
-#endif
      return myStr;
  }
 

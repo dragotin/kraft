@@ -49,14 +49,14 @@ ReportItem::ReportItem(DocPositionBase *dpb)
         re = QStringLiteral("2");
     }
 
-    _unit = dp->unit().einheit(_amount > 1 ? 2 : 1);
+    _unit = dp->unit().einheit(dp->amount() > 1 ? 2 : 1);
     _taxMarker = re;
     _uuid = dp->uuid();
 }
 
 QString ReportItem::htmlText()
 {
-    const QStringList li = _text.toHtmlEscaped().split( "\n", QString::KeepEmptyParts );
+    const QStringList li = _text.toHtmlEscaped().split( "\n", Qt::KeepEmptyParts );
     QString re = li.join("<br/>");
 
     return re;

@@ -51,7 +51,7 @@ AllDocsView::AllDocsView( QWidget *parent )
   QVBoxLayout *box = new QVBoxLayout;
   setLayout( box );
 
-  box->setMargin( 0 );
+  box->setContentsMargins(0,0,0,0);
   box->setSpacing( 0 );
 
   _searchLine = new QLineEdit(this);
@@ -140,7 +140,7 @@ QWidget* AllDocsView::initializeTreeWidget()
 
   //Add treewidgets to the toolbox: All docs view
   QVBoxLayout *vb1 = new QVBoxLayout;
-  vb1->setMargin(0);
+  vb1->setContentsMargins(0,0,0,0);
   _stack = new QStackedWidget(this);
   _stack->addWidget(_tableView);
   _stack->addWidget(_dateView);

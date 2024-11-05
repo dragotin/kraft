@@ -33,7 +33,6 @@
 #include "headertemplateprovider.h"
 #include "footertemplateprovider.h"
 #include "catalogtemplateprovider.h"
-#include "addresstemplateprovider.h"
 
 DocAssistant::DocAssistant( QWidget *parent ):
   QSplitter( parent ), mFullPreview( true ),
@@ -43,7 +42,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   QWidget *topWidget = new QWidget;
   QVBoxLayout *topVBox = new QVBoxLayout;
-  topVBox->setMargin(0);
+  topVBox->setContentsMargins(0,0,0,0);
   topWidget->setLayout( topVBox );
 
   QHBoxLayout *buttonLayout = new QHBoxLayout;
@@ -68,7 +67,7 @@ DocAssistant::DocAssistant( QWidget *parent ):
 
   mTemplatePane = new QWidget;
   QVBoxLayout *bottomVBox = new QVBoxLayout;
-  bottomVBox->setMargin(0);
+  bottomVBox->setContentsMargins(0,0,0,0);
 
   mTemplatePane->setLayout( bottomVBox );
   addWidget( mTemplatePane );

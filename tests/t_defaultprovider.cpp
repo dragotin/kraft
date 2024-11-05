@@ -20,7 +20,7 @@ void createTestFile( const QString& testFile, const QString& content = QString()
     QVERIFY (file.open(QIODevice::WriteOnly));
     {
         QTextStream stream(&file);
-        stream << c << endl;
+        stream << c << Qt::endl;
     }
 }
 
@@ -32,7 +32,7 @@ class T_Defaultprovider: public QObject {
 private:
     QString _systemDir;
 
-private slots:
+private Q_SLOTS:
     void initTestCase()
     {
         const QStringList dirs = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);

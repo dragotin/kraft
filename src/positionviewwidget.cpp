@@ -162,7 +162,7 @@ PositionViewWidget::PositionViewWidget()
 
   this->setAutoFillBackground(true);
   this->setBaseSize(this->width(), 100);
-  this->layout()->setMargin( 6 );
+  this->layout()->setContentsMargins(6, 6, 6, 6);
 }
 
 void PositionViewWidget::setDocPosition( DocPositionBase *dp)
