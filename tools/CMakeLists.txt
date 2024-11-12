@@ -4,7 +4,8 @@ set(FINDCONTACT_SRC findcontact.cpp ../src/addressprovider.cpp ../src/addresspro
 
 set(AUTOMOC ON)
 
-#
+include_directories("../src")
+
 # For now there is only the Akonadi based address backend, and thus
 # the findcontact tool is only built if akonadi is there.
 # If there are other backends, this must be FIXED.
@@ -16,7 +17,7 @@ if(${AKO_PREFIX}Akonadi_FOUND)
         Qt6::Widgets
         KF6::Contacts
         ${AKO_PREFIX}::AkonadiCore
-        ${AKO_PREFIX}::AkonadiContact
+        ${AKO_PREFIX}::AkonadiContactCore
     )
 
     ########### install files ###############

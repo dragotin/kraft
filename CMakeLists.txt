@@ -7,11 +7,11 @@ FIND_PACKAGE(ECM ${ECM_MIN_VERSION} REQUIRED NO_MODULE)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 SET(KF_IGNORE_PLATFORM_CHECK TRUE)
 set(QT_MIN_VERSION 6.2.4)
-set(KF5_MIN_VERSION 5.68.0)
 
 set(AKO_PREFIX "KPim6")
 
@@ -82,13 +82,12 @@ find_package(KF6 REQUIRED COMPONENTS
     I18n
     Config
     Contacts
+    TextTemplate
 )
-# Grantlee templating engine
-find_package(KF6TextTemplate REQUIRED)
 
-# find_package(${AKO_PREFIX}Akonadi)
-# find_package(KPim6AkonadiContact)
-
+find_package(${AKO_PREFIX}Akonadi)
+find_package(${AKO_PREFIX}AkonadiContactCore)
+find_package(${AKO_PREFIX}AkonadiContactWidgets)
 
 if(${AKO_PREFIX}Akonadi_FOUND AND ${AKO_PREFIX}AkonadiContact_FOUND AND ${AKO_PREFIX}ContactEditor_FOUND)
    add_definitions(-DHAVE_AKONADI)

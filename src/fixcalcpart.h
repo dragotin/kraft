@@ -32,7 +32,7 @@ public:
 
     virtual Geld basisKosten();
 
-    /* der Preis für eine Einheit */
+    /* der Preis fuer eine Einheit */
     Geld unitPreis();
     void setUnitPreis( Geld );
 
