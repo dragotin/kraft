@@ -166,8 +166,6 @@ set( kraft_UIS
 
 ki18n_wrap_ui(kraft_SRCS ${kraft_UIS})
 
-
-
 set(KRAFT_LINK_LIBS
     Qt6::Core
     Qt6::Widgets
@@ -183,20 +181,26 @@ set(KRAFT_LINK_LIBS
 )
 if(${AKO_PREFIX}Akonadi_FOUND)
   list(APPEND KRAFT_LINK_LIBS
+    ${AKO_PREFIX}::AkonadiCore
+    ${AKO_PREFIX}::AkonadiWidgets
     ${AKO_PREFIX}::AkonadiContactCore
     ${AKO_PREFIX}::AkonadiContactWidgets
   )
 endif()
 
-add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
+qt_add_library(kraftlib STATIC ${KRAFT_RC_SRC} ${kraft_SRCS})
 
-qt_add_ui(kraftlib INCLUDE_PREFIX "src" SOURCES ${kraft_UIS})
+qt_add_ui(kraftlib  SOURCES ${kraft_UIS})
 
 target_compile_options(kraftlib PRIVATE -Wall -Wno-suggest-override)
+target_include_directories(kraftlib PRIVATE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/models ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
 
-add_executable(kraft main.cpp)
+qt_add_executable(kraft
+    MANUAL_FINALIZATION
+    main.cpp)
 
 set_target_properties(kraft PROPERTIES OUTPUT_NAME kraft)
+target_include_directories(kraft PRIVATE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(kraftlib
 PUBLIC
@@ -204,9 +208,12 @@ PUBLIC
 )
 
 target_link_libraries(kraft
-  PUBLIC
+  PRIVATE
     kraftlib
 )
+
+qt_finalize_executable(kraft)
+
 
 install(TARGETS kraft ${INSTALL_TARGETS_DEFAULT_ARGS})
 

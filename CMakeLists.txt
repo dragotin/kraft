@@ -89,8 +89,9 @@ find_package(${AKO_PREFIX}Akonadi)
 find_package(${AKO_PREFIX}AkonadiContactCore)
 find_package(${AKO_PREFIX}AkonadiContactWidgets)
 
-if(${AKO_PREFIX}Akonadi_FOUND AND ${AKO_PREFIX}AkonadiContact_FOUND AND ${AKO_PREFIX}ContactEditor_FOUND)
-   add_definitions(-DHAVE_AKONADI)
+if( ${AKO_PREFIX}AkonadiContactCore_FOUND AND ${AKO_PREFIX}AkonadiContactWidgets_FOUND )
+    message ("## Defined Akonadi FOUND")
+    add_definitions(-DHAVE_AKONADI)
 endif()
 
 find_package(Ctemplate REQUIRED)
@@ -98,16 +99,9 @@ find_package(Ctemplate REQUIRED)
 find_package(Asciidoctor)
 # Sets the variable ASCIIDOCTOR_FOUND
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
 # disable the warning about null-pointer zero. FIXME.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-zero-as-null-pointer-constant")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-suggest-override")
-
-# set(QT_DEFINITIONS "${Qt6Core_DEFINITIONS} ${Qt6Gui_DEFINITIONS} ${Qt6Widgets_DEFINITIONS}")
-# add_definitions(${QT_DEFINITIONS} )
-
-# include_directories( /usr/include/${AKO_PREFIX}/AkonadiCore )
-# include_directories(/usr/include/${AKO_PREFIX}/)
 
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
         ki18n_install(po)
