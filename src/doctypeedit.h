@@ -75,7 +75,6 @@ private:
 
   DocType mOrigDocType;
 
-  QStringList allNumberCycles();
   QStringList removedTypes() { return mRemovedTypes; }
 
   void removeTypeFromDb( const QString& );

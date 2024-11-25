@@ -50,11 +50,10 @@ QMap<QByteArray, int> DbToXMLConverter::convert(const QString& dBase)
 {
     QMap<int, int> years = yearMap();
 
-    // defaults to $HOME/.local/kraft/v2/current
-    // QString dBase = DefaultProvider::self()->createV2BaseDir();
+    // dBase defaults to $HOME/.local/kraft/v2/current
 
     if (dBase.isEmpty()) {
-        qDebug() << "A new v2 base path can not be created";
+        qDebug() << "convert called with empty database dir";
 
         return {};
     }

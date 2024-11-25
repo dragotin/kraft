@@ -21,42 +21,15 @@
 #include <QDebug>
 
 #ifdef HAVE_AKONADI
-#include <akonadi_version.h>
-
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5,20,0)
-#include <AkonadiContact/akonadi-contact_version.h>
-#else
-#define AKONADICONTACT_VERSION AKONADI_VERSION
-#endif
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 20, 0)
-#include <AkonadiContact/akonadi/contactsearchjob.h>
-#else
-#include <akonadi/contact/contactsearchjob.h>
-#endif
-
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
+#include <Akonadi/ContactSearchJob>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
-
 #include <Akonadi/CollectionFetchJob>
-
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/Control>
 #include <Akonadi/ServerManager>
-#else
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
-
-#include <AkonadiCore/CollectionFetchJob>
-
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
-#include <AkonadiCore/entitydisplayattribute.h>
-#include <AkonadiCore/control.h>
-#include <AkonadiCore/servermanager.h>
-#endif
 
 using namespace Akonadi;
 #endif
@@ -84,6 +57,7 @@ bool AddressProviderPrivate::init()
     } else {
         mSession = new Akonadi::Session( "KraftSession" );
         _akonadiUp = true;
+        qDebug() << "** Akonadi Session started.";
     }
 #endif
     return _akonadiUp;
@@ -122,13 +96,14 @@ bool AddressProviderPrivate::lookupAddressee( const QString& uid )
         return false;
     }
 #ifdef HAVE_AKONADI
+    qDebug() << "Looking up uid" << uid << "in the Akonadi backend";
     Akonadi::ContactSearchJob *csjob = new Akonadi::ContactSearchJob( this );
-    csjob->setLimit( 1 );
+    // csjob->setLimit( 1 );
     csjob->setQuery(ContactSearchJob::ContactUid , uid, ContactSearchJob::ExactMatch);
+    csjob->fetchScope().fetchFullPayload();
 
     csjob->setProperty("UID", uid);
-    connect( csjob, SIGNAL( result( KJob* ) ), this, SLOT( searchResult( KJob* ) ) );
-    csjob->start();
+    connect(csjob, &Akonadi::ContactSearchJob::result, this, &AddressProviderPrivate::searchResult);
 
     mUidSearches.insert( uid );
 

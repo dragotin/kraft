@@ -80,6 +80,8 @@ void MyIdentity::load()
     connect(_addressProvider, &AddressProvider::lookupResult,
              this, &MyIdentity::slotAddresseeFound);
 
+    qDebug() << "looking up identity" << myUid;
+
     _myContact = KContacts::Addressee();
 
     KContacts::Addressee contact;

@@ -37,14 +37,8 @@
 #include <kcontacts/contactgroup.h>
 
 #ifdef HAVE_AKONADI
-#include <akonadi_version.h>
-#if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
 #include <Akonadi/EntityTreeModel>
 #include <Akonadi/EntityTreeView>
-#else
-#include <entitytreemodel.h>
-#include <entitytreeview.h>
-#endif
 #endif
 
 /* ==================================================================== */
@@ -235,13 +229,8 @@ KraftContactViewer::KraftContactViewer(QWidget *parent)
     lay->setContentsMargins(0,0,0,0);
     setLayout(lay);
 #ifdef HAVE_AKONADI
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-    _contactViewer = new ContactEditor::ContactViewer;
-#else
     _contactViewer = new Akonadi::ContactViewer;
-#endif
     _contactViewer->setShowQRCode(false);
-
     lay->addWidget(_contactViewer);
 #endif
 }
@@ -375,11 +364,7 @@ bool AddressSelectorWidget::backendUp() const
 void AddressSelectorWidget::slotCreateNewContact()
 {
 #ifdef HAVE_AKONADI
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-    _addressEditor = new ContactEditor::ContactEditorDialog(ContactEditor::ContactEditorDialog::EditMode, this );
-#else
     _addressEditor = new Akonadi::ContactEditorDialog(Akonadi::ContactEditorDialog::CreateMode, this );
-#endif
     _addressEditor->show();
 #endif
 }
@@ -409,11 +394,7 @@ void AddressSelectorWidget::slotEditContact()
     if ( index.isValid() ) {
       const Akonadi::Item item = index.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
       if ( item.isValid() && item.hasPayload<KContacts::Addressee>() ) {
-#if AKONADICONTACT_VERSION >= QT_VERSION_CHECK(5, 24, 0)
-        _addressEditor = new ContactEditor::ContactEditorDialog(ContactEditor::ContactEditorDialog::EditMode, this );
-#else
         _addressEditor = new Akonadi::ContactEditorDialog(Akonadi::ContactEditorDialog::CreateMode, this );
-#endif
         _addressEditor->setContact( item );
         _addressEditor->show();
       }
