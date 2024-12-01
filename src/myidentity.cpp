@@ -124,6 +124,11 @@ void MyIdentity::load()
     }
 }
 
+QString MyIdentity::errorMsg(const QString& uid)
+{
+    return _addressProvider->errorMsg(uid);
+}
+
 void MyIdentity::slotAddresseeFound(const QString& uid, const KContacts::Addressee& contact)
 {
     _myContact = contact;

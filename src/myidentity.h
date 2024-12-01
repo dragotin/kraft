@@ -64,6 +64,7 @@ public:
 
     MyIdentity::Source source() const;
 
+    QString errorMsg(const QString& uid);
 Q_SIGNALS:
 
     // final signal after the contact could be loaded
