@@ -84,6 +84,7 @@ bool KraftObj::hasTag(const QString& tag) const
 
 void KraftObj::setTags(const QStringList& list)
 {
+    _tags.clear();
     for( const auto &l : list) {
         addTag(l);
     }

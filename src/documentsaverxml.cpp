@@ -93,6 +93,10 @@ int xmlAppendItemsToGroup( QDomDocument& xmldoc, QDomElement itemGroupElem, Kraf
             attribElem.appendChild(textElement(xmldoc, "type", attribs[k].typeString()));
         }
 
+        const QStringList& tags = item->allTags();
+        for(const QString& tag : tags) {
+            itemType.appendChild(textElement(xmldoc, "tag", tag));
+        }
         itemGroupElem.appendChild(itemType);
         cnt++;
     }

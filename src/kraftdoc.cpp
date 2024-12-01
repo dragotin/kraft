@@ -394,9 +394,16 @@ void KraftDoc::setPositionList( DocPositionList newList, bool isNew)
     DocPositionBase *dpb = it.next();
     DocPosition *dp = static_cast<DocPosition*>( dpb );
     DocPosition *newDp = createPosition( dp->type() );
-    *newDp = *dp;
+    *newDp = *dp; // FIXME: This does not copy tags and attribs
+
+    // copy attribs and tags as they are not copied otherwise
+    newDp->setTags(dp->allTags());
+    QMap<QString, KraftAttrib> attribs = dp->attributes();
+    for (const auto& attrib : attribs.values()) {
+        newDp->setAttribute(attrib);
+    }
     if(isNew) {
-        newDp->setDbId(-1);
+        newDp->createUuid();
     }
   }
 }
@@ -461,14 +468,6 @@ void KraftDoc::slotMoveDownPosition( int dbid )
   if( curPos > 0 ) {
     mPositions.swapItemsAt( curPos, curPos-1 );
   }
-}
-
-int KraftDoc::slotAppendPosition( const DocPosition& pos )
-{
-  DocPosition *dp = createPosition();
-  *dp = pos; // FIXME: Proper assignment operator
-
-  return mPositions.count();
 }
 
 void KraftDoc::setTaxValues(double fullTax, double redTax)

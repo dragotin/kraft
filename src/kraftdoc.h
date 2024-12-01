@@ -262,12 +262,6 @@ public:
     KraftDocState& state() { return _state; }
 
  public Q_SLOTS:
-    /** calls redrawDocument() on all views connected to the document object and is
-   *  called by the view by which the document has been changed.
-   *  As this view normally repaints itself, it is excluded from the paintEvent.
-   */
-    int slotAppendPosition( const DocPosition& );
-
     // The following slots take get the db id as argument
     void slotRemovePosition( int );
     void slotMoveUpPosition( int );

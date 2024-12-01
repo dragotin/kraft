@@ -43,7 +43,6 @@ class PositionViewWidget : public QWidget, public Ui_positionWidget
     Q_OBJECT
 public:
     enum State { Active, New, Deleted, Locked };
-    enum Kind  { Normal, Demand, Alternative, Invalid };
 
     PositionViewWidget( );
     PositionViewWidget( int );
@@ -57,11 +56,11 @@ public:
     bool deleted() { return mToDelete; }
     DocPositionGuardedPtr position(){ return mPositionPtr; }
     State state() { return mState; }
-    Kind  kind()  { return mKind; }
+    DocPositionBase::PositionType  kind()  { return mKind; }
 
-    static QString techKindString(Kind kind);
-    static Kind techStringToKind( const QString& kindStr );
-    static QString kindLabel( Kind );
+    static QString techKindString(DocPosition::PositionType kind);
+    static DocPosition::PositionType techStringToKind( const QString& kindStr );
+    static QString kindLabel(DocPosition::PositionType);
 
     QString stateString( const State& state ) const;
     QString cleanKindString(const QString &src);
@@ -69,7 +68,6 @@ public:
     bool priceValid();
     void setCurrentPrice( Geld );
     Geld unitPrice();
-    QStringList tagList() { return mTags; }
     QString extraDiscountTagRestriction();
     DocPositionBase::TaxType taxType() const;
 
@@ -91,7 +89,7 @@ public Q_SLOTS:
 protected Q_SLOTS:
     void slotLockPosition();
     void slotUnlockPosition();
-    void slotSetPositionKind(Kind kind, bool alterText);
+    void slotSetPositionKind(DocPosition::PositionType kind, bool alterText);
     void slotUpdateTagToolTip();
     void paintEvent ( QPaintEvent* );
 
@@ -121,7 +119,6 @@ private:
     QMenu *mStateSubmenu;
     QMenu *mTaxSubmenu;
 
-    QStringList mTags;
     QAction * mDeleteId;
     QAction * mLockId;
     QAction * mUnlockId;
@@ -131,7 +128,7 @@ private:
 
     Geld mPositionPrice;  // only used for Discount items to store the result
     State mState;
-    Kind  mKind;
+    DocPositionBase::PositionType  mKind;
     bool mPositionPriceValid;
     QLocale *mLocale;
     DocPosition::TaxType mTax;

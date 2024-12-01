@@ -71,19 +71,15 @@ DocPositionBase::DocPositionBase(const DocPositionBase& b )
 
 DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
 {
-  if ( this == &dp ) return *this;
+  if (this == &dp) return *this;
 
+  KraftObj::operator=(dp);
   m_dbId = dp.m_dbId;
   m_position = dp.m_position;
   m_text = dp.m_text;
   mToDelete = dp.mToDelete;
   mType = dp.mType;
-
-  const QMap<QString, KraftAttrib> attrib = dp.attributes();
-  for (const auto& m:attrib) {
-      setAttribute(m);
-  }
-  mTaxType = dp.mTaxType;
+  mTaxType = dp.mTaxType;  
 
   return *this;
 }

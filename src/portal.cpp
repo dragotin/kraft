@@ -498,7 +498,7 @@ void Portal::slotReceivedMyAddress( const QString& uid, const KContacts::Address
     if( contact.isEmpty() ) {
         if( !uid.isEmpty() ) {
             // FIXME: Read the stored Address and compare the uid
-            const QString err = mAddressProvider->errorMsg(uid);
+            const QString err = _myIdentity.errorMsg(uid);
             qDebug () << "My-Contact could not be found:" << err;
         }
         return;

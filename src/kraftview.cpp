@@ -159,28 +159,28 @@ void KraftView::setupMappers()
 {
 
   mDeleteMapper = new QSignalMapper( this );
-  connect( mDeleteMapper, SIGNAL( mapped(int)),
-           this, SLOT( slotDeletePosition( int ) ) );
+  connect(mDeleteMapper, &QSignalMapper::mappedInt,
+          this, &KraftView::slotDeletePosition);
 
   mMoveUpMapper = new QSignalMapper( this );
-  connect( mMoveUpMapper, SIGNAL( mapped(int)),
-           this, SLOT( slotMovePositionUp( int  ) ) );
+  connect(mMoveUpMapper, &QSignalMapper::mappedInt,
+          this, &KraftView::slotMovePositionUp);
 
   mMoveDownMapper = new QSignalMapper( this );
-  connect( mMoveDownMapper, SIGNAL( mapped(int)),
-           this, SLOT( slotMovePositionDown( int ) ) );
+  connect(mMoveDownMapper, &QSignalMapper::mappedInt,
+          this, &KraftView::slotMovePositionDown);
 
   mLockPositionMapper = new QSignalMapper( this );
-  connect( mLockPositionMapper, SIGNAL( mapped( int )),
-           this, SLOT( slotLockPosition( int ) ) );
+  connect(mLockPositionMapper, &QSignalMapper::mappedInt,
+           this, &KraftView::slotLockPosition);
 
   mUnlockPositionMapper = new QSignalMapper( this );
-  connect( mUnlockPositionMapper, SIGNAL( mapped( int )),
-           this, SLOT( slotUnlockPosition( int ) ) );
+  connect(mUnlockPositionMapper, &QSignalMapper::mappedInt,
+           this, &KraftView::slotUnlockPosition);
 
   mModifiedMapper = new QSignalMapper( this );
-  connect( mModifiedMapper,  SIGNAL( mapped( int ) ),
-           this,  SLOT( slotPositionModified( int ) ) );
+  connect( mModifiedMapper,  &QSignalMapper::mappedInt,
+           this,  &KraftView::slotPositionModified);
   // block signals as long as the widget is built up.
   // unblocking happens in redrawDocument()
   mModifiedMapper->blockSignals(true);
@@ -1161,16 +1161,14 @@ DocPositionList KraftView::currentPositionList()
             QMap<QString, QString> replaceMap;
 
             if ( dpb ) {
-                // FIXME what about discount?
-                // FIXME get rid of PostionViewWidget::Kind
-                const PositionViewWidget::Kind k = widget->kind();
-                DocPositionBase::PositionType t {DocPositionBase::PositionType::Position};
-                if (k == PositionViewWidget::Kind::Demand) {
-                    t = DocPositionBase::PositionType::Demand;
-                } else if (k == PositionViewWidget::Kind::Alternative) {
-                    t = DocPositionBase::PositionType::Alternative;
-                } else if (k == PositionViewWidget::Kind::Demand) {
-                    t = DocPositionBase::PositionType::Demand;
+                const DocPositionBase::PositionType k = widget->kind();
+                DocPositionBase::PositionType t = dpb->type();
+                if (t == DocPositionBase::PositionType::Position) {
+                    if (k == DocPositionBase::PositionType::Demand) {
+                        t = DocPositionBase::PositionType::Demand;
+                    } else if (k == DocPositionBase::PositionType::Alternative) {
+                        t = DocPositionBase::PositionType::Alternative;
+                    }
                 }
                 DocPosition *newDp = new DocPosition(t);
 
@@ -1187,10 +1185,8 @@ DocPositionList KraftView::currentPositionList()
                     double discount = widget->mDiscountPercent->value();
 
                     /* set Attributes with the discount percentage */
-                    if (discount > 0.0) {
-                        KraftAttrib a( DocPosition::Discount, discount, KraftAttrib::Type::Float);
-                        newDp->setAttribute(a);
-                    }
+                    KraftAttrib a( DocPosition::Discount, discount, KraftAttrib::Type::Float);
+                    newDp->setAttribute(a);
 
                     // get the required tag as String.
                     const QString tagRequiredStr = widget->extraDiscountTagRestriction();
@@ -1213,7 +1209,7 @@ DocPositionList KraftView::currentPositionList()
 
                         if ( widget != w1 ) { // ATTENTION Porting: do not take the own value into account
                             if ( tagRequiredStr.isEmpty()  // means that all positions are to calculate
-                                 || w1->tagList().contains( tagRequiredStr ) ) { // tagList() returns strings, not Ids.
+                                 || w1->position()->allTags().contains( tagRequiredStr ) ) {
                                 if ( w1->priceValid() ) {
                                     sum += w1->currentPrice();
                                     // qDebug () << "Summing up pos with text " << w1->ordNumber() << " and price "
@@ -1268,7 +1264,7 @@ DocPositionList KraftView::currentPositionList()
                     newDp->setUnit( e );
 
                     /* set the tags */
-                    const QStringList tagStrings = widget->tagList();
+                    const QStringList tagStrings = widget->position()->allTags();
                     newDp->setTags(tagStrings);
                     // qDebug() << "============ " << tags.toString() << endl;
 
@@ -1405,7 +1401,9 @@ void KraftView::saveChanges()
     if (mModified) m_doc->setModified();
 
     DocPositionList list = currentPositionList();
-    m_doc->setPositionList( list );
+
+    // this does not need to be a deep copy
+    m_doc->setPositionList(list);
 
     bool ok = DocumentMan::self()->saveDocument(m_doc);
     if (!ok) {
