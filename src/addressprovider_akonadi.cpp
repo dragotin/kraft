@@ -98,12 +98,13 @@ bool AddressProviderPrivate::lookupAddressee( const QString& uid )
 #ifdef HAVE_AKONADI
     qDebug() << "Looking up uid" << uid << "in the Akonadi backend";
     Akonadi::ContactSearchJob *csjob = new Akonadi::ContactSearchJob( this );
-    // csjob->setLimit( 1 );
-    csjob->setQuery(ContactSearchJob::ContactUid , uid, ContactSearchJob::ExactMatch);
+    csjob->setLimit( 1 );
     csjob->fetchScope().fetchFullPayload();
+    csjob->setQuery(ContactSearchJob::ContactUid , uid, ContactSearchJob::ExactMatch);
 
+    // Store the lookup uid in an extra property
     csjob->setProperty("UID", uid);
-    connect(csjob, &Akonadi::ContactSearchJob::result, this, &AddressProviderPrivate::searchResult);
+    connect(csjob, &Akonadi::ItemFetchJob::result, this, &AddressProviderPrivate::searchResult);
 
     mUidSearches.insert( uid );
 
@@ -118,10 +119,8 @@ void AddressProviderPrivate::searchResult( KJob* job )
 {
     if( !job ) return;
 
-    QString uid;
+    const QString uid {job->property("UID").toString()};
     KContacts::Addressee contact;
-
-    uid = job->property("UID").toString();
 
     if( job->error() ) {
         // both uid and err message can be empty
@@ -129,19 +128,20 @@ void AddressProviderPrivate::searchResult( KJob* job )
         Q_EMIT lookupError(uid, errMsg );
         // qDebug () << "Address Search job failed: " << job->errorString();
     } else {
-	Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
-        const KContacts::Addressee::List contacts =
-                searchJob->contacts();
-                KContacts::Addressee::List();
-        // qDebug () << "Found list of " << contacts.size() << " addresses as search result";
+        Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>( job );
+        if (searchJob) {
+            const KContacts::Addressee::List contacts = searchJob->contacts();
+            // qDebug () << "Found list of " << contacts.size() << " addresses as search result";
 
-        if( contacts.size() > 0 ) {
-            contact = contacts[0];
-            // qDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
-            Q_EMIT addresseeFound(uid, contact);
-        } else {
-            // qDebug() << "No search result for UID" << uid;
-            Q_EMIT addresseeNotFound(uid);
+            if (contacts.size() > 0) {
+                auto contact = contacts.at(0);
+
+                // qDebug() << "Found uid search job for UID " << uid << " = " << contact.realName();
+                Q_EMIT addresseeFound(uid, contact);
+            } else {
+                // qDebug() << "No search result for UID" << uid;
+                Q_EMIT addresseeNotFound(uid);
+            }
         }
     }
 
