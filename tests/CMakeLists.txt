@@ -77,6 +77,13 @@ target_link_libraries(t_kraftdoc ${test_libs})
 
 # ============================================================
 
+add_executable(t_docposition t_docposition.cpp)
+add_test(t_docposition t_docposition)
+
+target_link_libraries(t_docposition ${test_libs})
+
+# ============================================================
+
 
 set(TESTS_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 configure_file ("testconfig.h.in" "testconfig.h")

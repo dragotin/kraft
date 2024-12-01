@@ -8,7 +8,6 @@
 #include "kraftdoc.h"
 #include "attribute.h"
 #include "docposition.h"
-#include "dbids.h"
 #include "format.h"
 #include "kraftsettings.h"
 #include "format.h"
