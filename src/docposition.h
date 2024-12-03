@@ -25,9 +25,9 @@
 
 // application specific includes
 #include "dbids.h"
-#include "calcpart.h"
 #include "attribute.h"
 #include "einheit.h"
+#include "geld.h"
 #include "kraftobj.h"
 
 /**
@@ -50,8 +50,6 @@ public:
 
     DocPositionBase();
     DocPositionBase( const PositionType& );
-
-    DocPositionBase(const DocPositionBase&);
 
     void setDbId( int id ) { m_dbId = id; }
     dbID dbId() { return dbID( m_dbId ); }
@@ -76,8 +74,6 @@ public:
     QString typeStr();
     static QString typeToString(DocPositionBase::PositionType t);
     static DocPositionBase::PositionType typeStrToType(const QString& t);
-
-    DocPositionBase& operator=( const DocPositionBase& );
 
 protected:
     int     m_dbId;

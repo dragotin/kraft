@@ -54,36 +54,6 @@ DocPositionBase::DocPositionBase( const PositionType& t )
 
 }
 
-DocPositionBase::DocPositionBase(const DocPositionBase& b )
-  : KraftObj(),
-    m_dbId( b.m_dbId ),
-    m_position( b.m_position ),
-    m_text( b.m_text ),
-    mToDelete( b.mToDelete ),
-    mTaxType( TaxFull ),
-    mType( b.mType )
-{
-    const QMap<QString, KraftAttrib> attrib = b.attributes();
-    for (const auto& m:attrib) {
-        setAttribute(m);
-    }
-}
-
-DocPositionBase& DocPositionBase::operator=( const DocPositionBase& dp )
-{
-  if (this == &dp) return *this;
-
-  KraftObj::operator=(dp);
-  m_dbId = dp.m_dbId;
-  m_position = dp.m_position;
-  m_text = dp.m_text;
-  mToDelete = dp.mToDelete;
-  mType = dp.mType;
-  mTaxType = dp.mTaxType;  
-
-  return *this;
-}
-
 DocPositionBase::TaxType DocPositionBase::taxType()
 {
   return mTaxType;
