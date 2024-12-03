@@ -52,7 +52,6 @@ public Q_SLOTS:
     void slotShowMonthDetails( int year, int month );
     void slotShowYearDetails( int year);
 
-
 private:
     void showAddress( const KContacts::Addressee& addressee, const QString& manAddress );
     void documentListing( TextTemplate *tmpl, int year, int month );

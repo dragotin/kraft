@@ -360,6 +360,13 @@ QString AllDocsView::currentDocumentIdent( ) const
     return id;
 }
 
+void AllDocsView::setErrorMsg(const QString& header, const QString& details)
+{
+    // FIXME: Show in a more prominent and user friendly way.
+    mErrHeader = header;
+    mErrDetails = details;
+}
+
 void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
 {
     Q_UNUSED(previous);
@@ -384,7 +391,7 @@ void AllDocsView::slotCurrentChanged( QModelIndex index, QModelIndex previous )
         if( isDoc ) {
             const DocDigest& digest = model->digest( mCurrentlySelected );
             Q_EMIT docSelected(digest.uuid());
-            mAllViewDetails->slotShowDocDetails( digest );
+            mAllViewDetails->slotShowDocDetails(digest);
         } else {
             const QModelIndex idIndx = model->index(mCurrentlySelected.row(),
                                                     DocumentModel::Treestruct_Type,

@@ -893,7 +893,8 @@ void Portal::slotDocConvertionFail(const QString& uuid, const QString& failStrin
     if (_currentSelectedUuid == uuid)
         _actOpenDocumentPDF->setEnabled(false);
 
-    QMessageBox::warning(this, i18n("Doc Generation Error"), failString + "\n\n"+details);
+    m_portalView->allDocsView()->setErrorMsg(failString, details);
+    slotStatusMsg( i18n("⚠ Document generation error: ") + failString);
 }
 
 void Portal::slotDocConverted(ReportFormat format, const QString& uuid, const KContacts::Addressee& customerContact)

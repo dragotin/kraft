@@ -59,6 +59,7 @@ public Q_SLOTS:
     void slotUpdateView(DocGuardedPtr doc);
 
     void setView(ViewType type);
+    void setErrorMsg(const QString& header, const QString& details);
 
 protected:
     void contextMenuEvent( QContextMenuEvent* );
@@ -90,6 +91,8 @@ private:
 
     QPushButton            *mNewDocButton;
     QLineEdit              *_searchLine;
+
+    QString  mErrHeader, mErrDetails;
 };
 
 #endif
